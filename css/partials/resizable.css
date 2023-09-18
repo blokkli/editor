@@ -1,0 +1,84 @@
+.pb-resizable {
+  @apply relative;
+  &.pb-is-resizing {
+    @apply cursor-ew-resize;
+    .pb-resizable-inner {
+      @apply pointer-events-none;
+    }
+    .pb-resizable-handle {
+      @apply opacity-100;
+    }
+  }
+  .pb-resizable-handle {
+    @apply absolute top-0 -left-10 w-[20px] h-full cursor-ew-resize  opacity-50 hover:opacity-100 transition z-[5000];
+    &:hover:before {
+      @apply bg-slate-400/40;
+    }
+    &:before {
+      content: '';
+      @apply bg-slate-400/25 absolute top-0 h-full left-10 w-[12px];
+    }
+    &:after {
+      content: '';
+      @apply absolute top-1/2 -translate-y-1/2 h-100 w-[5px] left-[13px] bg-slate-100 border-x-2 border-x-slate-400;
+    }
+  }
+}
+
+.pb-drupal-modal {
+  @apply fixed left-0 top-0 w-full h-full z-[990000];
+  .pb-drupal-modal-background {
+    @apply absolute left-0 top-0 w-full h-full bg-slate-600/90;
+  }
+  .pb-drupal-modal-resizable {
+    @apply ml-auto h-full bg-white shadow-2xl;
+    .pb-drupal-modal-iframe {
+      @apply flex-1 relative;
+      iframe {
+        @apply absolute top-0 left-0 w-full h-full;
+      }
+    }
+  }
+  .pb-resizable-inner {
+    @apply h-full flex flex-col;
+  }
+}
+
+.pb-drupal-modal-header {
+  @apply pl-20 border-b flex items-center text-base font-bold h-50 bg-slate-900 text-white gap-10 relative z-[6000];
+  button {
+    @apply w-50 h-50 flex items-center justify-center hover:bg-slate-700 ml-auto;
+    svg {
+      @apply fill-current w-25 h-25;
+    }
+  }
+}
+
+.pb-slide-in-enter-active,
+.pb-slide-in-leave-active {
+  transition: 0.2s ease-in-out;
+  .pb-drupal-modal-background {
+    transition: 0.2s ease-in-out;
+  }
+  .pb-resizable {
+    transition: 0.2s ease-in-out;
+  }
+}
+.pb-slide-in-enter-from,
+.pb-slide-in-leave-to {
+  .pb-drupal-modal-background {
+    @apply opacity-0;
+  }
+  .pb-resizable {
+    @apply translate-x-full;
+  }
+}
+
+.pb-fade-enter-active,
+.pb-fade-leave-active {
+  transition: 0.2s ease-in-out;
+}
+.pb-fade-enter-from,
+.pb-fade-leave-to {
+  @apply opacity-0;
+}

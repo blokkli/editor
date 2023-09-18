@@ -1,0 +1,13 @@
+.pb.pb-structure {
+  li {
+  }
+  ul {
+    @apply grid gap-10 mx-10;
+  }
+  ul.pb-structure-list {
+    @apply mt-10;
+    > li > h3 {
+      @apply font-bold;
+    }
+  }
+}

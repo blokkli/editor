@@ -1,0 +1,19 @@
+.pb.pb-errors {
+  li {
+    @apply p-15 text-base;
+  }
+  h3 {
+    @apply font-medium;
+  }
+  .pb-errors-success {
+    @apply text-center flex items-center pt-30 flex-col;
+
+    figure {
+      @apply rounded-full bg-green-100 text-green-500 p-20 w-100 h-100 mb-20;
+
+      svg {
+        @apply fill-current;
+      }
+    }
+  }
+}

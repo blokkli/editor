@@ -1,0 +1,25 @@
+.pb-field-area {
+  @apply absolute top-0 left-0;
+  > div {
+    @apply absolute top-0 right-0 pr-20 uppercase text-xs text-slate-800 font-medium select-none tracking-wide will-change-transform;
+    span {
+      @apply inline-block px-[8px] py-3 rounded-full;
+    }
+  }
+
+  &.pb-is-active {
+    > div span {
+      @apply bg-blue-700 text-white whitespace-nowrap;
+    }
+  }
+}
+
+.pb-canvas-area {
+  @apply pointer-events-none bg-white mix-blend-screen opacity-90 relative;
+  > div {
+    @apply absolute bg-black;
+    &.pb-is-active {
+      @apply border border-blue-700;
+    }
+  }
+}

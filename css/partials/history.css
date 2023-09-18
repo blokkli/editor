@@ -1,0 +1,89 @@
+.pb {
+  &.pb-history {
+    .pb-history-load-more {
+      @apply p-20 bg-white relative z-50 border-t border-t-slate-300;
+      > button {
+        @apply w-full;
+      }
+    }
+    ul {
+      @apply relative;
+      @apply px-20 pt-15;
+      li {
+        @apply relative;
+        &:after {
+          content: '';
+          @apply absolute w-0 left-[5.5px] top-0 h-full;
+          @apply border-l border-slate-300 border-dashed;
+          @apply translate-y-20;
+          @apply pointer-events-none;
+          z-index: 1;
+        }
+        &.is-last:after {
+          display: none;
+        }
+        &.is-active ~ li:after,
+        &.is-active:after {
+          @apply border-solid border-slate-400;
+        }
+
+        &.is-not-active button {
+          @apply text-slate-400;
+          em {
+            @apply text-slate-400;
+          }
+          &:before {
+            @apply text-slate-300 scale-50;
+          }
+        }
+        &.is-active {
+          @apply pointer-events-none;
+          button {
+            &:before {
+              @apply bg-blue-800 scale-100;
+            }
+          }
+        }
+
+        &.is-applied button {
+          &:before {
+            @apply border-blue-200 bg-blue-200;
+          }
+        }
+        &:not(.is-active) button {
+          &:hover {
+            @apply text-blue-800;
+            &:before {
+              @apply bg-blue-400;
+            }
+          }
+        }
+      }
+      button {
+        @apply text-left w-full block relative py-10 text-sm cursor-pointer pl-[22px];
+
+        > div {
+          @apply pointer-events-none;
+        }
+
+        &[disabled] {
+          @apply pointer-events-none;
+        }
+
+        &:before {
+          content: '';
+          @apply absolute -top-[8px] left-[-1px] w-15 h-15 bg-slate-200 rounded-full z-10;
+          @apply transition-all translate-y-20;
+          box-shadow: 0 0 0 3px white;
+        }
+
+        strong {
+          @apply text-sm;
+        }
+        em {
+          @apply text-slate-500 text-xs not-italic;
+        }
+      }
+    }
+  }
+}

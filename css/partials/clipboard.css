@@ -1,0 +1,45 @@
+.pb-clipboard {
+  @apply p-20;
+  .pb-clipboard-list {
+    @apply grid gap-10;
+  }
+  .pb-clipboard-info {
+    h4 {
+      @apply !text-xl !font-bold !font-sans;
+    }
+    p {
+      @apply !font-sans !text-base;
+    }
+  }
+}
+
+.pb-clipboard-item {
+  @apply !relative !border !border-slate-300 !cursor-grab !overflow-hidden !rounded !font-sans;
+  @apply hover:border-slate-500;
+  &:hover {
+    .pb-clipboard-item-header {
+      @apply bg-slate-600;
+    }
+  }
+  > * {
+    &:first-child {
+      margin-top: 0;
+    }
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+.pb-clipboard-item-header {
+  @apply !flex !items-center !gap-10 !text-lg !font-semibold !border-b !border-b-slate-300 !p-10;
+  @apply !bg-slate-700 !text-slate-100;
+  button {
+    @apply !ml-auto !text-lg !p-5 hover:bg-slate-500 !rounded !text-slate-300 hover:text-white;
+    svg {
+      @apply !w-20 !h-20 !fill-current;
+    }
+  }
+}
+.pb-clipboard-item-inner {
+  @apply !relative !h-full !line-clamp-6 !p-10 !font-sans !text-base;
+}

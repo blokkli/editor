@@ -1,0 +1,113 @@
+.pb {
+  .pb-paragraph-options-checkbox {
+    @apply relative inline-flex items-center cursor-pointer h-full px-10 text-slate-200;
+    @apply hover:bg-slate-800 hover:text-slate-50;
+    input {
+      @apply sr-only;
+    }
+    input:checked + div {
+      @apply after:translate-x-full after:border-white bg-slate-500 after:bg-slate-50;
+    }
+    > div {
+      @apply relative w-[36px] h-20 bg-slate-700 rounded-full;
+      @apply after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-300 after:rounded-full after:h-[16px] after:w-[16px] after:transition-all;
+    }
+    > span {
+      @apply inline-block pl-10;
+    }
+  }
+
+  .pb-paragraph-options-radios:not(.pb-is-color) {
+    @apply flex items-center px-10 h-full relative gap-3;
+    @apply text-slate-50  select-none text-sm;
+    > label {
+      @apply h-full flex items-center cursor-pointer;
+      input {
+        @apply sr-only;
+
+        &:checked + span {
+          @apply bg-slate-100 text-slate-900;
+        }
+      }
+      &:hover input:not(:checked) + span {
+        @apply bg-slate-700;
+      }
+      span {
+        @apply inline-block px-10 py-2 rounded-3xl;
+      }
+
+      &.pb-is-muted {
+        @apply text-slate-500;
+      }
+    }
+  }
+
+  .pb-paragraph-options-radios.pb-is-language {
+    > label:not(:hover) {
+      .pb-tooltip {
+        @apply hidden;
+      }
+    }
+    .pb-tooltip {
+      @apply absolute top-full left-0 w-full mt-3;
+    }
+  }
+
+  .pb-paragraph-options-radios.pb-is-color {
+    @apply flex items-stretch h-full px-5;
+    label {
+      @apply cursor-pointer h-full flex items-center px-5;
+      div {
+        @apply relative w-20 h-20 rounded-full;
+      }
+      input {
+        @apply mr-1 cursor-pointer;
+      }
+      span {
+        @apply absolute top-0 text-[0px] left-0 w-full h-full rounded-[inherit] outline outline-transparent outline-offset-2;
+      }
+      &:hover input:not(:checked) + span {
+        @apply outline-slate-400;
+      }
+      input {
+        opacity: 0;
+        &:checked + span {
+          @apply outline-slate-50;
+        }
+      }
+    }
+  }
+
+  .pb-paragraph-options-text {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    height: 100%;
+    input {
+      @apply bg-transparent;
+      height: 100%;
+      padding: 0 0.75rem;
+      &:focus {
+        outline: none;
+      }
+    }
+    &:hover {
+      color: var(--gin-color-primary);
+    }
+  }
+
+  .pb-paragraph-options-item {
+    @apply relative flex items-center;
+    &.pb-is-disabled {
+      @apply pointer-events-none opacity-20;
+    }
+    .pb-tooltip {
+      @apply absolute bottom-full left-0 w-full mb-3;
+    }
+    &:not(:hover) {
+      .pb-tooltip {
+        @apply hidden;
+      }
+    }
+  }
+}

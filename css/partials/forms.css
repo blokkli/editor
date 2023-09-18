@@ -1,0 +1,52 @@
+.pb-form-label {
+  @apply !block !mb-3 !text-base !font-semibold !text-gray-900 !font-sans;
+}
+
+.pb-form-input {
+  @apply !bg-white !border !border-slate-400 !text-gray-900 !rounded-md focus:!outline focus:!outline-2 focus:!outline-blue-700 focus:!border-blue-700 !block !w-full !p-10 !font-sans !text-base;
+}
+.pb {
+  .pb-checkbox,
+  .pb-radio {
+    @apply flex items-center cursor-pointer py-5 hover:text-blue-600 relative;
+    input {
+      @apply absolute opacity-0;
+    }
+
+    input:checked ~ span:before {
+      @apply bg-blue-700;
+    }
+    span {
+      @apply font-medium flex items-center;
+      &:before {
+        content: '';
+        @apply shrink-0 w-[18px] h-[18px] text-blue-600 bg-slate-100 border border-slate-400 focus:ring-blue-100 focus:ring-2 outline-none rounded block mr-[6px];
+      }
+    }
+  }
+
+  .pb-radio {
+    span:before {
+      @apply rounded-full;
+    }
+    input:checked ~ span:before {
+      box-shadow: inset 0 0 0 3px white;
+    }
+  }
+  .pb-checkbox {
+    input:checked ~ span:before {
+      background-image: url(./../check.svg);
+      background-size: 80% 80%;
+      background-repeat: no-repeat;
+      background-position: center center;
+    }
+  }
+
+  .pb-radio-list {
+    @apply h-[410px] overflow-auto  mt-10;
+  }
+
+  .pb-form-section {
+    @apply border-t pt-20 my-20;
+  }
+}

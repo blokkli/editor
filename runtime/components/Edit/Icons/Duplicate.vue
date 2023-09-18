@@ -1,0 +1,14 @@
+<template>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    x="0px"
+    y="0px"
+    width="100"
+    height="100"
+    viewBox="0 0 32 32"
+  >
+    <path
+      d="M 8 4 L 8 8 L 4 8 L 4 28 L 24 28 L 24 27 L 24 24 L 28 24 L 28 4 L 8 4 z M 10 6 L 26 6 L 26 22 L 24 22 L 24 8 L 10 8 L 10 6 z M 6 10 L 22 10 L 22 26 L 6 26 L 6 10 z M 13 14 L 13 17 L 10 17 L 10 19 L 13 19 L 13 22 L 15 22 L 15 19 L 18 19 L 18 17 L 15 17 L 15 14 L 13 14 z"
+    ></path>
+  </svg>
+</template>

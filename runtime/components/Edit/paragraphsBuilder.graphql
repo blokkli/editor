@@ -1,0 +1,662 @@
+#import "~/components/Paragraph/fragment.paragraphsFieldItem.graphql";
+#import "~/components/Paragraph/fragment.paragraph.graphql";
+
+fragment paragraphsBuilderEditState on ParagraphsBuilderEditState {
+  mutations {
+    ...paragraphsBuilderMutationItem
+  }
+
+  currentIndex
+  currentUserIsOwner
+  ownerName
+  mutatedState {
+    fields(langcode: $langcode) {
+      ...paragraphsBuilderMutatedField
+    }
+    behaviorSettings
+    violations {
+      ...paragraphsBuilderViolation
+    }
+  }
+  bundleLabel
+  entity {
+    id
+    label
+    ... on Node {
+      status
+    }
+    ... on EntityTranslatable {
+      translations {
+        ... on Node {
+          status
+        }
+        langcode
+        ... on EntityLinkable {
+          url {
+            path
+          }
+        }
+      }
+    }
+  }
+
+  translationState {
+    isTranslatable
+    sourceLanguage
+    availableLanguages {
+      id
+      name
+    }
+    translations
+  }
+}
+
+fragment paragraphsBuilderComment on CommentParagraphsBuilder {
+  id
+  targetUuid: fieldTargetUuid
+  resolved: fieldResolved
+  body: commentBody
+  created: createdRawField {
+    first {
+      value
+    }
+  }
+  user: uid {
+    label
+  }
+}
+
+fragment paragraphsBuilderMutationItem on FieldItemTypeParagraphsBuilderMutation {
+  timestamp
+  pluginId
+  plugin {
+    label
+    affectedParagraphUuid
+  }
+}
+
+fragment paragraphsBuilderViolation on ParagraphsEditViolation {
+  message
+  code
+  propertyPath
+}
+
+fragment paragraphsBuilderMutatedField on ParagraphsBuilderMutatedField {
+  name
+  label
+  field {
+    list {
+      ...paragraphsFieldItem
+      paragraph: entity {
+        ...paragraph
+      }
+    }
+  }
+}
+
+fragment paragraphsBuilderMutationResult on ParagraphsBuilderMutationResult {
+  success
+  state {
+    ...paragraphsBuilderEditState
+  }
+}
+
+query paragraphsEditState(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+) {
+  state: getParagraphsEditState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    ...paragraphsBuilderEditState
+  }
+}
+
+query paragraphsBuilderAvailableFeatures {
+  features: paragraphsBuilderAvailableFeatures {
+    ...paragraphsBuilderAvailableFeatures
+  }
+}
+
+fragment paragraphsBuilderAvailableFeatures on ParagraphsBuilderAvailableFeatures {
+  conversion
+  comment
+  library
+  mutations
+}
+
+query paragraphsBuilderComments(
+  $entityType: EntityType!
+  $entityUuid: String!
+) {
+  state: getParagraphsEditState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    comments {
+      ...paragraphsBuilderComment
+    }
+  }
+}
+
+mutation paragraphsBuilderPublish(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: publish {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation addParagraph(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $type: String!
+  $hostType: String!
+  $hostUuid: String!
+  $hostFieldName: String!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: add(
+      type: $type
+      afterUuid: $afterUuid
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+    ) {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation addReusableParagraph(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $libraryItemId: String!
+  $hostType: String!
+  $hostUuid: String!
+  $hostFieldName: String!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: add_reusable(
+      libraryItemId: $libraryItemId
+      afterUuid: $afterUuid
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+    ) {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation addTextParagraph(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $text: String!
+  $hostType: String!
+  $hostUuid: String!
+  $hostFieldName: String!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: add_text(
+      text: $text
+      afterUuid: $afterUuid
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+    ) {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation addVideoRemoteParagraph(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $url: String!
+  $hostType: String!
+  $hostUuid: String!
+  $hostFieldName: String!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: add_video_remote(
+      url: $url
+      afterUuid: $afterUuid
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+    ) {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation deleteParagraph(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $uuid: String!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: remove(uuid: $uuid) {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation deleteAllParagraphs(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: delete_all_paragraphs {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation deleteMultipleParagraphs(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $uuids: [String]!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: remove_multiple(uuids: $uuids) {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation duplicateParagraph(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $uuid: String!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: duplicate(uuid: $uuid) {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation makeParagraphReusable(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $uuid: String!
+  $label: String!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: make_reusable(uuid: $uuid, label: $label) {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation updateParagraphOption(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $uuid: String!
+  $key: String!
+  $value: String!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: update_behavior_setting(
+      pluginId: "paragraph_builder_data"
+      uuid: $uuid
+      key: $key
+      value: $value
+    ) {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation bulkUpdateParagraphBehaviorSettings(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $items: [ParagraphsBuilderBulkUpdateBehaviorSettingsInput]!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: bulk_update_behavior_settings(items: $items) {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation moveParagraph(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $uuid: String!
+  $hostType: String!
+  $hostUuid: String!
+  $hostFieldName: String!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: move(
+      uuid: $uuid
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+      afterUuid: $afterUuid
+    ) {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation moveMultipleParagraphs(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $uuids: [String]!
+  $hostType: String!
+  $hostUuid: String!
+  $hostFieldName: String!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: move_multiple(
+      uuids: $uuids
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+      afterUuid: $afterUuid
+    ) {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation convertParagraph(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $uuid: String!
+  $targetBundle: String!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: convert(uuid: $uuid, targetBundle: $targetBundle) {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation paragraphsBuilderRedo(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: redo {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation paragraphsBuilderSetHistoryIndex(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $index: Int!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: setHistoryIndex(index: $index) {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation revertAllChanges(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: revertAllChanges {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation paragraphsBuilderUndo(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: undo {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation paragraphsBuilderCopyFromExisting(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $sourceUuid: String!
+  $fields: [String]!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: copy_from_existing(sourceUuid: $sourceUuid, fields: $fields) {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation paragraphsBuilderTakeOwnership(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: takeOwnership {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation paragraphsBuilderAddComment(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $targetUuid: String!
+  $body: String!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: addComment(body: $body, uuid: $targetUuid) {
+      ...paragraphsBuilderComment
+    }
+  }
+}
+
+mutation paragraphsBuilderResolveComment(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $id: ID!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: resolveComment(id: $id) {
+      ...paragraphsBuilderComment
+    }
+  }
+}
+
+query availableParagraphs {
+  entityQuery(entityType: PARAGRAPHS_TYPE, limit: 999) {
+    items {
+      ...paragraphsType
+    }
+  }
+  paragraphsBuilderAllowedTypes {
+    ...paragraphsBuilderAllowedType
+  }
+  paragraphsBuilderConversions {
+    ...paragraphsBuilderConversion
+  }
+}
+
+query paragraphsBuilderExisting(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $bundle: String!
+  $conditions: [EntityQueryFilterConditionInput]
+  $text: String!
+) {
+  entityQuery(
+    entityType: $entityType
+    limit: 12
+    sort: [{ field: "changed", direction: ASC }]
+    filter: {
+      conditions: [
+        { field: "type", value: [$bundle] }
+        { field: "uuid", value: [$entityUuid], operator: NOT_EQUAL }
+        { field: "title", value: [$text], operator: LIKE }
+      ]
+      groups: [{ conjunction: OR, conditions: $conditions }]
+    }
+  ) {
+    total
+    items {
+      ...paragraphsBuilderExistingEntity
+    }
+  }
+}
+
+fragment paragraphsBuilderExistingEntity on Entity {
+  id
+  label
+  uuid
+}
+
+fragment paragraphsBuilderConversion on ParagraphsBuilderConversion {
+  sourceBundle
+  targetBundle
+}
+
+fragment paragraphsType on ParagraphsType {
+  id
+  label
+  icon: iconDefault
+  description
+  allowReusable
+  isTranslatable
+}
+
+fragment paragraphsBuilderAllowedType on ParagraphsBuilderAllowedType {
+  entityType
+  bundle
+  fieldName
+  allowedTypes
+}
+
+query paragraphsBuilderLibraryItems {
+  entityQuery(entityType: PARAGRAPHS_LIBRARY_ITEM, limit: 500) {
+    items {
+      ...paragraphsBuilderLibraryItem
+    }
+  }
+}
+
+fragment paragraphsBuilderLibraryItem on ParagraphsLibraryItem {
+  id
+  label
+  paragraphs: paragraphsRawField {
+    list {
+      ...paragraphsFieldItem
+      paragraph: entity {
+        ...paragraph
+      }
+    }
+  }
+}

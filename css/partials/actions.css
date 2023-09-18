@@ -1,0 +1,99 @@
+.pb {
+  &.pb-paragraph-actions {
+    @apply text-slate-50  select-none text-sm;
+  }
+  .pb-paragraph-actions-inner {
+    @apply fixed left-0 -top-60 p-0 flex items-stretch bg-slate-900 shadow-xl rounded-md whitespace-nowrap h-50 z-50;
+    > div {
+      &:not(:last-child) {
+        @apply border-r border-r-slate-600;
+      }
+    }
+  }
+  .pb-paragraph-actions-overlay {
+    @apply outline outline-blue-600 outline-offset-1 fixed top-0 left-0 pointer-events-none rounded;
+  }
+
+  .pb-paragraph-actions-buttons {
+    @apply relative flex;
+    button {
+      @apply text-slate-300 h-full flex items-center shrink-0 justify-center w-50;
+      @apply hover:bg-slate-700 hover:text-slate-50;
+      &.pb-is-active {
+        @apply bg-white text-slate-900;
+      }
+      .pb-tooltip {
+        @apply absolute bottom-full left-0 w-full mb-3;
+      }
+      &:not(:hover) {
+        .pb-tooltip {
+          @apply hidden;
+        }
+      }
+
+      &[disabled] {
+        @apply opacity-25 pointer-events-none;
+      }
+      svg {
+        @apply w-25 h-25 fill-current;
+      }
+    }
+  }
+
+  .pb-paragraph-actions-type-button {
+    @apply flex items-center justify-between cursor-default min-w-[180px] text-slate-300 font-bold h-full pl-10 pr-20 text-base rounded-l;
+    > span {
+      @apply mr-auto;
+    }
+    .pb-paragraph-icon {
+      @apply text-[25px] mr-5;
+    }
+    &.is-interactive {
+      @apply cursor-pointer;
+      &:not(.is-open) {
+        @apply hover:text-slate-50 hover:bg-slate-700;
+      }
+    }
+    &.is-open {
+      @apply bg-white text-slate-900;
+      > svg {
+        @apply transform rotate-180;
+      }
+    }
+    > svg {
+      @apply pointer-events-none w-15 h-20 ml-10 fill-current;
+    }
+  }
+
+  .pb-paragraph-actions-type {
+    position: relative;
+  }
+
+  .pb-paragraph-actions-type-dropdown {
+    @apply absolute top-full left-0 min-w-[300px] bg-white text-slate-700 rounded overflow-hidden shadow-xl rounded-t-none;
+    h3 {
+      @apply p-10 border-b border-b-slate-200;
+    }
+    button {
+      @apply flex py-15 px-10 items-center gap-5 w-full text-xl font-bold;
+      text-align: left;
+      line-height: 1;
+      svg {
+        @apply fill-current w-30 h-30;
+      }
+      &:hover {
+        @apply text-slate-900 bg-slate-50;
+      }
+    }
+  }
+
+  .pb-paragraph-actions-comment {
+    /* @apply relative; */
+  }
+  .pb-paragraph-actions-comment-dropdown {
+    @apply absolute top-full left-0 w-full bg-white p-15 shadow-xl rounded-b;
+    button {
+      @apply mt-15;
+    }
+  }
+}

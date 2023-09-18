@@ -1,0 +1,39 @@
+.pb-dialog {
+  @apply fixed top-0 left-0 w-screen h-screen  z-[9999999999];
+  @apply flex items-center justify-center;
+  .pb-dialog-background {
+    @apply absolute top-0 left-0 w-full h-full bg-slate-800/90;
+  }
+
+  .pb-dialog-inner {
+    @apply min-w-[450px] max-w-screen-xl bg-white shadow-2xl rounded-md p-20 relative z-20;
+  }
+
+  .pb-dialog-header {
+    @apply mb-30;
+    h3 {
+      @apply text-3xl font-semibold font-sans;
+    }
+    > div {
+      @apply text-lg font-sans mt-10;
+    }
+  }
+  .pb-dialog-footer {
+    @apply flex gap-10;
+  }
+}
+
+.pb-dialog-form {
+  @apply mb-30;
+}
+
+.pb-dialog-content-element {
+  @apply rounded p-20 min-h-[400px] mb-30 border border-slate-300 flex items-center justify-center;
+  &.pb-default-bg {
+    @apply bg-slate-50;
+  }
+}
+
+.pb-message-info {
+  @apply font-sans text-base bg-yellow-50 p-10 border border-yellow-400 rounded text-yellow-900 my-20;
+}
