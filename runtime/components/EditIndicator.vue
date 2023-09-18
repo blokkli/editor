@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import './../../dist/output.css'
+import '#nuxt-paragraphs-builder/styles'
 const props = defineProps<{
   fieldName?: string
   fieldKey: string
