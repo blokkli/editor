@@ -51,21 +51,6 @@ fragment paragraphsBuilderEditState on ParagraphsBuilderEditState {
   }
 }
 
-fragment paragraphsBuilderComment on CommentParagraphsBuilder {
-  id
-  targetUuid: fieldTargetUuid
-  resolved: fieldResolved
-  body: commentBody
-  created: createdRawField {
-    first {
-      value
-    }
-  }
-  user: uid {
-    label
-  }
-}
-
 fragment paragraphsBuilderMutationItem on FieldItemTypeParagraphsBuilderMutation {
   timestamp
   pluginId
@@ -127,20 +112,6 @@ fragment paragraphsBuilderAvailableFeatures on ParagraphsBuilderAvailableFeature
   mutations
 }
 
-query paragraphsBuilderComments(
-  $entityType: EntityType!
-  $entityUuid: String!
-) {
-  state: getParagraphsEditState(
-    entityType: $entityType
-    entityUuid: $entityUuid
-  ) {
-    comments {
-      ...paragraphsBuilderComment
-    }
-  }
-}
-
 mutation paragraphsBuilderPublish(
   $entityType: EntityType!
   $entityUuid: String!
@@ -172,32 +143,6 @@ mutation addParagraph(
   ) {
     action: add(
       type: $type
-      afterUuid: $afterUuid
-      hostType: $hostType
-      hostUuid: $hostUuid
-      hostFieldName: $hostFieldName
-    ) {
-      ...paragraphsBuilderMutationResult
-    }
-  }
-}
-
-mutation addReusableParagraph(
-  $entityType: EntityType!
-  $entityUuid: String!
-  $langcode: String
-  $libraryItemId: String!
-  $hostType: String!
-  $hostUuid: String!
-  $hostFieldName: String!
-  $afterUuid: String
-) {
-  state: paragraphsEditMutationState(
-    entityType: $entityType
-    entityUuid: $entityUuid
-  ) {
-    action: add_reusable(
-      libraryItemId: $libraryItemId
       afterUuid: $afterUuid
       hostType: $hostType
       hostUuid: $hostUuid
@@ -541,37 +486,6 @@ mutation paragraphsBuilderTakeOwnership(
   }
 }
 
-mutation paragraphsBuilderAddComment(
-  $entityType: EntityType!
-  $entityUuid: String!
-  $targetUuid: String!
-  $body: String!
-) {
-  state: paragraphsEditMutationState(
-    entityType: $entityType
-    entityUuid: $entityUuid
-  ) {
-    action: addComment(body: $body, uuid: $targetUuid) {
-      ...paragraphsBuilderComment
-    }
-  }
-}
-
-mutation paragraphsBuilderResolveComment(
-  $entityType: EntityType!
-  $entityUuid: String!
-  $id: ID!
-) {
-  state: paragraphsEditMutationState(
-    entityType: $entityType
-    entityUuid: $entityUuid
-  ) {
-    action: resolveComment(id: $id) {
-      ...paragraphsBuilderComment
-    }
-  }
-}
-
 query availableParagraphs {
   entityQuery(entityType: PARAGRAPHS_TYPE, limit: 999) {
     items {
@@ -638,25 +552,4 @@ fragment paragraphsBuilderAllowedType on ParagraphsBuilderAllowedType {
   bundle
   fieldName
   allowedTypes
-}
-
-query paragraphsBuilderLibraryItems {
-  entityQuery(entityType: PARAGRAPHS_LIBRARY_ITEM, limit: 500) {
-    items {
-      ...paragraphsBuilderLibraryItem
-    }
-  }
-}
-
-fragment paragraphsBuilderLibraryItem on ParagraphsLibraryItem {
-  id
-  label
-  paragraphs: paragraphsRawField {
-    list {
-      ...paragraphsFieldItem
-      paragraph: entity {
-        ...paragraph
-      }
-    }
-  }
 }

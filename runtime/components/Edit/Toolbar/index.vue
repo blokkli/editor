@@ -175,6 +175,7 @@
           <div class="pb-tooltip">Validierungen</div>
         </button>
         <button
+          v-if="commentsEnabled"
           @click="$emit('toggleSidebar', 'comments')"
           :class="{ 'is-active': activeSidebar === 'comments' }"
         >

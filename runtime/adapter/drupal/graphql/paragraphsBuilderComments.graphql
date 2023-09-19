@@ -1,0 +1,59 @@
+fragment paragraphsBuilderComment on CommentParagraphsBuilder {
+  id
+  targetUuid: fieldTargetUuid
+  resolved: fieldResolved
+  body: commentBody
+  created: createdRawField {
+    first {
+      value
+    }
+  }
+  user: uid {
+    label
+  }
+}
+
+query paragraphsBuilderComments(
+  $entityType: EntityType!
+  $entityUuid: String!
+) {
+  state: getParagraphsEditState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    comments {
+      ...paragraphsBuilderComment
+    }
+  }
+}
+
+mutation paragraphsBuilderAddComment(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $targetUuid: String!
+  $body: String!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: addComment(body: $body, uuid: $targetUuid) {
+      ...paragraphsBuilderComment
+    }
+  }
+}
+
+mutation paragraphsBuilderResolveComment(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $id: ID!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: resolveComment(id: $id) {
+      ...paragraphsBuilderComment
+    }
+  }
+}

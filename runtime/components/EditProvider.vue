@@ -1296,7 +1296,9 @@ onMounted(async () => {
   // document.body.classList.add('pb-body')
   await loadAvailableFeatures()
   await loadState(currentLanguage.value)
-  loadComments()
+  if (availableFeatures.value.comment) {
+    loadComments()
+  }
   document.addEventListener('keydown', onKeyDown)
   document.addEventListener('keyup', onKeyUp)
   document.body.addEventListener('mousedown', onWindowMouseDown)

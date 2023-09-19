@@ -1,0 +1,49 @@
+#import "~/components/Paragraph/fragment.paragraphsFieldItem.graphql";
+#import "~/components/Paragraph/fragment.paragraph.graphql";
+
+mutation addReusableParagraph(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $libraryItemId: String!
+  $hostType: String!
+  $hostUuid: String!
+  $hostFieldName: String!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: add_reusable(
+      libraryItemId: $libraryItemId
+      afterUuid: $afterUuid
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+    ) {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+query paragraphsBuilderLibraryItems {
+  entityQuery(entityType: PARAGRAPHS_LIBRARY_ITEM, limit: 500) {
+    items {
+      ...paragraphsBuilderLibraryItem
+    }
+  }
+}
+
+fragment paragraphsBuilderLibraryItem on ParagraphsLibraryItem {
+  id
+  label
+  paragraphs: paragraphsRawField {
+    list {
+      ...paragraphsFieldItem
+      paragraph: entity {
+        ...paragraph
+      }
+    }
+  }
+}
