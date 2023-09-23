@@ -41,7 +41,7 @@
     />
 
     <PbEditIndicator
-      v-if="fieldKey"
+      v-if="fieldKey && showIndicator"
       :field-name="fieldConfig?.label"
       :field-key="fieldKey"
       @edit="edit"
@@ -74,6 +74,7 @@ const mutatedFields = inject<Ref<PbMutatedField[]> | null>(
   null,
 )
 const router = useRouter()
+const route = useRoute()
 
 function edit() {
   if (props.entity?.id && workflowEnabled) {
@@ -121,6 +122,8 @@ const fieldKey = computed(() => {
     return props.entity.uuid + ':' + props.fieldConfig.name
   }
 })
+
+const showIndicator = computed(() => fieldKey.value && !route.query.pbEditing)
 
 const fieldListType = computed(() => props.fieldListType)
 
