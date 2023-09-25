@@ -7,7 +7,7 @@
           ref="button"
           @click="$emit('edit')"
         >
-          {{ fieldName }} bearbeiten
+          Abschnitte bearbeiten
         </button>
       </div>
     </div>
@@ -17,8 +17,7 @@
 <script lang="ts" setup>
 import '#nuxt-paragraphs-builder/styles'
 const props = defineProps<{
-  fieldName?: string
-  fieldKey: string
+  uuid: string
 }>()
 
 defineEmits(['edit'])
@@ -30,8 +29,9 @@ const isVisible = ref(false)
 let raf: any = null
 
 function loop() {
-  const el = document.querySelector(`[data-field-key="${props.fieldKey}"]`)
-  if (el && el instanceof HTMLElement && button.value) {
+  const el = document.querySelector(`[data-provider-uuid="${props.uuid}"]`)
+  isVisible.value = window.innerWidth > 1024
+  if (isVisible.value && el && el instanceof HTMLElement && button.value) {
     const rect = el.getBoundingClientRect()
     const buttonHeight = button.value.getBoundingClientRect().height
     const y = Math.max(
@@ -39,7 +39,6 @@ function loop() {
       10,
     )
     style.value.transform = `translateY(${y}px)`
-    isVisible.value = true
   }
 
   raf = window.requestAnimationFrame(loop)

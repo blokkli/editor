@@ -1,13 +1,18 @@
 <template>
-  <div class="pb pb-multi-select">
+  <div class="pb pb-multi-select" v-if="isSelecting">
     <svg
-      v-if="isSelecting"
       class="pb-multi-select-area"
       v-bind="style"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <rect :width="selectRect.width" :height="selectRect.height"></rect>
+      <rect
+        :width="selectRect.width"
+        :height="selectRect.height"
+        :x="selectRect.x"
+        :y="selectRect.y"
+        :style="{ animationDuration }"
+      ></rect>
     </svg>
 
     <Item
@@ -51,6 +56,8 @@ const startY = ref(0)
 const currentX = ref(0)
 const currentY = ref(0)
 const selectable = ref<SelectableElement[]>([])
+const viewportWidth = ref(window.innerWidth)
+const viewportHeight = ref(window.innerHeight)
 
 const actuallySelectable = computed(() => {
   return selectable.value.filter((v) => {
@@ -60,6 +67,12 @@ const actuallySelectable = computed(() => {
       return !v.nested
     }
   })
+})
+
+const animationDuration = computed(() => {
+  const perimeter = 2 * (selectRect.value.width + selectRect.value.height)
+  const animationDuration = 200 - perimeter / 100
+  return animationDuration + 'ms'
 })
 
 function intersects(a: Rectangle, b: Rectangle): boolean {
@@ -86,13 +99,10 @@ const selectRect = computed<Rectangle>(() => {
 
 const style = computed(() => {
   return {
-    style: {
-      transform: `translate(${selectRect.value.x}px, ${selectRect.value.y}px)`,
-    },
-    width: selectRect.value.width,
-    height: selectRect.value.height,
-    viewBox: `0 0 ${Math.round(selectRect.value.width)} ${Math.round(
-      selectRect.value.height,
+    width: viewportWidth.value,
+    height: viewportHeight.value,
+    viewBox: `0 0 ${Math.round(viewportWidth.value)} ${Math.round(
+      viewportHeight.value,
     )}`,
   }
 })
@@ -213,7 +223,10 @@ function onWindowMouseDown(e: MouseEvent) {
   }
 }
 
-function onAnimationFrame(e: AnimationFrameEvent) {}
+function onAnimationFrame(e: AnimationFrameEvent) {
+  viewportWidth.value = window.innerWidth
+  viewportHeight.value = window.innerHeight
+}
 
 onMounted(() => {
   window.addEventListener('mousedown', onWindowMouseDown)

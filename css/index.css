@@ -135,9 +135,9 @@
   }
 
   .pb-multi-select-area {
-    @apply absolute top-0 left-0 pointer-events-none z-30;
+    @apply fixed top-0 left-0 pointer-events-none z-30;
     rect {
-      @apply stroke-slate-400 stroke-[4];
+      @apply stroke-slate-400 stroke-[2];
       stroke-dasharray: 4 4;
       stroke-dashoffset: 100;
       animation: 0.1s pbSelectArea infinite;

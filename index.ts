@@ -153,20 +153,22 @@ export default defineNuxtModule<ModuleOptions>({
         './runtime/composables/useParagraphsBuilderEditContext',
       ),
     })
-
-    // The types template.
-    nuxt.options.alias['#nuxt-paragraphs-builder/styles'] = addTemplate({
+    const templateStyles = addTemplate({
       write: true,
       filename: 'paragraphs-builder/edit.css',
       getContents: () => {
+        console.log('Building nuxt-paragraphs-builder CSS...')
         const sourceFile = resolver.resolve('css/index.css')
         const sourceFolder = resolver.resolve('runtime')
         return buildStyles(sourceFile, sourceFolder)
       },
       options: {
-        paragraphsBuilder: true,
+        paragraphsBuilderStyle: true,
       },
-    }).dst
+    })
+
+    // The types template.
+    nuxt.options.alias['#nuxt-paragraphs-builder/styles'] = templateStyles.dst
 
     // Get all files.
     const files = await resolveFiles(srcDir, moduleOptions.pattern || [], {
@@ -274,10 +276,31 @@ export default defineNuxtModule<ModuleOptions>({
       })
     }
 
+    const appliesStyles = (path: string): boolean => {
+      return path.includes('nuxt-paragraphs-builder/css')
+    }
+
     // Watch for file changes in dev mode.
     if (nuxt.options.dev) {
       nuxt.hook('vite:serverCreated', (viteServer) => {
         nuxt.hook('builder:watch', async (_event, path) => {
+          if (appliesStyles(path)) {
+            await updateTemplates({
+              filter: (template) => {
+                return (
+                  template.options && template.options.paragraphsBuilderStyle
+                )
+              },
+            })
+            const modules = viteServer.moduleGraph.getModulesByFile(
+              templateStyles.dst,
+            )
+            if (modules) {
+              modules.forEach((v) => {
+                viteServer.reloadModule(v)
+              })
+            }
+          }
           const filePath = await applies(path)
           if (!filePath) {
             return

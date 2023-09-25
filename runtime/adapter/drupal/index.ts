@@ -39,6 +39,11 @@ const drupalAdapter: PbAdapter<
 
     const bundleLabel = state?.bundleLabel || ''
 
+    const editUrl =
+      state?.entity && 'editUrl' in state.entity
+        ? state.entity.editUrl?.path
+        : ''
+
     return {
       currentIndex,
       mutations,
@@ -49,6 +54,7 @@ const drupalAdapter: PbAdapter<
         ...(entity || {}),
         translations: entityTranslations,
         bundleLabel,
+        editUrl,
       },
       translationState,
       entityTranslations,

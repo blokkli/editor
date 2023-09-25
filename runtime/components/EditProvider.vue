@@ -452,7 +452,13 @@ function openEntityForm() {
   selectedParagraph.value = null
   selectedParagraphs.value = []
   iframeBundle.value = ''
-  modalUrl.value = `/${currentLanguage.value}/${props.entityType}/${entity.value.id}/edit?paragraphsBuilder=true&destination=/de/paragraphs_builder/redirect`
+  if (entity.value.editUrl) {
+    modalUrl.value =
+      entity.value.editUrl +
+      '?paragraphsBuilder=true&destination=/de/paragraphs_builder/redirect'
+  } else {
+    modalUrl.value = `/${currentLanguage.value}/${props.entityType}/${entity.value.id}/edit?paragraphsBuilder=true&destination=/de/paragraphs_builder/redirect`
+  }
 }
 
 function onMultiSelectStart() {
@@ -753,6 +759,7 @@ function setContext(context?: PbEditState) {
   entity.value.status = context?.entity?.status
   entity.value.translations = context?.entity?.translations || []
   entity.value.bundleLabel = context?.entity?.bundleLabel || ''
+  entity.value.editUrl = context?.entity.editUrl
 
   translationState.value.isTranslatable =
     !!context?.translationState?.isTranslatable

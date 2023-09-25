@@ -95,9 +95,9 @@ export interface PbFieldItemParagraphFragment {
   entityBundle: string
 }
 
-export interface PbFieldItemFragment {
+export interface PbFieldItemFragment<T extends any> {
   item?: PbFieldItemParagraphFragment
-  paragraph?: any
+  paragraph?: T
 }
 
 type PbList = PbFieldItemFragment[]
@@ -123,6 +123,7 @@ export type PbEditEntity = {
   status?: boolean
   translations: PbEditEntityTranslation[]
   bundleLabel?: string
+  editUrl?: string
 }
 
 export interface PbAvailableLanguage {

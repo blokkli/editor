@@ -39,13 +39,6 @@
       :data-uuid="item.item.uuid"
       :index="i"
     />
-
-    <PbEditIndicator
-      v-if="fieldKey && showIndicator"
-      :field-name="fieldConfig?.label"
-      :field-key="fieldKey"
-      @edit="edit"
-    />
   </component>
 </template>
 
@@ -53,17 +46,11 @@
 import { PbFieldItemFragment, PbMutatedField, PbField } from './../types'
 import { ValidFieldListTypes } from '#nuxt-paragraphs-builder/generated-types'
 
-const PbEditIndicator = defineAsyncComponent(() => {
-  return import('./EditIndicator.vue')
-})
-
 const ParagraphsList = defineAsyncComponent(() => {
   return import('./Edit/ParagraphsList/index.vue')
 })
 
 const attrs = useAttrs()
-
-const workflowEnabled = false
 
 const isEditing = inject('isEditing', false)
 const isInReusable = inject('paragraphsBuilderReusable', false)
@@ -73,29 +60,10 @@ const mutatedFields = inject<Ref<PbMutatedField[]> | null>(
   'paragraphsBuilderMutatedFields',
   null,
 )
-const router = useRouter()
-const route = useRoute()
-
-function edit() {
-  if (props.entity?.id && workflowEnabled) {
-    // @TODO: Proper route generating.
-    return router.push({
-      path: `/de/node/${props.entity.id}/latest`,
-      query: {
-        pbEditing: props.entity?.uuid,
-      },
-    })
-  }
-  router.push({
-    query: {
-      pbEditing: props.entity?.uuid,
-    },
-  })
-}
 
 const props = withDefaults(
   defineProps<{
-    list?: PbFieldItemFragment[]
+    list?: PbFieldItemFragment<any>[]
     fieldConfig?: PbField['fieldConfig']
     canEdit?: boolean
     entity?: PbField['entity']
@@ -123,17 +91,15 @@ const fieldKey = computed(() => {
   }
 })
 
-const showIndicator = computed(() => fieldKey.value && !route.query.pbEditing)
-
 const fieldListType = computed(() => props.fieldListType)
 
-const filteredList = computed<Array<Required<PbFieldItemFragment>>>(() => {
+const filteredList = computed<Array<Required<PbFieldItemFragment<any>>>>(() => {
   if (mutatedFields?.value && !isNested) {
     return (mutatedFields.value.find((v) => v.name === props.fieldConfig?.name)
-      ?.field.list || []) as Array<Required<PbFieldItemFragment>>
+      ?.field.list || []) as Array<Required<PbFieldItemFragment<any>>>
   }
   return props.list.filter((v) => v.item && v.paragraph) as Array<
-    Required<PbFieldItemFragment>
+    Required<PbFieldItemFragment<any>>
   >
 })
 

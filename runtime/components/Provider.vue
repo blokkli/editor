@@ -1,5 +1,5 @@
 <template>
-  <component :is="tag">
+  <component :is="tag" :data-provider-uuid="entityUuid">
     <PbPreviewProvider
       v-if="isPreviewing"
       :entity-type="entityType"
@@ -31,6 +31,8 @@
       :can-edit="canEdit"
       :is-preview="isPreviewing"
     ></slot>
+
+    <PbEditIndicator v-if="showIndicator" :uuid="entityUuid" @edit="edit" />
   </component>
 </template>
 
@@ -45,7 +47,12 @@ const PbEditProvider = defineAsyncComponent(() => {
   return import('./EditProvider.vue')
 })
 
+const PbEditIndicator = defineAsyncComponent(() => {
+  return import('./EditIndicator.vue')
+})
+
 const route = useRoute()
+const router = useRouter()
 const drupalUser = useDrupalUser()
 
 const props = withDefaults(
@@ -77,4 +84,16 @@ const isEditing = computed(() => {
 const isPreviewing = computed(() => {
   return props.entityUuid && route.query.pbPreview === props.entityUuid
 })
+
+const showIndicator = computed(
+  () => canEdit.value && !route.query.pbEditing && !route.query.pbPreview,
+)
+
+function edit() {
+  router.push({
+    query: {
+      pbEditing: props.entityUuid,
+    },
+  })
+}
 </script>

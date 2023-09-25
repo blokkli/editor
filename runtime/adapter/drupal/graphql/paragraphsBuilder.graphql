@@ -25,6 +25,11 @@ fragment paragraphsBuilderEditState on ParagraphsBuilderEditState {
     ... on Node {
       status
     }
+    ... on EntityLinkable {
+      editUrl: url(rel: "edit-form") {
+        path
+      }
+    }
     ... on EntityTranslatable {
       translations {
         ... on Node {
