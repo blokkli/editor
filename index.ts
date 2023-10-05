@@ -77,6 +77,10 @@ export type ModuleOptions = {
    * this field.
    */
   fieldListTypes?: string[]
+
+  disableFeatures?: {
+    library?: boolean
+  }
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -107,6 +111,10 @@ export default defineNuxtModule<ModuleOptions>({
         types.push('default')
       }
       return types.filter(onlyUnique)
+    }
+
+    nuxt.options.runtimeConfig.public.paragraphsBuilder = {
+      disableLibrary: !!moduleOptions.disableFeatures?.library,
     }
 
     // The path to the source directory of this module's consumer.

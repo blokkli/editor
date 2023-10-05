@@ -277,6 +277,7 @@ import { ParagraphsBuilderEditStateFragment } from '#build/graphql-operations'
 
 const route = useRoute()
 const router = useRouter()
+const runtimeConfig = useRuntimeConfig().public.paragraphsBuilder
 
 const currentLanguage = computed({
   get() {
@@ -794,10 +795,11 @@ async function loadAvailableFeatures() {
   const mutations = data?.mutations || []
   availableFeatures.value.comment = !!data?.comment
   availableFeatures.value.conversion = !!data?.conversion
-  // availableFeatures.value.library = !!data?.library
-  // @TODO: Should be configurable.
-  availableFeatures.value.library = false
   availableFeatures.value.duplicate = mutations.includes('duplicate')
+  availableFeatures.value.library = !!data?.library
+  if (runtimeConfig.disableLibrary) {
+    availableFeatures.value.library = false
+  }
 }
 
 function modalClose() {
