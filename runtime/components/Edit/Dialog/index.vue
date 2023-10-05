@@ -1,15 +1,15 @@
 <template>
-  <div class="pb pb-dialog pb-control" @wheel.stop @keydown.stop>
+  <div class="pb-dialog pb-control" @wheel.stop @keydown.stop>
     <div @click="$emit('cancel')" class="pb-dialog-background"></div>
     <div class="pb-dialog-inner" :style="{ width: width + 'px' }">
-      <div class="pb-dialog-header">
+      <div class="pb pb-dialog-header">
         <h3>{{ title }}</h3>
         <div v-if="lead">{{ lead }}</div>
       </div>
       <div class="pb-dialog-content">
         <slot></slot>
       </div>
-      <div class="pb-dialog-footer">
+      <div class="pb pb-dialog-footer">
         <button
           @click="$emit('submit')"
           class="pb-button"

@@ -35,9 +35,9 @@ const inner = ref<HTMLDivElement | null>(null)
 const paragraphNativeHeight = ref(0)
 
 const style = computed(() => {
-  const ratio = 300 / paragraphWidth.value
+  const ratio = 260 / paragraphWidth.value
   return {
-    width: '300px',
+    width: '260px',
     height: paragraphNativeHeight.value * ratio + 'px',
   }
 })
@@ -57,7 +57,7 @@ const backgroundClass = computed(() => {
 const innerStyle = computed(() => {
   return {
     width: paragraphWidth.value + 'px',
-    transform: `scale(${300 / paragraphWidth.value})`,
+    transform: `scale(${260 / paragraphWidth.value})`,
   }
 })
 

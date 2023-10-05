@@ -9,7 +9,7 @@
     @submit="onSubmit"
     @cancel="$emit('cancel')"
   >
-    <div class="pb-dialog-form">
+    <div class="pb pb-dialog-form">
       <div class="pb-form-section">
         <h3 class="pb-form-label">Welche Inhalte möchten Sie importieren?</h3>
         <label v-for="field in fields" class="pb-checkbox">
