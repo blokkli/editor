@@ -103,6 +103,7 @@ export function defineParagraph<T extends TypedParagraphDefinitionInput>(
 
   const fieldListType = inject<ComputedRef<ValidFieldListTypes>>(
     'paragraphsBuilderFieldListType',
+    computed(() => 'default'),
   )!
 
   // Inject the data from the ParagraphItem component.
