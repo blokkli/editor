@@ -273,13 +273,13 @@
   }
 }
 
-.sortable-fallback {
-  @apply relative overflow-hidden;
-  &:before {
-    content: '';
-    @apply absolute top-0 left-0 w-full h-full bg-blue-500;
-  }
-}
+/* .sortable-fallback { */
+/*   @apply relative overflow-hidden; */
+/*   &:before { */
+/*     content: ''; */
+/*     @apply absolute top-0 left-0 w-full h-full bg-blue-500; */
+/*   } */
+/* } */
 
 .pb-list-item.sortable-ghost {
   @apply flex items-center justify-center bg-blue-400 rounded text-white font-sans text-xl;
@@ -293,4 +293,8 @@
 
 .pb-owner-indicator {
   @apply fixed bottom-0 left-70 right-0 bg-red-100 z-[90000] p-20 text-red-800 font-medium text-lg flex justify-between items-center;
+}
+
+.pb.pb-dragging-overlay {
+  @apply fixed top-0 left-0 bg-blue-500/25 pointer-events-none rounded outline outline-blue-600 outline-offset-1;
 }

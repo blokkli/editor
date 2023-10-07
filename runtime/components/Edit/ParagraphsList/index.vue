@@ -45,7 +45,7 @@ export default {
 </script>
 
 <script lang="ts" setup>
-import Sortable from 'sortablejs'
+import Sortable, { SortableEvent } from 'sortablejs'
 import { eventBus } from './../eventBus'
 import { buildDraggableItem } from '../helpers'
 import {
@@ -247,8 +247,14 @@ function onUpdate(e: Sortable.SortableEvent) {
   }
 }
 
-function onStart() {
-  eventBus.emit('draggingStart')
+function onStart(e: SortableEvent) {
+  const rect = e.item.getBoundingClientRect()
+  const originalEvent = (e as any).originalEvent || ({} as PointerEvent)
+  eventBus.emit('draggingStart', {
+    rect,
+    offsetX: originalEvent.clientX,
+    offsetY: originalEvent.clientY,
+  })
 }
 
 function onAdd(e: Sortable.SortableEvent) {
@@ -343,7 +349,7 @@ onMounted(() => {
     instance = new Sortable(container.value, {
       disabled: editMode?.value !== 'editing',
       forceFallback: true,
-      swapThreshold: 0.9,
+      swapThreshold: 0.5,
       group: {
         name: 'types',
         put: onPut,
@@ -351,10 +357,12 @@ onMounted(() => {
       },
       ignore: '.pb-hidden',
       fallbackClass: 'sortable-fallback',
-      fallbackOnBody: true,
-      emptyInsertThreshold: 50,
-      animation: 300,
+      fallbackOnBody: false,
+      forceAutoScrollFallback: true,
+      emptyInsertThreshold: 20,
+      animation: 200,
       preventOnFilter: true,
+      dragoverBubble: false,
       onStart,
       onUpdate,
       onEnd,

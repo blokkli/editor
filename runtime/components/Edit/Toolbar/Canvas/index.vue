@@ -142,7 +142,7 @@ watch(
 
 function onMouseMove(e: MouseEvent) {
   if (mouseIsDown.value) {
-    e.preventDefault()
+    // e.preventDefault()
     if (wrapperEl && nuxtRootEl) {
       const diffX = startMoveoffset.x - e.x
       const diffY = startMoveoffset.y - e.y
@@ -227,6 +227,8 @@ function loop() {
   if (canvasRect && rootRect && sidebarRect) {
     rootRect.width = rootRect.width - sidebarRect.width
     eventBus.emit('animationFrame', {
+      mouseX: mouseX.value,
+      mouseY: mouseY.value,
       scale: scale.value,
       rootRect,
       canvasRect,
@@ -251,6 +253,14 @@ function loop() {
   raf = window.requestAnimationFrame(loop)
 }
 
+const mouseX = ref(0)
+const mouseY = ref(0)
+
+function onMouseMoveGlobal(e: MouseEvent) {
+  mouseX.value = e.x
+  mouseY.value = e.y
+}
+
 onMounted(() => {
   wrapperEl = document.querySelector('.pb-main-canvas')
   nuxtRootEl = document.querySelector('#nuxt-root')
@@ -258,6 +268,9 @@ onMounted(() => {
   window.addEventListener('mousedown', onMouseDown)
   window.addEventListener('mouseup', onMouseUp)
   window.addEventListener('keydown', onKeyDown)
+  window.addEventListener('mousemove', onMouseMoveGlobal, {
+    passive: false,
+  })
   document.body.addEventListener('wheel', onWheel, { passive: false })
   if (nuxtRootEl && wrapperEl) {
     updateOffset(getCenterX(), 50)
@@ -271,6 +284,7 @@ onUnmounted(() => {
   window.removeEventListener('mousedown', onMouseDown)
   window.removeEventListener('mouseup', onMouseUp)
   window.removeEventListener('keydown', onKeyDown)
+  window.removeEventListener('mousemove', onMouseMoveGlobal)
   nuxtRootEl?.classList.remove('pb-has-sidebar-open')
   nuxtRootEl?.classList.remove('pb-has-preview-open')
   window.cancelAnimationFrame(raf)

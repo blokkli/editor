@@ -121,6 +121,8 @@ export type AnimationFrameEvent = {
   canvasRect: DOMRect
   fieldAreas: AnimationFrameFieldArea[]
   scale: number
+  mouseX: number
+  mouseY: number
 }
 
 export type PbMessage = {
@@ -128,12 +130,18 @@ export type PbMessage = {
   message: string
 }
 
+export type DraggableStartEvent = {
+  rect: DOMRect
+  offsetX: number
+  offsetY: number
+}
+
 export type ParagraphsBuilderEvents = {
   select: DraggableExistingParagraphItem
   selectAdditional: DraggableExistingParagraphItem
   editParagraph: EditParagraphEvent
   removeGhosts: undefined
-  draggingStart: undefined
+  draggingStart: DraggableStartEvent
   draggingEnd: undefined
   moveParagraph: MoveParagraphEvent
   moveMultipleParagraphs: MoveMultipleParagraphsEvent

@@ -110,7 +110,7 @@ provide('paragraphsBuilderFieldListType', fieldListType)
 <style lang="postcss">
 .pb-field-paragraphs {
   position: relative;
-  min-height: 5rem;
+  min-height: 3rem;
   &:hover {
     outline: 1px dashed;
     .pb-field-paragraphs {

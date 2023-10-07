@@ -16,6 +16,7 @@
 
 <script lang="ts" setup>
 import '#nuxt-paragraphs-builder/styles'
+
 const props = defineProps<{
   uuid: string
 }>()

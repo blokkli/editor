@@ -144,7 +144,7 @@
       :is-dragging="isDragging"
       :conversions="data.conversions"
       :all-types="data.allTypes"
-      :allowed-types="selectableParagraphTypes"
+      :allowed-types="allowedTypesInList"
       :can-comment="availableFeatures.comment"
       :library-enabled="availableFeatures.library"
       :edit-mode="editMode"
@@ -195,6 +195,8 @@
 
     <Messages />
 
+    <DraggingOverlay />
+
     <transition appear name="pb-slide-up" :duration="900">
       <TemplatesDialog
         :entity-type="entityType"
@@ -241,6 +243,7 @@ import ToolbarCanvas from './Edit/Toolbar/Canvas/index.vue'
 import ToolbarTranslationState from './Edit/Toolbar/TranslationState/index.vue'
 import TemplatesDialog from './Edit/Templates/index.vue'
 import FieldAreaOverlay from './Edit/FieldAreaOverlay/index.vue'
+import DraggingOverlay from './Edit/DraggingOverlay/index.vue'
 import Messages from './Edit/Messages/index.vue'
 import PbDialog from './Edit/Dialog/index.vue'
 import ParagraphOptions, {
@@ -256,6 +259,7 @@ import {
   MoveMultipleParagraphsEvent,
   AddReusableParagraphEvent,
   MutatedParagraphOptions,
+  DraggableStartEvent,
 } from './Edit/types'
 import { definitions } from '#nuxt-paragraphs-builder/definitions'
 import '#nuxt-paragraphs-builder/styles'
@@ -607,7 +611,7 @@ function editParagraph(uuid: string) {
   modalUrl.value = `/${currentLanguage.value}/paragraphs_builder/${props.entityType}/${props.entityUuid}/edit/${uuid}`
 }
 
-function onDraggingStart() {
+function onDraggingStart(e: DraggableStartEvent) {
   isDragging.value = true
 }
 
@@ -1062,7 +1066,7 @@ const selectableParagraphTypes = computed(() => {
         .filter(Boolean) as string[]
     }
     // If the selected paragraph is inside a nested paragraph, return the allowed paragraphs of the parent paragraph.
-    else if (selectedParagraph.value.hostType === 'paragraph') {
+    if (selectedParagraph.value.hostType === 'paragraph') {
       return allowedTypes.value
         .filter(
           (v) =>
@@ -1097,6 +1101,27 @@ const selectableParagraphTypes = computed(() => {
   }
 
   return generallyAvailableParagraphTypes.value.map((v) => v.id || '')
+})
+
+/**
+ * The allowed paragraph types in the current field item list.
+ *
+ * Unlike selectableParagraphTypes, this always uses the selected paragraphs's
+ * parent field to determine the allowed types.
+ */
+const allowedTypesInList = computed(() => {
+  if (selectedParagraph.value) {
+    return allowedTypes.value
+      .filter(
+        (v) =>
+          v.entityType === props.entityType &&
+          v.bundle === props.bundle &&
+          v.fieldName === selectedParagraph.value?.hostFieldName,
+      )
+      .flatMap((v) => v.allowedTypes)
+      .filter(Boolean) as string[]
+  }
+  return []
 })
 
 async function revertAllChanges() {
@@ -1387,5 +1412,10 @@ provide('paragraphsBuilderEditContext', { eventBus, mutatedParagraphOptions })
   outline: 4px solid var(--gin-color-primary);
   outline-offset: 0px;
   border-radius: 5px;
+}
+
+.sortable-fallback {
+  pointer-events: none;
+  display: none !important;
 }
 </style>
