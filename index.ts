@@ -1,7 +1,9 @@
 import {
+  addBuildPlugin,
   addComponent,
   addImports,
   addTemplate,
+  addVitePlugin,
   createResolver,
   defineNuxtModule,
   resolveFiles,
@@ -18,6 +20,7 @@ import postcssUrl from 'postcss-url'
 import tailwindNesting from 'tailwindcss/nesting'
 import tailwindcss from 'tailwindcss'
 import tailwindConfig from './css/tailwind.config'
+import { ParagraphsBuilderPlugin } from './vitePlugin'
 
 async function buildStyles(sourceFile: string, sourceFolder: string) {
   const css = await fsp.readFile(sourceFile).then((v) => v.toString())
@@ -146,7 +149,7 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     // Only add the vite plugin when building.
-    // addVitePlugin(ParagraphsBuilderPlugin.vite({}))
+    addBuildPlugin(ParagraphsBuilderPlugin(nuxt))
 
     // Add composables.
     addImports({
@@ -313,7 +316,7 @@ export default defineNuxtModule<ModuleOptions>({
           if (!filePath) {
             return
           }
-          // Determine if the extractable texts in the file have changed.
+          // Determine if the file has changed.
           const hasChanged = await extractor.handleFile(filePath)
 
           // Nothing to do.
