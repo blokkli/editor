@@ -77,9 +77,9 @@
         @toggle-sidebar="toggleSidebar($event)"
         @toggle-preview="showPreview = !showPreview"
         @open-entity-form="openEntityForm"
-        @toggle-mask="toggleMaskVisible"
         @show-templates="showTemplates = true"
         @show-translations="openTranslations"
+        @show-qr-code="showQrCode"
         :editing-enabled="canEdit"
         :comments-enabled="availableFeatures.comment"
         :library-enabled="availableFeatures.library"
@@ -92,7 +92,6 @@
         :selected-paragraph-uuid="selectedParagraph?.uuid"
         :violation-count="violations.length"
         :modal-url="modalUrl"
-        :mask-visible="maskVisible"
         :edit-mode="editMode"
       >
         <template #title>
@@ -188,7 +187,6 @@
       @resolve-comment="onResolveComment($event)"
     />
     <FieldAreaOverlay
-      :mask-visible="maskVisible"
       :active-field-key="activeFieldKey"
       @select="activeFieldKey = $event"
     />
@@ -235,7 +233,6 @@
         <QrCode :url="previewGrantUrl" />
       </PbDialog>
     </transition>
-    <FileDrop />
   </Teleport>
   <slot></slot>
 </template>
@@ -261,7 +258,6 @@ import ToolbarTranslationState from './Edit/Toolbar/TranslationState/index.vue'
 import TemplatesDialog from './Edit/Templates/index.vue'
 import FieldAreaOverlay from './Edit/FieldAreaOverlay/index.vue'
 import DraggingOverlay from './Edit/DraggingOverlay/index.vue'
-import FileDrop from './Edit/FileDrop/index.vue'
 import Messages from './Edit/Messages/index.vue'
 import PbDialog from './Edit/Dialog/index.vue'
 import QrCode from './Edit/QrCode/index.vue'
@@ -302,6 +298,62 @@ const route = useRoute()
 const router = useRouter()
 const runtimeConfig = useRuntimeConfig().public.paragraphsBuilder
 
+const availableFeatures = ref({
+  comment: false,
+  conversion: false,
+  duplicate: false,
+  library: false,
+})
+const currentUserIsOwner = ref(false)
+const ownerName = ref('')
+const mutatedFields = ref<PbMutatedField[]>([])
+const entity = ref<PbEditEntity>({
+  id: undefined,
+  changed: undefined,
+  status: false,
+  translations: [],
+})
+const mutatedParagraphOptions = ref<MutatedParagraphOptions>({})
+const translationState = ref({
+  isTranslatable: false,
+  sourceLanguage: '',
+  availableLanguages: [] as PbAvailableLanguage[],
+  translations: [] as string[],
+})
+
+const selectedParagraph = ref<DraggableExistingParagraphItem | null>(null)
+const selectedParagraphs = ref<DraggableExistingParagraphItem[]>([])
+const activeFieldKey = ref('')
+const violations = ref<PbViolation[]>([])
+const isEditingParagraph = ref(false)
+const isDragging = ref(false)
+const refreshTrigger = ref(0)
+const modalUrl = ref('')
+const iframeBundle = ref('')
+const currentMutationIndex = ref(-1)
+const mutations = ref<PbMutation[]>([])
+const visibleSidebar = ref('')
+const isLoading = ref(false)
+const isInitializing = ref(true)
+const isPressingControl = ref(false)
+const isPressingSpace = ref(false)
+const showPreview = ref(false)
+const showTemplates = ref(false)
+const showRevertDialog = ref(false)
+const previewGrantUrl = ref('')
+const maskVisible = ref(window.localStorage.getItem('_pb_mask_visible') === '1')
+
+const pbStore = {
+  maskVisible,
+  toggleMaskVisible() {
+    maskVisible.value = !maskVisible.value
+    window.localStorage.setItem(
+      '_pb_mask_visible',
+      maskVisible.value ? '1' : '0',
+    )
+  },
+}
+
 const currentLanguage = computed({
   get() {
     const v = route.query.language
@@ -325,49 +377,169 @@ const currentLanguage = computed({
     loadState(language)
   },
 })
+const canEdit = computed(() => currentUserIsOwner.value)
+const isTranslation = computed(
+  () => currentLanguage.value !== translationState.value.sourceLanguage,
+)
+const translationLabel = computed(() => {
+  if (!isTranslation.value) {
+    return
+  }
 
-const availableFeatures = ref({
-  comment: false,
-  conversion: false,
-  duplicate: false,
-  library: false,
+  return translationState.value.availableLanguages.find(
+    (v) => v.id === currentLanguage.value,
+  )?.name
 })
-const currentUserIsOwner = ref(false)
-const ownerName = ref('')
-const mutatedFields = ref<PbMutatedField[]>([])
-const entity = ref<PbEditEntity>({
-  id: undefined,
-  changed: undefined,
-  status: false,
-  translations: [],
+const editMode = computed<PbEditMode>(() => {
+  if (!canEdit.value) {
+    return 'readonly'
+  }
+  if (isTranslation.value) {
+    return 'translating'
+  }
+
+  return 'editing'
 })
-const mutatedParagraphOptions = ref<MutatedParagraphOptions>({})
-const translationState = ref({
-  isTranslatable: false,
-  sourceLanguage: '',
-  availableLanguages: [] as PbAvailableLanguage[],
-  translations: [] as string[],
+const hasSidebar = computed(() => !!visibleSidebar.value || !!modalUrl.value)
+const selectedParagraphType = computed<PbType | undefined>(
+  () =>
+    data.value?.allTypes.find(
+      (v) => v.id === selectedParagraph.value?.paragraphType,
+    ),
+)
+const contextVariables = computed(() => ({
+  entityType: props.entityType.toUpperCase() as any,
+  entityUuid: props.entityUuid,
+  langcode: currentLanguage.value,
+}))
+
+const hasNoParagraphs = computed(
+  () => !mutatedFields.value.find((v) => v.field.list?.length),
+)
+const possibleFieldNames = computed<string[]>(() => {
+  return mutatedFields.value.map((v) => v.name)
 })
-const selectedParagraph = ref<DraggableExistingParagraphItem | null>(null)
-const selectedParagraphs = ref<DraggableExistingParagraphItem[]>([])
-const activeFieldKey = ref('')
-const violations = ref<PbViolation[]>([])
-const isEditingParagraph = ref(false)
-const isDragging = ref(false)
-const refreshTrigger = ref(0)
-const modalUrl = ref('')
-const iframeBundle = ref('')
-const currentMutationIndex = ref(-1)
-const mutations = ref<PbMutation[]>([])
-const visibleSidebar = ref('')
-const isLoading = ref(false)
-const isInitializing = ref(true)
-const isPressingControl = ref(false)
-const isPressingSpace = ref(false)
-const showPreview = ref(false)
-const showTemplates = ref(false)
-const showRevertDialog = ref(false)
-const maskVisible = ref(window.localStorage.getItem('_pb_mask_visible') === '1')
+const allowedTypes = computed<PbAllowedBundle[]>(() => {
+  return data.value?.allowedTypes || []
+})
+const selectableParagraphTypes = computed(() => {
+  if (selectedParagraph.value) {
+    // If the selected paragraph allows nested paragraphs, return the allowed paragraphs for it.
+    if (
+      paragraphTypesWithNested.value.includes(
+        selectedParagraph.value.paragraphType,
+      )
+    ) {
+      return allowedTypes.value
+        .filter(
+          (v) =>
+            v.entityType === 'paragraph' &&
+            v.bundle === selectedParagraph.value?.paragraphType,
+        )
+        .flatMap((v) => v.allowedTypes)
+        .filter(Boolean) as string[]
+    }
+    // If the selected paragraph is inside a nested paragraph, return the allowed paragraphs of the parent paragraph.
+    if (selectedParagraph.value.hostType === 'paragraph') {
+      return allowedTypes.value
+        .filter(
+          (v) =>
+            v.entityType === 'paragraph' &&
+            v.bundle === selectedParagraph.value?.hostBundle,
+        )
+        .flatMap((v) => v.allowedTypes)
+        .filter(Boolean) as string[]
+    } else {
+      return allowedTypes.value
+        .filter(
+          (v) =>
+            v.entityType === props.entityType &&
+            v.bundle === props.bundle &&
+            v.fieldName === selectedParagraph.value?.hostFieldName,
+        )
+        .flatMap((v) => v.allowedTypes)
+        .filter(Boolean) as string[]
+    }
+  }
+  if (
+    activeField.value &&
+    activeField.value.hostEntityType === props.entityType
+  ) {
+    return (
+      allowedTypes.value.find((v) => {
+        return (
+          v.bundle === props.bundle && v.fieldName === activeField.value?.name
+        )
+      })?.allowedTypes || []
+    )
+  }
+
+  return generallyAvailableParagraphTypes.value.map((v) => v.id || '')
+})
+
+/**
+ * The allowed paragraph types in the current field item list.
+ *
+ * Unlike selectableParagraphTypes, this always uses the selected paragraphs's
+ * parent field to determine the allowed types.
+ */
+const allowedTypesInList = computed(() => {
+  if (selectedParagraph.value) {
+    return allowedTypes.value
+      .filter(
+        (v) =>
+          v.entityType === props.entityType &&
+          v.bundle === props.bundle &&
+          v.fieldName === selectedParagraph.value?.hostFieldName,
+      )
+      .flatMap((v) => v.allowedTypes)
+      .filter(Boolean) as string[]
+  }
+  return []
+})
+
+/**
+ * All paragraph types that themselves have nested paragraphs.
+ */
+const paragraphTypesWithNested = computed<string[]>(() => {
+  return (
+    data.value?.allowedTypes
+      .filter((v) => v.entityType === 'paragraph')
+      .map((v) => v.bundle) || []
+  )
+})
+
+const generallyAvailableParagraphTypes = computed(() => {
+  const fieldNames = mutatedFields.value.map((v) => v.name)
+  const typesOnEntity = (
+    data.value?.allowedTypes.filter((v) => {
+      return (
+        v.entityType === props.entityType &&
+        v.bundle === props.bundle &&
+        fieldNames.includes(v.fieldName)
+      )
+    }) || []
+  )
+    .flatMap((v) => v.allowedTypes)
+    .filter(Boolean)
+
+  const typesOnParagraphs =
+    data.value?.allowedTypes
+      .filter((v) => {
+        return typesOnEntity.includes(v.bundle)
+      })
+      .flatMap((v) => v.allowedTypes) || []
+
+  const allAllowedTypes = [...typesOnEntity, ...typesOnParagraphs]
+
+  return (
+    data.value?.allTypes.filter(
+      (v) => v.id && allAllowedTypes.includes(v.id),
+    ) || []
+  )
+})
+
+provide('paragraphsBuilderStore', pbStore)
 
 const activeField = computed(() => {
   if (activeFieldKey.value) {
@@ -387,59 +559,23 @@ const activeField = computed(() => {
   }
 })
 
-function toggleMaskVisible() {
-  maskVisible.value = !maskVisible.value
-  window.localStorage.setItem('_pb_mask_visible', maskVisible.value ? '1' : '0')
-}
-
 function openTranslations() {
   modalUrl.value = `/${currentLanguage.value}/paragraphs_builder/${props.entityType}/${props.entityUuid}/translate-paragraphs?destination=/de/paragraphs_builder/redirect`
+}
+
+const dialogQrCode = ref(false)
+
+function showQrCode() {
+  dialogQrCode.value = true
 }
 
 function modulo(n: number, m: number) {
   return ((n % m) + m) % m
 }
 
-const canEdit = computed(() => {
-  return currentUserIsOwner.value
-})
-
-const isTranslation = computed(() => {
-  return currentLanguage.value !== translationState.value.sourceLanguage
-})
-
-const translationLabel = computed(() => {
-  if (!isTranslation.value) {
-    return
-  }
-
-  return translationState.value.availableLanguages.find(
-    (v) => v.id === currentLanguage.value,
-  )?.name
-})
-
-const editMode = computed<PbEditMode>(() => {
-  if (!canEdit.value) {
-    return 'readonly'
-  }
-  if (isTranslation.value) {
-    return 'translating'
-  }
-
-  return 'editing'
-})
-
-const hasNoParagraphs = computed(() => {
-  return !mutatedFields.value.find((v) => v.field.list?.length)
-})
-
 function onSelectMultiple(items: DraggableExistingParagraphItem[]) {
   selectedParagraphs.value = items
 }
-
-const hasSidebar = computed<boolean>(() => {
-  return !!visibleSidebar.value || !!modalUrl.value
-})
 
 watch(hasSidebar, (has) =>
   has
@@ -465,13 +601,6 @@ const props = defineProps<{
   bundle: string
 }>()
 
-const selectedParagraphType = computed<PbType | undefined>(
-  () =>
-    data.value?.allTypes.find(
-      (v) => v.id === selectedParagraph.value?.paragraphType,
-    ),
-)
-
 function openEntityForm() {
   selectedParagraph.value = null
   selectedParagraphs.value = []
@@ -489,14 +618,6 @@ function onMultiSelectStart() {
   selectedParagraph.value = null
   selectedParagraphs.value = []
 }
-
-const contextVariables = computed(() => {
-  return {
-    entityType: props.entityType.toUpperCase() as any,
-    entityUuid: props.entityUuid,
-    langcode: currentLanguage.value,
-  }
-})
 
 function toggleSidebar(key: string) {
   removeDroppedElements()
@@ -630,7 +751,7 @@ function editParagraph(uuid: string) {
   modalUrl.value = `/${currentLanguage.value}/paragraphs_builder/${props.entityType}/${props.entityUuid}/edit/${uuid}`
 }
 
-function onDraggingStart(e: DraggableStartEvent) {
+function onDraggingStart() {
   isDragging.value = true
 }
 
@@ -706,6 +827,19 @@ async function addClipboardParagraph(e: AddClipboardParagraphEvent) {
         afterUuid: e.afterUuid,
       }),
       'Der Video-Abschnitt konnte nicht hinzugefügt werden.',
+    )
+  } else if (e.item.paragraphType === 'image') {
+    await mutateWithLoadingState(
+      useGraphqlMutation('addImageParagraph', {
+        ...contextVariables.value,
+        data: e.item.clipboardData,
+        fileName: e.item.additional || '',
+        hostType: e.host.type,
+        hostUuid: e.host.uuid,
+        hostFieldName: e.host.fieldName,
+        afterUuid: e.afterUuid,
+      }),
+      'Das Bild konnte nicht hinzugefügt werden.',
     )
   }
   if (visibleSidebar.value === 'clipboard') {
@@ -784,6 +918,7 @@ function setContext(context?: PbEditState) {
   entity.value.translations = context?.entity?.translations || []
   entity.value.bundleLabel = context?.entity?.bundleLabel || ''
   entity.value.editUrl = context?.entity.editUrl
+  previewGrantUrl.value = context?.previewUrl || ''
 
   translationState.value.isTranslatable =
     !!context?.translationState?.isTranslatable
@@ -796,10 +931,6 @@ function setContext(context?: PbEditState) {
 
   eventBus.emit('updateMutatedFields', { fields: newMutatedFields })
 }
-
-const possibleFieldNames = computed<string[]>(() => {
-  return mutatedFields.value.map((v) => v.name)
-})
 
 async function loadState(langcode: string) {
   const { data } = await useGraphqlQuery('paragraphsEditState', {
@@ -1020,127 +1151,6 @@ const { data } = await useLazyAsyncData(() => {
     const conversions = v.data.paragraphsBuilderConversions || []
     return { allTypes, allowedTypes, conversions }
   })
-})
-
-const allowedTypes = computed<PbAllowedBundle[]>(() => {
-  return data.value?.allowedTypes || []
-})
-
-/**
- * All paragraph types that themselves have nested paragraphs.
- */
-const paragraphTypesWithNested = computed<string[]>(() => {
-  return (
-    data.value?.allowedTypes
-      .filter((v) => v.entityType === 'paragraph')
-      .map((v) => v.bundle) || []
-  )
-})
-
-const generallyAvailableParagraphTypes = computed(() => {
-  const fieldNames = mutatedFields.value.map((v) => v.name)
-  const typesOnEntity = (
-    data.value?.allowedTypes.filter((v) => {
-      return (
-        v.entityType === props.entityType &&
-        v.bundle === props.bundle &&
-        fieldNames.includes(v.fieldName)
-      )
-    }) || []
-  )
-    .flatMap((v) => v.allowedTypes)
-    .filter(Boolean)
-
-  const typesOnParagraphs =
-    data.value?.allowedTypes
-      .filter((v) => {
-        return typesOnEntity.includes(v.bundle)
-      })
-      .flatMap((v) => v.allowedTypes) || []
-
-  const allAllowedTypes = [...typesOnEntity, ...typesOnParagraphs]
-
-  return (
-    data.value?.allTypes.filter(
-      (v) => v.id && allAllowedTypes.includes(v.id),
-    ) || []
-  )
-})
-
-const selectableParagraphTypes = computed(() => {
-  if (selectedParagraph.value) {
-    // If the selected paragraph allows nested paragraphs, return the allowed paragraphs for it.
-    if (
-      paragraphTypesWithNested.value.includes(
-        selectedParagraph.value.paragraphType,
-      )
-    ) {
-      return allowedTypes.value
-        .filter(
-          (v) =>
-            v.entityType === 'paragraph' &&
-            v.bundle === selectedParagraph.value?.paragraphType,
-        )
-        .flatMap((v) => v.allowedTypes)
-        .filter(Boolean) as string[]
-    }
-    // If the selected paragraph is inside a nested paragraph, return the allowed paragraphs of the parent paragraph.
-    if (selectedParagraph.value.hostType === 'paragraph') {
-      return allowedTypes.value
-        .filter(
-          (v) =>
-            v.entityType === 'paragraph' &&
-            v.bundle === selectedParagraph.value?.hostBundle,
-        )
-        .flatMap((v) => v.allowedTypes)
-        .filter(Boolean) as string[]
-    } else {
-      return allowedTypes.value
-        .filter(
-          (v) =>
-            v.entityType === props.entityType &&
-            v.bundle === props.bundle &&
-            v.fieldName === selectedParagraph.value?.hostFieldName,
-        )
-        .flatMap((v) => v.allowedTypes)
-        .filter(Boolean) as string[]
-    }
-  }
-  if (
-    activeField.value &&
-    activeField.value.hostEntityType === props.entityType
-  ) {
-    return (
-      allowedTypes.value.find((v) => {
-        return (
-          v.bundle === props.bundle && v.fieldName === activeField.value?.name
-        )
-      })?.allowedTypes || []
-    )
-  }
-
-  return generallyAvailableParagraphTypes.value.map((v) => v.id || '')
-})
-
-/**
- * The allowed paragraph types in the current field item list.
- *
- * Unlike selectableParagraphTypes, this always uses the selected paragraphs's
- * parent field to determine the allowed types.
- */
-const allowedTypesInList = computed(() => {
-  if (selectedParagraph.value) {
-    return allowedTypes.value
-      .filter(
-        (v) =>
-          v.entityType === props.entityType &&
-          v.bundle === props.bundle &&
-          v.fieldName === selectedParagraph.value?.hostFieldName,
-      )
-      .flatMap((v) => v.allowedTypes)
-      .filter(Boolean) as string[]
-  }
-  return []
 })
 
 async function revertAllChanges() {

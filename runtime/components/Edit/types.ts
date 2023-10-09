@@ -1,3 +1,4 @@
+import type { Ref } from 'vue'
 import type { Emitter } from 'mitt'
 import { PbMutatedField } from '../../types'
 
@@ -51,6 +52,7 @@ export interface DraggableClipboardItem {
   element: HTMLElement
   paragraphType: string
   clipboardData: string
+  additional?: string
 }
 
 export type DraggableItem =

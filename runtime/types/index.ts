@@ -1,3 +1,8 @@
+export interface PbStore {
+  maskVisible: globalThis.Ref<boolean>
+  toggleMaskVisible: () => void
+}
+
 export type StringBoolean = '0' | '1'
 
 export type ParagraphDefinitionOptionText = {
@@ -205,6 +210,7 @@ export interface PbEditState {
   }
   entity: PbEditEntity
   translationState: PbTranslationState
+  previewUrl?: string
 }
 
 export interface PbType {

@@ -24,6 +24,7 @@ import { falsy } from '../../../helpers'
 import Sortable from 'sortablejs'
 import Sidebar from './../../Inner/index.vue'
 import Item, { ReusableItem } from './Item/index.vue'
+import { eventBus } from './../../../eventBus'
 
 const listEl = ref<HTMLDivElement | null>(null)
 const text = ref('')
@@ -64,6 +65,18 @@ onMounted(() => {
         revertClone: false,
       },
       forceFallback: true,
+      onStart(e) {
+        const rect = e.item.getBoundingClientRect()
+        const originalEvent = (e as any).originalEvent || ({} as PointerEvent)
+        eventBus.emit('draggingStart', {
+          rect,
+          offsetX: originalEvent.clientX,
+          offsetY: originalEvent.clientY,
+        })
+      },
+      onEnd() {
+        eventBus.emit('draggingEnd')
+      },
       animation: 300,
     })
   }

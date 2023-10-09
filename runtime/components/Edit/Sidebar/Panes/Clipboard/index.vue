@@ -16,6 +16,7 @@
           :data-paragraph-type="item.paragraphType"
           :data-clipboard-type="item.type"
           :data-clipboard-data="item.data"
+          :data-clipboard-additional="item.additional"
           :key="item.data + renderKey"
         >
           <div class="pb-clipboard-item">
@@ -36,6 +37,9 @@
                   :src="`http://i3.ytimg.com/vi/${item.data}/hqdefault.jpg`"
                 />
               </div>
+              <div v-else-if="item.type === 'image'">
+                <img :src="item.data" />
+              </div>
             </div>
           </div>
         </div>
@@ -50,20 +54,33 @@ import SidebarInner from './../../Inner/index.vue'
 import ParagraphIcon from './../../../ParagraphIcon/index.vue'
 import IconDelete from './../../../Icons/Delete.vue'
 import { PbType } from './../../../../../types'
+import { eventBus } from './../../../eventBus'
 
 interface ClipboardItemText {
   type: 'text'
   paragraphType: string
   data: string
+  additional?: string
 }
 
 interface ClipboardItemYouTube {
   type: 'youtube'
   paragraphType: string
   data: string
+  additional?: string
 }
 
-type ClipboardItem = ClipboardItemText | ClipboardItemYouTube
+interface ClipboardItemImage {
+  type: 'image'
+  paragraphType: string
+  data: string
+  additional: string
+}
+
+type ClipboardItem =
+  | ClipboardItemText
+  | ClipboardItemYouTube
+  | ClipboardItemImage
 
 const emit = defineEmits(['paste'])
 
@@ -113,6 +130,45 @@ function removeAttributes(el: Element) {
   }
 }
 
+const TYPES_IMAGE = ['image/jpeg', 'image/png', 'image/jpg']
+
+function handleFiles(data: DataTransfer) {
+  if (!FileReader) {
+    return
+  }
+
+  const files = [...data.files]
+
+  files.forEach((file) => {
+    const fr = new FileReader()
+    fr.onload = function () {
+      if (typeof fr.result === 'string') {
+        if (TYPES_IMAGE.includes(file.type)) {
+          pastedItems.value.push({
+            type: 'image',
+            paragraphType: 'image',
+            data: fr.result,
+            additional: file.name,
+          })
+          emit('paste')
+        }
+      }
+    }
+    fr.readAsDataURL(file)
+  })
+}
+
+function onDrop(e: DragEvent) {
+  e.preventDefault()
+  if (e.dataTransfer?.files.length) {
+    handleFiles(e.dataTransfer)
+  }
+}
+
+function onDragOver(e: DragEvent) {
+  e.preventDefault()
+}
+
 let instance: Sortable | null = null
 
 function onPaste(e: ClipboardEvent) {
@@ -122,6 +178,9 @@ function onPaste(e: ClipboardEvent) {
 
   // Get pasted data via clipboard API
   const clipboardData = e.clipboardData
+  if (clipboardData?.files.length) {
+    return handleFiles(clipboardData)
+  }
   let pastedData = clipboardData?.getData('text/html')
   if (!pastedData) {
     pastedData = clipboardData?.getData('text')
@@ -164,6 +223,8 @@ function remove(index: number) {
 
 onMounted(() => {
   document.addEventListener('paste', onPaste)
+  document.body.addEventListener('drop', onDrop)
+  document.addEventListener('dragover', onDragOver)
   if (listEl.value) {
     instance = new Sortable(listEl.value, {
       sort: false,
@@ -181,11 +242,25 @@ onMounted(() => {
       },
       forceFallback: true,
       animation: 300,
+      onStart(e) {
+        const rect = e.item.getBoundingClientRect()
+        const originalEvent = (e as any).originalEvent || ({} as PointerEvent)
+        eventBus.emit('draggingStart', {
+          rect,
+          offsetX: originalEvent.clientX,
+          offsetY: originalEvent.clientY,
+        })
+      },
+      onEnd() {
+        eventBus.emit('draggingEnd')
+      },
     })
   }
 })
 onUnmounted(() => {
   document.removeEventListener('paste', onPaste)
+  document.body.removeEventListener('drop', onDrop)
+  document.removeEventListener('dragover', onDragOver)
   if (instance) {
     instance.destroy()
   }

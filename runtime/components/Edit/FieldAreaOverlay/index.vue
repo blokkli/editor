@@ -25,12 +25,13 @@
 import { eventBus } from '../eventBus'
 import { AnimationFrameEvent } from '../types'
 
+const { maskVisible } = useParagraphsBuilderStore()
+
 defineEmits<{
   (e: 'select', key: string): void
 }>()
 
 const props = defineProps<{
-  maskVisible: boolean
   activeFieldKey: string
 }>()
 
@@ -64,7 +65,7 @@ const canvasAreaStyle = computed(() => {
 })
 
 function onAnimationFrame(e: AnimationFrameEvent) {
-  if (props.maskVisible) {
+  if (maskVisible.value) {
     canvasFieldAreas.value = e.fieldAreas
       .filter((v) => !v.isNested)
       .map((v) => {

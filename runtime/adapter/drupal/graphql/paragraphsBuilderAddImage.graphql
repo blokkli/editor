@@ -1,0 +1,27 @@
+mutation addImageParagraph(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $data: String!
+  $fileName: String!
+  $hostType: String!
+  $hostUuid: String!
+  $hostFieldName: String!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: add_image(
+      data: $data
+      fileName: $fileName
+      afterUuid: $afterUuid
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+    ) {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}

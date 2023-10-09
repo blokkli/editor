@@ -69,6 +69,7 @@ export function buildDraggableItem(
     }
   } else if (dataset.elementType === 'clipboard') {
     const clipboardData = dataset.clipboardData
+    const additional = dataset.clipboardAdditional
     const paragraphType = dataset.paragraphType
     if (clipboardData && paragraphType) {
       return {
@@ -76,6 +77,7 @@ export function buildDraggableItem(
         element,
         paragraphType,
         clipboardData,
+        additional,
       }
     }
   } else if (dataset.elementType === 'multiple_existing') {

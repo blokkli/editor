@@ -34,6 +34,7 @@ import Sortable from 'sortablejs'
 import { falsy, onlyUnique } from './../helpers'
 import ParagraphIcon from './../ParagraphIcon/index.vue'
 import { PbType } from '../../../types'
+import { eventBus } from './../eventBus'
 
 const STORAGE_KEY = '_vp_paragraphs_sorting'
 
@@ -120,10 +121,18 @@ onMounted(() => {
         revertClone: false,
       },
       fallbackClass: 'sortable-fallback',
-      onStart() {
+      onStart(e) {
+        const rect = e.item.getBoundingClientRect()
+        const originalEvent = (e as any).originalEvent || ({} as PointerEvent)
+        eventBus.emit('draggingStart', {
+          rect,
+          offsetX: originalEvent.clientX,
+          offsetY: originalEvent.clientY,
+        })
         isDragging.value = true
       },
       onEnd() {
+        eventBus.emit('draggingEnd')
         isDragging.value = false
         storeSort()
         updateKey.value = updateKey.value + 1

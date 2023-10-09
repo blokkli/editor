@@ -158,6 +158,11 @@ export default defineNuxtModule<ModuleOptions>({
       as: 'defineParagraph',
     })
     addImports({
+      name: 'useParagraphsBuilderStore',
+      from: resolver.resolve('./runtime/composables/useParagraphsBuilderStore'),
+      as: 'useParagraphsBuilderStore',
+    })
+    addImports({
       name: 'useParagraphsBuilderEditContext',
       as: 'useParagraphsBuilderEditContext',
       from: resolver.resolve(

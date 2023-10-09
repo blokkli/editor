@@ -90,9 +90,11 @@ export const ParagraphsBuilderPlugin = (nuxt: Nuxt) =>
           return
         }
 
+        // Skip files that don't contain our string.
         if (!source.includes('defineParagraph')) {
           return
         }
+
         const s = new MagicString(source)
 
         walk(
@@ -101,21 +103,24 @@ export const ParagraphsBuilderPlugin = (nuxt: Nuxt) =>
             ecmaVersion: 'latest',
           }),
           {
-            enter: async (_node) => {
+            enter: async (node) => {
+              // We only care about calls to a method.
               if (
-                _node.type !== 'CallExpression' ||
-                (_node as CallExpression).callee.type !== 'Identifier'
+                node.type !== 'CallExpression' ||
+                (node as CallExpression).callee.type !== 'Identifier'
               ) {
                 return
               }
-              const node = _node as CallExpression & {
+
+              const callNode = node as CallExpression & {
                 start: number
                 end: number
               }
-              const name = 'name' in node.callee && node.callee.name
+
+              const name = 'name' in callNode.callee && callNode.callee.name
               if (name === 'defineParagraph') {
-                const arg = node.arguments[0]
-                const meta = node.arguments[0] as Expression & {
+                const arg = callNode.arguments[0]
+                const meta = callNode.arguments[0] as Expression & {
                   start: number
                   end: number
                 }

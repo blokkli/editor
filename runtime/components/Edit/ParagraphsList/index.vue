@@ -6,7 +6,6 @@
     :is="tag || 'div'"
     @click.capture="onClick"
     @dblclick.capture="onDoubleClick"
-    :ondrop="onDrop"
     :data-field-name="fieldConfig.name"
     :data-field-label="fieldConfig.label"
     :data-field-is-nested="isNested"
@@ -78,7 +77,7 @@ const allAllowedTypes = inject<ComputedRef<PbAllowedBundle[]>>(
 const container = ref<HTMLDivElement | null>(null)
 
 const props = defineProps<{
-  list: PbFieldItemFragment[]
+  list: PbFieldItemFragment<any>[]
   entity: PbFieldEntity
   fieldConfig: PbFieldConfig
   tag?: string
@@ -193,28 +192,6 @@ const host = computed<DraggableHostData>(() => {
     fieldName: props.fieldConfig.name!,
   }
 })
-
-function onDrop(e: DragEvent) {
-  e.preventDefault()
-  if (e.dataTransfer && e.dataTransfer.items) {
-    // Use DataTransferItemList interface to access the file(s)
-    ;[...e.dataTransfer.items].forEach((item, i) => {
-      // If dropped items aren't files, reject them
-      if (item.kind === 'file') {
-        const file = item.getAsFile()
-        if (file) {
-          console.log(file)
-          console.log(`… file[${i}].name = ${file.name}`)
-        }
-      }
-    })
-  } else if (e.dataTransfer?.files) {
-    // Use DataTransfer interface to access the file(s)
-    ;[...e.dataTransfer.files].forEach((file, i) => {
-      console.log(`… file[${i}].name = ${file.name}`)
-    })
-  }
-}
 
 function getPreviousItem(
   el: HTMLElement,
