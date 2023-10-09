@@ -267,7 +267,8 @@
   }
   &.pb-is-pressing-space {
     @apply cursor-move;
-    .pb-main-canvas {
+    .pb-main-canvas,
+    .pb-paragraphs-container {
       @apply pointer-events-none;
     }
   }
@@ -297,4 +298,14 @@
 
 .pb.pb-dragging-overlay {
   @apply fixed top-0 left-0 bg-blue-500/25 pointer-events-none rounded outline outline-blue-600 outline-offset-1;
+}
+
+.pb-qr-code {
+  canvas {
+    @apply !w-full !h-auto aspect-square;
+  }
+
+  p {
+    @apply my-20;
+  }
 }

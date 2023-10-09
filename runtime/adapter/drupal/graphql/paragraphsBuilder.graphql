@@ -54,6 +54,8 @@ fragment paragraphsBuilderEditState on ParagraphsBuilderEditState {
     }
     translations
   }
+
+  previewUrl
 }
 
 fragment paragraphsBuilderMutationItem on FieldItemTypeParagraphsBuilderMutation {

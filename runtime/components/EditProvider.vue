@@ -219,6 +219,23 @@
         @cancel="showRevertDialog = false"
       />
     </transition>
+
+    <transition appear name="pb-slide-up" :duration="900">
+      <PbDialog
+        v-if="dialogQrCode && previewGrantUrl"
+        title="Vorschau mit Smartphone"
+        lead="Scannen Sie den QR-Code mit Ihrem Smartphone um die Vorschau zu öffnen."
+        submit-label="Schliessen"
+        is-danger
+        hide-buttons
+        :width="490"
+        @submit="dialogQrCode = false"
+        @cancel="dialogQrCode = false"
+      >
+        <QrCode :url="previewGrantUrl" />
+      </PbDialog>
+    </transition>
+    <FileDrop />
   </Teleport>
   <slot></slot>
 </template>
@@ -244,8 +261,10 @@ import ToolbarTranslationState from './Edit/Toolbar/TranslationState/index.vue'
 import TemplatesDialog from './Edit/Templates/index.vue'
 import FieldAreaOverlay from './Edit/FieldAreaOverlay/index.vue'
 import DraggingOverlay from './Edit/DraggingOverlay/index.vue'
+import FileDrop from './Edit/FileDrop/index.vue'
 import Messages from './Edit/Messages/index.vue'
 import PbDialog from './Edit/Dialog/index.vue'
+import QrCode from './Edit/QrCode/index.vue'
 import ParagraphOptions, {
   UpdateParagraphOptionEvent,
 } from './Edit/ParagraphOptions/index.vue'

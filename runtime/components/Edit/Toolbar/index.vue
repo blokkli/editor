@@ -97,6 +97,12 @@
           <ShortcutIndicator meta key-label="P" />
         </div>
       </a>
+      <button class="pb-toolbar-button" @click="$emit('showQrCode')">
+        <IconQrCode />
+        <div class="pb-tooltip">
+          <span>Vorschau (mit Smartphone)</span>
+        </div>
+      </button>
     </div>
     <div class="pb-toolbar-container">
       <button
@@ -127,7 +133,7 @@
     </div>
     <slot name="afterTitle"></slot>
     <div class="pb-toolbar-container">
-      <button class="pb-toolbar-button" @click="$emit('toggleMask')">
+      <button class="pb-toolbar-button" @click="toggleMaskVisible">
         <IconCheckbox v-if="maskVisible" />
         <IconTextureBox v-else />
         <div class="pb-tooltip">
@@ -210,16 +216,18 @@ import IconPreview from './../Icons/Preview.vue'
 import IconClipboard from './../Icons/Clipboard.vue'
 import IconComment from './../Icons/Comment.vue'
 import IconTree from './../Icons/Tree.vue'
-import IconForm from './../Icons/Form.vue'
 import IconCheckbox from './../Icons/Checkbox.vue'
 import IconImport from './../Icons/Import.vue'
 import IconTextureBox from './../Icons/TextureBox.vue'
 import IconOpenInNew from './../Icons/OpenInNew.vue'
 import IconTranslate from './../Icons/Translate.vue'
+import IconQrCode from './../Icons/QrCode.vue'
 import ShortcutIndicator from './../ShortcutIndicator/index.vue'
 import { PbEditMode, PbMutation } from '../../../types'
 
 const route = useRoute()
+
+const { maskVisible, toggleMaskVisible } = useParagraphsBuilderStore()
 
 const emit = defineEmits([
   'revert',
@@ -229,7 +237,7 @@ const emit = defineEmits([
   'close',
   'toggleSidebar',
   'togglePreview',
-  'toggleMask',
+  'showQrCode',
   'openEntityForm',
   'showTemplates',
   'showTranslations',
@@ -246,7 +254,6 @@ const props = defineProps<{
   showPreview: boolean
   isPressingControl: boolean
   isPressingSpace: boolean
-  maskVisible: boolean
   editMode: PbEditMode
 }>()
 
@@ -291,7 +298,7 @@ async function onKeyPress(e: KeyboardEvent) {
   } else if (e.key === 'm' && (e.ctrlKey || e.metaKey)) {
     e.stopImmediatePropagation()
     e.preventDefault()
-    emit('toggleMask')
+    toggleMaskVisible()
   } else if (e.key === 'p' && (e.ctrlKey || e.metaKey)) {
     e.stopImmediatePropagation()
     e.preventDefault()

@@ -9,7 +9,7 @@
       <div class="pb-dialog-content">
         <slot></slot>
       </div>
-      <div class="pb pb-dialog-footer">
+      <div class="pb pb-dialog-footer" v-if="!hideButtons">
         <button
           @click="$emit('submit')"
           class="pb-button"
@@ -34,10 +34,11 @@ withDefaults(
     title: string
     lead?: string
     width?: number
-    submitLabel: string
+    submitLabel?: string
     canSubmit?: boolean
     isDanger?: boolean
     isLoading?: boolean
+    hideButtons?: boolean
   }>(),
   {
     width: 600,

@@ -20,6 +20,7 @@ const drupalAdapter: PbAdapter<
     const mutatedState = state?.mutatedState || {}
     const entity = state?.entity
     const translationState = state?.translationState || {}
+    const previewUrl = state?.previewUrl || ''
 
     const entityTranslations =
       entity && 'translations' in entity
@@ -58,6 +59,7 @@ const drupalAdapter: PbAdapter<
       },
       translationState,
       entityTranslations,
+      previewUrl,
     }
   },
 }
