@@ -560,7 +560,9 @@ const activeField = computed(() => {
 })
 
 function openTranslations() {
-  modalUrl.value = `/${currentLanguage.value}/paragraphs_builder/${props.entityType}/${props.entityUuid}/translate-paragraphs?destination=/de/paragraphs_builder/redirect`
+  setModalUrl(
+    `/paragraphs_builder/${props.entityType}/${props.entityUuid}/translate-paragraphs?destination=/de/paragraphs_builder/redirect`,
+  )
 }
 
 const dialogQrCode = ref(false)
@@ -606,11 +608,14 @@ function openEntityForm() {
   selectedParagraphs.value = []
   iframeBundle.value = ''
   if (entity.value.editUrl) {
-    modalUrl.value =
+    setModalUrl(
       entity.value.editUrl +
-      '?paragraphsBuilder=true&destination=/de/paragraphs_builder/redirect'
+        '?paragraphsBuilder=true&destination=/de/paragraphs_builder/redirect',
+    )
   } else {
-    modalUrl.value = `/${currentLanguage.value}/${props.entityType}/${entity.value.id}/edit?paragraphsBuilder=true&destination=/de/paragraphs_builder/redirect`
+    setModalUrl(
+      `/${props.entityType}/${entity.value.id}/edit?paragraphsBuilder=true&destination=/de/paragraphs_builder/redirect`,
+    )
   }
 }
 
@@ -660,6 +665,18 @@ async function onResolveComment(id: string | number) {
   if (result.data.state?.action) {
     comments.value = result.data.state.action
   }
+}
+
+function setModalUrl(path: string, providedLangcode?: string) {
+  const langcode = providedLangcode || currentLanguage.value
+  if (
+    runtimeConfig.langcodeWithoutPrefix &&
+    runtimeConfig.langcodeWithoutPrefix === langcode
+  ) {
+    modalUrl.value = path
+    return
+  }
+  modalUrl.value = `/${langcode}${path}`
 }
 
 function lockBody() {
@@ -721,34 +738,39 @@ async function addNewParagraph(e: AddNewParagraphEvent) {
   }
 
   iframeBundle.value = e.type
-  modalUrl.value =
+  setModalUrl(
     '/' +
-    [
-      currentLanguage.value,
-      'paragraphs_builder',
-      props.entityType,
-      props.entityUuid,
-      'add',
-      e.type,
-      e.host.type,
-      e.host.uuid,
-      e.host.fieldName,
-      e.afterUuid,
-    ]
-      .filter(Boolean)
-      .join('/')
+      [
+        'paragraphs_builder',
+        props.entityType,
+        props.entityUuid,
+        'add',
+        e.type,
+        e.host.type,
+        e.host.uuid,
+        e.host.fieldName,
+        e.afterUuid,
+      ]
+        .filter(Boolean)
+        .join('/'),
+  )
 }
 
 function onTranslateEntity(langcode: string) {
   selectedParagraph.value = null
   selectedParagraphs.value = []
   iframeBundle.value = ''
-  modalUrl.value = `/${langcode}/${props.entityType}/${entity.value.id}/translations/add/${translationState.value.sourceLanguage}/${langcode}?paragraphsBuilder=true&destination=/de/paragraphs_builder/redirect`
+  setModalUrl(
+    `/${props.entityType}/${entity.value.id}/translations/add/${translationState.value.sourceLanguage}/${langcode}?paragraphsBuilder=true&destination=/de/paragraphs_builder/redirect`,
+    langcode,
+  )
 }
 
 function editParagraph(uuid: string) {
   iframeBundle.value = selectedParagraph.value?.paragraphType || ''
-  modalUrl.value = `/${currentLanguage.value}/paragraphs_builder/${props.entityType}/${props.entityUuid}/edit/${uuid}`
+  setModalUrl(
+    `/paragraphs_builder/${props.entityType}/${props.entityUuid}/edit/${uuid}`,
+  )
 }
 
 function onDraggingStart() {

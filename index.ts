@@ -84,6 +84,13 @@ export type ModuleOptions = {
   disableFeatures?: {
     library?: boolean
   }
+
+  /**
+   * The langcode that doesn't use a URL prefix.
+   *
+   * This is used to build paths for iframes.
+   */
+  langcodeWithoutPrefix?: string
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -118,6 +125,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     nuxt.options.runtimeConfig.public.paragraphsBuilder = {
       disableLibrary: !!moduleOptions.disableFeatures?.library,
+      langcodeWithoutPrefix: moduleOptions.langcodeWithoutPrefix,
     }
 
     // The path to the source directory of this module's consumer.

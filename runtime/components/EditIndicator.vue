@@ -59,6 +59,6 @@ onUnmounted(() => {
   position: fixed;
   top: 0;
   right: 10px;
-  z-index: 10000000;
+  z-index: 100;
 }
 </style>
