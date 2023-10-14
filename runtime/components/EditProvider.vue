@@ -561,7 +561,7 @@ const activeField = computed(() => {
 
 function openTranslations() {
   setModalUrl(
-    `/paragraphs_builder/${props.entityType}/${props.entityUuid}/translate-paragraphs?destination=/de/paragraphs_builder/redirect`,
+    `/paragraphs_builder/${props.entityType}/${props.entityUuid}/translate-paragraphs`,
   )
 }
 
@@ -608,14 +608,9 @@ function openEntityForm() {
   selectedParagraphs.value = []
   iframeBundle.value = ''
   if (entity.value.editUrl) {
-    setModalUrl(
-      entity.value.editUrl +
-        '?paragraphsBuilder=true&destination=/de/paragraphs_builder/redirect',
-    )
+    setModalUrl(entity.value.editUrl + '')
   } else {
-    setModalUrl(
-      `/${props.entityType}/${entity.value.id}/edit?paragraphsBuilder=true&destination=/de/paragraphs_builder/redirect`,
-    )
+    setModalUrl(`/${props.entityType}/${entity.value.id}/edit`)
   }
 }
 
@@ -669,14 +664,13 @@ async function onResolveComment(id: string | number) {
 
 function setModalUrl(path: string, providedLangcode?: string) {
   const langcode = providedLangcode || currentLanguage.value
-  if (
+  const prefix =
     runtimeConfig.langcodeWithoutPrefix &&
     runtimeConfig.langcodeWithoutPrefix === langcode
-  ) {
-    modalUrl.value = path
-    return
-  }
-  modalUrl.value = `/${langcode}${path}`
+      ? ''
+      : '/' + langcode
+  const queryParam = `?paragraphsBuilder=true&destination=${prefix}/paragraphs_builder/redirect`
+  modalUrl.value = prefix + path + queryParam
 }
 
 function lockBody() {
@@ -761,7 +755,7 @@ function onTranslateEntity(langcode: string) {
   selectedParagraphs.value = []
   iframeBundle.value = ''
   setModalUrl(
-    `/${props.entityType}/${entity.value.id}/translations/add/${translationState.value.sourceLanguage}/${langcode}?paragraphsBuilder=true&destination=/de/paragraphs_builder/redirect`,
+    `/${props.entityType}/${entity.value.id}/translations/add/${translationState.value.sourceLanguage}/${langcode}`,
     langcode,
   )
 }
