@@ -1,29 +1,33 @@
 <template>
-  <div :data-provider-uuid="entityUuid">
-    <PbPreviewProvider
-      v-if="isPreviewing"
-      :entity-type="entityType"
-      :entity-uuid="entityUuid"
-      :bundle="bundle"
+  <div :data-provider-uuid="uuid">
+    <template
+      v-if="uuid && entityType && bundle && (isPreviewing || isEditing)"
     >
-      <slot
-        :is-editing="isEditing"
-        :can-edit="canEdit"
-        :is-preview="isPreviewing"
-      ></slot>
-    </PbPreviewProvider>
-    <PbEditProvider
-      v-else-if="isEditing"
-      :entity-type="entityType"
-      :entity-uuid="entityUuid"
-      :bundle="bundle"
-    >
-      <slot
-        :is-editing="isEditing"
-        :can-edit="canEdit"
-        :is-preview="isPreviewing"
-      ></slot>
-    </PbEditProvider>
+      <PbPreviewProvider
+        v-if="isPreviewing"
+        :entity-type="entityType"
+        :entity-uuid="uuid"
+        :bundle="bundle"
+      >
+        <slot
+          :is-editing="isEditing"
+          :can-edit="canEdit"
+          :is-preview="isPreviewing"
+        ></slot>
+      </PbPreviewProvider>
+      <PbEditProvider
+        v-else-if="isEditing"
+        :entity-type="entityType"
+        :entity-uuid="uuid"
+        :bundle="bundle"
+      >
+        <slot
+          :is-editing="isEditing"
+          :can-edit="canEdit"
+          :is-preview="isPreviewing"
+        ></slot>
+      </PbEditProvider>
+    </template>
 
     <slot
       v-else
@@ -32,13 +36,11 @@
       :is-preview="isPreviewing"
     ></slot>
 
-    <PbEditIndicator v-if="showIndicator" :uuid="entityUuid" @edit="edit" />
+    <PbEditIndicator v-if="showIndicator" :uuid="uuid" @edit="edit" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useDrupalUser } from '~/stores/drupalUser'
-
 const PbPreviewProvider = defineAsyncComponent(() => {
   return import('./PreviewProvider.vue')
 })
@@ -53,14 +55,14 @@ const PbEditIndicator = defineAsyncComponent(() => {
 
 const route = useRoute()
 const router = useRouter()
-const drupalUser = useDrupalUser()
 const language = useCurrentLanguage()
 
 const props = withDefaults(
   defineProps<{
+    uuid: string
+    canEdit: boolean
     entityType: string
     bundle: string
-    entityUuid: string
     tag?: string
   }>(),
   {
@@ -68,32 +70,22 @@ const props = withDefaults(
   },
 )
 
-const canEdit = computed(() => {
-  return (
-    props.entityUuid && props.entityType && drupalUser.canUseParagraphsBuilder
-  )
-})
-
 const isEditing = computed(() => {
-  return (
-    canEdit.value &&
-    props.entityUuid &&
-    route.query.pbEditing === props.entityUuid
-  )
+  return props.canEdit && props.uuid && route.query.pbEditing === props.uuid
 })
 
 const isPreviewing = computed(() => {
-  return props.entityUuid && route.query.pbPreview === props.entityUuid
+  return props.uuid && route.query.pbPreview === props.uuid
 })
 
 const showIndicator = computed(
-  () => canEdit.value && !route.query.pbEditing && !route.query.pbPreview,
+  () => props.canEdit && !route.query.pbEditing && !route.query.pbPreview,
 )
 
 function edit() {
   router.push({
     query: {
-      pbEditing: props.entityUuid,
+      pbEditing: props.uuid,
       language: language.value,
     },
   })
