@@ -1,14 +1,20 @@
 <template>
   <div class="pb-paragraph-options-text">
-    <input type="text" :placeholder="label" v-model.lazy="text" />
+    <input :type="type" :placeholder="label" v-model="text" />
   </div>
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{
-  label: string
-  value: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    label: string
+    value: string
+    type?: string
+  }>(),
+  {
+    type: 'text',
+  },
+)
 
 const emit = defineEmits(['update'])
 
@@ -16,8 +22,8 @@ const text = computed({
   get() {
     return props.value || ''
   },
-  set(v: any) {
-    emit('update', v)
+  set(v: string | number | undefined) {
+    emit('update', (v === undefined ? '' : v).toString())
   },
 })
 </script>

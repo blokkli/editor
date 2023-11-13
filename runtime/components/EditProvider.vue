@@ -93,6 +93,7 @@
         :violation-count="violations.length"
         :modal-url="modalUrl"
         :edit-mode="editMode"
+        :has-grid="hasGrid"
       >
         <template #title>
           <div class="pb-toolbar-title">
@@ -234,6 +235,11 @@
       </PbDialog>
     </transition>
   </Teleport>
+  <div
+    v-if="hasGrid && gridVisible"
+    class="pb-grid-overlay"
+    v-html="runtimeConfig.gridMarkup"
+  />
   <slot></slot>
 </template>
 
@@ -342,6 +348,9 @@ const showTemplates = ref(false)
 const showRevertDialog = ref(false)
 const previewGrantUrl = ref('')
 const maskVisible = ref(window.localStorage.getItem('_pb_mask_visible') === '1')
+const gridVisible = ref(window.localStorage.getItem('_pb_grid_visible') === '1')
+
+const hasGrid = computed(() => !!runtimeConfig.gridMarkup)
 
 const pbStore = {
   maskVisible,
@@ -350,6 +359,14 @@ const pbStore = {
     window.localStorage.setItem(
       '_pb_mask_visible',
       maskVisible.value ? '1' : '0',
+    )
+  },
+  gridVisible,
+  toggleGridVisible() {
+    gridVisible.value = !gridVisible.value
+    window.localStorage.setItem(
+      '_pb_grid_visible',
+      gridVisible.value ? '1' : '0',
     )
   },
 }
@@ -608,7 +625,7 @@ function openEntityForm() {
   selectedParagraphs.value = []
   iframeBundle.value = ''
   if (entity.value.editUrl) {
-    setModalUrl(entity.value.editUrl + '')
+    modalUrl.value = entity.value.editUrl
   } else {
     setModalUrl(`/${props.entityType}/${entity.value.id}/edit`)
   }

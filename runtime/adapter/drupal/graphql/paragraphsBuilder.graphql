@@ -485,6 +485,8 @@ query paragraphsBuilderExisting(
   $entityType: EntityType!
   $entityUuid: String!
   $bundle: String!
+  $bundleField: String!
+  $titleField: String!
   $conditions: [EntityQueryFilterConditionInput]
   $text: String!
 ) {
@@ -494,9 +496,9 @@ query paragraphsBuilderExisting(
     sort: [{ field: "changed", direction: ASC }]
     filter: {
       conditions: [
-        { field: "type", value: [$bundle] }
+        { field: $bundleField, value: [$bundle] }
         { field: "uuid", value: [$entityUuid], operator: NOT_EQUAL }
-        { field: "title", value: [$text], operator: LIKE }
+        { field: $titleField, value: [$text], operator: LIKE }
       ]
       groups: [{ conjunction: OR, conditions: $conditions }]
     }

@@ -1,6 +1,8 @@
 export interface PbStore {
   maskVisible: globalThis.Ref<boolean>
   toggleMaskVisible: () => void
+  gridVisible: globalThis.Ref<boolean>
+  toggleGridVisible: () => void
 }
 
 export type StringBoolean = '0' | '1'
@@ -9,6 +11,7 @@ export type ParagraphDefinitionOptionText = {
   type: 'text'
   default: string
   label: string
+  inputType?: 'text' | 'number' | 'date'
 }
 
 export type ParagraphDefinitionOptionCheckbox = {
@@ -17,16 +20,23 @@ export type ParagraphDefinitionOptionCheckbox = {
   label: string
 }
 
+export type ParagraphDefinitionOptionCheckboxes = {
+  type: 'checkboxes'
+  label: string
+  options: Record<string, string>
+}
+
 export type ParagraphDefinitionOptionRadios = {
   type: 'radios'
   label: string
   default: string
-  displayAs?: 'radios' | 'colors'
-  options: Record<string, string>
+  displayAs?: 'radios' | 'colors' | 'grid'
+  options: Record<string, string | number[]>
 }
 
 export type ParagraphDefinitionOption =
   | ParagraphDefinitionOptionCheckbox
+  | ParagraphDefinitionOptionCheckboxes
   | ParagraphDefinitionOptionRadios
   | ParagraphDefinitionOptionText
 

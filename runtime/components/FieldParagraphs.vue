@@ -14,18 +14,19 @@
       :field-config="fieldConfig"
       :list="filteredList"
       :entity="entity"
-      :class="attrs.class"
+      :class="[attrs.class, listClass]"
       :is-nested="isNested"
       class="field-paragraphs pb-field-paragraphs"
       :tag="tag"
     />
   </template>
   <component
-    v-else
+    v-else-if="!editOnly"
     :is="tag"
     :class="[
       attrs.class,
       { 'pb-field-paragraphs': canEdit && !isNested && !isPreview },
+      listClass
     ]"
     class="field-paragraphs"
     :data-field-key="fieldKey"
@@ -40,6 +41,7 @@
       :index="i"
     />
   </component>
+  <slot name="after" :items="filteredList"></slot>
 </template>
 
 <script lang="ts" setup>
@@ -70,6 +72,8 @@ const props = withDefaults(
     tag?: string
     preventEdit?: boolean
     fieldListType?: ValidFieldListTypes
+    editOnly?: boolean
+    listClass?: string
   }>(),
   {
     list: () => [],

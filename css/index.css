@@ -39,6 +39,8 @@
 
   @apply font-sans;
 
+  letter-spacing: 0;
+
   .pb-list {
     @apply pt-5 relative z-20;
     &::-webkit-scrollbar {
@@ -308,4 +310,8 @@
   p {
     @apply my-20;
   }
+}
+
+.pb-is-disabled {
+  @apply opacity-30 group-hover:opacity-60;
 }

@@ -3,7 +3,6 @@ import {
   addComponent,
   addImports,
   addTemplate,
-  addVitePlugin,
   createResolver,
   defineNuxtModule,
   resolveFiles,
@@ -36,6 +35,10 @@ async function buildStyles(sourceFile: string, sourceFolder: string) {
     .process(css, { from: sourceFile })
     .then((result) => {
       return result.css
+    })
+    .catch((e) => {
+      console.log(e)
+      throw new Error('Failed to compile nuxt-paragraphs-builder CSS.')
     })
   return processed
 }
@@ -91,6 +94,11 @@ export type ModuleOptions = {
    * This is used to build paths for iframes.
    */
   langcodeWithoutPrefix?: string
+
+  /**
+   * If provided, the grid feature is enabled and the markup is used to display the grid.
+   */
+  gridMarkup?: string
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -126,6 +134,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.runtimeConfig.public.paragraphsBuilder = {
       disableLibrary: !!moduleOptions.disableFeatures?.library,
       langcodeWithoutPrefix: moduleOptions.langcodeWithoutPrefix,
+      gridMarkup: moduleOptions.gridMarkup,
     }
 
     // The path to the source directory of this module's consumer.

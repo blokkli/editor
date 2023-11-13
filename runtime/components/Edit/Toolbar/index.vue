@@ -134,14 +134,25 @@
     <slot name="afterTitle"></slot>
     <div class="pb-toolbar-container">
       <button class="pb-toolbar-button" @click="toggleMaskVisible">
-        <IconCheckbox v-if="maskVisible" />
-        <IconTextureBox v-else />
+        <IconTextureBox :class="{ 'pb-is-disabled': !maskVisible }" />
         <div class="pb-tooltip">
           <span>{{
             maskVisible ? 'Inhaltsfelder anzeigen' : 'Inhaltsfelder verstecken'
           }}</span>
 
           <ShortcutIndicator meta key-label="M" />
+        </div>
+      </button>
+      <button
+        v-if="hasGrid"
+        class="pb-toolbar-button"
+        @click="toggleGridVisible"
+      >
+        <IconGrid :class="{ 'pb-is-disabled': !gridVisible }" />
+        <div class="pb-tooltip">
+          <span>{{ gridVisible ? 'Grid verstecken' : 'Grid anzeigen' }}</span>
+
+          <ShortcutIndicator meta key-label="G" />
         </div>
       </button>
     </div>
@@ -221,13 +232,15 @@ import IconImport from './../Icons/Import.vue'
 import IconTextureBox from './../Icons/TextureBox.vue'
 import IconOpenInNew from './../Icons/OpenInNew.vue'
 import IconTranslate from './../Icons/Translate.vue'
+import IconGrid from './../Icons/Grid.vue'
 import IconQrCode from './../Icons/QrCode.vue'
 import ShortcutIndicator from './../ShortcutIndicator/index.vue'
 import { PbEditMode, PbMutation } from '../../../types'
 
 const route = useRoute()
 
-const { maskVisible, toggleMaskVisible } = useParagraphsBuilderStore()
+const { maskVisible, toggleMaskVisible, gridVisible, toggleGridVisible } =
+  useParagraphsBuilderStore()
 
 const emit = defineEmits([
   'revert',
@@ -255,6 +268,7 @@ const props = defineProps<{
   isPressingControl: boolean
   isPressingSpace: boolean
   editMode: PbEditMode
+  hasGrid: boolean
 }>()
 
 const menuVisible = ref(false)
@@ -307,6 +321,10 @@ async function onKeyPress(e: KeyboardEvent) {
     e.stopImmediatePropagation()
     e.preventDefault()
     emit('openEntityForm')
+  } else if (e.key === 'g' && (e.ctrlKey || e.metaKey)) {
+    e.stopImmediatePropagation()
+    e.preventDefault()
+    toggleGridVisible()
   }
 }
 

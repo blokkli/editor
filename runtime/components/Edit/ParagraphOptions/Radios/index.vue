@@ -1,7 +1,10 @@
 <template>
   <div
     class="pb-paragraph-options-radios"
-    :class="{ 'pb-is-color': displayAs === 'colors' }"
+    :class="{
+      'pb-is-color': displayAs === 'colors',
+      'pb-is-grid': displayAs === 'grid',
+    }"
   >
     <label v-for="option in mappedOptions">
       <div v-bind="getInputWrapperAttributes(option.value)">
@@ -13,7 +16,12 @@
           :checked="value === option.key"
           @change="$emit('update', option.key)"
         />
-        <span>{{ option.value }}</span>
+        <span v-if="typeof option.value === 'string'" class="pb-is-text">
+          {{ option.value }}
+        </span>
+        <div v-else class="pb-paragraph-options-radios-flex">
+          <div v-for="v in option.value" :style="{ flex: v }" />
+        </div>
       </div>
     </label>
   </div>
@@ -22,7 +30,7 @@
 <script lang="ts" setup>
 const props = defineProps<{
   name: string
-  displayAs?: 'radios' | 'colors'
+  displayAs?: 'radios' | 'colors' | 'grid'
   options: Record<string, string>
   value: string
 }>()

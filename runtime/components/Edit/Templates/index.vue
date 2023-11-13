@@ -103,6 +103,8 @@ async function loadResults(userInput = '') {
     entityType: props.entityType.toUpperCase() as EntityType,
     entityUuid: props.currentEntityUuid,
     bundle: props.bundle,
+    bundleField: props.entityType === 'taxonomy_term' ? 'vid' : 'type',
+    titleField: props.entityType === 'taxonomy_term' ? 'name' : 'title',
     conditions: props.fields.map((v) => {
       return {
         field: v.name,

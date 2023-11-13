@@ -4,6 +4,7 @@
     class="pb-paragraph-options-item"
     v-for="plugin in availableOptions"
     :class="{ 'pb-is-disabled': !editingEnabled }"
+    @keydown.stop
   >
     <div class="pb-tooltip">
       <span>{{ plugin.option.label }}</span>
@@ -22,9 +23,17 @@
       :value="getOptionValue(plugin.property, plugin.option.default)"
       @update="setOptionValue(plugin.property, $event)"
     />
+    <OptionCheckboxes
+      v-else-if="plugin.option.type === 'checkboxes'"
+      :label="plugin.option.label"
+      :options="plugin.option.options"
+      :value="getOptionValue(plugin.property, plugin.option.default)"
+      @update="setOptionValue(plugin.property, $event)"
+    />
     <OptionText
       v-else-if="plugin.option.type === 'text'"
       :label="plugin.option.label"
+      :type="plugin.option.inputType"
       :value="getOptionValue(plugin.property, plugin.option.default)"
       @update="setOptionValue(plugin.property, $event)"
     />
@@ -38,6 +47,7 @@ import {
 } from '#nuxt-paragraphs-builder/definitions'
 import OptionRadios from './Radios/index.vue'
 import OptionCheckbox from './Checkbox/index.vue'
+import OptionCheckboxes from './Checkboxes/index.vue'
 import OptionText from './Text/index.vue'
 import {
   ParagraphDefinitionOption,

@@ -71,7 +71,7 @@ const props = withDefaults(
 )
 
 const isEditing = computed(() => {
-  return props.canEdit && props.uuid && route.query.pbEditing === props.uuid
+  return props.canEdit && !!props.uuid && route.query.pbEditing === props.uuid
 })
 
 const isPreviewing = computed(() => {
