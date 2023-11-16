@@ -625,7 +625,9 @@ function openEntityForm() {
   selectedParagraphs.value = []
   iframeBundle.value = ''
   if (entity.value.editUrl) {
-    modalUrl.value = entity.value.editUrl
+    const prefix = getModalPrefix()
+    const queryParam = getModalQueryParams(prefix)
+    modalUrl.value = entity.value.editUrl + queryParam
   } else {
     setModalUrl(`/${props.entityType}/${entity.value.id}/edit`)
   }
@@ -679,14 +681,21 @@ async function onResolveComment(id: string | number) {
   }
 }
 
-function setModalUrl(path: string, providedLangcode?: string) {
+function getModalPrefix(providedLangcode?: string) {
   const langcode = providedLangcode || currentLanguage.value
-  const prefix =
-    runtimeConfig.langcodeWithoutPrefix &&
+  return runtimeConfig.langcodeWithoutPrefix &&
     runtimeConfig.langcodeWithoutPrefix === langcode
-      ? ''
-      : '/' + langcode
-  const queryParam = `?paragraphsBuilder=true&destination=${prefix}/paragraphs_builder/redirect`
+    ? ''
+    : '/' + langcode
+}
+
+function getModalQueryParams(prefix: string) {
+  return `?paragraphsBuilder=true&destination=${prefix}/paragraphs_builder/redirect`
+}
+
+function setModalUrl(path: string, providedLangcode?: string) {
+  const prefix = getModalPrefix(providedLangcode)
+  const queryParam = getModalQueryParams(prefix)
   modalUrl.value = prefix + path + queryParam
 }
 
@@ -1336,14 +1345,9 @@ function setClipboard(text: string) {
   const blob = new Blob([text], { type })
   const data = [new ClipboardItem({ [type]: blob })]
 
-  navigator.clipboard.write(data).then(
-    () => {
-      console.log('SUCCESS')
-    },
-    () => {
-      console.log('FAIL')
-    },
-  )
+  try {
+    navigator.clipboard.write(data)
+  } catch (_e) {}
 }
 
 function copySelectedParagraphToClipboard(uuid: string) {
@@ -1367,7 +1371,6 @@ function onKeyDown(e: KeyboardEvent) {
     }
   } else if (e.key === 'c') {
     if (selectedParagraph.value) {
-      e.preventDefault()
       copySelectedParagraphToClipboard(selectedParagraph.value.uuid)
     }
   }
