@@ -13,50 +13,9 @@
         Mir zuweisen
       </button>
     </div>
-    <div class="pb-sidebar" v-if="data" v-show="visibleSidebar">
-      <PaneHistory
-        v-if="visibleSidebar === 'history'"
-        :mutations="mutations"
-        :current-index="currentMutationIndex"
-        :editing-enabled="canEdit"
-        @set-history-index="setHistoryIndex"
-      />
-      <PaneLibrary
-        v-else-if="availableFeatures.library && visibleSidebar === 'library'"
-        :mutations="mutations"
-        :current-index="currentMutationIndex"
-        @set-history-index="setHistoryIndex"
-      />
-      <PaneComments
-        v-else-if="visibleSidebar === 'comments'"
-        :comments="comments"
-      />
-      <PaneStructure
-        v-else-if="visibleSidebar === 'structure'"
-        :all-types="data.allTypes"
-      />
-      <PaneErrors
-        v-else-if="visibleSidebar === 'errors'"
-        :violations="violations"
-      />
-      <PaneClipboard
-        v-show="visibleSidebar === 'clipboard'"
-        :all-types="data.allTypes"
-        @paste="visibleSidebar = 'clipboard'"
-      />
-    </div>
-    <transition name="pb-slide-in" :duration="200">
-      <DrupalFrame
-        v-if="modalUrl && data?.allTypes"
-        :url="modalUrl"
-        :all-types="data.allTypes"
-        :bundle="iframeBundle"
-        :translation-label="translationLabel"
-        @close="modalClose"
-        @submit="modalSubmit"
-        @submit-entity-form="modalSubmitEntityForm"
-      />
-    </transition>
+
+    <div class="pb-sidebar" id="pb-sidebar-content" v-show="visibleSidebar" />
+
     <AvailableParagraphs
       @wheel.stop=""
       v-if="data && selectableParagraphTypes.length"
@@ -65,98 +24,23 @@
       :selectable="selectableParagraphTypes"
     />
 
-    <Preview v-if="showPreview" />
+    <Toolbar />
 
-    <div v-if="!isInitializing" class="pb pb-top pb-control">
-      <Toolbar
-        @revert="showRevertDialog = true"
-        @undo="undo"
-        @redo="redo"
-        @publish="publish"
-        @close="close"
-        @toggle-sidebar="toggleSidebar($event)"
-        @toggle-preview="showPreview = !showPreview"
-        @open-entity-form="openEntityForm"
-        @show-templates="showTemplates = true"
-        @show-translations="openTranslations"
-        @show-qr-code="showQrCode"
-        :editing-enabled="canEdit"
-        :comments-enabled="availableFeatures.comment"
-        :library-enabled="availableFeatures.library"
-        :is-pressing-control="isPressingControl"
-        :is-pressing-space="isPressingSpace"
-        :current-index="currentMutationIndex"
-        :mutations="mutations"
-        :active-sidebar="visibleSidebar"
-        :show-preview="showPreview"
-        :selected-paragraph-uuid="selectedParagraph?.uuid"
-        :violation-count="violations.length"
-        :modal-url="modalUrl"
-        :edit-mode="editMode"
-        :has-grid="hasGrid"
-      >
-        <template #title>
-          <div class="pb-toolbar-title">
-            <div>
-              <span
-                class="pb-status-indicator"
-                :class="{
-                  'pb-is-success': entity.status && !mutations.length,
-                  'pb-is-warning': entity.status && mutations.length,
-                }"
-              ></span>
-              <strong>{{ entity.label }}</strong>
-              <span>&nbsp;{{ entity.bundleLabel }}</span>
-            </div>
-          </div>
-          <div class="pb-tooltip">
-            <span v-if="entity.status && !mutations.length"
-              >Seite ist publiziert</span
-            >
-            <span v-else-if="entity.status && mutations.length"
-              >Seite ist publiziert (Änderungen ausstehend)</span
-            >
-            <span v-else>Seite ist nicht publiziert</span>
-          </div>
-        </template>
-        <template #afterTitle>
-          <ToolbarTranslationState
-            v-bind="translationState"
-            :entity-translations="entity.translations"
-            v-model="currentLanguage"
-            @translate-entity="onTranslateEntity($event)"
-          />
-        </template>
-        <template #right>
-          <ToolbarCanvas
-            :is-pressing-space="isPressingSpace"
-            :is-pressing-control="isPressingControl"
-            :preview-open="showPreview"
-            :sidebar-open="!!(visibleSidebar || modalUrl)"
-          />
-        </template>
-      </Toolbar>
-    </div>
     <Actions
-      v-if="selectedParagraph && data"
+      v-if="data"
       :selected="selectedParagraph"
       :paragraph-type="selectedParagraphType"
       :is-dragging="isDragging"
       :conversions="data.conversions"
       :all-types="data.allTypes"
       :allowed-types="allowedTypesInList"
-      :can-comment="availableFeatures.comment"
-      :library-enabled="availableFeatures.library"
       :edit-mode="editMode"
-      @delete="deleteParagraph(selectedParagraph.uuid)"
-      @duplicate="duplicateParagraph(selectedParagraph.uuid)"
-      @edit="editParagraph(selectedParagraph.uuid)"
-      @translate="editParagraph(selectedParagraph.uuid)"
-      @convert="convertParagraph(selectedParagraph.uuid, $event)"
-      @make-reusable="makeParagraphReusable(selectedParagraph.uuid, $event)"
-      @add-comment="onAddComment(selectedParagraph.uuid, $event)"
+      @delete="deleteParagraph(selectedParagraph?.uuid)"
+      @duplicate="duplicateParagraph(selectedParagraph?.uuid)"
+      @convert="convertParagraph(selectedParagraph?.uuid, $event)"
     >
       <ParagraphOptions
+        v-if="selectedParagraph"
         :key="'options_' + selectedParagraph.uuid"
         :uuid="selectedParagraph.uuid"
         :paragraph-type="selectedParagraph.paragraphType"
@@ -168,6 +52,7 @@
         :editing-enabled="editMode === 'editing'"
       />
     </Actions>
+
     <MultiSelect
       v-if="!isPressingSpace && canEdit && !isTranslation"
       :is-pressing-control="isPressingControl"
@@ -175,98 +60,72 @@
       @select-single="onSelectParagraph"
       @select-multiple="onSelectMultiple"
     />
+
     <Selection
       v-if="selectedParagraphs.length && canEdit"
       :items="selectedParagraphs"
       :is-pressing-control="isPressingControl"
       @delete="deleteSelectedParagraphs"
     />
-    <CommentsOverlay
-      v-if="availableFeatures.comment"
-      :comments="comments"
-      @add-comment="onAddComment($event.uuid, $event.body)"
-      @resolve-comment="onResolveComment($event)"
-    />
-    <FieldAreaOverlay
-      :active-field-key="activeFieldKey"
-      @select="activeFieldKey = $event"
-    />
 
     <Messages />
 
     <DraggingOverlay />
-
-    <transition appear name="pb-slide-up" :duration="900">
-      <TemplatesDialog
-        :entity-type="entityType"
-        :bundle="bundle"
-        :current-entity-uuid="entityUuid"
-        :fields="mutatedFields"
-        v-if="showTemplates && possibleFieldNames.length"
-        @confirm="copyFromExisting($event.sourceUuid, $event.fields)"
-        @cancel="showTemplates = false"
-      />
-    </transition>
-    <transition appear name="pb-slide-up" :duration="900">
-      <PbDialog
-        v-if="showRevertDialog"
-        title="Änderungen unwiderruflich verwerfen"
-        lead="Damit werden alle Änderungen gelöscht und der aktuell publizierte Stand wiederhergestellt. Diese Aktion kann nicht rückgängig gemacht werden."
-        submit-label="Änderungen verwerfen"
-        is-danger
-        @submit="revertAllChanges"
-        @cancel="showRevertDialog = false"
-      />
-    </transition>
-
-    <transition appear name="pb-slide-up" :duration="900">
-      <PbDialog
-        v-if="dialogQrCode && previewGrantUrl"
-        title="Vorschau mit Smartphone"
-        lead="Scannen Sie den QR-Code mit Ihrem Smartphone um die Vorschau zu öffnen."
-        submit-label="Schliessen"
-        is-danger
-        hide-buttons
-        :width="490"
-        @submit="dialogQrCode = false"
-        @cancel="dialogQrCode = false"
-      >
-        <QrCode :url="previewGrantUrl" />
-      </PbDialog>
-    </transition>
   </Teleport>
-  <div
-    v-if="hasGrid && gridVisible"
-    class="pb-grid-overlay"
-    v-html="runtimeConfig.gridMarkup"
-  />
+
+  <template v-if="!isInitializing">
+    <FeatureHistory />
+    <FeatureLibrary v-if="availableFeatures.library" />
+    <FeatureComments v-if="availableFeatures.comment" />
+    <FeatureClipboard />
+    <FeatureStructure />
+    <FeatureValidations />
+    <FeatureGrid v-if="runtimeConfig.gridMarkup" />
+    <FeatureMask />
+    <FeatureCanvas />
+    <FeaturePreview />
+    <FeatureEntityTitle />
+    <FeatureDrupalFrame />
+    <FeaturePublish />
+    <FeatureRevert />
+    <FeatureTranslations />
+    <FeatureImportExisting />
+    <FeatureExit />
+    <FeatureFieldAreas />
+  </template>
+
   <slot></slot>
 </template>
 
 <script lang="ts" setup>
 import Toolbar from './Edit/Toolbar/index.vue'
-import DrupalFrame from './Edit/DrupalFrame/index.vue'
 import AvailableParagraphs from './Edit/AvailableParagraphs/index.vue'
 import IconSpinner from './Edit/Icons/Spinner.vue'
 import Actions from './Edit/ParagraphActions.vue'
 import MultiSelect from './Edit/MultiSelect/index.vue'
-import CommentsOverlay from './Edit/CommentsOverlay/index.vue'
-import PaneClipboard from './Edit/Sidebar/Panes/Clipboard/index.vue'
-import PaneHistory from './Edit/Sidebar/Panes/History/index.vue'
-import PaneLibrary from './Edit/Sidebar/Panes/Library/index.vue'
-import PaneStructure from './Edit/Sidebar/Panes/Structure/index.vue'
-import PaneComments from './Edit/Sidebar/Panes/Comments/index.vue'
-import PaneErrors from './Edit/Sidebar/Panes/Errors/index.vue'
 import Selection from './Edit/MultiSelect/Selection/index.vue'
-import Preview from './Edit/Preview/index.vue'
-import ToolbarCanvas from './Edit/Toolbar/Canvas/index.vue'
-import ToolbarTranslationState from './Edit/Toolbar/TranslationState/index.vue'
-import TemplatesDialog from './Edit/Templates/index.vue'
-import FieldAreaOverlay from './Edit/FieldAreaOverlay/index.vue'
 import DraggingOverlay from './Edit/DraggingOverlay/index.vue'
 import Messages from './Edit/Messages/index.vue'
-import PbDialog from './Edit/Dialog/index.vue'
-import QrCode from './Edit/QrCode/index.vue'
+
+import FeatureLibrary from './Edit/Features/Library/index.vue'
+import FeatureClipboard from './Edit/Features/Clipboard/index.vue'
+import FeatureStructure from './Edit/Features/Structure/index.vue'
+import FeatureHistory from './Edit/Features/History/index.vue'
+import FeatureValidations from './Edit/Features/Validations/index.vue'
+import FeatureComments from './Edit/Features/Comments/index.vue'
+import FeatureGrid from './Edit/Features/Grid/index.vue'
+import FeatureMask from './Edit/Features/Mask/index.vue'
+import FeatureCanvas from './Edit/Features/Canvas/index.vue'
+import FeaturePreview from './Edit/Features/Preview/index.vue'
+import FeatureEntityTitle from './Edit/Features/EntityTitle/index.vue'
+import FeatureDrupalFrame from './Edit/Features/DrupalFrame/index.vue'
+import FeatureTranslations from './Edit/Features/Translations/index.vue'
+import FeatureRevert from './Edit/Features/Revert/index.vue'
+import FeatureImportExisting from './Edit/Features/ImportExisting/index.vue'
+import FeatureExit from './Edit/Features/Exit/index.vue'
+import FeaturePublish from './Edit/Features/Publish/index.vue'
+import FeatureFieldAreas from './Edit/Features/FieldAreas/index.vue'
+
 import ParagraphOptions, {
   UpdateParagraphOptionEvent,
 } from './Edit/ParagraphOptions/index.vue'
@@ -276,18 +135,16 @@ import {
   AddNewParagraphEvent,
   AddClipboardParagraphEvent,
   DraggableExistingParagraphItem,
-  EditParagraphEvent,
   MoveMultipleParagraphsEvent,
   AddReusableParagraphEvent,
   MutatedParagraphOptions,
-  DraggableStartEvent,
+  MakeReusableEvent,
 } from './Edit/types'
 import { definitions } from '#nuxt-paragraphs-builder/definitions'
 import '#nuxt-paragraphs-builder/styles'
 import {
   PbMutatedField,
   PbAllowedBundle,
-  PbComment,
   PbEditState,
   PbMutation,
   PbViolation,
@@ -331,11 +188,8 @@ const selectedParagraph = ref<DraggableExistingParagraphItem | null>(null)
 const selectedParagraphs = ref<DraggableExistingParagraphItem[]>([])
 const activeFieldKey = ref('')
 const violations = ref<PbViolation[]>([])
-const isEditingParagraph = ref(false)
 const isDragging = ref(false)
 const refreshTrigger = ref(0)
-const modalUrl = ref('')
-const iframeBundle = ref('')
 const currentMutationIndex = ref(-1)
 const mutations = ref<PbMutation[]>([])
 const visibleSidebar = ref('')
@@ -343,33 +197,8 @@ const isLoading = ref(false)
 const isInitializing = ref(true)
 const isPressingControl = ref(false)
 const isPressingSpace = ref(false)
-const showPreview = ref(false)
 const showTemplates = ref(false)
-const showRevertDialog = ref(false)
 const previewGrantUrl = ref('')
-const maskVisible = ref(window.localStorage.getItem('_pb_mask_visible') === '1')
-const gridVisible = ref(window.localStorage.getItem('_pb_grid_visible') === '1')
-
-const hasGrid = computed(() => !!runtimeConfig.gridMarkup)
-
-const pbStore = {
-  maskVisible,
-  toggleMaskVisible() {
-    maskVisible.value = !maskVisible.value
-    window.localStorage.setItem(
-      '_pb_mask_visible',
-      maskVisible.value ? '1' : '0',
-    )
-  },
-  gridVisible,
-  toggleGridVisible() {
-    gridVisible.value = !gridVisible.value
-    window.localStorage.setItem(
-      '_pb_grid_visible',
-      gridVisible.value ? '1' : '0',
-    )
-  },
-}
 
 const currentLanguage = computed({
   get() {
@@ -394,19 +223,12 @@ const currentLanguage = computed({
     loadState(language)
   },
 })
+
 const canEdit = computed(() => currentUserIsOwner.value)
 const isTranslation = computed(
   () => currentLanguage.value !== translationState.value.sourceLanguage,
 )
-const translationLabel = computed(() => {
-  if (!isTranslation.value) {
-    return
-  }
 
-  return translationState.value.availableLanguages.find(
-    (v) => v.id === currentLanguage.value,
-  )?.name
-})
 const editMode = computed<PbEditMode>(() => {
   if (!canEdit.value) {
     return 'readonly'
@@ -417,7 +239,7 @@ const editMode = computed<PbEditMode>(() => {
 
   return 'editing'
 })
-const hasSidebar = computed(() => !!visibleSidebar.value || !!modalUrl.value)
+const hasSidebar = computed(() => !!visibleSidebar.value)
 const selectedParagraphType = computed<PbType | undefined>(
   () =>
     data.value?.allTypes.find(
@@ -433,9 +255,7 @@ const contextVariables = computed(() => ({
 const hasNoParagraphs = computed(
   () => !mutatedFields.value.find((v) => v.field.list?.length),
 )
-const possibleFieldNames = computed<string[]>(() => {
-  return mutatedFields.value.map((v) => v.name)
-})
+
 const allowedTypes = computed<PbAllowedBundle[]>(() => {
   return data.value?.allowedTypes || []
 })
@@ -556,8 +376,6 @@ const generallyAvailableParagraphTypes = computed(() => {
   )
 })
 
-provide('paragraphsBuilderStore', pbStore)
-
 const activeField = computed(() => {
   if (activeFieldKey.value) {
     const el = document.querySelector(
@@ -575,18 +393,6 @@ const activeField = computed(() => {
     }
   }
 })
-
-function openTranslations() {
-  setModalUrl(
-    `/paragraphs_builder/${props.entityType}/${props.entityUuid}/translate-paragraphs`,
-  )
-}
-
-const dialogQrCode = ref(false)
-
-function showQrCode() {
-  dialogQrCode.value = true
-}
 
 function modulo(n: number, m: number) {
   return ((n % m) + m) % m
@@ -620,19 +426,6 @@ const props = defineProps<{
   bundle: string
 }>()
 
-function openEntityForm() {
-  selectedParagraph.value = null
-  selectedParagraphs.value = []
-  iframeBundle.value = ''
-  if (entity.value.editUrl) {
-    const prefix = getModalPrefix()
-    const queryParam = getModalQueryParams(prefix)
-    modalUrl.value = entity.value.editUrl + queryParam
-  } else {
-    setModalUrl(`/${props.entityType}/${entity.value.id}/edit`)
-  }
-}
-
 function onMultiSelectStart() {
   selectedParagraph.value = null
   selectedParagraphs.value = []
@@ -640,8 +433,6 @@ function onMultiSelectStart() {
 
 function toggleSidebar(key: string) {
   removeDroppedElements()
-  modalUrl.value = ''
-  iframeBundle.value = ''
   if (visibleSidebar.value === key) {
     visibleSidebar.value = ''
   } else {
@@ -658,45 +449,6 @@ interface MutationResponseLike<T> {
       }
     }
   }
-}
-
-async function onAddComment(uuid: string, body: string) {
-  const result = await useGraphqlMutation('paragraphsBuilderAddComment', {
-    ...contextVariables.value,
-    targetUuid: uuid,
-    body,
-  })
-  if (result.data.state?.action) {
-    comments.value = result.data.state.action
-  }
-}
-
-async function onResolveComment(id: string | number) {
-  const result = await useGraphqlMutation('paragraphsBuilderResolveComment', {
-    ...contextVariables.value,
-    id: String(id),
-  })
-  if (result.data.state?.action) {
-    comments.value = result.data.state.action
-  }
-}
-
-function getModalPrefix(providedLangcode?: string) {
-  const langcode = providedLangcode || currentLanguage.value
-  return runtimeConfig.langcodeWithoutPrefix &&
-    runtimeConfig.langcodeWithoutPrefix === langcode
-    ? ''
-    : '/' + langcode
-}
-
-function getModalQueryParams(prefix: string) {
-  return `?paragraphsBuilder=true&destination=${prefix}/paragraphs_builder/redirect`
-}
-
-function setModalUrl(path: string, providedLangcode?: string) {
-  const prefix = getModalPrefix(providedLangcode)
-  const queryParam = getModalQueryParams(prefix)
-  modalUrl.value = prefix + path + queryParam
 }
 
 function lockBody() {
@@ -754,43 +506,7 @@ async function addNewParagraph(e: AddNewParagraphEvent) {
         type: e.type,
       }),
     )
-    return
   }
-
-  iframeBundle.value = e.type
-  setModalUrl(
-    '/' +
-      [
-        'paragraphs_builder',
-        props.entityType,
-        props.entityUuid,
-        'add',
-        e.type,
-        e.host.type,
-        e.host.uuid,
-        e.host.fieldName,
-        e.afterUuid,
-      ]
-        .filter(Boolean)
-        .join('/'),
-  )
-}
-
-function onTranslateEntity(langcode: string) {
-  selectedParagraph.value = null
-  selectedParagraphs.value = []
-  iframeBundle.value = ''
-  setModalUrl(
-    `/${props.entityType}/${entity.value.id}/translations/add/${translationState.value.sourceLanguage}/${langcode}`,
-    langcode,
-  )
-}
-
-function editParagraph(uuid: string) {
-  iframeBundle.value = selectedParagraph.value?.paragraphType || ''
-  setModalUrl(
-    `/paragraphs_builder/${props.entityType}/${props.entityUuid}/edit/${uuid}`,
-  )
 }
 
 function onDraggingStart() {
@@ -1000,25 +716,15 @@ async function loadAvailableFeatures() {
 
 function modalClose() {
   removeDroppedElements()
-  modalUrl.value = ''
-  isEditingParagraph.value = false
   unlockBody()
 }
 
-async function modalSubmit() {
+async function onReloadState() {
   removeDroppedElements()
-  modalUrl.value = ''
-  visibleSidebar.value = ''
-  isEditingParagraph.value = false
-  iframeBundle.value = ''
   await loadState(currentLanguage.value)
 }
 
-async function modalSubmitEntityForm() {
-  modalUrl.value = ''
-  visibleSidebar.value = ''
-  isEditingParagraph.value = false
-  iframeBundle.value = ''
+async function onReloadEntity() {
   await refreshNuxtData()
   await loadState(currentLanguage.value)
 }
@@ -1070,27 +776,6 @@ function onSelectParagraphAdditional(item: DraggableExistingParagraphItem) {
   }
   selectedParagraphs.value.push(item)
   unselectParagraph()
-}
-
-function onEditParagraph(e: EditParagraphEvent) {
-  if (!canEdit.value) {
-    return
-  }
-  const definition = definitions.find((v) => v.bundle === e.bundle)
-  if (definition?.disableEdit) {
-    return
-  }
-  if (isTranslation.value) {
-    const type = data.value?.allTypes.find((v) => v.id === e.bundle)
-    if (!type) {
-      return
-    }
-
-    if (!type.isTranslatable) {
-      return
-    }
-  }
-  editParagraph(e.uuid)
 }
 
 async function deleteParagraph(uuid: string | null | undefined) {
@@ -1154,18 +839,14 @@ async function duplicateParagraph(uuid: string | null | undefined) {
   )
 }
 
-async function makeParagraphReusable(
-  uuid: string | null | undefined,
-  label: string,
-) {
-  if (!uuid || !canEdit.value) {
+async function makeParagraphReusable(e: MakeReusableEvent) {
+  if (!e.uuid || !canEdit.value) {
     return
   }
   await mutateWithLoadingState(
     useGraphqlMutation('makeParagraphReusable', {
       ...contextVariables.value,
-      uuid,
-      label,
+      ...e,
     }),
     'Der Abschnitt konnte nicht wiederverwendbar gemacht werden.',
   )
@@ -1201,7 +882,6 @@ async function revertAllChanges() {
     'Änderungen konnten nicht verworfen werden.',
     'Alle Änderungen wurden verworfen.',
   )
-  showRevertDialog.value = false
 }
 
 function onWindowMouseDown(e: MouseEvent) {
@@ -1229,11 +909,10 @@ function onWindowMouseDown(e: MouseEvent) {
       activeFieldKey.value = ''
     }
   }
-  isEditingParagraph.value = false
   unselectParagraph()
 }
 
-async function close() {
+function onExitEditor() {
   window.location.href = route.path
 }
 
@@ -1250,7 +929,7 @@ async function copyFromExisting(sourceUuid: string, fields: string[]) {
   showTemplates.value = false
 }
 
-async function publish() {
+async function onPublish() {
   await mutateWithLoadingState(
     useGraphqlMutation('paragraphsBuilderPublish', contextVariables.value),
     'Änderungen konnten nicht publiziert werden.',
@@ -1270,7 +949,7 @@ async function redo() {
   )
 }
 
-async function setHistoryIndex(index: number) {
+async function setMutationIndex(index: number) {
   await mutateWithLoadingState(
     useGraphqlMutation('paragraphsBuilderSetHistoryIndex', {
       ...contextVariables.value,
@@ -1288,15 +967,6 @@ async function takeOwnership() {
     'Fehler beim Zuweisen.',
     'Sie sind nun der Besitzer.',
   )
-}
-
-const comments = ref<PbComment[]>([])
-
-async function loadComments() {
-  comments.value = await useGraphqlQuery('paragraphsBuilderComments', {
-    entityType: props.entityType.toUpperCase() as any,
-    entityUuid: props.entityUuid,
-  }).then((v) => v.data.state?.comments || [])
 }
 
 /**
@@ -1374,6 +1044,12 @@ function onKeyDown(e: KeyboardEvent) {
       copySelectedParagraphToClipboard(selectedParagraph.value.uuid)
     }
   }
+
+  eventBus.emit('keyPressed', {
+    code: e.key,
+    shift: e.shiftKey,
+    meta: e.ctrlKey,
+  })
 }
 
 function onKeyUp() {
@@ -1390,14 +1066,38 @@ useHead({
   },
 })
 
+const activeViewOptions = ref<string[]>([])
+const toggleViewOption = (id: string) => {
+  if (activeViewOptions.value.includes(id)) {
+    activeViewOptions.value = activeViewOptions.value.filter((v) => v !== id)
+  } else {
+    activeViewOptions.value.push(id)
+  }
+
+  localStorage.setItem(
+    '_pb_active_view_options',
+    JSON.stringify(activeViewOptions.value),
+  )
+}
+
+function restoreActiveViewOptions() {
+  try {
+    const data = localStorage.getItem('_pb_active_view_options')
+    if (data) {
+      const items = JSON.parse(data)
+      if (items && Array.isArray(items)) {
+        activeViewOptions.value = items
+      }
+    }
+  } catch (_e) {}
+}
+
 onMounted(async () => {
+  restoreActiveViewOptions()
   // document.documentElement.classList.add('pb-html-root')
   // document.body.classList.add('pb-body')
   await loadAvailableFeatures()
   await loadState(currentLanguage.value)
-  if (availableFeatures.value.comment) {
-    loadComments()
-  }
   document.addEventListener('keydown', onKeyDown)
   document.addEventListener('keyup', onKeyUp)
   document.body.addEventListener('mousedown', onWindowMouseDown)
@@ -1405,12 +1105,19 @@ onMounted(async () => {
   eventBus.on('addReusableParagraph', addReusableParagraph)
   eventBus.on('select', onSelectParagraph)
   eventBus.on('selectAdditional', onSelectParagraphAdditional)
-  eventBus.on('editParagraph', onEditParagraph)
   eventBus.on('addClipboardParagraph', addClipboardParagraph)
   eventBus.on('moveParagraph', moveParagraph)
   eventBus.on('moveMultipleParagraphs', moveMultipleParagraphs)
   eventBus.on('draggingStart', onDraggingStart)
   eventBus.on('draggingEnd', onDraggingEnd)
+  eventBus.on('makeReusable', makeParagraphReusable)
+  eventBus.on('undo', undo)
+  eventBus.on('redo', redo)
+  eventBus.on('reloadState', onReloadState)
+  eventBus.on('reloadEntity', onReloadEntity)
+  eventBus.on('exitEditor', onExitEditor)
+  eventBus.on('revertAllChanges', revertAllChanges)
+  eventBus.on('publish', onPublish)
 
   // Show the import dialog when there are no paragraphs yet and no mutations.
   if (hasNoParagraphs.value && !mutations.value.length) {
@@ -1428,12 +1135,19 @@ onUnmounted(() => {
   eventBus.off('addReusableParagraph', addReusableParagraph)
   eventBus.off('select', onSelectParagraph)
   eventBus.off('selectAdditional', onSelectParagraphAdditional)
-  eventBus.off('editParagraph', onEditParagraph)
   eventBus.off('addClipboardParagraph', addClipboardParagraph)
   eventBus.off('moveParagraph', moveParagraph)
   eventBus.off('moveMultipleParagraphs', moveMultipleParagraphs)
   eventBus.off('draggingStart', onDraggingStart)
   eventBus.off('draggingEnd', onDraggingEnd)
+  eventBus.off('makeReusable', makeParagraphReusable)
+  eventBus.off('undo', undo)
+  eventBus.off('redo', redo)
+  eventBus.off('reloadState', onReloadState)
+  eventBus.off('reloadEntity', onReloadEntity)
+  eventBus.off('exitEditor', onExitEditor)
+  eventBus.off('revertAllChanges', revertAllChanges)
+  eventBus.off('publish', onPublish)
 
   // document.documentElement.classList.remove('pb-html-root')
   // document.body.classList.remove('pb-body')
@@ -1444,6 +1158,43 @@ provide('isEditing', true)
 provide('paragraphsBuilderEditMode', editMode)
 provide('paragraphsBuilderAllowedTypes', allowedTypes)
 provide('paragraphsBuilderEditContext', { eventBus, mutatedParagraphOptions })
+
+const allTypes = computed(() => data.value?.allTypes || [])
+
+const pbStore = {
+  entityType: props.entityType,
+  entityUuid: props.entityUuid,
+  entityBundle: props.bundle,
+  showTemplates,
+  canEdit,
+  mutatedFields: readonly(mutatedFields),
+  availableFeatures: readonly(availableFeatures),
+  currentMutationIndex: readonly(currentMutationIndex),
+  mutations: readonly(mutations),
+  activeSidebar: readonly(visibleSidebar),
+  toggleSidebar,
+  showSidebar: (id: string) => (visibleSidebar.value = id),
+  allTypes,
+  violations: readonly(violations),
+  setMutationIndex,
+  eventBus,
+  selectedParagraph: readonly(selectedParagraph),
+  allowedTypesInList,
+  activeViewOptions,
+  toggleViewOption,
+  runtimeConfig,
+  activeFieldKey: readonly(activeFieldKey),
+  setActiveFieldKey: (key: string) => (activeFieldKey.value = key),
+  isPressingControl: readonly(isPressingControl),
+  isPressingSpace: readonly(isPressingSpace),
+  previewGrantUrl: readonly(previewGrantUrl),
+  entity: readonly(entity),
+  translationState: readonly(translationState),
+  currentLanguage,
+  editMode: readonly(editMode),
+}
+
+provide('paragraphsBuilderStore', pbStore)
 </script>
 
 <style lang="postcss">

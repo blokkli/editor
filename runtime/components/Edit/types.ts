@@ -1,6 +1,6 @@
 import type { Ref } from 'vue'
 import type { Emitter } from 'mitt'
-import { PbMutatedField } from '../../types'
+import { PbAvailableLanguage, PbMutatedField } from '../../types'
 
 export interface DraggableHostData {
   type: string
@@ -138,10 +138,33 @@ export type DraggableStartEvent = {
   offsetY: number
 }
 
+export type MakeReusableEvent = {
+  label: string
+  uuid: string
+}
+
+export type KeyPressedEvent = {
+  code: string
+  meta: boolean
+  shift: boolean
+}
+
+export type TranslateParagraphEvent = {
+  uuid: string
+  language: PbAvailableLanguage
+}
+
+export type ImportFromExistingEvent = {
+  sourceUuid: string
+  sourceFields: string[]
+}
+
 export type ParagraphsBuilderEvents = {
   select: DraggableExistingParagraphItem
   selectAdditional: DraggableExistingParagraphItem
   editParagraph: EditParagraphEvent
+  translateParagraph: TranslateParagraphEvent
+  batchTranslate: undefined
   removeGhosts: undefined
   draggingStart: DraggableStartEvent
   draggingEnd: undefined
@@ -153,6 +176,19 @@ export type ParagraphsBuilderEvents = {
   updateMutatedFields: UpdateMutatedFieldsEvent
   animationFrame: AnimationFrameEvent
   message: PbMessage
+  makeReusable: MakeReusableEvent
+  undo: undefined
+  redo: undefined
+  keyPressed: KeyPressedEvent
+  editEntity: undefined
+  translateEntity: string
+  reloadState: undefined
+  reloadEntity: undefined
+  revertAllChanges: undefined
+  closeMenu: undefined
+  importFromExisting: ImportFromExistingEvent
+  exitEditor: undefined
+  publish: undefined
 }
 
 export type ParagraphsBuilderEventBus = Emitter<ParagraphsBuilderEvents>

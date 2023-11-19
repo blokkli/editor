@@ -1,6 +1,6 @@
 <template>
   <slot :items="filteredList"></slot>
-  <template
+  <ParagraphsList
     v-if="
       isEditing &&
       canEdit &&
@@ -9,24 +9,21 @@
       fieldConfig.name &&
       entity?.entityTypeId
     "
-  >
-    <ParagraphsList
-      :field-config="fieldConfig"
-      :list="filteredList"
-      :entity="entity"
-      :class="[attrs.class, listClass]"
-      :is-nested="isNested"
-      class="field-paragraphs pb-field-paragraphs"
-      :tag="tag"
-    />
-  </template>
+    :field-config="fieldConfig"
+    :list="filteredList"
+    :entity="entity"
+    :class="[attrs.class, listClass]"
+    :is-nested="isNested"
+    class="field-paragraphs pb-field-paragraphs"
+    :tag="tag"
+  />
   <component
     v-else-if="!editOnly"
     :is="tag"
     :class="[
       attrs.class,
       { 'pb-field-paragraphs': canEdit && !isNested && !isPreview },
-      listClass
+      listClass,
     ]"
     class="field-paragraphs"
     :data-field-key="fieldKey"

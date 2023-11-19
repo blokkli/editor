@@ -1,8 +1,64 @@
+import { WritableComputedRef } from 'nuxt/dist/app/compat/capi'
+import { DraggableExistingParagraphItem } from '../components/Edit/types'
+import { eventBus } from './../components/Edit/eventBus'
+
 export interface PbStore {
-  maskVisible: globalThis.Ref<boolean>
-  toggleMaskVisible: () => void
-  gridVisible: globalThis.Ref<boolean>
-  toggleGridVisible: () => void
+  entityType: string
+  entityUuid: string
+  entityBundle: string
+  showTemplates: globalThis.Ref<boolean>
+  showRevertDialog: globalThis.Ref<boolean>
+  canEdit: globalThis.ComputedRef<boolean>
+  currentMutationIndex: Readonly<globalThis.Ref<number>>
+  setMutationIndex: (index: number) => void
+
+  availableFeatures: Readonly<
+    globalThis.Ref<{
+      comment: boolean
+      conversion: boolean
+      duplicate: boolean
+      library: boolean
+    }>
+  >
+
+  mutations: Readonly<globalThis.Ref<PbMutation[]>>
+
+  activeSidebar: Readonly<globalThis.Ref<string>>
+  toggleSidebar: (id: string) => void
+  showSidebar: (id: string) => void
+  allTypes: globalThis.ComputedRef<PbType[]>
+  violations: globalThis.ComputedRef<PbViolation[]>
+  eventBus: typeof eventBus
+
+  selectedParagraph?: Readonly<
+    globalThis.Ref<DraggableExistingParagraphItem | null>
+  >
+
+  allowedTypesInList: globalThis.ComputedRef<string[]>
+
+  activeViewOptions: Readonly<globalThis.Ref<string[]>>
+  toggleViewOption: (id: string) => void
+
+  runtimeConfig: {
+    disableLibrary: boolean
+    gridMarkup: string
+    langcodeWithoutPrefix: string
+  }
+
+  activeFieldKey: Readonly<globalThis.Ref<string>>
+  setActiveFieldKey: (key: string) => void
+
+  isPressingControl: Readonly<globalThis.Ref<boolean>>
+  isPressingSpace: Readonly<globalThis.Ref<boolean>>
+  previewGrantUrl: Readonly<globalThis.Ref<string>>
+  entity: Readonly<globalThis.Ref<PbEditEntity>>
+  translationState: Readonly<globalThis.Ref<PbTranslationState>>
+
+  currentLanguage: WritableComputedRef<string>
+
+  editMode: Readonly<globalThis.Ref<PbEditMode>>
+
+  mutatedFields: Readonly<globalThis.Ref<PbMutatedField[]>>
 }
 
 export type StringBoolean = '0' | '1'

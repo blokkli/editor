@@ -1,5 +1,5 @@
 <template>
-  <div class="pb pb-paragraph-actions pb-control">
+  <div v-show="selected" class="pb pb-paragraph-actions pb-control">
     <div :style="styleSize" class="pb-paragraph-actions-overlay" />
     <div
       v-if="!isDragging"
@@ -43,7 +43,7 @@
           </div>
         </div>
       </div>
-      <div class="pb-paragraph-actions-buttons">
+      <div class="pb-paragraph-actions-buttons" id="pb-paragraph-actions">
         <button
           v-if="editMode === 'translating'"
           @click="$emit('translate')"
@@ -76,16 +76,6 @@
             <ShortcutIndicator meta key-label="D" />
           </div>
         </button>
-        <button
-          v-if="libraryEnabled && editingEnabled"
-          @click="showReusableDialog = true"
-          :disabled="!canMakeReusable"
-        >
-          <IconReusable />
-          <div class="pb-tooltip">
-            <span>Zur Bibliothek hinzufügen</span>
-          </div>
-        </button>
         <button v-if="editingEnabled" @click="$emit('delete')">
           <IconDelete />
           <div class="pb-tooltip">
@@ -93,55 +83,21 @@
             <ShortcutIndicator key-label="DEL" />
           </div>
         </button>
-        <div v-if="canComment" class="pb-paragraph-actions-comment">
-          <button
-            @click="showAddComment = !showAddComment"
-            :class="{ 'pb-is-active': showAddComment }"
-          >
-            <IconCommentAdd />
-            <div class="pb-tooltip">
-              <span>Kommentieren</span>
-            </div>
-          </button>
-        </div>
       </div>
-      <div v-if="showAddComment" class="pb-paragraph-actions-comment-dropdown">
-        <label for="comment_body" class="pb-form-label">Kommentar</label>
-        <textarea
-          v-model.lazy="comment"
-          type="text"
-          id="comment_body"
-          class="pb-form-input"
-          rows="5"
-          required
-        />
-        <button @click="addComment" class="pb-button pb-is-primary">
-          Kommentar speichern
-        </button>
-      </div>
+
+      <div id="pb-paragraph-actions-after"></div>
+
       <slot></slot>
     </div>
   </div>
-  <transition appear name="pb-slide-up" :duration="300">
-    <ReusableDialog
-      v-if="showReusableDialog"
-      :uuid="selected.uuid"
-      :background-class="definition?.editBackgroundClass"
-      @confirm="onMakeReusable"
-      @cancel="showReusableDialog = false"
-    />
-  </transition>
 </template>
 
 <script lang="ts" setup>
 import IconDelete from './Icons/Delete.vue'
 import IconDuplicate from './Icons/Duplicate.vue'
-import IconReusable from './Icons/Reusable.vue'
 import IconEdit from './Icons/Edit.vue'
 import IconCaret from './Icons/Caret.vue'
 import IconTranslate from './Icons/Translate.vue'
-import IconCommentAdd from './Icons/CommentAdd.vue'
-import ReusableDialog from './ReusableDialog/index.vue'
 import ParagraphIcon from './ParagraphIcon/index.vue'
 import ShortcutIndicator from './ShortcutIndicator/index.vue'
 import { icons, definitions } from '#nuxt-paragraphs-builder/definitions'
@@ -151,33 +107,17 @@ import { eventBus } from './eventBus'
 import { PbConversion, PbEditMode, PbType } from '../../types'
 
 const showConversions = ref(false)
-const showReusableDialog = ref(false)
-const showAddComment = ref(false)
-const comment = ref('')
 
 const emit = defineEmits<{
   (e: 'delete'): void
-  (e: 'addComment'): void
   (e: 'edit'): void
   (e: 'translate'): void
   (e: 'duplicate'): void
-  (e: 'makeReusable', label: string): void
   (e: 'convert', targetBundle: string): void
-  (e: 'addComment', comment: string): void
 }>()
 
-function addComment() {
-  emit('addComment', comment.value)
-  showAddComment.value = false
-}
-
-function onMakeReusable(label: string) {
-  showReusableDialog.value = false
-  emit('makeReusable', label)
-}
-
 const props = defineProps<{
-  selected: DraggableExistingParagraphItem
+  selected?: DraggableExistingParagraphItem
   paragraphType?: PbType
   allTypes: PbType[]
   conversions: PbConversion[]
@@ -186,8 +126,6 @@ const props = defineProps<{
   allowedTypes: string[]
   isDragging: boolean
 
-  canComment: boolean
-  libraryEnabled: boolean
   editMode: PbEditMode
 }>()
 
@@ -196,7 +134,7 @@ const editingEnabled = computed(() => {
 })
 
 watch(
-  () => props.selected.uuid,
+  () => props.selected?.uuid,
   () => {
     showConversions.value = false
   },
@@ -218,14 +156,6 @@ const innerStyle = computed(() => {
 
 const isReusable = computed(() => {
   return definition.value?.bundle === 'from_library'
-})
-
-const canMakeReusable = computed(() => {
-  return (
-    !isReusable.value &&
-    props.paragraphType?.allowReusable &&
-    props.allowedTypes.includes('from_library')
-  )
 })
 
 const possibleConversions = computed<PbType[]>(() => {
@@ -254,6 +184,9 @@ const styleSize = computed(() => {
 })
 
 async function onKeyPress(e: KeyboardEvent) {
+  if (!props.selected) {
+    return
+  }
   if (e.key === 'd' && (e.ctrlKey || e.metaKey)) {
     e.stopImmediatePropagation()
     e.preventDefault()
@@ -268,6 +201,9 @@ async function onKeyPress(e: KeyboardEvent) {
 }
 
 function onAnimationFrame(e: AnimationFrameEvent) {
+  if (!props.selected) {
+    return
+  }
   const rect = e.rects[props.selected.uuid]
   if (rect) {
     bounds.value.top = rect.y

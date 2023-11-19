@@ -1,0 +1,37 @@
+<template>
+  <PluginMenuButton
+    v-if="mutatedFields.length"
+    title="Importieren..."
+    description="Von einer bestehenden Seite importieren"
+    @click="showModal = true"
+    :disabled="editMode !== 'editing'"
+  >
+    <Icon />
+  </PluginMenuButton>
+
+  <Teleport to="body">
+    <transition appear name="pb-slide-up" :duration="900">
+      <ExistingDialog
+        v-if="showModal"
+        @confirm="onSubmit($event.sourceUuid, $event.fields)"
+        @cancel="showModal = false"
+      />
+    </transition>
+  </Teleport>
+</template>
+
+<script lang="ts" setup>
+import PluginMenuButton from './../../Plugin/MenuButton/index.vue'
+import Icon from './../../Icons/Import.vue'
+import ExistingDialog from './Dialog/index.vue'
+
+const { eventBus, editMode, mutatedFields } = useParagraphsBuilderStore()
+
+const showModal = ref(false)
+
+function onSubmit(sourceUuid: string, sourceFields: string[]) {
+  showModal.value = false
+  eventBus.emit('closeMenu')
+  eventBus.emit('importFromExisting', { sourceUuid, sourceFields })
+}
+</script>
