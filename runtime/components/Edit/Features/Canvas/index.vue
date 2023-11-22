@@ -41,7 +41,6 @@ let sidebarEl: HTMLElement | null = null
 const { isPressingSpace } = useParagraphsBuilderStore()
 
 const previewOpen = ref(false)
-const sidebarOpen = ref(false)
 
 watch(previewOpen, (isOpen) => {
   if (isOpen) {
@@ -280,6 +279,57 @@ function setInitState() {
   updateOffset(getCenterX(), 50)
 }
 
+let touchStartOffset = { x: 0, y: 0 }
+let lastTouchDistance: number = 0
+
+function onTouchStart(e: TouchEvent) {
+  if (e.touches.length === 1) {
+    // Single touch (panning)
+    touchStartOffset.x = e.touches[0].clientX
+    touchStartOffset.y = e.touches[0].clientY
+  } else if (e.touches.length === 2) {
+    // Two fingers (pinch zooming)
+    lastTouchDistance = getDistanceBetweenTouches(e)
+  }
+}
+
+function onTouchMove(e: TouchEvent) {
+  e.preventDefault()
+  console.log(e.touches)
+  if (e.touches.length === 1 && !lastTouchDistance) {
+    // Single touch move (panning)
+    const diffX = touchStartOffset.x - e.touches[0].clientX
+    const diffY = touchStartOffset.y - e.touches[0].clientY
+
+    updateOffset(offset.x - diffX, offset.y - diffY)
+
+    touchStartOffset.x = e.touches[0].clientX
+    touchStartOffset.y = e.touches[0].clientY
+  } else if (e.touches.length === 2) {
+    // Pinch zoom
+    const currentDistance = getDistanceBetweenTouches(e)
+    const delta = currentDistance - lastTouchDistance
+
+    // Determine zoom factor based on the change in distance between touches
+    const zoomChange = delta * zoomFactor
+
+    lastTouchDistance = currentDistance
+  }
+}
+
+function onTouchEnd(e: TouchEvent) {
+  lastTouchDistance = 0
+}
+
+function getDistanceBetweenTouches(e: TouchEvent) {
+  const touch1 = e.touches[0]
+  const touch2 = e.touches[1]
+  return Math.sqrt(
+    Math.pow(touch2.clientX - touch1.clientX, 2) +
+      Math.pow(touch2.clientY - touch1.clientY, 2),
+  )
+}
+
 onMounted(() => {
   wrapperEl = document.querySelector('.pb-main-canvas')
   nuxtRootEl = document.querySelector('#nuxt-root')
@@ -290,6 +340,11 @@ onMounted(() => {
   window.addEventListener('mousemove', onMouseMoveGlobal, {
     passive: false,
   })
+
+  window.addEventListener('touchstart', onTouchStart, { passive: false })
+  window.addEventListener('touchmove', onTouchMove, { passive: false })
+  window.addEventListener('touchend', onTouchEnd, { passive: false })
+
   document.body.addEventListener('wheel', onWheel, { passive: false })
   setInitState()
   updateStyles()
@@ -314,6 +369,9 @@ onUnmounted(() => {
   window.removeEventListener('mouseup', onMouseUp)
   window.removeEventListener('keydown', onKeyDown)
   window.removeEventListener('mousemove', onMouseMoveGlobal)
+  window.removeEventListener('touchstart', onTouchStart)
+  window.removeEventListener('touchmove', onTouchMove)
+  window.removeEventListener('touchend', onTouchEnd)
   nuxtRootEl?.classList.remove('pb-has-sidebar-open')
   nuxtRootEl?.classList.remove('pb-has-preview-open')
   window.cancelAnimationFrame(raf)
