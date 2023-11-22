@@ -1,10 +1,13 @@
 <template>
-  <div v-if="isVisible" class="pb pb-dragging-overlay" :style="style"></div>
+  <Teleport to="body">
+    <div v-if="isVisible" class="pb pb-dragging-overlay" :style="style"></div>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
-import { AnimationFrameEvent, DraggableStartEvent } from '../types'
-import { eventBus, emitMessage } from './../eventBus'
+import { AnimationFrameEvent, DraggableStartEvent } from '../../types'
+
+const { eventBus } = useParagraphsBuilderStore()
 
 const isVisible = ref(false)
 const width = ref(0)

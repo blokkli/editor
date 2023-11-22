@@ -192,6 +192,16 @@ export type ParagraphsBuilderEvents = {
   updateParagraphOptions: UpdateParagraphOptionEvent[]
   duplicateParagraph: string
   deleteParagraph: string
+
+  // Selection.
+  'select:start': undefined
+  'select:end': string[]
+
+  'paragraph:convert': ParagraphConvertEvent
+}
+export type ParagraphConvertEvent = {
+  uuid: string
+  targetBundle: string
 }
 
 export type ParagraphsBuilderEventBus = Emitter<ParagraphsBuilderEvents>

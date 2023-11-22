@@ -49,7 +49,7 @@
   }
 
   &.pb-init-overlay {
-    @apply bg-slate-950/90 fixed top-0 left-0 w-screen h-screen z-[999999999] backdrop-blur-xl flex items-center justify-center;
+    @apply bg-slate-100/90 fixed top-0 left-0 w-screen h-screen z-[999999999] backdrop-blur-xl flex items-center justify-center;
     svg {
       @apply w-100 h-100 text-slate-700 animate-spin fill-slate-50;
     }

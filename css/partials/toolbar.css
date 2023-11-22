@@ -219,6 +219,10 @@
       @apply bg-yellow-400;
     }
   }
+
+  .pb-feature-canvas-button {
+    @apply flex h-full items-center justify-between min-w-[74px];
+  }
 }
 
 .pb-menu-enter-active,

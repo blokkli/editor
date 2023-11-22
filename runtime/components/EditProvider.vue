@@ -1,64 +1,20 @@
 <template>
-  <Teleport to="body">
-    <div v-if="isInitializing" class="pb pb-init-overlay">
-      <IconSpinner />
-    </div>
-    <div v-if="!currentUserIsOwner" class="pb-owner-indicator">
-      <p>
-        Diese Seite wird aktuell von
-        <strong>{{ ownerName }}</strong> bearbeitet. Änderungen können nur von
-        einer Person gleichzeitig durchgeführt werden.
-      </p>
-      <button class="pb-button is-danger" @click="takeOwnership">
-        Mir zuweisen
-      </button>
-    </div>
+  <Loading v-if="isInitializing" />
 
-    <div class="pb-sidebar" id="pb-sidebar-content" v-show="visibleSidebar" />
+  <Selection
+    v-if="selectedParagraphs.length && canEdit"
+    :items="selectedParagraphs"
+    :is-pressing-control="isPressingControl"
+    @delete="deleteSelectedParagraphs"
+  />
 
-    <AvailableParagraphs
-      @wheel.stop=""
-      v-if="data && selectableParagraphTypes.length"
-      :can-use="canEdit && !isTranslation"
-      :paragraph-types="generallyAvailableParagraphTypes"
-      :selectable="selectableParagraphTypes"
-    />
+  <ParagraphActions v-if="data" />
 
-    <Toolbar />
+  <Messages />
 
-    <Actions
-      v-if="data"
-      :selected="selectedParagraph"
-      :paragraph-type="selectedParagraphType"
-      :is-dragging="isDragging"
-      :conversions="data.conversions"
-      :all-types="data.allTypes"
-      :allowed-types="allowedTypesInList"
-      :edit-mode="editMode"
-      @convert="convertParagraph(selectedParagraph?.uuid, $event)"
-    />
+  <Toolbar @loaded="toolbarLoaded = true" />
 
-    <MultiSelect
-      v-if="!isPressingSpace && canEdit && !isTranslation"
-      :is-pressing-control="isPressingControl"
-      @start-select="onMultiSelectStart"
-      @select-single="onSelectParagraph"
-      @select-multiple="onSelectMultiple"
-    />
-
-    <Selection
-      v-if="selectedParagraphs.length && canEdit"
-      :items="selectedParagraphs"
-      :is-pressing-control="isPressingControl"
-      @delete="deleteSelectedParagraphs"
-    />
-
-    <Messages />
-
-    <DraggingOverlay />
-  </Teleport>
-
-  <template v-if="!isInitializing">
+  <div v-if="!isInitializing && toolbarLoaded" :key="route.fullPath">
     <!-- Sidebar -->
     <FeatureHistory />
     <FeatureLibrary v-if="availableFeatures.library" />
@@ -77,6 +33,10 @@
     <FeaturePreview />
     <FeatureEntityTitle />
     <FeatureTranslations />
+    <FeatureOwnership />
+    <FeatureMultiSelect v-if="!isPressingSpace && canEdit && !isTranslation" />
+    <FeatureDraggingOverlay />
+    <FeatureAvailableParagraphs v-if="data && canEdit && !isTranslation" />
 
     <!-- Form -->
     <FeatureDrupalFrame />
@@ -92,20 +52,18 @@
     <FeatureDuplicateParagraph />
     <FeatureDeleteParagraph />
     <FeatureParagraphOptions />
-  </template>
+    <FeatureConversions />
+  </div>
 
   <slot></slot>
 </template>
 
 <script lang="ts" setup>
 import Toolbar from './Edit/Toolbar/index.vue'
-import AvailableParagraphs from './Edit/AvailableParagraphs/index.vue'
-import IconSpinner from './Edit/Icons/Spinner.vue'
-import Actions from './Edit/ParagraphActions.vue'
-import MultiSelect from './Edit/MultiSelect/index.vue'
-import Selection from './Edit/MultiSelect/Selection/index.vue'
-import DraggingOverlay from './Edit/DraggingOverlay/index.vue'
+import ParagraphActions from './Edit/ParagraphActions.vue'
+import Selection from './Edit/Features/MultiSelect/Selection/index.vue'
 import Messages from './Edit/Messages/index.vue'
+import Loading from './Edit/Loading/index.vue'
 
 import FeatureLibrary from './Edit/Features/Library/index.vue'
 import FeatureClipboard from './Edit/Features/Clipboard/index.vue'
@@ -129,6 +87,11 @@ import FeatureParagraphOptions from './Edit/Features/ParagraphOptions/index.vue'
 import FeatureDuplicateParagraph from './Edit/Features/DuplicateParagraph/index.vue'
 import FeatureEditParagraph from './Edit/Features/EditParagraph/index.vue'
 import FeatureDeleteParagraph from './Edit/Features/DeleteParagraph/index.vue'
+import FeatureOwnership from './Edit/Features/Ownership/index.vue'
+import FeatureMultiSelect from './Edit/Features/MultiSelect/index.vue'
+import FeatureDraggingOverlay from './Edit/Features/DraggingOverlay/index.vue'
+import FeatureAvailableParagraphs from './Edit/Features/AvailableParagraphs/index.vue'
+import FeatureConversions from './Edit/Features/Conversions/index.vue'
 
 import { eventBus, emitMessage } from './Edit/eventBus'
 import {
@@ -154,14 +117,17 @@ import {
   PbEditMode,
   PbStore,
   PbTranslationState,
+  PbConversion,
 } from '../types'
 import adapter from './../adapter/drupal'
-import { buildDraggableItem, falsy } from './Edit/helpers'
+import { buildDraggableItem, falsy, findParagraphElement } from './Edit/helpers'
 import { ParagraphsBuilderEditStateFragment } from '#build/graphql-operations'
 
 const route = useRoute()
 const router = useRouter()
 const runtimeConfig = useRuntimeConfig().public.paragraphsBuilder
+
+const toolbarLoaded = ref(false)
 
 const availableFeatures = ref({
   comment: false,
@@ -261,60 +227,6 @@ const hasNoParagraphs = computed(
 const allowedTypes = computed<PbAllowedBundle[]>(() => {
   return data.value?.allowedTypes || []
 })
-const selectableParagraphTypes = computed(() => {
-  if (selectedParagraph.value) {
-    // If the selected paragraph allows nested paragraphs, return the allowed paragraphs for it.
-    if (
-      paragraphTypesWithNested.value.includes(
-        selectedParagraph.value.paragraphType,
-      )
-    ) {
-      return allowedTypes.value
-        .filter(
-          (v) =>
-            v.entityType === 'paragraph' &&
-            v.bundle === selectedParagraph.value?.paragraphType,
-        )
-        .flatMap((v) => v.allowedTypes)
-        .filter(Boolean) as string[]
-    }
-    // If the selected paragraph is inside a nested paragraph, return the allowed paragraphs of the parent paragraph.
-    if (selectedParagraph.value.hostType === 'paragraph') {
-      return allowedTypes.value
-        .filter(
-          (v) =>
-            v.entityType === 'paragraph' &&
-            v.bundle === selectedParagraph.value?.hostBundle,
-        )
-        .flatMap((v) => v.allowedTypes)
-        .filter(Boolean) as string[]
-    } else {
-      return allowedTypes.value
-        .filter(
-          (v) =>
-            v.entityType === props.entityType &&
-            v.bundle === props.bundle &&
-            v.fieldName === selectedParagraph.value?.hostFieldName,
-        )
-        .flatMap((v) => v.allowedTypes)
-        .filter(Boolean) as string[]
-    }
-  }
-  if (
-    activeField.value &&
-    activeField.value.hostEntityType === props.entityType
-  ) {
-    return (
-      allowedTypes.value.find((v) => {
-        return (
-          v.bundle === props.bundle && v.fieldName === activeField.value?.name
-        )
-      })?.allowedTypes || []
-    )
-  }
-
-  return generallyAvailableParagraphTypes.value.map((v) => v.id || '')
-})
 
 /**
  * The allowed paragraph types in the current field item list.
@@ -348,60 +260,27 @@ const paragraphTypesWithNested = computed<string[]>(() => {
   )
 })
 
-const generallyAvailableParagraphTypes = computed(() => {
-  const fieldNames = mutatedFields.value.map((v) => v.name)
-  const typesOnEntity = (
-    data.value?.allowedTypes.filter((v) => {
-      return (
-        v.entityType === props.entityType &&
-        v.bundle === props.bundle &&
-        fieldNames.includes(v.fieldName)
-      )
-    }) || []
-  )
-    .flatMap((v) => v.allowedTypes)
-    .filter(Boolean)
-
-  const typesOnParagraphs =
-    data.value?.allowedTypes
-      .filter((v) => {
-        return typesOnEntity.includes(v.bundle)
-      })
-      .flatMap((v) => v.allowedTypes) || []
-
-  const allAllowedTypes = [...typesOnEntity, ...typesOnParagraphs]
-
-  return (
-    data.value?.allTypes.filter(
-      (v) => v.id && allAllowedTypes.includes(v.id),
-    ) || []
-  )
-})
-
-const activeField = computed(() => {
-  if (activeFieldKey.value) {
-    const el = document.querySelector(
-      `[data-field-key="${activeFieldKey.value}"]`,
-    )
-    if (el && el instanceof HTMLElement) {
-      const label = el.dataset.fieldLabel
-      const name = el.dataset.fieldName
-      const isNested = el.dataset.fieldIsNested === 'true'
-      const hostEntityType = el.dataset.hostEntityType
-      const hostEntityUuid = el.dataset.hostEntityUuid
-      if (label && name && hostEntityType && hostEntityUuid) {
-        return { label, name, hostEntityType, hostEntityUuid, isNested }
-      }
-    }
-  }
-})
-
 function modulo(n: number, m: number) {
   return ((n % m) + m) % m
 }
 
-function onSelectMultiple(items: DraggableExistingParagraphItem[]) {
-  selectedParagraphs.value = items
+function onSelectEnd(uuids: string[]) {
+  const paragraphs = uuids
+    .map((uuid) => {
+      const element = findParagraphElement(uuid)
+      if (element) {
+        const item = buildDraggableItem(element)
+        if (item && item.itemType === 'existing') {
+          return item
+        }
+      }
+    })
+    .filter(falsy)
+  if (paragraphs.length === 1) {
+    selectedParagraph.value = paragraphs[0]
+  } else {
+    selectedParagraphs.value = paragraphs
+  }
 }
 
 watch(hasSidebar, (has) =>
@@ -867,6 +746,10 @@ const { data } = await useLazyAsyncData(() => {
   })
 })
 
+const conversions = computed<PbConversion[]>(
+  () => data.value?.conversions || [],
+)
+
 async function revertAllChanges() {
   await mutateWithLoadingState(
     useGraphqlMutation('revertAllChanges', contextVariables.value),
@@ -1112,6 +995,8 @@ onMounted(async () => {
   eventBus.on('updateParagraphOptions', onPersistOptions)
   eventBus.on('duplicateParagraph', duplicateParagraph)
   eventBus.on('deleteParagraph', deleteParagraph)
+  eventBus.on('select:start', onMultiSelectStart)
+  eventBus.on('select:end', onSelectEnd)
 
   // Show the import dialog when there are no paragraphs yet and no mutations.
   if (hasNoParagraphs.value && !mutations.value.length) {
@@ -1119,6 +1004,10 @@ onMounted(async () => {
   }
 
   isInitializing.value = false
+})
+
+onBeforeUnmount(() => {
+  toolbarLoaded.value = false
 })
 
 onUnmounted(() => {
@@ -1145,6 +1034,8 @@ onUnmounted(() => {
   eventBus.off('updateParagraphOptions', onPersistOptions)
   eventBus.off('duplicateParagraph', duplicateParagraph)
   eventBus.off('deleteParagraph', deleteParagraph)
+  eventBus.off('select:start', onMultiSelectStart)
+  eventBus.off('select:end', onSelectEnd)
 
   // document.documentElement.classList.remove('pb-html-root')
   // document.body.classList.remove('pb-body')
@@ -1176,6 +1067,8 @@ const pbStore: PbStore = {
   eventBus,
   selectedParagraph: readonly(selectedParagraph),
   allowedTypesInList,
+  allowedTypes,
+  paragraphTypesWithNested,
   activeViewOptions,
   toggleViewOption,
   runtimeConfig,
@@ -1189,6 +1082,10 @@ const pbStore: PbStore = {
   currentLanguage,
   editMode: readonly(editMode),
   mutatedOptions: mutatedParagraphOptions,
+  ownerName: readonly(ownerName),
+  currentUserIsOwner: readonly(currentUserIsOwner),
+  takeOwnership,
+  conversions,
 }
 
 provide('paragraphsBuilderStore', pbStore)

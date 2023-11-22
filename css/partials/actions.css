@@ -1,4 +1,7 @@
 .pb {
+  #pb-paragraph-actions-title {
+    @apply h-full;
+  }
   &.pb-paragraph-actions {
     @apply text-slate-50  select-none text-sm;
   }
@@ -66,7 +69,7 @@
   }
 
   .pb-paragraph-actions-type {
-    position: relative;
+    @apply relative h-full;
   }
 
   .pb-paragraph-actions-type-dropdown {

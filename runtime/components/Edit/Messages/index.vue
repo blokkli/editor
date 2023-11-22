@@ -1,14 +1,16 @@
 <template>
-  <div class="pb pb-messages">
-    <TransitionGroup name="pb-message">
-      <Item
-        v-for="(message, index) in messages"
-        v-bind="message"
-        :key="index"
-        @close="removeMessage(index)"
-      />
-    </TransitionGroup>
-  </div>
+  <Teleport to="body">
+    <div class="pb pb-messages">
+      <TransitionGroup name="pb-message">
+        <Item
+          v-for="(message, index) in messages"
+          v-bind="message"
+          :key="index"
+          @close="removeMessage(index)"
+        />
+      </TransitionGroup>
+    </div>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>

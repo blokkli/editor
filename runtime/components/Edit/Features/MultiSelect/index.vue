@@ -1,53 +1,49 @@
 <template>
-  <div class="pb pb-multi-select" v-if="isSelecting">
-    <svg
-      class="pb-multi-select-area"
-      v-bind="style"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <rect
-        :width="selectRect.width"
-        :height="selectRect.height"
-        :x="selectRect.x"
-        :y="selectRect.y"
-        :style="{ animationDuration }"
-      ></rect>
-    </svg>
+  <Teleport to="body">
+    <div class="pb pb-multi-select" v-if="isSelecting">
+      <svg
+        class="pb-multi-select-area"
+        v-bind="style"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          :width="selectRect.width"
+          :height="selectRect.height"
+          :x="selectRect.x"
+          :y="selectRect.y"
+          :style="{ animationDuration }"
+        />
+      </svg>
 
-    <Item
-      v-if="isSelecting"
-      v-for="item in actuallySelectable"
-      :rect="item.rect"
-      :select-rect="selectRect"
-      :is-intersecting="intersects(selectRect, item.rect)"
-    />
-  </div>
+      <Item
+        v-if="isSelecting"
+        v-for="item in actuallySelectable"
+        :rect="item.rect"
+        :select-rect="selectRect"
+        :is-intersecting="intersects(selectRect, item.rect)"
+      />
+    </div>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
-import { eventBus } from '../eventBus'
-import { buildDraggableItem, falsy, findParagraphElement } from '../helpers'
-import { AnimationFrameEvent, DraggableExistingParagraphItem } from '../types'
+import { eventBus } from '../../eventBus'
+import { buildDraggableItem, falsy, findParagraphElement } from '../../helpers'
+import {
+  AnimationFrameEvent,
+  DraggableExistingParagraphItem,
+} from '../../types'
 import type { Rectangle } from './Item/index.vue'
 import Item from './Item/index.vue'
+
+const { isPressingControl } = useParagraphsBuilderStore()
 
 export type SelectableElement = {
   item: DraggableExistingParagraphItem
   nested: boolean
   rect: Rectangle
 }
-
-const emit = defineEmits<{
-  (e: 'startSelect'): void
-  (e: 'unselect'): void
-  (e: 'selectSingle', data: DraggableExistingParagraphItem): void
-  (e: 'selectMultiple', data: DraggableExistingParagraphItem[]): void
-}>()
-
-const props = defineProps<{
-  isPressingControl: boolean
-}>()
 
 let timeout: any = null
 const isSelecting = ref(false)
@@ -61,7 +57,7 @@ const viewportHeight = ref(window.innerHeight)
 
 const actuallySelectable = computed(() => {
   return selectable.value.filter((v) => {
-    if (props.isPressingControl) {
+    if (isPressingControl.value) {
       return v.nested
     } else {
       return !v.nested
@@ -186,14 +182,14 @@ function onWindowMouseUp(e: MouseEvent) {
     }
 
     if (item.itemType === 'existing') {
-      emit('selectSingle', item)
+      eventBus.emit('select:end', [item.uuid])
     }
     return
   }
 
-  emit(
-    'selectMultiple',
-    selected.map((v) => v.item),
+  eventBus.emit(
+    'select:end',
+    selected.map((v) => v.item.uuid),
   )
 }
 
@@ -207,7 +203,7 @@ function onWindowMouseDown(e: MouseEvent) {
   }
   if (e.target && e.target instanceof Element) {
     if (shouldStartMultiSelect(e.target)) {
-      emit('startSelect')
+      eventBus.emit('select:start')
       timeout = setTimeout(() => {
         const newX = e.x + window.scrollX
         const newY = e.y + window.scrollY
@@ -241,5 +237,3 @@ onBeforeUnmount(() => {
   eventBus.off('animationFrame', onAnimationFrame)
 })
 </script>
-
-<style lang="postcss"></style>

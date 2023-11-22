@@ -1,48 +1,50 @@
 <template>
-  <div class="pb pb-multi-select-selection pb-control" :style="wrapperStyle">
-    <div
-      v-if="showActions"
-      class="pb-paragraph-actions pb-control"
-      @mouseup.capture.prevent=""
-    >
-      <div class="pb-paragraph-actions-inner">
-        <div class="pb-paragraph-actions-type">
-          <div class="pb-paragraph-actions-type-button">
-            <span>{{ items.length }} Paragraphs</span>
+  <Teleport to="body">
+    <div class="pb pb-multi-select-selection pb-control" :style="wrapperStyle">
+      <div
+        v-if="showActions"
+        class="pb-paragraph-actions pb-control"
+        @mouseup.capture.prevent=""
+      >
+        <div class="pb-paragraph-actions-inner">
+          <div class="pb-paragraph-actions-type">
+            <div class="pb-paragraph-actions-type-button">
+              <span>{{ items.length }} Paragraphs</span>
+            </div>
+          </div>
+          <div class="pb-paragraph-actions-buttons">
+            <button @click.prevent.capture="$emit('duplicate')" disabled>
+              <IconDuplicate />
+              <div class="pb-tooltip">Duplizieren</div>
+            </button>
+            <button @click.prevent.capture="$emit('delete')">
+              <IconDelete />
+              <div class="pb-tooltip">Löschen</div>
+            </button>
           </div>
         </div>
-        <div class="pb-paragraph-actions-buttons">
-          <button @click.prevent.capture="$emit('duplicate')" disabled>
-            <IconDuplicate />
-            <div class="pb-tooltip">Duplizieren</div>
-          </button>
-          <button @click.prevent.capture="$emit('delete')">
-            <IconDelete />
-            <div class="pb-tooltip">Löschen</div>
-          </button>
+      </div>
+      <div ref="container">
+        <div
+          class="pb-multi-select-selection-item pb-clone"
+          :style="style"
+          data-element-type="multiple_existing"
+          :data-bundles="bundles"
+          :data-uuids="uuids"
+        >
+          <div v-for="item in selected" :style="item.style"></div>
         </div>
       </div>
     </div>
-    <div ref="container">
-      <div
-        class="pb-multi-select-selection-item pb-clone"
-        :style="style"
-        data-element-type="multiple_existing"
-        :data-bundles="bundles"
-        :data-uuids="uuids"
-      >
-        <div v-for="item in selected" :style="item.style"></div>
-      </div>
-    </div>
-  </div>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
 import Sortable from 'sortablejs'
 import type { Rectangle } from '../Item/index.vue'
-import IconDelete from './../../Icons/Delete.vue'
-import IconDuplicate from './../../Icons/Duplicate.vue'
-import { DraggableExistingParagraphItem } from '../../types'
+import IconDelete from './../../../Icons/Delete.vue'
+import IconDuplicate from './../../../Icons/Duplicate.vue'
+import { DraggableExistingParagraphItem } from '../../../types'
 
 function getCoords(elem: HTMLElement): Rectangle {
   const box = elem.getBoundingClientRect()

@@ -37,7 +37,9 @@ export interface PbStore {
     Readonly<DraggableExistingParagraphItem | null>
   >
 
+  allowedTypes: globalThis.ComputedRef<PbAllowedBundle[]>
   allowedTypesInList: globalThis.ComputedRef<string[]>
+  paragraphTypesWithNested: globalThis.ComputedRef<string[]>
 
   activeViewOptions: globalThis.Ref<Readonly<string[]>>
   toggleViewOption: (id: string) => void
@@ -64,6 +66,14 @@ export interface PbStore {
   mutatedFields: globalThis.Ref<Readonly<PbMutatedField[]>>
 
   mutatedOptions: globalThis.Ref<MutatedParagraphOptions>
+
+  ownerName: globalThis.Ref<Readonly<string>>
+  currentUserIsOwner: globalThis.Ref<Readonly<boolean>>
+  takeOwnership: () => void
+
+  conversions: globalThis.ComputedRef<PbConversion[]>
+
+  isDragging: globalThis.Ref<Readonly<boolean>>
 }
 
 export type StringBoolean = '0' | '1'

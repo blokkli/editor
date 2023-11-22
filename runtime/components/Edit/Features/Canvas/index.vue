@@ -6,8 +6,10 @@
     region="before-sidebar"
     @click="resetZoom"
   >
-    <IconMagnifier />
-    <span>{{ zoomLevel }}</span>
+    <div class="pb-feature-canvas-button">
+      <IconMagnifier />
+      <span>{{ zoomLevel }}</span>
+    </div>
   </PluginToolbarButton>
 </template>
 
@@ -315,9 +317,5 @@ onUnmounted(() => {
   nuxtRootEl?.classList.remove('pb-has-sidebar-open')
   nuxtRootEl?.classList.remove('pb-has-preview-open')
   window.cancelAnimationFrame(raf)
-  if (wrapperEl) {
-    wrapperEl.style.translate = ''
-    wrapperEl.style.scale = ''
-  }
 })
 </script>
