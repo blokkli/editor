@@ -2,7 +2,7 @@
   <PluginMenuButton
     title="Veröffentlichen"
     description="Alle Änderungen öffentlich machen"
-    @click="eventBus.emit('publish')"
+    @click="onClick"
     :disabled="!mutations.length || !canEdit"
     type="success"
   >
@@ -14,5 +14,13 @@
 import PluginMenuButton from './../../Plugin/MenuButton/index.vue'
 import Icon from './../../Icons/Publish.vue'
 
-const { eventBus, mutations, canEdit } = useParagraphsBuilderStore()
+const { mutations, canEdit, mutateWithLoadingState, adapter } =
+  useParagraphsBuilderStore()
+
+const onClick = () =>
+  mutateWithLoadingState(
+    adapter.publish(),
+    'Änderungen konnten nicht publiziert werden.',
+    'Änderungen erfolgreich publiziert.',
+  )
 </script>

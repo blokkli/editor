@@ -55,7 +55,8 @@ import {
 } from './../../../../../types'
 import { falsy } from '../../../helpers'
 
-const { mutatedOptions, canEdit, eventBus } = useParagraphsBuilderStore()
+const { mutatedOptions, canEdit, adapter, mutateWithLoadingState } =
+  useParagraphsBuilderStore()
 
 const props = defineProps<{
   uuid: string
@@ -126,6 +127,11 @@ onBeforeUnmount(() => {
       }
     })
     .filter(falsy)
-  eventBus.emit('updateParagraphOptions', values)
+
+  if (!values.length) {
+    return
+  }
+
+  mutateWithLoadingState(adapter.updateParagraphOptions(values))
 })
 </script>

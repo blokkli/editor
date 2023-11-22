@@ -29,12 +29,17 @@ import PluginMenuButton from './../../Plugin/MenuButton/index.vue'
 import Icon from './../../Icons/Revert.vue'
 import PbDialog from './../../Dialog/index.vue'
 
-const { eventBus, mutations, canEdit } = useParagraphsBuilderStore()
+const { eventBus, mutations, canEdit, adapter, mutateWithLoadingState } =
+  useParagraphsBuilderStore()
 
 const showConfirm = ref(false)
 
-function onSubmit() {
+async function onSubmit() {
   eventBus.emit('closeMenu')
-  eventBus.emit('revertAllChanges')
+  await mutateWithLoadingState(
+    adapter.revertAllChanges(),
+    'Änderungen konnten nicht verworfen werden.',
+    'Alle Änderungen wurden verworfen.',
+  )
 }
 </script>

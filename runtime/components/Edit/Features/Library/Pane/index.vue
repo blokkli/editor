@@ -23,6 +23,8 @@ import Sortable from 'sortablejs'
 import Item, { ReusableItem } from './Item/index.vue'
 import { eventBus } from './../../../eventBus'
 
+const { adapter, mutateWithLoadingState } = useParagraphsBuilderStore()
+
 const listEl = ref<HTMLDivElement | null>(null)
 const text = ref('')
 let instance: Sortable | null = null

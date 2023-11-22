@@ -51,6 +51,7 @@ import {
   DraggableExistingParagraphItem,
   DraggableHostData,
   DraggableItem,
+  MoveParagraphEvent,
 } from '../types'
 import {
   PbAllowedBundle,
@@ -61,6 +62,8 @@ import {
   PbFieldItemParagraphFragment,
   PbEditMode,
 } from '../../../types'
+
+const { adapter, mutateWithLoadingState } = useParagraphsBuilderStore()
 
 let instance: Sortable | null = null
 
@@ -215,13 +218,20 @@ function onUpdate(e: Sortable.SortableEvent) {
   if (item.itemType === 'existing') {
     const previous = getPreviousItem(item.element)
     if (item.itemType === 'existing') {
-      eventBus.emit('moveParagraph', {
+      moveParagraph({
         item,
         host: host.value,
         afterUuid: previous?.uuid,
       })
     }
   }
+}
+
+const moveParagraph = (e: MoveParagraphEvent) => {
+  mutateWithLoadingState(
+    adapter.moveParagraph(e),
+    'Der Abschnitt konnte nicht verschoben werden.',
+  )
 }
 
 function onStart(e: SortableEvent) {
@@ -244,43 +254,50 @@ function onAdd(e: Sortable.SortableEvent) {
   if (item.itemType === 'multiple_existing') {
     const previous = getPreviousItem(e.item)
     const afterUuid = previous?.uuid
-    eventBus.emit('moveMultipleParagraphs', {
-      uuids: item.uuids,
-      host: host.value,
-      afterUuid,
-    })
+    mutateWithLoadingState(
+      adapter.moveMultipleParagraphs({
+        uuids: item.uuids,
+        host: host.value,
+        afterUuid,
+      }),
+    )
     return
   }
   const afterUuid = getPreviousItem(item.element)?.uuid
 
   if (item.itemType === 'new') {
     if (e.newIndex !== undefined) {
-      eventBus.emit('addNewParagraph', {
-        type: item.paragraphType,
-        item,
-        host: host.value,
-        afterUuid,
-      })
-      return
+      return mutateWithLoadingState(
+        adapter.addNewParagraph({
+          type: item.paragraphType,
+          item,
+          host: host.value,
+          afterUuid,
+        }),
+      )
     }
   } else if (item.itemType === 'clipboard') {
-    eventBus.emit('addClipboardParagraph', {
-      afterUuid,
-      item,
-      host: host.value,
-    })
+    mutateWithLoadingState(
+      adapter.addClipboardParagraph({
+        afterUuid,
+        item,
+        host: host.value,
+      }),
+    )
   } else if (item.itemType === 'existing') {
-    eventBus.emit('moveParagraph', {
+    moveParagraph({
       item,
       host: host.value,
       afterUuid,
     })
   } else if (item.itemType === 'reusable') {
-    eventBus.emit('addReusableParagraph', {
-      item,
-      host: host.value,
-      afterUuid,
-    })
+    mutateWithLoadingState(
+      adapter.addReusableParagraph({
+        item,
+        host: host.value,
+        afterUuid,
+      }),
+    )
   }
 }
 

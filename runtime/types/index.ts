@@ -6,6 +6,12 @@ import {
 import { eventBus } from './../components/Edit/eventBus'
 import { PbAdapter } from './adapter'
 
+export type PbMutateWithLoadingState = (
+  promise: Promise<PbMutationResponseLike<any>> | undefined,
+  errorMessage?: string,
+  successMessage?: string,
+) => Promise<boolean>
+
 export type PbAvailableFeatures = {
   comment: boolean
   conversion: boolean
@@ -14,7 +20,19 @@ export type PbAvailableFeatures = {
 }
 
 export interface PbStore {
+  /**
+   * Perform a mutation with a loading state.
+   */
+  mutateWithLoadingState: PbMutateWithLoadingState
+
+  /**
+   * The adapter.
+   */
   adapter: PbAdapter<any>
+
+  /**
+   * The entity type.
+   */
   entityType: string
   entityUuid: string
   entityBundle: string
@@ -303,6 +321,17 @@ export interface PbType {
   allowReusable?: boolean
   icon?: string
   isTranslatable?: boolean
+}
+
+interface PbMutationResponseLike<T> {
+  data: {
+    state?: {
+      action?: {
+        success?: boolean
+        state?: T
+      }
+    }
+  }
 }
 
 export type PbEditMode = 'readonly' | 'editing' | 'translating'

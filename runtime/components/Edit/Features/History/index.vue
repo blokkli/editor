@@ -14,7 +14,7 @@
             'is-applied': item.index < currentMutationIndex,
           }"
         >
-          <button @click="onClick(item.index)" :disabled="!canEdit">
+          <button @click="setHistoryIndex(item.index)" :disabled="!canEdit">
             <div>
               <div>
                 <strong>{{ item.mutation.plugin?.label }}</strong>
@@ -33,7 +33,7 @@
           class="is-last"
           :class="currentMutationIndex === -1 ? 'is-active' : 'is-applied'"
         >
-          <button @click="onClick(-1)">
+          <button @click="setHistoryIndex(-1)">
             <div>
               <strong>Aktuelle Revision</strong>
             </div>
@@ -62,7 +62,7 @@
     key-code="Z"
     region="before-title"
     :disabled="!canUndo"
-    @click="eventBus.emit('undo')"
+    @click="undo"
   >
     <IconUndo />
   </PluginToolbarButton>
@@ -74,7 +74,7 @@
     key-code="Z"
     region="before-title"
     :disabled="!canRedo"
-    @click="eventBus.emit('redo')"
+    @click="redo"
   >
     <IconRedo />
   </PluginToolbarButton>
@@ -88,8 +88,13 @@ import IconUndo from './../../Icons/Undo.vue'
 import IconRedo from './../../Icons/Redo.vue'
 import RelativeTime from './../../RelativeTime/index.vue'
 
-const { mutations, currentMutationIndex, canEdit, setMutationIndex, eventBus } =
-  useParagraphsBuilderStore()
+const {
+  mutations,
+  currentMutationIndex,
+  canEdit,
+  adapter,
+  mutateWithLoadingState,
+} = useParagraphsBuilderStore()
 
 const showAmount = ref(10)
 
@@ -148,9 +153,12 @@ function clearAffectedTimeout() {
     .forEach((el) => el.classList.remove('pb-item-focused'))
 }
 
-function onClick(index: number) {
+function setHistoryIndex(index: number) {
   if (index !== currentMutationIndex.value) {
-    setMutationIndex(index)
+    mutateWithLoadingState(adapter.setHistoryIndex(index))
   }
 }
+
+const undo = () => mutateWithLoadingState(adapter.undo())
+const redo = () => mutateWithLoadingState(adapter.redo())
 </script>

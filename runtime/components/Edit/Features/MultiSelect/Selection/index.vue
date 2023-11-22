@@ -17,7 +17,7 @@
               <IconDuplicate />
               <div class="pb-tooltip">Duplizieren</div>
             </button>
-            <button @click.prevent.capture="$emit('delete')">
+            <button @click.prevent.capture="deleteSelected">
               <IconDelete />
               <div class="pb-tooltip">Löschen</div>
             </button>
@@ -46,6 +46,16 @@ import IconDelete from './../../../Icons/Delete.vue'
 import IconDuplicate from './../../../Icons/Duplicate.vue'
 import { DraggableExistingParagraphItem } from '../../../types'
 
+const { adapter, mutateWithLoadingState } = useParagraphsBuilderStore()
+
+const deleteSelected = () => {
+  const uuids = props.items.map((v) => v.uuid)
+  mutateWithLoadingState(
+    adapter.deleteMultipleParagraphs(uuids),
+    'Die Abschnitte konnten nicht entfernt werden.',
+  )
+}
+
 function getCoords(elem: HTMLElement): Rectangle {
   const box = elem.getBoundingClientRect()
 
@@ -69,11 +79,6 @@ function getCoords(elem: HTMLElement): Rectangle {
   }
 }
 
-defineEmits<{
-  (e: 'duplicate'): void
-  (e: 'delete'): void
-}>()
-
 function onlyUnique(value: string, index: number, self: Array<string>) {
   return self.indexOf(value) === index
 }
@@ -82,8 +87,6 @@ const props = defineProps<{
   items: DraggableExistingParagraphItem[]
   isPressingControl: boolean
 }>()
-
-const wrapperEl = ref<HTMLElement | null>(null)
 
 type SelectedItem = {
   style: {

@@ -55,7 +55,7 @@ const {
   selectedParagraph,
   allowedTypesInList,
   editMode,
-  eventBus,
+  mutateWithLoadingState,
 } = useParagraphsBuilderStore()
 
 const { data: conversionsData } = await useLazyAsyncData(() =>
@@ -64,15 +64,18 @@ const { data: conversionsData } = await useLazyAsyncData(() =>
 
 const conversions = computed(() => conversionsData.value || [])
 
-function onConvert(targetBundle?: string) {
+async function onConvert(targetBundle?: string) {
   if (!targetBundle || !selectedParagraph.value?.uuid) {
     return
   }
 
-  eventBus.emit('paragraph:convert', {
-    uuid: selectedParagraph.value.uuid,
-    targetBundle,
-  })
+  await mutateWithLoadingState(
+    adapter.convertParagraph({
+      uuid: selectedParagraph.value.uuid,
+      targetBundle,
+    }),
+    'Der Abschnitt konnte nicht konvertiert werden.',
+  )
 }
 
 const editingEnabled = computed(() => editMode.value === 'editing')

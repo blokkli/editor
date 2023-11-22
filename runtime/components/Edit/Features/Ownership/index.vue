@@ -14,6 +14,13 @@
 </template>
 
 <script lang="ts" setup>
-const { ownerName, currentUserIsOwner, takeOwnership } =
+const { ownerName, currentUserIsOwner, adapter, mutateWithLoadingState } =
   useParagraphsBuilderStore()
+
+const takeOwnership = () =>
+  mutateWithLoadingState(
+    adapter.takeOwnership(),
+    'Fehler beim Zuweisen.',
+    'Sie sind nun der Besitzer.',
+  )
 </script>

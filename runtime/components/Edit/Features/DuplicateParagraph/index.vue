@@ -14,13 +14,17 @@
 import Icon from './../../Icons/Duplicate.vue'
 import PluginParagraphAction from './../../Plugin/ParagraphAction/index.vue'
 
-const { selectedParagraph, editMode, eventBus } = useParagraphsBuilderStore()
+const { selectedParagraph, editMode, adapter, mutateWithLoadingState } =
+  useParagraphsBuilderStore()
 
 function onClick() {
   if (!selectedParagraph.value) {
     return
   }
 
-  eventBus.emit('duplicateParagraph', selectedParagraph.value.uuid)
+  mutateWithLoadingState(
+    adapter.duplicateParagraph(selectedParagraph.value.uuid),
+    'Der Abschnitt konnte nicht dupliziert werden.',
+  )
 }
 </script>

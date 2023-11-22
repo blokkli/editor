@@ -37,8 +37,13 @@ import { definitions } from '#nuxt-paragraphs-builder/definitions'
 
 const showReusableDialog = ref(false)
 
-const { selectedParagraph, allTypes, allowedTypesInList, eventBus } =
-  useParagraphsBuilderStore()
+const {
+  selectedParagraph,
+  allTypes,
+  allowedTypesInList,
+  mutateWithLoadingState,
+  adapter,
+} = useParagraphsBuilderStore()
 
 const definition = computed(() => {
   return selectedParagraph?.value
@@ -65,10 +70,13 @@ function onMakeReusable(label: string) {
   if (!selectedParagraph?.value?.uuid) {
     return
   }
-  eventBus.emit('makeReusable', {
-    label,
-    uuid: selectedParagraph.value.uuid,
-  })
+  mutateWithLoadingState(
+    adapter.makeParagraphReusable({
+      label,
+      uuid: selectedParagraph.value.uuid,
+    }),
+    'Der Abschnitt konnte nicht wiederverwendbar gemacht werden.',
+  )
 }
 
 const canMakeReusable = computed(() => {

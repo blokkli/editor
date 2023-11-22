@@ -13,13 +13,17 @@
 import Icon from './../../Icons/Delete.vue'
 import PluginParagraphAction from './../../Plugin/ParagraphAction/index.vue'
 
-const { selectedParagraph, editMode, eventBus } = useParagraphsBuilderStore()
+const { selectedParagraph, editMode, mutateWithLoadingState, adapter } =
+  useParagraphsBuilderStore()
 
 function onClick() {
   if (!selectedParagraph.value) {
     return
   }
 
-  eventBus.emit('deleteParagraph', selectedParagraph.value.uuid)
+  mutateWithLoadingState(
+    adapter.deleteParagraph(selectedParagraph.value.uuid),
+    'Der Abschnitt konnte nicht entfernt werden.',
+  )
 }
 </script>

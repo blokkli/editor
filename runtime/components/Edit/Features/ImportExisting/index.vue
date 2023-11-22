@@ -25,13 +25,21 @@ import PluginMenuButton from './../../Plugin/MenuButton/index.vue'
 import Icon from './../../Icons/Import.vue'
 import ExistingDialog from './Dialog/index.vue'
 
-const { eventBus, editMode, mutatedFields } = useParagraphsBuilderStore()
+const { eventBus, editMode, mutatedFields, adapter, mutateWithLoadingState } =
+  useParagraphsBuilderStore()
 
 const showModal = ref(false)
 
 function onSubmit(sourceUuid: string, sourceFields: string[]) {
   showModal.value = false
   eventBus.emit('closeMenu')
-  eventBus.emit('importFromExisting', { sourceUuid, sourceFields })
+  mutateWithLoadingState(
+    adapter.importFromExisting({
+      sourceFields,
+      sourceUuid,
+    }),
+    'Inhalte konnten nicht übernommen werden.',
+    'Inhalte erfolgreich übernommen.',
+  )
 }
 </script>

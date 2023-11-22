@@ -5,7 +5,6 @@
     v-if="selectedParagraphs.length && canEdit"
     :items="selectedParagraphs"
     :is-pressing-control="isPressingControl"
-    @delete="deleteSelectedParagraphs"
   />
 
   <ParagraphActions />
@@ -95,18 +94,9 @@ import FeatureConversions from './Edit/Features/Conversions/index.vue'
 
 import { eventBus, emitMessage } from './Edit/eventBus'
 import {
-  MoveParagraphEvent,
-  AddNewParagraphEvent,
-  AddClipboardParagraphEvent,
   DraggableExistingParagraphItem,
-  MoveMultipleParagraphsEvent,
-  AddReusableParagraphEvent,
   MutatedParagraphOptions,
-  MakeReusableEvent,
-  UpdateParagraphOptionEvent,
-  ImportFromExistingEvent,
 } from './Edit/types'
-import { definitions } from '#nuxt-paragraphs-builder/definitions'
 import '#nuxt-paragraphs-builder/styles'
 import {
   PbMutatedField,
@@ -118,10 +108,10 @@ import {
   PbStore,
   PbTranslationState,
   PbAvailableFeatures,
+  PbMutateWithLoadingState,
 } from '../types'
 import getAdapter from './../adapter/drupal'
 import { buildDraggableItem, falsy, findParagraphElement } from './Edit/helpers'
-import { ParagraphsBuilderEditStateFragment } from '#build/graphql-operations'
 
 const route = useRoute()
 const router = useRouter()
@@ -315,17 +305,6 @@ function toggleSidebar(key: string) {
   }
 }
 
-interface MutationResponseLike<T> {
-  data: {
-    state?: {
-      action?: {
-        success?: boolean
-        state?: T
-      }
-    }
-  }
-}
-
 function lockBody() {
   document.body.classList.add('pb-body-loading')
   isLoading.value = true
@@ -336,13 +315,11 @@ function unlockBody() {
   isLoading.value = false
 }
 
-async function mutateWithLoadingState(
-  promise:
-    | Promise<MutationResponseLike<ParagraphsBuilderEditStateFragment>>
-    | undefined,
-  errorMessage?: string,
-  successMessage?: string,
-): Promise<boolean> {
+const mutateWithLoadingState: PbMutateWithLoadingState = async (
+  promise,
+  errorMessage,
+  successMessage,
+) => {
   if (!promise) {
     return true
   }
@@ -358,6 +335,7 @@ async function mutateWithLoadingState(
     if (successMessage) {
       emitMessage(successMessage)
     }
+    checkDOMState()
     return true
   } catch (_e) {
     emitMessage(
@@ -366,18 +344,21 @@ async function mutateWithLoadingState(
     )
   }
 
+  checkDOMState()
   unlockBody()
   return false
 }
 
-async function addNewParagraph(e: AddNewParagraphEvent) {
-  if (!canEdit.value) {
-    return
-  }
-  const definition = definitions.find((v) => v.bundle === e.item.paragraphType)
-  if (definition?.disableEdit) {
-    await mutateWithLoadingState(adapter.addNewParagraph(e))
-  }
+function checkDOMState() {
+  nextTick(() => {
+    // Check if the currently selected paragraph is still in the DOM.
+    if (selectedParagraph.value) {
+      const el = findParagraphElement(selectedParagraph.value.uuid)
+      if (!el) {
+        selectedParagraph.value = null
+      }
+    }
+  })
 }
 
 function onDraggingStart() {
@@ -388,53 +369,8 @@ function onDraggingEnd() {
   isDragging.value = false
 }
 
-async function onPersistOptions(items: UpdateParagraphOptionEvent[]) {
-  if (!items.length) {
-    return
-  }
-  await mutateWithLoadingState(adapter.updateParagraphOptions(items))
-}
-
-async function addClipboardParagraph(e: AddClipboardParagraphEvent) {
-  if (!canEdit.value) {
-    return
-  }
-  await mutateWithLoadingState(adapter.addClipboardParagraph(e))
-}
-
-async function moveParagraph(e: MoveParagraphEvent) {
-  if (!canEdit.value) {
-    return
-  }
-  await mutateWithLoadingState(
-    adapter.moveParagraph(e),
-    'Der Abschnitt konnte nicht verschoben werden.',
-  )
-}
-
-async function moveMultipleParagraphs(e: MoveMultipleParagraphsEvent) {
-  if (!canEdit.value) {
-    return
-  }
-  await mutateWithLoadingState(
-    adapter.moveMultipleParagraphs(e),
-    'Die Abschnitte konnte nicht verschoben werden.',
-  )
-}
-
-async function addReusableParagraph(e: AddReusableParagraphEvent) {
-  if (!canEdit.value) {
-    return
-  }
-  await mutateWithLoadingState(
-    adapter.addReusableParagraph(e),
-    'Der wiederverwendbare Abschnitt konnte nicht hinzugefügt werden.',
-  )
-}
-
 function setContext(context?: PbEditState) {
   removeDroppedElements()
-  modalClose()
   const newMutatedFields = context?.mutatedState?.fields || []
   mutatedFields.value = newMutatedFields
   mutatedParagraphOptions.value = context?.mutatedState?.behaviorSettings || {}
@@ -483,11 +419,6 @@ async function loadAvailableFeatures() {
   if (runtimeConfig.disableLibrary) {
     availableFeatures.value.library = false
   }
-}
-
-function modalClose() {
-  removeDroppedElements()
-  unlockBody()
 }
 
 async function onReloadState() {
@@ -549,65 +480,6 @@ function onSelectParagraphAdditional(item: DraggableExistingParagraphItem) {
   unselectParagraph()
 }
 
-async function deleteParagraph(uuid: string | null | undefined) {
-  if (!uuid || !canEdit.value || isTranslation.value) {
-    return
-  }
-  await mutateWithLoadingState(
-    adapter.deleteParagraph(uuid),
-    'Der Abschnitt konnte nicht entfernt werden.',
-  )
-
-  unselectParagraph()
-}
-
-async function deleteSelectedParagraphs() {
-  const uuids = selectedParagraphs.value.map((v) => v.uuid)
-  if (!uuids.length || !canEdit.value) {
-    return
-  }
-  await mutateWithLoadingState(
-    adapter.deleteMultipleParagraphs(uuids),
-    'Die Abschnitte konnten nicht entfernt werden.',
-  )
-
-  unselectParagraph()
-  selectedParagraphs.value = []
-}
-
-async function convertParagraph(uuid: string, targetBundle: string) {
-  if (!canEdit.value) {
-    return
-  }
-  await mutateWithLoadingState(
-    adapter.convertParagraph(e),
-    'Der Abschnitt konnte nicht konvertiert werden.',
-  )
-
-  unselectParagraph()
-}
-
-async function duplicateParagraph(uuid: string | null | undefined) {
-  if (!uuid || !canEdit.value || isTranslation.value) {
-    return
-  }
-  await mutateWithLoadingState(
-    adapter.duplicateParagraph(uuid),
-    'Der Abschnitt konnte nicht dupliziert werden.',
-  )
-}
-
-async function makeParagraphReusable(e: MakeReusableEvent) {
-  if (!e.uuid || !canEdit.value) {
-    return
-  }
-  await mutateWithLoadingState(
-    adapter.makeParagraphReusable(e),
-    'Der Abschnitt konnte nicht wiederverwendbar gemacht werden.',
-  )
-  selectedParagraph.value = null
-}
-
 function removeDroppedElements() {
   document
     .querySelectorAll('.pb-paragraphs-container .pb-clone')
@@ -629,14 +501,6 @@ const { data: allowedTypesData } = await useLazyAsyncData(() =>
   adapter.getAvailableParagraphTypes(),
 )
 const allowedTypes = computed(() => allowedTypesData.value || [])
-
-async function revertAllChanges() {
-  await mutateWithLoadingState(
-    adapter.revertAllChanges(),
-    'Änderungen konnten nicht verworfen werden.',
-    'Alle Änderungen wurden verworfen.',
-  )
-}
 
 function onWindowMouseDown(e: MouseEvent) {
   if (e.ctrlKey || isPressingSpace.value) {
@@ -668,43 +532,6 @@ function onWindowMouseDown(e: MouseEvent) {
 
 function onExitEditor() {
   window.location.href = route.path
-}
-
-async function importFromExisting(e: ImportFromExistingEvent) {
-  await mutateWithLoadingState(
-    adapter.importFromExisting(e),
-    'Inhalte konnten nicht übernommen werden.',
-    'Inhalte erfolgreich übernommen.',
-  )
-  showTemplates.value = false
-}
-
-async function onPublish() {
-  await mutateWithLoadingState(
-    adapter.publish(),
-    'Änderungen konnten nicht publiziert werden.',
-    'Änderungen erfolgreich publiziert.',
-  )
-}
-
-async function undo() {
-  await mutateWithLoadingState(adapter.undo())
-}
-
-async function redo() {
-  await mutateWithLoadingState(adapter.redo())
-}
-
-async function setMutationIndex(index: number) {
-  await mutateWithLoadingState(adapter.setHistoryIndex(index))
-}
-
-async function takeOwnership() {
-  await mutateWithLoadingState(
-    adapter.takeOwnership(),
-    'Fehler beim Zuweisen.',
-    'Sie sind nun der Besitzer.',
-  )
 }
 
 /**
@@ -839,26 +666,13 @@ onMounted(async () => {
   document.addEventListener('keydown', onKeyDown)
   document.addEventListener('keyup', onKeyUp)
   document.body.addEventListener('mousedown', onWindowMouseDown)
-  eventBus.on('addNewParagraph', addNewParagraph)
-  eventBus.on('addReusableParagraph', addReusableParagraph)
   eventBus.on('select', onSelectParagraph)
   eventBus.on('selectAdditional', onSelectParagraphAdditional)
-  eventBus.on('addClipboardParagraph', addClipboardParagraph)
-  eventBus.on('moveParagraph', moveParagraph)
-  eventBus.on('moveMultipleParagraphs', moveMultipleParagraphs)
   eventBus.on('draggingStart', onDraggingStart)
   eventBus.on('draggingEnd', onDraggingEnd)
-  eventBus.on('makeReusable', makeParagraphReusable)
-  eventBus.on('undo', undo)
-  eventBus.on('redo', redo)
   eventBus.on('reloadState', onReloadState)
   eventBus.on('reloadEntity', onReloadEntity)
   eventBus.on('exitEditor', onExitEditor)
-  eventBus.on('revertAllChanges', revertAllChanges)
-  eventBus.on('publish', onPublish)
-  eventBus.on('updateParagraphOptions', onPersistOptions)
-  eventBus.on('duplicateParagraph', duplicateParagraph)
-  eventBus.on('deleteParagraph', deleteParagraph)
   eventBus.on('select:start', onMultiSelectStart)
   eventBus.on('select:end', onSelectEnd)
 
@@ -878,26 +692,13 @@ onUnmounted(() => {
   document.removeEventListener('keydown', onKeyDown)
   document.removeEventListener('keyup', onKeyUp)
   document.body.removeEventListener('mousedown', onWindowMouseDown)
-  eventBus.off('addNewParagraph', addNewParagraph)
-  eventBus.off('addReusableParagraph', addReusableParagraph)
   eventBus.off('select', onSelectParagraph)
   eventBus.off('selectAdditional', onSelectParagraphAdditional)
-  eventBus.off('addClipboardParagraph', addClipboardParagraph)
-  eventBus.off('moveParagraph', moveParagraph)
-  eventBus.off('moveMultipleParagraphs', moveMultipleParagraphs)
   eventBus.off('draggingStart', onDraggingStart)
   eventBus.off('draggingEnd', onDraggingEnd)
-  eventBus.off('makeReusable', makeParagraphReusable)
-  eventBus.off('undo', undo)
-  eventBus.off('redo', redo)
   eventBus.off('reloadState', onReloadState)
   eventBus.off('reloadEntity', onReloadEntity)
   eventBus.off('exitEditor', onExitEditor)
-  eventBus.off('revertAllChanges', revertAllChanges)
-  eventBus.off('publish', onPublish)
-  eventBus.off('updateParagraphOptions', onPersistOptions)
-  eventBus.off('duplicateParagraph', duplicateParagraph)
-  eventBus.off('deleteParagraph', deleteParagraph)
   eventBus.off('select:start', onMultiSelectStart)
   eventBus.off('select:end', onSelectEnd)
 
@@ -927,7 +728,6 @@ const pbStore: PbStore = {
   showSidebar: (id: string) => (visibleSidebar.value = id),
   allTypes,
   violations: readonly(violations),
-  setMutationIndex,
   eventBus,
   selectedParagraph: readonly(selectedParagraph),
   allowedTypesInList,
@@ -948,7 +748,7 @@ const pbStore: PbStore = {
   mutatedOptions: mutatedParagraphOptions,
   ownerName: readonly(ownerName),
   currentUserIsOwner: readonly(currentUserIsOwner),
-  takeOwnership,
+  mutateWithLoadingState,
 }
 
 provide('paragraphsBuilderStore', pbStore)
