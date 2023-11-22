@@ -76,6 +76,9 @@ function loop() {
   }
 }
 
+provide('paragraphsBuilderReusable', true)
+provide('isEditing', false)
+
 onMounted(() => {
   loop()
 })

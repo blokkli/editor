@@ -25,8 +25,18 @@ import PluginMenuButton from './../../Plugin/MenuButton/index.vue'
 import Icon from './../../Icons/Import.vue'
 import ExistingDialog from './Dialog/index.vue'
 
-const { eventBus, editMode, mutatedFields, adapter, mutateWithLoadingState } =
-  useParagraphsBuilderStore()
+const {
+  eventBus,
+  editMode,
+  mutatedFields,
+  adapter,
+  mutateWithLoadingState,
+  mutations,
+} = useParagraphsBuilderStore()
+
+const hasNoParagraphs = computed(
+  () => !mutatedFields.value.find((v) => v.field.list?.length),
+)
 
 const showModal = ref(false)
 
@@ -42,4 +52,11 @@ function onSubmit(sourceUuid: string, sourceFields: string[]) {
     'Inhalte erfolgreich übernommen.',
   )
 }
+
+onMounted(() => {
+  // Show the import dialog when there are no paragraphs yet and no mutations.
+  if (hasNoParagraphs.value && !mutations.value.length) {
+    showModal.value = true
+  }
+})
 </script>

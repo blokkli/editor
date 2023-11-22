@@ -3,7 +3,7 @@
     <template #icon>
       <Icon />
     </template>
-    <div>
+    <div @mousedown.stop @mousemove.stop @dragstart.stop>
       <div class="pb pb-clipboard pb-control">
         <div v-if="!pastedItems.length" class="pb-clipboard-info">
           <h4>Keine Elemente in der Zwischenablage</h4>
@@ -12,41 +12,11 @@
             werden dann hier angezeigt.
           </p>
         </div>
-        <div ref="listEl" class="pb-clipboard-list">
-          <div
-            v-for="(item, index) in pastedItems"
-            class="pb-clone"
-            data-element-type="clipboard"
-            :data-paragraph-type="item.paragraphType"
-            :data-clipboard-type="item.type"
-            :data-clipboard-data="item.data"
-            :data-clipboard-additional="item.additional"
-            :key="item.data + renderKey"
-          >
-            <div class="pb-clipboard-item">
-              <div class="pb-clipboard-item-header">
-                <ParagraphIcon :bundle="item.paragraphType" />
-                <div>{{ getLabel(item.paragraphType) }}</div>
-                <button @click="remove(index)"><IconDelete /></button>
-              </div>
-              <div>
-                <div
-                  v-if="item.type === 'text'"
-                  class="pb-clipboard-item-inner"
-                  v-html="item.data"
-                />
-                <div v-else-if="item.type === 'youtube'">
-                  <img
-                    :src="`http://i3.ytimg.com/vi/${item.data}/hqdefault.jpg`"
-                  />
-                </div>
-                <div v-else-if="item.type === 'image'">
-                  <img :src="item.data" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ClipboardList
+          v-if="pastedItems.length"
+          :items="pastedItems"
+          @remove="remove"
+        />
       </div>
     </div>
   </PluginSidebar>
@@ -54,50 +24,17 @@
 
 <script lang="ts" setup>
 import PluginSidebar from './../../Plugin/Sidebar/index.vue'
-import ParagraphIcon from './../../ParagraphIcon/index.vue'
 import Icon from './../../Icons/Clipboard.vue'
-import IconDelete from './../../Icons/Delete.vue'
+import ClipboardList from './List/index.vue'
+import type { ClipboardItem } from './List/index.vue'
 
-import Sortable from 'sortablejs'
-import { eventBus } from './../../eventBus'
+import { KeyPressedEvent } from '../../types'
 
-const { allTypes, showSidebar } = useParagraphsBuilderStore()
-
-interface ClipboardItemText {
-  type: 'text'
-  paragraphType: string
-  data: string
-  additional?: string
-}
-
-interface ClipboardItemYouTube {
-  type: 'youtube'
-  paragraphType: string
-  data: string
-  additional?: string
-}
-
-interface ClipboardItemImage {
-  type: 'image'
-  paragraphType: string
-  data: string
-  additional: string
-}
-
-type ClipboardItem =
-  | ClipboardItemText
-  | ClipboardItemYouTube
-  | ClipboardItemImage
+const { showSidebar, eventBus, selectedParagraph } = useParagraphsBuilderStore()
 
 const ALLOWED_HTML_ATTRIBUTES = ['href']
 
-const listEl = ref<HTMLDivElement | null>(null)
 const pastedItems = ref<ClipboardItem[]>([])
-const renderKey = ref(0)
-
-function getLabel(bundle: string): string {
-  return allTypes.value.find((v) => v.id === bundle)?.label || bundle
-}
 
 function getYouTubeID(url: string): string | null {
   const regExp =
@@ -173,8 +110,6 @@ function showClipboardSidebar() {
   showSidebar('clipboard')
 }
 
-let instance: Sortable | null = null
-
 function onPaste(e: ClipboardEvent) {
   // Stop data actually being pasted into div
   e.stopPropagation()
@@ -225,48 +160,44 @@ function remove(index: number) {
   })
 }
 
+function setClipboard(text: string) {
+  const type = 'text/plain'
+  const blob = new Blob([text], { type })
+  const data = [new ClipboardItem({ [type]: blob })]
+
+  try {
+    navigator.clipboard.write(data)
+  } catch (_e) {}
+}
+
+function copySelectedParagraphToClipboard(uuid: string) {
+  const element = document.querySelector(`[data-uuid="${uuid}"]`)
+  if (element instanceof HTMLElement) {
+    const markup = element.outerHTML
+    setClipboard(markup)
+  }
+}
+
+function onKeyPressed(e: KeyPressedEvent) {
+  if (!selectedParagraph.value) {
+    return
+  }
+  if (e.code !== 'c' || !e.meta) {
+    return
+  }
+  copySelectedParagraphToClipboard(selectedParagraph.value.uuid)
+}
+
 onMounted(() => {
+  eventBus.on('keyPressed', onKeyPressed)
   document.addEventListener('paste', onPaste)
   document.body.addEventListener('drop', onDrop)
   document.addEventListener('dragover', onDragOver)
-  if (listEl.value) {
-    instance = new Sortable(listEl.value, {
-      sort: false,
-      group: {
-        name: 'types',
-        put: false,
-        revertClone: false,
-      },
-      onRemove(e) {
-        const oldIndex = e.oldIndex
-        if (oldIndex !== undefined) {
-          remove(oldIndex)
-        }
-        renderKey.value += 1
-      },
-      forceFallback: true,
-      animation: 300,
-      onStart(e) {
-        const rect = e.item.getBoundingClientRect()
-        const originalEvent = (e as any).originalEvent || ({} as PointerEvent)
-        eventBus.emit('draggingStart', {
-          rect,
-          offsetX: originalEvent.clientX,
-          offsetY: originalEvent.clientY,
-        })
-      },
-      onEnd() {
-        eventBus.emit('draggingEnd')
-      },
-    })
-  }
 })
 onUnmounted(() => {
+  eventBus.off('keyPressed', onKeyPressed)
   document.removeEventListener('paste', onPaste)
   document.body.removeEventListener('drop', onDrop)
   document.removeEventListener('dragover', onDragOver)
-  if (instance) {
-    instance.destroy()
-  }
 })
 </script>

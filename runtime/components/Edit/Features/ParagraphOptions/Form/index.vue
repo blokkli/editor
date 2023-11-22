@@ -55,6 +55,8 @@ import {
 } from './../../../../../types'
 import { falsy } from '../../../helpers'
 
+const KEY = 'paragraph_builder_data'
+
 const { mutatedOptions, canEdit, adapter, mutateWithLoadingState } =
   useParagraphsBuilderStore()
 
@@ -64,6 +66,7 @@ const props = defineProps<{
   paragraphType: string
 }>()
 
+const originalOptionValues = ref<Record<string, string>>({})
 const collectedOptionUpdates = ref<Record<string, string>>({})
 
 const availableOptions = computed(() => {
@@ -107,6 +110,11 @@ function getOptionValue(key: string, defaultValue: any) {
 }
 
 function setOptionValue(key: string, value: string) {
+  // First time changing an option value store it in this ref.
+  if (originalOptionValues.value[key] === undefined) {
+    originalOptionValues.value[key] = getOptionValue(key, null)
+  }
+
   collectedOptionUpdates.value[key] = value
   if (!mutatedOptions.value[props.uuid]) {
     mutatedOptions.value[props.uuid] = {}
@@ -120,6 +128,12 @@ function setOptionValue(key: string, value: string) {
 onBeforeUnmount(() => {
   const values = Object.entries(collectedOptionUpdates.value)
     .map(([key, value]) => {
+      // Check if the original value is the same as the updated value.
+      // If yes, we can skip updating it, since it's the same.
+      const originalValue = originalOptionValues.value[key]
+      if (originalValue === value) {
+        return
+      }
       return {
         uuid: props.uuid,
         key,

@@ -45,7 +45,7 @@ export default {
 
 <script lang="ts" setup>
 import Sortable, { SortableEvent } from 'sortablejs'
-import { eventBus } from './../eventBus'
+import { definitions } from '#nuxt-paragraphs-builder/definitions'
 import { buildDraggableItem } from '../helpers'
 import {
   DraggableExistingParagraphItem,
@@ -63,7 +63,8 @@ import {
   PbEditMode,
 } from '../../../types'
 
-const { adapter, mutateWithLoadingState } = useParagraphsBuilderStore()
+const { adapter, mutateWithLoadingState, eventBus } =
+  useParagraphsBuilderStore()
 
 let instance: Sortable | null = null
 
@@ -267,14 +268,26 @@ function onAdd(e: Sortable.SortableEvent) {
 
   if (item.itemType === 'new') {
     if (e.newIndex !== undefined) {
-      return mutateWithLoadingState(
-        adapter.addNewParagraph({
+      const definition = definitions.find(
+        (v) => v.bundle === item.paragraphType,
+      )
+      if (definition?.disableEdit) {
+        return mutateWithLoadingState(
+          adapter.addNewParagraph({
+            type: item.paragraphType,
+            item,
+            host: host.value,
+            afterUuid,
+          }),
+        )
+      } else {
+        eventBus.emit('addNewParagraph', {
           type: item.paragraphType,
           item,
           host: host.value,
           afterUuid,
-        }),
-      )
+        })
+      }
     }
   } else if (item.itemType === 'clipboard') {
     mutateWithLoadingState(

@@ -95,7 +95,7 @@ const fieldKey = computed(() => {
 const fieldListType = computed(() => props.fieldListType)
 
 const filteredList = computed<Array<Required<PbFieldItemFragment<any>>>>(() => {
-  if (mutatedFields?.value && !isNested) {
+  if (mutatedFields?.value && !isNested && !isInReusable) {
     return (mutatedFields.value.find((v) => v.name === props.fieldConfig?.name)
       ?.field.list || []) as Array<Required<PbFieldItemFragment<any>>>
   }

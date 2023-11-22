@@ -147,6 +147,7 @@ export type KeyPressedEvent = {
   code: string
   meta: boolean
   shift: boolean
+  originalEvent: KeyboardEvent
 }
 
 export type TranslateParagraphEvent = {

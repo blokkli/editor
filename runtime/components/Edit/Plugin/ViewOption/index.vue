@@ -33,9 +33,12 @@ const props = defineProps<{
   keyCode?: string
 }>()
 
-const { activeViewOptions, toggleViewOption } = useParagraphsBuilderStore()
+const storageKey = computed(() => '_pb_view_option_' + props.id)
 
-const isActive = computed(() => activeViewOptions.value.includes(props.id))
+const isActive = ref(localStorage.getItem(storageKey.value) === 'true')
 
-const onClick = () => toggleViewOption(props.id)
+const onClick = () => {
+  isActive.value = !isActive.value
+  localStorage.setItem(storageKey.value, isActive.value ? 'true' : 'false')
+}
 </script>

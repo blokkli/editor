@@ -315,3 +315,40 @@
 .pb-is-disabled {
   @apply opacity-30 group-hover:opacity-60;
 }
+
+.pb-paragraphs-container {
+  &.is-empty {
+    min-height: 4rem;
+  }
+  .draggable {
+    outline-offset: -3px;
+    &:hover {
+      outline: 2px solid rgba(0, 0, 0, 0.3);
+    }
+    a,
+    button {
+      pointer-events: none;
+    }
+  }
+}
+
+[data-element-type='existing'] {
+  > * {
+    user-select: none;
+  }
+  a,
+  button {
+    pointer-events: none;
+  }
+}
+
+.pb-item-focused {
+  outline: 4px solid var(--gin-color-primary);
+  outline-offset: 0px;
+  border-radius: 5px;
+}
+
+.sortable-fallback {
+  pointer-events: none;
+  display: none !important;
+}

@@ -36,8 +36,6 @@ export interface PbStore {
   entityType: string
   entityUuid: string
   entityBundle: string
-  showTemplates: globalThis.Ref<boolean>
-  showRevertDialog: globalThis.Ref<boolean>
   canEdit: globalThis.ComputedRef<boolean>
   currentMutationIndex: globalThis.Ref<Readonly<number>>
   setMutationIndex: (index: number) => void
@@ -60,9 +58,6 @@ export interface PbStore {
   allowedTypes: globalThis.ComputedRef<PbAllowedBundle[]>
   allowedTypesInList: globalThis.ComputedRef<string[]>
   paragraphTypesWithNested: globalThis.ComputedRef<string[]>
-
-  activeViewOptions: globalThis.Ref<Readonly<string[]>>
-  toggleViewOption: (id: string) => void
 
   runtimeConfig: {
     disableLibrary: boolean

@@ -147,13 +147,11 @@ const currentLanguage = computed({
   },
 })
 
-const contextVariables = computed(() => ({
+const adapter = getAdapter({
   entityType: props.entityType.toUpperCase() as any,
   entityUuid: props.entityUuid || '',
   langcode: currentLanguage.value || '',
-}))
-
-const adapter = getAdapter(contextVariables.value)
+})
 
 const toolbarLoaded = ref(false)
 
@@ -193,7 +191,6 @@ const isLoading = ref(false)
 const isInitializing = ref(true)
 const isPressingControl = ref(false)
 const isPressingSpace = ref(false)
-const showTemplates = ref(false)
 const previewGrantUrl = ref('')
 
 const canEdit = computed(() => currentUserIsOwner.value)
@@ -213,10 +210,6 @@ const editMode = computed<PbEditMode>(() => {
 })
 
 const hasSidebar = computed(() => !!visibleSidebar.value)
-
-const hasNoParagraphs = computed(
-  () => !mutatedFields.value.find((v) => v.field.list?.length),
-)
 
 /**
  * The allowed paragraph types in the current field item list.
@@ -249,10 +242,6 @@ const paragraphTypesWithNested = computed<string[]>(() => {
       .map((v) => v.bundle) || []
   )
 })
-
-function modulo(n: number, m: number) {
-  return ((n % m) + m) % m
-}
 
 function onSelectEnd(uuids: string[]) {
   const paragraphs = uuids
@@ -534,86 +523,19 @@ function onExitEditor() {
   window.location.href = route.path
 }
 
-/**
- * Allows using Tab / Shift-Tab to navigate through paragraphs.
- */
-function onTabPress(isBackwards: boolean) {
-  const paragraphs = [
-    ...document.querySelectorAll('[data-uuid]'),
-  ] as HTMLElement[]
-  if (!paragraphs.length) {
-    return
-  }
-
-  const currentIndex = selectedParagraph.value
-    ? paragraphs.findIndex(
-        (v) => v.dataset.uuid === selectedParagraph.value?.uuid,
-      )
-    : -1
-
-  const targetIndex = modulo(
-    isBackwards ? currentIndex - 1 : currentIndex + 1,
-    paragraphs.length,
-  )
-  const targetElement = paragraphs[targetIndex]
-  if (!targetElement) {
-    return
-  }
-  const targetItem = buildDraggableItem(targetElement)
-  if (!targetItem) {
-    return
-  }
-
-  if (targetItem.itemType !== 'existing') {
-    return
-  }
-
-  targetElement.scrollIntoView({
-    block: 'nearest',
-  })
-
-  eventBus.emit('select', targetItem)
-}
-
-function setClipboard(text: string) {
-  const type = 'text/plain'
-  const blob = new Blob([text], { type })
-  const data = [new ClipboardItem({ [type]: blob })]
-
-  try {
-    navigator.clipboard.write(data)
-  } catch (_e) {}
-}
-
-function copySelectedParagraphToClipboard(uuid: string) {
-  const element = document.querySelector(`[data-uuid="${uuid}"]`)
-  if (element instanceof HTMLElement) {
-    const markup = element.outerHTML
-    setClipboard(markup)
-  }
-}
-
 function onKeyDown(e: KeyboardEvent) {
   // For the one person that remapped caps lock to control.
   if (e.key === 'Control' || e.key === 'CapsLock') {
     isPressingControl.value = true
   } else if (e.code === 'Space') {
     isPressingSpace.value = true
-  } else if (e.key === 'Tab') {
-    if (selectedParagraph.value) {
-      e.preventDefault()
-      onTabPress(e.shiftKey)
-    }
-  } else if (e.key === 'c') {
-    if (selectedParagraph.value) {
-      copySelectedParagraphToClipboard(selectedParagraph.value.uuid)
-    }
   }
 
   eventBus.emit('keyPressed', {
     code: e.key,
     shift: e.shiftKey,
     meta: e.ctrlKey,
+    originalEvent: e,
   })
 }
 
@@ -631,36 +553,7 @@ useHead({
   },
 })
 
-const activeViewOptions = ref<string[]>([])
-const toggleViewOption = (id: string) => {
-  if (activeViewOptions.value.includes(id)) {
-    activeViewOptions.value = activeViewOptions.value.filter((v) => v !== id)
-  } else {
-    activeViewOptions.value.push(id)
-  }
-
-  localStorage.setItem(
-    '_pb_active_view_options',
-    JSON.stringify(activeViewOptions.value),
-  )
-}
-
-function restoreActiveViewOptions() {
-  try {
-    const data = localStorage.getItem('_pb_active_view_options')
-    if (data) {
-      const items = JSON.parse(data)
-      if (items && Array.isArray(items)) {
-        activeViewOptions.value = items
-      }
-    }
-  } catch (_e) {}
-}
-
 onMounted(async () => {
-  restoreActiveViewOptions()
-  // document.documentElement.classList.add('pb-html-root')
-  // document.body.classList.add('pb-body')
   await loadAvailableFeatures()
   await loadState(currentLanguage.value)
   document.addEventListener('keydown', onKeyDown)
@@ -675,11 +568,6 @@ onMounted(async () => {
   eventBus.on('exitEditor', onExitEditor)
   eventBus.on('select:start', onMultiSelectStart)
   eventBus.on('select:end', onSelectEnd)
-
-  // Show the import dialog when there are no paragraphs yet and no mutations.
-  if (hasNoParagraphs.value && !mutations.value.length) {
-    showTemplates.value = true
-  }
 
   isInitializing.value = false
 })
@@ -701,9 +589,6 @@ onUnmounted(() => {
   eventBus.off('exitEditor', onExitEditor)
   eventBus.off('select:start', onMultiSelectStart)
   eventBus.off('select:end', onSelectEnd)
-
-  // document.documentElement.classList.remove('pb-html-root')
-  // document.body.classList.remove('pb-body')
 })
 
 provide('paragraphsBuilderMutatedFields', mutatedFields)
@@ -717,7 +602,6 @@ const pbStore: PbStore = {
   entityType: props.entityType,
   entityUuid: props.entityUuid,
   entityBundle: props.bundle,
-  showTemplates,
   canEdit,
   mutatedFields: readonly(mutatedFields),
   availableFeatures: readonly(availableFeatures),
@@ -733,8 +617,6 @@ const pbStore: PbStore = {
   allowedTypesInList,
   allowedTypes,
   paragraphTypesWithNested,
-  activeViewOptions,
-  toggleViewOption,
   runtimeConfig,
   activeFieldKey: readonly(activeFieldKey),
   setActiveFieldKey: (key: string) => (activeFieldKey.value = key),
@@ -749,46 +631,8 @@ const pbStore: PbStore = {
   ownerName: readonly(ownerName),
   currentUserIsOwner: readonly(currentUserIsOwner),
   mutateWithLoadingState,
+  isDragging: readonly(isDragging),
 }
 
 provide('paragraphsBuilderStore', pbStore)
 </script>
-
-<style lang="postcss">
-.pb-paragraphs-container {
-  &.is-empty {
-    min-height: 4rem;
-  }
-  .draggable {
-    outline-offset: -3px;
-    &:hover {
-      outline: 2px solid rgba(0, 0, 0, 0.3);
-    }
-    a,
-    button {
-      pointer-events: none;
-    }
-  }
-}
-
-[data-element-type='existing'] {
-  > * {
-    user-select: none;
-  }
-  a,
-  button {
-    pointer-events: none;
-  }
-}
-
-.pb-item-focused {
-  outline: 4px solid var(--gin-color-primary);
-  outline-offset: 0px;
-  border-radius: 5px;
-}
-
-.sortable-fallback {
-  pointer-events: none;
-  display: none !important;
-}
-</style>
