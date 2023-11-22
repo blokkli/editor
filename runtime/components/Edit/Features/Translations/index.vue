@@ -25,15 +25,29 @@
   >
     <IconTranslate />
   </PluginMenuButton>
+
+  <PluginParagraphAction
+    title="Übersetzen"
+    @click="onTranslateParagraph"
+    v-if="editMode === 'translating'"
+  >
+    <IconTranslate />
+  </PluginParagraphAction>
 </template>
 
 <script lang="ts" setup>
 import { falsy } from '../../helpers'
 import PluginMenuButton from './../../Plugin/MenuButton/index.vue'
+import PluginParagraphAction from './../../Plugin/ParagraphAction/index.vue'
 import IconTranslate from './../../Icons/Translate.vue'
 
-const { translationState, currentLanguage, eventBus, editMode } =
-  useParagraphsBuilderStore()
+const {
+  translationState,
+  currentLanguage,
+  eventBus,
+  editMode,
+  selectedParagraph,
+} = useParagraphsBuilderStore()
 
 type TranslationStateItem = {
   id: string
@@ -69,5 +83,16 @@ function onClick(item: TranslationStateItem, event: Event) {
 
   event.preventDefault()
   eventBus.emit('translateEntity', item.id)
+}
+
+function onTranslateParagraph() {
+  if (!selectedParagraph.value) {
+    return
+  }
+
+  eventBus.emit('editParagraph', {
+    uuid: selectedParagraph.value.uuid,
+    bundle: selectedParagraph.value.paragraphType,
+  })
 }
 </script>

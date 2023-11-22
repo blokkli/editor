@@ -50,28 +50,14 @@
 </template>
 
 <script lang="ts" setup>
-import IconPublish from './../Icons/Publish.vue'
 import IconMenu from './../Icons/Menu.vue'
 import IconClose from './../Icons/Close.vue'
-import IconExit from './../Icons/Exit.vue'
 
-const { canEdit, mutations, eventBus } = useParagraphsBuilderStore()
-
-const emit = defineEmits(['revert', 'publish'])
+const { eventBus } = useParagraphsBuilderStore()
 
 const menuVisible = ref(false)
+const closeMenu = () => (menuVisible.value = false)
 
-function closeMenu(cb?: () => void) {
-  menuVisible.value = false
-  if (cb) {
-    cb()
-  }
-}
-
-onMounted(() => {
-  eventBus.on('closeMenu', closeMenu)
-})
-onBeforeUnmount(() => {
-  eventBus.off('closeMenu', closeMenu)
-})
+onMounted(() => eventBus.on('closeMenu', closeMenu))
+onBeforeUnmount(() => eventBus.off('closeMenu', closeMenu))
 </script>

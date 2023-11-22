@@ -8,7 +8,12 @@
       <slot></slot>
       <div class="pb-tooltip">
         <span>{{ title }}</span>
-        <ShortcutIndicator v-if="keyLabel" :meta="meta" :key-label="keyLabel" />
+        <ShortcutIndicator
+          v-if="keyCode"
+          :meta="meta"
+          :key-label="keyCode"
+          @pressed="$emit('click')"
+        />
       </div>
     </button>
   </Teleport>
@@ -29,7 +34,7 @@ defineProps<{
   disabled?: boolean
   active?: boolean
   meta?: boolean
-  keyLabel?: string
+  keyCode?: string
 }>()
 
 defineEmits(['click'])

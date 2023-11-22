@@ -1,5 +1,8 @@
 import { WritableComputedRef } from 'nuxt/dist/app/compat/capi'
-import { DraggableExistingParagraphItem } from '../components/Edit/types'
+import {
+  DraggableExistingParagraphItem,
+  MutatedParagraphOptions,
+} from '../components/Edit/types'
 import { eventBus } from './../components/Edit/eventBus'
 
 export interface PbStore {
@@ -9,11 +12,11 @@ export interface PbStore {
   showTemplates: globalThis.Ref<boolean>
   showRevertDialog: globalThis.Ref<boolean>
   canEdit: globalThis.ComputedRef<boolean>
-  currentMutationIndex: Readonly<globalThis.Ref<number>>
+  currentMutationIndex: globalThis.Ref<Readonly<number>>
   setMutationIndex: (index: number) => void
 
-  availableFeatures: Readonly<
-    globalThis.Ref<{
+  availableFeatures: globalThis.Ref<
+    Readonly<{
       comment: boolean
       conversion: boolean
       duplicate: boolean
@@ -21,22 +24,22 @@ export interface PbStore {
     }>
   >
 
-  mutations: Readonly<globalThis.Ref<PbMutation[]>>
+  mutations: globalThis.Ref<Readonly<PbMutation[]>>
 
-  activeSidebar: Readonly<globalThis.Ref<string>>
+  activeSidebar: globalThis.Ref<Readonly<string>>
   toggleSidebar: (id: string) => void
   showSidebar: (id: string) => void
   allTypes: globalThis.ComputedRef<PbType[]>
-  violations: globalThis.ComputedRef<PbViolation[]>
+  violations: globalThis.Ref<Readonly<PbViolation[]>>
   eventBus: typeof eventBus
 
-  selectedParagraph?: Readonly<
-    globalThis.Ref<DraggableExistingParagraphItem | null>
+  selectedParagraph: globalThis.Ref<
+    Readonly<DraggableExistingParagraphItem | null>
   >
 
   allowedTypesInList: globalThis.ComputedRef<string[]>
 
-  activeViewOptions: Readonly<globalThis.Ref<string[]>>
+  activeViewOptions: globalThis.Ref<Readonly<string[]>>
   toggleViewOption: (id: string) => void
 
   runtimeConfig: {
@@ -45,20 +48,22 @@ export interface PbStore {
     langcodeWithoutPrefix: string
   }
 
-  activeFieldKey: Readonly<globalThis.Ref<string>>
+  activeFieldKey: globalThis.Ref<Readonly<string>>
   setActiveFieldKey: (key: string) => void
 
-  isPressingControl: Readonly<globalThis.Ref<boolean>>
-  isPressingSpace: Readonly<globalThis.Ref<boolean>>
-  previewGrantUrl: Readonly<globalThis.Ref<string>>
-  entity: Readonly<globalThis.Ref<PbEditEntity>>
-  translationState: Readonly<globalThis.Ref<PbTranslationState>>
+  isPressingControl: globalThis.Ref<Readonly<boolean>>
+  isPressingSpace: globalThis.Ref<Readonly<boolean>>
+  previewGrantUrl: globalThis.Ref<Readonly<string>>
+  entity: globalThis.Ref<Readonly<PbEditEntity>>
+  translationState: globalThis.Ref<Readonly<PbTranslationState>>
 
-  currentLanguage: WritableComputedRef<string>
+  currentLanguage: WritableComputedRef<string | null | undefined>
 
-  editMode: Readonly<globalThis.Ref<PbEditMode>>
+  editMode: globalThis.Ref<Readonly<PbEditMode>>
 
-  mutatedFields: Readonly<globalThis.Ref<PbMutatedField[]>>
+  mutatedFields: globalThis.Ref<Readonly<PbMutatedField[]>>
+
+  mutatedOptions: globalThis.Ref<MutatedParagraphOptions>
 }
 
 export type StringBoolean = '0' | '1'

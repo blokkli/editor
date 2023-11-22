@@ -35,23 +35,8 @@
       :all-types="data.allTypes"
       :allowed-types="allowedTypesInList"
       :edit-mode="editMode"
-      @delete="deleteParagraph(selectedParagraph?.uuid)"
-      @duplicate="duplicateParagraph(selectedParagraph?.uuid)"
       @convert="convertParagraph(selectedParagraph?.uuid, $event)"
-    >
-      <ParagraphOptions
-        v-if="selectedParagraph"
-        :key="'options_' + selectedParagraph.uuid"
-        :uuid="selectedParagraph.uuid"
-        :paragraph-type="selectedParagraph.paragraphType"
-        :reusable-bundle="selectedParagraph.reusableBundle"
-        :reusable-uuid="selectedParagraph.reusableUuid"
-        :mutated-paragraph-options="mutatedParagraphOptions"
-        @update-option="onUpdateParagraphOption"
-        @persist-options="onPersistOptions"
-        :editing-enabled="editMode === 'editing'"
-      />
-    </Actions>
+    />
 
     <MultiSelect
       v-if="!isPressingSpace && canEdit && !isTranslation"
@@ -74,24 +59,39 @@
   </Teleport>
 
   <template v-if="!isInitializing">
+    <!-- Sidebar -->
     <FeatureHistory />
     <FeatureLibrary v-if="availableFeatures.library" />
     <FeatureComments v-if="availableFeatures.comment" />
     <FeatureClipboard />
     <FeatureStructure />
     <FeatureValidations />
+
+    <!-- View Options -->
     <FeatureGrid v-if="runtimeConfig.gridMarkup" />
     <FeatureMask />
     <FeatureCanvas />
+    <FeatureFieldAreas />
+
+    <!-- General -->
     <FeaturePreview />
     <FeatureEntityTitle />
+    <FeatureTranslations />
+
+    <!-- Form -->
     <FeatureDrupalFrame />
+
+    <!-- Menu -->
     <FeaturePublish />
     <FeatureRevert />
-    <FeatureTranslations />
     <FeatureImportExisting />
     <FeatureExit />
-    <FeatureFieldAreas />
+
+    <!-- Paragraph Actions -->
+    <FeatureEditParagraph />
+    <FeatureDuplicateParagraph />
+    <FeatureDeleteParagraph />
+    <FeatureParagraphOptions />
   </template>
 
   <slot></slot>
@@ -125,10 +125,11 @@ import FeatureImportExisting from './Edit/Features/ImportExisting/index.vue'
 import FeatureExit from './Edit/Features/Exit/index.vue'
 import FeaturePublish from './Edit/Features/Publish/index.vue'
 import FeatureFieldAreas from './Edit/Features/FieldAreas/index.vue'
+import FeatureParagraphOptions from './Edit/Features/ParagraphOptions/index.vue'
+import FeatureDuplicateParagraph from './Edit/Features/DuplicateParagraph/index.vue'
+import FeatureEditParagraph from './Edit/Features/EditParagraph/index.vue'
+import FeatureDeleteParagraph from './Edit/Features/DeleteParagraph/index.vue'
 
-import ParagraphOptions, {
-  UpdateParagraphOptionEvent,
-} from './Edit/ParagraphOptions/index.vue'
 import { eventBus, emitMessage } from './Edit/eventBus'
 import {
   MoveParagraphEvent,
@@ -150,8 +151,9 @@ import {
   PbViolation,
   PbType,
   PbEditEntity,
-  PbAvailableLanguage,
   PbEditMode,
+  PbStore,
+  PbTranslationState,
 } from '../types'
 import adapter from './../adapter/drupal'
 import { buildDraggableItem, falsy } from './Edit/helpers'
@@ -177,11 +179,11 @@ const entity = ref<PbEditEntity>({
   translations: [],
 })
 const mutatedParagraphOptions = ref<MutatedParagraphOptions>({})
-const translationState = ref({
+const translationState = ref<PbTranslationState>({
   isTranslatable: false,
   sourceLanguage: '',
-  availableLanguages: [] as PbAvailableLanguage[],
-  translations: [] as string[],
+  availableLanguages: [],
+  translations: [],
 })
 
 const selectedParagraph = ref<DraggableExistingParagraphItem | null>(null)
@@ -545,17 +547,6 @@ async function onPersistOptions(items: UpdateParagraphOptionEvent[]) {
       items: persistItems,
     }),
   )
-}
-
-async function onUpdateParagraphOption(data: UpdateParagraphOptionEvent) {
-  if (!mutatedParagraphOptions.value[data.uuid]) {
-    mutatedParagraphOptions.value[data.uuid] = {}
-  }
-  if (!mutatedParagraphOptions.value[data.uuid].paragraph_builder_data) {
-    mutatedParagraphOptions.value[data.uuid].paragraph_builder_data = {}
-  }
-  mutatedParagraphOptions.value[data.uuid].paragraph_builder_data[data.key] =
-    data.value
 }
 
 async function addClipboardParagraph(e: AddClipboardParagraphEvent) {
@@ -1118,6 +1109,9 @@ onMounted(async () => {
   eventBus.on('exitEditor', onExitEditor)
   eventBus.on('revertAllChanges', revertAllChanges)
   eventBus.on('publish', onPublish)
+  eventBus.on('updateParagraphOptions', onPersistOptions)
+  eventBus.on('duplicateParagraph', duplicateParagraph)
+  eventBus.on('deleteParagraph', deleteParagraph)
 
   // Show the import dialog when there are no paragraphs yet and no mutations.
   if (hasNoParagraphs.value && !mutations.value.length) {
@@ -1148,6 +1142,9 @@ onUnmounted(() => {
   eventBus.off('exitEditor', onExitEditor)
   eventBus.off('revertAllChanges', revertAllChanges)
   eventBus.off('publish', onPublish)
+  eventBus.off('updateParagraphOptions', onPersistOptions)
+  eventBus.off('duplicateParagraph', duplicateParagraph)
+  eventBus.off('deleteParagraph', deleteParagraph)
 
   // document.documentElement.classList.remove('pb-html-root')
   // document.body.classList.remove('pb-body')
@@ -1158,10 +1155,9 @@ provide('isEditing', true)
 provide('paragraphsBuilderEditMode', editMode)
 provide('paragraphsBuilderAllowedTypes', allowedTypes)
 provide('paragraphsBuilderEditContext', { eventBus, mutatedParagraphOptions })
-
 const allTypes = computed(() => data.value?.allTypes || [])
 
-const pbStore = {
+const pbStore: PbStore = {
   entityType: props.entityType,
   entityUuid: props.entityUuid,
   entityBundle: props.bundle,
@@ -1192,6 +1188,7 @@ const pbStore = {
   translationState: readonly(translationState),
   currentLanguage,
   editMode: readonly(editMode),
+  mutatedOptions: mutatedParagraphOptions,
 }
 
 provide('paragraphsBuilderStore', pbStore)

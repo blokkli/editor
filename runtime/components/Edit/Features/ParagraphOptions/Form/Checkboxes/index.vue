@@ -29,7 +29,8 @@
 </template>
 
 <script lang="ts" setup>
-import IconCaret from './../../Icons/Caret.vue'
+import IconCaret from './../../../../Icons/Caret.vue'
+
 const props = defineProps<{
   label: string
   value?: string

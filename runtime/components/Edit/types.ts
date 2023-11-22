@@ -189,6 +189,9 @@ export type ParagraphsBuilderEvents = {
   importFromExisting: ImportFromExistingEvent
   exitEditor: undefined
   publish: undefined
+  updateParagraphOptions: UpdateParagraphOptionEvent[]
+  duplicateParagraph: string
+  deleteParagraph: string
 }
 
 export type ParagraphsBuilderEventBus = Emitter<ParagraphsBuilderEvents>

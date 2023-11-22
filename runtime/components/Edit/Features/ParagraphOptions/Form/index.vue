@@ -3,7 +3,7 @@
     v-if="availableOptions.length"
     class="pb-paragraph-options-item"
     v-for="plugin in availableOptions"
-    :class="{ 'pb-is-disabled': !editingEnabled }"
+    :class="{ 'pb-is-disabled': !canEdit }"
     @keydown.stop
   >
     <div class="pb-tooltip">
@@ -52,27 +52,15 @@ import OptionText from './Text/index.vue'
 import {
   ParagraphDefinitionOption,
   ParagraphDefinitionOptionsInput,
-} from './../../../types'
-import { MutatedParagraphOptions } from '../types'
+} from './../../../../../types'
+import { falsy } from '../../../helpers'
 
-export type UpdateParagraphOptionEvent = {
-  uuid: string
-  key: string
-  value: string
-}
-
-const emit = defineEmits<{
-  (e: 'updateOption', data: UpdateParagraphOptionEvent): void
-  (e: 'persistOptions', data: UpdateParagraphOptionEvent[]): void
-}>()
+const { mutatedOptions, canEdit, eventBus } = useParagraphsBuilderStore()
 
 const props = defineProps<{
   uuid: string
-  paragraphType: string
   reusableBundle?: string
-  reusableUuid?: string
-  mutatedParagraphOptions: MutatedParagraphOptions
-  editingEnabled: boolean
+  paragraphType: string
 }>()
 
 const collectedOptionUpdates = ref<Record<string, string>>({})
@@ -102,14 +90,14 @@ const availableOptions = computed(() => {
 
 function getOptionValue(key: string, defaultValue: any) {
   if (
-    props.mutatedParagraphOptions[props.uuid] &&
-    props.mutatedParagraphOptions[props.uuid].paragraph_builder_data &&
+    mutatedOptions.value[props.uuid] &&
+    mutatedOptions.value[props.uuid].paragraph_builder_data &&
     Object.prototype.hasOwnProperty.call(
-      props.mutatedParagraphOptions[props.uuid].paragraph_builder_data,
+      mutatedOptions.value[props.uuid].paragraph_builder_data,
       key,
     )
   ) {
-    return props.mutatedParagraphOptions[props.uuid].paragraph_builder_data[key]
+    return mutatedOptions.value[props.uuid].paragraph_builder_data[key]
   }
   if (typeof defaultValue === 'boolean') {
     return defaultValue === true ? '1' : ''
@@ -119,21 +107,25 @@ function getOptionValue(key: string, defaultValue: any) {
 
 function setOptionValue(key: string, value: string) {
   collectedOptionUpdates.value[key] = value
-  emit('updateOption', { uuid: props.uuid, key, value })
+  if (!mutatedOptions.value[props.uuid]) {
+    mutatedOptions.value[props.uuid] = {}
+  }
+  if (!mutatedOptions.value[props.uuid].paragraph_builder_data) {
+    mutatedOptions.value[props.uuid].paragraph_builder_data = {}
+  }
+  mutatedOptions.value[props.uuid].paragraph_builder_data[key] = value
 }
 
 onBeforeUnmount(() => {
-  emit(
-    'persistOptions',
-    Object.entries(collectedOptionUpdates.value).map(([key, value]) => {
+  const values = Object.entries(collectedOptionUpdates.value)
+    .map(([key, value]) => {
       return {
         uuid: props.uuid,
         key,
         value,
       }
-    }),
-  )
+    })
+    .filter(falsy)
+  eventBus.emit('updateParagraphOptions', values)
 })
 </script>
-
-<style></style>
