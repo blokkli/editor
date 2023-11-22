@@ -8,7 +8,7 @@
     @delete="deleteSelectedParagraphs"
   />
 
-  <ParagraphActions v-if="data" />
+  <ParagraphActions />
 
   <Messages />
 
@@ -36,7 +36,7 @@
     <FeatureOwnership />
     <FeatureMultiSelect v-if="!isPressingSpace && canEdit && !isTranslation" />
     <FeatureDraggingOverlay />
-    <FeatureAvailableParagraphs v-if="data && canEdit && !isTranslation" />
+    <FeatureAvailableParagraphs v-if="canEdit && !isTranslation" />
 
     <!-- Form -->
     <FeatureDrupalFrame />
@@ -103,23 +103,23 @@ import {
   AddReusableParagraphEvent,
   MutatedParagraphOptions,
   MakeReusableEvent,
+  UpdateParagraphOptionEvent,
+  ImportFromExistingEvent,
 } from './Edit/types'
 import { definitions } from '#nuxt-paragraphs-builder/definitions'
 import '#nuxt-paragraphs-builder/styles'
 import {
   PbMutatedField,
-  PbAllowedBundle,
   PbEditState,
   PbMutation,
   PbViolation,
-  PbType,
   PbEditEntity,
   PbEditMode,
   PbStore,
   PbTranslationState,
-  PbConversion,
+  PbAvailableFeatures,
 } from '../types'
-import adapter from './../adapter/drupal'
+import getAdapter from './../adapter/drupal'
 import { buildDraggableItem, falsy, findParagraphElement } from './Edit/helpers'
 import { ParagraphsBuilderEditStateFragment } from '#build/graphql-operations'
 
@@ -127,9 +127,47 @@ const route = useRoute()
 const router = useRouter()
 const runtimeConfig = useRuntimeConfig().public.paragraphsBuilder
 
+const props = defineProps<{
+  entityType: string
+  entityUuid: string
+  bundle: string
+}>()
+
+const currentLanguage = computed({
+  get() {
+    const v = route.query.language
+    if (v && typeof v === 'string') {
+      return v
+    }
+    return translationState.value.sourceLanguage
+  },
+  set(language) {
+    const path = entity.value.translations.find((v) => v.langcode === language)
+      ?.url
+    if (path) {
+      router.replace({
+        path,
+        query: {
+          ...route.query,
+          language,
+        },
+      })
+    }
+    loadState(language)
+  },
+})
+
+const contextVariables = computed(() => ({
+  entityType: props.entityType.toUpperCase() as any,
+  entityUuid: props.entityUuid || '',
+  langcode: currentLanguage.value || '',
+}))
+
+const adapter = getAdapter(contextVariables.value)
+
 const toolbarLoaded = ref(false)
 
-const availableFeatures = ref({
+const availableFeatures = ref<PbAvailableFeatures>({
   comment: false,
   conversion: false,
   duplicate: false,
@@ -168,30 +206,6 @@ const isPressingSpace = ref(false)
 const showTemplates = ref(false)
 const previewGrantUrl = ref('')
 
-const currentLanguage = computed({
-  get() {
-    const v = route.query.language
-    if (v && typeof v === 'string') {
-      return v
-    }
-    return translationState.value.sourceLanguage
-  },
-  set(language) {
-    const path = entity.value.translations.find((v) => v.langcode === language)
-      ?.url
-    if (path) {
-      router.replace({
-        path,
-        query: {
-          ...route.query,
-          language,
-        },
-      })
-    }
-    loadState(language)
-  },
-})
-
 const canEdit = computed(() => currentUserIsOwner.value)
 const isTranslation = computed(
   () => currentLanguage.value !== translationState.value.sourceLanguage,
@@ -207,26 +221,12 @@ const editMode = computed<PbEditMode>(() => {
 
   return 'editing'
 })
+
 const hasSidebar = computed(() => !!visibleSidebar.value)
-const selectedParagraphType = computed<PbType | undefined>(
-  () =>
-    data.value?.allTypes.find(
-      (v) => v.id === selectedParagraph.value?.paragraphType,
-    ),
-)
-const contextVariables = computed(() => ({
-  entityType: props.entityType.toUpperCase() as any,
-  entityUuid: props.entityUuid,
-  langcode: currentLanguage.value,
-}))
 
 const hasNoParagraphs = computed(
   () => !mutatedFields.value.find((v) => v.field.list?.length),
 )
-
-const allowedTypes = computed<PbAllowedBundle[]>(() => {
-  return data.value?.allowedTypes || []
-})
 
 /**
  * The allowed paragraph types in the current field item list.
@@ -254,7 +254,7 @@ const allowedTypesInList = computed(() => {
  */
 const paragraphTypesWithNested = computed<string[]>(() => {
   return (
-    data.value?.allowedTypes
+    allowedTypes.value
       .filter((v) => v.entityType === 'paragraph')
       .map((v) => v.bundle) || []
   )
@@ -301,12 +301,6 @@ useHead({
   },
 })
 
-const props = defineProps<{
-  entityType: string
-  entityUuid: string
-  bundle: string
-}>()
-
 function onMultiSelectStart() {
   selectedParagraph.value = null
   selectedParagraphs.value = []
@@ -343,10 +337,15 @@ function unlockBody() {
 }
 
 async function mutateWithLoadingState(
-  promise: Promise<MutationResponseLike<ParagraphsBuilderEditStateFragment>>,
+  promise:
+    | Promise<MutationResponseLike<ParagraphsBuilderEditStateFragment>>
+    | undefined,
   errorMessage?: string,
   successMessage?: string,
 ): Promise<boolean> {
+  if (!promise) {
+    return true
+  }
   lockBody()
   try {
     const result = await promise
@@ -377,16 +376,7 @@ async function addNewParagraph(e: AddNewParagraphEvent) {
   }
   const definition = definitions.find((v) => v.bundle === e.item.paragraphType)
   if (definition?.disableEdit) {
-    await mutateWithLoadingState(
-      useGraphqlMutation('addParagraph', {
-        ...contextVariables.value,
-        hostType: e.host.type,
-        hostFieldName: e.host.fieldName,
-        hostUuid: e.host.uuid,
-        afterUuid: e.afterUuid,
-        type: e.type,
-      }),
-    )
+    await mutateWithLoadingState(adapter.addNewParagraph(e))
   }
 }
 
@@ -402,77 +392,14 @@ async function onPersistOptions(items: UpdateParagraphOptionEvent[]) {
   if (!items.length) {
     return
   }
-  if (items.length === 1) {
-    const item = items[0]
-    await mutateWithLoadingState(
-      useGraphqlMutation('updateParagraphOption', {
-        ...contextVariables.value,
-        ...item,
-      }),
-    )
-    return
-  }
-  const persistItems = items.map((v) => {
-    return {
-      uuid: v.uuid,
-      key: v.key,
-      value: v.value,
-      pluginId: 'paragraph_builder_data',
-    }
-  })
-  await mutateWithLoadingState(
-    useGraphqlMutation('bulkUpdateParagraphBehaviorSettings', {
-      ...contextVariables.value,
-      items: persistItems,
-    }),
-  )
+  await mutateWithLoadingState(adapter.updateParagraphOptions(items))
 }
 
 async function addClipboardParagraph(e: AddClipboardParagraphEvent) {
   if (!canEdit.value) {
     return
   }
-  if (e.item.paragraphType === 'text') {
-    await mutateWithLoadingState(
-      useGraphqlMutation('addTextParagraph', {
-        ...contextVariables.value,
-        text: e.item.clipboardData,
-        hostType: e.host.type,
-        hostUuid: e.host.uuid,
-        hostFieldName: e.host.fieldName,
-        afterUuid: e.afterUuid,
-      }),
-      'Der Text-Abschnitt konnte nicht hinzugefügt werden.',
-    )
-  } else if (e.item.paragraphType === 'video_remote') {
-    await mutateWithLoadingState(
-      useGraphqlMutation('addVideoRemoteParagraph', {
-        ...contextVariables.value,
-        url: 'http://www.youtube.com/watch?v=' + e.item.clipboardData,
-        hostType: e.host.type,
-        hostUuid: e.host.uuid,
-        hostFieldName: e.host.fieldName,
-        afterUuid: e.afterUuid,
-      }),
-      'Der Video-Abschnitt konnte nicht hinzugefügt werden.',
-    )
-  } else if (e.item.paragraphType === 'image') {
-    await mutateWithLoadingState(
-      useGraphqlMutation('addImageParagraph', {
-        ...contextVariables.value,
-        data: e.item.clipboardData,
-        fileName: e.item.additional || '',
-        hostType: e.host.type,
-        hostUuid: e.host.uuid,
-        hostFieldName: e.host.fieldName,
-        afterUuid: e.afterUuid,
-      }),
-      'Das Bild konnte nicht hinzugefügt werden.',
-    )
-  }
-  if (visibleSidebar.value === 'clipboard') {
-    visibleSidebar.value = ''
-  }
+  await mutateWithLoadingState(adapter.addClipboardParagraph(e))
 }
 
 async function moveParagraph(e: MoveParagraphEvent) {
@@ -480,14 +407,7 @@ async function moveParagraph(e: MoveParagraphEvent) {
     return
   }
   await mutateWithLoadingState(
-    useGraphqlMutation('moveParagraph', {
-      ...contextVariables.value,
-      uuid: e.item.uuid,
-      hostType: e.host.type,
-      hostUuid: e.host.uuid,
-      hostFieldName: e.host.fieldName,
-      afterUuid: e.afterUuid,
-    }),
+    adapter.moveParagraph(e),
     'Der Abschnitt konnte nicht verschoben werden.',
   )
 }
@@ -497,14 +417,7 @@ async function moveMultipleParagraphs(e: MoveMultipleParagraphsEvent) {
     return
   }
   await mutateWithLoadingState(
-    useGraphqlMutation('moveMultipleParagraphs', {
-      ...contextVariables.value,
-      uuids: e.uuids,
-      hostType: e.host.type,
-      hostUuid: e.host.uuid,
-      hostFieldName: e.host.fieldName,
-      afterUuid: e.afterUuid,
-    }),
+    adapter.moveMultipleParagraphs(e),
     'Die Abschnitte konnte nicht verschoben werden.',
   )
 }
@@ -514,14 +427,7 @@ async function addReusableParagraph(e: AddReusableParagraphEvent) {
     return
   }
   await mutateWithLoadingState(
-    useGraphqlMutation('addReusableParagraph', {
-      ...contextVariables.value,
-      libraryItemId: e.item.libraryItemId,
-      hostType: e.host.type,
-      hostUuid: e.host.uuid,
-      hostFieldName: e.host.fieldName,
-      afterUuid: e.afterUuid,
-    }),
+    adapter.addReusableParagraph(e),
     'Der wiederverwendbare Abschnitt konnte nicht hinzugefügt werden.',
   )
 }
@@ -560,24 +466,19 @@ function setContext(context?: PbEditState) {
   eventBus.emit('updateMutatedFields', { fields: newMutatedFields })
 }
 
-async function loadState(langcode: string) {
-  const { data } = await useGraphqlQuery('paragraphsEditState', {
-    ...contextVariables.value,
-    langcode,
-  })
-
-  setContext(adapter.mapState(data.state))
+async function loadState(langcode?: string | undefined | null) {
+  const state = await adapter.loadState(langcode || currentLanguage.value)
+  if (state) {
+    setContext(adapter.mapState(state))
+  }
   unlockBody()
 }
 
 async function loadAvailableFeatures() {
-  const data = await useGraphqlQuery('paragraphsBuilderAvailableFeatures').then(
-    (v) => v.data.features,
-  )
-  const mutations = data?.mutations || []
+  const data = await adapter.getAvailableFeatures()
   availableFeatures.value.comment = !!data?.comment
   availableFeatures.value.conversion = !!data?.conversion
-  availableFeatures.value.duplicate = mutations.includes('duplicate')
+  availableFeatures.value.duplicate = !!data?.duplicate
   availableFeatures.value.library = !!data?.library
   if (runtimeConfig.disableLibrary) {
     availableFeatures.value.library = false
@@ -612,7 +513,7 @@ function onSelectParagraph(item: DraggableExistingParagraphItem) {
   if (hasNested) {
     // Get the nested paragraph fields.
     const nestedFields =
-      data.value?.allowedTypes
+      allowedTypes.value
         .filter(
           (v) =>
             v.entityType === 'paragraph' && v.bundle === item.paragraphType,
@@ -653,10 +554,7 @@ async function deleteParagraph(uuid: string | null | undefined) {
     return
   }
   await mutateWithLoadingState(
-    useGraphqlMutation('deleteParagraph', {
-      ...contextVariables.value,
-      uuid,
-    }),
+    adapter.deleteParagraph(uuid),
     'Der Abschnitt konnte nicht entfernt werden.',
   )
 
@@ -669,10 +567,7 @@ async function deleteSelectedParagraphs() {
     return
   }
   await mutateWithLoadingState(
-    useGraphqlMutation('deleteMultipleParagraphs', {
-      ...contextVariables.value,
-      uuids,
-    }),
+    adapter.deleteMultipleParagraphs(uuids),
     'Die Abschnitte konnten nicht entfernt werden.',
   )
 
@@ -685,11 +580,7 @@ async function convertParagraph(uuid: string, targetBundle: string) {
     return
   }
   await mutateWithLoadingState(
-    useGraphqlMutation('convertParagraph', {
-      ...contextVariables.value,
-      uuid,
-      targetBundle,
-    }),
+    adapter.convertParagraph(e),
     'Der Abschnitt konnte nicht konvertiert werden.',
   )
 
@@ -701,10 +592,7 @@ async function duplicateParagraph(uuid: string | null | undefined) {
     return
   }
   await mutateWithLoadingState(
-    useGraphqlMutation('duplicateParagraph', {
-      ...contextVariables.value,
-      uuid,
-    }),
+    adapter.duplicateParagraph(uuid),
     'Der Abschnitt konnte nicht dupliziert werden.',
   )
 }
@@ -714,10 +602,7 @@ async function makeParagraphReusable(e: MakeReusableEvent) {
     return
   }
   await mutateWithLoadingState(
-    useGraphqlMutation('makeParagraphReusable', {
-      ...contextVariables.value,
-      ...e,
-    }),
+    adapter.makeParagraphReusable(e),
     'Der Abschnitt konnte nicht wiederverwendbar gemacht werden.',
   )
   selectedParagraph.value = null
@@ -735,24 +620,19 @@ function removeDroppedElements() {
     .forEach((v) => v.classList.remove('pb-multi-select-hidden'))
 }
 
-const { data } = await useLazyAsyncData(() => {
-  return useGraphqlQuery('availableParagraphs').then((v) => {
-    const allTypes = v.data.entityQuery.items?.filter(
-      (v) => v && 'icon' in v,
-    ) as PbType[]
-    const allowedTypes = v.data.paragraphsBuilderAllowedTypes || []
-    const conversions = v.data.paragraphsBuilderConversions || []
-    return { allTypes, allowedTypes, conversions }
-  })
-})
-
-const conversions = computed<PbConversion[]>(
-  () => data.value?.conversions || [],
+const { data: allTypesData } = await useLazyAsyncData(() =>
+  adapter.getAllParagraphTypes(),
 )
+const allTypes = computed(() => allTypesData.value || [])
+
+const { data: allowedTypesData } = await useLazyAsyncData(() =>
+  adapter.getAvailableParagraphTypes(),
+)
+const allowedTypes = computed(() => allowedTypesData.value || [])
 
 async function revertAllChanges() {
   await mutateWithLoadingState(
-    useGraphqlMutation('revertAllChanges', contextVariables.value),
+    adapter.revertAllChanges(),
     'Änderungen konnten nicht verworfen werden.',
     'Alle Änderungen wurden verworfen.',
   )
@@ -790,13 +670,9 @@ function onExitEditor() {
   window.location.href = route.path
 }
 
-async function copyFromExisting(sourceUuid: string, fields: string[]) {
+async function importFromExisting(e: ImportFromExistingEvent) {
   await mutateWithLoadingState(
-    useGraphqlMutation('paragraphsBuilderCopyFromExisting', {
-      ...contextVariables.value,
-      sourceUuid,
-      fields,
-    }),
+    adapter.importFromExisting(e),
     'Inhalte konnten nicht übernommen werden.',
     'Inhalte erfolgreich übernommen.',
   )
@@ -805,39 +681,27 @@ async function copyFromExisting(sourceUuid: string, fields: string[]) {
 
 async function onPublish() {
   await mutateWithLoadingState(
-    useGraphqlMutation('paragraphsBuilderPublish', contextVariables.value),
+    adapter.publish(),
     'Änderungen konnten nicht publiziert werden.',
     'Änderungen erfolgreich publiziert.',
   )
 }
 
 async function undo() {
-  await mutateWithLoadingState(
-    useGraphqlMutation('paragraphsBuilderUndo', contextVariables.value),
-  )
+  await mutateWithLoadingState(adapter.undo())
 }
 
 async function redo() {
-  await mutateWithLoadingState(
-    useGraphqlMutation('paragraphsBuilderRedo', contextVariables.value),
-  )
+  await mutateWithLoadingState(adapter.redo())
 }
 
 async function setMutationIndex(index: number) {
-  await mutateWithLoadingState(
-    useGraphqlMutation('paragraphsBuilderSetHistoryIndex', {
-      ...contextVariables.value,
-      index,
-    }),
-  )
+  await mutateWithLoadingState(adapter.setHistoryIndex(index))
 }
 
 async function takeOwnership() {
   await mutateWithLoadingState(
-    useGraphqlMutation(
-      'paragraphsBuilderTakeOwnership',
-      contextVariables.value,
-    ),
+    adapter.takeOwnership(),
     'Fehler beim Zuweisen.',
     'Sie sind nun der Besitzer.',
   )
@@ -1046,9 +910,9 @@ provide('isEditing', true)
 provide('paragraphsBuilderEditMode', editMode)
 provide('paragraphsBuilderAllowedTypes', allowedTypes)
 provide('paragraphsBuilderEditContext', { eventBus, mutatedParagraphOptions })
-const allTypes = computed(() => data.value?.allTypes || [])
 
 const pbStore: PbStore = {
+  adapter,
   entityType: props.entityType,
   entityUuid: props.entityUuid,
   entityBundle: props.bundle,
@@ -1085,7 +949,6 @@ const pbStore: PbStore = {
   ownerName: readonly(ownerName),
   currentUserIsOwner: readonly(currentUserIsOwner),
   takeOwnership,
-  conversions,
 }
 
 provide('paragraphsBuilderStore', pbStore)

@@ -467,6 +467,26 @@ mutation paragraphsBuilderTakeOwnership(
   }
 }
 
+query pbAllTypes {
+  entityQuery(entityType: PARAGRAPHS_TYPE, limit: 999) {
+    items {
+      ...paragraphsType
+    }
+  }
+}
+
+query pbAllowedTypes {
+  paragraphsBuilderAllowedTypes {
+    ...paragraphsBuilderAllowedType
+  }
+}
+
+query pbConversions {
+  paragraphsBuilderConversions {
+    ...paragraphsBuilderConversion
+  }
+}
+
 query availableParagraphs {
   entityQuery(entityType: PARAGRAPHS_TYPE, limit: 999) {
     items {

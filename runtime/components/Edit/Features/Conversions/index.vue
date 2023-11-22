@@ -50,13 +50,19 @@ import { PbType } from '../../../../types'
 const showConversions = ref(false)
 
 const {
-  conversions,
+  adapter,
   allTypes,
   selectedParagraph,
   allowedTypesInList,
   editMode,
   eventBus,
 } = useParagraphsBuilderStore()
+
+const { data: conversionsData } = await useLazyAsyncData(() =>
+  adapter.getConversions(),
+)
+
+const conversions = computed(() => conversionsData.value || [])
 
 function onConvert(targetBundle?: string) {
   if (!targetBundle || !selectedParagraph.value?.uuid) {

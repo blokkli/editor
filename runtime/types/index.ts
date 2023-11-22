@@ -4,8 +4,17 @@ import {
   MutatedParagraphOptions,
 } from '../components/Edit/types'
 import { eventBus } from './../components/Edit/eventBus'
+import { PbAdapter } from './adapter'
+
+export type PbAvailableFeatures = {
+  comment: boolean
+  conversion: boolean
+  duplicate: boolean
+  library: boolean
+}
 
 export interface PbStore {
+  adapter: PbAdapter<any>
   entityType: string
   entityUuid: string
   entityBundle: string
@@ -15,14 +24,7 @@ export interface PbStore {
   currentMutationIndex: globalThis.Ref<Readonly<number>>
   setMutationIndex: (index: number) => void
 
-  availableFeatures: globalThis.Ref<
-    Readonly<{
-      comment: boolean
-      conversion: boolean
-      duplicate: boolean
-      library: boolean
-    }>
-  >
+  availableFeatures: globalThis.Ref<Readonly<PbAvailableFeatures>>
 
   mutations: globalThis.Ref<Readonly<PbMutation[]>>
 
