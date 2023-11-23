@@ -29,7 +29,7 @@ function buildItemsForField(element: HTMLElement): StructureTreeItem[] {
           uuid: child.dataset.uuid || '',
           bundle,
           type: allTypes.value.find((v) => v.id === bundle),
-          fields: buildTreeForField(child),
+          isNested: child.dataset.hostType === 'paragraph',
         }
       }
     })
@@ -50,6 +50,7 @@ function buildTreeForField(
       if (field instanceof HTMLElement) {
         return {
           name: field.dataset.fieldName || '',
+          label: field.dataset.fieldLabel || '',
           items: buildItemsForField(field),
         }
       }

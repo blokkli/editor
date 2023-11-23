@@ -1,13 +1,35 @@
 .pb.pb-structure {
-  li {
-  }
-  ul {
-    @apply grid gap-10 mx-10;
-  }
-  ul.pb-structure-list {
-    @apply mt-10;
-    > li > h3 {
+  .pb-structure-list {
+    @apply p-20 text-base;
+
+    .pb-structure-icon {
+      @apply w-20 h-20 border rounded bg-slate-100 flex items-center justify-center text-slate-500 mr-5;
+    }
+    .pb-paragraph-icon {
+      font-size: 15px;
+    }
+    li {
+      &.pb-is-nested {
+        @apply ml-20;
+      }
+    }
+    p {
       @apply font-bold;
+    }
+  }
+
+  button {
+    @apply flex items-center text-sm py-10 w-full;
+    &:hover {
+      .pb-structure-icon {
+        @apply bg-slate-500 text-white;
+      }
+    }
+
+    &.pb-is-active {
+      .pb-structure-icon {
+        @apply bg-blue-600 text-white;
+      }
     }
   }
 }
