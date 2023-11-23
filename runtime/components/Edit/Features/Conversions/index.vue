@@ -1,6 +1,6 @@
 <template>
   <Teleport to="#pb-paragraph-actions-title">
-    <div v-if="paragraphType" class="pb-paragraph-actions-type">
+    <div class="pb-paragraph-actions-type">
       <button
         class="pb-paragraph-actions-type-button"
         @click.prevent="showConversions = !showConversions"
@@ -10,8 +10,16 @@
           'is-open': showConversions,
         }"
       >
-        <ParagraphIcon :bundle="paragraphType.id" />
-        <span>{{ paragraphType.label }}</span>
+        <div class="pb-paragraph-actions-title-icon">
+          <ParagraphIcon v-if="paragraphType" :bundle="paragraphType.id" />
+          <IconSelection v-else />
+        </div>
+        <span>{{ title }}</span>
+        <span
+          class="pb-paragraph-actions-title-count"
+          :class="{ 'pb-is-hidden': selectedParagraphs.length <= 1 }"
+          >{{ selectedParagraphs.length }}</span
+        >
         <IconCaret v-if="possibleConversions.length && editingEnabled" />
       </button>
       <div
@@ -42,9 +50,10 @@
 
 <script lang="ts" setup>
 import IconCaret from './../../Icons/Caret.vue'
+import IconSelection from './../../Icons/Selection.vue'
 import ParagraphIcon from './../../ParagraphIcon/index.vue'
 import { icons } from '#nuxt-paragraphs-builder/definitions'
-import { falsy } from './../../helpers'
+import { falsy, onlyUnique } from './../../helpers'
 import { PbType } from '../../../../types'
 
 const showConversions = ref(false)
@@ -52,7 +61,7 @@ const showConversions = ref(false)
 const {
   adapter,
   allTypes,
-  selectedParagraph,
+  selectedParagraphs,
   allowedTypesInList,
   editMode,
   mutateWithLoadingState,
@@ -65,40 +74,55 @@ const { data: conversionsData } = await useLazyAsyncData(() =>
 const conversions = computed(() => conversionsData.value || [])
 
 async function onConvert(targetBundle?: string) {
-  if (!targetBundle || !selectedParagraph.value?.uuid) {
+  if (!targetBundle) {
     return
   }
 
   await mutateWithLoadingState(
-    adapter.convertParagraph({
-      uuid: selectedParagraph.value.uuid,
+    adapter.convertParagraphs(
+      selectedParagraphs.value.map((v) => v.uuid),
       targetBundle,
-    }),
+    ),
     'Der Abschnitt konnte nicht konvertiert werden.',
   )
 }
 
 const editingEnabled = computed(() => editMode.value === 'editing')
 
-const paragraphTypeId = computed(() => selectedParagraph.value?.paragraphType)
-const paragraphType = computed(() =>
-  paragraphTypeId.value
-    ? allTypes.value.find((v) => v.id === paragraphTypeId.value)
-    : undefined,
-)
+const paragraphTypeIds = computed(() => {
+  return selectedParagraphs.value.map((v) => v.paragraphType).filter(onlyUnique)
+})
 
-watch(
-  () => selectedParagraph.value?.uuid,
-  () => {
-    showConversions.value = false
-  },
-)
+const paragraphType = computed(() => {
+  if (paragraphTypeIds.value.length !== 1) {
+    return
+  }
+  return paragraphTypeIds.value
+    ? allTypes.value.find((v) => v.id === paragraphTypeIds.value[0])
+    : undefined
+})
+
+const title = computed(() => {
+  if (paragraphType.value) {
+    return paragraphType.value.label
+  }
+
+  return 'Paragraphen'
+})
+
+watch(selectedParagraphs, () => {
+  showConversions.value = false
+})
 
 const possibleConversions = computed<PbType[]>(() => {
+  if (paragraphTypeIds.value.length !== 1) {
+    return []
+  }
+  const sourceType = paragraphTypeIds.value[0]
   return conversions.value
     .filter(
       (v) =>
-        v.sourceBundle === selectedParagraph.value?.paragraphType &&
+        v.sourceBundle === sourceType &&
         allowedTypesInList.value.includes(v.targetBundle),
     )
     .map((v) => allTypes.value.find((t) => t.id === v.targetBundle))

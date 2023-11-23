@@ -40,6 +40,7 @@
 import Sortable from 'sortablejs'
 import { falsy, onlyUnique } from './../../helpers'
 import ParagraphIcon from './../../ParagraphIcon/index.vue'
+import { DraggableExistingParagraphItem } from '../../types'
 
 const {
   eventBus,
@@ -48,7 +49,7 @@ const {
   entityType,
   entityBundle,
   allTypes,
-  selectedParagraph,
+  selectedParagraphs,
   paragraphTypesWithNested,
   activeFieldKey,
 } = useParagraphsBuilderStore()
@@ -84,44 +85,42 @@ const activeField = computed(() => {
   }
 })
 
-const selectableParagraphTypes = computed(() => {
-  if (selectedParagraph.value) {
-    // If the selected paragraph allows nested paragraphs, return the allowed paragraphs for it.
-    if (
-      paragraphTypesWithNested.value.includes(
-        selectedParagraph.value.paragraphType,
+const getAllowedTypesForSelected = (
+  p: DraggableExistingParagraphItem,
+): string[] => {
+  // If the selected paragraph allows nested paragraphs, return the allowed paragraphs for it.
+  if (paragraphTypesWithNested.value.includes(p.paragraphType)) {
+    return allowedTypes.value
+      .filter(
+        (v) => v.entityType === 'paragraph' && v.bundle === p.paragraphType,
       )
-    ) {
-      return allowedTypes.value
-        .filter(
-          (v) =>
-            v.entityType === 'paragraph' &&
-            v.bundle === selectedParagraph.value?.paragraphType,
-        )
-        .flatMap((v) => v.allowedTypes)
-        .filter(Boolean) as string[]
-    }
-    // If the selected paragraph is inside a nested paragraph, return the allowed paragraphs of the parent paragraph.
-    if (selectedParagraph.value.hostType === 'paragraph') {
-      return allowedTypes.value
-        .filter(
-          (v) =>
-            v.entityType === 'paragraph' &&
-            v.bundle === selectedParagraph.value?.hostBundle,
-        )
-        .flatMap((v) => v.allowedTypes)
-        .filter(Boolean) as string[]
-    } else {
-      return allowedTypes.value
-        .filter(
-          (v) =>
-            v.entityType === entityType &&
-            v.bundle === entityBundle &&
-            v.fieldName === selectedParagraph.value?.hostFieldName,
-        )
-        .flatMap((v) => v.allowedTypes)
-        .filter(Boolean) as string[]
-    }
+      .flatMap((v) => v.allowedTypes)
+      .filter(Boolean) as string[]
+  }
+  // If the selected paragraph is inside a nested paragraph, return the allowed paragraphs of the parent paragraph.
+  if (p.hostType === 'paragraph') {
+    return allowedTypes.value
+      .filter((v) => v.entityType === 'paragraph' && v.bundle === p.hostBundle)
+      .flatMap((v) => v.allowedTypes)
+      .filter(Boolean) as string[]
+  } else {
+    return allowedTypes.value
+      .filter(
+        (v) =>
+          v.entityType === entityType &&
+          v.bundle === entityBundle &&
+          v.fieldName === p.hostFieldName,
+      )
+      .flatMap((v) => v.allowedTypes)
+      .filter(Boolean) as string[]
+  }
+}
+
+const selectableParagraphTypes = computed(() => {
+  if (selectedParagraphs.value.length) {
+    return selectedParagraphs.value.flatMap((v) =>
+      getAllowedTypesForSelected(v),
+    )
   }
   if (activeField.value && activeField.value.hostEntityType === entityType) {
     return (

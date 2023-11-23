@@ -40,14 +40,10 @@ import { falsy } from '../../helpers'
 import PluginMenuButton from './../../Plugin/MenuButton/index.vue'
 import PluginParagraphAction from './../../Plugin/ParagraphAction/index.vue'
 import IconTranslate from './../../Icons/Translate.vue'
+import { DraggableExistingParagraphItem } from '../../types'
 
-const {
-  translationState,
-  currentLanguage,
-  eventBus,
-  editMode,
-  selectedParagraph,
-} = useParagraphsBuilderStore()
+const { translationState, currentLanguage, eventBus, editMode } =
+  useParagraphsBuilderStore()
 
 type TranslationStateItem = {
   id: string
@@ -85,14 +81,10 @@ function onClick(item: TranslationStateItem, event: Event) {
   eventBus.emit('translateEntity', item.id)
 }
 
-function onTranslateParagraph() {
-  if (!selectedParagraph.value) {
-    return
-  }
-
+function onTranslateParagraph(paragraphs: DraggableExistingParagraphItem[]) {
   eventBus.emit('editParagraph', {
-    uuid: selectedParagraph.value.uuid,
-    bundle: selectedParagraph.value.paragraphType,
+    uuid: paragraphs[0].uuid,
+    bundle: paragraphs[0].paragraphType,
   })
 }
 </script>

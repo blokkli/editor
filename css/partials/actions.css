@@ -2,6 +2,12 @@
   #pb-paragraph-actions-title {
     @apply h-full;
   }
+  .pb-paragraph-actions-title-count {
+    @apply bg-slate-50 text-slate-900 inline-block px-3 w-20 h-20 rounded-full ml-10 text-sm font-bold;
+    &.pb-is-hidden {
+      @apply opacity-0;
+    }
+  }
   &.pb-paragraph-actions {
     @apply text-slate-50  select-none text-sm;
   }
@@ -15,6 +21,10 @@
   }
   .pb-paragraph-actions-overlay {
     @apply outline outline-blue-600 outline-offset-1 fixed top-0 left-0 pointer-events-none rounded;
+    > div {
+      @apply absolute top-0 left-0;
+      @apply outline outline-blue-700 outline-1 rounded bg-blue-500/25;
+    }
   }
 
   .pb-paragraph-actions-buttons {
@@ -44,12 +54,15 @@
   }
 
   .pb-paragraph-actions-type-button {
-    @apply flex items-center justify-between cursor-default min-w-[180px] text-slate-300 font-bold h-full pl-10 pr-20 text-base rounded-l;
+    @apply flex items-center justify-between cursor-default min-w-[180px] text-slate-300 font-bold h-full pl-10 pr-20 text-base rounded-l leading-none;
     > span {
       @apply mr-auto;
     }
-    .pb-paragraph-icon {
+    .pb-paragraph-actions-title-icon {
       @apply text-[25px] mr-5;
+      svg {
+        @apply w-[1em] h-[1em] fill-current;
+      }
     }
     &.is-interactive {
       @apply cursor-pointer;

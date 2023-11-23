@@ -5,25 +5,23 @@
     :disabled="editMode !== 'editing'"
     meta
     key-code="D"
+    multiple
   >
     <Icon />
   </PluginParagraphAction>
 </template>
 
 <script lang="ts" setup>
+import { DraggableExistingParagraphItem } from '../../types'
 import Icon from './../../Icons/Duplicate.vue'
 import PluginParagraphAction from './../../Plugin/ParagraphAction/index.vue'
 
-const { selectedParagraph, editMode, adapter, mutateWithLoadingState } =
+const { editMode, adapter, mutateWithLoadingState } =
   useParagraphsBuilderStore()
 
-function onClick() {
-  if (!selectedParagraph.value) {
-    return
-  }
-
+function onClick(items: DraggableExistingParagraphItem[]) {
   mutateWithLoadingState(
-    adapter.duplicateParagraph(selectedParagraph.value.uuid),
+    adapter.duplicateParagraphs(items.map((v) => v.uuid)),
     'Der Abschnitt konnte nicht dupliziert werden.',
   )
 }

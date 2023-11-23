@@ -161,7 +161,7 @@ export type ImportFromExistingEvent = {
 }
 
 export type ParagraphsBuilderEvents = {
-  select: DraggableExistingParagraphItem
+  select: string
   selectAdditional: DraggableExistingParagraphItem
   editParagraph: EditParagraphEvent
   translateParagraph: TranslateParagraphEvent

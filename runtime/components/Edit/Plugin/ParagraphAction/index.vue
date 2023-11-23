@@ -1,8 +1,8 @@
 <template>
   <Teleport to="#pb-paragraph-actions">
     <button
-      :disabled="disabled"
-      @click="$emit('click')"
+      :disabled="isDisabled"
+      @click="onClick"
       :class="{ 'pb-is-active': active }"
     >
       <slot></slot>
@@ -11,31 +11,75 @@
         <ShortcutIndicator
           v-if="keyCode"
           :meta="meta"
-          :key-label="keyCode"
-          @pressed="$emit('click')"
+          :key-code="keyCode"
+          @pressed="onClick"
         />
       </div>
     </button>
   </Teleport>
   <Teleport to="#pb-paragraph-actions-after">
-    <slot name="after" :paragraphUuid="paragraphUuid"></slot>
+    <slot
+      name="after"
+      :paragraphUuid="paragraphUuid"
+      :paragraphs="selectedParagraphs"
+    />
   </Teleport>
 </template>
 
 <script lang="ts" setup>
+import { DraggableExistingParagraphItem } from '../../types'
 import ShortcutIndicator from './../../ShortcutIndicator/index.vue'
 
-const { selectedParagraph } = useParagraphsBuilderStore()
+const { selectedParagraphs } = useParagraphsBuilderStore()
 
-const paragraphUuid = computed(() => selectedParagraph?.value?.uuid)
+const paragraphUuid = computed(() => selectedParagraphs.value[0]?.uuid)
 
-defineProps<{
+const props = defineProps<{
+  /**
+   * The title of the action.
+   */
   title: string
+
+  /**
+   * Whether the action is disabled.
+   */
   disabled?: boolean
+
+  /**
+   * Whether the button should be displayed in an active state (e.g. when it's a dropdown).
+   */
   active?: boolean
-  meta?: boolean
+
+  /**
+   * The key code to use for the shortcut.
+   */
   keyCode?: string
+
+  /**
+   * Wheter the shortcut needs the meta modifier key.
+   */
+  meta?: boolean
+
+  /**
+   * Whether the action supports multiple paragraphs.
+   */
+  multiple?: boolean
 }>()
 
-defineEmits(['click'])
+const isDisabled = computed(
+  () =>
+    props.disabled || (!props.multiple && selectedParagraphs.value.length > 1),
+)
+
+const emit = defineEmits<{
+  (e: 'click', items: DraggableExistingParagraphItem[]): void
+}>()
+
+const onClick = () => {
+  if (isDisabled.value) {
+    return
+  }
+
+  emit('click', selectedParagraphs.value)
+}
 </script>

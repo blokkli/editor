@@ -56,8 +56,11 @@ export interface PbAdapter<T> {
   ): Promise<MutationResponseLike<T>>
   deleteParagraph(uuid: string): Promise<MutationResponseLike<T>>
   deleteMultipleParagraphs(uuids: string[]): Promise<MutationResponseLike<T>>
-  convertParagraph(e: ParagraphConvertEvent): Promise<MutationResponseLike<T>>
-  duplicateParagraph(uuid: string): Promise<MutationResponseLike<T>>
+  convertParagraphs(
+    uuids: string[],
+    targetBundle: string,
+  ): Promise<MutationResponseLike<T>>
+  duplicateParagraphs(uuids: string[]): Promise<MutationResponseLike<T>>
   makeParagraphReusable(e: MakeReusableEvent): Promise<MutationResponseLike<T>>
   importFromExisting(
     e: ImportFromExistingEvent,

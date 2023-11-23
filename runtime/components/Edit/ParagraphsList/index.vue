@@ -19,7 +19,13 @@
       :paragraph="item.paragraph"
       :is-editing="true"
       :index="i"
-      :key="'i_' + item.item?.uuid + entity.uuid + entity.entityTypeId"
+      :key="
+        'i_' +
+        item.item?.uuid +
+        entity.uuid +
+        entity.entityTypeId +
+        item.item.entityBundle
+      "
       :data-id="item"
       :parent-paragraph-bundle="isNested ? entity?.entityBundle : ''"
       data-editing="true"
@@ -169,7 +175,7 @@ function onClick(e: MouseEvent) {
     if (e.metaKey || e.ctrlKey) {
       eventBus.emit('selectAdditional', item)
     } else {
-      eventBus.emit('select', item)
+      eventBus.emit('select', item.uuid)
     }
     e.preventDefault()
     e.stopPropagation()

@@ -51,9 +51,7 @@ export interface PbStore {
   violations: globalThis.Ref<Readonly<PbViolation[]>>
   eventBus: typeof eventBus
 
-  selectedParagraph: globalThis.ComputedRef<
-    DraggableExistingParagraphItem | undefined
-  >
+  selectedParagraphs: globalThis.ComputedRef<DraggableExistingParagraphItem[]>
 
   allowedTypes: globalThis.ComputedRef<PbAllowedBundle[]>
   allowedTypesInList: globalThis.ComputedRef<string[]>
@@ -201,13 +199,13 @@ export interface PbFieldItemFragment<T extends any> {
   paragraph?: T
 }
 
-type PbList = PbFieldItemFragment[]
+type PbList = PbFieldItemFragment<any>[]
 
 export type PbMutatedField = {
   name: string
   label: string
   field: {
-    list?: PbFieldItemFragment[]
+    list?: PbFieldItemFragment<any>[]
   }
 }
 

@@ -1,9 +1,9 @@
 <template>
   <div
     class="pb-multi-select-rectangle"
-    v-show="isIntersecting"
     :style="style"
-  ></div>
+    :class="{ 'pb-is-active': isIntersecting }"
+  />
 </template>
 
 <script lang="ts" setup>

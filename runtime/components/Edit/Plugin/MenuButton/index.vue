@@ -21,6 +21,7 @@ defineProps<{
   description: string
   disabled?: boolean
   type?: 'success' | 'danger'
+  weight?: number
 }>()
 
 const emit = defineEmits(['click'])

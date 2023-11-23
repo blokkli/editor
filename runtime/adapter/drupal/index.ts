@@ -85,16 +85,30 @@ const getDrupalAdapter: PbAdapterFactory<ParagraphsBuilderEditStateFragment> = (
         ...e,
       })
     },
-    duplicateParagraph(uuid) {
-      return useGraphqlMutation('duplicateParagraph', {
+    duplicateParagraphs(uuids) {
+      if (uuids.length === 1) {
+        return useGraphqlMutation('duplicateParagraph', {
+          ...ctx,
+          uuid: uuids[0],
+        })
+      }
+      return useGraphqlMutation('pbDuplicateMultipleParagraphs', {
         ...ctx,
-        uuid,
+        uuids,
       })
     },
-    convertParagraph(e) {
-      return useGraphqlMutation('convertParagraph', {
+    convertParagraphs(uuids, targetBundle) {
+      if (uuids.length === 1) {
+        return useGraphqlMutation('convertParagraph', {
+          ...ctx,
+          uuid: uuids[0],
+          targetBundle,
+        })
+      }
+      return useGraphqlMutation('pbConvertMultiple', {
         ...ctx,
-        ...e,
+        uuids,
+        targetBundle,
       })
     },
     deleteMultipleParagraphs(uuids) {

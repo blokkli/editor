@@ -61,17 +61,49 @@ const { mutatedOptions, canEdit, adapter, mutateWithLoadingState } =
   useParagraphsBuilderStore()
 
 const props = defineProps<{
-  uuid: string
-  reusableBundle?: string
+  uuids: string[]
   paragraphType: string
 }>()
 
-const originalOptionValues = ref<Record<string, string>>({})
-const collectedOptionUpdates = ref<Record<string, string>>({})
+class OptionCollector {
+  options: Record<string, Record<string, string>>
+
+  constructor() {
+    this.options = {}
+  }
+
+  set(uuid: string, key: string, value: string): void {
+    if (!this.options[uuid]) {
+      this.options[uuid] = {}
+    }
+
+    this.options[uuid][key] = value
+  }
+
+  get(uuid: string, key: string): string | undefined {
+    return this.options[uuid]?.[key]
+  }
+
+  getEntries() {
+    return Object.entries(this.options)
+      .map(([uuid, options]) => {
+        return Object.entries(options).map(([key, value]) => {
+          return {
+            uuid,
+            key,
+            value,
+          }
+        })
+      })
+      .flat()
+  }
+}
+
+const original = new OptionCollector()
+const updated = new OptionCollector()
 
 const availableOptions = computed(() => {
-  const actualBundle = props.reusableBundle || props.paragraphType
-  const definition = definitions.find((v) => v.bundle === actualBundle)
+  const definition = definitions.find((v) => v.bundle === props.paragraphType)
   if (!definition) {
     return []
   }
@@ -92,16 +124,20 @@ const availableOptions = computed(() => {
   })
 })
 
-function getOptionValue(key: string, defaultValue: any) {
+function getOptionValue(key: string, defaultValue: any, uuidOverride?: string) {
+  const uuid = uuidOverride || props.uuids[0]
+  if (!uuid) {
+    return
+  }
   if (
-    mutatedOptions.value[props.uuid] &&
-    mutatedOptions.value[props.uuid].paragraph_builder_data &&
+    mutatedOptions.value[uuid] &&
+    mutatedOptions.value[uuid].paragraph_builder_data &&
     Object.prototype.hasOwnProperty.call(
-      mutatedOptions.value[props.uuid].paragraph_builder_data,
+      mutatedOptions.value[uuid].paragraph_builder_data,
       key,
     )
   ) {
-    return mutatedOptions.value[props.uuid].paragraph_builder_data[key]
+    return mutatedOptions.value[uuid].paragraph_builder_data[key]
   }
   if (typeof defaultValue === 'boolean') {
     return defaultValue === true ? '1' : ''
@@ -110,35 +146,35 @@ function getOptionValue(key: string, defaultValue: any) {
 }
 
 function setOptionValue(key: string, value: string) {
-  // First time changing an option value store it in this ref.
-  if (originalOptionValues.value[key] === undefined) {
-    originalOptionValues.value[key] = getOptionValue(key, null)
-  }
+  props.uuids.forEach((uuid) => {
+    // First time changing an option value store it in this ref.
+    if (original.get(uuid, key) === undefined) {
+      original.set(uuid, key, getOptionValue(key, null, uuid))
+    }
 
-  collectedOptionUpdates.value[key] = value
-  if (!mutatedOptions.value[props.uuid]) {
-    mutatedOptions.value[props.uuid] = {}
-  }
-  if (!mutatedOptions.value[props.uuid].paragraph_builder_data) {
-    mutatedOptions.value[props.uuid].paragraph_builder_data = {}
-  }
-  mutatedOptions.value[props.uuid].paragraph_builder_data[key] = value
+    updated.set(uuid, key, value)
+
+    if (!mutatedOptions.value[uuid]) {
+      mutatedOptions.value[uuid] = {}
+    }
+    if (!mutatedOptions.value[uuid].paragraph_builder_data) {
+      mutatedOptions.value[uuid].paragraph_builder_data = {}
+    }
+    mutatedOptions.value[uuid].paragraph_builder_data[key] = value
+  })
 }
 
 onBeforeUnmount(() => {
-  const values = Object.entries(collectedOptionUpdates.value)
-    .map(([key, value]) => {
+  const values = updated
+    .getEntries()
+    .map((entry) => {
       // Check if the original value is the same as the updated value.
       // If yes, we can skip updating it, since it's the same.
-      const originalValue = originalOptionValues.value[key]
-      if (originalValue === value) {
+      const originalValue = original.get(entry.uuid, entry.key)
+      if (originalValue === entry.value) {
         return
       }
-      return {
-        uuid: props.uuid,
-        key,
-        value,
-      }
+      return entry
     })
     .filter(falsy)
 

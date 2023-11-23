@@ -13,7 +13,7 @@
           v-if="keyCode"
           :meta="meta"
           :shift="shift"
-          :key-label="keyCode"
+          :key-code="keyCode"
           @pressed="onClick"
         />
       </div>

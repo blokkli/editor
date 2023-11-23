@@ -1,16 +1,7 @@
 <template>
   <Loading v-if="isInitializing" />
-
-  <Selection
-    v-if="selectedParagraphs.length > 1 && canEdit"
-    :items="selectedParagraphs"
-    :is-pressing-control="isPressingControl"
-  />
-
   <ParagraphActions />
-
   <Messages />
-
   <Toolbar @loaded="toolbarLoaded = true" />
 
   <div v-if="!isInitializing && toolbarLoaded" :key="route.fullPath">
@@ -54,13 +45,12 @@
     <FeatureConversions />
   </div>
 
-  <slot></slot>
+  <slot v-if="!isInitializing"></slot>
 </template>
 
 <script lang="ts" setup>
 import Toolbar from './Edit/Toolbar/index.vue'
 import ParagraphActions from './Edit/ParagraphActions.vue'
-import Selection from './Edit/Features/MultiSelect/Selection/index.vue'
 import Messages from './Edit/Messages/index.vue'
 import Loading from './Edit/Loading/index.vue'
 
@@ -111,7 +101,12 @@ import {
   PbMutateWithLoadingState,
 } from '../types'
 import getAdapter from './../adapter/drupal'
-import { buildDraggableItem, falsy, findParagraphElement } from './Edit/helpers'
+import {
+  buildDraggableItem,
+  falsy,
+  findParagraphElement,
+  onlyUnique,
+} from './Edit/helpers'
 
 const route = useRoute()
 const router = useRouter()
@@ -195,18 +190,8 @@ const selectedParagraphs = computed<DraggableExistingParagraphItem[]>(() =>
     .filter(falsy),
 )
 
-const selectedParagraph = computed<DraggableExistingParagraphItem | undefined>(
-  () => {
-    if (selectedParagraphs.value.length === 1) {
-      return selectedParagraphs.value[0]
-    }
-  },
-)
-
-const activeFieldKey = ref('')
 const violations = ref<PbViolation[]>([])
 const isDragging = ref(false)
-const refreshTrigger = ref(0)
 const currentMutationIndex = ref(-1)
 const mutations = ref<PbMutation[]>([])
 const visibleSidebar = ref('')
@@ -221,6 +206,35 @@ const isTranslation = computed(
   () => currentLanguage.value !== translationState.value.sourceLanguage,
 )
 
+const activeFieldKey = ref('')
+
+watch(selectedParagraphs, () => {
+  if (selectedParagraphs.value.length !== 1) {
+    return
+  }
+  const item = selectedParagraphs.value[0]
+  // Determine if the selected paragraph has nested paragraphs.
+  const hasNested = paragraphTypesWithNested.value.includes(item.paragraphType)
+  if (hasNested) {
+    // Get the nested paragraph fields.
+    const nestedFields =
+      allowedTypes.value
+        .filter(
+          (v) =>
+            v.entityType === 'paragraph' && v.bundle === item.paragraphType,
+        )
+        .map((v) => v.fieldName) || []
+
+    // When we have exactly one nested paragraph field, we can set the active
+    // field key to this field. That way the UI will show this field is active
+    // and display available paragraphs for this field.
+    if (nestedFields.length === 1) {
+      activeFieldKey.value = `${item.uuid}:${nestedFields[0]}`
+    }
+  }
+  activeFieldKey.value = `${item.hostUuid}:${item.hostFieldName}`
+})
+
 const editMode = computed<PbEditMode>(() => {
   if (!canEdit.value) {
     return 'readonly'
@@ -232,8 +246,6 @@ const editMode = computed<PbEditMode>(() => {
   return 'editing'
 })
 
-const hasSidebar = computed(() => !!visibleSidebar.value)
-
 /**
  * The allowed paragraph types in the current field item list.
  *
@@ -241,13 +253,16 @@ const hasSidebar = computed(() => !!visibleSidebar.value)
  * parent field to determine the allowed types.
  */
 const allowedTypesInList = computed(() => {
-  if (selectedParagraph.value) {
+  const hostFieldNames = selectedParagraphs.value
+    .map((v) => v.hostFieldName)
+    .filter(onlyUnique)
+  if (hostFieldNames.length === 1) {
     return allowedTypes.value
       .filter(
         (v) =>
           v.entityType === props.entityType &&
           v.bundle === props.bundle &&
-          v.fieldName === selectedParagraph.value?.hostFieldName,
+          v.fieldName === hostFieldNames[0],
       )
       .flatMap((v) => v.allowedTypes)
       .filter(Boolean) as string[]
@@ -280,12 +295,6 @@ function onSelectEnd(uuids: string[]) {
     .filter(falsy)
   selectedParagraphUuids.value = paragraphs.map((v) => v.uuid)
 }
-
-watch(hasSidebar, (has) =>
-  has
-    ? document.body.classList.add('pb-has-sidebar')
-    : document.body.classList.remove('pb-has-sidebar'),
-)
 
 watch(isPressingSpace, (has) =>
   has
@@ -382,10 +391,8 @@ function onDraggingEnd() {
 
 function setContext(context?: PbEditState) {
   removeDroppedElements()
-  const newMutatedFields = context?.mutatedState?.fields || []
-  mutatedFields.value = newMutatedFields
+
   mutatedParagraphOptions.value = context?.mutatedState?.behaviorSettings || {}
-  refreshTrigger.value = Date.now()
   mutations.value = context?.mutations || []
   violations.value = context?.mutatedState?.violations || []
   const currentIndex = context?.currentIndex
@@ -409,6 +416,9 @@ function setContext(context?: PbEditState) {
     context?.translationState?.sourceLanguage || ''
   translationState.value.availableLanguages =
     context?.translationState?.availableLanguages || []
+
+  const newMutatedFields = context?.mutatedState?.fields || []
+  mutatedFields.value = newMutatedFields
 
   eventBus.emit('updateMutatedFields', { fields: newMutatedFields })
 }
@@ -446,31 +456,9 @@ async function unselectParagraphs() {
   selectedParagraphUuids.value = []
 }
 
-function onSelectParagraph(item: DraggableExistingParagraphItem) {
+function onSelectParagraph(uuid: string) {
   unselectParagraphs()
-  selectedParagraphUuids.value = [item.uuid]
-
-  // Determine if the selected paragraph has nested paragraphs.
-  const hasNested = paragraphTypesWithNested.value.includes(item.paragraphType)
-  if (hasNested) {
-    // Get the nested paragraph fields.
-    const nestedFields =
-      allowedTypes.value
-        .filter(
-          (v) =>
-            v.entityType === 'paragraph' && v.bundle === item.paragraphType,
-        )
-        .map((v) => v.fieldName) || []
-
-    // When we have exactly one nested paragraph field, we can set the active
-    // field key to this field. That way the UI will show this field is active
-    // and display available paragraphs for this field.
-    if (nestedFields.length === 1) {
-      activeFieldKey.value = `${item.uuid}:${nestedFields[0]}`
-      return
-    }
-  }
-  activeFieldKey.value = `${item.hostUuid}:${item.hostFieldName}`
+  selectedParagraphUuids.value = [uuid]
 }
 
 function onSelectParagraphAdditional(item: DraggableExistingParagraphItem) {
@@ -534,7 +522,10 @@ function onWindowMouseDown(e: MouseEvent) {
 }
 
 function onExitEditor() {
-  window.location.href = route.path
+  isInitializing.value = true
+  nextTick(() => {
+    window.location.href = route.path
+  })
 }
 
 function onKeyDown(e: KeyboardEvent) {
@@ -583,7 +574,9 @@ onMounted(async () => {
   eventBus.on('select:start', onMultiSelectStart)
   eventBus.on('select:end', onSelectEnd)
 
-  isInitializing.value = false
+  nextTick(() => {
+    isInitializing.value = false
+  })
 })
 
 onBeforeUnmount(() => {
@@ -605,7 +598,10 @@ onUnmounted(() => {
   eventBus.off('select:end', onSelectEnd)
 })
 
-provide('paragraphsBuilderMutatedFields', mutatedFields)
+provide(
+  'paragraphsBuilderMutatedFields',
+  computed(() => mutatedFields.value),
+)
 provide('isEditing', true)
 provide('paragraphsBuilderEditMode', editMode)
 provide('paragraphsBuilderAllowedTypes', allowedTypes)
@@ -627,7 +623,7 @@ const pbStore: PbStore = {
   allTypes,
   violations: readonly(violations),
   eventBus,
-  selectedParagraph,
+  selectedParagraphs,
   allowedTypesInList,
   allowedTypes,
   paragraphTypesWithNested,

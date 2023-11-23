@@ -11,19 +11,20 @@
 </template>
 
 <script lang="ts" setup>
+import { DraggableExistingParagraphItem } from '../../types'
 import Icon from './../../Icons/Edit.vue'
 import PluginParagraphAction from './../../Plugin/ParagraphAction/index.vue'
 
-const { selectedParagraph, editMode, eventBus } = useParagraphsBuilderStore()
+const { editMode, eventBus } = useParagraphsBuilderStore()
 
-function onClick() {
-  if (!selectedParagraph.value) {
+function onClick(paragraphs: DraggableExistingParagraphItem[]) {
+  if (paragraphs.length !== 1) {
     return
   }
 
   eventBus.emit('editParagraph', {
-    uuid: selectedParagraph.value.uuid,
-    bundle: selectedParagraph.value.paragraphType,
+    uuid: paragraphs[0].uuid,
+    bundle: paragraphs[0].paragraphType,
   })
 }
 </script>

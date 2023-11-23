@@ -107,22 +107,3 @@ const filteredList = computed<Array<Required<PbFieldItemFragment<any>>>>(() => {
 provide('paragraphsBuilderIsNested', true)
 provide('paragraphsBuilderFieldListType', fieldListType)
 </script>
-
-<style lang="postcss">
-.pb-field-paragraphs {
-  position: relative;
-  min-height: 3rem;
-  &:hover {
-    outline: 1px dashed;
-    .pb-field-paragraphs {
-      outline: 1px dashed;
-    }
-  }
-}
-
-.pb-body {
-  .pb-main-canvas {
-    background: white;
-  }
-}
-</style>

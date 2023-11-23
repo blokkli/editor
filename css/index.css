@@ -21,7 +21,7 @@
   font-display: swap;
   font-style: normal;
   font-named-instance: 'Regular';
-  src: url('./Inter.var.woff2') format('woff2');
+  src: url('/Inter.var.woff2') format('woff2');
 }
 
 .pb-html-root,
@@ -51,7 +51,7 @@
   &.pb-init-overlay {
     @apply bg-slate-100/90 fixed top-0 left-0 w-screen h-screen z-[999999999] backdrop-blur-xl flex items-center justify-center;
     svg {
-      @apply w-100 h-100 text-slate-700 animate-spin fill-slate-50;
+      @apply w-100 h-100 text-slate-200 animate-spin fill-slate-400;
     }
   }
 
@@ -148,7 +148,14 @@
   }
 
   .pb-multi-select-rectangle {
-    @apply absolute top-0 left-0 pointer-events-none outline-2 outline-dashed outline-blue-700 outline-offset-2 rounded;
+    @apply absolute top-0 left-0 pointer-events-none  rounded;
+    &:not(.pb-is-active) {
+      @apply outline-2 outline-dashed outline-slate-400 outline-offset-2;
+    }
+
+    &.pb-is-active {
+      @apply outline outline-2 outline-blue-700 outline-offset-2 bg-blue-500/10;
+    }
   }
 }
 
@@ -242,14 +249,6 @@
     @apply w-full h-full fill-current;
   }
 }
-.pb-multi-select-selection-item {
-  @apply relative outline outline-blue-700 outline-4 rounded outline-offset-4 mx-auto;
-
-  > div {
-    @apply absolute;
-    @apply outline outline-blue-700 outline-1 rounded bg-blue-500/25;
-  }
-}
 
 .pb-body {
   @apply overflow-hidden;
@@ -275,14 +274,6 @@
     }
   }
 }
-
-/* .sortable-fallback { */
-/*   @apply relative overflow-hidden; */
-/*   &:before { */
-/*     content: ''; */
-/*     @apply absolute top-0 left-0 w-full h-full bg-blue-500; */
-/*   } */
-/* } */
 
 .pb-list-item.sortable-ghost {
   @apply flex items-center justify-center bg-blue-400 rounded text-white font-sans text-xl;
@@ -322,9 +313,6 @@
   }
   .draggable {
     outline-offset: -3px;
-    &:hover {
-      outline: 2px solid rgba(0, 0, 0, 0.3);
-    }
     a,
     button {
       pointer-events: none;
@@ -351,4 +339,33 @@
 .sortable-fallback {
   pointer-events: none;
   display: none !important;
+}
+
+.pb-field-paragraphs {
+  position: relative;
+  min-height: 3rem;
+}
+
+.pb-body:not(.pb-is-selecting) {
+  .pb-field-paragraphs {
+    &:hover {
+      outline: 1px dashed;
+      .pb-field-paragraphs {
+        outline: 1px dashed;
+      }
+    }
+  }
+  .pb-paragraphs-container {
+    .draggable {
+      &:hover {
+        outline: 2px solid rgba(0, 0, 0, 0.3);
+      }
+    }
+  }
+}
+
+.pb-body {
+  .pb-main-canvas {
+    background: white;
+  }
 }

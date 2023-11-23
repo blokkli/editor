@@ -193,6 +193,14 @@ function onWindowMouseUp(e: MouseEvent) {
   )
 }
 
+watch(isSelecting, (v) => {
+  if (v) {
+    document.body.classList.add('pb-is-selecting')
+  } else {
+    document.body.classList.remove('pb-is-selecting')
+  }
+})
+
 function onWindowMouseDown(e: MouseEvent) {
   selectable.value = []
   isSelecting.value = false

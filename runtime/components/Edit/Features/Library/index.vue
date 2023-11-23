@@ -38,12 +38,20 @@ import { definitions } from '#nuxt-paragraphs-builder/definitions'
 const showReusableDialog = ref(false)
 
 const {
-  selectedParagraph,
+  selectedParagraphs,
   allTypes,
   allowedTypesInList,
   mutateWithLoadingState,
   adapter,
 } = useParagraphsBuilderStore()
+
+const selectedParagraph = computed(() => {
+  if (selectedParagraphs.value.length !== 1) {
+    return
+  }
+
+  return selectedParagraphs.value[0]
+})
 
 const definition = computed(() => {
   return selectedParagraph?.value

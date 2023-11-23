@@ -12,7 +12,7 @@ import { KeyPressedEvent } from '../types'
 const props = defineProps<{
   meta?: boolean
   shift?: boolean
-  keyLabel: string
+  keyCode: string
 }>()
 
 const emit = defineEmits(['pressed'])
@@ -20,8 +20,16 @@ const emit = defineEmits(['pressed'])
 const { eventBus } = useParagraphsBuilderStore()
 
 const key = computed(() =>
-  [props.meta, props.shift, props.keyLabel.toLowerCase()].join('-'),
+  [props.meta, props.shift, props.keyCode.toLowerCase()].join('-'),
 )
+
+const keyLabel = computed(() => {
+  if (props.keyCode === 'Delete') {
+    return 'DEL'
+  }
+
+  return props.keyCode.toUpperCase()
+})
 
 function onKeyPressed(e: KeyPressedEvent) {
   const checkKey = [e.meta, e.shift, e.code.toLowerCase()].join('-')

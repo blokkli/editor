@@ -12,7 +12,7 @@
         <ShortcutIndicator
           v-if="keyCode"
           meta
-          :key-label="keyCode"
+          :key-code="keyCode"
           @pressed="onClick"
         />
       </div>

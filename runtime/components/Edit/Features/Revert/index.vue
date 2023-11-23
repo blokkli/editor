@@ -41,5 +41,6 @@ async function onSubmit() {
     'Änderungen konnten nicht verworfen werden.',
     'Alle Änderungen wurden verworfen.',
   )
+  showConfirm.value = false
 }
 </script>

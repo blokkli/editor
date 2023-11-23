@@ -28,9 +28,10 @@ import Icon from './../../Icons/Clipboard.vue'
 import ClipboardList from './List/index.vue'
 import type { ClipboardItem } from './List/index.vue'
 
-import { KeyPressedEvent } from '../../types'
+import { DraggableExistingParagraphItem, KeyPressedEvent } from '../../types'
 
-const { showSidebar, eventBus, selectedParagraph } = useParagraphsBuilderStore()
+const { showSidebar, eventBus, selectedParagraphs } =
+  useParagraphsBuilderStore()
 
 const ALLOWED_HTML_ATTRIBUTES = ['href']
 
@@ -170,22 +171,23 @@ function setClipboard(text: string) {
   } catch (_e) {}
 }
 
-function copySelectedParagraphToClipboard(uuid: string) {
-  const element = document.querySelector(`[data-uuid="${uuid}"]`)
-  if (element instanceof HTMLElement) {
-    const markup = element.outerHTML
+function copySelectedParagraphToClipboard(
+  items: DraggableExistingParagraphItem[],
+) {
+  const markup = items.map((v) => v.element.outerHTML).join(' ')
+  if (markup) {
     setClipboard(markup)
   }
 }
 
 function onKeyPressed(e: KeyPressedEvent) {
-  if (!selectedParagraph.value) {
+  if (!selectedParagraphs.value.length) {
     return
   }
   if (e.code !== 'c' || !e.meta) {
     return
   }
-  copySelectedParagraphToClipboard(selectedParagraph.value.uuid)
+  copySelectedParagraphToClipboard(selectedParagraphs.value)
 }
 
 onMounted(() => {

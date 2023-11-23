@@ -1,10 +1,19 @@
 <template>
   <Teleport to="body">
     <div
-      v-show="selectedParagraph && !isDragging"
+      v-show="selectedParagraphs.length && !isDragging"
       class="pb pb-paragraph-actions pb-control"
     >
-      <div :style="styleSize" class="pb-paragraph-actions-overlay" />
+      <div :style="styleSize" class="pb-paragraph-actions-overlay">
+        <div
+          v-for="rect in selectedRects"
+          :style="{
+            width: rect.width + 'px',
+            height: rect.height + 'px',
+            transform: `translate(${rect.left}px, ${rect.top}px)`,
+          }"
+        ></div>
+      </div>
 
       <div class="pb-paragraph-actions-inner" :style="innerStyle">
         <div id="pb-paragraph-actions-title" />
@@ -23,21 +32,20 @@
 </template>
 
 <script lang="ts" setup>
-import { buildDraggableItem } from './helpers'
+import { buildDraggableItem, falsy } from './helpers'
 import { AnimationFrameEvent, KeyPressedEvent } from './types'
 
-const showConversions = ref(false)
+type Rectangle = {
+  left: number
+  top: number
+  width: number
+  height: number
+}
 
-const { selectedParagraph, isDragging, eventBus } = useParagraphsBuilderStore()
+const { selectedParagraphs, isDragging, eventBus } = useParagraphsBuilderStore()
 
-watch(
-  () => selectedParagraph.value?.uuid,
-  () => {
-    showConversions.value = false
-  },
-)
-
-const bounds = ref({ width: 0, height: 0, left: 0, top: 0 })
+const bounds = ref<Rectangle>({ width: 0, height: 0, left: 0, top: 0 })
+const selectedRects = ref<Rectangle[]>([])
 
 const innerStyle = computed(() => {
   const x = Math.max(bounds.value.left, 80)
@@ -61,16 +69,65 @@ const styleSize = computed(() => {
   }
 })
 
-function onAnimationFrame(e: AnimationFrameEvent) {
-  if (!selectedParagraph.value) {
+function getBounds(rects: DOMRect[]): Rectangle | undefined {
+  if (!rects.length) {
     return
   }
-  const rect = e.rects[selectedParagraph.value.uuid]
-  if (rect) {
-    bounds.value.top = rect.y
-    bounds.value.left = rect.x
-    bounds.value.width = rect.width
-    bounds.value.height = rect.height
+
+  const firstRect = rects[0]
+  let minX = firstRect.x
+  let minY = firstRect.y
+  let maxX = minX + firstRect.width
+  let maxY = minY + firstRect.height
+
+  for (const rect of rects.slice(1)) {
+    minX = Math.min(minX, rect.x)
+    minY = Math.min(minY, rect.y)
+    maxX = Math.max(maxX, rect.x + rect.width)
+    maxY = Math.max(maxY, rect.y + rect.height)
+  }
+
+  return {
+    left: minX,
+    top: minY,
+    width: maxX - minX,
+    height: maxY - minY,
+  }
+}
+
+function onAnimationFrame(e: AnimationFrameEvent) {
+  if (!selectedParagraphs.value.length) {
+    return
+  }
+  const rects = selectedParagraphs.value
+    .map((paragraph) => {
+      return e.rects[paragraph.uuid]
+    })
+    .filter(falsy)
+  const newBounds = getBounds(rects)
+  if (newBounds) {
+    bounds.value.top = newBounds.top
+    bounds.value.left = newBounds.left
+    bounds.value.width = newBounds.width
+    bounds.value.height = newBounds.height
+  }
+
+  if (selectedParagraphs.value.length === 1) {
+    selectedRects.value = []
+  } else {
+    selectedRects.value = selectedParagraphs.value
+      .map((paragraph) => {
+        const rect = e.rects[paragraph.uuid]
+        if (rect) {
+          return {
+            width: rect.width,
+            height: rect.height,
+            top: rect.y - bounds.value.top,
+            left: rect.x - bounds.value.left,
+          }
+        }
+      })
+      .filter(falsy)
   }
 }
 
@@ -79,7 +136,7 @@ function modulo(n: number, m: number) {
 }
 
 function onKeyPressed(e: KeyPressedEvent) {
-  if (!selectedParagraph.value) {
+  if (selectedParagraphs.value.length !== 1) {
     return
   }
   if (e.code !== 'Tab') {
@@ -95,9 +152,9 @@ function onKeyPressed(e: KeyPressedEvent) {
     return
   }
 
-  const currentIndex = selectedParagraph.value
+  const currentIndex = selectedParagraphs.value[0]
     ? paragraphs.findIndex(
-        (v) => v.dataset.uuid === selectedParagraph.value?.uuid,
+        (v) => v.dataset.uuid === selectedParagraphs.value[0].uuid,
       )
     : -1
 
@@ -122,7 +179,7 @@ function onKeyPressed(e: KeyPressedEvent) {
     block: 'nearest',
   })
 
-  eventBus.emit('select', targetItem)
+  eventBus.emit('select', targetItem.uuid)
 }
 
 onMounted(() => {
