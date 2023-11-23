@@ -2,7 +2,7 @@
   <Loading v-if="isInitializing" />
 
   <Selection
-    v-if="selectedParagraphs.length && canEdit"
+    v-if="selectedParagraphs.length > 1 && canEdit"
     :items="selectedParagraphs"
     :is-pressing-control="isPressingControl"
   />
@@ -170,6 +170,7 @@ const entity = ref<PbEditEntity>({
   status: false,
   translations: [],
 })
+
 const mutatedParagraphOptions = ref<MutatedParagraphOptions>({})
 const translationState = ref<PbTranslationState>({
   isTranslatable: false,
@@ -178,8 +179,30 @@ const translationState = ref<PbTranslationState>({
   translations: [],
 })
 
-const selectedParagraph = ref<DraggableExistingParagraphItem | null>(null)
-const selectedParagraphs = ref<DraggableExistingParagraphItem[]>([])
+const selectedParagraphUuids = ref<string[]>([])
+
+const selectedParagraphs = computed<DraggableExistingParagraphItem[]>(() =>
+  selectedParagraphUuids.value
+    .map((uuid) => {
+      const el = findParagraphElement(uuid)
+      if (el) {
+        const item = buildDraggableItem(el)
+        if (item?.itemType === 'existing') {
+          return item
+        }
+      }
+    })
+    .filter(falsy),
+)
+
+const selectedParagraph = computed<DraggableExistingParagraphItem | undefined>(
+  () => {
+    if (selectedParagraphs.value.length === 1) {
+      return selectedParagraphs.value[0]
+    }
+  },
+)
+
 const activeFieldKey = ref('')
 const violations = ref<PbViolation[]>([])
 const isDragging = ref(false)
@@ -255,11 +278,7 @@ function onSelectEnd(uuids: string[]) {
       }
     })
     .filter(falsy)
-  if (paragraphs.length === 1) {
-    selectedParagraph.value = paragraphs[0]
-  } else {
-    selectedParagraphs.value = paragraphs
-  }
+  selectedParagraphUuids.value = paragraphs.map((v) => v.uuid)
 }
 
 watch(hasSidebar, (has) =>
@@ -281,8 +300,7 @@ useHead({
 })
 
 function onMultiSelectStart() {
-  selectedParagraph.value = null
-  selectedParagraphs.value = []
+  selectedParagraphUuids.value = []
 }
 
 function toggleSidebar(key: string) {
@@ -340,13 +358,17 @@ const mutateWithLoadingState: PbMutateWithLoadingState = async (
 
 function checkDOMState() {
   nextTick(() => {
-    // Check if the currently selected paragraph is still in the DOM.
-    if (selectedParagraph.value) {
-      const el = findParagraphElement(selectedParagraph.value.uuid)
-      if (!el) {
-        selectedParagraph.value = null
-      }
-    }
+    selectedParagraphUuids.value = selectedParagraphUuids.value.filter(
+      (uuid) => {
+        // Check if the currently selected paragraph is still in the DOM.
+        const el = findParagraphElement(uuid)
+        if (el) {
+          return true
+        }
+
+        return false
+      },
+    )
   })
 }
 
@@ -420,13 +442,13 @@ async function onReloadEntity() {
   await loadState(currentLanguage.value)
 }
 
-async function unselectParagraph() {
-  selectedParagraph.value = null
+async function unselectParagraphs() {
+  selectedParagraphUuids.value = []
 }
 
 function onSelectParagraph(item: DraggableExistingParagraphItem) {
-  selectedParagraph.value = item
-  selectedParagraphs.value = []
+  unselectParagraphs()
+  selectedParagraphUuids.value = [item.uuid]
 
   // Determine if the selected paragraph has nested paragraphs.
   const hasNested = paragraphTypesWithNested.value.includes(item.paragraphType)
@@ -452,21 +474,13 @@ function onSelectParagraph(item: DraggableExistingParagraphItem) {
 }
 
 function onSelectParagraphAdditional(item: DraggableExistingParagraphItem) {
-  if (selectedParagraphs.value.find((v) => v.uuid === item.uuid)) {
-    selectedParagraphs.value = selectedParagraphs.value.filter(
-      (v) => v.uuid !== item.uuid,
+  if (selectedParagraphUuids.value.includes(item.uuid)) {
+    selectedParagraphUuids.value = selectedParagraphUuids.value.filter(
+      (uuid) => uuid !== item.uuid,
     )
-    if (selectedParagraphs.value.length === 1) {
-      selectedParagraph.value = selectedParagraphs.value[0]
-      selectedParagraphs.value = []
-    }
     return
   }
-  if (selectedParagraph.value) {
-    selectedParagraphs.value.push(selectedParagraph.value)
-  }
-  selectedParagraphs.value.push(item)
-  unselectParagraph()
+  selectedParagraphUuids.value.push(item.uuid)
 }
 
 function removeDroppedElements() {
@@ -516,7 +530,7 @@ function onWindowMouseDown(e: MouseEvent) {
       activeFieldKey.value = ''
     }
   }
-  unselectParagraph()
+  unselectParagraphs()
 }
 
 function onExitEditor() {
@@ -613,7 +627,7 @@ const pbStore: PbStore = {
   allTypes,
   violations: readonly(violations),
   eventBus,
-  selectedParagraph: readonly(selectedParagraph),
+  selectedParagraph,
   allowedTypesInList,
   allowedTypes,
   paragraphTypesWithNested,

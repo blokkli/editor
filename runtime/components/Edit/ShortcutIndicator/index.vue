@@ -19,17 +19,17 @@ const emit = defineEmits(['pressed'])
 
 const { eventBus } = useParagraphsBuilderStore()
 
+const key = computed(() =>
+  [props.meta, props.shift, props.keyLabel.toLowerCase()].join('-'),
+)
+
 function onKeyPressed(e: KeyPressedEvent) {
-  if (e.code.toLowerCase() !== props.keyLabel.toLowerCase()) {
-    return
-  }
-  if (props.meta && !e.meta) {
-    return
-  }
-  if (props.shift && !e.shift) {
+  const checkKey = [e.meta, e.shift, e.code.toLowerCase()].join('-')
+  if (key.value !== checkKey) {
     return
   }
 
+  e.originalEvent.preventDefault()
   emit('pressed')
 }
 

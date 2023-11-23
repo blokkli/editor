@@ -51,8 +51,8 @@ export interface PbStore {
   violations: globalThis.Ref<Readonly<PbViolation[]>>
   eventBus: typeof eventBus
 
-  selectedParagraph: globalThis.Ref<
-    Readonly<DraggableExistingParagraphItem | null>
+  selectedParagraph: globalThis.ComputedRef<
+    DraggableExistingParagraphItem | undefined
   >
 
   allowedTypes: globalThis.ComputedRef<PbAllowedBundle[]>
@@ -71,8 +71,8 @@ export interface PbStore {
   isPressingControl: globalThis.Ref<Readonly<boolean>>
   isPressingSpace: globalThis.Ref<Readonly<boolean>>
   previewGrantUrl: globalThis.Ref<Readonly<string>>
-  entity: globalThis.Ref<Readonly<PbEditEntity>>
-  translationState: globalThis.Ref<Readonly<PbTranslationState>>
+  entity: globalThis.Readonly<globalThis.Ref<globalThis.Readonly<PbEditEntity>>>
+  translationState: Readonly<globalThis.Ref<Readonly<PbTranslationState>>>
 
   currentLanguage: WritableComputedRef<string | null | undefined>
 
