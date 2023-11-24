@@ -36,6 +36,7 @@ import {
 } from '../../types'
 import type { Rectangle } from './Item/index.vue'
 import Item from './Item/index.vue'
+import { Sortable } from './../../sortable'
 
 const { isPressingControl } = useParagraphsBuilderStore()
 
@@ -186,6 +187,10 @@ function onWindowMouseUp(e: MouseEvent) {
     }
     return
   }
+
+  selected.forEach((item) => {
+    Sortable.utils.select(item.item.element)
+  })
 
   eventBus.emit(
     'select:end',

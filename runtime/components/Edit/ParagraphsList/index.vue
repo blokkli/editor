@@ -4,7 +4,6 @@
     class="pb-paragraphs-container"
     :class="{ 'is-empty': !listToUse.length }"
     :is="tag || 'div'"
-    @click.capture="onClick"
     @dblclick.capture="onDoubleClick"
     :data-field-name="fieldConfig.name"
     :data-field-label="fieldConfig.label"
@@ -50,9 +49,10 @@ export default {
 </script>
 
 <script lang="ts" setup>
-import Sortable, { SortableEvent } from 'sortablejs'
+import type { SortableEvent } from 'sortablejs'
+import { Sortable } from './../sortable'
 import { definitions } from '#nuxt-paragraphs-builder/definitions'
-import { buildDraggableItem } from '../helpers'
+import { buildDraggableItem, falsy } from '../helpers'
 import {
   DraggableExistingParagraphItem,
   DraggableHostData,
@@ -169,19 +169,6 @@ function getItemFromEvent(e: MouseEvent): DraggableItem | undefined {
   }
 }
 
-function onClick(e: MouseEvent) {
-  const item = getItemFromEvent(e)
-  if (item && item.itemType === 'existing') {
-    if (e.metaKey || e.ctrlKey) {
-      eventBus.emit('selectAdditional', item)
-    } else {
-      eventBus.emit('select', item.uuid)
-    }
-    e.preventDefault()
-    e.stopPropagation()
-  }
-}
-
 function onDoubleClick(e: MouseEvent) {
   if (e.ctrlKey) {
     return
@@ -224,13 +211,26 @@ function onUpdate(e: Sortable.SortableEvent) {
   }
   if (item.itemType === 'existing') {
     const previous = getPreviousItem(item.element)
-    if (item.itemType === 'existing') {
-      moveParagraph({
-        item,
-        host: host.value,
-        afterUuid: previous?.uuid,
-      })
+    if (e.items.length > 1) {
+      const uuids = e.items
+        .map((el) => buildDraggableItem(el))
+        .map((v) => (v?.itemType === 'existing' ? v.uuid : undefined))
+        .filter(falsy)
+      if (uuids.length > 1) {
+        return mutateWithLoadingState(
+          adapter.moveMultipleParagraphs({
+            uuids,
+            afterUuid: previous?.uuid,
+            host: host.value,
+          }),
+        )
+      }
     }
+    moveParagraph({
+      item,
+      host: host.value,
+      afterUuid: previous?.uuid,
+    })
   }
 }
 
@@ -257,20 +257,10 @@ function onAdd(e: Sortable.SortableEvent) {
   if (!item) {
     return
   }
+
   e.item.classList.add('pb-moved-item')
-  if (item.itemType === 'multiple_existing') {
-    const previous = getPreviousItem(e.item)
-    const afterUuid = previous?.uuid
-    mutateWithLoadingState(
-      adapter.moveMultipleParagraphs({
-        uuids: item.uuids,
-        host: host.value,
-        afterUuid,
-      }),
-    )
-    return
-  }
-  const afterUuid = getPreviousItem(item.element)?.uuid
+  const afterUuid =
+    'element' in item ? getPreviousItem(item.element)?.uuid : undefined
 
   if (item.itemType === 'new') {
     if (e.newIndex !== undefined) {
@@ -357,12 +347,27 @@ function onPut(_to: Sortable, _from: Sortable, dragEl: HTMLElement) {
   return false
 }
 
+function updateSelection(e: SortableEvent) {
+  const uuids = e.items.map((v) => v.dataset.uuid).filter(falsy)
+  eventBus.emit('select:end', uuids)
+}
+
+function onSelect(e: SortableEvent) {
+  updateSelection(e)
+}
+
+function onDeselect(e: SortableEvent) {
+  updateSelection(e)
+}
+
 onMounted(() => {
   if (container.value) {
     instance = new Sortable(container.value, {
       disabled: editMode?.value !== 'editing',
       forceFallback: true,
       swapThreshold: 0.5,
+      multiDrag: true,
+      multiDragKey: 'ctrl' as any,
       group: {
         name: 'types',
         put: onPut,
@@ -376,6 +381,8 @@ onMounted(() => {
       animation: 200,
       preventOnFilter: true,
       dragoverBubble: false,
+      onSelect,
+      onDeselect,
       onStart,
       onUpdate,
       onEnd,

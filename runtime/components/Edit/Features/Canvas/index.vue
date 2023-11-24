@@ -295,7 +295,6 @@ function onTouchStart(e: TouchEvent) {
 
 function onTouchMove(e: TouchEvent) {
   e.preventDefault()
-  console.log(e.touches)
   if (e.touches.length === 1 && !lastTouchDistance) {
     // Single touch move (panning)
     const diffX = touchStartOffset.x - e.touches[0].clientX
