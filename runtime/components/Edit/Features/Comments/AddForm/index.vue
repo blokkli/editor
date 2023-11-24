@@ -9,7 +9,7 @@
       rows="5"
       required
     />
-    <button @click="emit('add', comment)" class="pb-button pb-is-primary">
+    <button @click="$emit('add', comment)" class="pb-button pb-is-primary">
       Kommentar speichern
     </button>
   </div>

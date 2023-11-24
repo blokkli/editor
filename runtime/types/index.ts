@@ -89,6 +89,8 @@ export interface PbStore {
   isDragging: globalThis.Ref<Readonly<boolean>>
 
   settings: globalThis.Ref<Record<string, any>>
+
+  refreshKey: globalThis.Ref<Readonly<string>>
 }
 
 export type StringBoolean = '0' | '1'
@@ -274,7 +276,7 @@ export interface PbAllowedBundle {
 }
 
 export type PbComment = {
-  id?: string
+  uuid?: string
   targetUuid?: string
   resolved?: boolean
   body?: string

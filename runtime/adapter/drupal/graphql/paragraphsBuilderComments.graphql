@@ -1,5 +1,5 @@
 fragment paragraphsBuilderComment on CommentParagraphsBuilder {
-  id
+  uuid
   targetUuid: fieldTargetUuid
   resolved: fieldResolved
   body: commentBody
@@ -37,7 +37,7 @@ mutation paragraphsBuilderAddComment(
     entityType: $entityType
     entityUuid: $entityUuid
   ) {
-    action: addComment(body: $body, uuid: $targetUuid) {
+    action: addComment(body: $body, paragraphUuid: $targetUuid) {
       ...paragraphsBuilderComment
     }
   }
@@ -46,13 +46,13 @@ mutation paragraphsBuilderAddComment(
 mutation paragraphsBuilderResolveComment(
   $entityType: EntityType!
   $entityUuid: String!
-  $id: ID!
+  $uuid: String!
 ) {
   state: paragraphsEditMutationState(
     entityType: $entityType
     entityUuid: $entityUuid
   ) {
-    action: resolveComment(id: $id) {
+    action: resolveComment(uuid: $uuid) {
       ...paragraphsBuilderComment
     }
   }

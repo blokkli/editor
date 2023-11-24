@@ -1,6 +1,7 @@
 import {
   PbAllowedBundle,
   PbAvailableFeatures,
+  PbComment,
   PbConversion,
   PbEditState,
   PbType,
@@ -71,4 +72,8 @@ export interface PbAdapter<T> {
   redo(): Promise<MutationResponseLike<T>>
   setHistoryIndex(index: number): Promise<MutationResponseLike<T>>
   takeOwnership(): Promise<MutationResponseLike<T>>
+
+  loadComments(): Promise<PbComment[]>
+  addComment(paragraphUuid: string, body: string): Promise<PbComment[]>
+  resolveComment(uuid: string): Promise<PbComment[]>
 }

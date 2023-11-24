@@ -29,7 +29,7 @@
         class="pb-comments-overlay-comments-item"
         v-for="comment in comments"
       >
-        <Comment v-bind="comment" @resolve="resolveComment(comment.id)" />
+        <Comment v-bind="comment" @resolve="resolveComment(comment.uuid)" />
       </div>
       <div class="pb-comments-overlay-form">
         <textarea
@@ -54,17 +54,17 @@
 </template>
 
 <script lang="ts" setup>
-import { PbComment } from './../../../../types'
-import Comment from './../../Comment/index.vue'
-import IconClose from './../../Icons/Close.vue'
-import IconComment from './../../Icons/Comment.vue'
+import { PbComment } from './../../../../../../types'
+import Comment from './../../../../Comment/index.vue'
+import IconClose from './../../../../Icons/Close.vue'
+import IconComment from './../../../../Icons/Comment.vue'
 
 const commentText = ref('')
 const showFullForm = ref(false)
 const emit = defineEmits<{
   (e: 'toggle'): void
   (e: 'addComment', text: string): void
-  (e: 'resolveComment', id: string | number): void
+  (e: 'resolveComment', id: string): void
 }>()
 
 const props = defineProps<{
@@ -88,7 +88,7 @@ function addComment() {
 
 function resolveComment(id: string | number | undefined) {
   if (id) {
-    emit('resolveComment', id)
+    emit('resolveComment', id.toString())
   }
 }
 </script>

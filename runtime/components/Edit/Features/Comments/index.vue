@@ -16,16 +16,17 @@
     title="Kommentieren"
     @click="showAddComment = !showAddComment"
     :active="showAddComment"
+    :weight="100"
   >
     <Icon />
     <template v-if="showAddComment" v-slot:after="{ paragraphUuid }">
-      <CommentAddForm @add="onAddComment(paragraphUuid, $event)" />
+      <CommentAddForm @add="onAddComment($event, paragraphUuid)" />
     </template>
   </PluginParagraphAction>
 
   <CommentsOverlay
     :comments="comments"
-    @add-comment="onAddComment($event.uuid, $event.body)"
+    @add-comment="onAddComment($event.body, $event.uuid)"
     @resolve-comment="onResolveComment($event)"
   />
 </template>
@@ -36,48 +37,22 @@ import PluginParagraphAction from './../../Plugin/ParagraphAction/index.vue'
 import Icon from './../../Icons/Comment.vue'
 import Comment from './../../Comment/index.vue'
 import CommentAddForm from './AddForm/index.vue'
+import CommentsOverlay from './Overlay/index.vue'
 import { PbComment } from '~/modules/nuxt-paragraphs-builder/runtime/types'
 
 const comments = ref<PbComment[]>([])
-
 const showAddComment = ref(false)
+const { adapter } = useParagraphsBuilderStore()
 
-const { entityType, entityUuid } = useParagraphsBuilderStore()
+const loadComments = async () => (comments.value = await adapter.loadComments())
 
-async function loadComments() {
-  comments.value = await useGraphqlQuery('paragraphsBuilderComments', {
-    entityType: entityType.toUpperCase() as any,
-    entityUuid: entityUuid,
-  }).then((v) => v.data.state?.comments || [])
+const onAddComment = async (body: string, uuid: string) => {
+  comments.value = await adapter.addComment(uuid, body)
+  showAddComment.value = false
 }
 
-async function onAddComment(uuid?: string, body: string) {
-  if (!uuid) {
-    return
-  }
-  const result = await useGraphqlMutation('paragraphsBuilderAddComment', {
-    entityType: entityType.toUpperCase() as any,
-    entityUuid: entityUuid,
-    targetUuid: uuid,
-    body,
-  })
-  if (result.data.state?.action) {
-    comments.value = result.data.state.action
-  }
-}
+const onResolveComment = async (uuid: string) =>
+  (comments.value = await adapter.resolveComment(uuid))
 
-async function onResolveComment(id: string | number) {
-  const result = await useGraphqlMutation('paragraphsBuilderResolveComment', {
-    entityType: entityType.toUpperCase() as any,
-    entityUuid: entityUuid,
-    id: String(id),
-  })
-  if (result.data.state?.action) {
-    comments.value = result.data.state.action
-  }
-}
-
-onMounted(() => {
-  loadComments()
-})
+onMounted(loadComments)
 </script>

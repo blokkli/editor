@@ -1,24 +1,27 @@
 <template>
-  <div class="pb pb-comments-overlay pb-control">
-    <Item
-      v-for="item in indicators"
-      v-bind="item"
-      @toggle="toggle(item.target)"
-      @add-comment="$emit('addComment', { body: $event, uuid: item.target })"
-      @resolve-comment="$emit('resolveComment', $event)"
-      :is-reduced="isReduced"
-      :is-left="isLeft"
-      :show-comments="active === item.target"
-    />
-  </div>
+  <Teleport to="body">
+    <div class="pb pb-comments-overlay pb-control">
+      <Item
+        v-for="item in indicators"
+        v-bind="item"
+        @toggle="toggle(item.target)"
+        @add-comment="$emit('addComment', { body: $event, uuid: item.target })"
+        @resolve-comment="$emit('resolveComment', $event)"
+        :is-reduced="isReduced"
+        :is-left="isLeft"
+        :show-comments="active === item.target"
+      />
+    </div>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
-import { PbComment } from '../../../types'
-import { eventBus } from '../eventBus'
-import { falsy } from '../helpers'
-import { AnimationFrameEvent } from '../types'
+import { PbComment } from '../../../../../types'
+import { falsy } from '../../../helpers'
+import { AnimationFrameEvent } from '../../../types'
 import Item from './Item/index.vue'
+
+const { eventBus } = useParagraphsBuilderStore()
 
 const props = defineProps<{
   comments: PbComment[]

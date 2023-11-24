@@ -267,6 +267,27 @@ const getDrupalAdapter: PbAdapterFactory<ParagraphsBuilderEditStateFragment> = (
         previewUrl,
       }
     },
+
+    loadComments() {
+      return useGraphqlQuery('paragraphsBuilderComments', ctx).then(
+        (v) => v.data.state?.comments || [],
+      )
+    },
+
+    addComment(paragraphUuid, body) {
+      return useGraphqlMutation('paragraphsBuilderAddComment', {
+        ...ctx,
+        targetUuid: paragraphUuid,
+        body,
+      }).then((v) => v.data.state?.action || [])
+    },
+
+    resolveComment(uuid) {
+      return useGraphqlMutation('paragraphsBuilderResolveComment', {
+        ...ctx,
+        uuid,
+      }).then((v) => v.data.state?.action || [])
+    },
   }
 }
 
