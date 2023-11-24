@@ -4,6 +4,7 @@
       :disabled="isDisabled"
       @click="onClick"
       :class="{ 'pb-is-active': active }"
+      :style="{ order: weight || 0 }"
     >
       <slot></slot>
       <div class="pb-tooltip">
@@ -64,6 +65,11 @@ const props = defineProps<{
    * Whether the action supports multiple paragraphs.
    */
   multiple?: boolean
+
+  /**
+   * The weight, used for positioning the button.
+   */
+  weight?: number
 }>()
 
 const isDisabled = computed(

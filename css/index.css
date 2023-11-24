@@ -356,10 +356,10 @@
       }
     }
   }
-  .pb-paragraphs-container {
-    .draggable {
-      &:hover {
-        outline: 2px solid rgba(0, 0, 0, 0.3);
+  .pb-main-canvas {
+    &:hover {
+      .draggable {
+        @apply outline-dashed outline-slate-400 outline-[1px];
       }
     }
   }

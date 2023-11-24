@@ -5,6 +5,7 @@
     description="Von einer bestehenden Seite importieren"
     @click="showModal = true"
     :disabled="editMode !== 'editing'"
+    :weight="50"
   >
     <Icon />
   </PluginMenuButton>

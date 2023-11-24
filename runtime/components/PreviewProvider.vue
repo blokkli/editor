@@ -4,12 +4,15 @@
 
 <script lang="ts" setup>
 import { PbMutatedField } from '../types'
+import '#nuxt-paragraphs-builder/styles'
 
 const props = defineProps<{
   entityType: string
   entityUuid: string
   bundle: string
 }>()
+
+const router = useRouter()
 
 let timeout: any = null
 let lastChanged: number = 0
@@ -25,10 +28,6 @@ const mutatedFields = ref<PbMutatedField[]>([])
 
 provide('paragraphsBuilderMutatedFields', mutatedFields)
 provide('paragraphsBuilderPreview', true)
-
-function onWheel(e: WheelEvent) {
-  window.scrollBy(0, e.deltaY / 3)
-}
 
 function onMessage(e: MessageEvent) {
   if (e.data && typeof e.data === 'object') {
@@ -81,8 +80,12 @@ onMounted(() => {
     // editing app. Also native scrolling is disabled and we handle it
     // ourselves.
     document.body.classList.add('pb-body-preview')
-    window.addEventListener('wheel', onWheel)
+    document.documentElement.classList.add('pb-html-preview')
     window.addEventListener('message', onMessage)
+
+    // Prevent navigating away from the preview when clicking Nuxt links.
+    router.push = () => Promise.resolve()
+    router.replace = () => Promise.resolve()
   } else {
     // We are a standalone page in preview mode. Setup polling for changes.
     checkChangedDate()
@@ -92,7 +95,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   clearTimeout(timeout)
   document.body.classList.remove('pb-body-preview')
-  window.removeEventListener('wheel', onWheel)
+  document.documentElement.classList.remove('pb-html-preview')
   window.removeEventListener('message', onMessage)
 })
 </script>

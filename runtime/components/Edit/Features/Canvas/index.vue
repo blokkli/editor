@@ -14,8 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { eventBus } from '../../eventBus'
-import { falsy } from '../../helpers'
+import { buildDraggableItem, falsy } from '../../helpers'
 import IconMagnifier from './../../Icons/Magnifier.vue'
 import PluginToolbarButton from './../../Plugin/ToolbarButton/index.vue'
 
@@ -30,15 +29,37 @@ function resetZoom() {
   updateOffset(getCenterX(), 50)
 }
 
-const zoomLevel = computed(() => {
-  return Math.round(scale.value * 100) + '%'
-})
+type Coord = {
+  x: number
+  y: number
+}
 
 let wrapperEl: HTMLElement | null = null
 let nuxtRootEl: HTMLElement | null = null
 let sidebarEl: HTMLElement | null = null
+const mouseX = ref(0)
+const mouseY = ref(0)
+const zoomFactor = 0.1
+const scale = ref(1)
+const offset: Coord = {
+  x: 0,
+  y: 0,
+}
+const zoomTarget: Coord = { x: 0, y: 0 }
+const zoomPoint: Coord = { x: 0, y: 0 }
+const startMoveoffset: Coord = {
+  x: 0,
+  y: 0,
+}
 
-const { isPressingSpace } = useParagraphsBuilderStore()
+const startMoveOffset: Coord = {
+  x: 0,
+  y: 0,
+}
+
+let targetOffset: Coord | null = null
+
+const { isPressingSpace, eventBus } = useParagraphsBuilderStore()
 
 const previewOpen = ref(false)
 
@@ -49,13 +70,6 @@ watch(previewOpen, (isOpen) => {
     nuxtRootEl?.classList.remove('pb-has-preview-open')
   }
 })
-
-const zoomFactor = 0.1
-const scale = ref(1)
-const offset = {
-  x: 0,
-  y: 0,
-}
 
 function updateOffset(x: number, y: number) {
   if (nuxtRootEl && wrapperEl) {
@@ -69,9 +83,6 @@ function updateOffset(x: number, y: number) {
     offset.y = Math.max(Math.min(y, maxY), minY)
   }
 }
-
-const zoomTarget = { x: 0, y: 0 }
-const zoomPoint = { x: 0, y: 0 }
 
 function onWheel(e: WheelEvent) {
   e.preventDefault()
@@ -109,16 +120,6 @@ function updateStyles() {
       offset.y,
     )}px`
   }
-}
-
-const startMoveoffset = {
-  x: 0,
-  y: 0,
-}
-
-const startMoveOffset = {
-  x: 0,
-  y: 0,
 }
 
 watch(isPressingSpace, (isPressing) => {
@@ -190,8 +191,38 @@ function getCenterX(): number {
   return 0
 }
 
+function lerp(start: number, end: number, t: number) {
+  return start * (1 - t) + end * t
+}
+
+let alpha = 0
+const speed = 0.01 // Animation speed
+const threshold = 1 // Threshold to stop the animation
+
 let raf: any = null
 function loop() {
+  if (targetOffset) {
+    // Check if the current offset is close enough to the target offset
+    if (
+      Math.abs(offset.x - targetOffset.x) < threshold &&
+      Math.abs(offset.y - targetOffset.y) < threshold
+    ) {
+      // We have reached our target.
+      targetOffset = null
+      alpha = 0
+    } else {
+      // Update the offset values
+      const x = lerp(offset.x, targetOffset.x, alpha)
+      const y = lerp(offset.y, targetOffset.y, alpha)
+      updateOffset(x, y)
+
+      // Increase alpha towards 1 at each frame
+      if (alpha < 1) {
+        alpha += speed
+      }
+    }
+  }
+
   updateStyles()
   const canvasRect = wrapperEl?.getBoundingClientRect()
   const rootRect = nuxtRootEl?.getBoundingClientRect()
@@ -246,8 +277,9 @@ function loop() {
   raf = window.requestAnimationFrame(loop)
 }
 
-const mouseX = ref(0)
-const mouseY = ref(0)
+const zoomLevel = computed(() => {
+  return Math.round(scale.value * 100) + '%'
+})
 
 function onMouseMoveGlobal(e: MouseEvent) {
   mouseX.value = e.x
@@ -329,6 +361,35 @@ function getDistanceBetweenTouches(e: TouchEvent) {
   )
 }
 
+function onParagraphScrollIntoView(uuid: string) {
+  const el = document.querySelector(`[data-uuid="${uuid}"]`)
+  if (!(el instanceof HTMLElement)) {
+    return
+  }
+  const item = buildDraggableItem(el)
+  if (item?.itemType !== 'existing') {
+    return
+  }
+
+  const rect = item.element.getBoundingClientRect()
+  targetOffset = {
+    x: offset.x,
+    y: offset.y - rect.y + 50 + window.innerHeight / 2 - rect.height / 2,
+  }
+  alpha = 0
+  // if (rect.y > window.innerHeight - 40) {
+  //   targetOffset = {
+  //     x: offset.x,
+  //     y: offset.y + (window.innerHeight - rect.y - rect.height - 100),
+  //   }
+  // } else if (rect.y < 100) {
+  //   targetOffset = {
+  //     x: offset.x,
+  //     y: offset.y - (rect.y - rect.height - 100),
+  //   }
+  // }
+}
+
 onMounted(() => {
   wrapperEl = document.querySelector('.pb-main-canvas')
   nuxtRootEl = document.querySelector('#nuxt-root')
@@ -343,8 +404,9 @@ onMounted(() => {
   window.addEventListener('touchstart', onTouchStart, { passive: false })
   window.addEventListener('touchmove', onTouchMove, { passive: false })
   window.addEventListener('touchend', onTouchEnd, { passive: false })
-
   document.body.addEventListener('wheel', onWheel, { passive: false })
+
+  eventBus.on('paragraph:scrollIntoView', onParagraphScrollIntoView)
   setInitState()
   updateStyles()
   loop()
@@ -374,5 +436,6 @@ onUnmounted(() => {
   nuxtRootEl?.classList.remove('pb-has-sidebar-open')
   nuxtRootEl?.classList.remove('pb-has-preview-open')
   window.cancelAnimationFrame(raf)
+  eventBus.off('paragraph:scrollIntoView', onParagraphScrollIntoView)
 })
 </script>

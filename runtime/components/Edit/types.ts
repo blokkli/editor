@@ -2,6 +2,14 @@ import type { Ref } from 'vue'
 import type { Emitter } from 'mitt'
 import { PbAvailableLanguage, PbMutatedField } from '../../types'
 
+export type MutatedParagraphOptions = {
+  [uuid: string]: {
+    [pluginId: string]: {
+      [key: string]: string
+    }
+  }
+}
+
 export interface DraggableHostData {
   type: string
   uuid: string
@@ -160,6 +168,11 @@ export type ImportFromExistingEvent = {
   sourceFields: string[]
 }
 
+export type ParagraphConvertEvent = {
+  uuid: string
+  targetBundle: string
+}
+
 export type ParagraphsBuilderEvents = {
   select: string
   selectAdditional: DraggableExistingParagraphItem
@@ -199,10 +212,8 @@ export type ParagraphsBuilderEvents = {
   'select:end': string[]
 
   'paragraph:convert': ParagraphConvertEvent
-}
-export type ParagraphConvertEvent = {
-  uuid: string
-  targetBundle: string
+
+  'paragraph:scrollIntoView': string
 }
 
 export type ParagraphsBuilderEventBus = Emitter<ParagraphsBuilderEvents>
@@ -215,14 +226,6 @@ export type ParagraphsBuilderEditContext = {
 export interface ParagraphOptionsOverride {
   uuid: Ref<string>
   options: Ref<Record<string, any>>
-}
-
-export type MutatedParagraphOptions = {
-  [uuid: string]: {
-    [pluginId: string]: {
-      [key: string]: string
-    }
-  }
 }
 
 export default {}

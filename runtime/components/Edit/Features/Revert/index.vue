@@ -5,6 +5,7 @@
     type="danger"
     @click="showConfirm = true"
     :disabled="!mutations.length || !canEdit"
+    :weight="10"
   >
     <Icon />
   </PluginMenuButton>

@@ -5,6 +5,7 @@
       :disabled="disabled"
       @click="onClick"
       :class="type ? 'pb-is-' + type : ''"
+      :style="{ order: weight || 0 }"
     >
       <div class="pb-toolbar-menu-list-icon">
         <slot></slot>

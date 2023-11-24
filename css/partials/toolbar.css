@@ -69,6 +69,10 @@
       content: '';
       @apply absolute top-0 left-0 w-full h-50 bg-white;
     }
+    > div {
+      @apply grid;
+      @apply border-t border-t-slate-200;
+    }
     #pb-toolbar-menu-secondary {
       @apply mt-auto;
     }
@@ -77,9 +81,6 @@
     @apply grid items-center pl-10 pr-20 py-15 gap-x-15 w-full text-left whitespace-nowrap text-slate-950;
     @apply hover:bg-slate-100;
     @apply border-b border-b-slate-200;
-    &:first-child {
-      @apply border-t border-t-slate-200;
-    }
     grid-template-columns: auto 1fr;
     grid-template-rows: auto auto;
     &[disabled] {

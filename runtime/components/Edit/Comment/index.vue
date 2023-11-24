@@ -24,7 +24,7 @@ defineEmits<{
 }>()
 
 const props = defineProps<{
-  id?: string | number
+  uuid?: string | number
   targetUuid?: string
   resolved?: boolean
   body?: string

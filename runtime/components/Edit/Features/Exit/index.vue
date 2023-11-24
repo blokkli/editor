@@ -3,6 +3,7 @@
     title="Schliessen"
     description="Editor schliessen ohne veröffentlichen"
     @click="eventBus.emit('exitEditor')"
+    :weight="100"
   >
     <Icon />
   </PluginMenuButton>

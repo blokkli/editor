@@ -22,6 +22,7 @@
     description="Alle Paragraphen übersetzen"
     @click="eventBus.emit('batchTranslate')"
     :disabled="editMode !== 'translating'"
+    :weight="60"
   >
     <IconTranslate />
   </PluginMenuButton>

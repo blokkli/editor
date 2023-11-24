@@ -1,12 +1,19 @@
 .pb.pb-structure {
+  @apply min-h-full;
   .pb-structure-list {
-    @apply p-20 text-base;
+    @apply text-base;
 
     .pb-structure-icon {
-      @apply w-20 h-20 border rounded bg-slate-100 flex items-center justify-center text-slate-500 mr-5;
+      @apply w-25 h-25 border rounded bg-slate-100 flex items-center justify-center text-slate-500 mr-10;
     }
     .pb-paragraph-icon {
-      font-size: 15px;
+      font-size: 18px;
+    }
+    > li {
+      @apply p-20 border-b;
+      > ul {
+        @apply mt-10;
+      }
     }
     li {
       &.pb-is-nested {
@@ -14,7 +21,7 @@
       }
     }
     p {
-      @apply font-bold;
+      @apply font-medium uppercase text-xs text-slate-800;
     }
   }
 
@@ -22,7 +29,7 @@
     @apply flex items-center text-sm py-10 w-full;
     &:hover {
       .pb-structure-icon {
-        @apply bg-slate-500 text-white;
+        @apply bg-slate-300 text-slate-900;
       }
     }
 

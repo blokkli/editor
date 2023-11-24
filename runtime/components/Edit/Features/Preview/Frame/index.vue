@@ -4,21 +4,13 @@
       <IconSpinner />
     </div>
     <div class="pb-preview-iframe">
-      <iframe
-        ref="iframe"
-        :src="src"
-        scrolling="no"
-        @load="isLoading = false"
-      ></iframe>
+      <iframe ref="iframe" :src="src" @load="isLoading = false" />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import {
-  DraggableExistingParagraphItem,
-  UpdateMutatedFieldsEvent,
-} from '../../../types'
+import { UpdateMutatedFieldsEvent } from '../../../types'
 import IconSpinner from './../../../Icons/Spinner.vue'
 const route = useRoute()
 
@@ -26,7 +18,7 @@ const { eventBus } = useParagraphsBuilderStore()
 
 const isLoading = ref(true)
 const iframe = ref<HTMLIFrameElement | null>(null)
-const width = ref(375)
+const width = ref(400)
 
 const style = computed(() => {
   return {
@@ -49,8 +41,8 @@ function onUpdateMutatedFields(e: UpdateMutatedFieldsEvent) {
   postMessageToIframe('paragraphsBuilderMutatedFields', e.fields)
 }
 
-function onSelectParagraph(e: DraggableExistingParagraphItem) {
-  postMessageToIframe('paragraphsBuilderFocus', e.uuid)
+function onSelectParagraph(uuid: string) {
+  postMessageToIframe('paragraphsBuilderFocus', uuid)
 }
 
 onMounted(() => {

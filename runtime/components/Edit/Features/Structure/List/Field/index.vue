@@ -1,9 +1,10 @@
 <template>
-  <li v-for="field in fields" class="pb-structure-field">
+  <li v-for="field in fields" class="pb-structure-field" :key="field.name">
     <p class="pb-is-field">{{ field.label }}</p>
-    <ul v-if="field.items">
+    <ul v-if="field.items?.length">
       <li
         v-for="item in field.items"
+        :key="item.uuid"
         :class="{ 'pb-is-nested': item.isNested }"
       >
         <button
@@ -22,8 +23,8 @@
 </template>
 
 <script lang="ts" setup>
-import { PbType } from './../../../../../types'
-import ParagraphIcon from './../../../ParagraphIcon/index.vue'
+import { PbType } from './../../../../../../types'
+import ParagraphIcon from './../../../../ParagraphIcon/index.vue'
 
 const { selectedParagraphs, eventBus } = useParagraphsBuilderStore()
 
@@ -31,7 +32,10 @@ const uuids = computed(() => selectedParagraphs.value.map((v) => v.uuid))
 
 const isSelected = (uuid: string) => uuids.value.includes(uuid)
 
-const select = (uuid: string) => eventBus.emit('select', uuid)
+const select = (uuid: string) => {
+  eventBus.emit('select', uuid)
+  eventBus.emit('paragraph:scrollIntoView', uuid)
+}
 
 export type StructureTreeItem = {
   uuid: string

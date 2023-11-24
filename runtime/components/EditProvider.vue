@@ -185,6 +185,7 @@ const availableFeatures = ref<PbAvailableFeatures>({
   duplicate: false,
   library: false,
 })
+const refreshKey = ref('')
 const currentUserIsOwner = ref(false)
 const ownerName = ref('')
 const mutatedFields = ref<PbMutatedField[]>([])
@@ -374,7 +375,7 @@ const mutateWithLoadingState: PbMutateWithLoadingState = async (
     unlockBody()
     if (result.data.state?.action?.state) {
       setContext(adapter.mapState(result.data.state?.action?.state))
-    } else {
+    } else if (!result.data.state?.action?.success) {
       throw new Error('Unexpected error.')
     }
     if (successMessage) {
@@ -450,6 +451,8 @@ function setContext(context?: PbEditState) {
   mutatedFields.value = newMutatedFields
 
   eventBus.emit('updateMutatedFields', { fields: newMutatedFields })
+
+  refreshKey.value = Date.now().toString()
 }
 
 async function loadState(langcode?: string | undefined | null) {
@@ -676,6 +679,7 @@ const pbStore: PbStore = {
   mutateWithLoadingState,
   isDragging: readonly(isDragging),
   settings,
+  refreshKey: readonly(refreshKey),
 }
 
 provide('paragraphsBuilderStore', pbStore)
