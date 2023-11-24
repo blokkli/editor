@@ -1,4 +1,24 @@
 .pb {
+  .pb-checkbox-toggle {
+    @apply relative inline-flex items-center cursor-pointer h-full text-slate-800 leading-none;
+    @apply hover:text-slate-950;
+    input {
+      @apply sr-only;
+    }
+    input:checked + div {
+      @apply after:translate-x-full after:border-white bg-blue-800;
+    }
+    input:not(:checked):hover + div {
+      @apply bg-slate-500;
+    }
+    > div {
+      @apply relative w-[36px] h-20 bg-slate-400 rounded-full;
+      @apply after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-[16px] after:w-[16px] after:transition-all;
+    }
+    > span {
+      @apply inline-block pl-10 text-base;
+    }
+  }
   .pb-paragraph-options-checkbox {
     @apply relative inline-flex items-center cursor-pointer h-full px-10 text-slate-200;
     @apply hover:bg-slate-800 hover:text-slate-50;

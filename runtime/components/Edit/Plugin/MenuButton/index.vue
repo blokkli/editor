@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="#pb-toolbar-menu">
+  <Teleport :to="to">
     <button
       class="pb-toolbar-menu-list-button"
       :disabled="disabled"
@@ -16,17 +16,22 @@
 </template>
 
 <script lang="ts" setup>
-defineProps<{
+const props = defineProps<{
   title: string
   description: string
   disabled?: boolean
   type?: 'success' | 'danger'
   weight?: number
+  secondary?: boolean
 }>()
 
 const emit = defineEmits(['click'])
 
 const { eventBus } = useParagraphsBuilderStore()
+
+const to = computed(
+  () => `#pb-toolbar-menu-${props.secondary ? 'secondary' : 'primary'}`,
+)
 
 function onClick() {
   eventBus.emit('closeMenu')

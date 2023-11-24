@@ -16,11 +16,10 @@
             </button>
 
             <transition name="pb-menu" :duration="200">
-              <div
-                v-show="menuVisible"
-                class="pb-toolbar-menu-list"
-                id="pb-toolbar-menu"
-              />
+              <div v-show="menuVisible" class="pb-toolbar-menu-list">
+                <div id="pb-toolbar-menu-primary" />
+                <div id="pb-toolbar-menu-secondary" />
+              </div>
             </transition>
           </div>
         </div>

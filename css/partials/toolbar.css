@@ -69,6 +69,9 @@
       content: '';
       @apply absolute top-0 left-0 w-full h-50 bg-white;
     }
+    #pb-toolbar-menu-secondary {
+      @apply mt-auto;
+    }
   }
   .pb-toolbar-menu-list-button {
     @apply grid items-center pl-10 pr-20 py-15 gap-x-15 w-full text-left whitespace-nowrap text-slate-950;

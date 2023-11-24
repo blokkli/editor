@@ -29,7 +29,7 @@
   <Teleport to="body">
     <PreviewFrame v-if="previewVisible" />
 
-    <Transition appear name="pb-slide-up" :duration="900">
+    <Transition appear name="pb-slide-up">
       <PbDialog
         v-if="qrCodeVisible"
         title="Vorschau mit Smartphone"

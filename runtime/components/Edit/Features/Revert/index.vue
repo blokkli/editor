@@ -10,7 +10,7 @@
   </PluginMenuButton>
 
   <Teleport to="body">
-    <transition appear name="pb-slide-up" :duration="900">
+    <transition appear name="pb-slide-up">
       <PbDialog
         v-if="showConfirm"
         title="Änderungen unwiderruflich verwerfen"

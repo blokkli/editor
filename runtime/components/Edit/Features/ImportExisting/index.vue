@@ -10,7 +10,7 @@
   </PluginMenuButton>
 
   <Teleport to="body">
-    <transition appear name="pb-slide-up" :duration="900">
+    <transition appear name="pb-slide-up">
       <ExistingDialog
         v-if="showModal"
         @confirm="onSubmit($event.sourceUuid, $event.fields)"
@@ -32,6 +32,7 @@ const {
   adapter,
   mutateWithLoadingState,
   mutations,
+  settings,
 } = useParagraphsBuilderStore()
 
 const hasNoParagraphs = computed(
@@ -55,7 +56,11 @@ function onSubmit(sourceUuid: string, sourceFields: string[]) {
 
 onMounted(() => {
   // Show the import dialog when there are no paragraphs yet and no mutations.
-  if (hasNoParagraphs.value && !mutations.value.length) {
+  if (
+    hasNoParagraphs.value &&
+    !mutations.value.length &&
+    settings.value.showImport
+  ) {
     showModal.value = true
   }
 })

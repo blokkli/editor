@@ -69,7 +69,7 @@ import {
   PbEditMode,
 } from '../../../types'
 
-const { adapter, mutateWithLoadingState, eventBus } =
+const { adapter, mutateWithLoadingState, eventBus, isPressingControl } =
   useParagraphsBuilderStore()
 
 let instance: Sortable | null = null
@@ -348,8 +348,19 @@ function onPut(_to: Sortable, _from: Sortable, dragEl: HTMLElement) {
 }
 
 function updateSelection(e: SortableEvent) {
-  const uuids = e.items.map((v) => v.dataset.uuid).filter(falsy)
-  eventBus.emit('select:end', uuids)
+  if (isPressingControl.value) {
+    const uuids = e.items.map((v) => v.dataset.uuid).filter(falsy)
+    eventBus.emit('select:end', uuids)
+  } else {
+    const item = buildDraggableItem(e.item)
+    if (item?.itemType === 'existing') {
+      document.querySelectorAll('.sortable-selected').forEach((el) => {
+        Sortable.utils.deselect(el as any)
+      })
+      Sortable.utils.select(item.element)
+      eventBus.emit('select', item.uuid)
+    }
+  }
 }
 
 function onSelect(e: SortableEvent) {
@@ -368,6 +379,7 @@ onMounted(() => {
       swapThreshold: 0.5,
       multiDrag: true,
       multiDragKey: 'ctrl' as any,
+      avoidImplicitDeselect: false,
       group: {
         name: 'types',
         put: onPut,

@@ -1,5 +1,5 @@
 .pb-form-label {
-  @apply !block !mb-3 !text-base !font-semibold !text-gray-900 !font-sans;
+  @apply !block !mb-10 !text-base !font-semibold !text-gray-900 !font-sans;
 }
 
 .pb-form-input {
@@ -47,6 +47,6 @@
   }
 
   .pb-form-section {
-    @apply border-t pt-20 my-20;
+    @apply border-t pt-20 my-20 last:mb-0;
   }
 }

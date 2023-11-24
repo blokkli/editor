@@ -87,6 +87,8 @@ export interface PbStore {
   conversions: globalThis.ComputedRef<PbConversion[]>
 
   isDragging: globalThis.Ref<Readonly<boolean>>
+
+  settings: globalThis.Ref<Record<string, any>>
 }
 
 export type StringBoolean = '0' | '1'
@@ -328,5 +330,10 @@ interface PbMutationResponseLike<T> {
 }
 
 export type PbEditMode = 'readonly' | 'editing' | 'translating'
+
+export interface PbSettings {
+  showImport: boolean | undefined
+  persistCanvas: boolean | undefined
+}
 
 export default {}

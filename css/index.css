@@ -14,6 +14,7 @@
 @import './partials/resizable.css';
 @import './partials/fieldAreas.css';
 @import './partials/messages.css';
+@import './partials/settings.css';
 
 @font-face {
   font-family: 'PB Inter';

@@ -227,7 +227,7 @@ function onWindowMouseDown(e: MouseEvent) {
         window.addEventListener('mousemove', onWindowMouseMove)
         selectable.value = getSelectableElements()
         isSelecting.value = true
-      }, 100)
+      }, 30)
     }
   }
 }

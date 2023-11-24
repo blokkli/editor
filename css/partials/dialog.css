@@ -19,12 +19,8 @@
     }
   }
   .pb-dialog-footer {
-    @apply flex gap-10;
+    @apply flex gap-10 mt-30;
   }
-}
-
-.pb-dialog-form {
-  @apply mb-30;
 }
 
 .pb-dialog-content-element {

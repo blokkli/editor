@@ -35,6 +35,7 @@
     <FeaturePublish />
     <FeatureRevert />
     <FeatureImportExisting />
+    <FeatureSettings />
     <FeatureExit />
 
     <!-- Paragraph Actions -->
@@ -81,6 +82,9 @@ import FeatureMultiSelect from './Edit/Features/MultiSelect/index.vue'
 import FeatureDraggingOverlay from './Edit/Features/DraggingOverlay/index.vue'
 import FeatureAvailableParagraphs from './Edit/Features/AvailableParagraphs/index.vue'
 import FeatureConversions from './Edit/Features/Conversions/index.vue'
+import FeatureSettings from './Edit/Features/Settings/index.vue'
+
+import { Sortable } from './Edit/sortable'
 
 import { eventBus, emitMessage } from './Edit/eventBus'
 import {
@@ -149,6 +153,31 @@ const adapter = getAdapter({
 })
 
 const toolbarLoaded = ref(false)
+
+const settings = ref<Record<string, any>>({})
+
+watch(
+  () => Object.values(settings.value),
+  () => {
+    window.localStorage.setItem('_pb_settings', JSON.stringify(settings.value))
+  },
+)
+
+function restoreSettings() {
+  try {
+    const stringified = localStorage.getItem('_pb_settings')
+    if (stringified) {
+      const data = JSON.parse(stringified)
+      if (data && typeof data === 'object' && data !== null) {
+        settings.value = data
+      }
+      return
+    }
+  } catch (_e) {}
+  // Set defaults if no custom settings found.
+  settings.value.showImport = true
+  settings.value.persistCanvas = true
+}
 
 const availableFeatures = ref<PbAvailableFeatures>({
   comment: false,
@@ -454,6 +483,9 @@ async function onReloadEntity() {
 
 async function unselectParagraphs() {
   selectedParagraphUuids.value = []
+  document.querySelectorAll('.sortable-selected').forEach((el) => {
+    Sortable.utils.deselect(el as any)
+  })
 }
 
 function onSelectParagraph(uuid: string) {
@@ -559,6 +591,7 @@ useHead({
 })
 
 onMounted(async () => {
+  restoreSettings()
   await loadAvailableFeatures()
   await loadState(currentLanguage.value)
   document.addEventListener('keydown', onKeyDown)
@@ -642,6 +675,7 @@ const pbStore: PbStore = {
   currentUserIsOwner: readonly(currentUserIsOwner),
   mutateWithLoadingState,
   isDragging: readonly(isDragging),
+  settings,
 }
 
 provide('paragraphsBuilderStore', pbStore)

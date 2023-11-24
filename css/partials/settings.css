@@ -1,0 +1,7 @@
+.pb-settings-checkboxes {
+  @apply grid gap-10;
+}
+
+.pb-settings-buttons {
+  @apply grid gap-10;
+}
