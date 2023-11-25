@@ -152,3 +152,15 @@ export function getRelativeTimeString(
   const rtf = new Intl.RelativeTimeFormat(lang, { numeric: 'auto' })
   return rtf.format(Math.floor(deltaSeconds / divisor), units[unitIndex])
 }
+
+export function removeDroppedElements() {
+  document
+    .querySelectorAll('.pb-paragraphs-container .pb-clone')
+    .forEach((v) => v.remove())
+  document
+    .querySelectorAll('.pb-paragraphs-container .pb-moved-item')
+    .forEach((v) => v.remove())
+  document
+    .querySelectorAll('.pb-multi-select-hidden')
+    .forEach((v) => v.classList.remove('pb-multi-select-hidden'))
+}

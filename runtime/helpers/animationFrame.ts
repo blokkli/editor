@@ -6,6 +6,11 @@ export default function () {
   const mouseY = ref(0)
   let raf: any = null
 
+  function onMouseMoveGlobal(e: MouseEvent) {
+    mouseX.value = e.x
+    mouseY.value = e.y
+  }
+
   const loop = () => {
     // Let the "Artboard" feature alter the position/scale of the root element
     // before triggering the main animation loop event.
@@ -71,9 +76,13 @@ export default function () {
 
   onMounted(() => {
     loop()
+    window.addEventListener('mousemove', onMouseMoveGlobal, {
+      passive: false,
+    })
   })
 
   onBeforeUnmount(() => {
     window.cancelAnimationFrame(raf)
+    window.removeEventListener('mousemove', onMouseMoveGlobal)
   })
 }

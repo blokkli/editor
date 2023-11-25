@@ -269,11 +269,6 @@ const zoomLevel = computed(
   () => Math.round((animationTarget.value?.scale || scale.value) * 100) + '%',
 )
 
-function onMouseMoveGlobal(e: MouseEvent) {
-  mouseX.value = e.x
-  mouseY.value = e.y
-}
-
 /**
  * Restore the last canvas state if possible.
  */
@@ -371,9 +366,6 @@ onMounted(() => {
   nuxtRootEl = document.querySelector('#nuxt-root')
   window.addEventListener('mousedown', onMouseDown)
   window.addEventListener('mouseup', onMouseUp)
-  window.addEventListener('mousemove', onMouseMoveGlobal, {
-    passive: false,
-  })
 
   window.addEventListener('touchstart', onTouchStart, { passive: false })
   window.addEventListener('touchmove', onTouchMove, { passive: false })
@@ -404,7 +396,6 @@ onUnmounted(() => {
   document.body.removeEventListener('wheel', onWheel)
   window.removeEventListener('mousedown', onMouseDown)
   window.removeEventListener('mouseup', onMouseUp)
-  window.removeEventListener('mousemove', onMouseMoveGlobal)
   window.removeEventListener('touchstart', onTouchStart)
   window.removeEventListener('touchmove', onTouchMove)
   window.removeEventListener('touchend', onTouchEnd)
