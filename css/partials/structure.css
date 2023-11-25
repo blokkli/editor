@@ -21,11 +21,6 @@
 
   button {
     @apply py-10 w-full;
-    &:hover {
-      .pb-paragraph-label-icon {
-        @apply bg-slate-200 text-slate-900 border-slate-400;
-      }
-    }
   }
 
   .pb-structure-field-paragraphs {

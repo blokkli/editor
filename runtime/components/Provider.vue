@@ -7,7 +7,6 @@
         v-if="isPreviewing"
         :entity-type="entityType"
         :entity-uuid="uuid"
-        :bundle="bundle"
       >
         <slot
           :is-editing="isEditing"

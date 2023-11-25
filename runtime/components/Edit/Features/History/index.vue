@@ -3,7 +3,7 @@
     <template #icon>
       <Icon />
     </template>
-    <div class="pb pb-history pb-control" @mouseleave="clearAffectedTimeout">
+    <div class="pb pb-history pb-control">
       <ul>
         <li
           v-for="item in mapped"
@@ -14,7 +14,10 @@
             'is-applied': item.index < currentMutationIndex,
           }"
         >
-          <button @click="setHistoryIndex(item.index)" :disabled="!canEdit">
+          <button
+            @click="setHistoryIndex(item.index, item)"
+            :disabled="!canEdit"
+          >
             <div>
               <div>
                 <strong>{{ item.mutation.plugin?.label }}</strong>
@@ -87,6 +90,7 @@ import Icon from './../../Icons/History.vue'
 import IconUndo from './../../Icons/Undo.vue'
 import IconRedo from './../../Icons/Redo.vue'
 import RelativeTime from './../../RelativeTime/index.vue'
+import { PbMutation } from '~/modules/nuxt-paragraphs-builder/runtime/types'
 
 const {
   mutations,
@@ -94,6 +98,7 @@ const {
   canEdit,
   adapter,
   mutateWithLoadingState,
+  eventBus,
 } = useParagraphsBuilderStore()
 
 const showAmount = ref(10)
@@ -114,7 +119,13 @@ watch(totalMutations, (newTotal, previousTotal) => {
   }
 })
 
-const mapped = computed(() => {
+type HistoryItem = {
+  index: number
+  mutation: PbMutation
+  timestamp: number
+}
+
+const mapped = computed<HistoryItem[]>(() => {
   return mutations.value
     .map((mutation, index) => {
       return {
@@ -131,31 +142,16 @@ const mapped = computed(() => {
     })
 })
 
-let timeout: any = null
-
-function setAffected(uuid?: string) {
-  clearAffectedTimeout()
-  timeout = setTimeout(() => {
-    const el = document.querySelector(`[data-uuid="${uuid}"]`)
-    if (el && el instanceof HTMLElement) {
-      el.classList.add('pb-item-focused')
-      el.scrollIntoView({
-        block: 'center',
+async function setHistoryIndex(index: number, item?: HistoryItem) {
+  if (index !== currentMutationIndex.value) {
+    const affected = item?.mutation?.plugin?.affectedParagraphUuid
+    await mutateWithLoadingState(adapter.setHistoryIndex(index))
+    if (affected) {
+      nextTick(() => {
+        eventBus.emit('select', affected)
+        eventBus.emit('paragraph:scrollIntoView', affected)
       })
     }
-  }, 100)
-}
-
-function clearAffectedTimeout() {
-  clearTimeout(timeout)
-  document
-    .querySelectorAll('.pb-item-focused')
-    .forEach((el) => el.classList.remove('pb-item-focused'))
-}
-
-function setHistoryIndex(index: number) {
-  if (index !== currentMutationIndex.value) {
-    mutateWithLoadingState(adapter.setHistoryIndex(index))
   }
 }
 

@@ -51,18 +51,9 @@
 
 <script lang="ts" setup>
 import PbDialog from './../../../Dialog/index.vue'
-import { EntityQueryOperator, EntityType } from '#build/graphql-operations'
-import { falsy } from '../../../helpers'
+import { PbImportItem } from '~/modules/nuxt-paragraphs-builder/runtime/types'
 
-const { entityType, entityUuid, entityBundle, mutatedFields } =
-  useParagraphsBuilderStore()
-
-interface ExistingEntity {
-  id: string
-  uuid: string
-  label: string
-  search: string
-}
+const { mutatedFields, adapter } = useParagraphsBuilderStore()
 
 const emit = defineEmits<{
   (e: 'confirm', data: { sourceUuid: string; fields: string[] }): void
@@ -79,7 +70,7 @@ const resultsSearchTerm = ref('')
 const sourceEntityUuid = ref('')
 const selectedFields = ref<string[]>([])
 const isLoading = ref(false)
-const entities = ref<ExistingEntity[]>([])
+const entities = ref<PbImportItem[]>([])
 const total = ref(0)
 
 let timeout: any = null
@@ -93,41 +84,9 @@ watch(searchTerm, (newTerm) => {
 })
 
 async function loadResults(userInput = '') {
-  const text = `%${userInput}%`
-  const { data } = await useGraphqlQuery('paragraphsBuilderExisting', {
-    entityType: entityType.toUpperCase() as EntityType,
-    entityUuid: entityUuid,
-    bundle: entityBundle,
-    bundleField: entityType === 'taxonomy_term' ? 'vid' : 'type',
-    titleField: entityType === 'taxonomy_term' ? 'name' : 'title',
-    conditions: mutatedFields.value.map((v) => {
-      return {
-        field: v.name,
-        operator: 'IS_NOT_NULL' as EntityQueryOperator,
-      }
-    }),
-    text,
-  })
-
-  const items =
-    data.entityQuery.items
-      ?.map((v) => {
-        if (v.label && v.uuid && v.id) {
-          return {
-            id: v.id,
-            uuid: v.uuid,
-            label: v.label,
-            search: v.label.toLowerCase(),
-          }
-        }
-        return null
-      })
-      .filter(falsy) || []
-
-  items.sort((a, b) => a.search.localeCompare(b.search))
-
-  entities.value = items
-  total.value = data.entityQuery.total || 0
+  const result = await adapter.getImportItems(userInput)
+  entities.value = result.items
+  total.value = result.total
   resultsSearchTerm.value = userInput
 }
 

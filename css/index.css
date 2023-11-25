@@ -378,6 +378,13 @@
   }
 }
 
+.pb-parent:hover .pb-paragraph-label,
+.pb-paragraph-label:hover {
+  .pb-paragraph-label-icon {
+    @apply bg-slate-200 text-slate-900 border-slate-400;
+  }
+}
+
 .pb-paragraph-label-icon {
   @apply w-25 h-25 border rounded bg-slate-100 flex items-center justify-center text-slate-500 mr-[7px] relative z-20 border-slate-300;
 }

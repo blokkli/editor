@@ -5,24 +5,23 @@
 <script lang="ts" setup>
 import { PbMutatedField } from '../types'
 import '#nuxt-paragraphs-builder/styles'
+import getAdapter from './../adapter/drupal'
 
 const props = defineProps<{
   entityType: string
   entityUuid: string
-  bundle: string
 }>()
+
+const adapter = getAdapter(props)
 
 const router = useRouter()
 
 let timeout: any = null
 let lastChanged: number = 0
 
-const { data, refresh } = await useAsyncData(() => {
-  return useGraphqlQuery('paragraphsEditState', {
-    entityType: props.entityType.toUpperCase() as any,
-    entityUuid: props.entityUuid,
-  }).then((v) => v.data.state?.mutatedState)
-})
+const { data, refresh } = await useAsyncData(() =>
+  adapter.loadState().then((v) => v?.mutatedState),
+)
 
 const mutatedFields = ref<PbMutatedField[]>([])
 
@@ -53,15 +52,13 @@ function onMessage(e: MessageEvent) {
 async function checkChangedDate() {
   clearTimeout(timeout)
   timeout = setTimeout(async () => {
-    const response = await $fetch<any>(
-      `/de/paragraphs_builder/${props.entityType}/${props.entityUuid}/last_changed`,
-    )
-    if (response && response.changed) {
-      if (lastChanged !== 0 && lastChanged !== response.changed) {
+    const changed = await adapter.getLastChanged()
+    if (changed) {
+      if (lastChanged !== 0 && lastChanged !== changed) {
         await refresh()
         mutatedFields.value = data.value?.fields || []
       }
-      lastChanged = response.changed
+      lastChanged = changed
       checkChangedDate()
     }
   }, 1000)

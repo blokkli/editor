@@ -283,6 +283,11 @@ export interface PbAllowedBundle {
   allowedTypes?: string[]
 }
 
+export interface PbImportItem {
+  uuid: string
+  label: string
+}
+
 export type PbComment = {
   uuid?: string
   targetUuid?: string

@@ -20,6 +20,7 @@
           <li
             v-for="child in item.items"
             :key="child.uuid"
+            class="pb-parent"
             :class="{
               'pb-is-active': isSelected(child.uuid),
               'pb-is-inside-active': isSelected(item.uuid),

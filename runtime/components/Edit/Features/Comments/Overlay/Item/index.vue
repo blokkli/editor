@@ -31,7 +31,7 @@
       >
         <Comment v-bind="comment" @resolve="resolveComment(comment.uuid)" />
       </div>
-      <div class="pb-comments-overlay-form">
+      <div class="pb-comments-overlay-form" @keydown.capture.stop>
         <textarea
           v-model="commentText"
           type="text"

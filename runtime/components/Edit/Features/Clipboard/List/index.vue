@@ -1,8 +1,8 @@
 <template>
-  <div ref="listEl" class="pb-clipboard-list">
-    <div
+  <ul ref="listEl" class="pb-clipboard-list">
+    <li
       v-for="(item, index) in items"
-      class="pb-clone"
+      class="pb-clone pb-parent"
       data-element-type="clipboard"
       :data-paragraph-type="item.paragraphType"
       :data-clipboard-type="item.type"
@@ -12,8 +12,12 @@
     >
       <div class="pb-clipboard-item">
         <div class="pb-clipboard-item-header">
-          <ParagraphIcon :bundle="item.paragraphType" />
-          <div>{{ getLabel(item.paragraphType) }}</div>
+          <div class="pb-paragraph-label">
+            <div class="pb-paragraph-label-icon">
+              <ParagraphIcon :bundle="item.paragraphType" />
+            </div>
+            <span>{{ getLabel(item.paragraphType) }}</span>
+          </div>
           <button @click="$emit('remove', index)"><IconDelete /></button>
         </div>
         <div>
@@ -30,8 +34,8 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
+    </li>
+  </ul>
 </template>
 
 <script lang="ts" setup>
@@ -94,10 +98,6 @@ onMounted(() => {
         revertClone: false,
       },
       onRemove(e) {
-        const oldIndex = e.oldIndex
-        if (oldIndex !== undefined) {
-          emit('remove', oldIndex)
-        }
         renderKey.value += 1
       },
       forceFallback: true,

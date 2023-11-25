@@ -149,7 +149,6 @@ const currentLanguage = computed({
 const adapter = getAdapter({
   entityType: props.entityType.toUpperCase() as any,
   entityUuid: props.entityUuid || '',
-  langcode: currentLanguage.value || '',
 })
 
 const toolbarLoaded = ref(false)
