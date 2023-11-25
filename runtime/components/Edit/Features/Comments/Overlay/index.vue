@@ -90,7 +90,7 @@ function onAnimationFrame(e: AnimationFrameEvent) {
           count: v.comments.length,
           comments: v.comments,
           style: {
-            transform: `translate(${x}px, ${rect.y}px)`,
+            transform: `translate(${x}px, ${rect.y + window.scrollY}px)`,
           },
         }
       }

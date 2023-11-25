@@ -16,7 +16,7 @@
     <!-- View Options -->
     <FeatureGrid v-if="runtimeConfig.gridMarkup" />
     <FeatureMask />
-    <FeatureCanvas />
+    <FeatureArtboard />
     <FeatureFieldAreas />
 
     <!-- General -->
@@ -54,6 +54,7 @@ import Toolbar from './Edit/Toolbar/index.vue'
 import ParagraphActions from './Edit/ParagraphActions.vue'
 import Messages from './Edit/Messages/index.vue'
 import Loading from './Edit/Loading/index.vue'
+import animationFrame from './../helpers/animationFrame'
 
 import FeatureLibrary from './Edit/Features/Library/index.vue'
 import FeatureClipboard from './Edit/Features/Clipboard/index.vue'
@@ -63,7 +64,7 @@ import FeatureValidations from './Edit/Features/Validations/index.vue'
 import FeatureComments from './Edit/Features/Comments/index.vue'
 import FeatureGrid from './Edit/Features/Grid/index.vue'
 import FeatureMask from './Edit/Features/Mask/index.vue'
-import FeatureCanvas from './Edit/Features/Canvas/index.vue'
+import FeatureArtboard from './Edit/Features/Artboard/index.vue'
 import FeaturePreview from './Edit/Features/Preview/index.vue'
 import FeatureEntityTitle from './Edit/Features/EntityTitle/index.vue'
 import FeatureDrupalFrame from './Edit/Features/DrupalFrame/index.vue'
@@ -591,6 +592,8 @@ useHead({
     class: ['pb-html-root'],
   },
 })
+
+animationFrame()
 
 onMounted(async () => {
   restoreSettings()

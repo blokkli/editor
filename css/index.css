@@ -25,12 +25,16 @@
   src: url('/Inter.var.woff2') format('woff2');
 }
 
-.pb-html-root,
-.pb-body {
+.pb-html-root.pb-is-artboard,
+.pb-html-root.pb-is-artboard .pb-body {
   @apply overflow-hidden h-screen w-screen;
   img {
     @apply pointer-events-none;
   }
+}
+.pb-html-root:not(.pb-is-artboard) {
+  padding-top: 50px;
+  padding-left: 70px;
 }
 
 .pb {
@@ -251,7 +255,7 @@
   }
 }
 
-.pb-body {
+.pb-html-root.pb-is-artboard .pb-body {
   @apply overflow-hidden;
   #nuxt-root {
     @apply bg-slate-200 overflow-hidden absolute top-50 left-70 bottom-0 right-0;

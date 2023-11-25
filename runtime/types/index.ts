@@ -562,6 +562,7 @@ export type ParagraphsBuilderEvents = {
   'paragraph:convert': ParagraphConvertEvent
 
   'paragraph:scrollIntoView': string
+  'animationFrame:before': undefined
 }
 
 export type ParagraphsBuilderEventBus = Emitter<ParagraphsBuilderEvents>

@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { buildDraggableItem, falsy } from '#pb/helpers'
+import { buildDraggableItem } from '#pb/helpers'
 import { KeyPressedEvent } from '#pb/types'
 import { Icon } from '#pb/components'
 import { PluginToolbarButton } from '#pb/plugins'
@@ -26,7 +26,6 @@ type Coord = {
 
 let wrapperEl: HTMLElement | null = null
 let nuxtRootEl: HTMLElement | null = null
-let sidebarEl: HTMLElement | null = null
 const mouseX = ref(0)
 const mouseY = ref(0)
 const zoomFactor = 0.1
@@ -47,7 +46,7 @@ const startMoveOffset: Coord = {
   y: 0,
 }
 
-let animationTarget: (Coord & { scale: number }) | null = null
+const animationTarget = ref<(Coord & { scale: number }) | null>(null)
 
 const { isPressingSpace, eventBus } = useParagraphsBuilderStore()
 
@@ -189,14 +188,14 @@ function onKeyPressed(e: KeyPressedEvent) {
     const rect = nuxtRootEl.getBoundingClientRect()
     animateTo(offset.x, -wrapperEl.offsetHeight + rect.height - 50)
   } else if (e.code === 'ArrowUp') {
-    if (animationTarget) {
-      animationTarget.y += 200
+    if (animationTarget.value) {
+      animationTarget.value.y += 200
     } else {
       animateTo(offset.x, offset.y + 200)
     }
   } else if (e.code === 'ArrowDown') {
-    if (animationTarget) {
-      animationTarget.y -= 200
+    if (animationTarget.value) {
+      animationTarget.value.y -= 200
     } else {
       animateTo(offset.x, offset.y - 200)
     }
@@ -227,34 +226,33 @@ let alpha = 0
 const speed = 0.01 // Animation speed
 
 const animateTo = (x: number, y: number, targetScale?: number) => {
-  animationTarget = { x, y, scale: targetScale || scale.value }
+  animationTarget.value = { x, y, scale: targetScale || scale.value }
   alpha = 0
 }
 
 const stopAnimate = () => {
-  animationTarget = null
+  animationTarget.value = null
   alpha = 0
 }
 
-let raf: any = null
-function loop() {
-  if (animationTarget) {
+function onAnimationFrame() {
+  if (animationTarget.value) {
     // Check if the current offset is close enough to the target offset
     if (
-      Math.abs(offset.x - animationTarget.x) < 1 &&
-      Math.abs(offset.y - animationTarget.y) < 1 &&
-      Math.abs(scale.value - animationTarget.scale) < 0.02
+      Math.abs(offset.x - animationTarget.value.x) < 1 &&
+      Math.abs(offset.y - animationTarget.value.y) < 1 &&
+      Math.abs(scale.value - animationTarget.value.scale) < 0.02
     ) {
       // We have reached our target.
-      updateOffset(animationTarget.x, animationTarget.y)
-      scale.value = animationTarget.scale
+      updateOffset(animationTarget.value.x, animationTarget.value.y)
+      scale.value = animationTarget.value.scale
       stopAnimate()
     } else {
       // Update the offset values
-      const x = lerp(offset.x, animationTarget.x, alpha)
-      const y = lerp(offset.y, animationTarget.y, alpha)
+      const x = lerp(offset.x, animationTarget.value.x, alpha)
+      const y = lerp(offset.y, animationTarget.value.y, alpha)
       updateOffset(x, y)
-      const newScale = lerp(scale.value, animationTarget.scale, alpha)
+      const newScale = lerp(scale.value, animationTarget.value.scale, alpha)
       scale.value = newScale
 
       // Increase alpha towards 1 at each frame
@@ -265,61 +263,10 @@ function loop() {
   }
 
   updateStyles()
-  const canvasRect = wrapperEl?.getBoundingClientRect()
-  const rootRect = nuxtRootEl?.getBoundingClientRect()
-  const sidebarRect = sidebarEl?.getBoundingClientRect()
-  const fieldAreas = [...document.querySelectorAll('[data-field-label]')]
-    .map((el) => {
-      if (el instanceof HTMLElement) {
-        const rect = el.getBoundingClientRect()
-        const label = el.dataset.fieldLabel
-        const name = el.dataset.fieldName
-        const key = el.dataset.fieldKey
-        const isNested = el.dataset.fieldIsNested === 'true'
-        if (label && name && key) {
-          return {
-            key,
-            label,
-            name,
-            isNested,
-            rect,
-            isVisible: !!el.offsetHeight,
-          }
-        }
-      }
-    })
-    .filter(falsy)
-  if (canvasRect && rootRect && sidebarRect) {
-    rootRect.width = rootRect.width - sidebarRect.width
-    eventBus.emit('animationFrame', {
-      mouseX: mouseX.value,
-      mouseY: mouseY.value,
-      scale: scale.value,
-      rootRect,
-      canvasRect,
-      fieldAreas,
-      rects: [
-        ...document.querySelectorAll(
-          '[data-element-type="existing"]:not(.sortable-drag)',
-        ),
-      ].reduce<Record<string, DOMRect>>((acc, el) => {
-        if (el instanceof HTMLElement) {
-          const uuid = el.dataset.uuid
-          if (uuid) {
-            const rect = el.getBoundingClientRect()
-            acc[uuid] = rect
-          }
-        }
-        return acc
-      }, {}),
-    })
-  }
-
-  raf = window.requestAnimationFrame(loop)
 }
 
 const zoomLevel = computed(
-  () => Math.round((animationTarget?.scale || scale.value) * 100) + '%',
+  () => Math.round((animationTarget.value?.scale || scale.value) * 100) + '%',
 )
 
 function onMouseMoveGlobal(e: MouseEvent) {
@@ -422,7 +369,6 @@ function onParagraphScrollIntoView(uuid: string) {
 onMounted(() => {
   wrapperEl = document.querySelector('.pb-main-canvas')
   nuxtRootEl = document.querySelector('#nuxt-root')
-  sidebarEl = document.querySelector('.pb-sidebar')
   window.addEventListener('mousedown', onMouseDown)
   window.addEventListener('mouseup', onMouseUp)
   window.addEventListener('mousemove', onMouseMoveGlobal, {
@@ -436,9 +382,10 @@ onMounted(() => {
 
   eventBus.on('paragraph:scrollIntoView', onParagraphScrollIntoView)
   eventBus.on('keyPressed', onKeyPressed)
+  eventBus.on('animationFrame:before', onAnimationFrame)
   setInitState()
   updateStyles()
-  loop()
+  document.documentElement.classList.add('pb-is-artboard')
 })
 
 onBeforeUnmount(() => {
@@ -463,8 +410,13 @@ onUnmounted(() => {
   window.removeEventListener('touchend', onTouchEnd)
   nuxtRootEl?.classList.remove('pb-has-sidebar-open')
   nuxtRootEl?.classList.remove('pb-has-preview-open')
-  window.cancelAnimationFrame(raf)
   eventBus.off('paragraph:scrollIntoView', onParagraphScrollIntoView)
   eventBus.off('keyPressed', onKeyPressed)
+  eventBus.off('animationFrame:before', onAnimationFrame)
+  document.documentElement.classList.remove('pb-is-artboard')
+  if (wrapperEl) {
+    wrapperEl.style.transform = ''
+    wrapperEl.style.scale = ''
+  }
 })
 </script>

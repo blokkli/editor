@@ -11,7 +11,7 @@
           :width="selectRect.width"
           :height="selectRect.height"
           :x="selectRect.x"
-          :y="selectRect.y"
+          :y="selectRect.y - scrollY"
           :style="{ animationDuration }"
         />
       </svg>
@@ -55,6 +55,7 @@ const currentY = ref(0)
 const selectable = ref<SelectableElement[]>([])
 const viewportWidth = ref(window.innerWidth)
 const viewportHeight = ref(window.innerHeight)
+const scrollY = ref(0)
 
 const actuallySelectable = computed(() => {
   return selectable.value.filter((v) => {
@@ -244,6 +245,7 @@ function onWindowMouseDown(e: MouseEvent) {
 function onAnimationFrame(e: AnimationFrameEvent) {
   viewportWidth.value = window.innerWidth
   viewportHeight.value = window.innerHeight
+  scrollY.value = window.scrollY
 }
 
 onMounted(() => {

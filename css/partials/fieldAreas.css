@@ -15,7 +15,7 @@
 }
 
 .pb-canvas-area {
-  @apply pointer-events-none bg-white mix-blend-screen opacity-90 relative;
+  @apply pointer-events-none bg-white mix-blend-screen opacity-90 fixed z-50 top-0 left-0;
   > div {
     @apply absolute bg-black;
     &.pb-is-active {
