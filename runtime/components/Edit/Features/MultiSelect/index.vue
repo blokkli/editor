@@ -46,8 +46,9 @@ export type SelectableElement = {
   rect: Rectangle
 }
 
-let timeout: any = null
 const isSelecting = ref(false)
+const downX = ref(0)
+const downY = ref(0)
 const startX = ref(0)
 const startY = ref(0)
 const currentX = ref(0)
@@ -145,12 +146,27 @@ function shouldStartMultiSelect(target: Element): boolean {
 function onWindowMouseMove(e: MouseEvent) {
   e.preventDefault()
   e.stopPropagation()
+
+  if (!isSelecting.value) {
+    const diffX = Math.abs(downX.value - e.x)
+    const diffY = Math.abs(downY.value - e.y)
+    if (diffX > 3 || diffY > 3) {
+      eventBus.emit('select:start')
+      const newX = e.x + window.scrollX
+      const newY = e.y + window.scrollY
+      startX.value = newX
+      startY.value = newY
+      currentX.value = newX
+      currentY.value = newY
+      selectable.value = getSelectableElements()
+      isSelecting.value = true
+    }
+  }
   currentX.value = e.x + window.scrollX
   currentY.value = e.y + window.scrollY
 }
 
 function onWindowMouseUp(e: MouseEvent) {
-  clearTimeout(timeout)
   window.removeEventListener('mousemove', onWindowMouseMove)
 
   if (!isSelecting.value) {
@@ -208,26 +224,15 @@ watch(isSelecting, (v) => {
 
 function onWindowMouseDown(e: MouseEvent) {
   selectable.value = []
-  isSelecting.value = false
 
-  clearTimeout(timeout)
   if (e.ctrlKey) {
     return
   }
   if (e.target && e.target instanceof Element) {
     if (shouldStartMultiSelect(e.target)) {
-      eventBus.emit('select:start')
-      timeout = setTimeout(() => {
-        const newX = e.x + window.scrollX
-        const newY = e.y + window.scrollY
-        startX.value = newX
-        startY.value = newY
-        currentX.value = newX
-        currentY.value = newY
-        window.addEventListener('mousemove', onWindowMouseMove)
-        selectable.value = getSelectableElements()
-        isSelecting.value = true
-      }, 30)
+      window.addEventListener('mousemove', onWindowMouseMove)
+      downX.value = e.x
+      downY.value = e.y
     }
   }
 }
