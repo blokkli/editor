@@ -1,5 +1,5 @@
 import { inject } from 'vue'
-import type { ParagraphsBuilderEditContext } from './../components/Edit/types'
+import type { ParagraphsBuilderEditContext } from '#pb/types'
 
 export function useParagraphsBuilderEditContext() {
   return inject<ParagraphsBuilderEditContext | null>(

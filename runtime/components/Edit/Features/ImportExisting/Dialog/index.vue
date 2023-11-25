@@ -1,5 +1,5 @@
 <template>
-  <PbDialog
+  <DialogModal
     :title="title"
     :lead="lead"
     :width="600"
@@ -46,12 +46,12 @@
         </label>
       </div>
     </div>
-  </PbDialog>
+  </DialogModal>
 </template>
 
 <script lang="ts" setup>
-import PbDialog from './../../../Dialog/index.vue'
-import { PbImportItem } from '~/modules/nuxt-paragraphs-builder/runtime/types'
+import { DialogModal } from '#pb/components'
+import { PbImportItem } from '#pb/types'
 
 const { mutatedFields, adapter } = useParagraphsBuilderStore()
 

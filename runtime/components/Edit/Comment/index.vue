@@ -8,16 +8,16 @@
     </RelativeTime>
     <div class="pb-comment-body" v-html="body" />
     <button @click="$emit('resolve')" v-if="!resolved">
-      <IconCheck />
+      <Icon name="check" />
       <span>Als erledigt markieren</span>
     </button>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { PbComment } from '../../../types'
-import IconCheck from './../Icons/Check.vue'
-import RelativeTime from './../RelativeTime/index.vue'
+import type { PbComment } from '#pb/types'
+import { Icon } from '#pb/components'
+import { RelativeTime } from '#pb/components'
 
 defineEmits<{
   (e: 'resolve'): void

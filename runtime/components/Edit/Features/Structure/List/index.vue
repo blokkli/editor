@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import { falsy } from '../../../helpers'
+import { falsy } from '#pb/helpers'
 import Field, { StructureTreeItem, StructureTreeField } from './Field/index.vue'
 
 const { allTypes, refreshKey, entityUuid } = useParagraphsBuilderStore()

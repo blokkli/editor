@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { AnimationFrameEvent } from '../../../types'
+import { AnimationFrameEvent } from '#pb/types'
 
 const { eventBus, activeFieldKey, setActiveFieldKey } =
   useParagraphsBuilderStore()

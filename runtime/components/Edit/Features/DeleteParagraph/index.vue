@@ -5,15 +5,13 @@
     :disabled="editMode !== 'editing'"
     multiple
     key-code="Delete"
-  >
-    <Icon />
-  </PluginParagraphAction>
+    icon="delete"
+  />
 </template>
 
 <script lang="ts" setup>
-import { DraggableExistingParagraphItem } from '../../types'
-import Icon from './../../Icons/Delete.vue'
-import PluginParagraphAction from './../../Plugin/ParagraphAction/index.vue'
+import { DraggableExistingParagraphItem } from '#pb/types'
+import { PluginParagraphAction } from '#pb/plugins'
 
 const { editMode, mutateWithLoadingState, adapter } =
   useParagraphsBuilderStore()

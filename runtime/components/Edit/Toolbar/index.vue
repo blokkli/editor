@@ -11,8 +11,7 @@
               :class="{ 'pb-is-active': menuVisible }"
               @click="menuVisible = !menuVisible"
             >
-              <IconClose v-if="menuVisible" />
-              <IconMenu v-else />
+              <Icon :name="menuVisible ? 'close' : 'menu'" />
             </button>
 
             <transition name="pb-menu" :duration="200">
@@ -53,8 +52,7 @@
 </template>
 
 <script lang="ts" setup>
-import IconMenu from './../Icons/Menu.vue'
-import IconClose from './../Icons/Close.vue'
+import { Icon } from '#pb/components'
 
 const { eventBus, activeSidebar } = useParagraphsBuilderStore()
 

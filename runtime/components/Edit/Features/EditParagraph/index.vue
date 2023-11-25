@@ -5,15 +5,13 @@
     :disabled="disabled"
     meta
     key-code="E"
-  >
-    <Icon />
-  </PluginParagraphAction>
+    icon="edit"
+  />
 </template>
 
 <script lang="ts" setup>
-import { DraggableExistingParagraphItem } from '../../types'
-import Icon from './../../Icons/Edit.vue'
-import PluginParagraphAction from './../../Plugin/ParagraphAction/index.vue'
+import { DraggableExistingParagraphItem } from '#pb/types'
+import { PluginParagraphAction } from '#pb/plugins'
 import { definitions } from '#nuxt-paragraphs-builder/definitions'
 
 const { editMode, eventBus, selectedParagraphs } = useParagraphsBuilderStore()

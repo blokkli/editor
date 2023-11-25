@@ -52,8 +52,8 @@ import OptionText from './Text/index.vue'
 import {
   ParagraphDefinitionOption,
   ParagraphDefinitionOptionsInput,
-} from './../../../../../types'
-import { falsy } from '../../../helpers'
+} from '#pb/types'
+import { falsy } from '#pb/helpers'
 
 const KEY = 'paragraph_builder_data'
 

@@ -1,8 +1,10 @@
 <template>
-  <PluginSidebar id="clipboard" title="Zwischenablage" edit-only>
-    <template #icon>
-      <Icon />
-    </template>
+  <PluginSidebar
+    id="clipboard"
+    title="Zwischenablage"
+    edit-only
+    icon="clipboard"
+  >
     <div @mousedown.stop @mousemove.stop @dragstart.stop>
       <div class="pb pb-clipboard pb-control">
         <div v-if="!pastedItems.length" class="pb-clipboard-info">
@@ -23,12 +25,11 @@
 </template>
 
 <script lang="ts" setup>
-import PluginSidebar from './../../Plugin/Sidebar/index.vue'
-import Icon from './../../Icons/Clipboard.vue'
+import { PluginSidebar } from '#pb/plugins'
 import ClipboardList from './List/index.vue'
 import type { ClipboardItem } from './List/index.vue'
 
-import { DraggableExistingParagraphItem, KeyPressedEvent } from '../../types'
+import { DraggableExistingParagraphItem, KeyPressedEvent } from '#pb/types'
 
 const { showSidebar, eventBus, selectedParagraphs } =
   useParagraphsBuilderStore()

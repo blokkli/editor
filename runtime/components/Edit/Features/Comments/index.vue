@@ -1,8 +1,5 @@
 <template>
-  <PluginSidebar id="comments" title="Kommentare">
-    <template #icon>
-      <Icon />
-    </template>
+  <PluginSidebar id="comments" title="Kommentare" icon="comment">
     <div class="pb pb-comments pb-control">
       <ul>
         <li v-for="comment in comments">
@@ -17,9 +14,9 @@
     @click="showAddComment = !showAddComment"
     :active="showAddComment"
     :weight="100"
+    icon="comment"
   >
-    <Icon />
-    <template v-if="showAddComment" v-slot:after="{ paragraphUuid }">
+    <template v-if="showAddComment" v-slot="{ paragraphUuid }">
       <CommentAddForm @add="onAddComment($event, paragraphUuid)" />
     </template>
   </PluginParagraphAction>
@@ -32,13 +29,11 @@
 </template>
 
 <script lang="ts" setup>
-import PluginSidebar from './../../Plugin/Sidebar/index.vue'
-import PluginParagraphAction from './../../Plugin/ParagraphAction/index.vue'
-import Icon from './../../Icons/Comment.vue'
+import { PluginSidebar, PluginParagraphAction } from '#pb/plugins'
 import Comment from './../../Comment/index.vue'
 import CommentAddForm from './AddForm/index.vue'
 import CommentsOverlay from './Overlay/index.vue'
-import { PbComment } from '~/modules/nuxt-paragraphs-builder/runtime/types'
+import type { PbComment } from '#pb/types'
 
 const comments = ref<PbComment[]>([])
 const showAddComment = ref(false)

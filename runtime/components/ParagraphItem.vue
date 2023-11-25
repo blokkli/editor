@@ -12,7 +12,7 @@ export default {
 import type {
   InjectedParagraphItem,
   PbFieldItemParagraphFragment,
-} from './../types'
+} from '#pb/types'
 import { getParagraphComponent } from '#nuxt-paragraphs-builder/imports'
 
 const props = withDefaults(

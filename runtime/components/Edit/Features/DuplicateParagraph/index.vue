@@ -6,15 +6,13 @@
     meta
     key-code="D"
     multiple
-  >
-    <Icon />
-  </PluginParagraphAction>
+    icon="duplicate"
+  />
 </template>
 
 <script lang="ts" setup>
-import { DraggableExistingParagraphItem } from '../../types'
-import Icon from './../../Icons/Duplicate.vue'
-import PluginParagraphAction from './../../Plugin/ParagraphAction/index.vue'
+import { DraggableExistingParagraphItem } from '#pb/types'
+import { PluginParagraphAction } from '#pb/plugins'
 
 const { editMode, adapter, mutateWithLoadingState } =
   useParagraphsBuilderStore()

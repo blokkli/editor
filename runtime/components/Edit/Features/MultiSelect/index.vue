@@ -28,17 +28,16 @@
 </template>
 
 <script lang="ts" setup>
-import { eventBus } from '../../eventBus'
-import { buildDraggableItem, falsy, findParagraphElement } from '../../helpers'
-import {
+import { buildDraggableItem, falsy, findParagraphElement } from '#pb/helpers'
+import type {
   AnimationFrameEvent,
   DraggableExistingParagraphItem,
-} from '../../types'
+} from '#pb/types'
 import type { Rectangle } from './Item/index.vue'
 import Item from './Item/index.vue'
-import { Sortable } from './../../sortable'
+import { Sortable } from '#pb/sortable'
 
-const { isPressingControl } = useParagraphsBuilderStore()
+const { isPressingControl, eventBus } = useParagraphsBuilderStore()
 
 export type SelectableElement = {
   item: DraggableExistingParagraphItem

@@ -27,8 +27,8 @@
 
 <script setup lang="ts">
 import { definitions } from '#nuxt-paragraphs-builder/definitions'
-import { PbLibraryItem } from './../../../../../../types'
-import ParagraphIcon from './../../../../ParagraphIcon/index.vue'
+import { PbLibraryItem } from '#pb/types'
+import { ParagraphIcon } from '#pb/components'
 
 const props = defineProps<PbLibraryItem>()
 

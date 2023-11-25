@@ -7,12 +7,12 @@
     :disabled="!mutations.length || !canEdit"
     :weight="10"
   >
-    <Icon />
+    <Icon name="revert" />
   </PluginMenuButton>
 
   <Teleport to="body">
     <transition appear name="pb-slide-up">
-      <PbDialog
+      <DialogModal
         v-if="showConfirm"
         title="Änderungen unwiderruflich verwerfen"
         lead="Damit werden alle Änderungen gelöscht und der aktuell publizierte Stand wiederhergestellt. Diese Aktion kann nicht rückgängig gemacht werden."
@@ -26,9 +26,8 @@
 </template>
 
 <script lang="ts" setup>
-import PluginMenuButton from './../../Plugin/MenuButton/index.vue'
-import Icon from './../../Icons/Revert.vue'
-import PbDialog from './../../Dialog/index.vue'
+import { PluginMenuButton } from '#pb/plugins'
+import { Icon, DialogModal } from '#pb/components'
 
 const { eventBus, mutations, canEdit, adapter, mutateWithLoadingState } =
   useParagraphsBuilderStore()

@@ -1,8 +1,5 @@
 <template>
-  <PluginSidebar id="history" title="Änderungen">
-    <template #icon>
-      <Icon />
-    </template>
+  <PluginSidebar id="history" title="Änderungen" icon="history">
     <div class="pb pb-history pb-control">
       <ul>
         <li
@@ -66,9 +63,8 @@
     region="before-title"
     :disabled="!canUndo"
     @click="undo"
-  >
-    <IconUndo />
-  </PluginToolbarButton>
+    icon="undo"
+  />
 
   <PluginToolbarButton
     title="Wiederherstellen"
@@ -78,19 +74,14 @@
     region="before-title"
     :disabled="!canRedo"
     @click="redo"
-  >
-    <IconRedo />
-  </PluginToolbarButton>
+    icon="redo"
+  />
 </template>
 
 <script lang="ts" setup>
-import PluginSidebar from './../../Plugin/Sidebar/index.vue'
-import PluginToolbarButton from './../../Plugin/ToolbarButton/index.vue'
-import Icon from './../../Icons/History.vue'
-import IconUndo from './../../Icons/Undo.vue'
-import IconRedo from './../../Icons/Redo.vue'
-import RelativeTime from './../../RelativeTime/index.vue'
-import { PbMutation } from '~/modules/nuxt-paragraphs-builder/runtime/types'
+import { PluginSidebar, PluginToolbarButton } from '#pb/plugins'
+import { RelativeTime } from '#pb/components'
+import { PbMutation } from '#pb/types'
 
 const {
   mutations,

@@ -18,7 +18,9 @@
             </div>
             <span>{{ getLabel(item.paragraphType) }}</span>
           </div>
-          <button @click="$emit('remove', index)"><IconDelete /></button>
+          <button @click="$emit('remove', index)">
+            <Icon name="delete" />
+          </button>
         </div>
         <div>
           <div
@@ -39,9 +41,8 @@
 </template>
 
 <script lang="ts" setup>
-import ParagraphIcon from './../../../ParagraphIcon/index.vue'
-import IconDelete from './../../../Icons/Delete.vue'
-import Sortable from 'sortablejs'
+import { ParagraphIcon, Icon } from '#pb/components'
+import { Sortable } from '#pb/sortable'
 
 let instance: Sortable | null = null
 

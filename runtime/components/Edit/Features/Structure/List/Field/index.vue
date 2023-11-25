@@ -40,8 +40,8 @@
 </template>
 
 <script lang="ts" setup>
-import { PbType } from './../../../../../../types'
-import ParagraphIcon from './../../../../ParagraphIcon/index.vue'
+import { PbType } from '#pb/types'
+import { ParagraphIcon } from '#pb/components'
 
 const { selectedParagraphs, eventBus } = useParagraphsBuilderStore()
 

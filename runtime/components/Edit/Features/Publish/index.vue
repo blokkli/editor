@@ -7,13 +7,13 @@
     type="success"
     :weight="0"
   >
-    <Icon />
+    <Icon name="publish" />
   </PluginMenuButton>
 </template>
 
 <script lang="ts" setup>
-import PluginMenuButton from './../../Plugin/MenuButton/index.vue'
-import Icon from './../../Icons/Publish.vue'
+import { PluginMenuButton } from '#pb/plugins'
+import { Icon } from '#pb/components'
 
 const { mutations, canEdit, mutateWithLoadingState, adapter, eventBus } =
   useParagraphsBuilderStore()

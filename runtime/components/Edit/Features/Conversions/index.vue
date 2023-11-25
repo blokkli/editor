@@ -12,7 +12,7 @@
       >
         <div class="pb-paragraph-actions-title-icon">
           <ParagraphIcon v-if="paragraphType" :bundle="paragraphType.id" />
-          <IconSelection v-else />
+          <Icon name="selection" v-else />
         </div>
         <span>{{ title }}</span>
         <span
@@ -20,7 +20,10 @@
           :class="{ 'pb-is-hidden': selectedParagraphs.length <= 1 }"
           >{{ selectedParagraphs.length }}</span
         >
-        <IconCaret v-if="possibleConversions.length && editingEnabled" />
+        <Icon
+          name="caret"
+          v-if="possibleConversions.length && editingEnabled"
+        />
       </button>
       <div
         v-if="possibleConversions.length"
@@ -49,12 +52,11 @@
 </template>
 
 <script lang="ts" setup>
-import IconCaret from './../../Icons/Caret.vue'
-import IconSelection from './../../Icons/Selection.vue'
-import ParagraphIcon from './../../ParagraphIcon/index.vue'
+import { Icon } from '#pb/components'
+import { ParagraphIcon } from '#pb/components'
 import { icons } from '#nuxt-paragraphs-builder/definitions'
-import { falsy, onlyUnique } from './../../helpers'
-import { PbType } from '../../../../types'
+import { falsy, onlyUnique } from '#pb/helpers'
+import type { PbType } from '#pb/types'
 
 const showConversions = ref(false)
 

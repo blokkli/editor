@@ -1,13 +1,13 @@
 <template>
   <div class="pb-paragraph-icon" v-if="markup" v-html="markup" />
   <div v-else class="pb-paragraph-icon">
-    <IconQuestion />
+    <Icon name="question" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { icons } from '#nuxt-paragraphs-builder/definitions'
-import IconQuestion from './../Icons/Question.vue'
+import { Icon } from '#pb/components'
 
 const props = defineProps<{
   bundle?: string

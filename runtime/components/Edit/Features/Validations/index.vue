@@ -1,9 +1,5 @@
 <template>
-  <PluginSidebar id="violations" title="Validierungen">
-    <template #icon>
-      <Icon />
-    </template>
-
+  <PluginSidebar id="violations" title="Validierungen" icon="alert">
     <div class="pb pb-errors pb-control">
       <ul v-if="violations.length">
         <li v-for="item in violations">
@@ -14,7 +10,7 @@
       </ul>
       <div v-else class="pb-errors-success">
         <figure>
-          <IconCheck />
+          <Icon name="check" />
         </figure>
         <h3>Keine Validierungsfehler gefunden.</h3>
       </div>
@@ -23,9 +19,8 @@
 </template>
 
 <script lang="ts" setup>
-import PluginSidebar from './../../Plugin/Sidebar/index.vue'
-import Icon from './../../Icons/Alert.vue'
-import IconCheck from './../../Icons/Check.vue'
+import { PluginSidebar } from '#pb/plugins'
+import { Icon } from '#pb/components'
 
 const { violations } = useParagraphsBuilderStore()
 </script>

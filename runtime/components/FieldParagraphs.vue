@@ -42,8 +42,8 @@
 </template>
 
 <script lang="ts" setup>
-import { PbFieldItemFragment, PbMutatedField, PbField } from './../types'
-import { ValidFieldListTypes } from '#nuxt-paragraphs-builder/generated-types'
+import type { PbFieldItemFragment, PbMutatedField, PbField } from '#pb/types'
+import type { ValidFieldListTypes } from '#nuxt-paragraphs-builder/generated-types'
 
 const ParagraphsList = defineAsyncComponent(() => {
   return import('./Edit/ParagraphsList/index.vue')

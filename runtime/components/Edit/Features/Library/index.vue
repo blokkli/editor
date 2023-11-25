@@ -1,8 +1,5 @@
 <template>
-  <PluginSidebar id="library" title="Bibliothek" edit-only>
-    <template #icon>
-      <IconReusable />
-    </template>
+  <PluginSidebar id="library" title="Bibliothek" edit-only icon="reusable">
     <Pane />
   </PluginSidebar>
 
@@ -10,9 +7,8 @@
     title="Zur Bibliothek hinzufügen"
     @click="showReusableDialog = true"
     :disabled="!canMakeReusable"
-  >
-    <IconReusable />
-  </PluginParagraphAction>
+    icon="reusable"
+  />
 
   <Teleport to="body">
     <transition appear name="pb-slide-up" :duration="300">
@@ -28,10 +24,8 @@
 </template>
 
 <script lang="ts" setup>
-import PluginSidebar from './../../Plugin/Sidebar/index.vue'
-import PluginParagraphAction from './../../Plugin/ParagraphAction/index.vue'
+import { PluginSidebar, PluginParagraphAction } from '#pb/plugins'
 import Pane from './Pane/index.vue'
-import IconReusable from './../../Icons/Reusable.vue'
 import ReusableDialog from './ReusableDialog/index.vue'
 import { definitions } from '#nuxt-paragraphs-builder/definitions'
 

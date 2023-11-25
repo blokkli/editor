@@ -9,9 +9,9 @@ import {
   updateTemplates,
 } from '@nuxt/kit'
 import Extractor from './Extractor'
-import { extname } from 'path'
+import { extname, basename } from 'path'
 import { ParagraphDefinitionOptionsInput } from './runtime/types'
-import { onlyUnique } from './runtime/components/Edit/helpers'
+import { onlyUnique } from './runtime/helpers'
 import postcss from 'postcss'
 import { promises as fsp } from 'fs'
 import postcssImport from 'postcss-import'
@@ -287,10 +287,49 @@ export default defineNuxtModule<ModuleOptions>({
         paragraphsBuilder: true,
       },
     })
+
+    const templateIcons = addTemplate({
+      write: true,
+      filename: 'paragraphs-builder/icons.ts',
+      getContents: async () => {
+        const path = resolver.resolve('./icons')
+        const files = await resolveFiles(path, '*.svg')
+        const icons = await Promise.all(
+          files.map((filePath) => {
+            return fsp.readFile(filePath).then((data) => {
+              const name = basename(filePath, '.svg').toLowerCase()
+              return {
+                markup: data.toString(),
+                name,
+              }
+            })
+          }),
+        )
+
+        const iconMap = icons.reduce<Record<string, string>>((acc, v) => {
+          acc[v.name] = v.markup
+          return acc
+        }, {})
+
+        return `export const icons = ${JSON.stringify(iconMap)} as const
+export type PbIcon = keyof typeof icons`
+      },
+      options: {
+        paragraphsBuilder: true,
+      },
+    })
+    nuxt.options.alias['#pb/icons'] = templateIcons.dst
+
     nuxt.options.alias['#nuxt-paragraphs-builder/imports'] = templateImports.dst
 
-    nuxt.options.alias['#nuxt-paragraphs-builder/types'] =
-      resolver.resolve('runtime/types')
+    nuxt.options.alias['#pb/types'] = resolver.resolve('runtime/types')
+
+    nuxt.options.alias['#pb/plugins'] = resolver.resolve('runtime/plugins')
+    nuxt.options.alias['#pb/components'] = resolver.resolve(
+      'runtime/components/Edit',
+    )
+    nuxt.options.alias['#pb/helpers'] = resolver.resolve('runtime/helpers')
+    nuxt.options.alias['#pb/sortable'] = resolver.resolve('runtime/sortable')
 
     // Checks if the given file path is handled by this module.
     const applies = (path: string): Promise<string | undefined | void> => {

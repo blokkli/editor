@@ -7,8 +7,6 @@ import {
   PbImportItem,
   PbLibraryItem,
   PbType,
-} from '.'
-import {
   AddClipboardParagraphEvent,
   AddNewParagraphEvent,
   AddReusableParagraphEvent,
@@ -17,7 +15,7 @@ import {
   MoveMultipleParagraphsEvent,
   MoveParagraphEvent,
   UpdateParagraphOptionEvent,
-} from '../components/Edit/types'
+} from '#pb/types'
 
 interface MutationResponseLike<T> {
   data: {

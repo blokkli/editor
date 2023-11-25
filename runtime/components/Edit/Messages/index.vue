@@ -14,10 +14,10 @@
 </template>
 
 <script lang="ts" setup>
-import { eventBus } from '../eventBus'
-import { PbMessage } from '../types'
+import type { PbMessage } from '#pb/types'
 import Item from './Item/index.vue'
 
+const { eventBus } = useParagraphsBuilderStore()
 const messages = ref<PbMessage[]>([])
 
 function onMessage(message: PbMessage) {

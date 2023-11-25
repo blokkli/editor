@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onlyUnique } from '../../helpers'
+import { onlyUnique } from '#pb/helpers'
 import OptionsForm from './Form/index.vue'
 
 const { selectedParagraphs } = useParagraphsBuilderStore()

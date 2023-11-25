@@ -1,5 +1,5 @@
 import { inject } from 'vue'
-import type { PbStore } from './../types'
+import type { PbStore } from '#pb/types'
 
 export function useParagraphsBuilderStore(): PbStore {
   return inject('paragraphsBuilderStore') as PbStore

@@ -16,9 +16,8 @@
 </template>
 
 <script lang="ts" setup>
-import { PbComment } from '../../../../../types'
-import { falsy } from '../../../helpers'
-import { AnimationFrameEvent } from '../../../types'
+import type { PbComment, AnimationFrameEvent } from '#pb/types'
+import { falsy } from '#pb/helpers'
 import Item from './Item/index.vue'
 
 const { eventBus } = useParagraphsBuilderStore()

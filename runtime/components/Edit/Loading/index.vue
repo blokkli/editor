@@ -1,11 +1,11 @@
 <template>
   <Teleport to="body">
     <div class="pb pb-init-overlay">
-      <IconSpinner />
+      <Icon name="spinner" />
     </div>
   </Teleport>
 </template>
 
 <script lang="ts" setup>
-import IconSpinner from './../Icons/Spinner.vue'
+import { Icon } from '#pb/components'
 </script>

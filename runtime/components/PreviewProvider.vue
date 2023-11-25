@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { PbMutatedField } from '../types'
+import { PbMutatedField } from '#pb/types'
 import '#nuxt-paragraphs-builder/styles'
 import getAdapter from './../adapter/drupal'
 

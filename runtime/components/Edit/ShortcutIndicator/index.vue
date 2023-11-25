@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import { KeyPressedEvent } from '../types'
+import { KeyPressedEvent } from '#pb/types'
 
 const props = defineProps<{
   meta?: boolean

@@ -6,31 +6,28 @@
     region="after-menu"
     @click="previewVisible = !previewVisible"
     :active="previewVisible"
-  >
-    <IconPreview />
-  </PluginToolbarButton>
+    icon="preview"
+  />
 
   <PluginToolbarButton
     title="Vorschau (neues Fenster)"
     region="after-menu"
     @click="openPreview"
-  >
-    <IconOpenInNew />
-  </PluginToolbarButton>
+    icon="openinnew"
+  />
 
   <PluginToolbarButton
     title="Vorschau (mit Smartphone)"
     region="after-menu"
     @click="qrCodeVisible = true"
-  >
-    <IconQrCode />
-  </PluginToolbarButton>
+    icon="qrcode"
+  />
 
   <Teleport to="body">
     <PreviewFrame v-if="previewVisible" />
 
     <Transition appear name="pb-slide-up">
-      <PbDialog
+      <DialogModal
         v-if="qrCodeVisible"
         title="Vorschau mit Smartphone"
         lead="Scannen Sie den QR-Code mit Ihrem Smartphone um die Vorschau zu öffnen."
@@ -42,19 +39,16 @@
         @cancel="qrCodeVisible = false"
       >
         <QrCode :url="previewGrantUrl || previewUrl" />
-      </PbDialog>
+      </DialogModal>
     </Transition>
   </Teleport>
 </template>
 
 <script lang="ts" setup>
-import IconPreview from './../../Icons/Preview.vue'
-import IconOpenInNew from './../../Icons/OpenInNew.vue'
-import IconQrCode from './../../Icons/QrCode.vue'
-import PluginToolbarButton from './../../Plugin/ToolbarButton/index.vue'
+import { PluginToolbarButton } from '#pb/plugins'
 import PreviewFrame from './Frame/index.vue'
 import QrCode from './QrCode/index.vue'
-import PbDialog from './../../Dialog/index.vue'
+import { DialogModal } from '#pb/components'
 
 const previewVisible = ref(false)
 const qrCodeVisible = ref(false)

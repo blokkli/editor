@@ -135,7 +135,7 @@ export default class Extractor {
       return acc
     }, {})
 
-    return `import { ParagraphDefinitionInput } from '#nuxt-paragraphs-builder/types'
+    return `import { ParagraphDefinitionInput } from '#pb/types'
 import { TypedParagraphDefinitionInput } from '#nuxt-paragraphs-builder/generated-types'
 
 export const globalOptions = ${JSON.stringify(globalOptions, null, 2)} as const
@@ -207,7 +207,7 @@ export const globalOptionsDefaults: Record<GlobalOptionsType, string> = ${JSON.s
       })
       .join(' | ')
     return `
-import { ParagraphDefinitionInput } from '#nuxt-paragraphs-builder/types'
+import { ParagraphDefinitionInput } from '#pb/types'
 export type ValidFieldListTypes = ${validFieldListTypes}
 export type ValidParagraphBundle = ${validParagraphBundles}
 export type ValidParentParagraphBundle = ${validParentParagraphBundles}

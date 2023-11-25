@@ -40,17 +40,15 @@
 </template>
 
 <script lang="ts" setup>
-const PbPreviewProvider = defineAsyncComponent(() => {
-  return import('./PreviewProvider.vue')
-})
+const PbPreviewProvider = defineAsyncComponent(
+  () => import('./PreviewProvider.vue'),
+)
 
-const PbEditProvider = defineAsyncComponent(() => {
-  return import('./EditProvider.vue')
-})
+const PbEditProvider = defineAsyncComponent(() => import('./EditProvider.vue'))
 
-const PbEditIndicator = defineAsyncComponent(() => {
-  return import('./EditIndicator.vue')
-})
+const PbEditIndicator = defineAsyncComponent(
+  () => import('./EditIndicator.vue'),
+)
 
 const route = useRoute()
 const router = useRouter()

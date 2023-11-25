@@ -6,7 +6,7 @@
     key-code="M"
   >
     <template #icon>
-      <Icon />
+      <Icon name="texturebox" />
     </template>
 
     <template v-slot="{ isActive }">
@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import PluginViewOption from './../../Plugin/ViewOption/index.vue'
-import Icon from './../../Icons/TextureBox.vue'
+import { PluginViewOption } from '#pb/plugins'
+import { Icon } from '#pb/components'
 import Overlay from './Overlay/index.vue'
 </script>

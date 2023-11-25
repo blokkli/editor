@@ -32,8 +32,8 @@
 </template>
 
 <script lang="ts" setup>
-import { buildDraggableItem, falsy } from './helpers'
-import { AnimationFrameEvent, KeyPressedEvent } from './types'
+import { buildDraggableItem, falsy } from '#pb/helpers'
+import { AnimationFrameEvent, KeyPressedEvent } from '#pb/types'
 
 type Rectangle = {
   left: number

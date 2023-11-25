@@ -5,13 +5,13 @@
     @click="eventBus.emit('exitEditor')"
     :weight="100"
   >
-    <Icon />
+    <Icon name="exit" />
   </PluginMenuButton>
 </template>
 
 <script lang="ts" setup>
-import PluginMenuButton from './../../Plugin/MenuButton/index.vue'
-import Icon from './../../Icons/Exit.vue'
+import { PluginMenuButton } from '#pb/plugins'
+import { Icon } from '#pb/components'
 
 const { eventBus } = useParagraphsBuilderStore()
 </script>

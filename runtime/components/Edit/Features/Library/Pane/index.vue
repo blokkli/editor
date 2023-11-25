@@ -23,11 +23,10 @@
 <script lang="ts" setup>
 import Sortable from 'sortablejs'
 import Item from './Item/index.vue'
-import { eventBus } from './../../../eventBus'
-import { PbLibraryItem } from '~/modules/nuxt-paragraphs-builder/runtime/types'
-import { falsy } from '../../../helpers'
+import { PbLibraryItem } from '#pb/types'
+import { falsy } from '#pb/helpers'
 
-const { adapter } = useParagraphsBuilderStore()
+const { adapter, eventBus } = useParagraphsBuilderStore()
 
 const listEl = ref<HTMLDivElement | null>(null)
 const text = ref('')

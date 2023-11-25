@@ -50,16 +50,14 @@ export default {
 
 <script lang="ts" setup>
 import type { SortableEvent } from 'sortablejs'
-import { Sortable } from './../sortable'
+import { Sortable } from '#pb/sortable'
 import { definitions } from '#nuxt-paragraphs-builder/definitions'
-import { buildDraggableItem, falsy } from '../helpers'
+import { buildDraggableItem, falsy } from '#pb/helpers'
 import {
   DraggableExistingParagraphItem,
   DraggableHostData,
   DraggableItem,
   MoveParagraphEvent,
-} from '../types'
-import {
   PbAllowedBundle,
   PbFieldConfig,
   PbFieldItemFragment,
@@ -67,7 +65,7 @@ import {
   PbFieldEntity,
   PbFieldItemParagraphFragment,
   PbEditMode,
-} from '../../../types'
+} from '#pb/types'
 
 const { adapter, mutateWithLoadingState, eventBus, isPressingControl } =
   useParagraphsBuilderStore()

@@ -84,13 +84,13 @@ import FeatureAvailableParagraphs from './Edit/Features/AvailableParagraphs/inde
 import FeatureConversions from './Edit/Features/Conversions/index.vue'
 import FeatureSettings from './Edit/Features/Settings/index.vue'
 
-import { Sortable } from './Edit/sortable'
+import { Sortable } from '#pb/sortable'
 
-import { eventBus, emitMessage } from './Edit/eventBus'
-import {
+import { eventBus, emitMessage } from './../eventBus'
+import type {
   DraggableExistingParagraphItem,
   MutatedParagraphOptions,
-} from './Edit/types'
+} from '#pb/types'
 import '#nuxt-paragraphs-builder/styles'
 import {
   PbMutatedField,
@@ -103,14 +103,14 @@ import {
   PbTranslationState,
   PbAvailableFeatures,
   PbMutateWithLoadingState,
-} from '../types'
+} from '#pb/types'
 import getAdapter from './../adapter/drupal'
 import {
   buildDraggableItem,
   falsy,
   findParagraphElement,
   onlyUnique,
-} from './Edit/helpers'
+} from '#pb/helpers'
 
 const route = useRoute()
 const router = useRouter()

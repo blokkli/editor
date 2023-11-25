@@ -7,17 +7,17 @@
     @click="resetZoom"
   >
     <div class="pb-feature-canvas-button">
-      <IconMagnifier />
+      <Icon name="magnifier" />
       <span>{{ zoomLevel }}</span>
     </div>
   </PluginToolbarButton>
 </template>
 
 <script lang="ts" setup>
-import { buildDraggableItem, falsy } from '../../helpers'
-import { KeyPressedEvent } from '../../types'
-import IconMagnifier from './../../Icons/Magnifier.vue'
-import PluginToolbarButton from './../../Plugin/ToolbarButton/index.vue'
+import { buildDraggableItem, falsy } from '#pb/helpers'
+import { KeyPressedEvent } from '#pb/types'
+import { Icon } from '#pb/components'
+import { PluginToolbarButton } from '#pb/plugins'
 
 type Coord = {
   x: number

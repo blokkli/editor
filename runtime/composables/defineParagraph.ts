@@ -4,7 +4,7 @@ import { useParagraphsBuilderEditContext } from '#imports'
 import {
   ParagraphDefinitionOptionsInput,
   InjectedParagraphItem,
-} from './../types'
+} from '#pb/types'
 import type { globalOptions } from '#nuxt-paragraphs-builder/definitions'
 import { globalOptionsDefaults } from '#nuxt-paragraphs-builder/default-global-options'
 

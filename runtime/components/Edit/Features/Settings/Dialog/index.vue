@@ -1,5 +1,5 @@
 <template>
-  <PbDialog
+  <DialogModal
     title="Einstellungen"
     :width="400"
     @cancel="$emit('cancel')"
@@ -35,11 +35,11 @@
         </div>
       </div>
     </div>
-  </PbDialog>
+  </DialogModal>
 </template>
 
 <script lang="ts" setup>
-import PbDialog from './../../../Dialog/index.vue'
+import { DialogModal } from '#pb/components'
 
 const { settings } = useParagraphsBuilderStore()
 

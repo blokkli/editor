@@ -1,6 +1,6 @@
 import { ParagraphsBuilderEditStateFragment } from '#build/graphql-operations'
-import { falsy } from '../../components/Edit/helpers'
-import { PbType } from '../../types'
+import { falsy } from '#pb/helpers'
+import { PbType } from '#pb/types'
 import { PbAdapter } from '../../types/adapter'
 
 type PbAdapterContext = {

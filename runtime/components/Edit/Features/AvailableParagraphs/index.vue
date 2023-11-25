@@ -38,9 +38,9 @@
 
 <script lang="ts" setup>
 import Sortable from 'sortablejs'
-import { falsy, onlyUnique } from './../../helpers'
-import ParagraphIcon from './../../ParagraphIcon/index.vue'
-import { DraggableExistingParagraphItem } from '../../types'
+import { falsy, onlyUnique } from '#pb/helpers'
+import { ParagraphIcon } from '#pb/components'
+import { DraggableExistingParagraphItem } from '#pb/types'
 
 const {
   eventBus,

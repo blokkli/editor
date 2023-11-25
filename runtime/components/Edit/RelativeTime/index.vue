@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getRelativeTimeString } from '../helpers'
+import { getRelativeTimeString } from '#pb/helpers'
 
 const props = defineProps<{
   timestamp: number

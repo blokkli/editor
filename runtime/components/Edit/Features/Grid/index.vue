@@ -6,7 +6,7 @@
     key-code="G"
   >
     <template #icon>
-      <IconGrid />
+      <Icon name="grid" />
     </template>
 
     <template v-slot="{ isActive }">
@@ -20,8 +20,8 @@
 </template>
 
 <script lang="ts" setup>
-import PluginViewOption from './../../Plugin/ViewOption/index.vue'
-import IconGrid from './../../Icons/Grid.vue'
+import { PluginViewOption } from '#pb/plugins'
+import { Icon } from '#pb/components'
 
 const { runtimeConfig } = useParagraphsBuilderStore()
 </script>

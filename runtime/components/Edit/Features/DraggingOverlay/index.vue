@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { AnimationFrameEvent, DraggableStartEvent } from '../../types'
+import type { AnimationFrameEvent, DraggableStartEvent } from '#pb/types'
 
 const { eventBus } = useParagraphsBuilderStore()
 

@@ -1,5 +1,5 @@
 <template>
-  <PbDialog
+  <DialogModal
     :title="title"
     :lead="lead"
     :width="1200"
@@ -26,11 +26,11 @@
     >
       <div ref="paragraph"></div>
     </div>
-  </PbDialog>
+  </DialogModal>
 </template>
 
 <script lang="ts" setup>
-import PbDialog from './../../../Dialog/index.vue'
+import { DialogModal } from '#pb/components'
 
 defineEmits<{
   (e: 'confirm', label: string): void

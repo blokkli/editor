@@ -12,11 +12,11 @@
           <div class="pb-drupal-modal-header">
             <ParagraphIcon v-if="bundle" :bundle="bundle" />
             <div v-else class="pb-paragraph-icon">
-              <IconForm />
+              <Icon name="form" />
             </div>
             <span>{{ title }}</span>
             <button @click="close">
-              <IconClose />
+              <Icon name="close" />
             </button>
           </div>
           <div class="pb-drupal-modal-iframe">
@@ -35,12 +35,10 @@
 </template>
 
 <script lang="ts" setup>
-import Resizable from './../../Resizable/index.vue'
-import IconClose from './../../Icons/Close.vue'
-import IconForm from './../../Icons/Form.vue'
-import ParagraphIcon from './../../ParagraphIcon/index.vue'
+import { Resizable } from '#pb/components'
+import { Icon, ParagraphIcon } from '#pb/components'
 import { definitions } from '#nuxt-paragraphs-builder/definitions'
-import { AddNewParagraphEvent, EditParagraphEvent } from '../../types'
+import { AddNewParagraphEvent, EditParagraphEvent } from '#pb/types'
 
 const {
   allTypes,

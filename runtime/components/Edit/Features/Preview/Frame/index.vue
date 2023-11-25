@@ -1,7 +1,7 @@
 <template>
   <div class="pb-preview" :style="style">
     <div v-if="isLoading" class="pb-preview-loading">
-      <IconSpinner />
+      <Icon name="spinner" />
     </div>
     <div class="pb-preview-iframe">
       <iframe ref="iframe" :src="src" @load="isLoading = false" />
@@ -10,8 +10,9 @@
 </template>
 
 <script lang="ts" setup>
-import { UpdateMutatedFieldsEvent } from '../../../types'
-import IconSpinner from './../../../Icons/Spinner.vue'
+import type { UpdateMutatedFieldsEvent } from '#pb/types'
+import { Icon } from '#pb/components'
+
 const route = useRoute()
 
 const { eventBus } = useParagraphsBuilderStore()

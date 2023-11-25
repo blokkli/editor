@@ -23,25 +23,21 @@
     @click="eventBus.emit('batchTranslate')"
     :disabled="editMode !== 'translating'"
     :weight="60"
-  >
-    <IconTranslate />
-  </PluginMenuButton>
+    icon="translate"
+  />
 
   <PluginParagraphAction
     title="Übersetzen"
     @click="onTranslateParagraph"
     v-if="editMode === 'translating'"
-  >
-    <IconTranslate />
-  </PluginParagraphAction>
+    icon="translate"
+  />
 </template>
 
 <script lang="ts" setup>
-import { falsy } from '../../helpers'
-import PluginMenuButton from './../../Plugin/MenuButton/index.vue'
-import PluginParagraphAction from './../../Plugin/ParagraphAction/index.vue'
-import IconTranslate from './../../Icons/Translate.vue'
-import { DraggableExistingParagraphItem } from '../../types'
+import { falsy } from '#pb/helpers'
+import { PluginMenuButton, PluginParagraphAction } from '#pb/plugins'
+import { DraggableExistingParagraphItem } from '#pb/types'
 
 const { translationState, currentLanguage, eventBus, editMode } =
   useParagraphsBuilderStore()

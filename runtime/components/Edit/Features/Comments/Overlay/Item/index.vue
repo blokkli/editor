@@ -13,7 +13,7 @@
         'pb-has-unresolved-comments': unresolvedCount > 0,
       }"
     >
-      <IconClose v-if="showComments" />
+      <Icon name="close" v-if="showComments" />
       <span v-else>{{ unresolvedCount }}</span>
     </button>
     <div
@@ -22,7 +22,7 @@
       :class="{ 'pb-is-left': isLeft }"
     >
       <div class="pb-comments-overlay-comments-header">
-        <IconComment />
+        <Icon name="comment" />
         <span>{{ comments.length }} Kommentare</span>
       </div>
       <div
@@ -54,10 +54,9 @@
 </template>
 
 <script lang="ts" setup>
-import { PbComment } from './../../../../../../types'
-import Comment from './../../../../Comment/index.vue'
-import IconClose from './../../../../Icons/Close.vue'
-import IconComment from './../../../../Icons/Comment.vue'
+import { PbComment } from '#pb/types'
+import Comment from '#pb/components/Comment/index.vue'
+import { Icon } from '#pb/components'
 
 const commentText = ref('')
 const showFullForm = ref(false)

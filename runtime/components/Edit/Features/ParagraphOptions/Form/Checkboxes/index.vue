@@ -8,7 +8,7 @@
         <span>{{ label }}</span>
         <span v-for="item in checked" class="pb-pill">{{ item }}</span>
       </div>
-      <IconCaret />
+      <Icon name="caret" />
     </button>
     <div v-if="isOpen">
       <label
@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import IconCaret from './../../../../Icons/Caret.vue'
+import { Icon } from '#pb/components'
 
 const props = defineProps<{
   label: string

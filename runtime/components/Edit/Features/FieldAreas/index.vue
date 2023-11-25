@@ -6,7 +6,7 @@
     key-code="I"
   >
     <template #icon>
-      <Icon />
+      <Icon name="area" />
     </template>
 
     <template v-slot="{ isActive }">
@@ -19,6 +19,6 @@
 
 <script lang="ts" setup>
 import Overlay from './Overlay/index.vue'
-import PluginViewOption from './../../Plugin/ViewOption/index.vue'
-import Icon from './../../Icons/Area.vue'
+import { PluginViewOption } from '#pb/plugins'
+import { Icon } from '#pb/components'
 </script>

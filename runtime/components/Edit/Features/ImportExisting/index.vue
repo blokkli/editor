@@ -7,7 +7,7 @@
     :disabled="editMode !== 'editing'"
     :weight="50"
   >
-    <Icon />
+    <Icon name="import" />
   </PluginMenuButton>
 
   <Teleport to="body">
@@ -22,8 +22,8 @@
 </template>
 
 <script lang="ts" setup>
-import PluginMenuButton from './../../Plugin/MenuButton/index.vue'
-import Icon from './../../Icons/Import.vue'
+import { PluginMenuButton } from '#pb/plugins'
+import { Icon } from '#pb/components'
 import ExistingDialog from './Dialog/index.vue'
 
 const {
