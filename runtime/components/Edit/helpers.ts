@@ -49,13 +49,13 @@ export function buildDraggableItem(
     }
   } else if (dataset.elementType === 'reusable') {
     const paragraphBundle = dataset.paragraphBundle
-    const libraryItemId = dataset.libraryItemId
-    if (paragraphBundle && libraryItemId) {
+    const libraryItemUuid = dataset.libraryItemUuid
+    if (paragraphBundle && libraryItemUuid) {
       return {
         itemType: 'reusable',
         element,
         paragraphBundle,
-        libraryItemId,
+        libraryItemUuid,
       }
     }
   } else if (dataset.elementType === 'new') {

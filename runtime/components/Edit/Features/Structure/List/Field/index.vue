@@ -7,8 +7,8 @@
         :key="item.uuid"
         :class="{ 'pb-is-active': isSelected(item.uuid) }"
       >
-        <button class="pb-structure-paragraph" @click="select(item.uuid)">
-          <div class="pb-structure-icon">
+        <button class="pb-paragraph-label" @click="select(item.uuid)">
+          <div class="pb-paragraph-label-icon">
             <ParagraphIcon :bundle="item.bundle" />
           </div>
           <span>{{ item.type?.label || item.bundle }}</span>
@@ -25,8 +25,8 @@
               'pb-is-inside-active': isSelected(item.uuid),
             }"
           >
-            <button class="pb-structure-paragraph" @click="select(child.uuid)">
-              <div class="pb-structure-icon">
+            <button class="pb-paragraph-label" @click="select(child.uuid)">
+              <div class="pb-paragraph-label-icon">
                 <ParagraphIcon :bundle="child.bundle" />
               </div>
               <span>{{ child.type?.label || child.bundle }}</span>

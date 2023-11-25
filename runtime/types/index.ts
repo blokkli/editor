@@ -268,6 +268,14 @@ export interface PbField {
   entity?: PbFieldEntity
 }
 
+export interface PbLibraryItem {
+  uuid: string
+  label?: string
+  bundle: string
+  item: PbFieldItemParagraphFragment
+  paragraph: any
+}
+
 export interface PbAllowedBundle {
   entityType: string
   bundle: string

@@ -5,7 +5,7 @@ mutation addReusableParagraph(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
-  $libraryItemId: String!
+  $libraryItemUuid: String!
   $hostType: String!
   $hostUuid: String!
   $hostFieldName: String!
@@ -16,7 +16,7 @@ mutation addReusableParagraph(
     entityUuid: $entityUuid
   ) {
     action: add_reusable(
-      libraryItemId: $libraryItemId
+      libraryItemUuid: $libraryItemUuid
       afterUuid: $afterUuid
       hostType: $hostType
       hostUuid: $hostUuid
@@ -28,7 +28,7 @@ mutation addReusableParagraph(
 }
 
 query paragraphsBuilderLibraryItems {
-  entityQuery(entityType: PARAGRAPHS_LIBRARY_ITEM, limit: 500) {
+  entityQuery(entityType: PARAGRAPHS_LIBRARY_ITEM, limit: 50) {
     items {
       ...paragraphsBuilderLibraryItem
     }
@@ -36,7 +36,7 @@ query paragraphsBuilderLibraryItems {
 }
 
 fragment paragraphsBuilderLibraryItem on ParagraphsLibraryItem {
-  id
+  uuid
   label
   paragraphs: paragraphsRawField {
     list {

@@ -1,56 +1,72 @@
 <template>
   <div class="pb-library pb-control">
-    <!-- <div class="pb-library-form"> -->
-    <!--   <label for="library_search" class="pb-form-label">Suchbegriff</label> -->
-    <!--   <input -->
-    <!--     v-model="text" -->
-    <!--     type="text" -->
-    <!--     id="library_search" -->
-    <!--     class="pb-form-input" -->
-    <!--     placeholder="" -->
-    <!--     required -->
-    <!--   /> -->
-    <!-- </div> -->
+    <div class="pb-library-form">
+      <input
+        v-model="text"
+        type="text"
+        id="library_search"
+        class="pb-form-input"
+        placeholder="Suchbegriff"
+        required
+      />
+    </div>
     <div v-if="data" class="pb-library-list" ref="listEl">
-      <Item v-for="item in data" v-bind="item" />
+      <Item
+        v-for="item in data"
+        v-bind="item"
+        v-show="visible === null || visible.includes(item.uuid)"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { falsy } from '../../../helpers'
 import Sortable from 'sortablejs'
-import Item, { ReusableItem } from './Item/index.vue'
+import Item from './Item/index.vue'
 import { eventBus } from './../../../eventBus'
+import { PbLibraryItem } from '~/modules/nuxt-paragraphs-builder/runtime/types'
+import { falsy } from '../../../helpers'
 
-const { adapter, mutateWithLoadingState } = useParagraphsBuilderStore()
+const { adapter } = useParagraphsBuilderStore()
 
 const listEl = ref<HTMLDivElement | null>(null)
 const text = ref('')
 let instance: Sortable | null = null
 
-const { data } = await useAsyncData<ReusableItem[]>(() => {
-  return useGraphqlQuery('paragraphsBuilderLibraryItems').then((response) => {
-    return (
-      response.data.entityQuery.items
-        ?.map((v) => {
-          if (v && 'id' in v && v.id) {
-            const paragraph = v.paragraphs?.list?.[0]
-            const bundle = paragraph?.item?.entityBundle
-            if (bundle && paragraph && paragraph.paragraph && paragraph.item) {
-              return {
-                id: v.id,
-                label: v.label,
-                bundle,
-                item: paragraph.item,
-                paragraph: paragraph.paragraph,
-              }
-            }
+type SearchElement = {
+  uuid: string
+  text: string
+}
+
+const elements = ref<SearchElement[]>([])
+
+const buildElements = () => {
+  if (!listEl.value) {
+    return
+  }
+  elements.value = [...listEl.value.querySelectorAll('.pb-library-list-item')]
+    .map((el) => {
+      if (el instanceof HTMLElement) {
+        const uuid = el.dataset.libraryItemUuid
+        if (uuid) {
+          return {
+            uuid,
+            text: el.innerText.toLowerCase(),
           }
-        })
-        .filter(falsy) || []
-    )
-  })
+        }
+      }
+    })
+    .filter(falsy)
+}
+
+const { data } = await useAsyncData<PbLibraryItem[]>(() =>
+  adapter.getLibraryItems(),
+)
+
+watch(text, () => {
+  if (!elements.value.length) {
+    buildElements()
+  }
 })
 
 onMounted(() => {
@@ -80,10 +96,21 @@ onMounted(() => {
     })
   }
 })
+
 onUnmounted(() => {
   if (instance) {
     instance.destroy()
   }
+})
+
+const visible = computed<string[] | null>(() => {
+  if (!text.value || !elements.value.length) {
+    return null
+  }
+
+  return elements.value
+    .filter((v) => v.text.includes(text.value.toLowerCase()))
+    .map((v) => v.uuid)
 })
 </script>
 

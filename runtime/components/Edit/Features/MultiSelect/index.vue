@@ -140,6 +140,11 @@ function shouldStartMultiSelect(target: Element): boolean {
     return false
   }
 
+  const isInSidebar = !!target.closest('.pb-sidebar')
+  if (isInSidebar) {
+    return false
+  }
+
   return true
 }
 

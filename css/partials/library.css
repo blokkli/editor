@@ -1,4 +1,7 @@
 .pb-library {
+  .pb-library-list-item-header {
+    @apply flex items-center mb-15;
+  }
 }
 .pb-library-list {
   .pb-library-list-item {
@@ -7,9 +10,6 @@
   .pb-library-list-item:hover {
     @apply outline outline-slate-300 -outline-offset-2 opacity-95;
   }
-}
-.pb-library-list-item {
-  border-bottom: 1px solid var(--gin-border-color);
 }
 .pb-library-list-item-inner {
   @apply relative;

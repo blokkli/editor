@@ -52,7 +52,7 @@ export interface DraggableReusableParagraphItem {
   itemType: 'reusable'
   element: HTMLElement
   paragraphBundle: string
-  libraryItemId: string
+  libraryItemUuid: string
 }
 
 export interface DraggableClipboardItem {

@@ -126,7 +126,7 @@ const getDrupalAdapter: PbAdapterFactory<ParagraphsBuilderEditStateFragment> = (
     addReusableParagraph(e) {
       return useGraphqlMutation('addReusableParagraph', {
         ...ctx,
-        libraryItemId: e.item.libraryItemId,
+        libraryItemUuid: e.item.libraryItemUuid,
         hostType: e.host.type,
         hostUuid: e.host.uuid,
         hostFieldName: e.host.fieldName,
@@ -287,6 +287,37 @@ const getDrupalAdapter: PbAdapterFactory<ParagraphsBuilderEditStateFragment> = (
         ...ctx,
         uuid,
       }).then((v) => v.data.state?.action || [])
+    },
+
+    getLibraryItems() {
+      return useGraphqlQuery('paragraphsBuilderLibraryItems').then(
+        (response) => {
+          return (
+            response.data.entityQuery.items
+              ?.map((v) => {
+                if (v && 'uuid' in v && v.uuid) {
+                  const paragraph = v.paragraphs?.list?.[0]
+                  const bundle = paragraph?.item?.entityBundle
+                  if (
+                    bundle &&
+                    paragraph &&
+                    paragraph.paragraph &&
+                    paragraph.item
+                  ) {
+                    return {
+                      uuid: v.uuid,
+                      label: v.label,
+                      bundle,
+                      item: paragraph.item,
+                      paragraph: paragraph.paragraph,
+                    }
+                  }
+                }
+              })
+              .filter(falsy) || []
+          )
+        },
+      )
     },
   }
 }

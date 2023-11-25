@@ -370,3 +370,14 @@
     background: white;
   }
 }
+
+.pb-paragraph-label {
+  @apply flex items-center text-slate-700;
+  span {
+    @apply text-sm;
+  }
+}
+
+.pb-paragraph-label-icon {
+  @apply w-25 h-25 border rounded bg-slate-100 flex items-center justify-center text-slate-500 mr-[7px] relative z-20 border-slate-300;
+}

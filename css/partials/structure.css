@@ -10,9 +10,6 @@
       }
     }
 
-    .pb-structure-icon {
-      @apply w-25 h-25 border rounded bg-slate-100 flex items-center justify-center text-slate-500 mr-10 relative z-20 border-slate-300;
-    }
     .pb-paragraph-icon {
       font-size: 18px;
     }
@@ -23,9 +20,9 @@
   }
 
   button {
-    @apply flex items-center text-sm py-10 w-full  text-slate-600;
+    @apply py-10 w-full;
     &:hover {
-      .pb-structure-icon {
+      .pb-paragraph-label-icon {
         @apply bg-slate-200 text-slate-900 border-slate-400;
       }
     }
@@ -34,7 +31,7 @@
   .pb-structure-field-paragraphs {
     li {
       &.pb-is-active > button {
-        .pb-structure-icon {
+        .pb-paragraph-label-icon {
           @apply bg-blue-600 text-white border-blue-900;
         }
 
@@ -44,7 +41,7 @@
       }
 
       &.pb-is-inside-active > button {
-        .pb-structure-icon {
+        .pb-paragraph-label-icon {
           @apply bg-blue-50 text-blue-700 border-blue-300;
         }
 

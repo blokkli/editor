@@ -3,10 +3,18 @@
     class="pb-library-list-item"
     data-element-type="reusable"
     :data-paragraph-bundle="bundle"
-    :data-library-item-id="id"
+    :data-library-item-uuid="uuid"
     :data-label="label"
     :class="backgroundClass"
   >
+    <div class="pb pb-library-list-item-header">
+      <div class="pb-paragraph-label">
+        <div class="pb-paragraph-label-icon">
+          <ParagraphIcon :bundle="bundle" />
+        </div>
+        <span>{{ label }}</span>
+      </div>
+    </div>
     <div class="pb-library-list-item-inner" :style="style">
       <div class="pb-library-paragraph" :style="paragraphStyle">
         <div ref="inner" class="pb-library-paragraph-inner" :style="innerStyle">
@@ -19,17 +27,10 @@
 
 <script setup lang="ts">
 import { definitions } from '#nuxt-paragraphs-builder/definitions'
-import { PbFieldItemParagraphFragment } from './../../../../../../types'
+import { PbLibraryItem } from './../../../../../../types'
+import ParagraphIcon from './../../../../ParagraphIcon/index.vue'
 
-export type ReusableItem = {
-  id: string
-  label?: string
-  bundle: string
-  item: PbFieldItemParagraphFragment
-  paragraph: any
-}
-
-const props = defineProps<ReusableItem>()
+const props = defineProps<PbLibraryItem>()
 
 const inner = ref<HTMLDivElement | null>(null)
 const paragraphNativeHeight = ref(0)

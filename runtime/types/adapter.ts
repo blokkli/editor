@@ -4,6 +4,7 @@ import {
   PbComment,
   PbConversion,
   PbEditState,
+  PbLibraryItem,
   PbType,
 } from '.'
 import {
@@ -14,7 +15,6 @@ import {
   MakeReusableEvent,
   MoveMultipleParagraphsEvent,
   MoveParagraphEvent,
-  ParagraphConvertEvent,
   UpdateParagraphOptionEvent,
 } from '../components/Edit/types'
 
@@ -62,7 +62,6 @@ export interface PbAdapter<T> {
     targetBundle: string,
   ): Promise<MutationResponseLike<T>>
   duplicateParagraphs(uuids: string[]): Promise<MutationResponseLike<T>>
-  makeParagraphReusable(e: MakeReusableEvent): Promise<MutationResponseLike<T>>
   importFromExisting(
     e: ImportFromExistingEvent,
   ): Promise<MutationResponseLike<T>>
@@ -76,4 +75,7 @@ export interface PbAdapter<T> {
   loadComments(): Promise<PbComment[]>
   addComment(paragraphUuid: string, body: string): Promise<PbComment[]>
   resolveComment(uuid: string): Promise<PbComment[]>
+
+  makeParagraphReusable(e: MakeReusableEvent): Promise<MutationResponseLike<T>>
+  getLibraryItems(): Promise<PbLibraryItem[]>
 }
