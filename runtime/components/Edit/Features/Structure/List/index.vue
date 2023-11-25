@@ -14,28 +14,26 @@ const { allTypes, refreshKey, entityUuid } = useParagraphsBuilderStore()
 
 const tree = ref<StructureTreeField[]>([])
 
+function mapItem(el: Element): StructureTreeItem | undefined {
+  if (el instanceof HTMLElement) {
+    const bundle = el.dataset.paragraphType || ''
+    return {
+      uuid: el.dataset.uuid || '',
+      bundle,
+      type: allTypes.value.find((v) => v.id === bundle),
+      items: [...el.querySelectorAll('[data-uuid]')].map(mapItem).filter(falsy),
+    }
+  }
+}
+
 function buildItemsForField(element: HTMLElement): StructureTreeItem[] {
-  const paragraphs = element.querySelectorAll(
-    `[data-provider-uuid="${entityUuid}"] [data-uuid]`,
-  )
-  return [...paragraphs]
-    .map((child) => {
-      if (child instanceof HTMLElement) {
-        const bundle = child.dataset.paragraphType || ''
-        return {
-          uuid: child.dataset.uuid || '',
-          bundle,
-          type: allTypes.value.find((v) => v.id === bundle),
-          isNested: child.dataset.hostType === 'paragraph',
-        }
-      }
-    })
-    .filter(falsy)
+  const paragraphs = element.children
+  return [...paragraphs].map(mapItem).filter(falsy)
 }
 
 function buildTree() {
   const fields = document.body.querySelectorAll(
-    '.pb-field-paragraphs[data-field-is-nested="false"]',
+    `[data-host-entity-uuid="${entityUuid}"]`,
   )
   tree.value = [...fields]
     .map((field) => {

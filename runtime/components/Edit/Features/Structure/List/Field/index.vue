@@ -1,22 +1,38 @@
 <template>
   <li v-for="field in fields" class="pb-structure-field" :key="field.name">
     <p class="pb-is-field">{{ field.label }}</p>
-    <ul v-if="field.items?.length">
+    <ul v-if="field.items?.length" class="pb-structure-field-paragraphs">
       <li
         v-for="item in field.items"
         :key="item.uuid"
-        :class="{ 'pb-is-nested': item.isNested }"
+        :class="{ 'pb-is-active': isSelected(item.uuid) }"
       >
-        <button
-          class="pb-structure-paragraph"
-          :class="{ 'pb-is-active': isSelected(item.uuid) }"
-          @click="select(item.uuid)"
-        >
+        <button class="pb-structure-paragraph" @click="select(item.uuid)">
           <div class="pb-structure-icon">
             <ParagraphIcon :bundle="item.bundle" />
           </div>
           <span>{{ item.type?.label || item.bundle }}</span>
         </button>
+        <ul
+          v-if="item.items?.length"
+          class="pb-structure-field-nested-paragraphs"
+        >
+          <li
+            v-for="child in item.items"
+            :key="child.uuid"
+            :class="{
+              'pb-is-active': isSelected(child.uuid),
+              'pb-is-inside-active': isSelected(item.uuid),
+            }"
+          >
+            <button class="pb-structure-paragraph" @click="select(child.uuid)">
+              <div class="pb-structure-icon">
+                <ParagraphIcon :bundle="child.bundle" />
+              </div>
+              <span>{{ child.type?.label || child.bundle }}</span>
+            </button>
+          </li>
+        </ul>
       </li>
     </ul>
   </li>
@@ -41,7 +57,7 @@ export type StructureTreeItem = {
   uuid: string
   bundle: string
   type?: PbType
-  isNested: boolean
+  items?: StructureTreeItem[]
 }
 
 export type StructureTreeField = {

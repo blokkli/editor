@@ -175,11 +175,8 @@ function onKeyPressed(e: KeyPressedEvent) {
     return
   }
 
-  targetElement.scrollIntoView({
-    block: 'nearest',
-  })
-
   eventBus.emit('select', targetItem.uuid)
+  eventBus.emit('paragraph:scrollIntoView', targetItem.uuid)
 }
 
 onMounted(() => {

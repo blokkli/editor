@@ -3,39 +3,77 @@
   .pb-structure-list {
     @apply text-base;
 
-    .pb-structure-icon {
-      @apply w-25 h-25 border rounded bg-slate-100 flex items-center justify-center text-slate-500 mr-10;
-    }
-    .pb-paragraph-icon {
-      font-size: 18px;
-    }
     > li {
       @apply p-20 border-b;
       > ul {
         @apply mt-10;
       }
     }
-    li {
-      &.pb-is-nested {
-        @apply ml-20;
-      }
+
+    .pb-structure-icon {
+      @apply w-25 h-25 border rounded bg-slate-100 flex items-center justify-center text-slate-500 mr-10 relative z-20 border-slate-300;
     }
+    .pb-paragraph-icon {
+      font-size: 18px;
+    }
+
     p {
       @apply font-medium uppercase text-xs text-slate-800;
     }
   }
 
   button {
-    @apply flex items-center text-sm py-10 w-full;
+    @apply flex items-center text-sm py-10 w-full  text-slate-600;
     &:hover {
       .pb-structure-icon {
-        @apply bg-slate-300 text-slate-900;
+        @apply bg-slate-200 text-slate-900 border-slate-400;
       }
     }
+  }
 
-    &.pb-is-active {
-      .pb-structure-icon {
-        @apply bg-blue-600 text-white;
+  .pb-structure-field-paragraphs {
+    li {
+      &.pb-is-active > button {
+        .pb-structure-icon {
+          @apply bg-blue-600 text-white border-blue-900;
+        }
+
+        span {
+          @apply text-slate-950 font-semibold;
+        }
+      }
+
+      &.pb-is-inside-active > button {
+        .pb-structure-icon {
+          @apply bg-blue-50 text-blue-700 border-blue-300;
+        }
+
+        span {
+          @apply text-slate-950 font-medium;
+        }
+      }
+    }
+  }
+
+  .pb-structure-field-nested-paragraphs {
+    li {
+      @apply pl-25 relative;
+      &:before {
+        content: '';
+        @apply absolute top-[-22px] h-full w-0  left-[11.5px] border-l border-l-slate-400 border-dashed;
+      }
+      &:after {
+        content: '';
+        @apply absolute left-[11.5px] w-[15px] h-0  top-[22px] border-t border-t-slate-400 border-dashed;
+      }
+
+      &.pb-is-inside-active {
+        &:before {
+          @apply !border-l-blue-400 border-solid;
+        }
+        &:after {
+          @apply !border-t-blue-400 border-solid;
+        }
       }
     }
   }

@@ -15,19 +15,9 @@
 
 <script lang="ts" setup>
 import { buildDraggableItem, falsy } from '../../helpers'
+import { KeyPressedEvent } from '../../types'
 import IconMagnifier from './../../Icons/Magnifier.vue'
 import PluginToolbarButton from './../../Plugin/ToolbarButton/index.vue'
-
-let resetTimeout: any = null
-
-function resetZoom() {
-  clearTimeout(resetTimeout)
-  const y = offset.y / scale.value
-  scale.value = 1
-  updateOffset(offset.x, y)
-  updateStyles()
-  updateOffset(getCenterX(), 50)
-}
 
 type Coord = {
   x: number
@@ -57,7 +47,7 @@ const startMoveOffset: Coord = {
   y: 0,
 }
 
-let targetOffset: Coord | null = null
+let animationTarget: (Coord & { scale: number }) | null = null
 
 const { isPressingSpace, eventBus } = useParagraphsBuilderStore()
 
@@ -74,10 +64,11 @@ watch(previewOpen, (isOpen) => {
 function updateOffset(x: number, y: number) {
   if (nuxtRootEl && wrapperEl) {
     const rootRect = nuxtRootEl.getBoundingClientRect()
-    const wrapperRect = wrapperEl.getBoundingClientRect()
-    const minX = -(wrapperRect.width - 50)
+    const wrapperHeight = wrapperEl.offsetHeight * scale.value
+    const wrapperWidth = wrapperEl.offsetWidth * scale.value
+    const minX = -(wrapperWidth - 50)
     const maxX = rootRect.width - 50
-    const minY = -(wrapperRect.height - 50)
+    const minY = -(wrapperHeight - 50)
     const maxY = rootRect.height - 50
     offset.x = Math.max(Math.min(x, maxX), minX)
     offset.y = Math.max(Math.min(y, maxY), minY)
@@ -85,6 +76,7 @@ function updateOffset(x: number, y: number) {
 }
 
 function onWheel(e: WheelEvent) {
+  stopAnimate()
   e.preventDefault()
   if (!wrapperEl || !nuxtRootEl) {
     return
@@ -120,6 +112,33 @@ function updateStyles() {
       offset.y,
     )}px`
   }
+}
+
+function resetZoom() {
+  const canvasHeight = wrapperEl?.offsetHeight
+  if (!canvasHeight) {
+    return
+  }
+  // Calculate the ideal y position for the current offset.
+  const targetY =
+    window.innerHeight / 2 - (window.innerHeight / 2 - offset.y) / scale.value
+
+  // Make sure the canvas has a maximum distance to the top and bottom of the screen of 70px.
+  const y = Math.min(
+    Math.max(targetY, -(canvasHeight - window.innerHeight + 120)),
+    70,
+  )
+  animateTo(getCenterX(1), y, 1)
+}
+
+function scaleToFit() {
+  const canvasHeight = wrapperEl?.offsetHeight
+  if (!canvasHeight) {
+    return
+  }
+
+  const targetScale = (window.innerHeight - 50 - 60) / canvasHeight
+  animateTo(getCenterX(targetScale), 30, targetScale)
 }
 
 watch(isPressingSpace, (isPressing) => {
@@ -160,7 +179,7 @@ function onMouseUp() {
   mouseIsDown.value = false
 }
 
-function onKeyDown(e: KeyboardEvent) {
+function onKeyPressed(e: KeyPressedEvent) {
   if (!wrapperEl || !nuxtRootEl) {
     return
   }
@@ -168,25 +187,34 @@ function onKeyDown(e: KeyboardEvent) {
     scrollToTop()
   } else if (e.code === 'PageDown') {
     const rect = nuxtRootEl.getBoundingClientRect()
-    updateOffset(offset.x, -wrapperEl.offsetHeight + rect.height - 50)
+    animateTo(offset.x, -wrapperEl.offsetHeight + rect.height - 50)
   } else if (e.code === 'ArrowUp') {
-    updateOffset(offset.x, offset.y + 50)
+    if (animationTarget) {
+      animationTarget.y += 200
+    } else {
+      animateTo(offset.x, offset.y + 200)
+    }
   } else if (e.code === 'ArrowDown') {
-    updateOffset(offset.x, offset.y - 50)
-  } else if (e.code === 'Digit0' && e.ctrlKey) {
+    if (animationTarget) {
+      animationTarget.y -= 200
+    } else {
+      animateTo(offset.x, offset.y - 200)
+    }
+  } else if (e.code === 'Digit0' && e.meta) {
     resetZoom()
+  } else if (e.code === 'f' && e.meta) {
+    scaleToFit()
   }
 }
 
 function scrollToTop() {
-  updateOffset(offset.x, 50)
+  animateTo(offset.x, 50)
 }
 
-function getCenterX(): number {
-  if (nuxtRootEl && wrapperEl) {
-    const rootRect = nuxtRootEl.getBoundingClientRect()
-    const wrapperRect = wrapperEl.getBoundingClientRect()
-    return (rootRect.width - wrapperRect.width) / 2
+function getCenterX(targetScale?: number): number {
+  const scaleToUse = targetScale || scale.value
+  if (wrapperEl) {
+    return (window.innerWidth - 70 - wrapperEl.offsetWidth * scaleToUse) / 2
   }
   return 0
 }
@@ -197,24 +225,37 @@ function lerp(start: number, end: number, t: number) {
 
 let alpha = 0
 const speed = 0.01 // Animation speed
-const threshold = 1 // Threshold to stop the animation
+
+const animateTo = (x: number, y: number, targetScale?: number) => {
+  animationTarget = { x, y, scale: targetScale || scale.value }
+  alpha = 0
+}
+
+const stopAnimate = () => {
+  animationTarget = null
+  alpha = 0
+}
 
 let raf: any = null
 function loop() {
-  if (targetOffset) {
+  if (animationTarget) {
     // Check if the current offset is close enough to the target offset
     if (
-      Math.abs(offset.x - targetOffset.x) < threshold &&
-      Math.abs(offset.y - targetOffset.y) < threshold
+      Math.abs(offset.x - animationTarget.x) < 1 &&
+      Math.abs(offset.y - animationTarget.y) < 1 &&
+      Math.abs(scale.value - animationTarget.scale) < 0.02
     ) {
       // We have reached our target.
-      targetOffset = null
-      alpha = 0
+      updateOffset(animationTarget.x, animationTarget.y)
+      scale.value = animationTarget.scale
+      stopAnimate()
     } else {
       // Update the offset values
-      const x = lerp(offset.x, targetOffset.x, alpha)
-      const y = lerp(offset.y, targetOffset.y, alpha)
+      const x = lerp(offset.x, animationTarget.x, alpha)
+      const y = lerp(offset.y, animationTarget.y, alpha)
       updateOffset(x, y)
+      const newScale = lerp(scale.value, animationTarget.scale, alpha)
+      scale.value = newScale
 
       // Increase alpha towards 1 at each frame
       if (alpha < 1) {
@@ -277,9 +318,9 @@ function loop() {
   raf = window.requestAnimationFrame(loop)
 }
 
-const zoomLevel = computed(() => {
-  return Math.round(scale.value * 100) + '%'
-})
+const zoomLevel = computed(
+  () => Math.round((animationTarget?.scale || scale.value) * 100) + '%',
+)
 
 function onMouseMoveGlobal(e: MouseEvent) {
   mouseX.value = e.x
@@ -372,22 +413,10 @@ function onParagraphScrollIntoView(uuid: string) {
   }
 
   const rect = item.element.getBoundingClientRect()
-  targetOffset = {
-    x: offset.x,
-    y: offset.y - rect.y + 50 + window.innerHeight / 2 - rect.height / 2,
-  }
-  alpha = 0
-  // if (rect.y > window.innerHeight - 40) {
-  //   targetOffset = {
-  //     x: offset.x,
-  //     y: offset.y + (window.innerHeight - rect.y - rect.height - 100),
-  //   }
-  // } else if (rect.y < 100) {
-  //   targetOffset = {
-  //     x: offset.x,
-  //     y: offset.y - (rect.y - rect.height - 100),
-  //   }
-  // }
+  animateTo(
+    offset.x,
+    offset.y - rect.y + 50 + window.innerHeight / 2 - rect.height / 2,
+  )
 }
 
 onMounted(() => {
@@ -396,7 +425,6 @@ onMounted(() => {
   sidebarEl = document.querySelector('.pb-sidebar')
   window.addEventListener('mousedown', onMouseDown)
   window.addEventListener('mouseup', onMouseUp)
-  window.addEventListener('keydown', onKeyDown)
   window.addEventListener('mousemove', onMouseMoveGlobal, {
     passive: false,
   })
@@ -407,6 +435,7 @@ onMounted(() => {
   document.body.addEventListener('wheel', onWheel, { passive: false })
 
   eventBus.on('paragraph:scrollIntoView', onParagraphScrollIntoView)
+  eventBus.on('keyPressed', onKeyPressed)
   setInitState()
   updateStyles()
   loop()
@@ -428,7 +457,6 @@ onUnmounted(() => {
   document.body.removeEventListener('wheel', onWheel)
   window.removeEventListener('mousedown', onMouseDown)
   window.removeEventListener('mouseup', onMouseUp)
-  window.removeEventListener('keydown', onKeyDown)
   window.removeEventListener('mousemove', onMouseMoveGlobal)
   window.removeEventListener('touchstart', onTouchStart)
   window.removeEventListener('touchmove', onTouchMove)
@@ -437,5 +465,6 @@ onUnmounted(() => {
   nuxtRootEl?.classList.remove('pb-has-preview-open')
   window.cancelAnimationFrame(raf)
   eventBus.off('paragraph:scrollIntoView', onParagraphScrollIntoView)
+  eventBus.off('keyPressed', onKeyPressed)
 })
 </script>
