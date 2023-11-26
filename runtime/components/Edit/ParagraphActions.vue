@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import { buildDraggableItem, falsy } from '#pb/helpers'
+import { buildDraggableItem, falsy, modulo } from '#pb/helpers'
 import { AnimationFrameEvent, KeyPressedEvent } from '#pb/types'
 
 type Rectangle = {
@@ -129,10 +129,6 @@ function onAnimationFrame(e: AnimationFrameEvent) {
       })
       .filter(falsy)
   }
-}
-
-function modulo(n: number, m: number) {
-  return ((n % m) + m) % m
 }
 
 function onKeyPressed(e: KeyPressedEvent) {

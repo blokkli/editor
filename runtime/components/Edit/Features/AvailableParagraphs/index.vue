@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts" setup>
-import Sortable from 'sortablejs'
+import { Sortable } from '#pb/sortable'
 import { falsy, onlyUnique } from '#pb/helpers'
 import { ParagraphIcon } from '#pb/components'
 import { DraggableExistingParagraphItem } from '#pb/types'

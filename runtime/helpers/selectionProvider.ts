@@ -6,6 +6,7 @@ import { Sortable } from '#pb/sortable'
 export default function (isPressingSpace: globalThis.Ref<boolean>) {
   const selectedParagraphUuids = ref<string[]>([])
   const activeFieldKey = ref('')
+  const isDragging = ref(false)
 
   const selectedParagraphs = computed<DraggableExistingParagraphItem[]>(() =>
     selectedParagraphUuids.value
@@ -90,12 +91,42 @@ export default function (isPressingSpace: globalThis.Ref<boolean>) {
     unselectParagraphs()
   }
 
+  const setActiveFieldKey = (key: string) => (activeFieldKey.value = key)
+
+  const onStateReloaded = () => {
+    nextTick(() => {
+      selectedParagraphUuids.value = selectedParagraphUuids.value.filter(
+        (uuid) => {
+          // Check if the currently selected paragraph is still in the DOM.
+          const el = findParagraphElement(uuid)
+          if (el) {
+            return true
+          }
+
+          return false
+        },
+      )
+    })
+  }
+
+  function onDraggingStart() {
+    isDragging.value = true
+  }
+
+  function onDraggingEnd() {
+    isDragging.value = false
+  }
+
   onMounted(() => {
     document.body.addEventListener('mousedown', onWindowMouseDown)
     eventBus.on('selectAdditional', onSelectParagraphAdditional)
     eventBus.on('select', onSelectParagraph)
     eventBus.on('select:start', onMultiSelectStart)
     eventBus.on('select:end', onSelectEnd)
+    eventBus.on('setActiveFieldKey', setActiveFieldKey)
+    eventBus.on('state:reloaded', onStateReloaded)
+    eventBus.on('draggingStart', onDraggingStart)
+    eventBus.on('draggingEnd', onDraggingEnd)
   })
 
   onBeforeUnmount(() => {
@@ -104,6 +135,10 @@ export default function (isPressingSpace: globalThis.Ref<boolean>) {
     eventBus.off('select', onSelectParagraph)
     eventBus.off('select:start', onMultiSelectStart)
     eventBus.off('select:end', onSelectEnd)
+    eventBus.off('setActiveFieldKey', setActiveFieldKey)
+    eventBus.off('state:reloaded', onStateReloaded)
+    eventBus.off('draggingStart', onDraggingStart)
+    eventBus.off('draggingEnd', onDraggingEnd)
   })
 
   return {

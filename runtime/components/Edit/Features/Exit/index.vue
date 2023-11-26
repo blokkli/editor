@@ -2,7 +2,7 @@
   <PluginMenuButton
     title="Schliessen"
     description="Editor schliessen ohne veröffentlichen"
-    @click="eventBus.emit('exitEditor')"
+    @click="onClick"
     :weight="100"
   >
     <Icon name="exit" />
@@ -13,5 +13,11 @@
 import { PluginMenuButton } from '#pb/plugins'
 import { Icon } from '#pb/components'
 
-const { eventBus } = useParagraphsBuilderStore()
+const route = useRoute()
+
+function onClick() {
+  nextTick(() => {
+    window.location.href = route.path
+  })
+}
 </script>

@@ -21,6 +21,7 @@
   <FeatureMultiSelect v-if="!isPressingSpace && canEdit && !isTranslation" />
   <FeatureDraggingOverlay />
   <FeatureAvailableParagraphs v-if="canEdit && !isTranslation" />
+  <FeatureSearch />
 
   <!-- Form -->
   <FeatureDrupalFrame />
@@ -69,6 +70,7 @@ import FeatureDraggingOverlay from './DraggingOverlay/index.vue'
 import FeatureAvailableParagraphs from './AvailableParagraphs/index.vue'
 import FeatureConversions from './Conversions/index.vue'
 import FeatureSettings from './Settings/index.vue'
+import FeatureSearch from './Search/index.vue'
 
 const { isPressingSpace, availableFeatures, canEdit, editMode, runtimeConfig } =
   useParagraphsBuilderStore()

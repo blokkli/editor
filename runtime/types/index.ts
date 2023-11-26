@@ -2,7 +2,7 @@ import type { Ref } from 'vue'
 import type { Emitter } from 'mitt'
 
 import { WritableComputedRef } from 'nuxt/dist/app/compat/capi'
-import { eventBus } from './../components/Edit/eventBus'
+import { eventBus } from './../eventBus'
 import { PbAdapter } from './adapter'
 
 export type PbMutateWithLoadingState = (
@@ -530,6 +530,7 @@ export type ParagraphsBuilderEvents = {
   removeGhosts: undefined
   draggingStart: DraggableStartEvent
   draggingEnd: undefined
+  setActiveFieldKey: string
   moveParagraph: MoveParagraphEvent
   moveMultipleParagraphs: MoveMultipleParagraphsEvent
   addNewParagraph: AddNewParagraphEvent
@@ -563,6 +564,8 @@ export type ParagraphsBuilderEvents = {
 
   'paragraph:scrollIntoView': string
   'animationFrame:before': undefined
+
+  'state:reloaded': undefined
 }
 
 export type ParagraphsBuilderEventBus = Emitter<ParagraphsBuilderEvents>

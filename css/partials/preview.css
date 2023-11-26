@@ -20,24 +20,3 @@
   @apply overflow-hidden;
   @apply overflow-y-auto;
 }
-
-.pb-html-preview {
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: blue orange;
-  }
-
-  /* Works on Chrome, Edge, and Safari */
-  *::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  *::-webkit-scrollbar-track {
-    @apply bg-slate-100;
-  }
-
-  *::-webkit-scrollbar-thumb {
-    @apply bg-slate-400;
-    border-radius: 20px;
-  }
-}

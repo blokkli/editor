@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import Sortable from 'sortablejs'
+import { Sortable } from '#pb/sortable'
 import Item from './Item/index.vue'
 import { PbLibraryItem } from '#pb/types'
 import { falsy } from '#pb/helpers'

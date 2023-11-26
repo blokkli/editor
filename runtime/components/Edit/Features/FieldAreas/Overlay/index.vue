@@ -5,7 +5,7 @@
       class="pb-field-area"
       :style="area.style"
       :class="{ 'pb-is-active': area.key === activeFieldKey }"
-      @click="setActiveFieldKey(area.key)"
+      @click="eventBus.emit('setActiveFieldKey', area.key)"
     >
       <div>
         <span>{{ area.label }}</span>
@@ -17,8 +17,7 @@
 <script lang="ts" setup>
 import { AnimationFrameEvent } from '#pb/types'
 
-const { eventBus, activeFieldKey, setActiveFieldKey } =
-  useParagraphsBuilderStore()
+const { eventBus, activeFieldKey } = useParagraphsBuilderStore()
 
 export type FieldArea = {
   key: string

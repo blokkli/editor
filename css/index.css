@@ -15,6 +15,7 @@
 @import './partials/fieldAreas.css';
 @import './partials/messages.css';
 @import './partials/settings.css';
+@import './partials/search.css';
 
 @font-face {
   font-family: 'PB Inter';
@@ -255,8 +256,11 @@
   }
 }
 
-.pb-html-root.pb-is-artboard .pb-body {
+.pb-html-root.pb-is-artboard {
   @apply overflow-hidden;
+  .pb-body {
+    @apply overflow-hidden;
+  }
   #nuxt-root {
     @apply bg-slate-200 overflow-hidden absolute top-50 left-70 bottom-0 right-0;
     &.pb-has-preview-open {
@@ -271,7 +275,7 @@
     backface-visibility: hidden;
     transform-origin: 0 0;
   }
-  &.pb-is-pressing-space {
+  .pb-body.pb-is-pressing-space {
     @apply cursor-move;
     .pb-main-canvas,
     .pb-paragraphs-container {
@@ -391,4 +395,24 @@
 
 .pb-paragraph-label-icon {
   @apply w-25 h-25 border rounded bg-slate-100 flex items-center justify-center text-slate-500 mr-[7px] relative z-20 border-slate-300;
+}
+
+.pb {
+  * {
+    scrollbar-width: thin;
+  }
+
+  /* Works on Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  *::-webkit-scrollbar-track {
+    @apply bg-slate-100;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    @apply bg-slate-400;
+    border-radius: 20px;
+  }
 }

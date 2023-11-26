@@ -26,8 +26,6 @@ type Coord = {
 
 let wrapperEl: HTMLElement | null = null
 let nuxtRootEl: HTMLElement | null = null
-const mouseX = ref(0)
-const mouseY = ref(0)
 const zoomFactor = 0.1
 const scale = ref(1)
 const offset: Coord = {
@@ -201,7 +199,7 @@ function onKeyPressed(e: KeyPressedEvent) {
     }
   } else if (e.code === 'Digit0' && e.meta) {
     resetZoom()
-  } else if (e.code === 'f' && e.meta) {
+  } else if (e.code === 'Digit1' && e.meta) {
     scaleToFit()
   }
 }

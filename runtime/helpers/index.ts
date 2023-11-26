@@ -164,3 +164,7 @@ export function removeDroppedElements() {
     .querySelectorAll('.pb-multi-select-hidden')
     .forEach((v) => v.classList.remove('pb-multi-select-hidden'))
 }
+
+export function modulo(n: number, m: number) {
+  return ((n % m) + m) % m
+}
