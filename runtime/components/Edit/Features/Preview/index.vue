@@ -17,6 +17,7 @@
   />
 
   <PluginToolbarButton
+    v-if="previewGrantUrl"
     title="Vorschau (mit Smartphone)"
     region="after-menu"
     @click="qrCodeVisible = true"
@@ -28,7 +29,7 @@
 
     <Transition appear name="pb-slide-up">
       <DialogModal
-        v-if="qrCodeVisible"
+        v-if="qrCodeVisible && previewGrantUrl"
         title="Vorschau mit Smartphone"
         lead="Scannen Sie den QR-Code mit Ihrem Smartphone um die Vorschau zu öffnen."
         submit-label="Schliessen"
@@ -38,7 +39,7 @@
         @submit="qrCodeVisible = false"
         @cancel="qrCodeVisible = false"
       >
-        <QrCode :url="previewGrantUrl || previewUrl" />
+        <QrCode :url="previewGrantUrl" />
       </DialogModal>
     </Transition>
   </Teleport>
@@ -55,7 +56,11 @@ const qrCodeVisible = ref(false)
 
 const route = useRoute()
 
-const { previewGrantUrl } = useParagraphsBuilderStore()
+const { adapter } = useParagraphsBuilderStore()
+
+const { data: previewGrantUrl } = await useAsyncData(() =>
+  adapter.getPreviewGrantUrl(),
+)
 
 const previewUrl = computed(() =>
   route.fullPath.replace('pbEditing', 'pbPreview'),

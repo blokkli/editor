@@ -352,6 +352,11 @@ const getDrupalAdapter: PbAdapterFactory<ParagraphsBuilderEditStateFragment> = (
       `/paragraphs_builder/${ctx.entityType}/${ctx.entityUuid}/last_changed`,
     ).then((v) => v.changed)
 
+  const getPreviewGrantUrl: DrupalAdapter['getPreviewGrantUrl'] = () =>
+    useGraphqlQuery('pbGetPreviewGrantUrl', ctx).then(
+      (v) => v.data.getParagraphsEditState?.previewUrl,
+    )
+
   return {
     getImportItems,
     getConversions,
@@ -383,6 +388,7 @@ const getDrupalAdapter: PbAdapterFactory<ParagraphsBuilderEditStateFragment> = (
     resolveComment,
     getLibraryItems,
     getLastChanged,
+    getPreviewGrantUrl,
   }
 }
 

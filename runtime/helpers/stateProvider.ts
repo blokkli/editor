@@ -21,7 +21,6 @@ export default function (adapter: PbAdapter<any>) {
   const mutations = ref<PbMutation[]>([])
   const violations = ref<PbViolation[]>([])
   const currentMutationIndex = ref(-1)
-  const previewGrantUrl = ref('')
   const isLoading = ref(false)
   const entity = ref<PbEditEntity>({
     id: undefined,
@@ -56,7 +55,6 @@ export default function (adapter: PbAdapter<any>) {
     entity.value.translations = context?.entity?.translations || []
     entity.value.bundleLabel = context?.entity?.bundleLabel || ''
     entity.value.editUrl = context?.entity.editUrl
-    previewGrantUrl.value = context?.previewUrl || ''
 
     translationState.value.isTranslatable =
       !!context?.translationState?.isTranslatable
@@ -199,7 +197,6 @@ export default function (adapter: PbAdapter<any>) {
     mutations,
     violations,
     currentMutationIndex,
-    previewGrantUrl,
     setContext,
     mutateWithLoadingState,
     loadState,

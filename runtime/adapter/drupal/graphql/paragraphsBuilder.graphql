@@ -54,8 +54,6 @@ fragment paragraphsBuilderEditState on ParagraphsBuilderEditState {
     }
     translations
   }
-
-  previewUrl
 }
 
 fragment paragraphsBuilderMutationItem on FieldItemTypeParagraphsBuilderMutation {
@@ -465,6 +463,12 @@ mutation paragraphsBuilderUndo(
     action: undo {
       ...paragraphsBuilderMutationResult
     }
+  }
+}
+
+query pbGetPreviewGrantUrl($entityType: EntityType!, $entityUuid: String!) {
+  getParagraphsEditState(entityType: $entityType, entityUuid: $entityUuid) {
+    previewUrl
   }
 }
 

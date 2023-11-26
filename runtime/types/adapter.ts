@@ -195,4 +195,11 @@ export interface PbAdapter<T> {
    * Get the last changed timestamp for the edit state.
    */
   getLastChanged(): Promise<number>
+
+  /**
+   * Get the shareable preview URL.
+   *
+   * This should return a URL that can be used to bypass logins, using a token or similar, that can be shared with non-editing people.
+   */
+  getPreviewGrantUrl(): Promise<string | undefined | null>
 }
