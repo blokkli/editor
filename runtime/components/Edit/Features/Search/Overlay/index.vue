@@ -32,11 +32,11 @@
             <ParagraphIcon :bundle="item.item.paragraphType" />
           </div>
           <div>
-            <Highlight tag="h2" :text="item.title" :search="searchCleaned" />
+            <Highlight tag="h2" :text="item.title" :regex="regex" />
             <Highlight
               class="pb-search-item-text"
               :text="item.text"
-              :search="searchCleaned"
+              :regex="regex"
             />
           </div>
         </li>
@@ -82,7 +82,26 @@ const input = ref<HTMLInputElement | null>(null)
 const items = ref<SearchItem[]>([])
 const index = ref(0)
 
-const searchCleaned = computed(() => search.value.toLowerCase().trim())
+const words = computed(() =>
+  search.value
+    .toLowerCase()
+    .trim()
+    .split(' ')
+    .map((v) => v.trim())
+    .filter(Boolean),
+)
+
+const regex = computed(() => {
+  if (!words.value.length) {
+    return
+  }
+  // Join all words into a regex.
+  const pattern = words.value
+    .map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('|')
+
+  return new RegExp(pattern, 'gi')
+})
 
 const setIndex = (newIndex: number) => {
   index.value = modulo(newIndex, visibleItems.value.length)
@@ -184,14 +203,27 @@ onMounted(() => {
 defineExpose({ focusInput })
 
 const visibleItems = computed(() => {
-  if (!searchCleaned.value) {
+  if (!words.value.length) {
     return items.value
   }
-  return items.value.filter(
-    (v) =>
-      v.text.toLowerCase().includes(searchCleaned.value) ||
-      v.title.toLowerCase().includes(searchCleaned.value),
-  )
+  const scored = items.value
+    .map((item) => {
+      const score = words.value.reduce((acc, word) => {
+        if (item.text.toLowerCase().includes(word)) {
+          acc += 1
+        }
+        if (item.title.toLowerCase().includes(word)) {
+          acc += 1
+        }
+        return acc
+      }, 0)
+      return { item, score }
+    })
+    .filter((v) => !!v.score)
+
+  scored.sort((a, b) => b.score - a.score)
+
+  return scored.map((v) => v.item)
 })
 
 watch(visibleItems, () => {
