@@ -416,3 +416,7 @@
     border-radius: 20px;
   }
 }
+
+.pb-overlay {
+  @apply bg-slate-800/90 backdrop-blur-md;
+}

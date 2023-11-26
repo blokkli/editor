@@ -4,7 +4,7 @@
       <div
         v-if="isRendered"
         v-show="isVisible"
-        class="pb pb-search"
+        class="pb pb-search pb-overlay"
         @click.stop.prevent="isVisible = false"
       >
         <Overlay

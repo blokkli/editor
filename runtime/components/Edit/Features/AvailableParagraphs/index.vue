@@ -54,7 +54,7 @@ const {
   activeFieldKey,
 } = useParagraphsBuilderStore()
 
-const STORAGE_KEY = '_vp_paragraphs_sorting'
+const STORAGE_KEY = '_pb_paragraphs_sorting'
 
 const typeList = ref<HTMLDivElement | null>(null)
 const wrapper = ref<HTMLDivElement | null>(null)

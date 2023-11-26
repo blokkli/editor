@@ -14,8 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { buildDraggableItem } from '#pb/helpers'
-import { KeyPressedEvent } from '#pb/types'
+import { KeyPressedEvent, ParagraphScrollIntoViewEvent } from '#pb/types'
 import { Icon } from '#pb/components'
 import { PluginToolbarButton } from '#pb/plugins'
 
@@ -44,21 +43,12 @@ const startMoveOffset: Coord = {
   y: 0,
 }
 
+// The target state for the current animation.
 const animationTarget = ref<(Coord & { scale: number }) | null>(null)
 
-const { isPressingSpace, eventBus } = useParagraphsBuilderStore()
+const { isPressingSpace, eventBus, dom } = useParagraphsBuilderStore()
 
-const previewOpen = ref(false)
-
-watch(previewOpen, (isOpen) => {
-  if (isOpen) {
-    nuxtRootEl?.classList.add('pb-has-preview-open')
-  } else {
-    nuxtRootEl?.classList.remove('pb-has-preview-open')
-  }
-})
-
-function updateOffset(x: number, y: number) {
+const limitOffset = (providedX: number, providedY: number): Coord => {
   if (nuxtRootEl && wrapperEl) {
     const rootRect = nuxtRootEl.getBoundingClientRect()
     const wrapperHeight = wrapperEl.offsetHeight * scale.value
@@ -67,8 +57,26 @@ function updateOffset(x: number, y: number) {
     const maxX = rootRect.width - 50
     const minY = -(wrapperHeight - 50)
     const maxY = rootRect.height - 50
-    offset.x = Math.max(Math.min(x, maxX), minX)
-    offset.y = Math.max(Math.min(y, maxY), minY)
+    const x = Math.max(Math.min(providedX, maxX), minX)
+    const y = Math.max(Math.min(providedY, maxY), minY)
+    return { x, y }
+  }
+
+  return { x: providedX, y: providedY }
+}
+
+function updateOffset(x: number, y: number) {
+  const limited = limitOffset(x, y)
+  offset.x = limited.x
+  offset.y = limited.y
+}
+
+function updateAnimationTarget(newX: number, newY: number, newScale?: number) {
+  const { x, y } = limitOffset(newX, newY)
+  animationTarget.value = {
+    x,
+    y,
+    scale: newScale || animationTarget.value?.scale || scale.value,
   }
 }
 
@@ -89,7 +97,7 @@ function onWheel(e: WheelEvent) {
     zoomTarget.y = (zoomPoint.y - offset.y) / scale.value
 
     scale.value = Math.max(
-      0.1,
+      0.05,
       Math.min(3, scale.value + delta * zoomFactor * scale.value),
     )
 
@@ -180,32 +188,49 @@ function onKeyPressed(e: KeyPressedEvent) {
   if (!wrapperEl || !nuxtRootEl) {
     return
   }
-  if (e.code === 'PageUp') {
+  if (e.code === 'Home') {
     scrollToTop()
+  } else if (e.code === 'End') {
+    scrollToEnd()
+  } else if (e.code === 'PageUp') {
+    scrollPageUp()
   } else if (e.code === 'PageDown') {
-    const rect = nuxtRootEl.getBoundingClientRect()
-    animateTo(offset.x, -wrapperEl.offsetHeight + rect.height - 50)
+    scrollPageDown()
   } else if (e.code === 'ArrowUp') {
+    // Already animating, skip animation.
     if (animationTarget.value) {
-      animationTarget.value.y += 200
+      updateAnimationTarget(
+        animationTarget.value.x,
+        animationTarget.value.y + 200,
+      )
+      alpha = 0.2
     } else {
       animateTo(offset.x, offset.y + 200)
     }
   } else if (e.code === 'ArrowDown') {
     if (animationTarget.value) {
-      animationTarget.value.y -= 200
+      updateAnimationTarget(
+        animationTarget.value.x,
+        animationTarget.value.y - 200,
+      )
+      alpha = 0.2
     } else {
       animateTo(offset.x, offset.y - 200)
     }
   } else if (e.code === 'Digit0' && e.meta) {
     resetZoom()
-  } else if (e.code === 'Digit1' && e.meta) {
+  } else if (e.code === '1' && e.meta) {
     scaleToFit()
   }
 }
 
-function scrollToTop() {
-  animateTo(offset.x, 50)
+const scrollPageUp = () => animateTo(offset.x, offset.y + window.innerHeight)
+const scrollPageDown = () => animateTo(offset.x, offset.y - window.innerHeight)
+const scrollToTop = () => animateTo(offset.x, 50)
+const scrollToEnd = () => {
+  const rect = nuxtRootEl!.getBoundingClientRect()
+  const wrapperRect = wrapperEl!.getBoundingClientRect()
+  animateTo(offset.x, -wrapperRect.height + rect.height - 50)
 }
 
 function getCenterX(targetScale?: number): number {
@@ -221,10 +246,10 @@ function lerp(start: number, end: number, t: number) {
 }
 
 let alpha = 0
-const speed = 0.01 // Animation speed
+const speed = 0.01
 
 const animateTo = (x: number, y: number, targetScale?: number) => {
-  animationTarget.value = { x, y, scale: targetScale || scale.value }
+  updateAnimationTarget(x, y, targetScale || scale.value)
   alpha = 0
 }
 
@@ -342,21 +367,34 @@ function getDistanceBetweenTouches(e: TouchEvent) {
   )
 }
 
-function onParagraphScrollIntoView(uuid: string) {
-  const el = document.querySelector(`[data-uuid="${uuid}"]`)
-  if (!(el instanceof HTMLElement)) {
-    return
-  }
-  const item = buildDraggableItem(el)
-  if (item?.itemType !== 'existing') {
+function onParagraphScrollIntoView(e: ParagraphScrollIntoViewEvent) {
+  const item = dom.findParagraphItem(e.uuid)
+  if (!item) {
     return
   }
 
   const rect = item.element.getBoundingClientRect()
-  animateTo(
-    offset.x,
-    offset.y - rect.y + 50 + window.innerHeight / 2 - rect.height / 2,
-  )
+
+  let targetY: number | null = null
+
+  if (e.center) {
+    targetY = offset.y - rect.y + 50 + window.innerHeight / 2 - rect.height / 2
+  } else if (rect.y < 70) {
+    targetY = offset.y - (rect.y - 50) + 70
+  } else if (rect.y + rect.height > window.innerHeight) {
+    targetY = offset.y + (window.innerHeight - (rect.y + rect.height) - 40)
+  }
+
+  if (targetY) {
+    if (e.immediate || animationTarget.value) {
+      if (animationTarget.value) {
+        animationTarget.value.y = targetY
+      }
+      offset.y = targetY
+    } else {
+      animateTo(offset.x, targetY)
+    }
+  }
 }
 
 onMounted(() => {
@@ -397,8 +435,6 @@ onUnmounted(() => {
   window.removeEventListener('touchstart', onTouchStart)
   window.removeEventListener('touchmove', onTouchMove)
   window.removeEventListener('touchend', onTouchEnd)
-  nuxtRootEl?.classList.remove('pb-has-sidebar-open')
-  nuxtRootEl?.classList.remove('pb-has-preview-open')
   eventBus.off('paragraph:scrollIntoView', onParagraphScrollIntoView)
   eventBus.off('keyPressed', onKeyPressed)
   eventBus.off('animationFrame:before', onAnimationFrame)

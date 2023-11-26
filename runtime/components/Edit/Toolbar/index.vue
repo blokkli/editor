@@ -42,7 +42,7 @@
         <transition name="pb-fade" :duration="200">
           <div
             v-if="menuVisible"
-            class="pb-toolbar-menu-overlay"
+            class="pb-toolbar-menu-overlay pb-overlay"
             @click="menuVisible = false"
           />
         </transition>

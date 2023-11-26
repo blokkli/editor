@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-const LOCALSTORAGE_KEY = 'pb_drupal_frame_width'
+const LOCALSTORAGE_KEY = '_pb_resizeable_frame_width'
 const width = ref(600)
 const startX = ref(0)
 const startWidth = ref(0)

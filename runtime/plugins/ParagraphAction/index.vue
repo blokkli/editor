@@ -84,7 +84,7 @@ const emit = defineEmits<{
 }>()
 
 const onClick = () => {
-  if (isDisabled.value) {
+  if (isDisabled.value || !paragraphUuid.value) {
     return
   }
 

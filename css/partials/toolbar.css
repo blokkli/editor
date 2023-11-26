@@ -61,7 +61,7 @@
   }
 
   .pb-toolbar-menu-overlay {
-    @apply fixed top-0 left-0 w-screen h-screen bg-slate-600/90 z-[12000];
+    @apply fixed top-0 left-0 w-screen h-screen z-[12000];
   }
   .pb-toolbar-menu-list {
     @apply fixed top-0 left-0 bg-white shadow-lg bottom-0 pt-50 flex flex-col;
@@ -78,7 +78,7 @@
     }
   }
   .pb-toolbar-menu-list-button {
-    @apply grid items-center pl-10 pr-20 py-15 gap-x-15 w-full text-left whitespace-nowrap text-slate-950;
+    @apply grid items-center pl-15 pr-20 py-15 gap-x-15 w-full text-left whitespace-nowrap text-slate-950;
     @apply hover:bg-slate-100;
     @apply border-b border-b-slate-200;
     grid-template-columns: auto 1fr;

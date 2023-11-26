@@ -19,6 +19,7 @@ import selectionProvider from './../helpers/selectionProvider'
 import settingsProvider from './../helpers/settingsProvider'
 import editStateProvider from './../helpers/stateProvider'
 import paragraphTypeProvider from './../helpers/paragraphTypeProvider'
+import domProvider from './../helpers/domProvider'
 
 import { eventBus } from './../eventBus'
 import '#nuxt-paragraphs-builder/styles'
@@ -78,6 +79,8 @@ const { paragraphTypesWithNested, allowedTypesInList, allTypes, allowedTypes } =
     props.entityType,
     props.bundle,
   )
+
+const dom = domProvider()
 
 animationFrameProvider()
 
@@ -173,5 +176,6 @@ provide<PbStore>('paragraphsBuilderStore', {
   isDragging: readonly(isDragging),
   settings,
   refreshKey: readonly(refreshKey),
+  dom,
 })
 </script>

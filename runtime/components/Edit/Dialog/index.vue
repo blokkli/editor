@@ -1,6 +1,6 @@
 <template>
   <div class="pb-dialog pb-control" @wheel.stop @keydown.stop>
-    <div @click="$emit('cancel')" class="pb-dialog-background"></div>
+    <div @click="$emit('cancel')" class="pb-dialog-background pb-overlay"></div>
     <div class="pb-dialog-inner" :style="{ width: width + 'px' }">
       <div class="pb pb-dialog-header">
         <h3>{{ title }}</h3>
@@ -28,7 +28,9 @@
 </template>
 
 <script lang="ts" setup>
-defineEmits(['submit', 'cancel'])
+import { KeyPressedEvent } from '../../../types'
+
+const emit = defineEmits(['submit', 'cancel'])
 withDefaults(
   defineProps<{
     title: string
@@ -45,4 +47,20 @@ withDefaults(
     canSubmit: true,
   },
 )
+
+const { eventBus } = useParagraphsBuilderStore()
+
+const onKeyPressed = (e: KeyPressedEvent) => {
+  if (e.code === 'Escape') {
+    emit('cancel')
+  }
+}
+
+onMounted(() => {
+  eventBus.on('keyPressed', onKeyPressed)
+})
+
+onBeforeUnmount(() => {
+  eventBus.off('keyPressed', onKeyPressed)
+})
 </script>

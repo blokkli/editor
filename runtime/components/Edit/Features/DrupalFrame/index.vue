@@ -7,7 +7,7 @@
         @click.capture=""
         @mousedown.prevent.stop=""
       >
-        <div class="pb-drupal-modal-background"></div>
+        <div class="pb-drupal-modal-background pb-overlay"></div>
         <Resizable class="pb-drupal-modal-resizable">
           <div class="pb-drupal-modal-header">
             <ParagraphIcon v-if="bundle" :bundle="bundle" />

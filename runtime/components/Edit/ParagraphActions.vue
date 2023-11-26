@@ -3,6 +3,7 @@
     <div
       v-show="selectedParagraphs.length && !isDragging"
       class="pb pb-paragraph-actions pb-control"
+      @click.stop
     >
       <div :style="styleSize" class="pb-paragraph-actions-overlay">
         <div
@@ -16,16 +17,17 @@
       </div>
 
       <div class="pb-paragraph-actions-inner" :style="innerStyle">
-        <div id="pb-paragraph-actions-title" />
+        <div class="pb-paragraph-actions-controls">
+          <div id="pb-paragraph-actions-title" />
 
-        <div class="pb-paragraph-actions-buttons" id="pb-paragraph-actions" />
+          <div class="pb-paragraph-actions-buttons" id="pb-paragraph-actions" />
 
+          <div
+            class="pb-paragraph-actions-buttons"
+            id="pb-paragraph-actions-options"
+          />
+        </div>
         <div id="pb-paragraph-actions-after"></div>
-
-        <div
-          class="pb-paragraph-actions-buttons"
-          id="pb-paragraph-actions-options"
-        />
       </div>
     </div>
   </Teleport>
@@ -172,7 +174,7 @@ function onKeyPressed(e: KeyPressedEvent) {
   }
 
   eventBus.emit('select', targetItem.uuid)
-  eventBus.emit('paragraph:scrollIntoView', targetItem.uuid)
+  eventBus.emit('paragraph:scrollIntoView', { uuid: targetItem.uuid })
 }
 
 onMounted(() => {

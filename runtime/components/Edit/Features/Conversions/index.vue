@@ -25,27 +25,29 @@
           v-if="possibleConversions.length && editingEnabled"
         />
       </button>
-      <div
-        v-if="possibleConversions.length"
-        class="pb-paragraph-actions-type-dropdown"
-      >
-        <div v-if="showConversions">
-          <h3>Umwandeln zu...</h3>
-          <button
-            @click.prevent="onConvert(conversion.id)"
-            v-for="conversion in possibleConversions"
-          >
-            <div>
-              <div
-                v-if="conversion.id && icons[conversion.id]"
-                v-html="icons[conversion.id]"
-              />
-            </div>
-            <div>
-              <div>{{ conversion.label }}</div>
-            </div>
-          </button>
-        </div>
+    </div>
+  </Teleport>
+  <Teleport to="#pb-paragraph-actions-after">
+    <div
+      v-if="possibleConversions.length && showConversions"
+      class="pb-paragraph-actions-type-dropdown"
+    >
+      <div>
+        <h3>Umwandeln zu...</h3>
+        <button
+          @click.prevent="onConvert(conversion.id)"
+          v-for="conversion in possibleConversions"
+        >
+          <div>
+            <div
+              v-if="conversion.id && icons[conversion.id]"
+              v-html="icons[conversion.id]"
+            />
+          </div>
+          <div>
+            <div>{{ conversion.label }}</div>
+          </div>
+        </button>
       </div>
     </div>
   </Teleport>

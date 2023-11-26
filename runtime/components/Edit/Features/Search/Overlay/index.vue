@@ -1,6 +1,6 @@
 <template>
   <div
-    class="pb-search-overlay"
+    class="pb-search-box"
     @keydown="onKeyDown"
     @wheel.stop
     @mousedown.stop
@@ -15,6 +15,7 @@
         placeholder="Inhalt durchsuchen"
         ref="input"
         autocomplete="off"
+        spellcheck="false"
         required
       />
     </div>
@@ -27,17 +28,17 @@
           @click.stop="clickItem"
           ref="listItems"
         >
-          <div class="pb-search-item-header">
-            <div class="pb-search-item-icon">
-              <ParagraphIcon :bundle="item.item.paragraphType" />
-            </div>
-            <Highlight :text="item.title" :search="searchCleaned" />
+          <div class="pb-search-item-icon">
+            <ParagraphIcon :bundle="item.item.paragraphType" />
           </div>
-          <Highlight
-            class="pb-search-item-text"
-            :text="item.text"
-            :search="searchCleaned"
-          />
+          <div>
+            <Highlight tag="h2" :text="item.title" :search="searchCleaned" />
+            <Highlight
+              class="pb-search-item-text"
+              :text="item.text"
+              :search="searchCleaned"
+            />
+          </div>
         </li>
       </ul>
     </div>
@@ -94,7 +95,10 @@ const clickItem = () => {
   }
 
   eventBus.emit('select', item.item.uuid)
-  eventBus.emit('paragraph:scrollIntoView', item.item.uuid)
+  eventBus.emit('paragraph:scrollIntoView', {
+    uuid: item.item.uuid,
+    center: true,
+  })
   emit('close')
 }
 
@@ -115,12 +119,30 @@ const onKeyDown = (e: KeyboardEvent) => {
   } else if (e.code === 'Enter') {
     clickItem()
     return
+  } else if (e.code === 'Escape') {
+    emit('close')
   } else {
     return
   }
   e.preventDefault()
   e.stopPropagation()
   scrollItemIntoView()
+}
+
+const buildSearchText = (el: HTMLElement): string => {
+  let text = el.innerText
+
+  // Add alt and title attributes.
+  el.querySelectorAll('img').forEach((img) => {
+    if (img.alt) {
+      text += ' ' + img.alt
+    }
+    if (img.title) {
+      text += ' ' + img.title
+    }
+  })
+
+  return text
 }
 
 const buildIndex = () => {
@@ -136,7 +158,7 @@ const buildIndex = () => {
           const searchItem = {
             item,
             title: typeLabelMap.value[item.paragraphType] || item.paragraphType,
-            text: el.innerText,
+            text: buildSearchText(el),
           }
           return searchItem
         }

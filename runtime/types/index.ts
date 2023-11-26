@@ -4,6 +4,7 @@ import type { Emitter } from 'mitt'
 import { WritableComputedRef } from 'nuxt/dist/app/compat/capi'
 import { eventBus } from './../eventBus'
 import { PbAdapter } from './adapter'
+import { PbDomProvider } from '../helpers/domProvider'
 
 export type PbMutateWithLoadingState = (
   promise: Promise<PbMutationResponseLike<any>> | undefined,
@@ -90,6 +91,8 @@ export interface PbStore {
   settings: globalThis.Ref<Record<string, any>>
 
   refreshKey: globalThis.Ref<Readonly<string>>
+
+  dom: PbDomProvider
 }
 
 export type StringBoolean = '0' | '1'
@@ -521,6 +524,12 @@ export type ParagraphConvertEvent = {
   targetBundle: string
 }
 
+export type ParagraphScrollIntoViewEvent = {
+  uuid: string
+  center?: boolean
+  immediate?: boolean
+}
+
 export type ParagraphsBuilderEvents = {
   select: string
   selectAdditional: DraggableExistingParagraphItem
@@ -562,7 +571,7 @@ export type ParagraphsBuilderEvents = {
 
   'paragraph:convert': ParagraphConvertEvent
 
-  'paragraph:scrollIntoView': string
+  'paragraph:scrollIntoView': ParagraphScrollIntoViewEvent
   'animationFrame:before': undefined
 
   'state:reloaded': undefined

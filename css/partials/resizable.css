@@ -28,7 +28,7 @@
 .pb-drupal-modal {
   @apply fixed left-0 top-0 w-full h-full z-[990000];
   .pb-drupal-modal-background {
-    @apply absolute left-0 top-0 w-full h-full bg-slate-600/90;
+    @apply absolute left-0 top-0 w-full h-full;
   }
   .pb-drupal-modal-resizable {
     @apply ml-auto h-full bg-white shadow-2xl;

@@ -12,11 +12,12 @@
     @apply text-slate-50  select-none text-sm;
   }
   .pb-paragraph-actions-inner {
-    @apply fixed left-0 -top-60 p-0 flex items-stretch bg-slate-900 shadow-xl rounded-md whitespace-nowrap h-50 z-[501];
-    > div {
-      &:not(:last-child) {
-        @apply border-r border-r-slate-600;
-      }
+    @apply fixed left-0 -top-60 p-0 h-50 z-[501];
+  }
+  .pb-paragraph-actions-controls {
+    @apply flex items-stretch whitespace-nowrap h-full bg-slate-900 shadow-xl rounded-md;
+    > div:not(:first-child):not(:empty) {
+      @apply border-l border-l-slate-500;
     }
   }
   .pb-paragraph-actions-overlay {
@@ -29,7 +30,7 @@
 
   .pb-paragraph-actions-buttons {
     @apply relative flex;
-    button {
+    > button {
       @apply text-slate-300 h-full flex items-center shrink-0 justify-center w-50;
       @apply hover:bg-slate-700 hover:text-slate-50;
       &.pb-is-active {

@@ -140,7 +140,7 @@ async function setHistoryIndex(index: number, item?: HistoryItem) {
     if (affected) {
       nextTick(() => {
         eventBus.emit('select', affected)
-        eventBus.emit('paragraph:scrollIntoView', affected)
+        eventBus.emit('paragraph:scrollIntoView', { uuid: affected })
       })
     }
   }

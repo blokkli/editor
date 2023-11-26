@@ -2,7 +2,7 @@
   @apply fixed top-0 left-0 w-screen h-screen  z-[9999999999];
   @apply flex items-center justify-center;
   .pb-dialog-background {
-    @apply absolute top-0 left-0 w-full h-full bg-slate-800/90;
+    @apply absolute top-0 left-0 w-full h-full;
   }
 
   .pb-dialog-inner {
