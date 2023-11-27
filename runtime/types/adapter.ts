@@ -15,6 +15,8 @@ import {
   MoveMultipleParagraphsEvent,
   MoveParagraphEvent,
   UpdateParagraphOptionEvent,
+  PbSearchContentItem,
+  AddContentSearchItemParagraphEvent,
 } from '#pb/types'
 
 interface MutationResponseLike<T> {
@@ -202,4 +204,26 @@ export interface PbAdapter<T> {
    * This should return a URL that can be used to bypass logins, using a token or similar, that can be shared with non-editing people.
    */
   getPreviewGrantUrl(): Promise<string | undefined | null>
+
+  /**
+   * Return the possible content search tabs.
+   */
+  getContentSearchTabs(): Record<string, string>
+
+  /**
+   * Return items for the "content" search.
+   *
+   * Should only return a limited amount of results, sorted by relevance.
+   */
+  getContentSearchResults(
+    tab: string,
+    text: string,
+  ): Promise<PbSearchContentItem[]>
+
+  /**
+   * Add the dropped paragraph from a search content item.
+   */
+  addContentSearchItemParagraph(
+    e: AddContentSearchItemParagraphEvent,
+  ): Promise<MutationResponseLike<T>> | undefined
 }

@@ -13,6 +13,10 @@
             Verwenden Sie Ctrl-V auf der Seite um Inhalte einzufügen. Diese
             werden dann hier angezeigt.
           </p>
+          <p>
+            Verwenden Sie Ctrl-F um bestehende Inhalte zu suchen und in die
+            Zwischenablage einzufügen.
+          </p>
         </div>
         <ClipboardList
           v-if="pastedItems.length"
@@ -29,7 +33,11 @@ import { PluginSidebar } from '#pb/plugins'
 import ClipboardList from './List/index.vue'
 import type { ClipboardItem } from './List/index.vue'
 
-import { DraggableExistingParagraphItem, KeyPressedEvent } from '#pb/types'
+import {
+  DraggableExistingParagraphItem,
+  KeyPressedEvent,
+  PbSearchContentItem,
+} from '#pb/types'
 
 const { showSidebar, eventBus, selectedParagraphs } =
   useParagraphsBuilderStore()
@@ -191,14 +199,30 @@ function onKeyPressed(e: KeyPressedEvent) {
   copySelectedParagraphToClipboard(selectedParagraphs.value)
 }
 
+function onSelectContentItem(item: PbSearchContentItem) {
+  item.targetBundles.forEach((bundle) => {
+    pastedItems.value.push({
+      type: 'search_content',
+      paragraphType: bundle,
+      data: item.title.replace(/<\/?[^>]+(>|$)/g, ''),
+      item,
+    })
+  })
+
+  showClipboardSidebar()
+}
+
 onMounted(() => {
   eventBus.on('keyPressed', onKeyPressed)
+  eventBus.on('search:selectContentItem', onSelectContentItem)
   document.addEventListener('paste', onPaste)
   document.body.addEventListener('drop', onDrop)
   document.addEventListener('dragover', onDragOver)
 })
+
 onUnmounted(() => {
   eventBus.off('keyPressed', onKeyPressed)
+  eventBus.off('search:selectContentItem', onSelectContentItem)
   document.removeEventListener('paste', onPaste)
   document.body.removeEventListener('drop', onDrop)
   document.removeEventListener('dragover', onDragOver)

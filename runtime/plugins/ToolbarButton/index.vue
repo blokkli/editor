@@ -30,7 +30,12 @@ import { Icon } from '#pb/components'
 
 const props = defineProps<{
   title: string
-  region: 'after-title' | 'before-title' | 'before-sidebar' | 'after-menu'
+  region:
+    | 'after-title'
+    | 'before-title'
+    | 'before-sidebar'
+    | 'after-menu'
+    | 'before-view-options'
   editOnly?: boolean
   disabled?: boolean
   active?: boolean

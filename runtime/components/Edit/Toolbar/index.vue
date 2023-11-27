@@ -23,20 +23,22 @@
           </div>
         </div>
 
-        <div class="pb-toolbar-container" id="pb-toolbar-after-menu"></div>
+        <div class="pb-toolbar-container" id="pb-toolbar-after-menu" />
 
-        <div class="pb-toolbar-container" id="pb-toolbar-before-title"></div>
+        <div class="pb-toolbar-container" id="pb-toolbar-before-title" />
 
         <div class="pb-toolbar-container pb-is-title" id="pb-toolbar-title" />
 
-        <div class="pb-toolbar-container" id="pb-toolbar-after-title"></div>
+        <div class="pb-toolbar-container" id="pb-toolbar-after-title" />
 
-        <div class="pb-toolbar-container" id="pb-toolbar-view-options"></div>
+        <div class="pb-toolbar-container" id="pb-toolbar-before-view-options" />
 
-        <div class="pb-toolbar-container" id="pb-toolbar-before-sidebar"></div>
+        <div class="pb-toolbar-container" id="pb-toolbar-view-options" />
+
+        <div class="pb-toolbar-container" id="pb-toolbar-before-sidebar" />
 
         <div class="pb-toolbar-container">
-          <div class="pb-toolbar-tabs" id="pb-sidebar-tabs"></div>
+          <div class="pb-toolbar-tabs" id="pb-sidebar-tabs" />
         </div>
 
         <transition name="pb-fade" :duration="200">

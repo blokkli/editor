@@ -305,6 +305,15 @@ function onAdd(e: Sortable.SortableEvent) {
         afterUuid,
       }),
     )
+  } else if (item.itemType === 'search_content') {
+    mutateWithLoadingState(
+      adapter.addContentSearchItemParagraph({
+        item: item.searchItem,
+        host: host.value,
+        bundle: item.paragraphType,
+        afterUuid,
+      }),
+    )
   }
 }
 

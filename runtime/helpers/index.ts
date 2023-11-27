@@ -1,4 +1,4 @@
-import type { DraggableItem } from '#pb/types'
+import type { DraggableItem, PbSearchContentItem } from '#pb/types'
 
 /**
  * Type check for falsy values.
@@ -72,6 +72,16 @@ export function buildDraggableItem(
     const additional = dataset.clipboardAdditional
     const paragraphType = dataset.paragraphType
     if (clipboardData && paragraphType) {
+      const searchItemData = dataset.clipboardSearchItem
+      if (searchItemData) {
+        const searchItem = JSON.parse(searchItemData) as PbSearchContentItem
+        return {
+          itemType: 'search_content',
+          element,
+          paragraphType,
+          searchItem,
+        }
+      }
       return {
         itemType: 'clipboard',
         element,

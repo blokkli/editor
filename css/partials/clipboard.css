@@ -8,11 +8,12 @@
     }
   }
   .pb-clipboard-info {
+    @apply p-20;
     h4 {
-      @apply !text-xl !font-bold !font-sans;
+      @apply !text-base !font-bold !font-sans leading-none;
     }
     p {
-      @apply !font-sans !text-base;
+      @apply !font-sans !text-sm mt-10;
     }
   }
 }

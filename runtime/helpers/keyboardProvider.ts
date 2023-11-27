@@ -3,9 +3,13 @@ import { eventBus } from '../eventBus'
 export default function () {
   const isPressingControl = ref(false)
   const isPressingSpace = ref(false)
-  function onKeyUp() {
-    isPressingControl.value = false
-    isPressingSpace.value = false
+  function onKeyUp(e: KeyboardEvent) {
+    if (e.code === 'Space') {
+      isPressingSpace.value = false
+    }
+    if (e.code === 'Control' || e.key === 'CapsLock') {
+      isPressingControl.value = false
+    }
   }
   function onKeyDown(e: KeyboardEvent) {
     // For the one person that remapped caps lock to control.
@@ -18,7 +22,7 @@ export default function () {
     eventBus.emit('keyPressed', {
       code: e.key,
       shift: e.shiftKey,
-      meta: e.ctrlKey,
+      meta: isPressingControl.value,
       originalEvent: e,
     })
   }

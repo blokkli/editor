@@ -414,12 +414,20 @@ export interface DraggableClipboardItem {
   additional?: string
 }
 
+export interface DraggableSearchContentItem {
+  itemType: 'search_content'
+  element: HTMLElement
+  paragraphType: string
+  searchItem: PbSearchContentItem
+}
+
 export type DraggableItem =
   | DraggableClipboardItem
   | DraggableNewParagraphItem
   | DraggableExistingParagraphItem
   | DraggableReusableParagraphItem
   | DraggableMultipleExistingParagraphItem
+  | DraggableSearchContentItem
 
 export type MoveParagraphEvent = {
   afterUuid?: string
@@ -443,6 +451,13 @@ export type AddNewParagraphEvent = {
 export type AddClipboardParagraphEvent = {
   item: DraggableClipboardItem
   host: DraggableHostData
+  afterUuid?: string
+}
+
+export type AddContentSearchItemParagraphEvent = {
+  item: PbSearchContentItem
+  host: DraggableHostData
+  bundle: string
   afterUuid?: string
 }
 
@@ -575,6 +590,9 @@ export type ParagraphsBuilderEvents = {
   'animationFrame:before': undefined
 
   'state:reloaded': undefined
+
+  'search:selectContentItem': PbSearchContentItem
+  addContentSearchItemParagraph: AddContentSearchItemParagraphEvent
 }
 
 export type ParagraphsBuilderEventBus = Emitter<ParagraphsBuilderEvents>
@@ -587,6 +605,41 @@ export type ParagraphsBuilderEditContext = {
 export interface ParagraphOptionsOverride {
   uuid: Ref<string>
   options: Ref<Record<string, any>>
+}
+
+/**
+ * Defines a content search item.
+ */
+export type PbSearchContentItem = {
+  /**
+   * The ID of the item.
+   */
+  id: string
+
+  /**
+   * The title displayed to the user.
+   */
+  title: string
+
+  /**
+   * Additional context displayed alongside the title.
+   */
+  context?: string
+
+  /**
+   * The text displayed to the user.
+   */
+  text: string
+
+  /**
+   * The possible paragraph bundles for which a paragraph may be added for this content item.
+   */
+  targetBundles: string[]
+
+  /**
+   * An optional image URL that is used instead of an icon.
+   */
+  imageUrl?: string
 }
 
 export default {}

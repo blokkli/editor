@@ -15,6 +15,14 @@
       </div>
     </Transition>
   </Teleport>
+  <PluginToolbarButton
+    title="Inhalte suchen"
+    meta
+    key-code="F"
+    region="before-view-options"
+    @click="onClick"
+    icon="search"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -23,6 +31,7 @@
  */
 import { KeyPressedEvent } from '#pb/types'
 import Overlay from './Overlay/index.vue'
+import { PluginToolbarButton } from '#pb/plugins'
 
 const { eventBus } = useParagraphsBuilderStore()
 
@@ -31,19 +40,17 @@ const isVisible = ref(false)
 
 const overlay = ref<InstanceType<typeof Overlay> | null>(null)
 
-const onKeypress = (e: KeyPressedEvent) => {
-  if (e.code === 'f' && e.meta) {
-    isRendered.value = true
-    isVisible.value = !isVisible.value
-    e.originalEvent.preventDefault()
-    nextTick(() => {
-      if (isVisible.value && overlay.value) {
-        overlay.value.focusInput()
-      }
-    })
-    return
-  }
+function onClick() {
+  isRendered.value = true
+  isVisible.value = !isVisible.value
+  nextTick(() => {
+    if (isVisible.value && overlay.value) {
+      overlay.value.focusInput()
+    }
+  })
+}
 
+const onKeypress = (e: KeyPressedEvent) => {
   if (e.code === 'Escape') {
     isVisible.value = false
   }

@@ -43,7 +43,7 @@ const markup = computed(() => {
   const highlighted = props.text
     .substring(index)
     .replace(props.regex, (match) => {
-      return `<em data-match="${match}">${match}</em>`
+      return `<em>${match}</em>`
     })
 
   return before + highlighted

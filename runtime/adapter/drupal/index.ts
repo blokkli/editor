@@ -357,6 +357,64 @@ const getDrupalAdapter: PbAdapterFactory<ParagraphsBuilderEditStateFragment> = (
       (v) => v.data.getParagraphsEditState?.previewUrl,
     )
 
+  const getContentSearchResults: DrupalAdapter['getContentSearchResults'] = (
+    type,
+    text,
+  ) => {
+    return $fetch('/api/blokkli-search', {
+      query: { text, type },
+    })
+  }
+
+  const getContentSearchTabs: DrupalAdapter['getContentSearchTabs'] = () => {
+    return {
+      pages: 'Seiten',
+      people: 'Personen',
+      images: 'Bilder',
+    }
+  }
+
+  const addContentSearchItemParagraph: DrupalAdapter['addContentSearchItemParagraph'] =
+    (e) => {
+      if (e.bundle === 'government_contact') {
+        return useGraphqlMutation('pbAddGovernmentContact', {
+          ...ctx,
+          id: e.item.id,
+          hostType: e.host.type,
+          hostUuid: e.host.uuid,
+          hostFieldName: e.host.fieldName,
+          afterUuid: e.afterUuid,
+        })
+      } else if (e.bundle === 'image') {
+        return useGraphqlMutation('pbAddMediaImageReference', {
+          ...ctx,
+          id: e.item.id,
+          hostType: e.host.type,
+          hostUuid: e.host.uuid,
+          hostFieldName: e.host.fieldName,
+          afterUuid: e.afterUuid,
+        })
+      } else if (e.bundle === 'teaser') {
+        return useGraphqlMutation('pbAddTeaserFromUrl', {
+          ...ctx,
+          url: 'entity:node/' + e.item.id,
+          hostType: e.host.type,
+          hostUuid: e.host.uuid,
+          hostFieldName: e.host.fieldName,
+          afterUuid: e.afterUuid,
+        })
+      } else if (e.bundle === 'button') {
+        return useGraphqlMutation('pbAddButtonFromUrl', {
+          ...ctx,
+          url: 'entity:node/' + e.item.id,
+          hostType: e.host.type,
+          hostUuid: e.host.uuid,
+          hostFieldName: e.host.fieldName,
+          afterUuid: e.afterUuid,
+        })
+      }
+    }
+
   return {
     getImportItems,
     getConversions,
@@ -389,6 +447,9 @@ const getDrupalAdapter: PbAdapterFactory<ParagraphsBuilderEditStateFragment> = (
     getLibraryItems,
     getLastChanged,
     getPreviewGrantUrl,
+    getContentSearchTabs,
+    getContentSearchResults,
+    addContentSearchItemParagraph,
   }
 }
 

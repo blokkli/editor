@@ -8,6 +8,9 @@
       :data-clipboard-type="item.type"
       :data-clipboard-data="item.data"
       :data-clipboard-additional="item.additional"
+      :data-clipboard-search-item="
+        item.type === 'search_content' ? JSON.stringify(item.item) : undefined
+      "
       :key="item.data + renderKey"
     >
       <div class="pb-clipboard-item">
@@ -24,15 +27,18 @@
         </div>
         <div>
           <div
-            v-if="item.type === 'text'"
+            v-if="item.type === 'text' || item.type === 'search_content'"
             class="pb-clipboard-item-inner"
             v-html="item.data"
           />
-          <div v-else-if="item.type === 'youtube'">
+          <div v-if="item.type === 'youtube'">
             <img :src="`http://i3.ytimg.com/vi/${item.data}/hqdefault.jpg`" />
           </div>
           <div v-else-if="item.type === 'image'">
             <img :src="item.data" />
+          </div>
+          <div v-else-if="item.type === 'search_content' && item.item.imageUrl">
+            <img :src="item.item.imageUrl" />
           </div>
         </div>
       </div>
@@ -43,6 +49,7 @@
 <script lang="ts" setup>
 import { ParagraphIcon, Icon } from '#pb/components'
 import { Sortable } from '#pb/sortable'
+import { PbSearchContentItem } from '~/modules/nuxt-paragraphs-builder/runtime/types'
 
 let instance: Sortable | null = null
 
@@ -70,10 +77,19 @@ interface ClipboardItemImage {
   additional: string
 }
 
+interface ClipboardItemSearchContent {
+  type: 'search_content'
+  paragraphType: string
+  data: string
+  item: PbSearchContentItem
+  additional?: string
+}
+
 export type ClipboardItem =
   | ClipboardItemText
   | ClipboardItemYouTube
   | ClipboardItemImage
+  | ClipboardItemSearchContent
 
 defineProps<{
   items: ClipboardItem[]

@@ -7,7 +7,6 @@
     @click="resetZoom"
   >
     <div class="pb-feature-canvas-button">
-      <Icon name="magnifier" />
       <span>{{ zoomLevel }}</span>
     </div>
   </PluginToolbarButton>
@@ -15,7 +14,6 @@
 
 <script lang="ts" setup>
 import { KeyPressedEvent, ParagraphScrollIntoViewEvent } from '#pb/types'
-import { Icon } from '#pb/components'
 import { PluginToolbarButton } from '#pb/plugins'
 
 type Coord = {
