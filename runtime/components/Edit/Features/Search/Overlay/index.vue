@@ -203,20 +203,14 @@ onMounted(() => {
 defineExpose({ focusInput })
 
 const visibleItems = computed(() => {
-  if (!words.value.length) {
+  if (!words.value.length || !regex.value) {
     return items.value
   }
   const scored = items.value
     .map((item) => {
-      const score = words.value.reduce((acc, word) => {
-        if (item.text.toLowerCase().includes(word)) {
-          acc += 1
-        }
-        if (item.title.toLowerCase().includes(word)) {
-          acc += 1
-        }
-        return acc
-      }, 0)
+      let score = 0
+      score += (item.text.toLowerCase().match(regex.value!) || []).length
+      score += (item.title.toLowerCase().match(regex.value!) || []).length
       return { item, score }
     })
     .filter((v) => !!v.score)

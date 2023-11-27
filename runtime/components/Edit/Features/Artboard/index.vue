@@ -46,7 +46,10 @@ const startMoveOffset: Coord = {
 // The target state for the current animation.
 const animationTarget = ref<(Coord & { scale: number }) | null>(null)
 
-const { isPressingSpace, eventBus, dom } = useParagraphsBuilderStore()
+const { isPressingSpace, eventBus, dom, entityUuid } =
+  useParagraphsBuilderStore()
+
+const storageKey = computed(() => '_pb_artboard_' + entityUuid)
 
 const limitOffset = (providedX: number, providedY: number): Coord => {
   if (nuxtRootEl && wrapperEl) {
@@ -63,6 +66,10 @@ const limitOffset = (providedX: number, providedY: number): Coord => {
   }
 
   return { x: providedX, y: providedY }
+}
+
+function updateScale(newScale: number) {
+  scale.value = Math.max(0.05, Math.min(3, newScale))
 }
 
 function updateOffset(x: number, y: number) {
@@ -96,11 +103,7 @@ function onWheel(e: WheelEvent) {
     zoomTarget.x = (zoomPoint.x - offset.x) / scale.value
     zoomTarget.y = (zoomPoint.y - offset.y) / scale.value
 
-    scale.value = Math.max(
-      0.05,
-      Math.min(3, scale.value + delta * zoomFactor * scale.value),
-    )
-
+    updateScale(scale.value + delta * zoomFactor * scale.value)
     updateOffset(
       -zoomTarget.x * scale.value + zoomPoint.x,
       -zoomTarget.y * scale.value + zoomPoint.y,
@@ -296,7 +299,7 @@ const zoomLevel = computed(
  * Restore the last canvas state if possible.
  */
 function setInitState() {
-  const stored = window.localStorage.getItem('pb_canvas')
+  const stored = window.localStorage.getItem(storageKey.value)
   if (stored) {
     try {
       const values = JSON.parse(stored)
@@ -306,9 +309,8 @@ function setInitState() {
         typeof values.offset.x === 'number' &&
         typeof values.offset.y === 'number'
       ) {
-        scale.value = values.scale
-        offset.x = values.offset.x
-        offset.y = values.offset.y
+        updateOffset(values.offset.x, values.offset.y)
+        updateScale(values.scale)
         return
       }
     } catch (_e) {}
@@ -397,6 +399,19 @@ function onParagraphScrollIntoView(e: ParagraphScrollIntoViewEvent) {
   }
 }
 
+const saveState = () =>
+  window.localStorage.setItem(
+    storageKey.value,
+    JSON.stringify({
+      scale: scale.value,
+      offset: offset,
+    }),
+  )
+
+const onBeforeUnload = () => {
+  saveState()
+}
+
 onMounted(() => {
   wrapperEl = document.querySelector('.pb-main-canvas')
   nuxtRootEl = document.querySelector('#nuxt-root')
@@ -414,20 +429,11 @@ onMounted(() => {
   setInitState()
   updateStyles()
   document.documentElement.classList.add('pb-is-artboard')
+
+  window.addEventListener('beforeunload', onBeforeUnload)
 })
 
 onBeforeUnmount(() => {
-  // Store current canvas state in local storage.
-  window.localStorage.setItem(
-    'pb_canvas',
-    JSON.stringify({
-      scale: scale.value,
-      offset: offset,
-    }),
-  )
-})
-
-onUnmounted(() => {
   document.body.removeEventListener('mousemove', onMouseMove)
   document.body.removeEventListener('wheel', onWheel)
   window.removeEventListener('mousedown', onMouseDown)
@@ -439,8 +445,13 @@ onUnmounted(() => {
   eventBus.off('keyPressed', onKeyPressed)
   eventBus.off('animationFrame:before', onAnimationFrame)
   document.documentElement.classList.remove('pb-is-artboard')
+  // Store current canvas state in local storage.
+  saveState()
+})
+
+onUnmounted(() => {
   if (wrapperEl) {
-    wrapperEl.style.transform = ''
+    wrapperEl.style.translate = ''
     wrapperEl.style.scale = ''
   }
 })

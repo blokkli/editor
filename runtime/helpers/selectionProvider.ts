@@ -145,5 +145,6 @@ export default function (isPressingSpace: globalThis.Ref<boolean>) {
     selectedParagraphUuids,
     selectedParagraphs,
     activeFieldKey,
+    isDragging,
   }
 }

@@ -16,6 +16,7 @@
 @import './partials/messages.css';
 @import './partials/settings.css';
 @import './partials/search.css';
+@import './partials/availableList.css';
 
 @font-face {
   font-family: 'PB Inter';
@@ -47,65 +48,11 @@
 
   letter-spacing: 0;
 
-  .pb-list {
-    @apply pt-5 relative z-20;
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-
   &.pb-init-overlay {
     @apply bg-slate-100/90 fixed top-0 left-0 w-screen h-screen z-[999999999] backdrop-blur-xl flex items-center justify-center;
     svg {
       @apply w-100 h-100 text-slate-200 animate-spin fill-slate-400;
     }
-  }
-
-  .pb-list-item {
-    @apply px-10 py-5 w-full;
-
-    &.pb-is-disabled {
-      @apply pointer-events-none;
-      .pb-list-item-inner {
-        @apply bg-slate-900;
-      }
-      .pb-list-item-label {
-        @apply text-slate-700;
-      }
-      .pb-list-item-icon {
-        @apply text-slate-800;
-      }
-    }
-    flex: 0 0 auto;
-
-    &:hover {
-      .pb-list-item-inner {
-        @apply bg-slate-500 text-white;
-      }
-      .pb-list-item-label span {
-        @apply text-white;
-      }
-    }
-  }
-
-  .pb-list-item-inner {
-    @apply relative flex bg-slate-700 text-slate-100 rounded w-full items-center justify-center cursor-grab flex-col text-sm leading-3 p-10 aspect-square z-10;
-  }
-
-  .pb-list-item-label {
-    @apply absolute top-0 left-full whitespace-nowrap p-10 h-full rounded-sm opacity-0 items-center text-slate-100/50 ml-15 transition pointer-events-none;
-    @apply text-lg font-bold;
-  }
-
-  .pb-list-item-icon {
-    @apply text-3xl;
-    svg {
-      @apply fill-current w-30 h-30;
-    }
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   &.pb-top {
@@ -115,31 +62,6 @@
     left: 0;
     width: 100%;
     z-index: 50000;
-  }
-
-  &.pb-available-paragraphs {
-    @apply bg-slate-900 top-50 bottom-0 fixed left-0 w-70 select-none z-[40000];
-    &.pb-is-disabled {
-      @apply pointer-events-none;
-      .pb-list {
-        @apply opacity-20;
-      }
-    }
-    &:after {
-      @apply absolute top-0 left-full h-full w-[280px] z-0 pointer-events-none;
-      @apply opacity-0;
-      @apply origin-left scale-x-50;
-      @apply transition bg-slate-900/90;
-      content: '';
-    }
-    &.pb-is-active {
-      &:after {
-        @apply opacity-100 scale-x-100;
-      }
-      .pb-list-item-label {
-        @apply opacity-100;
-      }
-    }
   }
 
   .pb-multi-select-area {
@@ -284,7 +206,7 @@
   }
 }
 
-.pb-list-item.sortable-ghost {
+.pb-main-canvas .pb-list-item.sortable-ghost.pb-clone {
   @apply flex items-center justify-center bg-blue-400 rounded text-white font-sans text-xl;
   .pb-list-item-icon {
     @apply text-3xl;

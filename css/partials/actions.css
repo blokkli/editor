@@ -55,29 +55,37 @@
   }
 
   .pb-paragraph-actions-type-button {
-    @apply flex items-center justify-between cursor-default min-w-[180px] text-slate-300 font-bold h-full pl-10 pr-20 text-base rounded-l leading-none;
+    @apply flex items-center justify-between cursor-default min-w-[180px] text-slate-300 font-bold h-full pl-[9px] pr-20 text-base rounded-l leading-none;
     > span {
       @apply mr-auto;
     }
     .pb-paragraph-actions-title-icon {
-      @apply text-[25px] mr-5;
+      @apply text-[25px] mr-10 bg-slate-800 w-[34px] h-[34px] rounded border border-slate-600 relative text-white;
       svg {
-        @apply w-[1em] h-[1em] fill-current;
+        @apply w-[1em] h-[1em] fill-current absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
       }
     }
     &.is-interactive {
       @apply cursor-pointer;
       &:not(.is-open) {
         @apply hover:text-slate-50 hover:bg-slate-700;
+        &:hover {
+          .pb-paragraph-actions-title-icon {
+            @apply bg-slate-600 border-slate-400;
+          }
+        }
       }
     }
     &.is-open {
-      @apply bg-white text-slate-900;
+      @apply bg-slate-700 text-white;
       .pb-icon {
         @apply transform rotate-180;
       }
+      .pb-paragraph-actions-title-icon {
+        @apply bg-slate-600 border-slate-400;
+      }
     }
-    .pb-icon svg {
+    .pb-caret svg {
       @apply pointer-events-none w-15 h-15 fill-current;
     }
   }
@@ -87,19 +95,22 @@
   }
 
   .pb-paragraph-actions-type-dropdown {
-    @apply absolute top-full left-0 min-w-[300px] bg-white text-slate-700 rounded overflow-hidden shadow-xl rounded-t-none;
+    @apply absolute top-full left-0 min-w-[300px] bg-slate-900 text-slate-200 rounded overflow-hidden shadow-xl rounded-t-none;
     h3 {
-      @apply p-10 border-b border-b-slate-200;
+      @apply p-10 border-b border-b-slate-700;
     }
     button {
-      @apply flex py-15 px-10 items-center gap-5 w-full text-xl font-bold;
+      @apply flex py-15 px-10 items-center gap-5 w-full  font-semibold text-lg;
       text-align: left;
       line-height: 1;
-      svg {
-        @apply fill-current w-30 h-30;
-      }
       &:hover {
-        @apply text-slate-900 bg-slate-50;
+        @apply text-white bg-slate-700;
+      }
+    }
+    .pb-paragraph-icon {
+      @apply w-[34px] h-[34px] bg-slate-700 rounded flex items-center justify-center border border-slate-500;
+      svg {
+        @apply w-25 h-25;
       }
     }
   }

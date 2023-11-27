@@ -22,6 +22,7 @@
         >
         <Icon
           name="caret"
+          class="pb-caret"
           v-if="possibleConversions.length && editingEnabled"
         />
       </button>
@@ -38,12 +39,7 @@
           @click.prevent="onConvert(conversion.id)"
           v-for="conversion in possibleConversions"
         >
-          <div>
-            <div
-              v-if="conversion.id && icons[conversion.id]"
-              v-html="icons[conversion.id]"
-            />
-          </div>
+          <ParagraphIcon :bundle="conversion.id" />
           <div>
             <div>{{ conversion.label }}</div>
           </div>

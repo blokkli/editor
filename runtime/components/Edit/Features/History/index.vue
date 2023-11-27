@@ -1,5 +1,10 @@
 <template>
-  <PluginSidebar id="history" title="Änderungen" icon="history">
+  <PluginSidebar
+    id="history"
+    title="Änderungen"
+    icon="history"
+    v-slot="{ scrolledToEnd }"
+  >
     <div class="pb pb-history pb-control">
       <ul>
         <li
@@ -29,9 +34,20 @@
             </div>
           </button>
         </li>
+        <li v-if="totalMutations > showAmount" class="pb-history-load-more">
+          <button @click="showAmount += 100">
+            <strong
+              >{{ Math.min(totalMutations - showAmount, 100) }} weitere
+              anzeigen</strong
+            >
+          </button>
+        </li>
         <li
           class="is-last"
-          :class="currentMutationIndex === -1 ? 'is-active' : 'is-applied'"
+          :class="[
+            currentMutationIndex === -1 ? 'is-active' : 'is-applied',
+            { 'pb-has-shadow': !scrolledToEnd },
+          ]"
         >
           <button @click="setHistoryIndex(-1)">
             <div>
@@ -48,11 +64,6 @@
           </button>
         </li>
       </ul>
-      <div class="pb-history-load-more" v-if="totalMutations > showAmount">
-        <button class="pb-button" @click="showAmount += 20">
-          Mehr anzeigen
-        </button>
-      </div>
     </div>
   </PluginSidebar>
 
@@ -92,7 +103,7 @@ const {
   eventBus,
 } = useParagraphsBuilderStore()
 
-const showAmount = ref(10)
+const showAmount = ref(50)
 
 const canUndo = computed(() => currentMutationIndex.value >= 0)
 
@@ -100,13 +111,15 @@ const canRedo = computed(
   () => currentMutationIndex.value < mutations.value.length - 1,
 )
 
+const isAtEndOfList = ref(false)
+
 const totalMutations = computed(() => {
   return mutations.value.length
 })
 
 watch(totalMutations, (newTotal, previousTotal) => {
   if (newTotal !== previousTotal) {
-    showAmount.value = 10
+    showAmount.value = 50
   }
 })
 
@@ -148,4 +161,6 @@ async function setHistoryIndex(index: number, item?: HistoryItem) {
 
 const undo = () => mutateWithLoadingState(adapter.undo())
 const redo = () => mutateWithLoadingState(adapter.redo())
+
+onMounted(() => {})
 </script>

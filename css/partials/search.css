@@ -43,6 +43,7 @@
     &:before {
       content: attr(data-match);
       @apply absolute top-0 -left-1 -right-1 h-full bg-yellow-300 rounded px-1;
+      @apply outline outline-[1px] -outline-offset-1 outline-yellow-400;
     }
   }
 }
@@ -71,15 +72,23 @@
 
 .pb-search-enter-active,
 .pb-search-leave-active {
-  transition: 0.17s ease-in-out;
+  transition: 0.2s ease-in-out;
   .pb-search-box {
-    transition: 0.17s ease-in-out;
+    transition: 0.2s cubic-bezier(0.56, 0.04, 0.25, 1);
   }
 }
 .pb-search-enter-from,
 .pb-search-leave-to {
   @apply opacity-0;
+}
+
+.pb-search-enter-from {
   .pb-search-box {
-    @apply translate-y-30;
+    @apply translate-y-[100px];
+  }
+}
+.pb-search-leave-to {
+  .pb-search-box {
+    @apply translate-y-[100px];
   }
 }

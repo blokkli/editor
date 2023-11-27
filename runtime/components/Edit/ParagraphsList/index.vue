@@ -377,7 +377,7 @@ onMounted(() => {
       swapThreshold: 0.5,
       multiDrag: true,
       multiDragKey: 'ctrl' as any,
-      avoidImplicitDeselect: false,
+      avoidImplicitDeselect: true,
       group: {
         name: 'types',
         put: onPut,
