@@ -3,7 +3,7 @@
     v-if="availableOptions.length"
     class="pb-paragraph-options-item"
     v-for="plugin in availableOptions"
-    :class="{ 'pb-is-disabled': !canEdit }"
+    :class="{ 'pb-is-disabled': !canEdit || editMode !== 'editing' }"
     @keydown.stop
   >
     <div class="pb-tooltip">
@@ -57,7 +57,7 @@ import { falsy } from '#pb/helpers'
 
 const KEY = 'paragraph_builder_data'
 
-const { mutatedOptions, canEdit, adapter, mutateWithLoadingState } =
+const { mutatedOptions, canEdit, adapter, mutateWithLoadingState, editMode } =
   useParagraphsBuilderStore()
 
 const props = defineProps<{

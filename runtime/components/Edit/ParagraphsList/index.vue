@@ -4,6 +4,7 @@
     class="pb-paragraphs-container"
     :class="{ 'is-empty': !listToUse.length }"
     :is="tag || 'div'"
+    @click="onClick"
     @dblclick.capture="onDoubleClick"
     :data-field-name="fieldConfig.name"
     :data-field-label="fieldConfig.label"
@@ -164,6 +165,18 @@ function getItemFromEvent(e: MouseEvent): DraggableItem | undefined {
         return item
       }
     }
+  }
+}
+
+function onClick(e: MouseEvent) {
+  if (e.ctrlKey) {
+    return
+  }
+  e.stopPropagation()
+  e.preventDefault()
+  const item = getItemFromEvent(e)
+  if (item && item.itemType === 'existing') {
+    eventBus.emit('select', item.uuid)
   }
 }
 
