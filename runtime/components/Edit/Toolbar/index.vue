@@ -11,7 +11,7 @@
               :class="{ 'pb-is-active': menuVisible }"
               @click="menuVisible = !menuVisible"
             >
-              <Icon :name="menuVisible ? 'close' : 'menu'" />
+              <Icon :name="menuVisible ? 'close' : 'logo'" />
             </button>
 
             <transition name="pb-menu" :duration="200">

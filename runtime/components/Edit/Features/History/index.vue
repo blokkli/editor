@@ -111,8 +111,6 @@ const canRedo = computed(
   () => currentMutationIndex.value < mutations.value.length - 1,
 )
 
-const isAtEndOfList = ref(false)
-
 const totalMutations = computed(() => {
   return mutations.value.length
 })
