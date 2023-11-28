@@ -24,7 +24,7 @@ import domProvider from './../helpers/domProvider'
 import { eventBus } from './../eventBus'
 import '#nuxt-paragraphs-builder/styles'
 import { PbStore, PbAvailableFeatures } from '#pb/types'
-import getAdapter from './../adapter/drupal'
+import getAdapter from '#blokkli/compiled-edit-adapter'
 import { removeDroppedElements } from '#pb/helpers'
 
 const props = defineProps<{

@@ -3,7 +3,7 @@ import type { Emitter } from 'mitt'
 
 import { WritableComputedRef } from 'nuxt/dist/app/compat/capi'
 import { eventBus } from './../eventBus'
-import { PbAdapter } from './adapter'
+import { PbAdapter } from '#blokkli/adapter'
 import { PbDomProvider } from '../helpers/domProvider'
 
 export type PbMutateWithLoadingState = (

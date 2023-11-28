@@ -13,13 +13,31 @@ import { extname, basename } from 'path'
 import { ParagraphDefinitionOptionsInput } from './runtime/types'
 import { onlyUnique } from './runtime/helpers'
 import postcss from 'postcss'
-import { promises as fsp } from 'fs'
+import { promises as fsp, existsSync } from 'fs'
 import postcssImport from 'postcss-import'
 import postcssUrl from 'postcss-url'
 import tailwindNesting from 'tailwindcss/nesting'
 import tailwindcss from 'tailwindcss'
 import tailwindConfig from './css/tailwind.config'
 import { ParagraphsBuilderPlugin } from './vitePlugin'
+
+export const fileExists = (
+  path?: string,
+  extensions = ['js', 'ts'],
+): string | null => {
+  if (!path) {
+    return null
+  } else if (existsSync(path)) {
+    // If path already contains/forces the extension
+    return path
+  }
+
+  const extension = extensions.find((extension) =>
+    existsSync(`${path}.${extension}`),
+  )
+
+  return extension ? `${path}.${extension}` : null
+}
 
 async function buildStyles(sourceFile: string, sourceFolder: string) {
   const css = await fsp.readFile(sourceFile).then((v) => v.toString())
@@ -136,6 +154,35 @@ export default defineNuxtModule<ModuleOptions>({
       langcodeWithoutPrefix: moduleOptions.langcodeWithoutPrefix,
       gridMarkup: moduleOptions.gridMarkup,
     }
+
+    // Setup adapter.
+    const resolvedPath = '~/app/blokkli.editAdapter'
+      .replace(/^(~~|@@)/, nuxt.options.rootDir)
+      .replace(/^(~|@)/, nuxt.options.srcDir)
+    // nuxt.options.build.transpile.push(resolvedPath)
+    const adapterTemplate = (() => {
+      const resolvedFilename = `blokkli.editAdapter.ts`
+
+      const maybeUserFile = fileExists(resolvedPath, ['ts'])
+
+      if (!maybeUserFile) {
+        throw new Error(
+          'Missing blokkli adapter file in ~/app/blokkli.editAdapter.ts',
+        )
+      }
+      return addTemplate({
+        filename: resolvedFilename,
+        write: true,
+        getContents: () => `
+        import type { PbAdapterFactory } from '#blokkli/adapter'
+        import adapter from '${resolvedPath}'
+
+        export default adapter as PbAdapterFactory<any>
+        `,
+      })
+    })()
+
+    nuxt.options.alias['#blokkli/compiled-edit-adapter'] = adapterTemplate.dst
 
     // The path to the source directory of this module's consumer.
     const srcDir = nuxt.options.srcDir
@@ -330,6 +377,8 @@ export type PbIcon = keyof typeof icons`
     )
     nuxt.options.alias['#pb/helpers'] = resolver.resolve('runtime/helpers')
     nuxt.options.alias['#pb/sortable'] = resolver.resolve('runtime/sortable')
+
+    nuxt.options.alias['#blokkli/adapter'] = resolver.resolve('runtime/adapter')
 
     // Checks if the given file path is handled by this module.
     const applies = (path: string): Promise<string | undefined | void> => {

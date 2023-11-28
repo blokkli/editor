@@ -78,9 +78,9 @@ export interface PbAdapter<T> {
   /**
    * Add a clipboard paragraph.
    */
-  addClipboardParagraph(
+  addClipboardParagraph?: (
     e: AddClipboardParagraphEvent,
-  ): Promise<MutationResponseLike<T>> | undefined
+  ) => Promise<MutationResponseLike<T>> | undefined
 
   /**
    * Move a paragraph.
@@ -208,22 +208,35 @@ export interface PbAdapter<T> {
   /**
    * Return the possible content search tabs.
    */
-  getContentSearchTabs(): Record<string, string>
+  getContentSearchTabs?: () => Record<string, string>
 
   /**
    * Return items for the "content" search.
    *
    * Should only return a limited amount of results, sorted by relevance.
    */
-  getContentSearchResults(
+  getContentSearchResults?: (
     tab: string,
     text: string,
-  ): Promise<PbSearchContentItem[]>
+  ) => Promise<PbSearchContentItem[]>
 
   /**
    * Add the dropped paragraph from a search content item.
    */
-  addContentSearchItemParagraph(
+  addContentSearchItemParagraph?: (
     e: AddContentSearchItemParagraphEvent,
-  ): Promise<MutationResponseLike<T>> | undefined
+  ) => Promise<MutationResponseLike<T>> | undefined
+}
+
+export interface PbAdapterContext {
+  entityType: string
+  entityUuid: string
+}
+
+export type PbAdapterFactory<T> = (ctx: PbAdapterContext) => PbAdapter<T>
+
+export function defineBlokkliEditAdapter<T>(
+  cb: PbAdapterFactory<T>,
+): PbAdapterFactory<T> {
+  return cb
 }

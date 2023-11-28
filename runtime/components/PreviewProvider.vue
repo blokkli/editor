@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { PbMutatedField } from '#pb/types'
 import '#nuxt-paragraphs-builder/styles'
-import getAdapter from './../adapter/drupal'
+import getAdapter from '#blokkli/compiled-edit-adapter'
 
 const props = defineProps<{
   entityType: string
