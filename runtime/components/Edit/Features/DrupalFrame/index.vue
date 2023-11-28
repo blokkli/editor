@@ -90,12 +90,14 @@ const iframe = ref<HTMLIFrameElement | null>(null)
 
 const titleSuffix = computed(() => {
   const langcode = editLangcode.value || currentLanguage.value
-  if (translationState.value.availableLanguages) {
-    const match = translationState.value.availableLanguages.find(
-      (v) => v.id === langcode,
-    )?.name
-    if (match) {
-      return ` übersetzen (${match})`
+  if (langcode !== currentLanguage.value) {
+    if (translationState.value.availableLanguages) {
+      const match = translationState.value.availableLanguages.find(
+        (v) => v.id === langcode,
+      )?.name
+      if (match) {
+        return ` übersetzen (${match})`
+      }
     }
   }
 
@@ -104,7 +106,7 @@ const titleSuffix = computed(() => {
 
 const titlePrefix = computed(() => {
   if (entityTypeInForm.value === 'entity') {
-    return 'Seite bearbeiten'
+    return 'Seite '
   }
 
   return (
@@ -170,6 +172,7 @@ function onEditParagraph(e: EditParagraphEvent) {
 
 function onTranslateEntity(langcode: string) {
   editLangcode.value = langcode
+  entityTypeInForm.value = 'entity'
   setModalUrl(
     `/${entityType}/${entity.value.id}/translations/add/${translationState.value.sourceLanguage}/${langcode}`,
     langcode,
@@ -184,6 +187,7 @@ function onBatchTranslate() {
 }
 
 function onEditEntity() {
+  entityTypeInForm.value = 'entity'
   if (entity.value.editUrl) {
     const prefix = getModalPrefix()
     const queryParam = getModalQueryParams(prefix)
@@ -203,6 +207,7 @@ async function addNewParagraph(e: AddNewParagraphEvent) {
   }
 
   bundle.value = e.type
+  entityTypeInForm.value = 'paragraph'
   editLangcode.value = currentLanguage.value
   setModalUrl(
     '/' +
