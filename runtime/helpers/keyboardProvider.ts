@@ -10,19 +10,20 @@ export default function () {
     if (e.code === 'Control' || e.key === 'CapsLock') {
       isPressingControl.value = false
     }
+    isPressingControl.value =
+      e.getModifierState('Control') || e.getModifierState('Meta')
   }
   function onKeyDown(e: KeyboardEvent) {
-    // For the one person that remapped caps lock to control.
-    if (e.key === 'Control' || e.key === 'CapsLock') {
-      isPressingControl.value = true
-    } else if (e.code === 'Space') {
+    isPressingControl.value =
+      e.getModifierState('Control') || e.getModifierState('Meta')
+    if (e.code === 'Space') {
       isPressingSpace.value = true
     }
 
     eventBus.emit('keyPressed', {
       code: e.key,
       shift: e.shiftKey,
-      meta: isPressingControl.value,
+      meta: e.ctrlKey || e.metaKey,
       originalEvent: e,
     })
   }
