@@ -1,5 +1,6 @@
 .pb-preview {
-  @apply fixed top-50 bottom-0 bg-white shadow-lg left-70 z-[30000];
+  @apply fixed top-50 bottom-0 bg-white shadow-lg z-[30000];
+  left: var(--pb-root-offset-left);
   .pb-preview-iframe {
     @apply relative w-full h-full;
     iframe {

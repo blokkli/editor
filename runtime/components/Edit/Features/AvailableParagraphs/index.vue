@@ -218,6 +218,7 @@ const sortedList = computed(() => {
 })
 
 onMounted(() => {
+  document.documentElement.classList.add('pb-has-sidebar-left')
   sorts.value = (localStorage.getItem(STORAGE_KEY) || '').split(',') || []
   if (typeList.value) {
     instance = new Sortable(typeList.value, {
@@ -256,6 +257,7 @@ onMounted(() => {
   }
 })
 onUnmounted(() => {
+  document.documentElement.classList.remove('pb-has-sidebar-left')
   if (instance) {
     instance.destroy()
   }
