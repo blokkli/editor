@@ -12,7 +12,7 @@
         v-model="search"
         type="text"
         id="pb_search_input"
-        placeholder="Inhalt durchsuchen"
+        placeholder="Suchbegriff eingeben"
         ref="input"
         autocomplete="off"
         spellcheck="false"

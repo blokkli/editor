@@ -258,7 +258,6 @@ const getDrupalAdapter: PbAdapterFactory<ParagraphsBuilderEditStateFragment> = (
     const mutatedState = state?.mutatedState || {}
     const entity = state?.entity
     const translationState = state?.translationState || {}
-    const previewUrl = state?.previewUrl || ''
 
     const entityTranslations =
       entity && 'translations' in entity
@@ -297,7 +296,6 @@ const getDrupalAdapter: PbAdapterFactory<ParagraphsBuilderEditStateFragment> = (
       },
       translationState,
       entityTranslations,
-      previewUrl,
     }
   }
 
@@ -368,9 +366,9 @@ const getDrupalAdapter: PbAdapterFactory<ParagraphsBuilderEditStateFragment> = (
 
   const getContentSearchTabs: DrupalAdapter['getContentSearchTabs'] = () => {
     return {
-      pages: 'Seiten',
+      pages: 'Inhaltsseiten',
       people: 'Personen',
-      images: 'Bilder',
+      images: 'Medien',
     }
   }
 

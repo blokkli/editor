@@ -6,6 +6,7 @@
       @click.stop="clickItem"
       @mouseenter="index = i"
       ref="listItems"
+      class="pb-is-small"
     >
       <div class="pb-search-item-icon">
         <ParagraphIcon :bundle="item.item.paragraphType" />

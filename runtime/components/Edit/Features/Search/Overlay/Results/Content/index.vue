@@ -22,6 +22,13 @@
         </div>
       </button>
     </div>
+    <div
+      v-if="!isLoading && !items.length && search"
+      class="pb-search-no-results"
+    >
+      <Icon name="sad" />
+      <span>Keine Resultate gefunden</span>
+    </div>
   </div>
 </template>
 
@@ -43,19 +50,10 @@ const isLoading = ref(true)
 
 const emit = defineEmits(['close'])
 
-const { allTypes, eventBus, adapter } = useParagraphsBuilderStore()
+const { eventBus, adapter } = useParagraphsBuilderStore()
 
 const items = ref<PbSearchContentItem[]>([])
 let timeout: any = null
-
-const typeLabelMap = computed(() => {
-  return allTypes.value.reduce<Record<string, string>>((acc, v) => {
-    if (v.id && v.label) {
-      acc[v.id] = v.label
-    }
-    return acc
-  }, {})
-})
 
 const doSearch = () => {
   isLoading.value = false

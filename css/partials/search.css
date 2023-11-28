@@ -51,17 +51,25 @@
   .pb-search-item-content {
     @apply truncate flex flex-col h-full py-5;
   }
+  .pb-search-no-results {
+    @apply absolute top-0 left-0 h-full w-full flex items-center justify-center flex-col text-lg text-slate-500 font-medium;
+    svg {
+      @apply fill-current w-100 h-100 mb-15;
+    }
+  }
 
   .pb-search-tabs {
-    @apply flex border-b;
+    @apply flex border-b justify-between;
     li {
-      @apply flex-1;
       button {
-        @apply p-20 border-b-3 border-b-transparent w-full text-center uppercase text-sm font-medium;
+        @apply p-20 w-full text-center uppercase text-sm text-slate-500;
+      }
+      &:not(.pb-is-active):hover button {
+        @apply text-slate-800;
       }
       &.pb-is-active {
         button {
-          @apply font-bold text-blue-700 border-b-blue-700;
+          @apply font-bold text-blue-700;
         }
       }
     }
@@ -81,6 +89,14 @@
   @apply overflow-auto h-[720px];
   button {
     @apply px-20 text-slate-700 py-20 cursor-pointer h-[120px] relative flex gap-15 text-left w-full;
+
+    &.pb-is-small {
+      @apply h-90;
+      .pb-search-item-icon {
+        @apply w-50 h-50;
+        @apply text-3xl;
+      }
+    }
 
     h2 {
       @apply font-bold text-lg leading-none align-baseline;
