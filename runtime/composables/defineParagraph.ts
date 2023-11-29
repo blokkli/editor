@@ -87,7 +87,9 @@ export function defineParagraph<T extends TypedParagraphDefinitionInput>(
   // The default options are provided by the paragraph itself.
   const defaultOptions: Record<string, any> = {}
   for (const key in config.options) {
-    defaultOptions[key] = config.options[key].default
+    if (config.options[key] && 'default' in config.options[key]) {
+      defaultOptions[key] = config.options[key].default
+    }
   }
 
   // If the paragraph uses global options, we add the default values from the

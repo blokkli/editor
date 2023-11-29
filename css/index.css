@@ -310,9 +310,12 @@
 }
 
 .pb-paragraph-label {
-  @apply flex items-center text-slate-700;
+  @apply flex items-center text-slate-700 text-left;
+  > div {
+    @apply shrink-0;
+  }
   span {
-    @apply text-sm;
+    @apply text-sm truncate min-w-0;
   }
 }
 

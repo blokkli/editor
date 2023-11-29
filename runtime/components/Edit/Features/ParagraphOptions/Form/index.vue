@@ -42,8 +42,8 @@
 
 <script lang="ts" setup>
 import {
-  definitions,
   globalOptions,
+  getDefinition,
 } from '#nuxt-paragraphs-builder/definitions'
 import OptionRadios from './Radios/index.vue'
 import OptionCheckbox from './Checkbox/index.vue'
@@ -103,7 +103,7 @@ const original = new OptionCollector()
 const updated = new OptionCollector()
 
 const availableOptions = computed(() => {
-  const definition = definitions.find((v) => v.bundle === props.paragraphType)
+  const definition = getDefinition(props.paragraphType)
   if (!definition) {
     return []
   }

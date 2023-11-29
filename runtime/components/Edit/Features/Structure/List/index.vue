@@ -9,6 +9,7 @@
 <script lang="ts" setup>
 import { falsy } from '#pb/helpers'
 import Field, { StructureTreeItem, StructureTreeField } from './Field/index.vue'
+import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
 
 const { allTypes, refreshKey, entityUuid } = useParagraphsBuilderStore()
 
@@ -17,11 +18,15 @@ const tree = ref<StructureTreeField[]>([])
 function mapItem(el: Element): StructureTreeItem | undefined {
   if (el instanceof HTMLElement) {
     const bundle = el.dataset.paragraphType || ''
+    const definition = getDefinition(bundle)
+    const title =
+      definition && definition.editTitle ? definition.editTitle(el) : undefined
     return {
       uuid: el.dataset.uuid || '',
       bundle,
       type: allTypes.value.find((v) => v.id === bundle),
       items: [...el.querySelectorAll('[data-uuid]')].map(mapItem).filter(falsy),
+      title,
     }
   }
 }

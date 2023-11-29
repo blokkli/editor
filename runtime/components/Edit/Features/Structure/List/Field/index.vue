@@ -11,7 +11,7 @@
           <div class="pb-paragraph-label-icon">
             <ParagraphIcon :bundle="item.bundle" />
           </div>
-          <span>{{ item.type?.label || item.bundle }}</span>
+          <span>{{ item.title || item.type?.label || item.bundle }}</span>
         </button>
         <ul
           v-if="item.items?.length"
@@ -30,7 +30,9 @@
               <div class="pb-paragraph-label-icon">
                 <ParagraphIcon :bundle="child.bundle" />
               </div>
-              <span>{{ child.type?.label || child.bundle }}</span>
+              <span>{{
+                child.title || child.type?.label || child.bundle
+              }}</span>
             </button>
           </li>
         </ul>
@@ -59,6 +61,7 @@ export type StructureTreeItem = {
   bundle: string
   type?: PbType
   items?: StructureTreeItem[]
+  title?: string
 }
 
 export type StructureTreeField = {

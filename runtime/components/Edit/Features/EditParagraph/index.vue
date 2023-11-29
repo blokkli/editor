@@ -12,7 +12,7 @@
 <script lang="ts" setup>
 import { DraggableExistingParagraphItem } from '#pb/types'
 import { PluginParagraphAction } from '#pb/plugins'
-import { definitions } from '#nuxt-paragraphs-builder/definitions'
+import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
 
 const { editMode, eventBus, selectedParagraphs } = useParagraphsBuilderStore()
 
@@ -25,7 +25,7 @@ const disabled = computed(() => {
   }
 
   const type = selectedParagraphs.value[0]?.paragraphType
-  return definitions.find((v) => v.bundle === type)?.disableEdit === true
+  return !type || getDefinition(type)?.disableEdit === true
 })
 
 function onClick(paragraphs: DraggableExistingParagraphItem[]) {

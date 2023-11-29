@@ -27,7 +27,7 @@
 import { PluginSidebar, PluginParagraphAction } from '#pb/plugins'
 import Pane from './Pane/index.vue'
 import ReusableDialog from './ReusableDialog/index.vue'
-import { definitions } from '#nuxt-paragraphs-builder/definitions'
+import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
 
 const showReusableDialog = ref(false)
 
@@ -49,9 +49,7 @@ const selectedParagraph = computed(() => {
 
 const definition = computed(() => {
   return selectedParagraph?.value
-    ? definitions.find(
-        (v) => v.bundle === selectedParagraph.value?.paragraphType,
-      )
+    ? getDefinition(selectedParagraph.value.paragraphType)
     : null
 })
 

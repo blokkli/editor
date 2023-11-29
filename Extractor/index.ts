@@ -11,6 +11,7 @@ type ExtractedParagraph = {
   chunkName: string
   componentName: string
   definition: ParagraphDefinitionInput<any>
+  source: string
 }
 
 /**
@@ -50,9 +51,9 @@ export default class Extractor {
    * should trigger a rebuild of the query.
    */
   async handleFile(filePath: string): Promise<boolean> {
-    const source = await this.readFile(filePath)
-    const definition = this.extractSingle(source, filePath)
-    if (!definition) {
+    const fileSource = await this.readFile(filePath)
+    const extracted = this.extractSingle(fileSource, filePath)
+    if (!extracted) {
       if (this.definitions[filePath]) {
         delete this.definitions[filePath]
         return true
@@ -60,6 +61,8 @@ export default class Extractor {
 
       return false
     }
+
+    const { definition, source } = extracted
 
     const icon = await this.getIcon(filePath)
 
@@ -71,6 +74,7 @@ export default class Extractor {
         icon,
         chunkName: definition.chunkName || 'global',
         componentName: 'Paragraph_' + definition.bundle,
+        source,
       }
       return true
     }
@@ -93,13 +97,13 @@ export default class Extractor {
   extractSingle(
     code: string,
     filePath: string,
-  ): ParagraphDefinitionInput<any> | undefined {
+  ): { definition: ParagraphDefinitionInput<any>; source: string } | undefined {
     const rgx = /defineParagraph\((\{.+?\})\)/gms
-    const str = rgx.exec(code)?.[1]
-    if (str) {
+    const source = rgx.exec(code)?.[1]
+    if (source) {
       try {
-        const obj = eval(`(${str})`)
-        return obj
+        const definition = eval(`(${source})`)
+        return { definition, source }
       } catch (e) {
         console.error(
           `Failed to parse Paragraph component "${filePath}": defineParagraph does not contain a valid object literal. No variables and methods are allowed inside defineParagraph().`,
@@ -123,9 +127,10 @@ export default class Extractor {
   generateDefinitionTemplate(
     globalOptions: ParagraphDefinitionOptionsInput = {},
   ): string {
-    const allDefintions: ParagraphDefinitionInput<any>[] = Object.values(
-      this.definitions,
-    ).map((v) => v.definition)
+    const allDefinitions = Object.values(this.definitions).map((v) => {
+      return `${v.definition.bundle}: ${v.source}`
+    })
+
     const icons = Object.values(this.definitions).reduce<
       Record<string, string>
     >((acc, v) => {
@@ -142,11 +147,14 @@ export const globalOptions = ${JSON.stringify(globalOptions, null, 2)} as const
 
 export const icons: Record<string, string> = ${JSON.stringify(icons)}
 
-export const definitions: TypedParagraphDefinitionInput[] = ${JSON.stringify(
-      allDefintions,
-      null,
-      2,
-    )}`
+export const definitionsMap: Record<string, TypedParagraphDefinitionInput> = {
+  ${allDefinitions.join(',\n')}
+}
+
+export const definitions: TypedParagraphDefinitionInput[] = Object.values(definitionsMap)
+
+export const getDefinition = (bundle: string): TypedParagraphDefinitionInput|undefined => definitionsMap[bundle]
+`
   }
 
   /**

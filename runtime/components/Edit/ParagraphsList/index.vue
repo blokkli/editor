@@ -4,7 +4,7 @@
     class="pb-paragraphs-container"
     :class="{ 'is-empty': !listToUse.length }"
     :is="tag || 'div'"
-    @click="onClick"
+    @click.capture="onClick"
     @dblclick.capture="onDoubleClick"
     :data-field-name="fieldConfig.name"
     :data-field-label="fieldConfig.label"
@@ -52,7 +52,7 @@ export default {
 <script lang="ts" setup>
 import type { SortableEvent } from 'sortablejs'
 import { Sortable } from '#pb/sortable'
-import { definitions } from '#nuxt-paragraphs-builder/definitions'
+import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
 import { buildDraggableItem, falsy } from '#pb/helpers'
 import {
   DraggableExistingParagraphItem,
@@ -275,9 +275,7 @@ function onAdd(e: Sortable.SortableEvent) {
 
   if (item.itemType === 'new') {
     if (e.newIndex !== undefined) {
-      const definition = definitions.find(
-        (v) => v.bundle === item.paragraphType,
-      )
+      const definition = getDefinition(item.paragraphType)
       if (definition?.disableEdit) {
         return mutateWithLoadingState(
           adapter.addNewParagraph({

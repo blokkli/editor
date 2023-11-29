@@ -6,13 +6,18 @@
       @click.stop="clickItem"
       @mouseenter="index = i"
       ref="listItems"
-      class="pb-is-small"
     >
       <div class="pb-search-item-icon">
         <ParagraphIcon :bundle="item.item.paragraphType" />
       </div>
       <div class="pb-search-item-content">
         <Highlight tag="h2" :text="item.title" :regex="regex" />
+        <Highlight
+          v-if="item.context"
+          class="pb-search-item-context"
+          :text="item.context"
+          :regex="regex"
+        />
         <Highlight
           class="pb-search-item-text"
           :text="item.text"
@@ -43,6 +48,7 @@ type SearchItem = {
   item: DraggableExistingParagraphItem
   title: string
   text: string
+  context?: string
 }
 
 const { entityUuid, allTypes, eventBus, refreshKey } =
@@ -140,16 +146,18 @@ const buildIndex = () => {
   const paragraphs = document.body.querySelectorAll(
     `[data-host-entity-uuid="${entityUuid}"] [data-uuid]`,
   )
-  console.log('Building index')
 
   const newItems = [...paragraphs]
     .map((el) => {
       if (el instanceof HTMLElement) {
         const item = buildDraggableItem(el)
         if (item?.itemType === 'existing') {
+          const title =
+            typeLabelMap.value[item.paragraphType] || item.paragraphType
           const searchItem = {
             item,
-            title: typeLabelMap.value[item.paragraphType] || item.paragraphType,
+            title: item.editTitle || title,
+            context: title,
             text: buildSearchText(el),
           }
           return searchItem
@@ -175,6 +183,9 @@ const visibleItems = computed(() => {
       let score = 0
       score += (item.text.toLowerCase().match(regex.value!) || []).length
       score += (item.title.toLowerCase().match(regex.value!) || []).length
+      if (item.context) {
+        score += (item.context.toLowerCase().match(regex.value!) || []).length
+      }
       return { item, score }
     })
     .filter((v) => !!v.score)

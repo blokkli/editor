@@ -11,7 +11,6 @@ import {
 import Extractor from './Extractor'
 import { extname, basename } from 'path'
 import { ParagraphDefinitionOptionsInput } from './runtime/types'
-import { onlyUnique } from './runtime/helpers'
 import postcss from 'postcss'
 import { promises as fsp, existsSync } from 'fs'
 import postcssImport from 'postcss-import'
@@ -20,6 +19,10 @@ import tailwindNesting from 'tailwindcss/nesting'
 import tailwindcss from 'tailwindcss'
 import tailwindConfig from './css/tailwind.config'
 import { ParagraphsBuilderPlugin } from './vitePlugin'
+
+export function onlyUnique(value: string, index: number, self: Array<string>) {
+  return self.indexOf(value) === index
+}
 
 export const fileExists = (
   path?: string,
@@ -133,6 +136,13 @@ export default defineNuxtModule<ModuleOptions>({
     chunkNames: ['global'] as string[],
   },
   async setup(moduleOptions, nuxt) {
+    // The path to the source directory of this module's consumer.
+    const srcDir = nuxt.options.srcDir
+    const srcResolver = createResolver(srcDir)
+
+    // The path of this module.
+    const resolver = createResolver(import.meta.url)
+
     function getChunkNames(): string[] {
       const chunkNames = [...(moduleOptions.chunkNames || [])]
       if (!chunkNames.includes('global')) {
@@ -148,6 +158,29 @@ export default defineNuxtModule<ModuleOptions>({
       }
       return types.filter(onlyUnique)
     }
+
+    // Get all files.
+    const files = await resolveFiles(srcDir, moduleOptions.pattern || [], {
+      followSymbolicLinks: false,
+    })
+
+    // Create extractor instance and add initial set of files.
+    const extractor = new Extractor(!nuxt.options.dev)
+    await extractor.addFiles(files)
+
+    // The definitions.
+    const templateDefinitions = addTemplate({
+      write: true,
+      filename: 'paragraphs-builder/definitions.ts',
+      getContents: () => {
+        return extractor.generateDefinitionTemplate(moduleOptions.globalOptions)
+      },
+      options: {
+        paragraphsBuilder: true,
+      },
+    })
+    nuxt.options.alias['#nuxt-paragraphs-builder/definitions'] =
+      templateDefinitions.dst
 
     nuxt.options.runtimeConfig.public.paragraphsBuilder = {
       disableLibrary: !!moduleOptions.disableFeatures?.library,
@@ -183,13 +216,6 @@ export default defineNuxtModule<ModuleOptions>({
     })()
 
     nuxt.options.alias['#blokkli/compiled-edit-adapter'] = adapterTemplate.dst
-
-    // The path to the source directory of this module's consumer.
-    const srcDir = nuxt.options.srcDir
-    const srcResolver = createResolver(srcDir)
-
-    // The path of this module.
-    const resolver = createResolver(import.meta.url)
 
     // Add plugin and transpile runtime directory.
     nuxt.options.build.transpile.push(resolver.resolve('runtime'))
@@ -249,29 +275,6 @@ export default defineNuxtModule<ModuleOptions>({
 
     // The types template.
     nuxt.options.alias['#nuxt-paragraphs-builder/styles'] = templateStyles.dst
-
-    // Get all files.
-    const files = await resolveFiles(srcDir, moduleOptions.pattern || [], {
-      followSymbolicLinks: false,
-    })
-
-    // Create extractor instance and add initial set of files.
-    const extractor = new Extractor(!nuxt.options.dev)
-    await extractor.addFiles(files)
-
-    // The definitions.
-    const templateDefinitions = addTemplate({
-      write: true,
-      filename: 'paragraphs-builder/definitions.ts',
-      getContents: () => {
-        return extractor.generateDefinitionTemplate(moduleOptions.globalOptions)
-      },
-      options: {
-        paragraphsBuilder: true,
-      },
-    })
-    nuxt.options.alias['#nuxt-paragraphs-builder/definitions'] =
-      templateDefinitions.dst
 
     // The types template.
     const templateGeneratedTypes = addTemplate({

@@ -1,10 +1,22 @@
 import type { Ref } from 'vue'
 import type { Emitter } from 'mitt'
 
-import { WritableComputedRef } from 'nuxt/dist/app/compat/capi'
+import type { WritableComputedRef } from 'nuxt/dist/app/compat/capi'
+import type { PbDomProvider } from '../helpers/domProvider'
 import { eventBus } from './../eventBus'
-import { PbAdapter } from '#blokkli/adapter'
-import { PbDomProvider } from '../helpers/domProvider'
+import type { PbAdapter } from '#blokkli/adapter'
+import { PbStorageProvider } from '../helpers/storageProvider'
+
+interface PbMutationResponseLike<T> {
+  data: {
+    state?: {
+      action?: {
+        success?: boolean
+        state?: T
+      }
+    }
+  }
+}
 
 export type PbMutateWithLoadingState = (
   promise: Promise<PbMutationResponseLike<any>> | undefined,
@@ -17,82 +29,6 @@ export type PbAvailableFeatures = {
   conversion: boolean
   duplicate: boolean
   library: boolean
-}
-
-export interface PbStore {
-  /**
-   * Perform a mutation with a loading state.
-   */
-  mutateWithLoadingState: PbMutateWithLoadingState
-
-  /**
-   * The adapter.
-   */
-  adapter: PbAdapter<any>
-
-  /**
-   * The entity type.
-   */
-  entityType: string
-  entityUuid: string
-  entityBundle: string
-  canEdit: globalThis.ComputedRef<boolean>
-  currentMutationIndex: globalThis.Ref<Readonly<number>>
-  setMutationIndex: (index: number) => void
-
-  availableFeatures: globalThis.Ref<Readonly<PbAvailableFeatures>>
-
-  mutations: globalThis.Ref<Readonly<PbMutation[]>>
-
-  activeSidebar: globalThis.Ref<Readonly<string>>
-  toggleSidebar: (id: string) => void
-  showSidebar: (id: string) => void
-  allTypes: globalThis.ComputedRef<PbType[]>
-  violations: globalThis.Ref<Readonly<PbViolation[]>>
-  eventBus: typeof eventBus
-
-  selectedParagraphs: globalThis.ComputedRef<DraggableExistingParagraphItem[]>
-
-  allowedTypes: globalThis.ComputedRef<PbAllowedBundle[]>
-  allowedTypesInList: globalThis.ComputedRef<string[]>
-  paragraphTypesWithNested: globalThis.ComputedRef<string[]>
-
-  runtimeConfig: {
-    disableLibrary: boolean
-    gridMarkup: string
-    langcodeWithoutPrefix: string
-  }
-
-  activeFieldKey: globalThis.Ref<Readonly<string>>
-  setActiveFieldKey: (key: string) => void
-
-  isPressingControl: globalThis.Ref<Readonly<boolean>>
-  isPressingSpace: globalThis.Ref<Readonly<boolean>>
-  previewGrantUrl: globalThis.Ref<Readonly<string>>
-  entity: globalThis.Readonly<globalThis.Ref<globalThis.Readonly<PbEditEntity>>>
-  translationState: Readonly<globalThis.Ref<Readonly<PbTranslationState>>>
-
-  currentLanguage: WritableComputedRef<string | null | undefined>
-
-  editMode: globalThis.Ref<Readonly<PbEditMode>>
-
-  mutatedFields: globalThis.Ref<Readonly<PbMutatedField[]>>
-
-  mutatedOptions: globalThis.Ref<MutatedParagraphOptions>
-
-  ownerName: globalThis.Ref<Readonly<string>>
-  currentUserIsOwner: globalThis.Ref<Readonly<boolean>>
-  takeOwnership: () => void
-
-  conversions: globalThis.ComputedRef<PbConversion[]>
-
-  isDragging: globalThis.Ref<Readonly<boolean>>
-
-  settings: globalThis.Ref<Record<string, any>>
-
-  refreshKey: globalThis.Ref<Readonly<string>>
-
-  dom: PbDomProvider
 }
 
 export type StringBoolean = '0' | '1'
@@ -113,6 +49,10 @@ export type ParagraphDefinitionOptionCheckbox = {
 export type ParagraphDefinitionOptionCheckboxes = {
   type: 'checkboxes'
   label: string
+  /**
+   * The default values, separated by comma.
+   */
+  default: string
   options: Record<string, string>
 }
 
@@ -183,6 +123,17 @@ export type ParagraphDefinitionInput<V, T = []> = {
    * is being displayed standalone.
    */
   editBackgroundClass?: string
+
+  /**
+   * Define a custom title for this paragraph at runtime in the editor.
+   *
+   * If a method is provided, it receives the root element of this component
+   * and should return a title.
+   *
+   * If no value is returned, the regular label of the paragraph (e.g.
+   * "Teaser") is displayed.
+   */
+  editTitle?: (el: HTMLElement) => string | undefined
 }
 
 export type InjectedParagraphItem = ComputedRef<{
@@ -200,7 +151,7 @@ export interface PbFieldItemParagraphFragment {
   entityBundle: string
 }
 
-export interface PbFieldItemFragment<T extends any> {
+export interface PbFieldItemFragment<T> {
   item?: PbFieldItemParagraphFragment
   paragraph?: T
 }
@@ -335,17 +286,6 @@ export interface PbType {
   isTranslatable?: boolean
 }
 
-interface PbMutationResponseLike<T> {
-  data: {
-    state?: {
-      action?: {
-        success?: boolean
-        state?: T
-      }
-    }
-  }
-}
-
 export type PbEditMode = 'readonly' | 'editing' | 'translating'
 
 export interface PbSettings {
@@ -359,6 +299,41 @@ export type MutatedParagraphOptions = {
       [key: string]: string
     }
   }
+}
+
+/**
+ * Defines a content search item.
+ */
+export type PbSearchContentItem = {
+  /**
+   * The ID of the item.
+   */
+  id: string
+
+  /**
+   * The title displayed to the user.
+   */
+  title: string
+
+  /**
+   * Additional context displayed alongside the title.
+   */
+  context?: string
+
+  /**
+   * The text displayed to the user.
+   */
+  text: string
+
+  /**
+   * The possible paragraph bundles for which a paragraph may be added for this content item.
+   */
+  targetBundles: string[]
+
+  /**
+   * An optional image URL that is used instead of an icon.
+   */
+  imageUrl?: string
 }
 
 export interface DraggableHostData {
@@ -385,6 +360,11 @@ export interface DraggableExistingParagraphItem {
    * The reusable paragraph UUID if this paragraph is a from_library type.
    */
   reusableUuid?: string
+
+  /**
+   * The title to use when displaying the paragraph in an abstract way.
+   */
+  editTitle?: string
 }
 
 export interface DraggableMultipleExistingParagraphItem {
@@ -428,6 +408,11 @@ export type DraggableItem =
   | DraggableReusableParagraphItem
   | DraggableMultipleExistingParagraphItem
   | DraggableSearchContentItem
+
+export interface ParagraphOptionsOverride {
+  uuid: Ref<string>
+  options: Ref<Record<string, any>>
+}
 
 export type MoveParagraphEvent = {
   afterUuid?: string
@@ -602,44 +587,81 @@ export type ParagraphsBuilderEditContext = {
   mutatedParagraphOptions: MutatedParagraphOptions
 }
 
-export interface ParagraphOptionsOverride {
-  uuid: Ref<string>
-  options: Ref<Record<string, any>>
-}
-
-/**
- * Defines a content search item.
- */
-export type PbSearchContentItem = {
+export interface PbStore {
   /**
-   * The ID of the item.
+   * Perform a mutation with a loading state.
    */
-  id: string
+  mutateWithLoadingState: PbMutateWithLoadingState
 
   /**
-   * The title displayed to the user.
+   * The adapter.
    */
-  title: string
+  adapter: PbAdapter<any>
 
   /**
-   * Additional context displayed alongside the title.
+   * The entity type.
    */
-  context?: string
+  entityType: string
+  entityUuid: string
+  entityBundle: string
+  canEdit: globalThis.ComputedRef<boolean>
+  currentMutationIndex: globalThis.Ref<Readonly<number>>
+  setMutationIndex: (index: number) => void
 
-  /**
-   * The text displayed to the user.
-   */
-  text: string
+  availableFeatures: globalThis.Ref<Readonly<PbAvailableFeatures>>
 
-  /**
-   * The possible paragraph bundles for which a paragraph may be added for this content item.
-   */
-  targetBundles: string[]
+  mutations: globalThis.Ref<Readonly<PbMutation[]>>
 
-  /**
-   * An optional image URL that is used instead of an icon.
-   */
-  imageUrl?: string
+  activeSidebar: globalThis.Ref<Readonly<string>>
+  toggleSidebar: (id: string) => void
+  showSidebar: (id: string) => void
+  allTypes: globalThis.ComputedRef<PbType[]>
+  violations: globalThis.Ref<Readonly<PbViolation[]>>
+  eventBus: typeof eventBus
+
+  selectedParagraphs: globalThis.ComputedRef<DraggableExistingParagraphItem[]>
+
+  allowedTypes: globalThis.ComputedRef<PbAllowedBundle[]>
+  allowedTypesInList: globalThis.ComputedRef<string[]>
+  paragraphTypesWithNested: globalThis.ComputedRef<string[]>
+
+  runtimeConfig: {
+    disableLibrary: boolean
+    gridMarkup: string
+    langcodeWithoutPrefix: string
+  }
+
+  activeFieldKey: globalThis.Ref<Readonly<string>>
+  setActiveFieldKey: (key: string) => void
+
+  isPressingControl: globalThis.Ref<Readonly<boolean>>
+  isPressingSpace: globalThis.Ref<Readonly<boolean>>
+  previewGrantUrl: globalThis.Ref<Readonly<string>>
+  entity: globalThis.Readonly<globalThis.Ref<globalThis.Readonly<PbEditEntity>>>
+  translationState: Readonly<globalThis.Ref<Readonly<PbTranslationState>>>
+
+  currentLanguage: WritableComputedRef<string | null | undefined>
+
+  editMode: globalThis.Ref<Readonly<PbEditMode>>
+
+  mutatedFields: globalThis.Ref<Readonly<PbMutatedField[]>>
+
+  mutatedOptions: globalThis.Ref<MutatedParagraphOptions>
+
+  ownerName: globalThis.Ref<Readonly<string>>
+  currentUserIsOwner: globalThis.Ref<Readonly<boolean>>
+  takeOwnership: () => void
+
+  conversions: globalThis.ComputedRef<PbConversion[]>
+
+  isDragging: globalThis.Ref<Readonly<boolean>>
+
+  settings: globalThis.Ref<Record<string, any>>
+
+  refreshKey: globalThis.Ref<Readonly<string>>
+
+  dom: PbDomProvider
+  storage: PbStorageProvider
 }
 
 export default {}

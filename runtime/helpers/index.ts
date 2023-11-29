@@ -1,4 +1,5 @@
 import type { DraggableItem, PbSearchContentItem } from '#pb/types'
+import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
 
 /**
  * Type check for falsy values.
@@ -34,6 +35,11 @@ export function buildDraggableItem(
       paragraphType &&
       hostBundle
     ) {
+      const definition = getDefinition(paragraphType)
+      const editTitle =
+        definition && definition.editTitle
+          ? definition?.editTitle(element)
+          : undefined
       return {
         itemType: 'existing',
         element,
@@ -45,6 +51,7 @@ export function buildDraggableItem(
         hostFieldName,
         reusableBundle,
         reusableUuid,
+        editTitle,
       }
     }
   } else if (dataset.elementType === 'reusable') {
