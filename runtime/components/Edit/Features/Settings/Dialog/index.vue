@@ -53,7 +53,7 @@
 <script lang="ts" setup>
 import { DialogModal } from '#pb/components'
 
-const { storage } = useParagraphsBuilderStore()
+const { storage } = useBlokkli()
 
 const showImport = storage.use('showImport', true)
 const useArtboard = storage.use('useArtboard', true)

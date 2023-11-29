@@ -44,7 +44,7 @@ type Rectangle = {
   height: number
 }
 
-const { selection, eventBus, dom } = useParagraphsBuilderStore()
+const { selection, eventBus, dom } = useBlokkli()
 
 const bounds = ref<Rectangle>({ width: 0, height: 0, left: 0, top: 0 })
 const selectedRects = ref<Rectangle[]>([])

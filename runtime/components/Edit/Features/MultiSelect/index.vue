@@ -7,5 +7,5 @@
 <script lang="ts" setup>
 import Overlay from './Overlay/index.vue'
 
-const { keyboard } = useParagraphsBuilderStore()
+const { keyboard } = useBlokkli()
 </script>

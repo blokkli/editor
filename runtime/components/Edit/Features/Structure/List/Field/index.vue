@@ -45,7 +45,7 @@
 import { PbType } from '#pb/types'
 import { ParagraphIcon } from '#pb/components'
 
-const { selection, eventBus } = useParagraphsBuilderStore()
+const { selection, eventBus } = useBlokkli()
 
 const uuids = computed(() => selection.blocks.value.map((v) => v.uuid))
 

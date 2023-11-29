@@ -33,7 +33,7 @@ import { KeyPressedEvent } from '#pb/types'
 import Overlay from './Overlay/index.vue'
 import { PluginToolbarButton } from '#pb/plugins'
 
-const { eventBus } = useParagraphsBuilderStore()
+const { eventBus } = useBlokkli()
 
 const isRendered = ref(false)
 const isVisible = ref(false)

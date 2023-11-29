@@ -50,7 +50,7 @@ const isLoading = ref(true)
 
 const emit = defineEmits(['close'])
 
-const { eventBus, adapter } = useParagraphsBuilderStore()
+const { eventBus, adapter } = useBlokkli()
 
 const items = ref<PbSearchContentItem[]>([])
 let timeout: any = null

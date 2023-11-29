@@ -13,7 +13,7 @@
 import { onlyUnique } from '#pb/helpers'
 import OptionsForm from './Form/index.vue'
 
-const { selection } = useParagraphsBuilderStore()
+const { selection } = useBlokkli()
 
 const uuids = computed(() => selection.blocks.value.map((v) => v.uuid))
 const types = computed(() =>

@@ -34,7 +34,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['click'])
 
-const { eventBus } = useParagraphsBuilderStore()
+const { eventBus } = useBlokkli()
 
 const to = computed(
   () => `#pb-toolbar-menu-${props.secondary ? 'secondary' : 'primary'}`,

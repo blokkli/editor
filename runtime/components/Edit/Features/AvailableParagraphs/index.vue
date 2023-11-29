@@ -42,15 +42,8 @@ import { falsy, onlyUnique } from '#pb/helpers'
 import { ParagraphIcon } from '#pb/components'
 import { DraggableExistingParagraphItem } from '#pb/types'
 
-const {
-  eventBus,
-  mutatedFields,
-  entityType,
-  entityBundle,
-  selection,
-  storage,
-  types,
-} = useParagraphsBuilderStore()
+const { eventBus, state, entityType, entityBundle, selection, storage, types } =
+  useBlokkli()
 
 const typeList = ref<HTMLDivElement | null>(null)
 const wrapper = ref<HTMLDivElement | null>(null)
@@ -131,7 +124,7 @@ const selectableParagraphTypes = computed(() => {
 })
 
 const generallyAvailableParagraphTypes = computed(() => {
-  const fieldNames = mutatedFields.value.map((v) => v.name)
+  const fieldNames = state.mutatedFields.value.map((v) => v.name)
   const typesOnEntity = (
     types.allowedTypes.value.filter((v) => {
       return (

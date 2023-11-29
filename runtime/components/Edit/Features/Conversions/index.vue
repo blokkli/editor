@@ -57,8 +57,7 @@ import type { PbType } from '#pb/types'
 
 const showConversions = ref(false)
 
-const { adapter, types, selection, editMode, mutateWithLoadingState } =
-  useParagraphsBuilderStore()
+const { adapter, types, selection, state } = useBlokkli()
 
 const { data: conversionsData } = await useLazyAsyncData(() =>
   adapter.getConversions(),
@@ -71,7 +70,7 @@ async function onConvert(targetBundle?: string) {
     return
   }
 
-  await mutateWithLoadingState(
+  await state.mutateWithLoadingState(
     adapter.convertParagraphs(
       selection.blocks.value.map((v) => v.uuid),
       targetBundle,
@@ -80,7 +79,7 @@ async function onConvert(targetBundle?: string) {
   )
 }
 
-const editingEnabled = computed(() => editMode.value === 'editing')
+const editingEnabled = computed(() => state.editMode.value === 'editing')
 
 const paragraphTypeIds = computed(() => {
   return selection.blocks.value.map((v) => v.paragraphType).filter(onlyUnique)

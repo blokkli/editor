@@ -37,7 +37,7 @@ import type { PbComment } from '#pb/types'
 
 const comments = ref<PbComment[]>([])
 const showAddComment = ref(false)
-const { adapter } = useParagraphsBuilderStore()
+const { adapter } = useBlokkli()
 
 const loadComments = async () => (comments.value = await adapter.loadComments())
 

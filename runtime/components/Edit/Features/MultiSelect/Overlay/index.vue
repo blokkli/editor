@@ -35,7 +35,7 @@ import type { Rectangle } from './Item/index.vue'
 import Item from './Item/index.vue'
 import { Sortable } from '#pb/sortable'
 
-const { keyboard, eventBus, dom } = useParagraphsBuilderStore()
+const { keyboard, eventBus, dom } = useBlokkli()
 
 export type SelectableElement = {
   item: DraggableExistingParagraphItem

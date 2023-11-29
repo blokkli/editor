@@ -61,7 +61,7 @@ import { modulo } from '~/modules/nuxt-paragraphs-builder/runtime/helpers'
 import ResultsPage from './Results/Page/index.vue'
 import ResultsContent from './Results/Content/index.vue'
 
-const { adapter } = useParagraphsBuilderStore()
+const { adapter } = useBlokkli()
 
 const emit = defineEmits(['close'])
 

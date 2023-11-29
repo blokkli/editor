@@ -12,7 +12,7 @@
     <div class="pb pb-dialog-form">
       <div class="pb-form-section">
         <h3 class="pb-form-label">Welche Inhalte möchten Sie importieren?</h3>
-        <label v-for="field in mutatedFields" class="pb-checkbox">
+        <label v-for="field in state.mutatedFields.value" class="pb-checkbox">
           <input v-model="selectedFields" type="checkbox" :value="field.name" />
           <span>{{ field.label }}</span>
         </label>
@@ -53,7 +53,7 @@
 import { DialogModal } from '#pb/components'
 import { PbImportItem } from '#pb/types'
 
-const { mutatedFields, adapter } = useParagraphsBuilderStore()
+const { state, adapter } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'confirm', data: { sourceUuid: string; fields: string[] }): void

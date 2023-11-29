@@ -23,5 +23,5 @@
 import { PluginViewOption } from '#pb/plugins'
 import { Icon } from '#pb/components'
 
-const { runtimeConfig } = useParagraphsBuilderStore()
+const { runtimeConfig } = useBlokkli()
 </script>

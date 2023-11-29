@@ -17,7 +17,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['pressed'])
 
-const { eventBus } = useParagraphsBuilderStore()
+const { eventBus } = useBlokkli()
 
 const key = computed(() =>
   [props.meta, props.shift, props.keyCode.toLowerCase()].join('-'),

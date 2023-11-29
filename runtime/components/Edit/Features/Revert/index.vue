@@ -29,8 +29,8 @@
 import { PluginMenuButton } from '#pb/plugins'
 import { Icon, DialogModal } from '#pb/components'
 
-const { eventBus, mutations, canEdit, adapter, mutateWithLoadingState } =
-  useParagraphsBuilderStore()
+const { eventBus, adapter, state } = useBlokkli()
+const { mutations, canEdit, mutateWithLoadingState } = state
 
 const showConfirm = ref(false)
 

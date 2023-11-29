@@ -17,7 +17,7 @@
 import type { PbMessage } from '#pb/types'
 import Item from './Item/index.vue'
 
-const { eventBus } = useParagraphsBuilderStore()
+const { eventBus } = useBlokkli()
 const messages = ref<PbMessage[]>([])
 
 function onMessage(message: PbMessage) {

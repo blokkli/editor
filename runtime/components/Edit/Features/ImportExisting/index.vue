@@ -1,10 +1,10 @@
 <template>
   <PluginMenuButton
-    v-if="mutatedFields.length"
+    v-if="state.mutatedFields.value.length"
     title="Importieren..."
     description="Von einer bestehenden Seite importieren"
     @click="showModal = true"
-    :disabled="editMode !== 'editing'"
+    :disabled="state.editMode.value !== 'editing'"
     :weight="50"
   >
     <Icon name="import" />
@@ -26,20 +26,12 @@ import { PluginMenuButton } from '#pb/plugins'
 import { Icon } from '#pb/components'
 import ExistingDialog from './Dialog/index.vue'
 
-const {
-  eventBus,
-  editMode,
-  mutatedFields,
-  adapter,
-  mutateWithLoadingState,
-  mutations,
-  storage,
-} = useParagraphsBuilderStore()
+const { eventBus, adapter, storage, state } = useBlokkli()
 
 const shouldOpen = storage.use('showImport', true)
 
 const hasNoParagraphs = computed(
-  () => !mutatedFields.value.find((v) => v.field.list?.length),
+  () => !state.mutatedFields.value.find((v) => v.field.list?.length),
 )
 
 const showModal = ref(false)
@@ -47,7 +39,7 @@ const showModal = ref(false)
 function onSubmit(sourceUuid: string, sourceFields: string[]) {
   showModal.value = false
   eventBus.emit('closeMenu')
-  mutateWithLoadingState(
+  state.mutateWithLoadingState(
     adapter.importFromExisting({
       sourceFields,
       sourceUuid,
@@ -59,7 +51,11 @@ function onSubmit(sourceUuid: string, sourceFields: string[]) {
 
 onMounted(() => {
   // Show the import dialog when there are no paragraphs yet and no mutations.
-  if (hasNoParagraphs.value && !mutations.value.length && shouldOpen.value) {
+  if (
+    hasNoParagraphs.value &&
+    !state.mutations.value.length &&
+    shouldOpen.value
+  ) {
     showModal.value = true
   }
 })

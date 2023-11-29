@@ -11,7 +11,7 @@ import { falsy } from '#pb/helpers'
 import Field, { StructureTreeItem, StructureTreeField } from './Field/index.vue'
 import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
 
-const { types, refreshKey, entityUuid } = useParagraphsBuilderStore()
+const { types, state, entityUuid } = useBlokkli()
 
 const tree = ref<StructureTreeField[]>([])
 
@@ -53,7 +53,7 @@ function buildTree() {
     .filter(falsy)
 }
 
-watch(refreshKey, () => buildTree())
+watch(state.refreshKey, () => buildTree())
 
 onMounted(() => {
   buildTree()

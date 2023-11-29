@@ -96,6 +96,7 @@ export default function (): PbAnimationProvider {
     eventBus.on('select:start', requestDraw)
     eventBus.on('select:end', requestDraw)
     eventBus.on('selectAdditional', requestDraw)
+    eventBus.on('option:update', requestDraw)
     document.addEventListener('scroll', requestDraw)
     document.body.addEventListener('wheel', requestDraw, { passive: false })
     window.addEventListener('mousemove', onMouseMoveGlobal, {
@@ -112,6 +113,7 @@ export default function (): PbAnimationProvider {
     eventBus.off('select:start', requestDraw)
     eventBus.off('select:end', requestDraw)
     eventBus.off('selectAdditional', requestDraw)
+    eventBus.off('option:update', requestDraw)
   })
 
   const requestDraw = () => (shouldDraw.value = true)

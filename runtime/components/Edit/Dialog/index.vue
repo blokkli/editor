@@ -53,7 +53,7 @@ withDefaults(
   },
 )
 
-const { eventBus } = useParagraphsBuilderStore()
+const { eventBus } = useBlokkli()
 
 const onKeyPressed = (e: KeyPressedEvent) => {
   if (e.code === 'Escape') {

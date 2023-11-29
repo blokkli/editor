@@ -43,7 +43,7 @@ const startMoveOffset: Coord = {
 const animationTarget = ref<(Coord & { scale: number }) | null>(null)
 
 const { keyboard, eventBus, dom, entityUuid, storage, ui, animation } =
-  useParagraphsBuilderStore()
+  useBlokkli()
 
 const limitOffset = (providedX: number, providedY: number): Coord => {
   const rootRect = ui.rootElement().getBoundingClientRect()

@@ -99,7 +99,7 @@ const emit = defineEmits<{
   (e: 'remove', index: number): void
 }>()
 
-const { types, eventBus } = useParagraphsBuilderStore()
+const { types, eventBus } = useBlokkli()
 
 function getLabel(bundle: string): string {
   return types.allTypes.value.find((v) => v.id === bundle)?.label || bundle

@@ -11,12 +11,33 @@ import type {
 } from '#pb/types'
 import { removeDroppedElements, falsy } from '#pb/helpers'
 import { emitMessage, eventBus } from '../eventBus'
-import { PbAdapter } from '../types/adapter'
+import { PbAdapter } from '../adapter'
 
-export default function (adapter: PbAdapter<any>) {
+export type PbStateOwner = {
+  name: string | undefined
+  currentUserIsOwner: boolean
+}
+
+export type PbStateProvider = {
+  owner: Readonly<Ref<PbStateOwner | null>>
+  refreshKey: Readonly<Ref<string>>
+  mutatedFields: Readonly<Ref<PbMutatedField[]>>
+  entity: Readonly<Ref<PbEditEntity>>
+  mutatedOptions: Ref<MutatedParagraphOptions>
+  translation: Readonly<Ref<PbTranslationState>>
+  mutations: Readonly<Ref<PbMutation[]>>
+  currentMutationIndex: Readonly<Ref<number>>
+  violations: Readonly<Ref<PbViolation[]>>
+  mutateWithLoadingState: PbMutateWithLoadingState
+  editMode: Readonly<Ref<PbEditMode>>
+  canEdit: ComputedRef<boolean>
+}
+
+export default async function (
+  adapter: PbAdapter<any>,
+): Promise<PbStateProvider> {
+  const owner = ref<PbStateOwner | null>(null)
   const refreshKey = ref('')
-  const currentUserIsOwner = ref(false)
-  const ownerName = ref('')
   const mutatedFields = ref<PbMutatedField[]>([])
   const mutations = ref<PbMutation[]>([])
   const violations = ref<PbViolation[]>([])
@@ -29,9 +50,10 @@ export default function (adapter: PbAdapter<any>) {
     translations: [],
   })
 
-  const mutatedParagraphOptions = ref<MutatedParagraphOptions>({})
-  const translationState = ref<PbTranslationState>({
+  const mutatedOptions = ref<MutatedParagraphOptions>({})
+  const translation = ref<PbTranslationState>({
     isTranslatable: false,
+    currentLanguage: '',
     sourceLanguage: '',
     availableLanguages: [],
     translations: [],
@@ -40,14 +62,15 @@ export default function (adapter: PbAdapter<any>) {
   function setContext(context?: PbEditState) {
     removeDroppedElements()
 
-    mutatedParagraphOptions.value =
-      context?.mutatedState?.behaviorSettings || {}
+    mutatedOptions.value = context?.mutatedState?.behaviorSettings || {}
     mutations.value = context?.mutations || []
     violations.value = context?.mutatedState?.violations || []
     const currentIndex = context?.currentIndex
     currentMutationIndex.value = currentIndex === undefined ? -1 : currentIndex
-    currentUserIsOwner.value = !!context?.currentUserIsOwner
-    ownerName.value = context?.ownerName || ''
+    owner.value = {
+      name: context?.ownerName,
+      currentUserIsOwner: !!context?.currentUserIsOwner,
+    }
     entity.value.id = context?.entity?.id
     entity.value.changed = context?.entity?.changed
     entity.value.label = context?.entity?.label
@@ -56,13 +79,13 @@ export default function (adapter: PbAdapter<any>) {
     entity.value.bundleLabel = context?.entity?.bundleLabel || ''
     entity.value.editUrl = context?.entity.editUrl
 
-    translationState.value.isTranslatable =
+    translation.value.isTranslatable =
       !!context?.translationState?.isTranslatable
-    translationState.value.translations =
+    translation.value.translations =
       context?.translationState?.translations?.filter(falsy) || []
-    translationState.value.sourceLanguage =
+    translation.value.sourceLanguage =
       context?.translationState?.sourceLanguage || ''
-    translationState.value.availableLanguages =
+    translation.value.availableLanguages =
       context?.translationState?.availableLanguages || []
 
     const newMutatedFields = context?.mutatedState?.fields || []
@@ -142,7 +165,7 @@ export default function (adapter: PbAdapter<any>) {
       if (v && typeof v === 'string') {
         return v
       }
-      return translationState.value.sourceLanguage
+      return translation.value.sourceLanguage
     },
     set(language) {
       const path = entity.value.translations.find(
@@ -160,9 +183,9 @@ export default function (adapter: PbAdapter<any>) {
       loadState(language)
     },
   })
-  const canEdit = computed(() => currentUserIsOwner.value)
+  const canEdit = computed(() => !!owner.value?.currentUserIsOwner)
   const isTranslation = computed(
-    () => currentLanguage.value !== translationState.value.sourceLanguage,
+    () => currentLanguage.value !== translation.value.sourceLanguage,
   )
 
   const editMode = computed<PbEditMode>(() => {
@@ -191,22 +214,20 @@ export default function (adapter: PbAdapter<any>) {
     computed(() => mutatedFields.value),
   )
 
+  await loadState()
+
   return {
     refreshKey,
-    currentUserIsOwner,
-    ownerName,
+    owner: readonly(owner),
     mutatedFields,
     entity,
-    mutatedParagraphOptions,
-    translationState,
+    mutatedOptions,
+    translation,
     mutations,
     violations,
     currentMutationIndex,
-    setContext,
     mutateWithLoadingState,
-    loadState,
     editMode,
-    currentLanguage,
     canEdit,
   }
 }

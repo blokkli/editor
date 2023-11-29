@@ -26,7 +26,7 @@ import Item from './Item/index.vue'
 import { PbLibraryItem } from '#pb/types'
 import { falsy } from '#pb/helpers'
 
-const { adapter, eventBus } = useParagraphsBuilderStore()
+const { adapter, eventBus } = useBlokkli()
 
 const listEl = ref<HTMLDivElement | null>(null)
 const text = ref('')

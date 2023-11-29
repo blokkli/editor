@@ -55,14 +55,8 @@ import {
 } from '#pb/types'
 import { falsy } from '#pb/helpers'
 
-const {
-  mutatedOptions,
-  canEdit,
-  adapter,
-  mutateWithLoadingState,
-  editMode,
-  eventBus,
-} = useParagraphsBuilderStore()
+const { adapter, eventBus, state } = useBlokkli()
+const { mutatedOptions, canEdit, mutateWithLoadingState, editMode } = state
 
 const props = defineProps<{
   uuids: string[]

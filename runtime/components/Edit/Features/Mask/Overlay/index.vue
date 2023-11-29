@@ -7,7 +7,7 @@
 <script lang="ts" setup>
 import { AnimationFrameEvent } from '#pb/types'
 
-const { eventBus } = useParagraphsBuilderStore()
+const { eventBus } = useBlokkli()
 
 type CanvasFieldArea = {
   style: Record<string, string>

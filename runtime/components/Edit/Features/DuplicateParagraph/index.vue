@@ -2,7 +2,7 @@
   <PluginParagraphAction
     title="Duplizieren"
     @click="onClick"
-    :disabled="editMode !== 'editing'"
+    :disabled="state.editMode.value !== 'editing'"
     meta
     key-code="D"
     multiple
@@ -14,11 +14,10 @@
 import { DraggableExistingParagraphItem } from '#pb/types'
 import { PluginParagraphAction } from '#pb/plugins'
 
-const { editMode, adapter, mutateWithLoadingState } =
-  useParagraphsBuilderStore()
+const { adapter, state } = useBlokkli()
 
 function onClick(items: DraggableExistingParagraphItem[]) {
-  mutateWithLoadingState(
+  state.mutateWithLoadingState(
     adapter.duplicateParagraphs(items.map((v) => v.uuid)),
     'Der Abschnitt konnte nicht dupliziert werden.',
   )

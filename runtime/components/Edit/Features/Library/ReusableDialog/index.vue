@@ -37,7 +37,7 @@ defineEmits<{
   (e: 'cancel'): void
 }>()
 
-const { dom } = useParagraphsBuilderStore()
+const { dom } = useBlokkli()
 
 const props = defineProps<{
   uuid: string

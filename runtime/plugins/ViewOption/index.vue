@@ -25,7 +25,7 @@
 <script setup lang="ts">
 import { ShortcutIndicator } from '#pb/components'
 
-const { storage } = useParagraphsBuilderStore()
+const { storage } = useBlokkli()
 
 const props = defineProps<{
   id: string

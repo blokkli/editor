@@ -31,5 +31,5 @@
 <script lang="ts" setup>
 import { PluginSidebar } from '#pb/plugins'
 
-const { keyboard, selection } = useParagraphsBuilderStore()
+const { keyboard, selection } = useBlokkli()
 </script>

@@ -28,5 +28,6 @@
 </template>
 
 <script lang="ts" setup>
-const { entity, mutations, eventBus } = useParagraphsBuilderStore()
+const { state, eventBus } = useBlokkli()
+const { entity, mutations } = state
 </script>

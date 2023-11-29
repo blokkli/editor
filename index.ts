@@ -248,9 +248,9 @@ export default defineNuxtModule<ModuleOptions>({
       as: 'defineParagraph',
     })
     addImports({
-      name: 'useParagraphsBuilderStore',
-      from: resolver.resolve('./runtime/composables/useParagraphsBuilderStore'),
-      as: 'useParagraphsBuilderStore',
+      name: 'useBlokkli',
+      from: resolver.resolve('./runtime/composables/useBlokkli'),
+      as: 'useBlokkli',
     })
     addImports({
       name: 'useParagraphsBuilderEditContext',

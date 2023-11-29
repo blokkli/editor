@@ -7,7 +7,7 @@
 <script lang="ts" setup>
 import type { AnimationFrameEvent, DraggableStartEvent } from '#pb/types'
 
-const { eventBus } = useParagraphsBuilderStore()
+const { eventBus } = useBlokkli()
 
 const isVisible = ref(false)
 const width = ref(0)

@@ -51,7 +51,7 @@ type SearchItem = {
   context?: string
 }
 
-const { eventBus, refreshKey, types, dom } = useParagraphsBuilderStore()
+const { eventBus, state, types, dom } = useBlokkli()
 
 const buildForKey = ref('')
 
@@ -139,7 +139,7 @@ const buildSearchText = (el: HTMLElement): string => {
 }
 
 const buildIndex = () => {
-  if (buildForKey.value === refreshKey.value) {
+  if (buildForKey.value === state.refreshKey.value) {
     return
   }
   const newItems = dom
@@ -157,7 +157,7 @@ const buildIndex = () => {
     .filter(falsy)
 
   items.value = newItems
-  buildForKey.value = refreshKey.value
+  buildForKey.value = state.refreshKey.value
 }
 
 onMounted(() => {

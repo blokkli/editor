@@ -2,7 +2,7 @@
   <PluginParagraphAction
     title="Löschen"
     @click="onClick"
-    :disabled="editMode !== 'editing'"
+    :disabled="state.editMode.value !== 'editing'"
     multiple
     key-code="Delete"
     icon="delete"
@@ -13,19 +13,18 @@
 import { DraggableExistingParagraphItem } from '#pb/types'
 import { PluginParagraphAction } from '#pb/plugins'
 
-const { editMode, mutateWithLoadingState, adapter, eventBus } =
-  useParagraphsBuilderStore()
+const { state, adapter, eventBus } = useBlokkli()
 
 async function onClick(items: DraggableExistingParagraphItem[]) {
   // Unselect all paragraphs.
   eventBus.emit('select:end', [])
   if (items.length === 1) {
-    await mutateWithLoadingState(
+    await state.mutateWithLoadingState(
       adapter.deleteParagraph(items[0].uuid),
       'Der Abschnitt konnte nicht entfernt werden.',
     )
   } else if (items.length > 1) {
-    await mutateWithLoadingState(
+    await state.mutateWithLoadingState(
       adapter.deleteMultipleParagraphs(items.map((v) => v.uuid)),
       'Die Abschnitte konnten nicht entfernt werden.',
     )

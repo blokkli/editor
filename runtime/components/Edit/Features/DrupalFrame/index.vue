@@ -40,18 +40,10 @@ import { Icon, ParagraphIcon } from '#pb/components'
 import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
 import { AddNewParagraphEvent, EditParagraphEvent } from '#pb/types'
 
-const {
-  types,
-  eventBus,
-  currentLanguage,
-  runtimeConfig,
-  entity,
-  entityType,
-  entityUuid,
-  translationState,
-  canEdit,
-  editMode,
-} = useParagraphsBuilderStore()
+const { types, eventBus, runtimeConfig, entityType, entityUuid, state } =
+  useBlokkli()
+
+const currentLanguage = computed(() => state.translation.value.currentLanguage)
 
 const modalUrl = ref('')
 const bundle = ref('')
@@ -91,8 +83,8 @@ const iframe = ref<HTMLIFrameElement | null>(null)
 const titleSuffix = computed(() => {
   const langcode = editLangcode.value || currentLanguage.value
   if (langcode !== currentLanguage.value) {
-    if (translationState.value.availableLanguages) {
-      const match = translationState.value.availableLanguages.find(
+    if (state.translation.value.availableLanguages) {
+      const match = state.translation.value.availableLanguages.find(
         (v) => v.id === langcode,
       )?.name
       if (match) {
@@ -150,14 +142,14 @@ function onIFrameLoad() {
 }
 
 function onEditParagraph(e: EditParagraphEvent) {
-  if (!canEdit.value) {
+  if (!state.canEdit.value) {
     return
   }
   const definition = getDefinition(e.bundle)
   if (definition?.disableEdit) {
     return
   }
-  if (editMode.value === 'translating') {
+  if (state.editMode.value === 'translating') {
     const type = types.allTypes.value.find((v) => v.id === e.bundle)
     if (!type) {
       return
@@ -175,7 +167,7 @@ function onTranslateEntity(langcode: string) {
   editLangcode.value = langcode
   entityTypeInForm.value = 'entity'
   setModalUrl(
-    `/${entityType}/${entity.value.id}/translations/add/${translationState.value.sourceLanguage}/${langcode}`,
+    `/${entityType}/${state.entity.value.id}/translations/add/${state.translation.value.sourceLanguage}/${langcode}`,
     langcode,
   )
 }
@@ -189,17 +181,17 @@ function onBatchTranslate() {
 
 function onEditEntity() {
   entityTypeInForm.value = 'entity'
-  if (entity.value.editUrl) {
+  if (state.entity.value.editUrl) {
     const prefix = getModalPrefix()
     const queryParam = getModalQueryParams(prefix)
-    modalUrl.value = entity.value.editUrl + queryParam
+    modalUrl.value = state.entity.value.editUrl + queryParam
   } else {
-    setModalUrl(`/${entityType}/${entity.value.id}/edit`)
+    setModalUrl(`/${entityType}/${state.entity.value.id}/edit`)
   }
 }
 
 async function addNewParagraph(e: AddNewParagraphEvent) {
-  if (!canEdit.value) {
+  if (!state.canEdit.value) {
     return
   }
   const definition = getDefinition(e.item.paragraphType)

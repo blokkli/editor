@@ -40,7 +40,7 @@ import {
   PbSearchContentItem,
 } from '#pb/types'
 
-const { eventBus, selection } = useParagraphsBuilderStore()
+const { eventBus, selection } = useBlokkli()
 
 const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
 

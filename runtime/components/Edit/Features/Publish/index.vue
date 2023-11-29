@@ -15,8 +15,8 @@
 import { PluginMenuButton } from '#pb/plugins'
 import { Icon } from '#pb/components'
 
-const { mutations, canEdit, mutateWithLoadingState, adapter, eventBus } =
-  useParagraphsBuilderStore()
+const { state, adapter, eventBus } = useBlokkli()
+const { mutations, canEdit, mutateWithLoadingState } = state
 
 const onClick = async () => {
   await mutateWithLoadingState(

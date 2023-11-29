@@ -19,15 +19,14 @@ const router = useRouter()
 let timeout: any = null
 let lastChanged: number = 0
 const mutatedFields = ref<PbMutatedField[]>([])
-const mutatedParagraphOptions = ref<MutatedParagraphOptions>({})
+const mutatedOptions = ref<MutatedParagraphOptions>({})
 
 const { data, refresh } = await useAsyncData(() =>
   adapter.loadState().then((v) => adapter.mapState(v)),
 )
 
 const updateState = () => {
-  mutatedParagraphOptions.value =
-    data.value?.mutatedState?.behaviorSettings || {}
+  mutatedOptions.value = data.value?.mutatedState?.behaviorSettings || {}
   mutatedFields.value = data.value?.mutatedState?.fields || []
 }
 
@@ -36,7 +35,7 @@ updateState()
 provide('paragraphsBuilderMutatedFields', mutatedFields)
 provide('paragraphsBuilderPreview', true)
 provide('paragraphsBuilderEditContext', {
-  mutatedParagraphOptions,
+  mutatedOptions,
 })
 
 function onMessage(e: MessageEvent) {
@@ -58,13 +57,13 @@ function onMessage(e: MessageEvent) {
     if (e.data.name === 'paragraphsBuilderUpdateOption') {
       const { uuid, key, value } = e.data.data
 
-      if (!mutatedParagraphOptions.value[uuid]) {
-        mutatedParagraphOptions.value[uuid] = {}
+      if (!mutatedOptions.value[uuid]) {
+        mutatedOptions.value[uuid] = {}
       }
-      if (!mutatedParagraphOptions.value[uuid].paragraph_builder_data) {
-        mutatedParagraphOptions.value[uuid].paragraph_builder_data = {}
+      if (!mutatedOptions.value[uuid].paragraph_builder_data) {
+        mutatedOptions.value[uuid].paragraph_builder_data = {}
       }
-      mutatedParagraphOptions.value[uuid].paragraph_builder_data[key] = value
+      mutatedOptions.value[uuid].paragraph_builder_data[key] = value
     }
   }
 }

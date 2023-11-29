@@ -11,6 +11,7 @@ import { PbSelectionProvider } from '../helpers/selectionProvider'
 import { PbKeyboardProvider } from '../helpers/keyboardProvider'
 import { PbUiProvider } from '../helpers/uiProvider'
 import { PbAnimationProvider } from '../helpers/animationFrame'
+import { PbStateProvider } from '../helpers/stateProvider'
 
 interface PbMutationResponseLike<T> {
   data: {
@@ -195,6 +196,7 @@ export interface PbAvailableLanguage {
 export interface PbTranslationState {
   isTranslatable?: boolean | null
   sourceLanguage?: string | null
+  currentLanguage?: string
   availableLanguages?: PbAvailableLanguage[]
   translations?: Array<string | null> | null
 }
@@ -590,15 +592,10 @@ export type ParagraphsBuilderEventBus = Emitter<ParagraphsBuilderEvents>
 
 export type ParagraphsBuilderEditContext = {
   eventBus: ParagraphsBuilderEventBus
-  mutatedParagraphOptions: Ref<MutatedParagraphOptions>
+  mutatedOptions: Ref<MutatedParagraphOptions>
 }
 
 export interface PbStore {
-  /**
-   * Perform a mutation with a loading state.
-   */
-  mutateWithLoadingState: PbMutateWithLoadingState
-
   /**
    * The adapter.
    */
@@ -610,15 +607,7 @@ export interface PbStore {
   entityType: string
   entityUuid: string
   entityBundle: string
-  canEdit: globalThis.ComputedRef<boolean>
-  currentMutationIndex: globalThis.Ref<Readonly<number>>
-  setMutationIndex: (index: number) => void
 
-  availableFeatures: globalThis.Ref<Readonly<PbAvailableFeatures>>
-
-  mutations: globalThis.Ref<Readonly<PbMutation[]>>
-
-  violations: globalThis.Ref<Readonly<PbViolation[]>>
   eventBus: typeof eventBus
 
   runtimeConfig: {
@@ -627,26 +616,6 @@ export interface PbStore {
     langcodeWithoutPrefix: string
   }
 
-  previewGrantUrl: globalThis.Ref<Readonly<string>>
-  entity: globalThis.Readonly<globalThis.Ref<globalThis.Readonly<PbEditEntity>>>
-  translationState: Readonly<globalThis.Ref<Readonly<PbTranslationState>>>
-
-  currentLanguage: WritableComputedRef<string | null | undefined>
-
-  editMode: globalThis.Ref<Readonly<PbEditMode>>
-
-  mutatedFields: globalThis.Ref<Readonly<PbMutatedField[]>>
-
-  mutatedOptions: globalThis.Ref<MutatedParagraphOptions>
-
-  ownerName: globalThis.Ref<Readonly<string>>
-  currentUserIsOwner: globalThis.Ref<Readonly<boolean>>
-  takeOwnership: () => void
-
-  conversions: globalThis.ComputedRef<PbConversion[]>
-
-  refreshKey: globalThis.Ref<Readonly<string>>
-
   dom: PbDomProvider
   storage: PbStorageProvider
   types: PbTypesProvider
@@ -654,6 +623,7 @@ export interface PbStore {
   keyboard: PbKeyboardProvider
   ui: PbUiProvider
   animation: PbAnimationProvider
+  state: PbStateProvider
 }
 
 export default {}

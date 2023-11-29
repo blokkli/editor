@@ -17,7 +17,7 @@
 <script lang="ts" setup>
 import { AnimationFrameEvent } from '#pb/types'
 
-const { eventBus, selection } = useParagraphsBuilderStore()
+const { eventBus, selection } = useBlokkli()
 
 export type FieldArea = {
   key: string

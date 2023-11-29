@@ -64,15 +64,11 @@ import {
   PbMutatedField,
   PbFieldEntity,
   PbFieldItemParagraphFragment,
-  PbEditMode,
 } from '#pb/types'
 
-const { adapter, mutateWithLoadingState, eventBus, keyboard, types, dom } =
-  useParagraphsBuilderStore()
+const { adapter, state, eventBus, keyboard, types, dom } = useBlokkli()
 
 let instance: Sortable | null = null
-
-const editMode = inject<ComputedRef<PbEditMode>>('paragraphsBuilderEditMode')
 
 const mutatedFields = inject<Ref<PbMutatedField[]>>(
   'paragraphsBuilderMutatedFields',
@@ -95,7 +91,7 @@ const fieldKey = computed(() => {
 })
 
 watch(
-  () => editMode?.value,
+  () => state.editMode.value,
   (mode) => {
     if (!instance) {
       return
@@ -222,7 +218,7 @@ function onUpdate(e: Sortable.SortableEvent) {
         .map((v) => (v?.itemType === 'existing' ? v.uuid : undefined))
         .filter(falsy)
       if (uuids.length > 1) {
-        return mutateWithLoadingState(
+        return state.mutateWithLoadingState(
           adapter.moveMultipleParagraphs({
             uuids,
             afterUuid: previous?.uuid,
@@ -240,7 +236,7 @@ function onUpdate(e: Sortable.SortableEvent) {
 }
 
 const moveParagraph = (e: MoveParagraphEvent) => {
-  mutateWithLoadingState(
+  state.mutateWithLoadingState(
     adapter.moveParagraph(e),
     'Der Abschnitt konnte nicht verschoben werden.',
   )
@@ -271,7 +267,7 @@ function onAdd(e: Sortable.SortableEvent) {
     if (e.newIndex !== undefined) {
       const definition = getDefinition(item.paragraphType)
       if (definition?.disableEdit) {
-        return mutateWithLoadingState(
+        return state.mutateWithLoadingState(
           adapter.addNewParagraph({
             type: item.paragraphType,
             item,
@@ -289,7 +285,7 @@ function onAdd(e: Sortable.SortableEvent) {
       }
     }
   } else if (item.itemType === 'clipboard' && adapter.addClipboardParagraph) {
-    mutateWithLoadingState(
+    state.mutateWithLoadingState(
       adapter.addClipboardParagraph({
         afterUuid,
         item,
@@ -303,7 +299,7 @@ function onAdd(e: Sortable.SortableEvent) {
       afterUuid,
     })
   } else if (item.itemType === 'reusable') {
-    mutateWithLoadingState(
+    state.mutateWithLoadingState(
       adapter.addReusableParagraph({
         item,
         host: host.value,
@@ -314,7 +310,7 @@ function onAdd(e: Sortable.SortableEvent) {
     item.itemType === 'search_content' &&
     adapter.addContentSearchItemParagraph
   ) {
-    mutateWithLoadingState(
+    state.mutateWithLoadingState(
       adapter.addContentSearchItemParagraph({
         item: item.searchItem,
         host: host.value,
@@ -389,7 +385,7 @@ function onDeselect(e: SortableEvent) {
 onMounted(() => {
   if (container.value) {
     instance = new Sortable(container.value, {
-      disabled: editMode?.value !== 'editing',
+      disabled: state.editMode.value !== 'editing',
       forceFallback: true,
       swapThreshold: 0.5,
       multiDrag: true,

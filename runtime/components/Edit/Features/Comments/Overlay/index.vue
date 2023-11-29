@@ -20,7 +20,7 @@ import type { PbComment, AnimationFrameEvent } from '#pb/types'
 import { falsy } from '#pb/helpers'
 import Item from './Item/index.vue'
 
-const { eventBus } = useParagraphsBuilderStore()
+const { eventBus } = useBlokkli()
 
 const props = defineProps<{
   comments: PbComment[]

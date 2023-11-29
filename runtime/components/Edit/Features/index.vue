@@ -19,9 +19,9 @@
   <FeatureEntityTitle />
   <FeatureTranslations />
   <FeatureOwnership />
-  <FeatureMultiSelect v-if="canEdit && !isTranslation" />
+  <FeatureMultiSelect v-if="state.canEdit.value && !isTranslation" />
   <FeatureDraggingOverlay />
-  <FeatureAvailableParagraphs v-if="canEdit && !isTranslation" />
+  <FeatureAvailableParagraphs v-if="state.canEdit.value && !isTranslation" />
   <FeatureSearch />
 
   <!-- Form -->
@@ -73,9 +73,29 @@ import FeatureConversions from './Conversions/index.vue'
 import FeatureSettings from './Settings/index.vue'
 import FeatureSearch from './Search/index.vue'
 import FeatureDebug from './Debug/index.vue'
+import { PbAvailableFeatures } from '../../../types'
 
-const { availableFeatures, canEdit, editMode, runtimeConfig } =
-  useParagraphsBuilderStore()
+const { state, runtimeConfig, adapter } = useBlokkli()
 
-const isTranslation = computed(() => editMode.value === 'translating')
+const availableFeatures = ref<PbAvailableFeatures>({
+  comment: false,
+  conversion: false,
+  duplicate: false,
+  library: false,
+})
+
+async function loadAvailableFeatures() {
+  const data = await adapter.getAvailableFeatures()
+  availableFeatures.value.comment = !!data?.comment
+  availableFeatures.value.conversion = !!data?.conversion
+  availableFeatures.value.duplicate = !!data?.duplicate
+  availableFeatures.value.library = !!data?.library
+  if (runtimeConfig.disableLibrary) {
+    availableFeatures.value.library = false
+  }
+}
+
+await loadAvailableFeatures()
+
+const isTranslation = computed(() => state.editMode.value === 'translating')
 </script>

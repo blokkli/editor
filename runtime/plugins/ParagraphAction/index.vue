@@ -31,7 +31,7 @@ import { Icon } from '#pb/components'
 import { DraggableExistingParagraphItem } from '#pb/types'
 import { ShortcutIndicator } from '#pb/components'
 
-const { selection } = useParagraphsBuilderStore()
+const { selection } = useBlokkli()
 
 const paragraphUuid = computed(() => selection.blocks.value[0]?.uuid)
 

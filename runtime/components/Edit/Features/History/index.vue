@@ -94,14 +94,10 @@ import { PluginSidebar, PluginToolbarButton } from '#pb/plugins'
 import { RelativeTime } from '#pb/components'
 import { PbMutation } from '#pb/types'
 
-const {
-  mutations,
-  currentMutationIndex,
-  canEdit,
-  adapter,
-  mutateWithLoadingState,
-  eventBus,
-} = useParagraphsBuilderStore()
+const { adapter, eventBus, state } = useBlokkli()
+
+const { mutations, currentMutationIndex, canEdit, mutateWithLoadingState } =
+  state
 
 const showAmount = ref(50)
 

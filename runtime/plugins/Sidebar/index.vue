@@ -3,7 +3,7 @@
     <button
       @click="toggleSidebar(id)"
       :class="{ 'is-active': activeSidebar === id }"
-      :disabled="editOnly && !canEdit"
+      :disabled="editOnly && !state.canEdit.value"
     >
       <slot name="icon">
         <Icon v-if="icon" :name="icon" />
@@ -33,7 +33,7 @@ const props = defineProps<{
   icon?: PbIcon
 }>()
 
-const { storage, canEdit } = useParagraphsBuilderStore()
+const { storage, state } = useBlokkli()
 
 const activeSidebar = storage.use('sidebar:active', '')
 

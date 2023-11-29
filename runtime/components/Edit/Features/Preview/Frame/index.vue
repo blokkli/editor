@@ -18,7 +18,7 @@ import { Icon } from '#pb/components'
 
 const route = useRoute()
 
-const { eventBus, selection } = useParagraphsBuilderStore()
+const { eventBus, selection } = useBlokkli()
 
 watch(selection.uuids, (selectedUuids) => {
   postMessageToIframe('paragraphsBuilderSelect', selectedUuids)

@@ -39,8 +39,8 @@ import { falsy } from '#pb/helpers'
 import { PluginMenuButton, PluginParagraphAction } from '#pb/plugins'
 import { DraggableExistingParagraphItem } from '#pb/types'
 
-const { translationState, currentLanguage, eventBus, editMode } =
-  useParagraphsBuilderStore()
+const { eventBus, state } = useBlokkli()
+const { translation, editMode } = state
 
 type TranslationStateItem = {
   id: string
@@ -51,17 +51,15 @@ type TranslationStateItem = {
 }
 
 const items = computed<TranslationStateItem[]>(() => {
-  return (translationState.value.availableLanguages || [])
+  return (translation.value.availableLanguages || [])
     .map((language) => {
       if (language && language.id) {
         return {
           id: language.id,
           code: language.id.toUpperCase(),
           label: language.name,
-          checked: currentLanguage.value === language.id,
-          exists: (translationState.value.translations || []).includes(
-            language.id,
-          ),
+          checked: translation.value.currentLanguage === language.id,
+          exists: (translation.value.translations || []).includes(language.id),
         }
       }
       return null
@@ -71,7 +69,7 @@ const items = computed<TranslationStateItem[]>(() => {
 
 function onClick(item: TranslationStateItem, event: Event) {
   if (item.exists) {
-    return (currentLanguage.value = item.id)
+    return (translation.value.currentLanguage = item.id)
   }
 
   event.preventDefault()

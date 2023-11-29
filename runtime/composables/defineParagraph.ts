@@ -145,8 +145,7 @@ export function defineParagraph<T extends TypedParagraphDefinitionInput>(
   if (editContext && uuid) {
     const options = computed(() => {
       const overrideOptions =
-        editContext.mutatedParagraphOptions.value[uuid]
-          ?.paragraph_builder_data || {}
+        editContext.mutatedOptions.value[uuid]?.paragraph_builder_data || {}
       return {
         ...defaultOptions,
         ...(paragraphItem?.value.paragraphsBuilderOptions || {}),

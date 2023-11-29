@@ -56,7 +56,7 @@
 <script lang="ts" setup>
 import { Icon } from '#pb/components'
 
-const { eventBus } = useParagraphsBuilderStore()
+const { eventBus } = useBlokkli()
 
 const emit = defineEmits(['loaded'])
 

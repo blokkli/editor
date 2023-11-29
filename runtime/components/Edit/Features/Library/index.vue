@@ -31,8 +31,7 @@ import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
 
 const showReusableDialog = ref(false)
 
-const { selection, mutateWithLoadingState, adapter, types } =
-  useParagraphsBuilderStore()
+const { selection, state, adapter, types } = useBlokkli()
 
 const selectedBlock = computed(() => {
   if (selection.blocks.value.length !== 1) {
@@ -65,7 +64,7 @@ function onMakeReusable(label: string) {
   if (!selectedBlock?.value?.uuid) {
     return
   }
-  mutateWithLoadingState(
+  state.mutateWithLoadingState(
     adapter.makeParagraphReusable({
       label,
       uuid: selectedBlock.value.uuid,

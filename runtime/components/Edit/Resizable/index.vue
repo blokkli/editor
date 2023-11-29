@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-const { storage } = useParagraphsBuilderStore()
+const { storage } = useBlokkli()
 
 const persistedWidth = storage.use('resizable:width', 600)
 const width = ref(persistedWidth.value)

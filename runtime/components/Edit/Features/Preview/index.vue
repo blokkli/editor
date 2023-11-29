@@ -55,7 +55,7 @@ const qrCodeVisible = ref(false)
 
 const route = useRoute()
 
-const { adapter, storage } = useParagraphsBuilderStore()
+const { adapter, storage } = useBlokkli()
 
 const previewVisible = storage.use('preview:visible', false)
 
