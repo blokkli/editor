@@ -16,10 +16,10 @@ import Features from './Edit/Features/index.vue'
 import animationFrameProvider from './../helpers/animationFrame'
 import keyboardProvider from './../helpers/keyboardProvider'
 import selectionProvider from './../helpers/selectionProvider'
-import settingsProvider from './../helpers/settingsProvider'
 import editStateProvider from './../helpers/stateProvider'
 import paragraphTypeProvider from './../helpers/paragraphTypeProvider'
 import domProvider from './../helpers/domProvider'
+import storageProvider from './../helpers/storageProvider'
 
 import { eventBus } from './../eventBus'
 import '#nuxt-paragraphs-builder/styles'
@@ -71,7 +71,6 @@ const availableFeatures = ref<PbAvailableFeatures>({
 const { isPressingControl, isPressingSpace } = keyboardProvider()
 const { selectedParagraphs, activeFieldKey, isDragging } =
   selectionProvider(isPressingSpace)
-const { settings } = settingsProvider()
 const { paragraphTypesWithNested, allowedTypesInList, allTypes, allowedTypes } =
   await paragraphTypeProvider(
     adapter,
@@ -81,6 +80,7 @@ const { paragraphTypesWithNested, allowedTypesInList, allTypes, allowedTypes } =
   )
 
 const dom = domProvider()
+const storage = storageProvider()
 
 animationFrameProvider()
 
@@ -174,8 +174,8 @@ provide<PbStore>('paragraphsBuilderStore', {
   currentUserIsOwner: readonly(currentUserIsOwner),
   mutateWithLoadingState,
   isDragging: readonly(isDragging),
-  settings,
   refreshKey: readonly(refreshKey),
   dom,
+  storage,
 })
 </script>

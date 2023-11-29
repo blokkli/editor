@@ -33,8 +33,10 @@ const {
   adapter,
   mutateWithLoadingState,
   mutations,
-  settings,
+  storage,
 } = useParagraphsBuilderStore()
+
+const shouldOpen = storage.use('showImport', true)
 
 const hasNoParagraphs = computed(
   () => !mutatedFields.value.find((v) => v.field.list?.length),
@@ -57,11 +59,7 @@ function onSubmit(sourceUuid: string, sourceFields: string[]) {
 
 onMounted(() => {
   // Show the import dialog when there are no paragraphs yet and no mutations.
-  if (
-    hasNoParagraphs.value &&
-    !mutations.value.length &&
-    settings.value.showImport
-  ) {
+  if (hasNoParagraphs.value && !mutations.value.length && shouldOpen.value) {
     showModal.value = true
   }
 })

@@ -44,10 +44,8 @@ const startMoveOffset: Coord = {
 // The target state for the current animation.
 const animationTarget = ref<(Coord & { scale: number }) | null>(null)
 
-const { isPressingSpace, eventBus, dom, entityUuid } =
+const { isPressingSpace, eventBus, dom, entityUuid, storage } =
   useParagraphsBuilderStore()
-
-const storageKey = computed(() => '_pb_artboard_' + entityUuid)
 
 const limitOffset = (providedX: number, providedY: number): Coord => {
   if (nuxtRootEl && wrapperEl) {
@@ -225,13 +223,19 @@ function onKeyPressed(e: KeyPressedEvent) {
   }
 }
 
-const scrollPageUp = () => animateTo(offset.x, offset.y + window.innerHeight)
-const scrollPageDown = () => animateTo(offset.x, offset.y - window.innerHeight)
-const scrollToTop = () => animateTo(offset.x, 50)
-const scrollToEnd = () => {
+const getEndY = () => {
   const rect = nuxtRootEl!.getBoundingClientRect()
   const wrapperRect = wrapperEl!.getBoundingClientRect()
-  animateTo(offset.x, -wrapperRect.height + rect.height - 50)
+  return -wrapperRect.height + rect.height - 50
+}
+
+const scrollPageUp = () =>
+  animateTo(offset.x, Math.min(offset.y + window.innerHeight, 50))
+const scrollPageDown = () =>
+  animateTo(offset.x, Math.max(offset.y - window.innerHeight, getEndY()))
+const scrollToTop = () => animateTo(offset.x, 50)
+const scrollToEnd = () => {
+  animateTo(offset.x, getEndY())
 }
 
 function getCenterX(targetScale?: number): number {
@@ -293,29 +297,15 @@ const zoomLevel = computed(
   () => Math.round((animationTarget.value?.scale || scale.value) * 100) + '%',
 )
 
-/**
- * Restore the last canvas state if possible.
- */
-function setInitState() {
-  const stored = window.localStorage.getItem(storageKey.value)
-  if (stored) {
-    try {
-      const values = JSON.parse(stored)
-      if (
-        values &&
-        typeof values.scale === 'number' &&
-        typeof values.offset.x === 'number' &&
-        typeof values.offset.y === 'number'
-      ) {
-        updateOffset(values.offset.x, values.offset.y)
-        updateScale(values.scale)
-        return
-      }
-    } catch (_e) {}
-  }
-
-  updateOffset(getCenterX(), 50)
+type SavedState = {
+  offset: Coord
+  scale: number
 }
+
+const storageKey = computed(() => 'artboard:' + entityUuid)
+const savedState = storage.use<SavedState | null>(storageKey, null)
+
+const shouldPersist = storage.use('persistArtboard', true)
 
 let touchStartOffset = { x: 0, y: 0 }
 let lastTouchDistance: number = 0
@@ -397,14 +387,12 @@ function onParagraphScrollIntoView(e: ParagraphScrollIntoViewEvent) {
   }
 }
 
-const saveState = () =>
-  window.localStorage.setItem(
-    storageKey.value,
-    JSON.stringify({
-      scale: scale.value,
-      offset: offset,
-    }),
-  )
+const saveState = () => {
+  if (!shouldPersist.value) {
+    return
+  }
+  savedState.value = { offset, scale: scale.value }
+}
 
 const onBeforeUnload = () => {
   saveState()
@@ -424,11 +412,15 @@ onMounted(() => {
   eventBus.on('paragraph:scrollIntoView', onParagraphScrollIntoView)
   eventBus.on('keyPressed', onKeyPressed)
   eventBus.on('animationFrame:before', onAnimationFrame)
-  setInitState()
-  updateStyles()
   document.documentElement.classList.add('pb-is-artboard')
-
   window.addEventListener('beforeunload', onBeforeUnload)
+
+  if (savedState.value && shouldPersist.value) {
+    offset.x = savedState.value.offset.x
+    offset.y = savedState.value.offset.y
+    updateScale(savedState.value.scale)
+  }
+  updateStyles()
 })
 
 onBeforeUnmount(() => {

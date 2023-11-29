@@ -105,7 +105,7 @@
       }
     }
     .pb-search-item-context {
-      @apply text-xs mt-3;
+      @apply text-sm mt-3;
     }
     &:after {
       content: '';

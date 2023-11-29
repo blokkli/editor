@@ -25,6 +25,8 @@
 <script setup lang="ts">
 import { ShortcutIndicator } from '#pb/components'
 
+const { storage } = useParagraphsBuilderStore()
+
 const props = defineProps<{
   id: string
   titleOn: string
@@ -33,12 +35,11 @@ const props = defineProps<{
   keyCode?: string
 }>()
 
-const storageKey = computed(() => '_pb_view_option_' + props.id)
+const storageKey = 'view_option_' + props.id
 
-const isActive = ref(localStorage.getItem(storageKey.value) === 'true')
+const isActive = storage.use(storageKey, false)
 
 const onClick = () => {
   isActive.value = !isActive.value
-  localStorage.setItem(storageKey.value, isActive.value ? 'true' : 'false')
 }
 </script>

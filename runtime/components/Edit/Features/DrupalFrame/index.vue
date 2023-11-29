@@ -37,7 +37,7 @@
 <script lang="ts" setup>
 import { Resizable } from '#pb/components'
 import { Icon, ParagraphIcon } from '#pb/components'
-import { definitions } from '#nuxt-paragraphs-builder/definitions'
+import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
 import { AddNewParagraphEvent, EditParagraphEvent } from '#pb/types'
 
 const {
@@ -152,7 +152,7 @@ function onEditParagraph(e: EditParagraphEvent) {
   if (!canEdit.value) {
     return
   }
-  const definition = definitions.find((v) => v.bundle === e.bundle)
+  const definition = getDefinition(e.bundle)
   if (definition?.disableEdit) {
     return
   }
@@ -201,14 +201,14 @@ async function addNewParagraph(e: AddNewParagraphEvent) {
   if (!canEdit.value) {
     return
   }
-  const definition = definitions.find((v) => v.bundle === e.item.paragraphType)
+  const definition = getDefinition(e.item.paragraphType)
   if (definition?.disableEdit) {
     return
   }
 
   bundle.value = e.type
   entityTypeInForm.value = 'paragraph'
-  editLangcode.value = currentLanguage.value
+  editLangcode.value = currentLanguage.value || ''
   setModalUrl(
     '/' +
       [

@@ -13,19 +13,13 @@
 </template>
 
 <script lang="ts" setup>
-const LOCALSTORAGE_KEY = '_pb_resizeable_frame_width'
-const width = ref(600)
+const { storage } = useParagraphsBuilderStore()
+
+const persistedWidth = storage.use('resizable:width', 600)
+const width = ref(persistedWidth.value)
 const startX = ref(0)
 const startWidth = ref(0)
 const isResizing = ref(false)
-
-const fromStorage = window.localStorage.getItem(LOCALSTORAGE_KEY)
-if (fromStorage) {
-  const value = parseInt(fromStorage)
-  if (value) {
-    width.value = value
-  }
-}
 
 function onMouseMove(e: MouseEvent) {
   e.stopPropagation()
@@ -42,6 +36,7 @@ function onMouseUp(e: MouseEvent) {
   isResizing.value = false
   window.removeEventListener('mousemove', onMouseMove)
   window.removeEventListener('mouseup', onMouseUp)
+  persistedWidth.value = width.value
 }
 
 function onMouseDown(e: MouseEvent) {
@@ -58,6 +53,5 @@ function onMouseDown(e: MouseEvent) {
 onBeforeUnmount(() => {
   window.removeEventListener('mousemove', onMouseMove)
   window.removeEventListener('mouseup', onMouseUp)
-  window.localStorage.setItem(LOCALSTORAGE_KEY, width.value.toString())
 })
 </script>

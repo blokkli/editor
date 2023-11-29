@@ -52,17 +52,17 @@ const {
   selectedParagraphs,
   paragraphTypesWithNested,
   activeFieldKey,
+  storage,
 } = useParagraphsBuilderStore()
-
-const STORAGE_KEY = '_pb_paragraphs_sorting'
 
 const typeList = ref<HTMLDivElement | null>(null)
 const wrapper = ref<HTMLDivElement | null>(null)
 const isDragging = ref(false)
 const isActive = ref(false)
 const updateKey = ref(0)
-const sorts = ref<string[]>([])
 const scrollY = ref(0)
+
+const sorts = storage.use<string[]>('sorts', [])
 
 let instance: Sortable | null = null
 let mouseTimeout: any = null
@@ -199,7 +199,6 @@ function storeSort() {
       .filter(falsy)
       .filter(onlyUnique)
     sorts.value = sorted
-    localStorage.setItem(STORAGE_KEY, sorted.join(','))
   }
 }
 
@@ -219,7 +218,6 @@ const sortedList = computed(() => {
 
 onMounted(() => {
   document.documentElement.classList.add('pb-has-sidebar-left')
-  sorts.value = (localStorage.getItem(STORAGE_KEY) || '').split(',') || []
   if (typeList.value) {
     instance = new Sortable(typeList.value, {
       sort: true,

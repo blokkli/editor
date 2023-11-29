@@ -9,15 +9,19 @@
       <div class="pb-form-section">
         <h3 class="pb-form-label">Darstellung</h3>
         <ul class="pb-settings-checkboxes">
-          <li v-for="checkbox in checkboxes" :key="checkbox.key">
+          <li>
             <label class="pb-checkbox-toggle">
-              <input
-                type="checkbox"
-                v-model="settings[checkbox.key]"
-                class="peer"
-              />
+              <input type="checkbox" v-model="showImport" class="peer" />
               <div></div>
-              <span>{{ checkbox.label }}</span>
+              <span>"Inhalte importieren" Dialog beim Start anzeigen</span>
+            </label>
+          </li>
+
+          <li>
+            <label class="pb-checkbox-toggle">
+              <input type="checkbox" v-model="persistArtboard" class="peer" />
+              <div></div>
+              <span>Position und Zoom speichern</span>
             </label>
           </li>
         </ul>
@@ -25,11 +29,11 @@
       <div class="pb-form-section">
         <h3 class="pb-form-label">Erweitert</h3>
         <div class="pb-settings-buttons">
-          <button class="pb-button">
+          <button class="pb-button" @click="revertSort">
             Sortierung der Paragraphen zurücksetzen
           </button>
 
-          <button class="pb-button is-danger">
+          <button class="pb-button is-danger" @click="revertAll">
             Alle Einstellungen zurücksetzen
           </button>
         </div>
@@ -41,18 +45,16 @@
 <script lang="ts" setup>
 import { DialogModal } from '#pb/components'
 
-const { settings } = useParagraphsBuilderStore()
+const { storage } = useParagraphsBuilderStore()
 
-const checkboxesMap = {
-  showImport: '"Inhalte importieren" Dialog beim Start anzeigen',
-  persistCanvas: 'Position und Zoom speichern',
-}
-
-const checkboxes = computed(() =>
-  Object.entries(checkboxesMap).map(([key, label]) => ({ key, label })),
-)
+const showImport = storage.use('showImport', true)
+const persistArtboard = storage.use('persistArtboard', true)
 
 const emit = defineEmits<{
   (e: 'cancel'): void
 }>()
+
+const revertSort = () => storage.clear('sorts')
+
+const revertAll = () => storage.clearAll()
 </script>
