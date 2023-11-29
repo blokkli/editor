@@ -14,6 +14,7 @@ import type {
   PbFieldItemParagraphFragment,
 } from '#pb/types'
 import { getParagraphComponent } from '#nuxt-paragraphs-builder/imports'
+import { INJECT_BLOCK_ITEM } from '../helpers/symbols'
 
 const props = withDefaults(
   defineProps<{
@@ -47,5 +48,5 @@ const paragraphItem = computed(() => {
   }
 })
 
-provide<InjectedParagraphItem>('paragraphItem', paragraphItem)
+provide<InjectedParagraphItem>(INJECT_BLOCK_ITEM, paragraphItem)
 </script>

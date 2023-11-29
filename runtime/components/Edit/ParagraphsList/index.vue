@@ -65,14 +65,13 @@ import {
   PbFieldEntity,
   PbFieldItemParagraphFragment,
 } from '#pb/types'
+import { INJECT_MUTATED_FIELDS } from '../../../helpers/symbols'
 
 const { adapter, state, eventBus, keyboard, types, dom } = useBlokkli()
 
 let instance: Sortable | null = null
 
-const mutatedFields = inject<Ref<PbMutatedField[]>>(
-  'paragraphsBuilderMutatedFields',
-)
+const mutatedFields = inject<Ref<PbMutatedField[]>>(INJECT_MUTATED_FIELDS)
 
 const container = ref<HTMLDivElement | null>(null)
 

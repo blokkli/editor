@@ -252,13 +252,6 @@ export default defineNuxtModule<ModuleOptions>({
       from: resolver.resolve('./runtime/composables/useBlokkli'),
       as: 'useBlokkli',
     })
-    addImports({
-      name: 'useParagraphsBuilderEditContext',
-      as: 'useParagraphsBuilderEditContext',
-      from: resolver.resolve(
-        './runtime/composables/useParagraphsBuilderEditContext',
-      ),
-    })
     const templateStyles = addTemplate({
       write: true,
       filename: 'paragraphs-builder/edit.css',

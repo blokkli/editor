@@ -29,6 +29,10 @@
 import { definitions } from '#nuxt-paragraphs-builder/definitions'
 import { PbLibraryItem } from '#pb/types'
 import { ParagraphIcon } from '#pb/components'
+import {
+  INJECT_IS_EDITING,
+  INJECT_IS_IN_REUSABLE,
+} from '~/modules/nuxt-paragraphs-builder/runtime/helpers/symbols'
 
 const props = defineProps<PbLibraryItem>()
 
@@ -77,8 +81,8 @@ function loop() {
   }
 }
 
-provide('paragraphsBuilderReusable', true)
-provide('isEditing', false)
+provide(INJECT_IS_IN_REUSABLE, true)
+provide(INJECT_IS_EDITING, false)
 
 onMounted(() => {
   loop()

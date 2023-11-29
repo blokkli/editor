@@ -6,6 +6,11 @@
 import { MutatedParagraphOptions, PbMutatedField } from '#pb/types'
 import '#nuxt-paragraphs-builder/styles'
 import getAdapter from '#blokkli/compiled-edit-adapter'
+import {
+  INJECT_EDIT_CONTEXT,
+  INJECT_IS_PREVIEW,
+  INJECT_MUTATED_FIELDS,
+} from '../helpers/symbols'
 
 const props = defineProps<{
   entityType: string
@@ -32,9 +37,9 @@ const updateState = () => {
 
 updateState()
 
-provide('paragraphsBuilderMutatedFields', mutatedFields)
-provide('paragraphsBuilderPreview', true)
-provide('paragraphsBuilderEditContext', {
+provide(INJECT_MUTATED_FIELDS, mutatedFields)
+provide(INJECT_IS_PREVIEW, true)
+provide(INJECT_EDIT_CONTEXT, {
   mutatedOptions,
 })
 

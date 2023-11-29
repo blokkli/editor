@@ -12,6 +12,7 @@ import type {
 import { removeDroppedElements, falsy } from '#pb/helpers'
 import { emitMessage, eventBus } from '../eventBus'
 import { PbAdapter } from '../adapter'
+import { INJECT_MUTATED_FIELDS } from './symbols'
 
 export type PbStateOwner = {
   name: string | undefined
@@ -210,7 +211,7 @@ export default async function (
   })
 
   provide(
-    'paragraphsBuilderMutatedFields',
+    INJECT_MUTATED_FIELDS,
     computed(() => mutatedFields.value),
   )
 

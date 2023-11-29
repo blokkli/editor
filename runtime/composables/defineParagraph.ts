@@ -1,9 +1,9 @@
 import { computed, inject } from 'vue'
 import type { ComputedRef } from 'vue'
-import { useParagraphsBuilderEditContext } from '#imports'
 import {
   ParagraphDefinitionOptionsInput,
   InjectedParagraphItem,
+  ParagraphsBuilderEditContext,
 } from '#pb/types'
 import type { globalOptions } from '#nuxt-paragraphs-builder/definitions'
 import { globalOptionsDefaults } from '#nuxt-paragraphs-builder/default-global-options'
@@ -14,6 +14,11 @@ import {
   ValidFieldListTypes,
   ValidParentParagraphBundle,
 } from '#nuxt-paragraphs-builder/generated-types'
+import {
+  INJECT_BLOCK_ITEM,
+  INJECT_EDIT_CONTEXT,
+  INJECT_FIELD_LIST_TYPE,
+} from '../helpers/symbols'
 
 type StringBoolean = '0' | '1'
 
@@ -104,12 +109,12 @@ export function defineParagraph<T extends TypedParagraphDefinitionInput>(
   }
 
   const fieldListType = inject<ComputedRef<ValidFieldListTypes>>(
-    'paragraphsBuilderFieldListType',
+    INJECT_FIELD_LIST_TYPE,
     computed(() => 'default'),
   )!
 
   // Inject the data from the ParagraphItem component.
-  const paragraphItem = inject<InjectedParagraphItem>('paragraphItem')
+  const paragraphItem = inject<InjectedParagraphItem>(INJECT_BLOCK_ITEM)
   const uuid = paragraphItem?.value.uuid || ''
   const index =
     paragraphItem?.value.index !== undefined
@@ -141,7 +146,10 @@ export function defineParagraph<T extends TypedParagraphDefinitionInput>(
   // the options. These options are only persisted once the user closes the
   // options popup. In order to have live preview of how these options affect
   // the paragraph, we use this state to override the paragraphs options.
-  const editContext = useParagraphsBuilderEditContext()
+  const editContext = inject<ParagraphsBuilderEditContext | null>(
+    INJECT_EDIT_CONTEXT,
+    null,
+  )
   if (editContext && uuid) {
     const options = computed(() => {
       const overrideOptions =

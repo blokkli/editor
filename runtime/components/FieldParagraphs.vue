@@ -44,6 +44,14 @@
 <script lang="ts" setup>
 import type { PbFieldItemFragment, PbMutatedField, PbField } from '#pb/types'
 import type { ValidFieldListTypes } from '#nuxt-paragraphs-builder/generated-types'
+import {
+  INJECT_FIELD_LIST_TYPE,
+  INJECT_IS_EDITING,
+  INJECT_IS_IN_REUSABLE,
+  INJECT_IS_NESTED,
+  INJECT_IS_PREVIEW,
+  INJECT_MUTATED_FIELDS,
+} from '../helpers/symbols'
 
 const ParagraphsList = defineAsyncComponent(() => {
   return import('./Edit/ParagraphsList/index.vue')
@@ -51,12 +59,12 @@ const ParagraphsList = defineAsyncComponent(() => {
 
 const attrs = useAttrs()
 
-const isEditing = inject('isEditing', false)
-const isInReusable = inject('paragraphsBuilderReusable', false)
-const isPreview = inject<boolean>('paragraphsBuilderPreview', false)
-const isNested = inject('paragraphsBuilderIsNested', false)
+const isEditing = inject(INJECT_IS_EDITING, false)
+const isInReusable = inject(INJECT_IS_IN_REUSABLE, false)
+const isPreview = inject<boolean>(INJECT_IS_PREVIEW, false)
+const isNested = inject(INJECT_IS_NESTED, false)
 const mutatedFields = inject<Ref<PbMutatedField[]> | null>(
-  'paragraphsBuilderMutatedFields',
+  INJECT_MUTATED_FIELDS,
   null,
 )
 
@@ -104,6 +112,6 @@ const filteredList = computed<Array<Required<PbFieldItemFragment<any>>>>(() => {
   >
 })
 
-provide('paragraphsBuilderIsNested', true)
-provide('paragraphsBuilderFieldListType', fieldListType)
+provide(INJECT_IS_NESTED, true)
+provide(INJECT_FIELD_LIST_TYPE, fieldListType)
 </script>

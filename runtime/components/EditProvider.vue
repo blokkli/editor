@@ -26,6 +26,11 @@ import { eventBus } from './../eventBus'
 import '#nuxt-paragraphs-builder/styles'
 import { PbStore } from '#pb/types'
 import getAdapter from '#blokkli/compiled-edit-adapter'
+import {
+  INJECT_APP,
+  INJECT_EDIT_CONTEXT,
+  INJECT_IS_EDITING,
+} from '../helpers/symbols'
 
 const props = defineProps<{
   entityType: string
@@ -76,12 +81,12 @@ onBeforeUnmount(() => {
   toolbarLoaded.value = false
 })
 
-provide('isEditing', true)
-provide('paragraphsBuilderEditContext', {
+provide(INJECT_IS_EDITING, true)
+provide(INJECT_EDIT_CONTEXT, {
   eventBus,
   mutatedOptions: state.mutatedOptions,
 })
-provide<PbStore>('blokkliApp', {
+provide<PbStore>(INJECT_APP, {
   adapter,
   entityType: props.entityType,
   entityUuid: props.entityUuid,
