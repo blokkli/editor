@@ -1,0 +1,11 @@
+.pb.pb-debug {
+  section {
+    @apply p-20 border-b;
+    > h2 {
+      @apply font-semibold uppercase text-sm mb-5;
+    }
+    > div {
+      @apply flex justify-between;
+    }
+  }
+}

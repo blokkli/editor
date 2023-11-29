@@ -6,6 +6,7 @@
   <FeatureClipboard />
   <FeatureStructure />
   <FeatureValidations />
+  <FeatureDebug />
 
   <!-- View Options -->
   <FeatureGrid v-if="runtimeConfig.gridMarkup" />
@@ -71,6 +72,7 @@ import FeatureAvailableParagraphs from './AvailableParagraphs/index.vue'
 import FeatureConversions from './Conversions/index.vue'
 import FeatureSettings from './Settings/index.vue'
 import FeatureSearch from './Search/index.vue'
+import FeatureDebug from './Debug/index.vue'
 
 const { availableFeatures, canEdit, editMode, runtimeConfig } =
   useParagraphsBuilderStore()

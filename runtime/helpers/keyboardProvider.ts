@@ -8,19 +8,25 @@ export type PbKeyboardProvider = {
 export default function (): PbKeyboardProvider {
   const isPressingControl = ref(false)
   const isPressingSpace = ref(false)
-  function onKeyUp(e: KeyboardEvent) {
+
+  const onKeyUp = (e: KeyboardEvent) => {
+    isPressingControl.value =
+      e.getModifierState('Control') || e.getModifierState('Meta')
+
     if (e.code === 'Space') {
       isPressingSpace.value = false
     }
     if (e.code === 'Control' || e.key === 'CapsLock') {
       isPressingControl.value = false
     }
-    isPressingControl.value =
-      e.getModifierState('Control') || e.getModifierState('Meta')
   }
-  function onKeyDown(e: KeyboardEvent) {
+
+  const onKeyDown = (e: KeyboardEvent) => {
     isPressingControl.value =
-      e.getModifierState('Control') || e.getModifierState('Meta')
+      e.getModifierState('Control') ||
+      e.getModifierState('Meta') ||
+      e.code === 'CapsLock'
+
     if (e.code === 'Space') {
       isPressingSpace.value = true
     }
@@ -28,7 +34,7 @@ export default function (): PbKeyboardProvider {
     eventBus.emit('keyPressed', {
       code: e.key,
       shift: e.shiftKey,
-      meta: e.ctrlKey || e.metaKey,
+      meta: e.ctrlKey || e.metaKey || isPressingControl.value,
       originalEvent: e,
     })
   }
