@@ -38,9 +38,9 @@ export default function (): PbStorageProvider {
     const storageKey = computed(
       () => PREFIX + (typeof key === 'string' ? key : key.value),
     )
-    if (!values.value[storageKey.value]) {
+    if (values.value[storageKey.value] === undefined) {
       const existing = getExisting(storageKey.value)
-      if (existing) {
+      if (existing !== undefined) {
         values.value[storageKey.value] = existing
       } else {
         values.value[storageKey.value] = defaultValue
@@ -49,7 +49,11 @@ export default function (): PbStorageProvider {
 
     return computed({
       get() {
-        return values.value[storageKey.value] || defaultValue
+        const v = values.value[storageKey.value]
+        if (v === undefined) {
+          return defaultValue
+        }
+        return v
       },
       set(newValue: T) {
         values.value[storageKey.value] = newValue

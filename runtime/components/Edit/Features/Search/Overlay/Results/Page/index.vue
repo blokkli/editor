@@ -31,7 +31,7 @@
 <script lang="ts" setup>
 import Highlight from './../../Highlight/index.vue'
 import { ParagraphIcon } from '#pb/components'
-import { buildDraggableItem, falsy, modulo } from '#pb/helpers'
+import { falsy, modulo } from '#pb/helpers'
 import { DraggableExistingParagraphItem } from '#pb/types'
 
 const listItems = ref<HTMLLIElement[]>([])
@@ -51,13 +51,12 @@ type SearchItem = {
   context?: string
 }
 
-const { entityUuid, allTypes, eventBus, refreshKey } =
-  useParagraphsBuilderStore()
+const { eventBus, refreshKey, types, dom } = useParagraphsBuilderStore()
 
 const buildForKey = ref('')
 
 const typeLabelMap = computed(() => {
-  return allTypes.value.reduce<Record<string, string>>((acc, v) => {
+  return types.allTypes.value.reduce<Record<string, string>>((acc, v) => {
     if (v.id && v.label) {
       acc[v.id] = v.label
     }
@@ -143,26 +142,17 @@ const buildIndex = () => {
   if (buildForKey.value === refreshKey.value) {
     return
   }
-  const paragraphs = document.body.querySelectorAll(
-    `[data-host-entity-uuid="${entityUuid}"] [data-uuid]`,
-  )
-
-  const newItems = [...paragraphs]
-    .map((el) => {
-      if (el instanceof HTMLElement) {
-        const item = buildDraggableItem(el)
-        if (item?.itemType === 'existing') {
-          const title =
-            typeLabelMap.value[item.paragraphType] || item.paragraphType
-          const searchItem = {
-            item,
-            title: item.editTitle || title,
-            context: title,
-            text: buildSearchText(el),
-          }
-          return searchItem
-        }
+  const newItems = dom
+    .getAllBlocks()
+    .map((item) => {
+      const title = typeLabelMap.value[item.paragraphType] || item.paragraphType
+      const searchItem = {
+        item,
+        title: item.editTitle || title,
+        context: title,
+        text: buildSearchText(item.element),
       }
+      return searchItem
     })
     .filter(falsy)
 

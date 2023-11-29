@@ -26,7 +26,7 @@
 import type { PbIcon } from '#pb/icons'
 import { Icon } from '#pb/components'
 
-defineProps<{
+const props = defineProps<{
   id: string
   title: string
   editOnly?: boolean
@@ -41,6 +41,8 @@ const toggleSidebar = (id: string) =>
   activeSidebar.value === id
     ? (activeSidebar.value = '')
     : (activeSidebar.value = id)
+
+const showSidebar = () => (activeSidebar.value = props.id)
 
 const sidebarContent = ref<HTMLDivElement | null>(null)
 const scrolledToEnd = ref(false)
@@ -63,4 +65,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.cancelAnimationFrame(raf)
 })
+
+defineExpose({ showSidebar })
 </script>

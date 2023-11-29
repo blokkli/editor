@@ -1,6 +1,11 @@
 import { eventBus } from '../eventBus'
 
-export default function () {
+export type PbKeyboardProvider = {
+  isPressingSpace: Readonly<Ref<boolean>>
+  isPressingControl: Readonly<Ref<boolean>>
+}
+
+export default function (): PbKeyboardProvider {
   const isPressingControl = ref(false)
   const isPressingSpace = ref(false)
   function onKeyUp(e: KeyboardEvent) {
@@ -43,5 +48,8 @@ export default function () {
       : document.body.classList.remove('pb-is-pressing-space'),
   )
 
-  return { isPressingSpace, isPressingControl }
+  return {
+    isPressingSpace: readonly(isPressingSpace),
+    isPressingControl: readonly(isPressingControl),
+  }
 }

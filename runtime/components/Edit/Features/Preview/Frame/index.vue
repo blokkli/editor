@@ -10,12 +10,19 @@
 </template>
 
 <script lang="ts" setup>
-import type { UpdateMutatedFieldsEvent } from '#pb/types'
+import type {
+  UpdateMutatedFieldsEvent,
+  UpdateParagraphOptionEvent,
+} from '#pb/types'
 import { Icon } from '#pb/components'
 
 const route = useRoute()
 
-const { eventBus } = useParagraphsBuilderStore()
+const { eventBus, selection } = useParagraphsBuilderStore()
+
+watch(selection.uuids, (selectedUuids) => {
+  postMessageToIframe('paragraphsBuilderSelect', selectedUuids)
+})
 
 const isLoading = ref(true)
 const iframe = ref<HTMLIFrameElement | null>(null)
@@ -27,31 +34,31 @@ const style = computed(() => {
   }
 })
 
-const src = computed(() => {
-  return route.fullPath.replace('pbEditing', 'pbPreview')
-})
+const src = computed(() => route.fullPath.replace('pbEditing', 'pbPreview'))
 
-function postMessageToIframe(name: string, data: any) {
+const postMessageToIframe = (name: string, data: any) =>
   iframe.value?.contentWindow?.postMessage({
     name,
-    data,
+    data: JSON.parse(JSON.stringify(data)),
   })
-}
 
-function onUpdateMutatedFields(e: UpdateMutatedFieldsEvent) {
+const onUpdateMutatedFields = (e: UpdateMutatedFieldsEvent) =>
   postMessageToIframe('paragraphsBuilderMutatedFields', e.fields)
-}
 
-function onSelectParagraph(uuid: string) {
+const onSelectParagraph = (uuid: string) =>
   postMessageToIframe('paragraphsBuilderFocus', uuid)
-}
+
+const onUpdateOption = (option: UpdateParagraphOptionEvent) =>
+  postMessageToIframe('paragraphsBuilderUpdateOption', option)
 
 onMounted(() => {
+  eventBus.on('option:update', onUpdateOption)
   eventBus.on('updateMutatedFields', onUpdateMutatedFields)
   eventBus.on('select', onSelectParagraph)
 })
 
 onBeforeUnmount(() => {
+  eventBus.off('option:update', onUpdateOption)
   eventBus.off('updateMutatedFields', onUpdateMutatedFields)
   eventBus.off('select', onSelectParagraph)
 })

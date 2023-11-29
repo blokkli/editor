@@ -17,8 +17,8 @@
         <span>{{ title }}</span>
         <span
           class="pb-paragraph-actions-title-count"
-          :class="{ 'pb-is-hidden': selectedParagraphs.length <= 1 }"
-          >{{ selectedParagraphs.length }}</span
+          :class="{ 'pb-is-hidden': selection.blocks.value.length <= 1 }"
+          >{{ selection.blocks.value.length }}</span
         >
         <Icon
           name="caret"
@@ -52,20 +52,13 @@
 <script lang="ts" setup>
 import { Icon } from '#pb/components'
 import { ParagraphIcon } from '#pb/components'
-import { icons } from '#nuxt-paragraphs-builder/definitions'
 import { falsy, onlyUnique } from '#pb/helpers'
 import type { PbType } from '#pb/types'
 
 const showConversions = ref(false)
 
-const {
-  adapter,
-  allTypes,
-  selectedParagraphs,
-  allowedTypesInList,
-  editMode,
-  mutateWithLoadingState,
-} = useParagraphsBuilderStore()
+const { adapter, types, selection, editMode, mutateWithLoadingState } =
+  useParagraphsBuilderStore()
 
 const { data: conversionsData } = await useLazyAsyncData(() =>
   adapter.getConversions(),
@@ -80,7 +73,7 @@ async function onConvert(targetBundle?: string) {
 
   await mutateWithLoadingState(
     adapter.convertParagraphs(
-      selectedParagraphs.value.map((v) => v.uuid),
+      selection.blocks.value.map((v) => v.uuid),
       targetBundle,
     ),
     'Der Abschnitt konnte nicht konvertiert werden.',
@@ -90,7 +83,7 @@ async function onConvert(targetBundle?: string) {
 const editingEnabled = computed(() => editMode.value === 'editing')
 
 const paragraphTypeIds = computed(() => {
-  return selectedParagraphs.value.map((v) => v.paragraphType).filter(onlyUnique)
+  return selection.blocks.value.map((v) => v.paragraphType).filter(onlyUnique)
 })
 
 const paragraphType = computed(() => {
@@ -98,7 +91,7 @@ const paragraphType = computed(() => {
     return
   }
   return paragraphTypeIds.value
-    ? allTypes.value.find((v) => v.id === paragraphTypeIds.value[0])
+    ? types.allTypes.value.find((v) => v.id === paragraphTypeIds.value[0])
     : undefined
 })
 
@@ -110,7 +103,7 @@ const title = computed(() => {
   return 'Paragraphen'
 })
 
-watch(selectedParagraphs, () => {
+watch(selection.blocks, () => {
   showConversions.value = false
 })
 
@@ -123,9 +116,9 @@ const possibleConversions = computed<PbType[]>(() => {
     .filter(
       (v) =>
         v.sourceBundle === sourceType &&
-        allowedTypesInList.value.includes(v.targetBundle),
+        types.allowedTypesInList.value.includes(v.targetBundle),
     )
-    .map((v) => allTypes.value.find((t) => t.id === v.targetBundle))
+    .map((v) => types.allTypes.value.find((t) => t.id === v.targetBundle))
     .filter(falsy)
 })
 </script>

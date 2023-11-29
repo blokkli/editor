@@ -3,13 +3,23 @@ import { findParagraphElement, buildDraggableItem, falsy } from '#pb/helpers'
 import { eventBus } from '../eventBus'
 import { Sortable } from '#pb/sortable'
 
-export default function (isPressingSpace: globalThis.Ref<boolean>) {
-  const selectedParagraphUuids = ref<string[]>([])
+export type PbSelectionProvider = {
+  uuids: Readonly<Ref<string[]>>
+  blocks: ComputedRef<DraggableExistingParagraphItem[]>
+  activeFieldKey: Readonly<Ref<string>>
+  isDragging: Readonly<Ref<boolean>>
+  setActiveFieldKey: (key: string) => void
+}
+
+export default function (
+  isPressingSpace: globalThis.Ref<boolean>,
+): PbSelectionProvider {
+  const selectedUuids = ref<string[]>([])
   const activeFieldKey = ref('')
   const isDragging = ref(false)
 
-  const selectedParagraphs = computed<DraggableExistingParagraphItem[]>(() =>
-    selectedParagraphUuids.value
+  const blocks = computed<DraggableExistingParagraphItem[]>(() =>
+    selectedUuids.value
       .map((uuid) => {
         const el = findParagraphElement(uuid)
         if (el) {
@@ -34,15 +44,15 @@ export default function (isPressingSpace: globalThis.Ref<boolean>) {
         }
       })
       .filter(falsy)
-    selectedParagraphUuids.value = paragraphs.map((v) => v.uuid)
+    selectedUuids.value = paragraphs.map((v) => v.uuid)
   }
 
   function onMultiSelectStart() {
-    selectedParagraphUuids.value = []
+    selectedUuids.value = []
   }
 
   function unselectParagraphs() {
-    selectedParagraphUuids.value = []
+    selectedUuids.value = []
     document.querySelectorAll('.sortable-selected').forEach((el) => {
       Sortable.utils.deselect(el as any)
     })
@@ -50,17 +60,17 @@ export default function (isPressingSpace: globalThis.Ref<boolean>) {
 
   function onSelectParagraph(uuid: string) {
     unselectParagraphs()
-    selectedParagraphUuids.value = [uuid]
+    selectedUuids.value = [uuid]
   }
 
   function onSelectParagraphAdditional(item: DraggableExistingParagraphItem) {
-    if (selectedParagraphUuids.value.includes(item.uuid)) {
-      selectedParagraphUuids.value = selectedParagraphUuids.value.filter(
+    if (selectedUuids.value.includes(item.uuid)) {
+      selectedUuids.value = selectedUuids.value.filter(
         (uuid) => uuid !== item.uuid,
       )
       return
     }
-    selectedParagraphUuids.value.push(item.uuid)
+    selectedUuids.value.push(item.uuid)
   }
 
   function onWindowMouseDown(e: MouseEvent) {
@@ -91,21 +101,17 @@ export default function (isPressingSpace: globalThis.Ref<boolean>) {
     unselectParagraphs()
   }
 
-  const setActiveFieldKey = (key: string) => (activeFieldKey.value = key)
-
   const onStateReloaded = () => {
     nextTick(() => {
-      selectedParagraphUuids.value = selectedParagraphUuids.value.filter(
-        (uuid) => {
-          // Check if the currently selected paragraph is still in the DOM.
-          const el = findParagraphElement(uuid)
-          if (el) {
-            return true
-          }
+      selectedUuids.value = selectedUuids.value.filter((uuid) => {
+        // Check if the currently selected paragraph is still in the DOM.
+        const el = findParagraphElement(uuid)
+        if (el) {
+          return true
+        }
 
-          return false
-        },
-      )
+        return false
+      })
     })
   }
 
@@ -141,10 +147,13 @@ export default function (isPressingSpace: globalThis.Ref<boolean>) {
     eventBus.off('draggingEnd', onDraggingEnd)
   })
 
+  const setActiveFieldKey = (key: string) => (activeFieldKey.value = key)
+
   return {
-    selectedParagraphUuids,
-    selectedParagraphs,
+    uuids: selectedUuids,
+    blocks,
     activeFieldKey,
     isDragging,
+    setActiveFieldKey,
   }
 }

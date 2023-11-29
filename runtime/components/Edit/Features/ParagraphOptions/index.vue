@@ -1,7 +1,7 @@
 <template>
   <Teleport to="#pb-paragraph-actions-options">
     <OptionsForm
-      v-if="types.length === 1 && !isDragging"
+      v-if="types.length === 1 && !selection.isDragging.value"
       :key="uuids.join('-')"
       :uuids="uuids"
       :paragraph-type="types[0]"
@@ -13,10 +13,11 @@
 import { onlyUnique } from '#pb/helpers'
 import OptionsForm from './Form/index.vue'
 
-const { selectedParagraphs, isDragging } = useParagraphsBuilderStore()
-const uuids = computed(() => selectedParagraphs.value.map((v) => v.uuid))
+const { selection } = useParagraphsBuilderStore()
+
+const uuids = computed(() => selection.blocks.value.map((v) => v.uuid))
 const types = computed(() =>
-  selectedParagraphs.value
+  selection.blocks.value
     .map((v) => v.reusableBundle || v.paragraphType)
     .filter(onlyUnique),
 )

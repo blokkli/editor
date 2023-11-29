@@ -1,14 +1,25 @@
-import { DraggableExistingParagraphItem } from '../types'
-import { PbAdapter } from '../types/adapter'
+import {
+  DraggableExistingParagraphItem,
+  PbAllowedBundle,
+  PbType,
+} from '../types'
 import { onlyUnique } from '#pb/helpers'
 import { eventBus } from '../eventBus'
+import { PbAdapter } from '../adapter'
+
+export type PbTypesProvider = {
+  paragraphTypesWithNested: ComputedRef<string[]>
+  allowedTypesInList: ComputedRef<string[]>
+  allTypes: ComputedRef<PbType[]>
+  allowedTypes: ComputedRef<PbAllowedBundle[]>
+}
 
 export default async function (
   adapter: PbAdapter<any>,
-  selectedParagraphs: ComputedRef<DraggableExistingParagraphItem[]>,
+  blocks: ComputedRef<DraggableExistingParagraphItem[]>,
   entityType: string,
   bundle: string,
-) {
+): Promise<PbTypesProvider> {
   const { data: allTypesData } = await useLazyAsyncData(() =>
     adapter.getAllParagraphTypes(),
   )
@@ -26,7 +37,7 @@ export default async function (
    * parent field to determine the allowed types.
    */
   const allowedTypesInList = computed(() => {
-    const hostFieldNames = selectedParagraphs.value
+    const hostFieldNames = blocks.value
       .map((v) => v.hostFieldName)
       .filter(onlyUnique)
     if (hostFieldNames.length === 1) {
@@ -43,11 +54,11 @@ export default async function (
     return []
   })
 
-  watch(selectedParagraphs, () => {
-    if (selectedParagraphs.value.length !== 1) {
+  watch(blocks, () => {
+    if (blocks.value.length !== 1) {
       return
     }
-    const item = selectedParagraphs.value[0]
+    const item = blocks.value[0]
     // Determine if the selected paragraph has nested paragraphs.
     const hasNested = paragraphTypesWithNested.value.includes(
       item.paragraphType,

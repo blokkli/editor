@@ -41,7 +41,7 @@ import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
 import { AddNewParagraphEvent, EditParagraphEvent } from '#pb/types'
 
 const {
-  allTypes,
+  types,
   eventBus,
   currentLanguage,
   runtimeConfig,
@@ -110,7 +110,8 @@ const titlePrefix = computed(() => {
   }
 
   return (
-    allTypes.value.find((v) => v.id === bundle.value)?.label || bundle.value
+    types.allTypes.value.find((v) => v.id === bundle.value)?.label ||
+    bundle.value
   )
 })
 
@@ -157,7 +158,7 @@ function onEditParagraph(e: EditParagraphEvent) {
     return
   }
   if (editMode.value === 'translating') {
-    const type = allTypes.value.find((v) => v.id === e.bundle)
+    const type = types.allTypes.value.find((v) => v.id === e.bundle)
     if (!type) {
       return
     }

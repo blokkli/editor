@@ -37,6 +37,8 @@ defineEmits<{
   (e: 'cancel'): void
 }>()
 
+const { dom } = useParagraphsBuilderStore()
+
 const props = defineProps<{
   uuid: string
   backgroundClass?: string
@@ -54,20 +56,26 @@ const lead =
 
 onMounted(() => {
   if (paragraph.value) {
-    const el = document.querySelector(`[data-uuid="${props.uuid}"]`)
-    if (el && el instanceof HTMLElement) {
-      width.value = el.getBoundingClientRect().width + 40
-      const markup = el.outerHTML
-      const clone = document.createElement('div')
-      clone.innerHTML = markup
-      const cloneEl = clone.firstElementChild
-      if (cloneEl instanceof HTMLElement) {
-        Object.keys(cloneEl.dataset).forEach((dataKey) => {
-          delete cloneEl.dataset[dataKey]
-        })
-      }
-      paragraph.value.appendChild(clone)
+    const item = dom.findBlock(props.uuid)
+    if (!item) {
+      return
     }
+
+    if (item.editTitle) {
+      label.value = item.editTitle.substring(0, 40)
+    }
+
+    width.value = item.element.getBoundingClientRect().width + 40
+    const markup = item.element.outerHTML
+    const clone = document.createElement('div')
+    clone.innerHTML = markup
+    const cloneEl = clone.firstElementChild
+    if (cloneEl instanceof HTMLElement) {
+      Object.keys(cloneEl.dataset).forEach((dataKey) => {
+        delete cloneEl.dataset[dataKey]
+      })
+    }
+    paragraph.value.appendChild(clone)
   }
 })
 </script>

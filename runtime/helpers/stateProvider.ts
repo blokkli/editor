@@ -186,6 +186,11 @@ export default function (adapter: PbAdapter<any>) {
     eventBus.off('reloadEntity', onReloadEntity)
   })
 
+  provide(
+    'paragraphsBuilderMutatedFields',
+    computed(() => mutatedFields.value),
+  )
+
   return {
     refreshKey,
     currentUserIsOwner,

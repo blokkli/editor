@@ -1,8 +1,9 @@
 <template>
-  <div :data-provider-uuid="uuid">
-    <template
-      v-if="uuid && entityType && bundle && (isPreviewing || isEditing)"
-    >
+  <div
+    :data-provider-uuid="uuid"
+    :data-blokkli-provider-active="isInEditor || undefined"
+  >
+    <template v-if="isInEditor">
       <PbPreviewProvider
         v-if="isPreviewing"
         :entity-type="entityType"
@@ -65,6 +66,14 @@ const props = withDefaults(
   {
     tag: 'div',
   },
+)
+
+const isInEditor = computed(
+  () =>
+    props.uuid &&
+    props.entityType &&
+    props.bundle &&
+    (isPreviewing.value || isEditing.value),
 )
 
 const isEditing = computed(() => {

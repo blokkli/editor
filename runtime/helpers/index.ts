@@ -15,8 +15,11 @@ export function falsy<T>(value: T): value is NonNullable<T> {
  * Maps a HTML element that is draggable to a draggable item data object.
  */
 export function buildDraggableItem(
-  element: HTMLElement,
+  element: Element,
 ): DraggableItem | undefined {
+  if (!(element instanceof HTMLElement)) {
+    return
+  }
   const dataset = element.dataset
   if (dataset.elementType === 'existing') {
     const uuid = dataset.uuid

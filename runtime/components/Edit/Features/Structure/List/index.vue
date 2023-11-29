@@ -11,7 +11,7 @@ import { falsy } from '#pb/helpers'
 import Field, { StructureTreeItem, StructureTreeField } from './Field/index.vue'
 import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
 
-const { allTypes, refreshKey, entityUuid } = useParagraphsBuilderStore()
+const { types, refreshKey, entityUuid } = useParagraphsBuilderStore()
 
 const tree = ref<StructureTreeField[]>([])
 
@@ -24,7 +24,7 @@ function mapItem(el: Element): StructureTreeItem | undefined {
     return {
       uuid: el.dataset.uuid || '',
       bundle,
-      type: allTypes.value.find((v) => v.id === bundle),
+      type: types.allTypes.value.find((v) => v.id === bundle),
       items: [...el.querySelectorAll('[data-uuid]')].map(mapItem).filter(falsy),
       title,
     }
@@ -53,7 +53,9 @@ function buildTree() {
     .filter(falsy)
 }
 
-buildTree()
-
 watch(refreshKey, () => buildTree())
+
+onMounted(() => {
+  buildTree()
+})
 </script>

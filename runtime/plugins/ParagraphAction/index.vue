@@ -21,7 +21,7 @@
     </button>
   </Teleport>
   <Teleport to="#pb-paragraph-actions-after">
-    <slot :paragraphUuid="paragraphUuid" :paragraphs="selectedParagraphs" />
+    <slot :paragraphUuid="paragraphUuid" :paragraphs="selection.blocks" />
   </Teleport>
 </template>
 
@@ -31,9 +31,9 @@ import { Icon } from '#pb/components'
 import { DraggableExistingParagraphItem } from '#pb/types'
 import { ShortcutIndicator } from '#pb/components'
 
-const { selectedParagraphs } = useParagraphsBuilderStore()
+const { selection } = useParagraphsBuilderStore()
 
-const paragraphUuid = computed(() => selectedParagraphs.value[0]?.uuid)
+const paragraphUuid = computed(() => selection.blocks.value[0]?.uuid)
 
 const props = defineProps<{
   /**
@@ -76,7 +76,7 @@ const props = defineProps<{
 
 const isDisabled = computed(
   () =>
-    props.disabled || (!props.multiple && selectedParagraphs.value.length > 1),
+    props.disabled || (!props.multiple && selection.blocks.value.length > 1),
 )
 
 const emit = defineEmits<{
@@ -88,6 +88,6 @@ const onClick = () => {
     return
   }
 
-  emit('click', selectedParagraphs.value)
+  emit('click', selection.blocks.value)
 }
 </script>

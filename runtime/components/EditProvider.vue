@@ -20,6 +20,7 @@ import editStateProvider from './../helpers/stateProvider'
 import paragraphTypeProvider from './../helpers/paragraphTypeProvider'
 import domProvider from './../helpers/domProvider'
 import storageProvider from './../helpers/storageProvider'
+import uiProvider from './../helpers/uiProvider'
 
 import { eventBus } from './../eventBus'
 import '#nuxt-paragraphs-builder/styles'
@@ -67,21 +68,20 @@ const availableFeatures = ref<PbAvailableFeatures>({
   library: false,
 })
 
-const { isPressingControl, isPressingSpace } = keyboardProvider()
-const { selectedParagraphs, activeFieldKey, isDragging } =
-  selectionProvider(isPressingSpace)
-const { paragraphTypesWithNested, allowedTypesInList, allTypes, allowedTypes } =
-  await paragraphTypeProvider(
-    adapter,
-    selectedParagraphs,
-    props.entityType,
-    props.bundle,
-  )
+const keyboard = keyboardProvider()
+const selection = selectionProvider(keyboard.isPressingSpace)
+const types = await paragraphTypeProvider(
+  adapter,
+  selection.blocks,
+  props.entityType,
+  props.bundle,
+)
 
 const dom = domProvider()
 const storage = storageProvider()
+const ui = uiProvider()
 
-animationFrameProvider()
+const animation = animationFrameProvider()
 
 const isLoading = ref(false)
 const isInitializing = ref(true)
@@ -104,8 +104,6 @@ async function loadAvailableFeatures() {
 }
 
 onMounted(async () => {
-  document.documentElement.classList.add('pb-html-root')
-  document.body.classList.add('pb-body')
   await loadAvailableFeatures()
   await loadState(currentLanguage.value)
 
@@ -115,19 +113,12 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
-  document.documentElement.classList.remove('pb-html-root')
-  document.body.classList.remove('pb-body')
   isInitializing.value = true
   toolbarLoaded.value = false
 })
 
-provide(
-  'paragraphsBuilderMutatedFields',
-  computed(() => mutatedFields.value),
-)
 provide('isEditing', true)
 provide('paragraphsBuilderEditMode', editMode)
-provide('paragraphsBuilderAllowedTypes', allowedTypes)
 provide('paragraphsBuilderEditContext', { eventBus, mutatedParagraphOptions })
 provide<PbStore>('paragraphsBuilderStore', {
   adapter,
@@ -139,18 +130,9 @@ provide<PbStore>('paragraphsBuilderStore', {
   availableFeatures: readonly(availableFeatures),
   currentMutationIndex: readonly(currentMutationIndex),
   mutations: readonly(mutations),
-  allTypes,
   violations: readonly(violations),
   eventBus,
-  selectedParagraphs,
-  allowedTypesInList,
-  allowedTypes,
-  paragraphTypesWithNested,
   runtimeConfig,
-  activeFieldKey: readonly(activeFieldKey),
-  setActiveFieldKey: (key: string) => (activeFieldKey.value = key),
-  isPressingControl: readonly(isPressingControl),
-  isPressingSpace: readonly(isPressingSpace),
   entity: readonly(entity),
   translationState: readonly(translationState),
   currentLanguage,
@@ -159,9 +141,13 @@ provide<PbStore>('paragraphsBuilderStore', {
   ownerName: readonly(ownerName),
   currentUserIsOwner: readonly(currentUserIsOwner),
   mutateWithLoadingState,
-  isDragging: readonly(isDragging),
   refreshKey: readonly(refreshKey),
   dom,
   storage,
+  types,
+  selection,
+  keyboard,
+  ui,
+  animation,
 })
 </script>

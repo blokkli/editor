@@ -59,7 +59,6 @@ import {
   DraggableHostData,
   DraggableItem,
   MoveParagraphEvent,
-  PbAllowedBundle,
   PbFieldConfig,
   PbFieldItemFragment,
   PbMutatedField,
@@ -68,7 +67,7 @@ import {
   PbEditMode,
 } from '#pb/types'
 
-const { adapter, mutateWithLoadingState, eventBus, isPressingControl } =
+const { adapter, mutateWithLoadingState, eventBus, keyboard, types, dom } =
   useParagraphsBuilderStore()
 
 let instance: Sortable | null = null
@@ -77,10 +76,6 @@ const editMode = inject<ComputedRef<PbEditMode>>('paragraphsBuilderEditMode')
 
 const mutatedFields = inject<Ref<PbMutatedField[]>>(
   'paragraphsBuilderMutatedFields',
-)
-
-const allAllowedTypes = inject<ComputedRef<PbAllowedBundle[]>>(
-  'paragraphsBuilderAllowedTypes',
 )
 
 const container = ref<HTMLDivElement | null>(null)
@@ -127,7 +122,7 @@ const cardinality = computed<number>(() => {
  */
 const allowedTypes = computed(() => {
   return (
-    allAllowedTypes?.value.find((v) => {
+    types.allowedTypes.value.find((v) => {
       return (
         v.entityType === props.entity.entityTypeId &&
         v.bundle === props.entity.entityBundle &&
@@ -155,17 +150,16 @@ const listToUse = computed<CombinedParagraphsFieldItem[]>(() => {
 })
 
 function getItemFromEvent(e: MouseEvent): DraggableItem | undefined {
-  if (e.target && e.target instanceof HTMLElement) {
-    const el = e.target.closest('[data-element-type="existing"]')
-    if (el && el instanceof HTMLElement) {
-      const item = buildDraggableItem(el)
-      if (item && item.itemType === 'existing') {
-        e.preventDefault()
-        e.stopPropagation()
-        return item
-      }
-    }
+  if (!e.target) {
+    return
   }
+  const item = dom.findClosestBlock(e.target)
+  if (!item) {
+    return
+  }
+  e.preventDefault()
+  e.stopPropagation()
+  return item
 }
 
 function onClick(e: MouseEvent) {
@@ -294,7 +288,7 @@ function onAdd(e: Sortable.SortableEvent) {
         })
       }
     }
-  } else if (item.itemType === 'clipboard') {
+  } else if (item.itemType === 'clipboard' && adapter.addClipboardParagraph) {
     mutateWithLoadingState(
       adapter.addClipboardParagraph({
         afterUuid,
@@ -316,7 +310,10 @@ function onAdd(e: Sortable.SortableEvent) {
         afterUuid,
       }),
     )
-  } else if (item.itemType === 'search_content') {
+  } else if (
+    item.itemType === 'search_content' &&
+    adapter.addContentSearchItemParagraph
+  ) {
     mutateWithLoadingState(
       adapter.addContentSearchItemParagraph({
         item: item.searchItem,
@@ -366,7 +363,7 @@ function onPut(_to: Sortable, _from: Sortable, dragEl: HTMLElement) {
 }
 
 function updateSelection(e: SortableEvent) {
-  if (isPressingControl.value) {
+  if (keyboard.isPressingControl.value) {
     const uuids = e.items.map((v) => v.dataset.uuid).filter(falsy)
     eventBus.emit('select:end', uuids)
   } else {

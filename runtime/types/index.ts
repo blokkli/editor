@@ -6,6 +6,11 @@ import type { PbDomProvider } from '../helpers/domProvider'
 import { eventBus } from './../eventBus'
 import type { PbAdapter } from '#blokkli/adapter'
 import { PbStorageProvider } from '../helpers/storageProvider'
+import { PbTypesProvider } from '../helpers/paragraphTypeProvider'
+import { PbSelectionProvider } from '../helpers/selectionProvider'
+import { PbKeyboardProvider } from '../helpers/keyboardProvider'
+import { PbUiProvider } from '../helpers/uiProvider'
+import { PbAnimationProvider } from '../helpers/animationFrame'
 
 interface PbMutationResponseLike<T> {
   data: {
@@ -578,13 +583,14 @@ export type ParagraphsBuilderEvents = {
 
   'search:selectContentItem': PbSearchContentItem
   addContentSearchItemParagraph: AddContentSearchItemParagraphEvent
+  'option:update': UpdateParagraphOptionEvent
 }
 
 export type ParagraphsBuilderEventBus = Emitter<ParagraphsBuilderEvents>
 
 export type ParagraphsBuilderEditContext = {
   eventBus: ParagraphsBuilderEventBus
-  mutatedParagraphOptions: MutatedParagraphOptions
+  mutatedParagraphOptions: Ref<MutatedParagraphOptions>
 }
 
 export interface PbStore {
@@ -612,15 +618,8 @@ export interface PbStore {
 
   mutations: globalThis.Ref<Readonly<PbMutation[]>>
 
-  allTypes: globalThis.ComputedRef<PbType[]>
   violations: globalThis.Ref<Readonly<PbViolation[]>>
   eventBus: typeof eventBus
-
-  selectedParagraphs: globalThis.ComputedRef<DraggableExistingParagraphItem[]>
-
-  allowedTypes: globalThis.ComputedRef<PbAllowedBundle[]>
-  allowedTypesInList: globalThis.ComputedRef<string[]>
-  paragraphTypesWithNested: globalThis.ComputedRef<string[]>
 
   runtimeConfig: {
     disableLibrary: boolean
@@ -628,11 +627,6 @@ export interface PbStore {
     langcodeWithoutPrefix: string
   }
 
-  activeFieldKey: globalThis.Ref<Readonly<string>>
-  setActiveFieldKey: (key: string) => void
-
-  isPressingControl: globalThis.Ref<Readonly<boolean>>
-  isPressingSpace: globalThis.Ref<Readonly<boolean>>
   previewGrantUrl: globalThis.Ref<Readonly<string>>
   entity: globalThis.Readonly<globalThis.Ref<globalThis.Readonly<PbEditEntity>>>
   translationState: Readonly<globalThis.Ref<Readonly<PbTranslationState>>>
@@ -651,14 +645,15 @@ export interface PbStore {
 
   conversions: globalThis.ComputedRef<PbConversion[]>
 
-  isDragging: globalThis.Ref<Readonly<boolean>>
-
-  settings: globalThis.Ref<Record<string, any>>
-
   refreshKey: globalThis.Ref<Readonly<string>>
 
   dom: PbDomProvider
   storage: PbStorageProvider
+  types: PbTypesProvider
+  selection: PbSelectionProvider
+  keyboard: PbKeyboardProvider
+  ui: PbUiProvider
+  animation: PbAnimationProvider
 }
 
 export default {}

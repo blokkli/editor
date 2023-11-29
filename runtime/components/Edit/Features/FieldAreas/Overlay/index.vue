@@ -4,7 +4,7 @@
       v-for="area in areas"
       class="pb-field-area"
       :style="area.style"
-      :class="{ 'pb-is-active': area.key === activeFieldKey }"
+      :class="{ 'pb-is-active': area.key === selection.activeFieldKey.value }"
       @click="eventBus.emit('setActiveFieldKey', area.key)"
     >
       <div>
@@ -17,7 +17,7 @@
 <script lang="ts" setup>
 import { AnimationFrameEvent } from '#pb/types'
 
-const { eventBus, activeFieldKey } = useParagraphsBuilderStore()
+const { eventBus, selection } = useParagraphsBuilderStore()
 
 export type FieldArea = {
   key: string
@@ -33,7 +33,9 @@ const areas = ref<FieldArea[]>([])
 function onAnimationFrame(e: AnimationFrameEvent) {
   areas.value = e.fieldAreas
     .filter((v) => {
-      return v.isVisible && (!v.isNested || v.key === activeFieldKey.value)
+      return (
+        v.isVisible && (!v.isNested || v.key === selection.activeFieldKey.value)
+      )
     })
     .map((v) => {
       return {

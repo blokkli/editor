@@ -19,6 +19,14 @@
 
           <li>
             <label class="pb-checkbox-toggle">
+              <input type="checkbox" v-model="useArtboard" class="peer" />
+              <div></div>
+              <span>Zeichenfläche verwenden</span>
+            </label>
+          </li>
+
+          <li>
+            <label class="pb-checkbox-toggle">
               <input type="checkbox" v-model="persistArtboard" class="peer" />
               <div></div>
               <span>Position und Zoom speichern</span>
@@ -48,6 +56,7 @@ import { DialogModal } from '#pb/components'
 const { storage } = useParagraphsBuilderStore()
 
 const showImport = storage.use('showImport', true)
+const useArtboard = storage.use('useArtboard', true)
 const persistArtboard = storage.use('persistArtboard', true)
 
 const emit = defineEmits<{

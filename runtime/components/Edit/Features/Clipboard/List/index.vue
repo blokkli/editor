@@ -99,10 +99,10 @@ const emit = defineEmits<{
   (e: 'remove', index: number): void
 }>()
 
-const { allTypes, eventBus } = useParagraphsBuilderStore()
+const { types, eventBus } = useParagraphsBuilderStore()
 
 function getLabel(bundle: string): string {
-  return allTypes.value.find((v) => v.id === bundle)?.label || bundle
+  return types.allTypes.value.find((v) => v.id === bundle)?.label || bundle
 }
 
 onMounted(() => {

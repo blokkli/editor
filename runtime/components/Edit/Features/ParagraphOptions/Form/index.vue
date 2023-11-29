@@ -55,10 +55,14 @@ import {
 } from '#pb/types'
 import { falsy } from '#pb/helpers'
 
-const KEY = 'paragraph_builder_data'
-
-const { mutatedOptions, canEdit, adapter, mutateWithLoadingState, editMode } =
-  useParagraphsBuilderStore()
+const {
+  mutatedOptions,
+  canEdit,
+  adapter,
+  mutateWithLoadingState,
+  editMode,
+  eventBus,
+} = useParagraphsBuilderStore()
 
 const props = defineProps<{
   uuids: string[]
@@ -161,6 +165,7 @@ function setOptionValue(key: string, value: string) {
       mutatedOptions.value[uuid].paragraph_builder_data = {}
     }
     mutatedOptions.value[uuid].paragraph_builder_data[key] = value
+    eventBus.emit('option:update', { uuid, key, value })
   })
 }
 

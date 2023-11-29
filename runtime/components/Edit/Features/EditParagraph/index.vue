@@ -14,17 +14,17 @@ import { DraggableExistingParagraphItem } from '#pb/types'
 import { PluginParagraphAction } from '#pb/plugins'
 import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
 
-const { editMode, eventBus, selectedParagraphs } = useParagraphsBuilderStore()
+const { editMode, eventBus, selection } = useParagraphsBuilderStore()
 
 const disabled = computed(() => {
   if (editMode.value !== 'editing') {
     return true
   }
-  if (selectedParagraphs.value.length > 1) {
+  if (selection.blocks.value.length > 1) {
     return true
   }
 
-  const type = selectedParagraphs.value[0]?.paragraphType
+  const type = selection.blocks.value[0]?.paragraphType
   return !type || getDefinition(type)?.disableEdit === true
 })
 

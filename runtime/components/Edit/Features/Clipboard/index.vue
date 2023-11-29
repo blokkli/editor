@@ -4,6 +4,7 @@
     title="Zwischenablage"
     edit-only
     icon="clipboard"
+    ref="plugin"
   >
     <div @mousedown.stop @mousemove.stop @dragstart.stop>
       <div class="pb pb-clipboard pb-control">
@@ -39,8 +40,9 @@ import {
   PbSearchContentItem,
 } from '#pb/types'
 
-const { showSidebar, eventBus, selectedParagraphs } =
-  useParagraphsBuilderStore()
+const { eventBus, selection } = useParagraphsBuilderStore()
+
+const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
 
 const ALLOWED_HTML_ATTRIBUTES = ['href']
 
@@ -116,9 +118,7 @@ function onDragOver(e: DragEvent) {
   e.preventDefault()
 }
 
-function showClipboardSidebar() {
-  showSidebar('clipboard')
-}
+const showClipboardSidebar = () => plugin?.value?.showSidebar()
 
 function onPaste(e: ClipboardEvent) {
   // Stop data actually being pasted into div
@@ -190,13 +190,13 @@ function copySelectedParagraphToClipboard(
 }
 
 function onKeyPressed(e: KeyPressedEvent) {
-  if (!selectedParagraphs.value.length) {
+  if (!selection.blocks.value.length) {
     return
   }
   if (e.code !== 'c' || !e.meta) {
     return
   }
-  copySelectedParagraphToClipboard(selectedParagraphs.value)
+  copySelectedParagraphToClipboard(selection.blocks.value)
 }
 
 function onSelectContentItem(item: PbSearchContentItem) {

@@ -13,8 +13,8 @@
   <Teleport to="body">
     <transition appear name="pb-slide-up" :duration="300">
       <ReusableDialog
-        v-if="showReusableDialog && selectedParagraph"
-        :uuid="selectedParagraph.uuid"
+        v-if="showReusableDialog && selectedBlock"
+        :uuid="selectedBlock.uuid"
         :background-class="definition?.editBackgroundClass"
         @confirm="onMakeReusable"
         @cancel="showReusableDialog = false"
@@ -31,32 +31,27 @@ import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
 
 const showReusableDialog = ref(false)
 
-const {
-  selectedParagraphs,
-  allTypes,
-  allowedTypesInList,
-  mutateWithLoadingState,
-  adapter,
-} = useParagraphsBuilderStore()
+const { selection, mutateWithLoadingState, adapter, types } =
+  useParagraphsBuilderStore()
 
-const selectedParagraph = computed(() => {
-  if (selectedParagraphs.value.length !== 1) {
+const selectedBlock = computed(() => {
+  if (selection.blocks.value.length !== 1) {
     return
   }
 
-  return selectedParagraphs.value[0]
+  return selection.blocks.value[0]
 })
 
 const definition = computed(() => {
-  return selectedParagraph?.value
-    ? getDefinition(selectedParagraph.value.paragraphType)
+  return selectedBlock?.value
+    ? getDefinition(selectedBlock.value.paragraphType)
     : null
 })
 
 const paragraphType = computed(() =>
-  selectedParagraph?.value
-    ? allTypes.value.find(
-        (v) => v.id === selectedParagraph.value?.paragraphType,
+  selectedBlock?.value
+    ? types.allTypes.value.find(
+        (v) => v.id === selectedBlock.value?.paragraphType,
       )
     : null,
 )
@@ -67,13 +62,13 @@ const isReusable = computed(() => {
 
 function onMakeReusable(label: string) {
   showReusableDialog.value = false
-  if (!selectedParagraph?.value?.uuid) {
+  if (!selectedBlock?.value?.uuid) {
     return
   }
   mutateWithLoadingState(
     adapter.makeParagraphReusable({
       label,
-      uuid: selectedParagraph.value.uuid,
+      uuid: selectedBlock.value.uuid,
     }),
     'Der Abschnitt konnte nicht wiederverwendbar gemacht werden.',
   )
@@ -83,7 +78,7 @@ const canMakeReusable = computed(() => {
   return (
     !isReusable.value &&
     paragraphType?.value?.allowReusable &&
-    allowedTypesInList.value.includes('from_library')
+    types.allowedTypesInList.value.includes('from_library')
   )
 })
 </script>

@@ -51,12 +51,13 @@ import PreviewFrame from './Frame/index.vue'
 import QrCode from './QrCode/index.vue'
 import { DialogModal } from '#pb/components'
 
-const previewVisible = ref(false)
 const qrCodeVisible = ref(false)
 
 const route = useRoute()
 
-const { adapter } = useParagraphsBuilderStore()
+const { adapter, storage } = useParagraphsBuilderStore()
+
+const previewVisible = storage.use('preview:visible', false)
 
 const { data: previewGrantUrl } = await useAsyncData(() =>
   adapter.getPreviewGrantUrl(),

@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { PbMutatedField } from '#pb/types'
+import { MutatedParagraphOptions, PbMutatedField } from '#pb/types'
 import '#nuxt-paragraphs-builder/styles'
 import getAdapter from '#blokkli/compiled-edit-adapter'
 
@@ -18,15 +18,26 @@ const router = useRouter()
 
 let timeout: any = null
 let lastChanged: number = 0
+const mutatedFields = ref<PbMutatedField[]>([])
+const mutatedParagraphOptions = ref<MutatedParagraphOptions>({})
 
 const { data, refresh } = await useAsyncData(() =>
-  adapter.loadState().then((v) => v?.mutatedState),
+  adapter.loadState().then((v) => adapter.mapState(v)),
 )
 
-const mutatedFields = ref<PbMutatedField[]>([])
+const updateState = () => {
+  mutatedParagraphOptions.value =
+    data.value?.mutatedState?.behaviorSettings || {}
+  mutatedFields.value = data.value?.mutatedState?.fields || []
+}
+
+updateState()
 
 provide('paragraphsBuilderMutatedFields', mutatedFields)
 provide('paragraphsBuilderPreview', true)
+provide('paragraphsBuilderEditContext', {
+  mutatedParagraphOptions,
+})
 
 function onMessage(e: MessageEvent) {
   if (e.data && typeof e.data === 'object') {
@@ -36,11 +47,24 @@ function onMessage(e: MessageEvent) {
       const uuid = e.data.data
       const el = document.querySelector(`[data-uuid="${uuid}"]`)
       if (el) {
-        el.scrollIntoView({
+        let position = el.getBoundingClientRect()
+        window.scrollTo({
+          left: position.left,
+          top: position.top + window.scrollY - 200,
           behavior: 'smooth',
-          block: 'nearest',
         })
       }
+    }
+    if (e.data.name === 'paragraphsBuilderUpdateOption') {
+      const { uuid, key, value } = e.data.data
+
+      if (!mutatedParagraphOptions.value[uuid]) {
+        mutatedParagraphOptions.value[uuid] = {}
+      }
+      if (!mutatedParagraphOptions.value[uuid].paragraph_builder_data) {
+        mutatedParagraphOptions.value[uuid].paragraph_builder_data = {}
+      }
+      mutatedParagraphOptions.value[uuid].paragraph_builder_data[key] = value
     }
   }
 }
@@ -56,7 +80,7 @@ async function checkChangedDate() {
     if (changed) {
       if (lastChanged !== 0 && lastChanged !== changed) {
         await refresh()
-        mutatedFields.value = data.value?.fields || []
+        updateState()
       }
       lastChanged = changed
       checkChangedDate()
@@ -64,13 +88,15 @@ async function checkChangedDate() {
   }, 1000)
 }
 
-function isInIframe(): boolean {
-  return window.parent !== window
+const onWheel = (e: WheelEvent) => {
+  if (e.ctrlKey) {
+    e.preventDefault()
+  }
 }
 
-onMounted(() => {
-  mutatedFields.value = data.value?.fields || []
+const isInIframe = () => window.parent !== window
 
+onMounted(() => {
   if (isInIframe()) {
     // We are a preview inside the iframe of the main editing app.
     // In this case updated state is passed in via postMessage from the main
@@ -79,6 +105,7 @@ onMounted(() => {
     document.body.classList.add('pb-body-preview')
     document.documentElement.classList.add('pb-html-preview')
     window.addEventListener('message', onMessage)
+    window.addEventListener('wheel', onWheel, { passive: false })
 
     // Prevent navigating away from the preview when clicking Nuxt links.
     router.push = () => Promise.resolve()
@@ -93,6 +120,7 @@ onBeforeUnmount(() => {
   clearTimeout(timeout)
   document.body.classList.remove('pb-body-preview')
   document.documentElement.classList.remove('pb-html-preview')
+  window.removeEventListener('wheel', onWheel)
   window.removeEventListener('message', onMessage)
 })
 </script>

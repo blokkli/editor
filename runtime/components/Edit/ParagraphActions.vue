@@ -1,7 +1,7 @@
 <template>
   <Teleport to="body">
     <div
-      v-show="selectedParagraphs.length && !isDragging"
+      v-show="selection.blocks.value.length && !selection.isDragging.value"
       class="pb pb-paragraph-actions pb-control"
       @click.stop
     >
@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts" setup>
-import { buildDraggableItem, falsy, modulo } from '#pb/helpers'
+import { falsy, modulo } from '#pb/helpers'
 import { AnimationFrameEvent, KeyPressedEvent } from '#pb/types'
 
 type Rectangle = {
@@ -44,7 +44,7 @@ type Rectangle = {
   height: number
 }
 
-const { selectedParagraphs, isDragging, eventBus } = useParagraphsBuilderStore()
+const { selection, eventBus, dom } = useParagraphsBuilderStore()
 
 const bounds = ref<Rectangle>({ width: 0, height: 0, left: 0, top: 0 })
 const selectedRects = ref<Rectangle[]>([])
@@ -98,10 +98,10 @@ function getBounds(rects: DOMRect[]): Rectangle | undefined {
 }
 
 function onAnimationFrame(e: AnimationFrameEvent) {
-  if (!selectedParagraphs.value.length) {
+  if (!selection.blocks.value.length) {
     return
   }
-  const rects = selectedParagraphs.value
+  const rects = selection.blocks.value
     .map((paragraph) => {
       return e.rects[paragraph.uuid]
     })
@@ -114,10 +114,10 @@ function onAnimationFrame(e: AnimationFrameEvent) {
     bounds.value.height = newBounds.height
   }
 
-  if (selectedParagraphs.value.length === 1) {
+  if (selection.blocks.value.length === 1) {
     selectedRects.value = []
   } else {
-    selectedRects.value = selectedParagraphs.value
+    selectedRects.value = selection.blocks.value
       .map((paragraph) => {
         const rect = e.rects[paragraph.uuid]
         if (rect) {
@@ -134,7 +134,7 @@ function onAnimationFrame(e: AnimationFrameEvent) {
 }
 
 function onKeyPressed(e: KeyPressedEvent) {
-  if (selectedParagraphs.value.length !== 1) {
+  if (selection.blocks.value.length !== 1) {
     return
   }
   if (e.code !== 'Tab') {
@@ -143,33 +143,21 @@ function onKeyPressed(e: KeyPressedEvent) {
 
   e.originalEvent.preventDefault()
 
-  const paragraphs = [
-    ...document.querySelectorAll('[data-uuid]'),
-  ] as HTMLElement[]
-  if (!paragraphs.length) {
+  const items = dom.getAllBlocks()
+  if (!items.length) {
     return
   }
 
-  const currentIndex = selectedParagraphs.value[0]
-    ? paragraphs.findIndex(
-        (v) => v.dataset.uuid === selectedParagraphs.value[0].uuid,
-      )
+  const currentIndex = selection.blocks.value[0]
+    ? items.findIndex((v) => v.uuid === selection.blocks.value[0].uuid)
     : -1
 
   const targetIndex = modulo(
     e.shift ? currentIndex - 1 : currentIndex + 1,
-    paragraphs.length,
+    items.length,
   )
-  const targetElement = paragraphs[targetIndex]
-  if (!targetElement) {
-    return
-  }
-  const targetItem = buildDraggableItem(targetElement)
+  const targetItem = items[targetIndex]
   if (!targetItem) {
-    return
-  }
-
-  if (targetItem.itemType !== 'existing') {
     return
   }
 

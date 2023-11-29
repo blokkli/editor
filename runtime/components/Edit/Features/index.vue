@@ -18,7 +18,7 @@
   <FeatureEntityTitle />
   <FeatureTranslations />
   <FeatureOwnership />
-  <FeatureMultiSelect v-if="!isPressingSpace && canEdit && !isTranslation" />
+  <FeatureMultiSelect v-if="canEdit && !isTranslation" />
   <FeatureDraggingOverlay />
   <FeatureAvailableParagraphs v-if="canEdit && !isTranslation" />
   <FeatureSearch />
@@ -72,7 +72,7 @@ import FeatureConversions from './Conversions/index.vue'
 import FeatureSettings from './Settings/index.vue'
 import FeatureSearch from './Search/index.vue'
 
-const { isPressingSpace, availableFeatures, canEdit, editMode, runtimeConfig } =
+const { availableFeatures, canEdit, editMode, runtimeConfig } =
   useParagraphsBuilderStore()
 
 const isTranslation = computed(() => editMode.value === 'translating')

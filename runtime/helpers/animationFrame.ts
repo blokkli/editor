@@ -1,17 +1,33 @@
 import { falsy } from '#pb/helpers'
 import { eventBus } from '../eventBus'
 
-export default function () {
+export type PbAnimationProvider = {
+  /**
+   * Request an animation loop. Should be called when UI state changes.
+   */
+  requestDraw: () => void
+}
+
+export default function (): PbAnimationProvider {
   const mouseX = ref(0)
   const mouseY = ref(0)
   let raf: any = null
+  const shouldDraw = ref(true)
 
   function onMouseMoveGlobal(e: MouseEvent) {
     mouseX.value = e.x
     mouseY.value = e.y
+    shouldDraw.value = true
   }
 
   const loop = () => {
+    // Make sure we don't loop when it's not needed.
+    if (!shouldDraw.value) {
+      raf = window.requestAnimationFrame(loop)
+      return
+    }
+    shouldDraw.value = false
+
     // Let the "Artboard" feature alter the position/scale of the root element
     // before triggering the main animation loop event.
     eventBus.emit('animationFrame:before')
@@ -76,6 +92,12 @@ export default function () {
 
   onMounted(() => {
     loop()
+    eventBus.on('select', requestDraw)
+    eventBus.on('select:start', requestDraw)
+    eventBus.on('select:end', requestDraw)
+    eventBus.on('selectAdditional', requestDraw)
+    document.addEventListener('scroll', requestDraw)
+    document.body.addEventListener('wheel', requestDraw, { passive: false })
     window.addEventListener('mousemove', onMouseMoveGlobal, {
       passive: false,
     })
@@ -84,5 +106,15 @@ export default function () {
   onBeforeUnmount(() => {
     window.cancelAnimationFrame(raf)
     window.removeEventListener('mousemove', onMouseMoveGlobal)
+    document.body.removeEventListener('wheel', requestDraw)
+    document.removeEventListener('scroll', requestDraw)
+    eventBus.off('select', requestDraw)
+    eventBus.off('select:start', requestDraw)
+    eventBus.off('select:end', requestDraw)
+    eventBus.off('selectAdditional', requestDraw)
   })
+
+  const requestDraw = () => (shouldDraw.value = true)
+
+  return { requestDraw }
 }

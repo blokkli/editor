@@ -45,14 +45,11 @@ import { DraggableExistingParagraphItem } from '#pb/types'
 const {
   eventBus,
   mutatedFields,
-  allowedTypes,
   entityType,
   entityBundle,
-  allTypes,
-  selectedParagraphs,
-  paragraphTypesWithNested,
-  activeFieldKey,
+  selection,
   storage,
+  types,
 } = useParagraphsBuilderStore()
 
 const typeList = ref<HTMLDivElement | null>(null)
@@ -68,9 +65,9 @@ let instance: Sortable | null = null
 let mouseTimeout: any = null
 
 const activeField = computed(() => {
-  if (activeFieldKey.value) {
+  if (selection.activeFieldKey.value) {
     const el = document.querySelector(
-      `[data-field-key="${activeFieldKey.value}"]`,
+      `[data-field-key="${selection.activeFieldKey.value}"]`,
     )
     if (el && el instanceof HTMLElement) {
       const label = el.dataset.fieldLabel
@@ -89,8 +86,8 @@ const getAllowedTypesForSelected = (
   p: DraggableExistingParagraphItem,
 ): string[] => {
   // If the selected paragraph allows nested paragraphs, return the allowed paragraphs for it.
-  if (paragraphTypesWithNested.value.includes(p.paragraphType)) {
-    return allowedTypes.value
+  if (types.paragraphTypesWithNested.value.includes(p.paragraphType)) {
+    return types.allowedTypes.value
       .filter(
         (v) => v.entityType === 'paragraph' && v.bundle === p.paragraphType,
       )
@@ -99,12 +96,12 @@ const getAllowedTypesForSelected = (
   }
   // If the selected paragraph is inside a nested paragraph, return the allowed paragraphs of the parent paragraph.
   if (p.hostType === 'paragraph') {
-    return allowedTypes.value
+    return types.allowedTypes.value
       .filter((v) => v.entityType === 'paragraph' && v.bundle === p.hostBundle)
       .flatMap((v) => v.allowedTypes)
       .filter(Boolean) as string[]
   } else {
-    return allowedTypes.value
+    return types.allowedTypes.value
       .filter(
         (v) =>
           v.entityType === entityType &&
@@ -117,14 +114,12 @@ const getAllowedTypesForSelected = (
 }
 
 const selectableParagraphTypes = computed(() => {
-  if (selectedParagraphs.value.length) {
-    return selectedParagraphs.value.flatMap((v) =>
-      getAllowedTypesForSelected(v),
-    )
+  if (selection.blocks.value.length) {
+    return selection.blocks.value.flatMap((v) => getAllowedTypesForSelected(v))
   }
   if (activeField.value && activeField.value.hostEntityType === entityType) {
     return (
-      allowedTypes.value.find((v) => {
+      types.allowedTypes.value.find((v) => {
         return (
           v.bundle === entityBundle && v.fieldName === activeField.value?.name
         )
@@ -138,7 +133,7 @@ const selectableParagraphTypes = computed(() => {
 const generallyAvailableParagraphTypes = computed(() => {
   const fieldNames = mutatedFields.value.map((v) => v.name)
   const typesOnEntity = (
-    allowedTypes.value.filter((v) => {
+    types.allowedTypes.value.filter((v) => {
       return (
         v.entityType === entityType &&
         v.bundle === entityBundle &&
@@ -150,7 +145,7 @@ const generallyAvailableParagraphTypes = computed(() => {
     .filter(Boolean)
 
   const typesOnParagraphs =
-    allowedTypes.value
+    types.allowedTypes.value
       .filter((v) => {
         return typesOnEntity.includes(v.bundle)
       })
@@ -159,7 +154,9 @@ const generallyAvailableParagraphTypes = computed(() => {
   const allAllowedTypes = [...typesOnEntity, ...typesOnParagraphs]
 
   return (
-    allTypes.value.filter((v) => v.id && allAllowedTypes.includes(v.id)) || []
+    types.allTypes.value.filter(
+      (v) => v.id && allAllowedTypes.includes(v.id),
+    ) || []
   )
 })
 

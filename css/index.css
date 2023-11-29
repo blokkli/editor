@@ -17,6 +17,7 @@
 @import './partials/settings.css';
 @import './partials/search.css';
 @import './partials/availableList.css';
+@import './partials/artboard.css';
 
 @font-face {
   font-family: 'PB Inter';
@@ -27,13 +28,6 @@
   src: url('/Inter.var.woff2') format('woff2');
 }
 
-.pb-html-root.pb-is-artboard,
-.pb-html-root.pb-is-artboard .pb-body {
-  @apply overflow-hidden h-screen w-screen;
-  img {
-    @apply pointer-events-none;
-  }
-}
 .pb-html-root:not(.pb-is-artboard) {
   padding-top: 50px;
   padding-left: 70px;
@@ -178,41 +172,6 @@
   }
 }
 
-.pb-html-root.pb-is-artboard {
-  @apply overflow-hidden;
-  --pb-root-offset-left: 0px;
-  --pb-root-offset-top: 50px;
-  .pb-body {
-    @apply overflow-hidden;
-  }
-  #nuxt-root {
-    @apply bg-slate-200 overflow-hidden absolute bottom-0 right-0;
-    left: var(--pb-root-offset-left);
-    top: var(--pb-root-offset-top);
-    &.pb-has-preview-open {
-      @apply left-[445px];
-    }
-  }
-  .pb-main-canvas {
-    @apply shadow-xl absolute top-0 left-0 w-full xl:w-[80vw] min-w-[1280px] max-w-[1920px] pointer-events-none;
-    user-select: none;
-    /* will-change: transform, scale, tranlate; */
-    image-rendering: crisp-edges;
-    backface-visibility: hidden;
-    transform-origin: 0 0;
-  }
-  &.pb-has-sidebar-left {
-    --pb-root-offset-left: 70px;
-  }
-  .pb-body.pb-is-pressing-space {
-    @apply cursor-move;
-    .pb-main-canvas,
-    .pb-paragraphs-container {
-      @apply pointer-events-none;
-    }
-  }
-}
-
 .pb-main-canvas .pb-list-item.sortable-ghost.pb-clone {
   @apply flex items-center justify-center bg-blue-400 rounded text-white font-sans text-xl;
   .pb-list-item-icon {
@@ -330,7 +289,8 @@
   @apply w-25 h-25 border rounded bg-slate-100 flex items-center justify-center text-slate-500 mr-[7px] relative z-20 border-slate-300;
 }
 
-.pb {
+.pb,
+.pb-html-preview {
   * {
     scrollbar-width: thin;
   }

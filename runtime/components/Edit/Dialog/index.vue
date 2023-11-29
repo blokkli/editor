@@ -4,8 +4,11 @@
     <div class="pb-dialog-inner" :style="{ width: width + 'px' }">
       <div class="pb pb-dialog-header">
         <h3>{{ title }}</h3>
-        <div v-if="lead">{{ lead }}</div>
+        <button @click="$emit('cancel')">
+          <Icon name="close" />
+        </button>
       </div>
+      <div class="pb pb-dialog-lead" v-if="lead">{{ lead }}</div>
       <div class="pb-dialog-content">
         <slot></slot>
       </div>
@@ -28,9 +31,11 @@
 </template>
 
 <script lang="ts" setup>
-import { KeyPressedEvent } from '../../../types'
+import type { KeyPressedEvent } from '#pb/types'
+import { Icon } from '#pb/components'
 
 const emit = defineEmits(['submit', 'cancel'])
+
 withDefaults(
   defineProps<{
     title: string

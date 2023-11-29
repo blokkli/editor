@@ -10,13 +10,18 @@
   }
 
   .pb-dialog-header {
-    @apply mb-30;
+    @apply mb-30 flex justify-between items-center;
     h3 {
       @apply text-3xl font-semibold font-sans;
     }
-    > div {
-      @apply text-lg font-sans mt-10;
+    button {
+      svg {
+        @apply fill-slate-700 w-30 h-30 hover:fill-blue-700;
+      }
     }
+  }
+  .pb-dialog-lead {
+    @apply text-lg font-sans mt-10;
   }
   .pb-dialog-footer {
     @apply flex gap-10 mt-30;
