@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <div class="pb-sidebar" id="pb-sidebar-content" v-show="activeSidebar" />
+    <div class="pb-sidebar" id="pb-sidebar-content" />
 
     <div class="pb pb-top pb-control">
       <div class="pb pb-toolbar">
@@ -56,7 +56,7 @@
 <script lang="ts" setup>
 import { Icon } from '#pb/components'
 
-const { eventBus, activeSidebar } = useParagraphsBuilderStore()
+const { eventBus } = useParagraphsBuilderStore()
 
 const emit = defineEmits(['loaded'])
 

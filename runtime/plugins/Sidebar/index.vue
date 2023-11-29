@@ -33,7 +33,14 @@ defineProps<{
   icon?: PbIcon
 }>()
 
-const { toggleSidebar, activeSidebar, canEdit } = useParagraphsBuilderStore()
+const { storage, canEdit } = useParagraphsBuilderStore()
+
+const activeSidebar = storage.use('sidebar:active', '')
+
+const toggleSidebar = (id: string) =>
+  activeSidebar.value === id
+    ? (activeSidebar.value = '')
+    : (activeSidebar.value = id)
 
 const sidebarContent = ref<HTMLDivElement | null>(null)
 const scrolledToEnd = ref(false)

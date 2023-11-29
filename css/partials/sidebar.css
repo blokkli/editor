@@ -4,6 +4,10 @@
     -1px -0px 2px rgb(20 45 82 / 2%),
     -3px -0px 4px rgb(20 45 82 / 3%),
     -5px -0px 8px rgb(20 45 82 / 4%);
+
+  &:empty {
+    @apply hidden;
+  }
 }
 
 .pb-sidebar-inner {

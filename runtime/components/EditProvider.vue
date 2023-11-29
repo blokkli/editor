@@ -25,7 +25,6 @@ import { eventBus } from './../eventBus'
 import '#nuxt-paragraphs-builder/styles'
 import { PbStore, PbAvailableFeatures } from '#pb/types'
 import getAdapter from '#blokkli/compiled-edit-adapter'
-import { removeDroppedElements } from '#pb/helpers'
 
 const props = defineProps<{
   entityType: string
@@ -84,7 +83,6 @@ const storage = storageProvider()
 
 animationFrameProvider()
 
-const visibleSidebar = ref('')
 const isLoading = ref(false)
 const isInitializing = ref(true)
 
@@ -93,15 +91,6 @@ useHead({
     class: [isLoading.value ? 'pb-is-loading' : ''],
   },
 })
-
-function toggleSidebar(key: string) {
-  removeDroppedElements()
-  if (visibleSidebar.value === key) {
-    visibleSidebar.value = ''
-  } else {
-    visibleSidebar.value = key
-  }
-}
 
 async function loadAvailableFeatures() {
   const data = await adapter.getAvailableFeatures()
@@ -150,9 +139,6 @@ provide<PbStore>('paragraphsBuilderStore', {
   availableFeatures: readonly(availableFeatures),
   currentMutationIndex: readonly(currentMutationIndex),
   mutations: readonly(mutations),
-  activeSidebar: readonly(visibleSidebar),
-  toggleSidebar,
-  showSidebar: (id: string) => (visibleSidebar.value = id),
   allTypes,
   violations: readonly(violations),
   eventBus,

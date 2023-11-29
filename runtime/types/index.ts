@@ -612,9 +612,6 @@ export interface PbStore {
 
   mutations: globalThis.Ref<Readonly<PbMutation[]>>
 
-  activeSidebar: globalThis.Ref<Readonly<string>>
-  toggleSidebar: (id: string) => void
-  showSidebar: (id: string) => void
   allTypes: globalThis.ComputedRef<PbType[]>
   violations: globalThis.Ref<Readonly<PbViolation[]>>
   eventBus: typeof eventBus
