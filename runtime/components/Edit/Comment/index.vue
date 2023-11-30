@@ -1,5 +1,5 @@
 <template>
-  <div class="pb pb-comment">
+  <div class="pb pb-comment" @click="$emit('clickComment')">
     <h3 class="pb-comment-title">{{ user?.label }}</h3>
     <RelativeTime :timestamp="timestamp" v-slot="{ formatted }">
       <div class="pb-comment-date">
@@ -21,6 +21,7 @@ import { RelativeTime } from '#pb/components'
 
 defineEmits<{
   (e: 'resolve'): void
+  (e: 'clickComment'): void
 }>()
 
 const props = defineProps<{

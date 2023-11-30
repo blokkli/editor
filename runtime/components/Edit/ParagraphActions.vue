@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts" setup>
-import { falsy, modulo } from '#pb/helpers'
+import { falsy, modulo, getBounds } from '#pb/helpers'
 import { AnimationFrameEvent, KeyPressedEvent } from '#pb/types'
 
 type Rectangle = {
@@ -70,32 +70,6 @@ const styleSize = computed(() => {
     height: height + 'px',
   }
 })
-
-function getBounds(rects: DOMRect[]): Rectangle | undefined {
-  if (!rects.length) {
-    return
-  }
-
-  const firstRect = rects[0]
-  let minX = firstRect.x
-  let minY = firstRect.y
-  let maxX = minX + firstRect.width
-  let maxY = minY + firstRect.height
-
-  for (const rect of rects.slice(1)) {
-    minX = Math.min(minX, rect.x)
-    minY = Math.min(minY, rect.y)
-    maxX = Math.max(maxX, rect.x + rect.width)
-    maxY = Math.max(maxY, rect.y + rect.height)
-  }
-
-  return {
-    left: minX,
-    top: minY,
-    width: maxX - minX,
-    height: maxY - minY,
-  }
-}
 
 function onAnimationFrame(e: AnimationFrameEvent) {
   if (!selection.blocks.value.length) {

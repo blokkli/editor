@@ -21,7 +21,11 @@
     </button>
   </Teleport>
   <Teleport to="#pb-paragraph-actions-after">
-    <slot :paragraphUuid="paragraphUuid" :paragraphs="selection.blocks" />
+    <slot
+      :paragraphUuid="paragraphUuid"
+      :paragraphs="selection.blocks.value"
+      :uuids="uuids"
+    />
   </Teleport>
 </template>
 
@@ -34,6 +38,7 @@ import { ShortcutIndicator } from '#pb/components'
 const { selection } = useBlokkli()
 
 const paragraphUuid = computed(() => selection.blocks.value[0]?.uuid)
+const uuids = computed(() => selection.uuids.value)
 
 const props = defineProps<{
   /**

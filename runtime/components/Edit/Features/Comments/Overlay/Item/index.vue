@@ -4,6 +4,7 @@
     :style="style"
     :class="{
       'pb-is-active': showComments,
+      'pb-is-left': isLeft,
     }"
   >
     <button
@@ -69,7 +70,7 @@ const emit = defineEmits<{
 const props = defineProps<{
   isReduced: boolean
   isLeft: boolean
-  target: string
+  uuids: string[]
   comments: PbComment[]
   style: any
   showComments: boolean

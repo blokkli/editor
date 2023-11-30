@@ -1,8 +1,12 @@
-.pb.pb-comments {
-}
 .pb.pb-comments-overlay {
   .pb-comments-overlay-item {
-    @apply absolute top-0 left-0;
+    @apply absolute top-0 left-0 w-0;
+    &.pb-is-left {
+      @apply border-l-2 border-l-slate-300 border-dashed;
+    }
+    &:not(.pb-is-left) {
+      @apply border-r-2 border-r-slate-300 border-dashed;
+    }
     &.pb-is-active {
       z-index: 50;
     }

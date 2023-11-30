@@ -3,7 +3,7 @@
     <div class="pb pb-comments pb-control">
       <ul>
         <li v-for="comment in comments">
-          <Comment v-bind="comment" />
+          <Comment v-bind="comment" @click-comment="onClickComment(comment)" />
         </li>
       </ul>
     </div>
@@ -15,15 +15,16 @@
     :active="showAddComment"
     :weight="100"
     icon="comment"
+    multiple
   >
-    <template v-if="showAddComment" v-slot="{ paragraphUuid }">
-      <CommentAddForm @add="onAddComment($event, paragraphUuid)" />
+    <template v-if="showAddComment" v-slot="{ uuids }">
+      <CommentAddForm @add="onAddComment($event, uuids)" />
     </template>
   </PluginParagraphAction>
 
   <CommentsOverlay
     :comments="comments"
-    @add-comment="onAddComment($event.body, $event.uuid)"
+    @add-comment="onAddComment($event.body, $event.uuids)"
     @resolve-comment="onResolveComment($event)"
   />
 </template>
@@ -37,17 +38,20 @@ import type { PbComment } from '#pb/types'
 
 const comments = ref<PbComment[]>([])
 const showAddComment = ref(false)
-const { adapter } = useBlokkli()
+const { adapter, eventBus } = useBlokkli()
 
 const loadComments = async () => (comments.value = await adapter.loadComments())
 
-const onAddComment = async (body: string, uuid: string) => {
-  comments.value = await adapter.addComment([uuid], body)
+const onAddComment = async (body: string, uuids: string[]) => {
+  comments.value = await adapter.addComment(uuids, body)
   showAddComment.value = false
 }
 
 const onResolveComment = async (uuid: string) =>
   (comments.value = await adapter.resolveComment(uuid))
+
+const onClickComment = (comment: PbComment) =>
+  eventBus.emit('select:end', comment.paragraphUuids || [])
 
 onMounted(loadComments)
 </script>
