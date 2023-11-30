@@ -34,14 +34,14 @@ const props = defineProps<{
 
 const emit = defineEmits(['click'])
 
-const { eventBus } = useBlokkli()
+const { ui } = useBlokkli()
 
 const to = computed(
   () => `#pb-toolbar-menu-${props.secondary ? 'secondary' : 'primary'}`,
 )
 
 function onClick() {
-  eventBus.emit('closeMenu')
+  ui.menu.close()
   emit('click')
 }
 </script>

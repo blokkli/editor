@@ -244,7 +244,7 @@ const moveParagraph = (e: MoveParagraphEvent) => {
 function onStart(e: SortableEvent) {
   const rect = e.item.getBoundingClientRect()
   const originalEvent = (e as any).originalEvent || ({} as PointerEvent)
-  eventBus.emit('draggingStart', {
+  eventBus.emit('dragging:start', {
     rect,
     offsetX: originalEvent.clientX,
     offsetY: originalEvent.clientY,
@@ -322,7 +322,7 @@ function onAdd(e: Sortable.SortableEvent) {
 
 function onEnd() {
   eventBus.emit('removeGhosts')
-  eventBus.emit('draggingEnd')
+  eventBus.emit('dragging:end')
 }
 
 function onPut(_to: Sortable, _from: Sortable, dragEl: HTMLElement) {

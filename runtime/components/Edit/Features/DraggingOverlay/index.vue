@@ -54,12 +54,12 @@ function onDraggingEnd() {
 }
 
 onMounted(() => {
-  eventBus.on('draggingStart', onDraggingStart)
-  eventBus.on('draggingEnd', onDraggingEnd)
+  eventBus.on('dragging:start', onDraggingStart)
+  eventBus.on('dragging:end', onDraggingEnd)
 })
 
 onUnmounted(() => {
-  eventBus.off('draggingStart', onDraggingStart)
-  eventBus.off('draggingEnd', onDraggingEnd)
+  eventBus.off('dragging:start', onDraggingStart)
+  eventBus.off('dragging:end', onDraggingEnd)
 })
 </script>

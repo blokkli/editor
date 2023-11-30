@@ -1,6 +1,11 @@
 export type PbUiProvider = {
   rootElement: () => HTMLElement
   artboardElement: () => HTMLElement
+  menu: {
+    isOpen: Readonly<Ref<boolean>>
+    close: () => void
+    open: () => void
+  }
 }
 
 export default function (): PbUiProvider {
@@ -16,7 +21,14 @@ export default function (): PbUiProvider {
     document.body.classList.remove('pb-body')
   })
 
+  const menuIsOpen = ref(false)
+
   return {
+    menu: {
+      isOpen: menuIsOpen,
+      close: () => (menuIsOpen.value = false),
+      open: () => (menuIsOpen.value = true),
+    },
     rootElement: () => {
       if (rootElement) {
         return rootElement

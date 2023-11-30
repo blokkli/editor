@@ -158,32 +158,15 @@ export default async function (
   }
 
   const route = useRoute()
-  const router = useRouter()
 
-  const currentLanguage = computed({
-    get() {
-      const v = route.query.language
-      if (v && typeof v === 'string') {
-        return v
-      }
-      return translation.value.sourceLanguage
-    },
-    set(language) {
-      const path = entity.value.translations.find(
-        (v) => v.langcode === language,
-      )?.url
-      if (path) {
-        router.replace({
-          path,
-          query: {
-            ...route.query,
-            language,
-          },
-        })
-      }
-      loadState(language)
-    },
+  const currentLanguage = computed(() => {
+    const v = route.query.language
+    if (v && typeof v === 'string') {
+      return v
+    }
+    return translation.value.sourceLanguage
   })
+
   const canEdit = computed(() => !!owner.value?.currentUserIsOwner)
   const isTranslation = computed(
     () => currentLanguage.value !== translation.value.sourceLanguage,

@@ -1,17 +1,15 @@
 import type { Ref } from 'vue'
 import type { Emitter } from 'mitt'
-
-import type { WritableComputedRef } from 'nuxt/dist/app/compat/capi'
 import type { PbDomProvider } from '../helpers/domProvider'
-import { eventBus } from './../eventBus'
 import type { PbAdapter } from '#blokkli/adapter'
-import { PbStorageProvider } from '../helpers/storageProvider'
-import { PbTypesProvider } from '../helpers/paragraphTypeProvider'
-import { PbSelectionProvider } from '../helpers/selectionProvider'
-import { PbKeyboardProvider } from '../helpers/keyboardProvider'
-import { PbUiProvider } from '../helpers/uiProvider'
-import { PbAnimationProvider } from '../helpers/animationFrame'
-import { PbStateProvider } from '../helpers/stateProvider'
+import type { PbStorageProvider } from '../helpers/storageProvider'
+import type { PbTypesProvider } from '../helpers/paragraphTypeProvider'
+import type { PbSelectionProvider } from '../helpers/selectionProvider'
+import type { PbKeyboardProvider } from '../helpers/keyboardProvider'
+import type { PbUiProvider } from '../helpers/uiProvider'
+import type { PbAnimationProvider } from '../helpers/animationFrame'
+import type { PbStateProvider } from '../helpers/stateProvider'
+import type { eventBus } from './../eventBus'
 
 interface PbMutationResponseLike<T> {
   data: {
@@ -250,7 +248,7 @@ export interface PbImportItem {
 
 export type PbComment = {
   uuid?: string
-  targetUuid?: string
+  paragraphUuids?: string[]
   resolved?: boolean
   body?: string
   created?: { first?: { value?: string } }
@@ -544,30 +542,20 @@ export type ParagraphsBuilderEvents = {
   translateParagraph: TranslateParagraphEvent
   batchTranslate: undefined
   removeGhosts: undefined
-  draggingStart: DraggableStartEvent
-  draggingEnd: undefined
+  'dragging:start': DraggableStartEvent
+  'dragging:end': undefined
   setActiveFieldKey: string
   moveParagraph: MoveParagraphEvent
   moveMultipleParagraphs: MoveMultipleParagraphsEvent
   addNewParagraph: AddNewParagraphEvent
-  addReusableParagraph: AddReusableParagraphEvent
-  addClipboardParagraph: AddClipboardParagraphEvent
   updateMutatedFields: UpdateMutatedFieldsEvent
   animationFrame: AnimationFrameEvent
   message: PbMessage
-  makeReusable: MakeReusableEvent
-  undo: undefined
-  redo: undefined
   keyPressed: KeyPressedEvent
   editEntity: undefined
   translateEntity: string
   reloadState: undefined
   reloadEntity: undefined
-  revertAllChanges: undefined
-  closeMenu: undefined
-  importFromExisting: ImportFromExistingEvent
-  exitEditor: undefined
-  publish: undefined
   updateParagraphOptions: UpdateParagraphOptionEvent[]
   duplicateParagraph: string
   deleteParagraph: string

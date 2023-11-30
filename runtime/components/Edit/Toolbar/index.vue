@@ -8,14 +8,14 @@
           <div class="pb-toolbar-menu">
             <button
               class="pb-toolbar-menu-button"
-              :class="{ 'pb-is-active': menuVisible }"
-              @click="menuVisible = !menuVisible"
+              :class="{ 'pb-is-active': menuOpen }"
+              @click="menuOpen ? ui.menu.close() : ui.menu.open()"
             >
-              <Icon :name="menuVisible ? 'close' : 'logo'" />
+              <Icon :name="menuOpen ? 'close' : 'logo'" />
             </button>
 
             <transition name="pb-menu" :duration="200">
-              <div v-show="menuVisible" class="pb-toolbar-menu-list">
+              <div v-show="menuOpen" class="pb-toolbar-menu-list">
                 <div id="pb-toolbar-menu-primary" />
                 <div id="pb-toolbar-menu-secondary" />
               </div>
@@ -43,9 +43,9 @@
 
         <transition name="pb-fade" :duration="200">
           <div
-            v-if="menuVisible"
+            v-if="menuOpen"
             class="pb-toolbar-menu-overlay pb-overlay"
-            @click="menuVisible = false"
+            @click="ui.menu.close()"
           />
         </transition>
       </div>
@@ -56,18 +56,13 @@
 <script lang="ts" setup>
 import { Icon } from '#pb/components'
 
-const { eventBus } = useBlokkli()
+const { ui } = useBlokkli()
 
 const emit = defineEmits(['loaded'])
 
-const menuVisible = ref(false)
-const closeMenu = () => (menuVisible.value = false)
+const menuOpen = computed(() => ui.menu.isOpen.value)
 
 onMounted(() => {
-  eventBus.on('closeMenu', closeMenu)
   emit('loaded')
-})
-onBeforeUnmount(() => {
-  eventBus.off('closeMenu', closeMenu)
 })
 </script>

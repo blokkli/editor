@@ -131,8 +131,8 @@ export default function (
     eventBus.on('select:end', onSelectEnd)
     eventBus.on('setActiveFieldKey', setActiveFieldKey)
     eventBus.on('state:reloaded', onStateReloaded)
-    eventBus.on('draggingStart', onDraggingStart)
-    eventBus.on('draggingEnd', onDraggingEnd)
+    eventBus.on('dragging:start', onDraggingStart)
+    eventBus.on('dragging:end', onDraggingEnd)
   })
 
   onBeforeUnmount(() => {
@@ -143,8 +143,8 @@ export default function (
     eventBus.off('select:end', onSelectEnd)
     eventBus.off('setActiveFieldKey', setActiveFieldKey)
     eventBus.off('state:reloaded', onStateReloaded)
-    eventBus.off('draggingStart', onDraggingStart)
-    eventBus.off('draggingEnd', onDraggingEnd)
+    eventBus.off('dragging:start', onDraggingStart)
+    eventBus.off('dragging:end', onDraggingEnd)
   })
 
   const setActiveFieldKey = (key: string) => (activeFieldKey.value = key)

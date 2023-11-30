@@ -221,7 +221,7 @@ onMounted(() => {
       onStart(e) {
         const rect = e.item.getBoundingClientRect()
         const originalEvent = (e as any).originalEvent || ({} as PointerEvent)
-        eventBus.emit('draggingStart', {
+        eventBus.emit('dragging:start', {
           rect,
           offsetX: originalEvent.clientX,
           offsetY: originalEvent.clientY,
@@ -229,7 +229,7 @@ onMounted(() => {
         isDragging.value = true
       },
       onEnd() {
-        eventBus.emit('draggingEnd')
+        eventBus.emit('dragging:end')
         isDragging.value = false
         storeSort()
         updateKey.value = updateKey.value + 1

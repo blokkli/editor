@@ -1,6 +1,6 @@
 <template>
   <PluginMenuButton
-    title="Veröffentlichen und Schliessen"
+    title="Veröffentlichen"
     description="Alle Änderungen öffentlich machen"
     @click="onClick"
     :disabled="!mutations.length || !canEdit"
@@ -15,7 +15,7 @@
 import { PluginMenuButton } from '#pb/plugins'
 import { Icon } from '#pb/components'
 
-const { state, adapter, eventBus } = useBlokkli()
+const { state, adapter } = useBlokkli()
 const { mutations, canEdit, mutateWithLoadingState } = state
 
 const onClick = async () => {
@@ -24,6 +24,5 @@ const onClick = async () => {
     'Änderungen konnten nicht publiziert werden.',
     'Änderungen erfolgreich publiziert.',
   )
-  eventBus.emit('exitEditor')
 }
 </script>

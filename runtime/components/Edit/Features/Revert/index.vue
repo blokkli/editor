@@ -29,13 +29,12 @@
 import { PluginMenuButton } from '#pb/plugins'
 import { Icon, DialogModal } from '#pb/components'
 
-const { eventBus, adapter, state } = useBlokkli()
+const { adapter, state } = useBlokkli()
 const { mutations, canEdit, mutateWithLoadingState } = state
 
 const showConfirm = ref(false)
 
 async function onSubmit() {
-  eventBus.emit('closeMenu')
   await mutateWithLoadingState(
     adapter.revertAllChanges(),
     'Änderungen konnten nicht verworfen werden.',

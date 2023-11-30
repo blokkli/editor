@@ -26,7 +26,7 @@ import { PluginMenuButton } from '#pb/plugins'
 import { Icon } from '#pb/components'
 import ExistingDialog from './Dialog/index.vue'
 
-const { eventBus, adapter, storage, state } = useBlokkli()
+const { adapter, storage, state } = useBlokkli()
 
 const shouldOpen = storage.use('showImport', true)
 
@@ -38,7 +38,6 @@ const showModal = ref(false)
 
 function onSubmit(sourceUuid: string, sourceFields: string[]) {
   showModal.value = false
-  eventBus.emit('closeMenu')
   state.mutateWithLoadingState(
     adapter.importFromExisting({
       sourceFields,
