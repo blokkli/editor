@@ -123,6 +123,10 @@
   display: none !important;
 }
 
+.pb-multi-select-anchor {
+  @apply absolute w-0 h-0 z-[9999999999] pointer-events-none;
+}
+
 .pb-button {
   @apply h-50 !px-20 inline-flex justify-center items-center gap-10 rounded-md !font-semibold  focus:outline-none transition !shadow !font-sans !text-base;
   @apply !text-slate-900 hover:!text-white;

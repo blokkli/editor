@@ -32,7 +32,20 @@ export default function (
       .filter(falsy),
   )
 
-  function onSelectEnd(uuids: string[]) {
+  function updateSortable() {
+    document.querySelectorAll('.sortable-selected').forEach((el) => {
+      Sortable.utils.deselect(el as any)
+    })
+    selectedUuids.value.forEach((uuid) => {
+      const item = findParagraphElement(uuid)
+      if (item) {
+        Sortable.utils.select(item)
+      }
+    })
+  }
+
+  function selectParagraphs(uuids: string[]) {
+    unselectParagraphs()
     const paragraphs = uuids
       .map((uuid) => {
         const element = findParagraphElement(uuid)
@@ -45,32 +58,25 @@ export default function (
       })
       .filter(falsy)
     selectedUuids.value = paragraphs.map((v) => v.uuid)
-  }
-
-  function onMultiSelectStart() {
-    selectedUuids.value = []
+    updateSortable()
   }
 
   function unselectParagraphs() {
     selectedUuids.value = []
-    document.querySelectorAll('.sortable-selected').forEach((el) => {
-      Sortable.utils.deselect(el as any)
-    })
+    updateSortable()
   }
 
   function onSelectParagraph(uuid: string) {
-    unselectParagraphs()
-    selectedUuids.value = [uuid]
+    selectParagraphs([uuid])
   }
 
-  function onSelectParagraphAdditional(item: DraggableExistingParagraphItem) {
-    if (selectedUuids.value.includes(item.uuid)) {
-      selectedUuids.value = selectedUuids.value.filter(
-        (uuid) => uuid !== item.uuid,
-      )
-      return
+  function selectToggle(uuid: string) {
+    if (selectedUuids.value.includes(uuid)) {
+      selectedUuids.value = selectedUuids.value.filter((v) => v !== uuid)
+    } else {
+      selectedUuids.value.push(uuid)
     }
-    selectedUuids.value.push(item.uuid)
+    updateSortable()
   }
 
   function onWindowMouseDown(e: MouseEvent) {
@@ -125,10 +131,10 @@ export default function (
 
   onMounted(() => {
     document.body.addEventListener('mousedown', onWindowMouseDown)
-    eventBus.on('selectAdditional', onSelectParagraphAdditional)
     eventBus.on('select', onSelectParagraph)
-    eventBus.on('select:start', onMultiSelectStart)
-    eventBus.on('select:end', onSelectEnd)
+    eventBus.on('select:start', unselectParagraphs)
+    eventBus.on('select:toggle', selectToggle)
+    eventBus.on('select:end', selectParagraphs)
     eventBus.on('setActiveFieldKey', setActiveFieldKey)
     eventBus.on('state:reloaded', onStateReloaded)
     eventBus.on('dragging:start', onDraggingStart)
@@ -137,10 +143,10 @@ export default function (
 
   onBeforeUnmount(() => {
     document.body.removeEventListener('mousedown', onWindowMouseDown)
-    eventBus.off('selectAdditional', onSelectParagraphAdditional)
     eventBus.off('select', onSelectParagraph)
-    eventBus.off('select:start', onMultiSelectStart)
-    eventBus.off('select:end', onSelectEnd)
+    eventBus.off('select:start', unselectParagraphs)
+    eventBus.off('select:toggle', selectToggle)
+    eventBus.off('select:end', selectParagraphs)
     eventBus.off('setActiveFieldKey', setActiveFieldKey)
     eventBus.off('state:reloaded', onStateReloaded)
     eventBus.off('dragging:start', onDraggingStart)

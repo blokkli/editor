@@ -17,11 +17,14 @@ export type Rectangle = {
 const props = defineProps<{
   rect: Rectangle
   isIntersecting: boolean
+  offsetY: number
 }>()
 
 const style = computed(() => {
   return {
-    transform: `translate(${props.rect.x}px, ${props.rect.y}px)`,
+    transform: `translate(${props.rect.x}px, ${
+      props.rect.y + props.offsetY
+    }px)`,
     width: props.rect.width + 'px',
     height: props.rect.height + 'px',
   }

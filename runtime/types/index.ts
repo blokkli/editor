@@ -537,7 +537,6 @@ export type ParagraphScrollIntoViewEvent = {
 
 export type ParagraphsBuilderEvents = {
   select: string
-  selectAdditional: DraggableExistingParagraphItem
   editParagraph: EditParagraphEvent
   translateParagraph: TranslateParagraphEvent
   batchTranslate: undefined
@@ -562,6 +561,7 @@ export type ParagraphsBuilderEvents = {
 
   // Selection.
   'select:start': undefined
+  'select:toggle': string
   'select:end': string[]
 
   'paragraph:convert': ParagraphConvertEvent

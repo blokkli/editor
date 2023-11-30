@@ -1,64 +1,86 @@
 <template>
-  <div class="pb pb-multi-select" v-if="isSelecting">
-    <svg
-      class="pb-multi-select-area"
-      v-bind="style"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <rect
-        :width="selectRect.width"
-        :height="selectRect.height"
-        :x="selectRect.x"
-        :y="selectRect.y - scrollY"
-        :style="{ animationDuration }"
-      />
-    </svg>
+  <Teleport to="body">
+    <div class="pb pb-multi-select">
+      <svg
+        class="pb-multi-select-area"
+        v-bind="style"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          :width="selectRect.width"
+          :height="selectRect.height"
+          :x="selectRect.x"
+          :y="selectRect.y"
+          :style="{ animationDuration }"
+        />
+      </svg>
 
-    <Item
-      v-if="isSelecting"
-      v-for="item in actuallySelectable"
-      :rect="item.rect"
-      :select-rect="selectRect"
-      :is-intersecting="intersects(selectRect, item.rect)"
+      <Item
+        v-for="item in selectable"
+        :rect="item.rect"
+        :is-intersecting="item.isIntersecting"
+        :offset-y="scrollY"
+      />
+    </div>
+  </Teleport>
+  <Teleport to=".pb-main-canvas">
+    <div
+      ref="anchor"
+      class="pb-multi-select-anchor"
+      :style="{ top: anchorY + 'px', left: anchorX + 'px' }"
     />
-  </div>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
-import { falsy } from '#pb/helpers'
-import type {
-  AnimationFrameEvent,
-  DraggableExistingParagraphItem,
-} from '#pb/types'
+import type { AnimationFrameEvent } from '#pb/types'
 import type { Rectangle } from './Item/index.vue'
 import Item from './Item/index.vue'
 import { Sortable } from '#pb/sortable'
 
-const { keyboard, eventBus, dom } = useBlokkli()
+const { keyboard, eventBus, ui } = useBlokkli()
 
 export type SelectableElement = {
-  item: DraggableExistingParagraphItem
+  uuid: string
   nested: boolean
   rect: Rectangle
+  isIntersecting: boolean
 }
 
-const isSelecting = ref(false)
-const downX = ref(0)
-const downY = ref(0)
-const startX = ref(0)
-const startY = ref(0)
-const currentX = ref(0)
-const currentY = ref(0)
+const props = defineProps<{
+  startX: number
+  startY: number
+}>()
+
+const emit = defineEmits<{
+  (e: 'select', uuids: string[]): void
+}>()
+
+const anchorX = ref(0)
+const anchorY = ref(0)
+const anchor = ref<HTMLDivElement | null>(null)
+const scrollY = ref(0)
+
 const selectable = ref<SelectableElement[]>([])
 const viewportWidth = ref(window.innerWidth)
 const viewportHeight = ref(window.innerHeight)
-const scrollY = ref(0)
+
+const getAnchorRect = () => {
+  if (!anchor.value) {
+    return { x: 0, y: 0 }
+  }
+  const rect = anchor.value.getBoundingClientRect()
+  return {
+    x: rect.x,
+    y: rect.y,
+  }
+}
 
 const actuallySelectable = computed(() => {
   return selectable.value.filter((v) => {
     if (keyboard.isPressingControl.value) {
-      return v.nested
+      return true
     } else {
       return !v.nested
     }
@@ -80,17 +102,11 @@ function intersects(a: Rectangle, b: Rectangle): boolean {
   )
 }
 
-const selectRect = computed<Rectangle>(() => {
-  const ax = startX.value > currentX.value ? currentX.value : startX.value
-  const ay = startY.value > currentY.value ? currentY.value : startY.value
-  const bx = startX.value > currentX.value ? startX.value : currentX.value
-  const by = startY.value > currentY.value ? startY.value : currentY.value
-  return {
-    x: ax,
-    y: ay,
-    width: bx - ax,
-    height: by - ay,
-  }
+const selectRect = ref<Rectangle>({
+  x: 0,
+  y: 0,
+  width: 0,
+  height: 0,
 })
 
 const style = computed(() => {
@@ -103,153 +119,67 @@ const style = computed(() => {
   }
 })
 
-function getSelectableElements(): SelectableElement[] {
-  return dom
-    .getAllBlocks()
-    .map((item) => {
-      if (item && item.itemType === 'existing') {
-        const rect = item.element.getBoundingClientRect()
-        const y = rect.top + document.documentElement.scrollTop
-        return {
-          item: item,
-          nested: item.element.dataset.isNested === 'true',
-          rect: {
-            x: rect.left,
-            y,
-            width: rect.width,
-            height: rect.height,
-          },
-        }
-      }
-      return null
-    })
-    .filter(falsy)
-}
-
-function shouldStartMultiSelect(target: Element): boolean {
-  const isInsideParagraph = !!target.closest('.draggable')
-  if (isInsideParagraph) {
-    return false
-  }
-  const isInsideControl = !!target.closest('.pb-control')
-  if (isInsideControl) {
-    return false
-  }
-
-  const isInSidebar = !!target.closest('.pb-sidebar')
-  if (isInSidebar) {
-    return false
-  }
-
-  return true
-}
-
-function onWindowMouseMove(e: MouseEvent) {
-  e.preventDefault()
-  e.stopPropagation()
-
-  if (!isSelecting.value) {
-    const diffX = Math.abs(downX.value - e.x)
-    const diffY = Math.abs(downY.value - e.y)
-    if (diffX > 3 || diffY > 3) {
-      eventBus.emit('select:start')
-      const newX = e.x + window.scrollX
-      const newY = e.y + window.scrollY
-      startX.value = newX
-      startY.value = newY
-      currentX.value = newX
-      currentY.value = newY
-      selectable.value = getSelectableElements()
-      isSelecting.value = true
-    }
-  }
-  currentX.value = e.x + window.scrollX
-  currentY.value = e.y + window.scrollY
-}
-
-function onWindowMouseUp(e: MouseEvent) {
-  window.removeEventListener('mousemove', onWindowMouseMove)
-
-  if (!isSelecting.value) {
-    selectable.value = []
-    return
-  }
-
-  isSelecting.value = false
-
-  if (isSelecting.value) {
-    e.preventDefault()
-    e.stopPropagation()
-  }
-
+function emitSelected() {
   const selected = actuallySelectable.value.filter((item) => {
     return intersects(selectRect.value, item.rect)
   })
-
-  if (selected.length === 1) {
-    selectable.value = []
-    const uuid = selected[0].item.uuid
-    const item = dom.findBlock(uuid)
-
-    if (!item) {
-      return
-    }
-
-    if (item.itemType === 'existing') {
-      eventBus.emit('select:end', [item.uuid])
-    }
-    return
-  }
-
-  selected.forEach((item) => {
-    Sortable.utils.select(item.item.element)
-  })
-
   eventBus.emit(
     'select:end',
-    selected.map((v) => v.item.uuid),
+    selected.map((v) => v.uuid),
   )
-}
 
-watch(isSelecting, (v) => {
-  if (v) {
-    document.body.classList.add('pb-is-selecting')
-  } else {
-    document.body.classList.remove('pb-is-selecting')
-  }
-})
-
-function onWindowMouseDown(e: MouseEvent) {
-  selectable.value = []
-
-  if (e.ctrlKey) {
-    return
-  }
-  if (e.target && e.target instanceof Element) {
-    if (shouldStartMultiSelect(e.target)) {
-      window.addEventListener('mousemove', onWindowMouseMove)
-      downX.value = e.x
-      downY.value = e.y
-    }
-  }
+  // selected.forEach((item) => {
+  //   Sortable.utils.select(item.uuid)
+  // })
 }
 
 function onAnimationFrame(e: AnimationFrameEvent) {
   viewportWidth.value = window.innerWidth
   viewportHeight.value = window.innerHeight
+  const anchorRect = getAnchorRect()
+  const startX = anchorRect.x
+  const startY = anchorRect.y
+
   scrollY.value = window.scrollY
+
+  selectable.value = Object.entries(e.rects).map(([uuid, rect]) => {
+    return {
+      uuid,
+      nested: false,
+      rect,
+      isIntersecting: intersects(selectRect.value, rect),
+    }
+  })
+
+  const ax = startX > e.mouseX ? e.mouseX : startX
+  const ay = startY > e.mouseY ? e.mouseY : startY
+  const bx = startX > e.mouseX ? startX : e.mouseX
+  const by = startY > e.mouseY ? startY : e.mouseY
+  selectRect.value = {
+    x: ax,
+    y: ay,
+    width: bx - ax,
+    height: by - ay,
+  }
 }
 
 onMounted(() => {
-  window.addEventListener('mousedown', onWindowMouseDown)
-  window.addEventListener('mouseup', onWindowMouseUp)
+  const artboard = ui.artboardElement()
+  const artboardRect = artboard.getBoundingClientRect()
+  const scale = ui.getArtboardScale()
+  const newX = props.startX
+  const newY = props.startY
+  anchorX.value = (newX - artboardRect.left) / scale
+  anchorY.value = (newY - artboardRect.top) / scale
+
   eventBus.on('animationFrame', onAnimationFrame)
+  document.body.classList.add('pb-is-selecting')
+  eventBus.emit('select:start')
 })
 
 onBeforeUnmount(() => {
-  window.removeEventListener('mousemove', onWindowMouseMove)
-  window.removeEventListener('mousedown', onWindowMouseDown)
-  window.removeEventListener('mouseup', onWindowMouseUp)
   eventBus.off('animationFrame', onAnimationFrame)
+  document.body.classList.remove('pb-is-selecting')
+  emitSelected()
 })
 </script>

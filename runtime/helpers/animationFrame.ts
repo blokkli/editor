@@ -9,24 +9,31 @@ export type PbAnimationProvider = {
 }
 
 export default function (): PbAnimationProvider {
-  const mouseX = ref(0)
-  const mouseY = ref(0)
+  let mouseX = 0
+  let mouseY = 0
+
   let raf: any = null
-  const shouldDraw = ref(true)
+
+  // Keep track of how many frames should be rendered.
+  // Assuming 60 fps, this value means after every draw request we will only
+  // render a maximum of 2 seconds.
+  let iterator = 120
 
   function onMouseMoveGlobal(e: MouseEvent) {
-    mouseX.value = e.x
-    mouseY.value = e.y
-    shouldDraw.value = true
+    mouseX = e.x
+    mouseY = e.y
+    iterator = 120
   }
 
   const loop = () => {
     // Make sure we don't loop when it's not needed.
-    if (!shouldDraw.value) {
+    if (iterator < 1) {
       raf = window.requestAnimationFrame(loop)
       return
     }
-    shouldDraw.value = false
+
+    // Decrement the value.
+    iterator--
 
     // Let the "Artboard" feature alter the position/scale of the root element
     // before triggering the main animation loop event.
@@ -62,10 +69,10 @@ export default function (): PbAnimationProvider {
         .filter(falsy)
       if (canvasRect && rootRect && sidebarRect) {
         rootRect.width = rootRect.width - sidebarRect.width
-        const scale = parseInt(wrapperEl.style.scale)
+        const scale = parseFloat(wrapperEl.style.scale)
         eventBus.emit('animationFrame', {
-          mouseX: mouseX.value,
-          mouseY: mouseY.value,
+          mouseX,
+          mouseY,
           scale: isNaN(scale) ? 1 : scale,
           rootRect,
           canvasRect,
@@ -95,8 +102,9 @@ export default function (): PbAnimationProvider {
     eventBus.on('select', requestDraw)
     eventBus.on('select:start', requestDraw)
     eventBus.on('select:end', requestDraw)
-    eventBus.on('selectAdditional', requestDraw)
+    eventBus.on('select:toggle', requestDraw)
     eventBus.on('option:update', requestDraw)
+    eventBus.on('state:reloaded', requestDraw)
     document.addEventListener('scroll', requestDraw)
     document.body.addEventListener('wheel', requestDraw, { passive: false })
     window.addEventListener('mousemove', onMouseMoveGlobal, {
@@ -112,11 +120,12 @@ export default function (): PbAnimationProvider {
     eventBus.off('select', requestDraw)
     eventBus.off('select:start', requestDraw)
     eventBus.off('select:end', requestDraw)
-    eventBus.off('selectAdditional', requestDraw)
+    eventBus.off('select:toggle', requestDraw)
     eventBus.off('option:update', requestDraw)
+    eventBus.off('state:reloaded', requestDraw)
   })
 
-  const requestDraw = () => (shouldDraw.value = true)
+  const requestDraw = () => (iterator = 120)
 
   return { requestDraw }
 }

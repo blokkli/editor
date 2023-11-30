@@ -158,14 +158,15 @@ function getItemFromEvent(e: MouseEvent): DraggableItem | undefined {
 }
 
 function onClick(e: MouseEvent) {
-  if (e.ctrlKey) {
-    return
-  }
   e.stopPropagation()
   e.preventDefault()
   const item = getItemFromEvent(e)
   if (item && item.itemType === 'existing') {
-    eventBus.emit('select', item.uuid)
+    if (e.ctrlKey) {
+      eventBus.emit('select:toggle', item.uuid)
+    } else {
+      eventBus.emit('select', item.uuid)
+    }
   }
 }
 
@@ -374,10 +375,12 @@ function updateSelection(e: SortableEvent) {
 }
 
 function onSelect(e: SortableEvent) {
+  return
   updateSelection(e)
 }
 
 function onDeselect(e: SortableEvent) {
+  return
   updateSelection(e)
 }
 
