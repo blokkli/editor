@@ -176,7 +176,7 @@ export interface PbAdapter<T> {
   /**
    * Add a comment to a paragraph.
    */
-  addComment(paragraphUuid: string, body: string): Promise<PbComment[]>
+  addComment(paragraphUuids: string[], body: string): Promise<PbComment[]>
 
   /**
    * Resolve a comment.

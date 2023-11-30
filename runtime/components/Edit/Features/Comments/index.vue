@@ -42,7 +42,7 @@ const { adapter } = useBlokkli()
 const loadComments = async () => (comments.value = await adapter.loadComments())
 
 const onAddComment = async (body: string, uuid: string) => {
-  comments.value = await adapter.addComment(uuid, body)
+  comments.value = await adapter.addComment([uuid], body)
   showAddComment.value = false
 }
 

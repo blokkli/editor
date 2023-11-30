@@ -63,7 +63,7 @@ const showFullForm = ref(false)
 const emit = defineEmits<{
   (e: 'toggle'): void
   (e: 'addComment', text: string): void
-  (e: 'resolveComment', id: string): void
+  (e: 'resolveComment', uuid: string): void
 }>()
 
 const props = defineProps<{
@@ -85,9 +85,9 @@ function addComment() {
   commentText.value = ''
 }
 
-function resolveComment(id: string | number | undefined) {
-  if (id) {
-    emit('resolveComment', id.toString())
+function resolveComment(uuid: string | undefined) {
+  if (uuid) {
+    emit('resolveComment', uuid)
   }
 }
 </script>

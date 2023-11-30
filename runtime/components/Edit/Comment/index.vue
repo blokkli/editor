@@ -25,7 +25,7 @@ defineEmits<{
 
 const props = defineProps<{
   uuid?: string | number
-  targetUuid?: string
+  paragraphUuids?: string[]
   resolved?: boolean
   body?: string
   created?: PbComment['created']

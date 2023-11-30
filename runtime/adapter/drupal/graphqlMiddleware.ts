@@ -267,10 +267,10 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         (v) => v.data.state?.comments || [],
       )
 
-    const addComment: DrupalAdapter['addComment'] = (paragraphUuid, body) =>
+    const addComment: DrupalAdapter['addComment'] = (paragraphUuids, body) =>
       useGraphqlMutation('paragraphsBuilderAddComment', {
         ...ctx,
-        targetUuid: paragraphUuid,
+        paragraphUuids,
         body,
       }).then((v) => v.data.state?.action || [])
 

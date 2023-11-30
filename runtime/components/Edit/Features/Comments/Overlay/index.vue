@@ -28,7 +28,7 @@ const props = defineProps<{
 
 defineEmits<{
   (e: 'addComment', data: { uuid: string; body: string }): void
-  (e: 'resolveComment', id: string): void
+  (e: 'resolveComment', uuid: string): void
 }>()
 
 const isReduced = ref(false)
@@ -45,11 +45,12 @@ function toggle(uuid: string) {
 
 const grouped = computed(() => {
   const map = props.comments.reduce<Record<string, PbComment[]>>((acc, v) => {
-    if (v.targetUuid) {
-      if (!acc[v.targetUuid]) {
-        acc[v.targetUuid] = []
+    if (v.paragraphUuids?.length) {
+      const uuid = v.paragraphUuids[0]
+      if (!acc[uuid]) {
+        acc[uuid] = []
       }
-      acc[v.targetUuid].push(v)
+      acc[uuid].push(v)
     }
     return acc
   }, {})
