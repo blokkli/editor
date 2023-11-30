@@ -582,7 +582,7 @@ export type ParagraphsBuilderEditContext = {
   mutatedOptions: Ref<MutatedParagraphOptions>
 }
 
-export interface PbStore {
+export interface BlokkliApp {
   /**
    * The adapter.
    */

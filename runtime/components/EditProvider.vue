@@ -24,7 +24,7 @@ import uiProvider from './../helpers/uiProvider'
 
 import { eventBus } from './../eventBus'
 import '#nuxt-paragraphs-builder/styles'
-import { PbStore } from '#pb/types'
+import { BlokkliApp } from '#pb/types'
 import getAdapter from '#blokkli/compiled-edit-adapter'
 import {
   INJECT_APP,
@@ -74,7 +74,7 @@ provide(INJECT_EDIT_CONTEXT, {
   eventBus,
   mutatedOptions: state.mutatedOptions,
 })
-provide<PbStore>(INJECT_APP, {
+provide<BlokkliApp>(INJECT_APP, {
   adapter,
   eventBus,
   runtimeConfig,
