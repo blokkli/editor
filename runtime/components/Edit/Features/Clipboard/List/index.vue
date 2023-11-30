@@ -49,7 +49,7 @@
 <script lang="ts" setup>
 import { ParagraphIcon, Icon } from '#pb/components'
 import { Sortable } from '#pb/sortable'
-import { PbSearchContentItem } from '~/modules/nuxt-paragraphs-builder/runtime/types'
+import { PbSearchContentItem } from '#pb/types'
 
 let instance: Sortable | null = null
 

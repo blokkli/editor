@@ -41,11 +41,11 @@ const selectedBlock = computed(() => {
   return selection.blocks.value[0]
 })
 
-const definition = computed(() => {
-  return selectedBlock?.value
+const definition = computed(() =>
+  selectedBlock?.value
     ? getDefinition(selectedBlock.value.paragraphType)
-    : null
-})
+    : null,
+)
 
 const paragraphType = computed(() =>
   selectedBlock?.value
@@ -55,9 +55,7 @@ const paragraphType = computed(() =>
     : null,
 )
 
-const isReusable = computed(() => {
-  return definition.value?.bundle === 'from_library'
-})
+const isReusable = computed(() => definition.value?.bundle === 'from_library')
 
 function onMakeReusable(label: string) {
   showReusableDialog.value = false
@@ -73,11 +71,10 @@ function onMakeReusable(label: string) {
   )
 }
 
-const canMakeReusable = computed(() => {
-  return (
+const canMakeReusable = computed(
+  () =>
     !isReusable.value &&
     paragraphType?.value?.allowReusable &&
-    types.allowedTypesInList.value.includes('from_library')
-  )
-})
+    types.allowedTypesInList.value.includes('from_library'),
+)
 </script>

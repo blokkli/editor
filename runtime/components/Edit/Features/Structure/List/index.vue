@@ -11,7 +11,7 @@ import { falsy } from '#pb/helpers'
 import Field, { StructureTreeItem, StructureTreeField } from './Field/index.vue'
 import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
 
-const { types, state, entityUuid } = useBlokkli()
+const { types, state, context } = useBlokkli()
 
 const tree = ref<StructureTreeField[]>([])
 
@@ -38,7 +38,7 @@ function buildItemsForField(element: HTMLElement): StructureTreeItem[] {
 
 function buildTree() {
   const fields = document.body.querySelectorAll(
-    `[data-host-entity-uuid="${entityUuid}"]`,
+    `[data-host-entity-uuid="${context.value.entityUuid}"]`,
   )
   tree.value = [...fields]
     .map((field) => {

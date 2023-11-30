@@ -42,8 +42,7 @@ import { falsy, onlyUnique } from '#pb/helpers'
 import { ParagraphIcon } from '#pb/components'
 import { DraggableExistingParagraphItem } from '#pb/types'
 
-const { eventBus, state, entityType, entityBundle, selection, storage, types } =
-  useBlokkli()
+const { eventBus, state, selection, storage, types, context } = useBlokkli()
 
 const typeList = ref<HTMLDivElement | null>(null)
 const wrapper = ref<HTMLDivElement | null>(null)
@@ -97,8 +96,8 @@ const getAllowedTypesForSelected = (
     return types.allowedTypes.value
       .filter(
         (v) =>
-          v.entityType === entityType &&
-          v.bundle === entityBundle &&
+          v.entityType === context.value.entityType &&
+          v.bundle === context.value.entityBundle &&
           v.fieldName === p.hostFieldName,
       )
       .flatMap((v) => v.allowedTypes)
@@ -110,11 +109,15 @@ const selectableParagraphTypes = computed(() => {
   if (selection.blocks.value.length) {
     return selection.blocks.value.flatMap((v) => getAllowedTypesForSelected(v))
   }
-  if (activeField.value && activeField.value.hostEntityType === entityType) {
+  if (
+    activeField.value &&
+    activeField.value.hostEntityType === context.value.entityType
+  ) {
     return (
       types.allowedTypes.value.find((v) => {
         return (
-          v.bundle === entityBundle && v.fieldName === activeField.value?.name
+          v.bundle === context.value.entityBundle &&
+          v.fieldName === activeField.value?.name
         )
       })?.allowedTypes || []
     )
@@ -128,8 +131,8 @@ const generallyAvailableParagraphTypes = computed(() => {
   const typesOnEntity = (
     types.allowedTypes.value.filter((v) => {
       return (
-        v.entityType === entityType &&
-        v.bundle === entityBundle &&
+        v.entityType === context.value.entityType &&
+        v.bundle === context.value.entityBundle &&
         fieldNames.includes(v.fieldName)
       )
     }) || []

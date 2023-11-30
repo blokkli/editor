@@ -4,16 +4,33 @@ import { eventBus } from '../eventBus'
 import { Sortable } from '#pb/sortable'
 
 export type PbSelectionProvider = {
+  /**
+   * The currently selected UUIDs.
+   */
   uuids: Readonly<Ref<string[]>>
+
+  /**
+   * The currently selected blocks.
+   */
   blocks: ComputedRef<DraggableExistingParagraphItem[]>
+
+  /**
+   * The active field key.
+   */
   activeFieldKey: Readonly<Ref<string>>
+
+  /**
+   * Whether the user is currently dragging a block.
+   */
   isDragging: Readonly<Ref<boolean>>
+
+  /**
+   * Update the active field key.
+   */
   setActiveFieldKey: (key: string) => void
 }
 
-export default function (
-  isPressingSpace: globalThis.Ref<boolean>,
-): PbSelectionProvider {
+export default function (): PbSelectionProvider {
   const selectedUuids = ref<string[]>([])
   const activeFieldKey = ref('')
   const isDragging = ref(false)
@@ -80,7 +97,7 @@ export default function (
   }
 
   function onWindowMouseDown(e: MouseEvent) {
-    if (e.ctrlKey || isPressingSpace.value) {
+    if (e.ctrlKey) {
       return
     }
     if (e.target && e.target instanceof Element) {
@@ -130,7 +147,7 @@ export default function (
   }
 
   onMounted(() => {
-    document.body.addEventListener('mousedown', onWindowMouseDown)
+    document.documentElement.addEventListener('mousedown', onWindowMouseDown)
     eventBus.on('select', onSelectParagraph)
     eventBus.on('select:start', unselectParagraphs)
     eventBus.on('select:toggle', selectToggle)
@@ -142,7 +159,7 @@ export default function (
   })
 
   onBeforeUnmount(() => {
-    document.body.removeEventListener('mousedown', onWindowMouseDown)
+    document.documentElement.removeEventListener('mousedown', onWindowMouseDown)
     eventBus.off('select', onSelectParagraph)
     eventBus.off('select:start', unselectParagraphs)
     eventBus.off('select:toggle', selectToggle)

@@ -27,16 +27,18 @@ export default function (): PbKeyboardProvider {
       e.getModifierState('Meta') ||
       e.code === 'CapsLock'
 
+    if (!isPressingSpace.value) {
+      eventBus.emit('keyPressed', {
+        code: e.key,
+        shift: e.shiftKey,
+        meta: e.ctrlKey || e.metaKey || isPressingControl.value,
+        originalEvent: e,
+      })
+    }
+
     if (e.code === 'Space') {
       isPressingSpace.value = true
     }
-
-    eventBus.emit('keyPressed', {
-      code: e.key,
-      shift: e.shiftKey,
-      meta: e.ctrlKey || e.metaKey || isPressingControl.value,
-      originalEvent: e,
-    })
   }
   onMounted(() => {
     document.addEventListener('keydown', onKeyDown)

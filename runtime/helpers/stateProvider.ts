@@ -11,7 +11,7 @@ import type {
 } from '#pb/types'
 import { removeDroppedElements, falsy } from '#pb/helpers'
 import { emitMessage, eventBus } from '../eventBus'
-import { PbAdapter } from '../adapter'
+import { PbAdapter, PbAdapterContext } from '../adapter'
 import { INJECT_MUTATED_FIELDS } from './symbols'
 
 export type PbStateOwner = {
@@ -36,6 +36,7 @@ export type PbStateProvider = {
 
 export default async function (
   adapter: PbAdapter<any>,
+  context: ComputedRef<PbAdapterContext>,
 ): Promise<PbStateProvider> {
   const owner = ref<PbStateOwner | null>(null)
   const refreshKey = ref('')
@@ -54,7 +55,6 @@ export default async function (
   const mutatedOptions = ref<MutatedParagraphOptions>({})
   const translation = ref<PbTranslationState>({
     isTranslatable: false,
-    currentLanguage: '',
     sourceLanguage: '',
     availableLanguages: [],
     translations: [],
@@ -140,8 +140,8 @@ export default async function (
     return false
   }
 
-  async function loadState(langcode?: string | undefined | null) {
-    const state = await adapter.loadState(langcode)
+  async function loadState() {
+    const state = await adapter.loadState()
     if (state) {
       setContext(adapter.mapState(state))
     }
@@ -149,27 +149,17 @@ export default async function (
 
   async function onReloadState() {
     removeDroppedElements()
-    await loadState(currentLanguage.value)
+    await loadState()
   }
 
   async function onReloadEntity() {
     await refreshNuxtData()
-    await loadState(currentLanguage.value)
+    await loadState()
   }
-
-  const route = useRoute()
-
-  const currentLanguage = computed(() => {
-    const v = route.query.language
-    if (v && typeof v === 'string') {
-      return v
-    }
-    return translation.value.sourceLanguage
-  })
 
   const canEdit = computed(() => !!owner.value?.currentUserIsOwner)
   const isTranslation = computed(
-    () => currentLanguage.value !== translation.value.sourceLanguage,
+    () => context.value.language !== translation.value.sourceLanguage,
   )
 
   const editMode = computed<PbEditMode>(() => {

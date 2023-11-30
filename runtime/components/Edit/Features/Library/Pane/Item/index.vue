@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="pb-library-list-item-inner" :style="style">
-      <div class="pb-library-paragraph" :style="paragraphStyle">
+      <div class="pb-library-paragraph">
         <div ref="inner" class="pb-library-paragraph-inner" :style="innerStyle">
           <PbItem :item="item" :paragraph="paragraph" />
         </div>
@@ -26,13 +26,10 @@
 </template>
 
 <script setup lang="ts">
-import { definitions } from '#nuxt-paragraphs-builder/definitions'
+import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
 import { PbLibraryItem } from '#pb/types'
 import { ParagraphIcon } from '#pb/components'
-import {
-  INJECT_IS_EDITING,
-  INJECT_IS_IN_REUSABLE,
-} from '~/modules/nuxt-paragraphs-builder/runtime/helpers/symbols'
+import { INJECT_IS_EDITING, INJECT_IS_IN_REUSABLE } from '#pb/helpers/symbols'
 
 const props = defineProps<PbLibraryItem>()
 
@@ -47,27 +44,19 @@ const style = computed(() => {
   }
 })
 
-const definition = computed(() => {
-  return definitions.find((v) => v.bundle === props.bundle)
-})
+const definition = computed(() => getDefinition(props.uuid))
 
-const paragraphWidth = computed(() => {
-  return definition.value?.editWidth || 600
-})
+const paragraphWidth = computed(() => definition.value?.editWidth || 600)
 
-const backgroundClass = computed(() => {
-  return definition.value?.editBackgroundClass || ''
-})
+const backgroundClass = computed(
+  () => definition.value?.editBackgroundClass || '',
+)
 
 const innerStyle = computed(() => {
   return {
     width: paragraphWidth.value + 'px',
     transform: `scale(${260 / paragraphWidth.value})`,
   }
-})
-
-const paragraphStyle = computed(() => {
-  return {}
 })
 
 let raf: any = null

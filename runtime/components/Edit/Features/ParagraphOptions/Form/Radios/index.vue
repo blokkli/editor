@@ -31,14 +31,14 @@
 const props = defineProps<{
   name: string
   displayAs?: 'radios' | 'colors' | 'grid'
-  options: Record<string, string>
+  options: Record<string, string | number[]>
   value: string
 }>()
 
 defineEmits(['update'])
 
-function getInputWrapperAttributes(value: string) {
-  if (props.displayAs === 'colors') {
+function getInputWrapperAttributes(value: string | number[]) {
+  if (props.displayAs === 'colors' && typeof value === 'string') {
     if (value.indexOf('#') === 0) {
       return {
         style: 'background-color: ' + value,

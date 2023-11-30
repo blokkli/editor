@@ -1,1 +1,1 @@
-# nuxt-paragraphs-builder
+# blökkli page builder

@@ -1,13 +1,15 @@
 <template>
   <div
-    :data-provider-uuid="uuid"
+    :data-provider-uuid="entityUuid"
     :data-blokkli-provider-active="isInEditor || undefined"
   >
     <template v-if="isInEditor">
       <PbPreviewProvider
         v-if="isPreviewing"
         :entity-type="entityType"
-        :entity-uuid="uuid"
+        :entity-uuid="entityUuid"
+        :entity-bundle="entityBundle"
+        :language="language"
       >
         <slot
           :is-editing="isEditing"
@@ -18,8 +20,9 @@
       <PbEditProvider
         v-else-if="isEditing"
         :entity-type="entityType"
-        :entity-uuid="uuid"
-        :bundle="bundle"
+        :entity-uuid="entityUuid"
+        :entity-bundle="entityBundle"
+        :language="language"
       >
         <slot
           :is-editing="isEditing"
@@ -36,7 +39,7 @@
       :is-preview="isPreviewing"
     ></slot>
 
-    <PbEditIndicator v-if="showIndicator" :uuid="uuid" @edit="edit" />
+    <PbEditIndicator v-if="showIndicator" :uuid="entityUuid" @edit="edit" />
   </div>
 </template>
 
@@ -53,35 +56,40 @@ const PbEditIndicator = defineAsyncComponent(
 
 const route = useRoute()
 const router = useRouter()
-const language = useCurrentLanguage()
 
 const props = withDefaults(
   defineProps<{
-    uuid: string
-    canEdit: boolean
     entityType: string
-    bundle: string
+    entityBundle: string
+    entityUuid: string
+    canEdit: boolean
     tag?: string
+    language?: string
   }>(),
   {
     tag: 'div',
+    language: '',
   },
 )
 
 const isInEditor = computed(
   () =>
-    props.uuid &&
+    props.entityUuid &&
     props.entityType &&
-    props.bundle &&
+    props.entityBundle &&
     (isPreviewing.value || isEditing.value),
 )
 
 const isEditing = computed(() => {
-  return props.canEdit && !!props.uuid && route.query.pbEditing === props.uuid
+  return (
+    props.canEdit &&
+    !!props.entityUuid &&
+    route.query.pbEditing === props.entityUuid
+  )
 })
 
 const isPreviewing = computed(() => {
-  return props.uuid && route.query.pbPreview === props.uuid
+  return props.entityUuid && route.query.pbPreview === props.entityUuid
 })
 
 const showIndicator = computed(
@@ -91,8 +99,8 @@ const showIndicator = computed(
 function edit() {
   router.push({
     query: {
-      pbEditing: props.uuid,
-      language: language.value,
+      pbEditing: props.entityUuid,
+      language: props.language,
     },
   })
 }

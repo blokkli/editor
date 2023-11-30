@@ -42,7 +42,7 @@ const startMoveOffset: Coord = {
 // The target state for the current animation.
 const animationTarget = ref<(Coord & { scale: number }) | null>(null)
 
-const { keyboard, eventBus, dom, entityUuid, storage, ui, animation } =
+const { keyboard, eventBus, dom, context, storage, ui, animation } =
   useBlokkli()
 
 const limitOffset = (providedX: number, providedY: number): Coord => {
@@ -156,6 +156,11 @@ function onMouseMove(e: MouseEvent) {
 const mouseIsDown = ref(false)
 
 function onMouseDown(e: MouseEvent) {
+  if (!keyboard.isPressingSpace.value) {
+    return
+  }
+  e.preventDefault()
+  e.stopPropagation()
   startMoveoffset.x = e.x
   startMoveoffset.y = e.y
   startMoveOffset.x = offset.x
@@ -283,7 +288,7 @@ type SavedState = {
   scale: number
 }
 
-const storageKey = computed(() => 'artboard:' + entityUuid)
+const storageKey = computed(() => 'artboard:' + context.value.entityUuid)
 const savedState = storage.use<SavedState | null>(storageKey, null)
 
 const shouldPersist = storage.use('persistArtboard', true)
@@ -376,7 +381,7 @@ const saveState = () => {
 }
 
 onMounted(() => {
-  window.addEventListener('mousedown', onMouseDown)
+  document.body.addEventListener('mousedown', onMouseDown)
   window.addEventListener('mouseup', onMouseUp)
 
   window.addEventListener('touchstart', onTouchStart, { passive: false })
@@ -401,7 +406,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   document.body.removeEventListener('mousemove', onMouseMove)
   document.body.removeEventListener('wheel', onWheel)
-  window.removeEventListener('mousedown', onMouseDown)
+  document.body.removeEventListener('mousedown', onMouseDown)
   window.removeEventListener('mouseup', onMouseUp)
   window.removeEventListener('touchstart', onTouchStart)
   window.removeEventListener('touchmove', onTouchMove)

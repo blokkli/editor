@@ -40,10 +40,9 @@ import { Icon, ParagraphIcon } from '#pb/components'
 import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
 import { AddNewParagraphEvent, EditParagraphEvent } from '#pb/types'
 
-const { types, eventBus, runtimeConfig, entityType, entityUuid, state } =
-  useBlokkli()
+const { types, eventBus, runtimeConfig, state, context } = useBlokkli()
 
-const currentLanguage = computed(() => state.translation.value.currentLanguage)
+const currentLanguage = computed(() => context.value.language)
 
 const modalUrl = ref('')
 const bundle = ref('')
@@ -160,14 +159,16 @@ function onEditParagraph(e: EditParagraphEvent) {
     }
   }
   bundle.value = e.bundle
-  setModalUrl(`/paragraphs_builder/${entityType}/${entityUuid}/edit/${e.uuid}`)
+  setModalUrl(
+    `/paragraphs_builder/${context.value.entityType}/${context.value.entityUuid}/edit/${e.uuid}`,
+  )
 }
 
 function onTranslateEntity(langcode: string) {
   editLangcode.value = langcode
   entityTypeInForm.value = 'entity'
   setModalUrl(
-    `/${entityType}/${state.entity.value.id}/translations/add/${state.translation.value.sourceLanguage}/${langcode}`,
+    `/${context.value.entityType}/${state.entity.value.id}/translations/add/${state.translation.value.sourceLanguage}/${langcode}`,
     langcode,
   )
 }
@@ -175,7 +176,7 @@ function onTranslateEntity(langcode: string) {
 function onBatchTranslate() {
   titleOverride.value = 'Alle Paragraphen übersetzen'
   setModalUrl(
-    `/paragraphs_builder/${entityType}/${entityUuid}/translate-paragraphs`,
+    `/paragraphs_builder/${context.value.entityType}/${context.value.entityUuid}/translate-paragraphs`,
   )
 }
 
@@ -186,7 +187,7 @@ function onEditEntity() {
     const queryParam = getModalQueryParams(prefix)
     modalUrl.value = state.entity.value.editUrl + queryParam
   } else {
-    setModalUrl(`/${entityType}/${state.entity.value.id}/edit`)
+    setModalUrl(`/${context.value.entityType}/${state.entity.value.id}/edit`)
   }
 }
 
@@ -206,8 +207,8 @@ async function addNewParagraph(e: AddNewParagraphEvent) {
     '/' +
       [
         'paragraphs_builder',
-        entityType,
-        entityUuid,
+        context.value.entityType,
+        context.value.entityUuid,
         'add',
         e.type,
         e.host.type,

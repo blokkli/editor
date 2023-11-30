@@ -1,7 +1,7 @@
 import type { Ref } from 'vue'
 import type { Emitter } from 'mitt'
 import type { PbDomProvider } from '../helpers/domProvider'
-import type { PbAdapter } from '#blokkli/adapter'
+import type { PbAdapter, PbAdapterContext } from '#blokkli/adapter'
 import type { PbStorageProvider } from '../helpers/storageProvider'
 import type { PbTypesProvider } from '../helpers/paragraphTypeProvider'
 import type { PbSelectionProvider } from '../helpers/selectionProvider'
@@ -194,7 +194,6 @@ export interface PbAvailableLanguage {
 export interface PbTranslationState {
   isTranslatable?: boolean | null
   sourceLanguage?: string | null
-  currentLanguage?: string
   availableLanguages?: PbAvailableLanguage[]
   translations?: Array<string | null> | null
 }
@@ -589,13 +588,6 @@ export interface PbStore {
    */
   adapter: PbAdapter<any>
 
-  /**
-   * The entity type.
-   */
-  entityType: string
-  entityUuid: string
-  entityBundle: string
-
   eventBus: typeof eventBus
 
   runtimeConfig: {
@@ -612,6 +604,7 @@ export interface PbStore {
   ui: PbUiProvider
   animation: PbAnimationProvider
   state: PbStateProvider
+  context: ComputedRef<PbAdapterContext>
 }
 
 export default {}

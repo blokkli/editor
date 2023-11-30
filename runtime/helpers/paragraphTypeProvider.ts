@@ -5,7 +5,7 @@ import {
 } from '../types'
 import { onlyUnique } from '#pb/helpers'
 import { eventBus } from '../eventBus'
-import { PbAdapter } from '../adapter'
+import { PbAdapter, PbAdapterContext } from '../adapter'
 
 export type PbTypesProvider = {
   paragraphTypesWithNested: ComputedRef<string[]>
@@ -17,18 +17,12 @@ export type PbTypesProvider = {
 export default async function (
   adapter: PbAdapter<any>,
   blocks: ComputedRef<DraggableExistingParagraphItem[]>,
-  entityType: string,
-  bundle: string,
+  context: ComputedRef<PbAdapterContext>,
 ): Promise<PbTypesProvider> {
-  const { data: allTypesData } = await useLazyAsyncData(() =>
-    adapter.getAllParagraphTypes(),
-  )
-  const allTypes = computed(() => allTypesData.value || [])
-
-  const { data: allowedTypesData } = await useLazyAsyncData(() =>
-    adapter.getAvailableParagraphTypes(),
-  )
-  const allowedTypes = computed(() => allowedTypesData.value || [])
+  const allTypesData = await adapter.getAllParagraphTypes()
+  const allTypes = computed(() => allTypesData || [])
+  const allowedTypesData = await adapter.getAvailableParagraphTypes()
+  const allowedTypes = computed(() => allowedTypesData || [])
 
   /**
    * The allowed paragraph types in the current field item list.
@@ -44,8 +38,8 @@ export default async function (
       return allowedTypes.value
         .filter(
           (v) =>
-            v.entityType === entityType &&
-            v.bundle === bundle &&
+            v.entityType === context.value.entityType &&
+            v.bundle === context.value.entityBundle &&
             v.fieldName === hostFieldNames[0],
         )
         .flatMap((v) => v.allowedTypes)

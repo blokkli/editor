@@ -7,17 +7,19 @@ type DrupalAdapter = PbAdapter<ParagraphsBuilderEditStateFragment>
 
 export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
   (providedContext) => {
-    const ctx = {
-      entityType: providedContext.entityType.toUpperCase() as any,
-      entityUuid: providedContext.entityUuid,
-    }
+    const ctx = computed(() => {
+      return {
+        ...providedContext.value,
+        entityType: providedContext.value.entityType.toUpperCase() as any,
+      }
+    })
 
     const getImportItems: DrupalAdapter['getImportItems'] = (
       searchText: string,
     ) =>
       useGraphqlQuery('pbGetImportSourceEntities', {
-        entityType: (ctx.entityType as string).toLowerCase(),
-        entityUuid: ctx.entityUuid,
+        entityType: (ctx.value.entityType as string).toLowerCase(),
+        entityUuid: ctx.value.entityUuid,
         searchText,
       }).then((data) => {
         return {
@@ -47,7 +49,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
 
     const loadState: DrupalAdapter['loadState'] = (langcode) =>
       useGraphqlQuery('paragraphsEditState', {
-        ...ctx,
+        ...ctx.value,
         langcode: langcode || undefined,
       }).then((v) => v.data.state)
 
@@ -66,36 +68,36 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
       }
 
     const takeOwnership: DrupalAdapter['takeOwnership'] = () =>
-      useGraphqlMutation('paragraphsBuilderTakeOwnership', ctx)
+      useGraphqlMutation('paragraphsBuilderTakeOwnership', ctx.value)
 
     const setHistoryIndex: DrupalAdapter['setHistoryIndex'] = (index) =>
       useGraphqlMutation('paragraphsBuilderSetHistoryIndex', {
-        ...ctx,
+        ...ctx.value,
         index,
       })
 
     const redo: DrupalAdapter['redo'] = () =>
-      useGraphqlMutation('paragraphsBuilderRedo', ctx)
+      useGraphqlMutation('paragraphsBuilderRedo', ctx.value)
 
     const undo: DrupalAdapter['undo'] = () =>
-      useGraphqlMutation('paragraphsBuilderUndo', ctx)
+      useGraphqlMutation('paragraphsBuilderUndo', ctx.value)
 
     const publish: DrupalAdapter['publish'] = () =>
-      useGraphqlMutation('paragraphsBuilderPublish', ctx)
+      useGraphqlMutation('paragraphsBuilderPublish', ctx.value)
 
     const importFromExisting: DrupalAdapter['importFromExisting'] = (e) =>
       useGraphqlMutation('pbCopyFromExisting', {
-        ...ctx,
+        ...ctx.value,
         sourceUuid: e.sourceUuid,
         fields: e.sourceFields,
       })
 
     const revertAllChanges: DrupalAdapter['revertAllChanges'] = () =>
-      useGraphqlMutation('revertAllChanges', ctx)
+      useGraphqlMutation('revertAllChanges', ctx.value)
 
     const makeParagraphReusable: DrupalAdapter['makeParagraphReusable'] = (e) =>
       useGraphqlMutation('makeParagraphReusable', {
-        ...ctx,
+        ...ctx.value,
         ...e,
       })
 
@@ -104,12 +106,12 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
     ) => {
       if (uuids.length === 1) {
         return useGraphqlMutation('duplicateParagraph', {
-          ...ctx,
+          ...ctx.value,
           uuid: uuids[0],
         })
       }
       return useGraphqlMutation('pbDuplicateMultipleParagraphs', {
-        ...ctx,
+        ...ctx.value,
         uuids,
       })
     }
@@ -120,13 +122,13 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
     ) => {
       if (uuids.length === 1) {
         return useGraphqlMutation('convertParagraph', {
-          ...ctx,
+          ...ctx.value,
           uuid: uuids[0],
           targetBundle,
         })
       }
       return useGraphqlMutation('pbConvertMultiple', {
-        ...ctx,
+        ...ctx.value,
         uuids,
         targetBundle,
       })
@@ -135,19 +137,19 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
     const deleteMultipleParagraphs: DrupalAdapter['deleteMultipleParagraphs'] =
       (uuids) =>
         useGraphqlMutation('deleteMultipleParagraphs', {
-          ...ctx,
+          ...ctx.value,
           uuids,
         })
 
     const deleteParagraph: DrupalAdapter['deleteParagraph'] = (uuid) =>
       useGraphqlMutation('deleteParagraph', {
-        ...ctx,
+        ...ctx.value,
         uuid,
       })
 
     const addReusableParagraph: DrupalAdapter['addReusableParagraph'] = (e) =>
       useGraphqlMutation('addReusableParagraph', {
-        ...ctx,
+        ...ctx.value,
         libraryItemUuid: e.item.libraryItemUuid,
         hostType: e.host.type,
         hostUuid: e.host.uuid,
@@ -159,7 +161,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
       e,
     ) =>
       useGraphqlMutation('moveMultipleParagraphs', {
-        ...ctx,
+        ...ctx.value,
         uuids: e.uuids,
         hostType: e.host.type,
         hostUuid: e.host.uuid,
@@ -169,7 +171,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
 
     const moveParagraph: DrupalAdapter['moveParagraph'] = (e) =>
       useGraphqlMutation('moveParagraph', {
-        ...ctx,
+        ...ctx.value,
         uuid: e.item.uuid,
         hostType: e.host.type,
         hostUuid: e.host.uuid,
@@ -179,7 +181,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
 
     const addNewParagraph: DrupalAdapter['addNewParagraph'] = (e) =>
       useGraphqlMutation('addParagraph', {
-        ...ctx,
+        ...ctx.value,
         hostType: e.host.type,
         hostFieldName: e.host.fieldName,
         hostUuid: e.host.uuid,
@@ -192,7 +194,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
     ) => {
       if (options.length === 1) {
         return useGraphqlMutation('updateParagraphOption', {
-          ...ctx,
+          ...ctx.value,
           ...options[0],
         })
       }
@@ -205,7 +207,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         }
       })
       return useGraphqlMutation('bulkUpdateParagraphBehaviorSettings', {
-        ...ctx,
+        ...ctx.value,
         items: persistItems,
       })
     }
@@ -263,20 +265,20 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
     }
 
     const loadComments: DrupalAdapter['loadComments'] = () =>
-      useGraphqlQuery('paragraphsBuilderComments', ctx).then(
+      useGraphqlQuery('paragraphsBuilderComments', ctx.value).then(
         (v) => v.data.state?.comments || [],
       )
 
     const addComment: DrupalAdapter['addComment'] = (paragraphUuids, body) =>
       useGraphqlMutation('paragraphsBuilderAddComment', {
-        ...ctx,
+        ...ctx.value,
         paragraphUuids,
         body,
       }).then((v) => v.data.state?.action || [])
 
     const resolveComment: DrupalAdapter['resolveComment'] = (uuid) =>
       useGraphqlMutation('paragraphsBuilderResolveComment', {
-        ...ctx,
+        ...ctx.value,
         uuid,
       }).then((v) => v.data.state?.action || [])
 
@@ -310,11 +312,11 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
 
     const getLastChanged: DrupalAdapter['getLastChanged'] = () =>
       $fetch<{ changed: number }>(
-        `/paragraphs_builder/${ctx.entityType}/${ctx.entityUuid}/last_changed`,
+        `/paragraphs_builder/${ctx.value.entityType}/${ctx.value.entityUuid}/last_changed`,
       ).then((v) => v.changed)
 
     const getPreviewGrantUrl: DrupalAdapter['getPreviewGrantUrl'] = () =>
-      useGraphqlQuery('pbGetPreviewGrantUrl', ctx).then(
+      useGraphqlQuery('pbGetPreviewGrantUrl', ctx.value).then(
         (v) => v.data.getParagraphsEditState?.previewUrl,
       )
 

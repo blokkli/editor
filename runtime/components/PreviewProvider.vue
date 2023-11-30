@@ -15,9 +15,13 @@ import {
 const props = defineProps<{
   entityType: string
   entityUuid: string
+  entityBundle: string
+  language?: string
 }>()
 
-const adapter = getAdapter(props)
+const context = computed(() => props)
+
+const adapter = getAdapter(context)
 
 const router = useRouter()
 

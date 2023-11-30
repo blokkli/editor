@@ -57,7 +57,7 @@
 
 <script lang="ts" setup>
 import { Icon } from '#pb/components'
-import { modulo } from '~/modules/nuxt-paragraphs-builder/runtime/helpers'
+import { modulo } from '#pb/helpers'
 import ResultsPage from './Results/Page/index.vue'
 import ResultsContent from './Results/Content/index.vue'
 

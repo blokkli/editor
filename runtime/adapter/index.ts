@@ -231,9 +231,13 @@ export interface PbAdapter<T> {
 export interface PbAdapterContext {
   entityType: string
   entityUuid: string
+  entityBundle: string
+  language?: string
 }
 
-export type PbAdapterFactory<T> = (ctx: PbAdapterContext) => PbAdapter<T>
+export type PbAdapterFactory<T> = (
+  ctx: ComputedRef<PbAdapterContext>,
+) => PbAdapter<T>
 
 export function defineBlokkliEditAdapter<T>(
   cb: PbAdapterFactory<T>,

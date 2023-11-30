@@ -35,42 +35,30 @@ import {
 const props = defineProps<{
   entityType: string
   entityUuid: string
-  bundle: string
+  entityBundle: string
+  language?: string
 }>()
 
-const adapter = getAdapter({
-  entityType: props.entityType.toUpperCase() as any,
-  entityUuid: props.entityUuid || '',
-})
+const context = computed(() => props)
+
+const adapter = getAdapter(context)
 
 const route = useRoute()
 const runtimeConfig = useRuntimeConfig().public.paragraphsBuilder
 
 const toolbarLoaded = ref(false)
-const isLoading = ref(false)
 const isInitializing = ref(true)
 
-const state = await editStateProvider(adapter)
+const state = await editStateProvider(adapter, context)
 const keyboard = keyboardProvider()
-const selection = selectionProvider(keyboard.isPressingSpace)
+const selection = selectionProvider()
 const dom = domProvider()
 const storage = storageProvider()
 const ui = uiProvider()
 const animation = animationFrameProvider()
-const types = await paragraphTypeProvider(
-  adapter,
-  selection.blocks,
-  props.entityType,
-  props.bundle,
-)
+const types = await paragraphTypeProvider(adapter, selection.blocks, context)
 
-useHead({
-  bodyAttrs: {
-    class: [isLoading.value ? 'pb-is-loading' : ''],
-  },
-})
-
-onMounted(async () => {
+onMounted(() => {
   nextTick(() => {
     isInitializing.value = false
   })
@@ -88,9 +76,6 @@ provide(INJECT_EDIT_CONTEXT, {
 })
 provide<PbStore>(INJECT_APP, {
   adapter,
-  entityType: props.entityType,
-  entityUuid: props.entityUuid,
-  entityBundle: props.bundle,
   eventBus,
   runtimeConfig,
   state,
@@ -101,5 +86,6 @@ provide<PbStore>(INJECT_APP, {
   keyboard,
   ui,
   animation,
+  context,
 })
 </script>
