@@ -81,7 +81,10 @@ const iframe = ref<HTMLIFrameElement | null>(null)
 
 const titleSuffix = computed(() => {
   const langcode = editLangcode.value || currentLanguage.value
-  if (langcode !== currentLanguage.value) {
+  if (
+    langcode !== currentLanguage.value ||
+    state.editMode.value === 'translating'
+  ) {
     if (state.translation.value.availableLanguages) {
       const match = state.translation.value.availableLanguages.find(
         (v) => v.id === langcode,
@@ -185,7 +188,7 @@ function onEditEntity() {
   if (state.entity.value.editUrl) {
     const prefix = getModalPrefix()
     const queryParam = getModalQueryParams(prefix)
-    modalUrl.value = state.entity.value.editUrl + queryParam
+    modalUrl.value = prefix + state.entity.value.editUrl + queryParam
   } else {
     setModalUrl(`/${context.value.entityType}/${state.entity.value.id}/edit`)
   }

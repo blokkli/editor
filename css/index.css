@@ -19,6 +19,7 @@
 @import './partials/availableList.css';
 @import './partials/artboard.css';
 @import './partials/debug.css';
+@import './partials/scaleToFit.css';
 
 @font-face {
   font-family: 'PB Inter';

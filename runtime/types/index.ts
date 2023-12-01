@@ -131,13 +131,22 @@ export type ParagraphDefinitionInput<V, T = []> = {
   /**
    * Define a custom title for this paragraph at runtime in the editor.
    *
-   * If a method is provided, it receives the root element of this component
-   * and should return a title.
+   * The title will be displayed to the editor to give some context. E.g. a
+   * title block displays an excerpt from the title.
    *
-   * If no value is returned, the regular label of the paragraph (e.g.
-   * "Teaser") is displayed.
+   * If a method is provided, it receives the root element of this component
+   * and should return a fitting title.
+   *
+   * If no method is defined or it doesn't return a value, the regular label
+   * of the paragraph (e.g. "Teaser") is displayed.
    */
   editTitle?: (el: HTMLElement) => string | undefined
+
+  /**
+   * Build mock props for this component used for previewing on hover or in
+   * the clipboard preview.
+   */
+  mockProps?: (text?: string) => any
 }
 
 export type InjectedParagraphItem = ComputedRef<{
@@ -181,7 +190,6 @@ export type PbEditEntity = {
   label?: string
   changed?: number
   status?: boolean
-  translations: PbEditEntityTranslation[]
   bundleLabel?: string
   editUrl?: string
 }
@@ -191,11 +199,17 @@ export interface PbAvailableLanguage {
   name: string
 }
 
+export interface PbAvailableTranslation {
+  id: string
+  url: string
+  status: boolean
+}
+
 export interface PbTranslationState {
   isTranslatable?: boolean | null
   sourceLanguage?: string | null
   availableLanguages?: PbAvailableLanguage[]
-  translations?: Array<string | null> | null
+  translations?: PbAvailableTranslation[]
 }
 
 export interface PbFieldConfig {

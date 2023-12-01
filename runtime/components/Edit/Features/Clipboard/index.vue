@@ -7,8 +7,8 @@
     ref="plugin"
   >
     <div @mousedown.stop @mousemove.stop @dragstart.stop>
-      <div class="pb pb-clipboard pb-control">
-        <div v-if="!pastedItems.length" class="pb-clipboard-info">
+      <div class="pb-clipboard pb-control">
+        <div v-if="!pastedItems.length" class="pb pb-clipboard-info">
           <h4>Keine Elemente in der Zwischenablage</h4>
           <p>
             Verwenden Sie Ctrl-V auf der Seite um Inhalte einzufügen. Diese

@@ -1,6 +1,6 @@
 import { ParagraphsBuilderEditStateFragment } from '#build/graphql-operations'
 import { falsy } from '#pb/helpers'
-import { PbType } from '#pb/types'
+import { PbAvailableTranslation, PbTranslationState, PbType } from '#pb/types'
 import { PbAdapter, defineBlokkliEditAdapter } from '#blokkli/adapter'
 
 type DrupalAdapter = PbAdapter<ParagraphsBuilderEditStateFragment>
@@ -222,15 +222,14 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
       const ownerName = state?.ownerName || ''
       const mutatedState = state?.mutatedState || {}
       const entity = state?.entity
-      const translationState = state?.translationState || {}
 
-      const entityTranslations =
+      const translations: PbAvailableTranslation[] =
         entity && 'translations' in entity
           ? entity.translations
               ?.map((v) => {
                 if (v.langcode && 'url' in v && v.url?.path) {
                   return {
-                    langcode: v.langcode,
+                    id: v.langcode,
                     url: v.url.path,
                     status: 'status' in v ? !!v.status : true,
                   }
@@ -239,6 +238,13 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
               })
               .filter(falsy) || []
           : []
+
+      const translationState: PbTranslationState = {
+        isTranslatable: !!state.translationState?.isTranslatable,
+        sourceLanguage: state.translationState?.sourceLanguage || '',
+        availableLanguages: state.translationState?.availableLanguages || [],
+        translations,
+      }
 
       const bundleLabel = state?.bundleLabel || ''
 
@@ -255,12 +261,10 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         mutatedState,
         entity: {
           ...(entity || {}),
-          translations: entityTranslations,
           bundleLabel,
           editUrl,
         },
         translationState,
-        entityTranslations,
       }
     }
 

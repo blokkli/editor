@@ -14,7 +14,7 @@
       :key="item.data + renderKey"
     >
       <div class="pb-clipboard-item">
-        <div class="pb-clipboard-item-header">
+        <div class="pb pb-clipboard-item-header">
           <div class="pb-paragraph-label">
             <div class="pb-paragraph-label-icon">
               <ParagraphIcon :bundle="item.paragraphType" />
@@ -27,7 +27,7 @@
         </div>
         <div>
           <div
-            v-if="item.type === 'text' || item.type === 'search_content'"
+            v-if="item.type === 'text'"
             class="pb-clipboard-item-inner"
             v-html="item.data"
           />
@@ -40,6 +40,12 @@
           <div v-else-if="item.type === 'search_content' && item.item.imageUrl">
             <img :src="item.item.imageUrl" />
           </div>
+          <div v-else-if="item.type === 'search_content'">
+            <SearchContentItem
+              :target-bundle="item.paragraphType"
+              :data="item.data"
+            />
+          </div>
         </div>
       </div>
     </li>
@@ -50,6 +56,7 @@
 import { ParagraphIcon, Icon } from '#pb/components'
 import { Sortable } from '#pb/sortable'
 import { PbSearchContentItem } from '#pb/types'
+import SearchContentItem from './SearchContent/index.vue'
 
 let instance: Sortable | null = null
 

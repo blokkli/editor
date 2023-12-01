@@ -11,27 +11,7 @@
     @apply outline outline-slate-300 -outline-offset-2 opacity-95;
   }
 }
-.pb-library-list-item-inner {
-  @apply relative;
-  > div {
-  }
-}
 
 .pb-library-form {
   @apply p-20;
-}
-.pb-library-paragraph {
-  @apply absolute top-0 left-0;
-}
-
-.pb-library-paragraph-inner {
-  transform-origin: 0 0;
-  > * {
-    margin: 0 !important;
-    pointer-events: none;
-  }
-  .container {
-    margin: 0 !important;
-    padding: 0 !important;
-  }
 }

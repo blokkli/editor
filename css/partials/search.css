@@ -1,5 +1,5 @@
 .pb.pb-search {
-  @apply fixed top-0 left-0 w-full h-full z-[900] overflow-hidden flex items-center justify-center;
+  @apply fixed top-0 left-0 w-full h-full z-[99999] overflow-hidden flex items-center justify-center;
 }
 
 .pb .pb-search-box {
