@@ -49,7 +49,6 @@ export default async function (
     id: undefined,
     changed: undefined,
     status: false,
-    translations: [],
   })
 
   const mutatedOptions = ref<MutatedParagraphOptions>({})
@@ -76,7 +75,6 @@ export default async function (
     entity.value.changed = context?.entity?.changed
     entity.value.label = context?.entity?.label
     entity.value.status = context?.entity?.status
-    entity.value.translations = context?.entity?.translations || []
     entity.value.bundleLabel = context?.entity?.bundleLabel || ''
     entity.value.editUrl = context?.entity.editUrl
 

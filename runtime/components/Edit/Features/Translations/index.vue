@@ -1,7 +1,10 @@
 <template>
   <Teleport to="#pb-toolbar-after-title">
     <div class="pb-paragraph-options-radios pb-is-language">
-      <label v-for="item in items" :class="{ 'pb-is-muted': !item.exists }">
+      <label
+        v-for="item in items"
+        :class="{ 'pb-is-muted': !item.translation }"
+      >
         <div>
           <input
             type="radio"
@@ -37,17 +40,20 @@
 <script lang="ts" setup>
 import { falsy } from '#pb/helpers'
 import { PluginMenuButton, PluginParagraphAction } from '#pb/plugins'
-import { DraggableExistingParagraphItem } from '#pb/types'
+import {
+  DraggableExistingParagraphItem,
+  PbAvailableTranslation,
+} from '#pb/types'
 
-const { eventBus, state, context } = useBlokkli()
+const { eventBus, state, context, adapter } = useBlokkli()
 const { translation, editMode } = state
 
 type TranslationStateItem = {
   id: string
   code: string
   label: string
-  exists: boolean
   checked: boolean
+  translation?: PbAvailableTranslation
 }
 
 const items = computed<TranslationStateItem[]>(() => {
@@ -59,7 +65,9 @@ const items = computed<TranslationStateItem[]>(() => {
           code: language.id.toUpperCase(),
           label: language.name,
           checked: context.value.language === language.id,
-          exists: (translation.value.translations || []).includes(language.id),
+          translation: (translation.value.translations || []).find(
+            (v) => v.id === language.id,
+          ),
         }
       }
       return null
@@ -68,8 +76,8 @@ const items = computed<TranslationStateItem[]>(() => {
 })
 
 function onClick(item: TranslationStateItem, event: Event) {
-  if (item.exists) {
-    return (context.value.language = item.id)
+  if (item.translation && adapter.changeLanguage) {
+    return adapter.changeLanguage(item.translation)
   }
 
   event.preventDefault()

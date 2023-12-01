@@ -17,6 +17,7 @@ import {
   UpdateParagraphOptionEvent,
   PbSearchContentItem,
   AddContentSearchItemParagraphEvent,
+  PbAvailableTranslation,
 } from '#pb/types'
 
 interface MutationResponseLike<T> {
@@ -226,6 +227,11 @@ export interface PbAdapter<T> {
   addContentSearchItemParagraph?: (
     e: AddContentSearchItemParagraphEvent,
   ) => Promise<MutationResponseLike<T>> | undefined
+
+  /**
+   * Change the language.
+   */
+  changeLanguage?: (translation: PbAvailableTranslation) => Promise<any>
 }
 
 export interface PbAdapterContext {
