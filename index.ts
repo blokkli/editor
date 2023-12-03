@@ -120,6 +120,11 @@ export type ModuleOptions = {
    * If provided, the grid feature is enabled and the markup is used to display the grid.
    */
   gridMarkup?: string
+
+  /**
+   * Add paths to custom feature components.
+   */
+  customFeatures?: string[]
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -286,6 +291,33 @@ export default defineNuxtModule<ModuleOptions>({
     })
     nuxt.options.alias['#nuxt-paragraphs-builder/generated-types'] =
       templateGeneratedTypes.dst
+
+    // The custom feature components.
+    const featureComponents = addTemplate({
+      write: true,
+      filename: 'paragraphs-builder/features.ts',
+      getContents: () => {
+        const paths: string[] = moduleOptions.customFeatures || []
+        const imports = paths
+          .map((v, i) => {
+            return `import Feature_${i} from '${srcResolver.resolve(v)}'`
+          })
+          .join('\n')
+
+        const features = paths
+          .map((_v, i) => {
+            return `Feature_${i}`
+          })
+          .join(',')
+
+        return `${imports}
+export const featureComponents: any[] = [${features}]`
+      },
+      options: {
+        paragraphsBuilder: true,
+      },
+    })
+    nuxt.options.alias['#blokkli-runtime/features'] = featureComponents.dst
 
     // The types template.
     const templateDefaultGlobalOptions = addTemplate({

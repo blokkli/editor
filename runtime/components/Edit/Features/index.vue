@@ -40,6 +40,9 @@
   <FeatureDeleteParagraph />
   <FeatureParagraphOptions />
   <FeatureConversions />
+
+  <!-- User provided feature components. -->
+  <Component v-for="component in featureComponents" :is="component" />
 </template>
 
 <script lang="ts" setup>
@@ -74,6 +77,7 @@ import FeatureSettings from './Settings/index.vue'
 import FeatureSearch from './Search/index.vue'
 import FeatureDebug from './Debug/index.vue'
 import { PbAvailableFeatures } from '../../../types'
+import { featureComponents } from '#blokkli-runtime/features'
 
 const { state, runtimeConfig, adapter } = useBlokkli()
 
