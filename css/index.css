@@ -218,6 +218,9 @@
   .draggable {
     outline-offset: -3px;
     a,
+    iframe,
+    input,
+    form,
     button {
       pointer-events: none;
     }

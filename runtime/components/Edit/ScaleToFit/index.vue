@@ -1,5 +1,5 @@
 <template>
-  <div class="pb-scale-to-fit" :style="style">
+  <div ref="root" class="pb-scale-to-fit" :style="style">
     <div ref="wrapper" class="pb-scale-to-fit-wrapper">
       <div ref="inner" class="pb-scale-to-fit-wrapper-item" :style="innerStyle">
         <slot></slot>
@@ -13,8 +13,10 @@ const props = defineProps<{
   width?: number
 }>()
 
+const root = ref<HTMLDivElement | null>(null)
 const inner = ref<HTMLDivElement | null>(null)
 const wrapper = ref<HTMLDivElement | null>(null)
+const rootWidth = ref(260)
 const paragraphNativeWidth = ref(0)
 const paragraphNativeHeight = ref(0)
 const computedHeight = ref(0)
@@ -29,20 +31,25 @@ const style = computed(() => {
 const innerStyle = computed(() => {
   return {
     width: props.width ? props.width + 'px' : 'auto',
-    transform: `scale(${260 / paragraphNativeWidth.value})`,
+    transform: `scale(${rootWidth.value / paragraphNativeWidth.value})`,
   }
 })
 
 function loop() {
+  if (root.value) {
+    rootWidth.value = root.value.offsetWidth
+  }
   if (inner.value) {
     const rect = inner.value.getBoundingClientRect()
     paragraphNativeHeight.value = inner.value.offsetHeight
-    paragraphNativeWidth.value = Math.max(inner.value.offsetWidth, 260)
+    paragraphNativeWidth.value = Math.max(
+      inner.value.offsetWidth,
+      rootWidth.value,
+    )
     computedHeight.value = rect.height
   }
-  if (!paragraphNativeHeight.value) {
-    raf = window.requestAnimationFrame(loop)
-  }
+
+  raf = requestAnimationFrame(loop)
 }
 
 onMounted(() => {

@@ -123,6 +123,14 @@ export type ParagraphDefinitionInput<V, T = []> = {
   editWidth?: number
 
   /**
+   * When set to true the preview in the library is not rendered.
+   *
+   * This should be used for complex components that render things like sliders,
+   * iframes, modals, etc.
+   */
+  noLibraryPreview?: boolean
+
+  /**
    * A background color class that is applied during editing when the paragraph
    * is being displayed standalone.
    */

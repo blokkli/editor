@@ -15,12 +15,18 @@
         <span>{{ label }}</span>
       </div>
     </div>
-    <div class="pb-library-list-item-inner" :style="style">
-      <div class="pb-library-paragraph">
-        <div ref="inner" class="pb-library-paragraph-inner" :style="innerStyle">
-          <PbItem :item="item" :paragraph="paragraph" />
-        </div>
-      </div>
+    <div
+      v-if="renderPreview"
+      class="pb-library-list-item-inner"
+      :class="backgroundClass"
+    >
+      <ScaleToFit :width="paragraphWidth">
+        <PbItem
+          :item="item"
+          :paragraph="paragraph"
+          parent-paragraph-bundle="nested"
+        />
+      </ScaleToFit>
     </div>
   </div>
 </template>
@@ -28,56 +34,22 @@
 <script setup lang="ts">
 import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
 import { PbLibraryItem } from '#pb/types'
-import { ParagraphIcon } from '#pb/components'
+import { ParagraphIcon, ScaleToFit } from '#pb/components'
 import { INJECT_IS_EDITING, INJECT_IS_IN_REUSABLE } from '#pb/helpers/symbols'
 
 const props = defineProps<PbLibraryItem>()
 
-const inner = ref<HTMLDivElement | null>(null)
-const paragraphNativeHeight = ref(0)
+const definition = computed(() => getDefinition(props.bundle))
 
-const style = computed(() => {
-  const ratio = 260 / paragraphWidth.value
-  return {
-    width: '260px',
-    height: paragraphNativeHeight.value * ratio + 'px',
-  }
-})
-
-const definition = computed(() => getDefinition(props.uuid))
-
-const paragraphWidth = computed(() => definition.value?.editWidth || 600)
+const paragraphWidth = computed(() => definition.value?.editWidth)
+const renderPreview = computed(
+  () => definition.value?.noLibraryPreview !== true,
+)
 
 const backgroundClass = computed(
   () => definition.value?.editBackgroundClass || '',
 )
 
-const innerStyle = computed(() => {
-  return {
-    width: paragraphWidth.value + 'px',
-    transform: `scale(${260 / paragraphWidth.value})`,
-  }
-})
-
-let raf: any = null
-
-function loop() {
-  if (inner.value) {
-    paragraphNativeHeight.value = inner.value.offsetHeight
-  }
-  if (!paragraphNativeHeight.value) {
-    raf = window.requestAnimationFrame(loop)
-  }
-}
-
 provide(INJECT_IS_IN_REUSABLE, true)
 provide(INJECT_IS_EDITING, false)
-
-onMounted(() => {
-  loop()
-})
-
-onBeforeUnmount(() => {
-  cancelAnimationFrame(raf)
-})
 </script>

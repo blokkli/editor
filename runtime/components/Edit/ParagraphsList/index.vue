@@ -402,7 +402,7 @@ onMounted(() => {
       fallbackClass: 'sortable-fallback',
       fallbackOnBody: false,
       forceAutoScrollFallback: true,
-      emptyInsertThreshold: 20,
+      emptyInsertThreshold: 100,
       animation: 200,
       preventOnFilter: true,
       dragoverBubble: false,
