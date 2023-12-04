@@ -188,7 +188,7 @@ function onEditEntity() {
   if (state.entity.value.editUrl) {
     const prefix = getModalPrefix()
     const queryParam = getModalQueryParams(prefix)
-    modalUrl.value = prefix + state.entity.value.editUrl + queryParam
+    modalUrl.value = state.entity.value.editUrl + queryParam
   } else {
     setModalUrl(`/${context.value.entityType}/${state.entity.value.id}/edit`)
   }
