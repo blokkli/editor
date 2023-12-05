@@ -1,7 +1,7 @@
 <template>
   <Teleport to="body">
-    <div class="pb pb-messages">
-      <TransitionGroup name="pb-message">
+    <div class="bk bk-messages">
+      <TransitionGroup name="bk-message">
         <Item
           v-for="(message, index) in messages"
           v-bind="message"
@@ -14,13 +14,13 @@
 </template>
 
 <script lang="ts" setup>
-import type { PbMessage } from '#blokkli/types'
+import type { BlokkliMessage } from '#blokkli/types'
 import Item from './Item/index.vue'
 
 const { eventBus } = useBlokkli()
-const messages = ref<PbMessage[]>([])
+const messages = ref<BlokkliMessage[]>([])
 
-function onMessage(message: PbMessage) {
+function onMessage(message: BlokkliMessage) {
   messages.value.push(message)
 }
 

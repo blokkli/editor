@@ -1,12 +1,12 @@
 <template>
-  <div class="pb-icon" v-html="markup" />
+  <div class="bk-icon" v-html="markup" />
 </template>
 
 <script lang="ts" setup>
-import { icons, PbIcon } from '#blokkli/icons'
+import { icons, BlokkliIcon } from '#blokkli/icons'
 
 const props = defineProps<{
-  name: PbIcon
+  name: BlokkliIcon
 }>()
 
 const markup = computed(() => icons[props.name])

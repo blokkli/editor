@@ -1,8 +1,8 @@
 <template>
-  <Teleport to="#pb-paragraph-actions-title">
-    <div class="pb-paragraph-actions-type">
+  <Teleport to="#bk-paragraph-actions-title">
+    <div class="bk-paragraph-actions-type">
       <button
-        class="pb-paragraph-actions-type-button"
+        class="bk-paragraph-actions-type-button"
         @click.prevent="showConversions = !showConversions"
         :disabled="!possibleConversions.length || !editingEnabled"
         :class="{
@@ -10,28 +10,28 @@
           'is-open': showConversions,
         }"
       >
-        <div class="pb-paragraph-actions-title-icon">
+        <div class="bk-paragraph-actions-title-icon">
           <ParagraphIcon v-if="paragraphType" :bundle="paragraphType.id" />
           <Icon name="selection" v-else />
         </div>
         <span>{{ title }}</span>
         <span
-          class="pb-paragraph-actions-title-count"
-          :class="{ 'pb-is-hidden': selection.blocks.value.length <= 1 }"
+          class="bk-paragraph-actions-title-count"
+          :class="{ 'bk-is-hidden': selection.blocks.value.length <= 1 }"
           >{{ selection.blocks.value.length }}</span
         >
         <Icon
           name="caret"
-          class="pb-caret"
+          class="bk-caret"
           v-if="possibleConversions.length && editingEnabled"
         />
       </button>
     </div>
   </Teleport>
-  <Teleport to="#pb-paragraph-actions-after">
+  <Teleport to="#bk-paragraph-actions-after">
     <div
       v-if="possibleConversions.length && showConversions"
-      class="pb-paragraph-actions-type-dropdown"
+      class="bk-paragraph-actions-type-dropdown"
     >
       <div>
         <h3>Umwandeln zu...</h3>
@@ -53,7 +53,7 @@
 import { Icon } from '#blokkli/components'
 import { ParagraphIcon } from '#blokkli/components'
 import { falsy, onlyUnique } from '#blokkli/helpers'
-import type { PbType } from '#blokkli/types'
+import type { BlokkliItemType } from '#blokkli/types'
 
 const showConversions = ref(false)
 
@@ -106,7 +106,7 @@ watch(selection.blocks, () => {
   showConversions.value = false
 })
 
-const possibleConversions = computed<PbType[]>(() => {
+const possibleConversions = computed<BlokkliItemType[]>(() => {
   if (paragraphTypeIds.value.length !== 1) {
     return []
   }

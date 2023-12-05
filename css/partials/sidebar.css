@@ -1,4 +1,4 @@
-.pb-sidebar {
+.bk-sidebar {
   @apply fixed top-50 bottom-0 right-0 bg-white w-[300px]  z-[30000];
   box-shadow:
     -1px -0px 2px rgb(20 45 82 / 2%),
@@ -10,14 +10,14 @@
   }
 }
 
-.pb-sidebar-inner {
+.bk-sidebar-inner {
   @apply h-full flex flex-col;
 }
-.pb-sidebar-title {
+.bk-sidebar-title {
   @apply !font-bold !text-xl !font-sans !p-20 !border-b !border-b-slate-300;
 }
 
-.pb-sidebar-content {
+.bk-sidebar-content {
   @apply flex-1;
   overflow: auto;
 }

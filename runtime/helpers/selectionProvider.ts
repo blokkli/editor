@@ -3,7 +3,7 @@ import { findParagraphElement, buildDraggableItem, falsy } from '#blokkli/helper
 import { eventBus } from '../eventBus'
 import { Sortable } from '#blokkli/sortable'
 
-export type PbSelectionProvider = {
+export type BlokkliSelectionProvider = {
   /**
    * The currently selected UUIDs.
    */
@@ -30,7 +30,7 @@ export type PbSelectionProvider = {
   setActiveFieldKey: (key: string) => void
 }
 
-export default function (): PbSelectionProvider {
+export default function (): BlokkliSelectionProvider {
   const selectedUuids = ref<string[]>([])
   const activeFieldKey = ref('')
   const isDragging = ref(false)
@@ -101,16 +101,16 @@ export default function (): PbSelectionProvider {
       return
     }
     if (e.target && e.target instanceof Element) {
-      if (e.target.closest('.pb-paragraph-actions')) {
+      if (e.target.closest('.bk-paragraph-actions')) {
         return
       }
       if (e.target.closest('[data-uuid]')) {
         return
       }
-      if (e.target.closest('.pb-list')) {
+      if (e.target.closest('.bk-list')) {
         return
       }
-      if (e.target.closest('.pb-control')) {
+      if (e.target.closest('.bk-control')) {
         return
       }
 

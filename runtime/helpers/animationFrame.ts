@@ -1,14 +1,14 @@
 import { falsy } from '#blokkli/helpers'
 import { eventBus } from '../eventBus'
 
-export type PbAnimationProvider = {
+export type BlokkliAnimationProvider = {
   /**
    * Request an animation loop. Should be called when UI state changes.
    */
   requestDraw: () => void
 }
 
-export default function (): PbAnimationProvider {
+export default function (): BlokkliAnimationProvider {
   let mouseX = 0
   let mouseY = 0
 
@@ -39,9 +39,9 @@ export default function (): PbAnimationProvider {
     // before triggering the main animation loop event.
     eventBus.emit('animationFrame:before')
 
-    const wrapperEl = document.querySelector('.pb-main-canvas')
+    const wrapperEl = document.querySelector('.bk-main-canvas')
     const nuxtRootEl = document.querySelector('#nuxt-root')
-    const sidebarEl = document.querySelector('.pb-sidebar')
+    const sidebarEl = document.querySelector('.bk-sidebar')
     if (wrapperEl instanceof HTMLElement) {
       const canvasRect = wrapperEl?.getBoundingClientRect()
       const rootRect = nuxtRootEl?.getBoundingClientRect()

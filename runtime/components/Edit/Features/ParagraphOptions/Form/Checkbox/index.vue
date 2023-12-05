@@ -1,5 +1,5 @@
 <template>
-  <label class="pb-paragraph-options-checkbox">
+  <label class="bk-paragraph-options-checkbox">
     <input type="checkbox" v-model="checked" class="peer" />
     <div></div>
     <span>{{ label }}</span>

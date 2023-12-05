@@ -1,8 +1,8 @@
 <template>
   <Teleport to="body">
-    <div class="pb pb-multi-select">
+    <div class="bk bk-multi-select">
       <svg
-        class="pb-multi-select-area"
+        class="bk-multi-select-area"
         v-bind="style"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -24,10 +24,10 @@
       />
     </div>
   </Teleport>
-  <Teleport to=".pb-main-canvas">
+  <Teleport to=".bk-main-canvas">
     <div
       ref="anchor"
-      class="pb-multi-select-anchor"
+      class="bk-multi-select-anchor"
       :style="{ top: anchorY + 'px', left: anchorX + 'px' }"
     />
   </Teleport>
@@ -173,13 +173,13 @@ onMounted(() => {
   anchorY.value = (newY - artboardRect.top) / scale
 
   eventBus.on('animationFrame', onAnimationFrame)
-  document.body.classList.add('pb-is-selecting')
+  document.body.classList.add('bk-is-selecting')
   eventBus.emit('select:start')
 })
 
 onBeforeUnmount(() => {
   eventBus.off('animationFrame', onAnimationFrame)
-  document.body.classList.remove('pb-is-selecting')
+  document.body.classList.remove('bk-is-selecting')
   emitSelected()
 })
 </script>

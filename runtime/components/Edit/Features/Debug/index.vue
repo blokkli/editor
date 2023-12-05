@@ -1,6 +1,6 @@
 <template>
   <PluginSidebar id="debug" title="Debug" icon="bug" v-if="showDebug">
-    <div class="pb pb-debug">
+    <div class="bk bk-debug">
       <section>
         <h2>Keyboard</h2>
         <div>

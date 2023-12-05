@@ -1,7 +1,7 @@
 <template>
-  <div ref="root" class="pb-scale-to-fit" :style="style">
-    <div ref="wrapper" class="pb-scale-to-fit-wrapper">
-      <div ref="inner" class="pb-scale-to-fit-wrapper-item" :style="innerStyle">
+  <div ref="root" class="bk-scale-to-fit" :style="style">
+    <div ref="wrapper" class="bk-scale-to-fit-wrapper">
+      <div ref="inner" class="bk-scale-to-fit-wrapper-item" :style="innerStyle">
         <slot></slot>
       </div>
     </div>

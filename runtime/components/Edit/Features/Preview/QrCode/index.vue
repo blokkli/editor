@@ -1,11 +1,11 @@
 <template>
-  <div class="pb-qr-code">
+  <div class="bk-qr-code">
     <canvas ref="canvas"></canvas>
     <p>
       Sie können den Link auch kopieren und mit anderen Personen teilen (ohne
       Login).
     </p>
-    <input :value="fullUrl" @focus="onFocus" class="pb-form-input" readonly />
+    <input :value="fullUrl" @focus="onFocus" class="bk-form-input" readonly />
   </div>
 </template>
 

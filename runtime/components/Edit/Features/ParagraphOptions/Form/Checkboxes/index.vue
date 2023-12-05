@@ -1,19 +1,19 @@
 <template>
   <div
-    class="pb-paragraph-options-checkboxes"
-    :class="{ 'pb-is-active': isOpen }"
+    class="bk-paragraph-options-checkboxes"
+    :class="{ 'bk-is-active': isOpen }"
   >
     <button @click="isOpen = !isOpen">
       <div>
         <span>{{ label }}</span>
-        <span v-for="item in checked" class="pb-pill">{{ item }}</span>
+        <span v-for="item in checked" class="bk-pill">{{ item }}</span>
       </div>
       <Icon name="caret" />
     </button>
     <div v-if="isOpen">
       <label
         v-for="option in mappedOptions"
-        class="pb-paragraph-options-checkbox"
+        class="bk-paragraph-options-checkbox"
       >
         <input
           type="checkbox"

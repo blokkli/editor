@@ -1,58 +1,58 @@
 <template>
   <Teleport to="body">
-    <div class="pb-sidebar" id="pb-sidebar-content" />
+    <div class="bk-sidebar" id="bk-sidebar-content" />
 
-    <div class="pb pb-top pb-control">
-      <div class="pb pb-toolbar">
-        <div class="pb-toolbar-area pb-is-menu">
-          <div class="pb-toolbar-menu">
+    <div class="bk bk-top bk-control">
+      <div class="bk bk-toolbar">
+        <div class="bk-toolbar-area bk-is-menu">
+          <div class="bk-toolbar-menu">
             <button
-              class="pb-toolbar-menu-button"
-              :class="{ 'pb-is-active': menuOpen }"
+              class="bk-toolbar-menu-button"
+              :class="{ 'bk-is-active': menuOpen }"
               @click="menuOpen ? ui.menu.close() : ui.menu.open()"
             >
               <Icon :name="menuOpen ? 'close' : 'logo'" />
             </button>
 
-            <transition name="pb-menu" :duration="200">
-              <div v-show="menuOpen" class="pb-toolbar-menu-list">
-                <div id="pb-toolbar-menu-primary" />
-                <div id="pb-toolbar-menu-secondary" />
+            <transition name="bk-menu" :duration="200">
+              <div v-show="menuOpen" class="bk-toolbar-menu-list">
+                <div id="bk-toolbar-menu-primary" />
+                <div id="bk-toolbar-menu-secondary" />
               </div>
             </transition>
           </div>
         </div>
 
-        <div class="pb-toolbar-container" id="pb-toolbar-after-menu" />
+        <div class="bk-toolbar-container" id="bk-toolbar-after-menu" />
 
-        <div class="pb-toolbar-container" id="pb-toolbar-before-title" />
+        <div class="bk-toolbar-container" id="bk-toolbar-before-title" />
 
-        <div class="pb-toolbar-container pb-is-title" id="pb-toolbar-title" />
+        <div class="bk-toolbar-container bk-is-title" id="bk-toolbar-title" />
 
-        <div class="pb-toolbar-container" id="pb-toolbar-after-title" />
+        <div class="bk-toolbar-container" id="bk-toolbar-after-title" />
 
-        <div class="pb-toolbar-container" id="pb-toolbar-before-view-options" />
+        <div class="bk-toolbar-container" id="bk-toolbar-before-view-options" />
 
-        <div class="pb-toolbar-container" id="pb-toolbar-view-options" />
+        <div class="bk-toolbar-container" id="bk-toolbar-view-options" />
 
-        <div class="pb-toolbar-container" id="pb-toolbar-before-sidebar" />
+        <div class="bk-toolbar-container" id="bk-toolbar-before-sidebar" />
 
-        <div class="pb-toolbar-container">
-          <div class="pb-toolbar-tabs" id="pb-sidebar-tabs" />
+        <div class="bk-toolbar-container">
+          <div class="bk-toolbar-tabs" id="bk-sidebar-tabs" />
         </div>
 
-        <transition name="pb-fade" :duration="200">
+        <transition name="bk-fade" :duration="200">
           <div
             v-if="menuOpen"
-            class="pb-toolbar-menu-overlay pb-overlay"
+            class="bk-toolbar-menu-overlay bk-overlay"
             @click="ui.menu.close()"
           />
         </transition>
       </div>
     </div>
-    <!-- <div class="pb pb-bottom pb-control"> -->
-    <!--   <div class="pb-toolbar-container" id="pb-toolbar-bottom-left" /> -->
-    <!--   <div class="pb-toolbar-container" id="pb-toolbar-bottom-right" /> -->
+    <!-- <div class="bk bk-bottom bk-control"> -->
+    <!--   <div class="bk-toolbar-container" id="bk-toolbar-bottom-left" /> -->
+    <!--   <div class="bk-toolbar-container" id="bk-toolbar-bottom-right" /> -->
     <!-- </div> -->
   </Teleport>
 </template>

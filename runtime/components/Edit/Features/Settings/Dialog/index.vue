@@ -5,12 +5,12 @@
     @cancel="$emit('cancel')"
     hide-buttons
   >
-    <div class="pb pb-dialog-form">
-      <div class="pb-form-section">
-        <h3 class="pb-form-label">Darstellung</h3>
-        <ul class="pb-settings-checkboxes">
+    <div class="bk bk-dialog-form">
+      <div class="bk-form-section">
+        <h3 class="bk-form-label">Darstellung</h3>
+        <ul class="bk-settings-checkboxes">
           <li>
-            <label class="pb-checkbox-toggle">
+            <label class="bk-checkbox-toggle">
               <input type="checkbox" v-model="showImport" class="peer" />
               <div></div>
               <span>"Inhalte importieren" Dialog beim Start anzeigen</span>
@@ -18,7 +18,7 @@
           </li>
 
           <li>
-            <label class="pb-checkbox-toggle">
+            <label class="bk-checkbox-toggle">
               <input type="checkbox" v-model="useArtboard" class="peer" />
               <div></div>
               <span>Zeichenfläche verwenden</span>
@@ -26,7 +26,7 @@
           </li>
 
           <li>
-            <label class="pb-checkbox-toggle">
+            <label class="bk-checkbox-toggle">
               <input type="checkbox" v-model="persistArtboard" class="peer" />
               <div></div>
               <span>Position und Zoom speichern</span>
@@ -34,14 +34,14 @@
           </li>
         </ul>
       </div>
-      <div class="pb-form-section">
-        <h3 class="pb-form-label">Erweitert</h3>
-        <div class="pb-settings-buttons">
-          <button class="pb-button" @click="revertSort">
+      <div class="bk-form-section">
+        <h3 class="bk-form-label">Erweitert</h3>
+        <div class="bk-settings-buttons">
+          <button class="bk-button" @click="revertSort">
             Sortierung der Paragraphen zurücksetzen
           </button>
 
-          <button class="pb-button is-danger" @click="revertAll">
+          <button class="bk-button is-danger" @click="revertAll">
             Alle Einstellungen zurücksetzen
           </button>
         </div>

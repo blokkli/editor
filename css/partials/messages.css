@@ -1,4 +1,4 @@
-@keyframes pb-message-timer {
+@keyframes bk-message-timer {
   from {
     transform: scaleX(1);
   }
@@ -7,34 +7,34 @@
   }
 }
 
-.pb.pb-messages {
+.bk.bk-messages {
   @apply fixed left-70 bottom-0 z-[9000] right-0;
 
-  .pb-message {
+  .bk-message {
     @apply p-20 w-full text-white font-bold text-lg text-center relative;
 
-    &.pb-has-timer {
+    &.bk-has-timer {
       &:before {
         content: '';
         @apply h-5 bg-white/50 absolute bottom-0 left-0 w-full origin-top-left;
-        animation: 6.1s pb-message-timer linear;
+        animation: 6.1s bk-message-timer linear;
       }
     }
 
-    &.pb-is-success {
+    &.bk-is-success {
       @apply bg-green-600 hover:bg-green-700;
     }
-    &.pb-is-error {
+    &.bk-is-error {
       @apply bg-red-600 hover:bg-red-700;
     }
   }
 }
 
-.pb-message-enter-active,
-.pb-message-leave-active {
+.bk-message-enter-active,
+.bk-message-leave-active {
   @apply transition;
 }
-.pb-message-enter-from,
-.pb-message-leave-to {
+.bk-message-enter-from,
+.bk-message-leave-to {
   @apply translate-y-full;
 }

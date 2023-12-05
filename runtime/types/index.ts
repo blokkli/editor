@@ -1,17 +1,18 @@
 import type { Ref } from 'vue'
 import type { Emitter } from 'mitt'
-import type { PbDomProvider } from '../helpers/domProvider'
-import type { PbAdapter, PbAdapterContext } from '#blokkli/adapter'
-import type { PbStorageProvider } from '../helpers/storageProvider'
-import type { PbTypesProvider } from '../helpers/paragraphTypeProvider'
-import type { PbSelectionProvider } from '../helpers/selectionProvider'
-import type { PbKeyboardProvider } from '../helpers/keyboardProvider'
-import type { PbUiProvider } from '../helpers/uiProvider'
-import type { PbAnimationProvider } from '../helpers/animationFrame'
-import type { PbStateProvider } from '../helpers/stateProvider'
+import type { BlokkliDomProvider } from '../helpers/domProvider'
+import type { BlokkliAdapter, BlokkliAdapterContext } from '#blokkli/adapter'
+import type { BlokkliStorageProvider } from '../helpers/storageProvider'
+import type { BlokkliTypesProvider } from '../helpers/paragraphTypeProvider'
+import type { BlokkliSelectionProvider } from '../helpers/selectionProvider'
+import type { BlokkliKeyboardProvider } from '../helpers/keyboardProvider'
+import type { BlokkliUiProvider } from '../helpers/uiProvider'
+import type { BlokkliAnimationProvider } from '../helpers/animationFrame'
+import type { BlokkliStateProvider } from '../helpers/stateProvider'
 import type { eventBus } from './../eventBus'
+import type { ParagraphDefinitionOption } from './blokkOptions'
 
-interface PbMutationResponseLike<T> {
+interface MutationResponseLike<T> {
   data: {
     state?: {
       action?: {
@@ -22,57 +23,18 @@ interface PbMutationResponseLike<T> {
   }
 }
 
-export type PbMutateWithLoadingState = (
-  promise: Promise<PbMutationResponseLike<any>> | undefined,
+export type MutateWithLoadingStateFunction = (
+  promise: Promise<MutationResponseLike<any>> | undefined,
   errorMessage?: string,
   successMessage?: string,
 ) => Promise<boolean>
 
-export type PbAvailableFeatures = {
+export type BlokkliAvailableFeatures = {
   comment: boolean
   conversion: boolean
   duplicate: boolean
   library: boolean
 }
-
-export type StringBoolean = '0' | '1'
-
-export type ParagraphDefinitionOptionText = {
-  type: 'text'
-  default: string
-  label: string
-  inputType?: 'text' | 'number' | 'date'
-}
-
-export type ParagraphDefinitionOptionCheckbox = {
-  type: 'checkbox'
-  default: StringBoolean
-  label: string
-}
-
-export type ParagraphDefinitionOptionCheckboxes = {
-  type: 'checkboxes'
-  label: string
-  /**
-   * The default values, separated by comma.
-   */
-  default: string
-  options: Record<string, string>
-}
-
-export type ParagraphDefinitionOptionRadios = {
-  type: 'radios'
-  label: string
-  default: string
-  displayAs?: 'radios' | 'colors' | 'grid'
-  options: Record<string, string | number[]>
-}
-
-export type ParagraphDefinitionOption =
-  | ParagraphDefinitionOptionCheckbox
-  | ParagraphDefinitionOptionCheckboxes
-  | ParagraphDefinitionOptionRadios
-  | ParagraphDefinitionOptionText
 
 export type ParagraphDefinitionOptionsInput = {
   [key: string]: ParagraphDefinitionOption
@@ -165,35 +127,27 @@ export type InjectedParagraphItem = ComputedRef<{
   parentParagraphBundle?: string
 }>
 
-export interface PbFieldItemParagraphFragment {
+export interface BlokkliFieldListItemParagraph {
   __typename: any
   id?: string
   uuid: string
   entityBundle: string
 }
 
-export interface PbFieldItemFragment<T> {
-  item?: PbFieldItemParagraphFragment
+export interface BlokkliFieldList<T> {
+  item?: BlokkliFieldListItemParagraph
   paragraph?: T
 }
 
-type PbList = PbFieldItemFragment<any>[]
-
-export type PbMutatedField = {
+export type BlokkliMutatedField = {
   name: string
   label: string
   field: {
-    list?: PbFieldItemFragment<any>[]
+    list?: BlokkliFieldList<any>[]
   }
 }
 
-export type PbEditEntityTranslation = {
-  langcode: string
-  url: string
-  status: boolean
-}
-
-export type PbEditEntity = {
+export type BlokkliEditEntity = {
   id?: string
   label?: string
   changed?: number
@@ -202,25 +156,25 @@ export type PbEditEntity = {
   editUrl?: string
 }
 
-export interface PbAvailableLanguage {
+export interface BlokkliLanguage {
   id?: string
   name: string
 }
 
-export interface PbAvailableTranslation {
+export interface BlokkliEntityTranslation {
   id: string
   url: string
   status: boolean
 }
 
-export interface PbTranslationState {
+export interface BlokkliTranslationState {
   isTranslatable?: boolean | null
   sourceLanguage?: string | null
-  availableLanguages?: PbAvailableLanguage[]
-  translations?: PbAvailableTranslation[]
+  availableLanguages?: BlokkliLanguage[]
+  translations?: BlokkliEntityTranslation[]
 }
 
-export interface PbFieldConfig {
+export interface BlokkliFieldListConfig {
   name?: string
   label?: string
   storage?: {
@@ -228,46 +182,39 @@ export interface PbFieldConfig {
   }
 }
 
-export interface PbFieldEntity {
+export interface BlokkliFieldListEntity {
   id?: string
   entityTypeId: string
   entityBundle: string
   uuid: string
 }
 
-export interface PbConversion {
+export interface BlokkliConversionItem {
   sourceBundle: string
   targetBundle: string
 }
 
-export interface PbField {
-  canEdit?: boolean
-  list?: PbList
-  fieldConfig?: PbFieldConfig
-  entity?: PbFieldEntity
-}
-
-export interface PbLibraryItem {
+export interface BlokkliLibraryItem {
   uuid: string
   label?: string
   bundle: string
-  item: PbFieldItemParagraphFragment
+  item: BlokkliFieldListItemParagraph
   paragraph: any
 }
 
-export interface PbAllowedBundle {
+export interface BlokkliAvailableType {
   entityType: string
   bundle: string
   fieldName: string
   allowedTypes?: string[]
 }
 
-export interface PbImportItem {
+export interface BlokkliImportItem {
   uuid: string
   label: string
 }
 
-export type PbComment = {
+export type BlokkliComment = {
   uuid?: string
   paragraphUuids?: string[]
   resolved?: boolean
@@ -276,34 +223,34 @@ export type PbComment = {
   user?: { label?: string }
 }
 
-export interface PbMutation {
+export interface BlokkliMutationItem {
   timestamp?: string
   pluginId?: string
   plugin?: { label?: string; affectedParagraphUuid?: string }
 }
 
-export interface PbViolation {
+export interface BlokkliValidation {
   message: string
   code?: string
   propertyPath?: string
 }
 
-export interface PbEditState {
+export interface BlokkliMappedState {
   currentIndex: number
-  mutations: PbMutation[]
+  mutations: BlokkliMutationItem[]
   currentUserIsOwner: boolean
   ownerName: string
   mutatedState?: {
     behaviorSettings?: any
-    fields?: PbMutatedField[]
-    violations?: PbViolation[]
+    fields?: BlokkliMutatedField[]
+    violations?: BlokkliValidation[]
   }
-  entity: PbEditEntity
-  translationState: PbTranslationState
+  entity: BlokkliEditEntity
+  translationState: BlokkliTranslationState
   previewUrl?: string
 }
 
-export interface PbType {
+export interface BlokkliItemType {
   id?: string
   label?: string
   description?: string
@@ -312,12 +259,7 @@ export interface PbType {
   isTranslatable?: boolean
 }
 
-export type PbEditMode = 'readonly' | 'editing' | 'translating'
-
-export interface PbSettings {
-  showImport: boolean | undefined
-  persistCanvas: boolean | undefined
-}
+export type BlokkliEditMode = 'readonly' | 'editing' | 'translating'
 
 export type MutatedParagraphOptions = {
   [uuid: string]: {
@@ -330,7 +272,7 @@ export type MutatedParagraphOptions = {
 /**
  * Defines a content search item.
  */
-export type PbSearchContentItem = {
+export type BlokkliSearchContentItem = {
   /**
    * The ID of the item.
    */
@@ -424,7 +366,7 @@ export interface DraggableSearchContentItem {
   itemType: 'search_content'
   element: HTMLElement
   paragraphType: string
-  searchItem: PbSearchContentItem
+  searchItem: BlokkliSearchContentItem
 }
 
 export type DraggableItem =
@@ -466,7 +408,7 @@ export type AddClipboardParagraphEvent = {
 }
 
 export type AddContentSearchItemParagraphEvent = {
-  item: PbSearchContentItem
+  item: BlokkliSearchContentItem
   host: DraggableHostData
   bundle: string
   afterUuid?: string
@@ -490,7 +432,7 @@ export type EditParagraphEvent = {
 }
 
 export type UpdateMutatedFieldsEvent = {
-  fields: PbMutatedField[]
+  fields: BlokkliMutatedField[]
 }
 
 type AnimationFrameFieldArea = {
@@ -512,7 +454,7 @@ export type AnimationFrameEvent = {
   mouseY: number
 }
 
-export type PbMessage = {
+export type BlokkliMessage = {
   type: 'success' | 'error'
   message: string
 }
@@ -537,7 +479,7 @@ export type KeyPressedEvent = {
 
 export type TranslateParagraphEvent = {
   uuid: string
-  language: PbAvailableLanguage
+  language: BlokkliLanguage
 }
 
 export type ImportFromExistingEvent = {
@@ -570,7 +512,7 @@ export type ParagraphsBuilderEvents = {
   addNewParagraph: AddNewParagraphEvent
   updateMutatedFields: UpdateMutatedFieldsEvent
   animationFrame: AnimationFrameEvent
-  message: PbMessage
+  message: BlokkliMessage
   keyPressed: KeyPressedEvent
   editEntity: undefined
   translateEntity: string
@@ -592,7 +534,7 @@ export type ParagraphsBuilderEvents = {
 
   'state:reloaded': undefined
 
-  'search:selectContentItem': PbSearchContentItem
+  'search:selectContentItem': BlokkliSearchContentItem
   addContentSearchItemParagraph: AddContentSearchItemParagraphEvent
   'option:update': UpdateParagraphOptionEvent
 }
@@ -608,7 +550,7 @@ export interface BlokkliApp {
   /**
    * The adapter.
    */
-  adapter: PbAdapter<any>
+  adapter: BlokkliAdapter<any>
 
   eventBus: typeof eventBus
 
@@ -618,15 +560,15 @@ export interface BlokkliApp {
     langcodeWithoutPrefix: string
   }
 
-  dom: PbDomProvider
-  storage: PbStorageProvider
-  types: PbTypesProvider
-  selection: PbSelectionProvider
-  keyboard: PbKeyboardProvider
-  ui: PbUiProvider
-  animation: PbAnimationProvider
-  state: PbStateProvider
-  context: ComputedRef<PbAdapterContext>
+  dom: BlokkliDomProvider
+  storage: BlokkliStorageProvider
+  types: BlokkliTypesProvider
+  selection: BlokkliSelectionProvider
+  keyboard: BlokkliKeyboardProvider
+  ui: BlokkliUiProvider
+  animation: BlokkliAnimationProvider
+  state: BlokkliStateProvider
+  context: ComputedRef<BlokkliAdapterContext>
 }
 
 export default {}

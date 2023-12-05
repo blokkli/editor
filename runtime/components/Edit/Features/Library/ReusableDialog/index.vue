@@ -8,21 +8,21 @@
     @submit="$emit('confirm', label)"
     @cancel="$emit('cancel')"
   >
-    <div class="pb-dialog-form">
-      <label for="reusable_label" class="pb-form-label">Beschreibung</label>
+    <div class="bk-dialog-form">
+      <label for="reusable_label" class="bk-form-label">Beschreibung</label>
       <input
         v-model="label"
         type="text"
         id="reusable_label"
-        class="pb-form-input"
+        class="bk-form-input"
         placeholder="Teaser Kampagne 2023"
         required
       />
     </div>
-    <div class="pb-form-label">Vorschau</div>
+    <div class="bk-form-label">Vorschau</div>
     <div
-      class="pb-dialog-content-element"
-      :class="[backgroundClass, { 'pb-default-bg': !backgroundClass }]"
+      class="bk-dialog-content-element"
+      :class="[backgroundClass, { 'bk-default-bg': !backgroundClass }]"
     >
       <div ref="paragraph"></div>
     </div>

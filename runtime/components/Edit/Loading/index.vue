@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <div class="pb pb-init-overlay">
+    <div class="bk bk-init-overlay">
       <Icon name="spinner" />
     </div>
   </Teleport>

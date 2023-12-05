@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="#pb-sidebar-tabs">
+  <Teleport to="#bk-sidebar-tabs">
     <button
       @click="toggleSidebar(id)"
       :class="{ 'is-active': activeSidebar === id }"
@@ -8,14 +8,14 @@
       <slot name="icon">
         <Icon v-if="icon" :name="icon" />
       </slot>
-      <div class="pb-tooltip">{{ title }}</div>
+      <div class="bk-tooltip">{{ title }}</div>
     </button>
   </Teleport>
 
-  <Teleport to="#pb-sidebar-content" v-if="activeSidebar === id">
-    <div class="pb-sidebar-inner" @wheel.stop="">
-      <h3 class="pb-sidebar-title">{{ title }}</h3>
-      <div ref="sidebarContent" class="pb-sidebar-content">
+  <Teleport to="#bk-sidebar-content" v-if="activeSidebar === id">
+    <div class="bk-sidebar-inner" @wheel.stop="">
+      <h3 class="bk-sidebar-title">{{ title }}</h3>
+      <div ref="sidebarContent" class="bk-sidebar-content">
         <slot :scrolled-to-end="scrolledToEnd"></slot>
       </div>
     </div>
@@ -23,14 +23,14 @@
 </template>
 
 <script setup lang="ts">
-import type { PbIcon } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon } from '#blokkli/components'
 
 const props = defineProps<{
   id: string
   title: string
   editOnly?: boolean
-  icon?: PbIcon
+  icon?: BlokkliIcon
 }>()
 
 const { storage, state } = useBlokkli()
@@ -46,9 +46,9 @@ const showSidebar = () => (activeSidebar.value = props.id)
 
 watch(activeSidebar, (active) => {
   if (active) {
-    document.documentElement.classList.add('pb-has-sidebar-right')
+    document.documentElement.classList.add('bk-has-sidebar-right')
   } else {
-    document.documentElement.classList.remove('pb-has-sidebar-right')
+    document.documentElement.classList.remove('bk-has-sidebar-right')
   }
 })
 

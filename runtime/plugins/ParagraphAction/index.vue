@@ -1,15 +1,15 @@
 <template>
-  <Teleport to="#pb-paragraph-actions">
+  <Teleport to="#bk-paragraph-actions">
     <button
       :disabled="isDisabled"
       @click="onClick"
-      :class="{ 'pb-is-active': active }"
+      :class="{ 'bk-is-active': active }"
       :style="{ order: weight || 0 }"
     >
       <slot name="icon">
         <Icon v-if="icon" :name="icon" />
       </slot>
-      <div class="pb-tooltip">
+      <div class="bk-tooltip">
         <span>{{ title }}</span>
         <ShortcutIndicator
           v-if="keyCode"
@@ -20,7 +20,7 @@
       </div>
     </button>
   </Teleport>
-  <Teleport to="#pb-paragraph-actions-after">
+  <Teleport to="#bk-paragraph-actions-after">
     <slot
       :paragraphUuid="paragraphUuid"
       :paragraphs="selection.blocks.value"
@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { PbIcon } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon } from '#blokkli/components'
 import { DraggableExistingParagraphItem } from '#blokkli/types'
 import { ShortcutIndicator } from '#blokkli/components'
@@ -76,7 +76,7 @@ const props = defineProps<{
    */
   weight?: number
 
-  icon?: PbIcon
+  icon?: BlokkliIcon
 }>()
 
 const isDisabled = computed(

@@ -1,19 +1,19 @@
-.pb.pb-comments-overlay {
-  .pb-comments-overlay-item {
+.bk.bk-comments-overlay {
+  .bk-comments-overlay-item {
     @apply absolute top-0 left-0 w-0;
-    &.pb-is-left {
+    &.bk-is-left {
       @apply border-l-2 border-l-slate-300 border-dashed;
     }
-    &:not(.pb-is-left) {
+    &:not(.bk-is-left) {
       @apply border-r-2 border-r-slate-300 border-dashed;
     }
-    &.pb-is-active {
+    &.bk-is-active {
       z-index: 50;
     }
   }
-  .pb-comments-overlay-item-button {
+  .bk-comments-overlay-item-button {
     @apply w-40 h-40  text-lg font-bold  leading-none relative bg-slate-300 text-slate-600 hover:bg-slate-400 flex items-center justify-center z-20;
-    &.pb-has-unresolved-comments {
+    &.bk-has-unresolved-comments {
       @apply bg-yellow-300 text-yellow-900 hover:bg-yellow-400;
     }
     svg {
@@ -23,28 +23,28 @@
       @apply mt-2;
     }
   }
-  .pb-comments-overlay-comments {
+  .bk-comments-overlay-comments {
     @apply bg-white shadow-xl  origin-top-left absolute top-0  z-10;
-    &.pb-is-left {
+    &.bk-is-left {
       @apply left-0;
-      .pb-comments-overlay-comments-header {
+      .bk-comments-overlay-comments-header {
         @apply pl-50 justify-between flex-row-reverse;
       }
     }
-    &:not(.pb-is-left) {
+    &:not(.bk-is-left) {
       @apply right-0;
     }
   }
-  .pb-comments-overlay-comments-header {
+  .bk-comments-overlay-comments-header {
     @apply h-40 pl-10 bg-slate-100 flex items-center uppercase text-xs font-semibold border-b border-b-slate-300 text-slate-600 pr-10;
     svg {
       @apply w-15 h-15 mr-5 fill-current;
     }
   }
-  .pb-comments-overlay-comments-item {
+  .bk-comments-overlay-comments-item {
     @apply w-300;
   }
-  .pb-comments-overlay-form {
+  .bk-comments-overlay-form {
     @apply p-10;
     button {
       @apply w-full mt-10;
@@ -52,15 +52,15 @@
   }
 }
 
-.pb.pb-comment {
+.bk.bk-comment {
   @apply font-sans text-base p-10 border-b hover:bg-slate-50;
   h3 {
     @apply font-sans font-bold;
   }
-  .pb-comment-date {
+  .bk-comment-date {
     @apply text-xs text-slate-500;
   }
-  .pb-comment-body {
+  .bk-comment-body {
     @apply mt-5 break-words;
   }
   &:hover {

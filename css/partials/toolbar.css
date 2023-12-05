@@ -1,5 +1,5 @@
-.pb {
-  &.pb-top {
+.bk {
+  &.bk-top {
     @apply bg-slate-900;
     position: fixed;
     top: 0;
@@ -8,13 +8,13 @@
     z-index: 50000;
   }
 
-  &.pb-toolbar {
+  &.bk-toolbar {
     @apply select-none;
   }
 
-  .pb-toolbar-tabs {
+  .bk-toolbar-tabs {
     @apply flex h-full relative;
-    .pb-tooltip {
+    .bk-tooltip {
       @apply absolute top-full left-0 right-3 mt-3;
     }
     button {
@@ -22,7 +22,7 @@
       @apply hover:bg-slate-700;
       &.is-active {
         @apply bg-white text-slate-900;
-        .pb-tooltip {
+        .bk-tooltip {
           @apply hidden;
         }
       }
@@ -34,13 +34,13 @@
         @apply pointer-events-none opacity-25;
       }
       &:not(:hover) {
-        .pb-tooltip {
+        .bk-tooltip {
           @apply hidden;
         }
       }
     }
   }
-  .pb-tooltip {
+  .bk-tooltip {
     @apply bg-slate-800/80 backdrop-blur p-5 text-slate-50 font-semibold text-sm rounded select-none pointer-events-none h-[34px] flex items-center justify-between px-10 leading-none whitespace-nowrap;
     kbd {
       @apply font-sans text-xs flex ml-5;
@@ -52,15 +52,15 @@
       @apply bg-slate-500 px-5 text-slate-100 rounded h-[18px] flex items-center min-w-[18px] justify-center;
     }
   }
-  .pb-toolbar-menu {
+  .bk-toolbar-menu {
     @apply relative z-[13000] h-full;
   }
 
-  .pb-toolbar-menu-button {
+  .bk-toolbar-menu-button {
     @apply bg-blue-700 w-70 flex items-center justify-center text-slate-50 h-full focus:outline-none relative z-50 transition;
     @apply hover:bg-blue-800;
 
-    &.pb-is-active {
+    &.bk-is-active {
       @apply bg-white text-blue-700;
     }
 
@@ -69,10 +69,10 @@
     }
   }
 
-  .pb-toolbar-menu-overlay {
+  .bk-toolbar-menu-overlay {
     @apply fixed top-0 left-0 w-screen h-screen z-[12000];
   }
-  .pb-toolbar-menu-list {
+  .bk-toolbar-menu-list {
     @apply fixed top-0 left-0 bg-white shadow-lg bottom-0 pt-50 flex flex-col;
     &:before {
       content: '';
@@ -82,11 +82,11 @@
       @apply grid;
       @apply border-t border-t-slate-200;
     }
-    #pb-toolbar-menu-secondary {
+    #bk-toolbar-menu-secondary {
       @apply mt-auto;
     }
   }
-  .pb-toolbar-menu-list-button {
+  .bk-toolbar-menu-list-button {
     @apply grid items-center pl-15 pr-20 py-15 gap-x-15 w-full text-left whitespace-nowrap text-slate-950;
     @apply hover:bg-slate-100;
     @apply border-b border-b-slate-200;
@@ -94,7 +94,7 @@
     grid-template-rows: auto auto;
     &[disabled] {
       @apply pointer-events-none;
-      .pb-toolbar-menu-list-icon {
+      .bk-toolbar-menu-list-icon {
         @apply bg-white border-slate-100 text-slate-300;
       }
       span,
@@ -110,35 +110,35 @@
       @apply text-slate-700 text-sm;
     }
 
-    &:not([disabled]).pb-is-danger {
-      .pb-toolbar-menu-list-icon {
+    &:not([disabled]).bk-is-danger {
+      .bk-toolbar-menu-list-icon {
         @apply bg-red-50 text-red-800 border-red-200;
       }
       &:hover {
-        .pb-toolbar-menu-list-icon {
+        .bk-toolbar-menu-list-icon {
           @apply bg-red-200 text-red-900 border-red-400;
         }
       }
     }
 
-    &:not([disabled]).pb-is-success {
-      .pb-toolbar-menu-list-icon {
+    &:not([disabled]).bk-is-success {
+      .bk-toolbar-menu-list-icon {
         @apply bg-green-50 text-green-800 border-green-300;
       }
       &:hover {
-        .pb-toolbar-menu-list-icon {
+        .bk-toolbar-menu-list-icon {
           @apply bg-green-200 text-green-900 border-green-400;
         }
       }
     }
 
     &:hover {
-      .pb-toolbar-menu-list-icon {
+      .bk-toolbar-menu-list-icon {
         @apply bg-slate-200 text-slate-900 border-slate-500;
       }
     }
   }
-  .pb-toolbar-menu-list-icon {
+  .bk-toolbar-menu-list-icon {
     @apply w-50 h-50 flex items-center justify-center bg-slate-100 rounded text-slate-500 border border-slate-300;
     grid-column: 1;
     grid-row: 1 / -1;
@@ -147,15 +147,15 @@
     }
   }
 
-  .pb-toolbar-button {
+  .bk-toolbar-button {
     @apply text-slate-200 flex gap-5 items-center px-10 min-w-[50px] justify-center;
     @apply hover:bg-slate-700;
 
-    &.pb-is-inactive {
+    &.bk-is-inactive {
       @apply text-slate-600;
     }
 
-    &.pb-is-zoom {
+    &.bk-is-zoom {
       @apply w-100 justify-between px-15;
     }
 
@@ -167,48 +167,48 @@
     }
     &.is-active {
       @apply bg-white text-slate-900;
-      .pb-tooltip {
+      .bk-tooltip {
         @apply hidden;
       }
     }
-    &.pb-is-active-underline {
+    &.bk-is-active-underline {
       box-shadow: inset 0 -2px 0 0 white;
     }
     &:not(:hover) {
-      .pb-tooltip {
+      .bk-tooltip {
         @apply hidden;
       }
     }
-    .pb-tooltip {
+    .bk-tooltip {
       @apply absolute top-full left-0 mt-3;
       min-width: calc(100% - 3px);
     }
   }
 
-  .pb-toolbar-area.pb-is-menu + .pb-toolbar-container .pb-tooltip {
+  .bk-toolbar-area.bk-is-menu + .bk-toolbar-container .bk-tooltip {
     @apply left-3;
   }
 
-  &.pb-toolbar {
+  &.bk-toolbar {
     @apply flex h-50 text-base;
   }
 
-  .pb-toolbar-container {
+  .bk-toolbar-container {
     @apply relative flex h-full;
-    &.pb-is-title {
+    &.bk-is-title {
       @apply flex-1;
 
-      .pb-toolbar-button {
+      .bk-toolbar-button {
         @apply w-full justify-start relative;
-        .pb-tooltip {
+        .bk-tooltip {
           @apply w-auto min-w-0;
         }
         &:not(:hover) {
-          .pb-tooltip {
+          .bk-tooltip {
             @apply hidden;
           }
         }
-        .pb-toolbar-title {
+        .bk-toolbar-title {
           @apply relative w-full h-full;
           > div {
             @apply min-w-0 overflow-ellipsis overflow-hidden absolute top-1/2 left-0 w-full whitespace-nowrap -translate-y-1/2 text-left;
@@ -219,50 +219,50 @@
         @apply text-slate-100;
       }
     }
-    + .pb-toolbar-container {
+    + .bk-toolbar-container {
       @apply border-l border-l-slate-600;
     }
   }
-  .pb-status-indicator {
+  .bk-status-indicator {
     @apply w-[11px] h-[11px] inline-block bg-red-500 rounded-full shrink-0 mr-[8px];
-    &.pb-is-success {
+    &.bk-is-success {
       @apply bg-green-500;
     }
-    &.pb-is-warning {
+    &.bk-is-warning {
       @apply bg-yellow-400;
     }
   }
 
-  .pb-feature-canvas-button {
+  .bk-feature-canvas-button {
     @apply flex h-full items-center justify-center min-w-[50px];
   }
 }
 
-.pb-menu-enter-active,
-.pb-menu-leave-active {
+.bk-menu-enter-active,
+.bk-menu-leave-active {
   transition: 0.2s ease-in-out;
 }
-.pb-menu-enter-from,
-.pb-menu-leave-to {
+.bk-menu-enter-from,
+.bk-menu-leave-to {
   transform: translateX(-100%);
 }
 
-.pb-slide-up-enter-active,
-.pb-slide-up-leave-active {
+.bk-slide-up-enter-active,
+.bk-slide-up-leave-active {
   transition: 0.3s ease-in-out;
-  .pb-dialog-inner {
+  .bk-dialog-inner {
     transition: 0.3s ease-in-out;
   }
-  .pb-dialog-background {
+  .bk-dialog-background {
     transition: 0.3s ease-in-out;
   }
 }
-.pb-slide-up-enter-from,
-.pb-slide-up-leave-to {
-  .pb-dialog-background {
+.bk-slide-up-enter-from,
+.bk-slide-up-leave-to {
+  .bk-dialog-background {
     @apply opacity-0;
   }
-  .pb-dialog-inner {
+  .bk-dialog-inner {
     @apply scale-90 opacity-0;
   }
 }

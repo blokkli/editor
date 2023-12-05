@@ -1,17 +1,17 @@
 <template>
   <Teleport to="body">
-    <transition name="pb-slide-in" :duration="200">
+    <transition name="bk-slide-in" :duration="200">
       <div
         v-if="modalUrl"
-        class="pb-drupal-modal"
+        class="bk-drupal-modal"
         @click.capture=""
         @mousedown.prevent.stop=""
       >
-        <div class="pb-drupal-modal-background pb-overlay"></div>
-        <Resizable class="pb-drupal-modal-resizable">
-          <div class="pb-drupal-modal-header">
+        <div class="bk-drupal-modal-background bk-overlay"></div>
+        <Resizable class="bk-drupal-modal-resizable">
+          <div class="bk-drupal-modal-header">
             <ParagraphIcon v-if="bundle" :bundle="bundle" />
-            <div v-else class="pb-paragraph-icon">
+            <div v-else class="bk-paragraph-icon">
               <Icon name="form" />
             </div>
             <span>{{ title }}</span>
@@ -19,11 +19,11 @@
               <Icon name="close" />
             </button>
           </div>
-          <div class="pb-drupal-modal-iframe">
+          <div class="bk-drupal-modal-iframe">
             <iframe
               allowtransparency
               :src="modalUrl"
-              class="pb-drupal-iframe"
+              class="bk-drupal-iframe"
               ref="iframe"
               @load="onIFrameLoad"
             />

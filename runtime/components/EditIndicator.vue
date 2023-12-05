@@ -1,9 +1,9 @@
 <template>
   <Teleport to="body">
     <div class="pb" v-show="isVisible">
-      <div class="pb-field-paragraphs-indicator" :style="style">
+      <div class="bk-field-paragraphs-indicator" :style="style">
         <button
-          class="pb-button pb-is-primary"
+          class="bk-button bk-is-primary"
           ref="button"
           @click="$emit('edit')"
         >
@@ -55,7 +55,7 @@ onUnmounted(() => {
 </script>
 
 <style lang="postcss">
-.pb-field-paragraphs-indicator {
+.bk-field-paragraphs-indicator {
   position: fixed;
   top: 0;
   right: 10px;

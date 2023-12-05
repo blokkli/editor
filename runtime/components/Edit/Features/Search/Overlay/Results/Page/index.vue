@@ -2,24 +2,24 @@
   <div v-show="visible">
     <button
       v-for="(item, i) in visibleItems"
-      :class="{ 'pb-is-active': i === index }"
+      :class="{ 'bk-is-active': i === index }"
       @click.stop="clickItem"
       @mouseenter="index = i"
       ref="listItems"
     >
-      <div class="pb-search-item-icon">
+      <div class="bk-search-item-icon">
         <ParagraphIcon :bundle="item.item.paragraphType" />
       </div>
-      <div class="pb-search-item-content">
+      <div class="bk-search-item-content">
         <Highlight tag="h2" :text="item.title" :regex="regex" />
         <Highlight
           v-if="item.context"
-          class="pb-search-item-context"
+          class="bk-search-item-context"
           :text="item.context"
           :regex="regex"
         />
         <Highlight
-          class="pb-search-item-text"
+          class="bk-search-item-text"
           :text="item.text"
           :regex="regex"
         />

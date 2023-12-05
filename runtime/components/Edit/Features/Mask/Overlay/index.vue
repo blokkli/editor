@@ -1,5 +1,5 @@
 <template>
-  <div class="pb-canvas-area" :style="canvasAreaStyle">
+  <div class="bk-canvas-area" :style="canvasAreaStyle">
     <div v-for="area in canvasFieldAreas" :style="area.style" />
   </div>
 </template>

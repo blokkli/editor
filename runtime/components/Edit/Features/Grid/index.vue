@@ -12,7 +12,7 @@
     <template v-slot="{ isActive }">
       <div
         v-if="isActive"
-        class="pb-grid-overlay"
+        class="bk-grid-overlay"
         v-html="runtimeConfig.gridMarkup"
       />
     </template>

@@ -11,7 +11,7 @@
   </PluginMenuButton>
 
   <Teleport to="body">
-    <transition appear name="pb-slide-up">
+    <transition appear name="bk-slide-up">
       <DialogModal
         v-if="showConfirm"
         title="Änderungen unwiderruflich verwerfen"

@@ -1,9 +1,9 @@
 <template>
   <div
-    class="pb-paragraph-options-radios"
+    class="bk-paragraph-options-radios"
     :class="{
-      'pb-is-color': displayAs === 'colors',
-      'pb-is-grid': displayAs === 'grid',
+      'bk-is-color': displayAs === 'colors',
+      'bk-is-grid': displayAs === 'grid',
     }"
   >
     <label v-for="option in mappedOptions">
@@ -16,10 +16,10 @@
           :checked="value === option.key"
           @change="$emit('update', option.key)"
         />
-        <span v-if="typeof option.value === 'string'" class="pb-is-text">
+        <span v-if="typeof option.value === 'string'" class="bk-is-text">
           {{ option.value }}
         </span>
-        <div v-else class="pb-paragraph-options-radios-flex">
+        <div v-else class="bk-paragraph-options-radios-flex">
           <div v-for="v in option.value" :style="{ flex: v }" />
         </div>
       </div>

@@ -2,7 +2,7 @@ import { WritableComputedRef } from 'nuxt/dist/app/compat/capi'
 
 const PREFIX = 'blokkli:'
 
-export type PbStorageProvider = {
+export type BlokkliStorageProvider = {
   use: <T>(
     key: string | ComputedRef<string>,
     defaultValue: T,
@@ -28,7 +28,7 @@ const getExisting = (key: string): any => {
  * This composable can be used to keep state across page navigations and
  * even after a refresh.
  */
-export default function (): PbStorageProvider {
+export default function (): BlokkliStorageProvider {
   const values = ref<Record<string, any>>({})
 
   const use = <T>(

@@ -1,6 +1,6 @@
 <template>
   <slot :items="filteredList"></slot>
-  <ParagraphsList
+  <DraggableList
     v-if="
       isEditing &&
       canEdit &&
@@ -14,7 +14,7 @@
     :entity="entity"
     :class="[attrs.class, listClass]"
     :is-nested="isNested"
-    class="field-paragraphs pb-field-paragraphs"
+    class="field-paragraphs bk-field-paragraphs"
     :tag="tag"
   />
   <component
@@ -22,13 +22,13 @@
     :is="tag"
     :class="[
       attrs.class,
-      { 'pb-field-paragraphs': canEdit && !isNested && !isPreview },
+      { 'bk-field-paragraphs': canEdit && !isNested && !isPreview },
       listClass,
     ]"
     class="field-paragraphs"
     :data-field-key="fieldKey"
   >
-    <PbItem
+    <BlokkliItem
       v-for="(item, i) in filteredList"
       :key="item.item.uuid"
       :item="item.item"
@@ -42,7 +42,12 @@
 </template>
 
 <script lang="ts" setup>
-import type { PbFieldItemFragment, PbMutatedField, PbField } from '#blokkli/types'
+import type {
+  BlokkliFieldList,
+  BlokkliFieldListConfig,
+  BlokkliFieldListEntity,
+  BlokkliMutatedField,
+} from '#blokkli/types'
 import type { ValidFieldListTypes } from '#blokkli/generated-types'
 import {
   INJECT_FIELD_LIST_TYPE,
@@ -53,8 +58,8 @@ import {
   INJECT_MUTATED_FIELDS,
 } from '../helpers/symbols'
 
-const ParagraphsList = defineAsyncComponent(() => {
-  return import('./Edit/ParagraphsList/index.vue')
+const DraggableList = defineAsyncComponent(() => {
+  return import('./Edit/DraggableList/index.vue')
 })
 
 const attrs = useAttrs()
@@ -63,17 +68,17 @@ const isEditing = inject(INJECT_IS_EDITING, false)
 const isInReusable = inject(INJECT_IS_IN_REUSABLE, false)
 const isPreview = inject<boolean>(INJECT_IS_PREVIEW, false)
 const isNested = inject(INJECT_IS_NESTED, false)
-const mutatedFields = inject<Ref<PbMutatedField[]> | null>(
+const mutatedFields = inject<Ref<BlokkliMutatedField[]> | null>(
   INJECT_MUTATED_FIELDS,
   null,
 )
 
 const props = withDefaults(
   defineProps<{
-    list?: PbFieldItemFragment<any>[]
-    fieldConfig?: PbField['fieldConfig']
+    list?: BlokkliFieldList<any>[]
+    fieldConfig?: BlokkliFieldListConfig
     canEdit?: boolean
-    entity?: PbField['entity']
+    entity?: BlokkliFieldListEntity
     tag?: string
     preventEdit?: boolean
     fieldListType?: ValidFieldListTypes
@@ -102,13 +107,13 @@ const fieldKey = computed(() => {
 
 const fieldListType = computed(() => props.fieldListType)
 
-const filteredList = computed<Array<Required<PbFieldItemFragment<any>>>>(() => {
+const filteredList = computed<Array<Required<BlokkliFieldList<any>>>>(() => {
   if (mutatedFields?.value && !isNested && !isInReusable) {
     return (mutatedFields.value.find((v) => v.name === props.fieldConfig?.name)
-      ?.field.list || []) as Array<Required<PbFieldItemFragment<any>>>
+      ?.field.list || []) as Array<Required<BlokkliFieldList<any>>>
   }
   return props.list.filter((v) => v.item && v.paragraph) as Array<
-    Required<PbFieldItemFragment<any>>
+    Required<BlokkliFieldList<any>>
   >
 })
 

@@ -76,12 +76,12 @@ import FeatureConversions from './Conversions/index.vue'
 import FeatureSettings from './Settings/index.vue'
 import FeatureSearch from './Search/index.vue'
 import FeatureDebug from './Debug/index.vue'
-import { PbAvailableFeatures } from '../../../types'
+import { BlokkliAvailableFeatures } from '../../../types'
 import { featureComponents } from '#blokkli-runtime/features'
 
 const { state, runtimeConfig, adapter } = useBlokkli()
 
-const availableFeatures = ref<PbAvailableFeatures>({
+const availableFeatures = ref<BlokkliAvailableFeatures>({
   comment: false,
   conversion: false,
   duplicate: false,

@@ -99,8 +99,8 @@ export type ModuleOptions = {
   /**
    * Valid paragraphs field list types.
    *
-   * If one or more values are defined, they can be passed to the PbField
-   * component as a prop. The value is made available to all paragraphs inside
+   * If one or more values are defined, they can be passed to the BlokkliField
+   * component as a prop. The value is made available to all blokkli items inside
    * this field.
    */
   fieldListTypes?: string[]
@@ -211,10 +211,10 @@ export default defineNuxtModule<ModuleOptions>({
         filename: resolvedFilename,
         write: true,
         getContents: () => `
-        import type { PbAdapterFactory } from '#blokkli/adapter'
+        import type { BlokkliAdapterFactory } from '#blokkli/adapter'
         import adapter from '${resolvedPath}'
 
-        export default adapter as PbAdapterFactory<any>
+        export default adapter as BlokkliAdapterFactory<any>
         `,
       })
     })()
@@ -225,20 +225,20 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.build.transpile.push(resolver.resolve('runtime'))
 
     addComponent({
-      filePath: resolver.resolve('./runtime/components/FieldParagraphs.vue'),
-      name: 'PbField',
+      filePath: resolver.resolve('./runtime/components/Field.vue'),
+      name: 'BlokkliField',
       global: true,
     })
 
     addComponent({
       filePath: resolver.resolve('./runtime/components/Provider.vue'),
-      name: 'PbProvider',
+      name: 'BlokkliProvider',
       global: true,
     })
 
     addComponent({
-      filePath: resolver.resolve('./runtime/components/ParagraphItem.vue'),
-      name: 'PbItem',
+      filePath: resolver.resolve('./runtime/components/BlokkliItem.vue'),
+      name: 'BlokkliItem',
       global: true,
     })
 
@@ -384,7 +384,7 @@ export const featureComponents: any[] = [${features}]`
         }, {})
 
         return `export const icons = ${JSON.stringify(iconMap)} as const
-export type PbIcon = keyof typeof icons`
+export type BlokkliIcon = keyof typeof icons`
       },
       options: {
         paragraphsBuilder: true,

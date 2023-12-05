@@ -1,9 +1,9 @@
 <template>
-  <div class="pb-preview" :style="style">
-    <div v-if="isLoading" class="pb-preview-loading">
+  <div class="bk-preview" :style="style">
+    <div v-if="isLoading" class="bk-preview-loading">
       <Icon name="spinner" />
     </div>
-    <div class="pb-preview-iframe">
+    <div class="bk-preview-iframe">
       <iframe ref="iframe" :src="src" @load="isLoading = false" />
     </div>
   </div>
@@ -34,7 +34,9 @@ const style = computed(() => {
   }
 })
 
-const src = computed(() => route.fullPath.replace('pbEditing', 'pbPreview'))
+const src = computed(() =>
+  route.fullPath.replace('blokkliEditing', 'blokkliPreview'),
+)
 
 const postMessageToIframe = (name: string, data: any) =>
   iframe.value?.contentWindow?.postMessage({

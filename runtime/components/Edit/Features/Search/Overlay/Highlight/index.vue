@@ -1,5 +1,5 @@
 <template>
-  <component :is="tag || 'div'" class="pb-highlight" v-html="markup" />
+  <component :is="tag || 'div'" class="bk-highlight" v-html="markup" />
 </template>
 
 <script lang="ts" setup>

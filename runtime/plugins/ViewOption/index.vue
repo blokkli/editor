@@ -1,12 +1,12 @@
 <template>
-  <Teleport to="#pb-toolbar-view-options">
+  <Teleport to="#bk-toolbar-view-options">
     <button
-      class="pb-toolbar-button"
+      class="bk-toolbar-button"
       @click="onClick"
-      :class="{ 'pb-is-inactive': !isActive }"
+      :class="{ 'bk-is-inactive': !isActive }"
     >
       <slot name="icon"></slot>
-      <div class="pb-tooltip">
+      <div class="bk-tooltip">
         <span>{{ isActive ? titleOff : titleOn }}</span>
 
         <ShortcutIndicator

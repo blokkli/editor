@@ -1,7 +1,7 @@
 <template>
   <button
-    class="pb-message"
-    :class="[{ 'pb-has-timer': hasTimer }, 'pb-is-' + type]"
+    class="bk-message"
+    :class="[{ 'bk-has-timer': hasTimer }, 'bk-is-' + type]"
     @click="$emit('close')"
     @mouseenter="stopTimer"
     @mouseleave="startTimer"

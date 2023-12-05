@@ -1,27 +1,27 @@
-.pb-html-root.pb-is-artboard,
-.pb-html-root.pb-is-artboard .pb-body {
+.bk-html-root.bk-is-artboard,
+.bk-html-root.bk-is-artboard .bk-body {
   @apply overflow-hidden h-screen w-screen;
   img {
     @apply pointer-events-none;
   }
 }
 
-.pb-html-root.pb-is-artboard {
+.bk-html-root.bk-is-artboard {
   @apply overflow-hidden;
-  --pb-root-offset-left: 0px;
-  --pb-root-offset-top: 50px;
-  .pb-body {
+  --bk-root-offset-left: 0px;
+  --bk-root-offset-top: 50px;
+  .bk-body {
     @apply overflow-hidden;
   }
   #nuxt-root {
     @apply bg-slate-200 overflow-hidden absolute bottom-0 right-0;
-    left: var(--pb-root-offset-left);
-    top: var(--pb-root-offset-top);
-    &.pb-has-preview-open {
+    left: var(--bk-root-offset-left);
+    top: var(--bk-root-offset-top);
+    &.bk-has-preview-open {
       @apply left-[445px];
     }
   }
-  .pb-main-canvas {
+  .bk-main-canvas {
     @apply shadow-xl absolute top-0 left-0 w-full xl:w-[80vw] min-w-[1280px] max-w-[1920px] pointer-events-none;
     user-select: none;
     image-rendering: crisp-edges;
@@ -29,18 +29,18 @@
     transform-origin: 0 0;
     transform: translateZ(0);
   }
-  &.pb-has-sidebar-left {
-    --pb-root-offset-left: 70px;
+  &.bk-has-sidebar-left {
+    --bk-root-offset-left: 70px;
   }
-  .pb-body.pb-is-pressing-space {
+  .bk-body.bk-is-pressing-space {
     @apply cursor-move;
-    .pb-main-canvas,
-    .pb-paragraphs-container {
+    .bk-main-canvas,
+    .bk-paragraphs-container {
       @apply pointer-events-none;
     }
   }
 
-  .pb-artboard-scrollbar {
+  .bk-artboard-scrollbar {
     @apply fixed top-[55px] bottom-5 right-5 w-10 bg-slate-500/10 z-[100] rounded-full transition overflow-hidden;
     /* @apply opacity-25; */
 
@@ -48,7 +48,7 @@
       @apply bg-slate-500/50  w-full block rounded-full;
     }
 
-    &.pb-is-active,
+    &.bk-is-active,
     &:hover {
       @apply opacity-100 bg-slate-500/40;
       button {
@@ -56,15 +56,15 @@
       }
     }
 
-    &.pb-is-active button,
+    &.bk-is-active button,
     button:hover {
       @apply bg-slate-500;
     }
   }
 }
 
-.pb-html-root.pb-is-artboard.pb-has-sidebar-right {
-  .pb-artboard-scrollbar {
+.bk-html-root.bk-is-artboard.bk-has-sidebar-right {
+  .bk-artboard-scrollbar {
     @apply right-[305px];
   }
 }

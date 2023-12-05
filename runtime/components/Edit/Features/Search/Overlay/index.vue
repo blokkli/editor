@@ -1,12 +1,12 @@
 <template>
   <div
-    class="pb-search-box"
+    class="bk-search-box"
     @keydown="onKeyDown"
     @wheel.stop
     @mousedown.stop
     @click.stop
   >
-    <div class="pb-search-input">
+    <div class="bk-search-input">
       <Icon name="search" />
       <input
         v-model="search"
@@ -20,17 +20,17 @@
       />
     </div>
 
-    <ul class="pb-search-tabs">
+    <ul class="bk-search-tabs">
       <li
         v-for="(item, i) in tabItems"
-        :class="{ 'pb-is-active': tabIndex === i }"
+        :class="{ 'bk-is-active': tabIndex === i }"
       >
         <button @click="tabIndex = i">{{ item.label }}</button>
       </li>
     </ul>
 
-    <div class="pb-search-results" ref="resultsEl">
-      <div class="pb-search-list">
+    <div class="bk-search-results" ref="resultsEl">
+      <div class="bk-search-list">
         <template v-for="item in tabItems">
           <ResultsPage
             v-if="item.key === 'on_this_page'"

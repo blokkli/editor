@@ -1,7 +1,7 @@
-.pb-preview {
+.bk-preview {
   @apply fixed top-50 bottom-0 bg-white shadow-lg z-[30000];
-  left: var(--pb-root-offset-left);
-  .pb-preview-iframe {
+  left: var(--bk-root-offset-left);
+  .bk-preview-iframe {
     @apply relative w-full h-full;
     iframe {
       @apply bg-white block w-full h-full;
@@ -9,7 +9,7 @@
       @apply overflow-y-auto;
     }
   }
-  .pb-preview-loading {
+  .bk-preview-loading {
     @apply absolute top-0 left-0 w-full h-full z-50 bg-white/90 flex items-center justify-center backdrop-blur-lg;
     svg {
       @apply w-100 h-100 text-slate-200 animate-spin fill-slate-900;
@@ -17,7 +17,7 @@
   }
 }
 
-.pb-body-preview {
+.bk-body-preview {
   @apply overflow-hidden;
   @apply overflow-y-auto;
 }

@@ -9,33 +9,33 @@
     @submit="onSubmit"
     @cancel="$emit('cancel')"
   >
-    <div class="pb pb-dialog-form">
-      <div class="pb-form-section">
-        <h3 class="pb-form-label">Welche Inhalte möchten Sie importieren?</h3>
-        <label v-for="field in state.mutatedFields.value" class="pb-checkbox">
+    <div class="bk bk-dialog-form">
+      <div class="bk-form-section">
+        <h3 class="bk-form-label">Welche Inhalte möchten Sie importieren?</h3>
+        <label v-for="field in state.mutatedFields.value" class="bk-checkbox">
           <input v-model="selectedFields" type="checkbox" :value="field.name" />
           <span>{{ field.label }}</span>
         </label>
       </div>
-      <div class="pb-form-section">
-        <label for="pb_search_term" class="pb-form-label"
+      <div class="bk-form-section">
+        <label for="pb_search_term" class="bk-form-label"
           >Von welcher Seite möchten Sie importieren?</label
         >
         <input
           v-model="searchTerm"
           type="text"
           id="pb_search_term"
-          class="pb-form-input"
+          class="bk-form-input"
           placeholder="Seiten durchsuchen"
           required
         />
       </div>
       <div>{{ entities.length }} von {{ total }} Seiten</div>
       <div
-        class="pb-radio-list"
+        class="bk-radio-list"
         :style="{ opacity: searchTerm !== resultsSearchTerm ? 0.5 : 1 }"
       >
-        <label v-for="entity in entities" class="pb-radio">
+        <label v-for="entity in entities" class="bk-radio">
           <input
             v-model="sourceEntityUuid"
             type="radio"
@@ -51,7 +51,7 @@
 
 <script lang="ts" setup>
 import { DialogModal } from '#blokkli/components'
-import { PbImportItem } from '#blokkli/types'
+import { BlokkliImportItem } from '#blokkli/types'
 
 const { state, adapter } = useBlokkli()
 
@@ -70,7 +70,7 @@ const resultsSearchTerm = ref('')
 const sourceEntityUuid = ref('')
 const selectedFields = ref<string[]>([])
 const isLoading = ref(false)
-const entities = ref<PbImportItem[]>([])
+const entities = ref<BlokkliImportItem[]>([])
 const total = ref(0)
 
 let timeout: any = null

@@ -1,4 +1,4 @@
-export type PbUiProvider = {
+export type BlokkliUiProvider = {
   rootElement: () => HTMLElement
   artboardElement: () => HTMLElement
   menu: {
@@ -9,17 +9,17 @@ export type PbUiProvider = {
   getArtboardScale: () => number
 }
 
-export default function (): PbUiProvider {
+export default function (): BlokkliUiProvider {
   let cachedRootElement: HTMLElement | null = null
   let cachedArtboardElement: HTMLElement | null = null
 
   onMounted(async () => {
-    document.documentElement.classList.add('pb-html-root')
-    document.body.classList.add('pb-body')
+    document.documentElement.classList.add('bk-html-root')
+    document.body.classList.add('bk-body')
   })
   onBeforeUnmount(() => {
-    document.documentElement.classList.remove('pb-html-root')
-    document.body.classList.remove('pb-body')
+    document.documentElement.classList.remove('bk-html-root')
+    document.body.classList.remove('bk-body')
   })
 
   const menuIsOpen = ref(false)
@@ -28,7 +28,7 @@ export default function (): PbUiProvider {
     if (cachedArtboardElement) {
       return cachedArtboardElement
     }
-    const el = document.querySelector('.pb-main-canvas')
+    const el = document.querySelector('.bk-main-canvas')
     if (!el || !(el instanceof HTMLElement)) {
       throw new Error('Failed to locate artboard element.')
     }

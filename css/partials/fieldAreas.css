@@ -1,4 +1,4 @@
-.pb-field-area {
+.bk-field-area {
   @apply absolute top-0 left-0;
   > div {
     @apply absolute top-0 right-0 pr-20 uppercase text-xs text-slate-800 font-medium select-none tracking-wide will-change-transform;
@@ -7,18 +7,18 @@
     }
   }
 
-  &.pb-is-active {
+  &.bk-is-active {
     > div span {
       @apply bg-blue-700 text-white whitespace-nowrap;
     }
   }
 }
 
-.pb-canvas-area {
+.bk-canvas-area {
   @apply pointer-events-none bg-white mix-blend-screen opacity-90 fixed z-50 top-0 left-0;
   > div {
     @apply absolute bg-black;
-    &.pb-is-active {
+    &.bk-is-active {
       @apply border border-blue-700;
     }
   }

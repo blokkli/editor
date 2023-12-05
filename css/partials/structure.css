@@ -1,6 +1,6 @@
-.pb.pb-structure {
+.bk.bk-structure {
   @apply min-h-full;
-  .pb-structure-list {
+  .bk-structure-list {
     @apply text-base;
 
     > li {
@@ -10,7 +10,7 @@
       }
     }
 
-    .pb-paragraph-icon {
+    .bk-paragraph-icon {
       font-size: 18px;
     }
 
@@ -23,10 +23,10 @@
     @apply py-10 w-full;
   }
 
-  .pb-structure-field-paragraphs {
+  .bk-structure-field-paragraphs {
     li {
-      &.pb-is-active > button {
-        .pb-paragraph-label-icon {
+      &.bk-is-active > button {
+        .bk-paragraph-label-icon {
           @apply bg-blue-600 text-white border-blue-900;
         }
 
@@ -35,8 +35,8 @@
         }
       }
 
-      &.pb-is-inside-active > button {
-        .pb-paragraph-label-icon {
+      &.bk-is-inside-active > button {
+        .bk-paragraph-label-icon {
           @apply bg-blue-50 text-blue-700 border-blue-300;
         }
 
@@ -47,7 +47,7 @@
     }
   }
 
-  .pb-structure-field-nested-paragraphs {
+  .bk-structure-field-nested-paragraphs {
     li {
       @apply pl-25 relative;
       &:before {
@@ -59,7 +59,7 @@
         @apply absolute left-[11.5px] w-[15px] h-0  top-[22px] border-t border-t-slate-400 border-dashed;
       }
 
-      &.pb-is-inside-active {
+      &.bk-is-inside-active {
         &:before {
           @apply !border-l-blue-400 border-solid;
         }

@@ -1,7 +1,7 @@
 <template>
-  <Teleport :to="'#pb-toolbar-' + region">
+  <Teleport :to="'#bk-toolbar-' + region">
     <button
-      class="pb-toolbar-button"
+      class="bk-toolbar-button"
       @click="onClick"
       :disabled="disabled"
       :class="{ 'is-active': active }"
@@ -9,7 +9,7 @@
       <slot>
         <Icon v-if="icon" :name="icon" />
       </slot>
-      <div class="pb-tooltip">
+      <div class="bk-tooltip">
         <span>{{ title }}</span>
         <ShortcutIndicator
           v-if="keyCode"
@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 import { ShortcutIndicator } from '#blokkli/components'
-import type { PbIcon } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon } from '#blokkli/components'
 
 const props = defineProps<{
@@ -42,7 +42,7 @@ const props = defineProps<{
   meta?: boolean
   shift?: boolean
   keyCode?: string
-  icon?: PbIcon
+  icon?: BlokkliIcon
 }>()
 
 const emit = defineEmits(['click'])

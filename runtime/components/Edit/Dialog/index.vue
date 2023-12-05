@@ -1,30 +1,30 @@
 <template>
-  <div class="pb-dialog pb-control" @wheel.stop @keydown.stop>
-    <div @click="$emit('cancel')" class="pb-dialog-background pb-overlay"></div>
-    <div class="pb-dialog-inner" :style="{ width: width + 'px' }">
-      <div class="pb pb-dialog-header">
+  <div class="bk-dialog bk-control" @wheel.stop @keydown.stop>
+    <div @click="$emit('cancel')" class="bk-dialog-background bk-overlay"></div>
+    <div class="bk-dialog-inner" :style="{ width: width + 'px' }">
+      <div class="bk bk-dialog-header">
         <h3>{{ title }}</h3>
         <button @click="$emit('cancel')">
           <Icon name="close" />
         </button>
       </div>
-      <div class="pb pb-dialog-lead" v-if="lead">{{ lead }}</div>
-      <div class="pb-dialog-content">
+      <div class="bk bk-dialog-lead" v-if="lead">{{ lead }}</div>
+      <div class="bk-dialog-content">
         <slot></slot>
       </div>
-      <div class="pb pb-dialog-footer" v-if="!hideButtons">
+      <div class="bk bk-dialog-footer" v-if="!hideButtons">
         <button
           @click="$emit('submit')"
-          class="pb-button"
+          class="bk-button"
           :disabled="!canSubmit"
           :class="[
-            { 'pb-is-loading': isLoading },
-            isDanger ? 'pb-is-danger' : 'pb-is-primary',
+            { 'bk-is-loading': isLoading },
+            isDanger ? 'bk-is-danger' : 'bk-is-primary',
           ]"
         >
           {{ submitLabel }}
         </button>
-        <button @click="$emit('cancel')" class="pb-button">Abbrechen</button>
+        <button @click="$emit('cancel')" class="bk-button">Abbrechen</button>
       </div>
     </div>
   </div>

@@ -6,15 +6,15 @@
     region="before-sidebar"
     @click="resetZoom"
   >
-    <div class="pb-feature-canvas-button">
+    <div class="bk-feature-canvas-button">
       <span>{{ zoomLevel }}</span>
     </div>
   </PluginToolbarButton>
   <Teleport to="body">
     <div
       ref="scrollbar"
-      class="pb-artboard-scrollbar"
-      :class="{ 'pb-is-active': isDraggingThumb }"
+      class="bk-artboard-scrollbar"
+      :class="{ 'bk-is-active': isDraggingThumb }"
       @mousedown.stop.prevent="onClickScrollbar"
     >
       <button
@@ -525,7 +525,7 @@ onMounted(() => {
   eventBus.on('paragraph:scrollIntoView', onParagraphScrollIntoView)
   eventBus.on('keyPressed', onKeyPressed)
   eventBus.on('animationFrame:before', onAnimationFrame)
-  document.documentElement.classList.add('pb-is-artboard')
+  document.documentElement.classList.add('bk-is-artboard')
   window.addEventListener('beforeunload', saveState)
 
   if (savedState.value && shouldPersist.value) {
@@ -547,7 +547,7 @@ onBeforeUnmount(() => {
   eventBus.off('paragraph:scrollIntoView', onParagraphScrollIntoView)
   eventBus.off('keyPressed', onKeyPressed)
   eventBus.off('animationFrame:before', onAnimationFrame)
-  document.documentElement.classList.remove('pb-is-artboard')
+  document.documentElement.classList.remove('bk-is-artboard')
   // Store current canvas state in local storage.
   saveState()
 })

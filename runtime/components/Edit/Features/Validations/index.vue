@@ -1,6 +1,6 @@
 <template>
   <PluginSidebar id="violations" title="Validierungen" icon="alert">
-    <div class="pb pb-errors pb-control">
+    <div class="bk bk-errors bk-control">
       <ul v-if="state.violations.value.length">
         <li v-for="item in state.violations.value">
           <h3>{{ item.message }}</h3>
@@ -8,7 +8,7 @@
           <p>{{ item.propertyPath }}</p>
         </li>
       </ul>
-      <div v-else class="pb-errors-success">
+      <div v-else class="bk-errors-success">
         <figure>
           <Icon name="check" />
         </figure>

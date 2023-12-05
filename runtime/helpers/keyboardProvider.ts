@@ -1,11 +1,11 @@
 import { eventBus } from '../eventBus'
 
-export type PbKeyboardProvider = {
+export type BlokkliKeyboardProvider = {
   isPressingSpace: Readonly<Ref<boolean>>
   isPressingControl: Readonly<Ref<boolean>>
 }
 
-export default function (): PbKeyboardProvider {
+export default function (): BlokkliKeyboardProvider {
   const isPressingControl = ref(false)
   const isPressingSpace = ref(false)
 
@@ -52,8 +52,8 @@ export default function (): PbKeyboardProvider {
 
   watch(isPressingSpace, (has) =>
     has
-      ? document.body.classList.add('pb-is-pressing-space')
-      : document.body.classList.remove('pb-is-pressing-space'),
+      ? document.body.classList.add('bk-is-pressing-space')
+      : document.body.classList.remove('bk-is-pressing-space'),
   )
 
   return {

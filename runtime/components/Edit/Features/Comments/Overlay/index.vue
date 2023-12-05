@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <div class="pb pb-comments-overlay pb-control">
+    <div class="bk bk-comments-overlay bk-control">
       <Item
         v-for="item in indicators"
         v-bind="item"
@@ -16,14 +16,14 @@
 </template>
 
 <script lang="ts" setup>
-import type { PbComment, AnimationFrameEvent } from '#blokkli/types'
+import type { BlokkliComment, AnimationFrameEvent } from '#blokkli/types'
 import { getBounds } from '#blokkli/helpers'
 import Item from './Item/index.vue'
 
 const { eventBus } = useBlokkli()
 
 const props = defineProps<{
-  comments: PbComment[]
+  comments: BlokkliComment[]
 }>()
 
 defineEmits<{
@@ -47,7 +47,7 @@ function toggle(item: Indicator) {
 
 export type Indicator = {
   id: string
-  comments: PbComment[]
+  comments: BlokkliComment[]
   uuids: string[]
   style: {
     transform: string
@@ -66,7 +66,7 @@ function onAnimationFrame(e: AnimationFrameEvent) {
   isLeft.value = x < e.rootRect.x + e.rootRect.width - 300
 
   const newIndicators: Record<string, Indicator> = {}
-  const orphaned: PbComment[] = []
+  const orphaned: BlokkliComment[] = []
   const yMap = new Set<number>()
 
   const findY = (y: number): number => {

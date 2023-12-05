@@ -1,12 +1,12 @@
-.pb-scale-to-fit {
+.bk-scale-to-fit {
   @apply relative;
 }
 
-.pb-scale-to-fit-wrapper {
+.bk-scale-to-fit-wrapper {
   @apply relative;
 }
 
-.pb-scale-to-fit-wrapper-item {
+.bk-scale-to-fit-wrapper-item {
   @apply absolute top-0 left-0 pointer-events-none select-none;
   transform-origin: 0 0;
   > * {

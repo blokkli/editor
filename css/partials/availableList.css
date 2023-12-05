@@ -1,48 +1,48 @@
-.pb {
-  .pb-list {
+.bk {
+  .bk-list {
     @apply pt-5 relative z-20;
     &::-webkit-scrollbar {
       display: none;
     }
   }
 
-  .pb-list-item {
+  .bk-list-item {
     @apply px-10 py-5 w-full cursor-grab;
 
-    &.pb-is-disabled {
+    &.bk-is-disabled {
       @apply pointer-events-none;
-      .pb-list-item-inner {
+      .bk-list-item-inner {
         @apply bg-slate-900;
       }
-      .pb-list-item-label {
+      .bk-list-item-label {
         @apply text-slate-700;
       }
-      .pb-list-item-icon {
+      .bk-list-item-icon {
         @apply text-slate-800;
       }
     }
     flex: 0 0 auto;
 
     &:hover {
-      .pb-list-item-inner {
+      .bk-list-item-inner {
         @apply bg-slate-700 text-white border-slate-400;
       }
-      .pb-list-item-label span {
+      .bk-list-item-label span {
         @apply text-white;
       }
     }
   }
 
-  .pb-list-item-inner {
+  .bk-list-item-inner {
     @apply relative flex bg-slate-800 text-slate-200 rounded w-full items-center justify-center flex-col text-sm leading-3 p-10 aspect-square z-10 border border-slate-600;
   }
 
-  .pb-list-item-label {
+  .bk-list-item-label {
     @apply absolute top-0 left-full whitespace-nowrap p-10 h-full rounded-sm opacity-0 items-center text-slate-100/50 ml-[7px] transition pointer-events-none;
     @apply text-lg font-semibold;
   }
 
-  .pb-list-item-icon {
+  .bk-list-item-icon {
     @apply text-3xl;
     svg {
       @apply fill-current w-30 h-30;
@@ -53,11 +53,11 @@
     justify-content: center;
   }
 
-  &.pb-available-paragraphs {
+  &.bk-available-paragraphs {
     @apply bg-slate-900 top-50 bottom-0 fixed left-0 w-70 select-none z-[40000];
-    &.pb-is-disabled {
+    &.bk-is-disabled {
       @apply pointer-events-none;
-      .pb-list {
+      .bk-list {
         @apply opacity-20;
       }
     }
@@ -68,11 +68,11 @@
       @apply transition bg-slate-900;
       content: '';
     }
-    &.pb-is-active {
+    &.bk-is-active {
       &:after {
         @apply opacity-100 scale-x-100;
       }
-      .pb-list-item-label {
+      .bk-list-item-label {
         @apply opacity-100;
       }
     }

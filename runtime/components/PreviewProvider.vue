@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { MutatedParagraphOptions, PbMutatedField } from '#blokkli/types'
+import { MutatedParagraphOptions, BlokkliMutatedField } from '#blokkli/types'
 import '#blokkli/styles'
 import getAdapter from '#blokkli/compiled-edit-adapter'
 import {
@@ -27,7 +27,7 @@ const router = useRouter()
 
 let timeout: any = null
 let lastChanged: number = 0
-const mutatedFields = ref<PbMutatedField[]>([])
+const mutatedFields = ref<BlokkliMutatedField[]>([])
 const mutatedOptions = ref<MutatedParagraphOptions>({})
 
 const { data, refresh } = await useAsyncData(() =>
@@ -110,8 +110,8 @@ onMounted(() => {
     // In this case updated state is passed in via postMessage from the main
     // editing app. Also native scrolling is disabled and we handle it
     // ourselves.
-    document.body.classList.add('pb-body-preview')
-    document.documentElement.classList.add('pb-html-preview')
+    document.body.classList.add('bk-body-preview')
+    document.documentElement.classList.add('bk-html-preview')
     window.addEventListener('message', onMessage)
     window.addEventListener('wheel', onWheel, { passive: false })
 
@@ -126,8 +126,8 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   clearTimeout(timeout)
-  document.body.classList.remove('pb-body-preview')
-  document.documentElement.classList.remove('pb-html-preview')
+  document.body.classList.remove('bk-body-preview')
+  document.documentElement.classList.remove('bk-html-preview')
   window.removeEventListener('wheel', onWheel)
   window.removeEventListener('message', onMessage)
 })

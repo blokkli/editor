@@ -11,7 +11,7 @@
   />
 
   <Teleport to="body">
-    <transition appear name="pb-slide-up" :duration="300">
+    <transition appear name="bk-slide-up" :duration="300">
       <ReusableDialog
         v-if="showReusableDialog && selectedBlock"
         :uuid="selectedBlock.uuid"

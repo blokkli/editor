@@ -1,9 +1,9 @@
 <template>
-  <div class="pb-paragraph-icon" v-if="markup" v-html="markup" />
-  <div v-else-if="bundle === 'from_library'" class="pb-paragraph-icon">
+  <div class="bk-paragraph-icon" v-if="markup" v-html="markup" />
+  <div v-else-if="bundle === 'from_library'" class="bk-paragraph-icon">
     <Icon name="reusable" />
   </div>
-  <div v-else class="pb-paragraph-icon">
+  <div v-else class="bk-paragraph-icon">
     <Icon name="question" />
   </div>
 </template>

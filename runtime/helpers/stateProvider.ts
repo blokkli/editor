@@ -1,65 +1,65 @@
 import type {
-  PbMutatedField,
-  PbEditEntity,
+  BlokkliMutatedField,
+  BlokkliEditEntity,
   MutatedParagraphOptions,
-  PbTranslationState,
-  PbEditState,
-  PbMutation,
-  PbViolation,
-  PbMutateWithLoadingState,
-  PbEditMode,
+  BlokkliTranslationState,
+  BlokkliMappedState,
+  BlokkliMutationItem,
+  BlokkliValidation,
+  MutateWithLoadingStateFunction,
+  BlokkliEditMode,
 } from '#blokkli/types'
 import { removeDroppedElements, falsy } from '#blokkli/helpers'
 import { emitMessage, eventBus } from '../eventBus'
-import { PbAdapter, PbAdapterContext } from '../adapter'
+import { BlokkliAdapter, BlokkliAdapterContext } from '../adapter'
 import { INJECT_MUTATED_FIELDS } from './symbols'
 
-export type PbStateOwner = {
+export type BlokkliOwner = {
   name: string | undefined
   currentUserIsOwner: boolean
 }
 
-export type PbStateProvider = {
-  owner: Readonly<Ref<PbStateOwner | null>>
+export type BlokkliStateProvider = {
+  owner: Readonly<Ref<BlokkliOwner | null>>
   refreshKey: Readonly<Ref<string>>
-  mutatedFields: Readonly<Ref<PbMutatedField[]>>
-  entity: Readonly<Ref<PbEditEntity>>
+  mutatedFields: Readonly<Ref<BlokkliMutatedField[]>>
+  entity: Readonly<Ref<BlokkliEditEntity>>
   mutatedOptions: Ref<MutatedParagraphOptions>
-  translation: Readonly<Ref<PbTranslationState>>
-  mutations: Readonly<Ref<PbMutation[]>>
+  translation: Readonly<Ref<BlokkliTranslationState>>
+  mutations: Readonly<Ref<BlokkliMutationItem[]>>
   currentMutationIndex: Readonly<Ref<number>>
-  violations: Readonly<Ref<PbViolation[]>>
-  mutateWithLoadingState: PbMutateWithLoadingState
-  editMode: Readonly<Ref<PbEditMode>>
+  violations: Readonly<Ref<BlokkliValidation[]>>
+  mutateWithLoadingState: MutateWithLoadingStateFunction
+  editMode: Readonly<Ref<BlokkliEditMode>>
   canEdit: ComputedRef<boolean>
 }
 
 export default async function (
-  adapter: PbAdapter<any>,
-  context: ComputedRef<PbAdapterContext>,
-): Promise<PbStateProvider> {
-  const owner = ref<PbStateOwner | null>(null)
+  adapter: BlokkliAdapter<any>,
+  context: ComputedRef<BlokkliAdapterContext>,
+): Promise<BlokkliStateProvider> {
+  const owner = ref<BlokkliOwner | null>(null)
   const refreshKey = ref('')
-  const mutatedFields = ref<PbMutatedField[]>([])
-  const mutations = ref<PbMutation[]>([])
-  const violations = ref<PbViolation[]>([])
+  const mutatedFields = ref<BlokkliMutatedField[]>([])
+  const mutations = ref<BlokkliMutationItem[]>([])
+  const violations = ref<BlokkliValidation[]>([])
   const currentMutationIndex = ref(-1)
   const isLoading = ref(false)
-  const entity = ref<PbEditEntity>({
+  const entity = ref<BlokkliEditEntity>({
     id: undefined,
     changed: undefined,
     status: false,
   })
 
   const mutatedOptions = ref<MutatedParagraphOptions>({})
-  const translation = ref<PbTranslationState>({
+  const translation = ref<BlokkliTranslationState>({
     isTranslatable: false,
     sourceLanguage: '',
     availableLanguages: [],
     translations: [],
   })
 
-  function setContext(context?: PbEditState) {
+  function setContext(context?: BlokkliMappedState) {
     removeDroppedElements()
 
     mutatedOptions.value = context?.mutatedState?.behaviorSettings || {}
@@ -97,16 +97,16 @@ export default async function (
   }
 
   function lockBody() {
-    document.body.classList.add('pb-body-loading')
+    document.body.classList.add('bk-body-loading')
     isLoading.value = true
   }
 
   function unlockBody() {
-    document.body.classList.remove('pb-body-loading')
+    document.body.classList.remove('bk-body-loading')
     isLoading.value = false
   }
 
-  const mutateWithLoadingState: PbMutateWithLoadingState = async (
+  const mutateWithLoadingState: MutateWithLoadingStateFunction = async (
     promise,
     errorMessage,
     successMessage,
@@ -160,7 +160,7 @@ export default async function (
     () => context.value.language !== translation.value.sourceLanguage,
   )
 
-  const editMode = computed<PbEditMode>(() => {
+  const editMode = computed<BlokkliEditMode>(() => {
     if (!canEdit.value) {
       return 'readonly'
     }

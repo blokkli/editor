@@ -1,6 +1,6 @@
-.pb {
-  &.pb-history {
-    .pb-history-load-more {
+.bk {
+  &.bk-history {
+    .bk-history-load-more {
       @apply h-[70px] pt-10;
       button {
         &:before {
@@ -37,7 +37,7 @@
         }
         &.is-last {
           @apply sticky bg-white bottom-0 z-50 py-15;
-          &.pb-has-shadow {
+          &.bk-has-shadow {
             box-shadow: 0 -2px 12px theme('colors.slate.300');
           }
         }

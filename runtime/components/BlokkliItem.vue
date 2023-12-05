@@ -4,21 +4,21 @@
 
 <script lang="ts">
 export default {
-  name: 'PbItem',
+  name: 'BlokkliItem',
 }
 </script>
 
 <script lang="ts" setup>
 import type {
   InjectedParagraphItem,
-  PbFieldItemParagraphFragment,
+  BlokkliFieldListItemParagraph,
 } from '#blokkli/types'
 import { getParagraphComponent } from '#blokkli/imports'
 import { INJECT_BLOCK_ITEM } from '../helpers/symbols'
 
 const props = withDefaults(
   defineProps<{
-    item: PbFieldItemParagraphFragment
+    item: BlokkliFieldListItemParagraph
     paragraph: any
     index?: number
     parentParagraphBundle?: string

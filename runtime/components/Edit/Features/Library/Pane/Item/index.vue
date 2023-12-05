@@ -1,15 +1,15 @@
 <template>
   <div
-    class="pb-library-list-item"
+    class="bk-library-list-item"
     data-element-type="reusable"
     :data-paragraph-bundle="bundle"
     :data-library-item-uuid="uuid"
     :data-label="label"
     :class="backgroundClass"
   >
-    <div class="pb pb-library-list-item-header">
-      <div class="pb-paragraph-label">
-        <div class="pb-paragraph-label-icon">
+    <div class="bk bk-library-list-item-header">
+      <div class="bk-paragraph-label">
+        <div class="bk-paragraph-label-icon">
           <ParagraphIcon :bundle="bundle" />
         </div>
         <span>{{ label }}</span>
@@ -17,11 +17,11 @@
     </div>
     <div
       v-if="renderPreview"
-      class="pb-library-list-item-inner"
+      class="bk-library-list-item-inner"
       :class="backgroundClass"
     >
       <ScaleToFit :width="paragraphWidth">
-        <PbItem
+        <BlokkliItem
           :item="item"
           :paragraph="paragraph"
           parent-paragraph-bundle="nested"
@@ -33,11 +33,14 @@
 
 <script setup lang="ts">
 import { getDefinition } from '#blokkli/definitions'
-import { PbLibraryItem } from '#blokkli/types'
+import { BlokkliLibraryItem } from '#blokkli/types'
 import { ParagraphIcon, ScaleToFit } from '#blokkli/components'
-import { INJECT_IS_EDITING, INJECT_IS_IN_REUSABLE } from '#blokkli/helpers/symbols'
+import {
+  INJECT_IS_EDITING,
+  INJECT_IS_IN_REUSABLE,
+} from '#blokkli/helpers/symbols'
 
-const props = defineProps<PbLibraryItem>()
+const props = defineProps<BlokkliLibraryItem>()
 
 const definition = computed(() => getDefinition(props.bundle))
 

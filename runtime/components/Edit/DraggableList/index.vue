@@ -1,7 +1,7 @@
 <template>
   <component
     ref="container"
-    class="pb-paragraphs-container"
+    class="bk-paragraphs-container"
     :class="{ 'is-empty': !listToUse.length }"
     :is="tag || 'div'"
     @click.capture="onClick"
@@ -13,7 +13,7 @@
     :data-host-entity-uuid="entity.uuid"
     :data-field-key="fieldKey"
   >
-    <PbItem
+    <BlokkliItem
       v-for="(item, i) in listToUse"
       :item="item.item"
       :paragraph="item.paragraph"
@@ -45,7 +45,7 @@
 
 <script lang="ts">
 export default {
-  name: 'PbParagraphsList',
+  name: 'BlokkliDraggableList',
 }
 </script>
 
@@ -59,11 +59,11 @@ import {
   DraggableHostData,
   DraggableItem,
   MoveParagraphEvent,
-  PbFieldConfig,
-  PbFieldItemFragment,
-  PbMutatedField,
-  PbFieldEntity,
-  PbFieldItemParagraphFragment,
+  BlokkliFieldListConfig,
+  BlokkliFieldList,
+  BlokkliMutatedField,
+  BlokkliFieldListEntity,
+  BlokkliFieldListItemParagraph,
 } from '#blokkli/types'
 import { INJECT_MUTATED_FIELDS } from '../../../helpers/symbols'
 
@@ -71,14 +71,14 @@ const { adapter, state, eventBus, keyboard, types, dom } = useBlokkli()
 
 let instance: Sortable | null = null
 
-const mutatedFields = inject<Ref<PbMutatedField[]>>(INJECT_MUTATED_FIELDS)
+const mutatedFields = inject<Ref<BlokkliMutatedField[]>>(INJECT_MUTATED_FIELDS)
 
 const container = ref<HTMLDivElement | null>(null)
 
 const props = defineProps<{
-  list: PbFieldItemFragment<any>[]
-  entity: PbFieldEntity
-  fieldConfig: PbFieldConfig
+  list: BlokkliFieldList<any>[]
+  entity: BlokkliFieldListEntity
+  fieldConfig: BlokkliFieldListConfig
   tag?: string
   isNested: boolean
 }>()
@@ -132,7 +132,7 @@ const fieldName = computed(() => {
 })
 
 type CombinedParagraphsFieldItem = {
-  item: PbFieldItemParagraphFragment
+  item: BlokkliFieldListItemParagraph
   paragraph: any
 }
 
@@ -259,7 +259,7 @@ function onAdd(e: Sortable.SortableEvent) {
     return
   }
 
-  e.item.classList.add('pb-moved-item')
+  e.item.classList.add('bk-moved-item')
   const afterUuid =
     'element' in item ? getPreviousItem(item.element)?.uuid : undefined
 
@@ -398,7 +398,7 @@ onMounted(() => {
         put: onPut,
         revertClone: false,
       },
-      ignore: '.pb-hidden',
+      ignore: '.bk-hidden',
       fallbackClass: 'sortable-fallback',
       fallbackOnBody: false,
       forceAutoScrollFallback: true,

@@ -1,12 +1,12 @@
 import {
-  PbAllowedBundle,
-  PbAvailableFeatures,
-  PbComment,
-  PbConversion,
-  PbEditState,
-  PbImportItem,
-  PbLibraryItem,
-  PbType,
+  BlokkliAvailableType,
+  BlokkliAvailableFeatures,
+  BlokkliComment,
+  BlokkliConversionItem,
+  BlokkliMappedState,
+  BlokkliImportItem,
+  BlokkliLibraryItem,
+  BlokkliItemType,
   AddClipboardParagraphEvent,
   AddNewParagraphEvent,
   AddReusableParagraphEvent,
@@ -15,9 +15,9 @@ import {
   MoveMultipleParagraphsEvent,
   MoveParagraphEvent,
   UpdateParagraphOptionEvent,
-  PbSearchContentItem,
+  BlokkliSearchContentItem,
   AddContentSearchItemParagraphEvent,
-  PbAvailableTranslation,
+  BlokkliEntityTranslation,
 } from '#blokkli/types'
 
 interface MutationResponseLike<T> {
@@ -31,7 +31,7 @@ interface MutationResponseLike<T> {
   }
 }
 
-export interface PbAdapter<T> {
+export interface BlokkliAdapter<T> {
   /**
    * Load the state for the given langcode.
    */
@@ -42,27 +42,27 @@ export interface PbAdapter<T> {
    *
    * These will only override enabled features.
    */
-  getAvailableFeatures(): Promise<PbAvailableFeatures>
+  getAvailableFeatures(): Promise<BlokkliAvailableFeatures>
 
   /**
    * Return a list of all paragraph types.
    */
-  getAllParagraphTypes(): Promise<PbType[]>
+  getAllParagraphTypes(): Promise<BlokkliItemType[]>
 
   /**
    * Get all available paragraph types for the current host entity.
    */
-  getAvailableParagraphTypes(): Promise<PbAllowedBundle[]>
+  getAvailableParagraphTypes(): Promise<BlokkliAvailableType[]>
 
   /**
    * Get all possible conversions.
    */
-  getConversions(): Promise<PbConversion[]>
+  getConversions(): Promise<BlokkliConversionItem[]>
 
   /*
    * Map the state returned by mutations.
    */
-  mapState(state: T): PbEditState
+  mapState(state: T): BlokkliMappedState
 
   /**
    * Add a new paragraph.
@@ -130,7 +130,7 @@ export interface PbAdapter<T> {
    */
   getImportItems(
     searchText?: string,
-  ): Promise<{ items: PbImportItem[]; total: number }>
+  ): Promise<{ items: BlokkliImportItem[]; total: number }>
 
   /**
    * Import paragraphs from an existing entity.
@@ -172,17 +172,17 @@ export interface PbAdapter<T> {
   /**
    * Load all comments.
    */
-  loadComments(): Promise<PbComment[]>
+  loadComments(): Promise<BlokkliComment[]>
 
   /**
    * Add a comment to a paragraph.
    */
-  addComment(paragraphUuids: string[], body: string): Promise<PbComment[]>
+  addComment(paragraphUuids: string[], body: string): Promise<BlokkliComment[]>
 
   /**
    * Resolve a comment.
    */
-  resolveComment(uuid: string): Promise<PbComment[]>
+  resolveComment(uuid: string): Promise<BlokkliComment[]>
 
   /**
    * Make a paragraph reusable.
@@ -192,7 +192,7 @@ export interface PbAdapter<T> {
   /**
    * Get all paragraph library items.
    */
-  getLibraryItems(): Promise<PbLibraryItem[]>
+  getLibraryItems(): Promise<BlokkliLibraryItem[]>
 
   /**
    * Get the last changed timestamp for the edit state.
@@ -219,7 +219,7 @@ export interface PbAdapter<T> {
   getContentSearchResults?: (
     tab: string,
     text: string,
-  ) => Promise<PbSearchContentItem[]>
+  ) => Promise<BlokkliSearchContentItem[]>
 
   /**
    * Add the dropped paragraph from a search content item.
@@ -231,22 +231,22 @@ export interface PbAdapter<T> {
   /**
    * Change the language.
    */
-  changeLanguage?: (translation: PbAvailableTranslation) => Promise<any>
+  changeLanguage?: (translation: BlokkliEntityTranslation) => Promise<any>
 }
 
-export interface PbAdapterContext {
+export interface BlokkliAdapterContext {
   entityType: string
   entityUuid: string
   entityBundle: string
   language?: string
 }
 
-export type PbAdapterFactory<T> = (
-  ctx: ComputedRef<PbAdapterContext>,
-) => PbAdapter<T>
+export type BlokkliAdapterFactory<T> = (
+  ctx: ComputedRef<BlokkliAdapterContext>,
+) => BlokkliAdapter<T>
 
 export function defineBlokkliEditAdapter<T>(
-  cb: PbAdapterFactory<T>,
-): PbAdapterFactory<T> {
+  cb: BlokkliAdapterFactory<T>,
+): BlokkliAdapterFactory<T> {
   return cb
 }

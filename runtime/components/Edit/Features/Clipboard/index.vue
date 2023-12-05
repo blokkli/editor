@@ -7,8 +7,8 @@
     ref="plugin"
   >
     <div @mousedown.stop @mousemove.stop @dragstart.stop>
-      <div class="pb-clipboard pb-control">
-        <div v-if="!pastedItems.length" class="pb pb-clipboard-info">
+      <div class="bk-clipboard bk-control">
+        <div v-if="!pastedItems.length" class="bk bk-clipboard-info">
           <h4>Keine Elemente in der Zwischenablage</h4>
           <p>
             Verwenden Sie Ctrl-V auf der Seite um Inhalte einzufügen. Diese
@@ -37,7 +37,7 @@ import type { ClipboardItem } from './List/index.vue'
 import {
   DraggableExistingParagraphItem,
   KeyPressedEvent,
-  PbSearchContentItem,
+  BlokkliSearchContentItem,
 } from '#blokkli/types'
 
 const { eventBus, selection } = useBlokkli()
@@ -199,7 +199,7 @@ function onKeyPressed(e: KeyPressedEvent) {
   copySelectedParagraphToClipboard(selection.blocks.value)
 }
 
-function onSelectContentItem(item: PbSearchContentItem) {
+function onSelectContentItem(item: BlokkliSearchContentItem) {
   item.targetBundles.forEach((bundle) => {
     pastedItems.value.push({
       type: 'search_content',

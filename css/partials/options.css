@@ -1,5 +1,5 @@
-.pb {
-  .pb-checkbox-toggle {
+.bk {
+  .bk-checkbox-toggle {
     @apply relative inline-flex items-center cursor-pointer h-full text-slate-800 leading-none;
     @apply hover:text-slate-950;
     input {
@@ -19,7 +19,7 @@
       @apply inline-block pl-10 text-base;
     }
   }
-  .pb-paragraph-options-checkbox {
+  .bk-paragraph-options-checkbox {
     @apply relative inline-flex items-center cursor-pointer h-full px-10 text-slate-200;
     @apply hover:bg-slate-800 hover:text-slate-50;
     input {
@@ -37,7 +37,7 @@
     }
   }
 
-  .pb-paragraph-options-radios:not(.pb-is-color) {
+  .bk-paragraph-options-radios:not(.bk-is-color) {
     @apply flex items-center px-10 h-full relative gap-3;
     @apply text-slate-50  select-none text-sm;
     > label {
@@ -56,24 +56,24 @@
         @apply inline-block px-10 py-2 rounded-3xl;
       }
 
-      &.pb-is-muted {
+      &.bk-is-muted {
         @apply text-slate-500;
       }
     }
   }
 
-  .pb-paragraph-options-radios.pb-is-language {
+  .bk-paragraph-options-radios.bk-is-language {
     > label:not(:hover) {
-      .pb-tooltip {
+      .bk-tooltip {
         @apply hidden;
       }
     }
-    .pb-tooltip {
+    .bk-tooltip {
       @apply absolute top-full left-0 w-full mt-3;
     }
   }
 
-  .pb-paragraph-options-radios.pb-is-color {
+  .bk-paragraph-options-radios.bk-is-color {
     @apply flex items-stretch h-full px-5;
     label {
       @apply cursor-pointer h-full flex items-center px-5;
@@ -98,7 +98,7 @@
     }
   }
 
-  .pb-paragraph-options-text {
+  .bk-paragraph-options-text {
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -116,23 +116,23 @@
     }
   }
 
-  .pb-paragraph-options-item {
+  .bk-paragraph-options-item {
     @apply relative flex items-center;
-    &.pb-is-disabled {
+    &.bk-is-disabled {
       @apply pointer-events-none opacity-20;
     }
-    .pb-tooltip {
+    .bk-tooltip {
       @apply absolute bottom-full left-0 w-full mb-3;
     }
     &:not(:hover) {
-      .pb-tooltip {
+      .bk-tooltip {
         @apply hidden;
       }
     }
   }
 
-  .pb-paragraph-options-radios.pb-is-grid {
-    .pb-paragraph-options-radios-flex {
+  .bk-paragraph-options-radios.bk-is-grid {
+    .bk-paragraph-options-radios-flex {
       @apply flex h-20 w-60 mx-5 border border-current text-slate-500 relative;
 
       > div {
@@ -163,7 +163,7 @@
     }
   }
 
-  .pb-paragraph-options-checkboxes {
+  .bk-paragraph-options-checkboxes {
     @apply px-15 h-full hover:bg-slate-700;
 
     button {
@@ -177,7 +177,7 @@
         @apply ml-10;
       }
 
-      .pb-pill {
+      .bk-pill {
         @apply bg-slate-50 inline-block text-slate-900 ml-5 rounded-full px-5 py-[1px] uppercase text-xs font-semibold;
       }
     }
@@ -189,7 +189,7 @@
       }
     }
 
-    &.pb-is-active {
+    &.bk-is-active {
       @apply bg-slate-800;
       button {
         svg {

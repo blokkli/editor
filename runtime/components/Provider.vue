@@ -4,7 +4,7 @@
     :data-blokkli-provider-active="isInEditor || undefined"
   >
     <template v-if="isInEditor">
-      <PbPreviewProvider
+      <PreviewProvider
         v-if="isPreviewing"
         :entity-type="entityType"
         :entity-uuid="entityUuid"
@@ -15,9 +15,9 @@
           :is-editing="isEditing"
           :can-edit="canEdit"
           :is-preview="isPreviewing"
-        ></slot>
-      </PbPreviewProvider>
-      <PbEditProvider
+        />
+      </PreviewProvider>
+      <EditProvider
         v-else-if="isEditing"
         :entity-type="entityType"
         :entity-uuid="entityUuid"
@@ -28,8 +28,8 @@
           :is-editing="isEditing"
           :can-edit="canEdit"
           :is-preview="isPreviewing"
-        ></slot>
-      </PbEditProvider>
+        />
+      </EditProvider>
     </template>
 
     <slot
@@ -37,22 +37,20 @@
       :is-editing="isEditing"
       :can-edit="canEdit"
       :is-preview="isPreviewing"
-    ></slot>
+    />
 
-    <PbEditIndicator v-if="showIndicator" :uuid="entityUuid" @edit="edit" />
+    <EditIndicator v-if="showIndicator" :uuid="entityUuid" @edit="edit" />
   </div>
 </template>
 
 <script lang="ts" setup>
-const PbPreviewProvider = defineAsyncComponent(
+const PreviewProvider = defineAsyncComponent(
   () => import('./PreviewProvider.vue'),
 )
 
-const PbEditProvider = defineAsyncComponent(() => import('./EditProvider.vue'))
+const EditProvider = defineAsyncComponent(() => import('./EditProvider.vue'))
 
-const PbEditIndicator = defineAsyncComponent(
-  () => import('./EditIndicator.vue'),
-)
+const EditIndicator = defineAsyncComponent(() => import('./EditIndicator.vue'))
 
 const route = useRoute()
 const router = useRouter()
@@ -84,22 +82,23 @@ const isEditing = computed(() => {
   return (
     props.canEdit &&
     !!props.entityUuid &&
-    route.query.pbEditing === props.entityUuid
+    route.query.blokkliEditing === props.entityUuid
   )
 })
 
 const isPreviewing = computed(() => {
-  return props.entityUuid && route.query.pbPreview === props.entityUuid
+  return props.entityUuid && route.query.blokkliPreview === props.entityUuid
 })
 
 const showIndicator = computed(
-  () => props.canEdit && !route.query.pbEditing && !route.query.pbPreview,
+  () =>
+    props.canEdit && !route.query.blokkliEditing && !route.query.blokkliPreview,
 )
 
 function edit() {
   router.push({
     query: {
-      pbEditing: props.entityUuid,
+      blokkliEditing: props.entityUuid,
       language: props.language,
     },
   })

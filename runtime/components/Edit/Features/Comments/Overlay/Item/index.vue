@@ -1,42 +1,42 @@
 <template>
   <div
-    class="pb-comments-overlay-item"
+    class="bk-comments-overlay-item"
     :style="style"
     :class="{
-      'pb-is-active': showComments,
-      'pb-is-left': isLeft,
+      'bk-is-active': showComments,
+      'bk-is-left': isLeft,
     }"
   >
     <button
-      class="pb-comments-overlay-item-button"
+      class="bk-comments-overlay-item-button"
       @click="$emit('toggle')"
       :class="{
-        'pb-has-unresolved-comments': unresolvedCount > 0,
+        'bk-has-unresolved-comments': unresolvedCount > 0,
       }"
     >
       <Icon name="close" v-if="showComments" />
       <span v-else>{{ unresolvedCount }}</span>
     </button>
     <div
-      class="pb-comments-overlay-comments"
+      class="bk-comments-overlay-comments"
       v-show="showComments"
-      :class="{ 'pb-is-left': isLeft }"
+      :class="{ 'bk-is-left': isLeft }"
     >
-      <div class="pb-comments-overlay-comments-header">
+      <div class="bk-comments-overlay-comments-header">
         <Icon name="comment" />
         <span>{{ comments.length }} Kommentare</span>
       </div>
       <div
-        class="pb-comments-overlay-comments-item"
+        class="bk-comments-overlay-comments-item"
         v-for="comment in comments"
       >
         <Comment v-bind="comment" @resolve="resolveComment(comment.uuid)" />
       </div>
-      <div class="pb-comments-overlay-form" @keydown.capture.stop>
+      <div class="bk-comments-overlay-form" @keydown.capture.stop>
         <textarea
           v-model="commentText"
           type="text"
-          class="pb-form-input"
+          class="bk-form-input"
           placeholder="Antworten"
           @focus="showFullForm = true"
           required
@@ -44,7 +44,7 @@
         </textarea>
         <button
           @click="addComment"
-          class="pb-button pb-is-primary is-small"
+          class="bk-button bk-is-primary is-small"
           v-if="showFullForm && commentText"
         >
           Kommentar speichern
@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts" setup>
-import { PbComment } from '#blokkli/types'
+import { BlokkliComment } from '#blokkli/types'
 import Comment from '#blokkli/components/Comment/index.vue'
 import { Icon } from '#blokkli/components'
 
@@ -71,7 +71,7 @@ const props = defineProps<{
   isReduced: boolean
   isLeft: boolean
   uuids: string[]
-  comments: PbComment[]
+  comments: BlokkliComment[]
   style: any
   showComments: boolean
 }>()

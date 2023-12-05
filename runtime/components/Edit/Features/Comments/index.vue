@@ -1,6 +1,6 @@
 <template>
   <PluginSidebar id="comments" title="Kommentare" icon="comment">
-    <div class="pb pb-comments pb-control">
+    <div class="bk bk-comments bk-control">
       <ul>
         <li v-for="comment in comments">
           <Comment v-bind="comment" @click-comment="onClickComment(comment)" />
@@ -34,9 +34,9 @@ import { PluginSidebar, PluginParagraphAction } from '#blokkli/plugins'
 import Comment from './../../Comment/index.vue'
 import CommentAddForm from './AddForm/index.vue'
 import CommentsOverlay from './Overlay/index.vue'
-import type { PbComment } from '#blokkli/types'
+import type { BlokkliComment } from '#blokkli/types'
 
-const comments = ref<PbComment[]>([])
+const comments = ref<BlokkliComment[]>([])
 const showAddComment = ref(false)
 const { adapter, eventBus } = useBlokkli()
 
@@ -50,7 +50,7 @@ const onAddComment = async (body: string, uuids: string[]) => {
 const onResolveComment = async (uuid: string) =>
   (comments.value = await adapter.resolveComment(uuid))
 
-const onClickComment = (comment: PbComment) =>
+const onClickComment = (comment: BlokkliComment) =>
   eventBus.emit('select:end', comment.paragraphUuids || [])
 
 onMounted(loadComments)

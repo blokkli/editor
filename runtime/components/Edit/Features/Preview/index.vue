@@ -27,7 +27,7 @@
   <Teleport to="body">
     <PreviewFrame v-if="previewVisible" />
 
-    <Transition appear name="pb-slide-up">
+    <Transition appear name="bk-slide-up">
       <DialogModal
         v-if="qrCodeVisible && previewGrantUrl"
         title="Vorschau mit Smartphone"
@@ -64,7 +64,7 @@ const { data: previewGrantUrl } = await useAsyncData(() =>
 )
 
 const previewUrl = computed(() =>
-  route.fullPath.replace('pbEditing', 'pbPreview'),
+  route.fullPath.replace('blokkliEditing', 'blokkliPreview'),
 )
 
 function openPreview() {

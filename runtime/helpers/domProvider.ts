@@ -1,7 +1,7 @@
 import type { DraggableExistingParagraphItem } from '#blokkli/types'
 import { buildDraggableItem, falsy } from '#blokkli/helpers'
 
-export type PbDomProvider = {
+export type BlokkliDomProvider = {
   findBlock(uuid: string): DraggableExistingParagraphItem | undefined
   getAllBlocks(): DraggableExistingParagraphItem[]
   findClosestBlock(
@@ -9,7 +9,7 @@ export type PbDomProvider = {
   ): DraggableExistingParagraphItem | undefined
 }
 
-export default function (): PbDomProvider {
+export default function (): BlokkliDomProvider {
   const findBlock = (
     uuid: string,
   ): DraggableExistingParagraphItem | undefined => {

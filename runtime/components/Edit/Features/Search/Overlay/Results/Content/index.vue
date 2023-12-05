@@ -1,30 +1,30 @@
 <template>
   <div v-show="visible">
-    <div v-if="visible && isLoading" class="pb-search-loading">
+    <div v-if="visible && isLoading" class="bk-search-loading">
       <Icon name="spinner" />
     </div>
-    <div :class="{ 'pb-search-is-loading': isLoading }">
+    <div :class="{ 'bk-search-is-loading': isLoading }">
       <button
         v-for="(item, i) in items"
-        :class="{ 'pb-is-active': i === index }"
+        :class="{ 'bk-is-active': i === index }"
         @click.stop="clickItem"
         @mouseenter="index = i"
         ref="listItems"
       >
-        <div class="pb-search-item-icon">
+        <div class="bk-search-item-icon">
           <img v-if="item.imageUrl" :src="item.imageUrl" />
           <ParagraphIcon v-else :bundle="item.targetBundles[0]" />
         </div>
-        <div class="pb-search-item-content">
-          <h2 class="pb-highlight" v-html="item.title" />
-          <div class="pb-search-item-context" v-html="item.context" />
-          <div class="pb-search-item-text pb-highlight" v-html="item.text" />
+        <div class="bk-search-item-content">
+          <h2 class="bk-highlight" v-html="item.title" />
+          <div class="bk-search-item-context" v-html="item.context" />
+          <div class="bk-search-item-text bk-highlight" v-html="item.text" />
         </div>
       </button>
     </div>
     <div
       v-if="!isLoading && !items.length && search"
-      class="pb-search-no-results"
+      class="bk-search-no-results"
     >
       <Icon name="sad" />
       <span>Keine Resultate gefunden</span>
@@ -35,7 +35,7 @@
 <script lang="ts" setup>
 import { ParagraphIcon, Icon } from '#blokkli/components'
 import { modulo } from '#blokkli/helpers'
-import { PbSearchContentItem } from '#blokkli/types'
+import { BlokkliSearchContentItem } from '#blokkli/types'
 
 const listItems = ref<HTMLLIElement[]>([])
 
@@ -52,7 +52,7 @@ const emit = defineEmits(['close'])
 
 const { eventBus, adapter } = useBlokkli()
 
-const items = ref<PbSearchContentItem[]>([])
+const items = ref<BlokkliSearchContentItem[]>([])
 let timeout: any = null
 
 const doSearch = () => {

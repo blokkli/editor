@@ -1,17 +1,17 @@
-.pb-library {
-  .pb-library-list-item-header {
+.bk-library {
+  .bk-library-list-item-header {
     @apply flex items-center mb-15;
   }
 }
-.pb-library-list {
-  .pb-library-list-item {
+.bk-library-list {
+  .bk-library-list-item {
     @apply relative p-20 cursor-grab border-b border-b-slate-300 overflow-hidden;
   }
-  .pb-library-list-item:hover {
+  .bk-library-list-item:hover {
     @apply outline outline-slate-300 -outline-offset-2 opacity-95;
   }
 }
 
-.pb-library-form {
+.bk-library-form {
   @apply p-20;
 }

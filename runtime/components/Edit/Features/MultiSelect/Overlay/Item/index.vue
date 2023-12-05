@@ -1,8 +1,8 @@
 <template>
   <div
-    class="pb-multi-select-rectangle"
+    class="bk-multi-select-rectangle"
     :style="style"
-    :class="{ 'pb-is-active': isIntersecting }"
+    :class="{ 'bk-is-active': isIntersecting }"
   />
 </template>
 

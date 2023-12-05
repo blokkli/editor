@@ -1,9 +1,13 @@
 import { ParagraphsBuilderEditStateFragment } from '#build/graphql-operations'
 import { falsy } from '#blokkli/helpers'
-import { PbAvailableTranslation, PbTranslationState, PbType } from '#blokkli/types'
-import { PbAdapter, defineBlokkliEditAdapter } from '#blokkli/adapter'
+import {
+  BlokkliEntityTranslation,
+  BlokkliTranslationState,
+  BlokkliItemType,
+} from '#blokkli/types'
+import { BlokkliAdapter, defineBlokkliEditAdapter } from '#blokkli/adapter'
 
-type DrupalAdapter = PbAdapter<ParagraphsBuilderEditStateFragment>
+type DrupalAdapter = BlokkliAdapter<ParagraphsBuilderEditStateFragment>
 
 export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
   (providedContext) => {
@@ -43,7 +47,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
       useGraphqlQuery('pbAllTypes').then((v) => {
         const allTypes = v.data.entityQuery.items?.filter(
           (v) => v && 'icon' in v,
-        ) as PbType[]
+        ) as BlokkliItemType[]
         return allTypes
       })
 
@@ -223,7 +227,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
       const mutatedState = state?.mutatedState || {}
       const entity = state?.entity
 
-      const translations: PbAvailableTranslation[] =
+      const translations: BlokkliEntityTranslation[] =
         entity && 'translations' in entity
           ? entity.translations
               ?.map((v) => {
@@ -239,7 +243,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
               .filter(falsy) || []
           : []
 
-      const translationState: PbTranslationState = {
+      const translationState: BlokkliTranslationState = {
         isTranslatable: !!state.translationState?.isTranslatable,
         sourceLanguage: state.translationState?.sourceLanguage || '',
         availableLanguages: state.translationState?.availableLanguages || [],

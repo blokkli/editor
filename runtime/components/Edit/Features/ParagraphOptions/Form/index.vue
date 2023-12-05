@@ -1,12 +1,12 @@
 <template>
   <div
     v-if="availableOptions.length"
-    class="pb-paragraph-options-item"
+    class="bk-paragraph-options-item"
     v-for="plugin in availableOptions"
-    :class="{ 'pb-is-disabled': !canEdit || editMode !== 'editing' }"
+    :class="{ 'bk-is-disabled': !canEdit || editMode !== 'editing' }"
     @keydown.stop
   >
-    <div class="pb-tooltip">
+    <div class="bk-tooltip">
       <span>{{ plugin.option.label }}</span>
     </div>
     <OptionRadios

@@ -1,13 +1,13 @@
 <template>
   <Teleport :to="to">
     <button
-      class="pb-toolbar-menu-list-button"
+      class="bk-toolbar-menu-list-button"
       :disabled="disabled"
       @click="onClick"
-      :class="type ? 'pb-is-' + type : ''"
+      :class="type ? 'bk-is-' + type : ''"
       :style="{ order: weight || 0 }"
     >
-      <div class="pb-toolbar-menu-list-icon">
+      <div class="bk-toolbar-menu-list-icon">
         <slot>
           <Icon v-if="icon" :name="icon" />
         </slot>
@@ -19,14 +19,14 @@
 </template>
 
 <script lang="ts" setup>
-import type { PbIcon } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon } from '#blokkli/components'
 
 const props = defineProps<{
   title: string
   description: string
   disabled?: boolean
-  icon?: PbIcon
+  icon?: BlokkliIcon
   type?: 'success' | 'danger'
   weight?: number
   secondary?: boolean
@@ -37,7 +37,7 @@ const emit = defineEmits(['click'])
 const { ui } = useBlokkli()
 
 const to = computed(
-  () => `#pb-toolbar-menu-${props.secondary ? 'secondary' : 'primary'}`,
+  () => `#bk-toolbar-menu-${props.secondary ? 'secondary' : 'primary'}`,
 )
 
 function onClick() {

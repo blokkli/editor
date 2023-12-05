@@ -1,6 +1,6 @@
 <template>
-  <div class="pb pb-structure pb-control">
-    <ul class="pb-structure-list">
+  <div class="bk bk-structure bk-control">
+    <ul class="bk-structure-list">
       <Field :fields="tree" />
     </ul>
   </div>

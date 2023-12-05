@@ -1,15 +1,15 @@
 <template>
-  <div class="pb-paragraph-actions-comment-dropdown" @keydown.capture.stop>
-    <label for="comment_body" class="pb-form-label">Kommentar</label>
+  <div class="bk-paragraph-actions-comment-dropdown" @keydown.capture.stop>
+    <label for="comment_body" class="bk-form-label">Kommentar</label>
     <textarea
       v-model.lazy="comment"
       type="text"
       id="comment_body"
-      class="pb-form-input"
+      class="bk-form-input"
       rows="5"
       required
     />
-    <button @click="$emit('add', comment)" class="pb-button pb-is-primary">
+    <button @click="$emit('add', comment)" class="bk-button bk-is-primary">
       Kommentar speichern
     </button>
   </div>

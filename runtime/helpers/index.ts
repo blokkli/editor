@@ -1,4 +1,4 @@
-import type { DraggableItem, PbSearchContentItem } from '#blokkli/types'
+import type { DraggableItem, BlokkliSearchContentItem } from '#blokkli/types'
 import { getDefinition } from '#blokkli/definitions'
 
 /**
@@ -84,7 +84,7 @@ export function buildDraggableItem(
     if (clipboardData && paragraphType) {
       const searchItemData = dataset.clipboardSearchItem
       if (searchItemData) {
-        const searchItem = JSON.parse(searchItemData) as PbSearchContentItem
+        const searchItem = JSON.parse(searchItemData) as BlokkliSearchContentItem
         return {
           itemType: 'search_content',
           element,
@@ -175,14 +175,14 @@ export function getRelativeTimeString(
 
 export function removeDroppedElements() {
   document
-    .querySelectorAll('.pb-paragraphs-container .pb-clone')
+    .querySelectorAll('.bk-paragraphs-container .bk-clone')
     .forEach((v) => v.remove())
   document
-    .querySelectorAll('.pb-paragraphs-container .pb-moved-item')
+    .querySelectorAll('.bk-paragraphs-container .bk-moved-item')
     .forEach((v) => v.remove())
   document
-    .querySelectorAll('.pb-multi-select-hidden')
-    .forEach((v) => v.classList.remove('pb-multi-select-hidden'))
+    .querySelectorAll('.bk-multi-select-hidden')
+    .forEach((v) => v.classList.remove('bk-multi-select-hidden'))
 }
 
 export function modulo(n: number, m: number) {

@@ -1,14 +1,14 @@
 <template>
   <div
-    class="pb-resizable"
+    class="bk-resizable"
     @wheel.stop=""
     :style="{ width: width + 'px' }"
-    :class="{ 'pb-is-resizing': isResizing }"
+    :class="{ 'bk-is-resizing': isResizing }"
   >
-    <div class="pb-resizable-inner">
+    <div class="bk-resizable-inner">
       <slot></slot>
     </div>
-    <button @mousedown="onMouseDown" class="pb-resizable-handle"></button>
+    <button @mousedown="onMouseDown" class="bk-resizable-handle"></button>
   </div>
 </template>
 

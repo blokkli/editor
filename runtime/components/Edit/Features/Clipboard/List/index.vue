@@ -1,8 +1,8 @@
 <template>
-  <ul ref="listEl" class="pb-clipboard-list">
+  <ul ref="listEl" class="bk-clipboard-list">
     <li
       v-for="(item, index) in items"
-      class="pb-clone pb-parent"
+      class="bk-clone bk-parent"
       data-element-type="clipboard"
       :data-paragraph-type="item.paragraphType"
       :data-clipboard-type="item.type"
@@ -13,10 +13,10 @@
       "
       :key="item.data + renderKey"
     >
-      <div class="pb-clipboard-item">
-        <div class="pb pb-clipboard-item-header">
-          <div class="pb-paragraph-label">
-            <div class="pb-paragraph-label-icon">
+      <div class="bk-clipboard-item">
+        <div class="bk bk-clipboard-item-header">
+          <div class="bk-paragraph-label">
+            <div class="bk-paragraph-label-icon">
               <ParagraphIcon :bundle="item.paragraphType" />
             </div>
             <span>{{ getLabel(item.paragraphType) }}</span>
@@ -28,7 +28,7 @@
         <div>
           <div
             v-if="item.type === 'text'"
-            class="pb-clipboard-item-inner"
+            class="bk-clipboard-item-inner"
             v-html="item.data"
           />
           <div v-if="item.type === 'youtube'">
@@ -55,7 +55,7 @@
 <script lang="ts" setup>
 import { ParagraphIcon, Icon } from '#blokkli/components'
 import { Sortable } from '#blokkli/sortable'
-import { PbSearchContentItem } from '#blokkli/types'
+import { BlokkliSearchContentItem } from '#blokkli/types'
 import SearchContentItem from './SearchContent/index.vue'
 
 let instance: Sortable | null = null
@@ -88,7 +88,7 @@ interface ClipboardItemSearchContent {
   type: 'search_content'
   paragraphType: string
   data: string
-  item: PbSearchContentItem
+  item: BlokkliSearchContentItem
   additional?: string
 }
 

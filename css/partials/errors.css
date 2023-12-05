@@ -1,11 +1,11 @@
-.pb.pb-errors {
+.bk.bk-errors {
   li {
     @apply p-15 text-base;
   }
   h3 {
     @apply font-medium;
   }
-  .pb-errors-success {
+  .bk-errors-success {
     @apply text-center flex items-center pt-30 flex-col;
 
     figure {

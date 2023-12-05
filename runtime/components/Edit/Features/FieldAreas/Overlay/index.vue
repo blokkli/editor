@@ -1,10 +1,10 @@
 <template>
-  <div class="pb pb-field-areas">
+  <div class="bk bk-field-areas">
     <div
       v-for="area in areas"
-      class="pb-field-area"
+      class="bk-field-area"
       :style="area.style"
-      :class="{ 'pb-is-active': area.key === selection.activeFieldKey.value }"
+      :class="{ 'bk-is-active': area.key === selection.activeFieldKey.value }"
       @click="eventBus.emit('setActiveFieldKey', area.key)"
     >
       <div>

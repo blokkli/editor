@@ -1,15 +1,15 @@
-.pb-resizable {
+.bk-resizable {
   @apply relative;
-  &.pb-is-resizing {
+  &.bk-is-resizing {
     @apply cursor-ew-resize;
-    .pb-resizable-inner {
+    .bk-resizable-inner {
       @apply pointer-events-none;
     }
-    .pb-resizable-handle {
+    .bk-resizable-handle {
       @apply opacity-100;
     }
   }
-  .pb-resizable-handle {
+  .bk-resizable-handle {
     @apply absolute top-0 -left-10 w-[20px] h-full cursor-ew-resize  opacity-50 hover:opacity-100 transition z-[5000];
     &:hover:before {
       @apply bg-slate-400/40;
@@ -25,26 +25,26 @@
   }
 }
 
-.pb-drupal-modal {
+.bk-drupal-modal {
   @apply fixed left-0 top-0 w-full h-full z-[990000];
-  .pb-drupal-modal-background {
+  .bk-drupal-modal-background {
     @apply absolute left-0 top-0 w-full h-full;
   }
-  .pb-drupal-modal-resizable {
+  .bk-drupal-modal-resizable {
     @apply ml-auto h-full bg-white shadow-2xl;
-    .pb-drupal-modal-iframe {
+    .bk-drupal-modal-iframe {
       @apply flex-1 relative;
       iframe {
         @apply absolute top-0 left-0 w-full h-full;
       }
     }
   }
-  .pb-resizable-inner {
+  .bk-resizable-inner {
     @apply h-full flex flex-col;
   }
 }
 
-.pb-drupal-modal-header {
+.bk-drupal-modal-header {
   @apply pl-20 border-b flex items-center text-base font-bold h-50 bg-slate-900 text-white gap-10 relative z-[6000];
   button {
     @apply w-50 h-50 flex items-center justify-center hover:bg-slate-700 ml-auto;
@@ -54,31 +54,31 @@
   }
 }
 
-.pb-slide-in-enter-active,
-.pb-slide-in-leave-active {
+.bk-slide-in-enter-active,
+.bk-slide-in-leave-active {
   transition: 0.2s ease-in-out;
-  .pb-drupal-modal-background {
+  .bk-drupal-modal-background {
     transition: 0.2s ease-in-out;
   }
-  .pb-resizable {
+  .bk-resizable {
     transition: 0.2s ease-in-out;
   }
 }
-.pb-slide-in-enter-from,
-.pb-slide-in-leave-to {
-  .pb-drupal-modal-background {
+.bk-slide-in-enter-from,
+.bk-slide-in-leave-to {
+  .bk-drupal-modal-background {
     @apply opacity-0;
   }
-  .pb-resizable {
+  .bk-resizable {
     @apply translate-x-full;
   }
 }
 
-.pb-fade-enter-active,
-.pb-fade-leave-active {
+.bk-fade-enter-active,
+.bk-fade-leave-active {
   transition: 0.2s ease-in-out;
 }
-.pb-fade-enter-from,
-.pb-fade-leave-to {
+.bk-fade-enter-from,
+.bk-fade-leave-to {
   @apply opacity-0;
 }

@@ -1,10 +1,10 @@
 <template>
   <Teleport to="body">
-    <Transition name="pb-search">
+    <Transition name="bk-search">
       <div
         v-if="isRendered"
         v-show="isVisible"
-        class="pb pb-search pb-overlay"
+        class="bk bk-search bk-overlay"
         @click.stop.prevent="isVisible = false"
       >
         <Overlay

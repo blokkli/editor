@@ -1,12 +1,12 @@
 <template>
-  <div class="pb pb-comment" @click="$emit('clickComment')">
-    <h3 class="pb-comment-title">{{ user?.label }}</h3>
+  <div class="bk bk-comment" @click="$emit('clickComment')">
+    <h3 class="bk-comment-title">{{ user?.label }}</h3>
     <RelativeTime :timestamp="timestamp" v-slot="{ formatted }">
-      <div class="pb-comment-date">
+      <div class="bk-comment-date">
         {{ formatted }}
       </div>
     </RelativeTime>
-    <div class="pb-comment-body" v-html="body" />
+    <div class="bk-comment-body" v-html="body" />
     <button @click="$emit('resolve')" v-if="!resolved">
       <Icon name="check" />
       <span>Als erledigt markieren</span>
@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { PbComment } from '#blokkli/types'
+import type { BlokkliComment } from '#blokkli/types'
 import { Icon } from '#blokkli/components'
 import { RelativeTime } from '#blokkli/components'
 
@@ -29,8 +29,8 @@ const props = defineProps<{
   paragraphUuids?: string[]
   resolved?: boolean
   body?: string
-  created?: PbComment['created']
-  user?: PbComment['user']
+  created?: BlokkliComment['created']
+  user?: BlokkliComment['user']
 }>()
 
 const timestamp = computed(() =>

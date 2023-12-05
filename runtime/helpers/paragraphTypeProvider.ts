@@ -1,24 +1,24 @@
 import {
   DraggableExistingParagraphItem,
-  PbAllowedBundle,
-  PbType,
+  BlokkliAvailableType,
+  BlokkliItemType,
 } from '../types'
 import { onlyUnique } from '#blokkli/helpers'
 import { eventBus } from '../eventBus'
-import { PbAdapter, PbAdapterContext } from '../adapter'
+import { BlokkliAdapter, BlokkliAdapterContext } from '../adapter'
 
-export type PbTypesProvider = {
+export type BlokkliTypesProvider = {
   paragraphTypesWithNested: ComputedRef<string[]>
   allowedTypesInList: ComputedRef<string[]>
-  allTypes: ComputedRef<PbType[]>
-  allowedTypes: ComputedRef<PbAllowedBundle[]>
+  allTypes: ComputedRef<BlokkliItemType[]>
+  allowedTypes: ComputedRef<BlokkliAvailableType[]>
 }
 
 export default async function (
-  adapter: PbAdapter<any>,
+  adapter: BlokkliAdapter<any>,
   blocks: ComputedRef<DraggableExistingParagraphItem[]>,
-  context: ComputedRef<PbAdapterContext>,
-): Promise<PbTypesProvider> {
+  context: ComputedRef<BlokkliAdapterContext>,
+): Promise<BlokkliTypesProvider> {
   const allTypesData = await adapter.getAllParagraphTypes()
   const allTypes = computed(() => allTypesData || [])
   const allowedTypesData = await adapter.getAvailableParagraphTypes()

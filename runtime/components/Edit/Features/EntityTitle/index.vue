@@ -1,20 +1,20 @@
 <template>
-  <Teleport to="#pb-toolbar-title">
-    <button class="pb-toolbar-button" @click="eventBus.emit('editEntity')">
-      <div class="pb-toolbar-title">
+  <Teleport to="#bk-toolbar-title">
+    <button class="bk-toolbar-button" @click="eventBus.emit('editEntity')">
+      <div class="bk-toolbar-title">
         <div>
           <span
-            class="pb-status-indicator"
+            class="bk-status-indicator"
             :class="{
-              'pb-is-success': entity.status && !mutations.length,
-              'pb-is-warning': entity.status && mutations.length,
+              'bk-is-success': entity.status && !mutations.length,
+              'bk-is-warning': entity.status && mutations.length,
             }"
           ></span>
           <strong>{{ entity.label }}</strong>
           <span>&nbsp;{{ entity.bundleLabel }}</span>
         </div>
       </div>
-      <div class="pb-tooltip">
+      <div class="bk-tooltip">
         <span v-if="entity.status && !mutations.length"
           >Seite ist publiziert</span
         >

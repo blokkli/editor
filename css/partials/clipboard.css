@@ -1,5 +1,5 @@
-.pb-clipboard {
-  .pb-clipboard-list {
+.bk-clipboard {
+  .bk-clipboard-list {
     > li {
       @apply cursor-grab;
       @apply p-20;
@@ -7,7 +7,7 @@
       @apply hover:bg-slate-50;
     }
   }
-  .pb-clipboard-info {
+  .bk-clipboard-info {
     @apply p-20;
     h4 {
       @apply !text-base !font-bold !font-sans leading-none;
@@ -18,7 +18,7 @@
   }
 }
 
-.pb-clipboard-item {
+.bk-clipboard-item {
   @apply !relative  !overflow-hidden !rounded !font-sans;
   @apply hover:border-slate-500;
   > * {
@@ -31,7 +31,7 @@
   }
 }
 
-.pb-clipboard-item-header {
+.bk-clipboard-item-header {
   @apply !flex !items-center !gap-10 !text-lg !font-semibold mb-15;
   button {
     @apply !ml-auto !text-lg !p-5 !rounded text-slate-500;
@@ -41,6 +41,6 @@
     }
   }
 }
-.pb-clipboard-item-inner {
+.bk-clipboard-item-inner {
   @apply !relative !h-full !line-clamp-6 !font-sans !text-base;
 }

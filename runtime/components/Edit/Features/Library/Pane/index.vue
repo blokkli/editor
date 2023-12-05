@@ -1,16 +1,16 @@
 <template>
-  <div class="pb-library pb-control">
-    <div class="pb-library-form">
+  <div class="bk-library bk-control">
+    <div class="bk-library-form">
       <input
         v-model="text"
         type="text"
         id="library_search"
-        class="pb-form-input"
+        class="bk-form-input"
         placeholder="Suchbegriff"
         required
       />
     </div>
-    <div v-if="data" class="pb-library-list" ref="listEl">
+    <div v-if="data" class="bk-library-list" ref="listEl">
       <Item
         v-for="item in data"
         v-bind="item"
@@ -23,7 +23,7 @@
 <script lang="ts" setup>
 import { Sortable } from '#blokkli/sortable'
 import Item from './Item/index.vue'
-import { PbLibraryItem } from '#blokkli/types'
+import { BlokkliLibraryItem } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
 
 const { adapter, eventBus } = useBlokkli()
@@ -43,7 +43,7 @@ const buildElements = () => {
   if (!listEl.value) {
     return
   }
-  elements.value = [...listEl.value.querySelectorAll('.pb-library-list-item')]
+  elements.value = [...listEl.value.querySelectorAll('.bk-library-list-item')]
     .map((el) => {
       if (el instanceof HTMLElement) {
         const uuid = el.dataset.libraryItemUuid
@@ -58,7 +58,7 @@ const buildElements = () => {
     .filter(falsy)
 }
 
-const { data } = await useAsyncData<PbLibraryItem[]>(() =>
+const { data } = await useAsyncData<BlokkliLibraryItem[]>(() =>
   adapter.getLibraryItems(),
 )
 

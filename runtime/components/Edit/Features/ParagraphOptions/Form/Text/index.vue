@@ -1,5 +1,5 @@
 <template>
-  <div class="pb-paragraph-options-text">
+  <div class="bk-paragraph-options-text">
     <input :type="type" :placeholder="label" v-model="text" />
   </div>
 </template>

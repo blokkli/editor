@@ -7,7 +7,7 @@
     icon="cog"
   />
   <Teleport to="body">
-    <transition appear name="pb-slide-up">
+    <transition appear name="bk-slide-up">
       <SettingsDialog v-if="showSettings" @cancel="showSettings = false" />
     </transition>
   </Teleport>

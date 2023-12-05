@@ -3,30 +3,30 @@
     <div
       v-if="selectableParagraphTypes.length"
       @wheel.stop=""
-      class="pb pb-available-paragraphs pb-control"
-      :class="{ 'pb-is-active': isActive }"
+      class="bk bk-available-paragraphs bk-control"
+      :class="{ 'bk-is-active': isActive }"
       ref="wrapper"
       @wheel.prevent.capture="onWheel"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
     >
-      <div ref="typeList" class="pb-list" :style="style">
+      <div ref="typeList" class="bk-list" :style="style">
         <div
-          class="pb-list-item pb-clone"
+          class="bk-list-item bk-clone"
           data-element-type="new"
           :data-paragraph-type="type.id"
           v-for="(type, i) in sortedList"
           :class="{
-            'pb-is-disabled':
+            'bk-is-disabled':
               !type.id || !selectableParagraphTypes.includes(type.id),
           }"
           :key="i + (type.id || 'undefined') + updateKey"
         >
-          <div class="pb-list-item-inner">
-            <div class="pb-list-item-icon">
+          <div class="bk-list-item-inner">
+            <div class="bk-list-item-icon">
               <ParagraphIcon :bundle="type.id" />
             </div>
-            <div class="pb-list-item-label">
+            <div class="bk-list-item-label">
               <span>{{ type.label }}</span>
             </div>
           </div>
@@ -185,7 +185,7 @@ const style = computed(() => {
 
 function storeSort() {
   if (typeList.value) {
-    const sorted = [...typeList.value.querySelectorAll('.pb-list-item')]
+    const sorted = [...typeList.value.querySelectorAll('.bk-list-item')]
       .map((v) => {
         return (v as HTMLDivElement).dataset.paragraphType
       })
@@ -210,7 +210,7 @@ const sortedList = computed(() => {
 })
 
 onMounted(() => {
-  document.documentElement.classList.add('pb-has-sidebar-left')
+  document.documentElement.classList.add('bk-has-sidebar-left')
   if (typeList.value) {
     instance = new Sortable(typeList.value, {
       sort: true,
@@ -248,7 +248,7 @@ onMounted(() => {
   }
 })
 onUnmounted(() => {
-  document.documentElement.classList.remove('pb-has-sidebar-left')
+  document.documentElement.classList.remove('bk-has-sidebar-left')
   if (instance) {
     instance.destroy()
   }

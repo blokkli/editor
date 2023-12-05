@@ -2,10 +2,10 @@
   <Teleport to="body">
     <div
       v-show="selection.blocks.value.length && !selection.isDragging.value"
-      class="pb pb-paragraph-actions pb-control"
+      class="bk bk-paragraph-actions bk-control"
       @click.stop
     >
-      <div :style="styleSize" class="pb-paragraph-actions-overlay">
+      <div :style="styleSize" class="bk-paragraph-actions-overlay">
         <div
           v-for="rect in selectedRects"
           :style="{
@@ -16,18 +16,18 @@
         ></div>
       </div>
 
-      <div class="pb-paragraph-actions-inner" :style="innerStyle">
-        <div class="pb-paragraph-actions-controls">
-          <div id="pb-paragraph-actions-title" />
+      <div class="bk-paragraph-actions-inner" :style="innerStyle">
+        <div class="bk-paragraph-actions-controls">
+          <div id="bk-paragraph-actions-title" />
 
-          <div class="pb-paragraph-actions-buttons" id="pb-paragraph-actions" />
+          <div class="bk-paragraph-actions-buttons" id="bk-paragraph-actions" />
 
           <div
-            class="pb-paragraph-actions-buttons"
-            id="pb-paragraph-actions-options"
+            class="bk-paragraph-actions-buttons"
+            id="bk-paragraph-actions-options"
           />
         </div>
-        <div id="pb-paragraph-actions-after"></div>
+        <div id="bk-paragraph-actions-after"></div>
       </div>
     </div>
   </Teleport>

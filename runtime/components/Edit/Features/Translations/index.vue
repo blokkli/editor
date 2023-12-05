@@ -1,9 +1,9 @@
 <template>
-  <Teleport to="#pb-toolbar-after-title">
-    <div class="pb-paragraph-options-radios pb-is-language">
+  <Teleport to="#bk-toolbar-after-title">
+    <div class="bk-paragraph-options-radios bk-is-language">
       <label
         v-for="item in items"
-        :class="{ 'pb-is-muted': !item.translation }"
+        :class="{ 'bk-is-muted': !item.translation }"
       >
         <div>
           <input
@@ -14,7 +14,7 @@
             @click="onClick(item, $event)"
           />
           <span>{{ item.code }}</span>
-          <div class="pb-tooltip">{{ item.label }}</div>
+          <div class="bk-tooltip">{{ item.label }}</div>
         </div>
       </label>
     </div>
@@ -42,7 +42,7 @@ import { falsy } from '#blokkli/helpers'
 import { PluginMenuButton, PluginParagraphAction } from '#blokkli/plugins'
 import {
   DraggableExistingParagraphItem,
-  PbAvailableTranslation,
+  BlokkliEntityTranslation,
 } from '#blokkli/types'
 
 const { eventBus, state, context, adapter } = useBlokkli()
@@ -53,7 +53,7 @@ type TranslationStateItem = {
   code: string
   label: string
   checked: boolean
-  translation?: PbAvailableTranslation
+  translation?: BlokkliEntityTranslation
 }
 
 const items = computed<TranslationStateItem[]>(() => {

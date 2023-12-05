@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <div v-if="isVisible" class="pb pb-dragging-overlay" :style="style"></div>
+    <div v-if="isVisible" class="bk bk-dragging-overlay" :style="style"></div>
   </Teleport>
 </template>
 

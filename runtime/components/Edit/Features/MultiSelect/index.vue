@@ -26,12 +26,12 @@ function shouldStartMultiSelect(target: Element): boolean {
   if (isInsideParagraph) {
     return false
   }
-  const isInsideControl = !!target.closest('.pb-control')
+  const isInsideControl = !!target.closest('.bk-control')
   if (isInsideControl) {
     return false
   }
 
-  const isInSidebar = !!target.closest('.pb-sidebar')
+  const isInSidebar = !!target.closest('.bk-sidebar')
   if (isInSidebar) {
     return false
   }

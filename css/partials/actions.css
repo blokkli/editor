@@ -1,26 +1,26 @@
-.pb {
-  #pb-paragraph-actions-title {
+.bk {
+  #bk-paragraph-actions-title {
     @apply h-full;
   }
-  .pb-paragraph-actions-title-count {
+  .bk-paragraph-actions-title-count {
     @apply bg-slate-50 text-slate-900 inline-block px-3 w-20 h-20 rounded-full ml-10 text-sm font-bold;
-    &.pb-is-hidden {
+    &.bk-is-hidden {
       @apply opacity-0;
     }
   }
-  &.pb-paragraph-actions {
+  &.bk-paragraph-actions {
     @apply text-slate-50  select-none text-sm;
   }
-  .pb-paragraph-actions-inner {
+  .bk-paragraph-actions-inner {
     @apply fixed left-0 -top-60 p-0 h-50 z-[501];
   }
-  .pb-paragraph-actions-controls {
+  .bk-paragraph-actions-controls {
     @apply flex items-stretch whitespace-nowrap h-full bg-slate-900 shadow-xl rounded-md;
     > div:not(:first-child):not(:empty) {
       @apply border-l border-l-slate-500;
     }
   }
-  .pb-paragraph-actions-overlay {
+  .bk-paragraph-actions-overlay {
     @apply outline outline-blue-600 outline-offset-1 fixed top-0 left-0 pointer-events-none rounded z-[500];
     > div {
       @apply absolute top-0 left-0;
@@ -28,19 +28,19 @@
     }
   }
 
-  .pb-paragraph-actions-buttons {
+  .bk-paragraph-actions-buttons {
     @apply relative flex;
     > button {
       @apply text-slate-300 h-full flex items-center shrink-0 justify-center w-50;
       @apply hover:bg-slate-700 hover:text-slate-50;
-      &.pb-is-active {
+      &.bk-is-active {
         @apply bg-white text-slate-900;
       }
-      .pb-tooltip {
+      .bk-tooltip {
         @apply absolute bottom-full left-0 w-full mb-3;
       }
       &:not(:hover) {
-        .pb-tooltip {
+        .bk-tooltip {
           @apply hidden;
         }
       }
@@ -54,12 +54,12 @@
     }
   }
 
-  .pb-paragraph-actions-type-button {
+  .bk-paragraph-actions-type-button {
     @apply flex items-center justify-between cursor-default min-w-[180px] text-slate-300 font-bold h-full pl-[9px] pr-20 text-base rounded-l leading-none;
     > span {
       @apply mr-auto;
     }
-    .pb-paragraph-actions-title-icon {
+    .bk-paragraph-actions-title-icon {
       @apply text-[25px] mr-10 bg-slate-800 w-[34px] h-[34px] rounded border border-slate-600 relative text-white;
       svg {
         @apply w-[1em] h-[1em] fill-current absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
@@ -70,7 +70,7 @@
       &:not(.is-open) {
         @apply hover:text-slate-50 hover:bg-slate-700;
         &:hover {
-          .pb-paragraph-actions-title-icon {
+          .bk-paragraph-actions-title-icon {
             @apply bg-slate-600 border-slate-400;
           }
         }
@@ -78,23 +78,23 @@
     }
     &.is-open {
       @apply bg-slate-700 text-white;
-      .pb-icon {
+      .bk-icon {
         @apply transform rotate-180;
       }
-      .pb-paragraph-actions-title-icon {
+      .bk-paragraph-actions-title-icon {
         @apply bg-slate-600 border-slate-400;
       }
     }
-    .pb-caret svg {
+    .bk-caret svg {
       @apply pointer-events-none w-15 h-15 fill-current;
     }
   }
 
-  .pb-paragraph-actions-type {
+  .bk-paragraph-actions-type {
     @apply relative h-full;
   }
 
-  .pb-paragraph-actions-type-dropdown {
+  .bk-paragraph-actions-type-dropdown {
     @apply absolute top-full left-0 min-w-[300px] bg-slate-900 text-slate-200 rounded overflow-hidden shadow-xl rounded-t-none;
     h3 {
       @apply p-10 border-b border-b-slate-700;
@@ -107,7 +107,7 @@
         @apply text-white bg-slate-700;
       }
     }
-    .pb-paragraph-icon {
+    .bk-paragraph-icon {
       @apply w-[34px] h-[34px] bg-slate-700 rounded flex items-center justify-center border border-slate-500;
       svg {
         @apply w-25 h-25;
@@ -115,10 +115,10 @@
     }
   }
 
-  .pb-paragraph-actions-comment {
+  .bk-paragraph-actions-comment {
     /* @apply relative; */
   }
-  .pb-paragraph-actions-comment-dropdown {
+  .bk-paragraph-actions-comment-dropdown {
     @apply absolute top-full left-0 w-full bg-white p-15 shadow-xl rounded-b;
     button {
       @apply mt-15;

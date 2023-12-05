@@ -5,7 +5,7 @@
     icon="history"
     v-slot="{ scrolledToEnd }"
   >
-    <div class="pb pb-history pb-control">
+    <div class="bk bk-history bk-control">
       <ul>
         <li
           v-for="item in mapped"
@@ -34,7 +34,7 @@
             </div>
           </button>
         </li>
-        <li v-if="totalMutations > showAmount" class="pb-history-load-more">
+        <li v-if="totalMutations > showAmount" class="bk-history-load-more">
           <button @click="showAmount += 100">
             <strong
               >{{ Math.min(totalMutations - showAmount, 100) }} weitere
@@ -46,7 +46,7 @@
           class="is-last"
           :class="[
             currentMutationIndex === -1 ? 'is-active' : 'is-applied',
-            { 'pb-has-shadow': !scrolledToEnd },
+            { 'bk-has-shadow': !scrolledToEnd },
           ]"
         >
           <button @click="setHistoryIndex(-1)">
@@ -92,7 +92,7 @@
 <script lang="ts" setup>
 import { PluginSidebar, PluginToolbarButton } from '#blokkli/plugins'
 import { RelativeTime } from '#blokkli/components'
-import { PbMutation } from '#blokkli/types'
+import { BlokkliMutationItem } from '#blokkli/types'
 
 const { adapter, eventBus, state } = useBlokkli()
 
@@ -119,7 +119,7 @@ watch(totalMutations, (newTotal, previousTotal) => {
 
 type HistoryItem = {
   index: number
-  mutation: PbMutation
+  mutation: BlokkliMutationItem
   timestamp: number
 }
 
