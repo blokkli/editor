@@ -1,4 +1,13 @@
 .pb {
+  &.pb-top {
+    @apply bg-slate-900;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 50000;
+  }
+
   &.pb-toolbar {
     @apply select-none;
   }

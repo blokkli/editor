@@ -39,4 +39,32 @@
       @apply pointer-events-none;
     }
   }
+
+  .pb-artboard-scrollbar {
+    @apply fixed top-[55px] bottom-5 right-5 w-10 bg-slate-500/10 z-[100] rounded-full transition overflow-hidden;
+    /* @apply opacity-25; */
+
+    button {
+      @apply bg-slate-500/50  w-full block rounded-full;
+    }
+
+    &.pb-is-active,
+    &:hover {
+      @apply opacity-100 bg-slate-500/40;
+      button {
+        @apply bg-slate-600;
+      }
+    }
+
+    &.pb-is-active button,
+    button:hover {
+      @apply bg-slate-500;
+    }
+  }
+}
+
+.pb-html-root.pb-is-artboard.pb-has-sidebar-right {
+  .pb-artboard-scrollbar {
+    @apply right-[305px];
+  }
 }

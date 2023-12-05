@@ -10,6 +10,19 @@
       <span>{{ zoomLevel }}</span>
     </div>
   </PluginToolbarButton>
+  <Teleport to="body">
+    <div
+      ref="scrollbar"
+      class="pb-artboard-scrollbar"
+      :class="{ 'pb-is-active': isDraggingThumb }"
+      @mousedown.stop.prevent="onClickScrollbar"
+    >
+      <button
+        :style="scrollbarStyle"
+        @mousedown.capture.prevent.stop="onThumbMouseDown"
+      />
+    </div>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
@@ -34,12 +47,47 @@ type Coord = {
   y: number
 }
 
+const scrollbar = ref<HTMLElement | null>(null)
+const isDraggingThumb = ref(false)
+
+const scrollStartY = ref(0)
+const scrollStartOffsetY = ref(0)
+const thumbStartY = ref(0)
+
+function onThumbMouseDown(e: MouseEvent) {
+  isDraggingThumb.value = true
+  scrollStartY.value = e.clientY
+  scrollStartOffsetY.value = offset.value.y
+  thumbStartY.value = thumbY.value
+  animationTarget.value = null
+  document.body.addEventListener('mousemove', onThumbMouseMove, {
+    passive: false,
+  })
+}
+
+function onThumbMouseMove(e: MouseEvent) {
+  const diff = scrollStartY.value - e.clientY
+  const newThumbY = Math.max(
+    Math.min(-thumbStartY.value + diff, 0),
+    -(scrollbarHeight.value - scrollThumbHeight.value),
+  )
+  offset.value.y = getOffsetFromThumb(newThumbY)
+}
+
+function onClickScrollbar(e: MouseEvent) {
+  if (e.offsetY < thumbY.value) {
+    scrollPageUp()
+  } else {
+    scrollPageDown()
+  }
+}
+
 const zoomFactor = 0.1
 const scale = ref(1)
-const offset: Coord = {
+const offset = ref<Coord>({
   x: 0,
   y: 0,
-}
+})
 const zoomTarget: Coord = { x: 0, y: 0 }
 const zoomPoint: Coord = { x: 0, y: 0 }
 const startMoveoffset: Coord = {
@@ -51,6 +99,45 @@ const startMoveOffset: Coord = {
   x: 0,
   y: 0,
 }
+const rootHeight = ref(1000)
+const artboardHeight = ref(6000)
+const scrollbarHeight = ref(0)
+
+function getOffsetFromThumb(newThumbY: number): number {
+  const maxThumbY = scrollbarHeight.value - scrollThumbHeight.value
+  const newScrollProgress = newThumbY / maxThumbY
+  const newScrollTop = newScrollProgress * scrollHeight.value
+  const newOffsetY = newScrollTop + rootHeight.value - props.padding
+  return newOffsetY
+}
+
+const scrollHeight = computed(
+  () =>
+    artboardHeight.value * scale.value + rootHeight.value - 2 * props.padding,
+)
+
+const scrollTop = computed(() =>
+  Math.round(offset.value.y - rootHeight.value + props.padding),
+)
+
+// The scroll progress as a value from 0 to 1.
+const scrollProgress = computed(() =>
+  Math.abs(scrollTop.value / scrollHeight.value),
+)
+
+const scrollThumbHeight = computed(
+  () => (rootHeight.value / scrollHeight.value) * rootHeight.value,
+)
+
+const thumbY = computed(
+  () =>
+    (scrollbarHeight.value - scrollThumbHeight.value) * scrollProgress.value,
+)
+
+const scrollbarStyle = computed(() => ({
+  height: scrollThumbHeight.value + 'px',
+  transform: `translateY(${thumbY.value}px)`,
+}))
 
 // The target state for the current animation.
 const animationTarget = ref<(Coord & { scale: number }) | null>(null)
@@ -83,8 +170,8 @@ function updateScale(newScale: number) {
 
 function updateOffset(x: number, y: number) {
   const limited = limitOffset(x, y)
-  offset.x = limited.x
-  offset.y = limited.y
+  offset.value.x = limited.x
+  offset.value.y = limited.y
   animation.requestDraw()
 }
 
@@ -107,8 +194,8 @@ function onWheel(e: WheelEvent) {
 
   if (e.ctrlKey) {
     const delta = Math.sign(-e.deltaY)
-    zoomTarget.x = (zoomPoint.x - offset.x) / scale.value
-    zoomTarget.y = (zoomPoint.y - offset.y) / scale.value
+    zoomTarget.x = (zoomPoint.x - offset.value.x) / scale.value
+    zoomTarget.y = (zoomPoint.y - offset.value.y) / scale.value
 
     updateScale(scale.value + delta * zoomFactor * scale.value)
     updateOffset(
@@ -116,7 +203,10 @@ function onWheel(e: WheelEvent) {
       -zoomTarget.y * scale.value + zoomPoint.y,
     )
   } else {
-    updateOffset(offset.x + -(e.deltaX / 3), offset.y + -(e.deltaY / 3))
+    updateOffset(
+      offset.value.x + -(e.deltaX / 3),
+      offset.value.y + -(e.deltaY / 3),
+    )
   }
   animation.requestDraw()
 }
@@ -124,8 +214,8 @@ function onWheel(e: WheelEvent) {
 function updateStyles() {
   ui.artboardElement().style.scale = scale.value.toString()
   ui.artboardElement().style.translate = `${Math.round(
-    offset.x,
-  )}px ${Math.round(offset.y)}px`
+    offset.value.x,
+  )}px ${Math.round(offset.value.y)}px`
 }
 
 function resetZoom() {
@@ -133,7 +223,8 @@ function resetZoom() {
   const root = ui.rootElement()
   // Calculate the center of the viewport in the current scale.
   const viewportCenterY = root.offsetHeight / 2
-  const currentCenterOnArtboard = (-offset.y + viewportCenterY) / scale.value
+  const currentCenterOnArtboard =
+    (-offset.value.y + viewportCenterY) / scale.value
 
   // Calculate the new offset so that whatever is in the center of the
   // viewport remains the center after applying the scale.
@@ -157,8 +248,8 @@ function scaleToFit() {
 
 watch(keyboard.isPressingSpace, (isPressing) => {
   if (isPressing) {
-    startMoveOffset.x = offset.x
-    startMoveOffset.y = offset.y
+    startMoveOffset.x = offset.value.x
+    startMoveOffset.y = offset.value.y
     document.body.addEventListener('mousemove', onMouseMove, {
       passive: false,
     })
@@ -187,13 +278,15 @@ function onMouseDown(e: MouseEvent) {
   e.stopPropagation()
   startMoveoffset.x = e.x
   startMoveoffset.y = e.y
-  startMoveOffset.x = offset.x
-  startMoveOffset.y = offset.y
+  startMoveOffset.x = offset.value.x
+  startMoveOffset.y = offset.value.y
   mouseIsDown.value = true
 }
 
 function onMouseUp() {
   mouseIsDown.value = false
+  isDraggingThumb.value = false
+  document.body.removeEventListener('mousemove', onThumbMouseMove)
 }
 
 function onKeyPressed(e: KeyPressedEvent) {
@@ -214,7 +307,7 @@ function onKeyPressed(e: KeyPressedEvent) {
       )
       alpha = 0.2
     } else {
-      animateTo(offset.x, offset.y + 200)
+      animateTo(offset.value.x, offset.value.y + 200)
     }
   } else if (e.code === 'ArrowDown') {
     if (animationTarget.value) {
@@ -224,7 +317,7 @@ function onKeyPressed(e: KeyPressedEvent) {
       )
       alpha = 0.2
     } else {
-      animateTo(offset.x, offset.y - 200)
+      animateTo(offset.value.x, offset.value.y - 200)
     }
   } else if (e.code === 'Digit0' && e.meta) {
     resetZoom()
@@ -241,17 +334,17 @@ const getEndY = () => {
 
 const scrollPageUp = () =>
   animateTo(
-    offset.x,
-    Math.min(offset.y + ui.rootElement().offsetHeight, props.padding),
+    offset.value.x,
+    Math.min(offset.value.y + ui.rootElement().offsetHeight, props.padding),
   )
 const scrollPageDown = () =>
   animateTo(
-    offset.x,
-    Math.max(offset.y - ui.rootElement().offsetHeight, getEndY()),
+    offset.value.x,
+    Math.max(offset.value.y - ui.rootElement().offsetHeight, getEndY()),
   )
-const scrollToTop = () => animateTo(offset.x, props.padding)
+const scrollToTop = () => animateTo(offset.value.x, props.padding)
 const scrollToEnd = () => {
-  animateTo(offset.x, getEndY())
+  animateTo(offset.value.x, getEndY())
 }
 
 function getCenterX(targetScale?: number): number {
@@ -284,8 +377,8 @@ function onAnimationFrame() {
   if (animationTarget.value) {
     // Check if the current offset is close enough to the target offset
     if (
-      Math.abs(offset.x - animationTarget.value.x) < 1 &&
-      Math.abs(offset.y - animationTarget.value.y) < 1 &&
+      Math.abs(offset.value.x - animationTarget.value.x) < 1 &&
+      Math.abs(offset.value.y - animationTarget.value.y) < 1 &&
       Math.abs(scale.value - animationTarget.value.scale) < 0.02
     ) {
       // We have reached our target.
@@ -294,8 +387,8 @@ function onAnimationFrame() {
       stopAnimate()
     } else {
       // Update the offset values
-      const x = lerp(offset.x, animationTarget.value.x, alpha)
-      const y = lerp(offset.y, animationTarget.value.y, alpha)
+      const x = lerp(offset.value.x, animationTarget.value.x, alpha)
+      const y = lerp(offset.value.y, animationTarget.value.y, alpha)
       updateOffset(x, y)
       const newScale = lerp(scale.value, animationTarget.value.scale, alpha)
       scale.value = newScale
@@ -306,6 +399,12 @@ function onAnimationFrame() {
       }
     }
     animation.requestDraw()
+  }
+  const artboard = ui.artboardElement()
+  rootHeight.value = ui.rootElement().offsetHeight
+  artboardHeight.value = artboard.offsetHeight
+  if (scrollbar.value) {
+    scrollbarHeight.value = scrollbar.value.offsetHeight
   }
 
   updateStyles()
@@ -346,7 +445,7 @@ function onTouchMove(e: TouchEvent) {
     const diffX = touchStartOffset.x - e.touches[0].clientX
     const diffY = touchStartOffset.y - e.touches[0].clientY
 
-    updateOffset(offset.x - diffX, offset.y - diffY)
+    updateOffset(offset.value.x - diffX, offset.value.y - diffY)
 
     touchStartOffset.x = e.touches[0].clientX
     touchStartOffset.y = e.touches[0].clientY
@@ -388,11 +487,11 @@ function onParagraphScrollIntoView(e: ParagraphScrollIntoViewEvent) {
 
   if (e.center) {
     targetY =
-      offset.y - rect.y + props.padding + rootHeight / 2 - rect.height / 2
+      offset.value.y - rect.y + props.padding + rootHeight / 2 - rect.height / 2
   } else if (rect.y < 70) {
-    targetY = offset.y - (rect.y - props.padding) + 70
+    targetY = offset.value.y - (rect.y - props.padding) + 70
   } else if (rect.y + rect.height > rootHeight) {
-    targetY = offset.y + (rootHeight - (rect.y + rect.height) - 40)
+    targetY = offset.value.y + (rootHeight - (rect.y + rect.height) - 40)
   }
 
   if (targetY) {
@@ -400,9 +499,9 @@ function onParagraphScrollIntoView(e: ParagraphScrollIntoViewEvent) {
       if (animationTarget.value) {
         animationTarget.value.y = targetY
       }
-      offset.y = targetY
+      offset.value.y = targetY
     } else {
-      animateTo(offset.x, targetY)
+      animateTo(offset.value.x, targetY)
     }
   }
 }
@@ -411,7 +510,7 @@ const saveState = () => {
   if (!shouldPersist.value) {
     return
   }
-  savedState.value = { offset, scale: scale.value }
+  savedState.value = { offset: offset.value, scale: scale.value }
 }
 
 onMounted(() => {
@@ -430,8 +529,8 @@ onMounted(() => {
   window.addEventListener('beforeunload', saveState)
 
   if (savedState.value && shouldPersist.value) {
-    offset.x = savedState.value.offset.x
-    offset.y = savedState.value.offset.y
+    offset.value.x = savedState.value.offset.x
+    offset.value.y = savedState.value.offset.y
     updateScale(savedState.value.scale)
   }
   updateStyles()

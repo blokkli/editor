@@ -44,6 +44,14 @@ const toggleSidebar = (id: string) =>
 
 const showSidebar = () => (activeSidebar.value = props.id)
 
+watch(activeSidebar, (active) => {
+  if (active) {
+    document.documentElement.classList.add('pb-has-sidebar-right')
+  } else {
+    document.documentElement.classList.remove('pb-has-sidebar-right')
+  }
+})
+
 const sidebarContent = ref<HTMLDivElement | null>(null)
 const scrolledToEnd = ref(false)
 let raf: any = null
