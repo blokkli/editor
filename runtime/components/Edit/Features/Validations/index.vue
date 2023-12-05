@@ -19,8 +19,8 @@
 </template>
 
 <script lang="ts" setup>
-import { PluginSidebar } from '#pb/plugins'
-import { Icon } from '#pb/components'
+import { PluginSidebar } from '#blokkli/plugins'
+import { Icon } from '#blokkli/components'
 
 const { state } = useBlokkli()
 </script>

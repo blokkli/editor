@@ -1,4 +1,4 @@
-import { falsy } from '#pb/helpers'
+import { falsy } from '#blokkli/helpers'
 import { eventBus } from '../eventBus'
 
 export type PbAnimationProvider = {

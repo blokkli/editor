@@ -1,7 +1,7 @@
-import { DraggableExistingParagraphItem } from '#pb/types'
-import { findParagraphElement, buildDraggableItem, falsy } from '#pb/helpers'
+import { DraggableExistingParagraphItem } from '#blokkli/types'
+import { findParagraphElement, buildDraggableItem, falsy } from '#blokkli/helpers'
 import { eventBus } from '../eventBus'
-import { Sortable } from '#pb/sortable'
+import { Sortable } from '#blokkli/sortable'
 
 export type PbSelectionProvider = {
   /**

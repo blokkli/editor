@@ -21,10 +21,10 @@
 </template>
 
 <script lang="ts" setup>
-import { Sortable } from '#pb/sortable'
+import { Sortable } from '#blokkli/sortable'
 import Item from './Item/index.vue'
-import { PbLibraryItem } from '#pb/types'
-import { falsy } from '#pb/helpers'
+import { PbLibraryItem } from '#blokkli/types'
+import { falsy } from '#blokkli/helpers'
 
 const { adapter, eventBus } = useBlokkli()
 

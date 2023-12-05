@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onlyUnique } from '#pb/helpers'
+import { onlyUnique } from '#blokkli/helpers'
 import OptionsForm from './Form/index.vue'
 
 const { selection } = useBlokkli()

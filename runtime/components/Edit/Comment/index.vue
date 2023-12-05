@@ -15,9 +15,9 @@
 </template>
 
 <script lang="ts" setup>
-import type { PbComment } from '#pb/types'
-import { Icon } from '#pb/components'
-import { RelativeTime } from '#pb/components'
+import type { PbComment } from '#blokkli/types'
+import { Icon } from '#blokkli/components'
+import { RelativeTime } from '#blokkli/components'
 
 defineEmits<{
   (e: 'resolve'): void

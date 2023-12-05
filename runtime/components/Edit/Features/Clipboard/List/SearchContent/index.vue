@@ -8,10 +8,10 @@
 </template>
 
 <script lang="ts" setup>
-import { getParagraphComponent } from '#nuxt-paragraphs-builder/imports'
-import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
-import { INJECT_BLOCK_ITEM } from '#pb/helpers/symbols'
-import { ScaleToFit } from '#pb/components'
+import { getParagraphComponent } from '#blokkli/imports'
+import { getDefinition } from '#blokkli/definitions'
+import { INJECT_BLOCK_ITEM } from '#blokkli/helpers/symbols'
+import { ScaleToFit } from '#blokkli/components'
 
 const props = defineProps<{
   targetBundle: string

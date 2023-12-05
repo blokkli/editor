@@ -22,8 +22,8 @@
 </template>
 
 <script lang="ts" setup>
-import { PluginMenuButton } from '#pb/plugins'
-import { Icon } from '#pb/components'
+import { PluginMenuButton } from '#blokkli/plugins'
+import { Icon } from '#blokkli/components'
 import ExistingDialog from './Dialog/index.vue'
 
 const { adapter, storage, state } = useBlokkli()

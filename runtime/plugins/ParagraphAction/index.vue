@@ -30,10 +30,10 @@
 </template>
 
 <script lang="ts" setup>
-import type { PbIcon } from '#pb/icons'
-import { Icon } from '#pb/components'
-import { DraggableExistingParagraphItem } from '#pb/types'
-import { ShortcutIndicator } from '#pb/components'
+import type { PbIcon } from '#blokkli/icons'
+import { Icon } from '#blokkli/components'
+import { DraggableExistingParagraphItem } from '#blokkli/types'
+import { ShortcutIndicator } from '#blokkli/components'
 
 const { selection } = useBlokkli()
 

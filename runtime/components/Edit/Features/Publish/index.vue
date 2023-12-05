@@ -12,8 +12,8 @@
 </template>
 
 <script lang="ts" setup>
-import { PluginMenuButton } from '#pb/plugins'
-import { Icon } from '#pb/components'
+import { PluginMenuButton } from '#blokkli/plugins'
+import { Icon } from '#blokkli/components'
 
 const { state, adapter } = useBlokkli()
 const { mutations, canEdit, mutateWithLoadingState } = state

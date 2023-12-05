@@ -90,9 +90,9 @@
 </template>
 
 <script lang="ts" setup>
-import { PluginSidebar, PluginToolbarButton } from '#pb/plugins'
-import { RelativeTime } from '#pb/components'
-import { PbMutation } from '#pb/types'
+import { PluginSidebar, PluginToolbarButton } from '#blokkli/plugins'
+import { RelativeTime } from '#blokkli/components'
+import { PbMutation } from '#blokkli/types'
 
 const { adapter, eventBus, state } = useBlokkli()
 

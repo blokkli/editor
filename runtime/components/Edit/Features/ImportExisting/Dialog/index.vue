@@ -50,8 +50,8 @@
 </template>
 
 <script lang="ts" setup>
-import { DialogModal } from '#pb/components'
-import { PbImportItem } from '#pb/types'
+import { DialogModal } from '#blokkli/components'
+import { PbImportItem } from '#blokkli/types'
 
 const { state, adapter } = useBlokkli()
 

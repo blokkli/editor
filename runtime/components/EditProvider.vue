@@ -23,8 +23,8 @@ import storageProvider from './../helpers/storageProvider'
 import uiProvider from './../helpers/uiProvider'
 
 import { eventBus } from './../eventBus'
-import '#nuxt-paragraphs-builder/styles'
-import { BlokkliApp } from '#pb/types'
+import '#blokkli/styles'
+import { BlokkliApp } from '#blokkli/types'
 import getAdapter from '#blokkli/compiled-edit-adapter'
 import {
   INJECT_APP,

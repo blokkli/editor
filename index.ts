@@ -59,7 +59,7 @@ async function buildStyles(sourceFile: string, sourceFolder: string) {
     })
     .catch((e) => {
       console.log(e)
-      throw new Error('Failed to compile nuxt-paragraphs-builder CSS.')
+      throw new Error('Failed to compile blokkli CSS.')
     })
   return processed
 }
@@ -71,7 +71,7 @@ async function buildStyles(sourceFile: string, sourceFolder: string) {
 const POSSIBLE_EXTENSIONS = ['.js', '.ts', '.vue', '.mjs']
 
 /**
- * Options for the vue-paragraphs-builder module.
+ * Options for the module.
  */
 export type ModuleOptions = {
   /**
@@ -129,8 +129,8 @@ export type ModuleOptions = {
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: 'nuxt-paragraphs-builder',
-    configKey: 'paragraphsBuilder',
+    name: 'blokkli',
+    configKey: 'blokkli',
     compatibility: {
       nuxt: '^3.4.0',
     },
@@ -176,7 +176,7 @@ export default defineNuxtModule<ModuleOptions>({
     // The definitions.
     const templateDefinitions = addTemplate({
       write: true,
-      filename: 'paragraphs-builder/definitions.ts',
+      filename: 'blokkli/definitions.ts',
       getContents: () => {
         return extractor.generateDefinitionTemplate(moduleOptions.globalOptions)
       },
@@ -184,8 +184,7 @@ export default defineNuxtModule<ModuleOptions>({
         paragraphsBuilder: true,
       },
     })
-    nuxt.options.alias['#nuxt-paragraphs-builder/definitions'] =
-      templateDefinitions.dst
+    nuxt.options.alias['#blokkli/definitions'] = templateDefinitions.dst
 
     nuxt.options.runtimeConfig.public.paragraphsBuilder = {
       disableLibrary: !!moduleOptions.disableFeatures?.library,
@@ -259,9 +258,9 @@ export default defineNuxtModule<ModuleOptions>({
     })
     const templateStyles = addTemplate({
       write: true,
-      filename: 'paragraphs-builder/edit.css',
+      filename: 'blokkli/edit.css',
       getContents: () => {
-        console.log('Building nuxt-paragraphs-builder CSS...')
+        console.log('Building blokkli CSS...')
         const sourceFile = resolver.resolve('css/index.css')
         const sourceFolder = resolver.resolve('runtime')
         return buildStyles(sourceFile, sourceFolder)
@@ -272,12 +271,12 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     // The types template.
-    nuxt.options.alias['#nuxt-paragraphs-builder/styles'] = templateStyles.dst
+    nuxt.options.alias['#blokkli/styles'] = templateStyles.dst
 
     // The types template.
     const templateGeneratedTypes = addTemplate({
       write: true,
-      filename: 'paragraphs-builder/generated-types.ts',
+      filename: 'blokkli/generated-types.ts',
       getContents: () => {
         return extractor.generateTypesTemplate(
           Object.keys(moduleOptions.globalOptions || {}),
@@ -289,13 +288,12 @@ export default defineNuxtModule<ModuleOptions>({
         paragraphsBuilder: true,
       },
     })
-    nuxt.options.alias['#nuxt-paragraphs-builder/generated-types'] =
-      templateGeneratedTypes.dst
+    nuxt.options.alias['#blokkli/generated-types'] = templateGeneratedTypes.dst
 
     // The custom feature components.
     const featureComponents = addTemplate({
       write: true,
-      filename: 'paragraphs-builder/features.ts',
+      filename: 'blokkli/features.ts',
       getContents: () => {
         const paths: string[] = moduleOptions.customFeatures || []
         const imports = paths
@@ -322,7 +320,7 @@ export const featureComponents: any[] = [${features}]`
     // The types template.
     const templateDefaultGlobalOptions = addTemplate({
       write: true,
-      filename: 'paragraphs-builder/default-global-options.ts',
+      filename: 'blokkli/default-global-options.ts',
       getContents: () => {
         return extractor.generateDefaultGlobalOptions(
           moduleOptions.globalOptions || {},
@@ -332,14 +330,14 @@ export const featureComponents: any[] = [${features}]`
         paragraphsBuilder: true,
       },
     })
-    nuxt.options.alias['#nuxt-paragraphs-builder/default-global-options'] =
+    nuxt.options.alias['#blokkli/default-global-options'] =
       templateDefaultGlobalOptions.dst
 
     getChunkNames().forEach((chunkName) => {
       if (chunkName !== 'global') {
         const template = addTemplate({
           write: true,
-          filename: `paragraphs-builder/chunk-${chunkName}.ts`,
+          filename: `blokkli/chunk-${chunkName}.ts`,
           getContents: () => {
             return extractor.generateChunkGroup(chunkName, true)
           },
@@ -347,14 +345,13 @@ export const featureComponents: any[] = [${features}]`
             paragraphsBuilder: true,
           },
         })
-        nuxt.options.alias['#nuxt-paragraphs-builder/chunk-' + chunkName] =
-          template.dst
+        nuxt.options.alias['#blokkli/chunk-' + chunkName] = template.dst
       }
     })
 
     const templateImports = addTemplate({
       write: true,
-      filename: 'paragraphs-builder/imports.ts',
+      filename: 'blokkli/imports.ts',
       getContents: () => {
         return extractor.generateImportsTemplate(getChunkNames())
       },
@@ -365,7 +362,7 @@ export const featureComponents: any[] = [${features}]`
 
     const templateIcons = addTemplate({
       write: true,
-      filename: 'paragraphs-builder/icons.ts',
+      filename: 'blokkli/icons.ts',
       getContents: async () => {
         const path = resolver.resolve('./icons')
         const files = await resolveFiles(path, '*.svg')
@@ -393,19 +390,16 @@ export type PbIcon = keyof typeof icons`
         paragraphsBuilder: true,
       },
     })
-    nuxt.options.alias['#pb/icons'] = templateIcons.dst
-
-    nuxt.options.alias['#nuxt-paragraphs-builder/imports'] = templateImports.dst
-
-    nuxt.options.alias['#pb/types'] = resolver.resolve('runtime/types')
-
-    nuxt.options.alias['#pb/plugins'] = resolver.resolve('runtime/plugins')
-    nuxt.options.alias['#pb/components'] = resolver.resolve(
+    nuxt.options.alias['#blokkli/icons'] = templateIcons.dst
+    nuxt.options.alias['#blokkli/imports'] = templateImports.dst
+    nuxt.options.alias['#blokkli/types'] = resolver.resolve('runtime/types')
+    nuxt.options.alias['#blokkli/plugins'] = resolver.resolve('runtime/plugins')
+    nuxt.options.alias['#blokkli/components'] = resolver.resolve(
       'runtime/components/Edit',
     )
-    nuxt.options.alias['#pb/helpers'] = resolver.resolve('runtime/helpers')
-    nuxt.options.alias['#pb/sortable'] = resolver.resolve('runtime/sortable')
-
+    nuxt.options.alias['#blokkli/helpers'] = resolver.resolve('runtime/helpers')
+    nuxt.options.alias['#blokkli/sortable'] =
+      resolver.resolve('runtime/sortable')
     nuxt.options.alias['#blokkli/adapter'] = resolver.resolve('runtime/adapter')
 
     // Checks if the given file path is handled by this module.
@@ -426,7 +420,7 @@ export type PbIcon = keyof typeof icons`
     }
 
     const appliesStyles = (path: string): boolean => {
-      return path.includes('nuxt-paragraphs-builder/css')
+      return path.includes('blokkli/css')
     }
 
     // Watch for file changes in dev mode.

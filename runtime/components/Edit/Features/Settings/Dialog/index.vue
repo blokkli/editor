@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts" setup>
-import { DialogModal } from '#pb/components'
+import { DialogModal } from '#blokkli/components'
 
 const { storage } = useBlokkli()
 

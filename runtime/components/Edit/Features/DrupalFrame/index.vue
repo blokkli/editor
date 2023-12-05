@@ -35,10 +35,10 @@
 </template>
 
 <script lang="ts" setup>
-import { Resizable } from '#pb/components'
-import { Icon, ParagraphIcon } from '#pb/components'
-import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
-import { AddNewParagraphEvent, EditParagraphEvent } from '#pb/types'
+import { Resizable } from '#blokkli/components'
+import { Icon, ParagraphIcon } from '#blokkli/components'
+import { getDefinition } from '#blokkli/definitions'
+import { AddNewParagraphEvent, EditParagraphEvent } from '#blokkli/types'
 
 const { types, eventBus, runtimeConfig, state, context } = useBlokkli()
 

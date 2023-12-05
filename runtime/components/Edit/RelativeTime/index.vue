@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getRelativeTimeString } from '#pb/helpers'
+import { getRelativeTimeString } from '#blokkli/helpers'
 
 const props = defineProps<{
   timestamp: number

@@ -10,9 +10,9 @@
 </template>
 
 <script lang="ts" setup>
-import { DraggableExistingParagraphItem } from '#pb/types'
-import { PluginParagraphAction } from '#pb/plugins'
-import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
+import { DraggableExistingParagraphItem } from '#blokkli/types'
+import { PluginParagraphAction } from '#blokkli/plugins'
+import { getDefinition } from '#blokkli/definitions'
 
 const { eventBus, selection, state } = useBlokkli()
 

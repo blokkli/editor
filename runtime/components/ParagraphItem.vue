@@ -12,8 +12,8 @@ export default {
 import type {
   InjectedParagraphItem,
   PbFieldItemParagraphFragment,
-} from '#pb/types'
-import { getParagraphComponent } from '#nuxt-paragraphs-builder/imports'
+} from '#blokkli/types'
+import { getParagraphComponent } from '#blokkli/imports'
 import { INJECT_BLOCK_ITEM } from '../helpers/symbols'
 
 const props = withDefaults(

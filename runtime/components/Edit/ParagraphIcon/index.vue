@@ -9,8 +9,8 @@
 </template>
 
 <script lang="ts" setup>
-import { icons } from '#nuxt-paragraphs-builder/definitions'
-import { Icon } from '#pb/components'
+import { icons } from '#blokkli/definitions'
+import { Icon } from '#blokkli/components'
 
 const props = defineProps<{
   bundle?: string

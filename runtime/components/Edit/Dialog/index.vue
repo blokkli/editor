@@ -31,8 +31,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { KeyPressedEvent } from '#pb/types'
-import { Icon } from '#pb/components'
+import type { KeyPressedEvent } from '#blokkli/types'
+import { Icon } from '#blokkli/components'
 
 const emit = defineEmits(['submit', 'cancel'])
 

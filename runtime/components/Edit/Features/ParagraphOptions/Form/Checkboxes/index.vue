@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Icon } from '#pb/components'
+import { Icon } from '#blokkli/components'
 
 const props = defineProps<{
   label: string

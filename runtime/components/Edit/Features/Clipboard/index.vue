@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts" setup>
-import { PluginSidebar } from '#pb/plugins'
+import { PluginSidebar } from '#blokkli/plugins'
 import ClipboardList from './List/index.vue'
 import type { ClipboardItem } from './List/index.vue'
 
@@ -38,7 +38,7 @@ import {
   DraggableExistingParagraphItem,
   KeyPressedEvent,
   PbSearchContentItem,
-} from '#pb/types'
+} from '#blokkli/types'
 
 const { eventBus, selection } = useBlokkli()
 

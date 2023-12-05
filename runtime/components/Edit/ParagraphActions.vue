@@ -34,8 +34,8 @@
 </template>
 
 <script lang="ts" setup>
-import { falsy, modulo, getBounds } from '#pb/helpers'
-import { AnimationFrameEvent, KeyPressedEvent } from '#pb/types'
+import { falsy, modulo, getBounds } from '#blokkli/helpers'
+import { AnimationFrameEvent, KeyPressedEvent } from '#blokkli/types'
 
 type Rectangle = {
   left: number

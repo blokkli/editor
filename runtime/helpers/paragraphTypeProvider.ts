@@ -3,7 +3,7 @@ import {
   PbAllowedBundle,
   PbType,
 } from '../types'
-import { onlyUnique } from '#pb/helpers'
+import { onlyUnique } from '#blokkli/helpers'
 import { eventBus } from '../eventBus'
 import { PbAdapter, PbAdapterContext } from '../adapter'
 

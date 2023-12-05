@@ -56,8 +56,8 @@
 </template>
 
 <script lang="ts" setup>
-import { Icon } from '#pb/components'
-import { modulo } from '#pb/helpers'
+import { Icon } from '#blokkli/components'
+import { modulo } from '#blokkli/helpers'
 import ResultsPage from './Results/Page/index.vue'
 import ResultsContent from './Results/Content/index.vue'
 

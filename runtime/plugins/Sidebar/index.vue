@@ -23,8 +23,8 @@
 </template>
 
 <script setup lang="ts">
-import type { PbIcon } from '#pb/icons'
-import { Icon } from '#pb/components'
+import type { PbIcon } from '#blokkli/icons'
+import { Icon } from '#blokkli/components'
 
 const props = defineProps<{
   id: string

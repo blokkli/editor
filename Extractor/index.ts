@@ -140,8 +140,8 @@ export default class Extractor {
       return acc
     }, {})
 
-    return `import { ParagraphDefinitionInput } from '#pb/types'
-import { TypedParagraphDefinitionInput } from '#nuxt-paragraphs-builder/generated-types'
+    return `import { ParagraphDefinitionInput } from '#blokkli/types'
+import { TypedParagraphDefinitionInput } from '#blokkli/generated-types'
 
 export const globalOptions = ${JSON.stringify(globalOptions, null, 2)} as const
 
@@ -172,7 +172,7 @@ export const getDefinition = (bundle: string): TypedParagraphDefinitionInput|und
       return acc
     }, {})
     return `
-import { GlobalOptionsType } from '#nuxt-paragraphs-builder/generated-types'
+import { GlobalOptionsType } from '#blokkli/generated-types'
 export const globalOptionsDefaults: Record<GlobalOptionsType, string> = ${JSON.stringify(
       defaults,
       null,
@@ -215,7 +215,7 @@ export const globalOptionsDefaults: Record<GlobalOptionsType, string> = ${JSON.s
       })
       .join(' | ')
     return `
-import { ParagraphDefinitionInput } from '#pb/types'
+import { ParagraphDefinitionInput } from '#blokkli/types'
 export type ValidFieldListTypes = ${validFieldListTypes}
 export type ValidParagraphBundle = ${validParagraphBundles}
 export type ValidParentParagraphBundle = ${validParentParagraphBundles}
@@ -233,7 +233,7 @@ export type TypedParagraphDefinitionInput = ParagraphDefinitionInput<ValidChunkN
     const chunkImports = chunkNames
       .filter((v) => v !== 'global')
       .map((chunkName) => {
-        return `${chunkName}: () => import('#nuxt-paragraphs-builder/chunk-${chunkName}')`
+        return `${chunkName}: () => import('#blokkli/chunk-${chunkName}')`
       })
 
     const nonGlobalChunkMapping = Object.values(this.definitions).reduce<

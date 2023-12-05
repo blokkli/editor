@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { AnimationFrameEvent, DraggableStartEvent } from '#pb/types'
+import type { AnimationFrameEvent, DraggableStartEvent } from '#blokkli/types'
 
 const { eventBus } = useBlokkli()
 

@@ -3,8 +3,8 @@
 </template>
 
 <script lang="ts" setup>
-import { MutatedParagraphOptions, PbMutatedField } from '#pb/types'
-import '#nuxt-paragraphs-builder/styles'
+import { MutatedParagraphOptions, PbMutatedField } from '#blokkli/types'
+import '#blokkli/styles'
 import getAdapter from '#blokkli/compiled-edit-adapter'
 import {
   INJECT_EDIT_CONTEXT,

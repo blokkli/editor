@@ -1,5 +1,5 @@
 import mitt from 'mitt'
-import type { ParagraphsBuilderEvents } from '#pb/types'
+import type { ParagraphsBuilderEvents } from '#blokkli/types'
 
 export const eventBus = mitt<ParagraphsBuilderEvents>()
 

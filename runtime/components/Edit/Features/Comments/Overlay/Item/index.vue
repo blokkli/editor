@@ -55,9 +55,9 @@
 </template>
 
 <script lang="ts" setup>
-import { PbComment } from '#pb/types'
-import Comment from '#pb/components/Comment/index.vue'
-import { Icon } from '#pb/components'
+import { PbComment } from '#blokkli/types'
+import Comment from '#blokkli/components/Comment/index.vue'
+import { Icon } from '#blokkli/components'
 
 const commentText = ref('')
 const showFullForm = ref(false)

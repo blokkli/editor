@@ -1,5 +1,5 @@
-import type { DraggableExistingParagraphItem } from '#pb/types'
-import { buildDraggableItem, falsy } from '#pb/helpers'
+import type { DraggableExistingParagraphItem } from '#blokkli/types'
+import { buildDraggableItem, falsy } from '#blokkli/helpers'
 
 export type PbDomProvider = {
   findBlock(uuid: string): DraggableExistingParagraphItem | undefined

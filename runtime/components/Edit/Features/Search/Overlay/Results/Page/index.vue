@@ -30,9 +30,9 @@
 
 <script lang="ts" setup>
 import Highlight from './../../Highlight/index.vue'
-import { ParagraphIcon } from '#pb/components'
-import { falsy, modulo } from '#pb/helpers'
-import { DraggableExistingParagraphItem } from '#pb/types'
+import { ParagraphIcon } from '#blokkli/components'
+import { falsy, modulo } from '#blokkli/helpers'
+import { DraggableExistingParagraphItem } from '#blokkli/types'
 
 const listItems = ref<HTMLLIElement[]>([])
 const emit = defineEmits(['close'])

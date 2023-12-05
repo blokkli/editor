@@ -34,10 +34,10 @@
 </template>
 
 <script lang="ts" setup>
-import type { AnimationFrameEvent } from '#pb/types'
+import type { AnimationFrameEvent } from '#blokkli/types'
 import type { Rectangle } from './Item/index.vue'
 import Item from './Item/index.vue'
-import { Sortable } from '#pb/sortable'
+import { Sortable } from '#blokkli/sortable'
 
 const { keyboard, eventBus, ui } = useBlokkli()
 

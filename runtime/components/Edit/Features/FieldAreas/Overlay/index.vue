@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { AnimationFrameEvent } from '#pb/types'
+import { AnimationFrameEvent } from '#blokkli/types'
 
 const { eventBus, selection } = useBlokkli()
 

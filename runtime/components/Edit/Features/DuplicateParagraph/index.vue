@@ -11,8 +11,8 @@
 </template>
 
 <script lang="ts" setup>
-import { DraggableExistingParagraphItem } from '#pb/types'
-import { PluginParagraphAction } from '#pb/plugins'
+import { DraggableExistingParagraphItem } from '#blokkli/types'
+import { PluginParagraphAction } from '#blokkli/plugins'
 
 const { adapter, state } = useBlokkli()
 

@@ -33,9 +33,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ParagraphIcon, Icon } from '#pb/components'
-import { modulo } from '#pb/helpers'
-import { PbSearchContentItem } from '#pb/types'
+import { ParagraphIcon, Icon } from '#blokkli/components'
+import { modulo } from '#blokkli/helpers'
+import { PbSearchContentItem } from '#blokkli/types'
 
 const listItems = ref<HTMLLIElement[]>([])
 

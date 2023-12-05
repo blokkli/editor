@@ -1,5 +1,5 @@
-import type { DraggableItem, PbSearchContentItem } from '#pb/types'
-import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
+import type { DraggableItem, PbSearchContentItem } from '#blokkli/types'
+import { getDefinition } from '#blokkli/definitions'
 
 /**
  * Type check for falsy values.

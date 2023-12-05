@@ -44,7 +44,7 @@
 import {
   globalOptions,
   getDefinition,
-} from '#nuxt-paragraphs-builder/definitions'
+} from '#blokkli/definitions'
 import OptionRadios from './Radios/index.vue'
 import OptionCheckbox from './Checkbox/index.vue'
 import OptionCheckboxes from './Checkboxes/index.vue'
@@ -52,8 +52,8 @@ import OptionText from './Text/index.vue'
 import {
   ParagraphDefinitionOption,
   ParagraphDefinitionOptionsInput,
-} from '#pb/types'
-import { falsy } from '#pb/helpers'
+} from '#blokkli/types'
+import { falsy } from '#blokkli/helpers'
 
 const { adapter, eventBus, state } = useBlokkli()
 const { mutatedOptions, canEdit, mutateWithLoadingState, editMode } = state

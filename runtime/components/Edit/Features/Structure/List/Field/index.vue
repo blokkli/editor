@@ -42,8 +42,8 @@
 </template>
 
 <script lang="ts" setup>
-import { PbType } from '#pb/types'
-import { ParagraphIcon } from '#pb/components'
+import { PbType } from '#blokkli/types'
+import { ParagraphIcon } from '#blokkli/components'
 
 const { selection, eventBus } = useBlokkli()
 

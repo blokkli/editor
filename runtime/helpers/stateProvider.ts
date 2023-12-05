@@ -8,8 +8,8 @@ import type {
   PbViolation,
   PbMutateWithLoadingState,
   PbEditMode,
-} from '#pb/types'
-import { removeDroppedElements, falsy } from '#pb/helpers'
+} from '#blokkli/types'
+import { removeDroppedElements, falsy } from '#blokkli/helpers'
 import { emitMessage, eventBus } from '../eventBus'
 import { PbAdapter, PbAdapterContext } from '../adapter'
 import { INJECT_MUTATED_FIELDS } from './symbols'

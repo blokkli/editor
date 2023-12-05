@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import { KeyPressedEvent } from '#pb/types'
+import { KeyPressedEvent } from '#blokkli/types'
 
 const props = defineProps<{
   meta?: boolean

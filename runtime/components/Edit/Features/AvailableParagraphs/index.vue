@@ -37,10 +37,10 @@
 </template>
 
 <script lang="ts" setup>
-import { Sortable } from '#pb/sortable'
-import { falsy, onlyUnique } from '#pb/helpers'
-import { ParagraphIcon } from '#pb/components'
-import { DraggableExistingParagraphItem } from '#pb/types'
+import { Sortable } from '#blokkli/sortable'
+import { falsy, onlyUnique } from '#blokkli/helpers'
+import { ParagraphIcon } from '#blokkli/components'
+import { DraggableExistingParagraphItem } from '#blokkli/types'
 
 const { eventBus, state, selection, storage, types, context } = useBlokkli()
 

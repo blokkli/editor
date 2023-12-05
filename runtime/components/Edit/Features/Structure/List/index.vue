@@ -7,9 +7,9 @@
 </template>
 
 <script lang="ts" setup>
-import { falsy } from '#pb/helpers'
+import { falsy } from '#blokkli/helpers'
 import Field, { StructureTreeItem, StructureTreeField } from './Field/index.vue'
-import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
+import { getDefinition } from '#blokkli/definitions'
 
 const { types, state, context } = useBlokkli()
 

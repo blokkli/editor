@@ -29,8 +29,8 @@
 </template>
 
 <script lang="ts" setup>
-import { PluginSidebar } from '#pb/plugins'
-import { KeyPressedEvent } from '#pb/types'
+import { PluginSidebar } from '#blokkli/plugins'
+import { KeyPressedEvent } from '#blokkli/types'
 
 const { keyboard, selection, storage, eventBus } = useBlokkli()
 

@@ -4,16 +4,16 @@ import {
   ParagraphDefinitionOptionsInput,
   InjectedParagraphItem,
   ParagraphsBuilderEditContext,
-} from '#pb/types'
-import { globalOptions } from '#nuxt-paragraphs-builder/definitions'
-import { globalOptionsDefaults } from '#nuxt-paragraphs-builder/default-global-options'
+} from '#blokkli/types'
+import { globalOptions } from '#blokkli/definitions'
+import { globalOptionsDefaults } from '#blokkli/default-global-options'
 
 import {
   ValidGlobalConfigKeys,
   TypedParagraphDefinitionInput,
   ValidFieldListTypes,
   ValidParentParagraphBundle,
-} from '#nuxt-paragraphs-builder/generated-types'
+} from '#blokkli/generated-types'
 import {
   INJECT_BLOCK_ITEM,
   INJECT_EDIT_CONTEXT,

@@ -50,10 +50,10 @@
 </template>
 
 <script lang="ts" setup>
-import { Icon } from '#pb/components'
-import { ParagraphIcon } from '#pb/components'
-import { falsy, onlyUnique } from '#pb/helpers'
-import type { PbType } from '#pb/types'
+import { Icon } from '#blokkli/components'
+import { ParagraphIcon } from '#blokkli/components'
+import { falsy, onlyUnique } from '#blokkli/helpers'
+import type { PbType } from '#blokkli/types'
 
 const showConversions = ref(false)
 

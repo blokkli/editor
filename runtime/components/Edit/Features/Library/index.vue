@@ -24,10 +24,10 @@
 </template>
 
 <script lang="ts" setup>
-import { PluginSidebar, PluginParagraphAction } from '#pb/plugins'
+import { PluginSidebar, PluginParagraphAction } from '#blokkli/plugins'
 import Pane from './Pane/index.vue'
 import ReusableDialog from './ReusableDialog/index.vue'
-import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
+import { getDefinition } from '#blokkli/definitions'
 
 const showReusableDialog = ref(false)
 

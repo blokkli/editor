@@ -13,8 +13,8 @@
 import type {
   UpdateMutatedFieldsEvent,
   UpdateParagraphOptionEvent,
-} from '#pb/types'
-import { Icon } from '#pb/components'
+} from '#blokkli/types'
+import { Icon } from '#blokkli/components'
 
 const route = useRoute()
 

@@ -16,8 +16,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { PbComment, AnimationFrameEvent } from '#pb/types'
-import { getBounds } from '#pb/helpers'
+import type { PbComment, AnimationFrameEvent } from '#blokkli/types'
+import { getBounds } from '#blokkli/helpers'
 import Item from './Item/index.vue'
 
 const { eventBus } = useBlokkli()

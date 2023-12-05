@@ -42,8 +42,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { PbFieldItemFragment, PbMutatedField, PbField } from '#pb/types'
-import type { ValidFieldListTypes } from '#nuxt-paragraphs-builder/generated-types'
+import type { PbFieldItemFragment, PbMutatedField, PbField } from '#blokkli/types'
+import type { ValidFieldListTypes } from '#blokkli/generated-types'
 import {
   INJECT_FIELD_LIST_TYPE,
   INJECT_IS_EDITING,

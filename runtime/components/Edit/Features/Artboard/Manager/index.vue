@@ -26,8 +26,8 @@
 </template>
 
 <script lang="ts" setup>
-import { KeyPressedEvent, ParagraphScrollIntoViewEvent } from '#pb/types'
-import { PluginToolbarButton } from '#pb/plugins'
+import { KeyPressedEvent, ParagraphScrollIntoViewEvent } from '#blokkli/types'
+import { PluginToolbarButton } from '#blokkli/plugins'
 
 const props = withDefaults(
   defineProps<{

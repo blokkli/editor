@@ -38,12 +38,12 @@
 </template>
 
 <script lang="ts" setup>
-import { falsy } from '#pb/helpers'
-import { PluginMenuButton, PluginParagraphAction } from '#pb/plugins'
+import { falsy } from '#blokkli/helpers'
+import { PluginMenuButton, PluginParagraphAction } from '#blokkli/plugins'
 import {
   DraggableExistingParagraphItem,
   PbAvailableTranslation,
-} from '#pb/types'
+} from '#blokkli/types'
 
 const { eventBus, state, context, adapter } = useBlokkli()
 const { translation, editMode } = state

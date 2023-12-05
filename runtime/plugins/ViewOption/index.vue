@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { ShortcutIndicator } from '#pb/components'
+import { ShortcutIndicator } from '#blokkli/components'
 
 const { storage } = useBlokkli()
 

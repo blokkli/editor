@@ -5,6 +5,6 @@
 </template>
 
 <script lang="ts" setup>
-import { PluginSidebar } from '#pb/plugins'
+import { PluginSidebar } from '#blokkli/plugins'
 import List from './List/index.vue'
 </script>

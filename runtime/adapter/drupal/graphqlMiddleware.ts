@@ -1,6 +1,6 @@
 import { ParagraphsBuilderEditStateFragment } from '#build/graphql-operations'
-import { falsy } from '#pb/helpers'
-import { PbAvailableTranslation, PbTranslationState, PbType } from '#pb/types'
+import { falsy } from '#blokkli/helpers'
+import { PbAvailableTranslation, PbTranslationState, PbType } from '#blokkli/types'
 import { PbAdapter, defineBlokkliEditAdapter } from '#blokkli/adapter'
 
 type DrupalAdapter = PbAdapter<ParagraphsBuilderEditStateFragment>

@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import '#nuxt-paragraphs-builder/styles'
+import '#blokkli/styles'
 
 const props = defineProps<{
   uuid: string

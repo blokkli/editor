@@ -51,9 +51,9 @@ export default {
 
 <script lang="ts" setup>
 import type { SortableEvent } from 'sortablejs'
-import { Sortable } from '#pb/sortable'
-import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
-import { buildDraggableItem, falsy } from '#pb/helpers'
+import { Sortable } from '#blokkli/sortable'
+import { getDefinition } from '#blokkli/definitions'
+import { buildDraggableItem, falsy } from '#blokkli/helpers'
 import {
   DraggableExistingParagraphItem,
   DraggableHostData,
@@ -64,7 +64,7 @@ import {
   PbMutatedField,
   PbFieldEntity,
   PbFieldItemParagraphFragment,
-} from '#pb/types'
+} from '#blokkli/types'
 import { INJECT_MUTATED_FIELDS } from '../../../helpers/symbols'
 
 const { adapter, state, eventBus, keyboard, types, dom } = useBlokkli()

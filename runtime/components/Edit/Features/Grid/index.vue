@@ -20,8 +20,8 @@
 </template>
 
 <script lang="ts" setup>
-import { PluginViewOption } from '#pb/plugins'
-import { Icon } from '#pb/components'
+import { PluginViewOption } from '#blokkli/plugins'
+import { Icon } from '#blokkli/components'
 
 const { runtimeConfig } = useBlokkli()
 </script>

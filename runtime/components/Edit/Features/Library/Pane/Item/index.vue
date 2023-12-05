@@ -32,10 +32,10 @@
 </template>
 
 <script setup lang="ts">
-import { getDefinition } from '#nuxt-paragraphs-builder/definitions'
-import { PbLibraryItem } from '#pb/types'
-import { ParagraphIcon, ScaleToFit } from '#pb/components'
-import { INJECT_IS_EDITING, INJECT_IS_IN_REUSABLE } from '#pb/helpers/symbols'
+import { getDefinition } from '#blokkli/definitions'
+import { PbLibraryItem } from '#blokkli/types'
+import { ParagraphIcon, ScaleToFit } from '#blokkli/components'
+import { INJECT_IS_EDITING, INJECT_IS_IN_REUSABLE } from '#blokkli/helpers/symbols'
 
 const props = defineProps<PbLibraryItem>()
 

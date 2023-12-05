@@ -50,11 +50,15 @@
         </transition>
       </div>
     </div>
+    <!-- <div class="pb pb-bottom pb-control"> -->
+    <!--   <div class="pb-toolbar-container" id="pb-toolbar-bottom-left" /> -->
+    <!--   <div class="pb-toolbar-container" id="pb-toolbar-bottom-right" /> -->
+    <!-- </div> -->
   </Teleport>
 </template>
 
 <script lang="ts" setup>
-import { Icon } from '#pb/components'
+import { Icon } from '#blokkli/components'
 
 const { ui } = useBlokkli()
 

@@ -30,11 +30,11 @@
 </template>
 
 <script lang="ts" setup>
-import { PluginSidebar, PluginParagraphAction } from '#pb/plugins'
+import { PluginSidebar, PluginParagraphAction } from '#blokkli/plugins'
 import Comment from './../../Comment/index.vue'
 import CommentAddForm from './AddForm/index.vue'
 import CommentsOverlay from './Overlay/index.vue'
-import type { PbComment } from '#pb/types'
+import type { PbComment } from '#blokkli/types'
 
 const comments = ref<PbComment[]>([])
 const showAddComment = ref(false)

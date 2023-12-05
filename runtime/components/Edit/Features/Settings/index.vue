@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { PluginMenuButton } from '#pb/plugins'
+import { PluginMenuButton } from '#blokkli/plugins'
 import SettingsDialog from './Dialog/index.vue'
 
 const showSettings = ref(false)

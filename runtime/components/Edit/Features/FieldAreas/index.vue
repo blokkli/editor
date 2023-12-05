@@ -19,6 +19,6 @@
 
 <script lang="ts" setup>
 import Overlay from './Overlay/index.vue'
-import { PluginViewOption } from '#pb/plugins'
-import { Icon } from '#pb/components'
+import { PluginViewOption } from '#blokkli/plugins'
+import { Icon } from '#blokkli/components'
 </script>

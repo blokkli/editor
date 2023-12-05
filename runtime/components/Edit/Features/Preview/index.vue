@@ -46,10 +46,10 @@
 </template>
 
 <script lang="ts" setup>
-import { PluginToolbarButton } from '#pb/plugins'
+import { PluginToolbarButton } from '#blokkli/plugins'
 import PreviewFrame from './Frame/index.vue'
 import QrCode from './QrCode/index.vue'
-import { DialogModal } from '#pb/components'
+import { DialogModal } from '#blokkli/components'
 
 const qrCodeVisible = ref(false)
 

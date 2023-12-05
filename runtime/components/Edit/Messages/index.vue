@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { PbMessage } from '#pb/types'
+import type { PbMessage } from '#blokkli/types'
 import Item from './Item/index.vue'
 
 const { eventBus } = useBlokkli()

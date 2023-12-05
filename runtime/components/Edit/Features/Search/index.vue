@@ -29,9 +29,9 @@
 /**
  * Provides a fulltext search for paragraphs.
  */
-import { KeyPressedEvent } from '#pb/types'
+import { KeyPressedEvent } from '#blokkli/types'
 import Overlay from './Overlay/index.vue'
-import { PluginToolbarButton } from '#pb/plugins'
+import { PluginToolbarButton } from '#blokkli/plugins'
 
 const { eventBus } = useBlokkli()
 

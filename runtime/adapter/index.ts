@@ -18,7 +18,7 @@ import {
   PbSearchContentItem,
   AddContentSearchItemParagraphEvent,
   PbAvailableTranslation,
-} from '#pb/types'
+} from '#blokkli/types'
 
 interface MutationResponseLike<T> {
   data: {

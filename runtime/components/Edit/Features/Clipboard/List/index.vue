@@ -53,9 +53,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ParagraphIcon, Icon } from '#pb/components'
-import { Sortable } from '#pb/sortable'
-import { PbSearchContentItem } from '#pb/types'
+import { ParagraphIcon, Icon } from '#blokkli/components'
+import { Sortable } from '#blokkli/sortable'
+import { PbSearchContentItem } from '#blokkli/types'
 import SearchContentItem from './SearchContent/index.vue'
 
 let instance: Sortable | null = null
