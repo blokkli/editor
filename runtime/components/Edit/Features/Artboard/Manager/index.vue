@@ -16,6 +16,19 @@
 import { KeyPressedEvent, ParagraphScrollIntoViewEvent } from '#pb/types'
 import { PluginToolbarButton } from '#pb/plugins'
 
+const props = withDefaults(
+  defineProps<{
+    padding?: number
+    minScale?: number
+    maxScale?: number
+  }>(),
+  {
+    padding: 50,
+    minScale: 0.05,
+    maxScale: 3.5,
+  },
+)
+
 type Coord = {
   x: number
   y: number
@@ -45,21 +58,26 @@ const animationTarget = ref<(Coord & { scale: number }) | null>(null)
 const { keyboard, eventBus, dom, context, storage, ui, animation } =
   useBlokkli()
 
-const limitOffset = (providedX: number, providedY: number): Coord => {
+const limitOffset = (
+  providedX: number,
+  providedY: number,
+  providedScale?: number,
+): Coord => {
+  const targetScale = providedScale || scale.value
   const rootRect = ui.rootElement().getBoundingClientRect()
-  const wrapperHeight = ui.artboardElement().offsetHeight * scale.value
-  const wrapperWidth = ui.artboardElement().offsetWidth * scale.value
-  const minX = -(wrapperWidth - 50)
-  const maxX = rootRect.width - 50
-  const minY = -(wrapperHeight - 50)
-  const maxY = rootRect.height - 50
+  const wrapperHeight = ui.artboardElement().offsetHeight * targetScale
+  const wrapperWidth = ui.artboardElement().offsetWidth * targetScale
+  const minX = -(wrapperWidth - props.padding)
+  const maxX = rootRect.width - props.padding
+  const minY = -(wrapperHeight - props.padding)
+  const maxY = rootRect.height - props.padding
   const x = Math.max(Math.min(providedX, maxX), minX)
   const y = Math.max(Math.min(providedY, maxY), minY)
   return { x, y }
 }
 
 function updateScale(newScale: number) {
-  scale.value = Math.max(0.05, Math.min(3, newScale))
+  scale.value = Math.max(props.minScale, Math.min(props.maxScale, newScale))
   animation.requestDraw()
 }
 
@@ -71,7 +89,7 @@ function updateOffset(x: number, y: number) {
 }
 
 function updateAnimationTarget(newX: number, newY: number, newScale?: number) {
-  const { x, y } = limitOffset(newX, newY)
+  const { x, y } = limitOffset(newX, newY, newScale)
   animationTarget.value = {
     x,
     y,
@@ -111,24 +129,30 @@ function updateStyles() {
 }
 
 function resetZoom() {
-  const canvasHeight = ui.artboardElement().offsetHeight
-  // Calculate the ideal y position for the current offset.
-  const targetY =
-    window.innerHeight / 2 - (window.innerHeight / 2 - offset.y) / scale.value
+  const artboard = ui.artboardElement()
+  const root = ui.rootElement()
+  // Calculate the center of the viewport in the current scale.
+  const viewportCenterY = root.offsetHeight / 2
+  const currentCenterOnArtboard = (-offset.y + viewportCenterY) / scale.value
 
-  // Make sure the canvas has a maximum distance to the top and bottom of the screen of 70px.
-  const y = Math.min(
-    Math.max(targetY, -(canvasHeight - window.innerHeight + 120)),
-    70,
+  // Calculate the new offset so that whatever is in the center of the
+  // viewport remains the center after applying the scale.
+  const newYOffset = Math.min(
+    Math.max(
+      -currentCenterOnArtboard + viewportCenterY,
+      -artboard.offsetHeight + root.offsetHeight - props.padding,
+    ),
+    props.padding,
   )
-  animateTo(getCenterX(1), y, 1)
+  animateTo(getCenterX(1), newYOffset, 1)
 }
 
 function scaleToFit() {
   const canvasHeight = ui.artboardElement().offsetHeight
+  const rootHeight = ui.rootElement().offsetHeight
 
-  const targetScale = (window.innerHeight - 50 - 60) / canvasHeight
-  animateTo(getCenterX(targetScale), 30, targetScale)
+  const targetScale = (rootHeight - props.padding) / canvasHeight
+  animateTo(getCenterX(targetScale), props.padding / 2, targetScale)
 }
 
 watch(keyboard.isPressingSpace, (isPressing) => {
@@ -212,14 +236,20 @@ function onKeyPressed(e: KeyPressedEvent) {
 const getEndY = () => {
   const rect = ui.rootElement().getBoundingClientRect()
   const wrapperRect = ui.artboardElement().getBoundingClientRect()
-  return -wrapperRect.height + rect.height - 50
+  return -wrapperRect.height + rect.height - props.padding
 }
 
 const scrollPageUp = () =>
-  animateTo(offset.x, Math.min(offset.y + window.innerHeight, 50))
+  animateTo(
+    offset.x,
+    Math.min(offset.y + ui.rootElement().offsetHeight, props.padding),
+  )
 const scrollPageDown = () =>
-  animateTo(offset.x, Math.max(offset.y - window.innerHeight, getEndY()))
-const scrollToTop = () => animateTo(offset.x, 50)
+  animateTo(
+    offset.x,
+    Math.max(offset.y - ui.rootElement().offsetHeight, getEndY()),
+  )
+const scrollToTop = () => animateTo(offset.x, props.padding)
 const scrollToEnd = () => {
   animateTo(offset.x, getEndY())
 }
@@ -227,7 +257,9 @@ const scrollToEnd = () => {
 function getCenterX(targetScale?: number): number {
   const scaleToUse = targetScale || scale.value
   return (
-    (window.innerWidth - 70 - ui.artboardElement().offsetWidth * scaleToUse) / 2
+    (ui.rootElement().offsetWidth -
+      ui.artboardElement().offsetWidth * scaleToUse) /
+    2
   )
 }
 
@@ -352,13 +384,15 @@ function onParagraphScrollIntoView(e: ParagraphScrollIntoViewEvent) {
   const rect = item.element.getBoundingClientRect()
 
   let targetY: number | null = null
+  const rootHeight = ui.rootElement().offsetHeight
 
   if (e.center) {
-    targetY = offset.y - rect.y + 50 + window.innerHeight / 2 - rect.height / 2
+    targetY =
+      offset.y - rect.y + props.padding + rootHeight / 2 - rect.height / 2
   } else if (rect.y < 70) {
-    targetY = offset.y - (rect.y - 50) + 70
-  } else if (rect.y + rect.height > window.innerHeight) {
-    targetY = offset.y + (window.innerHeight - (rect.y + rect.height) - 40)
+    targetY = offset.y - (rect.y - props.padding) + 70
+  } else if (rect.y + rect.height > rootHeight) {
+    targetY = offset.y + (rootHeight - (rect.y + rect.height) - 40)
   }
 
   if (targetY) {
