@@ -40,7 +40,7 @@ type GlobalOptionsKeyTypes<T extends ValidGlobalConfigKeys> = {
   [K in T[number]]: GetType<GlobalOptionsType[K]>
 }
 
-type Paragraph<T extends BlokkliItemDefinitionInputWithTypes> = {
+type BlokkliComponent<T extends BlokkliItemDefinitionInputWithTypes> = {
   /**
    * The UUID of the paragraph.
    */
@@ -86,9 +86,9 @@ type Paragraph<T extends BlokkliItemDefinitionInputWithTypes> = {
 /**
  * Define a paragraph component.
  */
-export function defineParagraph<T extends BlokkliItemDefinitionInputWithTypes>(
+export function defineBlokkli<T extends BlokkliItemDefinitionInputWithTypes>(
   config: T,
-): Paragraph<T> {
+): BlokkliComponent<T> {
   // The default options are provided by the paragraph itself.
   const defaultOptions: Record<string, any> = {}
   for (const key in config.options) {

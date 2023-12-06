@@ -247,8 +247,8 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Add composables.
     addImports({
-      name: 'defineParagraph',
-      from: resolver.resolve('./runtime/composables/defineParagraph'),
+      name: 'defineBlokkli',
+      from: resolver.resolve('./runtime/composables/defineBlokkli'),
       as: 'defineParagraph',
     })
     addImports({

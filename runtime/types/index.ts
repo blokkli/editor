@@ -3,13 +3,13 @@ import type { Emitter } from 'mitt'
 import type { BlokkliDomProvider } from '../helpers/domProvider'
 import type { BlokkliAdapter, BlokkliAdapterContext } from '#blokkli/adapter'
 import type { BlokkliStorageProvider } from '../helpers/storageProvider'
-import type { BlokkliTypesProvider } from '../helpers/paragraphTypeProvider'
+import type { BlokkliTypesProvider } from '../helpers/typesProvider'
 import type { BlokkliSelectionProvider } from '../helpers/selectionProvider'
 import type { BlokkliKeyboardProvider } from '../helpers/keyboardProvider'
 import type { BlokkliUiProvider } from '../helpers/uiProvider'
 import type { BlokkliAnimationProvider } from '../helpers/animationFrame'
 import type { BlokkliStateProvider } from '../helpers/stateProvider'
-import type { eventBus } from './../eventBus'
+import type { eventBus } from './../helpers/eventBus'
 import type { ParagraphDefinitionOption } from './blokkOptions'
 
 interface MutationResponseLike<T> {
@@ -526,7 +526,7 @@ export type ParagraphsBuilderEvents = {
 
   'paragraph:convert': ConvertBlokkliItemEvent
 
-  'scrollIntoView': ScrollIntoViewEvent
+  scrollIntoView: ScrollIntoViewEvent
   'animationFrame:before': undefined
 
   'state:reloaded': undefined
