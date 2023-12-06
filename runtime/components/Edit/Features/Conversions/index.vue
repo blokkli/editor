@@ -1,8 +1,8 @@
 <template>
-  <Teleport to="#bk-paragraph-actions-title">
-    <div class="bk-paragraph-actions-type">
+  <Teleport to="#bk-blokkli-item-actions-title">
+    <div class="bk-blokkli-item-actions-type">
       <button
-        class="bk-paragraph-actions-type-button"
+        class="bk-blokkli-item-actions-type-button"
         @click.prevent="showConversions = !showConversions"
         :disabled="!possibleConversions.length || !editingEnabled"
         :class="{
@@ -10,13 +10,13 @@
           'is-open': showConversions,
         }"
       >
-        <div class="bk-paragraph-actions-title-icon">
+        <div class="bk-blokkli-item-actions-title-icon">
           <ParagraphIcon v-if="paragraphType" :bundle="paragraphType.id" />
           <Icon name="selection" v-else />
         </div>
         <span>{{ title }}</span>
         <span
-          class="bk-paragraph-actions-title-count"
+          class="bk-blokkli-item-actions-title-count"
           :class="{ 'bk-is-hidden': selection.blocks.value.length <= 1 }"
           >{{ selection.blocks.value.length }}</span
         >
@@ -28,10 +28,10 @@
       </button>
     </div>
   </Teleport>
-  <Teleport to="#bk-paragraph-actions-after">
+  <Teleport to="#bk-blokkli-item-actions-after">
     <div
       v-if="possibleConversions.length && showConversions"
-      class="bk-paragraph-actions-type-dropdown"
+      class="bk-blokkli-item-actions-type-dropdown"
     >
       <div>
         <h3>Umwandeln zu...</h3>

@@ -3,14 +3,19 @@
 </template>
 
 <script lang="ts" setup>
-import { MutatedParagraphOptions, BlokkliMutatedField } from '#blokkli/types'
+import {
+  MutatedParagraphOptions,
+  BlokkliMutatedField,
+  UpdateBlokkliItemOptionEvent,
+} from '#blokkli/types'
 import '#blokkli/styles'
 import getAdapter from '#blokkli/compiled-edit-adapter'
 import {
   INJECT_EDIT_CONTEXT,
   INJECT_IS_PREVIEW,
   INJECT_MUTATED_FIELDS,
-} from '../helpers/symbols'
+} from '#blokkli/helpers/symbols'
+import { frameEventBus } from '#blokkli/helpers/frameEventBus'
 
 const props = defineProps<{
   entityType: string
@@ -20,9 +25,7 @@ const props = defineProps<{
 }>()
 
 const context = computed(() => props)
-
 const adapter = getAdapter(context)
-
 const router = useRouter()
 
 let timeout: any = null
@@ -47,32 +50,19 @@ provide(INJECT_EDIT_CONTEXT, {
   mutatedOptions,
 })
 
+/**
+ * Listen to window messages and emit the matching frameEventBus event.
+ */
 function onMessage(e: MessageEvent) {
   if (e.data && typeof e.data === 'object') {
-    if (e.data.name === 'paragraphsBuilderMutatedFields') {
-      mutatedFields.value = [...e.data.data]
-    } else if (e.data.name === 'paragraphsBuilderFocus') {
-      const uuid = e.data.data
-      const el = document.querySelector(`[data-uuid="${uuid}"]`)
-      if (el) {
-        let position = el.getBoundingClientRect()
-        window.scrollTo({
-          left: position.left,
-          top: position.top + window.scrollY - 200,
-          behavior: 'smooth',
-        })
-      }
-    }
-    if (e.data.name === 'paragraphsBuilderUpdateOption') {
-      const { uuid, key, value } = e.data.data
-
-      if (!mutatedOptions.value[uuid]) {
-        mutatedOptions.value[uuid] = {}
-      }
-      if (!mutatedOptions.value[uuid].paragraph_builder_data) {
-        mutatedOptions.value[uuid].paragraph_builder_data = {}
-      }
-      mutatedOptions.value[uuid].paragraph_builder_data[key] = value
+    if (
+      e.data.name &&
+      typeof e.data.name === 'string' &&
+      e.data.name.startsWith('blokkli__')
+    ) {
+      const name = e.data.name.replace('blokkli__', '')
+      const data = e.data.data
+      frameEventBus.emit(name, data)
     }
   }
 }
@@ -104,8 +94,37 @@ const onWheel = (e: WheelEvent) => {
 
 const isInIframe = () => window.parent !== window
 
+const onMutatedFields = (fields: BlokkliMutatedField[]) => {
+  mutatedFields.value = [...fields]
+}
+const onFocusItem = (uuid: string) => {
+  const el = document.querySelector(`[data-uuid="${uuid}"]`)
+  if (el) {
+    let position = el.getBoundingClientRect()
+    window.scrollTo({
+      left: position.left,
+      top: position.top + window.scrollY - 200,
+      behavior: 'smooth',
+    })
+  }
+}
+const onUpdateOption = (option: UpdateBlokkliItemOptionEvent) => {
+  const { uuid, key, value } = option
+
+  if (!mutatedOptions.value[uuid]) {
+    mutatedOptions.value[uuid] = {}
+  }
+  if (!mutatedOptions.value[uuid].paragraph_builder_data) {
+    mutatedOptions.value[uuid].paragraph_builder_data = {}
+  }
+  mutatedOptions.value[uuid].paragraph_builder_data[key] = value
+}
+
 onMounted(() => {
   if (isInIframe()) {
+    frameEventBus.on('mutatedFields', onMutatedFields)
+    frameEventBus.on('focus', onFocusItem)
+    frameEventBus.on('updateOption', onUpdateOption)
     // We are a preview inside the iframe of the main editing app.
     // In this case updated state is passed in via postMessage from the main
     // editing app. Also native scrolling is disabled and we handle it
@@ -130,5 +149,8 @@ onBeforeUnmount(() => {
   document.documentElement.classList.remove('bk-html-preview')
   window.removeEventListener('wheel', onWheel)
   window.removeEventListener('message', onMessage)
+  frameEventBus.off('mutatedFields', onMutatedFields)
+  frameEventBus.off('focus', onFocusItem)
+  frameEventBus.off('updateOption', onUpdateOption)
 })
 </script>

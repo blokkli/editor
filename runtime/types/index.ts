@@ -36,50 +36,47 @@ export type BlokkliAvailableFeatures = {
   library: boolean
 }
 
-export type ParagraphDefinitionOptionsInput = {
+export type BlokkliItemDefinitionOptionsInput = {
   [key: string]: ParagraphDefinitionOption
 }
 
-export type ParagraphDefinitionInput<V, T = []> = {
+export type BlokkliItemDefinitionInput<V, T = []> = {
   /**
-   * The Drupal bundle name of the paragraph, e.g. "text" or "section_title".
+   * The type ID of the item, e.g. "text" or "section_title".
    */
   bundle: string
 
   /**
-   * The name of the chunk group to put the paragraph in.
+   * The name of the chunk group.
    *
-   * If this value is set, the paragraph component will be assigned to this
-   * import chunk. Multiple paragraphs can have the same chunk name.
+   * If this value is set, the component will be assigned to this
+   * import chunk. Multiple components can have the same chunk name.
    *
    * See the `chunkNames` option on the module's configuration for more details.
    */
   chunkName?: V
 
   /**
-   * Options available for the paragraph.
-   *
-   * These options are specific to this paragraph.
+   * Define options available for this blokkli.
    */
-  options?: ParagraphDefinitionOptionsInput
+  options?: BlokkliItemDefinitionOptionsInput
 
   /**
-   * Global options to use for this paragraph.
+   * Global options to use.
    *
-   * These options will be merged with the paragraph-specific options.
+   * These options will be merged with the component-specific options.
    */
   globalOptions?: T
 
   /**
-   * Disable editing of the paragraph. This should be set if the paragraph
-   * doesn't have any fields that can be edited in Drupal, except for paragraph
-   * fields.
+   * Disable editing. This should be set if the component doesn't have any
+   * fields that can be edited.
    */
   disableEdit?: boolean
 
   /**
-   * If set, this width is used during editing when a skeleton of the
-   * paragraph is being displayed. Additionally, the width is used in the
+   * If set, this width is used during editing when a clone or ghost of the
+   * component is being displayed. Additionally, the width is used in the
    * library pane to properly scale the element in the limited amount of space.
    */
   editWidth?: number
@@ -93,13 +90,13 @@ export type ParagraphDefinitionInput<V, T = []> = {
   noLibraryPreview?: boolean
 
   /**
-   * A background color class that is applied during editing when the paragraph
+   * A background color class that is applied during editing when the component
    * is being displayed standalone.
    */
   editBackgroundClass?: string
 
   /**
-   * Define a custom title for this paragraph at runtime in the editor.
+   * Define a custom title for this blokkli item at runtime in the editor.
    *
    * The title will be displayed to the editor to give some context. E.g. a
    * title block displays an excerpt from the title.
@@ -108,7 +105,7 @@ export type ParagraphDefinitionInput<V, T = []> = {
    * and should return a fitting title.
    *
    * If no method is defined or it doesn't return a value, the regular label
-   * of the paragraph (e.g. "Teaser") is displayed.
+   * of the blokkli type (e.g. "Teaser") is displayed.
    */
   editTitle?: (el: HTMLElement) => string | undefined
 
@@ -294,7 +291,7 @@ export type BlokkliSearchContentItem = {
   text: string
 
   /**
-   * The possible paragraph bundles for which a paragraph may be added for this content item.
+   * The possible blokkli types for which a blokkli may be added using this content item.
    */
   targetBundles: string[]
 
@@ -320,17 +317,17 @@ export interface DraggableExistingParagraphItem {
   paragraphType: string
   uuid: string
   /**
-   * The paragraph bundle if this item is reusable.
+   * The bundle if this item is reusable.
    */
   reusableBundle?: string
 
   /**
-   * The reusable paragraph UUID if this paragraph is a from_library type.
+   * The reusable UUID if this blokkli is a from_library type.
    */
   reusableUuid?: string
 
   /**
-   * The title to use when displaying the paragraph in an abstract way.
+   * The title to use when displaying the blokkli in list.
    */
   editTitle?: string
 }
@@ -382,19 +379,19 @@ export interface ParagraphOptionsOverride {
   options: Ref<Record<string, any>>
 }
 
-export type MoveParagraphEvent = {
+export type MoveBlokkliEvent = {
   afterUuid?: string
   item: DraggableExistingParagraphItem
   host: DraggableHostData
 }
 
-export type MoveMultipleParagraphsEvent = {
+export type MoveMultipleBlokkliItemsEvent = {
   afterUuid?: string
   uuids: string[]
   host: DraggableHostData
 }
 
-export type AddNewParagraphEvent = {
+export type AddNewBlokkliItemEvent = {
   type: string
   item: DraggableNewParagraphItem
   host: DraggableHostData
@@ -420,13 +417,13 @@ export type AddReusableParagraphEvent = {
   afterUuid?: string
 }
 
-export type UpdateParagraphOptionEvent = {
+export type UpdateBlokkliItemOptionEvent = {
   uuid: string
   key: string
   value: string
 }
 
-export type EditParagraphEvent = {
+export type EditBlokkliItemEvent = {
   uuid: string
   bundle: string
 }
@@ -477,7 +474,7 @@ export type KeyPressedEvent = {
   originalEvent: KeyboardEvent
 }
 
-export type TranslateParagraphEvent = {
+export type TranslateBlokkliItemEvent = {
   uuid: string
   language: BlokkliLanguage
 }
@@ -487,12 +484,12 @@ export type ImportFromExistingEvent = {
   sourceFields: string[]
 }
 
-export type ParagraphConvertEvent = {
+export type ConvertBlokkliItemEvent = {
   uuid: string
   targetBundle: string
 }
 
-export type ParagraphScrollIntoViewEvent = {
+export type ScrollIntoViewEvent = {
   uuid: string
   center?: boolean
   immediate?: boolean
@@ -500,16 +497,16 @@ export type ParagraphScrollIntoViewEvent = {
 
 export type ParagraphsBuilderEvents = {
   select: string
-  editParagraph: EditParagraphEvent
-  translateParagraph: TranslateParagraphEvent
+  editParagraph: EditBlokkliItemEvent
+  translateParagraph: TranslateBlokkliItemEvent
   batchTranslate: undefined
   removeGhosts: undefined
   'dragging:start': DraggableStartEvent
   'dragging:end': undefined
   setActiveFieldKey: string
-  moveParagraph: MoveParagraphEvent
-  moveMultipleParagraphs: MoveMultipleParagraphsEvent
-  addNewParagraph: AddNewParagraphEvent
+  moveParagraph: MoveBlokkliEvent
+  moveMultipleParagraphs: MoveMultipleBlokkliItemsEvent
+  addNewBlokkliItem: AddNewBlokkliItemEvent
   updateMutatedFields: UpdateMutatedFieldsEvent
   animationFrame: AnimationFrameEvent
   message: BlokkliMessage
@@ -518,7 +515,7 @@ export type ParagraphsBuilderEvents = {
   translateEntity: string
   reloadState: undefined
   reloadEntity: undefined
-  updateParagraphOptions: UpdateParagraphOptionEvent[]
+  updateParagraphOptions: UpdateBlokkliItemOptionEvent[]
   duplicateParagraph: string
   deleteParagraph: string
 
@@ -527,16 +524,16 @@ export type ParagraphsBuilderEvents = {
   'select:toggle': string
   'select:end': string[]
 
-  'paragraph:convert': ParagraphConvertEvent
+  'paragraph:convert': ConvertBlokkliItemEvent
 
-  'paragraph:scrollIntoView': ParagraphScrollIntoViewEvent
+  'scrollIntoView': ScrollIntoViewEvent
   'animationFrame:before': undefined
 
   'state:reloaded': undefined
 
   'search:selectContentItem': BlokkliSearchContentItem
   addContentSearchItemParagraph: AddContentSearchItemParagraphEvent
-  'option:update': UpdateParagraphOptionEvent
+  'option:update': UpdateBlokkliItemOptionEvent
 }
 
 export type ParagraphsBuilderEventBus = Emitter<ParagraphsBuilderEvents>

@@ -4,7 +4,7 @@ import {
   BlokkliItemType,
 } from '../types'
 import { onlyUnique } from '#blokkli/helpers'
-import { eventBus } from '../eventBus'
+import { eventBus } from '#blokkli/helpers/eventBus'
 import { BlokkliAdapter, BlokkliAdapterContext } from '../adapter'
 
 export type BlokkliTypesProvider = {
@@ -19,9 +19,9 @@ export default async function (
   blocks: ComputedRef<DraggableExistingParagraphItem[]>,
   context: ComputedRef<BlokkliAdapterContext>,
 ): Promise<BlokkliTypesProvider> {
-  const allTypesData = await adapter.getAllParagraphTypes()
+  const allTypesData = await adapter.getAllTypes()
   const allTypes = computed(() => allTypesData || [])
-  const allowedTypesData = await adapter.getAvailableParagraphTypes()
+  const allowedTypesData = await adapter.getAvailableTypes()
   const allowedTypes = computed(() => allowedTypesData || [])
 
   /**

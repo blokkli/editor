@@ -10,7 +10,7 @@ import {
 } from '@nuxt/kit'
 import Extractor from './Extractor'
 import { extname, basename } from 'path'
-import { ParagraphDefinitionOptionsInput } from './runtime/types'
+import { BlokkliItemDefinitionOptionsInput } from './runtime/types'
 import postcss from 'postcss'
 import { promises as fsp, existsSync } from 'fs'
 import postcssImport from 'postcss-import'
@@ -18,7 +18,7 @@ import postcssUrl from 'postcss-url'
 import tailwindNesting from 'tailwindcss/nesting'
 import tailwindcss from 'tailwindcss'
 import tailwindConfig from './css/tailwind.config'
-import { ParagraphsBuilderPlugin } from './vitePlugin'
+import { DefinitionPlugin } from './vitePlugin'
 
 export function onlyUnique(value: string, index: number, self: Array<string>) {
   return self.indexOf(value) === index
@@ -75,29 +75,29 @@ const POSSIBLE_EXTENSIONS = ['.js', '.ts', '.vue', '.mjs']
  */
 export type ModuleOptions = {
   /**
-   * The pattern of source files to scan for paragraph components.
+   * The pattern of source files to scan for blokkli components.
    */
   pattern?: string[]
 
-  globalOptions?: ParagraphDefinitionOptionsInput
+  globalOptions?: BlokkliItemDefinitionOptionsInput
 
   /**
    * Define available chunk groups.
    *
-   * The idea of this feature is to split rarely used paragraphs into separate
+   * The idea of this feature is to split rarely used components into separate
    * chunks, so that they are not imported on each page.
    *
-   * This value should only be set if the paragraph is actually used rarely.
+   * This value should only be set if the component is actually used rarely.
    * Having too many chunks has the opposite effect, as rendering a page
    * requires multiple requests.
    *
-   * If left empty, the paragraph is bundled in a default chunk, which should
-   * contain paragraphs that are used for most pages.
+   * If left empty, all components is bundled in a default chunk, which should
+   * contain components that are used for most pages.
    */
   chunkNames?: string[]
 
   /**
-   * Valid paragraphs field list types.
+   * Valid field list types.
    *
    * If one or more values are defined, they can be passed to the BlokkliField
    * component as a prop. The value is made available to all blokkli items inside
@@ -137,7 +137,7 @@ export default defineNuxtModule<ModuleOptions>({
   },
   defaults: {
     pattern: ['components/Paragraph/**/*.{js,ts,vue}'],
-    globalOptions: {} as ParagraphDefinitionOptionsInput,
+    globalOptions: {} as BlokkliItemDefinitionOptionsInput,
     chunkNames: ['global'] as string[],
   },
   async setup(moduleOptions, nuxt) {
@@ -181,12 +181,12 @@ export default defineNuxtModule<ModuleOptions>({
         return extractor.generateDefinitionTemplate(moduleOptions.globalOptions)
       },
       options: {
-        paragraphsBuilder: true,
+        blokkli: true,
       },
     })
     nuxt.options.alias['#blokkli/definitions'] = templateDefinitions.dst
 
-    nuxt.options.runtimeConfig.public.paragraphsBuilder = {
+    nuxt.options.runtimeConfig.public.blokkli = {
       disableLibrary: !!moduleOptions.disableFeatures?.library,
       langcodeWithoutPrefix: moduleOptions.langcodeWithoutPrefix,
       gridMarkup: moduleOptions.gridMarkup,
@@ -243,7 +243,7 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     // Only add the vite plugin when building.
-    addBuildPlugin(ParagraphsBuilderPlugin(nuxt))
+    addBuildPlugin(DefinitionPlugin(nuxt))
 
     // Add composables.
     addImports({
@@ -266,7 +266,7 @@ export default defineNuxtModule<ModuleOptions>({
         return buildStyles(sourceFile, sourceFolder)
       },
       options: {
-        paragraphsBuilderStyle: true,
+        blokkliStyle: true,
       },
     })
 
@@ -285,7 +285,7 @@ export default defineNuxtModule<ModuleOptions>({
         )
       },
       options: {
-        paragraphsBuilder: true,
+        blokkli: true,
       },
     })
     nuxt.options.alias['#blokkli/generated-types'] = templateGeneratedTypes.dst
@@ -312,7 +312,7 @@ export default defineNuxtModule<ModuleOptions>({
 export const featureComponents: any[] = [${features}]`
       },
       options: {
-        paragraphsBuilder: true,
+        blokkli: true,
       },
     })
     nuxt.options.alias['#blokkli-runtime/features'] = featureComponents.dst
@@ -327,7 +327,7 @@ export const featureComponents: any[] = [${features}]`
         )
       },
       options: {
-        paragraphsBuilder: true,
+        blokkli: true,
       },
     })
     nuxt.options.alias['#blokkli/default-global-options'] =
@@ -342,7 +342,7 @@ export const featureComponents: any[] = [${features}]`
             return extractor.generateChunkGroup(chunkName, true)
           },
           options: {
-            paragraphsBuilder: true,
+            blokkli: true,
           },
         })
         nuxt.options.alias['#blokkli/chunk-' + chunkName] = template.dst
@@ -356,7 +356,7 @@ export const featureComponents: any[] = [${features}]`
         return extractor.generateImportsTemplate(getChunkNames())
       },
       options: {
-        paragraphsBuilder: true,
+        blokkli: true,
       },
     })
 
@@ -387,7 +387,7 @@ export const featureComponents: any[] = [${features}]`
 export type BlokkliIcon = keyof typeof icons`
       },
       options: {
-        paragraphsBuilder: true,
+        blokkli: true,
       },
     })
     nuxt.options.alias['#blokkli/icons'] = templateIcons.dst
@@ -420,7 +420,7 @@ export type BlokkliIcon = keyof typeof icons`
     }
 
     const appliesStyles = (path: string): boolean => {
-      return path.includes('blokkli/css')
+      return path.includes('nuxt-paragraphs-builder/css')
     }
 
     // Watch for file changes in dev mode.
@@ -430,9 +430,7 @@ export type BlokkliIcon = keyof typeof icons`
           if (appliesStyles(path)) {
             await updateTemplates({
               filter: (template) => {
-                return (
-                  template.options && template.options.paragraphsBuilderStyle
-                )
+                return template.options && template.options.blokkliStyle
               },
             })
             const modules = viteServer.moduleGraph.getModulesByFile(
@@ -444,6 +442,7 @@ export type BlokkliIcon = keyof typeof icons`
               })
             }
           }
+
           const filePath = await applies(path)
           if (!filePath) {
             return
@@ -458,7 +457,7 @@ export type BlokkliIcon = keyof typeof icons`
 
           await updateTemplates({
             filter: (template) => {
-              return template.options && template.options.paragraphsBuilder
+              return template.options && template.options.blokkli
             },
           })
 

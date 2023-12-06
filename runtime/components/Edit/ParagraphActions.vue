@@ -2,10 +2,10 @@
   <Teleport to="body">
     <div
       v-show="selection.blocks.value.length && !selection.isDragging.value"
-      class="bk bk-paragraph-actions bk-control"
+      class="bk bk-blokkli-item-actions bk-control"
       @click.stop
     >
-      <div :style="styleSize" class="bk-paragraph-actions-overlay">
+      <div :style="styleSize" class="bk-blokkli-item-actions-overlay">
         <div
           v-for="rect in selectedRects"
           :style="{
@@ -16,18 +16,18 @@
         ></div>
       </div>
 
-      <div class="bk-paragraph-actions-inner" :style="innerStyle">
-        <div class="bk-paragraph-actions-controls">
-          <div id="bk-paragraph-actions-title" />
+      <div class="bk-blokkli-item-actions-inner" :style="innerStyle">
+        <div class="bk-blokkli-item-actions-controls">
+          <div id="bk-blokkli-item-actions-title" />
 
-          <div class="bk-paragraph-actions-buttons" id="bk-paragraph-actions" />
+          <div class="bk-blokkli-item-actions-buttons" id="bk-blokkli-item-actions" />
 
           <div
-            class="bk-paragraph-actions-buttons"
-            id="bk-paragraph-actions-options"
+            class="bk-blokkli-item-actions-buttons"
+            id="bk-blokkli-item-actions-options"
           />
         </div>
-        <div id="bk-paragraph-actions-after"></div>
+        <div id="bk-blokkli-item-actions-after"></div>
       </div>
     </div>
   </Teleport>
@@ -136,7 +136,7 @@ function onKeyPressed(e: KeyPressedEvent) {
   }
 
   eventBus.emit('select', targetItem.uuid)
-  eventBus.emit('paragraph:scrollIntoView', { uuid: targetItem.uuid })
+  eventBus.emit('scrollIntoView', { uuid: targetItem.uuid })
 }
 
 onMounted(() => {

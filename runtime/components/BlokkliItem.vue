@@ -2,12 +2,6 @@
   <component :is="component" v-bind="paragraph" />
 </template>
 
-<script lang="ts">
-export default {
-  name: 'BlokkliItem',
-}
-</script>
-
 <script lang="ts" setup>
 import type {
   InjectedParagraphItem,
@@ -32,9 +26,7 @@ const props = withDefaults(
 
 const component = await getParagraphComponent(props.item.entityBundle)
 
-const index = computed(() => {
-  return props.index || 0
-})
+const index = computed(() => props.index)
 
 const paragraphItem = computed(() => {
   return {
@@ -49,4 +41,10 @@ const paragraphItem = computed(() => {
 })
 
 provide<InjectedParagraphItem>(INJECT_BLOCK_ITEM, paragraphItem)
+</script>
+
+<script lang="ts">
+export default {
+  name: 'BlokkliItem',
+}
 </script>

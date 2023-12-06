@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bk-paragraph-options-checkboxes"
+    class="bk-blokkli-item-options-checkboxes"
     :class="{ 'bk-is-active': isOpen }"
   >
     <button @click="isOpen = !isOpen">
@@ -13,7 +13,7 @@
     <div v-if="isOpen">
       <label
         v-for="option in mappedOptions"
-        class="bk-paragraph-options-checkbox"
+        class="bk-blokkli-item-options-checkbox"
       >
         <input
           type="checkbox"

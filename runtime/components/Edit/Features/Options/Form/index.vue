@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="availableOptions.length"
-    class="bk-paragraph-options-item"
+    class="bk-blokkli-item-options-item"
     v-for="plugin in availableOptions"
     :class="{ 'bk-is-disabled': !canEdit || editMode !== 'editing' }"
     @keydown.stop
@@ -51,7 +51,7 @@ import OptionCheckboxes from './Checkboxes/index.vue'
 import OptionText from './Text/index.vue'
 import {
   ParagraphDefinitionOption,
-  ParagraphDefinitionOptionsInput,
+  BlokkliItemDefinitionOptionsInput,
 } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
 
@@ -108,7 +108,7 @@ const availableOptions = computed(() => {
   const options = definition.options || {}
   const global = (
     (definition.globalOptions || []) as string[]
-  ).reduce<ParagraphDefinitionOptionsInput>((acc, v) => {
+  ).reduce<BlokkliItemDefinitionOptionsInput>((acc, v) => {
     const globalDefinition: ParagraphDefinitionOption | null =
       (globalOptions as any)[v] || null
     if (globalDefinition) {

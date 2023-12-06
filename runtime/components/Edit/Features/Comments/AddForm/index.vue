@@ -1,5 +1,5 @@
 <template>
-  <div class="bk-paragraph-actions-comment-dropdown" @keydown.capture.stop>
+  <div class="bk-blokkli-item-actions-comment-dropdown" @keydown.capture.stop>
     <label for="comment_body" class="bk-form-label">Kommentar</label>
     <textarea
       v-model.lazy="comment"

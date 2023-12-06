@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { KeyPressedEvent, ParagraphScrollIntoViewEvent } from '#blokkli/types'
+import { KeyPressedEvent, ScrollIntoViewEvent } from '#blokkli/types'
 import { PluginToolbarButton } from '#blokkli/plugins'
 
 const props = withDefaults(
@@ -474,7 +474,7 @@ function getDistanceBetweenTouches(e: TouchEvent) {
   )
 }
 
-function onParagraphScrollIntoView(e: ParagraphScrollIntoViewEvent) {
+function onParagraphScrollIntoView(e: ScrollIntoViewEvent) {
   const item = dom.findBlock(e.uuid)
   if (!item) {
     return

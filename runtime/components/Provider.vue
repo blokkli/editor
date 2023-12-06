@@ -45,10 +45,12 @@
 
 <script lang="ts" setup>
 const PreviewProvider = defineAsyncComponent(
-  () => import('./PreviewProvider.vue'),
+  () => import('./Edit/PreviewProvider.vue'),
 )
 
-const EditProvider = defineAsyncComponent(() => import('./EditProvider.vue'))
+const EditProvider = defineAsyncComponent(
+  () => import('./Edit/EditProvider.vue'),
+)
 
 const EditIndicator = defineAsyncComponent(() => import('./EditIndicator.vue'))
 

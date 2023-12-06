@@ -108,7 +108,7 @@ const clickItem = () => {
   }
 
   eventBus.emit('select', item.item.uuid)
-  eventBus.emit('paragraph:scrollIntoView', {
+  eventBus.emit('scrollIntoView', {
     uuid: item.item.uuid,
     center: true,
   })

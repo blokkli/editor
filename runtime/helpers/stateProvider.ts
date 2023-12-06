@@ -10,7 +10,7 @@ import type {
   BlokkliEditMode,
 } from '#blokkli/types'
 import { removeDroppedElements, falsy } from '#blokkli/helpers'
-import { emitMessage, eventBus } from '../eventBus'
+import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
 import { BlokkliAdapter, BlokkliAdapterContext } from '../adapter'
 import { INJECT_MUTATED_FIELDS } from './symbols'
 

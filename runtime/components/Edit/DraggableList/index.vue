@@ -58,7 +58,7 @@ import {
   DraggableExistingParagraphItem,
   DraggableHostData,
   DraggableItem,
-  MoveParagraphEvent,
+  MoveBlokkliEvent,
   BlokkliFieldListConfig,
   BlokkliFieldList,
   BlokkliMutatedField,
@@ -235,7 +235,7 @@ function onUpdate(e: Sortable.SortableEvent) {
   }
 }
 
-const moveParagraph = (e: MoveParagraphEvent) => {
+const moveParagraph = (e: MoveBlokkliEvent) => {
   state.mutateWithLoadingState(
     adapter.moveParagraph(e),
     'Der Abschnitt konnte nicht verschoben werden.',
@@ -268,7 +268,7 @@ function onAdd(e: Sortable.SortableEvent) {
       const definition = getDefinition(item.paragraphType)
       if (definition?.disableEdit) {
         return state.mutateWithLoadingState(
-          adapter.addNewParagraph({
+          adapter.addNewBlokkliItem({
             type: item.paragraphType,
             item,
             host: host.value,
@@ -276,7 +276,7 @@ function onAdd(e: Sortable.SortableEvent) {
           }),
         )
       } else {
-        eventBus.emit('addNewParagraph', {
+        eventBus.emit('addNewBlokkliItem', {
           type: item.paragraphType,
           item,
           host: host.value,

@@ -7,17 +7,17 @@ import {
   BlokkliImportItem,
   BlokkliLibraryItem,
   BlokkliItemType,
+  BlokkliEntityTranslation,
+  BlokkliSearchContentItem,
   AddClipboardParagraphEvent,
-  AddNewParagraphEvent,
+  AddNewBlokkliItemEvent,
   AddReusableParagraphEvent,
   ImportFromExistingEvent,
   MakeReusableEvent,
-  MoveMultipleParagraphsEvent,
-  MoveParagraphEvent,
-  UpdateParagraphOptionEvent,
-  BlokkliSearchContentItem,
+  MoveMultipleBlokkliItemsEvent,
+  MoveBlokkliEvent,
+  UpdateBlokkliItemOptionEvent,
   AddContentSearchItemParagraphEvent,
-  BlokkliEntityTranslation,
 } from '#blokkli/types'
 
 interface MutationResponseLike<T> {
@@ -47,12 +47,12 @@ export interface BlokkliAdapter<T> {
   /**
    * Return a list of all paragraph types.
    */
-  getAllParagraphTypes(): Promise<BlokkliItemType[]>
+  getAllTypes(): Promise<BlokkliItemType[]>
 
   /**
-   * Get all available paragraph types for the current host entity.
+   * Get all available blokkli types for the current entity.
    */
-  getAvailableParagraphTypes(): Promise<BlokkliAvailableType[]>
+  getAvailableTypes(): Promise<BlokkliAvailableType[]>
 
   /**
    * Get all possible conversions.
@@ -65,15 +65,15 @@ export interface BlokkliAdapter<T> {
   mapState(state: T): BlokkliMappedState
 
   /**
-   * Add a new paragraph.
+   * Add a new blokkli item.
    */
-  addNewParagraph(e: AddNewParagraphEvent): Promise<MutationResponseLike<T>>
+  addNewBlokkliItem(e: AddNewBlokkliItemEvent): Promise<MutationResponseLike<T>>
 
   /**
    * Update multiple paragraph options.
    */
   updateParagraphOptions(
-    options: UpdateParagraphOptionEvent[],
+    options: UpdateBlokkliItemOptionEvent[],
   ): Promise<MutationResponseLike<T>>
 
   /**
@@ -86,13 +86,13 @@ export interface BlokkliAdapter<T> {
   /**
    * Move a paragraph.
    */
-  moveParagraph(e: MoveParagraphEvent): Promise<MutationResponseLike<T>>
+  moveParagraph(e: MoveBlokkliEvent): Promise<MutationResponseLike<T>>
 
   /**
    * Move multiple paragraphs.
    */
   moveMultipleParagraphs(
-    e: MoveMultipleParagraphsEvent,
+    e: MoveMultipleBlokkliItemsEvent,
   ): Promise<MutationResponseLike<T>>
 
   /**

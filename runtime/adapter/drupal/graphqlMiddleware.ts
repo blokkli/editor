@@ -37,13 +37,13 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         (v) => v.data.paragraphsBuilderConversions || [],
       )
 
-    const getAvailableParagraphTypes: DrupalAdapter['getAvailableParagraphTypes'] =
+    const getAvailableTypes: DrupalAdapter['getAvailableTypes'] =
       () =>
         useGraphqlQuery('pbAllowedTypes').then(
           (v) => v.data.paragraphsBuilderAllowedTypes || [],
         )
 
-    const getAllParagraphTypes: DrupalAdapter['getAllParagraphTypes'] = () =>
+    const getAllTypes: DrupalAdapter['getAllTypes'] = () =>
       useGraphqlQuery('pbAllTypes').then((v) => {
         const allTypes = v.data.entityQuery.items?.filter(
           (v) => v && 'icon' in v,
@@ -183,7 +183,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         afterUuid: e.afterUuid,
       })
 
-    const addNewParagraph: DrupalAdapter['addNewParagraph'] = (e) =>
+    const addNewBlokkliItem: DrupalAdapter['addNewBlokkliItem'] = (e) =>
       useGraphqlMutation('addParagraph', {
         ...ctx.value,
         hostType: e.host.type,
@@ -331,8 +331,8 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
     return {
       getImportItems,
       getConversions,
-      getAvailableParagraphTypes,
-      getAllParagraphTypes,
+      getAvailableTypes,
+      getAllTypes,
       loadState,
       getAvailableFeatures,
       takeOwnership,
@@ -350,7 +350,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
       addReusableParagraph,
       moveMultipleParagraphs,
       moveParagraph,
-      addNewParagraph,
+      addNewBlokkliItem,
       updateParagraphOptions,
       mapState,
       loadComments,

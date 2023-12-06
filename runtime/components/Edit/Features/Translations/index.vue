@@ -1,6 +1,6 @@
 <template>
   <Teleport to="#bk-toolbar-after-title">
-    <div class="bk-paragraph-options-radios bk-is-language">
+    <div class="bk-blokkli-item-options-radios bk-is-language">
       <label
         v-for="item in items"
         :class="{ 'bk-is-muted': !item.translation }"

@@ -38,7 +38,7 @@
 import { Resizable } from '#blokkli/components'
 import { Icon, ParagraphIcon } from '#blokkli/components'
 import { getDefinition } from '#blokkli/definitions'
-import { AddNewParagraphEvent, EditParagraphEvent } from '#blokkli/types'
+import { AddNewBlokkliItemEvent, EditBlokkliItemEvent } from '#blokkli/types'
 
 const { types, eventBus, runtimeConfig, state, context } = useBlokkli()
 
@@ -143,7 +143,7 @@ function onIFrameLoad() {
   }
 }
 
-function onEditParagraph(e: EditParagraphEvent) {
+function onEditParagraph(e: EditBlokkliItemEvent) {
   if (!state.canEdit.value) {
     return
   }
@@ -194,7 +194,7 @@ function onEditEntity() {
   }
 }
 
-async function addNewParagraph(e: AddNewParagraphEvent) {
+async function addNewBlokkliItem(e: AddNewBlokkliItemEvent) {
   if (!state.canEdit.value) {
     return
   }
@@ -231,7 +231,7 @@ onMounted(() => {
   eventBus.on('translateEntity', onTranslateEntity)
   eventBus.on('batchTranslate', onBatchTranslate)
   eventBus.on('editEntity', onEditEntity)
-  eventBus.on('addNewParagraph', addNewParagraph)
+  eventBus.on('addNewBlokkliItem', addNewBlokkliItem)
 })
 
 onUnmounted(() => {
@@ -240,7 +240,7 @@ onUnmounted(() => {
   eventBus.off('translateEntity', onTranslateEntity)
   eventBus.off('batchTranslate', onBatchTranslate)
   eventBus.off('editEntity', onEditEntity)
-  eventBus.off('addNewParagraph', addNewParagraph)
+  eventBus.off('addNewBlokkliItem', addNewBlokkliItem)
 })
 </script>
 

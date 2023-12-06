@@ -1,7 +1,7 @@
 import { computed, inject } from 'vue'
 import type { ComputedRef } from 'vue'
 import {
-  ParagraphDefinitionOptionsInput,
+  BlokkliItemDefinitionOptionsInput,
   InjectedParagraphItem,
   ParagraphsBuilderEditContext,
 } from '#blokkli/types'
@@ -10,7 +10,7 @@ import { globalOptionsDefaults } from '#blokkli/default-global-options'
 
 import {
   ValidGlobalConfigKeys,
-  TypedParagraphDefinitionInput,
+  BlokkliItemDefinitionInputWithTypes,
   ValidFieldListTypes,
   ValidParentParagraphBundle,
 } from '#blokkli/generated-types'
@@ -30,7 +30,7 @@ type GetType<T> = T extends { type: 'checkbox' }
     : string
   : string
 
-type ParagraphWithOptions<T extends ParagraphDefinitionOptionsInput> = {
+type WithOptions<T extends BlokkliItemDefinitionOptionsInput> = {
   [K in keyof T]: GetType<T[K]>
 }
 
@@ -40,7 +40,7 @@ type GlobalOptionsKeyTypes<T extends ValidGlobalConfigKeys> = {
   [K in T[number]]: GetType<GlobalOptionsType[K]>
 }
 
-type Paragraph<T extends TypedParagraphDefinitionInput> = {
+type Paragraph<T extends BlokkliItemDefinitionInputWithTypes> = {
   /**
    * The UUID of the paragraph.
    */
@@ -74,8 +74,8 @@ type Paragraph<T extends TypedParagraphDefinitionInput> = {
    * options.
    */
   options: ComputedRef<
-    (T['options'] extends ParagraphDefinitionOptionsInput
-      ? ParagraphWithOptions<T['options']>
+    (T['options'] extends BlokkliItemDefinitionOptionsInput
+      ? WithOptions<T['options']>
       : {}) &
       (T['globalOptions'] extends ValidGlobalConfigKeys
         ? GlobalOptionsKeyTypes<T['globalOptions']>
@@ -86,7 +86,7 @@ type Paragraph<T extends TypedParagraphDefinitionInput> = {
 /**
  * Define a paragraph component.
  */
-export function defineParagraph<T extends TypedParagraphDefinitionInput>(
+export function defineParagraph<T extends BlokkliItemDefinitionInputWithTypes>(
   config: T,
 ): Paragraph<T> {
   // The default options are provided by the paragraph itself.

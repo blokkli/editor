@@ -1,5 +1,5 @@
 import { falsy } from '#blokkli/helpers'
-import { eventBus } from '../eventBus'
+import { eventBus } from '#blokkli/helpers/eventBus'
 
 export type BlokkliAnimationProvider = {
   /**

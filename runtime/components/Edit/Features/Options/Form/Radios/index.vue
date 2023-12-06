@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bk-paragraph-options-radios"
+    class="bk-blokkli-item-options-radios"
     :class="{
       'bk-is-color': displayAs === 'colors',
       'bk-is-grid': displayAs === 'grid',
@@ -19,7 +19,7 @@
         <span v-if="typeof option.value === 'string'" class="bk-is-text">
           {{ option.value }}
         </span>
-        <div v-else class="bk-paragraph-options-radios-flex">
+        <div v-else class="bk-blokkli-item-options-radios-flex">
           <div v-for="v in option.value" :style="{ flex: v }" />
         </div>
       </div>

@@ -1,6 +1,10 @@
 import { DraggableExistingParagraphItem } from '#blokkli/types'
-import { findParagraphElement, buildDraggableItem, falsy } from '#blokkli/helpers'
-import { eventBus } from '../eventBus'
+import {
+  findParagraphElement,
+  buildDraggableItem,
+  falsy,
+} from '#blokkli/helpers'
+import { eventBus } from '#blokkli/helpers/eventBus'
 import { Sortable } from '#blokkli/sortable'
 
 export type BlokkliSelectionProvider = {
@@ -101,7 +105,7 @@ export default function (): BlokkliSelectionProvider {
       return
     }
     if (e.target && e.target instanceof Element) {
-      if (e.target.closest('.bk-paragraph-actions')) {
+      if (e.target.closest('.bk-blokkli-item-actions')) {
         return
       }
       if (e.target.closest('[data-uuid]')) {

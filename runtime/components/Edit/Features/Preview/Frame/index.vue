@@ -12,54 +12,55 @@
 <script lang="ts" setup>
 import type {
   UpdateMutatedFieldsEvent,
-  UpdateParagraphOptionEvent,
+  UpdateBlokkliItemOptionEvent,
 } from '#blokkli/types'
 import { Icon } from '#blokkli/components'
+import { frameEventBus } from './../../../../../helpers/frameEventBus'
 
 const route = useRoute()
 
 const { eventBus, selection } = useBlokkli()
 
 watch(selection.uuids, (selectedUuids) => {
-  postMessageToIframe('paragraphsBuilderSelect', selectedUuids)
+  frameEventBus.emit('selectItems', selectedUuids)
 })
 
 const isLoading = ref(true)
 const iframe = ref<HTMLIFrameElement | null>(null)
 const width = ref(400)
 
-const style = computed(() => {
-  return {
-    width: width.value + 'px',
-  }
-})
+const style = computed(() => ({
+  width: width.value + 'px',
+}))
 
 const src = computed(() =>
   route.fullPath.replace('blokkliEditing', 'blokkliPreview'),
 )
 
-const postMessageToIframe = (name: string, data: any) =>
+const onUpdateMutatedFields = (e: UpdateMutatedFieldsEvent) =>
+  frameEventBus.emit('mutatedFields', e.fields)
+const onSelectParagraph = (uuid: string) => frameEventBus.emit('focus', uuid)
+const onUpdateOption = (option: UpdateBlokkliItemOptionEvent) =>
+  frameEventBus.emit('updateOption', option)
+
+/**
+ * Emit the event to the iframe.
+ */
+const onFrameEventBusEvent = (name: any, data: any) =>
   iframe.value?.contentWindow?.postMessage({
-    name,
+    name: 'blokkli__' + name,
     data: JSON.parse(JSON.stringify(data)),
   })
 
-const onUpdateMutatedFields = (e: UpdateMutatedFieldsEvent) =>
-  postMessageToIframe('paragraphsBuilderMutatedFields', e.fields)
-
-const onSelectParagraph = (uuid: string) =>
-  postMessageToIframe('paragraphsBuilderFocus', uuid)
-
-const onUpdateOption = (option: UpdateParagraphOptionEvent) =>
-  postMessageToIframe('paragraphsBuilderUpdateOption', option)
-
 onMounted(() => {
+  frameEventBus.on('*', onFrameEventBusEvent)
   eventBus.on('option:update', onUpdateOption)
   eventBus.on('updateMutatedFields', onUpdateMutatedFields)
   eventBus.on('select', onSelectParagraph)
 })
 
 onBeforeUnmount(() => {
+  frameEventBus.off('*', onFrameEventBusEvent)
   eventBus.off('option:update', onUpdateOption)
   eventBus.off('updateMutatedFields', onUpdateMutatedFields)
   eventBus.off('select', onSelectParagraph)

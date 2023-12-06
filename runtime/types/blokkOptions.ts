@@ -1,19 +1,19 @@
 export type StringBoolean = '0' | '1'
 
-type ParagraphDefinitionOptionText = {
+type DefinitionOptionText = {
   type: 'text'
   default: string
   label: string
   inputType?: 'text' | 'number' | 'date'
 }
 
-type ParagraphDefinitionOptionCheckbox = {
+type DefinitionOptionCheckbox = {
   type: 'checkbox'
   default: StringBoolean
   label: string
 }
 
-type ParagraphDefinitionOptionCheckboxes = {
+type DefinitionOptionCheckboxes = {
   type: 'checkboxes'
   label: string
   /**
@@ -23,7 +23,7 @@ type ParagraphDefinitionOptionCheckboxes = {
   options: Record<string, string>
 }
 
-type ParagraphDefinitionOptionRadios = {
+type DefinitionOptionRadios = {
   type: 'radios'
   label: string
   default: string
@@ -32,7 +32,7 @@ type ParagraphDefinitionOptionRadios = {
 }
 
 export type ParagraphDefinitionOption =
-  | ParagraphDefinitionOptionCheckbox
-  | ParagraphDefinitionOptionCheckboxes
-  | ParagraphDefinitionOptionRadios
-  | ParagraphDefinitionOptionText
+  | DefinitionOptionCheckbox
+  | DefinitionOptionCheckboxes
+  | DefinitionOptionRadios
+  | DefinitionOptionText

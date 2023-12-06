@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="#bk-paragraph-actions-options">
+  <Teleport to="#bk-blokkli-item-actions-options">
     <OptionsForm
       v-if="types.length === 1 && !selection.isDragging.value"
       :key="uuids.join('-')"

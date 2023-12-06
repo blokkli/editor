@@ -11,7 +11,7 @@
       :data-clipboard-search-item="
         item.type === 'search_content' ? JSON.stringify(item.item) : undefined
       "
-      :key="item.data + renderKey"
+      :key="index + item.data + renderKey"
     >
       <div class="bk-clipboard-item">
         <div class="bk bk-clipboard-item-header">

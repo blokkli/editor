@@ -1,4 +1,4 @@
-import { eventBus } from '../eventBus'
+import { eventBus } from '#blokkli/helpers/eventBus'
 
 export type BlokkliKeyboardProvider = {
   isPressingSpace: Readonly<Ref<boolean>>

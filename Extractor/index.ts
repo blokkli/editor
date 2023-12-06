@@ -1,8 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 import {
-  ParagraphDefinitionInput,
-  ParagraphDefinitionOptionsInput,
+  BlokkliItemDefinitionInput,
+  BlokkliItemDefinitionOptionsInput,
 } from '../runtime/types'
 
 type ExtractedParagraph = {
@@ -10,7 +10,7 @@ type ExtractedParagraph = {
   icon?: string
   chunkName: string
   componentName: string
-  definition: ParagraphDefinitionInput<any>
+  definition: BlokkliItemDefinitionInput<any>
   source: string
 }
 
@@ -97,7 +97,7 @@ export default class Extractor {
   extractSingle(
     code: string,
     filePath: string,
-  ): { definition: ParagraphDefinitionInput<any>; source: string } | undefined {
+  ): { definition: BlokkliItemDefinitionInput<any>; source: string } | undefined {
     const rgx = /defineParagraph\((\{.+?\})\)/gms
     const source = rgx.exec(code)?.[1]
     if (source) {
@@ -125,7 +125,7 @@ export default class Extractor {
    * Generate the template.
    */
   generateDefinitionTemplate(
-    globalOptions: ParagraphDefinitionOptionsInput = {},
+    globalOptions: BlokkliItemDefinitionOptionsInput = {},
   ): string {
     const allDefinitions = Object.values(this.definitions).map((v) => {
       return `${v.definition.bundle}: ${v.source}`
@@ -140,20 +140,20 @@ export default class Extractor {
       return acc
     }, {})
 
-    return `import { ParagraphDefinitionInput } from '#blokkli/types'
-import { TypedParagraphDefinitionInput } from '#blokkli/generated-types'
+    return `import { BlokkliItemDefinitionInput } from '#blokkli/types'
+import { BlokkliItemDefinitionInputWithTypes } from '#blokkli/generated-types'
 
 export const globalOptions = ${JSON.stringify(globalOptions, null, 2)} as const
 
 export const icons: Record<string, string> = ${JSON.stringify(icons)}
 
-export const definitionsMap: Record<string, TypedParagraphDefinitionInput> = {
+export const definitionsMap: Record<string, BlokkliItemDefinitionInputWithTypes> = {
   ${allDefinitions.join(',\n')}
 }
 
-export const definitions: TypedParagraphDefinitionInput[] = Object.values(definitionsMap)
+export const definitions: BlokkliItemDefinitionInputWithTypes[] = Object.values(definitionsMap)
 
-export const getDefinition = (bundle: string): TypedParagraphDefinitionInput|undefined => definitionsMap[bundle]
+export const getDefinition = (bundle: string): BlokkliItemDefinitionInputWithTypes|undefined => definitionsMap[bundle]
 `
   }
 
@@ -161,7 +161,7 @@ export const getDefinition = (bundle: string): TypedParagraphDefinitionInput|und
    * Generate the default global options values template.
    */
   generateDefaultGlobalOptions(
-    globalOptions: ParagraphDefinitionOptionsInput = {},
+    globalOptions: BlokkliItemDefinitionOptionsInput = {},
   ): string {
     const defaults = Object.entries(globalOptions).reduce<
       Record<string, string>
@@ -185,7 +185,7 @@ export const globalOptionsDefaults: Record<GlobalOptionsType, string> = ${JSON.s
     chunkNames: string[],
     fieldListTypes: string[],
   ): string {
-    const allDefintions: ParagraphDefinitionInput<any>[] = Object.values(
+    const allDefintions: BlokkliItemDefinitionInput<any>[] = Object.values(
       this.definitions,
     ).map((v) => v.definition)
     const validChunkNames = chunkNames
@@ -215,14 +215,14 @@ export const globalOptionsDefaults: Record<GlobalOptionsType, string> = ${JSON.s
       })
       .join(' | ')
     return `
-import { ParagraphDefinitionInput } from '#blokkli/types'
+import { BlokkliItemDefinitionInput } from '#blokkli/types'
 export type ValidFieldListTypes = ${validFieldListTypes}
 export type ValidParagraphBundle = ${validParagraphBundles}
 export type ValidParentParagraphBundle = ${validParentParagraphBundles}
 export type ValidChunkNames = ${validChunkNames}
 export type GlobalOptionsType = ${validGlobalOptions || 'never'}
 export type ValidGlobalConfigKeys = Array<GlobalOptionsType>
-export type TypedParagraphDefinitionInput = ParagraphDefinitionInput<ValidChunkNames, ValidGlobalConfigKeys>
+export type BlokkliItemDefinitionInputWithTypes = BlokkliItemDefinitionInput<ValidChunkNames, ValidGlobalConfigKeys>
 `
   }
 

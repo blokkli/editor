@@ -53,7 +53,7 @@ const isSelected = (uuid: string) => uuids.value.includes(uuid)
 
 const select = (uuid: string) => {
   eventBus.emit('select', uuid)
-  eventBus.emit('paragraph:scrollIntoView', { uuid })
+  eventBus.emit('scrollIntoView', { uuid })
 }
 
 export type StructureTreeItem = {

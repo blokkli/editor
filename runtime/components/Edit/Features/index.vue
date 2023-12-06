@@ -38,7 +38,7 @@
   <FeatureEditParagraph />
   <FeatureDuplicateParagraph />
   <FeatureDeleteParagraph />
-  <FeatureParagraphOptions />
+  <FeatureOptions />
   <FeatureConversions />
 
   <!-- User provided feature components. -->
@@ -64,7 +64,7 @@ import FeatureImportExisting from './ImportExisting/index.vue'
 import FeatureExit from './Exit/index.vue'
 import FeaturePublish from './Publish/index.vue'
 import FeatureFieldAreas from './FieldAreas/index.vue'
-import FeatureParagraphOptions from './ParagraphOptions/index.vue'
+import FeatureOptions from './Options/index.vue'
 import FeatureDuplicateParagraph from './DuplicateParagraph/index.vue'
 import FeatureEditParagraph from './EditParagraph/index.vue'
 import FeatureDeleteParagraph from './DeleteParagraph/index.vue'

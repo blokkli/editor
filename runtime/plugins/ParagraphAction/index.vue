@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="#bk-paragraph-actions">
+  <Teleport to="#bk-blokkli-item-actions">
     <button
       :disabled="isDisabled"
       @click="onClick"
@@ -20,7 +20,7 @@
       </div>
     </button>
   </Teleport>
-  <Teleport to="#bk-paragraph-actions-after">
+  <Teleport to="#bk-blokkli-item-actions-after">
     <slot
       :paragraphUuid="paragraphUuid"
       :paragraphs="selection.blocks.value"

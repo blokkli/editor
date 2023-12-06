@@ -3,7 +3,7 @@ import MagicString from 'magic-string'
 import { walk } from 'estree-walker'
 import type { Nuxt } from '@nuxt/schema'
 import type { CallExpression, Expression, ObjectExpression } from 'estree'
-import { ParagraphDefinitionInput } from '../runtime/types'
+import { BlokkliItemDefinitionInput } from '../runtime/types'
 
 /**
  * Type check for falsy values.
@@ -17,7 +17,7 @@ export function falsy<T>(value: T): value is NonNullable<T> {
 
 const fileRegex = /\.(vue)$/
 
-type RuntimeParagraphDefintionInput = {
+type RuntimeDefinitionInput = {
   options?: {
     [key: string]: {
       default: string
@@ -31,7 +31,7 @@ type RuntimeParagraphDefintionInput = {
  */
 function estreeToObject(
   expression: ObjectExpression,
-): ParagraphDefinitionInput<any> {
+): BlokkliItemDefinitionInput<any> {
   return Object.fromEntries(
     expression.properties
       .map((prop) => {
@@ -51,15 +51,15 @@ function estreeToObject(
 }
 
 /**
- * Build the runtime paragraph definition from the full definition.
+ * Build the runtime type definition from the full definition.
  *
  * During runtime, only the option default values and the array of globel
  * options are needed.
  */
 function buildRuntimeDefinition(
-  definition: ParagraphDefinitionInput<any>,
-): RuntimeParagraphDefintionInput {
-  const runtimeDefinition: RuntimeParagraphDefintionInput = {}
+  definition: BlokkliItemDefinitionInput<any>,
+): RuntimeDefinitionInput {
+  const runtimeDefinition: RuntimeDefinitionInput = {}
 
   if (definition.options) {
     runtimeDefinition.options = {}
@@ -80,7 +80,7 @@ function buildRuntimeDefinition(
   return runtimeDefinition
 }
 
-export const ParagraphsBuilderPlugin = (nuxt: Nuxt) =>
+export const DefinitionPlugin = (nuxt: Nuxt) =>
   createUnplugin(() => {
     return {
       name: 'transform-file',
