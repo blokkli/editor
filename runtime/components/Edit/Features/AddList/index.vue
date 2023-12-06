@@ -60,6 +60,7 @@ const wrapper = ref<HTMLDivElement | null>(null)
 const isDragging = ref(false)
 const isActive = ref(false)
 const updateKey = ref(0)
+const scrollX = ref(0)
 const scrollY = ref(0)
 
 const sorts = storage.use<string[]>('sorts', [])
@@ -170,13 +171,31 @@ const generallyAvailableBundles = computed(() => {
 })
 
 function onWheel(e: WheelEvent) {
-  const scrollHeight = typeList.value?.scrollHeight || 0
-  const wrapperHeight = wrapper.value?.offsetHeight || 0
-  const diff = Math.min(Math.max(e.deltaY, -20), 20)
-  scrollY.value = Math.min(
-    Math.max(scrollY.value + diff, 0),
-    scrollHeight - wrapperHeight,
-  )
+  if (listOrientation.value === 'vertical') {
+    const scrollHeight = typeList.value?.scrollHeight || 0
+    const wrapperHeight = wrapper.value?.offsetHeight || 0
+    const diff = Math.min(Math.max(e.deltaY, -20), 20)
+    if (wrapperHeight > scrollHeight) {
+      scrollY.value = 0
+    } else {
+      scrollY.value = Math.min(
+        Math.max(scrollY.value + diff, 0),
+        scrollHeight - wrapperHeight,
+      )
+    }
+  } else if (listOrientation.value === 'horizontal') {
+    const scrollWidth = typeList.value?.scrollWidth || 0
+    const wrapperWidth = wrapper.value?.offsetWidth || 0
+    const diff = Math.min(Math.max(e.deltaY || e.deltaX, -20), 20)
+    if (wrapperWidth > scrollWidth) {
+      scrollX.value = 0
+    } else {
+      scrollX.value = Math.min(
+        Math.max(scrollX.value + diff, 0),
+        scrollWidth - wrapperWidth,
+      )
+    }
+  }
 }
 
 function onMouseEnter() {
@@ -192,7 +211,10 @@ function onMouseLeave() {
 
 const style = computed(() => {
   return {
-    transform: `translateY(-${scrollY.value}px)`,
+    transform:
+      listOrientation.value === 'vertical'
+        ? `translateY(-${scrollY.value}px)`
+        : `translateX(-${scrollX.value}px)`,
   }
 })
 

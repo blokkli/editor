@@ -84,12 +84,13 @@
     }
   }
   &.bk-is-horizontal {
-    @apply w-full h-70;
+    @apply w-full h-70 flex;
     .bk-list {
-      @apply flex;
+      @apply flex mx-auto;
     }
     .bk-list-item-label {
       @apply absolute left-0 bottom-full opacity-0 mb-15;
+      @apply left-1/2 -translate-x-1/2;
     }
     .bk-list-item {
       @apply px-5 py-5 cursor-grab;
@@ -99,9 +100,9 @@
         }
       }
 
-      &:not(:first-child) {
+      &:first-child {
         .bk-list-item-label {
-          @apply left-1/2 -translate-x-1/2;
+          @apply left-0 translate-x-0;
         }
       }
       &:hover {
