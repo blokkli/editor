@@ -27,7 +27,7 @@
 
 <script lang="ts" setup>
 /**
- * Provides a fulltext search for paragraphs.
+ * Provides a fulltext search for rendered items on the page.
  */
 import { KeyPressedEvent } from '#blokkli/types'
 import Overlay from './Overlay/index.vue'

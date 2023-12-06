@@ -75,7 +75,7 @@ export default class Extractor {
         definition,
         icon,
         chunkName: definition.chunkName || 'global',
-        componentName: 'Paragraph_' + definition.bundle,
+        componentName: 'BlokkliComponent_' + definition.bundle,
         source,
       }
       return true
@@ -111,7 +111,7 @@ export default class Extractor {
         return { definition, source }
       } catch (e) {
         console.error(
-          `Failed to parse Paragraph component "${filePath}": ${this.composableName} does not contain a valid object literal. No variables and methods are allowed inside ${this.composableName}().`,
+          `Failed to parse component "${filePath}": ${this.composableName} does not contain a valid object literal. No variables and methods are allowed inside ${this.composableName}().`,
         )
       }
     }
@@ -203,17 +203,12 @@ export const globalOptionsDefaults: Record<GlobalOptionsType, string> = ${JSON.s
         return `'${v}'`
       })
       .join(' | ')
-    const validParagraphBundles = allDefintions
-      .map((v) => {
-        return `'${v.bundle}'`
-      })
-      .join(' | ')
     const validGlobalOptions = globalOptionKeys
       .map((v) => {
         return `'${v}'`
       })
       .join(' | ')
-    const validParentParagraphBundles = allDefintions
+    const validParentItemBundles = allDefintions
       .filter((v) => v.bundle !== 'from_library')
       .map((v) => {
         return `'${v.bundle}'`
@@ -222,8 +217,7 @@ export const globalOptionsDefaults: Record<GlobalOptionsType, string> = ${JSON.s
     return `
 import { BlokkliItemDefinitionInput } from '#blokkli/types'
 export type ValidFieldListTypes = ${validFieldListTypes}
-export type ValidParagraphBundle = ${validParagraphBundles}
-export type ValidParentItemBundle = ${validParentParagraphBundles}
+export type ValidParentItemBundle = ${validParentItemBundles}
 export type ValidChunkNames = ${validChunkNames}
 export type GlobalOptionsType = ${validGlobalOptions || 'never'}
 export type ValidGlobalConfigKeys = Array<GlobalOptionsType>

@@ -62,7 +62,7 @@ const props = defineProps<{
   meta?: boolean
 
   /**
-   * Whether the action supports multiple paragraphs.
+   * Whether the action supports multiple items.
    */
   multiple?: boolean
 

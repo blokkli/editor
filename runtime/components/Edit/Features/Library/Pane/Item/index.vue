@@ -20,7 +20,7 @@
       class="bk-library-list-item-inner"
       :class="backgroundClass"
     >
-      <ScaleToFit :width="paragraphWidth">
+      <ScaleToFit :width="editWidth">
         <BlokkliItem :item="item" :props="props" parent-type="nested" />
       </ScaleToFit>
     </div>
@@ -40,7 +40,7 @@ const componentProps = defineProps<BlokkliLibraryItem>()
 
 const definition = computed(() => getDefinition(componentProps.bundle))
 
-const paragraphWidth = computed(() => definition.value?.editWidth)
+const editWidth = computed(() => definition.value?.editWidth)
 const renderPreview = computed(
   () => definition.value?.noLibraryPreview !== true,
 )

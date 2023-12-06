@@ -17,8 +17,8 @@ const root = ref<HTMLDivElement | null>(null)
 const inner = ref<HTMLDivElement | null>(null)
 const wrapper = ref<HTMLDivElement | null>(null)
 const rootWidth = ref(260)
-const paragraphNativeWidth = ref(0)
-const paragraphNativeHeight = ref(0)
+const nativeWidth = ref(0)
+const nativeHeight = ref(0)
 const computedHeight = ref(0)
 let raf: any = null
 
@@ -31,7 +31,7 @@ const style = computed(() => {
 const innerStyle = computed(() => {
   return {
     width: props.width ? props.width + 'px' : 'auto',
-    transform: `scale(${rootWidth.value / paragraphNativeWidth.value})`,
+    transform: `scale(${rootWidth.value / nativeWidth.value})`,
   }
 })
 
@@ -41,11 +41,8 @@ function loop() {
   }
   if (inner.value) {
     const rect = inner.value.getBoundingClientRect()
-    paragraphNativeHeight.value = inner.value.offsetHeight
-    paragraphNativeWidth.value = Math.max(
-      inner.value.offsetWidth,
-      rootWidth.value,
-    )
+    nativeHeight.value = inner.value.offsetHeight
+    nativeWidth.value = Math.max(inner.value.offsetWidth, rootWidth.value)
     computedHeight.value = rect.height
   }
 

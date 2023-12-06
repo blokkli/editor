@@ -28,14 +28,14 @@ const disabled = computed(() => {
   return !type || getDefinition(type)?.disableEdit === true
 })
 
-function onClick(paragraphs: DraggableExistingBlokkliItem[]) {
-  if (paragraphs.length !== 1) {
+function onClick(items: DraggableExistingBlokkliItem[]) {
+  if (items.length !== 1) {
     return
   }
 
   eventBus.emit('item:edit', {
-    uuid: paragraphs[0].uuid,
-    bundle: paragraphs[0].itemBundle,
+    uuid: items[0].uuid,
+    bundle: items[0].itemBundle,
   })
 }
 </script>

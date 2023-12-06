@@ -514,8 +514,6 @@ export type BlokkliEvents = {
   'select:toggle': string
   'select:end': string[]
 
-  'paragraph:convert': ConvertBlokkliItemEvent
-
   scrollIntoView: ScrollIntoViewEvent
   'animationFrame:before': undefined
 

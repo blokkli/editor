@@ -30,7 +30,7 @@ const { adapter, storage, state, text } = useBlokkli()
 
 const shouldOpen = storage.use('showImport', true)
 
-const hasNoParagraphs = computed(
+const isEmpty = computed(
   () => !state.mutatedFields.value.find((v) => v.field.list?.length),
 )
 
@@ -49,12 +49,8 @@ function onSubmit(sourceUuid: string, sourceFields: string[]) {
 }
 
 onMounted(() => {
-  // Show the import dialog when there are no paragraphs yet and no mutations.
-  if (
-    hasNoParagraphs.value &&
-    !state.mutations.value.length &&
-    shouldOpen.value
-  ) {
+  // Show the import dialog when there are no items yet and no mutations.
+  if (isEmpty.value && !state.mutations.value.length && shouldOpen.value) {
     showModal.value = true
   }
 })

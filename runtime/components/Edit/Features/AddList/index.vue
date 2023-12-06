@@ -154,14 +154,14 @@ const generallyAvailableBundles = computed(() => {
     .flatMap((v) => v.allowedTypes)
     .filter(Boolean)
 
-  const typesOnParagraphs =
+  const typesOnItems =
     types.allowedTypes.value
       .filter((v) => {
         return typesOnEntity.includes(v.bundle)
       })
       .flatMap((v) => v.allowedTypes) || []
 
-  const allAllowedTypes = [...typesOnEntity, ...typesOnParagraphs]
+  const allAllowedTypes = [...typesOnEntity, ...typesOnItems]
 
   return (
     types.allTypes.value.filter(

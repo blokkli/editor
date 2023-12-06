@@ -11,6 +11,11 @@
               :class="{ 'bk-is-active': menuOpen }"
               @click="menuOpen ? ui.menu.close() : ui.menu.open()"
             >
+              <!-- <div class="bk-toolbar-menu-button-icon"> -->
+              <!--   <div></div> -->
+              <!--   <div></div> -->
+              <!--   <div></div> -->
+              <!-- </div> -->
               <Icon :name="menuOpen ? 'close' : 'logo'" />
             </button>
 

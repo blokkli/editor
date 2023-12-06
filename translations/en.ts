@@ -50,7 +50,7 @@ export default {
   importExistingDescription: 'Import from an existing page',
   importExistingDialogTitle: 'Import from existing page',
   importExistingDialogLead:
-    'Import content from an existing page. The paragraphs will be added to the end of the list. This action can be undone.',
+    'Import content from an existing page. The items will be added to the end of the list. This action can be undone.',
   importExistingDialogSubmit: 'Import content',
   importExistingFieldsLabel: 'Which content would you like to import?',
   importExistingPagesLabel: 'From which page would you like to import?',
@@ -64,7 +64,7 @@ export default {
   libraryError: 'The item could not be made reusable.',
   libraryDialogTitle: 'Add to library',
   libraryDialogLead:
-    'When you add a paragraph to the library, you can use it on multiple pages at the same time. Changes to this paragraph are then immediately published on all pages.',
+    'When you add an item to the library, you can use it on multiple pages at the same time. Changes to this item are then immediately published on all pages.',
   libraryDialogSubmit: 'Add to library',
   libraryDialogDescriptionLabel: 'Description',
   libraryDialogTitleInputPlaceholder: 'e.g. Teaser Campaign 2023',
@@ -117,13 +117,13 @@ export default {
   settingsListOrientation: 'Content elements',
   settingsListOrientationVertical: 'Vertical',
   settingsListOrientationHorizontal: 'Horizontal',
-  settingsRevertSorting: 'Reset paragraph sorting',
+  settingsRevertSorting: 'Reset item sorting',
   settingsRevertAll: 'Reset all settings',
 
   structureToolbarLabel: 'Structure',
 
   translationsBatchTranslateMenuTitle: 'Translate...',
-  translationsBatchTranslateMenuDescription: 'Translate all paragraphs',
+  translationsBatchTranslateMenuDescription: 'Translate all items',
   translationsItemAction: 'Translate...',
 
   validationsToolbarLabel: 'Validations',

@@ -12,7 +12,7 @@
 }
 
 .bk-settings-ui {
-  @apply flex gap-10;
+  @apply flex gap-15;
   li {
     @apply relative flex-1;
     label {
@@ -33,14 +33,20 @@
         @apply opacity-100;
       }
     }
+    input:checked + .bk-icon + span {
+      @apply font-semibold text-slate-950;
+    }
     input:not(:checked):hover + .bk-icon {
       @apply border-slate-500;
       svg {
         @apply opacity-70;
       }
     }
+    input:not(:checked):hover + .bk-icon + span {
+      @apply text-slate-800;
+    }
     span {
-      @apply inline-block mt-5 text-sm text-center w-full;
+      @apply inline-block mt-10 text-sm text-center w-full text-slate-600;
     }
   }
 }

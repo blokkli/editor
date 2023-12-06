@@ -26,7 +26,7 @@
       class="bk-dialog-content-element"
       :class="[backgroundClass, { 'bk-default-bg': !backgroundClass }]"
     >
-      <div ref="paragraph"></div>
+      <div ref="previewEl"></div>
     </div>
   </DialogModal>
 </template>
@@ -50,10 +50,10 @@ const label = ref('')
 
 const width = ref(450)
 
-const paragraph = ref<HTMLDivElement | null>(null)
+const previewEl = ref<HTMLDivElement | null>(null)
 
 onMounted(() => {
-  if (paragraph.value) {
+  if (previewEl.value) {
     const item = dom.findBlock(props.uuid)
     if (!item) {
       return
@@ -73,7 +73,7 @@ onMounted(() => {
         delete cloneEl.dataset[dataKey]
       })
     }
-    paragraph.value.appendChild(clone)
+    previewEl.value.appendChild(clone)
   }
 })
 </script>

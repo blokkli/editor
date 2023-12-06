@@ -22,8 +22,8 @@ const onSelect = (uuids: string[]) => {
 }
 
 function shouldStartMultiSelect(target: Element): boolean {
-  const isInsideParagraph = !!target.closest('.draggable')
-  if (isInsideParagraph) {
+  const isInsideItem = !!target.closest('.draggable')
+  if (isInsideItem) {
     return false
   }
   const isInsideControl = !!target.closest('.bk-control')

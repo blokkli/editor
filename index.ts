@@ -86,6 +86,10 @@ export type ModuleOptions = {
    */
   composableName?: string
 
+  /**
+   * Define reusable options that can be used in blokkli item components by
+   * referencing the option name.
+   */
   globalOptions?: BlokkliItemDefinitionOptionsInput
 
   /**
