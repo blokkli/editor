@@ -57,18 +57,26 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         langcode: langcode || undefined,
       }).then((v) => v.data.state)
 
-    const getAvailableFeatures: DrupalAdapter['getAvailableFeatures'] =
+    const getDisabledFeatures: DrupalAdapter['getDisabledFeatures'] =
       async () => {
         const data = await useGraphqlQuery('pbAvailableFeatures').then(
           (v) => v.data.features,
         )
+        const disabled: string[] = []
         const mutations = data?.mutations || []
-        return {
-          comment: !!data?.comment,
-          conversion: !!data?.conversion,
-          duplicate: mutations.includes('duplicate'),
-          library: !!data?.library,
+        if (!data?.comment) {
+          disabled.push('Comments')
         }
+        if (!data?.conversion) {
+          disabled.push('Conversions')
+        }
+        if (!data?.library) {
+          disabled.push('Library')
+        }
+        if (!mutations.includes('duplicate')) {
+          disabled.push('Duplicate')
+        }
+        return disabled
       }
 
     const takeOwnership: DrupalAdapter['takeOwnership'] = () =>
@@ -323,7 +331,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
       getAvailableTypes,
       getAllTypes,
       loadState,
-      getAvailableFeatures,
+      getDisabledFeatures,
       takeOwnership,
       setHistoryIndex,
       redo,

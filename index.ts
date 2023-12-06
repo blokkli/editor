@@ -10,7 +10,10 @@ import {
 } from '@nuxt/kit'
 import Extractor from './Extractor'
 import { extname, basename } from 'path'
-import { BlokkliItemDefinitionOptionsInput } from './runtime/types'
+import type {
+  BlokkliItemDefinitionOptionsInput,
+  BlokkliFeature,
+} from './runtime/types'
 import postcss from 'postcss'
 import { promises as fsp, existsSync } from 'fs'
 import postcssImport from 'postcss-import'
@@ -72,6 +75,10 @@ async function buildStyles(sourceFile: string, sourceFolder: string) {
  */
 const POSSIBLE_EXTENSIONS = ['.js', '.ts', '.vue', '.mjs']
 
+type AlterFeatures = {
+  features: BlokkliFeature[]
+}
+
 /**
  * Options for the module.
  */
@@ -116,10 +123,6 @@ export type ModuleOptions = {
    */
   fieldListTypes?: string[]
 
-  disableFeatures?: {
-    library?: boolean
-  }
-
   /**
    * The langcode that doesn't use a URL prefix.
    *
@@ -131,11 +134,6 @@ export type ModuleOptions = {
    * If provided, the grid feature is enabled and the markup is used to display the grid.
    */
   gridMarkup?: string
-
-  /**
-   * Add paths to custom feature components.
-   */
-  customFeatures?: string[]
 
   /**
    * Define the plugin ID for the blokkli options.
@@ -160,6 +158,16 @@ export type ModuleOptions = {
    * The default/fallback language for the editor.
    */
   defaultLanguage?: string
+
+  /**
+   * Alter features by removing or adding new ones.
+   *
+   * It's also possible to override builtin feature components with custom
+   * implementations.
+   */
+  alterFeatures?: (
+    ctx: AlterFeatures,
+  ) => Promise<BlokkliFeature[]> | BlokkliFeature[]
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -182,8 +190,89 @@ export default defineNuxtModule<ModuleOptions>({
     const srcDir = nuxt.options.srcDir
     const srcResolver = createResolver(srcDir)
 
+    const moduleDir = import.meta.url
+
     // The path of this module.
-    const resolver = createResolver(import.meta.url)
+    const resolver = createResolver(moduleDir)
+
+    const featureFolder = resolver.resolve('./runtime/components/Edit/Features')
+    const features: BlokkliFeature[] = await resolveFiles(
+      featureFolder,
+      ['*/index.vue'],
+      {
+        followSymbolicLinks: false,
+      },
+    ).then((files) => {
+      return files.map((componentPath) => {
+        const regex = /\/Features\/([^\/]+)\//
+        const id = componentPath.match(regex)?.[1] || ''
+        return {
+          id,
+          componentPath,
+        }
+      })
+    })
+
+    const featuresContext: AlterFeatures = {
+      features,
+    }
+
+    featuresContext.features = featuresContext.features.filter((v) => {
+      if (v.id === 'Grid' && !moduleOptions.gridMarkup) {
+        return false
+      }
+
+      return true
+    })
+
+    if (moduleOptions.alterFeatures) {
+      featuresContext.features = await Promise.resolve(
+        moduleOptions.alterFeatures(featuresContext),
+      )
+    }
+
+    // The custom feature components.
+    const featureComponents = addTemplate({
+      write: true,
+      filename: 'blokkli/features.ts',
+      getContents: () => {
+        const features = featuresContext.features.map((v) => {
+          const importName = `Feature_${v.id}`
+          return {
+            id: v.id,
+            importName,
+            importStatement: `import ${importName} from '${v.componentPath}'`,
+          }
+        })
+
+        const imports = features
+          .map((v) => {
+            return v.importStatement
+          })
+          .join('\n')
+
+        const featuresArray = features
+          .map((v) => {
+            return `{ id: "${v.id}", component: ${v.importName} }`
+          })
+          .join(',\n')
+
+        return `${imports}
+
+type FeatureComponent = {
+  id: string
+  component: any
+}
+        
+export const featureComponents: FeatureComponent[] = [
+${featuresArray}
+]`
+      },
+      options: {
+        blokkli: true,
+      },
+    })
+    nuxt.options.alias['#blokkli-runtime/features'] = featureComponents.dst
 
     function getChunkNames(): string[] {
       const chunkNames = [...(moduleOptions.chunkNames || [])]
@@ -203,7 +292,12 @@ export default defineNuxtModule<ModuleOptions>({
 
     const importPattern = moduleOptions.pattern || []
 
-    if (!moduleOptions.disableFeatures?.library) {
+    const libraryEnabled = featuresContext.features.some(
+      (v) => v.id === 'Library',
+    )
+
+    // Add the from_library blokkli item.
+    if (libraryEnabled) {
       importPattern.push(
         resolver.resolve('./runtime/components/FromLibrary/*.vue'),
       )
@@ -360,33 +454,6 @@ export type ValidTextKeys = ${validTranslationKeys}
       },
     })
     nuxt.options.alias['#blokkli/generated-types'] = templateGeneratedTypes.dst
-
-    // The custom feature components.
-    const featureComponents = addTemplate({
-      write: true,
-      filename: 'blokkli/features.ts',
-      getContents: () => {
-        const paths: string[] = moduleOptions.customFeatures || []
-        const imports = paths
-          .map((v, i) => {
-            return `import Feature_${i} from '${srcResolver.resolve(v)}'`
-          })
-          .join('\n')
-
-        const features = paths
-          .map((_v, i) => {
-            return `Feature_${i}`
-          })
-          .join(',')
-
-        return `${imports}
-export const featureComponents: any[] = [${features}]`
-      },
-      options: {
-        blokkli: true,
-      },
-    })
-    nuxt.options.alias['#blokkli-runtime/features'] = featureComponents.dst
 
     // The types template.
     const templateDefaultGlobalOptions = addTemplate({

@@ -1,5 +1,8 @@
 <template>
-  <Teleport to="body">
+  <Teleport
+    v-if="state.canEdit.value && state.editMode.value === 'editing'"
+    to="body"
+  >
     <div
       v-if="selectableBundles.length"
       class="bk bk-add-list bk-control"

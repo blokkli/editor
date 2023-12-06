@@ -13,6 +13,7 @@
     @click="showReusableDialog = true"
     :disabled="!canMakeReusable"
     icon="reusable"
+    :weight="-70"
   />
 
   <Teleport to="body">

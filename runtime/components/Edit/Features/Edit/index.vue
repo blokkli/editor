@@ -6,6 +6,7 @@
     meta
     key-code="E"
     icon="edit"
+    :weight="-100"
   />
 </template>
 

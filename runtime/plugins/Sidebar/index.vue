@@ -4,6 +4,7 @@
       @click="toggleSidebar(id)"
       :class="{ 'is-active': activeSidebar === id }"
       :disabled="editOnly && !state.canEdit.value"
+      :style="{ order: weight || 0 }"
     >
       <slot name="icon">
         <Icon v-if="icon" :name="icon" />
@@ -31,6 +32,7 @@ const props = defineProps<{
   title: string
   editOnly?: boolean
   icon?: BlokkliIcon
+  weight?: string
 }>()
 
 const { storage, state } = useBlokkli()

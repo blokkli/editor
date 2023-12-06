@@ -11,7 +11,7 @@ import type { BlokkliAnimationProvider } from '../helpers/animationFrame'
 import type { BlokkliStateProvider } from '../helpers/stateProvider'
 import type { eventBus } from './../helpers/eventBus'
 import type { BlokkliDefinitionOption } from './blokkOptions'
-import { BlokkliTextProvider } from '../helpers/textProvider'
+import type { BlokkliTextProvider } from '../helpers/textProvider'
 
 interface MutationResponseLike<T> {
   data: {
@@ -24,18 +24,16 @@ interface MutationResponseLike<T> {
   }
 }
 
+export type BlokkliFeature = {
+  id: string
+  componentPath: string
+}
+
 export type MutateWithLoadingStateFunction = (
   promise: Promise<MutationResponseLike<any>> | undefined,
   errorMessage?: string,
   successMessage?: string,
 ) => Promise<boolean>
-
-export type BlokkliAvailableFeatures = {
-  comment: boolean
-  conversion: boolean
-  duplicate: boolean
-  library: boolean
-}
 
 export type BlokkliItemDefinitionOptionsInput = {
   [key: string]: BlokkliDefinitionOption

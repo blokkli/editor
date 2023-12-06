@@ -1,6 +1,5 @@
 import type {
   BlokkliAvailableType,
-  BlokkliAvailableFeatures,
   BlokkliComment,
   BlokkliConversionItem,
   BlokkliMappedState,
@@ -38,11 +37,15 @@ export interface BlokkliAdapter<T> {
   loadState(langcode?: string | undefined | null): Promise<T | undefined>
 
   /**
-   * Get available features at runtime.
+   * Get disabled features at runtime.
    *
-   * These will only override enabled features.
+   * For example, the "Translation" feature can be disabled if the current
+   * entity does not support translations.
+   *
+   * For features that are always disabled, use the `alterFeatures` option of
+   * the module to remove them entirely.
    */
-  getAvailableFeatures(): Promise<BlokkliAvailableFeatures>
+  getDisabledFeatures(): Promise<string[]>
 
   /**
    * Return a list of all types.

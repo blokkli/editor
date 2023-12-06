@@ -7,6 +7,7 @@
     key-code="D"
     multiple
     icon="duplicate"
+    :weight="-90"
   />
 </template>
 

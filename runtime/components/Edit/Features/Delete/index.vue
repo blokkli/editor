@@ -6,6 +6,7 @@
     multiple
     key-code="Delete"
     icon="delete"
+    :weight="-80"
   />
 </template>
 

@@ -3,6 +3,7 @@
     id="violations"
     :title="text('validationsToolbarLabel')"
     icon="alert"
+    weight="-10"
   >
     <div class="bk bk-errors bk-control">
       <ul v-if="state.violations.value.length">

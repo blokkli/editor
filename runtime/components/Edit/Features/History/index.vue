@@ -4,6 +4,7 @@
     :title="text('history')"
     icon="history"
     v-slot="{ scrolledToEnd }"
+    weight="-100"
   >
     <div class="bk bk-history bk-control">
       <ul>

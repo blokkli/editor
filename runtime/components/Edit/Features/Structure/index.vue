@@ -4,6 +4,7 @@
     :title="text('structureToolbarLabel')"
     edit-only
     icon="tree"
+    weight="-90"
   >
     <List />
   </PluginSidebar>

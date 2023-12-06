@@ -1,5 +1,11 @@
 <template>
-  <PluginSidebar id="debug" title="Debug" icon="bug" v-if="showDebug">
+  <PluginSidebar
+    id="debug"
+    title="Debug"
+    icon="bug"
+    v-if="showDebug"
+    weight="200"
+  >
     <div class="bk bk-debug">
       <section>
         <h2>Keyboard</h2>

@@ -5,6 +5,7 @@
     edit-only
     icon="clipboard"
     ref="plugin"
+    weight="-30"
   >
     <div @mousedown.stop @mousemove.stop @dragstart.stop>
       <div class="bk-clipboard bk-control">

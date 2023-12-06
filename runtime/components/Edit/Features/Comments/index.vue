@@ -1,5 +1,10 @@
 <template>
-  <PluginSidebar id="comments" :title="text('comments')" icon="comment">
+  <PluginSidebar
+    id="comments"
+    :title="text('comments')"
+    icon="comment"
+    weight="-20"
+  >
     <div class="bk bk-comments bk-control">
       <ul>
         <li v-for="comment in comments">
