@@ -6,17 +6,20 @@
     hide-buttons
   >
     <div class="bk bk-dialog-form bk-settings">
-      <div class="bk-form-section">
+      <div
+        class="bk-form-section"
+        v-if="importFeatureEnabled || artboardFeatureEnabled"
+      >
         <h3 class="bk-form-label">{{ text('settingsBehaviour') }}</h3>
         <ul class="bk-settings-checkboxes">
-          <li>
+          <li v-if="importFeatureEnabled">
             <label class="bk-checkbox-toggle">
               <input type="checkbox" v-model="showImport" class="peer" />
               <div></div>
               <span>{{ text('settingsShowImport') }}</span>
             </label>
           </li>
-          <li>
+          <li v-if="artboardFeatureEnabled">
             <label class="bk-checkbox-toggle">
               <input type="checkbox" v-model="persistArtboard" class="peer" />
               <div></div>
@@ -26,7 +29,7 @@
         </ul>
       </div>
 
-      <div class="bk-form-section">
+      <div class="bk-form-section" v-if="artboardFeatureEnabled">
         <h3 class="bk-form-label">{{ text('settingsViewOptions') }}</h3>
         <ul class="bk-settings-ui">
           <li>
@@ -46,7 +49,7 @@
         </ul>
       </div>
 
-      <div class="bk-form-section">
+      <div class="bk-form-section" v-if="addListFeatureEnabled">
         <h3 class="bk-form-label">{{ text('settingsListOrientation') }}</h3>
         <ul class="bk-settings-ui">
           <li>
@@ -73,7 +76,11 @@
       <div class="bk-form-section">
         <h3 class="bk-form-label">Erweitert</h3>
         <div class="bk-settings-buttons">
-          <button class="bk-button" @click="revertSort">
+          <button
+            v-if="addListFeatureEnabled"
+            class="bk-button"
+            @click="revertSort"
+          >
             {{ text('settingsRevertSorting') }}
           </button>
 
@@ -88,6 +95,7 @@
 
 <script lang="ts" setup>
 import { DialogModal, Icon } from '#blokkli/components'
+import { availableFeaturesAtBuild } from '#blokkli-runtime/features'
 
 const { storage, text } = useBlokkli()
 
@@ -98,6 +106,10 @@ const listOrientation = storage.use<'horizontal' | 'vertical'>(
   'listOrientation',
   'vertical',
 )
+
+const artboardFeatureEnabled = availableFeaturesAtBuild.includes('Artboard')
+const importFeatureEnabled = availableFeaturesAtBuild.includes('ImportExisting')
+const addListFeatureEnabled = availableFeaturesAtBuild.includes('AddList')
 
 const emit = defineEmits<{
   (e: 'cancel'): void

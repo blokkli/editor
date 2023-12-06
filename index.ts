@@ -251,6 +251,10 @@ export default defineNuxtModule<ModuleOptions>({
           })
           .join('\n')
 
+        const availableFeaturesAtBuild = featuresContext.features.map(
+          (v) => v.id,
+        )
+
         const featuresArray = features
           .map((v) => {
             return `{ id: "${v.id}", component: ${v.importName} }`
@@ -266,7 +270,12 @@ type FeatureComponent = {
         
 export const featureComponents: FeatureComponent[] = [
 ${featuresArray}
-]`
+]
+
+export const availableFeaturesAtBuild = ${JSON.stringify(
+          availableFeaturesAtBuild,
+        )}
+`
       },
       options: {
         blokkli: true,
