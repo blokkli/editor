@@ -1,21 +1,18 @@
 <template>
-  <component :is="component" v-bind="paragraph" />
+  <component :is="component" v-bind="props" />
 </template>
 
 <script lang="ts" setup>
-import type {
-  InjectedParagraphItem,
-  BlokkliFieldListItemParagraph,
-} from '#blokkli/types'
-import { getParagraphComponent } from '#blokkli/imports'
+import type { InjectedBlokkliItem, BlokkliFieldListItem } from '#blokkli/types'
+import { getBlokkliItemComponent } from '#blokkli/imports'
 import { INJECT_BLOCK_ITEM } from '../helpers/symbols'
 
-const props = withDefaults(
+const componentProps = withDefaults(
   defineProps<{
-    item: BlokkliFieldListItemParagraph
-    paragraph: any
+    item: BlokkliFieldListItem
+    props: any
     index?: number
-    parentParagraphBundle?: string
+    parentType?: string
     isEditing?: boolean
   }>(),
   {
@@ -24,23 +21,25 @@ const props = withDefaults(
   },
 )
 
-const component = await getParagraphComponent(props.item.entityBundle)
+const component = await getBlokkliItemComponent(
+  componentProps.item.entityBundle,
+)
 
-const index = computed(() => props.index)
+const index = computed(() => componentProps.index)
 
-const paragraphItem = computed(() => {
+const item = computed(() => {
   return {
     index,
-    uuid: props.item.uuid || '',
-    paragraphsBuilderOptions: ('paragraphsBuilderOptions' in props.item
-      ? props.item.paragraphsBuilderOptions
+    uuid: componentProps.item.uuid || '',
+    options: ('options' in componentProps.item
+      ? componentProps.item.options
       : {}) as any,
-    isEditing: props.isEditing,
-    parentParagraphBundle: props.parentParagraphBundle,
+    isEditing: componentProps.isEditing,
+    parentType: componentProps.parentType,
   }
 })
 
-provide<InjectedParagraphItem>(INJECT_BLOCK_ITEM, paragraphItem)
+provide<InjectedBlokkliItem>(INJECT_BLOCK_ITEM, item)
 </script>
 
 <script lang="ts">

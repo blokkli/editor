@@ -11,7 +11,7 @@
         }"
       >
         <div class="bk-blokkli-item-actions-title-icon">
-          <ParagraphIcon v-if="paragraphType" :bundle="paragraphType.id" />
+          <ItemIcon v-if="itemBundle" :bundle="itemBundle.id" />
           <Icon name="selection" v-else />
         </div>
         <span>{{ title }}</span>
@@ -34,12 +34,12 @@
       class="bk-blokkli-item-actions-type-dropdown"
     >
       <div>
-        <h3>Umwandeln zu...</h3>
+        <h3>{{ text('convertTo') }}</h3>
         <button
           @click.prevent="onConvert(conversion.id)"
           v-for="conversion in possibleConversions"
         >
-          <ParagraphIcon :bundle="conversion.id" />
+          <ItemIcon :bundle="conversion.id" />
           <div>
             <div>{{ conversion.label }}</div>
           </div>
@@ -51,13 +51,13 @@
 
 <script lang="ts" setup>
 import { Icon } from '#blokkli/components'
-import { ParagraphIcon } from '#blokkli/components'
+import { ItemIcon } from '#blokkli/components'
 import { falsy, onlyUnique } from '#blokkli/helpers'
 import type { BlokkliItemType } from '#blokkli/types'
 
 const showConversions = ref(false)
 
-const { adapter, types, selection, state } = useBlokkli()
+const { adapter, types, selection, state, text } = useBlokkli()
 
 const { data: conversionsData } = await useLazyAsyncData(() =>
   adapter.getConversions(),
@@ -71,35 +71,35 @@ async function onConvert(targetBundle?: string) {
   }
 
   await state.mutateWithLoadingState(
-    adapter.convertParagraphs(
+    adapter.convertItems(
       selection.blocks.value.map((v) => v.uuid),
       targetBundle,
     ),
-    'Der Abschnitt konnte nicht konvertiert werden.',
+    text('failedToConvert'),
   )
 }
 
 const editingEnabled = computed(() => state.editMode.value === 'editing')
 
-const paragraphTypeIds = computed(() => {
-  return selection.blocks.value.map((v) => v.paragraphType).filter(onlyUnique)
+const itemBundleIds = computed(() => {
+  return selection.blocks.value.map((v) => v.itemBundle).filter(onlyUnique)
 })
 
-const paragraphType = computed(() => {
-  if (paragraphTypeIds.value.length !== 1) {
+const itemBundle = computed(() => {
+  if (itemBundleIds.value.length !== 1) {
     return
   }
-  return paragraphTypeIds.value
-    ? types.allTypes.value.find((v) => v.id === paragraphTypeIds.value[0])
+  return itemBundleIds.value
+    ? types.allTypes.value.find((v) => v.id === itemBundleIds.value[0])
     : undefined
 })
 
 const title = computed(() => {
-  if (paragraphType.value) {
-    return paragraphType.value.label
+  if (itemBundle.value) {
+    return itemBundle.value.label
   }
 
-  return 'Paragraphen'
+  return text('multipleItemsLabel')
 })
 
 watch(selection.blocks, () => {
@@ -107,10 +107,10 @@ watch(selection.blocks, () => {
 })
 
 const possibleConversions = computed<BlokkliItemType[]>(() => {
-  if (paragraphTypeIds.value.length !== 1) {
+  if (itemBundleIds.value.length !== 1) {
     return []
   }
-  const sourceType = paragraphTypeIds.value[0]
+  const sourceType = itemBundleIds.value[0]
   return conversions.value
     .filter(
       (v) =>

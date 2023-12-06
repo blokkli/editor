@@ -1,5 +1,5 @@
 <template>
-  <PluginSidebar id="comments" title="Kommentare" icon="comment">
+  <PluginSidebar id="comments" :title="text('comments')" icon="comment">
     <div class="bk bk-comments bk-control">
       <ul>
         <li v-for="comment in comments">
@@ -9,8 +9,8 @@
     </div>
   </PluginSidebar>
 
-  <PluginParagraphAction
-    title="Kommentieren"
+  <PluginItemAction
+    :title="text('addCommentToItem')"
     @click="showAddComment = !showAddComment"
     :active="showAddComment"
     :weight="100"
@@ -20,7 +20,7 @@
     <template v-if="showAddComment" v-slot="{ uuids }">
       <CommentAddForm @add="onAddComment($event, uuids)" />
     </template>
-  </PluginParagraphAction>
+  </PluginItemAction>
 
   <CommentsOverlay
     :comments="comments"
@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts" setup>
-import { PluginSidebar, PluginParagraphAction } from '#blokkli/plugins'
+import { PluginSidebar, PluginItemAction } from '#blokkli/plugins'
 import Comment from './../../Comment/index.vue'
 import CommentAddForm from './AddForm/index.vue'
 import CommentsOverlay from './Overlay/index.vue'
@@ -38,7 +38,7 @@ import type { BlokkliComment } from '#blokkli/types'
 
 const comments = ref<BlokkliComment[]>([])
 const showAddComment = ref(false)
-const { adapter, eventBus } = useBlokkli()
+const { adapter, eventBus, text } = useBlokkli()
 
 const loadComments = async () => (comments.value = await adapter.loadComments())
 
@@ -51,7 +51,7 @@ const onResolveComment = async (uuid: string) =>
   (comments.value = await adapter.resolveComment(uuid))
 
 const onClickComment = (comment: BlokkliComment) =>
-  eventBus.emit('select:end', comment.paragraphUuids || [])
+  eventBus.emit('select:end', comment.itemUuids || [])
 
 onMounted(loadComments)
 </script>

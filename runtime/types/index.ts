@@ -10,7 +10,8 @@ import type { BlokkliUiProvider } from '../helpers/uiProvider'
 import type { BlokkliAnimationProvider } from '../helpers/animationFrame'
 import type { BlokkliStateProvider } from '../helpers/stateProvider'
 import type { eventBus } from './../helpers/eventBus'
-import type { ParagraphDefinitionOption } from './blokkOptions'
+import type { BlokkliDefinitionOption } from './blokkOptions'
+import { BlokkliTextProvider } from '../helpers/textProvider'
 
 interface MutationResponseLike<T> {
   data: {
@@ -37,7 +38,7 @@ export type BlokkliAvailableFeatures = {
 }
 
 export type BlokkliItemDefinitionOptionsInput = {
-  [key: string]: ParagraphDefinitionOption
+  [key: string]: BlokkliDefinitionOption
 }
 
 export type BlokkliItemDefinitionInput<V, T = []> = {
@@ -116,15 +117,15 @@ export type BlokkliItemDefinitionInput<V, T = []> = {
   mockProps?: (text?: string) => any
 }
 
-export type InjectedParagraphItem = ComputedRef<{
+export type InjectedBlokkliItem = ComputedRef<{
   index: ComputedRef<number>
   uuid: string
-  paragraphsBuilderOptions: Record<string, string> | undefined
+  options: Record<string, string> | undefined
   isEditing: boolean
-  parentParagraphBundle?: string
+  parentType?: string
 }>
 
-export interface BlokkliFieldListItemParagraph {
+export interface BlokkliFieldListItem {
   __typename: any
   id?: string
   uuid: string
@@ -132,8 +133,8 @@ export interface BlokkliFieldListItemParagraph {
 }
 
 export interface BlokkliFieldList<T> {
-  item?: BlokkliFieldListItemParagraph
-  paragraph?: T
+  item?: BlokkliFieldListItem
+  props?: T
 }
 
 export type BlokkliMutatedField = {
@@ -195,8 +196,8 @@ export interface BlokkliLibraryItem {
   uuid: string
   label?: string
   bundle: string
-  item: BlokkliFieldListItemParagraph
-  paragraph: any
+  item: BlokkliFieldListItem
+  props: any
 }
 
 export interface BlokkliAvailableType {
@@ -213,7 +214,7 @@ export interface BlokkliImportItem {
 
 export type BlokkliComment = {
   uuid?: string
-  paragraphUuids?: string[]
+  itemUuids?: string[]
   resolved?: boolean
   body?: string
   created?: { first?: { value?: string } }
@@ -223,7 +224,7 @@ export type BlokkliComment = {
 export interface BlokkliMutationItem {
   timestamp?: string
   pluginId?: string
-  plugin?: { label?: string; affectedParagraphUuid?: string }
+  plugin?: { label?: string; affectedItemUuid?: string }
 }
 
 export interface BlokkliValidation {
@@ -258,7 +259,7 @@ export interface BlokkliItemType {
 
 export type BlokkliEditMode = 'readonly' | 'editing' | 'translating'
 
-export type MutatedParagraphOptions = {
+export type MutatedOptions = {
   [uuid: string]: {
     [pluginId: string]: {
       [key: string]: string
@@ -307,14 +308,14 @@ export interface DraggableHostData {
   fieldName: string
 }
 
-export interface DraggableExistingParagraphItem {
+export interface DraggableExistingBlokkliItem {
   itemType: 'existing'
   element: HTMLElement
   hostType: string
   hostBundle: string
   hostUuid: string
   hostFieldName: string
-  paragraphType: string
+  itemBundle: string
   uuid: string
   /**
    * The bundle if this item is reusable.
@@ -332,29 +333,29 @@ export interface DraggableExistingParagraphItem {
   editTitle?: string
 }
 
-export interface DraggableMultipleExistingParagraphItem {
+export interface DraggableMultipleExistingItems {
   itemType: 'multiple_existing'
   uuids: string[]
   bundles: string[]
 }
 
-export interface DraggableNewParagraphItem {
+export interface DraggableNewItem {
   itemType: 'new'
   element: HTMLElement
-  paragraphType: string
+  itemBundle: string
 }
 
-export interface DraggableReusableParagraphItem {
+export interface DraggableReusableItem {
   itemType: 'reusable'
   element: HTMLElement
-  paragraphBundle: string
+  itemBundle: string
   libraryItemUuid: string
 }
 
 export interface DraggableClipboardItem {
   itemType: 'clipboard'
   element: HTMLElement
-  paragraphType: string
+  itemBundle: string
   clipboardData: string
   additional?: string
 }
@@ -362,26 +363,21 @@ export interface DraggableClipboardItem {
 export interface DraggableSearchContentItem {
   itemType: 'search_content'
   element: HTMLElement
-  paragraphType: string
+  itemBundle: string
   searchItem: BlokkliSearchContentItem
 }
 
 export type DraggableItem =
   | DraggableClipboardItem
-  | DraggableNewParagraphItem
-  | DraggableExistingParagraphItem
-  | DraggableReusableParagraphItem
-  | DraggableMultipleExistingParagraphItem
+  | DraggableNewItem
+  | DraggableExistingBlokkliItem
+  | DraggableReusableItem
+  | DraggableMultipleExistingItems
   | DraggableSearchContentItem
-
-export interface ParagraphOptionsOverride {
-  uuid: Ref<string>
-  options: Ref<Record<string, any>>
-}
 
 export type MoveBlokkliEvent = {
   afterUuid?: string
-  item: DraggableExistingParagraphItem
+  item: DraggableExistingBlokkliItem
   host: DraggableHostData
 }
 
@@ -393,26 +389,26 @@ export type MoveMultipleBlokkliItemsEvent = {
 
 export type AddNewBlokkliItemEvent = {
   type: string
-  item: DraggableNewParagraphItem
+  item: DraggableNewItem
   host: DraggableHostData
   afterUuid?: string
 }
 
-export type AddClipboardParagraphEvent = {
+export type AddClipboardItemEvent = {
   item: DraggableClipboardItem
   host: DraggableHostData
   afterUuid?: string
 }
 
-export type AddContentSearchItemParagraphEvent = {
+export type AddContentSearchItemEvent = {
   item: BlokkliSearchContentItem
   host: DraggableHostData
   bundle: string
   afterUuid?: string
 }
 
-export type AddReusableParagraphEvent = {
-  item: DraggableReusableParagraphItem
+export type AddReusableItemEvent = {
+  item: DraggableReusableItem
   host: DraggableHostData
   afterUuid?: string
 }
@@ -495,17 +491,14 @@ export type ScrollIntoViewEvent = {
   immediate?: boolean
 }
 
-export type ParagraphsBuilderEvents = {
+export type BlokkliEvents = {
   select: string
-  editParagraph: EditBlokkliItemEvent
-  translateParagraph: TranslateBlokkliItemEvent
+  'item:edit': EditBlokkliItemEvent
   batchTranslate: undefined
   removeGhosts: undefined
   'dragging:start': DraggableStartEvent
   'dragging:end': undefined
   setActiveFieldKey: string
-  moveParagraph: MoveBlokkliEvent
-  moveMultipleParagraphs: MoveMultipleBlokkliItemsEvent
   addNewBlokkliItem: AddNewBlokkliItemEvent
   updateMutatedFields: UpdateMutatedFieldsEvent
   animationFrame: AnimationFrameEvent
@@ -515,9 +508,6 @@ export type ParagraphsBuilderEvents = {
   translateEntity: string
   reloadState: undefined
   reloadEntity: undefined
-  updateParagraphOptions: UpdateBlokkliItemOptionEvent[]
-  duplicateParagraph: string
-  deleteParagraph: string
 
   // Selection.
   'select:start': undefined
@@ -532,15 +522,15 @@ export type ParagraphsBuilderEvents = {
   'state:reloaded': undefined
 
   'search:selectContentItem': BlokkliSearchContentItem
-  addContentSearchItemParagraph: AddContentSearchItemParagraphEvent
+  addContentSearchItem: AddContentSearchItemEvent
   'option:update': UpdateBlokkliItemOptionEvent
 }
 
-export type ParagraphsBuilderEventBus = Emitter<ParagraphsBuilderEvents>
+export type BlokkliEventBus = Emitter<BlokkliEvents>
 
-export type ParagraphsBuilderEditContext = {
-  eventBus: ParagraphsBuilderEventBus
-  mutatedOptions: Ref<MutatedParagraphOptions>
+export type BlokkliItemEditContext = {
+  eventBus: BlokkliEventBus
+  mutatedOptions: Ref<MutatedOptions>
 }
 
 export interface BlokkliApp {
@@ -555,6 +545,8 @@ export interface BlokkliApp {
     disableLibrary: boolean
     gridMarkup: string
     langcodeWithoutPrefix: string
+    optionsPluginId: string
+    itemEntityType: string
   }
 
   dom: BlokkliDomProvider
@@ -566,6 +558,7 @@ export interface BlokkliApp {
   animation: BlokkliAnimationProvider
   state: BlokkliStateProvider
   context: ComputedRef<BlokkliAdapterContext>
+  text: BlokkliTextProvider
 }
 
 export default {}

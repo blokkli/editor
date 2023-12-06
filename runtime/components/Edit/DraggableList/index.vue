@@ -1,7 +1,7 @@
 <template>
   <component
     ref="container"
-    class="bk-paragraphs-container"
+    class="bk-draggable-list-container"
     :class="{ 'is-empty': !listToUse.length }"
     :is="tag || 'div'"
     @click.capture="onClick"
@@ -16,7 +16,7 @@
     <BlokkliItem
       v-for="(item, i) in listToUse"
       :item="item.item"
-      :paragraph="item.paragraph"
+      :props="item.props"
       :is-editing="true"
       :index="i"
       :key="
@@ -27,7 +27,7 @@
         item.item.entityBundle
       "
       :data-id="item"
-      :parent-paragraph-bundle="isNested ? entity?.entityBundle : ''"
+      :parent-type="isNested ? entity?.entityBundle : ''"
       data-editing="true"
       data-element-type="existing"
       :data-uuid="item.item?.uuid"
@@ -35,7 +35,7 @@
       :data-host-type="entity?.entityTypeId"
       :data-host-bundle="entity?.entityBundle"
       :data-host-uuid="entity?.uuid"
-      :data-paragraph-type="item.item?.entityBundle"
+      :data-item-bundle="item.item?.entityBundle"
       :data-host-field-name="fieldName"
       :data-is-nested="isNested"
       class="draggable"
@@ -55,7 +55,7 @@ import { Sortable } from '#blokkli/sortable'
 import { getDefinition } from '#blokkli/definitions'
 import { buildDraggableItem, falsy } from '#blokkli/helpers'
 import {
-  DraggableExistingParagraphItem,
+  DraggableExistingBlokkliItem,
   DraggableHostData,
   DraggableItem,
   MoveBlokkliEvent,
@@ -63,11 +63,12 @@ import {
   BlokkliFieldList,
   BlokkliMutatedField,
   BlokkliFieldListEntity,
-  BlokkliFieldListItemParagraph,
+  BlokkliFieldListItem,
 } from '#blokkli/types'
 import { INJECT_MUTATED_FIELDS } from '../../../helpers/symbols'
 
-const { adapter, state, eventBus, keyboard, types, dom } = useBlokkli()
+const { adapter, state, eventBus, keyboard, types, dom, runtimeConfig } =
+  useBlokkli()
 
 let instance: Sortable | null = null
 
@@ -113,7 +114,7 @@ const cardinality = computed<number>(() => {
 })
 
 /**
- * The allowed paragraph types in this list.
+ * The allowed item bundles in this list.
  */
 const allowedTypes = computed(() => {
   return (
@@ -131,17 +132,17 @@ const fieldName = computed(() => {
   return props.fieldConfig.name || ''
 })
 
-type CombinedParagraphsFieldItem = {
-  item: BlokkliFieldListItemParagraph
-  paragraph: any
+type CombinedFieldItem = {
+  item: BlokkliFieldListItem
+  props: any
 }
 
-const listToUse = computed<CombinedParagraphsFieldItem[]>(() => {
-  if (props.entity.entityTypeId === 'paragraph') {
-    return props.list as CombinedParagraphsFieldItem[]
+const listToUse = computed<CombinedFieldItem[]>(() => {
+  if (props.entity.entityTypeId === runtimeConfig.itemEntityType) {
+    return props.list as CombinedFieldItem[]
   }
   return (mutatedFields?.value.find((v) => v.name === fieldName.value)?.field
-    .list || []) as CombinedParagraphsFieldItem[]
+    .list || []) as CombinedFieldItem[]
 })
 
 function getItemFromEvent(e: MouseEvent): DraggableItem | undefined {
@@ -176,9 +177,9 @@ function onDoubleClick(e: MouseEvent) {
   }
   const item = getItemFromEvent(e)
   if (item && item.itemType === 'existing') {
-    eventBus.emit('editParagraph', {
+    eventBus.emit('item:edit', {
       uuid: item.uuid,
-      bundle: item.paragraphType,
+      bundle: item.itemBundle,
     })
   }
 }
@@ -193,7 +194,7 @@ const host = computed<DraggableHostData>(() => {
 
 function getPreviousItem(
   el: HTMLElement,
-): DraggableExistingParagraphItem | undefined {
+): DraggableExistingBlokkliItem | undefined {
   if (
     el.previousElementSibling &&
     el.previousElementSibling instanceof HTMLElement
@@ -219,7 +220,7 @@ function onUpdate(e: Sortable.SortableEvent) {
         .filter(falsy)
       if (uuids.length > 1) {
         return state.mutateWithLoadingState(
-          adapter.moveMultipleParagraphs({
+          adapter.moveMultipleItems({
             uuids,
             afterUuid: previous?.uuid,
             host: host.value,
@@ -227,7 +228,7 @@ function onUpdate(e: Sortable.SortableEvent) {
         )
       }
     }
-    moveParagraph({
+    moveItem({
       item,
       host: host.value,
       afterUuid: previous?.uuid,
@@ -235,9 +236,9 @@ function onUpdate(e: Sortable.SortableEvent) {
   }
 }
 
-const moveParagraph = (e: MoveBlokkliEvent) => {
+const moveItem = (e: MoveBlokkliEvent) => {
   state.mutateWithLoadingState(
-    adapter.moveParagraph(e),
+    adapter.moveItem(e),
     'Der Abschnitt konnte nicht verschoben werden.',
   )
 }
@@ -265,11 +266,11 @@ function onAdd(e: Sortable.SortableEvent) {
 
   if (item.itemType === 'new') {
     if (e.newIndex !== undefined) {
-      const definition = getDefinition(item.paragraphType)
+      const definition = getDefinition(item.itemBundle)
       if (definition?.disableEdit) {
         return state.mutateWithLoadingState(
           adapter.addNewBlokkliItem({
-            type: item.paragraphType,
+            type: item.itemBundle,
             item,
             host: host.value,
             afterUuid,
@@ -277,30 +278,33 @@ function onAdd(e: Sortable.SortableEvent) {
         )
       } else {
         eventBus.emit('addNewBlokkliItem', {
-          type: item.paragraphType,
+          type: item.itemBundle,
           item,
           host: host.value,
           afterUuid,
         })
       }
     }
-  } else if (item.itemType === 'clipboard' && adapter.addClipboardParagraph) {
+  } else if (
+    item.itemType === 'clipboard' &&
+    adapter.addBlokkliItemFromClipboard
+  ) {
     state.mutateWithLoadingState(
-      adapter.addClipboardParagraph({
+      adapter.addBlokkliItemFromClipboard({
         afterUuid,
         item,
         host: host.value,
       }),
     )
   } else if (item.itemType === 'existing') {
-    moveParagraph({
+    moveItem({
       item,
       host: host.value,
       afterUuid,
     })
   } else if (item.itemType === 'reusable') {
     state.mutateWithLoadingState(
-      adapter.addReusableParagraph({
+      adapter.addReusableItem({
         item,
         host: host.value,
         afterUuid,
@@ -308,13 +312,13 @@ function onAdd(e: Sortable.SortableEvent) {
     )
   } else if (
     item.itemType === 'search_content' &&
-    adapter.addContentSearchItemParagraph
+    adapter.addContentSearchItem
   ) {
     state.mutateWithLoadingState(
-      adapter.addContentSearchItemParagraph({
+      adapter.addContentSearchItem({
         item: item.searchItem,
         host: host.value,
-        bundle: item.paragraphType,
+        bundle: item.itemBundle,
         afterUuid,
       }),
     )
@@ -337,18 +341,18 @@ function onPut(_to: Sortable, _from: Sortable, dragEl: HTMLElement) {
     return false
   }
 
-  // An paragraph of type "from_library" is being dropped here. Use the bundle of the
-  // nested paragraph instead to check if it's allowed.
+  // A bundle of type "from_library" is being dropped here. Use the bundle of the
+  // nested item instead to check if it's allowed.
   if (item.itemType === 'existing' && item.reusableBundle) {
     return allowedTypes.value.includes(item.reusableBundle)
   } else if (item.itemType === 'reusable') {
     return (
-      allowedTypes.value.includes(item.paragraphBundle) &&
+      allowedTypes.value.includes(item.itemBundle) &&
       allowedTypes.value.includes('from_library')
     )
   }
-  if ('paragraphType' in item) {
-    return allowedTypes.value.includes(item.paragraphType)
+  if ('itemBundle' in item) {
+    return allowedTypes.value.includes(item.itemBundle)
   } else if ('bundles' in item) {
     return item.bundles.every((v) => {
       return allowedTypes.value.includes(v)
@@ -376,12 +380,10 @@ function updateSelection(e: SortableEvent) {
 
 function onSelect(e: SortableEvent) {
   return
-  updateSelection(e)
 }
 
 function onDeselect(e: SortableEvent) {
   return
-  updateSelection(e)
 }
 
 onMounted(() => {

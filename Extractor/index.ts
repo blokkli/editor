@@ -5,7 +5,7 @@ import {
   BlokkliItemDefinitionOptionsInput,
 } from '../runtime/types'
 
-type ExtractedParagraph = {
+type ExtractedDefinition = {
   filePath: string
   icon?: string
   chunkName: string
@@ -18,11 +18,13 @@ type ExtractedParagraph = {
  * Service to handle text extractions across multiple files.
  */
 export default class Extractor {
-  definitions: Record<string, ExtractedParagraph> = {}
+  definitions: Record<string, ExtractedDefinition> = {}
   isBuild = false
+  composableName: string
 
-  constructor(isBuild = false) {
+  constructor(isBuild = false, composableName: string) {
     this.isBuild = isBuild
+    this.composableName = composableName
   }
 
   /**
@@ -45,7 +47,7 @@ export default class Extractor {
   }
 
   /**
-   * Read the file and extract the paragraph definitions.
+   * Read the file and extract the blokkli component definitions.
    *
    * Returns a promise containing a boolean that indicated if the given file
    * should trigger a rebuild of the query.
@@ -66,7 +68,7 @@ export default class Extractor {
 
     const icon = await this.getIcon(filePath)
 
-    // New file that didn't previously contain a paragraph definition.
+    // New file that didn't previously contain a blokkli component definition.
     if (!this.definitions[filePath]) {
       this.definitions[filePath] = {
         filePath,
@@ -97,8 +99,11 @@ export default class Extractor {
   extractSingle(
     code: string,
     filePath: string,
-  ): { definition: BlokkliItemDefinitionInput<any>; source: string } | undefined {
-    const rgx = /defineParagraph\((\{.+?\})\)/gms
+  ):
+    | { definition: BlokkliItemDefinitionInput<any>; source: string }
+    | undefined {
+    const pattern = this.composableName + '\\((\\{.+?\\})\\)'
+    const rgx = new RegExp(pattern, 'gms')
     const source = rgx.exec(code)?.[1]
     if (source) {
       try {
@@ -106,7 +111,7 @@ export default class Extractor {
         return { definition, source }
       } catch (e) {
         console.error(
-          `Failed to parse Paragraph component "${filePath}": defineParagraph does not contain a valid object literal. No variables and methods are allowed inside defineParagraph().`,
+          `Failed to parse Paragraph component "${filePath}": ${this.composableName} does not contain a valid object literal. No variables and methods are allowed inside ${this.composableName}().`,
         )
       }
     }
@@ -218,7 +223,7 @@ export const globalOptionsDefaults: Record<GlobalOptionsType, string> = ${JSON.s
 import { BlokkliItemDefinitionInput } from '#blokkli/types'
 export type ValidFieldListTypes = ${validFieldListTypes}
 export type ValidParagraphBundle = ${validParagraphBundles}
-export type ValidParentParagraphBundle = ${validParentParagraphBundles}
+export type ValidParentItemBundle = ${validParentParagraphBundles}
 export type ValidChunkNames = ${validChunkNames}
 export type GlobalOptionsType = ${validGlobalOptions || 'never'}
 export type ValidGlobalConfigKeys = Array<GlobalOptionsType>
@@ -258,7 +263,7 @@ const chunkMapping: Record<string, string> = ${JSON.stringify(
       2,
     )}
 
-export async function getParagraphComponent(bundle: string): Promise<any> {
+export async function getBlokkliItemComponent(bundle: string): Promise<any> {
   if (global[bundle]) {
     return global[bundle]
   }

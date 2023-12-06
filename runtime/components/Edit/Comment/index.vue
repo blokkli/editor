@@ -26,7 +26,7 @@ defineEmits<{
 
 const props = defineProps<{
   uuid?: string | number
-  paragraphUuids?: string[]
+  itemUudis?: string[]
   resolved?: boolean
   body?: string
   created?: BlokkliComment['created']

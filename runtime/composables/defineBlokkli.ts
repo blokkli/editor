@@ -2,22 +2,25 @@ import { computed, inject } from 'vue'
 import type { ComputedRef } from 'vue'
 import {
   BlokkliItemDefinitionOptionsInput,
-  InjectedParagraphItem,
-  ParagraphsBuilderEditContext,
+  InjectedBlokkliItem,
+  BlokkliItemEditContext,
 } from '#blokkli/types'
 import { globalOptions } from '#blokkli/definitions'
 import { globalOptionsDefaults } from '#blokkli/default-global-options'
+
+const blokkliConfig = useRuntimeConfig().public.blokkli
 
 import {
   ValidGlobalConfigKeys,
   BlokkliItemDefinitionInputWithTypes,
   ValidFieldListTypes,
-  ValidParentParagraphBundle,
+  ValidParentItemBundle,
 } from '#blokkli/generated-types'
 import {
   INJECT_BLOCK_ITEM,
   INJECT_EDIT_CONTEXT,
   INJECT_FIELD_LIST_TYPE,
+  INJECT_REUSABLE_OPTIONS,
 } from '../helpers/symbols'
 
 type StringBoolean = '0' | '1'
@@ -42,28 +45,27 @@ type GlobalOptionsKeyTypes<T extends ValidGlobalConfigKeys> = {
 
 type BlokkliComponent<T extends BlokkliItemDefinitionInputWithTypes> = {
   /**
-   * The UUID of the paragraph.
+   * The UUID of the item.
    */
   uuid: string
 
   /**
-   * The index of the paragraph in the field list.
+   * The index of the item in the field list.
    */
   index: ComputedRef<number>
 
   /**
-   * Whether the paragraph is being displayed in an editing context.
+   * Whether the item is being displayed in an editing context.
    */
   isEditing: boolean
 
   /**
-   * The bundle (Drupal bundle name, e.g. "teaser_list") of the parent
-   * paragraph if the paragraph is nested.
+   * The item type name (e.g. "teaser_list") of the parent item if this item is nested.
    */
-  parentParagraphBundle: ComputedRef<ValidParentParagraphBundle | undefined>
+  parentType: ComputedRef<ValidParentItemBundle | undefined>
 
   /**
-   * The type of the field list the paragraph is part of.
+   * The type of the field list the item is part of.
    */
   fieldListType: ComputedRef<ValidFieldListTypes>
 
@@ -84,12 +86,12 @@ type BlokkliComponent<T extends BlokkliItemDefinitionInputWithTypes> = {
 }
 
 /**
- * Define a paragraph component.
+ * Define a blokkli component.
  */
 export function defineBlokkli<T extends BlokkliItemDefinitionInputWithTypes>(
   config: T,
 ): BlokkliComponent<T> {
-  // The default options are provided by the paragraph itself.
+  // The default options are provided by the component definition itself.
   const defaultOptions: Record<string, any> = {}
   for (const key in config.options) {
     if (config.options[key] && 'default' in config.options[key]) {
@@ -97,8 +99,8 @@ export function defineBlokkli<T extends BlokkliItemDefinitionInputWithTypes>(
     }
   }
 
-  // If the paragraph uses global options, we add the default values from the
-  // global options to the default options of this paragraph.
+  // If the item uses global options, we add the default values from the
+  // global options to the default options of this item.
   if (config.globalOptions) {
     for (const key in config.globalOptions) {
       const defaultValue = (globalOptionsDefaults as any)[key as any]
@@ -113,30 +115,27 @@ export function defineBlokkli<T extends BlokkliItemDefinitionInputWithTypes>(
     computed(() => 'default'),
   )!
 
-  // Inject the data from the ParagraphItem component.
-  const paragraphItem = inject<InjectedParagraphItem>(INJECT_BLOCK_ITEM)
-  const uuid = paragraphItem?.value.uuid || ''
+  // Inject the data from the BlokkliItem component.
+  const item = inject<InjectedBlokkliItem>(INJECT_BLOCK_ITEM)
+  const uuid = item?.value.uuid || ''
   const index =
-    paragraphItem?.value.index !== undefined
-      ? paragraphItem.value.index
-      : computed(() => 0)
+    item?.value.index !== undefined ? item.value.index : computed(() => 0)
 
-  const parentParagraphBundle = computed(() => {
-    return paragraphItem?.value
-      .parentParagraphBundle as ValidParentParagraphBundle
+  const parentType = computed(() => {
+    return item?.value.parentType as ValidParentItemBundle
   })
 
-  // This is injected by the "from_library" paragraph component.
-  // If its present it means this paragraph is reusable. In this case it
-  // inherits the options defined on its wrapper paragraph.
-  const fromLibraryOptions = inject<any>('paragraphFromLibraryOptions', null)
+  // This is injected by the "from_library" blokkli component.
+  // If its present it means this blokkli is reusable. In this case it
+  // inherits the options defined on its wrapper blokkli.
+  const fromLibraryOptions = inject<any>(INJECT_REUSABLE_OPTIONS, null)
   if (fromLibraryOptions) {
     return {
       uuid,
       index,
-      isEditing: !!paragraphItem?.value.isEditing,
+      isEditing: !!item?.value.isEditing,
       options: fromLibraryOptions,
-      parentParagraphBundle,
+      parentType,
       fieldListType,
     }
   }
@@ -145,18 +144,20 @@ export function defineBlokkli<T extends BlokkliItemDefinitionInputWithTypes>(
   // separate reactive state. This state is mutated when the user is changing
   // the options. These options are only persisted once the user closes the
   // options popup. In order to have live preview of how these options affect
-  // the paragraph, we use this state to override the paragraphs options.
-  const editContext = inject<ParagraphsBuilderEditContext | null>(
+  // the component, we use this state to override the options.
+  const editContext = inject<BlokkliItemEditContext | null>(
     INJECT_EDIT_CONTEXT,
     null,
   )
   if (editContext && uuid) {
     const options = computed(() => {
       const overrideOptions =
-        editContext.mutatedOptions.value[uuid]?.paragraph_builder_data || {}
+        editContext.mutatedOptions.value[uuid]?.[
+          blokkliConfig.optionsPluginId
+        ] || {}
       return {
         ...defaultOptions,
-        ...(paragraphItem?.value.paragraphsBuilderOptions || {}),
+        ...(item?.value.options || {}),
         ...overrideOptions,
       }
     })
@@ -164,8 +165,8 @@ export function defineBlokkli<T extends BlokkliItemDefinitionInputWithTypes>(
       options,
       index,
       uuid,
-      isEditing: !!paragraphItem?.value.isEditing,
-      parentParagraphBundle,
+      isEditing: !!item?.value.isEditing,
+      parentType,
       fieldListType,
     } as any
   }
@@ -173,7 +174,7 @@ export function defineBlokkli<T extends BlokkliItemDefinitionInputWithTypes>(
   const options = computed(() => {
     return {
       ...defaultOptions,
-      ...paragraphItem?.value.paragraphsBuilderOptions,
+      ...item?.value.options,
     }
   })
 
@@ -181,8 +182,8 @@ export function defineBlokkli<T extends BlokkliItemDefinitionInputWithTypes>(
     uuid,
     index,
     options,
-    isEditing: !!paragraphItem?.value.isEditing,
-    parentParagraphBundle,
+    isEditing: !!item?.value.isEditing,
+    parentType,
     fieldListType,
   } as any
 }

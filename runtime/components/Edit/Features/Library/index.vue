@@ -3,7 +3,7 @@
     <Pane />
   </PluginSidebar>
 
-  <PluginParagraphAction
+  <PluginItemAction
     title="Zur Bibliothek hinzufügen"
     @click="showReusableDialog = true"
     :disabled="!canMakeReusable"
@@ -13,8 +13,8 @@
   <Teleport to="body">
     <transition appear name="bk-slide-up" :duration="300">
       <ReusableDialog
-        v-if="showReusableDialog && selectedBlock"
-        :uuid="selectedBlock.uuid"
+        v-if="showReusableDialog && selectedItem"
+        :uuid="selectedItem.uuid"
         :background-class="definition?.editBackgroundClass"
         @confirm="onMakeReusable"
         @cancel="showReusableDialog = false"
@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-import { PluginSidebar, PluginParagraphAction } from '#blokkli/plugins'
+import { PluginSidebar, PluginItemAction } from '#blokkli/plugins'
 import Pane from './Pane/index.vue'
 import ReusableDialog from './ReusableDialog/index.vue'
 import { getDefinition } from '#blokkli/definitions'
@@ -33,7 +33,7 @@ const showReusableDialog = ref(false)
 
 const { selection, state, adapter, types } = useBlokkli()
 
-const selectedBlock = computed(() => {
+const selectedItem = computed(() => {
   if (selection.blocks.value.length !== 1) {
     return
   }
@@ -42,16 +42,12 @@ const selectedBlock = computed(() => {
 })
 
 const definition = computed(() =>
-  selectedBlock?.value
-    ? getDefinition(selectedBlock.value.paragraphType)
-    : null,
+  selectedItem?.value ? getDefinition(selectedItem.value.itemBundle) : null,
 )
 
-const paragraphType = computed(() =>
-  selectedBlock?.value
-    ? types.allTypes.value.find(
-        (v) => v.id === selectedBlock.value?.paragraphType,
-      )
+const itemBundle = computed(() =>
+  selectedItem?.value
+    ? types.allTypes.value.find((v) => v.id === selectedItem.value?.itemBundle)
     : null,
 )
 
@@ -59,13 +55,13 @@ const isReusable = computed(() => definition.value?.bundle === 'from_library')
 
 function onMakeReusable(label: string) {
   showReusableDialog.value = false
-  if (!selectedBlock?.value?.uuid) {
+  if (!selectedItem?.value?.uuid) {
     return
   }
   state.mutateWithLoadingState(
-    adapter.makeParagraphReusable({
+    adapter.makeItemReusable({
       label,
-      uuid: selectedBlock.value.uuid,
+      uuid: selectedItem.value.uuid,
     }),
     'Der Abschnitt konnte nicht wiederverwendbar gemacht werden.',
   )
@@ -74,7 +70,7 @@ function onMakeReusable(label: string) {
 const canMakeReusable = computed(
   () =>
     !isReusable.value &&
-    paragraphType?.value?.allowReusable &&
+    itemBundle?.value?.allowReusable &&
     types.allowedTypesInList.value.includes('from_library'),
 )
 </script>

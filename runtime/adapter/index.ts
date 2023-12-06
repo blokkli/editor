@@ -9,15 +9,15 @@ import type {
   BlokkliItemType,
   BlokkliEntityTranslation,
   BlokkliSearchContentItem,
-  AddClipboardParagraphEvent,
+  AddClipboardItemEvent,
   AddNewBlokkliItemEvent,
-  AddReusableParagraphEvent,
+  AddReusableItemEvent,
   ImportFromExistingEvent,
   MakeReusableEvent,
   MoveMultipleBlokkliItemsEvent,
   MoveBlokkliEvent,
   UpdateBlokkliItemOptionEvent,
-  AddContentSearchItemParagraphEvent,
+  AddContentSearchItemEvent,
 } from '#blokkli/types'
 
 interface MutationResponseLike<T> {
@@ -45,7 +45,7 @@ export interface BlokkliAdapter<T> {
   getAvailableFeatures(): Promise<BlokkliAvailableFeatures>
 
   /**
-   * Return a list of all paragraph types.
+   * Return a list of all types.
    */
   getAllTypes(): Promise<BlokkliItemType[]>
 
@@ -70,60 +70,58 @@ export interface BlokkliAdapter<T> {
   addNewBlokkliItem(e: AddNewBlokkliItemEvent): Promise<MutationResponseLike<T>>
 
   /**
-   * Update multiple paragraph options.
+   * Update multiple options.
    */
-  updateParagraphOptions(
+  updateOptions(
     options: UpdateBlokkliItemOptionEvent[],
   ): Promise<MutationResponseLike<T>>
 
   /**
-   * Add a clipboard paragraph.
+   * Add a clipboard item.
    */
-  addClipboardParagraph?: (
-    e: AddClipboardParagraphEvent,
+  addBlokkliItemFromClipboard?: (
+    e: AddClipboardItemEvent,
   ) => Promise<MutationResponseLike<T>> | undefined
 
   /**
-   * Move a paragraph.
+   * Move an item.
    */
-  moveParagraph(e: MoveBlokkliEvent): Promise<MutationResponseLike<T>>
+  moveItem(e: MoveBlokkliEvent): Promise<MutationResponseLike<T>>
 
   /**
-   * Move multiple paragraphs.
+   * Move multiple items.
    */
-  moveMultipleParagraphs(
+  moveMultipleItems(
     e: MoveMultipleBlokkliItemsEvent,
   ): Promise<MutationResponseLike<T>>
 
   /**
-   * Add a reusable paragraph.
+   * Add a reusable item.
    */
-  addReusableParagraph(
-    e: AddReusableParagraphEvent,
-  ): Promise<MutationResponseLike<T>>
+  addReusableItem(e: AddReusableItemEvent): Promise<MutationResponseLike<T>>
 
   /**
-   * Delete a paragraph.
+   * Delete an item.
    */
-  deleteParagraph(uuid: string): Promise<MutationResponseLike<T>>
+  deleteItem(uuid: string): Promise<MutationResponseLike<T>>
 
   /**
-   * Delete multiple paragraphs.
+   * Delete multiple items.
    */
-  deleteMultipleParagraphs(uuids: string[]): Promise<MutationResponseLike<T>>
+  deleteMultipleItems(uuids: string[]): Promise<MutationResponseLike<T>>
 
   /**
-   * Convert multiple paragraphs.
+   * Convert multiple items.
    */
-  convertParagraphs(
+  convertItems(
     uuids: string[],
     targetBundle: string,
   ): Promise<MutationResponseLike<T>>
 
   /**
-   * Duplicate multiple paragraphs.
+   * Duplicate multiple items.
    */
-  duplicateParagraphs(uuids: string[]): Promise<MutationResponseLike<T>>
+  duplicateItems(uuids: string[]): Promise<MutationResponseLike<T>>
 
   /**
    * Get all existing entities for importing.
@@ -133,7 +131,7 @@ export interface BlokkliAdapter<T> {
   ): Promise<{ items: BlokkliImportItem[]; total: number }>
 
   /**
-   * Import paragraphs from an existing entity.
+   * Import items from an existing entity.
    */
   importFromExisting(
     e: ImportFromExistingEvent,
@@ -175,9 +173,9 @@ export interface BlokkliAdapter<T> {
   loadComments(): Promise<BlokkliComment[]>
 
   /**
-   * Add a comment to a paragraph.
+   * Add a comment to one or more items.
    */
-  addComment(paragraphUuids: string[], body: string): Promise<BlokkliComment[]>
+  addComment(itemUuids: string[], body: string): Promise<BlokkliComment[]>
 
   /**
    * Resolve a comment.
@@ -185,12 +183,12 @@ export interface BlokkliAdapter<T> {
   resolveComment(uuid: string): Promise<BlokkliComment[]>
 
   /**
-   * Make a paragraph reusable.
+   * Make an item reusable.
    */
-  makeParagraphReusable(e: MakeReusableEvent): Promise<MutationResponseLike<T>>
+  makeItemReusable(e: MakeReusableEvent): Promise<MutationResponseLike<T>>
 
   /**
-   * Get all paragraph library items.
+   * Get all library items.
    */
   getLibraryItems(): Promise<BlokkliLibraryItem[]>
 
@@ -222,10 +220,10 @@ export interface BlokkliAdapter<T> {
   ) => Promise<BlokkliSearchContentItem[]>
 
   /**
-   * Add the dropped paragraph from a search content item.
+   * Add the dropped item from a search content item.
    */
-  addContentSearchItemParagraph?: (
-    e: AddContentSearchItemParagraphEvent,
+  addContentSearchItem?: (
+    e: AddContentSearchItemEvent,
   ) => Promise<MutationResponseLike<T>> | undefined
 
   /**

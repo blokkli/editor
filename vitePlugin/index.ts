@@ -80,7 +80,7 @@ function buildRuntimeDefinition(
   return runtimeDefinition
 }
 
-export const DefinitionPlugin = (nuxt: Nuxt) =>
+export const DefinitionPlugin = (nuxt: Nuxt, composableName: string) =>
   createUnplugin(() => {
     return {
       name: 'transform-file',
@@ -91,7 +91,7 @@ export const DefinitionPlugin = (nuxt: Nuxt) =>
         }
 
         // Skip files that don't contain our string.
-        if (!source.includes('defineParagraph')) {
+        if (!source.includes(composableName)) {
           return
         }
 
@@ -118,7 +118,7 @@ export const DefinitionPlugin = (nuxt: Nuxt) =>
               }
 
               const name = 'name' in callNode.callee && callNode.callee.name
-              if (name === 'defineParagraph') {
+              if (name === composableName) {
                 const arg = callNode.arguments[0]
                 const meta = callNode.arguments[0] as Expression & {
                   start: number

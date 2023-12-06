@@ -1,8 +1,8 @@
 <template>
   <Teleport to="body">
     <div
-      v-if="selectableParagraphTypes.length"
-      class="bk bk-available-paragraphs bk-control"
+      v-if="selectableBundles.length"
+      class="bk bk-add-list bk-control"
       :class="[{ 'bk-is-active': isActive }, 'bk-is-' + listOrientation]"
       ref="wrapper"
       @wheel.prevent.capture.stop="onWheel"
@@ -13,17 +13,16 @@
         <div
           class="bk-list-item bk-clone"
           data-element-type="new"
-          :data-paragraph-type="type.id"
+          :data-item-bundle="type.id"
           v-for="(type, i) in sortedList"
           :class="{
-            'bk-is-disabled':
-              !type.id || !selectableParagraphTypes.includes(type.id),
+            'bk-is-disabled': !type.id || !selectableBundles.includes(type.id),
           }"
           :key="i + (type.id || 'undefined') + updateKey"
         >
           <div class="bk-list-item-inner">
             <div class="bk-list-item-icon">
-              <ParagraphIcon :bundle="type.id" />
+              <ItemIcon :bundle="type.id" />
             </div>
             <div
               class="bk-list-item-label"
@@ -41,10 +40,13 @@
 <script lang="ts" setup>
 import { Sortable } from '#blokkli/sortable'
 import { falsy, onlyUnique } from '#blokkli/helpers'
-import { ParagraphIcon } from '#blokkli/components'
-import { DraggableExistingParagraphItem } from '#blokkli/types'
+import { ItemIcon } from '#blokkli/components'
+import { DraggableExistingBlokkliItem } from '#blokkli/types'
 
-const { eventBus, state, selection, storage, types, context } = useBlokkli()
+const { eventBus, state, selection, storage, types, context, runtimeConfig } =
+  useBlokkli()
+
+const itemEntityType = runtimeConfig.itemEntityType
 
 const listOrientation = storage.use<'horizontal' | 'vertical'>(
   'listOrientation',
@@ -84,21 +86,23 @@ const activeField = computed(() => {
 })
 
 const getAllowedTypesForSelected = (
-  p: DraggableExistingParagraphItem,
+  p: DraggableExistingBlokkliItem,
 ): string[] => {
-  // If the selected paragraph allows nested paragraphs, return the allowed paragraphs for it.
-  if (types.paragraphTypesWithNested.value.includes(p.paragraphType)) {
+  // If the selected bundle allows nested items, return the allowed bundles for it instead.
+  if (types.itemBundlesWithNested.value.includes(p.itemBundle)) {
     return types.allowedTypes.value
       .filter(
-        (v) => v.entityType === 'paragraph' && v.bundle === p.paragraphType,
+        (v) => v.entityType === itemEntityType && v.bundle === p.itemBundle,
       )
       .flatMap((v) => v.allowedTypes)
       .filter(Boolean) as string[]
   }
-  // If the selected paragraph is inside a nested paragraph, return the allowed paragraphs of the parent paragraph.
-  if (p.hostType === 'paragraph') {
+  // If the selected bundle is inside a nested item, return the allowed bundles of the parent bundle.
+  if (p.hostType === itemEntityType) {
     return types.allowedTypes.value
-      .filter((v) => v.entityType === 'paragraph' && v.bundle === p.hostBundle)
+      .filter(
+        (v) => v.entityType === itemEntityType && v.bundle === p.hostBundle,
+      )
       .flatMap((v) => v.allowedTypes)
       .filter(Boolean) as string[]
   } else {
@@ -114,7 +118,7 @@ const getAllowedTypesForSelected = (
   }
 }
 
-const selectableParagraphTypes = computed(() => {
+const selectableBundles = computed(() => {
   if (selection.blocks.value.length) {
     return selection.blocks.value.flatMap((v) => getAllowedTypesForSelected(v))
   }
@@ -132,10 +136,10 @@ const selectableParagraphTypes = computed(() => {
     )
   }
 
-  return generallyAvailableParagraphTypes.value.map((v) => v.id || '')
+  return generallyAvailableBundles.value.map((v) => v.id || '')
 })
 
-const generallyAvailableParagraphTypes = computed(() => {
+const generallyAvailableBundles = computed(() => {
   const fieldNames = state.mutatedFields.value.map((v) => v.name)
   const typesOnEntity = (
     types.allowedTypes.value.filter((v) => {
@@ -196,7 +200,7 @@ function storeSort() {
   if (typeList.value) {
     const sorted = [...typeList.value.querySelectorAll('.bk-list-item')]
       .map((v) => {
-        return (v as HTMLDivElement).dataset.paragraphType
+        return (v as HTMLDivElement).dataset.itemBundle
       })
       .filter(falsy)
       .filter(onlyUnique)
@@ -205,10 +209,10 @@ function storeSort() {
 }
 
 const sortedList = computed(() => {
-  if (!generallyAvailableParagraphTypes.value) {
+  if (!generallyAvailableBundles.value) {
     return []
   }
-  return [...generallyAvailableParagraphTypes.value]
+  return [...generallyAvailableBundles.value]
     .filter((v) => v.id !== 'from_library')
     .sort((a, b) => {
       if (a.id && b.id) {

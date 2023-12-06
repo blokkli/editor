@@ -61,7 +61,7 @@ fragment paragraphsBuilderMutationItem on FieldItemTypeParagraphsBuilderMutation
   pluginId
   plugin {
     label
-    affectedParagraphUuid
+    affectedItemUuid: affectedParagraphUuid
   }
 }
 
@@ -77,7 +77,7 @@ fragment paragraphsBuilderMutatedField on ParagraphsBuilderMutatedField {
   field {
     list {
       ...paragraphsFieldItem
-      paragraph: entity {
+      props: entity {
         ...paragraph
       }
     }
@@ -91,7 +91,7 @@ fragment paragraphsBuilderMutationResult on ParagraphsBuilderMutationResult {
   }
 }
 
-query paragraphsEditState(
+query pbEditState(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
@@ -104,7 +104,7 @@ query paragraphsEditState(
   }
 }
 
-query paragraphsBuilderAvailableFeatures {
+query pbAvailableFeatures {
   features: paragraphsBuilderAvailableFeatures {
     ...paragraphsBuilderAvailableFeatures
   }
@@ -117,7 +117,7 @@ fragment paragraphsBuilderAvailableFeatures on ParagraphsBuilderAvailableFeature
   mutations
 }
 
-mutation paragraphsBuilderPublish(
+mutation pbPublish(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
@@ -132,7 +132,7 @@ mutation paragraphsBuilderPublish(
   }
 }
 
-mutation addParagraph(
+mutation pbAddParagraph(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
@@ -158,7 +158,7 @@ mutation addParagraph(
   }
 }
 
-mutation addTextParagraph(
+mutation pbAddTextParagraph(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
@@ -184,7 +184,7 @@ mutation addTextParagraph(
   }
 }
 
-mutation deleteParagraph(
+mutation pbDeleteParagraph(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
@@ -200,7 +200,7 @@ mutation deleteParagraph(
   }
 }
 
-mutation deleteAllParagraphs(
+mutation pbDeleteAllParagraphs(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
@@ -215,7 +215,7 @@ mutation deleteAllParagraphs(
   }
 }
 
-mutation deleteMultipleParagraphs(
+mutation pbDeleteMultipleParagraphs(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
@@ -231,7 +231,7 @@ mutation deleteMultipleParagraphs(
   }
 }
 
-mutation duplicateParagraph(
+mutation pbDuplicateParagraph(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
@@ -263,7 +263,7 @@ mutation pbDuplicateMultipleParagraphs(
   }
 }
 
-mutation makeParagraphReusable(
+mutation pbMakeParagraphReusable(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
@@ -280,20 +280,21 @@ mutation makeParagraphReusable(
   }
 }
 
-mutation updateParagraphOption(
+mutation pbUpdateParagraphOption(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
   $uuid: String!
   $key: String!
   $value: String!
+  $pluginId: String!
 ) {
   state: paragraphsEditMutationState(
     entityType: $entityType
     entityUuid: $entityUuid
   ) {
     action: update_behavior_setting(
-      pluginId: "paragraph_builder_data"
+      pluginId: $pluginId
       uuid: $uuid
       key: $key
       value: $value
@@ -303,7 +304,7 @@ mutation updateParagraphOption(
   }
 }
 
-mutation bulkUpdateParagraphBehaviorSettings(
+mutation pbBulkUpdateParagraphBehaviorSettings(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
@@ -319,7 +320,7 @@ mutation bulkUpdateParagraphBehaviorSettings(
   }
 }
 
-mutation moveParagraph(
+mutation pbMoveParagraph(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
@@ -345,7 +346,7 @@ mutation moveParagraph(
   }
 }
 
-mutation moveMultipleParagraphs(
+mutation pbMoveMultipleItems(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
@@ -371,7 +372,7 @@ mutation moveMultipleParagraphs(
   }
 }
 
-mutation convertParagraph(
+mutation pbConvertParagraph(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
@@ -405,7 +406,7 @@ mutation pbConvertMultiple(
   }
 }
 
-mutation paragraphsBuilderRedo(
+mutation pbRedo(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
@@ -420,7 +421,7 @@ mutation paragraphsBuilderRedo(
   }
 }
 
-mutation paragraphsBuilderSetHistoryIndex(
+mutation pbSetHistoryIndex(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
@@ -436,7 +437,7 @@ mutation paragraphsBuilderSetHistoryIndex(
   }
 }
 
-mutation revertAllChanges(
+mutation pbRevertAllChanges(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
@@ -451,7 +452,7 @@ mutation revertAllChanges(
   }
 }
 
-mutation paragraphsBuilderUndo(
+mutation pbUndo(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
@@ -507,7 +508,7 @@ mutation pbCopyFromExisting(
   }
 }
 
-mutation paragraphsBuilderTakeOwnership(
+mutation pbTakeOwnership(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
@@ -542,7 +543,7 @@ query pbConversions {
   }
 }
 
-query availableParagraphs {
+query pbAvailableParagraphs {
   entityQuery(entityType: PARAGRAPHS_TYPE, limit: 999) {
     items {
       ...paragraphsType
@@ -556,7 +557,7 @@ query availableParagraphs {
   }
 }
 
-query paragraphsBuilderExisting(
+query pbExisting(
   $entityType: EntityType!
   $entityUuid: String!
   $bundle: String!

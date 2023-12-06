@@ -10,8 +10,8 @@
         <div class="bk-drupal-modal-background bk-overlay"></div>
         <Resizable class="bk-drupal-modal-resizable">
           <div class="bk-drupal-modal-header">
-            <ParagraphIcon v-if="bundle" :bundle="bundle" />
-            <div v-else class="bk-paragraph-icon">
+            <ItemIcon v-if="bundle" :bundle="bundle" />
+            <div v-else class="bk-blokkli-item-icon">
               <Icon name="form" />
             </div>
             <span>{{ title }}</span>
@@ -36,7 +36,7 @@
 
 <script lang="ts" setup>
 import { Resizable } from '#blokkli/components'
-import { Icon, ParagraphIcon } from '#blokkli/components'
+import { Icon, ItemIcon } from '#blokkli/components'
 import { getDefinition } from '#blokkli/definitions'
 import { AddNewBlokkliItemEvent, EditBlokkliItemEvent } from '#blokkli/types'
 
@@ -124,7 +124,7 @@ function onMessage(e: MessageEvent): void {
   const { action, value } = e.data
 
   if (action === 'SAVE') {
-    if (entityTypeInForm.value === 'paragraph') {
+    if (entityTypeInForm.value === runtimeConfig.itemEntityType) {
       eventBus.emit('reloadState')
     } else {
       eventBus.emit('reloadEntity')
@@ -143,7 +143,7 @@ function onIFrameLoad() {
   }
 }
 
-function onEditParagraph(e: EditBlokkliItemEvent) {
+function onItemEdit(e: EditBlokkliItemEvent) {
   if (!state.canEdit.value) {
     return
   }
@@ -198,13 +198,13 @@ async function addNewBlokkliItem(e: AddNewBlokkliItemEvent) {
   if (!state.canEdit.value) {
     return
   }
-  const definition = getDefinition(e.item.paragraphType)
+  const definition = getDefinition(e.item.itemBundle)
   if (definition?.disableEdit) {
     return
   }
 
   bundle.value = e.type
-  entityTypeInForm.value = 'paragraph'
+  entityTypeInForm.value = runtimeConfig.itemEntityType as any
   editLangcode.value = currentLanguage.value || ''
   setModalUrl(
     '/' +
@@ -227,7 +227,7 @@ async function addNewBlokkliItem(e: AddNewBlokkliItemEvent) {
 onMounted(() => {
   window.addEventListener('message', onMessage)
 
-  eventBus.on('editParagraph', onEditParagraph)
+  eventBus.on('item:edit', onItemEdit)
   eventBus.on('translateEntity', onTranslateEntity)
   eventBus.on('batchTranslate', onBatchTranslate)
   eventBus.on('editEntity', onEditEntity)
@@ -236,7 +236,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('message', onMessage)
-  eventBus.off('editParagraph', onEditParagraph)
+  eventBus.off('item:edit', onItemEdit)
   eventBus.off('translateEntity', onTranslateEntity)
   eventBus.off('batchTranslate', onBatchTranslate)
   eventBus.off('editEntity', onEditEntity)

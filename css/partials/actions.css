@@ -107,7 +107,7 @@
         @apply text-white bg-slate-700;
       }
     }
-    .bk-paragraph-icon {
+    .bk-blokkli-item-icon {
       @apply w-[34px] h-[34px] bg-slate-700 rounded flex items-center justify-center border border-slate-500;
       svg {
         @apply w-25 h-25;

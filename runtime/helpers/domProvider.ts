@@ -1,19 +1,21 @@
-import type { DraggableExistingParagraphItem } from '#blokkli/types'
+import type { DraggableExistingBlokkliItem } from '#blokkli/types'
 import { buildDraggableItem, falsy } from '#blokkli/helpers'
 
 export type BlokkliDomProvider = {
-  findBlock(uuid: string): DraggableExistingParagraphItem | undefined
-  getAllBlocks(): DraggableExistingParagraphItem[]
+  findBlock(uuid: string): DraggableExistingBlokkliItem | undefined
+  getAllBlocks(): DraggableExistingBlokkliItem[]
   findClosestBlock(
     el: Element | EventTarget,
-  ): DraggableExistingParagraphItem | undefined
+  ): DraggableExistingBlokkliItem | undefined
 }
 
 export default function (): BlokkliDomProvider {
   const findBlock = (
     uuid: string,
-  ): DraggableExistingParagraphItem | undefined => {
-    const el = document.querySelector(`.field-paragraphs [data-uuid="${uuid}"]`)
+  ): DraggableExistingBlokkliItem | undefined => {
+    const el = document.querySelector(
+      `.bk-field-list [data-uuid="${uuid}"]`,
+    )
     if (el instanceof HTMLElement) {
       const item = buildDraggableItem(el)
       if (item?.itemType === 'existing') {
@@ -23,7 +25,7 @@ export default function (): BlokkliDomProvider {
     return
   }
 
-  const getAllBlocks = (): DraggableExistingParagraphItem[] => {
+  const getAllBlocks = (): DraggableExistingBlokkliItem[] => {
     return [
       ...document.querySelectorAll(
         '[data-blokkli-provider-active="true"] [data-uuid]',
@@ -40,7 +42,7 @@ export default function (): BlokkliDomProvider {
 
   const findClosestBlock = (
     el: Element | EventTarget,
-  ): DraggableExistingParagraphItem | undefined => {
+  ): DraggableExistingBlokkliItem | undefined => {
     if (!(el instanceof Element)) {
       return
     }

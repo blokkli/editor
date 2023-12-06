@@ -1,7 +1,7 @@
 #import "~/components/Paragraph/fragment.paragraphsFieldItem.graphql";
 #import "~/components/Paragraph/fragment.paragraph.graphql";
 
-mutation addReusableParagraph(
+mutation pbAddReusableParagraph(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
@@ -27,7 +27,7 @@ mutation addReusableParagraph(
   }
 }
 
-query paragraphsBuilderLibraryItems {
+query pbLibraryItems {
   entityQuery(entityType: PARAGRAPHS_LIBRARY_ITEM, limit: 50) {
     items {
       ...paragraphsBuilderLibraryItem
@@ -41,7 +41,7 @@ fragment paragraphsBuilderLibraryItem on ParagraphsLibraryItem {
   paragraphs: paragraphsRawField {
     list {
       ...paragraphsFieldItem
-      paragraph: entity {
+      props: entity {
         ...paragraph
       }
     }

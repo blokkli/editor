@@ -21,7 +21,7 @@
   <FeatureOwnership />
   <FeatureMultiSelect v-if="state.canEdit.value && !isTranslation" />
   <FeatureDraggingOverlay />
-  <FeatureAvailableParagraphs v-if="state.canEdit.value && !isTranslation" />
+  <FeatureAddList v-if="state.canEdit.value && !isTranslation" />
   <FeatureSearch />
 
   <!-- Form -->
@@ -34,10 +34,10 @@
   <FeatureSettings />
   <FeatureExit />
 
-  <!-- Paragraph Actions -->
-  <FeatureEditParagraph />
-  <FeatureDuplicateParagraph />
-  <FeatureDeleteParagraph />
+  <!-- Actions -->
+  <FeatureEdit />
+  <FeatureDuplicate />
+  <FeatureDelete />
   <FeatureOptions />
   <FeatureConversions />
 
@@ -65,13 +65,13 @@ import FeatureExit from './Exit/index.vue'
 import FeaturePublish from './Publish/index.vue'
 import FeatureFieldAreas from './FieldAreas/index.vue'
 import FeatureOptions from './Options/index.vue'
-import FeatureDuplicateParagraph from './DuplicateParagraph/index.vue'
-import FeatureEditParagraph from './EditParagraph/index.vue'
-import FeatureDeleteParagraph from './DeleteParagraph/index.vue'
+import FeatureDuplicate from './Duplicate/index.vue'
+import FeatureEdit from './Edit/index.vue'
+import FeatureDelete from './Delete/index.vue'
 import FeatureOwnership from './Ownership/index.vue'
 import FeatureMultiSelect from './MultiSelect/index.vue'
 import FeatureDraggingOverlay from './DraggingOverlay/index.vue'
-import FeatureAvailableParagraphs from './AvailableParagraphs/index.vue'
+import FeatureAddList from './AddList/index.vue'
 import FeatureConversions from './Conversions/index.vue'
 import FeatureSettings from './Settings/index.vue'
 import FeatureSearch from './Search/index.vue'

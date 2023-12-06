@@ -1,22 +1,19 @@
 <template>
   <li v-for="field in fields" class="bk-structure-field" :key="field.name">
     <p class="bk-is-field">{{ field.label }}</p>
-    <ul v-if="field.items?.length" class="bk-structure-field-paragraphs">
+    <ul v-if="field.items?.length" class="bk-structure-field-items">
       <li
         v-for="item in field.items"
         :key="item.uuid"
         :class="{ 'bk-is-active': isSelected(item.uuid) }"
       >
-        <button class="bk-paragraph-label" @click="select(item.uuid)">
-          <div class="bk-paragraph-label-icon">
-            <ParagraphIcon :bundle="item.bundle" />
+        <button class="bk-blokkli-item-label" @click="select(item.uuid)">
+          <div class="bk-blokkli-item-label-icon">
+            <ItemIcon :bundle="item.bundle" />
           </div>
           <span>{{ item.title || item.type?.label || item.bundle }}</span>
         </button>
-        <ul
-          v-if="item.items?.length"
-          class="bk-structure-field-nested-paragraphs"
-        >
+        <ul v-if="item.items?.length" class="bk-structure-field-nested-items">
           <li
             v-for="child in item.items"
             :key="child.uuid"
@@ -26,9 +23,9 @@
               'bk-is-inside-active': isSelected(item.uuid),
             }"
           >
-            <button class="bk-paragraph-label" @click="select(child.uuid)">
-              <div class="bk-paragraph-label-icon">
-                <ParagraphIcon :bundle="child.bundle" />
+            <button class="bk-blokkli-item-label" @click="select(child.uuid)">
+              <div class="bk-blokkli-item-label-icon">
+                <ItemIcon :bundle="child.bundle" />
               </div>
               <span>{{
                 child.title || child.type?.label || child.bundle
@@ -43,7 +40,7 @@
 
 <script lang="ts" setup>
 import { BlokkliItemType } from '#blokkli/types'
-import { ParagraphIcon } from '#blokkli/components'
+import { ItemIcon } from '#blokkli/components'
 
 const { selection, eventBus } = useBlokkli()
 

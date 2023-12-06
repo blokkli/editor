@@ -41,26 +41,25 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  globalOptions,
-  getDefinition,
-} from '#blokkli/definitions'
+import { globalOptions, getDefinition } from '#blokkli/definitions'
 import OptionRadios from './Radios/index.vue'
 import OptionCheckbox from './Checkbox/index.vue'
 import OptionCheckboxes from './Checkboxes/index.vue'
 import OptionText from './Text/index.vue'
 import {
-  ParagraphDefinitionOption,
+  BlokkliDefinitionOption,
   BlokkliItemDefinitionOptionsInput,
 } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
 
-const { adapter, eventBus, state } = useBlokkli()
+const { adapter, eventBus, state, runtimeConfig } = useBlokkli()
 const { mutatedOptions, canEdit, mutateWithLoadingState, editMode } = state
+
+const pluginId = runtimeConfig.optionsPluginId
 
 const props = defineProps<{
   uuids: string[]
-  paragraphType: string
+  itemBundle: string
 }>()
 
 class OptionCollector {
@@ -101,7 +100,7 @@ const original = new OptionCollector()
 const updated = new OptionCollector()
 
 const availableOptions = computed(() => {
-  const definition = getDefinition(props.paragraphType)
+  const definition = getDefinition(props.itemBundle)
   if (!definition) {
     return []
   }
@@ -109,7 +108,7 @@ const availableOptions = computed(() => {
   const global = (
     (definition.globalOptions || []) as string[]
   ).reduce<BlokkliItemDefinitionOptionsInput>((acc, v) => {
-    const globalDefinition: ParagraphDefinitionOption | null =
+    const globalDefinition: BlokkliDefinitionOption | null =
       (globalOptions as any)[v] || null
     if (globalDefinition) {
       acc[v] = globalDefinition
@@ -129,13 +128,13 @@ function getOptionValue(key: string, defaultValue: any, uuidOverride?: string) {
   }
   if (
     mutatedOptions.value[uuid] &&
-    mutatedOptions.value[uuid].paragraph_builder_data &&
+    mutatedOptions.value[uuid][pluginId] &&
     Object.prototype.hasOwnProperty.call(
-      mutatedOptions.value[uuid].paragraph_builder_data,
+      mutatedOptions.value[uuid][pluginId],
       key,
     )
   ) {
-    return mutatedOptions.value[uuid].paragraph_builder_data[key]
+    return mutatedOptions.value[uuid][pluginId][key]
   }
   if (typeof defaultValue === 'boolean') {
     return defaultValue === true ? '1' : ''
@@ -155,10 +154,10 @@ function setOptionValue(key: string, value: string) {
     if (!mutatedOptions.value[uuid]) {
       mutatedOptions.value[uuid] = {}
     }
-    if (!mutatedOptions.value[uuid].paragraph_builder_data) {
-      mutatedOptions.value[uuid].paragraph_builder_data = {}
+    if (!mutatedOptions.value[uuid][pluginId]) {
+      mutatedOptions.value[uuid][pluginId] = {}
     }
-    mutatedOptions.value[uuid].paragraph_builder_data[key] = value
+    mutatedOptions.value[uuid][pluginId][key] = value
     eventBus.emit('option:update', { uuid, key, value })
   })
 }
@@ -181,6 +180,6 @@ onBeforeUnmount(() => {
     return
   }
 
-  mutateWithLoadingState(adapter.updateParagraphOptions(values))
+  mutateWithLoadingState(adapter.updateOptions(values))
 })
 </script>

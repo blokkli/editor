@@ -21,23 +21,18 @@
     </button>
   </Teleport>
   <Teleport to="#bk-blokkli-item-actions-after">
-    <slot
-      :paragraphUuid="paragraphUuid"
-      :paragraphs="selection.blocks.value"
-      :uuids="uuids"
-    />
+    <slot :items="selection.blocks.value" :uuids="uuids" />
   </Teleport>
 </template>
 
 <script lang="ts" setup>
 import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon } from '#blokkli/components'
-import { DraggableExistingParagraphItem } from '#blokkli/types'
+import { DraggableExistingBlokkliItem } from '#blokkli/types'
 import { ShortcutIndicator } from '#blokkli/components'
 
 const { selection } = useBlokkli()
 
-const paragraphUuid = computed(() => selection.blocks.value[0]?.uuid)
 const uuids = computed(() => selection.uuids.value)
 
 const props = defineProps<{
@@ -85,11 +80,11 @@ const isDisabled = computed(
 )
 
 const emit = defineEmits<{
-  (e: 'click', items: DraggableExistingParagraphItem[]): void
+  (e: 'click', items: DraggableExistingBlokkliItem[]): void
 }>()
 
 const onClick = () => {
-  if (isDisabled.value || !paragraphUuid.value) {
+  if (isDisabled.value || !uuids.value.length) {
     return
   }
 

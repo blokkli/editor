@@ -8,7 +8,7 @@
       ref="listItems"
     >
       <div class="bk-search-item-icon">
-        <ParagraphIcon :bundle="item.item.paragraphType" />
+        <ItemIcon :bundle="item.item.itemBundle" />
       </div>
       <div class="bk-search-item-content">
         <Highlight tag="h2" :text="item.title" :regex="regex" />
@@ -30,9 +30,9 @@
 
 <script lang="ts" setup>
 import Highlight from './../../Highlight/index.vue'
-import { ParagraphIcon } from '#blokkli/components'
+import { ItemIcon } from '#blokkli/components'
 import { falsy, modulo } from '#blokkli/helpers'
-import { DraggableExistingParagraphItem } from '#blokkli/types'
+import { DraggableExistingBlokkliItem } from '#blokkli/types'
 
 const listItems = ref<HTMLLIElement[]>([])
 const emit = defineEmits(['close'])
@@ -45,7 +45,7 @@ const props = defineProps<{
 }>()
 
 type SearchItem = {
-  item: DraggableExistingParagraphItem
+  item: DraggableExistingBlokkliItem
   title: string
   text: string
   context?: string
@@ -145,7 +145,7 @@ const buildIndex = () => {
   const newItems = dom
     .getAllBlocks()
     .map((item) => {
-      const title = typeLabelMap.value[item.paragraphType] || item.paragraphType
+      const title = typeLabelMap.value[item.itemBundle] || item.itemBundle
       const searchItem = {
         item,
         title: item.editTitle || title,

@@ -4,7 +4,7 @@
 
 <script lang="ts" setup>
 import {
-  MutatedParagraphOptions,
+  MutatedOptions,
   BlokkliMutatedField,
   UpdateBlokkliItemOptionEvent,
 } from '#blokkli/types'
@@ -27,11 +27,12 @@ const props = defineProps<{
 const context = computed(() => props)
 const adapter = getAdapter(context)
 const router = useRouter()
+const optionsPluginId = useRuntimeConfig().public.blokkli.optionsPluginId
 
 let timeout: any = null
 let lastChanged: number = 0
 const mutatedFields = ref<BlokkliMutatedField[]>([])
-const mutatedOptions = ref<MutatedParagraphOptions>({})
+const mutatedOptions = ref<MutatedOptions>({})
 
 const { data, refresh } = await useAsyncData(() =>
   adapter.loadState().then((v) => adapter.mapState(v)),
@@ -114,10 +115,10 @@ const onUpdateOption = (option: UpdateBlokkliItemOptionEvent) => {
   if (!mutatedOptions.value[uuid]) {
     mutatedOptions.value[uuid] = {}
   }
-  if (!mutatedOptions.value[uuid].paragraph_builder_data) {
-    mutatedOptions.value[uuid].paragraph_builder_data = {}
+  if (!mutatedOptions.value[uuid][optionsPluginId]) {
+    mutatedOptions.value[uuid][optionsPluginId] = {}
   }
-  mutatedOptions.value[uuid].paragraph_builder_data[key] = value
+  mutatedOptions.value[uuid][optionsPluginId][key] = value
 }
 
 onMounted(() => {

@@ -86,13 +86,13 @@
 }
 .bk-body-loading {
   cursor: wait;
-  .bk-paragraphs-container,
+  .bk-draggable-list-container,
   .bk-control {
     pointer-events: none;
   }
 }
 
-.bk-paragraphs-container {
+.bk-draggable-list-container {
   @apply pointer-events-auto;
   .bk-list-item {
     @apply bg-white p-20 font-bold;
@@ -156,7 +156,7 @@
   }
 }
 
-.bk-paragraph-icon {
+.bk-blokkli-item-icon {
   width: 1em;
   height: 1em;
   svg {
@@ -197,7 +197,7 @@
   @apply opacity-30 group-hover:opacity-60;
 }
 
-.bk-paragraphs-container {
+.bk-draggable-list-container {
   &.is-empty {
     min-height: 4rem;
   }
@@ -234,16 +234,16 @@
   display: none !important;
 }
 
-.bk-field-paragraphs {
+.bk-field-list {
   position: relative;
   min-height: 3rem;
 }
 
 .bk-body:not(.bk-is-selecting) {
-  .bk-field-paragraphs {
+  .bk-field-list {
     &:hover {
       outline: 1px dashed;
-      .bk-field-paragraphs {
+      .bk-field-list {
         outline: 1px dashed;
       }
     }
@@ -263,7 +263,7 @@
   }
 }
 
-.bk-paragraph-label {
+.bk-blokkli-item-label {
   @apply flex items-center text-slate-700 text-left;
   > div {
     @apply shrink-0;
@@ -273,14 +273,14 @@
   }
 }
 
-.bk-parent:hover .bk-paragraph-label,
-.bk-paragraph-label:hover {
-  .bk-paragraph-label-icon {
+.bk-parent:hover .bk-blokkli-item-label,
+.bk-blokkli-item-label:hover {
+  .bk-blokkli-item-label-icon {
     @apply bg-slate-200 text-slate-900 border-slate-400;
   }
 }
 
-.bk-paragraph-label-icon {
+.bk-blokkli-item-label-icon {
   @apply w-25 h-25 border rounded bg-slate-100 flex items-center justify-center text-slate-500 mr-[7px] relative z-20 border-slate-300;
 }
 

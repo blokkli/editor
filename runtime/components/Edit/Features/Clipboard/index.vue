@@ -1,7 +1,7 @@
 <template>
   <PluginSidebar
     id="clipboard"
-    title="Zwischenablage"
+    :title="text('clipboard')"
     edit-only
     icon="clipboard"
     ref="plugin"
@@ -9,15 +9,8 @@
     <div @mousedown.stop @mousemove.stop @dragstart.stop>
       <div class="bk-clipboard bk-control">
         <div v-if="!pastedItems.length" class="bk bk-clipboard-info">
-          <h4>Keine Elemente in der Zwischenablage</h4>
-          <p>
-            Verwenden Sie Ctrl-V auf der Seite um Inhalte einzufügen. Diese
-            werden dann hier angezeigt.
-          </p>
-          <p>
-            Verwenden Sie Ctrl-F um bestehende Inhalte zu suchen und in die
-            Zwischenablage einzufügen.
-          </p>
+          <h4>{{ text('clipboardEmpty') }}</h4>
+          <div v-html="text('clipboardExplanation')" />
         </div>
         <ClipboardList
           v-if="pastedItems.length"
@@ -34,13 +27,9 @@ import { PluginSidebar } from '#blokkli/plugins'
 import ClipboardList from './List/index.vue'
 import type { ClipboardItem } from './List/index.vue'
 
-import {
-  DraggableExistingParagraphItem,
-  KeyPressedEvent,
-  BlokkliSearchContentItem,
-} from '#blokkli/types'
+import { KeyPressedEvent, BlokkliSearchContentItem } from '#blokkli/types'
 
-const { eventBus, selection } = useBlokkli()
+const { eventBus, selection, text } = useBlokkli()
 
 const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
 
@@ -95,7 +84,7 @@ function handleFiles(data: DataTransfer) {
         if (TYPES_IMAGE.includes(file.type)) {
           pastedItems.value.push({
             type: 'image',
-            paragraphType: 'image',
+            itemBundle: 'image',
             data: fr.result,
             additional: file.name,
           })
@@ -143,7 +132,7 @@ function onPaste(e: ClipboardEvent) {
   if (youtubeId) {
     pastedItems.value.push({
       type: 'youtube',
-      paragraphType: 'video_remote',
+      itemBundle: 'video_remote',
       data: youtubeId,
     })
     showClipboardSidebar()
@@ -158,7 +147,7 @@ function onPaste(e: ClipboardEvent) {
     showClipboardSidebar()
     pastedItems.value.push({
       type: 'text',
-      paragraphType: 'text',
+      itemBundle: 'text',
       data: div.innerHTML,
     })
   }
@@ -180,15 +169,6 @@ function setClipboard(text: string) {
   } catch (_e) {}
 }
 
-function copySelectedParagraphToClipboard(
-  items: DraggableExistingParagraphItem[],
-) {
-  const markup = items.map((v) => v.element.outerHTML).join(' ')
-  if (markup) {
-    setClipboard(markup)
-  }
-}
-
 function onKeyPressed(e: KeyPressedEvent) {
   if (!selection.blocks.value.length) {
     return
@@ -196,14 +176,19 @@ function onKeyPressed(e: KeyPressedEvent) {
   if (e.code !== 'c' || !e.meta) {
     return
   }
-  copySelectedParagraphToClipboard(selection.blocks.value)
+  const markup = selection.blocks.value
+    .map((v) => v.element.outerHTML)
+    .join(' ')
+  if (markup) {
+    setClipboard(markup)
+  }
 }
 
 function onSelectContentItem(item: BlokkliSearchContentItem) {
   item.targetBundles.forEach((bundle) => {
     pastedItems.value.push({
       type: 'search_content',
-      paragraphType: bundle,
+      itemBundle: bundle,
       data: item.title.replace(/<\/?[^>]+(>|$)/g, ''),
       item,
     })

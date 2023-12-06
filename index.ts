@@ -79,6 +79,11 @@ export type ModuleOptions = {
    */
   pattern?: string[]
 
+  /**
+   * The name of the composable to define a blokkli component.
+   */
+  composableName?: string
+
   globalOptions?: BlokkliItemDefinitionOptionsInput
 
   /**
@@ -125,6 +130,20 @@ export type ModuleOptions = {
    * Add paths to custom feature components.
    */
   customFeatures?: string[]
+
+  /**
+   * Define the plugin ID for the blokkli options.
+   *
+   * This is the key used to access the options from the runtime data of a blokkli item.
+   */
+  optionsPluginId?: string
+
+  /**
+   * The entity type of blokkli items.
+   *
+   * Using the paragraphs_builder integration this value should be set to "paragraph".
+   */
+  itemEntityType?: string
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -136,9 +155,11 @@ export default defineNuxtModule<ModuleOptions>({
     },
   },
   defaults: {
-    pattern: ['components/Paragraph/**/*.{js,ts,vue}'],
+    pattern: ['components/Blokkli/**/*.{js,ts,vue}'],
     globalOptions: {} as BlokkliItemDefinitionOptionsInput,
     chunkNames: ['global'] as string[],
+    composableName: 'defineBlokkli',
+    itemEntityType: 'blokkli_item',
   },
   async setup(moduleOptions, nuxt) {
     // The path to the source directory of this module's consumer.
@@ -164,13 +185,24 @@ export default defineNuxtModule<ModuleOptions>({
       return types.filter(onlyUnique)
     }
 
+    const importPattern = moduleOptions.pattern || []
+
+    if (!moduleOptions.disableFeatures?.library) {
+      importPattern.push(
+        resolver.resolve('./runtime/components/FromLibrary/*.vue'),
+      )
+    }
+
     // Get all files.
-    const files = await resolveFiles(srcDir, moduleOptions.pattern || [], {
+    const files = await resolveFiles(srcDir, importPattern, {
       followSymbolicLinks: false,
     })
 
     // Create extractor instance and add initial set of files.
-    const extractor = new Extractor(!nuxt.options.dev)
+    const extractor = new Extractor(
+      !nuxt.options.dev,
+      moduleOptions.composableName!,
+    )
     await extractor.addFiles(files)
 
     // The definitions.
@@ -188,8 +220,10 @@ export default defineNuxtModule<ModuleOptions>({
 
     nuxt.options.runtimeConfig.public.blokkli = {
       disableLibrary: !!moduleOptions.disableFeatures?.library,
-      langcodeWithoutPrefix: moduleOptions.langcodeWithoutPrefix,
+      langcodeWithoutPrefix: moduleOptions.langcodeWithoutPrefix || '',
       gridMarkup: moduleOptions.gridMarkup,
+      optionsPluginId: moduleOptions.optionsPluginId || 'blokkli',
+      itemEntityType: moduleOptions.itemEntityType || '',
     }
 
     // Setup adapter.
@@ -243,13 +277,13 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     // Only add the vite plugin when building.
-    addBuildPlugin(DefinitionPlugin(nuxt))
+    addBuildPlugin(DefinitionPlugin(nuxt, moduleOptions.composableName!))
 
     // Add composables.
     addImports({
       name: 'defineBlokkli',
       from: resolver.resolve('./runtime/composables/defineBlokkli'),
-      as: 'defineParagraph',
+      as: moduleOptions.composableName,
     })
     addImports({
       name: 'useBlokkli',
@@ -412,7 +446,7 @@ export type BlokkliIcon = keyof typeof icons`
       }
 
       // Get all files based on pattern and check if there is a match.
-      return resolveFiles(srcDir, moduleOptions.pattern!, {
+      return resolveFiles(srcDir, importPattern, {
         followSymbolicLinks: false,
       }).then((files) => {
         return files.find((v) => v === filePath)

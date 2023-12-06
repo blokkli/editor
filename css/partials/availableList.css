@@ -47,7 +47,7 @@
   }
 }
 
-.bk.bk-available-paragraphs {
+.bk.bk-add-list {
   @apply bg-slate-900 bottom-0 fixed left-0 select-none z-[40000];
 
   &.bk-is-active {

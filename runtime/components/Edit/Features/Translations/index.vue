@@ -29,9 +29,9 @@
     icon="translate"
   />
 
-  <PluginParagraphAction
+  <PluginItemAction
     title="Übersetzen"
-    @click="onTranslateParagraph"
+    @click="onTranslate"
     v-if="editMode === 'translating'"
     icon="translate"
   />
@@ -39,9 +39,9 @@
 
 <script lang="ts" setup>
 import { falsy } from '#blokkli/helpers'
-import { PluginMenuButton, PluginParagraphAction } from '#blokkli/plugins'
+import { PluginMenuButton, PluginItemAction } from '#blokkli/plugins'
 import {
-  DraggableExistingParagraphItem,
+  DraggableExistingBlokkliItem,
   BlokkliEntityTranslation,
 } from '#blokkli/types'
 
@@ -84,10 +84,10 @@ function onClick(item: TranslationStateItem, event: Event) {
   eventBus.emit('translateEntity', item.id)
 }
 
-function onTranslateParagraph(paragraphs: DraggableExistingParagraphItem[]) {
-  eventBus.emit('editParagraph', {
-    uuid: paragraphs[0].uuid,
-    bundle: paragraphs[0].paragraphType,
+function onTranslate(items: DraggableExistingBlokkliItem[]) {
+  eventBus.emit('item:edit', {
+    uuid: items[0].uuid,
+    bundle: items[0].itemBundle,
   })
 }
 </script>

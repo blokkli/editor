@@ -14,7 +14,7 @@
     :entity="entity"
     :class="[attrs.class, listClass]"
     :is-nested="isNested"
-    class="field-paragraphs bk-field-paragraphs"
+    class="bk-field-list"
     :tag="tag"
   />
   <component
@@ -22,18 +22,17 @@
     :is="tag"
     :class="[
       attrs.class,
-      { 'bk-field-paragraphs': canEdit && !isNested && !isPreview },
+      { 'bk-field-list': canEdit && !isNested && !isPreview },
       listClass,
     ]"
-    class="field-paragraphs"
     :data-field-key="fieldKey"
   >
     <BlokkliItem
       v-for="(item, i) in filteredList"
       :key="item.item.uuid"
       :item="item.item"
-      :paragraph="item.paragraph"
-      :parent-paragraph-bundle="isNested ? entity?.entityBundle : ''"
+      :props="item.props"
+      :parent-type="isNested ? entity?.entityBundle : ''"
       :data-uuid="item.item.uuid"
       :index="i"
     />
@@ -112,7 +111,7 @@ const filteredList = computed<Array<Required<BlokkliFieldList<any>>>>(() => {
     return (mutatedFields.value.find((v) => v.name === props.fieldConfig?.name)
       ?.field.list || []) as Array<Required<BlokkliFieldList<any>>>
   }
-  return props.list.filter((v) => v.item && v.paragraph) as Array<
+  return props.list.filter((v) => v.item && v.props) as Array<
     Required<BlokkliFieldList<any>>
   >
 })

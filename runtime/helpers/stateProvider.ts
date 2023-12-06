@@ -1,7 +1,7 @@
 import type {
   BlokkliMutatedField,
   BlokkliEditEntity,
-  MutatedParagraphOptions,
+  MutatedOptions,
   BlokkliTranslationState,
   BlokkliMappedState,
   BlokkliMutationItem,
@@ -24,7 +24,7 @@ export type BlokkliStateProvider = {
   refreshKey: Readonly<Ref<string>>
   mutatedFields: Readonly<Ref<BlokkliMutatedField[]>>
   entity: Readonly<Ref<BlokkliEditEntity>>
-  mutatedOptions: Ref<MutatedParagraphOptions>
+  mutatedOptions: Ref<MutatedOptions>
   translation: Readonly<Ref<BlokkliTranslationState>>
   mutations: Readonly<Ref<BlokkliMutationItem[]>>
   currentMutationIndex: Readonly<Ref<number>>
@@ -51,7 +51,7 @@ export default async function (
     status: false,
   })
 
-  const mutatedOptions = ref<MutatedParagraphOptions>({})
+  const mutatedOptions = ref<MutatedOptions>({})
   const translation = ref<BlokkliTranslationState>({
     isTranslatable: false,
     sourceLanguage: '',

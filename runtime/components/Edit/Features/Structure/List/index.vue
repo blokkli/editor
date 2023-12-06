@@ -17,7 +17,7 @@ const tree = ref<StructureTreeField[]>([])
 
 function mapItem(el: Element): StructureTreeItem | undefined {
   if (el instanceof HTMLElement) {
-    const bundle = el.dataset.paragraphType || ''
+    const bundle = el.dataset.itemBundle || ''
     const definition = getDefinition(bundle)
     const title =
       definition && definition.editTitle ? definition.editTitle(el) : undefined
@@ -32,8 +32,7 @@ function mapItem(el: Element): StructureTreeItem | undefined {
 }
 
 function buildItemsForField(element: HTMLElement): StructureTreeItem[] {
-  const paragraphs = element.children
-  return [...paragraphs].map(mapItem).filter(falsy)
+  return [...element.children].map(mapItem).filter(falsy)
 }
 
 function buildTree() {

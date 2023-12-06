@@ -1,5 +1,5 @@
 <template>
-  <PluginParagraphAction
+  <PluginItemAction
     title="Duplizieren"
     @click="onClick"
     :disabled="state.editMode.value !== 'editing'"
@@ -11,14 +11,14 @@
 </template>
 
 <script lang="ts" setup>
-import { DraggableExistingParagraphItem } from '#blokkli/types'
-import { PluginParagraphAction } from '#blokkli/plugins'
+import { DraggableExistingBlokkliItem } from '#blokkli/types'
+import { PluginItemAction } from '#blokkli/plugins'
 
 const { adapter, state } = useBlokkli()
 
-function onClick(items: DraggableExistingParagraphItem[]) {
+function onClick(items: DraggableExistingBlokkliItem[]) {
   state.mutateWithLoadingState(
-    adapter.duplicateParagraphs(items.map((v) => v.uuid)),
+    adapter.duplicateItems(items.map((v) => v.uuid)),
     'Der Abschnitt konnte nicht dupliziert werden.',
   )
 }

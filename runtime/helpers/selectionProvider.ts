@@ -1,6 +1,6 @@
-import { DraggableExistingParagraphItem } from '#blokkli/types'
+import { DraggableExistingBlokkliItem } from '#blokkli/types'
 import {
-  findParagraphElement,
+  findElement,
   buildDraggableItem,
   falsy,
 } from '#blokkli/helpers'
@@ -16,7 +16,7 @@ export type BlokkliSelectionProvider = {
   /**
    * The currently selected blocks.
    */
-  blocks: ComputedRef<DraggableExistingParagraphItem[]>
+  blocks: ComputedRef<DraggableExistingBlokkliItem[]>
 
   /**
    * The active field key.
@@ -39,10 +39,10 @@ export default function (): BlokkliSelectionProvider {
   const activeFieldKey = ref('')
   const isDragging = ref(false)
 
-  const blocks = computed<DraggableExistingParagraphItem[]>(() =>
+  const blocks = computed<DraggableExistingBlokkliItem[]>(() =>
     selectedUuids.value
       .map((uuid) => {
-        const el = findParagraphElement(uuid)
+        const el = findElement(uuid)
         if (el) {
           const item = buildDraggableItem(el)
           if (item?.itemType === 'existing') {
@@ -58,18 +58,18 @@ export default function (): BlokkliSelectionProvider {
       Sortable.utils.deselect(el as any)
     })
     selectedUuids.value.forEach((uuid) => {
-      const item = findParagraphElement(uuid)
+      const item = findElement(uuid)
       if (item) {
         Sortable.utils.select(item)
       }
     })
   }
 
-  function selectParagraphs(uuids: string[]) {
-    unselectParagraphs()
-    const paragraphs = uuids
+  function selectItems(uuids: string[]) {
+    unselectItems()
+    const items = uuids
       .map((uuid) => {
-        const element = findParagraphElement(uuid)
+        const element = findElement(uuid)
         if (element) {
           const item = buildDraggableItem(element)
           if (item && item.itemType === 'existing') {
@@ -78,17 +78,17 @@ export default function (): BlokkliSelectionProvider {
         }
       })
       .filter(falsy)
-    selectedUuids.value = paragraphs.map((v) => v.uuid)
+    selectedUuids.value = items.map((v) => v.uuid)
     updateSortable()
   }
 
-  function unselectParagraphs() {
+  function unselectItems() {
     selectedUuids.value = []
     updateSortable()
   }
 
-  function onSelectParagraph(uuid: string) {
-    selectParagraphs([uuid])
+  function onSelect(uuid: string) {
+    selectItems([uuid])
   }
 
   function selectToggle(uuid: string) {
@@ -125,14 +125,14 @@ export default function (): BlokkliSelectionProvider {
         activeFieldKey.value = ''
       }
     }
-    unselectParagraphs()
+    unselectItems()
   }
 
   const onStateReloaded = () => {
     nextTick(() => {
       selectedUuids.value = selectedUuids.value.filter((uuid) => {
-        // Check if the currently selected paragraph is still in the DOM.
-        const el = findParagraphElement(uuid)
+        // Check if the currently selected item is still in the DOM.
+        const el = findElement(uuid)
         if (el) {
           return true
         }
@@ -152,10 +152,10 @@ export default function (): BlokkliSelectionProvider {
 
   onMounted(() => {
     document.documentElement.addEventListener('mousedown', onWindowMouseDown)
-    eventBus.on('select', onSelectParagraph)
-    eventBus.on('select:start', unselectParagraphs)
+    eventBus.on('select', onSelect)
+    eventBus.on('select:start', unselectItems)
     eventBus.on('select:toggle', selectToggle)
-    eventBus.on('select:end', selectParagraphs)
+    eventBus.on('select:end', selectItems)
     eventBus.on('setActiveFieldKey', setActiveFieldKey)
     eventBus.on('state:reloaded', onStateReloaded)
     eventBus.on('dragging:start', onDraggingStart)
@@ -164,10 +164,10 @@ export default function (): BlokkliSelectionProvider {
 
   onBeforeUnmount(() => {
     document.documentElement.removeEventListener('mousedown', onWindowMouseDown)
-    eventBus.off('select', onSelectParagraph)
-    eventBus.off('select:start', unselectParagraphs)
+    eventBus.off('select', onSelect)
+    eventBus.off('select:start', unselectItems)
     eventBus.off('select:toggle', selectToggle)
-    eventBus.off('select:end', selectParagraphs)
+    eventBus.off('select:end', selectItems)
     eventBus.off('setActiveFieldKey', setActiveFieldKey)
     eventBus.off('state:reloaded', onStateReloaded)
     eventBus.off('dragging:start', onDraggingStart)

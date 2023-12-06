@@ -2,15 +2,15 @@
   <div
     class="bk-library-list-item"
     data-element-type="reusable"
-    :data-paragraph-bundle="bundle"
+    :data-item-bundle="bundle"
     :data-library-item-uuid="uuid"
     :data-label="label"
     :class="backgroundClass"
   >
     <div class="bk bk-library-list-item-header">
-      <div class="bk-paragraph-label">
-        <div class="bk-paragraph-label-icon">
-          <ParagraphIcon :bundle="bundle" />
+      <div class="bk-blokkli-item-label">
+        <div class="bk-blokkli-item-label-icon">
+          <ItemIcon :bundle="bundle" />
         </div>
         <span>{{ label }}</span>
       </div>
@@ -21,11 +21,7 @@
       :class="backgroundClass"
     >
       <ScaleToFit :width="paragraphWidth">
-        <BlokkliItem
-          :item="item"
-          :paragraph="paragraph"
-          parent-paragraph-bundle="nested"
-        />
+        <BlokkliItem :item="item" :props="props" parent-type="nested" />
       </ScaleToFit>
     </div>
   </div>
@@ -34,15 +30,15 @@
 <script setup lang="ts">
 import { getDefinition } from '#blokkli/definitions'
 import { BlokkliLibraryItem } from '#blokkli/types'
-import { ParagraphIcon, ScaleToFit } from '#blokkli/components'
+import { ItemIcon, ScaleToFit } from '#blokkli/components'
 import {
   INJECT_IS_EDITING,
   INJECT_IS_IN_REUSABLE,
 } from '#blokkli/helpers/symbols'
 
-const props = defineProps<BlokkliLibraryItem>()
+const componentProps = defineProps<BlokkliLibraryItem>()
 
-const definition = computed(() => getDefinition(props.bundle))
+const definition = computed(() => getDefinition(componentProps.bundle))
 
 const paragraphWidth = computed(() => definition.value?.editWidth)
 const renderPreview = computed(

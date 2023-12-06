@@ -1,4 +1,4 @@
-import ParagraphIcon from './ParagraphIcon/index.vue'
+import ItemIcon from './ItemIcon/index.vue'
 import ShortcutIndicator from './ShortcutIndicator/index.vue'
 import RelativeTime from './RelativeTime/index.vue'
 import Resizable from './Resizable/index.vue'
@@ -7,7 +7,7 @@ import DialogModal from './Dialog/index.vue'
 import ScaleToFit from './ScaleToFit/index.vue'
 
 export {
-  ParagraphIcon,
+  ItemIcon,
   ShortcutIndicator,
   RelativeTime,
   Icon,

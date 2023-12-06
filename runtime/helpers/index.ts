@@ -23,7 +23,7 @@ export function buildDraggableItem(
   const dataset = element.dataset
   if (dataset.elementType === 'existing') {
     const uuid = dataset.uuid
-    const paragraphType = dataset.paragraphType
+    const itemBundle = dataset.itemBundle
     const hostType = dataset.hostType
     const hostUuid = dataset.hostUuid
     const hostBundle = dataset.hostBundle
@@ -35,10 +35,10 @@ export function buildDraggableItem(
       hostType &&
       hostUuid &&
       hostFieldName &&
-      paragraphType &&
+      itemBundle &&
       hostBundle
     ) {
-      const definition = getDefinition(paragraphType)
+      const definition = getDefinition(itemBundle)
       const editTitle =
         definition && definition.editTitle
           ? definition?.editTitle(element)
@@ -46,7 +46,7 @@ export function buildDraggableItem(
       return {
         itemType: 'existing',
         element,
-        paragraphType,
+        itemBundle,
         uuid,
         hostType,
         hostBundle,
@@ -58,44 +58,44 @@ export function buildDraggableItem(
       }
     }
   } else if (dataset.elementType === 'reusable') {
-    const paragraphBundle = dataset.paragraphBundle
+    const itemBundle = dataset.itemBundle
     const libraryItemUuid = dataset.libraryItemUuid
-    if (paragraphBundle && libraryItemUuid) {
+    if (itemBundle && libraryItemUuid) {
       return {
         itemType: 'reusable',
         element,
-        paragraphBundle,
+        itemBundle,
         libraryItemUuid,
       }
     }
   } else if (dataset.elementType === 'new') {
-    const paragraphType = dataset.paragraphType
-    if (paragraphType) {
+    const itemBundle = dataset.itemBundle
+    if (itemBundle) {
       return {
         itemType: 'new',
         element,
-        paragraphType,
+        itemBundle,
       }
     }
   } else if (dataset.elementType === 'clipboard') {
     const clipboardData = dataset.clipboardData
     const additional = dataset.clipboardAdditional
-    const paragraphType = dataset.paragraphType
-    if (clipboardData && paragraphType) {
+    const itemBundle = dataset.itemBundle
+    if (clipboardData && itemBundle) {
       const searchItemData = dataset.clipboardSearchItem
       if (searchItemData) {
         const searchItem = JSON.parse(searchItemData) as BlokkliSearchContentItem
         return {
           itemType: 'search_content',
           element,
-          paragraphType,
+          itemBundle,
           searchItem,
         }
       }
       return {
         itemType: 'clipboard',
         element,
-        paragraphType,
+        itemBundle,
         clipboardData,
         additional,
       }
@@ -111,7 +111,7 @@ export function buildDraggableItem(
   }
 }
 
-export function findParagraphElement(uuid: string): HTMLElement | undefined {
+export function findElement(uuid: string): HTMLElement | undefined {
   const el = document.querySelector(`[data-uuid="${uuid}"]`)
   if (el instanceof HTMLElement) {
     return el
@@ -175,10 +175,10 @@ export function getRelativeTimeString(
 
 export function removeDroppedElements() {
   document
-    .querySelectorAll('.bk-paragraphs-container .bk-clone')
+    .querySelectorAll('.bk-draggable-list-container .bk-clone')
     .forEach((v) => v.remove())
   document
-    .querySelectorAll('.bk-paragraphs-container .bk-moved-item')
+    .querySelectorAll('.bk-draggable-list-container .bk-moved-item')
     .forEach((v) => v.remove())
   document
     .querySelectorAll('.bk-multi-select-hidden')

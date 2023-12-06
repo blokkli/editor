@@ -4,7 +4,7 @@
       v-if="types.length === 1 && !selection.isDragging.value"
       :key="uuids.join('-')"
       :uuids="uuids"
-      :paragraph-type="types[0]"
+      :item-bundle="types[0]"
     />
   </Teleport>
 </template>
@@ -18,7 +18,7 @@ const { selection } = useBlokkli()
 const uuids = computed(() => selection.blocks.value.map((v) => v.uuid))
 const types = computed(() =>
   selection.blocks.value
-    .map((v) => v.reusableBundle || v.paragraphType)
+    .map((v) => v.reusableBundle || v.itemBundle)
     .filter(onlyUnique),
 )
 </script>

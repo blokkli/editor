@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getParagraphComponent } from '#blokkli/imports'
+import { getBlokkliItemComponent } from '#blokkli/imports'
 import { getDefinition } from '#blokkli/definitions'
 import { INJECT_BLOCK_ITEM } from '#blokkli/helpers/symbols'
 import { ScaleToFit } from '#blokkli/components'
@@ -25,7 +25,7 @@ const mockProps = computed(() => {
   }
 })
 
-const component = await getParagraphComponent(props.targetBundle)
+const component = await getBlokkliItemComponent(props.targetBundle)
 
 const index = computed(() => 1)
 
@@ -33,9 +33,11 @@ const item = computed(() => {
   return {
     index,
     uuid: 'dummy',
-    paragraphsBuilderOptions: {},
+    options: {},
     isEditing: false,
-    parentParagraphBundle: 'paragraph',
+    // Non-nested items may render with a section/container, which is why we "
+    // fake" the item to be nested.
+    parentType: 'dummy-value',
   }
 })
 

@@ -4,7 +4,7 @@
       v-for="(item, index) in items"
       class="bk-clone bk-parent"
       data-element-type="clipboard"
-      :data-paragraph-type="item.paragraphType"
+      :data-item-bundle="item.itemBundle"
       :data-clipboard-type="item.type"
       :data-clipboard-data="item.data"
       :data-clipboard-additional="item.additional"
@@ -15,11 +15,11 @@
     >
       <div class="bk-clipboard-item">
         <div class="bk bk-clipboard-item-header">
-          <div class="bk-paragraph-label">
-            <div class="bk-paragraph-label-icon">
-              <ParagraphIcon :bundle="item.paragraphType" />
+          <div class="bk-blokkli-item-label">
+            <div class="bk-blokkli-item-label-icon">
+              <ItemIcon :bundle="item.itemBundle" />
             </div>
-            <span>{{ getLabel(item.paragraphType) }}</span>
+            <span>{{ getLabel(item.itemBundle) }}</span>
           </div>
           <button @click="$emit('remove', index)">
             <Icon name="delete" />
@@ -42,7 +42,7 @@
           </div>
           <div v-else-if="item.type === 'search_content'">
             <SearchContentItem
-              :target-bundle="item.paragraphType"
+              :target-bundle="item.itemBundle"
               :data="item.data"
             />
           </div>
@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ParagraphIcon, Icon } from '#blokkli/components'
+import { ItemIcon, Icon } from '#blokkli/components'
 import { Sortable } from '#blokkli/sortable'
 import { BlokkliSearchContentItem } from '#blokkli/types'
 import SearchContentItem from './SearchContent/index.vue'
@@ -65,28 +65,28 @@ const renderKey = ref(0)
 
 interface ClipboardItemText {
   type: 'text'
-  paragraphType: string
+  itemBundle: string
   data: string
   additional?: string
 }
 
 interface ClipboardItemYouTube {
   type: 'youtube'
-  paragraphType: string
+  itemBundle: string
   data: string
   additional?: string
 }
 
 interface ClipboardItemImage {
   type: 'image'
-  paragraphType: string
+  itemBundle: string
   data: string
   additional: string
 }
 
 interface ClipboardItemSearchContent {
   type: 'search_content'
-  paragraphType: string
+  itemBundle: string
   data: string
   item: BlokkliSearchContentItem
   additional?: string

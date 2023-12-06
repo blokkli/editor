@@ -1,5 +1,5 @@
 import {
-  DraggableExistingParagraphItem,
+  DraggableExistingBlokkliItem,
   BlokkliAvailableType,
   BlokkliItemType,
 } from '../types'
@@ -8,7 +8,7 @@ import { eventBus } from '#blokkli/helpers/eventBus'
 import { BlokkliAdapter, BlokkliAdapterContext } from '../adapter'
 
 export type BlokkliTypesProvider = {
-  paragraphTypesWithNested: ComputedRef<string[]>
+  itemBundlesWithNested: ComputedRef<string[]>
   allowedTypesInList: ComputedRef<string[]>
   allTypes: ComputedRef<BlokkliItemType[]>
   allowedTypes: ComputedRef<BlokkliAvailableType[]>
@@ -16,19 +16,19 @@ export type BlokkliTypesProvider = {
 
 export default async function (
   adapter: BlokkliAdapter<any>,
-  blocks: ComputedRef<DraggableExistingParagraphItem[]>,
+  blocks: ComputedRef<DraggableExistingBlokkliItem[]>,
   context: ComputedRef<BlokkliAdapterContext>,
 ): Promise<BlokkliTypesProvider> {
   const allTypesData = await adapter.getAllTypes()
   const allTypes = computed(() => allTypesData || [])
   const allowedTypesData = await adapter.getAvailableTypes()
   const allowedTypes = computed(() => allowedTypesData || [])
+  const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
 
   /**
-   * The allowed paragraph types in the current field item list.
+   * The allowed bundles in the current field item list.
    *
-   * Unlike selectableParagraphTypes, this always uses the selected paragraphs's
-   * parent field to determine the allowed types.
+   * This always uses the selected item's parent field to determine the allowed types.
    */
   const allowedTypesInList = computed(() => {
     const hostFieldNames = blocks.value
@@ -53,23 +53,21 @@ export default async function (
       return
     }
     const item = blocks.value[0]
-    // Determine if the selected paragraph has nested paragraphs.
-    const hasNested = paragraphTypesWithNested.value.includes(
-      item.paragraphType,
-    )
+    // Determine if the selected item has nested items.
+    const hasNested = itemBundlesWithNested.value.includes(item.itemBundle)
     if (hasNested) {
-      // Get the nested paragraph fields.
+      // Get the nested item fields.
       const nestedFields =
         allowedTypes.value
           .filter(
             (v) =>
-              v.entityType === 'paragraph' && v.bundle === item.paragraphType,
+              v.entityType === itemEntityType && v.bundle === item.itemBundle,
           )
           .map((v) => v.fieldName) || []
 
-      // When we have exactly one nested paragraph field, we can set the active
+      // When we have exactly one nested item field, we can set the active
       // field key to this field. That way the UI will show this field is active
-      // and display available paragraphs for this field.
+      // and display available items for this field.
       if (nestedFields.length === 1) {
         eventBus.emit('setActiveFieldKey', `${item.uuid}:${nestedFields[0]}`)
         return
@@ -79,18 +77,18 @@ export default async function (
   })
 
   /**
-   * All paragraph types that themselves have nested paragraphs.
+   * All item bundles that themselves have nested items.
    */
-  const paragraphTypesWithNested = computed<string[]>(() => {
+  const itemBundlesWithNested = computed<string[]>(() => {
     return (
       allowedTypes.value
-        .filter((v) => v.entityType === 'paragraph')
+        .filter((v) => v.entityType === itemEntityType)
         .map((v) => v.bundle) || []
     )
   })
 
   return {
-    paragraphTypesWithNested,
+    itemBundlesWithNested,
     allowedTypesInList,
     allTypes,
     allowedTypes,

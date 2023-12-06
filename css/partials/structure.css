@@ -10,7 +10,7 @@
       }
     }
 
-    .bk-paragraph-icon {
+    .bk-blokkli-item-icon {
       font-size: 18px;
     }
 
@@ -23,10 +23,10 @@
     @apply py-10 w-full;
   }
 
-  .bk-structure-field-paragraphs {
+  .bk-structure-field-items {
     li {
       &.bk-is-active > button {
-        .bk-paragraph-label-icon {
+        .bk-blokkli-item-label-icon {
           @apply bg-blue-600 text-white border-blue-900;
         }
 
@@ -36,7 +36,7 @@
       }
 
       &.bk-is-inside-active > button {
-        .bk-paragraph-label-icon {
+        .bk-blokkli-item-label-icon {
           @apply bg-blue-50 text-blue-700 border-blue-300;
         }
 
@@ -47,7 +47,7 @@
     }
   }
 
-  .bk-structure-field-nested-paragraphs {
+  .bk-structure-field-nested-items {
     li {
       @apply pl-25 relative;
       &:before {

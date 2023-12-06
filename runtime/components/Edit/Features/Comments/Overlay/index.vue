@@ -79,7 +79,7 @@ function onAnimationFrame(e: AnimationFrameEvent) {
 
   for (let i = 0; i < props.comments.length; i++) {
     const comment = props.comments[i]
-    const uuids = comment.paragraphUuids || []
+    const uuids = comment.itemUuids || []
     const rects = uuids.map((uuid) => e.rects[uuid]).filter(Boolean)
     if (!rects.length) {
       orphaned.push(comment)

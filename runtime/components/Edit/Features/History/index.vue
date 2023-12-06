@@ -142,7 +142,7 @@ const mapped = computed<HistoryItem[]>(() => {
 
 async function setHistoryIndex(index: number, item?: HistoryItem) {
   if (index !== currentMutationIndex.value) {
-    const affected = item?.mutation?.plugin?.affectedParagraphUuid
+    const affected = item?.mutation?.plugin?.affectedItemUuid
     await mutateWithLoadingState(adapter.setHistoryIndex(index))
     if (affected) {
       nextTick(() => {

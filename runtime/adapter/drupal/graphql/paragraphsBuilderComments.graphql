@@ -1,6 +1,6 @@
 fragment paragraphsBuilderComment on CommentBlokkliNode {
   uuid
-  paragraphUuids: fieldTargetUuids
+  itemUuids: fieldTargetUuids
   resolved: fieldResolved
   body: commentBody
   created: createdRawField {
@@ -13,10 +13,7 @@ fragment paragraphsBuilderComment on CommentBlokkliNode {
   }
 }
 
-query paragraphsBuilderComments(
-  $entityType: EntityType!
-  $entityUuid: String!
-) {
+query pbComments($entityType: EntityType!, $entityUuid: String!) {
   state: getParagraphsEditState(
     entityType: $entityType
     entityUuid: $entityUuid
@@ -27,23 +24,23 @@ query paragraphsBuilderComments(
   }
 }
 
-mutation paragraphsBuilderAddComment(
+mutation pbAddComment(
   $entityType: EntityType!
   $entityUuid: String!
-  $paragraphUuids: [String]!
+  $itemUuids: [String]!
   $body: String!
 ) {
   state: paragraphsEditMutationState(
     entityType: $entityType
     entityUuid: $entityUuid
   ) {
-    action: addComment(body: $body, paragraphUuids: $paragraphUuids) {
+    action: addComment(body: $body, paragraphUuids: $itemUuids) {
       ...paragraphsBuilderComment
     }
   }
 }
 
-mutation paragraphsBuilderResolveComment(
+mutation pbResolveComment(
   $entityType: EntityType!
   $entityUuid: String!
   $uuid: String!

@@ -49,7 +49,7 @@
   .bk-body.bk-is-pressing-space {
     @apply cursor-move;
     .bk-main-canvas,
-    .bk-paragraphs-container {
+    .bk-draggable-list-container {
       @apply pointer-events-none;
     }
   }

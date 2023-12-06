@@ -1,6 +1,6 @@
 <template>
   <PluginToolbarButton
-    title="Zoom zurücksetzen"
+    :title="text('resetZoom')"
     meta
     key-code="0"
     region="before-sidebar"
@@ -28,6 +28,9 @@
 <script lang="ts" setup>
 import { KeyPressedEvent, ScrollIntoViewEvent } from '#blokkli/types'
 import { PluginToolbarButton } from '#blokkli/plugins'
+
+const { keyboard, eventBus, dom, context, storage, ui, animation, text } =
+  useBlokkli()
 
 const props = withDefaults(
   defineProps<{
@@ -141,9 +144,6 @@ const scrollbarStyle = computed(() => ({
 
 // The target state for the current animation.
 const animationTarget = ref<(Coord & { scale: number }) | null>(null)
-
-const { keyboard, eventBus, dom, context, storage, ui, animation } =
-  useBlokkli()
 
 const limitOffset = (
   providedX: number,

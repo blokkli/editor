@@ -13,7 +13,7 @@
       >
         <div class="bk-search-item-icon">
           <img v-if="item.imageUrl" :src="item.imageUrl" />
-          <ParagraphIcon v-else :bundle="item.targetBundles[0]" />
+          <ItemIcon v-else :bundle="item.targetBundles[0]" />
         </div>
         <div class="bk-search-item-content">
           <h2 class="bk-highlight" v-html="item.title" />
@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ParagraphIcon, Icon } from '#blokkli/components'
+import { ItemIcon, Icon } from '#blokkli/components'
 import { modulo } from '#blokkli/helpers'
 import { BlokkliSearchContentItem } from '#blokkli/types'
 

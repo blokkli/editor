@@ -20,7 +20,10 @@
         <div class="bk-blokkli-item-actions-controls">
           <div id="bk-blokkli-item-actions-title" />
 
-          <div class="bk-blokkli-item-actions-buttons" id="bk-blokkli-item-actions" />
+          <div
+            class="bk-blokkli-item-actions-buttons"
+            id="bk-blokkli-item-actions"
+          />
 
           <div
             class="bk-blokkli-item-actions-buttons"
@@ -76,8 +79,8 @@ function onAnimationFrame(e: AnimationFrameEvent) {
     return
   }
   const rects = selection.blocks.value
-    .map((paragraph) => {
-      return e.rects[paragraph.uuid]
+    .map((v) => {
+      return e.rects[v.uuid]
     })
     .filter(falsy)
   const newBounds = getBounds(rects)
@@ -92,8 +95,8 @@ function onAnimationFrame(e: AnimationFrameEvent) {
     selectedRects.value = []
   } else {
     selectedRects.value = selection.blocks.value
-      .map((paragraph) => {
-        const rect = e.rects[paragraph.uuid]
+      .map((v) => {
+        const rect = e.rects[v.uuid]
         if (rect) {
           return {
             width: rect.width,
@@ -152,6 +155,6 @@ onUnmounted(() => {
 
 <script lang="ts">
 export default {
-  name: 'ParagraphActions',
+  name: 'ItemActions',
 }
 </script>

@@ -39,7 +39,7 @@ const src = computed(() =>
 
 const onUpdateMutatedFields = (e: UpdateMutatedFieldsEvent) =>
   frameEventBus.emit('mutatedFields', e.fields)
-const onSelectParagraph = (uuid: string) => frameEventBus.emit('focus', uuid)
+const onSelect = (uuid: string) => frameEventBus.emit('focus', uuid)
 const onUpdateOption = (option: UpdateBlokkliItemOptionEvent) =>
   frameEventBus.emit('updateOption', option)
 
@@ -56,13 +56,13 @@ onMounted(() => {
   frameEventBus.on('*', onFrameEventBusEvent)
   eventBus.on('option:update', onUpdateOption)
   eventBus.on('updateMutatedFields', onUpdateMutatedFields)
-  eventBus.on('select', onSelectParagraph)
+  eventBus.on('select', onSelect)
 })
 
 onBeforeUnmount(() => {
   frameEventBus.off('*', onFrameEventBusEvent)
   eventBus.off('option:update', onUpdateOption)
   eventBus.off('updateMutatedFields', onUpdateMutatedFields)
-  eventBus.off('select', onSelectParagraph)
+  eventBus.off('select', onSelect)
 })
 </script>

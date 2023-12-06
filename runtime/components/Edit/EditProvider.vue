@@ -1,6 +1,6 @@
 <template>
   <Loading v-if="isInitializing" />
-  <ParagraphActions />
+  <Actions />
   <Messages />
   <Toolbar @loaded="toolbarLoaded = true" />
   <Features v-if="!isInitializing && toolbarLoaded" :key="route.fullPath" />
@@ -9,7 +9,7 @@
 
 <script lang="ts" setup>
 import Toolbar from './Toolbar/index.vue'
-import ParagraphActions from './ParagraphActions.vue'
+import Actions from './Actions/index.vue'
 import Messages from './Messages/index.vue'
 import Loading from './Loading/index.vue'
 import Features from './Features/index.vue'
@@ -19,6 +19,7 @@ import selectionProvider from './../../helpers/selectionProvider'
 import editStateProvider from './../../helpers/stateProvider'
 import typesProvider from './../../helpers/typesProvider'
 import domProvider from './../../helpers/domProvider'
+import textProvider from './../../helpers/textProvider'
 import storageProvider from './../../helpers/storageProvider'
 import uiProvider from './../../helpers/uiProvider'
 
@@ -54,6 +55,7 @@ const dom = domProvider()
 const storage = storageProvider()
 const ui = uiProvider()
 const animation = animationFrameProvider()
+const text = textProvider()
 const types = await typesProvider(adapter, selection.blocks, context)
 const state = await editStateProvider(adapter, context)
 
@@ -86,5 +88,6 @@ provide<BlokkliApp>(INJECT_APP, {
   ui,
   animation,
   context,
+  text,
 })
 </script>
