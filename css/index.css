@@ -30,11 +30,6 @@
   src: url('/Inter.var.woff2') format('woff2');
 }
 
-.bk-html-root:not(.bk-is-artboard) {
-  padding-top: 50px;
-  padding-left: 70px;
-}
-
 .bk {
   @tailwind base;
   @tailwind components;

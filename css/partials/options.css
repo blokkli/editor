@@ -19,7 +19,7 @@
       @apply inline-block pl-10 text-base;
     }
   }
-  .bk-paragraph-options-checkbox {
+  .bk-blokkli-item-options-checkbox {
     @apply relative inline-flex items-center cursor-pointer h-full px-10 text-slate-200;
     @apply hover:bg-slate-800 hover:text-slate-50;
     input {
@@ -37,7 +37,7 @@
     }
   }
 
-  .bk-paragraph-options-radios:not(.bk-is-color) {
+  .bk-blokkli-item-options-radios:not(.bk-is-color) {
     @apply flex items-center px-10 h-full relative gap-3;
     @apply text-slate-50  select-none text-sm;
     > label {
@@ -62,7 +62,7 @@
     }
   }
 
-  .bk-paragraph-options-radios.bk-is-language {
+  .bk-blokkli-item-options-radios.bk-is-language {
     > label:not(:hover) {
       .bk-tooltip {
         @apply hidden;
@@ -73,7 +73,7 @@
     }
   }
 
-  .bk-paragraph-options-radios.bk-is-color {
+  .bk-blokkli-item-options-radios.bk-is-color {
     @apply flex items-stretch h-full px-5;
     label {
       @apply cursor-pointer h-full flex items-center px-5;
@@ -98,7 +98,7 @@
     }
   }
 
-  .bk-paragraph-options-text {
+  .bk-blokkli-item-options-text {
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -116,7 +116,7 @@
     }
   }
 
-  .bk-paragraph-options-item {
+  .bk-blokkli-item-options-item {
     @apply relative flex items-center;
     &.bk-is-disabled {
       @apply pointer-events-none opacity-20;
@@ -131,8 +131,8 @@
     }
   }
 
-  .bk-paragraph-options-radios.bk-is-grid {
-    .bk-paragraph-options-radios-flex {
+  .bk-blokkli-item-options-radios.bk-is-grid {
+    .bk-blokkli-item-options-radios-flex {
       @apply flex h-20 w-60 mx-5 border border-current text-slate-500 relative;
 
       > div {
@@ -163,7 +163,7 @@
     }
   }
 
-  .bk-paragraph-options-checkboxes {
+  .bk-blokkli-item-options-checkboxes {
     @apply px-15 h-full hover:bg-slate-700;
 
     button {

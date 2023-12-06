@@ -2,11 +2,10 @@
   <Teleport to="body">
     <div
       v-if="selectableParagraphTypes.length"
-      @wheel.stop=""
       class="bk bk-available-paragraphs bk-control"
-      :class="{ 'bk-is-active': isActive }"
+      :class="[{ 'bk-is-active': isActive }, 'bk-is-' + listOrientation]"
       ref="wrapper"
-      @wheel.prevent.capture="onWheel"
+      @wheel.prevent.capture.stop="onWheel"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
     >
@@ -26,7 +25,10 @@
             <div class="bk-list-item-icon">
               <ParagraphIcon :bundle="type.id" />
             </div>
-            <div class="bk-list-item-label">
+            <div
+              class="bk-list-item-label"
+              :class="{ 'bk-tooltip': listOrientation === 'horizontal' }"
+            >
               <span>{{ type.label }}</span>
             </div>
           </div>
@@ -43,6 +45,13 @@ import { ParagraphIcon } from '#blokkli/components'
 import { DraggableExistingParagraphItem } from '#blokkli/types'
 
 const { eventBus, state, selection, storage, types, context } = useBlokkli()
+
+const listOrientation = storage.use<'horizontal' | 'vertical'>(
+  'listOrientation',
+  'vertical',
+)
+
+watch(listOrientation, setRootClasses)
 
 const typeList = ref<HTMLDivElement | null>(null)
 const wrapper = ref<HTMLDivElement | null>(null)
@@ -209,8 +218,19 @@ const sortedList = computed(() => {
     })
 })
 
+function setRootClasses() {
+  document.documentElement.classList.remove('bk-has-sidebar-bottom')
+  document.documentElement.classList.remove('bk-has-sidebar-left')
+
+  if (listOrientation.value === 'horizontal') {
+    document.documentElement.classList.add('bk-has-sidebar-bottom')
+  } else if (listOrientation.value === 'vertical') {
+    document.documentElement.classList.add('bk-has-sidebar-left')
+  }
+}
+
 onMounted(() => {
-  document.documentElement.classList.add('bk-has-sidebar-left')
+  setRootClasses()
   if (typeList.value) {
     instance = new Sortable(typeList.value, {
       sort: true,
@@ -248,6 +268,7 @@ onMounted(() => {
   }
 })
 onUnmounted(() => {
+  document.documentElement.classList.remove('bk-has-sidebar-bottom')
   document.documentElement.classList.remove('bk-has-sidebar-left')
   if (instance) {
     instance.destroy()

@@ -6,17 +6,28 @@
   }
 }
 
-.bk-html-root.bk-is-artboard {
-  @apply overflow-hidden;
+.bk-html-root {
   --bk-root-offset-left: 0px;
   --bk-root-offset-top: 50px;
+  --bk-root-offset-bottom: 0px;
+}
+
+.bk-html-root:not(.bk-is-artboard) {
+  padding-top: var(--bk-root-offset-top);
+  padding-left: var(--bk-root-offset-left);
+}
+
+.bk-html-root.bk-is-artboard {
+  @apply overflow-hidden;
+
   .bk-body {
     @apply overflow-hidden;
   }
   #nuxt-root {
-    @apply bg-slate-200 overflow-hidden absolute bottom-0 right-0;
+    @apply bg-slate-200 overflow-hidden absolute  right-0;
     left: var(--bk-root-offset-left);
     top: var(--bk-root-offset-top);
+    bottom: var(--bk-root-offset-bottom);
     &.bk-has-preview-open {
       @apply left-[445px];
     }
@@ -32,6 +43,9 @@
   &.bk-has-sidebar-left {
     --bk-root-offset-left: 70px;
   }
+  &.bk-has-sidebar-bottom {
+    --bk-root-offset-bottom: 70px;
+  }
   .bk-body.bk-is-pressing-space {
     @apply cursor-move;
     .bk-main-canvas,
@@ -41,7 +55,9 @@
   }
 
   .bk-artboard-scrollbar {
-    @apply fixed top-[55px] bottom-5 right-5 w-10 bg-slate-500/10 z-[100] rounded-full transition overflow-hidden;
+    @apply fixed right-5 w-10 bg-slate-500/10 z-[100] rounded-full transition overflow-hidden;
+    top: calc(var(--bk-root-offset-top) + 5px);
+    bottom: calc(var(--bk-root-offset-bottom) + 5px);
     /* @apply opacity-25; */
 
     button {

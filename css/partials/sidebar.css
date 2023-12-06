@@ -1,5 +1,6 @@
 .bk-sidebar {
-  @apply fixed top-50 bottom-0 right-0 bg-white w-[300px]  z-[30000];
+  @apply fixed top-50 right-0 bg-white w-[300px]  z-[30000];
+  bottom: var(--bk-root-offset-bottom);
   box-shadow:
     -1px -0px 2px rgb(20 45 82 / 2%),
     -3px -0px 4px rgb(20 45 82 / 3%),

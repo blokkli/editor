@@ -5,3 +5,42 @@
 .bk-settings-buttons {
   @apply grid gap-10;
 }
+
+.bk-settings {
+  .bk-form-label {
+  }
+}
+
+.bk-settings-ui {
+  @apply flex gap-10;
+  li {
+    @apply relative flex-1;
+    label {
+      @apply block cursor-pointer;
+    }
+    input {
+      @apply appearance-none absolute top-0 left-0 w-full h-full cursor-pointer;
+    }
+    input + .bk-icon {
+      @apply border rounded overflow-hidden pointer-events-none;
+      svg {
+        @apply w-full h-auto opacity-50;
+      }
+    }
+    input:checked + .bk-icon {
+      @apply ring ring-blue-700;
+      svg {
+        @apply opacity-100;
+      }
+    }
+    input:not(:checked):hover + .bk-icon {
+      @apply border-slate-500;
+      svg {
+        @apply opacity-70;
+      }
+    }
+    span {
+      @apply inline-block mt-5 text-sm text-center w-full;
+    }
+  }
+}

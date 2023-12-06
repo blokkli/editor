@@ -1,26 +1,26 @@
 .bk {
-  #bk-paragraph-actions-title {
+  #bk-blokkli-item-actions-title {
     @apply h-full;
   }
-  .bk-paragraph-actions-title-count {
+  .bk-blokkli-item-actions-title-count {
     @apply bg-slate-50 text-slate-900 inline-block px-3 w-20 h-20 rounded-full ml-10 text-sm font-bold;
     &.bk-is-hidden {
       @apply opacity-0;
     }
   }
-  &.bk-paragraph-actions {
+  &.bk-blokkli-item-actions {
     @apply text-slate-50  select-none text-sm;
   }
-  .bk-paragraph-actions-inner {
+  .bk-blokkli-item-actions-inner {
     @apply fixed left-0 -top-60 p-0 h-50 z-[501];
   }
-  .bk-paragraph-actions-controls {
+  .bk-blokkli-item-actions-controls {
     @apply flex items-stretch whitespace-nowrap h-full bg-slate-900 shadow-xl rounded-md;
     > div:not(:first-child):not(:empty) {
       @apply border-l border-l-slate-500;
     }
   }
-  .bk-paragraph-actions-overlay {
+  .bk-blokkli-item-actions-overlay {
     @apply outline outline-blue-600 outline-offset-1 fixed top-0 left-0 pointer-events-none rounded z-[500];
     > div {
       @apply absolute top-0 left-0;
@@ -28,7 +28,7 @@
     }
   }
 
-  .bk-paragraph-actions-buttons {
+  .bk-blokkli-item-actions-buttons {
     @apply relative flex;
     > button {
       @apply text-slate-300 h-full flex items-center shrink-0 justify-center w-50;
@@ -54,12 +54,12 @@
     }
   }
 
-  .bk-paragraph-actions-type-button {
+  .bk-blokkli-item-actions-type-button {
     @apply flex items-center justify-between cursor-default min-w-[180px] text-slate-300 font-bold h-full pl-[9px] pr-20 text-base rounded-l leading-none;
     > span {
       @apply mr-auto;
     }
-    .bk-paragraph-actions-title-icon {
+    .bk-blokkli-item-actions-title-icon {
       @apply text-[25px] mr-10 bg-slate-800 w-[34px] h-[34px] rounded border border-slate-600 relative text-white;
       svg {
         @apply w-[1em] h-[1em] fill-current absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
@@ -70,7 +70,7 @@
       &:not(.is-open) {
         @apply hover:text-slate-50 hover:bg-slate-700;
         &:hover {
-          .bk-paragraph-actions-title-icon {
+          .bk-blokkli-item-actions-title-icon {
             @apply bg-slate-600 border-slate-400;
           }
         }
@@ -81,7 +81,7 @@
       .bk-icon {
         @apply transform rotate-180;
       }
-      .bk-paragraph-actions-title-icon {
+      .bk-blokkli-item-actions-title-icon {
         @apply bg-slate-600 border-slate-400;
       }
     }
@@ -90,11 +90,11 @@
     }
   }
 
-  .bk-paragraph-actions-type {
+  .bk-blokkli-item-actions-type {
     @apply relative h-full;
   }
 
-  .bk-paragraph-actions-type-dropdown {
+  .bk-blokkli-item-actions-type-dropdown {
     @apply absolute top-full left-0 min-w-[300px] bg-slate-900 text-slate-200 rounded overflow-hidden shadow-xl rounded-t-none;
     h3 {
       @apply p-10 border-b border-b-slate-700;
@@ -115,10 +115,10 @@
     }
   }
 
-  .bk-paragraph-actions-comment {
+  .bk-blokkli-item-actions-comment {
     /* @apply relative; */
   }
-  .bk-paragraph-actions-comment-dropdown {
+  .bk-blokkli-item-actions-comment-dropdown {
     @apply absolute top-full left-0 w-full bg-white p-15 shadow-xl rounded-b;
     button {
       @apply mt-15;

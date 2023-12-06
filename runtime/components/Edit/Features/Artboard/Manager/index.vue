@@ -474,7 +474,7 @@ function getDistanceBetweenTouches(e: TouchEvent) {
   )
 }
 
-function onParagraphScrollIntoView(e: ScrollIntoViewEvent) {
+function onScrollIntoView(e: ScrollIntoViewEvent) {
   const item = dom.findBlock(e.uuid)
   if (!item) {
     return
@@ -522,7 +522,7 @@ onMounted(() => {
   window.addEventListener('touchend', onTouchEnd, { passive: false })
   document.body.addEventListener('wheel', onWheel, { passive: false })
 
-  eventBus.on('paragraph:scrollIntoView', onParagraphScrollIntoView)
+  eventBus.on('scrollIntoView', onScrollIntoView)
   eventBus.on('keyPressed', onKeyPressed)
   eventBus.on('animationFrame:before', onAnimationFrame)
   document.documentElement.classList.add('bk-is-artboard')
@@ -544,7 +544,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('touchstart', onTouchStart)
   window.removeEventListener('touchmove', onTouchMove)
   window.removeEventListener('touchend', onTouchEnd)
-  eventBus.off('paragraph:scrollIntoView', onParagraphScrollIntoView)
+  eventBus.off('scrollIntoView', onScrollIntoView)
   eventBus.off('keyPressed', onKeyPressed)
   eventBus.off('animationFrame:before', onAnimationFrame)
   document.documentElement.classList.remove('bk-is-artboard')

@@ -7,8 +7,6 @@
   }
 
   .bk-list-item {
-    @apply px-10 py-5 w-full cursor-grab;
-
     &.bk-is-disabled {
       @apply pointer-events-none;
       .bk-list-item-inner {
@@ -37,11 +35,6 @@
     @apply relative flex bg-slate-800 text-slate-200 rounded w-full items-center justify-center flex-col text-sm leading-3 p-10 aspect-square z-10 border border-slate-600;
   }
 
-  .bk-list-item-label {
-    @apply absolute top-0 left-full whitespace-nowrap p-10 h-full rounded-sm opacity-0 items-center text-slate-100/50 ml-[7px] transition pointer-events-none;
-    @apply text-lg font-semibold;
-  }
-
   .bk-list-item-icon {
     @apply text-3xl;
     svg {
@@ -52,19 +45,32 @@
     align-items: center;
     justify-content: center;
   }
+}
 
-  &.bk-available-paragraphs {
-    @apply bg-slate-900 top-50 bottom-0 fixed left-0 w-70 select-none z-[40000];
-    &.bk-is-disabled {
-      @apply pointer-events-none;
-      .bk-list {
-        @apply opacity-20;
-      }
-    }
+.bk.bk-available-paragraphs {
+  @apply bg-slate-900 bottom-0 fixed left-0 select-none z-[40000];
+
+  &.bk-is-active {
     &:after {
-      @apply absolute top-0 left-full h-full w-[280px] z-0 pointer-events-none border-t;
-      @apply opacity-0;
+      @apply opacity-100 scale-x-100;
+    }
+  }
+  &.bk-is-vertical {
+    @apply top-50 w-70;
+    .bk-list-item-label {
+      @apply absolute whitespace-nowrap opacity-0 text-slate-100/50  transition pointer-events-none;
+      @apply top-0 left-full p-10 h-full ml-[7px];
+      @apply text-lg font-semibold;
+    }
+    .bk-list-item {
+      @apply w-full px-10 py-5 cursor-grab;
+    }
+
+    &:after {
+      @apply top-0 left-full h-full w-[280px] border-t;
       @apply origin-left scale-x-50;
+      @apply absolute z-0 pointer-events-none;
+      @apply opacity-0;
       @apply transition bg-slate-900;
       content: '';
     }
@@ -75,6 +81,43 @@
       .bk-list-item-label {
         @apply opacity-100;
       }
+    }
+  }
+  &.bk-is-horizontal {
+    @apply w-full h-70;
+    .bk-list {
+      @apply flex;
+    }
+    .bk-list-item-label {
+      @apply absolute left-0 bottom-full opacity-0 mb-15;
+    }
+    .bk-list-item {
+      @apply px-5 py-5 cursor-grab;
+      &:hover {
+        .bk-list-item-label {
+          @apply opacity-100;
+        }
+      }
+
+      &:not(:first-child) {
+        .bk-list-item-label {
+          @apply left-1/2 -translate-x-1/2;
+        }
+      }
+      &:hover {
+        .bk-list-item-label {
+          @apply opacity-100;
+        }
+      }
+    }
+
+    &.bk-is-active {
+    }
+  }
+  &.bk-is-disabled {
+    @apply pointer-events-none;
+    .bk-list {
+      @apply opacity-20;
     }
   }
 }
