@@ -1,8 +1,8 @@
 <template>
   <PluginViewOption
     id="mask"
-    title-on="Inhaltsfelder anzeigen"
-    title-off="Inhaltsfelder verstecken"
+    :title-on="text('maskShow')"
+    :title-off="text('maskHide')"
     key-code="M"
   >
     <template #icon>
@@ -21,4 +21,6 @@
 import { PluginViewOption } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 import Overlay from './Overlay/index.vue'
+
+const { text } = useBlokkli()
 </script>

@@ -73,7 +73,7 @@
     @apply fixed top-0 left-0 w-screen h-screen z-[12000];
   }
   .bk-toolbar-menu-list {
-    @apply fixed top-0 left-0 bg-white shadow-lg bottom-0 pt-50 flex flex-col;
+    @apply fixed top-0 left-0 bg-white shadow-lg bottom-0 pt-50 flex flex-col min-w-[400px];
     &:before {
       content: '';
       @apply absolute top-0 left-0 w-full h-50 bg-white;

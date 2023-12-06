@@ -1,10 +1,15 @@
 <template>
-  <PluginSidebar id="library" title="Bibliothek" edit-only icon="reusable">
+  <PluginSidebar
+    id="library"
+    :title="text('library')"
+    edit-only
+    icon="reusable"
+  >
     <Pane />
   </PluginSidebar>
 
   <PluginItemAction
-    title="Zur Bibliothek hinzufügen"
+    :title="text('libraryAdd')"
     @click="showReusableDialog = true"
     :disabled="!canMakeReusable"
     icon="reusable"
@@ -31,7 +36,7 @@ import { getDefinition } from '#blokkli/definitions'
 
 const showReusableDialog = ref(false)
 
-const { selection, state, adapter, types } = useBlokkli()
+const { selection, state, adapter, types, text } = useBlokkli()
 
 const selectedItem = computed(() => {
   if (selection.blocks.value.length !== 1) {
@@ -63,7 +68,7 @@ function onMakeReusable(label: string) {
       label,
       uuid: selectedItem.value.uuid,
     }),
-    'Der Abschnitt konnte nicht wiederverwendbar gemacht werden.',
+    text('libraryError'),
   )
 }
 

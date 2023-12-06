@@ -1,8 +1,8 @@
 <template>
   <PluginViewOption
     id="fieldAreas"
-    title-on="Inhaltsbereiche anzeigen"
-    title-off="Inhaltsbereiche verstecken"
+    :title-on="text('fieldAreasShow')"
+    :title-off="text('fieldAreasHide')"
     key-code="I"
   >
     <template #icon>
@@ -21,4 +21,6 @@
 import Overlay from './Overlay/index.vue'
 import { PluginViewOption } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
+
+const { text } = useBlokkli()
 </script>

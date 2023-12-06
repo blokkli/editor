@@ -27,7 +27,7 @@
       class="bk-search-no-results"
     >
       <Icon name="sad" />
-      <span>Keine Resultate gefunden</span>
+      <span>{{ text('searchBoxNoResultsFound') }}</span>
     </div>
   </div>
 </template>
@@ -50,7 +50,7 @@ const isLoading = ref(true)
 
 const emit = defineEmits(['close'])
 
-const { eventBus, adapter } = useBlokkli()
+const { eventBus, adapter, text } = useBlokkli()
 
 const items = ref<BlokkliSearchContentItem[]>([])
 let timeout: any = null
@@ -71,13 +71,15 @@ const doSearch = () => {
   }
   isLoading.value = true
   timeout = setTimeout(() => {
-    adapter
-      .getContentSearchResults(props.tab, props.search)
-      .then((newItems) => {
+    // This component can only ever be rendered if this adapter method exists,
+    // so we can safely assume it's there.
+    adapter.getContentSearchResults!(props.tab, props.search).then(
+      (newItems) => {
         items.value = newItems
         itemsSearchTerm.value = searchTerm
         isLoading.value = false
-      })
+      },
+    )
   }, 200)
 }
 

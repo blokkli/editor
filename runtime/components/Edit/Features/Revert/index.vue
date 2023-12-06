@@ -1,7 +1,7 @@
 <template>
   <PluginMenuButton
-    title="Verwerfen..."
-    description="Aktuell veröffentlichter Zustand Wiederherstellen"
+    :title="text('revertMenuTitle')"
+    :description="text('revertMenuDescription')"
     type="danger"
     @click="showConfirm = true"
     :disabled="!mutations.length || !canEdit"
@@ -14,9 +14,9 @@
     <transition appear name="bk-slide-up">
       <DialogModal
         v-if="showConfirm"
-        title="Änderungen unwiderruflich verwerfen"
-        lead="Damit werden alle Änderungen gelöscht und der aktuell publizierte Stand wiederhergestellt. Diese Aktion kann nicht rückgängig gemacht werden."
-        submit-label="Änderungen verwerfen"
+        :title="text('revertDialogTitle')"
+        :lead="text('revertDialogLead')"
+        :submit-label="text('revertDialogSubmit')"
         is-danger
         @submit="onSubmit"
         @cancel="showConfirm = false"
@@ -29,7 +29,7 @@
 import { PluginMenuButton } from '#blokkli/plugins'
 import { Icon, DialogModal } from '#blokkli/components'
 
-const { adapter, state } = useBlokkli()
+const { adapter, state, text } = useBlokkli()
 const { mutations, canEdit, mutateWithLoadingState } = state
 
 const showConfirm = ref(false)
@@ -37,8 +37,8 @@ const showConfirm = ref(false)
 async function onSubmit() {
   await mutateWithLoadingState(
     adapter.revertAllChanges(),
-    'Änderungen konnten nicht verworfen werden.',
-    'Alle Änderungen wurden verworfen.',
+    text('revertError'),
+    text('revertSuccess'),
   )
   showConfirm.value = false
 }

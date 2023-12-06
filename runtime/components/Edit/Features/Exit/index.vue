@@ -1,7 +1,7 @@
 <template>
   <PluginMenuButton
-    title="Schliessen"
-    description="Editor schliessen ohne veröffentlichen"
+    :title="text('exitTitle')"
+    :description="text('exitDescription')"
     @click="onClick"
     :weight="100"
   >
@@ -12,6 +12,8 @@
 <script lang="ts" setup>
 import { PluginMenuButton } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
+
+const { text } = useBlokkli()
 
 const route = useRoute()
 

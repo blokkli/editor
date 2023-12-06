@@ -1,6 +1,6 @@
 <template>
   <PluginToolbarButton
-    title="Mobile Vorschau"
+    :title="text('previewMobileFrame')"
     meta
     key-code="P"
     region="after-menu"
@@ -10,7 +10,7 @@
   />
 
   <PluginToolbarButton
-    title="Vorschau (neues Fenster)"
+    :title="text('previewNewWindow')"
     region="after-menu"
     @click="openPreview"
     icon="openinnew"
@@ -18,7 +18,7 @@
 
   <PluginToolbarButton
     v-if="previewGrantUrl"
-    title="Vorschau (mit Smartphone)"
+    :title="text('previewWithSmartphone')"
     region="after-menu"
     @click="qrCodeVisible = true"
     icon="qrcode"
@@ -30,9 +30,9 @@
     <Transition appear name="bk-slide-up">
       <DialogModal
         v-if="qrCodeVisible && previewGrantUrl"
-        title="Vorschau mit Smartphone"
-        lead="Scannen Sie den QR-Code mit Ihrem Smartphone um die Vorschau zu öffnen."
-        submit-label="Schliessen"
+        :title="text('previewDialogTitle')"
+        :lead="text('previewDialogLead')"
+        :submit-label="text('close')"
         is-danger
         hide-buttons
         :width="490"
@@ -55,7 +55,7 @@ const qrCodeVisible = ref(false)
 
 const route = useRoute()
 
-const { adapter, storage } = useBlokkli()
+const { adapter, storage, text } = useBlokkli()
 
 const previewVisible = storage.use('preview:visible', false)
 

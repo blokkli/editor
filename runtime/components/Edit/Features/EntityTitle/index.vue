@@ -15,19 +15,19 @@
         </div>
       </div>
       <div class="bk-tooltip">
-        <span v-if="entity.status && !mutations.length"
-          >Seite ist publiziert</span
-        >
-        <span v-else-if="entity.status && mutations.length"
-          >Seite ist publiziert (Änderungen ausstehend)</span
-        >
-        <span v-else>Seite ist nicht publiziert</span>
+        <span v-if="entity.status && !mutations.length">{{
+          text('pageIsPublished')
+        }}</span>
+        <span v-else-if="entity.status && mutations.length">{{
+          text('pageIsPublishedWithPendingChanges')
+        }}</span>
+        <span v-else>{{ text('pageIsNotPublished') }}</span>
       </div>
     </button>
   </Teleport>
 </template>
 
 <script lang="ts" setup>
-const { state, eventBus } = useBlokkli()
+const { state, eventBus, text } = useBlokkli()
 const { entity, mutations } = state
 </script>

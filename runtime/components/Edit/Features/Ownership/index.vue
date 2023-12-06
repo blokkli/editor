@@ -4,25 +4,30 @@
       v-if="!state.owner.value?.currentUserIsOwner"
       class="bk-owner-indicator"
     >
-      <p>
-        Diese Seite wird aktuell von
-        <strong>{{ state.owner.value?.name }}</strong> bearbeitet. Änderungen
-        können nur von einer Person gleichzeitig durchgeführt werden.
-      </p>
+      <p v-html="text('ownershipNote').replace('@name', name)" />
       <button class="bk-button is-danger" @click="takeOwnership">
-        Mir zuweisen
+        {{ text('ownershipTakeOwnership') }}
       </button>
     </div>
   </Teleport>
 </template>
 
 <script lang="ts" setup>
-const { adapter, state } = useBlokkli()
+const { adapter, state, text } = useBlokkli()
 
 const takeOwnership = () =>
   state.mutateWithLoadingState(
     adapter.takeOwnership(),
-    'Fehler beim Zuweisen.',
-    'Sie sind nun der Besitzer.',
+    text('ownershipError'),
+    text('ownershipSuccess'),
   )
+
+const name = computed(() => {
+  const v = state.owner.value?.name
+  if (v) {
+    return `<strong>${v}</strong>`
+  }
+
+  return ''
+})
 </script>

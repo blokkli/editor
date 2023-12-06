@@ -55,7 +55,7 @@ const dom = domProvider()
 const storage = storageProvider()
 const ui = uiProvider()
 const animation = animationFrameProvider()
-const text = textProvider()
+const text = textProvider(context)
 const types = await typesProvider(adapter, selection.blocks, context)
 const state = await editStateProvider(adapter, context)
 

@@ -1,8 +1,8 @@
 <template>
   <PluginMenuButton
     v-if="state.mutatedFields.value.length"
-    title="Importieren..."
-    description="Von einer bestehenden Seite importieren"
+    :title="text('importExistingTitle')"
+    :description="text('importExistingDescription')"
     @click="showModal = true"
     :disabled="state.editMode.value !== 'editing'"
     :weight="50"
@@ -26,7 +26,7 @@ import { PluginMenuButton } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 import ExistingDialog from './Dialog/index.vue'
 
-const { adapter, storage, state } = useBlokkli()
+const { adapter, storage, state, text } = useBlokkli()
 
 const shouldOpen = storage.use('showImport', true)
 
@@ -43,8 +43,8 @@ function onSubmit(sourceUuid: string, sourceFields: string[]) {
       sourceFields,
       sourceUuid,
     }),
-    'Inhalte konnten nicht übernommen werden.',
-    'Inhalte erfolgreich übernommen.',
+    text('importExistingError'),
+    text('importExistingSuccess'),
   )
 }
 

@@ -1,25 +1,27 @@
 <template>
   <DialogModal
-    :title="title"
-    :lead="lead"
+    :title="text('libraryDialogTitle')"
+    :lead="text('libraryDialogLead')"
     :width="1200"
-    :submitLabel="title"
+    :submitLabel="text('libraryDialogSubmit')"
     :can-submit="!!label.length"
     @submit="$emit('confirm', label)"
     @cancel="$emit('cancel')"
   >
     <div class="bk-dialog-form">
-      <label for="reusable_label" class="bk-form-label">Beschreibung</label>
+      <label for="reusable_label" class="bk-form-label">{{
+        text('libraryDialogDescriptionLabel')
+      }}</label>
       <input
         v-model="label"
         type="text"
         id="reusable_label"
         class="bk-form-input"
-        placeholder="Teaser Kampagne 2023"
+        :placeholder="text('libraryDialogTitleInputPlaceholder')"
         required
       />
     </div>
-    <div class="bk-form-label">Vorschau</div>
+    <div class="bk-form-label">{{ text('libraryPreviewLabel') }}</div>
     <div
       class="bk-dialog-content-element"
       :class="[backgroundClass, { 'bk-default-bg': !backgroundClass }]"
@@ -37,7 +39,7 @@ defineEmits<{
   (e: 'cancel'): void
 }>()
 
-const { dom } = useBlokkli()
+const { dom, text } = useBlokkli()
 
 const props = defineProps<{
   uuid: string
@@ -49,10 +51,6 @@ const label = ref('')
 const width = ref(450)
 
 const paragraph = ref<HTMLDivElement | null>(null)
-
-const title = 'Zur Bibliothek hinzufügen'
-const lead =
-  'Wenn Sie einen Paragraph zur Bibliothek hinzufügen können Sie diesen auf mehreren Seiten gleichzeitig verwenden. Änderungen an diesem Paragraph sind dann sofort auf allen Seiten publiziert.'
 
 onMounted(() => {
   if (paragraph.value) {

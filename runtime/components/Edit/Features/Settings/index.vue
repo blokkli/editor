@@ -1,7 +1,7 @@
 <template>
   <PluginMenuButton
-    title="Einstellungen"
-    description="Persönliche Einstellungen für den Editor"
+    :title="text('settingsMenuTitle')"
+    :description="text('settingsMenuDescription')"
     @click="onClick"
     secondary
     icon="cog"
@@ -16,6 +16,8 @@
 <script lang="ts" setup>
 import { PluginMenuButton } from '#blokkli/plugins'
 import SettingsDialog from './Dialog/index.vue'
+
+const { text } = useBlokkli()
 
 const showSettings = ref(false)
 

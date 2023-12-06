@@ -21,8 +21,8 @@
   </Teleport>
 
   <PluginMenuButton
-    title="Übersetzen..."
-    description="Alle Paragraphen übersetzen"
+    :title="text('translationsBatchTranslateMenuTitle')"
+    :description="text('translationsBatchTranslateMenuDescription')"
     @click="eventBus.emit('batchTranslate')"
     :disabled="editMode !== 'translating'"
     :weight="60"
@@ -30,7 +30,7 @@
   />
 
   <PluginItemAction
-    title="Übersetzen"
+    :title="text('translationsItemAction')"
     @click="onTranslate"
     v-if="editMode === 'translating'"
     icon="translate"
@@ -45,7 +45,7 @@ import {
   BlokkliEntityTranslation,
 } from '#blokkli/types'
 
-const { eventBus, state, context, adapter } = useBlokkli()
+const { eventBus, state, context, adapter, text } = useBlokkli()
 const { translation, editMode } = state
 
 type TranslationStateItem = {

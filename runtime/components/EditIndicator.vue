@@ -15,6 +15,7 @@
 </template>
 
 <script lang="ts" setup>
+// @TODO: Translate text
 import '#blokkli/styles'
 
 const props = defineProps<{

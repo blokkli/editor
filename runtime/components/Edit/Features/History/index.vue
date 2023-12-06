@@ -1,7 +1,7 @@
 <template>
   <PluginSidebar
     id="history"
-    title="Änderungen"
+    :title="text('history')"
     icon="history"
     v-slot="{ scrolledToEnd }"
   >
@@ -37,9 +37,13 @@
         <li v-if="totalMutations > showAmount" class="bk-history-load-more">
           <button @click="showAmount += 100">
             <strong
-              >{{ Math.min(totalMutations - showAmount, 100) }} weitere
-              anzeigen</strong
-            >
+              >{{
+                text('historyShowMore').replace(
+                  '@count',
+                  Math.min(totalMutations - showAmount, 100).toString(),
+                )
+              }}
+            </strong>
           </button>
         </li>
         <li
@@ -51,7 +55,7 @@
         >
           <button @click="setHistoryIndex(-1)">
             <div>
-              <strong>Aktuelle Revision</strong>
+              <strong>{{ text('historyCurrentRevision') }}</strong>
             </div>
             <!-- @TODO: Pass in the timestamp of the entity's latest revision. -->
             <!-- <RelativeTime -->
@@ -94,7 +98,7 @@ import { PluginSidebar, PluginToolbarButton } from '#blokkli/plugins'
 import { RelativeTime } from '#blokkli/components'
 import { BlokkliMutationItem } from '#blokkli/types'
 
-const { adapter, eventBus, state } = useBlokkli()
+const { adapter, eventBus, state, text } = useBlokkli()
 
 const { mutations, currentMutationIndex, canEdit, mutateWithLoadingState } =
   state

@@ -1,7 +1,7 @@
 <template>
   <PluginMenuButton
-    title="Veröffentlichen"
-    description="Alle Änderungen öffentlich machen"
+    :title="text('publishLabel')"
+    :description="text('publishDescription')"
     @click="onClick"
     :disabled="!mutations.length || !canEdit"
     type="success"
@@ -15,14 +15,14 @@
 import { PluginMenuButton } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 
-const { state, adapter } = useBlokkli()
+const { state, adapter, text } = useBlokkli()
 const { mutations, canEdit, mutateWithLoadingState } = state
 
 const onClick = async () => {
   await mutateWithLoadingState(
     adapter.publish(),
-    'Änderungen konnten nicht publiziert werden.',
-    'Änderungen erfolgreich publiziert.',
+    text('publishError'),
+    text('publishSuccess'),
   )
 }
 </script>

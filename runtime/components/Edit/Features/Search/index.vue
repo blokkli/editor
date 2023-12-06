@@ -16,7 +16,7 @@
     </Transition>
   </Teleport>
   <PluginToolbarButton
-    title="Inhalte suchen"
+    :title="text('searchToolbarLabel')"
     meta
     key-code="F"
     region="before-view-options"
@@ -33,7 +33,7 @@ import { KeyPressedEvent } from '#blokkli/types'
 import Overlay from './Overlay/index.vue'
 import { PluginToolbarButton } from '#blokkli/plugins'
 
-const { eventBus } = useBlokkli()
+const { eventBus, text } = useBlokkli()
 
 const isRendered = ref(false)
 const isVisible = ref(false)

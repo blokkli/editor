@@ -12,7 +12,7 @@
         v-model="search"
         type="text"
         id="pb_search_input"
-        placeholder="Suchbegriff eingeben"
+        :placeholder="text('searchBoxPlaceholder')"
         ref="input"
         autocomplete="off"
         spellcheck="false"
@@ -61,7 +61,7 @@ import { modulo } from '#blokkli/helpers'
 import ResultsPage from './Results/Page/index.vue'
 import ResultsContent from './Results/Content/index.vue'
 
-const { adapter } = useBlokkli()
+const { adapter, text } = useBlokkli()
 
 const emit = defineEmits(['close'])
 
@@ -72,8 +72,8 @@ type SearchComponent =
 const searchComponents = ref<SearchComponent[]>([])
 
 const tabsMap: Record<string, string> = {
-  on_this_page: 'Auf dieser Seite',
-  ...adapter.getContentSearchTabs(),
+  on_this_page: text('searchBoxOnThisPage'),
+  ...(adapter.getContentSearchTabs ? adapter.getContentSearchTabs() : {}),
 }
 
 const tabItems = computed(() => {

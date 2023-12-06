@@ -1,6 +1,6 @@
 <template>
   <PluginItemAction
-    title="Duplizieren"
+    :title="text('duplicate')"
     @click="onClick"
     :disabled="state.editMode.value !== 'editing'"
     meta
@@ -14,12 +14,12 @@
 import { DraggableExistingBlokkliItem } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
 
-const { adapter, state } = useBlokkli()
+const { adapter, state, text } = useBlokkli()
 
 function onClick(items: DraggableExistingBlokkliItem[]) {
   state.mutateWithLoadingState(
     adapter.duplicateItems(items.map((v) => v.uuid)),
-    'Der Abschnitt konnte nicht dupliziert werden.',
+    text('duplicateError'),
   )
 }
 </script>

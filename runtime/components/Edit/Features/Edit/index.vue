@@ -1,6 +1,6 @@
 <template>
   <PluginItemAction
-    title="Bearbeiten"
+    :title="text('edit')"
     @click="onClick"
     :disabled="disabled"
     meta
@@ -14,7 +14,7 @@ import { DraggableExistingBlokkliItem } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
 import { getDefinition } from '#blokkli/definitions'
 
-const { eventBus, selection, state } = useBlokkli()
+const { eventBus, selection, state, text } = useBlokkli()
 
 const disabled = computed(() => {
   if (state.editMode.value !== 'editing') {

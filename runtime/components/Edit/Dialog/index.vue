@@ -24,7 +24,9 @@
         >
           {{ submitLabel }}
         </button>
-        <button @click="$emit('cancel')" class="bk-button">Abbrechen</button>
+        <button @click="$emit('cancel')" class="bk-button">
+          {{ text('cancel') }}
+        </button>
       </div>
     </div>
   </div>
@@ -53,7 +55,7 @@ withDefaults(
   },
 )
 
-const { eventBus } = useBlokkli()
+const { eventBus, text } = useBlokkli()
 
 const onKeyPressed = (e: KeyPressedEvent) => {
   if (e.code === 'Escape') {

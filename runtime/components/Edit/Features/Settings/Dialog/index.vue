@@ -1,71 +1,59 @@
 <template>
   <DialogModal
-    title="Einstellungen"
+    :title="text('settingsDialogTitle')"
     :width="400"
     @cancel="$emit('cancel')"
     hide-buttons
   >
     <div class="bk bk-dialog-form bk-settings">
       <div class="bk-form-section">
-        <h3 class="bk-form-label">Verhalten</h3>
+        <h3 class="bk-form-label">{{ text('settingsBehaviour') }}</h3>
         <ul class="bk-settings-checkboxes">
           <li>
             <label class="bk-checkbox-toggle">
               <input type="checkbox" v-model="showImport" class="peer" />
               <div></div>
-              <span>"Inhalte importieren" Dialog beim Start anzeigen</span>
+              <span>{{ text('settingsShowImport') }}</span>
             </label>
           </li>
           <li>
             <label class="bk-checkbox-toggle">
               <input type="checkbox" v-model="persistArtboard" class="peer" />
               <div></div>
-              <span>Position und Zoom speichern</span>
-            </label>
-          </li>
-        </ul>
-      </div>
-      <div class="bk-form-section">
-        <h3 class="bk-form-label">Darstellung</h3>
-        <ul class="bk-settings-checkboxes">
-          <li>
-            <label class="bk-checkbox-toggle">
-              <input type="checkbox" v-model="useArtboard" class="peer" />
-              <div></div>
-              <span>Zeichenfläche verwenden</span>
+              <span>{{ text('settingsPersistArtboard') }}</span>
             </label>
           </li>
         </ul>
       </div>
 
       <div class="bk-form-section">
-        <h3 class="bk-form-label">Inhaltsdarstellung</h3>
+        <h3 class="bk-form-label">{{ text('settingsViewOptions') }}</h3>
         <ul class="bk-settings-ui">
           <li>
             <label>
               <input type="radio" v-model="useArtboard" :value="true" />
               <Icon name="artboard-enabled" />
-              <span>Zeichenfläche verwenden</span>
+              <span>{{ text('settingsUseArtboardTrue') }}</span>
             </label>
           </li>
           <li>
             <label>
               <input type="radio" v-model="useArtboard" :value="false" />
               <Icon name="artboard-disabled" />
-              <span>Normale Darstellung</span>
+              <span>{{ text('settingsUseArtboardFalse') }}</span>
             </label>
           </li>
         </ul>
       </div>
 
       <div class="bk-form-section">
-        <h3 class="bk-form-label">Inhaltselemente</h3>
+        <h3 class="bk-form-label">{{ text('settingsListOrientation') }}</h3>
         <ul class="bk-settings-ui">
           <li>
             <label>
               <input type="radio" v-model="listOrientation" value="vertical" />
               <Icon name="ui-list-vertical" />
-              <span>Vertikal</span>
+              <span>{{ text('settingsListOrientationVertical') }}</span>
             </label>
           </li>
           <li>
@@ -76,7 +64,7 @@
                 value="horizontal"
               />
               <Icon name="ui-list-horizontal" />
-              <span>Horizontal</span>
+              <span>{{ text('settingsListOrientationHorizontal') }}</span>
             </label>
           </li>
         </ul>
@@ -86,11 +74,11 @@
         <h3 class="bk-form-label">Erweitert</h3>
         <div class="bk-settings-buttons">
           <button class="bk-button" @click="revertSort">
-            Sortierung der Paragraphen zurücksetzen
+            {{ text('settingsRevertSorting') }}
           </button>
 
           <button class="bk-button is-danger" @click="revertAll">
-            Alle Einstellungen zurücksetzen
+            {{ text('settingsRevertAll') }}
           </button>
         </div>
       </div>
@@ -101,7 +89,7 @@
 <script lang="ts" setup>
 import { DialogModal, Icon } from '#blokkli/components'
 
-const { storage } = useBlokkli()
+const { storage, text } = useBlokkli()
 
 const showImport = storage.use('showImport', true)
 const useArtboard = storage.use('useArtboard', true)

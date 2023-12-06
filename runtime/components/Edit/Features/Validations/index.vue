@@ -1,5 +1,9 @@
 <template>
-  <PluginSidebar id="violations" title="Validierungen" icon="alert">
+  <PluginSidebar
+    id="violations"
+    :title="text('validationsToolbarLabel')"
+    icon="alert"
+  >
     <div class="bk bk-errors bk-control">
       <ul v-if="state.violations.value.length">
         <li v-for="item in state.violations.value">
@@ -12,7 +16,7 @@
         <figure>
           <Icon name="check" />
         </figure>
-        <h3>Keine Validierungsfehler gefunden.</h3>
+        <h3>{{ text('validationsNoneFound') }}</h3>
       </div>
     </div>
   </PluginSidebar>
@@ -22,5 +26,5 @@
 import { PluginSidebar } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 
-const { state } = useBlokkli()
+const { state, text } = useBlokkli()
 </script>

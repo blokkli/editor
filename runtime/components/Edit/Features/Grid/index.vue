@@ -1,8 +1,8 @@
 <template>
   <PluginViewOption
     id="grid"
-    title-on="Grid anzeigen"
-    title-off="Grid verstecken"
+    :title-on="text('gridShow')"
+    :title-off="text('gridHide')"
     key-code="G"
   >
     <template #icon>
@@ -23,5 +23,5 @@
 import { PluginViewOption } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 
-const { runtimeConfig } = useBlokkli()
+const { runtimeConfig, text } = useBlokkli()
 </script>

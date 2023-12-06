@@ -547,6 +547,7 @@ export interface BlokkliApp {
     langcodeWithoutPrefix: string
     optionsPluginId: string
     itemEntityType: string
+    defaultLanguage: string
   }
 
   dom: BlokkliDomProvider

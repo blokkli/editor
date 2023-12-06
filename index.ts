@@ -19,6 +19,8 @@ import tailwindNesting from 'tailwindcss/nesting'
 import tailwindcss from 'tailwindcss'
 import tailwindConfig from './css/tailwind.config'
 import { DefinitionPlugin } from './vitePlugin'
+import defu from 'defu'
+import defaultTranslations from './translations'
 
 export function onlyUnique(value: string, index: number, self: Array<string>) {
   return self.indexOf(value) === index
@@ -144,6 +146,16 @@ export type ModuleOptions = {
    * Using the paragraphs_builder integration this value should be set to "paragraph".
    */
   itemEntityType?: string
+
+  /**
+   * Provide overrides for the translations.
+   */
+  translations?: Record<string, Record<string, string>>
+
+  /**
+   * The default/fallback language for the editor.
+   */
+  defaultLanguage?: string
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -218,12 +230,33 @@ export default defineNuxtModule<ModuleOptions>({
     })
     nuxt.options.alias['#blokkli/definitions'] = templateDefinitions.dst
 
+    // The definitions.
+    const templateTranslations = addTemplate({
+      write: true,
+      filename: 'blokkli/tranlsations.ts',
+      getContents: () => {
+        const merged = defu(defaultTranslations, moduleOptions.translations)
+        const validTranslationKeys = Object.keys(merged.en)
+          .map((v) => `'${v}'`)
+          .join(' | ')
+        return `
+export const translations = ${JSON.stringify(merged)}
+export type ValidTextKeys = ${validTranslationKeys}
+`
+      },
+      options: {
+        blokkli: true,
+      },
+    })
+    nuxt.options.alias['#blokkli/translations'] = templateTranslations.dst
+
     nuxt.options.runtimeConfig.public.blokkli = {
       disableLibrary: !!moduleOptions.disableFeatures?.library,
       langcodeWithoutPrefix: moduleOptions.langcodeWithoutPrefix || '',
       gridMarkup: moduleOptions.gridMarkup,
       optionsPluginId: moduleOptions.optionsPluginId || 'blokkli',
       itemEntityType: moduleOptions.itemEntityType || '',
+      defaultLanguage: moduleOptions.defaultLanguage || 'en',
     }
 
     // Setup adapter.
