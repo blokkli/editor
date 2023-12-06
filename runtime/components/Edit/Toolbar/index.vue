@@ -66,9 +66,7 @@
 import { Icon } from '#blokkli/components'
 
 const { ui } = useBlokkli()
-
 const emit = defineEmits(['loaded'])
-
 const menuOpen = computed(() => ui.menu.isOpen.value)
 
 onMounted(() => {

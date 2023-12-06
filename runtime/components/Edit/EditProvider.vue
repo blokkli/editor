@@ -1,9 +1,13 @@
 <template>
-  <Loading v-if="isInitializing" />
+  <Loading v-if="isInitializing || !toolbarLoaded || !featuresLoaded" />
   <Actions />
   <Messages />
   <Toolbar @loaded="toolbarLoaded = true" />
-  <Features v-if="!isInitializing && toolbarLoaded" :key="route.fullPath" />
+  <Features
+    v-if="!isInitializing && toolbarLoaded"
+    :key="route.fullPath"
+    @loaded="featuresLoaded = true"
+  />
   <slot v-if="!isInitializing"></slot>
 </template>
 
@@ -13,7 +17,7 @@ import Actions from './Actions/index.vue'
 import Messages from './Messages/index.vue'
 import Loading from './Loading/index.vue'
 import Features from './Features/index.vue'
-import animationFrameProvider from './../../helpers/animationFrame'
+import animationProvider from './../../helpers/animationProvider'
 import keyboardProvider from './../../helpers/keyboardProvider'
 import selectionProvider from './../../helpers/selectionProvider'
 import editStateProvider from './../../helpers/stateProvider'
@@ -47,6 +51,7 @@ const route = useRoute()
 const runtimeConfig = useRuntimeConfig().public.blokkli
 
 const toolbarLoaded = ref(false)
+const featuresLoaded = ref(false)
 const isInitializing = ref(true)
 
 const keyboard = keyboardProvider()
@@ -54,7 +59,7 @@ const selection = selectionProvider()
 const dom = domProvider()
 const storage = storageProvider()
 const ui = uiProvider()
-const animation = animationFrameProvider()
+const animation = animationProvider()
 const text = textProvider(context)
 const types = await typesProvider(adapter, selection.blocks, context)
 const state = await editStateProvider(adapter, context)
