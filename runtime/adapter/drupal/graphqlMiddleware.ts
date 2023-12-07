@@ -325,7 +325,30 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         (v) => v.data.getParagraphsEditState?.previewUrl,
       )
 
+    const getTransformPlugins: DrupalAdapter['getTransformPlugins'] = () =>
+      useGraphqlQuery('pbGetTransformPlugins')
+        .then((v) => v.data.paragraphsBuilderGetTransformPlugins || [])
+        .then((plugins) =>
+          plugins.map((plugin) => {
+            return {
+              id: plugin.id,
+              label: plugin.label,
+              bundles: plugin.bundles,
+              min: plugin.min,
+              max: plugin.max,
+            }
+          }),
+        )
+
+    const applyTransformPlugin: DrupalAdapter['applyTransformPlugin'] = (e) =>
+      useGraphqlMutation('pbApplyTransformPlugin', {
+        ...ctx.value,
+        ...e,
+      })
+
     return {
+      getTransformPlugins,
+      applyTransformPlugin,
       getImportItems,
       getConversions,
       getAvailableTypes,

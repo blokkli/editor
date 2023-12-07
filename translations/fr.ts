@@ -23,6 +23,9 @@ export default {
   convertTo: 'Convertir en...',
   failedToConvert: "L'élément n'a pas pu être converti.",
 
+  transformTo: 'Other actions',
+  failedToTransform: 'The action "@name" could not be executed.',
+
   multipleItemsLabel: 'Éléments',
 
   duplicate: 'Dupliquer',

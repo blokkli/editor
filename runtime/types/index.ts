@@ -190,6 +190,33 @@ export interface BlokkliConversionItem {
   targetBundle: string
 }
 
+export interface BlokkliTransformPlugin {
+  /**
+   * The ID of the plugin.
+   */
+  id: string
+
+  /**
+   * The label of the transform plugin which is shown in the editor.
+   */
+  label: string
+
+  /**
+   * The array of bundles for which this transform plugin is available.
+   */
+  bundles: string[]
+
+  /**
+   * The minimum number of items required.
+   */
+  min: number
+
+  /**
+   * The maximum number of items.
+   */
+  max: number
+}
+
 export interface BlokkliLibraryItem {
   uuid: string
   label?: string

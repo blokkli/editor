@@ -3,11 +3,11 @@
     <div class="bk-blokkli-item-actions-type">
       <button
         class="bk-blokkli-item-actions-type-button"
-        @click.prevent="showConversions = !showConversions"
-        :disabled="!possibleConversions.length || !editingEnabled"
+        @click.prevent="showDropdown = !showDropdown"
+        :disabled="!shouldRenderDropdown"
         :class="{
-          'is-interactive': possibleConversions.length,
-          'is-open': showConversions,
+          'is-interactive': shouldRenderDropdown,
+          'is-open': showDropdown,
         }"
       >
         <div class="bk-blokkli-item-actions-title-icon">
@@ -20,20 +20,16 @@
           :class="{ 'bk-is-hidden': selection.blocks.value.length <= 1 }"
           >{{ selection.blocks.value.length }}</span
         >
-        <Icon
-          name="caret"
-          class="bk-caret"
-          v-if="possibleConversions.length && editingEnabled"
-        />
+        <Icon name="caret" class="bk-caret" v-if="shouldRenderDropdown" />
       </button>
     </div>
   </Teleport>
   <Teleport to="#bk-blokkli-item-actions-after">
     <div
-      v-if="possibleConversions.length && showConversions"
+      v-if="shouldRenderDropdown && showDropdown"
       class="bk-blokkli-item-actions-type-dropdown"
     >
-      <div>
+      <div v-if="possibleConversions.length">
         <h3>{{ text('convertTo') }}</h3>
         <button
           @click.prevent="onConvert(conversion.id)"
@@ -45,6 +41,17 @@
           </div>
         </button>
       </div>
+      <div v-if="possibleTransforms.length">
+        <h3>{{ text('transformTo') }}</h3>
+        <button
+          v-for="transform in possibleTransforms"
+          @click.prevent="onTransform(transform)"
+        >
+          <div>
+            <div>{{ transform.label }}</div>
+          </div>
+        </button>
+      </div>
     </div>
   </Teleport>
 </template>
@@ -53,17 +60,29 @@
 import { Icon } from '#blokkli/components'
 import { ItemIcon } from '#blokkli/components'
 import { falsy, onlyUnique } from '#blokkli/helpers'
-import type { BlokkliItemType } from '#blokkli/types'
+import type { BlokkliItemType, BlokkliTransformPlugin } from '#blokkli/types'
 
-const showConversions = ref(false)
+const showDropdown = ref(false)
 
 const { adapter, types, selection, state, text } = useBlokkli()
 
-const { data: conversionsData } = await useLazyAsyncData(() =>
-  adapter.getConversions(),
-)
+const { data: conversionsData } = await useLazyAsyncData(() => {
+  if (adapter.getConversions) {
+    return adapter.getConversions()
+  }
+  return Promise.resolve([])
+})
 
 const conversions = computed(() => conversionsData.value || [])
+
+const { data: transformData } = await useLazyAsyncData(() => {
+  if (adapter.getTransformPlugins) {
+    return adapter.getTransformPlugins()
+  }
+  return Promise.resolve([])
+})
+
+const transforms = computed(() => transformData.value || [])
 
 async function onConvert(targetBundle?: string) {
   if (!targetBundle) {
@@ -79,11 +98,21 @@ async function onConvert(targetBundle?: string) {
   )
 }
 
+async function onTransform(plugin: BlokkliTransformPlugin) {
+  await state.mutateWithLoadingState(
+    adapter.applyTransformPlugin({
+      uuids: selection.blocks.value.map((v) => v.uuid),
+      pluginId: plugin.id,
+    }),
+    text('failedToTransform').replace('@name', plugin.label),
+  )
+}
+
 const editingEnabled = computed(() => state.editMode.value === 'editing')
 
-const itemBundleIds = computed(() => {
-  return selection.blocks.value.map((v) => v.itemBundle).filter(onlyUnique)
-})
+const itemBundleIds = computed(() =>
+  selection.blocks.value.map((v) => v.itemBundle).filter(onlyUnique),
+)
 
 const itemBundle = computed(() => {
   if (itemBundleIds.value.length !== 1) {
@@ -103,7 +132,7 @@ const title = computed(() => {
 })
 
 watch(selection.blocks, () => {
-  showConversions.value = false
+  showDropdown.value = false
 })
 
 const possibleConversions = computed<BlokkliItemType[]>(() => {
@@ -120,4 +149,27 @@ const possibleConversions = computed<BlokkliItemType[]>(() => {
     .map((v) => types.allTypes.value.find((t) => t.id === v.targetBundle))
     .filter(falsy)
 })
+
+const possibleTransforms = computed<BlokkliTransformPlugin[]>(() => {
+  return transforms.value.filter((plugin) => {
+    if (selection.uuids.value.length < plugin.min) {
+      return false
+    }
+
+    if (plugin.max !== -1 && selection.uuids.value.length > plugin.max) {
+      return false
+    }
+
+    // Filter for supported bundles.
+    return itemBundleIds.value.every((bundle) =>
+      plugin.bundles.includes(bundle),
+    )
+  })
+})
+
+const shouldRenderDropdown = computed(
+  () =>
+    !!(possibleTransforms.value.length || possibleConversions.value.length) &&
+    editingEnabled.value,
+)
 </script>

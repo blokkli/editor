@@ -17,6 +17,7 @@ import type {
   MoveBlokkliEvent,
   UpdateBlokkliItemOptionEvent,
   AddContentSearchItemEvent,
+  BlokkliTransformPlugin,
 } from '#blokkli/types'
 
 interface MutationResponseLike<T> {
@@ -28,6 +29,11 @@ interface MutationResponseLike<T> {
       }
     }
   }
+}
+
+type AdapterApplyTransformPlugin = {
+  pluginId: string
+  uuids: string[]
 }
 
 export interface BlokkliAdapter<T> {
@@ -61,6 +67,18 @@ export interface BlokkliAdapter<T> {
    * Get all possible conversions.
    */
   getConversions(): Promise<BlokkliConversionItem[]>
+
+  /**
+   * Get all possible transform plugins.
+   */
+  getTransformPlugins(): Promise<BlokkliTransformPlugin[]>
+
+  /**
+   * Apply a transform plugin.
+   */
+  applyTransformPlugin(
+    e: AdapterApplyTransformPlugin,
+  ): Promise<MutationResponseLike<T>>
 
   /*
    * Map the state returned by mutations.

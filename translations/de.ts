@@ -20,8 +20,11 @@ export default {
   commentSave: 'Kommentar speichern',
   addCommentToItem: 'Kommentieren',
 
-  convertTo: 'Konvertieren zu...',
+  convertTo: 'Konvertieren',
   failedToConvert: 'Das Element konnte nicht konvertiert werden.',
+
+  transformTo: 'Weitere Aktionen',
+  failedToTransform: 'Die Aktion «@name» konnte nicht ausgeführt werden.',
 
   multipleItemsLabel: 'Elemente',
 

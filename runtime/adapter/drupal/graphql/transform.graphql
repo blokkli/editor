@@ -1,0 +1,26 @@
+query pbGetTransformPlugins {
+  paragraphsBuilderGetTransformPlugins {
+    id
+    label
+    bundles
+    min
+    max
+  }
+}
+
+mutation pbApplyTransformPlugin(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $pluginId: String!
+  $uuids: [String]!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: transform(pluginId: $pluginId, uuids: $uuids) {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}

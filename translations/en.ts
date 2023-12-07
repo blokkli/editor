@@ -23,6 +23,9 @@ export default {
   convertTo: 'Convert to...',
   failedToConvert: 'The item could not be converted.',
 
+  transformTo: 'Other actions',
+  failedToTransform: 'The action "@name" could not be executed.',
+
   multipleItemsLabel: 'Items',
 
   duplicate: 'Duplicate',
