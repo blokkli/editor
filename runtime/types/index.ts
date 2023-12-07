@@ -474,6 +474,7 @@ export type AnimationFrameEvent = {
   rootRect: DOMRect
   canvasRect: DOMRect
   fieldAreas: AnimationFrameFieldArea[]
+  hoveredUuid: string
   scale: number
   mouseX: number
   mouseY: number
@@ -523,6 +524,17 @@ export type ScrollIntoViewEvent = {
   immediate?: boolean
 }
 
+export type PluginMountEvent = {
+  type: 'ItemDropdown'
+  id: string
+  isRendering: ComputedRef<boolean>
+}
+
+export type PluginUnmountEvent = {
+  type: 'ItemDropdown'
+  id: string
+}
+
 export type BlokkliEvents = {
   select: string
   'item:edit': EditBlokkliItemEvent
@@ -554,6 +566,9 @@ export type BlokkliEvents = {
   'search:selectContentItem': BlokkliSearchContentItem
   addContentSearchItem: AddContentSearchItemEvent
   'option:update': UpdateBlokkliItemOptionEvent
+
+  'plugin:mount': PluginMountEvent
+  'plugin:unmount': PluginUnmountEvent
 }
 
 export type BlokkliEventBus = Emitter<BlokkliEvents>
@@ -590,6 +605,13 @@ export interface BlokkliApp {
   state: BlokkliStateProvider
   context: ComputedRef<BlokkliAdapterContext>
   text: BlokkliTextProvider
+}
+
+export interface Rectangle {
+  x: number
+  y: number
+  width: number
+  height: number
 }
 
 export default {}

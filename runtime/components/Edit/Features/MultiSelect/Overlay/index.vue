@@ -35,7 +35,8 @@
 
 <script lang="ts" setup>
 import type { AnimationFrameEvent } from '#blokkli/types'
-import type { Rectangle } from './Item/index.vue'
+import type { Rectangle } from '#blokkli/types'
+import { intersects } from '#blokkli/helpers'
 import Item from './Item/index.vue'
 
 const { keyboard, eventBus, ui } = useBlokkli()
@@ -91,15 +92,6 @@ const animationDuration = computed(() => {
   const animationDuration = 200 - perimeter / 100
   return animationDuration + 'ms'
 })
-
-function intersects(a: Rectangle, b: Rectangle): boolean {
-  return (
-    a.x < b.x + b.width &&
-    a.x + a.width > b.x &&
-    a.y < b.y + b.height &&
-    a.y + a.height > b.y
-  )
-}
 
 const selectRect = ref<Rectangle>({
   x: 0,

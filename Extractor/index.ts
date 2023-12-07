@@ -257,17 +257,16 @@ const chunkMapping: Record<string, string> = ${JSON.stringify(
       2,
     )}
 
-export async function getBlokkliItemComponent(bundle: string): Promise<any> {
+export function getBlokkliItemComponent(bundle: string): any {
   if (global[bundle]) {
     return global[bundle]
   }
   const chunkName = chunkMapping[bundle]
   if (chunkName) {
-    return chunks[chunkName]().then(chunk => {
+    return defineAsyncComponent(() => chunks[chunkName]().then(chunk => {
       return chunk.default[bundle]
-    })
+    }))
   }
-  return Promise.resolve()
 }`
   }
 

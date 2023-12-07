@@ -21,6 +21,7 @@
       :index="i"
       :key="
         'i_' +
+        i +
         item.item?.uuid +
         entity.uuid +
         entity.entityTypeId +
@@ -39,6 +40,7 @@
       :data-host-field-name="fieldName"
       :data-is-nested="isNested"
       :data-is-new="item.item.isNew"
+      :data-refresh-key="state.refreshKey.value"
       class="draggable"
     />
   </component>
@@ -363,30 +365,6 @@ function onPut(_to: Sortable, _from: Sortable, dragEl: HTMLElement) {
   return false
 }
 
-function updateSelection(e: SortableEvent) {
-  if (keyboard.isPressingControl.value) {
-    const uuids = e.items.map((v) => v.dataset.uuid).filter(falsy)
-    eventBus.emit('select:end', uuids)
-  } else {
-    const item = buildDraggableItem(e.item)
-    if (item?.itemType === 'existing') {
-      document.querySelectorAll('.sortable-selected').forEach((el) => {
-        Sortable.utils.deselect(el as any)
-      })
-      Sortable.utils.select(item.element)
-      eventBus.emit('select', item.uuid)
-    }
-  }
-}
-
-function onSelect(e: SortableEvent) {
-  return
-}
-
-function onDeselect(e: SortableEvent) {
-  return
-}
-
 onMounted(() => {
   if (container.value) {
     instance = new Sortable(container.value, {
@@ -409,8 +387,6 @@ onMounted(() => {
       animation: 200,
       preventOnFilter: true,
       dragoverBubble: false,
-      onSelect,
-      onDeselect,
       onStart,
       onUpdate,
       onEnd,

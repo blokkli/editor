@@ -7,12 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-export type Rectangle = {
-  x: number
-  y: number
-  width: number
-  height: number
-}
+import type { Rectangle } from '#blokkli/types'
 
 const props = defineProps<{
   rect: Rectangle

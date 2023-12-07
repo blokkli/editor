@@ -1,4 +1,8 @@
-import type { DraggableItem, BlokkliSearchContentItem } from '#blokkli/types'
+import type {
+  DraggableItem,
+  BlokkliSearchContentItem,
+  Rectangle,
+} from '#blokkli/types'
 import { getDefinition } from '#blokkli/definitions'
 
 /**
@@ -193,13 +197,6 @@ export function modulo(n: number, m: number) {
   return ((n % m) + m) % m
 }
 
-type Rectangle = {
-  left: number
-  top: number
-  width: number
-  height: number
-}
-
 export function getBounds(rects: DOMRect[]): Rectangle | undefined {
   if (!rects.length) {
     return
@@ -219,9 +216,27 @@ export function getBounds(rects: DOMRect[]): Rectangle | undefined {
   }
 
   return {
-    left: minX,
-    top: minY,
+    x: minX,
+    y: minY,
     width: maxX - minX,
     height: maxY - minY,
   }
+}
+
+export function intersects(a: Rectangle, b: Rectangle): boolean {
+  return (
+    a.x < b.x + b.width &&
+    a.x + a.width > b.x &&
+    a.y < b.y + b.height &&
+    a.y + a.height > b.y
+  )
+}
+
+export function isInsideRect(x: number, y: number, rect: Rectangle): boolean {
+  return (
+    x > rect.x &&
+    x < rect.x + rect.width &&
+    y > rect.y &&
+    y < rect.y + rect.height
+  )
 }

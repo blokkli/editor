@@ -1,4 +1,4 @@
-import { falsy } from '#blokkli/helpers'
+import { falsy, isInsideRect } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
 
 export type BlokkliAnimationProvider = {
@@ -70,6 +70,27 @@ export default function (): BlokkliAnimationProvider {
       if (canvasRect && rootRect && sidebarRect) {
         rootRect.width = rootRect.width - sidebarRect.width
         const scale = parseFloat(wrapperEl.style.scale)
+        const rects: Record<string, DOMRect> = {}
+        let hoveredUuid = ''
+        const elements = [
+          ...document.querySelectorAll(
+            '[data-element-type="existing"]:not(.sortable-drag)',
+          ),
+        ]
+
+        for (let i = 0; i < elements.length; i++) {
+          const el = elements[i]
+          if (el instanceof HTMLElement) {
+            const uuid = el.dataset.uuid
+            if (uuid) {
+              const rect = el.getBoundingClientRect()
+              rects[uuid] = rect
+              if (isInsideRect(mouseX, mouseY, rect)) {
+                hoveredUuid = uuid
+              }
+            }
+          }
+        }
         eventBus.emit('animationFrame', {
           mouseX,
           mouseY,
@@ -77,20 +98,8 @@ export default function (): BlokkliAnimationProvider {
           rootRect,
           canvasRect,
           fieldAreas,
-          rects: [
-            ...document.querySelectorAll(
-              '[data-element-type="existing"]:not(.sortable-drag)',
-            ),
-          ].reduce<Record<string, DOMRect>>((acc, el) => {
-            if (el instanceof HTMLElement) {
-              const uuid = el.dataset.uuid
-              if (uuid) {
-                const rect = el.getBoundingClientRect()
-                acc[uuid] = rect
-              }
-            }
-            return acc
-          }, {}),
+          rects,
+          hoveredUuid,
         })
       }
     }

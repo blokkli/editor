@@ -197,7 +197,7 @@ function onWheel(e: WheelEvent) {
     zoomTarget.x = (zoomPoint.x - offset.value.x) / scale.value
     zoomTarget.y = (zoomPoint.y - offset.value.y) / scale.value
 
-    const scaleFactor = Math.pow(SCALE_BASE, -Math.sign(e.deltaY) / 2)
+    const scaleFactor = Math.pow(SCALE_BASE, -Math.sign(e.deltaY) / 1.25)
 
     updateScale(scale.value * scaleFactor)
     updateOffset(

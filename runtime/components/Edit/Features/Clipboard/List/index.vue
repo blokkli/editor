@@ -122,6 +122,9 @@ onMounted(() => {
         revertClone: false,
       },
       onRemove(e) {
+        if (e.oldIndex !== undefined) {
+          emit('remove', e.oldIndex)
+        }
         renderKey.value += 1
       },
       forceFallback: true,

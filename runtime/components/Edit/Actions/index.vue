@@ -11,7 +11,7 @@
           :style="{
             width: rect.width + 'px',
             height: rect.height + 'px',
-            transform: `translate(${rect.left}px, ${rect.top}px)`,
+            transform: `translate(${rect.x}px, ${rect.y}px)`,
           }"
         ></div>
       </div>
@@ -20,10 +20,12 @@
         <div class="bk-blokkli-item-actions-controls">
           <div id="bk-blokkli-item-actions-title">
             <button
-              class="bk-blokkli-item-actions-type-button is-interactive"
+              class="bk-blokkli-item-actions-type-button"
               @click.prevent="showDropdown = !showDropdown"
+              :disabled="!shouldRenderButton"
               :class="{
                 'is-open': showDropdown,
+                'is-interactive': shouldRenderButton,
               }"
             >
               <div class="bk-blokkli-item-actions-title-icon">
@@ -36,7 +38,7 @@
                 :class="{ 'bk-is-hidden': selection.blocks.value.length <= 1 }"
                 >{{ selection.blocks.value.length }}</span
               >
-              <Icon name="caret" class="bk-caret" />
+              <Icon v-if="shouldRenderButton" name="caret" class="bk-caret" />
             </button>
             <div
               v-show="showDropdown && editingEnabled"
@@ -65,13 +67,11 @@
 import { falsy, modulo, getBounds, onlyUnique } from '#blokkli/helpers'
 import { AnimationFrameEvent, KeyPressedEvent } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
-
-type Rectangle = {
-  left: number
-  top: number
-  width: number
-  height: number
-}
+import type {
+  PluginMountEvent,
+  PluginUnmountEvent,
+  Rectangle,
+} from '#blokkli/types'
 
 const { selection, eventBus, dom, text, types, state } = useBlokkli()
 
@@ -83,7 +83,7 @@ watch(selection.blocks, () => {
   showDropdown.value = false
 })
 
-const bounds = ref<Rectangle>({ width: 0, height: 0, left: 0, top: 0 })
+const bounds = ref<Rectangle>({ width: 0, height: 0, x: 0, y: 0 })
 const selectedRects = ref<Rectangle[]>([])
 
 const title = computed(() => {
@@ -108,8 +108,8 @@ const itemBundle = computed(() => {
 })
 
 const innerStyle = computed(() => {
-  const x = Math.max(bounds.value.left, 80)
-  const y = Math.min(Math.max(bounds.value.top, 120), window.innerHeight)
+  const x = Math.max(bounds.value.x, 80)
+  const y = Math.min(Math.max(bounds.value.y, 120), window.innerHeight)
   return {
     transform: `translate(${x}px, ${y}px)`,
   }
@@ -120,10 +120,10 @@ const styleSize = computed(() => {
     return {}
   }
 
-  const { width, height, left, top } = bounds.value
+  const { width, height, x, y } = bounds.value
 
   return {
-    transform: `translate(${left}px, ${top}px)`,
+    transform: `translate(${x}px, ${y}px)`,
     width: width + 'px',
     height: height + 'px',
   }
@@ -140,8 +140,8 @@ function onAnimationFrame(e: AnimationFrameEvent) {
     .filter(falsy)
   const newBounds = getBounds(rects)
   if (newBounds) {
-    bounds.value.top = newBounds.top
-    bounds.value.left = newBounds.left
+    bounds.value.y = newBounds.y
+    bounds.value.x = newBounds.x
     bounds.value.width = newBounds.width
     bounds.value.height = newBounds.height
   }
@@ -156,8 +156,8 @@ function onAnimationFrame(e: AnimationFrameEvent) {
           return {
             width: rect.width,
             height: rect.height,
-            top: rect.y - bounds.value.top,
-            left: rect.x - bounds.value.left,
+            y: rect.y - bounds.value.y,
+            x: rect.x - bounds.value.x,
           }
         }
       })
@@ -197,14 +197,37 @@ function onKeyPressed(e: KeyPressedEvent) {
   eventBus.emit('scrollIntoView', { uuid: targetItem.uuid })
 }
 
+const mountedPlugins = ref<PluginMountEvent[]>([])
+
+const shouldRenderButton = computed(() => {
+  return mountedPlugins.value.some((v) => v.isRendering)
+})
+
+const onPluginMount = (e: PluginMountEvent) => {
+  if (e.type !== 'ItemDropdown') {
+    return
+  }
+  mountedPlugins.value.push(e as any)
+}
+const onPluginUnmount = (e: PluginUnmountEvent) => {
+  if (e.type !== 'ItemDropdown') {
+    return
+  }
+  mountedPlugins.value = mountedPlugins.value.filter((v) => v.type !== e.id)
+}
+
 onMounted(() => {
   eventBus.on('animationFrame', onAnimationFrame)
   eventBus.on('keyPressed', onKeyPressed)
+  eventBus.on('plugin:mount', onPluginMount)
+  eventBus.on('plugin:unmount', onPluginUnmount)
 })
 
 onUnmounted(() => {
   eventBus.off('animationFrame', onAnimationFrame)
   eventBus.off('keyPressed', onKeyPressed)
+  eventBus.off('plugin:mount', onPluginMount)
+  eventBus.off('plugin:unmount', onPluginUnmount)
 })
 </script>
 

@@ -1,7 +1,8 @@
 <template>
   <PluginItemDropdown
-    v-if="possibleConversions.length"
+    id="conversions"
     :title="text('convertTo')"
+    :enabled="!!possibleConversions.length"
   >
     <button
       @click.prevent="onConvert(conversion.id)"

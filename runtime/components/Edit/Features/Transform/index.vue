@@ -1,23 +1,33 @@
 <template>
   <PluginItemDropdown
+    id="transform"
     :title="text('transformTo')"
-    v-if="possibleTransforms.length"
+    :enabled="!!(itemBundleIds.length && possibleTransforms.length)"
   >
     <button
       v-for="transform in possibleTransforms"
-      @click.prevent="onTransform(transform)"
+      @click.prevent="onTransform(transform, selection.uuids.value)"
     >
       <div>
         <div>{{ transform.label }}</div>
       </div>
     </button>
   </PluginItemDropdown>
+  <Overlay
+    v-if="selection.isDragging.value && selection.uuids.value.length"
+    :selected-uuids="selection.uuids.value"
+    :selected-bundles="itemBundleIds"
+    :plugins="plugins"
+    @transform="onTransform($event.plugin, $event.uuids)"
+  />
 </template>
 
 <script lang="ts" setup>
 import { PluginItemDropdown } from '#blokkli/plugins'
 import { onlyUnique } from '#blokkli/helpers'
 import type { BlokkliTransformPlugin } from '#blokkli/types'
+import Overlay from './Overlay/index.vue'
+import { filterTransforms } from '#blokkli/helpers/transform'
 
 const { adapter, types, selection, state, text } = useBlokkli()
 
@@ -28,12 +38,12 @@ const { data: transformData } = await useLazyAsyncData(() => {
   return Promise.resolve([])
 })
 
-const transforms = computed(() => transformData.value || [])
+const plugins = computed(() => transformData.value || [])
 
-async function onTransform(plugin: BlokkliTransformPlugin) {
+async function onTransform(plugin: BlokkliTransformPlugin, uuids: string[]) {
   await state.mutateWithLoadingState(
     adapter.applyTransformPlugin({
-      uuids: selection.blocks.value.map((v) => v.uuid),
+      uuids,
       pluginId: plugin.id,
     }),
     text('failedToTransform').replace('@name', plugin.label),
@@ -45,27 +55,11 @@ const itemBundleIds = computed(() =>
 )
 
 const possibleTransforms = computed<BlokkliTransformPlugin[]>(() => {
-  return transforms.value.filter((plugin) => {
-    if (selection.uuids.value.length < plugin.min) {
-      return false
-    }
-
-    if (plugin.max !== -1 && selection.uuids.value.length > plugin.max) {
-      return false
-    }
-
-    // Check that the target bundles of the transform plugin are all allowed in the current field list.
-    const allAllowedInList = plugin.targetBundles.every((bundle) =>
-      types.allowedTypesInList.value.includes(bundle),
-    )
-    if (!allAllowedInList) {
-      return false
-    }
-
-    // Filter for supported bundles.
-    return itemBundleIds.value.every((bundle) =>
-      plugin.bundles.includes(bundle),
-    )
-  })
+  return filterTransforms(
+    plugins.value,
+    selection.uuids.value,
+    itemBundleIds.value,
+    types.allowedTypesInList.value,
+  )
 })
 </script>

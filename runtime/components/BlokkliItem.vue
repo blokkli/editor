@@ -21,9 +21,7 @@ const componentProps = withDefaults(
   },
 )
 
-const component = await getBlokkliItemComponent(
-  componentProps.item.entityBundle,
-)
+const component = getBlokkliItemComponent(componentProps.item.entityBundle)
 
 const index = computed(() => componentProps.index)
 

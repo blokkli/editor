@@ -1,0 +1,24 @@
+.bk.bk-transform-overlay {
+  @apply fixed top-0 left-0 z-[10] pointer-events-none rounded;
+  @apply border border-slate-800 border-dashed;
+
+  .bk-transform-overlay-label {
+    @apply py-5 px-10 font-semibold rounded;
+    @apply absolute bottom-full -left-2;
+    @apply bg-slate-200 text-slate-600;
+
+    kbd {
+      @apply bg-slate-300 text-slate-800 rounded font-sans text-xs uppercase py-3 px-5 font-semibold ml-5;
+    }
+  }
+
+  &.bk-is-active {
+    @apply border-blue-700 bg-blue-500/20 outline outline-2 outline-blue-700;
+    .bk-transform-overlay-label {
+      @apply bg-blue-700 text-white;
+      kbd {
+        @apply bg-white text-blue-700;
+      }
+    }
+  }
+}
