@@ -85,7 +85,6 @@ function onClickScrollbar(e: MouseEvent) {
   }
 }
 
-const zoomFactor = 0.1
 const scale = ref(1)
 const offset = ref<Coord>({
   x: 0,
@@ -184,6 +183,8 @@ function updateAnimationTarget(newX: number, newY: number, newScale?: number) {
   }
 }
 
+const SCALE_BASE = 1.1
+
 function onWheel(e: WheelEvent) {
   stopAnimate()
   e.preventDefault()
@@ -193,11 +194,12 @@ function onWheel(e: WheelEvent) {
   zoomPoint.y = e.pageY - rect.top
 
   if (e.ctrlKey) {
-    const delta = Math.sign(-e.deltaY)
     zoomTarget.x = (zoomPoint.x - offset.value.x) / scale.value
     zoomTarget.y = (zoomPoint.y - offset.value.y) / scale.value
 
-    updateScale(scale.value + delta * zoomFactor * scale.value)
+    const scaleFactor = Math.pow(SCALE_BASE, -Math.sign(e.deltaY) / 2)
+
+    updateScale(scale.value * scaleFactor)
     updateOffset(
       -zoomTarget.x * scale.value + zoomPoint.x,
       -zoomTarget.y * scale.value + zoomPoint.y,
@@ -454,14 +456,13 @@ function onTouchMove(e: TouchEvent) {
     const currentDistance = getDistanceBetweenTouches(e)
     const delta = currentDistance - lastTouchDistance
 
-    // Determine zoom factor based on the change in distance between touches
-    const zoomChange = delta * zoomFactor
+    // @TODO: Actually implement zooming.
 
     lastTouchDistance = currentDistance
   }
 }
 
-function onTouchEnd(e: TouchEvent) {
+function onTouchEnd() {
   lastTouchDistance = 0
 }
 
