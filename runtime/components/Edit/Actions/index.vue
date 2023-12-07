@@ -18,7 +18,32 @@
 
       <div class="bk-blokkli-item-actions-inner" :style="innerStyle">
         <div class="bk-blokkli-item-actions-controls">
-          <div id="bk-blokkli-item-actions-title" />
+          <div id="bk-blokkli-item-actions-title">
+            <button
+              class="bk-blokkli-item-actions-type-button is-interactive"
+              @click.prevent="showDropdown = !showDropdown"
+              :class="{
+                'is-open': showDropdown,
+              }"
+            >
+              <div class="bk-blokkli-item-actions-title-icon">
+                <ItemIcon v-if="itemBundle" :bundle="itemBundle.id" />
+                <Icon name="selection" v-else />
+              </div>
+              <span>{{ title }}</span>
+              <span
+                class="bk-blokkli-item-actions-title-count"
+                :class="{ 'bk-is-hidden': selection.blocks.value.length <= 1 }"
+                >{{ selection.blocks.value.length }}</span
+              >
+              <Icon name="caret" class="bk-caret" />
+            </button>
+            <div
+              v-show="showDropdown && editingEnabled"
+              class="bk-blokkli-item-actions-type-dropdown"
+              id="bk-blokkli-item-actions-dropdown"
+            />
+          </div>
 
           <div
             class="bk-blokkli-item-actions-buttons"
@@ -30,15 +55,16 @@
             id="bk-blokkli-item-actions-options"
           />
         </div>
-        <div id="bk-blokkli-item-actions-after"></div>
+        <div id="bk-blokkli-item-actions-after" />
       </div>
     </div>
   </Teleport>
 </template>
 
 <script lang="ts" setup>
-import { falsy, modulo, getBounds } from '#blokkli/helpers'
+import { falsy, modulo, getBounds, onlyUnique } from '#blokkli/helpers'
 import { AnimationFrameEvent, KeyPressedEvent } from '#blokkli/types'
+import { ItemIcon, Icon } from '#blokkli/components'
 
 type Rectangle = {
   left: number
@@ -47,10 +73,39 @@ type Rectangle = {
   height: number
 }
 
-const { selection, eventBus, dom } = useBlokkli()
+const { selection, eventBus, dom, text, types, state } = useBlokkli()
+
+const editingEnabled = computed(() => state.editMode.value === 'editing')
+
+const showDropdown = ref(false)
+
+watch(selection.blocks, () => {
+  showDropdown.value = false
+})
 
 const bounds = ref<Rectangle>({ width: 0, height: 0, left: 0, top: 0 })
 const selectedRects = ref<Rectangle[]>([])
+
+const title = computed(() => {
+  if (itemBundle.value) {
+    return itemBundle.value.label
+  }
+
+  return text('multipleItemsLabel')
+})
+
+const itemBundleIds = computed(() =>
+  selection.blocks.value.map((v) => v.itemBundle).filter(onlyUnique),
+)
+
+const itemBundle = computed(() => {
+  if (itemBundleIds.value.length !== 1) {
+    return
+  }
+  return itemBundleIds.value
+    ? types.allTypes.value.find((v) => v.id === itemBundleIds.value[0])
+    : undefined
+})
 
 const innerStyle = computed(() => {
   const x = Math.max(bounds.value.left, 80)

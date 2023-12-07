@@ -334,6 +334,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
               id: plugin.id,
               label: plugin.label,
               bundles: plugin.bundles,
+              targetBundles: plugin.targetBundles,
               min: plugin.min,
               max: plugin.max,
             }

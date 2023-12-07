@@ -38,6 +38,7 @@
       :data-item-bundle="item.item?.entityBundle"
       :data-host-field-name="fieldName"
       :data-is-nested="isNested"
+      :data-is-new="item.item.isNew"
       class="draggable"
     />
   </component>

@@ -128,6 +128,7 @@ export interface BlokkliFieldListItem {
   id?: string
   uuid: string
   entityBundle: string
+  isNew?: boolean
 }
 
 export interface BlokkliFieldList<T> {
@@ -205,6 +206,11 @@ export interface BlokkliTransformPlugin {
    * The array of bundles for which this transform plugin is available.
    */
   bundles: string[]
+
+  /**
+   * The array of bundles that the transform might create.
+   */
+  targetBundles: string[]
 
   /**
    * The minimum number of items required.
@@ -341,6 +347,7 @@ export interface DraggableExistingBlokkliItem {
   hostUuid: string
   hostFieldName: string
   itemBundle: string
+  isNew: boolean
   uuid: string
   /**
    * The bundle if this item is reusable.

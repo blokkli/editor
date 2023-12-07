@@ -3,6 +3,7 @@ query pbGetTransformPlugins {
     id
     label
     bundles
+    targetBundles
     min
     max
   }

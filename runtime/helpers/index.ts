@@ -30,6 +30,7 @@ export function buildDraggableItem(
     const hostFieldName = dataset.hostFieldName
     const reusableBundle = dataset.reusableBundle
     const reusableUuid = dataset.reusableUuid
+    const isNew = dataset.isNew === 'true'
     if (
       uuid &&
       hostType &&
@@ -55,6 +56,7 @@ export function buildDraggableItem(
         reusableBundle,
         reusableUuid,
         editTitle,
+        isNew,
       }
     }
   } else if (dataset.elementType === 'reusable') {
@@ -84,7 +86,9 @@ export function buildDraggableItem(
     if (clipboardData && itemBundle) {
       const searchItemData = dataset.clipboardSearchItem
       if (searchItemData) {
-        const searchItem = JSON.parse(searchItemData) as BlokkliSearchContentItem
+        const searchItem = JSON.parse(
+          searchItemData,
+        ) as BlokkliSearchContentItem
         return {
           itemType: 'search_content',
           element,
