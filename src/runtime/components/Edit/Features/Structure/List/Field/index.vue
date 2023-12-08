@@ -41,8 +41,8 @@
 </template>
 
 <script lang="ts" setup>
-import { BlokkliItemType } from '#blokkli/types'
 import { ItemIcon } from '#blokkli/components'
+import type { StructureTreeField } from './../types'
 
 const { selection, eventBus } = useBlokkli()
 
@@ -53,20 +53,6 @@ const isSelected = (uuid: string) => uuids.value.includes(uuid)
 const select = (uuid: string) => {
   eventBus.emit('select', uuid)
   eventBus.emit('scrollIntoView', { uuid })
-}
-
-export type StructureTreeItem = {
-  uuid: string
-  bundle: string
-  type?: BlokkliItemType
-  items?: StructureTreeItem[]
-  title?: string
-}
-
-export type StructureTreeField = {
-  name: string
-  label: string
-  items?: StructureTreeItem[]
 }
 
 defineProps<{

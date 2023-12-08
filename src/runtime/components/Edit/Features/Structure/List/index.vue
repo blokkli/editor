@@ -8,7 +8,8 @@
 
 <script lang="ts" setup>
 import { falsy } from '#blokkli/helpers'
-import Field, { StructureTreeItem, StructureTreeField } from './Field/index.vue'
+import Field from './Field/index.vue'
+import type { StructureTreeField, StructureTreeItem } from './types'
 import { getDefinition } from '#blokkli/definitions'
 
 const { types, state, context } = useBlokkli()

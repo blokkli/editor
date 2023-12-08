@@ -1,5 +1,8 @@
 import mitt from 'mitt'
-import { BlokkliMutatedField, UpdateBlokkliItemOptionEvent } from '../types'
+import type {
+  BlokkliMutatedField,
+  UpdateBlokkliItemOptionEvent,
+} from '../types'
 
 type FrameEventBusEvents = {
   selectItems: string[]

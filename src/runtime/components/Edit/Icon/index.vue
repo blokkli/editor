@@ -3,7 +3,8 @@
 </template>
 
 <script lang="ts" setup>
-import { icons, BlokkliIcon } from '#blokkli/icons'
+import { icons } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli/icons'
 
 const props = defineProps<{
   name: BlokkliIcon

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { ParagraphsBuilderEditStateFragment } from '#build/graphql-operations'
 import { falsy } from '#blokkli/helpers'
 import type {

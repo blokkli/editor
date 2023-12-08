@@ -1,6 +1,6 @@
 import { computed, inject } from 'vue'
 import type { ComputedRef } from 'vue'
-import {
+import type {
   BlokkliItemDefinitionOptionsInput,
   InjectedBlokkliItem,
   BlokkliItemEditContext,
@@ -8,9 +8,7 @@ import {
 import { globalOptions } from '#blokkli/definitions'
 import { globalOptionsDefaults } from '#blokkli/default-global-options'
 
-const blokkliConfig = useRuntimeConfig().public.blokkli
-
-import {
+import type {
   ValidGlobalConfigKeys,
   BlokkliItemDefinitionInputWithTypes,
   ValidFieldListTypes,
@@ -23,15 +21,17 @@ import {
   INJECT_REUSABLE_OPTIONS,
 } from '../helpers/symbols'
 
+const blokkliConfig = useRuntimeConfig().public.blokkli
+
 type StringBoolean = '0' | '1'
 
 type GetType<T> = T extends { type: 'checkbox' }
   ? StringBoolean
   : T extends { type: 'radios' }
-    ? T extends { options: infer O }
-      ? keyof O
-      : string
+  ? T extends { options: infer O }
+    ? keyof O
     : string
+  : string
 
 type WithOptions<T extends BlokkliItemDefinitionOptionsInput> = {
   [K in keyof T]: GetType<T[K]>

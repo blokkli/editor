@@ -96,45 +96,42 @@ export const DefinitionPlugin = (nuxt: Nuxt, composableName: string) =>
         }
 
         const s = new MagicString(source)
+        const parsed: any = this.parse(source, {
+          sourceType: 'module',
+          ecmaVersion: 'latest',
+        })
+        walk(parsed, {
+          enter: async (node) => {
+            // We only care about calls to a method.
+            if (
+              node.type !== 'CallExpression' ||
+              (node as CallExpression).callee.type !== 'Identifier'
+            ) {
+              return
+            }
 
-        walk(
-          this.parse(source, {
-            sourceType: 'module',
-            ecmaVersion: 'latest',
-          }),
-          {
-            enter: async (node) => {
-              // We only care about calls to a method.
-              if (
-                node.type !== 'CallExpression' ||
-                (node as CallExpression).callee.type !== 'Identifier'
-              ) {
-                return
-              }
+            const callNode = node as CallExpression & {
+              start: number
+              end: number
+            }
 
-              const callNode = node as CallExpression & {
+            const name = 'name' in callNode.callee && callNode.callee.name
+            if (name === composableName) {
+              const arg = callNode.arguments[0]
+              const meta = callNode.arguments[0] as Expression & {
                 start: number
                 end: number
               }
-
-              const name = 'name' in callNode.callee && callNode.callee.name
-              if (name === composableName) {
-                const arg = callNode.arguments[0]
-                const meta = callNode.arguments[0] as Expression & {
-                  start: number
-                  end: number
-                }
-                if (arg.type === 'ObjectExpression') {
-                  const definition = estreeToObject(arg)
-                  const runtimeDefinition = buildRuntimeDefinition(definition)
-                  const start = meta.start
-                  const end = meta.end
-                  s.overwrite(start, end, JSON.stringify(runtimeDefinition))
-                }
+              if (arg.type === 'ObjectExpression') {
+                const definition = estreeToObject(arg)
+                const runtimeDefinition = buildRuntimeDefinition(definition)
+                const start = meta.start
+                const end = meta.end
+                s.overwrite(start, end, JSON.stringify(runtimeDefinition))
               }
-            },
+            }
           },
-        )
+        })
 
         if (s.hasChanged()) {
           return {

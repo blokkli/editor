@@ -1,4 +1,4 @@
-import { BlokkliTransformPlugin } from '../types'
+import type { BlokkliTransformPlugin } from '../types'
 
 export function filterTransforms(
   plugins: BlokkliTransformPlugin[],

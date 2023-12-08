@@ -46,7 +46,7 @@ function toggle(item: Indicator) {
   }
 }
 
-export type Indicator = {
+type Indicator = {
   id: string
   comments: BlokkliComment[]
   uuids: string[]
@@ -89,7 +89,7 @@ function onAnimationFrame(e: AnimationFrameEvent) {
       const id = uuids.join(',')
       if (bounds) {
         if (!newIndicators[id]) {
-          const y = findY(Math.round(bounds.top + window.scrollY))
+          const y = findY(Math.round(bounds.y + window.scrollY))
           newIndicators[id] = {
             id,
             comments: [],

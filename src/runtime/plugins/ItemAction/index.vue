@@ -28,7 +28,7 @@
 <script lang="ts" setup>
 import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon } from '#blokkli/components'
-import { DraggableExistingBlokkliItem } from '#blokkli/types'
+import type { DraggableExistingBlokkliItem } from '#blokkli/types'
 import { ShortcutIndicator } from '#blokkli/components'
 
 const { selection } = useBlokkli()

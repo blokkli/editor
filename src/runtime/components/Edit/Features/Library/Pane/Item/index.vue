@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import { getDefinition } from '#blokkli/definitions'
-import { BlokkliLibraryItem } from '#blokkli/types'
+import type { BlokkliLibraryItem } from '#blokkli/types'
 import { ItemIcon, ScaleToFit } from '#blokkli/components'
 import {
   INJECT_IS_EDITING,

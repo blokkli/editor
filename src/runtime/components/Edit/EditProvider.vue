@@ -12,6 +12,7 @@
 </template>
 
 <script lang="ts" setup>
+import type { BlokkliApp } from '#blokkli/types'
 import Toolbar from './Toolbar/index.vue'
 import Actions from './Actions/index.vue'
 import Messages from './Messages/index.vue'
@@ -30,7 +31,6 @@ import uiProvider from './../../helpers/uiProvider'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import '#blokkli/styles'
 import { Sortable } from '#blokkli/sortable'
-import { BlokkliApp } from '#blokkli/types'
 import getAdapter from '#blokkli/compiled-edit-adapter'
 import {
   INJECT_APP,

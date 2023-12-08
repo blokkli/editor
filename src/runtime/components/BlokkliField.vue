@@ -75,9 +75,9 @@ const mutatedFields = inject<Ref<BlokkliMutatedField[]> | null>(
 const props = withDefaults(
   defineProps<{
     list?: BlokkliFieldList<any>[]
-    fieldConfig?: BlokkliFieldListConfig
+    fieldConfig?: BlokkliFieldListConfig | null
     canEdit?: boolean
-    entity?: BlokkliFieldListEntity
+    entity?: BlokkliFieldListEntity | null
     tag?: string
     preventEdit?: boolean
     fieldListType?: ValidFieldListTypes
@@ -89,8 +89,8 @@ const props = withDefaults(
     tag: 'div',
     canEdit: false,
     fieldListType: 'default',
-    fieldConfig: () => null,
-    entity: () => null,
+    fieldConfig: null,
+    entity: null,
     listClass: '',
   },
 )

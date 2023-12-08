@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
+import type {
   MutatedOptions,
   BlokkliMutatedField,
   UpdateBlokkliItemOptionEvent,

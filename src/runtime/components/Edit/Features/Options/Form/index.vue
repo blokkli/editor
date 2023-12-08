@@ -46,10 +46,9 @@ import OptionRadios from './Radios/index.vue'
 import OptionCheckbox from './Checkbox/index.vue'
 import OptionCheckboxes from './Checkboxes/index.vue'
 import OptionText from './Text/index.vue'
-import {
-  BlokkliDefinitionOption,
-  BlokkliItemDefinitionOptionsInput,
-} from '#blokkli/types'
+import type { BlokkliItemDefinitionOptionsInput } from '#blokkli/types'
+import type { BlokkliDefinitionOption } from '#blokkli/types/blokkOptions'
+
 import { falsy } from '#blokkli/helpers'
 
 const { adapter, eventBus, state, runtimeConfig } = useBlokkli()

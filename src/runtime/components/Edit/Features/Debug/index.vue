@@ -36,7 +36,7 @@
 
 <script lang="ts" setup>
 import { PluginSidebar } from '#blokkli/plugins'
-import { KeyPressedEvent } from '#blokkli/types'
+import type { KeyPressedEvent } from '#blokkli/types'
 
 const { keyboard, selection, storage, eventBus } = useBlokkli()
 

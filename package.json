@@ -45,6 +45,7 @@
     "@nuxt/schema": "^3.8.2",
     "@nuxt/test-utils": "^3.8.1",
     "@types/node": "^20.10.3",
+    "@types/qrcode": "^1.5.5",
     "@types/sortablejs": "^1.15.7",
     "changelogen": "^0.5.5",
     "eslint": "^8.55.0",

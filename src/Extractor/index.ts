@@ -146,8 +146,8 @@ export default class Extractor {
       return acc
     }, {})
 
-    return `import { BlokkliItemDefinitionInput } from '#blokkli/types'
-import { BlokkliItemDefinitionInputWithTypes } from '#blokkli/generated-types'
+    return `import type { BlokkliItemDefinitionInput } from '#blokkli/types'
+import type { BlokkliItemDefinitionInputWithTypes } from '#blokkli/generated-types'
 
 export const globalOptions = ${JSON.stringify(globalOptions, null, 2)} as const
 
@@ -178,7 +178,7 @@ export const getDefinition = (bundle: string): BlokkliItemDefinitionInputWithTyp
       return acc
     }, {})
     return `
-import { GlobalOptionsType } from '#blokkli/generated-types'
+import type { GlobalOptionsType } from '#blokkli/generated-types'
 export const globalOptionsDefaults: Record<GlobalOptionsType, string> = ${JSON.stringify(
       defaults,
       null,
@@ -216,7 +216,7 @@ export const globalOptionsDefaults: Record<GlobalOptionsType, string> = ${JSON.s
       })
       .join(' | ')
     return `
-import { BlokkliItemDefinitionInput } from '#blokkli/types'
+import type { BlokkliItemDefinitionInput } from '#blokkli/types'
 export type ValidFieldListTypes = ${validFieldListTypes}
 export type ValidParentItemBundle = ${validParentItemBundles}
 export type ValidChunkNames = ${validChunkNames}

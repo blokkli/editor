@@ -35,7 +35,5 @@ const props = defineProps<{
   user?: BlokkliComment['user']
 }>()
 
-const timestamp = computed(() =>
-  props.created?.first?.value ? parseInt(props.created.first.value) : 0,
-)
+const timestamp = computed(() => (props.created ? parseInt(props.created) : 0))
 </script>
