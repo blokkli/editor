@@ -2,22 +2,62 @@
   "name": "blokkli",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "repository": "dulnan/blokkli",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/module.mjs",
+      "require": "./dist/module.cjs"
+    }
+  },
+  "main": "./dist/module.cjs",
+  "types": "./dist/types.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepack": "nuxt-module-build build",
+    "dev": "nuxi dev playground",
+    "styles:build": "postcss ./css/index.css -o ./src/runtime/css/output.css",
+    "dev:build": "nuxi build playground",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
+    "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
+    "lint": "eslint ./src",
+    "lint:fix": "eslint ./src --fix",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "prettier": "prettier --check .",
+    "prettier:fix": "prettier --write ."
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mitt": "^3.0.1"
-  },
-  "peerDependencies": {
-    "vue3-click-away": "*"
+    "@nuxt/kit": "^3.8.2",
+    "mitt": "^3.0.1",
+    "qrcode": "^1.5.3",
+    "sortablejs": "^1.15.1"
   },
   "devDependencies": {
+    "@nuxt/devtools": "latest",
+    "@nuxt/eslint-config": "^0.2.0",
+    "@nuxt/module-builder": "^0.5.4",
+    "@nuxt/schema": "^3.8.2",
+    "@nuxt/test-utils": "^3.8.1",
+    "@types/node": "^20.10.3",
+    "@types/sortablejs": "^1.15.7",
+    "changelogen": "^0.5.5",
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "nuxt": "^3.8.2",
     "postcss": "^8.4.29",
+    "postcss-cli": "^11.0.0",
     "postcss-import": "^15.1.0",
+    "postcss-mixins": "^9.0.4",
     "postcss-url": "^10.1.3",
-    "tailwindcss": "^3.3.3"
+    "prettier": "^3.1.0",
+    "tailwindcss": "^3.3.3",
+    "vitest": "^0.33.0"
   }
 }
