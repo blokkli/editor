@@ -59,6 +59,7 @@
 </template>
 
 <script lang="ts" setup>
+import { watch, ref, computed, useBlokkli, onMounted } from '#imports'
 import { Icon } from '#blokkli/components'
 import { modulo } from '#blokkli/helpers'
 import ResultsPage from './Results/Page/index.vue'

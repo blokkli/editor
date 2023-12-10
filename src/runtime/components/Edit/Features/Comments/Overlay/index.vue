@@ -17,6 +17,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+
 import type { BlokkliComment, AnimationFrameEvent } from '#blokkli/types'
 import { getBounds } from '#blokkli/helpers'
 import Item from './Item/index.vue'

@@ -18,6 +18,8 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, useBlokkli, useLazyAsyncData } from '#imports'
+
 import { ItemIcon } from '#blokkli/components'
 import { PluginItemDropdown } from '#blokkli/plugins'
 import { falsy, onlyUnique } from '#blokkli/helpers'

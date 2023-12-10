@@ -10,11 +10,12 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, provide, defineBlokkli } from '#imports'
 import {
   INJECT_IS_IN_REUSABLE,
   INJECT_REUSABLE_OPTIONS,
 } from '#blokkli/helpers/symbols'
-import { BlokkliFieldList } from '../../types'
+import type { BlokkliFieldList } from '../../types'
 
 interface LibraryItem {
   field?: {
@@ -27,7 +28,7 @@ const props = defineProps<{
   libraryItem?: LibraryItem
 }>()
 
-const { index, options } = defineParagraph({
+const { index, options } = defineBlokkli({
   bundle: 'from_library',
 })
 

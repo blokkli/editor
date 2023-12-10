@@ -14,6 +14,7 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, useBlokkli, onMounted, onUnmounted } from '#imports'
 import type { BlokkliMessage } from '#blokkli/types'
 import Item from './Item/index.vue'
 

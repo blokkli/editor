@@ -7,6 +7,7 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from '#imports'
 import type { Rectangle } from '#blokkli/types'
 
 const props = defineProps<{

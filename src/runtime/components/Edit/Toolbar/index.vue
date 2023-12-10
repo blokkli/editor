@@ -63,6 +63,7 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, useBlokkli, onMounted } from '#imports'
 import { Icon } from '#blokkli/components'
 
 const { ui } = useBlokkli()

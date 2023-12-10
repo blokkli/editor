@@ -20,6 +20,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useBlokkli } from '#imports'
 import { PluginViewOption } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 

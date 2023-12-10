@@ -13,6 +13,8 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, useBlokkli } from '#imports'
+
 const { adapter, state, text } = useBlokkli()
 
 const takeOwnership = () =>

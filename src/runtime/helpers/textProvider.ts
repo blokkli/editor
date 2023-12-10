@@ -1,3 +1,4 @@
+import { type ComputedRef, computed } from 'vue'
 import { translations } from '#blokkli/translations'
 import type { ValidTextKeys } from '#blokkli/translations'
 import type { BlokkliAdapterContext } from '../adapter'
@@ -5,7 +6,7 @@ import type { BlokkliAdapterContext } from '../adapter'
 export type BlokkliTextProvider = (key: ValidTextKeys) => string
 
 export default function (
-  context: globalThis.ComputedRef<BlokkliAdapterContext>,
+  context: ComputedRef<BlokkliAdapterContext>,
 ): BlokkliTextProvider {
   const defaultLanguage = useRuntimeConfig().public.blokkli
     .defaultLanguage as keyof typeof translations

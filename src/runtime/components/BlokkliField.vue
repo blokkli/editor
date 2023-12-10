@@ -41,6 +41,14 @@
 </template>
 
 <script lang="ts" setup>
+import {
+  computed,
+  defineAsyncComponent,
+  useAttrs,
+  inject,
+  provide,
+  type Ref,
+} from '#imports'
 import type {
   BlokkliFieldList,
   BlokkliFieldListConfig,

@@ -14,6 +14,7 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, useBlokkli } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
 import SettingsDialog from './Dialog/index.vue'
 

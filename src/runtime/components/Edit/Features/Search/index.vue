@@ -29,6 +29,7 @@
 /**
  * Provides a fulltext search for rendered items on the page.
  */
+import { nextTick, ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import type { KeyPressedEvent } from '#blokkli/types'
 import Overlay from './Overlay/index.vue'
 import { PluginToolbarButton } from '#blokkli/plugins'

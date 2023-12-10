@@ -1,8 +1,9 @@
+import { type Ref, ref, readonly, onMounted, onBeforeUnmount, watch } from 'vue'
 import { eventBus } from '#blokkli/helpers/eventBus'
 
 export type BlokkliKeyboardProvider = {
-  isPressingSpace: Readonly<globalThis.Ref<boolean>>
-  isPressingControl: Readonly<globalThis.Ref<boolean>>
+  isPressingSpace: Readonly<Ref<boolean>>
+  isPressingControl: Readonly<Ref<boolean>>
 }
 
 export default function (): BlokkliKeyboardProvider {

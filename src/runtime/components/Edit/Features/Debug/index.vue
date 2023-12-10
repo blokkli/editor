@@ -35,6 +35,8 @@
 </template>
 
 <script lang="ts" setup>
+import { useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+
 import { PluginSidebar } from '#blokkli/plugins'
 import type { KeyPressedEvent } from '#blokkli/types'
 

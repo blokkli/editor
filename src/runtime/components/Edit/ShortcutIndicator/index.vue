@@ -7,6 +7,7 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import type { KeyPressedEvent } from '#blokkli/types'
 
 const props = defineProps<{

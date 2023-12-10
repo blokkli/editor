@@ -3,6 +3,7 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from '#imports'
 import { icons } from '#blokkli/icons'
 import type { BlokkliIcon } from '#blokkli/icons'
 

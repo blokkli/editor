@@ -28,6 +28,7 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from '#imports'
 const props = defineProps<{
   name: string
   displayAs?: 'radios' | 'colors' | 'grid'

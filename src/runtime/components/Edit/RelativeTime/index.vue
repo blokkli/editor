@@ -3,6 +3,7 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, computed, onMounted, onBeforeUnmount } from '#imports'
 import { getRelativeTimeString } from '#blokkli/helpers'
 
 const props = defineProps<{

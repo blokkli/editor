@@ -7,6 +7,7 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from '#imports'
 const props = defineProps<{
   label: string
   value: string

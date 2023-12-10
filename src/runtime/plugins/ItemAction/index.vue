@@ -26,6 +26,8 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, useBlokkli } from '#imports'
+
 import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon } from '#blokkli/components'
 import type { DraggableExistingBlokkliItem } from '#blokkli/types'

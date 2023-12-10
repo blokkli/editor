@@ -3,6 +3,8 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from '#imports'
+
 const props = defineProps<{
   /**
    * The text to find the matches in.

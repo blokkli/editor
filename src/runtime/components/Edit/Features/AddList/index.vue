@@ -41,6 +41,15 @@
 </template>
 
 <script lang="ts" setup>
+import {
+  watch,
+  ref,
+  computed,
+  useBlokkli,
+  onMounted,
+  onUnmounted,
+} from '#imports'
+
 import { Sortable } from '#blokkli/sortable'
 import { falsy, onlyUnique } from '#blokkli/helpers'
 import { ItemIcon } from '#blokkli/components'

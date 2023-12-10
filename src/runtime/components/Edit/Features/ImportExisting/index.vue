@@ -22,6 +22,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, computed, useBlokkli, onMounted } from '#imports'
+
 import { PluginMenuButton } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 import ExistingDialog from './Dialog/index.vue'

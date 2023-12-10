@@ -26,6 +26,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useBlokkli, ref } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
 import { Icon, DialogModal } from '#blokkli/components'
 

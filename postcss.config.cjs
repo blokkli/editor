@@ -3,8 +3,9 @@ module.exports = {
   plugins: {
     'postcss-import': {},
     'postcss-mixins': {},
-    'postcss-url': {},
+    'postcss-nested-import': {},
     'tailwindcss/nesting': {},
+    'postcss-url': {},
     tailwindcss: {},
     cssnano: {
       preset: 'default',

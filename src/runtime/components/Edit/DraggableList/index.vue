@@ -53,6 +53,17 @@ export default {
 </script>
 
 <script lang="ts" setup>
+import {
+  watch,
+  ref,
+  computed,
+  inject,
+  useBlokkli,
+  onMounted,
+  onUnmounted,
+  type Ref,
+} from '#imports'
+
 import type { SortableEvent } from 'sortablejs'
 import { Sortable } from '#blokkli/sortable'
 import { getDefinition } from '#blokkli/definitions'

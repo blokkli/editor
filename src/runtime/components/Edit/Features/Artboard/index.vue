@@ -3,6 +3,8 @@
 </template>
 
 <script lang="ts" setup>
+import { useBlokkli } from '#imports'
+
 import ArtboardManager from './Manager/index.vue'
 
 const { storage } = useBlokkli()

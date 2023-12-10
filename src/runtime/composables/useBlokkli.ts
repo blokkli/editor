@@ -1,4 +1,4 @@
-import { inject } from 'vue'
+import { inject } from '#imports'
 import type { BlokkliApp } from '#blokkli/types'
 import { INJECT_APP } from '../helpers/symbols'
 

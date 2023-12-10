@@ -26,6 +26,16 @@
 </template>
 
 <script lang="ts" setup>
+import {
+  watch,
+  ref,
+  computed,
+  useBlokkli,
+  onMounted,
+  onBeforeUnmount,
+  onUnmounted,
+} from '#imports'
+
 import type { KeyPressedEvent, ScrollIntoViewEvent } from '#blokkli/types'
 import { PluginToolbarButton } from '#blokkli/plugins'
 

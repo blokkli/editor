@@ -28,6 +28,7 @@
 </template>
 
 <script setup lang="ts">
+import { watch, ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon } from '#blokkli/components'
 

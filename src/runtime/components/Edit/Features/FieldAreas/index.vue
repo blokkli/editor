@@ -18,6 +18,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useBlokkli } from '#imports'
 import Overlay from './Overlay/index.vue'
 import { PluginViewOption } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'

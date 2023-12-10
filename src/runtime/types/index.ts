@@ -1,7 +1,7 @@
 import type { Ref, ComputedRef } from 'vue'
 import type { Emitter } from 'mitt'
 import type { BlokkliDomProvider } from '../helpers/domProvider'
-import type { BlokkliAdapter, BlokkliAdapterContext } from '#blokkli/adapter'
+import type { BlokkliAdapter, BlokkliAdapterContext } from './../adapter'
 import type { BlokkliStorageProvider } from '../helpers/storageProvider'
 import type { BlokkliTypesProvider } from '../helpers/typesProvider'
 import type { BlokkliSelectionProvider } from '../helpers/selectionProvider'
@@ -124,11 +124,11 @@ export type InjectedBlokkliItem = ComputedRef<{
 }>
 
 export interface BlokkliFieldListItem {
-  __typename: any
   id?: string
   uuid: string
   entityBundle: string
   isNew?: boolean
+  options?: Record<string, Record<string, string>>
 }
 
 export interface BlokkliFieldList<T> {
@@ -270,7 +270,7 @@ export interface BlokkliMappedState {
   currentUserIsOwner: boolean
   ownerName: string
   mutatedState?: {
-    behaviorSettings?: any
+    mutatedOptions?: any
     fields?: BlokkliMutatedField[]
     violations?: BlokkliValidation[]
   }
@@ -284,7 +284,6 @@ export interface BlokkliItemType {
   label: string
   description?: string
   allowReusable?: boolean
-  icon?: string
   isTranslatable?: boolean
 }
 

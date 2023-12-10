@@ -218,7 +218,7 @@ export const globalOptionsDefaults: Record<GlobalOptionsType, string> = ${JSON.s
     return `
 import type { BlokkliItemDefinitionInput } from '#blokkli/types'
 export type ValidFieldListTypes = ${validFieldListTypes}
-export type ValidParentItemBundle = ${validParentItemBundles}
+export type ValidParentItemBundle = ${validParentItemBundles || `''`}
 export type ValidChunkNames = ${validChunkNames}
 export type GlobalOptionsType = ${validGlobalOptions || 'never'}
 export type ValidGlobalConfigKeys = Array<GlobalOptionsType>

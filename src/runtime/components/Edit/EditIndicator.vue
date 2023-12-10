@@ -15,6 +15,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, onMounted, onUnmounted } from '#imports'
+
 // @TODO: Translate text
 import '#blokkli/styles'
 

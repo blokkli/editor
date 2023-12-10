@@ -1,5 +1,4 @@
-import { computed, inject } from 'vue'
-import type { ComputedRef } from 'vue'
+import { computed, inject, type ComputedRef } from '#imports'
 import type {
   BlokkliItemDefinitionOptionsInput,
   InjectedBlokkliItem,
@@ -28,10 +27,10 @@ type StringBoolean = '0' | '1'
 type GetType<T> = T extends { type: 'checkbox' }
   ? StringBoolean
   : T extends { type: 'radios' }
-  ? T extends { options: infer O }
-    ? keyof O
+    ? T extends { options: infer O }
+      ? keyof O
+      : string
     : string
-  : string
 
 type WithOptions<T extends BlokkliItemDefinitionOptionsInput> = {
   [K in keyof T]: GetType<T[K]>

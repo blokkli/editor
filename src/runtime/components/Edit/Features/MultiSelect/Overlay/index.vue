@@ -35,6 +35,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+
 import type { AnimationFrameEvent } from '#blokkli/types'
 import type { Rectangle } from '#blokkli/types'
 import { intersects } from '#blokkli/helpers'

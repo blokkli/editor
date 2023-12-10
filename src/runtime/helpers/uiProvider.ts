@@ -1,8 +1,10 @@
+import { type Ref, onMounted, onBeforeUnmount, ref } from 'vue'
+
 export type BlokkliUiProvider = {
   rootElement: () => HTMLElement
   artboardElement: () => HTMLElement
   menu: {
-    isOpen: Readonly<globalThis.Ref<boolean>>
+    isOpen: Readonly<Ref<boolean>>
     close: () => void
     open: () => void
   }

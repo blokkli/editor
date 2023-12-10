@@ -1,3 +1,4 @@
+@import './partials/preflight.css';
 @import './partials/actions.css';
 @import './partials/toolbar.css';
 @import './partials/history.css';
@@ -31,11 +32,11 @@
   src: url('/Inter.var.woff2') format('woff2');
 }
 
-.bk {
-  @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+.bk {
   @apply font-sans;
 
   letter-spacing: 0;

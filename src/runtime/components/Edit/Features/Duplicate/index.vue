@@ -12,6 +12,8 @@
 </template>
 
 <script lang="ts" setup>
+import { useBlokkli } from '#imports'
+
 import type { DraggableExistingBlokkliItem } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
 

@@ -7,6 +7,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useBlokkli, onMounted, nextTick } from '#imports'
 import { featureComponents } from '#blokkli-runtime/features'
 
 const emit = defineEmits(['loaded'])

@@ -12,6 +12,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useBlokkli } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 

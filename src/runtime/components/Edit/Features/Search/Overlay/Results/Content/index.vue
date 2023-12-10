@@ -34,6 +34,7 @@
 </template>
 
 <script lang="ts" setup>
+import { watch, ref, useBlokkli, onMounted } from '#imports'
 import { ItemIcon, Icon } from '#blokkli/components'
 import { modulo } from '#blokkli/helpers'
 import type { BlokkliSearchContentItem } from '#blokkli/types'

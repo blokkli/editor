@@ -53,6 +53,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, useBlokkli, onMounted, onUnmounted } from '#imports'
+
 import { ItemIcon, Icon } from '#blokkli/components'
 import { Sortable } from '#blokkli/sortable'
 import type { ClipboardItem } from '#blokkli/types'

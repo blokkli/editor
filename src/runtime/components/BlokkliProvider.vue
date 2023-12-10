@@ -44,6 +44,8 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, defineAsyncComponent, useRoute, useRouter } from '#imports'
+
 const PreviewProvider = defineAsyncComponent(
   () => import('./Edit/PreviewProvider.vue'),
 )

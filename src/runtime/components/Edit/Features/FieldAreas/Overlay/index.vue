@@ -16,6 +16,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+
 import type { AnimationFrameEvent } from '#blokkli/types'
 
 const { eventBus, selection } = useBlokkli()

@@ -55,6 +55,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, computed } from '#imports'
+
 import type { BlokkliComment } from '#blokkli/types'
 import Comment from '#blokkli/components/Comment/index.vue'
 import { Icon } from '#blokkli/components'

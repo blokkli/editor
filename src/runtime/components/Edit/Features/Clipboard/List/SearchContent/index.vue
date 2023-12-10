@@ -8,6 +8,8 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, provide } from '#imports'
+
 import { getBlokkliItemComponent } from '#blokkli/imports'
 import { getDefinition } from '#blokkli/definitions'
 import { INJECT_BLOCK_ITEM } from '#blokkli/helpers/symbols'

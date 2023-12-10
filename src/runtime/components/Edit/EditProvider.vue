@@ -12,6 +12,16 @@
 </template>
 
 <script lang="ts" setup>
+import {
+  ref,
+  computed,
+  provide,
+  onMounted,
+  onBeforeUnmount,
+  nextTick,
+  watch,
+  useRoute,
+} from '#imports'
 import type { BlokkliApp } from '#blokkli/types'
 import Toolbar from './Toolbar/index.vue'
 import Actions from './Actions/index.vue'

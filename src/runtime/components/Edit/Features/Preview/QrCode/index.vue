@@ -10,6 +10,7 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, computed, onMounted } from '#imports'
 import QR from 'qrcode'
 
 const canvas = ref<HTMLCanvasElement | null>(null)

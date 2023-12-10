@@ -100,6 +100,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useBlokkli } from '#imports'
 import { DialogModal, Icon } from '#blokkli/components'
 import { availableFeaturesAtBuild } from '#blokkli-runtime/features'
 

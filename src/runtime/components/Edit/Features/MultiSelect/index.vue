@@ -8,6 +8,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+
 import Overlay from './Overlay/index.vue'
 
 const { keyboard, eventBus } = useBlokkli()

@@ -65,6 +65,15 @@
 </template>
 
 <script lang="ts" setup>
+import {
+  watch,
+  ref,
+  computed,
+  useBlokkli,
+  onMounted,
+  onUnmounted,
+} from '#imports'
+
 import { falsy, modulo, getBounds, onlyUnique } from '#blokkli/helpers'
 import type { AnimationFrameEvent, KeyPressedEvent } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'

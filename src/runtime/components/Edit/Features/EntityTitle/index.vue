@@ -28,6 +28,8 @@
 </template>
 
 <script lang="ts" setup>
+import { useBlokkli } from '#imports'
+
 const { state, eventBus, text } = useBlokkli()
 const { entity, mutations } = state
 </script>

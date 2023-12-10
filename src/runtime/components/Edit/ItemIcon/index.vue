@@ -9,6 +9,7 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from '#imports'
 import { icons } from '#blokkli/definitions'
 import { Icon } from '#blokkli/components'
 
@@ -16,7 +17,5 @@ const props = defineProps<{
   bundle?: string
 }>()
 
-const markup = computed(() => {
-  return props.bundle ? icons[props.bundle] : undefined
-})
+const markup = computed(() => (props.bundle ? icons[props.bundle] : undefined))
 </script>

@@ -18,6 +18,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, useBlokkli } from '#imports'
+
 const comment = ref('')
 defineEmits(['add'])
 const { text } = useBlokkli()

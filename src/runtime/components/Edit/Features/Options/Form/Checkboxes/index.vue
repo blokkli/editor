@@ -32,6 +32,7 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, ref } from '#imports'
 import { Icon } from '#blokkli/components'
 
 const props = defineProps<{

@@ -41,6 +41,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useBlokkli, computed } from '#imports'
 import { ItemIcon } from '#blokkli/components'
 import type { StructureTreeField } from './../types'
 

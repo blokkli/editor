@@ -46,6 +46,7 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, computed, useBlokkli, useRoute, useAsyncData } from '#imports'
 import { PluginToolbarButton } from '#blokkli/plugins'
 import PreviewFrame from './Frame/index.vue'
 import QrCode from './QrCode/index.vue'

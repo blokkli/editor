@@ -5,6 +5,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, computed, useBlokkli, onMounted, onUnmounted } from '#imports'
+
 import type { AnimationFrameEvent, DraggableStartEvent } from '#blokkli/types'
 
 const { eventBus } = useBlokkli()

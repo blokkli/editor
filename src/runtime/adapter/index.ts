@@ -1,3 +1,4 @@
+import type { ComputedRef } from 'vue'
 import type {
   BlokkliAvailableType,
   BlokkliComment,
@@ -18,7 +19,7 @@ import type {
   UpdateBlokkliItemOptionEvent,
   AddContentSearchItemEvent,
   BlokkliTransformPlugin,
-} from '#blokkli/types'
+} from './../types'
 
 interface MutationResponseLike<T> {
   data: {
@@ -261,7 +262,7 @@ export interface BlokkliAdapterContext {
 }
 
 export type BlokkliAdapterFactory<T> = (
-  ctx: globalThis.ComputedRef<BlokkliAdapterContext>,
+  ctx: ComputedRef<BlokkliAdapterContext>,
 ) => BlokkliAdapter<T>
 
 export function defineBlokkliEditAdapter<T>(

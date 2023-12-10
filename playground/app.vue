@@ -1,5 +1,7 @@
 <template>
-  <div>Nuxt module playground!</div>
+  <div class="bk-main-canvas">
+    <NuxtPage />
+  </div>
 </template>
 
-<script setup></script>
+<script setup lang="ts"></script>

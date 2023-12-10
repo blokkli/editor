@@ -13,6 +13,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, useBlokkli, onBeforeUnmount } from '#imports'
+
 const { storage } = useBlokkli()
 
 const persistedWidth = storage.use('resizable:width', 600)

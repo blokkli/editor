@@ -3,6 +3,15 @@
 </template>
 
 <script lang="ts" setup>
+import {
+  ref,
+  computed,
+  provide,
+  onMounted,
+  onBeforeUnmount,
+  useRouter,
+  useAsyncData,
+} from '#imports'
 import type {
   MutatedOptions,
   BlokkliMutatedField,
@@ -39,7 +48,7 @@ const { data, refresh } = await useAsyncData(() =>
 )
 
 const updateState = () => {
-  mutatedOptions.value = data.value?.mutatedState?.behaviorSettings || {}
+  mutatedOptions.value = data.value?.mutatedState?.mutatedOptions || {}
   mutatedFields.value = data.value?.mutatedState?.fields || []
 }
 

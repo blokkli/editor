@@ -39,6 +39,7 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, useBlokkli } from '#imports'
 import { falsy } from '#blokkli/helpers'
 import { PluginMenuButton, PluginItemAction } from '#blokkli/plugins'
 import type {

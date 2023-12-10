@@ -9,6 +9,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, computed, onMounted, onBeforeUnmount } from '#imports'
+
 const props = defineProps<{
   width?: number
 }>()

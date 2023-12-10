@@ -30,6 +30,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, computed, useBlokkli } from '#imports'
+
 import { PluginSidebar, PluginItemAction } from '#blokkli/plugins'
 import Pane from './Pane/index.vue'
 import ReusableDialog from './ReusableDialog/index.vue'

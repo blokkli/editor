@@ -13,7 +13,7 @@ fragment paragraphsBuilderEditState on ParagraphsBuilderEditState {
     fields(langcode: $langcode) {
       ...paragraphsBuilderMutatedField
     }
-    behaviorSettings
+    mutatedOptions: behaviorSettings
     violations {
       ...paragraphsBuilderViolation
     }

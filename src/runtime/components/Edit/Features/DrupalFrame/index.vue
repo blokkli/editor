@@ -35,6 +35,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, computed, useBlokkli, onMounted, onUnmounted } from '#imports'
+
 import { Resizable } from '#blokkli/components'
 import { Icon, ItemIcon } from '#blokkli/components'
 import { getDefinition } from '#blokkli/definitions'

@@ -5,6 +5,8 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from '#imports'
+
 const props = withDefaults(
   defineProps<{
     label: string

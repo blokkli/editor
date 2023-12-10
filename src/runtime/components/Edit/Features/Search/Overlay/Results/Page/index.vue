@@ -30,6 +30,7 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, computed, useBlokkli, onMounted, watch } from '#imports'
 import Highlight from './../../Highlight/index.vue'
 import { ItemIcon } from '#blokkli/components'
 import { falsy, modulo } from '#blokkli/helpers'

@@ -24,6 +24,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useBlokkli } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 

@@ -24,6 +24,7 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, useBlokkli, useLazyAsyncData } from '#imports'
 import { PluginItemDropdown } from '#blokkli/plugins'
 import { onlyUnique } from '#blokkli/helpers'
 import type { BlokkliTransformPlugin } from '#blokkli/types'

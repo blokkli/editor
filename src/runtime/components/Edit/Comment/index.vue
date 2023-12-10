@@ -17,6 +17,8 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from '#imports'
+
 import type { BlokkliComment } from '#blokkli/types'
 import { Icon } from '#blokkli/components'
 import { RelativeTime } from '#blokkli/components'

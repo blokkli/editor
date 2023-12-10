@@ -96,6 +96,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, computed, useBlokkli, onMounted, nextTick, watch } from '#imports'
+
 import { PluginSidebar, PluginToolbarButton } from '#blokkli/plugins'
 import { RelativeTime } from '#blokkli/components'
 import type { BlokkliMutationItem } from '#blokkli/types'

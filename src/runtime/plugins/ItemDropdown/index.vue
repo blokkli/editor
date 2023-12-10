@@ -8,6 +8,7 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 const props = defineProps<{
   id: string
   title: string

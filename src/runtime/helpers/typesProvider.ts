@@ -1,3 +1,4 @@
+import { type ComputedRef, computed, watch } from 'vue'
 import type {
   DraggableExistingBlokkliItem,
   BlokkliAvailableType,
@@ -8,16 +9,16 @@ import { eventBus } from '#blokkli/helpers/eventBus'
 import type { BlokkliAdapter, BlokkliAdapterContext } from '../adapter'
 
 export type BlokkliTypesProvider = {
-  itemBundlesWithNested: globalThis.ComputedRef<string[]>
-  allowedTypesInList: globalThis.ComputedRef<string[]>
-  allTypes: globalThis.ComputedRef<BlokkliItemType[]>
-  allowedTypes: globalThis.ComputedRef<BlokkliAvailableType[]>
+  itemBundlesWithNested: ComputedRef<string[]>
+  allowedTypesInList: ComputedRef<string[]>
+  allTypes: ComputedRef<BlokkliItemType[]>
+  allowedTypes: ComputedRef<BlokkliAvailableType[]>
 }
 
 export default async function (
   adapter: BlokkliAdapter<any>,
-  blocks: globalThis.ComputedRef<DraggableExistingBlokkliItem[]>,
-  context: globalThis.ComputedRef<BlokkliAdapterContext>,
+  blocks: ComputedRef<DraggableExistingBlokkliItem[]>,
+  context: ComputedRef<BlokkliAdapterContext>,
 ): Promise<BlokkliTypesProvider> {
   const allTypesData = await adapter.getAllTypes()
   const allTypes = computed(() => allTypesData || [])

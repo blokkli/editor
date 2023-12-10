@@ -1,3 +1,13 @@
+import {
+  type Ref,
+  type ComputedRef,
+  computed,
+  ref,
+  nextTick,
+  onMounted,
+  onBeforeUnmount,
+} from 'vue'
+
 import type { DraggableExistingBlokkliItem } from '#blokkli/types'
 import { findElement, buildDraggableItem, falsy } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
@@ -7,22 +17,22 @@ export type BlokkliSelectionProvider = {
   /**
    * The currently selected UUIDs.
    */
-  uuids: Readonly<globalThis.Ref<string[]>>
+  uuids: Readonly<Ref<string[]>>
 
   /**
    * The currently selected blocks.
    */
-  blocks: globalThis.ComputedRef<DraggableExistingBlokkliItem[]>
+  blocks: ComputedRef<DraggableExistingBlokkliItem[]>
 
   /**
    * The active field key.
    */
-  activeFieldKey: Readonly<globalThis.Ref<string>>
+  activeFieldKey: Readonly<Ref<string>>
 
   /**
    * Whether the user is currently dragging a block.
    */
-  isDragging: Readonly<globalThis.Ref<boolean>>
+  isDragging: Readonly<Ref<boolean>>
 
   /**
    * Update the active field key.

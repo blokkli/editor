@@ -1,3 +1,13 @@
+import {
+  type Ref,
+  type ComputedRef,
+  computed,
+  ref,
+  readonly,
+  onMounted,
+  onBeforeUnmount,
+  provide,
+} from 'vue'
 import type {
   BlokkliMutatedField,
   BlokkliEditEntity,
@@ -13,6 +23,7 @@ import { removeDroppedElements, falsy } from '#blokkli/helpers'
 import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
 import type { BlokkliAdapter, BlokkliAdapterContext } from '../adapter'
 import { INJECT_MUTATED_FIELDS } from './symbols'
+import { refreshNuxtData } from 'nuxt/app'
 
 export type BlokkliOwner = {
   name: string | undefined
@@ -20,23 +31,23 @@ export type BlokkliOwner = {
 }
 
 export type BlokkliStateProvider = {
-  owner: Readonly<globalThis.Ref<BlokkliOwner | null>>
-  refreshKey: Readonly<globalThis.Ref<string>>
-  mutatedFields: Readonly<globalThis.Ref<BlokkliMutatedField[]>>
-  entity: Readonly<globalThis.Ref<BlokkliEditEntity>>
-  mutatedOptions: globalThis.Ref<MutatedOptions>
-  translation: Readonly<globalThis.Ref<BlokkliTranslationState>>
-  mutations: Readonly<globalThis.Ref<BlokkliMutationItem[]>>
-  currentMutationIndex: Readonly<globalThis.Ref<number>>
-  violations: Readonly<globalThis.Ref<BlokkliValidation[]>>
+  owner: Readonly<Ref<BlokkliOwner | null>>
+  refreshKey: Readonly<Ref<string>>
+  mutatedFields: Readonly<Ref<BlokkliMutatedField[]>>
+  entity: Readonly<Ref<BlokkliEditEntity>>
+  mutatedOptions: Ref<MutatedOptions>
+  translation: Readonly<Ref<BlokkliTranslationState>>
+  mutations: Readonly<Ref<BlokkliMutationItem[]>>
+  currentMutationIndex: Readonly<Ref<number>>
+  violations: Readonly<Ref<BlokkliValidation[]>>
   mutateWithLoadingState: MutateWithLoadingStateFunction
-  editMode: Readonly<globalThis.Ref<BlokkliEditMode>>
-  canEdit: globalThis.ComputedRef<boolean>
+  editMode: Readonly<Ref<BlokkliEditMode>>
+  canEdit: ComputedRef<boolean>
 }
 
 export default async function (
   adapter: BlokkliAdapter<any>,
-  context: globalThis.ComputedRef<BlokkliAdapterContext>,
+  context: ComputedRef<BlokkliAdapterContext>,
 ): Promise<BlokkliStateProvider> {
   const owner = ref<BlokkliOwner | null>(null)
   const refreshKey = ref('')
@@ -62,7 +73,7 @@ export default async function (
   function setContext(context?: BlokkliMappedState) {
     removeDroppedElements()
 
-    mutatedOptions.value = context?.mutatedState?.behaviorSettings || {}
+    mutatedOptions.value = context?.mutatedState?.mutatedOptions || {}
     mutations.value = context?.mutations || []
     violations.value = context?.mutatedState?.violations || []
     const currentIndex = context?.currentIndex

@@ -10,6 +10,16 @@
 </template>
 
 <script lang="ts" setup>
+import {
+  ref,
+  computed,
+  useBlokkli,
+  onMounted,
+  onBeforeUnmount,
+  useRoute,
+  watch,
+} from '#imports'
+
 import type {
   UpdateMutatedFieldsEvent,
   UpdateBlokkliItemOptionEvent,

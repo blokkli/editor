@@ -3,6 +3,8 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, provide } from '#imports'
+
 import type { InjectedBlokkliItem, BlokkliFieldListItem } from '#blokkli/types'
 import { getBlokkliItemComponent } from '#blokkli/imports'
 import { INJECT_BLOCK_ITEM } from '../helpers/symbols'

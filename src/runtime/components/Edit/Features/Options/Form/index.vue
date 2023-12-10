@@ -41,6 +41,8 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, useBlokkli, onBeforeUnmount } from '#imports'
+
 import { globalOptions, getDefinition } from '#blokkli/definitions'
 import OptionRadios from './Radios/index.vue'
 import OptionCheckbox from './Checkbox/index.vue'

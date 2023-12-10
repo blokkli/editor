@@ -1,10 +1,11 @@
+import { type ComputedRef, computed, ref } from 'vue'
 import type { WritableComputedRef } from 'nuxt/dist/app/compat/capi'
 
 const PREFIX = 'blokkli:'
 
 export type BlokkliStorageProvider = {
   use: <T>(
-    key: string | globalThis.ComputedRef<string>,
+    key: string | ComputedRef<string>,
     defaultValue: T,
   ) => WritableComputedRef<T>
   clearAll: () => void
@@ -33,10 +34,7 @@ const getExisting = (key: string): any => {
 export default function (): BlokkliStorageProvider {
   const values = ref<Record<string, any>>({})
 
-  const use = <T>(
-    key: string | globalThis.ComputedRef<string>,
-    defaultValue: T,
-  ) => {
+  const use = <T>(key: string | ComputedRef<string>, defaultValue: T) => {
     const storageKey = computed(
       () => PREFIX + (typeof key === 'string' ? key : key.value),
     )

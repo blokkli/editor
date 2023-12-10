@@ -349,7 +349,7 @@ export type ValidTextKeys = ${validTranslationKeys}
 
       const maybeUserFile = fileExists(resolvedPath, ['ts'])
 
-      if (!maybeUserFile && !nuxt.options._prepare) {
+      if (!maybeUserFile) {
         throw new Error(
           'Missing blokkli adapter file in ~/app/blokkli.editAdapter.ts',
         )
@@ -539,13 +539,14 @@ export type BlokkliIcon = keyof typeof icons`
     }
 
     const appliesStyles = (path: string): boolean => {
-      return path.includes('nuxt-paragraphs-builder/css')
+      return path.includes('runtime/css')
     }
 
     // Watch for file changes in dev mode.
     if (nuxt.options.dev) {
       nuxt.hook('vite:serverCreated', (viteServer) => {
         nuxt.hook('builder:watch', async (_event, path) => {
+          console.log(path)
           if (appliesStyles(path)) {
             await updateTemplates({
               filter: (template) => {

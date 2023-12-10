@@ -11,6 +11,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, onMounted, onBeforeUnmount } from '#imports'
+
 defineProps<{
   type: 'success' | 'error'
   message: string

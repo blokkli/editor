@@ -28,6 +28,8 @@
 </template>
 
 <script setup lang="ts">
+import { computed, provide } from '#imports'
+
 import { getDefinition } from '#blokkli/definitions'
 import type { BlokkliLibraryItem } from '#blokkli/types'
 import { ItemIcon, ScaleToFit } from '#blokkli/components'

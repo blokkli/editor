@@ -7,6 +7,7 @@
 </template>
 
 <script lang="ts" setup>
+import { watch, onMounted, useBlokkli, ref } from '#imports'
 import { falsy } from '#blokkli/helpers'
 import Field from './Field/index.vue'
 import type { StructureTreeField, StructureTreeItem } from './types'

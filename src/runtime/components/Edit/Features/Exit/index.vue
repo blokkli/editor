@@ -10,6 +10,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useBlokkli, useRoute, nextTick } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 

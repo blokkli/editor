@@ -34,6 +34,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, useBlokkli, onMounted } from '#imports'
+
 import { DialogModal } from '#blokkli/components'
 
 defineEmits<{

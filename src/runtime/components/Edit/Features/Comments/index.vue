@@ -35,6 +35,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, useBlokkli, onMounted } from '#imports'
+
 import { PluginSidebar, PluginItemAction } from '#blokkli/plugins'
 import Comment from './../../Comment/index.vue'
 import CommentAddForm from './AddForm/index.vue'
