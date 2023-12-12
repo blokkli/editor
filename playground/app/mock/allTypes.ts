@@ -1,20 +1,9 @@
 import type { BlokkliItemType } from '#blokkli/types'
+import { getBlockBundles } from './state/Block'
 
-export const allTypes: BlokkliItemType[] = [
-  {
-    id: 'text',
-    label: 'Text',
-  },
-  {
-    id: 'title',
-    label: 'Title',
-  },
-  {
-    id: 'grid',
-    label: 'Grid',
-  },
-  {
-    id: 'teaser',
-    label: 'Teaser',
-  },
-]
+export const allTypes: BlokkliItemType[] = getBlockBundles().map((block) => {
+  return {
+    id: block.bundle,
+    label: block.label,
+  }
+})

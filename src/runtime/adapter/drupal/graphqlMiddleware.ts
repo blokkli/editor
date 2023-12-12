@@ -349,6 +349,48 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         ...e,
       })
 
+    function getFrameUrlQuery(prefix: string) {
+      return `?paragraphsBuilder=true&destination=${prefix}/paragraphs_builder/redirect`
+    }
+
+    const buildFormUrl = (langcode: string, parts: string | string[]) => {
+      const prefix = `/${langcode}`
+      const url = typeof parts === 'string' ? parts : parts.join('/')
+      return { url: prefix + '/' + url + getFrameUrlQuery(prefix) }
+    }
+
+    const formFrameBuilder: DrupalAdapter['formFrameBuilder'] = (e) => {
+      if (e.form === 'block:add') {
+        return buildFormUrl(ctx.value.language, [
+          'paragraphs_builder',
+          ctx.value.entityType,
+          ctx.value.entityUuid,
+          'add',
+          e.data.type,
+          e.data.host.type,
+          e.data.host.uuid,
+          e.data.host.fieldName,
+          e.data.afterUuid,
+        ])
+      } else if (e.form === 'block:edit' || e.form === 'block:translate') {
+        return buildFormUrl(
+          ctx.value.language,
+          `/paragraphs_builder/${ctx.value.entityType}/${ctx.value.entityUuid}/edit/${e.data.uuid}`,
+        )
+      } else if (e.form === 'entity:edit') {
+        return buildFormUrl(ctx.value.language, [
+          ctx.value.entityType,
+          'edit',
+          ctx.value.entityUuid,
+        ])
+      } else if (e.form === 'batchTranslate') {
+        buildFormUrl(
+          ctx.value.language,
+          `/paragraphs_builder/${ctx.value.entityType}/${ctx.value.entityUuid}/translate-paragraphs`,
+        )
+      }
+    }
+
     return {
       getTransformPlugins,
       applyTransformPlugin,
@@ -382,6 +424,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
       getLibraryItems,
       getLastChanged,
       getPreviewGrantUrl,
+      formFrameBuilder,
     }
   },
 )

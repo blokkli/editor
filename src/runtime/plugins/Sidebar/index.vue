@@ -17,9 +17,11 @@
 
   <Teleport v-if="activeSidebar === id" to="#bk-sidebar-content">
     <div class="bk-sidebar-inner" @wheel.stop="">
-      <h3 class="bk-sidebar-title">
-        {{ title }}
-      </h3>
+      <div class="bk">
+        <h3 class="bk-sidebar-title">
+          {{ title }}
+        </h3>
+      </div>
       <div ref="sidebarContent" class="bk-sidebar-content">
         <slot :scrolled-to-end="scrolledToEnd" />
       </div>

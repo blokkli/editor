@@ -1,30 +1,41 @@
-import { Field, FieldBlocks, FieldText } from './Field'
+import { Field } from './Field'
+import { FieldBlocks } from './Field/Blocks'
 
 export class Entity {
+  static entityType = ''
+  static bundle = ''
+  static label = ''
+
   uuid: string
-  entityType: string
-  bundle: string
   fields: Record<string, Field<any>> = {}
 
-  constructor(uuid: string, entityType: string, bundle: string) {
+  constructor(uuid: string) {
     this.uuid = uuid
-    this.entityType = entityType
-    this.bundle = bundle
+
+    const constructor = this.constructor as typeof Entity
+    constructor.getFieldDefintions().forEach((field) => {
+      field.setEntity(this)
+      this.fields[field.id] = field
+    })
   }
 
-  // Clone method for Entity
-  clone(newUuid: string): Entity {
-    // Create a new instance of the current class
-    const cloned = new (this.constructor as typeof Entity)(
-      newUuid,
-      this.entityType,
-      this.bundle,
-    )
+  static getFieldDefintions(): Field<any>[] {
+    return []
+  }
 
-    const values = this.getValues()
-    cloned.setValues(values)
+  get entityType() {
+    const constructor = this.constructor as typeof Entity
+    return constructor.entityType
+  }
 
-    return cloned
+  get bundle() {
+    const constructor = this.constructor as typeof Entity
+    return constructor.bundle
+  }
+
+  get label() {
+    const constructor = this.constructor as typeof Entity
+    return constructor.label
   }
 
   getBlockFields(): FieldBlocks[] {
@@ -44,7 +55,10 @@ export class Entity {
   getValues(): Record<string, any> {
     return Object.values(this.fields).reduce<Record<string, any>>(
       (acc, field) => {
-        acc[field.id] = field.list
+        acc[field.id] = [...field.list].map((item) => {
+          console.log(item)
+          return JSON.parse(JSON.stringify(item))
+        })
         return acc
       },
       {},
@@ -53,36 +67,9 @@ export class Entity {
 
   setValues(values: Record<string, any>) {
     Object.entries(values).forEach(([field, value]) => {
-      this.fields[field].list = value
+      this.fields[field].list = (Array.isArray(value) ? value : [value]).filter(
+        Boolean,
+      )
     })
-  }
-}
-
-export class ContentPage extends Entity {
-  constructor(uuid: string) {
-    super(uuid, 'content', 'page')
-    this.addField(new FieldText('title', 'Titel', this))
-    this.addField(
-      new FieldBlocks(
-        'content',
-        'Content',
-        -1,
-        ['text', 'title', 'grid'],
-        this,
-      ),
-    )
-    this.addField(new FieldBlocks('footer', 'Footer', -1, ['text'], this))
-  }
-
-  title(): FieldText {
-    return this.get('title')
-  }
-
-  content(): FieldBlocks {
-    return this.get('content')
-  }
-
-  footer(): FieldBlocks {
-    return this.get('footer')
   }
 }

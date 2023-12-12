@@ -19,9 +19,10 @@ import type {
   UpdateBlokkliItemOptionEvent,
   AddContentSearchItemEvent,
   BlokkliTransformPlugin,
+  EditBlokkliItemEvent,
 } from './../types'
 
-interface MutationResponseLike<T> {
+export interface MutationResponseLike<T> {
   data: {
     state?: {
       action?: {
@@ -252,7 +253,54 @@ export interface BlokkliAdapter<T> {
    * Change the language.
    */
   changeLanguage?: (translation: BlokkliEntityTranslation) => Promise<any>
+
+  /**
+   * Build the URL for forms.
+   */
+  formFrameBuilder?: (
+    e: AdapterFormFrameBuilder,
+  ) => AdapterFormFrameBuilderResult | undefined | void
 }
+
+type AdapterFormFrameBuilderResult = {
+  url: string
+}
+
+type AdapterFormFrameBuilderBlockAdd = {
+  id: 'block:add'
+  data: AddNewBlokkliItemEvent
+}
+
+type AdapterFormFrameBuilderBlockTranslate = {
+  id: 'block:translate'
+  data: EditBlokkliItemEvent
+}
+
+type AdapterFormFrameBuilderBlockEdit = {
+  id: 'block:edit'
+  data: EditBlokkliItemEvent
+}
+
+type AdapterFormFrameBuilderEntityEdit = {
+  id: 'entity:edit'
+}
+
+type AdapterFormFrameBuilderEntityTranslate = {
+  id: 'entity:translate'
+  langcode: string
+}
+
+type AdapterFormFrameBuilderBatchTranslate = {
+  id: 'batchTranslate'
+}
+
+export type AdapterFormFrameBuilder =
+  | AdapterFormFrameBuilderBlockAdd
+  | AdapterFormFrameBuilderBlockEdit
+  | AdapterFormFrameBuilderBlockTranslate
+  | AdapterFormFrameBuilderEntityEdit
+  | AdapterFormFrameBuilderEntityTranslate
+  | AdapterFormFrameBuilderBatchTranslate
 
 export interface BlokkliAdapterContext {
   entityType: string

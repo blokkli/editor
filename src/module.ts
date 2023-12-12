@@ -239,7 +239,7 @@ type FeatureComponent = {
   id: string
   component: any
 }
-        
+
 export const featureComponents: FeatureComponent[] = [
 ${featuresArray}
 ]
@@ -520,6 +520,14 @@ export type BlokkliIcon = keyof typeof icons`
     nuxt.options.alias['#blokkli/sortable'] =
       resolver.resolve('runtime/sortable')
     nuxt.options.alias['#blokkli/adapter'] = resolver.resolve('runtime/adapter')
+
+    nuxt.hook('nitro:config', async (nitroConfig) => {
+      nitroConfig.publicAssets ||= []
+      nitroConfig.publicAssets.push({
+        dir: resolver.resolve('./runtime/public'),
+        maxAge: 60 * 60 * 24 * 365, // 1 year
+      })
+    })
 
     // Checks if the given file path is handled by this module.
     const applies = (path: string): Promise<string | undefined | void> => {

@@ -1,22 +1,24 @@
 import type { BlokkliAvailableType } from '#blokkli/types'
+import { getBlockBundles } from './state/Block'
+import { getContentBundles } from './state/Entity/Content'
+import { FieldBlocks } from './state/Field/Blocks'
 
 export const availableTypes: BlokkliAvailableType[] = [
-  {
-    entityType: 'content',
-    bundle: 'page',
-    fieldName: 'content',
-    allowedTypes: ['text', 'image', 'title', 'button', 'teaser', 'grid'],
-  },
-  {
-    entityType: 'content',
-    bundle: 'page',
-    fieldName: 'footer',
-    allowedTypes: ['text'],
-  },
-  {
-    entityType: 'block',
-    bundle: 'grid',
-    fieldName: 'blocks',
-    allowedTypes: ['teaser'],
-  },
+  ...getContentBundles(),
+  ...getBlockBundles(),
 ]
+  .map((item) => {
+    const blockFields = item
+      .getFieldDefintions()
+      .filter((field) => field instanceof FieldBlocks) as FieldBlocks[]
+
+    return blockFields.map((field) => {
+      return {
+        entityType: item.entityType,
+        bundle: item.bundle,
+        fieldName: field.id,
+        allowedTypes: field.allowedBundles,
+      }
+    })
+  })
+  .flat()

@@ -6,12 +6,9 @@
     :entity-uuid="page.uuid"
     :can-edit="true"
   >
-    <div>
-      <h1>{{ title }}</h1>
-
-      <BlokkliField v-bind="fieldContent" />
-      <BlokkliField v-bind="fieldFooter" />
-    </div>
+    <BlokkliField v-bind="fieldHeader" tag="header" />
+    <BlokkliField v-bind="fieldContent" />
+    <BlokkliField v-bind="fieldFooter" />
   </BlokkliProvider>
 </template>
 
@@ -19,22 +16,14 @@
 import { mapMockField, state } from '@/app/mock/state'
 
 const route = useRoute()
-
 const uuid = route.params.uuid
-
 const page = state.pages.find((v) => v.uuid === uuid)
 
 if (!page) {
   throw new Error('page not found')
 }
 
-const fieldContent = computed(() => {
-  return mapMockField(page.content())
-})
-
-const fieldFooter = computed(() => {
-  return mapMockField(page.footer())
-})
-
-const title = computed(() => page.title().getText())
+const fieldHeader = computed(() => mapMockField(page.header()))
+const fieldContent = computed(() => mapMockField(page.content()))
+const fieldFooter = computed(() => mapMockField(page.footer()))
 </script>

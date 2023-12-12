@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .field-label {
+    @apply block font-semibold mb-5;
+  }
+
+  .button {
+    @apply inline-block font-semibold text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 rounded-lg text-sm px-20 py-10 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800;
+  }
+
+  .container {
+    @apply max-w-7xl mx-auto px-20 md:px-30;
+  }
+}
+
+.entity-form {
+  @apply p-20;
+
+  input,
+  textarea {
+    @apply w-full;
+  }
+}
+
+.entity-form-footer {
+  @apply fixed bottom-0 left-0 w-full p-20 border-t;
+
+  input {
+    @apply rounded bg-blue-700 text-white font-bold px-10 py-15 cursor-pointer;
+  }
+}
+
+.field + .field {
+  @apply mt-20;
+}

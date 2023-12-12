@@ -2,6 +2,7 @@
 module.exports = {
   corePlugins: {
     preflight: false,
+    container: false,
   },
   content: ['./src/runtime/**/*.{vue,js,ts}'],
   theme: {

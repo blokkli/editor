@@ -1,7 +1,7 @@
 import type { BlokkliMutatedField, BlokkliMutationItem } from '#blokkli/types'
-import { Mutation } from '../plugins/mutations/Mutation'
+import { createMutation, type MutationArgsMap } from '../plugins/mutations'
 import { mapMockField } from '../state'
-import type { Block } from './Block'
+import type { Block } from './Block/Block'
 import type { Entity } from './Entity'
 
 export class BlockProxy {
@@ -86,9 +86,11 @@ export class MutationContext {
     return proxy
   }
 
-  moveProxyAfter(uuid: string, preceedingUuid: string) {
+  moveProxyAfter(uuid: string, preceedingUuid?: string) {
     const index = this.getIndex(uuid)
-    const preceedingIndex = this.getIndex(preceedingUuid)
+    const preceedingIndex = preceedingUuid
+      ? this.getIndex(preceedingUuid)
+      : undefined
 
     const targetIndex =
       index !== undefined && preceedingIndex !== undefined
@@ -120,34 +122,90 @@ type MutationItem = {
   id: string
   args: Record<string, any>
   configuration?: Record<string, any>
+  timestamp: number
 }
 
 export type MutatedState = {
   mutatedOptions: any
   fields: BlokkliMutatedField[]
+  context: MutationContext
 }
 
 export class EditState {
   uuid: string
-  mutations: MutationItem[] = []
-  currentIndex = -1
 
   constructor(uuid: string) {
     this.uuid = uuid
   }
 
-  setMutations(mutations: MutationItem[]) {
-    this.mutations = mutations
+  getStorageKey(suffix: string) {
+    return 'blokkli_mock_' + this.uuid + '_' + suffix
   }
 
-  addMutation(id: string, args: any) {
-    this.mutations.push({ id, args })
+  get currentIndex(): number {
+    try {
+      const data = window.localStorage.getItem(this.getStorageKey('index'))
+      if (data !== null) {
+        const v = parseInt(data)
+        if (!isNaN(v)) {
+          return v
+        }
+      }
+    } catch (_e) {
+      // Noop.
+    }
+
+    return -1
+  }
+
+  set currentIndex(v: number) {
+    window.localStorage.setItem(this.getStorageKey('index'), v.toString())
+  }
+
+  getMutations(): MutationItem[] {
+    try {
+      const data = window.localStorage.getItem(this.getStorageKey('mutations'))
+      if (data) {
+        const parsed = JSON.parse(data)
+        if (parsed && Array.isArray(parsed)) {
+          return parsed
+        }
+      }
+    } catch (_e) {
+      // Noop.
+    }
+
+    return []
+  }
+
+  revert() {
+    window.localStorage.removeItem(this.getStorageKey('mutations'))
+    window.localStorage.removeItem(this.getStorageKey('index'))
+  }
+
+  addMutation<T extends keyof MutationArgsMap>(
+    id: T,
+    args: MutationArgsMap[T],
+  ) {
+    let mutations = this.getMutations()
+    if (this.currentIndex !== mutations.length - 1) {
+      mutations = mutations.slice(0, this.currentIndex + 1)
+    }
+    mutations.push({ id, args, timestamp: Date.now() })
+    this.currentIndex = this.currentIndex + 1
+    this.persistMutations(mutations)
+  }
+
+  persistMutations(mutations: MutationItem[]) {
+    const data = JSON.stringify(mutations)
+    window.localStorage.setItem(this.getStorageKey('mutations'), data)
   }
 
   getMutationItems(): BlokkliMutationItem[] {
-    return this.mutations.map((v) => {
+    return this.getMutations().map((v) => {
       return {
         pluginId: v.id,
+        timestamp: (v.timestamp / 1000).toString(),
         plugin: {
           label: v.id,
         },
@@ -155,19 +213,28 @@ export class EditState {
     })
   }
 
-  getMutatedState(entity: Entity) {
+  getMutatedState(entity: Entity): MutatedState {
     const context = new MutationContext(entity)
 
-    this.mutations.forEach((item) => {
-      const plugin = Mutation.create(item.id, item.configuration)
-      plugin.execute(context, item.configuration)
-      item.configuration = plugin.configuration
-    })
+    const mutations = this.getMutations()
+    const currentIndex = this.currentIndex
+    for (let i = 0; i <= currentIndex; i++) {
+      const item = mutations[i]
+      if (item) {
+        const plugin = createMutation(item.id as any, item.configuration)
+        plugin.execute(context, item.args)
+        mutations[i].configuration = plugin.configuration
+      }
+    }
+
+    this.persistMutations(mutations)
 
     const mutatedOptions: Record<string, any> = {}
     const proxiesByFieldKey: Record<string, BlockProxy[]> = {}
     context.proxies.forEach((proxy) => {
-      mutatedOptions[proxy.block.uuid] = proxy.block.options().getOptions()
+      if (!proxy.isDeleted) {
+        mutatedOptions[proxy.block.uuid] = proxy.block.options().getOptions()
+      }
       const key = proxy.getFieldListKey()
       if (!proxiesByFieldKey[key]) {
         proxiesByFieldKey[key] = []
@@ -178,17 +245,27 @@ export class EditState {
     const blockFields = entity.getBlockFields()
 
     blockFields.forEach((field) => {
-      field.list = []
+      field.setList([])
       const key = field.getFieldListKey()
       const proxies = proxiesByFieldKey[key] || []
       proxies.forEach((proxy) => {
-        field.append(proxy.block)
+        if (!proxy.isDeleted) {
+          field.append(proxy.block)
+        }
+        const nestedBlockFields = proxy.block.getBlockFields()
+        nestedBlockFields.forEach((nestedField) => {
+          const nestedProxies =
+            proxiesByFieldKey[nestedField.getFieldListKey()] || []
+          nestedField.setList(
+            nestedProxies.filter((v) => !v.isDeleted).map((v) => v.block),
+          )
+        })
       })
     })
 
     return {
       mutatedOptions,
-      mutatedFields: blockFields.map((field) => {
+      fields: blockFields.map((field) => {
         return {
           name: field.id,
           label: field.label,
@@ -197,6 +274,7 @@ export class EditState {
           },
         }
       }),
+      context,
     }
   }
 }
