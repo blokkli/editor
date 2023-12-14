@@ -1,10 +1,16 @@
 import { createBlock } from './state/Block'
 import type { Block } from './state/Block/Block'
-import type { Comment } from './state/Comment'
+import { Comment } from './state/Comment'
 import type { Entity } from './state/Entity'
-import type { Content } from './state/Entity/Content'
-import { MediaImage, type Media } from './state/Media/Media'
-import type { User } from './state/User'
+import { ContentPage, type Content } from './state/Entity/Content'
+import type { LibraryItem } from './state/LibraryItem'
+import { MediaImage, type Media, MediaVideo } from './state/Media/Media'
+import { User } from './state/User'
+import blocksData from './../../snapshots/blocks-updated.json'
+import fieldsData from './../../snapshots/fields-all.json'
+import videosData from './../../snapshots/videos.json'
+import type { FieldBlocks } from './state/Field/Blocks'
+import { generateUUID } from './uuid'
 
 type StorageMap = {
   content: EntityStorage<Content>
@@ -12,6 +18,7 @@ type StorageMap = {
   user: EntityStorage<User>
   block: EntityStorage<Block>
   media: EntityStorage<Media>
+  library_item: EntityStorage<LibraryItem>
 }
 
 export type ValidStorageKey = keyof StorageMap
@@ -31,7 +38,7 @@ export class EntityStorage<T extends Entity> {
     return Object.values(this.entities)
   }
 
-  query(conditions: Record<string, string>): T[] {
+  query<K extends T>(conditions: Record<string, string>): K[] {
     return Object.values(this.entities).filter((entity) => {
       return Object.entries(conditions).every(([fieldName, value]) => {
         if (fieldName === 'bundle') {
@@ -40,11 +47,18 @@ export class EntityStorage<T extends Entity> {
         const field = entity.get(fieldName)
         return field.list.includes(value)
       })
-    })
+    }) as K[]
   }
 
   add(entity: T) {
     this.entities[entity.uuid] = entity
+  }
+
+  delete(uuid: string) {
+    const entity = this.entities[uuid]
+    if (entity) {
+      delete this.entities[uuid]
+    }
   }
 }
 
@@ -58,11 +72,104 @@ export class EntityStorageManager {
       user: new EntityStorage(),
       block: new EntityStorage(),
       media: new EntityStorage(),
+      library_item: new EntityStorage(),
     }
+
+    this.createImage('1', '/search.png', 'Search functionality in Blokkli')
+
+    this.createImage('2', '/code.png', 'Vue Component of a Blokkli Block')
+
+    this.createImage(
+      '3',
+      '/editor-screenshot.png',
+      'Vue Component of a Blokkli Block',
+    )
+
+    this.createImage('4', '/toolbar.png', 'Vue Component of a Blokkli Block')
+
+    this.createImage('5', '/drupal-logo.svg', 'Drupal Logo')
+    this.createImage(
+      '6',
+      '/basel-logo.svg',
+      'Logo of the canton of Basel-Stadt',
+    )
+
+    this.addUser('1', 'John Miller', 'john@example.com')
+    this.addUser('2', 'Martin Faux', 'martin@example.com')
+
+    this.addComment({
+      body: 'This is very nice!',
+      isResolved: true,
+      parentEntityType: 'content',
+      created: new Date(2023, 11, 4, 13, 2).getTime(),
+      parentEntityUuid: '1',
+      referencedBlocks: ['18a7ed49-7355-4d0d-9004-6623c98a999f'],
+      user: '1',
+    })
+
+    this.addComment({
+      body: 'We should probably link to the code in the repo for the adapter.',
+      isResolved: false,
+      parentEntityType: 'content',
+      created: new Date(2023, 11, 4, 11, 2).getTime(),
+      parentEntityUuid: '1',
+      referencedBlocks: ['c414a773-406c-4200-aef6-ada9349b3f11'],
+      user: '1',
+    })
+
+    const page = new ContentPage('1')
+    this.storages.content.add(page)
+
+    const usedBlocks: string[] = []
+
+    fieldsData.forEach((item) => {
+      usedBlocks.push(...item.field)
+      // const entity = this.load(item.entityType, item.entityUuid)
+      // console.log(entity)
+    })
+
+    const created: Record<string, boolean> = {}
+
+    blocksData.forEach((item) => {
+      if (usedBlocks.includes(item.uuid) && !created[item.uuid]) {
+        this.createBlock(item.bundle, item.uuid, item.values)
+      }
+    })
+
+    const added: string[] = []
+
+    fieldsData.forEach((item) => {
+      const entity = this.load(item.entityType, item.entityUuid)
+      if (entity) {
+        const field = entity.get<FieldBlocks>(item.name)
+        field.setList()
+        if (field) {
+          item.field.forEach((uuid) => {
+            if (!added.includes(uuid)) {
+              field.append(uuid)
+              added.push(uuid)
+            }
+          })
+        }
+      }
+    })
+
+    videosData.forEach((item, i) => {
+      this.createVideo((i + 100).toString(), item.url, item.title)
+    })
   }
 
   getUser(uuid: string): User | undefined {
     return this.storages.user.load(uuid)
+  }
+
+  addUser(uuid: string, name: string, email: string) {
+    const user = new User(uuid)
+    user.setValues({
+      name,
+      email,
+    })
+    this.storages.user.add(user)
   }
 
   getContent(uuid: string): Content | undefined {
@@ -78,6 +185,13 @@ export class EntityStorageManager {
       parentEntityType: 'content',
       parentEntityUuid: uuid,
     })
+  }
+
+  addComment(values: Record<string, any> = {}, uuid?: string): Comment {
+    const comment = new Comment(uuid || generateUUID())
+    comment.setValues(values)
+    this.storages.comment.add(comment)
+    return comment
   }
 
   addBlock(block: Block) {
@@ -100,6 +214,15 @@ export class EntityStorageManager {
     this.storages.media.add(image)
   }
 
+  createVideo(uuid: string, url: string, title: string) {
+    const video = new MediaVideo(uuid)
+    video.setValues({
+      url,
+      title,
+    })
+    this.storages.media.add(video)
+  }
+
   cloneBlock(entity: Block, newUuid: string): Entity {
     // Create a new instance of the current class
     const cloned = new (entity.constructor as typeof Entity)(newUuid) as Block
@@ -116,4 +239,6 @@ export class EntityStorageManager {
   }
 }
 
-export const entityStorageManager = new EntityStorageManager()
+const entityStorageManager = new EntityStorageManager()
+
+export { entityStorageManager }

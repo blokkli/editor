@@ -33,3 +33,9 @@ import { useBlokkli } from '#imports'
 const { state, eventBus, text } = useBlokkli()
 const { entity, mutations } = state
 </script>
+
+<script lang="ts">
+export default {
+  name: 'EntityTitle',
+}
+</script>

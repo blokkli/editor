@@ -1,12 +1,20 @@
 <template>
-  <section class="py-70" :class="colorClass">
+  <section
+    class="py-70"
+    :class="[
+      colorClass,
+
+      { 'border-t border-t-slate-200': options.background === 'white' },
+    ]"
+  >
     <BlokkliField
-      v-bind="fieldHeader"
-      class="container mb-20"
+      v-if="options.showHeader"
+      v-bind="header"
+      class="container mb-70"
       field-list-type="header"
     />
     <BlokkliField
-      v-bind="fieldBlocks"
+      v-bind="blocks"
       class="container grid gap-20 lg:gap-40"
       :class="{
         'grid-cols-2': options.mobile === '1',
@@ -19,13 +27,10 @@
 </template>
 
 <script lang="ts" setup>
-import { mapMockField } from '~/app/mock/state'
-import type { FieldBlocks } from '~/app/mock/state/Field/Blocks'
-
 const { options } = defineBlokkli({
   bundle: 'grid',
   disableEdit: true,
-  globalOptions: ['background'],
+  globalOptions: ['background', 'showHeader'],
   options: {
     columns: {
       type: 'radios',
@@ -44,15 +49,13 @@ const { options } = defineBlokkli({
       default: '1',
     },
   },
+  editTitle: (el) => el.querySelector('h2')?.innerText,
 })
 
-const props = defineProps<{
-  header: FieldBlocks
-  blocks: FieldBlocks
+defineProps<{
+  header: any
+  blocks: any
 }>()
-
-const fieldHeader = computed(() => mapMockField(props.header))
-const fieldBlocks = computed(() => mapMockField(props.blocks))
 
 const colorClass = computed(() => {
   switch (options.value.background) {

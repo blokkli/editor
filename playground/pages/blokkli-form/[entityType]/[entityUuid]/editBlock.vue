@@ -5,7 +5,8 @@
 </template>
 
 <script lang="ts" setup>
-import { getEditState, getPage } from '~/app/mock/state'
+import { entityStorageManager } from '~/app/mock/entityStorage'
+import { getEditState } from '~/app/mock/state'
 
 definePageMeta({
   layout: 'form',
@@ -16,7 +17,7 @@ const router = useRouter()
 const entityType = useParamString('entityType')
 const entityUuid = useParamString('entityUuid')
 const uuid = useQueryString('uuid')
-const page = getPage(entityUuid.value)
+const page = entityStorageManager.getContent(entityUuid.value)
 
 const editState = getEditState(entityType.value, entityUuid.value)
 const mutatedState = editState.getMutatedState(page)

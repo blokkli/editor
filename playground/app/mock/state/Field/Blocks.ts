@@ -1,5 +1,6 @@
 import { falsy } from '#blokkli/helpers'
 import { entityStorageManager } from '../../entityStorage'
+import { mapMockField } from '../../state'
 import { Block } from '../Block/Block'
 import { Field } from '../Field'
 
@@ -41,6 +42,10 @@ export class FieldBlocks extends Field<{ uuid: string }> {
 
   setList(items: PossibleItem[] = []) {
     super.setList(items.map(this.mapItem))
+  }
+
+  getPropValue() {
+    return mapMockField(this)
   }
 
   private mapItem(v: PossibleItem): FieldItem {

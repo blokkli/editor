@@ -62,3 +62,9 @@ const onClickComment = (comment: BlokkliComment) =>
 
 onMounted(loadComments)
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Comments',
+}
+</script>

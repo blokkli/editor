@@ -18,6 +18,7 @@ export function falsy<T>(value: T): value is NonNullable<T> {
 const fileRegex = /\.(vue)$/
 
 type RuntimeDefinitionInput = {
+  bundle: string
   options?: {
     [key: string]: {
       default: string
@@ -41,6 +42,17 @@ function estreeToObject(
               return [prop.key.name, prop.value.value]
             } else if (prop.value.type === 'ObjectExpression') {
               return [prop.key.name, estreeToObject(prop.value)]
+            } else if (prop.value.type === 'ArrayExpression') {
+              return [
+                prop.key.name,
+                prop.value.elements
+                  .map((v) => {
+                    if (v && 'value' in v) {
+                      return v.value
+                    }
+                  })
+                  .filter(falsy),
+              ]
             }
           }
         }
@@ -59,7 +71,9 @@ function estreeToObject(
 function buildRuntimeDefinition(
   definition: BlokkliItemDefinitionInput<any>,
 ): RuntimeDefinitionInput {
-  const runtimeDefinition: RuntimeDefinitionInput = {}
+  const runtimeDefinition: RuntimeDefinitionInput = {
+    bundle: definition.bundle,
+  }
 
   if (definition.options) {
     runtimeDefinition.options = {}

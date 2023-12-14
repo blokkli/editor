@@ -33,7 +33,7 @@ const { adapter, storage, state, text } = useBlokkli()
 const shouldOpen = storage.use('showImport', true)
 
 const isEmpty = computed(
-  () => !state.mutatedFields.value.find((v) => v.field.list?.length),
+  () => !state.mutatedFields.value.find((v) => v.list?.length),
 )
 
 const showModal = ref(false)
@@ -56,4 +56,10 @@ onMounted(() => {
     showModal.value = true
   }
 })
+</script>
+
+<script lang="ts">
+export default {
+  name: 'ImportExisting',
+}
 </script>

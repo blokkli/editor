@@ -33,3 +33,9 @@ const name = computed(() => {
   return ''
 })
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Ownership',
+}
+</script>

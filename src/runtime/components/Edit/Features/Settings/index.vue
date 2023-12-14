@@ -24,3 +24,9 @@ const showSettings = ref(false)
 
 const onClick = () => (showSettings.value = true)
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Settings',
+}
+</script>

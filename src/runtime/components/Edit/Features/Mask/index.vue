@@ -25,3 +25,9 @@ import Overlay from './Overlay/index.vue'
 
 const { text } = useBlokkli()
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Mask',
+}
+</script>

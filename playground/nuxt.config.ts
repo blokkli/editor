@@ -29,13 +29,22 @@ export default defineNuxtConfig({
           dark: 'bg-slate-800',
         },
       },
+      showHeader: {
+        type: 'checkbox',
+        label: 'Show Header',
+        default: '',
+      },
     },
   },
 
   svgIconSprite: {
     sprites: {
       default: {
-        importPatterns: ['./assets/icons/**/*.svg'],
+        importPatterns: [
+          './assets/icons/**/*.svg',
+          './../src/icons/logo.svg',
+          './components/Blokkli/**/*.svg',
+        ],
       },
     },
   },

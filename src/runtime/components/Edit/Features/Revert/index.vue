@@ -44,3 +44,9 @@ async function onSubmit() {
   showConfirm.value = false
 }
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Revert',
+}
+</script>

@@ -1,9 +1,8 @@
 <template>
-  <component
-    :is="tag || 'div'"
+  <div
     ref="container"
     class="bk-draggable-list-container"
-    :class="{ 'is-empty': !listToUse.length }"
+    :class="{ 'is-empty': !list.length }"
     :data-field-name="fieldConfig.name"
     :data-field-label="fieldConfig.label"
     :data-field-is-nested="isNested"
@@ -14,15 +13,8 @@
     @dblclick.capture="onDoubleClick"
   >
     <BlokkliItem
-      v-for="(item, i) in listToUse"
-      :key="
-        'i_' +
-        i +
-        item.item?.uuid +
-        entity.uuid +
-        entity.entityTypeId +
-        item.item.entityBundle
-      "
+      v-for="(item, i) in list"
+      :key="item.item?.uuid"
       :item="item.item"
       :props="item.props"
       :is-editing="true"
@@ -43,7 +35,7 @@
       :data-refresh-key="state.refreshKey.value"
       class="draggable"
     />
-  </component>
+  </div>
 </template>
 
 <script lang="ts">
@@ -149,14 +141,6 @@ type CombinedFieldItem = {
   item: BlokkliFieldListItem
   props: any
 }
-
-const listToUse = computed<CombinedFieldItem[]>(() => {
-  if (props.entity.entityTypeId === runtimeConfig.itemEntityType) {
-    return props.list as CombinedFieldItem[]
-  }
-  return (mutatedFields?.value.find((v) => v.name === fieldName.value)?.field
-    .list || []) as CombinedFieldItem[]
-})
 
 function getItemFromEvent(e: MouseEvent): DraggableItem | undefined {
   if (!e.target) {
@@ -346,7 +330,7 @@ function onEnd() {
 function onPut(_to: Sortable, _from: Sortable, dragEl: HTMLElement) {
   // Make sure cardinality is respected for this field.
   // A value of -1 means unlimited.
-  if (cardinality.value !== -1 && listToUse.value.length >= cardinality.value) {
+  if (cardinality.value !== -1 && props.list.length >= cardinality.value) {
     return false
   }
   const item = buildDraggableItem(dragEl)

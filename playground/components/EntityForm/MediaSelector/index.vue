@@ -8,7 +8,7 @@
         name="entity_selector"
       />
       <div>
-        <img :src="entity.url()" />
+        <img :src="entity.thumbnail()" />
       </div>
     </label>
   </div>
@@ -16,18 +16,17 @@
 
 <script lang="ts" setup>
 import { entityStorageManager } from '~/app/mock/entityStorage'
-import type { MediaImage } from '~/app/mock/state/Media/Media'
 
 const props = defineProps<{
   modelValue: string
+  bundles: string[]
 }>()
 
 defineEmits(['update:modelValue'])
 
 const entities = computed(() => {
-  return entityStorageManager
-    .getStorage('media')
-    .query({ bundle: 'image' }) as MediaImage[]
+  const bundle = props.bundles[0]
+  return entityStorageManager.getStorage('media').query({ bundle })
 })
 </script>
 

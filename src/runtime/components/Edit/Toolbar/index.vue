@@ -74,3 +74,9 @@ onMounted(() => {
   emit('loaded')
 })
 </script>
+
+<script lang="ts">
+export default {
+  name: 'BlokkliToolbar',
+}
+</script>

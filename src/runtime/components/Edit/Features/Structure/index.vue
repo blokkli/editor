@@ -17,3 +17,9 @@ import List from './List/index.vue'
 
 const { text } = useBlokkli()
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Structure',
+}
+</script>

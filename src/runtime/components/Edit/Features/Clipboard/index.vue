@@ -220,3 +220,9 @@ onUnmounted(() => {
   document.removeEventListener('dragover', onDragOver)
 })
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Clipboard',
+}
+</script>

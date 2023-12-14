@@ -1,10 +1,15 @@
 import { defineBlokkliEditAdapter } from '#blokkli/adapter'
 import type { BlokkliAdapter, MutationResponseLike } from '#blokkli/adapter'
+import { falsy } from '#blokkli/helpers'
+import type { BlokkliComment, BlokkliLibraryItem } from '#blokkli/types'
 import { allTypes } from './mock/allTypes'
 import { availableTypes } from './mock/availableTypes'
 import { conversions } from './mock/conversions'
-import { state, createPage, editState, getPage } from './mock/state'
+import { entityStorageManager } from './mock/entityStorage'
+import { state, editState, mapBlockItem } from './mock/state'
 import type { MutatedState } from './mock/state/EditState'
+import type { ContentPage } from './mock/state/Entity/Content'
+import type { MediaImage, MediaVideo } from './mock/state/Media/Media'
 import { transforms } from './mock/transforms'
 
 export default defineBlokkliEditAdapter((ctx) => {
@@ -23,7 +28,8 @@ export default defineBlokkliEditAdapter((ctx) => {
     })
   }
 
-  const getEntity = () => getPage(ctx.value.entityUuid)
+  const getEntity = () =>
+    entityStorageManager.getContent(ctx.value.entityUuid) as ContentPage
 
   const addMutation = (
     id: any,
@@ -35,9 +41,27 @@ export default defineBlokkliEditAdapter((ctx) => {
     return mockResponse(mutatedState)
   }
 
+  const loadComments = (): Promise<BlokkliComment[]> => {
+    const comments: BlokkliComment[] = entityStorageManager
+      .getCommentsForPage(ctx.value.entityUuid)
+      .map((item) => {
+        return {
+          uuid: item.uuid,
+          itemUuids: item.getBlockUuids(),
+          resolved: item.isResolved(),
+          body: item.getBody(),
+          created: (item.getCreated() / 1000).toString(),
+          user: {
+            label: item.getUser().getName(),
+          },
+        }
+      })
+    return Promise.resolve(comments)
+  }
+
   const adapter: BlokkliAdapter<MutatedState> = {
     loadState() {
-      const page = createPage()
+      const page = entityStorageManager.getContent(ctx.value.entityUuid)
       const mutatedState = editState.getMutatedState(page)
       return Promise.resolve(mutatedState)
     },
@@ -68,7 +92,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           violations: [],
         },
         entity: {
-          id: state.pages[0].uuid,
+          id: ctx.value.entityUuid,
           label: 'Demo Page',
           status: true,
           bundleLabel: 'Page',
@@ -83,7 +107,19 @@ export default defineBlokkliEditAdapter((ctx) => {
       return mockResponse(editState.getMutatedState(getEntity()))
     },
     loadComments() {
-      return Promise.resolve([])
+      return loadComments()
+    },
+    addComment(itemUuids, body) {
+      const comment = entityStorageManager.addComment({
+        body,
+        created: Date.now(),
+        isResolved: false,
+        parentEntityType: ctx.value.entityType,
+        parentEntityUuid: ctx.value.entityUuid,
+        referencedBlocks: itemUuids,
+        user: '1',
+      })
+      return loadComments()
     },
     addNewBlokkliItem: (e) =>
       addMutation('add', {
@@ -133,6 +169,39 @@ export default defineBlokkliEditAdapter((ctx) => {
       return mockResponse(editState.getMutatedState(getEntity()))
     },
 
+    getImportItems(text) {
+      return Promise.resolve({ items: [], total: 0 })
+    },
+
+    getLibraryItems() {
+      const libraryItems = entityStorageManager.storages.library_item.loadAll()
+
+      const items: BlokkliLibraryItem[] = libraryItems
+        .map((item) => {
+          const block = item.getBlocks().getBlocks()[0]
+          if (!block) {
+            return
+          }
+          return {
+            uuid: item.uuid,
+            label: item.title(),
+            bundle: block.bundle,
+            ...mapBlockItem(block),
+          }
+        })
+        .filter(falsy)
+
+      return Promise.resolve(items)
+    },
+
+    addReusableItem: (e) =>
+      addMutation('add_reusable_item', {
+        libraryItemUuid: e.item.libraryItemUuid,
+        hostEntityType: e.host.type,
+        hostEntityUuid: e.host.uuid,
+        hostField: e.host.fieldName,
+        preceedingUuid: e.afterUuid,
+      }),
     redo() {
       editState.currentIndex = Math.min(
         editState.currentIndex + 1,
@@ -177,6 +246,91 @@ export default defineBlokkliEditAdapter((ctx) => {
       addMutation('update_options', {
         options,
       }),
+
+    makeItemReusable: (e) => addMutation('make_reusable', e),
+
+    getContentSearchTabs() {
+      return {
+        images: 'Images',
+        videos: 'Videos',
+      }
+    },
+
+    getContentSearchResults(tab, text) {
+      if (tab === 'images') {
+        return Promise.resolve(
+          entityStorageManager.storages.media
+            .query<MediaImage>({ bundle: 'image' })
+            .map((image) => {
+              return {
+                id: image.uuid,
+                title: image.alt(),
+                text: image.alt(),
+                targetBundles: ['image'],
+                imageUrl: image.url(),
+              }
+            })
+            .filter((v) => v.title.toLowerCase().includes(text.toLowerCase())),
+        )
+      } else if (tab === 'videos') {
+        return Promise.resolve(
+          entityStorageManager.storages.media
+            .query<MediaVideo>({ bundle: 'video' })
+            .map((image) => {
+              return {
+                id: image.uuid,
+                title: image.title(),
+                text: image.title(),
+                targetBundles: ['video'],
+                imageUrl: image.thumbnail(),
+              }
+            })
+            .filter((v) => v.title.toLowerCase().includes(text.toLowerCase())),
+        )
+      }
+      return Promise.resolve([])
+    },
+
+    addContentSearchItem(e) {
+      if (e.bundle === 'image') {
+        return addMutation('add', {
+          bundle: 'image',
+          values: {
+            imageReference: [e.item.id],
+          },
+          hostEntityType: e.host.type,
+          hostEntityUuid: e.host.uuid,
+          hostField: e.host.fieldName,
+          preceedingUuid: e.afterUuid,
+        })
+      } else if (e.bundle === 'video') {
+        return addMutation('add', {
+          bundle: 'video',
+          values: {
+            video: [e.item.id],
+          },
+          hostEntityType: e.host.type,
+          hostEntityUuid: e.host.uuid,
+          hostField: e.host.fieldName,
+          preceedingUuid: e.afterUuid,
+        })
+      }
+    },
+
+    addBlokkliItemFromClipboard(e) {
+      if (e.item.itemBundle === 'text') {
+        return addMutation('add', {
+          bundle: 'text',
+          values: {
+            text: e.item.clipboardData,
+          },
+          hostEntityType: e.host.type,
+          hostEntityUuid: e.host.uuid,
+          hostField: e.host.fieldName,
+          preceedingUuid: e.afterUuid,
+        })
+      }
+    },
   }
 
   return adapter

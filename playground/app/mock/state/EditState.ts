@@ -1,8 +1,10 @@
 import type { BlokkliMutatedField, BlokkliMutationItem } from '#blokkli/types'
+import { entityStorageManager } from '../entityStorage'
 import { createMutation, type MutationArgsMap } from '../plugins/mutations'
-import { mapMockField } from '../state'
+import { mapBlockItem } from '../state'
 import type { Block } from './Block/Block'
 import type { Entity } from './Entity'
+import type { FieldBlocks } from './Field/Blocks'
 
 export class BlockProxy {
   hostEntityType: string
@@ -10,17 +12,20 @@ export class BlockProxy {
   hostField: string
   block: Block
   isDeleted = false
+  overrideOptions: Record<string, string>
 
   constructor(
     block: Block,
     hostEntityType: string,
     hostEntityUuid: string,
     hostField: string,
+    overrideOptions: Record<string, string> = {},
   ) {
     this.block = block
     this.hostEntityType = hostEntityType
     this.hostEntityUuid = hostEntityUuid
     this.hostField = hostField
+    this.overrideOptions = overrideOptions
   }
 
   static fromEntity(block: Block, hostField: string, entity: Entity) {
@@ -33,6 +38,10 @@ export class BlockProxy {
 
   getFieldListKey() {
     return [this.hostEntityType, this.hostEntityUuid, this.hostField].join(':')
+  }
+
+  setOptionOverride(key: string, value: string) {
+    this.overrideOptions[key] = value
   }
 }
 
@@ -53,7 +62,16 @@ export class MutationContext {
   }
 
   getProxy(uuid: string): BlockProxy | undefined {
-    return this.proxies.find((v) => v.block.uuid === uuid)
+    const proxy = this.proxies.find((v) => v.block.uuid === uuid)
+    if (proxy) {
+      return proxy
+    }
+    const block = entityStorageManager.storages.block.load(uuid)
+    if (block) {
+      const newProxy = new BlockProxy(block, 'content', '1', 'content')
+      this.proxies.push(newProxy)
+      return newProxy
+    }
   }
 
   getIndex(uuid: string): number | undefined {
@@ -70,7 +88,7 @@ export class MutationContext {
     if (index === undefined) {
       this.proxies.unshift(proxy)
     } else {
-      this.proxies.splice(index, 0, proxy)
+      this.proxies.splice(index + 1, 0, proxy)
     }
   }
   appendProxy(proxy: BlockProxy) {
@@ -139,7 +157,7 @@ export class EditState {
   }
 
   getStorageKey(suffix: string) {
-    return 'blokkli_mock_' + this.uuid + '_' + suffix
+    return '__blokkli_mock_' + this.uuid + '_' + suffix
   }
 
   get currentIndex(): number {
@@ -213,7 +231,7 @@ export class EditState {
     })
   }
 
-  getMutatedState(entity: Entity): MutatedState {
+  getMutatedState(entity: Entity, save?: boolean): MutatedState {
     const context = new MutationContext(entity)
 
     const mutations = this.getMutations()
@@ -233,7 +251,21 @@ export class EditState {
     const proxiesByFieldKey: Record<string, BlockProxy[]> = {}
     context.proxies.forEach((proxy) => {
       if (!proxy.isDeleted) {
-        mutatedOptions[proxy.block.uuid] = proxy.block.options().getOptions()
+        mutatedOptions[proxy.block.uuid] = {
+          mock: {
+            ...proxy.block.options().getOptions().mock,
+            ...JSON.parse(JSON.stringify(proxy.overrideOptions)),
+          },
+        }
+      } else {
+        if (save) {
+          entityStorageManager.storages.block.delete(proxy.block.uuid)
+        }
+      }
+      if (save) {
+        Object.entries(proxy.overrideOptions).forEach(([key, value]) => {
+          proxy.block.options().setOptionValue(key, value)
+        })
       }
       const key = proxy.getFieldListKey()
       if (!proxiesByFieldKey[key]) {
@@ -242,38 +274,35 @@ export class EditState {
       proxiesByFieldKey[key].push(proxy)
     })
 
-    const blockFields = entity.getBlockFields()
+    const mutatedFields: Record<string, BlokkliMutatedField> = {}
 
-    blockFields.forEach((field) => {
-      field.setList([])
-      const key = field.getFieldListKey()
-      const proxies = proxiesByFieldKey[key] || []
-      proxies.forEach((proxy) => {
-        if (!proxy.isDeleted) {
-          field.append(proxy.block)
+    for (let i = 0; i < context.proxies.length; i++) {
+      const proxy = context.proxies[i]
+
+      if (proxy.isDeleted) {
+        continue
+      }
+
+      const key = proxy.getFieldListKey()
+      if (!mutatedFields[key]) {
+        mutatedFields[key] = {
+          name: proxy.hostField,
+          entityType: proxy.hostEntityType,
+          entityUuid: proxy.hostEntityUuid,
+          list: [],
         }
-        const nestedBlockFields = proxy.block.getBlockFields()
-        nestedBlockFields.forEach((nestedField) => {
-          const nestedProxies =
-            proxiesByFieldKey[nestedField.getFieldListKey()] || []
-          nestedField.setList(
-            nestedProxies.filter((v) => !v.isDeleted).map((v) => v.block),
-          )
-        })
-      })
-    })
+      }
+
+      mutatedFields[key].list.push(mapBlockItem(proxy.block))
+    }
+
+    if (save) {
+      const blockFields: FieldBlocks[] = []
+    }
 
     return {
       mutatedOptions,
-      fields: blockFields.map((field) => {
-        return {
-          name: field.id,
-          label: field.label,
-          field: {
-            list: mapMockField(field).list,
-          },
-        }
-      }),
+      fields: Object.values(mutatedFields),
       context,
     }
   }

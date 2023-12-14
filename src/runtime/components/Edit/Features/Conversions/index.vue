@@ -69,3 +69,9 @@ const possibleConversions = computed<BlokkliItemType[]>(() => {
     .filter(falsy)
 })
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Conversions',
+}
+</script>

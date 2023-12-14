@@ -5,5 +5,6 @@ export const allTypes: BlokkliItemType[] = getBlockBundles().map((block) => {
   return {
     id: block.bundle,
     label: block.label,
+    allowReusable: block.allowReusable,
   }
 })

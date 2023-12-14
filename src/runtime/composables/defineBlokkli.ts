@@ -20,17 +20,17 @@ import {
   INJECT_REUSABLE_OPTIONS,
 } from '../helpers/symbols'
 
-const blokkliConfig = useRuntimeConfig().public.blokkli
+const { optionsPluginId } = useRuntimeConfig().public.blokkli
 
-type StringBoolean = '0' | '1'
+type StringBoolean = '0' | '1' | ''
 
 type GetType<T> = T extends { type: 'checkbox' }
   ? StringBoolean
   : T extends { type: 'radios' }
-    ? T extends { options: infer O }
-      ? keyof O
-      : string
+  ? T extends { options: infer O }
+    ? keyof O
     : string
+  : string
 
 type WithOptions<T extends BlokkliItemDefinitionOptionsInput> = {
   [K in keyof T]: GetType<T[K]>
@@ -90,9 +90,11 @@ type BlokkliComponent<T extends BlokkliItemDefinitionInputWithTypes> = {
 export function defineBlokkli<T extends BlokkliItemDefinitionInputWithTypes>(
   config: T,
 ): BlokkliComponent<T> {
+  const optionKeys: string[] = []
   // The default options are provided by the component definition itself.
   const defaultOptions: Record<string, any> = {}
   for (const key in config.options) {
+    optionKeys.push(key)
     if (config.options[key] && 'default' in config.options[key]) {
       defaultOptions[key] = config.options[key].default
     }
@@ -101,12 +103,13 @@ export function defineBlokkli<T extends BlokkliItemDefinitionInputWithTypes>(
   // If the item uses global options, we add the default values from the
   // global options to the default options of this item.
   if (config.globalOptions) {
-    for (const key in config.globalOptions) {
+    config.globalOptions.forEach((key) => {
+      optionKeys.push(key)
       const defaultValue = (globalOptionsDefaults as any)[key as any]
       if (defaultValue !== undefined) {
         defaultOptions[key] = defaultValue
       }
-    }
+    })
   }
 
   const fieldListType = inject<ComputedRef<ValidFieldListTypes>>(
@@ -127,17 +130,10 @@ export function defineBlokkli<T extends BlokkliItemDefinitionInputWithTypes>(
   // This is injected by the "from_library" blokkli component.
   // If its present it means this blokkli is reusable. In this case it
   // inherits the options defined on its wrapper blokkli.
-  const fromLibraryOptions = inject<any>(INJECT_REUSABLE_OPTIONS, null)
-  if (fromLibraryOptions) {
-    return {
-      uuid,
-      index,
-      isEditing: !!item?.value.isEditing,
-      options: fromLibraryOptions,
-      parentType,
-      fieldListType,
-    }
-  }
+  const fromLibraryOptions = inject<ComputedRef<Record<string, string>> | null>(
+    INJECT_REUSABLE_OPTIONS,
+    null,
+  )
 
   // When we are in an edit context, the current options are managed in a
   // separate reactive state. This state is mutated when the user is changing
@@ -148,35 +144,50 @@ export function defineBlokkli<T extends BlokkliItemDefinitionInputWithTypes>(
     INJECT_EDIT_CONTEXT,
     null,
   )
-  if (editContext && uuid) {
-    const options = computed(() => {
-      const overrideOptions =
-        editContext.mutatedOptions.value[uuid]?.[
-          blokkliConfig.optionsPluginId
-        ] || {}
-      return {
-        ...defaultOptions,
-        ...(item?.value.options || {}),
-        ...overrideOptions,
-      }
-    })
-    return {
-      options,
-      index,
-      uuid,
-      isEditing: !!item?.value.isEditing,
-      parentType,
-      fieldListType,
-    } as any
+
+  if (uuid === '266e73f3-310e-4c35-9b5c-9b4cb231cf9d') {
+    // debugger
   }
 
   const options = computed(() => {
-    return {
-      ...defaultOptions,
-      ...item?.value.options,
+    if (config.bundle === 'from_library') {
+      return {
+        ...(item?.value.options || {}),
+        ...(editContext?.mutatedOptions.value[uuid]?.[optionsPluginId] || {}),
+      }
     }
-  })
+    const result = optionKeys.reduce<Record<string, string>>((acc, key) => {
+      // Use an override option if available.
+      if (editContext) {
+        const overrideOptions =
+          editContext.mutatedOptions.value[uuid]?.[optionsPluginId] || {}
 
+        if (overrideOptions[key] !== undefined) {
+          acc[key] = overrideOptions[key]
+          return acc
+        }
+      }
+
+      if (fromLibraryOptions) {
+        if (fromLibraryOptions.value[key] !== undefined) {
+          acc[key] = fromLibraryOptions.value[key]
+          return acc
+        }
+      }
+
+      if (item?.value.options && item.value.options[key] !== undefined) {
+        // Use the persisted option value on the item itself.
+        acc[key] = item.value.options[key]
+        return acc
+      }
+
+      // Fallback to the default defined by the component.
+      acc[key] = defaultOptions[key]
+      return acc
+    }, {})
+
+    return result
+  })
   return {
     uuid,
     index,

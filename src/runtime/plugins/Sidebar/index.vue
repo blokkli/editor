@@ -85,3 +85,9 @@ onBeforeUnmount(() => {
 
 defineExpose({ showSidebar })
 </script>
+
+<script lang="ts">
+export default {
+  name: 'PluginSidebar',
+}
+</script>

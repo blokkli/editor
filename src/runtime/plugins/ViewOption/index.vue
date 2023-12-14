@@ -44,3 +44,9 @@ const onClick = () => {
   isActive.value = !isActive.value
 }
 </script>
+
+<script lang="ts">
+export default {
+  name: 'PluginViewOption',
+}
+</script>

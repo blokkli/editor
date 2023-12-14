@@ -465,7 +465,6 @@ function onTouchMove(e: TouchEvent) {
     // Pinch zoom
     const currentDistance = getDistanceBetweenTouches(e)
     const delta = currentDistance - lastTouchDistance
-    console.log(delta)
 
     // @TODO: Actually implement zooming.
 

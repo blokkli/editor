@@ -138,10 +138,9 @@ export interface BlokkliFieldList<T> {
 
 export type BlokkliMutatedField = {
   name: string
-  label: string
-  field: {
-    list?: BlokkliFieldList<any>[]
-  }
+  entityType: string
+  entityUuid: string
+  list: BlokkliFieldList<any>[]
 }
 
 export type BlokkliEditEntity = {

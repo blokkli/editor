@@ -1,12 +1,8 @@
 import { type ComputedRef, computed, watch } from 'vue'
-import type {
-  DraggableExistingBlokkliItem,
-  BlokkliAvailableType,
-  BlokkliItemType,
-} from '../types'
-import { onlyUnique } from '#blokkli/helpers'
+import type { BlokkliAvailableType, BlokkliItemType } from '../types'
 import { eventBus } from '#blokkli/helpers/eventBus'
-import type { BlokkliAdapter, BlokkliAdapterContext } from '../adapter'
+import type { BlokkliAdapter } from '../adapter'
+import type { BlokkliSelectionProvider } from './selectionProvider'
 
 export type BlokkliTypesProvider = {
   itemBundlesWithNested: ComputedRef<string[]>
@@ -17,8 +13,7 @@ export type BlokkliTypesProvider = {
 
 export default async function (
   adapter: BlokkliAdapter<any>,
-  blocks: ComputedRef<DraggableExistingBlokkliItem[]>,
-  context: ComputedRef<BlokkliAdapterContext>,
+  selection: BlokkliSelectionProvider,
 ): Promise<BlokkliTypesProvider> {
   const allTypesData = await adapter.getAllTypes()
   const allTypes = computed(() => allTypesData || [])
@@ -32,16 +27,14 @@ export default async function (
    * This always uses the selected item's parent field to determine the allowed types.
    */
   const allowedTypesInList = computed(() => {
-    const hostFieldNames = blocks.value
-      .map((v) => v.hostFieldName)
-      .filter(onlyUnique)
-    if (hostFieldNames.length === 1) {
+    if (selection.blocks.value.length === 1) {
+      const block = selection.blocks.value[0]
       return allowedTypes.value
         .filter(
           (v) =>
-            v.entityType === context.value.entityType &&
-            v.bundle === context.value.entityBundle &&
-            v.fieldName === hostFieldNames[0],
+            v.entityType === block.hostType &&
+            v.bundle === block.hostBundle &&
+            v.fieldName === block.hostFieldName,
         )
         .flatMap((v) => v.allowedTypes)
         .filter(Boolean) as string[]
@@ -49,11 +42,11 @@ export default async function (
     return []
   })
 
-  watch(blocks, () => {
-    if (blocks.value.length !== 1) {
+  watch(selection.blocks, () => {
+    if (selection.blocks.value.length !== 1) {
       return
     }
-    const item = blocks.value[0]
+    const item = selection.blocks.value[0]
     // Determine if the selected item has nested items.
     const hasNested = itemBundlesWithNested.value.includes(item.itemBundle)
     if (hasNested) {

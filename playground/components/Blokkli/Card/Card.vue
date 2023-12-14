@@ -8,21 +8,20 @@
       :class="{
         'p-10 lg:p-20 rounded shadow-lg border h-full': isBox,
         'bg-slate-700 border-slate-600': isBox && isInverted,
-        'bg-slate-50 border-slate-300': isBox && !isInverted,
+        'bg-white border-slate-300': isBox && !isInverted,
       }"
     >
       <div
-        v-if="iconName"
-        class="rounded w-50 h-50 p-10 mb-10"
-        :class="
-          isInverted
-            ? 'bg-slate-900 text-slate-200'
-            : 'bg-slate-200 text-slate-600'
-        "
+        v-if="icon"
+        class="rounded w-50 h-50 lg:w-[64px] lg:h-[64px] p-10 mb-10 border border-blue-100"
+        :class="iconClass"
       >
-        <SpriteSymbol :name="iconName" class="fill-current w-full h-full" />
+        <SpriteSymbol :name="icon" class="fill-current w-full h-full" />
       </div>
-      <h3 class="font-bold text-xl" :class="{ 'text-slate-100': isInverted }">
+      <h3
+        class="font-bold text-lg md:text-xl lg:mb-5"
+        :class="{ 'text-slate-100': isInverted }"
+      >
         {{ title }}
       </h3>
       <p :class="{ 'text-slate-400': isInverted }">{{ text }}</p>
@@ -31,30 +30,58 @@
 </template>
 
 <script lang="ts" setup>
-import type { FieldIcon } from '~/app/mock/state/Field/Icon'
-import type { FieldText } from '~/app/mock/state/Field/Text'
-import type { FieldTextarea } from '~/app/mock/state/Field/Textarea'
-
 const { parentType, options } = defineBlokkli({
   bundle: 'card',
+  editWidth: 380,
   options: {
     box: {
       type: 'checkbox',
       label: 'Box',
       default: '0',
     },
+    color: {
+      type: 'radios',
+      label: 'Color',
+      default: 'lightBlue',
+      displayAs: 'colors',
+      options: {
+        lightBlue: 'bg-blue-100',
+        lightYellow: 'bg-yellow-200',
+        lightGreen: 'bg-green-200',
+        lightRed: 'bg-red-200',
+      },
+    },
   },
+  editTitle: (el) => el.querySelector('h3')?.innerText,
 })
 
-const props = defineProps<{
-  icon: FieldIcon
-  title: FieldText
-  text: FieldTextarea
+defineProps<{
+  icon?: string
+  title: string
+  text: string
 }>()
 
-const iconName = computed(() => props.icon.getIconName())
 const isBox = computed(() => options.value.box === '1')
 
 const injectedInverted = inject<ComputedRef<boolean> | null>('isInverted', null)
 const isInverted = computed(() => !!injectedInverted?.value)
+
+const iconClass = computed(() => {
+  if (options.value.color === 'lightYellow') {
+    return isInverted.value
+      ? 'bg-yellow-500 text-black border-yellow-600'
+      : 'bg-yellow-100 text-yellow-900 border-yellow-200'
+  } else if (options.value.color === 'lightGreen') {
+    return isInverted.value
+      ? 'bg-green-500 text-green-950 border-green-600'
+      : 'bg-green-100 text-green-900 border-green-200'
+  } else if (options.value.color === 'lightRed') {
+    return isInverted.value
+      ? 'bg-red-500 text-black border-red-700'
+      : 'bg-red-100 text-red-800 border-red-200'
+  }
+  return isInverted.value
+    ? 'bg-blue-700 text-white border-blue-800'
+    : 'bg-blue-50 text-blue-950'
+})
 </script>

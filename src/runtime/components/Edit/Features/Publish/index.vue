@@ -27,3 +27,9 @@ const onClick = async () => {
   )
 }
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Publish',
+}
+</script>

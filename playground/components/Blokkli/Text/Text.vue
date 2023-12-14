@@ -1,12 +1,14 @@
 <template>
-  <div :class="{ 'container mx-auto': !parentType }">
-    <div class="content" v-html="markup" />
+  <div :class="{ 'container mx-auto my-20': !parentType }">
+    <div
+      class="content"
+      :class="{ 'is-inverted': isInverted }"
+      v-html="markup"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
-import type { FieldTextarea } from '~/app/mock/state/Field/Textarea'
-
 const { parentType, options } = defineBlokkli({
   bundle: 'text',
   options: {
@@ -16,14 +18,18 @@ const { parentType, options } = defineBlokkli({
       default: '0',
     },
   },
+  editTitle: (el) => el.innerText,
 })
 
 const props = defineProps<{
-  text: FieldTextarea
+  text: string
 }>()
 
+const injectedInverted = inject<ComputedRef<boolean> | null>('isInverted', null)
+const isInverted = computed(() => !!injectedInverted?.value)
+
 const markup = computed((v) => {
-  const text = props.text.getText()
+  const text = props.text
   if (options.value.list === '1') {
     return (
       '<ul>' +
@@ -40,12 +46,19 @@ const markup = computed((v) => {
 
 <style lang="postcss">
 .content {
+  &.is-inverted {
+    @apply text-slate-200;
+  }
   ul {
     li {
       @apply font-medium;
       &:before {
         content: '';
-        @apply inline-block w-15 h-15 rounded-full bg-blue-700 mr-10;
+        @apply inline-block w-[16px] h-[16px] rounded-full bg-blue-700 mr-10 align-middle overflow-hidden;
+        background-image: url(/check.svg);
+        background-size: 60% 60%;
+        background-position: center center;
+        background-repeat: no-repeat;
       }
       &:not(:last-child) {
         @apply mb-10;

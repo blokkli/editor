@@ -93,3 +93,9 @@ const onClick = () => {
   emit('click', selection.blocks.value)
 }
 </script>
+
+<script lang="ts">
+export default {
+  name: 'PluginItemAction',
+}
+</script>

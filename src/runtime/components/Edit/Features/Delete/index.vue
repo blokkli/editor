@@ -34,3 +34,9 @@ async function onClick(items: DraggableExistingBlokkliItem[]) {
   }
 }
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Delete',
+}
+</script>

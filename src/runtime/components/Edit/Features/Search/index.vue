@@ -65,3 +65,9 @@ onBeforeUnmount(() => {
   eventBus.off('keyPressed', onKeypress)
 })
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Search',
+}
+</script>

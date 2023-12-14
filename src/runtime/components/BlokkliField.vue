@@ -118,9 +118,13 @@ const fieldKey = computed(() => {
 const fieldListType = computed(() => props.fieldListType)
 
 const filteredList = computed<Array<Required<BlokkliFieldList<any>>>>(() => {
-  if (mutatedFields?.value && !isNested && !isInReusable) {
-    return (mutatedFields.value.find((v) => v.name === props.fieldConfig?.name)
-      ?.field.list || []) as Array<Required<BlokkliFieldList<any>>>
+  if (mutatedFields?.value && !isInReusable) {
+    return (mutatedFields.value.find(
+      (field: BlokkliMutatedField) =>
+        field.name === props.fieldConfig?.name &&
+        field.entityType === props.entity?.entityTypeId &&
+        field.entityUuid === props.entity?.uuid,
+    )?.list || []) as Array<Required<BlokkliFieldList<any>>>
   }
   return props.list.filter((v) => v.item && v.props) as Array<
     Required<BlokkliFieldList<any>>

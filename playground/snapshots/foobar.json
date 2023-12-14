@@ -1,369 +1,476 @@
 [
   {
+    "id": "make_reusable",
+    "args": {
+      "label": "Feature History",
+      "uuid": "27e417eb-a5fa-4d17-94b5-e218fc653906"
+    },
+    "timestamp": 1702451207760,
+    "configuration": {
+      "new_uuid_default": "266e73f3-310e-4c35-9b5c-9b4cb231cf9d",
+      "new_uuid_library_item": "245700ae-7a28-440b-b6eb-4b655d97aba1",
+      "libraryItemId": "245700ae-7a28-440b-b6eb-4b655d97aba1"
+    }
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "266e73f3-310e-4c35-9b5c-9b4cb231cf9d",
+          "key": "box",
+          "value": ""
+        }
+      ]
+    },
+    "timestamp": 1702451694674,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "266e73f3-310e-4c35-9b5c-9b4cb231cf9d",
+          "key": "box",
+          "value": "1"
+        }
+      ]
+    },
+    "timestamp": 1702451696905,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "266e73f3-310e-4c35-9b5c-9b4cb231cf9d",
+          "key": "box",
+          "value": ""
+        }
+      ]
+    },
+    "timestamp": 1702451698789,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "266e73f3-310e-4c35-9b5c-9b4cb231cf9d",
+          "key": "box",
+          "value": "1"
+        }
+      ]
+    },
+    "timestamp": 1702452659960,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "266e73f3-310e-4c35-9b5c-9b4cb231cf9d",
+          "key": "box",
+          "value": ""
+        }
+      ]
+    },
+    "timestamp": 1702452661679,
+    "configuration": {}
+  },
+  {
+    "id": "make_reusable",
+    "args": {
+      "label": "Feature Select",
+      "uuid": "1645ba79-8770-4a0c-a58b-163a847eea22"
+    },
+    "timestamp": 1702452673926,
+    "configuration": {
+      "new_uuid_default": "d6ddbd8b-9601-4a9f-a8fb-41d39031e25c",
+      "new_uuid_library_item": "5a92551a-0a5d-46cb-8f00-67c6735ecfa8",
+      "libraryItemId": "5a92551a-0a5d-46cb-8f00-67c6735ecfa8"
+    }
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "266e73f3-310e-4c35-9b5c-9b4cb231cf9d",
+          "key": "box",
+          "value": "1"
+        }
+      ]
+    },
+    "timestamp": 1702452699023,
+    "configuration": {}
+  },
+  {
+    "id": "move",
+    "args": {
+      "uuids": ["266e73f3-310e-4c35-9b5c-9b4cb231cf9d"],
+      "hostEntityType": "block",
+      "hostEntityUuid": "bf4acf60-e0a2-43bb-b4fc-9f32a41a4816",
+      "hostField": "blocks",
+      "preceedingUuid": "a4aac285-9615-4764-81de-96d3af41e622"
+    },
+    "timestamp": 1702453441553,
+    "configuration": {}
+  },
+  {
     "id": "add",
     "args": {
-      "bundle": "hero",
+      "bundle": "image",
+      "values": { "imageReference": ["3"] },
+      "hostEntityType": "content",
+      "hostEntityUuid": "1",
+      "hostField": "content",
+      "preceedingUuid": "6d0bde10-a05b-4c7d-a8cf-fafc8e0001f1"
+    },
+    "timestamp": 1702454184976,
+    "configuration": {
+      "new_uuid_default": "eaacb115-11eb-4a9c-ae16-cdf6c649d6a5"
+    }
+  },
+  {
+    "id": "add",
+    "args": {
+      "bundle": "video",
+      "values": { "video": "104" },
+      "hostEntityType": "content",
+      "hostEntityUuid": "1",
+      "hostField": "content",
+      "preceedingUuid": "958fba1e-400f-42c5-b310-11f59db59e2f"
+    },
+    "timestamp": 1702455840005,
+    "configuration": {
+      "new_uuid_default": "2404f921-2e35-4dd8-9baa-bd244bf7bc1b"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "2404f921-2e35-4dd8-9baa-bd244bf7bc1b",
+      "values": { "video": "103" }
+    },
+    "timestamp": 1702455967808,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "2404f921-2e35-4dd8-9baa-bd244bf7bc1b",
+          "key": "elevated",
+          "value": "1"
+        }
+      ]
+    },
+    "timestamp": 1702455973327,
+    "configuration": {}
+  },
+  {
+    "id": "add",
+    "args": {
+      "bundle": "video",
+      "values": { "video": ["100"] },
+      "hostEntityType": "content",
+      "hostEntityUuid": "1",
+      "hostField": "content",
+      "preceedingUuid": "6d0bde10-a05b-4c7d-a8cf-fafc8e0001f1"
+    },
+    "timestamp": 1702456044401,
+    "configuration": {
+      "new_uuid_default": "2cff48e2-bc13-4105-96d0-cbd73cddde5a"
+    }
+  },
+  {
+    "id": "move",
+    "args": {
+      "uuids": ["3284016a-aa33-4994-8e4d-c0a6f9bd91c7"],
+      "hostEntityType": "block",
+      "hostEntityUuid": "bf4acf60-e0a2-43bb-b4fc-9f32a41a4816",
+      "hostField": "header"
+    },
+    "timestamp": 1702456315202,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "ce8afc60-2f42-4b99-8a44-c5a46eb15f7a",
+          "key": "background",
+          "value": "dark"
+        }
+      ]
+    },
+    "timestamp": 1702456462422,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "ce8afc60-2f42-4b99-8a44-c5a46eb15f7a",
+          "key": "background",
+          "value": "light"
+        }
+      ]
+    },
+    "timestamp": 1702456657580,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf",
+          "key": "showHeader",
+          "value": "1"
+        }
+      ]
+    },
+    "timestamp": 1702457064112,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf",
+          "key": "showHeader",
+          "value": ""
+        }
+      ]
+    },
+    "timestamp": 1702457111647,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "bf4acf60-e0a2-43bb-b4fc-9f32a41a4816",
+          "key": "showHeader",
+          "value": "1"
+        }
+      ]
+    },
+    "timestamp": 1702457123283,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "334a4e80-a174-49ba-b986-af5697f093b7",
+          "key": "showHeader",
+          "value": "1"
+        }
+      ]
+    },
+    "timestamp": 1702457127549,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "c414a773-406c-4200-aef6-ada9349b3f11",
+          "key": "showHeader",
+          "value": "1"
+        }
+      ]
+    },
+    "timestamp": 1702457129877,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "6d0bde10-a05b-4c7d-a8cf-fafc8e0001f1",
+          "key": "showHeader",
+          "value": "1"
+        }
+      ]
+    },
+    "timestamp": 1702457132199,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "958fba1e-400f-42c5-b310-11f59db59e2f",
+          "key": "showHeader",
+          "value": "1"
+        }
+      ]
+    },
+    "timestamp": 1702457135658,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "ce8afc60-2f42-4b99-8a44-c5a46eb15f7a",
+          "key": "background",
+          "value": "dark"
+        }
+      ]
+    },
+    "timestamp": 1702457386082,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "ce8afc60-2f42-4b99-8a44-c5a46eb15f7a",
+          "key": "background",
+          "value": "white"
+        }
+      ]
+    },
+    "timestamp": 1702457405302,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "958fba1e-400f-42c5-b310-11f59db59e2f",
+          "key": "background",
+          "value": "dark"
+        }
+      ]
+    },
+    "timestamp": 1702457431710,
+    "configuration": {}
+  },
+  {
+    "id": "delete",
+    "args": { "uuids": ["2cff48e2-bc13-4105-96d0-cbd73cddde5a"] },
+    "timestamp": 1702457567572,
+    "configuration": {}
+  },
+  {
+    "id": "add",
+    "args": {
+      "bundle": "text",
       "values": {
-        "title": "Interactive page building experience for Nuxt",
-        "lead": "Beautifully designed landing pages, websites, and dashboards built on top of Tailwind CSS and fully coded in HTML, React, Next.js, and Vue. A great starting point for your next project, saving you weeks of development time."
+        "text": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
       },
       "hostEntityType": "content",
       "hostEntityUuid": "1",
-      "hostField": "header",
-      "preceedingUuid": ""
+      "hostField": "content",
+      "preceedingUuid": "6694e5d3-da35-417b-87ce-5022b6377e92"
     },
-    "timestamp": 1702283432931,
+    "timestamp": 1702458560579,
     "configuration": {
-      "new_uuid_default": "69eb7a59-6a71-4f37-8031-cd4b56b18a90"
+      "new_uuid_default": "4946b98c-a83f-41a8-8c86-2b37cf2f83d9"
     }
+  },
+  {
+    "id": "move",
+    "args": {
+      "uuids": ["4946b98c-a83f-41a8-8c86-2b37cf2f83d9"],
+      "hostEntityType": "content",
+      "hostEntityUuid": "1",
+      "hostField": "content",
+      "preceedingUuid": "f7e3f26b-9c8a-4571-9f98-660bcca08938"
+    },
+    "timestamp": 1702464820507,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "ce8afc60-2f42-4b99-8a44-c5a46eb15f7a",
+          "key": "background",
+          "value": "light"
+        }
+      ]
+    },
+    "timestamp": 1702464825110,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "ce8afc60-2f42-4b99-8a44-c5a46eb15f7a",
+          "key": "reverse",
+          "value": ""
+        }
+      ]
+    },
+    "timestamp": 1702464853755,
+    "configuration": {}
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "5780e657-2c02-45b2-bb92-1424a7a29fb8",
+      "values": {
+        "icon": "translate",
+        "title": "Multilanguage",
+        "text": "Blokkli supports a multilingual workflow. When translating content, the structure can not be altered."
+      }
+    },
+    "timestamp": 1702464993642,
+    "configuration": {}
   },
   {
     "id": "add",
     "args": {
       "bundle": "button",
-      "values": { "title": "Try it out", "url": "/page/1?blokkliEditing=1" },
-      "hostEntityType": "block",
-      "hostEntityUuid": "69eb7a59-6a71-4f37-8031-cd4b56b18a90",
-      "hostField": "buttons",
-      "preceedingUuid": ""
-    },
-    "timestamp": 1702283681392,
-    "configuration": {
-      "new_uuid_default": "e792c951-d86a-4bb8-8708-5f8266246bc8"
-    }
-  },
-  {
-    "id": "duplicate",
-    "args": { "uuids": ["e792c951-d86a-4bb8-8708-5f8266246bc8"] },
-    "timestamp": 1702283847279,
-    "configuration": {
-      "new_uuid_e792c951-d86a-4bb8-8708-5f8266246bc8": "5dbd8ee5-6df4-46c9-8203-7c5bdbf77b5b"
-    }
-  },
-  {
-    "id": "move",
-    "args": {
-      "uuids": ["e792c951-d86a-4bb8-8708-5f8266246bc8"],
-      "hostEntityType": "block",
-      "hostEntityUuid": "69eb7a59-6a71-4f37-8031-cd4b56b18a90",
-      "hostField": "buttons"
-    },
-    "timestamp": 1702283871022,
-    "configuration": {}
-  },
-  {
-    "id": "edit",
-    "args": {
-      "uuid": "69eb7a59-6a71-4f37-8031-cd4b56b18a90",
-      "values": {
-        "title": "Interactive page building experience for Nuxt",
-        "lead": "Designed for efficiency and ease of use, Blokkli is your go-to solution for crafting consistent, professional pages with a suite of powerful features."
-      }
-    },
-    "timestamp": 1702285252097,
-    "configuration": {}
-  },
-  {
-    "id": "move",
-    "args": {
-      "uuids": ["e792c951-d86a-4bb8-8708-5f8266246bc8"],
-      "hostEntityType": "block",
-      "hostEntityUuid": "69eb7a59-6a71-4f37-8031-cd4b56b18a90",
-      "hostField": "buttons",
-      "preceedingUuid": "5dbd8ee5-6df4-46c9-8203-7c5bdbf77b5b"
-    },
-    "timestamp": 1702285267423,
-    "configuration": {}
-  },
-  {
-    "id": "delete",
-    "args": { "uuids": ["1", "2", "3", "4", "5", "6"] },
-    "timestamp": 1702285290448,
-    "configuration": {}
-  },
-  {
-    "id": "add",
-    "args": {
-      "bundle": "title",
-      "values": {
-        "title": "Effortless Page Building",
-        "lead": "Discover the ease and efficiency of building web pages with Blokkli. Our framework is designed to streamline your workflow, making it effortless to create, edit, and manage content, even for large-scale projects."
-      },
+      "values": { "title": "Explore Paragraphs Builder", "url": "/" },
       "hostEntityType": "content",
       "hostEntityUuid": "1",
       "hostField": "content",
-      "preceedingUuid": ""
+      "preceedingUuid": "c414a773-406c-4200-aef6-ada9349b3f11"
     },
-    "timestamp": 1702285602202,
+    "timestamp": 1702465049625,
     "configuration": {
-      "new_uuid_default": "91ba4c8d-6318-4915-9576-d041ad81df52"
+      "new_uuid_default": "332bbf33-2368-4b56-8ae6-4855657bc5d4"
     }
   },
   {
-    "id": "duplicate",
-    "args": { "uuids": ["91ba4c8d-6318-4915-9576-d041ad81df52"] },
-    "timestamp": 1702285610541,
-    "configuration": {
-      "new_uuid_91ba4c8d-6318-4915-9576-d041ad81df52": "f6d90afd-6b39-4299-bef3-e9ba73d058f5"
-    }
-  },
-  {
-    "id": "edit",
+    "id": "update_options",
     "args": {
-      "uuid": "91ba4c8d-6318-4915-9576-d041ad81df52",
-      "values": {
-        "title": "Intuitive Design Experience",
-        "lead": " Experience the seamless integration of advanced design tools and user-friendly features. Blokkli offers an intuitive design experience, enabling you to craft beautiful web pages with the finesse of professional software like Photoshop and Figma."
-      }
+      "options": [
+        {
+          "uuid": "332bbf33-2368-4b56-8ae6-4855657bc5d4",
+          "key": "color",
+          "value": "primary"
+        }
+      ]
     },
-    "timestamp": 1702285617846,
-    "configuration": {}
-  },
-  {
-    "id": "duplicate",
-    "args": { "uuids": ["91ba4c8d-6318-4915-9576-d041ad81df52"] },
-    "timestamp": 1702285619412,
-    "configuration": {
-      "new_uuid_91ba4c8d-6318-4915-9576-d041ad81df52": "7d71f39f-0749-46f6-bc72-0daee031f7c6"
-    }
-  },
-  {
-    "id": "edit",
-    "args": {
-      "uuid": "91ba4c8d-6318-4915-9576-d041ad81df52",
-      "values": {
-        "title": "Versatile Block Management",
-        "lead": "Blokkli brings unparalleled versatility to your fingertips. Our block management system is engineered for flexibility, allowing you to easily transform, customize, and reuse content blocks to fit your unique design vision."
-      }
-    },
-    "timestamp": 1702285632938,
-    "configuration": {}
-  },
-  {
-    "id": "duplicate",
-    "args": { "uuids": ["91ba4c8d-6318-4915-9576-d041ad81df52"] },
-    "timestamp": 1702285638732,
-    "configuration": {
-      "new_uuid_91ba4c8d-6318-4915-9576-d041ad81df52": "e169c13e-c582-4292-b234-43e22eb04f3f"
-    }
-  },
-  {
-    "id": "edit",
-    "args": {
-      "uuid": "91ba4c8d-6318-4915-9576-d041ad81df52",
-      "values": {
-        "title": "Multilingual Support and Previews",
-        "lead": "Expand your website's global reach with Blokkli's multilingual support and real-time mobile previews. Ensure your content resonates with a diverse audience and looks perfect on every device."
-      }
-    },
-    "timestamp": 1702285648594,
-    "configuration": {}
-  },
-  {
-    "id": "duplicate",
-    "args": { "uuids": ["91ba4c8d-6318-4915-9576-d041ad81df52"] },
-    "timestamp": 1702285650284,
-    "configuration": {
-      "new_uuid_91ba4c8d-6318-4915-9576-d041ad81df52": "64a9484f-f8da-412d-a1d0-47b90ed2421d"
-    }
-  },
-  {
-    "id": "edit",
-    "args": {
-      "uuid": "91ba4c8d-6318-4915-9576-d041ad81df52",
-      "values": {
-        "title": "Efficient Content Management",
-        "lead": "Tailored for the demands of managing extensive websites, Blokkli is your solution for efficient and consistent content management. Effortlessly handle 100+ pages while maintaining a cohesive look and feel across your site."
-      }
-    },
-    "timestamp": 1702285661840,
-    "configuration": {}
-  },
-  {
-    "id": "duplicate",
-    "args": { "uuids": ["91ba4c8d-6318-4915-9576-d041ad81df52"] },
-    "timestamp": 1702285680220,
-    "configuration": {
-      "new_uuid_91ba4c8d-6318-4915-9576-d041ad81df52": "c02e16b4-4b57-40dc-9277-138e8b8a52d7"
-    }
-  },
-  {
-    "id": "edit",
-    "args": {
-      "uuid": "91ba4c8d-6318-4915-9576-d041ad81df52",
-      "values": {
-        "title": "Simplified, Not Simplistic",
-        "lead": " Embrace a framework that balances essential functionality with simplicity. Blokkli provides the necessary tools to build creative and consistent web pages, without overwhelming you with too many options."
-      }
-    },
-    "timestamp": 1702285688249,
-    "configuration": {}
-  },
-  {
-    "id": "duplicate",
-    "args": { "uuids": ["91ba4c8d-6318-4915-9576-d041ad81df52"] },
-    "timestamp": 1702285699484,
-    "configuration": {
-      "new_uuid_91ba4c8d-6318-4915-9576-d041ad81df52": "f520a4f2-a816-4954-8a5c-66a5a5dfc7e5"
-    }
-  },
-  {
-    "id": "edit",
-    "args": {
-      "uuid": "91ba4c8d-6318-4915-9576-d041ad81df52",
-      "values": {
-        "title": "Get Started with Blokkli",
-        "lead": "Step into the future of web page building with Blokkli. Whether you're managing a large website or crafting individual pages, our framework equips you with the tools and flexibility needed for efficient, high-quality web design."
-      }
-    },
-    "timestamp": 1702285709211,
-    "configuration": {}
-  },
-  {
-    "id": "move",
-    "args": {
-      "uuids": ["91ba4c8d-6318-4915-9576-d041ad81df52"],
-      "hostEntityType": "content",
-      "hostEntityUuid": "1",
-      "hostField": "content",
-      "preceedingUuid": "c02e16b4-4b57-40dc-9277-138e8b8a52d7"
-    },
-    "timestamp": 1702285717993,
-    "configuration": {}
-  },
-  {
-    "id": "move",
-    "args": {
-      "uuids": ["91ba4c8d-6318-4915-9576-d041ad81df52"],
-      "hostEntityType": "content",
-      "hostEntityUuid": "1",
-      "hostField": "content",
-      "preceedingUuid": "f6d90afd-6b39-4299-bef3-e9ba73d058f5"
-    },
-    "timestamp": 1702285719799,
-    "configuration": {}
-  },
-  {
-    "id": "move",
-    "args": {
-      "uuids": ["91ba4c8d-6318-4915-9576-d041ad81df52"],
-      "hostEntityType": "content",
-      "hostEntityUuid": "1",
-      "hostField": "content",
-      "preceedingUuid": "f520a4f2-a816-4954-8a5c-66a5a5dfc7e5"
-    },
-    "timestamp": 1702285722885,
-    "configuration": {}
-  },
-  {
-    "id": "add",
-    "args": {
-      "bundle": "grid",
-      "values": {},
-      "hostEntityType": "content",
-      "hostEntityUuid": "1",
-      "hostField": "content",
-      "preceedingUuid": "f6d90afd-6b39-4299-bef3-e9ba73d058f5"
-    },
-    "timestamp": 1702285736929,
-    "configuration": {
-      "new_uuid_default": "d8fb1e72-a1e5-4900-ac71-44c40eb4192c"
-    }
-  },
-  {
-    "id": "move",
-    "args": {
-      "uuids": ["d8fb1e72-a1e5-4900-ac71-44c40eb4192c"],
-      "hostEntityType": "content",
-      "hostEntityUuid": "1",
-      "hostField": "content",
-      "preceedingUuid": "f6d90afd-6b39-4299-bef3-e9ba73d058f5"
-    },
-    "timestamp": 1702285738646,
-    "configuration": {}
-  },
-  {
-    "id": "edit",
-    "args": {
-      "uuid": "f6d90afd-6b39-4299-bef3-e9ba73d058f5",
-      "values": {
-        "title": "Simplify Your Web Design Process",
-        "tagline": "Effortless Page Building",
-        "lead": "Discover the ease and efficiency of building web pages with Blokkli. Our framework is designed to streamline your workflow, making it effortless to create, edit, and manage content, even for large-scale projects."
-      }
-    },
-    "timestamp": 1702287458607,
-    "configuration": {}
-  },
-  {
-    "id": "edit",
-    "args": {
-      "uuid": "7d71f39f-0749-46f6-bc72-0daee031f7c6",
-      "values": {
-        "title": "Design with Intuition and Precision",
-        "tagline": "Design Experience",
-        "lead": " Experience the seamless integration of advanced design tools and user-friendly features. Blokkli offers an intuitive design experience, enabling you to craft beautiful web pages with the finesse of professional software like Photoshop and Figma."
-      }
-    },
-    "timestamp": 1702287482225,
-    "configuration": {}
-  },
-  {
-    "id": "edit",
-    "args": {
-      "uuid": "e169c13e-c582-4292-b234-43e22eb04f3f",
-      "values": {
-        "title": "Unleash the Power of Flexibility",
-        "tagline": "Block Management",
-        "lead": "Blokkli brings unparalleled versatility to your fingertips. Our block management system is engineered for flexibility, allowing you to easily transform, customize, and reuse content blocks to fit your unique design vision."
-      }
-    },
-    "timestamp": 1702287503319,
-    "configuration": {}
-  },
-  {
-    "id": "edit",
-    "args": {
-      "uuid": "64a9484f-f8da-412d-a1d0-47b90ed2421d",
-      "values": {
-        "title": "Global Reach with Local Touch",
-        "tagline": "Multilingual",
-        "lead": "Expand your website's global reach with Blokkli's multilingual support and real-time mobile previews. Ensure your content resonates with a diverse audience and looks perfect on every device."
-      }
-    },
-    "timestamp": 1702287528365,
-    "configuration": {}
-  },
-  {
-    "id": "edit",
-    "args": {
-      "uuid": "c02e16b4-4b57-40dc-9277-138e8b8a52d7",
-      "values": {
-        "title": "Master the Art of Large-Scale Web Management",
-        "tagline": "Content Management",
-        "lead": "Tailored for the demands of managing extensive websites, Blokkli is your solution for efficient and consistent content management. Effortlessly handle 100+ pages while maintaining a cohesive look and feel across your site."
-      }
-    },
-    "timestamp": 1702287548484,
-    "configuration": {}
-  },
-  {
-    "id": "edit",
-    "args": {
-      "uuid": "f520a4f2-a816-4954-8a5c-66a5a5dfc7e5",
-      "values": {
-        "title": "Elevate Your Web Design, Minus the Complexity",
-        "tagline": "Simplified, Not Simplistic",
-        "lead": " Embrace a framework that balances essential functionality with simplicity. Blokkli provides the necessary tools to build creative and consistent web pages, without overwhelming you with too many options."
-      }
-    },
-    "timestamp": 1702287564824,
-    "configuration": {}
-  },
-  {
-    "id": "delete",
-    "args": { "uuids": ["d8fb1e72-a1e5-4900-ac71-44c40eb4192c"] },
-    "timestamp": 1702287572273,
+    "timestamp": 1702465063078,
     "configuration": {}
   },
   {
@@ -373,36 +480,86 @@
       "values": {},
       "hostEntityType": "content",
       "hostEntityUuid": "1",
-      "hostField": "content"
+      "hostField": "content",
+      "preceedingUuid": "332bbf33-2368-4b56-8ae6-4855657bc5d4"
     },
-    "timestamp": 1702288307317,
+    "timestamp": 1702465076295,
     "configuration": {
-      "new_uuid_default": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953"
+      "new_uuid_default": "90d01577-babc-45b5-a03b-2ba266822425"
     }
   },
   {
     "id": "move",
     "args": {
-      "uuids": ["f6d90afd-6b39-4299-bef3-e9ba73d058f5"],
+      "uuids": ["332bbf33-2368-4b56-8ae6-4855657bc5d4"],
       "hostEntityType": "block",
-      "hostEntityUuid": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953",
+      "hostEntityUuid": "90d01577-babc-45b5-a03b-2ba266822425",
       "hostField": "left"
     },
-    "timestamp": 1702288310820,
+    "timestamp": 1702465080499,
     "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["b819947c-1bce-429e-a210-91579dae421c"] },
+    "timestamp": 1702465083143,
+    "configuration": {
+      "new_uuid_b819947c-1bce-429e-a210-91579dae421c": "8a51a714-1990-4d6a-9bf7-81344cc1a288"
+    }
+  },
+  {
+    "id": "move",
+    "args": {
+      "uuids": ["8a51a714-1990-4d6a-9bf7-81344cc1a288"],
+      "hostEntityType": "block",
+      "hostEntityUuid": "90d01577-babc-45b5-a03b-2ba266822425",
+      "hostField": "left"
+    },
+    "timestamp": 1702465085778,
+    "configuration": {}
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "8a51a714-1990-4d6a-9bf7-81344cc1a288",
+      "values": {
+        "tagline": "Drupal",
+        "title": "Integration with Drupal Paragraphs",
+        "lead": "Blokkli comes with an adapter to integrate the editor in existing or new Paragraphs based setups. The \"Paragraphs Builder\" Drupal module implements all features required to use Blokkli as your editing experience."
+      }
+    },
+    "timestamp": 1702465214854,
+    "configuration": {}
+  },
+  {
+    "id": "add",
+    "args": {
+      "bundle": "text",
+      "values": {
+        "text": "Edit state entity to keep track of mutations\nPlugin system for custom mutations and actions\nGraphQL schema extension"
+      },
+      "hostEntityType": "block",
+      "hostEntityUuid": "90d01577-babc-45b5-a03b-2ba266822425",
+      "hostField": "left",
+      "preceedingUuid": "8a51a714-1990-4d6a-9bf7-81344cc1a288"
+    },
+    "timestamp": 1702465274625,
+    "configuration": {
+      "new_uuid_default": "67a9e26f-8028-4283-8b7d-8f836355b949"
+    }
   },
   {
     "id": "update_options",
     "args": {
       "options": [
         {
-          "uuid": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953",
-          "key": "background",
-          "value": "yellow"
+          "uuid": "67a9e26f-8028-4283-8b7d-8f836355b949",
+          "key": "list",
+          "value": "1"
         }
       ]
     },
-    "timestamp": 1702288320137,
+    "timestamp": 1702465277588,
     "configuration": {}
   },
   {
@@ -410,237 +567,287 @@
     "args": {
       "options": [
         {
-          "uuid": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953",
-          "key": "background",
-          "value": "dark"
-        }
-      ]
-    },
-    "timestamp": 1702288396509,
-    "configuration": {}
-  },
-  {
-    "id": "update_options",
-    "args": {
-      "options": [
-        {
-          "uuid": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953",
-          "key": "background",
-          "value": "light"
-        }
-      ]
-    },
-    "timestamp": 1702288763675,
-    "configuration": {}
-  },
-  {
-    "id": "update_options",
-    "args": {
-      "options": [
-        {
-          "uuid": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953",
-          "key": "background",
-          "value": "dark"
-        }
-      ]
-    },
-    "timestamp": 1702288768610,
-    "configuration": {}
-  },
-  {
-    "id": "update_options",
-    "args": {
-      "options": [
-        {
-          "uuid": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953",
-          "key": "background",
-          "value": "light"
-        }
-      ]
-    },
-    "timestamp": 1702289172098,
-    "configuration": {}
-  },
-  {
-    "id": "update_options",
-    "args": {
-      "options": [
-        {
-          "uuid": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953",
-          "key": "background",
-          "value": "dark"
-        }
-      ]
-    },
-    "timestamp": 1702289342658,
-    "configuration": {}
-  },
-  {
-    "id": "update_options",
-    "args": {
-      "options": [
-        {
-          "uuid": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953",
-          "key": "background",
-          "value": "light"
-        }
-      ]
-    },
-    "timestamp": 1702289498787,
-    "configuration": {}
-  },
-  {
-    "id": "update_options",
-    "args": {
-      "options": [
-        {
-          "uuid": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953",
-          "key": "background",
-          "value": "dark"
-        }
-      ]
-    },
-    "timestamp": 1702289602650,
-    "configuration": {}
-  },
-  {
-    "id": "update_options",
-    "args": {
-      "options": [
-        {
-          "uuid": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953",
-          "key": "background",
-          "value": "light"
-        }
-      ]
-    },
-    "timestamp": 1702289605353,
-    "configuration": {}
-  },
-  {
-    "id": "update_options",
-    "args": {
-      "options": [
-        {
-          "uuid": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953",
-          "key": "columns",
-          "value": "oneThree"
-        }
-      ]
-    },
-    "timestamp": 1702289727719,
-    "configuration": {}
-  },
-  {
-    "id": "update_options",
-    "args": {
-      "options": [
-        {
-          "uuid": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953",
-          "key": "columns",
-          "value": "equal"
-        },
-        {
-          "uuid": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953",
+          "uuid": "90d01577-babc-45b5-a03b-2ba266822425",
           "key": "reverse",
           "value": ""
         }
       ]
     },
-    "timestamp": 1702289986854,
+    "timestamp": 1702465302981,
     "configuration": {}
   },
   {
-    "id": "add",
+    "id": "update_options",
     "args": {
-      "bundle": "card",
-      "values": {
-        "icon": "history",
-        "title": "History Tracking",
-        "text": "View and jump to any point in your editing history."
-      },
-      "hostEntityType": "content",
-      "hostEntityUuid": "1",
-      "hostField": "content",
-      "preceedingUuid": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953"
+      "options": [
+        {
+          "uuid": "6d0bde10-a05b-4c7d-a8cf-fafc8e0001f1",
+          "key": "background",
+          "value": "light"
+        }
+      ]
     },
-    "timestamp": 1702291362510,
-    "configuration": {
-      "new_uuid_default": "16d4f7c5-44a1-4276-a53c-913dc2d44b7a"
-    }
-  },
-  {
-    "id": "add",
-    "args": {
-      "bundle": "card",
-      "values": { "icon": "drupal", "title": "Test", "text": "Test" },
-      "hostEntityType": "content",
-      "hostEntityUuid": "1",
-      "hostField": "content",
-      "preceedingUuid": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953"
-    },
-    "timestamp": 1702291635671,
-    "configuration": {
-      "new_uuid_default": "cb2e81a7-3c0b-4784-a067-5454fef81887"
-    }
+    "timestamp": 1702465316597,
+    "configuration": {}
   },
   {
     "id": "delete",
-    "args": { "uuids": ["16d4f7c5-44a1-4276-a53c-913dc2d44b7a"] },
-    "timestamp": 1702291654728,
+    "args": { "uuids": ["eaacb115-11eb-4a9c-ae16-cdf6c649d6a5"] },
+    "timestamp": 1702465332998,
+    "configuration": {}
+  },
+  {
+    "id": "delete",
+    "args": { "uuids": ["2404f921-2e35-4dd8-9baa-bd244bf7bc1b"] },
+    "timestamp": 1702465335229,
+    "configuration": {}
+  },
+  {
+    "id": "move",
+    "args": {
+      "uuids": ["90d01577-babc-45b5-a03b-2ba266822425"],
+      "hostEntityType": "content",
+      "hostEntityUuid": "1",
+      "hostField": "content",
+      "preceedingUuid": "4946b98c-a83f-41a8-8c86-2b37cf2f83d9"
+    },
+    "timestamp": 1702465355736,
+    "configuration": {}
+  },
+  {
+    "id": "move",
+    "args": {
+      "uuids": ["90d01577-babc-45b5-a03b-2ba266822425"],
+      "hostEntityType": "content",
+      "hostEntityUuid": "1",
+      "hostField": "content",
+      "preceedingUuid": "c414a773-406c-4200-aef6-ada9349b3f11"
+    },
+    "timestamp": 1702465361982,
     "configuration": {}
   },
   {
     "id": "edit",
     "args": {
-      "uuid": "cb2e81a7-3c0b-4784-a067-5454fef81887",
+      "uuid": "b819947c-1bce-429e-a210-91579dae421c",
       "values": {
-        "icon": "history",
-        "title": "History Tracking",
-        "text": "View and jump to any point in your editing history"
+        "tagline": "Integration",
+        "title": "Just the editor",
+        "lead": "Blokkli only requires a simple data structure and integrates with any CMS using a single adapter interface."
       }
     },
-    "timestamp": 1702291999993,
+    "timestamp": 1702465456677,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "90d01577-babc-45b5-a03b-2ba266822425",
+          "key": "background",
+          "value": "dark"
+        }
+      ]
+    },
+    "timestamp": 1702465465511,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "90d01577-babc-45b5-a03b-2ba266822425",
+          "key": "columns",
+          "value": "twoOne"
+        }
+      ]
+    },
+    "timestamp": 1702465722756,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "90d01577-babc-45b5-a03b-2ba266822425",
+          "key": "reverse",
+          "value": "1"
+        }
+      ]
+    },
+    "timestamp": 1702465726227,
     "configuration": {}
   },
   {
     "id": "add",
     "args": {
-      "bundle": "grid",
-      "values": {},
-      "hostEntityType": "content",
-      "hostEntityUuid": "1",
-      "hostField": "content",
-      "preceedingUuid": "cb2e81a7-3c0b-4784-a067-5454fef81887"
+      "bundle": "image",
+      "values": { "imageReference": "5" },
+      "hostEntityType": "block",
+      "hostEntityUuid": "90d01577-babc-45b5-a03b-2ba266822425",
+      "hostField": "right",
+      "preceedingUuid": ""
     },
-    "timestamp": 1702292038350,
+    "timestamp": 1702465906479,
     "configuration": {
-      "new_uuid_default": "afbf14d9-4e25-4e77-a145-9a63f6177356"
+      "new_uuid_default": "1be4ab78-8265-48a6-a1aa-ff852d2507b5"
     }
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "1be4ab78-8265-48a6-a1aa-ff852d2507b5",
+          "key": "elevated",
+          "value": ""
+        }
+      ]
+    },
+    "timestamp": 1702465913419,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "90d01577-babc-45b5-a03b-2ba266822425",
+          "key": "reverse",
+          "value": ""
+        }
+      ]
+    },
+    "timestamp": 1702465932071,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "c414a773-406c-4200-aef6-ada9349b3f11",
+          "key": "background",
+          "value": "light"
+        }
+      ]
+    },
+    "timestamp": 1702465962278,
+    "configuration": {}
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "47f0bf41-bd49-47c2-a2c4-145f80abe161",
+      "values": {
+        "tagline": "Multi Everything",
+        "title": "Multilingual Support and Advanced Previewing",
+        "lead": "Blokkli transcends language barriers and offers advanced previewing options, ensuring your content resonates globally."
+      }
+    },
+    "timestamp": 1702465999892,
+    "configuration": {}
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "4636604d-f473-4d10-b083-79a00228a2d8",
+      "values": {
+        "icon": "phone",
+        "title": "Mobile First",
+        "text": "Direct mobile preview from within the editor. Instantly see how changes affect mobile rendering."
+      }
+    },
+    "timestamp": 1702466109297,
+    "configuration": {}
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "57bbeffb-dd8d-44f6-a29a-3a1145b4e373",
+      "values": {
+        "icon": "qr",
+        "title": "Hands-on Preview",
+        "text": "If supported by the backend, Blokkli can generate a QR code that can be scanned on a smartphone to see and feel a preview of the page, with live reloading."
+      }
+    },
+    "timestamp": 1702466238273,
+    "configuration": {}
   },
   {
     "id": "move",
     "args": {
-      "uuids": ["cb2e81a7-3c0b-4784-a067-5454fef81887"],
+      "uuids": ["57bbeffb-dd8d-44f6-a29a-3a1145b4e373"],
       "hostEntityType": "block",
-      "hostEntityUuid": "afbf14d9-4e25-4e77-a145-9a63f6177356",
-      "hostField": "blocks"
+      "hostEntityUuid": "6d0bde10-a05b-4c7d-a8cf-fafc8e0001f1",
+      "hostField": "blocks",
+      "preceedingUuid": "5780e657-2c02-45b2-bb92-1424a7a29fb8"
     },
-    "timestamp": 1702292040960,
+    "timestamp": 1702466241801,
     "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["0962e858-fbf6-4f98-bf6f-f7813bd5f9be"] },
+    "timestamp": 1702466260710,
+    "configuration": {
+      "new_uuid_0962e858-fbf6-4f98-bf6f-f7813bd5f9be": "49e2da9e-4e87-4570-9909-458494c9cf3d"
+    }
   },
   {
     "id": "update_options",
     "args": {
       "options": [
         {
-          "uuid": "afbf14d9-4e25-4e77-a145-9a63f6177356",
-          "key": "columns",
-          "value": "two"
+          "uuid": "49e2da9e-4e87-4570-9909-458494c9cf3d",
+          "key": "color",
+          "value": "normal"
         }
       ]
     },
-    "timestamp": 1702292218148,
+    "timestamp": 1702466263203,
+    "configuration": {}
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "49e2da9e-4e87-4570-9909-458494c9cf3d",
+      "values": { "title": "Documentation", "url": "/page/1?blokkliEditing=1" }
+    },
+    "timestamp": 1702466272295,
+    "configuration": {}
+  },
+  {
+    "id": "move",
+    "args": {
+      "uuids": ["266e73f3-310e-4c35-9b5c-9b4cb231cf9d"],
+      "hostEntityType": "block",
+      "hostEntityUuid": "bf4acf60-e0a2-43bb-b4fc-9f32a41a4816",
+      "hostField": "blocks",
+      "preceedingUuid": "d6ddbd8b-9601-4a9f-a8fb-41d39031e25c"
+    },
+    "timestamp": 1702466283707,
+    "configuration": {}
+  },
+  {
+    "id": "move",
+    "args": {
+      "uuids": ["dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf"],
+      "hostEntityType": "content",
+      "hostEntityUuid": "1",
+      "hostField": "content",
+      "preceedingUuid": "f7e3f26b-9c8a-4571-9f98-660bcca08938"
+    },
+    "timestamp": 1702466320564,
+    "configuration": {}
+  },
+  {
+    "id": "delete",
+    "args": { "uuids": ["4946b98c-a83f-41a8-8c86-2b37cf2f83d9"] },
+    "timestamp": 1702466322163,
     "configuration": {}
   },
   {
@@ -648,25 +855,225 @@
     "args": {
       "options": [
         {
-          "uuid": "cb2e81a7-3c0b-4784-a067-5454fef81887",
+          "uuid": "bf4acf60-e0a2-43bb-b4fc-9f32a41a4816",
+          "key": "background",
+          "value": "light"
+        }
+      ]
+    },
+    "timestamp": 1702466327627,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf",
+          "key": "background",
+          "value": "dark"
+        }
+      ]
+    },
+    "timestamp": 1702466386322,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf",
+          "key": "background",
+          "value": "light"
+        }
+      ]
+    },
+    "timestamp": 1702466393864,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "ce8afc60-2f42-4b99-8a44-c5a46eb15f7a",
+          "key": "background",
+          "value": "dark"
+        }
+      ]
+    },
+    "timestamp": 1702466398992,
+    "configuration": {}
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "87098bb1-d849-4afc-8845-05ef2d08d160",
+      "values": {
+        "icon": "lightbulb",
+        "title": "Simple",
+        "text": "Blokkli provides an adapter to integrate the editor with any existing Paragraphs based Drupal setup."
+      }
+    },
+    "timestamp": 1702466477943,
+    "configuration": {}
+  },
+  {
+    "id": "move",
+    "args": {
+      "uuids": ["87098bb1-d849-4afc-8845-05ef2d08d160"],
+      "hostEntityType": "block",
+      "hostEntityUuid": "c414a773-406c-4200-aef6-ada9349b3f11",
+      "hostField": "blocks"
+    },
+    "timestamp": 1702466481587,
+    "configuration": {}
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "4526d2d0-f122-4093-902f-e2f00a433981",
+      "values": {
+        "tagline": "Developer Experience",
+        "title": "Integrates in any Nuxt setup",
+        "lead": "Blocks are rendered with minimal overhead. Full SSR support, no leaking CSS."
+      }
+    },
+    "timestamp": 1702466866163,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf",
+          "key": "background",
+          "value": "white"
+        }
+      ]
+    },
+    "timestamp": 1702466878117,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "e011fd53-b083-4db0-a4aa-26c3602916f8",
+          "key": "elevated",
+          "value": ""
+        }
+      ]
+    },
+    "timestamp": 1702466882125,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf",
+          "key": "background",
+          "value": "light"
+        }
+      ]
+    },
+    "timestamp": 1702466889539,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "e011fd53-b083-4db0-a4aa-26c3602916f8",
+          "key": "elevated",
+          "value": "1"
+        }
+      ]
+    },
+    "timestamp": 1702466890853,
+    "configuration": {}
+  },
+  {
+    "id": "move",
+    "args": {
+      "uuids": [
+        "dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf",
+        "ce8afc60-2f42-4b99-8a44-c5a46eb15f7a"
+      ],
+      "hostEntityType": "content",
+      "hostEntityUuid": "1",
+      "hostField": "content",
+      "preceedingUuid": "dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf"
+    },
+    "timestamp": 1702466909344,
+    "configuration": {}
+  },
+  {
+    "id": "move",
+    "args": {
+      "uuids": ["ce8afc60-2f42-4b99-8a44-c5a46eb15f7a"],
+      "hostEntityType": "content",
+      "hostEntityUuid": "1",
+      "hostField": "content",
+      "preceedingUuid": "334a4e80-a174-49ba-b986-af5697f093b7"
+    },
+    "timestamp": 1702466915868,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "c414a773-406c-4200-aef6-ada9349b3f11",
+          "key": "background",
+          "value": "white"
+        }
+      ]
+    },
+    "timestamp": 1702466954386,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "87098bb1-d849-4afc-8845-05ef2d08d160",
+          "key": "box",
+          "value": ""
+        },
+        {
+          "uuid": "a3bcf0de-589c-44d2-9ca7-b8184cfe5028",
+          "key": "box",
+          "value": ""
+        },
+        {
+          "uuid": "c3f229a1-7bb7-4d0a-8820-51a48acd73b0",
           "key": "box",
           "value": ""
         }
       ]
     },
-    "timestamp": 1702293782686,
+    "timestamp": 1702466964200,
     "configuration": {}
   },
   {
     "id": "move",
     "args": {
-      "uuids": ["afbf14d9-4e25-4e77-a145-9a63f6177356"],
+      "uuids": ["dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf"],
       "hostEntityType": "content",
       "hostEntityUuid": "1",
       "hostField": "content",
-      "preceedingUuid": "7d71f39f-0749-46f6-bc72-0daee031f7c6"
+      "preceedingUuid": "f7e3f26b-9c8a-4571-9f98-660bcca08938"
     },
-    "timestamp": 1702293789084,
+    "timestamp": 1702466981102,
     "configuration": {}
   },
   {
@@ -674,77 +1081,726 @@
     "args": {
       "options": [
         {
-          "uuid": "afbf14d9-4e25-4e77-a145-9a63f6177356",
+          "uuid": "ce8afc60-2f42-4b99-8a44-c5a46eb15f7a",
+          "key": "background",
+          "value": "light"
+        }
+      ]
+    },
+    "timestamp": 1702466989009,
+    "configuration": {}
+  },
+  {
+    "id": "move",
+    "args": {
+      "uuids": ["6d0bde10-a05b-4c7d-a8cf-fafc8e0001f1"],
+      "hostEntityType": "content",
+      "hostEntityUuid": "1",
+      "hostField": "content",
+      "preceedingUuid": "dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf"
+    },
+    "timestamp": 1702467003465,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "6d0bde10-a05b-4c7d-a8cf-fafc8e0001f1",
+          "key": "background",
+          "value": "white"
+        }
+      ]
+    },
+    "timestamp": 1702467006547,
+    "configuration": {}
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "b819947c-1bce-429e-a210-91579dae421c",
+      "values": {
+        "tagline": "Integration",
+        "title": "It's just the editor",
+        "lead": "Blokkli only requires a simple data structure and integrates with any CMS using a single adapter interface."
+      }
+    },
+    "timestamp": 1702467026509,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "958fba1e-400f-42c5-b310-11f59db59e2f",
+          "key": "background",
+          "value": "light"
+        }
+      ]
+    },
+    "timestamp": 1702467050255,
+    "configuration": {}
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "d8d3ad51-7c37-4a27-ad64-e04ee8a4f842",
+      "values": {
+        "tagline": "Features",
+        "title": "All features available",
+        "lead": ""
+      }
+    },
+    "timestamp": 1702467122962,
+    "configuration": {}
+  },
+  {
+    "id": "delete",
+    "args": { "uuids": ["a53ae0b9-1f2d-4d9b-8980-933cedc446d7"] },
+    "timestamp": 1702467125395,
+    "configuration": {}
+  },
+  {
+    "id": "delete",
+    "args": { "uuids": ["0a5fc9c4-212a-476c-bdf6-1fe7cad9980a"] },
+    "timestamp": 1702467126243,
+    "configuration": {}
+  },
+  {
+    "id": "delete",
+    "args": { "uuids": ["7aaffcf7-be40-434e-97a2-9e1b39303ed3"] },
+    "timestamp": 1702467127067,
+    "configuration": {}
+  },
+  {
+    "id": "add",
+    "args": {
+      "bundle": "card",
+      "values": {
+        "icon": "",
+        "title": "Add List",
+        "text": "List to easily drag and drop new blocks"
+      },
+      "hostEntityType": "block",
+      "hostEntityUuid": "958fba1e-400f-42c5-b310-11f59db59e2f",
+      "hostField": "blocks",
+      "preceedingUuid": ""
+    },
+    "timestamp": 1702467162873,
+    "configuration": {
+      "new_uuid_default": "fb92c962-1d8e-44b3-ab01-694579b4af04"
+    }
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["fb92c962-1d8e-44b3-ab01-694579b4af04"] },
+    "timestamp": 1702467164602,
+    "configuration": {
+      "new_uuid_fb92c962-1d8e-44b3-ab01-694579b4af04": "acff013c-ff59-4ec8-95b9-916e6291531e"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "acff013c-ff59-4ec8-95b9-916e6291531e",
+      "values": {
+        "icon": "",
+        "title": "Artboard",
+        "text": "Pan and zoom pages for easy overview"
+      }
+    },
+    "timestamp": 1702467208292,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["acff013c-ff59-4ec8-95b9-916e6291531e"] },
+    "timestamp": 1702467211242,
+    "configuration": {
+      "new_uuid_acff013c-ff59-4ec8-95b9-916e6291531e": "a8c2f652-c446-417e-ad38-758c66391408"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "a8c2f652-c446-417e-ad38-758c66391408",
+      "values": {
+        "icon": "",
+        "title": "Clipboard",
+        "text": "Paste text, images or links to create new blocks"
+      }
+    },
+    "timestamp": 1702467233805,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["a8c2f652-c446-417e-ad38-758c66391408"] },
+    "timestamp": 1702467237641,
+    "configuration": {
+      "new_uuid_a8c2f652-c446-417e-ad38-758c66391408": "37594bf6-47db-4d8f-9cde-8c3c4b2bdacf"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "37594bf6-47db-4d8f-9cde-8c3c4b2bdacf",
+      "values": {
+        "icon": "",
+        "title": "Comments",
+        "text": "Add comments to one or more blocks and mark comments as resolved."
+      }
+    },
+    "timestamp": 1702467261426,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["37594bf6-47db-4d8f-9cde-8c3c4b2bdacf"] },
+    "timestamp": 1702467266233,
+    "configuration": {
+      "new_uuid_37594bf6-47db-4d8f-9cde-8c3c4b2bdacf": "7c0a8a92-1619-4dd9-b351-3ad7a8580409"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "7c0a8a92-1619-4dd9-b351-3ad7a8580409",
+      "values": {
+        "icon": "",
+        "title": "Conversions",
+        "text": "Convert one or more blocks to different types while preserving their content."
+      }
+    },
+    "timestamp": 1702467287719,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["7c0a8a92-1619-4dd9-b351-3ad7a8580409"] },
+    "timestamp": 1702467300867,
+    "configuration": {
+      "new_uuid_7c0a8a92-1619-4dd9-b351-3ad7a8580409": "b850c14b-cf1b-4b57-9b9e-32609dc8f7a8"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "b850c14b-cf1b-4b57-9b9e-32609dc8f7a8",
+      "values": {
+        "icon": "",
+        "title": "Entity Title & Form",
+        "text": "Seamlessly integrate CMS forms to edit non-block content like page title, metatags, etc."
+      }
+    },
+    "timestamp": 1702467363960,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["b850c14b-cf1b-4b57-9b9e-32609dc8f7a8"] },
+    "timestamp": 1702467370640,
+    "configuration": {
+      "new_uuid_b850c14b-cf1b-4b57-9b9e-32609dc8f7a8": "0bb54dcf-51d1-4ef2-a6a8-45c018fc69ea"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "0bb54dcf-51d1-4ef2-a6a8-45c018fc69ea",
+      "values": {
+        "icon": "",
+        "title": "Grid",
+        "text": "Show a grid overlay in the editor."
+      }
+    },
+    "timestamp": 1702467396480,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["0bb54dcf-51d1-4ef2-a6a8-45c018fc69ea"] },
+    "timestamp": 1702467402153,
+    "configuration": {
+      "new_uuid_0bb54dcf-51d1-4ef2-a6a8-45c018fc69ea": "0aed8ca0-dc8e-40b8-9135-7de8d59f4115"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "0aed8ca0-dc8e-40b8-9135-7de8d59f4115",
+      "values": {
+        "icon": "",
+        "title": "Form",
+        "text": "Integrates forms from a CMS via iframe. Render your own forms directly inside the editor."
+      }
+    },
+    "timestamp": 1702467455099,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["0aed8ca0-dc8e-40b8-9135-7de8d59f4115"] },
+    "timestamp": 1702467459127,
+    "configuration": {
+      "new_uuid_0aed8ca0-dc8e-40b8-9135-7de8d59f4115": "bbb78511-9ef1-473f-a96b-a07dc71760e3"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "bbb78511-9ef1-473f-a96b-a07dc71760e3",
+      "values": {
+        "icon": "",
+        "title": "History",
+        "text": "Quickly undo or redo changes or jump to any point in the history stack."
+      }
+    },
+    "timestamp": 1702467489381,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["bbb78511-9ef1-473f-a96b-a07dc71760e3"] },
+    "timestamp": 1702467494543,
+    "configuration": {
+      "new_uuid_bbb78511-9ef1-473f-a96b-a07dc71760e3": "468642cd-396e-4372-b339-56c5ca65642d"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "468642cd-396e-4372-b339-56c5ca65642d",
+      "values": {
+        "icon": "",
+        "title": "Import Existing",
+        "text": "Offer a way to import content from existing pages or templates."
+      }
+    },
+    "timestamp": 1702467509469,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["468642cd-396e-4372-b339-56c5ca65642d"] },
+    "timestamp": 1702467513344,
+    "configuration": {
+      "new_uuid_468642cd-396e-4372-b339-56c5ca65642d": "a9918c5a-f393-4356-809a-cb5f53dc27d3"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "a9918c5a-f393-4356-809a-cb5f53dc27d3",
+      "values": {
+        "icon": "",
+        "title": "Library",
+        "text": "Make blocks reusable by adding them to a library. Easily drag and drop library blocks into the page."
+      }
+    },
+    "timestamp": 1702467553886,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["a9918c5a-f393-4356-809a-cb5f53dc27d3"] },
+    "timestamp": 1702467560430,
+    "configuration": {
+      "new_uuid_a9918c5a-f393-4356-809a-cb5f53dc27d3": "22137d66-d9d6-4328-9ca7-538bf6a71c7a"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "22137d66-d9d6-4328-9ca7-538bf6a71c7a",
+      "values": {
+        "icon": "",
+        "title": "Mask",
+        "text": "Hide parts of the page that can't be changed via the editor (header, footer, etc.)"
+      }
+    },
+    "timestamp": 1702467602730,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["22137d66-d9d6-4328-9ca7-538bf6a71c7a"] },
+    "timestamp": 1702467607246,
+    "configuration": {
+      "new_uuid_22137d66-d9d6-4328-9ca7-538bf6a71c7a": "8c1c4260-8c0d-48b2-939d-2151adb63d99"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "8c1c4260-8c0d-48b2-939d-2151adb63d99",
+      "values": {
+        "icon": "",
+        "title": "Multiselect",
+        "text": "Select one or more blocks using a selection rectangle."
+      }
+    },
+    "timestamp": 1702467625706,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["8c1c4260-8c0d-48b2-939d-2151adb63d99"] },
+    "timestamp": 1702467629589,
+    "configuration": {
+      "new_uuid_8c1c4260-8c0d-48b2-939d-2151adb63d99": "8a51d72c-79b6-49d7-a76a-5f1c83252920"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "8a51d72c-79b6-49d7-a76a-5f1c83252920",
+      "values": {
+        "icon": "",
+        "title": "Options",
+        "text": "Implement block options that are rendered directly in the editor, with instant preview."
+      }
+    },
+    "timestamp": 1702467683277,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["8a51d72c-79b6-49d7-a76a-5f1c83252920"] },
+    "timestamp": 1702467690263,
+    "configuration": {
+      "new_uuid_8a51d72c-79b6-49d7-a76a-5f1c83252920": "56a392ea-65cb-42c5-a1a9-97d7fc2718b4"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "56a392ea-65cb-42c5-a1a9-97d7fc2718b4",
+      "values": {
+        "icon": "",
+        "title": "Ownership",
+        "text": "Restrict editing to a single person."
+      }
+    },
+    "timestamp": 1702467726533,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["56a392ea-65cb-42c5-a1a9-97d7fc2718b4"] },
+    "timestamp": 1702467730341,
+    "configuration": {
+      "new_uuid_56a392ea-65cb-42c5-a1a9-97d7fc2718b4": "149f66f8-fb41-4eb4-a765-ea649dcebc10"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "149f66f8-fb41-4eb4-a765-ea649dcebc10",
+      "values": {
+        "icon": "",
+        "title": "Preview",
+        "text": "Live mobile preview via iframe, separate URL or by scanning a QR code to preview on a smartphone."
+      }
+    },
+    "timestamp": 1702467769065,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["149f66f8-fb41-4eb4-a765-ea649dcebc10"] },
+    "timestamp": 1702467773948,
+    "configuration": {
+      "new_uuid_149f66f8-fb41-4eb4-a765-ea649dcebc10": "8085ec5a-b345-4a6f-9ff7-ad1fabea898b"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "8085ec5a-b345-4a6f-9ff7-ad1fabea898b",
+      "values": {
+        "icon": "",
+        "title": "Publish",
+        "text": "Apply changes from the history stack and publish them. Implement custom publishing workflows by extending the feature."
+      }
+    },
+    "timestamp": 1702467846715,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["8085ec5a-b345-4a6f-9ff7-ad1fabea898b"] },
+    "timestamp": 1702467850971,
+    "configuration": {
+      "new_uuid_8085ec5a-b345-4a6f-9ff7-ad1fabea898b": "baf3810c-25f3-42f6-8ecd-048ef4f5c8fe"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "baf3810c-25f3-42f6-8ecd-048ef4f5c8fe",
+      "values": {
+        "icon": "",
+        "title": "Search",
+        "text": "Find blocks on the current page. Implement custom providers to search existing content or images. Drag and drop search items to create blocks."
+      }
+    },
+    "timestamp": 1702467900863,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["baf3810c-25f3-42f6-8ecd-048ef4f5c8fe"] },
+    "timestamp": 1702467905075,
+    "configuration": {
+      "new_uuid_baf3810c-25f3-42f6-8ecd-048ef4f5c8fe": "e01cbcda-c815-4325-8f27-ff977a60c5f9"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "e01cbcda-c815-4325-8f27-ff977a60c5f9",
+      "values": {
+        "icon": "",
+        "title": "Settings",
+        "text": "Let users configure the editor. Add custom settings to the form."
+      }
+    },
+    "timestamp": 1702467952440,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["e01cbcda-c815-4325-8f27-ff977a60c5f9"] },
+    "timestamp": 1702467956322,
+    "configuration": {
+      "new_uuid_e01cbcda-c815-4325-8f27-ff977a60c5f9": "5f46fde3-ccca-489b-afa4-456d2649de5b"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "5f46fde3-ccca-489b-afa4-456d2649de5b",
+      "values": {
+        "icon": "",
+        "title": "Structure",
+        "text": "Quick overview of the page structure. Click to jump to block."
+      }
+    },
+    "timestamp": 1702467976986,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["5f46fde3-ccca-489b-afa4-456d2649de5b"] },
+    "timestamp": 1702467980866,
+    "configuration": {
+      "new_uuid_5f46fde3-ccca-489b-afa4-456d2649de5b": "3bbb964a-93a0-4b85-91dd-52e8bc8425fc"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "3bbb964a-93a0-4b85-91dd-52e8bc8425fc",
+      "values": {
+        "icon": "",
+        "title": "Transform",
+        "text": "Implement custom actions to transform one or more blocks, like merging or splitting."
+      }
+    },
+    "timestamp": 1702468000710,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["3bbb964a-93a0-4b85-91dd-52e8bc8425fc"] },
+    "timestamp": 1702468004562,
+    "configuration": {
+      "new_uuid_3bbb964a-93a0-4b85-91dd-52e8bc8425fc": "a7a3b4bf-c891-4387-a012-a9cb2da8b1b4"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "a7a3b4bf-c891-4387-a012-a9cb2da8b1b4",
+      "values": {
+        "icon": "",
+        "title": "Translations",
+        "text": "Adds support for multilingual content. Easy switch between enabled languages."
+      }
+    },
+    "timestamp": 1702468033501,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["a7a3b4bf-c891-4387-a012-a9cb2da8b1b4"] },
+    "timestamp": 1702468038105,
+    "configuration": {
+      "new_uuid_a7a3b4bf-c891-4387-a012-a9cb2da8b1b4": "34344398-bb04-450f-9fa9-d3763f5bae0c"
+    }
+  },
+  {
+    "id": "edit",
+    "args": {
+      "uuid": "34344398-bb04-450f-9fa9-d3763f5bae0c",
+      "values": {
+        "icon": "",
+        "title": "Validations",
+        "text": "Give hints about validation errors like missing alt texts, empty blocks or excessive use of line breaks."
+      }
+    },
+    "timestamp": 1702468076859,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "958fba1e-400f-42c5-b310-11f59db59e2f",
+          "key": "columns",
+          "value": "four"
+        }
+      ]
+    },
+    "timestamp": 1702468099217,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "958fba1e-400f-42c5-b310-11f59db59e2f",
           "key": "columns",
           "value": "three"
         }
       ]
     },
-    "timestamp": 1702293810772,
+    "timestamp": 1702468103813,
     "configuration": {}
   },
   {
-    "id": "duplicate",
-    "args": { "uuids": ["cb2e81a7-3c0b-4784-a067-5454fef81887"] },
-    "timestamp": 1702293811192,
-    "configuration": {
-      "new_uuid_cb2e81a7-3c0b-4784-a067-5454fef81887": "1c29f376-6a0d-48ee-b7b9-d906d367032d"
-    }
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "90d01577-babc-45b5-a03b-2ba266822425",
+          "key": "showHeader",
+          "value": ""
+        }
+      ]
+    },
+    "timestamp": 1702468399571,
+    "configuration": {}
   },
   {
-    "id": "duplicate",
-    "args": { "uuids": ["cb2e81a7-3c0b-4784-a067-5454fef81887"] },
-    "timestamp": 1702293811920,
-    "configuration": {
-      "new_uuid_cb2e81a7-3c0b-4784-a067-5454fef81887": "950ced6f-641c-4449-99c4-2f17bf45ab1a"
-    }
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "6d0bde10-a05b-4c7d-a8cf-fafc8e0001f1",
+          "key": "mobile",
+          "value": ""
+        }
+      ]
+    },
+    "timestamp": 1702468493407,
+    "configuration": {}
   },
   {
-    "id": "duplicate",
-    "args": { "uuids": ["cd19e987-ad3c-4c24-b90b-20e2a0d9b953"] },
-    "timestamp": 1702293872815,
-    "configuration": {
-      "new_uuid_cd19e987-ad3c-4c24-b90b-20e2a0d9b953": "b96f26c6-723c-4866-a844-ad73d1cfb861",
-      "new_uuid_f6d90afd-6b39-4299-bef3-e9ba73d058f5": "81b534c7-0197-41be-a887-2907e6d3345c",
-      "new_uuid_81b534c7-0197-41be-a887-2907e6d3345c": "ecb77924-6379-45b0-a761-6bab828ca07d"
-    }
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "958fba1e-400f-42c5-b310-11f59db59e2f",
+          "key": "mobile",
+          "value": "1"
+        }
+      ]
+    },
+    "timestamp": 1702468502791,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "958fba1e-400f-42c5-b310-11f59db59e2f",
+          "key": "background",
+          "value": "white"
+        }
+      ]
+    },
+    "timestamp": 1702468515943,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "958fba1e-400f-42c5-b310-11f59db59e2f",
+          "key": "columns",
+          "value": "four"
+        }
+      ]
+    },
+    "timestamp": 1702468525362,
+    "configuration": {}
   },
   {
     "id": "move",
     "args": {
-      "uuids": ["f6d90afd-6b39-4299-bef3-e9ba73d058f5"],
+      "uuids": ["266e73f3-310e-4c35-9b5c-9b4cb231cf9d"],
       "hostEntityType": "block",
-      "hostEntityUuid": "b96f26c6-723c-4866-a844-ad73d1cfb861",
-      "hostField": "left",
-      "preceedingUuid": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953"
+      "hostEntityUuid": "bf4acf60-e0a2-43bb-b4fc-9f32a41a4816",
+      "hostField": "blocks"
     },
-    "timestamp": 1702293876059,
+    "timestamp": 1702468792809,
+    "configuration": {}
+  },
+  {
+    "id": "move",
+    "args": {
+      "uuids": ["266e73f3-310e-4c35-9b5c-9b4cb231cf9d"],
+      "hostEntityType": "block",
+      "hostEntityUuid": "bf4acf60-e0a2-43bb-b4fc-9f32a41a4816",
+      "hostField": "blocks",
+      "preceedingUuid": "d6ddbd8b-9601-4a9f-a8fb-41d39031e25c"
+    },
+    "timestamp": 1702468794226,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf",
+          "key": "reverse",
+          "value": ""
+        }
+      ]
+    },
+    "timestamp": 1702468821756,
     "configuration": {}
   },
   {
     "id": "edit",
     "args": {
-      "uuid": "81b534c7-0197-41be-a887-2907e6d3345c",
+      "uuid": "611aae9b-49be-4236-b4a0-1602aa306f56",
       "values": {
-        "title": "Feels like Figma",
-        "tagline": "Artboard Navigation",
-        "lead": "Pan and zoom through your page with an artboard that mimics design tools like Photoshop or Figma."
+        "tagline": "Search",
+        "title": "Easily find existing content",
+        "lead": "Easily locate content and transform your blocks to suit your needs, adding flexibility to your page design."
       }
     },
-    "timestamp": 1702293929826,
-    "configuration": {}
-  },
-  {
-    "id": "edit",
-    "args": {
-      "uuid": "81b534c7-0197-41be-a887-2907e6d3345c",
-      "values": {
-        "title": "Feels like Figma",
-        "tagline": "Artboard",
-        "lead": "Pan and zoom through your page with an artboard that mimics design tools like Photoshop or Figma."
-      }
-    },
-    "timestamp": 1702293935142,
+    "timestamp": 1702468828266,
     "configuration": {}
   },
   {
@@ -752,13 +1808,41 @@
     "args": {
       "options": [
         {
-          "uuid": "1c29f376-6a0d-48ee-b7b9-d906d367032d",
+          "uuid": "1be4ab78-8265-48a6-a1aa-ff852d2507b5",
+          "key": "elevated",
+          "value": "1"
+        }
+      ]
+    },
+    "timestamp": 1702468853899,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "1be4ab78-8265-48a6-a1aa-ff852d2507b5",
+          "key": "elevated",
+          "value": ""
+        }
+      ]
+    },
+    "timestamp": 1702468855881,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "c3f229a1-7bb7-4d0a-8820-51a48acd73b0",
           "key": "box",
           "value": "1"
         }
       ]
     },
-    "timestamp": 1702294015761,
+    "timestamp": 1702468859213,
     "configuration": {}
   },
   {
@@ -766,317 +1850,42 @@
     "args": {
       "options": [
         {
-          "uuid": "1c29f376-6a0d-48ee-b7b9-d906d367032d",
+          "uuid": "c3f229a1-7bb7-4d0a-8820-51a48acd73b0",
           "key": "box",
           "value": ""
         }
       ]
     },
-    "timestamp": 1702294018782,
-    "configuration": {}
-  },
-  {
-    "id": "update_options",
-    "args": {
-      "options": [
-        {
-          "uuid": "1c29f376-6a0d-48ee-b7b9-d906d367032d",
-          "key": "box",
-          "value": "1"
-        }
-      ]
-    },
-    "timestamp": 1702294021984,
-    "configuration": {}
-  },
-  {
-    "id": "edit",
-    "args": {
-      "uuid": "950ced6f-641c-4449-99c4-2f17bf45ab1a",
-      "values": {
-        "icon": "nuxt",
-        "title": "History Tracking",
-        "text": "View and jump to any point in your editing history"
-      }
-    },
-    "timestamp": 1702294026787,
-    "configuration": {}
-  },
-  {
-    "id": "update_options",
-    "args": {
-      "options": [
-        {
-          "uuid": "cb2e81a7-3c0b-4784-a067-5454fef81887",
-          "key": "box",
-          "value": ""
-        }
-      ]
-    },
-    "timestamp": 1702294032288,
-    "configuration": {}
-  },
-  {
-    "id": "update_options",
-    "args": {
-      "options": [
-        {
-          "uuid": "cb2e81a7-3c0b-4784-a067-5454fef81887",
-          "key": "box",
-          "value": "1"
-        }
-      ]
-    },
-    "timestamp": 1702294033956,
-    "configuration": {}
-  },
-  {
-    "id": "update_options",
-    "args": {
-      "options": [
-        {
-          "uuid": "cb2e81a7-3c0b-4784-a067-5454fef81887",
-          "key": "box",
-          "value": ""
-        }
-      ]
-    },
-    "timestamp": 1702294035758,
-    "configuration": {}
-  },
-  {
-    "id": "update_options",
-    "args": {
-      "options": [
-        {
-          "uuid": "cb2e81a7-3c0b-4784-a067-5454fef81887",
-          "key": "box",
-          "value": "1"
-        }
-      ]
-    },
-    "timestamp": 1702294037370,
-    "configuration": {}
-  },
-  {
-    "id": "update_options",
-    "args": {
-      "options": [
-        {
-          "uuid": "cb2e81a7-3c0b-4784-a067-5454fef81887",
-          "key": "box",
-          "value": ""
-        }
-      ]
-    },
-    "timestamp": 1702294038891,
-    "configuration": {}
-  },
-  {
-    "id": "update_options",
-    "args": {
-      "options": [
-        {
-          "uuid": "cb2e81a7-3c0b-4784-a067-5454fef81887",
-          "key": "box",
-          "value": "1"
-        }
-      ]
-    },
-    "timestamp": 1702294040400,
-    "configuration": {}
-  },
-  {
-    "id": "update_options",
-    "args": {
-      "options": [
-        {
-          "uuid": "cb2e81a7-3c0b-4784-a067-5454fef81887",
-          "key": "box",
-          "value": ""
-        }
-      ]
-    },
-    "timestamp": 1702294041928,
-    "configuration": {}
-  },
-  {
-    "id": "update_options",
-    "args": {
-      "options": [
-        {
-          "uuid": "cb2e81a7-3c0b-4784-a067-5454fef81887",
-          "key": "box",
-          "value": "1"
-        }
-      ]
-    },
-    "timestamp": 1702294044814,
+    "timestamp": 1702468861045,
     "configuration": {}
   },
   {
     "id": "add",
     "args": {
-      "bundle": "button",
-      "values": { "title": "Learn more", "url": "/" },
-      "hostEntityType": "block",
-      "hostEntityUuid": "1c29f376-6a0d-48ee-b7b9-d906d367032d",
-      "hostField": "blocks",
-      "preceedingUuid": ""
+      "bundle": "video",
+      "values": { "video": ["100"] },
+      "hostEntityType": "content",
+      "hostEntityUuid": "1",
+      "hostField": "content",
+      "preceedingUuid": "958fba1e-400f-42c5-b310-11f59db59e2f"
     },
-    "timestamp": 1702294087911,
+    "timestamp": 1702468895210,
     "configuration": {
-      "new_uuid_default": "c1954f11-3baa-4971-a94a-99a3705c0249"
+      "new_uuid_default": "fa94c010-4c42-4676-9ee7-69e04476d9f6"
     }
-  },
-  {
-    "id": "duplicate",
-    "args": { "uuids": ["5dbd8ee5-6df4-46c9-8203-7c5bdbf77b5b"] },
-    "timestamp": 1702294094565,
-    "configuration": {
-      "new_uuid_5dbd8ee5-6df4-46c9-8203-7c5bdbf77b5b": "0605f16b-49a7-4685-a59b-2721c79fd508"
-    }
-  },
-  {
-    "id": "move",
-    "args": {
-      "uuids": ["5dbd8ee5-6df4-46c9-8203-7c5bdbf77b5b"],
-      "hostEntityType": "content",
-      "hostEntityUuid": "1",
-      "hostField": "content",
-      "preceedingUuid": "7d71f39f-0749-46f6-bc72-0daee031f7c6"
-    },
-    "timestamp": 1702294097352,
-    "configuration": {}
-  },
-  {
-    "id": "move",
-    "args": {
-      "uuids": ["5dbd8ee5-6df4-46c9-8203-7c5bdbf77b5b"],
-      "hostEntityType": "block",
-      "hostEntityUuid": "950ced6f-641c-4449-99c4-2f17bf45ab1a",
-      "hostField": "blocks"
-    },
-    "timestamp": 1702294099830,
-    "configuration": {}
-  },
-  {
-    "id": "move",
-    "args": {
-      "uuids": ["7d71f39f-0749-46f6-bc72-0daee031f7c6"],
-      "hostEntityType": "content",
-      "hostEntityUuid": "1",
-      "hostField": "content",
-      "preceedingUuid": "afbf14d9-4e25-4e77-a145-9a63f6177356"
-    },
-    "timestamp": 1702294169969,
-    "configuration": {}
-  },
-  {
-    "id": "move",
-    "args": {
-      "uuids": ["7d71f39f-0749-46f6-bc72-0daee031f7c6"],
-      "hostEntityType": "content",
-      "hostEntityUuid": "1",
-      "hostField": "content",
-      "preceedingUuid": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953"
-    },
-    "timestamp": 1702294171005,
-    "configuration": {}
-  },
-  {
-    "id": "move",
-    "args": {
-      "uuids": ["64a9484f-f8da-412d-a1d0-47b90ed2421d"],
-      "hostEntityType": "content",
-      "hostEntityUuid": "1",
-      "hostField": "content",
-      "preceedingUuid": "afbf14d9-4e25-4e77-a145-9a63f6177356"
-    },
-    "timestamp": 1702294174067,
-    "configuration": {}
-  },
-  {
-    "id": "move",
-    "args": {
-      "uuids": ["64a9484f-f8da-412d-a1d0-47b90ed2421d"],
-      "hostEntityType": "content",
-      "hostEntityUuid": "1",
-      "hostField": "content",
-      "preceedingUuid": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953"
-    },
-    "timestamp": 1702294175833,
-    "configuration": {}
-  },
-  {
-    "id": "move",
-    "args": {
-      "uuids": ["afbf14d9-4e25-4e77-a145-9a63f6177356"],
-      "hostEntityType": "content",
-      "hostEntityUuid": "1",
-      "hostField": "content",
-      "preceedingUuid": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953"
-    },
-    "timestamp": 1702294183889,
-    "configuration": {}
-  },
-  {
-    "id": "move",
-    "args": {
-      "uuids": ["64a9484f-f8da-412d-a1d0-47b90ed2421d"],
-      "hostEntityType": "content",
-      "hostEntityUuid": "1",
-      "hostField": "content",
-      "preceedingUuid": "7d71f39f-0749-46f6-bc72-0daee031f7c6"
-    },
-    "timestamp": 1702294187423,
-    "configuration": {}
-  },
-  {
-    "id": "move",
-    "args": {
-      "uuids": ["7d71f39f-0749-46f6-bc72-0daee031f7c6"],
-      "hostEntityType": "content",
-      "hostEntityUuid": "1",
-      "hostField": "content",
-      "preceedingUuid": "cd19e987-ad3c-4c24-b90b-20e2a0d9b953"
-    },
-    "timestamp": 1702294188619,
-    "configuration": {}
   },
   {
     "id": "update_options",
     "args": {
       "options": [
         {
-          "uuid": "950ced6f-641c-4449-99c4-2f17bf45ab1a",
-          "key": "box",
-          "value": ""
+          "uuid": "fa94c010-4c42-4676-9ee7-69e04476d9f6",
+          "key": "elevated",
+          "value": "1"
         }
       ]
     },
-    "timestamp": 1702294193242,
-    "configuration": {}
-  },
-  {
-    "id": "duplicate",
-    "args": { "uuids": ["1c29f376-6a0d-48ee-b7b9-d906d367032d"] },
-    "timestamp": 1702294195612,
-    "configuration": {
-      "new_uuid_1c29f376-6a0d-48ee-b7b9-d906d367032d": "71d62493-1ea6-43d1-b43e-c94d6353fe44",
-      "new_uuid_c1954f11-3baa-4971-a94a-99a3705c0249": "5cd0df92-3525-4dd4-ada7-10cca976f857"
-    }
-  },
-  {
-    "id": "move",
-    "args": {
-      "uuids": ["1c29f376-6a0d-48ee-b7b9-d906d367032d"],
-      "hostEntityType": "content",
-      "hostEntityUuid": "1",
-      "hostField": "content",
-      "preceedingUuid": "64a9484f-f8da-412d-a1d0-47b90ed2421d"
-    },
-    "timestamp": 1702294197521,
+    "timestamp": 1702468901725,
     "configuration": {}
   },
   {
@@ -1084,13 +1893,292 @@
     "args": {
       "options": [
         {
-          "uuid": "1c29f376-6a0d-48ee-b7b9-d906d367032d",
+          "uuid": "c414a773-406c-4200-aef6-ada9349b3f11",
+          "key": "background",
+          "value": "dark"
+        }
+      ]
+    },
+    "timestamp": 1702469569758,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "c414a773-406c-4200-aef6-ada9349b3f11",
+          "key": "background",
+          "value": "light"
+        }
+      ]
+    },
+    "timestamp": 1702469614990,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "c414a773-406c-4200-aef6-ada9349b3f11",
+          "key": "background",
+          "value": "white"
+        }
+      ]
+    },
+    "timestamp": 1702469617725,
+    "configuration": {}
+  },
+  {
+    "id": "move",
+    "args": {
+      "uuids": ["6694e5d3-da35-417b-87ce-5022b6377e92"],
+      "hostEntityType": "content",
+      "hostEntityUuid": "1",
+      "hostField": "content",
+      "preceedingUuid": "f7e3f26b-9c8a-4571-9f98-660bcca08938"
+    },
+    "timestamp": 1702469807078,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "f7e3f26b-9c8a-4571-9f98-660bcca08938",
+          "key": "showHeader",
+          "value": "1"
+        }
+      ]
+    },
+    "timestamp": 1702469811667,
+    "configuration": {}
+  },
+  {
+    "id": "move",
+    "args": {
+      "uuids": ["d6020cd0-45f0-4200-8690-e297a38a1cca"],
+      "hostEntityType": "block",
+      "hostEntityUuid": "f7e3f26b-9c8a-4571-9f98-660bcca08938",
+      "hostField": "header"
+    },
+    "timestamp": 1702469813572,
+    "configuration": {}
+  },
+  {
+    "id": "move",
+    "args": {
+      "uuids": ["6694e5d3-da35-417b-87ce-5022b6377e92"],
+      "hostEntityType": "content",
+      "hostEntityUuid": "1",
+      "hostField": "content",
+      "preceedingUuid": "bf4acf60-e0a2-43bb-b4fc-9f32a41a4816"
+    },
+    "timestamp": 1702469826006,
+    "configuration": {}
+  },
+  {
+    "id": "move",
+    "args": {
+      "uuids": ["6694e5d3-da35-417b-87ce-5022b6377e92"],
+      "hostEntityType": "content",
+      "hostEntityUuid": "1",
+      "hostField": "content",
+      "preceedingUuid": "f7e3f26b-9c8a-4571-9f98-660bcca08938"
+    },
+    "timestamp": 1702469829684,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "e490a86d-a0f3-470d-bb40-1ec7c47651f1",
+          "key": "color",
+          "value": "lightYellow"
+        }
+      ]
+    },
+    "timestamp": 1702470122397,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "25cdf719-d6ef-4a27-a828-ba6ed8b78ee6",
+          "key": "color",
+          "value": "lightGreen"
+        }
+      ]
+    },
+    "timestamp": 1702470125263,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "16968897-7742-494f-bd9f-2ac214aa92cd",
+          "key": "color",
+          "value": "lightRed"
+        }
+      ]
+    },
+    "timestamp": 1702470126710,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["f7e3f26b-9c8a-4571-9f98-660bcca08938"] },
+    "timestamp": 1702470213948,
+    "configuration": {
+      "new_uuid_f7e3f26b-9c8a-4571-9f98-660bcca08938": "7e91c933-a5c3-47bd-94b3-2217d4ec53ba",
+      "new_uuid_d6020cd0-45f0-4200-8690-e297a38a1cca": "336fc4c0-86c7-46fe-be8e-3fb6289fe074",
+      "new_uuid_e490a86d-a0f3-470d-bb40-1ec7c47651f1": "72633ab5-2353-45ce-8a1b-3726c7da8679",
+      "new_uuid_25cdf719-d6ef-4a27-a828-ba6ed8b78ee6": "583b10c3-3057-4379-ab16-c9c0ce1c2d66",
+      "new_uuid_16968897-7742-494f-bd9f-2ac214aa92cd": "59b6db95-f4ca-4dd7-86a4-3ad53e66571b"
+    }
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "7e91c933-a5c3-47bd-94b3-2217d4ec53ba",
+          "key": "showHeader",
+          "value": "1"
+        }
+      ]
+    },
+    "timestamp": 1702470218443,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "7e91c933-a5c3-47bd-94b3-2217d4ec53ba",
+          "key": "columns",
+          "value": "four"
+        }
+      ]
+    },
+    "timestamp": 1702470231710,
+    "configuration": {}
+  },
+  {
+    "id": "duplicate",
+    "args": { "uuids": ["59b6db95-f4ca-4dd7-86a4-3ad53e66571b"] },
+    "timestamp": 1702470232034,
+    "configuration": {
+      "new_uuid_59b6db95-f4ca-4dd7-86a4-3ad53e66571b": "08aca4c8-58e4-4528-b8e5-928df05bf5d9"
+    }
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "583b10c3-3057-4379-ab16-c9c0ce1c2d66",
+          "key": "color",
+          "value": "lightYellow"
+        }
+      ]
+    },
+    "timestamp": 1702470236298,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "59b6db95-f4ca-4dd7-86a4-3ad53e66571b",
+          "key": "color",
+          "value": "lightGreen"
+        }
+      ]
+    },
+    "timestamp": 1702470237974,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "08aca4c8-58e4-4528-b8e5-928df05bf5d9",
+          "key": "color",
+          "value": "lightRed"
+        }
+      ]
+    },
+    "timestamp": 1702470239305,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "7e91c933-a5c3-47bd-94b3-2217d4ec53ba",
+          "key": "background",
+          "value": "dark"
+        }
+      ]
+    },
+    "timestamp": 1702470246736,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "72633ab5-2353-45ce-8a1b-3726c7da8679",
+          "key": "color",
+          "value": "lightRed"
+        },
+        {
+          "uuid": "72633ab5-2353-45ce-8a1b-3726c7da8679",
+          "key": "box",
+          "value": "1"
+        },
+        {
+          "uuid": "583b10c3-3057-4379-ab16-c9c0ce1c2d66",
+          "key": "color",
+          "value": "lightRed"
+        },
+        {
+          "uuid": "583b10c3-3057-4379-ab16-c9c0ce1c2d66",
+          "key": "box",
+          "value": "1"
+        },
+        {
+          "uuid": "59b6db95-f4ca-4dd7-86a4-3ad53e66571b",
+          "key": "color",
+          "value": "lightRed"
+        },
+        {
+          "uuid": "59b6db95-f4ca-4dd7-86a4-3ad53e66571b",
+          "key": "box",
+          "value": "1"
+        },
+        {
+          "uuid": "08aca4c8-58e4-4528-b8e5-928df05bf5d9",
           "key": "box",
           "value": "1"
         }
       ]
     },
-    "timestamp": 1702294199190,
+    "timestamp": 1702470613705,
     "configuration": {}
   },
   {
@@ -1098,13 +2186,13 @@
     "args": {
       "options": [
         {
-          "uuid": "1c29f376-6a0d-48ee-b7b9-d906d367032d",
-          "key": "box",
-          "value": ""
+          "uuid": "7e91c933-a5c3-47bd-94b3-2217d4ec53ba",
+          "key": "columns",
+          "value": "three"
         }
       ]
     },
-    "timestamp": 1702294202550,
+    "timestamp": 1702470616561,
     "configuration": {}
   },
   {
@@ -1112,13 +2200,164 @@
     "args": {
       "options": [
         {
-          "uuid": "1c29f376-6a0d-48ee-b7b9-d906d367032d",
-          "key": "box",
-          "value": "1"
+          "uuid": "72633ab5-2353-45ce-8a1b-3726c7da8679",
+          "key": "color",
+          "value": "lightBlue"
+        },
+        {
+          "uuid": "583b10c3-3057-4379-ab16-c9c0ce1c2d66",
+          "key": "color",
+          "value": "lightBlue"
+        },
+        {
+          "uuid": "59b6db95-f4ca-4dd7-86a4-3ad53e66571b",
+          "key": "color",
+          "value": "lightBlue"
+        },
+        {
+          "uuid": "08aca4c8-58e4-4528-b8e5-928df05bf5d9",
+          "key": "color",
+          "value": "lightBlue"
         }
       ]
     },
-    "timestamp": 1702294204384,
+    "timestamp": 1702470623795,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "e490a86d-a0f3-470d-bb40-1ec7c47651f1",
+          "key": "color",
+          "value": "lightBlue"
+        },
+        {
+          "uuid": "25cdf719-d6ef-4a27-a828-ba6ed8b78ee6",
+          "key": "color",
+          "value": "lightBlue"
+        },
+        {
+          "uuid": "16968897-7742-494f-bd9f-2ac214aa92cd",
+          "key": "color",
+          "value": "lightBlue"
+        }
+      ]
+    },
+    "timestamp": 1702470792329,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "583b10c3-3057-4379-ab16-c9c0ce1c2d66",
+          "key": "color",
+          "value": "lightYellow"
+        }
+      ]
+    },
+    "timestamp": 1702470827357,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "59b6db95-f4ca-4dd7-86a4-3ad53e66571b",
+          "key": "color",
+          "value": "lightGreen"
+        }
+      ]
+    },
+    "timestamp": 1702470829044,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "08aca4c8-58e4-4528-b8e5-928df05bf5d9",
+          "key": "color",
+          "value": "lightRed"
+        }
+      ]
+    },
+    "timestamp": 1702470831035,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "7e91c933-a5c3-47bd-94b3-2217d4ec53ba",
+          "key": "columns",
+          "value": "four"
+        }
+      ]
+    },
+    "timestamp": 1702470834692,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "f7e3f26b-9c8a-4571-9f98-660bcca08938",
+          "key": "background",
+          "value": "white"
+        }
+      ]
+    },
+    "timestamp": 1702474601439,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "e490a86d-a0f3-470d-bb40-1ec7c47651f1",
+          "key": "color",
+          "value": "lightYellow"
+        }
+      ]
+    },
+    "timestamp": 1702474645540,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "25cdf719-d6ef-4a27-a828-ba6ed8b78ee6",
+          "key": "color",
+          "value": "lightGreen"
+        }
+      ]
+    },
+    "timestamp": 1702474647589,
+    "configuration": {}
+  },
+  {
+    "id": "update_options",
+    "args": {
+      "options": [
+        {
+          "uuid": "16968897-7742-494f-bd9f-2ac214aa92cd",
+          "key": "color",
+          "value": "lightRed"
+        }
+      ]
+    },
+    "timestamp": 1702474649058,
     "configuration": {}
   }
 ]

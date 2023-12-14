@@ -1,6 +1,7 @@
 import type { Block } from './Block'
 import { BlockButton } from './Button'
 import { BlockCard } from './Card'
+import { BlockFromLibrary } from './FromLibrary'
 import { BlockGrid } from './Grid'
 import { BlockHero } from './Hero'
 import { BlockImage } from './Image'
@@ -8,6 +9,8 @@ import { BlockTeaser } from './Teaser'
 import { BlockText } from './Text'
 import { BlockTitle } from './Title'
 import { BlockTwoColumns } from './TwoColumns'
+import { BlockVideo } from './Video'
+import { BlockWidget } from './Widget'
 
 export const createBlock = (bundle: string, uuid: string): Block => {
   switch (bundle) {
@@ -29,6 +32,12 @@ export const createBlock = (bundle: string, uuid: string): Block => {
       return new BlockCard(uuid)
     case 'image':
       return new BlockImage(uuid)
+    case 'from_library':
+      return new BlockFromLibrary(uuid)
+    case 'video':
+      return new BlockVideo(uuid)
+    case 'widget':
+      return new BlockWidget(uuid)
   }
 
   throw new Error('Invalid block bundle: ' + bundle)
@@ -45,5 +54,7 @@ export const getBlockBundles = (): Array<typeof Block> => {
     BlockButton,
     BlockHero,
     BlockCard,
+    BlockVideo,
+    BlockWidget,
   ]
 }

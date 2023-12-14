@@ -24,3 +24,9 @@ const types = computed(() =>
     .filter(onlyUnique),
 )
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Options',
+}
+</script>

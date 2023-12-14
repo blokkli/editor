@@ -331,7 +331,7 @@ export type ValidTextKeys = ${validTranslationKeys}
 
     nuxt.options.runtimeConfig.public.blokkli = {
       langcodeWithoutPrefix: moduleOptions.langcodeWithoutPrefix || '',
-      gridMarkup: moduleOptions.gridMarkup,
+      gridMarkup: moduleOptions.gridMarkup || '',
       optionsPluginId: moduleOptions.optionsPluginId || 'blokkli',
       itemEntityType: moduleOptions.itemEntityType || '',
       defaultLanguage: moduleOptions.defaultLanguage || 'en',
@@ -341,8 +341,6 @@ export type ValidTextKeys = ${validTranslationKeys}
     const resolvedPath = '~/app/blokkli.editAdapter'
       .replace(/^(~~|@@)/, nuxt.options.rootDir)
       .replace(/^(~|@)/, nuxt.options.srcDir)
-    console.log(nuxt.options.rootDir)
-    console.log(nuxt.options.srcDir)
     // nuxt.options.build.transpile.push(resolvedPath)
     const adapterTemplate = (() => {
       const resolvedFilename = `blokkli.editAdapter.ts`
@@ -554,7 +552,6 @@ export type BlokkliIcon = keyof typeof icons`
     if (nuxt.options.dev) {
       nuxt.hook('vite:serverCreated', (viteServer) => {
         nuxt.hook('builder:watch', async (_event, path) => {
-          console.log(path)
           if (appliesStyles(path)) {
             await updateTemplates({
               filter: (template) => {

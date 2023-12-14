@@ -166,3 +166,9 @@ const redo = () => mutateWithLoadingState(adapter.redo())
 
 onMounted(() => {})
 </script>
+
+<script lang="ts">
+export default {
+  name: 'History',
+}
+</script>

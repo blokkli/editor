@@ -30,6 +30,7 @@
       <MediaSelector
         v-else-if="field.type === 'media'"
         v-model="values[field.name]"
+        v-bind="field.props"
       />
     </div>
     <div class="entity-form-footer">
@@ -62,6 +63,7 @@ type FormField = {
   name: string
   label: string
   value: string
+  props?: any
 }
 
 const mapField = (field: Field<unknown>): FormField | undefined => {
@@ -100,6 +102,9 @@ const mapField = (field: Field<unknown>): FormField | undefined => {
         name: field.id,
         label: field.label,
         value: field.list[0] || '',
+        props: {
+          bundles: field.allowedBundles,
+        },
       }
     }
   }

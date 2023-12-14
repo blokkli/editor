@@ -11,3 +11,9 @@ const { storage } = useBlokkli()
 
 const useArtboard = storage.use('useArtboard', true)
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Artboard',
+}
+</script>

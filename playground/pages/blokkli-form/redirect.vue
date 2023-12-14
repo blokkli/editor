@@ -5,6 +5,7 @@
 <script lang="ts" setup>
 definePageMeta({
   name: 'blokkli-form-redirect',
+  layout: 'form',
 })
 
 onMounted(() => {

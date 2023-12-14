@@ -1,0 +1,197 @@
+[
+  {
+    "name": "blocks",
+    "entityType": "block",
+    "entityUuid": "f7e3f26b-9c8a-4571-9f98-660bcca08938",
+    "field": [
+      "72633ab5-2353-45ce-8a1b-3726c7da8679",
+      "25cdf719-d6ef-4a27-a828-ba6ed8b78ee6",
+      "59b6db95-f4ca-4dd7-86a4-3ad53e66571b"
+    ]
+  },
+  {
+    "name": "content",
+    "entityType": "content",
+    "entityUuid": "1",
+    "field": [
+      "319c3ffb-6d38-4885-860e-fa346c40e5c1",
+      "bf4acf60-e0a2-43bb-b4fc-9f32a41a4816",
+      "f7e3f26b-9c8a-4571-9f98-660bcca08938",
+      "6694e5d3-da35-417b-87ce-5022b6377e92",
+      "dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf",
+      "6d0bde10-a05b-4c7d-a8cf-fafc8e0001f1",
+      "334a4e80-a174-49ba-b986-af5697f093b7",
+      "ce8afc60-2f42-4b99-8a44-c5a46eb15f7a",
+      "c414a773-406c-4200-aef6-ada9349b3f11",
+      "90d01577-babc-45b5-a03b-2ba266822425",
+      "958fba1e-400f-42c5-b310-11f59db59e2f"
+    ]
+  },
+  {
+    "name": "header",
+    "entityType": "block",
+    "entityUuid": "bf4acf60-e0a2-43bb-b4fc-9f32a41a4816",
+    "field": ["3284016a-aa33-4994-8e4d-c0a6f9bd91c7"]
+  },
+  {
+    "name": "blocks",
+    "entityType": "block",
+    "entityUuid": "bf4acf60-e0a2-43bb-b4fc-9f32a41a4816",
+    "field": [
+      "a4aac285-9615-4764-81de-96d3af41e622",
+      "1645ba79-8770-4a0c-a58b-163a847eea22",
+      "27e417eb-a5fa-4d17-94b5-e218fc653906"
+    ]
+  },
+  {
+    "name": "header",
+    "entityType": "block",
+    "entityUuid": "f7e3f26b-9c8a-4571-9f98-660bcca08938",
+    "field": ["d6020cd0-45f0-4200-8690-e297a38a1cca"]
+  },
+  {
+    "name": "left",
+    "entityType": "block",
+    "entityUuid": "dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf",
+    "field": [
+      "611aae9b-49be-4236-b4a0-1602aa306f56",
+      "4ce7b4f0-da66-4ae6-9378-c47eb7b7158e"
+    ]
+  },
+  {
+    "name": "right",
+    "entityType": "block",
+    "entityUuid": "dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf",
+    "field": ["e011fd53-b083-4db0-a4aa-26c3602916f8"]
+  },
+  {
+    "name": "header",
+    "entityType": "block",
+    "entityUuid": "6d0bde10-a05b-4c7d-a8cf-fafc8e0001f1",
+    "field": ["47f0bf41-bd49-47c2-a2c4-145f80abe161"]
+  },
+  {
+    "name": "blocks",
+    "entityType": "block",
+    "entityUuid": "6d0bde10-a05b-4c7d-a8cf-fafc8e0001f1",
+    "field": [
+      "5780e657-2c02-45b2-bb92-1424a7a29fb8",
+      "57bbeffb-dd8d-44f6-a29a-3a1145b4e373",
+      "4636604d-f473-4d10-b083-79a00228a2d8"
+    ]
+  },
+  {
+    "name": "header",
+    "entityType": "block",
+    "entityUuid": "334a4e80-a174-49ba-b986-af5697f093b7",
+    "field": ["4e7ac454-2b6b-4c45-a01c-34abdd52b792"]
+  },
+  {
+    "name": "blocks",
+    "entityType": "block",
+    "entityUuid": "334a4e80-a174-49ba-b986-af5697f093b7",
+    "field": [
+      "af913394-1d5b-4d05-bbc0-46f280d1787b",
+      "82b54483-03ee-4483-8b14-121d611ecf27",
+      "3ce777ca-70a5-48fb-b220-7ac2ab052516"
+    ]
+  },
+  {
+    "name": "left",
+    "entityType": "block",
+    "entityUuid": "ce8afc60-2f42-4b99-8a44-c5a46eb15f7a",
+    "field": [
+      "4526d2d0-f122-4093-902f-e2f00a433981",
+      "3a2617ed-6844-4d39-859c-82869f4ea5aa"
+    ]
+  },
+  {
+    "name": "right",
+    "entityType": "block",
+    "entityUuid": "ce8afc60-2f42-4b99-8a44-c5a46eb15f7a",
+    "field": ["9ab46061-c9f3-40fb-bfb1-27ba3bb628f5"]
+  },
+  {
+    "name": "header",
+    "entityType": "block",
+    "entityUuid": "c414a773-406c-4200-aef6-ada9349b3f11",
+    "field": ["b819947c-1bce-429e-a210-91579dae421c"]
+  },
+  {
+    "name": "blocks",
+    "entityType": "block",
+    "entityUuid": "c414a773-406c-4200-aef6-ada9349b3f11",
+    "field": [
+      "87098bb1-d849-4afc-8845-05ef2d08d160",
+      "a3bcf0de-589c-44d2-9ca7-b8184cfe5028",
+      "c3f229a1-7bb7-4d0a-8820-51a48acd73b0"
+    ]
+  },
+  {
+    "name": "left",
+    "entityType": "block",
+    "entityUuid": "90d01577-babc-45b5-a03b-2ba266822425",
+    "field": [
+      "8a51a714-1990-4d6a-9bf7-81344cc1a288",
+      "67a9e26f-8028-4283-8b7d-8f836355b949",
+      "332bbf33-2368-4b56-8ae6-4855657bc5d4"
+    ]
+  },
+  {
+    "name": "right",
+    "entityType": "block",
+    "entityUuid": "90d01577-babc-45b5-a03b-2ba266822425",
+    "field": ["1be4ab78-8265-48a6-a1aa-ff852d2507b5"]
+  },
+  {
+    "name": "header",
+    "entityType": "block",
+    "entityUuid": "958fba1e-400f-42c5-b310-11f59db59e2f",
+    "field": ["d8d3ad51-7c37-4a27-ad64-e04ee8a4f842"]
+  },
+  {
+    "name": "blocks",
+    "entityType": "block",
+    "entityUuid": "958fba1e-400f-42c5-b310-11f59db59e2f",
+    "field": [
+      "fb92c962-1d8e-44b3-ab01-694579b4af04",
+      "acff013c-ff59-4ec8-95b9-916e6291531e",
+      "a8c2f652-c446-417e-ad38-758c66391408",
+      "37594bf6-47db-4d8f-9cde-8c3c4b2bdacf",
+      "7c0a8a92-1619-4dd9-b351-3ad7a8580409",
+      "b850c14b-cf1b-4b57-9b9e-32609dc8f7a8",
+      "0bb54dcf-51d1-4ef2-a6a8-45c018fc69ea",
+      "0aed8ca0-dc8e-40b8-9135-7de8d59f4115",
+      "bbb78511-9ef1-473f-a96b-a07dc71760e3",
+      "468642cd-396e-4372-b339-56c5ca65642d",
+      "a9918c5a-f393-4356-809a-cb5f53dc27d3",
+      "22137d66-d9d6-4328-9ca7-538bf6a71c7a",
+      "8c1c4260-8c0d-48b2-939d-2151adb63d99",
+      "8a51d72c-79b6-49d7-a76a-5f1c83252920",
+      "56a392ea-65cb-42c5-a1a9-97d7fc2718b4",
+      "149f66f8-fb41-4eb4-a765-ea649dcebc10",
+      "8085ec5a-b345-4a6f-9ff7-ad1fabea898b",
+      "baf3810c-25f3-42f6-8ecd-048ef4f5c8fe",
+      "e01cbcda-c815-4325-8f27-ff977a60c5f9",
+      "5f46fde3-ccca-489b-afa4-456d2649de5b",
+      "3bbb964a-93a0-4b85-91dd-52e8bc8425fc",
+      "a7a3b4bf-c891-4387-a012-a9cb2da8b1b4",
+      "34344398-bb04-450f-9fa9-d3763f5bae0c"
+    ]
+  },
+  {
+    "name": "header",
+    "entityType": "content",
+    "entityUuid": "1",
+    "field": ["18a7ed49-7355-4d0d-9004-6623c98a999f"]
+  },
+  {
+    "name": "buttons",
+    "entityType": "block",
+    "entityUuid": "18a7ed49-7355-4d0d-9004-6623c98a999f",
+    "field": [
+      "0962e858-fbf6-4f98-bf6f-f7813bd5f9be",
+      "49e2da9e-4e87-4570-9909-458494c9cf3d"
+    ]
+  }
+]

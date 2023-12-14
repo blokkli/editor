@@ -72,7 +72,7 @@ const storage = storageProvider()
 const ui = uiProvider()
 const animation = animationProvider()
 const text = textProvider(context)
-const types = await typesProvider(adapter, selection.blocks, context)
+const types = await typesProvider(adapter, selection)
 const state = await editStateProvider(adapter, context)
 
 // Hacky workaround because of Sortable interfering with Vue rendering.

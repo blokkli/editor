@@ -87,3 +87,9 @@ onBeforeUnmount(() => {
   window.removeEventListener('mouseup', onWindowMouseUp)
 })
 </script>
+
+<script lang="ts">
+export default {
+  name: 'MultiSelect',
+}
+</script>

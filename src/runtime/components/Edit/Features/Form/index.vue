@@ -124,3 +124,9 @@ onUnmounted(() => {
   eventBus.off('addNewBlokkliItem', addNewBlokkliItem)
 })
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Form',
+}
+</script>

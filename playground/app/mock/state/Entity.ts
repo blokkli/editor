@@ -56,7 +56,6 @@ export class Entity {
     return Object.values(this.fields).reduce<Record<string, any>>(
       (acc, field) => {
         acc[field.id] = [...field.list].map((item) => {
-          console.log(item)
           return JSON.parse(JSON.stringify(item))
         })
         return acc
@@ -71,5 +70,14 @@ export class Entity {
         Boolean,
       )
     })
+  }
+
+  toJSON() {
+    return {
+      entityType: this.entityType,
+      bundle: this.bundle,
+      uuid: this.uuid,
+      values: this.fields,
+    }
   }
 }

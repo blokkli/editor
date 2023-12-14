@@ -1,3 +1,5 @@
+import { computed, type ComputedRef } from '#imports'
+
 export default function (key: string): ComputedRef<string> {
   const route = useRoute()
 

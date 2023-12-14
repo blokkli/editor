@@ -6,6 +6,7 @@
     :index="index"
     :data-reusable-bundle="item.item.entityBundle"
     :data-reusable-uuid="item.item.uuid"
+    :parent-type="parentType"
   />
 </template>
 
@@ -24,13 +25,14 @@ interface LibraryItem {
 }
 
 const props = defineProps<{
-  uuid: string
   libraryItem?: LibraryItem
 }>()
 
-const { index, options } = defineBlokkli({
+const { index, options, parentType } = defineBlokkli({
   bundle: 'from_library',
 })
+
+console.log(options)
 
 // Reusable items inherit the options from this wrapper paragraph.
 // They are injected in the defineBlokkli() composable.
@@ -39,8 +41,14 @@ provide(INJECT_IS_IN_REUSABLE, true)
 
 const item = computed(() => {
   const v = props.libraryItem?.field?.list?.[0]
-  if (v && v.item && 'id' in v.item) {
+  if (v && v.item && 'uuid' in v.item) {
     return v
   }
 })
+</script>
+
+<script lang="ts">
+export default {
+  name: 'BlokkliFromLibrary',
+}
 </script>

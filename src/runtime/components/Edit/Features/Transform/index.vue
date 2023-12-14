@@ -65,3 +65,9 @@ const possibleTransforms = computed<BlokkliTransformPlugin[]>(() => {
   )
 })
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Transform',
+}
+</script>

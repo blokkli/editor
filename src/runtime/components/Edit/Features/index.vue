@@ -27,3 +27,9 @@ onMounted(() => {
   })
 })
 </script>
+
+<script lang="ts">
+export default {
+  name: 'BlokkliFeatures',
+}
+</script>

@@ -18,7 +18,7 @@ export class MutationUpdateOptions extends Mutation {
         return
       }
 
-      proxy.block.options().setOptionValue(option.key, option.value)
+      proxy.setOptionOverride(option.key, option.value)
     })
   }
 }

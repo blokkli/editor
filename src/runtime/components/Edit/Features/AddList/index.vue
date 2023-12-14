@@ -153,13 +153,11 @@ const selectableBundles = computed(() => {
 })
 
 const generallyAvailableBundles = computed(() => {
-  const fieldNames = state.mutatedFields.value.map((v) => v.name)
   const typesOnEntity = (
     types.allowedTypes.value.filter((v) => {
       return (
         v.entityType === context.value.entityType &&
-        v.bundle === context.value.entityBundle &&
-        fieldNames.includes(v.fieldName)
+        v.bundle === context.value.entityBundle
       )
     }) || []
   )
@@ -312,4 +310,10 @@ onUnmounted(() => {
     instance.destroy()
   }
 })
+</script>
+
+<script lang="ts">
+export default {
+  name: 'AddList',
+}
 </script>

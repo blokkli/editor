@@ -1,27 +1,35 @@
 <template>
-  <div class="py-30 md:py-60 lg:py-100" :class="colorClass">
+  <div
+    class="py-30 md:py-60 lg:py-100"
+    :class="[
+      colorClass,
+      { 'border-t border-t-slate-200': options.background === 'white' },
+    ]"
+  >
     <BlokkliField
-      v-bind="fieldHeader"
-      class="container mb-20"
+      v-if="options.showHeader"
+      v-bind="header"
+      class="container mb-70"
       field-list-type="header"
     />
     <div class="container mx-auto grid gap-20 lg:gap-40 grid-cols-12">
       <BlokkliField
-        v-bind="fieldLeft"
-        class="flex flex-col gap-20"
+        v-bind="left"
+        class="flex flex-col gap-20 col-span-12"
         :class="{
-          'col-span-6': options.columns === 'equal',
-          'col-span-4': options.columns === 'oneTwo',
-          'col-span-8': options.columns === 'twoOne',
+          'md:col-span-6': options.columns === 'equal',
+          'md:col-span-4': options.columns === 'oneTwo',
+          'md:col-span-8': options.columns === 'twoOne',
         }"
       />
       <BlokkliField
-        v-bind="fieldRight"
+        v-bind="right"
+        class="col-span-12"
         :class="{
           'md:order-first': options.reverse,
-          'col-span-6': options.columns === 'equal',
-          'col-span-8': options.columns === 'oneTwo',
-          'col-span-4': options.columns === 'twoOne',
+          'md:col-span-6': options.columns === 'equal',
+          'md:col-span-8': options.columns === 'oneTwo',
+          'md:col-span-4': options.columns === 'twoOne',
         }"
       />
     </div>
@@ -29,13 +37,10 @@
 </template>
 
 <script lang="ts" setup>
-import { mapMockField } from '~/app/mock/state'
-import type { FieldBlocks } from '~/app/mock/state/Field/Blocks'
-
 const { options } = defineBlokkli({
   bundle: 'two_columns',
   disableEdit: true,
-  globalOptions: ['background'],
+  globalOptions: ['background', 'showHeader'],
   options: {
     columns: {
       type: 'radios',
@@ -54,17 +59,14 @@ const { options } = defineBlokkli({
       default: '0',
     },
   },
+  editTitle: (el) => el.querySelector('h2')?.innerText,
 })
 
-const props = defineProps<{
-  header: FieldBlocks
-  left: FieldBlocks
-  right: FieldBlocks
+defineProps<{
+  header: any
+  left: any
+  right: any
 }>()
-
-const fieldHeader = computed(() => mapMockField(props.header))
-const fieldLeft = computed(() => mapMockField(props.left))
-const fieldRight = computed(() => mapMockField(props.right))
 
 const colorClass = computed(() => {
   switch (options.value.background) {

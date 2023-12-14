@@ -39,4 +39,19 @@ export abstract class Field<T> {
   toString() {
     return JSON.stringify(this.list)
   }
+
+  getPropValue(): any {
+    if (this.cardinality === 1) {
+      return this.getPropValueItem(this.list[0])
+    }
+    return this.list.map((v) => this.getPropValueItem(v))
+  }
+
+  getPropValueItem(v: T): any {
+    return v
+  }
+
+  toJSON() {
+    return this.list
+  }
 }

@@ -5,7 +5,8 @@
 </template>
 
 <script lang="ts" setup>
-import { getEditState, getPage } from '~/app/mock/state'
+import { entityStorageManager } from '~/app/mock/entityStorage'
+import { getEditState } from '~/app/mock/state'
 import { getBlockBundles } from '~/app/mock/state/Block'
 
 definePageMeta({
@@ -32,9 +33,8 @@ if (!blockBundle) {
 
 const fields = blockBundle.getFieldDefintions()
 
-const page = getPage(entityUuid.value)
-
 const onSubmit = (values: Record<string, string>) => {
+  const page = entityStorageManager.getContent(entityUuid.value)
   editState.addMutation('add', {
     bundle: bundle.value,
     values,

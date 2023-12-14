@@ -1,4 +1,5 @@
 import { type MutationContext } from '../../state/EditState'
+import { generateUUID } from '../../uuid'
 import { Plugin } from '../Plugin'
 
 export class Mutation extends Plugin {
@@ -18,7 +19,7 @@ export class Mutation extends Plugin {
       return this.configuration[key]
     }
 
-    const uuid = crypto.randomUUID()
+    const uuid = generateUUID()
     this.configuration[key] = uuid
     return uuid
   }

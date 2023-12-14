@@ -7,6 +7,7 @@ import { Block } from './Block'
 export class BlockCard extends Block {
   static bundle = 'card'
   static label = 'Card'
+  static allowReusable = true
 
   static getFieldDefintions(): Field<any>[] {
     return [

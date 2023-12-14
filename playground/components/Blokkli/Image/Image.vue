@@ -1,13 +1,14 @@
 <template>
   <div :class="{ 'container my-40': !parentType }">
-    <div :class="{ 'overflow-hidden shadow-xl rounded-lg': isElevated }">
-      <img v-if="url" :src="url" />
+    <div
+      :class="{ 'overflow-hidden shadow-xl rounded-lg bg-white': isElevated }"
+    >
+      <img v-if="url" :src="url" :alt="alt" />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import type { FieldReference } from '~/app/mock/state/Field/Reference'
 import type { MediaImage } from '~/app/mock/state/Media/Media'
 
 const { options, parentType } = defineBlokkli({
@@ -16,20 +17,18 @@ const { options, parentType } = defineBlokkli({
     elevated: {
       type: 'checkbox',
       label: 'Elevated',
-      default: '0',
+      default: '1',
     },
   },
+  editTitle: (el) => el.querySelector('img')?.alt,
 })
 
 const props = defineProps<{
-  imageReference: FieldReference<MediaImage>
+  imageReference: MediaImage
 }>()
 
-const image = computed<MediaImage | undefined>(
-  () => props.imageReference.getReferencedEntities()[0],
-)
-
-const url = computed(() => image.value?.url())
+const url = computed(() => props.imageReference.url())
+const alt = computed(() => props.imageReference.alt())
 
 const isElevated = computed(() => options.value.elevated == '1')
 </script>

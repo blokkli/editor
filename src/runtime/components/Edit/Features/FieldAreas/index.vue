@@ -25,3 +25,9 @@ import { Icon } from '#blokkli/components'
 
 const { text } = useBlokkli()
 </script>
+
+<script lang="ts">
+export default {
+  name: 'FieldAreas',
+}
+</script>

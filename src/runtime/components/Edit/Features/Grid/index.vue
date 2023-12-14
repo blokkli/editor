@@ -26,3 +26,9 @@ import { Icon } from '#blokkli/components'
 
 const { runtimeConfig, text } = useBlokkli()
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Grid',
+}
+</script>

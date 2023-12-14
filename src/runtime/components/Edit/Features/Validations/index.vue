@@ -30,3 +30,9 @@ import { Icon } from '#blokkli/components'
 
 const { state, text } = useBlokkli()
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Validations',
+}
+</script>

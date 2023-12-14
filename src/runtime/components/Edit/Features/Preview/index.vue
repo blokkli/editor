@@ -72,3 +72,9 @@ function openPreview() {
   window.open(previewUrl.value)
 }
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Preview',
+}
+</script>

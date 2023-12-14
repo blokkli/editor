@@ -59,3 +59,9 @@ onBeforeUnmount(() => {
   eventBus.off('keyPressed', onKeyPress)
 })
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Debug',
+}
+</script>

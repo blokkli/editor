@@ -19,7 +19,7 @@
       @apply block cursor-pointer;
     }
     input {
-      @apply appearance-none absolute top-0 left-0 w-full h-full cursor-pointer;
+      @apply appearance-none absolute top-0 left-0 w-full h-full cursor-pointer opacity-0;
     }
     input + .bk-icon {
       @apply border rounded overflow-hidden pointer-events-none;

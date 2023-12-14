@@ -10,7 +10,14 @@ export class BlockGrid extends Block {
     return [
       ...super.getFieldDefintions(),
       new FieldBlocks('header', 'Header', 1, ['title']),
-      new FieldBlocks('blocks', 'Blocks', -1, ['teaser', 'card']),
+      new FieldBlocks('blocks', 'Blocks', -1, [
+        'teaser',
+        'card',
+        'text',
+        'from_library',
+        'video',
+        'image',
+      ]),
     ]
   }
 

@@ -1,36 +1,37 @@
 <template>
   <div class="inline-block">
-    <NuxtLink :to="href" class="button">
+    <NuxtLink
+      :to="href"
+      class="button"
+      :class="{ 'is-primary': options.color === 'primary' }"
+    >
       {{ title }}
     </NuxtLink>
   </div>
 </template>
 
 <script lang="ts" setup>
-import type { FieldText } from '~/app/mock/state/Field/Text'
-import type { FieldUrl } from '~/app/mock/state/Field/Url'
-
 const { options } = defineBlokkli({
   bundle: 'button',
   options: {
     color: {
       type: 'radios',
       label: 'Color',
-      default: 'green',
+      default: 'white',
       displayAs: 'colors',
       options: {
-        green: '#68ab44',
-        berry: '#8b106f',
-        orange: '#d58925',
+        normal: 'bg-white',
+        primary: 'bg-blue-700',
       },
     },
   },
+  editTitle: (el) => el.querySelector('a')?.innerText,
 })
 
 const props = defineProps<{
-  url: FieldUrl
-  title: FieldText
+  url: string
+  title: string
 }>()
 
-const href = computed(() => props.url.toString())
+const href = computed(() => props.url)
 </script>

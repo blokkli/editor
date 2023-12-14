@@ -30,6 +30,8 @@ export class ContentPage extends Content {
         'button',
         'card',
         'image',
+        'from_library',
+        'video',
       ]),
       new FieldBlocks('footer', 'Footer', -1, ['text']),
       new FieldBlocks('header', 'Header', 1, ['hero']),

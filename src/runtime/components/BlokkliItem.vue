@@ -20,7 +20,7 @@ const componentProps = withDefaults(
   {
     index: 0,
     isEditing: false,
-    parentType: 'default',
+    parentType: '',
   },
 )
 

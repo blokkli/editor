@@ -55,3 +55,9 @@ function onClick() {
   emit('click')
 }
 </script>
+
+<script lang="ts">
+export default {
+  name: 'PluginToolbarButton',
+}
+</script>

@@ -4,6 +4,7 @@ import { Entity } from './../Entity'
 
 export abstract class Block extends Entity {
   public static entityType = 'block'
+  static allowReusable = false
 
   static getFieldDefintions(): Field<any>[] {
     return [
@@ -14,5 +15,13 @@ export abstract class Block extends Entity {
 
   options(): FieldOptions {
     return this.fields.options as FieldOptions
+  }
+
+  getProps(): Record<string, any> {
+    const props: Record<string, any> = {}
+    Object.values(this.fields).forEach((field) => {
+      props[field.id] = field.getPropValue()
+    })
+    return props
   }
 }

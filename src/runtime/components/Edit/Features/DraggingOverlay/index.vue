@@ -65,3 +65,9 @@ onUnmounted(() => {
   eventBus.off('dragging:end', onDraggingEnd)
 })
 </script>
+
+<script lang="ts">
+export default {
+  name: 'DraggingOverlay',
+}
+</script>

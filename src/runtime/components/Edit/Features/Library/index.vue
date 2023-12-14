@@ -75,10 +75,20 @@ function onMakeReusable(label: string) {
   )
 }
 
+const fromLibraryAllowedInList = computed(() => {
+  return types.allowedTypesInList.value.includes('from_library')
+})
+
 const canMakeReusable = computed(
   () =>
     !isReusable.value &&
     itemBundle?.value?.allowReusable &&
-    types.allowedTypesInList.value.includes('from_library'),
+    fromLibraryAllowedInList.value,
 )
+</script>
+
+<script lang="ts">
+export default {
+  name: 'Library',
+}
 </script>
