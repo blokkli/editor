@@ -33,7 +33,7 @@
     }
   }
   .bk-main-canvas {
-    @apply shadow-xl absolute top-0 left-0 w-full xl:w-[80vw] min-w-[1280px] max-w-[1920px] pointer-events-none;
+    @apply shadow-xl absolute top-0 left-0 xl:w-[80vw] w-screen lg:w-full lg:min-w-[1280px] max-w-[1920px] pointer-events-none;
     user-select: none;
     image-rendering: crisp-edges;
     backface-visibility: hidden;

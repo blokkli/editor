@@ -2,7 +2,7 @@
   <Teleport to="body">
     <div id="bk-sidebar-content" class="bk-sidebar" />
 
-    <div class="bk bk-top bk-control">
+    <div class="bk bk-top bk-control" @touchstart.stop @touchmove.stop>
       <div class="bk bk-toolbar">
         <div class="bk-toolbar-area bk-is-menu">
           <div class="bk-toolbar-menu">

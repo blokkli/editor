@@ -49,11 +49,9 @@ import {
   watch,
   ref,
   computed,
-  inject,
   useBlokkli,
   onMounted,
   onUnmounted,
-  type Ref,
 } from '#imports'
 
 import type { SortableEvent } from 'sortablejs'
@@ -67,17 +65,14 @@ import type {
   MoveBlokkliEvent,
   BlokkliFieldListConfig,
   BlokkliFieldList,
-  BlokkliMutatedField,
   BlokkliFieldListEntity,
   BlokkliFieldListItem,
 } from '#blokkli/types'
-import { INJECT_MUTATED_FIELDS } from '../../../helpers/symbols'
 
-const { adapter, state, eventBus, types, dom, runtimeConfig } = useBlokkli()
+const { adapter, state, eventBus, types, dom, selection } = useBlokkli()
+const hasItemSelected = computed(() => !!selection.uuids.value.length)
 
 let instance: Sortable | null = null
-
-const mutatedFields = inject<Ref<BlokkliMutatedField[]>>(INJECT_MUTATED_FIELDS)
 
 const container = ref<HTMLDivElement | null>(null)
 
@@ -368,6 +363,8 @@ onMounted(() => {
       multiDrag: true,
       multiDragKey: 'ctrl' as any,
       avoidImplicitDeselect: true,
+      delayOnTouchOnly: true,
+      touchStartThreshold: 200,
       group: {
         name: 'types',
         put: onPut,

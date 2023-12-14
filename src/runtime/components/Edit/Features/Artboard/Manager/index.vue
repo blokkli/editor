@@ -22,6 +22,15 @@
         @mousedown.capture.prevent.stop="onThumbMouseDown"
       />
     </div>
+
+    <!-- <div class="artboard-debug"> -->
+    <!--   <table> -->
+    <!--     <tr v-for="[key, value] in Object.entries(debugValues)"> -->
+    <!--       <th>{{ key }}</th> -->
+    <!--       <td>{{ value }}</td> -->
+    <!--     </tr> -->
+    <!--   </table> -->
+    <!-- </div> -->
   </Teleport>
 </template>
 
@@ -39,8 +48,19 @@ import {
 import type { KeyPressedEvent, ScrollIntoViewEvent } from '#blokkli/types'
 import { PluginToolbarButton } from '#blokkli/plugins'
 
-const { keyboard, eventBus, dom, context, storage, ui, animation, text } =
-  useBlokkli()
+const {
+  keyboard,
+  eventBus,
+  dom,
+  context,
+  storage,
+  ui,
+  animation,
+  text,
+  selection,
+} = useBlokkli()
+
+const hasItemSelected = computed(() => !!selection.uuids.value.length)
 
 const props = withDefaults(
   defineProps<{
@@ -59,6 +79,8 @@ type Coord = {
   x: number
   y: number
 }
+
+const debugValues = ref<any>({})
 
 const scrollbar = ref<HTMLElement | null>(null)
 const isDraggingThumb = ref(false)
@@ -437,22 +459,86 @@ const savedState = storage.use<SavedState | null>(storageKey, null)
 const shouldPersist = storage.use('persistArtboard', true)
 
 const touchStartOffset = { x: 0, y: 0 }
-let lastTouchDistance: number = 0
+
+const initialTouchDistance = ref<number | null>(null)
+const initialScale = ref(1)
+
+function getDistance(touches: TouchList) {
+  const dx = touches[0].clientX - touches[1].clientX
+  const dy = touches[0].clientY - touches[1].clientY
+  return Math.sqrt(dx * dx + dy * dy)
+}
 
 function onTouchStart(e: TouchEvent) {
+  if (hasItemSelected.value) {
+    return
+  }
   if (e.touches.length === 1) {
     // Single touch (panning)
     touchStartOffset.x = e.touches[0].clientX
     touchStartOffset.y = e.touches[0].clientY
   } else if (e.touches.length === 2) {
-    // Two fingers (pinch zooming)
-    lastTouchDistance = getDistanceBetweenTouches(e)
+    // Pinch start
+    initialTouchDistance.value = getDistance(e.touches)
+    initialScale.value = scale.value
   }
 }
 
+function getMidpoint(touches: TouchList) {
+  const x = touches[0].clientX
+  const y = touches[0].clientY
+  if (touches.length === 1) {
+    return {
+      x,
+      y,
+    }
+  }
+  return {
+    x: (x + touches[1].clientX) / 2,
+    y: (y + touches[1].clientY) / 2,
+  }
+}
+
+let isPinching = false
+
 function onTouchMove(e: TouchEvent) {
+  if (hasItemSelected.value) {
+    return
+  }
   e.preventDefault()
-  if (e.touches.length === 1 && !lastTouchDistance) {
+  e.stopPropagation()
+  // Calculate midpoint
+  const midpoint = getMidpoint(e.touches)
+  const focalPoint = {
+    x: (midpoint.x - offset.value.x) / scale.value,
+    y: (midpoint.y - offset.value.y) / scale.value,
+  }
+
+  let newScale = 1
+
+  if (e.touches.length === 2 && initialTouchDistance.value !== null) {
+    isPinching = true
+    // Pinch move
+    const newTouchDistance = getDistance(e.touches)
+    const scaleFactor = newTouchDistance / initialTouchDistance.value
+
+    newScale = initialScale.value * scaleFactor
+
+    updateScale(newScale)
+    debugValues.value = {
+      newTouchDistance,
+      scaleFactor,
+      scale: scale.value,
+      x: offset.value.x,
+      y: offset.value.y,
+    }
+  } else if (e.touches.length === 1 && initialTouchDistance.value === null) {
+    if (isPinching) {
+      touchStartOffset.x = e.touches[0].clientX
+      touchStartOffset.y = e.touches[0].clientY
+      isPinching = false
+      return
+    }
     // Single touch move (panning)
     const diffX = touchStartOffset.x - e.touches[0].clientX
     const diffY = touchStartOffset.y - e.touches[0].clientY
@@ -461,28 +547,21 @@ function onTouchMove(e: TouchEvent) {
 
     touchStartOffset.x = e.touches[0].clientX
     touchStartOffset.y = e.touches[0].clientY
-  } else if (e.touches.length === 2) {
-    // Pinch zoom
-    const currentDistance = getDistanceBetweenTouches(e)
-    const delta = currentDistance - lastTouchDistance
-
-    // @TODO: Actually implement zooming.
-
-    lastTouchDistance = currentDistance
+    return
   }
+
+  // Adjust offset based on new scale and focal point
+  const newOffsetX = midpoint.x - focalPoint.x * newScale
+  const newOffsetY = midpoint.y - focalPoint.y * newScale
+  updateOffset(newOffsetX, newOffsetY)
 }
 
-function onTouchEnd() {
-  lastTouchDistance = 0
-}
-
-function getDistanceBetweenTouches(e: TouchEvent) {
-  const touch1 = e.touches[0]
-  const touch2 = e.touches[1]
-  return Math.sqrt(
-    Math.pow(touch2.clientX - touch1.clientX, 2) +
-      Math.pow(touch2.clientY - touch1.clientY, 2),
-  )
+function onTouchEnd(e: TouchEvent) {
+  if (e.touches.length <= 1) {
+    // Reset initial values for pinch
+    initialTouchDistance.value = null
+    initialScale.value = 1
+  }
 }
 
 function onScrollIntoView(e: ScrollIntoViewEvent) {
@@ -528,9 +607,9 @@ onMounted(() => {
   document.body.addEventListener('mousedown', onMouseDown)
   window.addEventListener('mouseup', onMouseUp)
 
-  window.addEventListener('touchstart', onTouchStart, { passive: false })
-  window.addEventListener('touchmove', onTouchMove, { passive: false })
-  window.addEventListener('touchend', onTouchEnd, { passive: false })
+  document.addEventListener('touchstart', onTouchStart, { passive: false })
+  document.addEventListener('touchmove', onTouchMove, { passive: false })
+  document.addEventListener('touchend', onTouchEnd, { passive: false })
   document.body.addEventListener('wheel', onWheel, { passive: false })
 
   eventBus.on('scrollIntoView', onScrollIntoView)
@@ -552,9 +631,9 @@ onBeforeUnmount(() => {
   document.body.removeEventListener('wheel', onWheel)
   document.body.removeEventListener('mousedown', onMouseDown)
   window.removeEventListener('mouseup', onMouseUp)
-  window.removeEventListener('touchstart', onTouchStart)
-  window.removeEventListener('touchmove', onTouchMove)
-  window.removeEventListener('touchend', onTouchEnd)
+  document.removeEventListener('touchstart', onTouchStart)
+  document.removeEventListener('touchmove', onTouchMove)
+  document.removeEventListener('touchend', onTouchEnd)
   eventBus.off('scrollIntoView', onScrollIntoView)
   eventBus.off('keyPressed', onKeyPressed)
   eventBus.off('animationFrame:before', onAnimationFrame)
@@ -568,3 +647,15 @@ onUnmounted(() => {
   ui.artboardElement().style.scale = ''
 })
 </script>
+
+<style>
+.artboard-debug {
+  position: fixed;
+  z-index: 9999999999;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: white;
+  padding: 1rem;
+}
+</style>
