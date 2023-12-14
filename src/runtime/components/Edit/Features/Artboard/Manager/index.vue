@@ -45,7 +45,11 @@ import {
   onUnmounted,
 } from '#imports'
 
-import type { KeyPressedEvent, ScrollIntoViewEvent } from '#blokkli/types'
+import type {
+  KeyPressedEvent,
+  ScrollIntoViewEvent,
+  Coord,
+} from '#blokkli/types'
 import { PluginToolbarButton } from '#blokkli/plugins'
 
 const {
@@ -74,11 +78,6 @@ const props = withDefaults(
     maxScale: 3.5,
   },
 )
-
-type Coord = {
-  x: number
-  y: number
-}
 
 const debugValues = ref<any>({})
 

@@ -1,4 +1,7 @@
-import type { DraggableExistingBlokkliItem } from '#blokkli/types'
+import type {
+  DraggableExistingBlokkliItem,
+  BlokkliFieldElement,
+} from '#blokkli/types'
 import { buildDraggableItem, falsy } from '#blokkli/helpers'
 
 export type BlokkliDomProvider = {
@@ -7,6 +10,8 @@ export type BlokkliDomProvider = {
   findClosestBlock(
     el: Element | EventTarget,
   ): DraggableExistingBlokkliItem | undefined
+
+  getAllFields(): BlokkliFieldElement[]
 }
 
 export default function (): BlokkliDomProvider {
@@ -55,5 +60,40 @@ export default function (): BlokkliDomProvider {
     return item
   }
 
-  return { findBlock, getAllBlocks, findClosestBlock }
+  const getAllFields = (): BlokkliFieldElement[] => {
+    const elements = [...document.querySelectorAll('.bk-field-list')]
+
+    return elements
+      .map((element) => {
+        if (element instanceof HTMLElement) {
+          const key = element.dataset.fieldKey
+          const name = element.dataset.fieldName
+          const label = element.dataset.fieldLabel
+          const isNested = element.dataset.fieldIsNested === 'true'
+          const hostEntityType = element.dataset.hostEntityType
+          const hostEntityUuid = element.dataset.hostEntityUuid
+          const cardinality = parseInt(element.dataset.fieldCardinality || '-1')
+          const allowedBundles = (
+            element.dataset.fieldAllowedBundles || ''
+          ).split(',')
+
+          if (key && name && label && hostEntityType && hostEntityUuid) {
+            return {
+              key,
+              name,
+              label,
+              isNested,
+              hostEntityType,
+              hostEntityUuid,
+              cardinality: isNaN(cardinality) ? -1 : cardinality,
+              allowedBundles,
+              element,
+            }
+          }
+        }
+      })
+      .filter(falsy)
+  }
+
+  return { findBlock, getAllBlocks, findClosestBlock, getAllFields }
 }

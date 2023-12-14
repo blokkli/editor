@@ -5,6 +5,7 @@ import Resizable from './Resizable/index.vue'
 import Icon from './Icon/index.vue'
 import DialogModal from './Dialog/index.vue'
 import ScaleToFit from './ScaleToFit/index.vue'
+import Sortli from './Sortli/index.vue'
 
 export {
   ItemIcon,
@@ -14,4 +15,5 @@ export {
   Resizable,
   DialogModal,
   ScaleToFit,
+  Sortli,
 }

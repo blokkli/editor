@@ -331,6 +331,41 @@ export type BlokkliSearchContentItem = {
   imageUrl?: string
 }
 
+interface ClipboardItemText {
+  type: 'text'
+  itemBundle: string
+  data: string
+  additional?: string
+}
+
+interface ClipboardItemYouTube {
+  type: 'youtube'
+  itemBundle: string
+  data: string
+  additional?: string
+}
+
+interface ClipboardItemImage {
+  type: 'image'
+  itemBundle: string
+  data: string
+  additional: string
+}
+
+interface ClipboardItemSearchContent {
+  type: 'search_content'
+  itemBundle: string
+  data: string
+  item: BlokkliSearchContentItem
+  additional?: string
+}
+
+export type ClipboardItem =
+  | ClipboardItemText
+  | ClipboardItemYouTube
+  | ClipboardItemImage
+  | ClipboardItemSearchContent
+
 export interface DraggableHostData {
   type: string
   uuid: string
@@ -361,12 +396,6 @@ export interface DraggableExistingBlokkliItem {
    * The title to use when displaying the blokkli in list.
    */
   editTitle?: string
-}
-
-export interface DraggableMultipleExistingItems {
-  itemType: 'multiple_existing'
-  uuids: string[]
-  bundles: string[]
 }
 
 export interface DraggableNewItem {
@@ -402,7 +431,6 @@ export type DraggableItem =
   | DraggableNewItem
   | DraggableExistingBlokkliItem
   | DraggableReusableItem
-  | DraggableMultipleExistingItems
   | DraggableSearchContentItem
 
 export type MoveBlokkliEvent = {
@@ -484,9 +512,7 @@ export type BlokkliMessage = {
 }
 
 export type DraggableStartEvent = {
-  rect: DOMRect
-  offsetX: number
-  offsetY: number
+  items: DraggableItem[]
 }
 
 export type MakeReusableEvent = {
@@ -537,7 +563,6 @@ export type BlokkliEvents = {
   select: string
   'item:edit': EditBlokkliItemEvent
   batchTranslate: undefined
-  removeGhosts: undefined
   'dragging:start': DraggableStartEvent
   'dragging:end': undefined
   setActiveFieldKey: string
@@ -611,39 +636,21 @@ export interface Rectangle {
   height: number
 }
 
-interface ClipboardItemText {
-  type: 'text'
-  itemBundle: string
-  data: string
-  additional?: string
+export type Coord = {
+  x: number
+  y: number
 }
 
-interface ClipboardItemYouTube {
-  type: 'youtube'
-  itemBundle: string
-  data: string
-  additional?: string
+export type BlokkliFieldElement = {
+  key: string
+  name: string
+  label: string
+  isNested: boolean
+  hostEntityType: string
+  hostEntityUuid: string
+  allowedBundles: string[]
+  cardinality: number
+  element: HTMLElement
 }
-
-interface ClipboardItemImage {
-  type: 'image'
-  itemBundle: string
-  data: string
-  additional: string
-}
-
-interface ClipboardItemSearchContent {
-  type: 'search_content'
-  itemBundle: string
-  data: string
-  item: BlokkliSearchContentItem
-  additional?: string
-}
-
-export type ClipboardItem =
-  | ClipboardItemText
-  | ClipboardItemYouTube
-  | ClipboardItemImage
-  | ClipboardItemSearchContent
 
 export default {}

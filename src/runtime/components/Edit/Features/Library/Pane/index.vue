@@ -10,38 +10,29 @@
         required
       />
     </div>
-    <div v-if="data" ref="listEl" class="bk-library-list">
+    <Sortli v-if="data" ref="listEl" class="bk-library-list">
       <Item
         v-for="item in data"
         v-show="visible === null || visible.includes(item.uuid)"
         :key="item.uuid"
+        :data-sortli-id="item.uuid"
         v-bind="item"
       />
-    </div>
+    </Sortli>
   </div>
 </template>
 
 <script lang="ts" setup>
-import {
-  ref,
-  computed,
-  useBlokkli,
-  onMounted,
-  onUnmounted,
-  watch,
-  useAsyncData,
-} from '#imports'
-
-import { Sortable } from '#blokkli/sortable'
+import { ref, computed, useBlokkli, watch, useAsyncData } from '#imports'
+import { Sortli } from '#blokkli/components'
 import Item from './Item/index.vue'
 import type { BlokkliLibraryItem } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
 
-const { adapter, eventBus } = useBlokkli()
+const { adapter } = useBlokkli()
 
 const listEl = ref<HTMLDivElement | null>(null)
 const text = ref('')
-let instance: Sortable | null = null
 
 type SearchElement = {
   uuid: string
@@ -76,40 +67,6 @@ const { data } = await useAsyncData<BlokkliLibraryItem[]>(() =>
 watch(text, () => {
   if (!elements.value.length) {
     buildElements()
-  }
-})
-
-onMounted(() => {
-  if (listEl.value) {
-    instance = new Sortable(listEl.value, {
-      sort: false,
-      group: {
-        name: 'types',
-        put: false,
-        pull: 'clone',
-        revertClone: false,
-      },
-      forceFallback: true,
-      onStart(e) {
-        const rect = e.item.getBoundingClientRect()
-        const originalEvent = (e as any).originalEvent || ({} as PointerEvent)
-        eventBus.emit('dragging:start', {
-          rect,
-          offsetX: originalEvent.clientX,
-          offsetY: originalEvent.clientY,
-        })
-      },
-      onEnd() {
-        eventBus.emit('dragging:end')
-      },
-      animation: 300,
-    })
-  }
-})
-
-onUnmounted(() => {
-  if (instance) {
-    instance.destroy()
   }
 })
 

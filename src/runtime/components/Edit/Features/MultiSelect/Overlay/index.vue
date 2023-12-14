@@ -121,10 +121,6 @@ function emitSelected() {
     'select:end',
     selected.map((v) => v.uuid),
   )
-
-  // selected.forEach((item) => {
-  //   Sortable.utils.select(item.uuid)
-  // })
 }
 
 function onAnimationFrame(e: AnimationFrameEvent) {

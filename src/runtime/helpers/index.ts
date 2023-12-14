@@ -19,7 +19,7 @@ export function falsy<T>(value: T): value is NonNullable<T> {
  * Maps a HTML element that is draggable to a draggable item data object.
  */
 export function buildDraggableItem(
-  element: Element,
+  element: Element | EventTarget,
 ): DraggableItem | undefined {
   if (!(element instanceof HTMLElement)) {
     return

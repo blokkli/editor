@@ -13,7 +13,7 @@ export class BlockHero extends Block {
       ...super.getFieldDefintions(),
       new FieldText('title', 'Title'),
       new FieldTextarea('lead', 'Lead'),
-      new FieldBlocks('buttons', 'Buttons', 2, ['button']),
+      new FieldBlocks('buttons', 'Buttons', 3, ['button']),
     ]
   }
 }

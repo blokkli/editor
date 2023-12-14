@@ -7,7 +7,7 @@
     icon="clipboard"
     weight="-30"
   >
-    <div @mousedown.stop @mousemove.stop @dragstart.stop>
+    <div>
       <div class="bk-clipboard bk-control">
         <div v-if="!pastedItems.length" class="bk bk-clipboard-info">
           <h4>{{ text('clipboardEmpty') }}</h4>

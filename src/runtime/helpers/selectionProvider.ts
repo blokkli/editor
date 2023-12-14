@@ -11,7 +11,6 @@ import {
 import type { DraggableExistingBlokkliItem } from '#blokkli/types'
 import { findElement, buildDraggableItem, falsy } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
-import { Sortable } from '#blokkli/sortable'
 
 export type BlokkliSelectionProvider = {
   /**
@@ -59,18 +58,6 @@ export default function (): BlokkliSelectionProvider {
       .filter(falsy),
   )
 
-  function updateSortable() {
-    document.querySelectorAll('.sortable-selected').forEach((el) => {
-      Sortable.utils.deselect(el as any)
-    })
-    selectedUuids.value.forEach((uuid) => {
-      const item = findElement(uuid)
-      if (item) {
-        Sortable.utils.select(item)
-      }
-    })
-  }
-
   function selectItems(uuids: string[]) {
     unselectItems()
     const items = uuids
@@ -85,12 +72,10 @@ export default function (): BlokkliSelectionProvider {
       })
       .filter(falsy)
     selectedUuids.value = items.map((v) => v.uuid)
-    updateSortable()
   }
 
   function unselectItems() {
     selectedUuids.value = []
-    updateSortable()
   }
 
   function onSelect(uuid: string) {
@@ -103,7 +88,6 @@ export default function (): BlokkliSelectionProvider {
     } else {
       selectedUuids.value.push(uuid)
     }
-    updateSortable()
   }
 
   function onWindowMouseDown(e: MouseEvent) {

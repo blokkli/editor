@@ -22,6 +22,7 @@
 @import './partials/artboard.css';
 @import './partials/debug.css';
 @import './partials/scaleToFit.css';
+@import './partials/DropTargets.css';
 
 @font-face {
   font-family: 'PB Inter';
@@ -166,23 +167,13 @@
   }
 }
 
-.bk-main-canvas .bk-list-item.sortable-ghost.bk-clone {
-  @apply flex items-center justify-center bg-blue-400 rounded text-white font-sans text-xl;
-  .bk-list-item-icon {
-    @apply text-3xl;
-    svg {
-      @apply fill-current w-30 h-30;
-    }
-  }
-}
-
 .bk-owner-indicator {
   @apply fixed bottom-0 right-0 bg-red-100 z-[90000] p-20 text-red-800 font-medium text-lg flex justify-between items-center;
   left: var(--bk-root-offset-left);
 }
 
 .bk.bk-dragging-overlay {
-  @apply fixed top-0 left-0 bg-blue-500/25 pointer-events-none rounded outline outline-blue-600 outline-offset-1;
+  @apply fixed top-0 left-0 bg-blue-500/25 pointer-events-none rounded outline outline-blue-600 outline-offset-1 z-[999999];
 }
 
 .bk-qr-code {
@@ -195,9 +186,9 @@
   }
 }
 
-.bk-is-disabled {
-  @apply opacity-30 group-hover:opacity-60;
-}
+/* .bk-is-disabled { */
+/*   @apply opacity-30 group-hover:opacity-60; */
+/* } */
 
 .bk-draggable-list-container {
   &.is-empty {
@@ -231,17 +222,12 @@
   border-radius: 5px;
 }
 
-.sortable-fallback {
-  pointer-events: none;
-  display: none !important;
-}
-
 .bk-field-list {
   position: relative;
   min-height: 3rem;
 }
 
-.bk-body:not(.bk-is-selecting) {
+.bk-body:not(.bk-is-selecting):not(.bk-is-dragging) {
   .bk-field-list {
     &:hover {
       outline: 1px dashed;
@@ -257,6 +243,10 @@
       }
     }
   }
+}
+
+.bk-body.bk-is-selecting * {
+  pointer-events: none !important;
 }
 
 .bk-body {

@@ -1,6 +1,6 @@
 .bk-clipboard {
   .bk-clipboard-list {
-    > li {
+    > div {
       @apply cursor-grab;
       @apply p-20;
       @apply border-b border-b-slate-300;

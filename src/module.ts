@@ -401,21 +401,11 @@ export type ValidTextKeys = ${validTranslationKeys}
       from: resolver.resolve('./runtime/composables/useBlokkli'),
       as: 'useBlokkli',
     })
-    const templateStyles = addTemplate({
-      write: true,
-      filename: 'blokkli/edit.css',
-      getContents: async () => {
-        const stylesPath = resolver.resolve('./runtime/css/output.css')
-        const css = await fsp.readFile(stylesPath)
-        return css.toString()
-      },
-      options: {
-        blokkliStyle: true,
-      },
-    })
 
     // The types template.
-    nuxt.options.alias['#blokkli/styles'] = templateStyles.dst
+    nuxt.options.alias['#blokkli/styles'] = resolver.resolve(
+      './runtime/css/output.css',
+    )
 
     // The types template.
     const templateGeneratedTypes = addTemplate({
@@ -515,8 +505,6 @@ export type BlokkliIcon = keyof typeof icons`
       'runtime/components/Edit',
     )
     nuxt.options.alias['#blokkli/helpers'] = resolver.resolve('runtime/helpers')
-    nuxt.options.alias['#blokkli/sortable'] =
-      resolver.resolve('runtime/sortable')
     nuxt.options.alias['#blokkli/adapter'] = resolver.resolve('runtime/adapter')
 
     nuxt.hook('nitro:config', async (nitroConfig) => {
@@ -544,30 +532,13 @@ export type BlokkliIcon = keyof typeof icons`
       })
     }
 
-    const appliesStyles = (path: string): boolean => {
-      return path.includes('runtime/css')
-    }
-
     // Watch for file changes in dev mode.
     if (nuxt.options.dev) {
+      nuxt.hook('builder:watch', async (_event, path) => {
+        console.log('PATH: ' + path)
+      })
       nuxt.hook('vite:serverCreated', (viteServer) => {
         nuxt.hook('builder:watch', async (_event, path) => {
-          if (appliesStyles(path)) {
-            await updateTemplates({
-              filter: (template) => {
-                return template.options && template.options.blokkliStyle
-              },
-            })
-            const modules = viteServer.moduleGraph.getModulesByFile(
-              templateStyles.dst,
-            )
-            if (modules) {
-              modules.forEach((v) => {
-                viteServer.reloadModule(v)
-              })
-            }
-          }
-
           const filePath = await applies(path)
           if (!filePath) {
             return

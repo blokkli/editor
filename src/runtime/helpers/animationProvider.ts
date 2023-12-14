@@ -75,9 +75,7 @@ export default function (): BlokkliAnimationProvider {
         const rects: Record<string, DOMRect> = {}
         let hoveredUuid = ''
         const elements = [
-          ...document.querySelectorAll(
-            '[data-element-type="existing"]:not(.sortable-drag)',
-          ),
+          ...document.querySelectorAll('[data-element-type="existing"]'),
         ]
 
         for (let i = 0; i < elements.length; i++) {

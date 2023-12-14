@@ -1,10 +1,11 @@
 <template>
-  <ul ref="listEl" class="bk-clipboard-list">
-    <li
+  <Sortli class="bk-clipboard-list">
+    <div
       v-for="(item, index) in items"
       :key="index + item.data + renderKey"
       class="bk-clone bk-parent"
       data-element-type="clipboard"
+      :data-sortli-id="'clipboard_' + index"
       :data-item-bundle="item.itemBundle"
       :data-clipboard-type="item.type"
       :data-clipboard-data="item.data"
@@ -48,73 +49,29 @@
           </div>
         </div>
       </div>
-    </li>
-  </ul>
+    </div>
+  </Sortli>
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, onMounted, onUnmounted } from '#imports'
-
-import { ItemIcon, Icon } from '#blokkli/components'
-import { Sortable } from '#blokkli/sortable'
+import { ref, useBlokkli } from '#imports'
+import { ItemIcon, Icon, Sortli } from '#blokkli/components'
 import type { ClipboardItem } from '#blokkli/types'
 import SearchContentItem from './SearchContent/index.vue'
 
-let instance: Sortable | null = null
-
-const listEl = ref<HTMLDivElement | null>(null)
 const renderKey = ref(0)
 
 defineProps<{
   items: ClipboardItem[]
 }>()
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'remove', index: number): void
 }>()
 
-const { types, eventBus } = useBlokkli()
+const { types } = useBlokkli()
 
 function getLabel(bundle: string): string {
   return types.allTypes.value.find((v) => v.id === bundle)?.label || bundle
 }
-
-onMounted(() => {
-  if (listEl.value) {
-    instance = new Sortable(listEl.value, {
-      sort: false,
-      group: {
-        name: 'types',
-        put: false,
-        revertClone: false,
-      },
-      onRemove(e) {
-        if (e.oldIndex !== undefined) {
-          emit('remove', e.oldIndex)
-        }
-        renderKey.value += 1
-      },
-      forceFallback: true,
-      animation: 300,
-      onStart(e) {
-        const rect = e.item.getBoundingClientRect()
-        const originalEvent = (e as any).originalEvent || ({} as PointerEvent)
-        eventBus.emit('dragging:start', {
-          rect,
-          offsetX: originalEvent.clientX,
-          offsetY: originalEvent.clientY,
-        })
-      },
-      onEnd() {
-        eventBus.emit('dragging:end')
-      },
-    })
-  }
-})
-
-onUnmounted(() => {
-  if (instance) {
-    instance.destroy()
-  }
-})
 </script>

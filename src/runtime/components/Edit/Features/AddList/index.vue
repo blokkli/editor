@@ -12,13 +12,14 @@
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
     >
-      <div ref="typeList" class="bk-list" :style="style">
+      <Sortli ref="typeList" class="bk-list" :style="style">
         <div
           v-for="(type, i) in sortedList"
           :key="i + (type.id || 'undefined') + updateKey"
           class="bk-list-item bk-clone"
           data-element-type="new"
           :data-item-bundle="type.id"
+          :data-sortli-id="type.id"
           :class="{
             'bk-is-disabled': !type.id || !selectableBundles.includes(type.id),
           }"
@@ -35,7 +36,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </Sortli>
     </div>
   </Teleport>
 </template>
@@ -50,12 +51,11 @@ import {
   onUnmounted,
 } from '#imports'
 
-import { Sortable } from '#blokkli/sortable'
 import { falsy, onlyUnique } from '#blokkli/helpers'
-import { ItemIcon } from '#blokkli/components'
+import { ItemIcon, Sortli } from '#blokkli/components'
 import type { DraggableExistingBlokkliItem } from '#blokkli/types'
 
-const { eventBus, state, selection, storage, types, context, runtimeConfig } =
+const { state, selection, storage, types, context, runtimeConfig } =
   useBlokkli()
 
 const itemEntityType = runtimeConfig.itemEntityType
@@ -69,7 +69,6 @@ watch(listOrientation, setRootClasses)
 
 const typeList = ref<HTMLDivElement | null>(null)
 const wrapper = ref<HTMLDivElement | null>(null)
-const isDragging = ref(false)
 const isActive = ref(false)
 const updateKey = ref(0)
 const scrollX = ref(0)
@@ -77,7 +76,6 @@ const scrollY = ref(0)
 
 const sorts = storage.use<string[]>('sorts', [])
 
-let instance: Sortable | null = null
 let mouseTimeout: any = null
 
 const activeField = computed(() => {
@@ -267,48 +265,10 @@ function setRootClasses() {
 
 onMounted(() => {
   setRootClasses()
-  if (typeList.value) {
-    instance = new Sortable(typeList.value, {
-      sort: true,
-      group: {
-        name: 'types',
-        put: false,
-        pull: 'clone',
-        revertClone: false,
-      },
-      fallbackClass: 'sortable-fallback',
-      onStart(e) {
-        const rect = e.item.getBoundingClientRect()
-        const originalEvent = (e as any).originalEvent || ({} as PointerEvent)
-        eventBus.emit('dragging:start', {
-          rect,
-          offsetX: originalEvent.clientX,
-          offsetY: originalEvent.clientY,
-        })
-        isDragging.value = true
-      },
-      onEnd() {
-        eventBus.emit('dragging:end')
-        isDragging.value = false
-        storeSort()
-        updateKey.value = updateKey.value + 1
-        if (typeList.value) {
-          typeList.value
-            .querySelectorAll('[draggable="false"]')
-            .forEach((el) => el.remove())
-        }
-      },
-      forceFallback: true,
-      animation: 300,
-    })
-  }
 })
 onUnmounted(() => {
   document.documentElement.classList.remove('bk-has-sidebar-bottom')
   document.documentElement.classList.remove('bk-has-sidebar-left')
-  if (instance) {
-    instance.destroy()
-  }
 })
 </script>
 
