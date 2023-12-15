@@ -1,14 +1,9 @@
 <template>
-  <Teleport to="body">
-    <div v-if="isVisible" class="bk bk-dragging-overlay" :style="style" />
-  </Teleport>
+  <DragItems v-if="isVisible" :x="mouseX" :y="mouseY" :items="dragItems" />
   <DropTargets
     v-if="dragItems.length"
     :items="dragItems"
-    :x="boxX"
-    :y="boxY"
-    :width="width"
-    :height="height"
+    :box="box"
     :mouse-x="mouseX"
     :mouse-y="mouseY"
     @drop="onDrop"
@@ -16,8 +11,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli, onMounted, onUnmounted } from '#imports'
+import { ref, useBlokkli, onMounted, onUnmounted } from '#imports'
 import DropTargets, { type DropTargetEvent } from './DropTargets/index.vue'
+import DragItems from './DragItems/index.vue'
 
 import type {
   AnimationFrameEvent,
@@ -29,20 +25,22 @@ import type {
   DraggableSearchContentItem,
   DraggableStartEvent,
   KeyPressedEvent,
+  Rectangle,
 } from '#blokkli/types'
 import { getDefinition } from '#blokkli/definitions'
 
 const { eventBus, adapter, state } = useBlokkli()
 
 const isVisible = ref(false)
-const width = ref(0)
-const height = ref(0)
-const x = ref(0)
-const y = ref(0)
 const mouseX = ref(0)
 const mouseY = ref(0)
-const offsetX = ref(0)
-const offsetY = ref(0)
+
+const box = ref<Rectangle>({
+  x: 0,
+  y: 0,
+  width: 10,
+  height: 10,
+})
 
 const dragItems = ref<DraggableItem[]>([])
 
@@ -117,24 +115,23 @@ const onDrop = async (e: DropTargetEvent) => {
   eventBus.emit('dragging:end')
 }
 
-const boxX = computed(() => mouseX.value - offsetX.value)
-const boxY = computed(() => mouseY.value - offsetY.value)
-
-const style = computed(() => {
-  return {
-    width: width.value + 'px',
-    height: height.value + 'px',
-    transform: `translate(${boxX.value}px, ${boxY.value}px)`,
-  }
-})
-
 function loop(e: AnimationFrameEvent) {
   mouseX.value = e.mouseX
   mouseY.value = e.mouseY
   if (!isVisible.value) {
-    offsetX.value = mouseX.value - x.value
-    offsetY.value = mouseY.value - y.value
     isVisible.value = true
+  }
+
+  const rect = document
+    .querySelector('.bk-dragging-overlay')
+    ?.getBoundingClientRect()
+  if (rect) {
+    box.value = {
+      x: rect.x,
+      y: rect.y,
+      width: rect.width,
+      height: rect.height,
+    }
   }
 }
 
@@ -147,16 +144,8 @@ const onMouseUp = (e: MouseEvent) => {
 function onDraggingStart(e: DraggableStartEvent) {
   dragItems.value = e.items
   const item = e.items[0]
-  console.log(e)
   if ('element' in item) {
-    const rect = item.element.getBoundingClientRect()
-    width.value = rect.width
-    height.value = rect.height
-    x.value = rect.x
-    y.value = rect.y
-
     eventBus.on('animationFrame', loop)
-
     window.addEventListener('mouseup', onMouseUp)
   }
 }

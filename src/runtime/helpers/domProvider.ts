@@ -1,6 +1,7 @@
 import type {
   DraggableExistingBlokkliItem,
   BlokkliFieldElement,
+  DraggableItem,
 } from '#blokkli/types'
 import { buildDraggableItem, falsy } from '#blokkli/helpers'
 
@@ -12,6 +13,11 @@ export type BlokkliDomProvider = {
   ): DraggableExistingBlokkliItem | undefined
 
   getAllFields(): BlokkliFieldElement[]
+
+  /**
+   * Return the droppable markup for a draggable item.
+   */
+  getDropElementMarkup(item: DraggableItem): string
 }
 
 export default function (): BlokkliDomProvider {
@@ -95,5 +101,18 @@ export default function (): BlokkliDomProvider {
       .filter(falsy)
   }
 
-  return { findBlock, getAllBlocks, findClosestBlock, getAllFields }
+  const getDropElementMarkup = (item: DraggableItem): string => {
+    const dropElement =
+      item.element.querySelector('.bk-drop-element') || item.element
+    // Remove all data attributes.
+    return dropElement.outerHTML.replace(/\sdata-\w+="[^"]*"/g, '')
+  }
+
+  return {
+    findBlock,
+    getAllBlocks,
+    findClosestBlock,
+    getAllFields,
+    getDropElementMarkup,
+  }
 }

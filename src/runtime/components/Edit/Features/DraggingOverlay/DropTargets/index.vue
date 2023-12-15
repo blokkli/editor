@@ -34,7 +34,14 @@
 </template>
 
 <script lang="ts" setup>
-import { falsy, intersects, isInsideRect } from '#blokkli/helpers'
+import {
+  falsy,
+  intersects,
+  isInsideRect,
+  findClosestRectangle,
+  calculateIntersection,
+  realBackgroundColor,
+} from '#blokkli/helpers'
 import type {
   BlokkliFieldElement,
   DraggableHostData,
@@ -42,43 +49,6 @@ import type {
   Rectangle,
 } from '#blokkli/types'
 import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
-
-function calculateIntersection(rectA: Rectangle, rectB: Rectangle): number {
-  // Calculate the coordinates of the intersection rectangle
-  const xOverlap = Math.max(
-    0,
-    Math.min(rectA.x + rectA.width, rectB.x + rectB.width) -
-      Math.max(rectA.x, rectB.x),
-  )
-  const yOverlap = Math.max(
-    0,
-    Math.min(rectA.y + rectA.height, rectB.y + rectB.height) -
-      Math.max(rectA.y, rectB.y),
-  )
-
-  // Calculate the area of intersection
-  const intersectionArea = xOverlap * yOverlap
-
-  // Calculate the area of rectA
-  const rectAArea = rectA.width * rectA.height
-
-  // Calculate the percentage of rectA covered by the intersection
-  const intersectionAreaPercent = intersectionArea / rectAArea
-
-  return intersectionAreaPercent
-}
-
-function realBackgroundColor(el: HTMLElement | null) {
-  const transparent = 'rgba(0, 0, 0, 0)'
-  if (!el) return transparent
-
-  const bg = getComputedStyle(el).backgroundColor
-  if (bg === transparent || bg === 'transparent') {
-    return realBackgroundColor(el.parentElement)
-  } else {
-    return bg
-  }
-}
 
 const activeKey = ref('')
 
@@ -115,10 +85,7 @@ const emit = defineEmits<{
 
 const props = defineProps<{
   items: DraggableItem[]
-  x: number
-  y: number
-  width: number
-  height: number
+  box: Rectangle
   mouseX: number
   mouseY: number
 }>()
@@ -385,20 +352,12 @@ const buildFieldRects = () => {
   })
 }
 
-const boxRect = computed<Rectangle>(() => {
-  return {
-    width: props.width,
-    height: props.height,
-    x: props.x,
-    y: props.y,
-  }
-})
+type IntersectingRectangle = Rectangle & { key: string; intersection: number }
 
-const onAnimationFrame = () => {
+const getSelectedRect = (): string | undefined => {
   const elements = [...document.querySelectorAll('[data-drop-target-key]')]
 
-  let newKey = ''
-  let largestIntersection = 0
+  const intersectingRects: IntersectingRectangle[] = []
 
   for (let i = 0; i < elements.length; i++) {
     const el = elements[i]
@@ -411,18 +370,51 @@ const onAnimationFrame = () => {
       continue
     }
     if (isInsideRect(props.mouseX, props.mouseY, rect)) {
-      newKey = key
-      break
+      return key
     }
-    if (intersects(boxRect.value, rect)) {
-      const intersection = calculateIntersection(rect, boxRect.value)
-      if (intersection > largestIntersection) {
-        newKey = key
-        largestIntersection = intersection
-      }
+    if (intersects(props.box, rect)) {
+      const intersection = calculateIntersection(rect, props.box)
+      intersectingRects.push({
+        x: rect.x,
+        y: rect.y,
+        width: rect.width,
+        height: rect.height,
+        key,
+        intersection,
+      })
     }
   }
-  activeKey.value = newKey
+
+  if (intersectingRects.length === 0) {
+    return
+  } else if (intersectingRects.length === 1) {
+    return intersectingRects[0].key
+  }
+
+  // Return the rectangle that is closest to the cursor.
+  const closest = findClosestRectangle(
+    props.mouseX,
+    props.mouseY,
+    intersectingRects,
+  )
+  return closest.key
+}
+
+let prevMouseX = 0
+let prevMouseY = 0
+
+const onAnimationFrame = () => {
+  // We only want to do the calculations for changes in 5px steps.
+  const mouseX = Math.round(props.mouseX / 5)
+  const mouseY = Math.round(props.mouseY / 5)
+
+  // Only do the calculations if the mouse position has actually changed.
+  if (prevMouseX !== mouseX || prevMouseY !== mouseY) {
+    console.log('Calculate')
+    activeKey.value = getSelectedRect() || ''
+    prevMouseX = mouseX
+    prevMouseY = mouseY
+  }
 }
 
 onMounted(() => {

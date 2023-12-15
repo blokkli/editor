@@ -22,7 +22,8 @@
 @import './partials/artboard.css';
 @import './partials/debug.css';
 @import './partials/scaleToFit.css';
-@import './partials/DropTargets.css';
+@import './partials/DraggingOverlay.css';
+@import './partials/MultiSelect.css';
 
 @font-face {
   font-family: 'PB Inter';
@@ -46,28 +47,6 @@
     @apply bg-slate-100/90 fixed top-0 left-0 w-screen h-screen z-[999999999] backdrop-blur-xl flex items-center justify-center;
     svg {
       @apply w-100 h-100 text-slate-200 animate-spin fill-slate-400;
-    }
-  }
-
-  .bk-multi-select-area {
-    @apply fixed top-0 left-0 pointer-events-none z-30;
-    rect {
-      @apply stroke-slate-400 stroke-[2];
-      stroke-dasharray: 4 4;
-      stroke-dashoffset: 100;
-      animation: 0.1s pbSelectArea infinite;
-      animation-timing-function: linear;
-    }
-  }
-
-  .bk-multi-select-rectangle {
-    @apply absolute top-0 left-0 pointer-events-none  rounded;
-    &:not(.bk-is-active) {
-      @apply outline-2 outline-dashed outline-slate-400 outline-offset-2;
-    }
-
-    &.bk-is-active {
-      @apply outline outline-2 outline-blue-700 outline-offset-2 bg-blue-500/10;
     }
   }
 }
@@ -170,10 +149,6 @@
 .bk-owner-indicator {
   @apply fixed bottom-0 right-0 bg-red-100 z-[90000] p-20 text-red-800 font-medium text-lg flex justify-between items-center;
   left: var(--bk-root-offset-left);
-}
-
-.bk.bk-dragging-overlay {
-  @apply fixed top-0 left-0 bg-blue-500/25 pointer-events-none rounded outline outline-blue-600 outline-offset-1 z-[999999];
 }
 
 .bk-qr-code {

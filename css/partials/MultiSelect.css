@@ -1,0 +1,36 @@
+.bk {
+  .bk-multi-select-area {
+    @apply fixed top-0 left-0 pointer-events-none z-30;
+    rect {
+      @apply stroke-slate-400 stroke-[2];
+      stroke-dasharray: 4 4;
+      stroke-dashoffset: 100;
+      animation: 0.1s bkSelectArea infinite;
+      animation-timing-function: linear;
+    }
+  }
+
+  .bk-multi-select-rectangle {
+    @apply absolute top-0 left-0 pointer-events-none  rounded;
+    &:not(.bk-is-active) {
+      @apply outline-2 outline-dashed outline-slate-400 outline-offset-2;
+    }
+
+    &.bk-is-active {
+      @apply outline outline-2 outline-blue-700 outline-offset-2 bg-blue-500/10;
+    }
+  }
+
+  .bk-multi-select-selection {
+    @apply absolute z-[10000] top-0 left-0;
+  }
+}
+
+@keyframes bkSelectArea {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: 8;
+  }
+}

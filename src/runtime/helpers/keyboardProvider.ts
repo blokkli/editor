@@ -41,14 +41,29 @@ export default function (): BlokkliKeyboardProvider {
       isPressingSpace.value = true
     }
   }
+
+  /**
+   * When the tab becomes inactive we set key modifier states to false.
+   *
+   * This solves a potential problem where someone might switch tabs using the
+   * control key, which would keep CTRL being active when coming back to the
+   * window, even though the key isn't being pressed anymore.
+   */
+  const onVisibilityChange = () => {
+    isPressingControl.value = false
+    isPressingSpace.value = false
+  }
+
   onMounted(() => {
     document.addEventListener('keydown', onKeyDown)
     document.addEventListener('keyup', onKeyUp)
+    document.addEventListener('visibilitychange', onVisibilityChange)
   })
 
   onBeforeUnmount(() => {
     document.removeEventListener('keydown', onKeyDown)
     document.removeEventListener('keyup', onKeyUp)
+    document.removeEventListener('visibilitychange', onVisibilityChange)
   })
 
   watch(isPressingSpace, (has) =>

@@ -21,7 +21,12 @@
       :class="backgroundClass"
     >
       <ScaleToFit :width="editWidth">
-        <BlokkliItem :item="item" :props="props" parent-type="nested" />
+        <BlokkliItem
+          :item="item"
+          :props="props"
+          parent-type="nested"
+          class="bk-drop-element"
+        />
       </ScaleToFit>
     </div>
   </div>

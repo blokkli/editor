@@ -1,0 +1,213 @@
+<template>
+  <Teleport to="body">
+    <div class="bk-dragging-overlay" :style="style">
+      <div
+        v-for="(rect, i) in rects"
+        :key="i"
+        :class="{ 'bk-is-top': rect.isTop }"
+        :style="{
+          width: rect.width + 'px',
+          height: rect.height + 'px',
+          transform: `translate(${rect.x}px, ${rect.y}px) scale(${rect.scale})`,
+          opacity: rect.opacity,
+          background: rect.background,
+        }"
+        v-html="rect.markup"
+      ></div>
+    </div>
+  </Teleport>
+</template>
+
+<script setup lang="ts">
+import {
+  ref,
+  computed,
+  useBlokkli,
+  onMounted,
+  onUnmounted,
+  onBeforeUnmount,
+} from '#imports'
+import type { DraggableItem, Rectangle } from '#blokkli/types'
+import { isInsideRect, realBackgroundColor } from '#blokkli/helpers'
+
+const { eventBus, dom } = useBlokkli()
+
+const props = defineProps<{
+  items: DraggableItem[]
+  x: number
+  y: number
+}>()
+
+const lerp = (s: number, e: number, t: number) => s * (1 - t) + e * t
+
+const width = ref(10)
+const height = ref(10)
+
+const offsetX = ref(0)
+const offsetY = ref(0)
+
+const style = computed(() => {
+  return {
+    width: width.value + 'px',
+    height: height.value + 'px',
+    transform: `translate(${props.x - offsetX.value}px, ${
+      props.y - offsetY.value
+    }px)`,
+  }
+})
+
+type AnimationRectangle = Rectangle & {
+  isTop: boolean
+  targetOpacity: number
+  opacity: number
+  scale: number
+  targetX: number
+  targetY: number
+  targetScale: number
+  markup: string
+  background: string
+  elementOpacity?: string
+  element: HTMLElement
+}
+
+const rects = ref<AnimationRectangle[]>([])
+
+let alpha = 0
+const speed = 0.02
+const threshold = 0.1
+
+const onAnimationFrame = () => {
+  let allRectsAtTarget = true
+
+  const newRects: AnimationRectangle[] = []
+
+  for (let i = 0; i < rects.value.length; i++) {
+    const rect = rects.value[i]
+    const newX = lerp(rect.x, rect.targetX, alpha)
+    const newY = lerp(rect.y, rect.targetY, alpha)
+    const newOpacity = lerp(rect.opacity, rect.targetOpacity, alpha)
+
+    const newScale = lerp(rect.scale, rect.targetScale, alpha)
+
+    // Check if the rectangle is at its target position
+    if (
+      Math.abs(newX - rect.targetX) > threshold ||
+      Math.abs(newY - rect.targetY) > threshold ||
+      Math.abs(newScale - rect.targetScale) > 0.01
+    ) {
+      allRectsAtTarget = false
+    }
+
+    newRects.push({
+      ...rect,
+      x: newX,
+      y: newY,
+      scale: newScale,
+      opacity: newOpacity,
+    })
+  }
+
+  // Increase alpha towards 1 at each frame
+  if (alpha < 1) {
+    alpha += speed
+  }
+
+  if (allRectsAtTarget) {
+    rects.value = newRects.map((v) => {
+      return {
+        ...v,
+        opacity: v.targetOpacity,
+        scale: v.targetScale,
+        x: v.targetX,
+        y: v.targetY,
+      }
+    })
+    eventBus.off('animationFrame', onAnimationFrame)
+    return
+  }
+  rects.value = newRects
+}
+
+onMounted(() => {
+  const elRects = props.items.map((item, index) => {
+    return {
+      rect: item.element.getBoundingClientRect(),
+      element: item.element,
+      item,
+      index,
+    }
+  })
+
+  // Find the matching bound rectangle that will determine the size of the box that is being dragged.
+  const boundRect =
+    elRects.find((v) => isInsideRect(props.x, props.y, v.rect)) || elRects[0]
+
+  const bounds = boundRect.rect
+
+  const boundsWidth = Math.min(500, bounds.width)
+  const ratio = boundsWidth / bounds.width
+  const boundsHeight = bounds.height * ratio
+  const boundsX = Math.max(
+    Math.min(props.x - boundsWidth / 2, bounds.x + bounds.width - boundsWidth),
+    bounds.x,
+  )
+  const boundsY = Math.max(
+    Math.min(
+      props.y - boundsHeight / 2,
+      bounds.y + bounds.height - boundsHeight,
+    ),
+    bounds.y,
+  )
+
+  offsetX.value = props.x - boundsX
+  offsetY.value = props.y - boundsY
+  width.value = boundsWidth
+  height.value = boundsHeight
+
+  rects.value = elRects.map((item) => {
+    const isTop = item.index === boundRect.index
+    const rect = item.rect
+    return {
+      isTop,
+      x: rect.x - boundsX,
+      y: rect.y - boundsY,
+      width: item.element.scrollWidth,
+      height: item.element.scrollHeight,
+      opacity: 1,
+      targetOpacity: isTop ? 0.6 : 0,
+      targetX: props.x - boundsX - offsetX.value,
+      targetY: props.y - boundsY - offsetY.value,
+      scale: rect.width / item.element.scrollWidth,
+      targetScale: Math.min(boundsWidth / item.element.scrollWidth, 1),
+      markup: dom.getDropElementMarkup(item.item),
+      background: realBackgroundColor(item.element),
+      elementOpacity:
+        item.item.itemType === 'existing'
+          ? item.element.style.opacity
+          : undefined,
+      element: item.element,
+    }
+  })
+
+  elRects.forEach((item) => {
+    if (item.item.itemType === 'existing') {
+      item.element.style.opacity = '0.2'
+    }
+  })
+
+  eventBus.on('animationFrame', onAnimationFrame)
+})
+
+onBeforeUnmount(() => {
+  // Restore the original opacity on the blocks.
+  rects.value.forEach((item) => {
+    if (item.elementOpacity !== undefined) {
+      item.element.style.opacity = item.elementOpacity
+    }
+  })
+})
+
+onUnmounted(() => {
+  eventBus.off('animationFrame', onAnimationFrame)
+})
+</script>

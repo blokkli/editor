@@ -1,3 +1,26 @@
+.bk-dragging-overlay {
+  /* @apply fixed top-0 left-0 bg-blue-500/25 pointer-events-none rounded outline outline-blue-600 outline-offset-1 z-[999999]; */
+  @apply fixed top-0 left-0 pointer-events-none z-[999999];
+
+  > div {
+    @apply absolute top-0 left-0 origin-top-left;
+    @apply outline outline-blue-700 outline-1 rounded bg-white;
+
+    > * {
+      margin: 0 !important;
+      height: 100% !important;
+    }
+    &:before {
+      content: '';
+      @apply absolute top-0 left-0 w-full h-full bg-blue-500/60 z-[200];
+    }
+
+    &.bk-is-top {
+      z-index: 100;
+    }
+  }
+}
+
 .bk.bk-drop-targets {
   @apply absolute top-0 left-0 w-full h-full  z-[500] pointer-events-auto;
 
@@ -6,12 +29,12 @@
   }
 
   .bk-drop-targets-field-child {
-    @apply border border-blue-500;
-    @apply absolute bg-blue-300/30;
+    @apply border border-slate-500;
+    @apply absolute bg-slate-300/30;
     @apply transition;
 
     &.bk-is-active {
-      @apply bg-blue-700/70;
+      @apply bg-blue-700/90 outline outline-white;
     }
 
     &.bk-is-horizontal {

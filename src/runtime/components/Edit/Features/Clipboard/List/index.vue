@@ -26,7 +26,7 @@
             <Icon name="delete" />
           </button>
         </div>
-        <div>
+        <div class="bk-drop-element">
           <div
             v-if="item.type === 'text'"
             class="bk-clipboard-item-inner"

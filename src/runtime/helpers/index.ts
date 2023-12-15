@@ -108,14 +108,6 @@ export function buildDraggableItem(
         additional,
       }
     }
-  } else if (dataset.elementType === 'multiple_existing') {
-    const bundles = (dataset.bundles || '').split(',')
-    const uuids = (dataset.uuids || '').split(',')
-    return {
-      itemType: 'multiple_existing',
-      bundles,
-      uuids,
-    }
   }
 }
 
@@ -239,4 +231,83 @@ export function isInsideRect(x: number, y: number, rect: Rectangle): boolean {
     y > rect.y &&
     y < rect.y + rect.height
   )
+}
+
+/**
+ * Calculate the intersection amount of two rectangles as a value from 0 to 1.
+ */
+export function calculateIntersection(
+  rectA: Rectangle,
+  rectB: Rectangle,
+): number {
+  const xOverlap = Math.max(
+    0,
+    Math.min(rectA.x + rectA.width, rectB.x + rectB.width) -
+      Math.max(rectA.x, rectB.x),
+  )
+  const yOverlap = Math.max(
+    0,
+    Math.min(rectA.y + rectA.height, rectB.y + rectB.height) -
+      Math.max(rectA.y, rectB.y),
+  )
+
+  const intersectionArea = xOverlap * yOverlap
+  const rectAArea = rectA.width * rectA.height
+
+  return intersectionArea / rectAArea
+}
+
+/**
+ * Return the closest rectangle.
+ *
+ * Distance is measured from the center pooint of the rectangle to the given x and y coords.
+ */
+export function findClosestRectangle<T extends Rectangle>(
+  x: number,
+  y: number,
+  rects: T[],
+): T {
+  let closestRect: T = rects[0]
+  let minDistance = distanceToRectangle(x, y, rects[0])
+
+  for (let i = 1; i < rects.length; i++) {
+    const rect = rects[i]
+    const distance = distanceToRectangle(x, y, rect)
+
+    if (distance < minDistance) {
+      closestRect = rect
+      minDistance = distance
+    }
+  }
+
+  return closestRect
+}
+
+/**
+ * Return the distance from the given coordinates to the center of the rectangle.
+ */
+export function distanceToRectangle(
+  x: number,
+  y: number,
+  rect: Rectangle,
+): number {
+  const centerX = rect.x + rect.width / 2
+  const centerY = rect.y + rect.height / 2
+
+  const dx = x - centerX
+  const dy = y - centerY
+
+  return Math.sqrt(dx * dx + dy * dy)
+}
+
+export function realBackgroundColor(el: HTMLElement | null) {
+  const transparent = 'rgba(0, 0, 0, 0)'
+  if (!el) return transparent
+
+  const bg = getComputedStyle(el).backgroundColor
+  if (bg === transparent || bg === 'transparent') {
+    return realBackgroundColor(el.parentElement)
+  } else {
+    return bg
+  }
 }
