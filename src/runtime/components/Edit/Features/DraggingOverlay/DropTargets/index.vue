@@ -1,6 +1,6 @@
 <template>
   <Teleport to=".bk-main-canvas">
-    <div class="bk bk-drop-targets" @mouseup.capture="onMouseUp">
+    <div class="bk bk-drop-targets">
       <div
         v-for="field in fieldRects"
         :key="field.key"
@@ -22,14 +22,6 @@
         ></div>
       </div>
     </div>
-    <!-- <div class="bk bk-drop-targets-area"> -->
-    <!--   <div -->
-    <!--     v-for="field in fieldRects" -->
-    <!--     :key="'area_' + field.key" -->
-    <!--     :style="{ ...field.style, backgroundColor: field.backgroundColor }" -->
-    <!--     :class="{ 'bk-is-disabled': field.disabled }" -->
-    <!--   /> -->
-    <!-- </div> -->
   </Teleport>
 </template>
 
@@ -90,8 +82,10 @@ const props = defineProps<{
   mouseY: number
 }>()
 
-const onMouseUp = () => {
+const onMouseUp = (e: MouseEvent) => {
   if (activeKey.value) {
+    e.preventDefault()
+    e.stopPropagation()
     const el = document.querySelector(
       `[data-drop-target-key="${activeKey.value}"]`,
     )
@@ -154,23 +148,22 @@ function getChildrenOrientation(element: HTMLElement): Orientation {
   return 'vertical'
 }
 
-const draggingBundles = computed<string[]>(() => {
-  return props.items
-    .flatMap((item) => {
-      return item.itemBundle
-    })
-    .filter(falsy)
-})
+/**
+ * The bundles being dragged.
+ */
+const draggingBundles = computed<string[]>(() =>
+  props.items.flatMap((item) => item.itemBundle).filter(falsy),
+)
 
-const selectionUuids = computed<string[]>(() => {
-  return props.items
+const selectionUuids = computed<string[]>(() =>
+  props.items
     .map((item) => {
       if (item.itemType === 'existing') {
         return item.uuid
       }
     })
-    .filter(falsy)
-})
+    .filter(falsy),
+)
 
 function getGapSize(orientation: Orientation, element: HTMLElement): number {
   const computedStyle = window.getComputedStyle(element)
@@ -200,6 +193,7 @@ function getGapSize(orientation: Orientation, element: HTMLElement): number {
 
 const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
   const children: FieldRectChild[] = []
+  const fieldWidth = field.element.offsetWidth
 
   const orientation = getChildrenOrientation(field.element)
   const childElements = [...field.element.children]
@@ -278,7 +272,9 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
           key: 'last_' + uuid,
           orientation,
           style: {
-            width: gap + 'px',
+            width:
+              Math.max(gap, fieldWidth - (el.offsetLeft + el.offsetWidth)) +
+              'px',
             height: el.offsetHeight + 'px',
             left: el.offsetLeft + el.offsetWidth + 'px',
             top: el.offsetTop + 'px',
@@ -373,7 +369,7 @@ const getSelectedRect = (): string | undefined => {
       return key
     }
     if (intersects(props.box, rect)) {
-      const intersection = calculateIntersection(props.box, rect)
+      const intersection = calculateIntersection(rect, props.box)
       intersectingRects.push({
         x: rect.x,
         y: rect.y,
@@ -430,12 +426,14 @@ const onAnimationFrame = () => {
 
 onMounted(() => {
   document.body.classList.add('bk-is-dragging')
+  document.body.addEventListener('mouseup', onMouseUp)
   fieldRects.value = buildFieldRects()
   eventBus.on('animationFrame', onAnimationFrame)
 })
 
 onBeforeUnmount(() => {
   document.body.classList.remove('bk-is-dragging')
+  document.body.removeEventListener('mouseup', onMouseUp)
   eventBus.off('animationFrame', onAnimationFrame)
 })
 </script>

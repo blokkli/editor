@@ -294,12 +294,12 @@ export function distanceToRectangle(
   y: number,
   rect: Rectangle,
 ): number {
-  const centerX = rect.x + rect.width / 2
-  const centerY = rect.y + rect.height / 2
-
-  const dx = x - centerX
-  const dy = y - centerY
-
+  const minX = rect.x
+  const minY = rect.y
+  const maxX = rect.x + rect.width
+  const maxY = rect.y + rect.height
+  const dx = Math.max(minX - x, 0, x - maxX)
+  const dy = Math.max(minY - y, 0, y - maxY)
   return Math.sqrt(dx * dx + dy * dy)
 }
 

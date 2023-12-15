@@ -146,7 +146,8 @@ function onDraggingStart(e: DraggableStartEvent) {
   const item = e.items[0]
   if ('element' in item) {
     eventBus.on('animationFrame', loop)
-    window.addEventListener('mouseup', onMouseUp)
+    document.removeEventListener('mouseup', onMouseUp)
+    document.addEventListener('mouseup', onMouseUp)
   }
 }
 
@@ -154,12 +155,12 @@ function onDraggingEnd() {
   isVisible.value = false
   dragItems.value = []
   eventBus.off('animationFrame', loop)
-  window.removeEventListener('mouseup', onMouseUp)
+  document.removeEventListener('mouseup', onMouseUp)
 }
 
 const onKeyPressed = (e: KeyPressedEvent) => {
   if (e.code === 'Escape') {
-    window.removeEventListener('mouseup', onMouseUp)
+    document.removeEventListener('mouseup', onMouseUp)
     eventBus.emit('dragging:end')
   }
 }
@@ -174,7 +175,7 @@ onUnmounted(() => {
   eventBus.off('dragging:start', onDraggingStart)
   eventBus.off('dragging:end', onDraggingEnd)
   eventBus.off('keyPressed', onKeyPressed)
-  window.removeEventListener('mouseup', onMouseUp)
+  document.removeEventListener('mouseup', onMouseUp)
 })
 </script>
 
