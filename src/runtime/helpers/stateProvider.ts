@@ -43,6 +43,7 @@ export type BlokkliStateProvider = {
   mutateWithLoadingState: MutateWithLoadingStateFunction
   editMode: Readonly<Ref<BlokkliEditMode>>
   canEdit: ComputedRef<boolean>
+  isLoading: Readonly<Ref<boolean>>
 }
 
 export default async function (
@@ -212,5 +213,6 @@ export default async function (
     mutateWithLoadingState,
     editMode,
     canEdit,
+    isLoading: readonly(isLoading),
   }
 }

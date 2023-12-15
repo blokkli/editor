@@ -161,6 +161,10 @@ function onPaste(e: ClipboardEvent) {
   e.stopPropagation()
   e.preventDefault()
 
+  if (state.isLoading.value) {
+    return
+  }
+
   // Get pasted data via clipboard API
   const clipboardData = e.clipboardData
   if (clipboardData?.files.length) {

@@ -18,7 +18,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['pressed'])
 
-const { eventBus } = useBlokkli()
+const { eventBus, state } = useBlokkli()
 
 const key = computed(() =>
   [props.meta, props.shift, props.keyCode.toLowerCase()].join('-'),
@@ -39,6 +39,10 @@ function onKeyPressed(e: KeyPressedEvent) {
   }
 
   e.originalEvent.preventDefault()
+
+  if (state.isLoading.value) {
+    return
+  }
   emit('pressed')
 }
 

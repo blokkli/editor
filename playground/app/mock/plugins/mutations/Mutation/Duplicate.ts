@@ -66,6 +66,8 @@ export class MutationDuplicate extends Mutation {
       hostField,
     )
 
+    cloneProxy.overrideOptions = { ...proxy.overrideOptions }
+
     const children = context.getProxiesForHost(
       proxy.block.entityType,
       proxy.block.uuid,
@@ -85,6 +87,7 @@ export class MutationDuplicate extends Mutation {
           newUuid,
           childProxy.hostField,
         )
+        clonedChildProxy.overrideOptions = { ...childProxy.overrideOptions }
         context.appendProxy(clonedChildProxy)
       }
     })

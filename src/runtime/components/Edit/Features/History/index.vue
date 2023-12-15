@@ -96,8 +96,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli, onMounted, nextTick, watch } from '#imports'
-
+import { ref, computed, useBlokkli, nextTick, watch } from '#imports'
 import { PluginSidebar, PluginToolbarButton } from '#blokkli/plugins'
 import { RelativeTime } from '#blokkli/components'
 import type { BlokkliMutationItem } from '#blokkli/types'
@@ -108,16 +107,11 @@ const { mutations, currentMutationIndex, canEdit, mutateWithLoadingState } =
   state
 
 const showAmount = ref(50)
-
 const canUndo = computed(() => currentMutationIndex.value >= 0)
-
 const canRedo = computed(
   () => currentMutationIndex.value < mutations.value.length - 1,
 )
-
-const totalMutations = computed(() => {
-  return mutations.value.length
-})
+const totalMutations = computed(() => mutations.value.length)
 
 watch(totalMutations, (newTotal, previousTotal) => {
   if (newTotal !== previousTotal) {
@@ -131,8 +125,8 @@ type HistoryItem = {
   timestamp: number
 }
 
-const mapped = computed<HistoryItem[]>(() => {
-  return mutations.value
+const mapped = computed<HistoryItem[]>(() =>
+  mutations.value
     .map((mutation, index) => {
       return {
         index,
@@ -145,8 +139,8 @@ const mapped = computed<HistoryItem[]>(() => {
     })
     .filter((v, _i, arr) => {
       return v.index >= arr.length - showAmount.value
-    })
-})
+    }),
+)
 
 async function setHistoryIndex(index: number, item?: HistoryItem) {
   if (index !== currentMutationIndex.value) {
@@ -163,8 +157,6 @@ async function setHistoryIndex(index: number, item?: HistoryItem) {
 
 const undo = () => mutateWithLoadingState(adapter.undo())
 const redo = () => mutateWithLoadingState(adapter.redo())
-
-onMounted(() => {})
 </script>
 
 <script lang="ts">
