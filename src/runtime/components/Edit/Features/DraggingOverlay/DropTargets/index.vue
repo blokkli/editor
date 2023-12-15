@@ -373,7 +373,7 @@ const getSelectedRect = (): string | undefined => {
       return key
     }
     if (intersects(props.box, rect)) {
-      const intersection = calculateIntersection(rect, props.box)
+      const intersection = calculateIntersection(props.box, rect)
       intersectingRects.push({
         x: rect.x,
         y: rect.y,
@@ -391,7 +391,19 @@ const getSelectedRect = (): string | undefined => {
     return intersectingRects[0].key
   }
 
-  // Return the rectangle that is closest to the cursor.
+  // Sort by intersection area.
+  intersectingRects.sort((a, b) => b.intersection - a.intersection)
+
+  const first = intersectingRects[0]
+  const second = intersectingRects[1]
+  const diff = first.intersection - second.intersection
+  // If the difference of area overlap between the first and second candidate
+  // is larger than the threshold, return the first.
+  if (diff > 0.1) {
+    return first.key
+  }
+
+  // Fallback: Return the rectangle that is closest to the cursor.
   const closest = findClosestRectangle(
     props.mouseX,
     props.mouseY,

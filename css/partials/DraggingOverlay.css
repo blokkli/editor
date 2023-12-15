@@ -1,6 +1,6 @@
 .bk-dragging-overlay {
   /* @apply fixed top-0 left-0 bg-blue-500/25 pointer-events-none rounded outline outline-blue-600 outline-offset-1 z-[999999]; */
-  @apply fixed top-0 left-0 pointer-events-none z-[999999];
+  @apply fixed top-0 left-0 pointer-events-none z-[999999]  border-3;
 
   > div {
     @apply absolute top-0 left-0 origin-top-left;
