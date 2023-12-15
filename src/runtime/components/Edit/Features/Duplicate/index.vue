@@ -40,7 +40,7 @@ const canDuplicate = computed<boolean>(() => {
   const selectedCount = selection.blocks.value.length
   for (let i = 0; i < selectedCount; i++) {
     const block = selection.blocks.value[i]
-    const field = dom.getBlockField(block)
+    const field = dom.getBlockField(block.uuid)
 
     // Early return if the field is already full.
     if (field.cardinality !== -1 && field.blockCount >= field.cardinality) {

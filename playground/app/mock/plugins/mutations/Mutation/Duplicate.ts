@@ -6,6 +6,10 @@ import { Mutation } from './../Mutation'
 
 export type MutationDuplicateArgs = {
   uuids: string[]
+  hostEntityType?: string
+  hostEntityUuid?: string
+  hostField?: string
+  preceedingUuid?: string
 }
 
 export class MutationDuplicate extends Mutation {
@@ -14,7 +18,7 @@ export class MutationDuplicate extends Mutation {
   }
 
   execute(context: MutationContext, args: MutationDuplicateArgs) {
-    let preceedingUuid = args.uuids
+    const sorted = args.uuids
       .map((uuid) => {
         const index = context.getIndex(uuid)
         if (index !== undefined) {
@@ -25,12 +29,20 @@ export class MutationDuplicate extends Mutation {
         }
       })
       .filter(falsy)
-      .sort((a, b) => a.index - b.index)[0]?.uuid
+      .sort((a, b) => a.index - b.index)
+    let preceedingUuid = args.preceedingUuid || sorted[sorted.length - 1].uuid
 
-    args.uuids.forEach((uuid) => {
-      const proxy = context.getProxy(uuid)
+    sorted.forEach((v) => {
+      const proxy = context.getProxy(v.uuid)
       if (proxy) {
-        const clone = this.duplicateProxy(context, proxy, preceedingUuid)
+        const clone = this.duplicateProxy(
+          context,
+          proxy,
+          args.hostEntityType || proxy.hostEntityType,
+          args.hostEntityUuid || proxy.hostEntityUuid,
+          args.hostField || proxy.hostField,
+          preceedingUuid,
+        )
         preceedingUuid = clone.block.uuid
       }
     })
@@ -39,6 +51,9 @@ export class MutationDuplicate extends Mutation {
   duplicateProxy(
     context: MutationContext,
     proxy: BlockProxy,
+    hostEntityType: string,
+    hostEntityUuid: string,
+    hostField: string,
     preceedingUuid?: string,
   ): BlockProxy {
     const block = proxy.block
@@ -46,9 +61,9 @@ export class MutationDuplicate extends Mutation {
     const clone = entityStorageManager.cloneBlock(block, newUuid) as Block
     const cloneProxy = new BlockProxy(
       clone,
-      proxy.hostEntityType,
-      proxy.hostEntityUuid,
-      proxy.hostField,
+      hostEntityType,
+      hostEntityUuid,
+      hostField,
     )
 
     const children = context.getProxiesForHost(

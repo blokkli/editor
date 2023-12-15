@@ -48,7 +48,7 @@ export type BlokkliDomProvider = {
    */
   getDropElementMarkup(item: DraggableItem): string
 
-  getBlockField(item: DraggableExistingBlokkliItem): BlokkliFieldElement
+  getBlockField(uuid: string): BlokkliFieldElement
 }
 
 export default function (): BlokkliDomProvider {
@@ -116,17 +116,19 @@ export default function (): BlokkliDomProvider {
     return dropElement.outerHTML.replace(/\sdata-\w+="[^"]*"/g, '')
   }
 
-  const getBlockField = (
-    item: DraggableExistingBlokkliItem,
-  ): BlokkliFieldElement => {
-    const el = item.element.closest('.bk-field-list')
+  const getBlockField = (uuid: string): BlokkliFieldElement => {
+    const block = findBlock(uuid)
+    if (!block) {
+      throw new Error('Block does not exist: ' + uuid)
+    }
+    const el = block.element.closest('.bk-field-list')
     if (!(el instanceof HTMLElement)) {
-      throw new Error('Failed to locate field element for block: ' + item.uuid)
+      throw new Error('Failed to locate field element for block: ' + uuid)
     }
 
     const field = buildFieldElement(el)
     if (!field) {
-      throw new Error('Failed to build field for block: ' + item.uuid)
+      throw new Error('Failed to build field for block: ' + uuid)
     }
 
     return field

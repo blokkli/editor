@@ -164,6 +164,15 @@ export default defineBlokkliEditAdapter((ctx) => {
         uuids,
       }),
 
+    pasteExistingBlocks: (e) =>
+      addMutation('duplicate', {
+        uuids: e.uuids,
+        hostEntityType: e.host.type,
+        hostEntityUuid: e.host.uuid,
+        hostField: e.host.fieldName,
+        preceedingUuid: e.preceedingUuid,
+      }),
+
     undo() {
       editState.currentIndex = Math.max(editState.currentIndex - 1, -1)
       return mockResponse(editState.getMutatedState(getEntity()))

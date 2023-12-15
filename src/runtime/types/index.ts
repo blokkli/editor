@@ -656,4 +656,10 @@ export type BlokkliFieldElement = {
   blockCount: number
 }
 
+export type PasteExistingBlocksEvent = {
+  uuids: string[]
+  host: DraggableHostData
+  preceedingUuid?: string
+}
+
 export default {}

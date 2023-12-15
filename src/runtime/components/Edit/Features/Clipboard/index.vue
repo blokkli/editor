@@ -33,8 +33,9 @@ import type {
   BlokkliSearchContentItem,
   ClipboardItem,
 } from '#blokkli/types'
+import { falsy } from '#blokkli/helpers'
 
-const { eventBus, selection, text } = useBlokkli()
+const { eventBus, selection, text, adapter, dom, state } = useBlokkli()
 
 const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
 
@@ -114,6 +115,47 @@ function onDragOver(e: DragEvent) {
 
 const showClipboardSidebar = () => plugin?.value?.showSidebar()
 
+const handleSelectionPaste = (pastedUuids: string[]) => {
+  // Pasting is only possible into a single field.
+  if (selection.uuids.value.length !== 1) {
+    return
+  }
+
+  if (!pastedUuids.length) {
+    return
+  }
+
+  const field = dom.getBlockField(selection.uuids.value[0])
+
+  const pastedBlocks = pastedUuids
+    .map((uuid) => dom.findBlock(uuid))
+    .filter(falsy)
+    .filter((block) => field.allowedBundles.includes(block.itemBundle))
+
+  if (!pastedBlocks.length) {
+    return
+  }
+
+  if (
+    field.cardinality !== -1 &&
+    field.blockCount + pastedBlocks.length > field.cardinality
+  ) {
+    return
+  }
+
+  state.mutateWithLoadingState(
+    adapter.pasteExistingBlocks({
+      uuids: pastedBlocks.map((v) => v.uuid),
+      host: {
+        type: field.hostEntityType,
+        uuid: field.hostEntityUuid,
+        fieldName: field.name,
+      },
+      preceedingUuid: selection.uuids.value[0],
+    }),
+  )
+}
+
 function onPaste(e: ClipboardEvent) {
   // Stop data actually being pasted into div
   e.stopPropagation()
@@ -130,6 +172,18 @@ function onPaste(e: ClipboardEvent) {
   }
   if (!pastedData) {
     return
+  }
+
+  if (pastedData.startsWith('{')) {
+    try {
+      const data = JSON.parse(pastedData)
+      if (typeof data === 'object' && data.type && data.type === 'selection') {
+        const uuids: string[] = data.uuids
+        return handleSelectionPaste(uuids)
+      }
+    } catch (_e) {
+      // Noop.
+    }
   }
 
   const youtubeId = getYouTubeID(pastedData)
@@ -183,12 +237,9 @@ function onKeyPressed(e: KeyPressedEvent) {
   if (e.code !== 'c' || !e.meta) {
     return
   }
-  const markup = selection.blocks.value
-    .map((v) => v.element.outerHTML)
-    .join(' ')
-  if (markup) {
-    setClipboard(markup)
-  }
+  setClipboard(
+    JSON.stringify({ type: 'selection', uuids: selection.uuids.value }),
+  )
 }
 
 function onSelectContentItem(item: BlokkliSearchContentItem) {

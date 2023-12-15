@@ -20,6 +20,7 @@ import type {
   AddContentSearchItemEvent,
   BlokkliTransformPlugin,
   EditBlokkliItemEvent,
+  PasteExistingBlocksEvent,
 } from './../types'
 
 export interface MutationResponseLike<T> {
@@ -145,6 +146,13 @@ export interface BlokkliAdapter<T> {
    * Duplicate multiple items.
    */
   duplicateItems(uuids: string[]): Promise<MutationResponseLike<T>>
+
+  /**
+   * Paste existing blocks.
+   */
+  pasteExistingBlocks(
+    e: PasteExistingBlocksEvent,
+  ): Promise<MutationResponseLike<T>>
 
   /**
    * Get all existing entities for importing.
