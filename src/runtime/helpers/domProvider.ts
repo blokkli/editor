@@ -5,6 +5,35 @@ import type {
 } from '#blokkli/types'
 import { buildDraggableItem, falsy } from '#blokkli/helpers'
 
+const buildFieldElement = (
+  element: HTMLElement,
+): BlokkliFieldElement | undefined => {
+  const key = element.dataset.fieldKey
+  const name = element.dataset.fieldName
+  const label = element.dataset.fieldLabel
+  const blockCount = parseInt(element.dataset.fieldBlockCount || '0')
+  const isNested = element.dataset.fieldIsNested === 'true'
+  const hostEntityType = element.dataset.hostEntityType
+  const hostEntityUuid = element.dataset.hostEntityUuid
+  const cardinality = parseInt(element.dataset.fieldCardinality || '-1')
+  const allowedBundles = (element.dataset.fieldAllowedBundles || '').split(',')
+
+  if (key && name && label && hostEntityType && hostEntityUuid) {
+    return {
+      key,
+      name,
+      label,
+      isNested,
+      hostEntityType,
+      hostEntityUuid,
+      cardinality: isNaN(cardinality) ? -1 : cardinality,
+      allowedBundles,
+      element,
+      blockCount: isNaN(blockCount) ? 0 : blockCount,
+    }
+  }
+}
+
 export type BlokkliDomProvider = {
   findBlock(uuid: string): DraggableExistingBlokkliItem | undefined
   getAllBlocks(): DraggableExistingBlokkliItem[]
@@ -18,6 +47,8 @@ export type BlokkliDomProvider = {
    * Return the droppable markup for a draggable item.
    */
   getDropElementMarkup(item: DraggableItem): string
+
+  getBlockField(item: DraggableExistingBlokkliItem): BlokkliFieldElement
 }
 
 export default function (): BlokkliDomProvider {
@@ -72,30 +103,7 @@ export default function (): BlokkliDomProvider {
     return elements
       .map((element) => {
         if (element instanceof HTMLElement) {
-          const key = element.dataset.fieldKey
-          const name = element.dataset.fieldName
-          const label = element.dataset.fieldLabel
-          const isNested = element.dataset.fieldIsNested === 'true'
-          const hostEntityType = element.dataset.hostEntityType
-          const hostEntityUuid = element.dataset.hostEntityUuid
-          const cardinality = parseInt(element.dataset.fieldCardinality || '-1')
-          const allowedBundles = (
-            element.dataset.fieldAllowedBundles || ''
-          ).split(',')
-
-          if (key && name && label && hostEntityType && hostEntityUuid) {
-            return {
-              key,
-              name,
-              label,
-              isNested,
-              hostEntityType,
-              hostEntityUuid,
-              cardinality: isNaN(cardinality) ? -1 : cardinality,
-              allowedBundles,
-              element,
-            }
-          }
+          return buildFieldElement(element)
         }
       })
       .filter(falsy)
@@ -108,11 +116,28 @@ export default function (): BlokkliDomProvider {
     return dropElement.outerHTML.replace(/\sdata-\w+="[^"]*"/g, '')
   }
 
+  const getBlockField = (
+    item: DraggableExistingBlokkliItem,
+  ): BlokkliFieldElement => {
+    const el = item.element.closest('.bk-field-list')
+    if (!(el instanceof HTMLElement)) {
+      throw new Error('Failed to locate field element for block: ' + item.uuid)
+    }
+
+    const field = buildFieldElement(el)
+    if (!field) {
+      throw new Error('Failed to build field for block: ' + item.uuid)
+    }
+
+    return field
+  }
+
   return {
     findBlock,
     getAllBlocks,
     findClosestBlock,
     getAllFields,
     getDropElementMarkup,
+    getBlockField,
   }
 }

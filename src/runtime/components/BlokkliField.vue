@@ -14,6 +14,7 @@
     :entity="entity"
     :class="[attrs.class, listClass]"
     :is-nested="isNested"
+    :data-field-block-count="filteredList.length"
     class="bk-field-list"
     :tag="tag"
   />

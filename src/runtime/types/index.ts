@@ -653,6 +653,7 @@ export type BlokkliFieldElement = {
   allowedBundles: string[]
   cardinality: number
   element: HTMLElement
+  blockCount: number
 }
 
 export default {}
