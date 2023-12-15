@@ -382,6 +382,8 @@ export interface DraggableExistingBlokkliItem {
   itemBundle: string
   isNew: boolean
   uuid: string
+  isNested: boolean
+
   /**
    * The bundle if this item is reusable.
    */

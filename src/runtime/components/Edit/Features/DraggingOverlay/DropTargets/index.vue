@@ -422,7 +422,6 @@ const onAnimationFrame = () => {
 
   // Only do the calculations if the mouse position has actually changed.
   if (prevMouseX !== mouseX || prevMouseY !== mouseY) {
-    console.log('Calculate')
     activeKey.value = getSelectedRect() || ''
     prevMouseX = mouseX
     prevMouseY = mouseY

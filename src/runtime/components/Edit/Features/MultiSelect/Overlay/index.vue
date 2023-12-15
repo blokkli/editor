@@ -42,7 +42,7 @@ import type { Rectangle } from '#blokkli/types'
 import { intersects } from '#blokkli/helpers'
 import Item from './Item/index.vue'
 
-const { keyboard, eventBus, ui } = useBlokkli()
+const { keyboard, eventBus, ui, dom, runtimeConfig } = useBlokkli()
 
 export type SelectableElement = {
   uuid: string
@@ -80,16 +80,6 @@ const getAnchorRect = () => {
   }
 }
 
-const actuallySelectable = computed(() => {
-  return selectable.value.filter((v) => {
-    if (keyboard.isPressingControl.value) {
-      return true
-    } else {
-      return !v.nested
-    }
-  })
-})
-
 const animationDuration = computed(() => {
   const perimeter = 2 * (selectRect.value.width + selectRect.value.height)
   const animationDuration = 200 - perimeter / 100
@@ -114,7 +104,7 @@ const style = computed(() => {
 })
 
 function emitSelected() {
-  const selected = actuallySelectable.value.filter((item) => {
+  const selected = selectable.value.filter((item) => {
     return intersects(selectRect.value, item.rect)
   })
   eventBus.emit(
@@ -122,6 +112,13 @@ function emitSelected() {
     selected.map((v) => v.uuid),
   )
 }
+
+const nestedUuids = computed(() => {
+  return dom
+    .getAllBlocks()
+    .filter((v) => v.isNested)
+    .map((v) => v.uuid)
+})
 
 function onAnimationFrame(e: AnimationFrameEvent) {
   viewportWidth.value = window.innerWidth
@@ -132,14 +129,31 @@ function onAnimationFrame(e: AnimationFrameEvent) {
 
   scrollY.value = window.scrollY
 
-  selectable.value = Object.entries(e.rects).map(([uuid, rect]) => {
-    return {
-      uuid,
-      nested: false,
-      rect,
-      isIntersecting: intersects(selectRect.value, rect),
+  let hasNested = false
+  const newSelectable: SelectableElement[] = []
+  Object.entries(e.rects).forEach(([uuid, rect]) => {
+    const nested = nestedUuids.value.includes(uuid)
+    const isIntersecting = intersects(selectRect.value, rect)
+    if (isIntersecting && nested) {
+      hasNested = true
     }
+    newSelectable.push({
+      uuid,
+      nested,
+      rect,
+      isIntersecting,
+    })
   })
+
+  // If any of the intersecting blocks are nested and the user isn't pressing
+  // Control, only select the nested blocks. This allows the user to use multi
+  // select to target nested blocks. It's likely not desireable to select both
+  // the host block and the child blocks at the same time.
+  if (hasNested && !keyboard.isPressingControl.value) {
+    selectable.value = newSelectable.filter((v) => v.nested)
+  } else {
+    selectable.value = newSelectable
+  }
 
   const ax = startX > e.mouseX ? e.mouseX : startX
   const ay = startY > e.mouseY ? e.mouseY : startY

@@ -5,6 +5,8 @@ import type {
 } from '#blokkli/types'
 import { getDefinition } from '#blokkli/definitions'
 
+const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
+
 /**
  * Type check for falsy values.
  *
@@ -52,6 +54,7 @@ export function buildDraggableItem(
         itemType: 'existing',
         element,
         itemBundle,
+        isNested: hostType === itemEntityType,
         uuid,
         hostType,
         hostBundle,

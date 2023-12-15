@@ -159,6 +159,7 @@ function onDraggingEnd() {
 
 const onKeyPressed = (e: KeyPressedEvent) => {
   if (e.code === 'Escape') {
+    window.removeEventListener('mouseup', onMouseUp)
     eventBus.emit('dragging:end')
   }
 }
