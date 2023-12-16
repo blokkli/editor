@@ -2,10 +2,13 @@
   @apply absolute z-[90501] pointer-events-auto;
 
   .bk-editable-field-input {
-    @apply border-yellow-400 border-2;
+    @apply border-green-400 border-2;
     @apply rounded bg-white shadow-lg;
     @apply min-w-[360px] w-full;
-    @apply absolute left-1/2 bottom-10 -translate-x-1/2;
+    @apply absolute bottom-10 left-1/2;
+    transform: translateX(-50%) scale(calc(1 / var(--bk-artboard-scale)));
+    /* transform: translateX(-50%); */
+    transform-origin: bottom;
 
     textarea,
     .bk-textarea {
@@ -35,13 +38,13 @@
     @apply relative;
   }
   .bk-editable-field-buttons {
-    @apply flex justify-between items-center text-sm bg-yellow-400 text-yellow-950;
+    @apply flex justify-between items-center text-sm bg-green-400 text-green-950;
     h3 {
       @apply h-full px-10 uppercase font-semibold tracking-wide;
     }
     button {
       @apply px-10 py-10 flex items-center font-semibold font-sans ml-auto leading-none gap-5;
-      @apply hover:bg-yellow-500;
+      @apply hover:bg-green-500;
       svg {
         @apply w-15 h-15;
       }
@@ -58,7 +61,7 @@
       cursor: text;
 
       &:hover {
-        @apply outline-2 outline-yellow-500 outline-offset-1 outline-dotted;
+        @apply outline-2 outline-green-500 outline-offset-1 outline-dotted;
       }
     }
     [data-blokkli-is-reusable='true'] {

@@ -8,9 +8,9 @@
     ]"
   >
     <BlokkliField
-      v-if="options.showHeader"
       v-bind="header"
-      class="container mb-70"
+      class="container"
+      non-empty-class="mb-70"
       field-list-type="header"
     />
     <BlokkliField
@@ -30,7 +30,7 @@
 const { options } = defineBlokkli({
   bundle: 'grid',
   disableEdit: true,
-  globalOptions: ['background', 'showHeader'],
+  globalOptions: ['background'],
   options: {
     columns: {
       type: 'radios',

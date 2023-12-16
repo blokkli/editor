@@ -7,9 +7,9 @@
     ]"
   >
     <BlokkliField
-      v-if="options.showHeader"
       v-bind="header"
-      class="container mb-70"
+      class="container"
+      non-empty-class="mb-70"
       field-list-type="header"
     />
     <div class="container mx-auto grid gap-20 lg:gap-40 grid-cols-12">
@@ -40,7 +40,7 @@
 const { options } = defineBlokkli({
   bundle: 'two_columns',
   disableEdit: true,
-  globalOptions: ['background', 'showHeader'],
+  globalOptions: ['background'],
   options: {
     columns: {
       type: 'radios',

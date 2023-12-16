@@ -80,6 +80,7 @@ export default defineBlokkliEditAdapter((ctx) => {
     getTransformPlugins() {
       return Promise.resolve(transforms)
     },
+    applyTransformPlugin() {},
     mapState(inputState) {
       return {
         currentIndex: editState.currentIndex,

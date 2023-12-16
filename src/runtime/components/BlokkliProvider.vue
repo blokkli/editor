@@ -84,17 +84,16 @@ const isInEditor = computed(
     (isPreviewing.value || isEditing.value),
 )
 
-const isEditing = computed(() => {
-  return (
+const isEditing = computed(
+  () =>
     props.canEdit &&
     !!props.entityUuid &&
-    route.query.blokkliEditing === props.entityUuid
-  )
-})
+    route.query.blokkliEditing === props.entityUuid,
+)
 
-const isPreviewing = computed(() => {
-  return props.entityUuid && route.query.blokkliPreview === props.entityUuid
-})
+const isPreviewing = computed(
+  () => props.entityUuid && route.query.blokkliPreview === props.entityUuid,
+)
 
 const showIndicator = computed(
   () =>

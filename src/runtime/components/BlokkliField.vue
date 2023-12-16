@@ -12,7 +12,11 @@
     :field-config="fieldConfig"
     :list="filteredList"
     :entity="entity"
-    :class="[attrs.class, listClass, { 'bk-is-empty': !list.length }]"
+    :class="[
+      attrs.class,
+      listClass,
+      { 'bk-is-empty': !list.length, [nonEmptyClass]: list.length },
+    ]"
     :is-nested="isNested"
     :data-field-block-count="filteredList.length"
     class="bk-field-list"
@@ -92,6 +96,7 @@ const props = withDefaults(
     fieldListType?: ValidFieldListTypes
     editOnly?: boolean
     listClass?: string
+    nonEmptyClass?: string
   }>(),
   {
     list: () => [],
@@ -101,6 +106,7 @@ const props = withDefaults(
     fieldConfig: null,
     entity: null,
     listClass: '',
+    nonEmptyClass: '',
   },
 )
 

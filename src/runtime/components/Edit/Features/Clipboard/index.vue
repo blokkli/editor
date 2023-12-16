@@ -157,6 +157,12 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
 }
 
 function onPaste(e: ClipboardEvent) {
+  if (
+    e.target instanceof HTMLInputElement ||
+    e.target instanceof HTMLTextAreaElement
+  ) {
+    return
+  }
   // Stop data actually being pasted into div
   e.stopPropagation()
   e.preventDefault()

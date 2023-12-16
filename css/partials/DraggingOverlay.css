@@ -32,15 +32,11 @@
     @apply border border-slate-500 rounded;
     @apply absolute bg-slate-300/30;
     @apply transition duration-75;
-
-    &:before {
-      content: attr(data-field-label);
-      @apply absolute bottom-full left-0 block rounded-full py-3 px-[8px] mb-5 text-xs font-semibold uppercase;
-      @apply bg-slate-200/10 text-slate-400;
-    }
+    @apply flex items-center justify-center;
+    @apply text-xs font-semibold uppercase text-slate-500;
 
     &.bk-is-active {
-      @apply bg-blue-700/90 outline outline-white;
+      @apply bg-blue-700/90 outline outline-white text-white;
 
       &:before {
         @apply bg-blue-700 text-white;
@@ -49,16 +45,14 @@
 
     &.bk-is-horizontal {
       @apply origin-left;
-      &.bk-is-active {
-        /* @apply scale-x-150; */
+      span {
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
       }
     }
 
     &.bk-is-vertical {
       @apply origin-top;
-      &.bk-is-active {
-        /* @apply scale-y-150; */
-      }
     }
   }
 }
