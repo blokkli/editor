@@ -1,5 +1,5 @@
 <template>
-  <div class="bk bk-field-areas">
+  <div class="bk bk-field-areas" v-show="!selection.isDragging.value">
     <div
       v-for="area in areas"
       :key="area.key"

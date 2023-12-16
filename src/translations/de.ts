@@ -134,4 +134,6 @@ export default {
   validationsNoneFound: 'Keine Validierungsfehler gefunden.',
 
   editIndicatorLabel: 'Elemente bearbeiten',
+
+  fieldIsRequired: 'Feld darf nicht leer sein',
 }

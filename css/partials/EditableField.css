@@ -77,5 +77,5 @@
 }
 .bk-editable-enter-from,
 .bk-editable-leave-to {
-  @apply opacity-0 translate-y-40 scale-75;
+  @apply opacity-0 translate-y-60 scale-75;
 }

@@ -7,6 +7,7 @@
         class="bk-drop-targets-field"
         :data-drop-target-field="field.key"
         :style="field.style"
+        v-show="field.children.length"
       >
         <div
           v-for="child in field.children"
@@ -14,6 +15,7 @@
           :style="child.style"
           :data-prev-uuid="child.prevUuid"
           :data-drop-target-key="child.key"
+          :data-field-label="field.label"
           class="bk-drop-targets-field-child"
           :class="[
             { 'bk-is-active': activeKey === child.key },
@@ -60,6 +62,7 @@ type FieldRect = {
   style: Record<string, any>
   backgroundColor: string
   children: FieldRectChild[]
+  label: string
 }
 
 export type DropTargetEvent = {
@@ -194,6 +197,7 @@ function getGapSize(orientation: Orientation, element: HTMLElement): number {
 const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
   const children: FieldRectChild[] = []
   const fieldWidth = field.element.offsetWidth
+  const fieldHeight = field.element.offsetHeight
 
   const orientation = getChildrenOrientation(field.element)
   const childElements = [...field.element.children]
@@ -218,16 +222,30 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
   let prevUuid: string | undefined = ''
 
   if (childElements.length === 0) {
-    children.push({
-      key: field.key + '_empty',
-      orientation,
-      style: {
-        left: '0px',
-        top: '0px',
-        width: '100%',
-        height: '100%',
-      },
-    })
+    if (orientation === 'horizontal') {
+      children.push({
+        key: field.key + '_empty',
+        orientation,
+        style: {
+          left: '0px',
+          top: '0px',
+          width: '100%',
+          height: '100%',
+        },
+      })
+    } else {
+      children.push({
+        key: field.key + '_empty',
+        orientation,
+        style: {
+          left: '0px',
+          top: '0px',
+          width: '100%',
+          // height: fieldHeight > 30 ? '100%' : '30px',
+          height: '100%',
+        },
+      })
+    }
   }
 
   const gap = Math.max(getGapSize(orientation, field.element), 30)
@@ -310,7 +328,7 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
         orientation,
         style: {
           width: gap + 'px',
-          height: el.offsetHeight + 'px',
+          height: Math.max(el.offsetHeight, 30) + 'px',
           left: el.offsetLeft - gap + 'px',
           top: el.offsetTop + 'px',
         },
@@ -324,7 +342,7 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
 
 const fieldRects = ref<FieldRect[]>([])
 
-const buildFieldRects = () => {
+const buildFieldRects = (): FieldRect[] => {
   const artboardRect = ui.artboardElement().getBoundingClientRect()
   const scale = ui.getArtboardScale()
   return dom.getAllFields().map((field) => {
@@ -344,6 +362,7 @@ const buildFieldRects = () => {
       },
       backgroundColor,
       children,
+      label: field.label,
     }
   })
 }

@@ -132,4 +132,6 @@ export default {
   validationsNoneFound: 'Nessun errore di validazione trovato.',
 
   editIndicatorLabel: 'Modifica elementi',
+
+  fieldIsRequired: 'Questo campo è obbligatorio',
 }

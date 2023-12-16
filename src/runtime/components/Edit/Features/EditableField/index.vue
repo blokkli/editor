@@ -10,7 +10,7 @@
           <div class="bk-editable-field-buttons">
             <h3>{{ fieldLabel }}</h3>
             <button @click.capture.stop="cancel">
-              <span>Abbrechen</span>
+              <span>{{ translationText('cancel') }}</span>
               <Icon name="close" />
             </button>
           </div>
@@ -56,7 +56,14 @@ import {
   nextTick,
 } from '#imports'
 
-const { eventBus, ui, selection, state, adapter } = useBlokkli()
+const {
+  eventBus,
+  ui,
+  selection,
+  state,
+  adapter,
+  text: translationText,
+} = useBlokkli()
 
 const fieldLabel = ref('')
 const fieldName = ref('')
@@ -85,7 +92,7 @@ const count = computed(() => text.value.length)
 
 const errorText = computed(() => {
   if (required.value && !text.value) {
-    return 'This field is required'
+    return translationText('fieldIsRequired')
   }
 })
 

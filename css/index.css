@@ -168,9 +168,6 @@
 /* } */
 
 .bk-draggable-list-container {
-  &.is-empty {
-    min-height: 4rem;
-  }
   .draggable {
     outline-offset: -3px;
     a,

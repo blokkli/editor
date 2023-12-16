@@ -12,7 +12,7 @@
     :field-config="fieldConfig"
     :list="filteredList"
     :entity="entity"
-    :class="[attrs.class, listClass]"
+    :class="[attrs.class, listClass, { 'bk-is-empty': !list.length }]"
     :is-nested="isNested"
     :data-field-block-count="filteredList.length"
     class="bk-field-list"

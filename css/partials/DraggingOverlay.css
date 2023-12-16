@@ -33,8 +33,18 @@
     @apply absolute bg-slate-300/30;
     @apply transition duration-75;
 
+    &:before {
+      content: attr(data-field-label);
+      @apply absolute bottom-full left-0 block rounded-full py-3 px-[8px] mb-5 text-xs font-semibold uppercase;
+      @apply bg-slate-200/10 text-slate-400;
+    }
+
     &.bk-is-active {
       @apply bg-blue-700/90 outline outline-white;
+
+      &:before {
+        @apply bg-blue-700 text-white;
+      }
     }
 
     &.bk-is-horizontal {

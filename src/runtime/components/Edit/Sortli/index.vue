@@ -97,9 +97,22 @@ const onMouseDown = (e: MouseEvent) => {
   e.stopPropagation()
   e.preventDefault()
 
-  if (selection.editableActive.value) {
+  const fromEditable = originatesFromEditable(e)
+
+  if (selection.editableActive.value && !fromEditable) {
     eventBus.emit('editable:save')
     return
+  }
+
+  if (fromEditable) {
+    if (
+      selection.editableActive.value &&
+      e.target instanceof HTMLElement &&
+      emitEditableFocus(e.target)
+    ) {
+      e.stopPropagation()
+      return
+    }
   }
 
   start.value.x = e.clientX
@@ -109,11 +122,15 @@ const onMouseDown = (e: MouseEvent) => {
 }
 
 const onMouseUp = (e: MouseEvent) => {
+  window.removeEventListener('mousemove', onMouseMove)
   if (!mouseIsDown.value) {
     return
   }
   mouseIsDown.value = false
-  window.removeEventListener('mousemove', onMouseMove)
+
+  if (selection.editableActive.value) {
+    return
+  }
 
   if (!selection.isDragging.value) {
     e.preventDefault()
@@ -125,27 +142,36 @@ const onMouseUp = (e: MouseEvent) => {
   }
   eventBus.emit('dragging:end')
 }
+
+const emitEditableFocus = (el: HTMLElement): boolean => {
+  const fieldName = el.dataset.blokkliEditableField
+  if (fieldName) {
+    const block = dom.findClosestBlock(el)
+    if (block) {
+      const argsValue = el.dataset.blokkliEditableFieldConfig
+      const args = argsValue ? JSON.parse(argsValue) : undefined
+      eventBus.emit('editable:focus', {
+        fieldName,
+        block,
+        element: el,
+        args,
+      })
+      return true
+    }
+  }
+
+  return false
+}
+
 const onDoubleClick = (e: MouseEvent) => {
   if (
     originatesFromEditable(e) &&
     e.target instanceof HTMLElement &&
     !keyboard.isPressingControl.value
   ) {
-    const fieldName = e.target.dataset.blokkliEditableField
-    if (fieldName) {
-      const block = dom.findClosestBlock(e.target)
-      if (block) {
-        e.stopPropagation()
-        const argsValue = e.target.dataset.blokkliEditableFieldConfig
-        const args = argsValue ? JSON.parse(argsValue) : undefined
-        eventBus.emit('editable:focus', {
-          fieldName,
-          block,
-          element: e.target,
-          args,
-        })
-        return
-      }
+    if (emitEditableFocus(e.target)) {
+      e.stopPropagation()
+      return
     }
   }
   const id = findItemId(e)

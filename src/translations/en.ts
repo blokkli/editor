@@ -133,4 +133,6 @@ export default {
   validationsNoneFound: 'No validation errors found.',
 
   editIndicatorLabel: 'Edit items',
+
+  fieldIsRequired: 'This field is required',
 }
