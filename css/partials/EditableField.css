@@ -1,0 +1,81 @@
+.bk.bk-editable-field {
+  @apply absolute z-[90501] pointer-events-auto;
+
+  .bk-editable-field-input {
+    @apply border-yellow-400 border-2;
+    @apply rounded bg-white shadow-lg;
+    @apply min-w-[360px] w-full;
+    @apply absolute left-1/2 bottom-10 -translate-x-1/2;
+
+    textarea,
+    .bk-textarea {
+      @apply appearance-none resize-none block p-10;
+      @apply outline-none shadow-none border-none;
+      @apply focus:!outline-none focus:!shadow-none focus:!border-none focus:!ring-0 bg-transparent;
+      @apply overflow-hidden min-h-[50px];
+      @apply text-lg;
+    }
+    .bk-textarea {
+      @apply whitespace-pre-wrap opacity-0 pointer-events-none;
+    }
+    textarea {
+      @apply absolute top-0 left-0 w-full h-full;
+    }
+  }
+  .bk-editable-field-info {
+    @apply px-10 py-[6px] border-t border-t-slate-300 text-sm font-semibold flex justify-between;
+  }
+  .bk-editable-field-info-error {
+    @apply text-red-500;
+  }
+  .bk-editable-field-info-count {
+    @apply ml-auto;
+  }
+  .bk-editable-field-textarea {
+    @apply relative;
+  }
+  .bk-editable-field-buttons {
+    @apply flex justify-between items-center text-sm bg-yellow-400 text-yellow-950;
+    h3 {
+      @apply h-full px-10 uppercase font-semibold tracking-wide;
+    }
+    button {
+      @apply px-10 py-10 flex items-center font-semibold font-sans ml-auto leading-none gap-5;
+      @apply hover:bg-yellow-500;
+      svg {
+        @apply w-15 h-15;
+      }
+    }
+  }
+}
+
+.bk-body:not(.bk-is-pressing-control) {
+  /* Only target blocks inside the editing area (e.g. not inside the library pane) */
+  [data-blokkli-provider-active='true'] {
+    /* Don't target editable fields inside a block from the library. */
+    [data-blokkli-editable-field] {
+      pointer-events: all;
+      cursor: text;
+
+      &:hover {
+        @apply outline-2 outline-yellow-500 outline-offset-1 outline-dotted;
+      }
+    }
+    [data-blokkli-is-reusable='true'] {
+      * {
+        pointer-events: none !important;
+      }
+    }
+  }
+}
+
+.bk-editable-enter-active,
+.bk-editable-leave-active {
+  transition: 0.25s ease-in-out;
+  transition-timing-function: cubic-bezier(0.13, 0.63, 0.55, 1);
+  @apply origin-bottom;
+}
+.bk-editable-enter-from,
+.bk-editable-leave-to {
+  @apply opacity-0 translate-y-40 scale-75;
+}

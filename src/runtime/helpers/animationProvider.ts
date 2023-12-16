@@ -48,7 +48,11 @@ export default function (): BlokkliAnimationProvider {
       const canvasRect = wrapperEl?.getBoundingClientRect()
       const rootRect = nuxtRootEl?.getBoundingClientRect()
       const sidebarRect = sidebarEl?.getBoundingClientRect()
-      const fieldAreas = [...document.querySelectorAll('[data-field-label]')]
+      const fieldAreas = [
+        ...document.querySelectorAll(
+          '[data-blokkli-provider-active="true"] [data-field-label]',
+        ),
+      ]
         .map((el) => {
           if (el instanceof HTMLElement) {
             const rect = el.getBoundingClientRect()
@@ -75,7 +79,9 @@ export default function (): BlokkliAnimationProvider {
         const rects: Record<string, DOMRect> = {}
         let hoveredUuid = ''
         const elements = [
-          ...document.querySelectorAll('[data-element-type="existing"]'),
+          ...document.querySelectorAll(
+            '[data-blokkli-provider-active="true"] [data-element-type="existing"]',
+          ),
         ]
 
         for (let i = 0; i < elements.length; i++) {

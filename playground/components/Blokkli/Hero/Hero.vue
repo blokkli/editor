@@ -7,8 +7,16 @@
         <BlokkliHeroAnimation :animated="!isEditing" />
       </div>
       <div class="col-span-8 lg:order-first">
-        <h1 class="text-4xl lg:text-6xl hero-title" v-html="titleMarkup" />
-        <p v-if="lead" class="mt-20 text-lg lg:text-xl text-slate-700">
+        <h1
+          class="text-4xl lg:text-6xl hero-title"
+          v-html="titleMarkup"
+          v-blokkli-editable:title="{ required: true }"
+        />
+        <p
+          v-if="lead"
+          v-blokkli-editable:lead="{ required: true }"
+          class="mt-20 text-lg lg:text-xl text-slate-700"
+        >
           {{ lead }}
         </p>
         <BlokkliField

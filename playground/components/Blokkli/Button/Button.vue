@@ -5,7 +5,7 @@
       class="button"
       :class="{ 'is-primary': options.color === 'primary' }"
     >
-      <span v-blokkli-editable:title>{{ title }}</span>
+      <span v-blokkli-editable:title="{ label: 'CTA' }">{{ title }}</span>
     </NuxtLink>
   </div>
 </template>

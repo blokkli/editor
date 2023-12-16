@@ -1,22 +1,14 @@
 <template>
   <Teleport to="body">
     <div
-      v-show="selection.blocks.value.length && !selection.isDragging.value"
+      v-show="
+        selection.blocks.value.length &&
+        !selection.isDragging.value &&
+        !selection.editableActive.value
+      "
       class="bk bk-blokkli-item-actions bk-control"
       @click.stop
     >
-      <div :style="styleSize" class="bk-blokkli-item-actions-overlay">
-        <div
-          v-for="rect in selectedRects"
-          :key="rect.uuid"
-          :style="{
-            width: rect.width + 'px',
-            height: rect.height + 'px',
-            transform: `translate(${rect.x}px, ${rect.y}px)`,
-          }"
-        />
-      </div>
-
       <div class="bk-blokkli-item-actions-inner" :style="innerStyle">
         <div class="bk-blokkli-item-actions-controls">
           <div id="bk-blokkli-item-actions-title">
@@ -74,29 +66,26 @@ import {
   onUnmounted,
 } from '#imports'
 
-import { falsy, modulo, getBounds, onlyUnique } from '#blokkli/helpers'
+import { modulo, onlyUnique } from '#blokkli/helpers'
 import type { AnimationFrameEvent, KeyPressedEvent } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
-import type {
-  PluginMountEvent,
-  PluginUnmountEvent,
-  Rectangle,
-} from '#blokkli/types'
+import type { PluginMountEvent, PluginUnmountEvent } from '#blokkli/types'
 
-type SelectedRectangle = Rectangle & { uuid: string }
-
-const { selection, eventBus, dom, text, types, state } = useBlokkli()
+const { selection, eventBus, dom, text, types, state, ui } = useBlokkli()
 
 const editingEnabled = computed(() => state.editMode.value === 'editing')
 
+const PADDING = 10
+const ACTIONS_HEIGHT = 50
+
+const mountedPlugins = ref<PluginMountEvent[]>([])
 const showDropdown = ref(false)
+const x = ref(0)
+const y = ref(0)
 
 watch(selection.blocks, () => {
   showDropdown.value = false
 })
-
-const bounds = ref<Rectangle>({ width: 0, height: 0, x: 0, y: 0 })
-const selectedRects = ref<SelectedRectangle[]>([])
 
 const title = computed(() => {
   if (itemBundle.value) {
@@ -119,62 +108,24 @@ const itemBundle = computed(() => {
     : undefined
 })
 
-const innerStyle = computed(() => {
-  const x = Math.max(bounds.value.x, 80)
-  const y = Math.min(Math.max(bounds.value.y, 120), window.innerHeight)
-  return {
-    transform: `translate(${x}px, ${y}px)`,
-  }
-})
-
-const styleSize = computed(() => {
-  if (!bounds.value) {
-    return {}
-  }
-
-  const { width, height, x, y } = bounds.value
-
-  return {
-    transform: `translate(${x}px, ${y}px)`,
-    width: width + 'px',
-    height: height + 'px',
-  }
-})
+const innerStyle = computed(() => ({
+  transform: `translate(${x.value}px, ${y.value}px)`,
+}))
 
 function onAnimationFrame(e: AnimationFrameEvent) {
   if (!selection.blocks.value.length) {
     return
   }
-  const rects = selection.blocks.value
-    .map((v) => {
-      return e.rects[v.uuid]
-    })
-    .filter(falsy)
-  const newBounds = getBounds(rects)
-  if (newBounds) {
-    bounds.value.y = newBounds.y
-    bounds.value.x = newBounds.x
-    bounds.value.width = newBounds.width
-    bounds.value.height = newBounds.height
-  }
 
-  if (selection.blocks.value.length === 1) {
-    selectedRects.value = []
-  } else {
-    selectedRects.value = selection.blocks.value
-      .map((v) => {
-        const rect = e.rects[v.uuid]
-        if (rect) {
-          return {
-            uuid: v.uuid,
-            width: rect.width,
-            height: rect.height,
-            y: rect.y - bounds.value.y,
-            x: rect.x - bounds.value.x,
-          }
-        }
-      })
-      .filter(falsy)
+  const el = document.querySelector('.bk-selection')
+  if (el && el instanceof HTMLElement) {
+    const rect = el.getBoundingClientRect()
+    const rootRect = ui.rootElement().getBoundingClientRect()
+    x.value = Math.max(rect.x, rootRect.x + PADDING)
+    y.value = Math.min(
+      Math.max(rect.y - ACTIONS_HEIGHT - PADDING, rootRect.y + PADDING),
+      rootRect.height - PADDING,
+    )
   }
 }
 
@@ -210,11 +161,9 @@ function onKeyPressed(e: KeyPressedEvent) {
   eventBus.emit('scrollIntoView', { uuid: targetItem.uuid })
 }
 
-const mountedPlugins = ref<PluginMountEvent[]>([])
-
-const shouldRenderButton = computed(() => {
-  return mountedPlugins.value.some((v) => v.isRendering)
-})
+const shouldRenderButton = computed(() =>
+  mountedPlugins.value.some((v) => v.isRendering),
+)
 
 const onPluginMount = (e: PluginMountEvent) => {
   if (e.type !== 'ItemDropdown') {

@@ -1,6 +1,6 @@
 <template>
   <Loading v-if="isInitializing || !toolbarLoaded || !featuresLoaded" />
-  <Actions />
+  <Actions v-if="!isInitializing" />
   <Messages />
   <Toolbar @loaded="toolbarLoaded = true" />
   <Features
@@ -19,7 +19,6 @@ import {
   onMounted,
   onBeforeUnmount,
   nextTick,
-  watch,
   useRoute,
 } from '#imports'
 import type { BlokkliApp } from '#blokkli/types'

@@ -244,11 +244,45 @@ function onWheel(e: WheelEvent) {
   animation.requestDraw()
 }
 
+function scaleToUnitRange(v: number, min: number, max: number): number {
+  // Ensure v is within the range [min, max]
+  if (v < min) {
+    v = min
+  } else if (v > max) {
+    v = max
+  }
+
+  // Scale v to the range [0, 1]
+  return (v - min) / (max - min)
+}
+
+const scaleProgress = computed(() => {
+  return scaleToUnitRange(scale.value, props.minScale, props.maxScale)
+})
+
+const getOutlineWidth = () => {
+  return Math.min(3 / scale.value, 7)
+}
+
+const getRadius = () => {
+  return 3 * scaleProgress.value
+}
+
 function updateStyles() {
   ui.artboardElement().style.scale = scale.value.toString()
   ui.artboardElement().style.translate = `${Math.round(
     offset.value.x,
   )}px ${Math.round(offset.value.y)}px`
+
+  document.documentElement.style.setProperty(
+    '--bk-outline-width',
+    getOutlineWidth().toString(),
+  )
+
+  document.documentElement.style.setProperty(
+    '--bk-radius',
+    getRadius().toString(),
+  )
 }
 
 function resetZoom() {

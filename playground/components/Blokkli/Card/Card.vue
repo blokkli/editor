@@ -19,7 +19,7 @@
         <SpriteSymbol :name="icon" class="fill-current w-full h-full" />
       </div>
       <h3
-        v-blokkli-editable:title
+        v-blokkli-editable:title="{ required: true }"
         class="font-bold text-lg md:text-xl lg:mb-5"
         :class="{ 'text-slate-100': isInverted }"
       >

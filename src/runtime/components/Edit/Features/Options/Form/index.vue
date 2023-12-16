@@ -1,42 +1,48 @@
 <template>
   <div
-    v-for="plugin in availableOptions"
-    :key="plugin.property"
-    class="bk-blokkli-item-options-item"
-    :class="{ 'bk-is-disabled': !canEdit || editMode !== 'editing' }"
-    @keydown.stop
+    class="bk-blokkli-item-options"
+    @click="onClick"
+    @mouseleave="onMouseLeave"
   >
-    <div class="bk-tooltip">
-      <span>{{ plugin.option.label }}</span>
+    <div
+      v-for="plugin in availableOptions"
+      :key="plugin.property"
+      class="bk-blokkli-item-options-item"
+      :class="{ 'bk-is-disabled': !canEdit || editMode !== 'editing' }"
+      @keydown.stop
+    >
+      <div class="bk-tooltip">
+        <span>{{ plugin.option.label }}</span>
+      </div>
+      <OptionRadios
+        v-if="plugin.option.type === 'radios'"
+        :options="plugin.option.options"
+        :name="plugin.property"
+        :value="getOptionValue(plugin.property, plugin.option.default)"
+        :display-as="plugin.option.displayAs"
+        @update="setOptionValue(plugin.property, $event)"
+      />
+      <OptionCheckbox
+        v-else-if="plugin.option.type === 'checkbox'"
+        :label="plugin.option.label"
+        :value="getOptionValue(plugin.property, plugin.option.default)"
+        @update="setOptionValue(plugin.property, $event)"
+      />
+      <OptionCheckboxes
+        v-else-if="plugin.option.type === 'checkboxes'"
+        :label="plugin.option.label"
+        :options="plugin.option.options"
+        :value="getOptionValue(plugin.property, plugin.option.default)"
+        @update="setOptionValue(plugin.property, $event)"
+      />
+      <OptionText
+        v-else-if="plugin.option.type === 'text'"
+        :label="plugin.option.label"
+        :type="plugin.option.inputType"
+        :value="getOptionValue(plugin.property, plugin.option.default)"
+        @update="setOptionValue(plugin.property, $event)"
+      />
     </div>
-    <OptionRadios
-      v-if="plugin.option.type === 'radios'"
-      :options="plugin.option.options"
-      :name="plugin.property"
-      :value="getOptionValue(plugin.property, plugin.option.default)"
-      :display-as="plugin.option.displayAs"
-      @update="setOptionValue(plugin.property, $event)"
-    />
-    <OptionCheckbox
-      v-else-if="plugin.option.type === 'checkbox'"
-      :label="plugin.option.label"
-      :value="getOptionValue(plugin.property, plugin.option.default)"
-      @update="setOptionValue(plugin.property, $event)"
-    />
-    <OptionCheckboxes
-      v-else-if="plugin.option.type === 'checkboxes'"
-      :label="plugin.option.label"
-      :options="plugin.option.options"
-      :value="getOptionValue(plugin.property, plugin.option.default)"
-      @update="setOptionValue(plugin.property, $event)"
-    />
-    <OptionText
-      v-else-if="plugin.option.type === 'text'"
-      :label="plugin.option.label"
-      :type="plugin.option.inputType"
-      :value="getOptionValue(plugin.property, plugin.option.default)"
-      @update="setOptionValue(plugin.property, $event)"
-    />
   </div>
 </template>
 
@@ -53,10 +59,18 @@ import type { BlokkliDefinitionOption } from '#blokkli/types/blokkOptions'
 
 import { falsy } from '#blokkli/helpers'
 
-const { adapter, eventBus, state, runtimeConfig } = useBlokkli()
+const { adapter, eventBus, state, runtimeConfig, selection } = useBlokkli()
 const { mutatedOptions, canEdit, mutateWithLoadingState, editMode } = state
 
 const pluginId = runtimeConfig.optionsPluginId
+
+const onClick = () => {
+  selection.isChangingOptions.value = true
+}
+
+const onMouseLeave = () => {
+  selection.isChangingOptions.value = false
+}
 
 const props = defineProps<{
   uuids: string[]
@@ -164,6 +178,7 @@ function setOptionValue(key: string, value: string) {
 }
 
 onBeforeUnmount(() => {
+  selection.isChangingOptions.value = false
   const values = updated
     .getEntries()
     .map((entry) => {

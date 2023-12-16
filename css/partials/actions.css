@@ -12,7 +12,7 @@
     @apply text-slate-50  select-none text-sm;
   }
   .bk-blokkli-item-actions-inner {
-    @apply fixed left-0 -top-60 p-0 h-50 z-[501];
+    @apply fixed left-0 top-0 p-0 h-50 z-[501];
   }
   .bk-blokkli-item-actions-controls {
     @apply flex items-stretch whitespace-nowrap h-full bg-slate-900 shadow-xl rounded-md;

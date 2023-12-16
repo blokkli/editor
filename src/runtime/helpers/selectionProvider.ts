@@ -37,12 +37,24 @@ export type BlokkliSelectionProvider = {
    * Update the active field key.
    */
   setActiveFieldKey: (key: string) => void
+
+  /**
+   * Whether an editable field is currently being edited.
+   */
+  editableActive: Ref<boolean>
+
+  /**
+   * Whether the user is currently changing block options.
+   */
+  isChangingOptions: Ref<boolean>
 }
 
 export default function (): BlokkliSelectionProvider {
   const selectedUuids = ref<string[]>([])
   const activeFieldKey = ref('')
   const isDragging = ref(false)
+  const editableActive = ref(false)
+  const isChangingOptions = ref(false)
 
   const blocks = computed<DraggableExistingBlokkliItem[]>(() =>
     selectedUuids.value
@@ -114,6 +126,7 @@ export default function (): BlokkliSelectionProvider {
       } else {
         activeFieldKey.value = ''
       }
+      eventBus.emit('editable:save')
     }
     unselectItems()
   }
@@ -172,5 +185,7 @@ export default function (): BlokkliSelectionProvider {
     activeFieldKey,
     isDragging,
     setActiveFieldKey,
+    editableActive,
+    isChangingOptions,
   }
 }

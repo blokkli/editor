@@ -561,6 +561,20 @@ export type PluginUnmountEvent = {
   id: string
 }
 
+export type BlokkliEditableDirectiveArgs = {
+  label?: string
+  name?: string
+  maxlength?: number
+  required?: boolean
+}
+
+export type EditableFieldFocusEvent = {
+  fieldName: string
+  block: DraggableExistingBlokkliItem
+  element: HTMLElement
+  args?: BlokkliEditableDirectiveArgs
+}
+
 export type BlokkliEvents = {
   select: string
   'item:edit': EditBlokkliItemEvent
@@ -594,6 +608,9 @@ export type BlokkliEvents = {
 
   'plugin:mount': PluginMountEvent
   'plugin:unmount': PluginUnmountEvent
+
+  'editable:focus': EditableFieldFocusEvent
+  'editable:save': undefined
 }
 
 export type BlokkliEventBus = Emitter<BlokkliEvents>

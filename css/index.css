@@ -24,6 +24,8 @@
 @import './partials/scaleToFit.css';
 @import './partials/DraggingOverlay.css';
 @import './partials/MultiSelect.css';
+@import './partials/Selection.css';
+@import './partials/EditableField.css';
 
 @font-face {
   font-family: 'PB Inter';
@@ -251,6 +253,10 @@
   @apply w-25 h-25 border rounded bg-slate-100 flex items-center justify-center text-slate-500 mr-[7px] relative z-20 border-slate-300;
 }
 
+.bk-html-root {
+  --bk-outline-width: 1;
+}
+
 .bk,
 .bk-html-preview {
   * {
@@ -274,16 +280,4 @@
 
 .bk-overlay {
   @apply bg-slate-800/90 backdrop-blur-md;
-}
-
-[data-blokkli-editable-field] {
-  pointer-events: all !important;
-  cursor: text;
-
-  &:hover:not(:focus) {
-    @apply outline-2 rounded outline-yellow-500 outline-offset-1 outline-dotted;
-  }
-  &:focus {
-    @apply outline outline-4 rounded outline-yellow-500 outline-offset-4 bg-yellow-300/10 relative z-[9999999999];
-  }
 }

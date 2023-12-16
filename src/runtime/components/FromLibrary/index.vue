@@ -6,6 +6,7 @@
     :index="index"
     :data-reusable-bundle="item.item.entityBundle"
     :data-reusable-uuid="item.item.uuid"
+    data-blokkli-is-reusable="true"
     :parent-type="parentType"
   />
 </template>

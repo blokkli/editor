@@ -3,7 +3,7 @@
     <div :class="{ 'md:max-w-3xl md:mx-auto md:text-center': isCentered }">
       <p
         v-if="tagline"
-        v-blokkli-editable:tagline
+        v-blokkli-editable:tagline="{ label: 'Tagline', maxlength: 30 }"
         class="uppercase font-semibold border px-10 py-1 rounded-full inline-block text-xs mb-20"
         :class="
           isInverted
@@ -14,7 +14,7 @@
         {{ tagline }}
       </p>
       <h2
-        v-blokkli-editable:title
+        v-blokkli-editable:title="{ required: true }"
         class="text-2xl lg:text-4xl font-extrabold"
         :class="{ 'text-white': isInverted }"
       >

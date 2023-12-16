@@ -1,0 +1,15 @@
+.bk.bk-selection {
+  @apply absolute top-0 left-0 pointer-events-none z-[500];
+  /* @apply outline outline-blue-600 outline-offset-1; */
+
+  > div {
+    @apply absolute top-0 left-0;
+    @apply outline outline-blue-700 outline-offset-2 bg-blue-500/10;
+    outline-width: calc(var(--bk-outline-width) * 1px);
+    border-radius: calc(var(--bk-radius) * 1px);
+  }
+
+  &.bk-is-invisible {
+    @apply opacity-0;
+  }
+}

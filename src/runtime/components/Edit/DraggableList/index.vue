@@ -132,10 +132,6 @@ function onSelect(uuid: string) {
 }
 
 function onAction(uuid: string) {
-  if (keyboard.isPressingControl.value) {
-    return
-  }
-
   const item = dom.findBlock(uuid)
   if (!item) {
     return

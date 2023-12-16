@@ -1,4 +1,25 @@
 .bk {
+  .bk-blokkli-item-options {
+    @apply flex;
+  }
+  .bk-blokkli-item-options-item {
+    @apply relative flex items-center;
+    &.bk-is-disabled {
+      @apply pointer-events-none opacity-20;
+    }
+    .bk-tooltip {
+      @apply absolute bottom-full left-0 w-full mb-3;
+    }
+    &:not(:hover) {
+      .bk-tooltip {
+        @apply hidden;
+      }
+    }
+
+    &:not(:last-child) {
+      @apply border-r border-r-slate-600;
+    }
+  }
   .bk-checkbox-toggle {
     @apply relative inline-flex items-center cursor-pointer h-full text-slate-800 leading-none;
     @apply hover:text-slate-950;
@@ -113,21 +134,6 @@
     }
     &:hover {
       color: var(--gin-color-primary);
-    }
-  }
-
-  .bk-blokkli-item-options-item {
-    @apply relative flex items-center;
-    &.bk-is-disabled {
-      @apply pointer-events-none opacity-20;
-    }
-    .bk-tooltip {
-      @apply absolute bottom-full left-0 w-full mb-3;
-    }
-    &:not(:hover) {
-      .bk-tooltip {
-        @apply hidden;
-      }
     }
   }
 

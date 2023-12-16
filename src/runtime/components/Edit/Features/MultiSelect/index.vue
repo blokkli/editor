@@ -12,7 +12,9 @@ import { ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
 import Overlay from './Overlay/index.vue'
 
-const { keyboard, eventBus } = useBlokkli()
+const { keyboard, eventBus, selection } = useBlokkli()
+
+const enabled = computed(() => !selection.editableActive.value)
 
 const shouldRender = ref(false)
 const downX = ref(0)
@@ -24,6 +26,9 @@ const onSelect = (uuids: string[]) => {
 }
 
 function shouldStartMultiSelect(target: Element): boolean {
+  if (!enabled.value) {
+    return false
+  }
   const isInsideItem = !!target.closest('.draggable')
   if (isInsideItem) {
     return false
@@ -62,7 +67,8 @@ function onWindowMouseDown(e: MouseEvent) {
   if (
     e.ctrlKey ||
     keyboard.isPressingSpace.value ||
-    keyboard.isPressingControl.value
+    keyboard.isPressingControl.value ||
+    !enabled.value
   ) {
     return
   }

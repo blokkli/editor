@@ -1,8 +1,9 @@
 <template>
   <div
     @mousedown.capture="onMouseDown"
-    @dblclick="onDoubleClick"
+    @dblclick.capture="onDoubleClick"
     @mouseup="onMouseUp"
+    @click.capture="onClick"
   >
     <slot></slot>
   </div>
@@ -17,7 +18,7 @@ const props = defineProps<{
   useSelection?: boolean
 }>()
 
-const { selection, eventBus } = useBlokkli()
+const { selection, eventBus, dom, keyboard } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'select', id: string): void
@@ -35,6 +36,10 @@ const findItemId = (e: MouseEvent): string | undefined => {
       return item.dataset.sortliId
     }
   }
+}
+
+const onClick = (e: MouseEvent) => {
+  e.preventDefault()
 }
 
 const onMouseMove = (e: MouseEvent) => {
@@ -77,10 +82,8 @@ const onMouseMove = (e: MouseEvent) => {
 
 const originatesFromEditable = (e: MouseEvent) => {
   if (e.target instanceof HTMLElement) {
-    if (
-      e.target.dataset.blokkliEditableField &&
-      document.activeElement === e.target
-    ) {
+    const el = e.target.closest('[data-blokkli-editable-field]')
+    if (el) {
       return true
     }
   }
@@ -92,8 +95,10 @@ const onMouseDown = (e: MouseEvent) => {
     return
   }
   e.stopPropagation()
+  e.preventDefault()
 
-  if (originatesFromEditable(e)) {
+  if (selection.editableActive.value) {
+    eventBus.emit('editable:save')
     return
   }
 
@@ -121,8 +126,27 @@ const onMouseUp = (e: MouseEvent) => {
   eventBus.emit('dragging:end')
 }
 const onDoubleClick = (e: MouseEvent) => {
-  if (originatesFromEditable(e)) {
-    return
+  if (
+    originatesFromEditable(e) &&
+    e.target instanceof HTMLElement &&
+    !keyboard.isPressingControl.value
+  ) {
+    const fieldName = e.target.dataset.blokkliEditableField
+    if (fieldName) {
+      const block = dom.findClosestBlock(e.target)
+      if (block) {
+        e.stopPropagation()
+        const argsValue = e.target.dataset.blokkliEditableFieldConfig
+        const args = argsValue ? JSON.parse(argsValue) : undefined
+        eventBus.emit('editable:focus', {
+          fieldName,
+          block,
+          element: e.target,
+          args,
+        })
+        return
+      }
+    }
   }
   const id = findItemId(e)
   if (id) {
