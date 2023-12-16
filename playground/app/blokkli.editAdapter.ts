@@ -124,7 +124,6 @@ export default defineBlokkliEditAdapter((ctx) => {
     addNewBlokkliItem: (e) =>
       addMutation('add', {
         bundle: e.type,
-        values: {},
         hostEntityType: e.host.type,
         hostEntityUuid: e.host.uuid,
         hostField: e.host.fieldName,

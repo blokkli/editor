@@ -12,4 +12,10 @@ export class BlockImage extends Block {
       new FieldReference('imageReference', 'Image', 1, 'media', ['image']),
     ]
   }
+
+  static getDefaultValues(): Record<string, any> {
+    return {
+      imageReference: ['7'],
+    }
+  }
 }

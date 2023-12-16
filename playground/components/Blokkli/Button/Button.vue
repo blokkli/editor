@@ -13,6 +13,7 @@
 <script lang="ts" setup>
 const { options } = defineBlokkli({
   bundle: 'button',
+  noAddForm: true,
   options: {
     color: {
       type: 'radios',

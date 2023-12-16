@@ -36,6 +36,7 @@
 const { parentType, options } = defineBlokkli({
   bundle: 'card',
   editWidth: 380,
+  noAddForm: true,
   options: {
     box: {
       type: 'checkbox',

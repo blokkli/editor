@@ -61,7 +61,7 @@ const onDrop = async (e: DropTargetEvent) => {
     const items = e.items as DraggableNewItem[]
     const item = items[0]
     const definition = getDefinition(item.itemBundle)
-    if (definition?.disableEdit) {
+    if (definition?.disableEdit || definition?.noAddForm) {
       await state.mutateWithLoadingState(
         adapter.addNewBlokkliItem({
           type: item.itemBundle,

@@ -13,6 +13,10 @@ export abstract class Block extends Entity {
     ]
   }
 
+  static getDefaultValues(): Record<string, any> {
+    return {}
+  }
+
   options(): FieldOptions {
     return this.fields.options as FieldOptions
   }

@@ -1,3 +1,4 @@
+import { LOREM_SHORT } from '../../defaultText'
 import type { Field } from '../Field'
 import { FieldText } from '../Field/Text'
 import { FieldUrl } from '../Field/Url'
@@ -13,5 +14,12 @@ export class BlockButton extends Block {
       new FieldText('title', 'Title'),
       new FieldUrl('url', 'URL'),
     ]
+  }
+
+  static getDefaultValues(): Record<string, any> {
+    return {
+      title: LOREM_SHORT,
+      url: 'https://www.example.com',
+    }
   }
 }

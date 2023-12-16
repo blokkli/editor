@@ -13,6 +13,7 @@ import type { MediaImage } from '~/app/mock/state/Media/Media'
 
 const { options, parentType } = defineBlokkli({
   bundle: 'image',
+  noAddForm: true,
   options: {
     elevated: {
       type: 'checkbox',

@@ -12,6 +12,7 @@
 <script lang="ts" setup>
 const { parentType, options } = defineBlokkli({
   bundle: 'text',
+  noAddForm: true,
   options: {
     list: {
       type: 'checkbox',

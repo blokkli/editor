@@ -33,6 +33,15 @@ if (!blockBundle) {
 
 const fields = blockBundle.getFieldDefintions()
 
+const defaultValues = blockBundle.getDefaultValues()
+
+fields.forEach((field) => {
+  const defaultValue = defaultValues[field.id]
+  if (defaultValue) {
+    field.setList([defaultValue])
+  }
+})
+
 const onSubmit = (values: Record<string, string>) => {
   const page = entityStorageManager.getContent(entityUuid.value)
   editState.addMutation('add', {

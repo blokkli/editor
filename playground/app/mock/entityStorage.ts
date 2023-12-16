@@ -94,6 +94,8 @@ export class EntityStorageManager {
       'Logo of the canton of Basel-Stadt',
     )
 
+    this.createImage('7', '/placeholder.jpg', 'Placeholder')
+
     this.addUser('1', 'John Miller', 'john@example.com')
     this.addUser('2', 'Martin Faux', 'martin@example.com')
 

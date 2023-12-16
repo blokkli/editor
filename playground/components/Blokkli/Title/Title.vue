@@ -35,6 +35,7 @@
 <script lang="ts" setup>
 const { parentType, fieldListType } = defineBlokkli({
   bundle: 'title',
+  noAddForm: true,
   editTitle: (el) => el.querySelector('h2')?.innerText,
 })
 

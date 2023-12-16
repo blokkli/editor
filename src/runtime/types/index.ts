@@ -81,6 +81,13 @@ export type BlokkliItemDefinitionInput<V, T = []> = {
   editWidth?: number
 
   /**
+   * When set to true, adding a new block of this type will not open the add
+   * form but add it immediately. This should only be used if the block
+   * itself provides default values (like "lorem ipsum" text).
+   */
+  noAddForm?: boolean
+
+  /**
    * When set to true the preview in the library is not rendered.
    *
    * This should be used for complex components that render things like sliders,
