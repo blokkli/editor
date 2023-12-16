@@ -31,7 +31,7 @@
   .bk-drop-targets-field-child {
     @apply border border-slate-500 rounded;
     @apply absolute bg-slate-300/30;
-    @apply transition;
+    @apply transition duration-75;
 
     &.bk-is-active {
       @apply bg-blue-700/90 outline outline-white;

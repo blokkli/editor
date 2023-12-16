@@ -662,4 +662,15 @@ export type PasteExistingBlocksEvent = {
   preceedingUuid?: string
 }
 
+export type NativeBlokkliEditableBlurEvent = CustomEvent<{
+  field: string
+  text: string
+}>
+
+export type UpdateFieldValueEvent = {
+  uuid: string
+  fieldName: string
+  fieldValue: string
+}
+
 export default {}

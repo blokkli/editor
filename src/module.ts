@@ -2,6 +2,7 @@ import {
   addBuildPlugin,
   addComponent,
   addImports,
+  addPlugin,
   addTemplate,
   createResolver,
   defineNuxtModule,
@@ -500,7 +501,9 @@ export type BlokkliIcon = keyof typeof icons`
     nuxt.options.alias['#blokkli/icons'] = templateIcons.dst
     nuxt.options.alias['#blokkli/imports'] = templateImports.dst
     nuxt.options.alias['#blokkli/types'] = resolver.resolve('runtime/types')
-    nuxt.options.alias['#blokkli/plugins'] = resolver.resolve('runtime/plugins')
+    nuxt.options.alias['#blokkli/plugins'] = resolver.resolve(
+      'runtime/blokkliPlugins',
+    )
     nuxt.options.alias['#blokkli/components'] = resolver.resolve(
       'runtime/components/Edit',
     )
@@ -513,6 +516,10 @@ export type BlokkliIcon = keyof typeof icons`
         dir: resolver.resolve('./runtime/public'),
         maxAge: 60 * 60 * 24 * 365, // 1 year
       })
+    })
+
+    addPlugin({
+      src: resolver.resolve('runtime/plugins/blokkliEditable.ts'),
     })
 
     // Checks if the given file path is handled by this module.

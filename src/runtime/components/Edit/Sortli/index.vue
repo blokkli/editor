@@ -1,7 +1,7 @@
 <template>
   <div
-    @mousedown="onMouseDown"
-    @dblclick.capture="onDoubleClick"
+    @mousedown.capture="onMouseDown"
+    @dblclick="onDoubleClick"
     @mouseup="onMouseUp"
   >
     <slot></slot>
@@ -75,13 +75,28 @@ const onMouseMove = (e: MouseEvent) => {
   }
 }
 
+const originatesFromEditable = (e: MouseEvent) => {
+  if (e.target instanceof HTMLElement) {
+    if (
+      e.target.dataset.blokkliEditableField &&
+      document.activeElement === e.target
+    ) {
+      return true
+    }
+  }
+}
+
 const onMouseDown = (e: MouseEvent) => {
   const id = findItemId(e)
   if (!id) {
     return
   }
-  e.preventDefault()
   e.stopPropagation()
+
+  if (originatesFromEditable(e)) {
+    return
+  }
+
   start.value.x = e.clientX
   start.value.y = e.clientY
   mouseIsDown.value = true
@@ -106,6 +121,9 @@ const onMouseUp = (e: MouseEvent) => {
   eventBus.emit('dragging:end')
 }
 const onDoubleClick = (e: MouseEvent) => {
+  if (originatesFromEditable(e)) {
+    return
+  }
   const id = findItemId(e)
   if (id) {
     emit('action', id)

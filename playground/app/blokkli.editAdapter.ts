@@ -173,6 +173,13 @@ export default defineBlokkliEditAdapter((ctx) => {
         preceedingUuid: e.preceedingUuid,
       }),
 
+    updateFieldValue: (e) =>
+      addMutation('update_field_value', {
+        uuid: e.uuid,
+        fieldName: e.fieldName,
+        fieldValue: e.fieldValue,
+      }),
+
     undo() {
       editState.currentIndex = Math.max(editState.currentIndex - 1, -1)
       return mockResponse(editState.getMutatedState(getEntity()))

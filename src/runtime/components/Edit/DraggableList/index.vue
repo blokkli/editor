@@ -13,6 +13,7 @@
     :data-field-cardinality="cardinality"
     @select="onSelect"
     @action="onAction"
+    @blokklieditable.capture.stop="onEditableBlur"
   >
     <BlokkliItem
       v-for="(item, i) in list"
@@ -36,6 +37,7 @@
       :data-is-nested="isNested"
       :data-is-new="item.item.isNew"
       :data-refresh-key="state.refreshKey.value"
+      :data-is-selected="selection.uuids.value.includes(item.item?.uuid)"
       class="draggable"
     />
   </Sortli>
@@ -54,9 +56,26 @@ import type {
   BlokkliFieldListConfig,
   BlokkliFieldList,
   BlokkliFieldListEntity,
+  NativeBlokkliEditableBlurEvent,
 } from '#blokkli/types'
 
-const { state, eventBus, types, dom, keyboard } = useBlokkli()
+const { state, eventBus, types, dom, keyboard, adapter, selection } =
+  useBlokkli()
+
+const onEditableBlur = (e: NativeBlokkliEditableBlurEvent) => {
+  if (e.target instanceof HTMLElement) {
+    const block = dom.findClosestBlock(e.target)
+    if (block) {
+      state.mutateWithLoadingState(
+        adapter.updateFieldValue({
+          uuid: block.uuid,
+          fieldName: e.detail.field,
+          fieldValue: e.detail.text,
+        }),
+      )
+    }
+  }
+}
 
 const props = defineProps<{
   list: BlokkliFieldList<any>[]

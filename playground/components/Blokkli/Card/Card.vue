@@ -19,12 +19,15 @@
         <SpriteSymbol :name="icon" class="fill-current w-full h-full" />
       </div>
       <h3
+        v-blokkli-editable:title
         class="font-bold text-lg md:text-xl lg:mb-5"
         :class="{ 'text-slate-100': isInverted }"
       >
         {{ title }}
       </h3>
-      <p :class="{ 'text-slate-400': isInverted }">{{ text }}</p>
+      <p v-blokkli-editable:text :class="{ 'text-slate-400': isInverted }">
+        {{ text }}
+      </p>
     </div>
   </div>
 </template>

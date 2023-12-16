@@ -275,3 +275,15 @@
 .bk-overlay {
   @apply bg-slate-800/90 backdrop-blur-md;
 }
+
+[data-blokkli-editable-field] {
+  pointer-events: all !important;
+  cursor: text;
+
+  &:hover:not(:focus) {
+    @apply outline-2 rounded outline-yellow-500 outline-offset-1 outline-dotted;
+  }
+  &:focus {
+    @apply outline outline-4 rounded outline-yellow-500 outline-offset-4 bg-yellow-300/10 relative z-[9999999999];
+  }
+}

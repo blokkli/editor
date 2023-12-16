@@ -16,6 +16,10 @@ import {
 } from './Mutation/MakeReusable'
 import { MutationMove, type MutationMoveArgs } from './Mutation/Move'
 import {
+  MutationUpdateFieldValue,
+  type MutationUpdateFieldValueArgs,
+} from './Mutation/UpdateFieldValue'
+import {
   MutationUpdateOptions,
   type MutationUpdateOptionsArgs,
 } from './Mutation/UpdateOptions'
@@ -29,6 +33,7 @@ export type MutationArgsMap = {
   update_options: MutationUpdateOptionsArgs
   make_reusable: MutationMakeReusableArgs
   add_reusable_item: MutationAddReusableItemArgs
+  update_field_value: MutationUpdateFieldValueArgs
 }
 
 export const createMutation = <T extends keyof MutationArgsMap>(
@@ -52,6 +57,8 @@ export const createMutation = <T extends keyof MutationArgsMap>(
       return new MutationMakeReusable(configuration)
     case 'add_reusable_item':
       return new MutationAddReusableItem(configuration)
+    case 'update_field_value':
+      return new MutationUpdateFieldValue(configuration)
   }
 
   throw new Error('Missing mutation plugin with ID: ' + id)

@@ -21,6 +21,7 @@ import type {
   BlokkliTransformPlugin,
   EditBlokkliItemEvent,
   PasteExistingBlocksEvent,
+  UpdateFieldValueEvent,
 } from './../types'
 
 export interface MutationResponseLike<T> {
@@ -268,6 +269,10 @@ export interface BlokkliAdapter<T> {
   formFrameBuilder?: (
     e: AdapterFormFrameBuilder,
   ) => AdapterFormFrameBuilderResult | undefined | void
+
+  updateFieldValue: (
+    e: UpdateFieldValueEvent,
+  ) => Promise<MutationResponseLike<T>> | undefined
 }
 
 type AdapterFormFrameBuilderResult = {

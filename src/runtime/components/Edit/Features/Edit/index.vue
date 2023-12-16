@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli } from '#imports'
+import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
 import type { DraggableExistingBlokkliItem } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
@@ -41,6 +41,18 @@ function onClick(items: DraggableExistingBlokkliItem[]) {
     bundle: items[0].itemBundle,
   })
 }
+
+const onEditableBlur = (el: HTMLElement) => {
+  console.log(el)
+}
+
+onMounted(() => {
+  eventBus.on('editable:blur', onEditableBlur)
+})
+
+onBeforeUnmount(() => {
+  eventBus.off('editable:blur', onEditableBlur)
+})
 </script>
 
 <script lang="ts">
