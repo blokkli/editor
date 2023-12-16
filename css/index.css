@@ -198,7 +198,7 @@
 
 .bk-field-list {
   position: relative;
-  min-height: 3rem;
+  min-height: 30px;
 }
 
 .bk-body:not(.bk-is-selecting):not(.bk-is-dragging) {
@@ -252,6 +252,7 @@
 
 .bk-html-root {
   --bk-outline-width: 1;
+  --bk-artboard-scale: 1;
 }
 
 .bk,

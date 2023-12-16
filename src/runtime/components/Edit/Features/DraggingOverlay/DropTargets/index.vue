@@ -21,7 +21,9 @@
             { 'bk-is-active': activeKey === child.key },
             'bk-is-' + child.orientation,
           ]"
-        ></div>
+        >
+          <span>{{ field.label }}</span>
+        </div>
       </div>
     </div>
   </Teleport>
@@ -241,8 +243,8 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
           left: '0px',
           top: '0px',
           width: '100%',
-          // height: fieldHeight > 30 ? '100%' : '30px',
-          height: '100%',
+          height: fieldHeight > 30 ? '100%' : '30px',
+          // height: '100%',
         },
       })
     }
@@ -345,26 +347,34 @@ const fieldRects = ref<FieldRect[]>([])
 const buildFieldRects = (): FieldRect[] => {
   const artboardRect = ui.artboardElement().getBoundingClientRect()
   const scale = ui.getArtboardScale()
-  return dom.getAllFields().map((field) => {
+  const rects: FieldRect[] = []
+  const allFields = dom.getAllFields()
+  for (let i = 0; i < allFields.length; i++) {
+    const field = allFields[i]
     const rect = field.element.getBoundingClientRect()
     const x = rect.x / scale - artboardRect.x / scale
     const y = rect.y / scale - artboardRect.y / scale
     const children = getChildren(field)
     const backgroundColor = realBackgroundColor(field.element)
-    return {
+    const height = Math.max(field.element.offsetHeight, 30)
+    const width = Math.max(field.element.offsetWidth, 30)
+
+    rects.push({
       key: field.key,
       field,
       disabled: children.length === 0,
       style: {
-        width: field.element.offsetWidth + 'px',
-        height: field.element.offsetHeight + 'px',
+        width: width + 'px',
+        height: height + 'px',
         transform: `translate(${x}px, ${y}px)`,
       },
       backgroundColor,
       children,
       label: field.label,
-    }
-  })
+    })
+  }
+
+  return rects
 }
 
 type IntersectingRectangle = Rectangle & { key: string; intersection: number }

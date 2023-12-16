@@ -10,11 +10,19 @@
   --bk-root-offset-left: 0px;
   --bk-root-offset-top: 50px;
   --bk-root-offset-bottom: 0px;
+  &.bk-has-sidebar-left {
+    --bk-root-offset-left: 70px;
+  }
+  &.bk-has-sidebar-bottom {
+    --bk-root-offset-bottom: 70px;
+  }
 }
 
-.bk-html-root:not(.bk-is-artboard) {
-  padding-top: var(--bk-root-offset-top);
-  padding-left: var(--bk-root-offset-left);
+.bk-html-root:not(.bk-is-artboard) .bk-main-canvas {
+  margin-top: var(--bk-root-offset-top);
+  margin-left: var(--bk-root-offset-left);
+  margin-bottom: var(--bk-root-offset-bottom);
+  position: relative;
 }
 
 .bk-html-root.bk-is-artboard {
@@ -40,17 +48,12 @@
     transform-origin: 0 0;
     transform: translateZ(0);
   }
-  &.bk-has-sidebar-left {
-    --bk-root-offset-left: 70px;
-  }
-  &.bk-has-sidebar-bottom {
-    --bk-root-offset-bottom: 70px;
-  }
+
   .bk-body.bk-is-pressing-space {
     @apply cursor-move;
     .bk-main-canvas,
-    .bk-draggable-list-container {
-      @apply pointer-events-none;
+    .bk-draggable-list-container * {
+      @apply !pointer-events-none;
     }
   }
 

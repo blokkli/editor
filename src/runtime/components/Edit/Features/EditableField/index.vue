@@ -117,7 +117,7 @@ const onEditableFocus = (e: EditableFieldFocusEvent) => {
   const x = (rect.x - artboardRect.x) / scale
   const y = (rect.y - artboardRect.y) / scale
   style.value = {
-    width: rect.width + 'px',
+    width: e.element.offsetWidth + 'px',
     top: y + 'px',
     left: x + 'px',
   }

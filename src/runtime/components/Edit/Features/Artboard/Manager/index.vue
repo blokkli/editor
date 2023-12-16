@@ -283,6 +283,11 @@ function updateStyles() {
     '--bk-radius',
     getRadius().toString(),
   )
+
+  document.documentElement.style.setProperty(
+    '--bk-artboard-scale',
+    scale.value.toString(),
+  )
 }
 
 function resetZoom() {
@@ -678,6 +683,11 @@ onBeforeUnmount(() => {
 onUnmounted(() => {
   ui.artboardElement().style.translate = ''
   ui.artboardElement().style.scale = ''
+  document.documentElement.style.setProperty('--bk-outline-width', null)
+
+  document.documentElement.style.setProperty('--bk-radius', null)
+
+  document.documentElement.style.setProperty('--bk-artboard-scale', null)
 })
 </script>
 
