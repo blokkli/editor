@@ -71,8 +71,7 @@ import type {
 const { eventBus, state, context, adapter, text, ui } = useBlokkli()
 const { translation, editMode } = state
 
-// const isDropdown = computed(() => ui.isMobile.value)
-const isDropdown = computed(() => true)
+const isDropdown = computed(() => ui.isMobile.value || items.value.length > 5)
 
 const isOpen = ref(false)
 

@@ -16,20 +16,12 @@ export type BlokkliUiProvider = {
   }
   getArtboardScale: () => number
   isMobile: ComputedRef<boolean>
+  isDesktop: ComputedRef<boolean>
 }
 
 export default function (): BlokkliUiProvider {
   let cachedRootElement: HTMLElement | null = null
   let cachedArtboardElement: HTMLElement | null = null
-
-  onMounted(async () => {
-    document.documentElement.classList.add('bk-html-root')
-    document.body.classList.add('bk-body')
-  })
-  onBeforeUnmount(() => {
-    document.documentElement.classList.remove('bk-html-root')
-    document.body.classList.remove('bk-body')
-  })
 
   const menuIsOpen = ref(false)
 
@@ -66,7 +58,24 @@ export default function (): BlokkliUiProvider {
     return scaleValue
   }
 
-  const isMobile = computed(() => window.innerWidth < 768)
+  const viewportWidth = ref(375)
+  const isMobile = computed(() => viewportWidth.value < 768)
+  const isDesktop = computed(() => viewportWidth.value > 1024)
+
+  const onResize = () => {
+    viewportWidth.value = window.innerWidth
+  }
+
+  onMounted(async () => {
+    window.addEventListener('resize', onResize)
+    document.documentElement.classList.add('bk-html-root')
+    document.body.classList.add('bk-body')
+  })
+  onBeforeUnmount(() => {
+    window.removeEventListener('resize', onResize)
+    document.documentElement.classList.remove('bk-html-root')
+    document.body.classList.remove('bk-body')
+  })
 
   return {
     menu: {
@@ -78,5 +87,6 @@ export default function (): BlokkliUiProvider {
     rootElement,
     getArtboardScale,
     isMobile,
+    isDesktop,
   }
 }

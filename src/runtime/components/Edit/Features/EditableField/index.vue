@@ -6,10 +6,10 @@
         :style="style"
         class="bk bk-editable-field bk-control"
       >
-        <form @submit.prevent class="bk-editable-field-input">
+        <form @submit.prevent="cancel" class="bk-editable-field-input">
           <div class="bk-editable-field-buttons">
             <h3>{{ fieldLabel }}</h3>
-            <button @click.capture.stop="cancel">
+            <button type="submit">
               <span>{{ translationText('cancel') }}</span>
               <Icon name="close" />
             </button>
@@ -24,7 +24,7 @@
               rows="2"
               :style="inputStyle"
               v-bind="inputAttributes"
-              @blur.prevent.stop="close(true)"
+              @blur.prevent.stop="onBlur"
             />
             <div :style="inputStyle" class="bk-textarea" v-html="text" />
           </div>
@@ -78,6 +78,18 @@ const inputStyle = ref<Record<string, any>>({})
 const required = ref(false)
 const maxlength = ref(0)
 const block = ref<DraggableExistingBlokkliItem | null>(null)
+let blurTimeout: any = null
+
+const onBlur = () => {
+  clearTimeout(blurTimeout)
+
+  blurTimeout = setTimeout(() => {
+    if (!selection.editableActive.value) {
+      return
+    }
+    close(true)
+  }, 100)
+}
 
 const inputAttributes = computed(() => {
   const attrs: Record<string, any> = {}

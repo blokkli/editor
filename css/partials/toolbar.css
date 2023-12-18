@@ -4,13 +4,13 @@
   }
 
   .bk-toolbar-wrapper {
-    @apply flex border-t border-t-slate-700 flex-1 md:flex-initial md:first:flex-1 md:border-t-0;
+    @apply flex border-t border-t-slate-700 flex-1 lg:flex-initial lg:first:flex-1 lg:border-t-0;
   }
 
   &.bk-toolbar {
     @apply select-none;
     @apply h-100 text-base flex flex-col;
-    @screen md {
+    @screen lg {
       @apply h-50 flex-row;
     }
   }
@@ -22,14 +22,14 @@
     }
     button {
       @apply flex text-slate-300 h-full focus:outline-none flex-1 items-center px-10 gap-10 aspect-square justify-center;
-      @apply md:hover:bg-slate-700;
+      @apply lg:hover:bg-slate-700;
       .bk-tooltip {
         @apply hidden;
       }
       &.is-active {
         @apply bg-white text-slate-900;
         .bk-tooltip {
-          @apply hidden;
+          @apply !hidden;
         }
       }
       svg {
@@ -39,10 +39,10 @@
       &[disabled] {
         @apply pointer-events-none opacity-25;
       }
-      @screen md {
+      @screen lg {
         &:hover {
           .bk-tooltip {
-            @apply block;
+            @apply flex;
           }
         }
       }
@@ -50,7 +50,7 @@
   }
   .bk-tooltip {
     @apply bg-slate-800/80 backdrop-blur p-5 text-slate-50 font-semibold text-sm rounded select-none pointer-events-none h-[34px] hidden items-center justify-between px-10 leading-none whitespace-nowrap;
-    @screen md {
+    @screen lg {
       @apply flex;
     }
     kbd {
@@ -68,8 +68,8 @@
   }
 
   .bk-toolbar-menu-button {
-    @apply bg-blue-700 w-50 md:w-70 flex items-center justify-center text-slate-50 h-full focus:outline-none relative z-50 transition;
-    @apply md:hover:bg-blue-800;
+    @apply bg-blue-700 w-50 lg:w-70 flex items-center justify-center text-slate-50 h-full focus:outline-none relative z-50 transition;
+    @apply lg:hover:bg-blue-800;
 
     &.bk-is-active {
       @apply bg-white text-blue-700;
@@ -99,7 +99,7 @@
   }
   .bk-toolbar-menu-list-button {
     @apply grid items-center pl-15 pr-20 py-15 gap-x-15 w-full text-left whitespace-nowrap text-slate-950;
-    @apply md:hover:bg-slate-100;
+    @apply lg:hover:bg-slate-100;
     @apply border-b border-b-slate-200;
     grid-template-columns: auto 1fr;
     grid-template-rows: auto auto;
@@ -160,7 +160,7 @@
 
   .bk-toolbar-button {
     @apply text-slate-200 flex gap-5 items-center px-10 min-w-[50px] justify-center;
-    @apply md:hover:bg-slate-700;
+    @apply lg:hover:bg-slate-700;
 
     &.bk-is-inactive {
       @apply text-slate-600;
@@ -330,17 +330,17 @@
 .bk-translations {
   @apply relative;
   .bk-toolbar-button {
-    @apply uppercase h-full;
+    @apply uppercase h-full font-semibold;
 
     &.bk-is-active {
       @apply bg-white text-slate-900;
     }
   }
   .bk-translations-dropdown {
-    @apply absolute top-full right-0 md:right-auto md:left-0 w-200 bg-white z-[999999] shadow-lg;
+    @apply absolute top-full right-0 lg:right-auto lg:left-0 w-200 bg-white z-[999999] shadow-lg;
 
     label {
-      @apply relative px-15 py-10 block cursor-pointer md:hover:bg-slate-100;
+      @apply relative px-15 py-10 block cursor-pointer lg:hover:bg-slate-100;
       &.bk-is-muted {
         @apply text-slate-400;
       }
