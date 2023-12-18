@@ -30,7 +30,7 @@ import {
 import type { DraggableItem, Rectangle } from '#blokkli/types'
 import { isInsideRect, realBackgroundColor } from '#blokkli/helpers'
 
-const { eventBus, dom } = useBlokkli()
+const { eventBus, dom, ui, animation } = useBlokkli()
 
 const props = defineProps<{
   items: DraggableItem[]
@@ -46,13 +46,25 @@ const height = ref(10)
 const offsetX = ref(0)
 const offsetY = ref(0)
 
+const translateX = computed(() => {
+  if (ui.isMobile.value) {
+    return window.innerWidth / 2 - width.value / 2
+  }
+  return props.x - offsetX.value
+})
+
+const translateY = computed(() => {
+  if (ui.isMobile.value) {
+    return window.innerHeight - 200
+  }
+  return props.y - offsetY.value
+})
+
 const style = computed(() => {
   return {
     width: width.value + 'px',
     height: height.value + 'px',
-    transform: `translate(${props.x - offsetX.value}px, ${
-      props.y - offsetY.value
-    }px)`,
+    transform: `translate(${translateX.value}px, ${translateY.value}px)`,
   }
 })
 
@@ -96,6 +108,8 @@ const onAnimationFrame = () => {
       Math.abs(newScale - rect.targetScale) > 0.01
     ) {
       allRectsAtTarget = false
+    } else {
+      animation.requestDraw()
     }
 
     newRects.push({
@@ -130,9 +144,11 @@ const onAnimationFrame = () => {
 
 onMounted(() => {
   const elRects = props.items.map((item, index) => {
+    const element =
+      item.element.querySelector('.bk-drop-element') || item.element
     return {
-      rect: item.element.getBoundingClientRect(),
-      element: item.element,
+      rect: element.getBoundingClientRect(),
+      element,
       item,
       index,
     }
@@ -144,20 +160,29 @@ onMounted(() => {
 
   const bounds = boundRect.rect
 
-  const boundsWidth = Math.min(500, bounds.width)
+  const boundsWidth = ui.isMobile.value ? 200 : Math.min(500, bounds.width)
   const ratio = boundsWidth / bounds.width
   const boundsHeight = bounds.height * ratio
-  const boundsX = Math.max(
-    Math.min(props.x - boundsWidth / 2, bounds.x + bounds.width - boundsWidth),
-    bounds.x,
-  )
-  const boundsY = Math.max(
-    Math.min(
-      props.y - boundsHeight / 2,
-      bounds.y + bounds.height - boundsHeight,
-    ),
-    bounds.y,
-  )
+  const boundsX = ui.isMobile.value
+    ? window.innerWidth / 2 - 50
+    : ui.isMobile.value
+    ? 10
+    : Math.max(
+        Math.min(
+          props.x - boundsWidth / 2,
+          bounds.x + bounds.width - boundsWidth,
+        ),
+        bounds.x,
+      )
+  const boundsY = ui.isMobile.value
+    ? window.innerHeight - 200
+    : Math.max(
+        Math.min(
+          props.y - boundsHeight / 2,
+          bounds.y + bounds.height - boundsHeight,
+        ),
+        bounds.y,
+      )
 
   offsetX.value = props.x - boundsX
   offsetY.value = props.y - boundsY
@@ -174,7 +199,7 @@ onMounted(() => {
       width: item.element.scrollWidth,
       height: item.element.scrollHeight,
       opacity: 1,
-      targetOpacity: isTop ? 0.6 : 0,
+      targetOpacity: isTop ? (ui.isMobile.value ? 1 : 0.6) : 0,
       targetX: props.x - boundsX - offsetX.value,
       targetY: props.y - boundsY - offsetY.value,
       scale: rect.width / item.element.scrollWidth,

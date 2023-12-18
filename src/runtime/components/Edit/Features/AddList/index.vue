@@ -5,15 +5,16 @@
   >
     <div
       v-if="selectableBundles.length"
+      v-show="!ui.isMobile.value || !selection.isMultiSelecting.value"
       ref="wrapper"
       class="bk bk-add-list bk-control"
       :class="[{ 'bk-is-active': isActive }, 'bk-is-' + listOrientation]"
-      @wheel.prevent.capture.stop="onWheel"
+      @wheel.capture.stop="onWheel"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
     >
       <Sortli ref="typeList" class="bk-list" :style="style">
-        <div
+        <button
           v-for="(type, i) in sortedList"
           :key="i + (type.id || 'undefined') + updateKey"
           class="bk-list-item bk-clone"
@@ -27,15 +28,22 @@
           <div class="bk-list-item-inner">
             <div class="bk-list-item-icon">
               <ItemIcon :bundle="type.id" />
+              <div class="bk-add-list-drop bk-drop-element">
+                <ItemIcon :bundle="type.id" />
+                <span>{{ type.label }}</span>
+              </div>
             </div>
             <div
               class="bk-list-item-label"
-              :class="{ 'bk-tooltip': listOrientation === 'horizontal' }"
+              :class="{
+                'bk-tooltip':
+                  listOrientation === 'horizontal' && !ui.isMobile.value,
+              }"
             >
               <span>{{ type.label }}</span>
             </div>
           </div>
-        </div>
+        </button>
       </Sortli>
     </div>
   </Teleport>
@@ -55,14 +63,20 @@ import { falsy, onlyUnique } from '#blokkli/helpers'
 import { ItemIcon, Sortli } from '#blokkli/components'
 import type { DraggableExistingBlokkliItem } from '#blokkli/types'
 
-const { state, selection, storage, types, context, runtimeConfig } =
+const { state, selection, storage, types, context, runtimeConfig, ui } =
   useBlokkli()
 
 const itemEntityType = runtimeConfig.itemEntityType
 
-const listOrientation = storage.use<'horizontal' | 'vertical'>(
+type ListOrientation = 'horizontal' | 'vertical'
+
+const listOrientationSetting = storage.use<ListOrientation>(
   'listOrientation',
   'vertical',
+)
+
+const listOrientation = computed<ListOrientation>(() =>
+  ui.isMobile.value ? 'horizontal' : listOrientationSetting.value,
 )
 
 watch(listOrientation, setRootClasses)
@@ -179,6 +193,10 @@ const generallyAvailableBundles = computed(() => {
 })
 
 function onWheel(e: WheelEvent) {
+  if (ui.isMobile.value) {
+    return
+  }
+  e.preventDefault()
   if (listOrientation.value === 'vertical') {
     const scrollHeight = typeList.value?.scrollHeight || 0
     const wrapperHeight = wrapper.value?.offsetHeight || 0

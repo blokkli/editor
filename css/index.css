@@ -77,7 +77,7 @@
 }
 
 .bk-draggable-list-container {
-  @apply pointer-events-auto;
+  @apply pointer-events-auto select-none;
   .bk-list-item {
     @apply bg-white p-20 font-bold;
   }
@@ -173,6 +173,7 @@
     a,
     iframe,
     input,
+    img,
     form,
     button {
       pointer-events: none;
@@ -181,6 +182,7 @@
 }
 
 [data-element-type='existing'] {
+  user-select: none;
   > * {
     user-select: none;
   }
@@ -222,7 +224,10 @@
 }
 
 .bk-body.bk-is-selecting * {
-  pointer-events: none !important;
+  @apply select-none;
+  @screen md {
+    pointer-events: none !important;
+  }
 }
 
 .bk-body {
@@ -281,4 +286,13 @@
 
 .bk-overlay {
   @apply bg-slate-800/90 backdrop-blur-md;
+}
+
+.bk-touch-action-bar {
+  @apply fixed bottom-0 left-0 w-full z-[99999999] bg-slate-900;
+  height: var(--bk-root-offset-bottom);
+
+  button {
+    @apply w-full  h-full min-h-0 rounded-none;
+  }
 }

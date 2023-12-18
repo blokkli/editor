@@ -600,9 +600,9 @@ export type BlokkliEvents = {
   reloadEntity: undefined
 
   // Selection.
-  'select:start': undefined
+  'select:start': string[] | undefined
   'select:toggle': string
-  'select:end': string[]
+  'select:end': string[] | undefined
 
   scrollIntoView: ScrollIntoViewEvent
   'animationFrame:before': undefined

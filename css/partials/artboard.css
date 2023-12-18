@@ -8,16 +8,21 @@
 
 .bk-html-root {
   --bk-root-offset-left: 0px;
-  --bk-root-offset-top: 100px;
+  --bk-root-offset-top: 80px;
   --bk-root-offset-bottom: 0px;
+  --bk-actions-height: 50px;
   @screen md {
     --bk-root-offset-top: 50px;
+    --bk-actions-height: 50px;
   }
   &.bk-has-sidebar-left {
     --bk-root-offset-left: 70px;
   }
   &.bk-has-sidebar-bottom {
-    --bk-root-offset-bottom: 70px;
+    --bk-root-offset-bottom: 50px;
+    @screen md {
+      --bk-root-offset-bottom: 70px;
+    }
   }
   @apply h-screen w-screen overflow-hidden;
 }

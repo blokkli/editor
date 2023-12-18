@@ -17,6 +17,7 @@ export type BlokkliUiProvider = {
   getArtboardScale: () => number
   isMobile: ComputedRef<boolean>
   isDesktop: ComputedRef<boolean>
+  isArtboard: () => boolean
 }
 
 export default function (): BlokkliUiProvider {
@@ -58,12 +59,16 @@ export default function (): BlokkliUiProvider {
     return scaleValue
   }
 
-  const viewportWidth = ref(375)
+  const viewportWidth = ref(window.innerWidth)
   const isMobile = computed(() => viewportWidth.value < 768)
   const isDesktop = computed(() => viewportWidth.value > 1024)
 
   const onResize = () => {
     viewportWidth.value = window.innerWidth
+  }
+
+  const isArtboard = () => {
+    return document.documentElement.classList.contains('bk-is-artboard')
   }
 
   onMounted(async () => {
@@ -88,5 +93,6 @@ export default function (): BlokkliUiProvider {
     getArtboardScale,
     isMobile,
     isDesktop,
+    isArtboard,
   }
 }

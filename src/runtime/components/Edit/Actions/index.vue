@@ -71,7 +71,10 @@ import type { AnimationFrameEvent, KeyPressedEvent } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
 import type { PluginMountEvent, PluginUnmountEvent } from '#blokkli/types'
 
-const { selection, eventBus, dom, text, types, state, ui } = useBlokkli()
+const { selection, eventBus, dom, text, types, state, ui, storage } =
+  useBlokkli()
+
+const useArtboard = storage.use('useArtboard', true)
 
 const editingEnabled = computed(() => state.editMode.value === 'editing')
 
@@ -131,13 +134,17 @@ function onAnimationFrame(e: AnimationFrameEvent) {
   }
 
   const el = document.querySelector('.bk-selection')
+  const artboardEl = ui.artboardElement()
+  const artboardRect = artboardEl.getBoundingClientRect()
+  const rootRect = ui.rootElement().getBoundingClientRect()
+  const wrapperRect = ui.isArtboard() ? rootRect : artboardRect
   if (el && el instanceof HTMLElement) {
     const rect = el.getBoundingClientRect()
-    const rootRect = ui.rootElement().getBoundingClientRect()
     x.value = Math.max(rect.x, rootRect.x + PADDING)
+    y.value = rect.y
     y.value = Math.min(
-      Math.max(rect.y - ACTIONS_HEIGHT - PADDING, rootRect.y + PADDING),
-      rootRect.height - PADDING,
+      Math.max(rect.y - ACTIONS_HEIGHT - PADDING, wrapperRect.y + PADDING),
+      wrapperRect.height - PADDING,
     )
   }
 }

@@ -1,9 +1,13 @@
 <template>
   <div
+    ref="list"
     @mousedown.capture="onMouseDown"
     @dblclick.capture="onDoubleClick"
     @mouseup="onMouseUp"
     @click.capture="onClick"
+    @touchstart.capture="onTouchStart"
+    @touchmove.capture="onTouchMove"
+    @touchend.capture="onTouchEnd"
   >
     <slot></slot>
   </div>
@@ -25,23 +29,139 @@ const emit = defineEmits<{
   (e: 'action', id: string): void
 }>()
 
+const list = ref<HTMLElement | null>(null)
 const mouseIsDown = ref(false)
 const start = ref<Coord>({ x: 0, y: 0 })
 
-const findItemId = (
-  e: PointerEvent | MouseEvent | TouchEvent,
-): string | undefined => {
-  const target = e.target
-  if (target instanceof HTMLElement || target instanceof SVGElement) {
-    const item = target.closest('[data-sortli-id]')
-    if (item instanceof HTMLElement) {
-      return item.dataset.sortliId
-    }
+const isTouching = ref(false)
+let touchTimeout: any = null
+let touchedId: string | undefined = undefined
+
+const onTouchStart = (e: TouchEvent) => {
+  isTouching.value = true
+  if (!props.useSelection) {
+    return
   }
+  clearTimeout(touchTimeout)
+  if (selection.isDragging.value) {
+    return
+  }
+  const currentTouchedId = findItem(e)?.id
+  touchedId = currentTouchedId
+  if (!touchedId || !currentTouchedId) {
+    return
+  }
+  const touch = e.touches[0]
+  start.value.x = touch.clientX
+  start.value.y = touch.clientY
+
+  touchTimeout = setTimeout(() => {
+    if (selection.isDragging.value) {
+      return
+    }
+    if (!list.value || !touchedId) {
+      return
+    }
+
+    // Long press on an additional item.
+    if (!selection.uuids.value.includes(currentTouchedId)) {
+      if (!selection.isMultiSelecting.value) {
+        eventBus.emit('select:start', [
+          ...selection.uuids.value,
+          currentTouchedId,
+        ])
+      }
+      clearTimeout(touchTimeout)
+      return
+    }
+    eventBus.emit('dragging:start', { items: [...selection.blocks.value] })
+  }, 200)
+}
+
+const onTouchMove = (e: TouchEvent) => {
+  if (!props.useSelection) {
+    return
+  }
+  const touch = e.touches[0]
+
+  const diffX = Math.abs(start.value.x - touch.clientX)
+  const diffY = Math.abs(start.value.y - touch.clientY)
+
+  if (diffX > 8 || diffY > 8) {
+    clearTimeout(touchTimeout)
+  }
+}
+const onTouchEnd = (e: TouchEvent) => {
+  if (!props.useSelection) {
+    return
+  }
+  clearTimeout(touchTimeout)
+}
+
+type FoundItem = {
+  id: string
+  element: HTMLElement
+}
+
+const findItem = (
+  e: PointerEvent | MouseEvent | TouchEvent,
+): FoundItem | undefined => {
+  if (!list.value) {
+    return
+  }
+
+  const target = e.target
+  if (!(target instanceof HTMLElement || target instanceof SVGElement)) {
+    return
+  }
+
+  const item = target.closest('[data-sortli-id]')
+  if (!(item instanceof HTMLElement)) {
+    return
+  }
+
+  const id = item.dataset.sortliId
+  if (!id) {
+    return
+  }
+
+  const el = list.value.querySelector(`:scope > [data-sortli-id="${id}"]`)
+  if (!(el instanceof HTMLElement)) {
+    return
+  }
+
+  return { id, element: el }
 }
 
 const onClick = (e: MouseEvent) => {
   e.preventDefault()
+  if (!props.useSelection) {
+    const el = findItem(e)?.element
+    if (!el) {
+      return
+    }
+    const item = buildDraggableItem(el)
+    if (!item) {
+      return
+    }
+    eventBus.emit('dragging:start', { items: [item] })
+    return
+  }
+  const id = findItem(e)?.id
+  if (!id) {
+    return
+  }
+
+  if (
+    (selection.uuids.value.includes(id) &&
+      selection.uuids.value.length === 1) ||
+    selection.isMultiSelecting.value ||
+    keyboard.isPressingControl.value
+  ) {
+    eventBus.emit('select:toggle', id)
+  } else {
+    eventBus.emit('select', id)
+  }
 }
 
 const onMouseMove = (e: MouseEvent) => {
@@ -49,7 +169,10 @@ const onMouseMove = (e: MouseEvent) => {
     window.removeEventListener('mousemove', onMouseMove)
     return
   }
-  const uuid = findItemId(e)
+  if (isTouching.value) {
+    return
+  }
+  const uuid = findItem(e)?.id
   if (!uuid || !e.target) {
     window.removeEventListener('mousemove', onMouseMove)
     return
@@ -92,7 +215,10 @@ const originatesFromEditable = (e: MouseEvent | TouchEvent) => {
 }
 
 const onMouseDown = (e: MouseEvent) => {
-  const id = findItemId(e)
+  if (isTouching.value) {
+    return
+  }
+  const id = findItem(e)?.id
   if (!id) {
     return
   }
@@ -125,6 +251,10 @@ const onMouseDown = (e: MouseEvent) => {
 
 const onMouseUp = (e: MouseEvent) => {
   window.removeEventListener('mousemove', onMouseMove)
+
+  if (isTouching.value) {
+    return
+  }
   if (!mouseIsDown.value) {
     return
   }
@@ -134,14 +264,6 @@ const onMouseUp = (e: MouseEvent) => {
     return
   }
 
-  if (!selection.isDragging.value) {
-    e.preventDefault()
-    e.stopPropagation()
-    const id = findItemId(e)
-    if (id) {
-      emit('select', id)
-    }
-  }
   eventBus.emit('dragging:end')
 }
 
@@ -166,6 +288,11 @@ const emitEditableFocus = (el: HTMLElement): boolean => {
 }
 
 const onDoubleClick = (e: MouseEvent) => {
+  if (selection.isMultiSelecting.value) {
+    e.stopPropagation()
+    e.preventDefault()
+    return
+  }
   if (
     originatesFromEditable(e) &&
     e.target instanceof HTMLElement &&
@@ -176,7 +303,7 @@ const onDoubleClick = (e: MouseEvent) => {
       return
     }
   }
-  const id = findItemId(e)
+  const id = findItem(e)?.id
   if (id) {
     emit('action', id)
   }

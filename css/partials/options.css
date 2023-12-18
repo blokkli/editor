@@ -1,6 +1,10 @@
 .bk {
   .bk-blokkli-item-options {
     @apply flex;
+    height: var(--bk-actions-height);
+    &:empty {
+      @apply hidden;
+    }
   }
   .bk-blokkli-item-options-item {
     @apply relative flex items-center;

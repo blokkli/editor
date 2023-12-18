@@ -7,7 +7,7 @@
   >
     <div class="bk bk-dialog-form bk-settings">
       <div
-        v-if="importFeatureEnabled || artboardFeatureEnabled"
+        v-if="importFeatureEnabled || artboardFeatureAvailable"
         class="bk-form-section"
       >
         <h3 class="bk-form-label">
@@ -21,7 +21,7 @@
               <span>{{ text('settingsShowImport') }}</span>
             </label>
           </li>
-          <li v-if="artboardFeatureEnabled">
+          <li v-if="artboardFeatureAvailable">
             <label class="bk-checkbox-toggle">
               <input v-model="persistArtboard" type="checkbox" class="peer" />
               <div />
@@ -31,7 +31,7 @@
         </ul>
       </div>
 
-      <div v-if="artboardFeatureEnabled" class="bk-form-section">
+      <div v-if="artboardFeatureAvailable" class="bk-form-section">
         <h3 class="bk-form-label">
           {{ text('settingsViewOptions') }}
         </h3>
@@ -53,7 +53,7 @@
         </ul>
       </div>
 
-      <div v-if="addListFeatureEnabled" class="bk-form-section">
+      <div v-if="showAddListOptions" class="bk-form-section">
         <h3 class="bk-form-label">
           {{ text('settingsListOrientation') }}
         </h3>
@@ -83,7 +83,7 @@
         <h3 class="bk-form-label">Erweitert</h3>
         <div class="bk-settings-buttons">
           <button
-            v-if="addListFeatureEnabled"
+            v-if="showAddListOptions"
             class="bk-button"
             @click="revertSort"
           >
@@ -104,7 +104,7 @@ import { useBlokkli } from '#imports'
 import { DialogModal, Icon } from '#blokkli/components'
 import { availableFeaturesAtBuild } from '#blokkli-runtime/features'
 
-const { storage, text } = useBlokkli()
+const { storage, text, ui } = useBlokkli()
 
 const showImport = storage.use('showImport', true)
 const useArtboard = storage.use('useArtboard', true)
@@ -114,9 +114,13 @@ const listOrientation = storage.use<'horizontal' | 'vertical'>(
   'vertical',
 )
 
-const artboardFeatureEnabled = availableFeaturesAtBuild.includes('Artboard')
+const artboardFeatureAvailable = computed(
+  () => availableFeaturesAtBuild.includes('Artboard') && !ui.isMobile.value,
+)
 const importFeatureEnabled = availableFeaturesAtBuild.includes('ImportExisting')
-const addListFeatureEnabled = availableFeaturesAtBuild.includes('AddList')
+const showAddListOptions = computed(
+  () => availableFeaturesAtBuild.includes('AddList') && !ui.isMobile.value,
+)
 
 defineEmits<{
   (e: 'cancel'): void

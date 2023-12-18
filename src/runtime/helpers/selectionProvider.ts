@@ -6,6 +6,7 @@ import {
   nextTick,
   onMounted,
   onBeforeUnmount,
+  watch,
 } from 'vue'
 
 import type { DraggableExistingBlokkliItem } from '#blokkli/types'
@@ -34,6 +35,11 @@ export type BlokkliSelectionProvider = {
   isDragging: Readonly<Ref<boolean>>
 
   /**
+   * Whether the user is currently in multi select mode.
+   */
+  isMultiSelecting: Readonly<Ref<boolean>>
+
+  /**
    * Update the active field key.
    */
   setActiveFieldKey: (key: string) => void
@@ -55,6 +61,7 @@ export default function (): BlokkliSelectionProvider {
   const isDragging = ref(false)
   const editableActive = ref(false)
   const isChangingOptions = ref(false)
+  const isMultiSelecting = ref(false)
 
   const blocks = computed<DraggableExistingBlokkliItem[]>(() =>
     selectedUuids.value
@@ -147,18 +154,29 @@ export default function (): BlokkliSelectionProvider {
 
   function onDraggingStart() {
     isDragging.value = true
+    isMultiSelecting.value = false
   }
 
   function onDraggingEnd() {
     isDragging.value = false
   }
 
+  const onSelectStart = (uuids: string[] = []) => {
+    selectedUuids.value = uuids
+    isMultiSelecting.value = true
+  }
+
+  const onSelectEnd = (uuids: string[] = []) => {
+    isMultiSelecting.value = false
+    selectItems(uuids)
+  }
+
   onMounted(() => {
     document.documentElement.addEventListener('mousedown', onWindowMouseDown)
     eventBus.on('select', onSelect)
-    eventBus.on('select:start', unselectItems)
+    eventBus.on('select:start', onSelectStart)
     eventBus.on('select:toggle', selectToggle)
-    eventBus.on('select:end', selectItems)
+    eventBus.on('select:end', onSelectEnd)
     eventBus.on('setActiveFieldKey', setActiveFieldKey)
     eventBus.on('state:reloaded', onStateReloaded)
     eventBus.on('dragging:start', onDraggingStart)
@@ -168,9 +186,9 @@ export default function (): BlokkliSelectionProvider {
   onBeforeUnmount(() => {
     document.documentElement.removeEventListener('mousedown', onWindowMouseDown)
     eventBus.off('select', onSelect)
-    eventBus.off('select:start', unselectItems)
+    eventBus.off('select:start', onSelectStart)
     eventBus.off('select:toggle', selectToggle)
-    eventBus.off('select:end', selectItems)
+    eventBus.off('select:end', onSelectEnd)
     eventBus.off('setActiveFieldKey', setActiveFieldKey)
     eventBus.off('state:reloaded', onStateReloaded)
     eventBus.off('dragging:start', onDraggingStart)
@@ -178,6 +196,12 @@ export default function (): BlokkliSelectionProvider {
   })
 
   const setActiveFieldKey = (key: string) => (activeFieldKey.value = key)
+
+  watch(isMultiSelecting, (is) => {
+    is
+      ? document.body.classList.add('bk-is-selecting')
+      : document.body.classList.remove('bk-is-selecting')
+  })
 
   return {
     uuids: selectedUuids,
@@ -187,5 +211,6 @@ export default function (): BlokkliSelectionProvider {
     setActiveFieldKey,
     editableActive,
     isChangingOptions,
+    isMultiSelecting,
   }
 }

@@ -9,14 +9,14 @@
 
   &.bk-toolbar {
     @apply select-none;
-    @apply h-100 text-base flex flex-col;
+    @apply h-80 text-base flex flex-col;
     @screen lg {
       @apply h-50 flex-row;
     }
   }
 
   .bk-toolbar-tabs {
-    @apply flex h-50 relative;
+    @apply flex h-40 lg:h-50 relative;
     .bk-tooltip {
       @apply absolute top-full left-0 right-3 mt-3;
     }
@@ -68,7 +68,7 @@
   }
 
   .bk-toolbar-menu-button {
-    @apply bg-blue-700 w-50 lg:w-70 flex items-center justify-center text-slate-50 h-full focus:outline-none relative z-50 transition;
+    @apply bg-blue-700 w-40 lg:w-70 flex items-center justify-center text-slate-50 h-full focus:outline-none relative z-50 transition;
     @apply lg:hover:bg-blue-800;
 
     &.bk-is-active {
@@ -76,7 +76,7 @@
     }
 
     svg {
-      @apply w-50 h-40 fill-current pointer-events-none;
+      @apply w-30 h-20 lg:w-50 lg:h-40 fill-current pointer-events-none;
     }
   }
 
@@ -159,7 +159,7 @@
   }
 
   .bk-toolbar-button {
-    @apply text-slate-200 flex gap-5 items-center px-10 min-w-[50px] justify-center;
+    @apply text-slate-200 flex gap-5 items-center px-10 min-w-[40px] lg:min-w-[50px] justify-center;
     @apply lg:hover:bg-slate-700;
 
     &.bk-is-inactive {
@@ -216,7 +216,7 @@
       @apply ml-auto;
     }
     &#bk-toolbar-title {
-      @apply flex-1;
+      @apply flex-1 text-xs lg:text-sm xl:text-base;
       .bk-toolbar-button {
         @apply w-full justify-start relative;
         .bk-tooltip {
@@ -242,7 +242,7 @@
     }
   }
   .bk-status-indicator {
-    @apply w-[11px] h-[11px] inline-block bg-red-500 rounded-full shrink-0 mr-[8px];
+    @apply w-[0.9em] h-[0.9em] inline-block bg-red-500 rounded-full shrink-0 mr-[0.3em] align-middle;
     &.bk-is-success {
       @apply bg-green-500;
     }
@@ -298,6 +298,15 @@
   }
 }
 
+.bk-touch-bar-enter-active,
+.bk-touch-bar-leave-active {
+  transition: 0.2s ease-in-out;
+}
+.bk-touch-bar-enter-from,
+.bk-touch-bar-leave-to {
+  transform: translateY(100%);
+}
+
 .bk-menu-enter-active,
 .bk-menu-leave-active {
   transition: 0.2s ease-in-out;
@@ -328,7 +337,7 @@
 }
 
 .bk-translations {
-  @apply relative;
+  @apply relative text-xs lg:text-sm xl:text-base;
   .bk-toolbar-button {
     @apply uppercase h-full font-semibold;
 

@@ -8,10 +8,11 @@
           <Icon name="close" />
         </button>
       </div>
-      <div v-if="lead" class="bk bk-dialog-lead">
-        {{ lead }}
-      </div>
+
       <div class="bk-dialog-content">
+        <div v-if="lead" class="bk bk-dialog-lead">
+          {{ lead }}
+        </div>
         <slot />
       </div>
       <div v-if="!hideButtons" class="bk bk-dialog-footer">

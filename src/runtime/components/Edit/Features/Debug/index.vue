@@ -51,12 +51,21 @@ const onKeyPress = (e: KeyPressedEvent) => {
   }
 }
 
+const onEvent = (name: string, data: any) => {
+  if (name === 'animationFrame' || name === 'animationFrame:before') {
+    return
+  }
+  console.log({ name, data })
+}
+
 onMounted(() => {
   eventBus.on('keyPressed', onKeyPress)
+  eventBus.on('*', onEvent)
 })
 
 onBeforeUnmount(() => {
   eventBus.off('keyPressed', onKeyPress)
+  eventBus.off('*', onEvent)
 })
 </script>
 

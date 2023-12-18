@@ -17,6 +17,9 @@
           :data-drop-target-key="child.key"
           :data-field-label="field.label"
           class="bk-drop-targets-field-child"
+          @click.stop.prevent.capture="onChildClick(field, child)"
+          @touchstart="activeKey = child.key"
+          @touchend="activeKey = ''"
           :class="[
             { 'bk-is-active': activeKey === child.key },
             'bk-is-' + child.orientation,
@@ -86,6 +89,19 @@ const props = defineProps<{
   mouseX: number
   mouseY: number
 }>()
+
+const onChildClick = (field: FieldRect, child: FieldRectChild) => {
+  emit('drop', {
+    field: field.field,
+    preceedingUuid: child.prevUuid,
+    items: [...props.items],
+    host: {
+      type: field.field.hostEntityType,
+      uuid: field.field.hostEntityUuid,
+      fieldName: field.field.name,
+    },
+  })
+}
 
 const onMouseUp = (e: MouseEvent) => {
   if (activeKey.value) {
@@ -287,16 +303,22 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
           },
         })
       } else {
+        const width = Math.max(
+          gap,
+          fieldWidth - (el.offsetLeft + el.offsetWidth),
+        )
         children.push({
           prevUuid: uuid,
           key: 'last_' + uuid,
           orientation,
           style: {
-            width:
-              Math.max(gap, fieldWidth - (el.offsetLeft + el.offsetWidth)) +
-              'px',
+            width: width + 'px',
             height: el.offsetHeight + 'px',
-            left: el.offsetLeft + el.offsetWidth + 'px',
+            left:
+              Math.min(
+                el.offsetLeft + el.offsetWidth,
+                window.innerWidth - width,
+              ) + 'px',
             top: el.offsetTop + 'px',
           },
         })
@@ -331,7 +353,7 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
         style: {
           width: gap + 'px',
           height: Math.max(el.offsetHeight, 30) + 'px',
-          left: el.offsetLeft - gap + 'px',
+          left: Math.max(el.offsetLeft - gap, 0) + 'px',
           top: el.offsetTop + 'px',
         },
       })
@@ -345,7 +367,8 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
 const fieldRects = ref<FieldRect[]>([])
 
 const buildFieldRects = (): FieldRect[] => {
-  const artboardRect = ui.artboardElement().getBoundingClientRect()
+  const artboardEl = ui.artboardElement()
+  const artboardRect = artboardEl.getBoundingClientRect()
   const scale = ui.getArtboardScale()
   const rects: FieldRect[] = []
   const allFields = dom.getAllFields()
@@ -353,7 +376,7 @@ const buildFieldRects = (): FieldRect[] => {
     const field = allFields[i]
     const rect = field.element.getBoundingClientRect()
     const x = rect.x / scale - artboardRect.x / scale
-    const y = rect.y / scale - artboardRect.y / scale
+    const y = rect.y / scale - artboardRect.y / scale + artboardEl.scrollTop
     const children = getChildren(field)
     const backgroundColor = realBackgroundColor(field.element)
     const height = Math.max(field.element.offsetHeight, 30)
@@ -455,9 +478,11 @@ const onAnimationFrame = () => {
 
 onMounted(() => {
   document.body.classList.add('bk-is-dragging')
-  document.body.addEventListener('mouseup', onMouseUp)
   fieldRects.value = buildFieldRects()
-  eventBus.on('animationFrame', onAnimationFrame)
+  if (!ui.isMobile.value) {
+    document.body.addEventListener('mouseup', onMouseUp)
+    eventBus.on('animationFrame', onAnimationFrame)
+  }
 })
 
 onBeforeUnmount(() => {

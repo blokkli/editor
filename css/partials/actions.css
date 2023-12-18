@@ -1,6 +1,7 @@
 .bk {
   #bk-blokkli-item-actions-title {
-    @apply h-full;
+    height: var(--bk-actions-height);
+    @apply flex-1;
   }
   .bk-blokkli-item-actions-title-count {
     @apply bg-slate-50 text-slate-900 inline-block px-3 w-20 h-20 rounded-full ml-10 text-sm font-bold;
@@ -12,19 +13,21 @@
     @apply text-slate-50  select-none text-sm;
   }
   .bk-blokkli-item-actions-inner {
-    @apply fixed left-0 p-0 h-50 z-[501] w-full;
+    @apply fixed left-0 p-0 z-[501] w-full;
     bottom: var(--bk-root-offset-bottom);
     @screen md {
-      @apply bottom-auto top-0 w-auto;
+      @apply top-0 w-auto;
+      bottom: initial;
     }
   }
   .bk-blokkli-item-actions-controls {
-    @apply flex items-stretch whitespace-nowrap h-full bg-slate-900 shadow-xl  overflow-auto border-b border-b-slate-700;
+    @apply flex items-stretch whitespace-nowrap h-full bg-slate-900 shadow-xl border-b border-b-slate-700 flex-wrap lg:flex-nowrap;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
     @screen md {
       @apply rounded-md border-b-0;
-    }
-    > div:not(:first-child):not(:empty) {
-      @apply border-l border-l-slate-500;
     }
   }
   .bk-blokkli-item-actions-overlay {
@@ -35,11 +38,25 @@
     }
   }
 
+  #bk-blokkli-item-actions-options {
+    @apply overflow-auto lg:overflow-visible;
+    @apply border-b border-b-slate-700 lg:border-b-0;
+    @apply order-first min-w-full lg:min-w-0 lg:order-none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &:empty {
+      @apply hidden;
+    }
+  }
+
   .bk-blokkli-item-actions-buttons {
     @apply relative flex;
     > button {
-      @apply text-slate-300 h-full flex items-center shrink-0 justify-center w-50;
+      @apply text-slate-300 h-full flex items-center shrink-0 justify-center relative z-50;
       @apply md:hover:bg-slate-700 md:hover:text-slate-50;
+      width: var(--bk-actions-height);
       &.bk-is-active {
         @apply bg-white text-slate-900;
       }
@@ -58,20 +75,22 @@
         @apply opacity-25 pointer-events-none;
       }
       svg {
-        @apply w-25 h-25 fill-current;
+        @apply w-20 h-20 md:w-25 md:h-25 fill-current;
       }
     }
   }
 
   .bk-blokkli-item-actions-type-button {
-    @apply flex items-center justify-between cursor-default min-w-[180px] text-slate-300 font-bold h-full pl-[9px] pr-15 text-base rounded-l leading-none;
+    @apply flex items-center justify-between cursor-default md:min-w-[180px] text-slate-300 font-bold h-full pl-[9px] pr-15  rounded-l leading-none;
+    @apply text-xs md:text-sm lg:text-base;
+    @apply w-full;
     > span {
       @apply mr-auto;
     }
     .bk-blokkli-item-actions-title-icon {
-      @apply text-[25px] mr-10 bg-slate-800 w-[34px] h-[34px] rounded border border-slate-600 relative text-white;
+      @apply text-xl md:text-[34px] mr-[0.25em] bg-slate-800 w-[1em] h-[1em] rounded border border-slate-600 relative text-white;
       svg {
-        @apply w-[1em] h-[1em] fill-current absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+        @apply w-[0.7em] h-[0.7em] fill-current absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
       }
     }
     &.is-interactive {
@@ -102,14 +121,18 @@
     }
   }
 
+  #bk-blokkli-item-actions {
+    @apply border-l border-l-slate-600;
+  }
+
   .bk-blokkli-item-actions-type {
     @apply relative h-full;
   }
 
   .bk-blokkli-item-actions-type-dropdown {
-    @apply absolute bottom-full left-0 min-w-[300px] bg-slate-900 text-slate-200 rounded overflow-hidden shadow-xl rounded-t-none;
+    @apply absolute bottom-full left-0 min-w-[300px] bg-slate-900 text-slate-200 overflow-hidden shadow-xl-inverted rounded-tr;
     @screen md {
-      @apply top-full bottom-auto;
+      @apply top-full bottom-auto shadow-xl rounded-t-none rounded-b;
     }
     h3 {
       @apply p-10 pt-15 font-semibold uppercase text-xs tracking-wide text-slate-400;
@@ -143,7 +166,11 @@
     /* @apply relative; */
   }
   .bk-blokkli-item-actions-comment-dropdown {
-    @apply absolute top-full left-0 w-full bg-white p-15 shadow-xl rounded-b;
+    @apply absolute left-0 w-full bg-white p-15 shadow-xl-inverted;
+    bottom: var(--bk-actions-height);
+    @screen md {
+      @apply top-full bottom-auto shadow-xl rounded-b;
+    }
     button {
       @apply mt-15;
     }

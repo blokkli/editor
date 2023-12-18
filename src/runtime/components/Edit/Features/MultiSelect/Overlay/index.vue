@@ -177,13 +177,11 @@ onMounted(() => {
   anchorY.value = (newY - artboardRect.top) / scale
 
   eventBus.on('animationFrame', onAnimationFrame)
-  document.body.classList.add('bk-is-selecting')
   eventBus.emit('select:start')
 })
 
 onBeforeUnmount(() => {
   eventBus.off('animationFrame', onAnimationFrame)
-  document.body.classList.remove('bk-is-selecting')
   emitSelected()
 })
 </script>

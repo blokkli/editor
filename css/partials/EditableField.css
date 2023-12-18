@@ -58,7 +58,9 @@
   }
 }
 
-.bk-body:not(.bk-is-pressing-control) {
+.bk-body:not(.bk-is-pressing-control):not(.bk-is-dragging):not(
+    .bk-is-selecting
+  ) {
   /* Only target blocks inside the editing area (e.g. not inside the library pane) */
   [data-blokkli-provider-active='true'] {
     /* Don't target editable fields inside a block from the library. */

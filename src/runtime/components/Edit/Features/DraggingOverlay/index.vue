@@ -8,6 +8,21 @@
     :mouse-y="mouseY"
     @drop="onDrop"
   />
+  <Teleport to="body">
+    <Transition name="bk-touch-bar">
+      <div
+        v-if="ui.isMobile.value && isVisible"
+        class="bk bk-touch-action-bar bk-control"
+      >
+        <button
+          class="bk-button bk-is-danger"
+          @click.stop.prevent.capture="eventBus.emit('dragging:end')"
+        >
+          Cancel dragging
+        </button>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
@@ -29,7 +44,7 @@ import type {
 } from '#blokkli/types'
 import { getDefinition } from '#blokkli/definitions'
 
-const { eventBus, adapter, state } = useBlokkli()
+const { eventBus, adapter, state, ui } = useBlokkli()
 
 const isVisible = ref(false)
 const mouseX = ref(0)
@@ -112,6 +127,7 @@ const onDrop = async (e: DropTargetEvent) => {
       }),
     )
   }
+  onDraggingEnd()
   eventBus.emit('dragging:end')
 }
 
@@ -138,7 +154,9 @@ function loop(e: AnimationFrameEvent) {
 const onMouseUp = (e: MouseEvent) => {
   e.preventDefault()
   e.stopPropagation()
-  eventBus.emit('dragging:end')
+  if (!ui.isMobile.value) {
+    eventBus.emit('dragging:end')
+  }
 }
 
 function onDraggingStart(e: DraggableStartEvent) {

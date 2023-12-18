@@ -21,9 +21,16 @@ export default function (): BlokkliAnimationProvider {
   // render a maximum of 2 seconds.
   let iterator = 120
 
-  function onMouseMoveGlobal(e: MouseEvent) {
+  const onMouseMoveGlobal = (e: MouseEvent) => {
     mouseX = e.x
     mouseY = e.y
+    iterator = 120
+  }
+
+  const onTouchMoveGlobal = (e: TouchEvent) => {
+    const touch = e.touches[0]
+    mouseX = touch.screenX
+    mouseY = touch.screenY
     iterator = 120
   }
 
@@ -125,11 +132,15 @@ export default function (): BlokkliAnimationProvider {
     window.addEventListener('mousemove', onMouseMoveGlobal, {
       passive: false,
     })
+    window.addEventListener('touchmove', onTouchMoveGlobal, {
+      passive: false,
+    })
   })
 
   onBeforeUnmount(() => {
     window.cancelAnimationFrame(raf)
     window.removeEventListener('mousemove', onMouseMoveGlobal)
+    window.removeEventListener('touchmove', onTouchMoveGlobal)
     document.body.removeEventListener('wheel', requestDraw)
     document.removeEventListener('scroll', requestDraw)
     eventBus.off('select', requestDraw)

@@ -1,6 +1,23 @@
 <template>
+  <Teleport to="body">
+    <Transition name="bk-touch-bar">
+      <div
+        v-if="ui.isMobile.value && selection.isMultiSelecting.value"
+        class="bk bk-touch-action-bar bk-control"
+      >
+        <button
+          class="bk-button bk-is-primary"
+          @click.stop.prevent.capture="
+            eventBus.emit('select:end', [...selection.uuids.value])
+          "
+        >
+          Finish selecting
+        </button>
+      </div>
+    </Transition>
+  </Teleport>
   <Overlay
-    v-if="shouldRender"
+    v-if="shouldRender && !ui.isMobile.value"
     :start-x="downX"
     :start-y="downY"
     @select="onSelect"
@@ -12,7 +29,7 @@ import { ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
 import Overlay from './Overlay/index.vue'
 
-const { keyboard, eventBus, selection } = useBlokkli()
+const { keyboard, eventBus, selection, ui } = useBlokkli()
 
 const enabled = computed(() => !selection.editableActive.value)
 

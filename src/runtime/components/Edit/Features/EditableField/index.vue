@@ -20,11 +20,11 @@
               ref="input"
               enterkeyhint="done"
               v-model="text"
-              @keydown.stop="onKeyDown"
+              @keydown.stop.capture="onKeyDown"
               rows="2"
               :style="inputStyle"
               v-bind="inputAttributes"
-              @blur.prevent.stop="onBlur"
+              @blur="onBlur"
             />
             <div :style="inputStyle" class="bk-textarea" v-html="text" />
           </div>
@@ -80,8 +80,15 @@ const maxlength = ref(0)
 const block = ref<DraggableExistingBlokkliItem | null>(null)
 let blurTimeout: any = null
 
-const onBlur = () => {
+const onBlur = (e: FocusEvent) => {
   clearTimeout(blurTimeout)
+
+  if (!ui.isMobile.value) {
+    return
+  }
+
+  e.stopPropagation()
+  e.preventDefault()
 
   blurTimeout = setTimeout(() => {
     if (!selection.editableActive.value) {
@@ -128,11 +135,13 @@ const onEditableFocus = (e: EditableFieldFocusEvent) => {
   if (ui.isMobile.value) {
     style.value = {}
   } else {
-    const artboardRect = ui.artboardElement().getBoundingClientRect()
+    const artboardEl = ui.artboardElement()
+    const artboardRect = artboardEl.getBoundingClientRect()
+    const artboardScroll = artboardEl.scrollTop
     const scale = ui.getArtboardScale()
     const rect = e.element.getBoundingClientRect()
     const x = (rect.x - artboardRect.x) / scale
-    const y = (rect.y - artboardRect.y) / scale
+    const y = (rect.y - artboardRect.y) / scale + artboardScroll
     style.value = {
       width: e.element.offsetWidth + 'px',
       top: y + 'px',

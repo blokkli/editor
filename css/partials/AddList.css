@@ -1,12 +1,16 @@
 .bk {
   .bk-list {
-    @apply pt-5 relative z-20;
+    @apply relative z-30;
     &::-webkit-scrollbar {
       display: none;
     }
   }
 
   .bk-list-item {
+    @apply touch-manipulation;
+    @screen md {
+      @apply aspect-square;
+    }
     &.bk-is-disabled {
       @apply pointer-events-none;
       .bk-list-item-inner {
@@ -32,13 +36,20 @@
   }
 
   .bk-list-item-inner {
-    @apply relative flex bg-slate-800 text-slate-200 rounded w-full items-center justify-center flex-col text-sm leading-3 p-10 aspect-square z-10 border border-slate-600;
+    @apply relative flex bg-slate-800 text-slate-200 rounded items-center justify-center text-sm leading-3 z-10 border border-slate-600 gap-5;
+    @apply md:w-[1em];
+    font-size: 20px;
+    @apply px-10 py-5 md:py-10;
+    @screen md {
+      font-size: 30px;
+      @apply w-full h-full;
+    }
   }
 
   .bk-list-item-icon {
-    @apply text-3xl;
+    @apply relative overflow-hidden;
     svg {
-      @apply fill-current w-30 h-30;
+      @apply fill-current;
     }
     flex: 0 0 auto;
     display: flex;
@@ -48,7 +59,8 @@
 }
 
 .bk.bk-add-list {
-  @apply bg-slate-900 bottom-0 fixed left-0 select-none z-[40000];
+  @apply bg-slate-900 bottom-0 fixed left-0 select-none z-[40000] overflow-auto lg:overflow-visible;
+  @apply touch-manipulation;
 
   &.bk-is-active {
     &:after {
@@ -84,13 +96,17 @@
     }
   }
   &.bk-is-horizontal {
-    @apply w-full h-70 flex;
+    @apply w-full flex md:py-5;
+    height: var(--bk-root-offset-bottom);
     .bk-list {
       @apply flex mx-auto;
     }
     .bk-list-item-label {
-      @apply absolute left-0 bottom-full opacity-0 mb-15;
-      @apply left-1/2 -translate-x-1/2;
+      @apply text-xs;
+      @screen md {
+        @apply absolute left-0 bottom-full opacity-0 mb-15 text-base;
+        @apply left-1/2 -translate-x-1/2;
+      }
     }
     .bk-list-item {
       @apply px-5 py-5 cursor-grab;
@@ -120,5 +136,16 @@
     .bk-list {
       @apply opacity-20;
     }
+  }
+
+  .bk-add-list-drop {
+    @apply absolute top-0 left-0 opacity-0 w-auto;
+  }
+}
+
+.bk-add-list-drop {
+  @apply bg-slate-900 text-white flex h-50 gap-10 text-base font-semibold items-center rounded-md whitespace-nowrap min-w-[200px] px-15;
+  .bk-blokkli-item-icon {
+    flex: 0 0 auto;
   }
 }
