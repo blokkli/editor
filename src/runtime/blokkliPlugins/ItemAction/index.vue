@@ -4,7 +4,7 @@
       :disabled="isDisabled"
       :class="{ 'bk-is-active': active }"
       :style="{ order: weight || 0 }"
-      @click="onClick"
+      @click.prevent.stop="onClick"
     >
       <slot name="icon">
         <Icon v-if="icon" :name="icon" />

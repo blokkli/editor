@@ -1,5 +1,6 @@
 <template>
   <PluginToolbarButton
+    v-if="!ui.isMobile.value"
     :title="text('previewMobileFrame')"
     meta
     key-code="P"
@@ -17,7 +18,7 @@
   />
 
   <PluginToolbarButton
-    v-if="previewGrantUrl"
+    v-if="previewGrantUrl && !ui.isMobile.value"
     :title="text('previewWithSmartphone')"
     region="after-menu"
     icon="qrcode"
@@ -56,7 +57,7 @@ const qrCodeVisible = ref(false)
 
 const route = useRoute()
 
-const { adapter, storage, text } = useBlokkli()
+const { adapter, storage, text, ui } = useBlokkli()
 
 const previewVisible = storage.use('preview:visible', false)
 

@@ -1,4 +1,10 @@
-import { type Ref, onMounted, onBeforeUnmount, ref } from 'vue'
+import {
+  type Ref,
+  type ComputedRef,
+  onMounted,
+  onBeforeUnmount,
+  ref,
+} from 'vue'
 
 export type BlokkliUiProvider = {
   rootElement: () => HTMLElement
@@ -9,6 +15,7 @@ export type BlokkliUiProvider = {
     open: () => void
   }
   getArtboardScale: () => number
+  isMobile: ComputedRef<boolean>
 }
 
 export default function (): BlokkliUiProvider {
@@ -59,6 +66,8 @@ export default function (): BlokkliUiProvider {
     return scaleValue
   }
 
+  const isMobile = computed(() => window.innerWidth < 768)
+
   return {
     menu: {
       isOpen: menuIsOpen,
@@ -68,5 +77,6 @@ export default function (): BlokkliUiProvider {
     artboardElement,
     rootElement,
     getArtboardScale,
+    isMobile,
   }
 }

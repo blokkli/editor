@@ -1,23 +1,44 @@
 <template>
   <Teleport to="#bk-toolbar-after-title">
-    <div class="bk-blokkli-item-options-radios bk-is-language">
-      <label
-        v-for="item in items"
-        :key="item.id"
-        :class="{ 'bk-is-muted': !item.translation }"
+    <div
+      v-if="items.length"
+      class="bk-translations"
+      :class="{ 'bk-is-dropdown': isDropdown }"
+    >
+      <button
+        v-if="isDropdown"
+        class="bk-toolbar-button"
+        :class="{ 'bk-is-active': isOpen }"
+        @click.stop.prevent="isOpen = !isOpen"
       >
-        <div>
-          <input
-            type="radio"
-            :checked="item.checked"
-            :value="item.id"
-            name="pb_language"
-            @click="onClick(item, $event)"
-          />
-          <span>{{ item.code }}</span>
-          <div class="bk-tooltip">{{ item.label }}</div>
-        </div>
-      </label>
+        {{ activeLangcode }}
+      </button>
+      <div
+        v-if="isOpen || !isDropdown"
+        :class="
+          isDropdown
+            ? 'bk-translations-dropdown'
+            : 'bk-blokkli-item-options-radios bk-is-language'
+        "
+      >
+        <label
+          v-for="item in items"
+          :key="item.id"
+          :class="{ 'bk-is-muted': !item.translation }"
+        >
+          <div>
+            <input
+              type="radio"
+              :checked="item.checked"
+              :value="item.id"
+              name="pb_language"
+              @click.stop.prevent="onClick(item, $event)"
+            />
+            <span>{{ item.code }}</span>
+            <div :class="{ 'bk-tooltip': !isDropdown }">{{ item.label }}</div>
+          </div>
+        </label>
+      </div>
     </div>
   </Teleport>
 
@@ -47,8 +68,15 @@ import type {
   BlokkliEntityTranslation,
 } from '#blokkli/types'
 
-const { eventBus, state, context, adapter, text } = useBlokkli()
+const { eventBus, state, context, adapter, text, ui } = useBlokkli()
 const { translation, editMode } = state
+
+// const isDropdown = computed(() => ui.isMobile.value)
+const isDropdown = computed(() => true)
+
+const isOpen = ref(false)
+
+const activeLangcode = computed(() => context.value.language)
 
 type TranslationStateItem = {
   id: string

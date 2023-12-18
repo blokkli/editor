@@ -5,6 +5,7 @@
     entity-bundle="page"
     :entity-uuid="page.uuid"
     :can-edit="true"
+    language="en"
   >
     <BlokkliField v-bind="fieldHeader" tag="header" />
     <BlokkliField v-bind="fieldContent" />

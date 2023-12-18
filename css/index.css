@@ -201,19 +201,21 @@
   min-height: 30px;
 }
 
-.bk-body:not(.bk-is-selecting):not(.bk-is-dragging) {
-  .bk-field-list {
-    &:hover {
-      outline: 1px dashed;
-      .bk-field-list {
+@screen lg {
+  .bk-body:not(.bk-is-selecting):not(.bk-is-dragging) {
+    .bk-field-list {
+      &:hover {
         outline: 1px dashed;
+        .bk-field-list {
+          outline: 1px dashed;
+        }
       }
     }
-  }
-  .bk-main-canvas {
-    &:hover {
-      .draggable {
-        @apply outline-dashed outline-slate-400 outline-[1px];
+    .bk-main-canvas {
+      &:hover {
+        .draggable {
+          @apply outline-dashed outline-slate-400 outline-[1px];
+        }
       }
     }
   }
@@ -251,7 +253,8 @@
 }
 
 .bk-html-root {
-  --bk-outline-width: 1;
+  --bk-outline-width: 2;
+  --bk-radius: 4;
   --bk-artboard-scale: 1;
 }
 

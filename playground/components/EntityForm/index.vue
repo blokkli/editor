@@ -21,6 +21,7 @@
         v-else-if="field.type === 'textarea'"
         :id="field.name"
         v-model="values[field.name]"
+        rows="10"
         :name="field.name"
       />
       <FieldIconInput

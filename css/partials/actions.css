@@ -12,10 +12,17 @@
     @apply text-slate-50  select-none text-sm;
   }
   .bk-blokkli-item-actions-inner {
-    @apply fixed left-0 top-0 p-0 h-50 z-[501];
+    @apply fixed left-0 p-0 h-50 z-[501] w-full;
+    bottom: var(--bk-root-offset-bottom);
+    @screen md {
+      @apply bottom-auto top-0 w-auto;
+    }
   }
   .bk-blokkli-item-actions-controls {
-    @apply flex items-stretch whitespace-nowrap h-full bg-slate-900 shadow-xl rounded-md;
+    @apply flex items-stretch whitespace-nowrap h-full bg-slate-900 shadow-xl  overflow-auto border-b border-b-slate-700;
+    @screen md {
+      @apply rounded-md border-b-0;
+    }
     > div:not(:first-child):not(:empty) {
       @apply border-l border-l-slate-500;
     }
@@ -32,16 +39,18 @@
     @apply relative flex;
     > button {
       @apply text-slate-300 h-full flex items-center shrink-0 justify-center w-50;
-      @apply hover:bg-slate-700 hover:text-slate-50;
+      @apply md:hover:bg-slate-700 md:hover:text-slate-50;
       &.bk-is-active {
         @apply bg-white text-slate-900;
       }
       .bk-tooltip {
         @apply absolute bottom-full left-0 w-full mb-3;
       }
-      &:not(:hover) {
-        .bk-tooltip {
-          @apply hidden;
+      @screen md {
+        &:not(:hover) {
+          .bk-tooltip {
+            @apply hidden;
+          }
         }
       }
 
@@ -98,7 +107,10 @@
   }
 
   .bk-blokkli-item-actions-type-dropdown {
-    @apply absolute top-full left-0 min-w-[300px] bg-slate-900 text-slate-200 rounded overflow-hidden shadow-xl rounded-t-none;
+    @apply absolute bottom-full left-0 min-w-[300px] bg-slate-900 text-slate-200 rounded overflow-hidden shadow-xl rounded-t-none;
+    @screen md {
+      @apply top-full bottom-auto;
+    }
     h3 {
       @apply p-10 pt-15 font-semibold uppercase text-xs tracking-wide text-slate-400;
     }
@@ -106,10 +118,12 @@
       @apply flex py-15 px-10 items-center gap-5 w-full  font-semibold text-lg text-slate-300;
       text-align: left;
       line-height: 1;
-      &:hover {
-        @apply text-white bg-slate-800;
-        .bk-blokkli-item-icon {
-          @apply border-slate-300;
+      @screen md {
+        &:hover {
+          @apply text-white bg-slate-800;
+          .bk-blokkli-item-icon {
+            @apply border-slate-300;
+          }
         }
       }
     }

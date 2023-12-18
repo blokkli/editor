@@ -18,6 +18,9 @@
         spellcheck="false"
         required
       />
+      <button>
+        <Icon name="close" @click="$emit('close')" />
+      </button>
     </div>
 
     <ul class="bk-search-tabs">

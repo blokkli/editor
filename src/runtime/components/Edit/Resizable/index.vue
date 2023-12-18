@@ -1,7 +1,7 @@
 <template>
   <div
     class="bk-resizable"
-    :style="{ width: width + 'px' }"
+    :style="style"
     :class="{ 'bk-is-resizing': isResizing }"
     @wheel.stop=""
   >
@@ -15,7 +15,7 @@
 <script lang="ts" setup>
 import { ref, useBlokkli, onBeforeUnmount } from '#imports'
 
-const { storage } = useBlokkli()
+const { storage, ui } = useBlokkli()
 
 const persistedWidth = storage.use('resizable:width', 600)
 const width = ref(persistedWidth.value)
@@ -23,7 +23,18 @@ const startX = ref(0)
 const startWidth = ref(0)
 const isResizing = ref(false)
 
+const style = computed(() => {
+  if (ui.isMobile.value) {
+    return {}
+  }
+
+  return { width: width.value + 'px' }
+})
+
 function onMouseMove(e: MouseEvent) {
+  if (ui.isMobile.value) {
+    return
+  }
   e.stopPropagation()
   e.preventDefault()
   width.value = Math.max(
@@ -33,6 +44,9 @@ function onMouseMove(e: MouseEvent) {
 }
 
 function onMouseUp(e: MouseEvent) {
+  if (ui.isMobile.value) {
+    return
+  }
   e.stopPropagation()
   e.preventDefault()
   isResizing.value = false
@@ -42,6 +56,9 @@ function onMouseUp(e: MouseEvent) {
 }
 
 function onMouseDown(e: MouseEvent) {
+  if (ui.isMobile.value) {
+    return
+  }
   startX.value = e.x
   startWidth.value = width.value
   isResizing.value = true

@@ -1,25 +1,31 @@
 .bk {
   &.bk-top {
-    @apply bg-slate-900;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 50000;
+    @apply bg-slate-900 fixed top-0 left-0 w-full z-[50000];
+  }
+
+  .bk-toolbar-wrapper {
+    @apply flex border-t border-t-slate-700 flex-1 md:flex-initial md:first:flex-1 md:border-t-0;
   }
 
   &.bk-toolbar {
     @apply select-none;
+    @apply h-100 text-base flex flex-col;
+    @screen md {
+      @apply h-50 flex-row;
+    }
   }
 
   .bk-toolbar-tabs {
-    @apply flex h-full relative;
+    @apply flex h-50 relative;
     .bk-tooltip {
       @apply absolute top-full left-0 right-3 mt-3;
     }
     button {
       @apply flex text-slate-300 h-full focus:outline-none flex-1 items-center px-10 gap-10 aspect-square justify-center;
-      @apply hover:bg-slate-700;
+      @apply md:hover:bg-slate-700;
+      .bk-tooltip {
+        @apply hidden;
+      }
       &.is-active {
         @apply bg-white text-slate-900;
         .bk-tooltip {
@@ -33,15 +39,20 @@
       &[disabled] {
         @apply pointer-events-none opacity-25;
       }
-      &:not(:hover) {
-        .bk-tooltip {
-          @apply hidden;
+      @screen md {
+        &:hover {
+          .bk-tooltip {
+            @apply block;
+          }
         }
       }
     }
   }
   .bk-tooltip {
-    @apply bg-slate-800/80 backdrop-blur p-5 text-slate-50 font-semibold text-sm rounded select-none pointer-events-none h-[34px] flex items-center justify-between px-10 leading-none whitespace-nowrap;
+    @apply bg-slate-800/80 backdrop-blur p-5 text-slate-50 font-semibold text-sm rounded select-none pointer-events-none h-[34px] hidden items-center justify-between px-10 leading-none whitespace-nowrap;
+    @screen md {
+      @apply flex;
+    }
     kbd {
       @apply font-sans text-xs flex ml-5;
     }
@@ -57,8 +68,8 @@
   }
 
   .bk-toolbar-menu-button {
-    @apply bg-blue-700 w-70 flex items-center justify-center text-slate-50 h-full focus:outline-none relative z-50 transition;
-    @apply hover:bg-blue-800;
+    @apply bg-blue-700 w-50 md:w-70 flex items-center justify-center text-slate-50 h-full focus:outline-none relative z-50 transition;
+    @apply md:hover:bg-blue-800;
 
     &.bk-is-active {
       @apply bg-white text-blue-700;
@@ -88,7 +99,7 @@
   }
   .bk-toolbar-menu-list-button {
     @apply grid items-center pl-15 pr-20 py-15 gap-x-15 w-full text-left whitespace-nowrap text-slate-950;
-    @apply hover:bg-slate-100;
+    @apply md:hover:bg-slate-100;
     @apply border-b border-b-slate-200;
     grid-template-columns: auto 1fr;
     grid-template-rows: auto auto;
@@ -149,7 +160,7 @@
 
   .bk-toolbar-button {
     @apply text-slate-200 flex gap-5 items-center px-10 min-w-[50px] justify-center;
-    @apply hover:bg-slate-700;
+    @apply md:hover:bg-slate-700;
 
     &.bk-is-inactive {
       @apply text-slate-600;
@@ -189,15 +200,23 @@
     @apply left-3;
   }
 
-  &.bk-toolbar {
-    @apply flex h-50 text-base;
+  #bk-toolbar-before-view-options {
   }
 
   .bk-toolbar-container {
+    @apply border-l border-l-slate-600;
+    &:empty {
+      @apply hidden;
+    }
     @apply relative flex h-full;
-    &.bk-is-title {
+    &#bk-toolbar-view-options {
+      @apply hidden md:flex;
+    }
+    &.bk-is-sidebar {
+      @apply ml-auto;
+    }
+    &#bk-toolbar-title {
       @apply flex-1;
-
       .bk-toolbar-button {
         @apply w-full justify-start relative;
         .bk-tooltip {
@@ -220,7 +239,6 @@
       }
     }
     + .bk-toolbar-container {
-      @apply border-l border-l-slate-600;
     }
   }
   .bk-status-indicator {
@@ -306,5 +324,36 @@
   }
   .bk-dialog-inner {
     @apply scale-90 opacity-0;
+  }
+}
+
+.bk-translations {
+  @apply relative;
+  .bk-toolbar-button {
+    @apply uppercase h-full;
+
+    &.bk-is-active {
+      @apply bg-white text-slate-900;
+    }
+  }
+  .bk-translations-dropdown {
+    @apply absolute top-full right-0 md:right-auto md:left-0 w-200 bg-white z-[999999] shadow-lg;
+
+    label {
+      @apply relative px-15 py-10 block cursor-pointer md:hover:bg-slate-100;
+      &.bk-is-muted {
+        @apply text-slate-400;
+      }
+      > div {
+        @apply flex items-center gap-10;
+        span {
+          @apply font-semibold;
+        }
+      }
+    }
+
+    input {
+      @apply appearance-none opacity-0 absolute top-0 left-0 w-full h-full cursor-pointer;
+    }
   }
 }

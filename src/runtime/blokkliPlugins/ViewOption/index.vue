@@ -1,9 +1,10 @@
 <template>
   <Teleport to="#bk-toolbar-view-options">
     <button
+      v-if="!ui.isMobile.value"
       class="bk-toolbar-button"
       :class="{ 'bk-is-inactive': !isActive }"
-      @click="onClick"
+      @click.prevent.stop="onClick"
     >
       <slot name="icon" />
       <div class="bk-tooltip">
@@ -19,14 +20,14 @@
     </button>
   </Teleport>
 
-  <slot :is-active="isActive" />
+  <slot :is-active="isActive && !ui.isMobile.value" />
 </template>
 
 <script setup lang="ts">
 import { useBlokkli } from '#imports'
 import { ShortcutIndicator } from '#blokkli/components'
 
-const { storage } = useBlokkli()
+const { storage, ui } = useBlokkli()
 
 const props = defineProps<{
   id: string

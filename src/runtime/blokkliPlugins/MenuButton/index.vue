@@ -5,7 +5,7 @@
       :disabled="disabled"
       :class="type ? 'bk-is-' + type : ''"
       :style="{ order: weight || 0 }"
-      @click="onClick"
+      @click.prevent.stop="onClick"
     >
       <div class="bk-toolbar-menu-list-icon">
         <slot>

@@ -41,11 +41,13 @@ const bounds = computed<BoundsRectable | null>(() => {
     return null
   }
 
-  const artboardRect = ui.artboardElement().getBoundingClientRect()
+  const artboardEl = ui.artboardElement()
+  const artboardRect = artboardEl.getBoundingClientRect()
+  const artboardScroll = artboardEl.scrollTop
 
   return {
     x: (boundingBox.x - artboardRect.x) / scale,
-    y: (boundingBox.y - artboardRect.y) / scale,
+    y: (boundingBox.y - artboardRect.y) / scale + artboardScroll,
     width: boundingBox.width / scale,
     height: boundingBox.height / scale,
     isVisible:
@@ -60,7 +62,9 @@ const selectedRects = computed<SelectedRect[]>(() => {
     return []
   }
   const scale = ui.getArtboardScale()
-  const artboardRect = ui.artboardElement().getBoundingClientRect()
+  const artboardEl = ui.artboardElement()
+  const artboardRect = artboardEl.getBoundingClientRect()
+  const artboardScroll = artboardEl.scrollTop
 
   const rects: SelectedRect[] = []
 
@@ -69,7 +73,7 @@ const selectedRects = computed<SelectedRect[]>(() => {
     const rect = block.element.getBoundingClientRect()
     rects.push({
       x: (rect.x - artboardRect.x) / scale - bounds.value.x,
-      y: (rect.y - artboardRect.y) / scale - bounds.value.y,
+      y: (rect.y - artboardRect.y) / scale - bounds.value.y + artboardScroll,
       width: rect.width / scale,
       height: rect.height / scale,
       uuid: block.uuid,

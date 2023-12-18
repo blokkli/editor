@@ -99,7 +99,33 @@ export default defineBlokkliEditAdapter((ctx) => {
           bundleLabel: 'Page',
         },
         translationState: {
-          isTranslatable: false,
+          isTranslatable: true,
+          sourceLanguage: 'en',
+          availableLanguages: [
+            {
+              id: 'en',
+              name: 'English',
+            },
+            {
+              id: 'de',
+              name: 'German',
+            },
+            {
+              id: 'fr',
+              name: 'French',
+            },
+            {
+              id: 'it',
+              name: 'Italian',
+            },
+          ],
+          translations: [
+            {
+              id: 'en',
+              url: '/en',
+              status: true,
+            },
+          ],
         },
       }
     },

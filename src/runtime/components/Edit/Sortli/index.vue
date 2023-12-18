@@ -28,7 +28,9 @@ const emit = defineEmits<{
 const mouseIsDown = ref(false)
 const start = ref<Coord>({ x: 0, y: 0 })
 
-const findItemId = (e: MouseEvent): string | undefined => {
+const findItemId = (
+  e: PointerEvent | MouseEvent | TouchEvent,
+): string | undefined => {
   const target = e.target
   if (target instanceof HTMLElement || target instanceof SVGElement) {
     const item = target.closest('[data-sortli-id]')
@@ -80,7 +82,7 @@ const onMouseMove = (e: MouseEvent) => {
   }
 }
 
-const originatesFromEditable = (e: MouseEvent) => {
+const originatesFromEditable = (e: MouseEvent | TouchEvent) => {
   if (e.target instanceof HTMLElement) {
     const el = e.target.closest('[data-blokkli-editable-field]')
     if (el) {

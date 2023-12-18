@@ -87,6 +87,14 @@ watch(selection.blocks, () => {
   showDropdown.value = false
 })
 
+watch(ui.isMobile, (isMobile) => {
+  eventBus.off('animationFrame', onAnimationFrame)
+
+  if (!isMobile) {
+    eventBus.on('animationFrame', onAnimationFrame)
+  }
+})
+
 const title = computed(() => {
   if (itemBundle.value) {
     return itemBundle.value.label
@@ -108,9 +116,14 @@ const itemBundle = computed(() => {
     : undefined
 })
 
-const innerStyle = computed(() => ({
-  transform: `translate(${x.value}px, ${y.value}px)`,
-}))
+const innerStyle = computed(() => {
+  if (ui.isMobile.value) {
+    return {}
+  }
+  return {
+    transform: `translate(${x.value}px, ${y.value}px)`,
+  }
+})
 
 function onAnimationFrame(e: AnimationFrameEvent) {
   if (!selection.blocks.value.length) {
@@ -179,7 +192,9 @@ const onPluginUnmount = (e: PluginUnmountEvent) => {
 }
 
 onMounted(() => {
-  eventBus.on('animationFrame', onAnimationFrame)
+  if (!ui.isMobile.value) {
+    eventBus.on('animationFrame', onAnimationFrame)
+  }
   eventBus.on('keyPressed', onKeyPressed)
   eventBus.on('plugin:mount', onPluginMount)
   eventBus.on('plugin:unmount', onPluginUnmount)

@@ -4,7 +4,7 @@
       class="bk-toolbar-button"
       :disabled="disabled"
       :class="{ 'is-active': active }"
-      @click="onClick"
+      @click.prevent.stop="onClick"
     >
       <slot>
         <Icon v-if="icon" :name="icon" />

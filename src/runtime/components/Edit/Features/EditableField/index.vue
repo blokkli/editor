@@ -6,7 +6,7 @@
         :style="style"
         class="bk bk-editable-field bk-control"
       >
-        <div class="bk-editable-field-input">
+        <form @submit.prevent class="bk-editable-field-input">
           <div class="bk-editable-field-buttons">
             <h3>{{ fieldLabel }}</h3>
             <button @click.capture.stop="cancel">
@@ -18,11 +18,13 @@
           <div class="bk-editable-field-textarea">
             <textarea
               ref="input"
+              enterkeyhint="done"
               v-model="text"
               @keydown.stop="onKeyDown"
               rows="2"
               :style="inputStyle"
               v-bind="inputAttributes"
+              @blur.prevent.stop="close(true)"
             />
             <div :style="inputStyle" class="bk-textarea" v-html="text" />
           </div>
@@ -35,7 +37,7 @@
               <span v-if="maxlength">&nbsp;/&nbsp;{{ maxlength }}</span>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </Transition>
   </Teleport>
@@ -111,15 +113,19 @@ const onKeyDown = (e: KeyboardEvent) => {
 }
 
 const onEditableFocus = (e: EditableFieldFocusEvent) => {
-  const artboardRect = ui.artboardElement().getBoundingClientRect()
-  const scale = ui.getArtboardScale()
-  const rect = e.element.getBoundingClientRect()
-  const x = (rect.x - artboardRect.x) / scale
-  const y = (rect.y - artboardRect.y) / scale
-  style.value = {
-    width: e.element.offsetWidth + 'px',
-    top: y + 'px',
-    left: x + 'px',
+  if (ui.isMobile.value) {
+    style.value = {}
+  } else {
+    const artboardRect = ui.artboardElement().getBoundingClientRect()
+    const scale = ui.getArtboardScale()
+    const rect = e.element.getBoundingClientRect()
+    const x = (rect.x - artboardRect.x) / scale
+    const y = (rect.y - artboardRect.y) / scale
+    style.value = {
+      width: e.element.offsetWidth + 'px',
+      top: y + 'px',
+      left: x + 'px',
+    }
   }
   fieldName.value = e.fieldName
   block.value = e.block
@@ -145,12 +151,15 @@ const onEditableFocus = (e: EditableFieldFocusEvent) => {
 }
 
 const close = async (save?: boolean) => {
+  // Weird iOS bug: Close method is called twice, so we have to check if we
+  // are actually still editing.
+  if (!selection.editableActive.value) {
+    return
+  }
   if (save && errorText.value) {
     return
   }
-  if (!save && element.value) {
-    element.value.textContent = originalText.value
-  }
+
   if (save && block.value && text.value !== originalText.value) {
     await state.mutateWithLoadingState(
       adapter.updateFieldValue({
@@ -159,6 +168,9 @@ const close = async (save?: boolean) => {
         fieldValue: text.value,
       }),
     )
+  }
+  if (!save && element.value) {
+    element.value.textContent = originalText.value
   }
   selection.editableActive.value = false
   style.value = null

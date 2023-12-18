@@ -3,11 +3,11 @@
 }
 
 .bk .bk-search-box {
-  @apply relative w-[800px] flex flex-col bg-white overflow-hidden rounded-[8px] shadow-lg;
+  @apply relative h-full lg:h-auto w-full lg:w-[800px] flex flex-col bg-white md:overflow-hidden lg:rounded-[8px] lg:shadow-lg;
 }
 
 .bk-search-results {
-  @apply flex-1 relative;
+  @apply flex-1 relative overflow-auto;
 }
 
 .bk {
@@ -22,22 +22,28 @@
   }
   .bk-search-input {
     @apply relative border-b border-b-slate-200;
-    .bk-icon {
-      @apply text-slate-600 w-30 h-30 absolute top-1/2 -translate-y-1/2 left-25;
+    > .bk-icon {
+      @apply text-slate-600 w-25 h-25 md:w-30 md:h-30 absolute top-1/2 -translate-y-1/2 left-15 md:left-25;
       svg {
         @apply fill-current;
       }
     }
     input {
-      @apply bg-transparent h-70 appearance-none pl-[65px] w-full focus:outline-none focus:shadow-none focus:border-none;
-      @apply text-slate-950 text-xl font-bold leading-none;
+      @apply bg-transparent h-60 md:h-70 appearance-none pl-50 md:pl-[65px] w-full focus:outline-none focus:shadow-none focus:border-none;
+      @apply text-slate-950 text-lg md:text-xl font-bold leading-none;
       @apply placeholder-slate-400 placeholder:font-normal;
+    }
+    button {
+      @apply absolute top-0 right-0 h-full px-15;
+      svg {
+        @apply w-20 h-20 fill-slate-600;
+      }
     }
   }
 
   .bk-search-item-icon {
-    @apply w-80 h-80 rounded bg-slate-100 flex items-center justify-center border border-slate-200 shrink-0 text-slate-500 relative overflow-hidden;
-    @apply text-5xl;
+    @apply w-60 h-60 md:w-80 md:h-80 rounded bg-slate-100 flex items-center justify-center border border-slate-200 shrink-0 text-slate-500 relative overflow-hidden;
+    @apply text-3xl md:text-5xl;
 
     img {
       @apply absolute top-0 left-0 w-full h-full object-cover;
@@ -45,11 +51,11 @@
   }
 
   .bk-search-item-text {
-    @apply text-base mt-auto min-w-0 truncate leading-none;
+    @apply text-xs md:text-base mt-auto min-w-0 truncate leading-none;
   }
 
   .bk-search-item-content {
-    @apply truncate flex flex-col h-full py-5;
+    @apply truncate flex flex-col h-full md:py-5;
   }
   .bk-search-no-results {
     @apply absolute top-0 left-0 h-full w-full flex items-center justify-center flex-col text-lg text-slate-500 font-medium;
@@ -86,26 +92,18 @@
 }
 
 .bk .bk-search-list {
-  @apply overflow-auto h-[720px];
+  @apply overflow-auto h-full md:h-[720px];
   button {
-    @apply px-20 text-slate-700 py-20 cursor-pointer h-[120px] relative flex gap-15 text-left w-full;
-
-    &.bk-is-small {
-      @apply h-90;
-      .bk-search-item-icon {
-        @apply w-50 h-50;
-        @apply text-3xl;
-      }
-    }
+    @apply px-20 text-slate-700  py-15 md:py-20 cursor-pointer md:h-[120px] relative flex gap-15 text-left w-full;
 
     h2 {
-      @apply font-bold text-lg leading-none align-baseline;
+      @apply font-bold text-base md:text-lg leading-none align-baseline;
       div {
         @apply inline-block;
       }
     }
     .bk-search-item-context {
-      @apply text-sm mt-3;
+      @apply text-xs md:text-sm mt-3 mb-5 md:mb-0;
     }
     &:after {
       content: '';

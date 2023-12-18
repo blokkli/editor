@@ -4,7 +4,7 @@
       :class="{ 'is-active': activeSidebar === id }"
       :disabled="editOnly && !state.canEdit.value"
       :style="{ order: weight || 0 }"
-      @click="toggleSidebar(id)"
+      @click.prevent.stop="toggleSidebar(id)"
     >
       <slot name="icon">
         <Icon v-if="icon" :name="icon" />

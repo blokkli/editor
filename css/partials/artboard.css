@@ -8,21 +8,30 @@
 
 .bk-html-root {
   --bk-root-offset-left: 0px;
-  --bk-root-offset-top: 50px;
+  --bk-root-offset-top: 100px;
   --bk-root-offset-bottom: 0px;
+  @screen md {
+    --bk-root-offset-top: 50px;
+  }
   &.bk-has-sidebar-left {
     --bk-root-offset-left: 70px;
   }
   &.bk-has-sidebar-bottom {
     --bk-root-offset-bottom: 70px;
   }
+  @apply h-screen w-screen overflow-hidden;
 }
 
 .bk-html-root:not(.bk-is-artboard) .bk-main-canvas {
-  margin-top: var(--bk-root-offset-top);
-  margin-left: var(--bk-root-offset-left);
-  margin-bottom: var(--bk-root-offset-bottom);
-  position: relative;
+  /* margin-top: var(--bk-root-offset-top); */
+  /* margin-left: var(--bk-root-offset-left); */
+  /* margin-bottom: var(--bk-root-offset-bottom); */
+
+  @apply fixed;
+  top: var(--bk-root-offset-top);
+  left: var(--bk-root-offset-left);
+  bottom: var(--bk-root-offset-bottom);
+  @apply right-0 overflow-auto;
 }
 
 .bk-html-root.bk-is-artboard {

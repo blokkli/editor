@@ -20,7 +20,7 @@
 }
 
 .entity-form {
-  @apply p-20;
+  @apply p-20 mb-100;
 
   input,
   textarea {
@@ -29,7 +29,7 @@
 }
 
 .entity-form-footer {
-  @apply fixed bottom-0 left-0 w-full p-20 border-t;
+  @apply fixed bottom-0 left-0 w-full p-20 border-t bg-white z-50;
 
   input {
     @apply rounded bg-blue-700 text-white font-bold px-10 py-15 cursor-pointer;
