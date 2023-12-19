@@ -8,11 +8,10 @@
   .bk-dialog-inner {
     @apply lg:min-w-[450px] max-w-screen-xl bg-white shadow-2xl rounded-md  relative z-20 max-h-full min-h-0;
     @apply flex flex-col;
-    @apply p-15 md:p-20;
   }
 
   .bk-dialog-header {
-    @apply mb-15 md:mb-30 flex justify-between items-center;
+    @apply flex justify-between items-center p-15 lg:p-20;
     flex: 0 0 auto;
     h3 {
       @apply text-lg md:text-lg xl:text-3xl font-semibold font-sans;
@@ -27,12 +26,13 @@
     @apply text-base md:text-lg font-sans mt-10;
   }
   .bk-dialog-footer {
-    @apply flex gap-10 mt-15 md:mt-30;
+    @apply flex gap-10 mt-15 md:mt-30 p-15 lg:p-20;
     flex: 0 0 auto;
   }
 
   .bk-dialog-content {
-    @apply overflow-auto flex-1 min-h-0 max-h-full h-full;
+    @apply overflow-auto flex-1 min-h-0 max-h-full h-full px-15 lg:px-20;
+    @apply overscroll-contain;
   }
 }
 

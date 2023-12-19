@@ -1,5 +1,5 @@
 <template>
-  <div class="bk bk-structure bk-control">
+  <div class="bk bk-structure bk-control" tabindex="1" @keydown="onKeydown">
     <ul class="bk-structure-list">
       <Field :fields="tree" />
     </ul>
@@ -16,6 +16,19 @@ import { getDefinition } from '#blokkli/definitions'
 const { types, state, context } = useBlokkli()
 
 const tree = ref<StructureTreeField[]>([])
+
+const onKeydown = (e: KeyboardEvent) => {
+  if (e.code === 'Tab') {
+    return
+  }
+  if (e.code === 'ArrowUp') {
+    e.stopPropagation()
+    e.preventDefault()
+  } else if (e.code === 'ArrowDown') {
+    e.stopPropagation()
+    e.preventDefault()
+  }
+}
 
 function mapItem(el: Element): StructureTreeItem | undefined {
   if (el instanceof HTMLElement) {

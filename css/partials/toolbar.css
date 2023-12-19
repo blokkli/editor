@@ -21,7 +21,7 @@
       @apply absolute top-full left-0 right-3 mt-3;
     }
     button {
-      @apply flex text-slate-300 h-full focus:outline-none flex-1 items-center px-10 gap-10 aspect-square justify-center;
+      @apply flex text-slate-300 h-full focus:outline-none flex-1 items-center px-10 gap-10 aspect-square justify-center w-50;
       @apply lg:hover:bg-slate-700;
       .bk-tooltip {
         @apply hidden;

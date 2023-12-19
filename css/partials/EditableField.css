@@ -22,13 +22,15 @@
       @apply outline-none shadow-none border-none;
       @apply focus:!outline-none focus:!shadow-none focus:!border-none focus:!ring-0 bg-transparent;
       @apply overflow-hidden min-h-[50px];
-      @apply text-lg;
+      @apply text-base lg:text-lg;
     }
     .bk-textarea {
       @apply whitespace-pre-wrap opacity-0 pointer-events-none;
+      max-height: calc(100vh - 550px);
     }
     textarea {
-      @apply absolute top-0 left-0 w-full h-full;
+      @apply absolute top-0 left-0 w-full h-full overflow-auto;
+      @apply overscroll-contain;
     }
   }
   .bk-editable-field-info {
@@ -44,12 +46,15 @@
     @apply relative;
   }
   .bk-editable-field-buttons {
-    @apply flex justify-between items-center text-sm bg-green-400 text-green-950;
+    @apply flex justify-between items-center text-xs bg-green-400 text-green-950 lg:text-base h-40 lg:h-50;
     h3 {
-      @apply h-full px-10 uppercase font-semibold tracking-wide;
+      @apply h-full px-10 uppercase font-semibold tracking-wide flex items-center gap-[0.5em] leading-none;
+      .bk-blokkli-item-icon {
+        @apply text-[1.5em] p-[0.2em] bg-green-950 rounded-[0.2em] text-green-400;
+      }
     }
     button {
-      @apply px-10 py-10 flex items-center font-semibold font-sans ml-auto leading-none gap-5;
+      @apply px-10 flex items-center font-semibold font-sans ml-auto leading-none gap-5 h-full;
       @apply hover:bg-green-500;
       svg {
         @apply w-15 h-15;

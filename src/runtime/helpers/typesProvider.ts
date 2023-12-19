@@ -3,12 +3,19 @@ import type { BlokkliAvailableType, BlokkliItemType } from '../types'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import type { BlokkliAdapter } from '../adapter'
 import type { BlokkliSelectionProvider } from './selectionProvider'
+import { getDefinition } from '#blokkli/definitions'
+import type { BlokkliItemDefinitionInputWithTypes } from '#blokkli/generated-types'
+
+export type BlokkliBlockType = BlokkliItemType & {
+  definition: BlokkliItemDefinitionInputWithTypes | undefined
+}
 
 export type BlokkliTypesProvider = {
   itemBundlesWithNested: ComputedRef<string[]>
   allowedTypesInList: ComputedRef<string[]>
   allTypes: ComputedRef<BlokkliItemType[]>
   allowedTypes: ComputedRef<BlokkliAvailableType[]>
+  getType: (bundle: string) => BlokkliBlockType | undefined
 }
 
 export default async function (
@@ -81,10 +88,22 @@ export default async function (
     )
   })
 
+  const getType = (bundle: string): BlokkliBlockType | undefined => {
+    const type = allTypes.value.find((v) => v.id === bundle)
+    const definition = getDefinition(bundle)
+    if (type) {
+      return {
+        ...type,
+        definition,
+      }
+    }
+  }
+
   return {
     itemBundlesWithNested,
     allowedTypesInList,
     allTypes,
     allowedTypes,
+    getType,
   }
 }

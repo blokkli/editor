@@ -14,7 +14,7 @@
   @apply h-full flex flex-col;
 }
 .bk-sidebar-title {
-  @apply !font-bold !text-xl !font-sans !p-20 !border-b !border-b-slate-300;
+  @apply !font-bold md:!text-xl !font-sans !p-15 md:!p-20 !border-b !border-b-slate-300;
 }
 
 .bk-sidebar-content {

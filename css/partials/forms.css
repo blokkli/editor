@@ -47,6 +47,8 @@
   }
 
   .bk-form-section {
-    @apply border-t pt-20 my-20 last:mb-0;
+    &:not(:first-child) {
+      @apply border-t pt-20 my-20;
+    }
   }
 }

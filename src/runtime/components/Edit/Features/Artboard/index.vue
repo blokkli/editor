@@ -1,15 +1,54 @@
 <template>
-  <ArtboardManager v-if="useArtboard && !ui.isMobile.value" />
+  <ArtboardManager v-if="useArtboard" />
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli } from '#imports'
+import type { ScrollIntoViewEvent } from '#blokkli/types'
+import { useBlokkli, onMounted, onBeforeUnmount, watch } from '#imports'
 
 import ArtboardManager from './Manager/index.vue'
 
-const { storage, ui } = useBlokkli()
+const { storage, ui, eventBus, dom } = useBlokkli()
 
-const useArtboard = storage.use('useArtboard', true)
+const useArtboardSetting = storage.use('useArtboard', true)
+
+const useArtboard = computed(
+  () => useArtboardSetting.value && !ui.isMobile.value,
+)
+
+/**
+ * Handler is only executed when the artboard is not mounted.
+ */
+const onScrollIntoView = (e: ScrollIntoViewEvent) => {
+  const item = dom.findBlock(e.uuid)
+  if (!item) {
+    return
+  }
+
+  const options: ScrollIntoViewOptions = {}
+
+  if (e.center) {
+    options.block = 'center'
+  }
+
+  options.behavior = e.immediate ? 'instant' : 'smooth'
+
+  item.element.scrollIntoView(options)
+}
+
+const setFallback = () => {
+  eventBus.off('scrollIntoView', onScrollIntoView)
+  if (useArtboard.value) {
+    eventBus.on('scrollIntoView', onScrollIntoView)
+  }
+}
+
+watch(useArtboard, setFallback)
+onMounted(setFallback)
+
+onBeforeUnmount(() => {
+  eventBus.off('scrollIntoView', onScrollIntoView)
+})
 </script>
 
 <script lang="ts">

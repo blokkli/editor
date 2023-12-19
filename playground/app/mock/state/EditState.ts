@@ -157,7 +157,7 @@ export class EditState {
   }
 
   getStorageKey(suffix: string) {
-    return '__blokkli_mock_' + this.uuid + '_' + suffix
+    return '___blokkli_mock_' + this.uuid + '_' + suffix
   }
 
   get currentIndex(): number {

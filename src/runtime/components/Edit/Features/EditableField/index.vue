@@ -8,7 +8,10 @@
       >
         <form @submit.prevent="cancel" class="bk-editable-field-input">
           <div class="bk-editable-field-buttons">
-            <h3>{{ fieldLabel }}</h3>
+            <h3>
+              <ItemIcon :bundle="itemBundle" />
+              {{ label }}
+            </h3>
             <button type="submit">
               <span>{{ translationText('cancel') }}</span>
               <Icon name="close" />
@@ -48,7 +51,7 @@ import type {
   DraggableExistingBlokkliItem,
   EditableFieldFocusEvent,
 } from '#blokkli/types'
-import { Icon } from '#blokkli/components'
+import { Icon, ItemIcon } from '#blokkli/components'
 import {
   ref,
   watch,
@@ -65,14 +68,16 @@ const {
   state,
   adapter,
   text: translationText,
+  types,
 } = useBlokkli()
 
-const fieldLabel = ref('')
+const label = ref('')
 const fieldName = ref('')
 const input = ref<HTMLInputElement | null>(null)
 const style = ref<Record<string, any> | null>(null)
 const originalText = ref('')
 const text = ref('')
+const itemBundle = ref('')
 const element = ref<HTMLElement | null>(null)
 const inputStyle = ref<Record<string, any>>({})
 const required = ref(false)
@@ -148,13 +153,15 @@ const onEditableFocus = (e: EditableFieldFocusEvent) => {
       left: x + 'px',
     }
   }
-  fieldName.value = e.fieldName
+  const typeLabel = types.getType(e.block.itemBundle)?.label || ''
+  const fieldLabel = e.args?.label || e.fieldName
+  label.value = [typeLabel, fieldLabel].join(' » ')
   block.value = e.block
   text.value = e.element.textContent || ''
   originalText.value = e.element.textContent || ''
   element.value = e.element
+  itemBundle.value = e.block.itemBundle
   selection.editableActive.value = true
-  fieldLabel.value = e.args?.label || e.fieldName
   maxlength.value = e.args?.maxlength || 0
   required.value = !!e.args?.required
 
@@ -166,7 +173,8 @@ const onEditableFocus = (e: EditableFieldFocusEvent) => {
   nextTick(() => {
     if (input.value) {
       input.value.focus()
-      inputStyle.value.minHeight = input.value.scrollHeight + 'px'
+      inputStyle.value.minHeight =
+        Math.min(input.value.scrollHeight, 100) + 'px'
     }
   })
 }
