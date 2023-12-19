@@ -2,13 +2,11 @@
   .bk-clipboard-list {
     > div {
       @apply cursor-grab;
-      @apply p-20;
       @apply border-b border-b-slate-300;
       @apply hover:bg-slate-50;
     }
   }
   .bk-clipboard-info {
-    @apply p-20;
     h4 {
       @apply !text-base !font-bold !font-sans leading-none;
     }
@@ -21,6 +19,9 @@
 .bk-clipboard-item {
   @apply !relative  !overflow-hidden !rounded !font-sans;
   @apply hover:border-slate-500;
+  img {
+    @apply block aspect-[4/3] object-cover;
+  }
   > * {
     &:first-child {
       margin-top: 0;
@@ -43,4 +44,26 @@
 }
 .bk-clipboard-item-inner {
   @apply !relative !h-full !line-clamp-6 !font-sans !text-base;
+}
+
+.bk-clipboard-form {
+  @apply flex gap-5 overflow-hidden;
+  .bk-clipboard-input {
+    @apply flex-1 min-w-0;
+    input {
+      @apply w-full h-50;
+    }
+  }
+
+  .bk-clipboard-upload {
+    @apply relative flex-grow-0;
+
+    input {
+      @apply appearance-none absolute top-0 left-0 w-full h-full opacity-0;
+    }
+
+    .bk-button {
+      @apply !p-0 aspect-square;
+    }
+  }
 }

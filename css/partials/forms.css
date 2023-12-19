@@ -3,7 +3,7 @@
 }
 
 .bk-form-input {
-  @apply !bg-white !border !border-slate-400 !text-gray-900 !rounded-md focus:!outline focus:!outline-2 focus:!outline-blue-700 focus:!border-blue-700 !block !w-full !p-10 !font-sans !text-base;
+  @apply !bg-white !border !border-slate-400 !text-gray-900 !rounded-md focus:!outline-none focus:!border-transparent !block !w-full !p-10 !font-sans !text-base;
 }
 .bk {
   .bk-checkbox,

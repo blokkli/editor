@@ -1,10 +1,19 @@
 .bk {
   &.bk-top {
-    @apply bg-slate-900 fixed top-0 left-0 w-full z-[50000];
+    @apply fixed top-0 left-0 w-full z-[50000];
+    @apply bg-slate-950/80 backdrop-blur-lg lg:backdrop-blur-none lg:bg-slate-900;
   }
 
   .bk-toolbar-wrapper {
-    @apply flex border-t border-t-slate-700 flex-1 lg:flex-initial lg:first:flex-1 lg:border-t-0;
+    @apply flex flex-1 lg:flex-initial lg:first:flex-1;
+    &:not(:first-child) {
+      @screen lg {
+        @apply border-l border-l-slate-600;
+      }
+    }
+    &:first-child {
+      @apply bg-slate-950 lg:bg-transparent;
+    }
   }
 
   &.bk-toolbar {
@@ -33,7 +42,8 @@
         }
       }
       svg {
-        @apply fill-current w-20 h-20 pointer-events-none;
+        @apply fill-current pointer-events-none;
+        @apply w-18 h-18 md:w-20 md:h-20;
       }
 
       &[disabled] {
@@ -84,7 +94,9 @@
     @apply fixed top-0 left-0 w-screen h-screen z-[12000];
   }
   .bk-toolbar-menu-list {
-    @apply fixed top-0 left-0 bg-white shadow-lg bottom-0 pt-50 flex flex-col min-w-[400px];
+    @apply fixed top-0 left-0 bg-white shadow-lg bottom-0 flex flex-col max-w-[480px] lg:min-w-[400px] h-screen overflow-auto;
+    @apply pt-40 lg:pt-50;
+    width: calc(100vw - 40px);
     &:before {
       content: '';
       @apply absolute top-0 left-0 w-full h-50 bg-white;
@@ -150,7 +162,8 @@
     }
   }
   .bk-toolbar-menu-list-icon {
-    @apply w-50 h-50 flex items-center justify-center bg-slate-100 rounded text-slate-500 border border-slate-300;
+    @apply flex items-center justify-center bg-slate-100 rounded text-slate-500 border border-slate-300;
+    @apply w-40 h-40 md:w-50 md:h-50;
     grid-column: 1;
     grid-row: 1 / -1;
     svg {
@@ -174,7 +187,7 @@
       @apply pointer-events-none text-slate-700;
     }
     svg {
-      @apply w-20 h-20 fill-current;
+      @apply w-18 h-18 md:w-20 md:h-20 fill-current;
     }
     &.is-active {
       @apply bg-white text-slate-900;
@@ -204,7 +217,11 @@
   }
 
   .bk-toolbar-container {
-    @apply border-l border-l-slate-600;
+    &:not(:first-child) {
+      @screen lg {
+        @apply border-l border-l-slate-600;
+      }
+    }
     &:empty {
       @apply hidden;
     }
@@ -365,4 +382,13 @@
       @apply appearance-none opacity-0 absolute top-0 left-0 w-full h-full cursor-pointer;
     }
   }
+}
+
+.bk-toolbar-enter-active,
+.bk-toolbar-leave-active {
+  transition: 0.2s ease-in-out;
+}
+.bk-toolbar-enter-from,
+.bk-toolbar-leave-to {
+  transform: translateY(-100%);
 }

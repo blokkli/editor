@@ -73,7 +73,20 @@ const text = textProvider(context)
 const types = await typesProvider(adapter, selection)
 const state = await editStateProvider(adapter, context)
 
+const originalThemeColor = ref('')
+const THEME_COLOR = '#020617'
+
 onMounted(() => {
+  const el = document.head.querySelectorAll('[name="theme-color"]')
+  if (el instanceof HTMLMetaElement) {
+    originalThemeColor.value = el.content
+    el.content = THEME_COLOR
+  } else {
+    const meta = document.createElement('meta')
+    meta.name = 'theme-color'
+    meta.content = THEME_COLOR
+    document.getElementsByTagName('head')[0].appendChild(meta)
+  }
   nextTick(() => {
     isInitializing.value = false
   })
@@ -82,6 +95,14 @@ onMounted(() => {
 onBeforeUnmount(() => {
   isInitializing.value = true
   toolbarLoaded.value = false
+  const el = document.head.querySelectorAll('[name="theme-color"]')
+  if (el instanceof HTMLMetaElement) {
+    if (originalThemeColor.value) {
+      el.content = originalThemeColor.value
+    } else {
+      el.remove()
+    }
+  }
 })
 
 provide(INJECT_IS_EDITING, true)

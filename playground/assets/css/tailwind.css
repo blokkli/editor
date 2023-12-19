@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+  @apply overscroll-contain;
+}
+
+body {
+  min-height: 100vh;
+}
+
 @layer components {
   .field-label {
     @apply block font-semibold mb-5;

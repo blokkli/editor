@@ -1,5 +1,10 @@
 <template>
-  <div class="bk-drupal-modal-iframe">
+  <div
+    class="bk-drupal-modal-iframe"
+    @scroll.stop
+    @touchstart.stop.capture.prevent
+    @touchmove.stop.capture.prevent
+  >
     <iframe
       ref="iframe"
       allowtransparency

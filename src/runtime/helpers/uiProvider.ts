@@ -18,6 +18,7 @@ export type BlokkliUiProvider = {
   isMobile: ComputedRef<boolean>
   isDesktop: ComputedRef<boolean>
   isArtboard: () => boolean
+  isUsingTouch: ComputedRef<boolean>
 }
 
 export default function (): BlokkliUiProvider {

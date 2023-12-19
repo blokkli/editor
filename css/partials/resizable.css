@@ -40,9 +40,9 @@
   .bk-drupal-modal-resizable {
     @apply ml-auto h-full bg-white shadow-2xl;
     .bk-drupal-modal-iframe {
-      @apply flex-1 relative;
+      @apply flex-1 relative overscroll-contain;
       iframe {
-        @apply absolute top-0 left-0 w-full h-full;
+        @apply absolute top-0 left-0 w-full h-full overscroll-contain;
       }
     }
   }

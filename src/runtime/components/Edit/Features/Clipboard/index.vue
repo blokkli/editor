@@ -7,17 +7,35 @@
     icon="clipboard"
     weight="-30"
   >
-    <div>
-      <div class="bk-clipboard bk-control">
-        <div v-if="!pastedItems.length" class="bk bk-clipboard-info">
-          <h4>{{ text('clipboardEmpty') }}</h4>
-          <div v-html="text('clipboardExplanation')" />
+    <div class="bk-clipboard bk-control">
+      <div
+        v-if="!pastedItems.length"
+        class="bk bk-clipboard-info bk-sidebar-padding"
+      >
+        <h4>{{ text('clipboardEmpty') }}</h4>
+        <div v-if="!ui.isMobile.value" v-html="text('clipboardExplanation')" />
+      </div>
+      <ClipboardList
+        v-if="pastedItems.length"
+        :items="pastedItems"
+        @remove="remove"
+      />
+      <div class="bk-clipboard-form bk-sidebar-padding">
+        <div class="bk-clipboard-input">
+          <input
+            type="text"
+            class="bk-form-input"
+            @paste.stop.prevent="onManualPaste"
+            @keydown.stop
+            :placeholder="text('clipboardPastePlaceholder')"
+          />
         </div>
-        <ClipboardList
-          v-if="pastedItems.length"
-          :items="pastedItems"
-          @remove="remove"
-        />
+        <div class="bk-clipboard-upload">
+          <input type="file" @change="onFileInput" />
+          <div class="bk-button bk-is-primary">
+            <Icon name="upload" />
+          </div>
+        </div>
       </div>
     </div>
   </PluginSidebar>
@@ -34,14 +52,25 @@ import type {
   ClipboardItem,
 } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
+import { Icon } from '#blokkli/components'
 
-const { eventBus, selection, text, adapter, dom, state } = useBlokkli()
+const { eventBus, selection, text, adapter, dom, state, ui } = useBlokkli()
 
 const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
 
 const ALLOWED_HTML_ATTRIBUTES = ['href']
 
 const pastedItems = ref<ClipboardItem[]>([])
+
+const onFileInput = (e: Event) => {
+  e.preventDefault()
+  if (e.target instanceof HTMLInputElement) {
+    const files = e.target.files
+    if (files) {
+      handleFiles(files)
+    }
+  }
+}
 
 function getYouTubeID(url: string): string | null {
   const regExp =
@@ -74,14 +103,18 @@ function removeAttributes(el: Element) {
   }
 }
 
+const onManualPaste = async (e: ClipboardEvent) => {
+  onPaste(e, true)
+}
+
 const TYPES_IMAGE = ['image/jpeg', 'image/png', 'image/jpg']
 
-function handleFiles(data: DataTransfer) {
+function handleFiles(data: DataTransfer | FileList) {
   if (!FileReader) {
     return
   }
 
-  const files = [...data.files]
+  const files = data instanceof DataTransfer ? [...data.files] : [...data]
 
   files.forEach((file) => {
     const fr = new FileReader()
@@ -156,10 +189,11 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
   )
 }
 
-function onPaste(e: ClipboardEvent) {
+function onPaste(e: ClipboardEvent, fromInput?: boolean) {
   if (
-    e.target instanceof HTMLInputElement ||
-    e.target instanceof HTMLTextAreaElement
+    !fromInput &&
+    (e.target instanceof HTMLInputElement ||
+      e.target instanceof HTMLTextAreaElement)
   ) {
     return
   }
@@ -196,7 +230,11 @@ function onPaste(e: ClipboardEvent) {
     }
   }
 
-  const youtubeId = getYouTubeID(pastedData)
+  handlePastedText(pastedData)
+}
+
+const handlePastedText = (text: string) => {
+  const youtubeId = getYouTubeID(text)
 
   if (youtubeId) {
     pastedItems.value.push({
@@ -209,7 +247,7 @@ function onPaste(e: ClipboardEvent) {
   }
 
   const div = document.createElement('div')
-  div.innerHTML = pastedData.replace(/(?:&nbsp;|<br>)/g, '')
+  div.innerHTML = text.replace(/(?:&nbsp;|<br>)/g, '')
 
   removeAttributes(div)
   if (div.innerText) {

@@ -2,7 +2,6 @@
   <div
     ref="list"
     @mousedown.capture="onMouseDown"
-    @dblclick.capture="onDoubleClick"
     @mouseup="onMouseUp"
     @click.capture="onClick"
     @touchstart.capture="onTouchStart"
@@ -36,8 +35,22 @@ const start = ref<Coord>({ x: 0, y: 0 })
 const isTouching = ref(false)
 let touchTimeout: any = null
 let touchedId: string | undefined = undefined
+let clickStart: number | null = null
+
+const shouldHandleEvent = (e: TouchEvent | MouseEvent) => {
+  if (e.target instanceof HTMLElement || e.target instanceof SVGElement) {
+    if (e.target.closest('.bk-no-drag')) {
+      return false
+    }
+  }
+
+  return true
+}
 
 const onTouchStart = (e: TouchEvent) => {
+  if (!shouldHandleEvent(e)) {
+    return
+  }
   isTouching.value = true
   if (!props.useSelection) {
     return
@@ -134,7 +147,28 @@ const findItem = (
 }
 
 const onClick = (e: MouseEvent) => {
+  if (!shouldHandleEvent(e)) {
+    return
+  }
   e.preventDefault()
+
+  if (selection.isDragging.value) {
+    eventBus.emit('dragging:end')
+    return
+  }
+
+  // Chrome on Android doesn't support the dblclick event, so we have to reimplement it.
+  if (clickStart !== null) {
+    const now = Date.now()
+    if (now - clickStart < 200) {
+      e.preventDefault()
+      onDoubleClick(e)
+      clickStart = null
+      return
+    }
+  }
+  clickStart = Date.now()
+
   if (!props.useSelection) {
     const el = findItem(e)?.element
     if (!el) {
@@ -218,6 +252,7 @@ const onMouseDown = (e: MouseEvent) => {
   if (isTouching.value) {
     return
   }
+
   const id = findItem(e)?.id
   if (!id) {
     return
@@ -252,6 +287,7 @@ const onMouseDown = (e: MouseEvent) => {
 const onMouseUp = (e: MouseEvent) => {
   window.removeEventListener('mousemove', onMouseMove)
 
+  eventBus.emit('dragging:end')
   if (isTouching.value) {
     return
   }
@@ -263,8 +299,6 @@ const onMouseUp = (e: MouseEvent) => {
   if (selection.editableActive.value) {
     return
   }
-
-  eventBus.emit('dragging:end')
 }
 
 const emitEditableFocus = (el: HTMLElement): boolean => {
@@ -287,7 +321,7 @@ const emitEditableFocus = (el: HTMLElement): boolean => {
   return false
 }
 
-const onDoubleClick = (e: MouseEvent) => {
+const onDoubleClick = (e: MouseEvent | TouchEvent) => {
   if (selection.isMultiSelecting.value) {
     e.stopPropagation()
     e.preventDefault()

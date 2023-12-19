@@ -3,7 +3,7 @@
     class="bk-resizable"
     :style="style"
     :class="{ 'bk-is-resizing': isResizing }"
-    @wheel.stop=""
+    @wheel.stop
   >
     <div class="bk-resizable-inner">
       <slot />

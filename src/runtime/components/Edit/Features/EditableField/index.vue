@@ -164,6 +164,7 @@ const onEditableFocus = (e: EditableFieldFocusEvent) => {
   selection.editableActive.value = true
   maxlength.value = e.args?.maxlength || 0
   required.value = !!e.args?.required
+  e.element.dataset.blokkliEditableActive = 'true'
 
   const computedStyle = window.getComputedStyle(e.element)
   inputStyle.value = {
@@ -172,9 +173,11 @@ const onEditableFocus = (e: EditableFieldFocusEvent) => {
 
   nextTick(() => {
     if (input.value) {
+      input.value.style.opacity = '0'
       input.value.focus()
       inputStyle.value.minHeight =
         Math.min(input.value.scrollHeight, 100) + 'px'
+      input.value.style.opacity = '1'
     }
   })
 }
@@ -200,6 +203,9 @@ const close = async (save?: boolean) => {
   }
   if (!save && element.value) {
     element.value.textContent = originalText.value
+  }
+  if (element.value) {
+    element.value.dataset.blokkliEditableActive = undefined
   }
   selection.editableActive.value = false
   style.value = null

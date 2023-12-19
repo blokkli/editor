@@ -134,4 +134,6 @@ export default {
   editIndicatorLabel: 'Modifica elementi',
 
   fieldIsRequired: 'Questo campo è obbligatorio',
+
+  clipboardPastePlaceholder: 'Paste text or media here',
 }

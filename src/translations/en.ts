@@ -135,4 +135,6 @@ export default {
   editIndicatorLabel: 'Edit items',
 
   fieldIsRequired: 'This field is required',
+
+  clipboardPastePlaceholder: 'Paste text or media here',
 }

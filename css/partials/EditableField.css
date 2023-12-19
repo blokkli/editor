@@ -50,7 +50,7 @@
     h3 {
       @apply h-full px-10 uppercase font-semibold tracking-wide flex items-center gap-[0.5em] leading-none;
       .bk-blokkli-item-icon {
-        @apply text-[1.5em] p-[0.2em] bg-green-950 rounded-[0.2em] text-green-400;
+        @apply text-[1.5em] p-[0.15em] bg-green-700 border border-green-700 rounded-[0.15em] text-green-200;
       }
     }
     button {
@@ -68,8 +68,11 @@
   ) {
   /* Only target blocks inside the editing area (e.g. not inside the library pane) */
   [data-blokkli-provider-active='true'] {
+    [data-blokkli-editable-active='true'] {
+      @apply outline outline-[3px] !pointer-events-none outline-green-500;
+    }
     /* Don't target editable fields inside a block from the library. */
-    [data-blokkli-editable-field] {
+    [data-blokkli-editable-field]:not([data-blokkli-editable-active='true']) {
       pointer-events: all;
       cursor: text;
 
@@ -86,7 +89,9 @@
     }
     @media (hover: none) {
       [data-is-selected='true'] {
-        [data-blokkli-editable-field] {
+        [data-blokkli-editable-field]:not(
+            [data-blokkli-editable-active='true']
+          ) {
           @apply outline-1 outline-green-500 outline-dashed -outline-offset-2;
         }
       }

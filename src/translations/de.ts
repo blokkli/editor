@@ -136,4 +136,6 @@ export default {
   editIndicatorLabel: 'Elemente bearbeiten',
 
   fieldIsRequired: 'Feld darf nicht leer sein',
+
+  clipboardPastePlaceholder: 'Text oder Medien einfügen',
 }

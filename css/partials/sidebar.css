@@ -8,6 +8,10 @@
   &:empty {
     @apply hidden;
   }
+
+  &.bk-is-hidden {
+    @apply opacity-0 pointer-events-none;
+  }
 }
 
 .bk-sidebar-inner {
@@ -18,7 +22,7 @@
 }
 
 .bk-sidebar-content-wrapper {
-  @apply flex-1 relative overflow-hidden;
+  @apply flex-1 relative overflow-hidden overscroll-contain;
   @screen lg {
     &:focus-within {
       &:before {
@@ -33,4 +37,8 @@
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+.bk-sidebar-padding {
+  @apply p-15 lg:p-20;
 }

@@ -342,7 +342,7 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
           width: '100%',
           height: gap + 'px',
           left: '0px',
-          top: el.offsetTop - gap + 'px',
+          top: el.offsetTop - gap / 2 + 'px',
         },
       })
     } else {
@@ -353,7 +353,7 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
         style: {
           width: gap + 'px',
           height: Math.max(el.offsetHeight, 30) + 'px',
-          left: Math.max(el.offsetLeft - gap, 0) + 'px',
+          left: Math.max(el.offsetLeft - gap / 1.25, 0) + 'px',
           top: el.offsetTop + 'px',
         },
       })
