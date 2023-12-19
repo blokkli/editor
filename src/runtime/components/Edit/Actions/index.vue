@@ -10,7 +10,7 @@
       @click.stop
     >
       <div class="bk-blokkli-item-actions-inner" :style="innerStyle">
-        <div class="bk-blokkli-item-actions-controls">
+        <div ref="controlsEl" class="bk-blokkli-item-actions-controls">
           <div id="bk-blokkli-item-actions-title">
             <button
               class="bk-blokkli-item-actions-type-button"
@@ -66,21 +66,19 @@ import {
   onUnmounted,
 } from '#imports'
 
-import { modulo, onlyUnique } from '#blokkli/helpers'
+import { onlyUnique } from '#blokkli/helpers'
 import type { AnimationFrameEvent, KeyPressedEvent } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
 import type { PluginMountEvent, PluginUnmountEvent } from '#blokkli/types'
 
-const { selection, eventBus, dom, text, types, state, ui, storage } =
-  useBlokkli()
-
-const useArtboard = storage.use('useArtboard', true)
+const { selection, eventBus, text, types, state, ui } = useBlokkli()
 
 const editingEnabled = computed(() => state.editMode.value === 'editing')
 
 const PADDING = 10
 const ACTIONS_HEIGHT = 50
 
+const controlsEl = ref<HTMLElement | null>(null)
 const mountedPlugins = ref<PluginMountEvent[]>([])
 const showDropdown = ref(false)
 const x = ref(0)
@@ -138,10 +136,13 @@ function onAnimationFrame(e: AnimationFrameEvent) {
   const artboardRect = artboardEl.getBoundingClientRect()
   const rootRect = ui.rootElement().getBoundingClientRect()
   const wrapperRect = ui.isArtboard() ? rootRect : artboardRect
+  const controlsWidth = controlsEl.value ? controlsEl.value.scrollWidth : 500
   if (el && el instanceof HTMLElement) {
     const rect = el.getBoundingClientRect()
-    x.value = Math.max(rect.x, rootRect.x + PADDING)
-    y.value = rect.y
+    x.value = Math.min(
+      Math.max(rect.x, rootRect.x + PADDING),
+      window.innerWidth - controlsWidth - PADDING * 2,
+    )
     y.value = Math.min(
       Math.max(rect.y - ACTIONS_HEIGHT - PADDING, wrapperRect.y + PADDING),
       wrapperRect.height - PADDING,
