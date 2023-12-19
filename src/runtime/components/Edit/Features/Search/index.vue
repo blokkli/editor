@@ -4,7 +4,7 @@
       <div
         v-if="isRendered"
         v-show="isVisible"
-        class="bk bk-search bk-overlay"
+        class="bk bk-search"
         @click.stop.prevent="isVisible = false"
       >
         <Overlay
@@ -16,6 +16,7 @@
     </Transition>
   </Teleport>
   <PluginToolbarButton
+    id="search"
     :title="text('searchToolbarLabel')"
     meta
     key-code="F"

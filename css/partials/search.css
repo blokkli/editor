@@ -1,13 +1,13 @@
 .bk.bk-search {
-  @apply fixed top-0 left-0 w-full h-full z-[99999] overflow-hidden flex items-center justify-center;
+  @apply fixed right-0 bottom-0 z-[99999] overflow-hidden md:shadow-xl-left top-40 md:top-0 w-full md:w-[600px];
 }
 
 .bk .bk-search-box {
-  @apply relative h-full lg:h-auto w-full lg:w-[800px] flex flex-col bg-white md:overflow-hidden lg:rounded-[8px] lg:shadow-lg;
+  @apply relative h-full w-full flex flex-col md:overflow-hidden;
 }
 
 .bk-search-results {
-  @apply flex-1 relative overflow-auto;
+  @apply flex-1 relative bg-white;
 }
 
 .bk {
@@ -21,22 +21,23 @@
     @apply opacity-50;
   }
   .bk-search-input {
-    @apply relative border-b border-b-slate-200;
+    @apply relative pl-30 md:pl-[50px] bg-slate-900 md:bg-slate-700;
     > .bk-icon {
-      @apply text-slate-600 w-25 h-25 md:w-30 md:h-30 absolute top-1/2 -translate-y-1/2 left-15 md:left-25;
+      @apply text-slate-100 w-20 h-20 absolute top-1/2 -translate-y-1/2 left-10 md:left-20;
       svg {
         @apply fill-current;
       }
     }
     input {
-      @apply bg-transparent h-60 md:h-70 appearance-none pl-50 md:pl-[65px] w-full focus:outline-none focus:shadow-none focus:border-none;
-      @apply text-slate-950 text-lg md:text-xl font-bold leading-none;
-      @apply placeholder-slate-400 placeholder:font-normal;
+      @apply h-40 md:h-50 appearance-none w-full focus:outline-none focus:shadow-none focus:border-none focus:ring-transparent bg-transparent;
+      @apply text-slate-100 md:text-lg font-bold leading-none;
+      @apply placeholder-slate-500 placeholder:font-normal;
+      @apply pl-10 md:pl-0;
     }
     button {
       @apply absolute top-0 right-0 h-full px-15;
       svg {
-        @apply w-20 h-20 fill-slate-600;
+        @apply w-20 h-20 fill-slate-100;
       }
     }
   }
@@ -65,10 +66,10 @@
   }
 
   .bk-search-tabs {
-    @apply flex border-b justify-between;
+    @apply flex border-b justify-between bg-white;
     li {
       button {
-        @apply p-20 w-full text-center uppercase text-sm text-slate-500;
+        @apply px-15 py-[12px] lg:p-20 w-full text-center uppercase text-xs md:text-sm text-slate-500;
       }
       &:not(.bk-is-active):hover button {
         @apply text-slate-800;
@@ -92,7 +93,7 @@
 }
 
 .bk .bk-search-list {
-  @apply overflow-auto h-full md:h-[720px];
+  @apply overflow-auto h-full overscroll-contain absolute top-0 left-0 w-full;
   button {
     @apply px-20 text-slate-700  py-15 md:py-20 cursor-pointer md:h-[120px] relative flex gap-15 text-left w-full;
 
@@ -121,9 +122,8 @@
 
 .bk-search-enter-active,
 .bk-search-leave-active {
-  transition: 0.2s ease-in-out;
+  transition: 0.2s cubic-bezier(0.56, 0.04, 0.25, 1);
   .bk-search-box {
-    transition: 0.2s cubic-bezier(0.56, 0.04, 0.25, 1);
   }
 }
 .bk-search-enter-from,
@@ -132,12 +132,8 @@
 }
 
 .bk-search-enter-from {
-  .bk-search-box {
-    @apply translate-y-[70px];
-  }
+  @apply translate-x-full;
 }
 .bk-search-leave-to {
-  .bk-search-box {
-    @apply translate-y-[70px];
-  }
+  @apply translate-x-full;
 }

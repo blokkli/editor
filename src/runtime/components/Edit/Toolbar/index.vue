@@ -27,11 +27,6 @@
           </div>
 
           <div class="bk-toolbar-wrapper">
-            <div
-              id="bk-toolbar-before-view-options"
-              class="bk-toolbar-container"
-            />
-
             <div id="bk-toolbar-view-options" class="bk-toolbar-container" />
 
             <div id="bk-toolbar-before-sidebar" class="bk-toolbar-container" />
@@ -39,6 +34,10 @@
             <div class="bk-toolbar-container bk-is-sidebar">
               <div id="bk-sidebar-tabs" class="bk-toolbar-tabs" />
             </div>
+            <div
+              id="bk-toolbar-before-view-options"
+              class="bk-toolbar-container"
+            />
           </div>
         </div>
       </div>

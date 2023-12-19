@@ -68,6 +68,10 @@ import { modulo } from '#blokkli/helpers'
 import ResultsPage from './Results/Page/index.vue'
 import ResultsContent from './Results/Content/index.vue'
 
+const props = defineProps<{
+  visible: boolean
+}>()
+
 const { adapter, text } = useBlokkli()
 
 const emit = defineEmits(['close'])
@@ -110,10 +114,6 @@ const searchCleaned = computed(() =>
 const getResultsComponent = (): SearchComponent | undefined => {
   return searchComponents.value.find((v) => v.isActive())
 }
-
-const props = defineProps<{
-  visible: boolean
-}>()
 
 const focusInput = () => {
   if (input.value) {

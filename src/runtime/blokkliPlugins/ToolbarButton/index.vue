@@ -3,7 +3,7 @@
     <button
       class="bk-toolbar-button"
       :disabled="disabled"
-      :class="{ 'is-active': active }"
+      :class="[{ 'is-active': active }, id ? 'bk-is-' + id : undefined]"
       @click.prevent.stop="onClick"
     >
       <slot>
@@ -29,6 +29,7 @@ import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon } from '#blokkli/components'
 
 const props = defineProps<{
+  id?: string
   title: string
   region:
     | 'after-title'

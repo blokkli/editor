@@ -78,7 +78,7 @@
   }
 
   .bk-toolbar-menu-button {
-    @apply bg-blue-700 w-40 lg:w-70 flex items-center justify-center text-slate-50 h-full focus:outline-none relative z-50 transition;
+    @apply bg-blue-700 w-50 lg:w-70 flex items-center justify-center text-slate-50 h-full focus:outline-none relative z-50 transition;
     @apply lg:hover:bg-blue-800;
 
     &.bk-is-active {
@@ -172,7 +172,7 @@
   }
 
   .bk-toolbar-button {
-    @apply text-slate-200 flex gap-5 items-center px-10 min-w-[40px] lg:min-w-[50px] justify-center;
+    @apply text-slate-200 flex gap-5 items-center px-10 min-w-[50px] justify-center;
     @apply lg:hover:bg-slate-700;
 
     &.bk-is-inactive {
@@ -230,7 +230,7 @@
       @apply hidden md:flex;
     }
     &.bk-is-sidebar {
-      @apply ml-auto;
+      @apply mr-auto md:mr-0 md:ml-auto;
     }
     &#bk-toolbar-title {
       @apply flex-1 text-xs lg:text-sm xl:text-base;
