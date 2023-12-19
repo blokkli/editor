@@ -55,13 +55,16 @@ import { ItemIcon } from '#blokkli/components'
 import type { StructureTreeField } from './../types'
 import type { ScrollIntoViewEvent } from '#blokkli/types'
 
-const { selection, eventBus } = useBlokkli()
+const { selection, eventBus, ui } = useBlokkli()
 
 const uuids = computed(() => selection.blocks.value.map((v) => v.uuid))
 
 const isSelected = (uuid: string) => uuids.value.includes(uuid)
 
 const select = (uuid: string) => {
+  if (ui.isMobile.value) {
+    eventBus.emit('sidebar:close')
+  }
   eventBus.emit('select', uuid)
   eventBus.emit('scrollIntoView', { uuid })
 }

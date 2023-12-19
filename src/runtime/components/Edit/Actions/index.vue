@@ -26,7 +26,9 @@
                   <ItemIcon v-if="itemBundle" :bundle="itemBundle.id" />
                   <Icon v-else name="selection" />
                 </div>
-                <span>{{ title }}</span>
+                <span class="bk-blokkli-item-actions-title-label">{{
+                  title
+                }}</span>
                 <span
                   class="bk-blokkli-item-actions-title-count"
                   :class="{

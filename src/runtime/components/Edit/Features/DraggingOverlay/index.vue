@@ -72,6 +72,12 @@ const onDrop = async (e: DropTargetEvent) => {
         host,
       }),
     )
+    if (ui.isMobile.value) {
+      eventBus.emit('scrollIntoView', { uuid: uuids[0], center: true })
+    }
+    nextTick(() => {
+      eventBus.emit('select:end', uuids)
+    })
   } else if (e.items.every((v) => v.itemType === 'new')) {
     const items = e.items as DraggableNewItem[]
     const item = items[0]
@@ -162,6 +168,9 @@ const onMouseUp = (e: MouseEvent) => {
 function onDraggingStart(e: DraggableStartEvent) {
   dragItems.value = e.items
   const item = e.items[0]
+  if (!item) {
+    return
+  }
   if ('element' in item) {
     eventBus.on('animationFrame', loop)
     document.removeEventListener('mouseup', onMouseUp)

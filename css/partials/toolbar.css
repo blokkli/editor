@@ -1,7 +1,7 @@
 .bk {
   &.bk-top {
     @apply fixed top-0 left-0 w-full z-[50000];
-    @apply bg-slate-950/80 backdrop-blur-lg lg:backdrop-blur-none lg:bg-slate-900;
+    @apply bg-slate-950/90 backdrop-blur-lg lg:backdrop-blur-none lg:bg-slate-900;
   }
 
   .bk-toolbar-wrapper {

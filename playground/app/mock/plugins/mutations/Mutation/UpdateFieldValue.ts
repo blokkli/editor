@@ -19,6 +19,9 @@ export class MutationUpdateFieldValue extends Mutation {
     }
     const block = proxy.block
     const field = block.get(args.fieldName)
+    if (!field) {
+      return
+    }
     field.setList([JSON.parse(JSON.stringify(args.fieldValue))])
   }
 }

@@ -620,6 +620,8 @@ export type BlokkliEvents = {
 
   'editable:focus': EditableFieldFocusEvent
   'editable:save': undefined
+
+  'sidebar:close': undefined
 }
 
 export type BlokkliEventBus = Emitter<BlokkliEvents>

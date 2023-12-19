@@ -25,19 +25,22 @@
     }
     flex: 0 0 auto;
 
-    &:hover {
-      .bk-list-item-inner {
-        @apply bg-slate-700 text-white border-slate-400;
-      }
-      .bk-list-item-label span {
-        @apply text-white;
+    @media not all and (hover: none) {
+      &:hover {
+        .bk-list-item-inner {
+          @apply bg-slate-700 text-white border-slate-400;
+        }
+        .bk-list-item-label span {
+          @apply text-white;
+        }
       }
     }
   }
 
   .bk-list-item-inner {
-    @apply relative flex bg-slate-800 text-slate-200 rounded items-center justify-center text-sm leading-3 z-10 border border-slate-600 gap-5;
+    @apply relative flex text-slate-200 rounded items-center justify-center text-sm leading-3 z-10 border border-slate-800 lg:border-slate-600 gap-5;
     @apply md:w-[1em];
+    @apply bg-slate-900 lg:bg-slate-800;
     font-size: 20px;
     @apply px-10 py-5 md:py-10;
     @screen md {
@@ -59,7 +62,7 @@
 }
 
 .bk.bk-add-list {
-  @apply bg-slate-900 bottom-0 fixed left-0 select-none z-[40000] overflow-auto lg:overflow-visible;
+  @apply bg-slate-950 lg:bg-slate-900 bottom-0 fixed left-0 select-none z-[40000] overflow-auto lg:overflow-visible;
   @apply touch-manipulation;
 
   &.bk-is-active {

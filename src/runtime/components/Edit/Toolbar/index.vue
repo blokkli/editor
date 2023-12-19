@@ -46,21 +46,29 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useBlokkli } from '#imports'
+import { onMounted, useBlokkli, onBeforeUnmount } from '#imports'
 import ToolbarMenu from './Menu/index.vue'
 
-const { ui, selection } = useBlokkli()
+const { ui, selection, eventBus, storage } = useBlokkli()
 
 const showToolbar = computed(
   () => !ui.isMobile.value || !selection.isDragging.value,
 )
 
 const showSidebar = computed(() => showToolbar.value)
+const activeSidebar = storage.use('sidebar:active', '')
 
 const emit = defineEmits(['loaded'])
 
+const onSidebarClose = () => (activeSidebar.value = '')
+
 onMounted(() => {
   emit('loaded')
+  eventBus.on('sidebar:close', onSidebarClose)
+})
+
+onBeforeUnmount(() => {
+  eventBus.off('sidebar:close', onSidebarClose)
 })
 </script>
 

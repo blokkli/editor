@@ -48,10 +48,10 @@ const shouldHandleEvent = (e: TouchEvent | MouseEvent) => {
 }
 
 const onTouchStart = (e: TouchEvent) => {
+  isTouching.value = true
   if (!shouldHandleEvent(e)) {
     return
   }
-  isTouching.value = true
   if (!props.useSelection) {
     return
   }
@@ -75,20 +75,26 @@ const onTouchStart = (e: TouchEvent) => {
     if (!list.value || !touchedId) {
       return
     }
+    // clearTimeout(touchTimeout)
 
     // Long press on an additional item.
-    if (!selection.uuids.value.includes(currentTouchedId)) {
+    if (
+      !selection.uuids.value.includes(currentTouchedId) &&
+      selection.uuids.value.length
+    ) {
       if (!selection.isMultiSelecting.value) {
         eventBus.emit('select:start', [
           ...selection.uuids.value,
           currentTouchedId,
         ])
       }
-      clearTimeout(touchTimeout)
       return
     }
+    if (!selection.isMultiSelecting.value && !selection.uuids.value.length) {
+      eventBus.emit('select', currentTouchedId)
+    }
     eventBus.emit('dragging:start', { items: [...selection.blocks.value] })
-  }, 200)
+  }, 300)
 }
 
 const onTouchMove = (e: TouchEvent) => {
@@ -100,7 +106,7 @@ const onTouchMove = (e: TouchEvent) => {
   const diffX = Math.abs(start.value.x - touch.clientX)
   const diffY = Math.abs(start.value.y - touch.clientY)
 
-  if (diffX > 8 || diffY > 8) {
+  if (diffX > 3 || diffY > 5) {
     clearTimeout(touchTimeout)
   }
 }

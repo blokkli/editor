@@ -73,5 +73,15 @@ watch(state.refreshKey, () => buildTree())
 
 onMounted(() => {
   buildTree()
+
+  nextTick(() => {
+    // Scroll the active element into view.
+    const el = document.querySelector(
+      '.bk-structure-field-items li.bk-is-active',
+    )
+    if (el instanceof HTMLElement) {
+      el.scrollIntoView({ block: 'center', behavior: 'instant' })
+    }
+  })
 })
 </script>

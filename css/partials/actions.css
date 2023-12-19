@@ -4,7 +4,7 @@
     @apply flex-1;
   }
   .bk-blokkli-item-actions-title-count {
-    @apply bg-slate-50 text-slate-900 inline-block px-3 w-20 h-20 rounded-full ml-10 text-sm font-bold;
+    @apply bg-slate-50 text-slate-900 inline-block px-3 w-[1.25em] h-[1.25em] rounded-full ml-10 text-xs lg:text-sm font-bold;
     &.bk-is-hidden {
       @apply opacity-0;
     }
@@ -21,7 +21,8 @@
     }
   }
   .bk-blokkli-item-actions-controls {
-    @apply flex items-stretch whitespace-nowrap h-full bg-slate-900 shadow-xl border-b border-b-slate-700 flex-wrap lg:flex-nowrap;
+    @apply flex items-stretch whitespace-nowrap h-full shadow-xl flex-wrap lg:flex-nowrap;
+    @apply bg-slate-950/90 backdrop-blur lg:bg-slate-900 lg:backdrop-blur-none;
 
     &::-webkit-scrollbar {
       display: none;
@@ -40,7 +41,7 @@
 
   #bk-blokkli-item-actions-options {
     @apply overflow-auto lg:overflow-visible;
-    @apply border-b border-b-slate-700 lg:border-b-0;
+    @apply border-b border-b-slate-500/25 lg:border-b-0;
     @apply order-first min-w-full lg:min-w-0 lg:order-none;
     &::-webkit-scrollbar {
       display: none;
@@ -84,7 +85,7 @@
     @apply flex items-center justify-between cursor-default md:min-w-[180px] text-slate-300 font-bold h-full pl-[9px] pr-15  rounded-l leading-none;
     @apply text-xs md:text-sm lg:text-base;
     @apply w-full;
-    > span {
+    .bk-blokkli-item-actions-title-label {
       @apply mr-auto;
     }
     .bk-blokkli-item-actions-title-icon {
@@ -122,7 +123,7 @@
   }
 
   #bk-blokkli-item-actions {
-    @apply border-l border-l-slate-600;
+    @apply lg:border-l lg:border-l-slate-600;
   }
 
   .bk-blokkli-item-actions-type {

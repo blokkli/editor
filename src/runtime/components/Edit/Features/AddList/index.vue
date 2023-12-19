@@ -5,7 +5,6 @@
   >
     <div
       v-if="selectableBundles.length"
-      v-show="!ui.isMobile.value || !selection.isMultiSelecting.value"
       ref="wrapper"
       class="bk bk-add-list bk-control"
       :class="[{ 'bk-is-active': isActive }, 'bk-is-' + listOrientation]"

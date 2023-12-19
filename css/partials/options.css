@@ -21,7 +21,7 @@
     }
 
     &:not(:last-child) {
-      @apply border-r border-r-slate-600;
+      @apply lg:border-r lg:border-r-slate-600;
     }
   }
   .bk-checkbox-toggle {

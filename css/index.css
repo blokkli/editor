@@ -261,6 +261,10 @@
   --bk-outline-width: 2;
   --bk-radius: 4;
   --bk-artboard-scale: 1;
+
+  .draggable {
+    scroll-margin: calc(var(--bk-root-offset-top) + 20px);
+  }
 }
 
 .bk,
