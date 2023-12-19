@@ -22,8 +22,10 @@
           {{ title }}
         </h3>
       </div>
-      <div ref="sidebarContent" class="bk-sidebar-content">
-        <slot :scrolled-to-end="scrolledToEnd" />
+      <div class="bk-sidebar-content-wrapper">
+        <div ref="sidebarContent" class="bk-sidebar-content">
+          <slot :scrolled-to-end="scrolledToEnd" />
+        </div>
       </div>
     </div>
   </Teleport>

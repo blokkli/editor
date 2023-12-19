@@ -10,8 +10,14 @@ import {
 } from 'vue'
 
 import type { DraggableExistingBlokkliItem } from '#blokkli/types'
-import { findElement, buildDraggableItem, falsy } from '#blokkli/helpers'
+import {
+  findElement,
+  buildDraggableItem,
+  falsy,
+  modulo,
+} from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
+import type { BlokkliDomProvider } from './domProvider'
 
 export type BlokkliSelectionProvider = {
   /**
@@ -55,7 +61,7 @@ export type BlokkliSelectionProvider = {
   isChangingOptions: Ref<boolean>
 }
 
-export default function (): BlokkliSelectionProvider {
+export default function (dom: BlokkliDomProvider): BlokkliSelectionProvider {
   const selectedUuids = ref<string[]>([])
   const activeFieldKey = ref('')
   const isDragging = ref(false)
@@ -171,12 +177,43 @@ export default function (): BlokkliSelectionProvider {
     selectItems(uuids)
   }
 
+  const selectInList = (prev?: boolean) => {
+    const items = dom.getAllBlocks()
+    if (!items.length) {
+      return
+    }
+
+    const currentIndex = blocks.value[0]
+      ? items.findIndex((v) => v.uuid === blocks.value[0].uuid)
+      : -1
+
+    const targetIndex = modulo(
+      prev ? currentIndex - 1 : currentIndex + 1,
+      items.length,
+    )
+    const targetItem = items[targetIndex]
+    if (!targetItem) {
+      return
+    }
+    onSelect(targetItem.uuid)
+    eventBus.emit('scrollIntoView', { uuid: targetItem.uuid })
+  }
+
+  const onSelectPrevious = () => {
+    selectInList(true)
+  }
+  const onSelectNext = () => {
+    selectInList()
+  }
+
   onMounted(() => {
     document.documentElement.addEventListener('mousedown', onWindowMouseDown)
     eventBus.on('select', onSelect)
     eventBus.on('select:start', onSelectStart)
     eventBus.on('select:toggle', selectToggle)
     eventBus.on('select:end', onSelectEnd)
+    eventBus.on('select:previous', onSelectPrevious)
+    eventBus.on('select:next', onSelectNext)
     eventBus.on('setActiveFieldKey', setActiveFieldKey)
     eventBus.on('state:reloaded', onStateReloaded)
     eventBus.on('dragging:start', onDraggingStart)
@@ -189,6 +226,8 @@ export default function (): BlokkliSelectionProvider {
     eventBus.off('select:start', onSelectStart)
     eventBus.off('select:toggle', selectToggle)
     eventBus.off('select:end', onSelectEnd)
+    eventBus.off('select:previous', onSelectPrevious)
+    eventBus.off('select:next', onSelectNext)
     eventBus.off('setActiveFieldKey', setActiveFieldKey)
     eventBus.off('state:reloaded', onStateReloaded)
     eventBus.off('dragging:start', onDraggingStart)

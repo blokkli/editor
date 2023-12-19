@@ -17,7 +17,19 @@
   @apply !font-bold md:!text-xl !font-sans !p-15 md:!p-20 !border-b !border-b-slate-300;
 }
 
+.bk-sidebar-content-wrapper {
+  @apply flex-1 relative overflow-hidden;
+  &:focus-within {
+    &:before {
+      content: '';
+      @apply absolute top-0 left-0 w-full h-full border-3 border-blue-400 pointer-events-none z-[500];
+    }
+  }
+}
 .bk-sidebar-content {
-  @apply flex-1;
+  @apply absolute top-0 left-0 w-full h-full;
   overflow: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }

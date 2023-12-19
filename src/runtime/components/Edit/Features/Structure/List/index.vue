@@ -13,7 +13,7 @@ import Field from './Field/index.vue'
 import type { StructureTreeField, StructureTreeItem } from './types'
 import { getDefinition } from '#blokkli/definitions'
 
-const { types, state, context } = useBlokkli()
+const { types, state, context, eventBus } = useBlokkli()
 
 const tree = ref<StructureTreeField[]>([])
 
@@ -24,9 +24,11 @@ const onKeydown = (e: KeyboardEvent) => {
   if (e.code === 'ArrowUp') {
     e.stopPropagation()
     e.preventDefault()
+    eventBus.emit('select:previous')
   } else if (e.code === 'ArrowDown') {
     e.stopPropagation()
     e.preventDefault()
+    eventBus.emit('select:next')
   }
 }
 

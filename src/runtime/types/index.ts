@@ -603,6 +603,8 @@ export type BlokkliEvents = {
   'select:start': string[] | undefined
   'select:toggle': string
   'select:end': string[] | undefined
+  'select:previous': undefined
+  'select:next': undefined
 
   scrollIntoView: ScrollIntoViewEvent
   'animationFrame:before': undefined

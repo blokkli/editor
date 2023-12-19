@@ -9,7 +9,11 @@
         :key="item.uuid"
         :class="{ 'bk-is-active': isSelected(item.uuid) }"
       >
-        <button class="bk-blokkli-item-label" @click="select(item.uuid)">
+        <button
+          class="bk-blokkli-item-label"
+          @click="select(item.uuid)"
+          :data-blokkli-structure-uuid="item.uuid"
+        >
           <div class="bk-blokkli-item-label-icon">
             <ItemIcon :bundle="item.bundle" />
           </div>
@@ -25,7 +29,12 @@
               'bk-is-inside-active': isSelected(item.uuid),
             }"
           >
-            <button class="bk-blokkli-item-label" @click="select(child.uuid)">
+            <button
+              class="bk-blokkli-item-label"
+              @click="select(child.uuid)"
+              :data-blokkli-structure-uuid="child.uuid"
+              data-blokkli-structure-nested="true"
+            >
               <div class="bk-blokkli-item-label-icon">
                 <ItemIcon :bundle="child.bundle" />
               </div>
@@ -41,9 +50,10 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, computed } from '#imports'
+import { useBlokkli, computed, onMounted, onBeforeUnmount } from '#imports'
 import { ItemIcon } from '#blokkli/components'
 import type { StructureTreeField } from './../types'
+import type { ScrollIntoViewEvent } from '#blokkli/types'
 
 const { selection, eventBus } = useBlokkli()
 
@@ -59,4 +69,24 @@ const select = (uuid: string) => {
 defineProps<{
   fields?: StructureTreeField[]
 }>()
+
+const onScrollIntoView = (e: ScrollIntoViewEvent) => {
+  const el = document.querySelector(`[data-blokkli-structure-uuid="${e.uuid}"]`)
+  if (el instanceof HTMLElement) {
+    const isNested = el.dataset.blokkliStructureNested === 'true'
+    el.scrollIntoView({
+      block: 'nearest',
+      behavior: 'instant',
+    })
+    el.focus()
+  }
+}
+
+onMounted(() => {
+  eventBus.on('scrollIntoView', onScrollIntoView)
+})
+
+onBeforeUnmount(() => {
+  eventBus.off('scrollIntoView', onScrollIntoView)
+})
 </script>

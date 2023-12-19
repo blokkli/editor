@@ -159,26 +159,7 @@ function onKeyPressed(e: KeyPressedEvent) {
 
   e.originalEvent.preventDefault()
 
-  const items = dom.getAllBlocks()
-  if (!items.length) {
-    return
-  }
-
-  const currentIndex = selection.blocks.value[0]
-    ? items.findIndex((v) => v.uuid === selection.blocks.value[0].uuid)
-    : -1
-
-  const targetIndex = modulo(
-    e.shift ? currentIndex - 1 : currentIndex + 1,
-    items.length,
-  )
-  const targetItem = items[targetIndex]
-  if (!targetItem) {
-    return
-  }
-
-  eventBus.emit('select', targetItem.uuid)
-  eventBus.emit('scrollIntoView', { uuid: targetItem.uuid })
+  e.shift ? eventBus.emit('select:previous') : eventBus.emit('select:next')
 }
 
 const shouldRenderButton = computed(() =>
