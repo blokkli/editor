@@ -268,6 +268,13 @@ const sortedList = computed(() => {
       }
       return 9999
     })
+    .filter((v) => {
+      if (ui.isMobile.value) {
+        return selectableBundles.value.includes(v.id)
+      }
+
+      return true
+    })
 })
 
 function setRootClasses() {

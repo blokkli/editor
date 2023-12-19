@@ -73,13 +73,22 @@
       pointer-events: all;
       cursor: text;
 
-      &:hover {
-        @apply outline-2 outline-green-500 outline-offset-1 outline-dotted;
+      @screen lg {
+        &:hover {
+          @apply outline-2 outline-green-500 outline-offset-1 outline-dotted;
+        }
       }
     }
     [data-blokkli-is-reusable='true'] {
       * {
         pointer-events: none !important;
+      }
+    }
+    @media (hover: none) {
+      [data-is-selected='true'] {
+        [data-blokkli-editable-field] {
+          @apply outline-1 outline-green-500 outline-dashed -outline-offset-2;
+        }
       }
     }
   }

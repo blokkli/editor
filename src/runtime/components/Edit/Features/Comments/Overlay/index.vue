@@ -23,7 +23,7 @@ import type { BlokkliComment, AnimationFrameEvent } from '#blokkli/types'
 import { getBounds } from '#blokkli/helpers'
 import Item from './Item/index.vue'
 
-const { eventBus } = useBlokkli()
+const { eventBus, ui } = useBlokkli()
 
 const props = defineProps<{
   comments: BlokkliComment[]
@@ -61,10 +61,12 @@ type Indicator = {
 const indicators = ref<Indicator[]>([])
 
 function onAnimationFrame(e: AnimationFrameEvent) {
-  const x = Math.min(
-    e.canvasRect.x + e.canvasRect.width + 20,
-    e.rootRect.x + e.rootRect.width - 60,
-  )
+  const x = ui.isMobile.value
+    ? e.canvasRect.width - 40
+    : Math.min(
+        e.canvasRect.x + e.canvasRect.width + 20,
+        e.rootRect.x + e.rootRect.width - 60,
+      )
   isReduced.value = e.scale < 0.8
   isLeft.value = x < e.rootRect.x + e.rootRect.width - 300
 

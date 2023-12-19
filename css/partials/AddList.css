@@ -99,7 +99,7 @@
     @apply w-full flex md:py-5;
     height: var(--bk-root-offset-bottom);
     .bk-list {
-      @apply flex mx-auto;
+      @apply flex lg:mx-auto;
     }
     .bk-list-item-label {
       @apply text-xs;

@@ -38,13 +38,13 @@ const onScrollIntoView = (e: ScrollIntoViewEvent) => {
 
 const setFallback = () => {
   eventBus.off('scrollIntoView', onScrollIntoView)
-  if (useArtboard.value) {
+  if (!useArtboard.value) {
     eventBus.on('scrollIntoView', onScrollIntoView)
   }
 }
 
-watch(useArtboard, setFallback)
-onMounted(setFallback)
+watch(useArtboard, () => setFallback())
+onMounted(() => setFallback())
 
 onBeforeUnmount(() => {
   eventBus.off('scrollIntoView', onScrollIntoView)

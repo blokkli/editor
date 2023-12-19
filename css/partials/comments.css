@@ -1,11 +1,13 @@
 .bk.bk-comments-overlay {
   .bk-comments-overlay-item {
     @apply absolute top-0 left-0 w-0;
-    &.bk-is-left {
-      @apply border-l-2 border-l-slate-300 border-dashed;
-    }
-    &:not(.bk-is-left) {
-      @apply border-r-2 border-r-slate-300 border-dashed;
+    @screen lg {
+      &.bk-is-left {
+        @apply border-l-2 border-l-slate-300 border-dashed;
+      }
+      &:not(.bk-is-left) {
+        @apply border-r-2 border-r-slate-300 border-dashed;
+      }
     }
     &.bk-is-active {
       z-index: 50;

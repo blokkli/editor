@@ -24,7 +24,6 @@
       --bk-root-offset-bottom: 70px;
     }
   }
-  @apply h-screen w-screen overflow-hidden;
 }
 
 .bk-html-root:not(.bk-is-artboard) .bk-main-canvas {
@@ -32,11 +31,10 @@
   /* margin-left: var(--bk-root-offset-left); */
   /* margin-bottom: var(--bk-root-offset-bottom); */
 
-  @apply fixed;
-  top: var(--bk-root-offset-top);
-  left: var(--bk-root-offset-left);
-  bottom: var(--bk-root-offset-bottom);
-  @apply right-0 overflow-auto;
+  @apply relative;
+  margin-top: var(--bk-root-offset-top);
+  margin-left: var(--bk-root-offset-left);
+  margin-bottom: var(--bk-root-offset-bottom);
 }
 
 .bk-html-root.bk-is-artboard {
