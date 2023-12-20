@@ -13,7 +13,7 @@
     @apply text-slate-50  select-none text-sm;
   }
   .bk-blokkli-item-actions-inner {
-    @apply fixed left-0 p-0 z-[501] w-full will-change-transform;
+    @apply fixed left-0 p-0 z-actions w-full will-change-transform;
     bottom: var(--bk-root-offset-bottom);
     @screen md {
       @apply top-0 w-auto;
@@ -29,13 +29,6 @@
     }
     @screen md {
       @apply rounded-md border-b-0;
-    }
-  }
-  .bk-blokkli-item-actions-overlay {
-    @apply outline outline-blue-600 outline-offset-1 fixed top-0 left-0 pointer-events-none rounded z-[500];
-    > div {
-      @apply absolute top-0 left-0;
-      @apply outline outline-blue-700 outline-1 rounded bg-blue-500/25;
     }
   }
 

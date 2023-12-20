@@ -1,5 +1,5 @@
 .bk-dialog {
-  @apply fixed top-0 left-0 w-screen bottom-0  z-[9999999999] p-15;
+  @apply fixed top-0 left-0 w-screen bottom-0  z-dialog p-15;
   @apply flex items-center justify-center;
   .bk-dialog-background {
     @apply absolute top-0 left-0 w-full h-full;

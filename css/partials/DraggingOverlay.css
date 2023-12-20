@@ -1,6 +1,5 @@
 .bk-dragging-overlay {
-  /* @apply fixed top-0 left-0 bg-blue-500/25 pointer-events-none rounded outline outline-blue-600 outline-offset-1 z-[999999]; */
-  @apply fixed bottom-0 lg:bottom-auto lg:top-0 left-0 pointer-events-none z-[999999] rounded select-none;
+  @apply fixed bottom-0 lg:bottom-auto lg:top-0 left-0 pointer-events-none z-dragging-overlay rounded select-none;
 
   > div {
     @apply absolute top-0 left-0 origin-top-left rounded;
@@ -15,19 +14,18 @@
     @screen md {
       &:before {
         content: '';
-        @apply absolute top-0 left-0 w-full h-full bg-blue-500/60 z-[200] rounded;
+        @apply absolute top-0 left-0 w-full h-full bg-blue-500/60 z-50 rounded;
       }
     }
 
     &.bk-is-top {
-      z-index: 100;
-      @apply shadow-xl-inverted;
+      @apply shadow-xl-inverted z-50;
     }
   }
 }
 
 .bk.bk-drop-targets {
-  @apply absolute top-0 left-0 w-full h-full z-[500000] pointer-events-auto select-none;
+  @apply absolute top-0 left-0 w-full h-full z-drop-targets pointer-events-auto select-none;
 
   .bk-drop-targets-field {
     @apply absolute top-0 left-0;

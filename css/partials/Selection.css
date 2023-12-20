@@ -1,6 +1,5 @@
 .bk.bk-selection {
-  @apply absolute top-0 left-0 pointer-events-none z-[500];
-  /* @apply outline outline-blue-600 outline-offset-1; */
+  @apply absolute top-0 left-0 pointer-events-none z-selection;
 
   > div {
     @apply absolute top-0 left-0;

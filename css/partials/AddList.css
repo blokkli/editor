@@ -62,7 +62,7 @@
 }
 
 .bk.bk-add-list {
-  @apply bg-slate-950 lg:bg-slate-900 bottom-0 fixed left-0 select-none z-[40000] overflow-auto lg:overflow-visible;
+  @apply bg-slate-950 lg:bg-slate-900 bottom-0 fixed left-0 select-none z-add-list overflow-auto lg:overflow-visible;
   @apply touch-manipulation;
 
   &.bk-is-active {

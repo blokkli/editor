@@ -1,6 +1,6 @@
 .bk {
   &.bk-top {
-    @apply fixed top-0 left-0 w-full z-[50000];
+    @apply fixed top-0 left-0 w-full z-toolbar;
     @apply bg-slate-950/90 backdrop-blur-lg lg:backdrop-blur-none lg:bg-slate-900;
   }
 
@@ -74,7 +74,7 @@
     }
   }
   .bk-toolbar-menu {
-    @apply relative z-[13000] h-full;
+    @apply relative z-menu h-full;
   }
 
   .bk-toolbar-menu-button {
@@ -91,7 +91,7 @@
   }
 
   .bk-toolbar-menu-overlay {
-    @apply fixed top-0 left-0 w-screen h-screen z-[12000];
+    @apply fixed top-0 left-0 w-screen h-screen z-menu-overlay;
   }
   .bk-toolbar-menu-list {
     @apply fixed top-0 left-0 bg-white shadow-lg bottom-0 flex flex-col max-w-[480px] lg:min-w-[400px] h-screen overflow-auto;
@@ -363,7 +363,7 @@
     }
   }
   .bk-translations-dropdown {
-    @apply absolute top-full right-0 lg:right-auto lg:left-0 w-200 bg-white z-[999999] shadow-lg;
+    @apply absolute top-full right-0 lg:right-auto lg:left-0 w-200 bg-white z-toolbar-dropdown shadow-lg;
 
     label {
       @apply relative px-15 py-10 block cursor-pointer lg:hover:bg-slate-100;

@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <div class="bk-dragging-overlay" :style="style">
+    <div class="bk bk-dragging-overlay" :style="style">
       <div
         v-for="(rect, i) in rects"
         :key="i"

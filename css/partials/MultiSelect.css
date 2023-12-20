@@ -20,10 +20,14 @@
       @apply outline outline-2 outline-blue-700 outline-offset-2 bg-blue-500/10;
     }
   }
+}
 
-  .bk-multi-select-selection {
-    @apply absolute z-[10000] top-0 left-0;
-  }
+.bk-multi-select-hidden {
+  display: none !important;
+}
+
+.bk-multi-select-anchor {
+  @apply absolute w-0 h-0 pointer-events-none;
 }
 
 @keyframes bkSelectArea {

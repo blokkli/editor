@@ -1,4 +1,9 @@
 /** @type {import('tailwindcss').Config} */
+
+const z = (index) => {
+  return `calc(var(--bk-z-index-base) + ${index})`
+}
+
 module.exports = {
   corePlugins: {
     preflight: false,
@@ -10,6 +15,31 @@ module.exports = {
       sans: ['PB Inter, sans-serif'],
     },
     extend: {
+      zIndex: {
+        'editable-field': z(600),
+        selection: z(700),
+        actions: z(800),
+        'drop-targets': z(900),
+        'transform-overlay': z(910),
+        'add-list': z(950),
+        'touch-action-bar': z(955),
+        'dragging-overlay': z(960),
+        toolbar: z(1000),
+        preview: z(1050),
+        sidebar: z(1100),
+        'sidebar-inner': z(1150),
+        search: z(1200),
+        'toolbar-dropdown': z(1300),
+        messages: z(2000),
+        'menu-overlay': z(3000),
+        menu: z(3010),
+        'artboard-scrollbar': z(3100),
+        'edit-form': z(20_000),
+        resizable: z(20_100),
+        'edit-form-header': z(20_200),
+        dialog: z(50_100),
+        'init-overlay': z(100_000),
+      },
       boxShadow: {
         sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
         DEFAULT:

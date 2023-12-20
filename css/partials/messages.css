@@ -8,7 +8,7 @@
 }
 
 .bk.bk-messages {
-  @apply fixed z-[9000] right-0;
+  @apply fixed z-messages right-0;
   left: var(--bk-root-offset-left);
   bottom: var(--bk-root-offset-bottom);
 

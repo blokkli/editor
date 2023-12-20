@@ -1,5 +1,5 @@
 .bk.bk-transform-overlay {
-  @apply fixed top-0 left-0 z-[10] pointer-events-none rounded;
+  @apply fixed top-0 left-0 z-transform-overlay pointer-events-none rounded;
   @apply border border-slate-800 border-dashed;
 
   .bk-transform-overlay-label {

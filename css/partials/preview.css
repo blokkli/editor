@@ -1,5 +1,5 @@
 .bk-preview {
-  @apply fixed top-50 bottom-0 bg-white shadow-lg z-[30000];
+  @apply fixed top-50 bottom-0 bg-white shadow-lg z-preview;
   left: var(--bk-root-offset-left);
   .bk-preview-iframe {
     @apply relative w-full h-full;

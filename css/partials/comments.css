@@ -10,7 +10,7 @@
       }
     }
     &.bk-is-active {
-      z-index: 50;
+      @apply z-50;
     }
   }
   .bk-comments-overlay-item-button {

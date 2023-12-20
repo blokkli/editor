@@ -16,7 +16,7 @@
     @apply hidden;
     @screen md {
       @apply block;
-      @apply absolute top-0 -left-10 w-[20px] h-full cursor-ew-resize  opacity-50 hover:opacity-100 transition z-[5000];
+      @apply absolute top-0 -left-10 w-[20px] h-full cursor-ew-resize opacity-50 hover:opacity-100 transition z-resizable;
       &:hover:before {
         @apply bg-slate-400/40;
       }
@@ -33,7 +33,7 @@
 }
 
 .bk-drupal-modal {
-  @apply fixed left-0 top-0 w-full h-full z-[990000];
+  @apply fixed left-0 top-0 w-full h-full z-edit-form;
   .bk-drupal-modal-background {
     @apply absolute left-0 top-0 w-full h-full;
   }
@@ -52,7 +52,7 @@
 }
 
 .bk-drupal-modal-header {
-  @apply pl-20 border-b flex items-center text-base font-bold h-50 bg-slate-900 text-white gap-10 relative z-[6000];
+  @apply pl-20 border-b flex items-center text-base font-bold h-50 bg-slate-900 text-white gap-10 relative z-edit-form-header;
   button {
     @apply w-50 h-50 flex items-center justify-center hover:bg-slate-700 ml-auto;
     svg {

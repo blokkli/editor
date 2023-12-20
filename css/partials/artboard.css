@@ -70,7 +70,7 @@
   }
 
   .bk-artboard-scrollbar {
-    @apply fixed right-5 w-10 bg-slate-500/10 z-[100] rounded-full transition overflow-hidden;
+    @apply fixed right-5 w-10 bg-slate-500/10 z-artboard-scrollbar rounded-full transition overflow-hidden;
     top: calc(var(--bk-root-offset-top) + 5px);
     bottom: calc(var(--bk-root-offset-bottom) + 5px);
     /* @apply opacity-25; */
@@ -96,6 +96,6 @@
 
 .bk-html-root.bk-is-artboard.bk-has-sidebar-right {
   .bk-artboard-scrollbar {
-    @apply right-[305px];
+    @apply right-[360px];
   }
 }
