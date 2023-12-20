@@ -144,8 +144,8 @@ const onAnimationFrame = () => {
 
 onMounted(() => {
   const elRects = props.items.map((item, index) => {
-    const element =
-      item.element.querySelector('.bk-drop-element') || item.element
+    const element = (item.element.querySelector('.bk-drop-element') ||
+      item.element) as HTMLElement
     return {
       rect: element.getBoundingClientRect(),
       element,

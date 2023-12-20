@@ -43,21 +43,44 @@
   }
 
   .bk-search-item-icon {
-    @apply w-60 h-60 md:w-80 md:h-80 rounded bg-slate-100 flex items-center justify-center border border-slate-200 shrink-0 text-slate-500 relative overflow-hidden;
-    @apply text-3xl md:text-5xl;
+    @apply w-[1em] h-[1em] rounded-[0.1em] bg-slate-100 flex items-center justify-center border border-slate-200 shrink-0 text-slate-500 relative overflow-hidden;
+    @apply p-[0.125em];
+    @apply text-[40px] lg:text-[46px];
+
+    .bk-blokkli-item-icon {
+      @apply w-full h-full;
+    }
 
     img {
       @apply absolute top-0 left-0 w-full h-full object-cover;
     }
   }
 
-  .bk-search-item-text {
-    @apply text-xs md:text-base mt-auto min-w-0 truncate leading-none;
+  .bk-search-item-content {
+    @apply w-full overflow-hidden flex flex-col justify-between;
   }
 
-  .bk-search-item-content {
-    @apply truncate flex flex-col h-full md:py-5;
+  .bk-search-item-title {
+    @apply font-bold text-sm lg:text-base leading-none align-baseline truncate;
+    div {
+      @apply inline-block;
+    }
   }
+  .bk-search-item-context {
+    @apply whitespace-nowrap uppercase text-xs align-baseline font-semibold;
+    &:after {
+      content: '-';
+      @apply inline-block mx-5;
+    }
+  }
+
+  .bk-search-item-subtitle {
+    @apply min-w-0 inline-flex overflow-hidden w-full text-sm mt-auto items-baseline;
+  }
+  .bk-search-item-text {
+    @apply min-w-0 truncate w-full;
+  }
+
   .bk-search-no-results {
     @apply absolute top-0 left-0 h-full w-full flex items-center justify-center flex-col text-lg text-slate-500 font-medium;
     svg {
@@ -85,8 +108,6 @@
 
 .bk-highlight {
   em {
-    /* @apply not-italic inline-block bg-yellow-300 px-5 rounded text-slate-950 mx-2; */
-    /* @apply not-italic inline-block bg-yellow-300 px-5 rounded text-slate-950 mx-2; */
     @apply not-italic relative inline-block rounded;
     @apply bg-yellow-100 outline outline-[1px] outline-yellow-300;
   }
@@ -95,17 +116,8 @@
 .bk .bk-search-list {
   @apply overflow-auto h-full overscroll-contain absolute top-0 left-0 w-full;
   button {
-    @apply px-20 text-slate-700  py-15 md:py-20 cursor-pointer md:h-[120px] relative flex gap-15 text-left w-full;
+    @apply px-20 text-slate-700  py-15 md:py-20 cursor-pointer relative flex gap-10 text-left w-full items-stretch;
 
-    h2 {
-      @apply font-bold text-base md:text-lg leading-none align-baseline;
-      div {
-        @apply inline-block;
-      }
-    }
-    .bk-search-item-context {
-      @apply text-xs md:text-sm mt-3 mb-5 md:mb-0;
-    }
     &:after {
       content: '';
       @apply absolute bottom-0 left-0 w-full h-[0.5px] bg-slate-200;

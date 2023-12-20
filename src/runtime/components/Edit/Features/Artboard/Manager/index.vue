@@ -22,15 +22,6 @@
         @mousedown.capture.prevent.stop="onThumbMouseDown"
       />
     </div>
-
-    <!-- <div class="artboard-debug"> -->
-    <!--   <table> -->
-    <!--     <tr v-for="[key, value] in Object.entries(debugValues)"> -->
-    <!--       <th>{{ key }}</th> -->
-    <!--       <td>{{ value }}</td> -->
-    <!--     </tr> -->
-    <!--   </table> -->
-    <!-- </div> -->
   </Teleport>
 </template>
 
@@ -642,6 +633,10 @@ const saveState = () => {
 }
 
 onMounted(() => {
+  // Scroll to the top left to prevent overflow issues when artboard is enabled
+  // /disabled (e.g. switching from mobile to destop viewport).
+  window.scrollY = 0
+  window.scrollX = 0
   document.body.addEventListener('mousedown', onMouseDown)
   window.addEventListener('mouseup', onMouseUp)
 
@@ -683,22 +678,9 @@ onBeforeUnmount(() => {
 onUnmounted(() => {
   ui.artboardElement().style.translate = ''
   ui.artboardElement().style.scale = ''
+
   document.documentElement.style.setProperty('--bk-outline-width', null)
-
   document.documentElement.style.setProperty('--bk-radius', null)
-
   document.documentElement.style.setProperty('--bk-artboard-scale', null)
 })
 </script>
-
-<style>
-.artboard-debug {
-  position: fixed;
-  z-index: 9999999999;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  background: white;
-  padding: 1rem;
-}
-</style>

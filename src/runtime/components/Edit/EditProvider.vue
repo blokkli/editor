@@ -8,7 +8,7 @@
     :key="route.fullPath"
     @loaded="featuresLoaded = true"
   />
-  <slot v-if="!isInitializing" />
+  <slot />
 </template>
 
 <script lang="ts" setup>
@@ -76,7 +76,13 @@ const state = await editStateProvider(adapter, context)
 const originalThemeColor = ref('')
 const THEME_COLOR = '#020617'
 
+const onContextMenu = (e: Event) => {
+  e.preventDefault()
+  e.stopPropagation()
+}
+
 onMounted(() => {
+  window.addEventListener('contextmenu', onContextMenu)
   const el = document.head.querySelectorAll('[name="theme-color"]')
   if (el instanceof HTMLMetaElement) {
     originalThemeColor.value = el.content
@@ -93,6 +99,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  window.removeEventListener('contextmenu', onContextMenu)
   isInitializing.value = true
   toolbarLoaded.value = false
   const el = document.head.querySelectorAll('[name="theme-color"]')

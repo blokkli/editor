@@ -145,13 +145,17 @@ function onAnimationFrame(e: AnimationFrameEvent) {
   const controlsWidth = controlsEl.value ? controlsEl.value.scrollWidth : 500
   if (el && el instanceof HTMLElement) {
     const rect = el.getBoundingClientRect()
-    x.value = Math.min(
-      Math.max(rect.x, rootRect.x + PADDING),
-      window.innerWidth - controlsWidth - PADDING * 2,
+    x.value = Math.round(
+      Math.min(
+        Math.max(rect.x, rootRect.x + PADDING),
+        window.innerWidth - controlsWidth - PADDING * 2,
+      ),
     )
-    y.value = Math.min(
-      Math.max(rect.y - ACTIONS_HEIGHT - PADDING, wrapperRect.y + PADDING),
-      wrapperRect.height - PADDING,
+    y.value = Math.round(
+      Math.min(
+        Math.max(rect.y - ACTIONS_HEIGHT - PADDING, wrapperRect.y + PADDING),
+        wrapperRect.height - PADDING,
+      ),
     )
   }
 }

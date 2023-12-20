@@ -12,18 +12,25 @@
         <ItemIcon :bundle="item.item.itemBundle" />
       </div>
       <div class="bk-search-item-content">
-        <Highlight tag="h2" :text="item.title" :regex="regex" />
         <Highlight
-          v-if="item.context"
-          class="bk-search-item-context"
-          :text="item.context"
+          class="bk-search-item-title"
+          tag="div"
+          :text="item.title"
           :regex="regex"
         />
-        <Highlight
-          class="bk-search-item-text"
-          :text="item.text"
-          :regex="regex"
-        />
+        <div class="bk-search-item-subtitle">
+          <Highlight
+            v-if="item.context"
+            class="bk-search-item-context"
+            :text="item.context"
+            :regex="regex"
+          />
+          <Highlight
+            class="bk-search-item-text"
+            :text="item.text"
+            :regex="regex"
+          />
+        </div>
       </div>
     </button>
   </div>
@@ -125,7 +132,7 @@ const scrollItemIntoView = () => {
 }
 
 const buildSearchText = (el: HTMLElement): string => {
-  let text = el.innerText
+  let text = el.innerText || ''
 
   // Add alt and title attributes.
   el.querySelectorAll('img').forEach((img) => {

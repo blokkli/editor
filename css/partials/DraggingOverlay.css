@@ -87,6 +87,9 @@
       &:before {
         @apply scale-100;
       }
+      span {
+        @apply bg-white text-blue-700;
+      }
     }
 
     &.bk-is-horizontal {

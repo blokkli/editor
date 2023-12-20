@@ -13,7 +13,7 @@
     @apply text-slate-50  select-none text-sm;
   }
   .bk-blokkli-item-actions-inner {
-    @apply fixed left-0 p-0 z-[501] w-full;
+    @apply fixed left-0 p-0 z-[501] w-full will-change-transform;
     bottom: var(--bk-root-offset-bottom);
     @screen md {
       @apply top-0 w-auto;
@@ -55,7 +55,7 @@
   .bk-blokkli-item-actions-buttons {
     @apply relative flex;
     > button {
-      @apply text-slate-300 h-full flex items-center shrink-0 justify-center relative z-50;
+      @apply text-slate-300 h-full flex items-center shrink-0 justify-center relative md:static z-50;
       @apply md:hover:bg-slate-700 md:hover:text-slate-50;
       width: var(--bk-actions-height);
       &.bk-is-active {
