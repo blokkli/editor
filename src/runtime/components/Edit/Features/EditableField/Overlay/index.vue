@@ -1,6 +1,6 @@
 <template>
   <div v-if="loaded" :style="style" class="bk-editable-field bk-control">
-    <form class="bk-editable-field-input" @submit.prevent="cancel">
+    <form ref="form" class="bk-editable-field-input" @submit.prevent="cancel">
       <div class="bk bk-editable-field-buttons">
         <h3>
           <ItemIcon :bundle="itemBundle" />
@@ -100,7 +100,7 @@ const loaded = ref(false)
 const originalText = ref('')
 const modelValue = ref('')
 const inputStyle = ref<Record<string, any>>({})
-const input = ref<HTMLInputElement | HTMLDivElement | null>(null)
+const form = ref<HTMLFormElement | null>(null)
 const style = computed(() => {
   if (ui.isMobile.value) {
     return {}
@@ -200,6 +200,31 @@ const onEditableSave = () => {
   close(true)
 }
 
+const focusInput = (el?: HTMLElement | Document | null) => {
+  if (!el) {
+    return
+  }
+
+  const textarea = el.querySelector('textarea')
+  if (textarea) {
+    textarea.focus()
+    return
+  }
+
+  const editable = el.querySelector('[contenteditable]')
+  if (editable instanceof HTMLElement) {
+    editable.focus()
+    return
+  }
+
+  const iframe = el.querySelector('iframe')
+
+  if (iframe?.contentDocument) {
+    focusInput(iframe.contentDocument)
+    return
+  }
+}
+
 onMounted(() => {
   eventBus.on('editable:save', onEditableSave)
 
@@ -223,14 +248,17 @@ onMounted(() => {
 
   nextTick(() => {
     scrollHeight.value = el.scrollHeight
-    if (input.value) {
-      input.value.style.opacity = '0'
-      input.value.focus()
-      inputStyle.value.minHeight =
-        Math.min(input.value.scrollHeight, 100) + 'px'
-      input.value.style.opacity = '1'
-    }
     loaded.value = true
+    nextTick(() => {
+      focusInput(form.value)
+    })
+    // if (input.value) {
+    //   input.value.style.opacity = '0'
+    //   input.value.focus()
+    //   inputStyle.value.minHeight =
+    //     Math.min(input.value.scrollHeight, 100) + 'px'
+    //   input.value.style.opacity = '1'
+    // }
   })
 })
 

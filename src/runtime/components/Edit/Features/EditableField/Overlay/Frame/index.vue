@@ -1,6 +1,6 @@
 <template>
   <div class="bk-editable-field-frame">
-    <iframe :style="{ height: height + 'px' }" :src="url" />
+    <iframe ref="iframe" :style="{ height: height + 'px' }" :src="url" />
   </div>
 </template>
 
