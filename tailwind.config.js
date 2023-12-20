@@ -24,10 +24,11 @@ module.exports = {
         'add-list': z(950),
         'touch-action-bar': z(955),
         'dragging-overlay': z(960),
+        sidebar: z(970),
+        'sidebar-inner': z(980),
         toolbar: z(1000),
         preview: z(1050),
-        sidebar: z(1100),
-        'sidebar-inner': z(1150),
+
         search: z(1200),
         'toolbar-dropdown': z(1300),
         messages: z(2000),
