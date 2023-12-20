@@ -55,7 +55,11 @@ const translateX = computed(() => {
 
 const translateY = computed(() => {
   if (ui.isMobile.value) {
-    return window.innerHeight - 200
+    // 50 is the height of the "cancel dragging" button at the bottom.
+    // 20 is the desired margin to the edge of the button.
+    // The Math.max() calculation makes sure that a maximum of 100px is visible
+    // of the drag items.
+    return -50 - 20 + Math.max(0, height.value - 100)
   }
   return props.y - offsetY.value
 })
@@ -164,9 +168,7 @@ onMounted(() => {
   const ratio = boundsWidth / bounds.width
   const boundsHeight = bounds.height * ratio
   const boundsX = ui.isMobile.value
-    ? window.innerWidth / 2 - 50
-    : ui.isMobile.value
-    ? 10
+    ? 0
     : Math.max(
         Math.min(
           props.x - boundsWidth / 2,
@@ -175,7 +177,7 @@ onMounted(() => {
         bounds.x,
       )
   const boundsY = ui.isMobile.value
-    ? window.innerHeight - 200
+    ? translateY.value
     : Math.max(
         Math.min(
           props.y - boundsHeight / 2,
@@ -192,10 +194,18 @@ onMounted(() => {
   rects.value = elRects.map((item) => {
     const isTop = item.index === boundRect.index
     const rect = item.rect
+    const targetScale = Math.min(boundsWidth / item.element.scrollWidth, 1)
     return {
       isTop,
-      x: rect.x - boundsX,
-      y: rect.y - boundsY,
+      x: ui.isMobile.value ? rect.x - translateX.value : rect.x - boundsX,
+      y: ui.isMobile.value
+        ? -rect.height -
+          (window.innerHeight -
+            boundsHeight -
+            rect.y -
+            rect.height +
+            translateY.value)
+        : rect.y - boundsY,
       width: item.element.scrollWidth,
       height: item.element.scrollHeight,
       opacity: 1,
@@ -203,7 +213,7 @@ onMounted(() => {
       targetX: props.x - boundsX - offsetX.value,
       targetY: props.y - boundsY - offsetY.value,
       scale: rect.width / item.element.scrollWidth,
-      targetScale: Math.min(boundsWidth / item.element.scrollWidth, 1),
+      targetScale,
       markup: dom.getDropElementMarkup(item.item),
       background: realBackgroundColor(item.element),
       elementOpacity:

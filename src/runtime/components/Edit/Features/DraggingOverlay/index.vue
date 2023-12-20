@@ -44,7 +44,7 @@ import type {
 } from '#blokkli/types'
 import { getDefinition } from '#blokkli/definitions'
 
-const { eventBus, adapter, state, ui } = useBlokkli()
+const { eventBus, adapter, state, ui, animation } = useBlokkli()
 
 const isVisible = ref(false)
 const mouseX = ref(0)
@@ -166,7 +166,7 @@ const onMouseUp = (e: MouseEvent) => {
 }
 
 function onDraggingStart(e: DraggableStartEvent) {
-  dragItems.value = e.items
+  animation.requestDraw()
   const item = e.items[0]
   if (!item) {
     return
@@ -176,6 +176,7 @@ function onDraggingStart(e: DraggableStartEvent) {
     document.removeEventListener('mouseup', onMouseUp)
     document.addEventListener('mouseup', onMouseUp)
   }
+  dragItems.value = e.items
 }
 
 function onDraggingEnd() {

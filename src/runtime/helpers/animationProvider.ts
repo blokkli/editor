@@ -29,8 +29,8 @@ export default function (): BlokkliAnimationProvider {
 
   const onTouchMoveGlobal = (e: TouchEvent) => {
     const touch = e.touches[0]
-    mouseX = touch.screenX
-    mouseY = touch.screenY
+    mouseX = touch.pageX
+    mouseY = touch.pageY
     iterator = 120
   }
 

@@ -1,10 +1,10 @@
 .bk-dragging-overlay {
   /* @apply fixed top-0 left-0 bg-blue-500/25 pointer-events-none rounded outline outline-blue-600 outline-offset-1 z-[999999]; */
-  @apply fixed top-0 left-0 pointer-events-none z-[999999] md:border-3 rounded select-none;
+  @apply fixed bottom-0 lg:bottom-auto lg:top-0 left-0 pointer-events-none z-[999999] md:border-3 rounded select-none;
 
   > div {
     @apply absolute top-0 left-0 origin-top-left rounded;
-    @apply shadow-xl md:outline md:outline-blue-700 outline-1 rounded bg-white;
+    @apply md:outline md:outline-blue-700 outline-1 rounded bg-white;
 
     > * {
       margin: 0 !important;
@@ -21,6 +21,7 @@
 
     &.bk-is-top {
       z-index: 100;
+      @apply shadow-xl-inverted;
     }
   }
 }
