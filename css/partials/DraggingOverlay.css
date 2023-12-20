@@ -1,6 +1,6 @@
 .bk-dragging-overlay {
   /* @apply fixed top-0 left-0 bg-blue-500/25 pointer-events-none rounded outline outline-blue-600 outline-offset-1 z-[999999]; */
-  @apply fixed bottom-0 lg:bottom-auto lg:top-0 left-0 pointer-events-none z-[999999] md:border-3 rounded select-none;
+  @apply fixed bottom-0 lg:bottom-auto lg:top-0 left-0 pointer-events-none z-[999999] rounded select-none;
 
   > div {
     @apply absolute top-0 left-0 origin-top-left rounded;
@@ -10,7 +10,7 @@
       margin: 0 !important;
       height: 100% !important;
       @apply !pointer-events-none;
-      @apply !select-none;
+      @apply !select-none !shadow-none;
     }
     @screen md {
       &:before {

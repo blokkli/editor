@@ -13,7 +13,7 @@
           background: rect.background,
         }"
         v-html="rect.markup"
-      ></div>
+      />
     </div>
   </Teleport>
 </template>
@@ -153,6 +153,7 @@ onMounted(() => {
     return {
       rect: element.getBoundingClientRect(),
       element,
+      hasDropElement: item.element !== element,
       item,
       index,
     }
@@ -212,7 +213,7 @@ onMounted(() => {
       targetOpacity: isTop ? (ui.isMobile.value ? 1 : 0.6) : 0,
       targetX: props.x - boundsX - offsetX.value,
       targetY: props.y - boundsY - offsetY.value,
-      scale: rect.width / item.element.scrollWidth,
+      scale: item.hasDropElement ? 0 : rect.width / item.element.scrollWidth,
       targetScale,
       markup: dom.getDropElementMarkup(item.item),
       background: realBackgroundColor(item.element),

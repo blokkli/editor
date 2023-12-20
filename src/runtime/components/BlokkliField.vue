@@ -15,7 +15,7 @@
     :class="[
       attrs.class,
       listClass,
-      { 'bk-is-empty': !list.length, [nonEmptyClass]: list.length },
+      { 'bk-is-empty': !list.length, [nonEmptyClass]: filteredList.length },
     ]"
     :is-nested="isNested"
     :data-field-block-count="filteredList.length"

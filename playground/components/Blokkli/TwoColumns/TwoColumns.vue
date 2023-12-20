@@ -12,7 +12,7 @@
       non-empty-class="mb-70"
       field-list-type="header"
     />
-    <div class="container mx-auto grid gap-20 lg:gap-40 grid-cols-12">
+    <div class="container mx-auto grid gap-30 lg:gap-40 grid-cols-12">
       <BlokkliField
         v-bind="left"
         class="flex flex-col gap-20 col-span-12"
