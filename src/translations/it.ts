@@ -1,6 +1,7 @@
 export default {
   close: 'Chiudi',
   cancel: 'Annulla',
+  save: 'Save',
   deleteButton: 'Elimina',
   deleteError: "L'elemento non può essere rimosso.",
   deleteMultipleError: 'Gli elementi non possono essere rimossi.',

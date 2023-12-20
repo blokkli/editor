@@ -22,12 +22,13 @@
         v-blokkli-editable:title="{ required: true }"
         class="font-bold text-lg md:text-xl lg:mb-5"
         :class="{ 'text-slate-100': isInverted }"
-      >
-        {{ title }}
-      </h3>
-      <p v-blokkli-editable:text :class="{ 'text-slate-400': isInverted }">
-        {{ text }}
-      </p>
+        v-text="title"
+      />
+      <p
+        v-blokkli-editable:text
+        :class="{ 'text-slate-400': isInverted }"
+        v-text="text"
+      />
     </div>
   </div>
 </template>

@@ -56,5 +56,10 @@ module.exports = {
       4: '4px',
     },
   },
-  plugins: [require('@tailwindcss/forms')],
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography')({
+      className: 'ck-content',
+    }),
+  ],
 }

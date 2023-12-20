@@ -16,9 +16,8 @@
           v-if="lead"
           v-blokkli-editable:lead="{ required: true }"
           class="mt-20 text-lg lg:text-xl text-slate-700"
-        >
-          {{ lead }}
-        </p>
+          v-text="lead"
+        />
         <BlokkliField
           v-bind="buttons"
           list-class="mt-20 lg:mt-40 flex gap-10 flex-wrap"

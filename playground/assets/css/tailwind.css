@@ -2,9 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body {
-  @apply overscroll-contain;
+html {
+  &:not(.allow-overscroll) {
+    @apply overscroll-contain;
+    body {
+      @apply overscroll-contain;
+    }
+  }
 }
 
 body {
@@ -47,4 +51,43 @@ body {
 
 .field + .field {
   @apply mt-20;
+}
+
+.ck-content {
+  @apply max-w-none;
+  &.is-inverted {
+    @apply text-slate-200;
+  }
+  ul {
+    li {
+      @apply font-medium;
+      &:before {
+        content: '';
+        @apply inline-block w-[16px] h-[16px] rounded-full bg-blue-700 mr-10 align-middle overflow-hidden;
+        background-image: url(/check.svg);
+        background-size: 60% 60%;
+        background-position: center center;
+        background-repeat: no-repeat;
+      }
+      &:not(:last-child) {
+        @apply mb-10;
+      }
+    }
+  }
+
+  p + p {
+    @apply mt-20;
+  }
+
+  h2 {
+    @apply font-bold text-3xl;
+  }
+
+  h3 {
+    @apply font-bold text-lg;
+  }
+
+  h4 {
+    @apply uppercase font-semibold text-base;
+  }
 }

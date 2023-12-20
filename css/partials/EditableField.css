@@ -1,4 +1,4 @@
-.bk.bk-editable-field {
+.bk-editable-field {
   @apply fixed z-editable-field pointer-events-auto left-0 w-full;
   top: var(--bk-root-offset-top);
   @screen md {
@@ -46,18 +46,21 @@
     @apply relative;
   }
   .bk-editable-field-buttons {
-    @apply flex justify-between items-center text-xs bg-green-400 text-green-950 lg:text-base h-40 lg:h-50;
+    @apply flex justify-between items-center text-xs bg-green-400 text-green-950 h-40;
     h3 {
-      @apply h-full px-10 uppercase font-semibold tracking-wide flex items-center gap-[0.5em] leading-none;
+      @apply h-full px-10 uppercase font-semibold tracking-wide flex items-center gap-[0.5em] leading-none mr-auto;
       .bk-blokkli-item-icon {
         @apply text-[1.5em] p-[0.15em] bg-green-700 border border-green-700 rounded-[0.15em] text-green-200;
       }
     }
     button {
-      @apply px-10 flex items-center font-semibold font-sans ml-auto leading-none gap-5 h-full;
+      @apply px-10 flex items-center font-semibold font-sans leading-none gap-5 h-full;
       @apply hover:bg-green-500;
       svg {
-        @apply w-15 h-15;
+        @apply w-15 h-15 fill-current;
+      }
+      &:disabled {
+        @apply pointer-events-none opacity-25;
       }
     }
   }
@@ -111,4 +114,16 @@
   @screen md {
     @apply opacity-0 translate-y-60 scale-75;
   }
+}
+
+.bk-editable-field-contenteditable {
+  @apply p-10;
+
+  > div {
+    @apply focus:outline-none;
+  }
+}
+
+.bk-editable-field-frame iframe {
+  @apply block w-full max-h-[550px];
 }

@@ -373,6 +373,16 @@ export default defineBlokkliEditAdapter((ctx) => {
         })
       }
     },
+
+    buildEditableFrameUrl(e) {
+      const prefix = `/blokkli-form/${ctx.value.entityType}/${ctx.value.entityUuid}/fieldValueEditor`
+      const params = new URLSearchParams()
+      params.set('fieldName', e.fieldName)
+      if (e.uuid) {
+        params.set('uuid', e.uuid)
+      }
+      return `${prefix}?${params.toString()}`
+    },
   }
 
   return adapter

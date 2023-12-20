@@ -9,7 +9,7 @@ export class BlockText extends Block {
 
   static getDefaultValues(): Record<string, any> {
     return {
-      text: LOREM_TEXT,
+      text: `<p>${LOREM_TEXT}</p>`,
     }
   }
 

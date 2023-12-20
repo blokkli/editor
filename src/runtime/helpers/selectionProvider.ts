@@ -199,12 +199,8 @@ export default function (dom: BlokkliDomProvider): BlokkliSelectionProvider {
     eventBus.emit('scrollIntoView', { uuid: targetItem.uuid })
   }
 
-  const onSelectPrevious = () => {
-    selectInList(true)
-  }
-  const onSelectNext = () => {
-    selectInList()
-  }
+  const onSelectPrevious = () => selectInList(true)
+  const onSelectNext = () => selectInList()
 
   onMounted(() => {
     document.documentElement.addEventListener('mousedown', onWindowMouseDown)

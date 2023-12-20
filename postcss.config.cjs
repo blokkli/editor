@@ -10,5 +10,12 @@ module.exports = {
     cssnano: {
       preset: 'default',
     },
+    'postcss-replace': {
+      pattern: /(--tw|\*, ::before, ::after)/g,
+      data: {
+        '--tw': '--bk-tw',
+        '*, ::before, ::after': ':root',
+      },
+    },
   },
 }

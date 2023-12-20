@@ -273,6 +273,15 @@ export interface BlokkliAdapter<T> {
   updateFieldValue: (
     e: UpdateFieldValueEvent,
   ) => Promise<MutationResponseLike<T>> | undefined
+
+  buildEditableFrameUrl?: (
+    e: AdapterBuildEditableFrameUrl,
+  ) => string | undefined
+}
+
+type AdapterBuildEditableFrameUrl = {
+  fieldName: string
+  uuid?: string
 }
 
 type AdapterFormFrameBuilderResult = {

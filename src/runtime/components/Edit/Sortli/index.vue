@@ -307,20 +307,23 @@ const onMouseUp = (e: MouseEvent) => {
   }
 }
 
-const emitEditableFocus = (el: HTMLElement): boolean => {
-  const fieldName = el.dataset.blokkliEditableField
-  if (fieldName) {
-    const block = dom.findClosestBlock(el)
-    if (block) {
-      const argsValue = el.dataset.blokkliEditableFieldConfig
-      const args = argsValue ? JSON.parse(argsValue) : undefined
-      eventBus.emit('editable:focus', {
-        fieldName,
-        block,
-        element: el,
-        args,
-      })
-      return true
+const emitEditableFocus = (eventTarget: HTMLElement): boolean => {
+  const el = eventTarget.closest('[data-blokkli-editable-field]')
+  if (el instanceof HTMLElement) {
+    const fieldName = el.dataset.blokkliEditableField
+    if (fieldName) {
+      const block = dom.findClosestBlock(el)
+      if (block) {
+        const argsValue = el.dataset.blokkliEditableFieldConfig
+        const args = argsValue ? JSON.parse(argsValue) : undefined
+        eventBus.emit('editable:focus', {
+          fieldName,
+          block,
+          element: el,
+          args,
+        })
+        return true
+      }
     }
   }
 

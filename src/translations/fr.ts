@@ -1,6 +1,7 @@
 export default {
   close: 'Fermer',
   cancel: 'Annuler',
+  save: 'Save',
   deleteButton: 'Supprimer',
   deleteError: "L'élément n'a pas pu être supprimé.",
   deleteMultipleError: "Les éléments n'ont pas pu être supprimés.",

@@ -568,11 +568,14 @@ export type PluginUnmountEvent = {
   id: string
 }
 
+export type BlokkliEditableType = 'plaintext' | 'markup' | 'table' | 'frame'
+
 export type BlokkliEditableDirectiveArgs = {
   label?: string
   name?: string
   maxlength?: number
   required?: boolean
+  type?: BlokkliEditableType
 }
 
 export type EditableFieldFocusEvent = {

@@ -17,12 +17,9 @@
         pattern="(https?|/).*?"
         :name="field.name"
       />
-      <textarea
+      <RichText
         v-else-if="field.type === 'textarea'"
-        :id="field.name"
         v-model="values[field.name]"
-        rows="10"
-        :name="field.name"
       />
       <FieldIconInput
         v-else-if="field.type === 'icon'"
@@ -49,6 +46,7 @@ import { FieldTextarea } from '~/app/mock/state/Field/Textarea'
 import { FieldUrl } from '~/app/mock/state/Field/Url'
 import FieldIconInput from './FieldIcon/index.vue'
 import MediaSelector from './MediaSelector/index.vue'
+import RichText from './RichText/index.vue'
 import { FieldReference } from '~/app/mock/state/Field/Reference'
 
 const props = defineProps<{

@@ -1,6 +1,7 @@
 export default {
   close: 'Schliessen',
   cancel: 'Abbrechen',
+  save: 'Speichern',
   deleteButton: 'Löschen',
   deleteError: 'Das Element konnte nicht entfernt werden.',
   deleteMultipleError: 'Die Elemente konnten nicht entfernt werden.',

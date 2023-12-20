@@ -1,6 +1,7 @@
 export default {
   close: 'Close',
   cancel: 'Cancel',
+  save: 'Save',
   deleteButton: 'Delete',
   deleteError: 'The item could not be removed.',
   deleteMultipleError: 'The items could not be removed.',

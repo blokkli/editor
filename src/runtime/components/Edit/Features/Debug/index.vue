@@ -52,6 +52,9 @@ const onKeyPress = (e: KeyPressedEvent) => {
 }
 
 const onEvent = (name: string, data: any) => {
+  if (!showDebug.value) {
+    return
+  }
   if (name === 'animationFrame' || name === 'animationFrame:before') {
     return
   }
