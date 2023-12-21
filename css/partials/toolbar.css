@@ -326,7 +326,7 @@
 
 .bk-menu-enter-active,
 .bk-menu-leave-active {
-  transition: 0.2s ease-in-out;
+  @apply transition ease-swing;
 }
 .bk-menu-enter-from,
 .bk-menu-leave-to {
@@ -386,7 +386,7 @@
 
 .bk-toolbar-enter-active,
 .bk-toolbar-leave-active {
-  transition: 0.2s ease-in-out;
+  @apply transition ease-swing;
 }
 .bk-toolbar-enter-from,
 .bk-toolbar-leave-to {

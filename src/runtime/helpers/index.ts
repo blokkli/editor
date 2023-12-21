@@ -192,7 +192,7 @@ export function modulo(n: number, m: number) {
   return ((n % m) + m) % m
 }
 
-export function getBounds(rects: DOMRect[]): Rectangle | undefined {
+export function getBounds(rects: Rectangle[]): Rectangle | undefined {
   if (!rects.length) {
     return
   }

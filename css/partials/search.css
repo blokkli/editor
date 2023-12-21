@@ -37,7 +37,7 @@
     button {
       @apply absolute top-0 right-0 h-full px-15;
       svg {
-        @apply w-20 h-20 fill-slate-100;
+        @apply w-20 h-20 fill-slate-100 pointer-events-none;
       }
     }
   }
@@ -132,11 +132,13 @@
   }
 }
 
+.bk-toolbar-button.bk-is-search .bk-tooltip {
+  @apply left-auto right-3;
+}
+
 .bk-search-enter-active,
 .bk-search-leave-active {
-  transition: 0.2s cubic-bezier(0.56, 0.04, 0.25, 1);
-  .bk-search-box {
-  }
+  @apply transition ease-swing;
 }
 .bk-search-enter-from,
 .bk-search-leave-to {

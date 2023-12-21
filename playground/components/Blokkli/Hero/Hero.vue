@@ -35,7 +35,7 @@ const { options, isEditing } = defineBlokkli({
       type: 'text',
       default: '0',
       inputType: 'number',
-      label: 'Highlight words',
+      label: 'Highlight start index',
     },
     highlightLength: {
       type: 'text',

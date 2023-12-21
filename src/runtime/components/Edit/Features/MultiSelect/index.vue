@@ -17,7 +17,7 @@
     </Transition>
   </Teleport>
   <Overlay
-    v-if="shouldRender && !ui.isMobile.value"
+    v-if="shouldRender"
     :start-x="downX"
     :start-y="downY"
     @select="onSelect"
@@ -85,7 +85,8 @@ function onWindowMouseDown(e: MouseEvent) {
     e.ctrlKey ||
     keyboard.isPressingSpace.value ||
     keyboard.isPressingControl.value ||
-    !enabled.value
+    !enabled.value ||
+    selection.isDragging.value
   ) {
     return
   }
@@ -99,15 +100,27 @@ function onWindowMouseDown(e: MouseEvent) {
   }
 }
 
-onMounted(() => {
-  window.addEventListener('mousedown', onWindowMouseDown)
-  window.addEventListener('mouseup', onWindowMouseUp)
-})
-
-onBeforeUnmount(() => {
+const cleanup = () => {
   window.removeEventListener('mousemove', onWindowMouseMove)
   window.removeEventListener('mousedown', onWindowMouseDown)
   window.removeEventListener('mouseup', onWindowMouseUp)
+}
+
+const init = () => {
+  cleanup()
+  if (ui.isMobile.value) {
+    return
+  }
+  window.addEventListener('mousedown', onWindowMouseDown)
+  window.addEventListener('mouseup', onWindowMouseUp)
+}
+
+onMounted(() => {
+  init()
+})
+
+onBeforeUnmount(() => {
+  cleanup()
 })
 </script>
 

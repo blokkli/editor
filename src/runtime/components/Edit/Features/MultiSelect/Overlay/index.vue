@@ -42,7 +42,7 @@ import type { Rectangle } from '#blokkli/types'
 import { intersects } from '#blokkli/helpers'
 import Item from './Item/index.vue'
 
-const { keyboard, eventBus, ui, dom, runtimeConfig } = useBlokkli()
+const { keyboard, eventBus, ui, dom } = useBlokkli()
 
 export type SelectableElement = {
   uuid: string
@@ -144,6 +144,10 @@ function onAnimationFrame(e: AnimationFrameEvent) {
       isIntersecting,
     })
   })
+
+  if (ui.isMobile.value) {
+    return
+  }
 
   // If any of the intersecting blocks are nested and the user isn't pressing
   // Control, only select the nested blocks. This allows the user to use multi

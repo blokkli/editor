@@ -5,6 +5,7 @@
     :class="{
       'bk-is-active': showComments,
       'bk-is-left': isLeft,
+      'bk-is-right': !isLeft,
     }"
   >
     <button
@@ -20,7 +21,7 @@
     <div
       v-show="showComments"
       class="bk-comments-overlay-comments"
-      :class="{ 'bk-is-left': isLeft }"
+      :class="{ 'bk-is-left': isLeft, 'bk-is-right': !isLeft }"
     >
       <div class="bk-comments-overlay-comments-header">
         <Icon name="comment" />

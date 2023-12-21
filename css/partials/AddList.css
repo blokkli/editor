@@ -8,9 +8,6 @@
 
   .bk-list-item {
     @apply touch-manipulation;
-    @screen md {
-      @apply aspect-square;
-    }
     &.bk-is-disabled {
       @apply pointer-events-none;
       .bk-list-item-inner {
@@ -42,10 +39,10 @@
     @apply md:w-[1em];
     @apply bg-slate-900 lg:bg-slate-800;
     font-size: 20px;
-    @apply px-10 py-5 md:py-10;
+    @apply px-10 py-5;
     @screen md {
       font-size: 30px;
-      @apply w-full h-full;
+      @apply w-full h-auto aspect-square p-0;
     }
   }
 
@@ -79,10 +76,15 @@
     }
     .bk-list-item {
       @apply w-full px-10 py-5 cursor-grab;
+      @screen md {
+        &:first-child {
+          @apply pt-10;
+        }
+      }
     }
 
     &:after {
-      @apply top-0 left-full h-full w-[280px] border-t;
+      @apply top-0 left-full h-full w-[280px] border-t md:border-t-slate-700;
       @apply origin-left scale-x-50;
       @apply absolute z-0 pointer-events-none;
       @apply opacity-0;
@@ -128,6 +130,11 @@
         .bk-list-item-label {
           @apply opacity-100;
         }
+      }
+    }
+    .bk-list-item-inner {
+      @screen md {
+        @apply w-auto h-full;
       }
     }
 

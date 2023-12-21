@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="body">
+  <Teleport to=".bk-main-canvas">
     <div class="bk bk-comments-overlay bk-control">
       <Item
         v-for="item in indicators"
@@ -20,10 +20,10 @@
 import { ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
 import type { BlokkliComment, AnimationFrameEvent } from '#blokkli/types'
-import { getBounds } from '#blokkli/helpers'
+import { falsy, getBounds } from '#blokkli/helpers'
 import Item from './Item/index.vue'
 
-const { eventBus, ui } = useBlokkli()
+const { eventBus, ui, dom } = useBlokkli()
 
 const props = defineProps<{
   comments: BlokkliComment[]
@@ -61,12 +61,12 @@ type Indicator = {
 const indicators = ref<Indicator[]>([])
 
 function onAnimationFrame(e: AnimationFrameEvent) {
-  const x = ui.isMobile.value
-    ? e.canvasRect.width - 40
-    : Math.min(
-        e.canvasRect.x + e.canvasRect.width + 20,
-        e.rootRect.x + e.rootRect.width - 60,
-      )
+  const scale = ui.getArtboardScale()
+  const artboardEl = ui.artboardElement()
+  const artboardRect = artboardEl.getBoundingClientRect()
+  const artboardScroll = artboardEl.scrollTop
+
+  const x = Math.min(artboardRect.width / scale + 20, window.innerWidth - 50)
   isReduced.value = e.scale < 0.8
   isLeft.value = x < e.rootRect.x + e.rootRect.width - 300
 
@@ -85,7 +85,20 @@ function onAnimationFrame(e: AnimationFrameEvent) {
   for (let i = 0; i < props.comments.length; i++) {
     const comment = props.comments[i]
     const uuids = comment.itemUuids || []
-    const rects = uuids.map((uuid) => e.rects[uuid]).filter(Boolean)
+    const rects = uuids
+      .map((uuid) => dom.findBlock(uuid))
+      .filter(falsy)
+      .map((block) => {
+        const rect = block.element.getBoundingClientRect()
+
+        return {
+          x: (rect.x - artboardRect.x) / scale,
+          y: (rect.y - artboardRect.y) / scale - +artboardScroll,
+          width: rect.width / scale,
+          height: rect.height / scale,
+          uuid: block.uuid,
+        }
+      })
     if (!rects.length) {
       orphaned.push(comment)
     } else {
@@ -93,7 +106,7 @@ function onAnimationFrame(e: AnimationFrameEvent) {
       const id = uuids.join(',')
       if (bounds) {
         if (!newIndicators[id]) {
-          const y = findY(Math.round(bounds.y + window.scrollY))
+          const y = findY(Math.round(bounds.y + artboardScroll))
           newIndicators[id] = {
             id,
             comments: [],

@@ -15,14 +15,19 @@ module.exports = {
       sans: ['PB Inter, sans-serif'],
     },
     extend: {
+      transitionTimingFunction: {
+        swing: 'cubic-bezier(0.56, 0.04, 0.25, 1)',
+      },
       zIndex: {
         'editable-field': z(600),
         selection: z(700),
+        'comments-overlay': z(750),
+        'comments-overlay-active': z(755),
         actions: z(800),
         'drop-targets': z(900),
         'transform-overlay': z(910),
+        messages: z(930),
         'add-list': z(950),
-        'touch-action-bar': z(955),
         'dragging-overlay': z(960),
         sidebar: z(970),
         'sidebar-inner': z(980),
@@ -31,10 +36,10 @@ module.exports = {
 
         search: z(1200),
         'toolbar-dropdown': z(1300),
-        messages: z(2000),
         'menu-overlay': z(3000),
         menu: z(3010),
         'artboard-scrollbar': z(3100),
+        'touch-action-bar': z(5000),
         'edit-form': z(20_000),
         resizable: z(20_100),
         'edit-form-header': z(20_200),

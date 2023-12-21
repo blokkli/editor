@@ -1,6 +1,6 @@
 .bk.bk-comments-overlay {
   .bk-comments-overlay-item {
-    @apply absolute top-0 left-0 w-0;
+    @apply absolute top-0 left-0 w-0 z-comments-overlay pointer-events-auto;
     @screen lg {
       &.bk-is-left {
         @apply border-l-2 border-l-slate-300 border-dashed;
@@ -10,11 +10,12 @@
       }
     }
     &.bk-is-active {
-      @apply z-50;
+      @apply z-comments-overlay-active;
     }
   }
   .bk-comments-overlay-item-button {
-    @apply w-40 h-40  text-lg font-bold  leading-none relative bg-slate-300 text-slate-600 hover:bg-slate-400 flex items-center justify-center z-20;
+    @apply w-40 h-40  text-lg font-bold  leading-none relative bg-slate-300 text-slate-600 hover:bg-slate-400 flex items-center justify-center z-20 origin-top-left;
+    transform: scale(calc(1 / var(--bk-artboard-scale)));
     &.bk-has-unresolved-comments {
       @apply bg-yellow-300 text-yellow-900 hover:bg-yellow-400;
     }
@@ -26,15 +27,16 @@
     }
   }
   .bk-comments-overlay-comments {
-    @apply bg-white shadow-xl  origin-top-left absolute top-0  z-10;
+    @apply bg-white shadow-xl  origin-top-left absolute top-40  z-10;
+    transform: scale(calc(1 / var(--bk-artboard-scale)));
+    &.bk-is-right {
+      @apply -right-40;
+    }
     &.bk-is-left {
       @apply left-0;
       .bk-comments-overlay-comments-header {
-        @apply pl-50 justify-between flex-row-reverse;
+        @apply justify-between flex-row-reverse;
       }
-    }
-    &:not(.bk-is-left) {
-      @apply right-0;
     }
   }
   .bk-comments-overlay-comments-header {

@@ -4,7 +4,7 @@
     @apply flex-1;
   }
   .bk-blokkli-item-actions-title-count {
-    @apply bg-slate-50 text-slate-900 inline-block px-3 w-[1.25em] h-[1.25em] rounded-full ml-10 text-xs lg:text-sm font-bold;
+    @apply bg-slate-50 text-slate-900 inline-flex items-center justify-center px-3 min-w-[1.5em] h-[1.5em] rounded-full ml-10 text-xs lg:text-sm font-bold leading-none;
     &.bk-is-hidden {
       @apply opacity-0;
     }
@@ -34,7 +34,7 @@
 
   #bk-blokkli-item-actions-options {
     @apply overflow-auto lg:overflow-visible;
-    @apply border-b border-b-slate-500/25 lg:border-b-0;
+    @apply border-b border-b-slate-500/25 lg:border-b-0 lg:border-l lg:border-l-slate-700;
     @apply order-first min-w-full lg:min-w-0 lg:order-none;
     &::-webkit-scrollbar {
       display: none;

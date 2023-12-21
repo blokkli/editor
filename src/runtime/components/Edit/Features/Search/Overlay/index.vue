@@ -18,8 +18,8 @@
         spellcheck="false"
         required
       />
-      <button>
-        <Icon name="close" @click="$emit('close')" />
+      <button @click="$emit('close')">
+        <Icon name="close" />
       </button>
     </div>
 

@@ -52,7 +52,9 @@ import ToolbarMenu from './Menu/index.vue'
 const { ui, selection, eventBus, storage } = useBlokkli()
 
 const showToolbar = computed(
-  () => !ui.isMobile.value || !selection.isDragging.value,
+  () =>
+    !ui.isMobile.value ||
+    (!selection.isDragging.value && !selection.isMultiSelecting.value),
 )
 
 const showSidebar = computed(() => showToolbar.value)

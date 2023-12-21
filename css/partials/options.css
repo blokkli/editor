@@ -12,7 +12,7 @@
       @apply pointer-events-none opacity-20;
     }
     .bk-tooltip {
-      @apply absolute bottom-full left-0 w-full mb-3;
+      @apply absolute bottom-full left-0 min-w-full mb-3;
     }
     &:not(:hover) {
       .bk-tooltip {
@@ -23,22 +23,33 @@
     &:not(:last-child) {
       @apply lg:border-r lg:border-r-slate-600;
     }
+
+    &:last-child {
+      .bk-blokkli-item-options-text input {
+        @apply rounded-e-md;
+      }
+    }
   }
   .bk-checkbox-toggle {
     @apply relative inline-flex items-center cursor-pointer h-full text-slate-800 leading-none;
-    @apply hover:text-slate-950;
+
+    @media not all and (hover: none) {
+      @apply hover:text-slate-950;
+    }
     input {
       @apply sr-only;
     }
     input:checked + div {
       @apply after:translate-x-full after:border-white bg-blue-800;
     }
-    input:not(:checked):hover + div {
-      @apply bg-slate-500;
+    @media not all and (hover: none) {
+      input:not(:checked):hover + div {
+        @apply bg-slate-500;
+      }
     }
     > div {
       @apply relative w-[36px] h-20 bg-slate-400 rounded-full;
-      @apply after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-[16px] after:w-[16px] after:transition-all;
+      @apply after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-[16px] after:w-[16px];
     }
     > span {
       @apply inline-block pl-10 text-base;
@@ -46,7 +57,9 @@
   }
   .bk-blokkli-item-options-checkbox {
     @apply relative inline-flex items-center cursor-pointer h-full px-10 text-slate-200;
-    @apply hover:bg-slate-800 hover:text-slate-50;
+    @media not all and (hover: none) {
+      @apply hover:bg-slate-800 hover:text-slate-50;
+    }
     input {
       @apply sr-only;
     }
@@ -55,7 +68,7 @@
     }
     > div {
       @apply relative w-[36px] h-20 bg-slate-700 rounded-full;
-      @apply after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-300 after:rounded-full after:h-[16px] after:w-[16px] after:transition-all;
+      @apply after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-300 after:rounded-full after:h-[16px] after:w-[16px];
     }
     > span {
       @apply inline-block pl-10;
@@ -74,8 +87,10 @@
           @apply bg-slate-100 text-slate-900;
         }
       }
-      &:hover input:not(:checked) + span {
-        @apply bg-slate-700;
+      @media not all and (hover: none) {
+        &:hover input:not(:checked) + span {
+          @apply bg-slate-700;
+        }
       }
       span {
         @apply inline-block px-10 py-2 rounded-3xl;
@@ -111,8 +126,10 @@
       span {
         @apply absolute top-0 text-[0px] left-0 w-full h-full rounded-[inherit] outline outline-transparent outline-offset-2;
       }
-      &:hover input:not(:checked) + span {
-        @apply outline-slate-400;
+      @media not all and (hover: none) {
+        &:hover input:not(:checked) + span {
+          @apply outline-slate-400;
+        }
       }
       input {
         opacity: 0;
@@ -124,20 +141,17 @@
   }
 
   .bk-blokkli-item-options-text {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    height: 100%;
+    @apply cursor-pointer h-full;
     input {
-      @apply bg-transparent;
-      height: 100%;
-      padding: 0 0.75rem;
-      &:focus {
-        outline: none;
+      @apply bg-transparent h-full px-10 focus:outline-none focus:shadow-none focus:bg-slate-800;
+    }
+    @media not all and (hover: none) {
+      &:hover {
+        color: var(--gin-color-primary);
       }
     }
-    &:hover {
-      color: var(--gin-color-primary);
+
+    &.bk-is-type-number {
     }
   }
 
@@ -164,17 +178,23 @@
       }
     }
     label {
-      &:hover input:not(:checked) + div {
-        @apply text-slate-300;
-        > div {
-          @apply bg-slate-600;
+      @media not all and (hover: none) {
+        &:hover input:not(:checked) + div {
+          @apply text-slate-300;
+          > div {
+            @apply bg-slate-600;
+          }
         }
       }
     }
   }
 
   .bk-blokkli-item-options-checkboxes {
-    @apply px-15 h-full hover:bg-slate-700;
+    @apply px-15 h-full;
+
+    @media not all and (hover: none) {
+      @apply hover:bg-slate-700;
+    }
 
     button {
       @apply flex items-center gap-10 h-full;
@@ -195,7 +215,10 @@
     > div {
       @apply absolute top-full left-0 grid bg-slate-900 rounded overflow-hidden;
       label {
-        @apply hover:bg-slate-800 py-10;
+        @apply py-10;
+        @media not all and (hover: none) {
+          @apply hover:bg-slate-800;
+        }
       }
     }
 

@@ -1,6 +1,6 @@
 <template>
-  <div class="bk-blokkli-item-options-text">
-    <input v-model="text" :type="type" :placeholder="label" />
+  <div class="bk-blokkli-item-options-text" :class="'bk-is-type-' + type">
+    <input v-model="text" :type="type" :placeholder="label" :style="style" />
   </div>
 </template>
 
@@ -20,7 +20,13 @@ const props = withDefaults(
 
 const emit = defineEmits(['update'])
 
-const text = computed({
+const style = computed(() => {
+  return {
+    width: Math.max(text.value.length * 20, 100) + 'px',
+  }
+})
+
+const text = computed<string>({
   get() {
     return props.value || ''
   },

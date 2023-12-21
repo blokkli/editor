@@ -178,12 +178,6 @@ html {
   }
 }
 
-.bk-item-focused {
-  outline: 4px solid var(--gin-color-primary);
-  outline-offset: 0px;
-  border-radius: 5px;
-}
-
 .bk-field-list {
   position: relative;
   min-height: 30px;
