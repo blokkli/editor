@@ -1,63 +1,61 @@
 <template>
   <Teleport to="body">
     <div class="bk bk-blokkli-item-actions bk-control" @click.stop>
-      <Transition :name="ui.isMobile.value ? 'bk-actions' : undefined">
-        <div
-          v-show="
-            selection.blocks.value.length &&
-            !selection.isDragging.value &&
-            !selection.editableActive.value
-          "
-          class="bk-blokkli-item-actions-inner"
-          :style="innerStyle"
-        >
-          <div ref="controlsEl" class="bk-blokkli-item-actions-controls">
-            <div id="bk-blokkli-item-actions-title">
-              <button
-                class="bk-blokkli-item-actions-type-button"
-                :disabled="!shouldRenderButton"
+      <div
+        v-show="
+          selection.blocks.value.length &&
+          !selection.isDragging.value &&
+          !selection.editableActive.value
+        "
+        class="bk-blokkli-item-actions-inner"
+        :style="innerStyle"
+      >
+        <div ref="controlsEl" class="bk-blokkli-item-actions-controls">
+          <div id="bk-blokkli-item-actions-title">
+            <button
+              class="bk-blokkli-item-actions-type-button"
+              :disabled="!shouldRenderButton"
+              :class="{
+                'is-open': showDropdown,
+                'is-interactive': shouldRenderButton,
+              }"
+              @click.prevent="showDropdown = !showDropdown"
+            >
+              <div class="bk-blokkli-item-actions-title-icon">
+                <ItemIcon v-if="itemBundle" :bundle="itemBundle.id" />
+                <Icon v-else name="selection" />
+              </div>
+              <span class="bk-blokkli-item-actions-title-label">{{
+                title
+              }}</span>
+              <span
+                class="bk-blokkli-item-actions-title-count"
                 :class="{
-                  'is-open': showDropdown,
-                  'is-interactive': shouldRenderButton,
+                  'bk-is-hidden': selection.blocks.value.length <= 1,
                 }"
-                @click.prevent="showDropdown = !showDropdown"
+                >{{ selection.blocks.value.length }}</span
               >
-                <div class="bk-blokkli-item-actions-title-icon">
-                  <ItemIcon v-if="itemBundle" :bundle="itemBundle.id" />
-                  <Icon v-else name="selection" />
-                </div>
-                <span class="bk-blokkli-item-actions-title-label">{{
-                  title
-                }}</span>
-                <span
-                  class="bk-blokkli-item-actions-title-count"
-                  :class="{
-                    'bk-is-hidden': selection.blocks.value.length <= 1,
-                  }"
-                  >{{ selection.blocks.value.length }}</span
-                >
-                <Icon v-if="shouldRenderButton" name="caret" class="bk-caret" />
-              </button>
-              <div
-                v-show="showDropdown && editingEnabled"
-                id="bk-blokkli-item-actions-dropdown"
-                class="bk-blokkli-item-actions-type-dropdown"
-              />
-            </div>
-
+              <Icon v-if="shouldRenderButton" name="caret" class="bk-caret" />
+            </button>
             <div
-              id="bk-blokkli-item-actions"
-              class="bk-blokkli-item-actions-buttons"
-            />
-
-            <div
-              id="bk-blokkli-item-actions-options"
-              class="bk-blokkli-item-actions-buttons"
+              v-show="showDropdown && editingEnabled"
+              id="bk-blokkli-item-actions-dropdown"
+              class="bk-blokkli-item-actions-type-dropdown"
             />
           </div>
-          <div id="bk-blokkli-item-actions-after" />
+
+          <div
+            id="bk-blokkli-item-actions"
+            class="bk-blokkli-item-actions-buttons"
+          />
+
+          <div
+            id="bk-blokkli-item-actions-options"
+            class="bk-blokkli-item-actions-buttons"
+          />
         </div>
-      </Transition>
+        <div id="bk-blokkli-item-actions-after" />
+      </div>
     </div>
   </Teleport>
 </template>

@@ -22,4 +22,12 @@ export class BlockButton extends Block {
       url: 'https://www.example.com',
     }
   }
+
+  getTitle() {
+    return this.get<FieldText>('title').getText()
+  }
+
+  getUrl() {
+    return this.get<FieldUrl>('url').toString()
+  }
 }

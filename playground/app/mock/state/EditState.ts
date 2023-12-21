@@ -1,3 +1,4 @@
+import { falsy } from '#blokkli/helpers'
 import type { BlokkliMutatedField, BlokkliMutationItem } from '#blokkli/types'
 import { entityStorageManager } from '../entityStorage'
 import { createMutation, type MutationArgsMap } from '../plugins/mutations'
@@ -133,6 +134,23 @@ export class MutationContext {
         proxy.hostEntityType === hostEntityType
       )
     })
+  }
+
+  getProxies(uuids: string[]): BlockProxy[] {
+    return uuids
+      .map((uuid) => {
+        const proxy = this.getProxy(uuid)
+        const index = this.getIndex(uuid)
+        if (proxy && index !== undefined) {
+          return {
+            proxy,
+            index,
+          }
+        }
+      })
+      .filter(falsy)
+      .sort((a, b) => a.index - b.index)
+      .map((v) => v.proxy)
   }
 }
 
