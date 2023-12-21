@@ -32,13 +32,22 @@
   }
 
   .bk-drop-targets-field-child {
-    /* @apply border border-slate-500; */
     @apply border border-transparent;
     @apply absolute rounded;
-    /* @apply bg-slate-300/30; */
     @apply transition duration-75;
     @apply flex items-center justify-center;
     @apply text-xs font-semibold uppercase text-slate-500;
+
+    &.bk-is-nested {
+      span,
+      &:before,
+      &:after {
+        @apply bg-lime-500;
+      }
+      &.bk-is-active span {
+        @apply bg-lime-600;
+      }
+    }
 
     span {
       @apply inline-block bg-blue-500 text-white relative z-50 rounded-full;
@@ -46,7 +55,7 @@
 
     &:before {
       content: '';
-      @apply absolute bg-blue-500 top-1/2 left-1/2 w-full h-full -translate-x-1/2 -translate-y-1/2;
+      @apply absolute bg-blue-500 top-1/2 left-1/2 w-full h-full -translate-x-1/2 -translate-y-1/2 rounded;
       @apply transition pointer-events-none;
     }
 
@@ -87,7 +96,7 @@
         @apply scale-100;
       }
       span {
-        @apply bg-white text-blue-700;
+        @apply bg-blue-700;
       }
     }
 

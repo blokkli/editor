@@ -22,6 +22,7 @@
           @touchend="activeKey = ''"
           :class="[
             { 'bk-is-active': activeKey === child.key },
+            { 'bk-is-nested': child.isNested },
             'bk-is-' + child.orientation,
           ]"
         >
@@ -58,6 +59,7 @@ type FieldRectChild = {
   style: Record<string, any>
   orientation: Orientation
   prevUuid?: string
+  isNested: boolean
 }
 
 type FieldRect = {
@@ -226,6 +228,8 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
       const selectionAreChildren = selectionUuids.value.every((uuid) =>
         childElements.find((v) => v.dataset.uuid === uuid),
       )
+      // Return no drop targets if any of the selected blocks is not part of the field.
+      // That way we can still return drop targets when a block is moved inside the field.
       if (!selectionAreChildren) {
         return []
       }
@@ -249,6 +253,7 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
       children.push({
         key: field.key + '_empty',
         orientation,
+        isNested: field.isNested,
         style: {
           left: '0px',
           top: '0px',
@@ -259,6 +264,7 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
     } else {
       children.push({
         key: field.key + '_empty',
+        isNested: field.isNested,
         orientation,
         style: {
           left: '0px',
@@ -300,6 +306,7 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
           prevUuid: uuid,
           key: 'last_' + uuid,
           orientation,
+          isNested: field.isNested,
           style: {
             width: '100%',
             height: gap + 'px',
@@ -316,6 +323,7 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
           prevUuid: uuid,
           key: 'last_' + uuid,
           orientation,
+          isNested: field.isNested,
           style: {
             width: width + 'px',
             height: el.offsetHeight + 'px',
@@ -343,6 +351,7 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
         prevUuid,
         key: uuid,
         orientation,
+        isNested: field.isNested,
         style: {
           width: '100%',
           height: gap + 'px',
@@ -355,10 +364,11 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
         prevUuid,
         key: uuid,
         orientation,
+        isNested: field.isNested,
         style: {
           width: gap + 'px',
           height: Math.max(el.offsetHeight, 30) + 'px',
-          left: Math.max(el.offsetLeft - gap / 1.25, 0) + 'px',
+          left: Math.max(el.offsetLeft - gap, 0) + 'px',
           top: el.offsetTop + 'px',
         },
       })
