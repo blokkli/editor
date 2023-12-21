@@ -60,5 +60,6 @@ export const getBlockBundles = (): Array<typeof Block> => {
     BlockVideo,
     BlockWidget,
     BlockTable,
+    BlockFromLibrary,
   ]
 }

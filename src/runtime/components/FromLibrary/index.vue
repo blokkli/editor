@@ -33,8 +33,6 @@ const { index, options, parentType } = defineBlokkli({
   bundle: 'from_library',
 })
 
-console.log(options)
-
 // Reusable items inherit the options from this wrapper paragraph.
 // They are injected in the defineBlokkli() composable.
 provide(INJECT_REUSABLE_OPTIONS, options)

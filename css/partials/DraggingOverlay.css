@@ -6,8 +6,12 @@
     @apply md:outline md:outline-blue-700 outline-1 rounded bg-white;
 
     > * {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
       margin: 0 !important;
-      height: 100% !important;
+      /* Prevent text wrapping for cloned ghost elements (in particular: buttons). */
+      width: calc(100% + 1px) !important;
       @apply !pointer-events-none;
       @apply !select-none !shadow-none;
     }

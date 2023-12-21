@@ -145,16 +145,14 @@ export default function (dom: BlokkliDomProvider): BlokkliSelectionProvider {
   }
 
   const onStateReloaded = () => {
-    nextTick(() => {
-      selectedUuids.value = selectedUuids.value.filter((uuid) => {
-        // Check if the currently selected item is still in the DOM.
-        const el = findElement(uuid)
-        if (el) {
-          return true
-        }
+    selectedUuids.value = selectedUuids.value.filter((uuid) => {
+      // Check if the currently selected item is still in the DOM.
+      const el = findElement(uuid)
+      if (el) {
+        return true
+      }
 
-        return false
-      })
+      return false
     })
   }
 

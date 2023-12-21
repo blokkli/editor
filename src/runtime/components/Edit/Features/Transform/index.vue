@@ -56,14 +56,14 @@ const itemBundleIds = computed(() =>
   selection.blocks.value.map((v) => v.itemBundle).filter(onlyUnique),
 )
 
-const possibleTransforms = computed<BlokkliTransformPlugin[]>(() => {
-  return filterTransforms(
+const possibleTransforms = computed<BlokkliTransformPlugin[]>(() =>
+  filterTransforms(
     plugins.value,
     selection.uuids.value,
     itemBundleIds.value,
     types.allowedTypesInList.value,
-  )
-})
+  ),
+)
 </script>
 
 <script lang="ts">

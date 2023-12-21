@@ -21,7 +21,7 @@ const props = defineProps<{
   useSelection?: boolean
 }>()
 
-const { selection, eventBus, dom, keyboard } = useBlokkli()
+const { selection, eventBus, dom, keyboard, ui } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'select', id: string): void
@@ -175,7 +175,7 @@ const onClick = (e: MouseEvent) => {
   }
   clickStart = Date.now()
 
-  if (!props.useSelection) {
+  if (!props.useSelection && ui.isMobile.value) {
     const el = findItem(e)?.element
     if (!el) {
       return
@@ -255,6 +255,9 @@ const originatesFromEditable = (e: MouseEvent | TouchEvent) => {
 }
 
 const onMouseDown = (e: MouseEvent) => {
+  eventBus.emit('dragging:end')
+  start.value.x = 0
+  start.value.y = 0
   if (isTouching.value) {
     return
   }
@@ -292,6 +295,8 @@ const onMouseDown = (e: MouseEvent) => {
 
 const onMouseUp = (e: MouseEvent) => {
   window.removeEventListener('mousemove', onMouseMove)
+  start.value.x = 0
+  start.value.y = 0
 
   eventBus.emit('dragging:end')
   if (isTouching.value) {

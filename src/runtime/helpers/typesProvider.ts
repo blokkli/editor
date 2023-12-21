@@ -31,22 +31,43 @@ export default async function (
   /**
    * The allowed bundles in the current field item list.
    *
-   * This always uses the selected item's parent field to determine the allowed types.
+   * This always uses the parent field of the selected blocks to determine the allowed types.
    */
   const allowedTypesInList = computed(() => {
-    if (selection.blocks.value.length === 1) {
-      const block = selection.blocks.value[0]
-      return allowedTypes.value
-        .filter(
-          (v) =>
-            v.entityType === block.hostType &&
-            v.bundle === block.hostBundle &&
-            v.fieldName === block.hostFieldName,
-        )
-        .flatMap((v) => v.allowedTypes)
-        .filter(Boolean) as string[]
+    if (!selection.blocks.value.length) {
+      return []
     }
-    return []
+
+    // Iterate over blocks to determine if they are all part of the same field.
+    let hostType = ''
+    let hostBundle = ''
+    let fieldName = ''
+    for (let i = 0; i < selection.blocks.value.length; i++) {
+      const block = selection.blocks.value[i]
+      if (i !== 0) {
+        if (
+          hostType !== block.hostType ||
+          hostBundle !== block.hostBundle ||
+          fieldName !== block.hostFieldName
+        ) {
+          // Not all blocks are in the same field. Return empty array.
+          return []
+        }
+      }
+      hostType = block.hostType
+      hostBundle = block.hostBundle
+      fieldName = block.hostFieldName
+    }
+
+    return allowedTypes.value
+      .filter(
+        (v) =>
+          v.entityType === hostType &&
+          v.bundle === hostBundle &&
+          v.fieldName === fieldName,
+      )
+      .flatMap((v) => v.allowedTypes)
+      .filter(Boolean) as string[]
   })
 
   watch(selection.blocks, () => {

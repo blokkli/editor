@@ -213,7 +213,7 @@ onMounted(() => {
       targetOpacity: isTop ? (ui.isMobile.value ? 1 : 0.6) : 0,
       targetX: props.x - boundsX - offsetX.value,
       targetY: props.y - boundsY - offsetY.value,
-      scale: item.hasDropElement ? 0 : rect.width / item.element.scrollWidth,
+      scale: rect.width / item.element.scrollWidth,
       targetScale,
       markup: dom.getDropElementMarkup(item.item),
       background: realBackgroundColor(item.element),
