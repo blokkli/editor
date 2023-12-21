@@ -218,12 +218,17 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
   const fieldHeight = field.element.offsetHeight
 
   const orientation = getChildrenOrientation(field.element)
-  const childElements = [...field.element.children]
+  const childElements = [...field.element.children] as HTMLElement[]
 
   // Check cardinality of field.
   if (field.cardinality !== -1) {
     if (childElements.length >= field.cardinality) {
-      return []
+      const selectionAreChildren = selectionUuids.value.every((uuid) =>
+        childElements.find((v) => v.dataset.uuid === uuid),
+      )
+      if (!selectionAreChildren) {
+        return []
+      }
     }
   }
 
