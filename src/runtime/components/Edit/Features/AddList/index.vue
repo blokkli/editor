@@ -14,6 +14,59 @@
     >
       <Sortli ref="typeList" class="bk-list" :style="style">
         <button
+          key="assistant"
+          class="bk-list-item bk-clone bk-is-rose"
+          data-element-type="action"
+          data-action-type="assistant"
+          data-sortli-id="assistant"
+        >
+          <div class="bk-list-item-inner">
+            <div class="bk-list-item-icon">
+              <Icon name="robot" />
+              <div class="bk-add-list-drop bk-drop-element">
+                <Icon name="robot" />
+                <span>AI Assistant</span>
+              </div>
+            </div>
+            <div
+              class="bk-list-item-label"
+              :class="{
+                'bk-tooltip':
+                  listOrientation === 'horizontal' && !ui.isMobile.value,
+              }"
+            >
+              <span>AI Assistant</span>
+            </div>
+          </div>
+        </button>
+        <button
+          key="reusable"
+          class="bk-list-item bk-clone bk-is-green"
+          data-element-type="action"
+          data-action-type="library"
+          data-sortli-id="library"
+          data-item-bundle="from_library"
+        >
+          <div class="bk-list-item-inner">
+            <div class="bk-list-item-icon">
+              <Icon name="reusable" />
+              <div class="bk-add-list-drop bk-drop-element">
+                <Icon name="reusable" />
+                <span>From Library</span>
+              </div>
+            </div>
+            <div
+              class="bk-list-item-label"
+              :class="{
+                'bk-tooltip':
+                  listOrientation === 'horizontal' && !ui.isMobile.value,
+              }"
+            >
+              <span>From Library</span>
+            </div>
+          </div>
+        </button>
+        <button
           v-for="(type, i) in sortedList"
           :key="i + (type.id || 'undefined') + updateKey"
           class="bk-list-item bk-clone"
@@ -59,7 +112,7 @@ import {
 } from '#imports'
 
 import { falsy, onlyUnique } from '#blokkli/helpers'
-import { ItemIcon, Sortli } from '#blokkli/components'
+import { ItemIcon, Sortli, Icon } from '#blokkli/components'
 import type { DraggableExistingBlokkliItem } from '#blokkli/types'
 
 const { state, selection, storage, types, context, runtimeConfig, ui } =

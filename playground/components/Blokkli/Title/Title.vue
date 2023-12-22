@@ -34,19 +34,22 @@
 const { parentType, fieldListType } = defineBlokkli({
   bundle: 'title',
   noAddForm: true,
+  editWidth: 700,
   editTitle: (el) => el.querySelector('h2')?.innerText,
 })
 
 const injectedInverted = inject<ComputedRef<boolean> | null>('isInverted', null)
 const isInverted = computed(() => !!injectedInverted?.value)
 
-defineProps<{
+const props = defineProps<{
   title: string
   tagline?: string
   lead?: string
 }>()
 
 const isCentered = computed(
-  () => fieldListType.value === 'header' || !parentType.value,
+  () =>
+    (props.lead || props.tagline) &&
+    (fieldListType.value === 'header' || !parentType.value),
 )
 </script>

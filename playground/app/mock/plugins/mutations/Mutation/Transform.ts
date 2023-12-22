@@ -147,6 +147,13 @@ export class MutationTransform extends Mutation {
             return block
           })
         }
+      } else if (el.tagName === 'A') {
+        const block = entityStorageManager.createBlock('button', getUuid())
+        block.setValues({
+          title: el.innerText,
+          url: el.href,
+        })
+        return block
       }
 
       const block = entityStorageManager.createBlock('text', getUuid())

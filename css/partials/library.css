@@ -1,17 +1,43 @@
-.bk-library {
-  .bk-library-list-item-header {
-    @apply flex items-center mb-15;
+.bk-library-dialog-list {
+  @apply grid gap-20 md:grid-cols-2 mt-20;
+
+  > li {
+    @apply border cursor-pointer rounded overflow-hidden;
+    .bk-blokkli-item-label {
+      @apply font-semibold pointer-events-none;
+    }
+
+    @media not all and (hover: none) {
+      &:not(.bk-is-selected):hover {
+        @apply border-slate-400;
+        .bk-library-list-item-header {
+          @apply bg-slate-200;
+        }
+      }
+    }
+
+    &.bk-is-selected {
+      @apply border-blue-700;
+      .bk-library-list-item-header {
+        @apply bg-blue-700;
+      }
+      .bk-blokkli-item-label-icon {
+        @apply bg-blue-900 border-blue-500 text-blue-100;
+      }
+      .bk-blokkli-item-label {
+        @apply text-white;
+      }
+    }
   }
 }
-.bk-library-list {
-  .bk-library-list-item {
-    @apply relative p-20 cursor-grab border-b border-b-slate-300 overflow-hidden;
-  }
-  .bk-library-list-item:hover {
-    @apply outline outline-slate-300 -outline-offset-2 opacity-95;
-  }
+.bk-library-list-item-header {
+  @apply p-15 bg-slate-100;
 }
 
-.bk-library-form {
+.bk-library-list-item-inner {
   @apply p-20;
+}
+
+.bk-library-dialog-form {
+  @apply mt-20;
 }

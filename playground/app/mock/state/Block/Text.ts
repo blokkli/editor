@@ -6,6 +6,7 @@ import { Block } from './Block'
 export class BlockText extends Block {
   static bundle = 'text'
   static label = 'Text'
+  static allowReusable = true
 
   static getDefaultValues(): Record<string, any> {
     return {

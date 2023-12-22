@@ -32,6 +32,7 @@ import DragItems from './DragItems/index.vue'
 
 import type {
   AnimationFrameEvent,
+  DraggableActionItem,
   DraggableClipboardItem,
   DraggableExistingBlokkliItem,
   DraggableItem,
@@ -132,6 +133,13 @@ const onDrop = async (e: DropTargetEvent) => {
         afterUuid,
       }),
     )
+  } else if (e.items.every((v) => v.itemType === 'action')) {
+    eventBus.emit('action:placed', {
+      preceedingUuid: e.preceedingUuid,
+      action: e.items[0] as DraggableActionItem,
+      host: e.host,
+      field: e.field,
+    })
   }
   onDraggingEnd()
   eventBus.emit('dragging:end')

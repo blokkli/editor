@@ -59,6 +59,7 @@
     "eslint-plugin-prettier": "^5.0.1",
     "nuxt": "^3.8.2",
     "nuxt-svg-icon-sprite": "^0.0.1-beta.0",
+    "openai": "^4.24.0",
     "postcss": "^8.4.29",
     "postcss-cli": "^11.0.0",
     "postcss-import": "^15.1.0",

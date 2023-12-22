@@ -22,6 +22,8 @@ import type {
   EditBlokkliItemEvent,
   PasteExistingBlocksEvent,
   UpdateFieldValueEvent,
+  AssistantResult,
+  DraggableHostData,
 } from './../types'
 
 export interface MutationResponseLike<T> {
@@ -222,7 +224,7 @@ export interface BlokkliAdapter<T> {
   /**
    * Get all library items.
    */
-  getLibraryItems(): Promise<BlokkliLibraryItem[]>
+  getLibraryItems(bundles: string[]): Promise<BlokkliLibraryItem[]>
 
   /**
    * Get the last changed timestamp for the edit state.
@@ -277,7 +279,39 @@ export interface BlokkliAdapter<T> {
   buildEditableFrameUrl?: (
     e: AdapterBuildEditableFrameUrl,
   ) => string | undefined
+
+  assistantGetResults?: (
+    e: AdapterAssistantGetResults,
+  ) => Promise<AssistantResult | undefined>
+
+  assistantAddBlockFromResult?: (
+    e: AdapterAssistantAddBlockFromResult,
+  ) => Promise<MutationResponseLike<T>> | undefined
 }
+
+type AdapterAssistantAddBlockFromResult = {
+  result: AssistantResult
+  host: DraggableHostData
+  preceedingUuid?: string
+}
+
+type AdapterAssistantGetResultsCreate = {
+  type: 'create'
+  prompt: string
+}
+
+type AdapterAssistantGetResultsEdit = {
+  type: 'edit'
+  /**
+   * The text that should be edited.
+   */
+  text: string
+  prompt: string
+}
+
+type AdapterAssistantGetResults =
+  | AdapterAssistantGetResultsCreate
+  | AdapterAssistantGetResultsEdit
 
 type AdapterBuildEditableFrameUrl = {
   fieldName: string

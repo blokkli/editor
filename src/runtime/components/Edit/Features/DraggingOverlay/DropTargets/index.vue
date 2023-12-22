@@ -175,7 +175,13 @@ function getChildrenOrientation(element: HTMLElement): Orientation {
  * The bundles being dragged.
  */
 const draggingBundles = computed<string[]>(() =>
-  props.items.flatMap((item) => item.itemBundle).filter(falsy),
+  props.items
+    .flatMap((item) => ('itemBundle' in item ? item.itemBundle : null))
+    .filter(falsy),
+)
+
+const isAction = computed(
+  () => props.items.length === 1 && props.items[0].itemType === 'action',
 )
 
 const selectionUuids = computed<string[]>(() =>
@@ -225,9 +231,11 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
   // Check cardinality of field.
   if (field.cardinality !== -1) {
     if (childElements.length >= field.cardinality) {
-      const selectionAreChildren = selectionUuids.value.every((uuid) =>
-        childElements.find((v) => v.dataset.uuid === uuid),
-      )
+      const selectionAreChildren =
+        selectionUuids.value.length &&
+        selectionUuids.value.every((uuid) =>
+          childElements.find((v) => v.dataset.uuid === uuid),
+        )
       // Return no drop targets if any of the selected blocks is not part of the field.
       // That way we can still return drop targets when a block is moved inside the field.
       if (!selectionAreChildren) {
@@ -237,10 +245,11 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
   }
 
   const allBundlesAllowed =
-    draggingBundles.value.length &&
-    draggingBundles.value.every((bundle) =>
-      field.allowedBundles.includes(bundle),
-    )
+    isAction.value ||
+    (draggingBundles.value.length &&
+      draggingBundles.value.every((bundle) =>
+        field.allowedBundles.includes(bundle),
+      ))
   if (!allBundlesAllowed) {
     return []
   }

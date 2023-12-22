@@ -8,6 +8,7 @@
     :data-field-is-nested="isNested"
     :data-host-entity-type="entity.entityTypeId"
     :data-host-entity-uuid="entity.uuid"
+    :data-host-entity-bundle="entity.entityBundle"
     :data-field-key="fieldKey"
     :data-field-allowed-bundles="allowedBundles"
     :data-field-cardinality="cardinality"

@@ -138,4 +138,21 @@ export default {
   fieldIsRequired: 'This field is required',
 
   clipboardPastePlaceholder: 'Paste text or media here',
+
+  assistantDialogTitle: 'Generate content with AI assistant',
+  assistantDialogLead:
+    "Please enter what you'd like the assistant to generate.",
+  assistantDialogSubmit: 'Create blocks',
+  assistantPromptLabel: 'Prompt',
+  assistantPromptPlaceholder:
+    'Generate content for a page about how taxes work in Switzerland',
+  assistantAddResultError: 'Failed to add block from assistant.',
+  assistantBlockActionTooltip: 'Edit with AI Assistant',
+
+  libraryPlaceDialogTitle: 'Add block from library',
+  libraryPlaceDialogLead: 'Select a block from the library to add it.',
+  libraryPlaceDialogSubmit: 'Add',
+  libraryPlaceSearchLabel: 'Filter library items',
+
+  searchInputPlaceholder: 'Enter search term',
 }

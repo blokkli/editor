@@ -14,6 +14,7 @@ const buildFieldElement = (
   const blockCount = parseInt(element.dataset.fieldBlockCount || '0')
   const isNested = element.dataset.fieldIsNested === 'true'
   const hostEntityType = element.dataset.hostEntityType
+  const hostEntityBundle = element.dataset.hostEntityBundle
   const hostEntityUuid = element.dataset.hostEntityUuid
   const cardinality = parseInt(element.dataset.fieldCardinality || '-1')
   const allowedBundles = (element.dataset.fieldAllowedBundles || '').split(',')
@@ -26,6 +27,7 @@ const buildFieldElement = (
       isNested,
       hostEntityType,
       hostEntityUuid,
+      hostEntityBundle,
       cardinality: isNaN(cardinality) ? -1 : cardinality,
       allowedBundles,
       element,

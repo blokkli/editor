@@ -6,12 +6,12 @@
   }
 
   .bk-dialog-inner {
-    @apply lg:min-w-[450px] max-w-screen-xl bg-white shadow-2xl rounded-md  relative z-20 max-h-full min-h-0;
+    @apply lg:min-w-[450px] max-w-screen-xl bg-white shadow-2xl rounded-md  relative z-20 max-h-full min-h-0 overflow-hidden;
     @apply flex flex-col;
   }
 
   .bk-dialog-header {
-    @apply flex justify-between items-center p-15 lg:p-20;
+    @apply flex justify-between items-center p-15 lg:p-20 border-b bg-slate-50;
     flex: 0 0 auto;
     h3 {
       @apply text-lg md:text-lg xl:text-3xl font-semibold font-sans;
@@ -26,7 +26,7 @@
     @apply text-base md:text-lg font-sans mt-10;
   }
   .bk-dialog-footer {
-    @apply flex gap-10 mt-15 md:mt-30 p-15 lg:p-20;
+    @apply flex gap-10 mt-15 md:mt-30 p-15 lg:p-20 border-t bg-slate-50;
     flex: 0 0 auto;
   }
 

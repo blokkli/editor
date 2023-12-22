@@ -215,13 +215,16 @@ export default defineBlokkliEditAdapter((ctx) => {
       return Promise.resolve({ items: [], total: 0 })
     },
 
-    getLibraryItems() {
+    getLibraryItems(bundles: string[]) {
       const libraryItems = entityStorageManager.storages.library_item.loadAll()
 
       const items: BlokkliLibraryItem[] = libraryItems
         .map((item) => {
           const block = item.getBlocks().getBlocks()[0]
           if (!block) {
+            return
+          }
+          if (!bundles.includes(block.bundle)) {
             return
           }
           return {
@@ -238,7 +241,7 @@ export default defineBlokkliEditAdapter((ctx) => {
 
     addReusableItem: (e) =>
       addMutation('add_reusable_item', {
-        libraryItemUuid: e.item.libraryItemUuid,
+        libraryItemUuid: e.libraryItemUuid,
         hostEntityType: e.host.type,
         hostEntityUuid: e.host.uuid,
         hostField: e.host.fieldName,
@@ -382,6 +385,30 @@ export default defineBlokkliEditAdapter((ctx) => {
         params.set('uuid', e.uuid)
       }
       return `${prefix}?${params.toString()}`
+    },
+
+    assistantGetResults(e) {
+      return $fetch('/api/gpt', {
+        method: 'post',
+        body: {
+          prompt: e.prompt,
+        },
+      })
+    },
+
+    assistantAddBlockFromResult(e) {
+      if (e.result.type === 'markup') {
+        return addMutation('add', {
+          bundle: 'text',
+          values: {
+            text: e.result.content,
+          },
+          hostEntityType: e.host.type,
+          hostEntityUuid: e.host.uuid,
+          hostField: e.host.fieldName,
+          preceedingUuid: e.preceedingUuid,
+        })
+      }
     },
   }
 

@@ -1,13 +1,4 @@
 <template>
-  <PluginSidebar
-    id="library"
-    :title="text('library')"
-    edit-only
-    icon="reusable"
-  >
-    <Pane />
-  </PluginSidebar>
-
   <PluginItemAction
     :title="text('libraryAdd')"
     :disabled="!canMakeReusable"
@@ -27,19 +18,31 @@
       />
     </transition>
   </Teleport>
+
+  <Teleport to="body">
+    <transition appear name="bk-slide-up" :duration="300">
+      <LibraryDialog
+        v-if="placedAction"
+        :field="placedAction.field"
+        @close="placedAction = null"
+        @submit="onAddLibraryItem"
+      />
+    </transition>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli } from '#imports'
+import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
-import { PluginSidebar, PluginItemAction } from '#blokkli/plugins'
-import Pane from './Pane/index.vue'
+import { PluginItemAction } from '#blokkli/plugins'
 import ReusableDialog from './ReusableDialog/index.vue'
+import LibraryDialog from './LibraryDialog/index.vue'
 import { getDefinition } from '#blokkli/definitions'
+import type { ActionPlacedEvent } from '#blokkli/types'
 
 const showReusableDialog = ref(false)
 
-const { selection, state, adapter, types, text } = useBlokkli()
+const { selection, state, adapter, types, text, eventBus } = useBlokkli()
 
 const selectedItem = computed(() => {
   if (selection.blocks.value.length !== 1) {
@@ -48,6 +51,21 @@ const selectedItem = computed(() => {
 
   return selection.blocks.value[0]
 })
+
+const placedAction = ref<ActionPlacedEvent | null>(null)
+const onAddLibraryItem = async (uuid: string) => {
+  if (!placedAction.value) {
+    return
+  }
+  await state.mutateWithLoadingState(
+    adapter.addReusableItem({
+      libraryItemUuid: uuid,
+      host: placedAction.value.host,
+      afterUuid: placedAction.value.preceedingUuid,
+    }),
+  )
+  placedAction.value = null
+}
 
 const definition = computed(() =>
   selectedItem?.value ? getDefinition(selectedItem.value.itemBundle) : null,
@@ -85,6 +103,21 @@ const canMakeReusable = computed(
     itemBundle?.value?.allowReusable &&
     fromLibraryAllowedInList.value,
 )
+
+const onActionPlaced = (e: ActionPlacedEvent) => {
+  if (e.action.actionType !== 'library') {
+    return
+  }
+  placedAction.value = e
+}
+
+onMounted(() => {
+  eventBus.on('action:placed', onActionPlaced)
+})
+
+onBeforeUnmount(() => {
+  eventBus.off('action:placed', onActionPlaced)
+})
 </script>
 
 <script lang="ts">

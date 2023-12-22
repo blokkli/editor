@@ -413,6 +413,13 @@ export interface DraggableNewItem {
   itemBundle: string
 }
 
+export interface DraggableActionItem {
+  itemType: 'action'
+  actionType: string
+  itemBundle?: string
+  element: HTMLElement
+}
+
 export interface DraggableReusableItem {
   itemType: 'reusable'
   element: HTMLElement
@@ -438,6 +445,7 @@ export interface DraggableSearchContentItem {
 export type DraggableItem =
   | DraggableClipboardItem
   | DraggableNewItem
+  | DraggableActionItem
   | DraggableExistingBlokkliItem
   | DraggableReusableItem
   | DraggableSearchContentItem
@@ -475,7 +483,7 @@ export type AddContentSearchItemEvent = {
 }
 
 export type AddReusableItemEvent = {
-  item: DraggableReusableItem
+  libraryItemUuid: string
   host: DraggableHostData
   afterUuid?: string
 }
@@ -625,6 +633,15 @@ export type BlokkliEvents = {
   'editable:save': undefined
 
   'sidebar:close': undefined
+
+  'action:placed': ActionPlacedEvent
+}
+
+export type ActionPlacedEvent = {
+  action: DraggableActionItem
+  preceedingUuid?: string
+  host: DraggableHostData
+  field: BlokkliFieldElement
 }
 
 export type BlokkliEventBus = Emitter<BlokkliEvents>
@@ -680,6 +697,7 @@ export type BlokkliFieldElement = {
   label: string
   isNested: boolean
   hostEntityType: string
+  hostEntityBundle: string
   hostEntityUuid: string
   allowedBundles: string[]
   cardinality: number
@@ -703,5 +721,11 @@ export type UpdateFieldValueEvent = {
   fieldName: string
   fieldValue: string
 }
+
+export type AssistantResultMarkup = {
+  type: 'markup'
+  content: string
+}
+export type AssistantResult = AssistantResultMarkup
 
 export default {}

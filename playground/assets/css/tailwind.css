@@ -58,7 +58,7 @@ body {
   &.is-inverted {
     @apply text-slate-200;
   }
-  ul {
+  ul.is-bulleted {
     li {
       @apply font-medium;
       &:before {

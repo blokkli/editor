@@ -20,6 +20,36 @@
         @apply text-slate-800;
       }
     }
+
+    &.bk-is-rose {
+      .bk-list-item-inner {
+        @apply bg-rose-950 border-rose-800 text-rose-100;
+      }
+      @media not all and (hover: none) {
+        &:hover {
+          .bk-list-item-inner {
+            @apply bg-rose-900 border-rose-600 text-rose-50;
+          }
+        }
+      }
+    }
+
+    &.bk-is-green {
+      .bk-list-item-inner {
+        @apply bg-lime-950 border-lime-800 text-lime-100;
+      }
+      @media not all and (hover: none) {
+        &:hover {
+          .bk-list-item-inner {
+            @apply bg-lime-900 border-lime-600 text-lime-50;
+          }
+        }
+      }
+    }
+
+    .bk-icon {
+      @apply w-[1em] h-[1em];
+    }
     flex: 0 0 auto;
 
     @media not all and (hover: none) {

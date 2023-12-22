@@ -10,9 +10,10 @@
 </template>
 
 <script lang="ts" setup>
-const { parentType, options } = defineBlokkli({
+const { parentType } = defineBlokkli({
   bundle: 'text',
   noAddForm: true,
+  editWidth: 700,
   editTitle: (el) => el.innerText,
 })
 

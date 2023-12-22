@@ -86,6 +86,17 @@ export function buildDraggableItem(
         itemBundle,
       }
     }
+  } else if (dataset.elementType === 'action') {
+    const actionType = dataset.actionType
+    const itemBundle = dataset.itemBundle
+    if (actionType) {
+      return {
+        itemType: 'action',
+        actionType,
+        itemBundle,
+        element,
+      }
+    }
   } else if (dataset.elementType === 'clipboard') {
     const clipboardData = dataset.clipboardData
     const additional = dataset.clipboardAdditional

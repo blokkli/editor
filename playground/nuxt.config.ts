@@ -8,6 +8,10 @@ export default defineNuxtConfig({
   ssr: false,
   modules: ['../src/module', '@nuxtjs/tailwindcss', 'nuxt-svg-icon-sprite'],
 
+  runtimeConfig: {
+    openaiKey: process.env.OPENAI_KEY || '',
+  },
+
   app: {
     rootId: 'nuxt-root',
     head: {
