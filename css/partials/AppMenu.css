@@ -1,0 +1,103 @@
+.bk.bk-menu-overlay {
+  @apply fixed top-0 left-0 w-screen bottom-0 z-menu-overlay;
+}
+
+.bk.bk-menu-list {
+  @apply fixed top-0 left-0 bg-white shadow-lg max-w-[480px] lg:min-w-[400px] bottom-0 flex flex-col;
+  @apply z-menu;
+  width: calc(100vw - 40px);
+
+  #bk-menu-secondary {
+    @apply mt-auto;
+  }
+
+  > button {
+    @apply h-40 md:h-50 flex items-center text-base font-bold pl-15 md:pl-25 bg-blue-700 text-white transition;
+    svg {
+      @apply w-20 h-20  md:w-30 md:h-30 mr-25 fill-current;
+    }
+
+    &.bk-is-active {
+      @apply bg-white text-slate-950;
+    }
+  }
+}
+
+.bk-menu-list-inner {
+  @apply flex-1 overflow-auto flex flex-col;
+  > div {
+    @apply grid;
+    @apply border-t border-t-slate-200;
+  }
+}
+
+.bk .bk-menu-list-button {
+  @apply grid items-center pl-15 pr-20 py-15 gap-x-10 md:gap-x-15 w-full text-left whitespace-nowrap text-slate-950;
+  @apply lg:hover:bg-slate-100;
+  @apply border-b border-b-slate-200;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  &[disabled] {
+    @apply pointer-events-none;
+    .bk-menu-list-icon {
+      @apply bg-white border-slate-100 text-slate-300;
+    }
+    span,
+    strong {
+      @apply text-slate-400;
+    }
+  }
+  strong {
+    @apply font-semibold;
+  }
+  span {
+    grid-column: 2;
+    @apply text-slate-700 text-sm;
+  }
+
+  &:not([disabled]).bk-is-danger {
+    .bk-menu-list-icon {
+      @apply bg-red-50 text-red-800 border-red-200;
+    }
+    &:hover {
+      .bk-menu-list-icon {
+        @apply bg-red-200 text-red-900 border-red-400;
+      }
+    }
+  }
+
+  &:not([disabled]).bk-is-success {
+    .bk-menu-list-icon {
+      @apply bg-green-50 text-green-800 border-green-300;
+    }
+    &:hover {
+      .bk-menu-list-icon {
+        @apply bg-green-200 text-green-900 border-green-400;
+      }
+    }
+  }
+
+  &:hover {
+    .bk-menu-list-icon {
+      @apply bg-slate-200 text-slate-900 border-slate-500;
+    }
+  }
+}
+.bk-menu-list-icon {
+  @apply flex items-center justify-center bg-slate-100 rounded text-slate-500 border border-slate-300;
+  @apply w-40 h-40 md:w-50 md:h-50;
+  grid-column: 1;
+  grid-row: 1 / -1;
+  svg {
+    @apply w-25 h-25 fill-current pointer-events-none;
+  }
+}
+
+.bk-menu-enter-active,
+.bk-menu-leave-active {
+  @apply transition ease-swing duration-200;
+}
+.bk-menu-enter-from,
+.bk-menu-leave-to {
+  transform: translateX(-100%);
+}

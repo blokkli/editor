@@ -21,27 +21,15 @@
     }
   }
   .bk-blokkli-item-actions-controls {
-    @apply flex items-stretch whitespace-nowrap h-full shadow-xl flex-wrap lg:flex-nowrap;
+    @apply flex items-stretch whitespace-nowrap h-full lg:shadow-xl flex-wrap lg:flex-nowrap;
     @apply bg-slate-950/90 backdrop-blur lg:bg-slate-900 lg:backdrop-blur-none;
+    @apply relative z-50;
 
     &::-webkit-scrollbar {
       display: none;
     }
     @screen md {
       @apply rounded-md border-b-0;
-    }
-  }
-
-  #bk-blokkli-item-actions-options {
-    @apply overflow-auto lg:overflow-visible;
-    @apply border-b border-b-slate-500/25 lg:border-b-0 lg:border-l lg:border-l-slate-700;
-    @apply order-first min-w-full lg:min-w-0 lg:order-none;
-    &::-webkit-scrollbar {
-      display: none;
-    }
-
-    &:empty {
-      @apply hidden;
     }
   }
 
@@ -137,7 +125,7 @@
   }
 
   .bk-blokkli-item-actions-type-dropdown {
-    @apply absolute bottom-full left-0 min-w-[300px] bg-slate-900 text-slate-200 overflow-hidden shadow-xl-inverted rounded-tr;
+    @apply absolute bottom-full left-0 min-w-[300px] bg-slate-900 text-slate-200 overflow-hidden shadow-xl-inverted rounded-tr w-screen md:w-auto;
     @screen md {
       @apply top-full bottom-auto shadow-xl rounded-t-none rounded-b;
     }
@@ -145,7 +133,7 @@
       @apply p-10 pt-15 font-semibold uppercase text-xs tracking-wide text-slate-400;
     }
     button {
-      @apply flex py-15 px-10 items-center gap-5 w-full  font-semibold text-lg text-slate-300;
+      @apply flex py-15 px-10 items-center gap-5 w-full font-semibold md:text-lg text-slate-300;
       text-align: left;
       line-height: 1;
       @screen md {
@@ -158,14 +146,11 @@
       }
     }
     .bk-blokkli-item-icon {
-      @apply w-[34px] h-[34px] bg-slate-700 rounded flex items-center justify-center border border-slate-500;
-      svg {
-        @apply w-25 h-25;
-      }
+      @apply text-2xl md:text-[34px] bg-slate-700 rounded flex items-center justify-center border border-slate-500 p-[0.2em];
     }
 
     > div:not(:first-child) {
-      @apply border-t border-t-slate-600;
+      @apply border-t border-t-slate-800;
     }
   }
 

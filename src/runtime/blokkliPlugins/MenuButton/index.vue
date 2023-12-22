@@ -1,13 +1,13 @@
 <template>
   <Teleport :to="to">
     <button
-      class="bk-toolbar-menu-list-button"
+      class="bk-menu-list-button"
       :disabled="disabled"
       :class="type ? 'bk-is-' + type : ''"
       :style="{ order: weight || 0 }"
       @click.prevent.stop="onClick"
     >
-      <div class="bk-toolbar-menu-list-icon">
+      <div class="bk-menu-list-icon">
         <slot>
           <Icon v-if="icon" :name="icon" />
         </slot>
@@ -38,7 +38,7 @@ const emit = defineEmits(['click'])
 const { ui } = useBlokkli()
 
 const to = computed(
-  () => `#bk-toolbar-menu-${props.secondary ? 'secondary' : 'primary'}`,
+  () => `#bk-menu-${props.secondary ? 'secondary' : 'primary'}`,
 )
 
 function onClick() {

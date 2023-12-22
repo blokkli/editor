@@ -1,9 +1,20 @@
 .bk {
   .bk-blokkli-item-options {
-    @apply flex;
+    @apply flex min-w-[100vw];
     height: var(--bk-actions-height);
+
+    @apply overflow-auto lg:overflow-visible;
+    @apply lg:border-l lg:border-l-slate-700;
+    @apply order-first min-w-full lg:min-w-0 lg:order-none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
     &:empty {
       @apply hidden;
+    }
+    &:not(:empty) {
+      @apply border-b border-b-slate-500/25 lg:border-b-0;
     }
   }
   .bk-blokkli-item-options-item {

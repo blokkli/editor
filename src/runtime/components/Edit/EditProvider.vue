@@ -3,6 +3,7 @@
   <Actions v-if="!isInitializing" />
   <Messages />
   <Toolbar @loaded="toolbarLoaded = true" />
+  <AppMenu />
   <AddList />
   <Features
     v-if="!isInitializing && toolbarLoaded"
@@ -29,6 +30,7 @@ import Actions from './Actions/index.vue'
 import Loading from './Loading/index.vue'
 import Messages from './Messages/index.vue'
 import Features from './Features/index.vue'
+import AppMenu from './AppMenu/index.vue'
 import animationProvider from './../../helpers/animationProvider'
 import keyboardProvider from './../../helpers/keyboardProvider'
 import selectionProvider from './../../helpers/selectionProvider'

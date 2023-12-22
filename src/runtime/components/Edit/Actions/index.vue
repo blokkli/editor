@@ -10,7 +10,11 @@
         class="bk-blokkli-item-actions-inner"
         :style="innerStyle"
       >
-        <div ref="controlsEl" class="bk-blokkli-item-actions-controls">
+        <div
+          ref="controlsEl"
+          class="bk-blokkli-item-actions-controls"
+          id="bk-blokkli-item-actions-controls"
+        >
           <div id="bk-blokkli-item-actions-title">
             <button
               class="bk-blokkli-item-actions-type-button"
@@ -47,11 +51,6 @@
 
           <div
             id="bk-blokkli-item-actions"
-            class="bk-blokkli-item-actions-buttons"
-          />
-
-          <div
-            id="bk-blokkli-item-actions-options"
             class="bk-blokkli-item-actions-buttons"
           />
         </div>

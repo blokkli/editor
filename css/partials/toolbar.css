@@ -90,87 +90,6 @@
     }
   }
 
-  .bk-toolbar-menu-overlay {
-    @apply fixed top-0 left-0 w-screen h-screen z-menu-overlay;
-  }
-  .bk-toolbar-menu-list {
-    @apply fixed top-0 left-0 bg-white shadow-lg bottom-0 flex flex-col max-w-[480px] lg:min-w-[400px] h-screen overflow-auto;
-    @apply pt-40 lg:pt-50;
-    width: calc(100vw - 40px);
-    &:before {
-      content: '';
-      @apply absolute top-0 left-0 w-full h-50 bg-white;
-    }
-    > div {
-      @apply grid;
-      @apply border-t border-t-slate-200;
-    }
-    #bk-toolbar-menu-secondary {
-      @apply mt-auto;
-    }
-  }
-  .bk-toolbar-menu-list-button {
-    @apply grid items-center pl-15 pr-20 py-15 gap-x-15 w-full text-left whitespace-nowrap text-slate-950;
-    @apply lg:hover:bg-slate-100;
-    @apply border-b border-b-slate-200;
-    grid-template-columns: auto 1fr;
-    grid-template-rows: auto auto;
-    &[disabled] {
-      @apply pointer-events-none;
-      .bk-toolbar-menu-list-icon {
-        @apply bg-white border-slate-100 text-slate-300;
-      }
-      span,
-      strong {
-        @apply text-slate-400;
-      }
-    }
-    strong {
-      @apply font-semibold;
-    }
-    span {
-      grid-column: 2;
-      @apply text-slate-700 text-sm;
-    }
-
-    &:not([disabled]).bk-is-danger {
-      .bk-toolbar-menu-list-icon {
-        @apply bg-red-50 text-red-800 border-red-200;
-      }
-      &:hover {
-        .bk-toolbar-menu-list-icon {
-          @apply bg-red-200 text-red-900 border-red-400;
-        }
-      }
-    }
-
-    &:not([disabled]).bk-is-success {
-      .bk-toolbar-menu-list-icon {
-        @apply bg-green-50 text-green-800 border-green-300;
-      }
-      &:hover {
-        .bk-toolbar-menu-list-icon {
-          @apply bg-green-200 text-green-900 border-green-400;
-        }
-      }
-    }
-
-    &:hover {
-      .bk-toolbar-menu-list-icon {
-        @apply bg-slate-200 text-slate-900 border-slate-500;
-      }
-    }
-  }
-  .bk-toolbar-menu-list-icon {
-    @apply flex items-center justify-center bg-slate-100 rounded text-slate-500 border border-slate-300;
-    @apply w-40 h-40 md:w-50 md:h-50;
-    grid-column: 1;
-    grid-row: 1 / -1;
-    svg {
-      @apply w-25 h-25 fill-current pointer-events-none;
-    }
-  }
-
   .bk-toolbar-button {
     @apply text-slate-200 flex gap-5 items-center px-10 min-w-[50px] justify-center;
     @apply lg:hover:bg-slate-700;
@@ -322,15 +241,6 @@
 .bk-touch-bar-enter-from,
 .bk-touch-bar-leave-to {
   transform: translateY(100%);
-}
-
-.bk-menu-enter-active,
-.bk-menu-leave-active {
-  @apply transition ease-swing;
-}
-.bk-menu-enter-from,
-.bk-menu-leave-to {
-  transform: translateX(-100%);
 }
 
 .bk-translations {

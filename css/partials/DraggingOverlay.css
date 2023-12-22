@@ -46,26 +46,26 @@
       span,
       &:before,
       &:after {
-        @apply bg-lime-500;
+        @apply bg-sky-500;
       }
       &.bk-is-active span {
-        @apply bg-lime-600;
+        @apply bg-sky-600;
       }
     }
 
     span {
-      @apply inline-block bg-blue-500 text-white relative z-50 rounded-full;
+      @apply inline-block bg-indigo-500 text-white relative z-50 rounded-full;
     }
 
     &:before {
       content: '';
-      @apply absolute bg-blue-500 top-1/2 left-1/2 w-full h-full -translate-x-1/2 -translate-y-1/2 rounded;
+      @apply absolute bg-indigo-500 top-1/2 left-1/2 w-full h-full -translate-x-1/2 -translate-y-1/2 rounded;
       @apply transition pointer-events-none;
     }
 
     &:after {
       content: '';
-      @apply absolute bg-blue-500 pointer-events-none;
+      @apply absolute bg-indigo-500 pointer-events-none;
     }
 
     &.bk-is-horizontal {
@@ -100,7 +100,7 @@
         @apply scale-100;
       }
       span {
-        @apply bg-blue-700;
+        @apply bg-indigo-700;
       }
     }
 

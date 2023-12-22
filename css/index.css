@@ -27,6 +27,7 @@
 @import './partials/Selection.css';
 @import './partials/EditableField.css';
 @import './partials/Assistant.css';
+@import './partials/AppMenu.css';
 
 @font-face {
   font-family: 'PB Inter';

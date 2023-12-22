@@ -15,14 +15,10 @@
       >
         <div class="bk bk-toolbar">
           <div class="bk-toolbar-wrapper">
-            <ToolbarMenu />
-
+            <div id="bk-toolbar-menu" class="bk-toolbar-area bk-is-menu" />
             <div id="bk-toolbar-after-menu" class="bk-toolbar-container" />
-
             <div id="bk-toolbar-before-title" class="bk-toolbar-container" />
-
             <div id="bk-toolbar-title" class="bk-toolbar-container" />
-
             <div id="bk-toolbar-after-title" class="bk-toolbar-container" />
           </div>
 
@@ -47,9 +43,11 @@
 
 <script lang="ts" setup>
 import { onMounted, useBlokkli, onBeforeUnmount } from '#imports'
-import ToolbarMenu from './Menu/index.vue'
+import { Icon } from '#blokkli/components'
 
 const { ui, selection, eventBus, storage } = useBlokkli()
+
+const menuOpen = computed(() => ui.menu.isOpen.value)
 
 const showToolbar = computed(
   () =>

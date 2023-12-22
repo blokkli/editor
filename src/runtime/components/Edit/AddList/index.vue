@@ -7,7 +7,7 @@
       ref="wrapper"
       class="bk bk-add-list bk-control"
       :class="[{ 'bk-is-active': isActive }, 'bk-is-' + listOrientation]"
-      @wheel.capture.stop
+      @wheel.capture="onWheel"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
     >
@@ -61,6 +61,8 @@ function onMouseLeave() {
   clearTimeout(mouseTimeout)
   isActive.value = false
 }
+
+const onWheel = (e: WheelEvent) => {}
 
 function setRootClasses() {
   document.documentElement.classList.remove('bk-has-sidebar-bottom')

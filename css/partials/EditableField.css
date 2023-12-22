@@ -6,7 +6,7 @@
   }
 
   .bk-editable-field-input {
-    @apply border-green-400 border-2;
+    @apply border-teal-400 border-2;
     @apply bg-white shadow-lg;
     @apply min-w-[360px] w-full;
     @screen md {
@@ -46,16 +46,16 @@
     @apply relative;
   }
   .bk-editable-field-buttons {
-    @apply flex justify-between items-center text-xs bg-green-400 text-green-950 h-40;
+    @apply flex justify-between items-center text-xs bg-teal-400 text-teal-950 h-40;
     h3 {
       @apply h-full px-10 uppercase font-semibold tracking-wide flex items-center gap-[0.5em] leading-none mr-auto;
       .bk-blokkli-item-icon {
-        @apply text-[1.5em] p-[0.15em] bg-green-700 border border-green-700 rounded-[0.15em] text-green-200;
+        @apply text-[1.5em] p-[0.15em] bg-teal-700 border border-teal-700 rounded-[0.15em] text-teal-200;
       }
     }
     button {
       @apply px-10 flex items-center font-semibold font-sans leading-none gap-5 h-full;
-      @apply hover:bg-green-500;
+      @apply hover:bg-teal-500;
       svg {
         @apply w-15 h-15 fill-current;
       }
@@ -72,7 +72,7 @@
   /* Only target blocks inside the editing area (e.g. not inside the library pane) */
   [data-blokkli-provider-active='true'] {
     [data-blokkli-editable-active='true'] {
-      @apply outline outline-[3px] !pointer-events-none outline-green-500;
+      @apply outline outline-[3px] !pointer-events-none outline-teal-500;
     }
     /* Don't target editable fields inside a block from the library. */
     [data-blokkli-editable-field]:not([data-blokkli-editable-active='true']) {
@@ -81,7 +81,7 @@
 
       @screen lg {
         &:hover {
-          @apply outline-2 outline-green-500 outline-offset-1 outline-dotted;
+          @apply outline-2 outline-teal-500 outline-offset-1 outline-dotted;
         }
       }
     }
@@ -95,7 +95,7 @@
         [data-blokkli-editable-field]:not(
             [data-blokkli-editable-active='true']
           ) {
-          @apply outline-1 outline-green-500 outline-dashed -outline-offset-2;
+          @apply outline-1 outline-teal-500 outline-dashed -outline-offset-2;
         }
       }
     }

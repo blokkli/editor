@@ -1,7 +1,14 @@
 <template>
-  <div class="bk-dialog bk-control" @wheel.stop @keydown.stop>
+  <div
+    class="bk-dialog bk-control"
+    @wheel.stop
+    @keydown.stop
+    @touchstart.stop
+    @touchmove.stop
+    @touchend.stop
+  >
     <div class="bk-dialog-background" @click="$emit('cancel')" />
-    <div class="bk-dialog-inner" :style="{ width: width + 'px' }">
+    <div class="bk-dialog-inner" :style="style">
       <div class="bk bk-dialog-header">
         <h3>{{ title }}</h3>
         <button @click="$emit('cancel')">
@@ -40,9 +47,11 @@ import { useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import type { KeyPressedEvent } from '#blokkli/types'
 import { Icon } from '#blokkli/components'
 
+const { eventBus, ui } = useBlokkli()
+
 const emit = defineEmits(['submit', 'cancel'])
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     title: string
     lead?: string
@@ -61,7 +70,15 @@ withDefaults(
   },
 )
 
-const { eventBus } = useBlokkli()
+const style = computed(() => {
+  if (ui.isMobile.value) {
+    return {}
+  }
+
+  return {
+    width: props.width + 'px',
+  }
+})
 
 const onKeyPressed = (e: KeyPressedEvent) => {
   if (e.code === 'Escape') {

@@ -1,5 +1,6 @@
 .bk-form-label {
   @apply !block !mb-10 !text-base !font-semibold !text-gray-900 !font-sans;
+  @apply mt-20;
 }
 
 .bk-form-input {

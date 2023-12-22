@@ -7,7 +7,7 @@
   }
 
   .bk-dialog-inner {
-    @apply lg:min-w-[450px] max-w-screen-xl bg-white shadow-2xl rounded-t-xl md:rounded-md  relative z-20 max-h-full min-h-0 overflow-hidden h-full lg:h-auto;
+    @apply w-full lg:min-w-[450px] max-w-screen-xl bg-white shadow-2xl rounded-t-xl md:rounded-md  relative z-20 max-h-full min-h-0 overflow-hidden h-full lg:h-auto;
     @apply flex flex-col;
   }
 
@@ -15,7 +15,7 @@
     @apply flex justify-between items-center p-15 lg:p-20 border-b bg-slate-50;
     flex: 0 0 auto;
     h3 {
-      @apply text-lg md:text-lg xl:text-3xl font-semibold font-sans;
+      @apply text-lg md:text-lg xl:text-2xl font-bold font-sans;
     }
     button {
       svg {

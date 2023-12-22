@@ -140,7 +140,7 @@
 
     height: var(--bk-root-offset-bottom);
     #blokkli-add-list-actions {
-      @apply flex border-r border-r-slate-700 px-5;
+      @apply flex border-r border-r-slate-800 md:border-r-slate-700 px-5;
       flex: 0 0 auto;
 
       .bk-list-item-label {
