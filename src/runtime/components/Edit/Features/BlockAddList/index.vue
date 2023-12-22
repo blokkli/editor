@@ -1,103 +1,35 @@
 <template>
-  <Teleport
-    v-if="state.canEdit.value && state.editMode.value === 'editing'"
-    to="body"
-  >
-    <div
-      v-if="selectableBundles.length"
-      ref="wrapper"
-      class="bk bk-add-list bk-control"
-      :class="[{ 'bk-is-active': isActive }, 'bk-is-' + listOrientation]"
-      @wheel.capture.stop="onWheel"
-      @mouseenter="onMouseEnter"
-      @mouseleave="onMouseLeave"
+  <Teleport v-if="selectableBundles.length" to="#blokkli-add-list-blocks">
+    <button
+      v-for="(type, i) in sortedList"
+      :key="i + (type.id || 'undefined') + updateKey"
+      class="bk-list-item bk-clone"
+      data-element-type="new"
+      :data-item-bundle="type.id"
+      :data-sortli-id="type.id"
+      :class="{
+        'bk-is-disabled': !type.id || !selectableBundles.includes(type.id),
+      }"
     >
-      <Sortli ref="typeList" class="bk-list" :style="style">
-        <button
-          key="assistant"
-          class="bk-list-item bk-clone bk-is-rose"
-          data-element-type="action"
-          data-action-type="assistant"
-          data-sortli-id="assistant"
-        >
-          <div class="bk-list-item-inner">
-            <div class="bk-list-item-icon">
-              <Icon name="robot" />
-              <div class="bk-add-list-drop bk-drop-element">
-                <Icon name="robot" />
-                <span>AI Assistant</span>
-              </div>
-            </div>
-            <div
-              class="bk-list-item-label"
-              :class="{
-                'bk-tooltip':
-                  listOrientation === 'horizontal' && !ui.isMobile.value,
-              }"
-            >
-              <span>AI Assistant</span>
-            </div>
+      <div class="bk-list-item-inner">
+        <div class="bk-list-item-icon">
+          <ItemIcon :bundle="type.id" />
+          <div class="bk-add-list-drop bk-drop-element">
+            <ItemIcon :bundle="type.id" />
+            <span>{{ type.label }}</span>
           </div>
-        </button>
-        <button
-          key="reusable"
-          class="bk-list-item bk-clone bk-is-green"
-          data-element-type="action"
-          data-action-type="library"
-          data-sortli-id="library"
-          data-item-bundle="from_library"
-        >
-          <div class="bk-list-item-inner">
-            <div class="bk-list-item-icon">
-              <Icon name="reusable" />
-              <div class="bk-add-list-drop bk-drop-element">
-                <Icon name="reusable" />
-                <span>From Library</span>
-              </div>
-            </div>
-            <div
-              class="bk-list-item-label"
-              :class="{
-                'bk-tooltip':
-                  listOrientation === 'horizontal' && !ui.isMobile.value,
-              }"
-            >
-              <span>From Library</span>
-            </div>
-          </div>
-        </button>
-        <button
-          v-for="(type, i) in sortedList"
-          :key="i + (type.id || 'undefined') + updateKey"
-          class="bk-list-item bk-clone"
-          data-element-type="new"
-          :data-item-bundle="type.id"
-          :data-sortli-id="type.id"
+        </div>
+        <div
+          class="bk-list-item-label"
           :class="{
-            'bk-is-disabled': !type.id || !selectableBundles.includes(type.id),
+            'bk-tooltip':
+              listOrientation === 'horizontal' && !ui.isMobile.value,
           }"
         >
-          <div class="bk-list-item-inner">
-            <div class="bk-list-item-icon">
-              <ItemIcon :bundle="type.id" />
-              <div class="bk-add-list-drop bk-drop-element">
-                <ItemIcon :bundle="type.id" />
-                <span>{{ type.label }}</span>
-              </div>
-            </div>
-            <div
-              class="bk-list-item-label"
-              :class="{
-                'bk-tooltip':
-                  listOrientation === 'horizontal' && !ui.isMobile.value,
-              }"
-            >
-              <span>{{ type.label }}</span>
-            </div>
-          </div>
-        </button>
-      </Sortli>
-    </div>
+          <span>{{ type.label }}</span>
+        </div>
+      </div>
+    </button>
   </Teleport>
 </template>
 
@@ -112,22 +44,22 @@ import {
 } from '#imports'
 
 import { falsy, onlyUnique } from '#blokkli/helpers'
-import { ItemIcon, Sortli, Icon } from '#blokkli/components'
-import type { DraggableExistingBlokkliItem } from '#blokkli/types'
+import { ItemIcon } from '#blokkli/components'
+import type {
+  DraggableExistingBlokkliItem,
+  AddListOrientation,
+} from '#blokkli/types'
 
-const { state, selection, storage, types, context, runtimeConfig, ui } =
-  useBlokkli()
+const { selection, storage, types, context, runtimeConfig, ui } = useBlokkli()
 
 const itemEntityType = runtimeConfig.itemEntityType
 
-type ListOrientation = 'horizontal' | 'vertical'
-
-const listOrientationSetting = storage.use<ListOrientation>(
+const listOrientationSetting = storage.use<AddListOrientation>(
   'listOrientation',
   'vertical',
 )
 
-const listOrientation = computed<ListOrientation>(() =>
+const listOrientation = computed<AddListOrientation>(() =>
   ui.isMobile.value ? 'horizontal' : listOrientationSetting.value,
 )
 
@@ -351,6 +283,6 @@ onUnmounted(() => {
 
 <script lang="ts">
 export default {
-  name: 'AddList',
+  name: 'BlockAddList',
 }
 </script>

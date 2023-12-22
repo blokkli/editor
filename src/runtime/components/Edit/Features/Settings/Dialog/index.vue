@@ -118,9 +118,7 @@ const artboardFeatureAvailable = computed(
   () => availableFeaturesAtBuild.includes('Artboard') && !ui.isMobile.value,
 )
 const importFeatureEnabled = availableFeaturesAtBuild.includes('ImportExisting')
-const showAddListOptions = computed(
-  () => availableFeaturesAtBuild.includes('AddList') && !ui.isMobile.value,
-)
+const showAddListOptions = computed(() => !ui.isMobile.value)
 
 defineEmits<{
   (e: 'cancel'): void

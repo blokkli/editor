@@ -4,6 +4,7 @@ import PluginItemDropdown from './ItemDropdown/index.vue'
 import PluginSidebar from './Sidebar/index.vue'
 import PluginToolbarButton from './ToolbarButton/index.vue'
 import PluginViewOption from './ViewOption/index.vue'
+import PluginAddAction from './AddAction/index.vue'
 
 export {
   PluginMenuButton,
@@ -12,4 +13,5 @@ export {
   PluginToolbarButton,
   PluginViewOption,
   PluginItemDropdown,
+  PluginAddAction,
 }

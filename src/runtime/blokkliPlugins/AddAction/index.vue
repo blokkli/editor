@@ -1,50 +1,81 @@
 <template>
-  <Teleport :to="to">
+  <Teleport to="#blokkli-add-list-actions">
     <button
-      class="bk-toolbar-menu-list-button"
-      :disabled="disabled"
-      :class="type ? 'bk-is-' + type : ''"
-      :style="{ order: weight || 0 }"
-      @click.prevent.stop="onClick"
+      key="assistant"
+      class="bk-list-item bk-clone"
+      :class="'bk-is-' + color"
+      data-element-type="action"
+      :data-action-type="type"
+      :data-sortli-id="type"
     >
-      <div class="bk-toolbar-menu-list-icon">
-        <slot>
-          <Icon v-if="icon" :name="icon" />
-        </slot>
+      <div class="bk-list-item-inner">
+        <div class="bk-list-item-icon">
+          <Icon :name="icon" />
+          <div class="bk-add-list-drop bk-drop-element">
+            <Icon :name="icon" />
+            <span>{{ title }}</span>
+          </div>
+        </div>
+        <div
+          class="bk-list-item-label"
+          :class="{
+            'bk-tooltip':
+              listOrientation === 'horizontal' && !ui.isMobile.value,
+          }"
+        >
+          <span>{{ title }}</span>
+        </div>
       </div>
-      <strong>{{ title }}</strong>
-      <span>{{ description }}</span>
     </button>
   </Teleport>
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli } from '#imports'
+import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import type { BlokkliIcon } from '#blokkli/icons'
+import type { ActionPlacedEvent, AddListOrientation } from '#blokkli/types'
 import { Icon } from '#blokkli/components'
 
 const props = defineProps<{
+  type: string
   title: string
-  description: string
+  icon: BlokkliIcon
+  color: 'rose' | 'lime'
+  description?: string
   disabled?: boolean
-  icon?: BlokkliIcon
-  type?: 'success' | 'danger'
   weight?: number
-  secondary?: boolean
 }>()
 
-const emit = defineEmits(['click'])
+const emit = defineEmits<{
+  (e: 'placed', data: ActionPlacedEvent): void
+}>()
 
-const { ui } = useBlokkli()
+const { ui, storage, eventBus } = useBlokkli()
 
-const to = computed(
-  () => `#bk-toolbar-menu-${props.secondary ? 'secondary' : 'primary'}`,
+const listOrientationSetting = storage.use<AddListOrientation>(
+  'listOrientation',
+  'vertical',
 )
 
-function onClick() {
-  ui.menu.close()
-  emit('click')
+const listOrientation = computed<AddListOrientation>(() =>
+  ui.isMobile.value ? 'horizontal' : listOrientationSetting.value,
+)
+
+const onActionPlaced = (e: ActionPlacedEvent) => {
+  if (e.action.actionType !== props.type) {
+    return
+  }
+
+  emit('placed', e)
 }
+
+onMounted(() => {
+  eventBus.on('action:placed', onActionPlaced)
+})
+
+onBeforeUnmount(() => {
+  eventBus.off('action:placed', onActionPlaced)
+})
 </script>
 
 <script lang="ts">

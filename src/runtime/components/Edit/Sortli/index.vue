@@ -144,7 +144,7 @@ const findItem = (
     return
   }
 
-  const el = list.value.querySelector(`:scope > [data-sortli-id="${id}"]`)
+  const el = list.value.querySelector(`[data-sortli-id="${id}"]`)
   if (!(el instanceof HTMLElement)) {
     return
   }
@@ -157,6 +157,7 @@ const onClick = (e: MouseEvent) => {
     return
   }
   e.preventDefault()
+  e.stopPropagation()
 
   if (selection.isDragging.value) {
     eventBus.emit('dragging:end')

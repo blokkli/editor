@@ -7,6 +7,14 @@
     @click="showReusableDialog = true"
   />
 
+  <PluginAddAction
+    type="library"
+    title="From Library"
+    icon="reusable"
+    color="lime"
+    @placed="placedAction = $event"
+  />
+
   <Teleport to="body">
     <transition appear name="bk-slide-up" :duration="300">
       <ReusableDialog
@@ -32,9 +40,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+import { ref, computed, useBlokkli } from '#imports'
 
-import { PluginItemAction } from '#blokkli/plugins'
+import { PluginItemAction, PluginAddAction } from '#blokkli/plugins'
 import ReusableDialog from './ReusableDialog/index.vue'
 import LibraryDialog from './LibraryDialog/index.vue'
 import { getDefinition } from '#blokkli/definitions'
@@ -42,7 +50,7 @@ import type { ActionPlacedEvent } from '#blokkli/types'
 
 const showReusableDialog = ref(false)
 
-const { selection, state, adapter, types, text, eventBus } = useBlokkli()
+const { selection, state, adapter, types, text } = useBlokkli()
 
 const selectedItem = computed(() => {
   if (selection.blocks.value.length !== 1) {
@@ -103,21 +111,6 @@ const canMakeReusable = computed(
     itemBundle?.value?.allowReusable &&
     fromLibraryAllowedInList.value,
 )
-
-const onActionPlaced = (e: ActionPlacedEvent) => {
-  if (e.action.actionType !== 'library') {
-    return
-  }
-  placedAction.value = e
-}
-
-onMounted(() => {
-  eventBus.on('action:placed', onActionPlaced)
-})
-
-onBeforeUnmount(() => {
-  eventBus.off('action:placed', onActionPlaced)
-})
 </script>
 
 <script lang="ts">

@@ -728,4 +728,6 @@ export type AssistantResultMarkup = {
 }
 export type AssistantResult = AssistantResultMarkup
 
+export type AddListOrientation = 'horizontal' | 'vertical'
+
 export default {}

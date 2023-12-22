@@ -34,7 +34,7 @@
       }
     }
 
-    &.bk-is-green {
+    &.bk-is-lime {
       .bk-list-item-inner {
         @apply bg-lime-950 border-lime-800 text-lime-100;
       }
@@ -89,23 +89,35 @@
 }
 
 .bk.bk-add-list {
-  @apply bg-slate-950 lg:bg-slate-900 bottom-0 fixed left-0 select-none z-add-list overflow-auto lg:overflow-visible;
+  @apply bottom-0 fixed left-0 select-none z-add-list overflow-auto lg:overflow-hidden ease-swing transition-all;
   @apply touch-manipulation;
 
-  &.bk-is-active {
-    &:after {
-      @apply opacity-100 scale-x-100;
-    }
-  }
   &.bk-is-vertical {
+    @apply w-[70px];
+
+    &:after {
+      @apply w-70;
+      @apply top-0 left-0 h-full border-t md:border-t-slate-700 bg-slate-950 lg:bg-slate-900;
+      @apply origin-left;
+      @apply absolute z-0 pointer-events-none;
+      @apply transition bg-slate-900 ease-swing;
+      content: '';
+    }
+
+    .bk-list {
+      @apply h-full overflow-auto overflow-x-hidden absolute top-0 left-0 w-full;
+    }
     @apply top-50 w-70;
+    #blokkli-add-list-actions {
+      @apply border-b border-b-slate-700 pb-5;
+    }
     .bk-list-item-label {
-      @apply absolute whitespace-nowrap opacity-0 text-slate-100/50  transition pointer-events-none;
+      @apply absolute whitespace-nowrap opacity-0 text-slate-100/50  transition w-[300px] text-left;
       @apply top-0 left-full p-10 h-full ml-[7px];
       @apply text-lg font-semibold;
     }
     .bk-list-item {
-      @apply w-full px-10 py-5 cursor-grab;
+      @apply w-70 px-10 py-5 cursor-grab block;
       @screen md {
         &:first-child {
           @apply pt-10;
@@ -113,17 +125,10 @@
       }
     }
 
-    &:after {
-      @apply top-0 left-full h-full w-[280px] border-t md:border-t-slate-700;
-      @apply origin-left scale-x-50;
-      @apply absolute z-0 pointer-events-none;
-      @apply opacity-0;
-      @apply transition bg-slate-900;
-      content: '';
-    }
     &.bk-is-active {
+      @apply w-[300px];
       &:after {
-        @apply opacity-100 scale-x-100;
+        transform: scaleX(calc(300 / 70));
       }
       .bk-list-item-label {
         @apply opacity-100;
@@ -131,8 +136,23 @@
     }
   }
   &.bk-is-horizontal {
-    @apply w-full flex md:py-5;
+    @apply w-full flex md:py-5 bg-slate-900;
+
     height: var(--bk-root-offset-bottom);
+    #blokkli-add-list-actions {
+      @apply flex border-r border-r-slate-700 px-5;
+      flex: 0 0 auto;
+
+      .bk-list-item-label {
+        @apply hidden lg:block;
+      }
+      .bk-list-item-inner {
+        @apply px-5;
+      }
+    }
+    #blokkli-add-list-blocks {
+      @apply flex px-5;
+    }
     .bk-list {
       @apply flex lg:mx-auto;
     }
