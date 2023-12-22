@@ -3,6 +3,7 @@
     :title="text('libraryDialogTitle')"
     :lead="text('libraryDialogLead')"
     :width="1200"
+    icon="reusable"
     :submit-label="text('libraryDialogSubmit')"
     :can-submit="!!label.length"
     @submit="$emit('confirm', label)"

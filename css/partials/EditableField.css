@@ -125,5 +125,6 @@
 }
 
 .bk-editable-field-frame iframe {
-  @apply block w-full max-h-[550px];
+  @apply block w-full;
+  max-height: calc(100vh - 500px);
 }

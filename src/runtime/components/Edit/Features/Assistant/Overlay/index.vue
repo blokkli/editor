@@ -5,6 +5,7 @@
     :submit-label="text('assistantDialogSubmit')"
     :width="1200"
     :can-submit="!!result"
+    icon="robot"
     @submit="onSubmit"
     @cancel="onCancel"
   >

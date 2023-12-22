@@ -538,6 +538,10 @@ export type MakeReusableEvent = {
   uuid: string
 }
 
+export type DetachReusableBlockEvent = {
+  uuids: string[]
+}
+
 export type KeyPressedEvent = {
   code: string
   meta: boolean

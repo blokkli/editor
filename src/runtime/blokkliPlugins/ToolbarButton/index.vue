@@ -4,6 +4,7 @@
       class="bk-toolbar-button"
       :disabled="disabled"
       :class="[{ 'is-active': active }, id ? 'bk-is-' + id : undefined]"
+      :style="{ order: weight || 0 }"
       @click.prevent.stop="onClick"
     >
       <slot>
@@ -37,6 +38,7 @@ const props = defineProps<{
     | 'before-sidebar'
     | 'after-menu'
     | 'before-view-options'
+    | 'view-options'
   editOnly?: boolean
   disabled?: boolean
   active?: boolean
@@ -44,6 +46,11 @@ const props = defineProps<{
   shift?: boolean
   keyCode?: string
   icon?: BlokkliIcon
+
+  /**
+   * The weight, used for positioning the button.
+   */
+  weight?: number | string
 }>()
 
 const emit = defineEmits(['click'])

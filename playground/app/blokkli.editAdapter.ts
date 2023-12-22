@@ -247,6 +247,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         hostField: e.host.fieldName,
         preceedingUuid: e.afterUuid,
       }),
+    detachReusableBlock: (e) => addMutation('detach_reusable', e),
     redo() {
       editState.currentIndex = Math.min(
         editState.currentIndex + 1,

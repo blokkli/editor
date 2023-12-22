@@ -5,6 +5,7 @@
     :submit-label="text('libraryPlaceDialogSubmit')"
     :width="800"
     :can-submit="!!selectedItem"
+    icon="reusable"
     @submit="onSubmit"
     @cancel="onCancel"
   >

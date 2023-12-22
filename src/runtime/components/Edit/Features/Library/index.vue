@@ -1,5 +1,14 @@
 <template>
   <PluginItemAction
+    v-if="isReusable && adapter.detachReusableBlock"
+    :title="text('detachFromLibrary')"
+    icon="detach"
+    multiple
+    :weight="-70"
+    @click="onDetach"
+  />
+  <PluginItemAction
+    v-else
     :title="text('libraryAdd')"
     :disabled="!canMakeReusable"
     icon="reusable"
@@ -60,6 +69,17 @@ const selectedItem = computed(() => {
   return selection.blocks.value[0]
 })
 
+const onDetach = async () => {
+  if (!adapter.detachReusableBlock || !selection.uuids.value.length) {
+    return
+  }
+  await state.mutateWithLoadingState(
+    adapter.detachReusableBlock({
+      uuids: selection.uuids.value,
+    }),
+  )
+}
+
 const placedAction = ref<ActionPlacedEvent | null>(null)
 const onAddLibraryItem = async (uuid: string) => {
   if (!placedAction.value) {
@@ -85,7 +105,11 @@ const itemBundle = computed(() =>
     : null,
 )
 
-const isReusable = computed(() => definition.value?.bundle === 'from_library')
+const isReusable = computed(
+  () =>
+    selection.blocks.value.length &&
+    selection.blocks.value.every((v) => v.itemBundle === 'from_library'),
+)
 
 function onMakeReusable(label: string) {
   showReusableDialog.value = false

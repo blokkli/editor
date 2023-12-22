@@ -71,7 +71,7 @@ const props = defineProps<{
   /**
    * The weight, used for positioning the button.
    */
-  weight?: number
+  weight?: number | string
 
   icon?: BlokkliIcon
 }>()

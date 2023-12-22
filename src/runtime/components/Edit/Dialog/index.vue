@@ -10,6 +10,7 @@
     <div class="bk-dialog-background" @click="$emit('cancel')" />
     <div class="bk-dialog-inner" :style="style">
       <div class="bk bk-dialog-header">
+        <Icon v-if="icon" :name="icon" />
         <h3>{{ title }}</h3>
         <button @click="$emit('cancel')">
           <Icon name="close" />
@@ -43,7 +44,7 @@
 
 <script lang="ts" setup>
 import { useBlokkli, onMounted, onBeforeUnmount } from '#imports'
-
+import type { BlokkliIcon } from '#blokkli/icons'
 import type { KeyPressedEvent } from '#blokkli/types'
 import { Icon } from '#blokkli/components'
 
@@ -61,12 +62,14 @@ const props = withDefaults(
     isDanger?: boolean
     isLoading?: boolean
     hideButtons?: boolean
+    icon?: BlokkliIcon
   }>(),
   {
     width: 600,
     canSubmit: true,
     lead: '',
     submitLabel: '',
+    icon: undefined,
   },
 )
 

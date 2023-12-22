@@ -15,11 +15,14 @@ export class BlockFromLibrary extends Block {
     ]
   }
 
+  getLibraryItem(): LibraryItem | undefined {
+    return this.get<FieldReference<LibraryItem>>(
+      'libraryItem',
+    ).getReferencedEntities()[0]
+  }
+
   getProps() {
-    const libraryItem =
-      this.get<FieldReference<LibraryItem>>(
-        'libraryItem',
-      ).getReferencedEntities()[0]
+    const libraryItem = this.getLibraryItem()
     if (!libraryItem) {
       return {}
     }

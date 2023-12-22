@@ -3,7 +3,8 @@
     :title="text('resetZoom')"
     meta
     key-code="0"
-    region="before-sidebar"
+    region="view-options"
+    weight="10"
     @click="resetZoom"
   >
     <div class="bk-feature-canvas-button">

@@ -12,19 +12,25 @@
   }
 
   .bk-dialog-header {
-    @apply flex justify-between items-center p-15 lg:p-20 border-b bg-slate-50;
+    @apply flex items-center p-15 lg:p-20 border-b border-b-slate-300 bg-slate-100 relative overflow-hidden;
     flex: 0 0 auto;
+    @apply text-lg md:text-lg xl:text-2xl;
     h3 {
-      @apply text-lg md:text-lg xl:text-2xl font-bold font-sans;
+      @apply font-bold font-sans relative z-10;
     }
     button {
+      @apply ml-auto h-full;
       svg {
-        @apply fill-slate-700 w-30 h-30 hover:fill-blue-700;
+        @apply fill-slate-700 w-20 h-20 md:w-30 md:h-30 hover:fill-blue-700;
       }
+    }
+
+    > .bk-icon {
+      @apply w-[1.5em] h-[1.5em] mr-[0.5em];
     }
   }
   .bk-dialog-lead {
-    @apply text-base md:text-lg font-sans mt-10;
+    @apply text-base md:text-lg lg:text-xl font-sans mb-10 lg:mb-20 text-slate-700;
   }
   .bk-dialog-footer {
     @apply flex gap-10 md:mt-30 p-15 lg:p-20 border-t bg-slate-50;
@@ -35,7 +41,7 @@
   }
 
   .bk-dialog-content {
-    @apply overflow-auto flex-1 min-h-0 max-h-full h-full px-15 lg:px-20 lg:h-auto;
+    @apply overflow-auto flex-1 min-h-0 max-h-full h-full px-15 pt-15 lg:px-20 lg:pt-20 lg:h-auto;
     @apply overscroll-contain;
   }
   .bk-dialog-content-inner {

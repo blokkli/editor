@@ -24,6 +24,7 @@ import type {
   UpdateFieldValueEvent,
   AssistantResult,
   DraggableHostData,
+  DetachReusableBlockEvent,
 } from './../types'
 
 export interface MutationResponseLike<T> {
@@ -220,6 +221,13 @@ export interface BlokkliAdapter<T> {
    * Make an item reusable.
    */
   makeItemReusable(e: MakeReusableEvent): Promise<MutationResponseLike<T>>
+
+  /**
+   * Detach a reusable block and add a copy of it in place.
+   */
+  detachReusableBlock?: (
+    e: DetachReusableBlockEvent,
+  ) => Promise<MutationResponseLike<T>>
 
   /**
    * Get all library items.

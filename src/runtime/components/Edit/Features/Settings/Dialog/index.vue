@@ -3,6 +3,7 @@
     :title="text('settingsDialogTitle')"
     :width="400"
     hide-buttons
+    icon="cog"
     @cancel="$emit('cancel')"
   >
     <div class="bk bk-dialog-form bk-settings">

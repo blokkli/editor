@@ -155,4 +155,6 @@ export default {
   libraryPlaceSearchLabel: 'Filter library items',
 
   searchInputPlaceholder: 'Enter search term',
+
+  detachFromLibrary: 'Detach from library',
 }
