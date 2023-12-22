@@ -530,6 +530,7 @@ export type BlokkliMessage = {
 
 export type DraggableStartEvent = {
   items: DraggableItem[]
+  coords: Coord
 }
 
 export type MakeReusableEvent = {

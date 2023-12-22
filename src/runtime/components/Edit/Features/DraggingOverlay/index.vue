@@ -1,5 +1,11 @@
 <template>
-  <DragItems v-if="isVisible" :x="mouseX" :y="mouseY" :items="dragItems" />
+  <DragItems
+    v-if="isVisible"
+    :x="mouseX"
+    :y="mouseY"
+    :start-coords="startCoords"
+    :items="dragItems"
+  />
   <DropTargets
     v-if="dragItems.length"
     :items="dragItems"
@@ -32,6 +38,7 @@ import DragItems from './DragItems/index.vue'
 
 import type {
   AnimationFrameEvent,
+  Coord,
   DraggableActionItem,
   DraggableClipboardItem,
   DraggableExistingBlokkliItem,
@@ -50,6 +57,10 @@ const { eventBus, adapter, state, ui, animation } = useBlokkli()
 const isVisible = ref(false)
 const mouseX = ref(0)
 const mouseY = ref(0)
+const startCoords = ref<Coord>({
+  x: 0,
+  y: 0,
+})
 
 const box = ref<Rectangle>({
   x: 0,
@@ -104,7 +115,7 @@ const onDrop = async (e: DropTargetEvent) => {
     const item = e.items[0] as DraggableReusableItem
     await state.mutateWithLoadingState(
       adapter.addReusableItem({
-        item,
+        libraryItemUuid: item.libraryItemUuid,
         host,
         afterUuid,
       }),
@@ -174,6 +185,7 @@ const onMouseUp = (e: MouseEvent) => {
 }
 
 function onDraggingStart(e: DraggableStartEvent) {
+  startCoords.value = e.coords
   animation.requestDraw()
   const item = e.items[0]
   if (!item) {

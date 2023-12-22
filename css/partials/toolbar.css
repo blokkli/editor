@@ -333,26 +333,6 @@
   transform: translateX(-100%);
 }
 
-.bk-slide-up-enter-active,
-.bk-slide-up-leave-active {
-  transition: 0.3s ease-in-out;
-  .bk-dialog-inner {
-    transition: 0.3s ease-in-out;
-  }
-  .bk-dialog-background {
-    transition: 0.3s ease-in-out;
-  }
-}
-.bk-slide-up-enter-from,
-.bk-slide-up-leave-to {
-  .bk-dialog-background {
-    @apply opacity-0;
-  }
-  .bk-dialog-inner {
-    @apply scale-90 opacity-0;
-  }
-}
-
 .bk-translations {
   @apply relative text-xs lg:text-sm xl:text-base;
   .bk-toolbar-button {

@@ -1,6 +1,7 @@
 .bk-assistant-dialog {
   @apply mt-30;
 }
+
 .bk-assistant-dialog {
   @apply grid gap-30;
 
@@ -16,22 +17,24 @@
 .bk-assistant-dialog-textarea {
   @apply relative border rounded focus-within:border-blue-600;
   button {
-    @apply absolute left-0 bottom-0 w-full rounded-t-none;
+    @apply w-full rounded-t-none;
   }
 
   textarea {
-    @apply border-none focus:border-none focus:ring-0;
+    @apply border-none focus:border-none focus:ring-0 pb-50;
   }
 }
 
 .bk-assistant-dialog-result {
-  @apply flex flex-col;
+  @apply md:flex md:flex-col;
 }
 
 .bk-assistant-dialog-result-inner {
-  @apply relative flex-1 border border-slate-300 rounded;
-  > div {
-    @apply absolute top-0 left-0 w-full h-full overflow-auto p-20;
+  @apply relative flex-1 border border-slate-300 rounded p-20 md:p-0;
+  @screen md {
+    > div {
+      @apply absolute top-0 left-0 w-full h-full overflow-auto p-20;
+    }
   }
 }
 

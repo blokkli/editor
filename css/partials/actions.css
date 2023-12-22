@@ -1,7 +1,7 @@
 .bk {
   #bk-blokkli-item-actions-title {
     height: var(--bk-actions-height);
-    @apply flex-1;
+    @apply w-[160px] md:w-200 lg:w-[240px];
   }
   .bk-blokkli-item-actions-title-count {
     @apply bg-slate-50 text-slate-900 inline-flex items-center justify-center px-3 min-w-[1.5em] h-[1.5em] rounded-full ml-10 text-xs lg:text-sm font-bold leading-none;
@@ -46,13 +46,18 @@
   }
 
   .bk-blokkli-item-actions-buttons {
-    @apply relative flex;
+    @apply relative flex flex-1 md:flex-initial;
     > button {
-      @apply text-slate-300 h-full flex items-center shrink-0 justify-center relative md:static z-50;
+      @apply text-slate-300 h-full flex items-center shrink-0  justify-center relative md:static z-50;
       @apply md:hover:bg-slate-700 md:hover:text-slate-50;
-      width: var(--bk-actions-height);
+      max-width: var(--bk-actions-height);
+      flex: 1 0 auto;
+      @screen md {
+        width: var(--bk-actions-height);
+        flex: initial;
+      }
       &.bk-is-active {
-        @apply bg-white text-slate-900;
+        @apply bg-white text-slate-900 z-50;
       }
       .bk-tooltip {
         @apply absolute bottom-full left-0 w-full mb-3;
@@ -75,11 +80,11 @@
   }
 
   .bk-blokkli-item-actions-type-button {
-    @apply flex items-center justify-between cursor-default md:min-w-[180px] text-slate-300 font-bold h-full pl-[9px] pr-15  rounded-l leading-none;
+    @apply flex items-center justify-between cursor-default md:min-w-[180px] text-slate-300 font-bold h-full pl-[9px] md:pr-15  rounded-l leading-none;
     @apply text-xs md:text-sm lg:text-base;
     @apply w-full;
     .bk-blokkli-item-actions-title-label {
-      @apply mr-auto;
+      @apply mr-auto truncate;
     }
     .bk-blokkli-item-actions-title-icon {
       @apply text-xl md:text-[34px] mr-[0.25em] bg-slate-800 w-[1em] h-[1em] rounded border border-slate-600 relative text-white;
@@ -89,17 +94,19 @@
     }
     &.is-interactive {
       @apply cursor-pointer;
-      &:not(.is-open) {
-        @apply hover:text-slate-50 hover:bg-slate-700;
-        &:hover {
-          .bk-blokkli-item-actions-title-icon {
-            @apply bg-slate-600 border-slate-400;
+      @media not all and (hover: none) {
+        &:not(.is-open) {
+          @apply hover:text-slate-50 hover:bg-slate-700;
+          &:hover {
+            .bk-blokkli-item-actions-title-icon {
+              @apply bg-slate-600 border-slate-400;
+            }
           }
         }
       }
     }
     &.is-open {
-      @apply bg-slate-700 text-white;
+      @apply md:bg-slate-700 text-white;
       .bk-caret {
         @apply transform rotate-180;
       }
@@ -113,10 +120,16 @@
         @apply pointer-events-none w-15 h-15 fill-current;
       }
     }
+
+    &.bk-is-reusable {
+      .bk-blokkli-item-actions-title-icon {
+        @apply bg-lime-800 border-lime-600 text-white;
+      }
+    }
   }
 
   #bk-blokkli-item-actions {
-    @apply lg:border-l lg:border-l-slate-600;
+    @apply lg:border-l lg:border-l-slate-600 justify-end;
   }
 
   .bk-blokkli-item-actions-type {

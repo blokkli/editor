@@ -7,11 +7,11 @@
       ref="wrapper"
       class="bk bk-add-list bk-control"
       :class="[{ 'bk-is-active': isActive }, 'bk-is-' + listOrientation]"
-      @wheel.capture.stop="onWheel"
+      @wheel.capture.stop
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
     >
-      <Sortli ref="typeList" class="bk-list" :style="style">
+      <Sortli ref="typeList" class="bk-list">
         <div id="blokkli-add-list-actions"></div>
         <div id="blokkli-add-list-blocks"></div>
       </Sortli>
@@ -49,44 +49,7 @@ watch(listOrientation, setRootClasses)
 const typeList = ref<HTMLDivElement | null>(null)
 const wrapper = ref<HTMLDivElement | null>(null)
 const isActive = ref(false)
-const scrollX = ref(0)
-const scrollY = ref(0)
-
 let mouseTimeout: any = null
-
-function onWheel(e: WheelEvent) {
-  return
-  if (ui.isMobile.value) {
-    return
-  }
-  e.preventDefault()
-  return
-  if (listOrientation.value === 'vertical') {
-    const scrollHeight = typeList.value?.scrollHeight || 0
-    const wrapperHeight = wrapper.value?.offsetHeight || 0
-    const diff = Math.min(Math.max(e.deltaY, -20), 20)
-    if (wrapperHeight > scrollHeight) {
-      scrollY.value = 0
-    } else {
-      scrollY.value = Math.min(
-        Math.max(scrollY.value + diff, 0),
-        scrollHeight - wrapperHeight,
-      )
-    }
-  } else if (listOrientation.value === 'horizontal') {
-    const scrollWidth = typeList.value?.scrollWidth || 0
-    const wrapperWidth = wrapper.value?.offsetWidth || 0
-    const diff = Math.min(Math.max(e.deltaY || e.deltaX, -20), 20)
-    if (wrapperWidth > scrollWidth) {
-      scrollX.value = 0
-    } else {
-      scrollX.value = Math.min(
-        Math.max(scrollX.value + diff, 0),
-        scrollWidth - wrapperWidth,
-      )
-    }
-  }
-}
 
 function onMouseEnter() {
   clearTimeout(mouseTimeout)
@@ -98,15 +61,6 @@ function onMouseLeave() {
   clearTimeout(mouseTimeout)
   isActive.value = false
 }
-
-const style = computed(() => {
-  return {
-    transform:
-      listOrientation.value === 'vertical'
-        ? `translateY(-${scrollY.value}px)`
-        : `translateX(-${scrollX.value}px)`,
-  }
-})
 
 function setRootClasses() {
   document.documentElement.classList.remove('bk-has-sidebar-bottom')

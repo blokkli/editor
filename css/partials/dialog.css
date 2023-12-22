@@ -1,12 +1,13 @@
 .bk-dialog {
-  @apply fixed top-0 left-0 w-screen bottom-0  z-dialog p-15;
+  @apply fixed top-0 left-0 w-screen bottom-0  z-dialog lg:p-15;
   @apply flex items-center justify-center;
   .bk-dialog-background {
     @apply absolute top-0 left-0 w-full h-full;
+    @apply bg-black md:bg-slate-800/90 md:backdrop-blur-md;
   }
 
   .bk-dialog-inner {
-    @apply lg:min-w-[450px] max-w-screen-xl bg-white shadow-2xl rounded-md  relative z-20 max-h-full min-h-0 overflow-hidden;
+    @apply lg:min-w-[450px] max-w-screen-xl bg-white shadow-2xl rounded-t-xl md:rounded-md  relative z-20 max-h-full min-h-0 overflow-hidden h-full lg:h-auto;
     @apply flex flex-col;
   }
 
@@ -26,13 +27,24 @@
     @apply text-base md:text-lg font-sans mt-10;
   }
   .bk-dialog-footer {
-    @apply flex gap-10 mt-15 md:mt-30 p-15 lg:p-20 border-t bg-slate-50;
+    @apply flex gap-10 md:mt-30 p-15 lg:p-20 border-t bg-slate-50;
     flex: 0 0 auto;
+    button {
+      @apply w-full lg:w-auto;
+    }
   }
 
   .bk-dialog-content {
-    @apply overflow-auto flex-1 min-h-0 max-h-full h-full px-15 lg:px-20;
+    @apply overflow-auto flex-1 min-h-0 max-h-full h-full px-15 lg:px-20 lg:h-auto;
     @apply overscroll-contain;
+  }
+  .bk-dialog-content-inner {
+    min-height: calc(100vh - 160px);
+    @apply pb-20;
+    @screen md {
+      min-height: auto;
+      @apply h-auto;
+    }
   }
 }
 
@@ -45,4 +57,24 @@
 
 .bk-message-info {
   @apply font-sans text-base bg-yellow-50 p-10 border border-yellow-400 rounded text-yellow-900 my-20;
+}
+
+.bk-slide-up-enter-active,
+.bk-slide-up-leave-active {
+  @apply transition ease-swing duration-300;
+  .bk-dialog-inner {
+    @apply transition ease-swing duration-300;
+  }
+  .bk-dialog-background {
+    @apply transition ease-swing duration-300;
+  }
+}
+.bk-slide-up-enter-from,
+.bk-slide-up-leave-to {
+  .bk-dialog-background {
+    @apply opacity-0;
+  }
+  .bk-dialog-inner {
+    @apply translate-y-full lg:translate-y-0 lg:scale-90 lg:opacity-0;
+  }
 }

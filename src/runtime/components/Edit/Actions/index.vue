@@ -18,6 +18,7 @@
               :class="{
                 'is-open': showDropdown,
                 'is-interactive': shouldRenderButton,
+                'bk-is-reusable': itemBundle?.id === 'from_library',
               }"
               @click.prevent="showDropdown = !showDropdown"
             >

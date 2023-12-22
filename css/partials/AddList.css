@@ -23,12 +23,12 @@
 
     &.bk-is-rose {
       .bk-list-item-inner {
-        @apply bg-rose-950 border-rose-800 text-rose-100;
+        @apply bg-rose-900 border-rose-600 text-rose-100;
       }
       @media not all and (hover: none) {
         &:hover {
           .bk-list-item-inner {
-            @apply bg-rose-900 border-rose-600 text-rose-50;
+            @apply bg-rose-800 border-rose-500 text-white;
           }
         }
       }
@@ -36,12 +36,12 @@
 
     &.bk-is-lime {
       .bk-list-item-inner {
-        @apply bg-lime-950 border-lime-800 text-lime-100;
+        @apply bg-lime-800 border-lime-600 text-lime-50;
       }
       @media not all and (hover: none) {
         &:hover {
           .bk-list-item-inner {
-            @apply bg-lime-900 border-lime-600 text-lime-50;
+            @apply bg-lime-700 border-lime-500 text-white;
           }
         }
       }
@@ -77,7 +77,7 @@
   }
 
   .bk-list-item-icon {
-    @apply relative overflow-hidden;
+    @apply overflow-hidden;
     svg {
       @apply fill-current;
     }
@@ -89,11 +89,11 @@
 }
 
 .bk.bk-add-list {
-  @apply bottom-0 fixed left-0 select-none z-add-list overflow-auto lg:overflow-hidden ease-swing transition-all;
+  @apply bottom-0 fixed left-0 select-none z-add-list overflow-auto ease-swing transition-all;
   @apply touch-manipulation;
 
   &.bk-is-vertical {
-    @apply w-[70px];
+    @apply w-[70px] lg:overflow-hidden;
 
     &:after {
       @apply w-70;
@@ -136,7 +136,7 @@
     }
   }
   &.bk-is-horizontal {
-    @apply w-full flex md:py-5 bg-slate-900;
+    @apply w-full flex md:py-5 bg-slate-950 overflow-y-hidden lg:overflow-visible;
 
     height: var(--bk-root-offset-bottom);
     #blokkli-add-list-actions {
@@ -199,7 +199,7 @@
   }
 
   .bk-add-list-drop {
-    @apply absolute top-0 left-0 opacity-0 w-auto;
+    @apply absolute top-0 left-0 opacity-0 w-auto pointer-events-none;
   }
 }
 

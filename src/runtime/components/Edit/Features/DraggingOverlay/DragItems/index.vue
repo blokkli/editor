@@ -8,9 +8,10 @@
         :style="{
           width: rect.width + 'px',
           height: rect.height + 'px',
-          transform: `translate(${rect.x}px, ${rect.y}px) scale(${rect.scale})`,
+          transform: `translate(${rect.x}px, ${rect.y}px) scale(${rect.scaleX}, ${rect.scaleY})`,
           opacity: rect.opacity,
           background: rect.background,
+          transformOrigin: rect.transformOrigin,
         }"
         v-html="rect.markup"
       />
@@ -27,18 +28,32 @@ import {
   onUnmounted,
   onBeforeUnmount,
 } from '#imports'
-import type { DraggableItem, Rectangle } from '#blokkli/types'
-import { isInsideRect, realBackgroundColor } from '#blokkli/helpers'
+import type { Coord, DraggableItem, Rectangle } from '#blokkli/types'
+import { isInsideRect, realBackgroundColor, lerp } from '#blokkli/helpers'
 
 const { eventBus, dom, ui, animation } = useBlokkli()
 
 const props = defineProps<{
+  /**
+   * The items being dragged/placed.
+   */
   items: DraggableItem[]
-  x: number
-  y: number
-}>()
 
-const lerp = (s: number, e: number, t: number) => s * (1 - t) + e * t
+  /**
+   * The current x position of the cursor.
+   */
+  x: number
+
+  /**
+   * The current y position of the cursor.
+   */
+  y: number
+
+  /**
+   * The coordinates when the dragging action was started.
+   */
+  startCoords: Coord
+}>()
 
 const width = ref(10)
 const height = ref(10)
@@ -76,13 +91,16 @@ type AnimationRectangle = Rectangle & {
   isTop: boolean
   targetOpacity: number
   opacity: number
-  scale: number
+  scaleX: number
+  scaleY: number
   targetX: number
   targetY: number
-  targetScale: number
+  targetScaleX: number
+  targetScaleY: number
   markup: string
   background: string
   elementOpacity?: string
+  transformOrigin: string
   element: HTMLElement
 }
 
@@ -103,13 +121,15 @@ const onAnimationFrame = () => {
     const newY = lerp(rect.y, rect.targetY, alpha)
     const newOpacity = lerp(rect.opacity, rect.targetOpacity, alpha)
 
-    const newScale = lerp(rect.scale, rect.targetScale, alpha)
+    const newScaleX = lerp(rect.scaleX, rect.targetScaleX, alpha)
+    const newScaleY = lerp(rect.scaleY, rect.targetScaleY, alpha)
 
     // Check if the rectangle is at its target position
     if (
       Math.abs(newX - rect.targetX) > threshold ||
       Math.abs(newY - rect.targetY) > threshold ||
-      Math.abs(newScale - rect.targetScale) > 0.01
+      Math.abs(newScaleX - rect.targetScaleX) > 0.01 ||
+      Math.abs(newScaleY - rect.targetScaleY) > 0.01
     ) {
       allRectsAtTarget = false
     } else {
@@ -120,7 +140,8 @@ const onAnimationFrame = () => {
       ...rect,
       x: newX,
       y: newY,
-      scale: newScale,
+      scaleX: newScaleX,
+      scaleY: newScaleY,
       opacity: newOpacity,
     })
   }
@@ -135,7 +156,8 @@ const onAnimationFrame = () => {
       return {
         ...v,
         opacity: v.targetOpacity,
-        scale: v.targetScale,
+        scaleX: v.targetScaleX,
+        scaleY: v.targetScaleY,
         x: v.targetX,
         y: v.targetY,
       }
@@ -161,7 +183,9 @@ onMounted(() => {
 
   // Find the matching bound rectangle that will determine the size of the box that is being dragged.
   const boundRect =
-    elRects.find((v) => isInsideRect(props.x, props.y, v.rect)) || elRects[0]
+    elRects.find((v) =>
+      isInsideRect(props.startCoords.x, props.startCoords.y, v.rect),
+    ) || elRects[0]
 
   const bounds = boundRect.rect
 
@@ -172,7 +196,7 @@ onMounted(() => {
     ? 0
     : Math.max(
         Math.min(
-          props.x - boundsWidth / 2,
+          props.startCoords.x - boundsWidth / 2,
           bounds.x + bounds.width - boundsWidth,
         ),
         bounds.x,
@@ -181,21 +205,30 @@ onMounted(() => {
     ? translateY.value
     : Math.max(
         Math.min(
-          props.y - boundsHeight / 2,
+          props.startCoords.y - boundsHeight / 2,
           bounds.y + bounds.height - boundsHeight,
         ),
         bounds.y,
       )
 
-  offsetX.value = props.x - boundsX
-  offsetY.value = props.y - boundsY
+  offsetX.value = props.startCoords.x - boundsX
+  offsetY.value = props.startCoords.y - boundsY
   width.value = boundsWidth
   height.value = boundsHeight
 
   rects.value = elRects.map((item) => {
     const isTop = item.index === boundRect.index
     const rect = item.rect
-    const targetScale = Math.min(boundsWidth / item.element.scrollWidth, 1)
+    const baseRect = item.item.element.getBoundingClientRect()
+    const targetScaleX = Math.min(boundsWidth / item.element.scrollWidth, 1)
+    const targetScaleY = Math.min(boundsHeight / item.element.scrollHeight, 1)
+
+    const originX = 0
+    // const originX = item.hasDropElement
+    //   ? Math.min(props.startCoords.x - rect.x, rect.width)
+    //   : 0
+    const originY = 0
+
     return {
       isTop,
       x: ui.isMobile.value ? rect.x - translateX.value : rect.x - boundsX,
@@ -209,12 +242,15 @@ onMounted(() => {
         : rect.y - boundsY,
       width: item.element.scrollWidth,
       height: item.element.scrollHeight,
-      opacity: 1,
+      opacity: 0.9,
       targetOpacity: isTop ? (ui.isMobile.value ? 1 : 0.6) : 0,
-      targetX: props.x - boundsX - offsetX.value,
-      targetY: props.y - boundsY - offsetY.value,
-      scale: rect.width / item.element.scrollWidth,
-      targetScale,
+      targetX: props.startCoords.x - boundsX - offsetX.value,
+      targetY: props.startCoords.y - boundsY - offsetY.value,
+      scaleX: Math.min(baseRect.width / rect.width, 1),
+      scaleY: Math.min(baseRect.height / rect.height, 1),
+      targetScaleX,
+      targetScaleY,
+      transformOrigin: `${originX}px ${originY}px`,
       markup: dom.getDropElementMarkup(item.item),
       background: realBackgroundColor(item.element),
       elementOpacity:

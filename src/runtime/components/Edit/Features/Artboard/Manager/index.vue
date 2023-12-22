@@ -42,6 +42,7 @@ import type {
   Coord,
 } from '#blokkli/types'
 import { PluginToolbarButton } from '#blokkli/plugins'
+import { lerp } from '#blokkli/helpers'
 
 const {
   keyboard,
@@ -418,8 +419,6 @@ function getCenterX(targetScale?: number): number {
     2
   )
 }
-
-const lerp = (s: number, e: number, t: number) => s * (1 - t) + e * t
 
 let alpha = 0
 const speed = 0.01

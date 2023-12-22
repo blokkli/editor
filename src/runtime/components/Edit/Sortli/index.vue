@@ -93,7 +93,10 @@ const onTouchStart = (e: TouchEvent) => {
     if (!selection.isMultiSelecting.value && !selection.uuids.value.length) {
       eventBus.emit('select', currentTouchedId)
     }
-    eventBus.emit('dragging:start', { items: [...selection.blocks.value] })
+    eventBus.emit('dragging:start', {
+      items: [...selection.blocks.value],
+      coords: start.value,
+    })
   }, 300)
 }
 
@@ -185,7 +188,7 @@ const onClick = (e: MouseEvent) => {
     if (!item) {
       return
     }
-    eventBus.emit('dragging:start', { items: [item] })
+    eventBus.emit('dragging:start', { items: [item], coords: start.value })
     return
   }
   const id = findItem(e)?.id
@@ -229,7 +232,10 @@ const onMouseMove = (e: MouseEvent) => {
       if (!selection.uuids.value.length) {
         return
       }
-      eventBus.emit('dragging:start', { items: [...selection.blocks.value] })
+      eventBus.emit('dragging:start', {
+        items: [...selection.blocks.value],
+        coords: start.value,
+      })
       return
     }
 
@@ -240,7 +246,7 @@ const onMouseMove = (e: MouseEvent) => {
         if (!item) {
           return
         }
-        eventBus.emit('dragging:start', { items: [item] })
+        eventBus.emit('dragging:start', { items: [item], coords: start.value })
       }
     }
   }

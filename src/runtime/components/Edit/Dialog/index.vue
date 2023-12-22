@@ -1,6 +1,6 @@
 <template>
   <div class="bk-dialog bk-control" @wheel.stop @keydown.stop>
-    <div class="bk-dialog-background bk-overlay" @click="$emit('cancel')" />
+    <div class="bk-dialog-background" @click="$emit('cancel')" />
     <div class="bk-dialog-inner" :style="{ width: width + 'px' }">
       <div class="bk bk-dialog-header">
         <h3>{{ title }}</h3>
@@ -10,10 +10,12 @@
       </div>
 
       <div class="bk-dialog-content">
-        <div v-if="lead" class="bk bk-dialog-lead">
-          {{ lead }}
+        <div class="bk-dialog-content-inner">
+          <div v-if="lead" class="bk bk-dialog-lead">
+            {{ lead }}
+          </div>
+          <slot />
         </div>
-        <slot />
       </div>
       <div v-if="!hideButtons" class="bk bk-dialog-footer">
         <button
@@ -26,9 +28,6 @@
           @click="$emit('submit')"
         >
           {{ submitLabel }}
-        </button>
-        <button class="bk-button" @click="$emit('cancel')">
-          {{ text('cancel') }}
         </button>
       </div>
     </div>
@@ -62,7 +61,7 @@ withDefaults(
   },
 )
 
-const { eventBus, text } = useBlokkli()
+const { eventBus } = useBlokkli()
 
 const onKeyPressed = (e: KeyPressedEvent) => {
   if (e.code === 'Escape') {

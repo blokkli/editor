@@ -325,3 +325,5 @@ export function realBackgroundColor(el: HTMLElement | null) {
     return bg
   }
 }
+
+export const lerp = (s: number, e: number, t: number) => s * (1 - t) + e * t
