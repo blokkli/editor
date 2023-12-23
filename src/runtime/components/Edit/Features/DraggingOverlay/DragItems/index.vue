@@ -169,14 +169,51 @@ const onAnimationFrame = () => {
   rects.value = newRects
 }
 
+function getDraggingBounds(
+  mouse: Coord,
+  rect: Rectangle,
+  maxWidth: number,
+): Rectangle {
+  // The aspect ratio of the original rectangle.
+  const aspectRatio = rect.width / rect.height
+
+  // Apply maxWidth constraint to the rectangle's width and adjust height proportionally.
+  const effectiveWidth = Math.min(rect.width, maxWidth)
+  const effectiveHeight = effectiveWidth / aspectRatio
+
+  // Calculate the relative position of the drag start within the original rectangle.
+  const relativeX = mouse.x - rect.x
+  const relativeY = mouse.y - rect.y
+
+  // Calculate the proportional positions within the constrained rectangle
+  const proportionX = rect.width > 0 ? relativeX / rect.width : 0
+  const proportionY = rect.height > 0 ? relativeY / rect.height : 0
+
+  const effectiveRelativeX = effectiveWidth * proportionX
+  const effectiveRelativeY = effectiveHeight * proportionY
+
+  // Calculate final position
+  const finalX = mouse.x - effectiveRelativeX
+  const finalY = mouse.y - effectiveRelativeY
+
+  return {
+    x: finalX,
+    y: finalY,
+    width: effectiveWidth,
+    height: effectiveHeight,
+  }
+}
+
 onMounted(() => {
   const elRects = props.items.map((item, index) => {
-    const element = (item.element.querySelector('.bk-drop-element') ||
-      item.element) as HTMLElement
+    const itemElement = item.element()
+    const element = (itemElement.querySelector('.bk-drop-element') ||
+      itemElement) as HTMLElement
+
     return {
       rect: element.getBoundingClientRect(),
       element,
-      hasDropElement: item.element !== element,
+      hasDropElement: itemElement !== element,
       item,
       index,
     }
@@ -188,57 +225,40 @@ onMounted(() => {
       isInsideRect(props.startCoords.x, props.startCoords.y, v.rect),
     ) || elRects[0]
 
-  const bounds = boundRect.rect
-
-  const boundsWidth = ui.isMobile.value ? 200 : Math.min(500, bounds.width)
-  const ratio = boundsWidth / bounds.width
-  const boundsHeight = bounds.height * ratio
-  const boundsX = ui.isMobile.value
-    ? 0
-    : Math.max(
-        Math.min(
-          props.startCoords.x - boundsWidth / 2,
-          bounds.x + bounds.width - boundsWidth,
-        ),
-        bounds.x,
-      )
-  const boundsY = ui.isMobile.value
-    ? translateY.value
-    : Math.max(
-        Math.min(
-          props.startCoords.y - boundsHeight / 2,
-          bounds.y + bounds.height - boundsHeight,
-        ),
-        bounds.y,
-      )
+  const bounds = getDraggingBounds(
+    props.startCoords,
+    boundRect.rect,
+    ui.isMobile.value ? 250 : 500,
+  )
+  const boundsX = ui.isMobile.value ? 0 : bounds.x
+  const boundsY = ui.isMobile.value ? translateY.value : bounds.y
 
   offsetX.value = props.startCoords.x - boundsX
   offsetY.value = props.startCoords.y - boundsY
-  width.value = boundsWidth
-  height.value = boundsHeight
+  width.value = bounds.width
+  height.value = bounds.height
+
+  const artboardScale = ui.getArtboardScale()
 
   rects.value = elRects.map((item) => {
     const isTop = item.index === boundRect.index
     const rect = item.rect
-    const baseRect = item.item.element.getBoundingClientRect()
-    const targetScaleX = Math.min(boundsWidth / item.element.scrollWidth, 1)
-    const targetScaleY = Math.min(boundsHeight / item.element.scrollHeight, 1)
+    const baseRect = item.item.element().getBoundingClientRect()
+    const targetScaleX = Math.min(bounds.width / item.element.scrollWidth, 1)
+    const targetScaleY = Math.min(bounds.height / item.element.scrollHeight, 1)
 
     const originX = 0
-    // const originX = item.hasDropElement
-    //   ? Math.min(props.startCoords.x - rect.x, rect.width)
-    //   : 0
     const originY = 0
 
     const from: AnimationRectangleValues = {
       opacity: 0.9,
-      scaleX: Math.min(baseRect.width / rect.width, 1),
-      scaleY: Math.min(baseRect.height / rect.height, 1),
+      scaleX: Math.min(baseRect.width / rect.width, 1) * artboardScale,
+      scaleY: Math.min(baseRect.height / rect.height, 1) * artboardScale,
       x: ui.isMobile.value ? rect.x - translateX.value : rect.x - boundsX,
       y: ui.isMobile.value
         ? -rect.height -
           (window.innerHeight -
-            boundsHeight -
+            bounds.height -
             rect.y -
             rect.height +
             translateY.value)
@@ -247,8 +267,8 @@ onMounted(() => {
 
     const to: AnimationRectangleValues = {
       opacity: isTop ? (ui.isMobile.value ? 1 : 0.6) : 0,
-      x: props.startCoords.x - boundsX - offsetX.value,
-      y: props.startCoords.y - boundsY - offsetY.value,
+      x: 0,
+      y: 0,
       scaleX: targetScaleX,
       scaleY: targetScaleY,
     }
