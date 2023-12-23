@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getBounds } from '#blokkli/helpers'
+import { falsy, getBounds } from '#blokkli/helpers'
 import type { DraggableExistingBlokkliItem, Rectangle } from '#blokkli/types'
 import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
@@ -32,9 +32,14 @@ type BoundsRectable = Rectangle & { isVisible: boolean }
 
 const bounds = computed<BoundsRectable | null>(() => {
   const scale = ui.getArtboardScale()
-  const rects = props.blocks.map((block) => {
-    return block.element.getBoundingClientRect()
-  })
+  const rects = props.blocks
+    .map((block) => {
+      const element = block.element()
+      if (element instanceof HTMLElement) {
+        return element.getBoundingClientRect()
+      }
+    })
+    .filter(falsy)
 
   const boundingBox = getBounds(rects)
   if (!boundingBox) {
@@ -55,7 +60,7 @@ const bounds = computed<BoundsRectable | null>(() => {
 })
 
 const selectedRects = computed<SelectedRect[]>(() => {
-  if (!bounds.value) {
+  if (!bounds.value || !delayedRefresh.value) {
     return []
   }
   const scale = ui.getArtboardScale()
@@ -67,12 +72,13 @@ const selectedRects = computed<SelectedRect[]>(() => {
 
   for (let i = 0; i < props.blocks.length; i++) {
     const block = props.blocks[i]
-    const rect = block.element.getBoundingClientRect()
+    const element = block.element()
+    const rect = element.getBoundingClientRect()
     rects.push({
       x: (rect.x - artboardRect.x) / scale - bounds.value.x,
       y: (rect.y - artboardRect.y) / scale - bounds.value.y + artboardScroll,
       width: rect.width / scale,
-      height: block.element.scrollHeight,
+      height: element.scrollHeight,
       uuid: block.uuid,
     })
   }
@@ -97,7 +103,7 @@ const styleSize = computed(() => {
 onMounted(() => {
   interval = setInterval(() => {
     delayedRefresh.value += 1
-  }, 100)
+  }, 200)
 })
 
 onBeforeUnmount(() => {

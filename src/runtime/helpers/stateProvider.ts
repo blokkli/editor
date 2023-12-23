@@ -104,8 +104,8 @@ export default async function (
 
     eventBus.emit('updateMutatedFields', { fields: newMutatedFields })
 
-    refreshKey.value = Date.now().toString()
     eventBus.emit('state:reloaded')
+    refreshKey.value = Date.now().toString()
   }
 
   function lockBody() {

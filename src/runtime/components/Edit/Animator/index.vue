@@ -16,7 +16,7 @@
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
 
-const { animation, dom, ui } = useBlokkli()
+const { animation, ui } = useBlokkli()
 
 const elements = computed(() => {
   const scale = ui.getArtboardScale()

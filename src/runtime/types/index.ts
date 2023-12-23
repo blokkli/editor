@@ -381,7 +381,7 @@ export interface DraggableHostData {
 
 export interface DraggableExistingBlokkliItem {
   itemType: 'existing'
-  element: HTMLElement
+  element: () => HTMLElement
   hostType: string
   hostBundle: string
   hostUuid: string
@@ -409,7 +409,7 @@ export interface DraggableExistingBlokkliItem {
 
 export interface DraggableNewItem {
   itemType: 'new'
-  element: HTMLElement
+  element: () => HTMLElement
   itemBundle: string
 }
 
@@ -417,19 +417,19 @@ export interface DraggableActionItem {
   itemType: 'action'
   actionType: string
   itemBundle?: string
-  element: HTMLElement
+  element: () => HTMLElement
 }
 
 export interface DraggableReusableItem {
   itemType: 'reusable'
-  element: HTMLElement
+  element: () => HTMLElement
   itemBundle: string
   libraryItemUuid: string
 }
 
 export interface DraggableClipboardItem {
   itemType: 'clipboard'
-  element: HTMLElement
+  element: () => HTMLElement
   itemBundle: string
   clipboardData: string
   additional?: string
@@ -437,7 +437,7 @@ export interface DraggableClipboardItem {
 
 export interface DraggableSearchContentItem {
   itemType: 'search_content'
-  element: HTMLElement
+  element: () => HTMLElement
   itemBundle: string
   searchItem: BlokkliSearchContentItem
 }

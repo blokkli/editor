@@ -10,6 +10,10 @@
     &.bk-is-animation-enter {
       animation: 0.3s bk-animator-enter ease;
     }
+
+    > * {
+      @apply h-full w-full;
+    }
   }
 }
 

@@ -3,7 +3,6 @@ import {
   type ComputedRef,
   computed,
   ref,
-  nextTick,
   onMounted,
   onBeforeUnmount,
   watch,
@@ -18,6 +17,7 @@ import {
 } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import type { BlokkliDomProvider } from './domProvider'
+import type { BlokkliStateProvider } from './stateProvider'
 
 export type BlokkliSelectionProvider = {
   /**
@@ -61,7 +61,10 @@ export type BlokkliSelectionProvider = {
   isChangingOptions: Ref<boolean>
 }
 
-export default function (dom: BlokkliDomProvider): BlokkliSelectionProvider {
+export default function (
+  dom: BlokkliDomProvider,
+  state: BlokkliStateProvider,
+): BlokkliSelectionProvider {
   const selectedUuids = ref<string[]>([])
   const activeFieldKey = ref('')
   const isDragging = ref(false)
@@ -73,7 +76,7 @@ export default function (dom: BlokkliDomProvider): BlokkliSelectionProvider {
     selectedUuids.value
       .map((uuid) => {
         const el = findElement(uuid)
-        if (el) {
+        if (el && state.refreshKey.value) {
           const item = buildDraggableItem(el)
           if (item?.itemType === 'existing') {
             return item

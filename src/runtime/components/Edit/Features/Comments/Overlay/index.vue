@@ -89,7 +89,7 @@ function onAnimationFrame(e: AnimationFrameEvent) {
       .map((uuid) => dom.findBlock(uuid))
       .filter(falsy)
       .map((block) => {
-        const rect = block.element.getBoundingClientRect()
+        const rect = block.element().getBoundingClientRect()
 
         return {
           x: (rect.x - artboardRect.x) / scale,

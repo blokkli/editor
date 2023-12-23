@@ -155,17 +155,6 @@ function getOptionValue(key: string, defaultValue: any, uuidOverride?: string) {
   return defaultValue
 }
 
-const elements = computed(() =>
-  props.uuids
-    .flatMap((uuid) => {
-      const el = dom.findBlock(uuid)?.element
-      if (el) {
-        return [el, ...el.querySelectorAll('[data-uuid]')]
-      }
-    })
-    .filter(falsy),
-)
-
 function setOptionValue(key: string, value: string) {
   props.uuids.forEach((uuid) => {
     // First time changing an option value store it in this ref.

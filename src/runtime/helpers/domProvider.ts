@@ -117,7 +117,7 @@ export default function (): BlokkliDomProvider {
 
   const getDropElementMarkup = (item: DraggableItem): string => {
     const dropElement =
-      item.element.querySelector('.bk-drop-element') || item.element
+      item.element().querySelector('.bk-drop-element') || item.element()
     // Remove all data attributes.
     return dropElement.outerHTML.replace(/\sdata-\w+="[^"]*"/g, '')
   }
@@ -127,7 +127,7 @@ export default function (): BlokkliDomProvider {
     if (!block) {
       throw new Error('Block does not exist: ' + uuid)
     }
-    const el = block.element.closest('.bk-field-list')
+    const el = block.element().closest('.bk-field-list')
     if (!(el instanceof HTMLElement)) {
       throw new Error('Failed to locate field element for block: ' + uuid)
     }

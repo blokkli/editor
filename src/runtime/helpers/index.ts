@@ -52,7 +52,8 @@ export function buildDraggableItem(
           : undefined
       return {
         itemType: 'existing',
-        element,
+        element: () =>
+          document.querySelector(`[data-uuid="${uuid}"]`) as HTMLElement,
         itemBundle,
         isNested: hostType === itemEntityType,
         uuid,
@@ -66,23 +67,15 @@ export function buildDraggableItem(
         isNew,
       }
     }
-  } else if (dataset.elementType === 'reusable') {
-    const itemBundle = dataset.itemBundle
-    const libraryItemUuid = dataset.libraryItemUuid
-    if (itemBundle && libraryItemUuid) {
-      return {
-        itemType: 'reusable',
-        element,
-        itemBundle,
-        libraryItemUuid,
-      }
-    }
   } else if (dataset.elementType === 'new') {
     const itemBundle = dataset.itemBundle
     if (itemBundle) {
       return {
         itemType: 'new',
-        element,
+        element: () =>
+          document.querySelector(
+            `[data-sortli-id="${itemBundle}"]`,
+          ) as HTMLElement,
         itemBundle,
       }
     }
@@ -94,13 +87,17 @@ export function buildDraggableItem(
         itemType: 'action',
         actionType,
         itemBundle,
-        element,
+        element: () =>
+          document.querySelector(
+            `[data-element-type="action"][data-sortli-id="${actionType}"]`,
+          ) as HTMLElement,
       }
     }
   } else if (dataset.elementType === 'clipboard') {
     const clipboardData = dataset.clipboardData
     const additional = dataset.clipboardAdditional
     const itemBundle = dataset.itemBundle
+    const id = dataset.sortliId
     if (clipboardData && itemBundle) {
       const searchItemData = dataset.clipboardSearchItem
       if (searchItemData) {
@@ -109,14 +106,16 @@ export function buildDraggableItem(
         ) as BlokkliSearchContentItem
         return {
           itemType: 'search_content',
-          element,
+          element: () =>
+            document.querySelector(`[data-sortli-id="${id}"]`) as HTMLElement,
           itemBundle,
           searchItem,
         }
       }
       return {
         itemType: 'clipboard',
-        element,
+        element: () =>
+          document.querySelector(`[data-sortli-id="${id}"]`) as HTMLElement,
         itemBundle,
         clipboardData,
         additional,

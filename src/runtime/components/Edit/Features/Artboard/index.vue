@@ -33,7 +33,7 @@ const onScrollIntoView = (e: ScrollIntoViewEvent) => {
 
   options.behavior = e.immediate ? 'instant' : 'smooth'
 
-  item.element.scrollIntoView(options)
+  item.element().scrollIntoView(options)
 }
 
 const setFallback = () => {

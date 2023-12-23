@@ -68,8 +68,9 @@ onMounted(() => {
       label.value = item.editTitle.substring(0, 40)
     }
 
-    width.value = item.element.getBoundingClientRect().width + 40
-    const markup = item.element.outerHTML
+    const element = item.element()
+    width.value = element.getBoundingClientRect().width + 40
+    const markup = element.outerHTML
     const clone = document.createElement('div')
     clone.innerHTML = markup
     const cloneEl = clone.firstElementChild

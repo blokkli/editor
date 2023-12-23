@@ -1,6 +1,10 @@
 <template>
   <Teleport to=".bk-main-canvas">
-    <Overlay v-if="isVisible" :blocks="selection.blocks.value" />
+    <Overlay
+      v-if="isVisible"
+      :blocks="selection.blocks.value"
+      :key="state.refreshKey.value"
+    />
   </Teleport>
 </template>
 

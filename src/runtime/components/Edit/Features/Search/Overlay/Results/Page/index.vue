@@ -159,7 +159,7 @@ const buildIndex = () => {
         item,
         title: item.editTitle || title,
         context: title,
-        text: buildSearchText(item.element),
+        text: buildSearchText(item.element()),
       }
       return searchItem
     })
