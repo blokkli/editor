@@ -1,5 +1,5 @@
 <template>
-  <Teleport to=".bk-main-canvas">
+  <Teleport :to="ui.isMobile.value ? 'body' : '.bk-main-canvas'">
     <Transition :name="hasTransition ? 'bk-editable' : undefined">
       <Overlay v-if="editable" v-bind="editable" :key="key" />
     </Transition>
@@ -11,7 +11,7 @@ import type { EditableFieldFocusEvent } from '#blokkli/types'
 import Overlay from './Overlay/index.vue'
 import { ref, onMounted, onBeforeUnmount, useBlokkli, watch } from '#imports'
 
-const { eventBus, selection } = useBlokkli()
+const { eventBus, selection, ui } = useBlokkli()
 const editable = ref<EditableFieldFocusEvent | null>(null)
 const hasTransition = ref(false)
 

@@ -78,7 +78,7 @@ onBeforeUnmount(() => {
 
 <style lang="postcss">
 .field-value-editor .ck-editor {
-  @apply fixed top-0 left-0 w-screen overflow-hidden overscroll-contain;
+  @apply overscroll-contain;
   .ck-editor__editable_inline {
     @apply min-h-[200px] max-h-[500px];
   }

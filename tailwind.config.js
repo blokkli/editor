@@ -20,10 +20,10 @@ module.exports = {
         swing: 'cubic-bezier(0.56, 0.04, 0.25, 1)',
       },
       zIndex: {
-        'editable-field': z(600),
         selection: z(700),
         'comments-overlay': z(750),
         'comments-overlay-active': z(755),
+        'editable-field': z(770),
         actions: z(800),
         'drop-targets': z(900),
         'transform-overlay': z(910),
