@@ -48,14 +48,15 @@ const shouldHandleEvent = (e: TouchEvent | MouseEvent) => {
 }
 
 const onTouchStart = (e: TouchEvent) => {
+  e.stopPropagation()
   isTouching.value = true
+  clearTimeout(touchTimeout)
   if (!shouldHandleEvent(e)) {
     return
   }
   if (!props.useSelection) {
     return
   }
-  clearTimeout(touchTimeout)
   if (selection.isDragging.value) {
     return
   }
@@ -75,7 +76,6 @@ const onTouchStart = (e: TouchEvent) => {
     if (!list.value || !touchedId) {
       return
     }
-    // clearTimeout(touchTimeout)
 
     // Long press on an additional item.
     if (
@@ -188,6 +188,7 @@ const onClick = (e: MouseEvent) => {
     if (!item) {
       return
     }
+    console.log('B')
     eventBus.emit('dragging:start', { items: [item], coords: start.value })
     return
   }
@@ -232,6 +233,7 @@ const onMouseMove = (e: MouseEvent) => {
       if (!selection.uuids.value.length) {
         return
       }
+      console.log('C')
       eventBus.emit('dragging:start', {
         items: [...selection.blocks.value],
         coords: start.value,
@@ -246,6 +248,7 @@ const onMouseMove = (e: MouseEvent) => {
         if (!item) {
           return
         }
+        console.log('D')
         eventBus.emit('dragging:start', { items: [item], coords: start.value })
       }
     }

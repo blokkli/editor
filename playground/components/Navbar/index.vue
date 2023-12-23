@@ -1,27 +1,24 @@
 <template>
   <header class="bg-blue-50 border-b border-b-slate-500/20">
-    <div
-      class="container flex flex-col md:flex-row items-center md:justify-between md:items-end py-20"
-    >
-      <div class="flex items-center gap-10">
+    <div class="container flex justify-between items-center py-10 md:py-20">
+      <div class="flex items-center gap-5 md:gap-10">
         <div
-          class="w-50 h-50 bg-blue-700 flex items-center justify-center rounded"
+          class="w-20 h-20 md:w-50 md:h-50 bg-blue-700 flex items-center justify-center rounded"
         >
           <SpriteSymbol name="logo" class="text-white w-full h-full" />
         </div>
-        <NuxtLink to="/" class="font-extrabold text-2xl text-slate-800"
+        <NuxtLink
+          to="/"
+          class="font-extrabold text-lg md:text-2xl text-slate-800"
           >blökkli</NuxtLink
         >
       </div>
-      <nav class="mt-20">
+      <nav>
         <ul
-          class="flex gap-20 items-end leading-none justify-center md:justify-start"
+          class="flex gap-20 items-center leading-none justify-center md:justify-start text-sm"
         >
           <li>
-            <a href="/">Documentation</a>
-          </li>
-          <li>
-            <a href="/">Features</a>
+            <a href="/">Docs</a>
           </li>
           <li>
             <iframe

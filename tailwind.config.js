@@ -1,3 +1,4 @@
+const plugin = require('tailwindcss/plugin')
 /** @type {import('tailwindcss').Config} */
 
 const z = (index) => {
@@ -109,5 +110,12 @@ module.exports = {
       4: '4px',
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(function ({ addVariant }) {
+      addVariant(
+        'mobile-only',
+        "@media screen and (max-width: theme('screens.sm'))",
+      ) // instead of hard-coded 640px use sm breakpoint value from config. Or anything
+    }),
+  ],
 }

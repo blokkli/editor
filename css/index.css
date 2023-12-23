@@ -205,6 +205,14 @@ html {
   }
 }
 
+.bk-body.bk-is-selecting {
+  .bk-main-canvas {
+    .draggable[data-is-selected='false'] {
+      @apply outline-dashed outline-slate-400 outline-offset-0 outline-2;
+    }
+  }
+}
+
 .bk-body.bk-is-selecting * {
   @apply select-none;
   @screen md {

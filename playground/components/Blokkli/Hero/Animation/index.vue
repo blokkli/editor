@@ -1,13 +1,15 @@
 <template>
   <div class="relative hero-animation">
-    <div
+    <ul
       v-for="(icon, i) in icons"
       :key="icon"
-      class="bg-white aspect-square rounded-lg overflow-hidden p-15 shadow-lg"
+      class="bg-white rounded-lg overflow-hidden p-15 shadow-lg"
       :style="getIconStyle(i)"
     >
-      <SpriteSymbol :name="icon" class="h-full w-full fill-slate-700" />
-    </div>
+      <li>
+        <SpriteSymbol :name="icon" class="h-full w-full fill-slate-700" />
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -34,13 +36,13 @@ const icons: NuxtSvgSpriteSymbol[] = [
 ]
 
 const getIconStyle = (index: number) => {
-  if (isMobile.value) {
-    return {
-      transform: `rotateZ(${
-        Math.sin(2 + index + (index % 3) + step.value / 200) * 20
-      }deg) translateZ(${-100 + Math.cos(index + step.value / 200) * 200}px)`,
-    }
-  }
+  // if (isMobile.value) {
+  //   return {
+  //     transform: `rotateZ(${
+  //       Math.sin(2 + index + (index % 3) + step.value / 200) * 20
+  //     }deg) translateZ(${-100 + Math.cos(index + step.value / 200) * 200}px)`,
+  //   }
+  // }
   const x = Math.sin(index) * 30
   const y =
     Math.cos(index + (index % 8) + step.value / 500) * 30 - 50 + step.value / 1
@@ -79,9 +81,17 @@ onBeforeUnmount(() => {
 .hero-animation {
   perspective: 1200px;
   transform-style: preserve-3d;
-  @apply inline-grid grid-cols-3 gap-40;
+  @apply inline-grid grid-cols-3 gap-50 w-full mt-[120px] -mb-[50px] md:mt-0 md:mb-0;
   @screen lg {
     perspective: 700px;
+  }
+
+  svg {
+    @apply w-full h-full leading-none;
+  }
+
+  li {
+    @apply flex relative w-full items-center justify-center aspect-square;
   }
 }
 </style>

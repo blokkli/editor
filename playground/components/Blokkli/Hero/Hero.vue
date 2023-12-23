@@ -1,12 +1,7 @@
 <template>
-  <div
-    class="hero py-50 md:py-100 lg:py-200 bg-gradient-to-b from-blue-50 to-white overflow-hidden relative"
-  >
+  <div class="hero py-20 md:py-100 lg:py-200 overflow-hidden relative">
     <div class="container lg:grid grid-cols-12 gap-20 lg:gap-40">
-      <div class="col-span-4 max-w-[340px] lg:w-full mx-auto mb-30 lg:mb-0">
-        <BlokkliHeroAnimation :animated="!isEditing" />
-      </div>
-      <div class="col-span-8 lg:order-first">
+      <div class="col-span-8 hero-content">
         <h1
           class="text-4xl lg:text-6xl hero-title"
           v-html="titleMarkup"
@@ -22,6 +17,9 @@
           v-bind="buttons"
           list-class="mt-20 lg:mt-40 flex gap-10 flex-wrap"
         />
+      </div>
+      <div class="col-span-4 max-w-[340px] lg:w-full mx-auto mb-30 lg:mb-0">
+        <BlokkliHeroAnimation :animated="!isEditing" />
       </div>
     </div>
   </div>
@@ -83,11 +81,20 @@ const titleMarkup = computed(() => {
     content: '';
     @apply absolute bottom-0 left-0 w-full h-100 bg-gradient-to-b from-white/0 to-white;
   }
+  &:before {
+    content: '';
+    @apply absolute top-0 left-0 w-full h-full z-0;
+    @apply bg-gradient-to-b from-blue-50 to-white;
+  }
 }
 .hero-title {
   @apply text-slate-950 font-extrabold;
   em {
     @apply not-italic bg-blue-50 inline-block px-[0.125em] py-[0.125em] text-blue-700 border-2 border-blue-200 border-dashed rounded;
   }
+}
+
+.hero-content {
+  @apply relative z-10;
 }
 </style>
