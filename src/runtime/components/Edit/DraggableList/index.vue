@@ -35,9 +35,10 @@
       :data-item-bundle="item.item?.entityBundle"
       :data-host-field-name="fieldName"
       :data-is-nested="isNested"
-      :data-is-new="item.item.isNew"
+      :data-is-new="item.item?.isNew"
       :data-refresh-key="state.refreshKey.value"
       :data-is-selected="selection.uuids.value.includes(item.item?.uuid)"
+      :data-flip-id="item.item?.uuid"
       class="draggable"
     />
   </Sortli>

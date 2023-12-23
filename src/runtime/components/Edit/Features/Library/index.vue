@@ -59,7 +59,7 @@ import type { ActionPlacedEvent } from '#blokkli/types'
 
 const showReusableDialog = ref(false)
 
-const { selection, state, adapter, types, text } = useBlokkli()
+const { selection, state, adapter, types, text, eventBus } = useBlokkli()
 
 const selectedItem = computed(() => {
   if (selection.blocks.value.length !== 1) {
@@ -78,6 +78,8 @@ const onDetach = async () => {
       uuids: selection.uuids.value,
     }),
   )
+
+  eventBus.emit('select:end')
 }
 
 const placedAction = ref<ActionPlacedEvent | null>(null)
@@ -111,18 +113,19 @@ const isReusable = computed(
     selection.blocks.value.every((v) => v.itemBundle === 'from_library'),
 )
 
-function onMakeReusable(label: string) {
+async function onMakeReusable(label: string) {
   showReusableDialog.value = false
   if (!selectedItem?.value?.uuid) {
     return
   }
-  state.mutateWithLoadingState(
+  await state.mutateWithLoadingState(
     adapter.makeItemReusable({
       label,
       uuid: selectedItem.value.uuid,
     }),
     text('libraryError'),
   )
+  eventBus.emit('select:end')
 }
 
 const fromLibraryAllowedInList = computed(() => {

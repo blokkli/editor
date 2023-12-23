@@ -18,7 +18,7 @@ export type BlokkliUiProvider = {
   isMobile: ComputedRef<boolean>
   isDesktop: ComputedRef<boolean>
   isArtboard: () => boolean
-  isUsingTouch: ComputedRef<boolean>
+  isAnimating: Ref<boolean>
 }
 
 export default function (): BlokkliUiProvider {
@@ -26,6 +26,7 @@ export default function (): BlokkliUiProvider {
   let cachedArtboardElement: HTMLElement | null = null
 
   const menuIsOpen = ref(false)
+  const isAnimating = ref(false)
 
   const artboardElement = () => {
     if (cachedArtboardElement) {
@@ -72,6 +73,12 @@ export default function (): BlokkliUiProvider {
     return document.documentElement.classList.contains('bk-is-artboard')
   }
 
+  watch(isAnimating, (is) => {
+    is
+      ? document.documentElement.classList.add('bk-is-animating')
+      : document.documentElement.classList.remove('bk-is-animating')
+  })
+
   onMounted(async () => {
     window.addEventListener('resize', onResize)
     document.documentElement.classList.add('bk-html-root')
@@ -95,5 +102,6 @@ export default function (): BlokkliUiProvider {
     isMobile,
     isDesktop,
     isArtboard,
+    isAnimating,
   }
 }

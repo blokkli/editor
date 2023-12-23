@@ -48,8 +48,8 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli, onBeforeUnmount } from '#imports'
-
 import { globalOptions, getDefinition } from '#blokkli/definitions'
+import { falsy } from '#blokkli/helpers'
 import OptionRadios from './Radios/index.vue'
 import OptionCheckbox from './Checkbox/index.vue'
 import OptionCheckboxes from './Checkboxes/index.vue'
@@ -57,9 +57,7 @@ import OptionText from './Text/index.vue'
 import type { BlokkliItemDefinitionOptionsInput } from '#blokkli/types'
 import type { BlokkliDefinitionOption } from '#blokkli/types/blokkOptions'
 
-import { falsy } from '#blokkli/helpers'
-
-const { adapter, eventBus, state, runtimeConfig, selection } = useBlokkli()
+const { adapter, eventBus, state, runtimeConfig, selection, dom } = useBlokkli()
 const { mutatedOptions, canEdit, mutateWithLoadingState, editMode } = state
 
 const pluginId = runtimeConfig.optionsPluginId
@@ -156,6 +154,17 @@ function getOptionValue(key: string, defaultValue: any, uuidOverride?: string) {
   }
   return defaultValue
 }
+
+const elements = computed(() =>
+  props.uuids
+    .flatMap((uuid) => {
+      const el = dom.findBlock(uuid)?.element
+      if (el) {
+        return [el, ...el.querySelectorAll('[data-uuid]')]
+      }
+    })
+    .filter(falsy),
+)
 
 function setOptionValue(key: string, value: string) {
   props.uuids.forEach((uuid) => {

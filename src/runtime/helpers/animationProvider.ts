@@ -3,14 +3,56 @@ import { onMounted, onBeforeUnmount } from '#imports'
 import { falsy, isInsideRect } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
 
+type AnimateElementMode = 'leave' | 'enter'
+
+type AnimationElement = {
+  el: HTMLElement
+  mode: AnimateElementMode
+  rect: DOMRect
+  top: number
+  height?: number
+  timestamp: number
+  markup: string
+  id: string
+}
+
 export type BlokkliAnimationProvider = {
   /**
    * Request an animation loop. Should be called when UI state changes.
    */
   requestDraw: () => void
+
+  animateElement: (
+    el: HTMLElement,
+    mode: AnimateElementMode,
+    height?: number,
+  ) => void
+
+  animationElements: Ref<AnimationElement[]>
 }
 
 export default function (): BlokkliAnimationProvider {
+  const animationId = ref(0)
+  const animationElements = ref<AnimationElement[]>([])
+  const animateElement = (
+    el: HTMLElement,
+    mode: AnimateElementMode,
+    height?: number,
+  ) => {
+    const computedStyle = getComputedStyle(el)
+    const marginTop = parseInt(computedStyle.marginTop.replace('px', ''))
+    animationId.value++
+    animationElements.value.push({
+      el,
+      mode,
+      top: marginTop,
+      height,
+      rect: el.getBoundingClientRect(),
+      timestamp: Date.now(),
+      markup: el.outerHTML.replace(/\sdata-\w+="[^"]*"/g, ''),
+      id: animationId.value.toString(),
+    })
+  }
   let mouseX = 0
   let mouseY = 0
 
@@ -153,5 +195,5 @@ export default function (): BlokkliAnimationProvider {
 
   const requestDraw = () => (iterator = 120)
 
-  return { requestDraw }
+  return { requestDraw, animateElement, animationElements }
 }

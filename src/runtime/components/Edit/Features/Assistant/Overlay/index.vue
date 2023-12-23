@@ -105,7 +105,5 @@ const onGenerate = async () => {
   } catch (_e) {}
 
   isGenerating.value = false
-
-  console.log(result)
 }
 </script>

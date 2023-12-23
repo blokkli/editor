@@ -1,11 +1,13 @@
 <template>
-  <DragItems
-    v-if="isVisible"
-    :x="mouseX"
-    :y="mouseY"
-    :start-coords="startCoords"
-    :items="dragItems"
-  />
+  <Teleport to="body">
+    <DragItems
+      v-if="isVisible"
+      :x="mouseX"
+      :y="mouseY"
+      :start-coords="startCoords"
+      :items="dragItems"
+    />
+  </Teleport>
   <DropTargets
     v-if="dragItems.length"
     :items="dragItems"
@@ -72,88 +74,92 @@ const box = ref<Rectangle>({
 const dragItems = ref<DraggableItem[]>([])
 
 const onDrop = async (e: DropTargetEvent) => {
-  const afterUuid = e.preceedingUuid
-  const host = e.host
-  if (e.items.every((v) => v.itemType === 'existing')) {
-    const items = e.items as DraggableExistingBlokkliItem[]
-    const uuids = items.map((v) => v.uuid)
-    await state.mutateWithLoadingState(
-      adapter.moveMultipleItems({
-        uuids,
-        afterUuid,
-        host,
-      }),
-    )
-    if (ui.isMobile.value) {
-      eventBus.emit('scrollIntoView', { uuid: uuids[0], center: true })
-    }
-    nextTick(() => {
-      eventBus.emit('select:end', uuids)
-    })
-  } else if (e.items.every((v) => v.itemType === 'new')) {
-    const items = e.items as DraggableNewItem[]
-    const item = items[0]
-    const definition = getDefinition(item.itemBundle)
-    if (definition?.disableEdit || definition?.noAddForm) {
+  onDraggingEnd()
+  eventBus.emit('dragging:end')
+  nextTick(async () => {
+    const afterUuid = e.preceedingUuid
+    const host = e.host
+    if (e.items.every((v) => v.itemType === 'existing')) {
+      const items = e.items as DraggableExistingBlokkliItem[]
+      const uuids = items.map((v) => v.uuid)
       await state.mutateWithLoadingState(
-        adapter.addNewBlokkliItem({
+        adapter.moveMultipleItems({
+          uuids,
+          afterUuid,
+          host,
+        }),
+      )
+
+      if (ui.isMobile.value) {
+        eventBus.emit('scrollIntoView', {
+          uuid: uuids[0],
+          center: true,
+        })
+      }
+      eventBus.emit('select:end', uuids)
+    } else if (e.items.every((v) => v.itemType === 'new')) {
+      const items = e.items as DraggableNewItem[]
+      const item = items[0]
+      const definition = getDefinition(item.itemBundle)
+      if (definition?.disableEdit || definition?.noAddForm) {
+        await state.mutateWithLoadingState(
+          adapter.addNewBlokkliItem({
+            type: item.itemBundle,
+            item,
+            host,
+            afterUuid,
+          }),
+        )
+      } else {
+        eventBus.emit('addNewBlokkliItem', {
           type: item.itemBundle,
           item,
           host,
           afterUuid,
+        })
+      }
+    } else if (e.items.every((v) => v.itemType === 'reusable')) {
+      const item = e.items[0] as DraggableReusableItem
+      await state.mutateWithLoadingState(
+        adapter.addReusableItem({
+          libraryItemUuid: item.libraryItemUuid,
+          host,
+          afterUuid,
         }),
       )
-    } else {
-      eventBus.emit('addNewBlokkliItem', {
-        type: item.itemBundle,
-        item,
-        host,
-        afterUuid,
+    } else if (e.items.every((v) => v.itemType === 'clipboard')) {
+      const item = e.items[0] as DraggableClipboardItem
+      if (adapter.addBlokkliItemFromClipboard) {
+        await state.mutateWithLoadingState(
+          adapter.addBlokkliItemFromClipboard({
+            afterUuid,
+            item,
+            host,
+          }),
+        )
+      }
+    } else if (
+      e.items.every((v) => v.itemType === 'search_content') &&
+      adapter.addContentSearchItem
+    ) {
+      const item = e.items[0] as DraggableSearchContentItem
+      state.mutateWithLoadingState(
+        adapter.addContentSearchItem({
+          item: item.searchItem,
+          host: host,
+          bundle: item.itemBundle,
+          afterUuid,
+        }),
+      )
+    } else if (e.items.every((v) => v.itemType === 'action')) {
+      eventBus.emit('action:placed', {
+        preceedingUuid: e.preceedingUuid,
+        action: e.items[0] as DraggableActionItem,
+        host: e.host,
+        field: e.field,
       })
     }
-  } else if (e.items.every((v) => v.itemType === 'reusable')) {
-    const item = e.items[0] as DraggableReusableItem
-    await state.mutateWithLoadingState(
-      adapter.addReusableItem({
-        libraryItemUuid: item.libraryItemUuid,
-        host,
-        afterUuid,
-      }),
-    )
-  } else if (e.items.every((v) => v.itemType === 'clipboard')) {
-    const item = e.items[0] as DraggableClipboardItem
-    if (adapter.addBlokkliItemFromClipboard) {
-      await state.mutateWithLoadingState(
-        adapter.addBlokkliItemFromClipboard({
-          afterUuid,
-          item,
-          host,
-        }),
-      )
-    }
-  } else if (
-    e.items.every((v) => v.itemType === 'search_content') &&
-    adapter.addContentSearchItem
-  ) {
-    const item = e.items[0] as DraggableSearchContentItem
-    state.mutateWithLoadingState(
-      adapter.addContentSearchItem({
-        item: item.searchItem,
-        host: host,
-        bundle: item.itemBundle,
-        afterUuid,
-      }),
-    )
-  } else if (e.items.every((v) => v.itemType === 'action')) {
-    eventBus.emit('action:placed', {
-      preceedingUuid: e.preceedingUuid,
-      action: e.items[0] as DraggableActionItem,
-      host: e.host,
-      field: e.field,
-    })
-  }
-  onDraggingEnd()
-  eventBus.emit('dragging:end')
+  })
 }
 
 function loop(e: AnimationFrameEvent) {

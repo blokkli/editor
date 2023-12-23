@@ -5,7 +5,9 @@
         v-show="
           selection.blocks.value.length &&
           !selection.isDragging.value &&
-          !selection.editableActive.value
+          !selection.editableActive.value &&
+          !ui.isAnimating.value &&
+          !animation.animationElements.value.length
         "
         class="bk-blokkli-item-actions-inner"
         :style="innerStyle"
@@ -75,7 +77,7 @@ import type { AnimationFrameEvent, KeyPressedEvent } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
 import type { PluginMountEvent, PluginUnmountEvent } from '#blokkli/types'
 
-const { selection, eventBus, text, types, state, ui } = useBlokkli()
+const { selection, eventBus, text, types, state, ui, animation } = useBlokkli()
 
 const editingEnabled = computed(() => state.editMode.value === 'editing')
 

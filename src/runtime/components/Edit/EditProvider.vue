@@ -10,6 +10,7 @@
     :key="route.fullPath"
     @loaded="featuresLoaded = true"
   />
+  <Animator v-if="!isInitializing" />
   <slot />
 </template>
 
@@ -31,6 +32,7 @@ import Loading from './Loading/index.vue'
 import Messages from './Messages/index.vue'
 import Features from './Features/index.vue'
 import AppMenu from './AppMenu/index.vue'
+import Animator from './Animator/index.vue'
 import animationProvider from './../../helpers/animationProvider'
 import keyboardProvider from './../../helpers/keyboardProvider'
 import selectionProvider from './../../helpers/selectionProvider'

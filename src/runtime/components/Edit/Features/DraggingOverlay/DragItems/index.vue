@@ -1,22 +1,20 @@
 <template>
-  <Teleport to="body">
-    <div class="bk-dragging-overlay" :style="style">
-      <div
-        v-for="(rect, i) in rects"
-        :key="i"
-        :class="{ 'bk-is-top': rect.isTop }"
-        :style="{
-          width: rect.width + 'px',
-          height: rect.height + 'px',
-          transform: `translate(${rect.x}px, ${rect.y}px) scale(${rect.scaleX}, ${rect.scaleY})`,
-          opacity: rect.opacity,
-          background: rect.background,
-          transformOrigin: rect.transformOrigin,
-        }"
-        v-html="rect.markup"
-      />
-    </div>
-  </Teleport>
+  <div class="bk-dragging-overlay" :style="style">
+    <div
+      v-for="(rect, i) in rects"
+      :key="i"
+      :class="{ 'bk-is-top': rect.isTop }"
+      :style="{
+        width: rect.width + 'px',
+        height: rect.height + 'px',
+        transform: `translate(${rect.x}px, ${rect.y}px) scale(${rect.scaleX}, ${rect.scaleY})`,
+        opacity: rect.opacity,
+        background: rect.background,
+        transformOrigin: rect.transformOrigin,
+      }"
+      v-html="rect.markup"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -87,22 +85,25 @@ const style = computed(() => {
   }
 })
 
-type AnimationRectangle = Rectangle & {
-  isTop: boolean
-  targetOpacity: number
+type AnimationRectangleValues = {
   opacity: number
   scaleX: number
   scaleY: number
-  targetX: number
-  targetY: number
-  targetScaleX: number
-  targetScaleY: number
-  markup: string
-  background: string
-  elementOpacity?: string
-  transformOrigin: string
-  element: HTMLElement
+  x: number
+  y: number
 }
+
+type AnimationRectangle = Rectangle &
+  AnimationRectangleValues & {
+    isTop: boolean
+    from: AnimationRectangleValues
+    to: AnimationRectangleValues
+    markup: string
+    background: string
+    elementOpacity?: string
+    transformOrigin: string
+    element: HTMLElement
+  }
 
 const rects = ref<AnimationRectangle[]>([])
 
@@ -117,19 +118,19 @@ const onAnimationFrame = () => {
 
   for (let i = 0; i < rects.value.length; i++) {
     const rect = rects.value[i]
-    const newX = lerp(rect.x, rect.targetX, alpha)
-    const newY = lerp(rect.y, rect.targetY, alpha)
-    const newOpacity = lerp(rect.opacity, rect.targetOpacity, alpha)
+    const newX = lerp(rect.x, rect.to.x, alpha)
+    const newY = lerp(rect.y, rect.to.y, alpha)
+    const newOpacity = lerp(rect.opacity, rect.to.opacity, alpha)
 
-    const newScaleX = lerp(rect.scaleX, rect.targetScaleX, alpha)
-    const newScaleY = lerp(rect.scaleY, rect.targetScaleY, alpha)
+    const newScaleX = lerp(rect.scaleX, rect.to.scaleX, alpha)
+    const newScaleY = lerp(rect.scaleY, rect.to.scaleY, alpha)
 
     // Check if the rectangle is at its target position
     if (
-      Math.abs(newX - rect.targetX) > threshold ||
-      Math.abs(newY - rect.targetY) > threshold ||
-      Math.abs(newScaleX - rect.targetScaleX) > 0.01 ||
-      Math.abs(newScaleY - rect.targetScaleY) > 0.01
+      Math.abs(newX - rect.to.x) > threshold ||
+      Math.abs(newY - rect.to.y) > threshold ||
+      Math.abs(newScaleX - rect.to.scaleX) > 0.01 ||
+      Math.abs(newScaleY - rect.to.scaleY) > 0.01
     ) {
       allRectsAtTarget = false
     } else {
@@ -155,11 +156,11 @@ const onAnimationFrame = () => {
     rects.value = newRects.map((v) => {
       return {
         ...v,
-        opacity: v.targetOpacity,
-        scaleX: v.targetScaleX,
-        scaleY: v.targetScaleY,
-        x: v.targetX,
-        y: v.targetY,
+        opacity: v.to.opacity,
+        scaleX: v.to.scaleX,
+        scaleY: v.to.scaleY,
+        x: v.to.x,
+        y: v.to.y,
       }
     })
     eventBus.off('animationFrame', onAnimationFrame)
@@ -229,8 +230,10 @@ onMounted(() => {
     //   : 0
     const originY = 0
 
-    return {
-      isTop,
+    const from: AnimationRectangleValues = {
+      opacity: 0.9,
+      scaleX: Math.min(baseRect.width / rect.width, 1),
+      scaleY: Math.min(baseRect.height / rect.height, 1),
       x: ui.isMobile.value ? rect.x - translateX.value : rect.x - boundsX,
       y: ui.isMobile.value
         ? -rect.height -
@@ -240,16 +243,25 @@ onMounted(() => {
             rect.height +
             translateY.value)
         : rect.y - boundsY,
+    }
+
+    const to: AnimationRectangleValues = {
+      opacity: isTop ? (ui.isMobile.value ? 1 : 0.6) : 0,
+      x: props.startCoords.x - boundsX - offsetX.value,
+      y: props.startCoords.y - boundsY - offsetY.value,
+      scaleX: targetScaleX,
+      scaleY: targetScaleY,
+    }
+
+    return {
+      isTop,
+      from,
+      to,
+      ...from,
       width: item.element.scrollWidth,
       height: item.element.scrollHeight,
       opacity: 0.9,
-      targetOpacity: isTop ? (ui.isMobile.value ? 1 : 0.6) : 0,
-      targetX: props.startCoords.x - boundsX - offsetX.value,
-      targetY: props.startCoords.y - boundsY - offsetY.value,
-      scaleX: Math.min(baseRect.width / rect.width, 1),
-      scaleY: Math.min(baseRect.height / rect.height, 1),
-      targetScaleX,
-      targetScaleY,
+
       transformOrigin: `${originX}px ${originY}px`,
       markup: dom.getDropElementMarkup(item.item),
       background: realBackgroundColor(item.element),

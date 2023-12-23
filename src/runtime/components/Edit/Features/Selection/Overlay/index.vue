@@ -72,7 +72,7 @@ const selectedRects = computed<SelectedRect[]>(() => {
       x: (rect.x - artboardRect.x) / scale - bounds.value.x,
       y: (rect.y - artboardRect.y) / scale - bounds.value.y + artboardScroll,
       width: rect.width / scale,
-      height: rect.height / scale,
+      height: block.element.scrollHeight,
       uuid: block.uuid,
     })
   }

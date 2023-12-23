@@ -51,6 +51,10 @@ export type BlokkliDomProvider = {
   getDropElementMarkup(item: DraggableItem): string
 
   getBlockField(uuid: string): BlokkliFieldElement
+  findField(
+    entityUuid: string,
+    fieldName: string,
+  ): BlokkliFieldElement | undefined
 }
 
 export default function (): BlokkliDomProvider {
@@ -136,6 +140,19 @@ export default function (): BlokkliDomProvider {
     return field
   }
 
+  const findField = (
+    uuid: string,
+    fieldName: string,
+  ): BlokkliFieldElement | undefined => {
+    const el = document.querySelector(
+      `[data-field-name="${fieldName}"][data-host-entity-uuid="${uuid}"]`,
+    )
+    if (!(el instanceof HTMLElement)) {
+      return
+    }
+    return buildFieldElement(el)
+  }
+
   return {
     findBlock,
     getAllBlocks,
@@ -143,5 +160,6 @@ export default function (): BlokkliDomProvider {
     getAllFields,
     getDropElementMarkup,
     getBlockField,
+    findField,
   }
 }

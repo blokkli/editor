@@ -8,14 +8,16 @@
 import { computed, useBlokkli } from '#imports'
 import Overlay from './Overlay/index.vue'
 
-const { selection, state } = useBlokkli()
+const { selection, state, ui, animation } = useBlokkli()
 
 const isVisible = computed(
   () =>
     !selection.isChangingOptions.value &&
     !selection.isDragging.value &&
     !selection.editableActive.value &&
-    !!state.refreshKey.value,
+    !!state.refreshKey.value &&
+    !ui.isAnimating.value &&
+    !animation.animationElements.value.length,
 )
 </script>
 

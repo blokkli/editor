@@ -28,6 +28,7 @@
 @import './partials/EditableField.css';
 @import './partials/Assistant.css';
 @import './partials/AppMenu.css';
+@import './partials/Animator.css';
 
 @font-face {
   font-family: 'PB Inter';
@@ -289,4 +290,20 @@ html {
   button {
     @apply w-full  h-full min-h-0 rounded-none;
   }
+}
+
+.list-leave-active {
+  transition: 0.3s ease;
+  transition-property: height, width;
+}
+.list-enter-active {
+  transition: 0.3s ease all;
+}
+
+.list-leave-to {
+  opacity: 0;
+}
+.list-enter-from {
+  opacity: 0;
+  transform: scale(0.9);
 }

@@ -1,5 +1,7 @@
 <template>
-  <div
+  <TransitionGroup
+    name="list"
+    tag="div"
     ref="list"
     @mousedown.capture="onMouseDown"
     @mouseup="onMouseUp"
@@ -7,9 +9,11 @@
     @touchstart.capture="onTouchStart"
     @touchmove.capture="onTouchMove"
     @touchend.capture="onTouchEnd"
+    @before-leave="beforeLeave"
+    @leave="onLeave"
   >
     <slot></slot>
-  </div>
+  </TransitionGroup>
 </template>
 
 <script lang="ts" setup>
@@ -21,14 +25,14 @@ const props = defineProps<{
   useSelection?: boolean
 }>()
 
-const { selection, eventBus, dom, keyboard, ui } = useBlokkli()
+const { selection, eventBus, dom, keyboard, ui, animation } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'select', id: string): void
   (e: 'action', id: string): void
 }>()
 
-const list = ref<HTMLElement | null>(null)
+const list = ref<ComponentPublicInstance | null>(null)
 const mouseIsDown = ref(false)
 const start = ref<Coord>({ x: 0, y: 0 })
 
@@ -45,6 +49,32 @@ const shouldHandleEvent = (e: TouchEvent | MouseEvent) => {
   }
 
   return true
+}
+
+const beforeLeave = (el: Element) => {
+  if (el instanceof HTMLElement) {
+    animation.animateElement(el, 'leave')
+    const rect = el.getBoundingClientRect()
+    const computed = getComputedStyle(el)
+    const marginTop = parseInt(computed.marginTop.replace('px', ''))
+    const marginBottom = parseInt(computed.marginBottom.replace('px', ''))
+    el.style.marginBottom = '0px'
+    el.style.marginTop = '0px'
+    el.style.opacity = '0'
+    el.style.paddingTop = '0px'
+    el.style.paddingBottom = '0px'
+    el.style.overflow = 'hidden'
+    el.style.height = rect.height + marginTop + marginBottom + 'px'
+  }
+}
+
+const onLeave = (el: Element, done: Function) => {
+  if (el instanceof HTMLElement) {
+    el.style.height = '0px'
+  }
+  setTimeout(() => {
+    done()
+  }, 310)
 }
 
 const onTouchStart = (e: TouchEvent) => {
@@ -147,7 +177,7 @@ const findItem = (
     return
   }
 
-  const el = list.value.querySelector(`[data-sortli-id="${id}"]`)
+  const el = list.value.$el.querySelector(`[data-sortli-id="${id}"]`)
   if (!(el instanceof HTMLElement)) {
     return
   }
@@ -188,7 +218,6 @@ const onClick = (e: MouseEvent) => {
     if (!item) {
       return
     }
-    console.log('B')
     eventBus.emit('dragging:start', { items: [item], coords: start.value })
     return
   }
@@ -233,7 +262,6 @@ const onMouseMove = (e: MouseEvent) => {
       if (!selection.uuids.value.length) {
         return
       }
-      console.log('C')
       eventBus.emit('dragging:start', {
         items: [...selection.blocks.value],
         coords: start.value,
@@ -248,7 +276,6 @@ const onMouseMove = (e: MouseEvent) => {
         if (!item) {
           return
         }
-        console.log('D')
         eventBus.emit('dragging:start', { items: [item], coords: start.value })
       }
     }
