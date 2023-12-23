@@ -174,8 +174,8 @@ export class EntityStorageManager {
     this.storages.user.add(user)
   }
 
-  getContent(uuid: string): Content | undefined {
-    return this.storages.content.load(uuid)
+  getContent<T extends Content>(uuid: string): T | undefined {
+    return this.storages.content.load(uuid) as T | undefined
   }
 
   getStorage<T extends keyof StorageMap>(key: T): StorageMap[T] {

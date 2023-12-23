@@ -4,15 +4,17 @@
 
 <script lang="ts" setup>
 import { computed, provide } from '#imports'
-
-import type { InjectedBlokkliItem, BlokkliFieldListItem } from '#blokkli/types'
+import type { InjectedBlokkliItem } from '#blokkli/types'
 import { getBlokkliItemComponent } from '#blokkli/imports'
-import { INJECT_BLOCK_ITEM } from '../helpers/symbols'
+import { INJECT_BLOCK_ITEM, INJECT_ENTITY_CONTEXT } from '../helpers/symbols'
 
 const componentProps = withDefaults(
   defineProps<{
-    item: BlokkliFieldListItem
-    props: any
+    uuid: string
+    bundle: string
+    isNew?: boolean
+    options?: Record<string, string>
+    props?: any
     index?: number
     parentType?: string
     isEditing?: boolean
@@ -21,26 +23,28 @@ const componentProps = withDefaults(
     index: 0,
     isEditing: false,
     parentType: '',
+    options: () => ({}),
+    props: () => ({}),
   },
 )
 
-const component = getBlokkliItemComponent(componentProps.item.entityBundle)
+const component = getBlokkliItemComponent(componentProps.bundle)
 
 const index = computed(() => componentProps.index)
-
-const item = computed(() => {
-  return {
-    index,
-    uuid: componentProps.item.uuid || '',
-    options: ('options' in componentProps.item
-      ? componentProps.item.options
-      : {}) as any,
-    isEditing: componentProps.isEditing,
-    parentType: componentProps.parentType,
-  }
-})
+const item = computed(() => ({
+  index,
+  uuid: componentProps.uuid || '',
+  options: componentProps.options || {},
+  isEditing: componentProps.isEditing,
+  parentType: componentProps.parentType,
+}))
 
 provide<InjectedBlokkliItem>(INJECT_BLOCK_ITEM, item)
+provide(INJECT_ENTITY_CONTEXT, {
+  uuid: componentProps.uuid,
+  type: 'block',
+  bundle: componentProps.bundle,
+})
 </script>
 
 <script lang="ts">

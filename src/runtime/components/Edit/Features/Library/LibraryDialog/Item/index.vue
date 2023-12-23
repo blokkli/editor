@@ -22,8 +22,7 @@
     >
       <ScaleToFit :width="editWidth">
         <BlokkliItem
-          :item="item"
-          :props="props"
+          v-bind="item"
           parent-type="nested"
           class="bk-drop-element"
         />
@@ -36,14 +35,19 @@
 import { computed, provide } from '#imports'
 
 import { getDefinition } from '#blokkli/definitions'
-import type { BlokkliLibraryItem } from '#blokkli/types'
+import type { BlokkliFieldListItem } from '#blokkli/types'
 import { ItemIcon, ScaleToFit } from '#blokkli/components'
 import {
   INJECT_IS_EDITING,
   INJECT_IS_IN_REUSABLE,
 } from '#blokkli/helpers/symbols'
 
-const componentProps = defineProps<BlokkliLibraryItem>()
+const componentProps = defineProps<{
+  uuid: string
+  label?: string
+  bundle: string
+  item: BlokkliFieldListItem
+}>()
 
 const definition = computed(() => getDefinition(componentProps.bundle))
 

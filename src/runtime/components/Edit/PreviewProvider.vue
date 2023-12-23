@@ -36,7 +36,6 @@ const props = defineProps<{
 const context = computed(() => props)
 const adapter = getAdapter(context)
 const router = useRouter()
-const optionsPluginId = useRuntimeConfig().public.blokkli.optionsPluginId
 
 let timeout: any = null
 let lastChanged: number = 0
@@ -124,10 +123,10 @@ const onUpdateOption = (option: UpdateBlokkliItemOptionEvent) => {
   if (!mutatedOptions.value[uuid]) {
     mutatedOptions.value[uuid] = {}
   }
-  if (!mutatedOptions.value[uuid][optionsPluginId]) {
-    mutatedOptions.value[uuid][optionsPluginId] = {}
+  if (!mutatedOptions.value[uuid]) {
+    mutatedOptions.value[uuid] = {}
   }
-  mutatedOptions.value[uuid][optionsPluginId][key] = value
+  mutatedOptions.value[uuid][key] = value
 }
 
 onMounted(() => {

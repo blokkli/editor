@@ -1,12 +1,11 @@
 import { onMounted, onBeforeUnmount } from '#imports'
-
 import { falsy, isInsideRect } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
+import type { Ref } from 'vue'
 
 type AnimateElementMode = 'leave' | 'enter'
 
 type AnimationElement = {
-  el: HTMLElement
   mode: AnimateElementMode
   rect: DOMRect
   top: number
@@ -41,9 +40,9 @@ export default function (): BlokkliAnimationProvider {
   ) => {
     const computedStyle = getComputedStyle(el)
     const marginTop = parseInt(computedStyle.marginTop.replace('px', ''))
+    el.dataset.animationId = animationId.value.toString()
     animationId.value++
     animationElements.value.push({
-      el,
       mode,
       top: marginTop,
       height,

@@ -1,11 +1,11 @@
 <template>
   <BlokkliItem
-    v-if="item && item.item"
-    :key="item.item.id"
+    v-if="item"
+    :key="item.uuid"
     v-bind="item"
     :index="index"
-    :data-reusable-bundle="item.item.entityBundle"
-    :data-reusable-uuid="item.item.uuid"
+    :data-reusable-bundle="item.bundle"
+    :data-reusable-uuid="item.uuid"
     data-blokkli-is-reusable="true"
     :parent-type="parentType"
   />
@@ -17,11 +17,11 @@ import {
   INJECT_IS_IN_REUSABLE,
   INJECT_REUSABLE_OPTIONS,
 } from '#blokkli/helpers/symbols'
-import type { BlokkliFieldList } from '../../types'
+import type { BlokkliFieldListItem } from '../../types'
 
 interface LibraryItem {
   field?: {
-    list?: BlokkliFieldList<any>[]
+    list?: BlokkliFieldListItem[]
   }
 }
 
@@ -40,7 +40,7 @@ provide(INJECT_IS_IN_REUSABLE, true)
 
 const item = computed(() => {
   const v = props.libraryItem?.field?.list?.[0]
-  if (v && v.item && 'uuid' in v.item) {
+  if (v && 'uuid' in v) {
     return v
   }
 })

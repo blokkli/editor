@@ -270,10 +270,8 @@ export class EditState {
     context.proxies.forEach((proxy) => {
       if (!proxy.isDeleted) {
         mutatedOptions[proxy.block.uuid] = {
-          mock: {
-            ...proxy.block.options().getOptions().mock,
-            ...JSON.parse(JSON.stringify(proxy.overrideOptions)),
-          },
+          ...proxy.block.options().getOptions(),
+          ...JSON.parse(JSON.stringify(proxy.overrideOptions)),
         }
       } else {
         if (save) {

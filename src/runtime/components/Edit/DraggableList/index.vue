@@ -3,12 +3,12 @@
     use-selection
     class="bk-draggable-list-container"
     :class="{ 'is-empty': !list.length }"
-    :data-field-name="fieldConfig.name"
-    :data-field-label="fieldConfig.label"
+    :data-field-name="name"
+    :data-field-label="label"
     :data-field-is-nested="isNested"
-    :data-host-entity-type="entity.entityTypeId"
+    :data-host-entity-type="entity.type"
     :data-host-entity-uuid="entity.uuid"
-    :data-host-entity-bundle="entity.entityBundle"
+    :data-host-entity-bundle="entity.bundle"
     :data-field-key="fieldKey"
     :data-field-allowed-bundles="allowedBundles"
     :data-field-cardinality="cardinality"
@@ -17,28 +17,30 @@
   >
     <BlokkliItem
       v-for="(item, i) in list"
-      :key="item.item?.uuid"
-      :item="item.item"
+      :key="item.uuid"
+      :uuid="item.uuid"
+      :bundle="item.bundle"
+      :is-new="item.isNew"
+      :options="item.options"
       :props="item.props"
       :is-editing="true"
       :index="i"
       :data-id="item"
-      :parent-type="isNested ? entity?.entityBundle : ''"
+      :parent-type="isNested ? entity.bundle : ''"
       data-editing="true"
       data-element-type="existing"
-      :data-sortli-id="item.item?.uuid"
-      :data-uuid="item.item?.uuid"
-      :data-action-key="fieldName + ':' + item.item?.uuid"
-      :data-host-type="entity?.entityTypeId"
-      :data-host-bundle="entity?.entityBundle"
-      :data-host-uuid="entity?.uuid"
-      :data-item-bundle="item.item?.entityBundle"
-      :data-host-field-name="fieldName"
+      :data-sortli-id="item.uuid"
+      :data-uuid="item.uuid"
+      :data-action-key="name + ':' + item.uuid"
+      :data-host-type="entity.type"
+      :data-host-bundle="entity.bundle"
+      :data-host-uuid="entity.uuid"
+      :data-item-bundle="item.bundle"
+      :data-host-field-name="name"
       :data-is-nested="isNested"
-      :data-is-new="item.item?.isNew"
+      :data-is-new="item.isNew"
       :data-refresh-key="state.refreshKey.value"
-      :data-is-selected="selection.uuids.value.includes(item.item?.uuid)"
-      :data-flip-id="item.item?.uuid"
+      :data-is-selected="selection.uuids.value.includes(item.uuid || '')"
       class="draggable"
     />
   </Sortli>
@@ -53,36 +55,20 @@ export default {
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
 import { Sortli } from '#blokkli/components'
-import type {
-  BlokkliFieldListConfig,
-  BlokkliFieldList,
-  BlokkliFieldListEntity,
-} from '#blokkli/types'
+import type { BlokkliFieldListItem, BlokkliEntityContext } from '#blokkli/types'
 
 const { state, eventBus, types, dom, keyboard, selection } = useBlokkli()
 
 const props = defineProps<{
-  list: BlokkliFieldList<any>[]
-  entity: BlokkliFieldListEntity
-  fieldConfig: BlokkliFieldListConfig
+  name: string
+  fieldKey: string
+  label?: string
+  list: BlokkliFieldListItem[]
+  entity: BlokkliEntityContext
+  cardinality: number
   tag?: string
   isNested: boolean
 }>()
-
-const fieldKey = computed(() => {
-  if (props.fieldConfig.name && props.entity.uuid) {
-    return `${props.entity.uuid}:${props.fieldConfig.name}`
-  }
-})
-
-const cardinality = computed<number>(() => {
-  if (props.fieldConfig && 'storage' in props.fieldConfig) {
-    if (typeof props.fieldConfig.storage?.cardinality === 'number') {
-      return props.fieldConfig.storage?.cardinality
-    }
-  }
-  return -1
-})
 
 /**
  * The allowed item bundles in this list.
@@ -91,16 +77,12 @@ const allowedBundles = computed<string>(() => {
   return (
     types.allowedTypes.value.find((v) => {
       return (
-        v.entityType === props.entity.entityTypeId &&
-        v.bundle === props.entity.entityBundle &&
-        v.fieldName === props.fieldConfig.name
+        v.entityType === props.entity.type &&
+        v.bundle === props.entity.bundle &&
+        v.fieldName === props.name
       )
     })?.allowedTypes || []
   ).join(',')
-})
-
-const fieldName = computed(() => {
-  return props.fieldConfig.name || ''
 })
 
 function onSelect(uuid: string) {

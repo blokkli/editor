@@ -20,7 +20,7 @@
           class="bk-checkbox"
         >
           <input v-model="selectedFields" type="checkbox" :value="field.name" />
-          <span>{{ field.label }}</span>
+          <span>{{ field.name }}</span>
         </label>
       </div>
       <div class="bk-form-section">

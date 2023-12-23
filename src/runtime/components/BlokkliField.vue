@@ -1,17 +1,13 @@
 <template>
   <slot :items="filteredList" />
   <DraggableList
-    v-if="
-      isEditing &&
-      canEdit &&
-      !isInReusable &&
-      fieldConfig &&
-      fieldConfig.name &&
-      entity?.entityTypeId
-    "
-    :field-config="fieldConfig"
+    v-if="isEditing && canEdit && !isInReusable"
     :list="filteredList"
+    :name="name"
+    :label="label"
+    :cardinality="cardinality"
     :entity="entity"
+    :field-key="fieldKey!"
     :class="[
       attrs.class,
       listClass,
@@ -34,11 +30,10 @@
   >
     <BlokkliItem
       v-for="(item, i) in filteredList"
-      :key="item.item.uuid"
-      :item="item.item"
-      :props="item.props"
-      :parent-type="isNested ? entity?.entityBundle : ''"
-      :data-uuid="item.item.uuid"
+      :key="item.uuid"
+      v-bind="item"
+      :parent-type="isNested ? entity?.bundle : ''"
+      :data-uuid="item.uuid"
       :index="i"
     />
   </component>
@@ -54,14 +49,15 @@ import {
   provide,
   type Ref,
 } from '#imports'
+
 import type {
-  BlokkliFieldList,
-  BlokkliFieldListConfig,
-  BlokkliFieldListEntity,
+  BlokkliFieldListItem,
   BlokkliMutatedField,
+  BlokkliEntityContext,
 } from '#blokkli/types'
 import type { ValidFieldListTypes } from '#blokkli/generated-types'
 import {
+  INJECT_ENTITY_CONTEXT,
   INJECT_FIELD_LIST_TYPE,
   INJECT_IS_EDITING,
   INJECT_IS_IN_REUSABLE,
@@ -84,15 +80,20 @@ const mutatedFields = inject<Ref<BlokkliMutatedField[]> | null>(
   INJECT_MUTATED_FIELDS,
   null,
 )
+const entity = inject<BlokkliEntityContext>(INJECT_ENTITY_CONTEXT)
+
+if (!entity) {
+  throw new Error('Missing entity context.')
+}
 
 const props = withDefaults(
   defineProps<{
-    list?: BlokkliFieldList<any>[]
-    fieldConfig?: BlokkliFieldListConfig | null
+    name: string
+    label?: string
+    cardinality?: number
+    list?: BlokkliFieldListItem[]
     canEdit?: boolean
-    entity?: BlokkliFieldListEntity | null
     tag?: string
-    preventEdit?: boolean
     fieldListType?: ValidFieldListTypes
     editOnly?: boolean
     listClass?: string
@@ -101,41 +102,35 @@ const props = withDefaults(
   {
     list: () => [],
     tag: 'div',
+    label: '',
+    cardinality: -1,
     canEdit: false,
     fieldListType: 'default',
-    fieldConfig: null,
-    entity: null,
     listClass: '',
     nonEmptyClass: '',
   },
 )
 
 const fieldKey = computed(() => {
-  if (
-    props.canEdit &&
-    !isNested &&
-    !isPreview &&
-    props.entity &&
-    props.fieldConfig
-  ) {
-    return props.entity.uuid + ':' + props.fieldConfig.name
+  if (props.canEdit && !isPreview) {
+    return entity.uuid + ':' + props.name
   }
 })
 
 const fieldListType = computed(() => props.fieldListType)
 
-const filteredList = computed<Array<Required<BlokkliFieldList<any>>>>(() => {
+const filteredList = computed<BlokkliFieldListItem[]>(() => {
   if (mutatedFields?.value && !isInReusable) {
-    return (mutatedFields.value.find(
-      (field: BlokkliMutatedField) =>
-        field.name === props.fieldConfig?.name &&
-        field.entityType === props.entity?.entityTypeId &&
-        field.entityUuid === props.entity?.uuid,
-    )?.list || []) as Array<Required<BlokkliFieldList<any>>>
+    return (
+      mutatedFields.value.find(
+        (field: BlokkliMutatedField) =>
+          field.name === props.name &&
+          field.entityType === entity.type &&
+          field.entityUuid === entity.uuid,
+      )?.list || []
+    )
   }
-  return props.list.filter((v) => v.item && v.props) as Array<
-    Required<BlokkliFieldList<any>>
-  >
+  return props.list
 })
 
 provide(INJECT_IS_NESTED, true)

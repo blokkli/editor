@@ -14,11 +14,11 @@
 </template>
 
 <script lang="ts" setup>
-import { mapMockField, state } from '@/app/mock/state'
+import { mapMockField } from '@/app/mock/state'
 import { entityStorageManager } from '~/app/mock/entityStorage'
+import type { ContentPage } from '~/app/mock/state/Entity/Content'
 
-const route = useRoute()
-const page = entityStorageManager.getContent('1')
+const page = entityStorageManager.getContent<ContentPage>('1')
 
 if (!page) {
   throw new Error('page not found')

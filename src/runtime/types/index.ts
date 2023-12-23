@@ -125,29 +125,30 @@ export type BlokkliItemDefinitionInput<V, T = []> = {
 export type InjectedBlokkliItem = ComputedRef<{
   index: ComputedRef<number>
   uuid: string
-  options: Record<string, string> | undefined
+  options?: Record<string, string> | undefined
   isEditing: boolean
   parentType?: string
 }>
 
 export interface BlokkliFieldListItem {
-  id?: string
   uuid: string
-  entityBundle: string
+  bundle: string
   isNew?: boolean
-  options?: Record<string, Record<string, string>>
-}
-
-export interface BlokkliFieldList<T> {
-  item?: BlokkliFieldListItem
-  props?: T
+  options?: Record<string, string>
+  props?: any
 }
 
 export type BlokkliMutatedField = {
   name: string
   entityType: string
   entityUuid: string
-  list: BlokkliFieldList<any>[]
+  list: BlokkliFieldListItem[]
+}
+
+export type BlokkliEntityContext = {
+  uuid: string
+  type: string
+  bundle: string
 }
 
 export type BlokkliEditEntity = {
@@ -175,21 +176,6 @@ export interface BlokkliTranslationState {
   sourceLanguage?: string | null
   availableLanguages?: BlokkliLanguage[]
   translations?: BlokkliEntityTranslation[]
-}
-
-export interface BlokkliFieldListConfig {
-  name?: string
-  label?: string
-  storage?: {
-    cardinality?: number
-  }
-}
-
-export interface BlokkliFieldListEntity {
-  id?: string
-  entityTypeId: string
-  entityBundle: string
-  uuid: string
 }
 
 export interface BlokkliConversionItem {
@@ -234,7 +220,6 @@ export interface BlokkliLibraryItem {
   label?: string
   bundle: string
   item: BlokkliFieldListItem
-  props: any
 }
 
 export interface BlokkliAvailableType {
@@ -297,9 +282,7 @@ export type BlokkliEditMode = 'readonly' | 'editing' | 'translating'
 
 export type MutatedOptions = {
   [uuid: string]: {
-    [pluginId: string]: {
-      [key: string]: string
-    }
+    [key: string]: string
   }
 }
 
@@ -667,7 +650,6 @@ export interface BlokkliApp {
   runtimeConfig: {
     gridMarkup: string
     langcodeWithoutPrefix: string
-    optionsPluginId: string
     itemEntityType: string
     defaultLanguage: string
   }

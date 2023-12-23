@@ -13,7 +13,6 @@ type DrupalAdapter = BlokkliAdapter<ParagraphsBuilderEditStateFragment>
 
 export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
   (providedContext) => {
-    const optionsPluginId = useRuntimeConfig().public.blokkli.optionsPluginId
     const ctx = computed(() => {
       return {
         ...providedContext.value,
@@ -203,7 +202,6 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         return useGraphqlMutation('pbUpdateParagraphOption', {
           ...ctx.value,
           ...options[0],
-          pluginId: optionsPluginId,
         })
       }
       const persistItems = options.map((v) => {
@@ -211,7 +209,6 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
           uuid: v.uuid,
           key: v.key,
           value: v.value,
-          pluginId: optionsPluginId,
         }
       })
       return useGraphqlMutation('pbBulkUpdateParagraphBehaviorSettings', {

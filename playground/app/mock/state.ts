@@ -1,5 +1,4 @@
-import type { BlokkliFieldList, BlokkliFieldListConfig } from '#blokkli/types'
-import { entityStorageManager, createPage } from './entityStorage'
+import type { BlokkliFieldListItem } from '#blokkli/types'
 import type { Block } from './state/Block/Block'
 import { EditState } from './state/EditState'
 import { ContentPage } from './state/Entity/Content'
@@ -23,38 +22,26 @@ export const state: MockState = {
   editState,
 }
 
-export function mapBlockItem(block: Block): BlokkliFieldList<any> {
+export function mapBlockItem(block: Block): BlokkliFieldListItem {
   const props = block.getProps()
   delete props.options
   return {
-    item: {
-      uuid: block.uuid,
-      entityBundle: block.bundle,
-      options: JSON.parse(JSON.stringify(block.options().getOptions().mock)),
-    },
+    uuid: block.uuid,
+    bundle: block.bundle,
+    options: JSON.parse(JSON.stringify(block.options().getOptions().mock)),
     props,
   }
 }
 
 export function mapMockField(field: FieldBlocks) {
-  const list: BlokkliFieldList<any>[] = field.getBlocks().map(mapBlockItem)
-  const fieldConfig: BlokkliFieldListConfig = {
-    name: field.id,
-    label: field.label,
-    storage: {
-      cardinality: field.cardinality,
-    },
-  }
+  const list: BlokkliFieldListItem[] = field.getBlocks().map(mapBlockItem)
 
   return {
+    name: field.id,
+    label: field.label,
+    cardinality: field.cardinality,
     list,
-    fieldConfig,
     canEdit: true,
-    entity: {
-      uuid: field.entity.uuid,
-      entityTypeId: field.entity.entityType,
-      entityBundle: field.entity.bundle,
-    },
   }
 }
 
@@ -65,23 +52,23 @@ export const getEditState = (
   return editState
 }
 
-const exportState = () => {
-  const page = entityStorageManager.getContent('1')
-  const result = editState.getMutatedState(page, true)
+// const exportState = () => {
+//   const page = entityStorageManager.getContent('1')
+//   const result = editState.getMutatedState(page, true)
 
-  const fields = result.fields.map((v) => {
-    return {
-      name: v.name,
-      entityType: v.entityType,
-      entityUuid: v.entityUuid,
-      field: v.list.map((v) => v.item?.uuid),
-    }
-  })
+//   const fields = result.fields.map((v) => {
+//     return {
+//       name: v.name,
+//       entityType: v.entityType,
+//       entityUuid: v.entityUuid,
+//       field: v.list.map((v) => v.item?.uuid),
+//     }
+//   })
 
-  console.log(JSON.stringify(fields))
+//   console.log(JSON.stringify(fields))
 
-  console.log(JSON.stringify(entityStorageManager.storages.block.loadAll()))
-}
+//   console.log(JSON.stringify(entityStorageManager.storages.block.loadAll()))
+// }
 
 // exportState()
 // throw new Error('Exported')

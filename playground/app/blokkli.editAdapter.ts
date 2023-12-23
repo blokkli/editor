@@ -231,7 +231,7 @@ export default defineBlokkliEditAdapter((ctx) => {
             uuid: item.uuid,
             label: item.title(),
             bundle: block.bundle,
-            ...mapBlockItem(block),
+            item: mapBlockItem(block),
           }
         })
         .filter(falsy)

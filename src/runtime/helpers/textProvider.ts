@@ -20,7 +20,7 @@ export default function (
     return defaultLanguage
   })
   const currentTranslations = computed(() => {
-    return translations[language.value]
+    return translations[language.value] as any
   })
   return (key: ValidTextKeys) => {
     return currentTranslations.value[key] || translations.en[key]

@@ -109,13 +109,6 @@ export type ModuleOptions = {
   gridMarkup?: string
 
   /**
-   * Define the plugin ID for the blokkli options.
-   *
-   * This is the key used to access the options from the runtime data of a blokkli item.
-   */
-  optionsPluginId?: string
-
-  /**
    * The entity type of blokkli items.
    *
    * Using the paragraphs_builder integration this value should be set to "paragraph".
@@ -313,7 +306,7 @@ export const availableFeaturesAtBuild = ${JSON.stringify(
     // The definitions.
     const templateTranslations = addTemplate({
       write: true,
-      filename: 'blokkli/tranlsations.ts',
+      filename: 'blokkli/translations.ts',
       getContents: () => {
         const merged = defu(defaultTranslations, moduleOptions.translations)
         const validTranslationKeys = Object.keys(merged.en)
@@ -333,7 +326,6 @@ export type ValidTextKeys = ${validTranslationKeys}
     nuxt.options.runtimeConfig.public.blokkli = {
       langcodeWithoutPrefix: moduleOptions.langcodeWithoutPrefix || '',
       gridMarkup: moduleOptions.gridMarkup || '',
-      optionsPluginId: moduleOptions.optionsPluginId || 'blokkli',
       itemEntityType: moduleOptions.itemEntityType || '',
       defaultLanguage: moduleOptions.defaultLanguage || 'en',
     }

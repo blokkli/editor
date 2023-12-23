@@ -45,6 +45,7 @@
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, useRoute, useRouter } from '#imports'
+import { INJECT_ENTITY_CONTEXT } from '../helpers/symbols'
 
 const PreviewProvider = defineAsyncComponent(
   () => import('./Edit/PreviewProvider.vue'),
@@ -108,4 +109,10 @@ function edit() {
     },
   })
 }
+
+provide(INJECT_ENTITY_CONTEXT, {
+  uuid: props.entityUuid,
+  type: props.entityType,
+  bundle: props.entityBundle,
+})
 </script>

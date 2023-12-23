@@ -22,7 +22,6 @@ export default defineNuxtConfig({
 
   blokkli: {
     itemEntityType: 'block',
-    optionsPluginId: 'mock',
     fieldListTypes: ['header'],
     gridMarkup: getGridMarkup(),
     globalOptions: {

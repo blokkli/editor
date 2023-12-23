@@ -20,8 +20,6 @@ import {
   INJECT_REUSABLE_OPTIONS,
 } from '../helpers/symbols'
 
-const { optionsPluginId } = useRuntimeConfig().public.blokkli
-
 type StringBoolean = '0' | '1' | ''
 
 type GetType<T> = T extends { type: 'checkbox' }
@@ -145,22 +143,17 @@ export function defineBlokkli<T extends BlokkliItemDefinitionInputWithTypes>(
     null,
   )
 
-  if (uuid === '266e73f3-310e-4c35-9b5c-9b4cb231cf9d') {
-    // debugger
-  }
-
   const options = computed(() => {
     if (config.bundle === 'from_library') {
       return {
         ...(item?.value.options || {}),
-        ...(editContext?.mutatedOptions.value[uuid]?.[optionsPluginId] || {}),
+        ...(editContext?.mutatedOptions.value[uuid] || {}),
       }
     }
     const result = optionKeys.reduce<Record<string, string>>((acc, key) => {
       // Use an override option if available.
       if (editContext) {
-        const overrideOptions =
-          editContext.mutatedOptions.value[uuid]?.[optionsPluginId] || {}
+        const overrideOptions = editContext.mutatedOptions.value[uuid] || {}
 
         if (overrideOptions[key] !== undefined) {
           acc[key] = overrideOptions[key]

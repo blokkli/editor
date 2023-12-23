@@ -57,10 +57,8 @@ import OptionText from './Text/index.vue'
 import type { BlokkliItemDefinitionOptionsInput } from '#blokkli/types'
 import type { BlokkliDefinitionOption } from '#blokkli/types/blokkOptions'
 
-const { adapter, eventBus, state, runtimeConfig, selection, dom } = useBlokkli()
+const { adapter, eventBus, state, selection } = useBlokkli()
 const { mutatedOptions, canEdit, mutateWithLoadingState, editMode } = state
-
-const pluginId = runtimeConfig.optionsPluginId
 
 const onClick = () => {
   selection.isChangingOptions.value = true
@@ -141,13 +139,9 @@ function getOptionValue(key: string, defaultValue: any, uuidOverride?: string) {
   }
   if (
     mutatedOptions.value[uuid] &&
-    mutatedOptions.value[uuid][pluginId] &&
-    Object.prototype.hasOwnProperty.call(
-      mutatedOptions.value[uuid][pluginId],
-      key,
-    )
+    Object.prototype.hasOwnProperty.call(mutatedOptions.value[uuid], key)
   ) {
-    return mutatedOptions.value[uuid][pluginId][key]
+    return mutatedOptions.value[uuid][key]
   }
   if (typeof defaultValue === 'boolean') {
     return defaultValue === true ? '1' : ''
@@ -167,10 +161,7 @@ function setOptionValue(key: string, value: string) {
     if (!mutatedOptions.value[uuid]) {
       mutatedOptions.value[uuid] = {}
     }
-    if (!mutatedOptions.value[uuid][pluginId]) {
-      mutatedOptions.value[uuid][pluginId] = {}
-    }
-    mutatedOptions.value[uuid][pluginId][key] = value
+    mutatedOptions.value[uuid][key] = value
     eventBus.emit('option:update', { uuid, key, value })
   })
 }

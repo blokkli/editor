@@ -99,10 +99,13 @@ const onGenerate = async () => {
 
   try {
     const fetched = await adapter.assistantGetResults!({
+      type: 'create',
       prompt: prompt.value,
     })
     result.value = fetched || null
-  } catch (_e) {}
+  } catch (_e) {
+    // Noop.
+  }
 
   isGenerating.value = false
 }

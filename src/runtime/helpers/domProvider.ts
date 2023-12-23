@@ -19,7 +19,14 @@ const buildFieldElement = (
   const cardinality = parseInt(element.dataset.fieldCardinality || '-1')
   const allowedBundles = (element.dataset.fieldAllowedBundles || '').split(',')
 
-  if (key && name && label && hostEntityType && hostEntityUuid) {
+  if (
+    key &&
+    name &&
+    label &&
+    hostEntityType &&
+    hostEntityUuid &&
+    hostEntityBundle
+  ) {
     return {
       key,
       name,

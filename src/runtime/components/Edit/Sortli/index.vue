@@ -53,7 +53,8 @@ const shouldHandleEvent = (e: TouchEvent | MouseEvent) => {
 
 const beforeLeave = (el: Element) => {
   if (el instanceof HTMLElement) {
-    animation.animateElement(el, 'leave')
+    // @TODO: Find out why this leads to recursion.
+    // animation.animateElement(el, 'leave')
     const rect = el.getBoundingClientRect()
     const computed = getComputedStyle(el)
     const marginTop = parseInt(computed.marginTop.replace('px', ''))
