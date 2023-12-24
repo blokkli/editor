@@ -121,6 +121,7 @@ export default {
   settingsListOrientation: 'Content elements',
   settingsListOrientationVertical: 'Vertical',
   settingsListOrientationHorizontal: 'Horizontal',
+  settingsListOrientationSidebar: 'Sidebar',
   settingsRevertSorting: 'Reset item sorting',
   settingsRevertAll: 'Reset all settings',
 
@@ -158,4 +159,6 @@ export default {
   searchInputPlaceholder: 'Enter search term',
 
   detachFromLibrary: 'Detach from library',
+
+  addListSidebarTitle: 'Add blocks',
 }

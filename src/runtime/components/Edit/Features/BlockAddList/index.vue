@@ -14,7 +14,10 @@
       <div class="bk-list-item-inner">
         <div class="bk-list-item-icon">
           <ItemIcon :bundle="type.id" />
-          <div class="bk-add-list-drop bk-drop-element">
+          <div
+            v-if="listOrientation !== 'sidebar'"
+            class="bk-add-list-drop bk-drop-element"
+          >
             <ItemIcon :bundle="type.id" />
             <span>{{ type.label }}</span>
           </div>

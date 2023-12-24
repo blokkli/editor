@@ -1,6 +1,21 @@
 <template>
+  <PluginSidebar
+    v-if="isSidebar"
+    id="add_list"
+    :title="text('addListSidebarTitle')"
+    render-always
+    icon="alert"
+    weight="-10"
+  >
+    <div>
+      <Sortli ref="typeList" class="bk bk-list-sidebar">
+        <div id="blokkli-add-list-blocks"></div>
+        <div id="blokkli-add-list-actions"></div>
+      </Sortli>
+    </div>
+  </PluginSidebar>
   <Teleport
-    v-if="state.canEdit.value && state.editMode.value === 'editing'"
+    v-else-if="state.canEdit.value && state.editMode.value === 'editing'"
     to="body"
   >
     <div
@@ -28,21 +43,22 @@ import {
   onMounted,
   onUnmounted,
 } from '#imports'
-
 import { Sortli } from '#blokkli/components'
+import { PluginSidebar } from '#blokkli/plugins'
+import type { AddListOrientation } from '#blokkli/types'
 
-const { state, storage, ui } = useBlokkli()
+const { state, storage, ui, text } = useBlokkli()
 
-type ListOrientation = 'horizontal' | 'vertical'
-
-const listOrientationSetting = storage.use<ListOrientation>(
+const listOrientationSetting = storage.use<AddListOrientation>(
   'listOrientation',
   'vertical',
 )
 
-const listOrientation = computed<ListOrientation>(() =>
+const listOrientation = computed<AddListOrientation>(() =>
   ui.isMobile.value ? 'horizontal' : listOrientationSetting.value,
 )
+
+const isSidebar = computed(() => listOrientation.value === 'sidebar')
 
 watch(listOrientation, setRootClasses)
 

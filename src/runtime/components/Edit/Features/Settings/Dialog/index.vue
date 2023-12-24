@@ -77,6 +77,13 @@
               <span>{{ text('settingsListOrientationHorizontal') }}</span>
             </label>
           </li>
+          <li>
+            <label>
+              <input v-model="listOrientation" type="radio" value="sidebar" />
+              <Icon name="ui-list-sidebar" />
+              <span>{{ text('settingsListOrientationSidebar') }}</span>
+            </label>
+          </li>
         </ul>
       </div>
 

@@ -1,10 +1,6 @@
 <template>
   <Teleport to="body">
-    <div
-      id="bk-sidebar-content"
-      class="bk-sidebar"
-      :class="{ 'bk-is-hidden': !showSidebar }"
-    />
+    <div id="bk-sidebar-content" class="bk-sidebar" v-show="activeSidebar" />
 
     <Transition name="bk-toolbar">
       <div

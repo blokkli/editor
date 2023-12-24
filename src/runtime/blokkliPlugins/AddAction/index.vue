@@ -12,6 +12,7 @@
         <div class="bk-list-item-icon">
           <Icon :name="icon" />
           <div
+            v-if="listOrientation !== 'sidebar'"
             class="bk-add-list-drop bk-drop-element"
             :class="'bk-is-' + color"
           >

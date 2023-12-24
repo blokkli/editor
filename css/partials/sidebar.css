@@ -59,7 +59,7 @@
   }
   &:not(:focus-within) {
     .bk-sidebar-content > * {
-      @apply pointer-events-none;
+      /* @apply pointer-events-none; */
     }
   }
 

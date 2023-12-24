@@ -16,7 +16,7 @@
   </Teleport>
 
   <Teleport
-    v-if="activeSidebar === id || isRenderedDetached"
+    v-if="activeSidebar === id || isRenderedDetached || renderAlways"
     :to="isRenderedDetached ? 'body' : '#bk-sidebar-content'"
   >
     <SidebarDetached
@@ -37,7 +37,12 @@
         </div>
       </div>
     </SidebarDetached>
-    <div v-else class="bk-sidebar-inner" @wheel="onWheel">
+    <div
+      v-else
+      class="bk-sidebar-inner"
+      @wheel="onWheel"
+      v-show="activeSidebar === id"
+    >
       <div class="bk">
         <div class="bk-sidebar-title">
           <span>{{ title }}</span>
@@ -67,6 +72,7 @@ const props = defineProps<{
   editOnly?: boolean
   icon?: BlokkliIcon
   weight?: string
+  renderAlways?: boolean
 }>()
 
 const { storage, state, ui } = useBlokkli()
