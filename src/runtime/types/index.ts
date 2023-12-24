@@ -623,6 +623,16 @@ export type BlokkliEvents = {
   'sidebar:close': undefined
 
   'action:placed': ActionPlacedEvent
+
+  'animator:add': AnimatorAddEvent
+}
+
+export type AnimateElementMode = 'leave' | 'enter'
+
+export type AnimatorAddEvent = {
+  id: string
+  mode: AnimateElementMode
+  height?: number
 }
 
 export type ActionPlacedEvent = {

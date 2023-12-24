@@ -1,12 +1,12 @@
 <template>
   <Teleport to="body">
-    <Transition appear name="bk-slide-up">
+    <transition name="bk-slide-in" :duration="200">
       <Overlay
         v-if="featureAvailable && placedAction"
         @close="onClose"
         @submit="onSubmit"
       />
-    </Transition>
+    </transition>
   </Teleport>
 
   <PluginAddAction

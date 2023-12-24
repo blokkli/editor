@@ -7,12 +7,13 @@
   }
 
   .bk-dialog-inner {
-    @apply w-full lg:min-w-[450px] max-w-screen-xl bg-white shadow-2xl rounded-t-xl md:rounded-md  relative z-20 max-h-full min-h-0 overflow-hidden h-full lg:h-auto;
+    @apply w-full lg:min-w-[450px] max-w-screen-xl bg-white shadow-2xl md:rounded-md  relative z-20 max-h-full min-h-0 overflow-hidden h-full lg:h-auto;
     @apply flex flex-col;
+    @apply bg-slate-950 md:bg-white;
   }
 
   .bk-dialog-header {
-    @apply flex items-center p-15 lg:p-20 border-b border-b-slate-300 bg-slate-100 relative overflow-hidden;
+    @apply flex items-center p-15 lg:p-20 bg-slate-950 text-white md:border-b md:border-b-slate-300 md:bg-slate-100 relative overflow-hidden md:text-slate-800;
     flex: 0 0 auto;
     @apply text-lg md:text-lg xl:text-2xl;
     h3 {
@@ -21,12 +22,12 @@
     button {
       @apply ml-auto h-full;
       svg {
-        @apply fill-slate-700 w-20 h-20 md:w-30 md:h-30 hover:fill-blue-700;
+        @apply fill-current w-20 h-20 md:w-30 md:h-30 md:hover:fill-blue-700;
       }
     }
 
     > .bk-icon {
-      @apply w-[1.5em] h-[1.5em] mr-[0.5em];
+      @apply w-[1.5em] h-[1.5em] mr-[0.5em] fill-current;
     }
   }
   .bk-dialog-lead {
@@ -41,7 +42,7 @@
   }
 
   .bk-dialog-content {
-    @apply overflow-auto flex-1 min-h-0 max-h-full h-full px-15 pt-15 lg:px-20 lg:pt-20 lg:h-auto;
+    @apply overflow-auto flex-1 min-h-0 max-h-full h-full px-15 pt-15 lg:px-20 lg:pt-20 lg:h-auto rounded-t-xl md:rounded-t-none bg-white;
     @apply overscroll-contain;
   }
   .bk-dialog-content-inner {

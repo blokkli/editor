@@ -11,7 +11,10 @@
       <div class="bk-list-item-inner">
         <div class="bk-list-item-icon">
           <Icon :name="icon" />
-          <div class="bk-add-list-drop bk-drop-element">
+          <div
+            class="bk-add-list-drop bk-drop-element"
+            :class="'bk-is-' + color"
+          >
             <Icon :name="icon" />
             <span>{{ title }}</span>
           </div>

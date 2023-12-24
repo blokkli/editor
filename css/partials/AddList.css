@@ -1,66 +1,70 @@
+.bk-list-item {
+  @apply touch-manipulation;
+  &.bk-is-disabled {
+    @apply pointer-events-none;
+    .bk-list-item-inner {
+      @apply bg-slate-900;
+    }
+    .bk-list-item-label {
+      @apply text-slate-700;
+    }
+    .bk-list-item-icon {
+      @apply text-slate-800;
+    }
+  }
+
+  .bk-icon {
+    @apply w-[1em] h-[1em];
+  }
+  flex: 0 0 auto;
+
+  @media not all and (hover: none) {
+    &:hover {
+      .bk-list-item-inner {
+        @apply bg-slate-700 text-white border-slate-400;
+      }
+      .bk-list-item-label span {
+        @apply text-white;
+      }
+    }
+  }
+}
+
+.bk-list-item.bk-is-rose .bk-list-item-inner,
+.bk-add-list-drop.bk-is-rose {
+  @apply bg-rose-900 border-rose-600 text-rose-100;
+}
+
+.bk-list-item.bk-is-rose {
+  @media not all and (hover: none) {
+    &:hover {
+      .bk-list-item-inner {
+        @apply bg-rose-800 border-rose-500 text-white;
+      }
+    }
+  }
+}
+
+.bk-list-item.bk-is-lime .bk-list-item-inner,
+.bk-add-list-drop.bk-is-lime {
+  @apply bg-lime-800 border-lime-600 text-lime-50;
+}
+
+.bk-list-item.bk-is-lime {
+  @media not all and (hover: none) {
+    &:hover {
+      .bk-list-item-inner {
+        @apply bg-lime-700 border-lime-500 text-white;
+      }
+    }
+  }
+}
+
 .bk {
   .bk-list {
     @apply relative z-30;
     &::-webkit-scrollbar {
       display: none;
-    }
-  }
-
-  .bk-list-item {
-    @apply touch-manipulation;
-    &.bk-is-disabled {
-      @apply pointer-events-none;
-      .bk-list-item-inner {
-        @apply bg-slate-900;
-      }
-      .bk-list-item-label {
-        @apply text-slate-700;
-      }
-      .bk-list-item-icon {
-        @apply text-slate-800;
-      }
-    }
-
-    &.bk-is-rose {
-      .bk-list-item-inner {
-        @apply bg-rose-900 border-rose-600 text-rose-100;
-      }
-      @media not all and (hover: none) {
-        &:hover {
-          .bk-list-item-inner {
-            @apply bg-rose-800 border-rose-500 text-white;
-          }
-        }
-      }
-    }
-
-    &.bk-is-lime {
-      .bk-list-item-inner {
-        @apply bg-lime-800 border-lime-600 text-lime-50;
-      }
-      @media not all and (hover: none) {
-        &:hover {
-          .bk-list-item-inner {
-            @apply bg-lime-700 border-lime-500 text-white;
-          }
-        }
-      }
-    }
-
-    .bk-icon {
-      @apply w-[1em] h-[1em];
-    }
-    flex: 0 0 auto;
-
-    @media not all and (hover: none) {
-      &:hover {
-        .bk-list-item-inner {
-          @apply bg-slate-700 text-white border-slate-400;
-        }
-        .bk-list-item-label span {
-          @apply text-white;
-        }
-      }
     }
   }
 
@@ -105,11 +109,11 @@
     }
 
     .bk-list {
-      @apply h-full overflow-auto overflow-x-hidden absolute top-0 left-0 w-full;
+      @apply h-full absolute top-0 left-0 w-full flex flex-col;
     }
     @apply top-50 w-70;
     #blokkli-add-list-actions {
-      @apply border-b border-b-slate-700 pb-5;
+      @apply border-t border-t-slate-700 pb-5;
     }
     .bk-list-item-label {
       @apply absolute whitespace-nowrap opacity-0 text-slate-100/50  transition w-[300px] text-left;
@@ -123,6 +127,10 @@
           @apply pt-10;
         }
       }
+    }
+
+    #blokkli-add-list-blocks {
+      @apply flex-1 overflow-auto overflow-x-hidden;
     }
 
     &.bk-is-active {
@@ -141,6 +149,7 @@
     height: var(--bk-root-offset-bottom);
     #blokkli-add-list-actions {
       @apply flex border-r border-r-slate-800 md:border-r-slate-700 px-5;
+      @apply order-first lg:order-last lg:border-r-0 lg:border-l lg:border-l-slate-800;
       flex: 0 0 auto;
 
       .bk-list-item-label {

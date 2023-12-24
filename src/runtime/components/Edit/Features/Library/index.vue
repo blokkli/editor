@@ -37,7 +37,7 @@
   </Teleport>
 
   <Teleport to="body">
-    <transition appear name="bk-slide-up" :duration="300">
+    <transition name="bk-slide-in" :duration="200">
       <LibraryDialog
         v-if="placedAction"
         :field="placedAction.field"

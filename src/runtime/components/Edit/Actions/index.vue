@@ -6,8 +6,7 @@
           selection.blocks.value.length &&
           !selection.isDragging.value &&
           !selection.editableActive.value &&
-          !ui.isAnimating.value &&
-          !animation.animationElements.value.length
+          !ui.isAnimating.value
         "
         class="bk-blokkli-item-actions-inner"
         :style="innerStyle"

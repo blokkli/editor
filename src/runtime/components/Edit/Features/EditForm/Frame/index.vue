@@ -1,17 +1,11 @@
 <template>
   <div
-    class="bk-drupal-modal-iframe"
+    class="bk-form-overlay-iframe"
     @scroll.stop
     @touchstart.stop.capture.prevent
     @touchmove.stop.capture.prevent
   >
-    <iframe
-      ref="iframe"
-      allowtransparency
-      :src="url"
-      class="bk-drupal-iframe"
-      @load="onIFrameLoad"
-    />
+    <iframe ref="iframe" allowtransparency :src="url" @load="onIFrameLoad" />
   </div>
 </template>
 
@@ -24,7 +18,6 @@ const { eventBus } = useBlokkli()
 const iframe = ref<HTMLIFrameElement | null>(null)
 
 const emit = defineEmits<{
-  (e: 'updateWidth', width: number): void
   (e: 'close'): void
 }>()
 
@@ -59,8 +52,6 @@ function onMessage(e: MessageEvent): void {
       eventBus.emit('reloadState')
     }
     emit('close')
-  } else if (action === 'DIALOG_WIDTH' && typeof value === 'number') {
-    emit('updateWidth', value)
   } else if (action === 'CANCEL') {
     emit('close')
   }

@@ -31,12 +31,21 @@ type SelectedRect = Rectangle & { uuid: string }
 type BoundsRectable = Rectangle & { isVisible: boolean }
 
 const bounds = computed<BoundsRectable | null>(() => {
+  const artboardEl = ui.artboardElement()
+  const artboardRect = artboardEl.getBoundingClientRect()
+  const artboardScroll = artboardEl.scrollTop
   const scale = ui.getArtboardScale()
   const rects = props.blocks
     .map((block) => {
       const element = block.element()
       if (element instanceof HTMLElement) {
-        return element.getBoundingClientRect()
+        const rect = element.getBoundingClientRect()
+        return {
+          x: (rect.x - artboardRect.x) / scale,
+          y: (rect.y - artboardRect.y) / scale,
+          width: element.offsetWidth,
+          height: element.offsetHeight,
+        }
       }
     })
     .filter(falsy)
@@ -46,13 +55,9 @@ const bounds = computed<BoundsRectable | null>(() => {
     return null
   }
 
-  const artboardEl = ui.artboardElement()
-  const artboardRect = artboardEl.getBoundingClientRect()
-  const artboardScroll = artboardEl.scrollTop
-
   return {
-    x: (boundingBox.x - artboardRect.x) / scale,
-    y: (boundingBox.y - artboardRect.y) / scale + artboardScroll,
+    x: boundingBox.x,
+    y: boundingBox.y + artboardScroll,
     width: boundingBox.width / scale,
     height: boundingBox.height / scale,
     isVisible: !!delayedRefresh.value,
@@ -77,7 +82,7 @@ const selectedRects = computed<SelectedRect[]>(() => {
     rects.push({
       x: (rect.x - artboardRect.x) / scale - bounds.value.x,
       y: (rect.y - artboardRect.y) / scale - bounds.value.y + artboardScroll,
-      width: rect.width / scale,
+      width: element.scrollWidth,
       height: element.scrollHeight,
       uuid: block.uuid,
     })

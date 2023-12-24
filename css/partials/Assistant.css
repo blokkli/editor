@@ -1,20 +1,8 @@
-.bk-assistant-dialog {
-  @apply mt-30;
+.bk-assistant-form {
+  @apply grid gap-30 p-20;
 }
 
-.bk-assistant-dialog {
-  @apply grid gap-30;
-
-  @screen lg {
-    @apply grid-cols-2;
-    textarea {
-      height: calc(100vh - 800px);
-      max-height: 1280px;
-    }
-  }
-}
-
-.bk-assistant-dialog-textarea {
+.bk-assistant-form-textarea {
   @apply relative border rounded focus-within:border-blue-600;
   button {
     @apply w-full rounded-t-none;
@@ -25,11 +13,11 @@
   }
 }
 
-.bk-assistant-dialog-result {
+.bk-assistant-form-result {
   @apply md:flex md:flex-col;
 }
 
-.bk-assistant-dialog-result-inner {
+.bk-assistant-form-result-inner {
   @apply relative flex-1 border border-slate-300 rounded p-20 md:p-0;
   @screen md {
     > div {

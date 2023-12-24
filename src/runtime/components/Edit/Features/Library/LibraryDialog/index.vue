@@ -1,15 +1,12 @@
 <template>
-  <DialogModal
+  <FormOverlay
+    id="library"
     :title="text('libraryPlaceDialogTitle')"
-    :lead="text('libraryPlaceDialogLead')"
-    :submit-label="text('libraryPlaceDialogSubmit')"
-    :width="800"
-    :can-submit="!!selectedItem"
     icon="reusable"
-    @submit="onSubmit"
-    @cancel="onCancel"
+    @close="onClose"
   >
-    <div class="bk-dialog-form bk-library-dialog">
+    <div class="bk-library-dialog">
+      <p class="bk-lead">{{ text('libraryPlaceDialogLead') }}</p>
       <div class="bk bk-library-dialog-form">
         <label class="bk-form-label" for="library_search">
           {{ text('libraryPlaceSearchLabel') }}
@@ -40,11 +37,16 @@
         </li>
       </ul>
     </div>
-  </DialogModal>
+    <template #footer>
+      <button class="bk-button bk-is-primary" @click="onSubmit">
+        {{ text('libraryPlaceDialogSubmit') }}
+      </button>
+    </template>
+  </FormOverlay>
 </template>
 
 <script setup lang="ts">
-import { DialogModal } from '#blokkli/components'
+import { DialogModal, FormOverlay } from '#blokkli/components'
 import { falsy } from '#blokkli/helpers'
 import type { BlokkliFieldElement, BlokkliLibraryItem } from '#blokkli/types'
 import { ref, useBlokkli } from '#imports'
@@ -81,7 +83,7 @@ const onSubmit = () => {
     emit('submit', selectedItem.value)
   }
 }
-const onCancel = () => {
+const onClose = () => {
   emit('close')
 }
 

@@ -1,51 +1,59 @@
 <template>
   <Teleport to="body">
     <transition name="bk-slide-in" :duration="200">
-      <div
+      <FormOverlay
         v-if="form"
-        class="bk bk-drupal-modal"
-        @click.capture.stop
-        @mousedown.prevent.stop
+        :bundle="bundle"
+        :title="title"
+        @close="onClose"
+        id="edit-form"
       >
-        <div class="bk-drupal-modal-background bk-overlay" />
-        <Resizable class="bk-drupal-modal-resizable">
-          <FormHeader :form="form" @close="onClose" />
-          <FormFrame
-            v-if="formUrl"
-            :url="formUrl"
-            :form="form"
-            @close="onClose"
-            @update-width="updateWidth"
-          />
-        </Resizable>
-      </div>
+        <FormFrame
+          v-if="formUrl"
+          :url="formUrl"
+          :form="form"
+          @close="onClose"
+        />
+      </FormOverlay>
     </transition>
   </Teleport>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, onMounted, onUnmounted } from '#imports'
-
-import { Resizable } from '#blokkli/components'
+import { FormOverlay } from '#blokkli/components'
 import { getDefinition } from '#blokkli/definitions'
 import type {
   AddNewBlokkliItemEvent,
   EditBlokkliItemEvent,
 } from '#blokkli/types'
 import FormFrame from './Frame/index.vue'
-import FormHeader from './Title/index.vue'
 import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
 
 const { types, eventBus, state, adapter } = useBlokkli()
 
 const form = ref<AdapterFormFrameBuilder | null>(null)
-const dialogWidth = ref(400)
-
-const updateWidth = (width: number) => (dialogWidth.value = width)
 
 const formUrl = computed<string | undefined>(() => {
   if (form.value && adapter.formFrameBuilder) {
     return adapter.formFrameBuilder(form.value)?.url
+  }
+})
+
+const title = computed(() => {
+  return 'TODO'
+})
+
+const bundle = computed(() => {
+  if (!form.value) {
+    return
+  }
+  if (form.value.id === 'block:add') {
+    return form.value.data.type
+  } else if (form.value.id === 'block:edit') {
+    return form.value.data.bundle
+  } else if (form.value.id === 'block:translate') {
+    return form.value.data.bundle
   }
 })
 
@@ -127,6 +135,6 @@ onUnmounted(() => {
 
 <script lang="ts">
 export default {
-  name: 'Form',
+  name: 'EditForm',
 }
 </script>

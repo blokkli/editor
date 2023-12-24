@@ -1,20 +1,17 @@
 <template>
-  <DialogModal
+  <FormOverlay
+    id="assistant"
     :title="text('assistantDialogTitle')"
-    :lead="text('assistantDialogLead')"
-    :submit-label="text('assistantDialogSubmit')"
-    :width="1200"
-    :can-submit="!!result"
     icon="robot"
-    @submit="onSubmit"
-    @cancel="onCancel"
+    @close="onClose"
   >
-    <div class="bk-dialog-form bk-assistant-dialog">
+    <div class="bk-assistant-form">
+      <p>{{ text('assistantDialogLead') }}</p>
       <div class="bk">
         <label class="bk-form-label" for="assistant_prompt">
           {{ text('assistantPromptLabel') }}
         </label>
-        <div class="bk-assistant-dialog-textarea">
+        <div class="bk-assistant-form-textarea">
           <textarea
             id="assistant_prompt"
             v-model="prompt"
@@ -33,7 +30,7 @@
           </button>
         </div>
       </div>
-      <div class="bk-assistant-dialog-result">
+      <div class="bk-assistant-form-result">
         <div class="bk-form-label">Result</div>
         <div class="bk-assistant-dialog-result-inner">
           <template v-if="result">
@@ -45,11 +42,16 @@
         </div>
       </div>
     </div>
-  </DialogModal>
+    <template #footer>
+      <button class="bk-button bk-is-primary" @click="onSubmit">
+        {{ text('assistantDialogSubmit') }}
+      </button>
+    </template>
+  </FormOverlay>
 </template>
 
 <script setup lang="ts">
-import { DialogModal } from '#blokkli/components'
+import { FormOverlay } from '#blokkli/components'
 import type { AssistantResult } from '#blokkli/types'
 import { useBlokkli } from '#imports'
 import ResultMarkup from './ResultMarkup/index.vue'
@@ -77,7 +79,22 @@ Write about the big changes introduced in Vue 3.
 `,
 )
 const isGenerating = ref(false)
-const result = ref<AssistantResult | null>(null)
+const result = ref<AssistantResult | null>({
+  type: 'markup',
+  content: `
+<h2>Origins</h2>
+<p>Vue was created in 2014 by Evan You, a former Google engineer. It was initially released to the public in February 2014.</p>
+
+<h2>Release of Vue 2</h2>
+<p>Vue 2 was released in September 2016. This release introduced significant improvements in performance and the virtual DOM implementation, making Vue even more efficient and capable.</p>
+
+<h2>Release of Vue 3</h2>
+<p>Vue 3, released in September 2020, brought several major changes, including the composition API, better TypeScript integration, and significant improvements in terms of performance, tree-shaking, and the overall developer experience.</p>
+
+<h2>Comparison to React</h2>
+<p>Vue is often compared to React due to their shared focus on building user interfaces. While React is developed and maintained by Facebook, Vue is an open-source project led by Evan You. Both frameworks have their strengths and weaknesses, and the choice between them often depends on the specific requirements of a project and the preferences of the development team.</p>
+`,
+})
 
 const onSubmit = () => {
   if (!result.value) {
@@ -87,7 +104,7 @@ const onSubmit = () => {
 
   emit('submit', result.value)
 }
-const onCancel = () => {
+const onClose = () => {
   emit('close')
 }
 
@@ -108,5 +125,11 @@ const onGenerate = async () => {
   }
 
   isGenerating.value = false
+}
+</script>
+
+<script lang="ts">
+export default {
+  name: 'AssistantOverlay',
 }
 </script>

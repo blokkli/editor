@@ -150,8 +150,9 @@ export default {
   assistantBlockActionTooltip: 'Edit with AI Assistant',
 
   libraryPlaceDialogTitle: 'Add block from library',
-  libraryPlaceDialogLead: 'Select a block from the library to add it.',
-  libraryPlaceDialogSubmit: 'Add',
+  libraryPlaceDialogLead:
+    'Select a reusable block from the library to add it to your layout. You can detach the block later.',
+  libraryPlaceDialogSubmit: 'Add reusable block',
   libraryPlaceSearchLabel: 'Filter library items',
 
   searchInputPlaceholder: 'Enter search term',

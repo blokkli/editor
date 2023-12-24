@@ -29,6 +29,7 @@
 @import './partials/Assistant.css';
 @import './partials/AppMenu.css';
 @import './partials/Animator.css';
+@import './partials/FormOverlay.css';
 
 @font-face {
   font-family: 'PB Inter';
@@ -292,18 +293,22 @@ html {
   }
 }
 
-.list-leave-active {
+.bk-sortli-leave-active {
   transition: 0.3s ease;
   transition-property: height, width;
 }
-.list-enter-active {
+.bk-sortli-enter-active {
   transition: 0.3s ease all;
 }
 
-.list-leave-to {
+.bk-sortli-leave-to {
   opacity: 0;
 }
-.list-enter-from {
+.bk-sortli-enter-from {
   opacity: 0;
   transform: scale(0.9);
+}
+
+.bk-lead {
+  @apply text-xl text-slate-600;
 }

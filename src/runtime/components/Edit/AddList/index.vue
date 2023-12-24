@@ -12,8 +12,8 @@
       @mouseleave="onMouseLeave"
     >
       <Sortli ref="typeList" class="bk-list">
-        <div id="blokkli-add-list-actions"></div>
         <div id="blokkli-add-list-blocks"></div>
+        <div id="blokkli-add-list-actions"></div>
       </Sortli>
     </div>
   </Teleport>
@@ -62,7 +62,16 @@ function onMouseLeave() {
   isActive.value = false
 }
 
-const onWheel = (e: WheelEvent) => {}
+const onWheel = (e: WheelEvent) => {
+  if (listOrientation.value === 'horizontal' && e.deltaX) {
+    e.stopPropagation()
+    return
+  }
+
+  if (listOrientation.value === 'vertical' && e.deltaY) {
+    e.stopPropagation()
+  }
+}
 
 function setRootClasses() {
   document.documentElement.classList.remove('bk-has-sidebar-bottom')

@@ -10,7 +10,7 @@
     :key="route.fullPath"
     @loaded="featuresLoaded = true"
   />
-  <!-- <Animator v-if="!isInitializing" /> -->
+  <Animator v-if="!isInitializing" />
   <slot />
 </template>
 

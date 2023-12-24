@@ -1,6 +1,6 @@
 <template>
   <TransitionGroup
-    name="list"
+    name="bk-sortli"
     tag="div"
     ref="list"
     @mousedown.capture="onMouseDown"
@@ -53,8 +53,9 @@ const shouldHandleEvent = (e: TouchEvent | MouseEvent) => {
 
 const beforeLeave = (el: Element) => {
   if (el instanceof HTMLElement) {
-    // @TODO: Find out why this leads to recursion.
-    // animation.animateElement(el, 'leave')
+    const animatorId = Math.round(Math.random() * 1000000000000).toString()
+    el.dataset.animatorId = animatorId
+    eventBus.emit('animator:add', { id: animatorId, mode: 'leave' })
     const rect = el.getBoundingClientRect()
     const computed = getComputedStyle(el)
     const marginTop = parseInt(computed.marginTop.replace('px', ''))

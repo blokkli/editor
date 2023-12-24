@@ -17,7 +17,12 @@ import { ref, useBlokkli, onBeforeUnmount } from '#imports'
 
 const { storage, ui } = useBlokkli()
 
-const persistedWidth = storage.use('resizable:width', 600)
+const props = defineProps<{
+  id: string
+}>()
+
+const storageKey = computed(() => 'resizable:width:' + props.id)
+const persistedWidth = storage.use(storageKey, 600)
 const width = ref(persistedWidth.value)
 const startX = ref(0)
 const startWidth = ref(0)

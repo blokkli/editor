@@ -1,5 +1,8 @@
 .bk-library-dialog-list {
-  @apply grid gap-20 md:grid-cols-2 mt-20;
+  @apply grid gap-20 mt-20;
+  @container (min-width: 700px) {
+    @apply grid-cols-2;
+  }
 
   > li {
     @apply border cursor-pointer rounded overflow-hidden;
@@ -38,6 +41,6 @@
   @apply p-20;
 }
 
-.bk-library-dialog-form {
-  @apply mt-20;
+.bk-library-dialog {
+  @apply p-20;
 }
