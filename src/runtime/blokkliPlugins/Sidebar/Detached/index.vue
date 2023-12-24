@@ -34,6 +34,8 @@ const props = defineProps<{
   icon?: BlokkliIcon
 }>()
 
+defineEmits(['close'])
+
 const { storage, eventBus } = useBlokkli()
 
 const storageKey = computed(() => 'sidebar:detached:size:' + props.id)
@@ -55,8 +57,8 @@ const storedData = storage.use(storageKey, {
 const isDragging = ref(false)
 const isResizing = ref(false)
 
-const x = ref(storedData.value.x)
-const y = ref(storedData.value.y)
+const x = ref(0)
+const y = ref(0)
 const width = ref(storedData.value.width)
 const height = ref(storedData.value.height)
 
@@ -115,7 +117,6 @@ const onMouseUp = (e: MouseEvent) => {
   updateStored()
 }
 
-const emit = defineEmits(['close'])
 const el = ref<HTMLDivElement | null>(null)
 let timeout: any = null
 
@@ -143,10 +144,14 @@ const recalculatePositions = () => {
     storedData.value.viewportWidth || window.innerWidth
   const storedViewportHeight =
     storedData.value.viewportHeight || window.innerHeight
-  const diffWidth = window.innerWidth - storedViewportWidth
+  const diffWidth = window.innerWidth - storedViewportWidth + width.value
   const diffHeight = window.innerHeight - storedViewportHeight
 
-  setCoordinates(x.value + diffWidth, y.value + diffHeight)
+  if (x.value > window.innerWidth / 2) {
+    setCoordinates(x.value + diffWidth, y.value + diffHeight)
+  } else {
+    setCoordinates(storedData.value.x, storedData.value.y)
+  }
 
   storedData.value.viewportWidth = window.innerWidth
   storedData.value.viewportHeight = window.innerHeight
@@ -155,6 +160,8 @@ const recalculatePositions = () => {
 const onUiResized = () => {
   recalculatePositions()
 }
+
+recalculatePositions()
 
 onMounted(() => {
   if (el.value) {

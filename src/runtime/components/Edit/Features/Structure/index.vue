@@ -15,14 +15,19 @@ import { useBlokkli, onMounted } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
 import List from './List/index.vue'
 
-const { text, state, ui } = useBlokkli()
+const { text, state, ui, selection } = useBlokkli()
 
 const targetNode = ui.providerElement()
 
-const listRefreshKey = ref(state.refreshKey.value)
+const listRefreshKey = ref('')
 
 const observer = new MutationObserver(() => {
-  if (listRefreshKey.value === state.refreshKey.value) {
+  if (
+    listRefreshKey.value === state.refreshKey.value ||
+    selection.isDragging.value ||
+    selection.isMultiSelecting.value ||
+    selection.isChangingOptions.value
+  ) {
     return
   }
   listRefreshKey.value = state.refreshKey.value

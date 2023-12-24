@@ -20,12 +20,12 @@
     :to="isRenderedDetached ? 'body' : '#bk-sidebar-content'"
   >
     <SidebarDetached
+      @wheel="onWheel"
       v-if="isRenderedDetached"
       :id="id"
       :title="title"
       :icon="icon"
       class="bk-sidebar-inner"
-      @wheel.stop=""
       @close="onAttach"
     >
       <template #icon>
@@ -37,7 +37,7 @@
         </div>
       </div>
     </SidebarDetached>
-    <div v-else class="bk-sidebar-inner" @wheel.stop="">
+    <div v-else class="bk-sidebar-inner" @wheel="onWheel">
       <div class="bk">
         <div class="bk-sidebar-title">
           <span>{{ title }}</span>
@@ -80,6 +80,12 @@ const isRenderedDetached = computed(
   () => isDetached.value && !ui.isMobile.value,
 )
 
+const onWheel = (e: WheelEvent) => {
+  if (isOverflowing.value) {
+    e.stopPropagation()
+  }
+}
+
 const onDetach = () => {
   isDetached.value = true
   activeSidebar.value = ''
@@ -107,6 +113,7 @@ watch(activeSidebar, (active) => {
 
 const sidebarContent = ref<HTMLDivElement | null>(null)
 const scrolledToEnd = ref(false)
+const isOverflowing = ref(false)
 let raf: any = null
 
 const loop = () => {
@@ -115,6 +122,9 @@ const loop = () => {
       sidebarContent.value.scrollHeight -
         (sidebarContent.value.scrollTop + sidebarContent.value.offsetHeight) <
       3
+
+    isOverflowing.value =
+      sidebarContent.value.scrollHeight > sidebarContent.value.offsetHeight
   }
   raf = window.requestAnimationFrame(loop)
 }

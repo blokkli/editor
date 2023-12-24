@@ -31,18 +31,10 @@
 }
 
 .bk-sidebar-content-wrapper {
-  @apply flex-1 relative overflow-hidden overscroll-contain;
-  @screen lg {
-    &:focus-within {
-      &:before {
-        content: '';
-        @apply absolute top-0 left-0 w-full h-full border-3 border-blue-400 pointer-events-none z-sidebar-inner;
-      }
-    }
-  }
+  @apply flex-1 relative overflow-hidden;
 }
 .bk-sidebar-content {
-  @apply absolute top-0 left-0 w-full h-full overflow-auto overscroll-contain;
+  @apply absolute top-0 left-0 w-full h-full overflow-auto;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -53,7 +45,7 @@
 }
 
 .bk-sidebar-detached {
-  @apply fixed top-0 left-0 bg-white z-sidebar rounded resize overflow-hidden min-w-[360px] min-h-[360px] shadow flex flex-col;
+  @apply fixed top-0 left-0 bg-white z-sidebar rounded resize overflow-hidden min-w-[360px] min-h-[260px] shadow flex flex-col;
   @apply max-w-[900px];
   &:focus-within {
     @apply z-sidebar-focused shadow-xl;
@@ -66,7 +58,7 @@
     }
   }
   &:not(:focus-within) {
-    .bk-sidebar-content {
+    .bk-sidebar-content > * {
       @apply pointer-events-none;
     }
   }

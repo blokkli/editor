@@ -599,7 +599,12 @@ function onScrollIntoView(e: ScrollIntoViewEvent) {
     return
   }
 
-  const rect = item.element().getBoundingClientRect()
+  const element = item.element()
+  if (!element) {
+    return
+  }
+
+  const rect = element.getBoundingClientRect()
 
   let targetY: number | null = null
   const rootHeight = ui.rootElement().offsetHeight
