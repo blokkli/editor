@@ -210,7 +210,7 @@ html {
 .bk-body.bk-is-selecting {
   .bk-main-canvas {
     .draggable[data-is-selected='false'] {
-      @apply outline-dashed outline-slate-400 outline-offset-0 outline-2;
+      @apply mobile-only:outline-dashed mobile-only:outline-slate-400 mobile-only:outline-offset-0 mobile-only:outline-2;
     }
   }
 }

@@ -9,3 +9,8 @@ defineProps<{
   markup: string
 }>()
 </script>
+<script lang="ts">
+export default {
+  name: 'AssistantResultMarkup',
+}
+</script>

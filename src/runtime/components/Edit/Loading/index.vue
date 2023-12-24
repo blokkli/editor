@@ -9,3 +9,9 @@
 <script lang="ts" setup>
 import { Icon } from '#blokkli/components'
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Loading',
+}
+</script>

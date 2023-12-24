@@ -39,3 +39,9 @@ const props = defineProps<{
 
 const timestamp = computed(() => (props.created ? parseInt(props.created) : 0))
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Comment',
+}
+</script>

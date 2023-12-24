@@ -30,3 +30,8 @@ defineEmits<{
   (e: 'close'): void
 }>()
 </script>
+<script lang="ts">
+export default {
+  name: 'FormOverlayHeader',
+}
+</script>

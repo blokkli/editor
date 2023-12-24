@@ -684,3 +684,8 @@ onUnmounted(() => {
   document.documentElement.style.setProperty('--bk-artboard-scale', null)
 })
 </script>
+<script lang="ts">
+export default {
+  name: 'ArtboardManager',
+}
+</script>

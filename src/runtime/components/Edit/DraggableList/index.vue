@@ -48,7 +48,7 @@
 
 <script lang="ts">
 export default {
-  name: 'BlokkliDraggableList',
+  name: 'DraggableList',
 }
 </script>
 

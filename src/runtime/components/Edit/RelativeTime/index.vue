@@ -29,3 +29,9 @@ onBeforeUnmount(() => {
   clearInterval(interval)
 })
 </script>
+
+<script lang="ts">
+export default {
+  name: 'RelativeTime',
+}
+</script>

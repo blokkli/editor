@@ -3,10 +3,12 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, provide } from '#imports'
+import { computed, provide, useRuntimeConfig } from '#imports'
 import type { InjectedBlokkliItem } from '#blokkli/types'
 import { getBlokkliItemComponent } from '#blokkli/imports'
 import { INJECT_BLOCK_ITEM, INJECT_ENTITY_CONTEXT } from '../helpers/symbols'
+
+const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
 
 const componentProps = withDefaults(
   defineProps<{
@@ -42,7 +44,7 @@ const item = computed(() => ({
 provide<InjectedBlokkliItem>(INJECT_BLOCK_ITEM, item)
 provide(INJECT_ENTITY_CONTEXT, {
   uuid: componentProps.uuid,
-  type: 'block',
+  type: itemEntityType,
   bundle: componentProps.bundle,
 })
 </script>

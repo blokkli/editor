@@ -88,3 +88,9 @@ onBeforeUnmount(() => {
   eventBus.off('animator:add', onAnimatorAdd)
 })
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Animator',
+}
+</script>

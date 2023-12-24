@@ -57,6 +57,12 @@ onUnmounted(() => {
 })
 </script>
 
+<script lang="ts">
+export default {
+  name: 'BlokkliEditIndicator',
+}
+</script>
+
 <style lang="postcss">
 .bk-edit-indicator {
   position: fixed;

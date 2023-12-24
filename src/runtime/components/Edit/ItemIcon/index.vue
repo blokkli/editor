@@ -19,3 +19,9 @@ const props = defineProps<{
 
 const markup = computed(() => (props.bundle ? icons[props.bundle] : undefined))
 </script>
+
+<script lang="ts">
+export default {
+  name: 'ItemIcon',
+}
+</script>

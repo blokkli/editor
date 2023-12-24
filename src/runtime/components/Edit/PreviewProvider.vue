@@ -163,3 +163,8 @@ onBeforeUnmount(() => {
   frameEventBus.off('updateOption', onUpdateOption)
 })
 </script>
+<script lang="ts">
+export default {
+  name: 'BlokkliPreviewProvider',
+}
+</script>

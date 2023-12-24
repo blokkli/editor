@@ -59,3 +59,9 @@ onBeforeUnmount(() => {
   cancelAnimationFrame(raf)
 })
 </script>
+
+<script lang="ts">
+export default {
+  name: 'ScaleToFit',
+}
+</script>

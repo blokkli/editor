@@ -13,3 +13,9 @@ const props = defineProps<{
 
 const markup = computed(() => icons[props.name])
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Icon',
+}
+</script>

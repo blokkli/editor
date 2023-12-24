@@ -79,3 +79,9 @@ onBeforeUnmount(() => {
   window.removeEventListener('mouseup', onMouseUp)
 })
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Resizable',
+}
+</script>

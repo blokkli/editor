@@ -37,3 +37,9 @@ onUnmounted(() => {
   eventBus.off('message', onMessage)
 })
 </script>
+
+<script lang="ts">
+export default {
+  name: 'Messages',
+}
+</script>

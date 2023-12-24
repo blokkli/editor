@@ -139,3 +139,9 @@ provide<BlokkliApp>(INJECT_APP, {
   text,
 })
 </script>
+
+<script lang="ts">
+export default {
+  name: 'EditProvider',
+}
+</script>

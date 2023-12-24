@@ -6,8 +6,8 @@
     @close="onClose"
   >
     <div class="bk-assistant-form">
-      <p>{{ text('assistantDialogLead') }}</p>
       <div class="bk">
+        <p class="bk-lead">{{ text('assistantDialogLead') }}</p>
         <label class="bk-form-label" for="assistant_prompt">
           {{ text('assistantPromptLabel') }}
         </label>
