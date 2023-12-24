@@ -103,6 +103,9 @@ export default function (
   }
 
   function unselectItems() {
+    if (selectedUuids.value.length === 0) {
+      return
+    }
     selectedUuids.value = []
   }
 
@@ -175,6 +178,9 @@ export default function (
 
   const onSelectEnd = (uuids: string[] = []) => {
     isMultiSelecting.value = false
+    if (uuids.length === 0 && selectedUuids.value.length === 0) {
+      return
+    }
     selectItems(uuids)
   }
 

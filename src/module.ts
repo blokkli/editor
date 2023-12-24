@@ -533,9 +533,6 @@ export type BlokkliIcon = keyof typeof icons`
 
     // Watch for file changes in dev mode.
     if (nuxt.options.dev) {
-      nuxt.hook('builder:watch', async (_event, path) => {
-        console.log('PATH: ' + path)
-      })
       nuxt.hook('vite:serverCreated', (viteServer) => {
         nuxt.hook('builder:watch', async (_event, path) => {
           const filePath = await applies(path)

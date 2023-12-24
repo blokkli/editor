@@ -7,13 +7,13 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, onMounted, useBlokkli, ref } from '#imports'
+import { onMounted, useBlokkli, ref } from '#imports'
 import { falsy } from '#blokkli/helpers'
 import Field from './Field/index.vue'
 import type { StructureTreeField, StructureTreeItem } from './types'
 import { getDefinition } from '#blokkli/definitions'
 
-const { types, state, context, eventBus } = useBlokkli()
+const { types, context, eventBus } = useBlokkli()
 
 const tree = ref<StructureTreeField[]>([])
 
@@ -68,8 +68,6 @@ function buildTree() {
     })
     .filter(falsy)
 }
-
-watch(state.refreshKey, () => buildTree())
 
 onMounted(() => {
   buildTree()

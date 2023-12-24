@@ -5,6 +5,38 @@ const z = (index) => {
   return `calc(var(--bk-z-index-base) + ${index})`
 }
 
+const zIndex = [
+  'selection',
+  'comments-overlay',
+  'comments-overlay-active',
+  'editable-field',
+  'actions',
+  'drop-targets',
+  'transform-overlay',
+  'messages',
+  'add-list',
+  'artboard-scrollbar',
+  'sidebar',
+  'sidebar-inner',
+  'sidebar-focused',
+  'dragging-overlay',
+  'toolbar',
+  'preview',
+  'toolbar-dropdown',
+  'search',
+  'menu-overlay',
+  'menu',
+  'touch-action-bar',
+  'edit-form',
+  'resizable',
+  'edit-form-header',
+  'dialog',
+  'init-overlay',
+].reduce((acc, key, index) => {
+  acc[key] = z(index + 100)
+  return acc
+}, {})
+
 module.exports = {
   corePlugins: {
     preflight: false,
@@ -19,33 +51,7 @@ module.exports = {
       transitionTimingFunction: {
         swing: 'cubic-bezier(0.56, 0.04, 0.25, 1)',
       },
-      zIndex: {
-        selection: z(700),
-        'comments-overlay': z(750),
-        'comments-overlay-active': z(755),
-        'editable-field': z(770),
-        actions: z(800),
-        'drop-targets': z(900),
-        'transform-overlay': z(910),
-        messages: z(930),
-        'add-list': z(950),
-        sidebar: z(970),
-        'sidebar-inner': z(980),
-        'dragging-overlay': z(990),
-        toolbar: z(1000),
-        preview: z(1050),
-        'toolbar-dropdown': z(1300),
-        'artboard-scrollbar': z(3100),
-        search: z(3200),
-        'menu-overlay': z(4000),
-        menu: z(4010),
-        'touch-action-bar': z(5000),
-        'edit-form': z(20_000),
-        resizable: z(20_100),
-        'edit-form-header': z(20_200),
-        dialog: z(50_100),
-        'init-overlay': z(100_000),
-      },
+      zIndex,
       boxShadow: {
         sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
         DEFAULT:

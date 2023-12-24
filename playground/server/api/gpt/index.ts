@@ -80,8 +80,6 @@ export default defineEventHandler(async (event) => {
     throw createError('Missing prompt.')
   }
 
-  console.log(body.prompt)
-
   // return MOCK_RESPONSE
 
   try {

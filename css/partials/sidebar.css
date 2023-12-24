@@ -14,13 +14,20 @@
   &.bk-is-hidden {
     @apply opacity-0 pointer-events-none;
   }
-}
+  .bk-sidebar-inner {
+    @apply h-full flex flex-col;
+  }
 
-.bk-sidebar-inner {
-  @apply h-full flex flex-col;
-}
-.bk-sidebar-title {
-  @apply !font-bold md:!text-xl !font-sans !p-15 md:!p-20 !border-b !border-b-slate-300;
+  .bk-sidebar-title {
+    @apply !font-bold md:!text-lg !font-sans !pl-15 md:!pl-20 !border-b !border-b-slate-300 flex justify-between items-center h-50 lg:h-60;
+    @apply select-none;
+    button {
+      @apply h-full px-15;
+    }
+    svg {
+      @apply w-[1em] h-[1em];
+    }
+  }
 }
 
 .bk-sidebar-content-wrapper {
@@ -43,4 +50,49 @@
 
 .bk-sidebar-padding {
   @apply p-15 lg:p-20;
+}
+
+.bk-sidebar-detached {
+  @apply fixed top-0 left-0 bg-white z-sidebar rounded resize overflow-hidden min-w-[360px] min-h-[360px] shadow flex flex-col;
+  @apply max-w-[900px];
+  &:focus-within {
+    @apply z-sidebar-focused shadow-xl;
+    .bk-sidebar-title {
+      @apply bg-blue-700 text-white;
+
+      button:hover {
+        @apply bg-blue-800;
+      }
+    }
+  }
+  &:not(:focus-within) {
+    .bk-sidebar-content {
+      @apply pointer-events-none;
+    }
+  }
+
+  .bk-sidebar-title {
+    @apply cursor-move;
+    @apply flex bg-slate-300 select-none pl-10 font-semibold text-sm h-40 items-center text-slate-500;
+
+    > .bk-icon {
+      @apply w-20 h-20 mr-5;
+      svg {
+        @apply fill-current;
+      }
+    }
+
+    button {
+      @apply ml-auto w-40 h-40 flex items-center justify-center;
+      &:hover {
+        @apply bg-slate-400;
+      }
+      svg {
+        @apply w-20 h-20 fill-current;
+      }
+    }
+  }
+}
+.bk-sidebar-detached-inner {
+  @apply h-full flex flex-col;
 }

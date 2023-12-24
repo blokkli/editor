@@ -5,10 +5,12 @@ import {
   onBeforeUnmount,
   ref,
 } from 'vue'
+import { eventBus } from './eventBus'
 
 export type BlokkliUiProvider = {
   rootElement: () => HTMLElement
   artboardElement: () => HTMLElement
+  providerElement: () => HTMLElement
   menu: {
     isOpen: Readonly<Ref<boolean>>
     close: () => void
@@ -24,6 +26,7 @@ export type BlokkliUiProvider = {
 export default function (): BlokkliUiProvider {
   let cachedRootElement: HTMLElement | null = null
   let cachedArtboardElement: HTMLElement | null = null
+  let cachedProviderElement: HTMLElement | null = null
 
   const menuIsOpen = ref(false)
   const isAnimating = ref(false)
@@ -52,6 +55,18 @@ export default function (): BlokkliUiProvider {
     return el
   }
 
+  const providerElement = () => {
+    if (cachedProviderElement) {
+      return cachedProviderElement
+    }
+    const el = document.querySelector('[data-blokkli-provider-active="true"]')
+    if (!el || !(el instanceof HTMLElement)) {
+      throw new Error('Failed to locate provider element.')
+    }
+    cachedProviderElement = el
+    return el
+  }
+
   const getArtboardScale = () => {
     const el = artboardElement()
     const scaleValue = parseFloat(el.style.scale || '1')
@@ -65,8 +80,16 @@ export default function (): BlokkliUiProvider {
   const isMobile = computed(() => viewportWidth.value < 768)
   const isDesktop = computed(() => viewportWidth.value > 1024)
 
+  let resizeTimeout: any = null
+
   const onResize = () => {
     viewportWidth.value = window.innerWidth
+
+    clearTimeout(resizeTimeout)
+
+    resizeTimeout = setTimeout(() => {
+      eventBus.emit('ui:resized')
+    }, 400)
   }
 
   const isArtboard = () => {
@@ -80,6 +103,7 @@ export default function (): BlokkliUiProvider {
   })
 
   onMounted(async () => {
+    viewportWidth.value = window.innerWidth
     window.addEventListener('resize', onResize)
     document.documentElement.classList.add('bk-html-root')
     document.body.classList.add('bk-body')
@@ -88,6 +112,7 @@ export default function (): BlokkliUiProvider {
     window.removeEventListener('resize', onResize)
     document.documentElement.classList.remove('bk-html-root')
     document.body.classList.remove('bk-body')
+    clearTimeout(resizeTimeout)
   })
 
   return {
@@ -98,6 +123,7 @@ export default function (): BlokkliUiProvider {
     },
     artboardElement,
     rootElement,
+    providerElement,
     getArtboardScale,
     isMobile,
     isDesktop,

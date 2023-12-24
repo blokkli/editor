@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="#bk-sidebar-tabs">
+  <Teleport v-if="!isDetached" to="#bk-sidebar-tabs">
     <button
       :class="{ 'is-active': activeSidebar === id }"
       :disabled="editOnly && !state.canEdit.value"
@@ -15,12 +15,36 @@
     </button>
   </Teleport>
 
-  <Teleport v-if="activeSidebar === id" to="#bk-sidebar-content">
-    <div class="bk-sidebar-inner" @wheel.stop="">
+  <Teleport
+    v-if="activeSidebar === id || isRenderedDetached"
+    :to="isRenderedDetached ? 'body' : '#bk-sidebar-content'"
+  >
+    <SidebarDetached
+      v-if="isRenderedDetached"
+      :id="id"
+      :title="title"
+      :icon="icon"
+      class="bk-sidebar-inner"
+      @wheel.stop=""
+      @close="onAttach"
+    >
+      <template #icon>
+        <slot name="icon" />
+      </template>
+      <div class="bk-sidebar-content-wrapper">
+        <div ref="sidebarContent" class="bk-sidebar-content">
+          <slot :scrolled-to-end="scrolledToEnd" />
+        </div>
+      </div>
+    </SidebarDetached>
+    <div v-else class="bk-sidebar-inner" @wheel.stop="">
       <div class="bk">
-        <h3 class="bk-sidebar-title">
-          {{ title }}
-        </h3>
+        <div class="bk-sidebar-title">
+          <span>{{ title }}</span>
+          <button @click.prevent.stop="onDetach">
+            <Icon name="expand" />
+          </button>
+        </div>
       </div>
       <div class="bk-sidebar-content-wrapper">
         <div ref="sidebarContent" class="bk-sidebar-content">
@@ -35,6 +59,7 @@
 import { watch, ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon } from '#blokkli/components'
+import SidebarDetached from './Detached/index.vue'
 
 const props = defineProps<{
   id: string
@@ -44,9 +69,26 @@ const props = defineProps<{
   weight?: string
 }>()
 
-const { storage, state } = useBlokkli()
+const { storage, state, ui } = useBlokkli()
 
+const detachedKey = computed(() => 'sidebar:detached:' + props.id)
+
+const isDetached = storage.use(detachedKey, false)
 const activeSidebar = storage.use('sidebar:active', '')
+
+const isRenderedDetached = computed(
+  () => isDetached.value && !ui.isMobile.value,
+)
+
+const onDetach = () => {
+  isDetached.value = true
+  activeSidebar.value = ''
+}
+
+const onAttach = () => {
+  isDetached.value = false
+  activeSidebar.value = props.id
+}
 
 const toggleSidebar = (id: string) =>
   activeSidebar.value === id

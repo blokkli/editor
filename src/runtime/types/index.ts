@@ -625,6 +625,13 @@ export type BlokkliEvents = {
   'action:placed': ActionPlacedEvent
 
   'animator:add': AnimatorAddEvent
+
+  'ui:resized': undefined
+}
+
+export type UiResizedEvent = {
+  width: number
+  height: number
 }
 
 export type AnimateElementMode = 'leave' | 'enter'

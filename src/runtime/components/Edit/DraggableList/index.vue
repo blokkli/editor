@@ -16,7 +16,8 @@
     @action="onAction"
   >
     <BlokkliItem
-      v-for="(item, i) in list"
+      v-for="(item, i) in renderList"
+      v-memo="[item.selected]"
       :key="item.uuid"
       :uuid="item.uuid"
       :bundle="item.bundle"
@@ -40,7 +41,7 @@
       :data-is-nested="isNested"
       :data-is-new="item.isNew"
       :data-refresh-key="state.refreshKey.value"
-      :data-is-selected="selection.uuids.value.includes(item.uuid || '')"
+      :class="{ 'bk-is-selected': item.selected }"
       class="draggable"
     />
   </Sortli>
@@ -69,6 +70,17 @@ const props = defineProps<{
   tag?: string
   isNested: boolean
 }>()
+
+type RenderedListItem = BlokkliFieldListItem & { selected: boolean }
+
+const renderList = computed<RenderedListItem[]>(() => {
+  return props.list.map((item) => {
+    return {
+      ...item,
+      selected: selection.uuids.value.includes(item.uuid),
+    }
+  })
+})
 
 /**
  * The allowed item bundles in this list.
