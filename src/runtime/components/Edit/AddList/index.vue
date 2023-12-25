@@ -4,8 +4,9 @@
     id="add_list"
     :title="text('addListSidebarTitle')"
     render-always
-    icon="alert"
+    icon="plus-box"
     weight="-10"
+    @updated="eventBus.emit('add-list:change')"
   >
     <div>
       <Sortli ref="typeList" class="bk bk-list-sidebar">
@@ -42,12 +43,13 @@ import {
   useBlokkli,
   onMounted,
   onUnmounted,
+  nextTick,
 } from '#imports'
 import { Sortli } from '#blokkli/components'
 import { PluginSidebar } from '#blokkli/plugins'
 import type { AddListOrientation } from '#blokkli/types'
 
-const { state, storage, ui, text } = useBlokkli()
+const { state, storage, ui, text, eventBus } = useBlokkli()
 
 const listOrientationSetting = storage.use<AddListOrientation>(
   'listOrientation',
@@ -60,7 +62,12 @@ const listOrientation = computed<AddListOrientation>(() =>
 
 const isSidebar = computed(() => listOrientation.value === 'sidebar')
 
-watch(listOrientation, setRootClasses)
+watch(listOrientation, () => {
+  setRootClasses()
+  nextTick(() => {
+    eventBus.emit('add-list:change')
+  })
+})
 
 const typeList = ref<HTMLDivElement | null>(null)
 const wrapper = ref<HTMLDivElement | null>(null)

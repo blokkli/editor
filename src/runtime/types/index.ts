@@ -627,6 +627,7 @@ export type BlokkliEvents = {
   'animator:add': AnimatorAddEvent
 
   'ui:resized': undefined
+  'add-list:change': undefined
 }
 
 export type UiResizedEvent = {

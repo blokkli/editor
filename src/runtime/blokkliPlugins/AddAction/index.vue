@@ -1,36 +1,14 @@
 <template>
-  <Teleport to="#blokkli-add-list-actions">
-    <button
-      key="assistant"
-      class="bk-list-item bk-clone"
-      :class="'bk-is-' + color"
+  <Teleport :key="renderKey" to="#blokkli-add-list-actions">
+    <AddListItem
+      :id="type"
+      :label="title"
+      :icon="icon"
+      :orientation="listOrientation"
+      :color="color"
       data-element-type="action"
       :data-action-type="type"
-      :data-sortli-id="type"
-    >
-      <div class="bk-list-item-inner">
-        <div class="bk-list-item-icon">
-          <Icon :name="icon" />
-          <div
-            v-if="listOrientation !== 'sidebar'"
-            class="bk-add-list-drop bk-drop-element"
-            :class="'bk-is-' + color"
-          >
-            <Icon :name="icon" />
-            <span>{{ title }}</span>
-          </div>
-        </div>
-        <div
-          class="bk-list-item-label"
-          :class="{
-            'bk-tooltip':
-              listOrientation === 'horizontal' && !ui.isMobile.value,
-          }"
-        >
-          <span>{{ title }}</span>
-        </div>
-      </div>
-    </button>
+    />
   </Teleport>
 </template>
 
@@ -38,7 +16,7 @@
 import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import type { BlokkliIcon } from '#blokkli/icons'
 import type { ActionPlacedEvent, AddListOrientation } from '#blokkli/types'
-import { Icon } from '#blokkli/components'
+import { AddListItem } from '#blokkli/components'
 
 const props = defineProps<{
   type: string
@@ -73,12 +51,20 @@ const onActionPlaced = (e: ActionPlacedEvent) => {
   emit('placed', e)
 }
 
+const renderKey = ref('')
+
+const onAddListChange = () => {
+  renderKey.value = Math.round(Math.random() * 1000000000).toString()
+}
+
 onMounted(() => {
   eventBus.on('action:placed', onActionPlaced)
+  eventBus.on('add-list:change', onAddListChange)
 })
 
 onBeforeUnmount(() => {
   eventBus.off('action:placed', onActionPlaced)
+  eventBus.off('add-list:change', onAddListChange)
 })
 </script>
 

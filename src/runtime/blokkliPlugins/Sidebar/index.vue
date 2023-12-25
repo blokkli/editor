@@ -75,6 +75,10 @@ const props = defineProps<{
   renderAlways?: boolean
 }>()
 
+const emit = defineEmits<{
+  (e: 'updated'): void
+}>()
+
 const { storage, state, ui } = useBlokkli()
 
 const detachedKey = computed(() => 'sidebar:detached:' + props.id)
@@ -95,17 +99,21 @@ const onWheel = (e: WheelEvent) => {
 const onDetach = () => {
   isDetached.value = true
   activeSidebar.value = ''
+  emit('updated')
 }
 
 const onAttach = () => {
   isDetached.value = false
   activeSidebar.value = props.id
+  emit('updated')
 }
 
-const toggleSidebar = (id: string) =>
+const toggleSidebar = (id: string) => {
   activeSidebar.value === id
     ? (activeSidebar.value = '')
     : (activeSidebar.value = id)
+  emit('updated')
+}
 
 const showSidebar = () => (activeSidebar.value = props.id)
 

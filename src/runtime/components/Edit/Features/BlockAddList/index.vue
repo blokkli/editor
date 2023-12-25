@@ -1,59 +1,33 @@
 <template>
-  <Teleport v-if="selectableBundles.length" to="#blokkli-add-list-blocks">
-    <button
+  <Teleport
+    v-if="selectableBundles.length"
+    :key="renderKey"
+    to="#blokkli-add-list-blocks"
+  >
+    <AddListItem
       v-for="(type, i) in sortedList"
-      :key="i + (type.id || 'undefined') + updateKey"
-      class="bk-list-item bk-clone"
+      :id="type.id"
+      :key="i + (type.id || 'undefined') + renderKey"
+      :label="type.label"
+      :bundle="type.id"
+      :orientation="listOrientation"
+      :disabled="!type.id || !selectableBundles.includes(type.id)"
       data-element-type="new"
       :data-item-bundle="type.id"
-      :data-sortli-id="type.id"
-      :class="{
-        'bk-is-disabled': !type.id || !selectableBundles.includes(type.id),
-      }"
-    >
-      <div class="bk-list-item-inner">
-        <div class="bk-list-item-icon">
-          <ItemIcon :bundle="type.id" />
-          <div
-            v-if="listOrientation !== 'sidebar'"
-            class="bk-add-list-drop bk-drop-element"
-          >
-            <ItemIcon :bundle="type.id" />
-            <span>{{ type.label }}</span>
-          </div>
-        </div>
-        <div
-          class="bk-list-item-label"
-          :class="{
-            'bk-tooltip':
-              listOrientation === 'horizontal' && !ui.isMobile.value,
-          }"
-        >
-          <span>{{ type.label }}</span>
-        </div>
-      </div>
-    </button>
+    />
   </Teleport>
 </template>
 
 <script lang="ts" setup>
-import {
-  watch,
-  ref,
-  computed,
-  useBlokkli,
-  onMounted,
-  onUnmounted,
-} from '#imports'
-
-import { falsy, onlyUnique } from '#blokkli/helpers'
-import { ItemIcon } from '#blokkli/components'
+import { ref, computed, useBlokkli, onMounted } from '#imports'
+import { AddListItem } from '#blokkli/components'
 import type {
   DraggableExistingBlokkliItem,
   AddListOrientation,
 } from '#blokkli/types'
 
-const { selection, storage, types, context, runtimeConfig, ui } = useBlokkli()
+const { selection, storage, types, context, runtimeConfig, ui, eventBus } =
+  useBlokkli()
 
 const itemEntityType = runtimeConfig.itemEntityType
 
@@ -66,18 +40,7 @@ const listOrientation = computed<AddListOrientation>(() =>
   ui.isMobile.value ? 'horizontal' : listOrientationSetting.value,
 )
 
-watch(listOrientation, setRootClasses)
-
-const typeList = ref<HTMLDivElement | null>(null)
-const wrapper = ref<HTMLDivElement | null>(null)
-const isActive = ref(false)
-const updateKey = ref(0)
-const scrollX = ref(0)
-const scrollY = ref(0)
-
 const sorts = storage.use<string[]>('sorts', [])
-
-let mouseTimeout: any = null
 
 const activeField = computed(() => {
   if (selection.activeFieldKey.value) {
@@ -179,70 +142,6 @@ const generallyAvailableBundles = computed(() => {
   )
 })
 
-function onWheel(e: WheelEvent) {
-  if (ui.isMobile.value) {
-    return
-  }
-  e.preventDefault()
-  if (listOrientation.value === 'vertical') {
-    const scrollHeight = typeList.value?.scrollHeight || 0
-    const wrapperHeight = wrapper.value?.offsetHeight || 0
-    const diff = Math.min(Math.max(e.deltaY, -20), 20)
-    if (wrapperHeight > scrollHeight) {
-      scrollY.value = 0
-    } else {
-      scrollY.value = Math.min(
-        Math.max(scrollY.value + diff, 0),
-        scrollHeight - wrapperHeight,
-      )
-    }
-  } else if (listOrientation.value === 'horizontal') {
-    const scrollWidth = typeList.value?.scrollWidth || 0
-    const wrapperWidth = wrapper.value?.offsetWidth || 0
-    const diff = Math.min(Math.max(e.deltaY || e.deltaX, -20), 20)
-    if (wrapperWidth > scrollWidth) {
-      scrollX.value = 0
-    } else {
-      scrollX.value = Math.min(
-        Math.max(scrollX.value + diff, 0),
-        scrollWidth - wrapperWidth,
-      )
-    }
-  }
-}
-
-function onMouseEnter() {
-  clearTimeout(mouseTimeout)
-  mouseTimeout = setTimeout(() => {
-    isActive.value = true
-  }, 200)
-}
-function onMouseLeave() {
-  clearTimeout(mouseTimeout)
-  isActive.value = false
-}
-
-const style = computed(() => {
-  return {
-    transform:
-      listOrientation.value === 'vertical'
-        ? `translateY(-${scrollY.value}px)`
-        : `translateX(-${scrollX.value}px)`,
-  }
-})
-
-function storeSort() {
-  if (typeList.value) {
-    const sorted = [...typeList.value.querySelectorAll('.bk-list-item')]
-      .map((v) => {
-        return (v as HTMLDivElement).dataset.itemBundle
-      })
-      .filter(falsy)
-      .filter(onlyUnique)
-    sorts.value = sorted
-  }
-}
-
 const sortedList = computed(() => {
   if (!generallyAvailableBundles.value) {
     return []
@@ -264,23 +163,18 @@ const sortedList = computed(() => {
     })
 })
 
-function setRootClasses() {
-  document.documentElement.classList.remove('bk-has-sidebar-bottom')
-  document.documentElement.classList.remove('bk-has-sidebar-left')
+const renderKey = ref('')
 
-  if (listOrientation.value === 'horizontal') {
-    document.documentElement.classList.add('bk-has-sidebar-bottom')
-  } else if (listOrientation.value === 'vertical') {
-    document.documentElement.classList.add('bk-has-sidebar-left')
-  }
+const onAddListChange = () => {
+  renderKey.value = Math.round(Math.random() * 1000000000).toString()
 }
 
 onMounted(() => {
-  setRootClasses()
+  eventBus.on('add-list:change', onAddListChange)
 })
-onUnmounted(() => {
-  document.documentElement.classList.remove('bk-has-sidebar-bottom')
-  document.documentElement.classList.remove('bk-has-sidebar-left')
+
+onBeforeUnmount(() => {
+  eventBus.off('add-list:change', onAddListChange)
 })
 </script>
 

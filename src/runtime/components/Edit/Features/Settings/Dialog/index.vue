@@ -1,7 +1,7 @@
 <template>
   <DialogModal
     :title="text('settingsDialogTitle')"
-    :width="400"
+    :width="700"
     hide-buttons
     icon="cog"
     @cancel="$emit('cancel')"
