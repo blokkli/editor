@@ -168,15 +168,3 @@
     }
   }
 }
-
-.bk-actions-enter-active,
-.bk-actions-leave-active {
-  transition: 0.2s ease-in-out;
-  @screen md {
-    transition: none;
-  }
-}
-.bk-actions-enter-from,
-.bk-actions-leave-to {
-  transform: translateY(100%);
-}

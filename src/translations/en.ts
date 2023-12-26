@@ -124,6 +124,7 @@ export default {
   settingsListOrientationSidebar: 'Sidebar',
   settingsRevertSorting: 'Reset item sorting',
   settingsRevertAll: 'Reset all settings',
+  settingsUseAnimations: 'Use animations',
 
   structureToolbarLabel: 'Structure',
 

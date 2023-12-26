@@ -341,7 +341,7 @@
     }
   }
   #blokkli-add-list-actions {
-    @apply border-t border-t-slate-400;
+    @apply border-t border-t-slate-200;
   }
 
   .bk-add-list-drop {

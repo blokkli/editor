@@ -1,0 +1,155 @@
+.bk-use-animations {
+  .bk-slide-up-enter-active,
+  .bk-slide-up-leave-active {
+    @apply transition ease-swing duration-300;
+    .bk-dialog-inner {
+      @apply transition ease-swing duration-300;
+    }
+    .bk-dialog-background {
+      @apply transition ease-swing duration-300;
+    }
+  }
+  .bk-slide-up-enter-from,
+  .bk-slide-up-leave-to {
+    .bk-dialog-background {
+      @apply opacity-0;
+    }
+    .bk-dialog-inner {
+      @apply translate-y-full lg:translate-y-0 lg:scale-90 lg:opacity-0;
+    }
+  }
+
+  /* Sortli. */
+
+  .bk-sortli-leave-active {
+    transition: 0.3s ease;
+    transition-property: height, width;
+  }
+  .bk-sortli-enter-active {
+    transition: 0.3s ease all;
+  }
+
+  .bk-sortli-leave-to {
+    opacity: 0;
+  }
+  .bk-sortli-enter-from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  /* Menu. */
+
+  .bk-menu-enter-active,
+  .bk-menu-leave-active {
+    @apply transition ease-swing duration-200;
+  }
+  .bk-menu-enter-from,
+  .bk-menu-leave-to {
+    transform: translateX(-100%);
+  }
+
+  /* Search. */
+
+  .bk-search-enter-active,
+  .bk-search-leave-active {
+    @apply transition ease-swing;
+  }
+  .bk-search-enter-from,
+  .bk-search-leave-to {
+    @apply opacity-0;
+  }
+
+  .bk-search-enter-from {
+    @apply translate-x-full;
+  }
+  .bk-search-leave-to {
+    @apply translate-x-full;
+  }
+
+  /* Actions. */
+  .bk-actions-enter-active,
+  .bk-actions-leave-active {
+    transition: 0.2s ease-in-out;
+    @screen md {
+      transition: none;
+    }
+  }
+  .bk-actions-enter-from,
+  .bk-actions-leave-to {
+    transform: translateY(100%);
+  }
+
+  .bk-slide-in-enter-active,
+  .bk-slide-in-leave-active {
+    @apply transition ease-swing duration-300;
+    .bk-form-overlay-background {
+      @apply transition ease-swing duration-300;
+    }
+    .bk-form-overlay-resizable {
+      @apply transition ease-swing duration-300;
+    }
+  }
+  .bk-slide-in-enter-from,
+  .bk-slide-in-leave-to {
+    .bk-form-overlay-background {
+      @apply opacity-0;
+    }
+    .bk-form-overlay-resizable {
+      @apply translate-y-full md:translate-x-full md:translate-y-0;
+    }
+  }
+
+  .bk-fade-enter-active,
+  .bk-fade-leave-active {
+    transition: 0.2s ease-in-out;
+  }
+  .bk-fade-enter-from,
+  .bk-fade-leave-to {
+    @apply opacity-0;
+  }
+
+  /* Messages. */
+  .bk-message-enter-active,
+  .bk-message-leave-active {
+    @apply transition;
+  }
+  .bk-message-enter-from,
+  .bk-message-leave-to {
+    @apply translate-y-full;
+  }
+
+  /* Toolbar. */
+  .bk-toolbar-enter-active,
+  .bk-toolbar-leave-active {
+    @apply transition ease-swing;
+  }
+  .bk-toolbar-enter-from,
+  .bk-toolbar-leave-to {
+    transform: translateY(-100%);
+  }
+
+  /* Touch Bar. */
+  .bk-touch-bar-enter-active,
+  .bk-touch-bar-leave-active {
+    transition: 0.2s ease-in-out;
+  }
+  .bk-touch-bar-enter-from,
+  .bk-touch-bar-leave-to {
+    transform: translateY(100%);
+  }
+
+  /* Content Editable. */
+  .bk-editable-enter-active,
+  .bk-editable-leave-active {
+    transition: 0.25s ease-in-out;
+    transition-timing-function: cubic-bezier(0.13, 0.63, 0.55, 1);
+    @apply origin-bottom;
+  }
+  .bk-editable-enter-from,
+  .bk-editable-leave-to {
+    @apply opacity-0 -translate-y-60;
+    @screen md {
+      @apply opacity-0 translate-y-60 scale-75;
+    }
+  }
+}

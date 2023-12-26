@@ -15,7 +15,13 @@
 
 <script lang="ts" setup>
 import type { AnimateElementMode, AnimatorAddEvent } from '#blokkli/types'
-import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+import {
+  computed,
+  useBlokkli,
+  onMounted,
+  onBeforeUnmount,
+  watch,
+} from '#imports'
 
 const { ui, eventBus } = useBlokkli()
 
@@ -80,12 +86,24 @@ const onAnimatorAdd = (e: AnimatorAddEvent) => {
   })
 }
 
+const setRootClasses = (unmount?: boolean) => {
+  document.documentElement.classList.remove('bk-use-animations')
+
+  if (ui.useAnimations.value && !unmount) {
+    document.documentElement.classList.add('bk-use-animations')
+  }
+}
+
+watch(ui.useAnimations, setRootClasses)
+
 onMounted(() => {
   eventBus.on('animator:add', onAnimatorAdd)
+  setRootClasses()
 })
 
 onBeforeUnmount(() => {
   eventBus.off('animator:add', onAnimatorAdd)
+  setRootClasses(true)
 })
 </script>
 

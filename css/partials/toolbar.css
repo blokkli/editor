@@ -12,7 +12,7 @@
       }
     }
     &:first-child {
-      @apply bg-slate-950 lg:bg-transparent;
+      @apply bg-black lg:bg-transparent;
     }
   }
 
@@ -78,7 +78,7 @@
   }
 
   .bk-toolbar-menu-button {
-    @apply bg-blue-700 w-50 lg:w-70 flex items-center justify-center text-slate-50 h-full focus:outline-none relative z-50 transition;
+    @apply lg:bg-blue-700 w-50 lg:w-70 flex items-center justify-center text-slate-50 h-full focus:outline-none relative z-50 transition;
     @apply lg:hover:bg-blue-800;
 
     &.bk-is-active {
@@ -86,7 +86,7 @@
     }
 
     svg {
-      @apply w-30 h-20 lg:w-50 lg:h-40 fill-current pointer-events-none;
+      @apply w-[24px] h-[24px] fill-current pointer-events-none;
     }
   }
 
@@ -234,15 +234,6 @@
   }
 }
 
-.bk-touch-bar-enter-active,
-.bk-touch-bar-leave-active {
-  transition: 0.2s ease-in-out;
-}
-.bk-touch-bar-enter-from,
-.bk-touch-bar-leave-to {
-  transform: translateY(100%);
-}
-
 .bk-translations {
   @apply relative text-xs lg:text-sm xl:text-base;
   .bk-toolbar-button {
@@ -272,13 +263,4 @@
       @apply appearance-none opacity-0 absolute top-0 left-0 w-full h-full cursor-pointer;
     }
   }
-}
-
-.bk-toolbar-enter-active,
-.bk-toolbar-leave-active {
-  @apply transition ease-swing;
-}
-.bk-toolbar-enter-from,
-.bk-toolbar-leave-to {
-  transform: translateY(-100%);
 }

@@ -102,20 +102,6 @@
   }
 }
 
-.bk-editable-enter-active,
-.bk-editable-leave-active {
-  transition: 0.25s ease-in-out;
-  transition-timing-function: cubic-bezier(0.13, 0.63, 0.55, 1);
-  @apply origin-bottom;
-}
-.bk-editable-enter-from,
-.bk-editable-leave-to {
-  @apply opacity-0 -translate-y-60;
-  @screen md {
-    @apply opacity-0 translate-y-60 scale-75;
-  }
-}
-
 .bk-editable-field-contenteditable {
   @apply p-10;
 

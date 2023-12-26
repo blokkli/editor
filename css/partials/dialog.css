@@ -9,11 +9,11 @@
   .bk-dialog-inner {
     @apply w-full lg:min-w-[450px] max-w-screen-xl bg-white shadow-2xl md:rounded-md  relative z-20 max-h-full min-h-0 overflow-hidden h-full lg:h-auto;
     @apply flex flex-col;
-    @apply bg-slate-950 md:bg-white;
+    @apply bg-black md:bg-white;
   }
 
   .bk-dialog-header {
-    @apply flex items-center p-15 lg:p-20 bg-slate-950 text-white md:border-b md:border-b-slate-300 md:bg-slate-100 relative overflow-hidden md:text-slate-800;
+    @apply flex items-center p-15 lg:p-20 bg-black text-white md:border-b md:border-b-slate-300 md:bg-slate-100 relative overflow-hidden md:text-slate-800;
     flex: 0 0 auto;
     @apply text-lg md:text-lg xl:text-2xl;
     h3 {
@@ -64,24 +64,4 @@
 
 .bk-message-info {
   @apply font-sans text-base bg-yellow-50 p-10 border border-yellow-400 rounded text-yellow-900 my-20;
-}
-
-.bk-slide-up-enter-active,
-.bk-slide-up-leave-active {
-  @apply transition ease-swing duration-300;
-  .bk-dialog-inner {
-    @apply transition ease-swing duration-300;
-  }
-  .bk-dialog-background {
-    @apply transition ease-swing duration-300;
-  }
-}
-.bk-slide-up-enter-from,
-.bk-slide-up-leave-to {
-  .bk-dialog-background {
-    @apply opacity-0;
-  }
-  .bk-dialog-inner {
-    @apply translate-y-full lg:translate-y-0 lg:scale-90 lg:opacity-0;
-  }
 }

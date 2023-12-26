@@ -73,14 +73,14 @@ const animation = animationProvider()
 const keyboard = keyboardProvider(animation)
 const dom = domProvider()
 const storage = storageProvider()
-const ui = uiProvider()
+const ui = uiProvider(storage)
 const text = textProvider(context)
 const state = await editStateProvider(adapter, context)
 const selection = selectionProvider(dom, state)
 const types = await typesProvider(adapter, selection)
 
 const originalThemeColor = ref('')
-const THEME_COLOR = '#020617'
+const THEME_COLOR = 'black'
 
 const onContextMenu = (e: Event) => {
   e.preventDefault()

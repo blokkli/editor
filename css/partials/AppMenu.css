@@ -92,12 +92,3 @@
     @apply w-25 h-25 fill-current pointer-events-none;
   }
 }
-
-.bk-menu-enter-active,
-.bk-menu-leave-active {
-  @apply transition ease-swing duration-200;
-}
-.bk-menu-enter-from,
-.bk-menu-leave-to {
-  transform: translateX(-100%);
-}

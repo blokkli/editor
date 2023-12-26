@@ -14,9 +14,9 @@
 .bk-settings-ui {
   @apply flex gap-15;
   li {
-    @apply relative flex-1;
+    @apply relative;
     label {
-      @apply block cursor-pointer;
+      @apply block cursor-pointer w-[200px];
     }
     input {
       @apply appearance-none absolute top-0 left-0 w-full h-full cursor-pointer opacity-0;

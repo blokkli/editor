@@ -1,6 +1,6 @@
 <template>
   <TransitionGroup
-    name="bk-sortli"
+    :name="ui.useAnimations.value ? 'bk-sortli' : undefined"
     tag="div"
     ref="list"
     @mousedown.capture="onMouseDown"
@@ -25,7 +25,7 @@ const props = defineProps<{
   useSelection?: boolean
 }>()
 
-const { selection, eventBus, dom, keyboard, ui, animation } = useBlokkli()
+const { selection, eventBus, dom, keyboard, ui } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'select', id: string): void
@@ -52,6 +52,9 @@ const shouldHandleEvent = (e: TouchEvent | MouseEvent) => {
 }
 
 const beforeLeave = (el: Element) => {
+  if (!ui.useAnimations.value) {
+    return
+  }
   if (el instanceof HTMLElement) {
     const animatorId = Math.round(Math.random() * 1000000000000).toString()
     el.dataset.animatorId = animatorId
@@ -71,6 +74,9 @@ const beforeLeave = (el: Element) => {
 }
 
 const onLeave = (el: Element, done: Function) => {
+  if (!ui.useAnimations.value) {
+    return done()
+  }
   if (el instanceof HTMLElement) {
     el.style.height = '0px'
   }

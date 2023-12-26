@@ -440,9 +440,10 @@ function onAnimationFrame() {
   if (animationTarget.value) {
     // Check if the current offset is close enough to the target offset
     if (
-      Math.abs(offset.value.x - animationTarget.value.x) < 1 &&
-      Math.abs(offset.value.y - animationTarget.value.y) < 1 &&
-      Math.abs(scale.value - animationTarget.value.scale) < 0.02
+      !ui.useAnimations.value ||
+      (Math.abs(offset.value.x - animationTarget.value.x) < 1 &&
+        Math.abs(offset.value.y - animationTarget.value.y) < 1 &&
+        Math.abs(scale.value - animationTarget.value.scale) < 0.02)
     ) {
       // We have reached our target.
       updateOffset(animationTarget.value.x, animationTarget.value.y)

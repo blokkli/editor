@@ -1,4 +1,5 @@
 @import './partials/preflight.css';
+@import './partials/transitions.css';
 @import './partials/actions.css';
 @import './partials/toolbar.css';
 @import './partials/history.css';
@@ -210,7 +211,7 @@ html {
 .bk-body.bk-is-selecting {
   .bk-main-canvas {
     .draggable[data-is-selected='false'] {
-      @apply mobile-only:outline-dashed mobile-only:outline-slate-400 mobile-only:outline-offset-0 mobile-only:outline-2;
+      @apply mobile-only:outline-dashed mobile-only:outline-slate-400 mobile-only:outline-offset-0 mobile-only:outline-1;
     }
   }
 }
@@ -291,22 +292,6 @@ html {
   button {
     @apply w-full  h-full min-h-0 rounded-none;
   }
-}
-
-.bk-sortli-leave-active {
-  transition: 0.3s ease;
-  transition-property: height, width;
-}
-.bk-sortli-enter-active {
-  transition: 0.3s ease all;
-}
-
-.bk-sortli-leave-to {
-  opacity: 0;
-}
-.bk-sortli-enter-from {
-  opacity: 0;
-  transform: scale(0.9);
 }
 
 .bk-lead {

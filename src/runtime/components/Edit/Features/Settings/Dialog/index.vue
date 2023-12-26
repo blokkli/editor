@@ -7,10 +7,7 @@
     @cancel="$emit('cancel')"
   >
     <div class="bk bk-dialog-form bk-settings">
-      <div
-        v-if="importFeatureEnabled || artboardFeatureAvailable"
-        class="bk-form-section"
-      >
+      <div class="bk-form-section">
         <h3 class="bk-form-label">
           {{ text('settingsBehaviour') }}
         </h3>
@@ -27,6 +24,13 @@
               <input v-model="persistArtboard" type="checkbox" class="peer" />
               <div />
               <span>{{ text('settingsPersistArtboard') }}</span>
+            </label>
+          </li>
+          <li>
+            <label class="bk-checkbox-toggle">
+              <input v-model="useAnimations" type="checkbox" class="peer" />
+              <div />
+              <span>{{ text('settingsUseAnimations') }}</span>
             </label>
           </li>
         </ul>
@@ -121,6 +125,7 @@ const listOrientation = storage.use<'horizontal' | 'vertical'>(
   'listOrientation',
   'vertical',
 )
+const useAnimations = storage.use('useAnimations', true)
 
 const artboardFeatureAvailable = computed(
   () => availableFeaturesAtBuild.includes('Artboard') && !ui.isMobile.value,

@@ -6,6 +6,7 @@ import {
   ref,
 } from 'vue'
 import { eventBus } from './eventBus'
+import type { BlokkliStorageProvider } from './storageProvider'
 
 export type BlokkliUiProvider = {
   rootElement: () => HTMLElement
@@ -21,15 +22,18 @@ export type BlokkliUiProvider = {
   isDesktop: ComputedRef<boolean>
   isArtboard: () => boolean
   isAnimating: Ref<boolean>
+  useAnimations: ComputedRef<boolean>
 }
 
-export default function (): BlokkliUiProvider {
+export default function (storage: BlokkliStorageProvider): BlokkliUiProvider {
   let cachedRootElement: HTMLElement | null = null
   let cachedArtboardElement: HTMLElement | null = null
   let cachedProviderElement: HTMLElement | null = null
 
   const menuIsOpen = ref(false)
   const isAnimating = ref(false)
+  const useAnimationsSetting = storage.use('useAnimations', true)
+  const useAnimations = computed(() => useAnimationsSetting.value)
 
   const artboardElement = () => {
     if (cachedArtboardElement) {
@@ -129,5 +133,6 @@ export default function (): BlokkliUiProvider {
     isDesktop,
     isArtboard,
     isAnimating,
+    useAnimations,
   }
 }

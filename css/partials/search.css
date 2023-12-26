@@ -135,19 +135,3 @@
 .bk-toolbar-button.bk-is-search .bk-tooltip {
   @apply left-auto right-3;
 }
-
-.bk-search-enter-active,
-.bk-search-leave-active {
-  @apply transition ease-swing;
-}
-.bk-search-enter-from,
-.bk-search-leave-to {
-  @apply opacity-0;
-}
-
-.bk-search-enter-from {
-  @apply translate-x-full;
-}
-.bk-search-leave-to {
-  @apply translate-x-full;
-}

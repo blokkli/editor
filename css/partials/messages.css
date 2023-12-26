@@ -31,12 +31,3 @@
     }
   }
 }
-
-.bk-message-enter-active,
-.bk-message-leave-active {
-  @apply transition;
-}
-.bk-message-enter-from,
-.bk-message-leave-to {
-  @apply translate-y-full;
-}
