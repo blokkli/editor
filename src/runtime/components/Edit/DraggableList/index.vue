@@ -40,6 +40,7 @@
       :data-host-field-name="name"
       :data-is-nested="isNested"
       :data-is-new="item.isNew"
+      :data-is-selected="item.selected"
       :data-refresh-key="state.refreshKey.value"
       :class="{ 'bk-is-selected': item.selected }"
       class="draggable"

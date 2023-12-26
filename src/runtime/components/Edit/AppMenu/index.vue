@@ -2,7 +2,7 @@
   <Teleport to="#bk-toolbar-menu">
     <div class="bk-toolbar-menu">
       <button class="bk-toolbar-menu-button" @click.prevent.stop="ui.menu.open">
-        <Icon name="logo" />
+        <Icon name="menu" />
       </button>
     </div>
   </Teleport>

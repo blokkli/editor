@@ -1,5 +1,5 @@
 <template>
-  <Teleport v-if="!isDetached" to="#bk-sidebar-tabs">
+  <Teleport v-if="!isRenderedDetached" to="#bk-sidebar-tabs">
     <button
       :class="{ 'is-active': activeSidebar === id }"
       :disabled="editOnly && !state.canEdit.value"
@@ -46,7 +46,7 @@
       <div class="bk">
         <div class="bk-sidebar-title">
           <span>{{ title }}</span>
-          <button @click.prevent.stop="onDetach">
+          <button v-if="!ui.isMobile.value" @click.prevent.stop="onDetach">
             <Icon name="expand" />
           </button>
         </div>

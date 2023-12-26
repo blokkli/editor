@@ -1,10 +1,10 @@
 <template>
   <div
+    ref="el"
     class="bk-sidebar-detached"
     :style="style"
     tabindex="10"
     @mousedown.stop="onSidebarMouseDown"
-    ref="el"
   >
     <div class="bk">
       <div class="bk-sidebar-title" @mousedown="onMouseDown">
