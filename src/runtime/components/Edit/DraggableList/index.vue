@@ -4,21 +4,21 @@
     class="bk-draggable-list-container"
     :class="{ 'is-empty': !list.length }"
     :data-field-name="name"
-    :data-field-label="label"
+    :data-field-label="fieldConfig?.label"
     :data-field-is-nested="isNested"
     :data-host-entity-type="entity.type"
     :data-host-entity-uuid="entity.uuid"
     :data-host-entity-bundle="entity.bundle"
     :data-field-key="fieldKey"
     :data-field-allowed-bundles="allowedBundles"
-    :data-field-cardinality="cardinality"
+    :data-field-cardinality="fieldConfig?.cardinality"
     @select="onSelect"
     @action="onAction"
   >
     <BlokkliItem
       v-for="(item, i) in renderList"
-      v-memo="[item.selected]"
       :key="item.uuid"
+      v-memo="[item.selected]"
       :uuid="item.uuid"
       :bundle="item.bundle"
       :is-new="item.isNew"
@@ -64,13 +64,20 @@ const { state, eventBus, types, dom, keyboard, selection } = useBlokkli()
 const props = defineProps<{
   name: string
   fieldKey: string
-  label?: string
   list: BlokkliFieldListItem[]
   entity: BlokkliEntityContext
-  cardinality: number
   tag?: string
   isNested: boolean
 }>()
+
+const fieldConfig = computed(() => {
+  return state.fieldConfig.value.find(
+    (v) =>
+      v.name === props.name &&
+      v.entityType === props.entity.type &&
+      v.entityBundle === props.entity.bundle,
+  )
+})
 
 type RenderedListItem = BlokkliFieldListItem & { selected: boolean }
 

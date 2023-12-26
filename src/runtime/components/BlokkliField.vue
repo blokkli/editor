@@ -4,8 +4,6 @@
     v-if="isEditing && canEdit && !isInReusable"
     :list="filteredList"
     :name="name"
-    :label="label"
-    :cardinality="cardinality"
     :entity="entity"
     :field-key="fieldKey!"
     :class="[
@@ -89,10 +87,7 @@ if (!entity) {
 const props = withDefaults(
   defineProps<{
     name: string
-    label?: string
-    cardinality?: number
     list?: BlokkliFieldListItem[]
-    canEdit?: boolean
     tag?: string
     fieldListType?: ValidFieldListTypes
     editOnly?: boolean
@@ -102,17 +97,17 @@ const props = withDefaults(
   {
     list: () => [],
     tag: 'div',
-    label: '',
-    cardinality: -1,
-    canEdit: false,
     fieldListType: 'default',
     listClass: '',
     nonEmptyClass: '',
   },
 )
 
+// @TODO: How to canEdit?
+const canEdit = ref(true)
+
 const fieldKey = computed(() => {
-  if (props.canEdit && !isPreview) {
+  if (canEdit.value && !isPreview) {
     return entity.uuid + ':' + props.name
   }
 })

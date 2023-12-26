@@ -18,6 +18,7 @@ import type {
   BlokkliValidation,
   MutateWithLoadingStateFunction,
   BlokkliEditMode,
+  BlokkliFieldConfig,
 } from '#blokkli/types'
 import { removeDroppedElements, falsy } from '#blokkli/helpers'
 import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
@@ -44,6 +45,7 @@ export type BlokkliStateProvider = {
   editMode: Readonly<Ref<BlokkliEditMode>>
   canEdit: ComputedRef<boolean>
   isLoading: Readonly<Ref<boolean>>
+  fieldConfig: ComputedRef<BlokkliFieldConfig[]>
 }
 
 export default async function (
@@ -198,6 +200,12 @@ export default async function (
     computed(() => mutatedFields.value),
   )
 
+  const loadedFieldConfig = await adapter.getFieldConfig()
+
+  const fieldConfig = computed(() => {
+    return loadedFieldConfig
+  })
+
   await loadState()
 
   return {
@@ -214,5 +222,6 @@ export default async function (
     editMode,
     canEdit,
     isLoading: readonly(isLoading),
+    fieldConfig,
   }
 }

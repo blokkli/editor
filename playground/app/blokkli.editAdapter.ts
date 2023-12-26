@@ -1,14 +1,20 @@
 import { defineBlokkliEditAdapter } from '#blokkli/adapter'
 import type { BlokkliAdapter, MutationResponseLike } from '#blokkli/adapter'
 import { falsy } from '#blokkli/helpers'
-import type { BlokkliComment, BlokkliLibraryItem } from '#blokkli/types'
+import type {
+  BlokkliComment,
+  BlokkliFieldConfig,
+  BlokkliLibraryItem,
+} from '#blokkli/types'
 import { allTypes } from './mock/allTypes'
 import { availableTypes } from './mock/availableTypes'
 import { conversions } from './mock/conversions'
 import { entityStorageManager } from './mock/entityStorage'
 import { state, editState, mapBlockItem } from './mock/state'
+import { getBlockBundles } from './mock/state/Block'
 import type { MutatedState } from './mock/state/EditState'
 import type { ContentPage } from './mock/state/Entity/Content'
+import { FieldBlocks } from './mock/state/Field/Blocks'
 import type { MediaImage, MediaVideo } from './mock/state/Media/Media'
 import { transforms } from './mock/transforms'
 
@@ -410,6 +416,39 @@ export default defineBlokkliEditAdapter((ctx) => {
           preceedingUuid: e.preceedingUuid,
         })
       }
+    },
+
+    getFieldConfig() {
+      const entity = getEntity()
+      const fields: BlokkliFieldConfig[] = []
+
+      entity.getBlockFields().forEach((field) => {
+        fields.push({
+          name: field.id,
+          label: field.label,
+          cardinality: field.cardinality,
+          entityType: entity.entityType,
+          entityBundle: entity.bundle,
+          canEdit: true,
+        })
+      })
+
+      getBlockBundles().forEach((blockBundle) => {
+        blockBundle.getFieldDefintions().forEach((field) => {
+          if (field instanceof FieldBlocks) {
+            fields.push({
+              name: field.id,
+              label: field.label,
+              cardinality: field.cardinality,
+              entityType: 'block',
+              entityBundle: blockBundle.bundle,
+              canEdit: true,
+            })
+          }
+        })
+      })
+
+      return Promise.resolve(fields)
     },
   }
 

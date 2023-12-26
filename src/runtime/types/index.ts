@@ -145,6 +145,15 @@ export type BlokkliMutatedField = {
   list: BlokkliFieldListItem[]
 }
 
+export type BlokkliFieldConfig = {
+  name: string
+  entityType: string
+  entityBundle: string
+  label: string
+  cardinality: number
+  canEdit: boolean
+}
+
 export type BlokkliEntityContext = {
   uuid: string
   type: string

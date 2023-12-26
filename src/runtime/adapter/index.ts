@@ -25,6 +25,7 @@ import type {
   AssistantResult,
   DraggableHostData,
   DetachReusableBlockEvent,
+  BlokkliFieldConfig,
 } from './../types'
 
 export interface MutationResponseLike<T> {
@@ -79,6 +80,11 @@ export interface BlokkliAdapter<T> {
    * Get all possible transform plugins.
    */
   getTransformPlugins(): Promise<BlokkliTransformPlugin[]>
+
+  /**
+   * Get the field configurations.
+   */
+  getFieldConfig(): Promise<BlokkliFieldConfig[]>
 
   /**
    * Apply a transform plugin.

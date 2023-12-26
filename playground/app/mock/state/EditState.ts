@@ -1,5 +1,5 @@
 import { falsy } from '#blokkli/helpers'
-import type { BlokkliMutatedField, BlokkliMutationItem } from '#blokkli/types'
+import type { BlokkliFieldConfig, BlokkliMutatedField, BlokkliMutationItem } from '#blokkli/types'
 import { entityStorageManager } from '../entityStorage'
 import { createMutation, type MutationArgsMap } from '../plugins/mutations'
 import { mapBlockItem } from '../state'
