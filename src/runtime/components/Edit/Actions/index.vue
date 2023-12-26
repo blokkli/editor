@@ -76,7 +76,7 @@ import type { AnimationFrameEvent, KeyPressedEvent } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
 import type { PluginMountEvent, PluginUnmountEvent } from '#blokkli/types'
 
-const { selection, eventBus, text, types, state, ui, animation } = useBlokkli()
+const { selection, eventBus, text, types, state, ui } = useBlokkli()
 
 const editingEnabled = computed(() => state.editMode.value === 'editing')
 
@@ -146,8 +146,10 @@ function onAnimationFrame(e: AnimationFrameEvent) {
     const rect = el.getBoundingClientRect()
     x.value = Math.round(
       Math.min(
-        Math.max(rect.x, rootRect.x + PADDING),
-        window.innerWidth - controlsWidth - PADDING * 2,
+        Math.max(rect.x, ui.visibleViewportPadded.value.x),
+        ui.visibleViewportPadded.value.x +
+          ui.visibleViewportPadded.value.width -
+          controlsWidth,
       ),
     )
     y.value = Math.round(

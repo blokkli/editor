@@ -23,7 +23,10 @@
     <div
       ref="wrapper"
       class="bk bk-add-list bk-control"
-      :class="[{ 'bk-is-active': isActive }, 'bk-is-' + listOrientation]"
+      :class="[
+        { 'bk-is-active': isActive },
+        'bk-is-' + ui.addListOrientation.value,
+      ]"
       @wheel.capture="onWheel"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
@@ -48,22 +51,12 @@ import {
 } from '#imports'
 import { Sortli } from '#blokkli/components'
 import { PluginSidebar } from '#blokkli/plugins'
-import type { AddListOrientation } from '#blokkli/types'
 
-const { state, storage, ui, text, eventBus } = useBlokkli()
+const { state, ui, text, eventBus } = useBlokkli()
 
-const listOrientationSetting = storage.use<AddListOrientation>(
-  'listOrientation',
-  'vertical',
-)
+const isSidebar = computed(() => ui.addListOrientation.value === 'sidebar')
 
-const listOrientation = computed<AddListOrientation>(() =>
-  ui.isMobile.value ? 'horizontal' : listOrientationSetting.value,
-)
-
-const isSidebar = computed(() => listOrientation.value === 'sidebar')
-
-watch(listOrientation, () => {
+watch(ui.addListOrientation, () => {
   setRootClasses()
   nextTick(() => {
     eventBus.emit('add-list:change')
@@ -87,12 +80,12 @@ function onMouseLeave() {
 }
 
 const onWheel = (e: WheelEvent) => {
-  if (listOrientation.value === 'horizontal' && e.deltaX) {
+  if (ui.addListOrientation.value === 'horizontal' && e.deltaX) {
     e.stopPropagation()
     return
   }
 
-  if (listOrientation.value === 'vertical' && e.deltaY) {
+  if (ui.addListOrientation.value === 'vertical' && e.deltaY) {
     e.stopPropagation()
   }
 }
@@ -101,9 +94,9 @@ function setRootClasses() {
   document.documentElement.classList.remove('bk-has-sidebar-bottom')
   document.documentElement.classList.remove('bk-has-sidebar-left')
 
-  if (listOrientation.value === 'horizontal') {
+  if (ui.addListOrientation.value === 'horizontal') {
     document.documentElement.classList.add('bk-has-sidebar-bottom')
-  } else if (listOrientation.value === 'vertical') {
+  } else if (ui.addListOrientation.value === 'vertical') {
     document.documentElement.classList.add('bk-has-sidebar-left')
   }
 }

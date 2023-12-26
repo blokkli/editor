@@ -26,7 +26,7 @@
   />
 
   <Teleport to="body">
-    <PreviewFrame v-if="previewVisible" />
+    <PreviewFrame v-if="previewVisible && !ui.isMobile.value" />
 
     <Transition appear name="bk-slide-up">
       <DialogModal

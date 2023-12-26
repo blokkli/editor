@@ -7,6 +7,7 @@ import {
 } from 'vue'
 import { eventBus } from './eventBus'
 import type { BlokkliStorageProvider } from './storageProvider'
+import type { AddListOrientation, Rectangle } from '#blokkli/types'
 
 export type BlokkliUiProvider = {
   rootElement: () => HTMLElement
@@ -23,6 +24,10 @@ export type BlokkliUiProvider = {
   isArtboard: () => boolean
   isAnimating: Ref<boolean>
   useAnimations: ComputedRef<boolean>
+  toolbarHeight: ComputedRef<number>
+  visibleViewport: ComputedRef<Rectangle>
+  visibleViewportPadded: ComputedRef<Rectangle>
+  addListOrientation: ComputedRef<AddListOrientation>
 }
 
 export default function (storage: BlokkliStorageProvider): BlokkliUiProvider {
@@ -81,13 +86,14 @@ export default function (storage: BlokkliStorageProvider): BlokkliUiProvider {
   }
 
   const viewportWidth = ref(window.innerWidth)
+  const viewportHeight = ref(window.innerHeight)
   const isMobile = computed(() => viewportWidth.value < 768)
   const isDesktop = computed(() => viewportWidth.value > 1024)
-
   let resizeTimeout: any = null
 
   const onResize = () => {
     viewportWidth.value = window.innerWidth
+    viewportHeight.value = window.innerHeight
 
     clearTimeout(resizeTimeout)
 
@@ -106,8 +112,83 @@ export default function (storage: BlokkliStorageProvider): BlokkliUiProvider {
       : document.documentElement.classList.remove('bk-is-animating')
   })
 
+  const toolbarHeight = computed(() => {
+    if (isMobile.value) {
+      return 80
+    }
+
+    return 50
+  })
+
+  const previewVisible = storage.use('preview:visible', false)
+  const activeSidebar = storage.use('sidebar:active', '')
+  const listOrientationSetting = storage.use<AddListOrientation>(
+    'listOrientation',
+    'vertical',
+  )
+
+  const addListOrientation = computed<AddListOrientation>(() =>
+    isMobile.value ? 'horizontal' : listOrientationSetting.value,
+  )
+
+  const visibleViewportX = computed<number>(() => {
+    let x = 0
+    if (previewVisible.value && !isMobile.value) {
+      x += 400
+    }
+    if (addListOrientation.value === 'vertical') {
+      x += 70
+    }
+    return x
+  })
+  const visibleViewportY = computed<number>(() => {
+    return toolbarHeight.value
+  })
+  const visibleViewportWidth = computed<number>(() => {
+    let width = viewportWidth.value - visibleViewportX.value
+    if (activeSidebar.value) {
+      // Chosen by fair dice roll.
+      width -= 351
+    }
+    return width
+  })
+  const visibleViewportHeight = computed<number>(() => {
+    let height = viewportHeight.value - visibleViewportY.value
+
+    if (addListOrientation.value === 'horizontal') {
+      if (isMobile.value) {
+        height -= 50
+      } else {
+        height -= 70
+      }
+    }
+
+    return height
+  })
+
+  const padding = computed(() => 10)
+
+  const visibleViewport = computed<Rectangle>(() => {
+    return {
+      x: visibleViewportX.value,
+      y: visibleViewportY.value,
+      width: visibleViewportWidth.value,
+      height: visibleViewportHeight.value,
+    }
+  })
+
+  const visibleViewportPadded = computed<Rectangle>(() => {
+    return {
+      x: visibleViewportX.value + padding.value,
+      y: visibleViewportY.value + padding.value,
+      width: visibleViewportWidth.value - 2 * padding.value,
+      height: visibleViewportHeight.value - 2 * padding.value,
+    }
+  })
+
   onMounted(async () => {
     viewportWidth.value = window.innerWidth
+    viewportHeight.value = window.innerHeight
     window.addEventListener('resize', onResize)
     document.documentElement.classList.add('bk-html-root')
     document.body.classList.add('bk-body')
@@ -134,5 +215,9 @@ export default function (storage: BlokkliStorageProvider): BlokkliUiProvider {
     isArtboard,
     isAnimating,
     useAnimations,
+    visibleViewport,
+    visibleViewportPadded,
+    toolbarHeight,
+    addListOrientation,
   }
 }

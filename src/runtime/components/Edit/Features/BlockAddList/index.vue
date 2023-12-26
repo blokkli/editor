@@ -11,7 +11,7 @@
       :key="i + (type.id || 'undefined') + renderKey"
       :label="type.label"
       :bundle="type.id"
-      :orientation="listOrientation"
+      :orientation="ui.addListOrientation.value"
       :disabled="!type.id || !selectableBundles.includes(type.id)"
       data-element-type="new"
       :data-item-bundle="type.id"
@@ -19,7 +19,8 @@
   </Teleport>
   <Teleport
     v-if="
-      listOrientation === 'sidebar' && generallyAvailableBundles.length > 10
+      ui.addListOrientation.value === 'sidebar' &&
+      generallyAvailableBundles.length > 10
     "
     to="#blokkli-add-list-sidebar-before"
   >
@@ -39,10 +40,7 @@
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, onMounted } from '#imports'
 import { AddListItem } from '#blokkli/components'
-import type {
-  DraggableExistingBlokkliItem,
-  AddListOrientation,
-} from '#blokkli/types'
+import type { DraggableExistingBlokkliItem } from '#blokkli/types'
 
 const {
   selection,
@@ -58,15 +56,6 @@ const {
 const searchText = ref('')
 
 const itemEntityType = runtimeConfig.itemEntityType
-
-const listOrientationSetting = storage.use<AddListOrientation>(
-  'listOrientation',
-  'vertical',
-)
-
-const listOrientation = computed<AddListOrientation>(() =>
-  ui.isMobile.value ? 'horizontal' : listOrientationSetting.value,
-)
 
 const sorts = storage.use<string[]>('sorts', [])
 

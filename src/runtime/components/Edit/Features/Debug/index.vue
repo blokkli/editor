@@ -32,6 +32,12 @@
       </section>
     </div>
   </PluginSidebar>
+
+  <Teleport v-if="showDebug" to="body">
+    <div class="bk-debug-visible-viewport" :style="visibleViewportOverlayStyle">
+      <div>Visible Viewport</div>
+    </div>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
@@ -40,9 +46,18 @@ import { useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
 import type { KeyPressedEvent } from '#blokkli/types'
 
-const { keyboard, selection, storage, eventBus } = useBlokkli()
+const { keyboard, selection, storage, eventBus, ui } = useBlokkli()
 
 const showDebug = storage.use('showDebug', false)
+
+const visibleViewportOverlayStyle = computed(() => {
+  return {
+    top: ui.visibleViewport.value.y + 'px',
+    left: ui.visibleViewport.value.x + 'px',
+    width: ui.visibleViewport.value.width + 'px',
+    height: ui.visibleViewport.value.height + 'px',
+  }
+})
 
 const onKeyPress = (e: KeyPressedEvent) => {
   if (e.code === '=' && e.meta) {
