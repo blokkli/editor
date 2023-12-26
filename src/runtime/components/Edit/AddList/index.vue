@@ -4,11 +4,12 @@
     id="add_list"
     :title="text('addListSidebarTitle')"
     render-always
-    icon="plus-box"
+    icon="plus"
     weight="-10"
     @updated="eventBus.emit('add-list:change')"
   >
     <div>
+      <div id="blokkli-add-list-sidebar-before" />
       <Sortli ref="typeList" class="bk bk-list-sidebar">
         <div id="blokkli-add-list-blocks"></div>
         <div id="blokkli-add-list-actions"></div>

@@ -336,8 +336,20 @@
         }
       }
     }
-    @container (min-width: 700px) {
+    @container (min-width: 800px) {
       @apply grid-cols-5;
+    }
+    @container (min-width: 1000px) {
+      @apply grid-cols-6;
+    }
+    @container (min-width: 1200px) {
+      @apply grid-cols-7;
+    }
+    @container (min-width: 1400px) {
+      @apply grid-cols-8;
+    }
+    @container (min-width: 1600px) {
+      @apply grid-cols-9;
     }
   }
   #blokkli-add-list-actions {
@@ -347,4 +359,8 @@
   .bk-add-list-drop {
     @apply opacity-0;
   }
+}
+
+.bk-list-sidebar-form {
+  @apply p-15;
 }

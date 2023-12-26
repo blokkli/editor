@@ -7,7 +7,7 @@
     @mousedown.stop="onSidebarMouseDown"
   >
     <div class="bk">
-      <div class="bk-sidebar-title" @mousedown="onMouseDown">
+      <div class="bk-sidebar-title" @mousedown="onMouseDown($event, 'move')">
         <slot name="icon">
           <Icon v-if="icon" :name="icon" />
         </slot>
@@ -19,6 +19,18 @@
     </div>
     <div class="bk-sidebar-detached-inner">
       <slot></slot>
+      <div
+        class="bk-sidebar-detached-handle bk-is-bottom"
+        @mousedown.stop.prevent="onMouseDown($event, 'resize-bottom')"
+      />
+      <div
+        class="bk-sidebar-detached-handle bk-is-right"
+        @mousedown.stop.prevent="onMouseDown($event, 'resize-right')"
+      />
+      <div
+        class="bk-sidebar-detached-handle bk-is-bottom-right"
+        @mousedown.stop.prevent="onMouseDown($event, 'resize-bottom-right')"
+      />
     </div>
   </div>
 </template>
@@ -54,18 +66,44 @@ const storedData = storage.use(storageKey, {
   viewportHeight: 0,
 })
 
+type MouseMode =
+  | 'move'
+  | 'resize-right'
+  | 'resize-bottom'
+  | 'resize-bottom-right'
+  | ''
+
 const isDragging = ref(false)
 const isResizing = ref(false)
+
+const mouseMode = ref<MouseMode>('')
 
 const x = ref(0)
 const y = ref(0)
 const width = ref(storedData.value.width)
 const height = ref(storedData.value.height)
 
-const startX = ref(0)
-const startY = ref(0)
 const startMouseX = ref(0)
 const startMouseY = ref(0)
+
+const rootCursor = computed(() => {
+  switch (mouseMode.value) {
+    case 'resize-bottom-right':
+      return 'se-resize'
+    case 'resize-bottom':
+      return 'ns-resize'
+    case 'resize-right':
+      return 'ew-resize'
+    case 'move':
+      return 'move'
+  }
+
+  return ''
+})
+
+watch(rootCursor, (cursor) => {
+  document.documentElement.style.cursor = cursor
+})
 
 const updateStored = () => {
   storedData.value = {
@@ -86,9 +124,8 @@ const style = computed(() => {
   }
 })
 
-const onMouseDown = (e: MouseEvent) => {
-  startX.value = x.value
-  startY.value = y.value
+const onMouseDown = (e: MouseEvent, mode: MouseMode) => {
+  mouseMode.value = mode
   startMouseX.value = e.clientX
   startMouseY.value = e.clientY
 
@@ -98,19 +135,40 @@ const onMouseDown = (e: MouseEvent) => {
 
 const setCoordinates = (newX: number, newY: number) => {
   x.value = Math.min(Math.max(newX, 0), window.innerWidth - width.value)
-  y.value = Math.max(newY, 50)
+  y.value = Math.min(Math.max(newY, 50), window.innerHeight - 40)
+}
+
+const setSizes = (newWidth?: number, newHeight?: number) => {
+  if (newWidth !== undefined) {
+    width.value = Math.min(Math.max(newWidth, 300), window.innerWidth - 300)
+  }
+  if (newHeight !== undefined) {
+    height.value = Math.min(Math.max(newHeight, 300), window.innerHeight - 50)
+  }
 }
 
 const onMouseMove = (e: MouseEvent) => {
-  setCoordinates(
-    startX.value + e.clientX - startMouseX.value,
-    startY.value + e.clientY - startMouseY.value,
-  )
+  if (mouseMode.value === 'move') {
+    setCoordinates(
+      storedData.value.x + e.clientX - startMouseX.value,
+      storedData.value.y + e.clientY - startMouseY.value,
+    )
+  } else if (mouseMode.value === 'resize-right') {
+    setSizes(storedData.value.width + e.clientX - startMouseX.value)
+  } else if (mouseMode.value === 'resize-bottom') {
+    setSizes(undefined, storedData.value.height + e.clientY - startMouseY.value)
+  } else if (mouseMode.value === 'resize-bottom-right') {
+    setSizes(
+      storedData.value.width + e.clientX - startMouseX.value,
+      storedData.value.height + e.clientY - startMouseY.value,
+    )
+  }
 }
 
-const onMouseUp = (e: MouseEvent) => {
+const onMouseUp = () => {
   isDragging.value = false
   isResizing.value = false
+  mouseMode.value = ''
   window.removeEventListener('mousemove', onMouseMove)
   window.removeEventListener('mouseup', onMouseUp)
 
@@ -118,26 +176,6 @@ const onMouseUp = (e: MouseEvent) => {
 }
 
 const el = ref<HTMLDivElement | null>(null)
-let timeout: any = null
-
-const resizeObserver = new ResizeObserver((entries) => {
-  const entry = entries[0]
-  if (!entry) {
-    return
-  }
-
-  clearTimeout(timeout)
-
-  if (!isResizing.value) {
-    return
-  }
-
-  timeout = setTimeout(() => {
-    width.value = Math.round(entry.contentRect.width)
-    height.value = Math.round(entry.contentRect.height)
-    updateStored()
-  }, 500)
-})
 
 const recalculatePositions = () => {
   const storedViewportWidth =
@@ -164,17 +202,10 @@ const onUiResized = () => {
 recalculatePositions()
 
 onMounted(() => {
-  if (el.value) {
-    resizeObserver.observe(el.value)
-  }
-
   eventBus.on('ui:resized', onUiResized)
 })
 
 onBeforeUnmount(() => {
-  if (el.value) {
-    resizeObserver.unobserve(el.value)
-  }
   window.removeEventListener('mousemove', onMouseMove)
   window.removeEventListener('mouseup', onMouseUp)
   eventBus.off('ui:resized', onUiResized)

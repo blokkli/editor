@@ -297,3 +297,11 @@ html {
 .bk-lead {
   @apply text-xl text-slate-600;
 }
+
+html:not(.bk-use-animations) {
+  *,
+  *:before,
+  *:after {
+    transition: none !important;
+  }
+}

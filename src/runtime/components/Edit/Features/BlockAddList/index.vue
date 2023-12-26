@@ -6,6 +6,7 @@
   >
     <AddListItem
       v-for="(type, i) in sortedList"
+      v-show="type.isVisible"
       :id="type.id"
       :key="i + (type.id || 'undefined') + renderKey"
       :label="type.label"
@@ -15,6 +16,23 @@
       data-element-type="new"
       :data-item-bundle="type.id"
     />
+  </Teleport>
+  <Teleport
+    v-if="
+      listOrientation === 'sidebar' && generallyAvailableBundles.length > 10
+    "
+    to="#blokkli-add-list-sidebar-before"
+  >
+    <div class="bk-list-sidebar-form">
+      <input
+        id="add_block_search"
+        v-model="searchText"
+        type="search"
+        class="bk-form-input"
+        :placeholder="text('searchInputPlaceholder')"
+        required
+      />
+    </div>
   </Teleport>
 </template>
 
@@ -26,8 +44,18 @@ import type {
   AddListOrientation,
 } from '#blokkli/types'
 
-const { selection, storage, types, context, runtimeConfig, ui, eventBus } =
-  useBlokkli()
+const {
+  selection,
+  storage,
+  types,
+  context,
+  runtimeConfig,
+  ui,
+  eventBus,
+  text,
+} = useBlokkli()
+
+const searchText = ref('')
 
 const itemEntityType = runtimeConfig.itemEntityType
 
@@ -154,12 +182,15 @@ const sortedList = computed(() => {
       }
       return 9999
     })
-    .filter((v) => {
-      if (ui.isMobile.value) {
-        return selectableBundles.value.includes(v.id)
+    .map((v) => {
+      return {
+        ...v,
+        isVisible: ui.isMobile.value
+          ? selectableBundles.value.includes(v.id)
+          : searchText.value
+          ? v.label.toLowerCase().includes(searchText.value.toLowerCase())
+          : true,
       }
-
-      return true
     })
 })
 

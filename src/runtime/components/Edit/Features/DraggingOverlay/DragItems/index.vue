@@ -152,7 +152,7 @@ const onAnimationFrame = () => {
     alpha += speed
   }
 
-  if (allRectsAtTarget) {
+  if (allRectsAtTarget || !ui.useAnimations.value) {
     rects.value = newRects.map((v) => {
       return {
         ...v,

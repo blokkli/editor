@@ -104,7 +104,6 @@ const onDetach = () => {
 
 const onAttach = () => {
   isDetached.value = false
-  activeSidebar.value = props.id
   emit('updated')
 }
 
