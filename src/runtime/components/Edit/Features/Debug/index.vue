@@ -37,6 +37,25 @@
     <div class="bk-debug-visible-viewport" :style="visibleViewportOverlayStyle">
       <div>Visible Viewport</div>
     </div>
+    <div
+      class="bk-debug-visible-viewport-padded"
+      :style="visibleViewportOverlayPaddedStyle"
+    >
+      <div>Visible Viewport Padded</div>
+    </div>
+    <div
+      class="bk-debug-viewport-blocking-rect"
+      v-for="(rect, i) in viewportBlockingRects"
+      :key="i"
+      :style="rect"
+    />
+
+    <div
+      class="bk-debug-viewport-lines"
+      v-for="(line, i) in linesRects"
+      :key="i"
+      :style="line"
+    />
   </Teleport>
 </template>
 
@@ -44,20 +63,74 @@
 import { useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
 import { PluginSidebar } from '#blokkli/plugins'
-import type { KeyPressedEvent } from '#blokkli/types'
+import type { KeyPressedEvent, Rectangle } from '#blokkli/types'
 
 const { keyboard, selection, storage, eventBus, ui } = useBlokkli()
 
 const showDebug = storage.use('showDebug', false)
 
-const visibleViewportOverlayStyle = computed(() => {
+const viewportBlockingRects = computed(() =>
+  ui.viewportBlockingRects.value.map(rectToStyle),
+)
+
+const rectToStyle = (rect: Rectangle) => {
   return {
-    top: ui.visibleViewport.value.y + 'px',
-    left: ui.visibleViewport.value.x + 'px',
-    width: ui.visibleViewport.value.width + 'px',
-    height: ui.visibleViewport.value.height + 'px',
+    top: rect.y + 'px',
+    left: rect.x + 'px',
+    width: rect.width + 'px',
+    height: rect.height + 'px',
   }
+}
+
+const linesRects = computed(() => {
+  const rects: any = []
+
+  ui.viewportBlockingRects.value.forEach((rect) => {
+    rects.push(
+      rectToStyle({
+        x: rect.x,
+        y: 0,
+        width: 1,
+        height: window.innerHeight,
+      }),
+    )
+    rects.push(
+      rectToStyle({
+        x: rect.x + rect.width,
+        y: 0,
+        width: 1,
+        height: window.innerHeight,
+      }),
+    )
+    rects.push(
+      rectToStyle({
+        x: 0,
+        y: rect.y,
+        width: window.innerWidth,
+        height: 1,
+      }),
+    )
+
+    rects.push(
+      rectToStyle({
+        x: 0,
+        y: rect.y + rect.height,
+        width: window.innerWidth,
+        height: 1,
+      }),
+    )
+  })
+
+  return rects
 })
+
+const visibleViewportOverlayStyle = computed(() =>
+  rectToStyle(ui.visibleViewport.value),
+)
+
+const visibleViewportOverlayPaddedStyle = computed(() =>
+  rectToStyle(ui.visibleViewportPadded.value),
+)
 
 const onKeyPress = (e: KeyPressedEvent) => {
   if (e.code === '=' && e.meta) {

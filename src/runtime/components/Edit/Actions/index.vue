@@ -12,9 +12,9 @@
         :style="innerStyle"
       >
         <div
+          id="bk-blokkli-item-actions-controls"
           ref="controlsEl"
           class="bk-blokkli-item-actions-controls"
-          id="bk-blokkli-item-actions-controls"
         >
           <div id="bk-blokkli-item-actions-title">
             <button
@@ -71,8 +71,12 @@ import {
   onUnmounted,
 } from '#imports'
 
-import { onlyUnique } from '#blokkli/helpers'
-import type { AnimationFrameEvent, KeyPressedEvent } from '#blokkli/types'
+import { intersects, onlyUnique } from '#blokkli/helpers'
+import type {
+  AnimationFrameEvent,
+  KeyPressedEvent,
+  Rectangle,
+} from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
 import type { PluginMountEvent, PluginUnmountEvent } from '#blokkli/types'
 
@@ -131,33 +135,107 @@ const innerStyle = computed(() => {
   }
 })
 
+// function findIdealPosition(
+//   blockingRects: Rectangle[],
+//   rectToPlace: Rectangle,
+//   box: Rectangle,
+// ): { x: number; y: number } {
+//   let idealX = rectToPlace.x
+//   let idealY = rectToPlace.y
+//
+//   for (const blockingRect of blockingRects) {
+//     if (intersects(rectToPlace, blockingRect)) {
+//       if (
+//         blockingRect.x + blockingRect.width <
+//         rectToPlace.x + rectToPlace.width
+//       ) {
+//         idealX = blockingRect.x + blockingRect.width
+//       } else {
+//         idealX = blockingRect.x - rectToPlace.width
+//       }
+//     }
+//   }
+//
+//   return {
+//     x: Math.min(
+//       Math.max(idealX, ui.visibleViewportPadded.value.x),
+//       ui.visibleViewportPadded.value.x +
+//         ui.visibleViewportPadded.value.width -
+//         rectToPlace.width,
+//     ),
+//     y: Math.min(
+//       Math.max(ui.visibleViewportPadded.value.y, idealY),
+//       ui.visibleViewportPadded.value.height +
+//         ui.visibleViewportPadded.value.y -
+//         rectToPlace.height,
+//     ),
+//   }
+// }
+
+const debugRect = ref({
+  top: '0px',
+  left: '0px',
+  width: '0px',
+  height: '0px',
+})
+
+function findIdealPosition(
+  blockingRects: Rectangle[],
+  rectToPlace: Rectangle,
+  box: Rectangle,
+): { x: number; y: number } {
+  let idealX = rectToPlace.x
+
+  // Find a non-blocking X position
+  for (const blockingRect of blockingRects) {
+    if (intersects(rectToPlace, blockingRect)) {
+      if (blockingRect.x + blockingRect.width < idealX + rectToPlace.width) {
+        idealX = blockingRect.x + blockingRect.width
+      } else {
+        idealX = blockingRect.x - rectToPlace.width
+      }
+    }
+  }
+
+  return {
+    x: Math.min(
+      Math.max(idealX, ui.visibleViewportPadded.value.x),
+      ui.visibleViewportPadded.value.x +
+        ui.visibleViewportPadded.value.width -
+        rectToPlace.width,
+    ),
+    y: Math.min(
+      Math.max(ui.visibleViewportPadded.value.y, rectToPlace.y),
+      ui.visibleViewportPadded.value.height +
+        ui.visibleViewportPadded.value.y -
+        rectToPlace.height,
+    ),
+  }
+}
+
 function onAnimationFrame(e: AnimationFrameEvent) {
   if (!selection.blocks.value.length) {
     return
   }
 
   const el = document.querySelector('.bk-selection')
-  const artboardEl = ui.artboardElement()
-  const artboardRect = artboardEl.getBoundingClientRect()
-  const rootRect = ui.rootElement().getBoundingClientRect()
-  const wrapperRect = ui.isArtboard() ? rootRect : artboardRect
   const controlsWidth = controlsEl.value ? controlsEl.value.scrollWidth : 500
   if (el && el instanceof HTMLElement) {
     const rect = el.getBoundingClientRect()
-    x.value = Math.round(
-      Math.min(
-        Math.max(rect.x, ui.visibleViewportPadded.value.x),
-        ui.visibleViewportPadded.value.x +
-          ui.visibleViewportPadded.value.width -
-          controlsWidth,
-      ),
+
+    const ideal = findIdealPosition(
+      ui.viewportBlockingRects.value,
+      {
+        x: rect.x,
+        y: rect.y - ACTIONS_HEIGHT - 15,
+        width: controlsWidth,
+        height: ACTIONS_HEIGHT,
+      },
+      ui.visibleViewportPadded.value,
     )
-    y.value = Math.round(
-      Math.min(
-        Math.max(rect.y - ACTIONS_HEIGHT - PADDING, wrapperRect.y + PADDING),
-        wrapperRect.height - PADDING,
-      ),
-    )
+
+    x.value = ideal.x
+    y.value = ideal.y
   }
 }
 

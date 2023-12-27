@@ -28,6 +28,9 @@ export type BlokkliUiProvider = {
   visibleViewport: ComputedRef<Rectangle>
   visibleViewportPadded: ComputedRef<Rectangle>
   addListOrientation: ComputedRef<AddListOrientation>
+
+  setViewportBlockingRectangle: (key: string, rect?: Rectangle) => void
+  viewportBlockingRects: ComputedRef<Rectangle[]>
 }
 
 export default function (storage: BlokkliStorageProvider): BlokkliUiProvider {
@@ -39,6 +42,16 @@ export default function (storage: BlokkliStorageProvider): BlokkliUiProvider {
   const isAnimating = ref(false)
   const useAnimationsSetting = storage.use('useAnimations', true)
   const useAnimations = computed(() => useAnimationsSetting.value)
+  const viewportBlockingRectsMap = ref<Record<string, Rectangle>>({})
+
+  const setViewportBlockingRectangle = (key: string, rect?: Rectangle) => {
+    if (!rect) {
+      delete viewportBlockingRectsMap.value[key]
+      return
+    }
+
+    viewportBlockingRectsMap.value[key] = rect
+  }
 
   const artboardElement = () => {
     if (cachedArtboardElement) {
@@ -168,6 +181,17 @@ export default function (storage: BlokkliStorageProvider): BlokkliUiProvider {
 
   const padding = computed(() => 10)
 
+  const viewportBlockingRects = computed<Rectangle[]>(() => {
+    return Object.values(viewportBlockingRectsMap.value).map((rect) => {
+      return {
+        x: rect.x - padding.value,
+        y: rect.y - padding.value,
+        width: rect.width + padding.value * 2,
+        height: rect.height + padding.value * 2,
+      }
+    })
+  })
+
   const visibleViewport = computed<Rectangle>(() => {
     return {
       x: visibleViewportX.value,
@@ -219,5 +243,7 @@ export default function (storage: BlokkliStorageProvider): BlokkliUiProvider {
     visibleViewportPadded,
     toolbarHeight,
     addListOrientation,
+    setViewportBlockingRectangle,
+    viewportBlockingRects,
   }
 }

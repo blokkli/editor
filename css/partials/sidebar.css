@@ -43,26 +43,22 @@
 }
 
 .bk-sidebar-detached {
-  @apply fixed top-0 left-0 bg-white z-sidebar rounded shadow flex flex-col;
+  @apply fixed top-0 left-0 bg-white z-sidebar rounded-md shadow-md flex flex-col overflow-hidden;
+  @apply border border-slate-400;
   &:focus-within {
     @apply z-sidebar-focused shadow-xl;
     .bk-sidebar-title {
-      @apply bg-blue-700 text-white;
+      @apply bg-slate-800 text-white;
 
       button:hover {
-        @apply bg-blue-800;
+        @apply bg-slate-700;
       }
-    }
-  }
-  &:not(:focus-within) {
-    .bk-sidebar-content > * {
-      /* @apply pointer-events-none; */
     }
   }
 
   .bk-sidebar-title {
     @apply cursor-move;
-    @apply flex bg-slate-300 select-none pl-10 font-semibold text-sm h-40 items-center text-slate-500;
+    @apply flex bg-slate-200 select-none pl-10 font-semibold text-sm h-40 items-center text-slate-500;
 
     > .bk-icon {
       @apply w-20 h-20 mr-5;
@@ -82,6 +78,7 @@
     }
   }
 }
+
 .bk-sidebar-detached-inner {
   @apply h-full flex flex-col relative;
 }
@@ -90,12 +87,12 @@
   @apply absolute z-50;
 
   &.bk-is-bottom {
-    @apply -bottom-5 h-15 w-full cursor-ns-resize;
+    @apply bottom-0 h-10 w-full cursor-ns-resize;
   }
   &.bk-is-right {
-    @apply -right-5 h-full w-15 cursor-ew-resize;
+    @apply right-0 h-full w-10 cursor-ew-resize;
   }
   &.bk-is-bottom-right {
-    @apply -right-5 -bottom-5 h-15 w-10 cursor-se-resize;
+    @apply right-0 bottom-0 h-10 w-10 cursor-se-resize;
   }
 }

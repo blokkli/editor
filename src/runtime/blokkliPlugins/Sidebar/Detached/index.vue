@@ -48,7 +48,7 @@ const props = defineProps<{
 
 defineEmits(['close'])
 
-const { storage, eventBus } = useBlokkli()
+const { storage, eventBus, ui } = useBlokkli()
 
 const storageKey = computed(() => 'sidebar:detached:size:' + props.id)
 
@@ -114,6 +114,7 @@ const updateStored = () => {
     viewportWidth: window.innerWidth,
     viewportHeight: window.innerHeight,
   }
+  ui.setViewportBlockingRectangle(storageKey.value, storedData.value)
 }
 
 const style = computed(() => {
@@ -193,6 +194,7 @@ const recalculatePositions = () => {
 
   storedData.value.viewportWidth = window.innerWidth
   storedData.value.viewportHeight = window.innerHeight
+  ui.setViewportBlockingRectangle(storageKey.value, storedData.value)
 }
 
 const onUiResized = () => {
@@ -203,11 +205,13 @@ recalculatePositions()
 
 onMounted(() => {
   eventBus.on('ui:resized', onUiResized)
+  ui.setViewportBlockingRectangle(storageKey.value, storedData.value)
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('mousemove', onMouseMove)
   window.removeEventListener('mouseup', onMouseUp)
   eventBus.off('ui:resized', onUiResized)
+  ui.setViewportBlockingRectangle(storageKey.value)
 })
 </script>
