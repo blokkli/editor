@@ -1,6 +1,5 @@
 import type { ComputedRef } from 'vue'
 import type {
-  BlokkliAvailableType,
   BlokkliComment,
   BlokkliConversionItem,
   BlokkliMappedState,
@@ -59,17 +58,12 @@ export interface BlokkliAdapter<T> {
    * For features that are always disabled, use the `alterFeatures` option of
    * the module to remove them entirely.
    */
-  getDisabledFeatures(): Promise<string[]>
+  getDisabledFeatures?: () => Promise<string[]>
 
   /**
    * Return a list of all types.
    */
   getAllTypes(): Promise<BlokkliItemType[]>
-
-  /**
-   * Get all available blokkli types for the current entity.
-   */
-  getAvailableTypes(): Promise<BlokkliAvailableType[]>
 
   /**
    * Get all possible conversions.

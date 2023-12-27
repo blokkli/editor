@@ -125,7 +125,7 @@
   }
 
   .bk-blokkli-item-options-radios.bk-is-color {
-    @apply flex items-stretch h-full px-5;
+    @apply flex items-stretch h-full px-10;
     label {
       @apply cursor-pointer h-full flex items-center px-5;
       div {
@@ -135,7 +135,7 @@
         @apply mr-1 cursor-pointer;
       }
       span {
-        @apply absolute top-0 text-[0px] left-0 w-full h-full rounded-[inherit] outline outline-transparent outline-offset-2;
+        @apply absolute top-0 text-[0px] left-0 w-full h-full rounded-[inherit] outline outline-2 outline-transparent outline-offset-2;
       }
       @media not all and (hover: none) {
         &:hover input:not(:checked) + span {

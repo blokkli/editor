@@ -17,7 +17,7 @@
   <PluginItemAction
     :title="text('addCommentToItem')"
     :active="showAddComment"
-    :weight="100"
+    weight="last"
     icon="comment"
     multiple
     @click="showAddComment = !showAddComment"

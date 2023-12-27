@@ -59,7 +59,7 @@ import { computed, useBlokkli } from '#imports'
 import { Sortli } from '#blokkli/components'
 import type { BlokkliFieldListItem, BlokkliEntityContext } from '#blokkli/types'
 
-const { state, eventBus, types, dom, keyboard, selection } = useBlokkli()
+const { state, eventBus, dom, keyboard, selection, types } = useBlokkli()
 
 const props = defineProps<{
   name: string
@@ -71,7 +71,7 @@ const props = defineProps<{
 }>()
 
 const fieldConfig = computed(() => {
-  return state.fieldConfig.value.find(
+  return types.fieldConfig.value.find(
     (v) =>
       v.name === props.name &&
       v.entityType === props.entity.type &&
@@ -95,13 +95,13 @@ const renderList = computed<RenderedListItem[]>(() => {
  */
 const allowedBundles = computed<string>(() => {
   return (
-    types.allowedTypes.value.find((v) => {
+    types.fieldConfig.value.find((v) => {
       return (
         v.entityType === props.entity.type &&
-        v.bundle === props.entity.bundle &&
-        v.fieldName === props.name
+        v.entityBundle === props.entity.bundle &&
+        v.name === props.name
       )
-    })?.allowedTypes || []
+    })?.allowedBundles || []
   ).join(',')
 })
 

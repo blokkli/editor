@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { DialogModal, FormOverlay } from '#blokkli/components'
+import { FormOverlay } from '#blokkli/components'
 import { falsy } from '#blokkli/helpers'
 import type { BlokkliFieldElement, BlokkliLibraryItem } from '#blokkli/types'
 import { ref, useBlokkli } from '#imports'
@@ -66,15 +66,15 @@ const searchText = ref('')
 const listEl = ref<HTMLDivElement | null>(null)
 const selectedItem = ref('')
 
-const allowedBundles = computed(() => {
+const allowedBundles = computed<string[]>(() => {
   return (
-    types.allowedTypes.value.filter((v) => {
+    types.fieldConfig.value.filter((v) => {
       return (
-        v.fieldName === props.field.name &&
-        v.bundle === props.field.hostEntityBundle &&
+        v.name === props.field.name &&
+        v.entityBundle === props.field.hostEntityBundle &&
         v.entityType === props.field.hostEntityType
       )
-    })[0]?.allowedTypes || []
+    })[0]?.allowedBundles || []
   )
 })
 

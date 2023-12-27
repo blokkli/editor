@@ -430,6 +430,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           entityType: entity.entityType,
           entityBundle: entity.bundle,
           canEdit: true,
+          allowedBundles: field.allowedBundles,
         })
       })
 
@@ -443,6 +444,7 @@ export default defineBlokkliEditAdapter((ctx) => {
               entityType: 'block',
               entityBundle: blockBundle.bundle,
               canEdit: true,
+              allowedBundles: field.allowedBundles,
             })
           }
         })

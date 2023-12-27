@@ -66,6 +66,9 @@
       }
     }
   }
+  .bk-blokkli-item-actions-buttons:last-child button.bk-is-last {
+    @apply lg:rounded-e-md;
+  }
 
   .bk-blokkli-item-actions-type-button {
     @apply flex items-center justify-between cursor-default md:min-w-[180px] text-slate-300 font-bold h-full pl-[9px] md:pr-15  rounded-l leading-none;
@@ -158,7 +161,7 @@
     /* @apply relative; */
   }
   .bk-blokkli-item-actions-comment-dropdown {
-    @apply absolute left-0 w-full bg-white p-15 shadow-xl-inverted;
+    @apply absolute left-0 w-full bg-white p-15 shadow-xl-inverted z-10;
     bottom: var(--bk-actions-height);
     @screen md {
       @apply top-full bottom-auto shadow-xl rounded-b;

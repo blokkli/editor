@@ -66,12 +66,12 @@ const allowedBundlesInList = computed<string[]>(() => {
   }
 
   return (
-    types.allowedTypes.value.find(
+    types.fieldConfig.value.find(
       (v) =>
-        v.fieldName === item.hostFieldName &&
+        v.name === item.hostFieldName &&
         v.entityType === item.hostType &&
-        v.bundle === item.hostBundle,
-    )?.allowedTypes || []
+        v.entityBundle === item.hostBundle,
+    )?.allowedBundles || []
   )
 })
 

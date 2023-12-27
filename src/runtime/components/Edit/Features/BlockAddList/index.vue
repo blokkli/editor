@@ -82,30 +82,32 @@ const getAllowedTypesForSelected = (
 ): string[] => {
   // If the selected bundle allows nested items, return the allowed bundles for it instead.
   if (types.itemBundlesWithNested.value.includes(p.itemBundle)) {
-    return types.allowedTypes.value
+    return types.fieldConfig.value
       .filter(
-        (v) => v.entityType === itemEntityType && v.bundle === p.itemBundle,
+        (v) =>
+          v.entityType === itemEntityType && v.entityBundle === p.itemBundle,
       )
-      .flatMap((v) => v.allowedTypes)
+      .flatMap((v) => v.allowedBundles)
       .filter(Boolean) as string[]
   }
   // If the selected bundle is inside a nested item, return the allowed bundles of the parent bundle.
   if (p.hostType === itemEntityType) {
-    return types.allowedTypes.value
+    return types.fieldConfig.value
       .filter(
-        (v) => v.entityType === itemEntityType && v.bundle === p.hostBundle,
+        (v) =>
+          v.entityType === itemEntityType && v.entityBundle === p.hostBundle,
       )
-      .flatMap((v) => v.allowedTypes)
+      .flatMap((v) => v.allowedBundles)
       .filter(Boolean) as string[]
   } else {
-    return types.allowedTypes.value
+    return types.fieldConfig.value
       .filter(
         (v) =>
           v.entityType === context.value.entityType &&
-          v.bundle === context.value.entityBundle &&
-          v.fieldName === p.hostFieldName,
+          v.entityBundle === context.value.entityBundle &&
+          v.name === p.hostFieldName,
       )
-      .flatMap((v) => v.allowedTypes)
+      .flatMap((v) => v.allowedBundles)
       .filter(Boolean) as string[]
   }
 }
@@ -119,12 +121,12 @@ const selectableBundles = computed(() => {
     activeField.value.hostEntityType === context.value.entityType
   ) {
     return (
-      types.allowedTypes.value.find((v) => {
+      types.fieldConfig.value.find((v) => {
         return (
-          v.bundle === context.value.entityBundle &&
-          v.fieldName === activeField.value?.name
+          v.entityBundle === context.value.entityBundle &&
+          v.name === activeField.value?.name
         )
-      })?.allowedTypes || []
+      })?.allowedBundles || []
     )
   }
 
@@ -133,22 +135,22 @@ const selectableBundles = computed(() => {
 
 const generallyAvailableBundles = computed(() => {
   const typesOnEntity = (
-    types.allowedTypes.value.filter((v) => {
+    types.fieldConfig.value.filter((v) => {
       return (
         v.entityType === context.value.entityType &&
-        v.bundle === context.value.entityBundle
+        v.entityBundle === context.value.entityBundle
       )
     }) || []
   )
-    .flatMap((v) => v.allowedTypes)
+    .flatMap((v) => v.allowedBundles)
     .filter(Boolean)
 
   const typesOnItems =
-    types.allowedTypes.value
+    types.fieldConfig.value
       .filter((v) => {
-        return typesOnEntity.includes(v.bundle)
+        return typesOnEntity.includes(v.entityBundle)
       })
-      .flatMap((v) => v.allowedTypes) || []
+      .flatMap((v) => v.allowedBundles) || []
 
   const allAllowedTypes = [...typesOnEntity, ...typesOnItems]
 

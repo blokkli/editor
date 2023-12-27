@@ -152,6 +152,7 @@ export type BlokkliFieldConfig = {
   label: string
   cardinality: number
   canEdit: boolean
+  allowedBundles: string[]
 }
 
 export type BlokkliEntityContext = {
@@ -229,13 +230,6 @@ export interface BlokkliLibraryItem {
   label?: string
   bundle: string
   item: BlokkliFieldListItem
-}
-
-export interface BlokkliAvailableType {
-  entityType: string
-  bundle: string
-  fieldName: string
-  allowedTypes?: string[]
 }
 
 export interface BlokkliImportItem {

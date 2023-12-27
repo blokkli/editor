@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="availableOptions.length"
     class="bk-blokkli-item-options"
     @click="onClick"
     @mouseleave="onMouseLeave"

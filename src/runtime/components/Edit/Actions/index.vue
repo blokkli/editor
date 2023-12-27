@@ -50,12 +50,13 @@
             />
           </div>
 
+          <div id="bk-blokkli-item-actions-after" />
+
           <div
             id="bk-blokkli-item-actions"
             class="bk-blokkli-item-actions-buttons"
           />
         </div>
-        <div id="bk-blokkli-item-actions-after" />
       </div>
     </div>
   </Teleport>

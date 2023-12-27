@@ -2,8 +2,8 @@
   <Teleport to="#bk-blokkli-item-actions">
     <button
       :disabled="isDisabled"
-      :class="{ 'bk-is-active': active }"
-      :style="{ order: weight || 0 }"
+      :class="{ 'bk-is-active': active, 'bk-is-last': weight === 'last' }"
+      :style="weight !== 'last' ? { order: weight || 0 } : undefined"
       @click.prevent.stop="onClick"
     >
       <slot name="icon">
@@ -71,7 +71,7 @@ const props = defineProps<{
   /**
    * The weight, used for positioning the button.
    */
-  weight?: number | string
+  weight?: number | string | 'last'
 
   icon?: BlokkliIcon
 }>()

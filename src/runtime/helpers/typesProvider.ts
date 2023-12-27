@@ -1,5 +1,5 @@
 import { type ComputedRef, computed, watch } from 'vue'
-import type { BlokkliAvailableType, BlokkliItemType } from '../types'
+import type { BlokkliFieldConfig, BlokkliItemType } from '../types'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import type { BlokkliAdapter } from '../adapter'
 import type { BlokkliSelectionProvider } from './selectionProvider'
@@ -14,8 +14,8 @@ export type BlokkliTypesProvider = {
   itemBundlesWithNested: ComputedRef<string[]>
   allowedTypesInList: ComputedRef<string[]>
   allTypes: ComputedRef<BlokkliItemType[]>
-  allowedTypes: ComputedRef<BlokkliAvailableType[]>
   getType: (bundle: string) => BlokkliBlockType | undefined
+  fieldConfig: ComputedRef<BlokkliFieldConfig[]>
 }
 
 export default async function (
@@ -24,9 +24,10 @@ export default async function (
 ): Promise<BlokkliTypesProvider> {
   const allTypesData = await adapter.getAllTypes()
   const allTypes = computed(() => allTypesData || [])
-  const allowedTypesData = await adapter.getAvailableTypes()
-  const allowedTypes = computed(() => allowedTypesData || [])
   const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
+
+  const loadedFieldConfig = await adapter.getFieldConfig()
+  const fieldConfig = computed(() => loadedFieldConfig)
 
   /**
    * The allowed bundles in the current field item list.
@@ -59,14 +60,14 @@ export default async function (
       fieldName = block.hostFieldName
     }
 
-    return allowedTypes.value
+    return fieldConfig.value
       .filter(
         (v) =>
           v.entityType === hostType &&
-          v.bundle === hostBundle &&
-          v.fieldName === fieldName,
+          v.entityBundle === hostBundle &&
+          v.name === fieldName,
       )
-      .flatMap((v) => v.allowedTypes)
+      .flatMap((v) => v.allowedBundles)
       .filter(Boolean) as string[]
   })
 
@@ -80,12 +81,13 @@ export default async function (
     if (hasNested) {
       // Get the nested item fields.
       const nestedFields =
-        allowedTypes.value
+        fieldConfig.value
           .filter(
             (v) =>
-              v.entityType === itemEntityType && v.bundle === item.itemBundle,
+              v.entityType === itemEntityType &&
+              v.entityBundle === item.itemBundle,
           )
-          .map((v) => v.fieldName) || []
+          .map((v) => v.name) || []
 
       // When we have exactly one nested item field, we can set the active
       // field key to this field. That way the UI will show this field is active
@@ -103,9 +105,9 @@ export default async function (
    */
   const itemBundlesWithNested = computed<string[]>(() => {
     return (
-      allowedTypes.value
+      fieldConfig.value
         .filter((v) => v.entityType === itemEntityType)
-        .map((v) => v.bundle) || []
+        .map((v) => v.entityBundle) || []
     )
   })
 
@@ -124,7 +126,7 @@ export default async function (
     itemBundlesWithNested,
     allowedTypesInList,
     allTypes,
-    allowedTypes,
     getType,
+    fieldConfig,
   }
 }
