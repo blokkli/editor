@@ -6,7 +6,7 @@
         <SpriteSymbol name="liip" class="h-30 aspect-[199/72]" />
       </div>
       <div>
-        <div class="font-semibold text-xs mb-20">Development sponsored by</div>
+        <div class="font-semibold text-xs mb-20">Development supported by</div>
         <SpriteSymbol name="basel" class="h-50 fill-current aspect-[683/249]" />
       </div>
     </div>
