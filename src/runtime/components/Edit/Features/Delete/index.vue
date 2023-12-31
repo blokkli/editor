@@ -21,17 +21,10 @@ const { state, adapter, eventBus, text } = useBlokkli()
 async function onClick(items: DraggableExistingBlokkliItem[]) {
   // Unselect all items.
   eventBus.emit('select:end', [])
-  if (items.length === 1) {
-    await state.mutateWithLoadingState(
-      adapter.deleteItem(items[0].uuid),
-      text('deleteError'),
-    )
-  } else if (items.length > 1) {
-    await state.mutateWithLoadingState(
-      adapter.deleteMultipleItems(items.map((v) => v.uuid)),
-      text('deleteMultipleError'),
-    )
-  }
+  await state.mutateWithLoadingState(
+    adapter.deleteBlocks(items.map((v) => v.uuid)),
+    text('deleteError'),
+  )
 }
 </script>
 

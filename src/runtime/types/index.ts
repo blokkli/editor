@@ -27,6 +27,7 @@ interface MutationResponseLike<T> {
 export type BlokkliFeature = {
   id: string
   componentPath: string
+  requiredAdapterMethods: string[]
 }
 
 export type MutateWithLoadingStateFunction = (

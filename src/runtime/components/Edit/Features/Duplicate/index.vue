@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli } from '#imports'
+import { useBlokkli, defineBlokkliFeature } from '#imports'
 
 import type {
   BlokkliFieldElement,
@@ -20,11 +20,15 @@ import type {
 } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
 
-const { adapter, state, text, selection, dom } = useBlokkli()
+const { state, text, selection, dom } = useBlokkli()
+
+const adapter = defineBlokkliFeature({
+  requiredAdapterMethods: ['duplicateBlocks'],
+})
 
 function onClick(items: DraggableExistingBlokkliItem[]) {
   state.mutateWithLoadingState(
-    adapter.duplicateItems(items.map((v) => v.uuid)),
+    adapter.duplicateBlocks(items.map((v) => v.uuid)),
     text('duplicateError'),
   )
 }

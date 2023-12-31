@@ -121,7 +121,7 @@ const onDrop = async (e: DropTargetEvent) => {
     } else if (e.items.every((v) => v.itemType === 'reusable')) {
       const item = e.items[0] as DraggableReusableItem
       await state.mutateWithLoadingState(
-        adapter.addReusableItem({
+        adapter.addLibraryItem({
           libraryItemUuid: item.libraryItemUuid,
           host,
           afterUuid,

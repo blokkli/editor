@@ -44,7 +44,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         (v) => v.data.paragraphsBuilderAllowedTypes || [],
       )
 
-    const getAllTypes: DrupalAdapter['getAllTypes'] = () =>
+    const getAllBundles: DrupalAdapter['getAllBundles'] = () =>
       useGraphqlQuery('pbAllTypes').then((v) => {
         const allTypes = v.data.entityQuery.items?.filter(
           (v) => v && 'icon' in v,
@@ -114,7 +114,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         ...e,
       })
 
-    const duplicateItems: DrupalAdapter['duplicateItems'] = (uuids) => {
+    const duplicateBlocks: DrupalAdapter['duplicateBlocks'] = (uuids) => {
       if (uuids.length === 1) {
         return useGraphqlMutation('pbDuplicateParagraph', {
           ...ctx.value,
@@ -145,19 +145,13 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
       })
     }
 
-    const deleteMultipleItems: DrupalAdapter['deleteMultipleItems'] = (uuids) =>
+    const deleteBlocks: DrupalAdapter['deleteBlocks'] = (uuids) =>
       useGraphqlMutation('pbDeleteMultipleParagraphs', {
         ...ctx.value,
         uuids,
       })
 
-    const deleteItem: DrupalAdapter['deleteItem'] = (uuid) =>
-      useGraphqlMutation('pbDeleteParagraph', {
-        ...ctx.value,
-        uuid,
-      })
-
-    const addReusableItem: DrupalAdapter['addReusableItem'] = (e) =>
+    const addLibraryItem: DrupalAdapter['addLibraryItem'] = (e) =>
       useGraphqlMutation('pbAddReusableParagraph', {
         ...ctx.value,
         libraryItemUuid: e.item.libraryItemUuid,
@@ -394,7 +388,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
       getImportItems,
       getConversions,
       getAvailableTypes,
-      getAllTypes,
+      getAllBundles,
       loadState,
       getDisabledFeatures,
       takeOwnership,
@@ -405,11 +399,10 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
       importFromExisting,
       revertAllChanges,
       makeItemReusable,
-      duplicateItems,
+      duplicateBlocks,
       convertItems,
       deleteMultipleItems,
-      deleteItem,
-      addReusableItem,
+      addLibraryItem,
       moveMultipleItems,
       moveItem,
       addNewBlokkliItem,
@@ -422,6 +415,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
       getLastChanged,
       getPreviewGrantUrl,
       formFrameBuilder,
+      deleteBlocks,
     }
   },
 )

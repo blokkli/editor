@@ -22,7 +22,7 @@ export default async function (
   adapter: BlokkliAdapter<any>,
   selection: BlokkliSelectionProvider,
 ): Promise<BlokkliTypesProvider> {
-  const allTypesData = await adapter.getAllTypes()
+  const allTypesData = await adapter.getAllBundles()
   const allTypes = computed(() => allTypesData || [])
   const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
 

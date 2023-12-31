@@ -49,6 +49,11 @@ export interface BlokkliAdapter<T> {
    */
   loadState(langcode?: string | undefined | null): Promise<T | undefined>
 
+  /*
+   * Map the state returned by mutations.
+   */
+  mapState(state: T): BlokkliMappedState
+
   /**
    * Get disabled features at runtime.
    *
@@ -63,17 +68,7 @@ export interface BlokkliAdapter<T> {
   /**
    * Return a list of all types.
    */
-  getAllTypes(): Promise<BlokkliItemType[]>
-
-  /**
-   * Get all possible conversions.
-   */
-  getConversions(): Promise<BlokkliConversionItem[]>
-
-  /**
-   * Get all possible transform plugins.
-   */
-  getTransformPlugins(): Promise<BlokkliTransformPlugin[]>
+  getAllBundles(): Promise<BlokkliItemType[]>
 
   /**
    * Get the field configurations.
@@ -81,16 +76,21 @@ export interface BlokkliAdapter<T> {
   getFieldConfig(): Promise<BlokkliFieldConfig[]>
 
   /**
+   * Get all possible conversions.
+   */
+  getConversions?: () => Promise<BlokkliConversionItem[]>
+
+  /**
+   * Get all possible transform plugins.
+   */
+  getTransformPlugins?: () => Promise<BlokkliTransformPlugin[]>
+
+  /**
    * Apply a transform plugin.
    */
-  applyTransformPlugin(
+  applyTransformPlugin?: (
     e: AdapterApplyTransformPlugin,
-  ): Promise<MutationResponseLike<T>>
-
-  /*
-   * Map the state returned by mutations.
-   */
-  mapState(state: T): BlokkliMappedState
+  ) => Promise<MutationResponseLike<T>>
 
   /**
    * Add a new blokkli item.
@@ -100,9 +100,9 @@ export interface BlokkliAdapter<T> {
   /**
    * Update multiple options.
    */
-  updateOptions(
+  updateOptions?: (
     options: UpdateBlokkliItemOptionEvent[],
-  ): Promise<MutationResponseLike<T>>
+  ) => Promise<MutationResponseLike<T>>
 
   /**
    * Add a clipboard item.
@@ -126,17 +126,12 @@ export interface BlokkliAdapter<T> {
   /**
    * Add a reusable item.
    */
-  addReusableItem(e: AddReusableItemEvent): Promise<MutationResponseLike<T>>
-
-  /**
-   * Delete an item.
-   */
-  deleteItem(uuid: string): Promise<MutationResponseLike<T>>
+  addLibraryItem?: (e: AddReusableItemEvent) => Promise<MutationResponseLike<T>>
 
   /**
    * Delete multiple items.
    */
-  deleteMultipleItems(uuids: string[]): Promise<MutationResponseLike<T>>
+  deleteBlocks(uuids: string[]): Promise<MutationResponseLike<T>>
 
   /**
    * Convert multiple items.
@@ -147,9 +142,9 @@ export interface BlokkliAdapter<T> {
   ): Promise<MutationResponseLike<T>>
 
   /**
-   * Duplicate multiple items.
+   * Duplicate blocks.
    */
-  duplicateItems(uuids: string[]): Promise<MutationResponseLike<T>>
+  duplicateBlocks?: (uuids: string[]) => Promise<MutationResponseLike<T>>
 
   /**
    * Paste existing blocks.

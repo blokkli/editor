@@ -9,7 +9,8 @@ import {
   resolveFiles,
   updateTemplates,
 } from '@nuxt/kit'
-import Extractor from './Extractor'
+import BlockExtractor from './Extractor/BlockExtractor'
+import FeatureExtractor from './Extractor/FeatureExtractor'
 import { extname, basename } from 'path'
 import type {
   BlokkliItemDefinitionOptionsInput,
@@ -162,19 +163,25 @@ export default defineNuxtModule<ModuleOptions>({
     const resolver = createResolver(moduleDir)
 
     const featureFolder = resolver.resolve('./runtime/components/Edit/Features')
+    const featureExtractor = new FeatureExtractor(!nuxt.options.dev)
     const features: BlokkliFeature[] = await resolveFiles(
       featureFolder,
       ['*/index.vue'],
       {
         followSymbolicLinks: false,
       },
-    ).then((files) => {
+    ).then(async (files) => {
+      await featureExtractor.addFiles(files)
+      const allExtracted = featureExtractor.getFeatures()
       return files.map((componentPath) => {
         const regex = /\/Features\/([^/]+)\//
         const id = componentPath.match(regex)?.[1] || ''
+        const extracted = allExtracted.find((v) => v.id === id)
         return {
           id,
           componentPath,
+          requiredAdapterMethods:
+            extracted?.definition?.requiredAdapterMethods || [],
         }
       })
     })
@@ -201,13 +208,14 @@ export default defineNuxtModule<ModuleOptions>({
     const featureComponents = addTemplate({
       write: true,
       filename: 'blokkli/features.ts',
-      getContents: () => {
+      getContents: async () => {
         const features = featuresContext.features.map((v) => {
           const importName = `Feature_${v.id}`
           return {
             id: v.id,
             importName,
             importStatement: `import ${importName} from '${v.componentPath}'`,
+            requiredAdapterMethods: v.requiredAdapterMethods,
           }
         })
 
@@ -223,15 +231,22 @@ export default defineNuxtModule<ModuleOptions>({
 
         const featuresArray = features
           .map((v) => {
-            return `{ id: "${v.id}", component: ${v.importName} }`
+            return `{ id: "${v.id}", component: ${
+              v.importName
+            }, requiredAdapterMethods: ${JSON.stringify(
+              v.requiredAdapterMethods,
+            )} }`
           })
           .join(',\n')
 
         return `${imports}
+import type { BlokkliAdapter } from '#blokkli/adapter'
+type AdapterMethods = keyof BlokkliAdapter<any>
 
 type FeatureComponent = {
   id: string
   component: any
+  requiredAdapterMethods: AdapterMethods[]
 }
 
 export const featureComponents: FeatureComponent[] = [
@@ -284,18 +299,20 @@ export const availableFeaturesAtBuild = ${JSON.stringify(
     })
 
     // Create extractor instance and add initial set of files.
-    const extractor = new Extractor(
+    const blockExtractor = new BlockExtractor(
       !nuxt.options.dev,
       moduleOptions.composableName!,
     )
-    await extractor.addFiles(files)
+    await blockExtractor.addFiles(files)
 
     // The definitions.
     const templateDefinitions = addTemplate({
       write: true,
       filename: 'blokkli/definitions.ts',
       getContents: () => {
-        return extractor.generateDefinitionTemplate(moduleOptions.globalOptions)
+        return blockExtractor.generateDefinitionTemplate(
+          moduleOptions.globalOptions,
+        )
       },
       options: {
         blokkli: true,
@@ -390,6 +407,11 @@ export type ValidTextKeys = ${validTranslationKeys}
       as: moduleOptions.composableName,
     })
     addImports({
+      name: 'defineBlokkliFeature',
+      from: resolver.resolve('./runtime/composables/defineBlokkliFeature'),
+      as: 'defineBlokkliFeature',
+    })
+    addImports({
       name: 'useBlokkli',
       from: resolver.resolve('./runtime/composables/useBlokkli'),
       as: 'useBlokkli',
@@ -405,7 +427,7 @@ export type ValidTextKeys = ${validTranslationKeys}
       write: true,
       filename: 'blokkli/generated-types.ts',
       getContents: () => {
-        return extractor.generateTypesTemplate(
+        return blockExtractor.generateTypesTemplate(
           Object.keys(moduleOptions.globalOptions || {}),
           getChunkNames(),
           getFieldListTypes(),
@@ -422,7 +444,7 @@ export type ValidTextKeys = ${validTranslationKeys}
       write: true,
       filename: 'blokkli/default-global-options.ts',
       getContents: () => {
-        return extractor.generateDefaultGlobalOptions(
+        return blockExtractor.generateDefaultGlobalOptions(
           moduleOptions.globalOptions || {},
         )
       },
@@ -439,7 +461,7 @@ export type ValidTextKeys = ${validTranslationKeys}
           write: true,
           filename: `blokkli/chunk-${chunkName}.ts`,
           getContents: () => {
-            return extractor.generateChunkGroup(chunkName, true)
+            return blockExtractor.generateChunkGroup(chunkName, true)
           },
           options: {
             blokkli: true,
@@ -453,7 +475,7 @@ export type ValidTextKeys = ${validTranslationKeys}
       write: true,
       filename: 'blokkli/imports.ts',
       getContents: () => {
-        return extractor.generateImportsTemplate(getChunkNames())
+        return blockExtractor.generateImportsTemplate(getChunkNames())
       },
       options: {
         blokkli: true,
@@ -540,7 +562,7 @@ export type BlokkliIcon = keyof typeof icons`
             return
           }
           // Determine if the file has changed.
-          const hasChanged = await extractor.handleFile(filePath)
+          const hasChanged = await blockExtractor.handleFile(filePath)
 
           // Nothing to do.
           if (!hasChanged) {

@@ -14,13 +14,9 @@
         <h3 class="bk-form-label">
           {{ text('importExistingFieldsLabel') }}
         </h3>
-        <label
-          v-for="field in state.mutatedFields.value"
-          :key="field.name"
-          class="bk-checkbox"
-        >
+        <label v-for="field in fields" :key="field.name" class="bk-checkbox">
           <input v-model="selectedFields" type="checkbox" :value="field.name" />
-          <span>{{ field.name }}</span>
+          <span>{{ field.label }}</span>
         </label>
       </div>
       <div class="bk-form-section">
@@ -67,7 +63,7 @@ import { watch, ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import { DialogModal } from '#blokkli/components'
 import type { BlokkliImportItem } from '#blokkli/types'
 
-const { state, adapter, text } = useBlokkli()
+const { state, adapter, text, types, context } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'confirm', data: { sourceUuid: string; fields: string[] }): void
@@ -106,6 +102,14 @@ function onSubmit() {
   })
   isLoading.value = true
 }
+
+const fields = computed(() => {
+  return types.fieldConfig.value.filter(
+    (v) =>
+      v.entityType === context.value.entityType &&
+      v.entityBundle === context.value.entityBundle,
+  )
+})
 
 onMounted(() => {
   loadResults()

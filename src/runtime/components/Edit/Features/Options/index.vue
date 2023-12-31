@@ -1,7 +1,11 @@
 <template>
   <Teleport to="#bk-blokkli-item-actions-controls">
     <OptionsForm
-      v-if="types.length === 1 && !selection.isDragging.value"
+      v-if="
+        types.length === 1 &&
+        !selection.isDragging.value &&
+        adapter.updateOptions
+      "
       :key="uuids.join('-')"
       :uuids="uuids"
       :item-bundle="types[0]"
@@ -15,7 +19,7 @@ import { computed, useBlokkli } from '#imports'
 import { onlyUnique } from '#blokkli/helpers'
 import OptionsForm from './Form/index.vue'
 
-const { selection } = useBlokkli()
+const { selection, adapter } = useBlokkli()
 
 const uuids = computed(() => selection.blocks.value.map((v) => v.uuid))
 const types = computed(() =>

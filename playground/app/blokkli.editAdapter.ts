@@ -7,7 +7,6 @@ import type {
   BlokkliLibraryItem,
 } from '#blokkli/types'
 import { allTypes } from './mock/allTypes'
-import { availableTypes } from './mock/availableTypes'
 import { conversions } from './mock/conversions'
 import { entityStorageManager } from './mock/entityStorage'
 import { state, editState, mapBlockItem } from './mock/state'
@@ -74,11 +73,8 @@ export default defineBlokkliEditAdapter((ctx) => {
     getDisabledFeatures() {
       return Promise.resolve([])
     },
-    getAllTypes() {
+    getAllBundles() {
       return Promise.resolve(allTypes)
-    },
-    getAvailableTypes() {
-      return Promise.resolve(availableTypes)
     },
     getConversions() {
       return Promise.resolve(conversions)
@@ -181,17 +177,12 @@ export default defineBlokkliEditAdapter((ctx) => {
         preceedingUuid: e.afterUuid,
       }),
 
-    deleteItem: (uuid) =>
-      addMutation('delete', {
-        uuids: [uuid],
-      }),
-
-    deleteMultipleItems: (uuids) =>
+    deleteBlocks: (uuids) =>
       addMutation('delete', {
         uuids,
       }),
 
-    duplicateItems: (uuids) =>
+    duplicateBlocks: (uuids) =>
       addMutation('duplicate', {
         uuids,
       }),
@@ -245,7 +236,7 @@ export default defineBlokkliEditAdapter((ctx) => {
       return Promise.resolve(items)
     },
 
-    addReusableItem: (e) =>
+    addLibraryItem: (e) =>
       addMutation('add_reusable_item', {
         libraryItemUuid: e.libraryItemUuid,
         hostEntityType: e.host.type,

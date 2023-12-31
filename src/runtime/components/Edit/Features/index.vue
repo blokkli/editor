@@ -15,10 +15,14 @@ const emit = defineEmits(['loaded'])
 const { adapter } = useBlokkli()
 
 // Let the edit adapter determine which features should be disabled at runtime.
-const disabledFeatures = await adapter.getDisabledFeatures()
+const disabledFeatures = adapter.getDisabledFeatures
+  ? await adapter.getDisabledFeatures()
+  : await Promise.resolve([])
 
 const availableFeatures = featureComponents.filter(
-  (v) => !disabledFeatures.includes(v.id),
+  (v) =>
+    !disabledFeatures.includes(v.id) &&
+    v.requiredAdapterMethods.every((method) => adapter[method]),
 )
 
 onMounted(() => {

@@ -17,7 +17,7 @@ type ExtractedDefinition = {
 /**
  * Service to handle text extractions across multiple files.
  */
-export default class Extractor {
+export default class BlockExtractor {
   definitions: Record<string, ExtractedDefinition> = {}
   isBuild = false
   composableName: string
