@@ -6,7 +6,15 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+useHead({
+  titleTemplate: (titleChunk) => {
+    return titleChunk
+      ? `${titleChunk} - blokk.li`
+      : 'blokk.li - Page Builder for Nuxt'
+  },
+})
+</script>
 
 <style lang="postcss">
 .bk-grid-overlay {
