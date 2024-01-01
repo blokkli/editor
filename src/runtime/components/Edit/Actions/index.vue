@@ -73,11 +73,7 @@ import {
 } from '#imports'
 
 import { intersects, onlyUnique } from '#blokkli/helpers'
-import type {
-  AnimationFrameEvent,
-  KeyPressedEvent,
-  Rectangle,
-} from '#blokkli/types'
+import type { KeyPressedEvent, Rectangle } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
 import type { PluginMountEvent, PluginUnmountEvent } from '#blokkli/types'
 
@@ -85,7 +81,6 @@ const { selection, eventBus, text, types, state, ui } = useBlokkli()
 
 const editingEnabled = computed(() => state.editMode.value === 'editing')
 
-const PADDING = 10
 const ACTIONS_HEIGHT = 50
 
 const controlsEl = ref<HTMLElement | null>(null)
@@ -136,61 +131,20 @@ const innerStyle = computed(() => {
   }
 })
 
-// function findIdealPosition(
-//   blockingRects: Rectangle[],
-//   rectToPlace: Rectangle,
-//   box: Rectangle,
-// ): { x: number; y: number } {
-//   let idealX = rectToPlace.x
-//   let idealY = rectToPlace.y
-//
-//   for (const blockingRect of blockingRects) {
-//     if (intersects(rectToPlace, blockingRect)) {
-//       if (
-//         blockingRect.x + blockingRect.width <
-//         rectToPlace.x + rectToPlace.width
-//       ) {
-//         idealX = blockingRect.x + blockingRect.width
-//       } else {
-//         idealX = blockingRect.x - rectToPlace.width
-//       }
-//     }
-//   }
-//
-//   return {
-//     x: Math.min(
-//       Math.max(idealX, ui.visibleViewportPadded.value.x),
-//       ui.visibleViewportPadded.value.x +
-//         ui.visibleViewportPadded.value.width -
-//         rectToPlace.width,
-//     ),
-//     y: Math.min(
-//       Math.max(ui.visibleViewportPadded.value.y, idealY),
-//       ui.visibleViewportPadded.value.height +
-//         ui.visibleViewportPadded.value.y -
-//         rectToPlace.height,
-//     ),
-//   }
-// }
-
-const debugRect = ref({
-  top: '0px',
-  left: '0px',
-  width: '0px',
-  height: '0px',
-})
-
 function findIdealPosition(
   blockingRects: Rectangle[],
   rectToPlace: Rectangle,
   box: Rectangle,
 ): { x: number; y: number } {
   let idealX = rectToPlace.x
+  const centerX = (box.x + box.width) / 2
 
-  // Find a non-blocking X position
   for (const blockingRect of blockingRects) {
     if (intersects(rectToPlace, blockingRect)) {
-      if (blockingRect.x + blockingRect.width < idealX + rectToPlace.width) {
+      if (
+        rectToPlace.x + rectToPlace.width > blockingRect.x &&
+        blockingRect.x < centerX
+      ) {
         idealX = blockingRect.x + blockingRect.width
       } else {
         idealX = blockingRect.x - rectToPlace.width
@@ -214,7 +168,26 @@ function findIdealPosition(
   }
 }
 
-function onAnimationFrame(e: AnimationFrameEvent) {
+const limitPlacedRect = (rect: Rectangle): Rectangle => {
+  return {
+    width: rect.width,
+    height: rect.height,
+    x: Math.min(
+      Math.max(rect.x, ui.visibleViewportPadded.value.x),
+      ui.visibleViewportPadded.value.x +
+        ui.visibleViewportPadded.value.width -
+        rect.width,
+    ),
+    y: Math.min(
+      Math.max(ui.visibleViewportPadded.value.y, rect.y),
+      ui.visibleViewportPadded.value.height +
+        ui.visibleViewportPadded.value.y -
+        rect.height,
+    ),
+  }
+}
+
+function onAnimationFrame() {
   if (!selection.blocks.value.length) {
     return
   }
@@ -222,16 +195,17 @@ function onAnimationFrame(e: AnimationFrameEvent) {
   const el = document.querySelector('.bk-selection')
   const controlsWidth = controlsEl.value ? controlsEl.value.scrollWidth : 500
   if (el && el instanceof HTMLElement) {
-    const rect = el.getBoundingClientRect()
+    const boundingRect = el.getBoundingClientRect()
+    const rect = limitPlacedRect({
+      x: boundingRect.x,
+      y: boundingRect.y - ACTIONS_HEIGHT - 15,
+      width: controlsWidth,
+      height: ACTIONS_HEIGHT,
+    })
 
     const ideal = findIdealPosition(
       ui.viewportBlockingRects.value,
-      {
-        x: rect.x,
-        y: rect.y - ACTIONS_HEIGHT - 15,
-        width: controlsWidth,
-        height: ACTIONS_HEIGHT,
-      },
+      rect,
       ui.visibleViewportPadded.value,
     )
 
