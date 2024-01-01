@@ -39,12 +39,23 @@
       :is-preview="isPreviewing"
     />
 
-    <EditIndicator v-if="showIndicator" :uuid="entityUuid" @edit="edit" />
+    <EditIndicator
+      v-if="showIndicator"
+      :uuid="entityUuid"
+      :edit-label="editLabel"
+      @edit="edit"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, useRoute, useRouter } from '#imports'
+import {
+  computed,
+  defineAsyncComponent,
+  useRoute,
+  useRouter,
+  provide,
+} from '#imports'
 import { INJECT_ENTITY_CONTEXT } from '../helpers/symbols'
 
 const PreviewProvider = defineAsyncComponent(
@@ -70,6 +81,7 @@ const props = withDefaults(
     canEdit: boolean
     tag?: string
     language?: string
+    editLabel?: string
   }>(),
   {
     tag: 'div',

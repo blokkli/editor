@@ -7,7 +7,7 @@
           class="bk-button bk-is-primary"
           @click="$emit('edit')"
         >
-          Abschnitte bearbeiten
+          {{ label }}
         </button>
       </div>
     </div>
@@ -15,14 +15,18 @@
 </template>
 
 <script lang="ts" setup>
+import textProvider from '#blokkli/helpers/textProvider'
 import { ref, onMounted, onUnmounted } from '#imports'
-
-// @TODO: Translate text
 import '#blokkli/styles'
 
 const props = defineProps<{
   uuid: string
+  editLabel?: string
 }>()
+
+const $t = textProvider()
+
+const label = computed(() => props.editLabel || $t('editIndicatorLabel'))
 
 defineEmits(['edit'])
 
