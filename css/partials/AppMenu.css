@@ -12,13 +12,10 @@
   }
 
   > button {
-    @apply h-40 md:h-50 flex items-center text-base font-bold pl-15 md:pl-25 bg-blue-700 text-white transition;
+    @apply h-40 md:h-50 flex items-center text-base font-bold pl-15 md:pl-25;
+    @apply bg-white text-slate-950;
     svg {
       @apply w-20 h-20  md:w-30 md:h-30 mr-25 fill-current;
-    }
-
-    &.bk-is-active {
-      @apply bg-white text-slate-950;
     }
   }
 }
