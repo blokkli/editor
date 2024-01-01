@@ -1,5 +1,9 @@
 import { falsy } from '#blokkli/helpers'
-import type { BlokkliFieldConfig, BlokkliMutatedField, BlokkliMutationItem } from '#blokkli/types'
+import type {
+  BlokkliFieldConfig,
+  BlokkliMutatedField,
+  BlokkliMutationItem,
+} from '#blokkli/types'
 import { entityStorageManager } from '../entityStorage'
 import { createMutation, type MutationArgsMap } from '../plugins/mutations'
 import { mapBlockItem } from '../state'
@@ -250,6 +254,7 @@ export class EditState {
   }
 
   getMutatedState(entity: Entity, save?: boolean): MutatedState {
+    const langcode = entity.langcode
     const context = new MutationContext(entity)
 
     const mutations = this.getMutations()
@@ -269,6 +274,7 @@ export class EditState {
     const proxiesByFieldKey: Record<string, BlockProxy[]> = {}
     context.proxies.forEach((proxy) => {
       if (!proxy.isDeleted) {
+        proxy.block = proxy.block.getTranslation(langcode)
         mutatedOptions[proxy.block.uuid] = {
           ...proxy.block.options().getOptions(),
           ...JSON.parse(JSON.stringify(proxy.overrideOptions)),

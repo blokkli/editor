@@ -7,6 +7,7 @@ import { Block } from './Block'
 export class BlockButton extends Block {
   static bundle = 'button'
   static label = 'Button'
+  static isTranslatable = true
 
   static getFieldDefintions(): Field<any>[] {
     return [

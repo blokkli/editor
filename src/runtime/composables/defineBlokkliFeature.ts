@@ -19,8 +19,8 @@ type CombinedAdapter<T, Methods extends AdapterMethods[]> = PickRequiredMethods<
   BlokkliAdapter<T>
 
 export function defineBlokkliFeature<T, Methods extends AdapterMethods[]>(
-  feature: BlokkliFeatureDefinition<Methods>,
+  _feature: BlokkliFeatureDefinition<Methods>,
 ): CombinedAdapter<T, Methods> {
-  const { adapter } = useBlokkli() // Assuming useBlokkli is defined elsewhere
+  const { adapter } = useBlokkli()
   return adapter as CombinedAdapter<T, Methods>
 }

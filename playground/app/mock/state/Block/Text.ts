@@ -7,6 +7,7 @@ export class BlockText extends Block {
   static bundle = 'text'
   static label = 'Text'
   static allowReusable = true
+  static isTranslatable = true
 
   static getDefaultValues(): Record<string, any> {
     return {

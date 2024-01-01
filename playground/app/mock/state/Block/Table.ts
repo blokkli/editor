@@ -8,6 +8,7 @@ export class BlockTable extends Block {
   static bundle = 'table'
   static label = 'Table'
   static allowReusable = true
+  static isTranslatable = true
 
   static getDefaultValues(): Record<string, any> {
     return {

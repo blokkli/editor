@@ -18,6 +18,8 @@ import type { MediaImage, MediaVideo } from './mock/state/Media/Media'
 import { transforms } from './mock/transforms'
 
 export default defineBlokkliEditAdapter((ctx) => {
+  const router = useRouter()
+  const route = useRoute()
   const mockResponse = (
     mutatedState: MutatedState,
   ): Promise<MutationResponseLike<MutatedState>> => {
@@ -127,9 +129,20 @@ export default defineBlokkliEditAdapter((ctx) => {
               url: '/en',
               status: true,
             },
+            {
+              id: 'de',
+              url: '/de',
+              status: true,
+            },
           ],
         },
       }
+    },
+    changeLanguage(e) {
+      return router.push({
+        path: e.url,
+        query: route.query,
+      })
     },
     revertAllChanges() {
       editState.revert()
@@ -277,6 +290,10 @@ export default defineBlokkliEditAdapter((ctx) => {
       } else if (e.id === 'block:edit') {
         url = '/editBlock'
         params.set('uuid', e.data.uuid)
+      } else if (e.id === 'block:translate') {
+        url = '/translateBlock'
+        params.set('uuid', e.data.uuid)
+        params.set('langcode', e.langcode)
       }
 
       if (url) {

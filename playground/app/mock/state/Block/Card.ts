@@ -9,6 +9,7 @@ export class BlockCard extends Block {
   static bundle = 'card'
   static label = 'Card'
   static allowReusable = true
+  static isTranslatable = true
 
   static getDefaultValues(): Record<string, any> {
     return {

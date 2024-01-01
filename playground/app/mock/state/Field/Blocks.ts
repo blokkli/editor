@@ -24,7 +24,10 @@ export class FieldBlocks extends Field<{ uuid: string }> {
   getBlocks(): Block[] {
     return this.list
       .map((item) => {
-        return entityStorageManager.load('block', item.uuid) as Block
+        const block = entityStorageManager.load('block', item.uuid) as Block
+        if (block) {
+          return block.getTranslation(this.entity.langcode)
+        }
       })
       .filter(falsy)
   }

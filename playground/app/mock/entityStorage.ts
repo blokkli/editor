@@ -120,6 +120,9 @@ export class EntityStorageManager {
     })
 
     const page = new ContentPage('1')
+    page.addTranslation('de', {
+      title: ['Interaktiver Page Builder für Nuxt'],
+    })
     this.storages.content.add(page)
 
     const usedBlocks: string[] = []

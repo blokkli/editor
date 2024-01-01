@@ -1,6 +1,6 @@
 <template>
   <Teleport
-    v-if="selectableBundles.length"
+    v-if="selectableBundles.length && shouldRender"
     :key="renderKey"
     to="#blokkli-add-list-blocks"
   >
@@ -20,7 +20,8 @@
   <Teleport
     v-if="
       ui.addListOrientation.value === 'sidebar' &&
-      generallyAvailableBundles.length > 10
+      generallyAvailableBundles.length > 10 &&
+      shouldRender
     "
     to="#blokkli-add-list-sidebar-before"
   >
@@ -51,7 +52,10 @@ const {
   ui,
   eventBus,
   text,
+  state,
 } = useBlokkli()
+
+const shouldRender = computed(() => state.editMode.value === 'editing')
 
 const searchText = ref('')
 

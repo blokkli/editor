@@ -149,6 +149,9 @@ function onDragOver(e: DragEvent) {
 const showClipboardSidebar = () => plugin?.value?.showSidebar()
 
 const handleSelectionPaste = (pastedUuids: string[]) => {
+  if (!adapter.pasteExistingBlocks) {
+    return
+  }
   // Pasting is only possible into a single field.
   if (selection.uuids.value.length !== 1) {
     return

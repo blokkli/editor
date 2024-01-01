@@ -1,6 +1,6 @@
 <template>
   <PluginSidebar
-    v-if="isSidebar"
+    v-if="isSidebar && shouldRender"
     id="add_list"
     :title="text('addListSidebarTitle')"
     render-always
@@ -16,10 +16,7 @@
       </Sortli>
     </div>
   </PluginSidebar>
-  <Teleport
-    v-else-if="state.canEdit.value && state.editMode.value === 'editing'"
-    to="body"
-  >
+  <Teleport v-else-if="shouldRender" to="body">
     <div
       ref="wrapper"
       class="bk bk-add-list bk-control"
@@ -55,6 +52,7 @@ import { PluginSidebar } from '#blokkli/plugins'
 const { state, ui, text, eventBus } = useBlokkli()
 
 const isSidebar = computed(() => ui.addListOrientation.value === 'sidebar')
+const shouldRender = computed(() => state.editMode.value === 'editing')
 
 watch(ui.addListOrientation, () => {
   setRootClasses()
@@ -93,6 +91,10 @@ const onWheel = (e: WheelEvent) => {
 function setRootClasses() {
   document.documentElement.classList.remove('bk-has-sidebar-bottom')
   document.documentElement.classList.remove('bk-has-sidebar-left')
+
+  if (!shouldRender.value) {
+    return
+  }
 
   if (ui.addListOrientation.value === 'horizontal') {
     document.documentElement.classList.add('bk-has-sidebar-bottom')

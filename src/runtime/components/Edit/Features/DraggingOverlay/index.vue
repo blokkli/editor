@@ -111,7 +111,7 @@ const onDrop = async (e: DropTargetEvent) => {
           }),
         )
       } else {
-        eventBus.emit('addNewBlokkliItem', {
+        eventBus.emit('add:block:new', {
           type: item.itemBundle,
           item,
           host,

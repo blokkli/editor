@@ -8,6 +8,7 @@ export class BlockTitle extends Block {
   static bundle = 'title'
   static label = 'Title'
   static allowReusable = true
+  static isTranslatable = true
 
   static getDefaultValues(): Record<string, any> {
     return {

@@ -149,9 +149,9 @@ export interface BlokkliAdapter<T> {
   /**
    * Paste existing blocks.
    */
-  pasteExistingBlocks(
+  pasteExistingBlocks?: (
     e: PasteExistingBlocksEvent,
-  ): Promise<MutationResponseLike<T>>
+  ) => Promise<MutationResponseLike<T>>
 
   /**
    * Get all existing entities for importing.
@@ -333,6 +333,7 @@ type AdapterFormFrameBuilderBlockAdd = {
 type AdapterFormFrameBuilderBlockTranslate = {
   id: 'block:translate'
   data: EditBlokkliItemEvent
+  langcode: string
 }
 
 type AdapterFormFrameBuilderBlockEdit = {

@@ -6,6 +6,7 @@ import { Block } from './Block'
 export class BlockTeaser extends Block {
   static bundle = 'teaser'
   static label = 'Teaser'
+  static isTranslatable = true
 
   static getFieldDefintions(): Field<any>[] {
     return [

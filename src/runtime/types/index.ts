@@ -592,7 +592,7 @@ export type BlokkliEvents = {
   'dragging:start': DraggableStartEvent
   'dragging:end': undefined
   setActiveFieldKey: string
-  addNewBlokkliItem: AddNewBlokkliItemEvent
+  'add:block:new': AddNewBlokkliItemEvent
   updateMutatedFields: UpdateMutatedFieldsEvent
   animationFrame: AnimationFrameEvent
   message: BlokkliMessage

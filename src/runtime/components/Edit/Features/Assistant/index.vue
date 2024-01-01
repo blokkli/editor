@@ -1,16 +1,11 @@
 <template>
   <Teleport to="body">
     <transition name="bk-slide-in" :duration="200">
-      <Overlay
-        v-if="featureAvailable && placedAction"
-        @close="onClose"
-        @submit="onSubmit"
-      />
+      <Overlay v-if="placedAction" @close="onClose" @submit="onSubmit" />
     </transition>
   </Teleport>
 
   <PluginAddAction
-    v-if="featureAvailable"
     type="assistant"
     title="AI Assistant"
     icon="robot"
@@ -39,11 +34,14 @@ import { PluginAddAction } from '#blokkli/plugins'
 import Overlay from './Overlay/index.vue'
 import EditForm from './EditForm/index.vue'
 
-const { adapter, state, text } = useBlokkli()
+const adapter = defineBlokkliFeature({
+  requiredAdapterMethods: [
+    'assistantGetResults',
+    'assistantAddBlockFromResult',
+  ],
+})
 
-const featureAvailable = computed(
-  () => !!(adapter.assistantGetResults && adapter.assistantAddBlockFromResult),
-)
+const { state, text } = useBlokkli()
 
 const placedAction = ref<ActionPlacedEvent | null>(null)
 

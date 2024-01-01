@@ -5,7 +5,7 @@
     entity-bundle="page"
     :entity-uuid="page.uuid"
     :can-edit="true"
-    language="en"
+    :language="language"
   >
     <BlokkliField v-bind="fieldHeader" tag="header" />
     <BlokkliField v-bind="fieldContent" />
@@ -18,11 +18,26 @@ import { mapMockField } from '@/app/mock/state'
 import { entityStorageManager } from '~/app/mock/entityStorage'
 import type { ContentPage } from '~/app/mock/state/Entity/Content'
 
+const route = useRoute()
+
+const language = computed(() => {
+  if (route.path.startsWith('/de')) {
+    return 'de'
+  } else if (route.path.startsWith('/fr')) {
+    return 'fr'
+  } else if (route.path.startsWith('/it')) {
+    return 'it'
+  }
+  return 'en'
+})
+
 const page = entityStorageManager.getContent<ContentPage>('1')
 
 if (!page) {
   throw new Error('page not found')
 }
+
+const translation = page.getTranslation(language.value)
 
 const fieldHeader = computed(() => mapMockField(page.header()))
 const fieldContent = computed(() => mapMockField(page.content()))

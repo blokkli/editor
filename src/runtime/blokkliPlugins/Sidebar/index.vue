@@ -2,7 +2,7 @@
   <Teleport v-if="!isRenderedDetached" to="#bk-sidebar-tabs">
     <button
       :class="{ 'is-active': activeSidebar === id }"
-      :disabled="editOnly && !state.canEdit.value"
+      :disabled="editOnly && state.editMode.value !== 'editing'"
       :style="{ order: weight || 0 }"
       @click.prevent.stop="toggleSidebar(id)"
     >

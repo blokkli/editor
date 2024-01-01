@@ -9,7 +9,7 @@ export type MutationUpdateFieldValueArgs = {
 
 export class MutationUpdateFieldValue extends Mutation {
   constructor(configuration?: Record<string, any>) {
-    super('add', configuration)
+    super('update_field_value', configuration)
   }
 
   execute(context: MutationContext, args: MutationUpdateFieldValueArgs) {

@@ -1,5 +1,5 @@
 <template>
-  <Teleport :key="renderKey" to="#blokkli-add-list-actions">
+  <Teleport v-if="shouldRender" :key="renderKey" to="#blokkli-add-list-actions">
     <AddListItem
       :id="type"
       :label="title"
@@ -32,7 +32,9 @@ const emit = defineEmits<{
   (e: 'placed', data: ActionPlacedEvent): void
 }>()
 
-const { ui, storage, eventBus } = useBlokkli()
+const { ui, storage, eventBus, state } = useBlokkli()
+
+const shouldRender = computed(() => state.editMode.value === 'editing')
 
 const listOrientationSetting = storage.use<AddListOrientation>(
   'listOrientation',

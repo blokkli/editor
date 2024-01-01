@@ -5,9 +5,11 @@ export class Entity {
   static entityType = ''
   static bundle = ''
   static label = ''
+  langcode = 'en'
 
   uuid: string
   fields: Record<string, Field<any>> = {}
+  translationValues: Record<string, Record<string, string[]>> = {}
 
   constructor(uuid: string) {
     this.uuid = uuid
@@ -17,6 +19,46 @@ export class Entity {
       field.setEntity(this)
       this.fields[field.id] = field
     })
+  }
+
+  addTranslation(language: string, values: Record<string, string[]>) {
+    this.translationValues[language] = values
+  }
+
+  getTranslation(language: string) {
+    if (language === 'en') {
+      return this
+    }
+
+    this.langcode = language
+
+    if (this.translationValues[language]) {
+      Object.entries(this.translationValues[language]).forEach(
+        ([fieldName, values]) => {
+          this.get(fieldName).setList(values)
+        },
+      )
+    }
+
+    return this
+  }
+
+  setTranslationValues(
+    langcode: string,
+    valuesInput: Record<string, any[] | any>,
+  ) {
+    if (!this.translationValues[langcode]) {
+      this.translationValues[langcode] = {}
+    }
+    Object.entries(valuesInput).forEach(([fieldName, value]) => {
+      this.translationValues[langcode][fieldName] = Array.isArray(value)
+        ? value
+        : [value]
+    })
+  }
+
+  getTranslationLanguages(): string[] {
+    return Object.keys(this.translationValues)
   }
 
   static getFieldDefintions(): Field<any>[] {

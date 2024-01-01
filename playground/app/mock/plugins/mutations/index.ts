@@ -15,6 +15,10 @@ import {
 } from './Mutation/Duplicate'
 import { MutationEdit, type MutationEditArgs } from './Mutation/Edit'
 import {
+  MutationEditTranslation,
+  type MutationEditTranslationArgs,
+} from './Mutation/EditTranslation'
+import {
   MutationMakeReusable,
   type MutationMakeReusableArgs,
 } from './Mutation/MakeReusable'
@@ -38,6 +42,7 @@ export type MutationArgsMap = {
   move: MutationMoveArgs
   duplicate: MutationDuplicateArgs
   edit: MutationEditArgs
+  edit_translation: MutationEditTranslationArgs
   update_options: MutationUpdateOptionsArgs
   make_reusable: MutationMakeReusableArgs
   add_reusable_item: MutationAddReusableItemArgs
@@ -61,6 +66,8 @@ export const createMutation = <T extends keyof MutationArgsMap>(
       return new MutationDuplicate(configuration)
     case 'edit':
       return new MutationEdit(configuration)
+    case 'edit_translation':
+      return new MutationEditTranslation(configuration)
     case 'update_options':
       return new MutationUpdateOptions(configuration)
     case 'make_reusable':

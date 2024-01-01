@@ -6,5 +6,6 @@ export const allTypes: BlokkliItemType[] = getBlockBundles().map((block) => {
     id: block.bundle,
     label: block.label,
     allowReusable: block.allowReusable,
+    isTranslatable: block.isTranslatable,
   }
 })

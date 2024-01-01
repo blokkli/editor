@@ -30,7 +30,7 @@ import type {
 import FormFrame from './Frame/index.vue'
 import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
 
-const { types, eventBus, state, adapter } = useBlokkli()
+const { types, eventBus, state, adapter, context } = useBlokkli()
 
 const form = ref<AdapterFormFrameBuilder | null>(null)
 
@@ -78,6 +78,12 @@ const onItemEdit = (e: EditBlokkliItemEvent) => {
     if (!type.isTranslatable) {
       return
     }
+    form.value = {
+      id: 'block:translate',
+      data: e,
+      langcode: context.value.language,
+    }
+    return
   }
   form.value = {
     id: 'block:edit',
@@ -121,7 +127,7 @@ onMounted(() => {
   eventBus.on('translateEntity', onTranslateEntity)
   eventBus.on('batchTranslate', onBatchTranslate)
   eventBus.on('editEntity', onEditEntity)
-  eventBus.on('addNewBlokkliItem', addNewBlokkliItem)
+  eventBus.on('add:block:new', addNewBlokkliItem)
 })
 
 onUnmounted(() => {
@@ -129,7 +135,7 @@ onUnmounted(() => {
   eventBus.off('translateEntity', onTranslateEntity)
   eventBus.off('batchTranslate', onBatchTranslate)
   eventBus.off('editEntity', onEditEntity)
-  eventBus.off('addNewBlokkliItem', addNewBlokkliItem)
+  eventBus.off('add:block:new', addNewBlokkliItem)
 })
 </script>
 
