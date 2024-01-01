@@ -18,11 +18,11 @@
         </h3>
         <button type="submit">
           <Icon name="close" />
-          <span>{{ translationText('cancel') }}</span>
+          <span>{{ $t('cancel') }}</span>
         </button>
         <button :disabled="!hasChanged" @click.prevent="close(true)">
           <Icon name="save" />
-          <span>{{ translationText('save') }}</span>
+          <span>{{ $t('save') }}</span>
         </button>
       </div>
 
@@ -86,15 +86,7 @@ import InputPlaintext from './Plaintext/index.vue'
 import InputContenteditable from './Contenteditable/index.vue'
 import InputFrame from './Frame/index.vue'
 
-const {
-  eventBus,
-  ui,
-  selection,
-  state,
-  adapter,
-  text: translationText,
-  types,
-} = useBlokkli()
+const { eventBus, ui, selection, state, adapter, $t, types } = useBlokkli()
 
 const props = defineProps<{
   fieldName: string
@@ -164,7 +156,7 @@ const count = computed(() => modelValue.value.length)
 
 const errorText = computed(() => {
   if (required.value && !modelValue.value) {
-    return translationText('fieldIsRequired')
+    return $t('fieldIsRequired')
   }
 })
 

@@ -43,7 +43,7 @@ const adapter = defineBlokkliFeature({
   requiredAdapterMethods: ['formFrameBuilder'],
 })
 
-const { types, eventBus, state, context } = useBlokkli()
+const { types, eventBus, state, context, $t } = useBlokkli()
 
 const form = ref<AdapterFormFrameBuilder | null>(null)
 
@@ -53,9 +53,59 @@ const formUrl = computed<string | undefined>(() => {
   }
 })
 
-const title = computed(() => {
-  return 'TODO'
+const labelReplacement = computed(() => {
+  switch (form.value?.id) {
+    case 'entity:edit':
+    case 'entity:translate':
+      return state.entity.value.label || ''
+  }
+
+  if (bundle.value) {
+    const definition = types.getType(bundle.value)
+    if (definition) {
+      return definition.label
+    }
+  }
+
+  return ''
 })
+
+const titleText = computed(() => {
+  switch (form.value?.id) {
+    case 'block:add':
+      return $t('editFormBlockAdd')
+    case 'block:translate':
+      return $t('editFormBlockTranslate')
+    case 'block:edit':
+      return $t('editFormBlockEdit')
+    case 'entity:edit':
+      return $t('editFormEntityEdit')
+    case 'entity:translate':
+      return $t('editFormEntityTranslate')
+  }
+
+  return $t('edit')
+})
+
+const languageReplacement = computed(() => {
+  if (form.value && 'langcode' in form.value) {
+    const langcode = form.value.langcode
+    const language = state.translation.value.availableLanguages?.find(
+      (v) => v.id === langcode,
+    )
+    if (language) {
+      return language.name || ''
+    }
+  }
+
+  return ''
+})
+
+const title = computed(() =>
+  titleText.value
+    .replace('@label', labelReplacement.value)
+    .replace('@language', languageReplacement.value),
+)
 
 const bundle = computed(() => {
   if (!form.value) {

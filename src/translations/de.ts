@@ -139,4 +139,11 @@ export default {
   fieldIsRequired: 'Feld darf nicht leer sein',
 
   clipboardPastePlaceholder: 'Text oder Medien einfügen',
+
+  editFormBlockAdd: '@label hinzufügen',
+  editFormBlockTranslate: '@label übersetzen (@language)',
+  editFormBlockEdit: '@label bearbeiten',
+  editFormEntityEdit: '"@label" bearbeiten',
+  editFormEntityTranslate: '"@label" übersetzen (@language)',
+  editFormBatchTranslate: 'Alle Blöcke übersetzen',
 }

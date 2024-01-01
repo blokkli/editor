@@ -137,7 +137,7 @@ export default {
   validationsToolbarLabel: 'Validations',
   validationsNoneFound: 'No validation errors found.',
 
-  editIndicatorLabel: 'Edit items',
+  editIndicatorLabel: 'Edit blocks',
 
   fieldIsRequired: 'This field is required',
 
@@ -164,4 +164,11 @@ export default {
   detachFromLibrary: 'Detach from library',
 
   addListSidebarTitle: 'Add blocks',
+
+  editFormBlockAdd: 'Add @label',
+  editFormBlockTranslate: 'Translate @label (@language)',
+  editFormBlockEdit: 'Edit @label',
+  editFormEntityEdit: 'Edit "@label"',
+  editFormEntityTranslate: 'Translate "@label" (@language)',
+  editFormBatchTranslate: 'Translate all blocks',
 }
