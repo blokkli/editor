@@ -1,5 +1,12 @@
 <template>
-  <Loading v-if="isInitializing || !toolbarLoaded || !featuresLoaded" />
+  <Teleport to="body">
+    <Transition name="bk-loading">
+      <Loading
+        v-if="isInitializing || !toolbarLoaded || !featuresLoaded"
+        screen
+      />
+    </Transition>
+  </Teleport>
   <Actions v-if="!isInitializing" />
   <Messages />
   <Toolbar @loaded="toolbarLoaded = true" />

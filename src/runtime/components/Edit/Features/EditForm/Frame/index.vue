@@ -6,16 +6,21 @@
     @touchmove.stop.capture.prevent
   >
     <iframe ref="iframe" allowtransparency :src="url" @load="onIFrameLoad" />
+    <Transition name="bk-loading">
+      <Loading v-if="!isLoaded" />
+    </Transition>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { useBlokkli, onUnmounted, onMounted } from '#imports'
 import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
+import { Loading } from '#blokkli/components'
 
 const { eventBus } = useBlokkli()
 
 const iframe = ref<HTMLIFrameElement | null>(null)
+const isLoaded = ref(false)
 
 const emit = defineEmits<{
   (e: 'close'): void
@@ -27,6 +32,7 @@ const props = defineProps<{
 }>()
 
 function onIFrameLoad() {
+  isLoaded.value = true
   if (iframe.value?.contentWindow) {
     iframe.value.contentWindow?.focus()
   }

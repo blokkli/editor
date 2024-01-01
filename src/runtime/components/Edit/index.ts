@@ -8,6 +8,7 @@ import ScaleToFit from './ScaleToFit/index.vue'
 import Sortli from './Sortli/index.vue'
 import FormOverlay from './FormOverlay/index.vue'
 import AddListItem from './AddList/Item/index.vue'
+import Loading from './Loading/index.vue'
 
 export {
   ItemIcon,
@@ -20,4 +21,5 @@ export {
   Sortli,
   FormOverlay,
   AddListItem,
+  Loading,
 }

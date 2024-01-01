@@ -108,6 +108,21 @@
     @apply opacity-0;
   }
 
+  .bk-loading-enter-active,
+  .bk-loading-leave-active {
+    @apply transition duration-700 delay-300;
+    .bk-icon {
+      @apply transition duration-[400ms] ease-swing delay-300;
+    }
+  }
+  .bk-loading-enter-from,
+  .bk-loading-leave-to {
+    @apply opacity-0;
+    .bk-icon {
+      @apply scale-0;
+    }
+  }
+
   /* Messages. */
   .bk-message-enter-active,
   .bk-message-leave-active {

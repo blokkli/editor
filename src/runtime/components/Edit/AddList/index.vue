@@ -106,6 +106,7 @@ function setRootClasses() {
 onMounted(() => {
   setRootClasses()
 })
+
 onUnmounted(() => {
   document.documentElement.classList.remove('bk-has-sidebar-bottom')
   document.documentElement.classList.remove('bk-has-sidebar-left')

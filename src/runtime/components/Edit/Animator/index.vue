@@ -3,11 +3,11 @@
     <div class="bk-animator">
       <div
         v-for="element in elements"
-        v-html="element.markup"
-        :style="element.style"
         :key="element.id"
+        :style="element.style"
         :class="'bk-is-animation-' + element.mode"
         @animationend="onAnimationEnd(element.id)"
+        v-html="element.markup"
       />
     </div>
   </Teleport>

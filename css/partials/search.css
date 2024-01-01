@@ -67,7 +67,7 @@
     }
   }
   .bk-search-item-context {
-    @apply whitespace-nowrap uppercase text-xs align-baseline font-semibold;
+    @apply whitespace-nowrap uppercase text-xs align-baseline font-semibold inline;
     &:after {
       content: '-';
       @apply inline-block mx-5;
@@ -75,10 +75,10 @@
   }
 
   .bk-search-item-subtitle {
-    @apply min-w-0 inline-flex overflow-hidden w-full text-sm mt-auto items-baseline;
+    @apply min-w-0 overflow-hidden w-full text-sm mt-auto items-baseline truncate;
   }
   .bk-search-item-text {
-    @apply min-w-0 truncate w-full;
+    @apply min-w-0 truncate inline;
   }
 
   .bk-search-no-results {

@@ -1,6 +1,6 @@
 <template>
   <PluginToolbarButton
-    v-if="!ui.isMobile.value && adapter.getLastChanged"
+    v-if="!ui.isMobile.value"
     :title="$t('previewMobileFrame')"
     meta
     key-code="P"
