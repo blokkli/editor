@@ -26,11 +26,17 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, ref } from '#imports'
+import { useBlokkli, ref, defineBlokkliFeature } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
 import { Icon, DialogModal } from '#blokkli/components'
 
-const { adapter, state, text } = useBlokkli()
+const adapter = defineBlokkliFeature({
+  requiredAdapterMethods: ['revertAllChanges'],
+  description:
+    'Provides a menu button to revert all changes done on the current entity.',
+})
+
+const { state, text } = useBlokkli()
 const { mutations, canEdit, mutateWithLoadingState } = state
 
 const showConfirm = ref(false)

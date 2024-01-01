@@ -4,9 +4,19 @@
 
 <script lang="ts" setup>
 import type { ScrollIntoViewEvent } from '#blokkli/types'
-import { useBlokkli, onMounted, onBeforeUnmount, watch } from '#imports'
-
+import {
+  useBlokkli,
+  onMounted,
+  onBeforeUnmount,
+  watch,
+  defineBlokkliFeature,
+} from '#imports'
 import ArtboardManager from './Manager/index.vue'
+
+defineBlokkliFeature({
+  description:
+    'Wraps the entire page in an artboard that can be zoomed and moved using the mouse.',
+})
 
 const { storage, ui, eventBus, dom } = useBlokkli()
 

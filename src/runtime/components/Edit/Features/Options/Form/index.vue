@@ -186,6 +186,6 @@ onBeforeUnmount(() => {
     return
   }
 
-  mutateWithLoadingState(adapter.updateOptions(values))
+  mutateWithLoadingState(adapter.updateOptions!(values))
 })
 </script>

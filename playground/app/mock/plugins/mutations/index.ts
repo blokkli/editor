@@ -15,6 +15,10 @@ import {
 } from './Mutation/Duplicate'
 import { MutationEdit, type MutationEditArgs } from './Mutation/Edit'
 import {
+  MutationEditEntity,
+  type MutationEditEntityArgs,
+} from './Mutation/EditEntity'
+import {
   MutationEditTranslation,
   type MutationEditTranslationArgs,
 } from './Mutation/EditTranslation'
@@ -49,6 +53,7 @@ export type MutationArgsMap = {
   update_field_value: MutationUpdateFieldValueArgs
   transform: MutationTransformArgs
   detach_reusable: MutationDetachReusableArgs
+  edit_entity: MutationEditEntityArgs
 }
 
 export const createMutation = <T extends keyof MutationArgsMap>(
@@ -80,6 +85,8 @@ export const createMutation = <T extends keyof MutationArgsMap>(
       return new MutationTransform(configuration)
     case 'detach_reusable':
       return new MutationDetachReusable(configuration)
+    case 'edit_entity':
+      return new MutationEditEntity(configuration)
   }
 
   throw new Error('Missing mutation plugin with ID: ' + id)

@@ -24,6 +24,7 @@ const { state, text, selection, dom } = useBlokkli()
 
 const adapter = defineBlokkliFeature({
   requiredAdapterMethods: ['duplicateBlocks'],
+  description: 'Provides an action to duplicate one or more blocks in place.',
 })
 
 function onClick(items: DraggableExistingBlokkliItem[]) {

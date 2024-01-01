@@ -18,23 +18,21 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli, useLazyAsyncData } from '#imports'
-
+import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import { ItemIcon } from '#blokkli/components'
 import { PluginItemDropdown } from '#blokkli/plugins'
 import { falsy, onlyUnique } from '#blokkli/helpers'
 import type { BlokkliItemType } from '#blokkli/types'
 
-const { adapter, types, selection, state, text } = useBlokkli()
-
-const { data: conversionsData } = await useLazyAsyncData(() => {
-  if (adapter.getConversions) {
-    return adapter.getConversions()
-  }
-  return Promise.resolve([])
+const adapter = defineBlokkliFeature({
+  requiredAdapterMethods: ['getConversions', 'convertBlocks'],
+  description:
+    'Provides block actions to convert one or more blocks to a different bundle.',
 })
 
-const conversions = computed(() => conversionsData.value || [])
+const { types, selection, state, text } = useBlokkli()
+
+const conversions = await adapter.getConversions()
 
 async function onConvert(targetBundle?: string) {
   if (!targetBundle) {
@@ -42,7 +40,7 @@ async function onConvert(targetBundle?: string) {
   }
 
   await state.mutateWithLoadingState(
-    adapter.convertItems(
+    adapter.convertBlocks(
       selection.blocks.value.map((v) => v.uuid),
       targetBundle,
     ),

@@ -9,7 +9,7 @@
       </div>
     </RelativeTime>
     <div class="bk-comment-body" v-html="body" />
-    <button v-if="!resolved" @click="$emit('resolve')">
+    <button v-if="!resolved && resolveImplemeted" @click="$emit('resolve')">
       <Icon name="check" />
       <span>Als erledigt markieren</span>
     </button>
@@ -17,11 +17,14 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from '#imports'
-
+import { computed, useBlokkli } from '#imports'
 import type { BlokkliComment } from '#blokkli/types'
 import { Icon } from '#blokkli/components'
 import { RelativeTime } from '#blokkli/components'
+
+const { adapter } = useBlokkli()
+
+const resolveImplemeted = computed(() => !!adapter.resolveComment)
 
 defineEmits<{
   (e: 'resolve'): void

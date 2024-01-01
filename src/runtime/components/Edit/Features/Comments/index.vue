@@ -35,17 +35,21 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, onMounted } from '#imports'
-
+import { ref, useBlokkli, onMounted, defineBlokkliFeature } from '#imports'
 import { PluginSidebar, PluginItemAction } from '#blokkli/plugins'
 import Comment from './../../Comment/index.vue'
 import CommentAddForm from './AddForm/index.vue'
 import CommentsOverlay from './Overlay/index.vue'
 import type { BlokkliComment } from '#blokkli/types'
 
+const adapter = defineBlokkliFeature({
+  requiredAdapterMethods: ['loadComments', 'addComment'],
+  description: 'Provides comment functionality for blocks.',
+})
+const { eventBus, text } = useBlokkli()
+
 const comments = ref<BlokkliComment[]>([])
 const showAddComment = ref(false)
-const { adapter, eventBus, text } = useBlokkli()
 
 const loadComments = async () => (comments.value = await adapter.loadComments())
 
@@ -54,8 +58,12 @@ const onAddComment = async (body: string, uuids: string[]) => {
   showAddComment.value = false
 }
 
-const onResolveComment = async (uuid: string) =>
-  (comments.value = await adapter.resolveComment(uuid))
+const onResolveComment = async (uuid: string) => {
+  if (!adapter.resolveComment) {
+    return
+  }
+  comments.value = await adapter.resolveComment(uuid)
+}
 
 const onClickComment = (comment: BlokkliComment) =>
   eventBus.emit('select:end', comment.itemUuids || [])

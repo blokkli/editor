@@ -127,7 +127,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
       })
     }
 
-    const convertItems: DrupalAdapter['convertItems'] = (
+    const convertBlocks: DrupalAdapter['convertBlocks'] = (
       uuids,
       targetBundle,
     ) => {
@@ -181,7 +181,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         afterUuid: e.afterUuid,
       })
 
-    const addNewBlokkliItem: DrupalAdapter['addNewBlokkliItem'] = (e) =>
+    const addNewBlock: DrupalAdapter['addNewBlock'] = (e) =>
       useGraphqlMutation('pbAddParagraph', {
         ...ctx.value,
         hostType: e.host.type,
@@ -400,12 +400,12 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
       revertAllChanges,
       makeItemReusable,
       duplicateBlocks,
-      convertItems,
+      convertBlocks,
       deleteMultipleItems,
       addLibraryItem,
       moveMultipleItems,
       moveItem,
-      addNewBlokkliItem,
+      addNewBlock,
       updateOptions,
       mapState,
       loadComments,

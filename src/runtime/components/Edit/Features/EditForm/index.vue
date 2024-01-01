@@ -20,7 +20,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli, onMounted, onUnmounted } from '#imports'
+import {
+  ref,
+  computed,
+  useBlokkli,
+  onMounted,
+  onUnmounted,
+  defineBlokkliFeature,
+} from '#imports'
 import { FormOverlay } from '#blokkli/components'
 import { getDefinition } from '#blokkli/definitions'
 import type {
@@ -30,12 +37,18 @@ import type {
 import FormFrame from './Frame/index.vue'
 import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
 
-const { types, eventBus, state, adapter, context } = useBlokkli()
+const adapter = defineBlokkliFeature({
+  description:
+    'Listens to edit events and renders an iframe containing the edit form.',
+  requiredAdapterMethods: ['formFrameBuilder'],
+})
+
+const { types, eventBus, state, context } = useBlokkli()
 
 const form = ref<AdapterFormFrameBuilder | null>(null)
 
 const formUrl = computed<string | undefined>(() => {
-  if (form.value && adapter.formFrameBuilder) {
+  if (form.value) {
     return adapter.formFrameBuilder(form.value)?.url
   }
 })
@@ -108,7 +121,7 @@ const onEditEntity = () =>
     id: 'entity:edit',
   })
 
-async function addNewBlokkliItem(e: AddNewBlokkliItemEvent) {
+async function addNewBlock(e: AddNewBlokkliItemEvent) {
   if (!state.canEdit.value) {
     return
   }
@@ -127,7 +140,7 @@ onMounted(() => {
   eventBus.on('translateEntity', onTranslateEntity)
   eventBus.on('batchTranslate', onBatchTranslate)
   eventBus.on('editEntity', onEditEntity)
-  eventBus.on('add:block:new', addNewBlokkliItem)
+  eventBus.on('add:block:new', addNewBlock)
 })
 
 onUnmounted(() => {
@@ -135,7 +148,7 @@ onUnmounted(() => {
   eventBus.off('translateEntity', onTranslateEntity)
   eventBus.off('batchTranslate', onBatchTranslate)
   eventBus.off('editEntity', onEditEntity)
-  eventBus.off('add:block:new', addNewBlokkliItem)
+  eventBus.off('add:block:new', addNewBlock)
 })
 </script>
 

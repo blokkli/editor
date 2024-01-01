@@ -52,8 +52,10 @@ export class BlockProxy {
 
 export class MutationContext {
   proxies: BlockProxy[] = []
+  entity: Entity
 
   constructor(hostEntity: Entity) {
+    this.entity = hostEntity
     const createProxies = (entity: Entity) => {
       entity.getBlockFields().forEach((field) => {
         field.getBlocks().forEach((block) => {

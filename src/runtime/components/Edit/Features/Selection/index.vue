@@ -2,15 +2,19 @@
   <Teleport to=".bk-main-canvas">
     <Overlay
       v-if="isVisible"
-      :blocks="selection.blocks.value"
       :key="state.refreshKey.value"
+      :blocks="selection.blocks.value"
     />
   </Teleport>
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli } from '#imports'
+import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import Overlay from './Overlay/index.vue'
+
+defineBlokkliFeature({
+  description: 'Renders an overlay that highlights the selected blocks.',
+})
 
 const { selection, state, ui } = useBlokkli()
 

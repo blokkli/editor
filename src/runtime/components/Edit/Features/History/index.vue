@@ -96,12 +96,25 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli, nextTick, watch } from '#imports'
+import {
+  ref,
+  computed,
+  useBlokkli,
+  nextTick,
+  watch,
+  defineBlokkliFeature,
+} from '#imports'
 import { PluginSidebar, PluginToolbarButton } from '#blokkli/plugins'
 import { RelativeTime } from '#blokkli/components'
 import type { BlokkliMutationItem } from '#blokkli/types'
 
-const { adapter, eventBus, state, text } = useBlokkli()
+const adapter = defineBlokkliFeature({
+  requiredAdapterMethods: ['setHistoryIndex'],
+  description:
+    'Implements support for history features (undo, redo, list of mutations).',
+})
+
+const { eventBus, state, text } = useBlokkli()
 
 const { mutations, currentMutationIndex, canEdit, mutateWithLoadingState } =
   state
@@ -155,8 +168,14 @@ async function setHistoryIndex(index: number, item?: HistoryItem) {
   }
 }
 
-const undo = () => mutateWithLoadingState(adapter.undo())
-const redo = () => mutateWithLoadingState(adapter.redo())
+const undo = () =>
+  mutateWithLoadingState(
+    adapter.setHistoryIndex(currentMutationIndex.value - 1),
+  )
+const redo = () =>
+  mutateWithLoadingState(
+    adapter.setHistoryIndex(currentMutationIndex.value + 1),
+  )
 </script>
 
 <script lang="ts">

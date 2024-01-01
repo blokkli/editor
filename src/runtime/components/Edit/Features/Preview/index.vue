@@ -1,6 +1,6 @@
 <template>
   <PluginToolbarButton
-    v-if="!ui.isMobile.value"
+    v-if="!ui.isMobile.value && adapter.getLastChanged"
     :title="text('previewMobileFrame')"
     meta
     key-code="P"
@@ -47,11 +47,22 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli, useRoute, useAsyncData } from '#imports'
+import {
+  ref,
+  computed,
+  useBlokkli,
+  useRoute,
+  useAsyncData,
+  defineBlokkliFeature,
+} from '#imports'
 import { PluginToolbarButton } from '#blokkli/plugins'
 import PreviewFrame from './Frame/index.vue'
 import QrCode from './QrCode/index.vue'
 import { DialogModal } from '#blokkli/components'
+
+defineBlokkliFeature({
+  description: 'Implements various preview features.',
+})
 
 const qrCodeVisible = ref(false)
 
@@ -61,9 +72,12 @@ const { adapter, storage, text, ui } = useBlokkli()
 
 const previewVisible = storage.use('preview:visible', false)
 
-const { data: previewGrantUrl } = await useAsyncData(() =>
-  adapter.getPreviewGrantUrl(),
-)
+const { data: previewGrantUrl } = await useAsyncData(() => {
+  if (!adapter.getPreviewGrantUrl) {
+    return Promise.resolve(null)
+  }
+  return adapter.getPreviewGrantUrl()
+})
 
 const previewUrl = computed(() =>
   route.fullPath.replace('blokkliEditing', 'blokkliPreview'),

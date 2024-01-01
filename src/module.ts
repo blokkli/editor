@@ -105,11 +105,6 @@ export type ModuleOptions = {
   langcodeWithoutPrefix?: string
 
   /**
-   * If provided, the grid feature is enabled and the markup is used to display the grid.
-   */
-  gridMarkup?: string
-
-  /**
    * The entity type of blokkli items.
    *
    * Using the paragraphs_builder integration this value should be set to "paragraph".
@@ -189,14 +184,6 @@ export default defineNuxtModule<ModuleOptions>({
     const featuresContext: AlterFeatures = {
       features,
     }
-
-    featuresContext.features = featuresContext.features.filter((v) => {
-      if (v.id === 'Grid' && !moduleOptions.gridMarkup) {
-        return false
-      }
-
-      return true
-    })
 
     if (moduleOptions.alterFeatures) {
       featuresContext.features = await Promise.resolve(

@@ -13,9 +13,15 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli } from '#imports'
+import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 
-const { adapter, state, text } = useBlokkli()
+const adapter = defineBlokkliFeature({
+  requiredAdapterMethods: ['takeOwnership'],
+  description:
+    'Renders a large button to take ownership of the current edit state.',
+})
+
+const { state, text } = useBlokkli()
 
 const takeOwnership = () =>
   state.mutateWithLoadingState(

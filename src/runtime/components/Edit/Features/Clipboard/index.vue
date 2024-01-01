@@ -54,6 +54,11 @@ import type {
 import { falsy } from '#blokkli/helpers'
 import { Icon } from '#blokkli/components'
 
+defineBlokkliFeature({
+  description:
+    'Provides clipboard integration to copy/paste existing blocks or paste supported clipboard content like text or images.',
+})
+
 const { eventBus, selection, text, adapter, dom, state, ui } = useBlokkli()
 
 const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)

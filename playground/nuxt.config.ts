@@ -1,9 +1,3 @@
-const getGridMarkup = () => {
-  return `<div class="container">${Array(12)
-    .fill('<div></div>')
-    .join('')}</div>`
-}
-
 export default defineNuxtConfig({
   ssr: false,
   modules: ['../src/module', '@nuxtjs/tailwindcss', 'nuxt-svg-icon-sprite'],
@@ -23,7 +17,6 @@ export default defineNuxtConfig({
   blokkli: {
     itemEntityType: 'block',
     fieldListTypes: ['header'],
-    gridMarkup: getGridMarkup(),
     globalOptions: {
       background: {
         type: 'radios',

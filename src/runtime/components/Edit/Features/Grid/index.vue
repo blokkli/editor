@@ -10,21 +10,24 @@
     </template>
 
     <template #default="{ isActive }">
-      <div
-        v-if="isActive"
-        class="bk-grid-overlay"
-        v-html="runtimeConfig.gridMarkup"
-      />
+      <div v-if="isActive" class="bk-grid-overlay" v-html="gridMarkup" />
     </template>
   </PluginViewOption>
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli } from '#imports'
+import { useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginViewOption } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 
-const { runtimeConfig, text } = useBlokkli()
+const adapter = defineBlokkliFeature({
+  requiredAdapterMethods: ['getGridMarkup'],
+  description: 'Provides a view option to render a grid.',
+})
+
+const gridMarkup = await Promise.resolve(adapter.getGridMarkup())
+
+const { text } = useBlokkli()
 </script>
 
 <script lang="ts">

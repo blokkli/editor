@@ -10,9 +10,13 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, useRoute, nextTick } from '#imports'
+import { useBlokkli, useRoute, nextTick, defineBlokkliFeature } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
+
+defineBlokkliFeature({
+  description: 'Provides a menu button to exit the editor without saving.',
+})
 
 const { text } = useBlokkli()
 

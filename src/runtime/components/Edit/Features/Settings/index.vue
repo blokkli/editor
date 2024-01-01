@@ -14,9 +14,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli } from '#imports'
+import { ref, useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
 import SettingsDialog from './Dialog/index.vue'
+
+defineBlokkliFeature({
+  description: 'Provides a menu button to display a settings dialog.',
+})
 
 const { text } = useBlokkli()
 

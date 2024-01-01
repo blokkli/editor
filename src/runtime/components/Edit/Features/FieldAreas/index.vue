@@ -18,10 +18,14 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli } from '#imports'
+import { useBlokkli, defineBlokkliFeature } from '#imports'
 import Overlay from './Overlay/index.vue'
 import { PluginViewOption } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
+
+defineBlokkliFeature({
+  description: 'Provides a view option to render the field areas with labels.',
+})
 
 const { text } = useBlokkli()
 </script>

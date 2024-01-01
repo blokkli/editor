@@ -34,7 +34,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, onMounted, onUnmounted } from '#imports'
+import {
+  ref,
+  useBlokkli,
+  onMounted,
+  onUnmounted,
+  defineBlokkliFeature,
+} from '#imports'
 import DropTargets, { type DropTargetEvent } from './DropTargets/index.vue'
 import DragItems from './DragItems/index.vue'
 
@@ -54,7 +60,11 @@ import type {
 } from '#blokkli/types'
 import { getDefinition } from '#blokkli/definitions'
 
-const { eventBus, adapter, state, ui, animation } = useBlokkli()
+const adapter = defineBlokkliFeature({
+  description: 'Renders an overlay when dragging or placing a block.',
+})
+
+const { eventBus, state, ui, animation } = useBlokkli()
 
 const isVisible = ref(false)
 const mouseX = ref(0)
@@ -103,7 +113,7 @@ const onDrop = async (e: DropTargetEvent) => {
       const definition = getDefinition(item.itemBundle)
       if (definition?.disableEdit || definition?.noAddForm) {
         await state.mutateWithLoadingState(
-          adapter.addNewBlokkliItem({
+          adapter.addNewBlock({
             type: item.itemBundle,
             item,
             host,

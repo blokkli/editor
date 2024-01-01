@@ -1,6 +1,7 @@
 <template>
   <BlokkliProvider
     v-if="page"
+    :key="language"
     entity-type="content"
     entity-bundle="page"
     :entity-uuid="page.uuid"

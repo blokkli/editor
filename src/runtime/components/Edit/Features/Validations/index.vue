@@ -24,9 +24,13 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli } from '#imports'
+import { useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
+
+defineBlokkliFeature({
+  description: 'Provides a sidebar pane to render validations.',
+})
 
 const { state, text } = useBlokkli()
 </script>

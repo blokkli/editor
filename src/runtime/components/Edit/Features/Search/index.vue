@@ -27,13 +27,22 @@
 </template>
 
 <script lang="ts" setup>
-/**
- * Provides a fulltext search for rendered items on the page.
- */
-import { nextTick, ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+import {
+  nextTick,
+  ref,
+  useBlokkli,
+  onMounted,
+  onBeforeUnmount,
+  defineBlokkliFeature,
+} from '#imports'
 import type { KeyPressedEvent } from '#blokkli/types'
 import Overlay from './Overlay/index.vue'
 import { PluginToolbarButton } from '#blokkli/plugins'
+
+defineBlokkliFeature({
+  description:
+    'Provides an overlay with shortcut to search for blocks on the current page or existing content to add as blocks.',
+})
 
 const { eventBus, text } = useBlokkli()
 

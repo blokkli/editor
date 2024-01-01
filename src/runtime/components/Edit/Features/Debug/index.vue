@@ -60,10 +60,18 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, onMounted, onBeforeUnmount } from '#imports'
-
+import {
+  useBlokkli,
+  onMounted,
+  onBeforeUnmount,
+  defineBlokkliFeature,
+} from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
 import type { KeyPressedEvent, Rectangle } from '#blokkli/types'
+
+defineBlokkliFeature({
+  description: 'Provides debugging functionality.',
+})
 
 const { keyboard, selection, storage, eventBus, ui } = useBlokkli()
 

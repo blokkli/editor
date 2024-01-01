@@ -95,7 +95,7 @@ export interface BlokkliAdapter<T> {
   /**
    * Add a new blokkli item.
    */
-  addNewBlokkliItem(e: AddNewBlokkliItemEvent): Promise<MutationResponseLike<T>>
+  addNewBlock(e: AddNewBlokkliItemEvent): Promise<MutationResponseLike<T>>
 
   /**
    * Update multiple options.
@@ -131,15 +131,15 @@ export interface BlokkliAdapter<T> {
   /**
    * Delete multiple items.
    */
-  deleteBlocks(uuids: string[]): Promise<MutationResponseLike<T>>
+  deleteBlocks?: (uuids: string[]) => Promise<MutationResponseLike<T>>
 
   /**
    * Convert multiple items.
    */
-  convertItems(
+  convertBlocks?: (
     uuids: string[],
     targetBundle: string,
-  ): Promise<MutationResponseLike<T>>
+  ) => Promise<MutationResponseLike<T>>
 
   /**
    * Duplicate blocks.
@@ -156,66 +156,56 @@ export interface BlokkliAdapter<T> {
   /**
    * Get all existing entities for importing.
    */
-  getImportItems(
+  getImportItems?: (
     searchText?: string,
-  ): Promise<{ items: BlokkliImportItem[]; total: number }>
+  ) => Promise<{ items: BlokkliImportItem[]; total: number }>
 
   /**
    * Import items from an existing entity.
    */
-  importFromExisting(
+  importFromExisting?: (
     e: ImportFromExistingEvent,
-  ): Promise<MutationResponseLike<T>>
+  ) => Promise<MutationResponseLike<T>>
 
   /**
    * Revert all changes to the last published state.
    */
-  revertAllChanges(): Promise<MutationResponseLike<T>>
+  revertAllChanges?: () => Promise<MutationResponseLike<T>>
 
   /**
    * Publish all changes.
    */
-  publish(): Promise<MutationResponseLike<T>>
-
-  /**
-   * Undo the last mutation.
-   */
-  undo(): Promise<MutationResponseLike<T>>
-
-  /**
-   * Redo the last mutation.
-   */
-  redo(): Promise<MutationResponseLike<T>>
+  publish?: () => Promise<MutationResponseLike<T>>
 
   /**
    * Set a specific history index.
    */
-  setHistoryIndex(index: number): Promise<MutationResponseLike<T>>
+  setHistoryIndex?: (index: number) => Promise<MutationResponseLike<T>>
 
   /**
    * Take ownership of the edit state.
    */
-  takeOwnership(): Promise<MutationResponseLike<T>>
+  takeOwnership?: () => Promise<MutationResponseLike<T>>
 
   /**
    * Load all comments.
    */
-  loadComments(): Promise<BlokkliComment[]>
+  loadComments?: () => Promise<BlokkliComment[]>
 
   /**
    * Add a comment to one or more items.
    */
-  addComment(itemUuids: string[], body: string): Promise<BlokkliComment[]>
+  addComment?: (itemUuids: string[], body: string) => Promise<BlokkliComment[]>
 
   /**
    * Resolve a comment.
    */
-  resolveComment(uuid: string): Promise<BlokkliComment[]>
+  resolveComment?: (uuid: string) => Promise<BlokkliComment[]>
 
   /**
    * Make an item reusable.
    */
-  makeItemReusable(e: MakeReusableEvent): Promise<MutationResponseLike<T>>
+  makeBlockReusable?: (e: MakeReusableEvent) => Promise<MutationResponseLike<T>>
 
   /**
    * Detach a reusable block and add a copy of it in place.
@@ -227,19 +217,23 @@ export interface BlokkliAdapter<T> {
   /**
    * Get all library items.
    */
-  getLibraryItems(bundles: string[]): Promise<BlokkliLibraryItem[]>
+  getLibraryItems?: (bundles: string[]) => Promise<BlokkliLibraryItem[]>
 
   /**
    * Get the last changed timestamp for the edit state.
    */
-  getLastChanged(): Promise<number>
+  getLastChanged?: () => Promise<number>
 
   /**
    * Get the shareable preview URL.
    *
    * This should return a URL that can be used to bypass logins, using a token or similar, that can be shared with non-editing people.
    */
-  getPreviewGrantUrl(): Promise<string | undefined | null>
+  getPreviewGrantUrl?: () =>
+    | Promise<string | undefined | null>
+    | string
+    | undefined
+    | null
 
   /**
    * Return the possible content search tabs.
@@ -275,21 +269,38 @@ export interface BlokkliAdapter<T> {
     e: AdapterFormFrameBuilder,
   ) => AdapterFormFrameBuilderResult | undefined | void
 
-  updateFieldValue: (
+  /**
+   * Update the value of a single block field.
+   */
+  updateFieldValue?: (
     e: UpdateFieldValueEvent,
   ) => Promise<MutationResponseLike<T>> | undefined
 
+  /**
+   * Build the iframe URL for an editable of type "frame".
+   */
   buildEditableFrameUrl?: (
     e: AdapterBuildEditableFrameUrl,
   ) => string | undefined
 
+  /**
+   * Get the result for an assistant query.
+   */
   assistantGetResults?: (
     e: AdapterAssistantGetResults,
   ) => Promise<AssistantResult | undefined>
 
+  /**
+   * Add one or more blocks from the given assistant result.
+   */
   assistantAddBlockFromResult?: (
     e: AdapterAssistantAddBlockFromResult,
   ) => Promise<MutationResponseLike<T>> | undefined
+
+  /**
+   * Return the HTML markup for displaying the grid.
+   */
+  getGridMarkup?: () => Promise<string> | string
 }
 
 type AdapterAssistantAddBlockFromResult = {

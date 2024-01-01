@@ -39,9 +39,20 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli, onMounted } from '#imports'
+import {
+  ref,
+  computed,
+  useBlokkli,
+  onMounted,
+  defineBlokkliFeature,
+} from '#imports'
 import { AddListItem } from '#blokkli/components'
 import type { DraggableExistingBlokkliItem } from '#blokkli/types'
+
+defineBlokkliFeature({
+  description:
+    'Renders a list of block bundles that can be added to the current page.',
+})
 
 const {
   selection,

@@ -670,7 +670,6 @@ export interface BlokkliApp {
   eventBus: typeof eventBus
 
   runtimeConfig: {
-    gridMarkup: string
     langcodeWithoutPrefix: string
     itemEntityType: string
     defaultLanguage: string

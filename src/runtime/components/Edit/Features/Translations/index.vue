@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli } from '#imports'
+import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import { falsy } from '#blokkli/helpers'
 import { PluginMenuButton, PluginItemAction } from '#blokkli/plugins'
 import type {
@@ -68,7 +68,12 @@ import type {
   BlokkliEntityTranslation,
 } from '#blokkli/types'
 
-const { eventBus, state, context, adapter, text, ui } = useBlokkli()
+const adapter = defineBlokkliFeature({
+  requiredAdapterMethods: ['changeLanguage'],
+  description: 'Adds support for block translations.',
+})
+
+const { eventBus, state, context, text, ui } = useBlokkli()
 const { translation, editMode } = state
 
 const isDropdown = computed(() => ui.isMobile.value || items.value.length > 5)
@@ -105,7 +110,7 @@ const items = computed<TranslationStateItem[]>(() => {
 })
 
 function onClick(item: TranslationStateItem, event: Event) {
-  if (item.translation && adapter.changeLanguage) {
+  if (item.translation) {
     return adapter.changeLanguage(item.translation)
   }
 

@@ -82,6 +82,9 @@ function onMessage(e: MessageEvent) {
  */
 async function checkChangedDate() {
   clearTimeout(timeout)
+  if (!adapter.getLastChanged) {
+    return
+  }
   timeout = setTimeout(async () => {
     const changed = await adapter.getLastChanged()
     if (changed) {

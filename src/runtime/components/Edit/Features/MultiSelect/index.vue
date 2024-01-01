@@ -25,9 +25,19 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
-
+import {
+  ref,
+  useBlokkli,
+  onMounted,
+  onBeforeUnmount,
+  defineBlokkliFeature,
+} from '#imports'
 import Overlay from './Overlay/index.vue'
+
+defineBlokkliFeature({
+  description:
+    'Implements support for selecting multiple blocks using a select rectangle.',
+})
 
 const { keyboard, eventBus, selection, ui } = useBlokkli()
 

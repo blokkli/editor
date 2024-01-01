@@ -7,11 +7,23 @@
 </template>
 
 <script lang="ts" setup>
-import type { EditableFieldFocusEvent } from '#blokkli/types'
+import {
+  ref,
+  onMounted,
+  onBeforeUnmount,
+  useBlokkli,
+  watch,
+  defineBlokkliFeature,
+} from '#imports'
 import Overlay from './Overlay/index.vue'
-import { ref, onMounted, onBeforeUnmount, useBlokkli, watch } from '#imports'
+import type { EditableFieldFocusEvent } from '#blokkli/types'
 
-const { eventBus, selection, ui } = useBlokkli()
+defineBlokkliFeature({
+  requiredAdapterMethods: ['updateFieldValue'],
+  description: 'Implements a form overlay to edit a single field of a block.',
+})
+
+const { eventBus, selection, ui, adapter } = useBlokkli()
 const editable = ref<EditableFieldFocusEvent | null>(null)
 const hasTransition = ref(false)
 
@@ -23,6 +35,11 @@ const key = computed(() => {
 })
 
 const onEditableFocus = (e: EditableFieldFocusEvent) => {
+  // Adapter doesn't support editable frames, return.
+  if (e.args?.type === 'frame' && !adapter.buildEditableFrameUrl) {
+    editable.value = null
+    return
+  }
   hasTransition.value = !editable.value
   editable.value = e
   selection.editableActive.value = true

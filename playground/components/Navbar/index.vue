@@ -7,11 +7,13 @@
         >
           <SpriteSymbol name="logo" class="text-white w-full h-full" />
         </div>
-        <NuxtLink
-          to="/"
-          class="font-extrabold text-lg md:text-2xl text-slate-800"
-          >blökkli</NuxtLink
-        >
+        <NuxtLink to="/" class="text-lg md:text-2xl text-slate-800">
+          <span class="font-extrabold">blökkli</span>
+          <sup
+            class="ml-5 text-[0.5em] uppercase align-middle font-bold text-red-500"
+            >beta</sup
+          >
+        </NuxtLink>
       </div>
       <nav>
         <ul

@@ -18,16 +18,20 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli } from '#imports'
+import { useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginViewOption } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 import Overlay from './Overlay/index.vue'
+
+defineBlokkliFeature({
+  description: 'Provides a view option to hide non-editable parts of the page.',
+})
 
 const { text } = useBlokkli()
 </script>
 
 <script lang="ts">
 export default {
-  name: 'Mask',
+  name: 'EditableMask',
 }
 </script>

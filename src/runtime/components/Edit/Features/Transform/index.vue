@@ -24,23 +24,21 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli, useLazyAsyncData } from '#imports'
+import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginItemDropdown } from '#blokkli/plugins'
 import { onlyUnique } from '#blokkli/helpers'
 import type { BlokkliTransformPlugin } from '#blokkli/types'
 import Overlay from './Overlay/index.vue'
 import { filterTransforms } from '#blokkli/helpers/transform'
 
-const { adapter, types, selection, state, text } = useBlokkli()
-
-const { data: transformData } = await useLazyAsyncData(() => {
-  if (adapter.getTransformPlugins) {
-    return adapter.getTransformPlugins()
-  }
-  return Promise.resolve([])
+const adapter = defineBlokkliFeature({
+  requiredAdapterMethods: ['getTransformPlugins', 'applyTransformPlugin'],
+  description: 'Provides integration for block transform plugins.',
 })
 
-const plugins = computed(() => transformData.value || [])
+const { types, selection, state, text } = useBlokkli()
+
+const plugins = await adapter.getTransformPlugins()
 
 async function onTransform(plugin: BlokkliTransformPlugin, uuids: string[]) {
   await state.mutateWithLoadingState(
@@ -58,7 +56,7 @@ const itemBundleIds = computed(() =>
 
 const possibleTransforms = computed<BlokkliTransformPlugin[]>(() =>
   filterTransforms(
-    plugins.value,
+    plugins,
     selection.uuids.value,
     itemBundleIds.value,
     types.allowedTypesInList.value,

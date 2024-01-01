@@ -22,13 +22,24 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli, onMounted } from '#imports'
-
+import {
+  ref,
+  computed,
+  useBlokkli,
+  onMounted,
+  defineBlokkliFeature,
+} from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 import ExistingDialog from './Dialog/index.vue'
 
-const { adapter, storage, state, text } = useBlokkli()
+const adapter = defineBlokkliFeature({
+  requiredAdapterMethods: ['getImportItems', 'importFromExisting'],
+  description:
+    'Implements a menu action that renders a dialog to import blocks from another entity.',
+})
+
+const { storage, state, text } = useBlokkli()
 
 const shouldOpen = storage.use('showImport', true)
 

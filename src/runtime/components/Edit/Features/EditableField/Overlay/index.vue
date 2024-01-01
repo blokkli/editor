@@ -1,15 +1,15 @@
 <template>
   <div
-    ref="root"
     v-if="loaded"
+    ref="root"
     :style="style"
     class="bk-editable-field bk-control"
   >
     <form
       ref="form"
       class="bk-editable-field-input"
-      @submit.prevent="cancel"
       :style="formStyle"
+      @submit.prevent="cancel"
     >
       <div class="bk bk-editable-field-buttons">
         <h3>
@@ -20,7 +20,7 @@
           <Icon name="close" />
           <span>{{ translationText('cancel') }}</span>
         </button>
-        <button @click.prevent="close(true)" :disabled="!hasChanged">
+        <button :disabled="!hasChanged" @click.prevent="close(true)">
           <Icon name="save" />
           <span>{{ translationText('save') }}</span>
         </button>

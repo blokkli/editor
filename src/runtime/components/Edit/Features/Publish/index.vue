@@ -16,7 +16,13 @@ import { useBlokkli } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 
-const { state, adapter, text } = useBlokkli()
+const adapter = defineBlokkliFeature({
+  requiredAdapterMethods: ['publish'],
+  description:
+    'Provides a menu button to publish the changes of the current entity.',
+})
+
+const { state, text } = useBlokkli()
 const { mutations, canEdit, mutateWithLoadingState } = state
 
 const onClick = async () => {

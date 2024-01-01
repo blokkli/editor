@@ -163,7 +163,7 @@ export default defineBlokkliEditAdapter((ctx) => {
       })
       return loadComments()
     },
-    addNewBlokkliItem: (e) =>
+    addNewBlock: (e) =>
       addMutation('add', {
         bundle: e.type,
         hostEntityType: e.host.type,
@@ -294,6 +294,8 @@ export default defineBlokkliEditAdapter((ctx) => {
         url = '/translateBlock'
         params.set('uuid', e.data.uuid)
         params.set('langcode', e.langcode)
+      } else if (e.id === 'entity:edit') {
+        url = '/editEntity'
       }
 
       if (url) {
@@ -307,7 +309,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         options,
       }),
 
-    makeItemReusable: (e) => addMutation('make_reusable', e),
+    makeBlockReusable: (e) => addMutation('make_reusable', e),
 
     getContentSearchTabs() {
       return {
@@ -459,6 +461,12 @@ export default defineBlokkliEditAdapter((ctx) => {
       })
 
       return Promise.resolve(fields)
+    },
+
+    getGridMarkup() {
+      return `<div class="container">${Array(12)
+        .fill('<div></div>')
+        .join('')}</div>`
     },
   }
 

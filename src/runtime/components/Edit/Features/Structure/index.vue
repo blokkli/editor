@@ -11,9 +11,14 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, onMounted } from '#imports'
+import { useBlokkli, onMounted, defineBlokkliFeature } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
 import List from './List/index.vue'
+
+defineBlokkliFeature({
+  description:
+    'Provides a sidebar button to render a structured list of all blocks on the current page.',
+})
 
 const { text, state, ui, selection } = useBlokkli()
 

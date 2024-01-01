@@ -28,7 +28,11 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli } from '#imports'
+import { useBlokkli, defineBlokkliFeature } from '#imports'
+
+defineBlokkliFeature({
+  description: 'Renders the title and status of the page entity.',
+})
 
 const { state, eventBus, text } = useBlokkli()
 const { entity, mutations } = state

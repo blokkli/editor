@@ -11,12 +11,17 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli } from '#imports'
+import { useBlokkli, defineBlokkliFeature } from '#imports'
 
 import type { DraggableExistingBlokkliItem } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
 
-const { state, adapter, eventBus, text } = useBlokkli()
+const { state, eventBus, text } = useBlokkli()
+
+const adapter = defineBlokkliFeature({
+  requiredAdapterMethods: ['deleteBlocks'],
+  description: 'Provides an action to delete one or more blocks.',
+})
 
 async function onClick(items: DraggableExistingBlokkliItem[]) {
   // Unselect all items.

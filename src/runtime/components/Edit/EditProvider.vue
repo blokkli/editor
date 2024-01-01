@@ -3,7 +3,7 @@
   <Actions v-if="!isInitializing" />
   <Messages />
   <Toolbar @loaded="toolbarLoaded = true" />
-  <AppMenu />
+  <AppMenu v-if="toolbarLoaded" />
   <AddList />
   <Features
     v-if="!isInitializing && toolbarLoaded"

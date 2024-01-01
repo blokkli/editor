@@ -3,7 +3,9 @@ import type { BlokkliAdapter } from '#blokkli/adapter'
 type AdapterMethods = keyof BlokkliAdapter<any>
 
 type BlokkliFeatureDefinition<Methods extends AdapterMethods[]> = {
-  requiredAdapterMethods: [...Methods]
+  label?: string
+  description?: string
+  requiredAdapterMethods?: [...Methods]
 }
 
 // This utility type picks only the methods listed in Methods array and makes them non-optional

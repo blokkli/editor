@@ -8,7 +8,7 @@
     @click="onDetach"
   />
   <PluginItemAction
-    v-else
+    v-else-if="!isReusable && adapter.makeBlockReusable"
     :title="text('libraryAdd')"
     :disabled="!canMakeReusable"
     icon="reusable"
@@ -17,6 +17,7 @@
   />
 
   <PluginAddAction
+    v-if="adapter.addLibraryItem && adapter.getLibraryItems"
     type="library"
     title="From Library"
     icon="reusable"
@@ -49,17 +50,21 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli } from '#imports'
-
+import { ref, computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginItemAction, PluginAddAction } from '#blokkli/plugins'
 import ReusableDialog from './ReusableDialog/index.vue'
 import LibraryDialog from './LibraryDialog/index.vue'
 import { getDefinition } from '#blokkli/definitions'
 import type { ActionPlacedEvent } from '#blokkli/types'
 
-const showReusableDialog = ref(false)
+const adapter = defineBlokkliFeature({
+  description:
+    'Implements support for a block library to manage reusable blocks.',
+  requiredAdapterMethods: ['makeBlockReusable'],
+})
 
-const { selection, state, adapter, types, text, eventBus } = useBlokkli()
+const { selection, state, types, text, eventBus } = useBlokkli()
+const showReusableDialog = ref(false)
 
 const selectedItem = computed(() => {
   if (selection.blocks.value.length !== 1) {
@@ -84,7 +89,7 @@ const onDetach = async () => {
 
 const placedAction = ref<ActionPlacedEvent | null>(null)
 const onAddLibraryItem = async (uuid: string) => {
-  if (!placedAction.value) {
+  if (!placedAction.value || !adapter.addLibraryItem) {
     return
   }
   await state.mutateWithLoadingState(
@@ -119,7 +124,7 @@ async function onMakeReusable(label: string) {
     return
   }
   await state.mutateWithLoadingState(
-    adapter.makeItemReusable({
+    adapter.makeBlockReusable({
       label,
       uuid: selectedItem.value.uuid,
     }),
