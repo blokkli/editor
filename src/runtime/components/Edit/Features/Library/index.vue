@@ -1,14 +1,14 @@
 <template>
   <PluginItemAction
     v-if="isReusable && adapter.detachReusableBlock"
-    :title="$t('detachFromLibrary')"
+    :title="$t('libraryDetach')"
     icon="detach"
     multiple
     :weight="-70"
     @click="onDetach"
   />
   <PluginItemAction
-    v-else-if="!isReusable && adapter.makeBlockReusable"
+    v-else-if="!isReusable"
     :title="$t('libraryAdd')"
     :disabled="!canMakeReusable"
     icon="reusable"
@@ -19,7 +19,7 @@
   <PluginAddAction
     v-if="adapter.addLibraryItem && adapter.getLibraryItems"
     type="library"
-    title="From Library"
+    :title="$t('libraryAddFromLibrary')"
     icon="reusable"
     color="lime"
     @placed="placedAction = $event"
@@ -40,7 +40,7 @@
   <Teleport to="body">
     <transition name="bk-slide-in" :duration="200">
       <LibraryDialog
-        v-if="placedAction"
+        v-if="placedAction && adapter.getLibraryItems"
         :field="placedAction.field"
         @close="placedAction = null"
         @submit="onAddLibraryItem"
@@ -133,9 +133,9 @@ async function onMakeReusable(label: string) {
   eventBus.emit('select:end')
 }
 
-const fromLibraryAllowedInList = computed(() => {
-  return types.allowedTypesInList.value.includes('from_library')
-})
+const fromLibraryAllowedInList = computed(() =>
+  types.allowedTypesInList.value.includes('from_library'),
+)
 
 const canMakeReusable = computed(
   () =>

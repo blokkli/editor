@@ -152,16 +152,17 @@ export default {
     'Generate content for a page about how taxes work in Switzerland',
   assistantAddResultError: 'Failed to add block from assistant.',
   assistantBlockActionTooltip: 'Edit with AI Assistant',
+  assistantAddAction: 'Add with AI Assistant',
 
   libraryPlaceDialogTitle: 'Add block from library',
   libraryPlaceDialogLead:
     'Select a reusable block from the library to add it to your layout. You can detach the block later.',
   libraryPlaceDialogSubmit: 'Add reusable block',
   libraryPlaceSearchLabel: 'Filter library items',
+  libraryDetach: 'Detach from library',
+  libraryAddFromLibrary: 'Add from library',
 
   searchInputPlaceholder: 'Enter search term',
-
-  detachFromLibrary: 'Detach from library',
 
   addListSidebarTitle: 'Add blocks',
 

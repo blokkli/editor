@@ -7,7 +7,7 @@
 
   <PluginAddAction
     type="assistant"
-    title="AI Assistant"
+    :title="$t('assistantAddAction')"
     icon="robot"
     color="rose"
     @placed="placedAction = $event"

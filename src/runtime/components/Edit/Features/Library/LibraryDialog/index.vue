@@ -88,7 +88,7 @@ const onClose = () => {
 }
 
 const { data } = await useAsyncData<BlokkliLibraryItem[]>(() =>
-  adapter.getLibraryItems(allowedBundles.value),
+  adapter.getLibraryItems!(allowedBundles.value),
 )
 
 type SearchElement = {
@@ -117,7 +117,7 @@ const buildElements = () => {
     .filter(falsy)
 }
 
-watch(text, () => {
+watch(searchText, () => {
   if (!elements.value.length) {
     buildElements()
   }
