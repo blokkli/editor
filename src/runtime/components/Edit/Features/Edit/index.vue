@@ -1,6 +1,6 @@
 <template>
   <PluginItemAction
-    :title="text('edit')"
+    :title="$t('edit')"
     :disabled="disabled"
     meta
     key-code="E"
@@ -20,7 +20,7 @@ defineBlokkliFeature({
   description: 'Provides an action to edit a block.',
 })
 
-const { eventBus, selection, state, text } = useBlokkli()
+const { eventBus, selection, state, $t } = useBlokkli()
 
 const disabled = computed(() => {
   if (state.editMode.value !== 'editing') {

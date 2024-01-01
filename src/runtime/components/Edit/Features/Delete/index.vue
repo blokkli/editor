@@ -1,6 +1,6 @@
 <template>
   <PluginItemAction
-    :title="text('deleteButton')"
+    :title="$t('deleteButton')"
     :disabled="state.editMode.value !== 'editing'"
     multiple
     key-code="Delete"
@@ -16,7 +16,7 @@ import { useBlokkli, defineBlokkliFeature } from '#imports'
 import type { DraggableExistingBlokkliItem } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
 
-const { state, eventBus, text } = useBlokkli()
+const { state, eventBus, $t } = useBlokkli()
 
 const adapter = defineBlokkliFeature({
   requiredAdapterMethods: ['deleteBlocks'],
@@ -28,7 +28,7 @@ async function onClick(items: DraggableExistingBlokkliItem[]) {
   eventBus.emit('select:end', [])
   await state.mutateWithLoadingState(
     adapter.deleteBlocks(items.map((v) => v.uuid)),
-    text('deleteError'),
+    $t('deleteError'),
   )
 }
 </script>

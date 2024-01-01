@@ -1,7 +1,7 @@
 <template>
   <PluginItemAction
     v-if="isReusable && adapter.detachReusableBlock"
-    :title="text('detachFromLibrary')"
+    :title="$t('detachFromLibrary')"
     icon="detach"
     multiple
     :weight="-70"
@@ -9,7 +9,7 @@
   />
   <PluginItemAction
     v-else-if="!isReusable && adapter.makeBlockReusable"
-    :title="text('libraryAdd')"
+    :title="$t('libraryAdd')"
     :disabled="!canMakeReusable"
     icon="reusable"
     :weight="-70"
@@ -63,7 +63,7 @@ const adapter = defineBlokkliFeature({
   requiredAdapterMethods: ['makeBlockReusable'],
 })
 
-const { selection, state, types, text, eventBus } = useBlokkli()
+const { selection, state, types, $t, eventBus } = useBlokkli()
 const showReusableDialog = ref(false)
 
 const selectedItem = computed(() => {
@@ -128,7 +128,7 @@ async function onMakeReusable(label: string) {
       label,
       uuid: selectedItem.value.uuid,
     }),
-    text('libraryError'),
+    $t('libraryError'),
   )
   eventBus.emit('select:end')
 }

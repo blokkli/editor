@@ -77,7 +77,7 @@ import type { KeyPressedEvent, Rectangle } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
 import type { PluginMountEvent, PluginUnmountEvent } from '#blokkli/types'
 
-const { selection, eventBus, text, types, state, ui } = useBlokkli()
+const { selection, eventBus, $t, types, state, ui } = useBlokkli()
 
 const editingEnabled = computed(() => state.editMode.value === 'editing')
 
@@ -106,7 +106,7 @@ const title = computed(() => {
     return itemBundle.value.label
   }
 
-  return text('multipleItemsLabel')
+  return $t('multipleItemsLabel')
 })
 
 const itemBundleIds = computed(() =>

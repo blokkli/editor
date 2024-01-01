@@ -15,7 +15,7 @@
 
   <!-- <PluginItemAction -->
   <!--   v-if="featureAvailable" -->
-  <!--   :title="text('assistantBlockActionTooltip')" -->
+  <!--   :title="$t('assistantBlockActionTooltip')" -->
   <!--   :active="showEdit" -->
   <!--   icon="robot" -->
   <!--   @click="showEdit = !showEdit" -->
@@ -48,7 +48,7 @@ const adapter = defineBlokkliFeature({
   ],
 })
 
-const { state, text } = useBlokkli()
+const { state, $t } = useBlokkli()
 
 const placedAction = ref<ActionPlacedEvent | null>(null)
 
@@ -68,7 +68,7 @@ const onSubmit = async (result: AssistantResult) => {
         host: placedAction.value.host,
         preceedingUuid: placedAction.value.preceedingUuid,
       }),
-      text('assistantAddResultError'),
+      $t('assistantAddResultError'),
     )
   }
 

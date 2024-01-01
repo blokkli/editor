@@ -1,29 +1,29 @@
 <template>
   <DialogModal
-    :title="text('libraryDialogTitle')"
-    :lead="text('libraryDialogLead')"
+    :title="$t('libraryDialogTitle')"
+    :lead="$t('libraryDialogLead')"
     :width="1200"
     icon="reusable"
-    :submit-label="text('libraryDialogSubmit')"
+    :submit-label="$t('libraryDialogSubmit')"
     :can-submit="!!label.length"
     @submit="$emit('confirm', label)"
     @cancel="$emit('cancel')"
   >
     <div class="bk-dialog-form">
       <label for="reusable_label" class="bk-form-label">{{
-        text('libraryDialogDescriptionLabel')
+        $t('libraryDialogDescriptionLabel')
       }}</label>
       <input
         id="reusable_label"
         v-model="label"
         type="text"
         class="bk-form-input"
-        :placeholder="text('libraryDialogTitleInputPlaceholder')"
+        :placeholder="$t('libraryDialogTitleInputPlaceholder')"
         required
       />
     </div>
     <div class="bk-form-label">
-      {{ text('libraryPreviewLabel') }}
+      {{ $t('libraryPreviewLabel') }}
     </div>
     <div
       class="bk-dialog-content-element"
@@ -44,7 +44,7 @@ defineEmits<{
   (e: 'cancel'): void
 }>()
 
-const { dom, text } = useBlokkli()
+const { dom, $t } = useBlokkli()
 
 const props = defineProps<{
   uuid: string

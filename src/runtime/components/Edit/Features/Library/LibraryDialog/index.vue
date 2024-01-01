@@ -1,22 +1,22 @@
 <template>
   <FormOverlay
     id="library"
-    :title="text('libraryPlaceDialogTitle')"
+    :title="$t('libraryPlaceDialogTitle')"
     icon="reusable"
     @close="onClose"
   >
     <div class="bk-library-dialog">
-      <p class="bk-lead">{{ text('libraryPlaceDialogLead') }}</p>
+      <p class="bk-lead">{{ $t('libraryPlaceDialogLead') }}</p>
       <div class="bk bk-library-dialog-form">
         <label class="bk-form-label" for="library_search">
-          {{ text('libraryPlaceSearchLabel') }}
+          {{ $t('libraryPlaceSearchLabel') }}
         </label>
         <input
           id="library_search"
           v-model="searchText"
           type="text"
           class="bk-form-input"
-          :placeholder="text('searchInputPlaceholder')"
+          :placeholder="$t('searchInputPlaceholder')"
           required
         />
       </div>
@@ -39,7 +39,7 @@
     </div>
     <template #footer>
       <button class="bk-button bk-is-primary" @click="onSubmit">
-        {{ text('libraryPlaceDialogSubmit') }}
+        {{ $t('libraryPlaceDialogSubmit') }}
       </button>
     </template>
   </FormOverlay>
@@ -56,7 +56,7 @@ const props = defineProps<{
   field: BlokkliFieldElement
 }>()
 
-const { text, adapter, types } = useBlokkli()
+const { $t, adapter, types } = useBlokkli()
 const emit = defineEmits<{
   (e: 'close'): void
   (e: 'submit', uuid: string): void

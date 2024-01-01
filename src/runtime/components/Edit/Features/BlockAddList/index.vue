@@ -31,7 +31,7 @@
         v-model="searchText"
         type="search"
         class="bk-form-input"
-        :placeholder="text('searchInputPlaceholder')"
+        :placeholder="$t('searchInputPlaceholder')"
         required
       />
     </div>
@@ -62,7 +62,7 @@ const {
   runtimeConfig,
   ui,
   eventBus,
-  text,
+  $t,
   state,
 } = useBlokkli()
 

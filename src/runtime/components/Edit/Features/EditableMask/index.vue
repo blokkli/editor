@@ -1,8 +1,8 @@
 <template>
   <PluginViewOption
     id="mask"
-    :title-on="text('maskShow')"
-    :title-off="text('maskHide')"
+    :title-on="$t('maskShow')"
+    :title-off="$t('maskHide')"
     key-code="M"
   >
     <template #icon>
@@ -27,7 +27,7 @@ defineBlokkliFeature({
   description: 'Provides a view option to hide non-editable parts of the page.',
 })
 
-const { text } = useBlokkli()
+const { $t } = useBlokkli()
 </script>
 
 <script lang="ts">

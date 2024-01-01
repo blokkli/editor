@@ -1,15 +1,15 @@
 <template>
   <FormOverlay
     id="assistant"
-    :title="text('assistantDialogTitle')"
+    :title="$t('assistantDialogTitle')"
     icon="robot"
     @close="onClose"
   >
     <div class="bk-assistant-form">
       <div class="bk">
-        <p class="bk-lead">{{ text('assistantDialogLead') }}</p>
+        <p class="bk-lead">{{ $t('assistantDialogLead') }}</p>
         <label class="bk-form-label" for="assistant_prompt">
-          {{ text('assistantPromptLabel') }}
+          {{ $t('assistantPromptLabel') }}
         </label>
         <div class="bk-assistant-form-textarea">
           <textarea
@@ -18,7 +18,7 @@
             type="text"
             class="bk-form-input"
             rows="10"
-            :placeholder="text('assistantPromptPlaceholder')"
+            :placeholder="$t('assistantPromptPlaceholder')"
             required
           />
           <button
@@ -44,7 +44,7 @@
     </div>
     <template #footer>
       <button class="bk-button bk-is-primary" @click="onSubmit">
-        {{ text('assistantDialogSubmit') }}
+        {{ $t('assistantDialogSubmit') }}
       </button>
     </template>
   </FormOverlay>
@@ -56,7 +56,7 @@ import type { AssistantResult } from '#blokkli/types'
 import { useBlokkli } from '#imports'
 import ResultMarkup from './ResultMarkup/index.vue'
 
-const { text, adapter } = useBlokkli()
+const { $t, adapter } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'close'): void

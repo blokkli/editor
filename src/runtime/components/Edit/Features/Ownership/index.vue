@@ -4,9 +4,9 @@
       v-if="!state.owner.value?.currentUserIsOwner"
       class="bk-owner-indicator"
     >
-      <p v-html="text('ownershipNote').replace('@name', name)" />
+      <p v-html="$t('ownershipNote').replace('@name', name)" />
       <button class="bk-button is-danger" @click="takeOwnership">
-        {{ text('ownershipTakeOwnership') }}
+        {{ $t('ownershipTakeOwnership') }}
       </button>
     </div>
   </Teleport>
@@ -21,13 +21,13 @@ const adapter = defineBlokkliFeature({
     'Renders a large button to take ownership of the current edit state.',
 })
 
-const { state, text } = useBlokkli()
+const { state, $t } = useBlokkli()
 
 const takeOwnership = () =>
   state.mutateWithLoadingState(
     adapter.takeOwnership(),
-    text('ownershipError'),
-    text('ownershipSuccess'),
+    $t('ownershipError'),
+    $t('ownershipSuccess'),
   )
 
 const name = computed(() => {

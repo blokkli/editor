@@ -1,7 +1,7 @@
 <template>
   <div class="bk-blokkli-item-actions-comment-dropdown" @keydown.capture.stop>
     <label for="comment_body" class="bk-form-label">{{
-      text('commentBody')
+      $t('commentBody')
     }}</label>
     <textarea
       id="comment_body"
@@ -12,7 +12,7 @@
       required
     />
     <button class="bk-button bk-is-primary" @click="$emit('add', comment)">
-      {{ text('commentSave') }}
+      {{ $t('commentSave') }}
     </button>
   </div>
 </template>
@@ -22,5 +22,5 @@ import { ref, useBlokkli } from '#imports'
 
 const comment = ref('')
 defineEmits(['add'])
-const { text } = useBlokkli()
+const { $t } = useBlokkli()
 </script>

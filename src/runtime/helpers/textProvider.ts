@@ -1,7 +1,9 @@
 import { type ComputedRef, computed } from 'vue'
 import { translations } from '#blokkli/translations'
-import type { ValidTextKeys } from '#blokkli/translations'
 import type { BlokkliAdapterContext } from '../adapter'
+import enTranslations from './../../translations/en'
+
+type ValidTextKeys = keyof typeof enTranslations
 
 export type BlokkliTextProvider = (key: ValidTextKeys) => string
 

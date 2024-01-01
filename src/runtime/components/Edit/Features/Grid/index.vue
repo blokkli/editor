@@ -1,8 +1,8 @@
 <template>
   <PluginViewOption
     id="grid"
-    :title-on="text('gridShow')"
-    :title-off="text('gridHide')"
+    :title-on="$t('gridShow')"
+    :title-off="$t('gridHide')"
     key-code="G"
   >
     <template #icon>
@@ -27,7 +27,7 @@ const adapter = defineBlokkliFeature({
 
 const gridMarkup = await Promise.resolve(adapter.getGridMarkup())
 
-const { text } = useBlokkli()
+const { $t } = useBlokkli()
 </script>
 
 <script lang="ts">

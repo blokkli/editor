@@ -1,7 +1,7 @@
 <template>
   <PluginItemDropdown
     id="conversions"
-    :title="text('convertTo')"
+    :title="$t('convertTo')"
     :enabled="!!possibleConversions.length"
   >
     <button
@@ -30,7 +30,7 @@ const adapter = defineBlokkliFeature({
     'Provides block actions to convert one or more blocks to a different bundle.',
 })
 
-const { types, selection, state, text } = useBlokkli()
+const { types, selection, state, $t } = useBlokkli()
 
 const conversions = await adapter.getConversions()
 
@@ -44,7 +44,7 @@ async function onConvert(targetBundle?: string) {
       selection.blocks.value.map((v) => v.uuid),
       targetBundle,
     ),
-    text('failedToConvert'),
+    $t('failedToConvert'),
   )
 }
 

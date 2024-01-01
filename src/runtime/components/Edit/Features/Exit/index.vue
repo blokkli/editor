@@ -1,7 +1,7 @@
 <template>
   <PluginMenuButton
-    :title="text('exitTitle')"
-    :description="text('exitDescription')"
+    :title="$t('exitTitle')"
+    :description="$t('exitDescription')"
     :weight="100"
     @click="onClick"
   >
@@ -18,7 +18,7 @@ defineBlokkliFeature({
   description: 'Provides a menu button to exit the editor without saving.',
 })
 
-const { text } = useBlokkli()
+const { $t } = useBlokkli()
 
 const route = useRoute()
 

@@ -1,9 +1,9 @@
 <template>
   <DialogModal
-    :title="text('importExistingDialogTitle')"
-    :lead="text('importExistingDialogLead')"
+    :title="$t('importExistingDialogTitle')"
+    :lead="$t('importExistingDialogLead')"
     :width="600"
-    :submit-label="text('importExistingDialogSubmit')"
+    :submit-label="$t('importExistingDialogSubmit')"
     :can-submit="!!(sourceEntityUuid && selectedFields.length)"
     :is-loading="isLoading"
     @submit="onSubmit"
@@ -12,7 +12,7 @@
     <div class="bk bk-dialog-form">
       <div class="bk-form-section">
         <h3 class="bk-form-label">
-          {{ text('importExistingFieldsLabel') }}
+          {{ $t('importExistingFieldsLabel') }}
         </h3>
         <label v-for="field in fields" :key="field.name" class="bk-checkbox">
           <input v-model="selectedFields" type="checkbox" :value="field.name" />
@@ -21,20 +21,20 @@
       </div>
       <div class="bk-form-section">
         <label for="pb_search_term" class="bk-form-label">{{
-          text('importExistingPagesLabel')
+          $t('importExistingPagesLabel')
         }}</label>
         <input
           id="pb_search_term"
           v-model="searchTerm"
           type="text"
           class="bk-form-input"
-          :placeholder="text('importExistingSearchPlaceholder')"
+          :placeholder="$t('importExistingSearchPlaceholder')"
           required
         />
       </div>
       <div>
         {{
-          text('importExistingResultsTitle')
+          $t('importExistingResultsTitle')
             .replace('@count', entities.length.toString())
             .replace('@total', total.toString())
         }}
@@ -63,7 +63,7 @@ import { watch, ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import { DialogModal } from '#blokkli/components'
 import type { BlokkliImportItem } from '#blokkli/types'
 
-const { state, adapter, text, types, context } = useBlokkli()
+const { state, adapter, $t, types, context } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'confirm', data: { sourceUuid: string; fields: string[] }): void

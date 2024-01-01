@@ -2,7 +2,7 @@
   <PluginSidebar
     id="history"
     v-slot="{ scrolledToEnd }"
-    :title="text('history')"
+    :title="$t('history')"
     icon="history"
     weight="-100"
   >
@@ -40,7 +40,7 @@
           <button @click="showAmount += 100">
             <strong
               >{{
-                text('historyShowMore').replace(
+                $t('historyShowMore').replace(
                   '@count',
                   Math.min(totalMutations - showAmount, 100).toString(),
                 )
@@ -57,7 +57,7 @@
         >
           <button @click="setHistoryIndex(-1)">
             <div>
-              <strong>{{ text('historyCurrentRevision') }}</strong>
+              <strong>{{ $t('historyCurrentRevision') }}</strong>
             </div>
             <!-- @TODO: Pass in the timestamp of the entity's latest revision. -->
             <!-- <RelativeTime -->
@@ -74,7 +74,7 @@
   </PluginSidebar>
 
   <PluginToolbarButton
-    title="Rückgängig"
+    :title="$t('historyUndo')"
     meta
     key-code="Z"
     region="before-title"
@@ -84,7 +84,7 @@
   />
 
   <PluginToolbarButton
-    title="Wiederherstellen"
+    :title="$t('historyRedo')"
     meta
     shift
     key-code="Z"
@@ -114,7 +114,7 @@ const adapter = defineBlokkliFeature({
     'Implements support for history features (undo, redo, list of mutations).',
 })
 
-const { eventBus, state, text } = useBlokkli()
+const { eventBus, state, $t } = useBlokkli()
 
 const { mutations, currentMutationIndex, canEdit, mutateWithLoadingState } =
   state

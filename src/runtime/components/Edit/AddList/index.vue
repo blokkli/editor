@@ -2,7 +2,7 @@
   <PluginSidebar
     v-if="isSidebar && shouldRender"
     id="add_list"
-    :title="text('addListSidebarTitle')"
+    :title="$t('addListSidebarTitle')"
     render-always
     icon="plus"
     weight="-10"
@@ -49,7 +49,7 @@ import {
 import { Sortli } from '#blokkli/components'
 import { PluginSidebar } from '#blokkli/plugins'
 
-const { state, ui, text, eventBus } = useBlokkli()
+const { state, ui, $t, eventBus } = useBlokkli()
 
 const isSidebar = computed(() => ui.addListOrientation.value === 'sidebar')
 const shouldRender = computed(() => state.editMode.value === 'editing')

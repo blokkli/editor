@@ -685,7 +685,7 @@ export interface BlokkliApp {
   animation: BlokkliAnimationProvider
   state: BlokkliStateProvider
   context: ComputedRef<BlokkliAdapterContext>
-  text: BlokkliTextProvider
+  $t: BlokkliTextProvider
 }
 
 export interface Rectangle {

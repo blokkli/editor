@@ -17,7 +17,7 @@
   </Teleport>
   <PluginToolbarButton
     id="search"
-    :title="text('searchToolbarLabel')"
+    :title="$t('searchToolbarLabel')"
     meta
     key-code="F"
     region="before-view-options"
@@ -44,7 +44,7 @@ defineBlokkliFeature({
     'Provides an overlay with shortcut to search for blocks on the current page or existing content to add as blocks.',
 })
 
-const { eventBus, text } = useBlokkli()
+const { eventBus, $t } = useBlokkli()
 
 const isRendered = ref(false)
 const isVisible = ref(false)

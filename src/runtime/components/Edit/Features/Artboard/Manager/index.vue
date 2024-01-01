@@ -1,6 +1,6 @@
 <template>
   <PluginToolbarButton
-    :title="text('resetZoom')"
+    :title="$t('resetZoom')"
     meta
     key-code="0"
     region="view-options"
@@ -53,7 +53,7 @@ const {
   storage,
   ui,
   animation,
-  text,
+  $t,
   selection,
 } = useBlokkli()
 

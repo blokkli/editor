@@ -49,6 +49,8 @@ export default {
   history: 'Changes',
   historyShowMore: 'Show @count more',
   historyCurrentRevision: 'Current revision',
+  historyUndo: 'Undo',
+  historyRedo: 'Redo',
 
   importExistingTitle: 'Import...',
   importExistingDescription: 'Import from an existing page',

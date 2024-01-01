@@ -1,6 +1,6 @@
 <template>
   <PluginItemAction
-    :title="text('duplicate')"
+    :title="$t('duplicate')"
     :disabled="!canDuplicate"
     meta
     key-code="D"
@@ -20,7 +20,7 @@ import type {
 } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
 
-const { state, text, selection, dom } = useBlokkli()
+const { state, $t, selection, dom } = useBlokkli()
 
 const adapter = defineBlokkliFeature({
   requiredAdapterMethods: ['duplicateBlocks'],
@@ -30,7 +30,7 @@ const adapter = defineBlokkliFeature({
 function onClick(items: DraggableExistingBlokkliItem[]) {
   state.mutateWithLoadingState(
     adapter.duplicateBlocks(items.map((v) => v.uuid)),
-    text('duplicateError'),
+    $t('duplicateError'),
   )
 }
 

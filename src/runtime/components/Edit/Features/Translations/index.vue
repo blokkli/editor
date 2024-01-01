@@ -43,8 +43,8 @@
   </Teleport>
 
   <PluginMenuButton
-    :title="text('translationsBatchTranslateMenuTitle')"
-    :description="text('translationsBatchTranslateMenuDescription')"
+    :title="$t('translationsBatchTranslateMenuTitle')"
+    :description="$t('translationsBatchTranslateMenuDescription')"
     :disabled="editMode !== 'translating'"
     :weight="60"
     icon="translate"
@@ -53,7 +53,7 @@
 
   <PluginItemAction
     v-if="editMode === 'translating'"
-    :title="text('translationsItemAction')"
+    :title="$t('translationsItemAction')"
     icon="translate"
     @click="onTranslate"
   />
@@ -73,7 +73,7 @@ const adapter = defineBlokkliFeature({
   description: 'Adds support for block translations.',
 })
 
-const { eventBus, state, context, text, ui } = useBlokkli()
+const { eventBus, state, context, $t, ui } = useBlokkli()
 const { translation, editMode } = state
 
 const isDropdown = computed(() => ui.isMobile.value || items.value.length > 5)

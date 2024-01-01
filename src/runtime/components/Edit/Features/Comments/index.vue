@@ -1,7 +1,7 @@
 <template>
   <PluginSidebar
     id="comments"
-    :title="text('comments')"
+    :title="$t('comments')"
     icon="comment"
     weight="-20"
   >
@@ -15,7 +15,7 @@
   </PluginSidebar>
 
   <PluginItemAction
-    :title="text('addCommentToItem')"
+    :title="$t('addCommentToItem')"
     :active="showAddComment"
     weight="last"
     icon="comment"
@@ -46,7 +46,7 @@ const adapter = defineBlokkliFeature({
   requiredAdapterMethods: ['loadComments', 'addComment'],
   description: 'Provides comment functionality for blocks.',
 })
-const { eventBus, text } = useBlokkli()
+const { eventBus, $t } = useBlokkli()
 
 const comments = ref<BlokkliComment[]>([])
 const showAddComment = ref(false)

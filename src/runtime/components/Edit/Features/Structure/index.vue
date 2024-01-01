@@ -1,7 +1,7 @@
 <template>
   <PluginSidebar
     id="structure"
-    :title="text('structureToolbarLabel')"
+    :title="$t('structureToolbarLabel')"
     edit-only
     icon="tree"
     weight="-90"
@@ -20,7 +20,7 @@ defineBlokkliFeature({
     'Provides a sidebar button to render a structured list of all blocks on the current page.',
 })
 
-const { text, state, ui, selection } = useBlokkli()
+const { $t, state, ui, selection } = useBlokkli()
 
 const targetNode = ui.providerElement()
 

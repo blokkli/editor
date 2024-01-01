@@ -1,7 +1,7 @@
 <template>
   <PluginItemDropdown
     id="transform"
-    :title="text('transformTo')"
+    :title="$t('transformTo')"
     :enabled="!!(itemBundleIds.length && possibleTransforms.length)"
   >
     <button
@@ -36,7 +36,7 @@ const adapter = defineBlokkliFeature({
   description: 'Provides integration for block transform plugins.',
 })
 
-const { types, selection, state, text } = useBlokkli()
+const { types, selection, state, $t } = useBlokkli()
 
 const plugins = await adapter.getTransformPlugins()
 
@@ -46,7 +46,7 @@ async function onTransform(plugin: BlokkliTransformPlugin, uuids: string[]) {
       uuids,
       pluginId: plugin.id,
     }),
-    text('failedToTransform').replace('@name', plugin.label),
+    $t('failedToTransform').replace('@name', plugin.label),
   )
 }
 

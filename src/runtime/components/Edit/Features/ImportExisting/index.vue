@@ -1,8 +1,8 @@
 <template>
   <PluginMenuButton
     v-if="state.mutatedFields.value.length"
-    :title="text('importExistingTitle')"
-    :description="text('importExistingDescription')"
+    :title="$t('importExistingTitle')"
+    :description="$t('importExistingDescription')"
     :disabled="state.editMode.value !== 'editing'"
     :weight="50"
     @click="showModal = true"
@@ -39,7 +39,7 @@ const adapter = defineBlokkliFeature({
     'Implements a menu action that renders a dialog to import blocks from another entity.',
 })
 
-const { storage, state, text } = useBlokkli()
+const { storage, state, $t } = useBlokkli()
 
 const shouldOpen = storage.use('showImport', true)
 
@@ -56,8 +56,8 @@ function onSubmit(sourceUuid: string, sourceFields: string[]) {
       sourceFields,
       sourceUuid,
     }),
-    text('importExistingError'),
-    text('importExistingSuccess'),
+    $t('importExistingError'),
+    $t('importExistingSuccess'),
   )
 }
 

@@ -2,7 +2,7 @@
   <PluginSidebar
     id="clipboard"
     ref="plugin"
-    :title="text('clipboard')"
+    :title="$t('clipboard')"
     edit-only
     icon="clipboard"
     weight="-30"
@@ -12,8 +12,8 @@
         v-if="!pastedItems.length"
         class="bk bk-clipboard-info bk-sidebar-padding"
       >
-        <h4>{{ text('clipboardEmpty') }}</h4>
-        <div v-if="!ui.isMobile.value" v-html="text('clipboardExplanation')" />
+        <h4>{{ $t('clipboardEmpty') }}</h4>
+        <div v-if="!ui.isMobile.value" v-html="$t('clipboardExplanation')" />
       </div>
       <ClipboardList
         v-if="pastedItems.length"
@@ -27,7 +27,7 @@
             class="bk-form-input"
             @paste.stop.prevent="onManualPaste"
             @keydown.stop
-            :placeholder="text('clipboardPastePlaceholder')"
+            :placeholder="$t('clipboardPastePlaceholder')"
           />
         </div>
         <div class="bk-clipboard-upload">
@@ -59,7 +59,7 @@ defineBlokkliFeature({
     'Provides clipboard integration to copy/paste existing blocks or paste supported clipboard content like text or images.',
 })
 
-const { eventBus, selection, text, adapter, dom, state, ui } = useBlokkli()
+const { eventBus, selection, $t, adapter, dom, state, ui } = useBlokkli()
 
 const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
 

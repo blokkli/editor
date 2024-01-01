@@ -34,7 +34,7 @@
       class="bk-search-no-results"
     >
       <Icon name="sad" />
-      <span>{{ text('searchBoxNoResultsFound') }}</span>
+      <span>{{ $t('searchBoxNoResultsFound') }}</span>
     </div>
   </div>
 </template>
@@ -58,7 +58,7 @@ const isLoading = ref(true)
 
 const emit = defineEmits(['close'])
 
-const { eventBus, adapter, text } = useBlokkli()
+const { eventBus, adapter, $t } = useBlokkli()
 
 const items = ref<BlokkliSearchContentItem[]>([])
 let timeout: any = null

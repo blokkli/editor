@@ -1,8 +1,8 @@
 <template>
   <PluginViewOption
     id="fieldAreas"
-    :title-on="text('fieldAreasShow')"
-    :title-off="text('fieldAreasHide')"
+    :title-on="$t('fieldAreasShow')"
+    :title-off="$t('fieldAreasHide')"
     key-code="I"
   >
     <template #icon>
@@ -27,7 +27,7 @@ defineBlokkliFeature({
   description: 'Provides a view option to render the field areas with labels.',
 })
 
-const { text } = useBlokkli()
+const { $t } = useBlokkli()
 </script>
 
 <script lang="ts">

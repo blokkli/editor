@@ -1,7 +1,7 @@
 <template>
   <PluginMenuButton
-    :title="text('settingsMenuTitle')"
-    :description="text('settingsMenuDescription')"
+    :title="$t('settingsMenuTitle')"
+    :description="$t('settingsMenuDescription')"
     secondary
     icon="cog"
     @click="onClick"
@@ -22,7 +22,7 @@ defineBlokkliFeature({
   description: 'Provides a menu button to display a settings dialog.',
 })
 
-const { text } = useBlokkli()
+const { $t } = useBlokkli()
 
 const showSettings = ref(false)
 

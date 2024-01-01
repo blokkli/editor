@@ -1,7 +1,7 @@
 <template>
   <PluginSidebar
     id="violations"
-    :title="text('validationsToolbarLabel')"
+    :title="$t('validationsToolbarLabel')"
     icon="alert"
     weight="-10"
   >
@@ -17,7 +17,7 @@
         <figure>
           <Icon name="check" />
         </figure>
-        <h3>{{ text('validationsNoneFound') }}</h3>
+        <h3>{{ $t('validationsNoneFound') }}</h3>
       </div>
     </div>
   </PluginSidebar>
@@ -32,7 +32,7 @@ defineBlokkliFeature({
   description: 'Provides a sidebar pane to render validations.',
 })
 
-const { state, text } = useBlokkli()
+const { state, $t } = useBlokkli()
 </script>
 
 <script lang="ts">

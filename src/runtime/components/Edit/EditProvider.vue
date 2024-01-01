@@ -74,7 +74,7 @@ const keyboard = keyboardProvider(animation)
 const dom = domProvider()
 const storage = storageProvider()
 const ui = uiProvider(storage)
-const text = textProvider(context)
+const $t = textProvider(context)
 const state = await editStateProvider(adapter, context)
 const selection = selectionProvider(dom, state)
 const types = await typesProvider(adapter, selection)
@@ -136,7 +136,7 @@ provide<BlokkliApp>(INJECT_APP, {
   ui,
   animation,
   context,
-  text,
+  $t,
 })
 </script>
 

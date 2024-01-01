@@ -13,7 +13,7 @@
         ref="input"
         v-model="search"
         type="text"
-        :placeholder="text('searchBoxPlaceholder')"
+        :placeholder="$t('searchBoxPlaceholder')"
         autocomplete="off"
         spellcheck="false"
         required
@@ -72,7 +72,7 @@ const props = defineProps<{
   visible: boolean
 }>()
 
-const { adapter, text } = useBlokkli()
+const { adapter, $t } = useBlokkli()
 
 const emit = defineEmits(['close'])
 
@@ -83,7 +83,7 @@ type SearchComponent =
 const searchComponents = ref<SearchComponent[]>([])
 
 const tabsMap: Record<string, string> = {
-  on_this_page: text('searchBoxOnThisPage'),
+  on_this_page: $t('searchBoxOnThisPage'),
   ...(adapter.getContentSearchTabs ? adapter.getContentSearchTabs() : {}),
 }
 

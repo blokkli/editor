@@ -1,7 +1,7 @@
 <template>
   <PluginMenuButton
-    :title="text('publishLabel')"
-    :description="text('publishDescription')"
+    :title="$t('publishLabel')"
+    :description="$t('publishDescription')"
     :disabled="!mutations.length || !canEdit"
     type="success"
     :weight="0"
@@ -22,14 +22,14 @@ const adapter = defineBlokkliFeature({
     'Provides a menu button to publish the changes of the current entity.',
 })
 
-const { state, text } = useBlokkli()
+const { state, $t } = useBlokkli()
 const { mutations, canEdit, mutateWithLoadingState } = state
 
 const onClick = async () => {
   await mutateWithLoadingState(
     adapter.publish(),
-    text('publishError'),
-    text('publishSuccess'),
+    $t('publishError'),
+    $t('publishSuccess'),
   )
 }
 </script>

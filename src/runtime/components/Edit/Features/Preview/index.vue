@@ -1,7 +1,7 @@
 <template>
   <PluginToolbarButton
     v-if="!ui.isMobile.value && adapter.getLastChanged"
-    :title="text('previewMobileFrame')"
+    :title="$t('previewMobileFrame')"
     meta
     key-code="P"
     region="after-menu"
@@ -11,7 +11,7 @@
   />
 
   <PluginToolbarButton
-    :title="text('previewNewWindow')"
+    :title="$t('previewNewWindow')"
     region="after-menu"
     icon="openinnew"
     @click="openPreview"
@@ -19,7 +19,7 @@
 
   <PluginToolbarButton
     v-if="previewGrantUrl && !ui.isMobile.value"
-    :title="text('previewWithSmartphone')"
+    :title="$t('previewWithSmartphone')"
     region="after-menu"
     icon="qrcode"
     @click="qrCodeVisible = true"
@@ -31,9 +31,9 @@
     <Transition appear name="bk-slide-up">
       <DialogModal
         v-if="qrCodeVisible && previewGrantUrl"
-        :title="text('previewDialogTitle')"
-        :lead="text('previewDialogLead')"
-        :submit-label="text('close')"
+        :title="$t('previewDialogTitle')"
+        :lead="$t('previewDialogLead')"
+        :submit-label="$t('close')"
         is-danger
         hide-buttons
         :width="490"
@@ -68,7 +68,7 @@ const qrCodeVisible = ref(false)
 
 const route = useRoute()
 
-const { adapter, storage, text, ui } = useBlokkli()
+const { adapter, storage, $t, ui } = useBlokkli()
 
 const previewVisible = storage.use('preview:visible', false)
 
