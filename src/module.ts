@@ -177,6 +177,7 @@ export default defineNuxtModule<ModuleOptions>({
           componentPath,
           requiredAdapterMethods:
             extracted?.definition?.requiredAdapterMethods || [],
+          description: extracted?.definition?.description || '',
         }
       })
     })
@@ -203,6 +204,7 @@ export default defineNuxtModule<ModuleOptions>({
             importName,
             importStatement: `import ${importName} from '${v.componentPath}'`,
             requiredAdapterMethods: v.requiredAdapterMethods,
+            description: v.description,
           }
         })
 
@@ -222,7 +224,7 @@ export default defineNuxtModule<ModuleOptions>({
               v.importName
             }, requiredAdapterMethods: ${JSON.stringify(
               v.requiredAdapterMethods,
-            )} }`
+            )}, description: "${v.description}" }`
           })
           .join(',\n')
 
@@ -234,6 +236,7 @@ type FeatureComponent = {
   id: string
   component: any
   requiredAdapterMethods: AdapterMethods[]
+  description: string
 }
 
 export const featureComponents: FeatureComponent[] = [

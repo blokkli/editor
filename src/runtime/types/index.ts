@@ -28,6 +28,7 @@ export type BlokkliFeature = {
   id: string
   componentPath: string
   requiredAdapterMethods: string[]
+  description: string
 }
 
 export type MutateWithLoadingStateFunction = (

@@ -152,7 +152,7 @@ export default defineBlokkliEditAdapter((ctx) => {
       return loadComments()
     },
     addComment(itemUuids, body) {
-      const comment = entityStorageManager.addComment({
+      entityStorageManager.addComment({
         body,
         created: Date.now(),
         isResolved: false,
@@ -216,11 +216,6 @@ export default defineBlokkliEditAdapter((ctx) => {
         fieldValue: e.fieldValue,
       }),
 
-    undo() {
-      editState.currentIndex = Math.max(editState.currentIndex - 1, -1)
-      return mockResponse(editState.getMutatedState(getEntity()))
-    },
-
     getImportItems(text) {
       return Promise.resolve({ items: [], total: 0 })
     },
@@ -258,13 +253,6 @@ export default defineBlokkliEditAdapter((ctx) => {
         preceedingUuid: e.afterUuid,
       }),
     detachReusableBlock: (e) => addMutation('detach_reusable', e),
-    redo() {
-      editState.currentIndex = Math.min(
-        editState.currentIndex + 1,
-        editState.getMutations().length,
-      )
-      return mockResponse(editState.getMutatedState(getEntity()))
-    },
 
     setHistoryIndex(index: number) {
       editState.currentIndex = Math.min(

@@ -9,6 +9,7 @@ type ExtractedDefinition = {
   filePath: string
   definition: {
     requiredAdapterMethods: string[]
+    description: string
   }
   source: string
 }
