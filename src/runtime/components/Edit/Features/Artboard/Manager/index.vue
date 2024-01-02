@@ -364,26 +364,9 @@ function onKeyPressed(e: KeyPressedEvent) {
   } else if (e.code === 'PageDown') {
     scrollPageDown()
   } else if (e.code === 'ArrowUp') {
-    // Already animating, skip animation.
-    if (animationTarget.value) {
-      updateAnimationTarget(
-        animationTarget.value.x,
-        animationTarget.value.y + 200,
-      )
-      alpha = 0.2
-    } else {
-      animateTo(offset.value.x, offset.value.y + 200)
-    }
+    animateOrJumpBy(200)
   } else if (e.code === 'ArrowDown') {
-    if (animationTarget.value) {
-      updateAnimationTarget(
-        animationTarget.value.x,
-        animationTarget.value.y - 200,
-      )
-      alpha = 0.2
-    } else {
-      animateTo(offset.value.x, offset.value.y - 200)
-    }
+    animateOrJumpBy(-200)
   } else if (e.code === 'Digit0' && e.meta) {
     resetZoom()
   } else if (e.code === '1' && e.meta) {
@@ -397,19 +380,35 @@ const getEndY = () => {
   return -wrapperRect.height + rect.height - props.padding
 }
 
+const animateOrJumpBy = (y: number) => {
+  if (animationTarget.value) {
+    updateAnimationTarget(animationTarget.value.x, animationTarget.value.y + y)
+    alpha = 0.2
+  } else {
+    animateTo(offset.value.x, offset.value.y + y)
+  }
+}
+
+const animateOrJumpTo = (y: number) => {
+  if (animationTarget.value) {
+    updateAnimationTarget(animationTarget.value.x, y)
+    alpha = 0.2
+  } else {
+    animateTo(offset.value.x, y)
+  }
+}
+
 const scrollPageUp = () =>
-  animateTo(
-    offset.value.x,
+  animateOrJumpTo(
     Math.min(offset.value.y + ui.rootElement().offsetHeight, props.padding),
   )
 const scrollPageDown = () =>
-  animateTo(
-    offset.value.x,
+  animateOrJumpTo(
     Math.max(offset.value.y - ui.rootElement().offsetHeight, getEndY()),
   )
-const scrollToTop = () => animateTo(offset.value.x, props.padding)
+const scrollToTop = () => animateOrJumpTo(props.padding)
 const scrollToEnd = () => {
-  animateTo(offset.value.x, getEndY())
+  animateOrJumpTo(getEndY())
 }
 
 function getCenterX(targetScale?: number): number {
