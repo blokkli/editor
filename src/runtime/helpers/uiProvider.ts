@@ -4,6 +4,8 @@ import {
   onMounted,
   onBeforeUnmount,
   ref,
+  computed,
+  watch,
 } from 'vue'
 import { eventBus } from './eventBus'
 import type { StorageProvider } from './storageProvider'

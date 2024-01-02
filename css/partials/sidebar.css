@@ -2,7 +2,9 @@
   @apply fixed right-0 bg-white w-full md:w-[351px] z-sidebar;
   bottom: var(--bk-root-offset-bottom);
   top: var(--bk-root-offset-top);
-  box-shadow: -1px -0px 2px rgb(20 45 82 / 2%), -3px -0px 4px rgb(20 45 82 / 3%),
+  box-shadow:
+    -1px -0px 2px rgb(20 45 82 / 2%),
+    -3px -0px 4px rgb(20 45 82 / 3%),
     -5px -0px 8px rgb(20 45 82 / 4%);
 
   &:empty {
