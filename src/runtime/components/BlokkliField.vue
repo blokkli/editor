@@ -48,11 +48,7 @@ import {
   type Ref,
 } from '#imports'
 
-import type {
-  FieldListItem,
-  MutatedField,
-  EntityContext,
-} from '#blokkli/types'
+import type { FieldListItem, MutatedField, EntityContext } from '#blokkli/types'
 import type { ValidFieldListTypes } from '#blokkli/generated-types'
 import {
   INJECT_ENTITY_CONTEXT,

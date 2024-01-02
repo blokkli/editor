@@ -3,11 +3,11 @@
     <div class="bk bk-drop-targets">
       <div
         v-for="field in fieldRects"
+        v-show="field.children.length"
         :key="field.key"
         class="bk-drop-targets-field"
         :data-drop-target-field="field.key"
         :style="field.style"
-        v-show="field.children.length"
       >
         <div
           v-for="child in field.children"
@@ -17,14 +17,14 @@
           :data-drop-target-key="child.key"
           :data-field-label="field.label"
           class="bk-drop-targets-field-child"
-          @click.stop.prevent.capture="onChildClick(field, child)"
-          @touchstart="activeKey = child.key"
-          @touchend="activeKey = ''"
           :class="[
             { 'bk-is-active': activeKey === child.key },
             { 'bk-is-nested': child.isNested },
             'bk-is-' + child.orientation,
           ]"
+          @click.stop.prevent.capture="onChildClick(field, child)"
+          @touchstart="activeKey = child.key"
+          @touchend="activeKey = ''"
         >
           <span>{{ field.label }}</span>
         </div>

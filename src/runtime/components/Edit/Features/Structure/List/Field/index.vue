@@ -11,8 +11,8 @@
       >
         <button
           class="bk-blokkli-item-label"
-          @click="select(item.uuid)"
           :data-blokkli-structure-uuid="item.uuid"
+          @click="select(item.uuid)"
         >
           <div class="bk-blokkli-item-label-icon">
             <ItemIcon :bundle="item.bundle" />
@@ -31,9 +31,9 @@
           >
             <button
               class="bk-blokkli-item-label"
-              @click="select(child.uuid)"
               :data-blokkli-structure-uuid="child.uuid"
               data-blokkli-structure-nested="true"
+              @click="select(child.uuid)"
             >
               <div class="bk-blokkli-item-label-icon">
                 <ItemIcon :bundle="child.bundle" />
@@ -76,7 +76,6 @@ defineProps<{
 const onScrollIntoView = (e: ScrollIntoViewEvent) => {
   const el = document.querySelector(`[data-blokkli-structure-uuid="${e.uuid}"]`)
   if (el instanceof HTMLElement) {
-    const isNested = el.dataset.blokkliStructureNested === 'true'
     el.scrollIntoView({
       block: 'nearest',
       behavior: 'instant',

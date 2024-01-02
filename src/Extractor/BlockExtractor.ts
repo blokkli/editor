@@ -99,9 +99,7 @@ export default class BlockExtractor {
   extractSingle(
     code: string,
     filePath: string,
-  ):
-    | { definition: BlockDefinitionInput<any>; source: string }
-    | undefined {
+  ): { definition: BlockDefinitionInput<any>; source: string } | undefined {
     const pattern = this.composableName + '\\((\\{.+?\\})\\)'
     const rgx = new RegExp(pattern, 'gms')
     const source = rgx.exec(code)?.[1]

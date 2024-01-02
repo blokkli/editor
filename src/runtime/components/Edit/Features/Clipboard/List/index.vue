@@ -23,8 +23,8 @@
             <span>{{ getLabel(item.itemBundle) }}</span>
           </div>
           <button
-            @click.prevent.stop.capture="$emit('remove', index)"
             class="bk-no-drag"
+            @click.prevent.stop.capture="$emit('remove', index)"
           >
             <Icon name="delete" />
           </button>

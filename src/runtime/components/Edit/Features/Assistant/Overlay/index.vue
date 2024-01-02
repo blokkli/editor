@@ -22,9 +22,9 @@
             required
           />
           <button
-            @click.prevent="onGenerate"
             class="bk-button is-small"
             :class="{ 'bk-is-loading': isGenerating }"
+            @click.prevent="onGenerate"
           >
             Generate
           </button>

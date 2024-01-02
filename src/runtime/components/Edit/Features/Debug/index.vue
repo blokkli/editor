@@ -44,16 +44,16 @@
       <div>Visible Viewport Padded</div>
     </div>
     <div
-      class="bk-debug-viewport-blocking-rect"
       v-for="(rect, i) in viewportBlockingRects"
       :key="i"
+      class="bk-debug-viewport-blocking-rect"
       :style="rect"
     />
 
     <div
-      class="bk-debug-viewport-lines"
       v-for="(line, i) in linesRects"
       :key="i"
+      class="bk-debug-viewport-lines"
       :style="line"
     />
   </Teleport>

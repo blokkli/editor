@@ -27,10 +27,7 @@ import { filterTransforms } from '#blokkli/helpers/transform'
 const { eventBus, dom, types, keyboard } = useBlokkli()
 
 const emit = defineEmits<{
-  (
-    e: 'transform',
-    data: { uuids: string[]; plugin: TransformPlugin },
-  ): void
+  (e: 'transform', data: { uuids: string[]; plugin: TransformPlugin }): void
 }>()
 
 const props = defineProps<{

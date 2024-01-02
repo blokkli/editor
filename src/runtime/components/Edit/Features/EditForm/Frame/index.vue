@@ -46,7 +46,7 @@ function onMessage(e: MessageEvent): void {
     return
   }
 
-  const { action, value } = e.data
+  const { action } = e.data
 
   if (action === 'SAVE') {
     if (

@@ -1,8 +1,8 @@
 <template>
   <TransitionGroup
+    ref="list"
     :name="ui.useAnimations.value ? 'bk-sortli' : undefined"
     tag="div"
-    ref="list"
     @mousedown.capture="onMouseDown"
     @mouseup="onMouseUp"
     @click.capture="onClick"

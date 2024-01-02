@@ -23,6 +23,7 @@ withDefaults(
   }>(),
   {
     icon: 'form',
+    bundle: '',
   },
 )
 

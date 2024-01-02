@@ -63,10 +63,7 @@
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import { falsy } from '#blokkli/helpers'
 import { PluginMenuButton, PluginItemAction } from '#blokkli/plugins'
-import type {
-  DraggableExistingBlock,
-  EntityTranslation,
-} from '#blokkli/types'
+import type { DraggableExistingBlock, EntityTranslation } from '#blokkli/types'
 
 const adapter = defineBlokkliFeature({
   requiredAdapterMethods: ['changeLanguage'],

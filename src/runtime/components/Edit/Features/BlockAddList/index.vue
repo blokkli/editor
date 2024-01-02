@@ -92,9 +92,7 @@ const activeField = computed(() => {
   }
 })
 
-const getAllowedTypesForSelected = (
-  p: DraggableExistingBlock,
-): string[] => {
+const getAllowedTypesForSelected = (p: DraggableExistingBlock): string[] => {
   // If the selected bundle allows nested items, return the allowed bundles for it instead.
   if (types.itemBundlesWithNested.value.includes(p.itemBundle)) {
     return types.fieldConfig.value
@@ -194,8 +192,8 @@ const sortedList = computed(() => {
         isVisible: ui.isMobile.value
           ? selectableBundles.value.includes(v.id)
           : searchText.value
-          ? v.label.toLowerCase().includes(searchText.value.toLowerCase())
-          : true,
+            ? v.label.toLowerCase().includes(searchText.value.toLowerCase())
+            : true,
       }
     })
 })

@@ -86,6 +86,7 @@ const props = withDefaults(
   {
     tag: 'div',
     language: '',
+    editLabel: '',
   },
 )
 

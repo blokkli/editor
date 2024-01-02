@@ -25,9 +25,9 @@
           <input
             type="text"
             class="bk-form-input"
+            :placeholder="$t('clipboardPastePlaceholder')"
             @paste.stop.prevent="onManualPaste"
             @keydown.stop
-            :placeholder="$t('clipboardPastePlaceholder')"
           />
         </div>
         <div class="bk-clipboard-upload">

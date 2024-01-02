@@ -7,7 +7,7 @@
     @keydown.stop
   >
     <div class="bk bk-form-overlay-background bk-overlay" />
-    <Resizable class="bk-form-overlay-resizable" :id="id">
+    <Resizable :id="id" class="bk-form-overlay-resizable">
       <FormHeader
         :bundle="bundle"
         :icon="icon"

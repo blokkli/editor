@@ -20,12 +20,12 @@
     :to="isRenderedDetached ? 'body' : '#bk-sidebar-content'"
   >
     <SidebarDetached
-      @wheel="onWheel"
       v-if="isRenderedDetached"
       :id="id"
       :title="title"
       :icon="icon"
       class="bk-sidebar-inner"
+      @wheel="onWheel"
       @close="onAttach"
     >
       <template #icon>
@@ -39,9 +39,9 @@
     </SidebarDetached>
     <div
       v-else
+      v-show="activeSidebar === id"
       class="bk-sidebar-inner"
       @wheel="onWheel"
-      v-show="activeSidebar === id"
     >
       <div class="bk">
         <div class="bk-sidebar-title">

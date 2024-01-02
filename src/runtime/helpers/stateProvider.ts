@@ -18,7 +18,6 @@ import type {
   Validation,
   MutateWithLoadingStateFunction,
   EditMode,
-  FieldConfig,
 } from '#blokkli/types'
 import { removeDroppedElements, falsy } from '#blokkli/helpers'
 import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'

@@ -56,6 +56,8 @@ withDefaults(
   }>(),
   {
     color: 'default',
+    bundle: '',
+    icon: undefined,
   },
 )
 </script>

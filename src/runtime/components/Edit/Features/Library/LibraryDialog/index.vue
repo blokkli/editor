@@ -24,10 +24,10 @@
         <li
           v-for="item in data"
           :key="item.uuid"
-          @click="selectedItem = item.uuid"
           :class="{
             'bk-is-selected': selectedItem === item.uuid,
           }"
+          @click="selectedItem = item.uuid"
         >
           <LibraryListItem
             v-show="visible === null || visible.includes(item.uuid)"

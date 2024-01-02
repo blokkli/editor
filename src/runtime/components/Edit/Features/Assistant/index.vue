@@ -12,32 +12,13 @@
     color="rose"
     @placed="placedAction = $event"
   />
-
-  <!-- <PluginItemAction -->
-  <!--   v-if="featureAvailable" -->
-  <!--   :title="$t('assistantBlockActionTooltip')" -->
-  <!--   :active="showEdit" -->
-  <!--   icon="robot" -->
-  <!--   @click="showEdit = !showEdit" -->
-  <!-- > -->
-  <!--   <template v-if="showEdit" #default="{ uuids }"> -->
-  <!--     <EditForm /> -->
-  <!--   </template> -->
-  <!-- </PluginItemAction> -->
 </template>
 
 <script lang="ts" setup>
 import type { ActionPlacedEvent, AssistantResult } from '#blokkli/types'
-import {
-  useBlokkli,
-  onMounted,
-  onBeforeUnmount,
-  defineBlokkliFeature,
-} from '#imports'
-// import { PluginItemAction } from '#blokkli/plugins'
+import { useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginAddAction } from '#blokkli/plugins'
 import Overlay from './Overlay/index.vue'
-import EditForm from './EditForm/index.vue'
 
 const adapter = defineBlokkliFeature({
   description:
@@ -51,10 +32,6 @@ const adapter = defineBlokkliFeature({
 const { state, $t } = useBlokkli()
 
 const placedAction = ref<ActionPlacedEvent | null>(null)
-
-const showEdit = ref(false)
-
-const onEdit = () => {}
 
 const onClose = () => {
   placedAction.value = null

@@ -16,7 +16,7 @@
     </transition>
     <transition name="bk-menu" :duration="200">
       <div v-show="menuOpen" class="bk bk-menu-list">
-        <button @click="ui.menu.close" :class="{ 'bk-is-active': menuOpen }">
+        <button :class="{ 'bk-is-active': menuOpen }" @click="ui.menu.close">
           <Icon name="close" />
         </button>
         <div class="bk-menu-list-inner">

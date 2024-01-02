@@ -7,9 +7,7 @@ type ValidTextKeys = keyof typeof enTranslations
 
 export type TextProvider = (key: ValidTextKeys) => string
 
-export default function (
-  context?: ComputedRef<AdapterContext>,
-): TextProvider {
+export default function (context?: ComputedRef<AdapterContext>): TextProvider {
   const defaultLanguage = useRuntimeConfig().public.blokkli
     .defaultLanguage as keyof typeof translations
   const language = computed(() => {

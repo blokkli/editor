@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <div id="bk-sidebar-content" class="bk-sidebar" v-show="activeSidebar" />
+    <div v-show="activeSidebar" id="bk-sidebar-content" class="bk-sidebar" />
 
     <Transition name="bk-toolbar">
       <div
@@ -39,11 +39,8 @@
 
 <script lang="ts" setup>
 import { onMounted, useBlokkli, onBeforeUnmount } from '#imports'
-import { Icon } from '#blokkli/components'
 
 const { ui, selection, eventBus, storage } = useBlokkli()
-
-const menuOpen = computed(() => ui.menu.isOpen.value)
 
 const showToolbar = computed(
   () =>
@@ -51,7 +48,6 @@ const showToolbar = computed(
     (!selection.isDragging.value && !selection.isMultiSelecting.value),
 )
 
-const showSidebar = computed(() => showToolbar.value)
 const activeSidebar = storage.use('sidebar:active', '')
 
 const emit = defineEmits(['loaded'])

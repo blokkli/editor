@@ -101,9 +101,7 @@ export function buildDraggableItem(
     if (clipboardData && itemBundle) {
       const searchItemData = dataset.clipboardSearchItem
       if (searchItemData) {
-        const searchItem = JSON.parse(
-          searchItemData,
-        ) as SearchContentItem
+        const searchItem = JSON.parse(searchItemData) as SearchContentItem
         return {
           itemType: 'search_content',
           element: () =>

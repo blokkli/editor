@@ -30,10 +30,7 @@ import {
 } from '#imports'
 import { FormOverlay } from '#blokkli/components'
 import { getDefinition } from '#blokkli/definitions'
-import type {
-  AddNewBlockEvent,
-  EditBlockEvent,
-} from '#blokkli/types'
+import type { AddNewBlockEvent, EditBlockEvent } from '#blokkli/types'
 import FormFrame from './Frame/index.vue'
 import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
 
