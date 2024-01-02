@@ -147,7 +147,7 @@ export class MutationTransform extends Mutation {
             return block
           })
         }
-      } else if (el.tagName === 'A') {
+      } else if (el instanceof HTMLAnchorElement) {
         const block = entityStorageManager.createBlock('button', getUuid())
         block.setValues({
           title: el.innerText,

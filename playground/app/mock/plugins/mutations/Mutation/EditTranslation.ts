@@ -4,7 +4,7 @@ import { Mutation } from './../Mutation'
 export type MutationEditTranslationArgs = {
   uuid: string
   langcode: string
-  values: Record<string, any[]>
+  values: Record<string, any[] | any>
 }
 
 export class MutationEditTranslation extends Mutation {

@@ -76,7 +76,7 @@ const { data: previewGrantUrl } = await useAsyncData(() => {
   if (!adapter.getPreviewGrantUrl) {
     return Promise.resolve(null)
   }
-  return adapter.getPreviewGrantUrl()
+  return Promise.resolve(adapter.getPreviewGrantUrl())
 })
 
 const previewUrl = computed(() =>

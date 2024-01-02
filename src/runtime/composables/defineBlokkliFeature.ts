@@ -1,12 +1,5 @@
-import type { BlokkliAdapter } from '#blokkli/adapter'
-
-type AdapterMethods = keyof BlokkliAdapter<any>
-
-type BlokkliFeatureDefinition<Methods extends AdapterMethods[]> = {
-  label?: string
-  description?: string
-  requiredAdapterMethods?: [...Methods]
-}
+import type { BlokkliAdapter, AdapterMethods } from '#blokkli/adapter'
+import type { BlokkliFeatureDefinition } from '#blokkli/types'
 
 // This utility type picks only the methods listed in Methods array and makes them non-optional
 type PickRequiredMethods<T, Methods extends AdapterMethods[]> = {

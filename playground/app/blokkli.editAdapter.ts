@@ -2,6 +2,7 @@ import { defineBlokkliEditAdapter } from '#blokkli/adapter'
 import type { BlokkliAdapter, MutationResponseLike } from '#blokkli/adapter'
 import { falsy } from '#blokkli/helpers'
 import type {
+  AssistantResultMarkup,
   BlokkliComment,
   BlokkliFieldConfig,
   BlokkliLibraryItem,
@@ -69,6 +70,11 @@ export default defineBlokkliEditAdapter((ctx) => {
   const adapter: BlokkliAdapter<MutatedState> = {
     loadState() {
       const page = entityStorageManager.getContent(ctx.value.entityUuid)
+      if (!page) {
+        throw new Error(
+          'Failed to load page with UUID: ' + ctx.value.entityUuid,
+        )
+      }
       const mutatedState = editState.getMutatedState(page)
       return Promise.resolve(mutatedState)
     },
@@ -393,7 +399,7 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     assistantGetResults(e) {
-      return $fetch('/api/gpt', {
+      return $fetch<AssistantResultMarkup | undefined>('/api/gpt', {
         method: 'post',
         body: {
           prompt: e.prompt,

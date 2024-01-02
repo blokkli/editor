@@ -63,7 +63,7 @@ import { watch, ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import { DialogModal } from '#blokkli/components'
 import type { BlokkliImportItem } from '#blokkli/types'
 
-const { state, adapter, $t, types, context } = useBlokkli()
+const { adapter, $t, types, context } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'confirm', data: { sourceUuid: string; fields: string[] }): void
@@ -89,7 +89,7 @@ watch(searchTerm, (newTerm) => {
 })
 
 async function loadResults(userInput = '') {
-  const result = await adapter.getImportItems(userInput)
+  const result = await adapter.getImportItems!(userInput)
   entities.value = result.items
   total.value = result.total
   resultsSearchTerm.value = userInput

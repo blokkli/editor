@@ -22,6 +22,11 @@ const hostEntityType = useQueryString('hostEntityType')
 const hostEntityUuid = useQueryString('hostEntityUuid')
 const hostField = useQueryString('hostField')
 const preceedingUuid = useQueryString('preceedingUuid')
+const page = entityStorageManager.getContent(entityUuid.value)
+
+if (!page) {
+  throw new Error('Failed to load page with UUID: ' + entityUuid.value)
+}
 
 const editState = getEditState(entityType.value, entityUuid.value)
 
@@ -43,7 +48,6 @@ fields.forEach((field) => {
 })
 
 const onSubmit = (values: Record<string, string>) => {
-  const page = entityStorageManager.getContent(entityUuid.value)
   editState.addMutation('add', {
     bundle: bundle.value,
     values,

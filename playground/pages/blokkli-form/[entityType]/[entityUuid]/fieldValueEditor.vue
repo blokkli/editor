@@ -20,6 +20,10 @@ const uuid = useQueryString('uuid')
 const fieldName = useQueryString('fieldName')
 const page = entityStorageManager.getContent(entityUuid.value)
 
+if (!page) {
+  throw new Error('Failed to load page with UUID: ' + entityUuid.value)
+}
+
 const editState = getEditState(entityType.value, entityUuid.value)
 const mutatedState = editState.getMutatedState(page)
 

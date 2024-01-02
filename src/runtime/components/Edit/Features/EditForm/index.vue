@@ -3,10 +3,10 @@
     <transition name="bk-slide-in" :duration="200">
       <FormOverlay
         v-if="form"
+        id="edit-form"
         :bundle="bundle"
         :title="title"
         @close="onClose"
-        id="edit-form"
       >
         <FormFrame
           v-if="formUrl"
@@ -140,6 +140,11 @@ const onItemEdit = (e: EditBlokkliItemEvent) => {
 
     if (!type.isTranslatable) {
       return
+    }
+    if (!context.value.language) {
+      throw new Error(
+        'Cannot translate block because language is missing in context.',
+      )
     }
     form.value = {
       id: 'block:translate',

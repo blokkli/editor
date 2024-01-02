@@ -29,11 +29,6 @@ export default defineNuxtConfig({
           dark: 'bg-slate-800',
         },
       },
-      showHeader: {
-        type: 'checkbox',
-        label: 'Show Header',
-        default: '',
-      },
     },
   },
 

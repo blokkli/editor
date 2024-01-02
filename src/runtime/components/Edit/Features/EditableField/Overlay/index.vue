@@ -178,7 +178,7 @@ const close = async (save?: boolean) => {
 
   if (save && props.block && modelValue.value !== originalText.value) {
     await state.mutateWithLoadingState(
-      adapter.updateFieldValue({
+      adapter.updateFieldValue!({
         uuid: props.block.uuid,
         fieldName: props.fieldName,
         fieldValue: modelValue.value,

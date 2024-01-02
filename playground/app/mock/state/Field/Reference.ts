@@ -25,9 +25,10 @@ export class FieldReference<T extends Entity> extends Field<string> {
 
   getReferencedEntities(): T[] {
     return this.list
-      .map((uuid) => {
-        return entityStorageManager.load(this.targetEntityType, uuid)
-      })
+      .map(
+        (uuid) =>
+          entityStorageManager.load(this.targetEntityType, uuid) as unknown,
+      )
       .filter(falsy) as T[]
   }
 }

@@ -57,7 +57,7 @@ const possibleConversions = computed<BlokkliItemType[]>(() => {
     return []
   }
   const sourceType = itemBundleIds.value[0]
-  return conversions.value
+  return conversions
     .filter(
       (v) =>
         v.sourceBundle === sourceType &&

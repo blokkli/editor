@@ -1,3 +1,4 @@
+import type { AssistantResultMarkup } from '#blokkli/types'
 import OpenAI from 'openai'
 
 const config = useRuntimeConfig()
@@ -74,14 +75,9 @@ const openai = new OpenAI({
   apiKey: config.openaiKey,
 })
 
-export default defineEventHandler(async (event) => {
-  const body = await readBody(event)
-  if (!body || !body.prompt) {
-    throw createError('Missing prompt.')
-  }
-
-  // return MOCK_RESPONSE
-
+const markupCompletion = async (
+  prompt: string,
+): Promise<AssistantResultMarkup | undefined> => {
   try {
     const completion = await openai.chat.completions.create({
       messages: [
@@ -89,18 +85,33 @@ export default defineEventHandler(async (event) => {
           role: 'system',
           content: INSTRUCTIONS_MARKUP,
         },
-        { role: 'user', content: body.prompt },
+        { role: 'user', content: prompt },
       ],
       model: 'gpt-3.5-turbo-1106',
     })
-    const content = completion.choices[0].message.content
+    const content = completion.choices[0].message.content || ''
     return {
       type: 'markup',
       content,
-    }
+    } as AssistantResultMarkup
   } catch (e) {
     console.log(e)
   }
+}
 
-  throw createError('Failed to retrieve data from OpenAI.')
-})
+export default defineEventHandler<Promise<AssistantResultMarkup>>(
+  async (event) => {
+    const body = await readBody(event)
+    if (!body || !body.prompt) {
+      throw createError('Missing prompt.')
+    }
+
+    const result = await markupCompletion(body.prompt)
+
+    if (!result) {
+      throw createError('Failed to retrieve data from OpenAI.')
+    }
+
+    return result
+  },
+)

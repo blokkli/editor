@@ -6,7 +6,9 @@ import { FieldUrl } from '../Field/Url'
 export abstract class Media extends Entity {
   static entityType = 'media'
 
-  thumbnail(): string | undefined {}
+  thumbnail(): string | undefined {
+    return
+  }
 }
 
 export class MediaImage extends Media {

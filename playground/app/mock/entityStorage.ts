@@ -144,7 +144,7 @@ export class EntityStorageManager {
     const added: string[] = []
 
     fieldsData.forEach((item) => {
-      const entity = this.load(item.entityType, item.entityUuid)
+      const entity = this.load(item.entityType as any, item.entityUuid)
       if (entity) {
         const field = entity.get<FieldBlocks>(item.name)
         field.setList()
@@ -177,8 +177,8 @@ export class EntityStorageManager {
     this.storages.user.add(user)
   }
 
-  getContent<T extends Content>(uuid: string): T | undefined {
-    return this.storages.content.load(uuid) as T | undefined
+  getContent(uuid: string): Content | undefined {
+    return this.storages.content.load(uuid)
   }
 
   getStorage<T extends keyof StorageMap>(key: T): StorageMap[T] {

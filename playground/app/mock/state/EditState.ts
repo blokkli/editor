@@ -1,9 +1,5 @@
 import { falsy } from '#blokkli/helpers'
-import type {
-  BlokkliFieldConfig,
-  BlokkliMutatedField,
-  BlokkliMutationItem,
-} from '#blokkli/types'
+import type { BlokkliMutatedField, BlokkliMutationItem } from '#blokkli/types'
 import { entityStorageManager } from '../entityStorage'
 import { createMutation, type MutationArgsMap } from '../plugins/mutations'
 import { mapBlockItem } from '../state'
@@ -160,7 +156,7 @@ export class MutationContext {
   }
 }
 
-type MutationItem = {
+type MockMutationItem = {
   id: string
   args: Record<string, any>
   configuration?: Record<string, any>
@@ -204,7 +200,7 @@ export class EditState {
     window.localStorage.setItem(this.getStorageKey('index'), v.toString())
   }
 
-  getMutations(): MutationItem[] {
+  getMutations(): MockMutationItem[] {
     try {
       const data = window.localStorage.getItem(this.getStorageKey('mutations'))
       if (data) {
@@ -238,7 +234,7 @@ export class EditState {
     this.persistMutations(mutations)
   }
 
-  persistMutations(mutations: MutationItem[]) {
+  persistMutations(mutations: MockMutationItem[]) {
     const data = JSON.stringify(mutations)
     window.localStorage.setItem(this.getStorageKey('mutations'), data)
   }

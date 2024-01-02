@@ -1,11 +1,9 @@
 import type { BlokkliFieldListItem } from '#blokkli/types'
 import type { Block } from './state/Block/Block'
 import { EditState } from './state/EditState'
-import { ContentPage } from './state/Entity/Content'
 import type { FieldBlocks } from './state/Field/Blocks'
 
 export type MockState = {
-  pages: ContentPage[]
   owner: {
     id: string
     name: string

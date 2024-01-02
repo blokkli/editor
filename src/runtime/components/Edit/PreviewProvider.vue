@@ -82,11 +82,13 @@ function onMessage(e: MessageEvent) {
  */
 async function checkChangedDate() {
   clearTimeout(timeout)
-  if (!adapter.getLastChanged) {
-    return
-  }
+
+  const delay = adapter.getLastChanged ? 1000 : 5000
+
   timeout = setTimeout(async () => {
-    const changed = await adapter.getLastChanged()
+    const changed = adapter.getLastChanged
+      ? await adapter.getLastChanged()
+      : Date.now()
     if (changed) {
       if (lastChanged !== 0 && lastChanged !== changed) {
         await refresh()
@@ -95,7 +97,7 @@ async function checkChangedDate() {
       lastChanged = changed
       checkChangedDate()
     }
-  }, 1000)
+  }, delay)
 }
 
 const onWheel = (e: WheelEvent) => {

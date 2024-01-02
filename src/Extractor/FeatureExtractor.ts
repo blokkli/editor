@@ -1,16 +1,11 @@
 import fs from 'fs'
-import type {
-  BlokkliItemDefinitionInput,
-  BlokkliItemDefinitionOptionsInput,
-} from '../runtime/types'
+import type { BlokkliFeatureDefinition } from '../runtime/types'
+import type { AdapterMethods } from '../runtime/adapter/index'
 
 type ExtractedDefinition = {
   id: string
   filePath: string
-  definition: {
-    requiredAdapterMethods: string[]
-    description: string
-  }
+  definition: BlokkliFeatureDefinition<AdapterMethods[]>
   source: string
 }
 
@@ -84,9 +79,7 @@ export default class Extractor {
   extractSingle(
     code: string,
     filePath: string,
-  ):
-    | { definition: BlokkliItemDefinitionInput<any>; source: string }
-    | undefined {
+  ): { definition: BlokkliFeatureDefinition<any>; source: string } | undefined {
     const pattern = this.composableName + '\\((\\{.+?\\})\\)'
     const rgx = new RegExp(pattern, 'gms')
     const source = rgx.exec(code)?.[1]

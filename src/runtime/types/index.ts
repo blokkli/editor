@@ -739,4 +739,12 @@ export type AssistantResult = AssistantResultMarkup
 
 export type AddListOrientation = 'horizontal' | 'vertical' | 'sidebar'
 
+export type AdapterMethods = keyof BlokkliAdapter<any>
+
+export type BlokkliFeatureDefinition<Methods extends AdapterMethods[]> = {
+  label?: string
+  description?: string
+  requiredAdapterMethods?: [...Methods]
+}
+
 export default {}

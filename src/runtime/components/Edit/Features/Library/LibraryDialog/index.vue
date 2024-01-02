@@ -29,7 +29,7 @@
             'bk-is-selected': selectedItem === item.uuid,
           }"
         >
-          <LibraryItem
+          <LibraryListItem
             v-show="visible === null || visible.includes(item.uuid)"
             :data-sortli-id="item.uuid"
             v-bind="item"
@@ -50,7 +50,7 @@ import { FormOverlay } from '#blokkli/components'
 import { falsy } from '#blokkli/helpers'
 import type { BlokkliFieldElement, BlokkliLibraryItem } from '#blokkli/types'
 import { ref, useBlokkli } from '#imports'
-import LibraryItem from './Item/index.vue'
+import LibraryListItem from './Item/index.vue'
 
 const props = defineProps<{
   field: BlokkliFieldElement

@@ -384,6 +384,8 @@ export type BlokkliAdapterFactory<T> = (
   ctx: ComputedRef<BlokkliAdapterContext>,
 ) => BlokkliAdapter<T>
 
+export type AdapterMethods = keyof BlokkliAdapter<any>
+
 export function defineBlokkliEditAdapter<T>(
   cb: BlokkliAdapterFactory<T>,
 ): BlokkliAdapterFactory<T> {

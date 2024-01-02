@@ -332,7 +332,6 @@ export type ValidTextKeys = ${validTranslationKeys}
 
     nuxt.options.runtimeConfig.public.blokkli = {
       langcodeWithoutPrefix: moduleOptions.langcodeWithoutPrefix || '',
-      gridMarkup: moduleOptions.gridMarkup || '',
       itemEntityType: moduleOptions.itemEntityType || '',
       defaultLanguage: moduleOptions.defaultLanguage || 'en',
     }

@@ -17,7 +17,7 @@
 <script lang="ts" setup>
 import { mapMockField } from '@/app/mock/state'
 import { entityStorageManager } from '~/app/mock/entityStorage'
-import type { ContentPage } from '~/app/mock/state/Entity/Content'
+import { ContentPage } from '~/app/mock/state/Entity/Content'
 
 const route = useRoute()
 
@@ -32,13 +32,17 @@ const language = computed(() => {
   return 'en'
 })
 
-const page = entityStorageManager.getContent<ContentPage>('1')
+const page = entityStorageManager.getContent('1')
 
 if (!page) {
-  throw new Error('page not found')
+  throw new Error('Failed to load page with UUID: 1')
 }
 
-const translation = page.getTranslation(language.value)
+if (!(page instanceof ContentPage)) {
+  throw new Error('Failed to load page with UUID: 1')
+}
+
+page.getTranslation(language.value)
 
 const fieldHeader = computed(() => mapMockField(page.header()))
 const fieldContent = computed(() => mapMockField(page.content()))
