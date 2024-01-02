@@ -2,9 +2,11 @@
   <div
     ref="el"
     class="bk-sidebar-detached"
+    :class="{ 'bk-is-focused': focusedSidebar === id }"
     :style="style"
     tabindex="10"
     @mousedown.stop="onSidebarMouseDown"
+    @focus.capture="onFocus"
   >
     <div class="bk">
       <div class="bk-sidebar-title" @mousedown="onMouseDown($event, 'move')">
@@ -12,47 +14,71 @@
           <Icon v-if="icon" :name="icon" />
         </slot>
         <span>{{ title }}</span>
-        <button @click.prevent.stop="$emit('close')">
+        <button
+          @click.prevent.stop.capture="$emit('close')"
+          @mousedown.capture.stop
+        >
           <Icon name="close" />
         </button>
       </div>
     </div>
-    <div class="bk-sidebar-detached-inner">
+    <div class="bk-sidebar-detached-inner" :style="innerStyle">
       <slot></slot>
-      <div
-        class="bk-sidebar-detached-handle bk-is-bottom"
-        @mousedown.stop.prevent="onMouseDown($event, 'resize-bottom')"
-      />
-      <div
-        class="bk-sidebar-detached-handle bk-is-right"
-        @mousedown.stop.prevent="onMouseDown($event, 'resize-right')"
-      />
-      <div
-        class="bk-sidebar-detached-handle bk-is-bottom-right"
-        @mousedown.stop.prevent="onMouseDown($event, 'resize-bottom-right')"
-      />
+      <template v-if="!size">
+        <div
+          class="bk-sidebar-detached-handle bk-is-bottom"
+          @mousedown.stop.prevent="onMouseDown($event, 'resize-bottom')"
+        />
+        <div
+          class="bk-sidebar-detached-handle bk-is-right"
+          @mousedown.stop.prevent="onMouseDown($event, 'resize-right')"
+        />
+        <div
+          class="bk-sidebar-detached-handle bk-is-bottom-right"
+          @mousedown.stop.prevent="onMouseDown($event, 'resize-bottom-right')"
+        />
+      </template>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli } from '#imports'
+import {
+  useBlokkli,
+  ref,
+  onMounted,
+  onBeforeUnmount,
+  computed,
+  watch,
+} from '#imports'
 import { Icon } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli/icons'
 
-const props = defineProps<{
-  id: string
-  title: string
-  icon?: BlokkliIcon
-}>()
+const props = withDefaults(
+  defineProps<{
+    id: string
+    title: string
+    icon: BlokkliIcon
+    minWidth?: number
+    minHeight?: number
+    size?: { width: number; height: number }
+  }>(),
+  {
+    minWidth: 300,
+    minHeight: 300,
+    size: undefined,
+  },
+)
 
 defineEmits(['close'])
 
 const { storage, eventBus, ui } = useBlokkli()
 
 const storageKey = computed(() => 'sidebar:detached:size:' + props.id)
+const focusedSidebar = storage.use('sidebar:focused', '')
 
 const onSidebarMouseDown = () => {
+  focusedSidebar.value = props.id
   isResizing.value = true
   window.addEventListener('mouseup', onMouseUp)
 }
@@ -105,6 +131,12 @@ watch(rootCursor, (cursor) => {
   document.documentElement.style.cursor = cursor
 })
 
+watch(mouseMode, (mode) => {
+  mode
+    ? document.documentElement.classList.add('bk-is-sidebar-interacting')
+    : document.documentElement.classList.remove('bk-is-sidebar-interacting')
+})
+
 const updateStored = () => {
   storedData.value = {
     x: x.value,
@@ -119,11 +151,20 @@ const updateStored = () => {
 
 const style = computed(() => {
   return {
-    width: width.value + 'px',
-    height: height.value + 'px',
     transform: `translate(${x.value}px, ${y.value}px)`,
   }
 })
+
+const innerStyle = computed(() => {
+  return {
+    width: (props.size?.width || width.value) + 'px',
+    height: (props.size?.height || height.value) + 'px',
+  }
+})
+
+const onFocus = () => {
+  focusedSidebar.value = props.id
+}
 
 const onMouseDown = (e: MouseEvent, mode: MouseMode) => {
   mouseMode.value = mode
@@ -141,10 +182,16 @@ const setCoordinates = (newX: number, newY: number) => {
 
 const setSizes = (newWidth?: number, newHeight?: number) => {
   if (newWidth !== undefined) {
-    width.value = Math.min(Math.max(newWidth, 300), window.innerWidth - 300)
+    width.value = Math.min(
+      Math.max(newWidth, props.minWidth),
+      window.innerWidth - 300,
+    )
   }
   if (newHeight !== undefined) {
-    height.value = Math.min(Math.max(newHeight, 300), window.innerHeight - 50)
+    height.value = Math.min(
+      Math.max(newHeight, props.minHeight),
+      window.innerHeight - 50,
+    )
   }
 }
 

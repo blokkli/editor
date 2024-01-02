@@ -1,4 +1,5 @@
 const plugin = require('tailwindcss/plugin')
+const colors = require('tailwindcss/colors')
 /** @type {import('tailwindcss').Config} */
 
 const z = (index) => {
@@ -33,7 +34,7 @@ const zIndex = [
   'dialog',
   'init-overlay',
 ].reduce((acc, key, index) => {
-  acc[key] = z(index + 100)
+  acc[key] = z(index + 1000)
   return acc
 }, {})
 

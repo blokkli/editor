@@ -25,6 +25,7 @@ import {
   INJECT_MUTATED_FIELDS,
 } from '#blokkli/helpers/symbols'
 import { frameEventBus } from '#blokkli/helpers/frameEventBus'
+import broadcastProvider from '#blokkli/helpers/broadcastProvider'
 
 const props = defineProps<{
   entityType: string
@@ -36,6 +37,7 @@ const props = defineProps<{
 const context = computed(() => props)
 const adapter = getAdapter(context)
 const router = useRouter()
+const broadcast = broadcastProvider()
 
 let timeout: any = null
 let lastChanged: number = 0
@@ -74,6 +76,10 @@ function onMessage(e: MessageEvent) {
       frameEventBus.emit(name, data)
     }
   }
+}
+
+const onMouseDown = () => {
+  broadcast.emit('previewFocused')
 }
 
 /**
@@ -147,6 +153,7 @@ onMounted(() => {
     document.documentElement.classList.add('bk-html-preview')
     window.addEventListener('message', onMessage)
     window.addEventListener('wheel', onWheel, { passive: false })
+    document.documentElement.addEventListener('mousedown', onMouseDown)
 
     // Prevent navigating away from the preview when clicking Nuxt links.
     router.push = () => Promise.resolve()
@@ -163,6 +170,7 @@ onBeforeUnmount(() => {
   document.documentElement.classList.remove('bk-html-preview')
   window.removeEventListener('wheel', onWheel)
   window.removeEventListener('message', onMessage)
+  document.documentElement.removeEventListener('mousedown', onMouseDown)
   frameEventBus.off('mutatedFields', onMutatedFields)
   frameEventBus.off('focus', onFocusItem)
   frameEventBus.off('updateOption', onUpdateOption)

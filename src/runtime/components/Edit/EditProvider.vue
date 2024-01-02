@@ -49,6 +49,7 @@ import domProvider from './../../helpers/domProvider'
 import textProvider from './../../helpers/textProvider'
 import storageProvider from './../../helpers/storageProvider'
 import uiProvider from './../../helpers/uiProvider'
+import broadcastProvider from './../../helpers/broadcastProvider'
 
 import { eventBus } from '#blokkli/helpers/eventBus'
 import '#blokkli/styles'
@@ -76,6 +77,7 @@ const toolbarLoaded = ref(false)
 const featuresLoaded = ref(false)
 const isInitializing = ref(true)
 
+const broadcast = broadcastProvider()
 const animation = animationProvider()
 const keyboard = keyboardProvider(animation)
 const dom = domProvider()
@@ -144,6 +146,7 @@ provide<BlokkliApp>(INJECT_APP, {
   animation,
   context,
   $t,
+  broadcast,
 })
 </script>
 

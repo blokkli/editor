@@ -135,8 +135,8 @@ export default function (storage: StorageProvider): UiProvider {
     return 50
   })
 
-  const previewVisible = storage.use('preview:visible', false)
-  const activeSidebar = storage.use('sidebar:active', '')
+  const activeSidebarLeft = storage.use('sidebar:active:left', '')
+  const activeSidebarRight = storage.use('sidebar:active:right', '')
   const listOrientationSetting = storage.use<AddListOrientation>(
     'listOrientation',
     'vertical',
@@ -148,11 +148,11 @@ export default function (storage: StorageProvider): UiProvider {
 
   const visibleViewportX = computed<number>(() => {
     let x = 0
-    if (previewVisible.value && !isMobile.value) {
-      x += 400
-    }
     if (addListOrientation.value === 'vertical') {
       x += 70
+    }
+    if (activeSidebarLeft.value) {
+      x += 400
     }
     return x
   })
@@ -161,7 +161,7 @@ export default function (storage: StorageProvider): UiProvider {
   })
   const visibleViewportWidth = computed<number>(() => {
     let width = viewportWidth.value - visibleViewportX.value
-    if (activeSidebar.value) {
+    if (activeSidebarRight.value) {
       // Chosen by fair dice roll.
       width -= 351
     }

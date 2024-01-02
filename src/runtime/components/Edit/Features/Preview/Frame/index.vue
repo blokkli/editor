@@ -1,7 +1,10 @@
 <template>
-  <div class="bk-preview" :style="style">
+  <div class="bk-preview">
     <div v-if="isLoading" class="bk-preview-loading">
       <Icon name="spinner" />
+    </div>
+    <div class="bk-preview-controls">
+      <slot></slot>
     </div>
     <div class="bk-preview-iframe">
       <iframe ref="iframe" :src="src" @load="isLoading = false" />
@@ -27,9 +30,13 @@ import type {
 import { Icon } from '#blokkli/components'
 import { frameEventBus } from './../../../../../helpers/frameEventBus'
 
+defineProps<{
+  detached?: boolean
+}>()
+
 const route = useRoute()
 
-const { eventBus, selection } = useBlokkli()
+const { eventBus, selection, broadcast } = useBlokkli()
 
 watch(selection.uuids, (selectedUuids) => {
   frameEventBus.emit('selectItems', selectedUuids)
@@ -37,11 +44,6 @@ watch(selection.uuids, (selectedUuids) => {
 
 const isLoading = ref(true)
 const iframe = ref<HTMLIFrameElement | null>(null)
-const width = ref(400)
-
-const style = computed(() => ({
-  width: width.value + 'px',
-}))
 
 const src = computed(() =>
   route.fullPath.replace('blokkliEditing', 'blokkliPreview'),
@@ -62,11 +64,18 @@ const onFrameEventBusEvent = (name: any, data: any) =>
     data: JSON.parse(JSON.stringify(data)),
   })
 
+const onPreviewFocused = () => {
+  if (iframe.value) {
+    iframe.value.focus()
+  }
+}
+
 onMounted(() => {
   frameEventBus.on('*', onFrameEventBusEvent)
   eventBus.on('option:update', onUpdateOption)
   eventBus.on('updateMutatedFields', onUpdateMutatedFields)
   eventBus.on('select', onSelect)
+  broadcast.on('previewFocused', onPreviewFocused)
 })
 
 onBeforeUnmount(() => {
@@ -74,5 +83,6 @@ onBeforeUnmount(() => {
   eventBus.off('option:update', onUpdateOption)
   eventBus.off('updateMutatedFields', onUpdateMutatedFields)
   eventBus.off('select', onSelect)
+  broadcast.off('previewFocused', onPreviewFocused)
 })
 </script>

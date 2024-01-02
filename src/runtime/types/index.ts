@@ -12,6 +12,7 @@ import type { StateProvider } from '../helpers/stateProvider'
 import type { eventBus } from './../helpers/eventBus'
 import type { BlockOptionDefinition } from './blokkOptions'
 import type { TextProvider } from '../helpers/textProvider'
+import type { BroadcastProvider } from '#blokkli/helpers/broadcastProvider'
 
 interface MutationResponseLike<T> {
   data: {
@@ -686,6 +687,7 @@ export interface BlokkliApp {
   state: StateProvider
   context: ComputedRef<AdapterContext>
   $t: TextProvider
+  broadcast: BroadcastProvider
 }
 
 export interface Rectangle {

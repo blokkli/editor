@@ -1,9 +1,9 @@
 <template>
-  <Teleport v-if="!isRenderedDetached" to="#bk-sidebar-tabs">
+  <Teleport v-if="!isRenderedDetached" :to="'#bk-sidebar-tabs-' + region">
     <button
       :class="{ 'is-active': activeSidebar === id }"
       :disabled="editOnly && state.editMode.value !== 'editing'"
-      :style="{ order: weight || 0 }"
+      :style="{ order: weight }"
       @click.prevent.stop="toggleSidebar(id)"
     >
       <slot name="icon">
@@ -17,13 +17,16 @@
 
   <Teleport
     v-if="activeSidebar === id || isRenderedDetached || renderAlways"
-    :to="isRenderedDetached ? 'body' : '#bk-sidebar-content'"
+    :to="isRenderedDetached ? 'body' : '#bk-sidebar-content-' + region"
   >
     <SidebarDetached
       v-if="isRenderedDetached"
       :id="id"
       :title="title"
       :icon="icon"
+      :min-width="minWidth"
+      :min-height="minHeight"
+      :size="size"
       class="bk-sidebar-inner"
       @wheel="onWheel"
       @close="onAttach"
@@ -33,7 +36,10 @@
       </template>
       <div class="bk-sidebar-content-wrapper">
         <div ref="sidebarContent" class="bk-sidebar-content">
-          <slot :scrolled-to-end="scrolledToEnd" />
+          <slot
+            :scrolled-to-end="scrolledToEnd"
+            :is-detached="isRenderedDetached"
+          />
         </div>
       </div>
     </SidebarDetached>
@@ -53,7 +59,10 @@
       </div>
       <div class="bk-sidebar-content-wrapper">
         <div ref="sidebarContent" class="bk-sidebar-content">
-          <slot :scrolled-to-end="scrolledToEnd" />
+          <slot
+            :scrolled-to-end="scrolledToEnd"
+            :is-detached="isRenderedDetached"
+          />
         </div>
       </div>
     </div>
@@ -66,14 +75,27 @@ import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon } from '#blokkli/components'
 import SidebarDetached from './Detached/index.vue'
 
-const props = defineProps<{
-  id: string
-  title: string
-  editOnly?: boolean
-  icon?: BlokkliIcon
-  weight?: string
-  renderAlways?: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    id: string
+    title: string
+    editOnly?: boolean
+    icon: BlokkliIcon
+    weight?: string | number
+    renderAlways?: boolean
+    region?: 'left' | 'right'
+    minWidth?: number
+    minHeight?: number
+    size?: { width: number; height: number }
+  }>(),
+  {
+    region: 'right',
+    weight: 0,
+    minWidth: undefined,
+    minHeight: undefined,
+    size: undefined,
+  },
+)
 
 const emit = defineEmits<{
   (e: 'updated'): void
@@ -82,9 +104,9 @@ const emit = defineEmits<{
 const { storage, state, ui } = useBlokkli()
 
 const detachedKey = computed(() => 'sidebar:detached:' + props.id)
-
+const storageKey = computed(() => 'sidebar:active:' + props.region)
 const isDetached = storage.use(detachedKey, false)
-const activeSidebar = storage.use('sidebar:active', '')
+const activeSidebar = storage.use(storageKey, '')
 
 const isRenderedDetached = computed(
   () => isDetached.value && !ui.isMobile.value,
@@ -118,9 +140,9 @@ const showSidebar = () => (activeSidebar.value = props.id)
 
 watch(activeSidebar, (active) => {
   if (active) {
-    document.documentElement.classList.add('bk-has-sidebar-right')
+    document.documentElement.classList.add('bk-has-sidebar-' + props.region)
   } else {
-    document.documentElement.classList.remove('bk-has-sidebar-right')
+    document.documentElement.classList.remove('bk-has-sidebar-' + props.region)
   }
 })
 

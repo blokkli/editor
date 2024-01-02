@@ -1,11 +1,17 @@
 .bk-sidebar {
-  @apply fixed right-0 bg-white w-full md:w-[351px] z-sidebar;
+  @apply fixed bg-white w-full z-sidebar;
+  &.bk-is-right {
+    @apply right-0 md:w-[351px];
+    box-shadow: -1px -0px 2px rgb(20 45 82 / 2%),
+      -3px -0px 4px rgb(20 45 82 / 3%), -5px -0px 8px rgb(20 45 82 / 4%);
+  }
+  &.bk-is-left {
+    @apply left-0 md:w-[400px];
+    box-shadow: 1px -0px 2px rgb(20 45 82 / 2%), 3px -0px 4px rgb(20 45 82 / 3%),
+      5px -0px 8px rgb(20 45 82 / 4%);
+  }
   bottom: var(--bk-root-offset-bottom);
   top: var(--bk-root-offset-top);
-  box-shadow:
-    -1px -0px 2px rgb(20 45 82 / 2%),
-    -3px -0px 4px rgb(20 45 82 / 3%),
-    -5px -0px 8px rgb(20 45 82 / 4%);
 
   &:empty {
     @apply hidden;
@@ -47,7 +53,7 @@
 .bk-sidebar-detached {
   @apply fixed top-0 left-0 bg-white z-sidebar rounded-md shadow-md flex flex-col overflow-hidden;
   @apply border border-slate-400;
-  &:focus-within {
+  &.bk-is-focused {
     @apply z-sidebar-focused shadow-xl;
     .bk-sidebar-title {
       @apply bg-slate-800 text-white;
@@ -96,5 +102,11 @@
   }
   &.bk-is-bottom-right {
     @apply right-0 bottom-0 h-10 w-10 cursor-se-resize;
+  }
+}
+
+html.bk-is-sidebar-interacting {
+  .bk-sidebar-detached {
+    @apply !pointer-events-none;
   }
 }

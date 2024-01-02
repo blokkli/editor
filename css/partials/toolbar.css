@@ -26,8 +26,17 @@
 
   .bk-toolbar-tabs {
     @apply flex h-40 lg:h-50 relative;
-    .bk-tooltip {
-      @apply absolute top-full left-0 right-3 mt-3;
+
+    &.bk-is-left {
+      .bk-tooltip {
+        @apply absolute top-full left-0 mt-3;
+      }
+    }
+
+    &.bk-is-right {
+      .bk-tooltip {
+        @apply absolute top-full left-0 right-3 mt-3;
+      }
     }
     button {
       @apply flex text-slate-300 h-full focus:outline-none flex-1 items-center px-10 gap-10 aspect-square justify-center w-50;

@@ -1,6 +1,15 @@
 <template>
   <Teleport to="body">
-    <div v-show="activeSidebar" id="bk-sidebar-content" class="bk-sidebar" />
+    <div
+      v-show="activeSidebarLeft"
+      id="bk-sidebar-content-left"
+      class="bk-sidebar bk-is-left"
+    />
+    <div
+      v-show="activeSidebarRight"
+      id="bk-sidebar-content-right"
+      class="bk-sidebar bk-is-right"
+    />
 
     <Transition name="bk-toolbar">
       <div
@@ -12,6 +21,12 @@
         <div class="bk bk-toolbar">
           <div class="bk-toolbar-wrapper">
             <div id="bk-toolbar-menu" class="bk-toolbar-area bk-is-menu" />
+            <div class="bk-toolbar-container bk-is-sidebar">
+              <div
+                id="bk-sidebar-tabs-left"
+                class="bk-toolbar-tabs bk-is-left"
+              />
+            </div>
             <div id="bk-toolbar-after-menu" class="bk-toolbar-container" />
             <div id="bk-toolbar-before-title" class="bk-toolbar-container" />
             <div id="bk-toolbar-title" class="bk-toolbar-container" />
@@ -24,7 +39,10 @@
             <div id="bk-toolbar-before-sidebar" class="bk-toolbar-container" />
 
             <div class="bk-toolbar-container bk-is-sidebar">
-              <div id="bk-sidebar-tabs" class="bk-toolbar-tabs" />
+              <div
+                id="bk-sidebar-tabs-right"
+                class="bk-toolbar-tabs bk-is-right"
+              />
             </div>
             <div
               id="bk-toolbar-before-view-options"
@@ -38,7 +56,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useBlokkli, onBeforeUnmount } from '#imports'
+import { onMounted, useBlokkli, onBeforeUnmount, computed } from '#imports'
 
 const { ui, selection, eventBus, storage } = useBlokkli()
 
@@ -48,19 +66,31 @@ const showToolbar = computed(
     (!selection.isDragging.value && !selection.isMultiSelecting.value),
 )
 
-const activeSidebar = storage.use('sidebar:active', '')
+const activeSidebarLeft = storage.use('sidebar:active:left', '')
+const activeSidebarRight = storage.use('sidebar:active:right', '')
+const focusedSidebar = storage.use('sidebar:focused', '')
 
 const emit = defineEmits(['loaded'])
 
-const onSidebarClose = () => (activeSidebar.value = '')
+const onSidebarClose = () => (activeSidebarRight.value = '')
+
+const onWindowMouseDown = (e: MouseEvent) => {
+  if (e.target instanceof HTMLElement || e.target instanceof SVGElement) {
+    if (!e.target.closest('.bk-sidebar-detached')) {
+      focusedSidebar.value = ''
+    }
+  }
+}
 
 onMounted(() => {
   emit('loaded')
   eventBus.on('sidebar:close', onSidebarClose)
+  document.documentElement.addEventListener('mousedown', onWindowMouseDown)
 })
 
 onBeforeUnmount(() => {
   eventBus.off('sidebar:close', onSidebarClose)
+  document.documentElement.removeEventListener('mousedown', onWindowMouseDown)
 })
 </script>
 
