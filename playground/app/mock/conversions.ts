@@ -1,6 +1,6 @@
-import type { BlokkliConversionItem } from '#blokkli/types'
+import type { ConversionItem } from '#blokkli/types'
 
-export const conversions: BlokkliConversionItem[] = [
+export const conversions: ConversionItem[] = [
   {
     sourceBundle: 'title',
     targetBundle: 'text',

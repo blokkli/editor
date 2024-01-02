@@ -1,5 +1,5 @@
 import type {
-  DraggableExistingBlokkliItem,
+  DraggableExistingBlock,
   BlokkliFieldElement,
   DraggableItem,
 } from '#blokkli/types'
@@ -43,12 +43,12 @@ const buildFieldElement = (
   }
 }
 
-export type BlokkliDomProvider = {
-  findBlock(uuid: string): DraggableExistingBlokkliItem | undefined
-  getAllBlocks(): DraggableExistingBlokkliItem[]
+export type DomProvider = {
+  findBlock(uuid: string): DraggableExistingBlock | undefined
+  getAllBlocks(): DraggableExistingBlock[]
   findClosestBlock(
     el: Element | EventTarget,
-  ): DraggableExistingBlokkliItem | undefined
+  ): DraggableExistingBlock | undefined
 
   getAllFields(): BlokkliFieldElement[]
 
@@ -64,10 +64,10 @@ export type BlokkliDomProvider = {
   ): BlokkliFieldElement | undefined
 }
 
-export default function (): BlokkliDomProvider {
+export default function (): DomProvider {
   const findBlock = (
     uuid: string,
-  ): DraggableExistingBlokkliItem | undefined => {
+  ): DraggableExistingBlock | undefined => {
     const el = document.querySelector(`.bk-field-list [data-uuid="${uuid}"]`)
     if (el instanceof HTMLElement) {
       const item = buildDraggableItem(el)
@@ -78,7 +78,7 @@ export default function (): BlokkliDomProvider {
     return
   }
 
-  const getAllBlocks = (): DraggableExistingBlokkliItem[] => {
+  const getAllBlocks = (): DraggableExistingBlock[] => {
     return [
       ...document.querySelectorAll(
         '[data-blokkli-provider-active="true"] [data-uuid]',
@@ -95,7 +95,7 @@ export default function (): BlokkliDomProvider {
 
   const findClosestBlock = (
     el: Element | EventTarget,
-  ): DraggableExistingBlokkliItem | undefined => {
+  ): DraggableExistingBlock | undefined => {
     if (!(el instanceof Element)) {
       return
     }

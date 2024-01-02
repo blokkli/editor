@@ -8,7 +8,7 @@ import {
   watch,
 } from 'vue'
 
-import type { DraggableExistingBlokkliItem } from '#blokkli/types'
+import type { DraggableExistingBlock } from '#blokkli/types'
 import {
   findElement,
   buildDraggableItem,
@@ -16,10 +16,10 @@ import {
   modulo,
 } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
-import type { BlokkliDomProvider } from './domProvider'
-import type { BlokkliStateProvider } from './stateProvider'
+import type { DomProvider } from './domProvider'
+import type { StateProvider } from './stateProvider'
 
-export type BlokkliSelectionProvider = {
+export type SelectionProvider = {
   /**
    * The currently selected UUIDs.
    */
@@ -28,7 +28,7 @@ export type BlokkliSelectionProvider = {
   /**
    * The currently selected blocks.
    */
-  blocks: ComputedRef<DraggableExistingBlokkliItem[]>
+  blocks: ComputedRef<DraggableExistingBlock[]>
 
   /**
    * The active field key.
@@ -62,9 +62,9 @@ export type BlokkliSelectionProvider = {
 }
 
 export default function (
-  dom: BlokkliDomProvider,
-  state: BlokkliStateProvider,
-): BlokkliSelectionProvider {
+  dom: DomProvider,
+  state: StateProvider,
+): SelectionProvider {
   const selectedUuids = ref<string[]>([])
   const activeFieldKey = ref('')
   const isDragging = ref(false)
@@ -72,7 +72,7 @@ export default function (
   const isChangingOptions = ref(false)
   const isMultiSelecting = ref(false)
 
-  const blocks = computed<DraggableExistingBlokkliItem[]>(() =>
+  const blocks = computed<DraggableExistingBlock[]>(() =>
     selectedUuids.value
       .map((uuid) => {
         const el = findElement(uuid)

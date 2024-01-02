@@ -19,7 +19,7 @@ import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
 import type {
   AnimationFrameEvent,
-  BlokkliTransformPlugin,
+  TransformPlugin,
   Rectangle,
 } from '#blokkli/types'
 import { filterTransforms } from '#blokkli/helpers/transform'
@@ -29,7 +29,7 @@ const { eventBus, dom, types, keyboard } = useBlokkli()
 const emit = defineEmits<{
   (
     e: 'transform',
-    data: { uuids: string[]; plugin: BlokkliTransformPlugin },
+    data: { uuids: string[]; plugin: TransformPlugin },
   ): void
 }>()
 
@@ -37,7 +37,7 @@ const props = defineProps<{
   // The item bundles in the current selection.
   selectedBundles: string[]
   selectedUuids: string[]
-  plugins: BlokkliTransformPlugin[]
+  plugins: TransformPlugin[]
 }>()
 
 const allItems = computed(() => dom.getAllBlocks())
@@ -87,7 +87,7 @@ const style = computed(() => {
 })
 
 type PossibleTransform = {
-  plugin: BlokkliTransformPlugin
+  plugin: TransformPlugin
   uuids: string[]
 }
 

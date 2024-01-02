@@ -14,8 +14,8 @@ import {
 } from '#imports'
 import type {
   MutatedOptions,
-  BlokkliMutatedField,
-  UpdateBlokkliItemOptionEvent,
+  MutatedField,
+  UpdateBlockOptionEvent,
 } from '#blokkli/types'
 import '#blokkli/styles'
 import getAdapter from '#blokkli/compiled-edit-adapter'
@@ -39,7 +39,7 @@ const router = useRouter()
 
 let timeout: any = null
 let lastChanged: number = 0
-const mutatedFields = ref<BlokkliMutatedField[]>([])
+const mutatedFields = ref<MutatedField[]>([])
 const mutatedOptions = ref<MutatedOptions>({})
 
 const { data, refresh } = await useAsyncData(() =>
@@ -108,7 +108,7 @@ const onWheel = (e: WheelEvent) => {
 
 const isInIframe = () => window.parent !== window
 
-const onMutatedFields = (fields: BlokkliMutatedField[]) => {
+const onMutatedFields = (fields: MutatedField[]) => {
   mutatedFields.value = [...fields]
 }
 const onFocusItem = (uuid: string) => {
@@ -122,7 +122,7 @@ const onFocusItem = (uuid: string) => {
     })
   }
 }
-const onUpdateOption = (option: UpdateBlokkliItemOptionEvent) => {
+const onUpdateOption = (option: UpdateBlockOptionEvent) => {
   const { uuid, key, value } = option
 
   if (!mutatedOptions.value[uuid]) {

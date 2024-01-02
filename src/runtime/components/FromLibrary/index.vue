@@ -17,11 +17,11 @@ import {
   INJECT_IS_IN_REUSABLE,
   INJECT_REUSABLE_OPTIONS,
 } from '#blokkli/helpers/symbols'
-import type { BlokkliFieldListItem } from '../../types'
+import type { FieldListItem } from '../../types'
 
 interface LibraryItem {
   field?: {
-    list?: BlokkliFieldListItem[]
+    list?: FieldListItem[]
   }
 }
 

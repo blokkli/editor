@@ -6,13 +6,13 @@
 
 <script lang="ts" setup>
 import { useBlokkli } from '#imports'
-import type { BlokkliEditableType } from '#blokkli/types'
+import type { EditableType } from '#blokkli/types'
 
 const { adapter } = useBlokkli()
 
 const props = defineProps<{
   modelValue: string
-  type: BlokkliEditableType
+  type: EditableType
   fieldName: string
   uuid: string
   initialHeight: number

@@ -1,30 +1,30 @@
 import type { ComputedRef } from 'vue'
 import type {
-  BlokkliComment,
-  BlokkliConversionItem,
-  BlokkliMappedState,
-  BlokkliImportItem,
-  BlokkliLibraryItem,
-  BlokkliItemType,
-  BlokkliEntityTranslation,
-  BlokkliSearchContentItem,
+  CommentItem,
+  ConversionItem,
+  MappedState,
+  ImportItem,
+  LibraryItem,
+  BlockBundleDefinition,
+  EntityTranslation,
+  SearchContentItem,
   AddClipboardItemEvent,
-  AddNewBlokkliItemEvent,
+  AddNewBlockEvent,
   AddReusableItemEvent,
   ImportFromExistingEvent,
   MakeReusableEvent,
-  MoveMultipleBlokkliItemsEvent,
-  MoveBlokkliEvent,
-  UpdateBlokkliItemOptionEvent,
+  MoveMultipleBlocksEvent,
+  MoveBlockEvent,
+  UpdateBlockOptionEvent,
   AddContentSearchItemEvent,
-  BlokkliTransformPlugin,
-  EditBlokkliItemEvent,
+  TransformPlugin,
+  EditBlockEvent,
   PasteExistingBlocksEvent,
   UpdateFieldValueEvent,
   AssistantResult,
   DraggableHostData,
   DetachReusableBlockEvent,
-  BlokkliFieldConfig,
+  FieldConfig,
 } from './../types'
 
 export interface MutationResponseLike<T> {
@@ -52,7 +52,7 @@ export interface BlokkliAdapter<T> {
   /*
    * Map the state returned by mutations.
    */
-  mapState(state: T): BlokkliMappedState
+  mapState(state: T): MappedState
 
   /**
    * Get disabled features at runtime.
@@ -68,22 +68,22 @@ export interface BlokkliAdapter<T> {
   /**
    * Return a list of all types.
    */
-  getAllBundles(): Promise<BlokkliItemType[]>
+  getAllBundles(): Promise<BlockBundleDefinition[]>
 
   /**
    * Get the field configurations.
    */
-  getFieldConfig(): Promise<BlokkliFieldConfig[]>
+  getFieldConfig(): Promise<FieldConfig[]>
 
   /**
    * Get all possible conversions.
    */
-  getConversions?: () => Promise<BlokkliConversionItem[]>
+  getConversions?: () => Promise<ConversionItem[]>
 
   /**
    * Get all possible transform plugins.
    */
-  getTransformPlugins?: () => Promise<BlokkliTransformPlugin[]>
+  getTransformPlugins?: () => Promise<TransformPlugin[]>
 
   /**
    * Apply a transform plugin.
@@ -93,34 +93,34 @@ export interface BlokkliAdapter<T> {
   ) => Promise<MutationResponseLike<T>>
 
   /**
-   * Add a new blokkli item.
+   * Add a new block.
    */
-  addNewBlock(e: AddNewBlokkliItemEvent): Promise<MutationResponseLike<T>>
+  addNewBlock(e: AddNewBlockEvent): Promise<MutationResponseLike<T>>
 
   /**
    * Update multiple options.
    */
   updateOptions?: (
-    options: UpdateBlokkliItemOptionEvent[],
+    options: UpdateBlockOptionEvent[],
   ) => Promise<MutationResponseLike<T>>
 
   /**
    * Add a clipboard item.
    */
-  addBlokkliItemFromClipboard?: (
+  addBlockFromClipboardItem?: (
     e: AddClipboardItemEvent,
   ) => Promise<MutationResponseLike<T>> | undefined
 
   /**
    * Move an item.
    */
-  moveItem(e: MoveBlokkliEvent): Promise<MutationResponseLike<T>>
+  moveItem(e: MoveBlockEvent): Promise<MutationResponseLike<T>>
 
   /**
    * Move multiple items.
    */
   moveMultipleItems(
-    e: MoveMultipleBlokkliItemsEvent,
+    e: MoveMultipleBlocksEvent,
   ): Promise<MutationResponseLike<T>>
 
   /**
@@ -158,7 +158,7 @@ export interface BlokkliAdapter<T> {
    */
   getImportItems?: (
     searchText?: string,
-  ) => Promise<{ items: BlokkliImportItem[]; total: number }>
+  ) => Promise<{ items: ImportItem[]; total: number }>
 
   /**
    * Import items from an existing entity.
@@ -190,17 +190,17 @@ export interface BlokkliAdapter<T> {
   /**
    * Load all comments.
    */
-  loadComments?: () => Promise<BlokkliComment[]>
+  loadComments?: () => Promise<CommentItem[]>
 
   /**
    * Add a comment to one or more items.
    */
-  addComment?: (itemUuids: string[], body: string) => Promise<BlokkliComment[]>
+  addComment?: (itemUuids: string[], body: string) => Promise<CommentItem[]>
 
   /**
    * Resolve a comment.
    */
-  resolveComment?: (uuid: string) => Promise<BlokkliComment[]>
+  resolveComment?: (uuid: string) => Promise<CommentItem[]>
 
   /**
    * Make an item reusable.
@@ -217,7 +217,7 @@ export interface BlokkliAdapter<T> {
   /**
    * Get all library items.
    */
-  getLibraryItems?: (bundles: string[]) => Promise<BlokkliLibraryItem[]>
+  getLibraryItems?: (bundles: string[]) => Promise<LibraryItem[]>
 
   /**
    * Get the last changed timestamp for the edit state.
@@ -248,7 +248,7 @@ export interface BlokkliAdapter<T> {
   getContentSearchResults?: (
     tab: string,
     text: string,
-  ) => Promise<BlokkliSearchContentItem[]>
+  ) => Promise<SearchContentItem[]>
 
   /**
    * Add the dropped item from a search content item.
@@ -260,7 +260,7 @@ export interface BlokkliAdapter<T> {
   /**
    * Change the language.
    */
-  changeLanguage?: (translation: BlokkliEntityTranslation) => Promise<any>
+  changeLanguage?: (translation: EntityTranslation) => Promise<any>
 
   /**
    * Build the URL for forms.
@@ -338,18 +338,18 @@ type AdapterFormFrameBuilderResult = {
 
 type AdapterFormFrameBuilderBlockAdd = {
   id: 'block:add'
-  data: AddNewBlokkliItemEvent
+  data: AddNewBlockEvent
 }
 
 type AdapterFormFrameBuilderBlockTranslate = {
   id: 'block:translate'
-  data: EditBlokkliItemEvent
+  data: EditBlockEvent
   langcode: string
 }
 
 type AdapterFormFrameBuilderBlockEdit = {
   id: 'block:edit'
-  data: EditBlokkliItemEvent
+  data: EditBlockEvent
 }
 
 type AdapterFormFrameBuilderEntityEdit = {
@@ -373,7 +373,7 @@ export type AdapterFormFrameBuilder =
   | AdapterFormFrameBuilderEntityTranslate
   | AdapterFormFrameBuilderBatchTranslate
 
-export interface BlokkliAdapterContext {
+export interface AdapterContext {
   entityType: string
   entityUuid: string
   entityBundle: string
@@ -381,7 +381,7 @@ export interface BlokkliAdapterContext {
 }
 
 export type BlokkliAdapterFactory<T> = (
-  ctx: ComputedRef<BlokkliAdapterContext>,
+  ctx: ComputedRef<AdapterContext>,
 ) => BlokkliAdapter<T>
 
 export type AdapterMethods = keyof BlokkliAdapter<any>

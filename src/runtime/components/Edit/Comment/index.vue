@@ -18,7 +18,7 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
-import type { BlokkliComment } from '#blokkli/types'
+import type { CommentItem } from '#blokkli/types'
 import { Icon } from '#blokkli/components'
 import { RelativeTime } from '#blokkli/components'
 
@@ -36,8 +36,8 @@ const props = defineProps<{
   itemUudis?: string[]
   resolved?: boolean
   body?: string
-  created?: BlokkliComment['created']
-  user?: BlokkliComment['user']
+  created?: CommentItem['created']
+  user?: CommentItem['user']
 }>()
 
 const timestamp = computed(() => (props.created ? parseInt(props.created) : 0))

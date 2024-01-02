@@ -57,15 +57,15 @@ export default {
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
 import { Sortli } from '#blokkli/components'
-import type { BlokkliFieldListItem, BlokkliEntityContext } from '#blokkli/types'
+import type { FieldListItem, EntityContext } from '#blokkli/types'
 
 const { state, eventBus, dom, keyboard, selection, types } = useBlokkli()
 
 const props = defineProps<{
   name: string
   fieldKey: string
-  list: BlokkliFieldListItem[]
-  entity: BlokkliEntityContext
+  list: FieldListItem[]
+  entity: EntityContext
   tag?: string
   isNested: boolean
 }>()
@@ -79,7 +79,7 @@ const fieldConfig = computed(() => {
   )
 })
 
-type RenderedListItem = BlokkliFieldListItem & { selected: boolean }
+type RenderedListItem = FieldListItem & { selected: boolean }
 
 const renderList = computed<RenderedListItem[]>(() => {
   return props.list.map((item) => {

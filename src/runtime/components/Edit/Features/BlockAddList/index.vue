@@ -47,7 +47,7 @@ import {
   defineBlokkliFeature,
 } from '#imports'
 import { AddListItem } from '#blokkli/components'
-import type { DraggableExistingBlokkliItem } from '#blokkli/types'
+import type { DraggableExistingBlock } from '#blokkli/types'
 
 defineBlokkliFeature({
   description:
@@ -93,7 +93,7 @@ const activeField = computed(() => {
 })
 
 const getAllowedTypesForSelected = (
-  p: DraggableExistingBlokkliItem,
+  p: DraggableExistingBlock,
 ): string[] => {
   // If the selected bundle allows nested items, return the allowed bundles for it instead.
   if (types.itemBundlesWithNested.value.includes(p.itemBundle)) {

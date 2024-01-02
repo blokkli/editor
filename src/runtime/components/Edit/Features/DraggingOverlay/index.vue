@@ -49,7 +49,7 @@ import type {
   Coord,
   DraggableActionItem,
   DraggableClipboardItem,
-  DraggableExistingBlokkliItem,
+  DraggableExistingBlock,
   DraggableItem,
   DraggableNewItem,
   DraggableReusableItem,
@@ -90,7 +90,7 @@ const onDrop = async (e: DropTargetEvent) => {
     const afterUuid = e.preceedingUuid
     const host = e.host
     if (e.items.every((v) => v.itemType === 'existing')) {
-      const items = e.items as DraggableExistingBlokkliItem[]
+      const items = e.items as DraggableExistingBlock[]
       const uuids = items.map((v) => v.uuid)
       await state.mutateWithLoadingState(
         adapter.moveMultipleItems({
@@ -139,9 +139,9 @@ const onDrop = async (e: DropTargetEvent) => {
       )
     } else if (e.items.every((v) => v.itemType === 'clipboard')) {
       const item = e.items[0] as DraggableClipboardItem
-      if (adapter.addBlokkliItemFromClipboard) {
+      if (adapter.addBlockFromClipboardItem) {
         await state.mutateWithLoadingState(
-          adapter.addBlokkliItemFromClipboard({
+          adapter.addBlockFromClipboardItem({
             afterUuid,
             item,
             host,

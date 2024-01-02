@@ -22,7 +22,7 @@ import {
 
 import type {
   UpdateMutatedFieldsEvent,
-  UpdateBlokkliItemOptionEvent,
+  UpdateBlockOptionEvent,
 } from '#blokkli/types'
 import { Icon } from '#blokkli/components'
 import { frameEventBus } from './../../../../../helpers/frameEventBus'
@@ -50,7 +50,7 @@ const src = computed(() =>
 const onUpdateMutatedFields = (e: UpdateMutatedFieldsEvent) =>
   frameEventBus.emit('mutatedFields', e.fields)
 const onSelect = (uuid: string) => frameEventBus.emit('focus', uuid)
-const onUpdateOption = (option: UpdateBlokkliItemOptionEvent) =>
+const onUpdateOption = (option: UpdateBlockOptionEvent) =>
   frameEventBus.emit('updateOption', option)
 
 /**

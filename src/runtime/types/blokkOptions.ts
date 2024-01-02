@@ -31,7 +31,7 @@ type DefinitionOptionRadios = {
   options: Record<string, string | number[]>
 }
 
-export type BlokkliDefinitionOption =
+export type BlockOptionDefinition =
   | DefinitionOptionCheckbox
   | DefinitionOptionCheckboxes
   | DefinitionOptionRadios

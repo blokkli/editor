@@ -22,7 +22,7 @@ import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import { ItemIcon } from '#blokkli/components'
 import { PluginItemDropdown } from '#blokkli/plugins'
 import { falsy, onlyUnique } from '#blokkli/helpers'
-import type { BlokkliItemType } from '#blokkli/types'
+import type { BlockBundleDefinition } from '#blokkli/types'
 
 const adapter = defineBlokkliFeature({
   requiredAdapterMethods: ['getConversions', 'convertBlocks'],
@@ -52,7 +52,7 @@ const itemBundleIds = computed(() =>
   selection.blocks.value.map((v) => v.itemBundle).filter(onlyUnique),
 )
 
-const possibleConversions = computed<BlokkliItemType[]>(() => {
+const possibleConversions = computed<BlockBundleDefinition[]>(() => {
   if (itemBundleIds.value.length !== 1) {
     return []
   }

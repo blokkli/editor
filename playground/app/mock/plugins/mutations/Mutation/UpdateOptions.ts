@@ -1,9 +1,9 @@
-import type { UpdateBlokkliItemOptionEvent } from '#blokkli/types'
+import type { UpdateBlockOptionEvent } from '#blokkli/types'
 import type { MutationContext } from '../../../state/EditState'
 import { Mutation } from './../Mutation'
 
 export type MutationUpdateOptionsArgs = {
-  options: UpdateBlokkliItemOptionEvent[]
+  options: UpdateBlockOptionEvent[]
 }
 
 export class MutationUpdateOptions extends Mutation {

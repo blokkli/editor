@@ -61,7 +61,7 @@
 import { watch, ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
 import { DialogModal } from '#blokkli/components'
-import type { BlokkliImportItem } from '#blokkli/types'
+import type { ImportItem } from '#blokkli/types'
 
 const { adapter, $t, types, context } = useBlokkli()
 
@@ -75,7 +75,7 @@ const resultsSearchTerm = ref('')
 const sourceEntityUuid = ref('')
 const selectedFields = ref<string[]>([])
 const isLoading = ref(false)
-const entities = ref<BlokkliImportItem[]>([])
+const entities = ref<ImportItem[]>([])
 const total = ref(0)
 
 let timeout: any = null

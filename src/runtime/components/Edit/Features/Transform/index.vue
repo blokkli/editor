@@ -27,7 +27,7 @@
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginItemDropdown } from '#blokkli/plugins'
 import { onlyUnique } from '#blokkli/helpers'
-import type { BlokkliTransformPlugin } from '#blokkli/types'
+import type { TransformPlugin } from '#blokkli/types'
 import Overlay from './Overlay/index.vue'
 import { filterTransforms } from '#blokkli/helpers/transform'
 
@@ -40,7 +40,7 @@ const { types, selection, state, $t } = useBlokkli()
 
 const plugins = await adapter.getTransformPlugins()
 
-async function onTransform(plugin: BlokkliTransformPlugin, uuids: string[]) {
+async function onTransform(plugin: TransformPlugin, uuids: string[]) {
   await state.mutateWithLoadingState(
     adapter.applyTransformPlugin({
       uuids,
@@ -54,7 +54,7 @@ const itemBundleIds = computed(() =>
   selection.blocks.value.map((v) => v.itemBundle).filter(onlyUnique),
 )
 
-const possibleTransforms = computed<BlokkliTransformPlugin[]>(() =>
+const possibleTransforms = computed<TransformPlugin[]>(() =>
   filterTransforms(
     plugins,
     selection.uuids.value,

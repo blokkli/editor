@@ -2,14 +2,14 @@ import { onMounted, onBeforeUnmount } from '#imports'
 import { falsy, isInsideRect } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
 
-export type BlokkliAnimationProvider = {
+export type AnimationProvider = {
   /**
    * Request an animation loop. Should be called when UI state changes.
    */
   requestDraw: () => void
 }
 
-export default function (): BlokkliAnimationProvider {
+export default function (): AnimationProvider {
   let mouseX = 0
   let mouseY = 0
 

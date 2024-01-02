@@ -11,11 +11,11 @@
 </template>
 
 <script lang="ts" setup>
-import type { BlokkliEditableType } from '#blokkli/types'
+import type { EditableType } from '#blokkli/types'
 
 const props = defineProps<{
   modelValue: string
-  type: BlokkliEditableType
+  type: EditableType
 }>()
 
 const original = ref('')

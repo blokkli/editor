@@ -1,5 +1,5 @@
 import type { BlokkliAdapter, AdapterMethods } from '#blokkli/adapter'
-import type { BlokkliFeatureDefinition } from '#blokkli/types'
+import type { FeatureDefinition } from '#blokkli/types'
 
 // This utility type picks only the methods listed in Methods array and makes them non-optional
 type PickRequiredMethods<T, Methods extends AdapterMethods[]> = {
@@ -14,7 +14,7 @@ type CombinedAdapter<T, Methods extends AdapterMethods[]> = PickRequiredMethods<
   BlokkliAdapter<T>
 
 export function defineBlokkliFeature<T, Methods extends AdapterMethods[]>(
-  _feature: BlokkliFeatureDefinition<Methods>,
+  _feature: FeatureDefinition<Methods>,
 ): CombinedAdapter<T, Methods> {
   const { adapter } = useBlokkli()
   return adapter as CombinedAdapter<T, Methods>

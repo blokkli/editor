@@ -43,7 +43,7 @@
 import { watch, ref, useBlokkli, onMounted } from '#imports'
 import { ItemIcon, Icon } from '#blokkli/components'
 import { modulo } from '#blokkli/helpers'
-import type { BlokkliSearchContentItem } from '#blokkli/types'
+import type { SearchContentItem } from '#blokkli/types'
 
 const listItems = ref<HTMLLIElement[]>([])
 
@@ -60,7 +60,7 @@ const emit = defineEmits(['close'])
 
 const { eventBus, adapter, $t } = useBlokkli()
 
-const items = ref<BlokkliSearchContentItem[]>([])
+const items = ref<SearchContentItem[]>([])
 let timeout: any = null
 
 const doSearch = () => {

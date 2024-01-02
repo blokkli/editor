@@ -12,7 +12,7 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
-import type { DraggableExistingBlokkliItem } from '#blokkli/types'
+import type { DraggableExistingBlock } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
 import { getDefinition } from '#blokkli/definitions'
 
@@ -34,7 +34,7 @@ const disabled = computed(() => {
   return !type || getDefinition(type)?.disableEdit === true
 })
 
-function onClick(items: DraggableExistingBlokkliItem[]) {
+function onClick(items: DraggableExistingBlock[]) {
   if (items.length !== 1) {
     return
   }

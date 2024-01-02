@@ -1,27 +1,27 @@
 import { type ComputedRef, computed, watch } from 'vue'
-import type { BlokkliFieldConfig, BlokkliItemType } from '../types'
+import type { FieldConfig, BlockBundleDefinition } from '../types'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import type { BlokkliAdapter } from '../adapter'
-import type { BlokkliSelectionProvider } from './selectionProvider'
+import type { SelectionProvider } from './selectionProvider'
 import { getDefinition } from '#blokkli/definitions'
-import type { BlokkliItemDefinitionInputWithTypes } from '#blokkli/generated-types'
+import type { BlockDefinitionInputWithTypes } from '#blokkli/generated-types'
 
-export type BlokkliBlockType = BlokkliItemType & {
-  definition: BlokkliItemDefinitionInputWithTypes | undefined
+export type BlokkliBlockType = BlockBundleDefinition & {
+  definition: BlockDefinitionInputWithTypes | undefined
 }
 
-export type BlokkliTypesProvider = {
+export type BlockDefinitionProvider = {
   itemBundlesWithNested: ComputedRef<string[]>
   allowedTypesInList: ComputedRef<string[]>
-  allTypes: ComputedRef<BlokkliItemType[]>
+  allTypes: ComputedRef<BlockBundleDefinition[]>
   getType: (bundle: string) => BlokkliBlockType | undefined
-  fieldConfig: ComputedRef<BlokkliFieldConfig[]>
+  fieldConfig: ComputedRef<FieldConfig[]>
 }
 
 export default async function (
   adapter: BlokkliAdapter<any>,
-  selection: BlokkliSelectionProvider,
-): Promise<BlokkliTypesProvider> {
+  selection: SelectionProvider,
+): Promise<BlockDefinitionProvider> {
   const allTypesData = await adapter.getAllBundles()
   const allTypes = computed(() => allTypesData || [])
   const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType

@@ -1,8 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 import type {
-  BlokkliItemDefinitionInput,
-  BlokkliItemDefinitionOptionsInput,
+  BlockDefinitionInput,
+  BlockDefinitionOptionsInput,
 } from '../runtime/types'
 
 type ExtractedDefinition = {
@@ -10,7 +10,7 @@ type ExtractedDefinition = {
   icon?: string
   chunkName: string
   componentName: string
-  definition: BlokkliItemDefinitionInput<any>
+  definition: BlockDefinitionInput<any>
   source: string
 }
 
@@ -100,7 +100,7 @@ export default class BlockExtractor {
     code: string,
     filePath: string,
   ):
-    | { definition: BlokkliItemDefinitionInput<any>; source: string }
+    | { definition: BlockDefinitionInput<any>; source: string }
     | undefined {
     const pattern = this.composableName + '\\((\\{.+?\\})\\)'
     const rgx = new RegExp(pattern, 'gms')
@@ -131,7 +131,7 @@ export default class BlockExtractor {
    * Generate the template.
    */
   generateDefinitionTemplate(
-    globalOptions: BlokkliItemDefinitionOptionsInput = {},
+    globalOptions: BlockDefinitionOptionsInput = {},
   ): string {
     const allDefinitions = Object.values(this.definitions).map((v) => {
       return `${v.definition.bundle}: ${v.source}`
@@ -146,20 +146,20 @@ export default class BlockExtractor {
       return acc
     }, {})
 
-    return `import type { BlokkliItemDefinitionInput } from '#blokkli/types'
-import type { BlokkliItemDefinitionInputWithTypes } from '#blokkli/generated-types'
+    return `import type { BlockDefinitionInput } from '#blokkli/types'
+import type { BlockDefinitionInputWithTypes } from '#blokkli/generated-types'
 
 export const globalOptions = ${JSON.stringify(globalOptions, null, 2)} as const
 
 export const icons: Record<string, string> = ${JSON.stringify(icons)}
 
-export const definitionsMap: Record<string, BlokkliItemDefinitionInputWithTypes> = {
+export const definitionsMap: Record<string, BlockDefinitionInputWithTypes> = {
   ${allDefinitions.join(',\n')}
 }
 
-export const definitions: BlokkliItemDefinitionInputWithTypes[] = Object.values(definitionsMap)
+export const definitions: BlockDefinitionInputWithTypes[] = Object.values(definitionsMap)
 
-export const getDefinition = (bundle: string): BlokkliItemDefinitionInputWithTypes|undefined => definitionsMap[bundle]
+export const getDefinition = (bundle: string): BlockDefinitionInputWithTypes|undefined => definitionsMap[bundle]
 `
   }
 
@@ -167,7 +167,7 @@ export const getDefinition = (bundle: string): BlokkliItemDefinitionInputWithTyp
    * Generate the default global options values template.
    */
   generateDefaultGlobalOptions(
-    globalOptions: BlokkliItemDefinitionOptionsInput = {},
+    globalOptions: BlockDefinitionOptionsInput = {},
   ): string {
     const defaults = Object.entries(globalOptions).reduce<
       Record<string, string>
@@ -191,7 +191,7 @@ export const globalOptionsDefaults: Record<GlobalOptionsType, string> = ${JSON.s
     chunkNames: string[],
     fieldListTypes: string[],
   ): string {
-    const allDefintions: BlokkliItemDefinitionInput<any>[] = Object.values(
+    const allDefintions: BlockDefinitionInput<any>[] = Object.values(
       this.definitions,
     ).map((v) => v.definition)
     const validChunkNames = chunkNames
@@ -216,13 +216,13 @@ export const globalOptionsDefaults: Record<GlobalOptionsType, string> = ${JSON.s
       })
       .join(' | ')
     return `
-import type { BlokkliItemDefinitionInput } from '#blokkli/types'
+import type { BlockDefinitionInput } from '#blokkli/types'
 export type ValidFieldListTypes = ${validFieldListTypes}
 export type ValidParentItemBundle = ${validParentItemBundles || `''`}
 export type ValidChunkNames = ${validChunkNames}
 export type GlobalOptionsType = ${validGlobalOptions || 'never'}
 export type ValidGlobalConfigKeys = Array<GlobalOptionsType>
-export type BlokkliItemDefinitionInputWithTypes = BlokkliItemDefinitionInput<ValidChunkNames, ValidGlobalConfigKeys>
+export type BlockDefinitionInputWithTypes = BlockDefinitionInput<ValidChunkNames, ValidGlobalConfigKeys>
 `
   }
 

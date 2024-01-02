@@ -50,6 +50,10 @@ replace_pairs+=("BlokkliEntityTranslation=>EntityTranslation")
 replace_pairs+=("BlokkliConversionItem=>ConversionItem")
 replace_pairs+=("BlokkliTransformPlugin=>TransformPlugin")
 replace_pairs+=("defineFeature=>defineBlokkliFeature")
+replace_pairs+=("BlokkliSelectionProvider=>SelectionProvider")
+replace_pairs+=("BlokkliEventBus=>Eventbus")
+replace_pairs+=("BlokkliItemEditContext=>ItemEditContext")
+# replace_pairs+=("=>")
 
 # Directory to search
 search_dirs=("./src" "./playground")

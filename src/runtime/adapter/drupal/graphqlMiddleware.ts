@@ -2,9 +2,9 @@
 import type { ParagraphsBuilderEditStateFragment } from '#build/graphql-operations'
 import { falsy } from '#blokkli/helpers'
 import type {
-  BlokkliEntityTranslation,
-  BlokkliTranslationState,
-  BlokkliItemType,
+  EntityTranslation,
+  TranslationState,
+  BlockBundleDefinition,
 } from '#blokkli/types'
 import { defineBlokkliEditAdapter } from '#blokkli/adapter'
 import type { BlokkliAdapter } from '#blokkli/adapter'
@@ -48,7 +48,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
       useGraphqlQuery('pbAllTypes').then((v) => {
         const allTypes = v.data.entityQuery.items?.filter(
           (v) => v && 'icon' in v,
-        ) as BlokkliItemType[]
+        ) as BlockBundleDefinition[]
         return allTypes
       })
 
@@ -222,7 +222,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
       const mutatedState = state?.mutatedState || {}
       const entity = state?.entity
 
-      const translations: BlokkliEntityTranslation[] =
+      const translations: EntityTranslation[] =
         entity && 'translations' in entity
           ? entity.translations
               ?.map((v) => {
@@ -238,7 +238,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
               .filter(falsy) || []
           : []
 
-      const translationState: BlokkliTranslationState = {
+      const translationState: TranslationState = {
         isTranslatable: !!state.translationState?.isTranslatable,
         sourceLanguage: state.translationState?.sourceLanguage || '',
         availableLanguages: state.translationState?.availableLanguages || [],

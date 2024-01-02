@@ -64,8 +64,8 @@ import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import { falsy } from '#blokkli/helpers'
 import { PluginMenuButton, PluginItemAction } from '#blokkli/plugins'
 import type {
-  DraggableExistingBlokkliItem,
-  BlokkliEntityTranslation,
+  DraggableExistingBlock,
+  EntityTranslation,
 } from '#blokkli/types'
 
 const adapter = defineBlokkliFeature({
@@ -87,7 +87,7 @@ type TranslationStateItem = {
   code: string
   label: string
   checked: boolean
-  translation?: BlokkliEntityTranslation
+  translation?: EntityTranslation
 }
 
 const items = computed<TranslationStateItem[]>(() => {
@@ -118,7 +118,7 @@ function onClick(item: TranslationStateItem, event: Event) {
   eventBus.emit('translateEntity', item.id)
 }
 
-function onTranslate(items: DraggableExistingBlokkliItem[]) {
+function onTranslate(items: DraggableExistingBlock[]) {
   eventBus.emit('item:edit', {
     uuid: items[0].uuid,
     bundle: items[0].itemBundle,

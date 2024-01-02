@@ -1,14 +1,14 @@
 import mitt from 'mitt'
 import type {
-  BlokkliMutatedField,
-  UpdateBlokkliItemOptionEvent,
+  MutatedField,
+  UpdateBlockOptionEvent,
 } from '../types'
 
 type FrameEventBusEvents = {
   selectItems: string[]
-  mutatedFields: BlokkliMutatedField[]
+  mutatedFields: MutatedField[]
   focus: string
-  updateOption: UpdateBlokkliItemOptionEvent
+  updateOption: UpdateBlockOptionEvent
 }
 
 export const frameEventBus = mitt<FrameEventBusEvents>()

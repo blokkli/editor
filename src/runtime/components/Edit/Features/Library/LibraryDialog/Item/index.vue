@@ -35,7 +35,7 @@
 import { computed, provide } from '#imports'
 
 import { getDefinition } from '#blokkli/definitions'
-import type { BlokkliFieldListItem } from '#blokkli/types'
+import type { FieldListItem } from '#blokkli/types'
 import { ItemIcon, ScaleToFit } from '#blokkli/components'
 import {
   INJECT_IS_EDITING,
@@ -46,7 +46,7 @@ const componentProps = defineProps<{
   uuid: string
   label?: string
   bundle: string
-  item: BlokkliFieldListItem
+  item: FieldListItem
 }>()
 
 const definition = computed(() => getDefinition(componentProps.bundle))

@@ -5,6 +5,7 @@ export default defineBuildConfig({
     '#blokkli/adapter',
     '#blokkli/types',
     '#blokkli/translations',
+    '#blokkli/generated-types',
     'defu',
     'unplugin',
     'magic-string',

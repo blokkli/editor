@@ -1,11 +1,11 @@
 import fs from 'fs'
-import type { BlokkliFeatureDefinition } from '../runtime/types'
+import type { FeatureDefinition } from '../runtime/types'
 import type { AdapterMethods } from '../runtime/adapter/index'
 
 type ExtractedDefinition = {
   id: string
   filePath: string
-  definition: BlokkliFeatureDefinition<AdapterMethods[]>
+  definition: FeatureDefinition<AdapterMethods[]>
   source: string
 }
 
@@ -79,7 +79,7 @@ export default class Extractor {
   extractSingle(
     code: string,
     filePath: string,
-  ): { definition: BlokkliFeatureDefinition<any>; source: string } | undefined {
+  ): { definition: FeatureDefinition<any>; source: string } | undefined {
     const pattern = this.composableName + '\\((\\{.+?\\})\\)'
     const rgx = new RegExp(pattern, 'gms')
     const source = rgx.exec(code)?.[1]

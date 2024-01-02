@@ -41,7 +41,7 @@ import { ref, computed, useBlokkli, onMounted, watch } from '#imports'
 import Highlight from './../../Highlight/index.vue'
 import { ItemIcon } from '#blokkli/components'
 import { falsy, modulo } from '#blokkli/helpers'
-import type { DraggableExistingBlokkliItem } from '#blokkli/types'
+import type { DraggableExistingBlock } from '#blokkli/types'
 
 const listItems = ref<HTMLLIElement[]>([])
 const emit = defineEmits(['close'])
@@ -54,7 +54,7 @@ const props = defineProps<{
 }>()
 
 type SearchItem = {
-  item: DraggableExistingBlokkliItem
+  item: DraggableExistingBlock
   title: string
   text: string
   context?: string

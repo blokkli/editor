@@ -1,15 +1,15 @@
 import { type Ref, ref, readonly, onMounted, onBeforeUnmount, watch } from 'vue'
 import { eventBus } from '#blokkli/helpers/eventBus'
-import type { BlokkliAnimationProvider } from './animationProvider'
+import type { AnimationProvider } from './animationProvider'
 
-export type BlokkliKeyboardProvider = {
+export type KeyboardProvider = {
   isPressingSpace: Readonly<Ref<boolean>>
   isPressingControl: Readonly<Ref<boolean>>
 }
 
 export default function (
-  animationProvider: BlokkliAnimationProvider,
-): BlokkliKeyboardProvider {
+  animationProvider: AnimationProvider,
+): KeyboardProvider {
   const isPressingControl = ref(false)
   const isPressingSpace = ref(false)
 

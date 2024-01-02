@@ -1,6 +1,6 @@
-import type { BlokkliTransformPlugin } from '#blokkli/types'
+import type { TransformPlugin } from '#blokkli/types'
 
-export const transforms: BlokkliTransformPlugin[] = [
+export const transforms: TransformPlugin[] = [
   {
     id: 'merge_texts',
     label: 'Merge texts',

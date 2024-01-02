@@ -1,11 +1,11 @@
-import type { BlokkliTransformPlugin } from '../types'
+import type { TransformPlugin } from '../types'
 
 export function filterTransforms(
-  plugins: BlokkliTransformPlugin[],
+  plugins: TransformPlugin[],
   selectedItems: any[],
   selectedBundles: string[],
   allowedBundles: string[],
-): BlokkliTransformPlugin[] {
+): TransformPlugin[] {
   return plugins.filter((plugin) => {
     if (selectedItems.length < plugin.min) {
       return false

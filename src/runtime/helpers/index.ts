@@ -1,6 +1,6 @@
 import type {
   DraggableItem,
-  BlokkliSearchContentItem,
+  SearchContentItem,
   Rectangle,
 } from '#blokkli/types'
 import { getDefinition } from '#blokkli/definitions'
@@ -103,7 +103,7 @@ export function buildDraggableItem(
       if (searchItemData) {
         const searchItem = JSON.parse(
           searchItemData,
-        ) as BlokkliSearchContentItem
+        ) as SearchContentItem
         return {
           itemType: 'search_content',
           element: () =>

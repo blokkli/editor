@@ -55,8 +55,8 @@ import OptionRadios from './Radios/index.vue'
 import OptionCheckbox from './Checkbox/index.vue'
 import OptionCheckboxes from './Checkboxes/index.vue'
 import OptionText from './Text/index.vue'
-import type { BlokkliItemDefinitionOptionsInput } from '#blokkli/types'
-import type { BlokkliDefinitionOption } from '#blokkli/types/blokkOptions'
+import type { BlockDefinitionOptionsInput } from '#blokkli/types'
+import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
 
 const { adapter, eventBus, state, selection } = useBlokkli()
 const { mutatedOptions, canEdit, mutateWithLoadingState, editMode } = state
@@ -119,8 +119,8 @@ const availableOptions = computed(() => {
   const options = definition.options || {}
   const global = (
     (definition.globalOptions || []) as string[]
-  ).reduce<BlokkliItemDefinitionOptionsInput>((acc, v) => {
-    const globalDefinition: BlokkliDefinitionOption | null =
+  ).reduce<BlockDefinitionOptionsInput>((acc, v) => {
+    const globalDefinition: BlockOptionDefinition | null =
       (globalOptions as any)[v] || null
     if (globalDefinition) {
       acc[v] = globalDefinition

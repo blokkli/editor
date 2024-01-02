@@ -30,7 +30,7 @@ import { computed, useBlokkli } from '#imports'
 
 import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon } from '#blokkli/components'
-import type { DraggableExistingBlokkliItem } from '#blokkli/types'
+import type { DraggableExistingBlock } from '#blokkli/types'
 import { ShortcutIndicator } from '#blokkli/components'
 
 const { selection } = useBlokkli()
@@ -82,7 +82,7 @@ const isDisabled = computed(
 )
 
 const emit = defineEmits<{
-  (e: 'click', items: DraggableExistingBlokkliItem[]): void
+  (e: 'click', items: DraggableExistingBlock[]): void
 }>()
 
 const onClick = () => {

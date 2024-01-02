@@ -1,7 +1,7 @@
 import mitt from 'mitt'
-import type { BlokkliEvents } from '#blokkli/types'
+import type { EventbusEvents } from '#blokkli/types'
 
-export const eventBus = mitt<BlokkliEvents>()
+export const eventBus = mitt<EventbusEvents>()
 
 export const emitMessage = (
   message: string,

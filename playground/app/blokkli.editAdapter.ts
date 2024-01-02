@@ -3,9 +3,9 @@ import type { BlokkliAdapter, MutationResponseLike } from '#blokkli/adapter'
 import { falsy } from '#blokkli/helpers'
 import type {
   AssistantResultMarkup,
-  BlokkliComment,
-  BlokkliFieldConfig,
-  BlokkliLibraryItem,
+  CommentItem,
+  FieldConfig,
+  LibraryItem,
 } from '#blokkli/types'
 import { allTypes } from './mock/allTypes'
 import { conversions } from './mock/conversions'
@@ -49,8 +49,8 @@ export default defineBlokkliEditAdapter((ctx) => {
     return mockResponse(mutatedState)
   }
 
-  const loadComments = (): Promise<BlokkliComment[]> => {
-    const comments: BlokkliComment[] = entityStorageManager
+  const loadComments = (): Promise<CommentItem[]> => {
+    const comments: CommentItem[] = entityStorageManager
       .getCommentsForPage(ctx.value.entityUuid)
       .map((item) => {
         return {
@@ -229,7 +229,7 @@ export default defineBlokkliEditAdapter((ctx) => {
     getLibraryItems(bundles: string[]) {
       const libraryItems = entityStorageManager.storages.library_item.loadAll()
 
-      const items: BlokkliLibraryItem[] = libraryItems
+      const items: LibraryItem[] = libraryItems
         .map((item) => {
           const block = item.getBlocks().getBlocks()[0]
           if (!block) {
@@ -373,7 +373,7 @@ export default defineBlokkliEditAdapter((ctx) => {
       }
     },
 
-    addBlokkliItemFromClipboard(e) {
+    addBlockFromClipboardItem(e) {
       if (e.item.itemBundle === 'text') {
         return addMutation('add', {
           bundle: 'text',
@@ -424,7 +424,7 @@ export default defineBlokkliEditAdapter((ctx) => {
 
     getFieldConfig() {
       const entity = getEntity()
-      const fields: BlokkliFieldConfig[] = []
+      const fields: FieldConfig[] = []
 
       entity.getBlockFields().forEach((field) => {
         fields.push({

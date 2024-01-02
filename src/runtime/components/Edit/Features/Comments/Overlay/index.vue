@@ -19,14 +19,14 @@
 <script lang="ts" setup>
 import { ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
-import type { BlokkliComment, AnimationFrameEvent } from '#blokkli/types'
+import type { CommentItem, AnimationFrameEvent } from '#blokkli/types'
 import { falsy, getBounds } from '#blokkli/helpers'
 import Item from './Item/index.vue'
 
 const { eventBus, ui, dom } = useBlokkli()
 
 const props = defineProps<{
-  comments: BlokkliComment[]
+  comments: CommentItem[]
 }>()
 
 defineEmits<{
@@ -50,7 +50,7 @@ function toggle(item: Indicator) {
 
 type Indicator = {
   id: string
-  comments: BlokkliComment[]
+  comments: CommentItem[]
   uuids: string[]
   style: {
     transform: string
@@ -71,7 +71,7 @@ function onAnimationFrame(e: AnimationFrameEvent) {
   isLeft.value = x < e.rootRect.x + e.rootRect.width - 300
 
   const newIndicators: Record<string, Indicator> = {}
-  const orphaned: BlokkliComment[] = []
+  const orphaned: CommentItem[] = []
   const yMap = new Set<number>()
 
   const findY = (y: number): number => {

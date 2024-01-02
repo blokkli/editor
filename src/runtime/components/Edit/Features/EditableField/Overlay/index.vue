@@ -69,8 +69,8 @@
 <script lang="ts" setup>
 import type {
   BlokkliEditableDirectiveArgs,
-  BlokkliEditableType,
-  DraggableExistingBlokkliItem,
+  EditableType,
+  DraggableExistingBlock,
 } from '#blokkli/types'
 import { Icon, ItemIcon } from '#blokkli/components'
 import {
@@ -90,7 +90,7 @@ const { eventBus, ui, selection, state, adapter, $t, types } = useBlokkli()
 
 const props = defineProps<{
   fieldName: string
-  block: DraggableExistingBlokkliItem
+  block: DraggableExistingBlock
   element: HTMLElement
   args?: BlokkliEditableDirectiveArgs
 }>()
@@ -142,7 +142,7 @@ const label = computed(() =>
     .filter(falsy)
     .join(' » '),
 )
-const editableType = computed<BlokkliEditableType>(
+const editableType = computed<EditableType>(
   () => props.args?.type || 'plaintext',
 )
 const isMarkup = computed(

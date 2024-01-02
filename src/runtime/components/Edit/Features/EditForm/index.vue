@@ -31,8 +31,8 @@ import {
 import { FormOverlay } from '#blokkli/components'
 import { getDefinition } from '#blokkli/definitions'
 import type {
-  AddNewBlokkliItemEvent,
-  EditBlokkliItemEvent,
+  AddNewBlockEvent,
+  EditBlockEvent,
 } from '#blokkli/types'
 import FormFrame from './Frame/index.vue'
 import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
@@ -124,7 +124,7 @@ const onClose = () => {
   form.value = null
 }
 
-const onItemEdit = (e: EditBlokkliItemEvent) => {
+const onItemEdit = (e: EditBlockEvent) => {
   if (!state.canEdit.value) {
     return
   }
@@ -176,7 +176,7 @@ const onEditEntity = () =>
     id: 'entity:edit',
   })
 
-async function addNewBlock(e: AddNewBlokkliItemEvent) {
+async function addNewBlock(e: AddNewBlockEvent) {
   if (!state.canEdit.value) {
     return
   }

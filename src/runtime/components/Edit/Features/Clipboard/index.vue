@@ -48,7 +48,7 @@ import { PluginSidebar } from '#blokkli/plugins'
 import ClipboardList from './List/index.vue'
 import type {
   KeyPressedEvent,
-  BlokkliSearchContentItem,
+  SearchContentItem,
   ClipboardItem,
 } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
@@ -298,7 +298,7 @@ function onKeyPressed(e: KeyPressedEvent) {
   )
 }
 
-function onSelectContentItem(item: BlokkliSearchContentItem) {
+function onSelectContentItem(item: SearchContentItem) {
   item.targetBundles.forEach((bundle) => {
     pastedItems.value.push({
       type: 'search_content',

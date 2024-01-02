@@ -1,17 +1,17 @@
 import type { Ref, ComputedRef } from 'vue'
 import type { Emitter } from 'mitt'
-import type { BlokkliDomProvider } from '../helpers/domProvider'
-import type { BlokkliAdapter, BlokkliAdapterContext } from './../adapter'
-import type { BlokkliStorageProvider } from '../helpers/storageProvider'
-import type { BlokkliTypesProvider } from '../helpers/typesProvider'
-import type { BlokkliSelectionProvider } from '../helpers/selectionProvider'
-import type { BlokkliKeyboardProvider } from '../helpers/keyboardProvider'
-import type { BlokkliUiProvider } from '../helpers/uiProvider'
-import type { BlokkliAnimationProvider } from '../helpers/animationProvider'
-import type { BlokkliStateProvider } from '../helpers/stateProvider'
+import type { DomProvider } from '../helpers/domProvider'
+import type { BlokkliAdapter, AdapterContext } from './../adapter'
+import type { StorageProvider } from '../helpers/storageProvider'
+import type { BlockDefinitionProvider } from '../helpers/typesProvider'
+import type { SelectionProvider } from '../helpers/selectionProvider'
+import type { KeyboardProvider } from '../helpers/keyboardProvider'
+import type { UiProvider } from '../helpers/uiProvider'
+import type { AnimationProvider } from '../helpers/animationProvider'
+import type { StateProvider } from '../helpers/stateProvider'
 import type { eventBus } from './../helpers/eventBus'
-import type { BlokkliDefinitionOption } from './blokkOptions'
-import type { BlokkliTextProvider } from '../helpers/textProvider'
+import type { BlockOptionDefinition } from './blokkOptions'
+import type { TextProvider } from '../helpers/textProvider'
 
 interface MutationResponseLike<T> {
   data: {
@@ -24,7 +24,7 @@ interface MutationResponseLike<T> {
   }
 }
 
-export type BlokkliFeature = {
+export type Feature = {
   id: string
   componentPath: string
   requiredAdapterMethods: string[]
@@ -37,11 +37,11 @@ export type MutateWithLoadingStateFunction = (
   successMessage?: string,
 ) => Promise<boolean>
 
-export type BlokkliItemDefinitionOptionsInput = {
-  [key: string]: BlokkliDefinitionOption
+export type BlockDefinitionOptionsInput = {
+  [key: string]: BlockOptionDefinition
 }
 
-export type BlokkliItemDefinitionInput<V, T = []> = {
+export type BlockDefinitionInput<V, T = []> = {
   /**
    * The type ID of the item, e.g. "text" or "section_title".
    */
@@ -58,9 +58,9 @@ export type BlokkliItemDefinitionInput<V, T = []> = {
   chunkName?: V
 
   /**
-   * Define options available for this blokkli.
+   * Define options available for this block.
    */
-  options?: BlokkliItemDefinitionOptionsInput
+  options?: BlockDefinitionOptionsInput
 
   /**
    * Global options to use.
@@ -104,7 +104,7 @@ export type BlokkliItemDefinitionInput<V, T = []> = {
   editBackgroundClass?: string
 
   /**
-   * Define a custom title for this blokkli item at runtime in the editor.
+   * Define a custom title for this block at runtime in the editor.
    *
    * The title will be displayed to the editor to give some context. E.g. a
    * title block displays an excerpt from the title.
@@ -113,7 +113,7 @@ export type BlokkliItemDefinitionInput<V, T = []> = {
    * and should return a fitting title.
    *
    * If no method is defined or it doesn't return a value, the regular label
-   * of the blokkli type (e.g. "Teaser") is displayed.
+   * of the bundle (e.g. "Teaser") is displayed.
    */
   editTitle?: (el: HTMLElement) => string | undefined
 
@@ -132,7 +132,7 @@ export type InjectedBlokkliItem = ComputedRef<{
   parentType?: string
 }>
 
-export interface BlokkliFieldListItem {
+export interface FieldListItem {
   uuid: string
   bundle: string
   isNew?: boolean
@@ -140,14 +140,14 @@ export interface BlokkliFieldListItem {
   props?: any
 }
 
-export type BlokkliMutatedField = {
+export type MutatedField = {
   name: string
   entityType: string
   entityUuid: string
-  list: BlokkliFieldListItem[]
+  list: FieldListItem[]
 }
 
-export type BlokkliFieldConfig = {
+export type FieldConfig = {
   name: string
   entityType: string
   entityBundle: string
@@ -157,13 +157,13 @@ export type BlokkliFieldConfig = {
   allowedBundles: string[]
 }
 
-export type BlokkliEntityContext = {
+export type EntityContext = {
   uuid: string
   type: string
   bundle: string
 }
 
-export type BlokkliEditEntity = {
+export type EditEntity = {
   id?: string
   label?: string
   changed?: number
@@ -172,30 +172,30 @@ export type BlokkliEditEntity = {
   editUrl?: string
 }
 
-export interface BlokkliLanguage {
+export interface Language {
   id?: string
   name: string
 }
 
-export interface BlokkliEntityTranslation {
+export interface EntityTranslation {
   id: string
   url: string
   status: boolean
 }
 
-export interface BlokkliTranslationState {
+export interface TranslationState {
   isTranslatable?: boolean | null
   sourceLanguage?: string | null
-  availableLanguages?: BlokkliLanguage[]
-  translations?: BlokkliEntityTranslation[]
+  availableLanguages?: Language[]
+  translations?: EntityTranslation[]
 }
 
-export interface BlokkliConversionItem {
+export interface ConversionItem {
   sourceBundle: string
   targetBundle: string
 }
 
-export interface BlokkliTransformPlugin {
+export interface TransformPlugin {
   /**
    * The ID of the plugin.
    */
@@ -227,19 +227,19 @@ export interface BlokkliTransformPlugin {
   max: number
 }
 
-export interface BlokkliLibraryItem {
+export interface LibraryItem {
   uuid: string
   label?: string
   bundle: string
-  item: BlokkliFieldListItem
+  item: FieldListItem
 }
 
-export interface BlokkliImportItem {
+export interface ImportItem {
   uuid: string
   label: string
 }
 
-export type BlokkliComment = {
+export type CommentItem = {
   uuid: string
   itemUuids: string[]
   resolved: boolean
@@ -248,34 +248,34 @@ export type BlokkliComment = {
   user: { label: string }
 }
 
-export interface BlokkliMutationItem {
+export interface MutationItem {
   timestamp?: string
   pluginId?: string
   plugin?: { label?: string; affectedItemUuid?: string }
 }
 
-export interface BlokkliValidation {
+export interface Validation {
   message: string
   code?: string
   propertyPath?: string
 }
 
-export interface BlokkliMappedState {
+export interface MappedState {
   currentIndex: number
-  mutations: BlokkliMutationItem[]
+  mutations: MutationItem[]
   currentUserIsOwner: boolean
   ownerName: string
   mutatedState?: {
     mutatedOptions?: any
-    fields?: BlokkliMutatedField[]
-    violations?: BlokkliValidation[]
+    fields?: MutatedField[]
+    violations?: Validation[]
   }
-  entity: BlokkliEditEntity
-  translationState: BlokkliTranslationState
+  entity: EditEntity
+  translationState: TranslationState
   previewUrl?: string
 }
 
-export interface BlokkliItemType {
+export interface BlockBundleDefinition {
   id: string
   label: string
   description?: string
@@ -283,7 +283,7 @@ export interface BlokkliItemType {
   isTranslatable?: boolean
 }
 
-export type BlokkliEditMode = 'readonly' | 'editing' | 'translating'
+export type EditMode = 'readonly' | 'editing' | 'translating'
 
 export type MutatedOptions = {
   [uuid: string]: {
@@ -294,7 +294,7 @@ export type MutatedOptions = {
 /**
  * Defines a content search item.
  */
-export type BlokkliSearchContentItem = {
+export type SearchContentItem = {
   /**
    * The ID of the item.
    */
@@ -316,7 +316,7 @@ export type BlokkliSearchContentItem = {
   text: string
 
   /**
-   * The possible blokkli types for which a blokkli may be added using this content item.
+   * The possible bundles for which a block may be added using this content item.
    */
   targetBundles: string[]
 
@@ -351,7 +351,7 @@ interface ClipboardItemSearchContent {
   type: 'search_content'
   itemBundle: string
   data: string
-  item: BlokkliSearchContentItem
+  item: SearchContentItem
   additional?: string
 }
 
@@ -367,7 +367,7 @@ export interface DraggableHostData {
   fieldName: string
 }
 
-export interface DraggableExistingBlokkliItem {
+export interface DraggableExistingBlock {
   itemType: 'existing'
   element: () => HTMLElement
   hostType: string
@@ -385,12 +385,12 @@ export interface DraggableExistingBlokkliItem {
   reusableBundle?: string
 
   /**
-   * The reusable UUID if this blokkli is a from_library type.
+   * The reusable UUID if this block is a from_library type.
    */
   reusableUuid?: string
 
   /**
-   * The title to use when displaying the blokkli in list.
+   * The title to use when displaying the block in lists during editing.
    */
   editTitle?: string
 }
@@ -427,30 +427,30 @@ export interface DraggableSearchContentItem {
   itemType: 'search_content'
   element: () => HTMLElement
   itemBundle: string
-  searchItem: BlokkliSearchContentItem
+  searchItem: SearchContentItem
 }
 
 export type DraggableItem =
   | DraggableClipboardItem
   | DraggableNewItem
   | DraggableActionItem
-  | DraggableExistingBlokkliItem
+  | DraggableExistingBlock
   | DraggableReusableItem
   | DraggableSearchContentItem
 
-export type MoveBlokkliEvent = {
+export type MoveBlockEvent = {
   afterUuid?: string
-  item: DraggableExistingBlokkliItem
+  item: DraggableExistingBlock
   host: DraggableHostData
 }
 
-export type MoveMultipleBlokkliItemsEvent = {
+export type MoveMultipleBlocksEvent = {
   afterUuid?: string
   uuids: string[]
   host: DraggableHostData
 }
 
-export type AddNewBlokkliItemEvent = {
+export type AddNewBlockEvent = {
   type: string
   item: DraggableNewItem
   host: DraggableHostData
@@ -464,7 +464,7 @@ export type AddClipboardItemEvent = {
 }
 
 export type AddContentSearchItemEvent = {
-  item: BlokkliSearchContentItem
+  item: SearchContentItem
   host: DraggableHostData
   bundle: string
   afterUuid?: string
@@ -476,19 +476,19 @@ export type AddReusableItemEvent = {
   afterUuid?: string
 }
 
-export type UpdateBlokkliItemOptionEvent = {
+export type UpdateBlockOptionEvent = {
   uuid: string
   key: string
   value: string
 }
 
-export type EditBlokkliItemEvent = {
+export type EditBlockEvent = {
   uuid: string
   bundle: string
 }
 
 export type UpdateMutatedFieldsEvent = {
-  fields: BlokkliMutatedField[]
+  fields: MutatedField[]
 }
 
 type AnimationFrameFieldArea = {
@@ -511,7 +511,7 @@ export type AnimationFrameEvent = {
   mouseY: number
 }
 
-export type BlokkliMessage = {
+export type Message = {
   type: 'success' | 'error'
   message: string
 }
@@ -537,9 +537,9 @@ export type KeyPressedEvent = {
   originalEvent: KeyboardEvent
 }
 
-export type TranslateBlokkliItemEvent = {
+export type TranslateBlockEvent = {
   uuid: string
-  language: BlokkliLanguage
+  language: Language
 }
 
 export type ImportFromExistingEvent = {
@@ -547,7 +547,7 @@ export type ImportFromExistingEvent = {
   sourceFields: string[]
 }
 
-export type ConvertBlokkliItemEvent = {
+export type ConvertBlockEvent = {
   uuid: string
   targetBundle: string
 }
@@ -569,34 +569,34 @@ export type PluginUnmountEvent = {
   id: string
 }
 
-export type BlokkliEditableType = 'plaintext' | 'markup' | 'table' | 'frame'
+export type EditableType = 'plaintext' | 'markup' | 'table' | 'frame'
 
 export type BlokkliEditableDirectiveArgs = {
   label?: string
   name?: string
   maxlength?: number
   required?: boolean
-  type?: BlokkliEditableType
+  type?: EditableType
 }
 
 export type EditableFieldFocusEvent = {
   fieldName: string
-  block: DraggableExistingBlokkliItem
+  block: DraggableExistingBlock
   element: HTMLElement
   args?: BlokkliEditableDirectiveArgs
 }
 
-export type BlokkliEvents = {
+export type EventbusEvents = {
   select: string
-  'item:edit': EditBlokkliItemEvent
+  'item:edit': EditBlockEvent
   batchTranslate: undefined
   'dragging:start': DraggableStartEvent
   'dragging:end': undefined
   setActiveFieldKey: string
-  'add:block:new': AddNewBlokkliItemEvent
+  'add:block:new': AddNewBlockEvent
   updateMutatedFields: UpdateMutatedFieldsEvent
   animationFrame: AnimationFrameEvent
-  message: BlokkliMessage
+  message: Message
   keyPressed: KeyPressedEvent
   editEntity: undefined
   translateEntity: string
@@ -615,9 +615,9 @@ export type BlokkliEvents = {
 
   'state:reloaded': undefined
 
-  'search:selectContentItem': BlokkliSearchContentItem
+  'search:selectContentItem': SearchContentItem
   addContentSearchItem: AddContentSearchItemEvent
-  'option:update': UpdateBlokkliItemOptionEvent
+  'option:update': UpdateBlockOptionEvent
 
   'plugin:mount': PluginMountEvent
   'plugin:unmount': PluginUnmountEvent
@@ -655,10 +655,10 @@ export type ActionPlacedEvent = {
   field: BlokkliFieldElement
 }
 
-export type BlokkliEventBus = Emitter<BlokkliEvents>
+export type Eventbus = Emitter<EventbusEvents>
 
-export type BlokkliItemEditContext = {
-  eventBus: BlokkliEventBus
+export type ItemEditContext = {
+  eventBus: Eventbus
   mutatedOptions: Ref<MutatedOptions>
 }
 
@@ -676,16 +676,16 @@ export interface BlokkliApp {
     defaultLanguage: string
   }
 
-  dom: BlokkliDomProvider
-  storage: BlokkliStorageProvider
-  types: BlokkliTypesProvider
-  selection: BlokkliSelectionProvider
-  keyboard: BlokkliKeyboardProvider
-  ui: BlokkliUiProvider
-  animation: BlokkliAnimationProvider
-  state: BlokkliStateProvider
-  context: ComputedRef<BlokkliAdapterContext>
-  $t: BlokkliTextProvider
+  dom: DomProvider
+  storage: StorageProvider
+  types: BlockDefinitionProvider
+  selection: SelectionProvider
+  keyboard: KeyboardProvider
+  ui: UiProvider
+  animation: AnimationProvider
+  state: StateProvider
+  context: ComputedRef<AdapterContext>
+  $t: TextProvider
 }
 
 export interface Rectangle {
@@ -741,7 +741,7 @@ export type AddListOrientation = 'horizontal' | 'vertical' | 'sidebar'
 
 export type AdapterMethods = keyof BlokkliAdapter<any>
 
-export type BlokkliFeatureDefinition<Methods extends AdapterMethods[]> = {
+export type FeatureDefinition<Methods extends AdapterMethods[]> = {
   label?: string
   description?: string
   requiredAdapterMethods?: [...Methods]

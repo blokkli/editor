@@ -9,20 +9,20 @@ import {
   provide,
 } from 'vue'
 import type {
-  BlokkliMutatedField,
-  BlokkliEditEntity,
+  MutatedField,
+  EditEntity,
   MutatedOptions,
-  BlokkliTranslationState,
-  BlokkliMappedState,
-  BlokkliMutationItem,
-  BlokkliValidation,
+  TranslationState,
+  MappedState,
+  MutationItem,
+  Validation,
   MutateWithLoadingStateFunction,
-  BlokkliEditMode,
-  BlokkliFieldConfig,
+  EditMode,
+  FieldConfig,
 } from '#blokkli/types'
 import { removeDroppedElements, falsy } from '#blokkli/helpers'
 import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
-import type { BlokkliAdapter, BlokkliAdapterContext } from '../adapter'
+import type { BlokkliAdapter, AdapterContext } from '../adapter'
 import { INJECT_MUTATED_FIELDS } from './symbols'
 import { refreshNuxtData } from 'nuxt/app'
 
@@ -31,48 +31,48 @@ export type BlokkliOwner = {
   currentUserIsOwner: boolean
 }
 
-export type BlokkliStateProvider = {
+export type StateProvider = {
   owner: Readonly<Ref<BlokkliOwner | null>>
   refreshKey: Readonly<Ref<string>>
-  mutatedFields: Readonly<Ref<BlokkliMutatedField[]>>
-  entity: Readonly<Ref<BlokkliEditEntity>>
+  mutatedFields: Readonly<Ref<MutatedField[]>>
+  entity: Readonly<Ref<EditEntity>>
   mutatedOptions: Ref<MutatedOptions>
-  translation: Readonly<Ref<BlokkliTranslationState>>
-  mutations: Readonly<Ref<BlokkliMutationItem[]>>
+  translation: Readonly<Ref<TranslationState>>
+  mutations: Readonly<Ref<MutationItem[]>>
   currentMutationIndex: Readonly<Ref<number>>
-  violations: Readonly<Ref<BlokkliValidation[]>>
+  violations: Readonly<Ref<Validation[]>>
   mutateWithLoadingState: MutateWithLoadingStateFunction
-  editMode: Readonly<Ref<BlokkliEditMode>>
+  editMode: Readonly<Ref<EditMode>>
   canEdit: ComputedRef<boolean>
   isLoading: Readonly<Ref<boolean>>
 }
 
 export default async function (
   adapter: BlokkliAdapter<any>,
-  context: ComputedRef<BlokkliAdapterContext>,
-): Promise<BlokkliStateProvider> {
+  context: ComputedRef<AdapterContext>,
+): Promise<StateProvider> {
   const owner = ref<BlokkliOwner | null>(null)
   const refreshKey = ref('')
-  const mutatedFields = ref<BlokkliMutatedField[]>([])
-  const mutations = ref<BlokkliMutationItem[]>([])
-  const violations = ref<BlokkliValidation[]>([])
+  const mutatedFields = ref<MutatedField[]>([])
+  const mutations = ref<MutationItem[]>([])
+  const violations = ref<Validation[]>([])
   const currentMutationIndex = ref(-1)
   const isLoading = ref(false)
-  const entity = ref<BlokkliEditEntity>({
+  const entity = ref<EditEntity>({
     id: undefined,
     changed: undefined,
     status: false,
   })
 
   const mutatedOptions = ref<MutatedOptions>({})
-  const translation = ref<BlokkliTranslationState>({
+  const translation = ref<TranslationState>({
     isTranslatable: false,
     sourceLanguage: '',
     availableLanguages: [],
     translations: [],
   })
 
-  function setContext(context?: BlokkliMappedState) {
+  function setContext(context?: MappedState) {
     removeDroppedElements()
 
     mutatedOptions.value = context?.mutatedState?.mutatedOptions || {}
@@ -173,7 +173,7 @@ export default async function (
     () => context.value.language !== translation.value.sourceLanguage,
   )
 
-  const editMode = computed<BlokkliEditMode>(() => {
+  const editMode = computed<EditMode>(() => {
     if (!canEdit.value) {
       return 'readonly'
     }

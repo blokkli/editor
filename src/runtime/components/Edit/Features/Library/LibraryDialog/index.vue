@@ -48,7 +48,7 @@
 <script setup lang="ts">
 import { FormOverlay } from '#blokkli/components'
 import { falsy } from '#blokkli/helpers'
-import type { BlokkliFieldElement, BlokkliLibraryItem } from '#blokkli/types'
+import type { BlokkliFieldElement, LibraryItem } from '#blokkli/types'
 import { ref, useBlokkli } from '#imports'
 import LibraryListItem from './Item/index.vue'
 
@@ -87,7 +87,7 @@ const onClose = () => {
   emit('close')
 }
 
-const { data } = await useAsyncData<BlokkliLibraryItem[]>(() =>
+const { data } = await useAsyncData<LibraryItem[]>(() =>
   adapter.getLibraryItems!(allowedBundles.value),
 )
 

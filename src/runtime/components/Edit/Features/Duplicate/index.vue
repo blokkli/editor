@@ -16,7 +16,7 @@ import { useBlokkli, defineBlokkliFeature } from '#imports'
 
 import type {
   BlokkliFieldElement,
-  DraggableExistingBlokkliItem,
+  DraggableExistingBlock,
 } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
 
@@ -27,7 +27,7 @@ const adapter = defineBlokkliFeature({
   description: 'Provides an action to duplicate one or more blocks in place.',
 })
 
-function onClick(items: DraggableExistingBlokkliItem[]) {
+function onClick(items: DraggableExistingBlock[]) {
   state.mutateWithLoadingState(
     adapter.duplicateBlocks(items.map((v) => v.uuid)),
     $t('duplicateError'),
@@ -39,7 +39,7 @@ const canDuplicate = computed<boolean>(() => {
     return false
   }
 
-  const blocksByField: Record<string, DraggableExistingBlokkliItem[]> = {}
+  const blocksByField: Record<string, DraggableExistingBlock[]> = {}
   const fieldsByKey: Record<string, BlokkliFieldElement> = {}
 
   const selectedCount = selection.blocks.value.length

@@ -1,15 +1,15 @@
 import { computed, inject, type ComputedRef } from '#imports'
 import type {
-  BlokkliItemDefinitionOptionsInput,
+  BlockDefinitionOptionsInput,
   InjectedBlokkliItem,
-  BlokkliItemEditContext,
+  ItemEditContext,
 } from '#blokkli/types'
 import { globalOptions } from '#blokkli/definitions'
 import { globalOptionsDefaults } from '#blokkli/default-global-options'
 
 import type {
   ValidGlobalConfigKeys,
-  BlokkliItemDefinitionInputWithTypes,
+  BlockDefinitionInputWithTypes,
   ValidFieldListTypes,
   ValidParentItemBundle,
 } from '#blokkli/generated-types'
@@ -30,7 +30,7 @@ type GetType<T> = T extends { type: 'checkbox' }
     : string
   : string
 
-type WithOptions<T extends BlokkliItemDefinitionOptionsInput> = {
+type WithOptions<T extends BlockDefinitionOptionsInput> = {
   [K in keyof T]: GetType<T[K]>
 }
 
@@ -40,7 +40,7 @@ type GlobalOptionsKeyTypes<T extends ValidGlobalConfigKeys> = {
   [K in T[number]]: GetType<GlobalOptionsType[K]>
 }
 
-type BlokkliComponent<T extends BlokkliItemDefinitionInputWithTypes> = {
+type BlokkliComponent<T extends BlockDefinitionInputWithTypes> = {
   /**
    * The UUID of the item.
    */
@@ -73,7 +73,7 @@ type BlokkliComponent<T extends BlokkliItemDefinitionInputWithTypes> = {
    * options.
    */
   options: ComputedRef<
-    (T['options'] extends BlokkliItemDefinitionOptionsInput
+    (T['options'] extends BlockDefinitionOptionsInput
       ? WithOptions<T['options']>
       : {}) &
       (T['globalOptions'] extends ValidGlobalConfigKeys
@@ -85,7 +85,7 @@ type BlokkliComponent<T extends BlokkliItemDefinitionInputWithTypes> = {
 /**
  * Define a blokkli component.
  */
-export function defineBlokkli<T extends BlokkliItemDefinitionInputWithTypes>(
+export function defineBlokkli<T extends BlockDefinitionInputWithTypes>(
   config: T,
 ): BlokkliComponent<T> {
   const optionKeys: string[] = []
@@ -138,10 +138,7 @@ export function defineBlokkli<T extends BlokkliItemDefinitionInputWithTypes>(
   // the options. These options are only persisted once the user closes the
   // options popup. In order to have live preview of how these options affect
   // the component, we use this state to override the options.
-  const editContext = inject<BlokkliItemEditContext | null>(
-    INJECT_EDIT_CONTEXT,
-    null,
-  )
+  const editContext = inject<ItemEditContext | null>(INJECT_EDIT_CONTEXT, null)
 
   const options = computed(() => {
     if (config.bundle === 'from_library') {

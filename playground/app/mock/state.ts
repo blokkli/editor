@@ -1,4 +1,4 @@
-import type { BlokkliFieldListItem } from '#blokkli/types'
+import type { FieldListItem } from '#blokkli/types'
 import type { Block } from './state/Block/Block'
 import { EditState } from './state/EditState'
 import type { FieldBlocks } from './state/Field/Blocks'
@@ -20,7 +20,7 @@ export const state: MockState = {
   editState,
 }
 
-export function mapBlockItem(block: Block): BlokkliFieldListItem {
+export function mapBlockItem(block: Block): FieldListItem {
   const props = block.getProps()
   delete props.options
   return {
@@ -32,7 +32,7 @@ export function mapBlockItem(block: Block): BlokkliFieldListItem {
 }
 
 export function mapMockField(field: FieldBlocks) {
-  const list: BlokkliFieldListItem[] = field.getBlocks().map(mapBlockItem)
+  const list: FieldListItem[] = field.getBlocks().map(mapBlockItem)
 
   return {
     name: field.id,

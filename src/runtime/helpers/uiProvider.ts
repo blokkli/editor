@@ -6,10 +6,10 @@ import {
   ref,
 } from 'vue'
 import { eventBus } from './eventBus'
-import type { BlokkliStorageProvider } from './storageProvider'
+import type { StorageProvider } from './storageProvider'
 import type { AddListOrientation, Rectangle } from '#blokkli/types'
 
-export type BlokkliUiProvider = {
+export type UiProvider = {
   rootElement: () => HTMLElement
   artboardElement: () => HTMLElement
   providerElement: () => HTMLElement
@@ -33,7 +33,7 @@ export type BlokkliUiProvider = {
   viewportBlockingRects: ComputedRef<Rectangle[]>
 }
 
-export default function (storage: BlokkliStorageProvider): BlokkliUiProvider {
+export default function (storage: StorageProvider): UiProvider {
   let cachedRootElement: HTMLElement | null = null
   let cachedArtboardElement: HTMLElement | null = null
   let cachedProviderElement: HTMLElement | null = null

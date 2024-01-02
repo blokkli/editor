@@ -1,5 +1,5 @@
 import { falsy } from '#blokkli/helpers'
-import type { BlokkliMutatedField, BlokkliMutationItem } from '#blokkli/types'
+import type { MutatedField, MutationItem } from '#blokkli/types'
 import { entityStorageManager } from '../entityStorage'
 import { createMutation, type MutationArgsMap } from '../plugins/mutations'
 import { mapBlockItem } from '../state'
@@ -165,7 +165,7 @@ type MockMutationItem = {
 
 export type MutatedState = {
   mutatedOptions: any
-  fields: BlokkliMutatedField[]
+  fields: MutatedField[]
   context: MutationContext
 }
 
@@ -239,7 +239,7 @@ export class EditState {
     window.localStorage.setItem(this.getStorageKey('mutations'), data)
   }
 
-  getMutationItems(): BlokkliMutationItem[] {
+  getMutationItems(): MutationItem[] {
     return this.getMutations().map((v) => {
       return {
         pluginId: v.id,
@@ -294,7 +294,7 @@ export class EditState {
       proxiesByFieldKey[key].push(proxy)
     })
 
-    const mutatedFields: Record<string, BlokkliMutatedField> = {}
+    const mutatedFields: Record<string, MutatedField> = {}
 
     for (let i = 0; i < context.proxies.length; i++) {
       const proxy = context.proxies[i]

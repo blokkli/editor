@@ -15,13 +15,13 @@
 
 <script lang="ts" setup>
 import { ref, useBlokkli, onMounted, onUnmounted } from '#imports'
-import type { BlokkliMessage } from '#blokkli/types'
+import type { Message } from '#blokkli/types'
 import Item from './Item/index.vue'
 
 const { eventBus } = useBlokkli()
-const messages = ref<BlokkliMessage[]>([])
+const messages = ref<Message[]>([])
 
-function onMessage(message: BlokkliMessage) {
+function onMessage(message: Message) {
   messages.value.push(message)
 }
 

@@ -40,7 +40,7 @@ import { PluginSidebar, PluginItemAction } from '#blokkli/plugins'
 import Comment from './../../Comment/index.vue'
 import CommentAddForm from './AddForm/index.vue'
 import CommentsOverlay from './Overlay/index.vue'
-import type { BlokkliComment } from '#blokkli/types'
+import type { CommentItem } from '#blokkli/types'
 
 const adapter = defineBlokkliFeature({
   requiredAdapterMethods: ['loadComments', 'addComment'],
@@ -48,7 +48,7 @@ const adapter = defineBlokkliFeature({
 })
 const { eventBus, $t } = useBlokkli()
 
-const comments = ref<BlokkliComment[]>([])
+const comments = ref<CommentItem[]>([])
 const showAddComment = ref(false)
 
 const loadComments = async () => (comments.value = await adapter.loadComments())
@@ -65,7 +65,7 @@ const onResolveComment = async (uuid: string) => {
   comments.value = await adapter.resolveComment(uuid)
 }
 
-const onClickComment = (comment: BlokkliComment) =>
+const onClickComment = (comment: CommentItem) =>
   eventBus.emit('select:end', comment.itemUuids || [])
 
 onMounted(loadComments)

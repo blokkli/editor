@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature } from '#imports'
 
-import type { DraggableExistingBlokkliItem } from '#blokkli/types'
+import type { DraggableExistingBlock } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
 
 const { state, eventBus, $t } = useBlokkli()
@@ -23,7 +23,7 @@ const adapter = defineBlokkliFeature({
   description: 'Provides an action to delete one or more blocks.',
 })
 
-async function onClick(items: DraggableExistingBlokkliItem[]) {
+async function onClick(items: DraggableExistingBlock[]) {
   // Unselect all items.
   eventBus.emit('select:end', [])
   await state.mutateWithLoadingState(

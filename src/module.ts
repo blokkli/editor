@@ -12,20 +12,17 @@ import {
 import BlockExtractor from './Extractor/BlockExtractor'
 import FeatureExtractor from './Extractor/FeatureExtractor'
 import { extname, basename } from 'path'
-import type {
-  BlokkliItemDefinitionOptionsInput,
-  BlokkliFeature,
-} from './runtime/types'
+import type { BlockDefinitionOptionsInput, Feature } from './runtime/types'
 import { promises as fsp, existsSync } from 'fs'
 import { DefinitionPlugin } from './vitePlugin'
 import defu from 'defu'
 import defaultTranslations from './translations'
 
-export function onlyUnique(value: string, index: number, self: Array<string>) {
+function onlyUnique(value: string, index: number, self: Array<string>) {
   return self.indexOf(value) === index
 }
 
-export const fileExists = (
+const fileExists = (
   path?: string,
   extensions = ['js', 'ts'],
 ): string | null => {
@@ -50,7 +47,7 @@ export const fileExists = (
 const POSSIBLE_EXTENSIONS = ['.js', '.ts', '.vue', '.mjs']
 
 type AlterFeatures = {
-  features: BlokkliFeature[]
+  features: Feature[]
 }
 
 /**
@@ -71,7 +68,7 @@ export type ModuleOptions = {
    * Define reusable options that can be used in blokkli item components by
    * referencing the option name.
    */
-  globalOptions?: BlokkliItemDefinitionOptionsInput
+  globalOptions?: BlockDefinitionOptionsInput
 
   /**
    * Define available chunk groups.
@@ -127,9 +124,7 @@ export type ModuleOptions = {
    * It's also possible to override builtin feature components with custom
    * implementations.
    */
-  alterFeatures?: (
-    ctx: AlterFeatures,
-  ) => Promise<BlokkliFeature[]> | BlokkliFeature[]
+  alterFeatures?: (ctx: AlterFeatures) => Promise<Feature[]> | Feature[]
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -142,7 +137,7 @@ export default defineNuxtModule<ModuleOptions>({
   },
   defaults: {
     pattern: ['components/Blokkli/**/*.{js,ts,vue}'],
-    globalOptions: {} as BlokkliItemDefinitionOptionsInput,
+    globalOptions: {} as BlockDefinitionOptionsInput,
     chunkNames: ['global'] as string[],
     composableName: 'defineBlokkli',
     itemEntityType: 'blokkli_item',
@@ -159,7 +154,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     const featureFolder = resolver.resolve('./runtime/components/Edit/Features')
     const featureExtractor = new FeatureExtractor(!nuxt.options.dev)
-    const features: BlokkliFeature[] = await resolveFiles(
+    const features: Feature[] = await resolveFiles(
       featureFolder,
       ['*/index.vue'],
       {

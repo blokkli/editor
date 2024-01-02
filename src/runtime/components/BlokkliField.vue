@@ -49,9 +49,9 @@ import {
 } from '#imports'
 
 import type {
-  BlokkliFieldListItem,
-  BlokkliMutatedField,
-  BlokkliEntityContext,
+  FieldListItem,
+  MutatedField,
+  EntityContext,
 } from '#blokkli/types'
 import type { ValidFieldListTypes } from '#blokkli/generated-types'
 import {
@@ -74,11 +74,11 @@ const isEditing = inject(INJECT_IS_EDITING, false)
 const isInReusable = inject(INJECT_IS_IN_REUSABLE, false)
 const isPreview = inject<boolean>(INJECT_IS_PREVIEW, false)
 const isNested = inject(INJECT_IS_NESTED, false)
-const mutatedFields = inject<Ref<BlokkliMutatedField[]> | null>(
+const mutatedFields = inject<Ref<MutatedField[]> | null>(
   INJECT_MUTATED_FIELDS,
   null,
 )
-const entity = inject<BlokkliEntityContext>(INJECT_ENTITY_CONTEXT)
+const entity = inject<EntityContext>(INJECT_ENTITY_CONTEXT)
 
 if (!entity) {
   throw new Error('Missing entity context.')
@@ -87,7 +87,7 @@ if (!entity) {
 const props = withDefaults(
   defineProps<{
     name: string
-    list?: BlokkliFieldListItem[]
+    list?: FieldListItem[]
     tag?: string
     fieldListType?: ValidFieldListTypes
     editOnly?: boolean
@@ -114,11 +114,11 @@ const fieldKey = computed(() => {
 
 const fieldListType = computed(() => props.fieldListType)
 
-const filteredList = computed<BlokkliFieldListItem[]>(() => {
+const filteredList = computed<FieldListItem[]>(() => {
   if (mutatedFields?.value && !isInReusable) {
     return (
       mutatedFields.value.find(
-        (field: BlokkliMutatedField) =>
+        (field: MutatedField) =>
           field.name === props.name &&
           field.entityType === entity.type &&
           field.entityUuid === entity.uuid,
