@@ -181,15 +181,17 @@ export default function (storage: StorageProvider): UiProvider {
     return height
   })
 
-  const padding = computed(() => 10)
+  const viewportPadding = computed(() => 10)
+  const blockingPaddingX = computed(() => 15)
+  const blockingPaddingY = computed(() => 50)
 
   const viewportBlockingRects = computed<Rectangle[]>(() => {
     return Object.values(viewportBlockingRectsMap.value).map((rect) => {
       return {
-        x: rect.x - padding.value,
-        y: rect.y - padding.value,
-        width: rect.width + padding.value * 2,
-        height: rect.height + padding.value * 2,
+        x: rect.x - blockingPaddingX.value,
+        y: rect.y - blockingPaddingY.value,
+        width: rect.width + blockingPaddingX.value * 2,
+        height: rect.height + blockingPaddingY.value * 2,
       }
     })
   })
@@ -205,10 +207,10 @@ export default function (storage: StorageProvider): UiProvider {
 
   const visibleViewportPadded = computed<Rectangle>(() => {
     return {
-      x: visibleViewportX.value + padding.value,
-      y: visibleViewportY.value + padding.value,
-      width: visibleViewportWidth.value - 2 * padding.value,
-      height: visibleViewportHeight.value - 2 * padding.value,
+      x: visibleViewportX.value + viewportPadding.value,
+      y: visibleViewportY.value + viewportPadding.value,
+      width: visibleViewportWidth.value - 2 * viewportPadding.value,
+      height: visibleViewportHeight.value - 2 * viewportPadding.value,
     }
   })
 

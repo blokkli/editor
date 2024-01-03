@@ -53,6 +53,7 @@ import {
 } from '#imports'
 import { Icon } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli/icons'
+import type { Rectangle } from '#blokkli/types'
 
 const props = withDefaults(
   defineProps<{
@@ -117,6 +118,15 @@ const height = computed(() => {
   return props.size?.height || userHeight.value
 })
 
+const blockingRectangle = computed<Rectangle>(() => {
+  return {
+    x: x.value,
+    y: y.value,
+    width: width.value,
+    height: height.value + 40,
+  }
+})
+
 const startMouseX = ref(0)
 const startMouseY = ref(0)
 
@@ -154,15 +164,11 @@ const updateStored = () => {
     viewportWidth: window.innerWidth,
     viewportHeight: window.innerHeight,
   }
-  ui.setViewportBlockingRectangle(storageKey.value, {
-    ...storedData.value,
-    height: storedData.value.height + 40,
-  })
 }
 
 watch(
   () => props.size,
-  (size) => {
+  () => {
     updateStored()
   },
 )
@@ -259,7 +265,6 @@ const recalculatePositions = () => {
 
   storedData.value.viewportWidth = window.innerWidth
   storedData.value.viewportHeight = window.innerHeight
-  ui.setViewportBlockingRectangle(storageKey.value, storedData.value)
 }
 
 const onUiResized = () => {
@@ -268,9 +273,13 @@ const onUiResized = () => {
 
 recalculatePositions()
 
+watch(blockingRectangle, (rect) => {
+  ui.setViewportBlockingRectangle(storageKey.value, rect)
+})
+
 onMounted(() => {
   eventBus.on('ui:resized', onUiResized)
-  ui.setViewportBlockingRectangle(storageKey.value, storedData.value)
+  ui.setViewportBlockingRectangle(storageKey.value, blockingRectangle.value)
 })
 
 onBeforeUnmount(() => {
