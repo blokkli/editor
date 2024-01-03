@@ -10,7 +10,6 @@
 @import './partials/clipboard.css';
 @import './partials/sidebar.css';
 @import './partials/library.css';
-@import './partials/preview.css';
 @import './partials/comments.css';
 @import './partials/structure.css';
 @import './partials/resizable.css';
@@ -31,6 +30,7 @@
 @import './partials/AppMenu.css';
 @import './partials/Animator.css';
 @import './partials/FormOverlay.css';
+@import './partials/ResponsivePreview.css';
 
 @font-face {
   font-family: 'PB Inter';

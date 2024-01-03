@@ -85,7 +85,7 @@ export default {
   ownershipSuccess: 'You are now the owner.',
   ownershipError: 'Error in assigning',
 
-  previewMobileFrame: 'Mobile preview',
+  responsivePreviewTitle: 'Responsive Preview',
   previewNewWindow: 'Preview (new window)',
   previewWithSmartphone: 'Preview (with smartphone)',
   previewDialogTitle: 'Preview with smartphone',

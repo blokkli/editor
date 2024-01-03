@@ -3,7 +3,7 @@
     <div v-if="isLoading" class="bk-preview-loading">
       <Icon name="spinner" />
     </div>
-    <div class="bk-preview-controls">
+    <div v-if="detached" class="bk-preview-controls">
       <slot></slot>
     </div>
     <div class="bk-preview-iframe">

@@ -34,14 +34,18 @@
       <template #icon>
         <slot name="icon" />
       </template>
-      <div class="bk-sidebar-content-wrapper">
-        <div ref="sidebarContent" class="bk-sidebar-content">
-          <slot
-            :scrolled-to-end="scrolledToEnd"
-            :is-detached="isRenderedDetached"
-          />
+      <template #default="{ width, height }">
+        <div class="bk-sidebar-content-wrapper">
+          <div ref="sidebarContent" class="bk-sidebar-content">
+            <slot
+              :scrolled-to-end="scrolledToEnd"
+              :is-detached="isRenderedDetached"
+              :width="width"
+              :height="height"
+            />
+          </div>
         </div>
-      </div>
+      </template>
     </SidebarDetached>
     <div
       v-else
@@ -62,6 +66,8 @@
           <slot
             :scrolled-to-end="scrolledToEnd"
             :is-detached="isRenderedDetached"
+            :width="undefined"
+            :height="undefined"
           />
         </div>
       </div>

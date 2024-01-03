@@ -413,11 +413,9 @@ const scrollToEnd = () => {
 
 function getCenterX(targetScale?: number): number {
   const scaleToUse = targetScale || scale.value
-  return (
-    (ui.rootElement().offsetWidth -
-      ui.artboardElement().offsetWidth * scaleToUse) /
-    2
-  )
+  const width =
+    ui.visibleViewportPadded.value.width + ui.visibleViewportPadded.value.x
+  return (width - ui.artboardElement().offsetWidth * scaleToUse) / 2
 }
 
 let alpha = 0

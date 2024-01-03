@@ -15,9 +15,6 @@
     --bk-root-offset-top: 50px;
     --bk-actions-height: 50px;
   }
-  &.bk-has-sidebar-left {
-    --bk-root-offset-left: 70px;
-  }
   &.bk-has-sidebar-bottom {
     --bk-root-offset-bottom: 50px;
     @screen md {

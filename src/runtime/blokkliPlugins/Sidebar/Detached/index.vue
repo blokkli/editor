@@ -23,7 +23,7 @@
       </div>
     </div>
     <div class="bk-sidebar-detached-inner" :style="innerStyle">
-      <slot></slot>
+      <slot :width="userWidth" :height="userHeight"></slot>
       <template v-if="!size">
         <div
           class="bk-sidebar-detached-handle bk-is-bottom"
@@ -106,8 +106,16 @@ const mouseMode = ref<MouseMode>('')
 
 const x = ref(0)
 const y = ref(0)
-const width = ref(storedData.value.width)
-const height = ref(storedData.value.height)
+const userWidth = ref(storedData.value.width)
+const userHeight = ref(storedData.value.height)
+
+const width = computed(() => {
+  return props.size?.width || userWidth.value
+})
+
+const height = computed(() => {
+  return props.size?.height || userHeight.value
+})
 
 const startMouseX = ref(0)
 const startMouseY = ref(0)
@@ -146,8 +154,18 @@ const updateStored = () => {
     viewportWidth: window.innerWidth,
     viewportHeight: window.innerHeight,
   }
-  ui.setViewportBlockingRectangle(storageKey.value, storedData.value)
+  ui.setViewportBlockingRectangle(storageKey.value, {
+    ...storedData.value,
+    height: storedData.value.height + 40,
+  })
 }
+
+watch(
+  () => props.size,
+  (size) => {
+    updateStored()
+  },
+)
 
 const style = computed(() => {
   return {
@@ -182,13 +200,13 @@ const setCoordinates = (newX: number, newY: number) => {
 
 const setSizes = (newWidth?: number, newHeight?: number) => {
   if (newWidth !== undefined) {
-    width.value = Math.min(
+    userWidth.value = Math.min(
       Math.max(newWidth, props.minWidth),
       window.innerWidth - 300,
     )
   }
   if (newHeight !== undefined) {
-    height.value = Math.min(
+    userHeight.value = Math.min(
       Math.max(newHeight, props.minHeight),
       window.innerHeight - 50,
     )

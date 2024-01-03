@@ -18,22 +18,22 @@ export default function (): BroadcastProvider {
   const broadcastEventBus = mitt<BroadcastEvents>()
   const channel = new BroadcastChannel('blokkli')
 
-  const onBroadcastChannelMessage = (e: MessageEvent<BroadcastedEvent>) => {
+  channel.addEventListener('message', (e: MessageEvent<BroadcastedEvent>) => {
+    // Prevent recursion when forwarding messages.
     if (e.data.senderId === senderId) {
       return
     }
+
+    // Emit the event in the local event bus.
     broadcastEventBus.emit(e.data.name, e.data.data)
-  }
-
-  channel.addEventListener('message', onBroadcastChannelMessage)
-
-  onBeforeUnmount(() => {
-    channel.close()
   })
+
+  onBeforeUnmount(channel.close)
 
   return {
     ...broadcastEventBus,
     emit(name: any, data?: any) {
+      // Custom emit method that forwards all events to the broadcast channel.
       const event: BroadcastedEvent = {
         name,
         data,
