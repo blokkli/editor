@@ -27,7 +27,12 @@ import {
   onBeforeUnmount,
 } from '#imports'
 import type { Coord, DraggableItem, Rectangle } from '#blokkli/types'
-import { isInsideRect, realBackgroundColor, lerp } from '#blokkli/helpers'
+import {
+  isInsideRect,
+  realBackgroundColor,
+  lerp,
+  easing,
+} from '#blokkli/helpers'
 
 const { eventBus, dom, ui, animation } = useBlokkli()
 
@@ -107,35 +112,26 @@ type AnimationRectangle = Rectangle &
 
 const rects = ref<AnimationRectangle[]>([])
 
-let alpha = 0
-const speed = 0.02
-const threshold = 0.1
+const animationStart = Date.now()
+const duration = 700
 
 const onAnimationFrame = () => {
-  let allRectsAtTarget = true
-
   const newRects: AnimationRectangle[] = []
+
+  const elapsed = Date.now() - animationStart
+  const alpha = easing.easeOutElastic(elapsed / duration)
+  const opacityAlpha = Math.min(Math.max(elapsed - 100, 0) / 200, 1)
 
   for (let i = 0; i < rects.value.length; i++) {
     const rect = rects.value[i]
-    const newX = lerp(rect.x, rect.to.x, alpha)
-    const newY = lerp(rect.y, rect.to.y, alpha)
-    const newOpacity = lerp(rect.opacity, rect.to.opacity, alpha)
+    const newX = lerp(rect.from.x, rect.to.x, alpha)
+    const newY = lerp(rect.from.y, rect.to.y, alpha)
+    const newOpacity = lerp(rect.from.opacity, rect.to.opacity, opacityAlpha)
 
-    const newScaleX = lerp(rect.scaleX, rect.to.scaleX, alpha)
-    const newScaleY = lerp(rect.scaleY, rect.to.scaleY, alpha)
+    const newScaleX = lerp(rect.from.scaleX, rect.to.scaleX, alpha)
+    const newScaleY = lerp(rect.from.scaleY, rect.to.scaleY, alpha)
 
-    // Check if the rectangle is at its target position
-    if (
-      Math.abs(newX - rect.to.x) > threshold ||
-      Math.abs(newY - rect.to.y) > threshold ||
-      Math.abs(newScaleX - rect.to.scaleX) > 0.01 ||
-      Math.abs(newScaleY - rect.to.scaleY) > 0.01
-    ) {
-      allRectsAtTarget = false
-    } else {
-      animation.requestDraw()
-    }
+    animation.requestDraw()
 
     newRects.push({
       ...rect,
@@ -147,12 +143,7 @@ const onAnimationFrame = () => {
     })
   }
 
-  // Increase alpha towards 1 at each frame
-  if (alpha < 1) {
-    alpha += speed
-  }
-
-  if (allRectsAtTarget || !ui.useAnimations.value) {
+  if (elapsed > duration || !ui.useAnimations.value) {
     rects.value = newRects.map((v) => {
       return {
         ...v,
@@ -245,7 +236,8 @@ onMounted(() => {
     const rect = item.rect
     const baseRect = item.item.element().getBoundingClientRect()
     const targetScaleX = Math.min(bounds.width / item.element.scrollWidth, 1)
-    const targetScaleY = Math.min(bounds.height / item.element.scrollHeight, 1)
+    // const targetScaleY = Math.min(bounds.height / item.element.scrollHeight, 1)
+    const targetScaleY = targetScaleX
 
     const originX = 0
     const originY = 0
@@ -280,7 +272,7 @@ onMounted(() => {
       ...from,
       width: item.element.scrollWidth,
       height: item.element.scrollHeight,
-      opacity: 0.9,
+      opacity: 1,
 
       transformOrigin: `${originX}px ${originY}px`,
       markup: dom.getDropElementMarkup(item.item),
