@@ -15,6 +15,7 @@ import { PluginMenuButton } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 
 defineBlokkliFeature({
+  id: 'exit',
   description: 'Provides a menu button to exit the editor without saving.',
 })
 

@@ -42,7 +42,8 @@ import CommentAddForm from './AddForm/index.vue'
 import CommentsOverlay from './Overlay/index.vue'
 import type { CommentItem } from '#blokkli/types'
 
-const adapter = defineBlokkliFeature({
+const { adapter } = defineBlokkliFeature({
+  id: 'comments',
   requiredAdapterMethods: ['loadComments', 'addComment'],
   description: 'Provides comment functionality for blocks.',
 })

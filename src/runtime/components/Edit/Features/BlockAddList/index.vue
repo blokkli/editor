@@ -50,6 +50,7 @@ import { AddListItem } from '#blokkli/components'
 import type { DraggableExistingBlock } from '#blokkli/types'
 
 defineBlokkliFeature({
+  id: 'block-add-list',
   description:
     'Renders a list of block bundles that can be added to the current page.',
 })
@@ -192,8 +193,8 @@ const sortedList = computed(() => {
         isVisible: ui.isMobile.value
           ? selectableBundles.value.includes(v.id)
           : searchText.value
-            ? v.label.toLowerCase().includes(searchText.value.toLowerCase())
-            : true,
+          ? v.label.toLowerCase().includes(searchText.value.toLowerCase())
+          : true,
       }
     })
 })

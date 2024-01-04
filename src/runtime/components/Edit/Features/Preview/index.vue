@@ -47,6 +47,7 @@ import QrCode from './QrCode/index.vue'
 import { DialogModal } from '#blokkli/components'
 
 defineBlokkliFeature({
+  id: 'preview',
   description: 'Implements various preview features.',
 })
 

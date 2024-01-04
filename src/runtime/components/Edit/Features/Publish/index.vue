@@ -16,7 +16,8 @@ import { useBlokkli } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 
-const adapter = defineBlokkliFeature({
+const { adapter } = defineBlokkliFeature({
+  id: 'publish',
   requiredAdapterMethods: ['publish'],
   description:
     'Provides a menu button to publish the changes of the current entity.',

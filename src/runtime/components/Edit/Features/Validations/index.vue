@@ -29,6 +29,7 @@ import { PluginSidebar } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 
 defineBlokkliFeature({
+  id: 'validations',
   description: 'Provides a sidebar pane to render validations.',
 })
 

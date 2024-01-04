@@ -13,10 +13,16 @@ type CombinedAdapter<T, Methods extends AdapterMethods[]> = PickRequiredMethods<
 > &
   BlokkliAdapter<T>
 
+type DefineBlokkliFeature<T, Methods extends AdapterMethods[]> = {
+  adapter: CombinedAdapter<T, Methods>
+}
+
 export function defineBlokkliFeature<T, Methods extends AdapterMethods[]>(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _feature: FeatureDefinition<Methods>,
-): CombinedAdapter<T, Methods> {
+  feature: FeatureDefinition<Methods>,
+): DefineBlokkliFeature<T, Methods> {
   const { adapter } = useBlokkli()
-  return adapter as CombinedAdapter<T, Methods>
+  return {
+    adapter: adapter as CombinedAdapter<T, Methods>,
+  }
 }

@@ -20,7 +20,8 @@ import { useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginViewOption } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 
-const adapter = defineBlokkliFeature({
+const { adapter } = defineBlokkliFeature({
+  id: 'grid',
   requiredAdapterMethods: ['getGridMarkup'],
   description: 'Provides a view option to render a grid.',
 })

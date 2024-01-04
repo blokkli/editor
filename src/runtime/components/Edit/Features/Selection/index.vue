@@ -13,6 +13,7 @@ import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import Overlay from './Overlay/index.vue'
 
 defineBlokkliFeature({
+  id: 'selection',
   description: 'Renders an overlay that highlights the selected blocks.',
 })
 

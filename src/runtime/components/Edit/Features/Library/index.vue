@@ -57,7 +57,8 @@ import LibraryDialog from './LibraryDialog/index.vue'
 import { getDefinition } from '#blokkli/definitions'
 import type { ActionPlacedEvent } from '#blokkli/types'
 
-const adapter = defineBlokkliFeature({
+const { adapter } = defineBlokkliFeature({
+  id: 'library',
   description:
     'Implements support for a block library to manage reusable blocks.',
   requiredAdapterMethods: ['makeBlockReusable'],

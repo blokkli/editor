@@ -16,6 +16,7 @@ import { PluginSidebar } from '#blokkli/plugins'
 import List from './List/index.vue'
 
 defineBlokkliFeature({
+  id: 'structure',
   description:
     'Provides a sidebar button to render a structured list of all blocks on the current page.',
 })

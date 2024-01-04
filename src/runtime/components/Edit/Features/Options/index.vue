@@ -15,6 +15,7 @@ import { onlyUnique } from '#blokkli/helpers'
 import OptionsForm from './Form/index.vue'
 
 defineBlokkliFeature({
+  id: 'options',
   description: 'Renders the options form for one or more blocks.',
   requiredAdapterMethods: ['updateOptions'],
 })

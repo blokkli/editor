@@ -19,6 +19,7 @@ import Overlay from './Overlay/index.vue'
 import type { EditableFieldFocusEvent } from '#blokkli/types'
 
 defineBlokkliFeature({
+  id: 'editable-field',
   requiredAdapterMethods: ['updateFieldValue'],
   description: 'Implements a form overlay to edit a single field of a block.',
 })

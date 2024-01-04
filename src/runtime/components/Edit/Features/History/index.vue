@@ -110,7 +110,8 @@ import { PluginSidebar, PluginToolbarButton } from '#blokkli/plugins'
 import { RelativeTime } from '#blokkli/components'
 import type { MutationItem } from '#blokkli/types'
 
-const adapter = defineBlokkliFeature({
+const { adapter } = defineBlokkliFeature({
+  id: 'history',
   requiredAdapterMethods: ['setHistoryIndex'],
   description:
     'Implements support for history features (undo, redo, list of mutations).',

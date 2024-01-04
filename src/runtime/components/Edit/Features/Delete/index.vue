@@ -18,7 +18,8 @@ import { PluginItemAction } from '#blokkli/plugins'
 
 const { state, eventBus, $t } = useBlokkli()
 
-const adapter = defineBlokkliFeature({
+const { adapter } = defineBlokkliFeature({
+  id: 'delete',
   requiredAdapterMethods: ['deleteBlocks'],
   description: 'Provides an action to delete one or more blocks.',
 })

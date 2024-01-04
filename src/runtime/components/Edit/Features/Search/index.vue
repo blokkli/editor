@@ -40,6 +40,7 @@ import Overlay from './Overlay/index.vue'
 import { PluginToolbarButton } from '#blokkli/plugins'
 
 defineBlokkliFeature({
+  id: 'search',
   description:
     'Provides an overlay with shortcut to search for blocks on the current page or existing content to add as blocks.',
 })

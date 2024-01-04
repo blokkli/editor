@@ -70,6 +70,7 @@ import { PluginSidebar } from '#blokkli/plugins'
 import type { KeyPressedEvent, Rectangle } from '#blokkli/types'
 
 defineBlokkliFeature({
+  id: 'debug',
   description: 'Provides debugging functionality.',
 })
 

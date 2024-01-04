@@ -22,7 +22,8 @@ import { PluginItemAction } from '#blokkli/plugins'
 
 const { state, $t, selection, dom } = useBlokkli()
 
-const adapter = defineBlokkliFeature({
+const { adapter } = defineBlokkliFeature({
+  id: 'duplicate',
   requiredAdapterMethods: ['duplicateBlocks'],
   description: 'Provides an action to duplicate one or more blocks in place.',
 })

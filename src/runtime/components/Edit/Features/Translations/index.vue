@@ -65,7 +65,8 @@ import { falsy } from '#blokkli/helpers'
 import { PluginMenuButton, PluginItemAction } from '#blokkli/plugins'
 import type { DraggableExistingBlock, EntityTranslation } from '#blokkli/types'
 
-const adapter = defineBlokkliFeature({
+const { adapter } = defineBlokkliFeature({
+  id: 'translations',
   requiredAdapterMethods: ['changeLanguage'],
   description: 'Adds support for block translations.',
 })

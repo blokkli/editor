@@ -70,6 +70,7 @@ import { Icon } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli/icons'
 
 defineBlokkliFeature({
+  id: 'responsive-preview',
   description:
     'Provides a responsive preview of the current edit state in an iframe.',
 })

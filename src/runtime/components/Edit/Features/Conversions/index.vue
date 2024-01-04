@@ -24,7 +24,8 @@ import { PluginItemDropdown } from '#blokkli/plugins'
 import { falsy, onlyUnique } from '#blokkli/helpers'
 import type { BlockBundleDefinition } from '#blokkli/types'
 
-const adapter = defineBlokkliFeature({
+const { adapter } = defineBlokkliFeature({
+  id: 'conversions',
   requiredAdapterMethods: ['getConversions', 'convertBlocks'],
   description:
     'Provides block actions to convert one or more blocks to a different bundle.',

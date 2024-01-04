@@ -34,7 +34,8 @@ import type { AddNewBlockEvent, EditBlockEvent } from '#blokkli/types'
 import FormFrame from './Frame/index.vue'
 import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
 
-const adapter = defineBlokkliFeature({
+const { adapter } = defineBlokkliFeature({
+  id: 'edit-form',
   description:
     'Listens to edit events and renders an iframe containing the edit form.',
   requiredAdapterMethods: ['formFrameBuilder'],

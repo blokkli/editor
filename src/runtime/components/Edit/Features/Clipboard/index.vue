@@ -55,6 +55,7 @@ import { falsy } from '#blokkli/helpers'
 import { Icon } from '#blokkli/components'
 
 defineBlokkliFeature({
+  id: 'clipboard',
   description:
     'Provides clipboard integration to copy/paste existing blocks or paste supported clipboard content like text or images.',
 })

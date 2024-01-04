@@ -743,10 +743,19 @@ export type AddListOrientation = 'horizontal' | 'vertical' | 'sidebar'
 
 export type AdapterMethods = keyof BlokkliAdapter<any>
 
+export type FeatureDefinitionSettingCheckbox = {
+  type: 'checkbox'
+  default: boolean
+  label: string
+}
+export type FeatureDefinitionSetting = FeatureDefinitionSettingCheckbox
+
 export type FeatureDefinition<Methods extends AdapterMethods[]> = {
+  id: string
   label?: string
   description?: string
   requiredAdapterMethods?: [...Methods]
+  settings?: Record<string, FeatureDefinitionSetting>
 }
 
 export default {}

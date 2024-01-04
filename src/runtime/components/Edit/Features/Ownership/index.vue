@@ -15,7 +15,8 @@
 <script lang="ts" setup>
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 
-const adapter = defineBlokkliFeature({
+const { adapter } = defineBlokkliFeature({
+  id: 'ownership',
   requiredAdapterMethods: ['takeOwnership'],
   description:
     'Renders a large button to take ownership of the current edit state.',

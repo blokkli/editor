@@ -24,6 +24,7 @@ import { PluginViewOption } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 
 defineBlokkliFeature({
+  id: 'field-areas',
   description: 'Provides a view option to render the field areas with labels.',
 })
 

@@ -17,6 +17,7 @@ import { PluginItemAction } from '#blokkli/plugins'
 import { getDefinition } from '#blokkli/definitions'
 
 defineBlokkliFeature({
+  id: 'edit',
   description: 'Provides an action to edit a block.',
 })
 

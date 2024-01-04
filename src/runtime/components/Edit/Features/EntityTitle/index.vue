@@ -31,6 +31,7 @@
 import { useBlokkli, defineBlokkliFeature } from '#imports'
 
 defineBlokkliFeature({
+  id: 'entity-title',
   description: 'Renders the title and status of the page entity.',
 })
 

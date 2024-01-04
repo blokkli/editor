@@ -31,7 +31,8 @@ import type { TransformPlugin } from '#blokkli/types'
 import Overlay from './Overlay/index.vue'
 import { filterTransforms } from '#blokkli/helpers/transform'
 
-const adapter = defineBlokkliFeature({
+const { adapter } = defineBlokkliFeature({
+  id: 'transform',
   requiredAdapterMethods: ['getTransformPlugins', 'applyTransformPlugin'],
   description: 'Provides integration for block transform plugins.',
 })

@@ -24,6 +24,7 @@ import { Icon } from '#blokkli/components'
 import Overlay from './Overlay/index.vue'
 
 defineBlokkliFeature({
+  id: 'editable-mask',
   description: 'Provides a view option to hide non-editable parts of the page.',
 })
 

@@ -30,7 +30,8 @@ import { useBlokkli, ref, defineBlokkliFeature } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
 import { Icon, DialogModal } from '#blokkli/components'
 
-const adapter = defineBlokkliFeature({
+const { adapter } = defineBlokkliFeature({
+  id: 'revert',
   requiredAdapterMethods: ['revertAllChanges'],
   description:
     'Provides a menu button to revert all changes done on the current entity.',

@@ -19,6 +19,7 @@ import { PluginMenuButton } from '#blokkli/plugins'
 import SettingsDialog from './Dialog/index.vue'
 
 defineBlokkliFeature({
+  id: 'settings',
   description: 'Provides a menu button to display a settings dialog.',
 })
 

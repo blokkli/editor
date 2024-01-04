@@ -33,7 +33,8 @@ import { PluginMenuButton } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 import ExistingDialog from './Dialog/index.vue'
 
-const adapter = defineBlokkliFeature({
+const { adapter } = defineBlokkliFeature({
+  id: 'import-existing',
   requiredAdapterMethods: ['getImportItems', 'importFromExisting'],
   description:
     'Implements a menu action that renders a dialog to import blocks from another entity.',
