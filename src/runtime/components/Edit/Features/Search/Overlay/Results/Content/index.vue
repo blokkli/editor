@@ -95,11 +95,11 @@ const index = ref(0)
 
 const prev = () => setIndex(index.value - 1)
 const next = () => setIndex(index.value + 1)
+const goToFirst = () => setIndex(0)
 const select = () => clickItem()
-
 const isActive = () => props.visible
 
-defineExpose({ prev, next, select, isActive })
+defineExpose({ prev, next, select, isActive, goToFirst })
 
 const setIndex = (newIndex: number) => {
   index.value = modulo(newIndex, items.value.length)

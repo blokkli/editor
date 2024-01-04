@@ -35,8 +35,8 @@
       </li>
     </ul>
 
-    <div ref="resultsEl" class="bk-search-results">
-      <div class="bk-search-list">
+    <div class="bk-search-results">
+      <div ref="resultsEl" class="bk-search-list">
         <template v-for="item in tabItems" :key="item.key">
           <ResultsPage
             v-if="item.key === 'on_this_page'"
@@ -100,6 +100,18 @@ const tab = computed<string>(() => tabs[tabIndex.value])
 const search = ref('')
 const input = ref<HTMLInputElement | null>(null)
 const resultsEl = ref<HTMLDivElement | null>(null)
+
+watch(search, () => {
+  const component = getResultsComponent()
+  if (component) {
+    component.goToFirst()
+    nextTick(() => {
+      if (resultsEl.value) {
+        resultsEl.value.scrollTop = 0
+      }
+    })
+  }
+})
 
 const searchCleaned = computed(() =>
   search.value
