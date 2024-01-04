@@ -125,12 +125,14 @@ const height = computed(() => {
   return props.size?.height || userHeight.value
 })
 
+const headerHeight = computed(() => 40)
+
 const blockingRectangle = computed<Rectangle>(() => {
   return {
     x: x.value,
     y: y.value,
     width: width.value,
-    height: height.value + 40,
+    height: height.value + headerHeight.value,
   }
 })
 
@@ -211,7 +213,12 @@ const onMouseDown = (e: MouseEvent, mode: MouseMode) => {
 
 const setCoordinates = (newX: number, newY: number) => {
   x.value = Math.min(Math.max(newX, 0), window.innerWidth - width.value)
-  y.value = Math.min(Math.max(newY, 50), window.innerHeight - 40)
+  y.value = Math.min(
+    Math.max(newY, ui.visibleViewport.value.y),
+    ui.visibleViewport.value.y +
+      ui.visibleViewport.value.height -
+      headerHeight.value,
+  )
 }
 
 const setSizes = (newWidth?: number, newHeight?: number) => {
