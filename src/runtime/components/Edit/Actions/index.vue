@@ -71,7 +71,8 @@ import {
   onMounted,
   onUnmounted,
 } from '#imports'
-import { intersects, onlyUnique, easing } from '#blokkli/helpers'
+import { intersects, onlyUnique } from '#blokkli/helpers'
+import { easeOutSine } from '#blokkli/helpers/easing'
 import type { KeyPressedEvent, Rectangle } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
 import type { PluginMountEvent, PluginUnmountEvent } from '#blokkli/types'
@@ -143,7 +144,7 @@ function findIdealPosition(
       const b = Math.abs(blockingRect.y + blockingRect.height - rectToPlace.y)
       const verticalOverlap = Math.min(a, b)
 
-      const smoothingFactor = easing.easeOutSine(
+      const smoothingFactor = easeOutSine(
         Math.min(verticalOverlap, maxOverlap) / maxOverlap,
       )
 

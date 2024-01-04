@@ -27,12 +27,8 @@ import {
   onBeforeUnmount,
 } from '#imports'
 import type { Coord, DraggableItem, Rectangle } from '#blokkli/types'
-import {
-  isInsideRect,
-  realBackgroundColor,
-  lerp,
-  easing,
-} from '#blokkli/helpers'
+import { isInsideRect, realBackgroundColor, lerp } from '#blokkli/helpers'
+import { easeOutElastic } from '#blokkli/helpers/easing'
 
 const { eventBus, dom, ui, animation } = useBlokkli()
 
@@ -113,14 +109,15 @@ type AnimationRectangle = Rectangle &
 const rects = ref<AnimationRectangle[]>([])
 
 const animationStart = Date.now()
-const duration = 700
+const duration = 500
 
 const onAnimationFrame = () => {
   const newRects: AnimationRectangle[] = []
 
   const elapsed = Date.now() - animationStart
-  const alpha = easing.easeOutElastic(elapsed / duration)
-  const opacityAlpha = Math.min(Math.max(elapsed - 100, 0) / 200, 1)
+  const alpha = easeOutElastic(elapsed / duration)
+  const opacityAlpha = Math.min(Math.max(elapsed - 300, 0) / 200, 1)
+  // const opacityAlpha = 0
 
   for (let i = 0; i < rects.value.length; i++) {
     const rect = rects.value[i]
@@ -258,9 +255,9 @@ onMounted(() => {
     }
 
     const to: AnimationRectangleValues = {
-      opacity: isTop ? (ui.isMobile.value ? 1 : 0.6) : 0,
-      x: 0,
-      y: 0,
+      opacity: isTop ? (ui.isMobile.value ? 1 : 1) : 0.1,
+      x: isTop ? 0 : (bounds.width - rect.width * targetScaleX) / 2,
+      y: isTop ? 0 : (bounds.height - rect.height * targetScaleX) / 2,
       scaleX: targetScaleX,
       scaleY: targetScaleY,
     }

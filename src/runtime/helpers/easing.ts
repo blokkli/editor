@@ -1,121 +1,25 @@
-export function easeInOutCirc(x: number): number {
-  return x < 0.5
-    ? (1 - Math.sqrt(1 - Math.pow(2 * x, 2))) / 2
-    : (Math.sqrt(1 - Math.pow(-2 * x + 2, 2)) + 1) / 2
-}
-
-export function easeInOutElastic(x: number): number {
-  const c5 = (2 * Math.PI) / 4.5
-
-  return x === 0
-    ? 0
-    : x === 1
-    ? 1
-    : x < 0.5
-    ? -(Math.pow(2, 20 * x - 10) * Math.sin((20 * x - 11.125) * c5)) / 2
-    : (Math.pow(2, -20 * x + 10) * Math.sin((20 * x - 11.125) * c5)) / 2 + 1
-}
-
-export function easeOutElastic(x: number): number {
-  const c4 = (2 * Math.PI) / 7
-
-  return x === 0
-    ? 0
-    : x === 1
-    ? 1
-    : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.95) * c4) + 1
-}
-
-export function easeInOutCubic(x: number): number {
-  return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2
-}
-
-export function easeInOutQuint(x: number): number {
-  return x < 0.5 ? 16 * x * x * x * x * x : 1 - Math.pow(-2 * x + 2, 5) / 2
-}
-
-export function easeInOutQuad(x: number): number {
-  return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2
-}
-
-export function easeInOutQuart(x: number): number {
-  return x < 0.5 ? 8 * x * x * x * x : 1 - Math.pow(-2 * x + 2, 4) / 2
-}
-
-export function easeInOutExpo(x: number): number {
-  return x === 0
-    ? 0
-    : x === 1
-    ? 1
-    : x < 0.5
-    ? Math.pow(2, 20 * x - 10) / 2
-    : (2 - Math.pow(2, -20 * x + 10)) / 2
-}
-
-export function easeOutBounce(x: number): number {
-  const n1 = 7.5625
-  const d1 = 2.75
-
-  if (x < 1 / d1) {
-    return n1 * x * x
-  } else if (x < 2 / d1) {
-    return n1 * (x -= 1.5 / d1) * x + 0.75
-  } else if (x < 2.5 / d1) {
-    return n1 * (x -= 2.25 / d1) * x + 0.9375
-  } else {
-    return n1 * (x -= 2.625 / d1) * x + 0.984375
+export function easeOutElastic(
+  time: number,
+  startIntensity = 2,
+  elasticPeriod = 0.5,
+): number {
+  // Return when at start or end of animation.
+  if (time === 0 || time === 1) {
+    return time
   }
-}
 
-export function easeInOutBack(x: number): number {
-  const c1 = 1.70158
-  const c2 = c1 * 1.525
+  const modifiedTime = Math.pow(time, startIntensity)
+  const amplitudeAdjustment = (elasticPeriod / (2 * Math.PI)) * Math.asin(1)
 
-  return x < 0.5
-    ? (Math.pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
-    : (Math.pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2
-}
-
-export function easeInOutBounce(x: number): number {
-  return x < 0.5
-    ? (1 - easeOutBounce(1 - 2 * x)) / 2
-    : (1 + easeOutBounce(2 * x - 1)) / 2
-}
-
-export function easeInOutSine(x: number): number {
-  return -(Math.cos(Math.PI * x) - 1) / 2
-}
-
-export function easeInExpo(x: number): number {
-  return x === 0 ? 0 : Math.pow(2, 10 * x - 10)
-}
-
-export function easeOutExpo(x: number): number {
-  return x === 1 ? 1 : 1 - Math.pow(2, -10 * x)
-}
-
-export function easeInCubic(x: number): number {
-  return x * x * x
-}
-
-export function easeOutCubic(x: number): number {
-  return 1 - Math.pow(1 - x, 3)
-}
-
-export function easeOutQuad(x: number): number {
-  return 1 - (1 - x) * (1 - x)
-}
-export function easeInQuad(x: number): number {
-  return x * x
+  return (
+    Math.pow(2, -10 * modifiedTime) *
+      Math.sin(
+        ((modifiedTime - amplitudeAdjustment) * (2 * Math.PI)) / elasticPeriod,
+      ) +
+    1
+  )
 }
 
 export function easeOutSine(x: number): number {
   return Math.sin((x * Math.PI) / 2)
-}
-
-export function easeOutBack(x: number): number {
-  const c1 = 1.70158
-  const c3 = c1 + 1
-
-  return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2)
 }

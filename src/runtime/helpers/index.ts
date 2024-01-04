@@ -4,7 +4,6 @@ import type {
   Rectangle,
 } from '#blokkli/types'
 import { getDefinition } from '#blokkli/definitions'
-export * as easing from './easing'
 
 const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
 
