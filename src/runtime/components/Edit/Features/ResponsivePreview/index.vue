@@ -105,10 +105,11 @@ const selectedViewport = computed<ViewportOption>(() => {
 const size = computed(() => {
   const w = selectedViewport.value?.width
   const h = selectedViewport.value?.height
+  const rotate = isRotated.value && selectedViewport.value.canRotate
   if (w && h) {
     return {
-      width: isRotated.value ? h : w,
-      height: (isRotated.value ? w : h) + 50,
+      width: rotate ? h : w,
+      height: (rotate ? w : h) + 50,
     }
   }
 })
