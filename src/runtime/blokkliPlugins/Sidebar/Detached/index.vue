@@ -75,11 +75,13 @@ defineEmits(['close'])
 
 const { storage, eventBus, ui } = useBlokkli()
 
+const BASE_Z = 60011
+
 const storageKey = computed(() => 'sidebar:detached:size:' + props.id)
 const focusedSidebar = storage.use('sidebar:focused', '')
 const zStorageKey = computed(() => 'sidebar:detached:z:' + props.id)
-const globalZ = useState('blokkli:z', () => 51010)
-const z = storage.use(zStorageKey.value, 51010)
+const globalZ = useState('blokkli:z', () => BASE_Z)
+const z = storage.use(zStorageKey.value, BASE_Z)
 
 if (z.value > globalZ.value) {
   globalZ.value = z.value
@@ -90,6 +92,23 @@ const onSidebarMouseDown = () => {
   isResizing.value = true
   window.addEventListener('mouseup', onMouseUp)
 }
+
+const offsetX = computed(() => {
+  if (
+    x.value + width.value >
+    ui.visibleViewport.value.x + ui.visibleViewport.value.width
+  ) {
+    return (
+      x.value +
+      width.value -
+      (ui.visibleViewport.value.x + ui.visibleViewport.value.width) +
+      15
+    )
+  } else if (x.value < ui.visibleViewport.value.x) {
+    return x.value - ui.visibleViewport.value.x - 15
+  }
+  return 0
+})
 
 const storedData = storage.use(storageKey, {
   x: 0,
@@ -129,7 +148,7 @@ const headerHeight = computed(() => 40)
 
 const blockingRectangle = computed<Rectangle>(() => {
   return {
-    x: x.value,
+    x: x.value - offsetX.value,
     y: y.value,
     width: width.value,
     height: height.value + headerHeight.value,
@@ -184,7 +203,7 @@ watch(
 
 const style = computed(() => {
   return {
-    transform: `translate(${x.value}px, ${y.value}px)`,
+    transform: `translate(${x.value - offsetX.value}px, ${y.value}px)`,
     zIndex: z.value,
   }
 })
@@ -212,7 +231,10 @@ const onMouseDown = (e: MouseEvent, mode: MouseMode) => {
 }
 
 const setCoordinates = (newX: number, newY: number) => {
-  x.value = Math.min(Math.max(newX, 0), window.innerWidth - width.value)
+  x.value = Math.min(
+    Math.max(newX, ui.visibleViewport.value.x),
+    ui.visibleViewport.value.width + ui.visibleViewport.value.x - width.value,
+  )
   y.value = Math.min(
     Math.max(newY, ui.visibleViewport.value.y),
     ui.visibleViewport.value.y +
@@ -286,12 +308,17 @@ const recalculatePositions = () => {
 
 const onUiResized = () => {
   recalculatePositions()
+  updateStored()
 }
 
 recalculatePositions()
 
 watch(blockingRectangle, (rect) => {
   ui.setViewportBlockingRectangle(storageKey.value, rect)
+})
+
+watch(offsetX, () => {
+  updateStored()
 })
 
 onMounted(() => {
