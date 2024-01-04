@@ -1,5 +1,5 @@
 <template>
-  <ArtboardManager v-if="useArtboard" />
+  <ArtboardManager v-if="useArtboard" :persist="settings.persist" />
 </template>
 
 <script lang="ts" setup>
@@ -13,18 +13,39 @@ import {
 } from '#imports'
 import ArtboardManager from './Manager/index.vue'
 
-defineBlokkliFeature({
+const { settings } = defineBlokkliFeature({
   id: 'artboard',
+  label: 'Artboard',
   description:
     'Wraps the entire page in an artboard that can be zoomed and moved using the mouse.',
+  settings: {
+    useArtboard: {
+      type: 'radios',
+      default: 'yes',
+      label: 'Use artboard',
+      options: {
+        yes: {
+          label: 'Use artboard',
+          icon: 'artboard-enabled',
+        },
+        no: {
+          label: 'Normal display',
+          icon: 'artboard-disabled',
+        },
+      },
+    },
+    persist: {
+      type: 'checkbox',
+      default: true,
+      label: 'Persist position and zoom',
+    },
+  },
 })
 
-const { storage, ui, eventBus, dom } = useBlokkli()
-
-const useArtboardSetting = storage.use('useArtboard', true)
+const { ui, eventBus, dom } = useBlokkli()
 
 const useArtboard = computed(
-  () => useArtboardSetting.value && !ui.isMobile.value,
+  () => settings.value.useArtboard === 'yes' && !ui.isMobile.value,
 )
 
 /**

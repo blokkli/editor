@@ -226,6 +226,8 @@ export default defineBlokkliEditAdapter((ctx) => {
       return Promise.resolve({ items: [], total: 0 })
     },
 
+    importFromExisting() {},
+
     getLibraryItems(bundles: string[]) {
       const libraryItems = entityStorageManager.storages.library_item.loadAll()
 

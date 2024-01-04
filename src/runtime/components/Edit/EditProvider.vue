@@ -50,6 +50,7 @@ import textProvider from './../../helpers/textProvider'
 import storageProvider from './../../helpers/storageProvider'
 import uiProvider from './../../helpers/uiProvider'
 import broadcastProvider from './../../helpers/broadcastProvider'
+import featuresProvider from './../../helpers/featuresProvider'
 
 import { eventBus } from '#blokkli/helpers/eventBus'
 import '#blokkli/styles'
@@ -87,6 +88,7 @@ const $t = textProvider(context)
 const state = await editStateProvider(adapter, context)
 const selection = selectionProvider(dom, state)
 const types = await typesProvider(adapter, selection)
+const features = featuresProvider()
 
 const originalThemeColor = ref('')
 const THEME_COLOR = 'black'
@@ -147,6 +149,7 @@ provide<BlokkliApp>(INJECT_APP, {
   context,
   $t,
   broadcast,
+  features,
 })
 </script>
 

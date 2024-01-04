@@ -28,7 +28,7 @@ export default function (): BroadcastProvider {
     broadcastEventBus.emit(e.data.name, e.data.data)
   })
 
-  onBeforeUnmount(channel.close)
+  onBeforeUnmount(() => channel.close())
 
   return {
     ...broadcastEventBus,

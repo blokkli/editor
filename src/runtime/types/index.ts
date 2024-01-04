@@ -13,6 +13,7 @@ import type { eventBus } from './../helpers/eventBus'
 import type { BlockOptionDefinition } from './blokkOptions'
 import type { TextProvider } from '../helpers/textProvider'
 import type { BroadcastProvider } from '#blokkli/helpers/broadcastProvider'
+import type { FeaturesProvider } from '#blokkli/helpers/featuresProvider'
 
 interface MutationResponseLike<T> {
   data: {
@@ -688,6 +689,7 @@ export interface BlokkliApp {
   context: ComputedRef<AdapterContext>
   $t: TextProvider
   broadcast: BroadcastProvider
+  features: FeaturesProvider
 }
 
 export interface Rectangle {
@@ -743,12 +745,27 @@ export type AddListOrientation = 'horizontal' | 'vertical' | 'sidebar'
 
 export type AdapterMethods = keyof BlokkliAdapter<any>
 
+export type FeatureDefinitionSettingRadiosOption = {
+  label: string
+  icon?: string
+}
+
+export type FeatureDefinitionSettingRadios = {
+  type: 'radios'
+  label: string
+  default: string
+  options: Record<string, FeatureDefinitionSettingRadiosOption>
+}
+
 export type FeatureDefinitionSettingCheckbox = {
   type: 'checkbox'
-  default: boolean
   label: string
+  default: boolean
 }
-export type FeatureDefinitionSetting = FeatureDefinitionSettingCheckbox
+
+export type FeatureDefinitionSetting =
+  | FeatureDefinitionSettingCheckbox
+  | FeatureDefinitionSettingRadios
 
 export type FeatureDefinition<Methods extends AdapterMethods[]> = {
   id: string

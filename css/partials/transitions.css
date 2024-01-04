@@ -15,7 +15,7 @@
       @apply opacity-0;
     }
     .bk-dialog-inner {
-      @apply translate-y-full lg:translate-y-0 lg:scale-90 lg:opacity-0;
+      @apply translate-y-full lg:translate-y-[400px] lg:opacity-0;
     }
   }
 

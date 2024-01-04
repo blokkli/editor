@@ -64,6 +64,7 @@ const props = withDefaults(
     padding?: number
     minScale?: number
     maxScale?: number
+    persist?: boolean
   }>(),
   {
     padding: 50,
@@ -485,8 +486,6 @@ type SavedState = {
 const storageKey = computed(() => 'artboard:' + context.value.entityUuid)
 const savedState = storage.use<SavedState | null>(storageKey, null)
 
-const shouldPersist = storage.use('persistArtboard', true)
-
 const touchStartOffset = { x: 0, y: 0 }
 
 const initialTouchDistance = ref<number | null>(null)
@@ -631,7 +630,7 @@ function onScrollIntoView(e: ScrollIntoViewEvent) {
 }
 
 const saveState = () => {
-  if (!shouldPersist.value) {
+  if (!props.persist) {
     return
   }
   savedState.value = { offset: offset.value, scale: scale.value }
@@ -656,7 +655,7 @@ onMounted(() => {
   document.documentElement.classList.add('bk-is-artboard')
   window.addEventListener('beforeunload', saveState)
 
-  if (savedState.value && shouldPersist.value) {
+  if (savedState.value && props.persist) {
     offset.value.x = savedState.value.offset.x
     offset.value.y = savedState.value.offset.y
     updateScale(savedState.value.scale)

@@ -33,16 +33,23 @@ import { PluginMenuButton } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 import ExistingDialog from './Dialog/index.vue'
 
-const { adapter } = defineBlokkliFeature({
+const { adapter, settings } = defineBlokkliFeature({
   id: 'import-existing',
+  label: 'Import existing content',
   requiredAdapterMethods: ['getImportItems', 'importFromExisting'],
   description:
     'Implements a menu action that renders a dialog to import blocks from another entity.',
+
+  settings: {
+    showDialogWhenEmpty: {
+      type: 'checkbox',
+      default: true,
+      label: 'Show dialog at start on empty pages',
+    },
+  },
 })
 
-const { storage, state, $t } = useBlokkli()
-
-const shouldOpen = storage.use('showImport', true)
+const { state, $t } = useBlokkli()
 
 const isEmpty = computed(
   () => !state.mutatedFields.value.find((v) => v.list?.length),
@@ -64,7 +71,11 @@ function onSubmit(sourceUuid: string, sourceFields: string[]) {
 
 onMounted(() => {
   // Show the import dialog when there are no items yet and no mutations.
-  if (isEmpty.value && !state.mutations.value.length && shouldOpen.value) {
+  if (
+    isEmpty.value &&
+    !state.mutations.value.length &&
+    settings.value.showDialogWhenEmpty
+  ) {
     showModal.value = true
   }
 })

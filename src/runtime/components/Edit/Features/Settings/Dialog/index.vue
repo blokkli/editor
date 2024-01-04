@@ -7,63 +7,22 @@
     @cancel="$emit('cancel')"
   >
     <div class="bk bk-dialog-form bk-settings">
+      <FeatureSettings
+        v-for="setting in featureSettings"
+        :id="setting.id"
+        :key="setting.id"
+        :label="setting.label"
+      />
       <div class="bk-form-section">
         <h3 class="bk-form-label">
           {{ $t('settingsBehaviour') }}
         </h3>
         <ul class="bk-settings-checkboxes">
-          <li v-if="importFeatureEnabled">
-            <label class="bk-checkbox-toggle">
-              <input v-model="showImport" type="checkbox" class="peer" />
-              <div />
-              <span>{{ $t('settingsShowImport') }}</span>
-            </label>
-          </li>
-          <li v-if="artboardFeatureAvailable">
-            <label class="bk-checkbox-toggle">
-              <input v-model="persistArtboard" type="checkbox" class="peer" />
-              <div />
-              <span>{{ $t('settingsPersistArtboard') }}</span>
-            </label>
-          </li>
           <li>
             <label class="bk-checkbox-toggle">
               <input v-model="useAnimations" type="checkbox" class="peer" />
               <div />
               <span>{{ $t('settingsUseAnimations') }}</span>
-            </label>
-          </li>
-          <li>
-            <label class="bk-checkbox-toggle">
-              <input
-                v-model="useMouseForHistory"
-                type="checkbox"
-                class="peer"
-              />
-              <div />
-              <span>{{ $t('settingsUseMouseForHistory') }}</span>
-            </label>
-          </li>
-        </ul>
-      </div>
-
-      <div v-if="artboardFeatureAvailable" class="bk-form-section">
-        <h3 class="bk-form-label">
-          {{ $t('settingsViewOptions') }}
-        </h3>
-        <ul class="bk-settings-ui">
-          <li>
-            <label>
-              <input v-model="useArtboard" type="radio" :value="true" />
-              <Icon name="artboard-enabled" />
-              <span>{{ $t('settingsUseArtboardTrue') }}</span>
-            </label>
-          </li>
-          <li>
-            <label>
-              <input v-model="useArtboard" type="radio" :value="false" />
-              <Icon name="artboard-disabled" />
-              <span>{{ $t('settingsUseArtboardFalse') }}</span>
             </label>
           </li>
         </ul>
@@ -125,24 +84,35 @@
 <script lang="ts" setup>
 import { useBlokkli } from '#imports'
 import { DialogModal, Icon } from '#blokkli/components'
-import { availableFeaturesAtBuild } from '#blokkli-runtime/features'
+import FeatureSettings from './FeatureSettings/index.vue'
 
-const { storage, $t, ui } = useBlokkli()
+const { storage, $t, ui, features } = useBlokkli()
 
-const showImport = storage.use('showImport', true)
-const useArtboard = storage.use('useArtboard', true)
-const useMouseForHistory = storage.use('useMouseForHistory', true)
-const persistArtboard = storage.use('persistArtboard', true)
+type FeatureSetting = {
+  id: string
+  label: string
+}
+
+const featureSettings = computed(() => {
+  return Object.values(
+    features.features.value.reduce<Record<string, FeatureSetting>>((acc, v) => {
+      if (v.settings) {
+        acc[v.id] = {
+          id: v.id,
+          label: v.label || v.id,
+        }
+      }
+      return acc
+    }, {}),
+  )
+})
+
 const listOrientation = storage.use<'horizontal' | 'vertical'>(
   'listOrientation',
   'vertical',
 )
 const useAnimations = storage.use('useAnimations', true)
 
-const artboardFeatureAvailable = computed(
-  () => availableFeaturesAtBuild.includes('Artboard') && !ui.isMobile.value,
-)
-const importFeatureEnabled = availableFeaturesAtBuild.includes('ImportExisting')
 const showAddListOptions = computed(() => !ui.isMobile.value)
 
 defineEmits<{

@@ -110,20 +110,28 @@ import { PluginSidebar, PluginToolbarButton } from '#blokkli/plugins'
 import { RelativeTime } from '#blokkli/components'
 import type { MutationItem } from '#blokkli/types'
 
-const { adapter } = defineBlokkliFeature({
+const { adapter, settings } = defineBlokkliFeature({
   id: 'history',
+  label: 'History',
   requiredAdapterMethods: ['setHistoryIndex'],
   description:
     'Implements support for history features (undo, redo, list of mutations).',
+  settings: {
+    useMouseButtons: {
+      type: 'checkbox',
+      label: 'Use mouse buttons for undo/redo',
+      default: true,
+    },
+  },
 })
 
-const { eventBus, state, $t, storage, ui } = useBlokkli()
+const { eventBus, state, $t, ui } = useBlokkli()
 
 const { mutations, currentMutationIndex, canEdit, mutateWithLoadingState } =
   state
 
-const useMouseForHistory = storage.use('useMouseForHistory', true)
 const showAmount = ref(50)
+const useMouseForHistory = computed(() => settings.value.useMouseButtons)
 const canUndo = computed(() => currentMutationIndex.value >= 0)
 const canRedo = computed(
   () => currentMutationIndex.value < mutations.value.length - 1,
