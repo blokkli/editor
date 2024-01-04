@@ -59,8 +59,8 @@
 import { ref, computed } from '#imports'
 
 import type { CommentItem } from '#blokkli/types'
-import Comment from '#blokkli/components/Comment/index.vue'
 import { Icon } from '#blokkli/components'
+import Comment from './../../Comment/index.vue'
 
 const commentText = ref('')
 const showFullForm = ref(false)

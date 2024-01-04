@@ -57,7 +57,7 @@
 }
 
 .bk.bk-comment {
-  @apply font-sans text-base p-10 border-b hover:bg-slate-50;
+  @apply font-sans text-base p-15 border-b hover:bg-slate-50;
   h3 {
     @apply font-sans font-bold;
   }

@@ -37,7 +37,7 @@
 <script lang="ts" setup>
 import { ref, useBlokkli, onMounted, defineBlokkliFeature } from '#imports'
 import { PluginSidebar, PluginItemAction } from '#blokkli/plugins'
-import Comment from './../../Comment/index.vue'
+import Comment from './Comment/index.vue'
 import CommentAddForm from './AddForm/index.vue'
 import CommentsOverlay from './Overlay/index.vue'
 import type { CommentItem } from '#blokkli/types'
