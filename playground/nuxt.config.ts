@@ -35,11 +35,7 @@ export default defineNuxtConfig({
   svgIconSprite: {
     sprites: {
       default: {
-        importPatterns: [
-          './assets/icons/**/*.svg',
-          './../src/icons/logo.svg',
-          './components/Blokkli/**/*.svg',
-        ],
+        importPatterns: ['./assets/icons/**/*.svg', './../src/icons/logo.svg'],
       },
     },
   },

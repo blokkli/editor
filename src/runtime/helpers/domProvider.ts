@@ -66,7 +66,9 @@ export type DomProvider = {
 
 export default function (): DomProvider {
   const findBlock = (uuid: string): DraggableExistingBlock | undefined => {
-    const el = document.querySelector(`.bk-field-list [data-uuid="${uuid}"]`)
+    const el = document.querySelector(
+      `.bk-field-list [data-uuid="${uuid}"]:not(.bk-sortli-leave-active)`,
+    )
     if (el instanceof HTMLElement) {
       const item = buildDraggableItem(el)
       if (item?.itemType === 'existing') {

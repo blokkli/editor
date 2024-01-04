@@ -242,7 +242,7 @@ onMounted(() => {
     const from: AnimationRectangleValues = {
       opacity: 0.9,
       scaleX: Math.min(baseRect.width / rect.width, 1) * artboardScale,
-      scaleY: Math.min(baseRect.height / rect.height, 1) * artboardScale,
+      scaleY: Math.min(baseRect.width / rect.width, 1) * artboardScale,
       x: ui.isMobile.value ? rect.x - translateX.value : rect.x - boundsX,
       y: ui.isMobile.value
         ? -rect.height -
