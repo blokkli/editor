@@ -15,12 +15,9 @@ const zIndex = [
   'transform-overlay',
   'messages',
   'artboard-scrollbar',
-
   'actions',
   'add-list',
   'sidebar',
-  'sidebar-inner',
-  'sidebar-focused',
   'dragging-overlay',
   'toolbar',
   'preview',
@@ -35,7 +32,7 @@ const zIndex = [
   'dialog',
   'init-overlay',
 ].reduce((acc, key, index) => {
-  acc[key] = z(index + 1000)
+  acc[key] = z(index + 10000)
   return acc
 }, {})
 

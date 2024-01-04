@@ -62,7 +62,7 @@
   @apply fixed top-0 left-0 bg-white z-sidebar rounded-md shadow-md flex flex-col overflow-hidden;
   @apply border border-slate-400;
   &.bk-is-focused {
-    @apply z-sidebar-focused shadow-xl;
+    @apply shadow-xl;
     .bk-sidebar-title {
       @apply bg-slate-800 text-white;
 

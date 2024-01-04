@@ -77,9 +77,16 @@ const { storage, eventBus, ui } = useBlokkli()
 
 const storageKey = computed(() => 'sidebar:detached:size:' + props.id)
 const focusedSidebar = storage.use('sidebar:focused', '')
+const zStorageKey = computed(() => 'sidebar:detached:z:' + props.id)
+const globalZ = useState('blokkli:z', () => 51010)
+const z = storage.use(zStorageKey.value, 51010)
+
+if (z.value > globalZ.value) {
+  globalZ.value = z.value
+}
 
 const onSidebarMouseDown = () => {
-  focusedSidebar.value = props.id
+  onFocus()
   isResizing.value = true
   window.addEventListener('mouseup', onMouseUp)
 }
@@ -176,6 +183,7 @@ watch(
 const style = computed(() => {
   return {
     transform: `translate(${x.value}px, ${y.value}px)`,
+    zIndex: z.value,
   }
 })
 
@@ -188,6 +196,8 @@ const innerStyle = computed(() => {
 
 const onFocus = () => {
   focusedSidebar.value = props.id
+  globalZ.value++
+  z.value = globalZ.value
 }
 
 const onMouseDown = (e: MouseEvent, mode: MouseMode) => {
