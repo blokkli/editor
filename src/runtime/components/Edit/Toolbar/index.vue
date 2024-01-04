@@ -1,14 +1,16 @@
 <template>
   <Teleport to="body">
     <div
-      v-show="activeSidebarLeft"
+      v-show="activeSidebarLeft && sidebarVisible"
       id="bk-sidebar-content-left"
       class="bk-sidebar bk-is-left"
+      :class="{ 'bk-is-hidden': !sidebarVisible }"
     />
     <div
       v-show="activeSidebarRight"
       id="bk-sidebar-content-right"
       class="bk-sidebar bk-is-right"
+      :class="{ 'bk-is-hidden': !sidebarVisible }"
     />
 
     <Transition name="bk-toolbar">
@@ -65,6 +67,14 @@ const showToolbar = computed(
     !ui.isMobile.value ||
     (!selection.isDragging.value && !selection.isMultiSelecting.value),
 )
+
+const sidebarVisible = computed(() => {
+  if (ui.isMobile.value) {
+    return !selection.isDragging.value
+  }
+
+  return true
+})
 
 const activeSidebarLeft = storage.use('sidebar:active:left', '')
 const activeSidebarRight = storage.use('sidebar:active:right', '')

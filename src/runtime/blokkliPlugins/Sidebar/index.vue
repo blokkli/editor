@@ -142,7 +142,12 @@ const toggleSidebar = (id: string) => {
   emit('updated')
 }
 
-const showSidebar = () => (activeSidebar.value = props.id)
+const showSidebar = () => {
+  if (isDetached.value) {
+    return
+  }
+  activeSidebar.value = props.id
+}
 
 watch(activeSidebar, (active) => {
   if (active) {

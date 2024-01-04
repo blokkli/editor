@@ -14,8 +14,12 @@
       3px -0px 4px rgb(20 45 82 / 3%),
       5px -0px 8px rgb(20 45 82 / 4%);
   }
-  bottom: var(--bk-root-offset-bottom);
   top: var(--bk-root-offset-top);
+  bottom: 0;
+
+  @screen md {
+    bottom: var(--bk-root-offset-bottom);
+  }
 
   &:empty {
     @apply hidden;
