@@ -96,7 +96,8 @@ function onWindowMouseDown(e: MouseEvent) {
     keyboard.isPressingSpace.value ||
     keyboard.isPressingControl.value ||
     !enabled.value ||
-    selection.isDragging.value
+    selection.isDragging.value ||
+    e.button !== 0
   ) {
     return
   }

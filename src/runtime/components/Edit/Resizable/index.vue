@@ -61,7 +61,7 @@ function onMouseUp(e: MouseEvent) {
 }
 
 function onMouseDown(e: MouseEvent) {
-  if (ui.isMobile.value) {
+  if (ui.isMobile.value || e.button !== 0) {
     return
   }
   startX.value = e.x

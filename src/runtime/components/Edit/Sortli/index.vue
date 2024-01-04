@@ -300,6 +300,9 @@ const originatesFromEditable = (e: MouseEvent | TouchEvent) => {
 }
 
 const onMouseDown = (e: MouseEvent) => {
+  if (e.button !== 0) {
+    return
+  }
   eventBus.emit('dragging:end')
   start.value.x = 0
   start.value.y = 0
