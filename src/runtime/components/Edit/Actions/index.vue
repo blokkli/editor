@@ -131,9 +131,13 @@ const innerStyle = computed(() => {
   }
 })
 
+/**
+ * Position the given rectToPlace so that it doesn't overlap with any of the blockingRects.
+ */
 function findIdealPosition(
   blockingRects: Rectangle[],
   rectToPlace: Rectangle,
+  viewport: Rectangle,
   maxOverlap = 60,
 ): { x: number; y: number } {
   let targetX = rectToPlace.x
@@ -164,16 +168,12 @@ function findIdealPosition(
 
   return {
     x: Math.min(
-      Math.max(targetX, ui.visibleViewportPadded.value.x),
-      ui.visibleViewportPadded.value.x +
-        ui.visibleViewportPadded.value.width -
-        rectToPlace.width,
+      Math.max(targetX, viewport.x),
+      viewport.x + viewport.width - rectToPlace.width,
     ),
     y: Math.min(
-      Math.max(ui.visibleViewportPadded.value.y, rectToPlace.y),
-      ui.visibleViewportPadded.value.height +
-        ui.visibleViewportPadded.value.y -
-        rectToPlace.height,
+      Math.max(viewport.y, rectToPlace.y),
+      viewport.height + viewport.y - rectToPlace.height,
     ),
   }
 }
@@ -213,7 +213,11 @@ function onAnimationFrame() {
       height: ACTIONS_HEIGHT,
     })
 
-    const ideal = findIdealPosition(ui.viewportBlockingRects.value, rect)
+    const ideal = findIdealPosition(
+      ui.viewportBlockingRects.value,
+      rect,
+      ui.visibleViewportPadded.value,
+    )
 
     x.value = ideal.x
     y.value = ideal.y
