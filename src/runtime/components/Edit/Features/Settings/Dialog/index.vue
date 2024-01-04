@@ -33,6 +33,17 @@
               <span>{{ $t('settingsUseAnimations') }}</span>
             </label>
           </li>
+          <li>
+            <label class="bk-checkbox-toggle">
+              <input
+                v-model="useMouseForHistory"
+                type="checkbox"
+                class="peer"
+              />
+              <div />
+              <span>{{ $t('settingsUseMouseForHistory') }}</span>
+            </label>
+          </li>
         </ul>
       </div>
 
@@ -120,6 +131,7 @@ const { storage, $t, ui } = useBlokkli()
 
 const showImport = storage.use('showImport', true)
 const useArtboard = storage.use('useArtboard', true)
+const useMouseForHistory = storage.use('useMouseForHistory', true)
 const persistArtboard = storage.use('persistArtboard', true)
 const listOrientation = storage.use<'horizontal' | 'vertical'>(
   'listOrientation',

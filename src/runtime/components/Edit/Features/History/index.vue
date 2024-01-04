@@ -103,6 +103,8 @@ import {
   nextTick,
   watch,
   defineBlokkliFeature,
+  onMounted,
+  onBeforeUnmount,
 } from '#imports'
 import { PluginSidebar, PluginToolbarButton } from '#blokkli/plugins'
 import { RelativeTime } from '#blokkli/components'
@@ -114,11 +116,12 @@ const adapter = defineBlokkliFeature({
     'Implements support for history features (undo, redo, list of mutations).',
 })
 
-const { eventBus, state, $t } = useBlokkli()
+const { eventBus, state, $t, storage, ui } = useBlokkli()
 
 const { mutations, currentMutationIndex, canEdit, mutateWithLoadingState } =
   state
 
+const useMouseForHistory = storage.use('useMouseForHistory', true)
 const showAmount = ref(50)
 const canUndo = computed(() => currentMutationIndex.value >= 0)
 const canRedo = computed(
@@ -176,6 +179,41 @@ const redo = () =>
   mutateWithLoadingState(
     adapter.setHistoryIndex(currentMutationIndex.value + 1),
   )
+
+const onMouseUp = (e: MouseEvent) => {
+  if (e.button === 3) {
+    // History back button on the mouse.
+    e.preventDefault()
+    e.stopPropagation()
+    if (canUndo.value) {
+      undo()
+    }
+  } else if (e.button === 4) {
+    // History forward button on the mouse.
+    e.preventDefault()
+    e.stopPropagation()
+    if (canRedo.value) {
+      redo()
+    }
+  }
+}
+
+const setupMouseListeners = () => {
+  document.removeEventListener('mouseup', onMouseUp)
+  if (useMouseForHistory.value && ui.isDesktop.value) {
+    document.addEventListener('mouseup', onMouseUp)
+  }
+}
+
+watch(useMouseForHistory, setupMouseListeners)
+
+onMounted(() => {
+  setupMouseListeners()
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('mouseup', onMouseUp)
+})
 </script>
 
 <script lang="ts">

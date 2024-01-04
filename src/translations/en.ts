@@ -172,4 +172,6 @@ export default {
   editFormEntityEdit: 'Edit "@label"',
   editFormEntityTranslate: 'Translate "@label" (@language)',
   editFormBatchTranslate: 'Translate all blocks',
+
+  settingsUseMouseForHistory: 'Use mouse buttons for undo/redo',
 }
