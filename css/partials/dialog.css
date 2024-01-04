@@ -12,24 +12,15 @@
     @apply bg-black md:bg-white;
   }
 
-  .bk-dialog-header {
-    @apply flex items-center p-15 lg:p-20 bg-black text-white md:border-b md:border-b-slate-300 md:bg-slate-100 relative overflow-hidden md:text-slate-800;
-    flex: 0 0 auto;
-    @apply text-lg md:text-lg xl:text-2xl;
-    h3 {
-      @apply font-bold font-sans relative z-10;
-    }
-    button {
-      @apply ml-auto h-full;
-      svg {
-        @apply fill-current w-20 h-20 md:w-30 md:h-30 md:hover:fill-blue-700;
+  @screen md {
+    .bk-overlay-header {
+      @apply bg-white text-slate-950 pl-15 py-5 text-lg border-b;
+      > button {
+        @apply p-15;
       }
     }
-
-    > .bk-icon {
-      @apply w-[1.5em] h-[1.5em] mr-[0.5em] fill-current;
-    }
   }
+
   .bk-dialog-lead {
     @apply text-base md:text-lg lg:text-xl font-sans mb-10 lg:mb-20 text-slate-700;
   }
@@ -64,4 +55,31 @@
 
 .bk-message-info {
   @apply font-sans text-base bg-yellow-50 p-10 border border-yellow-400 rounded text-yellow-900 my-20;
+}
+
+.bk-overlay-header {
+  @apply bg-black text-white flex items-center pl-10 text-base leading-none;
+
+  > .bk-icon,
+  > .bk-blokkli-item-icon {
+    @apply w-auto h-auto mr-5;
+    svg {
+      @apply fill-current w-[1.25em] h-[1.25em];
+    }
+  }
+
+  h3 {
+    @apply font-bold;
+  }
+
+  > button {
+    @apply px-10 py-15 ml-auto flex items-center justify-center;
+
+    .bk-icon {
+      @apply w-[1.25em] h-[1.25em];
+      svg {
+        @apply fill-current;
+      }
+    }
+  }
 }

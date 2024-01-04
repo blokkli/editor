@@ -9,7 +9,7 @@
   >
     <div class="bk-dialog-background" @click="$emit('cancel')" />
     <div class="bk-dialog-inner" :style="style">
-      <div class="bk bk-dialog-header">
+      <div class="bk bk-overlay-header">
         <Icon v-if="icon" :name="icon" />
         <h3>{{ title }}</h3>
         <button @click="$emit('cancel')">

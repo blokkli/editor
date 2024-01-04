@@ -25,15 +25,16 @@
   .bk-resizable-inner {
     @apply h-full flex flex-col;
   }
-}
 
-.bk-form-overlay-header {
-  @apply pl-5 md:pl-20 md:border-b flex items-center text-base font-bold h-50 bg-black text-white gap-10 relative z-edit-form-header;
-  @apply lg:bg-slate-900;
-  button {
-    @apply w-50 h-50 flex items-center justify-end pr-5 md:pr-0 md:justify-center hover:bg-slate-700 ml-auto;
-    svg {
-      @apply fill-current w-25 h-25;
+  .bk-overlay-header {
+    @apply z-edit-form-header;
+    @screen md {
+      @apply pl-15 h-50 bg-slate-900;
+
+      > button {
+        @apply h-full aspect-square;
+        @apply hover:bg-slate-800;
+      }
     }
   }
 }

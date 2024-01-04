@@ -1,10 +1,10 @@
 <template>
-  <div class="bk-form-overlay-header">
+  <div class="bk-overlay-header">
     <ItemIcon v-if="bundle" :bundle="bundle" />
     <div v-else class="bk-blokkli-item-icon">
       <Icon :name="icon" />
     </div>
-    <span>{{ title }}</span>
+    <h3>{{ title }}</h3>
     <button @mousedown.capture.stop="$emit('close')">
       <Icon name="close" />
     </button>
