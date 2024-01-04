@@ -26,7 +26,10 @@
       </div>
     </div>
 
-    <div class="bk-add-list-drop bk-drop-element" :class="'bk-is-' + color">
+    <div
+      class="bk-add-list-drop bk-drop-element"
+      :class="['bk-is-' + color, { 'bk-is-dark': isDark }]"
+    >
       <div class="bk-add-list-drop-icon">
         <ItemIcon v-if="bundle" :bundle="bundle" />
         <Icon v-else-if="icon" :name="icon" />
@@ -44,7 +47,7 @@ import { ItemIcon, Icon } from '#blokkli/components'
 
 const { ui } = useBlokkli()
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     id: string
     label: string
@@ -59,5 +62,8 @@ withDefaults(
     bundle: '',
     icon: undefined,
   },
+)
+const isDark = computed(
+  () => props.orientation !== 'sidebar' && props.color === 'default',
 )
 </script>

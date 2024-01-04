@@ -225,6 +225,10 @@
     @apply bg-lime-600 text-white;
   }
 
+  &.bk-is-dark {
+    @apply bg-slate-900 text-white;
+  }
+
   .bk-add-list-drop-icon {
     .bk-icon,
     .bk-blokkli-item-icon {

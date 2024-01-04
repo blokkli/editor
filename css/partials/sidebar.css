@@ -110,7 +110,12 @@
 }
 
 html.bk-is-sidebar-interacting {
-  .bk-sidebar-detached {
+  .bk-sidebar-detached,
+  iframe,
+  button,
+  input,
+  textarea,
+  a {
     @apply !pointer-events-none;
   }
 }
