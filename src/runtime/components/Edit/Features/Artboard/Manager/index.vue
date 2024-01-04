@@ -43,7 +43,7 @@ import type {
   Coord,
 } from '#blokkli/types'
 import { PluginToolbarButton } from '#blokkli/plugins'
-import { lerp } from '#blokkli/helpers'
+import { lerp, calculateCenterPosition } from '#blokkli/helpers'
 
 const {
   keyboard,
@@ -413,9 +413,11 @@ const scrollToEnd = () => {
 
 function getCenterX(targetScale?: number): number {
   const scaleToUse = targetScale || scale.value
-  const width =
-    ui.visibleViewportPadded.value.width + ui.visibleViewportPadded.value.x
-  return (width - ui.artboardElement().offsetWidth * scaleToUse) / 2
+  return calculateCenterPosition(
+    ui.viewportBlockingRects.value,
+    ui.visibleViewport.value,
+    ui.artboardElement().offsetWidth * scaleToUse,
+  )
 }
 
 let alpha = 0

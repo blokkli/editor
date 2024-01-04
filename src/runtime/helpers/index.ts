@@ -324,3 +324,54 @@ export function realBackgroundColor(el: HTMLElement | null) {
 }
 
 export const lerp = (s: number, e: number, t: number) => s * (1 - t) + e * t
+
+/**
+ * Calculate the ideal X coordinate for placing a rectangle.
+ *
+ * Coordinates are assumed to be 0,0 for top-left. The method returns a number that can be used to set the
+ */
+export const calculateCenterPosition = (
+  // Rectangles that block the viewport.
+  blockingRects: Rectangle[],
+  // The viewport in which the center should be determined.
+  // Note that this may not correspond to the actual browser viewport.
+  viewport: Rectangle,
+  // The width to use when determining the center.
+  widthToPlace: number,
+): number => {
+  // The center of the viewport.
+  const viewportCenterX = (viewport.x + viewport.width) / 2
+
+  // The amount of pixels a blocking rect must be away from the center so it
+  // affects positioning.
+  const blockingThreshold = viewport.width / 7
+
+  const x = blockingRects.reduce((acc, rect) => {
+    // If the rectangle is left of the center.
+    if (
+      rect.x < viewportCenterX &&
+      viewportCenterX - rect.x > blockingThreshold
+    ) {
+      if (rect.x + rect.width > acc) {
+        return rect.x + rect.width
+      }
+    }
+    return acc
+  }, viewport.x)
+
+  const width = blockingRects.reduce((acc, rect) => {
+    // If the rectangle is right of the center.
+    if (
+      rect.x > viewportCenterX &&
+      rect.x - viewportCenterX > blockingThreshold
+    ) {
+      if (rect.x < acc) {
+        return rect.x
+      }
+    }
+    return acc
+  }, viewport.width + viewport.x)
+
+  // Calculate the center X.
+  return (x + width) / 2 - widthToPlace / 2
+}
