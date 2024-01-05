@@ -15,6 +15,10 @@ export class MutationMove extends Mutation {
     super('move', configuration)
   }
 
+  getAffectedUuid(args: MutationMoveArgs): string | undefined {
+    return args.uuids[0]
+  }
+
   execute(context: MutationContext, args: MutationMoveArgs) {
     const proxies = args.uuids
       .map((uuid) => {

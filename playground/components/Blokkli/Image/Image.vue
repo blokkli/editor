@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { MediaImage } from '~/app/mock/state/Media/Media'
+import { MediaImage } from '~/app/mock/state/Media/Media'
 
 const { options, parentType } = defineBlokkli({
   bundle: 'image',
@@ -25,11 +25,22 @@ const { options, parentType } = defineBlokkli({
 })
 
 const props = defineProps<{
-  imageReference: MediaImage
+  imageReference: MediaImage | object
 }>()
 
-const url = computed(() => props.imageReference.url())
-const alt = computed(() => props.imageReference.alt())
+const url = computed(() => {
+  if (props.imageReference instanceof MediaImage) {
+    return props.imageReference.url()
+  }
+  return ''
+})
+
+const alt = computed(() => {
+  if (props.imageReference instanceof MediaImage) {
+    return props.imageReference.alt()
+  }
+  return ''
+})
 
 const isElevated = computed(() => options.value.elevated == '1')
 </script>

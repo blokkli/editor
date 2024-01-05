@@ -11,6 +11,10 @@ export class MutationUpdateOptions extends Mutation {
     super('update_options', configuration)
   }
 
+  getAffectedUuid(args: MutationUpdateOptionsArgs): string | undefined {
+    return args.options[0]?.uuid
+  }
+
   execute(context: MutationContext, args: MutationUpdateOptionsArgs) {
     args.options.forEach((option) => {
       const proxy = context.getProxy(option.uuid)

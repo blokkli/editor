@@ -17,6 +17,10 @@ export class MutationDuplicate extends Mutation {
     super('duplicate', configuration)
   }
 
+  getAffectedUuid(args: MutationDuplicateArgs): string | undefined {
+    return args.uuids[0]
+  }
+
   execute(context: MutationContext, args: MutationDuplicateArgs) {
     const sorted = args.uuids
       .map((uuid) => {

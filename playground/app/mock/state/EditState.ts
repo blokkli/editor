@@ -241,11 +241,13 @@ export class EditState {
 
   getMutationItems(): MutationItem[] {
     return this.getMutations().map((v) => {
+      const mutation = createMutation(v.id as any, v.configuration)
       return {
         pluginId: v.id,
         timestamp: (v.timestamp / 1000).toString(),
         plugin: {
           label: v.id,
+          affectedItemUuid: mutation.getAffectedUuid(v.args),
         },
       }
     })

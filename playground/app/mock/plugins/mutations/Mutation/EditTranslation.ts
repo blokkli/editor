@@ -12,6 +12,10 @@ export class MutationEditTranslation extends Mutation {
     super('edit_translation', configuration)
   }
 
+  getAffectedUuid(args: MutationEditTranslationArgs): string | undefined {
+    return args.uuid
+  }
+
   execute(context: MutationContext, args: MutationEditTranslationArgs) {
     const proxy = context.getProxy(args.uuid)
     if (!proxy) {

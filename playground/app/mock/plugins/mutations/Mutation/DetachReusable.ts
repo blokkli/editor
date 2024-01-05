@@ -33,7 +33,7 @@ export class MutationDetachReusable extends Mutation {
         return
       }
 
-      const newUuid = this.getUuidForNewEntity(block.uuid)
+      const newUuid = this.getUuidForNewEntity()
       const clone = entityStorageManager.cloneBlock(
         reusableBlock,
         newUuid,

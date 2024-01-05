@@ -147,8 +147,7 @@ onMounted(() => {
     frameEventBus.on('updateOption', onUpdateOption)
     // We are a preview inside the iframe of the main editing app.
     // In this case updated state is passed in via postMessage from the main
-    // editing app. Also native scrolling is disabled and we handle it
-    // ourselves.
+    // editing app.
     document.body.classList.add('bk-body-preview')
     document.documentElement.classList.add('bk-html-preview')
     window.addEventListener('message', onMessage)
@@ -176,6 +175,7 @@ onBeforeUnmount(() => {
   frameEventBus.off('updateOption', onUpdateOption)
 })
 </script>
+
 <script lang="ts">
 export default {
   name: 'BlokkliPreviewProvider',
