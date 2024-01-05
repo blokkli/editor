@@ -50,6 +50,7 @@ import type {
   KeyPressedEvent,
   SearchContentItem,
   ClipboardItem,
+  KeyboardShortcut,
 } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
 import { Icon } from '#blokkli/components'
@@ -70,7 +71,8 @@ const { settings } = defineBlokkliFeature({
   },
 })
 
-const { eventBus, selection, $t, adapter, dom, state, ui } = useBlokkli()
+const { eventBus, selection, $t, adapter, dom, state, ui, keyboard } =
+  useBlokkli()
 
 const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
 
@@ -326,12 +328,28 @@ function onSelectContentItem(item: SearchContentItem) {
   showClipboardSidebar()
 }
 
+const shortcuts = computed<KeyboardShortcut[]>(() => {
+  return [
+    {
+      code: 'C',
+      label: 'Copy selected blocks',
+      meta: true,
+    },
+    {
+      code: 'V',
+      label: 'Paste text, image or copied blocks',
+      meta: true,
+    },
+  ]
+})
+
 onMounted(() => {
   eventBus.on('keyPressed', onKeyPressed)
   eventBus.on('search:selectContentItem', onSelectContentItem)
   document.addEventListener('paste', onPaste)
   document.body.addEventListener('drop', onDrop)
   document.addEventListener('dragover', onDragOver)
+  shortcuts.value.forEach((v) => keyboard.registerShortcut(v))
 })
 
 onUnmounted(() => {
@@ -340,6 +358,7 @@ onUnmounted(() => {
   document.removeEventListener('paste', onPaste)
   document.body.removeEventListener('drop', onDrop)
   document.removeEventListener('dragover', onDragOver)
+  shortcuts.value.forEach((v) => keyboard.unregisterShortcut(v))
 })
 </script>
 

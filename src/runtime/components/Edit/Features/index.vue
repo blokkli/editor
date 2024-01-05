@@ -25,9 +25,12 @@ const disabledFeatures = adapter.getDisabledFeatures
 
 const availableFeatures = computed(() => {
   return featureComponents.filter((v) => {
+    // Feature is disabled at runtime.
     if (disabledFeatures.includes(v.id)) {
       return false
     }
+
+    // Feature requires adapter methods that aren't implemented.
     if (
       v.requiredAdapterMethods.length &&
       !v.requiredAdapterMethods.every((method) => adapter[method])
@@ -35,6 +38,7 @@ const availableFeatures = computed(() => {
       return false
     }
 
+    // Feature has dependencies on other features that are not yet rendered.
     if (
       v.dependencies.length &&
       !v.dependencies.every((id) => renderedFeatures.value.includes(id))
@@ -42,6 +46,7 @@ const availableFeatures = computed(() => {
       return false
     }
 
+    // Feature is not enabled for this viewport.
     if (
       v.viewports.length &&
       !v.viewports.some((viewport) => ui.appViewport.value === viewport)
@@ -49,6 +54,7 @@ const availableFeatures = computed(() => {
       return false
     }
 
+    // Feature can be rendered.
     return true
   })
 })

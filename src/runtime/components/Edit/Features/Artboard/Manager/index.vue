@@ -41,6 +41,7 @@ import type {
   KeyPressedEvent,
   ScrollIntoViewEvent,
   Coord,
+  KeyboardShortcut,
 } from '#blokkli/types'
 import { PluginToolbarButton } from '#blokkli/plugins'
 import { lerp, calculateCenterPosition } from '#blokkli/helpers'
@@ -355,6 +356,43 @@ function onMouseUp() {
   document.body.removeEventListener('mousemove', onThumbMouseMove)
 }
 
+const shortcuts = computed<KeyboardShortcut[]>(() => {
+  return [
+    {
+      code: 'Home',
+      label: 'Scroll to top',
+    },
+    {
+      code: 'PageUp',
+      label: 'Scroll one page up',
+    },
+    {
+      code: 'PageDown',
+      label: 'Scroll one page down',
+    },
+    {
+      code: 'ArrowUp',
+      label: 'Scroll up',
+    },
+    {
+      code: 'ArrowDown',
+      label: 'Scroll down',
+    },
+    {
+      code: '0',
+      label: 'Reset zoom',
+      meta: true,
+    },
+    {
+      code: '1',
+      label: 'Scale to fit',
+      meta: true,
+    },
+  ].map((v) => {
+    return { ...v, group: 'Artboard' }
+  })
+})
+
 function onKeyPressed(e: KeyPressedEvent) {
   if (e.code === 'Home') {
     scrollToTop()
@@ -664,6 +702,8 @@ onMounted(() => {
     offset.value.y = 20
   }
   updateStyles()
+
+  shortcuts.value.forEach((shortcut) => keyboard.registerShortcut(shortcut))
 })
 
 onBeforeUnmount(() => {
@@ -680,6 +720,7 @@ onBeforeUnmount(() => {
   document.documentElement.classList.remove('bk-is-artboard')
   // Store current canvas state in local storage.
   saveState()
+  shortcuts.value.forEach((shortcut) => keyboard.unregisterShortcut(shortcut))
 })
 
 onUnmounted(() => {

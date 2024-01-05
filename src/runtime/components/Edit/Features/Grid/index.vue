@@ -1,6 +1,7 @@
 <template>
   <PluginViewOption
     id="grid"
+    :label="$t('gridToggle')"
     v-slot="{ isActive }"
     :title-on="$t('gridShow')"
     :title-off="$t('gridHide')"

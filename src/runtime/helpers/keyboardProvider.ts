@@ -1,10 +1,27 @@
-import { type Ref, ref, readonly, onMounted, onBeforeUnmount, watch } from 'vue'
+import {
+  type Ref,
+  type ComputedRef,
+  ref,
+  readonly,
+  onMounted,
+  onBeforeUnmount,
+  watch,
+} from 'vue'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import type { AnimationProvider } from './animationProvider'
+import type { KeyboardShortcut } from '#blokkli/types'
+
+type RegisteredShortcut = {
+  key: string
+  shortcut: KeyboardShortcut
+}
 
 export type KeyboardProvider = {
   isPressingSpace: Readonly<Ref<boolean>>
   isPressingControl: Readonly<Ref<boolean>>
+  shortcuts: ComputedRef<RegisteredShortcut[]>
+  registerShortcut: (shortcut: KeyboardShortcut) => void
+  unregisterShortcut: (shortcut: KeyboardShortcut) => void
 }
 
 export default function (
@@ -12,6 +29,7 @@ export default function (
 ): KeyboardProvider {
   const isPressingControl = ref(false)
   const isPressingSpace = ref(false)
+  const registeredShortcuts = ref<RegisteredShortcut[]>([])
 
   const onKeyUp = (e: KeyboardEvent) => {
     isPressingControl.value =
@@ -83,8 +101,27 @@ export default function (
     animationProvider.requestDraw()
   })
 
+  const getShortcutKey = (shortcut: KeyboardShortcut) =>
+    [!!shortcut.meta, !!shortcut.shift, shortcut.code].join('-')
+
+  const registerShortcut = (shortcut: KeyboardShortcut) => {
+    registeredShortcuts.value.push({ key: getShortcutKey(shortcut), shortcut })
+  }
+
+  const unregisterShortcut = (shortcut: KeyboardShortcut) => {
+    const key = getShortcutKey(shortcut)
+    registeredShortcuts.value = registeredShortcuts.value.filter(
+      (v) => v.key !== key,
+    )
+  }
+
+  const shortcuts = computed(() => registeredShortcuts.value)
+
   return {
     isPressingSpace: readonly(isPressingSpace),
     isPressingControl: readonly(isPressingControl),
+    shortcuts,
+    registerShortcut,
+    unregisterShortcut,
   }
 }

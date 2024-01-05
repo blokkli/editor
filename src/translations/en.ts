@@ -40,9 +40,11 @@ export default {
   exitTitle: 'Close',
   exitDescription: 'Close editor without publishing',
 
+  fieldAreasToggle: 'Toggle content areas',
   fieldAreasShow: 'Show content areas',
   fieldAreasHide: 'Hide content areas',
 
+  gridToggle: 'Toggle grid',
   gridShow: 'Show grid',
   gridHide: 'Hide grid',
 
@@ -76,6 +78,7 @@ export default {
   libraryDialogTitleInputPlaceholder: 'e.g. Teaser Campaign 2023',
   libraryPreviewLabel: 'Preview',
 
+  maskToggle: 'Show content fields',
   maskShow: 'Show content fields',
   maskHide: 'Hide content fields',
 
@@ -176,4 +179,6 @@ export default {
   editFormBatchTranslate: 'Translate all blocks',
 
   settingsUseMouseForHistory: 'Use mouse buttons for undo/redo',
+
+  featureHelpTitle: 'Help',
 }

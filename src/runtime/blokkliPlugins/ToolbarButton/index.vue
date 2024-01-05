@@ -17,6 +17,7 @@
           :meta="meta"
           :shift="shift"
           :key-code="keyCode"
+          :label="title"
           @pressed="onClick"
         />
       </div>

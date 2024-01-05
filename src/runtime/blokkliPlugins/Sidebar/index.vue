@@ -38,6 +38,7 @@
         <div class="bk-sidebar-content-wrapper">
           <div ref="sidebarContent" class="bk-sidebar-content">
             <slot
+              :key="isRenderedDetached ? 'detached' : 'attached'"
               :scrolled-to-end="scrolledToEnd"
               :is-detached="isRenderedDetached"
               :width="width"
@@ -64,6 +65,7 @@
       <div class="bk-sidebar-content-wrapper">
         <div ref="sidebarContent" class="bk-sidebar-content">
           <slot
+            :key="isRenderedDetached ? 'detached' : 'attached'"
             :scrolled-to-end="scrolledToEnd"
             :is-detached="isRenderedDetached"
             :width="undefined"

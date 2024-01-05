@@ -14,7 +14,9 @@
         <ShortcutIndicator
           v-if="keyCode"
           :meta="meta"
+          :label="title"
           :key-code="keyCode"
+          group="blocks"
           @pressed="onClick"
         />
       </div>

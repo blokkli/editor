@@ -2,6 +2,7 @@
   <PluginViewOption
     id="mask"
     v-slot="{ isActive }"
+    :label="$t('maskToggle')"
     :title-on="$t('maskShow')"
     :title-off="$t('maskHide')"
     icon="texturebox"

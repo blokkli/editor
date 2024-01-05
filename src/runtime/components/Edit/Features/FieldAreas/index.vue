@@ -2,6 +2,7 @@
   <PluginViewOption
     id="fieldAreas"
     v-slot="{ isActive }"
+    :label="$t('fieldAreasToggle')"
     :title-on="$t('fieldAreasShow')"
     :title-off="$t('fieldAreasHide')"
     icon="area"

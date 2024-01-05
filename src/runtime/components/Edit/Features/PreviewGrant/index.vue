@@ -39,6 +39,7 @@ const { adapter } = defineBlokkliFeature({
   description:
     'Provides a button to open a dialog with a QR code to preview the page on a smartphone.',
   requiredAdapterMethods: ['getPreviewGrantUrl'],
+  viewports: ['desktop'],
 })
 
 const { $t, ui } = useBlokkli()

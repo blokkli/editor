@@ -16,6 +16,8 @@
           v-if="keyCode"
           meta
           :key-code="keyCode"
+          :label="label"
+          group="ui"
           @pressed="onClick"
         />
       </div>
@@ -34,6 +36,7 @@ const { storage, ui } = useBlokkli()
 
 const props = defineProps<{
   id: string
+  label: string
   titleOn: string
   titleOff: string
   editOnly?: boolean

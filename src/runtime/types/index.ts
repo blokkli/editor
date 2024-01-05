@@ -789,4 +789,12 @@ export type FeatureDefinition<
   settings?: Record<string, FeatureDefinitionSetting>
 }
 
+export type KeyboardShortcut = {
+  group?: string
+  meta?: boolean
+  shift?: boolean
+  code: string
+  label: string
+}
+
 export default {}

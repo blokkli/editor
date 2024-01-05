@@ -31,6 +31,7 @@
 @import './partials/Animator.css';
 @import './partials/FormOverlay.css';
 @import './partials/ResponsivePreview.css';
+@import './partials/Help.css';
 
 @font-face {
   font-family: 'PB Inter';

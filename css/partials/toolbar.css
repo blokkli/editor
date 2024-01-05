@@ -72,14 +72,8 @@
     @screen lg {
       @apply flex;
     }
-    kbd {
-      @apply font-sans text-xs flex ml-5;
-    }
-    > kbd {
-      @apply gap-5;
-    }
-    > kbd > kbd {
-      @apply bg-slate-500 px-5 text-slate-100 rounded h-[18px] flex items-center min-w-[18px] justify-center;
+    .bk-shortcut {
+      @apply ml-5;
     }
   }
   .bk-toolbar-menu {
@@ -271,5 +265,12 @@
     input {
       @apply appearance-none opacity-0 absolute top-0 left-0 w-full h-full cursor-pointer;
     }
+  }
+}
+
+.bk-shortcut {
+  @apply font-sans text-sm flex gap-5 font-semibold items-center h-[1.5em];
+  > kbd {
+    @apply bg-slate-500 px-5 text-slate-100 rounded flex items-center min-w-[1.5em] justify-center h-full leading-none pt-[0.15em];
   }
 }
