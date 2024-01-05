@@ -15,6 +15,12 @@
         </slot>
         <span>{{ title }}</span>
         <button
+          @click.prevent.stop.capture="isMinimized = !isMinimized"
+          @mousedown.capture.stop
+        >
+          <Icon :name="isMinimized ? 'window-maximize' : 'window-minimize'" />
+        </button>
+        <button
           @click.prevent.stop.capture="$emit('close')"
           @mousedown.capture.stop
         >
@@ -24,7 +30,7 @@
     </div>
     <div class="bk-sidebar-detached-inner" :style="innerStyle">
       <slot :width="userWidth" :height="userHeight"></slot>
-      <template v-if="!size">
+      <template v-if="!size && !isMinimized">
         <div
           class="bk-sidebar-detached-handle bk-is-bottom"
           @mousedown.stop.prevent="onMouseDown($event, 'resize-bottom')"
@@ -77,6 +83,10 @@ const { storage, eventBus, ui } = useBlokkli()
 
 const BASE_Z = 60011
 
+const isMinimized = storage.use(
+  computed(() => 'sidebar:detached:minimized:' + props.id),
+  false,
+)
 const storageKey = computed(() => 'sidebar:detached:size:' + props.id)
 const focusedSidebar = storage.use('sidebar:focused', '')
 const zStorageKey = computed(() => 'sidebar:detached:z:' + props.id)
@@ -151,7 +161,9 @@ const blockingRectangle = computed<Rectangle>(() => {
     x: x.value - offsetX.value,
     y: y.value,
     width: width.value,
-    height: height.value + headerHeight.value,
+    height: isMinimized.value
+      ? headerHeight.value
+      : height.value + headerHeight.value,
   }
 })
 
@@ -211,7 +223,7 @@ const style = computed(() => {
 const innerStyle = computed(() => {
   return {
     width: (props.size?.width || width.value) + 'px',
-    height: (props.size?.height || height.value) + 'px',
+    height: isMinimized.value ? 0 : (props.size?.height || height.value) + 'px',
   }
 })
 

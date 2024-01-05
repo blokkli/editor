@@ -77,9 +77,9 @@ defineBlokkliFeature({
     'Provides a responsive preview of the current edit state in an iframe.',
 })
 
-const { $t, ui, storage } = useBlokkli()
+const { $t, storage } = useBlokkli()
 
-const selectedViewportId = storage.use('mobile-preview:viewport', 'custom')
+const selectedViewportId = storage.use('mobile-preview:viewport', 'iphone-se')
 const isRotated = storage.use('mobile-preview:rotated', false)
 const dropdownOpen = ref(false)
 

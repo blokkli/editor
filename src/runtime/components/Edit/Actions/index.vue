@@ -77,7 +77,7 @@ import type { KeyPressedEvent, Rectangle } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
 import type { PluginMountEvent, PluginUnmountEvent } from '#blokkli/types'
 
-const { selection, eventBus, $t, types, state, ui } = useBlokkli()
+const { selection, eventBus, $t, types, state, ui, animation } = useBlokkli()
 
 const editingEnabled = computed(() => state.editMode.value === 'editing')
 
@@ -127,7 +127,7 @@ const innerStyle = computed(() => {
     return {}
   }
   return {
-    transform: `translate(${x.value}px, ${y.value}px)`,
+    transform: `translate(${Math.round(x.value)}px, ${Math.round(y.value)}px)`,
   }
 })
 
@@ -235,6 +235,7 @@ function onKeyPressed(e: KeyPressedEvent) {
   e.originalEvent.preventDefault()
 
   e.shift ? eventBus.emit('select:previous') : eventBus.emit('select:next')
+  animation.requestDraw()
 }
 
 const shouldRenderButton = computed(() =>

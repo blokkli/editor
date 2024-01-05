@@ -60,10 +60,10 @@
 }
 
 .bk-sidebar-detached {
-  @apply fixed top-0 left-0 bg-white z-sidebar-detached rounded-md shadow-md flex flex-col overflow-hidden;
-  @apply border border-slate-400;
+  @apply fixed top-0 left-0 bg-white z-sidebar-detached rounded-md flex flex-col overflow-hidden;
+  @apply border border-slate-300;
   &.bk-is-focused {
-    @apply shadow-xl;
+    @apply shadow-xl border-slate-400;
     .bk-sidebar-title {
       @apply bg-slate-800 text-white;
 
@@ -86,7 +86,7 @@
 
   .bk-sidebar-title {
     @apply cursor-move;
-    @apply flex bg-slate-200 select-none pl-10 font-semibold text-sm h-40 items-center text-slate-500;
+    @apply flex bg-slate-300 select-none pl-10 font-semibold text-sm h-40 items-center text-slate-500;
 
     > .bk-icon {
       @apply w-20 h-20 mr-5;
@@ -95,8 +95,12 @@
       }
     }
 
+    > span {
+      @apply mr-auto;
+    }
+
     button {
-      @apply ml-auto w-40 h-40 flex items-center justify-center;
+      @apply w-40 h-40 flex items-center justify-center;
       &:hover {
         @apply bg-slate-400;
       }
