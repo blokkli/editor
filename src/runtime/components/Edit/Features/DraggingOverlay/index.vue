@@ -16,21 +16,6 @@
     :mouse-y="mouseY"
     @drop="onDrop"
   />
-  <Teleport to="body">
-    <Transition name="bk-touch-bar">
-      <div
-        v-if="ui.isMobile.value && isVisible"
-        class="bk bk-touch-action-bar bk-control"
-      >
-        <button
-          class="bk-button bk-is-danger"
-          @click.stop.prevent.capture="eventBus.emit('dragging:end')"
-        >
-          Cancel dragging
-        </button>
-      </div>
-    </Transition>
-  </Teleport>
 </template>
 
 <script lang="ts" setup>

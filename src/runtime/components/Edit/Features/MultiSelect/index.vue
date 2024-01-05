@@ -1,21 +1,4 @@
 <template>
-  <Teleport to="body">
-    <Transition name="bk-touch-bar">
-      <div
-        v-if="ui.isMobile.value && selection.isMultiSelecting.value"
-        class="bk bk-touch-action-bar bk-control"
-      >
-        <button
-          class="bk-button bk-is-primary"
-          @click.stop.prevent.capture="
-            eventBus.emit('select:end', [...selection.uuids.value])
-          "
-        >
-          Finish selecting
-        </button>
-      </div>
-    </Transition>
-  </Teleport>
   <Overlay
     v-if="shouldRender"
     :start-x="downX"
@@ -40,9 +23,10 @@ defineBlokkliFeature({
   icon: 'multi-select',
   description:
     'Implements support for selecting multiple blocks using a select rectangle.',
+  viewports: ['desktop'],
 })
 
-const { keyboard, eventBus, selection, ui } = useBlokkli()
+const { keyboard, eventBus, selection } = useBlokkli()
 
 const enabled = computed(() => !selection.editableActive.value)
 
@@ -122,9 +106,6 @@ const cleanup = () => {
 
 const init = () => {
   cleanup()
-  if (ui.isMobile.value) {
-    return
-  }
   window.addEventListener('mousedown', onWindowMouseDown)
   window.addEventListener('mouseup', onWindowMouseUp)
 }

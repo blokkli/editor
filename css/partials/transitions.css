@@ -146,7 +146,7 @@
   /* Touch Bar. */
   .bk-touch-bar-enter-active,
   .bk-touch-bar-leave-active {
-    transition: 0.2s ease-in-out;
+    @apply transition duration-200 ease-swing;
   }
   .bk-touch-bar-enter-from,
   .bk-touch-bar-leave-to {

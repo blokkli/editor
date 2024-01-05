@@ -8,7 +8,8 @@
       -5px -0px 8px rgb(20 45 82 / 4%);
   }
   &.bk-is-left {
-    @apply left-0 md:w-[400px];
+    @apply md:w-[400px];
+    left: var(--bk-root-offset-left);
     box-shadow:
       1px -0px 2px rgb(20 45 82 / 2%),
       3px -0px 4px rgb(20 45 82 / 3%),

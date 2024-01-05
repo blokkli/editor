@@ -659,6 +659,9 @@ onMounted(() => {
     offset.value.x = savedState.value.offset.x
     offset.value.y = savedState.value.offset.y
     updateScale(savedState.value.scale)
+  } else {
+    offset.value.x = getCenterX()
+    offset.value.y = 20
   }
   updateStyles()
 })

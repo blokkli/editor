@@ -15,6 +15,9 @@
     --bk-root-offset-top: 50px;
     --bk-actions-height: 50px;
   }
+  &.bk-has-sidebar-left {
+    --bk-root-offset-left: 70px;
+  }
   &.bk-has-sidebar-bottom {
     --bk-root-offset-bottom: 50px;
     @screen md {
@@ -24,10 +27,6 @@
 }
 
 .bk-html-root:not(.bk-is-artboard) .bk-main-canvas {
-  /* margin-top: var(--bk-root-offset-top); */
-  /* margin-left: var(--bk-root-offset-left); */
-  /* margin-bottom: var(--bk-root-offset-bottom); */
-
   @apply relative;
   margin-top: var(--bk-root-offset-top);
   margin-left: var(--bk-root-offset-left);
