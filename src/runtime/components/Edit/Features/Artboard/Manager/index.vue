@@ -634,13 +634,24 @@ function onTouchEnd(e: TouchEvent) {
   }
 }
 
-function onScrollIntoView(e: ScrollIntoViewEvent) {
-  const item = dom.findBlock(e.uuid)
-  if (!item) {
-    return
-  }
+const findElementToScrollTo = (uuid: string): HTMLElement | undefined => {
+  try {
+    const item = dom.findBlock(uuid)
+    if (!item) {
+      return
+    }
 
-  const element = item.element()
+    const element = item.element()
+    if (!element) {
+      return
+    }
+
+    return element
+  } catch (_e) {}
+}
+
+function onScrollIntoView(e: ScrollIntoViewEvent) {
+  const element = findElementToScrollTo(e.uuid)
   if (!element) {
     return
   }
