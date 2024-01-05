@@ -15,7 +15,7 @@ import type { TextProvider } from '../helpers/textProvider'
 import type { BroadcastProvider } from '#blokkli/helpers/broadcastProvider'
 import type { FeaturesProvider } from '#blokkli/helpers/featuresProvider'
 import type { BlokkliIcon } from '#blokkli/icons'
-import type { SettingsGroup } from '#blokkli/constants'
+import type { SettingsGroup, Viewport } from '#blokkli/constants'
 
 interface MutationResponseLike<T> {
   data: {
@@ -751,6 +751,7 @@ export type FeatureDefinitionSettingRadios = {
   default: string
   options: Record<string, FeatureDefinitionSettingRadiosOption>
   group?: SettingsGroup
+  viewports?: Viewport[]
 }
 
 export type FeatureDefinitionSettingCheckbox = {
@@ -758,6 +759,7 @@ export type FeatureDefinitionSettingCheckbox = {
   label: string
   default: boolean
   group?: SettingsGroup
+  viewports?: Viewport[]
 }
 
 export type FeatureDefinitionSetting =
@@ -773,6 +775,7 @@ export type FeatureDefinition<
   icon: BlokkliIcon
   description?: string
   dependencies?: T[]
+  viewports?: Viewport[]
   requiredAdapterMethods?: [...Methods]
   settings?: Record<string, FeatureDefinitionSetting>
 }

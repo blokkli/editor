@@ -21,6 +21,7 @@ const { adapter } = defineBlokkliFeature({
   icon: 'grid',
   requiredAdapterMethods: ['getGridMarkup'],
   description: 'Provides a view option to render a grid.',
+  viewports: ['desktop'],
 })
 
 const gridMarkup = await Promise.resolve(adapter.getGridMarkup())

@@ -8,15 +8,7 @@
 
 .bk.bk-settings {
   .bk-settings-group-title {
-    @apply !flex items-center gap-15 font-bold mt-10 mb-30 text-xl;
-    .bk-icon {
-      @apply w-[1em] h-[1em] rounded-full border flex items-center justify-center;
-      @apply bg-slate-950 text-white border-blue-300;
-      @apply text-3xl;
-      svg {
-        @apply fill-current w-[0.6em] h-[0.6em];
-      }
-    }
+    @apply font-bold mt-10 mb-30 text-xl;
   }
   .bk-settings-feature-setting + .bk-settings-feature-setting {
     @apply mt-20;

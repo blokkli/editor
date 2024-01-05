@@ -123,6 +123,7 @@ const { adapter, settings } = defineBlokkliFeature({
       label: 'Use mouse buttons for undo/redo',
       default: true,
       group: 'behavior',
+      viewports: ['desktop'],
     },
   },
 })

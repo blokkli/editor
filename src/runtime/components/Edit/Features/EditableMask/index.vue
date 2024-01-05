@@ -22,6 +22,7 @@ defineBlokkliFeature({
   id: 'editable-mask',
   icon: 'texturebox',
   description: 'Provides a view option to hide non-editable parts of the page.',
+  viewports: ['desktop'],
 })
 
 const { $t } = useBlokkli()

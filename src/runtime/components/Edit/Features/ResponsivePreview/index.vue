@@ -1,6 +1,5 @@
 <template>
   <PluginSidebar
-    v-if="!ui.isMobile.value"
     id="mobile-preview"
     v-slot="{ width, height, isDetached }"
     :title="$t('responsivePreviewTitle')"
@@ -73,6 +72,7 @@ defineBlokkliFeature({
   id: 'responsive-preview',
   icon: 'cellphone',
   label: 'Responsive Preview',
+  viewports: ['desktop'],
   description:
     'Provides a responsive preview of the current edit state in an iframe.',
 })

@@ -12,7 +12,7 @@ import { featureComponents } from '#blokkli-runtime/features'
 
 const emit = defineEmits(['loaded'])
 
-const { adapter, features } = useBlokkli()
+const { adapter, features, ui } = useBlokkli()
 
 const renderedFeatures = computed(() =>
   features.features.value.map((v) => v.id),
@@ -38,6 +38,13 @@ const availableFeatures = computed(() => {
     if (
       v.dependencies.length &&
       !v.dependencies.every((id) => renderedFeatures.value.includes(id))
+    ) {
+      return false
+    }
+
+    if (
+      v.viewports.length &&
+      !v.viewports.some((viewport) => ui.appViewport.value === viewport)
     ) {
       return false
     }

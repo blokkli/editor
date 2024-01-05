@@ -9,7 +9,6 @@
     <div class="bk bk-dialog-form bk-settings">
       <div v-for="group in groups" :key="group.key" class="bk-form-section">
         <h3 class="bk-settings-group-title">
-          <Icon :name="group.icon" />
           <span>{{ group.label }}</span>
         </h3>
         <FeatureSetting
@@ -34,14 +33,14 @@
 
 <script lang="ts" setup>
 import { useBlokkli } from '#imports'
-import { DialogModal, Icon } from '#blokkli/components'
+import { DialogModal } from '#blokkli/components'
 import FeatureSetting from './FeatureSetting/index.vue'
 import type { ValidFeatureKey } from '#blokkli-runtime/features'
 import type { FeatureDefinitionSetting } from '#blokkli/types'
 import { SETTINGS_GROUP, type SettingsGroup } from '#blokkli/constants'
 import type { BlokkliIcon } from '#blokkli/icons'
 
-const { storage, $t, features } = useBlokkli()
+const { storage, $t, features, ui } = useBlokkli()
 
 type FeatureSetting = {
   featureId: ValidFeatureKey
@@ -79,28 +78,37 @@ const getGroupIcon = (key: SettingsGroup): BlokkliIcon => {
   return 'question'
 }
 
+const shouldRenderSetting = (setting: FeatureDefinitionSetting): boolean => {
+  if (setting.viewports?.length) {
+    return setting.viewports.some((v) => ui.appViewport.value === v)
+  }
+  return true
+}
+
 const groups = computed<GroupedSettings[]>(() => {
   return Object.values(
     features.features.value.reduce<Record<string, GroupedSettings>>(
       (acc, feature) => {
         Object.entries(feature.settings || {}).forEach(
           ([settingsKey, setting]) => {
-            const group = setting.group || 'advanced'
-            if (!acc[group]) {
-              acc[group] = {
-                id: group as any,
-                key: group,
-                label: getGroupLabel(group),
-                icon: getGroupIcon(group),
-                settings: [],
+            if (shouldRenderSetting(setting)) {
+              const group = setting.group || 'advanced'
+              if (!acc[group]) {
+                acc[group] = {
+                  id: group as any,
+                  key: group,
+                  label: getGroupLabel(group),
+                  icon: getGroupIcon(group),
+                  settings: [],
+                }
               }
-            }
 
-            acc[group].settings.push({
-              featureId: feature.id,
-              settingsKey,
-              setting,
-            })
+              acc[group].settings.push({
+                featureId: feature.id,
+                settingsKey,
+                setting,
+              })
+            }
           },
         )
         return acc

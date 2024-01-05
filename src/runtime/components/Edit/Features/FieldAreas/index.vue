@@ -23,6 +23,7 @@ defineBlokkliFeature({
   label: 'Field Areas',
   icon: 'area',
   description: 'Provides a view option to render the field areas with labels.',
+  viewports: ['desktop'],
 })
 
 const { $t } = useBlokkli()

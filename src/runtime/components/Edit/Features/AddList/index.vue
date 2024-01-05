@@ -20,7 +20,10 @@
     <div
       ref="wrapper"
       class="bk bk-add-list bk-control"
-      :class="[{ 'bk-is-active': isActive }, 'bk-is-' + listOrientation]"
+      :class="[
+        { 'bk-is-active': isActive },
+        'bk-is-' + ui.addListOrientation.value,
+      ]"
       @wheel.capture="onWheel"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
@@ -46,9 +49,8 @@ import {
 } from '#imports'
 import { Sortli } from '#blokkli/components'
 import { PluginSidebar } from '#blokkli/plugins'
-import type { AddListOrientation } from '#blokkli/types'
 
-const { settings } = defineBlokkliFeature({
+defineBlokkliFeature({
   id: 'add-list',
   icon: 'plus',
   label: 'Add List',
@@ -60,6 +62,7 @@ const { settings } = defineBlokkliFeature({
       label: 'Add List Orientation',
       default: 'vertical',
       group: 'appearance',
+      viewports: ['desktop'],
       options: {
         vertical: {
           label: 'Vertical',
@@ -78,16 +81,12 @@ const { settings } = defineBlokkliFeature({
   },
 })
 
-const { state, $t, eventBus } = useBlokkli()
+const { state, $t, eventBus, ui } = useBlokkli()
 
-const listOrientation = computed<AddListOrientation>(
-  () => settings.value.orientation || 'vertical',
-)
-
-const isSidebar = computed(() => listOrientation.value === 'sidebar')
+const isSidebar = computed(() => ui.addListOrientation.value === 'sidebar')
 const shouldRender = computed(() => state.editMode.value === 'editing')
 
-watch(listOrientation, () => {
+watch(ui.addListOrientation, () => {
   setRootClasses()
   nextTick(() => {
     eventBus.emit('add-list:change')
@@ -111,12 +110,12 @@ function onMouseLeave() {
 }
 
 const onWheel = (e: WheelEvent) => {
-  if (listOrientation.value === 'horizontal' && e.deltaX) {
+  if (ui.addListOrientation.value === 'horizontal' && e.deltaX) {
     e.stopPropagation()
     return
   }
 
-  if (listOrientation.value === 'vertical' && e.deltaY) {
+  if (ui.addListOrientation.value === 'vertical' && e.deltaY) {
     e.stopPropagation()
   }
 }
@@ -129,9 +128,9 @@ function setRootClasses() {
     return
   }
 
-  if (listOrientation.value === 'horizontal') {
+  if (ui.addListOrientation.value === 'horizontal') {
     document.documentElement.classList.add('bk-has-sidebar-bottom')
-  } else if (listOrientation.value === 'vertical') {
+  } else if (ui.addListOrientation.value === 'vertical') {
     document.documentElement.classList.add('bk-has-sidebar-left')
   }
 }

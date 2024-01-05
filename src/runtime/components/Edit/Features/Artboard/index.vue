@@ -25,6 +25,7 @@ const { settings } = defineBlokkliFeature({
       default: 'yes',
       label: 'Page editing',
       group: 'appearance',
+      viewports: ['desktop'],
       options: {
         yes: {
           label: 'Use artboard',
@@ -41,6 +42,7 @@ const { settings } = defineBlokkliFeature({
       default: true,
       label: 'Persist position and zoom',
       group: 'behavior',
+      viewports: ['desktop'],
     },
   },
 })

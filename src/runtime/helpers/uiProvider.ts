@@ -10,6 +10,7 @@ import {
 import { eventBus } from './eventBus'
 import type { StorageProvider } from './storageProvider'
 import type { AddListOrientation, Rectangle } from '#blokkli/types'
+import type { Viewport } from '#blokkli/constants'
 
 export type UiProvider = {
   rootElement: () => HTMLElement
@@ -33,6 +34,8 @@ export type UiProvider = {
 
   setViewportBlockingRectangle: (key: string, rect?: Rectangle) => void
   viewportBlockingRects: ComputedRef<Rectangle[]>
+
+  appViewport: ComputedRef<Viewport>
 }
 
 export default function (storage: StorageProvider): UiProvider {
@@ -100,10 +103,17 @@ export default function (storage: StorageProvider): UiProvider {
     return scaleValue
   }
 
+  const appViewport = computed<Viewport>(() => {
+    if (viewportWidth.value < 768) {
+      return 'mobile'
+    }
+    return 'desktop'
+  })
+
   const viewportWidth = ref(window.innerWidth)
   const viewportHeight = ref(window.innerHeight)
-  const isMobile = computed(() => viewportWidth.value < 768)
-  const isDesktop = computed(() => viewportWidth.value > 1024)
+  const isMobile = computed(() => appViewport.value === 'mobile')
+  const isDesktop = computed(() => appViewport.value === 'desktop')
   let resizeTimeout: any = null
 
   const onResize = () => {
@@ -249,5 +259,6 @@ export default function (storage: StorageProvider): UiProvider {
     addListOrientation,
     setViewportBlockingRectangle,
     viewportBlockingRects,
+    appViewport,
   }
 }

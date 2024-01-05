@@ -209,6 +209,8 @@ export default defineNuxtModule<ModuleOptions>({
           .map((v) => {
             return `{ id: "${v.id}", dependencies: ${JSON.stringify(
               v.definition.dependencies || [],
+            )}, viewports: ${JSON.stringify(
+              v.definition.viewports || [],
             )}, component: ${
               v.importName
             }, requiredAdapterMethods: ${JSON.stringify(
@@ -219,6 +221,7 @@ export default defineNuxtModule<ModuleOptions>({
 
         return `${imports}
 import type { BlokkliAdapter } from '#blokkli/adapter'
+import type { Viewport } from '#blokkli/constants'
 type AdapterMethods = keyof BlokkliAdapter<any>
 
 export const availableFeaturesAtBuild = ${JSON.stringify(
@@ -233,6 +236,7 @@ type FeatureComponent = {
   requiredAdapterMethods: AdapterMethods[]
   dependencies: ValidFeatureKey[]
   description: string
+  viewports: Viewport[]
 }
 
 export const featureComponents: FeatureComponent[] = [
