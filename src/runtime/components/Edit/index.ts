@@ -7,7 +7,7 @@ import DialogModal from './Dialog/index.vue'
 import ScaleToFit from './ScaleToFit/index.vue'
 import Sortli from './Sortli/index.vue'
 import FormOverlay from './FormOverlay/index.vue'
-import AddListItem from './AddList/Item/index.vue'
+import AddListItem from './AddListItem/index.vue'
 import Loading from './Loading/index.vue'
 
 export {

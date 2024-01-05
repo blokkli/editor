@@ -23,7 +23,8 @@ const { settings } = defineBlokkliFeature({
     useArtboard: {
       type: 'radios',
       default: 'yes',
-      label: 'Use artboard',
+      label: 'Page editing',
+      group: 'appearance',
       options: {
         yes: {
           label: 'Use artboard',
@@ -39,6 +40,7 @@ const { settings } = defineBlokkliFeature({
       type: 'checkbox',
       default: true,
       label: 'Persist position and zoom',
+      group: 'behavior',
     },
   },
 })

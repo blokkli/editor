@@ -1,5 +1,6 @@
 import type { BlokkliAdapter, AdapterMethods } from '#blokkli/adapter'
 import type { FeatureDefinition } from '#blokkli/types'
+import type { ValidFeatureKey } from '#blokkli-runtime/features'
 
 type SettingType<S> = S extends { type: 'checkbox' }
   ? boolean
@@ -26,7 +27,7 @@ type CombinedAdapter<T, Methods extends AdapterMethods[]> = PickRequiredMethods<
 type DefineBlokkliFeature<
   T,
   Methods extends AdapterMethods[],
-  F extends FeatureDefinition<Methods>,
+  F extends FeatureDefinition<Methods, ValidFeatureKey>,
 > = {
   adapter: CombinedAdapter<T, Methods>
   settings: ComputedRef<SettingsTypes<F['settings']>>
@@ -35,7 +36,7 @@ type DefineBlokkliFeature<
 export function defineBlokkliFeature<
   T,
   Methods extends AdapterMethods[],
-  F extends FeatureDefinition<Methods>,
+  F extends FeatureDefinition<Methods, ValidFeatureKey>,
 >(feature: F): DefineBlokkliFeature<T, Methods, F> {
   const { adapter, storage, features } = useBlokkli()
   const defaults = Object.entries(feature.settings || {}).reduce<
@@ -63,6 +64,6 @@ export function defineBlokkliFeature<
   })
   return {
     adapter: adapter as CombinedAdapter<T, Methods>,
-    settings,
+    settings: settings as any,
   }
 }

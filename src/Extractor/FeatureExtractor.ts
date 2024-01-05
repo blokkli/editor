@@ -2,8 +2,10 @@ import fs from 'fs'
 import type { FeatureDefinition } from '../runtime/types'
 import type { AdapterMethods } from '../runtime/adapter/index'
 
-type ExtractedDefinition = {
+export type ExtractedFeatureDefinition = {
   id: string
+  componentName: string
+  componentPath: string
   filePath: string
   definition: FeatureDefinition<AdapterMethods[]>
   source: string
@@ -13,7 +15,7 @@ type ExtractedDefinition = {
  * Service to handle text extractions across multiple files.
  */
 export default class Extractor {
-  definitions: Record<string, ExtractedDefinition> = {}
+  definitions: Record<string, ExtractedFeatureDefinition> = {}
   isBuild = false
   composableName: string
 
@@ -52,9 +54,11 @@ export default class Extractor {
     // New file that didn't previously contain a blokkli component definition.
     if (!this.definitions[filePath]) {
       const regex = /\/Features\/([^/]+)\//
-      const id = filePath.match(regex)?.[1] || ''
+      const componentName = filePath.match(regex)?.[1] || ''
       this.definitions[filePath] = {
-        id,
+        id: definition.id,
+        componentName,
+        componentPath: filePath,
         filePath,
         definition,
         source,
@@ -105,7 +109,7 @@ export default class Extractor {
     })
   }
 
-  getFeatures(): ExtractedDefinition[] {
+  getFeatures(): ExtractedFeatureDefinition[] {
     return Object.values(this.definitions)
   }
 }

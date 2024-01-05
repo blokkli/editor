@@ -15,6 +15,7 @@ import type { TextProvider } from '../helpers/textProvider'
 import type { BroadcastProvider } from '#blokkli/helpers/broadcastProvider'
 import type { FeaturesProvider } from '#blokkli/helpers/featuresProvider'
 import type { BlokkliIcon } from '#blokkli/icons'
+import type { SettingsGroup } from '#blokkli/constants'
 
 interface MutationResponseLike<T> {
   data: {
@@ -25,13 +26,6 @@ interface MutationResponseLike<T> {
       }
     }
   }
-}
-
-export type Feature = {
-  id: string
-  componentPath: string
-  requiredAdapterMethods: string[]
-  description: string
 }
 
 export type MutateWithLoadingStateFunction = (
@@ -756,23 +750,29 @@ export type FeatureDefinitionSettingRadios = {
   label: string
   default: string
   options: Record<string, FeatureDefinitionSettingRadiosOption>
+  group?: SettingsGroup
 }
 
 export type FeatureDefinitionSettingCheckbox = {
   type: 'checkbox'
   label: string
   default: boolean
+  group?: SettingsGroup
 }
 
 export type FeatureDefinitionSetting =
   | FeatureDefinitionSettingCheckbox
   | FeatureDefinitionSettingRadios
 
-export type FeatureDefinition<Methods extends AdapterMethods[]> = {
-  id: string
+export type FeatureDefinition<
+  Methods extends AdapterMethods[] = [],
+  T extends string = '',
+> = {
+  id: T
   label?: string
   icon: BlokkliIcon
   description?: string
+  dependencies?: T[]
   requiredAdapterMethods?: [...Methods]
   settings?: Record<string, FeatureDefinitionSetting>
 }

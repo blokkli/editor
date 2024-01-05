@@ -137,13 +137,13 @@ export default function (storage: StorageProvider): UiProvider {
 
   const activeSidebarLeft = storage.use('sidebar:active:left', '')
   const activeSidebarRight = storage.use('sidebar:active:right', '')
-  const listOrientationSetting = storage.use<AddListOrientation>(
-    'listOrientation',
-    'vertical',
-  )
+
+  const settingsStorage = storage.use('feature:add-list:settings', {
+    orientation: 'vertical' as any,
+  })
 
   const addListOrientation = computed<AddListOrientation>(() =>
-    isMobile.value ? 'horizontal' : listOrientationSetting.value,
+    isMobile.value ? 'horizontal' : settingsStorage.value.orientation,
   )
 
   const visibleViewportX = computed<number>(() => {

@@ -115,6 +115,8 @@ export default {
   settingsMenuDescription: 'Personal settings for the editor',
   settingsDialogTitle: 'Settings',
   settingsBehaviour: 'Behavior',
+  settingsAppearance: 'Appearance',
+  settingsAdvanced: 'Advanced',
   settingsShowImport: 'Show "Import content" dialog at start',
   settingsPersistArtboard: 'Save position and zoom',
   settingsViewOptions: 'Content display',

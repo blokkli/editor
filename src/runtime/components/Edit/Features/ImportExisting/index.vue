@@ -5,8 +5,8 @@
     :description="$t('importExistingDescription')"
     :disabled="state.editMode.value !== 'editing'"
     :weight="50"
-    @click="showModal = true"
     icon="import"
+    @click="showModal = true"
   />
 
   <Teleport to="body">
@@ -43,7 +43,8 @@ const { adapter, settings } = defineBlokkliFeature({
     showDialogWhenEmpty: {
       type: 'checkbox',
       default: true,
-      label: 'Show dialog at start on empty pages',
+      label: 'Show import dialog at start when page is empty',
+      group: 'behavior',
     },
   },
 })

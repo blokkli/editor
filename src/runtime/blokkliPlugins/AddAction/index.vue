@@ -4,7 +4,7 @@
       :id="type"
       :label="title"
       :icon="icon"
-      :orientation="listOrientation"
+      :orientation="ui.addListOrientation.value"
       :color="color"
       data-element-type="action"
       :data-action-type="type"
@@ -15,7 +15,7 @@
 <script lang="ts" setup>
 import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import type { BlokkliIcon } from '#blokkli/icons'
-import type { ActionPlacedEvent, AddListOrientation } from '#blokkli/types'
+import type { ActionPlacedEvent } from '#blokkli/types'
 import { AddListItem } from '#blokkli/components'
 
 const props = defineProps<{
@@ -32,17 +32,14 @@ const emit = defineEmits<{
   (e: 'placed', data: ActionPlacedEvent): void
 }>()
 
-const { ui, storage, eventBus, state } = useBlokkli()
+const { ui, eventBus, state, features } = useBlokkli()
 
-const shouldRender = computed(() => state.editMode.value === 'editing')
-
-const listOrientationSetting = storage.use<AddListOrientation>(
-  'listOrientation',
-  'vertical',
+const addListAvailable = computed(
+  () => !!features.features.value.find((v) => v.id === 'add-list'),
 )
 
-const listOrientation = computed<AddListOrientation>(() =>
-  ui.isMobile.value ? 'horizontal' : listOrientationSetting.value,
+const shouldRender = computed(
+  () => addListAvailable.value && state.editMode.value === 'editing',
 )
 
 const onActionPlaced = (e: ActionPlacedEvent) => {

@@ -11,7 +11,6 @@
   <Messages />
   <Toolbar @loaded="toolbarLoaded = true" />
   <AppMenu v-if="toolbarLoaded" />
-  <AddList />
   <Features
     v-if="!isInitializing && toolbarLoaded"
     :key="route.fullPath"
@@ -33,7 +32,6 @@ import {
 } from '#imports'
 import type { BlokkliApp } from '#blokkli/types'
 import Toolbar from './Toolbar/index.vue'
-import AddList from './AddList/index.vue'
 import Actions from './Actions/index.vue'
 import Loading from './Loading/index.vue'
 import Messages from './Messages/index.vue'

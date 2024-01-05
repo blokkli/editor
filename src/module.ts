@@ -10,9 +10,11 @@ import {
   updateTemplates,
 } from '@nuxt/kit'
 import BlockExtractor from './Extractor/BlockExtractor'
-import FeatureExtractor from './Extractor/FeatureExtractor'
+import FeatureExtractor, {
+  type ExtractedFeatureDefinition,
+} from './Extractor/FeatureExtractor'
 import { extname, basename } from 'path'
-import type { BlockDefinitionOptionsInput, Feature } from './runtime/types'
+import type { BlockDefinitionOptionsInput } from './runtime/types'
 import { promises as fsp, existsSync } from 'fs'
 import { DefinitionPlugin } from './vitePlugin'
 import defu from 'defu'
@@ -47,7 +49,7 @@ const fileExists = (
 const POSSIBLE_EXTENSIONS = ['.js', '.ts', '.vue', '.mjs']
 
 type AlterFeatures = {
-  features: Feature[]
+  features: ExtractedFeatureDefinition[]
 }
 
 /**
@@ -124,7 +126,9 @@ export type ModuleOptions = {
    * It's also possible to override builtin feature components with custom
    * implementations.
    */
-  alterFeatures?: (ctx: AlterFeatures) => Promise<Feature[]> | Feature[]
+  alterFeatures?: (
+    ctx: AlterFeatures,
+  ) => Promise<ExtractedFeatureDefinition[]> | ExtractedFeatureDefinition[]
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -154,7 +158,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     const featureFolder = resolver.resolve('./runtime/components/Edit/Features')
     const featureExtractor = new FeatureExtractor(!nuxt.options.dev)
-    const features: Feature[] = await resolveFiles(
+    const features: ExtractedFeatureDefinition[] = await resolveFiles(
       featureFolder,
       ['*/index.vue'],
       {
@@ -162,19 +166,7 @@ export default defineNuxtModule<ModuleOptions>({
       },
     ).then(async (files) => {
       await featureExtractor.addFiles(files)
-      const allExtracted = featureExtractor.getFeatures()
-      return files.map((componentPath) => {
-        const regex = /\/Features\/([^/]+)\//
-        const id = componentPath.match(regex)?.[1] || ''
-        const extracted = allExtracted.find((v) => v.id === id)
-        return {
-          id,
-          componentPath,
-          requiredAdapterMethods:
-            extracted?.definition?.requiredAdapterMethods || [],
-          description: extracted?.definition?.description || '',
-        }
-      })
+      return featureExtractor.getFeatures()
     })
 
     const featuresContext: AlterFeatures = {
@@ -193,13 +185,13 @@ export default defineNuxtModule<ModuleOptions>({
       filename: 'blokkli/features.ts',
       getContents: async () => {
         const features = featuresContext.features.map((v) => {
-          const importName = `Feature_${v.id}`
+          const importName = `Feature_${v.componentName}`
           return {
             id: v.id,
+            componentName: v.componentPath,
             importName,
             importStatement: `import ${importName} from '${v.componentPath}'`,
-            requiredAdapterMethods: v.requiredAdapterMethods,
-            description: v.description,
+            definition: v.definition,
           }
         })
 
@@ -215,11 +207,13 @@ export default defineNuxtModule<ModuleOptions>({
 
         const featuresArray = features
           .map((v) => {
-            return `{ id: "${v.id}", component: ${
+            return `{ id: "${v.id}", dependencies: ${JSON.stringify(
+              v.definition.dependencies || [],
+            )}, component: ${
               v.importName
             }, requiredAdapterMethods: ${JSON.stringify(
-              v.requiredAdapterMethods,
-            )}, description: "${v.description}" }`
+              v.definition.requiredAdapterMethods || [],
+            )}, description: "${v.definition.description || ''}" }`
           })
           .join(',\n')
 
@@ -227,20 +221,23 @@ export default defineNuxtModule<ModuleOptions>({
 import type { BlokkliAdapter } from '#blokkli/adapter'
 type AdapterMethods = keyof BlokkliAdapter<any>
 
+export const availableFeaturesAtBuild = ${JSON.stringify(
+          availableFeaturesAtBuild,
+        )} as const
+
+export type ValidFeatureKey = typeof availableFeaturesAtBuild[number]
+
 type FeatureComponent = {
   id: string
   component: any
   requiredAdapterMethods: AdapterMethods[]
+  dependencies: ValidFeatureKey[]
   description: string
 }
 
 export const featureComponents: FeatureComponent[] = [
 ${featuresArray}
 ]
-
-export const availableFeaturesAtBuild = ${JSON.stringify(
-          availableFeaturesAtBuild,
-        )}
 `
       },
       options: {
@@ -499,6 +496,8 @@ export type BlokkliIcon = keyof typeof icons`
     nuxt.options.alias['#blokkli/icons'] = templateIcons.dst
     nuxt.options.alias['#blokkli/imports'] = templateImports.dst
     nuxt.options.alias['#blokkli/types'] = resolver.resolve('runtime/types')
+    nuxt.options.alias['#blokkli/constants'] =
+      resolver.resolve('runtime/constants')
     nuxt.options.alias['#blokkli/plugins'] = resolver.resolve(
       'runtime/blokkliPlugins',
     )

@@ -7,72 +7,22 @@
     @cancel="$emit('cancel')"
   >
     <div class="bk bk-dialog-form bk-settings">
-      <FeatureSettings
-        v-for="setting in featureSettings"
-        :id="setting.id"
-        :key="setting.id"
-        :label="setting.label"
-        :icon="setting.icon"
-      />
-      <div class="bk-form-section">
-        <h3 class="bk-form-label">
-          {{ $t('settingsBehaviour') }}
+      <div v-for="group in groups" :key="group.key" class="bk-form-section">
+        <h3 class="bk-settings-group-title">
+          <Icon :name="group.icon" />
+          <span>{{ group.label }}</span>
         </h3>
-        <ul class="bk-settings-checkboxes">
-          <li>
-            <label class="bk-checkbox-toggle">
-              <input v-model="useAnimations" type="checkbox" class="peer" />
-              <div />
-              <span>{{ $t('settingsUseAnimations') }}</span>
-            </label>
-          </li>
-        </ul>
+        <FeatureSetting
+          v-for="setting in group.settings"
+          :key="group.key + setting.settingsKey"
+          :feature-id="setting.featureId"
+          :settings-key="setting.settingsKey"
+          :setting="setting.setting"
+        />
       </div>
-
-      <div v-if="showAddListOptions" class="bk-form-section">
-        <h3 class="bk-form-label">
-          {{ $t('settingsListOrientation') }}
-        </h3>
-        <ul class="bk-settings-ui">
-          <li>
-            <label>
-              <input v-model="listOrientation" type="radio" value="vertical" />
-              <Icon name="ui-list-vertical" />
-              <span>{{ $t('settingsListOrientationVertical') }}</span>
-            </label>
-          </li>
-          <li>
-            <label>
-              <input
-                v-model="listOrientation"
-                type="radio"
-                value="horizontal"
-              />
-              <Icon name="ui-list-horizontal" />
-              <span>{{ $t('settingsListOrientationHorizontal') }}</span>
-            </label>
-          </li>
-          <li>
-            <label>
-              <input v-model="listOrientation" type="radio" value="sidebar" />
-              <Icon name="ui-list-sidebar" />
-              <span>{{ $t('settingsListOrientationSidebar') }}</span>
-            </label>
-          </li>
-        </ul>
-      </div>
-
       <div class="bk-form-section">
         <h3 class="bk-form-label">Erweitert</h3>
         <div class="bk-settings-buttons">
-          <button
-            v-if="showAddListOptions"
-            class="bk-button"
-            @click="revertSort"
-          >
-            {{ $t('settingsRevertSorting') }}
-          </button>
-
           <button class="bk-button is-danger" @click="revertAll">
             {{ $t('settingsRevertAll') }}
           </button>
@@ -85,45 +35,89 @@
 <script lang="ts" setup>
 import { useBlokkli } from '#imports'
 import { DialogModal, Icon } from '#blokkli/components'
-import FeatureSettings from './FeatureSettings/index.vue'
+import FeatureSetting from './FeatureSetting/index.vue'
+import type { ValidFeatureKey } from '#blokkli-runtime/features'
+import type { FeatureDefinitionSetting } from '#blokkli/types'
+import { SETTINGS_GROUP, type SettingsGroup } from '#blokkli/constants'
 import type { BlokkliIcon } from '#blokkli/icons'
 
-const { storage, $t, ui, features } = useBlokkli()
+const { storage, $t, features } = useBlokkli()
 
 type FeatureSetting = {
-  id: string
-  label: string
-  icon: BlokkliIcon
+  featureId: ValidFeatureKey
+  settingsKey: string
+  setting: FeatureDefinitionSetting
 }
 
-const featureSettings = computed(() => {
+type GroupedSettings = {
+  id: SettingsGroup
+  key: string
+  label: string
+  icon: BlokkliIcon
+  settings: FeatureSetting[]
+}
+
+const getGroupLabel = (key: SettingsGroup): string => {
+  if (key === 'behavior') {
+    return $t('settingsBehaviour')
+  } else if (key === 'appearance') {
+    return $t('settingsAppearance')
+  } else if (key === 'advanced') {
+    return $t('settingsAdvanced')
+  }
+  return key
+}
+
+const getGroupIcon = (key: SettingsGroup): BlokkliIcon => {
+  if (key === 'behavior') {
+    return 'tools'
+  } else if (key === 'appearance') {
+    return 'palette'
+  } else if (key === 'advanced') {
+    return 'bug'
+  }
+  return 'question'
+}
+
+const groups = computed<GroupedSettings[]>(() => {
   return Object.values(
-    features.features.value.reduce<Record<string, FeatureSetting>>((acc, v) => {
-      if (v.settings) {
-        acc[v.id] = {
-          id: v.id,
-          label: v.label || v.id,
-          icon: v.icon,
-        }
-      }
-      return acc
-    }, {}),
+    features.features.value.reduce<Record<string, GroupedSettings>>(
+      (acc, feature) => {
+        Object.entries(feature.settings || {}).forEach(
+          ([settingsKey, setting]) => {
+            const group = setting.group || 'advanced'
+            if (!acc[group]) {
+              acc[group] = {
+                id: group as any,
+                key: group,
+                label: getGroupLabel(group),
+                icon: getGroupIcon(group),
+                settings: [],
+              }
+            }
+
+            acc[group].settings.push({
+              featureId: feature.id,
+              settingsKey,
+              setting,
+            })
+          },
+        )
+        return acc
+      },
+      {},
+    ),
   )
+    .map((group) => {
+      group.settings.sort((a, b) => b.settingsKey.localeCompare(a.settingsKey))
+      return group
+    })
+    .sort((a, b) => SETTINGS_GROUP.indexOf(a.id) - SETTINGS_GROUP.indexOf(b.id))
 })
-
-const listOrientation = storage.use<'horizontal' | 'vertical'>(
-  'listOrientation',
-  'vertical',
-)
-const useAnimations = storage.use('useAnimations', true)
-
-const showAddListOptions = computed(() => !ui.isMobile.value)
 
 defineEmits<{
   (e: 'cancel'): void
 }>()
-
-const revertSort = () => storage.clear('sorts')
 
 const revertAll = () => storage.clearAll()
 </script>

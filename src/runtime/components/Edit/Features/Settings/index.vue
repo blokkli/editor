@@ -23,6 +23,15 @@ defineBlokkliFeature({
   label: 'Settings',
   icon: 'cog',
   description: 'Provides a menu button to display a settings dialog.',
+
+  settings: {
+    useAnimations: {
+      type: 'checkbox',
+      default: true,
+      label: 'Use animations',
+      group: 'advanced',
+    },
+  },
 })
 
 const { $t } = useBlokkli()

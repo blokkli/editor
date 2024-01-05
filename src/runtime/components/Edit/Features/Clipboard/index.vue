@@ -54,11 +54,20 @@ import type {
 import { falsy } from '#blokkli/helpers'
 import { Icon } from '#blokkli/components'
 
-defineBlokkliFeature({
+const { settings } = defineBlokkliFeature({
   id: 'clipboard',
+  label: 'Clipboard',
   icon: 'clipboard',
   description:
     'Provides clipboard integration to copy/paste existing blocks or paste supported clipboard content like text or images.',
+  settings: {
+    openSidebarOnPaste: {
+      type: 'checkbox',
+      default: true,
+      label: 'Open sidebar when pasting from clipboard',
+      group: 'behavior',
+    },
+  },
 })
 
 const { eventBus, selection, $t, adapter, dom, state, ui } = useBlokkli()
@@ -153,7 +162,11 @@ function onDragOver(e: DragEvent) {
   e.preventDefault()
 }
 
-const showClipboardSidebar = () => plugin?.value?.showSidebar()
+const showClipboardSidebar = () => {
+  if (settings.value.openSidebarOnPaste) {
+    plugin?.value?.showSidebar()
+  }
+}
 
 const handleSelectionPaste = (pastedUuids: string[]) => {
   if (!adapter.pasteExistingBlocks) {

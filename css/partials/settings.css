@@ -7,20 +7,32 @@
 }
 
 .bk.bk-settings {
-  .bk-form-label {
-    @apply !flex items-center gap-10;
+  .bk-settings-group-title {
+    @apply !flex items-center gap-15 font-bold mt-10 mb-30 text-xl;
     .bk-icon {
-      @apply w-25 h-25;
+      @apply w-[1em] h-[1em] rounded-full border flex items-center justify-center;
+      @apply bg-slate-950 text-white border-blue-300;
+      @apply text-3xl;
+      svg {
+        @apply fill-current w-[0.6em] h-[0.6em];
+      }
+    }
+  }
+  .bk-settings-feature-setting + .bk-settings-feature-setting {
+    @apply mt-20;
+
+    &.bk-is-radios {
+      @apply mt-30;
     }
   }
 }
 
 .bk-settings-ui {
-  @apply flex gap-15;
+  @apply grid gap-15 grid-cols-3;
   li {
     @apply relative;
     label {
-      @apply block cursor-pointer w-[200px];
+      @apply block cursor-pointer;
     }
     input {
       @apply appearance-none absolute top-0 left-0 w-full h-full cursor-pointer opacity-0;
@@ -50,7 +62,7 @@
       @apply text-slate-800;
     }
     span {
-      @apply inline-block mt-10 text-sm text-center w-full text-slate-600;
+      @apply inline-block mt-10 text-sm text-left w-full text-slate-600;
     }
   }
 }

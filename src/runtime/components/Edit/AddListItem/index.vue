@@ -67,3 +67,9 @@ const isDark = computed(
   () => props.orientation !== 'sidebar' && props.color === 'default',
 )
 </script>
+
+<script lang="ts">
+export default {
+  name: 'AddListItem',
+}
+</script>

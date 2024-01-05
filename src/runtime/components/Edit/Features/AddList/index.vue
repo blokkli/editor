@@ -20,10 +20,7 @@
     <div
       ref="wrapper"
       class="bk bk-add-list bk-control"
-      :class="[
-        { 'bk-is-active': isActive },
-        'bk-is-' + ui.addListOrientation.value,
-      ]"
+      :class="[{ 'bk-is-active': isActive }, 'bk-is-' + listOrientation]"
       @wheel.capture="onWheel"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
@@ -45,16 +42,52 @@ import {
   onMounted,
   onUnmounted,
   nextTick,
+  defineBlokkliFeature,
 } from '#imports'
 import { Sortli } from '#blokkli/components'
 import { PluginSidebar } from '#blokkli/plugins'
+import type { AddListOrientation } from '#blokkli/types'
 
-const { state, ui, $t, eventBus } = useBlokkli()
+const { settings } = defineBlokkliFeature({
+  id: 'add-list',
+  icon: 'plus',
+  label: 'Add List',
+  description:
+    'Provides the container to render a list of blocks to add or add actions.',
+  settings: {
+    orientation: {
+      type: 'radios',
+      label: 'Add List Orientation',
+      default: 'vertical',
+      group: 'appearance',
+      options: {
+        vertical: {
+          label: 'Vertical',
+          icon: 'ui-list-vertical',
+        },
+        horizontal: {
+          label: 'Horizontal',
+          icon: 'ui-list-horizontal',
+        },
+        sidebar: {
+          label: 'Sidebar',
+          icon: 'ui-list-sidebar',
+        },
+      },
+    },
+  },
+})
 
-const isSidebar = computed(() => ui.addListOrientation.value === 'sidebar')
+const { state, $t, eventBus } = useBlokkli()
+
+const listOrientation = computed<AddListOrientation>(
+  () => settings.value.orientation || 'vertical',
+)
+
+const isSidebar = computed(() => listOrientation.value === 'sidebar')
 const shouldRender = computed(() => state.editMode.value === 'editing')
 
-watch(ui.addListOrientation, () => {
+watch(listOrientation, () => {
   setRootClasses()
   nextTick(() => {
     eventBus.emit('add-list:change')
@@ -78,12 +111,12 @@ function onMouseLeave() {
 }
 
 const onWheel = (e: WheelEvent) => {
-  if (ui.addListOrientation.value === 'horizontal' && e.deltaX) {
+  if (listOrientation.value === 'horizontal' && e.deltaX) {
     e.stopPropagation()
     return
   }
 
-  if (ui.addListOrientation.value === 'vertical' && e.deltaY) {
+  if (listOrientation.value === 'vertical' && e.deltaY) {
     e.stopPropagation()
   }
 }
@@ -96,9 +129,9 @@ function setRootClasses() {
     return
   }
 
-  if (ui.addListOrientation.value === 'horizontal') {
+  if (listOrientation.value === 'horizontal') {
     document.documentElement.classList.add('bk-has-sidebar-bottom')
-  } else if (ui.addListOrientation.value === 'vertical') {
+  } else if (listOrientation.value === 'vertical') {
     document.documentElement.classList.add('bk-has-sidebar-left')
   }
 }

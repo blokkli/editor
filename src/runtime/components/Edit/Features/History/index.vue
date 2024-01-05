@@ -122,6 +122,7 @@ const { adapter, settings } = defineBlokkliFeature({
       type: 'checkbox',
       label: 'Use mouse buttons for undo/redo',
       default: true,
+      group: 'behavior',
     },
   },
 })

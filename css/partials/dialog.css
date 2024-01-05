@@ -33,7 +33,7 @@
   }
 
   .bk-dialog-content {
-    @apply overflow-auto flex-1 min-h-0 max-h-full h-full px-15 pt-15 lg:px-20 lg:pt-20 lg:h-auto rounded-t-xl md:rounded-t-none bg-white;
+    @apply overflow-auto flex-1 min-h-0 max-h-full h-full px-15 pt-15 lg:px-20 xl:px-30 lg:pt-20 lg:h-auto rounded-t-xl md:rounded-t-none bg-white;
     @apply overscroll-contain;
   }
   .bk-dialog-content-inner {

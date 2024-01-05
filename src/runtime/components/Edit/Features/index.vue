@@ -12,18 +12,39 @@ import { featureComponents } from '#blokkli-runtime/features'
 
 const emit = defineEmits(['loaded'])
 
-const { adapter } = useBlokkli()
+const { adapter, features } = useBlokkli()
+
+const renderedFeatures = computed(() =>
+  features.features.value.map((v) => v.id),
+)
 
 // Let the edit adapter determine which features should be disabled at runtime.
 const disabledFeatures = adapter.getDisabledFeatures
   ? await adapter.getDisabledFeatures()
   : await Promise.resolve([])
 
-const availableFeatures = featureComponents.filter(
-  (v) =>
-    !disabledFeatures.includes(v.id) &&
-    v.requiredAdapterMethods.every((method) => adapter[method]),
-)
+const availableFeatures = computed(() => {
+  return featureComponents.filter((v) => {
+    if (disabledFeatures.includes(v.id)) {
+      return false
+    }
+    if (
+      v.requiredAdapterMethods.length &&
+      !v.requiredAdapterMethods.every((method) => adapter[method])
+    ) {
+      return false
+    }
+
+    if (
+      v.dependencies.length &&
+      !v.dependencies.every((id) => renderedFeatures.value.includes(id))
+    ) {
+      return false
+    }
+
+    return true
+  })
+})
 
 onMounted(() => {
   nextTick(() => {
