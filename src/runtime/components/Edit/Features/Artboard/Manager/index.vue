@@ -363,6 +363,10 @@ const shortcuts = computed<KeyboardShortcut[]>(() => {
       label: 'Scroll to top',
     },
     {
+      code: 'End',
+      label: 'Scroll to end',
+    },
+    {
       code: 'PageUp',
       label: 'Scroll one page up',
     },
@@ -379,7 +383,7 @@ const shortcuts = computed<KeyboardShortcut[]>(() => {
       label: 'Scroll down',
     },
     {
-      code: '0',
+      code: 'Digit0',
       label: 'Reset zoom',
       meta: true,
     },

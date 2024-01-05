@@ -1,5 +1,6 @@
 .bk-help {
   @apply p-20;
+  container-type: inline-size;
 }
 
 .bk-help-section {
@@ -10,12 +11,21 @@
 
 .bk-help-shortcuts {
   table {
-    @apply w-full;
+    @apply w-full text-sm;
+
+    @container (min-width: 500px) {
+      @apply text-lg;
+    }
 
     .bk-shortcut {
-      @apply text-xs;
       > kbd {
         @apply bg-slate-100 text-slate-800 border border-slate-300;
+      }
+      @container (min-width: 500px) {
+        @apply text-base;
+        > kbd {
+          @apply text-base;
+        }
       }
     }
 
@@ -33,7 +43,6 @@
 
     td {
       @apply py-10;
-      @apply text-sm;
       &:first-child {
         width: 0;
         @apply pr-10;

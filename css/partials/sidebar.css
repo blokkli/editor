@@ -72,6 +72,17 @@
       }
     }
   }
+  &:not(.bk-is-focused) {
+    .bk-sidebar-detached-inner {
+      button,
+      li,
+      a,
+      input,
+      textarea {
+        @apply pointer-events-none;
+      }
+    }
+  }
 
   .bk-sidebar-title {
     @apply cursor-move;

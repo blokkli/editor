@@ -49,6 +49,9 @@ const groups = computed(() => {
       acc[group].shortcuts.push(v.shortcut)
       return acc
     }, {}),
-  )
+  ).map((group) => {
+    group.shortcuts.sort((a, b) => a.code.localeCompare(b.code))
+    return group
+  })
 })
 </script>

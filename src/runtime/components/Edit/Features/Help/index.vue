@@ -1,13 +1,13 @@
 <template>
   <PluginSidebar
     id="help"
-    :title="$t('featureHelpTitle')"
+    :title="$t('featureHelpTitle', 'Help')"
     icon="chat-question"
     weight="100"
   >
     <div class="bk-help">
       <div class="bk-help-section">
-        <h3>Shortcuts</h3>
+        <h3>{{ $t('featureHelpShortcuts', 'Shortcuts') }}</h3>
         <Shortcuts />
       </div>
     </div>

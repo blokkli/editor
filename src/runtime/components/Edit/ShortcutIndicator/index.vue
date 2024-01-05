@@ -29,7 +29,13 @@ const key = computed(() =>
 
 const keyLabel = computed(() => {
   if (props.keyCode === 'Delete') {
-    return 'DEL'
+    return '⌫'
+  } else if (props.keyCode === 'ArrowDown') {
+    return '↓'
+  } else if (props.keyCode === 'ArrowUp') {
+    return '↑'
+  } else if (props.keyCode === 'Digit0') {
+    return ''
   }
 
   return props.keyCode.toUpperCase()

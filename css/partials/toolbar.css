@@ -269,8 +269,8 @@
 }
 
 .bk-shortcut {
-  @apply font-sans text-sm flex gap-5 font-semibold items-center h-[1.5em];
+  @apply text-xs flex gap-5 font-semibold items-center h-[1.5em];
   > kbd {
-    @apply bg-slate-500 px-5 text-slate-100 rounded flex items-center min-w-[1.5em] justify-center h-full leading-none pt-[0.15em];
+    @apply bg-slate-500 px-5 text-slate-100 rounded flex items-center min-w-[1.5em] justify-center h-full leading-none pt-[0.15em] font-sans text-xs;
   }
 }
