@@ -13,7 +13,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+import {
+  computed,
+  useBlokkli,
+  onMounted,
+  onBeforeUnmount,
+  nextTick,
+} from '#imports'
 import type { BlokkliIcon } from '#blokkli/icons'
 import type { ActionPlacedEvent } from '#blokkli/types'
 import { AddListItem } from '#blokkli/components'
@@ -53,7 +59,9 @@ const onActionPlaced = (e: ActionPlacedEvent) => {
 const renderKey = ref('')
 
 const onAddListChange = () => {
-  renderKey.value = Math.round(Math.random() * 1000000000).toString()
+  nextTick(() => {
+    renderKey.value = Math.round(Math.random() * 1000000000).toString()
+  })
 }
 
 onMounted(() => {

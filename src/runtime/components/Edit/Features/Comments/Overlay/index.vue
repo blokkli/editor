@@ -54,7 +54,6 @@ type Indicator = {
   uuids: string[]
   style: {
     transform: string
-    height: string
   }
 }
 
@@ -66,9 +65,11 @@ function onAnimationFrame(e: AnimationFrameEvent) {
   const artboardRect = artboardEl.getBoundingClientRect()
   const artboardScroll = artboardEl.scrollTop
 
-  const x = Math.min(artboardRect.width / scale + 20, window.innerWidth - 50)
+  const x = Math.min(artboardRect.width / scale + 10, window.innerWidth - 54)
   isReduced.value = e.scale < 0.8
-  isLeft.value = x < e.rootRect.x + e.rootRect.width - 300
+  isLeft.value =
+    x * scale + artboardRect.x + 300 <
+    ui.visibleViewportPadded.value.x + ui.visibleViewportPadded.value.width
 
   const newIndicators: Record<string, Indicator> = {}
   const orphaned: CommentItem[] = []
@@ -112,8 +113,7 @@ function onAnimationFrame(e: AnimationFrameEvent) {
             comments: [],
             uuids,
             style: {
-              transform: `translate(${x}px, ${y}px)`,
-              height: bounds.height + 'px',
+              transform: `translate(${x}px, ${y}px) scale(calc(1 / var(--bk-artboard-scale)))`,
             },
           }
         }

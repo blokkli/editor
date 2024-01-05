@@ -23,6 +23,7 @@
       generallyAvailableBundles.length > 10 &&
       shouldRender
     "
+    :key="renderKey"
     to="#blokkli-add-list-sidebar-before"
   >
     <div class="bk-list-sidebar-form">
@@ -45,6 +46,7 @@ import {
   useBlokkli,
   onMounted,
   defineBlokkliFeature,
+  nextTick,
 } from '#imports'
 import { AddListItem } from '#blokkli/components'
 import type { DraggableExistingBlock } from '#blokkli/types'
@@ -205,7 +207,9 @@ const sortedList = computed(() => {
 const renderKey = ref('')
 
 const onAddListChange = () => {
-  renderKey.value = Math.round(Math.random() * 1000000000).toString()
+  nextTick(() => {
+    renderKey.value = Math.round(Math.random() * 1000000000).toString()
+  })
 }
 
 onMounted(() => {

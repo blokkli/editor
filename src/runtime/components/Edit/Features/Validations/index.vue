@@ -2,7 +2,7 @@
   <PluginSidebar
     id="violations"
     :title="$t('validationsToolbarLabel')"
-    icon="alert"
+    icon="check"
     weight="-10"
   >
     <div class="bk bk-errors bk-control">
@@ -30,7 +30,7 @@ import { Icon } from '#blokkli/components'
 
 defineBlokkliFeature({
   id: 'validations',
-  icon: 'alert',
+  icon: 'check',
   label: 'Validations',
   description: 'Provides a sidebar pane to render validations.',
 })

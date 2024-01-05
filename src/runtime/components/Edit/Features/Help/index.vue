@@ -2,7 +2,7 @@
   <PluginSidebar
     id="help"
     :title="$t('featureHelpTitle', 'Help')"
-    icon="chat-question"
+    icon="help"
     weight="100"
   >
     <div class="bk-help">
@@ -21,7 +21,7 @@ import Shortcuts from './Shortcuts/index.vue'
 
 defineBlokkliFeature({
   id: 'help',
-  icon: 'question',
+  icon: 'help',
   label: 'Help',
   description:
     'Provides a sidebar pane with helpful information on how to use blokkli.',

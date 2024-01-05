@@ -98,7 +98,6 @@ const props = defineProps<{
 const getElement = (): HTMLElement => props.element
 
 const scrollHeight = ref(0)
-const offsetY = ref(0)
 const loaded = ref(false)
 const originalText = ref('')
 const modelValue = ref('')
@@ -129,7 +128,7 @@ const formStyle = computed(() => {
     return {}
   }
   return {
-    transform: `translateY(${offsetY.value}px) translateX(-50%) scale(calc(1 / var(--bk-artboard-scale)))`,
+    transform: `translateX(-50%) scale(calc(1 / var(--bk-artboard-scale)))`,
   }
 })
 
@@ -238,15 +237,6 @@ const focusInput = (el?: HTMLElement | Document | null) => {
   }
 }
 
-const onAnimationFrame = () => {
-  if (!root.value || ui.isMobile.value) {
-    return
-  }
-  const rect = root.value.getBoundingClientRect()
-  const top = rect.top - scrollHeight.value - 150
-  offsetY.value = Math.abs(Math.min(top, 0))
-}
-
 onMounted(() => {
   eventBus.on('editable:save', onEditableSave)
 
@@ -281,7 +271,6 @@ onMounted(() => {
     //     Math.min(input.value.scrollHeight, 100) + 'px'
     //   input.value.style.opacity = '1'
     // }
-    eventBus.on('animationFrame', onAnimationFrame)
   })
 })
 
@@ -289,6 +278,5 @@ onBeforeUnmount(() => {
   const el = getElement()
   el.dataset.blokkliEditableActive = undefined
   eventBus.off('editable:save', onEditableSave)
-  eventBus.off('animationFrame', onAnimationFrame)
 })
 </script>

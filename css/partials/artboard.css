@@ -7,7 +7,11 @@
 }
 
 .bk-html-root {
-  --bk-root-offset-left: 0px;
+  --bk-root-offset-left-sidebar: 0px;
+  --bk-root-offset-left-add-list: 0px;
+  --bk-root-offset-left: calc(
+    var(--bk-root-offset-left-sidebar) + var(--bk-root-offset-left-add-list)
+  );
   --bk-root-offset-top: 80px;
   --bk-root-offset-bottom: 0px;
   --bk-actions-height: 50px;
@@ -15,10 +19,13 @@
     --bk-root-offset-top: 50px;
     --bk-actions-height: 50px;
   }
-  &.bk-has-sidebar-left {
-    --bk-root-offset-left: 70px;
+  &.bk-has-add-list-left {
+    --bk-root-offset-left-add-list: 70px;
   }
-  &.bk-has-sidebar-bottom {
+  &.bk-has-sidebar-left {
+    --bk-root-offset-left-sidebar: 400px;
+  }
+  &.bk-has-add-list-bottom {
     --bk-root-offset-bottom: 50px;
     @screen md {
       --bk-root-offset-bottom: 70px;
@@ -41,7 +48,7 @@
   }
   #nuxt-root {
     @apply bg-slate-200 overflow-hidden absolute right-0;
-    left: var(--bk-root-offset-left);
+    left: 0;
     top: var(--bk-root-offset-top);
     bottom: var(--bk-root-offset-bottom);
     &.bk-has-preview-open {

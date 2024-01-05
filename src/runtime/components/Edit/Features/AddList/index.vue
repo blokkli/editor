@@ -43,7 +43,7 @@ import {
   computed,
   useBlokkli,
   onMounted,
-  onUnmounted,
+  onBeforeUnmount,
   nextTick,
   defineBlokkliFeature,
 } from '#imports'
@@ -92,6 +92,9 @@ watch(ui.addListOrientation, () => {
     eventBus.emit('add-list:change')
   })
 })
+watch(shouldRender, () => {
+  setRootClasses()
+})
 
 const typeList = ref<HTMLDivElement | null>(null)
 const wrapper = ref<HTMLDivElement | null>(null)
@@ -121,17 +124,17 @@ const onWheel = (e: WheelEvent) => {
 }
 
 function setRootClasses() {
-  document.documentElement.classList.remove('bk-has-sidebar-bottom')
-  document.documentElement.classList.remove('bk-has-sidebar-left')
+  document.documentElement.classList.remove('bk-has-add-list-bottom')
+  document.documentElement.classList.remove('bk-has-add-list-left')
 
   if (!shouldRender.value) {
     return
   }
 
   if (ui.addListOrientation.value === 'horizontal') {
-    document.documentElement.classList.add('bk-has-sidebar-bottom')
+    document.documentElement.classList.add('bk-has-add-list-bottom')
   } else if (ui.addListOrientation.value === 'vertical') {
-    document.documentElement.classList.add('bk-has-sidebar-left')
+    document.documentElement.classList.add('bk-has-add-list-left')
   }
 }
 
@@ -139,9 +142,9 @@ onMounted(() => {
   setRootClasses()
 })
 
-onUnmounted(() => {
-  document.documentElement.classList.remove('bk-has-sidebar-bottom')
-  document.documentElement.classList.remove('bk-has-sidebar-left')
+onBeforeUnmount(() => {
+  document.documentElement.classList.remove('bk-has-add-list-bottom')
+  document.documentElement.classList.remove('bk-has-add-list-left')
 })
 </script>
 

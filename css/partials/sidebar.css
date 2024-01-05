@@ -9,7 +9,7 @@
   }
   &.bk-is-left {
     @apply md:w-[400px];
-    left: var(--bk-root-offset-left);
+    left: var(--bk-root-offset-left-add-list);
     box-shadow:
       1px -0px 2px rgb(20 45 82 / 2%),
       3px -0px 4px rgb(20 45 82 / 3%),
@@ -34,13 +34,13 @@
   }
 
   .bk-sidebar-title {
-    @apply !font-bold md:!text-lg !font-sans !pl-15 md:!pl-20 !border-b !border-b-slate-300 flex justify-between items-center h-50 lg:h-60;
+    @apply !font-semibold !font-sans !pl-15 md:!pl-20 !border-b !border-b-slate-300 flex justify-between items-center h-50;
     @apply select-none;
     button {
-      @apply h-full px-15;
-    }
-    svg {
-      @apply w-[1em] h-[1em];
+      @apply h-full px-15 text-slate-700 hover:bg-slate-100 hover:text-slate-900;
+      svg {
+        @apply w-[1em] h-[1em] fill-current;
+      }
     }
   }
 }
