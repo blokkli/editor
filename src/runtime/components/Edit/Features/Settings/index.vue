@@ -18,6 +18,8 @@ import { ref, useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
 import SettingsDialog from './Dialog/index.vue'
 
+const { $t, storage } = useBlokkli()
+
 defineBlokkliFeature({
   id: 'settings',
   label: 'Settings',
@@ -31,13 +33,18 @@ defineBlokkliFeature({
       label: 'Use animations',
       group: 'advanced',
     },
+    resetAllSettings: {
+      type: 'method',
+      label: 'Reset all settings',
+      method: () => {
+        storage.clearAll()
+      },
+      group: 'advanced',
+    },
   },
 })
 
-const { $t } = useBlokkli()
-
-// const showSettings = ref(false)
-const showSettings = ref(true)
+const showSettings = ref(false)
 
 const onClick = () => (showSettings.value = true)
 </script>

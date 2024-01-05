@@ -19,14 +19,6 @@
           :setting="setting.setting"
         />
       </div>
-      <div class="bk-form-section">
-        <h3 class="bk-form-label">Erweitert</h3>
-        <div class="bk-settings-buttons">
-          <button class="bk-button is-danger" @click="revertAll">
-            {{ $t('settingsRevertAll') }}
-          </button>
-        </div>
-      </div>
     </div>
   </DialogModal>
 </template>
@@ -40,7 +32,7 @@ import type { FeatureDefinitionSetting } from '#blokkli/types'
 import { SETTINGS_GROUP, type SettingsGroup } from '#blokkli/constants'
 import type { BlokkliIcon } from '#blokkli/icons'
 
-const { storage, $t, features, ui } = useBlokkli()
+const { $t, features, ui } = useBlokkli()
 
 type FeatureSetting = {
   featureId: ValidFeatureKey
@@ -126,6 +118,4 @@ const groups = computed<GroupedSettings[]>(() => {
 defineEmits<{
   (e: 'cancel'): void
 }>()
-
-const revertAll = () => storage.clearAll()
 </script>

@@ -33,6 +33,11 @@
         </li>
       </ul>
     </div>
+    <div v-else-if="setting.type === 'method'">
+      <button class="bk-button" @click="setting.method()">
+        {{ setting.label }}
+      </button>
+    </div>
   </div>
 </template>
 

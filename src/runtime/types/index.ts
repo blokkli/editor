@@ -762,9 +762,18 @@ export type FeatureDefinitionSettingCheckbox = {
   viewports?: Viewport[]
 }
 
+export type FeatureDefinitionSettingMethod = {
+  type: 'method'
+  label: string
+  method: () => void
+  group?: SettingsGroup
+  viewports?: Viewport[]
+}
+
 export type FeatureDefinitionSetting =
   | FeatureDefinitionSettingCheckbox
   | FeatureDefinitionSettingRadios
+  | FeatureDefinitionSettingMethod
 
 export type FeatureDefinition<
   Methods extends AdapterMethods[] = [],

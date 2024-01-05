@@ -57,6 +57,9 @@
       input:not(:checked):hover + div {
         @apply bg-slate-500;
       }
+      input:checked:hover + div {
+        @apply bg-blue-700;
+      }
     }
     > div {
       @apply relative w-[36px] h-20 bg-slate-400 rounded-full;

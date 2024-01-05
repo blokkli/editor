@@ -33,6 +33,7 @@ const getExisting = (key: string): any => {
  */
 export default function (): StorageProvider {
   const values = ref<Record<string, any>>({})
+  const defaults = ref<Record<string, any>>({})
 
   const use = <T>(key: string | ComputedRef<string>, defaultValue: T) => {
     const storageKey = computed(
@@ -44,6 +45,7 @@ export default function (): StorageProvider {
         values.value[storageKey.value] = existing
       } else {
         values.value[storageKey.value] = defaultValue
+        defaults.value[storageKey.value] = defaultValue
       }
     }
 
@@ -63,7 +65,7 @@ export default function (): StorageProvider {
   }
 
   const clearAll = () => {
-    values.value = {}
+    values.value = JSON.parse(JSON.stringify(defaults.value))
     Object.keys(window.localStorage).forEach((key) => {
       if (key.startsWith(PREFIX)) {
         window.localStorage.removeItem(key)
