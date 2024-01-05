@@ -51,6 +51,7 @@ import type { DraggableExistingBlock } from '#blokkli/types'
 
 defineBlokkliFeature({
   id: 'block-add-list',
+  icon: 'plus',
   description:
     'Renders a list of block bundles that can be added to the current page.',
 })

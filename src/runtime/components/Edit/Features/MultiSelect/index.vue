@@ -36,6 +36,8 @@ import Overlay from './Overlay/index.vue'
 
 defineBlokkliFeature({
   id: 'multi-select',
+  label: 'Multiselect',
+  icon: 'multi-select',
   description:
     'Implements support for selecting multiple blocks using a select rectangle.',
 })

@@ -6,9 +6,8 @@
     :disabled="state.editMode.value !== 'editing'"
     :weight="50"
     @click="showModal = true"
-  >
-    <Icon name="import" />
-  </PluginMenuButton>
+    icon="import"
+  />
 
   <Teleport to="body">
     <transition appear name="bk-slide-up">
@@ -30,12 +29,12 @@ import {
   defineBlokkliFeature,
 } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
-import { Icon } from '#blokkli/components'
 import ExistingDialog from './Dialog/index.vue'
 
 const { adapter, settings } = defineBlokkliFeature({
   id: 'import-existing',
   label: 'Import existing content',
+  icon: 'import',
   requiredAdapterMethods: ['getImportItems', 'importFromExisting'],
   description:
     'Implements a menu action that renders a dialog to import blocks from another entity.',

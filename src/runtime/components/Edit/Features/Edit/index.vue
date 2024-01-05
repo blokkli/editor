@@ -18,6 +18,7 @@ import { getDefinition } from '#blokkli/definitions'
 
 defineBlokkliFeature({
   id: 'edit',
+  icon: 'edit',
   description: 'Provides an action to edit a block.',
 })
 

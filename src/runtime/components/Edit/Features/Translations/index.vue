@@ -67,6 +67,8 @@ import type { DraggableExistingBlock, EntityTranslation } from '#blokkli/types'
 
 const { adapter } = defineBlokkliFeature({
   id: 'translations',
+  label: 'Translations',
+  icon: 'translate',
   requiredAdapterMethods: ['changeLanguage'],
   description: 'Adds support for block translations.',
 })

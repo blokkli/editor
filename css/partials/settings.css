@@ -6,8 +6,12 @@
   @apply grid gap-10;
 }
 
-.bk-settings {
+.bk.bk-settings {
   .bk-form-label {
+    @apply !flex items-center gap-10;
+    .bk-icon {
+      @apply w-25 h-25;
+    }
   }
 }
 

@@ -26,6 +26,7 @@ import type { BlockBundleDefinition } from '#blokkli/types'
 
 const { adapter } = defineBlokkliFeature({
   id: 'conversions',
+  icon: 'convert',
   requiredAdapterMethods: ['getConversions', 'convertBlocks'],
   description:
     'Provides block actions to convert one or more blocks to a different bundle.',

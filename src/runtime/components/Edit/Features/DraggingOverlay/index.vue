@@ -61,6 +61,7 @@ import type {
 import { getDefinition } from '#blokkli/definitions'
 
 const { adapter } = defineBlokkliFeature({
+  icon: 'drag',
   id: 'dragging-overlay',
   description: 'Renders an overlay when dragging or placing a block.',
 })

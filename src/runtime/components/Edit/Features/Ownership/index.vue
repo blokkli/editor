@@ -17,6 +17,7 @@ import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 
 const { adapter } = defineBlokkliFeature({
   id: 'ownership',
+  icon: 'user',
   requiredAdapterMethods: ['takeOwnership'],
   description:
     'Renders a large button to take ownership of the current edit state.',

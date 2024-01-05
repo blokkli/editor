@@ -1,7 +1,8 @@
 <template>
   <div class="bk-form-section">
     <h3 class="bk-form-label">
-      {{ label }}
+      <Icon :name="icon" />
+      <span>{{ label }}</span>
     </h3>
     <div v-for="setting in featureSettings" :key="setting.key">
       <label
@@ -44,10 +45,12 @@
 <script lang="ts" setup>
 import type { FeatureDefinition } from '#blokkli/types'
 import { Icon } from '#blokkli/components'
+import type { BlokkliIcon } from '#blokkli/icons'
 
 const props = defineProps<{
   id: string
   label: string
+  icon: BlokkliIcon
 }>()
 
 const { features, storage } = useBlokkli()

@@ -71,6 +71,8 @@ import type { BlokkliIcon } from '#blokkli/icons'
 
 defineBlokkliFeature({
   id: 'responsive-preview',
+  icon: 'cellphone',
+  label: 'Responsive Preview',
   description:
     'Provides a responsive preview of the current edit state in an iframe.',
 })

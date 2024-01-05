@@ -41,6 +41,8 @@ import { PluginToolbarButton } from '#blokkli/plugins'
 
 defineBlokkliFeature({
   id: 'search',
+  icon: 'search',
+  label: 'Search',
   description:
     'Provides an overlay with shortcut to search for blocks on the current page or existing content to add as blocks.',
 })

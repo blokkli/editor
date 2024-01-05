@@ -16,6 +16,7 @@ import ArtboardManager from './Manager/index.vue'
 const { settings } = defineBlokkliFeature({
   id: 'artboard',
   label: 'Artboard',
+  icon: 'artboard',
   description:
     'Wraps the entire page in an artboard that can be zoomed and moved using the mouse.',
   settings: {

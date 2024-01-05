@@ -1,19 +1,15 @@
 <template>
   <PluginViewOption
     id="fieldAreas"
+    v-slot="{ isActive }"
     :title-on="$t('fieldAreasShow')"
     :title-off="$t('fieldAreasHide')"
+    icon="area"
     key-code="I"
   >
-    <template #icon>
-      <Icon name="area" />
-    </template>
-
-    <template #default="{ isActive }">
-      <Teleport v-if="isActive" to="body">
-        <Overlay />
-      </Teleport>
-    </template>
+    <Teleport v-if="isActive" to="body">
+      <Overlay />
+    </Teleport>
   </PluginViewOption>
 </template>
 
@@ -21,10 +17,11 @@
 import { useBlokkli, defineBlokkliFeature } from '#imports'
 import Overlay from './Overlay/index.vue'
 import { PluginViewOption } from '#blokkli/plugins'
-import { Icon } from '#blokkli/components'
 
 defineBlokkliFeature({
   id: 'field-areas',
+  label: 'Field Areas',
+  icon: 'area',
   description: 'Provides a view option to render the field areas with labels.',
 })
 

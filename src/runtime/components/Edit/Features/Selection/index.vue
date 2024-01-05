@@ -14,6 +14,8 @@ import Overlay from './Overlay/index.vue'
 
 defineBlokkliFeature({
   id: 'selection',
+  icon: 'selection',
+  label: 'Selection',
   description: 'Renders an overlay that highlights the selected blocks.',
 })
 

@@ -18,6 +18,8 @@ import { Icon } from '#blokkli/components'
 
 const { adapter } = defineBlokkliFeature({
   id: 'publish',
+  icon: 'publish',
+  label: 'Publish',
   requiredAdapterMethods: ['publish'],
   description:
     'Provides a menu button to publish the changes of the current entity.',

@@ -3,19 +3,19 @@
     :title="$t('exitTitle')"
     :description="$t('exitDescription')"
     :weight="100"
+    icon="exit"
     @click="onClick"
-  >
-    <Icon name="exit" />
-  </PluginMenuButton>
+  />
 </template>
 
 <script lang="ts" setup>
 import { useBlokkli, useRoute, nextTick, defineBlokkliFeature } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
-import { Icon } from '#blokkli/components'
 
 defineBlokkliFeature({
   id: 'exit',
+  label: 'Exit',
+  icon: 'exit',
   description: 'Provides a menu button to exit the editor without saving.',
 })
 

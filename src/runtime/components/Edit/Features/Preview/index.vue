@@ -48,6 +48,8 @@ import { DialogModal } from '#blokkli/components'
 
 defineBlokkliFeature({
   id: 'preview',
+  label: 'Preview',
+  icon: 'preview',
   description: 'Implements various preview features.',
 })
 

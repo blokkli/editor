@@ -12,6 +12,7 @@
         :id="setting.id"
         :key="setting.id"
         :label="setting.label"
+        :icon="setting.icon"
       />
       <div class="bk-form-section">
         <h3 class="bk-form-label">
@@ -85,12 +86,14 @@
 import { useBlokkli } from '#imports'
 import { DialogModal, Icon } from '#blokkli/components'
 import FeatureSettings from './FeatureSettings/index.vue'
+import type { BlokkliIcon } from '#blokkli/icons'
 
 const { storage, $t, ui, features } = useBlokkli()
 
 type FeatureSetting = {
   id: string
   label: string
+  icon: BlokkliIcon
 }
 
 const featureSettings = computed(() => {
@@ -100,6 +103,7 @@ const featureSettings = computed(() => {
         acc[v.id] = {
           id: v.id,
           label: v.label || v.id,
+          icon: v.icon,
         }
       }
       return acc

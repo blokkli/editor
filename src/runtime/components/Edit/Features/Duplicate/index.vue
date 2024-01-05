@@ -24,6 +24,7 @@ const { state, $t, selection, dom } = useBlokkli()
 
 const { adapter } = defineBlokkliFeature({
   id: 'duplicate',
+  icon: 'duplicate',
   requiredAdapterMethods: ['duplicateBlocks'],
   description: 'Provides an action to duplicate one or more blocks in place.',
 })

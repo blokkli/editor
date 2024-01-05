@@ -33,6 +33,8 @@ import { filterTransforms } from '#blokkli/helpers/transform'
 
 const { adapter } = defineBlokkliFeature({
   id: 'transform',
+  icon: 'puzzle',
+  label: 'Transform',
   requiredAdapterMethods: ['getTransformPlugins', 'applyTransformPlugin'],
   description: 'Provides integration for block transform plugins.',
 })

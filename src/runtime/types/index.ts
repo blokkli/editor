@@ -14,6 +14,7 @@ import type { BlockOptionDefinition } from './blokkOptions'
 import type { TextProvider } from '../helpers/textProvider'
 import type { BroadcastProvider } from '#blokkli/helpers/broadcastProvider'
 import type { FeaturesProvider } from '#blokkli/helpers/featuresProvider'
+import type { BlokkliIcon } from '#blokkli/icons'
 
 interface MutationResponseLike<T> {
   data: {
@@ -747,7 +748,7 @@ export type AdapterMethods = keyof BlokkliAdapter<any>
 
 export type FeatureDefinitionSettingRadiosOption = {
   label: string
-  icon?: string
+  icon?: BlokkliIcon
 }
 
 export type FeatureDefinitionSettingRadios = {
@@ -770,6 +771,7 @@ export type FeatureDefinitionSetting =
 export type FeatureDefinition<Methods extends AdapterMethods[]> = {
   id: string
   label?: string
+  icon: BlokkliIcon
   description?: string
   requiredAdapterMethods?: [...Methods]
   settings?: Record<string, FeatureDefinitionSetting>

@@ -20,12 +20,15 @@ import SettingsDialog from './Dialog/index.vue'
 
 defineBlokkliFeature({
   id: 'settings',
+  label: 'Settings',
+  icon: 'cog',
   description: 'Provides a menu button to display a settings dialog.',
 })
 
 const { $t } = useBlokkli()
 
-const showSettings = ref(false)
+// const showSettings = ref(false)
+const showSettings = ref(true)
 
 const onClick = () => (showSettings.value = true)
 </script>

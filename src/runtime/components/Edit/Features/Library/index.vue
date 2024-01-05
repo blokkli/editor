@@ -59,6 +59,8 @@ import type { ActionPlacedEvent } from '#blokkli/types'
 
 const { adapter } = defineBlokkliFeature({
   id: 'library',
+  icon: 'reusable',
+  label: 'Library',
   description:
     'Implements support for a block library to manage reusable blocks.',
   requiredAdapterMethods: ['makeBlockReusable'],

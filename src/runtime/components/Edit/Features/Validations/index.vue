@@ -30,6 +30,8 @@ import { Icon } from '#blokkli/components'
 
 defineBlokkliFeature({
   id: 'validations',
+  icon: 'alert',
+  label: 'Validations',
   description: 'Provides a sidebar pane to render validations.',
 })
 

@@ -1,27 +1,24 @@
 <template>
   <PluginViewOption
     id="grid"
+    v-slot="{ isActive }"
     :title-on="$t('gridShow')"
     :title-off="$t('gridHide')"
     key-code="G"
+    icon="grid"
   >
-    <template #icon>
-      <Icon name="grid" />
-    </template>
-
-    <template #default="{ isActive }">
-      <div v-if="isActive" class="bk-grid-overlay" v-html="gridMarkup" />
-    </template>
+    <div v-if="isActive" class="bk-grid-overlay" v-html="gridMarkup" />
   </PluginViewOption>
 </template>
 
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginViewOption } from '#blokkli/plugins'
-import { Icon } from '#blokkli/components'
 
 const { adapter } = defineBlokkliFeature({
   id: 'grid',
+  label: 'Grid',
+  icon: 'grid',
   requiredAdapterMethods: ['getGridMarkup'],
   description: 'Provides a view option to render a grid.',
 })

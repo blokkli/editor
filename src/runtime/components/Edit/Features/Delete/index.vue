@@ -20,6 +20,7 @@ const { state, eventBus, $t } = useBlokkli()
 
 const { adapter } = defineBlokkliFeature({
   id: 'delete',
+  icon: 'delete',
   requiredAdapterMethods: ['deleteBlocks'],
   description: 'Provides an action to delete one or more blocks.',
 })

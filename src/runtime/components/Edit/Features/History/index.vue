@@ -112,6 +112,7 @@ import type { MutationItem } from '#blokkli/types'
 
 const { adapter, settings } = defineBlokkliFeature({
   id: 'history',
+  icon: 'history',
   label: 'History',
   requiredAdapterMethods: ['setHistoryIndex'],
   description:

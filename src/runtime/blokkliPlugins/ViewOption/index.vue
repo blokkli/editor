@@ -6,7 +6,9 @@
       :class="{ 'bk-is-inactive': !isActive }"
       @click.prevent.stop="onClick"
     >
-      <slot name="icon" />
+      <slot name="icon">
+        <Icon v-if="icon" :name="icon" />
+      </slot>
       <div class="bk-tooltip">
         <span>{{ isActive ? titleOff : titleOn }}</span>
 
@@ -25,7 +27,8 @@
 
 <script setup lang="ts">
 import { useBlokkli } from '#imports'
-import { ShortcutIndicator } from '#blokkli/components'
+import { ShortcutIndicator, Icon } from '#blokkli/components'
+import type { BlokkliIcon } from '#blokkli/icons'
 
 const { storage, ui } = useBlokkli()
 
@@ -35,6 +38,7 @@ const props = defineProps<{
   titleOff: string
   editOnly?: boolean
   keyCode?: string
+  icon?: BlokkliIcon
 }>()
 
 const storageKey = 'view_option_' + props.id

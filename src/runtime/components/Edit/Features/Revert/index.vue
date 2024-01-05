@@ -2,13 +2,12 @@
   <PluginMenuButton
     :title="$t('revertMenuTitle')"
     :description="$t('revertMenuDescription')"
+    icon="revert"
     type="danger"
     :disabled="!mutations.length || !canEdit"
     :weight="10"
     @click="showConfirm = true"
-  >
-    <Icon name="revert" />
-  </PluginMenuButton>
+  />
 
   <Teleport to="body">
     <transition appear name="bk-slide-up">
@@ -28,10 +27,12 @@
 <script lang="ts" setup>
 import { useBlokkli, ref, defineBlokkliFeature } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
-import { Icon, DialogModal } from '#blokkli/components'
+import { DialogModal } from '#blokkli/components'
 
 const { adapter } = defineBlokkliFeature({
   id: 'revert',
+  icon: 'revert',
+  label: 'Revert',
   requiredAdapterMethods: ['revertAllChanges'],
   description:
     'Provides a menu button to revert all changes done on the current entity.',

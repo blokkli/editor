@@ -36,6 +36,7 @@ import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
 
 const { adapter } = defineBlokkliFeature({
   id: 'edit-form',
+  icon: 'form',
   description:
     'Listens to edit events and renders an iframe containing the edit form.',
   requiredAdapterMethods: ['formFrameBuilder'],

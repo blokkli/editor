@@ -44,6 +44,7 @@ import type { CommentItem } from '#blokkli/types'
 
 const { adapter } = defineBlokkliFeature({
   id: 'comments',
+  icon: 'comment',
   requiredAdapterMethods: ['loadComments', 'addComment'],
   description: 'Provides comment functionality for blocks.',
 })
