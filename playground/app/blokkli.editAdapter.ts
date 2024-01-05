@@ -464,6 +464,10 @@ export default defineBlokkliEditAdapter((ctx) => {
         .fill('<div></div>')
         .join('')}</div>`
     },
+
+    getPreviewGrantUrl() {
+      return route.fullPath
+    },
   }
 
   return adapter
