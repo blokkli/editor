@@ -41,4 +41,4 @@ The project is published under the MIT license.
 
 ## Acknowledgments
 
-Credits and acknowledgments.
+blökkli was developed by [Dulnan](https://github.com/dulnan) at [Liip](https://www.liip.ch/). The development was supported by the canton of Basel-Stadt in Switzerland as part of the relaunch project for WebBS. 
