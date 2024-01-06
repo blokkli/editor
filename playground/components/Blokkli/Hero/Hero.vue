@@ -1,5 +1,5 @@
 <template>
-  <div class="hero py-20 md:py-100 lg:py-200 overflow-hidden relative">
+  <div class="hero py-20 md:py-50 lg:py-100 overflow-hidden relative">
     <div class="container lg:grid grid-cols-12 gap-20 lg:gap-40">
       <div class="col-span-8 hero-content">
         <h1

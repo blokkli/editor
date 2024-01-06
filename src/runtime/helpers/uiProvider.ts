@@ -170,7 +170,7 @@ export default function (storage: StorageProvider): UiProvider {
     return toolbarHeight.value
   })
   const visibleViewportWidth = computed<number>(() => {
-    let width = viewportWidth.value - visibleViewportX.value
+    let width = viewportWidth.value - visibleViewportX.value - 50
     if (activeSidebarRight.value) {
       // Chosen by fair dice roll.
       width -= 351

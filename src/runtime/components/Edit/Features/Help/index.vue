@@ -4,6 +4,7 @@
     :title="$t('featureHelpTitle', 'Help')"
     icon="help"
     weight="100"
+    key-code="F1"
   >
     <div class="bk-help">
       <div class="bk-help-section">

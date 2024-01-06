@@ -38,7 +38,7 @@ const props = defineProps<{
     | 'before-title'
     | 'before-sidebar'
     | 'after-menu'
-    | 'before-view-options'
+    | 'before-sidebar-right'
     | 'view-options'
   editOnly?: boolean
   disabled?: boolean

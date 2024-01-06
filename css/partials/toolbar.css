@@ -1,74 +1,28 @@
 .bk {
-  &.bk-top {
-    @apply fixed top-0 left-0 w-full z-toolbar;
+  .bk-toolbar {
+    @apply relative top-0 left-0 right-0 z-toolbar md:right-50 md:border-r md:border-r-slate-700;
     @apply bg-slate-950/90 backdrop-blur-lg lg:backdrop-blur-none lg:bg-slate-900;
-  }
-
-  .bk-toolbar-wrapper {
-    @apply flex flex-1 lg:flex-initial lg:first:flex-1;
-    &:not(:first-child) {
-      @screen lg {
-        @apply border-l border-l-slate-600;
-      }
-    }
-    &:first-child {
-      @apply bg-black lg:bg-transparent;
-    }
-  }
-
-  &.bk-toolbar {
     @apply select-none;
-    @apply h-80 text-base flex flex-col;
+    @apply h-40 text-base flex;
+    @apply md:fixed;
     @screen lg {
-      @apply h-50 flex-row;
+      @apply h-50;
+    }
+
+    .bk-toolbar-button {
+      .bk-tooltip {
+        @apply absolute top-full left-0 mt-10;
+        min-width: calc(100% - 10px);
+      }
     }
   }
 
-  .bk-toolbar-tabs {
-    @apply flex h-40 lg:h-50 relative;
-
-    &.bk-is-left {
-      .bk-tooltip {
-        @apply absolute top-full left-0 mt-3;
-      }
-    }
-
-    &.bk-is-right {
-      .bk-tooltip {
-        @apply absolute top-full left-0 right-3 mt-3;
-      }
-    }
-    button {
-      @apply flex text-slate-300 h-full focus:outline-none flex-1 items-center px-10 gap-10 aspect-square justify-center w-50;
-      @apply lg:hover:bg-slate-700;
-      .bk-tooltip {
-        @apply hidden;
-      }
-      &.is-active {
-        @apply bg-white text-slate-900;
-        .bk-tooltip {
-          @apply !hidden;
-        }
-      }
-      svg {
-        @apply fill-current pointer-events-none;
-        @apply w-18 h-18 md:w-20 md:h-20;
-      }
-
-      &[disabled] {
-        @apply pointer-events-none opacity-25;
-      }
-      @screen lg {
-        &:hover {
-          .bk-tooltip {
-            @apply flex;
-          }
-        }
-      }
-    }
+  &.bk-top {
+    @apply fixed top-0 left-0 w-full md:static z-toolbar md:z-auto;
   }
+
   .bk-tooltip {
-    @apply bg-slate-800/80 backdrop-blur p-5 text-slate-50 font-semibold text-sm rounded select-none pointer-events-none h-[34px] hidden items-center justify-between px-10 leading-none whitespace-nowrap;
+    @apply bg-slate-800/80 backdrop-blur p-5 text-slate-50 font-semibold text-sm rounded select-none pointer-events-none h-[34px] hidden items-center justify-between px-10 leading-none whitespace-nowrap h-30;
     @screen lg {
       @apply flex;
     }
@@ -76,6 +30,7 @@
       @apply ml-5;
     }
   }
+
   .bk-toolbar-menu {
     @apply relative z-menu h-full;
   }
@@ -93,49 +48,8 @@
     }
   }
 
-  .bk-toolbar-button {
-    @apply text-slate-200 flex gap-5 items-center px-10 min-w-[50px] justify-center;
-    @apply lg:hover:bg-slate-700;
-
-    &.bk-is-inactive {
-      @apply text-slate-600;
-    }
-
-    &.bk-is-zoom {
-      @apply w-100 justify-between px-15;
-    }
-
-    &[disabled] {
-      @apply pointer-events-none text-slate-700;
-    }
-    svg {
-      @apply w-18 h-18 md:w-20 md:h-20 fill-current;
-    }
-    &.is-active {
-      @apply bg-white text-slate-900;
-      .bk-tooltip {
-        @apply hidden;
-      }
-    }
-    &.bk-is-active-underline {
-      box-shadow: inset 0 -2px 0 0 white;
-    }
-    &:not(:hover) {
-      .bk-tooltip {
-        @apply hidden;
-      }
-    }
-    .bk-tooltip {
-      @apply absolute top-full left-0 mt-3;
-      min-width: calc(100% - 3px);
-    }
-  }
-
   .bk-toolbar-area.bk-is-menu + .bk-toolbar-container .bk-tooltip {
     @apply left-3;
-  }
-
-  #bk-toolbar-before-view-options {
   }
 
   .bk-toolbar-container {
@@ -150,9 +64,10 @@
     @apply relative flex h-full;
     &#bk-toolbar-view-options {
       @apply hidden md:flex;
-    }
-    &.bk-is-sidebar {
-      @apply mr-auto md:mr-0 md:ml-auto;
+
+      .bk-tooltip {
+        @apply left-auto right-[9px];
+      }
     }
     &#bk-toolbar-title {
       @apply flex-1 text-xs lg:text-sm xl:text-base;
@@ -177,8 +92,6 @@
         @apply text-slate-100;
       }
     }
-    + .bk-toolbar-container {
-    }
   }
   .bk-status-indicator {
     @apply w-[0.9em] h-[0.9em] inline-block bg-red-500 rounded-full shrink-0 mr-[0.3em] align-middle;
@@ -192,48 +105,6 @@
 
   .bk-feature-canvas-button {
     @apply flex h-full items-center justify-center min-w-[50px];
-  }
-
-  .bk-toolbar-menu-button-icon {
-    @apply absolute top-0 left-0 w-full h-full;
-    > div {
-      @apply absolute top-0 left-0 rounded-full;
-      width: 7px;
-      background: white;
-      transition: 0.3s;
-    }
-
-    > div:nth-child(1) {
-      height: 30px;
-      top: 10px;
-      left: 24px;
-    }
-    > div:nth-child(2) {
-      height: 15px;
-      top: 9px;
-      left: 40px;
-      transform-origin: top left;
-      transform: rotate(25deg);
-    }
-    > div:nth-child(3) {
-      height: 15px;
-      top: 26px;
-      left: 40px;
-      transform-origin: bottom left;
-      transform: rotate(-25deg);
-    }
-
-    &:hover {
-      > div:nth-child(1) {
-        opacity: 0;
-      }
-      > div:nth-child(2) {
-        transform: rotate(45deg);
-      }
-      > div:nth-child(3) {
-        transform: translateX(-20px) translateY(-5px) rotate(45deg);
-      }
-    }
   }
 }
 
@@ -272,5 +143,36 @@
   @apply text-xs flex gap-5 font-semibold items-center h-[1.5em];
   > kbd {
     @apply bg-slate-500 px-5 text-slate-100 rounded flex items-center min-w-[1.5em] justify-center h-full leading-none pt-[0.15em] font-sans text-xs;
+  }
+}
+
+.bk {
+  .bk-toolbar-button {
+    @apply text-slate-200 flex gap-5 items-center px-10 min-w-[50px] justify-center h-40 md:h-50;
+
+    &:not(.is-active) {
+      @apply lg:hover:bg-slate-700;
+    }
+
+    &.bk-is-inactive {
+      @apply text-slate-600;
+    }
+
+    &[disabled] {
+      @apply pointer-events-none text-slate-700;
+    }
+    svg {
+      @apply w-18 h-18 md:w-20 md:h-20 fill-current;
+    }
+    &.is-active {
+      .bk-tooltip {
+        @apply hidden;
+      }
+    }
+    &:not(:hover) {
+      .bk-tooltip {
+        @apply hidden;
+      }
+    }
   }
 }

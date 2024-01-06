@@ -20,7 +20,7 @@
     :title="$t('searchToolbarLabel')"
     meta
     key-code="F"
-    region="before-view-options"
+    region="before-sidebar-right"
     icon="search"
     @click="onClick"
   />

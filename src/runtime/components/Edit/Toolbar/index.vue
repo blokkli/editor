@@ -14,43 +14,34 @@
     />
 
     <Transition name="bk-toolbar">
-      <div
-        v-show="showToolbar"
-        class="bk bk-top bk-control"
-        @touchstart.stop
-        @touchmove.stop
-      >
-        <div class="bk bk-toolbar">
-          <div class="bk-toolbar-wrapper">
-            <div id="bk-toolbar-menu" class="bk-toolbar-area bk-is-menu" />
-            <div class="bk-toolbar-container bk-is-sidebar">
-              <div
-                id="bk-sidebar-tabs-left"
-                class="bk-toolbar-tabs bk-is-left"
-              />
-            </div>
-            <div id="bk-toolbar-after-menu" class="bk-toolbar-container" />
-            <div id="bk-toolbar-before-title" class="bk-toolbar-container" />
-            <div id="bk-toolbar-title" class="bk-toolbar-container" />
-            <div id="bk-toolbar-after-title" class="bk-toolbar-container" />
-          </div>
-
-          <div class="bk-toolbar-wrapper">
-            <div id="bk-toolbar-view-options" class="bk-toolbar-container" />
-
-            <div id="bk-toolbar-before-sidebar" class="bk-toolbar-container" />
-
-            <div class="bk-toolbar-container bk-is-sidebar">
-              <div
-                id="bk-sidebar-tabs-right"
-                class="bk-toolbar-tabs bk-is-right"
-              />
-            </div>
+      <div class="bk bk-top" v-show="showToolbar">
+        <div class="bk-toolbar bk-control" @touchstart.stop @touchmove.stop>
+          <div id="bk-toolbar-menu" class="bk-toolbar-area bk-is-menu" />
+          <div class="bk-toolbar-container bk-is-sidebar">
             <div
-              id="bk-toolbar-before-view-options"
-              class="bk-toolbar-container"
+              id="bk-sidebar-tabs-left"
+              class="bk-sidebar-container-tabs bk-is-left"
             />
           </div>
+          <div id="bk-toolbar-after-menu" class="bk-toolbar-container" />
+          <div id="bk-toolbar-before-title" class="bk-toolbar-container" />
+          <div id="bk-toolbar-title" class="bk-toolbar-container" />
+          <div id="bk-toolbar-after-title" class="bk-toolbar-container" />
+          <div id="bk-toolbar-view-options" class="bk-toolbar-container" />
+          <div
+            id="bk-toolbar-before-sidebar"
+            class="bk-sidebar-container-tabs bk-toolbar-container"
+          />
+        </div>
+        <div
+          class="bk bk-sidebar-tabs"
+          :class="{ 'bk-has-sidebar-open': activeSidebarRight }"
+        >
+          <div id="bk-toolbar-before-sidebar-right" />
+          <div
+            id="bk-sidebar-tabs-right"
+            class="bk-sidebar-container-tabs bk-is-right"
+          />
         </div>
       </div>
     </Transition>

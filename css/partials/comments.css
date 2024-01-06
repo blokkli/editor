@@ -47,7 +47,7 @@
 }
 
 .bk.bk-comment {
-  @apply font-sans text-base p-15 border-b hover:bg-slate-50;
+  @apply font-sans text-base p-15 lg:p-20 border-b hover:bg-slate-50;
   h3 {
     @apply font-sans font-bold;
   }
@@ -55,7 +55,7 @@
     @apply text-xs text-slate-500;
   }
   .bk-comment-body {
-    @apply mt-5 break-words;
+    @apply mt-5 break-words lg:mt-15;
   }
   &:hover {
     button {

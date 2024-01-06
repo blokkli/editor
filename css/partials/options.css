@@ -123,7 +123,7 @@
       }
     }
     .bk-tooltip {
-      @apply absolute top-full left-0 w-full mt-3;
+      @apply absolute top-full left-0 w-full mt-10;
     }
   }
 

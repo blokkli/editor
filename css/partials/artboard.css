@@ -14,10 +14,12 @@
   );
   --bk-root-offset-top: 80px;
   --bk-root-offset-bottom: 0px;
+  --bk-root-offset-right: 0px;
   --bk-actions-height: 50px;
   @screen md {
     --bk-root-offset-top: 50px;
     --bk-actions-height: 50px;
+    --bk-root-offset-right: 50px;
   }
   &.bk-has-add-list-left {
     --bk-root-offset-left-add-list: 70px;

@@ -1,7 +1,8 @@
 .bk-sidebar {
   @apply fixed bg-white w-full z-sidebar;
   &.bk-is-right {
-    @apply right-0 md:w-[351px];
+    @apply md:w-[351px];
+    right: var(--bk-root-offset-right);
     box-shadow:
       -1px -0px 2px rgb(20 45 82 / 2%),
       -3px -0px 4px rgb(20 45 82 / 3%),
@@ -34,8 +35,12 @@
   }
 
   .bk-sidebar-title {
-    @apply !font-semibold !font-sans !pl-15 md:!pl-20 !border-b !border-b-slate-300 flex justify-between items-center h-50;
+    @apply !font-semibold !font-sans !pl-15 md:!pl-20 !border-b !border-b-slate-300 flex items-center h-50;
     @apply select-none;
+
+    > span {
+      @apply mr-auto;
+    }
     button {
       @apply h-full px-15 text-slate-700 hover:bg-slate-100 hover:text-slate-900;
       svg {
@@ -137,5 +142,90 @@ html.bk-is-sidebar-interacting {
   textarea,
   a {
     @apply !pointer-events-none;
+  }
+}
+
+.bk-sidebar-tabs {
+  @apply relative bg-slate-900 z-sidebar-tabs left-0 w-full flex justify-between flex-row-reverse;
+
+  > div {
+    @apply flex;
+  }
+
+  @screen md {
+    @apply fixed top-0;
+    top: 0;
+    bottom: var(--bk-root-offset-bottom);
+    @apply w-50 left-auto right-0 block;
+
+    > div {
+      @apply min-h-[50px] relative block;
+
+      &:first-child {
+        &:before {
+          content: '';
+          @apply absolute bottom-0 left-0 w-full h-1 bg-slate-700;
+        }
+
+        .bk-tooltip {
+          @apply top-full translate-y-0 mr-10 right-full mt-10;
+        }
+      }
+    }
+  }
+
+  &.bk-has-sidebar-open {
+    .bk-sidebar-container-tabs {
+      button:not(.is-active):not(:hover) {
+        @apply text-slate-600;
+      }
+    }
+  }
+
+  button {
+    @apply w-50 h-40 relative;
+    @apply md:h-50;
+
+    .bk-tooltip {
+      @apply absolute right-full left-auto mr-10 top-1/2 -translate-y-1/2;
+    }
+  }
+}
+.bk-sidebar-container-tabs {
+  &.bk-is-right {
+    @apply flex flex-row;
+    @apply md:flex-col;
+  }
+  .bk-toolbar-button {
+    &:before {
+      @apply content-[''] w-0 h-0 border-solid;
+      @apply absolute bottom-0 left-[17.5px] transition origin-bottom;
+      @apply scale-y-0;
+      border-width: 0 8px 6px;
+      border-color: transparent transparent #ffffff transparent;
+    }
+
+    @screen md {
+      &.bk-is-right {
+        &:before {
+          border-width: 10px 0 10px 10px;
+          border-color: transparent transparent transparent #ffffff;
+          @apply absolute top-15 left-0 transition origin-left;
+          @apply scale-x-0;
+        }
+      }
+      &.bk-is-left {
+        &:before {
+          border-width: 0 10px 10px;
+          @apply left-15;
+        }
+      }
+    }
+
+    &.is-active {
+      &:before {
+        @apply scale-100;
+      }
+    }
   }
 }

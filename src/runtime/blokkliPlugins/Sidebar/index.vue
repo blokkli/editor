@@ -1,7 +1,8 @@
 <template>
   <Teleport v-if="!isRenderedDetached" :to="'#bk-sidebar-tabs-' + region">
     <button
-      :class="{ 'is-active': activeSidebar === id }"
+      class="bk-toolbar-button"
+      :class="[{ 'is-active': activeSidebar === id }, 'bk-is-' + region]"
       :disabled="editOnly && state.editMode.value !== 'editing'"
       :style="{ order: weight }"
       @click.prevent.stop="toggleSidebar(id)"
@@ -10,7 +11,15 @@
         <Icon v-if="icon" :name="icon" />
       </slot>
       <div class="bk-tooltip">
-        {{ title }}
+        <span>{{ title }}</span>
+        <ShortcutIndicator
+          v-if="keyCode"
+          :meta="meta"
+          :shift="shift"
+          :key-code="keyCode"
+          :label="title"
+          @pressed="toggleSidebar(id)"
+        />
       </div>
     </button>
   </Teleport>
@@ -61,6 +70,9 @@
           <button v-if="!ui.isMobile.value" @click.prevent.stop="onDetach">
             <Icon name="expand" />
           </button>
+          <button @click.prevent.stop="toggleSidebar(id)">
+            <Icon name="close" />
+          </button>
         </div>
       </div>
       <div class="bk-sidebar-content-wrapper">
@@ -81,7 +93,7 @@
 <script setup lang="ts">
 import { watch, ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import type { BlokkliIcon } from '#blokkli/icons'
-import { Icon } from '#blokkli/components'
+import { Icon, ShortcutIndicator } from '#blokkli/components'
 import SidebarDetached from './Detached/index.vue'
 
 const props = withDefaults(
@@ -96,6 +108,9 @@ const props = withDefaults(
     minWidth?: number
     minHeight?: number
     size?: { width: number; height: number }
+    meta?: boolean
+    shift?: boolean
+    keyCode?: string
   }>(),
   {
     region: 'right',

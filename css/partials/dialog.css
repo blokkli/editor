@@ -20,6 +20,11 @@
       }
     }
   }
+  @screen lg {
+    .bk-overlay-header {
+      @apply pl-25;
+    }
+  }
 
   .bk-dialog-lead {
     @apply text-base md:text-lg lg:text-xl font-sans mb-10 lg:mb-20 text-slate-700;

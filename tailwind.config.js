@@ -20,6 +20,7 @@ const zIndex = [
   'sidebar',
   'sidebar-detached',
   'dragging-overlay',
+  'sidebar-tabs',
   'toolbar',
   'preview',
   'toolbar-dropdown',
