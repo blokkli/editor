@@ -69,6 +69,7 @@ const props = withDefaults(
     minWidth?: number
     minHeight?: number
     size?: { width: number; height: number }
+    isLeft?: boolean
   }>(),
   {
     minWidth: 300,
@@ -121,10 +122,10 @@ const offsetX = computed(() => {
 })
 
 const storedData = storage.use(storageKey, {
-  x: 0,
+  x: props.isLeft ? 0 : window.innerWidth - 360,
   y: 50,
   width: 360,
-  height: 360,
+  height: 520,
   viewportWidth: 0,
   viewportHeight: 0,
 })

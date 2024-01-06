@@ -27,6 +27,7 @@
       :min-width="minWidth"
       :min-height="minHeight"
       :size="size"
+      :is-left="region === 'left'"
       class="bk-sidebar-inner"
       @wheel="onWheel"
       @close="onAttach"
