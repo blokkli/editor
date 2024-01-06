@@ -38,6 +38,10 @@ type AnimationElement = {
 
 const animationElements = ref<AnimationElement[]>([])
 
+watch(animationElements, (elements) => {
+  ui.isAnimating.value = !!elements.length
+})
+
 const elements = computed(() => {
   const scale = ui.getArtboardScale()
   const artboardEl = ui.artboardElement()

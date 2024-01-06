@@ -8,7 +8,7 @@
       @click.stop="clickItem"
       @mouseenter="index = i"
     >
-      <div class="bk-search-item-icon">
+      <div class="bk-search-item-icon bk-is-icon">
         <ItemIcon :bundle="item.item.itemBundle" />
       </div>
       <div class="bk-search-item-content">

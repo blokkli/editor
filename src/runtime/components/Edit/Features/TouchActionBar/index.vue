@@ -7,7 +7,7 @@
         @click="eventBus.emit('select:end', [...selection.uuids.value])"
       />
       <Bar
-        v-else-if="selection.isDragging.value"
+        v-else-if="selection.isDragging.value && isTouch"
         label="Cancel dragging"
         danger
         @click="eventBus.emit('dragging:end')"
@@ -22,12 +22,13 @@ import Bar from './Bar/index.vue'
 
 const { eventBus, selection } = useBlokkli()
 
+const isTouch = computed(() => selection.draggingMode.value === 'touch')
+
 defineBlokkliFeature({
   id: 'touch-action-bar',
   label: 'Touch Action Bar',
   description: 'Renders a button on touch devices to cancel touch actions.',
   icon: 'button-pointer',
-  viewports: ['mobile'],
 })
 </script>
 

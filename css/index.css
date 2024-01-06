@@ -223,7 +223,7 @@ html {
 .bk-body.bk-is-selecting * {
   @apply select-none;
   @screen md {
-    pointer-events: none !important;
+    /* pointer-events: none !important; */
   }
 }
 
@@ -290,8 +290,7 @@ html {
 }
 
 .bk-touch-action-bar {
-  @apply fixed bottom-0 left-0 w-full z-touch-action-bar bg-slate-900;
-  height: var(--bk-root-offset-bottom);
+  @apply fixed bottom-0 left-0 w-full z-touch-action-bar bg-slate-900 h-50 pointer-events-auto;
 
   button {
     @apply w-full  h-full min-h-0 rounded-none;

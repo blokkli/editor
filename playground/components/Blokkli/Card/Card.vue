@@ -20,12 +20,13 @@
       </div>
       <h3
         v-blokkli-editable:title="{ required: true }"
-        class="font-bold text-lg md:text-xl lg:mb-5"
+        class="font-bold md:text-lg lg:text-xl lg:mb-5"
         :class="{ 'text-slate-100': isInverted }"
         v-text="title"
       />
       <p
         v-blokkli-editable:text
+        class="text-sm md:text-base"
         :class="{ 'text-slate-400': isInverted }"
         v-text="text"
       />

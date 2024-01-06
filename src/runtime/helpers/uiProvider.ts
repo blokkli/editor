@@ -104,7 +104,7 @@ export default function (storage: StorageProvider): UiProvider {
   }
 
   const appViewport = computed<Viewport>(() => {
-    if (viewportWidth.value < 768) {
+    if (viewportWidth.value < 1024) {
       return 'mobile'
     }
     return 'desktop'

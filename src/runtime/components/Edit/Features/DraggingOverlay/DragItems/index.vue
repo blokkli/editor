@@ -1,5 +1,9 @@
 <template>
-  <div class="bk-dragging-overlay" :style="style">
+  <div
+    class="bk-dragging-overlay"
+    :style="style"
+    :class="{ 'bk-is-touch': isTouch }"
+  >
     <div
       v-for="(rect, i) in rects"
       :key="i"
@@ -52,6 +56,8 @@ const props = defineProps<{
    * The coordinates when the dragging action was started.
    */
   startCoords: Coord
+
+  isTouch: boolean
 }>()
 
 const width = ref(10)
@@ -61,14 +67,14 @@ const offsetX = ref(0)
 const offsetY = ref(0)
 
 const translateX = computed(() => {
-  if (ui.isMobile.value) {
+  if (props.isTouch) {
     return window.innerWidth / 2 - width.value / 2
   }
   return props.x - offsetX.value
 })
 
 const translateY = computed(() => {
-  if (ui.isMobile.value) {
+  if (props.isTouch) {
     // 50 is the height of the "cancel dragging" button at the bottom.
     // 20 is the desired margin to the edge of the button.
     // The Math.max() calculation makes sure that a maximum of 100px is visible
@@ -117,7 +123,6 @@ const onAnimationFrame = () => {
   const elapsed = Date.now() - animationStart
   const alpha = easeOutElastic(elapsed / duration)
   const opacityAlpha = Math.min(Math.max(elapsed - 300, 0) / 200, 1)
-  // const opacityAlpha = 0
 
   for (let i = 0; i < rects.value.length; i++) {
     const rect = rects.value[i]
@@ -216,10 +221,10 @@ onMounted(() => {
   const bounds = getDraggingBounds(
     props.startCoords,
     boundRect.rect,
-    ui.isMobile.value ? 250 : 500,
+    props.isTouch ? 250 : 500,
   )
-  const boundsX = ui.isMobile.value ? 0 : bounds.x
-  const boundsY = ui.isMobile.value ? translateY.value : bounds.y
+  const boundsX = props.isTouch ? 0 : bounds.x
+  const boundsY = props.isTouch ? translateY.value : bounds.y
 
   offsetX.value = props.startCoords.x - boundsX
   offsetY.value = props.startCoords.y - boundsY
@@ -243,8 +248,8 @@ onMounted(() => {
       opacity: 0.9,
       scaleX: Math.min(baseRect.width / rect.width, 1) * artboardScale,
       scaleY: Math.min(baseRect.width / rect.width, 1) * artboardScale,
-      x: ui.isMobile.value ? rect.x - translateX.value : rect.x - boundsX,
-      y: ui.isMobile.value
+      x: props.isTouch ? rect.x - translateX.value : rect.x - boundsX,
+      y: props.isTouch
         ? -rect.height -
           (window.innerHeight -
             bounds.height -
@@ -255,7 +260,7 @@ onMounted(() => {
     }
 
     const to: AnimationRectangleValues = {
-      opacity: isTop ? (ui.isMobile.value ? 1 : 1) : 0.1,
+      opacity: isTop ? (props.isTouch ? 1 : 1) : 0.1,
       x: isTop ? 0 : (bounds.width - rect.width * targetScaleX) / 2,
       y: isTop ? 0 : (bounds.height - rect.height * targetScaleX) / 2,
       scaleX: targetScaleX,

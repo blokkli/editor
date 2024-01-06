@@ -17,11 +17,11 @@
 
     .bk-list-item-inner {
       @apply relative flex text-slate-200 rounded items-center justify-center text-sm leading-3 z-10 border border-slate-800 lg:border-slate-600 gap-5;
-      @apply md:w-[1em];
+      @apply lg:w-[1em];
       @apply bg-slate-900 lg:bg-slate-800;
       font-size: 20px;
       @apply px-10 py-5;
-      @screen md {
+      @screen lg {
         font-size: 30px;
         @apply w-full h-auto aspect-square p-0;
       }
@@ -97,7 +97,7 @@
     @apply text-lg font-semibold;
   }
   @apply w-70 px-10 py-5 cursor-grab block;
-  @screen md {
+  @screen lg {
     &:first-child {
       @apply pt-10;
     }
@@ -113,7 +113,7 @@
 
     &:after {
       @apply w-70;
-      @apply top-0 left-0 h-full border-t md:border-t-slate-700 bg-slate-950 lg:bg-slate-900;
+      @apply top-0 left-0 h-full border-t lg:border-t-slate-700 bg-slate-950 lg:bg-slate-900;
       @apply origin-left;
       @apply absolute z-0 pointer-events-none;
       @apply transition bg-slate-900 ease-swing;
@@ -143,11 +143,11 @@
     }
   }
   &.bk-is-horizontal {
-    @apply w-full flex md:py-5 bg-slate-950 overflow-y-hidden lg:overflow-visible;
+    @apply w-full flex lg:py-5 bg-slate-950 overflow-y-hidden lg:overflow-visible;
 
     height: var(--bk-root-offset-bottom);
     #blokkli-add-list-actions {
-      @apply flex border-r border-r-slate-800 md:border-r-slate-700 px-5;
+      @apply flex border-r border-r-slate-800 lg:border-r-slate-700 px-5;
       @apply order-first lg:order-last lg:border-r-0 lg:border-l lg:border-l-slate-800;
       flex: 0 0 auto;
 
@@ -166,7 +166,7 @@
     }
     .bk-list-item-label {
       @apply text-xs;
-      @screen md {
+      @screen lg {
         @apply absolute left-0 bottom-full opacity-0 mb-15 text-base;
         @apply left-1/2 -translate-x-1/2;
       }
@@ -191,7 +191,7 @@
       }
     }
     .bk-list-item-inner {
-      @screen md {
+      @screen lg {
         @apply w-auto h-full;
       }
     }

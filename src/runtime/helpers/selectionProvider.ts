@@ -8,7 +8,11 @@ import {
   watch,
 } from 'vue'
 
-import type { DraggableExistingBlock } from '#blokkli/types'
+import type {
+  DraggableExistingBlock,
+  DraggableStartEvent,
+  DraggingMode,
+} from '#blokkli/types'
 import {
   findElement,
   buildDraggableItem,
@@ -38,7 +42,12 @@ export type SelectionProvider = {
   /**
    * Whether the user is currently dragging a block.
    */
-  isDragging: Readonly<Ref<boolean>>
+  isDragging: ComputedRef<boolean>
+
+  /**
+   * Whether the user is currently dragging a block.
+   */
+  draggingMode: Readonly<Ref<DraggingMode | null>>
 
   /**
    * Whether the user is currently in multi select mode.
@@ -67,10 +76,12 @@ export default function (
 ): SelectionProvider {
   const selectedUuids = ref<string[]>([])
   const activeFieldKey = ref('')
-  const isDragging = ref(false)
+  const draggingMode = ref<DraggingMode | null>(null)
   const editableActive = ref(false)
   const isChangingOptions = ref(false)
   const isMultiSelecting = ref(false)
+
+  const isDragging = computed(() => !!draggingMode.value)
 
   const blocks = computed<DraggableExistingBlock[]>(() =>
     selectedUuids.value
@@ -162,13 +173,13 @@ export default function (
     })
   }
 
-  function onDraggingStart() {
-    isDragging.value = true
+  function onDraggingStart(e: DraggableStartEvent) {
+    draggingMode.value = e.mode
     isMultiSelecting.value = false
   }
 
   function onDraggingEnd() {
-    isDragging.value = false
+    draggingMode.value = null
   }
 
   const onSelectStart = (uuids: string[] = []) => {
@@ -254,5 +265,6 @@ export default function (
     editableActive,
     isChangingOptions,
     isMultiSelecting,
+    draggingMode,
   }
 }

@@ -21,7 +21,10 @@
     v-else-if="!editOnly"
     :class="[
       attrs.class,
-      { 'bk-field-list': canEdit && !isNested && !isPreview },
+      {
+        'bk-field-list': canEdit && !isNested && !isPreview,
+        [nonEmptyClass]: filteredList.length,
+      },
       listClass,
     ]"
     :data-field-key="fieldKey"

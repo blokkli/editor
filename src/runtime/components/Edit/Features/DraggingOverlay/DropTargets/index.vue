@@ -90,6 +90,7 @@ const props = defineProps<{
   box: Rectangle
   mouseX: number
   mouseY: number
+  isTouch: boolean
 }>()
 
 const onChildClick = (field: FieldRect, child: FieldRectChild) => {
@@ -503,7 +504,7 @@ const onAnimationFrame = () => {
 onMounted(() => {
   document.body.classList.add('bk-is-dragging')
   fieldRects.value = buildFieldRects()
-  if (!ui.isMobile.value) {
+  if (!props.isTouch) {
     document.body.addEventListener('mouseup', onMouseUp)
     eventBus.on('animationFrame', onAnimationFrame)
   }

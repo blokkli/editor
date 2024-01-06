@@ -1,7 +1,7 @@
 .bk {
   #bk-blokkli-item-actions-title {
     height: var(--bk-actions-height);
-    @apply w-[160px] md:w-200 lg:w-[240px];
+    @apply w-[160px] lg:w-200 lg:w-[240px];
   }
   .bk-blokkli-item-actions-title-count {
     @apply bg-slate-50 text-slate-900 inline-flex items-center justify-center px-3 min-w-[1.5em] h-[1.5em] rounded-full ml-10 text-xs lg:text-sm font-bold leading-none;
@@ -15,7 +15,7 @@
   .bk-blokkli-item-actions-inner {
     @apply fixed left-0 p-0 z-actions w-full will-change-transform;
     bottom: var(--bk-root-offset-bottom);
-    @screen md {
+    @screen lg {
       @apply top-0 w-auto;
       bottom: initial;
     }
@@ -28,19 +28,19 @@
     &::-webkit-scrollbar {
       display: none;
     }
-    @screen md {
+    @screen lg {
       @apply rounded-md border-b-0;
     }
   }
 
   .bk-blokkli-item-actions-buttons {
-    @apply relative flex flex-1 md:flex-initial;
+    @apply relative flex flex-1 lg:flex-initial;
     > button {
-      @apply text-slate-300 h-full flex items-center shrink-0  justify-center relative md:static z-50;
-      @apply md:hover:bg-slate-700 md:hover:text-slate-50;
+      @apply text-slate-300 h-full flex items-center shrink-0  justify-center relative lg:static z-50;
+      @apply lg:hover:bg-slate-700 lg:hover:text-slate-50;
       max-width: var(--bk-actions-height);
       flex: 1 0 auto;
-      @screen md {
+      @screen lg {
         width: var(--bk-actions-height);
         flex: initial;
       }
@@ -50,7 +50,7 @@
       .bk-tooltip {
         @apply absolute bottom-full left-0 w-full mb-3;
       }
-      @screen md {
+      @screen lg {
         &:not(:hover) {
           .bk-tooltip {
             @apply hidden;
@@ -62,7 +62,7 @@
         @apply opacity-25 pointer-events-none;
       }
       svg {
-        @apply w-20 h-20 md:w-25 md:h-25 fill-current;
+        @apply w-20 h-20 lg:w-25 lg:h-25 fill-current;
       }
     }
   }
@@ -71,14 +71,14 @@
   }
 
   .bk-blokkli-item-actions-type-button {
-    @apply flex items-center justify-between cursor-default md:min-w-[180px] text-slate-300 font-bold h-full pl-[9px] md:pr-15  rounded-l leading-none;
-    @apply text-xs md:text-sm lg:text-base;
+    @apply flex items-center justify-between cursor-default lg:min-w-[180px] text-slate-300 font-bold h-full pl-[9px] lg:pr-15  rounded-l leading-none;
+    @apply text-xs lg:text-sm lg:text-base;
     @apply w-full;
     .bk-blokkli-item-actions-title-label {
       @apply mr-auto truncate;
     }
     .bk-blokkli-item-actions-title-icon {
-      @apply text-xl md:text-[34px] mr-[0.25em] bg-slate-800 w-[1em] h-[1em] rounded border border-slate-600 relative text-white;
+      @apply text-xl lg:text-[34px] mr-[0.25em] bg-slate-800 w-[1em] h-[1em] rounded border border-slate-600 relative text-white;
       svg {
         @apply w-[0.7em] h-[0.7em] fill-current absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
       }
@@ -97,7 +97,7 @@
       }
     }
     &.is-open {
-      @apply md:bg-slate-700 text-white;
+      @apply lg:bg-slate-700 text-white;
       .bk-caret {
         @apply transform rotate-180;
       }
@@ -128,18 +128,18 @@
   }
 
   .bk-blokkli-item-actions-type-dropdown {
-    @apply absolute bottom-full left-0 min-w-[300px] bg-slate-900 text-slate-200 overflow-hidden shadow-xl-inverted rounded-tr w-screen md:w-auto;
-    @screen md {
+    @apply absolute bottom-full left-0 min-w-[300px] bg-slate-900 text-slate-200 overflow-hidden shadow-xl-inverted rounded-tr w-screen lg:w-auto;
+    @screen lg {
       @apply top-full bottom-auto shadow-xl rounded-t-none rounded-b;
     }
     h3 {
       @apply p-10 pt-15 font-semibold uppercase text-xs tracking-wide text-slate-400;
     }
     button {
-      @apply flex py-15 px-10 items-center gap-5 w-full font-semibold md:text-lg text-slate-300;
+      @apply flex py-15 px-10 items-center gap-5 w-full font-semibold lg:text-lg text-slate-300;
       text-align: left;
       line-height: 1;
-      @screen md {
+      @screen lg {
         &:hover {
           @apply text-white bg-slate-800;
           .bk-blokkli-item-icon {
@@ -149,7 +149,7 @@
       }
     }
     .bk-blokkli-item-icon {
-      @apply text-2xl md:text-[34px] bg-slate-700 rounded flex items-center justify-center border border-slate-500 p-[0.2em];
+      @apply text-2xl lg:text-[34px] bg-slate-700 rounded flex items-center justify-center border border-slate-500 p-[0.2em];
     }
 
     > div:not(:first-child) {
@@ -163,7 +163,7 @@
   .bk-blokkli-item-actions-comment-dropdown {
     @apply absolute left-0 w-full bg-white p-15 shadow-xl-inverted z-10;
     bottom: var(--bk-actions-height);
-    @screen md {
+    @screen lg {
       @apply top-full bottom-auto shadow-xl rounded-b;
     }
     button {

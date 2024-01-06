@@ -45,6 +45,11 @@ import type {
 } from '#blokkli/types'
 import { PluginToolbarButton } from '#blokkli/plugins'
 import { lerp, calculateCenterPosition } from '#blokkli/helpers'
+import {
+  easeOutElastic,
+  easeOutQuad,
+  easeOutSine,
+} from '#blokkli/helpers/easing'
 
 const {
   keyboard,
@@ -57,8 +62,6 @@ const {
   $t,
   selection,
 } = useBlokkli()
-
-const hasItemSelected = computed(() => !!selection.uuids.value.length)
 
 const props = withDefaults(
   defineProps<{
@@ -78,6 +81,15 @@ const debugValues = ref<any>({})
 
 const scrollbar = ref<HTMLElement | null>(null)
 const isDraggingThumb = ref(false)
+const isTouchMoving = ref(false)
+
+watch(selection.isDragging, () => {
+  isTouchMoving.value = false
+})
+
+watch(isTouchMoving, (is) => {
+  console.log('isTouchMoving: ' + is)
+})
 
 const scrollStartY = ref(0)
 const scrollStartOffsetY = ref(0)
@@ -492,11 +504,16 @@ function onAnimationFrame() {
       scale.value = animationTarget.value.scale
       stopAnimate()
     } else {
+      const easedAlpha = easeOutQuad(alpha)
       // Update the offset values
-      const x = lerp(offset.value.x, animationTarget.value.x, alpha)
-      const y = lerp(offset.value.y, animationTarget.value.y, alpha)
+      const x = lerp(offset.value.x, animationTarget.value.x, easedAlpha)
+      const y = lerp(offset.value.y, animationTarget.value.y, easedAlpha)
       updateOffset(x, y)
-      const newScale = lerp(scale.value, animationTarget.value.scale, alpha)
+      const newScale = lerp(
+        scale.value,
+        animationTarget.value.scale,
+        easedAlpha,
+      )
       scale.value = newScale
 
       // Increase alpha towards 1 at each frame
@@ -533,23 +550,36 @@ const touchStartOffset = { x: 0, y: 0 }
 const initialTouchDistance = ref<number | null>(null)
 const initialScale = ref(1)
 
-function getDistance(touches: TouchList) {
-  const dx = touches[0].clientX - touches[1].clientX
-  const dy = touches[0].clientY - touches[1].clientY
+function getDistance(a: Coord, b: Coord) {
+  const dx = a.x - b.x
+  const dy = a.y - b.y
   return Math.sqrt(dx * dx + dy * dy)
 }
 
+function getTouchDistance(touches: TouchList) {
+  return getDistance(
+    {
+      x: touches[0].clientX,
+      y: touches[0].clientY,
+    },
+    {
+      x: touches[1].clientX,
+      y: touches[1].clientY,
+    },
+  )
+}
+
 function onTouchStart(e: TouchEvent) {
-  if (hasItemSelected.value) {
-    return
-  }
+  stopAnimate()
+  isTouchMoving.value = true
+  prevTouchMoveCoords = []
   if (e.touches.length === 1) {
     // Single touch (panning)
     touchStartOffset.x = e.touches[0].clientX
     touchStartOffset.y = e.touches[0].clientY
   } else if (e.touches.length === 2) {
     // Pinch start
-    initialTouchDistance.value = getDistance(e.touches)
+    initialTouchDistance.value = getTouchDistance(e.touches)
     initialScale.value = scale.value
   }
 }
@@ -569,10 +599,14 @@ function getMidpoint(touches: TouchList) {
   }
 }
 
+type TouchCoord = Coord & { timestamp: number }
+
 let isPinching = false
+let prevTouchMoveCoords: TouchCoord[] = []
 
 function onTouchMove(e: TouchEvent) {
-  if (hasItemSelected.value) {
+  if (!isTouchMoving.value) {
+    onTouchStart(e)
     return
   }
   e.preventDefault()
@@ -589,7 +623,7 @@ function onTouchMove(e: TouchEvent) {
   if (e.touches.length === 2 && initialTouchDistance.value !== null) {
     isPinching = true
     // Pinch move
-    const newTouchDistance = getDistance(e.touches)
+    const newTouchDistance = getTouchDistance(e.touches)
     const scaleFactor = newTouchDistance / initialTouchDistance.value
 
     newScale = initialScale.value * scaleFactor
@@ -617,20 +651,70 @@ function onTouchMove(e: TouchEvent) {
 
     touchStartOffset.x = e.touches[0].clientX
     touchStartOffset.y = e.touches[0].clientY
+
+    const newTouchMoveCoord = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+      timestamp: Date.now(),
+    }
+    if (prevTouchMoveCoords.length === 2) {
+      prevTouchMoveCoords[0] = prevTouchMoveCoords[1]
+      prevTouchMoveCoords[1] = newTouchMoveCoord
+    } else {
+      prevTouchMoveCoords.push(newTouchMoveCoord)
+    }
     return
   }
 
   // Adjust offset based on new scale and focal point
   const newOffsetX = midpoint.x - focalPoint.x * newScale
   const newOffsetY = midpoint.y - focalPoint.y * newScale
+
   updateOffset(newOffsetX, newOffsetY)
 }
 
 function onTouchEnd(e: TouchEvent) {
+  isTouchMoving.value = false
   if (e.touches.length <= 1) {
     // Reset initial values for pinch
     initialTouchDistance.value = null
     initialScale.value = 1
+    const newPosition = calculateNewPosition(prevTouchMoveCoords, offset.value)
+    animateTo(newPosition.x, newPosition.y)
+    console.log(newPosition.velocity, offset.value, newPosition)
+    prevTouchMoveCoords = []
+  }
+}
+
+// Method to calculate the new position
+function calculateNewPosition(
+  coords: TouchCoord[],
+  position: Coord,
+): Coord & { velocity: number } {
+  if (coords.length !== 2) {
+    throw new Error('Array must contain exactly two touch coordinates.')
+  }
+
+  const [firstTouch, secondTouch] = coords
+
+  // Calculate differences in position and time
+  const deltaX = secondTouch.x - firstTouch.x
+  const deltaY = secondTouch.y - firstTouch.y
+  const deltaTime = secondTouch.timestamp - firstTouch.timestamp
+
+  if (deltaTime === 0) {
+    throw new Error('Delta time is zero, cannot calculate velocity.')
+  }
+
+  const velocity = Math.sqrt(deltaX * deltaX + deltaY * deltaY) / deltaTime
+
+  const angle = Math.atan2(deltaY, deltaX)
+
+  const factor = 200
+  return {
+    x: position.x + Math.cos(angle) * velocity * factor,
+    y: position.y + Math.sin(angle) * velocity * factor,
+    velocity,
   }
 }
 
@@ -697,7 +781,6 @@ onMounted(() => {
   document.body.addEventListener('mousedown', onMouseDown)
   window.addEventListener('mouseup', onMouseUp)
 
-  document.addEventListener('touchstart', onTouchStart, { passive: false })
   document.addEventListener('touchmove', onTouchMove, { passive: false })
   document.addEventListener('touchend', onTouchEnd, { passive: false })
   document.body.addEventListener('wheel', onWheel, { passive: false })
@@ -726,7 +809,6 @@ onBeforeUnmount(() => {
   document.body.removeEventListener('wheel', onWheel)
   document.body.removeEventListener('mousedown', onMouseDown)
   window.removeEventListener('mouseup', onMouseUp)
-  document.removeEventListener('touchstart', onTouchStart)
   document.removeEventListener('touchmove', onTouchMove)
   document.removeEventListener('touchend', onTouchEnd)
   eventBus.off('scrollIntoView', onScrollIntoView)

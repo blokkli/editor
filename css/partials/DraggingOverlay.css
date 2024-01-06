@@ -1,5 +1,9 @@
 .bk-dragging-overlay {
-  @apply fixed bottom-0 lg:bottom-auto lg:top-0 left-0 pointer-events-none z-dragging-overlay rounded select-none;
+  @apply fixed bottom-auto top-0 left-0 pointer-events-none z-dragging-overlay rounded select-none;
+
+  &.bk-is-touch {
+    @apply bottom-0 top-auto;
+  }
 
   > div {
     @apply absolute top-0 left-0 origin-top-left rounded;

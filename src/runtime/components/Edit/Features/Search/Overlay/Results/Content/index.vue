@@ -12,7 +12,10 @@
         @click.stop="clickItem"
         @mouseenter="index = i"
       >
-        <div class="bk-search-item-icon">
+        <div
+          class="bk-search-item-icon"
+          :class="{ 'bk-is-image': item.imageUrl }"
+        >
           <img v-if="item.imageUrl" :src="item.imageUrl" />
           <ItemIcon v-else :bundle="item.targetBundles[0]" />
         </div>

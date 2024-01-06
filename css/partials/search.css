@@ -126,7 +126,11 @@
     &.bk-is-active {
       @apply bg-slate-100 text-slate-950;
       .bk-search-item-icon {
-        @apply border-blue-700 bg-blue-600 text-white outline outline-blue-900 outline-[1px];
+        @apply border-blue-700 bg-blue-600 text-white;
+
+        &.bk-is-image {
+          @apply outline outline-blue-900 outline-[1px];
+        }
       }
     }
   }

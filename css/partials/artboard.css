@@ -16,7 +16,7 @@
   --bk-root-offset-bottom: 0px;
   --bk-root-offset-right: 0px;
   --bk-actions-height: 50px;
-  @screen md {
+  @screen lg {
     --bk-root-offset-top: 50px;
     --bk-actions-height: 50px;
     --bk-root-offset-right: 50px;
@@ -29,7 +29,7 @@
   }
   &.bk-has-add-list-bottom {
     --bk-root-offset-bottom: 50px;
-    @screen md {
+    @screen lg {
       --bk-root-offset-bottom: 70px;
     }
   }

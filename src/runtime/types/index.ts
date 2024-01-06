@@ -513,9 +513,12 @@ export type Message = {
   message: string
 }
 
+export type DraggingMode = 'touch' | 'mouse'
+
 export type DraggableStartEvent = {
   items: DraggableItem[]
   coords: Coord
+  mode: DraggingMode
 }
 
 export type MakeReusableEvent = {

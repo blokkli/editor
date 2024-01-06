@@ -6,6 +6,7 @@
       :y="mouseY"
       :start-coords="startCoords"
       :items="dragItems"
+      :is-touch="isTouching"
     />
   </Teleport>
   <DropTargets
@@ -14,6 +15,7 @@
     :box="box"
     :mouse-x="mouseX"
     :mouse-y="mouseY"
+    :is-touch="isTouching"
     @drop="onDrop"
   />
 </template>
@@ -54,6 +56,7 @@ const { adapter } = defineBlokkliFeature({
 const { eventBus, state, ui, animation } = useBlokkli()
 
 const isVisible = ref(false)
+const isTouching = ref(false)
 const mouseX = ref(0)
 const mouseY = ref(0)
 const startCoords = ref<Coord>({
@@ -188,6 +191,7 @@ const onMouseUp = (e: MouseEvent) => {
 }
 
 function onDraggingStart(e: DraggableStartEvent) {
+  isTouching.value = e.mode === 'touch'
   startCoords.value = e.coords
   animation.requestDraw()
   const item = e.items[0]
@@ -196,8 +200,10 @@ function onDraggingStart(e: DraggableStartEvent) {
   }
   if ('element' in item) {
     eventBus.on('animationFrame', loop)
-    document.removeEventListener('mouseup', onMouseUp)
-    document.addEventListener('mouseup', onMouseUp)
+    if (!isTouching.value) {
+      document.removeEventListener('mouseup', onMouseUp)
+      document.addEventListener('mouseup', onMouseUp)
+    }
   }
   dragItems.value = e.items
 }

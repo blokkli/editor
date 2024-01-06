@@ -10,7 +10,7 @@
     <BlokkliField
       v-bind="header"
       class="container"
-      non-empty-class="mb-70"
+      non-empty-class="mb-30 md:mb-70"
       field-list-type="header"
     />
     <BlokkliField

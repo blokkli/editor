@@ -87,6 +87,7 @@ const onLeave = (el: Element, done: Function) => {
 
 const onTouchStart = (e: TouchEvent) => {
   e.stopPropagation()
+  e.preventDefault()
   isTouching.value = true
   clearTimeout(touchTimeout)
   if (!shouldHandleEvent(e)) {
@@ -134,6 +135,7 @@ const onTouchStart = (e: TouchEvent) => {
     eventBus.emit('dragging:start', {
       items: [...selection.blocks.value],
       coords: start.value,
+      mode: isTouching.value ? 'touch' : 'mouse',
     })
   }, 300)
 }
@@ -201,7 +203,7 @@ const onClick = (e: MouseEvent) => {
   e.stopPropagation()
 
   if (selection.isDragging.value) {
-    eventBus.emit('dragging:end')
+    // eventBus.emit('dragging:end')
     return
   }
 
@@ -217,7 +219,7 @@ const onClick = (e: MouseEvent) => {
   }
   clickStart = Date.now()
 
-  if (!props.useSelection && ui.isMobile.value) {
+  if (!props.useSelection && isTouching.value) {
     const el = findItem(e)?.element
     if (!el) {
       return
@@ -226,7 +228,11 @@ const onClick = (e: MouseEvent) => {
     if (!item) {
       return
     }
-    eventBus.emit('dragging:start', { items: [item], coords: start.value })
+    eventBus.emit('dragging:start', {
+      items: [item],
+      coords: start.value,
+      mode: isTouching.value ? 'touch' : 'mouse',
+    })
     return
   }
   const id = findItem(e)?.id
@@ -273,6 +279,7 @@ const onMouseMove = (e: MouseEvent) => {
       eventBus.emit('dragging:start', {
         items: [...selection.blocks.value],
         coords: start.value,
+        mode: isTouching.value ? 'touch' : 'mouse',
       })
       return
     }
@@ -284,7 +291,11 @@ const onMouseMove = (e: MouseEvent) => {
         if (!item) {
           return
         }
-        eventBus.emit('dragging:start', { items: [item], coords: start.value })
+        eventBus.emit('dragging:start', {
+          items: [item],
+          coords: start.value,
+          mode: isTouching.value ? 'touch' : 'mouse',
+        })
       }
     }
   }
@@ -300,9 +311,13 @@ const originatesFromEditable = (e: MouseEvent | TouchEvent) => {
 }
 
 const onMouseDown = (e: MouseEvent) => {
+  if (isTouching.value) {
+    return
+  }
   if (e.button !== 0) {
     return
   }
+  console.log('mouse down')
   eventBus.emit('dragging:end')
   start.value.x = 0
   start.value.y = 0
@@ -342,6 +357,10 @@ const onMouseDown = (e: MouseEvent) => {
 }
 
 const onMouseUp = (e: MouseEvent) => {
+  if (isTouching.value) {
+    return
+  }
+  console.log('Mouse up')
   window.removeEventListener('mousemove', onMouseMove)
   start.value.x = 0
   start.value.y = 0

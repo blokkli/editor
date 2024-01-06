@@ -1,10 +1,10 @@
 .bk {
   .bk-toolbar {
-    @apply relative top-0 left-0 right-0 z-toolbar md:right-50 md:border-r md:border-r-slate-700;
+    @apply relative top-0 left-0 right-0 z-toolbar lg:right-50 lg:border-r lg:border-r-slate-700;
     @apply bg-slate-950/90 backdrop-blur-lg lg:backdrop-blur-none lg:bg-slate-900;
     @apply select-none;
     @apply h-40 text-base flex;
-    @apply md:fixed;
+    @apply lg:fixed;
     @screen lg {
       @apply h-50;
     }
@@ -18,7 +18,7 @@
   }
 
   &.bk-top {
-    @apply fixed top-0 left-0 w-full md:static z-toolbar md:z-auto;
+    @apply fixed top-0 left-0 w-full lg:static z-toolbar lg:z-auto;
   }
 
   .bk-tooltip {
@@ -63,7 +63,7 @@
     }
     @apply relative flex h-full;
     &#bk-toolbar-view-options {
-      @apply hidden md:flex;
+      @apply hidden lg:flex;
 
       .bk-tooltip {
         @apply left-auto right-[9px];
@@ -148,7 +148,7 @@
 
 .bk {
   .bk-toolbar-button {
-    @apply text-slate-200 flex gap-5 items-center px-10 min-w-[50px] justify-center h-40 md:h-50;
+    @apply text-slate-200 flex gap-5 items-center px-10 min-w-[50px] justify-center h-40 lg:h-50;
 
     &:not(.is-active) {
       @apply lg:hover:bg-slate-700;
@@ -162,7 +162,7 @@
       @apply pointer-events-none text-slate-700;
     }
     svg {
-      @apply w-18 h-18 md:w-20 md:h-20 fill-current;
+      @apply w-18 h-18 lg:w-20 lg:h-20 fill-current;
     }
     &.is-active {
       .bk-tooltip {
