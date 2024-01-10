@@ -371,6 +371,12 @@ export type ValidTextKeys = ${validTranslationKeys}
     })
 
     addComponent({
+      filePath: resolver.resolve('./runtime/components/BlokkliEditable.vue'),
+      name: 'BlokkliEditable',
+      global: true,
+    })
+
+    addComponent({
       filePath: resolver.resolve('./runtime/components/BlokkliProvider.vue'),
       name: 'BlokkliProvider',
       global: true,

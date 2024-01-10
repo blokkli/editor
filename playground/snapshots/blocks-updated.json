@@ -8,7 +8,7 @@
         { "key": "highlightLength", "value": "2" },
         { "key": "highlightStart", "value": "1" }
       ],
-      "title": ["Interactive page building experience for Nuxt"],
+      "title": ["Interactive $page building$ experience for Nuxt"],
       "lead": [
         "Simple content pages or complex landing pages. Blokkli provides a solid modular framework to build your own editing experience - with any backend."
       ],

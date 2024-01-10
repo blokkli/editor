@@ -584,6 +584,14 @@ export type EditableFieldFocusEvent = {
   block: DraggableExistingBlock
   element: HTMLElement
   args?: BlokkliEditableDirectiveArgs
+  isComponent?: boolean
+  value?: string
+}
+
+export type EditableFieldUpdateEvent = {
+  name: string
+  entityUuid: string
+  value: string
 }
 
 export type EventbusEvents = {
@@ -623,6 +631,7 @@ export type EventbusEvents = {
   'plugin:unmount': PluginUnmountEvent
 
   'editable:focus': EditableFieldFocusEvent
+  'editable:update': EditableFieldUpdateEvent
   'editable:save': undefined
 
   'sidebar:close': undefined

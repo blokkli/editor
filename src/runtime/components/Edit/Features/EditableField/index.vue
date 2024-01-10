@@ -8,6 +8,7 @@
 
 <script lang="ts" setup>
 import {
+  computed,
   ref,
   onMounted,
   onBeforeUnmount,

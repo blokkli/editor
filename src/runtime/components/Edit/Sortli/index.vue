@@ -17,7 +17,12 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, onBeforeUnmount } from '#imports'
+import {
+  useBlokkli,
+  onBeforeUnmount,
+  ref,
+  type ComponentPublicInstance,
+} from '#imports'
 import type { Coord } from '#blokkli/types'
 import { buildDraggableItem } from '#blokkli/helpers'
 
@@ -393,6 +398,8 @@ const emitEditableFocus = (eventTarget: HTMLElement): boolean => {
           block,
           element: el,
           args,
+          isComponent: el.dataset.blokkliEditableComponent === 'true',
+          value: el.dataset.blokkliEditableValue || '',
         })
         return true
       }

@@ -4,6 +4,11 @@ export default defineBuildConfig({
   externals: [
     '#blokkli/adapter',
     '#blokkli/types',
+    '#blokkli/icons',
+    '#blokkli/constants',
+    '#blokkli/helpers',
+    '#blokkli/helpers/broadcastProvider',
+    '#blokkli/helpers/featuresProvider',
     '#blokkli/translations',
     '#blokkli/generated-types',
     'defu',

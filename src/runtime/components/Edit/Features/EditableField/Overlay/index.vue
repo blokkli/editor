@@ -74,6 +74,7 @@ import type {
 } from '#blokkli/types'
 import { Icon, ItemIcon } from '#blokkli/components'
 import {
+  computed,
   ref,
   watch,
   onMounted,
@@ -93,13 +94,15 @@ const props = defineProps<{
   block: DraggableExistingBlock
   element: HTMLElement
   args?: BlokkliEditableDirectiveArgs
+  isComponent?: boolean
+  value?: string
 }>()
 
 const getElement = (): HTMLElement => props.element
 
 const scrollHeight = ref(0)
 const loaded = ref(false)
-const originalText = ref('')
+const originalText = ref(props.value || '')
 const modelValue = ref('')
 const inputStyle = ref<Record<string, any>>({})
 const form = ref<HTMLFormElement | null>(null)
@@ -185,10 +188,12 @@ const close = async (save?: boolean) => {
     )
   }
   if (!save && el) {
-    if (isMarkup.value) {
-      el.innerHTML = originalText.value
-    } else {
-      el.textContent = originalText.value
+    if (!props.isComponent) {
+      if (isMarkup.value) {
+        el.innerHTML = originalText.value
+      } else {
+        el.textContent = originalText.value
+      }
     }
   }
   if (el) {
@@ -198,13 +203,21 @@ const close = async (save?: boolean) => {
 }
 
 watch(modelValue, (newText) => {
-  if (props.element && selection.editableActive.value) {
+  if (props.element && selection.editableActive.value && !props.isComponent) {
     const el = getElement()
     if (editableType.value === 'plaintext') {
       el.textContent = newText
     } else {
       el.innerHTML = newText
     }
+  }
+
+  if (props.isComponent) {
+    eventBus.emit('editable:update', {
+      name: props.fieldName,
+      entityUuid: props.block.uuid,
+      value: newText,
+    })
   }
 })
 
@@ -242,10 +255,14 @@ onMounted(() => {
 
   const el = getElement()
 
-  if (isMarkup.value) {
-    modelValue.value = el.innerHTML
+  if (props.isComponent) {
+    modelValue.value = props.value || ''
   } else {
-    modelValue.value = el.textContent || ''
+    if (isMarkup.value) {
+      modelValue.value = el.innerHTML
+    } else {
+      modelValue.value = el.textContent || ''
+    }
   }
 
   originalText.value = modelValue.value

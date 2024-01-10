@@ -2,11 +2,17 @@
   <div class="hero py-20 md:py-50 lg:py-100 overflow-hidden relative">
     <div class="container lg:grid grid-cols-12 gap-20 lg:gap-40">
       <div class="col-span-8 hero-content">
-        <h1
-          class="text-4xl lg:text-6xl hero-title"
-          v-html="titleMarkup"
-          v-blokkli-editable:title="{ required: true }"
-        />
+        <BlokkliEditable
+          v-slot="{ value }"
+          :value="titleValue"
+          required
+          name="title"
+        >
+          <h1
+            class="text-4xl lg:text-6xl hero-title"
+            v-html="getTitleMarkup(value)"
+          />
+        </BlokkliEditable>
         <p
           v-if="lead"
           v-blokkli-editable:lead="{ required: true }"
@@ -28,20 +34,6 @@
 <script lang="ts" setup>
 const { options, isEditing } = defineBlokkli({
   bundle: 'hero',
-  options: {
-    highlightStart: {
-      type: 'text',
-      default: '0',
-      inputType: 'number',
-      label: 'Highlight start index',
-    },
-    highlightLength: {
-      type: 'text',
-      default: '0',
-      inputType: 'number',
-      label: 'Highlight length',
-    },
-  },
   editTitle: (el) => el.querySelector('h1')?.innerText,
 })
 
@@ -53,26 +45,25 @@ const props = defineProps<{
 
 const titleValue = computed(() => props.title.toString())
 
-const titleMarkup = computed(() => {
-  const start = parseInt(options.value.highlightStart)
-  const length = parseInt(options.value.highlightLength)
-  if (isNaN(start) || isNaN(length)) {
-    return titleValue.value
+const getTitleMarkup = (text: string): string => {
+  let result = ''
+  let dollarCount = 0
+
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] === '$') {
+      dollarCount++
+      if (dollarCount % 2 === 0) {
+        result += '</em>'
+      } else {
+        result += '<em>'
+      }
+    } else {
+      result += text[i]
+    }
   }
 
-  // Split the title into words
-  const words = titleValue.value.split(' ')
-
-  // Check if start and length values are within the bounds of the words array
-  if (start >= 0 && start < words.length && start + length <= words.length) {
-    // Wrap the specified range of words in <em></em> tags
-    const highlighted = words.slice(start, start + length).join(' ')
-    words.splice(start, length, `<em>${highlighted}</em>`)
-  }
-
-  // Join the words back into a string
-  return words.join(' ')
-})
+  return result
+}
 </script>
 
 <style lang="postcss">
