@@ -92,7 +92,6 @@ const onLeave = (el: Element, done: Function) => {
 
 const onTouchStart = (e: TouchEvent) => {
   e.stopPropagation()
-  e.preventDefault()
   isTouching.value = true
   clearTimeout(touchTimeout)
   if (!shouldHandleEvent(e)) {
