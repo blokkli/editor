@@ -1,13 +1,9 @@
 [
   {
-    "name": "blocks",
+    "name": "left",
     "entityType": "block",
-    "entityUuid": "f7e3f26b-9c8a-4571-9f98-660bcca08938",
-    "field": [
-      "72633ab5-2353-45ce-8a1b-3726c7da8679",
-      "25cdf719-d6ef-4a27-a828-ba6ed8b78ee6",
-      "59b6db95-f4ca-4dd7-86a4-3ad53e66571b"
-    ]
+    "entityUuid": "908fac9f-e47e-4478-bfd8-ab8ac947835b",
+    "field": ["6eb4ba7f-5102-41eb-aa35-5c6a33daab82"]
   },
   {
     "name": "content",
@@ -21,10 +17,13 @@
       "dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf",
       "6d0bde10-a05b-4c7d-a8cf-fafc8e0001f1",
       "334a4e80-a174-49ba-b986-af5697f093b7",
+      "908fac9f-e47e-4478-bfd8-ab8ac947835b",
       "ce8afc60-2f42-4b99-8a44-c5a46eb15f7a",
       "c414a773-406c-4200-aef6-ada9349b3f11",
       "90d01577-babc-45b5-a03b-2ba266822425",
-      "958fba1e-400f-42c5-b310-11f59db59e2f"
+      "958fba1e-400f-42c5-b310-11f59db59e2f",
+      "ba696dbe-8f34-4d83-857d-c1c805cf3aec",
+      "7ea2581f-d5d1-42ff-96d0-d68a667dd2f3"
     ]
   },
   {
@@ -48,6 +47,16 @@
     "entityType": "block",
     "entityUuid": "f7e3f26b-9c8a-4571-9f98-660bcca08938",
     "field": ["d6020cd0-45f0-4200-8690-e297a38a1cca"]
+  },
+  {
+    "name": "blocks",
+    "entityType": "block",
+    "entityUuid": "f7e3f26b-9c8a-4571-9f98-660bcca08938",
+    "field": [
+      "72633ab5-2353-45ce-8a1b-3726c7da8679",
+      "25cdf719-d6ef-4a27-a828-ba6ed8b78ee6",
+      "59b6db95-f4ca-4dd7-86a4-3ad53e66571b"
+    ]
   },
   {
     "name": "left",
@@ -176,7 +185,8 @@
       "5f46fde3-ccca-489b-afa4-456d2649de5b",
       "3bbb964a-93a0-4b85-91dd-52e8bc8425fc",
       "a7a3b4bf-c891-4387-a012-a9cb2da8b1b4",
-      "34344398-bb04-450f-9fa9-d3763f5bae0c"
+      "34344398-bb04-450f-9fa9-d3763f5bae0c",
+      "5407ef47-dfbc-456b-9900-8e2577185380"
     ]
   },
   {

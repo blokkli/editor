@@ -108,10 +108,10 @@
     "uuid": "d6020cd0-45f0-4200-8690-e297a38a1cca",
     "values": {
       "options": [],
-      "tagline": ["Personalize Your Creativity"],
+      "tagline": ["Customize your design"],
       "title": ["Dynamic Options and Interactive Features"],
       "lead": [
-        "Unlock the potential of each block with customizable options and interactive capabilities, enhancing both aesthetics and functionality."
+        "Add customizable options and interactive capabilities to your blocks. Unlock the potential with unique aesthetics and functionality. "
       ]
     }
   },
@@ -127,7 +127,11 @@
         { "key": "background", "value": "white" }
       ],
       "header": [{ "uuid": "d6020cd0-45f0-4200-8690-e297a38a1cca" }],
-      "blocks": [{ "uuid": "25cdf719-d6ef-4a27-a828-ba6ed8b78ee6" }]
+      "blocks": [
+        { "uuid": "72633ab5-2353-45ce-8a1b-3726c7da8679" },
+        { "uuid": "25cdf719-d6ef-4a27-a828-ba6ed8b78ee6" },
+        { "uuid": "59b6db95-f4ca-4dd7-86a4-3ad53e66571b" }
+      ]
     }
   },
   {
@@ -143,22 +147,6 @@
       "title": ["Artboard"],
       "text": [
         " Pan and zoom like in Photoshop or Figma for precise layout control."
-      ]
-    }
-  },
-  {
-    "entityType": "block",
-    "bundle": "card",
-    "uuid": "16968897-7742-494f-bd9f-2ac214aa92cd",
-    "values": {
-      "options": [
-        { "key": "box", "value": "" },
-        { "key": "color", "value": "lightRed" }
-      ],
-      "icon": ["clipboard"],
-      "title": ["Clipboard"],
-      "text": [
-        "Easily copy-paste text, images, and even YouTube links for enriched content."
       ]
     }
   },
@@ -214,7 +202,7 @@
       "icon": ["recycle"],
       "title": ["Shared Library"],
       "text": [
-        "Reuse blocks across multiple pages with a shared library, promoting consistency."
+        "Reuse blocks across multiple pages with a shared library enabling truly consistent content."
       ]
     }
   },
@@ -355,11 +343,9 @@
     "uuid": "611aae9b-49be-4236-b4a0-1602aa306f56",
     "values": {
       "options": [],
-      "tagline": ["Search"],
+      "tagline": ["Content search"],
       "title": ["Easily find existing content"],
-      "lead": [
-        "Easily locate content and transform your blocks to suit your needs, adding flexibility to your page design."
-      ]
+      "lead": ["Find blocks, content or media elements\n"]
     }
   },
   {
@@ -387,7 +373,7 @@
     "values": {
       "options": [{ "key": "list", "value": "1" }],
       "text": [
-        "Find content on page\nSearch existing content to add blocks\nImplement custom search providers"
+        "<p>Search for blocks, existing content or media in your CMS or DAM and place them right away as blocks on your page.&nbsp;<br>&nbsp;</p>"
       ]
     }
   },
@@ -485,7 +471,7 @@
     "values": {
       "options": [],
       "icon": ["qr"],
-      "title": ["Hands-on Preview"],
+      "title": ["Hands-on Live-Preview"],
       "text": [
         "If supported by the backend, Blokkli can generate a QR code that can be scanned on a smartphone to see and feel a preview of the page, with live reloading."
       ]
@@ -908,25 +894,9 @@
         { "key": "color", "value": "lightBlue" }
       ],
       "icon": ["palette"],
-      "title": ["Customization"],
+      "title": ["Custom Design"],
       "text": [
         "Change the behavior and appearance of each block with options like background color, alignment, and size."
-      ]
-    }
-  },
-  {
-    "entityType": "block",
-    "bundle": "card",
-    "uuid": "583b10c3-3057-4379-ab16-c9c0ce1c2d66",
-    "values": {
-      "options": [
-        { "key": "box", "value": "1" },
-        { "key": "color", "value": "lightYellow" }
-      ],
-      "icon": ["zoom"],
-      "title": ["Artboard"],
-      "text": [
-        " Pan and zoom like in Photoshop or Figma for precise layout control."
       ]
     }
   },
@@ -948,18 +918,63 @@
   },
   {
     "entityType": "block",
-    "bundle": "card",
-    "uuid": "08aca4c8-58e4-4528-b8e5-928df05bf5d9",
+    "bundle": "two_columns",
+    "uuid": "908fac9f-e47e-4478-bfd8-ab8ac947835b",
     "values": {
       "options": [
-        { "key": "box", "value": "1" },
-        { "key": "color", "value": "lightRed" }
+        { "key": "columns", "value": "twoOne" },
+        { "key": "background", "value": "dark" }
       ],
-      "icon": ["clipboard"],
-      "title": ["Clipboard"],
-      "text": [
-        "Easily copy-paste text, images, and even YouTube links for enriched content."
+      "header": [],
+      "left": [],
+      "right": []
+    }
+  },
+  {
+    "entityType": "block",
+    "bundle": "title",
+    "uuid": "6eb4ba7f-5102-41eb-aa35-5c6a33daab82",
+    "values": {
+      "options": [],
+      "tagline": ["Mobile Editing"],
+      "title": ["Edit your content on the go"],
+      "lead": [
+        "Access all blökkli features in a user-friendly mobile interface. \nAll features of blökkli are working in your mobile browser and with touch devices. You can add, edit and optimize your content while rushing to the next meeting. "
       ]
+    }
+  },
+  {
+    "entityType": "block",
+    "bundle": "card",
+    "uuid": "5407ef47-dfbc-456b-9900-8e2577185380",
+    "values": {
+      "options": [],
+      "icon": [],
+      "title": ["Validations"],
+      "text": [
+        "blökkli is free for everyone to use and published under the MIT License"
+      ]
+    }
+  },
+  {
+    "entityType": "block",
+    "bundle": "title",
+    "uuid": "ba696dbe-8f34-4d83-857d-c1c805cf3aec",
+    "values": {
+      "options": [],
+      "tagline": ["Let's go!"],
+      "title": ["Start creating impressive content now"],
+      "lead": ["Give blökkli a try - setup just takes 5 minutes*"]
+    }
+  },
+  {
+    "entityType": "block",
+    "bundle": "button",
+    "uuid": "7ea2581f-d5d1-42ff-96d0-d68a667dd2f3",
+    "values": {
+      "options": [],
+      "title": ["Try it now"],
+      "url": ["https://github.com/dulnan/blokkli"]
     }
   }
 ]
