@@ -48,6 +48,7 @@ import {
   useAttrs,
   inject,
   provide,
+  ref,
   type Ref,
 } from '#imports'
 

@@ -1,7 +1,7 @@
 <template>
   <TransitionGroup
     ref="list"
-    :name="ui.useAnimations.value ? 'bk-sortli' : undefined"
+    :name="ui.useAnimations.value && !noTransition ? 'bk-sortli' : undefined"
     tag="div"
     @mousedown.capture="onMouseDown"
     @mouseup="onMouseUp"
@@ -28,6 +28,7 @@ import { buildDraggableItem } from '#blokkli/helpers'
 
 const props = defineProps<{
   useSelection?: boolean
+  noTransition?: boolean
 }>()
 
 const { selection, eventBus, dom, keyboard, ui } = useBlokkli()
@@ -321,7 +322,6 @@ const onMouseDown = (e: MouseEvent) => {
   if (e.button !== 0) {
     return
   }
-  console.log('mouse down')
   eventBus.emit('dragging:end')
   start.value.x = 0
   start.value.y = 0
@@ -364,7 +364,6 @@ const onMouseUp = (e: MouseEvent) => {
   if (isTouching.value) {
     return
   }
-  console.log('Mouse up')
   window.removeEventListener('mousemove', onMouseMove)
   start.value.x = 0
   start.value.y = 0

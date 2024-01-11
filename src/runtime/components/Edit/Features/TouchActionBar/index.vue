@@ -2,7 +2,7 @@
   <Teleport to="body">
     <Transition name="bk-touch-bar">
       <Bar
-        v-if="selection.isMultiSelecting.value"
+        v-if="selection.isMultiSelecting.value && ui.isMobile.value"
         label="Finish selecting"
         @click="eventBus.emit('select:end', [...selection.uuids.value])"
       />
@@ -20,7 +20,7 @@
 import { useBlokkli, defineBlokkliFeature } from '#imports'
 import Bar from './Bar/index.vue'
 
-const { eventBus, selection } = useBlokkli()
+const { eventBus, selection, ui } = useBlokkli()
 
 const isTouch = computed(() => selection.draggingMode.value === 'touch')
 

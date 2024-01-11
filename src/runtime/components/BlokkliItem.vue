@@ -1,5 +1,6 @@
 <template>
-  <component :is="component" v-bind="props" />
+  <component v-if="component" :is="component" v-bind="props" />
+  <div v-else-if="isEditing">Block not implemented</div>
 </template>
 
 <script lang="ts" setup>

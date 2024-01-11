@@ -19,7 +19,6 @@ const zIndex = [
   'add-list',
   'sidebar',
   'sidebar-detached',
-  'dragging-overlay',
   'sidebar-tabs',
   'toolbar',
   'preview',
@@ -31,6 +30,7 @@ const zIndex = [
   'edit-form',
   'resizable',
   'edit-form-header',
+  'dragging-overlay',
   'dialog',
   'init-overlay',
 ].reduce((acc, key, index) => {
@@ -43,7 +43,7 @@ module.exports = {
     preflight: false,
     container: false,
   },
-  content: ['./src/runtime/**/*.{vue,js,ts}'],
+  content: ['./css/index.css'],
   theme: {
     fontFamily: {
       sans: ['PB Inter, sans-serif'],

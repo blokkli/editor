@@ -4,33 +4,48 @@
       <Icon name="spinner" />
     </div>
     <div :class="{ 'bk-search-is-loading': isLoading }">
-      <button
-        v-for="(item, i) in items"
-        :key="item.id"
-        ref="listItems"
-        :class="{ 'bk-is-active': i === index }"
-        @click.stop="clickItem"
-        @mouseenter="index = i"
-      >
-        <div
-          class="bk-search-item-icon"
-          :class="{ 'bk-is-image': item.imageUrl }"
+      <Sortli no-transition>
+        <button
+          v-for="(item, i) in items"
+          :key="tab + item.id"
+          ref="listItems"
+          data-element-type="clipboard"
+          class="bk bk-search-item"
+          :class="{ 'bk-is-active': i === index }"
+          :data-sortli-id="'search_' + tab + i"
+          :data-item-bundle="item.targetBundles[0]"
+          :data-clipboard-data="item.title"
+          :data-clipboard-search-item="JSON.stringify(item)"
+          data-clipboard-type="search_content"
+          @mouseenter="index = i"
+          @action="clickItem"
         >
-          <img v-if="item.imageUrl" :src="item.imageUrl" />
-          <ItemIcon v-else :bundle="item.targetBundles[0]" />
-        </div>
-        <div class="bk-search-item-content">
-          <div class="bk-search-item-title bk-highlight" v-html="item.title" />
-          <div class="bk-search-item-subtitle">
-            <div
-              v-if="item.context"
-              class="bk-search-item-context"
-              v-html="item.context"
-            />
-            <div class="bk-search-item-text bk-highlight" v-html="item.text" />
+          <div
+            class="bk-search-item-icon"
+            :class="{ 'bk-is-image': item.imageUrl }"
+          >
+            <img v-if="item.imageUrl" :src="item.imageUrl" />
+            <ItemIcon v-else :bundle="item.targetBundles[0]" />
           </div>
-        </div>
-      </button>
+          <div class="bk-search-item-content">
+            <div
+              class="bk-search-item-title bk-highlight"
+              v-html="item.title"
+            />
+            <div class="bk-search-item-subtitle">
+              <div
+                v-if="item.context"
+                class="bk-search-item-context"
+                v-html="item.context"
+              />
+              <div
+                class="bk-search-item-text bk-highlight"
+                v-html="item.text"
+              />
+            </div>
+          </div>
+        </button>
+      </Sortli>
     </div>
     <div
       v-if="!isLoading && !items.length && search"
@@ -44,7 +59,7 @@
 
 <script lang="ts" setup>
 import { watch, ref, useBlokkli, onMounted } from '#imports'
-import { ItemIcon, Icon } from '#blokkli/components'
+import { ItemIcon, Icon, Sortli } from '#blokkli/components'
 import { modulo } from '#blokkli/helpers'
 import type { SearchContentItem } from '#blokkli/types'
 

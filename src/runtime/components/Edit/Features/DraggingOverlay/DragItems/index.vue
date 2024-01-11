@@ -121,17 +121,18 @@ const onAnimationFrame = () => {
   const newRects: AnimationRectangle[] = []
 
   const elapsed = Date.now() - animationStart
-  const alpha = easeOutElastic(elapsed / duration)
+  const alphaX = easeOutElastic(elapsed / duration, 1.92, 0.51)
+  const alphaY = easeOutElastic(elapsed / duration, 2.2, 0.46)
   const opacityAlpha = Math.min(Math.max(elapsed - 300, 0) / 200, 1)
 
   for (let i = 0; i < rects.value.length; i++) {
     const rect = rects.value[i]
-    const newX = lerp(rect.from.x, rect.to.x, alpha)
-    const newY = lerp(rect.from.y, rect.to.y, alpha)
+    const newX = lerp(rect.from.x, rect.to.x, alphaX)
+    const newY = lerp(rect.from.y, rect.to.y, alphaY)
     const newOpacity = lerp(rect.from.opacity, rect.to.opacity, opacityAlpha)
 
-    const newScaleX = lerp(rect.from.scaleX, rect.to.scaleX, alpha)
-    const newScaleY = lerp(rect.from.scaleY, rect.to.scaleY, alpha)
+    const newScaleX = lerp(rect.from.scaleX, rect.to.scaleX, alphaX)
+    const newScaleY = lerp(rect.from.scaleY, rect.to.scaleY, alphaY)
 
     animation.requestDraw()
 
