@@ -115,22 +115,22 @@
 
 .bk .bk-search-list {
   @apply overflow-auto h-full overscroll-contain absolute top-0 left-0 w-full;
-  button {
-    @apply px-20 text-slate-700  py-15 md:py-20 cursor-pointer relative flex gap-10 text-left w-full items-stretch;
+}
+.bk.bk-search-item {
+  @apply px-20 text-slate-700 py-15 md:py-20 cursor-pointer relative flex gap-10 text-left w-full items-stretch;
 
-    &:after {
-      content: '';
-      @apply absolute bottom-0 left-0 w-full h-[0.5px] bg-slate-200;
-    }
+  &:after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-full h-[0.5px] bg-slate-200;
+  }
 
-    &.bk-is-active {
-      @apply bg-slate-100 text-slate-950;
-      .bk-search-item-icon {
-        @apply border-blue-700 bg-blue-600 text-white;
+  &.bk-is-active {
+    @apply bg-slate-100 text-slate-950;
+    .bk-search-item-icon {
+      @apply border-blue-700 bg-blue-600 text-white;
 
-        &.bk-is-image {
-          @apply outline outline-blue-900 outline-[1px];
-        }
+      &.bk-is-image {
+        @apply outline outline-blue-900 outline-[1px];
       }
     }
   }

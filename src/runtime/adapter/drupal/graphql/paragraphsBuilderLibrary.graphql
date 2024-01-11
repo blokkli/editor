@@ -27,6 +27,22 @@ mutation pbAddReusableParagraph(
   }
 }
 
+mutation pbDetachReusableParagraph(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $uuids: [String]!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: detach_reusable(uuids: $uuids) {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
 query pbLibraryItems {
   entityQuery(entityType: PARAGRAPHS_LIBRARY_ITEM, limit: 50) {
     items {
@@ -38,12 +54,10 @@ query pbLibraryItems {
 fragment paragraphsBuilderLibraryItem on ParagraphsLibraryItem {
   uuid
   label
-  paragraphs: paragraphsRawField {
-    list {
-      ...paragraphsFieldItem
-      props: entity {
-        ...paragraph
-      }
+  paragraphs {
+    ...paragraphsFieldItem
+    props {
+      ...paragraph
     }
   }
 }

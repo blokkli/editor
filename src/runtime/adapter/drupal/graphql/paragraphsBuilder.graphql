@@ -73,13 +73,12 @@ fragment paragraphsBuilderViolation on ParagraphsEditViolation {
 
 fragment paragraphsBuilderMutatedField on ParagraphsBuilderMutatedField {
   name
-  label
-  field {
-    list {
-      ...paragraphsFieldItem
-      props: entity {
-        ...paragraph
-      }
+  entityType
+  entityUuid
+  list {
+    ...paragraphsFieldItem
+    props {
+      ...paragraph
     }
   }
 }
@@ -236,12 +235,13 @@ mutation pbDuplicateParagraph(
   $entityUuid: String!
   $langcode: String
   $uuid: String!
+  $afterUuid: String
 ) {
   state: paragraphsEditMutationState(
     entityType: $entityType
     entityUuid: $entityUuid
   ) {
-    action: duplicate(uuid: $uuid) {
+    action: duplicate(uuid: $uuid, afterUuid: $afterUuid) {
       ...paragraphsBuilderMutationResult
     }
   }
@@ -252,12 +252,13 @@ mutation pbDuplicateMultipleParagraphs(
   $entityUuid: String!
   $langcode: String
   $uuids: [String]!
+  $afterUuid: String
 ) {
   state: paragraphsEditMutationState(
     entityType: $entityType
     entityUuid: $entityUuid
   ) {
-    action: duplicate_multiple(uuids: $uuids) {
+    action: duplicate_multiple(uuids: $uuids, afterUuid: $afterUuid) {
       ...paragraphsBuilderMutationResult
     }
   }
@@ -315,6 +316,29 @@ mutation pbBulkUpdateParagraphBehaviorSettings(
     entityUuid: $entityUuid
   ) {
     action: bulk_update_behavior_settings(items: $items) {
+      ...paragraphsBuilderMutationResult
+    }
+  }
+}
+
+mutation pbUpdateFieldValue(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String!
+  $uuid: String!
+  $fieldName: String!
+  $value: String!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: update_field_value(
+      uuid: $uuid
+      langcode: $langcode
+      fieldName: $fieldName
+      value: $value
+    ) {
       ...paragraphsBuilderMutationResult
     }
   }
@@ -611,4 +635,25 @@ fragment paragraphsBuilderAllowedType on ParagraphsBuilderAllowedType {
   bundle
   fieldName
   allowedTypes
+}
+
+query pbGetFieldConfig {
+  pbGetFieldConfig {
+    name
+    label
+    entityType
+    entityBundle
+    cardinality
+    canEdit
+    allowedBundles
+  }
+}
+
+query pbGetEditableFieldConfig {
+  pbGetEditableFieldConfig {
+    name
+    label
+    entityType
+    entityBundle
+  }
 }

@@ -269,7 +269,7 @@ ${featuresArray}
     const importPattern = moduleOptions.pattern || []
 
     const libraryEnabled = featuresContext.features.some(
-      (v) => v.id === 'Library',
+      (v) => v.id === 'library',
     )
 
     // Add the from_library blokkli item.

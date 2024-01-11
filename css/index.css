@@ -33,6 +33,10 @@
 @import './partials/ResponsivePreview.css';
 @import './partials/Help.css';
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @font-face {
   font-family: 'PB Inter';
   font-weight: 100 900;
@@ -41,10 +45,6 @@
   font-named-instance: 'Regular';
   src: url('/Inter.var.woff2') format('woff2');
 }
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 html {
   --bk-z-index-base: 50000;
@@ -150,6 +150,7 @@ html {
 .bk-owner-indicator {
   @apply fixed bottom-0 right-0 bg-red-100 z-messages p-20 text-red-800 font-medium text-lg flex justify-between items-center;
   left: var(--bk-root-offset-left);
+  right: var(--bk-root-offset-right);
 }
 
 .bk-qr-code {
