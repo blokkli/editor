@@ -154,6 +154,13 @@ export type FieldConfig = {
   allowedBundles: string[]
 }
 
+export type EditableFieldConfig = {
+  name: string
+  entityType: string
+  entityBundle: string
+  label: string
+}
+
 export type EntityContext = {
   uuid: string
   type: string

@@ -1,5 +1,9 @@
 import { type ComputedRef, computed, watch } from 'vue'
-import type { FieldConfig, BlockBundleDefinition } from '../types'
+import type {
+  FieldConfig,
+  BlockBundleDefinition,
+  EditableFieldConfig,
+} from '../types'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import type { BlokkliAdapter } from '../adapter'
 import type { SelectionProvider } from './selectionProvider'
@@ -16,6 +20,7 @@ export type BlockDefinitionProvider = {
   allTypes: ComputedRef<BlockBundleDefinition[]>
   getType: (bundle: string) => BlokkliBlockType | undefined
   fieldConfig: ComputedRef<FieldConfig[]>
+  editableFieldConfig: ComputedRef<EditableFieldConfig[]>
 }
 
 export default async function (
@@ -28,6 +33,10 @@ export default async function (
 
   const loadedFieldConfig = await adapter.getFieldConfig()
   const fieldConfig = computed(() => loadedFieldConfig)
+  const loadedEditableFieldConfig = adapter.getEditableFieldConfig
+    ? await adapter.getEditableFieldConfig()
+    : []
+  const editableFieldConfig = computed(() => loadedEditableFieldConfig)
 
   /**
    * The allowed bundles in the current field item list.
@@ -128,5 +137,6 @@ export default async function (
     allTypes,
     getType,
     fieldConfig,
+    editableFieldConfig,
   }
 }

@@ -35,6 +35,7 @@ const onMessage = (e: MessageEvent) => {
   if (typeof e.data === 'object') {
     if (e.data.name === 'blokkli__editable_field_update') {
       emit('update:modelValue', e.data.data.text)
+    } else if (e.data.name === 'blokkli__editable_field_update_height') {
       height.value = e.data.data.height
     }
   }

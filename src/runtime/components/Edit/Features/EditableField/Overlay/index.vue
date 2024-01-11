@@ -135,12 +135,23 @@ const formStyle = computed(() => {
   }
 })
 
+const fieldLabel = computed(
+  () =>
+    types.editableFieldConfig.value.find(
+      (v) =>
+        v.name === props.fieldName && v.entityBundle === props.block.itemBundle,
+    )?.label || props.fieldName,
+)
+
 const hasChanged = computed(() => modelValue.value !== originalText.value)
 const itemBundle = computed(() => props.block.itemBundle)
 const maxlength = computed(() => props.args?.maxlength)
 const required = computed(() => !!props.args?.required)
 const label = computed(() =>
-  [types.getType(itemBundle.value)?.label, props.args?.label || props.fieldName]
+  [
+    types.getType(itemBundle.value)?.label,
+    props.args?.label || fieldLabel.value,
+  ]
     .filter(falsy)
     .join(' » '),
 )

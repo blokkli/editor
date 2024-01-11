@@ -25,6 +25,7 @@ import type {
   DraggableHostData,
   DetachReusableBlockEvent,
   FieldConfig,
+  EditableFieldConfig,
 } from './../types'
 
 export interface MutationResponseLike<T> {
@@ -74,6 +75,11 @@ export interface BlokkliAdapter<T> {
    * Get the field configurations.
    */
   getFieldConfig(): Promise<FieldConfig[]>
+
+  /**
+   * Get the editable field configurations.
+   */
+  getEditableFieldConfig?: () => Promise<EditableFieldConfig[]>
 
   /**
    * Get all possible conversions.
@@ -377,7 +383,7 @@ export interface AdapterContext {
   entityType: string
   entityUuid: string
   entityBundle: string
-  language?: string
+  language: string
 }
 
 export type BlokkliAdapterFactory<T> = (
