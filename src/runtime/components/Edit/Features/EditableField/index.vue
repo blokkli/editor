@@ -22,6 +22,7 @@ import type { EditableFieldFocusEvent } from '#blokkli/types'
 defineBlokkliFeature({
   id: 'editable-field',
   icon: 'textbox',
+  label: 'Editable Field',
   requiredAdapterMethods: ['updateFieldValue'],
   description: 'Implements a form overlay to edit a single field of a block.',
 })

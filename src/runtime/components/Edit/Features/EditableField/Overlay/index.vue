@@ -18,11 +18,11 @@
         </h3>
         <button type="submit">
           <Icon name="close" />
-          <span>{{ $t('cancel') }}</span>
+          <span>{{ $t('cancel', 'Cancel') }}</span>
         </button>
         <button :disabled="!hasChanged" @click.prevent="close(true)">
           <Icon name="save" />
-          <span>{{ $t('save') }}</span>
+          <span>{{ $t('save', 'Save') }}</span>
         </button>
       </div>
 
@@ -169,7 +169,7 @@ const count = computed(() => modelValue.value.length)
 
 const errorText = computed(() => {
   if (required.value && !modelValue.value) {
-    return $t('fieldIsRequired')
+    return $t('fieldIsRequired', 'This field is required')
   }
 })
 

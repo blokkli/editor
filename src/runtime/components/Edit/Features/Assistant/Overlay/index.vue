@@ -1,15 +1,22 @@
 <template>
   <FormOverlay
     id="assistant"
-    :title="$t('assistantDialogTitle')"
+    :title="$t('assistantDialogTitle', 'Generate content with AI assistant')"
     icon="robot"
     @close="onClose"
   >
     <div class="bk-assistant-form">
       <div class="bk">
-        <p class="bk-lead">{{ $t('assistantDialogLead') }}</p>
+        <p class="bk-lead">
+          {{
+            $t(
+              'assistantDialogLead',
+              "Please enter what you'd like the assistant to generate.",
+            )
+          }}
+        </p>
         <label class="bk-form-label" for="assistant_prompt">
-          {{ $t('assistantPromptLabel') }}
+          {{ $t('assistantPromptLabel', 'Prompt') }}
         </label>
         <div class="bk-assistant-form-textarea">
           <textarea
@@ -18,7 +25,12 @@
             type="text"
             class="bk-form-input"
             rows="10"
-            :placeholder="$t('assistantPromptPlaceholder')"
+            :placeholder="
+              $t(
+                'assistantPromptPlaceholder',
+                'Generate content for a page about how taxes work in Switzerland',
+              )
+            "
             required
           />
           <button
@@ -44,7 +56,7 @@
     </div>
     <template #footer>
       <button class="bk-button bk-is-primary" @click="onSubmit">
-        {{ $t('assistantDialogSubmit') }}
+        {{ $t('assistantDialogSubmit', 'Create blocks') }}
       </button>
     </template>
   </FormOverlay>

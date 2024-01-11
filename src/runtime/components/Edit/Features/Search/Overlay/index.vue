@@ -13,7 +13,7 @@
         ref="input"
         v-model="search"
         type="text"
-        :placeholder="$t('searchBoxPlaceholder')"
+        :placeholder="$t('searchBoxPlaceholder', 'Enter search term')"
         autocomplete="off"
         spellcheck="false"
         required
@@ -83,7 +83,7 @@ type SearchComponent =
 const searchComponents = ref<SearchComponent[]>([])
 
 const tabsMap: Record<string, string> = {
-  on_this_page: $t('searchBoxOnThisPage'),
+  on_this_page: $t('searchBoxOnThisPage', 'On this page'),
   ...(adapter.getContentSearchTabs ? adapter.getContentSearchTabs() : {}),
 }
 

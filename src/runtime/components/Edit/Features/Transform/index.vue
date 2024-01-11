@@ -1,7 +1,7 @@
 <template>
   <PluginItemDropdown
     id="transform"
-    :title="$t('transformTo')"
+    :title="$t('transformTo', 'Other actions')"
     :enabled="!!(itemBundleIds.length && possibleTransforms.length)"
   >
     <button
@@ -49,7 +49,10 @@ async function onTransform(plugin: TransformPlugin, uuids: string[]) {
       uuids,
       pluginId: plugin.id,
     }),
-    $t('failedToTransform').replace('@name', plugin.label),
+    $t(
+      'failedToTransform',
+      'The action "@name" could not be executed.',
+    ).replace('@name', plugin.label),
   )
 }
 

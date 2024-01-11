@@ -1,7 +1,9 @@
 <template>
   <PluginMenuButton
-    :title="$t('settingsMenuTitle')"
-    :description="$t('settingsMenuDescription')"
+    :title="$t('settingsMenuTitle', 'Settings')"
+    :description="
+      $t('settingsMenuDescription', 'Personal settings for the editor')
+    "
     secondary
     icon="cog"
     @click="onClick"

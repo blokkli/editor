@@ -32,7 +32,7 @@
         v-model="searchText"
         type="search"
         class="bk-form-input"
-        :placeholder="$t('searchInputPlaceholder')"
+        :placeholder="$t('addListInputPlaceholder', 'Search available blocks')"
         required
       />
     </div>

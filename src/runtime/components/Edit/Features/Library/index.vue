@@ -1,7 +1,7 @@
 <template>
   <PluginItemAction
     v-if="isReusable && adapter.detachReusableBlock"
-    :title="$t('libraryDetach')"
+    :title="$t('libraryDetach', 'Detach from library')"
     icon="detach"
     multiple
     :weight="-70"
@@ -9,7 +9,7 @@
   />
   <PluginItemAction
     v-else-if="!isReusable"
-    :title="$t('libraryAdd')"
+    :title="$t('libraryAdd', 'Add to library')"
     :disabled="!canMakeReusable"
     icon="reusable"
     :weight="-70"
@@ -19,7 +19,7 @@
   <PluginAddAction
     v-if="adapter.addLibraryItem && adapter.getLibraryItems"
     type="library"
-    :title="$t('libraryAddFromLibrary')"
+    :title="$t('libraryAddFromLibrary', 'Add from library')"
     icon="reusable"
     color="lime"
     @placed="placedAction = $event"
@@ -131,7 +131,7 @@ async function onMakeReusable(label: string) {
       label,
       uuid: selectedItem.value.uuid,
     }),
-    $t('libraryError'),
+    $t('libraryError', 'Failed to add block to library.'),
   )
   eventBus.emit('select:end')
 }

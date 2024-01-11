@@ -1,7 +1,7 @@
 <template>
   <PluginMenuButton
-    :title="$t('exitTitle')"
-    :description="$t('exitDescription')"
+    :title="$t('exitTitle', 'Close')"
+    :description="$t('exitDescription', 'Close editor without publishing')"
     :weight="100"
     icon="exit"
     @click="onClick"

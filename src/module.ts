@@ -311,14 +311,17 @@ ${featuresArray}
       write: true,
       filename: 'blokkli/translations.ts',
       getContents: () => {
-        const merged = defu(defaultTranslations, moduleOptions.translations)
-        const validTranslationKeys = Object.keys(merged.en)
-          .map((v) => `'${v}'`)
-          .join(' | ')
-        return `
-export const translations = ${JSON.stringify(merged)}
-export type ValidTextKeys = ${validTranslationKeys}
-`
+        const translations: Record<string, Record<string, string>> = {}
+        Object.keys(defaultTranslations).forEach((language) => {
+          translations[language] = {}
+          Object.keys((defaultTranslations as any)[language]).forEach((key) => {
+            translations[language][key] = (defaultTranslations as any)[
+              language
+            ][key].translation
+          })
+        })
+        const merged = defu(translations, moduleOptions.translations)
+        return `export const translations = ${JSON.stringify(merged, null, 2)}`
       },
       options: {
         blokkli: true,

@@ -2,7 +2,7 @@
   <PluginSidebar
     id="mobile-preview"
     v-slot="{ width, height, isDetached }"
-    :title="$t('responsivePreviewTitle')"
+    :title="$t('responsivePreviewTitle', 'Responsive Preview')"
     :min-width="375"
     :min-height="375"
     :size="size"
@@ -135,7 +135,7 @@ const buildViewportSubtitle = (
 const viewportOptions = computed<ViewportOption[]>(() => {
   return [
     {
-      label: 'Custom',
+      label: $t('responsivePreviewCustomViewport', 'Custom'),
       id: 'custom',
       icon: 'resize',
     },

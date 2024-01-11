@@ -2,16 +2,17 @@
   <div class="bk-qr-code">
     <canvas ref="canvas" />
     <p>
-      Sie können den Link auch kopieren und mit anderen Personen teilen (ohne
-      Login).
+      {{ $t('previewQrCodeText', 'You can also copy the link and share it.') }}
     </p>
     <input :value="fullUrl" class="bk-form-input" readonly @focus="onFocus" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from '#imports'
+import { ref, computed, onMounted, useBlokkli } from '#imports'
 import QR from 'qrcode'
+
+const { $t } = useBlokkli()
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 

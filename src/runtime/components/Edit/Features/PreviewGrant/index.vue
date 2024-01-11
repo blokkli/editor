@@ -1,7 +1,7 @@
 <template>
   <PluginToolbarButton
     v-if="previewGrantUrl && !ui.isMobile.value"
-    :title="$t('previewWithSmartphone')"
+    :title="$t('previewWithSmartphone', 'Preview (with smartphone)')"
     region="after-menu"
     icon="qrcode"
     @click="qrCodeVisible = true"
@@ -11,9 +11,14 @@
     <Transition appear name="bk-slide-up">
       <DialogModal
         v-if="qrCodeVisible && previewGrantUrl"
-        :title="$t('previewDialogTitle')"
-        :lead="$t('previewDialogLead')"
-        :submit-label="$t('close')"
+        :title="$t('previewDialogTitle', 'Preview with smartphone')"
+        :lead="
+          $t(
+            'previewDialogLead',
+            'Scan the QR code with your smartphone to open the preview.',
+          )
+        "
+        :submit-label="$t('close', 'Close')"
         is-danger
         hide-buttons
         :width="490"

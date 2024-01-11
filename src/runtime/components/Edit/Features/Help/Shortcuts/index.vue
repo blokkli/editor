@@ -33,12 +33,24 @@ type ShortcutGroup = {
   shortcuts: KeyboardShortcut[]
 }
 
-const { keyboard } = useBlokkli()
+const { keyboard, $t } = useBlokkli()
+
+const getGroupLabel = (key: string) => {
+  if (key === 'general') {
+    return $t('shortcutGroupGeneral', 'General')
+  } else if (key === 'blocks') {
+    return $t('shortcutGroupBlocks', 'Blocks')
+  } else if (key === 'ui') {
+    return $t('shortcutGroupUi', 'UI')
+  }
+
+  return key
+}
 
 const groups = computed(() => {
   return Object.values(
     keyboard.shortcuts.value.reduce<Record<string, ShortcutGroup>>((acc, v) => {
-      const group = v.shortcut.group || 'general'
+      const group = getGroupLabel(v.shortcut.group || 'general')
       if (!acc[group]) {
         acc[group] = {
           group,

@@ -1,6 +1,6 @@
 <template>
   <DialogModal
-    :title="$t('settingsDialogTitle')"
+    :title="$t('settingsDialogTitle', 'Change settings')"
     :width="700"
     hide-buttons
     icon="cog"
@@ -50,11 +50,11 @@ type GroupedSettings = {
 
 const getGroupLabel = (key: SettingsGroup): string => {
   if (key === 'behavior') {
-    return $t('settingsBehaviour')
+    return $t('settingsBehaviour', 'Behaviour')
   } else if (key === 'appearance') {
-    return $t('settingsAppearance')
+    return $t('settingsAppearance', 'Appearance')
   } else if (key === 'advanced') {
-    return $t('settingsAdvanced')
+    return $t('settingsAdvanced', 'Advanced')
   }
   return key
 }

@@ -2,7 +2,7 @@
   <PluginSidebar
     id="history"
     v-slot="{ scrolledToEnd }"
-    :title="$t('history')"
+    :title="$t('history', 'History')"
     icon="history"
     weight="-100"
   >
@@ -40,7 +40,7 @@
           <button @click="showAmount += 100">
             <strong
               >{{
-                $t('historyShowMore').replace(
+                $t('historyShowMore', 'Show @count more').replace(
                   '@count',
                   Math.min(totalMutations - showAmount, 100).toString(),
                 )
@@ -57,7 +57,9 @@
         >
           <button @click="setHistoryIndex(-1)">
             <div>
-              <strong>{{ $t('historyCurrentRevision') }}</strong>
+              <strong>{{
+                $t('historyCurrentRevision', 'Current revision')
+              }}</strong>
             </div>
             <!-- @TODO: Pass in the timestamp of the entity's latest revision. -->
             <!-- <RelativeTime -->
@@ -74,7 +76,7 @@
   </PluginSidebar>
 
   <PluginToolbarButton
-    :title="$t('historyUndo')"
+    :title="$t('historyUndo', 'Undo')"
     meta
     key-code="Z"
     region="before-title"
@@ -84,7 +86,7 @@
   />
 
   <PluginToolbarButton
-    :title="$t('historyRedo')"
+    :title="$t('historyRedo', 'Redo')"
     meta
     shift
     key-code="Z"

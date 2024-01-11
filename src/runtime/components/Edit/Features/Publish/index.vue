@@ -1,7 +1,7 @@
 <template>
   <PluginMenuButton
-    :title="$t('publishLabel')"
-    :description="$t('publishDescription')"
+    :title="$t('publishLabel', 'Publish')"
+    :description="$t('publishDescription', 'Make all changes public')"
     :disabled="!mutations.length || !canEdit"
     type="success"
     :weight="0"
@@ -31,8 +31,8 @@ const { mutations, canEdit, mutateWithLoadingState } = state
 const onClick = async () => {
   await mutateWithLoadingState(
     adapter.publish(),
-    $t('publishError'),
-    $t('publishSuccess'),
+    $t('publishError', 'Changes could not be published.'),
+    $t('publishSuccess', 'Changes published successfully.'),
   )
 }
 </script>

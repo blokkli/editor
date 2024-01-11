@@ -1,8 +1,10 @@
 <template>
   <PluginMenuButton
     v-if="state.mutatedFields.value.length"
-    :title="$t('importExistingTitle')"
-    :description="$t('importExistingDescription')"
+    :title="$t('importExistingTitle', 'Import...')"
+    :description="
+      $t('importExistingDescription', 'Import from an existing page')
+    "
     :disabled="state.editMode.value !== 'editing'"
     :weight="50"
     icon="import"
@@ -64,8 +66,8 @@ function onSubmit(sourceUuid: string, sourceFields: string[]) {
       sourceFields,
       sourceUuid,
     }),
-    $t('importExistingError'),
-    $t('importExistingSuccess'),
+    $t('importExistingError', 'Content could not be imported.'),
+    $t('importExistingSuccess', 'Content imported successfully.'),
   )
 }
 

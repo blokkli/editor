@@ -1,7 +1,7 @@
 <template>
   <PluginSidebar
     id="violations"
-    :title="$t('validationsToolbarLabel')"
+    :title="$t('validationsToolbarLabel', 'Validations')"
     icon="check"
     weight="-10"
   >
@@ -17,7 +17,7 @@
         <figure>
           <Icon name="check" />
         </figure>
-        <h3>{{ $t('validationsNoneFound') }}</h3>
+        <h3>{{ $t('validationsNoneFound', 'No validation errors found.') }}</h3>
       </div>
     </div>
   </PluginSidebar>

@@ -1,7 +1,9 @@
 <template>
   <PluginMenuButton
-    :title="$t('revertMenuTitle')"
-    :description="$t('revertMenuDescription')"
+    :title="$t('revertMenuTitle', 'Discard...')"
+    :description="
+      $t('revertMenuDescription', 'Restore currently published state')
+    "
     icon="revert"
     type="danger"
     :disabled="!mutations.length || !canEdit"
@@ -13,9 +15,14 @@
     <transition appear name="bk-slide-up">
       <DialogModal
         v-if="showConfirm"
-        :title="$t('revertDialogTitle')"
-        :lead="$t('revertDialogLead')"
-        :submit-label="$t('revertDialogSubmit')"
+        :title="$t('revertDialogTitle', 'Irrevocably discard changes')"
+        :lead="
+          $t(
+            'revertDialogLead',
+            'This will delete all changes and restore the currently published state. This action cannot be undone.',
+          )
+        "
+        :submit-label="$t('revertDialogSubmit', 'Discard changes')"
         is-danger
         @submit="onSubmit"
         @cancel="showConfirm = false"
@@ -46,8 +53,8 @@ const showConfirm = ref(false)
 async function onSubmit() {
   await mutateWithLoadingState(
     adapter.revertAllChanges(),
-    $t('revertError'),
-    $t('revertSuccess'),
+    $t('revertError', 'Changes could not be discarded.'),
+    $t('revertSuccess', 'All changes have been discarded.'),
   )
   showConfirm.value = false
 }

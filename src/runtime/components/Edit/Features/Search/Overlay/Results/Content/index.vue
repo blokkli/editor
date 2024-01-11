@@ -52,7 +52,7 @@
       class="bk-search-no-results"
     >
       <Icon name="sad" />
-      <span>{{ $t('searchBoxNoResultsFound') }}</span>
+      <span>{{ $t('searchBoxNoResultsFound', 'No results found') }}</span>
     </div>
   </div>
 </template>

@@ -1,22 +1,31 @@
 <template>
   <FormOverlay
     id="library"
-    :title="$t('libraryPlaceDialogTitle')"
+    :title="$t('libraryPlaceDialogTitle', 'Add block from library')"
     icon="reusable"
     @close="onClose"
   >
     <div class="bk-library-dialog">
-      <p class="bk-lead">{{ $t('libraryPlaceDialogLead') }}</p>
+      <p class="bk-lead">
+        {{
+          $t(
+            'libraryPlaceDialogLead',
+            'Select a reusable block from the library to add it to your layout. You can detach the block later.',
+          )
+        }}
+      </p>
       <div class="bk bk-library-dialog-form">
         <label class="bk-form-label" for="library_search">
-          {{ $t('libraryPlaceSearchLabel') }}
+          {{ $t('libraryPlaceSearchLabel', 'Filter library items') }}
         </label>
         <input
           id="library_search"
           v-model="searchText"
           type="text"
           class="bk-form-input"
-          :placeholder="$t('searchInputPlaceholder')"
+          :placeholder="
+            $t('libraryPlaceSearchInputPlaceholder', 'Search library items')
+          "
           required
         />
       </div>
@@ -39,7 +48,7 @@
     </div>
     <template #footer>
       <button class="bk-button bk-is-primary" @click="onSubmit">
-        {{ $t('libraryPlaceDialogSubmit') }}
+        {{ $t('libraryPlaceDialogSubmit', 'Add reusable block') }}
       </button>
     </template>
   </FormOverlay>

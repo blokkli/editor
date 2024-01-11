@@ -71,6 +71,7 @@ import type { KeyPressedEvent, Rectangle } from '#blokkli/types'
 
 defineBlokkliFeature({
   id: 'debug',
+  label: 'Debug',
   icon: 'bug',
   description: 'Provides debugging functionality.',
 })

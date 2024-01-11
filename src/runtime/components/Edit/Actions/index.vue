@@ -106,7 +106,7 @@ const title = computed(() => {
     return itemBundle.value.label
   }
 
-  return $t('multipleItemsLabel')
+  return $t('multipleItemsLabel', 'Items')
 })
 
 const itemBundleIds = computed(() =>

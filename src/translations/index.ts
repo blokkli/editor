@@ -1,11 +1,9 @@
-import de from './de'
-import en from './en'
-import fr from './fr'
-import it from './it'
+import de from './de.json'
+import fr from './fr.json'
+import it from './it.json'
 
 const translations = {
   de,
-  en,
   fr,
   it,
 }

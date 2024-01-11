@@ -2,7 +2,7 @@
   <PluginSidebar
     id="clipboard"
     ref="plugin"
-    :title="$t('clipboard')"
+    :title="$t('clipboard', 'Clipboard')"
     edit-only
     icon="clipboard"
     weight="-30"
@@ -12,8 +12,23 @@
         v-if="!pastedItems.length"
         class="bk bk-clipboard-info bk-sidebar-padding"
       >
-        <h4>{{ $t('clipboardEmpty') }}</h4>
-        <div v-if="!ui.isMobile.value" v-html="$t('clipboardExplanation')" />
+        <h4>{{ $t('clipboardEmpty', 'No items in the clipboard') }}</h4>
+        <div
+          v-if="!ui.isMobile.value"
+          v-html="
+            $t(
+              'clipboardExplanation',
+              `<p>
+    Use Ctrl-V on the page to paste content. These
+    will then be displayed here.
+  </p>
+  <p>
+    Use Ctrl-F to search for existing content and paste it into
+    the clipboard.
+  </p>`,
+            )
+          "
+        />
       </div>
       <ClipboardList
         v-if="pastedItems.length"
@@ -25,7 +40,9 @@
           <input
             type="text"
             class="bk-form-input"
-            :placeholder="$t('clipboardPastePlaceholder')"
+            :placeholder="
+              $t('clipboardPastePlaceholder', 'Paste text or media here')
+            "
             @paste.stop.prevent="onManualPaste"
             @keydown.stop
           />
@@ -332,12 +349,15 @@ const shortcuts = computed<KeyboardShortcut[]>(() => {
   return [
     {
       code: 'C',
-      label: 'Copy selected blocks',
+      label: $t('clipboardCopyShortcutHelp', 'Copy selected blocks'),
       meta: true,
     },
     {
       code: 'V',
-      label: 'Paste text, image or copied blocks',
+      label: $t(
+        'clipboardPasteShortcutHelp',
+        'Paste text, image or copied blocks',
+      ),
       meta: true,
     },
   ]

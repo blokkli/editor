@@ -59,12 +59,17 @@ import {
   INJECT_IS_EDITING,
 } from '#blokkli/helpers/symbols'
 
-const props = defineProps<{
-  entityType: string
-  entityUuid: string
-  entityBundle: string
-  language?: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    entityType: string
+    entityUuid: string
+    entityBundle: string
+    language?: string
+  }>(),
+  {
+    language: 'en',
+  },
+)
 
 const context = computed(() => props)
 const adapter = getAdapter(context)

@@ -1,6 +1,6 @@
 <template>
   <PluginItemAction
-    :title="$t('edit')"
+    :title="$t('edit', 'Edit')"
     :disabled="disabled"
     meta
     key-code="E"
@@ -19,6 +19,7 @@ import { getDefinition } from '#blokkli/definitions'
 defineBlokkliFeature({
   id: 'edit',
   icon: 'edit',
+  label: 'Edit',
   description: 'Provides an action to edit a block.',
 })
 

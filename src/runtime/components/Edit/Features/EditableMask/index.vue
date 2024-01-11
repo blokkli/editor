@@ -2,9 +2,9 @@
   <PluginViewOption
     id="mask"
     v-slot="{ isActive }"
-    :label="$t('maskToggle')"
-    :title-on="$t('maskShow')"
-    :title-off="$t('maskHide')"
+    :label="$t('maskToggle', 'Show content fields')"
+    :title-on="$t('maskShow', 'Show content fields')"
+    :title-off="$t('maskHide', 'Hide content fields')"
     icon="texturebox"
     key-code="M"
   >
@@ -22,6 +22,7 @@ import Overlay from './Overlay/index.vue'
 defineBlokkliFeature({
   id: 'editable-mask',
   icon: 'texturebox',
+  label: 'Editable Mask',
   description: 'Provides a view option to hide non-editable parts of the page.',
   viewports: ['desktop'],
 })

@@ -8,11 +8,11 @@
         @change="toggleCheckbox"
       />
       <div />
-      <span>{{ setting.label }}</span>
+      <span>{{ settingLabel }}</span>
     </label>
     <div v-else-if="setting.type === 'radios'">
       <h3 class="bk-form-label">
-        {{ setting.label }}
+        {{ settingLabel }}
       </h3>
       <ul class="bk-settings-ui">
         <li
@@ -28,14 +28,14 @@
               @change="setRadioValue(value)"
             />
             <Icon v-if="config.icon" :name="config.icon" />
-            <span>{{ config.label }}</span>
+            <span>{{ getOptionLabel(value, config.label) }}</span>
           </label>
         </li>
       </ul>
     </div>
     <div v-else-if="setting.type === 'method'">
       <button class="bk-button" @click="setting.method()">
-        {{ setting.label }}
+        {{ settingLabel }}
       </button>
     </div>
   </div>
@@ -52,7 +52,28 @@ const props = defineProps<{
   setting: FeatureDefinitionSetting
 }>()
 
-const { storage } = useBlokkli()
+const { storage, $t: textTranslation } = useBlokkli()
+
+const settingLabel = computed(() => {
+  return (
+    textTranslation(
+      'feature_' + props.featureId + '_setting_' + props.settingsKey + '_label',
+    ) || props.setting.label
+  )
+})
+
+const getOptionLabel = (key: string, defaultLabel: string) => {
+  return (
+    textTranslation(
+      'feature_' +
+        props.featureId +
+        '_setting_' +
+        props.settingsKey +
+        '_option_' +
+        key,
+    ) || defaultLabel
+  )
+}
 
 const settingsStorage = storage.use(
   `feature:${props.featureId}:settings`,

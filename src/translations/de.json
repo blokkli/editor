@@ -1,0 +1,606 @@
+{
+  "addCommentToItem": {
+    "source": "Comment",
+    "translation": "Kommentieren"
+  },
+  "addListInputPlaceholder": {
+    "source": "Search available blocks",
+    "translation": "Blöcke durchsuchen"
+  },
+  "addListSidebarTitle": {
+    "source": "Add blocks",
+    "translation": "Block hinzufügen"
+  },
+  "artboard": {
+    "source": "Artboard",
+    "translation": "Zeichenfläche"
+  },
+  "artboardResetZoom": {
+    "source": "Reset zoom",
+    "translation": "Zoom zurücksetzen"
+  },
+  "artboardScaleToFit": {
+    "source": "Scale to fit",
+    "translation": "An Höhe anpassen"
+  },
+  "artboardScrollDown": {
+    "source": "Scroll down",
+    "translation": "runterscrollen"
+  },
+  "artboardScrollOnePageDown": {
+    "source": "Scroll one page down",
+    "translation": "Eine Seite hochscrollen"
+  },
+  "artboardScrollOnePageUp": {
+    "source": "Scroll one page up",
+    "translation": "Eine Seite runterscrollen"
+  },
+  "artboardScrollToEnd": {
+    "source": "Scroll to end",
+    "translation": "Zum Ende scrollen"
+  },
+  "artboardScrollToTop": {
+    "source": "Scroll to top",
+    "translation": "Zum Anfang scrollen"
+  },
+  "artboardScrollUp": {
+    "source": "Scroll up",
+    "translation": "hochscrollen"
+  },
+  "assistantAddAction": {
+    "source": "Add with AI Assistant",
+    "translation": "Mit KI-Assistent hinzufügen"
+  },
+  "assistantAddResultError": {
+    "source": "Failed to add block from assistant.",
+    "translation": "Fehler beim hinzufügen mit KI."
+  },
+  "assistantDialogLead": {
+    "source": "Please enter what you'd like the assistant to generate.",
+    "translation": "Geben Sie ein was der KI-Assistent generieren soll."
+  },
+  "assistantDialogSubmit": {
+    "source": "Create blocks",
+    "translation": "Blöcke erstellen"
+  },
+  "assistantDialogTitle": {
+    "source": "Generate content with AI assistant",
+    "translation": "Inhalt mit KI generieren"
+  },
+  "assistantPromptLabel": {
+    "source": "Prompt",
+    "translation": "Anweisung"
+  },
+  "assistantPromptPlaceholder": {
+    "source": "Generate content for a page about how taxes work in Switzerland",
+    "translation": "Schreibe Text zum Thema Steuern in der Schweiz"
+  },
+  "cancel": {
+    "source": "Cancel",
+    "translation": "Abbrechen"
+  },
+  "clipboard": {
+    "source": "Clipboard",
+    "translation": "Zwischenablage"
+  },
+  "clipboardCopyShortcutHelp": {
+    "source": "Copy selected blocks",
+    "translation": "Ausgewählte Blöcke kopieren"
+  },
+  "clipboardEmpty": {
+    "source": "No items in the clipboard",
+    "translation": "Keine Elemente in der Zwischenablage"
+  },
+  "clipboardExplanation": {
+    "source": "<p>\n    Use Ctrl-V on the page to paste content. These\n    will then be displayed here.\n  </p>\n  <p>\n    Use Ctrl-F to search for existing content and paste it into\n    the clipboard.\n  </p>",
+    "translation": "<p>Verwenden Sie Ctrl-V auf der Seite um Inhalte einzufügen. Diese werden dann hier angezeigt.</p><p>Verwenden Sie Ctrl-F um bestehende Inhalte zu suchen und in die Zwischenablage einzufügen.</p>"
+  },
+  "clipboardPastePlaceholder": {
+    "source": "Paste text or media here",
+    "translation": "Text oder Medien einfügen"
+  },
+  "clipboardPasteShortcutHelp": {
+    "source": "Paste text, image or copied blocks",
+    "translation": "Text, Bild oder kopierte Blöcke einfügen"
+  },
+  "close": {
+    "source": "Close",
+    "translation": "Schliessen"
+  },
+  "commentBody": {
+    "source": "Comment",
+    "translation": "Kommentar"
+  },
+  "commentSave": {
+    "source": "Submit comment",
+    "translation": "Kommentar speichern"
+  },
+  "comments": {
+    "source": "Comments",
+    "translation": "Kommentare"
+  },
+  "convertTo": {
+    "source": "Convert to...",
+    "translation": "Konvertieren"
+  },
+  "deleteButton": {
+    "source": "Delete",
+    "translation": "Löschen"
+  },
+  "deleteError": {
+    "source": "The block could not be deleted.",
+    "translation": "Das Element konnte nicht entfernt werden."
+  },
+  "duplicate": {
+    "source": "Duplicate",
+    "translation": "Duplizieren"
+  },
+  "duplicateError": {
+    "source": "The items could not be duplicated.",
+    "translation": "Die Elemente konnten nicht dupliziert werden."
+  },
+  "edit": {
+    "source": "Edit",
+    "translation": "Bearbeiten"
+  },
+  "editFormBlockAdd": {
+    "source": "Add @label",
+    "translation": "@label hinzufügen"
+  },
+  "editFormBlockEdit": {
+    "source": "Edit @label",
+    "translation": "@label bearbeiten"
+  },
+  "editFormBlockTranslate": {
+    "source": "Translate @label (@language)",
+    "translation": "@label übersetzen (@language)"
+  },
+  "editFormEntityEdit": {
+    "source": "Edit @label",
+    "translation": "\"@label\" bearbeiten"
+  },
+  "editFormEntityTranslate": {
+    "source": "Translate \"@label\" (@language)",
+    "translation": "\"@label\" übersetzen (@language)"
+  },
+  "editIndicatorLabel": {
+    "source": "Edit blocks",
+    "translation": "Elemente bearbeiten"
+  },
+  "exitDescription": {
+    "source": "Close editor without publishing",
+    "translation": "Editor schliessen ohne veröffentlichen"
+  },
+  "exitTitle": {
+    "source": "Close",
+    "translation": "Schliessen"
+  },
+  "failedToConvert": {
+    "source": "The block could not be converted.",
+    "translation": "Das Element konnte nicht konvertiert werden."
+  },
+  "failedToTransform": {
+    "source": "The action \"@name\" could not be executed.",
+    "translation": "Die Aktion «@name» konnte nicht ausgeführt werden."
+  },
+  "featureHelpShortcuts": {
+    "source": "Shortcuts",
+    "translation": "Tastenkombinationen"
+  },
+  "featureHelpTitle": {
+    "source": "Help",
+    "translation": "Hilfe"
+  },
+  "feature_add-list_setting_orientation_label": {
+    "source": "Add List",
+    "translation": "Block-Leiste"
+  },
+  "feature_add-list_setting_orientation_option_horizontal": {
+    "source": "Horizontal",
+    "translation": "Horizontal"
+  },
+  "feature_add-list_setting_orientation_option_sidebar": {
+    "source": "Sidebar",
+    "translation": "Sidebar"
+  },
+  "feature_add-list_setting_orientation_option_vertical": {
+    "source": "Vertical",
+    "translation": "Vertikal"
+  },
+  "feature_artboard_setting_persist_label": {
+    "source": "Persist position and zoom",
+    "translation": "Position und Zoom speichern"
+  },
+  "feature_artboard_setting_useArtboard_label": {
+    "source": "Page editing",
+    "translation": "Seitenbearbeitung"
+  },
+  "feature_artboard_setting_useArtboard_option_no": {
+    "source": "Normal display",
+    "translation": "Normale Darstellung"
+  },
+  "feature_artboard_setting_useArtboard_option_yes": {
+    "source": "Use artboard",
+    "translation": "Zeichenfläche verwenden"
+  },
+  "feature_clipboard_setting_openSidebarOnPaste_label": {
+    "source": "Open sidebar when pasting from clipboard",
+    "translation": "Seitenleiste beim Einfügen aus der Zwischenablage öffnen"
+  },
+  "feature_history_setting_useMouseButtons_label": {
+    "source": "Use mouse buttons for undo/redo",
+    "translation": "Maustasten für Rückgängig/Wiederherstellen verwenden"
+  },
+  "feature_import-existing_setting_showDialogWhenEmpty_label": {
+    "source": "Show import dialog at start when page is empty",
+    "translation": "Importdialog beim Start anzeigen, wenn die Seite leer ist"
+  },
+  "feature_settings_setting_resetAllSettings_label": {
+    "source": "Reset all settings",
+    "translation": "Alle Einstellungen zurücksetzen"
+  },
+  "feature_settings_setting_useAnimations_label": {
+    "source": "Use animations",
+    "translation": "Animationen verwenden"
+  },
+  "fieldAreasHide": {
+    "source": "Hide content areas",
+    "translation": "Inhaltsbereiche verstecken"
+  },
+  "fieldAreasShow": {
+    "source": "Show content areas",
+    "translation": "Inhaltsbereiche anzeigen"
+  },
+  "fieldAreasToggle": {
+    "source": "Toggle content areas",
+    "translation": "Inhaltsbereiche anzeigen"
+  },
+  "fieldIsRequired": {
+    "source": "This field is required",
+    "translation": "Feld darf nicht leer sein"
+  },
+  "gridHide": {
+    "source": "Hide grid",
+    "translation": "Spalten verstecken"
+  },
+  "gridShow": {
+    "source": "Show grid",
+    "translation": "Spalten anzeigen"
+  },
+  "gridToggle": {
+    "source": "Toggle grid",
+    "translation": "Spalten anzeigen"
+  },
+  "history": {
+    "source": "History",
+    "translation": "Änderungen"
+  },
+  "historyCurrentRevision": {
+    "source": "Current revision",
+    "translation": "Aktuelle Revision"
+  },
+  "historyRedo": {
+    "source": "Redo",
+    "translation": "Wiederholen"
+  },
+  "historyShowMore": {
+    "source": "Show @count more",
+    "translation": "@count weitere anzeigen"
+  },
+  "historyUndo": {
+    "source": "Undo",
+    "translation": "Rückgängig"
+  },
+  "importExistingDescription": {
+    "source": "Import from an existing page",
+    "translation": "Von einer bestehenden Seite importieren"
+  },
+  "importExistingDialogLead": {
+    "source": "Import content from an existing page. The items will be added to the end of the list. This action can be undone.",
+    "translation": "Importieren Sie Inhalte von einer bestehenden Seite. Die Elemente werden an das Ende der Liste hinzugefügt. Diese Aktion kann rückgängig gemacht werden."
+  },
+  "importExistingDialogSubmit": {
+    "source": "Import content",
+    "translation": "Inhalte importieren"
+  },
+  "importExistingDialogTitle": {
+    "source": "Import from existing page",
+    "translation": "Von bestehender Seite importieren"
+  },
+  "importExistingError": {
+    "source": "Content could not be imported.",
+    "translation": "Inhalte konnten nicht übernommen werden."
+  },
+  "importExistingFieldsLabel": {
+    "source": "Which content would you like to import?",
+    "translation": "Welche Inhalte möchten Sie importieren?"
+  },
+  "importExistingPagesLabel": {
+    "source": "From which page would you like to import?",
+    "translation": "Von welcher Seite möchten Sie importieren?"
+  },
+  "importExistingResultsTitle": {
+    "source": "@count of @total pages",
+    "translation": "@count von @total Seiten"
+  },
+  "importExistingSearchPlaceholder": {
+    "source": "Search pages",
+    "translation": "Seiten durchsuchen"
+  },
+  "importExistingSuccess": {
+    "source": "Content imported successfully.",
+    "translation": "Inhalte erfolgreich übernommen."
+  },
+  "importExistingTitle": {
+    "source": "Import...",
+    "translation": "Importieren..."
+  },
+  "libraryAdd": {
+    "source": "Add to library",
+    "translation": "Zur Bibliothek hinzufügen"
+  },
+  "libraryAddFromLibrary": {
+    "source": "Add from library",
+    "translation": "Aus der Bibliothek hinzufügen"
+  },
+  "libraryDetach": {
+    "source": "Detach from library",
+    "translation": "Von der Bibliothek loslösen"
+  },
+  "libraryDialogDescriptionLabel": {
+    "source": "Description",
+    "translation": "Beschreibung"
+  },
+  "libraryDialogLead": {
+    "source": "When you add an item to the library, you can use it on multiple pages at the same time. Changes to this item are then immediately published on all pages.",
+    "translation": "Wenn Sie ein Element zur Bibliothek hinzufügen können Sie diesen auf mehreren Seiten gleichzeitig verwenden. Änderungen an diesem Element sind dann sofort auf allen Seiten publiziert."
+  },
+  "libraryDialogSubmit": {
+    "source": "Add to library",
+    "translation": "Zur Bibliothek hinzufügen"
+  },
+  "libraryDialogTitle": {
+    "source": "Add to library",
+    "translation": "Zur Bibliothek hinzufügen"
+  },
+  "libraryDialogTitleInputPlaceholder": {
+    "source": "e.g. Teaser Campaign 2024",
+    "translation": "z.B. Teaser Kampagne 2023"
+  },
+  "libraryError": {
+    "source": "Failed to add block to library.",
+    "translation": "Das Element konnte nicht wiederverwendbar gemacht werden."
+  },
+  "libraryPlaceDialogLead": {
+    "source": "Select a reusable block from the library to add it to your layout. You can detach the block later.",
+    "translation": "Wählen Sie einen wiederverwendbaren Block aus der Bibliothek, um ihn zu Ihrem Layout hinzuzufügen. Sie können den Block später wieder entfernen."
+  },
+  "libraryPlaceDialogSubmit": {
+    "source": "Add reusable block",
+    "translation": "Wiederverwendbaren Block hinzufügen"
+  },
+  "libraryPlaceDialogTitle": {
+    "source": "Add block from library",
+    "translation": "Block aus Bibliothek hinzufügen"
+  },
+  "libraryPlaceSearchInputPlaceholder": {
+    "source": "Search library items",
+    "translation": "Suchbegriff eingeben"
+  },
+  "libraryPlaceSearchLabel": {
+    "source": "Filter library items",
+    "translation": "Bibliothek durchsuchen"
+  },
+  "libraryPreviewLabel": {
+    "source": "Preview",
+    "translation": "Vorschau"
+  },
+  "maskHide": {
+    "source": "Hide content fields",
+    "translation": "Inhaltsfelder verstecken"
+  },
+  "maskShow": {
+    "source": "Show content fields",
+    "translation": "Inhaltsfelder anzeigen"
+  },
+  "maskToggle": {
+    "source": "Show content fields",
+    "translation": "Inhaltsfelder anzeigen"
+  },
+  "multipleItemsLabel": {
+    "source": "Items",
+    "translation": "Elemente"
+  },
+  "ownershipError": {
+    "source": "Error in assigning",
+    "translation": "Fehler beim Zuweisen"
+  },
+  "ownershipNote": {
+    "source": "This page is currently being edited by @name. Changes can only be made by one person at a time.",
+    "translation": "Diese Seite wird aktuell von @name bearbeitet. Änderungen können nur von einer Person gleichzeitig durchgeführt werden."
+  },
+  "ownershipSuccess": {
+    "source": "You are now the owner.",
+    "translation": "Sie sind nun der Besitzer."
+  },
+  "ownershipTakeOwnership": {
+    "source": "Assign to me",
+    "translation": "Mir zuweisen"
+  },
+  "pageIsNotPublished": {
+    "source": "Page is not published",
+    "translation": "Seite ist nicht publiziert"
+  },
+  "pageIsPublished": {
+    "source": "Page is published",
+    "translation": "Seite ist publiziert"
+  },
+  "pageIsPublishedWithPendingChanges": {
+    "source": "Page is published (changes pending)",
+    "translation": "Seite ist publiziert (Änderungen ausstehend)"
+  },
+  "previewDialogLead": {
+    "source": "Scan the QR code with your smartphone to open the preview.",
+    "translation": "Scannen Sie den QR-Code mit Ihrem Smartphone um die Vorschau zu öffnen."
+  },
+  "previewDialogTitle": {
+    "source": "Preview with smartphone",
+    "translation": "Vorschau mit Smartphone"
+  },
+  "previewNewWindow": {
+    "source": "Preview (new window)",
+    "translation": "Vorschau (neues Fenster)"
+  },
+  "previewQrCodeText": {
+    "source": "You can also copy the link and share it.",
+    "translation": "Sie können den Link auch kopieren und teilen."
+  },
+  "previewWithSmartphone": {
+    "source": "Preview (with smartphone)",
+    "translation": "Vorschau (mit Smartphone)"
+  },
+  "publishDescription": {
+    "source": "Make all changes public",
+    "translation": "Alle Änderungen öffentlich machen"
+  },
+  "publishError": {
+    "source": "Changes could not be published.",
+    "translation": "Änderungen konnten nicht publiziert werden."
+  },
+  "publishLabel": {
+    "source": "Publish",
+    "translation": "Veröffentlichen"
+  },
+  "publishSuccess": {
+    "source": "Changes published successfully.",
+    "translation": "Änderungen erfolgreich publiziert."
+  },
+  "responsivePreviewCustomViewport": {
+    "source": "Custom",
+    "translation": "Benutzerdefiniert"
+  },
+  "responsivePreviewTitle": {
+    "source": "Responsive Preview",
+    "translation": "Responsive Vorschau"
+  },
+  "revertDialogLead": {
+    "source": "This will delete all changes and restore the currently published state. This action cannot be undone.",
+    "translation": "Damit werden alle Änderungen gelöscht und der aktuell publizierte Stand wiederhergestellt. Diese Aktion kann nicht rückgängig gemacht werden."
+  },
+  "revertDialogSubmit": {
+    "source": "Discard changes",
+    "translation": "Änderungen verwerfen"
+  },
+  "revertDialogTitle": {
+    "source": "Irrevocably discard changes",
+    "translation": "Änderungen unwiderruflich verwerfen"
+  },
+  "revertError": {
+    "source": "Changes could not be discarded.",
+    "translation": "Änderungen konnten nicht verworfen werden."
+  },
+  "revertMenuDescription": {
+    "source": "Restore currently published state",
+    "translation": "Aktuell veröffentlichter Zustand Wiederherstellen"
+  },
+  "revertMenuTitle": {
+    "source": "Discard...",
+    "translation": "Verwerfen..."
+  },
+  "revertSuccess": {
+    "source": "All changes have been discarded.",
+    "translation": "Alle Änderungen wurden verworfen."
+  },
+  "save": {
+    "source": "Save",
+    "translation": "Speichern"
+  },
+  "searchBoxNoResultsFound": {
+    "source": "No results found",
+    "translation": "Keine Resultate gefunden"
+  },
+  "searchBoxOnThisPage": {
+    "source": "On this page",
+    "translation": "Auf dieser Seite"
+  },
+  "searchBoxPlaceholder": {
+    "source": "Enter search term",
+    "translation": "Suchbegriff eingeben"
+  },
+  "searchToolbarLabel": {
+    "source": "Search content",
+    "translation": "Inhalte suchen"
+  },
+  "settingsAdvanced": {
+    "source": "Advanced",
+    "translation": "Erweitert"
+  },
+  "settingsAppearance": {
+    "source": "Appearance",
+    "translation": "Darstellung"
+  },
+  "settingsBehaviour": {
+    "source": "Behaviour",
+    "translation": "Verhalten"
+  },
+  "settingsDialogTitle": {
+    "source": "Change settings",
+    "translation": "Einstellungen"
+  },
+  "settingsMenuDescription": {
+    "source": "Personal settings for the editor",
+    "translation": "Persönliche Einstellungen für den Editor"
+  },
+  "settingsMenuTitle": {
+    "source": "Settings",
+    "translation": "Einstellungen"
+  },
+  "shortcutGroupBlocks": {
+    "source": "Blocks",
+    "translation": "Blöcke"
+  },
+  "shortcutGroupGeneral": {
+    "source": "General",
+    "translation": "Allgemein"
+  },
+  "shortcutGroupUi": {
+    "source": "UI",
+    "translation": "Oberfläche"
+  },
+  "structureToolbarLabel": {
+    "source": "Structure",
+    "translation": "Struktur"
+  },
+  "touchBarCancelDragging": {
+    "source": "Cancel dragging",
+    "translation": "Platzieren abbrechen"
+  },
+  "touchBarFinishSelecting": {
+    "source": "Finish selecting",
+    "translation": "Mehrfachauswahl beenden"
+  },
+  "transformTo": {
+    "source": "Other actions",
+    "translation": "Weitere Aktionen"
+  },
+  "translationsBatchTranslateMenuDescription": {
+    "source": "Translate all blocks",
+    "translation": "Alle Elemente übersetzen"
+  },
+  "translationsBatchTranslateMenuTitle": {
+    "source": "Translate...",
+    "translation": "Übersetzen..."
+  },
+  "translationsItemAction": {
+    "source": "Translate",
+    "translation": "Übersetzen..."
+  },
+  "validationsNoneFound": {
+    "source": "No validation errors found.",
+    "translation": "Keine Validierungsfehler gefunden."
+  },
+  "validationsToolbarLabel": {
+    "source": "Validations",
+    "translation": "Validierungen"
+  }
+}

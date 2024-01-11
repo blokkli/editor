@@ -1,7 +1,7 @@
 <template>
   <PluginSidebar
     id="structure"
-    :title="$t('structureToolbarLabel')"
+    :title="$t('structureToolbarLabel', 'Structure')"
     edit-only
     icon="tree"
     weight="-90"

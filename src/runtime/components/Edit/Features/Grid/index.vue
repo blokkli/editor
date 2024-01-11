@@ -1,10 +1,10 @@
 <template>
   <PluginViewOption
     id="grid"
-    :label="$t('gridToggle')"
     v-slot="{ isActive }"
-    :title-on="$t('gridShow')"
-    :title-off="$t('gridHide')"
+    :label="$t('gridToggle', 'Toggle grid')"
+    :title-on="$t('gridShow', 'Show grid')"
+    :title-off="$t('gridHide', 'Hide grid')"
     key-code="G"
     icon="grid"
   >

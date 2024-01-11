@@ -1,6 +1,6 @@
 <template>
   <PluginToolbarButton
-    :title="$t('previewNewWindow')"
+    :title="$t('previewNewWindow', 'Preview (new window)')"
     region="after-menu"
     icon="openinnew"
     @click="openPreview"

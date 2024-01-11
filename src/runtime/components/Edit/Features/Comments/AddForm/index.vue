@@ -1,7 +1,7 @@
 <template>
   <div class="bk-blokkli-item-actions-comment-dropdown" @keydown.capture.stop>
     <label for="comment_body" class="bk-form-label">{{
-      $t('commentBody')
+      $t('commentBody', 'Comment')
     }}</label>
     <textarea
       id="comment_body"
@@ -12,7 +12,7 @@
       required
     />
     <button class="bk-button bk-is-primary" @click="$emit('add', comment)">
-      {{ $t('commentSave') }}
+      {{ $t('commentSave', 'Submit comment') }}
     </button>
   </div>
 </template>

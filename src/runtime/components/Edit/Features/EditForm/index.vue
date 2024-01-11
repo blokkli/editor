@@ -37,6 +37,7 @@ import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
 const { adapter } = defineBlokkliFeature({
   id: 'edit-form',
   icon: 'form',
+  label: 'Edit Form',
   description:
     'Listens to edit events and renders an iframe containing the edit form.',
   requiredAdapterMethods: ['formFrameBuilder'],
@@ -72,18 +73,18 @@ const labelReplacement = computed(() => {
 const titleText = computed(() => {
   switch (form.value?.id) {
     case 'block:add':
-      return $t('editFormBlockAdd')
+      return $t('editFormBlockAdd', 'Add @label')
     case 'block:translate':
-      return $t('editFormBlockTranslate')
+      return $t('editFormBlockTranslate', 'Translate @label (@language)')
     case 'block:edit':
-      return $t('editFormBlockEdit')
+      return $t('editFormBlockEdit', 'Edit @label')
     case 'entity:edit':
-      return $t('editFormEntityEdit')
+      return $t('editFormEntityEdit', 'Edit @label')
     case 'entity:translate':
-      return $t('editFormEntityTranslate')
+      return $t('editFormEntityTranslate', 'Translate "@label" (@language)')
   }
 
-  return $t('edit')
+  return $t('edit', 'Edit')
 })
 
 const languageReplacement = computed(() => {

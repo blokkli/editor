@@ -2,7 +2,7 @@
   <PluginSidebar
     v-if="isSidebar && shouldRender"
     id="add_list"
-    :title="$t('addListSidebarTitle')"
+    :title="$t('addListSidebarTitle', 'Add blocks')"
     render-always
     icon="plus"
     weight="-10"
@@ -59,7 +59,7 @@ defineBlokkliFeature({
   settings: {
     orientation: {
       type: 'radios',
-      label: 'Add List Orientation',
+      label: 'Add List',
       default: 'vertical',
       group: 'appearance',
       viewports: ['desktop'],

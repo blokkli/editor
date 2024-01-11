@@ -1,7 +1,7 @@
 <template>
   <PluginSidebar
     id="comments"
-    :title="$t('comments')"
+    :title="$t('comments', 'Comments')"
     icon="comment"
     weight="-20"
   >
@@ -15,7 +15,7 @@
   </PluginSidebar>
 
   <PluginItemAction
-    :title="$t('addCommentToItem')"
+    :title="$t('addCommentToItem', 'Comment')"
     :active="showAddComment"
     weight="last"
     icon="comment"
@@ -45,6 +45,7 @@ import type { CommentItem } from '#blokkli/types'
 const { adapter } = defineBlokkliFeature({
   id: 'comments',
   icon: 'comment',
+  label: 'Comments',
   requiredAdapterMethods: ['loadComments', 'addComment'],
   description: 'Provides comment functionality for blocks.',
 })

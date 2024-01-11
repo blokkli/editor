@@ -1,6 +1,7 @@
 <template>
   <PluginToolbarButton
-    :title="$t('resetZoom')"
+    :title="$t('artboardResetZoom', 'Reset zoom')"
+    :shortcut-group="$t('artboard', 'Artboard')"
     meta
     key-code="0"
     region="view-options"
@@ -45,11 +46,7 @@ import type {
 } from '#blokkli/types'
 import { PluginToolbarButton } from '#blokkli/plugins'
 import { lerp, calculateCenterPosition } from '#blokkli/helpers'
-import {
-  easeOutElastic,
-  easeOutQuad,
-  easeOutSine,
-} from '#blokkli/helpers/easing'
+import { easeOutQuad } from '#blokkli/helpers/easing'
 
 const {
   keyboard,
@@ -372,40 +369,35 @@ const shortcuts = computed<KeyboardShortcut[]>(() => {
   return [
     {
       code: 'Home',
-      label: 'Scroll to top',
+      label: $t('artboardScrollToTop', 'Scroll to top'),
     },
     {
       code: 'End',
-      label: 'Scroll to end',
+      label: $t('artboardScrollToEnd', 'Scroll to end'),
     },
     {
       code: 'PageUp',
-      label: 'Scroll one page up',
+      label: $t('artboardScrollOnePageUp', 'Scroll one page up'),
     },
     {
       code: 'PageDown',
-      label: 'Scroll one page down',
+      label: $t('artboardScrollOnePageDown', 'Scroll one page down'),
     },
     {
       code: 'ArrowUp',
-      label: 'Scroll up',
+      label: $t('artboardScrollUp', 'Scroll up'),
     },
     {
       code: 'ArrowDown',
-      label: 'Scroll down',
-    },
-    {
-      code: 'Digit0',
-      label: 'Reset zoom',
-      meta: true,
+      label: $t('artboardScrollDown', 'Scroll down'),
     },
     {
       code: '1',
-      label: 'Scale to fit',
+      label: $t('artboardScaleToFit', 'Scale to fit'),
       meta: true,
     },
   ].map((v) => {
-    return { ...v, group: 'Artboard' }
+    return { ...v, group: $t('artboard', 'Artboard') }
   })
 })
 
@@ -829,6 +821,7 @@ onUnmounted(() => {
   document.documentElement.style.setProperty('--bk-artboard-scale', null)
 })
 </script>
+
 <script lang="ts">
 export default {
   name: 'ArtboardManager',

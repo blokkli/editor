@@ -26,7 +26,9 @@ const props = defineProps<{
 
 const $t = textProvider()
 
-const label = computed(() => props.editLabel || $t('editIndicatorLabel'))
+const label = computed(
+  () => props.editLabel || $t('editIndicatorLabel', 'Edit blocks'),
+)
 
 defineEmits(['edit'])
 

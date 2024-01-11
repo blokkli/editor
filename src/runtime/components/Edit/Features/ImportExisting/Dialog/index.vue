@@ -1,18 +1,28 @@
 <template>
   <DialogModal
-    :title="$t('importExistingDialogTitle')"
-    :lead="$t('importExistingDialogLead')"
+    :title="$t('importExistingDialogTitle', 'Import from existing page')"
+    :lead="
+      $t(
+        'importExistingDialogLead',
+        'Import content from an existing page. The items will be added to the end of the list. This action can be undone.',
+      )
+    "
     :width="600"
-    :submit-label="$t('importExistingDialogSubmit')"
+    :submit-label="$t('importExistingDialogSubmit', 'Import content')"
     :can-submit="!!(sourceEntityUuid && selectedFields.length)"
     :is-loading="isLoading"
     @submit="onSubmit"
-    @cancel="$emit('cancel')"
+    @cancel="$emit('cancel', 'Cancel')"
   >
     <div class="bk bk-dialog-form">
       <div class="bk-form-section">
         <h3 class="bk-form-label">
-          {{ $t('importExistingFieldsLabel') }}
+          {{
+            $t(
+              'importExistingFieldsLabel',
+              'Which content would you like to import?',
+            )
+          }}
         </h3>
         <label v-for="field in fields" :key="field.name" class="bk-checkbox">
           <input v-model="selectedFields" type="checkbox" :value="field.name" />
@@ -21,20 +31,23 @@
       </div>
       <div class="bk-form-section">
         <label for="pb_search_term" class="bk-form-label">{{
-          $t('importExistingPagesLabel')
+          $t(
+            'importExistingPagesLabel',
+            'From which page would you like to import?',
+          )
         }}</label>
         <input
           id="pb_search_term"
           v-model="searchTerm"
           type="text"
           class="bk-form-input"
-          :placeholder="$t('importExistingSearchPlaceholder')"
+          :placeholder="$t('importExistingSearchPlaceholder', 'Search pages')"
           required
         />
       </div>
       <div>
         {{
-          $t('importExistingResultsTitle')
+          $t('importExistingResultsTitle', '@count of @total pages')
             .replace('@count', entities.length.toString())
             .replace('@total', total.toString())
         }}

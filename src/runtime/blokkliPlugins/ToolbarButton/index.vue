@@ -18,6 +18,7 @@
           :shift="shift"
           :key-code="keyCode"
           :label="title"
+          :group="shortcutGroup"
           @pressed="onClick"
         />
       </div>
@@ -47,6 +48,7 @@ const props = defineProps<{
   shift?: boolean
   keyCode?: string
   icon?: BlokkliIcon
+  shortcutGroup?: string
 
   /**
    * The weight, used for positioning the button.

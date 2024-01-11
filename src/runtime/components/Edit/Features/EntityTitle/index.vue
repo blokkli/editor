@@ -16,12 +16,17 @@
       </div>
       <div class="bk-tooltip">
         <span v-if="entity.status && !mutations.length">{{
-          $t('pageIsPublished')
+          $t('pageIsPublished', 'Page is published')
         }}</span>
         <span v-else-if="entity.status && mutations.length">{{
-          $t('pageIsPublishedWithPendingChanges')
+          $t(
+            'pageIsPublishedWithPendingChanges',
+            'Page is published (changes pending)',
+          )
         }}</span>
-        <span v-else>{{ $t('pageIsNotPublished') }}</span>
+        <span v-else>{{
+          $t('pageIsNotPublished', 'Page is not published')
+        }}</span>
       </div>
     </button>
   </Teleport>
@@ -33,6 +38,7 @@ import { useBlokkli, defineBlokkliFeature } from '#imports'
 defineBlokkliFeature({
   id: 'entity-title',
   icon: 'title',
+  label: 'Entity Title',
   description: 'Renders the title and status of the page entity.',
 })
 

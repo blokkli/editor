@@ -17,7 +17,7 @@
   </Teleport>
   <PluginToolbarButton
     id="search"
-    :title="$t('searchToolbarLabel')"
+    :title="$t('searchToolbarLabel', 'Search content')"
     meta
     key-code="F"
     region="before-sidebar-right"

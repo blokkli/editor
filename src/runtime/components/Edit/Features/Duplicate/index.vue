@@ -1,6 +1,6 @@
 <template>
   <PluginItemAction
-    :title="$t('duplicate')"
+    :title="$t('duplicate', 'Duplicate')"
     :disabled="!canDuplicate"
     meta
     key-code="D"
@@ -25,6 +25,7 @@ const { state, $t, selection, dom } = useBlokkli()
 const { adapter } = defineBlokkliFeature({
   id: 'duplicate',
   icon: 'duplicate',
+  label: 'Duplicate',
   requiredAdapterMethods: ['duplicateBlocks'],
   description: 'Provides an action to duplicate one or more blocks in place.',
 })
@@ -32,7 +33,7 @@ const { adapter } = defineBlokkliFeature({
 function onClick(items: DraggableExistingBlock[]) {
   state.mutateWithLoadingState(
     adapter.duplicateBlocks(items.map((v) => v.uuid)),
-    $t('duplicateError'),
+    $t('duplicateError', 'The items could not be duplicated.'),
   )
 }
 

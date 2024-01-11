@@ -34,7 +34,7 @@ const keyLabel = computed(() => {
     return '↓'
   } else if (props.keyCode === 'ArrowUp') {
     return '↑'
-  } else if (props.keyCode === 'Digit0') {
+  } else if (props.keyCode === 'Digit0' || props.keyCode === '0') {
     return ''
   }
 
