@@ -1,0 +1,644 @@
+msgid ""
+msgstr ""
+"Language: fr\n"
+"Content-Type: text/plain\n"
+
+msgctxt "addCommentToItem"
+msgid "Comment"
+msgstr "Commenter"
+
+msgctxt "addListInputPlaceholder"
+msgid "Search available blocks"
+msgstr ""
+
+msgctxt "addListSidebarTitle"
+msgid "Add blocks"
+msgstr ""
+
+msgctxt "artboard"
+msgid "Artboard"
+msgstr ""
+
+msgctxt "artboardResetZoom"
+msgid "Reset zoom"
+msgstr ""
+
+msgctxt "artboardScaleToFit"
+msgid "Scale to fit"
+msgstr ""
+
+msgctxt "artboardScrollDown"
+msgid "Scroll down"
+msgstr ""
+
+msgctxt "artboardScrollOnePageDown"
+msgid "Scroll one page down"
+msgstr ""
+
+msgctxt "artboardScrollOnePageUp"
+msgid "Scroll one page up"
+msgstr ""
+
+msgctxt "artboardScrollToEnd"
+msgid "Scroll to end"
+msgstr ""
+
+msgctxt "artboardScrollToTop"
+msgid "Scroll to top"
+msgstr ""
+
+msgctxt "artboardScrollUp"
+msgid "Scroll up"
+msgstr ""
+
+msgctxt "assistantAddAction"
+msgid "Add with AI Assistant"
+msgstr ""
+
+msgctxt "assistantAddResultError"
+msgid "Failed to add block from assistant."
+msgstr ""
+
+msgctxt "assistantDialogLead"
+msgid "Please enter what you'd like the assistant to generate."
+msgstr ""
+
+msgctxt "assistantDialogSubmit"
+msgid "Create blocks"
+msgstr ""
+
+msgctxt "assistantDialogTitle"
+msgid "Generate content with AI assistant"
+msgstr ""
+
+msgctxt "assistantPromptLabel"
+msgid "Prompt"
+msgstr ""
+
+msgctxt "assistantPromptPlaceholder"
+msgid "Generate content for a page about how taxes work in Switzerland"
+msgstr ""
+
+msgctxt "cancel"
+msgid "Cancel"
+msgstr "Annuler"
+
+msgctxt "clipboard"
+msgid "Clipboard"
+msgstr "Presse-papiers"
+
+msgctxt "clipboardCopyShortcutHelp"
+msgid "Copy selected blocks"
+msgstr ""
+
+msgctxt "clipboardEmpty"
+msgid "No items in the clipboard"
+msgstr "Aucun élément dans le presse-papiers"
+
+msgctxt "clipboardExplanation"
+msgid ""
+"<p>\n"
+"    Use Ctrl-V on the page to paste content. These\n"
+"    will then be displayed here.\n"
+"  </p>\n"
+"  <p>\n"
+"    Use Ctrl-F to search for existing content and paste it into\n"
+"    the clipboard.\n"
+"  </p>"
+msgstr ""
+"<p>\n"
+"    Utilisez Ctrl-V sur la page pour coller du contenu. Ils\n"
+"    seront alors affichés ici.\n"
+"  </p>\n"
+"  <p>\n"
+"    Utilisez Ctrl-F pour rechercher du contenu existant et le copier\n"
+"    dans le presse-papiers.\n"
+"  </p>"
+
+msgctxt "clipboardPastePlaceholder"
+msgid "Paste text or media here"
+msgstr "Paste text or media here"
+
+msgctxt "clipboardPasteShortcutHelp"
+msgid "Paste text, image or copied blocks"
+msgstr ""
+
+msgctxt "close"
+msgid "Close"
+msgstr "Fermer"
+
+msgctxt "commentBody"
+msgid "Comment"
+msgstr "Commentaire"
+
+msgctxt "commentSave"
+msgid "Submit comment"
+msgstr "Sauvegarder le commentaire"
+
+msgctxt "comments"
+msgid "Comments"
+msgstr "Commentaires"
+
+msgctxt "convertTo"
+msgid "Convert to..."
+msgstr "Convertir en..."
+
+msgctxt "deleteButton"
+msgid "Delete"
+msgstr "Supprimer"
+
+msgctxt "deleteError"
+msgid "The block could not be deleted."
+msgstr "L'élément n'a pas pu être supprimé."
+
+msgctxt "duplicate"
+msgid "Duplicate"
+msgstr "Dupliquer"
+
+msgctxt "duplicateError"
+msgid "The items could not be duplicated."
+msgstr "Les éléments n'ont pas pu être dupliqués."
+
+msgctxt "edit"
+msgid "Edit"
+msgstr "Modifier"
+
+msgctxt "editFormBlockAdd"
+msgid "Add @label"
+msgstr ""
+
+msgctxt "editFormBlockEdit"
+msgid "Edit @label"
+msgstr ""
+
+msgctxt "editFormBlockTranslate"
+msgid "Translate @label (@language)"
+msgstr ""
+
+msgctxt "editFormEntityEdit"
+msgid "Edit @label"
+msgstr ""
+
+msgctxt "editFormEntityTranslate"
+msgid "Translate \"@label\" (@language)"
+msgstr ""
+
+msgctxt "editIndicatorLabel"
+msgid "Edit blocks"
+msgstr "Modifier les éléments"
+
+msgctxt "exitDescription"
+msgid "Close editor without publishing"
+msgstr "Fermer l’éditeur sans publier"
+
+msgctxt "exitTitle"
+msgid "Close"
+msgstr "Fermer"
+
+msgctxt "failedToConvert"
+msgid "The block could not be converted."
+msgstr "L'élément n'a pas pu être converti."
+
+msgctxt "failedToTransform"
+msgid "The action \"@name\" could not be executed."
+msgstr "The action \"@name\" could not be executed."
+
+msgctxt "featureHelpShortcuts"
+msgid "Shortcuts"
+msgstr ""
+
+msgctxt "featureHelpTitle"
+msgid "Help"
+msgstr ""
+
+msgctxt "feature_add-list_setting_orientation_label"
+msgid "Add List"
+msgstr ""
+
+msgctxt "feature_add-list_setting_orientation_option_horizontal"
+msgid "Horizontal"
+msgstr ""
+
+msgctxt "feature_add-list_setting_orientation_option_sidebar"
+msgid "Sidebar"
+msgstr "Encadré"
+
+msgctxt "feature_add-list_setting_orientation_option_vertical"
+msgid "Vertical"
+msgstr ""
+
+msgctxt "feature_artboard_setting_persist_label"
+msgid "Persist position and zoom"
+msgstr ""
+
+msgctxt "feature_artboard_setting_useArtboard_label"
+msgid "Page editing"
+msgstr ""
+
+msgctxt "feature_artboard_setting_useArtboard_option_no"
+msgid "Normal display"
+msgstr ""
+
+msgctxt "feature_artboard_setting_useArtboard_option_yes"
+msgid "Use artboard"
+msgstr ""
+
+msgctxt "feature_clipboard_setting_openSidebarOnPaste_label"
+msgid "Open sidebar when pasting from clipboard"
+msgstr ""
+
+msgctxt "feature_history_setting_useMouseButtons_label"
+msgid "Use mouse buttons for undo/redo"
+msgstr ""
+
+msgctxt "feature_import-existing_setting_showDialogWhenEmpty_label"
+msgid "Show import dialog at start when page is empty"
+msgstr ""
+
+msgctxt "feature_settings_setting_resetAllSettings_label"
+msgid "Reset all settings"
+msgstr ""
+
+msgctxt "feature_settings_setting_useAnimations_label"
+msgid "Use animations"
+msgstr ""
+
+msgctxt "fieldAreasHide"
+msgid "Hide content areas"
+msgstr "Masquer les zones de contenu"
+
+msgctxt "fieldAreasShow"
+msgid "Show content areas"
+msgstr "Afficher les zones de contenu"
+
+msgctxt "fieldAreasToggle"
+msgid "Toggle content areas"
+msgstr ""
+
+msgctxt "fieldIsRequired"
+msgid "This field is required"
+msgstr "Ce champ est obligatoire"
+
+msgctxt "gridHide"
+msgid "Hide grid"
+msgstr "Masquer la grille"
+
+msgctxt "gridShow"
+msgid "Show grid"
+msgstr "Afficher la grille"
+
+msgctxt "gridToggle"
+msgid "Toggle grid"
+msgstr ""
+
+msgctxt "history"
+msgid "History"
+msgstr "Historique"
+
+msgctxt "historyCurrentRevision"
+msgid "Current revision"
+msgstr "Révision actuelle"
+
+msgctxt "historyRedo"
+msgid "Redo"
+msgstr ""
+
+msgctxt "historyShowMore"
+msgid "Show @count more"
+msgstr "@count autres à afficher"
+
+msgctxt "historyUndo"
+msgid "Undo"
+msgstr ""
+
+msgctxt "importExistingDescription"
+msgid "Import from an existing page"
+msgstr "Importer d’une page existante"
+
+msgctxt "importExistingDialogLead"
+msgid ""
+"Import content from an existing page. The items will be added to the end of "
+"the list. This action can be undone."
+msgstr ""
+"Importez du contenu d’une page existante. Les éléments seront ajoutés à la "
+"fin de la liste. Cette action peut être annulée."
+
+msgctxt "importExistingDialogSubmit"
+msgid "Import content"
+msgstr "Importer le contenu"
+
+msgctxt "importExistingDialogTitle"
+msgid "Import from existing page"
+msgstr "Importer d’une page existante"
+
+msgctxt "importExistingError"
+msgid "Content could not be imported."
+msgstr "Le contenu n’a pas pu être importé."
+
+msgctxt "importExistingFieldsLabel"
+msgid "Which content would you like to import?"
+msgstr "Quel contenu souhaitez-vous importer ?"
+
+msgctxt "importExistingPagesLabel"
+msgid "From which page would you like to import?"
+msgstr "De quelle page souhaitez-vous importer ?"
+
+msgctxt "importExistingResultsTitle"
+msgid "@count of @total pages"
+msgstr "@count sur @total pages"
+
+msgctxt "importExistingSearchPlaceholder"
+msgid "Search pages"
+msgstr "Rechercher des pages"
+
+msgctxt "importExistingSuccess"
+msgid "Content imported successfully."
+msgstr "Contenu importé avec succès."
+
+msgctxt "importExistingTitle"
+msgid "Import..."
+msgstr "Importer..."
+
+msgctxt "libraryAdd"
+msgid "Add to library"
+msgstr "Ajouter à la bibliothèque"
+
+msgctxt "libraryAddFromLibrary"
+msgid "Add from library"
+msgstr ""
+
+msgctxt "libraryDetach"
+msgid "Detach from library"
+msgstr ""
+
+msgctxt "libraryDialogDescriptionLabel"
+msgid "Description"
+msgstr "Description"
+
+msgctxt "libraryDialogLead"
+msgid ""
+"When you add an item to the library, you can use it on multiple pages at "
+"the same time. Changes to this item are then immediately published on all "
+"pages."
+msgstr ""
+"En ajoutant un élément à la bibliothèque, vous pouvez l’utiliser sur "
+"plusieurs pages à la fois. Les modifications apportées à cet élément seront "
+"alors immédiatement publiées sur toutes les pages."
+
+msgctxt "libraryDialogSubmit"
+msgid "Add to library"
+msgstr "Ajouter à la bibliothèque"
+
+msgctxt "libraryDialogTitle"
+msgid "Add to library"
+msgstr "Ajouter à la bibliothèque"
+
+msgctxt "libraryDialogTitleInputPlaceholder"
+msgid "e.g. Teaser Campaign 2024"
+msgstr "Ex. : Teaser campagne 2023"
+
+msgctxt "libraryError"
+msgid "Failed to add block to library."
+msgstr "L'élément n’a pas pu être rendu réutilisable."
+
+msgctxt "libraryPlaceDialogLead"
+msgid ""
+"Select a reusable block from the library to add it to your layout. You can "
+"detach the block later."
+msgstr ""
+
+msgctxt "libraryPlaceDialogSubmit"
+msgid "Add reusable block"
+msgstr ""
+
+msgctxt "libraryPlaceDialogTitle"
+msgid "Add block from library"
+msgstr ""
+
+msgctxt "libraryPlaceSearchInputPlaceholder"
+msgid "Search library items"
+msgstr ""
+
+msgctxt "libraryPlaceSearchLabel"
+msgid "Filter library items"
+msgstr ""
+
+msgctxt "libraryPreviewLabel"
+msgid "Preview"
+msgstr "Aperçu"
+
+msgctxt "maskHide"
+msgid "Hide content fields"
+msgstr "Masquer les champs de contenu"
+
+msgctxt "maskShow"
+msgid "Show content fields"
+msgstr "Afficher les champs de contenu"
+
+msgctxt "maskToggle"
+msgid "Show content fields"
+msgstr ""
+
+msgctxt "multipleItemsLabel"
+msgid "Items"
+msgstr "Éléments"
+
+msgctxt "ownershipError"
+msgid "Error in assigning"
+msgstr "Erreur lors de l’attribution"
+
+msgctxt "ownershipNote"
+msgid ""
+"This page is currently being edited by @name. Changes can only be made by "
+"one person at a time."
+msgstr ""
+"Cette page est actuellement en cours de modification par @name. Les "
+"modifications ne peuvent être effectuées que par une personne à la fois."
+
+msgctxt "ownershipSuccess"
+msgid "You are now the owner."
+msgstr "Vous en êtes maintenant le propriétaire."
+
+msgctxt "ownershipTakeOwnership"
+msgid "Assign to me"
+msgstr "Me l’attribuer"
+
+msgctxt "pageIsNotPublished"
+msgid "Page is not published"
+msgstr "La page n’est pas publiée"
+
+msgctxt "pageIsPublished"
+msgid "Page is published"
+msgstr "La page est publiée"
+
+msgctxt "pageIsPublishedWithPendingChanges"
+msgid "Page is published (changes pending)"
+msgstr "La page est publiée (modifications en attente)"
+
+msgctxt "previewDialogLead"
+msgid "Scan the QR code with your smartphone to open the preview."
+msgstr "Scannez le code QR avec votre smartphone pour ouvrir l’aperçu."
+
+msgctxt "previewDialogTitle"
+msgid "Preview with smartphone"
+msgstr "Aperçu avec smartphone"
+
+msgctxt "previewNewWindow"
+msgid "Preview (new window)"
+msgstr "Aperçu (nouvelle fenêtre)"
+
+msgctxt "previewQrCodeText"
+msgid "You can also copy the link and share it."
+msgstr ""
+
+msgctxt "previewWithSmartphone"
+msgid "Preview (with smartphone)"
+msgstr "Aperçu (avec smartphone)"
+
+msgctxt "publishDescription"
+msgid "Make all changes public"
+msgstr "Rendre toutes les modifications publiques"
+
+msgctxt "publishError"
+msgid "Changes could not be published."
+msgstr "Les modifications n’ont pas pu être publiées."
+
+msgctxt "publishLabel"
+msgid "Publish"
+msgstr "Publier"
+
+msgctxt "publishSuccess"
+msgid "Changes published successfully."
+msgstr "Modifications publiées avec succès."
+
+msgctxt "responsivePreviewCustomViewport"
+msgid "Custom"
+msgstr ""
+
+msgctxt "responsivePreviewTitle"
+msgid "Responsive Preview"
+msgstr ""
+
+msgctxt "revertDialogLead"
+msgid ""
+"This will delete all changes and restore the currently published state. "
+"This action cannot be undone."
+msgstr ""
+"Cela supprimera toutes les modifications et restaurera l’état actuellement "
+"publié. Cette action est irréversible."
+
+msgctxt "revertDialogSubmit"
+msgid "Discard changes"
+msgstr "Annuler les modifications"
+
+msgctxt "revertDialogTitle"
+msgid "Irrevocably discard changes"
+msgstr "Annuler les modifications de façon irréversible"
+
+msgctxt "revertError"
+msgid "Changes could not be discarded."
+msgstr "Les modifications n’ont pas pu être annulées."
+
+msgctxt "revertMenuDescription"
+msgid "Restore currently published state"
+msgstr "Restaurer l’état actuellement publié"
+
+msgctxt "revertMenuTitle"
+msgid "Discard..."
+msgstr "Annuler..."
+
+msgctxt "revertSuccess"
+msgid "All changes have been discarded."
+msgstr "Toutes les modifications ont été annulées."
+
+msgctxt "save"
+msgid "Save"
+msgstr "Save"
+
+msgctxt "searchBoxNoResultsFound"
+msgid "No results found"
+msgstr "Aucun résultat trouvé"
+
+msgctxt "searchBoxOnThisPage"
+msgid "On this page"
+msgstr "Sur cette page"
+
+msgctxt "searchBoxPlaceholder"
+msgid "Enter search term"
+msgstr "Entrer un terme de recherche"
+
+msgctxt "searchToolbarLabel"
+msgid "Search content"
+msgstr "Rechercher des contenus"
+
+msgctxt "settingsAdvanced"
+msgid "Advanced"
+msgstr ""
+
+msgctxt "settingsAppearance"
+msgid "Appearance"
+msgstr ""
+
+msgctxt "settingsBehaviour"
+msgid "Behaviour"
+msgstr "Comportement"
+
+msgctxt "settingsDialogTitle"
+msgid "Change settings"
+msgstr "Paramètres"
+
+msgctxt "settingsMenuDescription"
+msgid "Personal settings for the editor"
+msgstr "Paramètres personnels pour l’éditeur"
+
+msgctxt "settingsMenuTitle"
+msgid "Settings"
+msgstr "Paramètres"
+
+msgctxt "shortcutGroupBlocks"
+msgid "Blocks"
+msgstr ""
+
+msgctxt "shortcutGroupGeneral"
+msgid "General"
+msgstr ""
+
+msgctxt "shortcutGroupUi"
+msgid "UI"
+msgstr ""
+
+msgctxt "structureToolbarLabel"
+msgid "Structure"
+msgstr "Structure"
+
+msgctxt "touchBarCancelDragging"
+msgid "Cancel dragging"
+msgstr ""
+
+msgctxt "touchBarFinishSelecting"
+msgid "Finish selecting"
+msgstr ""
+
+msgctxt "transformTo"
+msgid "Other actions"
+msgstr "Other actions"
+
+msgctxt "translationsBatchTranslateMenuDescription"
+msgid "Translate all blocks"
+msgstr "Traduire tous les éléments"
+
+msgctxt "translationsBatchTranslateMenuTitle"
+msgid "Translate..."
+msgstr "Traduire..."
+
+msgctxt "translationsItemAction"
+msgid "Translate"
+msgstr "Traduire..."
+
+msgctxt "validationsNoneFound"
+msgid "No validation errors found."
+msgstr "Aucune erreur de validation trouvée."
+
+msgctxt "validationsToolbarLabel"
+msgid "Validations"
+msgstr "Validations"

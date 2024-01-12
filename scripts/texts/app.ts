@@ -4,6 +4,9 @@ import { BaseCallExpression, Expression, SpreadElement } from 'estree'
 import { parse } from 'acorn'
 import chalk from 'chalk'
 import { glob } from 'glob'
+import { po as PO, type GetTextTranslation } from 'gettext-parser'
+
+const LANGUAGES = ['de', 'fr', 'it']
 
 function extractFunctionCalls(name: string, sourceCode: string): string[] {
   let inTCall = false
@@ -287,42 +290,82 @@ async function updateTranslationFile(
   language: string,
   sourceTexts: Record<string, string>,
 ) {
-  const filePath = path.resolve(
-    __dirname,
-    './../../src/translations/' + language + '.json',
-  )
-  const data = await fs.promises.readFile(filePath).then((v) => v.toString())
-  const parsed = JSON.parse(data) as Record<string, TranslationEntry>
+  const poFilePath = path.resolve(__dirname, `./../../i18n/${language}.po`)
+  const poData = await fs.promises.readFile(poFilePath, {
+    encoding: 'utf-8',
+  })
+  const poFile = PO.parse(poData, 'utf-8')
+
+  const existingTexts: Record<string, TranslationEntry> = {}
+
+  Object.entries(poFile.translations).forEach(([key, entry]) => {
+    const translation = Object.entries(entry)[0][1]
+    existingTexts[key] = {
+      source: translation.msgid,
+      translation: translation.msgstr[0],
+    }
+  })
 
   // Add missing keys to translations.
   Object.entries(sourceTexts).forEach(([key, text]) => {
-    if (!parsed[key]) {
-      parsed[key] = {
+    if (!existingTexts[key]) {
+      existingTexts[key] = {
         source: text,
         translation: '',
       }
     }
 
-    parsed[key].source = text
+    existingTexts[key].source = text
   })
 
   // Remove keys that are not needed anymore.
-  Object.keys(parsed).forEach((key) => {
+  Object.keys(existingTexts).forEach((key) => {
     if (!sourceTexts[key]) {
-      delete parsed[key]
+      delete existingTexts[key]
       return
     }
   })
 
-  const sorted = sortObjectKeys(parsed)
+  const sorted = sortObjectKeys(existingTexts)
+  await generatePO(language, sorted)
 
+  const filePath = path.resolve(
+    __dirname,
+    `./../../src/translations/${language}.json`,
+  )
   await fs.promises.writeFile(filePath, JSON.stringify(sorted, null, 2))
+}
+
+async function generatePO(
+  language: string,
+  texts: Record<string, TranslationEntry>,
+): Promise<void> {
+  const translations: Record<string, GetTextTranslation> = {}
+
+  Object.entries(texts).forEach(([key, text]) => {
+    translations[key] = {
+      msgctxt: key,
+      msgid: text.source,
+      msgstr: [text.translation],
+    }
+  })
+  const result = PO.compile({
+    charset: 'utf-8',
+    headers: {
+      Language: language,
+    },
+    translations: {
+      blokkli: translations,
+    },
+  }).toString()
+
+  const filePath = path.resolve(__dirname, `./../../i18n/${language}.po`)
+
+  await fs.promises.writeFile(filePath, result)
 }
 
 async function main() {
   const sourceTexts = await getSourceTexts()
-
-  const LANGUAGES = ['de', 'fr', 'it']
 
   await Promise.all(LANGUAGES.map((v) => updateTranslationFile(v, sourceTexts)))
 }
