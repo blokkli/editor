@@ -156,7 +156,9 @@ export default function (
       } else {
         activeFieldKey.value = ''
       }
-      eventBus.emit('editable:save')
+      if (editableActive.value) {
+        eventBus.emit('editable:save')
+      }
     }
     unselectItems()
   }

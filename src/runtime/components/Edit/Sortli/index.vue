@@ -322,7 +322,9 @@ const onMouseDown = (e: MouseEvent) => {
   if (e.button !== 0) {
     return
   }
-  eventBus.emit('dragging:end')
+  if (selection.isDragging.value) {
+    eventBus.emit('dragging:end')
+  }
   start.value.x = 0
   start.value.y = 0
   if (isTouching.value) {
@@ -368,7 +370,9 @@ const onMouseUp = (e: MouseEvent) => {
   start.value.x = 0
   start.value.y = 0
 
-  eventBus.emit('dragging:end')
+  if (selection.isDragging.value) {
+    eventBus.emit('dragging:end')
+  }
   if (isTouching.value) {
     return
   }
