@@ -9,31 +9,67 @@
     <div class="bk bk-debug">
       <section>
         <h2>Keyboard</h2>
-        <div>
-          <div>Space</div>
-          <div>{{ keyboard.isPressingSpace.value }}</div>
-        </div>
-        <div>
-          <div>Control</div>
-          <div>{{ keyboard.isPressingControl.value }}</div>
+        <div class="bk-debug-list">
+          <div>
+            <div>Space</div>
+            <div>{{ keyboard.isPressingSpace.value }}</div>
+          </div>
+          <div>
+            <div>Control</div>
+            <div>{{ keyboard.isPressingControl.value }}</div>
+          </div>
         </div>
       </section>
 
       <section>
         <h2>Selection</h2>
-        <div>
-          <div>Count</div>
-          <div>{{ selection.uuids.value.length }}</div>
+        <div class="bk-debug-list">
+          <div>
+            <div>Count</div>
+            <div>{{ selection.uuids.value.length }}</div>
+          </div>
+          <div>
+            <div>Is dragging</div>
+            <div>{{ selection.isDragging.value }}</div>
+          </div>
         </div>
-        <div>
-          <div>Is dragging</div>
-          <div>{{ selection.isDragging.value }}</div>
+      </section>
+
+      <section>
+        <h2>Rendering</h2>
+        <div class="bk-debug-list">
+          <div>
+            <label class="bk-checkbox-toggle">
+              <input v-model="showDebugViewport" type="checkbox" class="peer" />
+              <div />
+              <span>Show viewport overlay</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Features</h2>
+        <div class="bk-debug-features">
+          <div v-for="feature in featuresList" :key="feature.id">
+            <div>
+              <span
+                class="bk-status-indicator"
+                :class="feature.mounted ? 'bk-is-success' : 'bk-is-danger'"
+              ></span>
+            </div>
+            <div>
+              <h3>{{ feature.label }}</h3>
+              <div>{{ feature.id }}</div>
+              <p>{{ feature.description }}</p>
+            </div>
+          </div>
         </div>
       </section>
     </div>
   </PluginSidebar>
 
-  <Teleport v-if="showDebug" to="body">
+  <Teleport v-if="showDebug && showDebugViewport" to="body">
     <div class="bk-debug-visible-viewport" :style="visibleViewportOverlayStyle">
       <div>Visible Viewport</div>
     </div>
@@ -68,6 +104,7 @@ import {
 } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
 import type { KeyPressedEvent, Rectangle } from '#blokkli/types'
+import { featureComponents } from '#blokkli-runtime/features'
 
 defineBlokkliFeature({
   id: 'debug',
@@ -76,9 +113,10 @@ defineBlokkliFeature({
   description: 'Provides debugging functionality.',
 })
 
-const { keyboard, selection, storage, eventBus, ui } = useBlokkli()
+const { keyboard, selection, storage, eventBus, ui, features } = useBlokkli()
 
 const showDebug = storage.use('showDebug', false)
+const showDebugViewport = storage.use('showDebugViewport', false)
 
 const viewportBlockingRects = computed(() =>
   ui.viewportBlockingRects.value.map(rectToStyle),
@@ -142,6 +180,19 @@ const visibleViewportOverlayStyle = computed(() =>
 const visibleViewportOverlayPaddedStyle = computed(() =>
   rectToStyle(ui.visibleViewportPadded.value),
 )
+
+const featuresList = computed(() => {
+  return featureComponents.map((v) => {
+    const feature = features.features.value.find((f) => f.id === v.id)
+    return {
+      id: v.id,
+      label: v.label,
+      description: v.description,
+      dependencies: v.dependencies.join(', '),
+      mounted: !!feature,
+    }
+  })
+})
 
 const onKeyPress = (e: KeyPressedEvent) => {
   if (e.code === '=' && e.meta) {

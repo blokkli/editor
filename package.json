@@ -20,7 +20,7 @@
     "prepack": "nuxt-module-build build",
     "dev": "nuxi dev playground --host",
     "styles:build": "postcss ./css/index.css -o ./src/runtime/css/output.css",
-    "styles:watch": "postcss ./css/index.css -o ./src/runtime/css/output.css --watch --poll",
+    "styles:watch": "postcss ./css/index.css -o ./src/runtime/css/output.css --watch",
     "dev:build": "nuxi generate playground",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
     "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",

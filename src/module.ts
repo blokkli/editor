@@ -215,6 +215,8 @@ export default defineNuxtModule<ModuleOptions>({
               v.importName
             }, requiredAdapterMethods: ${JSON.stringify(
               v.definition.requiredAdapterMethods || [],
+            )}, label: ${JSON.stringify(
+              v.definition.label || '',
             )}, description: "${v.definition.description || ''}" }`
           })
           .join(',\n')
@@ -236,6 +238,7 @@ type FeatureComponent = {
   requiredAdapterMethods: AdapterMethods[]
   dependencies: ValidFeatureKey[]
   description: string
+  label: string
   viewports: Viewport[]
 }
 

@@ -101,6 +101,9 @@
     &.bk-is-warning {
       @apply bg-yellow-400;
     }
+    &.bk-is-danger {
+      @apply bg-red-400;
+    }
   }
 
   .bk-feature-canvas-button {

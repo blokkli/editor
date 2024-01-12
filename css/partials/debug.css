@@ -4,9 +4,26 @@
     > h2 {
       @apply font-semibold uppercase text-sm mb-5;
     }
-    > div {
-      @apply flex justify-between;
-    }
+  }
+}
+
+.bk-debug-list {
+  > div {
+    @apply flex justify-between;
+  }
+}
+
+.bk-debug-features {
+  h3 {
+    @apply font-bold;
+  }
+
+  p {
+    @apply text-sm;
+  }
+
+  > div {
+    @apply flex gap-5 py-10 border-b;
   }
 }
 
