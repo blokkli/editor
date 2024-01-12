@@ -14,7 +14,7 @@
       <div class="bk bk-editable-field-buttons">
         <h3>
           <ItemIcon :bundle="itemBundle" />
-          {{ label }}
+          <span>{{ label }}</span>
         </h3>
         <button type="submit">
           <Icon name="close" />

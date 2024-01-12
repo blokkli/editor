@@ -48,9 +48,12 @@
   .bk-editable-field-buttons {
     @apply flex justify-between items-center text-xs bg-teal-400 text-teal-950 h-40;
     h3 {
-      @apply h-full px-10 uppercase font-semibold tracking-wide flex items-center gap-[0.5em] leading-none mr-auto;
+      @apply h-full px-10 uppercase font-semibold tracking-wide flex items-center gap-[0.5em] leading-none mr-auto min-w-0;
       .bk-blokkli-item-icon {
         @apply text-[1.5em] p-[0.15em] bg-teal-700 border border-teal-700 rounded-[0.15em] text-teal-200;
+      }
+      span {
+        @apply min-w-0 overflow-ellipsis whitespace-nowrap inline-block overflow-hidden;
       }
     }
     button {
