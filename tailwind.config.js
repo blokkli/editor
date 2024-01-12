@@ -43,7 +43,7 @@ module.exports = {
     preflight: false,
     container: false,
   },
-  content: ['./css/index.css'],
+  content: [],
   theme: {
     fontFamily: {
       sans: ['PB Inter, sans-serif'],
