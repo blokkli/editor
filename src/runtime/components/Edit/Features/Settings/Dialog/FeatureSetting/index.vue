@@ -45,6 +45,7 @@
 import type { FeatureDefinitionSetting } from '#blokkli/types'
 import { Icon } from '#blokkli/components'
 import type { ValidFeatureKey } from '#blokkli-runtime/features'
+import { useBlokkli, computed } from '#imports'
 
 const props = defineProps<{
   featureId: ValidFeatureKey

@@ -1,6 +1,6 @@
 <template>
   <PluginItemAction
-    v-if="isReusable && adapter.detachReusableBlock"
+    v-if="isReusable"
     :title="$t('libraryDetach', 'Detach from library')"
     icon="detach"
     multiple
@@ -63,7 +63,7 @@ const { adapter } = defineBlokkliFeature({
   label: 'Library',
   description:
     'Implements support for a block library to manage reusable blocks.',
-  requiredAdapterMethods: ['makeBlockReusable'],
+  requiredAdapterMethods: ['makeBlockReusable', 'detachReusableBlock'],
 })
 
 const { selection, state, types, $t, eventBus } = useBlokkli()

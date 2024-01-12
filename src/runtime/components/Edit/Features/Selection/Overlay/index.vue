@@ -15,7 +15,7 @@
 <script lang="ts" setup>
 import { falsy, getBounds } from '#blokkli/helpers'
 import type { DraggableExistingBlock, Rectangle } from '#blokkli/types'
-import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
 const props = defineProps<{
   blocks: DraggableExistingBlock[]

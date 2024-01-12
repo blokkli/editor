@@ -12,6 +12,7 @@
 
 <script lang="ts" setup>
 import type { EditableType } from '#blokkli/types'
+import { ref, onMounted } from '#imports'
 
 const props = defineProps<{
   modelValue: string

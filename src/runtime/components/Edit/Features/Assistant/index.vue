@@ -16,7 +16,7 @@
 
 <script lang="ts" setup>
 import type { ActionPlacedEvent, AssistantResult } from '#blokkli/types'
-import { useBlokkli, defineBlokkliFeature } from '#imports'
+import { useBlokkli, defineBlokkliFeature, ref } from '#imports'
 import { PluginAddAction } from '#blokkli/plugins'
 import Overlay from './Overlay/index.vue'
 

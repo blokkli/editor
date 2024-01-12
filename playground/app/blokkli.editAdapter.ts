@@ -1,3 +1,4 @@
+import { useRouter, useRoute } from '#imports'
 import { defineBlokkliEditAdapter } from '#blokkli/adapter'
 import type { BlokkliAdapter, MutationResponseLike } from '#blokkli/adapter'
 import { falsy } from '#blokkli/helpers'
@@ -226,7 +227,9 @@ export default defineBlokkliEditAdapter((ctx) => {
       return Promise.resolve({ items: [], total: 0 })
     },
 
-    importFromExisting() {},
+    importFromExisting() {
+      return Promise.resolve() as any
+    },
 
     getLibraryItems(bundles: string[]) {
       const libraryItems = entityStorageManager.storages.library_item.loadAll()

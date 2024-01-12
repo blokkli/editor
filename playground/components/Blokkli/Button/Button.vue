@@ -11,6 +11,8 @@
 </template>
 
 <script lang="ts" setup>
+import { defineBlokkli, computed } from '#imports'
+
 const { options } = defineBlokkli({
   bundle: 'button',
   noAddForm: true,

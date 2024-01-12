@@ -6,6 +6,7 @@ import {
   onMounted,
   onBeforeUnmount,
   watch,
+  computed,
 } from 'vue'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import type { AnimationProvider } from './animationProvider'

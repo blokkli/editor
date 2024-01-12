@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, onBeforeUnmount } from '#imports'
+import { ref, useBlokkli, computed, onBeforeUnmount } from '#imports'
 
 const { storage, ui } = useBlokkli()
 

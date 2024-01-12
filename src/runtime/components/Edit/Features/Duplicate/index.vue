@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature } from '#imports'
+import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 
 import type {
   BlokkliFieldElement,

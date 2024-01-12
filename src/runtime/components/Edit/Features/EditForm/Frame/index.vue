@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, onUnmounted, onMounted } from '#imports'
+import { ref, useBlokkli, onUnmounted, onMounted } from '#imports'
 import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
 import { Loading } from '#blokkli/components'
 

@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+import { useBlokkli, onMounted, onBeforeUnmount, computed } from '#imports'
 import type { BlokkliIcon } from '#blokkli/icons'
 import type { KeyPressedEvent } from '#blokkli/types'
 import { Icon } from '#blokkli/components'

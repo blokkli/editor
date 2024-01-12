@@ -1,6 +1,6 @@
 import type { FeatureDefinition, AdapterMethods } from '#blokkli/types'
 import type { ValidFeatureKey } from '#blokkli-runtime/features'
-import { computed, type ComputedRef } from '#imports'
+import { computed, ref, type ComputedRef } from '#imports'
 
 export type FeaturesProvider = {
   features: ComputedRef<FeatureDefinition<AdapterMethods[], ValidFeatureKey>[]>

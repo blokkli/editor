@@ -21,6 +21,7 @@ import {
   onMounted,
   onBeforeUnmount,
   watch,
+  ref,
 } from '#imports'
 
 const { ui, eventBus } = useBlokkli()

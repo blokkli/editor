@@ -5,6 +5,7 @@
 <script lang="ts" setup>
 import type { ScrollIntoViewEvent } from '#blokkli/types'
 import {
+  computed,
   useBlokkli,
   onMounted,
   onBeforeUnmount,

@@ -6,6 +6,8 @@
 </template>
 
 <script lang="ts" setup>
+import { defineBlokkli } from '#imports'
+
 const { options, parentType } = defineBlokkli({
   bundle: 'widget',
   options: {

@@ -12,7 +12,7 @@
     :can-submit="!!(sourceEntityUuid && selectedFields.length)"
     :is-loading="isLoading"
     @submit="onSubmit"
-    @cancel="$emit('cancel', 'Cancel')"
+    @cancel="$emit('cancel')"
   >
     <div class="bk bk-dialog-form">
       <div class="bk-form-section">
@@ -71,7 +71,14 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+import {
+  computed,
+  watch,
+  ref,
+  useBlokkli,
+  onMounted,
+  onBeforeUnmount,
+} from '#imports'
 
 import { DialogModal } from '#blokkli/components'
 import type { ImportItem } from '#blokkli/types'

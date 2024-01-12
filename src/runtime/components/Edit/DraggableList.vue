@@ -48,12 +48,6 @@
   </Sortli>
 </template>
 
-<script lang="ts">
-export default {
-  name: 'DraggableList',
-}
-</script>
-
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
 import { Sortli } from '#blokkli/components'

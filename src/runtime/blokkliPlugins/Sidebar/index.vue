@@ -91,7 +91,14 @@
 </template>
 
 <script setup lang="ts">
-import { watch, ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+import {
+  computed,
+  watch,
+  ref,
+  useBlokkli,
+  onMounted,
+  onBeforeUnmount,
+} from '#imports'
 import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon, ShortcutIndicator } from '#blokkli/components'
 import SidebarDetached from './Detached/index.vue'

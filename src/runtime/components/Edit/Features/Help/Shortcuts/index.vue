@@ -24,7 +24,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { useBlokkli } from '#imports'
+import { useBlokkli, computed } from '#imports'
 import { ShortcutIndicator } from '#blokkli/components'
 import type { KeyboardShortcut } from '#blokkli/types'
 

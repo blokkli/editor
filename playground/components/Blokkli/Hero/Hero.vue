@@ -32,7 +32,9 @@
 </template>
 
 <script lang="ts" setup>
-const { options, isEditing } = defineBlokkli({
+import { defineBlokkli, computed } from '#imports'
+
+const { isEditing } = defineBlokkli({
   bundle: 'hero',
   editTitle: (el) => el.querySelector('h1')?.innerText,
 })

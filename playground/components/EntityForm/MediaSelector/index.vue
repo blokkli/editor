@@ -15,6 +15,7 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from '#imports'
 import { entityStorageManager } from '~/app/mock/entityStorage'
 
 const props = defineProps<{

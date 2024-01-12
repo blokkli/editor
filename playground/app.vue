@@ -7,6 +7,8 @@
 </template>
 
 <script setup lang="ts">
+import { useHead } from '#imports'
+
 useHead({
   titleTemplate: (titleChunk) => {
     return titleChunk

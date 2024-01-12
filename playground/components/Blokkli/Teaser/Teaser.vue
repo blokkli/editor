@@ -8,6 +8,7 @@
 </template>
 
 <script lang="ts" setup>
+import { defineBlokkli, computed } from '#imports'
 import type { FieldText } from '~/app/mock/state/Field/Text'
 import type { FieldTextarea } from '~/app/mock/state/Field/Textarea'
 

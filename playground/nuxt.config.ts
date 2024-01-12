@@ -2,6 +2,10 @@ export default defineNuxtConfig({
   ssr: false,
   modules: ['../src/module', '@nuxtjs/tailwindcss', 'nuxt-svg-icon-sprite'],
 
+  imports: {
+    autoImport: false,
+  },
+
   runtimeConfig: {
     openaiKey: process.env.OPENAI_KEY || '',
   },

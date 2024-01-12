@@ -45,6 +45,7 @@ import {
   computed,
   useBlokkli,
   onMounted,
+  onBeforeUnmount,
   defineBlokkliFeature,
   nextTick,
 } from '#imports'

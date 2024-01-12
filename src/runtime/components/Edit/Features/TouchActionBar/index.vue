@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature } from '#imports'
+import { useBlokkli, defineBlokkliFeature, computed } from '#imports'
 import Bar from './Bar/index.vue'
 
 const { eventBus, selection, ui, $t } = useBlokkli()

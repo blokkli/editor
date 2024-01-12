@@ -62,7 +62,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli, defineBlokkliFeature, watch } from '#imports'
+import {
+  ref,
+  computed,
+  useBlokkli,
+  defineBlokkliFeature,
+  watch,
+} from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
 import PreviewFrame from './Frame/index.vue'
 import { Icon } from '#blokkli/components'

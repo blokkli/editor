@@ -3,8 +3,10 @@ import type {
   SearchContentItem,
   Rectangle,
 } from '#blokkli/types'
+import { useRuntimeConfig } from '#imports'
 import { getDefinition } from '#blokkli/definitions'
 
+// @ts-ignore
 const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
 
 /**

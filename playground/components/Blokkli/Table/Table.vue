@@ -9,6 +9,8 @@
 </template>
 
 <script lang="ts" setup>
+import { defineBlokkli } from '#imports'
+
 const { parentType } = defineBlokkli({
   bundle: 'table',
   noAddForm: true,

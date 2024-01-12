@@ -9,6 +9,7 @@
 </template>
 
 <script lang="ts" setup>
+import { defineBlokkli, computed } from '#imports'
 import { MediaImage } from '~/app/mock/state/Media/Media'
 
 const { options, parentType } = defineBlokkli({

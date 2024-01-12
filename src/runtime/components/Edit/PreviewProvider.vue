@@ -31,7 +31,7 @@ const props = defineProps<{
   entityType: string
   entityUuid: string
   entityBundle: string
-  language?: string
+  language: string
 }>()
 
 const context = computed(() => props)
@@ -174,10 +174,4 @@ onBeforeUnmount(() => {
   frameEventBus.off('focus', onFocusItem)
   frameEventBus.off('updateOption', onUpdateOption)
 })
-</script>
-
-<script lang="ts">
-export default {
-  name: 'BlokkliPreviewProvider',
-}
 </script>

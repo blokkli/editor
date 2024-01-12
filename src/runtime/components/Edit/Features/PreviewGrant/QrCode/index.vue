@@ -10,7 +10,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, onMounted, useBlokkli } from '#imports'
-import QR from 'qrcode'
+import QR from 'qrcode-generator'
 
 const { $t } = useBlokkli()
 
@@ -35,9 +35,13 @@ onMounted(() => {
     return
   }
 
-  QR.toCanvas(canvas.value, fullUrl.value, {
-    scale: 10,
-    margin: 0,
-  })
+  const qr = QR(4, 'L')
+  qr.addData(fullUrl.value)
+  qr.make()
+
+  const ctx = canvas.value.getContext('2d')
+  if (ctx) {
+    qr.renderTo2dContext(ctx, 5)
+  }
 })
 </script>

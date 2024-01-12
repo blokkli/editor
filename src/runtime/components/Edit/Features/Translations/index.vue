@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
+import { ref, computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import { falsy } from '#blokkli/helpers'
 import { PluginMenuButton, PluginItemAction } from '#blokkli/plugins'
 import type { DraggableExistingBlock, EntityTranslation } from '#blokkli/types'

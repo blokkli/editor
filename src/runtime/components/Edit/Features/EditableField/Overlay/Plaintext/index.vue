@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli } from '#imports'
+import { useBlokkli, computed } from '#imports'
 
 const { ui, selection } = useBlokkli()
 

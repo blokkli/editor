@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli } from '#imports'
+import { useBlokkli, ref, computed, onMounted, onBeforeUnmount } from '#imports'
 import type { EditableType } from '#blokkli/types'
 
 const { adapter } = useBlokkli()

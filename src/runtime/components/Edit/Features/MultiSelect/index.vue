@@ -14,6 +14,7 @@ import {
   onMounted,
   onBeforeUnmount,
   defineBlokkliFeature,
+  computed,
 } from '#imports'
 import Overlay from './Overlay/index.vue'
 

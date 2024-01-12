@@ -27,6 +27,7 @@ import {
   onMounted,
   onUnmounted,
   defineBlokkliFeature,
+  nextTick,
 } from '#imports'
 import DropTargets, { type DropTargetEvent } from './DropTargets/index.vue'
 import DragItems from './DragItems/index.vue'

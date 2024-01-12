@@ -1,4 +1,10 @@
-import { computed, type ComputedRef } from '#imports'
+import {
+  computed,
+  useBlokkli,
+  onMounted,
+  onUnmounted,
+  type ComputedRef,
+} from '#imports'
 import type { BlokkliAdapter, AdapterMethods } from '#blokkli/adapter'
 import type { FeatureDefinition } from '#blokkli/types'
 import type { ValidFeatureKey } from '#blokkli-runtime/features'
@@ -43,7 +49,9 @@ export function defineBlokkliFeature<
   const defaults = Object.entries(feature.settings || {}).reduce<
     Record<string, any>
   >((acc, [key, config]) => {
-    acc[key] = config.default
+    if ('default' in config) {
+      acc[key] = config.default
+    }
     return acc
   }, {})
   const settingsStorage = storage.use(

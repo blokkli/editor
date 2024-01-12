@@ -42,7 +42,7 @@
 <script lang="ts" setup>
 import type { BlokkliIcon } from '#blokkli/icons'
 import type { AddListOrientation } from '#blokkli/types'
-import { useBlokkli } from '#imports'
+import { useBlokkli, computed } from '#imports'
 import { ItemIcon, Icon } from '#blokkli/components'
 
 const { ui } = useBlokkli()

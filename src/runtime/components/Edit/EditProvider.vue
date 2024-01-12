@@ -29,6 +29,7 @@ import {
   onBeforeUnmount,
   nextTick,
   useRoute,
+  useRuntimeConfig,
 } from '#imports'
 import type { BlokkliApp } from '#blokkli/types'
 import Toolbar from './Toolbar/index.vue'
@@ -154,10 +155,4 @@ provide<BlokkliApp>(INJECT_APP, {
   broadcast,
   features,
 })
-</script>
-
-<script lang="ts">
-export default {
-  name: 'EditProvider',
-}
 </script>

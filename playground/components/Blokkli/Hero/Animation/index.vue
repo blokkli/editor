@@ -14,6 +14,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount } from '#imports'
 import type { NuxtSvgSpriteSymbol } from '#nuxt-svg-sprite'
 
 const props = defineProps<{

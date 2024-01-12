@@ -244,6 +244,7 @@ export type BlockDefinitionInputWithTypes = BlockDefinitionInput<ValidChunkNames
     }, {})
 
     return `
+    import { defineAsyncComponent } from '#imports'
     ${this.generateChunkGroup('global')}
 
 const chunks: Record<string, () => Promise<any>> = {

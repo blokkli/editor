@@ -1,4 +1,5 @@
-import { type ComputedRef, computed, watch } from 'vue'
+import { type ComputedRef } from 'vue'
+import { useRuntimeConfig, computed, watch } from '#imports'
 import type {
   FieldConfig,
   BlockBundleDefinition,

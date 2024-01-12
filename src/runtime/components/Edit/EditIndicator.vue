@@ -16,7 +16,7 @@
 
 <script lang="ts" setup>
 import textProvider from '#blokkli/helpers/textProvider'
-import { ref, onMounted, onUnmounted } from '#imports'
+import { ref, onMounted, onUnmounted, computed } from '#imports'
 import '#blokkli/styles'
 
 const props = defineProps<{
@@ -61,12 +61,6 @@ onMounted(() => {
 onUnmounted(() => {
   window.cancelAnimationFrame(raf)
 })
-</script>
-
-<script lang="ts">
-export default {
-  name: 'BlokkliEditIndicator',
-}
 </script>
 
 <style lang="postcss">

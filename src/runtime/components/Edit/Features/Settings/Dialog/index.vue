@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli } from '#imports'
+import { useBlokkli, computed } from '#imports'
 import { DialogModal } from '#blokkli/components'
 import FeatureSetting from './FeatureSetting/index.vue'
 import type { ValidFeatureKey } from '#blokkli-runtime/features'

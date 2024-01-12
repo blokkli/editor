@@ -19,6 +19,7 @@ import {
   onMounted,
   onBeforeUnmount,
   nextTick,
+  ref,
 } from '#imports'
 import type { BlokkliIcon } from '#blokkli/icons'
 import type { ActionPlacedEvent } from '#blokkli/types'

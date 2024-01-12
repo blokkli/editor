@@ -101,6 +101,7 @@ import {
   onMounted,
   onBeforeUnmount,
   defineBlokkliFeature,
+  computed,
 } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
 import type { KeyPressedEvent, Rectangle } from '#blokkli/types'

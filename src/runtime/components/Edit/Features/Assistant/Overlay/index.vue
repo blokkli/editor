@@ -65,7 +65,7 @@
 <script setup lang="ts">
 import { FormOverlay } from '#blokkli/components'
 import type { AssistantResult } from '#blokkli/types'
-import { useBlokkli } from '#imports'
+import { useBlokkli, ref } from '#imports'
 import ResultMarkup from './ResultMarkup/index.vue'
 
 const { $t, adapter } = useBlokkli()

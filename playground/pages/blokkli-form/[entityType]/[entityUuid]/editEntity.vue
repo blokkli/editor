@@ -5,6 +5,7 @@
 </template>
 
 <script lang="ts" setup>
+import { definePageMeta, useRouter, useParamString } from '#imports'
 import { entityStorageManager } from '~/app/mock/entityStorage'
 import { getEditState } from '~/app/mock/state'
 

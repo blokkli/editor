@@ -11,6 +11,7 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, onMounted } from '#imports'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import CKEditor from '@ckeditor/ckeditor5-vue'
 

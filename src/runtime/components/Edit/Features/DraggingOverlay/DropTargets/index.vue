@@ -48,7 +48,7 @@ import type {
   DraggableItem,
   Rectangle,
 } from '#blokkli/types'
-import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
 const activeKey = ref('')
 

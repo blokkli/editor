@@ -11,7 +11,13 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, onMounted, defineBlokkliFeature } from '#imports'
+import {
+  useBlokkli,
+  onMounted,
+  defineBlokkliFeature,
+  ref,
+  onBeforeUnmount,
+} from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
 import List from './List/index.vue'
 

@@ -59,7 +59,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, onMounted, onUnmounted } from '#imports'
+import {
+  computed,
+  defineBlokkliFeature,
+  ref,
+  useBlokkli,
+  onMounted,
+  onUnmounted,
+} from '#imports'
 
 import { PluginSidebar } from '#blokkli/plugins'
 import ClipboardList from './List/index.vue'

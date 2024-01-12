@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useBlokkli, ref } from '#imports'
+import { onMounted, useBlokkli, ref, nextTick } from '#imports'
 import { falsy } from '#blokkli/helpers'
 import Field from './Field/index.vue'
 import type { StructureTreeField, StructureTreeItem } from './types'

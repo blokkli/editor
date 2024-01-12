@@ -3,6 +3,8 @@
 </template>
 
 <script lang="ts" setup>
+import { definePageMeta, onMounted } from '#imports'
+
 definePageMeta({
   name: 'blokkli-form-redirect',
   layout: 'form',

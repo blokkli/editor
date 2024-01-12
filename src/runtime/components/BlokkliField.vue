@@ -65,7 +65,7 @@ import {
 } from '../helpers/symbols'
 
 const DraggableList = defineAsyncComponent(() => {
-  return import('./Edit/DraggableList/index.vue')
+  return import('./Edit/DraggableList.vue')
 })
 
 const attrs = useAttrs()

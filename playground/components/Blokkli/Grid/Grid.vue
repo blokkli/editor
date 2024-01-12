@@ -27,6 +27,8 @@
 </template>
 
 <script lang="ts" setup>
+import { defineBlokkli, computed, provide } from '#imports'
+
 const { options } = defineBlokkli({
   bundle: 'grid',
   disableEdit: true,
