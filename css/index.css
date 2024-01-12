@@ -32,6 +32,7 @@
 @import './partials/FormOverlay.css';
 @import './partials/ResponsivePreview.css';
 @import './partials/Help.css';
+@import './indicator.css';
 
 @tailwind base;
 @tailwind components;
@@ -302,7 +303,7 @@ html {
   @apply text-xl text-slate-600;
 }
 
-html:not(.bk-use-animations) {
+html.bk-html-root:not(.bk-use-animations) {
   *,
   *:before,
   *:after {

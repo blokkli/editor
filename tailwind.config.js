@@ -43,7 +43,7 @@ module.exports = {
     preflight: false,
     container: false,
   },
-  content: [],
+  content: ['./css/indicator.css'],
   theme: {
     fontFamily: {
       sans: ['PB Inter, sans-serif'],

@@ -63,11 +63,4 @@ onUnmounted(() => {
 })
 </script>
 
-<style lang="postcss">
-.bk-edit-indicator {
-  position: fixed;
-  top: 0;
-  right: 10px;
-  z-index: 100;
-}
-</style>
+<style lang="postcss"></style>
