@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bk-dialog bk-control"
+    class="bk bk-dialog bk-control"
     @wheel.stop
     @keydown.stop
     @touchstart.stop

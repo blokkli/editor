@@ -1,6 +1,6 @@
 <template>
   <div class="bk-qr-code">
-    <canvas ref="canvas" />
+    <QrCodeVue :value="fullUrl" :size="430" level="H" />
     <p>
       {{ $t('previewQrCodeText', 'You can also copy the link and share it.') }}
     </p>
@@ -9,12 +9,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, useBlokkli } from '#imports'
-import QR from 'qrcode-generator'
+import { computed, useBlokkli } from '#imports'
+import QrCodeVue from 'qrcode.vue'
 
 const { $t } = useBlokkli()
-
-const canvas = ref<HTMLCanvasElement | null>(null)
 
 const props = defineProps<{
   url: string
@@ -29,19 +27,4 @@ function onFocus(e: FocusEvent) {
     e.target.select()
   }
 }
-
-onMounted(() => {
-  if (!canvas.value) {
-    return
-  }
-
-  const qr = QR(4, 'L')
-  qr.addData(fullUrl.value)
-  qr.make()
-
-  const ctx = canvas.value.getContext('2d')
-  if (ctx) {
-    qr.renderTo2dContext(ctx, 5)
-  }
-})
 </script>

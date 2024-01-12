@@ -147,7 +147,6 @@ export default defineNuxtModule<ModuleOptions>({
     itemEntityType: 'blokkli_item',
   },
   async setup(moduleOptions, nuxt) {
-    nuxt.options.build.transpile.push('qrcode')
     // The path to the source directory of this module's consumer.
     const srcDir = nuxt.options.srcDir
     const srcResolver = createResolver(srcDir)
