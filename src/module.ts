@@ -425,7 +425,7 @@ ${featuresArray}
       filename: 'blokkli/generated-types.ts',
       getContents: () => {
         return blockExtractor.generateTypesTemplate(
-          Object.keys(moduleOptions.globalOptions || {}),
+          moduleOptions.globalOptions || {},
           getChunkNames(),
           getFieldListTypes(),
         )

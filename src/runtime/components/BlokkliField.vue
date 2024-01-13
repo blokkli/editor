@@ -53,7 +53,10 @@ import {
 } from '#imports'
 
 import type { FieldListItem, MutatedField, EntityContext } from '#blokkli/types'
-import type { ValidFieldListTypes } from '#blokkli/generated-types'
+import type {
+  ValidFieldListTypes,
+  FieldListItemTyped,
+} from '#blokkli/generated-types'
 import {
   INJECT_ENTITY_CONTEXT,
   INJECT_FIELD_LIST_TYPE,
@@ -114,7 +117,7 @@ const fieldKey = computed(() => {
 
 const fieldListType = computed(() => props.fieldListType)
 
-const filteredList = computed<FieldListItem[]>(() => {
+const filteredList = computed<FieldListItemTyped[]>(() => {
   if (mutatedFields?.value && !isInReusable) {
     return (
       mutatedFields.value.find(

@@ -10,7 +10,7 @@ type ExtractedDefinition = {
   icon?: string
   chunkName: string
   componentName: string
-  definition: BlockDefinitionInput<any>
+  definition: BlockDefinitionInput
   source: string
   fileSource: string
   hasBlokkliField: boolean
@@ -190,7 +190,7 @@ export const globalOptionsDefaults: Record<GlobalOptionsKey, string> = ${JSON.st
   }
 
   generateTypesTemplate(
-    globalOptionKeys: string[],
+    globalOptions: BlockDefinitionOptionsInput,
     chunkNames: string[],
     fieldListTypes: string[],
   ): string {
@@ -207,7 +207,7 @@ export const globalOptionsDefaults: Record<GlobalOptionsKey, string> = ${JSON.st
         return `'${v}'`
       })
       .join(' | ')
-    const validGlobalOptions = globalOptionKeys
+    const validGlobalOptions = Object.keys(globalOptions)
       .map((v) => {
         return `'${v}'`
       })
@@ -224,12 +224,68 @@ export const globalOptionsDefaults: Record<GlobalOptionsKey, string> = ${JSON.st
         return `'${v.bundle}'`
       })
       .join(' | ')
-    return `export type ValidFieldListTypes = ${validFieldListTypes}
+
+    const typedFieldListItems = allDefintions
+      .filter((v) => v.bundle !== 'from_library')
+      .map((v) => {
+        const definedOptions = v.options as BlockDefinitionOptionsInput
+
+        // Add global options used.
+        const blockGlobalOptions: string[] = (v as any).globalOptions || []
+        blockGlobalOptions.forEach((key) => {
+          if (globalOptions[key]) {
+            definedOptions[key] = globalOptions[key]
+          }
+        })
+        const options = Object.entries(definedOptions || {})
+          .map(([key, option]) => {
+            if (option.type === 'text') {
+              return `${key}: string | undefined`
+            } else if (option.type === 'checkbox') {
+              return `${key}: '1' | '0' | undefined`
+            } else if (
+              option.type === 'radios' ||
+              option.type === 'checkboxes'
+            ) {
+              const possibleValues = Object.keys(option.options)
+                .map((v) => `'${v}'`)
+                .join(' | ')
+              return `${key}: ${possibleValues} | undefined`
+            }
+          })
+          .join('\n    ')
+
+        const typeName = `FieldListItem_${v.bundle}`
+        const typeDefinition = `type ${typeName} = {
+  bundle: '${v.bundle}'
+  options: {
+    ${options}
+  }
+}`
+        return { typeName, typeDefinition }
+      })
+
+    return `
+import type { FieldListItem } from "#blokkli/types"
+
+export type ValidFieldListTypes = ${validFieldListTypes}
+
 export type BlockBundle = ${validBlockBundles || `''`}
+
 export type BlockBundleWithNested = ${blockBundlesWithNested || `''`}
+
 export type ValidChunkNames = ${validChunkNames}
+
 export type GlobalOptionsKey = ${validGlobalOptions || 'never'}
-export type ValidGlobalConfigKeys = Array<GlobalOptionsKey>`
+
+export type ValidGlobalConfigKeys = Array<GlobalOptionsKey>
+
+${typedFieldListItems.map((v) => v.typeDefinition).join('\n\n')}
+
+export type FieldListItemTyped = FieldListItem & (${typedFieldListItems
+      .map((v) => v.typeName)
+      .join(' | ')})
+`
   }
 
   /**

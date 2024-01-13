@@ -228,11 +228,11 @@ export type InjectedBlokkliItem = ComputedRef<{
   parentType?: string
 }>
 
-export interface FieldListItem {
+export type FieldListItem = {
   uuid: string
   bundle: string
   isNew?: boolean
-  options?: Record<string, string>
+  options?: unknown
   props?: any
 }
 
