@@ -17,10 +17,11 @@ import type { FeaturesProvider } from '#blokkli/helpers/featuresProvider'
 import type { BlokkliIcon } from '#blokkli/icons'
 import type { SettingsGroup, Viewport } from '#blokkli/constants'
 import type {
+  BlockBundleWithNested,
+  GlobalOptionsKey,
   ValidChunkNames,
   ValidFieldListTypes,
   ValidGlobalConfigKeys,
-  ValidParentItemBundle,
 } from '#blokkli/generated-types'
 import type { globalOptions } from '#blokkli/definitions'
 
@@ -63,7 +64,7 @@ type GlobalOptionsKeyTypes<T extends ValidGlobalConfigKeys> = {
 
 export type DefineBlokkliContext<
   T extends BlockDefinitionOptionsInput = {},
-  G extends ValidGlobalConfigKeys = [],
+  G extends ValidGlobalConfigKeys | undefined = undefined,
 > = {
   /**
    * The UUID of the item.
@@ -83,7 +84,7 @@ export type DefineBlokkliContext<
   /**
    * The item type name (e.g. "teaser_list") of the parent item if this item is nested.
    */
-  parentType: ComputedRef<ValidParentItemBundle | undefined>
+  parentType: ComputedRef<BlockBundleWithNested | undefined>
 
   /**
    * The type of the field list the item is part of.
@@ -108,15 +109,24 @@ export type BlockDefinitionOptionsInput = {
 
 type DetermineVisibleOptionsContext<
   T extends BlockDefinitionOptionsInput = {},
-  G extends ValidGlobalConfigKeys = [],
+  G extends GlobalOptionsKey[] | undefined = undefined,
 > = {
   options: (T extends BlockDefinitionOptionsInput ? WithOptions<T> : {}) &
     (G extends ValidGlobalConfigKeys ? GlobalOptionsKeyTypes<G> : {})
+  parentType: BlockBundleWithNested | undefined
 }
+
+type ExtractGlobalOptions<G extends GlobalOptionsKey[]> =
+  G[number] extends GlobalOptionsKey ? G[number] : never
+
+type CombineKeysAndGlobalOptions<
+  T extends BlockDefinitionOptionsInput,
+  G extends GlobalOptionsKey[] | undefined,
+> = keyof T | ExtractGlobalOptions<NonNullable<G>>
 
 export type BlockDefinitionInput<
   Options extends BlockDefinitionOptionsInput = {},
-  GlobalOptions extends ValidGlobalConfigKeys = [],
+  GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
 > = {
   /**
    * The type ID of the item, e.g. "text" or "section_title".
@@ -145,9 +155,15 @@ export type BlockDefinitionInput<
    */
   globalOptions?: GlobalOptions
 
+  /**
+   * Determine which options should be visible in the editor based on the
+   * given context.
+   *
+   * If a method is defined, it is called whenever any of the options change.
+   */
   determineVisibleOptions?: (
     ctx: DetermineVisibleOptionsContext<Options, GlobalOptions>,
-  ) => Array<keyof Options | GlobalOptions[number]>
+  ) => Array<CombineKeysAndGlobalOptions<Options, GlobalOptions>>
 
   /**
    * Disable editing. This should be set if the component doesn't have any
@@ -480,6 +496,8 @@ export interface DraggableExistingBlock {
    * The title to use when displaying the block in lists during editing.
    */
   editTitle?: string
+
+  parentBlockBundle: BlockBundleWithNested | undefined
 }
 
 export interface DraggableNewItem {

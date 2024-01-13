@@ -9,9 +9,8 @@ import type {
 import { globalOptionsDefaults } from '#blokkli/default-global-options'
 
 import type {
-  ValidGlobalConfigKeys,
+  GlobalOptionsKey,
   ValidFieldListTypes,
-  ValidParentItemBundle,
 } from '#blokkli/generated-types'
 import {
   INJECT_BLOCK_ITEM,
@@ -25,7 +24,7 @@ import {
  */
 export function defineBlokkli<
   T extends BlockDefinitionOptionsInput,
-  G extends ValidGlobalConfigKeys,
+  G extends GlobalOptionsKey[] | undefined = undefined,
 >(config: BlockDefinitionInput<T, G>): DefineBlokkliContext<T, G> {
   const optionKeys: string[] = []
   // The default options are provided by the component definition itself.
@@ -60,9 +59,7 @@ export function defineBlokkli<
   const index =
     item?.value.index !== undefined ? item.value.index : computed(() => 0)
 
-  const parentType = computed(() => {
-    return item?.value.parentType as ValidParentItemBundle
-  })
+  const parentType = computed(() => item?.value.parentType)
 
   // This is injected by the "from_library" blokkli component.
   // If its present it means this blokkli is reusable. In this case it

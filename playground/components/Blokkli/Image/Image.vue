@@ -23,6 +23,12 @@ const { options, parentType } = defineBlokkli({
     },
   },
   editTitle: (el) => el.querySelector('img')?.alt,
+  determineVisibleOptions: (ctx) => {
+    if (ctx.parentType) {
+      return []
+    }
+    return ['elevated']
+  },
 })
 
 const props = defineProps<{
@@ -43,5 +49,7 @@ const alt = computed(() => {
   return ''
 })
 
-const isElevated = computed(() => options.value.elevated == '1')
+const isElevated = computed(
+  () => options.value.elevated == '1' || parentType.value,
+)
 </script>

@@ -67,6 +67,8 @@ export function buildDraggableItem(
         reusableUuid,
         editTitle,
         isNew,
+        parentBlockBundle:
+          hostType === itemEntityType ? (hostBundle as any) : undefined,
       }
     }
   } else if (dataset.elementType === 'new') {

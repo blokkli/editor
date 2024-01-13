@@ -36,7 +36,8 @@
     }
 
     &:last-child {
-      .bk-blokkli-item-options-text input {
+      .bk-blokkli-item-options-text input,
+      .bk-blokkli-item-options-checkbox {
         @apply rounded-e-md;
       }
     }

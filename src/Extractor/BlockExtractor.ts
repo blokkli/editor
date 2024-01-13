@@ -12,6 +12,8 @@ type ExtractedDefinition = {
   componentName: string
   definition: BlockDefinitionInput<any>
   source: string
+  fileSource: string
+  hasBlokkliField: boolean
 }
 
 /**
@@ -77,6 +79,11 @@ export default class BlockExtractor {
         chunkName: definition.chunkName || 'global',
         componentName: 'BlokkliComponent_' + definition.bundle,
         source,
+        fileSource,
+        hasBlokkliField:
+          fileSource.includes('<BlokkliField') ||
+          fileSource.includes('<blokkli-field') ||
+          fileSource.includes(':is="BlokkliField"'),
       }
       return true
     }
@@ -144,18 +151,19 @@ export default class BlockExtractor {
       return acc
     }, {})
 
-    return `import type { BlockDefinitionInput } from '#blokkli/types'
+    return `import type { GlobalOptionsKey } from './generated-types'
+import type { BlockDefinitionInput } from '#blokkli/types'
 export const globalOptions = ${JSON.stringify(globalOptions, null, 2)} as const
 
 export const icons: Record<string, string> = ${JSON.stringify(icons)}
 
-export const definitionsMap: Record<string, BlockDefinitionInput> = {
+export const definitionsMap: Record<string, BlockDefinitionInput<any, GlobalOptionsKey[]>> = {
   ${allDefinitions.join(',\n')}
 }
 
-export const definitions: BlockDefinitionInput[] = Object.values(definitionsMap)
+export const definitions: BlockDefinitionInput<any, GlobalOptionsKey[]>[] = Object.values(definitionsMap)
 
-export const getDefinition = (bundle: string): BlockDefinitionInput|undefined => definitionsMap[bundle]
+export const getDefinition = (bundle: string): BlockDefinitionInput<any, GlobalOptionsKey[]>|undefined => definitionsMap[bundle]
 `
   }
 
@@ -173,9 +181,8 @@ export const getDefinition = (bundle: string): BlockDefinitionInput|undefined =>
       }
       return acc
     }, {})
-    return `
-import type { GlobalOptionsType } from '#blokkli/generated-types'
-export const globalOptionsDefaults: Record<GlobalOptionsType, string> = ${JSON.stringify(
+    return `import type { GlobalOptionsKey } from '#blokkli/generated-types'
+export const globalOptionsDefaults: Record<GlobalOptionsKey, string> = ${JSON.stringify(
       defaults,
       null,
       2,
@@ -205,20 +212,24 @@ export const globalOptionsDefaults: Record<GlobalOptionsType, string> = ${JSON.s
         return `'${v}'`
       })
       .join(' | ')
-    const validParentItemBundles = allDefintions
+    const blockBundlesWithNested = Object.values(this.definitions)
+      .filter((v) => v.hasBlokkliField)
+      .map((v) => {
+        return `'${v.definition.bundle}'`
+      })
+      .join(' | ')
+    const validBlockBundles = allDefintions
       .filter((v) => v.bundle !== 'from_library')
       .map((v) => {
         return `'${v.bundle}'`
       })
       .join(' | ')
-    return `
-import type { BlockDefinitionInput } from '#blokkli/types'
-export type ValidFieldListTypes = ${validFieldListTypes}
-export type ValidParentItemBundle = ${validParentItemBundles || `''`}
+    return `export type ValidFieldListTypes = ${validFieldListTypes}
+export type BlockBundle = ${validBlockBundles || `''`}
+export type BlockBundleWithNested = ${blockBundlesWithNested || `''`}
 export type ValidChunkNames = ${validChunkNames}
-export type GlobalOptionsType = ${validGlobalOptions || 'never'}
-export type ValidGlobalConfigKeys = Array<GlobalOptionsType>
-`
+export type GlobalOptionsKey = ${validGlobalOptions || 'never'}
+export type ValidGlobalConfigKeys = Array<GlobalOptionsKey>`
   }
 
   /**
