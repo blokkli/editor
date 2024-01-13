@@ -16,6 +16,13 @@ import type { BroadcastProvider } from '#blokkli/helpers/broadcastProvider'
 import type { FeaturesProvider } from '#blokkli/helpers/featuresProvider'
 import type { BlokkliIcon } from '#blokkli/icons'
 import type { SettingsGroup, Viewport } from '#blokkli/constants'
+import type {
+  ValidChunkNames,
+  ValidFieldListTypes,
+  ValidGlobalConfigKeys,
+  ValidParentItemBundle,
+} from '#blokkli/generated-types'
+import type { globalOptions } from '#blokkli/definitions'
 
 interface MutationResponseLike<T> {
   data: {
@@ -34,11 +41,83 @@ export type MutateWithLoadingStateFunction = (
   successMessage?: string,
 ) => Promise<boolean>
 
+type StringBoolean = '0' | '1' | ''
+
+type GetType<T> = T extends { type: 'checkbox' }
+  ? StringBoolean
+  : T extends { type: 'radios' }
+  ? T extends { options: infer O }
+    ? keyof O
+    : string
+  : string
+
+type WithOptions<T extends BlockDefinitionOptionsInput> = {
+  [K in keyof T]: GetType<T[K]>
+}
+
+type GlobalOptionsType = typeof globalOptions
+
+type GlobalOptionsKeyTypes<T extends ValidGlobalConfigKeys> = {
+  [K in T[number]]: GetType<GlobalOptionsType[K]>
+}
+
+export type DefineBlokkliContext<
+  T extends BlockDefinitionOptionsInput = {},
+  G extends ValidGlobalConfigKeys = [],
+> = {
+  /**
+   * The UUID of the item.
+   */
+  uuid: string
+
+  /**
+   * The index of the item in the field list.
+   */
+  index: ComputedRef<number>
+
+  /**
+   * Whether the item is being displayed in an editing context.
+   */
+  isEditing: boolean
+
+  /**
+   * The item type name (e.g. "teaser_list") of the parent item if this item is nested.
+   */
+  parentType: ComputedRef<ValidParentItemBundle | undefined>
+
+  /**
+   * The type of the field list the item is part of.
+   */
+  fieldListType: ComputedRef<ValidFieldListTypes>
+
+  /**
+   * The reactive runtime options.
+   *
+   * This includes both the locally defined options and the inherited global
+   * options.
+   */
+  options: ComputedRef<
+    (T extends BlockDefinitionOptionsInput ? WithOptions<T> : {}) &
+      (G extends ValidGlobalConfigKeys ? GlobalOptionsKeyTypes<G> : {})
+  >
+}
+
 export type BlockDefinitionOptionsInput = {
   [key: string]: BlockOptionDefinition
 }
 
-export type BlockDefinitionInput<V, T = []> = {
+type DetermineVisibleOptionsContext<
+  T extends BlockDefinitionOptionsInput = {},
+  G extends ValidGlobalConfigKeys = [],
+> = {
+  options: (T extends BlockDefinitionOptionsInput ? WithOptions<T> : {}) &
+    (G extends ValidGlobalConfigKeys ? GlobalOptionsKeyTypes<G> : {})
+}
+
+export type BlockDefinitionInput<
+  Options extends BlockDefinitionOptionsInput = {},
+  GlobalOptions extends ValidGlobalConfigKeys = [],
+> = {
   /**
    * The type ID of the item, e.g. "text" or "section_title".
    */
@@ -52,19 +131,23 @@ export type BlockDefinitionInput<V, T = []> = {
    *
    * See the `chunkNames` option on the module's configuration for more details.
    */
-  chunkName?: V
+  chunkName?: ValidChunkNames[]
 
   /**
    * Define options available for this block.
    */
-  options?: BlockDefinitionOptionsInput
+  options?: Options
 
   /**
    * Global options to use.
    *
    * These options will be merged with the component-specific options.
    */
-  globalOptions?: T
+  globalOptions?: GlobalOptions
+
+  determineVisibleOptions?: (
+    ctx: DetermineVisibleOptionsContext<Options, GlobalOptions>,
+  ) => Array<keyof Options | GlobalOptions[number]>
 
   /**
    * Disable editing. This should be set if the component doesn't have any
@@ -112,7 +195,7 @@ export type BlockDefinitionInput<V, T = []> = {
    * If no method is defined or it doesn't return a value, the regular label
    * of the bundle (e.g. "Teaser") is displayed.
    */
-  editTitle?: (el: HTMLElement) => string | undefined
+  editTitle?: (el: HTMLElement) => string | undefined | null
 
   /**
    * Build mock props for this component used for previewing on hover or in

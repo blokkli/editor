@@ -4,15 +4,15 @@ import type {
   FieldConfig,
   BlockBundleDefinition,
   EditableFieldConfig,
+  BlockDefinitionInput,
 } from '../types'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import type { BlokkliAdapter } from '../adapter'
 import type { SelectionProvider } from './selectionProvider'
 import { getDefinition } from '#blokkli/definitions'
-import type { BlockDefinitionInputWithTypes } from '#blokkli/generated-types'
 
 export type BlokkliBlockType = BlockBundleDefinition & {
-  definition: BlockDefinitionInputWithTypes | undefined
+  definition: BlockDefinitionInput | undefined
 }
 
 export type BlockDefinitionProvider = {

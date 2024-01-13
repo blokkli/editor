@@ -1,15 +1,15 @@
 import { computed, inject, type ComputedRef } from '#imports'
 import type {
+  BlockDefinitionInput,
   BlockDefinitionOptionsInput,
+  DefineBlokkliContext,
   InjectedBlokkliItem,
   ItemEditContext,
 } from '#blokkli/types'
-import { globalOptions } from '#blokkli/definitions'
 import { globalOptionsDefaults } from '#blokkli/default-global-options'
 
 import type {
   ValidGlobalConfigKeys,
-  BlockDefinitionInputWithTypes,
   ValidFieldListTypes,
   ValidParentItemBundle,
 } from '#blokkli/generated-types'
@@ -20,74 +20,13 @@ import {
   INJECT_REUSABLE_OPTIONS,
 } from '../helpers/symbols'
 
-type StringBoolean = '0' | '1' | ''
-
-type GetType<T> = T extends { type: 'checkbox' }
-  ? StringBoolean
-  : T extends { type: 'radios' }
-    ? T extends { options: infer O }
-      ? keyof O
-      : string
-    : string
-
-type WithOptions<T extends BlockDefinitionOptionsInput> = {
-  [K in keyof T]: GetType<T[K]>
-}
-
-type GlobalOptionsType = typeof globalOptions
-
-type GlobalOptionsKeyTypes<T extends ValidGlobalConfigKeys> = {
-  [K in T[number]]: GetType<GlobalOptionsType[K]>
-}
-
-type BlokkliComponent<T extends BlockDefinitionInputWithTypes> = {
-  /**
-   * The UUID of the item.
-   */
-  uuid: string
-
-  /**
-   * The index of the item in the field list.
-   */
-  index: ComputedRef<number>
-
-  /**
-   * Whether the item is being displayed in an editing context.
-   */
-  isEditing: boolean
-
-  /**
-   * The item type name (e.g. "teaser_list") of the parent item if this item is nested.
-   */
-  parentType: ComputedRef<ValidParentItemBundle | undefined>
-
-  /**
-   * The type of the field list the item is part of.
-   */
-  fieldListType: ComputedRef<ValidFieldListTypes>
-
-  /**
-   * The reactive runtime options.
-   *
-   * This includes both the locally defined options and the inherited global
-   * options.
-   */
-  options: ComputedRef<
-    (T['options'] extends BlockDefinitionOptionsInput
-      ? WithOptions<T['options']>
-      : {}) &
-      (T['globalOptions'] extends ValidGlobalConfigKeys
-        ? GlobalOptionsKeyTypes<T['globalOptions']>
-        : {})
-  >
-}
-
 /**
  * Define a blokkli component.
  */
-export function defineBlokkli<T extends BlockDefinitionInputWithTypes>(
-  config: T,
-): BlokkliComponent<T> {
+export function defineBlokkli<
+  T extends BlockDefinitionOptionsInput,
+  G extends ValidGlobalConfigKeys,
+>(config: BlockDefinitionInput<T, G>): DefineBlokkliContext<T, G> {
   const optionKeys: string[] = []
   // The default options are provided by the component definition itself.
   const defaultOptions: Record<string, any> = {}

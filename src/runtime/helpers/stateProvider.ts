@@ -18,16 +18,27 @@ import type {
   Validation,
   MutateWithLoadingStateFunction,
   EditMode,
+  FieldListItem,
 } from '#blokkli/types'
 import { removeDroppedElements, falsy } from '#blokkli/helpers'
 import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
 import type { BlokkliAdapter, AdapterContext } from '../adapter'
 import { INJECT_MUTATED_FIELDS } from './symbols'
 import { refreshNuxtData } from 'nuxt/app'
+import { nextTick, useRuntimeConfig } from '#imports'
+
+const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
 
 export type BlokkliOwner = {
   name: string | undefined
   currentUserIsOwner: boolean
+}
+
+type RenderedBlock = {
+  item: FieldListItem
+  parentEntityType: string
+  parentEntityBundle: String
+  parentEntityUuid: string
 }
 
 export type StateProvider = {
@@ -44,6 +55,7 @@ export type StateProvider = {
   editMode: Readonly<Ref<EditMode>>
   canEdit: ComputedRef<boolean>
   isLoading: Readonly<Ref<boolean>>
+  renderedBlocks: ComputedRef<RenderedBlock[]>
 }
 
 export default async function (
@@ -69,6 +81,31 @@ export default async function (
     sourceLanguage: '',
     availableLanguages: [],
     translations: [],
+  })
+
+  const blockUuidMap = computed<Record<string, FieldListItem>>(() => {
+    return mutatedFields.value
+      .flatMap((v) => v.list)
+      .reduce<Record<string, FieldListItem>>((acc, v) => {
+        acc[v.uuid] = v
+        return acc
+      }, {})
+  })
+
+  const renderedBlocks = computed<RenderedBlock[]>(() => {
+    return mutatedFields.value.flatMap((field) => {
+      return field.list.map((item) => {
+        return {
+          item,
+          parentEntityType: field.entityType,
+          parentEntityUuid: field.entityUuid,
+          parentEntityBundle:
+            field.entityType === itemEntityType
+              ? blockUuidMap.value[field.entityUuid]?.bundle
+              : context.value.entityBundle,
+        }
+      })
+    })
   })
 
   function setContext(context?: MappedState) {
@@ -105,7 +142,9 @@ export default async function (
     eventBus.emit('updateMutatedFields', { fields: newMutatedFields })
 
     eventBus.emit('state:reloaded')
-    refreshKey.value = Date.now().toString()
+    nextTick(() => {
+      refreshKey.value = Date.now().toString()
+    })
   }
 
   function lockBody() {
@@ -214,5 +253,6 @@ export default async function (
     editMode,
     canEdit,
     isLoading: readonly(isLoading),
+    renderedBlocks,
   }
 }

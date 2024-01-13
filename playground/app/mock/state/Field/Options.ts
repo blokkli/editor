@@ -16,9 +16,7 @@ export class FieldOptions extends Field<FieldOptionsItem> {
       return acc
     }, {})
 
-    return {
-      mock: options,
-    }
+    return options
   }
 
   getOption(key: string): FieldOptionsItem | undefined {

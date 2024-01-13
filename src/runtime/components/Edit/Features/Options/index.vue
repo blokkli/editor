@@ -1,8 +1,12 @@
 <template>
   <Teleport to="#bk-blokkli-item-actions-controls">
     <OptionsForm
-      v-if="types.length === 1 && !selection.isDragging.value"
-      :key="uuids.join('-')"
+      v-if="
+        types.length === 1 &&
+        !selection.isDragging.value &&
+        !ui.isAnimating.value
+      "
+      :key="uuids.join('-') + state.refreshKey.value + ui.isAnimating.value"
       :uuids="uuids"
       :item-bundle="types[0]"
     />
@@ -22,7 +26,7 @@ defineBlokkliFeature({
   requiredAdapterMethods: ['updateOptions'],
 })
 
-const { selection } = useBlokkli()
+const { selection, state, ui } = useBlokkli()
 
 const uuids = computed(() => selection.blocks.value.map((v) => v.uuid))
 const types = computed(() =>

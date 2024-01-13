@@ -6,7 +6,7 @@
     @mouseleave="onMouseLeave"
   >
     <div
-      v-for="plugin in availableOptions"
+      v-for="plugin in visibleOptions"
       :key="plugin.property"
       class="bk-blokkli-item-options-item"
       :class="{ 'bk-is-disabled': !canEdit || editMode !== 'editing' }"
@@ -19,28 +19,28 @@
         v-if="plugin.option.type === 'radios'"
         :options="plugin.option.options"
         :name="plugin.property"
-        :value="getOptionValue(plugin.property, plugin.option.default)"
+        :value="plugin.value"
         :display-as="plugin.option.displayAs"
         @update="setOptionValue(plugin.property, $event)"
       />
       <OptionCheckbox
         v-else-if="plugin.option.type === 'checkbox'"
         :label="plugin.option.label"
-        :value="getOptionValue(plugin.property, plugin.option.default)"
+        :value="plugin.value"
         @update="setOptionValue(plugin.property, $event)"
       />
       <OptionCheckboxes
         v-else-if="plugin.option.type === 'checkboxes'"
         :label="plugin.option.label"
         :options="plugin.option.options"
-        :value="getOptionValue(plugin.property, plugin.option.default)"
+        :value="plugin.value"
         @update="setOptionValue(plugin.property, $event)"
       />
       <OptionText
         v-else-if="plugin.option.type === 'text'"
         :label="plugin.option.label"
         :type="plugin.option.inputType"
-        :value="getOptionValue(plugin.property, plugin.option.default)"
+        :value="plugin.value"
         @update="setOptionValue(plugin.property, $event)"
       />
     </div>
@@ -48,17 +48,20 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli, onBeforeUnmount } from '#imports'
+import { computed, useBlokkli, onBeforeUnmount, onMounted } from '#imports'
 import { globalOptions, getDefinition } from '#blokkli/definitions'
 import { falsy } from '#blokkli/helpers'
 import OptionRadios from './Radios/index.vue'
 import OptionCheckbox from './Checkbox/index.vue'
 import OptionCheckboxes from './Checkboxes/index.vue'
 import OptionText from './Text/index.vue'
-import type { BlockDefinitionOptionsInput } from '#blokkli/types'
+import type {
+  BlockDefinitionInput,
+  BlockDefinitionOptionsInput,
+} from '#blokkli/types'
 import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
 
-const { adapter, eventBus, state, selection } = useBlokkli()
+const { adapter, eventBus, state, selection, runtimeConfig } = useBlokkli()
 const { mutatedOptions, canEdit, mutateWithLoadingState, editMode } = state
 
 const onClick = () => {
@@ -111,14 +114,18 @@ class OptionCollector {
 const original = new OptionCollector()
 const updated = new OptionCollector()
 
+const definition = computed<BlockDefinitionInput | undefined>(() => {
+  return getDefinition(props.itemBundle)
+})
+
 const availableOptions = computed(() => {
-  const definition = getDefinition(props.itemBundle)
-  if (!definition) {
+  if (!definition.value) {
     return []
   }
-  const options = definition.options || {}
+  const options = (definition.value.options ||
+    {}) as BlockDefinitionOptionsInput
   const global = (
-    (definition.globalOptions || []) as string[]
+    (definition.value.globalOptions || []) as string[]
   ).reduce<BlockDefinitionOptionsInput>((acc, v) => {
     const globalDefinition: BlockOptionDefinition | null =
       (globalOptions as any)[v] || null
@@ -129,8 +136,40 @@ const availableOptions = computed(() => {
   }, {})
 
   return Object.entries({ ...options, ...global }).map(([property, option]) => {
-    return { property, option }
+    return { property, option, value: getOptionValue(property, option.default) }
   })
+})
+
+const visibleOptions = computed(() => {
+  if (!definition.value?.determineVisibleOptions) {
+    return availableOptions.value
+  }
+
+  const allOptions = availableOptions.value.reduce<Record<string, string>>(
+    (acc, v) => {
+      acc[v.property] = v.value
+      return acc
+    },
+    {},
+  )
+  const renderedBlock = state.renderedBlocks.value.find(
+    (v) => v.item.uuid === props.uuids[0],
+  )
+
+  const parentType =
+    renderedBlock?.parentEntityType === runtimeConfig.itemEntityType
+      ? renderedBlock.parentEntityBundle
+      : undefined
+
+  const visibleKeys: string[] = definition.value.determineVisibleOptions({
+    options: allOptions,
+    parentType: parentType as any,
+  })
+
+  const visible = availableOptions.value.filter((v) =>
+    visibleKeys.includes(v.property),
+  )
+  return visible
 })
 
 function getOptionValue(key: string, defaultValue: any, uuidOverride?: string) {
@@ -138,9 +177,10 @@ function getOptionValue(key: string, defaultValue: any, uuidOverride?: string) {
   if (!uuid) {
     return
   }
+  const blockMutatedOptions = mutatedOptions.value[uuid]
   if (
-    mutatedOptions.value[uuid] &&
-    Object.prototype.hasOwnProperty.call(mutatedOptions.value[uuid], key)
+    blockMutatedOptions &&
+    Object.prototype.hasOwnProperty.call(blockMutatedOptions, key)
   ) {
     return mutatedOptions.value[uuid][key]
   }
@@ -166,6 +206,14 @@ function setOptionValue(key: string, value: string) {
     eventBus.emit('option:update', { uuid, key, value })
   })
 }
+
+onMounted(() => {
+  props.uuids.forEach((uuid) => {
+    availableOptions.value.forEach((option) => {
+      original.set(uuid, option.property, option.value)
+    })
+  })
+})
 
 onBeforeUnmount(() => {
   selection.isChangingOptions.value = false

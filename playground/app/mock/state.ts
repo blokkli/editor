@@ -26,7 +26,7 @@ export function mapBlockItem(block: Block): FieldListItem {
   return {
     uuid: block.uuid,
     bundle: block.bundle,
-    options: JSON.parse(JSON.stringify(block.options().getOptions().mock)),
+    options: JSON.parse(JSON.stringify(block.options().getOptions())),
     props,
   }
 }
