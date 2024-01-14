@@ -8,13 +8,15 @@
     :can-edit="true"
     :language="language"
   >
-    <BlokkliField v-bind="fieldHeader" tag="header" />
-    <BlokkliField v-bind="fieldContent" />
-    <BlokkliField v-bind="fieldFooter" />
+    <BlokkliField name="header" :list="fieldHeader" tag="header" />
+    <BlokkliField name="content" :list="fieldContent" />
+    <BlokkliField name="footer" :list="fieldFooter" v-slot="{ items }">
+    </BlokkliField>
   </BlokkliProvider>
 </template>
 
 <script lang="ts" setup>
+import type { FieldListItemTyped } from '#blokkli/generated-types'
 import { useRoute, computed } from '#imports'
 import { mapMockField } from '@/app/mock/state'
 import { entityStorageManager } from '~/app/mock/entityStorage'
@@ -48,4 +50,12 @@ page.getTranslation(language.value)
 const fieldHeader = computed(() => mapMockField(page.header()))
 const fieldContent = computed(() => mapMockField(page.content()))
 const fieldFooter = computed(() => mapMockField(page.footer()))
+
+const mapItem = (item: FieldListItemTyped) => {
+  if (item.bundle === 'image') {
+    item.props.imageReference
+  }
+}
+
+const getMenu = (items: FieldListItemTyped[]) => {}
 </script>

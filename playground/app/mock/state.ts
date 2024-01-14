@@ -31,16 +31,8 @@ export function mapBlockItem(block: Block): FieldListItem {
   }
 }
 
-export function mapMockField(field: FieldBlocks) {
-  const list: FieldListItem[] = field.getBlocks().map(mapBlockItem)
-
-  return {
-    name: field.id,
-    label: field.label,
-    cardinality: field.cardinality,
-    list,
-    canEdit: true,
-  }
+export function mapMockField(field: FieldBlocks): FieldListItem[] {
+  return field.getBlocks().map(mapBlockItem)
 }
 
 export const getEditState = (

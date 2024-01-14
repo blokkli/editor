@@ -9,21 +9,24 @@ import type {
 import { globalOptionsDefaults } from '#blokkli/default-global-options'
 
 import type {
+  FieldListItemTyped,
   GlobalOptionsKey,
   ValidFieldListTypes,
 } from '#blokkli/generated-types'
 import {
   INJECT_BLOCK_ITEM,
   INJECT_EDIT_CONTEXT,
+  INJECT_FIELD_LIST_BLOCKS,
   INJECT_FIELD_LIST_TYPE,
   INJECT_REUSABLE_OPTIONS,
+  INJECT_PROVIDER_BLOCKS,
 } from '../helpers/symbols'
 
 /**
  * Define a blokkli component.
  */
 export function defineBlokkli<
-  T extends BlockDefinitionOptionsInput,
+  T extends BlockDefinitionOptionsInput = {},
   G extends GlobalOptionsKey[] | undefined = undefined,
 >(config: BlockDefinitionInput<T, G>): DefineBlokkliContext<T, G> {
   const optionKeys: string[] = []
@@ -51,6 +54,14 @@ export function defineBlokkli<
   const fieldListType = inject<ComputedRef<ValidFieldListTypes>>(
     INJECT_FIELD_LIST_TYPE,
     computed(() => 'default'),
+  )!
+
+  const siblings = inject<ComputedRef<FieldListItemTyped[]>>(
+    INJECT_FIELD_LIST_BLOCKS,
+  )!
+
+  const rootBlocks = inject<ComputedRef<FieldListItemTyped[]>>(
+    INJECT_PROVIDER_BLOCKS,
   )!
 
   // Inject the data from the BlokkliItem component.
@@ -121,5 +132,7 @@ export function defineBlokkli<
     isEditing: !!item?.value.isEditing,
     parentType,
     fieldListType,
+    siblings,
+    rootBlocks,
   } as any
 }

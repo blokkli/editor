@@ -1,5 +1,8 @@
 <template>
-  <div :class="{ 'container mx-auto mt-20 lg:mt-50': !parentType }">
+  <div
+    :id="'title-' + uuid"
+    :class="{ 'container mx-auto mt-20 lg:mt-50': !parentType }"
+  >
     <div :class="{ 'md:max-w-3xl md:mx-auto md:text-center': isCentered }">
       <p
         v-if="tagline"
@@ -32,10 +35,17 @@
 
 <script lang="ts" setup>
 import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
-const { parentType, fieldListType } = defineBlokkli({
+const { parentType, fieldListType, uuid } = defineBlokkli({
   bundle: 'title',
   noAddForm: true,
   editWidth: 700,
+  options: {
+    showInMenu: {
+      type: 'checkbox',
+      label: 'Show in menu',
+      default: '1',
+    },
+  },
   editTitle: (el) => el.querySelector('h2')?.innerText,
 })
 

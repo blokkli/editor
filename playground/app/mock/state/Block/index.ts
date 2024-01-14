@@ -5,6 +5,7 @@ import { BlockFromLibrary } from './FromLibrary'
 import { BlockGrid } from './Grid'
 import { BlockHero } from './Hero'
 import { BlockImage } from './Image'
+import { BlockOnThisPage } from './OnThisPage'
 import { BlockTable } from './Table'
 import { BlockTeaser } from './Teaser'
 import { BlockText } from './Text'
@@ -41,6 +42,8 @@ export const createBlock = (bundle: string, uuid: string): Block => {
       return new BlockWidget(uuid)
     case 'table':
       return new BlockTable(uuid)
+    case 'on_this_page':
+      return new BlockOnThisPage(uuid)
   }
 
   throw new Error('Invalid block bundle: ' + bundle)
@@ -61,5 +64,6 @@ export const getBlockBundles = (): Array<typeof Block> => {
     BlockWidget,
     BlockTable,
     BlockFromLibrary,
+    BlockOnThisPage,
   ]
 }

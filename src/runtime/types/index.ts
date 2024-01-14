@@ -18,6 +18,7 @@ import type { BlokkliIcon } from '#blokkli/icons'
 import type { SettingsGroup, Viewport } from '#blokkli/constants'
 import type {
   BlockBundleWithNested,
+  FieldListItemTyped,
   GlobalOptionsKey,
   ValidChunkNames,
   ValidFieldListTypes,
@@ -90,6 +91,16 @@ export type DefineBlokkliContext<
    * The type of the field list the item is part of.
    */
   fieldListType: ComputedRef<ValidFieldListTypes>
+
+  /**
+   * All sibling blocks (including this one) that are in the same field.
+   */
+  siblings: ComputedRef<FieldListItemTyped[]>
+
+  /**
+   * All blocks that are in the root field (direct child of <BlokkliProvider>).
+   */
+  rootBlocks: ComputedRef<FieldListItemTyped[]>
 
   /**
    * The reactive runtime options.
@@ -233,7 +244,7 @@ export type FieldListItem = {
   bundle: string
   isNew?: boolean
   options?: unknown
-  props?: any
+  props?: unknown
 }
 
 export type MutatedField = {

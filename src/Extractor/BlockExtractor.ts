@@ -225,10 +225,11 @@ export const globalOptionsDefaults: Record<GlobalOptionsKey, string> = ${JSON.st
       })
       .join(' | ')
 
-    const typedFieldListItems = allDefintions
-      .filter((v) => v.bundle !== 'from_library')
+    const typedFieldListItems = Object.values(this.definitions)
+      .filter((v) => v.definition.bundle !== 'from_library')
       .map((v) => {
-        const definedOptions = v.options as BlockDefinitionOptionsInput
+        const definedOptions = v.definition
+          .options as BlockDefinitionOptionsInput
 
         // Add global options used.
         const blockGlobalOptions: string[] = (v as any).globalOptions || []
@@ -255,17 +256,26 @@ export const globalOptionsDefaults: Record<GlobalOptionsKey, string> = ${JSON.st
           })
           .join('\n    ')
 
-        const typeName = `FieldListItem_${v.bundle}`
+        const typeName = `FieldListItem_${v.definition.bundle}`
         const typeDefinition = `type ${typeName} = {
-  bundle: '${v.bundle}'
+  bundle: '${v.definition.bundle}'
+  props: ExtractPublicPropTypes<InstanceType<typeof ${v.componentName}>>
   options: {
     ${options}
   }
 }`
-        return { typeName, typeDefinition }
+        return {
+          typeName,
+          typeDefinition,
+          import: `import type ${v.componentName} from '${v.filePath}'`,
+        }
       })
 
+    const componentImports = typedFieldListItems.map((v) => v.import).join('\n')
+
     return `
+${componentImports}
+import type { ExtractPublicPropTypes } from '#imports'
 import type { FieldListItem } from "#blokkli/types"
 
 export type ValidFieldListTypes = ${validFieldListTypes}
@@ -285,6 +295,7 @@ ${typedFieldListItems.map((v) => v.typeDefinition).join('\n\n')}
 export type FieldListItemTyped = FieldListItem & (${typedFieldListItems
       .map((v) => v.typeName)
       .join(' | ')})
+export type FieldListItemTypedArray = Array<FieldListItemTyped>
 `
   }
 

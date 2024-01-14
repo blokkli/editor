@@ -65,6 +65,8 @@ import {
   INJECT_IS_NESTED,
   INJECT_IS_PREVIEW,
   INJECT_MUTATED_FIELDS,
+  INJECT_FIELD_LIST_BLOCKS,
+  INJECT_PROVIDER_BLOCKS,
 } from '../helpers/symbols'
 
 const DraggableList = defineAsyncComponent(() => {
@@ -119,18 +121,21 @@ const fieldListType = computed(() => props.fieldListType)
 
 const filteredList = computed<FieldListItemTyped[]>(() => {
   if (mutatedFields?.value && !isInReusable) {
-    return (
-      mutatedFields.value.find(
-        (field: MutatedField) =>
-          field.name === props.name &&
-          field.entityType === entity.type &&
-          field.entityUuid === entity.uuid,
-      )?.list || []
-    )
+    return (mutatedFields.value.find(
+      (field: MutatedField) =>
+        field.name === props.name &&
+        field.entityType === entity.type &&
+        field.entityUuid === entity.uuid,
+    )?.list || []) as FieldListItemTyped[]
   }
-  return props.list
+  return props.list as FieldListItemTyped[]
 })
 
 provide(INJECT_IS_NESTED, true)
 provide(INJECT_FIELD_LIST_TYPE, fieldListType)
+provide(INJECT_FIELD_LIST_BLOCKS, filteredList)
+
+if (!isNested) {
+  provide(INJECT_PROVIDER_BLOCKS, filteredList)
+}
 </script>

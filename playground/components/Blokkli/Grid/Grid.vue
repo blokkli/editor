@@ -8,13 +8,15 @@
     ]"
   >
     <BlokkliField
-      v-bind="header"
+      name="header"
+      :list="header"
       class="container"
       non-empty-class="mb-30 md:mb-70"
       field-list-type="header"
     />
     <BlokkliField
-      v-bind="blocks"
+      name="blocks"
+      :list="blocks"
       class="container grid gap-20 lg:gap-40"
       :class="{
         'grid-cols-2': options.mobile === '1',
@@ -27,6 +29,7 @@
 </template>
 
 <script lang="ts" setup>
+import type { FieldListItemTyped } from '#blokkli/generated-types'
 import { defineBlokkli, computed, provide } from '#imports'
 
 const { options } = defineBlokkli({
@@ -55,8 +58,8 @@ const { options } = defineBlokkli({
 })
 
 defineProps<{
-  header: any
-  blocks: any
+  header: FieldListItemTyped[]
+  blocks: FieldListItemTyped[]
 }>()
 
 const colorClass = computed(() => {

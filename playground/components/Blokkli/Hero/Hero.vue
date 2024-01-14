@@ -20,7 +20,8 @@
           v-text="lead"
         />
         <BlokkliField
-          v-bind="buttons"
+          name="buttons"
+          :list="buttons"
           list-class="mt-20 lg:mt-40 flex gap-10 flex-wrap"
         />
       </div>
@@ -32,6 +33,7 @@
 </template>
 
 <script lang="ts" setup>
+import type { FieldListItemTyped } from '#blokkli/generated-types'
 import { defineBlokkli, computed } from '#imports'
 
 const { isEditing } = defineBlokkli({
@@ -42,7 +44,7 @@ const { isEditing } = defineBlokkli({
 const props = defineProps<{
   title: string
   lead: string
-  buttons: any
+  buttons: FieldListItemTyped[]
 }>()
 
 const titleValue = computed(() => props.title.toString())

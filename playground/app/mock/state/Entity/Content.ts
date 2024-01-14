@@ -33,6 +33,7 @@ export class ContentPage extends Content {
         'from_library',
         'video',
         'table',
+        'on_this_page',
       ]),
       new FieldBlocks('footer', 'Footer', -1, ['text']),
       new FieldBlocks('header', 'Header', 1, ['hero']),

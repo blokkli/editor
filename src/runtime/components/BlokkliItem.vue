@@ -1,5 +1,5 @@
 <template>
-  <component v-if="component" :is="component" v-bind="props" />
+  <component :is="component" v-if="component" v-bind="props" />
   <div v-else-if="isEditing">Block not implemented</div>
 </template>
 
@@ -16,7 +16,7 @@ const componentProps = withDefaults(
     uuid: string
     bundle: string
     isNew?: boolean
-    options?: Record<string, string>
+    options?: any
     props?: any
     index?: number
     parentType?: string

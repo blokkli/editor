@@ -7,14 +7,16 @@
     ]"
   >
     <BlokkliField
-      v-bind="header"
+      name="header"
+      :list="header"
       class="container"
       non-empty-class="mb-30 md:mb-70"
       field-list-type="header"
     />
     <div class="container mx-auto grid gap-30 lg:gap-40 grid-cols-12">
       <BlokkliField
-        v-bind="left"
+        name="left"
+        :list="left"
         class="flex flex-col gap-20 col-span-12"
         :class="{
           'md:col-span-6': options.columns === 'equal',
@@ -23,7 +25,8 @@
         }"
       />
       <BlokkliField
-        v-bind="right"
+        name="right"
+        :list="right"
         class="col-span-12"
         :class="{
           'md:order-first': options.reverse,
@@ -37,6 +40,7 @@
 </template>
 
 <script lang="ts" setup>
+import type { FieldListItemTypedArray } from '#blokkli/generated-types'
 import { defineBlokkli, computed, provide } from '#imports'
 
 const { options } = defineBlokkli({
@@ -65,9 +69,9 @@ const { options } = defineBlokkli({
 })
 
 defineProps<{
-  header: any
-  left: any
-  right: any
+  header: FieldListItemTypedArray
+  left: FieldListItemTypedArray
+  right: any[]
 }>()
 
 const colorClass = computed(() => {
