@@ -38,8 +38,10 @@ import { getDefinition } from '#blokkli/definitions'
 import type { FieldListItem } from '#blokkli/types'
 import { ItemIcon, ScaleToFit } from '#blokkli/components'
 import {
+  INJECT_FIELD_LIST_BLOCKS,
   INJECT_IS_EDITING,
   INJECT_IS_IN_REUSABLE,
+  INJECT_PROVIDER_BLOCKS,
 } from '#blokkli/helpers/symbols'
 
 const componentProps = defineProps<{
@@ -60,6 +62,10 @@ const backgroundClass = computed(
   () => definition.value?.editBackgroundClass || '',
 )
 
+const blocks = computed(() => [])
+
 provide(INJECT_IS_IN_REUSABLE, true)
 provide(INJECT_IS_EDITING, false)
+provide(INJECT_FIELD_LIST_BLOCKS, blocks)
+provide(INJECT_PROVIDER_BLOCKS, blocks)
 </script>

@@ -76,16 +76,10 @@ onMounted(() => {
     }
 
     const element = item.element()
+    const markup = dom.getDropElementMarkup(item)
     width.value = element.getBoundingClientRect().width + 40
-    const markup = element.outerHTML
     const clone = document.createElement('div')
     clone.innerHTML = markup
-    const cloneEl = clone.firstElementChild
-    if (cloneEl instanceof HTMLElement) {
-      Object.keys(cloneEl.dataset).forEach((dataKey) => {
-        delete cloneEl.dataset[dataKey]
-      })
-    }
     previewEl.value.appendChild(clone)
   }
 })
