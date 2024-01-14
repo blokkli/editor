@@ -79,8 +79,10 @@
     }
     /* Don't target editable fields inside a block from the library. */
     [data-blokkli-editable-field]:not([data-blokkli-editable-active='true']) {
-      pointer-events: all;
-      cursor: text;
+      @apply !cursor-text;
+      * {
+        @apply !cursor-text;
+      }
 
       @screen lg {
         &:hover {

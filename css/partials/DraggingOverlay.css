@@ -24,12 +24,12 @@
     @screen md {
       &:before {
         content: '';
-        @apply absolute top-0 left-0 w-full h-full bg-blue-500/10 z-50 rounded;
+        @apply absolute top-0 left-0 w-full h-full z-50 rounded;
       }
     }
 
     &.bk-is-top {
-      @apply shadow-xl-inverted z-50;
+      @apply shadow-xl-even z-50;
     }
   }
 }
