@@ -51,6 +51,8 @@ import {
 } from '#imports'
 import { AddListItem } from '#blokkli/components'
 import type { DraggableExistingBlock } from '#blokkli/types'
+import { onlyUnique } from '#blokkli/helpers'
+import { getDefinition } from '#blokkli/definitions'
 
 defineBlokkliFeature({
   id: 'block-add-list',
@@ -181,6 +183,34 @@ const generallyAvailableBundles = computed(() => {
   )
 })
 
+const existingBlockBundles = computed(() =>
+  state.renderedBlocks.value.map((v) => v.item.bundle),
+)
+
+const determineVisibility = (bundle: string, label: string): boolean => {
+  if (ui.isMobile.value && !selectableBundles.value.includes(bundle)) {
+    return false
+  }
+
+  if (
+    searchText.value &&
+    !label.toLowerCase().includes(searchText.value.toLowerCase())
+  ) {
+    return false
+  }
+
+  const definition = getDefinition(bundle)
+
+  if (definition?.editor?.maxInstances) {
+    const existingInstancesOfBundle = existingBlockBundles.value.filter(
+      (v) => v === bundle,
+    )
+    return existingInstancesOfBundle.length < definition.editor.maxInstances
+  }
+
+  return true
+}
+
 const sortedList = computed(() => {
   if (!generallyAvailableBundles.value) {
     return []
@@ -196,11 +226,7 @@ const sortedList = computed(() => {
     .map((v) => {
       return {
         ...v,
-        isVisible: ui.isMobile.value
-          ? selectableBundles.value.includes(v.id)
-          : searchText.value
-          ? v.label.toLowerCase().includes(searchText.value.toLowerCase())
-          : true,
+        isVisible: determineVisibility(v.id, v.label),
       }
     })
 })

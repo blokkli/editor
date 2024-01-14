@@ -16,7 +16,7 @@
       left: 0 !important;
       margin: 0 !important;
       /* Prevent text wrapping for cloned ghost elements (in particular: buttons). */
-      width: calc(100% + 1px) !important;
+      width: 100% !important;
       height: 100% !important;
       @apply !pointer-events-none;
       @apply !select-none !shadow-none;

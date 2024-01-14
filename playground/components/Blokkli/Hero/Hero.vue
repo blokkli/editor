@@ -40,6 +40,7 @@ const { isEditing } = defineBlokkli({
   bundle: 'hero',
   editor: {
     editTitle: (el) => el.querySelector('h1')?.innerText,
+    maxInstances: 1,
   },
 })
 

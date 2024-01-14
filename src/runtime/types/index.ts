@@ -202,7 +202,7 @@ export type BlokkliDefinitionInputEditor<
    * - 'editable:${string}'
    *    Immediately add the block without showing the full form and
    *    immediately open the editable field form with the given name.
-   *    For example, when the block has an editable field names "body"
+   *    For example, when the block has an editable field named "body"
    *    a possible value would be 'editable:body'.
    */
   addBehaviour?: BlokkliDefinitionAddBehaviour
@@ -231,6 +231,15 @@ export type BlokkliDefinitionInputEditor<
    * adapter, the clipboard text content is passed as an argument.
    */
   mockProps?: (text?: string) => Record<string, any>
+
+  /**
+   * Hides the block from the add list if more than the given amount of
+   * blocks aready exist on the page.
+   *
+   * Note this only affects the behaviour in the editor, it's still possible
+   * to have more blocks on the page, just not via the editor.
+   */
+  maxInstances?: number
 }
 
 export type BlockDefinitionInput<
