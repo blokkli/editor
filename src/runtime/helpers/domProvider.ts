@@ -185,7 +185,8 @@ export default function (): DomProvider {
   }
 
   const getDropElementMarkup = (item: DraggableItem): string => {
-    const el = item.element()
+    const el =
+      item.itemType === 'existing' ? item.dragElement() : item.element()
     const dropElement = el.querySelector('.bk-drop-element') || el
     return cloneElementWithStyles(dropElement, true).replace(
       /\sdata-\w+="[^"]*"/g,

@@ -3,12 +3,12 @@
     ref="list"
     :name="ui.useAnimations.value && !noTransition ? 'bk-sortli' : undefined"
     tag="div"
-    @mousedown.capture="onMouseDown"
-    @mouseup="onMouseUp"
-    @click.capture="onClick"
-    @touchstart.capture="onTouchStart"
-    @touchmove.capture="onTouchMove"
-    @touchend.capture="onTouchEnd"
+    @mousedown.prevent.capture="onMouseDown"
+    @mouseup.prevent.capture="onMouseUp"
+    @click.prevent.capture="onClick"
+    @touchstart="onTouchStart"
+    @touchmove="onTouchMove"
+    @touchend="onTouchEnd"
     @before-leave="beforeLeave"
     @leave="onLeave"
   >
@@ -25,10 +25,12 @@ import {
 } from '#imports'
 import type { Coord } from '#blokkli/types'
 import { buildDraggableItem } from '#blokkli/helpers'
+import { getDefinition } from '#blokkli/definitions'
 
 const props = defineProps<{
   useSelection?: boolean
   noTransition?: boolean
+  isNested?: boolean
 }>()
 
 const { selection, eventBus, dom, keyboard, ui } = useBlokkli()
@@ -92,6 +94,9 @@ const onLeave = (el: Element, done: Function) => {
 }
 
 const onTouchStart = (e: TouchEvent) => {
+  if (props.isNested) {
+    return
+  }
   e.stopPropagation()
   isTouching.value = true
   clearTimeout(touchTimeout)
@@ -146,6 +151,9 @@ const onTouchStart = (e: TouchEvent) => {
 }
 
 const onTouchMove = (e: TouchEvent) => {
+  if (props.isNested) {
+    return
+  }
   if (!props.useSelection) {
     return
   }
@@ -158,7 +166,10 @@ const onTouchMove = (e: TouchEvent) => {
     clearTimeout(touchTimeout)
   }
 }
-const onTouchEnd = (e: TouchEvent) => {
+const onTouchEnd = () => {
+  if (props.isNested) {
+    return
+  }
   if (!props.useSelection) {
     return
   }
@@ -173,34 +184,45 @@ type FoundItem = {
 const findItem = (
   e: PointerEvent | MouseEvent | TouchEvent,
 ): FoundItem | undefined => {
-  if (!list.value) {
-    return
-  }
-
   const target = e.target
-  if (!(target instanceof HTMLElement || target instanceof SVGElement)) {
+  if (!(target instanceof Element)) {
     return
   }
 
-  const item = target.closest('[data-sortli-id]')
-  if (!(item instanceof HTMLElement)) {
-    return
-  }
+  const tree = e.composedPath() as Element[]
 
-  const id = item.dataset.sortliId
-  if (!id) {
-    return
-  }
+  for (let i = 0; i < tree.length; i++) {
+    const el = tree[i]
+    if (!(el instanceof HTMLElement)) {
+      continue
+    }
+    const item = buildDraggableItem(el)
+    if (!item?.itemBundle) {
+      continue
+    }
+    const definition = getDefinition(item.itemBundle)
+    if (definition?.editor?.getDraggableElement) {
+      const draggableElement = definition.editor.getDraggableElement(el)
+      if (draggableElement) {
+        if (!tree.includes(draggableElement)) {
+          continue
+        }
+      }
+    }
 
-  const el = list.value.$el.querySelector(`[data-sortli-id="${id}"]`)
-  if (!(el instanceof HTMLElement)) {
-    return
-  }
+    const id = el.dataset.sortliId
+    if (!id) {
+      continue
+    }
 
-  return { id, element: el }
+    return { id, element: el }
+  }
 }
 
 const onClick = (e: MouseEvent) => {
+  if (props.isNested) {
+    return
+  }
   if (!shouldHandleEvent(e)) {
     return
   }
@@ -316,6 +338,9 @@ const originatesFromEditable = (e: MouseEvent | TouchEvent) => {
 }
 
 const onMouseDown = (e: MouseEvent) => {
+  if (props.isNested) {
+    return
+  }
   if (isTouching.value) {
     return
   }
@@ -362,7 +387,10 @@ const onMouseDown = (e: MouseEvent) => {
   window.addEventListener('mousemove', onMouseMove)
 }
 
-const onMouseUp = (e: MouseEvent) => {
+const onMouseUp = () => {
+  if (props.isNested) {
+    return
+  }
   if (isTouching.value) {
     return
   }

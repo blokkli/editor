@@ -3,9 +3,9 @@
 
   > div {
     @apply absolute top-0 left-0;
-    @apply outline outline-blue-700 -outline-offset-1 lg:outline-offset-4 lg:bg-blue-500/10;
+    @apply ring-blue-400/30 ring-[5px];
+    @apply outline outline-1 outline-blue-700 -outline-offset-1;
     outline-width: calc(var(--bk-outline-width) * 1px);
-    border-radius: calc(var(--bk-radius) * 1px);
   }
 
   &.bk-is-invisible {

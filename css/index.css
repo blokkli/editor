@@ -164,28 +164,10 @@ html {
   }
 }
 
-.bk-draggable-list-container {
-  .draggable {
-    outline-offset: -3px;
-    a,
-    iframe,
-    input,
-    img,
-    form,
-    button {
-      pointer-events: none;
-    }
-  }
-}
-
 [data-element-type='existing'] {
-  user-select: none;
-  > * {
-    user-select: none;
-  }
-  a,
-  button {
-    pointer-events: none;
+  @apply select-none cursor-default;
+  * {
+    @apply select-none cursor-default;
   }
 }
 
@@ -195,22 +177,8 @@ html {
 }
 
 @screen lg {
-  .bk-body:not(.bk-is-selecting):not(.bk-is-dragging) {
-    .bk-field-list {
-      &:hover {
-        outline: 1px dashed;
-        .bk-field-list {
-          outline: 1px dashed;
-        }
-      }
-    }
-    .bk-main-canvas {
-      &:hover {
-        .draggable {
-          @apply outline-dashed outline-slate-400 outline-[1px];
-        }
-      }
-    }
+  .bk-body.bk-is-selecting {
+    @apply cursor-crosshair;
   }
 }
 

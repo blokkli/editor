@@ -21,7 +21,7 @@ body {
   }
 
   .button {
-    @apply inline-block font-semibold focus:ring-4 focus:ring-blue-300 rounded-lg px-20 py-15 focus:outline-none border border-slate-400 hover:border-blue-700 hover:text-blue-700;
+    @apply inline-block font-semibold focus:ring-4 focus:ring-blue-300 rounded-full px-20 py-15 focus:outline-none border border-slate-400 hover:border-blue-700 hover:text-blue-700;
     &.is-primary {
       @apply text-white bg-blue-700 hover:bg-blue-800 border-blue-700 hover:border-blue-700 hover:text-white;
     }

@@ -48,6 +48,7 @@ const { parentType, fieldListType, uuid } = defineBlokkli({
     addBehaviour: 'editable:title',
     previewWidth: 700,
     editTitle: (el) => el.querySelector('h2')?.innerText,
+    getDraggableElement: (el) => el.firstElementChild,
   },
 })
 

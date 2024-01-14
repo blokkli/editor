@@ -200,14 +200,14 @@ function getDraggingBounds(
 
 onMounted(() => {
   const elRects = props.items.map((item, index) => {
-    const itemElement = item.element()
+    const itemElement =
+      item.itemType === 'existing' ? item.dragElement() : item.element()
     const element = (itemElement.querySelector('.bk-drop-element') ||
       itemElement) as HTMLElement
 
     return {
       rect: element.getBoundingClientRect(),
       element,
-      hasDropElement: itemElement !== element,
       item,
       index,
     }
@@ -237,7 +237,11 @@ onMounted(() => {
   rects.value = elRects.map((item) => {
     const isTop = item.index === boundRect.index
     const rect = item.rect
-    const baseRect = item.item.element().getBoundingClientRect()
+    const baseRect = (
+      item.item.itemType === 'existing'
+        ? item.item.dragElement()
+        : item.item.element()
+    ).getBoundingClientRect()
     const targetScaleX = Math.min(bounds.width / item.element.scrollWidth, 1)
     // const targetScaleY = Math.min(bounds.height / item.element.scrollHeight, 1)
     const targetScaleY = targetScaleX
@@ -273,8 +277,8 @@ onMounted(() => {
       from,
       to,
       ...from,
-      width: item.element.scrollWidth,
-      height: item.element.scrollHeight,
+      width: item.element.offsetWidth,
+      height: item.element.offsetHeight,
       opacity: 1,
 
       transformOrigin: `${originX}px ${originY}px`,

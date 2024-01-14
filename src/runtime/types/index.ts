@@ -240,6 +240,18 @@ export type BlokkliDefinitionInputEditor<
    * to have more blocks on the page, just not via the editor.
    */
   maxInstances?: number
+
+  /**
+   * Get the drag element for the editor.
+   *
+   * By default, the root element of the component is used for drag actions.
+   * Sometimes this might not be desirable however. For example, a button
+   * block might render a container as the root element and have the button
+   * as the child. In this case the whole container would be clickable and
+   * selectable. By providing the button as the drag element, only the button
+   * appears to be selectable/draggable.
+   */
+  getDraggableElement?: (el: HTMLElement) => Element | undefined | null
 }
 
 export type BlockDefinitionInput<
@@ -532,6 +544,7 @@ export interface DraggableHostData {
 export interface DraggableExistingBlock {
   itemType: 'existing'
   element: () => HTMLElement
+  dragElement: () => HTMLElement | SVGElement
   hostType: string
   hostBundle: string
   hostUuid: string

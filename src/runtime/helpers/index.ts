@@ -55,6 +55,15 @@ export function buildDraggableItem(
         itemType: 'existing',
         element: () =>
           document.querySelector(`[data-uuid="${uuid}"]`) as HTMLElement,
+        dragElement: () => {
+          const el = definition?.editor?.getDraggableElement
+            ? definition.editor.getDraggableElement(element)
+            : undefined
+          if (el instanceof HTMLElement || el instanceof SVGElement) {
+            return el
+          }
+          return document.querySelector(`[data-uuid="${uuid}"]`) as HTMLElement
+        },
         itemBundle,
         isNested: hostType === itemEntityType,
         uuid,

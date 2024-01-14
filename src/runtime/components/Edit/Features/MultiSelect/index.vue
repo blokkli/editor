@@ -44,10 +44,6 @@ function shouldStartMultiSelect(target: Element): boolean {
   if (!enabled.value) {
     return false
   }
-  const isInsideItem = !!target.closest('.draggable')
-  if (isInsideItem) {
-    return false
-  }
   const isInsideControl = !!target.closest('.bk-control')
   if (isInsideControl) {
     return false

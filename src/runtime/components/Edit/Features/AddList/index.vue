@@ -10,7 +10,7 @@
   >
     <div>
       <div id="blokkli-add-list-sidebar-before" />
-      <Sortli ref="typeList" class="bk bk-list-sidebar">
+      <Sortli class="bk bk-list-sidebar">
         <div id="blokkli-add-list-blocks"></div>
         <div id="blokkli-add-list-actions"></div>
       </Sortli>
@@ -28,7 +28,7 @@
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
     >
-      <Sortli ref="typeList" class="bk-list">
+      <Sortli class="bk-list">
         <div id="blokkli-add-list-blocks"></div>
         <div id="blokkli-add-list-actions"></div>
       </Sortli>
@@ -96,7 +96,6 @@ watch(shouldRender, () => {
   setRootClasses()
 })
 
-const typeList = ref<HTMLDivElement | null>(null)
 const wrapper = ref<HTMLDivElement | null>(null)
 const isActive = ref(false)
 let mouseTimeout: any = null

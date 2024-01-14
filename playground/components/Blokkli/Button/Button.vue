@@ -1,5 +1,5 @@
 <template>
-  <div class="inline-block">
+  <div :class="parentType ? 'inline-block' : 'container'">
     <NuxtLink
       :to="href"
       class="button"
@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import { defineBlokkli, computed } from '#imports'
 
-const { options } = defineBlokkli({
+const { options, parentType } = defineBlokkli({
   bundle: 'button',
   options: {
     color: {
@@ -30,6 +30,7 @@ const { options } = defineBlokkli({
   editor: {
     addBehaviour: 'no-form',
     editTitle: (el) => el.querySelector('a')?.innerText,
+    getDraggableElement: (el) => el.querySelector('a'),
   },
 })
 

@@ -41,8 +41,9 @@ import type { AnimationFrameEvent } from '#blokkli/types'
 import type { Rectangle } from '#blokkli/types'
 import { intersects } from '#blokkli/helpers'
 import Item from './Item/index.vue'
+import { getDefinition } from '#blokkli/definitions'
 
-const { keyboard, eventBus, ui, dom } = useBlokkli()
+const { keyboard, eventBus, ui, dom, state } = useBlokkli()
 
 export type SelectableElement = {
   uuid: string
@@ -120,6 +121,16 @@ const nestedUuids = computed(() => {
     .map((v) => v.uuid)
 })
 
+const blocks = computed(() =>
+  dom.getAllBlocks().map((block) => {
+    return {
+      uuid: block.uuid,
+      isNested: block.isNested,
+      element: block.dragElement(),
+    }
+  }),
+)
+
 function onAnimationFrame(e: AnimationFrameEvent) {
   viewportWidth.value = window.innerWidth
   viewportHeight.value = window.innerHeight
@@ -131,15 +142,15 @@ function onAnimationFrame(e: AnimationFrameEvent) {
 
   let hasNested = false
   const newSelectable: SelectableElement[] = []
-  Object.entries(e.rects).forEach(([uuid, rect]) => {
-    const nested = nestedUuids.value.includes(uuid)
+  blocks.value.forEach((block) => {
+    const rect = block.element.getBoundingClientRect()
     const isIntersecting = intersects(selectRect.value, rect)
-    if (isIntersecting && nested) {
+    if (isIntersecting && block.isNested) {
       hasNested = true
     }
     newSelectable.push({
-      uuid,
-      nested,
+      uuid: block.uuid,
+      nested: block.isNested,
       rect,
       isIntersecting,
     })

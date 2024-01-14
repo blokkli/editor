@@ -16,6 +16,7 @@ const { parentType } = defineBlokkli({
   editor: {
     addBehaviour: 'no-form',
     editTitle: (el) => el.innerText,
+    getDraggableElement: (el) => el.querySelector('.table'),
   },
 })
 

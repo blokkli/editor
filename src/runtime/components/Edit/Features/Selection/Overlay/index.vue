@@ -7,6 +7,7 @@
         width: rect.width + 'px',
         height: rect.height + 'px',
         transform: `translate(${rect.x}px, ${rect.y}px)`,
+        borderRadius: rect.borderRadius + 'px',
       }"
     />
   </div>
@@ -26,7 +27,10 @@ const { ui } = useBlokkli()
 const delayedRefresh = ref(1)
 let interval: any = null
 
-type SelectedRect = Rectangle & { uuid: string }
+type SelectedRect = Rectangle & {
+  uuid: string
+  borderRadius: number
+}
 
 type BoundsRectable = Rectangle & { isVisible: boolean }
 
@@ -37,7 +41,7 @@ const bounds = computed<BoundsRectable | null>(() => {
   const scale = ui.getArtboardScale()
   const rects = props.blocks
     .map((block) => {
-      const element = block.element()
+      const element = block.dragElement()
       if (element instanceof HTMLElement) {
         const rect = element.getBoundingClientRect()
         return {
@@ -77,14 +81,23 @@ const selectedRects = computed<SelectedRect[]>(() => {
 
   for (let i = 0; i < props.blocks.length; i++) {
     const block = props.blocks[i]
-    const element = block.element()
+    const element = block.dragElement()
     const rect = element.getBoundingClientRect()
+    const style = window.getComputedStyle(element)
+    const borderRadius = parseFloat(style.borderRadius.replace('px', '')) || 4
     rects.push({
       x: (rect.x - artboardRect.x) / scale - bounds.value.x,
       y: (rect.y - artboardRect.y) / scale - bounds.value.y + artboardScroll,
-      width: element.scrollWidth,
-      height: element.scrollHeight,
+      width:
+        element instanceof HTMLElement
+          ? element.offsetWidth
+          : element.scrollWidth,
+      height:
+        element instanceof HTMLElement
+          ? element.offsetHeight
+          : element.scrollHeight,
       uuid: block.uuid,
+      borderRadius: isNaN(borderRadius) ? 0 : borderRadius,
     })
   }
 

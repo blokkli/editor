@@ -30,6 +30,8 @@ const { options, parentType } = defineBlokkli({
       }
       return ['elevated']
     },
+
+    getDraggableElement: (el) => el.querySelector('div'),
   },
 })
 

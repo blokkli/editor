@@ -140,9 +140,6 @@ export default function (
       if (e.target.closest('.bk-blokkli-item-actions')) {
         return
       }
-      if (e.target.closest('[data-uuid]')) {
-        return
-      }
       if (e.target.closest('.bk-list')) {
         return
       }
