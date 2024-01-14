@@ -52,7 +52,7 @@
 }
 
 .bk-dialog-content-element {
-  @apply rounded p-20 min-h-[400px] mb-30 border border-slate-300 flex items-center justify-center;
+  @apply rounded p-20 min-h-[400px] mb-30 border border-slate-300 flex items-center justify-center overflow-hidden;
   &.bk-default-bg {
     @apply bg-slate-50;
   }

@@ -35,6 +35,7 @@
     <div
       class="bk-dialog-content-element"
       :class="[backgroundClass, { 'bk-default-bg': !backgroundClass }]"
+      :style="backgroundClass ? {} : { backgroundColor }"
     >
       <div ref="previewEl" />
     </div>
@@ -45,6 +46,7 @@
 import { ref, useBlokkli, onMounted } from '#imports'
 
 import { DialogModal } from '#blokkli/components'
+import { realBackgroundColor } from '#blokkli/helpers'
 
 defineEmits<{
   (e: 'confirm', label: string): void
@@ -59,10 +61,9 @@ const props = defineProps<{
 }>()
 
 const label = ref('')
-
 const width = ref(450)
-
 const previewEl = ref<HTMLDivElement | null>(null)
+const backgroundColor = ref('')
 
 onMounted(() => {
   if (previewEl.value) {
@@ -81,6 +82,7 @@ onMounted(() => {
     const clone = document.createElement('div')
     clone.innerHTML = markup
     previewEl.value.appendChild(clone)
+    backgroundColor.value = realBackgroundColor(element)
   }
 })
 </script>
