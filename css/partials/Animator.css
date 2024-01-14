@@ -2,7 +2,7 @@
   @apply absolute top-0 left-0 w-full h-full pointer-events-none z-[9999999999];
 
   > div {
-    @apply absolute;
+    @apply absolute origin-top;
 
     &.bk-is-animation-leave {
       animation: 0.3s bk-animator-leave ease;
@@ -19,22 +19,22 @@
 
 @keyframes bk-animator-leave {
   from {
-    transform: scale(1);
+    transform: scaleY(1);
     opacity: 1;
   }
   to {
-    transform: scale(0.8);
+    transform: scaleY(0);
     opacity: 0;
   }
 }
 
 @keyframes bk-animator-enter {
   from {
-    transform: scale(0);
+    transform: scaleY(0);
     opacity: 0;
   }
   to {
-    transform: scale(1);
+    transform: scaleY(1);
     opacity: 1;
   }
 }

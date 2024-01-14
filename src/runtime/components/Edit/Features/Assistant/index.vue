@@ -32,7 +32,7 @@ const { adapter } = defineBlokkliFeature({
   ],
 })
 
-const { state, $t } = useBlokkli()
+const { state, $t, eventBus } = useBlokkli()
 
 const placedAction = ref<ActionPlacedEvent | null>(null)
 
@@ -42,6 +42,9 @@ const onClose = () => {
 
 const onSubmit = async (result: AssistantResult) => {
   if (adapter.assistantAddBlockFromResult && placedAction.value) {
+    // All the existing UUIDs on the page.
+    const existingUuids = state.renderedBlocks.value.map((v) => v.item.uuid)
+
     await state.mutateWithLoadingState(
       adapter.assistantAddBlockFromResult({
         result,
@@ -50,6 +53,14 @@ const onSubmit = async (result: AssistantResult) => {
       }),
       $t('assistantAddResultError', 'Failed to add block from assistant.'),
     )
+
+    // Try to find the new block that has been added.
+    const newUuid = state.renderedBlocks.value.find(
+      (v) => !existingUuids.includes(v.item.uuid),
+    )?.item.uuid
+    if (newUuid) {
+      eventBus.emit('select', newUuid)
+    }
   }
 
   onClose()

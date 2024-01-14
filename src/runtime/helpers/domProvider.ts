@@ -56,7 +56,6 @@ const cloneElementWithStyles = (element: Element): string => {
   // Create a temporary container to generate the outer HTML
   const container = document.createElement('div')
   container.appendChild(clonedElement)
-  console.log(container)
 
   return container.innerHTML
 }

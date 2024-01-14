@@ -17,7 +17,11 @@ import {
   defineBlokkliFeature,
 } from '#imports'
 import Overlay from './Overlay/index.vue'
-import type { EditableFieldFocusEvent } from '#blokkli/types'
+import type {
+  BlokkliEditableDirectiveArgs,
+  DraggableExistingBlock,
+  EditableFieldFocusEvent,
+} from '#blokkli/types'
 
 defineBlokkliFeature({
   id: 'editable-field',
@@ -27,8 +31,17 @@ defineBlokkliFeature({
   description: 'Implements a form overlay to edit a single field of a block.',
 })
 
-const { eventBus, selection, ui, adapter } = useBlokkli()
-const editable = ref<EditableFieldFocusEvent | null>(null)
+type Editable = {
+  fieldName: string
+  block: DraggableExistingBlock
+  element: HTMLElement
+  args?: BlokkliEditableDirectiveArgs
+  isComponent?: boolean
+  value?: string
+}
+
+const { eventBus, selection, ui, adapter, dom } = useBlokkli()
+const editable = ref<Editable | null>(null)
 const hasTransition = ref(false)
 
 const key = computed(() => {
@@ -38,15 +51,46 @@ const key = computed(() => {
   return editable.value.block.uuid + editable.value.fieldName
 })
 
-const onEditableFocus = (e: EditableFieldFocusEvent) => {
-  // Adapter doesn't support editable frames, return.
-  if (e.args?.type === 'frame' && !adapter.buildEditableFrameUrl) {
-    editable.value = null
+const buildEditable = (
+  fieldName: string,
+  uuid: string,
+): Editable | undefined => {
+  const block = dom.findBlock(uuid)
+  if (!block) {
     return
   }
+  const fieldEl = block
+    .element()
+    .querySelector(`[data-blokkli-editable-field="${fieldName}"]`)
+  if (!(fieldEl instanceof HTMLElement)) {
+    return
+  }
+  const argsValue = fieldEl.dataset.blokkliEditableFieldConfig
+  const args: BlokkliEditableDirectiveArgs = argsValue
+    ? JSON.parse(argsValue)
+    : undefined
+
+  // Adapter doesn't support editable frames, return.
+  if (args?.type === 'frame' && !adapter.buildEditableFrameUrl) {
+    return
+  }
+
+  return {
+    fieldName,
+    block,
+    element: fieldEl,
+    args,
+    isComponent: fieldEl.dataset.blokkliEditableComponent === 'true',
+    value: fieldEl.dataset.blokkliEditableValue || '',
+  }
+}
+
+const onEditableFocus = (e: EditableFieldFocusEvent) => {
   hasTransition.value = !editable.value
-  editable.value = e
-  selection.editableActive.value = true
+  editable.value = buildEditable(e.fieldName, e.uuid) || null
+  if (editable.value) {
+    selection.editableActive.value = true
+  }
 }
 
 watch(selection.editableActive, (isActive) => {

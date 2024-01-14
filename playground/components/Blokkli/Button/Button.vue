@@ -28,7 +28,7 @@ const { options } = defineBlokkli({
     },
   },
   editor: {
-    noAddForm: true,
+    addBehaviour: 'no-form',
     editTitle: (el) => el.querySelector('a')?.innerText,
   },
 })

@@ -14,9 +14,9 @@ import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
 const { parentType } = defineBlokkli({
   bundle: 'text',
   editor: {
-    noAddForm: true,
-    editWidth: 700,
+    previewWidth: 700,
     editTitle: (el) => el.innerText,
+    addBehaviour: 'editable:text',
   },
 })
 

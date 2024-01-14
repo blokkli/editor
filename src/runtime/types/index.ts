@@ -135,6 +135,11 @@ type CombineKeysAndGlobalOptions<
   G extends GlobalOptionsKey[] | undefined,
 > = keyof T | ExtractGlobalOptions<NonNullable<G>>
 
+export type BlokkliDefinitionAddBehaviour =
+  | 'no-form'
+  | 'form'
+  | `editable:${string}`
+
 export type BlokkliDefinitionInputEditor<
   Options extends BlockDefinitionOptionsInput = {},
   GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
@@ -150,24 +155,19 @@ export type BlokkliDefinitionInputEditor<
   ) => Array<CombineKeysAndGlobalOptions<Options, GlobalOptions>>
 
   /**
-   * Disable editing. This should be set if the component doesn't have any
-   * fields that can be edited.
+   * Disable editing for blocks that don't have any editable fields.
+   *
+   * This disables the "Edit" button in the actions overlay and double click
+   * to edit.
    */
   disableEdit?: boolean
 
   /**
-   * If set, this width is used during editing when a clone or ghost of the
-   * component is being displayed. Additionally, the width is used in the
-   * library pane to properly scale the element in the limited amount of space.
+   * If set, if this block is being rendered standalone (e.g. when inside the
+   * "add to library" dialog), the given will be used as the root width. The
+   * rendered block is then scaled down so that it fits the available space.
    */
-  editWidth?: number
-
-  /**
-   * When set to true, adding a new block of this type will not open the add
-   * form but add it immediately. This should only be used if the block
-   * itself provides default values (like "lorem ipsum" text).
-   */
-  noAddForm?: boolean
+  previewWidth?: number
 
   /**
    * When set to true the preview in the library is not rendered.
@@ -175,13 +175,37 @@ export type BlokkliDefinitionInputEditor<
    * This should be used for complex components that render things like sliders,
    * iframes, modals, etc.
    */
-  noLibraryPreview?: boolean
+  noPreview?: boolean
 
   /**
    * A background color class that is applied during editing when the component
-   * is being displayed standalone.
+   * is being displayed standalone in a preview.
+   *
+   * For example, when the block can be made reusable and is being disabled in
+   * the "Add from Library" dialog, the given background class is used on the
+   * parent element.
+   *
+   * This can be used for blocks that render white text and are always
+   * rendered on top of a black background. Defining a background class makes
+   * sure the text is visible for the user.
    */
-  editBackgroundClass?: string
+  previewBackgroundClass?: string
+
+  /**
+   * Define the behaviour when a new block is added of this type.
+   *
+   * Possible options:
+   * - 'form' (default)
+   *    Shows the full form to enter block values.
+   * - 'no-form'
+   *    Immediately adds the block without showing the full form.
+   * - 'editable:${string}'
+   *    Immediately add the block without showing the full form and
+   *    immediately open the editable field form with the given name.
+   *    For example, when the block has an editable field names "body"
+   *    a possible value would be 'editable:body'.
+   */
+  addBehaviour?: BlokkliDefinitionAddBehaviour
 
   /**
    * Define a custom title for this block at runtime in the editor.
@@ -198,10 +222,15 @@ export type BlokkliDefinitionInputEditor<
   editTitle?: (el: HTMLElement) => string | undefined | null
 
   /**
-   * Build mock props for this component used for previewing on hover or in
-   * the clipboard preview.
+   * Build mock props for this component that are used when this block can
+   * be added from clipboard or search text content.
+   *
+   * The props are then used to render a preview of the block.
+   *
+   * For example, when pasting text into the editor and if supported by the
+   * adapter, the clipboard text content is passed as an argument.
    */
-  mockProps?: (text?: string) => any
+  mockProps?: (text?: string) => Record<string, any>
 }
 
 export type BlockDefinitionInput<
@@ -710,11 +739,7 @@ export type BlokkliEditableDirectiveArgs = {
 
 export type EditableFieldFocusEvent = {
   fieldName: string
-  block: DraggableExistingBlock
-  element: HTMLElement
-  args?: BlokkliEditableDirectiveArgs
-  isComponent?: boolean
-  value?: string
+  uuid: string
 }
 
 export type EditableFieldUpdateEvent = {

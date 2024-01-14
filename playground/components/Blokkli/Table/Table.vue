@@ -14,7 +14,7 @@ import { defineBlokkli } from '#imports'
 const { parentType } = defineBlokkli({
   bundle: 'table',
   editor: {
-    noAddForm: true,
+    addBehaviour: 'no-form',
     editTitle: (el) => el.innerText,
   },
 })

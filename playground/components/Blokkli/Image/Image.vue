@@ -22,7 +22,7 @@ const { options, parentType } = defineBlokkli({
     },
   },
   editor: {
-    noAddForm: true,
+    addBehaviour: 'no-form',
     editTitle: (el) => el.querySelector('img')?.alt,
     determineVisibleOptions: (ctx) => {
       if (ctx.parentType) {

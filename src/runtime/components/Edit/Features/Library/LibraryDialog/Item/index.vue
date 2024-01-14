@@ -20,7 +20,7 @@
       class="bk-library-list-item-inner"
       :class="backgroundClass"
     >
-      <ScaleToFit :width="editWidth">
+      <ScaleToFit :width="previewWidth">
         <BlokkliItem
           v-bind="item"
           parent-type="nested"
@@ -53,13 +53,13 @@ const componentProps = defineProps<{
 
 const definition = computed(() => getDefinition(componentProps.bundle))
 
-const editWidth = computed(() => definition.value?.editor?.editWidth)
+const previewWidth = computed(() => definition.value?.editor?.previewWidth)
 const renderPreview = computed(
-  () => definition.value?.editor?.noLibraryPreview !== true,
+  () => definition.value?.editor?.noPreview !== true,
 )
 
 const backgroundClass = computed(
-  () => definition.value?.editor?.editBackgroundClass || '',
+  () => definition.value?.editor?.previewBackgroundClass || '',
 )
 
 const blocks = computed(() => [])

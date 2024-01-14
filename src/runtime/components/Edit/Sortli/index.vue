@@ -393,15 +393,9 @@ const emitEditableFocus = (eventTarget: HTMLElement): boolean => {
     if (fieldName) {
       const block = dom.findClosestBlock(el)
       if (block) {
-        const argsValue = el.dataset.blokkliEditableFieldConfig
-        const args = argsValue ? JSON.parse(argsValue) : undefined
         eventBus.emit('editable:focus', {
           fieldName,
-          block,
-          element: el,
-          args,
-          isComponent: el.dataset.blokkliEditableComponent === 'true',
-          value: el.dataset.blokkliEditableValue || '',
+          uuid: block.uuid,
         })
         return true
       }
