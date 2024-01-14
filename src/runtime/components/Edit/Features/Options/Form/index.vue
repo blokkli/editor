@@ -115,7 +115,7 @@ const original = new OptionCollector()
 const updated = new OptionCollector()
 
 const definition = computed<BlockDefinitionInput | undefined>(() => {
-  return getDefinition(props.itemBundle)
+  return getDefinition(props.itemBundle) as BlockDefinitionInput
 })
 
 const availableOptions = computed(() => {
@@ -141,7 +141,7 @@ const availableOptions = computed(() => {
 })
 
 const visibleOptions = computed(() => {
-  if (!definition.value?.determineVisibleOptions) {
+  if (!definition.value?.editor?.determineVisibleOptions) {
     return availableOptions.value
   }
 
@@ -161,10 +161,11 @@ const visibleOptions = computed(() => {
       ? renderedBlock.parentEntityBundle
       : undefined
 
-  const visibleKeys: string[] = definition.value.determineVisibleOptions({
-    options: allOptions,
-    parentType: parentType as any,
-  })
+  const visibleKeys: string[] =
+    definition.value?.editor?.determineVisibleOptions({
+      options: allOptions,
+      parentType: parentType as any,
+    })
 
   const visible = availableOptions.value.filter((v) =>
     visibleKeys.includes(v.property),

@@ -34,7 +34,7 @@ const disabled = computed(() => {
   }
 
   const type = selection.blocks.value[0]?.itemBundle
-  return !type || getDefinition(type)?.disableEdit === true
+  return !type || getDefinition(type)?.editor?.disableEdit === true
 })
 
 function onClick(items: DraggableExistingBlock[]) {

@@ -30,7 +30,7 @@
       <ReusableDialog
         v-if="showReusableDialog && selectedItem"
         :uuid="selectedItem.uuid"
-        :background-class="definition?.editBackgroundClass"
+        :background-class="definition?.editor?.editBackgroundClass"
         @confirm="onMakeReusable"
         @cancel="showReusableDialog = false"
       />

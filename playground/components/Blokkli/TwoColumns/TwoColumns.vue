@@ -45,7 +45,6 @@ import { defineBlokkli, computed, provide } from '#imports'
 
 const { options } = defineBlokkli({
   bundle: 'two_columns',
-  disableEdit: true,
   globalOptions: ['background'],
   options: {
     columns: {
@@ -65,7 +64,10 @@ const { options } = defineBlokkli({
       default: '0',
     },
   },
-  editTitle: (el) => el.querySelector('h2')?.innerText,
+  editor: {
+    disableEdit: true,
+    editTitle: (el) => el.querySelector('h2')?.innerText,
+  },
 })
 
 defineProps<{

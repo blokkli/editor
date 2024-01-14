@@ -36,14 +36,15 @@ function mapItem(el: Element): StructureTreeItem | undefined {
   if (el instanceof HTMLElement) {
     const bundle = el.dataset.itemBundle || ''
     const definition = getDefinition(bundle)
-    const title =
-      definition && definition.editTitle ? definition.editTitle(el) : undefined
+    const title = definition?.editor?.editTitle
+      ? definition.editor.editTitle(el)
+      : undefined
     return {
       uuid: el.dataset.uuid || '',
       bundle,
       type: types.allTypes.value.find((v) => v.id === bundle),
       items: [...el.querySelectorAll('[data-uuid]')].map(mapItem).filter(falsy),
-      title,
+      title: title || undefined,
     }
   }
 }

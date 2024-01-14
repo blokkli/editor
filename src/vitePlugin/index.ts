@@ -3,7 +3,10 @@ import MagicString from 'magic-string'
 import { walk } from 'estree-walker'
 import type { Nuxt } from '@nuxt/schema'
 import type { CallExpression, Expression, ObjectExpression } from 'estree'
-import type { BlockDefinitionInput } from '../runtime/types'
+import type {
+  BlockDefinitionInput,
+  BlockDefinitionOptionsInput,
+} from '../runtime/types'
 
 /**
  * Type check for falsy values.
@@ -32,7 +35,7 @@ type RuntimeDefinitionInput = {
  */
 function estreeToObject(
   expression: ObjectExpression,
-): BlockDefinitionInput<any> {
+): BlockDefinitionInput<BlockDefinitionOptionsInput, []> {
   return Object.fromEntries(
     expression.properties
       .map((prop) => {
@@ -69,7 +72,7 @@ function estreeToObject(
  * options are needed.
  */
 function buildRuntimeDefinition(
-  definition: BlockDefinitionInput<any>,
+  definition: BlockDefinitionInput<BlockDefinitionOptionsInput, []>,
 ): RuntimeDefinitionInput {
   const runtimeDefinition: RuntimeDefinitionInput = {
     bundle: definition.bundle,

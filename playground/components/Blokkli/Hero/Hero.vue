@@ -38,7 +38,9 @@ import { defineBlokkli, computed } from '#imports'
 
 const { isEditing } = defineBlokkli({
   bundle: 'hero',
-  editTitle: (el) => el.querySelector('h1')?.innerText,
+  editor: {
+    editTitle: (el) => el.querySelector('h1')?.innerText,
+  },
 })
 
 const props = defineProps<{

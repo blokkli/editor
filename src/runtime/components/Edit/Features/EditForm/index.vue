@@ -129,7 +129,7 @@ const onItemEdit = (e: EditBlockEvent) => {
     return
   }
   const definition = getDefinition(e.bundle)
-  if (definition?.disableEdit) {
+  if (definition?.editor?.disableEdit) {
     return
   }
   if (state.editMode.value === 'translating') {
@@ -181,7 +181,7 @@ async function addNewBlock(e: AddNewBlockEvent) {
     return
   }
   const definition = getDefinition(e.item.itemBundle)
-  if (definition?.disableEdit) {
+  if (definition?.editor?.disableEdit) {
     return
   }
   form.value = {

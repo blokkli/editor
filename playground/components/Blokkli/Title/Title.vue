@@ -37,8 +37,6 @@
 import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
 const { parentType, fieldListType, uuid } = defineBlokkli({
   bundle: 'title',
-  noAddForm: true,
-  editWidth: 700,
   options: {
     showInMenu: {
       type: 'checkbox',
@@ -46,7 +44,11 @@ const { parentType, fieldListType, uuid } = defineBlokkli({
       default: '1',
     },
   },
-  editTitle: (el) => el.querySelector('h2')?.innerText,
+  editor: {
+    noAddForm: true,
+    editWidth: 700,
+    editTitle: (el) => el.querySelector('h2')?.innerText,
+  },
 })
 
 const injectedInverted = inject<ComputedRef<boolean> | null>('isInverted', null)

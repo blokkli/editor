@@ -20,6 +20,8 @@ const { options, parentType } = defineBlokkli({
       },
     },
   },
-  editTitle: (el) => el.dataset.widget,
+  editor: {
+    editTitle: (el) => el.dataset.widget,
+  },
 })
 </script>

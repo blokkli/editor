@@ -15,7 +15,6 @@ import { defineBlokkli, computed } from '#imports'
 
 const { options } = defineBlokkli({
   bundle: 'button',
-  noAddForm: true,
   options: {
     color: {
       type: 'radios',
@@ -28,7 +27,10 @@ const { options } = defineBlokkli({
       },
     },
   },
-  editTitle: (el) => el.querySelector('a')?.innerText,
+  editor: {
+    noAddForm: true,
+    editTitle: (el) => el.querySelector('a')?.innerText,
+  },
 })
 
 const props = defineProps<{

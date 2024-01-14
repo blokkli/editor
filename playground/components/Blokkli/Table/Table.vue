@@ -13,8 +13,10 @@ import { defineBlokkli } from '#imports'
 
 const { parentType } = defineBlokkli({
   bundle: 'table',
-  noAddForm: true,
-  editTitle: (el) => el.innerText,
+  editor: {
+    noAddForm: true,
+    editTitle: (el) => el.innerText,
+  },
 })
 
 defineProps<{

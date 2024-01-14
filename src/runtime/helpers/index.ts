@@ -48,10 +48,9 @@ export function buildDraggableItem(
       hostBundle
     ) {
       const definition = getDefinition(itemBundle)
-      const editTitle =
-        definition && definition.editTitle
-          ? definition?.editTitle(element)
-          : undefined
+      const editTitle = definition?.editor?.editTitle
+        ? definition?.editor.editTitle(element)
+        : undefined
       return {
         itemType: 'existing',
         element: () =>
@@ -65,7 +64,7 @@ export function buildDraggableItem(
         hostFieldName,
         reusableBundle,
         reusableUuid,
-        editTitle,
+        editTitle: editTitle || undefined,
         isNew,
         parentBlockBundle:
           hostType === itemEntityType ? (hostBundle as any) : undefined,

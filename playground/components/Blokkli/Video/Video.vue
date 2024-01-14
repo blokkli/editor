@@ -55,7 +55,9 @@ const { options, parentType } = defineBlokkli({
       default: '1',
     },
   },
-  editTitle: (el) => el.querySelector('h3')?.innerText,
+  editor: {
+    editTitle: (el) => el.querySelector('h3')?.innerText,
+  },
 })
 
 const props = defineProps<{

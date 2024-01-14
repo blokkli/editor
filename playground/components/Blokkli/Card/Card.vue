@@ -42,8 +42,7 @@ import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
 
 const { parentType, options } = defineBlokkli({
   bundle: 'card',
-  editWidth: 380,
-  noAddForm: true,
+
   options: {
     box: {
       type: 'checkbox',
@@ -63,12 +62,16 @@ const { parentType, options } = defineBlokkli({
       },
     },
   },
-  editTitle: (el) => el.querySelector('h3')?.innerText,
-  determineVisibleOptions: (ctx) => {
-    if (ctx.options.box === '1') {
-      return ['box', 'color']
-    }
-    return ['box']
+  editor: {
+    editWidth: 380,
+    noAddForm: true,
+    editTitle: (el) => el.querySelector('h3')?.innerText,
+    determineVisibleOptions: (ctx) => {
+      if (ctx.options.box === '1') {
+        return ['box', 'color']
+      }
+      return ['box']
+    },
   },
 })
 

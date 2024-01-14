@@ -135,37 +135,10 @@ type CombineKeysAndGlobalOptions<
   G extends GlobalOptionsKey[] | undefined,
 > = keyof T | ExtractGlobalOptions<NonNullable<G>>
 
-export type BlockDefinitionInput<
+export type BlokkliDefinitionInputEditor<
   Options extends BlockDefinitionOptionsInput = {},
   GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
 > = {
-  /**
-   * The type ID of the item, e.g. "text" or "section_title".
-   */
-  bundle: string
-
-  /**
-   * The name of the chunk group.
-   *
-   * If this value is set, the component will be assigned to this
-   * import chunk. Multiple components can have the same chunk name.
-   *
-   * See the `chunkNames` option on the module's configuration for more details.
-   */
-  chunkName?: ValidChunkNames[]
-
-  /**
-   * Define options available for this block.
-   */
-  options?: Options
-
-  /**
-   * Global options to use.
-   *
-   * These options will be merged with the component-specific options.
-   */
-  globalOptions?: GlobalOptions
-
   /**
    * Determine which options should be visible in the editor based on the
    * given context.
@@ -229,6 +202,43 @@ export type BlockDefinitionInput<
    * the clipboard preview.
    */
   mockProps?: (text?: string) => any
+}
+
+export type BlockDefinitionInput<
+  Options extends BlockDefinitionOptionsInput = {},
+  GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
+> = {
+  /**
+   * The type ID of the item, e.g. "text" or "section_title".
+   */
+  bundle: string
+
+  /**
+   * The name of the chunk group.
+   *
+   * If this value is set, the component will be assigned to this
+   * import chunk. Multiple components can have the same chunk name.
+   *
+   * See the `chunkNames` option on the module's configuration for more details.
+   */
+  chunkName?: ValidChunkNames[]
+
+  /**
+   * Define options available for this block.
+   */
+  options?: Options
+
+  /**
+   * Global options to use.
+   *
+   * These options will be merged with the component-specific options.
+   */
+  globalOptions?: GlobalOptions
+
+  /**
+   * Settings for the behaviour in the editor.
+   */
+  editor?: BlokkliDefinitionInputEditor<Options, GlobalOptions>
 }
 
 export type InjectedBlokkliItem = ComputedRef<{

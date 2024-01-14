@@ -14,7 +14,6 @@ import { MediaImage } from '~/app/mock/state/Media/Media'
 
 const { options, parentType } = defineBlokkli({
   bundle: 'image',
-  noAddForm: true,
   options: {
     elevated: {
       type: 'checkbox',
@@ -22,12 +21,15 @@ const { options, parentType } = defineBlokkli({
       default: '1',
     },
   },
-  editTitle: (el) => el.querySelector('img')?.alt,
-  determineVisibleOptions: (ctx) => {
-    if (ctx.parentType) {
-      return []
-    }
-    return ['elevated']
+  editor: {
+    noAddForm: true,
+    editTitle: (el) => el.querySelector('img')?.alt,
+    determineVisibleOptions: (ctx) => {
+      if (ctx.parentType) {
+        return []
+      }
+      return ['elevated']
+    },
   },
 })
 

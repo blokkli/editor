@@ -20,7 +20,9 @@ import { defineBlokkli, computed } from '#imports'
 
 const { rootBlocks } = defineBlokkli({
   bundle: 'on_this_page',
-  disableEdit: true,
+  editor: {
+    disableEdit: true,
+  },
 })
 
 type OnThisPageLink = {

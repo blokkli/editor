@@ -22,8 +22,8 @@ const props = defineProps<{
 
 const mockProps = computed(() => {
   const definition = getDefinition(props.targetBundle)
-  if (definition?.mockProps) {
-    return definition.mockProps(props.data)
+  if (definition?.editor?.mockProps) {
+    return definition.editor.mockProps(props.data)
   }
 })
 

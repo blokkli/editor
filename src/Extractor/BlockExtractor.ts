@@ -76,7 +76,7 @@ export default class BlockExtractor {
         filePath,
         definition,
         icon,
-        chunkName: definition.chunkName || 'global',
+        chunkName: (definition.chunkName || 'global') as any,
         componentName: 'BlokkliComponent_' + definition.bundle,
         source,
         fileSource,
@@ -152,18 +152,18 @@ export default class BlockExtractor {
     }, {})
 
     return `import type { GlobalOptionsKey } from './generated-types'
-import type { BlockDefinitionInput } from '#blokkli/types'
+import type { BlockDefinitionInput, BlockDefinitionOptionsInput } from '#blokkli/types'
 export const globalOptions = ${JSON.stringify(globalOptions, null, 2)} as const
 
 export const icons: Record<string, string> = ${JSON.stringify(icons)}
 
-export const definitionsMap: Record<string, BlockDefinitionInput<any, GlobalOptionsKey[]>> = {
+export const definitionsMap: Record<string, BlockDefinitionInput<BlockDefinitionOptionsInput, GlobalOptionsKey[]>> = {
   ${allDefinitions.join(',\n')}
 }
 
 export const definitions: BlockDefinitionInput<any, GlobalOptionsKey[]>[] = Object.values(definitionsMap)
 
-export const getDefinition = (bundle: string): BlockDefinitionInput<any, GlobalOptionsKey[]>|undefined => definitionsMap[bundle]
+export const getDefinition = (bundle: string): BlockDefinitionInput<Record<string, any>, GlobalOptionsKey[]>|undefined => definitionsMap[bundle]
 `
   }
 

@@ -53,13 +53,13 @@ const componentProps = defineProps<{
 
 const definition = computed(() => getDefinition(componentProps.bundle))
 
-const editWidth = computed(() => definition.value?.editWidth)
+const editWidth = computed(() => definition.value?.editor?.editWidth)
 const renderPreview = computed(
-  () => definition.value?.noLibraryPreview !== true,
+  () => definition.value?.editor?.noLibraryPreview !== true,
 )
 
 const backgroundClass = computed(
-  () => definition.value?.editBackgroundClass || '',
+  () => definition.value?.editor?.editBackgroundClass || '',
 )
 
 const blocks = computed(() => [])
