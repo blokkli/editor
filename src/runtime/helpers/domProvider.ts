@@ -49,9 +49,16 @@ const cloneWithInlineStyles = (node: Element): Element => {
   return clone
 }
 
-const cloneElementWithStyles = (element: Element): string => {
+const cloneElementWithStyles = (element: Element, isRoot?: boolean): string => {
   // Create a deep clone of the element with inline styles
   const clonedElement = cloneWithInlineStyles(element)
+  if (
+    isRoot &&
+    (clonedElement instanceof HTMLElement ||
+      clonedElement instanceof SVGElement)
+  ) {
+    clonedElement.style.opacity = '1'
+  }
 
   // Create a temporary container to generate the outer HTML
   const container = document.createElement('div')
@@ -180,7 +187,7 @@ export default function (): DomProvider {
   const getDropElementMarkup = (item: DraggableItem): string => {
     const el = item.element()
     const dropElement = el.querySelector('.bk-drop-element') || el
-    return cloneElementWithStyles(dropElement).replace(
+    return cloneElementWithStyles(dropElement, true).replace(
       /\sdata-\w+="[^"]*"/g,
       '',
     )
