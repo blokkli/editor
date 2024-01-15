@@ -6,6 +6,7 @@ export default defineBuildConfig({
     '#blokkli/types',
     '#blokkli/icons',
     '#blokkli/constants',
+    '#blokkli/definitions',
     '#blokkli/helpers',
     '#blokkli/helpers/broadcastProvider',
     '#blokkli/helpers/featuresProvider',

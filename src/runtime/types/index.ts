@@ -271,7 +271,7 @@ export type BlockDefinitionInput<
    *
    * See the `chunkNames` option on the module's configuration for more details.
    */
-  chunkName?: ValidChunkNames[]
+  chunkName?: ValidChunkNames
 
   /**
    * Define options available for this block.

@@ -136,7 +136,14 @@ export default async function (
     translation.value.availableLanguages =
       context?.translationState?.availableLanguages || []
 
-    const newMutatedFields = context?.mutatedState?.fields || []
+    const newMutatedFields = (context?.mutatedState?.fields || []).map(
+      (field) => {
+        return {
+          ...field,
+          list: field.list.filter(falsy),
+        }
+      },
+    )
     mutatedFields.value = newMutatedFields
 
     eventBus.emit('updateMutatedFields', { fields: newMutatedFields })
