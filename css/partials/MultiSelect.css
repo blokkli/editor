@@ -1,6 +1,6 @@
 .bk {
   .bk-multi-select-area {
-    @apply fixed top-0 left-0 pointer-events-none z-30;
+    @apply fixed top-0 left-0 pointer-events-none z-30 cursor-crosshair;
     rect {
       @apply stroke-slate-400 stroke-[2];
       stroke-dasharray: 4 4;
@@ -11,13 +11,14 @@
   }
 
   .bk-multi-select-rectangle {
-    @apply absolute top-0 left-0 pointer-events-none  rounded;
+    @apply absolute top-0 left-0 pointer-events-none rounded;
+
     &:not(.bk-is-active) {
-      @apply outline-2 outline-dashed outline-slate-400 outline-offset-2;
+      @apply outline-dashed;
     }
 
     &.bk-is-active {
-      @apply outline outline-2 outline-blue-700 outline-offset-2 bg-blue-500/10;
+      @apply bg-blue-500/20;
     }
   }
 }

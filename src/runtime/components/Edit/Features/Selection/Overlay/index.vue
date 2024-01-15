@@ -2,6 +2,7 @@
   <div v-if="styleSize" :style="styleSize" class="bk bk-selection">
     <div
       v-for="rect in selectedRects"
+      class="bk-selectable bk-is-active"
       :key="rect.uuid"
       :style="{
         width: rect.width + 'px',

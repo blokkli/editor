@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bk-multi-select-rectangle"
+    class="bk-multi-select-rectangle bk-selectable"
     :style="style"
     :class="{ 'bk-is-active': isIntersecting }"
   />

@@ -41,9 +41,8 @@ import type { AnimationFrameEvent } from '#blokkli/types'
 import type { Rectangle } from '#blokkli/types'
 import { intersects } from '#blokkli/helpers'
 import Item from './Item/index.vue'
-import { getDefinition } from '#blokkli/definitions'
 
-const { keyboard, eventBus, ui, dom, state } = useBlokkli()
+const { keyboard, eventBus, ui, dom } = useBlokkli()
 
 export type SelectableElement = {
   uuid: string

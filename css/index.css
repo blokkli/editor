@@ -178,7 +178,11 @@ html {
 
 @screen lg {
   .bk-body.bk-is-selecting {
-    @apply cursor-crosshair;
+    @apply !cursor-crosshair;
+
+    .bk-main-canvas * {
+      @apply !pointer-events-none;
+    }
   }
 }
 
@@ -276,5 +280,13 @@ html.bk-html-root:not(.bk-use-animations) {
   *:before,
   *:after {
     transition: none !important;
+  }
+}
+
+.bk-selectable {
+  @apply outline outline-1 outline-blue-700 -outline-offset-1;
+  &.bk-is-active {
+    @apply ring-blue-400/30 ring-[5px];
+    outline-width: calc(var(--bk-outline-width) * 1px);
   }
 }
