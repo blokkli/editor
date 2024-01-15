@@ -18,10 +18,102 @@ import {
   buildDraggableItem,
   falsy,
   modulo,
+  intersects,
+  getBounds,
 } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import type { DomProvider } from './domProvider'
 import type { StateProvider } from './stateProvider'
+
+/**
+ * Determine which blocks to select when the user is clicking on a block with the shift key.
+ */
+const visuallySelectBlocks = (
+  all: DraggableExistingBlock[],
+  selected: DraggableExistingBlock[],
+  toggleBlock: DraggableExistingBlock,
+): string[] => {
+  // Nothing selected yet, so we select the new block.
+  if (selected.length === 0) {
+    return [toggleBlock.uuid]
+  }
+
+  const toggleRect = toggleBlock.element().getBoundingClientRect()
+  const isToggleSelected = selected.some((el) => el.uuid === toggleBlock.uuid)
+
+  // One block selected.
+  if (selected.length === 1) {
+    if (isToggleSelected) {
+      return []
+    }
+
+    const selectedRect = selected[0].element().getBoundingClientRect()
+    const encompassingRect = getBounds([selectedRect, toggleRect])!
+
+    return all
+      .filter(
+        (el) =>
+          el.isNested === toggleBlock.isNested ||
+          selected[0].isNested === el.isNested,
+      )
+      .filter((el) =>
+        intersects(el.element().getBoundingClientRect(), encompassingRect),
+      )
+      .map((el) => el.uuid)
+  }
+
+  // More than one selected.
+  if (isToggleSelected) {
+    // Find the most upper left element excluding the toggleElement.
+    const upperLeftElement = selected
+      .filter((el) => el.uuid !== toggleBlock.uuid)
+      .reduce((prev, current) => {
+        const prevRect = prev.element().getBoundingClientRect()
+        const currentRect = current.element().getBoundingClientRect()
+        return prevRect.x <= currentRect.x && prevRect.y <= currentRect.y
+          ? prev
+          : current
+      })
+
+    const upperLeftRect = upperLeftElement.element().getBoundingClientRect()
+    const encompassingRect = getBounds([upperLeftRect, toggleRect])!
+
+    return all
+      .filter(
+        (el) =>
+          el.isNested === toggleBlock.isNested ||
+          selected.some((sel) => sel.isNested === el.isNested),
+      )
+      .filter((el) =>
+        intersects(el.element().getBoundingClientRect(), encompassingRect),
+      )
+      .map((el) => el.uuid)
+  }
+
+  // toggleBlock is not in the selection, select blocks that are visually
+  // between the most upper left block and toggleBlock.
+  const upperLeftElement = selected.reduce((prev, current) => {
+    const prevRect = prev.element().getBoundingClientRect()
+    const currentRect = current.element().getBoundingClientRect()
+    return prevRect.x <= currentRect.x && prevRect.y <= currentRect.y
+      ? prev
+      : current
+  })
+
+  const upperLeftRect = upperLeftElement.element().getBoundingClientRect()
+  const encompassingRect = getBounds([upperLeftRect, toggleRect])!
+
+  return all
+    .filter(
+      (el) =>
+        el.isNested === toggleBlock.isNested ||
+        selected.some((sel) => sel.isNested === el.isNested),
+    )
+    .filter((el) =>
+      intersects(el.element().getBoundingClientRect(), encompassingRect),
+    )
+    .map((el) => el.uuid)
+}
 
 export type SelectionProvider = {
   /**
@@ -216,6 +308,18 @@ export default function (
     eventBus.emit('scrollIntoView', { uuid: targetItem.uuid })
   }
 
+  const onShiftToggle = (uuid: string) => {
+    const block = dom.findBlock(uuid)
+    if (!block) {
+      return
+    }
+    selectedUuids.value = visuallySelectBlocks(
+      dom.getAllBlocks(),
+      blocks.value,
+      block,
+    )
+  }
+
   const onSelectPrevious = () => selectInList(true)
   const onSelectNext = () => selectInList()
 
@@ -224,6 +328,7 @@ export default function (
     eventBus.on('select', onSelect)
     eventBus.on('select:start', onSelectStart)
     eventBus.on('select:toggle', selectToggle)
+    eventBus.on('select:shiftToggle', onShiftToggle)
     eventBus.on('select:end', onSelectEnd)
     eventBus.on('select:previous', onSelectPrevious)
     eventBus.on('select:next', onSelectNext)
@@ -238,6 +343,7 @@ export default function (
     eventBus.off('select', onSelect)
     eventBus.off('select:start', onSelectStart)
     eventBus.off('select:toggle', selectToggle)
+    eventBus.off('select:shiftToggle', onShiftToggle)
     eventBus.off('select:end', onSelectEnd)
     eventBus.off('select:previous', onSelectPrevious)
     eventBus.off('select:next', onSelectNext)

@@ -267,6 +267,11 @@ const onClick = (e: MouseEvent) => {
     return
   }
 
+  if (keyboard.isPressingShift.value) {
+    eventBus.emit('select:shiftToggle', id)
+    return
+  }
+
   if (
     (selection.uuids.value.includes(id) &&
       selection.uuids.value.length === 1) ||

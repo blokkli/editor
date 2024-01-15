@@ -20,6 +20,7 @@ type RegisteredShortcut = {
 export type KeyboardProvider = {
   isPressingSpace: Readonly<Ref<boolean>>
   isPressingControl: Readonly<Ref<boolean>>
+  isPressingShift: Readonly<Ref<boolean>>
   shortcuts: ComputedRef<RegisteredShortcut[]>
   registerShortcut: (shortcut: KeyboardShortcut) => void
   unregisterShortcut: (shortcut: KeyboardShortcut) => void
@@ -30,11 +31,14 @@ export default function (
 ): KeyboardProvider {
   const isPressingControl = ref(false)
   const isPressingSpace = ref(false)
+  const isPressingShift = ref(false)
   const registeredShortcuts = ref<RegisteredShortcut[]>([])
 
   const onKeyUp = (e: KeyboardEvent) => {
     isPressingControl.value =
       e.getModifierState('Control') || e.getModifierState('Meta')
+
+    isPressingShift.value = e.getModifierState('Shift')
 
     if (e.code === 'Space') {
       isPressingSpace.value = false
@@ -49,6 +53,8 @@ export default function (
       e.getModifierState('Control') ||
       e.getModifierState('Meta') ||
       e.code === 'CapsLock'
+
+    isPressingShift.value = e.getModifierState('Shift')
 
     if (!isPressingSpace.value) {
       eventBus.emit('keyPressed', {
@@ -121,6 +127,7 @@ export default function (
   return {
     isPressingSpace: readonly(isPressingSpace),
     isPressingControl: readonly(isPressingControl),
+    isPressingShift: readonly(isPressingShift),
     shortcuts,
     registerShortcut,
     unregisterShortcut,

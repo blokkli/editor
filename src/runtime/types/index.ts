@@ -790,6 +790,7 @@ export type EventbusEvents = {
   // Selection.
   'select:start': string[] | undefined
   'select:toggle': string
+  'select:shiftToggle': string
   'select:end': string[] | undefined
   'select:previous': undefined
   'select:next': undefined
