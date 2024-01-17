@@ -155,6 +155,31 @@
     }
   }
 
+  .bk-blokkli-item-options-radios.bk-is-icons {
+    @apply gap-10 text-white;
+    .bk-blokkli-item-options-radios-icon {
+      @apply opacity-30;
+      svg {
+        @apply h-[24px] w-auto;
+        .bk-option-icon-fill {
+          @apply fill-slate-700;
+        }
+        .bk-option-icon-fill-strong {
+          @apply fill-slate-200;
+        }
+        .bk-option-icon-stroke {
+          @apply stroke-current;
+        }
+      }
+    }
+    input:not(:checked):hover + .bk-blokkli-item-options-radios-icon {
+      @apply opacity-50;
+    }
+    input:checked + .bk-blokkli-item-options-radios-icon {
+      @apply opacity-100;
+    }
+  }
+
   .bk-blokkli-item-options-text {
     @apply cursor-pointer h-full;
     input {

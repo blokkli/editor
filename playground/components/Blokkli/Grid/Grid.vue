@@ -40,11 +40,11 @@ const { options } = defineBlokkli({
       type: 'radios',
       label: 'Columns',
       default: 'two',
-      displayAs: 'grid',
+      displayAs: 'icons',
       options: {
-        two: [1, 1],
-        three: [1, 1, 1],
-        four: [1, 1, 1, 1],
+        two: 'icon-blokkli-option-two',
+        three: 'icon-blokkli-option-three',
+        four: 'icon-blokkli-option-four',
       },
     },
     mobile: {

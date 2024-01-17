@@ -4,6 +4,7 @@
     :class="{
       'bk-is-color': displayAs === 'colors',
       'bk-is-grid': displayAs === 'grid',
+      'bk-is-icons': displayAs === 'icons',
     }"
   >
     <label v-for="option in mappedOptions" :key="option.key">
@@ -16,7 +17,13 @@
           :checked="value === option.key"
           @change="$emit('update', option.key)"
         />
-        <span v-if="typeof option.value === 'string'" class="bk-is-text">
+        <div
+          v-if="displayAs === 'icons'"
+          class="bk-blokkli-item-options-radios-icon"
+        >
+          <Icon :name="option.value as any" />
+        </div>
+        <span v-else-if="typeof option.value === 'string'" class="bk-is-text">
           {{ option.value }}
         </span>
         <div v-else class="bk-blokkli-item-options-radios-flex">
@@ -29,9 +36,11 @@
 
 <script lang="ts" setup>
 import { computed } from '#imports'
+import { Icon } from '#blokkli/components'
+
 const props = defineProps<{
   name: string
-  displayAs?: 'radios' | 'colors' | 'grid'
+  displayAs?: 'radios' | 'colors' | 'grid' | 'icons'
   options: Record<string, string | number[]>
   value: string
 }>()

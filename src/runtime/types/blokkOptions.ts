@@ -23,13 +23,36 @@ type DefinitionOptionCheckboxes = {
   options: Record<string, string>
 }
 
+type DefinitionOptionRadiosGrid = {
+  displayAs: 'grid'
+  options: Record<string, number[]>
+}
+
+type DefinitionOptionRadiosColors = {
+  displayAs: 'colors'
+  options: Record<string, string>
+}
+
+type DefinitionOptionRadiosRadios = {
+  displayAs?: 'radios' | undefined
+  options: Record<string, string>
+}
+
+type DefinitionOptionRadiosIcons = {
+  displayAs: 'icons'
+  options: Record<string, `icon-blokkli-option-${string}`>
+}
+
 type DefinitionOptionRadios = {
   type: 'radios'
   label: string
   default: string
-  displayAs?: 'radios' | 'colors' | 'grid'
-  options: Record<string, string | number[]>
-}
+} & (
+  | DefinitionOptionRadiosColors
+  | DefinitionOptionRadiosGrid
+  | DefinitionOptionRadiosRadios
+  | DefinitionOptionRadiosIcons
+)
 
 export type BlockOptionDefinition =
   | DefinitionOptionCheckbox

@@ -483,10 +483,14 @@ ${featuresArray}
       write: true,
       filename: 'blokkli/icons.ts',
       getContents: async () => {
-        const path = resolver.resolve('./runtime/icons')
-        const files = await resolveFiles(path, '*.svg')
+        const pathModule = resolver.resolve('./runtime/icons')
+        const filesModule = await resolveFiles(pathModule, '*.svg')
+        const filesApp = await resolveFiles(
+          srcDir,
+          'components/**/icon-blokkli-*.svg',
+        )
         const icons = await Promise.all(
-          files.map((filePath) => {
+          [...filesModule, ...filesApp].map((filePath) => {
             return fsp.readFile(filePath).then((data) => {
               const name = basename(filePath, '.svg').toLowerCase()
               return {
