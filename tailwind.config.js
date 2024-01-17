@@ -26,11 +26,11 @@ const zIndex = [
   'search',
   'menu-overlay',
   'menu',
-  'touch-action-bar',
   'edit-form',
   'resizable',
   'edit-form-header',
   'dragging-overlay',
+  'touch-action-bar',
   'dialog',
   'init-overlay',
 ].reduce((acc, key, index) => {

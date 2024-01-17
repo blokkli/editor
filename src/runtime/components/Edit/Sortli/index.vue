@@ -197,15 +197,14 @@ const findItem = (
       continue
     }
     const item = buildDraggableItem(el)
-    if (!item?.itemBundle) {
-      continue
-    }
-    const definition = getDefinition(item.itemBundle)
-    if (definition?.editor?.getDraggableElement) {
-      const draggableElement = definition.editor.getDraggableElement(el)
-      if (draggableElement) {
-        if (!tree.includes(draggableElement)) {
-          continue
+    if (item?.itemType === 'existing') {
+      const definition = getDefinition(item.itemBundle)
+      if (definition?.editor?.getDraggableElement) {
+        const draggableElement = definition.editor.getDraggableElement(el)
+        if (draggableElement) {
+          if (!tree.includes(draggableElement)) {
+            continue
+          }
         }
       }
     }
