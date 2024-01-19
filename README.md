@@ -5,6 +5,10 @@
 blökkli is a highly interactive page-builder that can be used with various
 backend and offers various features to edit content quick and easy.
 
+## Demo
+
+https://blokk.li/
+
 ## Getting Started
 
 Instructions for setting up the project locally.
