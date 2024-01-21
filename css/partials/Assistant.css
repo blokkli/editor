@@ -3,7 +3,7 @@
 }
 
 .bk-assistant-form-textarea {
-  @apply relative border rounded focus-within:border-blue-600;
+  @apply relative border rounded focus-within:border-accent-600;
   button {
     @apply w-full rounded-t-none;
   }
@@ -18,7 +18,7 @@
 }
 
 .bk-assistant-form-result-inner {
-  @apply relative flex-1 border border-slate-300 rounded p-20 md:p-0;
+  @apply relative flex-1 border border-mono-300 rounded p-20 md:p-0;
   @screen md {
     > div {
       @apply absolute top-0 left-0 w-full h-full overflow-auto p-20;

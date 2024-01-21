@@ -34,7 +34,7 @@
     }
   }
   .bk-editable-field-info {
-    @apply px-10 py-[6px] border-t border-t-slate-300 text-sm font-semibold flex justify-between;
+    @apply px-10 py-[6px] border-t border-t-mono-300 text-sm font-semibold flex justify-between;
   }
   .bk-editable-field-info-error {
     @apply text-red-normal;

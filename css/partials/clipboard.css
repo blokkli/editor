@@ -2,8 +2,8 @@
   .bk-clipboard-list {
     > div {
       @apply cursor-grab;
-      @apply border-b border-b-slate-300;
-      @apply hover:bg-slate-50;
+      @apply border-b border-b-mono-300;
+      @apply hover:bg-mono-50;
     }
   }
   .bk-clipboard-info {
@@ -18,7 +18,7 @@
 
 .bk-clipboard-item {
   @apply !relative  !overflow-hidden !rounded !font-sans;
-  @apply hover:border-slate-500;
+  @apply hover:border-mono-500;
   img {
     @apply block aspect-[4/3] object-cover;
   }
@@ -35,8 +35,8 @@
 .bk-clipboard-item-header {
   @apply !flex !items-center !gap-10 !text-lg !font-semibold mb-15;
   button {
-    @apply !ml-auto !text-lg !p-5 !rounded text-slate-500;
-    @apply hover:bg-blue-700 hover:text-white;
+    @apply !ml-auto !text-lg !p-5 !rounded text-mono-500;
+    @apply hover:bg-accent-700 hover:text-white;
     svg {
       @apply !w-20 !h-20 !fill-current;
     }

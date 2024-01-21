@@ -16,9 +16,9 @@
     }
 
     .bk-list-item-inner {
-      @apply relative flex text-slate-200 rounded items-center justify-center text-sm leading-3 z-10 border border-slate-800 lg:border-slate-600 gap-5;
+      @apply relative flex text-mono-200 rounded items-center justify-center text-sm leading-3 z-10 border border-mono-800 lg:border-mono-600 gap-5;
       @apply lg:w-[1em];
-      @apply bg-slate-900 lg:bg-slate-800;
+      @apply bg-mono-900 lg:bg-mono-800;
       font-size: 20px;
       @apply px-10 py-5;
       @screen lg {
@@ -63,13 +63,13 @@
   &.bk-is-disabled {
     @apply pointer-events-none;
     .bk-list-item-inner {
-      @apply bg-slate-900;
+      @apply bg-mono-900;
     }
     .bk-list-item-label {
-      @apply text-slate-700;
+      @apply text-mono-700;
     }
     .bk-list-item-icon {
-      @apply text-slate-800;
+      @apply text-mono-800;
     }
   }
 
@@ -81,7 +81,7 @@
   @media not all and (hover: none) {
     &:hover {
       .bk-list-item-inner {
-        @apply bg-slate-700 text-white border-slate-400;
+        @apply bg-mono-700 text-white border-mono-400;
       }
       .bk-list-item-label span {
         @apply text-white;
@@ -92,7 +92,7 @@
 
 .bk-list-item.bk-is-vertical {
   .bk-list-item-label {
-    @apply absolute whitespace-nowrap opacity-0 text-slate-100/50  transition w-[300px] text-left;
+    @apply absolute whitespace-nowrap opacity-0 text-mono-100/50  transition w-[300px] text-left;
     @apply top-0 left-full p-10 h-full ml-[7px];
     @apply text-lg font-semibold;
   }
@@ -113,10 +113,10 @@
 
     &:after {
       @apply w-70;
-      @apply top-0 left-0 h-full border-t lg:border-t-slate-700 bg-slate-950 lg:bg-slate-900;
+      @apply top-0 left-0 h-full border-t lg:border-t-mono-700 bg-mono-950 lg:bg-mono-900;
       @apply origin-left;
       @apply absolute z-0 pointer-events-none;
-      @apply transition bg-slate-900 ease-swing;
+      @apply transition bg-mono-900 ease-swing;
       content: '';
     }
 
@@ -125,7 +125,7 @@
     }
     @apply top-50 w-70;
     #blokkli-add-list-actions {
-      @apply border-t border-t-slate-700 pb-5;
+      @apply border-t border-t-mono-700 pb-5;
     }
 
     #blokkli-add-list-blocks {
@@ -143,12 +143,12 @@
     }
   }
   &.bk-is-horizontal {
-    @apply w-full flex lg:py-5 bg-slate-950 overflow-y-hidden lg:overflow-visible;
+    @apply w-full flex lg:py-5 bg-mono-950 overflow-y-hidden lg:overflow-visible;
 
     height: var(--bk-root-offset-bottom);
     #blokkli-add-list-actions {
-      @apply flex border-r border-r-slate-800 lg:border-r-slate-700 px-5;
-      @apply order-first lg:order-last lg:border-r-0 lg:border-l lg:border-l-slate-800;
+      @apply flex border-r border-r-mono-800 lg:border-r-mono-700 px-5;
+      @apply order-first lg:order-last lg:border-r-0 lg:border-l lg:border-l-mono-800;
       flex: 0 0 auto;
 
       .bk-list-item-label {
@@ -212,7 +212,7 @@
 
 .bk-add-list-drop {
   @apply absolute top-0 left-0 w-[300px] pointer-events-none py-10;
-  @apply bg-slate-200 text-slate-900 flex gap-10 text-base font-semibold items-center rounded-md whitespace-nowrap px-15;
+  @apply bg-mono-200 text-mono-900 flex gap-10 text-base font-semibold items-center rounded-md whitespace-nowrap px-15;
   .bk-blokkli-item-icon {
     flex: 0 0 auto;
   }
@@ -226,7 +226,7 @@
   }
 
   &.bk-is-dark {
-    @apply bg-slate-900 text-white;
+    @apply bg-mono-900 text-white;
   }
 
   .bk-add-list-drop-icon {
@@ -244,19 +244,19 @@
 
 .bk-list-item.bk-is-sidebar {
   @apply relative;
-  @apply block text-lg bg-white px-15 py-10 text-slate-600;
+  @apply block text-lg bg-white px-15 py-10 text-mono-600;
 
   &.bk-is-disabled {
-    @apply text-slate-300;
+    @apply text-mono-300;
     .bk-list-item-icon {
       @apply opacity-30;
     }
   }
 
   &:hover {
-    @apply text-slate-950;
+    @apply text-mono-950;
     .bk-list-item-icon {
-      @apply bg-slate-200 border-slate-600 text-slate-700;
+      @apply bg-mono-200 border-mono-600 text-mono-700;
     }
   }
   .bk-list-item-label {
@@ -272,7 +272,7 @@
     }
   }
   .bk-list-item-icon {
-    @apply text-3xl text-slate-500 bg-slate-50 p-[0.2em] rounded border border-slate-300;
+    @apply text-3xl text-mono-500 bg-mono-50 p-[0.2em] rounded border border-mono-300;
   }
 
   &.bk-is-rose .bk-list-item-icon {
@@ -310,7 +310,7 @@
   container-type: inline-size;
   #blokkli-add-list-blocks,
   #blokkli-add-list-actions {
-    @apply grid grid-cols-1 text-slate-950;
+    @apply grid grid-cols-1 text-mono-950;
     @container (min-width: 400px) {
       @apply grid-cols-2;
       .bk-list-item {
@@ -357,7 +357,7 @@
     }
   }
   #blokkli-add-list-actions {
-    @apply border-t border-t-slate-200;
+    @apply border-t border-t-mono-200;
   }
 
   .bk-add-list-drop {

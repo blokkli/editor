@@ -41,14 +41,14 @@
   }
 
   .bk-sidebar-title {
-    @apply !font-semibold !font-sans !pl-15 md:!pl-20 !border-b !border-b-slate-300 flex items-center h-50;
+    @apply !font-semibold !font-sans !pl-15 md:!pl-20 !border-b !border-b-mono-300 flex items-center h-50;
     @apply select-none;
 
     > span {
       @apply mr-auto;
     }
     button {
-      @apply h-full px-15 text-slate-700 hover:bg-slate-100 hover:text-slate-900;
+      @apply h-full px-15 text-mono-700 hover:bg-mono-100 hover:text-mono-900;
       svg {
         @apply w-[1em] h-[1em] fill-current;
       }
@@ -72,14 +72,14 @@
 
 .bk-sidebar-detached {
   @apply fixed top-0 left-0 bg-white z-sidebar-detached rounded-md flex flex-col overflow-hidden;
-  @apply border border-slate-200;
+  @apply border border-mono-200;
   &.bk-is-focused {
-    @apply shadow-xl border-slate-700;
+    @apply shadow-xl border-mono-700;
     .bk-sidebar-title {
-      @apply bg-slate-800 text-white;
+      @apply bg-mono-800 text-white;
 
       button:hover {
-        @apply bg-slate-700;
+        @apply bg-mono-700;
       }
     }
   }
@@ -97,7 +97,7 @@
 
   .bk-sidebar-title {
     @apply cursor-move;
-    @apply flex bg-slate-300 select-none pl-10 font-semibold text-sm h-40 items-center text-slate-500;
+    @apply flex bg-mono-300 select-none pl-10 font-semibold text-sm h-40 items-center text-mono-500;
 
     > .bk-icon {
       @apply w-20 h-20 mr-5;
@@ -113,7 +113,7 @@
     button {
       @apply w-40 h-40 flex items-center justify-center;
       &:hover {
-        @apply bg-slate-400;
+        @apply bg-mono-400;
       }
       svg {
         @apply w-20 h-20 fill-current;
@@ -152,7 +152,7 @@ html.bk-is-sidebar-interacting {
 }
 
 .bk-sidebar-tabs {
-  @apply relative bg-slate-900 z-sidebar-tabs left-0 w-full flex justify-between flex-row-reverse;
+  @apply relative bg-mono-900 z-sidebar-tabs left-0 w-full flex justify-between flex-row-reverse;
 
   > div {
     @apply flex;
@@ -170,7 +170,7 @@ html.bk-is-sidebar-interacting {
       &:first-child {
         &:before {
           content: '';
-          @apply absolute bottom-0 left-0 w-full h-1 bg-slate-700;
+          @apply absolute bottom-0 left-0 w-full h-1 bg-mono-700;
         }
 
         .bk-tooltip {
@@ -183,7 +183,7 @@ html.bk-is-sidebar-interacting {
   &.bk-has-sidebar-open {
     .bk-sidebar-container-tabs {
       button:not(.is-active):not(:hover) {
-        @apply text-slate-600;
+        @apply text-mono-600;
       }
     }
   }

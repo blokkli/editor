@@ -15,7 +15,7 @@
     }
 
     p {
-      @apply font-medium uppercase text-xs text-slate-800;
+      @apply font-medium uppercase text-xs text-mono-800;
     }
   }
 
@@ -27,21 +27,21 @@
     li {
       &.bk-is-active > button {
         .bk-blokkli-item-label-icon {
-          @apply bg-blue-600 text-white border-blue-900;
+          @apply bg-accent-600 text-white border-accent-900;
         }
 
         span {
-          @apply text-slate-950 font-semibold;
+          @apply text-mono-950 font-semibold;
         }
       }
 
       &.bk-is-inside-active > button {
         .bk-blokkli-item-label-icon {
-          @apply bg-blue-50 text-blue-700 border-blue-300;
+          @apply bg-accent-50 text-accent-700 border-accent-300;
         }
 
         span {
-          @apply text-slate-950 font-medium;
+          @apply text-mono-950 font-medium;
         }
       }
     }
@@ -52,19 +52,19 @@
       @apply pl-25 relative;
       &:before {
         content: '';
-        @apply absolute top-[-22px] h-full w-0  left-[11.5px] border-l border-l-slate-400 border-dashed;
+        @apply absolute top-[-22px] h-full w-0  left-[11.5px] border-l border-l-mono-400 border-dashed;
       }
       &:after {
         content: '';
-        @apply absolute left-[11.5px] w-[15px] h-0  top-[22px] border-t border-t-slate-400 border-dashed;
+        @apply absolute left-[11.5px] w-[15px] h-0  top-[22px] border-t border-t-mono-400 border-dashed;
       }
 
       &.bk-is-inside-active {
         &:before {
-          @apply !border-l-blue-400 border-solid;
+          @apply !border-l-accent-400 border-solid;
         }
         &:after {
-          @apply !border-t-blue-400 border-solid;
+          @apply !border-t-accent-400 border-solid;
         }
       }
     }

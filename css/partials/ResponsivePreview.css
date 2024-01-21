@@ -11,7 +11,7 @@
   .bk-preview-loading {
     @apply absolute top-0 left-0 w-full h-full z-50 bg-white/90 flex items-center justify-center backdrop-blur-lg;
     svg {
-      @apply w-100 h-100 text-slate-200 animate-spin fill-slate-900;
+      @apply w-100 h-100 text-mono-200 animate-spin fill-mono-900;
     }
   }
 }
@@ -22,20 +22,20 @@
 }
 
 .bk-preview-controls {
-  @apply bg-slate-200 flex h-50;
+  @apply bg-mono-200 flex h-50;
 
   button,
   label {
     @apply cursor-pointer;
-    @apply bg-slate-200 text-slate-500;
-    @apply hover:bg-slate-300;
+    @apply bg-mono-200 text-mono-500;
+    @apply hover:bg-mono-300;
   }
 
   button {
     @apply min-w-[50px] flex;
 
     &:disabled {
-      @apply pointer-events-none text-slate-300;
+      @apply pointer-events-none text-mono-300;
     }
 
     &.bk-is-rotate {
@@ -68,10 +68,10 @@
       @apply block;
     }
     input:not(:checked) + .bk-preview-viewport-option {
-      @apply text-slate-400;
+      @apply text-mono-400;
     }
     .bk-dropdown-content {
-      @apply absolute top-full left-0 w-full z-50 bg-slate-800;
+      @apply absolute top-full left-0 w-full z-50 bg-mono-800;
       input {
         @apply absolute opacity-0;
       }
@@ -91,22 +91,22 @@
 
 .bk-sidebar-detached.bk-is-focused {
   .bk-preview-controls {
-    @apply bg-slate-300;
+    @apply bg-mono-300;
     button,
     label {
-      @apply bg-slate-800 hover:bg-slate-700 text-white;
+      @apply bg-mono-800 hover:bg-mono-700 text-white;
     }
     .bk-is-rotate {
-      @apply border-r-slate-700;
+      @apply border-r-mono-700;
       &:disabled {
-        @apply text-slate-600;
+        @apply text-mono-600;
       }
     }
     input:not(:checked) + .bk-preview-viewport-option {
-      @apply text-slate-500;
+      @apply text-mono-500;
     }
     label:hover input:not(:checked) + .bk-preview-viewport-option {
-      @apply text-slate-300;
+      @apply text-mono-300;
     }
   }
 }

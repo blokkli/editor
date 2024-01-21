@@ -6,7 +6,7 @@
     }
   }
   .bk-comments-overlay-item-button {
-    @apply text-lg font-bold leading-none relative bg-slate-300 text-slate-600 hover:bg-slate-400 flex items-center justify-center z-20 origin-top-left;
+    @apply text-lg font-bold leading-none relative bg-mono-300 text-mono-600 hover:bg-mono-400 flex items-center justify-center z-20 origin-top-left;
     @apply w-full h-full;
     &.bk-has-unresolved-comments {
       @apply bg-yellow-normal text-yellow-dark hover:bg-yellow-dark hover:text-yellow-light;
@@ -33,7 +33,7 @@
     }
   }
   .bk-comments-overlay-comments-header {
-    @apply h-40 pl-10 bg-slate-100 flex items-center uppercase text-xs font-semibold border-b border-b-slate-300 text-slate-600 pr-10;
+    @apply h-40 pl-10 bg-mono-100 flex items-center uppercase text-xs font-semibold border-b border-b-mono-300 text-mono-600 pr-10;
     svg {
       @apply w-15 h-15 mr-5 fill-current;
     }
@@ -47,12 +47,12 @@
 }
 
 .bk.bk-comment {
-  @apply font-sans text-base p-15 lg:p-20 border-b hover:bg-slate-50;
+  @apply font-sans text-base p-15 lg:p-20 border-b hover:bg-mono-50;
   h3 {
     @apply font-sans font-bold;
   }
   .bk-comment-date {
-    @apply text-xs text-slate-500;
+    @apply text-xs text-mono-500;
   }
   .bk-comment-body {
     @apply mt-5 break-words lg:mt-15;

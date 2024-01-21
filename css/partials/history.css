@@ -8,7 +8,7 @@
         }
         &:after {
           content: '';
-          @apply absolute h-40 w-0 border-l-[8px] top-0 left-2 z-50 border-slate-400;
+          @apply absolute h-40 w-0 border-l-[8px] top-0 left-2 z-50 border-mono-400;
           border-style: dotted;
         }
       }
@@ -18,7 +18,7 @@
 
       &:hover {
         button:after {
-          @apply border-blue-700;
+          @apply border-accent-700;
         }
       }
     }
@@ -30,7 +30,7 @@
         &:after {
           content: '';
           @apply absolute w-0 left-[25.5px] top-0 h-full;
-          @apply border-l border-slate-300 border-dashed;
+          @apply border-l border-mono-300 border-dashed;
           @apply translate-y-20;
           @apply pointer-events-none;
           z-index: 1;
@@ -38,7 +38,7 @@
         &.is-last {
           @apply sticky bg-white bottom-0 z-50 py-15;
           &.bk-has-shadow {
-            box-shadow: 0 -2px 12px theme('colors.slate.300');
+            box-shadow: 0 -2px 12px theme('colors.mono.300');
           }
         }
         &.is-last:after {
@@ -46,37 +46,37 @@
         }
         &.is-active ~ li:after,
         &.is-active:after {
-          @apply border-solid border-slate-400;
+          @apply border-solid border-mono-400;
         }
 
         &.is-not-active button {
-          @apply text-slate-400;
+          @apply text-mono-400;
           em {
-            @apply text-slate-400;
+            @apply text-mono-400;
           }
           &:before {
-            @apply text-slate-300 scale-50;
+            @apply text-mono-300 scale-50;
           }
         }
         &.is-active {
           @apply pointer-events-none;
           button {
             &:before {
-              @apply bg-blue-800 scale-100;
+              @apply bg-accent-800 scale-100;
             }
           }
         }
 
         &.is-applied button {
           &:before {
-            @apply border-blue-200 bg-blue-200;
+            @apply border-accent-200 bg-accent-200;
           }
         }
         &:not(.is-active) button {
           &:hover {
-            @apply text-blue-800;
+            @apply text-accent-800;
             &:before {
-              @apply bg-blue-400;
+              @apply bg-accent-400;
             }
           }
         }
@@ -94,7 +94,7 @@
 
         &:before {
           content: '';
-          @apply absolute -top-[8px] left-[-1px] w-15 h-15 bg-slate-200 rounded-full z-10;
+          @apply absolute -top-[8px] left-[-1px] w-15 h-15 bg-mono-200 rounded-full z-10;
           @apply transition-all translate-y-20;
           box-shadow: 0 0 0 3px white;
         }
@@ -103,7 +103,7 @@
           @apply text-sm font-semibold;
         }
         em {
-          @apply text-slate-500 text-xs not-italic;
+          @apply text-mono-500 text-xs not-italic;
         }
       }
     }

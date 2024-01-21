@@ -4,7 +4,7 @@
     height: var(--bk-actions-height);
 
     @apply overflow-auto lg:overflow-visible;
-    @apply lg:border-l lg:border-l-slate-700;
+    @apply lg:border-l lg:border-l-mono-700;
     @apply order-first min-w-full lg:min-w-0 lg:order-none;
     &::-webkit-scrollbar {
       display: none;
@@ -14,7 +14,7 @@
       @apply hidden;
     }
     &:not(:empty) {
-      @apply border-b border-b-slate-500/25 lg:border-b-0;
+      @apply border-b border-b-mono-500/25 lg:border-b-0;
     }
   }
   .bk-blokkli-item-options-item {
@@ -32,7 +32,7 @@
     }
 
     &:not(:last-child) {
-      @apply lg:border-r lg:border-r-slate-600;
+      @apply lg:border-r lg:border-r-mono-600;
     }
 
     &:last-child {
@@ -43,27 +43,27 @@
     }
   }
   .bk-checkbox-toggle {
-    @apply relative flex items-center cursor-pointer h-full text-slate-800 leading-none;
+    @apply relative flex items-center cursor-pointer h-full text-mono-800 leading-none;
 
     @media not all and (hover: none) {
-      @apply hover:text-slate-950;
+      @apply hover:text-mono-950;
     }
     input {
       @apply sr-only;
     }
     input:checked + div {
-      @apply after:translate-x-full after:border-white bg-blue-800;
+      @apply after:translate-x-full after:border-white bg-accent-800;
     }
     @media not all and (hover: none) {
       input:not(:checked):hover + div {
-        @apply bg-slate-500;
+        @apply bg-mono-500;
       }
       input:checked:hover + div {
-        @apply bg-blue-700;
+        @apply bg-accent-700;
       }
     }
     > div {
-      @apply relative w-[36px] h-20 bg-slate-400 rounded-full;
+      @apply relative w-[36px] h-20 bg-mono-400 rounded-full;
       @apply after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-[16px] after:w-[16px];
     }
     > span {
@@ -71,19 +71,19 @@
     }
   }
   .bk-blokkli-item-options-checkbox {
-    @apply relative inline-flex items-center cursor-pointer h-full px-10 text-slate-200;
+    @apply relative inline-flex items-center cursor-pointer h-full px-10 text-mono-200;
     @media not all and (hover: none) {
-      @apply hover:bg-slate-800 hover:text-slate-50;
+      @apply hover:bg-mono-800 hover:text-mono-50;
     }
     input {
       @apply sr-only;
     }
     input:checked + div {
-      @apply after:translate-x-full after:border-white bg-slate-500 after:bg-slate-50;
+      @apply after:translate-x-full after:border-white bg-mono-500 after:bg-mono-50;
     }
     > div {
-      @apply relative w-[36px] h-20 bg-slate-700 rounded-full;
-      @apply after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-300 after:rounded-full after:h-[16px] after:w-[16px];
+      @apply relative w-[36px] h-20 bg-mono-700 rounded-full;
+      @apply after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-mono-300 after:rounded-full after:h-[16px] after:w-[16px];
     }
     > span {
       @apply inline-block pl-10;
@@ -92,19 +92,19 @@
 
   .bk-blokkli-item-options-radios:not(.bk-is-color) {
     @apply flex items-center px-10 h-full relative gap-3;
-    @apply text-slate-50  select-none text-sm;
+    @apply text-mono-50  select-none text-sm;
     > label {
       @apply h-full flex items-center cursor-pointer;
       input {
         @apply sr-only;
 
         &:checked + span {
-          @apply bg-slate-100 text-slate-900;
+          @apply bg-mono-100 text-mono-900;
         }
       }
       @media not all and (hover: none) {
         &:hover input:not(:checked) + span {
-          @apply bg-slate-700;
+          @apply bg-mono-700;
         }
       }
       span {
@@ -112,7 +112,7 @@
       }
 
       &.bk-is-muted {
-        @apply text-slate-500;
+        @apply text-mono-500;
       }
     }
   }
@@ -143,13 +143,13 @@
       }
       @media not all and (hover: none) {
         &:hover input:not(:checked) + span {
-          @apply outline-slate-400;
+          @apply outline-mono-400;
         }
       }
       input {
         opacity: 0;
         &:checked + span {
-          @apply outline-slate-50;
+          @apply outline-mono-50;
         }
       }
     }
@@ -162,10 +162,10 @@
       svg {
         @apply h-[24px] w-auto;
         .bk-option-icon-fill {
-          @apply fill-slate-700;
+          @apply fill-mono-700;
         }
         .bk-option-icon-fill-strong {
-          @apply fill-slate-200;
+          @apply fill-mono-200;
         }
         .bk-option-icon-stroke {
           @apply stroke-current;
@@ -183,7 +183,7 @@
   .bk-blokkli-item-options-text {
     @apply cursor-pointer h-full;
     input {
-      @apply bg-transparent h-full px-10 focus:outline-none focus:shadow-none focus:bg-slate-800;
+      @apply bg-transparent h-full px-10 focus:outline-none focus:shadow-none focus:bg-mono-800;
     }
     @media not all and (hover: none) {
       &:hover {
@@ -197,10 +197,10 @@
 
   .bk-blokkli-item-options-radios.bk-is-grid {
     .bk-blokkli-item-options-radios-flex {
-      @apply flex h-20 w-60 mx-5 border border-current text-slate-500 relative;
+      @apply flex h-20 w-60 mx-5 border border-current text-mono-500 relative;
 
       > div {
-        @apply relative h-full bg-slate-800;
+        @apply relative h-full bg-mono-800;
         &:not(:last-child):after {
           content: '';
           @apply absolute -top-1 right-0 -bottom-1 border-r-[1px] border-current;
@@ -214,15 +214,15 @@
         @apply bg-white;
       }
       > div:after {
-        @apply !border-r-slate-950;
+        @apply !border-r-mono-950;
       }
     }
     label {
       @media not all and (hover: none) {
         &:hover input:not(:checked) + div {
-          @apply text-slate-300;
+          @apply text-mono-300;
           > div {
-            @apply bg-slate-600;
+            @apply bg-mono-600;
           }
         }
       }
@@ -233,14 +233,14 @@
     @apply px-15 h-full;
 
     @media not all and (hover: none) {
-      @apply hover:bg-slate-700;
+      @apply hover:bg-mono-700;
     }
 
     button {
       @apply flex items-center gap-10 h-full;
       svg {
         fill: currentColor;
-        @apply text-slate-100 w-20 h-15;
+        @apply text-mono-100 w-20 h-15;
       }
 
       span:nth-child(2) {
@@ -248,22 +248,22 @@
       }
 
       .bk-pill {
-        @apply bg-slate-50 inline-block text-slate-900 ml-5 rounded-full px-5 py-[1px] uppercase text-xs font-semibold;
+        @apply bg-mono-50 inline-block text-mono-900 ml-5 rounded-full px-5 py-[1px] uppercase text-xs font-semibold;
       }
     }
 
     > div {
-      @apply absolute top-full left-0 grid bg-slate-900 rounded overflow-hidden;
+      @apply absolute top-full left-0 grid bg-mono-900 rounded overflow-hidden;
       label {
         @apply py-10;
         @media not all and (hover: none) {
-          @apply hover:bg-slate-800;
+          @apply hover:bg-mono-800;
         }
       }
     }
 
     &.bk-is-active {
-      @apply bg-slate-800;
+      @apply bg-mono-800;
       button {
         svg {
           @apply rotate-180;

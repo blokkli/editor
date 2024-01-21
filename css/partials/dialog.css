@@ -3,7 +3,7 @@
   @apply flex items-center justify-center;
   .bk-dialog-background {
     @apply absolute top-0 left-0 w-full h-full;
-    @apply bg-black md:bg-slate-800/90 md:backdrop-blur-md;
+    @apply bg-black md:bg-mono-800/90 md:backdrop-blur-md;
   }
 
   .bk-dialog-inner {
@@ -14,7 +14,7 @@
 
   @screen md {
     .bk-overlay-header {
-      @apply bg-white text-slate-950 pl-15 py-5 text-lg border-b;
+      @apply bg-white text-mono-950 pl-15 py-5 text-lg border-b;
       > button {
         @apply p-15;
       }
@@ -27,10 +27,10 @@
   }
 
   .bk-dialog-lead {
-    @apply text-base md:text-lg lg:text-xl font-sans mb-10 lg:mb-20 text-slate-700;
+    @apply text-base md:text-lg lg:text-xl font-sans mb-10 lg:mb-20 text-mono-700;
   }
   .bk-dialog-footer {
-    @apply flex gap-10 md:mt-30 p-15 lg:p-20 border-t bg-slate-50;
+    @apply flex gap-10 md:mt-30 p-15 lg:p-20 border-t bg-mono-50;
     flex: 0 0 auto;
     button {
       @apply w-full lg:w-auto;
@@ -52,9 +52,9 @@
 }
 
 .bk-dialog-content-element {
-  @apply rounded p-20 min-h-[400px] mb-30 border border-slate-300 flex items-center justify-center overflow-hidden;
+  @apply rounded p-20 min-h-[400px] mb-30 border border-mono-300 flex items-center justify-center overflow-hidden;
   &.bk-default-bg {
-    @apply bg-slate-50;
+    @apply bg-mono-50;
   }
 }
 

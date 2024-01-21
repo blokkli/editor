@@ -50,7 +50,7 @@ module.exports = {
       mono: ['monospace'],
     },
     colors: {
-      blue: {
+      accent: {
         50: 'rgb(var(--bk-theme-accent-50) / <alpha-value>)',
         100: 'rgb(var(--bk-theme-accent-100) / <alpha-value>)',
         200: 'rgb(var(--bk-theme-accent-200) / <alpha-value>)',
@@ -63,7 +63,7 @@ module.exports = {
         900: 'rgb(var(--bk-theme-accent-900) / <alpha-value>)',
         950: 'rgb(var(--bk-theme-accent-950) / <alpha-value>)',
       },
-      slate: {
+      mono: {
         50: 'rgb(var(--bk-theme-mono-50) / <alpha-value>)',
         100: 'rgb(var(--bk-theme-mono-100) / <alpha-value>)',
         200: 'rgb(var(--bk-theme-mono-200) / <alpha-value>)',

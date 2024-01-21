@@ -1,7 +1,7 @@
 .bk-field-area {
   @apply absolute top-0 left-0;
   > div {
-    @apply absolute top-0 right-0 pr-20 uppercase text-xs text-slate-800 font-medium select-none tracking-wide will-change-transform;
+    @apply absolute top-0 right-0 pr-20 uppercase text-xs text-mono-800 font-medium select-none tracking-wide will-change-transform;
     span {
       @apply inline-block px-[8px] py-3 rounded-full whitespace-nowrap;
     }
@@ -9,7 +9,7 @@
 
   &.bk-is-active {
     > div span {
-      @apply bg-blue-700 text-white whitespace-nowrap;
+      @apply bg-accent-700 text-white whitespace-nowrap;
     }
   }
 }
@@ -19,7 +19,7 @@
   > div {
     @apply absolute bg-black;
     &.bk-is-active {
-      @apply border border-blue-700;
+      @apply border border-accent-700;
     }
   }
 }

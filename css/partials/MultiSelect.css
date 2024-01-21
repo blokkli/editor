@@ -2,7 +2,7 @@
   .bk-multi-select-area {
     @apply fixed top-0 left-0 pointer-events-none z-30 cursor-crosshair;
     rect {
-      @apply stroke-slate-400 stroke-[2];
+      @apply stroke-mono-400 stroke-[2];
       stroke-dasharray: 4 4;
       stroke-dashoffset: 100;
       animation: 0.1s bkSelectArea infinite;
@@ -18,7 +18,7 @@
     }
 
     &.bk-is-active {
-      /* @apply bg-blue-500/20; */
+      /* @apply bg-accent-500/20; */
       background-color: var(--bk-tw-ring-color);
     }
   }

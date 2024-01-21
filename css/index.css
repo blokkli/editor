@@ -55,20 +55,20 @@ html {
 .bk {
   @apply font-sans;
 
-  border-color: theme('colors.slate.200');
+  border-color: theme('colors.mono.200');
   * {
-    border-color: theme('colors.slate.200');
+    border-color: theme('colors.mono.200');
   }
 
   letter-spacing: 0;
 
   &.bk-loading-overlay {
-    @apply bg-slate-100/90 absolute top-0 left-0 w-full h-full z-init-overlay  flex items-center justify-center;
+    @apply bg-mono-100/90 absolute top-0 left-0 w-full h-full z-init-overlay  flex items-center justify-center;
     &.bk-is-screen {
       @apply fixed w-screen h-screen backdrop-blur-xl;
     }
     svg {
-      @apply w-100 h-100 text-slate-200 animate-spin fill-slate-400;
+      @apply w-100 h-100 text-mono-200 animate-spin fill-mono-400;
     }
   }
 }
@@ -106,11 +106,11 @@ html {
 
 .bk-button {
   @apply h-50 !px-20 inline-flex justify-center items-center gap-10 rounded-md !font-semibold  focus:outline-none transition !shadow !font-sans !text-base;
-  @apply !text-slate-900 hover:!text-white;
-  @apply !bg-slate-200 hover:!bg-slate-600;
+  @apply !text-mono-900 hover:!text-white;
+  @apply !bg-mono-200 hover:!bg-mono-600;
 
   &.bk-is-primary {
-    @apply !bg-blue-700 !text-white hover:!bg-blue-800;
+    @apply !bg-accent-700 !text-white hover:!bg-accent-800;
     &[disabled] {
       @apply opacity-30;
     }
@@ -192,7 +192,7 @@ html {
 .bk-body.bk-is-selecting {
   .bk-main-canvas {
     .draggable[data-is-selected='false'] {
-      @apply mobile-only:outline-dashed mobile-only:outline-slate-400 mobile-only:outline-offset-0 mobile-only:outline-1;
+      @apply mobile-only:outline-dashed mobile-only:outline-mono-400 mobile-only:outline-offset-0 mobile-only:outline-1;
     }
   }
 }
@@ -211,7 +211,7 @@ html {
 }
 
 .bk-blokkli-item-label {
-  @apply flex items-center text-slate-700 text-left;
+  @apply flex items-center text-mono-700 text-left;
   > div {
     @apply shrink-0;
   }
@@ -223,12 +223,12 @@ html {
 .bk-parent:hover .bk-blokkli-item-label,
 .bk-blokkli-item-label:hover {
   .bk-blokkli-item-label-icon {
-    @apply bg-slate-200 text-slate-900 border-slate-400;
+    @apply bg-mono-200 text-mono-900 border-mono-400;
   }
 }
 
 .bk-blokkli-item-label-icon {
-  @apply w-25 h-25 border rounded bg-slate-100 flex items-center justify-center text-slate-500 mr-[7px] relative z-20 border-slate-300;
+  @apply w-25 h-25 border rounded bg-mono-100 flex items-center justify-center text-mono-500 mr-[7px] relative z-20 border-mono-300;
 }
 
 .bk-html-root {
@@ -253,21 +253,21 @@ html {
   }
 
   *::-webkit-scrollbar-track {
-    @apply bg-slate-100;
+    @apply bg-mono-100;
   }
 
   *::-webkit-scrollbar-thumb {
-    @apply bg-slate-400;
+    @apply bg-mono-400;
     border-radius: 20px;
   }
 }
 
 .bk-overlay {
-  @apply bg-slate-800/90 backdrop-blur-md;
+  @apply bg-mono-800/90 backdrop-blur-md;
 }
 
 .bk-touch-action-bar {
-  @apply fixed bottom-0 left-0 w-full z-touch-action-bar bg-slate-900 h-50 pointer-events-auto;
+  @apply fixed bottom-0 left-0 w-full z-touch-action-bar bg-mono-900 h-50 pointer-events-auto;
 
   button {
     @apply w-full  h-full min-h-0 rounded-none;
@@ -275,7 +275,7 @@ html {
 }
 
 .bk-lead {
-  @apply text-xl text-slate-600;
+  @apply text-xl text-mono-600;
 }
 
 html.bk-html-root:not(.bk-use-animations) {
@@ -287,9 +287,9 @@ html.bk-html-root:not(.bk-use-animations) {
 }
 
 .bk-selectable {
-  @apply outline outline-1 outline-blue-700;
+  @apply outline outline-1 outline-accent-700;
   &.bk-is-active {
-    @apply ring-blue-400/30 ring-[7px];
+    @apply ring-accent-400/30 ring-[7px];
     outline-width: calc(var(--bk-outline-width) * 1px);
   }
 }

@@ -15,7 +15,7 @@
     @apply absolute left-0 top-0 w-full h-full mobile-only:bg-black;
   }
   .bk-form-overlay-resizable {
-    @apply ml-auto h-full shadow-2xl bg-slate-950;
+    @apply ml-auto h-full shadow-2xl bg-mono-950;
     .bk-form-overlay-iframe {
       iframe {
         @apply absolute top-0 left-0 w-full h-full overscroll-contain;
@@ -29,11 +29,11 @@
   .bk-overlay-header {
     @apply z-edit-form-header;
     @screen md {
-      @apply pl-15 h-50 bg-slate-900;
+      @apply pl-15 h-50 bg-mono-900;
 
       > button {
         @apply h-full aspect-square;
-        @apply hover:bg-slate-800;
+        @apply hover:bg-mono-800;
       }
     }
   }

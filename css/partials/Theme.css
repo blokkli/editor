@@ -48,8 +48,8 @@
 
 .bk-theme-editor-group {
   h2 {
-    @apply uppercase font-semibold text-sm text-slate-600 px-15 py-5;
-    @apply border-b border-b-slate-300;
-    @apply bg-slate-100;
+    @apply uppercase font-semibold text-sm text-mono-600 px-15 py-5;
+    @apply border-b border-b-mono-300;
+    @apply bg-mono-100;
   }
 }

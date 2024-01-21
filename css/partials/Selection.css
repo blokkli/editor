@@ -13,7 +13,7 @@
 .bk-body.bk-is-selecting {
   .bk.bk-selection {
     > div {
-      @apply mobile-only:bg-blue-500/40;
+      @apply mobile-only:bg-accent-500/40;
     }
   }
 }

@@ -46,16 +46,16 @@
     @apply absolute rounded;
     @apply transition duration-75;
     @apply flex items-center justify-center;
-    @apply text-xs font-semibold uppercase text-slate-500;
+    @apply text-xs font-semibold uppercase text-mono-500;
 
     &.bk-is-nested {
       span,
       &:before,
       &:after {
-        @apply bg-blue-500;
+        @apply bg-accent-500;
       }
       &.bk-is-active span {
-        @apply bg-blue-600;
+        @apply bg-accent-600;
       }
     }
 
@@ -63,10 +63,10 @@
       span,
       &:before,
       &:after {
-        @apply bg-blue-900;
+        @apply bg-accent-900;
       }
       &.bk-is-active span {
-        @apply bg-blue-950;
+        @apply bg-accent-950;
       }
     }
 

@@ -18,15 +18,15 @@
       @apply block;
       @apply absolute top-0 -left-10 w-[20px] h-full cursor-ew-resize opacity-50 hover:opacity-100 transition z-resizable;
       &:hover:before {
-        @apply bg-slate-400/40;
+        @apply bg-mono-400/40;
       }
       &:before {
         content: '';
-        @apply bg-slate-400/25 absolute top-0 h-full left-10 w-[12px];
+        @apply bg-mono-400/25 absolute top-0 h-full left-10 w-[12px];
       }
       &:after {
         content: '';
-        @apply absolute top-1/2 -translate-y-1/2 h-100 w-[5px] left-[13px] bg-slate-100 border-x-2 border-x-slate-400;
+        @apply absolute top-1/2 -translate-y-1/2 h-100 w-[5px] left-[13px] bg-mono-100 border-x-2 border-x-mono-400;
       }
     }
   }

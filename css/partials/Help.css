@@ -19,7 +19,7 @@
 
     .bk-shortcut {
       > kbd {
-        @apply bg-slate-100 text-slate-800 border border-slate-300;
+        @apply bg-mono-100 text-mono-800 border border-mono-300;
       }
       @container (min-width: 500px) {
         @apply text-base;
@@ -30,15 +30,15 @@
     }
 
     tr {
-      @apply border-b border-b-slate-300;
+      @apply border-b border-b-mono-300;
 
       &.bk-is-heading {
-        @apply border-b-2 border-b-slate-300;
+        @apply border-b-2 border-b-mono-300;
       }
     }
 
     th {
-      @apply text-left font-semibold pt-30 uppercase text-xs pb-10 text-slate-900;
+      @apply text-left font-semibold pt-30 uppercase text-xs pb-10 text-mono-900;
     }
 
     td {

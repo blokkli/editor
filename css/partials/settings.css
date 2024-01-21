@@ -36,25 +36,25 @@
       }
     }
     input:checked + .bk-icon {
-      @apply ring ring-blue-700;
+      @apply ring ring-accent-700;
       svg {
         @apply opacity-100;
       }
     }
     input:checked + .bk-icon + span {
-      @apply font-semibold text-slate-950;
+      @apply font-semibold text-mono-950;
     }
     input:not(:checked):hover + .bk-icon {
-      @apply border-slate-500;
+      @apply border-mono-500;
       svg {
         @apply opacity-70;
       }
     }
     input:not(:checked):hover + .bk-icon + span {
-      @apply text-slate-800;
+      @apply text-mono-800;
     }
     span {
-      @apply inline-block mt-10 text-sm text-left w-full text-slate-600;
+      @apply inline-block mt-10 text-sm text-left w-full text-mono-600;
     }
   }
 }

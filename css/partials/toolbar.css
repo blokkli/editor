@@ -1,7 +1,7 @@
 .bk {
   .bk-toolbar {
-    @apply relative top-0 left-0 right-0 z-toolbar lg:right-50 lg:border-r lg:border-r-slate-700;
-    @apply bg-slate-950/90 backdrop-blur-lg lg:backdrop-blur-none lg:bg-slate-900;
+    @apply relative top-0 left-0 right-0 z-toolbar lg:right-50 lg:border-r lg:border-r-mono-700;
+    @apply bg-mono-950/90 backdrop-blur-lg lg:backdrop-blur-none lg:bg-mono-900;
     @apply select-none;
     @apply h-40 text-base flex;
     @apply lg:fixed;
@@ -22,7 +22,7 @@
   }
 
   .bk-tooltip {
-    @apply bg-slate-800/80 backdrop-blur p-5 text-slate-50 font-semibold text-sm rounded select-none pointer-events-none h-[34px] hidden items-center justify-between px-10 leading-none whitespace-nowrap h-30;
+    @apply bg-mono-800/80 backdrop-blur p-5 text-mono-50 font-semibold text-sm rounded select-none pointer-events-none h-[34px] hidden items-center justify-between px-10 leading-none whitespace-nowrap h-30;
     @screen lg {
       @apply flex;
     }
@@ -36,11 +36,11 @@
   }
 
   .bk-toolbar-menu-button {
-    @apply lg:bg-blue-700 w-50 lg:w-70 flex items-center justify-center text-slate-50 h-full focus:outline-none relative z-50 transition;
-    @apply lg:hover:bg-blue-800;
+    @apply lg:bg-accent-700 w-50 lg:w-70 flex items-center justify-center text-mono-50 h-full focus:outline-none relative z-50 transition;
+    @apply lg:hover:bg-accent-800;
 
     &.bk-is-active {
-      @apply bg-white text-blue-700;
+      @apply bg-white text-accent-700;
     }
 
     svg {
@@ -55,7 +55,7 @@
   .bk-toolbar-container {
     &:not(:first-child) {
       @screen lg {
-        @apply border-l border-l-slate-600;
+        @apply border-l border-l-mono-600;
       }
     }
     &:empty {
@@ -89,7 +89,7 @@
         }
       }
       strong {
-        @apply text-slate-100;
+        @apply text-mono-100;
       }
     }
   }
@@ -114,16 +114,16 @@
     @apply uppercase h-full font-semibold;
 
     &.bk-is-active {
-      @apply bg-white text-slate-900;
+      @apply bg-white text-mono-900;
     }
   }
   .bk-translations-dropdown {
     @apply absolute top-full right-0 lg:right-auto lg:left-0 w-200 bg-white z-toolbar-dropdown shadow-lg;
 
     label {
-      @apply relative px-15 py-10 block cursor-pointer lg:hover:bg-slate-100;
+      @apply relative px-15 py-10 block cursor-pointer lg:hover:bg-mono-100;
       &.bk-is-muted {
-        @apply text-slate-400;
+        @apply text-mono-400;
       }
       > div {
         @apply flex items-center gap-10;
@@ -142,24 +142,24 @@
 .bk-shortcut {
   @apply text-xs flex gap-5 font-semibold items-center h-[1.5em];
   > kbd {
-    @apply bg-slate-500 px-5 text-slate-100 rounded flex items-center min-w-[1.5em] justify-center h-full leading-none pt-[0.15em] font-sans text-xs;
+    @apply bg-mono-500 px-5 text-mono-100 rounded flex items-center min-w-[1.5em] justify-center h-full leading-none pt-[0.15em] font-sans text-xs;
   }
 }
 
 .bk {
   .bk-toolbar-button {
-    @apply text-slate-200 flex gap-5 items-center px-10 min-w-[50px] justify-center h-40 lg:h-50;
+    @apply text-mono-200 flex gap-5 items-center px-10 min-w-[50px] justify-center h-40 lg:h-50;
 
     &:not(.is-active) {
-      @apply lg:hover:bg-slate-700;
+      @apply lg:hover:bg-mono-700;
     }
 
     &.bk-is-inactive {
-      @apply text-slate-600;
+      @apply text-mono-600;
     }
 
     &[disabled] {
-      @apply pointer-events-none text-slate-700;
+      @apply pointer-events-none text-mono-700;
     }
     svg {
       @apply w-18 h-18 lg:w-20 lg:h-20 fill-current;

@@ -1,27 +1,27 @@
 .bk-form-label {
-  @apply !block !mb-10 !text-base !font-semibold !text-slate-900 !font-sans;
+  @apply !block !mb-10 !text-base !font-semibold !text-mono-900 !font-sans;
   @apply mt-20;
 }
 
 .bk-form-input {
-  @apply !bg-white !border !border-slate-400 !text-slate-900 !rounded-md focus:!outline-none focus:!border-transparent !block !w-full !p-10 !font-sans !text-base;
+  @apply !bg-white !border !border-mono-400 !text-mono-900 !rounded-md focus:!outline-none focus:!border-transparent !block !w-full !p-10 !font-sans !text-base;
 }
 .bk {
   .bk-checkbox,
   .bk-radio {
-    @apply flex items-center cursor-pointer py-5 hover:text-blue-600 relative;
+    @apply flex items-center cursor-pointer py-5 hover:text-accent-600 relative;
     input {
       @apply absolute opacity-0;
     }
 
     input:checked ~ span:before {
-      @apply bg-blue-700;
+      @apply bg-accent-700;
     }
     span {
       @apply font-medium flex items-center;
       &:before {
         content: '';
-        @apply shrink-0 w-[18px] h-[18px] text-blue-600 bg-slate-100 border border-slate-400 focus:ring-blue-100 focus:ring-2 outline-none rounded block mr-[6px];
+        @apply shrink-0 w-[18px] h-[18px] text-accent-600 bg-mono-100 border border-mono-400 focus:ring-accent-100 focus:ring-2 outline-none rounded block mr-[6px];
       }
     }
   }

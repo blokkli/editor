@@ -50,5 +50,5 @@
 }
 
 .debug-rect {
-  @apply fixed bg-blue-700/10 border border-blue-700 z-[999999999999] pointer-events-none;
+  @apply fixed bg-accent-700/10 border border-accent-700 z-[999999999999] pointer-events-none;
 }

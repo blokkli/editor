@@ -4,13 +4,13 @@
     @apply w-[160px] lg:w-200 lg:w-[240px];
   }
   .bk-blokkli-item-actions-title-count {
-    @apply bg-slate-50 text-slate-900 inline-flex items-center justify-center px-3 min-w-[1.5em] h-[1.5em] rounded-full ml-10 text-xs lg:text-sm font-bold leading-none;
+    @apply bg-mono-50 text-mono-900 inline-flex items-center justify-center px-3 min-w-[1.5em] h-[1.5em] rounded-full ml-10 text-xs lg:text-sm font-bold leading-none;
     &.bk-is-hidden {
       @apply opacity-0;
     }
   }
   &.bk-blokkli-item-actions {
-    @apply text-slate-50  select-none text-sm;
+    @apply text-mono-50  select-none text-sm;
   }
   .bk-blokkli-item-actions-inner {
     @apply fixed left-0 p-0 z-actions w-full will-change-transform;
@@ -22,7 +22,7 @@
   }
   .bk-blokkli-item-actions-controls {
     @apply flex items-stretch whitespace-nowrap h-full lg:shadow-xl flex-wrap lg:flex-nowrap;
-    @apply bg-slate-950/90 backdrop-blur lg:bg-slate-900 lg:backdrop-blur-none;
+    @apply bg-mono-950/90 backdrop-blur lg:bg-mono-900 lg:backdrop-blur-none;
     @apply relative z-50;
 
     &::-webkit-scrollbar {
@@ -36,8 +36,8 @@
   .bk-blokkli-item-actions-buttons {
     @apply relative flex flex-1 lg:flex-initial;
     > button {
-      @apply text-slate-300 h-full flex items-center shrink-0  justify-center relative lg:static z-50;
-      @apply lg:hover:bg-slate-700 lg:hover:text-slate-50;
+      @apply text-mono-300 h-full flex items-center shrink-0  justify-center relative lg:static z-50;
+      @apply lg:hover:bg-mono-700 lg:hover:text-mono-50;
       max-width: var(--bk-actions-height);
       flex: 1 0 auto;
       @screen lg {
@@ -45,7 +45,7 @@
         flex: initial;
       }
       &.bk-is-active {
-        @apply bg-white text-slate-900 z-50;
+        @apply bg-white text-mono-900 z-50;
       }
       .bk-tooltip {
         @apply absolute bottom-full left-0 w-full mb-3;
@@ -71,14 +71,14 @@
   }
 
   .bk-blokkli-item-actions-type-button {
-    @apply flex items-center justify-between cursor-default lg:min-w-[180px] text-slate-300 font-bold h-full pl-[9px] lg:pr-15  rounded-l leading-none;
+    @apply flex items-center justify-between cursor-default lg:min-w-[180px] text-mono-300 font-bold h-full pl-[9px] lg:pr-15  rounded-l leading-none;
     @apply text-xs lg:text-sm lg:text-base;
     @apply w-full;
     .bk-blokkli-item-actions-title-label {
       @apply mr-auto truncate;
     }
     .bk-blokkli-item-actions-title-icon {
-      @apply text-xl lg:text-[34px] mr-[0.25em] bg-slate-800 w-[1em] h-[1em] rounded border border-slate-600 relative text-white;
+      @apply text-xl lg:text-[34px] mr-[0.25em] bg-mono-800 w-[1em] h-[1em] rounded border border-mono-600 relative text-white;
       svg {
         @apply w-[0.7em] h-[0.7em] fill-current absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
       }
@@ -87,22 +87,22 @@
       @apply cursor-pointer;
       @media not all and (hover: none) {
         &:not(.is-open) {
-          @apply hover:text-slate-50 hover:bg-slate-700;
+          @apply hover:text-mono-50 hover:bg-mono-700;
           &:hover {
             .bk-blokkli-item-actions-title-icon {
-              @apply bg-slate-600 border-slate-400;
+              @apply bg-mono-600 border-mono-400;
             }
           }
         }
       }
     }
     &.is-open {
-      @apply lg:bg-slate-700 text-white;
+      @apply lg:bg-mono-700 text-white;
       .bk-caret {
         @apply transform rotate-180;
       }
       .bk-blokkli-item-actions-title-icon {
-        @apply bg-slate-600 border-slate-400;
+        @apply bg-mono-600 border-mono-400;
       }
     }
     .bk-caret {
@@ -120,7 +120,7 @@
   }
 
   #bk-blokkli-item-actions {
-    @apply lg:border-l lg:border-l-slate-600 justify-end;
+    @apply lg:border-l lg:border-l-mono-600 justify-end;
   }
 
   .bk-blokkli-item-actions-type {
@@ -128,32 +128,32 @@
   }
 
   .bk-blokkli-item-actions-type-dropdown {
-    @apply absolute bottom-full left-0 min-w-[300px] bg-slate-900 text-slate-200 overflow-hidden shadow-xl-inverted rounded-tr w-screen lg:w-auto;
+    @apply absolute bottom-full left-0 min-w-[300px] bg-mono-900 text-mono-200 overflow-hidden shadow-xl-inverted rounded-tr w-screen lg:w-auto;
     @screen lg {
       @apply top-full bottom-auto shadow-xl rounded-t-none rounded-b;
     }
     h3 {
-      @apply p-10 pt-15 font-semibold uppercase text-xs tracking-wide text-slate-400;
+      @apply p-10 pt-15 font-semibold uppercase text-xs tracking-wide text-mono-400;
     }
     button {
-      @apply flex py-15 px-10 items-center gap-5 w-full font-semibold lg:text-lg text-slate-300;
+      @apply flex py-15 px-10 items-center gap-5 w-full font-semibold lg:text-lg text-mono-300;
       text-align: left;
       line-height: 1;
       @screen lg {
         &:hover {
-          @apply text-white bg-slate-800;
+          @apply text-white bg-mono-800;
           .bk-blokkli-item-icon {
-            @apply border-slate-300;
+            @apply border-mono-300;
           }
         }
       }
     }
     .bk-blokkli-item-icon {
-      @apply text-2xl lg:text-[34px] bg-slate-700 rounded flex items-center justify-center border border-slate-500 p-[0.2em];
+      @apply text-2xl lg:text-[34px] bg-mono-700 rounded flex items-center justify-center border border-mono-500 p-[0.2em];
     }
 
     > div:not(:first-child) {
-      @apply border-t border-t-slate-800;
+      @apply border-t border-t-mono-800;
     }
   }
 

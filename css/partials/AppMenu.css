@@ -13,7 +13,7 @@
 
   > button {
     @apply h-40 md:h-50 flex items-center text-base font-bold pl-15 md:pl-25;
-    @apply bg-white text-slate-950;
+    @apply bg-white text-mono-950;
     svg {
       @apply w-20 h-20  md:w-30 md:h-30 mr-25 fill-current;
     }
@@ -24,24 +24,24 @@
   @apply flex-1 overflow-auto flex flex-col;
   > div {
     @apply grid;
-    @apply border-t border-t-slate-200;
+    @apply border-t border-t-mono-200;
   }
 }
 
 .bk .bk-menu-list-button {
-  @apply grid items-center pl-15 pr-20 py-15 gap-x-10 md:gap-x-15 w-full text-left whitespace-nowrap text-slate-950;
-  @apply lg:hover:bg-slate-100;
-  @apply border-b border-b-slate-200;
+  @apply grid items-center pl-15 pr-20 py-15 gap-x-10 md:gap-x-15 w-full text-left whitespace-nowrap text-mono-950;
+  @apply lg:hover:bg-mono-100;
+  @apply border-b border-b-mono-200;
   grid-template-columns: auto 1fr;
   grid-template-rows: auto auto;
   &[disabled] {
     @apply pointer-events-none;
     .bk-menu-list-icon {
-      @apply bg-white border-slate-100 text-slate-300;
+      @apply bg-white border-mono-100 text-mono-300;
     }
     span,
     strong {
-      @apply text-slate-400;
+      @apply text-mono-400;
     }
   }
   strong {
@@ -49,7 +49,7 @@
   }
   span {
     grid-column: 2;
-    @apply text-slate-700 text-sm;
+    @apply text-mono-700 text-sm;
   }
 
   &:not([disabled]).bk-is-danger {
@@ -76,12 +76,12 @@
 
   &:hover {
     .bk-menu-list-icon {
-      @apply bg-slate-200 text-slate-900 border-slate-500;
+      @apply bg-mono-200 text-mono-900 border-mono-500;
     }
   }
 }
 .bk-menu-list-icon {
-  @apply flex items-center justify-center bg-slate-100 rounded text-slate-500 border border-slate-300;
+  @apply flex items-center justify-center bg-mono-100 rounded text-mono-500 border border-mono-300;
   @apply w-40 h-40 md:w-50 md:h-50;
   grid-column: 1;
   grid-row: 1 / -1;

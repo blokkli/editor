@@ -14,36 +14,36 @@
   .bk-search-loading {
     @apply absolute top-0 right-0 z-40 w-full h-full bg-white/40 flex items-center justify-center;
     svg {
-      @apply w-50 h-50 text-slate-200 animate-spin fill-slate-400;
+      @apply w-50 h-50 text-mono-200 animate-spin fill-mono-400;
     }
   }
   .bk-search-is-loading {
     @apply opacity-50;
   }
   .bk-search-input {
-    @apply relative pl-30 md:pl-[50px] bg-slate-900 md:bg-slate-700;
+    @apply relative pl-30 md:pl-[50px] bg-mono-900 md:bg-mono-700;
     > .bk-icon {
-      @apply text-slate-100 w-20 h-20 absolute top-1/2 -translate-y-1/2 left-10 md:left-20;
+      @apply text-mono-100 w-20 h-20 absolute top-1/2 -translate-y-1/2 left-10 md:left-20;
       svg {
         @apply fill-current;
       }
     }
     input {
       @apply h-40 md:h-50 appearance-none w-full focus:outline-none focus:shadow-none focus:border-none focus:ring-transparent bg-transparent;
-      @apply text-slate-100 md:text-lg font-bold leading-none;
-      @apply placeholder-slate-500 placeholder:font-normal;
+      @apply text-mono-100 md:text-lg font-bold leading-none;
+      @apply placeholder-mono-500 placeholder:font-normal;
       @apply pl-10 md:pl-0;
     }
     button {
       @apply absolute top-0 right-0 h-full px-15;
       svg {
-        @apply w-20 h-20 fill-slate-100 pointer-events-none;
+        @apply w-20 h-20 fill-mono-100 pointer-events-none;
       }
     }
   }
 
   .bk-search-item-icon {
-    @apply w-[1em] h-[1em] rounded-[0.1em] bg-slate-100 flex items-center justify-center border border-slate-200 shrink-0 text-slate-500 relative overflow-hidden;
+    @apply w-[1em] h-[1em] rounded-[0.1em] bg-mono-100 flex items-center justify-center border border-mono-200 shrink-0 text-mono-500 relative overflow-hidden;
     @apply p-[0.125em];
     @apply text-[40px] lg:text-[46px];
 
@@ -82,7 +82,7 @@
   }
 
   .bk-search-no-results {
-    @apply absolute top-0 left-0 h-full w-full flex items-center justify-center flex-col text-lg text-slate-500 font-medium;
+    @apply absolute top-0 left-0 h-full w-full flex items-center justify-center flex-col text-lg text-mono-500 font-medium;
     svg {
       @apply fill-current w-100 h-100 mb-15;
     }
@@ -92,14 +92,14 @@
     @apply flex border-b justify-between bg-white;
     li {
       button {
-        @apply px-15 py-[12px] lg:p-20 w-full text-center uppercase text-xs md:text-sm text-slate-500;
+        @apply px-15 py-[12px] lg:p-20 w-full text-center uppercase text-xs md:text-sm text-mono-500;
       }
       &:not(.bk-is-active):hover button {
-        @apply text-slate-800;
+        @apply text-mono-800;
       }
       &.bk-is-active {
         button {
-          @apply font-bold text-blue-700;
+          @apply font-bold text-accent-700;
         }
       }
     }
@@ -117,20 +117,20 @@
   @apply overflow-auto h-full overscroll-contain absolute top-0 left-0 w-full;
 }
 .bk.bk-search-item {
-  @apply px-20 text-slate-700 py-15 md:py-20 cursor-pointer relative flex gap-10 text-left w-full items-stretch;
+  @apply px-20 text-mono-700 py-15 md:py-20 cursor-pointer relative flex gap-10 text-left w-full items-stretch;
 
   &:after {
     content: '';
-    @apply absolute bottom-0 left-0 w-full h-[0.5px] bg-slate-200;
+    @apply absolute bottom-0 left-0 w-full h-[0.5px] bg-mono-200;
   }
 
   &.bk-is-active {
-    @apply bg-slate-100 text-slate-950;
+    @apply bg-mono-100 text-mono-950;
     .bk-search-item-icon {
-      @apply border-blue-700 bg-blue-600 text-white;
+      @apply border-accent-700 bg-accent-600 text-white;
 
       &.bk-is-image {
-        @apply outline outline-blue-900 outline-[1px];
+        @apply outline outline-accent-900 outline-[1px];
       }
     }
   }
