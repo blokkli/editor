@@ -257,9 +257,11 @@ export const globalOptionsDefaults: Record<GlobalOptionsKey, string> = ${JSON.st
           .join('\n    ')
 
         const typeName = `FieldListItem_${v.definition.bundle}`
-        const typeDefinition = `type ${typeName} = {
+        const typeDefinition = `
+type Props_${v.definition.bundle} = ExtractPublicPropTypes<InstanceType<typeof ${v.componentName}>>
+type ${typeName} = {
   bundle: '${v.definition.bundle}'
-  props: ExtractPublicPropTypes<InstanceType<typeof ${v.componentName}>>
+  props: Props_${v.definition.bundle}
   options: {
     ${options}
   }
@@ -272,6 +274,13 @@ export const globalOptionsDefaults: Record<GlobalOptionsKey, string> = ${JSON.st
       })
 
     const componentImports = typedFieldListItems.map((v) => v.import).join('\n')
+
+    const bundlePropsMap = Object.values(this.definitions)
+      .filter((v) => v.definition.bundle !== 'from_library')
+      .map((v) => {
+        return `${v.definition.bundle}: Props_${v.definition.bundle}`
+      })
+      .join('\n')
 
     return `
 ${componentImports}
@@ -296,6 +305,10 @@ export type FieldListItemTyped = FieldListItem & (${typedFieldListItems
       .map((v) => v.typeName)
       .join(' | ')})
 export type FieldListItemTypedArray = Array<FieldListItemTyped>
+
+export type BundlePropsMap = {
+  ${bundlePropsMap}
+}
 `
   }
 

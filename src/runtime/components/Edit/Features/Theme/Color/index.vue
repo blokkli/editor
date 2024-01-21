@@ -28,7 +28,7 @@ import type {
   ThemeColorShade,
   ThemeContextColorGroup,
   ThemeContextColorShade,
-} from '#blokkli/types'
+} from '#blokkli/types/theme'
 
 const props = defineProps<{
   group: ThemeColorGroup | ThemeContextColorGroup
@@ -63,12 +63,12 @@ function hexToRgb(v: string): RGB | null {
 }
 
 const initValue = computed(() =>
-  rgbToHex(configTheme[props.group][props.shade]),
+  rgbToHex((configTheme as any)[props.group][props.shade]),
 )
 
 const inputValue = computed({
   get() {
-    return rgbToHex(theme[props.group].value[props.shade])
+    return rgbToHex((theme as any)[props.group].value[props.shade])
   },
 
   set(hex: string) {

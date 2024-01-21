@@ -18,6 +18,7 @@ import type { BlokkliIcon } from '#blokkli/icons'
 import type { SettingsGroup, Viewport } from '#blokkli/constants'
 import type {
   BlockBundleWithNested,
+  BundlePropsMap,
   FieldListItemTyped,
   GlobalOptionsKey,
   ValidChunkNames,
@@ -120,12 +121,14 @@ export type BlockDefinitionOptionsInput = {
 }
 
 type DetermineVisibleOptionsContext<
+  B extends keyof BundlePropsMap | string,
   T extends BlockDefinitionOptionsInput = {},
   G extends GlobalOptionsKey[] | undefined = undefined,
 > = {
   options: (T extends BlockDefinitionOptionsInput ? WithOptions<T> : {}) &
     (G extends ValidGlobalConfigKeys ? GlobalOptionsKeyTypes<G> : {})
   parentType: BlockBundleWithNested | undefined
+  props: B extends keyof BundlePropsMap ? BundlePropsMap[B] : never
 }
 
 type ExtractGlobalOptions<G extends GlobalOptionsKey[]> =
@@ -142,6 +145,7 @@ export type BlokkliDefinitionAddBehaviour =
   | `editable:${string}`
 
 export type BlokkliDefinitionInputEditor<
+  Bundle extends keyof BundlePropsMap | string,
   Options extends BlockDefinitionOptionsInput = {},
   GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
 > = {
@@ -152,7 +156,7 @@ export type BlokkliDefinitionInputEditor<
    * If a method is defined, it is called whenever any of the options change.
    */
   determineVisibleOptions?: (
-    ctx: DetermineVisibleOptionsContext<Options, GlobalOptions>,
+    ctx: DetermineVisibleOptionsContext<Bundle, Options, GlobalOptions>,
   ) => Array<CombineKeysAndGlobalOptions<Options, GlobalOptions>>
 
   /**
@@ -258,11 +262,12 @@ export type BlokkliDefinitionInputEditor<
 export type BlockDefinitionInput<
   Options extends BlockDefinitionOptionsInput = {},
   GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
+  T extends keyof BundlePropsMap | string = '',
 > = {
   /**
    * The type ID of the item, e.g. "text" or "section_title".
    */
-  bundle: string
+  bundle: T
 
   /**
    * The name of the chunk group.
@@ -289,7 +294,7 @@ export type BlockDefinitionInput<
   /**
    * Settings for the behaviour in the editor.
    */
-  editor?: BlokkliDefinitionInputEditor<Options, GlobalOptions>
+  editor?: BlokkliDefinitionInputEditor<T, Options, GlobalOptions>
 }
 
 export type InjectedBlokkliItem = ComputedRef<{

@@ -152,9 +152,7 @@ const visibleOptions = computed(() => {
     },
     {},
   )
-  const renderedBlock = state.renderedBlocks.value.find(
-    (v) => v.item.uuid === props.uuids[0],
-  )
+  const renderedBlock = state.getRenderedBlock(props.uuids[0])
 
   const parentType =
     renderedBlock?.parentEntityType === runtimeConfig.itemEntityType
@@ -165,12 +163,10 @@ const visibleOptions = computed(() => {
     definition.value?.editor?.determineVisibleOptions({
       options: allOptions,
       parentType: parentType as any,
+      props: (renderedBlock?.item.props || {}) as never,
     })
 
-  const visible = availableOptions.value.filter((v) =>
-    visibleKeys.includes(v.property),
-  )
-  return visible
+  return availableOptions.value.filter((v) => visibleKeys.includes(v.property))
 })
 
 function getOptionValue(key: string, defaultValue: any, uuidOverride?: string) {

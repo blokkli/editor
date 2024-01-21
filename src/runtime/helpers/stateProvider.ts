@@ -56,6 +56,7 @@ export type StateProvider = {
   canEdit: ComputedRef<boolean>
   isLoading: Readonly<Ref<boolean>>
   renderedBlocks: ComputedRef<RenderedBlock[]>
+  getRenderedBlock: (uuid: string) => RenderedBlock | undefined
 }
 
 export default async function (
@@ -229,6 +230,9 @@ export default async function (
     return 'editing'
   })
 
+  const getRenderedBlock: StateProvider['getRenderedBlock'] = (uuid) =>
+    renderedBlocks.value.find((v) => v.item.uuid === uuid)
+
   onMounted(() => {
     eventBus.on('reloadState', onReloadState)
     eventBus.on('reloadEntity', onReloadEntity)
@@ -261,5 +265,6 @@ export default async function (
     canEdit,
     isLoading: readonly(isLoading),
     renderedBlocks,
+    getRenderedBlock,
   }
 }
