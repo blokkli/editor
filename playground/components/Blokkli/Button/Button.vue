@@ -1,5 +1,5 @@
 <template>
-  <div :class="parentType ? 'inline-block' : 'container'">
+  <div :class="parentType ? 'inline-block' : 'container text-center mt-25'">
     <NuxtLink
       :to="href"
       class="button"

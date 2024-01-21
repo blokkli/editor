@@ -11,14 +11,15 @@
   }
 
   .bk-multi-select-rectangle {
-    @apply absolute top-0 left-0 pointer-events-none rounded;
+    @apply absolute top-0 left-0 pointer-events-none;
 
     &:not(.bk-is-active) {
-      @apply outline-dashed;
+      @apply outline-dashed outline-2;
     }
 
     &.bk-is-active {
-      @apply bg-blue-500/20;
+      /* @apply bg-blue-500/20; */
+      background-color: var(--bk-tw-ring-color);
     }
   }
 }

@@ -541,6 +541,13 @@ export interface DraggableHostData {
   fieldName: string
 }
 
+export type DraggableStyle = {
+  radius: [number, number, number, number]
+  radiusString: string
+  contrastColor: string
+  contrastColorTranslucent: string
+}
+
 export interface DraggableExistingBlock {
   itemType: 'existing'
   element: () => HTMLElement

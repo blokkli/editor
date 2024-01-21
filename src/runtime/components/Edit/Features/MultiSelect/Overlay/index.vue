@@ -22,6 +22,7 @@
         :rect="item.rect"
         :is-intersecting="item.isIntersecting"
         :offset-y="scrollY"
+        :style="item.style"
       />
     </div>
   </Teleport>
@@ -37,9 +38,9 @@
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
-import type { AnimationFrameEvent } from '#blokkli/types'
+import type { AnimationFrameEvent, DraggableStyle } from '#blokkli/types'
 import type { Rectangle } from '#blokkli/types'
-import { intersects } from '#blokkli/helpers'
+import { getDraggableStyle, intersects } from '#blokkli/helpers'
 import Item from './Item/index.vue'
 
 const { keyboard, eventBus, ui, dom } = useBlokkli()
@@ -49,6 +50,7 @@ export type SelectableElement = {
   nested: boolean
   rect: Rectangle
   isIntersecting: boolean
+  style: DraggableStyle
 }
 
 const props = defineProps<{
@@ -113,19 +115,15 @@ function emitSelected() {
   )
 }
 
-const nestedUuids = computed(() => {
-  return dom
-    .getAllBlocks()
-    .filter((v) => v.isNested)
-    .map((v) => v.uuid)
-})
-
 const blocks = computed(() =>
   dom.getAllBlocks().map((block) => {
+    const element = block.dragElement()
+    const style = getDraggableStyle(element)
     return {
       uuid: block.uuid,
       isNested: block.isNested,
-      element: block.dragElement(),
+      element,
+      style,
     }
   }),
 )
@@ -147,11 +145,13 @@ function onAnimationFrame(e: AnimationFrameEvent) {
     if (isIntersecting && block.isNested) {
       hasNested = true
     }
+
     newSelectable.push({
       uuid: block.uuid,
       nested: block.isNested,
       rect,
       isIntersecting,
+      style: block.style,
     })
   })
 

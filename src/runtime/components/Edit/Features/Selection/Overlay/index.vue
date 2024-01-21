@@ -2,21 +2,27 @@
   <div v-if="styleSize" :style="styleSize" class="bk bk-selection">
     <div
       v-for="rect in selectedRects"
-      class="bk-selectable bk-is-active"
       :key="rect.uuid"
+      class="bk-selectable bk-is-active"
       :style="{
         width: rect.width + 'px',
         height: rect.height + 'px',
         transform: `translate(${rect.x}px, ${rect.y}px)`,
-        borderRadius: rect.borderRadius + 'px',
+        borderRadius: rect.style.radiusString,
+        outlineColor: rect.style.contrastColor,
+        '--bk-tw-ring-color': rect.style.contrastColorTranslucent,
       }"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { falsy, getBounds } from '#blokkli/helpers'
-import type { DraggableExistingBlock, Rectangle } from '#blokkli/types'
+import { falsy, getBounds, getDraggableStyle } from '#blokkli/helpers'
+import type {
+  DraggableExistingBlock,
+  DraggableStyle,
+  Rectangle,
+} from '#blokkli/types'
 import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
 const props = defineProps<{
@@ -30,7 +36,7 @@ let interval: any = null
 
 type SelectedRect = Rectangle & {
   uuid: string
-  borderRadius: number
+  style: DraggableStyle
 }
 
 type BoundsRectable = Rectangle & { isVisible: boolean }
@@ -84,8 +90,7 @@ const selectedRects = computed<SelectedRect[]>(() => {
     const block = props.blocks[i]
     const element = block.dragElement()
     const rect = element.getBoundingClientRect()
-    const style = window.getComputedStyle(element)
-    const borderRadius = parseFloat(style.borderRadius.replace('px', '')) || 4
+    const style = getDraggableStyle(element)
     rects.push({
       x: (rect.x - artboardRect.x) / scale - bounds.value.x,
       y: (rect.y - artboardRect.y) / scale - bounds.value.y + artboardScroll,
@@ -98,7 +103,7 @@ const selectedRects = computed<SelectedRect[]>(() => {
           ? element.offsetHeight
           : element.scrollHeight,
       uuid: block.uuid,
-      borderRadius: isNaN(borderRadius) ? 0 : borderRadius,
+      style,
     })
   }
 

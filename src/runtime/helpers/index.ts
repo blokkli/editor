@@ -2,9 +2,13 @@ import type {
   DraggableItem,
   SearchContentItem,
   Rectangle,
+  DraggableStyle,
 } from '#blokkli/types'
 import { useRuntimeConfig } from '#imports'
 import { getDefinition } from '#blokkli/definitions'
+
+// RGBA, e.g. [255, 255, 255, 1] (white)
+type Color = [number, number, number, number]
 
 // @ts-ignore
 const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
@@ -323,16 +327,60 @@ export function distanceToRectangle(
   return Math.sqrt(dx * dx + dy * dy)
 }
 
-export function realBackgroundColor(el: HTMLElement | null) {
+export const parseColorString = (color: string): Color | undefined => {
+  const rgbaRegex =
+    /^rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})(?:,\s*(0|1|0?\.\d+))?\)$/
+
+  const match = color.match(rgbaRegex)
+  if (!match) {
+    return
+  }
+
+  const r = parseInt(match[1])
+  const g = parseInt(match[2])
+  const b = parseInt(match[3])
+  const a = match[4] !== undefined ? parseFloat(match[4]) : 1
+
+  if ([r, g, b, a].some((val) => isNaN(val))) {
+    throw new Error('Invalid color values')
+  }
+
+  if (
+    r < 0 ||
+    r > 255 ||
+    g < 0 ||
+    g > 255 ||
+    b < 0 ||
+    b > 255 ||
+    a < 0 ||
+    a > 1
+  ) {
+    return
+  }
+
+  return [r, g, b, a]
+}
+
+/**
+ * Determine the visual background color of an element.
+ *
+ * If the element defines a background color itself, it will be returned.
+ * If the element has no explicit background color, we iterate over the
+ * ancestors until we find an element with a background color. If no background
+ * color can be determined, a transparent color is returned.
+ */
+export const realBackgroundColor = (
+  el: HTMLElement | SVGElement | null,
+): string => {
   const transparent = 'rgba(0, 0, 0, 0)'
   if (!el) return transparent
 
   const bg = getComputedStyle(el).backgroundColor
   if (bg === transparent || bg === 'transparent') {
     return realBackgroundColor(el.parentElement)
-  } else {
-    return bg
   }
+
+  return bg
 }
 
 export const lerp = (s: number, e: number, t: number) => s * (1 - t) + e * t
@@ -386,4 +434,91 @@ export const calculateCenterPosition = (
 
   // Calculate the center X.
   return (x + width) / 2 - widthToPlace / 2
+}
+
+function getContrastRatio(color1: Color, color2: Color): number {
+  const luminance1 = getLuminance(color1)
+  const luminance2 = getLuminance(color2)
+
+  const lighter = Math.max(luminance1, luminance2)
+  const darker = Math.min(luminance1, luminance2)
+
+  return (lighter + 0.05) / (darker + 0.05)
+}
+
+function getLuminance(color: Color): number {
+  const [r, g, b] = color.map((val) => {
+    val /= 255
+    return val <= 0.03928 ? val / 12.92 : Math.pow((val + 0.055) / 1.055, 2.4)
+  })
+
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+
+function findHighestContrastColor(
+  colors: Color[],
+  backgroundColor: Color = [255, 255, 255, 1],
+): Color {
+  let maxContrast = 0
+  let maxContrastColor: Color = colors[0]
+
+  for (const color of colors) {
+    const contrast = getContrastRatio(color, backgroundColor)
+    if (contrast > maxContrast) {
+      maxContrast = contrast
+      maxContrastColor = color
+    }
+  }
+
+  return maxContrastColor
+}
+
+export const rgbaToString = (color: Color): string =>
+  `rgba(${color.join(', ')})`
+
+export const getNumericStyleValue = (str: string, fallback = 0): number => {
+  const v = str.replace('px', '')
+  const num = parseFloat(v)
+  if (isNaN(num) || num === 0) {
+    return fallback
+  }
+  return num
+}
+
+export const getDraggableStyle = (
+  el: HTMLElement | SVGElement,
+): DraggableStyle => {
+  const style = getComputedStyle(el)
+
+  const radius: [number, number, number, number] = [
+    getNumericStyleValue(style.borderTopLeftRadius, 4),
+    getNumericStyleValue(style.borderTopRightRadius, 4),
+    getNumericStyleValue(style.borderBottomRightRadius, 4),
+    getNumericStyleValue(style.borderBottomLeftRadius, 4),
+  ]
+
+  const backgroundColor = parseColorString(
+    realBackgroundColor(el.parentElement),
+  )
+  const contrastColor = findHighestContrastColor(
+    [
+      // White.
+      [255, 255, 255, 1],
+      // blue-600.
+      [12, 107, 255, 1],
+    ],
+    backgroundColor,
+  )
+
+  return {
+    radius,
+    radiusString: radius.map((v) => v + 'px').join(' '),
+    contrastColor: rgbaToString(contrastColor),
+    contrastColorTranslucent: rgbaToString([
+      contrastColor[0],
+      contrastColor[1],
+      contrastColor[2],
+      0.25,
+    ]),
+  }
 }

@@ -8,12 +8,13 @@
 
 <script lang="ts" setup>
 import { computed } from '#imports'
-import type { Rectangle } from '#blokkli/types'
+import type { DraggableStyle, Rectangle } from '#blokkli/types'
 
 const props = defineProps<{
   rect: Rectangle
   isIntersecting: boolean
   offsetY: number
+  style: DraggableStyle
 }>()
 
 const style = computed(() => {
@@ -23,6 +24,9 @@ const style = computed(() => {
     }px)`,
     width: props.rect.width + 'px',
     height: props.rect.height + 'px',
+    borderRadius: props.style.radiusString,
+    outlineColor: props.style.contrastColor,
+    '--bk-tw-ring-color': props.style.contrastColorTranslucent,
   }
 })
 </script>

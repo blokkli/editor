@@ -7,7 +7,7 @@
 
   > div {
     @apply absolute top-0 left-0 origin-top-left rounded;
-    @apply md:outline md:outline-blue-700 outline-1 rounded bg-white;
+    @apply rounded bg-white;
 
     > * {
       /* display: none !important; */

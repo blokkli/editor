@@ -284,9 +284,9 @@ html.bk-html-root:not(.bk-use-animations) {
 }
 
 .bk-selectable {
-  @apply outline outline-1 outline-blue-700 -outline-offset-1;
+  @apply outline outline-1 outline-blue-700;
   &.bk-is-active {
-    @apply ring-blue-400/30 ring-[5px];
+    @apply ring-blue-400/30 ring-[7px];
     outline-width: calc(var(--bk-outline-width) * 1px);
   }
 }

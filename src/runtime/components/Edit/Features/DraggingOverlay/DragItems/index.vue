@@ -15,6 +15,7 @@
         opacity: rect.opacity,
         background: rect.background,
         transformOrigin: rect.transformOrigin,
+        borderRadius: rect.borderRadius,
       }"
       v-html="rect.markup"
     />
@@ -31,7 +32,12 @@ import {
   onBeforeUnmount,
 } from '#imports'
 import type { Coord, DraggableItem, Rectangle } from '#blokkli/types'
-import { isInsideRect, realBackgroundColor, lerp } from '#blokkli/helpers'
+import {
+  isInsideRect,
+  realBackgroundColor,
+  lerp,
+  getDraggableStyle,
+} from '#blokkli/helpers'
 import { easeOutElastic } from '#blokkli/helpers/easing'
 
 const { eventBus, dom, ui, animation } = useBlokkli()
@@ -110,6 +116,7 @@ type AnimationRectangle = Rectangle &
     elementOpacity?: string
     transformOrigin: string
     element: HTMLElement
+    borderRadius: string
   }
 
 const rects = ref<AnimationRectangle[]>([])
@@ -237,11 +244,11 @@ onMounted(() => {
   rects.value = elRects.map((item) => {
     const isTop = item.index === boundRect.index
     const rect = item.rect
-    const baseRect = (
+    const element =
       item.item.itemType === 'existing'
         ? item.item.dragElement()
         : item.item.element()
-    ).getBoundingClientRect()
+    const baseRect = element.getBoundingClientRect()
     const targetScaleX = Math.min(bounds.width / item.element.scrollWidth, 1)
     // const targetScaleY = Math.min(bounds.height / item.element.scrollHeight, 1)
     const targetScaleY = targetScaleX
@@ -272,6 +279,8 @@ onMounted(() => {
       scaleY: targetScaleY,
     }
 
+    const style = getDraggableStyle(element)
+
     return {
       isTop,
       from,
@@ -289,6 +298,7 @@ onMounted(() => {
           ? item.element.style.opacity
           : undefined,
       element: item.element,
+      borderRadius: style.radiusString,
     }
   })
 
