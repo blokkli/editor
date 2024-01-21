@@ -1,5 +1,5 @@
 <template>
-  <footer class="bg-slate-900 text-slate-300 py-30">
+  <footer class="bg-mono-900 text-mono-300 py-30">
     <div class="container flex gap-30">
       <div>
         <div class="font-semibold text-xs mb-20">Developed by</div>

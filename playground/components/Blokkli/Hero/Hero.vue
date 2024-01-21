@@ -16,7 +16,7 @@
         <p
           v-if="lead"
           v-blokkli-editable:lead="{ required: true }"
-          class="mt-20 text-lg lg:text-xl text-slate-700"
+          class="mt-20 text-lg lg:text-xl text-mono-700"
           v-text="lead"
         />
         <BlokkliField
@@ -82,13 +82,13 @@ const getTitleMarkup = (text: string): string => {
   &:before {
     content: '';
     @apply absolute top-0 left-0 w-full h-full z-0;
-    @apply bg-gradient-to-b from-blue-50 to-white;
+    @apply bg-gradient-to-b from-accent-50 to-white;
   }
 }
 .hero-title {
-  @apply text-slate-950 font-extrabold;
+  @apply text-mono-950 font-extrabold;
   em {
-    @apply not-italic bg-blue-50 inline-block px-[0.125em] py-[0.125em] text-blue-700 border-2 border-blue-200 border-dashed rounded;
+    @apply not-italic bg-accent-50 inline-block px-[0.125em] py-[0.125em] text-accent-700 border-2 border-accent-200 border-dashed rounded;
   }
 }
 

@@ -5,7 +5,7 @@
       <li v-for="(link, i) in links" :key="i">
         <a
           :href="link.url"
-          class="font-bold text-sm uppercase text-slate-700"
+          class="font-bold text-sm uppercase text-mono-700"
           >{{ link.label }}</a
         >
       </li>

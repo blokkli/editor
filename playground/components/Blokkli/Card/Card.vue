@@ -7,13 +7,13 @@
     <div
       :class="{
         'p-10 lg:p-20 rounded shadow-lg border h-full': isBox,
-        'bg-slate-700 border-slate-600': isBox && isInverted,
-        'bg-white border-slate-300': isBox && !isInverted,
+        'bg-mono-700 border-mono-600': isBox && isInverted,
+        'bg-white border-mono-300': isBox && !isInverted,
       }"
     >
       <div
         v-if="icon"
-        class="rounded w-50 h-50 lg:w-[64px] lg:h-[64px] p-10 mb-10 border border-blue-100"
+        class="rounded w-50 h-50 lg:w-[64px] lg:h-[64px] p-10 mb-10 border border-accent-100"
         :class="iconClass"
       >
         <SpriteSymbol :name="icon" class="fill-current w-full h-full" />
@@ -24,13 +24,13 @@
           label: 'A very long editable title',
         }"
         class="font-bold md:text-lg lg:text-xl lg:mb-5"
-        :class="{ 'text-slate-100': isInverted }"
+        :class="{ 'text-mono-100': isInverted }"
         v-text="title"
       />
       <p
         v-blokkli-editable:text
         class="text-sm md:text-base"
-        :class="{ 'text-slate-400': isInverted }"
+        :class="{ 'text-mono-400': isInverted }"
         v-text="text"
       />
     </div>
@@ -55,10 +55,10 @@ const { parentType, options } = defineBlokkli({
       default: 'lightBlue',
       displayAs: 'colors',
       options: {
-        lightBlue: 'bg-blue-100',
-        lightYellow: 'bg-yellow-200',
-        lightGreen: 'bg-green-200',
-        lightRed: 'bg-red-200',
+        lightBlue: 'bg-accent-100',
+        lightYellow: 'bg-yellow-normal',
+        lightGreen: 'bg-lime-normal',
+        lightRed: 'bg-red-normal',
       },
     },
   },
@@ -90,19 +90,19 @@ const isInverted = computed(() => !!injectedInverted?.value)
 const iconClass = computed(() => {
   if (options.value.color === 'lightYellow') {
     return isInverted.value
-      ? 'bg-yellow-500 text-black border-yellow-600'
-      : 'bg-yellow-100 text-yellow-900 border-yellow-200'
+      ? 'bg-yellow-normal text-yellow-dark border-yellow-normal/50'
+      : 'bg-yellow-light text-yellow-dark border-yellow-normal'
   } else if (options.value.color === 'lightGreen') {
     return isInverted.value
-      ? 'bg-green-500 text-green-950 border-green-600'
-      : 'bg-green-100 text-green-900 border-green-200'
+      ? 'bg-lime-normal text-lime-dark border-lime-dark/50'
+      : 'bg-lime-light text-lime-dark border-lime-normal'
   } else if (options.value.color === 'lightRed') {
     return isInverted.value
-      ? 'bg-red-500 text-black border-red-700'
-      : 'bg-red-100 text-red-800 border-red-200'
+      ? 'bg-red-normal text-red-dark border-red-normal'
+      : 'bg-red-light text-red-dark border-red-dark/50'
   }
   return isInverted.value
-    ? 'bg-blue-700 text-white border-blue-800'
-    : 'bg-blue-50 text-blue-950'
+    ? 'bg-accent-700 text-white border-accent-800'
+    : 'bg-accent-50 text-accent-950 border-accent-400'
 })
 </script>

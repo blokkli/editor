@@ -29,10 +29,10 @@ defineProps<{
 .table {
   @apply w-full;
   table {
-    @apply w-full text-sm text-left rtl:text-right text-gray-500;
+    @apply w-full text-sm text-left rtl:text-right text-mono-500;
 
     thead {
-      @apply text-xs text-gray-700 uppercase bg-gray-50;
+      @apply text-xs text-mono-700 uppercase bg-mono-50;
       th,
       td {
         @apply px-20 py-5;

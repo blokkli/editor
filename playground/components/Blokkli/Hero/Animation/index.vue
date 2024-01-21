@@ -7,7 +7,7 @@
       :style="getIconStyle(i)"
     >
       <li>
-        <SpriteSymbol :name="icon" class="h-full w-full fill-slate-700" />
+        <SpriteSymbol :name="icon" class="h-full w-full fill-mono-700" />
       </li>
     </ul>
   </div>

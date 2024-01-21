@@ -38,7 +38,7 @@ defineEmits(['update:modelValue'])
     }
 
     input:checked + div {
-      @apply ring ring-blue-700;
+      @apply ring ring-accent-700;
     }
   }
 

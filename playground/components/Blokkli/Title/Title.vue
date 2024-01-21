@@ -10,8 +10,8 @@
         class="uppercase font-semibold border px-10 py-1 rounded-full inline-block text-xs mb-20"
         :class="
           isInverted
-            ? 'bg-violet-900 border-violet-600 text-violet-200'
-            : 'text-violet-600 bg-violet-50 border-violet-300'
+            ? 'bg-mono-900 border-mono-500 text-mono-100'
+            : 'text-teal-dark/80 bg-teal-light/40 border-teal-normal'
         "
       >
         {{ tagline }}
@@ -26,7 +26,7 @@
         v-if="lead"
         v-blokkli-editable:lead
         class="text-md lg:text-xl mt-5 lg:mt-20"
-        :class="isInverted ? 'text-slate-300' : 'text-slate-600'"
+        :class="isInverted ? 'text-mono-300' : 'text-mono-600'"
         v-text="lead"
       />
     </div>

@@ -4,7 +4,7 @@
     :class="[
       colorClass,
 
-      { 'border-t border-t-slate-200': options.background === 'white' },
+      { 'border-t border-t-mono-200': options.background === 'white' },
     ]"
   >
     <BlokkliField
@@ -67,9 +67,9 @@ defineProps<{
 const colorClass = computed(() => {
   switch (options.value.background) {
     case 'dark':
-      return 'bg-slate-800'
+      return 'bg-mono-800'
     case 'light':
-      return 'bg-slate-100'
+      return 'bg-mono-100'
   }
   return 'bg-white'
 })

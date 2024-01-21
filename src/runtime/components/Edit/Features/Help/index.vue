@@ -26,6 +26,7 @@ defineBlokkliFeature({
   label: 'Help',
   description:
     'Provides a sidebar pane with helpful information on how to use blokkli.',
+  viewports: ['desktop'],
 })
 
 const { $t } = useBlokkli()

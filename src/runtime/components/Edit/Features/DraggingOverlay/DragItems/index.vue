@@ -252,7 +252,7 @@ onMounted(() => {
     const originY = 0
 
     const from: AnimationRectangleValues = {
-      opacity: 0.9,
+      opacity: isTop ? 1 : 0.9,
       scaleX: Math.min(baseRect.width / rect.width, 1) * artboardScale,
       scaleY: Math.min(baseRect.width / rect.width, 1) * artboardScale,
       x: props.isTouch ? rect.x - translateX.value : rect.x - boundsX,

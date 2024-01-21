@@ -1,16 +1,16 @@
 <template>
-  <header class="bg-blue-50 border-b border-b-slate-500/20">
+  <header class="bg-accent-50 border-b border-b-mono-500/20">
     <div class="container flex justify-between items-center py-10 md:py-20">
       <div class="flex items-center gap-5 md:gap-10">
         <div
-          class="w-20 h-20 md:w-50 md:h-50 bg-blue-700 flex items-center justify-center rounded"
+          class="w-20 h-20 md:w-50 md:h-50 bg-accent-700 flex items-center justify-center rounded"
         >
           <SpriteSymbol name="logo" class="text-white w-full h-full" />
         </div>
-        <NuxtLink to="/" class="text-lg md:text-2xl text-slate-800">
+        <NuxtLink to="/" class="text-lg md:text-2xl text-mono-800">
           <span class="font-extrabold">blökkli</span>
           <sup
-            class="ml-5 text-[0.5em] uppercase align-middle font-bold text-red-500"
+            class="ml-5 text-[0.5em] uppercase align-middle font-bold text-red-normal"
             >beta</sup
           >
         </NuxtLink>

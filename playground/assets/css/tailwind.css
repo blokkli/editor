@@ -21,9 +21,9 @@ body {
   }
 
   .button {
-    @apply inline-block font-semibold focus:ring-4 focus:ring-blue-300 rounded-full px-20 py-15 focus:outline-none border border-slate-400 hover:border-blue-700 hover:text-blue-700;
+    @apply inline-block font-semibold focus:ring-4 focus:ring-accent-300 rounded-full px-20 py-15 focus:outline-none border border-mono-400 hover:border-accent-700 hover:text-accent-700;
     &.is-primary {
-      @apply text-white bg-blue-700 hover:bg-blue-800 border-blue-700 hover:border-blue-700 hover:text-white;
+      @apply text-white bg-accent-700 hover:bg-accent-800 border-accent-700 hover:border-accent-700 hover:text-white;
     }
   }
 
@@ -45,7 +45,7 @@ body {
   @apply fixed bottom-0 left-0 w-full p-20 border-t bg-white z-50;
 
   input {
-    @apply rounded bg-blue-700 text-white font-bold px-10 py-15 cursor-pointer;
+    @apply rounded bg-accent-700 text-white font-bold px-10 py-15 cursor-pointer;
   }
 }
 
@@ -56,14 +56,14 @@ body {
 .ck-content {
   @apply max-w-none;
   &.is-inverted {
-    @apply text-slate-200;
+    @apply text-mono-200;
   }
   ul.is-bulleted {
     li {
       @apply font-medium;
       &:before {
         content: '';
-        @apply inline-block w-[16px] h-[16px] rounded-full bg-blue-700 mr-10 align-middle overflow-hidden;
+        @apply inline-block w-[16px] h-[16px] rounded-full bg-accent-700 mr-10 align-middle overflow-hidden;
         background-image: url(/check.svg);
         background-size: 60% 60%;
         background-position: center center;

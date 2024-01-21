@@ -23,7 +23,7 @@ const { options, parentType } = defineBlokkli({
       displayAs: 'colors',
       options: {
         normal: 'bg-white',
-        primary: 'bg-blue-700',
+        primary: 'bg-accent-700',
       },
     },
   },
