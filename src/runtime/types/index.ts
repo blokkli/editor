@@ -25,6 +25,7 @@ import type {
   ValidGlobalConfigKeys,
 } from '#blokkli/generated-types'
 import type { globalOptions } from '#blokkli/definitions'
+import type { ThemeProvider } from '#blokkli/helpers/themeProvider'
 
 interface MutationResponseLike<T> {
   data: {
@@ -541,6 +542,28 @@ export interface DraggableHostData {
   fieldName: string
 }
 
+// RGBA, e.g. [255, 255, 255] (white)
+export type RGB = [number, number, number]
+
+export type ThemeColorGroup = 'accent' | 'mono'
+
+export type ThemeColorShade =
+  | '50'
+  | '100'
+  | '200'
+  | '300'
+  | '400'
+  | '500'
+  | '600'
+  | '700'
+  | '800'
+  | '900'
+  | '950'
+
+export type ThemeColors = Record<ThemeColorShade, RGB>
+
+export type Theme = Record<ThemeColorGroup, ThemeColors>
+
 export type DraggableStyle = {
   radius: [number, number, number, number]
   radiusString: string
@@ -881,6 +904,7 @@ export interface BlokkliApp {
   $t: TextProvider
   broadcast: BroadcastProvider
   features: FeaturesProvider
+  theme: ThemeProvider
 }
 
 export interface Rectangle {

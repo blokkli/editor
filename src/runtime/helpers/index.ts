@@ -2,13 +2,11 @@ import type {
   DraggableItem,
   SearchContentItem,
   Rectangle,
+  RGB,
   DraggableStyle,
 } from '#blokkli/types'
 import { useRuntimeConfig } from '#imports'
 import { getDefinition } from '#blokkli/definitions'
-
-// RGBA, e.g. [255, 255, 255, 1] (white)
-type Color = [number, number, number, number]
 
 // @ts-ignore
 const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
@@ -327,7 +325,7 @@ export function distanceToRectangle(
   return Math.sqrt(dx * dx + dy * dy)
 }
 
-export const parseColorString = (color: string): Color | undefined => {
+export const parseColorString = (color: string): RGB | undefined => {
   const rgbaRegex =
     /^rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})(?:,\s*(0|1|0?\.\d+))?\)$/
 
@@ -345,20 +343,11 @@ export const parseColorString = (color: string): Color | undefined => {
     throw new Error('Invalid color values')
   }
 
-  if (
-    r < 0 ||
-    r > 255 ||
-    g < 0 ||
-    g > 255 ||
-    b < 0 ||
-    b > 255 ||
-    a < 0 ||
-    a > 1
-  ) {
+  if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255) {
     return
   }
 
-  return [r, g, b, a]
+  return [r, g, b]
 }
 
 /**
@@ -436,7 +425,7 @@ export const calculateCenterPosition = (
   return (x + width) / 2 - widthToPlace / 2
 }
 
-function getContrastRatio(color1: Color, color2: Color): number {
+function getContrastRatio(color1: RGB, color2: RGB): number {
   const luminance1 = getLuminance(color1)
   const luminance2 = getLuminance(color2)
 
@@ -446,7 +435,7 @@ function getContrastRatio(color1: Color, color2: Color): number {
   return (lighter + 0.05) / (darker + 0.05)
 }
 
-function getLuminance(color: Color): number {
+function getLuminance(color: RGB): number {
   const [r, g, b] = color.map((val) => {
     val /= 255
     return val <= 0.03928 ? val / 12.92 : Math.pow((val + 0.055) / 1.055, 2.4)
@@ -455,12 +444,12 @@ function getLuminance(color: Color): number {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b
 }
 
-function findHighestContrastColor(
-  colors: Color[],
-  backgroundColor: Color = [255, 255, 255, 1],
-): Color {
+export function findHighestContrastColor(
+  colors: RGB[],
+  backgroundColor: RGB = [255, 255, 255],
+): RGB {
   let maxContrast = 0
-  let maxContrastColor: Color = colors[0]
+  let maxContrastColor: RGB = colors[0]
 
   for (const color of colors) {
     const contrast = getContrastRatio(color, backgroundColor)
@@ -473,8 +462,8 @@ function findHighestContrastColor(
   return maxContrastColor
 }
 
-export const rgbaToString = (color: Color): string =>
-  `rgba(${color.join(', ')})`
+export const rgbaToString = (color: RGB, alpha = 1): string =>
+  `rgba(${[...color, alpha].join(', ')})`
 
 export const getNumericStyleValue = (str: string, fallback = 0): number => {
   const v = str.replace('px', '')
@@ -487,6 +476,7 @@ export const getNumericStyleValue = (str: string, fallback = 0): number => {
 
 export const getDraggableStyle = (
   el: HTMLElement | SVGElement,
+  accentColor: RGB,
 ): DraggableStyle => {
   const style = getComputedStyle(el)
 
@@ -501,12 +491,7 @@ export const getDraggableStyle = (
     realBackgroundColor(el.parentElement),
   )
   const contrastColor = findHighestContrastColor(
-    [
-      // White.
-      [255, 255, 255, 1],
-      // blue-600.
-      [12, 107, 255, 1],
-    ],
+    [[255, 255, 255], accentColor],
     backgroundColor,
   )
 
@@ -514,11 +499,6 @@ export const getDraggableStyle = (
     radius,
     radiusString: radius.map((v) => v + 'px').join(' '),
     contrastColor: rgbaToString(contrastColor),
-    contrastColorTranslucent: rgbaToString([
-      contrastColor[0],
-      contrastColor[1],
-      contrastColor[2],
-      0.25,
-    ]),
+    contrastColorTranslucent: rgbaToString(contrastColor, 0.25),
   }
 }

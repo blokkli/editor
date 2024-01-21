@@ -19,6 +19,35 @@ import { promises as fsp, existsSync } from 'fs'
 import { DefinitionPlugin } from './vitePlugin'
 import defu from 'defu'
 import defaultTranslations from './translations'
+import {
+  type ModuleOptionsTheme,
+  type ModuleOptionsThemeColor,
+  themes,
+  type ModuleOptionsThemeRgba,
+  getThemeColors,
+} from './themes'
+
+function hexToRgb(hex: string): ModuleOptionsThemeRgba {
+  // Remove the hash symbol if present
+  if (hex.startsWith('#')) {
+    hex = hex.slice(1)
+  }
+
+  // If it's a three-character hex, convert it to six characters
+  if (hex.length === 3) {
+    hex = hex
+      .split('')
+      .map((char) => char + char)
+      .join('')
+  }
+
+  // Convert the hex string to RGB
+  const r = parseInt(hex.slice(0, 2), 16)
+  const g = parseInt(hex.slice(2, 4), 16)
+  const b = parseInt(hex.slice(4, 6), 16)
+
+  return [r, g, b]
+}
 
 function onlyUnique(value: string, index: number, self: Array<string>) {
   return self.indexOf(value) === index
@@ -97,13 +126,6 @@ export type ModuleOptions = {
   fieldListTypes?: string[]
 
   /**
-   * The langcode that doesn't use a URL prefix.
-   *
-   * This is used to build paths for iframes.
-   */
-  langcodeWithoutPrefix?: string
-
-  /**
    * The entity type of blokkli items.
    *
    * Using the paragraphs_builder integration this value should be set to "paragraph".
@@ -129,6 +151,58 @@ export type ModuleOptions = {
   alterFeatures?: (
     ctx: AlterFeatures,
   ) => Promise<ExtractedFeatureDefinition[]> | ExtractedFeatureDefinition[]
+
+  /**
+   * Theme colors for the editor.
+   *
+   * Accent colors are used for selections, highlights, buttons.
+   * Mono colors are used for the UI elements in the editor.
+   */
+  theme?: ModuleOptionsTheme
+}
+
+const buildGlobalConfigTemplate = (theme?: ModuleOptionsTheme) => {
+  const accent = getThemeColors(theme?.accent || themes.default.accent)
+  const mono = getThemeColors(theme?.mono || themes.default.mono)
+
+  const buildVars = (
+    prefix: string,
+    colors: ModuleOptionsThemeColor,
+  ): string[] => {
+    return Object.entries(colors).map(([shade, color]) => {
+      const rgb = typeof color === 'string' ? hexToRgb(color) : color
+      return `--bk-theme-${prefix}-${shade}: ${rgb[0]} ${rgb[1]} ${rgb[2]}`
+    })
+  }
+
+  const vars = [
+    ...buildVars('accent', accent),
+    ...buildVars('mono', mono),
+  ].join(';\n')
+
+  const themeCss = `
+  :root {
+    ${vars}
+  }
+  `
+
+  const buildThemeConfig = (colors: ModuleOptionsThemeColor) => {
+    return Object.entries(colors).reduce<Record<string, any>>(
+      (acc, [key, color]) => {
+        const rgb = typeof color === 'string' ? hexToRgb(color) : color
+        acc[key] = rgb
+        return acc
+      },
+      {},
+    )
+  }
+
+  const fullTheme = {
+    accent: buildThemeConfig(accent),
+    mono: buildThemeConfig(mono),
+  }
+
+  return { themeCss, fullTheme }
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -333,7 +407,6 @@ ${featuresArray}
     nuxt.options.alias['#blokkli/translations'] = templateTranslations.dst
 
     nuxt.options.runtimeConfig.public.blokkli = {
-      langcodeWithoutPrefix: moduleOptions.langcodeWithoutPrefix || '',
       itemEntityType: moduleOptions.itemEntityType || '',
       defaultLanguage: moduleOptions.defaultLanguage || 'en',
     }
@@ -435,6 +508,38 @@ ${featuresArray}
       },
     })
     nuxt.options.alias['#blokkli/generated-types'] = templateGeneratedTypes.dst
+
+    const { themeCss, fullTheme } = buildGlobalConfigTemplate(
+      moduleOptions.theme,
+    )
+
+    // The types template.
+    const templateThemeCss = addTemplate({
+      write: true,
+      filename: 'blokkli/theme.css',
+      getContents: () => {
+        return themeCss
+      },
+      options: {
+        blokkli: true,
+      },
+    })
+    nuxt.options.alias['#blokkli/theme'] = templateThemeCss.dst
+
+    const templateConfig = addTemplate({
+      write: true,
+      filename: 'blokkli/config.ts',
+      getContents: () => {
+        return `
+import type { Theme } from '#blokkli/types'
+export const theme: Theme = ${JSON.stringify(fullTheme)}
+`
+      },
+      options: {
+        blokkli: true,
+      },
+    })
+    nuxt.options.alias['#blokkli/config'] = templateConfig.dst
 
     // The types template.
     const templateDefaultGlobalOptions = addTemplate({

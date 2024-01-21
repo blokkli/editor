@@ -50,8 +50,9 @@ import storageProvider from './../../helpers/storageProvider'
 import uiProvider from './../../helpers/uiProvider'
 import broadcastProvider from './../../helpers/broadcastProvider'
 import featuresProvider from './../../helpers/featuresProvider'
-
+import themeProvider from './../../helpers/themeProvider'
 import { eventBus } from '#blokkli/helpers/eventBus'
+import '#blokkli/theme'
 import '#blokkli/styles'
 import getAdapter from '#blokkli/compiled-edit-adapter'
 import {
@@ -93,6 +94,7 @@ const state = await editStateProvider(adapter, context)
 const selection = selectionProvider(dom, state)
 const types = await typesProvider(adapter, selection)
 const features = featuresProvider()
+const theme = themeProvider()
 
 const originalThemeColor = ref('')
 const THEME_COLOR = 'black'
@@ -154,5 +156,6 @@ provide<BlokkliApp>(INJECT_APP, {
   $t,
   broadcast,
   features,
+  theme,
 })
 </script>

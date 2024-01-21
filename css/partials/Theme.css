@@ -1,0 +1,55 @@
+.bk-theme-editor {
+  container-type: inline-size;
+}
+
+.bk-theme-editor-groups {
+  @container (min-width: 600px) {
+    @apply grid grid-cols-2;
+  }
+}
+
+.bk-theme-editor-table {
+  @apply w-full text-sm;
+
+  tr {
+    @apply border-b;
+  }
+
+  td {
+    @apply px-10;
+  }
+
+  .bk-theme-editor-color-shade {
+    @apply text-right font-medium;
+  }
+
+  .bk-theme-editor-color-buttons {
+    svg {
+      @apply w-20 h-20;
+    }
+  }
+
+  .bk-theme-editor-color-hex {
+    @apply w-full;
+    input {
+      @apply w-full font-mono;
+    }
+  }
+  .bk-theme-editor-color-color {
+    @apply w-0;
+  }
+}
+
+.bk-theme-editor-code {
+  textarea {
+    @apply w-full font-mono text-sm;
+  }
+}
+
+.bk-theme-editor-group {
+  h2 {
+    @apply uppercase font-semibold text-sm text-slate-600 px-15 py-5;
+    @apply border-b border-b-slate-300;
+    @apply bg-slate-100;
+  }
+}

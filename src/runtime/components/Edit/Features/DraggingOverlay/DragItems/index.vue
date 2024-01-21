@@ -32,15 +32,10 @@ import {
   onBeforeUnmount,
 } from '#imports'
 import type { Coord, DraggableItem, Rectangle } from '#blokkli/types'
-import {
-  isInsideRect,
-  realBackgroundColor,
-  lerp,
-  getDraggableStyle,
-} from '#blokkli/helpers'
+import { isInsideRect, realBackgroundColor, lerp } from '#blokkli/helpers'
 import { easeOutElastic } from '#blokkli/helpers/easing'
 
-const { eventBus, dom, ui, animation } = useBlokkli()
+const { eventBus, dom, ui, animation, theme } = useBlokkli()
 
 const props = defineProps<{
   /**
@@ -279,7 +274,7 @@ onMounted(() => {
       scaleY: targetScaleY,
     }
 
-    const style = getDraggableStyle(element)
+    const style = theme.getDraggableStyle(element)
 
     return {
       isTop,

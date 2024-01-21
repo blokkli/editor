@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { falsy, getBounds, getDraggableStyle } from '#blokkli/helpers'
+import { falsy, getBounds } from '#blokkli/helpers'
 import type {
   DraggableExistingBlock,
   DraggableStyle,
@@ -29,7 +29,7 @@ const props = defineProps<{
   blocks: DraggableExistingBlock[]
 }>()
 
-const { ui } = useBlokkli()
+const { ui, theme } = useBlokkli()
 
 const delayedRefresh = ref(1)
 let interval: any = null
@@ -90,7 +90,7 @@ const selectedRects = computed<SelectedRect[]>(() => {
     const block = props.blocks[i]
     const element = block.dragElement()
     const rect = element.getBoundingClientRect()
-    const style = getDraggableStyle(element)
+    const style = theme.getDraggableStyle(element)
     rects.push({
       x: (rect.x - artboardRect.x) / scale - bounds.value.x,
       y: (rect.y - artboardRect.y) / scale - bounds.value.y + artboardScroll,

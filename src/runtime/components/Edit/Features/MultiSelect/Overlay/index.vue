@@ -40,10 +40,10 @@ import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
 import type { AnimationFrameEvent, DraggableStyle } from '#blokkli/types'
 import type { Rectangle } from '#blokkli/types'
-import { getDraggableStyle, intersects } from '#blokkli/helpers'
+import { intersects } from '#blokkli/helpers'
 import Item from './Item/index.vue'
 
-const { keyboard, eventBus, ui, dom } = useBlokkli()
+const { keyboard, eventBus, ui, dom, theme } = useBlokkli()
 
 export type SelectableElement = {
   uuid: string
@@ -118,7 +118,7 @@ function emitSelected() {
 const blocks = computed(() =>
   dom.getAllBlocks().map((block) => {
     const element = block.dragElement()
-    const style = getDraggableStyle(element)
+    const style = theme.getDraggableStyle(element)
     return {
       uuid: block.uuid,
       isNested: block.isNested,
