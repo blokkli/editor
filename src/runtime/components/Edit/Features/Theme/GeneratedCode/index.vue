@@ -13,6 +13,10 @@ const code = computed(() => {
   const obj = {
     accent: theme.accent.value,
     mono: theme.mono.value,
+    teal: theme.teal.value,
+    yellow: theme.yellow.value,
+    red: theme.red.value,
+    lime: theme.lime.value,
   }
 
   return JSON.stringify(obj, null, 2)

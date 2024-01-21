@@ -17,19 +17,12 @@ import { extname, basename } from 'path'
 import type { BlockDefinitionOptionsInput } from './runtime/types'
 import { promises as fsp, existsSync } from 'fs'
 import { DefinitionPlugin } from './vitePlugin'
-import defu from 'defu'
+import defu, { createDefu } from 'defu'
 import defaultTranslations from './translations'
-import {
-  type ModuleOptionsTheme,
-  type ModuleOptionsThemeColor,
-  themes,
-  type ModuleOptionsThemeRgba,
-  getThemeColors,
-  getContextColors,
-  type ContextColor,
-} from './themes'
+import { getTheme, themes } from './themes'
+import type { ThemeName, RGB, Theme } from './runtime/types/theme'
 
-function hexToRgb(hex: string): ModuleOptionsThemeRgba {
+function hexToRgb(hex: string): RGB {
   // Remove the hash symbol if present
   if (hex.startsWith('#')) {
     hex = hex.slice(1)
@@ -160,7 +153,7 @@ export type ModuleOptions = {
    * Accent colors are used for selections, highlights, buttons.
    * Mono colors are used for the UI elements in the editor.
    */
-  theme?: ModuleOptionsTheme
+  theme?: ThemeName | Partial<Theme>
 
   /**
    * Enable the theme editor feature.
@@ -168,32 +161,26 @@ export type ModuleOptions = {
   enabledThemeEditor?: boolean
 }
 
-const buildGlobalConfigTemplate = (theme?: ModuleOptionsTheme) => {
-  const accent = getThemeColors(theme?.accent || themes.default.accent)
-  const mono = getThemeColors(theme?.mono || themes.default.mono)
-  const teal = getContextColors(theme?.teal || themes.default.teal)
-  const yellow = getContextColors(theme?.yellow || themes.default.yellow)
-  const red = getContextColors(theme?.red || themes.default.red)
-  const lime = getContextColors(theme?.lime || themes.default.lime)
+const buildThemeData = (themeOption?: ThemeName | Partial<Theme>) => {
+  const hasCustomTheme = !!themeOption
+  const mergeTheme = createDefu((obj, key, value) => {
+    // Don't merge RGB array.
+    if (Array.isArray(obj[key])) {
+      obj[key] = value
+      return true
+    }
+  })
+  const theme: Theme = mergeTheme(getTheme(themeOption), themes.arctic)
 
-  const buildVars = (
-    prefix: string,
-    colors: ModuleOptionsThemeColor | ContextColor,
-  ): string[] => {
-    return Object.entries(colors).map(([shade, color]) => {
-      const rgb = typeof color === 'string' ? hexToRgb(color) : color
-      return `--bk-theme-${prefix}-${shade}: ${rgb[0]} ${rgb[1]} ${rgb[2]}`
+  const vars = Object.entries(theme)
+    .map(([group, colors]) => {
+      return Object.entries(colors).map(([shade, color]) => {
+        const rgb = typeof color === 'string' ? hexToRgb(color) : color
+        return `--bk-theme-${group}-${shade}: ${rgb[0]} ${rgb[1]} ${rgb[2]}`
+      })
     })
-  }
-
-  const vars = [
-    ...buildVars('accent', accent),
-    ...buildVars('mono', mono),
-    ...buildVars('teal', teal),
-    ...buildVars('yellow', yellow),
-    ...buildVars('red', red),
-    ...buildVars('lime', lime),
-  ].join(';\n')
+    .flat()
+    .join(';\n')
 
   const themeCss = `
   :root {
@@ -201,27 +188,22 @@ const buildGlobalConfigTemplate = (theme?: ModuleOptionsTheme) => {
   }
   `
 
-  const buildThemeConfig = (colors: ModuleOptionsThemeColor | ContextColor) => {
-    return Object.entries(colors).reduce<Record<string, any>>(
-      (acc, [key, color]) => {
-        const rgb = typeof color === 'string' ? hexToRgb(color) : color
-        acc[key] = rgb
-        return acc
-      },
-      {},
-    )
-  }
+  const fullTheme = Object.entries(theme).reduce<Record<string, any>>(
+    (acc, [group, colors]) => {
+      acc[group] = Object.entries(colors).reduce<Record<string, any>>(
+        (colorAcc, [key, color]) => {
+          const rgb = typeof color === 'string' ? hexToRgb(color) : color
+          colorAcc[key] = rgb
+          return colorAcc
+        },
+        {},
+      )
+      return acc
+    },
+    {},
+  )
 
-  const fullTheme = {
-    accent: buildThemeConfig(accent),
-    mono: buildThemeConfig(mono),
-    teal: buildThemeConfig(teal),
-    yellow: buildThemeConfig(yellow),
-    red: buildThemeConfig(red),
-    lime: buildThemeConfig(lime),
-  }
-
-  return { themeCss, fullTheme }
+  return { themeCss, fullTheme, hasCustomTheme }
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -422,7 +404,7 @@ ${featuresArray}
             ][key].translation
           })
         })
-        const merged = defu(translations, moduleOptions.translations)
+        const merged = defu(moduleOptions.translations, translations)
         return `export const translations = ${JSON.stringify(merged, null, 2)}`
       },
       options: {
@@ -534,7 +516,7 @@ ${featuresArray}
     })
     nuxt.options.alias['#blokkli/generated-types'] = templateGeneratedTypes.dst
 
-    const { themeCss, fullTheme } = buildGlobalConfigTemplate(
+    const { themeCss, fullTheme, hasCustomTheme } = buildThemeData(
       moduleOptions.theme,
     )
 
@@ -555,8 +537,9 @@ ${featuresArray}
       write: true,
       filename: 'blokkli/config.ts',
       getContents: () => {
-        return `
-import type { Theme } from '#blokkli/types'
+        return `import type { Theme } from '#blokkli/types/theme'
+export const hasCustomTheme = ${JSON.stringify(hasCustomTheme)}
+export const themes: Record<string, Theme> = ${JSON.stringify(themes, null, 2)}
 export const theme: Theme = ${JSON.stringify(fullTheme, null, 2)}
 `
       },

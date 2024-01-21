@@ -542,33 +542,6 @@ export interface DraggableHostData {
   fieldName: string
 }
 
-// RGBA, e.g. [255, 255, 255] (white)
-export type RGB = [number, number, number]
-
-export type ThemeColorGroup = 'accent' | 'mono'
-export type ThemeContextColorGroup = 'teal' | 'yellow' | 'red' | 'lime'
-
-export type ThemeColorShade =
-  | '50'
-  | '100'
-  | '200'
-  | '300'
-  | '400'
-  | '500'
-  | '600'
-  | '700'
-  | '800'
-  | '900'
-  | '950'
-
-export type ThemeContextColorShade = 'light' | 'normal' | 'dark'
-
-export type ThemeColors = Record<ThemeColorShade, RGB>
-export type ThemeContextColors = Record<ThemeContextColorShade, RGB>
-
-export type Theme = Record<ThemeColorGroup, ThemeColors> &
-  Record<ThemeContextColorGroup, ThemeContextColors>
-
 export type DraggableStyle = {
   radius: [number, number, number, number]
   radiusString: string

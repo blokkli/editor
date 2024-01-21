@@ -53,3 +53,10 @@
     @apply bg-mono-100;
   }
 }
+
+.bk-theme-editor-select {
+  @apply border-b border-b-mono-500;
+  select {
+    @apply w-full px-15 py-15 font-semibold;
+  }
+}

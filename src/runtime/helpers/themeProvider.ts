@@ -1,14 +1,16 @@
-import { theme } from '#blokkli/config'
+import { theme, themes } from '#blokkli/config'
+import type { DraggableStyle } from '#blokkli/types'
 import type {
-  DraggableStyle,
   RGB,
+  Theme,
   ThemeColorGroup,
   ThemeColorShade,
   ThemeColors,
   ThemeContextColorGroup,
   ThemeContextColorShade,
   ThemeContextColors,
-} from '#blokkli/types'
+  ThemeName,
+} from '#blokkli/types/theme'
 import { type Ref, ref } from '#imports'
 import { getDraggableStyle } from '.'
 
@@ -27,6 +29,7 @@ export type ThemeProvider = {
       : ThemeContextColorShade,
     value: RGB,
   ) => void
+  applyTheme: (name: ThemeName | 'custom') => void
 }
 
 export default function (): ThemeProvider {
@@ -37,6 +40,63 @@ export default function (): ThemeProvider {
   const red = ref<ThemeContextColors>(theme.red)
   const lime = ref<ThemeContextColors>(theme.lime)
 
+  const customTheme = ref<Theme>(theme)
+
+  const setColor: ThemeProvider['setColor'] = (group, shade, value) => {
+    if (group === 'accent') {
+      accent.value[shade as ThemeColorShade] = value
+    } else if (group === 'mono') {
+      mono.value[shade as ThemeColorShade] = value
+    } else if (group === 'teal') {
+      teal.value[shade as ThemeContextColorShade] = value
+    } else if (group === 'red') {
+      red.value[shade as ThemeContextColorShade] = value
+    } else if (group === 'yellow') {
+      yellow.value[shade as ThemeContextColorShade] = value
+    } else if (group === 'lime') {
+      lime.value[shade as ThemeContextColorShade] = value
+    }
+
+    const root = document.querySelector(':root')
+    if (root instanceof HTMLElement) {
+      root.style.setProperty(
+        `--bk-theme-${group}-${shade}`,
+        `${value[0]} ${value[1]} ${value[2]}`,
+      )
+    }
+  }
+
+  const setColorsFromTheme = (v: Theme) => {
+    Object.entries(v).forEach(([group, colors]) => {
+      Object.entries(colors).forEach(([shade, value]) => {
+        setColor(group as any, shade as any, value)
+      })
+    })
+  }
+
+  const applyTheme: ThemeProvider['applyTheme'] = (name) => {
+    // Create backup of custom theme.
+    customTheme.value = JSON.parse(
+      JSON.stringify({
+        accent: accent.value,
+        mono: mono.value,
+        teal: teal.value,
+        yellow: yellow.value,
+        red: red.value,
+        lime: lime.value,
+      }),
+    )
+
+    if (name === 'custom') {
+      return setColorsFromTheme(customTheme.value)
+    }
+    const themeToApply = themes[name]
+
+    if (themeToApply) {
+      setColorsFromTheme(themeToApply)
+    }
+  }
+
   return {
     accent,
     mono,
@@ -45,28 +105,7 @@ export default function (): ThemeProvider {
     red,
     lime,
     getDraggableStyle: (el) => getDraggableStyle(el, accent.value[700]),
-    setColor: (group, shade, value) => {
-      if (group === 'accent') {
-        accent.value[shade as ThemeColorShade] = value
-      } else if (group === 'mono') {
-        mono.value[shade as ThemeColorShade] = value
-      } else if (group === 'teal') {
-        teal.value[shade as ThemeContextColorShade] = value
-      } else if (group === 'red') {
-        red.value[shade as ThemeContextColorShade] = value
-      } else if (group === 'yellow') {
-        yellow.value[shade as ThemeContextColorShade] = value
-      } else if (group === 'lime') {
-        lime.value[shade as ThemeContextColorShade] = value
-      }
-
-      const root = document.querySelector(':root')
-      if (root instanceof HTMLElement) {
-        root.style.setProperty(
-          `--bk-theme-${group}-${shade}`,
-          `${value[0]} ${value[1]} ${value[2]}`,
-        )
-      }
-    },
+    setColor,
+    applyTheme,
   }
 }

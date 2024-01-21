@@ -6,7 +6,14 @@
     weight="-100"
   >
     <div class="bk bk-theme-editor bk-control" @wheel.capture.stop>
-      <div class="bk-theme-editor-groups">
+      <div class="bk-theme-editor-select">
+        <select v-model="selectedTheme">
+          <option v-for="option in themeOptions" :key="option" :value="option">
+            {{ option }}
+          </option>
+        </select>
+      </div>
+      <div :key="selectedThemeId" class="bk-theme-editor-groups">
         <div v-for="group in groups" :key="group" class="bk-theme-editor-group">
           <h2>{{ group }}</h2>
           <table class="bk-theme-editor-table">
@@ -42,7 +49,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature } from '#imports'
+import { useBlokkli, defineBlokkliFeature, ref, computed } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
 import Color from './Color/index.vue'
 import GeneratedCode from './GeneratedCode/index.vue'
@@ -51,7 +58,9 @@ import type {
   ThemeColorShade,
   ThemeContextColorGroup,
   ThemeContextColorShade,
-} from '#blokkli/types'
+} from '#blokkli/types/theme'
+
+import { themes } from '#blokkli/config'
 
 defineBlokkliFeature({
   id: 'theme',
@@ -59,6 +68,22 @@ defineBlokkliFeature({
   label: 'Theme',
   description: 'Implements a theme editor.',
 })
+
+const { $t, theme } = useBlokkli()
+
+const selectedThemeId = ref('custom')
+
+const selectedTheme = computed({
+  get() {
+    return selectedThemeId.value
+  },
+  set(id: any) {
+    selectedThemeId.value = id
+    theme.applyTheme(id)
+  },
+})
+
+const themeOptions = computed(() => ['custom', ...Object.keys(themes)])
 
 const groups: ThemeColorGroup[] = ['accent', 'mono']
 const shades: ThemeColorShade[] = [
@@ -82,8 +107,6 @@ const contextGroups: ThemeContextColorGroup[] = [
   'lime',
 ]
 const contextShades: ThemeContextColorShade[] = ['light', 'normal', 'dark']
-
-const { $t } = useBlokkli()
 </script>
 
 <script lang="ts">
