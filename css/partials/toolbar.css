@@ -94,15 +94,12 @@
     }
   }
   .bk-status-indicator {
-    @apply w-[0.9em] h-[0.9em] inline-block bg-red-500 rounded-full shrink-0 mr-[0.3em] align-middle;
+    @apply w-[0.9em] h-[0.9em] inline-block bg-red-normal rounded-full shrink-0 mr-[0.3em] align-middle;
     &.bk-is-success {
-      @apply bg-green-500;
+      @apply bg-lime-normal;
     }
     &.bk-is-warning {
-      @apply bg-yellow-400;
-    }
-    &.bk-is-danger {
-      @apply bg-red-400;
+      @apply bg-yellow-normal;
     }
   }
 

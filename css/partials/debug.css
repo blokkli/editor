@@ -28,25 +28,25 @@
 }
 
 .bk-debug-visible-viewport {
-  @apply fixed bg-red-300/10 border-red-600 border-3 z-[999999999999] pointer-events-none;
+  @apply fixed bg-red-normal/10 border-red-normal border-3 z-[999999999999] pointer-events-none;
   > div {
-    @apply bg-red-600 text-xs p-2 text-white absolute top-0 left-0;
+    @apply bg-red-normal text-xs p-2 text-white absolute top-0 left-0;
   }
 }
 
 .bk-debug-visible-viewport-padded {
-  @apply fixed border-red-600 border-3 z-[9999999] pointer-events-none;
+  @apply fixed border-red-normal border-3 z-[9999999] pointer-events-none;
   > div {
-    @apply bg-red-600 text-xs p-2 text-white absolute top-0 left-0;
+    @apply bg-red-normal text-xs p-2 text-white absolute top-0 left-0;
   }
 }
 
 .bk-debug-viewport-blocking-rect {
-  @apply fixed border-red-600 border-3 z-[9999999] pointer-events-none;
+  @apply fixed border-red-normal border-3 z-[9999999] pointer-events-none;
 }
 
 .bk-debug-viewport-lines {
-  @apply fixed bg-green-800 z-[999999999999] pointer-events-none;
+  @apply fixed bg-lime-normal z-[999999999999] pointer-events-none;
 }
 
 .debug-rect {

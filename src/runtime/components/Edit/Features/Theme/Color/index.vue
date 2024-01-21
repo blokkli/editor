@@ -22,11 +22,17 @@
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/components'
 import { theme as configTheme } from '#blokkli/config'
-import type { RGB, ThemeColorGroup, ThemeColorShade } from '#blokkli/types'
+import type {
+  RGB,
+  ThemeColorGroup,
+  ThemeColorShade,
+  ThemeContextColorGroup,
+  ThemeContextColorShade,
+} from '#blokkli/types'
 
 const props = defineProps<{
-  group: ThemeColorGroup
-  shade: ThemeColorShade
+  group: ThemeColorGroup | ThemeContextColorGroup
+  shade: ThemeColorShade | ThemeContextColorShade
 }>()
 
 const { theme } = useBlokkli()

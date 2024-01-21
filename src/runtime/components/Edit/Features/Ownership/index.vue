@@ -12,7 +12,7 @@
           ).replace('@name', name)
         "
       />
-      <button class="bk-button is-danger" @click="takeOwnership">
+      <button class="bk-button bk-is-danger" @click="takeOwnership">
         {{ $t('ownershipTakeOwnership', 'Assign to me') }}
       </button>
     </div>

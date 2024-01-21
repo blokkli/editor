@@ -18,6 +18,22 @@
             />
           </table>
         </div>
+
+        <div
+          v-for="group in contextGroups"
+          :key="group"
+          class="bk-theme-editor-group"
+        >
+          <h2>{{ group }}</h2>
+          <table class="bk-theme-editor-table">
+            <Color
+              v-for="shade in contextShades"
+              :key="group + shade"
+              :group="group"
+              :shade="shade"
+            />
+          </table>
+        </div>
       </div>
 
       <GeneratedCode />
@@ -30,7 +46,12 @@ import { useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
 import Color from './Color/index.vue'
 import GeneratedCode from './GeneratedCode/index.vue'
-import type { ThemeColorGroup, ThemeColorShade } from '#blokkli/types'
+import type {
+  ThemeColorGroup,
+  ThemeColorShade,
+  ThemeContextColorGroup,
+  ThemeContextColorShade,
+} from '#blokkli/types'
 
 defineBlokkliFeature({
   id: 'theme',
@@ -53,6 +74,14 @@ const shades: ThemeColorShade[] = [
   '900',
   '950',
 ]
+
+const contextGroups: ThemeContextColorGroup[] = [
+  'teal',
+  'yellow',
+  'red',
+  'lime',
+]
+const contextShades: ThemeContextColorShade[] = ['light', 'normal', 'dark']
 
 const { $t } = useBlokkli()
 </script>

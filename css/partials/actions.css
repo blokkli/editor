@@ -114,7 +114,7 @@
 
     &.bk-is-reusable {
       .bk-blokkli-item-actions-title-icon {
-        @apply bg-lime-800 border-lime-600 text-white;
+        @apply bg-lime-dark border-lime-normal text-white;
       }
     }
   }

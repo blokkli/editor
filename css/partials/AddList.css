@@ -28,28 +28,28 @@
     }
 
     .bk-list-item.bk-is-rose .bk-list-item-inner {
-      @apply bg-rose-900 border-rose-600 text-rose-100;
+      @apply bg-red-dark border-red-normal text-red-light;
     }
 
     .bk-list-item.bk-is-rose {
       @media not all and (hover: none) {
         &:hover {
           .bk-list-item-inner {
-            @apply bg-rose-800 border-rose-500 text-white;
+            @apply bg-red-normal border-red-light/70 text-white;
           }
         }
       }
     }
 
     .bk-list-item.bk-is-lime .bk-list-item-inner {
-      @apply bg-lime-800 border-lime-600 text-lime-50;
+      @apply bg-lime-dark border-lime-normal text-lime-light;
     }
 
     .bk-list-item.bk-is-lime {
       @media not all and (hover: none) {
         &:hover {
           .bk-list-item-inner {
-            @apply bg-lime-700 border-lime-500 text-white;
+            @apply bg-lime-normal border-lime-light text-white;
           }
         }
       }
@@ -218,11 +218,11 @@
   }
 
   &.bk-is-rose {
-    @apply bg-rose-600 text-white;
+    @apply bg-red-normal text-white;
   }
 
   &.bk-is-lime {
-    @apply bg-lime-600 text-white;
+    @apply bg-lime-normal text-white;
   }
 
   &.bk-is-dark {
@@ -276,30 +276,30 @@
   }
 
   &.bk-is-rose .bk-list-item-icon {
-    @apply bg-rose-50 border-rose-300 text-rose-400;
+    @apply bg-red-light border-red-normal text-red-normal;
   }
 
   &.bk-is-rose {
     @media not all and (hover: none) {
       &:hover {
-        @apply text-rose-900;
+        @apply text-red-dark;
         .bk-list-item-icon {
-          @apply bg-rose-200 border-rose-400 text-rose-800;
+          @apply bg-red-normal border-red-dark text-red-light;
         }
       }
     }
   }
 
   &.bk-is-lime .bk-list-item-icon {
-    @apply bg-lime-50 border-lime-400 text-lime-600;
+    @apply bg-lime-light border-lime-normal text-lime-normal;
   }
 
   &.bk-is-lime {
     @media not all and (hover: none) {
       &:hover {
-        @apply text-lime-900;
+        @apply text-lime-dark;
         .bk-list-item-icon {
-          @apply bg-lime-200 border-lime-400 text-lime-800;
+          @apply bg-lime-normal border-lime-dark text-lime-light;
         }
       }
     }

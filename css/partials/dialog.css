@@ -59,7 +59,7 @@
 }
 
 .bk-message-info {
-  @apply font-sans text-base bg-yellow-50 p-10 border border-yellow-400 rounded text-yellow-900 my-20;
+  @apply font-sans text-base bg-yellow-light p-10 border border-yellow-normal rounded text-yellow-dark my-20;
 }
 
 .bk-overlay-header {

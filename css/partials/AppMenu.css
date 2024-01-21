@@ -54,22 +54,22 @@
 
   &:not([disabled]).bk-is-danger {
     .bk-menu-list-icon {
-      @apply bg-red-50 text-red-800 border-red-200;
+      @apply bg-red-light text-red-normal border-red-normal/40;
     }
     &:hover {
       .bk-menu-list-icon {
-        @apply bg-red-200 text-red-900 border-red-400;
+        @apply bg-red-normal/20 text-red-dark border-red-normal/50;
       }
     }
   }
 
   &:not([disabled]).bk-is-success {
     .bk-menu-list-icon {
-      @apply bg-green-50 text-green-800 border-green-300;
+      @apply bg-lime-light text-lime-normal border-lime-normal/40;
     }
     &:hover {
       .bk-menu-list-icon {
-        @apply bg-green-200 text-green-900 border-green-400;
+        @apply bg-lime-normal/20 text-lime-dark  border-lime-normal/40;
       }
     }
   }

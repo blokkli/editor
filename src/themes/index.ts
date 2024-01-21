@@ -16,6 +16,12 @@ export type ModuleOptionsThemeColor = {
 
 type ThemeColor = 'red' | 'blue' | 'slate' | 'stone'
 
+type ContextColorShade = 'light' | 'normal' | 'dark'
+export type ContextColor = Record<
+  ContextColorShade,
+  ModuleOptionsThemeRgba | string
+>
+
 export type ModuleOptionsTheme = {
   /**
    * The accent color for CTA, selections, highlights.
@@ -26,6 +32,26 @@ export type ModuleOptionsTheme = {
    * The monochrome color (grey) for UI elements.
    */
   mono?: ModuleOptionsThemeColor | ThemeColor
+
+  /**
+   * The teal color used for editable fields.
+   */
+  teal?: ContextColor
+
+  /**
+   * The yellow color used for comments, warning messages or status indicators.
+   */
+  yellow?: ContextColor
+
+  /**
+   * The red color used for the AI assistant, errors and status indicators.
+   */
+  red?: ContextColor
+
+  /**
+   * The lime color used for reusable blocks / library and status indicators.
+   */
+  lime?: ContextColor
 }
 
 const red: ModuleOptionsThemeColor = {
@@ -84,14 +110,70 @@ const stone: ModuleOptionsThemeColor = {
   950: '#0c0a09',
 }
 
-export const themes: Record<string, Required<ModuleOptionsTheme>> = {
+const contextTeal: ContextColor = {
+  light: '#ccfbf1',
+  normal: '#2dd4bf',
+  dark: '#134e4a',
+}
+
+const contextYellow: ContextColor = {
+  light: '#fefce8',
+  // 100: '#fef9c3',
+  // 200: '#fef08a',
+  // 300: '#fde047',
+  normal: '#facc15',
+  // 500: '#eab308',
+  // 600: '#ca8a04',
+  // 700: '#a16207',
+  // 800: '#854d0e',
+  dark: '#713f12',
+  // 950: '#422006',
+}
+
+const contextRed: ContextColor = {
+  light: red[50],
+  normal: red[500],
+  dark: red[900],
+}
+
+const contextGreen: ContextColor = {
+  light: red[50],
+  normal: red[500],
+  dark: red[900],
+}
+
+const contextLime: ContextColor = {
+  // 50: '#f7fee7',
+  light: '#ecfccb',
+  // 200: '#d9f99d',
+  // 300: '#bef264',
+  // 400: '#a3e635',
+  // normal: '#84cc16',
+  normal: '#65a30d',
+  // 700: '#4d7c0f',
+  dark: '#3f6212',
+  // 900: '#365314',
+  // 950: '#1a2e05',
+}
+
+export const themes = {
   default: {
     accent: blue,
     mono: slate,
+    teal: contextTeal,
+    yellow: contextYellow,
+    red: contextRed,
+    green: contextGreen,
+    lime: contextLime,
   },
   red: {
     accent: red,
     mono: stone,
+    teal: contextTeal,
+    yellow: contextYellow,
+    red: contextRed,
+    green: contextGreen,
+    lime: contextLime,
   },
 }
 
@@ -110,6 +192,23 @@ export const getThemeColors = (
     }
     throw new Error(`Invalid theme color: ${v}`)
   }
+
+  return v
+}
+
+export const getContextColors = (v: ContextColor): ContextColor => {
+  // if (typeof v === 'string') {
+  //   if (v === 'stone') {
+  //     return stone
+  //   } else if (v === 'red') {
+  //     return red
+  //   } else if (v === 'blue') {
+  //     return blue
+  //   } else if (v === 'slate') {
+  //     return slate
+  //   }
+  //   throw new Error(`Invalid theme color: ${v}`)
+  // }
 
   return v
 }

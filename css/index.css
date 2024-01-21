@@ -55,6 +55,11 @@ html {
 .bk {
   @apply font-sans;
 
+  border-color: theme('colors.slate.200');
+  * {
+    border-color: theme('colors.slate.200');
+  }
+
   letter-spacing: 0;
 
   &.bk-loading-overlay {
@@ -111,16 +116,13 @@ html {
     }
   }
   &.bk-is-danger {
-    @apply !bg-red-600 !text-white hover:!bg-red-800;
+    @apply !bg-red-normal !text-white hover:!bg-red-dark;
     &[disabled] {
       @apply opacity-30;
     }
   }
   &.is-small {
     @apply h-40 !px-10 text-sm;
-  }
-  &.is-danger {
-    @apply !bg-red-600 !text-white hover:!bg-red-800 !border-red-600 hover:!border-red-800;
   }
   &.is-icon-only {
     @apply !px-0 !w-50;
@@ -150,7 +152,7 @@ html {
 }
 
 .bk-owner-indicator {
-  @apply fixed bottom-0 right-0 bg-red-100 z-messages p-20 text-red-800 font-medium text-lg flex justify-between items-center;
+  @apply fixed bottom-0 right-0 bg-red-light z-messages p-20 text-red-normal font-medium text-lg flex justify-between items-center;
   left: var(--bk-root-offset-left);
   right: var(--bk-root-offset-right);
 }

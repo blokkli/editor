@@ -25,6 +25,8 @@ import {
   themes,
   type ModuleOptionsThemeRgba,
   getThemeColors,
+  getContextColors,
+  type ContextColor,
 } from './themes'
 
 function hexToRgb(hex: string): ModuleOptionsThemeRgba {
@@ -111,7 +113,7 @@ export type ModuleOptions = {
    * Having too many chunks has the opposite effect, as rendering a page
    * requires multiple requests.
    *
-   * If left empty, all components is bundled in a default chunk, which should
+   * If left empty, all components are bundled in a default chunk, which should
    * contain components that are used for most pages.
    */
   chunkNames?: string[]
@@ -159,15 +161,24 @@ export type ModuleOptions = {
    * Mono colors are used for the UI elements in the editor.
    */
   theme?: ModuleOptionsTheme
+
+  /**
+   * Enable the theme editor feature.
+   */
+  enabledThemeEditor?: boolean
 }
 
 const buildGlobalConfigTemplate = (theme?: ModuleOptionsTheme) => {
   const accent = getThemeColors(theme?.accent || themes.default.accent)
   const mono = getThemeColors(theme?.mono || themes.default.mono)
+  const teal = getContextColors(theme?.teal || themes.default.teal)
+  const yellow = getContextColors(theme?.yellow || themes.default.yellow)
+  const red = getContextColors(theme?.red || themes.default.red)
+  const lime = getContextColors(theme?.lime || themes.default.lime)
 
   const buildVars = (
     prefix: string,
-    colors: ModuleOptionsThemeColor,
+    colors: ModuleOptionsThemeColor | ContextColor,
   ): string[] => {
     return Object.entries(colors).map(([shade, color]) => {
       const rgb = typeof color === 'string' ? hexToRgb(color) : color
@@ -178,6 +189,10 @@ const buildGlobalConfigTemplate = (theme?: ModuleOptionsTheme) => {
   const vars = [
     ...buildVars('accent', accent),
     ...buildVars('mono', mono),
+    ...buildVars('teal', teal),
+    ...buildVars('yellow', yellow),
+    ...buildVars('red', red),
+    ...buildVars('lime', lime),
   ].join(';\n')
 
   const themeCss = `
@@ -186,7 +201,7 @@ const buildGlobalConfigTemplate = (theme?: ModuleOptionsTheme) => {
   }
   `
 
-  const buildThemeConfig = (colors: ModuleOptionsThemeColor) => {
+  const buildThemeConfig = (colors: ModuleOptionsThemeColor | ContextColor) => {
     return Object.entries(colors).reduce<Record<string, any>>(
       (acc, [key, color]) => {
         const rgb = typeof color === 'string' ? hexToRgb(color) : color
@@ -200,6 +215,10 @@ const buildGlobalConfigTemplate = (theme?: ModuleOptionsTheme) => {
   const fullTheme = {
     accent: buildThemeConfig(accent),
     mono: buildThemeConfig(mono),
+    teal: buildThemeConfig(teal),
+    yellow: buildThemeConfig(yellow),
+    red: buildThemeConfig(red),
+    lime: buildThemeConfig(lime),
   }
 
   return { themeCss, fullTheme }
@@ -240,7 +259,13 @@ export default defineNuxtModule<ModuleOptions>({
       },
     ).then(async (files) => {
       await featureExtractor.addFiles(files)
-      return featureExtractor.getFeatures()
+      return featureExtractor.getFeatures().filter((v) => {
+        // Remove the theme editor feature if not enabled.
+        if (v.id === 'theme' && !moduleOptions.enabledThemeEditor) {
+          return false
+        }
+        return true
+      })
     })
 
     const featuresContext: AlterFeatures = {
@@ -532,7 +557,7 @@ ${featuresArray}
       getContents: () => {
         return `
 import type { Theme } from '#blokkli/types'
-export const theme: Theme = ${JSON.stringify(fullTheme)}
+export const theme: Theme = ${JSON.stringify(fullTheme, null, 2)}
 `
       },
       options: {

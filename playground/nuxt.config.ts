@@ -39,6 +39,8 @@ export default defineNuxtConfig({
       accent: 'red',
       mono: 'stone',
     },
+
+    enabledThemeEditor: true,
   },
 
   svgIconSprite: {

@@ -9,7 +9,7 @@
     @apply text-lg font-bold leading-none relative bg-slate-300 text-slate-600 hover:bg-slate-400 flex items-center justify-center z-20 origin-top-left;
     @apply w-full h-full;
     &.bk-has-unresolved-comments {
-      @apply bg-yellow-300 text-yellow-900 hover:bg-yellow-400;
+      @apply bg-yellow-normal text-yellow-dark hover:bg-yellow-dark hover:text-yellow-light;
     }
     svg {
       @apply fill-current w-20 h-20;
@@ -64,7 +64,7 @@
   }
 
   button {
-    @apply items-center text-green-700 font-medium px-5 py-2 border border-green-200 rounded flex opacity-0;
+    @apply items-center text-lime-normal font-medium px-5 py-2 border border-lime-normal rounded flex opacity-0;
     svg {
       @apply w-15 h-15 fill-current mr-5;
     }
