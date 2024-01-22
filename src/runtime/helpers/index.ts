@@ -2,11 +2,11 @@ import type {
   DraggableItem,
   SearchContentItem,
   Rectangle,
-  RGB,
   DraggableStyle,
 } from '#blokkli/types'
 import { useRuntimeConfig } from '#imports'
 import { getDefinition } from '#blokkli/definitions'
+import type { RGB } from '#blokkli/types/theme'
 
 // @ts-ignore
 const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType

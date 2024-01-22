@@ -128,7 +128,7 @@ type DetermineVisibleOptionsContext<
   options: (T extends BlockDefinitionOptionsInput ? WithOptions<T> : {}) &
     (G extends ValidGlobalConfigKeys ? GlobalOptionsKeyTypes<G> : {})
   parentType: BlockBundleWithNested | undefined
-  props: B extends keyof BundlePropsMap ? BundlePropsMap[B] : never
+  props: B extends keyof BundlePropsMap ? BundlePropsMap[B] : any
 }
 
 type ExtractGlobalOptions<G extends GlobalOptionsKey[]> =
@@ -870,7 +870,6 @@ export interface BlokkliApp {
   eventBus: typeof eventBus
 
   runtimeConfig: {
-    langcodeWithoutPrefix: string
     itemEntityType: string
     defaultLanguage: string
   }

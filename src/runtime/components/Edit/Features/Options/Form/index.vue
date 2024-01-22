@@ -114,8 +114,8 @@ class OptionCollector {
 const original = new OptionCollector()
 const updated = new OptionCollector()
 
-const definition = computed<BlockDefinitionInput | undefined>(() => {
-  return getDefinition(props.itemBundle) as BlockDefinitionInput
+const definition = computed(() => {
+  return getDefinition(props.itemBundle)
 })
 
 const availableOptions = computed(() => {
@@ -160,10 +160,11 @@ const visibleOptions = computed(() => {
       : undefined
 
   const visibleKeys: string[] =
+    // We have to cast to any here because the types are guaranteed to be correct.
     definition.value?.editor?.determineVisibleOptions({
-      options: allOptions,
+      options: allOptions as any,
       parentType: parentType as any,
-      props: (renderedBlock?.item.props || {}) as never,
+      props: (renderedBlock?.item.props || {}) as any,
     })
 
   return availableOptions.value.filter((v) => visibleKeys.includes(v.property))
