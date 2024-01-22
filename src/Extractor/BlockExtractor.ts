@@ -5,7 +5,7 @@ import type {
   BlockDefinitionOptionsInput,
 } from '../runtime/types'
 
-type ExtractedBlockDefinitionInput = BlockDefinitionInput<{}, [], string>
+type ExtractedBlockDefinitionInput = BlockDefinitionInput<{}, []>
 
 type ExtractedDefinition = {
   filePath: string
@@ -72,32 +72,19 @@ export default class BlockExtractor {
 
     const icon = await this.getIcon(filePath)
 
-    // New file that didn't previously contain a blokkli component definition.
-    if (!this.definitions[filePath]) {
-      this.definitions[filePath] = {
-        filePath,
-        definition,
-        icon,
-        chunkName: (definition.chunkName || 'global') as any,
-        componentName: 'BlokkliComponent_' + definition.bundle,
-        source,
-        fileSource,
-        hasBlokkliField:
-          fileSource.includes('<BlokkliField') ||
-          fileSource.includes('<blokkli-field') ||
-          fileSource.includes(':is="BlokkliField"'),
-      }
-      return true
+    this.definitions[filePath] = {
+      filePath,
+      definition,
+      icon,
+      chunkName: (definition.chunkName || 'global') as any,
+      componentName: 'BlokkliComponent_' + definition.bundle,
+      source,
+      fileSource,
+      hasBlokkliField:
+        fileSource.includes('<BlokkliField') ||
+        fileSource.includes('<blokkli-field') ||
+        fileSource.includes(':is="BlokkliField"'),
     }
-
-    // If the the definition didn't change, return.
-    if (this.definitions[filePath].definition === definition) {
-      return false
-    }
-
-    // Update the definition.
-    this.definitions[filePath].definition = definition
-    this.definitions[filePath].icon = icon
 
     return true
   }
@@ -161,13 +148,13 @@ export const icons: Record<string, string> = ${JSON.stringify(icons)}
 
 export type PossibleDefinitionBundle = keyof BundlePropsMap | 'from_library'
 
-export const definitionsMap: Record<string, BlockDefinitionInput<BlockDefinitionOptionsInput, GlobalOptionsKey[], PossibleDefinitionBundle>> = {
+export const definitionsMap: Record<string, BlockDefinitionInput<BlockDefinitionOptionsInput, GlobalOptionsKey[]>> = {
   ${allDefinitions.join(',\n')}
 }
 
-export const definitions: BlockDefinitionInput<any, GlobalOptionsKey[], PossibleDefinitionBundle>[] = Object.values(definitionsMap)
+export const definitions: BlockDefinitionInput<any, GlobalOptionsKey[]>[] = Object.values(definitionsMap)
 
-export const getDefinition = (bundle: string): BlockDefinitionInput<Record<string, any>, GlobalOptionsKey[], PossibleDefinitionBundle>|undefined => definitionsMap[bundle]
+export const getDefinition = (bundle: string): BlockDefinitionInput<Record<string, any>, GlobalOptionsKey[]>|undefined => definitionsMap[bundle]
 `
   }
 
