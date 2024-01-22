@@ -23,5 +23,5 @@ export const getTheme = (
     throw new Error(`Invalid theme name: ${v}`)
   }
 
-  return {}
+  return v || {}
 }

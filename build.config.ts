@@ -10,6 +10,7 @@ export default defineBuildConfig({
     '#blokkli/helpers',
     '#blokkli/helpers/broadcastProvider',
     '#blokkli/helpers/featuresProvider',
+    '#blokkli/helpers/themeProvider',
     '#blokkli/translations',
     '#blokkli/generated-types',
     'defu',

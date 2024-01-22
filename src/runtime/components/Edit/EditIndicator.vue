@@ -17,6 +17,7 @@
 <script lang="ts" setup>
 import textProvider from '#blokkli/helpers/textProvider'
 import { ref, onMounted, onUnmounted, computed } from '#imports'
+import '#blokkli/theme'
 import '#blokkli/styles'
 
 const props = defineProps<{
