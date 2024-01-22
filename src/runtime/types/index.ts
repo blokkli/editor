@@ -121,14 +121,13 @@ export type BlockDefinitionOptionsInput = {
 }
 
 type DetermineVisibleOptionsContext<
-  B extends keyof BundlePropsMap | string,
   T extends BlockDefinitionOptionsInput = {},
   G extends GlobalOptionsKey[] | undefined = undefined,
 > = {
   options: (T extends BlockDefinitionOptionsInput ? WithOptions<T> : {}) &
     (G extends ValidGlobalConfigKeys ? GlobalOptionsKeyTypes<G> : {})
   parentType: BlockBundleWithNested | undefined
-  props: B extends keyof BundlePropsMap ? BundlePropsMap[B] : any
+  props: Record<string, any>
 }
 
 type ExtractGlobalOptions<G extends GlobalOptionsKey[]> =
@@ -145,7 +144,6 @@ export type BlokkliDefinitionAddBehaviour =
   | `editable:${string}`
 
 export type BlokkliDefinitionInputEditor<
-  Bundle extends keyof BundlePropsMap | string,
   Options extends BlockDefinitionOptionsInput = {},
   GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
 > = {
@@ -156,7 +154,7 @@ export type BlokkliDefinitionInputEditor<
    * If a method is defined, it is called whenever any of the options change.
    */
   determineVisibleOptions?: (
-    ctx: DetermineVisibleOptionsContext<Bundle, Options, GlobalOptions>,
+    ctx: DetermineVisibleOptionsContext<Options, GlobalOptions>,
   ) => Array<CombineKeysAndGlobalOptions<Options, GlobalOptions>>
 
   /**
@@ -262,12 +260,11 @@ export type BlokkliDefinitionInputEditor<
 export type BlockDefinitionInput<
   Options extends BlockDefinitionOptionsInput = {},
   GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
-  T extends keyof BundlePropsMap | string = '',
 > = {
   /**
    * The type ID of the item, e.g. "text" or "section_title".
    */
-  bundle: T
+  bundle: string
 
   /**
    * The name of the chunk group.
@@ -294,7 +291,7 @@ export type BlockDefinitionInput<
   /**
    * Settings for the behaviour in the editor.
    */
-  editor?: BlokkliDefinitionInputEditor<T, Options, GlobalOptions>
+  editor?: BlokkliDefinitionInputEditor<Options, GlobalOptions>
 }
 
 export type InjectedBlokkliItem = ComputedRef<{

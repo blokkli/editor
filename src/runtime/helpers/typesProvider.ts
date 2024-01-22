@@ -10,18 +10,11 @@ import type {
 import { eventBus } from '#blokkli/helpers/eventBus'
 import type { BlokkliAdapter } from '../adapter'
 import type { SelectionProvider } from './selectionProvider'
-import {
-  getDefinition,
-  type PossibleDefinitionBundle,
-} from '#blokkli/definitions'
+import { getDefinition } from '#blokkli/definitions'
 
 export type BlokkliBlockType = BlockBundleDefinition & {
   definition:
-    | BlockDefinitionInput<
-        BlockDefinitionOptionsInput,
-        any[],
-        PossibleDefinitionBundle
-      >
+    | BlockDefinitionInput<BlockDefinitionOptionsInput, any[]>
     | undefined
 }
 

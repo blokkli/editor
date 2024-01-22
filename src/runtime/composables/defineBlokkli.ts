@@ -27,10 +27,9 @@ import {
  * Define a blokkli component.
  */
 export function defineBlokkli<
-  B extends keyof BundlePropsMap | string,
   T extends BlockDefinitionOptionsInput = {},
   G extends GlobalOptionsKey[] | undefined = undefined,
->(config: BlockDefinitionInput<T, G, B>): DefineBlokkliContext<T, G> {
+>(config: BlockDefinitionInput<T, G>): DefineBlokkliContext<T, G> {
   const optionKeys: string[] = []
   // The default options are provided by the component definition itself.
   const defaultOptions: Record<string, any> = {}
