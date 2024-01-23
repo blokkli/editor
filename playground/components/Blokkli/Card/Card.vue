@@ -40,6 +40,12 @@
 <script lang="ts" setup>
 import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
 
+type Props = {
+  icon?: string
+  title: string
+  text: string
+}
+
 const { parentType, options } = defineBlokkli({
   bundle: 'card',
 
@@ -76,11 +82,7 @@ const { parentType, options } = defineBlokkli({
   },
 })
 
-defineProps<{
-  icon?: string
-  title: string
-  text: string
-}>()
+defineProps<Props>()
 
 const isBox = computed(() => options.value.box === '1')
 

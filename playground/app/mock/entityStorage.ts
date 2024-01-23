@@ -3,11 +3,10 @@ import type { Block } from './state/Block/Block'
 import { Comment } from './state/Comment'
 import type { Entity } from './state/Entity'
 import { ContentPage, type Content } from './state/Entity/Content'
-import type { LibraryItem } from './state/LibraryItem'
+import { LibraryItem } from './state/LibraryItem'
 import { MediaImage, type Media, MediaVideo } from './state/Media/Media'
 import { User } from './state/User'
-import blocksData from './../../snapshots/blocks-updated.json'
-import fieldsData from './../../snapshots/fields-all.json'
+import data from './../../snapshots/data.json'
 import videosData from './../../snapshots/videos.json'
 import type { FieldBlocks } from './state/Field/Blocks'
 import { generateUUID } from './uuid'
@@ -95,6 +94,7 @@ export class EntityStorageManager {
     )
 
     this.createImage('7', '/placeholder.jpg', 'Placeholder')
+    this.createImage('8', '/mobile-screenshot.png', 'Mobile Screenshot')
 
     this.addUser('1', 'John Miller', 'john@example.com')
     this.addUser('2', 'Martin Faux', 'martin@example.com')
@@ -127,23 +127,17 @@ export class EntityStorageManager {
 
     const usedBlocks: string[] = []
 
-    fieldsData.forEach((item) => {
+    data.fields.forEach((item) => {
       usedBlocks.push(...item.field)
-      // const entity = this.load(item.entityType, item.entityUuid)
-      // console.log(entity)
     })
 
-    const created: Record<string, boolean> = {}
-
-    blocksData.forEach((item) => {
-      if (usedBlocks.includes(item.uuid) && !created[item.uuid]) {
-        this.createBlock(item.bundle, item.uuid, item.values)
-      }
+    data.blocks.forEach((item) => {
+      this.createBlock(item.bundle, item.uuid, item.values)
     })
 
     const added: string[] = []
 
-    fieldsData.forEach((item) => {
+    data.fields.forEach((item) => {
       const entity = this.load(item.entityType as any, item.entityUuid)
       if (entity) {
         const field = entity.get<FieldBlocks>(item.name)
@@ -158,6 +152,17 @@ export class EntityStorageManager {
         }
       }
     })
+
+    data.libraryItems.forEach((item) => {
+      const libraryItem = new LibraryItem(item.uuid)
+      libraryItem.setValues({
+        title: item.title,
+      })
+      libraryItem.getBlocks().setList([item.block])
+      this.addLibraryItem(libraryItem)
+    })
+
+    console.log(this.storages.library_item.loadAll())
 
     videosData.forEach((item, i) => {
       this.createVideo((i + 100).toString(), item.url, item.title)
@@ -201,6 +206,10 @@ export class EntityStorageManager {
 
   addBlock(block: Block) {
     this.storages.block.add(block)
+  }
+
+  addLibraryItem(item: LibraryItem) {
+    this.storages.library_item.add(item)
   }
 
   createBlock(bundle: string, uuid: string, values: Record<string, any> = {}) {

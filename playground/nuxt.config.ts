@@ -29,8 +29,8 @@ export default defineNuxtConfig({
         displayAs: 'colors',
         options: {
           white: 'bg-white',
-          light: 'bg-slate-100',
-          dark: 'bg-slate-800',
+          light: 'bg-mono-100',
+          dark: 'bg-mono-800',
         },
       },
     },

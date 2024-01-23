@@ -24,13 +24,6 @@ const { options, parentType } = defineBlokkli({
   editor: {
     addBehaviour: 'no-form',
     editTitle: (el) => el.querySelector('img')?.alt,
-    determineVisibleOptions: (ctx) => {
-      if (ctx.parentType) {
-        return []
-      }
-      return ['elevated']
-    },
-
     getDraggableElement: (el) => el.querySelector('div'),
   },
 })
@@ -53,7 +46,5 @@ const alt = computed(() => {
   return ''
 })
 
-const isElevated = computed(
-  () => options.value.elevated == '1' || parentType.value,
-)
+const isElevated = computed(() => options.value.elevated == '1')
 </script>
