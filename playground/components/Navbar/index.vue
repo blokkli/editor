@@ -24,7 +24,7 @@
           </li>
           <li>
             <iframe
-              src="https://ghbtns.com/github-btn.html?user=dulnan&repo=nuxt-multi-cache&type=star&count=true"
+              src="https://ghbtns.com/github-btn.html?user=blokkli&repo=editor&type=star&count=true"
               frameborder="0"
               scrolling="0"
               width="84"

@@ -1,16 +1,16 @@
 <svg width="130" height="82" viewBox="0 0 130 82" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_46_86)">
-<rect width="130" height="82" fill="#E2E8F0"/>
-<g filter="url(#filter0_d_46_86)">
-<rect x="28" y="11" width="74" height="83" fill="white"/>
-</g>
-<rect x="31" y="16" width="34" height="6" fill="#D9D9D9"/>
-<rect x="31" y="24" width="20" height="6" fill="#D9D9D9"/>
-<rect x="31" y="38" width="66" height="2" fill="#D9D9D9"/>
-<rect x="31" y="42" width="59" height="2" fill="#D9D9D9"/>
-<rect x="31" y="46" width="63" height="2" fill="#D9D9D9"/>
-<rect x="31" y="50" width="41" height="2" fill="#D9D9D9"/>
-</g>
+  <g clip-path="url(#clip0_46_86)">
+    <rect width="130" height="82" class="bk-icon-theme-bg"/>
+    <g filter="url(#filter0_d_46_86)">
+      <rect x="28" y="11" width="74" height="83" class="bk-icon-theme-fg" />
+    </g>
+    <rect x="31" y="16" width="34" height="6" class="bk-icon-theme-text"/>
+    <rect x="31" y="24" width="20" height="6" class="bk-icon-theme-text"/>
+    <rect x="31" y="38" width="66" height="2" class="bk-icon-theme-text"/>
+    <rect x="31" y="42" width="59" height="2" class="bk-icon-theme-text"/>
+    <rect x="31" y="46" width="63" height="2" class="bk-icon-theme-text"/>
+    <rect x="31" y="50" width="41" height="2" class="bk-icon-theme-text"/>
+  </g>
 <defs>
 <filter id="filter0_d_46_86" x="24" y="7" width="82" height="91" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
@@ -23,7 +23,7 @@
 <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_46_86" result="shape"/>
 </filter>
 <clipPath id="clip0_46_86">
-<rect width="130" height="82" fill="white"/>
+<rect width="130" height="82" class="bk-icon-theme-fg" />
 </clipPath>
 </defs>
 </svg>

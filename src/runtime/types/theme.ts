@@ -1,7 +1,7 @@
 // RGBA, e.g. [255, 255, 255] (white)
 export type RGB = [number, number, number]
 
-export type ThemeName = 'arctic' | 'gruvbox' | 'fire'
+export type ThemeName = 'arctic' | 'gruvbox' | 'fire' | 'nuxt'
 
 export type ThemeColorGroup =
   /**

@@ -1,19 +1,19 @@
 <svg width="130" height="82" viewBox="0 0 130 82" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_49_216)">
-<rect width="130" height="82" fill="#E2E8F0"/>
-<rect x="132" y="64" width="18" height="132" transform="rotate(90 132 64)" fill="#0F172A"/>
-<rect x="34.5" y="66.5" width="13" height="13" rx="1.5" fill="#313C4B" stroke="#3F4B5B"/>
-<rect x="82.5" y="66.5" width="13" height="13" rx="1.5" fill="#313C4B" stroke="#3F4B5B"/>
-<rect x="98.5" y="66.5" width="13" height="13" rx="1.5" fill="#313C4B" stroke="#3F4B5B"/>
-<rect x="114.5" y="66.5" width="13" height="13" rx="1.5" fill="#313C4B" stroke="#3F4B5B"/>
-<rect x="18.5" y="66.5" width="13" height="13" rx="1.5" fill="#313C4B" stroke="#3F4B5B"/>
-<rect x="66.5" y="66.5" width="13" height="13" rx="1.5" fill="#313C4B" stroke="#3F4B5B"/>
-<rect x="2.5" y="66.5" width="13" height="13" rx="1.5" fill="#313C4B" stroke="#3F4B5B"/>
-<rect x="50.5" y="66.5" width="13" height="13" rx="1.5" fill="#313C4B" stroke="#3F4B5B"/>
-</g>
-<defs>
-<clipPath id="clip0_49_216">
-<rect width="130" height="82" fill="white"/>
-</clipPath>
-</defs>
+  <g clip-path="url(#clip0_49_216)">
+    <rect width="130" height="82" class="bk-icon-theme-bg" />
+    <rect x="132" y="64" width="18" height="132" transform="rotate(90 132 64)" class="bk-icon-theme-toolbar" />
+    <rect x="34.5" y="66.5" width="13" height="13" rx="1.5" class="bk-icon-theme-toolbar-dark-item"/>
+    <rect x="82.5" y="66.5" width="13" height="13" rx="1.5" class="bk-icon-theme-toolbar-dark-item"/>
+    <rect x="98.5" y="66.5" width="13" height="13" rx="1.5" class="bk-icon-theme-toolbar-dark-item"/>
+    <rect x="114.5" y="66.5" width="13" height="13" rx="1.5" class="bk-icon-theme-toolbar-dark-item"/>
+    <rect x="18.5" y="66.5" width="13" height="13" rx="1.5" class="bk-icon-theme-toolbar-dark-item"/>
+    <rect x="66.5" y="66.5" width="13" height="13" rx="1.5" class="bk-icon-theme-toolbar-dark-item"/>
+    <rect x="2.5" y="66.5" width="13" height="13" rx="1.5" class="bk-icon-theme-toolbar-dark-item"/>
+    <rect x="50.5" y="66.5" width="13" height="13" rx="1.5" class="bk-icon-theme-toolbar-dark-item"/>
+  </g>
+  <defs>
+  <clipPath id="clip0_49_216">
+    <rect width="130" height="82" class="bk-icon-theme-fg" />
+  </clipPath>
+  </defs>
 </svg>

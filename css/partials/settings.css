@@ -58,3 +58,27 @@
     }
   }
 }
+
+.bk-icon-theme-bg {
+  @apply fill-mono-200;
+}
+
+.bk-icon-theme-fg {
+  @apply fill-white;
+}
+
+.bk-icon-theme-text {
+  @apply fill-mono-300;
+}
+
+.bk-icon-theme-toolbar {
+  @apply fill-mono-950;
+}
+
+.bk-icon-theme-toolbar-dark-item {
+  @apply fill-mono-800 stroke-mono-600;
+}
+
+.bk-icon-theme-toolbar-light-item {
+  @apply fill-mono-200 stroke-mono-300;
+}
