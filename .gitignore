@@ -57,3 +57,4 @@ Temporary Items
 src/runtime/css
 
 playground/options-schema.json
+docs/.vitepress/cache

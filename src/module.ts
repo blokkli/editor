@@ -230,7 +230,7 @@ export default defineNuxtModule<ModuleOptions>({
     globalOptions: {} as BlockDefinitionOptionsInput,
     chunkNames: ['global'] as string[],
     composableName: 'defineBlokkli',
-    itemEntityType: 'blokkli_item',
+    itemEntityType: 'block',
   },
   async setup(moduleOptions, nuxt) {
     // The path to the source directory of this module's consumer.

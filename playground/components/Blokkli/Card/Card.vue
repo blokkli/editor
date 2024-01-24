@@ -67,6 +67,18 @@ const { parentType, options } = defineBlokkli({
         lightRed: 'bg-red-normal',
       },
     },
+    countries: {
+      type: 'checkboxes',
+      label: 'Countries',
+      default: 'ch,de,at',
+      options: {
+        ch: 'Switzerland',
+        de: 'Germany',
+        at: 'Austria',
+        it: 'Italy',
+        fr: 'France',
+      },
+    },
   },
   editor: {
     previewWidth: 380,

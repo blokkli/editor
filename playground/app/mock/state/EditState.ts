@@ -315,7 +315,9 @@ export class EditState {
         }
       }
 
-      mutatedFields[key].list.push(mapBlockItem(proxy.block))
+      mutatedFields[key].list.push(
+        mapBlockItem(proxy.block, proxy.overrideOptions),
+      )
     }
 
     if (save) {

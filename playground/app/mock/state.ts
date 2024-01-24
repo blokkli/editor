@@ -21,19 +21,24 @@ export const state: MockState = {
   editState,
 }
 
-export function mapBlockItem(block: Block): FieldListItem {
+export function mapBlockItem(
+  block: Block,
+  overrideOptions?: Record<string, string>,
+): FieldListItem {
   const props = block.getProps()
   delete props.options
   return {
     uuid: block.uuid,
     bundle: block.bundle,
-    options: JSON.parse(JSON.stringify(block.options().getOptions())),
+    options: JSON.parse(
+      JSON.stringify(overrideOptions || block.options().getOptions()),
+    ),
     props,
   }
 }
 
 export function mapMockField(field: FieldBlocks): FieldListItem[] {
-  return field.getBlocks().map(mapBlockItem)
+  return field.getBlocks().map((v) => mapBlockItem(v))
 }
 
 export const getEditState = (
