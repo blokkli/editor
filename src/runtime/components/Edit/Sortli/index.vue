@@ -263,6 +263,9 @@ const onClick = (e: MouseEvent) => {
   }
   const id = findItem(e)?.id
   if (!id) {
+    if (!selection.isMultiSelecting.value) {
+      eventBus.emit('select:end')
+    }
     return
   }
 
