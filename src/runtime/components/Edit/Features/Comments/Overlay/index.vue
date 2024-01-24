@@ -85,7 +85,7 @@ function onAnimationFrame(e: AnimationFrameEvent) {
 
   for (let i = 0; i < props.comments.length; i++) {
     const comment = props.comments[i]
-    const uuids = comment.itemUuids || []
+    const uuids = comment.blockUuids || []
     const rects = uuids
       .map((uuid) => dom.findBlock(uuid))
       .filter(falsy)

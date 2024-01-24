@@ -150,7 +150,7 @@ const onDropExisting = async (
 ) => {
   const uuids = items.map((v) => v.uuid)
   await state.mutateWithLoadingState(
-    adapter.moveMultipleItems({
+    adapter.moveMultpleBlocks({
       uuids,
       afterUuid,
       host,

@@ -1,6 +1,6 @@
 fragment paragraphsBuilderComment on CommentBlokkliNode {
   uuid
-  itemUuids: fieldTargetUuids
+  blockUuids: fieldTargetUuids
   resolved: fieldResolved
   body: commentBody
   created: createdRawField {
@@ -27,14 +27,14 @@ query pbComments($entityType: EntityType!, $entityUuid: String!) {
 mutation pbAddComment(
   $entityType: EntityType!
   $entityUuid: String!
-  $itemUuids: [String]!
+  $blockUuids: [String]!
   $body: String!
 ) {
   state: paragraphsEditMutationState(
     entityType: $entityType
     entityUuid: $entityUuid
   ) {
-    action: addComment(body: $body, paragraphUuids: $itemUuids) {
+    action: addComment(body: $body, paragraphUuids: $blockUuids) {
       ...paragraphsBuilderComment
     }
   }

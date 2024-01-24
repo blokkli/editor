@@ -87,6 +87,14 @@ export interface BlokkliAdapter<T> {
   getConversions?: () => Promise<ConversionItem[]>
 
   /**
+   * Convert multiple items.
+   */
+  convertBlocks?: (
+    uuids: string[],
+    targetBundle: string,
+  ) => Promise<MutationResponseLike<T>>
+
+  /**
    * Get all possible transform plugins.
    */
   getTransformPlugins?: () => Promise<TransformPlugin[]>
@@ -120,12 +128,12 @@ export interface BlokkliAdapter<T> {
   /**
    * Move an item.
    */
-  moveItem(e: MoveBlockEvent): Promise<MutationResponseLike<T>>
+  moveBlock(e: MoveBlockEvent): Promise<MutationResponseLike<T>>
 
   /**
    * Move multiple items.
    */
-  moveMultipleItems(
+  moveMultipleBlocks(
     e: MoveMultipleBlocksEvent,
   ): Promise<MutationResponseLike<T>>
 
@@ -138,14 +146,6 @@ export interface BlokkliAdapter<T> {
    * Delete multiple items.
    */
   deleteBlocks?: (uuids: string[]) => Promise<MutationResponseLike<T>>
-
-  /**
-   * Convert multiple items.
-   */
-  convertBlocks?: (
-    uuids: string[],
-    targetBundle: string,
-  ) => Promise<MutationResponseLike<T>>
 
   /**
    * Duplicate blocks.
@@ -201,7 +201,7 @@ export interface BlokkliAdapter<T> {
   /**
    * Add a comment to one or more items.
    */
-  addComment?: (itemUuids: string[], body: string) => Promise<CommentItem[]>
+  addComment?: (blockUuids: string[], body: string) => Promise<CommentItem[]>
 
   /**
    * Resolve a comment.

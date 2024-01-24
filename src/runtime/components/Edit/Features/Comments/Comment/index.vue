@@ -33,7 +33,7 @@ defineEmits<{
 
 const props = defineProps<{
   uuid?: string | number
-  itemUudis?: string[]
+  blockUuids?: string[]
   resolved?: boolean
   body?: string
   created?: CommentItem['created']

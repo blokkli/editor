@@ -172,7 +172,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         afterUuid: e.afterUuid,
       })
 
-    const moveMultipleItems: DrupalAdapter['moveMultipleItems'] = (e) =>
+    const moveMultipleBlocks: DrupalAdapter['moveMultipleBlocks'] = (e) =>
       useGraphqlMutation('pbMoveMultipleItems', {
         ...ctx.value,
         uuids: e.uuids,
@@ -182,7 +182,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         afterUuid: e.afterUuid,
       })
 
-    const moveItem: DrupalAdapter['moveItem'] = (e) =>
+    const moveBlock: DrupalAdapter['moveBlock'] = (e) =>
       useGraphqlMutation('pbMoveParagraph', {
         ...ctx.value,
         uuid: e.item.uuid,
@@ -307,7 +307,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
           if ('uuid' in item) {
             return {
               uuid: item.uuid,
-              itemUuids: item.itemUuids || [],
+              blockUuids: item.blockUuids || [],
               resolved: !!item.resolved,
               body: item.body || '',
               created: item.created?.first?.value || '',
@@ -325,10 +325,10 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         mapComments(v.data.state?.comments || []),
       )
 
-    const addComment: DrupalAdapter['addComment'] = (itemUuids, body) =>
+    const addComment: DrupalAdapter['addComment'] = (blockUuids, body) =>
       useGraphqlMutation('pbAddComment', {
         ...ctx.value,
-        itemUuids,
+        blockUuids,
         body,
       }).then((v) => mapComments(v.data.state?.action || []))
 
@@ -475,8 +475,8 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
       duplicateBlocks,
       convertBlocks,
       addLibraryItem,
-      moveMultipleItems,
-      moveItem,
+      moveMultipleBlocks,
+      moveBlock,
       addNewBlock,
       updateOptions,
       mapState,

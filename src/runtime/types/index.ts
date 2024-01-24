@@ -418,10 +418,10 @@ export interface ImportItem {
 
 export type CommentItem = {
   uuid: string
-  itemUuids: string[]
+  blockUuids: string[]
   resolved: boolean
   body: string
-  created: string
+  created: string | number
   user: { label: string }
 }
 

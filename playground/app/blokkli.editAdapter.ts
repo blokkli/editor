@@ -56,7 +56,7 @@ export default defineBlokkliEditAdapter((ctx) => {
       .map((item) => {
         return {
           uuid: item.uuid,
-          itemUuids: item.getBlockUuids(),
+          blockUuids: item.getBlockUuids(),
           resolved: item.isResolved(),
           body: item.getBody(),
           created: (item.getCreated() / 1000).toString(),
@@ -158,14 +158,14 @@ export default defineBlokkliEditAdapter((ctx) => {
     loadComments() {
       return loadComments()
     },
-    addComment(itemUuids, body) {
+    addComment(blockUuids, body) {
       entityStorageManager.addComment({
         body,
         created: Date.now(),
         isResolved: false,
         parentEntityType: ctx.value.entityType,
         parentEntityUuid: ctx.value.entityUuid,
-        referencedBlocks: itemUuids,
+        referencedBlocks: blockUuids,
         user: '1',
       })
       return loadComments()
@@ -179,7 +179,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         preceedingUuid: e.afterUuid,
       }),
 
-    moveItem: (e) =>
+    moveBlock: (e) =>
       addMutation('move', {
         uuids: [e.item.uuid],
         hostEntityType: e.host.type,
@@ -188,7 +188,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         preceedingUuid: e.afterUuid,
       }),
 
-    moveMultipleItems: (e) =>
+    moveMultipleBlocks: (e) =>
       addMutation('move', {
         uuids: e.uuids,
         hostEntityType: e.host.type,

@@ -69,7 +69,7 @@ const onResolveComment = async (uuid: string) => {
 }
 
 const onClickComment = (comment: CommentItem) =>
-  eventBus.emit('select:end', comment.itemUuids || [])
+  eventBus.emit('select:end', comment.blockUuids || [])
 
 onMounted(loadComments)
 </script>
