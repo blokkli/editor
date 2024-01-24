@@ -38,6 +38,8 @@ export default defineNuxtConfig({
     theme: 'arctic',
 
     enabledThemeEditor: true,
+
+    schemaOptionsPath: '~/options-schema.json',
   },
 
   svgIconSprite: {

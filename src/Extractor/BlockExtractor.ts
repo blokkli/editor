@@ -159,6 +159,34 @@ export const getDefinition = (bundle: string): BlockDefinitionInput<Record<strin
   }
 
   /**
+   * Generate the options schema.
+   */
+  generateOptionsSchema(
+    globalOptions: BlockDefinitionOptionsInput = {},
+  ): string {
+    const schema = Object.values(this.definitions).reduce<Record<string, any>>(
+      (acc, v) => {
+        acc[v.definition.bundle] = v.definition.options
+
+        const globalOptionKeys = v.definition.globalOptions || []
+
+        globalOptionKeys.forEach((name) => {
+          if (globalOptions[name]) {
+            acc[v.definition.bundle] = {
+              [name]: globalOptions[name],
+            }
+          }
+        })
+
+        return acc
+      },
+      {},
+    )
+
+    return JSON.stringify(schema, null, 2)
+  }
+
+  /**
    * Generate the default global options values template.
    */
   generateDefaultGlobalOptions(

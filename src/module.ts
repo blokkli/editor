@@ -21,6 +21,7 @@ import defu, { createDefu } from 'defu'
 import defaultTranslations from './translations'
 import { getTheme, themes } from './themes'
 import type { ThemeName, RGB, Theme } from './runtime/types/theme'
+import type { ResolvedNuxtTemplate } from '@nuxt/schema'
 
 function hexToRgb(hex: string): RGB {
   // Remove the hash symbol if present
@@ -159,6 +160,16 @@ export type ModuleOptions = {
    * Enable the theme editor feature.
    */
   enabledThemeEditor?: boolean
+
+  /**
+   * blokkli generates a JSON file that contains all the defined block
+   * options, keyed by block bundle. By default the file is output to
+   * .nuxt/blokkli/options-schema.json, but the path can be overriden here.
+   *
+   * The path can use aliases like ~ or @ and must also contain the file
+   * name including the extension.
+   */
+  schemaOptionsPath?: string
 }
 
 const buildThemeData = (themeOption?: ThemeName | Partial<Theme>) => {
@@ -565,6 +576,41 @@ export const theme: Theme = ${JSON.stringify(fullTheme, null, 2)}
     nuxt.options.alias['#blokkli/default-global-options'] =
       templateDefaultGlobalOptions.dst
 
+    let optionsSchemaTemplate: ResolvedNuxtTemplate | null = null
+
+    const generateOptionsSchema = async () => {
+      const outputPath = moduleOptions.schemaOptionsPath
+      if (outputPath) {
+        const resolvedPath = await srcResolver.resolvePath(outputPath)
+        const content = blockExtractor.generateOptionsSchema(
+          moduleOptions.globalOptions || {},
+        )
+
+        return fsp.writeFile(resolvedPath, content)
+      }
+
+      // Template was already generated.
+      if (optionsSchemaTemplate) {
+        return
+      }
+
+      // The types template.
+      optionsSchemaTemplate = addTemplate({
+        write: true,
+        filename: 'blokkli/options-schema.json',
+        getContents: () => {
+          return blockExtractor.generateOptionsSchema(
+            moduleOptions.globalOptions || {},
+          )
+        },
+        options: {
+          blokkli: true,
+        },
+      })
+    }
+
+    await generateOptionsSchema()
+
     getChunkNames().forEach((chunkName) => {
       if (chunkName !== 'global') {
         const template = addTemplate({
@@ -690,6 +736,8 @@ export type BlokkliIcon = keyof typeof icons`
               return template.options && template.options.blokkli
             },
           })
+
+          await generateOptionsSchema()
 
           // Trigger HMR for the definitions file.
           const modules = viteServer.moduleGraph.getModulesByFile(
