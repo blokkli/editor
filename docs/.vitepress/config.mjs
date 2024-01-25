@@ -13,7 +13,10 @@ const adapterDocs = [
   { text: 'applyTransformPlugin()', link: '/adapter/applyTransformPlugin' },
   { text: 'addNewBlock()', link: '/adapter/addNewBlock' },
   { text: 'updateOptions()', link: '/adapter/updateOptions' },
-  { text: 'addBlockFromClipboardItem()', link: '/adapter/addBlockFromClipboardItem' },
+  {
+    text: 'addBlockFromClipboardItem()',
+    link: '/adapter/addBlockFromClipboardItem',
+  },
   { text: 'moveBlock()', link: '/adapter/moveBlock' },
   { text: 'moveMultipleBlocks()', link: '/adapter/moveMultipleBlocks' },
   { text: 'addLibraryItem()', link: '/adapter/addLibraryItem' },
@@ -35,26 +38,33 @@ const adapterDocs = [
   { text: 'getLastChanged()', link: '/adapter/getLastChanged' },
   { text: 'getPreviewGrantUrl()', link: '/adapter/getPreviewGrantUrl' },
   { text: 'getContentSearchTabs()', link: '/adapter/getContentSearchTabs' },
-  { text: 'getContentSearchResults()', link: '/adapter/getContentSearchResults' },
+  {
+    text: 'getContentSearchResults()',
+    link: '/adapter/getContentSearchResults',
+  },
   { text: 'addContentSearchItem()', link: '/adapter/addContentSearchItem' },
   { text: 'changeLanguage()', link: '/adapter/changeLanguage' },
   { text: 'formFrameBuilder()', link: '/adapter/formFrameBuilder' },
   { text: 'updateFieldValue()', link: '/adapter/updateFieldValue' },
   { text: 'buildEditableFrameUrl()', link: '/adapter/buildEditableFrameUrl' },
   { text: 'assistantGetResults()', link: '/adapter/assistantGetResults' },
-  { text: 'assistantAddBlockFromResult()', link: '/adapter/assistantAddBlockFromResult' },
+  {
+    text: 'assistantAddBlockFromResult()',
+    link: '/adapter/assistantAddBlockFromResult',
+  },
   { text: 'getGridMarkup()', link: '/adapter/getGridMarkup' },
-].sort((a,b) => a.text.localeCompare(b.text))
+].sort((a, b) => a.text.localeCompare(b.text))
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "blökkli docs",
-  description: "Documentation for the blökkli page builder",
+  title: 'blökkli docs',
+  description: 'Documentation for the blökkli page builder',
+  // srcDir: 'docs',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Examples', link: '/markdown-examples' }
+      { text: 'Examples', link: '/markdown-examples' },
     ],
 
     sidebar: [
@@ -65,7 +75,7 @@ export default defineConfig({
           { text: 'Options', link: '/define-blokkli/options' },
           { text: 'Block Context', link: '/define-blokkli/block-context' },
           { text: 'Editor behaviour', link: '/define-blokkli/editor' },
-        ]
+        ],
       },
       {
         text: 'Data Structure',
@@ -74,7 +84,7 @@ export default defineConfig({
           { text: 'Components Data', link: '/data-structure/components' },
           { text: 'Block Options', link: '/data-structure/options' },
           { text: 'Nested Blocks', link: '/data-structure/nested-blocks' },
-        ]
+        ],
       },
       {
         text: 'Editor',
@@ -82,26 +92,26 @@ export default defineConfig({
           { text: 'Overview', link: '/editor/overview' },
           { text: 'Edit State', link: '/editor/edit-state' },
           { text: 'Features', link: '/editor/features' },
-        ]
+        ],
       },
       {
         text: 'Features',
-        items: [
-          { text: 'Library', link: '/features/library' },
-        ]
+        items: [{ text: 'Library', link: '/features/library' }],
       },
       {
         text: 'Adapter',
         collapsed: true,
         items: [
           { text: 'Overview', link: '/adapter/overview' },
-          ...adapterDocs
-        ]
-      }
+          ...adapterDocs,
+        ],
+      },
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
-    ]
-  }
+      { icon: 'github', link: 'https://github.com/vuejs/vitepress' },
+    ],
+  },
+
+  vite: {},
 })
