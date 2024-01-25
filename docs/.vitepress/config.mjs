@@ -64,7 +64,7 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Examples', link: '/markdown-examples' },
+      { text: 'blokk.li', link: 'https://blokk.li' },
     ],
 
     sidebar: [
@@ -109,9 +109,7 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/vuejs/vitepress' },
+      { icon: 'github', link: 'https://github.com/blokkli/editor' },
     ],
   },
-
-  vite: {},
 })
