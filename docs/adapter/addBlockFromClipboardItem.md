@@ -24,7 +24,8 @@ export default defineBlokkliEditAdapter((ctx) => {
               text: e.item.clipboardData,
 
               // The parent entity type where the block is being added.
-              // Could be the entity type of the <BlokkliProvider> or in case of nested blocks, the entity type of the block.
+              // Could be the entity type of the <BlokkliProvider> or in
+              // case of nested blocks, the entity type of the block.
               entityType: e.host.type,
               entityUuid: e.host.uuid,
 

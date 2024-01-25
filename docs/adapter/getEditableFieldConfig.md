@@ -26,10 +26,10 @@ defineProps<{
 </script>
 ```
 
+:::
+
 We would then return the following editable field config in our
 getEditableFieldConfig() method:
-
-:::
 
 ::: code-group
 
@@ -44,7 +44,8 @@ export default defineBlokkliEditAdapter((ctx) => {
           // Same name as defined in v-blokkli-editable
           name: 'field_title',
 
-          // Since the editable field is in the block, the entity type is "block".
+          // Since the editable field is in the block, the entity type
+          // is "block".
           entityType: 'block',
 
           // The bundle of the block.

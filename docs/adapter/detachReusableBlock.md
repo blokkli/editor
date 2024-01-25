@@ -28,17 +28,16 @@ import type { DetachReusableBlockEvent } from '#blokkli/types'
 export default defineBlokkliEditAdapter<YourStateType>((ctx) => {
   return {
     detachReusableBlock: (e: DetachReusableBlockEvent) => {
-      return $fetch(
-        `/backend-api/edit/${ctx.value.entityUuid}/detach-reusable`,
-        {
-          method: 'post',
-          body: {
-            // The UUIDs of the blocks that should be detached.
-            // Note the UUID is the one from the "from_library" block bundle, *NOT* the library item UUID or the block referenced in the library item.
-            uuids: e.uuid,
-          },
+      return $fetch(`/api/edit/${ctx.value.entityUuid}/detach-reusable`, {
+        method: 'post',
+        body: {
+          // The UUIDs of the blocks that should be detached.
+          // Note the UUID is the one from the "from_library" block bundle,
+          // *NOT* the library item UUID or the block referenced in the
+          // library item.
+          uuids: e.uuid,
         },
-      )
+      })
     },
   }
 })

@@ -1,4 +1,4 @@
-# getDisablesFeatures()
+# getDisabledFeatures()
 
 This method is called to determine which features should be disabled at runtime.
 
@@ -14,7 +14,7 @@ import { defineBlokkliEditAdapter } from '#blokkli/adapter'
 
 export default defineBlokkliEditAdapter((ctx) => {
   return {
-    getDisablesFeatures: () => {
+    getDisabledFeatures: () => {
       if (ctx.value.entityType === 'product') {
         return Promise.resolve(['comments'])
       }

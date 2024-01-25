@@ -1,17 +1,19 @@
 <template>
   <div :class="parentType ? 'inline-block' : 'container text-center mt-25'">
-    <NuxtLink
-      :to="href"
+    <Component
+      :is="isExternal ? 'a' : NuxtLink"
+      v-bind="attributes"
       class="button"
       :class="{ 'is-primary': options.color === 'primary' }"
     >
       <span v-blokkli-editable:title="{ label: 'CTA' }">{{ title }}</span>
-    </NuxtLink>
+    </Component>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { defineBlokkli, computed } from '#imports'
+import { NuxtLink } from '#components'
 
 const { options, parentType } = defineBlokkli({
   bundle: 'button',
@@ -40,4 +42,18 @@ const props = defineProps<{
 }>()
 
 const href = computed(() => props.url)
+
+const isExternal = computed(() => href.value.startsWith('http'))
+
+const attributes = computed(() => {
+  if (isExternal.value) {
+    return {
+      href: href.value,
+    }
+  }
+
+  return {
+    to: href.value,
+  }
+})
 </script>

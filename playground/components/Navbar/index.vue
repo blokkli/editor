@@ -20,7 +20,7 @@
           class="flex gap-20 items-center leading-none justify-center md:justify-start text-sm"
         >
           <li>
-            <a href="/">Docs</a>
+            <a href="https://docs.blokk.li">Docs</a>
           </li>
           <li>
             <iframe

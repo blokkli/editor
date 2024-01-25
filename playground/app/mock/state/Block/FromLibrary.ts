@@ -30,7 +30,7 @@ export class BlockFromLibrary extends Block {
 
     return {
       libraryItem: {
-        field: mapMockField(blocks)[0],
+        block: mapMockField(blocks)[0],
       },
     }
   }

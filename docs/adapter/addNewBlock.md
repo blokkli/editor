@@ -12,14 +12,15 @@ import { defineBlokkliEditAdapter } from '#blokkli/adapter'
 export default defineBlokkliEditAdapter((ctx) => {
   return {
     addNewBlock: (e) => {
-      return $fetch(`/backend-api/edit/${ctx.value.entityUuid}/add-new-block`, {
+      return $fetch(`/api/edit/${ctx.value.entityUuid}/add-new-block`, {
         method: 'post',
         body: {
           // The block bundle to add.
           bundle: e.type,
 
           // The parent entity type where the block is being added.
-          // Could be the entity type of the <BlokkliProvider> or in case of nested blocks, the entity type of the block.
+          // Could be the entity type of the <BlokkliProvider> or in case
+          // of nested blocks, the entity type of the block.
           entityType: e.host.type,
           entityUuid: e.host.uuid,
 

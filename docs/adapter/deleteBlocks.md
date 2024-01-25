@@ -15,7 +15,7 @@ import { defineBlokkliEditAdapter } from '#blokkli/adapter'
 export default defineBlokkliEditAdapter((ctx) => {
   return {
     deleteBlocks: (uuids) => {
-      return $fetch(`/backend-api/edit/${ctx.value.entityUuid}/delete-blocks`, {
+      return $fetch(`/api/edit/${ctx.value.entityUuid}/delete-blocks`, {
         method: 'post',
         body: {
           // The UUIDs of the blocks being deleted.

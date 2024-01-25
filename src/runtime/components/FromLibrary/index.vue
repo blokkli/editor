@@ -20,7 +20,7 @@ import {
 import type { FieldListItem } from '../../types'
 
 interface LibraryItem {
-  field?: FieldListItem
+  block?: FieldListItem
 }
 
 const props = defineProps<{
@@ -37,7 +37,7 @@ provide(INJECT_REUSABLE_OPTIONS, options)
 provide(INJECT_IS_IN_REUSABLE, true)
 
 const item = computed(() => {
-  const v = props.libraryItem?.field
+  const v = props.libraryItem?.block
   if (v && 'uuid' in v) {
     return v
   }

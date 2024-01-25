@@ -341,16 +341,13 @@ export type EntityContext = {
 }
 
 export type EditEntity = {
-  id?: string
   label?: string
-  changed?: number
   status?: boolean
   bundleLabel?: string
-  editUrl?: string
 }
 
 export interface Language {
-  id?: string
+  id: string
   name: string
 }
 

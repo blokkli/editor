@@ -31,16 +31,18 @@ We would then return the following field config in our getFieldConfig() method:
 
 ```typescript [~/app/blokkli.editAdapter.ts]
 import { defineBlokkliEditAdapter } from '#blokkli/adapter'
+import type { FieldConfig } from '#blokkli/types'
 
 export default defineBlokkliEditAdapter((ctx) => {
   return {
     getFieldConfig: () => {
-      return Promise.resolve([
+      const fieldConfig: FieldConfig[] = [
         {
           // Same name as on <BlokkliField>.
           name: 'field_blocks',
 
-          // Same type and bundle of the <BlokkliProvider> the field belongs to.
+          // Same type and bundle of the <BlokkliProvider> the field
+          // belongs to.
           entityType: 'content',
           entityBundle: 'blog_post',
 
@@ -56,7 +58,8 @@ export default defineBlokkliEditAdapter((ctx) => {
           // The block bundles that are allowed in this field.
           allowedBundles: ['title', 'rich_text', 'link', 'horizontal_rule'],
         },
-      ])
+      ]
+      return Promise.resolve(fieldConfig)
     },
   }
 })

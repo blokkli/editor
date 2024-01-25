@@ -16,7 +16,7 @@ export default defineBlokkliEditAdapter((ctx) => {
   return {
     getLastChanged: () => {
       return Promise.resolve(
-        // Timestamp of when the comment was added (as seconds since UNIX epoch).
+        // Timestamp of when the state was last edited (as seconds since UNIX epoch).
         1706109810,
       )
     },
