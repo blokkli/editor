@@ -9,7 +9,6 @@ import type {
 import { globalOptionsDefaults } from '#blokkli/default-global-options'
 
 import type {
-  BundlePropsMap,
   FieldListItemTyped,
   GlobalOptionsKey,
   ValidFieldListTypes,

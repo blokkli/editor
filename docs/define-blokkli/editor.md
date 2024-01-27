@@ -15,11 +15,23 @@ composables.
 
 With this setting you can reactively decide which defined options to show.
 
-It receives a single context argument that contains the following properties:
+It receives a single context argument of type
+[type.DetermineVisibleOptionsContext] that contains the following properties:
 
-### props
+### props: `any`
 
-The props passed into the
+The (untyped) props passed into the component.
+
+### parentType: `string|undefined`
+
+The parent block bundle, if the blcok is nested.
+
+### options: `Record<string, unknown>`
+
+The current options set on the block. The type is inferred at runtime from the
+options defined on the block.
+
+### Example
 
 Let's say we have a card component that can have an option icon (passed in via
 props). We define an option to set the color of the icon. Using the

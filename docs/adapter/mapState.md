@@ -3,7 +3,10 @@
 This method is called whenever one of the other adapter methods returns the
 refreshed state.
 
-Its job is to map the state from your type to the expected type by blökkli.
+Its job is to map the state from your generic type to the expected type by
+blökkli: [type.MappedState]
+
+[Learn more about the state object](/editor/edit-state)
 
 ## Example
 

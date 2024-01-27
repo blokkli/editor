@@ -13,13 +13,17 @@ the moveBlocks() method of the adapter.
 
 The expected state has the following properties:
 
-## currentIndex: `number`
+## currentIndex
+
+`number`
 
 This is the current index in the history stack. The default value is `-1`,
 meaning there is no mutation in the history stack. When a mutation is added, the
 index should become `0`, and so on.
 
-## mutations: MutationItem[]
+## mutations
+
+[type.MutationItem[]]
 
 This should contain an array of all mutations that have been applied in the
 current edit state.
@@ -55,7 +59,9 @@ current edit state.
 ]
 ```
 
-## currentUserIsOwner: `boolean`
+## currentUserIsOwner
+
+`boolean`
 
 This should indicate whether the current user is also the owner of the edit
 state. When this value is `false`, then the current user cannot edit any
@@ -66,16 +72,22 @@ user.
 
 By always returning `true` here you can disable the "ownership" feature.
 
-## ownerName: `string`
+## ownerName
+
+`string`
 
 The name of the owner of the edit state. This is used when `currentUserIsOwner`
 is `false` and the "take ownership" banner is displayed.
 
 ## mutatedState
 
+[type.MappedState]
+
 This contains the mutated state that is used to render the edited blocks.
 
-## mutatedState.fields: `MutatedField[]`
+## mutatedState.fields
+
+[type.MutatedField[]]
 
 This should contain an array of **all** block fields (both on the root level and
 nested block fields).
@@ -136,7 +148,9 @@ components.
 ]
 ```
 
-## mutatedState.mutatedOptions: `Record<string, Record<string, string>>`
+## mutatedState.mutatedOptions
+
+`Record<string, Record<string, string>>`
 
 This object contains the mutated options of all blocks, keyed by block UUID.
 
@@ -156,7 +170,9 @@ These options are used to override the existing options on a block. This object
 is made reactive, which allows the user to instantly see how changing an option
 value affects the block.
 
-## entity: `EditEntity`
+## entity
+
+[type.EditEntity]
 
 This should contain additional information about the host entity being edited.
 
@@ -171,23 +187,31 @@ title and status.
 }
 ```
 
-## translationState: `TranslationState`
+## translationState
+
+[type.TranslationState]
 
 If you need to support translations and multiple languages, this property should
 contain detailed information about the current translation state.
 
-## translationState.isTranslatable: `boolean`
+## translationState.isTranslatable
+
+`boolean`
 
 Whether the host entity is translatable at all. If `false`, then translations
 and language selector are disabled.
 
-## translationState.sourceLanguage: `string|null`
+## translationState.sourceLanguage
+
+`string|null`
 
 The source language of the host entity. If the current language does not match
 the source language, blökkli assumes the user is editing the translation, which
 disables most of the features (so only blocks can be translated).
 
-## translationState.availableLanguages: `Language[]`
+## translationState.availableLanguages
+
+[type.Language[]]
 
 An array of languages that are generally available.
 
@@ -212,7 +236,9 @@ An array of languages that are generally available.
 ]
 ```
 
-## translationState.translations: `EntityTranslation[]`
+## translationState.translations
+
+[type.EntityTranslation[]]
 
 An array of existing translations of the entity.
 

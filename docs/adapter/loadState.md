@@ -2,9 +2,11 @@
 
 Load edit state in the given langcode.
 
-The method is expected to return the state object specific to your
-implementation. It will later be passed to the [mapState()](/adapter/mapState)
-method of your adapter.
+The method is expected to return the state object that you define in the generic
+argument of `defineBlokkliEditAdapter()`.
+
+The returned object will then be passed to the [adapter.mapState] method of your
+adapter.
 
 ## Example
 

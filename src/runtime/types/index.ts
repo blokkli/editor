@@ -18,7 +18,6 @@ import type { BlokkliIcon } from '#blokkli/icons'
 import type { SettingsGroup, Viewport } from '#blokkli/constants'
 import type {
   BlockBundleWithNested,
-  BundlePropsMap,
   FieldListItemTyped,
   GlobalOptionsKey,
   ValidChunkNames,

@@ -152,7 +152,7 @@ html.bk-is-sidebar-interacting {
 }
 
 .bk-sidebar-tabs {
-  @apply relative bg-mono-900 z-sidebar-tabs left-0 w-full flex justify-between flex-row-reverse;
+  @apply relative bg-mono-900 z-sidebar-tabs left-0 w-full flex justify-between flex-row-reverse overflow-auto;
 
   > div {
     @apply flex;
