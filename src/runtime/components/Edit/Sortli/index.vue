@@ -60,7 +60,7 @@ const shouldHandleEvent = (e: TouchEvent | MouseEvent) => {
 }
 
 const beforeLeave = (el: Element) => {
-  if (!ui.useAnimations.value) {
+  if (!ui.useAnimations.value || props.noTransition) {
     return
   }
   if (el instanceof HTMLElement) {
@@ -82,7 +82,7 @@ const beforeLeave = (el: Element) => {
 }
 
 const onLeave = (el: Element, done: Function) => {
-  if (!ui.useAnimations.value) {
+  if (!ui.useAnimations.value || props.noTransition) {
     return done()
   }
   if (el instanceof HTMLElement) {

@@ -1,6 +1,10 @@
 import { useRouter, useRoute } from '#imports'
 import { defineBlokkliEditAdapter } from '#blokkli/adapter'
-import type { BlokkliAdapter, MutationResponseLike } from '#blokkli/adapter'
+import type {
+  BlokkliAdapter,
+  GetMediaLibraryFunction,
+  MutationResponseLike,
+} from '#blokkli/adapter'
 import { falsy } from '#blokkli/helpers'
 import type {
   AssistantResultMarkup,
@@ -18,6 +22,7 @@ import type { ContentPage } from './mock/state/Entity/Content'
 import { FieldBlocks } from './mock/state/Field/Blocks'
 import type { MediaImage, MediaVideo } from './mock/state/Media/Media'
 import { transforms } from './mock/transforms'
+import type { MediaLibraryItem } from '#blokkli/components/Features/MediaLibrary/types'
 
 export default defineBlokkliEditAdapter((ctx) => {
   const router = useRouter()
@@ -68,7 +73,59 @@ export default defineBlokkliEditAdapter((ctx) => {
     return Promise.resolve(comments)
   }
 
+  const mediaLibraryGetResults: GetMediaLibraryFunction<{
+    bundle: 'select'
+    foobar: 'checkbox'
+    text: 'text'
+  }> = (e) => {
+    const bundle = e.filters.bundle || 'image'
+    const items: MediaLibraryItem[] = entityStorageManager
+      .getStorage('media')
+      .query({ bundle })
+      .map((media) => {
+        return {
+          mediaId: media.uuid,
+          label: media.title(),
+          context: media.bundle,
+          thumbnail: media.thumbnail(),
+          blockBundle: bundle,
+        }
+      })
+      .filter((v) => {
+        if (e.filters.text) {
+          return v.label.toLowerCase().includes(e.filters.text)
+        }
+
+        return true
+      })
+    return Promise.resolve({
+      filters: {
+        bundle: {
+          type: 'select',
+          label: 'Bundle',
+          options: {
+            image: 'Image',
+            video: 'Video',
+          },
+        },
+        foobar: {
+          type: 'checkbox',
+          label: 'Do you want to do that',
+        },
+        text: {
+          type: 'text',
+          label: 'Text',
+          placeholder: 'Enter a search term',
+        },
+      },
+      items,
+      total: 253,
+      perPage: 16,
+    })
+  }
+
   const adapter: BlokkliAdapter<MutatedState> = {
+    mediaLibraryGetResults,
     loadState() {
       const page = entityStorageManager.getContent(ctx.value.entityUuid)
       if (!page) {
@@ -470,6 +527,32 @@ export default defineBlokkliEditAdapter((ctx) => {
 
     getPreviewGrantUrl() {
       return route.fullPath
+    },
+
+    mediaLibraryAddBlock(e) {
+      if (e.item.itemBundle === 'image') {
+        return addMutation('add', {
+          bundle: 'image',
+          values: {
+            imageReference: [e.item.mediaId],
+          },
+          hostEntityType: e.host.type,
+          hostEntityUuid: e.host.uuid,
+          hostField: e.host.fieldName,
+          preceedingUuid: e.preceedingUuid,
+        })
+      } else if (e.item.itemBundle === 'video') {
+        return addMutation('add', {
+          bundle: 'video',
+          values: {
+            video: [e.item.mediaId],
+          },
+          hostEntityType: e.host.type,
+          hostEntityUuid: e.host.uuid,
+          hostField: e.host.fieldName,
+          preceedingUuid: e.preceedingUuid,
+        })
+      }
     },
   }
 

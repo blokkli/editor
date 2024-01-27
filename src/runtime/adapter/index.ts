@@ -26,7 +26,15 @@ import type {
   DetachReusableBlockEvent,
   FieldConfig,
   EditableFieldConfig,
+  DraggableMediaLibraryItem,
 } from './../types'
+
+import type {
+  GetMediaLibraryFunction,
+  MediaLibraryItem,
+} from './../components/Edit/Features/MediaLibrary/types'
+
+export type { GetMediaLibraryFunction }
 
 export interface MutationResponseLike<T> {
   data: {
@@ -307,6 +315,24 @@ export interface BlokkliAdapter<T> {
    * Return the HTML markup for displaying the grid.
    */
   getGridMarkup?: () => Promise<string> | string
+
+  /**
+   * Return the media library results and filters using the given selected filter.
+   */
+  mediaLibraryGetResults?: GetMediaLibraryFunction<any>
+
+  /**
+   * Create a new block from the given media library item.
+   */
+  mediaLibraryAddBlock?: (
+    e: MediaLibraryAddBlockEvent,
+  ) => Promise<MutationResponseLike<T>> | undefined
+}
+
+export type MediaLibraryAddBlockEvent = {
+  host: DraggableHostData
+  preceedingUuid?: string
+  item: DraggableMediaLibraryItem
 }
 
 type AdapterAssistantAddBlockFromResult = {

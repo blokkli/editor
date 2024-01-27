@@ -1,0 +1,95 @@
+.bk-media-library {
+  @apply w-full overscroll-contain;
+  container-type: inline-size;
+}
+
+.bk-media-library-filters {
+  > div {
+    @apply border-b;
+
+    select {
+      @apply w-full py-15 px-20 cursor-pointer;
+    }
+
+    .bk-checkbox-toggle {
+      @apply w-full py-15 px-20 cursor-pointer;
+    }
+
+    .bk-form-text {
+      @apply relative;
+      .bk-icon {
+        @apply absolute top-1/2 left-15 -translate-y-1/2 z-50 w-25 h-25;
+        @apply text-mono-500;
+        svg {
+          @apply fill-current;
+        }
+      }
+
+      &:focus-within {
+        .bk-icon {
+          @apply text-accent-700;
+        }
+      }
+
+      input {
+        @apply w-full pl-50 pr-20 py-15 block;
+      }
+    }
+  }
+}
+
+.bk-media-library-items {
+  @apply grid grid-cols-2 gap-15 p-20;
+  @container (min-width: 400px) {
+    @apply grid-cols-3;
+  }
+
+  @container (min-width: 600px) {
+    @apply grid-cols-4;
+  }
+
+  @container (min-width: 800px) {
+    @apply grid-cols-5;
+  }
+
+  @container (min-width: 1000px) {
+    @apply grid-cols-6;
+  }
+
+  @container (min-width: 1200px) {
+    @apply grid-cols-7;
+  }
+
+  @container (min-width: 1400px) {
+    @apply grid-cols-8;
+  }
+
+  @container (min-width: 1600px) {
+    @apply grid-cols-9;
+  }
+
+  @container (min-width: 1800px) {
+    @apply grid-cols-10;
+  }
+
+  @container (min-width: 2000px) {
+    @apply grid-cols-11;
+  }
+
+  > div {
+    @apply text-sm cursor-pointer select-none;
+    img {
+      @apply aspect-square object-cover border border-mono-300 rounded block;
+    }
+
+    &:hover {
+      img {
+        @apply border-mono-400;
+      }
+    }
+
+    h3 {
+      @apply font-semibold mt-5;
+    }
+  }
+}

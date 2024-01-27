@@ -53,6 +53,8 @@ const adapterDocs = [
     link: '/adapter/assistantAddBlockFromResult',
   },
   { text: 'getGridMarkup()', link: '/adapter/getGridMarkup' },
+  { text: 'mediaLibraryAddBlock()', link: '/adapter/mediaLibraryAddBlock' },
+  { text: 'mediaLibraryGetResults()', link: '/adapter/mediaLibraryGetResults' },
 ].sort((a, b) => a.text.localeCompare(b.text))
 
 // https://vitepress.dev/reference/site-config

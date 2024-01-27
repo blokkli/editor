@@ -42,6 +42,7 @@ import type {
   DraggableExistingBlock,
   DraggableHostData,
   DraggableItem,
+  DraggableMediaLibraryItem,
   DraggableNewItem,
   DraggableReusableItem,
   DraggableSearchContentItem,
@@ -195,6 +196,22 @@ const onDropClipboardItem = async (
   }
 }
 
+const onDropMediaLibraryItem = async (
+  item: DraggableMediaLibraryItem,
+  host: DraggableHostData,
+  afterUuid?: string,
+) => {
+  if (adapter.mediaLibraryAddBlock) {
+    await state.mutateWithLoadingState(
+      adapter.mediaLibraryAddBlock({
+        preceedingUuid: afterUuid,
+        host,
+        item,
+      }),
+    )
+  }
+}
+
 const onDropSearchContentItem = async (
   item: DraggableSearchContentItem,
   host: DraggableHostData,
@@ -246,6 +263,8 @@ const onDrop = async (e: DropTargetEvent) => {
       await onDropSearchContentItem(typed.item, host, afterUuid)
     } else if (typed.itemType === 'action') {
       onDropAction(typed.item, host, e.field, afterUuid)
+    } else if (typed.itemType === 'media_library') {
+      await onDropMediaLibraryItem(typed.item, host, afterUuid)
     }
 
     // Try to find the new block that has been added.

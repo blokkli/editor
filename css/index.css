@@ -33,6 +33,7 @@
 @import './partials/ResponsivePreview.css';
 @import './partials/Help.css';
 @import './partials/Theme.css';
+@import './partials/MediaLibrary.css';
 @import './indicator.css';
 
 @tailwind base;

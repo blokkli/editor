@@ -9,6 +9,10 @@ export abstract class Media extends Entity {
   thumbnail(): string | undefined {
     return
   }
+
+  title(): string {
+    return ''
+  }
 }
 
 export class MediaImage extends Media {
@@ -33,6 +37,10 @@ export class MediaImage extends Media {
 
   alt(): string {
     return this.get<FieldText>('alt').getText()
+  }
+
+  title(): string {
+    return this.alt()
   }
 }
 

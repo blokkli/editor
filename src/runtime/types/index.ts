@@ -614,6 +614,13 @@ export interface DraggableSearchContentItem {
   searchItem: SearchContentItem
 }
 
+export interface DraggableMediaLibraryItem {
+  itemType: 'media_library'
+  element: () => HTMLElement
+  itemBundle: string
+  mediaId: string
+}
+
 export type DraggableItem =
   | DraggableClipboardItem
   | DraggableNewItem
@@ -621,6 +628,7 @@ export type DraggableItem =
   | DraggableExistingBlock
   | DraggableReusableItem
   | DraggableSearchContentItem
+  | DraggableMediaLibraryItem
 
 export type MoveBlockEvent = {
   afterUuid?: string

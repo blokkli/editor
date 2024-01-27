@@ -133,6 +133,20 @@ export function buildDraggableItem(
         additional,
       }
     }
+  } else if (dataset.elementType === 'media_library') {
+    const mediaId = dataset.mediaId
+    const itemBundle = dataset.itemBundle
+    if (mediaId && itemBundle) {
+      return {
+        itemType: 'media_library',
+        mediaId,
+        itemBundle,
+        element: () =>
+          document.querySelector(
+            `[data-element-type="media_library"][data-media-id="${mediaId}"]`,
+          ) as HTMLElement,
+      }
+    }
   }
 }
 
