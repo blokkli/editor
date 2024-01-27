@@ -221,6 +221,7 @@ export default defineConfig({
         collapsed: true,
         items: [
           { text: 'Overview', link: '/adapter/overview' },
+          { text: 'Minimal Example', link: '/adapter/minimal-example' },
           ...adapterDocs,
         ],
       },
