@@ -60,6 +60,8 @@ const {
   selection,
 } = useBlokkli()
 
+const artboardScrollMultiplier = storage.use('artboardScrollMultiplier', 1)
+
 const props = withDefaults(
   defineProps<{
     padding?: number
@@ -241,8 +243,8 @@ function onWheel(e: WheelEvent) {
     )
   } else {
     updateOffset(
-      offset.value.x + -(e.deltaX / 3),
-      offset.value.y + -(e.deltaY / 3),
+      offset.value.x + -(e.deltaX * artboardScrollMultiplier.value),
+      offset.value.y + -(e.deltaY * artboardScrollMultiplier.value),
     )
   }
   animation.requestDraw()

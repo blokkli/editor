@@ -293,3 +293,10 @@ html.bk-html-root:not(.bk-use-animations) {
     outline-width: calc(var(--bk-outline-width) * 1px);
   }
 }
+
+.bk-input-range {
+  @apply block w-full;
+  input {
+    @apply w-full block;
+  }
+}
