@@ -28,14 +28,8 @@ import type { globalOptions } from '#blokkli/definitions'
 import type { ThemeProvider } from '#blokkli/helpers/themeProvider'
 
 interface MutationResponseLike<T> {
-  data: {
-    state?: {
-      action?: {
-        success?: boolean
-        state?: T
-      }
-    }
-  }
+  success?: boolean
+  state?: T
 }
 
 export type MutateWithLoadingStateFunction = (
@@ -305,7 +299,7 @@ export type FieldListItem = {
   uuid: string
   bundle: string
   isNew?: boolean
-  options?: unknown
+  options?: Record<string, any>
   props?: unknown
 }
 

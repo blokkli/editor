@@ -21,6 +21,7 @@ defineBlokkliFeature({
   icon: 'edit',
   label: 'Edit',
   description: 'Provides an action to edit a block.',
+  requiredAdapterMethods: ['formFrameBuilder'],
 })
 
 const { eventBus, selection, state, $t } = useBlokkli()

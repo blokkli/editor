@@ -125,7 +125,8 @@ const onDropNew = async (
   if (
     definition?.editor?.disableEdit ||
     addBehaviour === 'no-form' ||
-    addBehaviour.startsWith('editable:')
+    addBehaviour.startsWith('editable:') ||
+    !adapter.formFrameBuilder
   ) {
     await state.mutateWithLoadingState(
       adapter.addNewBlock({

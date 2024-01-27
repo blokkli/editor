@@ -1,5 +1,6 @@
 <template>
   <PluginSidebar
+    v-if="adapter.addBlockFromClipboardItem"
     id="clipboard"
     ref="plugin"
     :title="$t('clipboard', 'Clipboard')"

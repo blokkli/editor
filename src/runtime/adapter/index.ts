@@ -34,14 +34,8 @@ import type { GetMediaLibraryFunction } from './../components/Edit/Features/Medi
 export type { GetMediaLibraryFunction }
 
 export interface MutationResponseLike<T> {
-  data: {
-    state?: {
-      action?: {
-        success?: boolean
-        state?: T
-      }
-    }
-  }
+  success: boolean
+  state: T
 }
 
 type AdapterApplyTransformPlugin = {

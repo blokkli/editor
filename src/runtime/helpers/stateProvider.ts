@@ -71,9 +71,9 @@ export default async function (
   const currentMutationIndex = ref(-1)
   const isLoading = ref(false)
   const entity = ref<EditEntity>({
-    id: undefined,
-    changed: undefined,
+    label: '',
     status: false,
+    bundleLabel: '',
   })
 
   const mutatedOptions = ref<MutatedOptions>({})
@@ -121,12 +121,9 @@ export default async function (
       name: context?.ownerName,
       currentUserIsOwner: !!context?.currentUserIsOwner,
     }
-    entity.value.id = context?.entity?.id
-    entity.value.changed = context?.entity?.changed
     entity.value.label = context?.entity?.label
     entity.value.status = context?.entity?.status
     entity.value.bundleLabel = context?.entity?.bundleLabel || ''
-    entity.value.editUrl = context?.entity.editUrl
 
     translation.value.isTranslatable =
       !!context?.translationState?.isTranslatable
@@ -177,11 +174,14 @@ export default async function (
     try {
       const result = await promise
       unlockBody()
-      if (result.data.state?.action?.state) {
-        setContext(adapter.mapState(result.data.state?.action?.state))
-      } else if (!result.data.state?.action?.success) {
+      if (result.state) {
+        setContext(adapter.mapState(result.state))
+      }
+
+      if (!result.success) {
         throw new Error('Unexpected error.')
       }
+
       if (successMessage) {
         emitMessage(successMessage)
       }

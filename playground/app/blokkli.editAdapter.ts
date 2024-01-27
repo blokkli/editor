@@ -31,14 +31,8 @@ export default defineBlokkliEditAdapter((ctx) => {
     mutatedState: MutatedState,
   ): Promise<MutationResponseLike<MutatedState>> => {
     return Promise.resolve({
-      data: {
-        state: {
-          action: {
-            succcess: true,
-            state: mutatedState,
-          },
-        },
-      },
+      success: true,
+      state: mutatedState,
     })
   }
 
