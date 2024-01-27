@@ -51,7 +51,6 @@ import {
 } from '#imports'
 import { AddListItem } from '#blokkli/components'
 import type { DraggableExistingBlock } from '#blokkli/types'
-import { onlyUnique } from '#blokkli/helpers'
 import { getDefinition } from '#blokkli/definitions'
 
 defineBlokkliFeature({
@@ -61,6 +60,7 @@ defineBlokkliFeature({
   description:
     'Renders a list of block bundles that can be added to the current page.',
   dependencies: ['add-list'],
+  screnshot: 'feature-block-add-list.jpg',
 })
 
 const {

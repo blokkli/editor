@@ -991,6 +991,7 @@ export type FeatureDefinition<
   viewports?: Viewport[]
   requiredAdapterMethods?: [...Methods]
   settings?: Record<string, FeatureDefinitionSetting>
+  screenshot?: string
 }
 
 export type KeyboardShortcut = {

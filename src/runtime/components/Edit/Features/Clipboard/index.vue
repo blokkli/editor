@@ -93,6 +93,8 @@ const { settings } = defineBlokkliFeature({
       group: 'behavior',
     },
   },
+
+  screenshot: 'feature-clipboard.jpg',
 })
 
 const { eventBus, selection, $t, adapter, dom, state, ui, keyboard } =

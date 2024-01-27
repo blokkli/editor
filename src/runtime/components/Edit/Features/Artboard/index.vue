@@ -46,6 +46,7 @@ const { settings } = defineBlokkliFeature({
       viewports: ['desktop'],
     },
   },
+  screenshot: 'feature-artboard.jpg',
 })
 
 const { ui, eventBus, dom } = useBlokkli()

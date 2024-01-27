@@ -30,6 +30,7 @@ const { adapter } = defineBlokkliFeature({
     'assistantGetResults',
     'assistantAddBlockFromResult',
   ],
+  screenshot: 'feature-assistant.jpg',
 })
 
 const { state, $t, eventBus } = useBlokkli()

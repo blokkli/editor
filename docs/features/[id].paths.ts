@@ -24,6 +24,8 @@ export default {
               }
             },
           ),
+
+          screenshot: feature.definition.screenshot,
         },
         content: feature.docs,
       }

@@ -25,7 +25,14 @@
     >
       <div class="bk-comments-overlay-comments-header">
         <Icon name="comment" />
-        <span>{{ comments.length }} Kommentare</span>
+        <span
+          >{{ comments.length }}
+          {{
+            comments.length === 1
+              ? $t('singleComment', 'comment')
+              : $t('comments', 'Comments')
+          }}</span
+        >
       </div>
       <div
         v-for="comment in comments"
@@ -39,7 +46,7 @@
           v-model="commentText"
           type="text"
           class="bk-form-input"
-          placeholder="Antworten"
+          :placeholder="$t('commentBodyPlaceholder', 'Add reply')"
           required
           @focus="showFullForm = true"
         />
@@ -48,7 +55,7 @@
           class="bk-button bk-is-primary is-small"
           @click="addComment"
         >
-          Kommentar speichern
+          {{ $t('commentAdd', 'Add comment') }}
         </button>
       </div>
     </div>
@@ -56,11 +63,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from '#imports'
-
+import { ref, computed, useBlokkli } from '#imports'
 import type { CommentItem } from '#blokkli/types'
 import { Icon } from '#blokkli/components'
 import Comment from './../../Comment/index.vue'
+
+const { $t } = useBlokkli()
 
 const commentText = ref('')
 const showFullForm = ref(false)

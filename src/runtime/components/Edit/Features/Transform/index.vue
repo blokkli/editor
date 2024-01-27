@@ -37,6 +37,7 @@ const { adapter } = defineBlokkliFeature({
   label: 'Transform',
   requiredAdapterMethods: ['getTransformPlugins', 'applyTransformPlugin'],
   description: 'Provides integration for block transform plugins.',
+  screenshot: 'feature-transform.jpg',
 })
 
 const { types, selection, state, $t } = useBlokkli()

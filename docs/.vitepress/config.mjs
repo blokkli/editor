@@ -58,10 +58,44 @@ const adapterDocs = [
   { text: 'mediaLibraryGetResults()', link: '/adapter/mediaLibraryGetResults' },
 ].sort((a, b) => a.text.localeCompare(b.text))
 
+// Define the plugin
+function linkPlugin(md) {
+  const regex = /\[adapter\.([^\]]+)\]/g
+
+  function replaceToken(tokens, idx) {
+    const token = tokens[idx]
+    const match = token.content.match(regex)
+
+    if (match) {
+      // Extract method name from the match
+      const methodName = match[0].slice(9, -1) // Removes [adapter. and ]
+
+      // Replace the content of the current token
+      token.type = 'html_inline'
+      token.content = `<a href="/adapter/${methodName}">${methodName}</a>`
+    }
+  }
+
+  md.core.ruler.push('replace_adapter_method', function (state) {
+    state.tokens.forEach((blockToken) => {
+      if (blockToken.type === 'inline' && blockToken.children) {
+        blockToken.children.forEach((token, idx) => {
+          replaceToken(blockToken.children, idx)
+        })
+      }
+    })
+  })
+}
+
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: 'blökkli docs',
   description: 'Documentation for the blökkli page builder',
+  markdown: {
+    config: (md) => {
+      md.use(linkPlugin)
+    },
+  },
   // srcDir: 'docs',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
@@ -114,6 +148,11 @@ export default defineConfig({
           { text: 'Overview', link: '/adapter/overview' },
           ...adapterDocs,
         ],
+      },
+      {
+        text: 'Plugins',
+        collapsed: true,
+        items: [{ text: 'Add Action', link: '/plugins/add-action' }],
       },
     ],
 

@@ -48,6 +48,7 @@ const { adapter } = defineBlokkliFeature({
   label: 'Comments',
   requiredAdapterMethods: ['loadComments', 'addComment'],
   description: 'Provides comment functionality for blocks.',
+  screenshot: 'feature-comments.jpg',
 })
 const { eventBus, $t } = useBlokkli()
 

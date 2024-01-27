@@ -79,6 +79,8 @@ defineBlokkliFeature({
       },
     },
   },
+
+  screenshot: 'feature-add-list.jpg',
 })
 
 const { state, $t, eventBus, ui } = useBlokkli()

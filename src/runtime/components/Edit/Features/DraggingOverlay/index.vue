@@ -57,6 +57,7 @@ const { adapter } = defineBlokkliFeature({
   id: 'dragging-overlay',
   label: 'Dragging Overlay',
   description: 'Renders an overlay when dragging or placing a block.',
+  screenshot: 'feature-dragging-overlay.jpg',
 })
 
 const { eventBus, state, ui, animation, dom } = useBlokkli()

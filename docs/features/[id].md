@@ -4,6 +4,8 @@
 
 <a :href="$params.sourceUrl">Source</a>
 
+<img v-if="$params.screenshot" :src="'/' + $params.screenshot">
+
 ## Required adapter methods
 
 <template v-if="$params.requiredAdapterMethods.length">
