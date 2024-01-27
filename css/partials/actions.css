@@ -48,7 +48,7 @@
         @apply bg-white text-mono-900 z-50;
       }
       .bk-tooltip {
-        @apply absolute bottom-full left-0 w-full mb-3;
+        @apply absolute bottom-full left-0 min-w-full mb-3;
       }
       @screen lg {
         &:not(:hover) {
