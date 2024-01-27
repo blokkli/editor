@@ -239,6 +239,8 @@ export default defineNuxtModule<ModuleOptions>({
 
     const moduleDir = import.meta.url
 
+    const isPlayground = srcDir.includes('/playground')
+
     // The path of this module.
     const resolver = createResolver(moduleDir)
 
@@ -344,6 +346,36 @@ ${featuresArray}
       },
     })
     nuxt.options.alias['#blokkli-runtime/features'] = featureComponents.dst
+
+    // Generate the features JSON file when the playground is built.
+    // This is used for generating the blökkli feature docs.
+    if (isPlayground) {
+      addTemplate({
+        write: true,
+        filename: 'blokkli/features.json',
+        getContents: async () => {
+          const featuresData = await Promise.all(
+            featuresContext.features.map(async (v) => {
+              const docsPath = v.filePath.replace('index.vue', 'docs.md')
+              let docs = ''
+              if (fileExists(docsPath)) {
+                docs = await fsp.readFile(docsPath).then((v) => v.toString())
+              }
+              return {
+                ...v,
+                repoRelativePath: v.filePath.replace(/.*\/src/, '/src'),
+                docs,
+              }
+            }),
+          )
+
+          return JSON.stringify(featuresData, null, 2)
+        },
+        options: {
+          blokkli: true,
+        },
+      })
+    }
 
     function getChunkNames(): string[] {
       const chunkNames = [...(moduleOptions.chunkNames || [])]

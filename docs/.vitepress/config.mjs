@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import features from './../../playground/.nuxt/blokkli/features.json'
 
 const adapterDocs = [
   { text: 'loadState()', link: '/adapter/loadState' },
@@ -98,7 +99,13 @@ export default defineConfig({
       },
       {
         text: 'Features',
-        items: [{ text: 'Library', link: '/features/library' }],
+        collapsed: true,
+        items: features.map((v) => {
+          return {
+            text: v.definition.label,
+            link: '/features/' + v.id,
+          }
+        }),
       },
       {
         text: 'Adapter',

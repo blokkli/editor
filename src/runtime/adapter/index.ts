@@ -29,10 +29,7 @@ import type {
   DraggableMediaLibraryItem,
 } from './../types'
 
-import type {
-  GetMediaLibraryFunction,
-  MediaLibraryItem,
-} from './../components/Edit/Features/MediaLibrary/types'
+import type { GetMediaLibraryFunction } from './../components/Edit/Features/MediaLibrary/types'
 
 export type { GetMediaLibraryFunction }
 

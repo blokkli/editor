@@ -1,5 +1,3 @@
-# Library
-
 The library feature provides a way to have reusable blocks that can be added to
 multiple host entities (e.g. pages).
 
