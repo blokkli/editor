@@ -1,6 +1,7 @@
 .bk-sidebar {
   @apply fixed bg-white w-full z-sidebar;
   &.bk-is-right {
+    @apply transition-all;
     box-shadow:
       1px -0px 2px rgb(20 45 82 / 2%),
       3px -0px 4px rgb(20 45 82 / 3%),
@@ -34,7 +35,7 @@
   }
 
   &.bk-is-hidden {
-    @apply opacity-0 pointer-events-none;
+    @apply opacity-0 pointer-events-none translate-y-40;
   }
   .bk-sidebar-inner {
     @apply h-full flex flex-col;

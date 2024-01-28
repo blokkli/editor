@@ -151,7 +151,13 @@ export function buildDraggableItem(
 }
 
 export function findElement(uuid: string): HTMLElement | undefined {
-  const el = document.querySelector(`[data-uuid="${uuid}"]`)
+  // Make sure to only select elements that are not currently in the process
+  // of transitioning out. This solves a bug where when the selected block
+  // is deleted, the reactive selection would return an element that wouldn't
+  // exist a moment later.
+  const el = document.querySelector(
+    `[data-uuid="${uuid}"]:not(.bk-sortli-leave-from)`,
+  )
   if (el instanceof HTMLElement) {
     return el
   }
