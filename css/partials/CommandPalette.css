@@ -1,6 +1,7 @@
 .bk {
   .bk-command-palette {
-    @apply fixed bg-mono-900 z-command-palette w-[600px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded;
+    @apply fixed bg-mono-900 z-command-palette w-[600px] left-1/2 -translate-x-1/2 rounded;
+    @apply top-70;
     @apply shadow-2xl;
     @apply border border-mono-600;
   }
@@ -28,20 +29,29 @@
   }
 
   .bk-command-palette-results {
-    @apply border-t border-t-mono-600 h-[400px] overflow-auto;
+    @apply border-t border-t-mono-800 h-[400px] overflow-auto;
   }
 
   .bk-command {
-    @apply flex text-mono-50 px-5 py-10 w-full text-left gap-10 items-center rounded;
+    @apply flex text-mono-300 px-5 py-10 w-full text-left gap-10 items-center rounded border border-transparent;
+
+    .bk-highlight em {
+      @apply bg-yellow-normal/20 outline outline-[1px] outline-yellow-normal/50 font-semibold text-white;
+    }
 
     &.bk-is-focused {
-      @apply bg-mono-800;
+      @apply bg-mono-800 border-mono-700 text-white;
+
+      .bk-command-icon {
+        @apply text-mono-100;
+      }
     }
   }
 
   .bk-command-icon {
-    @apply w-20 h-20 text-mono-400;
+    @apply w-20 h-20 text-mono-500;
 
+    .bk-blokkli-item-icon,
     .bk-icon {
       @apply w-full h-full;
       svg {
@@ -54,10 +64,10 @@
   .bk-command-palette-results-group {
     @apply p-10;
     &:not(:first-child) {
-      @apply border-t border-t-mono-500;
+      @apply border-t border-t-mono-800;
     }
     > h2 {
-      @apply text-mono-200 uppercase text-sm font-semibold pl-5 mb-10 mt-5;
+      @apply text-mono-400 uppercase text-sm font-semibold pl-5 mb-10 mt-5;
     }
   }
 }

@@ -265,13 +265,59 @@ const getBundlesForCommands = () => {
         }
       }
     }
-    return field.allowedBundles
+    return field.allowedBundles.filter((v) => v !== 'from_library')
   }
 
   return []
 }
+const commandCallbackInsert = (bundle: string, fieldName: string) => {
+  const block = selection.blocks.value[0]
+  const field = state.mutatedFields.value.find(
+    (v) =>
+      v.name === fieldName &&
+      v.entityType === runtimeConfig.itemEntityType &&
+      v.entityUuid === block.uuid,
+  )
+  const afterUuid = field ? field.list[field.list.length - 1]?.uuid : undefined
+  eventBus.emit('block:append', {
+    bundle,
+    afterUuid,
+    host: {
+      type: runtimeConfig.itemEntityType,
+      uuid: block.uuid,
+      fieldName,
+    },
+  })
+}
 
-const commandCallback = (bundle: string) => {
+const getInsertCommands = (): Command[] => {
+  if (selection.blocks.value.length !== 1) {
+    return []
+  }
+
+  const block = selection.blocks.value[0]
+  const fields = types.fieldConfig.value.filter(
+    (v) =>
+      v.entityType === runtimeConfig.itemEntityType &&
+      v.entityBundle === block.itemBundle,
+  )
+
+  return fields.flatMap((field) => {
+    return field.allowedBundles.map((bundle) => {
+      const label =
+        types.allTypes.value.find((v) => v.id === bundle)?.label || bundle
+      return {
+        id: 'block_add_list:insert:' + field.name + ':' + bundle,
+        label: `Insert ${label} into "${field.label}"`,
+        group: 'add',
+        bundle,
+        callback: () => commandCallbackInsert(bundle, field.name),
+      }
+    })
+  })
+}
+
+const commandCallbackAppend = (bundle: string) => {
   const block = selection.blocks.value[0]
   eventBus.emit('block:append', {
     bundle,
@@ -285,16 +331,18 @@ const commandCallback = (bundle: string) => {
 }
 
 const commandProvider = (): Command[] => {
-  return getBundlesForCommands().map((bundle) => {
+  const append: Command[] = getBundlesForCommands().map((bundle) => {
     const definition = types.allTypes.value.find((v) => v.id === bundle)
     return {
-      id: 'block_add_list:' + bundle,
-      label: `Append "${definition?.label}"`,
+      id: 'block_add_list:append:' + bundle,
+      label: `Append ${definition?.label || bundle}`,
       group: 'add',
       bundle,
-      callback: () => commandCallback(bundle),
+      callback: () => commandCallbackAppend(bundle),
     }
   })
+
+  return [...append, ...getInsertCommands()]
 }
 
 onMounted(() => {

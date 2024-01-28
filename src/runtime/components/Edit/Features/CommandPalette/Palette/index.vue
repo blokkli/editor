@@ -23,6 +23,7 @@
         :label="group.label"
         :commands="group.commands"
         :text="text"
+        :regex="regex"
         :focused-id="focusedId"
         @close="$emit('close')"
         @focus="focusedId = $event"
@@ -54,6 +55,27 @@ const emit = defineEmits(['close'])
 const inputEl = ref<HTMLInputElement | null>(null)
 const text = ref('')
 const focusedId = ref('')
+
+const words = computed(() =>
+  text.value
+    .toLowerCase()
+    .trim()
+    .split(' ')
+    .map((v) => v.trim())
+    .filter(Boolean),
+)
+
+const regex = computed(() => {
+  if (!words.value.length) {
+    return
+  }
+  // Join all words into a regex.
+  const pattern = words.value
+    .map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('|')
+
+  return new RegExp(pattern, 'gi')
+})
 
 type GroupedCommands = {
   id: CommandGroup

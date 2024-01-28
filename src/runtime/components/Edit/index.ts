@@ -9,6 +9,7 @@ import Sortli from './Sortli/index.vue'
 import FormOverlay from './FormOverlay/index.vue'
 import AddListItem from './AddListItem/index.vue'
 import Loading from './Loading/index.vue'
+import Highlight from './Highlight/index.vue'
 
 export {
   ItemIcon,
@@ -22,4 +23,5 @@ export {
   FormOverlay,
   AddListItem,
   Loading,
+  Highlight,
 }

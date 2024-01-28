@@ -17,7 +17,7 @@
           <Icon v-if="item.icon" :name="item.icon" />
           <ItemIcon v-else :bundle="item.bundle" />
         </div>
-        <span>{{ item.label }}</span>
+        <Highlight :text="item.label" tag="span" :regex="regex" />
       </button>
     </div>
   </div>
@@ -25,13 +25,14 @@
 
 <script lang="ts" setup>
 import { computed } from '#imports'
-import { Icon, ItemIcon } from '#blokkli/components'
+import { Icon, ItemIcon, Highlight } from '#blokkli/components'
 import type { Command } from '#blokkli/types'
 
 const props = defineProps<{
   label: string
   commands: Command[]
   text: string
+  regex?: RegExp
   focusedId: string
 }>()
 

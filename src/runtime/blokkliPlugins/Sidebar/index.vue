@@ -217,9 +217,9 @@ const onItemDropped = () => {
 
 const commandTitle = computed(() => {
   if (activeSidebar.value === props.id) {
-    return $t('sidebar.hide', 'Hide "@title"').replace('@title', props.title)
+    return $t('sidebar.hide', 'Hide @title').replace('@title', props.title)
   }
-  return $t('sidebar.show', 'Show "@title"').replace('@title', props.title)
+  return $t('sidebar.show', 'Show @title').replace('@title', props.title)
 })
 
 const commandCallback = () => {

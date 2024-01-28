@@ -12,7 +12,7 @@
     v-else-if="!isReusable"
     id="library_make_reusable"
     :title="$t('libraryAdd', 'Add to library')"
-    :disabled="!canMakeReusable"
+    :disabled="!canMakeReusable || state.editMode.value !== 'editing'"
     icon="reusable"
     :weight="-70"
     @click="showReusableDialog = true"

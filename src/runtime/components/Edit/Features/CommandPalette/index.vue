@@ -23,7 +23,8 @@ defineBlokkliFeature({
   id: 'command-palette',
   icon: 'command',
   label: 'Command Palette',
-  description: 'Provides a command palette for easy keyboard navigation.',
+  description:
+    'Provides a command palette with search to access most UI features with a keyboard.',
 })
 
 const { eventBus } = useBlokkli()

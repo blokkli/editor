@@ -102,7 +102,7 @@ const commandProvider = (): Command => {
     group: 'selection',
     label: props.title,
     icon: props.icon,
-    disabled: props.disabled,
+    disabled: props.disabled || !selection.blocks.value.length,
     callback: onClick,
   }
 }
