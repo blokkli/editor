@@ -1,0 +1,63 @@
+.bk {
+  .bk-command-palette {
+    @apply fixed bg-mono-900 z-command-palette w-[600px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded;
+    @apply shadow-2xl;
+    @apply border border-mono-600;
+  }
+
+  .bk-command-palette-input {
+    @apply text-mono-100 relative;
+
+    .bk-icon {
+      @apply absolute top-1/2 left-15 -translate-y-1/2 w-20 h-20;
+      svg {
+        @apply fill-current;
+      }
+    }
+
+    input {
+      @apply h-60 appearance-none w-full bg-transparent !outline-none !ring-0;
+      @apply pl-[45px];
+      @apply !border-none;
+      @apply text-lg font-bold;
+
+      &::placeholder {
+        @apply font-normal text-mono-600;
+      }
+    }
+  }
+
+  .bk-command-palette-results {
+    @apply border-t border-t-mono-600 h-[400px] overflow-auto;
+  }
+
+  .bk-command {
+    @apply flex text-mono-50 px-5 py-10 w-full text-left gap-10 items-center rounded;
+
+    &.bk-is-focused {
+      @apply bg-mono-800;
+    }
+  }
+
+  .bk-command-icon {
+    @apply w-20 h-20 text-mono-400;
+
+    .bk-icon {
+      @apply w-full h-full;
+      svg {
+        @apply w-full h-full;
+        @apply fill-current;
+      }
+    }
+  }
+
+  .bk-command-palette-results-group {
+    @apply p-10;
+    &:not(:first-child) {
+      @apply border-t border-t-mono-500;
+    }
+    > h2 {
+      @apply text-mono-200 uppercase text-sm font-semibold pl-5 mb-10 mt-5;
+    }
+  }
+}

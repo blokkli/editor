@@ -34,6 +34,7 @@ import DragItems from './DragItems/index.vue'
 
 import type {
   AnimationFrameEvent,
+  BlockAppendEvent,
   BlokkliDefinitionAddBehaviour,
   BlokkliFieldElement,
   Coord,
@@ -43,7 +44,6 @@ import type {
   DraggableHostData,
   DraggableItem,
   DraggableMediaLibraryItem,
-  DraggableNewItem,
   DraggableReusableItem,
   DraggableSearchContentItem,
   DraggableStartEvent,
@@ -115,11 +115,11 @@ function filterItemType<T extends DraggableItem>(
 }
 
 const onDropNew = async (
-  item: DraggableNewItem,
+  bundle: string,
   host: DraggableHostData,
   afterUuid?: string,
 ) => {
-  const definition = getDefinition(item.itemBundle)
+  const definition = getDefinition(bundle)
   const addBehaviour: BlokkliDefinitionAddBehaviour =
     definition?.editor?.addBehaviour || 'form'
   if (
@@ -130,16 +130,14 @@ const onDropNew = async (
   ) {
     await state.mutateWithLoadingState(
       adapter.addNewBlock({
-        type: item.itemBundle,
-        item,
+        bundle,
         host,
         afterUuid,
       }),
     )
   } else {
     eventBus.emit('add:block:new', {
-      type: item.itemBundle,
-      item,
+      bundle,
       host,
       afterUuid,
     })
@@ -257,7 +255,7 @@ const onDrop = async (e: DropTargetEvent) => {
     if (typed.itemType === 'existing') {
       await onDropExisting(typed.items, host, afterUuid)
     } else if (typed.itemType === 'new') {
-      await onDropNew(typed.item, host, afterUuid)
+      await onDropNew(typed.item.itemBundle, host, afterUuid)
     } else if (typed.itemType === 'reusable') {
       await onDropReusable(typed.item, host, afterUuid)
     } else if (typed.itemType === 'clipboard') {
@@ -367,16 +365,23 @@ const onKeyPressed = (e: KeyPressedEvent) => {
   }
 }
 
+const onBlockAppend = (e: BlockAppendEvent) => {
+  console.log(e)
+  onDropNew(e.bundle, e.host, e.afterUuid)
+}
+
 onMounted(() => {
   eventBus.on('dragging:start', onDraggingStart)
   eventBus.on('dragging:end', onDraggingEnd)
   eventBus.on('keyPressed', onKeyPressed)
+  eventBus.on('block:append', onBlockAppend)
 })
 
 onUnmounted(() => {
   eventBus.off('dragging:start', onDraggingStart)
   eventBus.off('dragging:end', onDraggingEnd)
   eventBus.off('keyPressed', onKeyPressed)
+  eventBus.off('block:append', onBlockAppend)
   document.removeEventListener('mouseup', onMouseUp)
 })
 </script>

@@ -1,5 +1,6 @@
 <template>
   <PluginMenuButton
+    id="import_existing"
     v-if="state.mutatedFields.value.length"
     :title="$t('importExistingTitle', 'Import...')"
     :description="

@@ -1,5 +1,6 @@
 <template>
   <PluginMenuButton
+    id="settings"
     :title="$t('settingsMenuTitle', 'Settings')"
     :description="
       $t('settingsMenuDescription', 'Personal settings for the editor')

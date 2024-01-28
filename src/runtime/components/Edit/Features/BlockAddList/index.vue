@@ -50,7 +50,7 @@ import {
   nextTick,
 } from '#imports'
 import { AddListItem } from '#blokkli/components'
-import type { DraggableExistingBlock } from '#blokkli/types'
+import type { Command, DraggableExistingBlock } from '#blokkli/types'
 import { getDefinition } from '#blokkli/definitions'
 
 defineBlokkliFeature({
@@ -73,6 +73,7 @@ const {
   eventBus,
   $t,
   state,
+  commands,
 } = useBlokkli()
 
 const shouldRender = computed(() => state.editMode.value === 'editing')
@@ -239,12 +240,71 @@ const onAddListChange = () => {
   })
 }
 
+const getBundlesForCommands = () => {
+  if (selection.blocks.value.length !== 1) {
+    return []
+  }
+
+  const block = selection.blocks.value[0]
+  const field = types.fieldConfig.value.find(
+    (v) =>
+      v.entityType === block.hostType &&
+      v.entityBundle === block.hostBundle &&
+      v.name === block.hostFieldName,
+  )
+
+  if (field) {
+    if (field.cardinality !== -1) {
+      const mutatedField = state.mutatedFields.value.find(
+        (v) => v.name === field.name && v.entityType === field.entityType,
+      )
+      if (mutatedField) {
+        // No more blocks allowed.
+        if (mutatedField.list.length >= field.cardinality) {
+          return []
+        }
+      }
+    }
+    return field.allowedBundles
+  }
+
+  return []
+}
+
+const commandCallback = (bundle: string) => {
+  const block = selection.blocks.value[0]
+  eventBus.emit('block:append', {
+    bundle,
+    afterUuid: selection.uuids.value[0],
+    host: {
+      type: block.hostType,
+      uuid: block.hostUuid,
+      fieldName: block.hostFieldName,
+    },
+  })
+}
+
+const commandProvider = (): Command[] => {
+  return getBundlesForCommands().map((bundle) => {
+    const definition = types.allTypes.value.find((v) => v.id === bundle)
+    return {
+      id: 'block_add_list:' + bundle,
+      label: `Append "${definition?.label}"`,
+      group: 'add',
+      bundle,
+      callback: () => commandCallback(bundle),
+    }
+  })
+}
+
 onMounted(() => {
   eventBus.on('add-list:change', onAddListChange)
+  commands.add(commandProvider)
 })
 
 onBeforeUnmount(() => {
   eventBus.off('add-list:change', onAddListChange)
+  commands.remove(commandProvider)
 })
 </script>
 

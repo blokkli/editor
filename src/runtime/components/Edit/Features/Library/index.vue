@@ -1,5 +1,6 @@
 <template>
   <PluginItemAction
+    id="library_detach"
     v-if="isReusable"
     :title="$t('libraryDetach', 'Detach from library')"
     icon="detach"
@@ -9,6 +10,7 @@
   />
   <PluginItemAction
     v-else-if="!isReusable"
+    id="library_make_reusable"
     :title="$t('libraryAdd', 'Add to library')"
     :disabled="!canMakeReusable"
     icon="reusable"

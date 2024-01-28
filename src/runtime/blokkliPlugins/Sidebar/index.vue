@@ -102,6 +102,7 @@ import {
 import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon, ShortcutIndicator } from '#blokkli/components'
 import SidebarDetached from './Detached/index.vue'
+import type { Command } from '#blokkli/types'
 
 const props = withDefaults(
   defineProps<{
@@ -132,7 +133,7 @@ const emit = defineEmits<{
   (e: 'updated'): void
 }>()
 
-const { storage, state, ui, eventBus } = useBlokkli()
+const { storage, state, ui, eventBus, commands, $t } = useBlokkli()
 
 const detachedKey = computed(() => 'sidebar:detached:' + props.id)
 const storageKey = computed(() => 'sidebar:active:' + props.region)
@@ -214,14 +215,42 @@ const onItemDropped = () => {
   }
 }
 
+const commandTitle = computed(() => {
+  if (activeSidebar.value === props.id) {
+    return $t('sidebar.hide', 'Hide "@title"').replace('@title', props.title)
+  }
+  return $t('sidebar.show', 'Show "@title"').replace('@title', props.title)
+})
+
+const commandCallback = () => {
+  if (activeSidebar.value === props.id) {
+    activeSidebar.value = ''
+  } else {
+    activeSidebar.value = props.id
+  }
+}
+
+const commandProvider = (): Command => {
+  return {
+    id: 'plugin:sidebar:' + props.id,
+    label: commandTitle.value,
+    group: 'ui',
+    icon: props.icon,
+    disabled: isRenderedDetached.value,
+    callback: commandCallback,
+  }
+}
+
 onMounted(() => {
   loop()
   eventBus.on('item:dropped', onItemDropped)
+  commands.add(commandProvider)
 })
 
 onBeforeUnmount(() => {
   window.cancelAnimationFrame(raf)
   eventBus.off('item:dropped', onItemDropped)
+  commands.remove(commandProvider)
 })
 
 defineExpose({ showSidebar })

@@ -43,6 +43,7 @@
   </Teleport>
 
   <PluginMenuButton
+    id="translations"
     :title="$t('translationsBatchTranslateMenuTitle', 'Translate...')"
     :description="
       $t('translationsBatchTranslateMenuDescription', 'Translate all blocks')
@@ -55,6 +56,7 @@
 
   <PluginItemAction
     v-if="editMode === 'translating'"
+    id="translate"
     :title="$t('translationsItemAction', 'Translate')"
     icon="translate"
     @click="onTranslate"

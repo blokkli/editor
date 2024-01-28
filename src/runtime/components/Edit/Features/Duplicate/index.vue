@@ -1,5 +1,6 @@
 <template>
   <PluginItemAction
+    id="duplicate"
     :title="$t('duplicate', 'Duplicate')"
     :disabled="!canDuplicate"
     meta

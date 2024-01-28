@@ -25,6 +25,10 @@ body {
     &.is-primary {
       @apply text-white bg-accent-700 hover:bg-accent-800 border-accent-700 hover:border-accent-700 hover:text-white;
     }
+
+    &.is-inverted {
+      @apply text-mono-300 hover:border-white hover:text-white;
+    }
   }
 
   .container {

@@ -76,6 +76,7 @@
   </PluginSidebar>
 
   <PluginToolbarButton
+    id="undo"
     :title="$t('historyUndo', 'Undo')"
     meta
     key-code="Z"
@@ -86,6 +87,7 @@
   />
 
   <PluginToolbarButton
+    id="redo"
     :title="$t('historyRedo', 'Redo')"
     meta
     shift

@@ -1,5 +1,6 @@
 <template>
   <PluginMenuButton
+    id="revert"
     :title="$t('revertMenuTitle', 'Discard...')"
     :description="
       $t('revertMenuDescription', 'Restore currently published state')

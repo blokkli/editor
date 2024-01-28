@@ -28,18 +28,19 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli } from '#imports'
+import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
 import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon } from '#blokkli/components'
-import type { DraggableExistingBlock } from '#blokkli/types'
+import type { Command, DraggableExistingBlock } from '#blokkli/types'
 import { ShortcutIndicator } from '#blokkli/components'
 
-const { selection } = useBlokkli()
+const { selection, commands } = useBlokkli()
 
 const uuids = computed(() => selection.uuids.value)
 
 const props = defineProps<{
+  id: string
   /**
    * The title of the action.
    */
@@ -94,6 +95,20 @@ const onClick = () => {
 
   emit('click', selection.blocks.value)
 }
+
+const commandProvider = (): Command => {
+  return {
+    id: 'plugin:item_action:' + props.id,
+    group: 'selection',
+    label: props.title,
+    icon: props.icon,
+    disabled: props.disabled,
+    callback: onClick,
+  }
+}
+
+onMounted(() => commands.add(commandProvider))
+onBeforeUnmount(() => commands.remove(commandProvider))
 </script>
 
 <script lang="ts">

@@ -10,7 +10,7 @@
         <Icon v-if="icon" :name="icon" />
       </slot>
       <div class="bk-tooltip">
-        <span>{{ isActive ? titleOff : titleOn }}</span>
+        <span>{{ title }}</span>
 
         <ShortcutIndicator
           v-if="keyCode"
@@ -28,11 +28,12 @@
 </template>
 
 <script setup lang="ts">
-import { useBlokkli } from '#imports'
+import { useBlokkli, onMounted, onBeforeUnmount, computed } from '#imports'
 import { ShortcutIndicator, Icon } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli/icons'
+import type { Command } from '#blokkli/types'
 
-const { storage, ui } = useBlokkli()
+const { storage, ui, commands } = useBlokkli()
 
 const props = defineProps<{
   id: string
@@ -48,9 +49,29 @@ const storageKey = 'view_option_' + props.id
 
 const isActive = storage.use(storageKey, false)
 
+const title = computed(() => (isActive.value ? props.titleOff : props.titleOn))
+
 const onClick = () => {
   isActive.value = !isActive.value
 }
+
+const commandProvider = (): Command => {
+  return {
+    id: 'plugin:view_option:' + props.id,
+    label: title.value,
+    icon: props.icon,
+    group: 'ui',
+    callback: () => (isActive.value = !isActive.value),
+  }
+}
+
+onMounted(() => {
+  commands.add(commandProvider)
+})
+
+onBeforeUnmount(() => {
+  commands.remove(commandProvider)
+})
 </script>
 
 <script lang="ts">

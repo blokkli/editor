@@ -26,6 +26,7 @@ import type {
 } from '#blokkli/generated-types'
 import type { globalOptions } from '#blokkli/definitions'
 import type { ThemeProvider } from '#blokkli/helpers/themeProvider'
+import type { CommandsProvider } from '#blokkli/helpers/commandsProvider'
 
 interface MutationResponseLike<T> {
   success?: boolean
@@ -636,8 +637,7 @@ export type MoveMultipleBlocksEvent = {
 }
 
 export type AddNewBlockEvent = {
-  type: string
-  item: DraggableNewItem
+  bundle: string
   host: DraggableHostData
   afterUuid?: string
 }
@@ -805,6 +805,7 @@ export type EventbusEvents = {
 
   // Add action dropped.
   'item:dropped': undefined
+  'block:append': BlockAppendEvent
 
   scrollIntoView: ScrollIntoViewEvent
   'animationFrame:before': undefined
@@ -830,6 +831,12 @@ export type EventbusEvents = {
 
   'ui:resized': undefined
   'add-list:change': undefined
+}
+
+export type BlockAppendEvent = {
+  bundle: string
+  host: DraggableHostData
+  afterUuid?: string
 }
 
 export type UiResizedEvent = {
@@ -885,6 +892,7 @@ export interface BlokkliApp {
   broadcast: BroadcastProvider
   features: FeaturesProvider
   theme: ThemeProvider
+  commands: CommandsProvider
 }
 
 export interface Rectangle {
@@ -996,6 +1004,18 @@ export type KeyboardShortcut = {
   shift?: boolean
   code: string
   label: string
+}
+
+export type CommandGroup = 'ui' | 'selection' | 'add' | 'action' | 'misc'
+
+export type Command = {
+  id: string
+  label: string
+  group?: CommandGroup
+  icon?: BlokkliIcon
+  bundle?: string
+  disabled?: boolean
+  callback: () => any
 }
 
 export default {}

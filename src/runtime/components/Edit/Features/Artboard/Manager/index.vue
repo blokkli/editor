@@ -1,5 +1,6 @@
 <template>
   <PluginToolbarButton
+    id="artboard_reset_zoom"
     :title="$t('artboardResetZoom', 'Reset zoom')"
     :shortcut-group="$t('artboard', 'Artboard')"
     meta
@@ -58,6 +59,7 @@ const {
   animation,
   $t,
   selection,
+  commands,
 } = useBlokkli()
 
 const artboardScrollMultiplier = storage.use('artboardScrollMultiplier', 1)
@@ -725,7 +727,9 @@ const findElementToScrollTo = (uuid: string): HTMLElement | undefined => {
     }
 
     return element
-  } catch (_e) {}
+  } catch (_e) {
+    // Noop.
+  }
 }
 
 function onScrollIntoView(e: ScrollIntoViewEvent) {

@@ -1,6 +1,7 @@
 <template>
   <PluginToolbarButton
     v-if="previewGrantUrl && !ui.isMobile.value"
+    id="preview_with_smartphone"
     :title="$t('previewWithSmartphone', 'Preview (with smartphone)')"
     region="after-menu"
     icon="qrcode"

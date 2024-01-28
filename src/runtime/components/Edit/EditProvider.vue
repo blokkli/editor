@@ -51,6 +51,7 @@ import uiProvider from './../../helpers/uiProvider'
 import broadcastProvider from './../../helpers/broadcastProvider'
 import featuresProvider from './../../helpers/featuresProvider'
 import themeProvider from './../../helpers/themeProvider'
+import commandsProvider from './../../helpers/commandsProvider'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import '#blokkli/theme'
 import '#blokkli/styles'
@@ -95,6 +96,7 @@ const selection = selectionProvider(dom, state)
 const types = await typesProvider(adapter, selection)
 const features = featuresProvider()
 const theme = themeProvider()
+const commands = commandsProvider()
 
 const originalThemeColor = ref('')
 const THEME_COLOR = 'black'
@@ -157,5 +159,6 @@ provide<BlokkliApp>(INJECT_APP, {
   broadcast,
   features,
   theme,
+  commands,
 })
 </script>

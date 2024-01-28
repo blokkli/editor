@@ -4,7 +4,10 @@
       :is="isExternal ? 'a' : NuxtLink"
       v-bind="attributes"
       class="button"
-      :class="{ 'is-primary': options.color === 'primary' }"
+      :class="{
+        'is-primary': options.color === 'primary',
+        'is-inverted': options.color === 'normal' && isInverted,
+      }"
     >
       <span v-blokkli-editable:title="{ label: 'CTA' }">{{ title }}</span>
     </Component>
@@ -12,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineBlokkli, computed } from '#imports'
+import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
 import { NuxtLink } from '#components'
 
 const { options, parentType } = defineBlokkli({
@@ -40,6 +43,9 @@ const props = defineProps<{
   url: string
   title: string
 }>()
+
+const injectedInverted = inject<ComputedRef<boolean> | null>('isInverted', null)
+const isInverted = computed(() => !!injectedInverted?.value)
 
 const href = computed(() => props.url)
 

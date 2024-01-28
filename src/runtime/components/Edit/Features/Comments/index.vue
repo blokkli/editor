@@ -15,6 +15,7 @@
   </PluginSidebar>
 
   <PluginItemAction
+    id="add_comment"
     :title="$t('addCommentToItem', 'Comment')"
     :active="showAddComment"
     weight="last"

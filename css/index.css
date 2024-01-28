@@ -34,6 +34,7 @@
 @import './partials/Help.css';
 @import './partials/Theme.css';
 @import './partials/MediaLibrary.css';
+@import './partials/CommandPalette.css';
 @import './indicator.css';
 
 @tailwind base;

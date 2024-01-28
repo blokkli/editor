@@ -1,5 +1,6 @@
 <template>
   <PluginItemAction
+    id="delete"
     :title="$t('deleteButton', 'Delete')"
     :disabled="state.editMode.value !== 'editing'"
     multiple

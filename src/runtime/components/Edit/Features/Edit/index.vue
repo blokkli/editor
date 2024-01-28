@@ -1,5 +1,6 @@
 <template>
   <PluginItemAction
+    id="edit"
     :title="$t('edit', 'Edit')"
     :disabled="disabled"
     meta

@@ -223,7 +223,7 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
     addNewBlock: (e) =>
       addMutation('add', {
-        bundle: e.type,
+        bundle: e.bundle,
         hostEntityType: e.host.type,
         hostEntityUuid: e.host.uuid,
         hostField: e.host.fieldName,
@@ -330,7 +330,7 @@ export default defineBlokkliEditAdapter((ctx) => {
       const params = new URLSearchParams()
       if (e.id === 'block:add') {
         url = '/addBlock'
-        params.set('bundle', e.data.type)
+        params.set('bundle', e.data.bundle)
         params.set('hostEntityType', e.data.host.type)
         params.set('hostEntityUuid', e.data.host.uuid)
         params.set('hostField', e.data.host.fieldName)

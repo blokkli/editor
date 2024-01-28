@@ -1,5 +1,6 @@
 <template>
   <PluginMenuButton
+    id="publish"
     :title="$t('publishLabel', 'Publish')"
     :description="$t('publishDescription', 'Make all changes public')"
     :disabled="!mutations.length || !canEdit"
