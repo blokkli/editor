@@ -1,8 +1,10 @@
 <template>
   <div
     class="bk bk-dialog bk-control"
+    ref="rootEl"
     @wheel.stop
-    @keydown.stop
+    @keydown.stop="onKeyDown"
+    @keyup.stop
     @touchstart.stop
     @touchmove.stop
     @touchend.stop
@@ -43,14 +45,16 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, onMounted, onBeforeUnmount, computed } from '#imports'
+import { useBlokkli, onMounted, computed, ref } from '#imports'
 import type { BlokkliIcon } from '#blokkli/icons'
-import type { KeyPressedEvent } from '#blokkli/types'
 import { Icon } from '#blokkli/components'
+import { modulo } from '#blokkli/helpers'
 
-const { eventBus, ui } = useBlokkli()
+const { ui } = useBlokkli()
 
 const emit = defineEmits(['submit', 'cancel'])
+
+const rootEl = ref<HTMLDivElement | null>(null)
 
 const props = withDefaults(
   defineProps<{
@@ -83,18 +87,70 @@ const style = computed(() => {
   }
 })
 
-const onKeyPressed = (e: KeyPressedEvent) => {
+type FocusableElement =
+  | HTMLInputElement
+  | HTMLSelectElement
+  | HTMLButtonElement
+  | HTMLTextAreaElement
+
+const getFocusableElements = (): FocusableElement[] => {
+  if (!rootEl.value) {
+    return []
+  }
+  return [
+    ...rootEl.value.querySelectorAll('input,select,button,textarea'),
+  ] as FocusableElement[]
+}
+
+const onKeyDown = (e: KeyboardEvent) => {
   if (e.code === 'Escape') {
+    e.preventDefault()
     emit('cancel')
+    return
+  }
+  if (!rootEl.value || e.code !== 'Tab') {
+    return
+  }
+  const prev = e.shiftKey
+  const focusableElements = getFocusableElements().filter((el) => {
+    const style = window.getComputedStyle(el)
+    if (style.pointerEvents === 'none') {
+      return false
+    }
+
+    if (el.disabled) {
+      return false
+    }
+
+    return true
+  }) as HTMLElement[]
+
+  const activeIndex = Math.max(
+    focusableElements.findIndex((el) => document.activeElement === el),
+    0,
+  )
+
+  const delta = prev ? -1 : 1
+
+  const indexToFocus = modulo(activeIndex + delta, focusableElements.length)
+  const elementToFocus = focusableElements[indexToFocus]
+
+  if (elementToFocus) {
+    elementToFocus.focus()
+    e.preventDefault()
   }
 }
 
 onMounted(() => {
-  eventBus.on('keyPressed', onKeyPressed)
-})
+  // Focus the first best match in the dialog. That is, an element that is not a button.
+  const focusableElements = getFocusableElements()
+  const bestMatch =
+    focusableElements.find((el) => !(el instanceof HTMLButtonElement)) ||
+    focusableElements[0]
 
-onBeforeUnmount(() => {
-  eventBus.off('keyPressed', onKeyPressed)
+  if (bestMatch) {
+    bestMatch.focus()
+  }
 })
 </script>
 
