@@ -3,6 +3,7 @@
     id="artboard_reset_zoom"
     :title="$t('artboardResetZoom', 'Reset zoom')"
     :shortcut-group="$t('artboard', 'Artboard')"
+    icon="magnifier"
     meta
     key-code="0"
     region="view-options"
