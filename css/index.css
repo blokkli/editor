@@ -107,18 +107,18 @@ html {
 }
 
 .bk-button {
-  @apply h-50 !px-20 inline-flex justify-center items-center gap-10 rounded-md !font-semibold  focus:outline-none transition !shadow !font-sans !text-base;
+  @apply h-50 !px-20 inline-flex justify-center items-center gap-10 rounded-md !font-semibold  focus:outline-none !font-sans !text-base focus:ring-[3px] focus:ring-offset-2;
   @apply !text-mono-900 hover:!text-white;
   @apply !bg-mono-200 hover:!bg-mono-600;
 
   &.bk-is-primary {
-    @apply !bg-accent-700 !text-white hover:!bg-accent-800;
+    @apply !bg-accent-700 !text-white hover:!bg-accent-800 focus:ring-accent-600 focus:ring-offset-accent-100;
     &[disabled] {
       @apply opacity-30;
     }
   }
   &.bk-is-danger {
-    @apply !bg-red-normal !text-white hover:!bg-red-dark;
+    @apply !bg-red-normal !text-white hover:!bg-red-dark focus:ring-red-dark;
     &[disabled] {
       @apply opacity-30;
     }
