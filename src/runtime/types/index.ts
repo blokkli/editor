@@ -803,6 +803,9 @@ export type EventbusEvents = {
   'select:previous': undefined
   'select:next': undefined
 
+  // Add action dropped.
+  'item:dropped': undefined
+
   scrollIntoView: ScrollIntoViewEvent
   'animationFrame:before': undefined
 

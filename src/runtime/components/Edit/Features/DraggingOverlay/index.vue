@@ -249,6 +249,7 @@ const onDrop = async (e: DropTargetEvent) => {
 
   onDraggingEnd()
   eventBus.emit('dragging:end')
+  eventBus.emit('item:dropped')
   nextTick(async () => {
     const afterUuid = e.preceedingUuid
     const host = e.host
