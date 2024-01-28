@@ -34,6 +34,7 @@ export class ContentPage extends Content {
         'video',
         'table',
         'on_this_page',
+        'widget',
       ]),
       new FieldBlocks('footer', 'Footer', -1, ['text']),
       new FieldBlocks('header', 'Header', 1, ['hero']),
