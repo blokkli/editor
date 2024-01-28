@@ -107,9 +107,41 @@
     "source": "Close",
     "translation": "Chiudi"
   },
+  "commandGroup.action": {
+    "source": "Actions",
+    "translation": ""
+  },
+  "commandGroup.add": {
+    "source": "Add new",
+    "translation": ""
+  },
+  "commandGroup.misc": {
+    "source": "Miscellaneous",
+    "translation": ""
+  },
+  "commandGroup.selection": {
+    "source": "Selection",
+    "translation": ""
+  },
+  "commandGroup.ui": {
+    "source": "Interface",
+    "translation": ""
+  },
+  "commandPalette.inputPlaceholder": {
+    "source": "Search commands...",
+    "translation": ""
+  },
+  "commentAdd": {
+    "source": "Add comment",
+    "translation": ""
+  },
   "commentBody": {
     "source": "Comment",
     "translation": "Commento"
+  },
+  "commentBodyPlaceholder": {
+    "source": "Add reply",
+    "translation": ""
   },
   "commentSave": {
     "source": "Submit comment",
@@ -407,6 +439,10 @@
     "source": "Show content fields",
     "translation": ""
   },
+  "mediaLibrary": {
+    "source": "Media Library",
+    "translation": ""
+  },
   "multipleItemsLabel": {
     "source": "Items",
     "translation": "Elementi"
@@ -567,9 +603,25 @@
     "source": "UI",
     "translation": ""
   },
+  "sidebar.hide": {
+    "source": "Hide \"@title\"",
+    "translation": ""
+  },
+  "sidebar.show": {
+    "source": "Show \"@title\"",
+    "translation": ""
+  },
+  "singleComment": {
+    "source": "comment",
+    "translation": ""
+  },
   "structureToolbarLabel": {
     "source": "Structure",
     "translation": "Struttura"
+  },
+  "theme": {
+    "source": "Theme",
+    "translation": ""
   },
   "touchBarCancelDragging": {
     "source": "Cancel dragging",

@@ -122,9 +122,41 @@ msgctxt "close"
 msgid "Close"
 msgstr "Schliessen"
 
+msgctxt "commandGroup.action"
+msgid "Actions"
+msgstr "Aktionen"
+
+msgctxt "commandGroup.add"
+msgid "Add new"
+msgstr "Hinzufügen"
+
+msgctxt "commandGroup.misc"
+msgid "Miscellaneous"
+msgstr "Diverse"
+
+msgctxt "commandGroup.selection"
+msgid "Selection"
+msgstr "Auswahl"
+
+msgctxt "commandGroup.ui"
+msgid "Interface"
+msgstr "Oberfläche"
+
+msgctxt "commandPalette.inputPlaceholder"
+msgid "Search commands..."
+msgstr "Aktionen durchsuchen..."
+
+msgctxt "commentAdd"
+msgid "Add comment"
+msgstr "Kommentar hinzufügen"
+
 msgctxt "commentBody"
 msgid "Comment"
 msgstr "Kommentar"
+
+msgctxt "commentBodyPlaceholder"
+msgid "Add reply"
+msgstr "Antwort hinzufügen"
 
 msgctxt "commentSave"
 msgid "Submit comment"
@@ -436,6 +468,10 @@ msgctxt "maskToggle"
 msgid "Show content fields"
 msgstr "Inhaltsfelder anzeigen"
 
+msgctxt "mediaLibrary"
+msgid "Media Library"
+msgstr "Medienbibliothek"
+
 msgctxt "multipleItemsLabel"
 msgid "Items"
 msgstr "Elemente"
@@ -604,9 +640,25 @@ msgctxt "shortcutGroupUi"
 msgid "UI"
 msgstr "Oberfläche"
 
+msgctxt "sidebar.hide"
+msgid "Hide \"@title\""
+msgstr "@title ausblenden"
+
+msgctxt "sidebar.show"
+msgid "Show \"@title\""
+msgstr "@title anzeigen"
+
+msgctxt "singleComment"
+msgid "comment"
+msgstr "Kommentar"
+
 msgctxt "structureToolbarLabel"
 msgid "Structure"
 msgstr "Struktur"
+
+msgctxt "theme"
+msgid "Theme"
+msgstr "Farben"
 
 msgctxt "touchBarCancelDragging"
 msgid "Cancel dragging"
