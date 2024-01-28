@@ -6,9 +6,12 @@
     <button @click="isOpen = !isOpen">
       <div>
         <span>{{ label }}</span>
-        <span v-for="item in checked" :key="item" class="bk-pill">{{
-          item
-        }}</span>
+        <template v-if="checked.length < 4">
+          <span v-for="item in checked" :key="item" class="bk-pill">{{
+            item
+          }}</span>
+        </template>
+        <span v-else class="bk-pill">{{ checked.length }}</span>
       </div>
       <Icon name="caret" />
     </button>
