@@ -136,7 +136,7 @@ export function defineBlokkli<
   const isEditing = !!item?.value.isEditing
 
   onMounted(() => {
-    if (!isEditing || !editContext) {
+    if (!isEditing || !editContext || fromLibraryOptions) {
       return
     }
 
