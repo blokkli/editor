@@ -2,6 +2,7 @@ import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
   externals: [
+    '#imports',
     '#blokkli/adapter',
     '#blokkli/types',
     '#blokkli/icons',
@@ -11,6 +12,7 @@ export default defineBuildConfig({
     '#blokkli/helpers/broadcastProvider',
     '#blokkli/helpers/featuresProvider',
     '#blokkli/helpers/themeProvider',
+    '#blokkli/helpers/commandsProvider',
     '#blokkli/translations',
     '#blokkli/generated-types',
     'defu',

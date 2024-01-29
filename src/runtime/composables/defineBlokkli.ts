@@ -1,4 +1,11 @@
-import { computed, inject, type ComputedRef } from '#imports'
+import {
+  computed,
+  inject,
+  type ComputedRef,
+  getCurrentInstance,
+  onMounted,
+  onBeforeUnmount,
+} from '#imports'
 import type {
   BlockDefinitionInput,
   BlockDefinitionOptionsInput,
@@ -125,11 +132,30 @@ export function defineBlokkli<
 
     return result
   })
+
+  const isEditing = !!item?.value.isEditing
+
+  onMounted(() => {
+    if (!isEditing || !editContext) {
+      return
+    }
+
+    // Register the DOM element of this block.
+    const instance = getCurrentInstance()
+    if (instance?.vnode.el instanceof HTMLElement) {
+      editContext.dom.registerBlock(uuid, instance.vnode.el)
+    }
+  })
+  onBeforeUnmount(() => {
+    if (editContext && uuid) {
+      editContext.dom.unregisterBlock(uuid)
+    }
+  })
   return {
     uuid,
     index,
     options,
-    isEditing: !!item?.value.isEditing,
+    isEditing,
     parentType,
     fieldListType,
     siblings,

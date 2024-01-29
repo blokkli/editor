@@ -128,7 +128,7 @@ const { adapter, settings } = defineBlokkliFeature({
   },
 })
 
-const { eventBus, state, $t, ui } = useBlokkli()
+const { state, $t, ui } = useBlokkli()
 
 const { mutations, currentMutationIndex, canEdit, mutateWithLoadingState } =
   state

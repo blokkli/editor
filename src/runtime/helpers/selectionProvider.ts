@@ -6,7 +6,8 @@ import {
   onMounted,
   onBeforeUnmount,
   watch,
-} from 'vue'
+  nextTick,
+} from '#imports'
 
 import type {
   DraggableExistingBlock,
@@ -24,7 +25,6 @@ import {
 import { eventBus } from '#blokkli/helpers/eventBus'
 import type { DomProvider } from './domProvider'
 import type { RenderedBlock, StateProvider } from './stateProvider'
-import { nextTick } from 'process'
 
 /**
  * Determine which blocks should be selected when the state changes.
@@ -224,6 +224,7 @@ export default function (
       newBlocks,
       prevBlocks,
     )
+    console.log(result)
 
     if (result) {
       selectedUuids.value = result.uuids
@@ -241,13 +242,7 @@ export default function (
   const blocks = computed<DraggableExistingBlock[]>(() =>
     selectedUuids.value
       .map((uuid) => {
-        const el = findElement(uuid)
-        if (el && state.refreshKey.value) {
-          const item = buildDraggableItem(el)
-          if (item?.itemType === 'existing') {
-            return item
-          }
-        }
+        return dom.findBlock(uuid)
       })
       .filter(falsy),
   )

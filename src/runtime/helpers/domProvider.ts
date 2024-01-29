@@ -1,3 +1,4 @@
+import { ref } from '#imports'
 import type {
   DraggableExistingBlock,
   BlokkliFieldElement,
@@ -124,20 +125,31 @@ export type DomProvider = {
     entityUuid: string,
     fieldName: string,
   ): BlokkliFieldElement | undefined
+
+  registerBlock: (uuid: string, el: HTMLElement) => void
+  unregisterBlock: (uuid: string) => void
 }
 
 export default function (): DomProvider {
+  const registeredBlocks = ref<Record<string, HTMLElement | undefined>>({})
+
+  const registerBlock = (uuid: string, el: HTMLElement) => {
+    registeredBlocks.value[uuid] = el
+  }
+
+  const unregisterBlock = (uuid: string) => {
+    registeredBlocks.value[uuid] = undefined
+  }
+
   const findBlock = (uuid: string): DraggableExistingBlock | undefined => {
-    const el = document.querySelector(
-      `.bk-field-list [data-uuid="${uuid}"]:not(.bk-sortli-leave-active)`,
-    )
-    if (el instanceof HTMLElement) {
-      const item = buildDraggableItem(el)
-      if (item?.itemType === 'existing') {
-        return item
-      }
+    const el = registeredBlocks.value[uuid]
+    if (!el) {
+      return
     }
-    return
+    const item = buildDraggableItem(el)
+    if (item?.itemType === 'existing') {
+      return item
+    }
   }
 
   const getAllBlocks = (): DraggableExistingBlock[] => {
@@ -233,5 +245,7 @@ export default function (): DomProvider {
     getDropElementMarkup,
     getBlockField,
     findField,
+    registerBlock,
+    unregisterBlock,
   }
 }

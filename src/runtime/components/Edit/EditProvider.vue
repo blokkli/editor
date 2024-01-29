@@ -141,6 +141,7 @@ provide(INJECT_IS_EDITING, true)
 provide(INJECT_EDIT_CONTEXT, {
   eventBus,
   mutatedOptions: state.mutatedOptions,
+  dom,
 })
 provide<BlokkliApp>(INJECT_APP, {
   adapter,

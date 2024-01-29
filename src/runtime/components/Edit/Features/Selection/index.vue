@@ -26,7 +26,7 @@ defineBlokkliFeature({
   description: 'Renders an overlay that highlights the selected blocks.',
 })
 
-const { selection, state, ui, keyboard, eventBus } = useBlokkli()
+const { selection, state, ui, eventBus } = useBlokkli()
 
 const isVisible = computed(
   () =>
