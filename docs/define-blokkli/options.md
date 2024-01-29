@@ -47,7 +47,7 @@ const { options } = defineBlokkli({
   options: {
     box: {
       type: 'checkbox',
-      label: 'Show as box',
+      label: 'Mobile',
       default: '1',
     },
   },
