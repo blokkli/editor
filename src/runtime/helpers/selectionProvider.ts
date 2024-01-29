@@ -36,20 +36,19 @@ const getSelectedAfterStateChange = (
 ): { scroll?: boolean; uuids: string[] } | undefined => {
   const newUuids = newBlocks.map((v) => v.item.uuid)
   const oldUuids = oldBlocks.map((v) => v.item.uuid)
-  const stillExisting = selected.filter((uuid) =>
-    newBlocks.find((v) => v.item.uuid === uuid),
-  )
 
-  if (newBlocks.length !== oldBlocks.length) {
-    const newBlock = newUuids.find((uuid) => !oldUuids.includes(uuid))
-    if (newBlock) {
-      return { uuids: [newBlock], scroll: true }
-    }
+  const newBlock = newUuids.find((uuid) => !oldUuids.includes(uuid))
+  if (newBlock) {
+    return { uuids: [newBlock], scroll: true }
   }
 
   if (selected.length === 0) {
     return
   }
+
+  const stillExisting = selected.filter((uuid) =>
+    newUuids.find((v) => v === uuid),
+  )
 
   // No blocks exist anymore.
   if (stillExisting.length === 0) {
@@ -224,7 +223,6 @@ export default function (
       newBlocks,
       prevBlocks,
     )
-    console.log(result)
 
     if (result) {
       selectedUuids.value = result.uuids
