@@ -50,6 +50,7 @@ export const getEditState = (
 
 const exportState = () => {
   const page = entityStorageManager.getContent('1')
+  // @ts-ignore
   const result = editState.getMutatedState(page, true)
 
   const fields = result.fields.map((v) => {

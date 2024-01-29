@@ -112,7 +112,7 @@ const bundle = computed(() => {
     return
   }
   if (form.value.id === 'block:add') {
-    return form.value.data.type
+    return form.value.data.bundle
   } else if (form.value.id === 'block:edit') {
     return form.value.data.bundle
   } else if (form.value.id === 'block:translate') {
@@ -180,7 +180,7 @@ async function addNewBlock(e: AddNewBlockEvent) {
   if (!state.canEdit.value) {
     return
   }
-  const definition = getDefinition(e.item.itemBundle)
+  const definition = getDefinition(e.bundle)
   if (definition?.editor?.disableEdit) {
     return
   }

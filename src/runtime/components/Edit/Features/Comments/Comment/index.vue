@@ -40,7 +40,9 @@ const props = defineProps<{
   user?: CommentItem['user']
 }>()
 
-const timestamp = computed(() => (props.created ? parseInt(props.created) : 0))
+const timestamp = computed(() =>
+  props.created ? parseInt(props.created.toString()) : 0,
+)
 </script>
 
 <script lang="ts">

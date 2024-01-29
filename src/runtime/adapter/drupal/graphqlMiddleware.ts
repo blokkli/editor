@@ -82,45 +82,47 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         return disabled
       }
 
+    const mapMutation = (v: any) => v.data.state.action
+
     const takeOwnership: DrupalAdapter['takeOwnership'] = () =>
-      useGraphqlMutation('pbTakeOwnership', ctx.value)
+      useGraphqlMutation('pbTakeOwnership', ctx.value).then(mapMutation)
 
     const setHistoryIndex: DrupalAdapter['setHistoryIndex'] = (index) =>
       useGraphqlMutation('pbSetHistoryIndex', {
         ...ctx.value,
         index,
-      })
+      }).then(mapMutation)
 
     const publish: DrupalAdapter['publish'] = () =>
-      useGraphqlMutation('pbPublish', ctx.value)
+      useGraphqlMutation('pbPublish', ctx.value).then(mapMutation)
 
     const importFromExisting: DrupalAdapter['importFromExisting'] = (e) =>
       useGraphqlMutation('pbCopyFromExisting', {
         ...ctx.value,
         sourceUuid: e.sourceUuid,
         fields: e.sourceFields,
-      })
+      }).then(mapMutation)
 
     const revertAllChanges: DrupalAdapter['revertAllChanges'] = () =>
-      useGraphqlMutation('pbRevertAllChanges', ctx.value)
+      useGraphqlMutation('pbRevertAllChanges', ctx.value).then(mapMutation)
 
     const makeBlockReusable: DrupalAdapter['makeBlockReusable'] = (e) =>
       useGraphqlMutation('pbMakeParagraphReusable', {
         ...ctx.value,
         ...e,
-      })
+      }).then(mapMutation)
 
     const duplicateBlocks: DrupalAdapter['duplicateBlocks'] = (uuids) => {
       if (uuids.length === 1) {
         return useGraphqlMutation('pbDuplicateParagraph', {
           ...ctx.value,
           uuid: uuids[0],
-        })
+        }).then(mapMutation)
       }
       return useGraphqlMutation('pbDuplicateMultipleParagraphs', {
         ...ctx.value,
         uuids,
-      })
+      }).then(mapMutation)
     }
 
     const pasteExistingBlocks: DrupalAdapter['pasteExistingBlocks'] = (e) => {
@@ -128,14 +130,14 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         ...ctx.value,
         uuids: e.uuids,
         afterUuid: e.preceedingUuid,
-      })
+      }).then(mapMutation)
     }
 
     const detachReusableBlock: DrupalAdapter['detachReusableBlock'] = (e) => {
       return useGraphqlMutation('pbDetachReusableParagraph', {
         ...ctx.value,
         uuids: e.uuids,
-      })
+      }).then(mapMutation)
     }
 
     const convertBlocks: DrupalAdapter['convertBlocks'] = (
@@ -147,20 +149,20 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
           ...ctx.value,
           uuid: uuids[0],
           targetBundle,
-        })
+        }).then(mapMutation)
       }
       return useGraphqlMutation('pbConvertMultiple', {
         ...ctx.value,
         uuids,
         targetBundle,
-      })
+      }).then(mapMutation)
     }
 
     const deleteBlocks: DrupalAdapter['deleteBlocks'] = (uuids) =>
       useGraphqlMutation('pbDeleteMultipleParagraphs', {
         ...ctx.value,
         uuids,
-      })
+      }).then(mapMutation)
 
     const addLibraryItem: DrupalAdapter['addLibraryItem'] = (e) =>
       useGraphqlMutation('pbAddReusableParagraph', {
@@ -170,7 +172,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         hostUuid: e.host.uuid,
         hostFieldName: e.host.fieldName,
         afterUuid: e.afterUuid,
-      })
+      }).then(mapMutation)
 
     const moveMultipleBlocks: DrupalAdapter['moveMultipleBlocks'] = (e) =>
       useGraphqlMutation('pbMoveMultipleItems', {
@@ -180,7 +182,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         hostUuid: e.host.uuid,
         hostFieldName: e.host.fieldName,
         afterUuid: e.afterUuid,
-      })
+      }).then(mapMutation)
 
     const moveBlock: DrupalAdapter['moveBlock'] = (e) =>
       useGraphqlMutation('pbMoveParagraph', {
@@ -190,7 +192,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         hostUuid: e.host.uuid,
         hostFieldName: e.host.fieldName,
         afterUuid: e.afterUuid,
-      })
+      }).then(mapMutation)
 
     const addNewBlock: DrupalAdapter['addNewBlock'] = (e) =>
       useGraphqlMutation('pbAddParagraph', {
@@ -199,8 +201,8 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         hostFieldName: e.host.fieldName,
         hostUuid: e.host.uuid,
         afterUuid: e.afterUuid,
-        type: e.type,
-      })
+        type: e.bundle,
+      }).then(mapMutation)
 
     const updateOptions: DrupalAdapter['updateOptions'] = (options) => {
       if (options.length === 1) {
@@ -210,7 +212,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
           key: options[0].key,
           value: options[0].value,
           pluginId: 'paragraph_builder_data',
-        })
+        }).then(mapMutation)
       }
       const persistItems = options.map((v) => {
         return {
@@ -223,7 +225,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
       return useGraphqlMutation('pbBulkUpdateParagraphBehaviorSettings', {
         ...ctx.value,
         items: persistItems,
-      })
+      }).then(mapMutation)
     }
 
     const mapState: DrupalAdapter['mapState'] = (state) => {
@@ -391,7 +393,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
       useGraphqlMutation('pbApplyTransformPlugin', {
         ...ctx.value,
         ...e,
-      })
+      }).then(mapMutation)
 
     const buildFormUrl = (parts: string | string[]) => {
       const prefix = `$PREFIX$`
@@ -407,7 +409,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
           entityType,
           ctx.value.entityUuid,
           'add',
-          e.data.type,
+          e.data.bundle,
           e.data.host.type,
           e.data.host.uuid,
           e.data.host.fieldName,
@@ -447,7 +449,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         uuid: e.uuid,
         fieldName: e.fieldName,
         value: e.fieldValue,
-      })
+      }).then(mapMutation)
 
     const buildEditableFrameUrl: DrupalAdapter['buildEditableFrameUrl'] = (
       e,
