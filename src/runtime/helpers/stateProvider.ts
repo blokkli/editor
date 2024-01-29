@@ -34,7 +34,7 @@ export type BlokkliOwner = {
   currentUserIsOwner: boolean
 }
 
-type RenderedBlock = {
+export type RenderedBlock = {
   item: FieldListItem
   parentEntityType: string
   parentEntityBundle: String

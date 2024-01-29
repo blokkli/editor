@@ -16,6 +16,7 @@ import {
   onMounted,
   onBeforeUnmount,
   ref,
+  computed,
 } from '#imports'
 import Palette from './Palette/index.vue'
 
@@ -27,7 +28,7 @@ defineBlokkliFeature({
     'Provides a command palette with search to access most UI features with a keyboard.',
 })
 
-const { eventBus } = useBlokkli()
+const { eventBus, keyboard, $t } = useBlokkli()
 
 const isVisible = ref(false)
 
@@ -38,12 +39,23 @@ const onKeyPressed = (e: KeyPressedEvent) => {
   }
 }
 
+const shortcut = computed(() => {
+  return {
+    meta: true,
+    code: 'k',
+    label: $t('commandPalette.open', 'Open Command Palette'),
+    group: 'general',
+  }
+})
+
 onMounted(() => {
   eventBus.on('keyPressed', onKeyPressed)
+  keyboard.registerShortcut(shortcut.value)
 })
 
 onBeforeUnmount(() => {
   eventBus.off('keyPressed', onKeyPressed)
+  keyboard.unregisterShortcut(shortcut.value)
 })
 </script>
 

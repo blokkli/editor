@@ -240,7 +240,7 @@ const onAddListChange = () => {
   })
 }
 
-const getBundlesForCommands = () => {
+const getBundlesForAppendCommands = () => {
   if (selection.blocks.value.length !== 1) {
     return []
   }
@@ -270,6 +270,69 @@ const getBundlesForCommands = () => {
 
   return []
 }
+
+const getAppendEndCommands = (): Command[] => {
+  if (selection.blocks.value.length !== 0) {
+    return []
+  }
+
+  const fields = types.fieldConfig.value.filter(
+    (v) =>
+      v.entityType === context.value.entityType &&
+      v.entityBundle === context.value.entityBundle,
+  )
+
+  return fields.flatMap((field) => {
+    if (field.cardinality !== -1) {
+      const mutatedField = state.mutatedFields.value.find(
+        (v) => v.name === field.name && v.entityType === field.entityType,
+      )
+      if (mutatedField) {
+        // No more blocks allowed.
+        if (mutatedField.list.length >= field.cardinality) {
+          return []
+        }
+      }
+    }
+    return field.allowedBundles
+      .filter((v) => v !== 'from_library')
+      .map((bundle) => {
+        const definition = types.allTypes.value.find((v) => v.id === bundle)
+        return {
+          id: 'block_add_list:append_end:' + bundle + field.name,
+          label: `Append ${definition?.label || bundle} in ${field.label}`,
+          group: 'add',
+          bundle,
+          callback: () => commandCallbackAppendEnd(bundle, field.name),
+        }
+      })
+  })
+}
+
+const commandCallbackAppendEnd = (bundle: string, fieldName: string) => {
+  const field = state.mutatedFields.value.find(
+    (v) =>
+      v.name === fieldName &&
+      v.entityType === context.value.entityType &&
+      v.entityUuid === context.value.entityUuid,
+  )
+
+  if (!field) {
+    return
+  }
+
+  const afterUuid = field.list[field.list.length - 1]?.uuid || undefined
+  eventBus.emit('block:append', {
+    bundle,
+    afterUuid,
+    host: {
+      type: context.value.entityType,
+      uuid: context.value.entityUuid,
+      fieldName,
+    },
+  })
+}
+
 const commandCallbackInsert = (bundle: string, fieldName: string) => {
   const block = selection.blocks.value[0]
   const field = state.mutatedFields.value.find(
@@ -330,8 +393,8 @@ const commandCallbackAppend = (bundle: string) => {
   })
 }
 
-const commandProvider = (): Command[] => {
-  const append: Command[] = getBundlesForCommands().map((bundle) => {
+const getAppendCommands = (): Command[] => {
+  return getBundlesForAppendCommands().map((bundle) => {
     const definition = types.allTypes.value.find((v) => v.id === bundle)
     return {
       id: 'block_add_list:append:' + bundle,
@@ -341,8 +404,14 @@ const commandProvider = (): Command[] => {
       callback: () => commandCallbackAppend(bundle),
     }
   })
+}
 
-  return [...append, ...getInsertCommands()]
+const commandProvider = (): Command[] => {
+  return [
+    ...getAppendCommands(),
+    ...getInsertCommands(),
+    ...getAppendEndCommands(),
+  ]
 }
 
 onMounted(() => {

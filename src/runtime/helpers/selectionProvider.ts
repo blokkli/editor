@@ -23,7 +23,50 @@ import {
 } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import type { DomProvider } from './domProvider'
-import type { StateProvider } from './stateProvider'
+import type { RenderedBlock, StateProvider } from './stateProvider'
+import { nextTick } from 'process'
+
+/**
+ * Determine which blocks should be selected when the state changes.
+ */
+const getSelectedAfterStateChange = (
+  selected: string[],
+  newBlocks: RenderedBlock[],
+  oldBlocks: RenderedBlock[],
+): { scroll?: boolean; uuids: string[] } | undefined => {
+  const newUuids = newBlocks.map((v) => v.item.uuid)
+  const oldUuids = oldBlocks.map((v) => v.item.uuid)
+  const stillExisting = selected.filter((uuid) =>
+    newBlocks.find((v) => v.item.uuid === uuid),
+  )
+
+  if (newBlocks.length !== oldBlocks.length) {
+    const newBlock = newUuids.find((uuid) => !oldUuids.includes(uuid))
+    if (newBlock) {
+      return { uuids: [newBlock], scroll: true }
+    }
+  }
+
+  if (selected.length === 0) {
+    return
+  }
+
+  // No blocks exist anymore.
+  if (stillExisting.length === 0) {
+    // Only one block was selected.
+    if (selected.length === 1) {
+      const index = oldBlocks.findIndex((v) => v.item.uuid === selected[0])
+      if (index !== -1) {
+        const previousUuid = oldBlocks[index - 1]?.item.uuid
+        if (previousUuid) {
+          return { uuids: [previousUuid], scroll: true }
+        }
+      }
+    }
+  }
+
+  return { scroll: true, uuids: stillExisting }
+}
 
 /**
  * Determine which blocks to select when the user is clicking on a block with the shift key.
@@ -174,6 +217,26 @@ export default function (
   const isMultiSelecting = ref(false)
 
   const isDragging = computed(() => !!draggingMode.value)
+
+  watch(state.renderedBlocks, (newBlocks, prevBlocks) => {
+    const result = getSelectedAfterStateChange(
+      selectedUuids.value,
+      newBlocks,
+      prevBlocks,
+    )
+
+    if (result) {
+      selectedUuids.value = result.uuids
+      if (result.scroll && selectedUuids.value.length) {
+        nextTick(() => {
+          eventBus.emit('scrollIntoView', {
+            uuid: result.uuids[0],
+            center: true,
+          })
+        })
+      }
+    }
+  })
 
   const blocks = computed<DraggableExistingBlock[]>(() =>
     selectedUuids.value

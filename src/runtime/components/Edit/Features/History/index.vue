@@ -18,10 +18,7 @@
             'is-applied': item.index < currentMutationIndex,
           }"
         >
-          <button
-            :disabled="!canEdit"
-            @click="setHistoryIndex(item.index, item)"
-          >
+          <button :disabled="!canEdit" @click="setHistoryIndex(item.index)">
             <div>
               <div>
                 <strong>{{ item.mutation.plugin?.label }}</strong>
@@ -104,7 +101,6 @@ import {
   ref,
   computed,
   useBlokkli,
-  nextTick,
   watch,
   defineBlokkliFeature,
   onMounted,
@@ -174,16 +170,9 @@ const mapped = computed<HistoryItem[]>(() =>
     }),
 )
 
-async function setHistoryIndex(index: number, item?: HistoryItem) {
+async function setHistoryIndex(index: number) {
   if (index !== currentMutationIndex.value) {
-    const affected = item?.mutation?.plugin?.affectedItemUuid
     await mutateWithLoadingState(adapter.setHistoryIndex(index))
-    if (affected) {
-      nextTick(() => {
-        eventBus.emit('select', affected)
-        eventBus.emit('scrollIntoView', { uuid: affected })
-      })
-    }
   }
 }
 
