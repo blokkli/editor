@@ -52,3 +52,15 @@
 .debug-rect {
   @apply fixed bg-accent-700/10 border border-accent-700 z-[999999999999] pointer-events-none;
 }
+
+.bk-debug-icons {
+  @apply grid grid-cols-4 gap-15 text-xs text-center;
+
+  .bk-icon {
+    @apply p-10;
+  }
+
+  svg {
+    @apply w-full aspect-square h-auto;
+  }
+}

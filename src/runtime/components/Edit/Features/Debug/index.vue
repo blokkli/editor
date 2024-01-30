@@ -65,6 +65,16 @@
       </section>
 
       <section>
+        <h2>Icons</h2>
+        <div class="bk-debug-icons">
+          <div v-for="icon in iconItems" :key="icon">
+            <Icon :name="icon" />
+            <p>{{ icon }}</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
         <h2>Features</h2>
         <div class="bk-debug-features">
           <div v-for="feature in featuresList" :key="feature.id">
@@ -120,6 +130,8 @@ import {
   computed,
 } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
+import { Icon } from '#blokkli/components'
+import { icons } from '#blokkli/icons'
 import type { KeyPressedEvent, Rectangle } from '#blokkli/types'
 import { featureComponents } from '#blokkli-runtime/features'
 
@@ -139,6 +151,8 @@ const artboardScrollMultiplier = storage.use('artboardScrollMultiplier', 1)
 const viewportBlockingRects = computed(() =>
   ui.viewportBlockingRects.value.map(rectToStyle),
 )
+
+const iconItems = computed(() => Object.keys(icons))
 
 const rectToStyle = (rect: Rectangle) => {
   return {
