@@ -105,7 +105,7 @@ const groupOrder = computed<CommandGroup[]>(() => {
   if (selection.uuids.value.length) {
     return ['selection', 'add']
   }
-  return []
+  return ['add']
 })
 
 const items = computed<Array<Command & { _id: number }>>(() =>

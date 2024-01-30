@@ -3,6 +3,18 @@ msgstr ""
 "Language: de\n"
 "Content-Type: text/plain\n"
 
+msgctxt "addBlockCommand.appendInField"
+msgid "Append \"@block\" in \"@field\""
+msgstr "«@block» in «@field» anfügen"
+
+msgctxt "addBlockCommand.appendRoot"
+msgid "Append \"@block\""
+msgstr "«@block» anfügen"
+
+msgctxt "addBlockCommand.insertInField"
+msgid "Insert \"@block\" into \"@field\""
+msgstr "«@block» in «@field» einfügen"
+
 msgctxt "addCommentToItem"
 msgid "Comment"
 msgstr "Kommentieren"
@@ -145,6 +157,10 @@ msgstr "Oberfläche"
 msgctxt "commandPalette.inputPlaceholder"
 msgid "Search commands..."
 msgstr "Aktionen durchsuchen..."
+
+msgctxt "commandPalette.open"
+msgid "Open Command Palette"
+msgstr "Befehle öffnen"
 
 msgctxt "commentAdd"
 msgid "Add comment"
@@ -476,6 +492,10 @@ msgctxt "multipleItemsLabel"
 msgid "Items"
 msgstr "Elemente"
 
+msgctxt "optionsCommand.setOption"
+msgid "Set option \"@option\" to \"@value\""
+msgstr "Option «@option» «@value» setzen"
+
 msgctxt "ownershipError"
 msgid "Error in assigning"
 msgstr "Fehler beim Zuweisen"
@@ -641,11 +661,11 @@ msgid "UI"
 msgstr "Oberfläche"
 
 msgctxt "sidebar.hide"
-msgid "Hide \"@title\""
+msgid "Hide @title"
 msgstr "@title ausblenden"
 
 msgctxt "sidebar.show"
-msgid "Show \"@title\""
+msgid "Show @title"
 msgstr "@title anzeigen"
 
 msgctxt "singleComment"

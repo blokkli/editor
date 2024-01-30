@@ -145,7 +145,10 @@ const visibleOptions = computed(() => {
 
   const allOptions = availableOptions.value.reduce<Record<string, string>>(
     (acc, v) => {
-      acc[v.property] = v.value
+      acc[v.property] =
+        v.value === undefined || v.value === null
+          ? getOptionValue(v.property, v.option.default)
+          : v.value
       return acc
     },
     {},
@@ -222,8 +225,8 @@ const commandProvider = (): Command[] => {
             )
               .replace('@option', option.option.label)
               .replace('@value', key),
-            group: 'options',
-            icon: 'palette',
+            group: 'selection',
+            icon: 'form',
             callback: () => setOptionValue(option.property, key),
           }
 
@@ -238,8 +241,8 @@ const commandProvider = (): Command[] => {
           )
             .replace('@option', option.option.label)
             .replace('@value', option.value === '1' ? 'false' : 'true'),
-          group: 'options',
-          icon: 'palette',
+          group: 'selection',
+          icon: 'form',
           callback: () =>
             setOptionValue(option.property, option.value === '1' ? '0' : '1'),
         }

@@ -1,4 +1,16 @@
 {
+  "addBlockCommand.appendInField": {
+    "source": "Append \"@block\" in \"@field\"",
+    "translation": "«@block» in «@field» anfügen"
+  },
+  "addBlockCommand.appendRoot": {
+    "source": "Append \"@block\"",
+    "translation": "«@block» anfügen"
+  },
+  "addBlockCommand.insertInField": {
+    "source": "Insert \"@block\" into \"@field\"",
+    "translation": "«@block» in «@field» einfügen"
+  },
   "addCommentToItem": {
     "source": "Comment",
     "translation": "Kommentieren"
@@ -130,6 +142,10 @@
   "commandPalette.inputPlaceholder": {
     "source": "Search commands...",
     "translation": "Aktionen durchsuchen..."
+  },
+  "commandPalette.open": {
+    "source": "Open Command Palette",
+    "translation": "Befehle öffnen"
   },
   "commentAdd": {
     "source": "Add comment",
@@ -447,6 +463,10 @@
     "source": "Items",
     "translation": "Elemente"
   },
+  "optionsCommand.setOption": {
+    "source": "Set option \"@option\" to \"@value\"",
+    "translation": "Option «@option» «@value» setzen"
+  },
   "ownershipError": {
     "source": "Error in assigning",
     "translation": "Fehler beim Zuweisen"
@@ -604,11 +624,11 @@
     "translation": "Oberfläche"
   },
   "sidebar.hide": {
-    "source": "Hide \"@title\"",
+    "source": "Hide @title",
     "translation": "@title ausblenden"
   },
   "sidebar.show": {
-    "source": "Show \"@title\"",
+    "source": "Show @title",
     "translation": "@title anzeigen"
   },
   "singleComment": {

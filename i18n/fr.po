@@ -3,6 +3,18 @@ msgstr ""
 "Language: fr\n"
 "Content-Type: text/plain\n"
 
+msgctxt "addBlockCommand.appendInField"
+msgid "Append \"@block\" in \"@field\""
+msgstr ""
+
+msgctxt "addBlockCommand.appendRoot"
+msgid "Append \"@block\""
+msgstr ""
+
+msgctxt "addBlockCommand.insertInField"
+msgid "Insert \"@block\" into \"@field\""
+msgstr ""
+
 msgctxt "addCommentToItem"
 msgid "Comment"
 msgstr "Commenter"
@@ -149,6 +161,10 @@ msgstr ""
 
 msgctxt "commandPalette.inputPlaceholder"
 msgid "Search commands..."
+msgstr ""
+
+msgctxt "commandPalette.open"
+msgid "Open Command Palette"
 msgstr ""
 
 msgctxt "commentAdd"
@@ -479,6 +495,10 @@ msgctxt "multipleItemsLabel"
 msgid "Items"
 msgstr "Éléments"
 
+msgctxt "optionsCommand.setOption"
+msgid "Set option \"@option\" to \"@value\""
+msgstr ""
+
 msgctxt "ownershipError"
 msgid "Error in assigning"
 msgstr "Erreur lors de l’attribution"
@@ -644,11 +664,11 @@ msgid "UI"
 msgstr ""
 
 msgctxt "sidebar.hide"
-msgid "Hide \"@title\""
+msgid "Hide @title"
 msgstr ""
 
 msgctxt "sidebar.show"
-msgid "Show \"@title\""
+msgid "Show @title"
 msgstr ""
 
 msgctxt "singleComment"
