@@ -199,21 +199,6 @@ mutation pbDeleteParagraph(
   }
 }
 
-mutation pbDeleteAllParagraphs(
-  $entityType: EntityType!
-  $entityUuid: String!
-  $langcode: String
-) {
-  state: paragraphsEditMutationState(
-    entityType: $entityType
-    entityUuid: $entityUuid
-  ) {
-    action: delete_all_paragraphs {
-      ...paragraphsBuilderMutationResult
-    }
-  }
-}
-
 mutation pbDeleteMultipleParagraphs(
   $entityType: EntityType!
   $entityUuid: String!
