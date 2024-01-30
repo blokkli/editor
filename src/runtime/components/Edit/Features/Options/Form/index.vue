@@ -55,13 +55,11 @@ import OptionRadios from './Radios/index.vue'
 import OptionCheckbox from './Checkbox/index.vue'
 import OptionCheckboxes from './Checkboxes/index.vue'
 import OptionText from './Text/index.vue'
-import type {
-  BlockDefinitionInput,
-  BlockDefinitionOptionsInput,
-} from '#blokkli/types'
+import type { BlockDefinitionOptionsInput, Command } from '#blokkli/types'
 import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
 
-const { adapter, eventBus, state, selection, runtimeConfig } = useBlokkli()
+const { adapter, eventBus, state, selection, runtimeConfig, commands, $t } =
+  useBlokkli()
 const { mutatedOptions, canEdit, mutateWithLoadingState, editMode } = state
 
 const onClick = () => {
@@ -205,7 +203,55 @@ function setOptionValue(key: string, value: string) {
   })
 }
 
+const commandProvider = (): Command[] => {
+  return visibleOptions.value
+    .flatMap((option) => {
+      if (option.option.type === 'text') {
+        return
+      }
+      if (
+        option.option.type === 'radios' ||
+        option.option.type === 'checkboxes'
+      ) {
+        return Object.keys(option.option.options).map((key) => {
+          const command: Command = {
+            id: 'options:' + option.property + option.option.type + key,
+            label: $t(
+              'optionsCommand.setOption',
+              'Set option "@option" to "@value"',
+            )
+              .replace('@option', option.option.label)
+              .replace('@value', key),
+            group: 'options',
+            icon: 'palette',
+            callback: () => setOptionValue(option.property, key),
+          }
+
+          return command
+        })
+      } else if (option.option.type === 'checkbox') {
+        const command: Command = {
+          id: 'options:' + option.property + ':toggle',
+          label: $t(
+            'optionsCommand.setOption',
+            'Set option "@option" to "@value"',
+          )
+            .replace('@option', option.option.label)
+            .replace('@value', option.value === '1' ? 'false' : 'true'),
+          group: 'options',
+          icon: 'palette',
+          callback: () =>
+            setOptionValue(option.property, option.value === '1' ? '0' : '1'),
+        }
+
+        return command
+      }
+    })
+    .filter(falsy)
+}
+
 onMounted(() => {
+  commands.add(commandProvider)
   props.uuids.forEach((uuid) => {
     availableOptions.value.forEach((option) => {
       original.set(uuid, option.property, option.value)
@@ -215,6 +261,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   selection.isChangingOptions.value = false
+  commands.remove(commandProvider)
   const values = updated
     .getEntries()
     .map((entry) => {

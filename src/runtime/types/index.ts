@@ -1007,7 +1007,13 @@ export type KeyboardShortcut = {
   label: string
 }
 
-export type CommandGroup = 'ui' | 'selection' | 'add' | 'action' | 'misc'
+export type CommandGroup =
+  | 'ui'
+  | 'selection'
+  | 'add'
+  | 'action'
+  | 'misc'
+  | 'options'
 
 export type Command = {
   id: string

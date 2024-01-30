@@ -300,7 +300,12 @@ const getAppendEndCommands = (): Command[] => {
         const definition = types.allTypes.value.find((v) => v.id === bundle)
         return {
           id: 'block_add_list:append_end:' + bundle + field.name,
-          label: `Append ${definition?.label || bundle} in ${field.label}`,
+          label: $t(
+            'addBlockCommand.appendInField',
+            'Append "@block" in "@field"',
+          )
+            .replace('@block', definition?.label || bundle)
+            .replace('@field', field.label),
           group: 'add',
           bundle,
           callback: () => commandCallbackAppendEnd(bundle, field.name),
@@ -371,7 +376,12 @@ const getInsertCommands = (): Command[] => {
         types.allTypes.value.find((v) => v.id === bundle)?.label || bundle
       return {
         id: 'block_add_list:insert:' + field.name + ':' + bundle,
-        label: `Insert ${label} into "${field.label}"`,
+        label: $t(
+          'addBlockCommand.insertInField',
+          'Insert "@block" into "@field"',
+        )
+          .replace('@block', label)
+          .replace('@field', field.label),
         group: 'add',
         bundle,
         callback: () => commandCallbackInsert(bundle, field.name),
@@ -398,7 +408,10 @@ const getAppendCommands = (): Command[] => {
     const definition = types.allTypes.value.find((v) => v.id === bundle)
     return {
       id: 'block_add_list:append:' + bundle,
-      label: `Append ${definition?.label || bundle}`,
+      label: $t('addBlockCommand.appendRoot', 'Append "@block"').replace(
+        '@block',
+        definition?.label || bundle,
+      ),
       group: 'add',
       bundle,
       callback: () => commandCallbackAppend(bundle),

@@ -30,31 +30,42 @@ import type { Command } from '#blokkli/types'
 
 const props = defineProps<{
   label: string
-  commands: Command[]
-  text: string
+  commands: Array<Command & { _id: number }>
+  visibleIds: number[] | undefined
   regex?: RegExp
   focusedId: string
 }>()
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'close'): void
   (e: 'focus', id: string): void
   (e: 'select', id: string): void
 }>()
 
 const mapped = computed(() => {
-  return props.commands.map((v) => {
-    return {
-      ...v,
-      visible: v.label.toLowerCase().includes(props.text),
-    }
-  })
+  return props.commands
+    .map((v) => {
+      return {
+        ...v,
+        visible:
+          props.visibleIds === undefined || props.visibleIds.includes(v._id),
+      }
+    })
+    .sort((a, b) => {
+      const indexA = props.visibleIds?.indexOf(a._id) || -1
+      const indexB = props.visibleIds?.indexOf(b._id) || -1
+
+      if (indexA === -1 && indexB === -1) {
+        return 0
+      } else if (indexA === -1) {
+        return 1
+      } else if (indexB === -1) {
+        return -1
+      }
+
+      return indexA - indexB
+    })
 })
 
 const shouldRender = computed(() => mapped.value.some((v) => v.visible))
-
-const onClick = (command: Command) => {
-  command.callback()
-  emit('close')
-}
 </script>

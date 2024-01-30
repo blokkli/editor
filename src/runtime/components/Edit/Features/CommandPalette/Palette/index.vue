@@ -22,7 +22,7 @@
         :key="group.id"
         :label="group.label"
         :commands="group.commands"
-        :text="text"
+        :visible-ids="visibleIds"
         :regex="regex"
         :focused-id="focusedId"
         @close="$emit('close')"
@@ -46,6 +46,7 @@ import {
 import { Icon } from '#blokkli/components'
 import type { Command, CommandGroup } from '#blokkli/types'
 import Group from './Group/index.vue'
+import FlexSearch from 'flexsearch'
 import { falsy } from '#blokkli/helpers'
 
 const { commands, $t, selection } = useBlokkli()
@@ -107,7 +108,36 @@ const groupOrder = computed<CommandGroup[]>(() => {
   return []
 })
 
-const items = computed(() => commands.getCommands().filter((v) => !v.disabled))
+const items = computed<Array<Command & { _id: number }>>(() =>
+  commands
+    .getCommands()
+    .filter((v) => !v.disabled)
+    .map((doc, index) => {
+      return {
+        ...doc,
+        _id: index,
+      }
+    }),
+)
+
+const index = new FlexSearch.Index({ preset: 'match', tokenize: 'full' })
+
+items.value.forEach((item) => {
+  index.add(item._id, item.label)
+})
+
+const visibleIds = computed<number[] | undefined>(() => {
+  if (!text.value) {
+    return undefined
+  }
+
+  return index.search(text.value).map((v) => {
+    if (typeof v === 'number') {
+      return v
+    }
+    return parseInt(v)
+  })
+})
 
 const groups = computed<GroupedCommands[]>(() => {
   return Object.values(
