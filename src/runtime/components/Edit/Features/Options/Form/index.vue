@@ -160,12 +160,17 @@ const visibleOptions = computed(() => {
       ? renderedBlock.parentEntityBundle
       : undefined
 
+  const ctxProps =
+    renderedBlock?.item.bundle === 'from_library'
+      ? (renderedBlock.item.props as any)?.libraryItem?.block?.props
+      : renderedBlock?.item.props
+
   const visibleKeys: string[] =
     // We have to cast to any here because the types are guaranteed to be correct.
     definition.value?.editor?.determineVisibleOptions({
       options: allOptions as any,
       parentType: parentType as any,
-      props: (renderedBlock?.item.props || {}) as any,
+      props: ctxProps as any,
     })
 
   return availableOptions.value.filter((v) => visibleKeys.includes(v.property))
