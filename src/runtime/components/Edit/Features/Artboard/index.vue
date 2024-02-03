@@ -7,15 +7,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { ScrollIntoViewEvent } from '#blokkli/types'
-import {
-  computed,
-  useBlokkli,
-  onMounted,
-  onBeforeUnmount,
-  watch,
-  defineBlokkliFeature,
-} from '#imports'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import ArtboardManager from './Manager/index.vue'
 
 const { settings } = defineBlokkliFeature({
@@ -63,16 +56,16 @@ const { settings } = defineBlokkliFeature({
   screenshot: 'feature-artboard.jpg',
 })
 
-const { ui, eventBus, dom } = useBlokkli()
+const { ui, dom } = useBlokkli()
 
 const useArtboard = computed(
   () => settings.value.useArtboard === 'yes' && !ui.isMobile.value,
 )
 
-/**
- * Handler is only executed when the artboard is not mounted.
- */
-const onScrollIntoView = (e: ScrollIntoViewEvent) => {
+onBlokkliEvent('scrollIntoView', (e) => {
+  if (!useArtboard.value) {
+    return
+  }
   const item = dom.findBlock(e.uuid)
   if (!item) {
     return
@@ -87,20 +80,6 @@ const onScrollIntoView = (e: ScrollIntoViewEvent) => {
   options.behavior = e.immediate ? 'instant' : 'smooth'
 
   item.element().scrollIntoView(options)
-}
-
-const setFallback = () => {
-  eventBus.off('scrollIntoView', onScrollIntoView)
-  if (!useArtboard.value) {
-    eventBus.on('scrollIntoView', onScrollIntoView)
-  }
-}
-
-watch(useArtboard, () => setFallback())
-onMounted(() => setFallback())
-
-onBeforeUnmount(() => {
-  eventBus.off('scrollIntoView', onScrollIntoView)
 })
 </script>
 

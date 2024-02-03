@@ -10,8 +10,6 @@
 import {
   computed,
   ref,
-  onMounted,
-  onBeforeUnmount,
   useBlokkli,
   watch,
   defineBlokkliFeature,
@@ -20,8 +18,8 @@ import Overlay from './Overlay/index.vue'
 import type {
   BlokkliEditableDirectiveArgs,
   DraggableExistingBlock,
-  EditableFieldFocusEvent,
 } from '#blokkli/types'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 defineBlokkliFeature({
   id: 'editable-field',
@@ -40,7 +38,7 @@ type Editable = {
   value?: string
 }
 
-const { eventBus, selection, adapter, dom } = useBlokkli()
+const { selection, adapter, dom } = useBlokkli()
 const editable = ref<Editable | null>(null)
 const hasTransition = ref(false)
 
@@ -85,26 +83,18 @@ const buildEditable = (
   }
 }
 
-const onEditableFocus = (e: EditableFieldFocusEvent) => {
+onBlokkliEvent('editable:focus', (e) => {
   hasTransition.value = !editable.value
   editable.value = buildEditable(e.fieldName, e.uuid) || null
   if (editable.value) {
     selection.editableActive.value = true
   }
-}
+})
 
 watch(selection.editableActive, (isActive) => {
   if (!isActive) {
     hasTransition.value = true
     editable.value = null
   }
-})
-
-onMounted(() => {
-  eventBus.on('editable:focus', onEditableFocus)
-})
-
-onBeforeUnmount(() => {
-  eventBus.off('editable:focus', onEditableFocus)
 })
 </script>

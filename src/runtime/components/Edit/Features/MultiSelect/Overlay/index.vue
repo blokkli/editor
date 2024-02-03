@@ -37,11 +37,11 @@
 
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
-
-import type { AnimationFrameEvent, DraggableStyle } from '#blokkli/types'
+import type { DraggableStyle } from '#blokkli/types'
 import type { Rectangle } from '#blokkli/types'
 import { intersects } from '#blokkli/helpers'
 import Item from './Item/index.vue'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { keyboard, eventBus, ui, dom, theme } = useBlokkli()
 
@@ -128,7 +128,7 @@ const blocks = computed(() =>
   }),
 )
 
-function onAnimationFrame(e: AnimationFrameEvent) {
+onBlokkliEvent('animationFrame', (e) => {
   viewportWidth.value = window.innerWidth
   viewportHeight.value = window.innerHeight
   const anchorRect = getAnchorRect()
@@ -179,7 +179,7 @@ function onAnimationFrame(e: AnimationFrameEvent) {
     width: bx - ax,
     height: by - ay,
   }
-}
+})
 
 onMounted(() => {
   const artboard = ui.artboardElement()
@@ -190,12 +190,10 @@ onMounted(() => {
   anchorX.value = (newX - artboardRect.left) / scale
   anchorY.value = (newY - artboardRect.top) / scale
 
-  eventBus.on('animationFrame', onAnimationFrame)
   eventBus.emit('select:start')
 })
 
 onBeforeUnmount(() => {
-  eventBus.off('animationFrame', onAnimationFrame)
   emitSelected()
 })
 </script>

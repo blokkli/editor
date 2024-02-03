@@ -9,14 +9,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { KeyPressedEvent } from '#blokkli/types'
-import {
-  computed,
-  useBlokkli,
-  defineBlokkliFeature,
-  onMounted,
-  onBeforeUnmount,
-} from '#imports'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import Overlay from './Overlay/index.vue'
 
 defineBlokkliFeature({
@@ -37,18 +31,10 @@ const isVisible = computed(
     !ui.isAnimating.value,
 )
 
-const onKeyPressed = (e: KeyPressedEvent) => {
+onBlokkliEvent('keyPressed', (e) => {
   if (e.code === 'Escape') {
     eventBus.emit('select:end')
   }
-}
-
-onMounted(() => {
-  eventBus.on('keyPressed', onKeyPressed)
-})
-
-onBeforeUnmount(() => {
-  eventBus.off('keyPressed', onKeyPressed)
 })
 </script>
 

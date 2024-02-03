@@ -49,9 +49,10 @@
 </template>
 
 <script lang="ts" setup>
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { onMounted, useBlokkli, onBeforeUnmount, computed } from '#imports'
 
-const { ui, selection, eventBus, storage } = useBlokkli()
+const { ui, selection, storage } = useBlokkli()
 
 const showToolbar = computed(
   () =>
@@ -73,8 +74,6 @@ const focusedSidebar = storage.use('sidebar:focused', '')
 
 const emit = defineEmits(['loaded'])
 
-const onSidebarClose = () => (activeSidebarRight.value = '')
-
 const onWindowMouseDown = (e: MouseEvent) => {
   if (e.target instanceof HTMLElement || e.target instanceof SVGElement) {
     if (!e.target.closest('.bk-sidebar-detached')) {
@@ -83,14 +82,14 @@ const onWindowMouseDown = (e: MouseEvent) => {
   }
 }
 
+onBlokkliEvent('sidebar:close', () => (activeSidebarRight.value = ''))
+
 onMounted(() => {
   emit('loaded')
-  eventBus.on('sidebar:close', onSidebarClose)
   document.documentElement.addEventListener('mousedown', onWindowMouseDown)
 })
 
 onBeforeUnmount(() => {
-  eventBus.off('sidebar:close', onSidebarClose)
   document.documentElement.removeEventListener('mousedown', onWindowMouseDown)
 })
 </script>

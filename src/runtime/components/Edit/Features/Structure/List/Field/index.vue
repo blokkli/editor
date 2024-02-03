@@ -50,10 +50,10 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, computed, onMounted, onBeforeUnmount } from '#imports'
+import { useBlokkli, computed } from '#imports'
 import { ItemIcon } from '#blokkli/components'
 import type { StructureTreeField } from './../types'
-import type { ScrollIntoViewEvent } from '#blokkli/types'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { selection, eventBus, ui } = useBlokkli()
 
@@ -73,7 +73,7 @@ defineProps<{
   fields?: StructureTreeField[]
 }>()
 
-const onScrollIntoView = (e: ScrollIntoViewEvent) => {
+onBlokkliEvent('scrollIntoView', (e) => {
   const el = document.querySelector(`[data-blokkli-structure-uuid="${e.uuid}"]`)
   if (el instanceof HTMLElement) {
     el.scrollIntoView({
@@ -82,13 +82,5 @@ const onScrollIntoView = (e: ScrollIntoViewEvent) => {
     })
     el.focus()
   }
-}
-
-onMounted(() => {
-  eventBus.on('scrollIntoView', onScrollIntoView)
-})
-
-onBeforeUnmount(() => {
-  eventBus.off('scrollIntoView', onScrollIntoView)
 })
 </script>

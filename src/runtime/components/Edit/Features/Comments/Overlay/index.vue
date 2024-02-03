@@ -17,11 +17,11 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
-
-import type { CommentItem, AnimationFrameEvent } from '#blokkli/types'
+import { ref, useBlokkli } from '#imports'
+import type { CommentItem } from '#blokkli/types'
 import { falsy, getBounds } from '#blokkli/helpers'
 import Item from './Item/index.vue'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { eventBus, ui, dom } = useBlokkli()
 
@@ -59,7 +59,7 @@ type Indicator = {
 
 const indicators = ref<Indicator[]>([])
 
-function onAnimationFrame(e: AnimationFrameEvent) {
+onBlokkliEvent('animationFrame', (e) => {
   const scale = ui.getArtboardScale()
   const artboardEl = ui.artboardElement()
   const artboardRect = artboardEl.getBoundingClientRect()
@@ -122,13 +122,5 @@ function onAnimationFrame(e: AnimationFrameEvent) {
     }
   }
   indicators.value = Object.values(newIndicators)
-}
-
-onMounted(() => {
-  eventBus.on('animationFrame', onAnimationFrame)
-})
-
-onBeforeUnmount(() => {
-  eventBus.off('animationFrame', onAnimationFrame)
 })
 </script>

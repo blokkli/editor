@@ -8,7 +8,7 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
-import type { KeyPressedEvent } from '#blokkli/types'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const props = defineProps<{
   group?: string
@@ -21,7 +21,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['pressed'])
 
-const { eventBus, state, keyboard } = useBlokkli()
+const { state, keyboard } = useBlokkli()
 
 const key = computed(() =>
   [props.meta, props.shift, props.keyCode.toLowerCase()].join('-'),
@@ -41,7 +41,17 @@ const keyLabel = computed(() => {
   return props.keyCode.toUpperCase()
 })
 
-function onKeyPressed(e: KeyPressedEvent) {
+const shortcut = computed(() => {
+  return {
+    meta: props.meta,
+    shift: props.shift,
+    code: props.keyCode,
+    label: props.label,
+    group: props.group,
+  }
+})
+
+onBlokkliEvent('keyPressed', (e) => {
   const checkKey = [e.meta, e.shift, e.code.toLowerCase()].join('-')
   if (key.value !== checkKey) {
     return
@@ -53,29 +63,17 @@ function onKeyPressed(e: KeyPressedEvent) {
     return
   }
   emit('pressed')
-}
-
-const shortcut = computed(() => {
-  return {
-    meta: props.meta,
-    shift: props.shift,
-    code: props.keyCode,
-    label: props.label,
-    group: props.group,
-  }
 })
 
 onMounted(() => {
   if (props.viewOnly) {
     return
   }
-  eventBus.on('keyPressed', onKeyPressed)
 
   keyboard.registerShortcut(shortcut.value)
 })
 
 onBeforeUnmount(() => {
-  eventBus.off('keyPressed', onKeyPressed)
   if (props.viewOnly) {
     return
   }

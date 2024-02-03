@@ -14,27 +14,19 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, onMounted, onUnmounted } from '#imports'
+import { ref } from '#imports'
 import type { Message } from '#blokkli/types'
 import Item from './Item/index.vue'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
-const { eventBus } = useBlokkli()
 const messages = ref<Message[]>([])
-
-function onMessage(message: Message) {
-  messages.value.push(message)
-}
 
 function removeMessage(index: number) {
   messages.value = messages.value.filter((_v, i) => i !== index)
 }
 
-onMounted(() => {
-  eventBus.on('message', onMessage)
-})
-
-onUnmounted(() => {
-  eventBus.off('message', onMessage)
+onBlokkliEvent('message', (message) => {
+  messages.value.push(message)
 })
 </script>
 

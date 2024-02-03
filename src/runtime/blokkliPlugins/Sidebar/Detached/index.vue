@@ -61,6 +61,7 @@ import {
 import { Icon } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli/icons'
 import type { Rectangle } from '#blokkli/types'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const props = withDefaults(
   defineProps<{
@@ -81,7 +82,7 @@ const props = withDefaults(
 
 defineEmits(['close'])
 
-const { storage, eventBus, ui } = useBlokkli()
+const { storage, ui } = useBlokkli()
 
 const BASE_Z = 60011
 
@@ -320,11 +321,6 @@ const recalculatePositions = () => {
   storedData.value.viewportHeight = window.innerHeight
 }
 
-const onUiResized = () => {
-  recalculatePositions()
-  updateStored()
-}
-
 recalculatePositions()
 
 watch(blockingRectangle, (rect) => {
@@ -335,15 +331,18 @@ watch(offsetX, () => {
   updateStored()
 })
 
+onBlokkliEvent('ui:resized', () => {
+  recalculatePositions()
+  updateStored()
+})
+
 onMounted(() => {
-  eventBus.on('ui:resized', onUiResized)
   ui.setViewportBlockingRectangle(storageKey.value, blockingRectangle.value)
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('mousemove', onMouseMove)
   window.removeEventListener('mouseup', onMouseUp)
-  eventBus.off('ui:resized', onUiResized)
   ui.setViewportBlockingRectangle(storageKey.value)
 })
 </script>

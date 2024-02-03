@@ -15,16 +15,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
-
-import type {
-  AnimationFrameEvent,
-  TransformPlugin,
-  Rectangle,
-} from '#blokkli/types'
+import { ref, computed, useBlokkli, onBeforeUnmount } from '#imports'
+import type { TransformPlugin, Rectangle } from '#blokkli/types'
 import { filterTransforms } from '#blokkli/helpers/transform'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
-const { eventBus, dom, types, keyboard } = useBlokkli()
+const { dom, types, keyboard } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'transform', data: { uuids: string[]; plugin: TransformPlugin }): void
@@ -90,7 +86,7 @@ type PossibleTransform = {
 
 const possibleTransform = ref<PossibleTransform | null>(null)
 
-const onAnimationFrame = (e: AnimationFrameEvent) => {
+onBlokkliEvent('animationFrame', (e) => {
   // Hasn't changed, return.
   hoveredUuid.value = e.hoveredUuid
 
@@ -109,7 +105,7 @@ const onAnimationFrame = (e: AnimationFrameEvent) => {
 
   hoveredRect.value = e.rects[hoveredUuid.value]
   possibleTransform.value = setPossibleTransform()
-}
+})
 
 const setPossibleTransform = () => {
   if (hoveredUuid.value && hoveredBundle.value && hoveredRect.value) {
@@ -127,12 +123,7 @@ const setPossibleTransform = () => {
   return null
 }
 
-onMounted(() => {
-  eventBus.on('animationFrame', onAnimationFrame)
-})
-
 onBeforeUnmount(() => {
-  eventBus.off('animationFrame', onAnimationFrame)
   if (
     hoveredUuid.value &&
     possibleTransform.value &&

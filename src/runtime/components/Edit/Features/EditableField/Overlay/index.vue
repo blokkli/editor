@@ -83,6 +83,7 @@ import { falsy, findIdealRectPosition } from '#blokkli/helpers'
 import InputPlaintext from './Plaintext/index.vue'
 import InputContenteditable from './Contenteditable/index.vue'
 import InputFrame from './Frame/index.vue'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { eventBus, ui, selection, state, adapter, $t, types } = useBlokkli()
 
@@ -218,10 +219,6 @@ watch(modelValue, (newText) => {
   }
 })
 
-const onEditableSave = () => {
-  close(true)
-}
-
 const focusInput = (el?: HTMLElement | Document | null) => {
   if (!el) {
     return
@@ -276,10 +273,10 @@ const onAnimationFrame = () => {
 
 onAnimationFrame()
 
-onMounted(() => {
-  eventBus.on('editable:save', onEditableSave)
-  eventBus.on('animationFrame', onAnimationFrame)
+onBlokkliEvent('animationFrame', onAnimationFrame)
+onBlokkliEvent('editable:save', () => close(true))
 
+onMounted(() => {
   const el = getElement()
 
   if (props.isComponent) {
@@ -314,7 +311,5 @@ onMounted(() => {
 onBeforeUnmount(() => {
   const el = getElement()
   el.dataset.blokkliEditableActive = undefined
-  eventBus.off('editable:save', onEditableSave)
-  eventBus.off('animationFrame', onAnimationFrame)
 })
 </script>

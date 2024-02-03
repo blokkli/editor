@@ -116,8 +116,9 @@ import {
 import { PluginSidebar } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 import { icons } from '#blokkli/icons'
-import type { KeyPressedEvent, Rectangle } from '#blokkli/types'
+import type { Rectangle } from '#blokkli/types'
 import { featureComponents } from '#blokkli-runtime/features'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 defineBlokkliFeature({
   id: 'debug',
@@ -209,12 +210,12 @@ const featuresList = computed(() => {
   })
 })
 
-const onKeyPress = (e: KeyPressedEvent) => {
+onBlokkliEvent('keyPressed', (e) => {
   if (e.code === '=' && e.meta) {
     e.originalEvent.preventDefault()
     showDebug.value = !showDebug.value
   }
-}
+})
 
 const onEvent = (name: string, data: any) => {
   if (!showDebug.value) {
@@ -227,12 +228,10 @@ const onEvent = (name: string, data: any) => {
 }
 
 onMounted(() => {
-  eventBus.on('keyPressed', onKeyPress)
   eventBus.on('*', onEvent)
 })
 
 onBeforeUnmount(() => {
-  eventBus.off('keyPressed', onKeyPress)
   eventBus.off('*', onEvent)
 })
 </script>

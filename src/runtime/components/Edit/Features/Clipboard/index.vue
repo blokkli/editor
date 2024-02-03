@@ -71,14 +71,10 @@ import {
 
 import { PluginSidebar } from '#blokkli/plugins'
 import ClipboardList from './List/index.vue'
-import type {
-  KeyPressedEvent,
-  SearchContentItem,
-  ClipboardItem,
-  KeyboardShortcut,
-} from '#blokkli/types'
+import type { ClipboardItem, KeyboardShortcut } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
 import { Icon } from '#blokkli/components'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { settings } = defineBlokkliFeature({
   id: 'clipboard',
@@ -98,8 +94,7 @@ const { settings } = defineBlokkliFeature({
   screenshot: 'feature-clipboard.jpg',
 })
 
-const { eventBus, selection, $t, adapter, dom, state, ui, keyboard } =
-  useBlokkli()
+const { selection, $t, adapter, dom, state, ui, keyboard } = useBlokkli()
 
 const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
 
@@ -330,7 +325,7 @@ function setClipboard(text: string) {
   }
 }
 
-function onKeyPressed(e: KeyPressedEvent) {
+onBlokkliEvent('keyPressed', (e) => {
   if (!selection.blocks.value.length) {
     return
   }
@@ -340,9 +335,9 @@ function onKeyPressed(e: KeyPressedEvent) {
   setClipboard(
     JSON.stringify({ type: 'selection', uuids: selection.uuids.value }),
   )
-}
+})
 
-function onSelectContentItem(item: SearchContentItem) {
+onBlokkliEvent('search:selectContentItem', (item) => {
   item.targetBundles.forEach((bundle) => {
     pastedItems.value.push({
       type: 'search_content',
@@ -353,7 +348,7 @@ function onSelectContentItem(item: SearchContentItem) {
   })
 
   showClipboardSidebar()
-}
+})
 
 const shortcuts = computed<KeyboardShortcut[]>(() => {
   return [
@@ -374,8 +369,6 @@ const shortcuts = computed<KeyboardShortcut[]>(() => {
 })
 
 onMounted(() => {
-  eventBus.on('keyPressed', onKeyPressed)
-  eventBus.on('search:selectContentItem', onSelectContentItem)
   document.addEventListener('paste', onPaste)
   document.body.addEventListener('drop', onDrop)
   document.addEventListener('dragover', onDragOver)
@@ -383,8 +376,6 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  eventBus.off('keyPressed', onKeyPressed)
-  eventBus.off('search:selectContentItem', onSelectContentItem)
   document.removeEventListener('paste', onPaste)
   document.body.removeEventListener('drop', onDrop)
   document.removeEventListener('dragover', onDragOver)

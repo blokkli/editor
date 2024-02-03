@@ -23,19 +23,13 @@
 </template>
 
 <script setup lang="ts">
-import {
-  ref,
-  computed,
-  useBlokkli,
-  onMounted,
-  onUnmounted,
-  onBeforeUnmount,
-} from '#imports'
+import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import type { Coord, DraggableItem, Rectangle } from '#blokkli/types'
 import { isInsideRect, realBackgroundColor, lerp } from '#blokkli/helpers'
 import { easeOutElastic } from '#blokkli/helpers/easing'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
-const { eventBus, dom, ui, animation, theme } = useBlokkli()
+const { dom, ui, animation, theme } = useBlokkli()
 
 const props = defineProps<{
   /**
@@ -118,8 +112,12 @@ const rects = ref<AnimationRectangle[]>([])
 
 const animationStart = Date.now()
 const duration = 500
+const isDone = ref(false)
 
-const onAnimationFrame = () => {
+onBlokkliEvent('animationFrame', () => {
+  if (isDone.value) {
+    return
+  }
   const newRects: AnimationRectangle[] = []
 
   const elapsed = Date.now() - animationStart
@@ -159,11 +157,11 @@ const onAnimationFrame = () => {
         y: v.to.y,
       }
     })
-    eventBus.off('animationFrame', onAnimationFrame)
+    isDone.value = true
     return
   }
   rects.value = newRects
-}
+})
 
 function getDraggingBounds(
   mouse: Coord,
@@ -302,8 +300,6 @@ onMounted(() => {
       item.element.style.opacity = '0.2'
     }
   })
-
-  eventBus.on('animationFrame', onAnimationFrame)
 })
 
 onBeforeUnmount(() => {
@@ -313,9 +309,5 @@ onBeforeUnmount(() => {
       item.element.style.opacity = item.elementOpacity
     }
   })
-})
-
-onUnmounted(() => {
-  eventBus.off('animationFrame', onAnimationFrame)
 })
 </script>

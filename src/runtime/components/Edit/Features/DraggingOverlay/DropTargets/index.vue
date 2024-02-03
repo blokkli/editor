@@ -42,6 +42,7 @@ import {
   calculateIntersection,
   realBackgroundColor,
 } from '#blokkli/helpers'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type {
   BlokkliFieldElement,
   DraggableHostData,
@@ -79,7 +80,7 @@ export type DropTargetEvent = {
   preceedingUuid?: string
 }
 
-const { dom, ui, eventBus } = useBlokkli()
+const { dom, ui } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'drop', data: DropTargetEvent): void
@@ -488,7 +489,10 @@ const getSelectedRect = (): string | undefined => {
 let prevMouseX = 0
 let prevMouseY = 0
 
-const onAnimationFrame = () => {
+onBlokkliEvent('animationFrame', () => {
+  if (props.isTouch) {
+    return
+  }
   // We only want to do the calculations for changes in 5px steps.
   const mouseX = Math.round(props.mouseX / 5)
   const mouseY = Math.round(props.mouseY / 5)
@@ -499,20 +503,18 @@ const onAnimationFrame = () => {
     prevMouseX = mouseX
     prevMouseY = mouseY
   }
-}
+})
 
 onMounted(() => {
   document.body.classList.add('bk-is-dragging')
   fieldRects.value = buildFieldRects()
   if (!props.isTouch) {
     document.body.addEventListener('mouseup', onMouseUp)
-    eventBus.on('animationFrame', onAnimationFrame)
   }
 })
 
 onBeforeUnmount(() => {
   document.body.classList.remove('bk-is-dragging')
   document.body.removeEventListener('mouseup', onMouseUp)
-  eventBus.off('animationFrame', onAnimationFrame)
 })
 </script>

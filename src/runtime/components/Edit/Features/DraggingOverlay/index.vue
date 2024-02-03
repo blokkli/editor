@@ -24,7 +24,6 @@
 import {
   ref,
   useBlokkli,
-  onMounted,
   onUnmounted,
   defineBlokkliFeature,
   nextTick,
@@ -34,7 +33,6 @@ import DragItems from './DragItems/index.vue'
 
 import type {
   AnimationFrameEvent,
-  BlockAppendEvent,
   BlokkliDefinitionAddBehaviour,
   BlokkliFieldElement,
   Coord,
@@ -46,11 +44,10 @@ import type {
   DraggableMediaLibraryItem,
   DraggableReusableItem,
   DraggableSearchContentItem,
-  DraggableStartEvent,
-  KeyPressedEvent,
   Rectangle,
 } from '#blokkli/types'
 import { getDefinition } from '#blokkli/definitions'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { adapter } = defineBlokkliFeature({
   icon: 'drag',
@@ -245,7 +242,6 @@ const onDrop = async (e: DropTargetEvent) => {
   // All the existing UUIDs on the page.
   const existingUuids = state.renderedBlocks.value.map((v) => v.item.uuid)
 
-  onDraggingEnd()
   eventBus.emit('dragging:end')
   eventBus.emit('item:dropped')
   nextTick(async () => {
@@ -333,7 +329,7 @@ const onMouseUp = (e: MouseEvent) => {
   }
 }
 
-function onDraggingStart(e: DraggableStartEvent) {
+onBlokkliEvent('dragging:start', (e) => {
   isTouching.value = e.mode === 'touch'
   startCoords.value = e.coords
   animation.requestDraw()
@@ -349,39 +345,27 @@ function onDraggingStart(e: DraggableStartEvent) {
     }
   }
   dragItems.value = e.items
-}
+})
 
-function onDraggingEnd() {
+onBlokkliEvent('dragging:end', () => {
   isVisible.value = false
   dragItems.value = []
   eventBus.off('animationFrame', loop)
   document.removeEventListener('mouseup', onMouseUp)
-}
+})
 
-const onKeyPressed = (e: KeyPressedEvent) => {
+onBlokkliEvent('keyPressed', (e) => {
   if (e.code === 'Escape') {
     document.removeEventListener('mouseup', onMouseUp)
     eventBus.emit('dragging:end')
   }
-}
+})
 
-const onBlockAppend = (e: BlockAppendEvent) => {
-  console.log(e)
+onBlokkliEvent('block:append', (e) => {
   onDropNew(e.bundle, e.host, e.afterUuid)
-}
-
-onMounted(() => {
-  eventBus.on('dragging:start', onDraggingStart)
-  eventBus.on('dragging:end', onDraggingEnd)
-  eventBus.on('keyPressed', onKeyPressed)
-  eventBus.on('block:append', onBlockAppend)
 })
 
 onUnmounted(() => {
-  eventBus.off('dragging:start', onDraggingStart)
-  eventBus.off('dragging:end', onDraggingEnd)
-  eventBus.off('keyPressed', onKeyPressed)
-  eventBus.off('block:append', onBlockAppend)
   document.removeEventListener('mouseup', onMouseUp)
 })
 </script>

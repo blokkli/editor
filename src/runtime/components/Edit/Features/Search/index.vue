@@ -27,17 +27,10 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  nextTick,
-  ref,
-  useBlokkli,
-  onMounted,
-  onBeforeUnmount,
-  defineBlokkliFeature,
-} from '#imports'
-import type { KeyPressedEvent } from '#blokkli/types'
+import { nextTick, ref, useBlokkli, defineBlokkliFeature } from '#imports'
 import Overlay from './Overlay/index.vue'
 import { PluginToolbarButton } from '#blokkli/plugins'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 defineBlokkliFeature({
   id: 'search',
@@ -47,7 +40,7 @@ defineBlokkliFeature({
     'Provides an overlay with shortcut to search for blocks on the current page or existing content to add as blocks.',
 })
 
-const { eventBus, $t } = useBlokkli()
+const { $t } = useBlokkli()
 
 const isRendered = ref(false)
 const isVisible = ref(false)
@@ -64,18 +57,10 @@ function onClick() {
   })
 }
 
-const onKeypress = (e: KeyPressedEvent) => {
+onBlokkliEvent('keyPressed', (e) => {
   if (e.code === 'Escape') {
     isVisible.value = false
   }
-}
-
-onMounted(() => {
-  eventBus.on('keyPressed', onKeypress)
-})
-
-onBeforeUnmount(() => {
-  eventBus.off('keyPressed', onKeypress)
 })
 </script>
 

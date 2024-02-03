@@ -44,8 +44,6 @@ import {
   ref,
   computed,
   useBlokkli,
-  onMounted,
-  onBeforeUnmount,
   defineBlokkliFeature,
   nextTick,
 } from '#imports'
@@ -53,6 +51,7 @@ import { AddListItem } from '#blokkli/components'
 import type { Command, DraggableExistingBlock } from '#blokkli/types'
 import { getDefinition } from '#blokkli/definitions'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 defineBlokkliFeature({
   id: 'block-add-list',
@@ -234,11 +233,7 @@ const sortedList = computed(() => {
 
 const renderKey = ref('')
 
-const onAddListChange = () => {
-  nextTick(() => {
-    renderKey.value = Math.round(Math.random() * 1000000000).toString()
-  })
-}
+const onAddListChange = () => {}
 
 const getBundlesForAppendCommands = () => {
   if (selection.blocks.value.length !== 1) {
@@ -427,12 +422,10 @@ defineCommands(() => {
   ]
 })
 
-onMounted(() => {
-  eventBus.on('add-list:change', onAddListChange)
-})
-
-onBeforeUnmount(() => {
-  eventBus.off('add-list:change', onAddListChange)
+onBlokkliEvent('add-list:change', () => {
+  nextTick(() => {
+    renderKey.value = Math.round(Math.random() * 1000000000).toString()
+  })
 })
 </script>
 

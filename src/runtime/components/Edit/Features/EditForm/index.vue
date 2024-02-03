@@ -20,19 +20,12 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  ref,
-  computed,
-  useBlokkli,
-  onMounted,
-  onUnmounted,
-  defineBlokkliFeature,
-} from '#imports'
+import { ref, computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import { FormOverlay } from '#blokkli/components'
 import { getDefinition } from '#blokkli/definitions'
-import type { AddNewBlockEvent, EditBlockEvent } from '#blokkli/types'
 import FormFrame from './Frame/index.vue'
 import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { adapter } = defineBlokkliFeature({
   id: 'edit-form',
@@ -43,7 +36,7 @@ const { adapter } = defineBlokkliFeature({
   requiredAdapterMethods: ['formFrameBuilder'],
 })
 
-const { types, eventBus, state, context, $t } = useBlokkli()
+const { types, state, context, $t } = useBlokkli()
 
 const form = ref<AdapterFormFrameBuilder | null>(null)
 
@@ -124,7 +117,7 @@ const onClose = () => {
   form.value = null
 }
 
-const onItemEdit = (e: EditBlockEvent) => {
+onBlokkliEvent('item:edit', (e) => {
   if (!state.canEdit.value) {
     return
   }
@@ -157,26 +150,28 @@ const onItemEdit = (e: EditBlockEvent) => {
     id: 'block:edit',
     data: e,
   }
-}
+})
 
-const onTranslateEntity = (langcode: string) => {
+onBlokkliEvent('translateEntity', (langcode: string) => {
   form.value = {
     id: 'entity:translate',
     langcode,
   }
-}
+})
 
-const onBatchTranslate = () =>
-  (form.value = {
+onBlokkliEvent('batchTranslate', () => {
+  form.value = {
     id: 'batchTranslate',
-  })
+  }
+})
 
-const onEditEntity = () =>
-  (form.value = {
+onBlokkliEvent('editEntity', () => {
+  form.value = {
     id: 'entity:edit',
-  })
+  }
+})
 
-async function addNewBlock(e: AddNewBlockEvent) {
+onBlokkliEvent('add:block:new', (e) => {
   if (!state.canEdit.value) {
     return
   }
@@ -188,22 +183,6 @@ async function addNewBlock(e: AddNewBlockEvent) {
     id: 'block:add',
     data: e,
   }
-}
-
-onMounted(() => {
-  eventBus.on('item:edit', onItemEdit)
-  eventBus.on('translateEntity', onTranslateEntity)
-  eventBus.on('batchTranslate', onBatchTranslate)
-  eventBus.on('editEntity', onEditEntity)
-  eventBus.on('add:block:new', addNewBlock)
-})
-
-onUnmounted(() => {
-  eventBus.off('item:edit', onItemEdit)
-  eventBus.off('translateEntity', onTranslateEntity)
-  eventBus.off('batchTranslate', onBatchTranslate)
-  eventBus.off('editEntity', onEditEntity)
-  eventBus.off('add:block:new', addNewBlock)
 })
 </script>
 

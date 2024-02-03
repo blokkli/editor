@@ -22,13 +22,9 @@ import {
   useRoute,
   watch,
 } from '#imports'
-
-import type {
-  UpdateMutatedFieldsEvent,
-  UpdateBlockOptionEvent,
-} from '#blokkli/types'
 import { Icon } from '#blokkli/components'
 import { frameEventBus } from './../../../../../helpers/frameEventBus'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 defineProps<{
   detached?: boolean
@@ -36,7 +32,7 @@ defineProps<{
 
 const route = useRoute()
 
-const { eventBus, selection, broadcast } = useBlokkli()
+const { selection, broadcast } = useBlokkli()
 
 watch(selection.uuids, (selectedUuids) => {
   frameEventBus.emit('selectItems', selectedUuids)
@@ -49,11 +45,11 @@ const src = computed(() =>
   route.fullPath.replace('blokkliEditing', 'blokkliPreview'),
 )
 
-const onUpdateMutatedFields = (e: UpdateMutatedFieldsEvent) =>
-  frameEventBus.emit('mutatedFields', e.fields)
-const onSelect = (uuid: string) => frameEventBus.emit('focus', uuid)
-const onUpdateOption = (option: UpdateBlockOptionEvent) =>
-  frameEventBus.emit('updateOption', option)
+onBlokkliEvent('updateMutatedFields', (e) =>
+  frameEventBus.emit('mutatedFields', e.fields),
+)
+onBlokkliEvent('select', (uuid) => frameEventBus.emit('focus', uuid))
+onBlokkliEvent('option:update', (e) => frameEventBus.emit('updateOption', e))
 
 /**
  * Emit the event to the iframe.
@@ -72,17 +68,11 @@ const onPreviewFocused = () => {
 
 onMounted(() => {
   frameEventBus.on('*', onFrameEventBusEvent)
-  eventBus.on('option:update', onUpdateOption)
-  eventBus.on('updateMutatedFields', onUpdateMutatedFields)
-  eventBus.on('select', onSelect)
   broadcast.on('previewFocused', onPreviewFocused)
 })
 
 onBeforeUnmount(() => {
   frameEventBus.off('*', onFrameEventBusEvent)
-  eventBus.off('option:update', onUpdateOption)
-  eventBus.off('updateMutatedFields', onUpdateMutatedFields)
-  eventBus.off('select', onSelect)
   broadcast.off('previewFocused', onPreviewFocused)
 })
 </script>

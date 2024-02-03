@@ -1,6 +1,7 @@
 import { onMounted, onBeforeUnmount } from '#imports'
 import { falsy, isInsideRect } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
+import onBlokkliEvent from './composables/onBlokkliEvent'
 
 export type AnimationProvider = {
   /**
@@ -120,12 +121,6 @@ export default function (): AnimationProvider {
 
   onMounted(() => {
     loop()
-    eventBus.on('select', requestDraw)
-    eventBus.on('select:start', requestDraw)
-    eventBus.on('select:end', requestDraw)
-    eventBus.on('select:toggle', requestDraw)
-    eventBus.on('option:update', requestDraw)
-    eventBus.on('state:reloaded', requestDraw)
     document.addEventListener('scroll', requestDraw)
     document.body.addEventListener('wheel', requestDraw, { passive: false })
     window.addEventListener('mousemove', onMouseMoveGlobal, {
@@ -142,15 +137,16 @@ export default function (): AnimationProvider {
     window.removeEventListener('touchmove', onTouchMoveGlobal)
     document.body.removeEventListener('wheel', requestDraw)
     document.removeEventListener('scroll', requestDraw)
-    eventBus.off('select', requestDraw)
-    eventBus.off('select:start', requestDraw)
-    eventBus.off('select:end', requestDraw)
-    eventBus.off('select:toggle', requestDraw)
-    eventBus.off('option:update', requestDraw)
-    eventBus.off('state:reloaded', requestDraw)
   })
 
   const requestDraw = () => (iterator = 120)
+
+  onBlokkliEvent('select', requestDraw)
+  onBlokkliEvent('select:start', requestDraw)
+  onBlokkliEvent('select:end', requestDraw)
+  onBlokkliEvent('select:toggle', requestDraw)
+  onBlokkliEvent('option:update', requestDraw)
+  onBlokkliEvent('state:reloaded', requestDraw)
 
   return { requestDraw }
 }

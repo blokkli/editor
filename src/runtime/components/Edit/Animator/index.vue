@@ -14,7 +14,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { AnimateElementMode, AnimatorAddEvent } from '#blokkli/types'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import type { AnimateElementMode } from '#blokkli/types'
 import {
   computed,
   useBlokkli,
@@ -24,7 +25,7 @@ import {
   ref,
 } from '#imports'
 
-const { ui, eventBus } = useBlokkli()
+const { ui } = useBlokkli()
 
 type AnimationElement = {
   mode: AnimateElementMode
@@ -72,7 +73,17 @@ const onAnimationEnd = (id: string) => {
   animationElements.value = animationElements.value.filter((v) => v.id !== id)
 }
 
-const onAnimatorAdd = (e: AnimatorAddEvent) => {
+const setRootClasses = (unmount?: boolean) => {
+  document.documentElement.classList.remove('bk-use-animations')
+
+  if (ui.useAnimations.value && !unmount) {
+    document.documentElement.classList.add('bk-use-animations')
+  }
+}
+
+watch(ui.useAnimations, setRootClasses)
+
+onBlokkliEvent('animator:add', (e) => {
   const el = document.querySelector(`[data-animator-id="${e.id}"]`)
   if (!(el instanceof HTMLElement)) {
     return
@@ -89,25 +100,13 @@ const onAnimatorAdd = (e: AnimatorAddEvent) => {
     id: e.id,
     el,
   })
-}
-
-const setRootClasses = (unmount?: boolean) => {
-  document.documentElement.classList.remove('bk-use-animations')
-
-  if (ui.useAnimations.value && !unmount) {
-    document.documentElement.classList.add('bk-use-animations')
-  }
-}
-
-watch(ui.useAnimations, setRootClasses)
+})
 
 onMounted(() => {
-  eventBus.on('animator:add', onAnimatorAdd)
   setRootClasses()
 })
 
 onBeforeUnmount(() => {
-  eventBus.off('animator:add', onAnimatorAdd)
   setRootClasses(true)
 })
 </script>

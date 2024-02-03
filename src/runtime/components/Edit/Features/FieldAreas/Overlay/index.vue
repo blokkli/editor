@@ -16,9 +16,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
-
-import type { AnimationFrameEvent } from '#blokkli/types'
+import { ref, useBlokkli } from '#imports'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { eventBus, selection } = useBlokkli()
 
@@ -33,7 +32,7 @@ type FieldArea = {
 
 const areas = ref<FieldArea[]>([])
 
-function onAnimationFrame(e: AnimationFrameEvent) {
+onBlokkliEvent('animationFrame', (e) => {
   areas.value = e.fieldAreas
     .filter((v) => {
       return (
@@ -54,13 +53,5 @@ function onAnimationFrame(e: AnimationFrameEvent) {
         },
       }
     })
-}
-
-onMounted(() => {
-  eventBus.on('animationFrame', onAnimationFrame)
-})
-
-onBeforeUnmount(() => {
-  eventBus.off('animationFrame', onAnimationFrame)
 })
 </script>

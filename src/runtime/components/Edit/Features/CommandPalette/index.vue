@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { KeyPressedEvent } from '#blokkli/types'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import {
   useBlokkli,
   defineBlokkliFeature,
@@ -28,16 +28,16 @@ defineBlokkliFeature({
     'Provides a command palette with search to access most UI features with a keyboard.',
 })
 
-const { eventBus, keyboard, $t } = useBlokkli()
+const { keyboard, $t } = useBlokkli()
 
 const isVisible = ref(false)
 
-const onKeyPressed = (e: KeyPressedEvent) => {
+onBlokkliEvent('keyPressed', (e) => {
   if (e.code === 'k' && e.meta) {
     e.originalEvent.preventDefault()
     isVisible.value = !isVisible.value
   }
-}
+})
 
 const shortcut = computed(() => {
   return {
@@ -49,12 +49,10 @@ const shortcut = computed(() => {
 })
 
 onMounted(() => {
-  eventBus.on('keyPressed', onKeyPressed)
   keyboard.registerShortcut(shortcut.value)
 })
 
 onBeforeUnmount(() => {
-  eventBus.off('keyPressed', onKeyPressed)
   keyboard.unregisterShortcut(shortcut.value)
 })
 </script>

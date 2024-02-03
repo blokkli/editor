@@ -4,8 +4,6 @@ import {
   computed,
   ref,
   readonly,
-  onMounted,
-  onBeforeUnmount,
   provide,
 } from 'vue'
 import type {
@@ -26,6 +24,7 @@ import type { BlokkliAdapter, AdapterContext } from '../adapter'
 import { INJECT_MUTATED_FIELDS } from './symbols'
 import { refreshNuxtData } from 'nuxt/app'
 import { nextTick, useRuntimeConfig } from '#imports'
+import onBlokkliEvent from './composables/onBlokkliEvent'
 
 const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
 
@@ -204,16 +203,6 @@ export default async function (
     }
   }
 
-  async function onReloadState() {
-    removeDroppedElements()
-    await loadState()
-  }
-
-  async function onReloadEntity() {
-    await refreshNuxtData()
-    await loadState()
-  }
-
   const canEdit = computed(() => !!owner.value?.currentUserIsOwner)
   const isTranslation = computed(
     () => context.value.language !== translation.value.sourceLanguage,
@@ -233,14 +222,14 @@ export default async function (
   const getRenderedBlock: StateProvider['getRenderedBlock'] = (uuid) =>
     renderedBlocks.value.find((v) => v.item.uuid === uuid)
 
-  onMounted(() => {
-    eventBus.on('reloadState', onReloadState)
-    eventBus.on('reloadEntity', onReloadEntity)
+  onBlokkliEvent('reloadState', async () => {
+    removeDroppedElements()
+    await loadState()
   })
 
-  onBeforeUnmount(() => {
-    eventBus.off('reloadState', onReloadState)
-    eventBus.off('reloadEntity', onReloadEntity)
+  onBlokkliEvent('reloadEntity', async () => {
+    await refreshNuxtData()
+    await loadState()
   })
 
   provide(

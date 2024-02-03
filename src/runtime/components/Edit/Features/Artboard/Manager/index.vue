@@ -40,27 +40,14 @@ import {
   onUnmounted,
 } from '#imports'
 
-import type {
-  KeyPressedEvent,
-  ScrollIntoViewEvent,
-  Coord,
-  KeyboardShortcut,
-} from '#blokkli/types'
+import type { Coord, KeyboardShortcut } from '#blokkli/types'
 import { PluginToolbarButton } from '#blokkli/plugins'
 import { lerp, calculateCenterPosition } from '#blokkli/helpers'
 import { easeOutQuad } from '#blokkli/helpers/easing'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
-const {
-  keyboard,
-  eventBus,
-  dom,
-  context,
-  storage,
-  ui,
-  animation,
-  $t,
-  selection,
-} = useBlokkli()
+const { keyboard, dom, context, storage, ui, animation, $t, selection } =
+  useBlokkli()
 
 const props = withDefaults(
   defineProps<{
@@ -405,7 +392,7 @@ const shortcuts = computed<KeyboardShortcut[]>(() => {
   })
 })
 
-function onKeyPressed(e: KeyPressedEvent) {
+onBlokkliEvent('keyPressed', (e) => {
   if (e.code === 'Home') {
     scrollToTop()
   } else if (e.code === 'End') {
@@ -423,7 +410,7 @@ function onKeyPressed(e: KeyPressedEvent) {
   } else if (e.code === '1' && e.meta) {
     scaleToFit()
   }
-}
+})
 
 const getEndY = () => {
   const rect = ui.rootElement().getBoundingClientRect()
@@ -486,7 +473,7 @@ const stopAnimate = () => {
   animation.requestDraw()
 }
 
-function onAnimationFrame() {
+onBlokkliEvent('animationFrame:before', () => {
   if (animationTarget.value) {
     // Check if the current offset is close enough to the target offset
     if (
@@ -527,7 +514,7 @@ function onAnimationFrame() {
   }
 
   updateStyles()
-}
+})
 
 const zoomLevel = computed(
   () => Math.round((animationTarget.value?.scale || scale.value) * 100) + '%',
@@ -732,7 +719,7 @@ const findElementToScrollTo = (uuid: string): HTMLElement | undefined => {
   }
 }
 
-function onScrollIntoView(e: ScrollIntoViewEvent) {
+onBlokkliEvent('scrollIntoView', (e) => {
   const element = findElementToScrollTo(e.uuid)
   if (!element) {
     return
@@ -762,7 +749,7 @@ function onScrollIntoView(e: ScrollIntoViewEvent) {
       animateTo(offset.value.x, targetY)
     }
   }
-}
+})
 
 const saveState = () => {
   if (!props.persist) {
@@ -783,9 +770,6 @@ onMounted(() => {
   document.addEventListener('touchend', onTouchEnd, { passive: false })
   document.body.addEventListener('wheel', onWheel, { passive: false })
 
-  eventBus.on('scrollIntoView', onScrollIntoView)
-  eventBus.on('keyPressed', onKeyPressed)
-  eventBus.on('animationFrame:before', onAnimationFrame)
   document.documentElement.classList.add('bk-is-artboard')
   window.addEventListener('beforeunload', saveState)
 
@@ -809,9 +793,6 @@ onBeforeUnmount(() => {
   window.removeEventListener('mouseup', onMouseUp)
   document.removeEventListener('touchmove', onTouchMove)
   document.removeEventListener('touchend', onTouchEnd)
-  eventBus.off('scrollIntoView', onScrollIntoView)
-  eventBus.off('keyPressed', onKeyPressed)
-  eventBus.off('animationFrame:before', onAnimationFrame)
   document.documentElement.classList.remove('bk-is-artboard')
   // Store current canvas state in local storage.
   saveState()

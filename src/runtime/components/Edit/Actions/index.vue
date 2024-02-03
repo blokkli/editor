@@ -63,18 +63,12 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  watch,
-  ref,
-  computed,
-  useBlokkli,
-  onMounted,
-  onUnmounted,
-} from '#imports'
+import { watch, ref, computed, useBlokkli } from '#imports'
 import { onlyUnique, findIdealRectPosition } from '#blokkli/helpers'
-import type { KeyPressedEvent, Rectangle } from '#blokkli/types'
+import type { Rectangle } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
-import type { PluginMountEvent, PluginUnmountEvent } from '#blokkli/types'
+import type { PluginMountEvent } from '#blokkli/types'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { selection, eventBus, $t, types, state, ui, animation } = useBlokkli()
 
@@ -90,14 +84,6 @@ const y = ref(0)
 
 watch(selection.blocks, () => {
   showDropdown.value = false
-})
-
-watch(ui.isMobile, (isMobile) => {
-  eventBus.off('animationFrame', onAnimationFrame)
-
-  if (!isMobile) {
-    eventBus.on('animationFrame', onAnimationFrame)
-  }
 })
 
 const title = computed(() => {
@@ -149,8 +135,8 @@ const limitPlacedRect = (rect: Rectangle): Rectangle => {
   }
 }
 
-function onAnimationFrame() {
-  if (!selection.blocks.value.length) {
+onBlokkliEvent('animationFrame', () => {
+  if (!selection.blocks.value.length || ui.isMobile.value) {
     return
   }
 
@@ -174,9 +160,9 @@ function onAnimationFrame() {
     x.value = ideal.x
     y.value = ideal.y
   }
-}
+})
 
-function onKeyPressed(e: KeyPressedEvent) {
+onBlokkliEvent('keyPressed', (e) => {
   if (selection.blocks.value.length !== 1) {
     return
   }
@@ -188,39 +174,24 @@ function onKeyPressed(e: KeyPressedEvent) {
 
   e.shift ? eventBus.emit('select:previous') : eventBus.emit('select:next')
   animation.requestDraw()
-}
+})
 
 const shouldRenderButton = computed(() =>
   mountedPlugins.value.some((v) => v.isRendering),
 )
 
-const onPluginMount = (e: PluginMountEvent) => {
+onBlokkliEvent('plugin:mount', (e) => {
   if (e.type !== 'ItemDropdown') {
     return
   }
   mountedPlugins.value.push(e as any)
-}
-const onPluginUnmount = (e: PluginUnmountEvent) => {
+})
+
+onBlokkliEvent('plugin:unmount', (e) => {
   if (e.type !== 'ItemDropdown') {
     return
   }
   mountedPlugins.value = mountedPlugins.value.filter((v) => v.type !== e.id)
-}
-
-onMounted(() => {
-  if (!ui.isMobile.value) {
-    eventBus.on('animationFrame', onAnimationFrame)
-  }
-  eventBus.on('keyPressed', onKeyPressed)
-  eventBus.on('plugin:mount', onPluginMount)
-  eventBus.on('plugin:unmount', onPluginUnmount)
-})
-
-onUnmounted(() => {
-  eventBus.off('animationFrame', onAnimationFrame)
-  eventBus.off('keyPressed', onKeyPressed)
-  eventBus.off('plugin:mount', onPluginMount)
-  eventBus.off('plugin:unmount', onPluginUnmount)
 })
 </script>
 

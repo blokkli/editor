@@ -5,11 +5,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
-
-import type { AnimationFrameEvent } from '#blokkli/types'
-
-const { eventBus } = useBlokkli()
+import { ref, computed } from '#imports'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 type CanvasFieldArea = {
   style: Record<string, string>
@@ -29,7 +26,7 @@ const canvasAreaStyle = computed(() => {
   }
 })
 
-function onAnimationFrame(e: AnimationFrameEvent) {
+onBlokkliEvent('animationFrame', (e) => {
   canvasFieldAreas.value = e.fieldAreas
     .filter((v) => !v.isNested)
     .map((v) => {
@@ -44,13 +41,5 @@ function onAnimationFrame(e: AnimationFrameEvent) {
     })
 
   canvasArea.value = e.canvasRect
-}
-
-onMounted(() => {
-  eventBus.on('animationFrame', onAnimationFrame)
-})
-
-onBeforeUnmount(() => {
-  eventBus.off('animationFrame', onAnimationFrame)
 })
 </script>

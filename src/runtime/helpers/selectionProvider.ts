@@ -9,11 +9,7 @@ import {
   nextTick,
 } from '#imports'
 
-import type {
-  DraggableExistingBlock,
-  DraggableStartEvent,
-  DraggingMode,
-} from '#blokkli/types'
+import type { DraggableExistingBlock, DraggingMode } from '#blokkli/types'
 import {
   findElement,
   buildDraggableItem,
@@ -25,6 +21,7 @@ import {
 import { eventBus } from '#blokkli/helpers/eventBus'
 import type { DomProvider } from './domProvider'
 import type { RenderedBlock, StateProvider } from './stateProvider'
+import onBlokkliEvent from './composables/onBlokkliEvent'
 
 /**
  * Determine which blocks should be selected when the state changes.
@@ -272,14 +269,6 @@ export default function (
     selectItems([uuid])
   }
 
-  function selectToggle(uuid: string) {
-    if (selectedUuids.value.includes(uuid)) {
-      selectedUuids.value = selectedUuids.value.filter((v) => v !== uuid)
-    } else {
-      selectedUuids.value.push(uuid)
-    }
-  }
-
   function onWindowMouseDown(e: MouseEvent) {
     if (e.ctrlKey) {
       return
@@ -308,40 +297,6 @@ export default function (
     unselectItems()
   }
 
-  const onStateReloaded = () => {
-    selectedUuids.value = selectedUuids.value.filter((uuid) => {
-      // Check if the currently selected item is still in the DOM.
-      const el = findElement(uuid)
-      if (el) {
-        return true
-      }
-
-      return false
-    })
-  }
-
-  function onDraggingStart(e: DraggableStartEvent) {
-    draggingMode.value = e.mode
-    isMultiSelecting.value = false
-  }
-
-  function onDraggingEnd() {
-    draggingMode.value = null
-  }
-
-  const onSelectStart = (uuids: string[] = []) => {
-    selectedUuids.value = uuids
-    isMultiSelecting.value = true
-  }
-
-  const onSelectEnd = (uuids: string[] = []) => {
-    isMultiSelecting.value = false
-    if (uuids.length === 0 && selectedUuids.value.length === 0) {
-      return
-    }
-    selectItems(uuids)
-  }
-
   const selectInList = (prev?: boolean) => {
     const items = dom.getAllBlocks()
     if (!items.length) {
@@ -364,7 +319,27 @@ export default function (
     eventBus.emit('scrollIntoView', { uuid: targetItem.uuid })
   }
 
-  const onShiftToggle = (uuid: string) => {
+  const setActiveFieldKey = (key: string) => (activeFieldKey.value = key)
+
+  watch(isMultiSelecting, (is) => {
+    is
+      ? document.body.classList.add('bk-is-selecting')
+      : document.body.classList.remove('bk-is-selecting')
+  })
+
+  onBlokkliEvent('select', onSelect)
+  onBlokkliEvent('select:start', (uuids) => {
+    selectedUuids.value = uuids || []
+    isMultiSelecting.value = true
+  })
+  onBlokkliEvent('select:toggle', (uuid) => {
+    if (selectedUuids.value.includes(uuid)) {
+      selectedUuids.value = selectedUuids.value.filter((v) => v !== uuid)
+    } else {
+      selectedUuids.value.push(uuid)
+    }
+  })
+  onBlokkliEvent('select:shiftToggle', (uuid) => {
     const block = dom.findBlock(uuid)
     if (!block) {
       return
@@ -374,47 +349,42 @@ export default function (
       blocks.value,
       block,
     )
-  }
+  })
+  onBlokkliEvent('select:end', (uuids) => {
+    isMultiSelecting.value = false
+    if (!uuids || (uuids.length === 0 && selectedUuids.value.length === 0)) {
+      return
+    }
+    selectItems(uuids)
+  })
+  onBlokkliEvent('select:previous', () => selectInList(true))
+  onBlokkliEvent('select:next', selectInList)
+  onBlokkliEvent('setActiveFieldKey', setActiveFieldKey)
+  onBlokkliEvent('state:reloaded', () => {
+    selectedUuids.value = selectedUuids.value.filter((uuid) => {
+      // Check if the currently selected item is still in the DOM.
+      const el = findElement(uuid)
+      if (el) {
+        return true
+      }
 
-  const onSelectPrevious = () => selectInList(true)
-  const onSelectNext = () => selectInList()
+      return false
+    })
+  })
+  onBlokkliEvent('dragging:start', (e) => {
+    draggingMode.value = e.mode
+    isMultiSelecting.value = false
+  })
+  onBlokkliEvent('dragging:end', () => {
+    draggingMode.value = null
+  })
 
   onMounted(() => {
     document.documentElement.addEventListener('mousedown', onWindowMouseDown)
-    eventBus.on('select', onSelect)
-    eventBus.on('select:start', onSelectStart)
-    eventBus.on('select:toggle', selectToggle)
-    eventBus.on('select:shiftToggle', onShiftToggle)
-    eventBus.on('select:end', onSelectEnd)
-    eventBus.on('select:previous', onSelectPrevious)
-    eventBus.on('select:next', onSelectNext)
-    eventBus.on('setActiveFieldKey', setActiveFieldKey)
-    eventBus.on('state:reloaded', onStateReloaded)
-    eventBus.on('dragging:start', onDraggingStart)
-    eventBus.on('dragging:end', onDraggingEnd)
   })
 
   onBeforeUnmount(() => {
     document.documentElement.removeEventListener('mousedown', onWindowMouseDown)
-    eventBus.off('select', onSelect)
-    eventBus.off('select:start', onSelectStart)
-    eventBus.off('select:toggle', selectToggle)
-    eventBus.off('select:shiftToggle', onShiftToggle)
-    eventBus.off('select:end', onSelectEnd)
-    eventBus.off('select:previous', onSelectPrevious)
-    eventBus.off('select:next', onSelectNext)
-    eventBus.off('setActiveFieldKey', setActiveFieldKey)
-    eventBus.off('state:reloaded', onStateReloaded)
-    eventBus.off('dragging:start', onDraggingStart)
-    eventBus.off('dragging:end', onDraggingEnd)
-  })
-
-  const setActiveFieldKey = (key: string) => (activeFieldKey.value = key)
-
-  watch(isMultiSelecting, (is) => {
-    is
-      ? document.body.classList.add('bk-is-selecting')
-      : document.body.classList.remove('bk-is-selecting')
   })
 
   return {

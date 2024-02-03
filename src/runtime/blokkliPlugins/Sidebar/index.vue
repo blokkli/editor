@@ -103,6 +103,7 @@ import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon, ShortcutIndicator } from '#blokkli/components'
 import SidebarDetached from './Detached/index.vue'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const props = withDefaults(
   defineProps<{
@@ -133,7 +134,7 @@ const emit = defineEmits<{
   (e: 'updated'): void
 }>()
 
-const { storage, state, ui, eventBus, $t } = useBlokkli()
+const { storage, state, ui, $t } = useBlokkli()
 
 const detachedKey = computed(() => 'sidebar:detached:' + props.id)
 const storageKey = computed(() => 'sidebar:active:' + props.region)
@@ -201,20 +202,6 @@ const loop = () => {
   raf = window.requestAnimationFrame(loop)
 }
 
-/**
- * Emitted when an item was dropped onto the page.
- */
-const onItemDropped = () => {
-  // On mobile we want to close the active sidebar.
-  // Some sidebar panes like the media library or clipboard allow drag and drop.
-  // During dragging the sidebar is hidden. If dragging ends, the sidebar would
-  // be visible again, which is annoying.
-  // This is why we hide any sidebar in this case.
-  if (ui.isMobile.value && activeSidebar.value) {
-    activeSidebar.value = ''
-  }
-}
-
 const commandTitle = computed(() => {
   if (activeSidebar.value === props.id) {
     return $t('sidebar.hide', 'Hide @title').replace('@title', props.title)
@@ -241,14 +228,23 @@ defineCommands(() => {
   }
 })
 
+onBlokkliEvent('item:dropped', () => {
+  // On mobile we want to close the active sidebar.
+  // Some sidebar panes like the media library or clipboard allow drag and drop.
+  // During dragging the sidebar is hidden. If dragging ends, the sidebar would
+  // be visible again, which is annoying.
+  // This is why we hide any sidebar in this case.
+  if (ui.isMobile.value && activeSidebar.value) {
+    activeSidebar.value = ''
+  }
+})
+
 onMounted(() => {
   loop()
-  eventBus.on('item:dropped', onItemDropped)
 })
 
 onBeforeUnmount(() => {
   window.cancelAnimationFrame(raf)
-  eventBus.off('item:dropped', onItemDropped)
 })
 
 defineExpose({ showSidebar })
