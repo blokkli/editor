@@ -1,19 +1,13 @@
 .bk-editable-field {
   @apply fixed z-editable-field pointer-events-auto left-0 w-full;
   top: var(--bk-root-offset-top);
-  @screen md {
-    @apply absolute;
-  }
 
   .bk-editable-field-input {
     @apply border-teal-normal border-2;
     @apply bg-white shadow-lg;
-    @apply min-w-[360px] w-full;
+    @apply w-full;
     @screen md {
-      @apply absolute bottom-10 left-1/2 rounded;
-      transform: translateX(-50%) scale(calc(1 / var(--bk-artboard-scale)));
-      /* transform: translateX(-50%); */
-      transform-origin: bottom;
+      @apply absolute bottom-0 left-0 rounded;
     }
 
     textarea,

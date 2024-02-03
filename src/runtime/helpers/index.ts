@@ -7,6 +7,7 @@ import type {
 import { useRuntimeConfig } from '#imports'
 import { getDefinition } from '#blokkli/definitions'
 import type { RGB } from '#blokkli/types/theme'
+import { easeOutSine } from './easing'
 
 // @ts-ignore
 const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
@@ -520,5 +521,52 @@ export const getDraggableStyle = (
     radiusString: radius.map((v) => v + 'px').join(' '),
     contrastColor: rgbaToString(contrastColor),
     contrastColorTranslucent: rgbaToString(contrastColor, 0.25),
+  }
+}
+
+/**
+ * Position the given rectToPlace so that it doesn't overlap with any of the blockingRects.
+ */
+export function findIdealRectPosition(
+  blockingRects: Rectangle[],
+  rectToPlace: Rectangle,
+  viewport: Rectangle,
+  maxOverlap = 60,
+): { x: number; y: number } {
+  let targetX = rectToPlace.x
+
+  for (const blockingRect of blockingRects) {
+    if (intersects(rectToPlace, blockingRect)) {
+      const a = Math.abs(rectToPlace.y + rectToPlace.height - blockingRect.y)
+      const b = Math.abs(blockingRect.y + blockingRect.height - rectToPlace.y)
+      const verticalOverlap = Math.min(a, b)
+
+      const smoothingFactor = easeOutSine(
+        Math.min(verticalOverlap, maxOverlap) / maxOverlap,
+      )
+
+      if (
+        rectToPlace.x + rectToPlace.width / 2 >
+        blockingRect.x + blockingRect.width / 2
+      ) {
+        targetX = blockingRect.x + blockingRect.width
+      } else {
+        targetX = blockingRect.x - rectToPlace.width
+      }
+      // Adjust targetX based on the smoothing factor
+      targetX = rectToPlace.x + smoothingFactor * (targetX - rectToPlace.x)
+      break
+    }
+  }
+
+  return {
+    x: Math.min(
+      Math.max(targetX, viewport.x),
+      viewport.x + viewport.width - rectToPlace.width,
+    ),
+    y: Math.min(
+      Math.max(viewport.y, rectToPlace.y),
+      viewport.height + viewport.y - rectToPlace.height,
+    ),
   }
 }

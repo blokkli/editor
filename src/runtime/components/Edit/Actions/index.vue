@@ -71,8 +71,7 @@ import {
   onMounted,
   onUnmounted,
 } from '#imports'
-import { intersects, onlyUnique } from '#blokkli/helpers'
-import { easeOutSine } from '#blokkli/helpers/easing'
+import { onlyUnique, findIdealRectPosition } from '#blokkli/helpers'
 import type { KeyPressedEvent, Rectangle } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
 import type { PluginMountEvent, PluginUnmountEvent } from '#blokkli/types'
@@ -131,53 +130,6 @@ const innerStyle = computed(() => {
   }
 })
 
-/**
- * Position the given rectToPlace so that it doesn't overlap with any of the blockingRects.
- */
-function findIdealPosition(
-  blockingRects: Rectangle[],
-  rectToPlace: Rectangle,
-  viewport: Rectangle,
-  maxOverlap = 60,
-): { x: number; y: number } {
-  let targetX = rectToPlace.x
-
-  for (const blockingRect of blockingRects) {
-    if (intersects(rectToPlace, blockingRect)) {
-      const a = Math.abs(rectToPlace.y + rectToPlace.height - blockingRect.y)
-      const b = Math.abs(blockingRect.y + blockingRect.height - rectToPlace.y)
-      const verticalOverlap = Math.min(a, b)
-
-      const smoothingFactor = easeOutSine(
-        Math.min(verticalOverlap, maxOverlap) / maxOverlap,
-      )
-
-      if (
-        rectToPlace.x + rectToPlace.width / 2 >
-        blockingRect.x + blockingRect.width / 2
-      ) {
-        targetX = blockingRect.x + blockingRect.width
-      } else {
-        targetX = blockingRect.x - rectToPlace.width
-      }
-      // Adjust targetX based on the smoothing factor
-      targetX = rectToPlace.x + smoothingFactor * (targetX - rectToPlace.x)
-      break
-    }
-  }
-
-  return {
-    x: Math.min(
-      Math.max(targetX, viewport.x),
-      viewport.x + viewport.width - rectToPlace.width,
-    ),
-    y: Math.min(
-      Math.max(viewport.y, rectToPlace.y),
-      viewport.height + viewport.y - rectToPlace.height,
-    ),
-  }
-}
-
 const limitPlacedRect = (rect: Rectangle): Rectangle => {
   return {
     width: rect.width,
@@ -213,7 +165,7 @@ function onAnimationFrame() {
       height: ACTIONS_HEIGHT,
     })
 
-    const ideal = findIdealPosition(
+    const ideal = findIdealRectPosition(
       ui.viewportBlockingRects.value,
       rect,
       ui.visibleViewportPadded.value,

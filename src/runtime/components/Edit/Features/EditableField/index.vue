@@ -1,5 +1,5 @@
 <template>
-  <Teleport :to="ui.isMobile.value ? 'body' : '.bk-main-canvas'">
+  <Teleport to="body">
     <Transition :name="hasTransition ? 'bk-editable' : undefined">
       <Overlay v-if="editable" v-bind="editable" :key="key" />
     </Transition>
@@ -40,7 +40,7 @@ type Editable = {
   value?: string
 }
 
-const { eventBus, selection, ui, adapter, dom } = useBlokkli()
+const { eventBus, selection, adapter, dom } = useBlokkli()
 const editable = ref<Editable | null>(null)
 const hasTransition = ref(false)
 

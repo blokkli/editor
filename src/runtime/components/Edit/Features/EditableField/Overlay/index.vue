@@ -5,12 +5,7 @@
     :style="style"
     class="bk-editable-field bk-control"
   >
-    <form
-      ref="form"
-      class="bk-editable-field-input"
-      :style="formStyle"
-      @submit.prevent="cancel"
-    >
+    <form ref="form" class="bk-editable-field-input" @submit.prevent="cancel">
       <div class="bk bk-editable-field-buttons">
         <h3>
           <ItemIcon :bundle="itemBundle" />
@@ -26,32 +21,34 @@
         </button>
       </div>
 
-      <InputContenteditable
-        v-if="editableType === 'markup'"
-        v-model="modelValue"
-        :type="editableType"
-        @close="close"
-      />
+      <div ref="input">
+        <InputContenteditable
+          v-if="editableType === 'markup'"
+          v-model="modelValue"
+          :type="editableType"
+          @close="close"
+        />
 
-      <InputFrame
-        v-else-if="editableType === 'frame'"
-        v-model="modelValue"
-        :type="editableType"
-        :field-name="fieldName"
-        :uuid="block.uuid"
-        :initial-height="scrollHeight"
-        @close="close"
-      />
+        <InputFrame
+          v-else-if="editableType === 'frame'"
+          v-model="modelValue"
+          :type="editableType"
+          :field-name="fieldName"
+          :uuid="block.uuid"
+          :initial-height="scrollHeight"
+          @close="close"
+        />
 
-      <InputPlaintext
-        v-else
-        v-model="modelValue"
-        :element="element"
-        :required="required"
-        :maxlength="maxlength"
-        @close="close"
-        @save="close(true)"
-      />
+        <InputPlaintext
+          v-else
+          v-model="modelValue"
+          :element="element"
+          :required="required"
+          :maxlength="maxlength"
+          @close="close"
+          @save="close(true)"
+        />
+      </div>
 
       <div v-if="!isMarkup" class="bk bk-editable-field-info">
         <div v-if="errorText" class="bk-editable-field-info-error">
@@ -82,7 +79,7 @@ import {
   useBlokkli,
   nextTick,
 } from '#imports'
-import { falsy } from '#blokkli/helpers'
+import { falsy, findIdealRectPosition } from '#blokkli/helpers'
 import InputPlaintext from './Plaintext/index.vue'
 import InputContenteditable from './Contenteditable/index.vue'
 import InputFrame from './Frame/index.vue'
@@ -107,31 +104,20 @@ const modelValue = ref('')
 const inputStyle = ref<Record<string, any>>({})
 const form = ref<HTMLFormElement | null>(null)
 const root = ref<HTMLDivElement | null>(null)
+const input = ref<HTMLDivElement | null>(null)
+
+const x = ref(0)
+const y = ref(0)
+
 const style = computed(() => {
   if (ui.isMobile.value) {
     return {}
   } else {
-    const artboardEl = ui.artboardElement()
-    const artboardRect = artboardEl.getBoundingClientRect()
-    const artboardScroll = artboardEl.scrollTop
-    const scale = ui.getArtboardScale()
-    const rect = props.element.getBoundingClientRect()
-    const x = (rect.x - artboardRect.x) / scale
-    const y = (rect.y - artboardRect.y) / scale + artboardScroll
     return {
       width: props.element.offsetWidth + 'px',
-      top: y + 'px',
-      left: x + 'px',
+      top: y.value + 'px',
+      left: x.value + 'px',
     }
-  }
-})
-
-const formStyle = computed(() => {
-  if (ui.isMobile.value) {
-    return {}
-  }
-  return {
-    transform: `translateX(-50%) scale(calc(1 / var(--bk-artboard-scale)))`,
   }
 })
 
@@ -261,8 +247,35 @@ const focusInput = (el?: HTMLElement | Document | null) => {
   }
 }
 
+const onAnimationFrame = () => {
+  const elementRect = props.element.getBoundingClientRect()
+
+  const height = form.value?.scrollHeight || 100
+  const width = Math.min(
+    Math.max(form.value?.scrollWidth || elementRect.width, 360),
+    760,
+  )
+
+  const ideal = findIdealRectPosition(
+    ui.viewportBlockingRects.value,
+    {
+      x: elementRect.x + (elementRect.width - props.element.scrollWidth) / 2,
+      y: elementRect.y - height - 20,
+      height,
+      width,
+    },
+    ui.visibleViewportPadded.value,
+  )
+
+  x.value = ideal.x
+  y.value = ideal.y + height
+}
+
+onAnimationFrame()
+
 onMounted(() => {
   eventBus.on('editable:save', onEditableSave)
+  eventBus.on('animationFrame', onAnimationFrame)
 
   const el = getElement()
 
@@ -292,13 +305,6 @@ onMounted(() => {
     nextTick(() => {
       focusInput(form.value)
     })
-    // if (input.value) {
-    //   input.value.style.opacity = '0'
-    //   input.value.focus()
-    //   inputStyle.value.minHeight =
-    //     Math.min(input.value.scrollHeight, 100) + 'px'
-    //   input.value.style.opacity = '1'
-    // }
   })
 })
 
@@ -306,5 +312,6 @@ onBeforeUnmount(() => {
   const el = getElement()
   el.dataset.blokkliEditableActive = undefined
   eventBus.off('editable:save', onEditableSave)
+  eventBus.off('animationFrame', onAnimationFrame)
 })
 </script>
