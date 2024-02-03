@@ -15,6 +15,7 @@ export default defineBuildConfig({
     '#blokkli/helpers/commandsProvider',
     '#blokkli/translations',
     '#blokkli/generated-types',
+    '#blokkli/types/generatedModuleTypes',
     'defu',
     'unplugin',
     'magic-string',

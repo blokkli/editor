@@ -115,7 +115,7 @@ import {
 } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
-import { icons } from '#blokkli/icons'
+import { icons, type BlokkliIcon } from '#blokkli/icons'
 import type { Rectangle } from '#blokkli/types'
 import { featureComponents } from '#blokkli-runtime/features'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
@@ -136,7 +136,7 @@ const viewportBlockingRects = computed(() =>
   ui.viewportBlockingRects.value.map(rectToStyle),
 )
 
-const iconItems = computed(() => Object.keys(icons))
+const iconItems = computed(() => Object.keys(icons) as BlokkliIcon[])
 
 const rectToStyle = (rect: Rectangle) => {
   return {

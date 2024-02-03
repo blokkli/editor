@@ -81,7 +81,7 @@ const regex = computed(() => {
 type GroupedCommands = {
   id: CommandGroup
   label: string
-  commands: Command[]
+  commands: Array<Command & { _id: number }>
 }
 
 const getGroupLabel = (id: CommandGroup): string => {
