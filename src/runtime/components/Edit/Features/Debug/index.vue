@@ -49,22 +49,6 @@
       </section>
 
       <section>
-        <h2>Artboard Scroll Speed</h2>
-        <div>
-          <label class="bk-input-range">
-            <input
-              v-model="artboardScrollMultiplier"
-              type="range"
-              min="0.2"
-              max="2"
-              step="0.01"
-            />
-          </label>
-          <div>{{ artboardScrollMultiplier }}</div>
-        </div>
-      </section>
-
-      <section>
         <h2>Icons</h2>
         <div class="bk-debug-icons">
           <div v-for="icon in iconItems" :key="icon">
@@ -146,7 +130,6 @@ const { keyboard, selection, storage, eventBus, ui, features } = useBlokkli()
 
 const showDebug = storage.use('showDebug', false)
 const showDebugViewport = storage.use('showDebugViewport', false)
-const artboardScrollMultiplier = storage.use('artboardScrollMultiplier', 1)
 
 const viewportBlockingRects = computed(() =>
   ui.viewportBlockingRects.value.map(rectToStyle),

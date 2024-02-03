@@ -971,6 +971,17 @@ export type FeatureDefinitionSettingCheckbox = {
   viewports?: Viewport[]
 }
 
+export type FeatureDefinitionSettingSlider = {
+  type: 'slider'
+  label: string
+  default: number
+  group?: SettingsGroup
+  viewports?: Viewport[]
+  min: number
+  max: number
+  step: number
+}
+
 export type FeatureDefinitionSettingMethod = {
   type: 'method'
   label: string
@@ -983,6 +994,7 @@ export type FeatureDefinitionSetting =
   | FeatureDefinitionSettingCheckbox
   | FeatureDefinitionSettingRadios
   | FeatureDefinitionSettingMethod
+  | FeatureDefinitionSettingSlider
 
 export type FeatureDefinition<
   Methods extends AdapterMethods[] = [],

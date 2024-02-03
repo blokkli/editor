@@ -60,10 +60,7 @@ const {
   animation,
   $t,
   selection,
-  commands,
 } = useBlokkli()
-
-const artboardScrollMultiplier = storage.use('artboardScrollMultiplier', 1)
 
 const props = withDefaults(
   defineProps<{
@@ -71,11 +68,13 @@ const props = withDefaults(
     minScale?: number
     maxScale?: number
     persist?: boolean
+    scrollSpeed?: number
   }>(),
   {
     padding: 50,
     minScale: 0.05,
     maxScale: 3.5,
+    scrollSpeed: 1,
   },
 )
 
@@ -246,8 +245,8 @@ function onWheel(e: WheelEvent) {
     )
   } else {
     updateOffset(
-      offset.value.x + -(e.deltaX * artboardScrollMultiplier.value),
-      offset.value.y + -(e.deltaY * artboardScrollMultiplier.value),
+      offset.value.x + -(e.deltaX * props.scrollSpeed),
+      offset.value.y + -(e.deltaY * props.scrollSpeed),
     )
   }
   animation.requestDraw()

@@ -38,6 +38,23 @@
         {{ settingLabel }}
       </button>
     </div>
+    <div v-else-if="setting.type === 'slider'">
+      <label class="bk-input-range">
+        <span>{{ settingLabel }}: {{ settingsStorage[settingsKey] }}</span>
+        <input
+          :value="settingsStorage[settingsKey]"
+          type="range"
+          :min="setting.min"
+          :max="setting.max"
+          :step="setting.step"
+          list="tickmarks"
+          @input="setSliderValue($event)"
+        />
+        <datalist id="tickmarks">
+          <option v-for="tick in tickmarks" :key="tick" :value="tick"></option>
+        </datalist>
+      </label>
+    </div>
   </div>
 </template>
 
@@ -78,7 +95,7 @@ const getOptionLabel = (key: string, defaultLabel: string) => {
 
 const settingsStorage = storage.use(
   `feature:${props.featureId}:settings`,
-  {} as Record<string, boolean | string>,
+  {} as Record<string, boolean | string | number>,
 )
 
 const toggleCheckbox = () => {
@@ -95,4 +112,30 @@ const setRadioValue = (value: string) => {
     [props.settingsKey]: value,
   }
 }
+
+const setSliderValue = (e: Event) => {
+  if (e.target instanceof HTMLInputElement) {
+    settingsStorage.value = {
+      ...settingsStorage.value,
+      [props.settingsKey]: parseFloat(e.target.value),
+    }
+  }
+}
+
+const tickmarks = computed(() => {
+  if (props.setting.type === 'slider') {
+    const values: number[] = []
+    for (
+      let value = props.setting.min;
+      value <= props.setting.max;
+      value += props.setting.step
+    ) {
+      values.push(value)
+    }
+    values.push(props.setting.max)
+    return values
+  }
+
+  return []
+})
 </script>

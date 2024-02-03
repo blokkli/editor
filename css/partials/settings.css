@@ -23,6 +23,11 @@
   @apply grid gap-15 grid-cols-3;
   li {
     @apply relative;
+    &:focus-within {
+      .bk-icon {
+        @apply outline outline-accent-950/80 outline-offset-[3px];
+      }
+    }
     label {
       @apply block cursor-pointer;
     }

@@ -77,6 +77,8 @@ const shouldRenderSetting = (setting: FeatureDefinitionSetting): boolean => {
   return true
 }
 
+const settingTypeOrder = ['checkbox', 'slider', 'method']
+
 const groups = computed<GroupedSettings[]>(() => {
   return Object.values(
     features.features.value.reduce<Record<string, GroupedSettings>>(
@@ -109,7 +111,13 @@ const groups = computed<GroupedSettings[]>(() => {
     ),
   )
     .map((group) => {
-      group.settings.sort((a, b) => b.settingsKey.localeCompare(a.settingsKey))
+      group.settings
+        .sort((a, b) => b.settingsKey.localeCompare(a.settingsKey))
+        .sort(
+          (a, b) =>
+            settingTypeOrder.indexOf(a.setting.type) -
+            settingTypeOrder.indexOf(b.setting.type),
+        )
       return group
     })
     .sort((a, b) => SETTINGS_GROUP.indexOf(a.id) - SETTINGS_GROUP.indexOf(b.id))

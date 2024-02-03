@@ -274,6 +274,10 @@ msgctxt "feature_artboard_setting_persist_label"
 msgid "Persist position and zoom"
 msgstr "Position und Zoom speichern"
 
+msgctxt "feature_artboard_setting_scrollSpeed_label"
+msgid "Artboard scroll speed"
+msgstr "Scrollgeschwindigkeit der Zeichenfläche"
+
 msgctxt "feature_artboard_setting_useArtboard_label"
 msgid "Page editing"
 msgstr "Seitenbearbeitung"

@@ -259,6 +259,10 @@
     "source": "Persist position and zoom",
     "translation": ""
   },
+  "feature_artboard_setting_scrollSpeed_label": {
+    "source": "Artboard scroll speed",
+    "translation": ""
+  },
   "feature_artboard_setting_useArtboard_label": {
     "source": "Page editing",
     "translation": ""
