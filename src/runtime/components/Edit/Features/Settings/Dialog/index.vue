@@ -31,6 +31,7 @@ import type { ValidFeatureKey } from '#blokkli-runtime/features'
 import type { FeatureDefinitionSetting } from '#blokkli/types'
 import { SETTINGS_GROUP, type SettingsGroup } from '#blokkli/constants'
 import type { BlokkliIcon } from '#blokkli/icons'
+import { settingsOverride } from '#blokkli/config'
 
 const { $t, features, ui } = useBlokkli()
 
@@ -70,7 +71,14 @@ const getGroupIcon = (key: SettingsGroup): BlokkliIcon => {
   return 'question'
 }
 
-const shouldRenderSetting = (setting: FeatureDefinitionSetting): boolean => {
+const shouldRenderSetting = (
+  key: keyof typeof settingsOverride,
+  setting: FeatureDefinitionSetting,
+): boolean => {
+  // Setting is disabled in module config.
+  if (settingsOverride[key]?.disable) {
+    return false
+  }
   if (setting.viewports?.length) {
     return setting.viewports.some((v) => ui.appViewport.value === v)
   }
@@ -85,7 +93,8 @@ const groups = computed<GroupedSettings[]>(() => {
       (acc, feature) => {
         Object.entries(feature.settings || {}).forEach(
           ([settingsKey, setting]) => {
-            if (shouldRenderSetting(setting)) {
+            const key: any = `feature:${feature.id}:${settingsKey}`
+            if (shouldRenderSetting(key, setting)) {
               const group = setting.group || 'advanced'
               if (!acc[group]) {
                 acc[group] = {

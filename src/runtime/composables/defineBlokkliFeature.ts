@@ -8,6 +8,7 @@ import {
 import type { BlokkliAdapter, AdapterMethods } from '#blokkli/adapter'
 import type { FeatureDefinition } from '#blokkli/types'
 import type { ValidFeatureKey } from '#blokkli-runtime/features'
+import { settingsOverride } from '#blokkli/config'
 
 type SettingType<S> = S extends { type: 'checkbox' }
   ? boolean
@@ -48,22 +49,52 @@ export function defineBlokkliFeature<
   F extends FeatureDefinition<Methods, ValidFeatureKey>,
 >(feature: F): DefineBlokkliFeature<T, Methods, F> {
   const { adapter, storage, features } = useBlokkli()
+
+  const storageKey = computed(() => `feature:${feature.id}:settings`)
   const defaults = Object.entries(feature.settings || {}).reduce<
     Record<string, any>
   >((acc, [key, config]) => {
-    if ('default' in config) {
+    const overrideKey =
+      `feature:${feature.id}:${key}` as keyof typeof settingsOverride
+    const override = settingsOverride[overrideKey]
+    if (override && 'default' in override && override.default !== undefined) {
+      acc[key] = override.default
+    } else if ('default' in config) {
       acc[key] = config.default
     }
     return acc
   }, {})
-  const settingsStorage = storage.use(
-    `feature:${feature.id}:settings`,
-    defaults,
+
+  const settingsStorage = storage.use(storageKey, defaults)
+
+  // The settings that are enforced via config.
+  // A setting is enforced if it has been disabled in the config. In this case
+  // we always want to use the default value.
+  const settingsEnforced = computed(() =>
+    Object.keys(feature.settings || {}).reduce<Record<string, any>>(
+      (acc, key) => {
+        const overrideKey =
+          `feature:${feature.id}:${key}` as keyof typeof settingsOverride
+        const override = settingsOverride[overrideKey]
+        if (override?.disable) {
+          acc[key] = defaults[key]
+        }
+        return acc
+      },
+      {},
+    ),
   )
+
   const settings = computed(() => {
     return {
+      // Default settings defined by the feature.
       ...defaults,
+
+      // Settings altered by the user.
       ...settingsStorage.value,
+
+      // Settings always enforced via config.
+      ...settingsEnforced.value,
     }
   })
 
@@ -73,6 +104,7 @@ export function defineBlokkliFeature<
   onUnmounted(() => {
     features.unmount(feature.id)
   })
+
   return {
     adapter: adapter as CombinedAdapter<T, Methods>,
     settings: settings as any,

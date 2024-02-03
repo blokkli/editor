@@ -22,6 +22,7 @@ import defaultTranslations from './translations'
 import { getTheme, themes } from './themes'
 import type { ThemeName, RGB, Theme } from './runtime/types/theme'
 import type { ResolvedNuxtTemplate } from '@nuxt/schema'
+import type { ModuleOptionsSettings } from '#blokkli/types/generatedModuleTypes'
 
 function hexToRgb(hex: string): RGB {
   // Remove the hash symbol if present
@@ -159,7 +160,7 @@ export type ModuleOptions = {
   /**
    * Enable the theme editor feature.
    */
-  enabledThemeEditor?: boolean
+  enableThemeEditor?: boolean
 
   /**
    * blokkli generates a JSON file that contains all the defined block
@@ -170,6 +171,11 @@ export type ModuleOptions = {
    * name including the extension.
    */
   schemaOptionsPath?: string
+
+  /**
+   * Override the settings.
+   */
+  settingsOverride?: ModuleOptionsSettings
 }
 
 const buildThemeData = (themeOption?: ThemeName | Partial<Theme>) => {
@@ -256,7 +262,7 @@ export default defineNuxtModule<ModuleOptions>({
       await featureExtractor.addFiles(files)
       return featureExtractor.getFeatures().filter((v) => {
         // Remove the theme editor feature if not enabled.
-        if (v.id === 'theme' && !moduleOptions.enabledThemeEditor) {
+        if (v.id === 'theme' && !moduleOptions.enableThemeEditor) {
           return false
         }
         return true
@@ -580,10 +586,18 @@ ${featuresArray}
       write: true,
       filename: 'blokkli/config.ts',
       getContents: () => {
+        const settingsOverride = moduleOptions.settingsOverride || {}
+
         return `import type { Theme } from '#blokkli/types/theme'
+import type { ModuleOptionsSettings } from '#blokkli/types/generatedModuleTypes'
+
 export const hasCustomTheme = ${JSON.stringify(hasCustomTheme)}
 export const themes: Record<string, Theme> = ${JSON.stringify(themes, null, 2)}
 export const theme: Theme = ${JSON.stringify(fullTheme, null, 2)}
+
+export const settingsOverride: ModuleOptionsSettings = ${JSON.stringify(
+          settingsOverride,
+        )}
 `
       },
       options: {
