@@ -37,9 +37,21 @@ export default defineNuxtConfig({
 
     theme: 'arctic',
 
-    enabledThemeEditor: true,
+    enableThemeEditor: true,
+
+    translations: {
+      en: {
+        editIndicatorLabel: 'Edit page content',
+      },
+    },
 
     schemaOptionsPath: '~/options-schema.json',
+
+    settingsOverride: {
+      'feature:artboard:scrollSpeed': {
+        default: 0.9,
+      },
+    },
   },
 
   svgIconSprite: {

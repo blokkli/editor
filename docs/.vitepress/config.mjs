@@ -6,6 +6,7 @@ import path from 'path'
 const TYPE_FILES = [
   './../../src/runtime/types/index.ts',
   './../../src/runtime/types/theme.ts',
+  './../../src/runtime/types/generatedModuleTypes.ts',
   './../../src/runtime/types/blokkOptions.ts',
   './../../src/runtime/adapter/index.ts',
 ]
@@ -136,6 +137,7 @@ function typeReferencePlugin(md) {
     const match = [...token.content.matchAll(regex)][0]
 
     if (match) {
+      console.log(token)
       const arg = match[0].slice(6, -1)
       const typeName = arg.replace('[', '').replace(']', '')
 
@@ -146,7 +148,10 @@ function typeReferencePlugin(md) {
       }
 
       token.type = 'html_inline'
-      token.content = `<a href="${githubUrl}" target="_blank"><code>${arg}</code></a>`
+      token.content = token.content.replace(
+        regex,
+        `<a href="${githubUrl}" target="_blank"><code>${arg}</code></a>`,
+      )
     }
   }
 
@@ -204,6 +209,9 @@ export default defineConfig({
           { text: 'Overview', link: '/editor/overview' },
           { text: 'Edit State', link: '/editor/edit-state' },
           { text: 'Features', link: '/editor/features' },
+          { text: 'Settings', link: '/editor/settings' },
+          { text: 'Themes', link: '/editor/themes' },
+          { text: 'Translations', link: '/editor/translations' },
         ],
       },
       {

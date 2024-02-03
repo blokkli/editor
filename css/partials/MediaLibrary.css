@@ -89,7 +89,7 @@
     }
 
     h3 {
-      @apply font-semibold mt-5;
+      @apply font-semibold mt-5 break-words;
     }
   }
 }
