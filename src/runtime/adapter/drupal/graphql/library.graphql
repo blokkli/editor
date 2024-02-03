@@ -22,7 +22,7 @@ mutation pbAddReusableParagraph(
       hostUuid: $hostUuid
       hostFieldName: $hostFieldName
     ) {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -38,7 +38,7 @@ mutation pbDetachReusableParagraph(
     entityUuid: $entityUuid
   ) {
     action: detach_reusable(uuids: $uuids) {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -46,12 +46,12 @@ mutation pbDetachReusableParagraph(
 query pbLibraryItems {
   entityQuery(entityType: PARAGRAPHS_LIBRARY_ITEM, limit: 50) {
     items {
-      ...paragraphsBuilderLibraryItem
+      ...paragraphsBlokkliLibraryItem
     }
   }
 }
 
-fragment paragraphsBuilderLibraryItem on ParagraphsLibraryItem {
+fragment paragraphsBlokkliLibraryItem on ParagraphsLibraryItem {
   uuid
   label
   paragraphs {

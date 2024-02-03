@@ -124,7 +124,7 @@ export type ModuleOptions = {
   /**
    * The entity type of blokkli items.
    *
-   * Using the paragraphs_builder integration this value should be set to "paragraph".
+   * Using the paragraphs_blokkli integration this value should be set to "paragraph".
    */
   itemEntityType?: string
 

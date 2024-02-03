@@ -1,9 +1,9 @@
 #import "~/components/Paragraph/fragment.paragraphsFieldItem.graphql";
 #import "~/components/Paragraph/fragment.paragraph.graphql";
 
-fragment paragraphsBuilderEditState on ParagraphsBuilderEditState {
+fragment paragraphsBlokkliEditState on ParagraphsBlokkliEditState {
   mutations {
-    ...paragraphsBuilderMutationItem
+    ...paragraphsBlokkliMutationItem
   }
 
   currentIndex
@@ -11,11 +11,11 @@ fragment paragraphsBuilderEditState on ParagraphsBuilderEditState {
   ownerName
   mutatedState {
     fields(langcode: $langcode) {
-      ...paragraphsBuilderMutatedField
+      ...paragraphsBlokkliMutatedField
     }
     mutatedOptions: behaviorSettings
     violations {
-      ...paragraphsBuilderViolation
+      ...paragraphsBlokkliViolation
     }
   }
   bundleLabel
@@ -56,7 +56,7 @@ fragment paragraphsBuilderEditState on ParagraphsBuilderEditState {
   }
 }
 
-fragment paragraphsBuilderMutationItem on FieldItemTypeParagraphsBuilderMutation {
+fragment paragraphsBlokkliMutationItem on FieldItemTypeParagraphsBlokkliMutation {
   timestamp
   pluginId
   plugin {
@@ -65,13 +65,13 @@ fragment paragraphsBuilderMutationItem on FieldItemTypeParagraphsBuilderMutation
   }
 }
 
-fragment paragraphsBuilderViolation on ParagraphsEditViolation {
+fragment paragraphsBlokkliViolation on ParagraphsEditViolation {
   message
   code
   propertyPath
 }
 
-fragment paragraphsBuilderMutatedField on ParagraphsBuilderMutatedField {
+fragment paragraphsBlokkliMutatedField on ParagraphsBlokkliMutatedField {
   name
   entityType
   entityUuid
@@ -83,10 +83,10 @@ fragment paragraphsBuilderMutatedField on ParagraphsBuilderMutatedField {
   }
 }
 
-fragment paragraphsBuilderMutationResult on ParagraphsBuilderMutationResult {
+fragment paragraphsBlokkliMutationResult on ParagraphsBlokkliMutationResult {
   success
   state {
-    ...paragraphsBuilderEditState
+    ...paragraphsBlokkliEditState
   }
 }
 
@@ -99,17 +99,17 @@ query pbEditState(
     entityType: $entityType
     entityUuid: $entityUuid
   ) {
-    ...paragraphsBuilderEditState
+    ...paragraphsBlokkliEditState
   }
 }
 
 query pbAvailableFeatures {
-  features: paragraphsBuilderAvailableFeatures {
-    ...paragraphsBuilderAvailableFeatures
+  features: paragraphsBlokkliAvailableFeatures {
+    ...paragraphsBlokkliAvailableFeatures
   }
 }
 
-fragment paragraphsBuilderAvailableFeatures on ParagraphsBuilderAvailableFeatures {
+fragment paragraphsBlokkliAvailableFeatures on ParagraphsBlokkliAvailableFeatures {
   conversion
   comment
   library
@@ -126,7 +126,7 @@ mutation pbPublish(
     entityUuid: $entityUuid
   ) {
     action: publish {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -152,33 +152,7 @@ mutation pbAddParagraph(
       hostUuid: $hostUuid
       hostFieldName: $hostFieldName
     ) {
-      ...paragraphsBuilderMutationResult
-    }
-  }
-}
-
-mutation pbAddTextParagraph(
-  $entityType: EntityType!
-  $entityUuid: String!
-  $langcode: String
-  $text: String!
-  $hostType: String!
-  $hostUuid: String!
-  $hostFieldName: String!
-  $afterUuid: String
-) {
-  state: paragraphsEditMutationState(
-    entityType: $entityType
-    entityUuid: $entityUuid
-  ) {
-    action: add_text(
-      text: $text
-      afterUuid: $afterUuid
-      hostType: $hostType
-      hostUuid: $hostUuid
-      hostFieldName: $hostFieldName
-    ) {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -194,7 +168,7 @@ mutation pbDeleteParagraph(
     entityUuid: $entityUuid
   ) {
     action: remove(uuid: $uuid) {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -210,7 +184,7 @@ mutation pbDeleteMultipleParagraphs(
     entityUuid: $entityUuid
   ) {
     action: remove_multiple(uuids: $uuids) {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -227,7 +201,7 @@ mutation pbDuplicateParagraph(
     entityUuid: $entityUuid
   ) {
     action: duplicate(uuid: $uuid, afterUuid: $afterUuid) {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -244,7 +218,7 @@ mutation pbDuplicateMultipleParagraphs(
     entityUuid: $entityUuid
   ) {
     action: duplicate_multiple(uuids: $uuids, afterUuid: $afterUuid) {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -261,7 +235,7 @@ mutation pbMakeParagraphReusable(
     entityUuid: $entityUuid
   ) {
     action: make_reusable(uuid: $uuid, label: $label) {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -285,7 +259,7 @@ mutation pbUpdateParagraphOption(
       key: $key
       value: $value
     ) {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -294,14 +268,14 @@ mutation pbBulkUpdateParagraphBehaviorSettings(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
-  $items: [ParagraphsBuilderBulkUpdateBehaviorSettingsInput]!
+  $items: [ParagraphsBlokkliBulkUpdateBehaviorSettingsInput]!
 ) {
   state: paragraphsEditMutationState(
     entityType: $entityType
     entityUuid: $entityUuid
   ) {
     action: bulk_update_behavior_settings(items: $items) {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -324,7 +298,7 @@ mutation pbUpdateFieldValue(
       fieldName: $fieldName
       value: $value
     ) {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -350,7 +324,7 @@ mutation pbMoveParagraph(
       hostFieldName: $hostFieldName
       afterUuid: $afterUuid
     ) {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -376,7 +350,7 @@ mutation pbMoveMultipleItems(
       hostFieldName: $hostFieldName
       afterUuid: $afterUuid
     ) {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -393,7 +367,7 @@ mutation pbConvertParagraph(
     entityUuid: $entityUuid
   ) {
     action: convert(uuid: $uuid, targetBundle: $targetBundle) {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -410,7 +384,7 @@ mutation pbConvertMultiple(
     entityUuid: $entityUuid
   ) {
     action: convert_multiple(uuids: $uuids, targetBundle: $targetBundle) {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -425,7 +399,7 @@ mutation pbRedo(
     entityUuid: $entityUuid
   ) {
     action: redo {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -441,7 +415,7 @@ mutation pbSetHistoryIndex(
     entityUuid: $entityUuid
   ) {
     action: setHistoryIndex(index: $index) {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -456,7 +430,7 @@ mutation pbRevertAllChanges(
     entityUuid: $entityUuid
   ) {
     action: revertAllChanges {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -471,7 +445,7 @@ mutation pbUndo(
     entityUuid: $entityUuid
   ) {
     action: undo {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -512,7 +486,7 @@ mutation pbCopyFromExisting(
     entityUuid: $entityUuid
   ) {
     action: copy_from_existing(fields: $fields, sourceUuid: $sourceUuid) {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -527,7 +501,7 @@ mutation pbTakeOwnership(
     entityUuid: $entityUuid
   ) {
     action: takeOwnership {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
@@ -541,14 +515,14 @@ query pbAllTypes {
 }
 
 query pbAllowedTypes {
-  paragraphsBuilderAllowedTypes {
-    ...paragraphsBuilderAllowedType
+  paragraphsBlokkliAllowedTypes {
+    ...paragraphsBlokkliAllowedType
   }
 }
 
 query pbConversions {
-  paragraphsBuilderConversions {
-    ...paragraphsBuilderConversion
+  paragraphsBlokkliConversions {
+    ...paragraphsBlokkliConversion
   }
 }
 
@@ -558,11 +532,11 @@ query pbAvailableParagraphs {
       ...paragraphsType
     }
   }
-  paragraphsBuilderAllowedTypes {
-    ...paragraphsBuilderAllowedType
+  paragraphsBlokkliAllowedTypes {
+    ...paragraphsBlokkliAllowedType
   }
-  paragraphsBuilderConversions {
-    ...paragraphsBuilderConversion
+  paragraphsBlokkliConversions {
+    ...paragraphsBlokkliConversion
   }
 }
 
@@ -590,18 +564,18 @@ query pbExisting(
   ) {
     total
     items {
-      ...paragraphsBuilderExistingEntity
+      ...paragraphsBlokkliExistingEntity
     }
   }
 }
 
-fragment paragraphsBuilderExistingEntity on Entity {
+fragment paragraphsBlokkliExistingEntity on Entity {
   id
   label
   uuid
 }
 
-fragment paragraphsBuilderConversion on ParagraphsBuilderConversion {
+fragment paragraphsBlokkliConversion on ParagraphsBlokkliConversion {
   sourceBundle
   targetBundle
 }
@@ -615,7 +589,7 @@ fragment paragraphsType on ParagraphsType {
   isTranslatable
 }
 
-fragment paragraphsBuilderAllowedType on ParagraphsBuilderAllowedType {
+fragment paragraphsBlokkliAllowedType on ParagraphsBlokkliAllowedType {
   entityType
   bundle
   fieldName

@@ -4,14 +4,14 @@ import { falsy } from '#blokkli/helpers'
 import { useGraphqlQuery, useGraphqlMutation, computed } from '#imports'
 import type { BlokkliAdapter } from '#blokkli/adapter'
 import {
-  ParagraphsBuilderCommentFragment,
-  ParagraphsBuilderEditStateFragment,
+  ParagraphsBlokkliCommentFragment,
+  ParagraphsBlokkliEditStateFragment,
 } from '#build/graphql-operations'
 import type { BlockBundleDefinition } from '#blokkli/types'
 
-type DrupalAdapter = BlokkliAdapter<ParagraphsBuilderEditStateFragment>
+type DrupalAdapter = BlokkliAdapter<ParagraphsBlokkliEditStateFragment>
 
-export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
+export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
   (providedContext) => {
     const ctx = computed(() => {
       return {
@@ -43,7 +43,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
 
     const getConversions: DrupalAdapter['getConversions'] = () =>
       useGraphqlQuery('pbConversions').then(
-        (v) => v?.data.paragraphsBuilderConversions || [],
+        (v) => v?.data.paragraphsBlokkliConversions || [],
       )
 
     const getAllBundles: DrupalAdapter['getAllBundles'] = () =>
@@ -211,7 +211,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
           uuid: options[0].uuid,
           key: options[0].key,
           value: options[0].value,
-          pluginId: 'paragraph_builder_data',
+          pluginId: 'paragraphs_blokkli_data',
         }).then(mapMutation)
       }
       const persistItems = options.map((v) => {
@@ -219,7 +219,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
           uuid: v.uuid,
           key: v.key,
           value: v.value,
-          pluginId: 'paragraph_builder_data',
+          pluginId: 'paragraphs_blokkli_data',
         }
       })
       return useGraphqlMutation('pbBulkUpdateParagraphBehaviorSettings', {
@@ -242,14 +242,14 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
 
       // The options are in the form of:
       // uuid: {
-      //   paragraph_builder_data: {
+      //   paragraphs_blokkli_data: {
       //     key: 'value'
       //   }
       // }
       const mutatedOptions = state.mutatedState?.mutatedOptions || {}
       Object.keys(mutatedOptions).forEach((uuid) => {
         mutatedOptions[uuid] =
-          mutatedOptions[uuid]?.paragraph_builder_data || {}
+          mutatedOptions[uuid]?.paragraphs_blokkli_data || {}
       })
 
       const translations: EntityTranslation[] =
@@ -302,7 +302,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
     }
 
     const mapComments = (
-      comments: Array<ParagraphsBuilderCommentFragment | {}>,
+      comments: Array<ParagraphsBlokkliCommentFragment | {}>,
     ) =>
       comments
         .map((item) => {
@@ -365,7 +365,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
 
     const getLastChanged: DrupalAdapter['getLastChanged'] = () =>
       $fetch<{ changed: number }>(
-        `/paragraphs_builder/${ctx.value.entityType}/${ctx.value.entityUuid}/last_changed`,
+        `/paragraphs_blokkli/${ctx.value.entityType}/${ctx.value.entityUuid}/last_changed`,
       ).then((v) => v.changed)
 
     const getPreviewGrantUrl: DrupalAdapter['getPreviewGrantUrl'] = () =>
@@ -375,7 +375,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
 
     const getTransformPlugins: DrupalAdapter['getTransformPlugins'] = () =>
       useGraphqlQuery('pbGetTransformPlugins')
-        .then((v) => v.data.paragraphsBuilderGetTransformPlugins || [])
+        .then((v) => v.data.paragraphsBlokkliGetTransformPlugins || [])
         .then((plugins) =>
           plugins.map((plugin) => {
             return {
@@ -398,14 +398,14 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
     const buildFormUrl = (parts: string | string[]) => {
       const prefix = `$PREFIX$`
       const url = typeof parts === 'string' ? parts : '/' + parts.join('/')
-      return { url: prefix + url + `?paragraphsBuilder=true` }
+      return { url: prefix + url + `?paragraphsBlokkli=true` }
     }
 
     const formFrameBuilder: DrupalAdapter['formFrameBuilder'] = (e) => {
       const entityType = ctx.value.entityType.toLowerCase()
       if (e.id === 'block:add') {
         return buildFormUrl([
-          'paragraphs_builder',
+          'paragraphs_blokkli',
           entityType,
           ctx.value.entityUuid,
           'add',
@@ -417,16 +417,16 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
         ])
       } else if (e.id === 'block:edit' || e.id === 'block:translate') {
         return buildFormUrl(
-          `/paragraphs_builder/${entityType}/${ctx.value.entityUuid}/edit/${e.data.uuid}`,
+          `/paragraphs_blokkli/${entityType}/${ctx.value.entityUuid}/edit/${e.data.uuid}`,
         )
       } else if (e.id === 'entity:edit' || e.id === 'entity:translate') {
         const langcode = 'langcode' in e ? e.langcode : ctx.value.language
         return buildFormUrl(
-          `/paragraphs_builder/${entityType}/${ctx.value.entityUuid}/edit_entity/${langcode}`,
+          `/paragraphs_blokkli/${entityType}/${ctx.value.entityUuid}/edit_entity/${langcode}`,
         )
       } else if (e.id === 'batchTranslate') {
         buildFormUrl(
-          `/paragraphs_builder/${entityType}/${ctx.value.entityUuid}/translate-paragraphs`,
+          `/paragraphs_blokkli/${entityType}/${ctx.value.entityUuid}/translate-paragraphs`,
         )
       }
     }
@@ -455,7 +455,7 @@ export default defineBlokkliEditAdapter<ParagraphsBuilderEditStateFragment>(
       e,
     ) => {
       return buildFormUrl(
-        `/paragraphs_builder/${ctx.value.entityType}/${ctx.value.entityUuid}/edit/${e.uuid}/rich_text/${e.fieldName}`,
+        `/paragraphs_blokkli/${ctx.value.entityType}/${ctx.value.entityUuid}/edit/${e.uuid}/rich_text/${e.fieldName}`,
       ).url
     }
 

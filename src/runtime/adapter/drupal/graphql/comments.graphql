@@ -1,4 +1,4 @@
-fragment paragraphsBuilderComment on CommentBlokkliNode {
+fragment paragraphsBlokkliComment on CommentBlokkliNode {
   uuid
   blockUuids: fieldTargetUuids
   resolved: fieldResolved
@@ -19,7 +19,7 @@ query pbComments($entityType: EntityType!, $entityUuid: String!) {
     entityUuid: $entityUuid
   ) {
     comments {
-      ...paragraphsBuilderComment
+      ...paragraphsBlokkliComment
     }
   }
 }
@@ -35,7 +35,7 @@ mutation pbAddComment(
     entityUuid: $entityUuid
   ) {
     action: addComment(body: $body, paragraphUuids: $blockUuids) {
-      ...paragraphsBuilderComment
+      ...paragraphsBlokkliComment
     }
   }
 }
@@ -50,7 +50,7 @@ mutation pbResolveComment(
     entityUuid: $entityUuid
   ) {
     action: resolveComment(uuid: $uuid) {
-      ...paragraphsBuilderComment
+      ...paragraphsBlokkliComment
     }
   }
 }

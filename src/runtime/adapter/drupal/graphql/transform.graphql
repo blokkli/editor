@@ -1,5 +1,5 @@
 query pbGetTransformPlugins {
-  paragraphsBuilderGetTransformPlugins {
+  paragraphsBlokkliGetTransformPlugins {
     id
     label
     bundles
@@ -21,7 +21,7 @@ mutation pbApplyTransformPlugin(
     entityUuid: $entityUuid
   ) {
     action: transform(pluginId: $pluginId, uuids: $uuids) {
-      ...paragraphsBuilderMutationResult
+      ...paragraphsBlokkliMutationResult
     }
   }
 }
