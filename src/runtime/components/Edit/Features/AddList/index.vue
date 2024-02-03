@@ -24,6 +24,7 @@
         { 'bk-is-active': isActive },
         'bk-is-' + ui.addListOrientation.value,
       ]"
+      :style="style"
       @wheel.capture="onWheel"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
@@ -50,7 +51,7 @@ import {
 import { Sortli } from '#blokkli/components'
 import { PluginSidebar } from '#blokkli/plugins'
 
-defineBlokkliFeature({
+const { settings } = defineBlokkliFeature({
   id: 'add-list',
   icon: 'plus',
   label: 'Add List',
@@ -101,6 +102,29 @@ watch(shouldRender, () => {
 const wrapper = ref<HTMLDivElement | null>(null)
 const isActive = ref(false)
 let mouseTimeout: any = null
+
+const style = computed(() => {
+  if (
+    settings.value.orientation === 'vertical' &&
+    isActive.value &&
+    wrapper.value
+  ) {
+    const labels = [
+      ...wrapper.value.querySelectorAll('.bk-list-item-label span'),
+    ] as HTMLSpanElement[]
+
+    // Determine which label has the largest width.
+    const width = labels.reduce((acc, el) => {
+      if (el.offsetWidth > acc) {
+        return el.offsetWidth
+      }
+      return acc
+    }, 0)
+    return {
+      '--bk-add-list-width': width + 90,
+    }
+  }
+})
 
 function onMouseEnter() {
   clearTimeout(mouseTimeout)

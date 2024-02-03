@@ -92,9 +92,10 @@
 
 .bk-list-item.bk-is-vertical {
   .bk-list-item-label {
-    @apply absolute whitespace-nowrap opacity-0 text-mono-100/50  transition w-[300px] text-left;
+    @apply absolute whitespace-nowrap opacity-0 text-mono-100/50  transition text-left;
     @apply top-0 left-full p-10 h-full ml-[7px];
     @apply text-lg font-semibold;
+    width: calc(var(--bk-add-list-width) * 1px);
   }
   @apply w-70 px-10 py-5 cursor-grab block;
   @screen lg {
@@ -133,9 +134,9 @@
     }
 
     &.bk-is-active {
-      @apply w-[300px];
+      width: calc(var(--bk-add-list-width) * 1px);
       &:after {
-        transform: scaleX(calc(300 / 70));
+        transform: scaleX(calc(var(--bk-add-list-width) / 70));
       }
       .bk-list-item-label {
         @apply opacity-100;
