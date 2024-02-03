@@ -9,6 +9,7 @@
 <script lang="ts" setup>
 import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
 
 const props = defineProps<{
   group?: string
@@ -21,7 +22,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['pressed'])
 
-const { state, keyboard } = useBlokkli()
+const { state } = useBlokkli()
 
 const key = computed(() =>
   [props.meta, props.shift, props.keyCode.toLowerCase()].join('-'),
@@ -41,15 +42,15 @@ const keyLabel = computed(() => {
   return props.keyCode.toUpperCase()
 })
 
-const shortcut = computed(() => {
-  return {
+if (!props.viewOnly) {
+  defineShortcut({
     meta: props.meta,
     shift: props.shift,
     code: props.keyCode,
     label: props.label,
     group: props.group,
-  }
-})
+  })
+}
 
 onBlokkliEvent('keyPressed', (e) => {
   const checkKey = [e.meta, e.shift, e.code.toLowerCase()].join('-')
@@ -69,15 +70,12 @@ onMounted(() => {
   if (props.viewOnly) {
     return
   }
-
-  keyboard.registerShortcut(shortcut.value)
 })
 
 onBeforeUnmount(() => {
   if (props.viewOnly) {
     return
   }
-  keyboard.unregisterShortcut(shortcut.value)
 })
 </script>
 

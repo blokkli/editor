@@ -61,20 +61,19 @@
 
 <script lang="ts" setup>
 import {
-  computed,
   defineBlokkliFeature,
   ref,
   useBlokkli,
   onMounted,
   onUnmounted,
 } from '#imports'
-
 import { PluginSidebar } from '#blokkli/plugins'
 import ClipboardList from './List/index.vue'
-import type { ClipboardItem, KeyboardShortcut } from '#blokkli/types'
+import type { ClipboardItem } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
 import { Icon } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
 
 const { settings } = defineBlokkliFeature({
   id: 'clipboard',
@@ -94,7 +93,7 @@ const { settings } = defineBlokkliFeature({
   screenshot: 'feature-clipboard.jpg',
 })
 
-const { selection, $t, adapter, dom, state, ui, keyboard } = useBlokkli()
+const { selection, $t, adapter, dom, state, ui } = useBlokkli()
 
 const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
 
@@ -350,36 +349,32 @@ onBlokkliEvent('search:selectContentItem', (item) => {
   showClipboardSidebar()
 })
 
-const shortcuts = computed<KeyboardShortcut[]>(() => {
-  return [
-    {
-      code: 'C',
-      label: $t('clipboardCopyShortcutHelp', 'Copy selected blocks'),
-      meta: true,
-    },
-    {
-      code: 'V',
-      label: $t(
-        'clipboardPasteShortcutHelp',
-        'Paste text, image or copied blocks',
-      ),
-      meta: true,
-    },
-  ]
-})
+defineShortcut([
+  {
+    code: 'C',
+    label: $t('clipboardCopyShortcutHelp', 'Copy selected blocks'),
+    meta: true,
+  },
+  {
+    code: 'V',
+    label: $t(
+      'clipboardPasteShortcutHelp',
+      'Paste text, image or copied blocks',
+    ),
+    meta: true,
+  },
+])
 
 onMounted(() => {
   document.addEventListener('paste', onPaste)
   document.body.addEventListener('drop', onDrop)
   document.addEventListener('dragover', onDragOver)
-  shortcuts.value.forEach((v) => keyboard.registerShortcut(v))
 })
 
 onUnmounted(() => {
   document.removeEventListener('paste', onPaste)
   document.body.removeEventListener('drop', onDrop)
   document.removeEventListener('dragover', onDragOver)
-  shortcuts.value.forEach((v) => keyboard.unregisterShortcut(v))
 })
 </script>
 

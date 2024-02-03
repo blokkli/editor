@@ -9,15 +9,9 @@
 </template>
 
 <script lang="ts" setup>
+import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import {
-  useBlokkli,
-  defineBlokkliFeature,
-  onMounted,
-  onBeforeUnmount,
-  ref,
-  computed,
-} from '#imports'
+import { useBlokkli, defineBlokkliFeature, ref } from '#imports'
 import Palette from './Palette/index.vue'
 
 defineBlokkliFeature({
@@ -28,7 +22,7 @@ defineBlokkliFeature({
     'Provides a command palette with search to access most UI features with a keyboard.',
 })
 
-const { keyboard, $t } = useBlokkli()
+const { $t } = useBlokkli()
 
 const isVisible = ref(false)
 
@@ -39,21 +33,11 @@ onBlokkliEvent('keyPressed', (e) => {
   }
 })
 
-const shortcut = computed(() => {
-  return {
-    meta: true,
-    code: 'k',
-    label: $t('commandPalette.open', 'Open Command Palette'),
-    group: 'general',
-  }
-})
-
-onMounted(() => {
-  keyboard.registerShortcut(shortcut.value)
-})
-
-onBeforeUnmount(() => {
-  keyboard.unregisterShortcut(shortcut.value)
+defineShortcut({
+  meta: true,
+  code: 'k',
+  label: $t('commandPalette.open', 'Open Command Palette'),
+  group: 'general',
 })
 </script>
 
