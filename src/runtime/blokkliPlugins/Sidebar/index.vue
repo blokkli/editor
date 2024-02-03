@@ -91,19 +91,13 @@
 </template>
 
 <script setup lang="ts">
-import {
-  computed,
-  watch,
-  ref,
-  useBlokkli,
-  onMounted,
-  onBeforeUnmount,
-} from '#imports'
+import { computed, watch, ref, useBlokkli } from '#imports'
 import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon, ShortcutIndicator } from '#blokkli/components'
 import SidebarDetached from './Detached/index.vue'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import useAnimationFrame from '#blokkli/helpers/composables/useAnimationFrame'
 
 const props = withDefaults(
   defineProps<{
@@ -187,9 +181,8 @@ watch(activeSidebar, (active) => {
 const sidebarContent = ref<HTMLDivElement | null>(null)
 const scrolledToEnd = ref(false)
 const isOverflowing = ref(false)
-let raf: any = null
 
-const loop = () => {
+useAnimationFrame(() => {
   if (sidebarContent.value) {
     scrolledToEnd.value =
       sidebarContent.value.scrollHeight -
@@ -199,8 +192,7 @@ const loop = () => {
     isOverflowing.value =
       sidebarContent.value.scrollHeight > sidebarContent.value.offsetHeight
   }
-  raf = window.requestAnimationFrame(loop)
-}
+})
 
 const commandTitle = computed(() => {
   if (activeSidebar.value === props.id) {
@@ -237,14 +229,6 @@ onBlokkliEvent('item:dropped', () => {
   if (ui.isMobile.value && activeSidebar.value) {
     activeSidebar.value = ''
   }
-})
-
-onMounted(() => {
-  loop()
-})
-
-onBeforeUnmount(() => {
-  window.cancelAnimationFrame(raf)
 })
 
 defineExpose({ showSidebar })

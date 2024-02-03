@@ -9,7 +9,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onBeforeUnmount } from '#imports'
+import useAnimationFrame from '#blokkli/helpers/composables/useAnimationFrame'
+import { ref, computed } from '#imports'
 
 const props = defineProps<{
   width?: number
@@ -22,7 +23,6 @@ const rootWidth = ref(260)
 const nativeWidth = ref(0)
 const nativeHeight = ref(0)
 const computedHeight = ref(0)
-let raf: any = null
 
 const style = computed(() => {
   return {
@@ -37,7 +37,7 @@ const innerStyle = computed(() => {
   }
 })
 
-function loop() {
+useAnimationFrame(() => {
   if (root.value) {
     rootWidth.value = root.value.offsetWidth
   }
@@ -47,16 +47,6 @@ function loop() {
     nativeWidth.value = Math.max(inner.value.offsetWidth, rootWidth.value)
     computedHeight.value = rect.height
   }
-
-  raf = requestAnimationFrame(loop)
-}
-
-onMounted(() => {
-  loop()
-})
-
-onBeforeUnmount(() => {
-  cancelAnimationFrame(raf)
 })
 </script>
 

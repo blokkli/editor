@@ -16,9 +16,10 @@
 
 <script lang="ts" setup>
 import textProvider from '#blokkli/helpers/textProvider'
-import { ref, onMounted, onUnmounted, computed } from '#imports'
+import { ref, computed } from '#imports'
 import '#blokkli/theme'
 import '#blokkli/styles'
+import useAnimationFrame from '#blokkli/helpers/composables/useAnimationFrame'
 
 const props = defineProps<{
   uuid: string
@@ -37,9 +38,7 @@ const style = ref<Record<string, string>>({})
 const button = ref<HTMLButtonElement | null>(null)
 const isVisible = ref(false)
 
-let raf: any = null
-
-function loop() {
+useAnimationFrame(() => {
   const el = document.querySelector(`[data-provider-uuid="${props.uuid}"]`)
   isVisible.value = window.innerWidth > 1024
   if (isVisible.value && el && el instanceof HTMLElement && button.value) {
@@ -51,16 +50,6 @@ function loop() {
     )
     style.value.transform = `translateY(${y}px)`
   }
-
-  raf = window.requestAnimationFrame(loop)
-}
-
-onMounted(() => {
-  loop()
-})
-
-onUnmounted(() => {
-  window.cancelAnimationFrame(raf)
 })
 </script>
 

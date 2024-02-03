@@ -2,6 +2,7 @@ import { onMounted, onBeforeUnmount } from '#imports'
 import { falsy, isInsideRect } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import onBlokkliEvent from './composables/onBlokkliEvent'
+import useAnimationFrame from './composables/useAnimationFrame'
 
 export type AnimationProvider = {
   /**
@@ -13,8 +14,6 @@ export type AnimationProvider = {
 export default function (): AnimationProvider {
   let mouseX = 0
   let mouseY = 0
-
-  let raf: any = null
 
   // Keep track of how many frames should be rendered.
   // Assuming 60 fps, this value means after every draw request we will only
@@ -34,10 +33,9 @@ export default function (): AnimationProvider {
     iterator = 120
   }
 
-  const loop = () => {
+  useAnimationFrame(() => {
     // Make sure we don't loop when it's not needed.
     if (iterator < 1) {
-      raf = window.requestAnimationFrame(loop)
       return
     }
 
@@ -116,11 +114,9 @@ export default function (): AnimationProvider {
         })
       }
     }
-    raf = window.requestAnimationFrame(loop)
-  }
+  })
 
   onMounted(() => {
-    loop()
     document.addEventListener('scroll', requestDraw)
     document.body.addEventListener('wheel', requestDraw, { passive: false })
     window.addEventListener('mousemove', onMouseMoveGlobal, {
@@ -132,7 +128,6 @@ export default function (): AnimationProvider {
   })
 
   onBeforeUnmount(() => {
-    window.cancelAnimationFrame(raf)
     window.removeEventListener('mousemove', onMouseMoveGlobal)
     window.removeEventListener('touchmove', onTouchMoveGlobal)
     document.body.removeEventListener('wheel', requestDraw)
