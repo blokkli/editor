@@ -1,7 +1,7 @@
 <template>
   <div
-    class="bk bk-dialog bk-control"
     ref="rootEl"
+    class="bk bk-dialog bk-control"
     @wheel.stop
     @keydown.stop="onKeyDown"
     @keyup.stop

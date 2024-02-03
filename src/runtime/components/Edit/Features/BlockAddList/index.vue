@@ -233,8 +233,6 @@ const sortedList = computed(() => {
 
 const renderKey = ref('')
 
-const onAddListChange = () => {}
-
 const getBundlesForAppendCommands = () => {
   if (selection.blocks.value.length !== 1) {
     return []

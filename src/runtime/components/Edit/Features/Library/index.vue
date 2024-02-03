@@ -1,7 +1,7 @@
 <template>
   <PluginItemAction
-    id="library_detach"
     v-if="isReusable"
+    id="library_detach"
     :title="$t('libraryDetach', 'Detach from library')"
     icon="detach"
     multiple

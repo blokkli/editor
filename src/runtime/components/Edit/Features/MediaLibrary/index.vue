@@ -12,8 +12,8 @@
           <label v-if="filter.filter.type === 'text'" class="bk-form-text">
             <Icon name="search" />
             <input
-              type="text"
               v-model.lazy="filterValues[filter.key]"
+              type="text"
               :placeholder="filter.filter.placeholder"
             />
           </label>
@@ -38,7 +38,7 @@
             v-else-if="filter.filter.type === 'checkbox'"
             class="bk-checkbox-toggle"
           >
-            <input type="checkbox" v-model="filterValues[filter.key]" />
+            <input v-model="filterValues[filter.key]" type="checkbox" />
             <div />
             <span>{{ filter.filter.label }}</span>
           </label>
@@ -91,18 +91,6 @@ const { adapter } = defineBlokkliFeature({
 })
 
 const { $t } = useBlokkli()
-
-const getDefaultFilterValue = (filter: MediaLibraryFilter) => {
-  if (filter.type === 'text') {
-    return ''
-  } else if (filter.type === 'select') {
-    return Object.keys(filter.options)[0]
-  } else if (filter.type === 'checkbox') {
-    return false
-  } else if (filter.type === 'checkboxes') {
-    return []
-  }
-}
 
 const filterValues = ref<Record<string, any>>({})
 

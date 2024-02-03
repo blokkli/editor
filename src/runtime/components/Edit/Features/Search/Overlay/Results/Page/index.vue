@@ -3,8 +3,8 @@
     <button
       v-for="(item, i) in visibleItems"
       :key="item.item.uuid"
-      class="bk bk-search-item"
       ref="listItems"
+      class="bk bk-search-item"
       :class="{ 'bk-is-active': i === index }"
       @click.stop="clickItem"
       @mouseenter="index = i"

@@ -121,6 +121,7 @@ const props = withDefaults(
     minWidth: undefined,
     minHeight: undefined,
     size: undefined,
+    keyCode: undefined,
   },
 )
 
