@@ -52,6 +52,7 @@ import {
 import { AddListItem } from '#blokkli/components'
 import type { Command, DraggableExistingBlock } from '#blokkli/types'
 import { getDefinition } from '#blokkli/definitions'
+import defineCommands from '#blokkli/helpers/composables/defineCommands'
 
 defineBlokkliFeature({
   id: 'block-add-list',
@@ -73,7 +74,6 @@ const {
   eventBus,
   $t,
   state,
-  commands,
 } = useBlokkli()
 
 const shouldRender = computed(() => state.editMode.value === 'editing')
@@ -419,22 +419,20 @@ const getAppendCommands = (): Command[] => {
   })
 }
 
-const commandProvider = (): Command[] => {
+defineCommands(() => {
   return [
     ...getAppendCommands(),
     ...getInsertCommands(),
     ...getAppendEndCommands(),
   ]
-}
+})
 
 onMounted(() => {
   eventBus.on('add-list:change', onAddListChange)
-  commands.add(commandProvider)
 })
 
 onBeforeUnmount(() => {
   eventBus.off('add-list:change', onAddListChange)
-  commands.remove(commandProvider)
 })
 </script>
 

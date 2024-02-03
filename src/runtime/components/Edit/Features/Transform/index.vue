@@ -30,6 +30,7 @@ import { onlyUnique } from '#blokkli/helpers'
 import type { TransformPlugin } from '#blokkli/types'
 import Overlay from './Overlay/index.vue'
 import { filterTransforms } from '#blokkli/helpers/transform'
+import defineCommands from '#blokkli/helpers/composables/defineCommands'
 
 const { adapter } = defineBlokkliFeature({
   id: 'transform',
@@ -68,6 +69,16 @@ const possibleTransforms = computed<TransformPlugin[]>(() =>
     itemBundleIds.value,
     types.allowedTypesInList.value,
   ),
+)
+
+defineCommands(() =>
+  possibleTransforms.value.map((transform) => ({
+    id: 'transform:' + transform.id,
+    label: transform.label,
+    group: 'selection',
+    icon: 'puzzle',
+    callback: () => onTransform(transform, selection.uuids.value),
+  })),
 )
 </script>
 

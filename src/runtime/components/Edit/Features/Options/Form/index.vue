@@ -57,9 +57,9 @@ import OptionCheckboxes from './Checkboxes/index.vue'
 import OptionText from './Text/index.vue'
 import type { BlockDefinitionOptionsInput, Command } from '#blokkli/types'
 import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
+import defineCommands from '#blokkli/helpers/composables/defineCommands'
 
-const { adapter, eventBus, state, selection, runtimeConfig, commands, $t } =
-  useBlokkli()
+const { adapter, eventBus, state, selection, runtimeConfig, $t } = useBlokkli()
 const { mutatedOptions, canEdit, mutateWithLoadingState, editMode } = state
 
 const onClick = () => {
@@ -209,7 +209,7 @@ function setOptionValue(key: string, value: string) {
   })
 }
 
-const commandProvider = (): Command[] => {
+defineCommands(() => {
   return visibleOptions.value
     .flatMap((option) => {
       if (option.option.type === 'text') {
@@ -254,10 +254,9 @@ const commandProvider = (): Command[] => {
       }
     })
     .filter(falsy)
-}
+})
 
 onMounted(() => {
-  commands.add(commandProvider)
   props.uuids.forEach((uuid) => {
     availableOptions.value.forEach((option) => {
       original.set(uuid, option.property, option.value)
@@ -267,7 +266,6 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   selection.isChangingOptions.value = false
-  commands.remove(commandProvider)
   const values = updated
     .getEntries()
     .map((entry) => {

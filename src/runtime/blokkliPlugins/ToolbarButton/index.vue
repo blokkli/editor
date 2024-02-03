@@ -27,13 +27,10 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, useBlokkli } from '#imports'
 import { ShortcutIndicator } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon } from '#blokkli/components'
-import type { Command } from '#blokkli/types'
-
-const { commands } = useBlokkli()
+import defineCommands from '#blokkli/helpers/composables/defineCommands'
 
 const props = defineProps<{
   id: string
@@ -70,7 +67,7 @@ function onClick() {
   emit('click')
 }
 
-const commandProvider = (): Command => {
+defineCommands(() => {
   return {
     id: 'plugin:toolbar_button:' + props.id,
     label: props.title,
@@ -79,14 +76,6 @@ const commandProvider = (): Command => {
     disabled: props.disabled,
     callback: () => emit('click'),
   }
-}
-
-onMounted(() => {
-  commands.add(commandProvider)
-})
-
-onBeforeUnmount(() => {
-  commands.remove(commandProvider)
 })
 </script>
 

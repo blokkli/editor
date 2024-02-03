@@ -33,13 +33,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { Command } from '#blokkli/types'
-import {
-  useBlokkli,
-  defineBlokkliFeature,
-  onMounted,
-  onBeforeUnmount,
-} from '#imports'
+import defineCommands from '#blokkli/helpers/composables/defineCommands'
+import { useBlokkli, defineBlokkliFeature } from '#imports'
 
 defineBlokkliFeature({
   id: 'entity-title',
@@ -48,10 +43,10 @@ defineBlokkliFeature({
   description: 'Renders the title and status of the page entity.',
 })
 
-const { state, eventBus, $t, commands } = useBlokkli()
+const { state, eventBus, $t } = useBlokkli()
 const { entity, mutations } = state
 
-const commandProvider = (): Command => {
+defineCommands(() => {
   return {
     id: 'feature:entity-title:edit-entity',
     group: 'misc',
@@ -62,14 +57,6 @@ const commandProvider = (): Command => {
     callback: () => eventBus.emit('editEntity'),
     icon: 'edit',
   }
-}
-
-onMounted(() => {
-  commands.add(commandProvider)
-})
-
-onBeforeUnmount(() => {
-  commands.remove(commandProvider)
 })
 </script>
 

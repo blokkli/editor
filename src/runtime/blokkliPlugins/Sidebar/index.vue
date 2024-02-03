@@ -102,7 +102,7 @@ import {
 import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon, ShortcutIndicator } from '#blokkli/components'
 import SidebarDetached from './Detached/index.vue'
-import type { Command } from '#blokkli/types'
+import defineCommands from '#blokkli/helpers/composables/defineCommands'
 
 const props = withDefaults(
   defineProps<{
@@ -133,7 +133,7 @@ const emit = defineEmits<{
   (e: 'updated'): void
 }>()
 
-const { storage, state, ui, eventBus, commands, $t } = useBlokkli()
+const { storage, state, ui, eventBus, $t } = useBlokkli()
 
 const detachedKey = computed(() => 'sidebar:detached:' + props.id)
 const storageKey = computed(() => 'sidebar:active:' + props.region)
@@ -230,7 +230,7 @@ const commandCallback = () => {
   }
 }
 
-const commandProvider = (): Command => {
+defineCommands(() => {
   return {
     id: 'plugin:sidebar:' + props.id,
     label: commandTitle.value,
@@ -239,18 +239,16 @@ const commandProvider = (): Command => {
     disabled: isRenderedDetached.value,
     callback: commandCallback,
   }
-}
+})
 
 onMounted(() => {
   loop()
   eventBus.on('item:dropped', onItemDropped)
-  commands.add(commandProvider)
 })
 
 onBeforeUnmount(() => {
   window.cancelAnimationFrame(raf)
   eventBus.off('item:dropped', onItemDropped)
-  commands.remove(commandProvider)
 })
 
 defineExpose({ showSidebar })

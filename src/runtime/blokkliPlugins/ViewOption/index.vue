@@ -28,12 +28,12 @@
 </template>
 
 <script setup lang="ts">
-import { useBlokkli, onMounted, onBeforeUnmount, computed } from '#imports'
+import { useBlokkli, computed } from '#imports'
 import { ShortcutIndicator, Icon } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli/icons'
-import type { Command } from '#blokkli/types'
+import defineCommands from '#blokkli/helpers/composables/defineCommands'
 
-const { storage, ui, commands } = useBlokkli()
+const { storage, ui } = useBlokkli()
 
 const props = defineProps<{
   id: string
@@ -55,7 +55,7 @@ const onClick = () => {
   isActive.value = !isActive.value
 }
 
-const commandProvider = (): Command => {
+defineCommands(() => {
   return {
     id: 'plugin:view_option:' + props.id,
     label: title.value,
@@ -63,14 +63,6 @@ const commandProvider = (): Command => {
     group: 'ui',
     callback: () => (isActive.value = !isActive.value),
   }
-}
-
-onMounted(() => {
-  commands.add(commandProvider)
-})
-
-onBeforeUnmount(() => {
-  commands.remove(commandProvider)
 })
 </script>
 

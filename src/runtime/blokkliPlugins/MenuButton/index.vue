@@ -19,10 +19,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+import { computed, useBlokkli } from '#imports'
 import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon } from '#blokkli/components'
-import type { Command } from '#blokkli/types'
+import defineCommands from '#blokkli/helpers/composables/defineCommands'
 
 const props = defineProps<{
   id: string
@@ -37,7 +37,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['click'])
 
-const { ui, commands } = useBlokkli()
+const { ui } = useBlokkli()
 
 const to = computed(
   () => `#bk-menu-${props.secondary ? 'secondary' : 'primary'}`,
@@ -54,7 +54,7 @@ const commandCallback = () => {
   }
 }
 
-const commandProvider = (): Command => {
+defineCommands(() => {
   return {
     id: 'plugin:menu_button:' + props.id,
     group: 'action',
@@ -63,14 +63,6 @@ const commandProvider = (): Command => {
     disabled: props.disabled,
     callback: commandCallback,
   }
-}
-
-onMounted(() => {
-  commands.add(commandProvider)
-})
-
-onBeforeUnmount(() => {
-  commands.remove(commandProvider)
 })
 </script>
 
