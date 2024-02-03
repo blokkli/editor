@@ -5,7 +5,7 @@
   .bk-editable-field-input {
     @apply border-teal-normal border-2;
     @apply bg-white shadow-lg;
-    @apply w-full;
+    @apply w-full min-w-[360px];
     @screen md {
       @apply absolute bottom-0 left-0 rounded;
     }

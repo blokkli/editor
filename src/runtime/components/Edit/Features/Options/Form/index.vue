@@ -112,9 +112,7 @@ class OptionCollector {
 const original = new OptionCollector()
 const updated = new OptionCollector()
 
-const definition = computed(() => {
-  return getDefinition(props.itemBundle)
-})
+const definition = computed(() => getDefinition(props.itemBundle))
 
 const availableOptions = computed(() => {
   if (!definition.value) {

@@ -248,6 +248,9 @@ const focusInput = (el?: HTMLElement | Document | null) => {
 }
 
 const onAnimationFrame = () => {
+  if (ui.isMobile.value) {
+    return
+  }
   const elementRect = props.element.getBoundingClientRect()
 
   const height = form.value?.scrollHeight || 100
@@ -259,7 +262,7 @@ const onAnimationFrame = () => {
   const ideal = findIdealRectPosition(
     ui.viewportBlockingRects.value,
     {
-      x: elementRect.x + (elementRect.width - props.element.scrollWidth) / 2,
+      x: elementRect.x + (elementRect.width - width) / 2,
       y: elementRect.y - height - 20,
       height,
       width,
