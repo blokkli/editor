@@ -1,6 +1,6 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
-import * as prettier from 'prettier'
+import { format } from './../helpers'
 import * as globby from 'globby'
 import FeatureExtractor from './../../src/Extractor/FeatureExtractor'
 
@@ -11,7 +11,6 @@ async function main() {
     __dirname,
     './../../src/runtime/components/Edit/Features',
   )
-  console.log({ searchPath })
 
   const files = await globby.globby(searchPath + '/*/index.vue')
 
@@ -56,16 +55,7 @@ async function main() {
   }
   `
 
-  const prettierConfigFile = await fs.readFile(
-    path.resolve(__dirname, './../../.prettierrc'),
-    'utf8',
-  )
-
-  const prettierConfig = JSON.parse(prettierConfigFile)
-  const formatted = await prettier.format(typeFile, {
-    ...prettierConfig,
-    parser: 'typescript',
-  })
+  const formatted = await format(typeFile, 'typescript')
 
   const dest = path.resolve(
     __dirname,

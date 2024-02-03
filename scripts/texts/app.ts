@@ -4,6 +4,7 @@ import { BaseCallExpression, Expression, SpreadElement } from 'estree'
 import { parse } from 'acorn'
 import chalk from 'chalk'
 import { glob } from 'glob'
+import { format } from './../helpers'
 import { po as PO, type GetTextTranslation } from 'gettext-parser'
 
 const LANGUAGES = ['de', 'fr', 'it']
@@ -333,7 +334,8 @@ async function updateTranslationFile(
     __dirname,
     `./../../src/translations/${language}.json`,
   )
-  await fs.promises.writeFile(filePath, JSON.stringify(sorted, null, 2))
+  const formatted = await format(JSON.stringify(sorted, null, 2), 'json')
+  await fs.promises.writeFile(filePath, formatted)
 }
 
 async function generatePO(

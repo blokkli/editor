@@ -3,11 +3,9 @@
     <h2 class="font-bold text-2xl mb-20">On this page</h2>
     <ul class="flex gap-15">
       <li v-for="(link, i) in links" :key="i">
-        <a
-          :href="link.url"
-          class="font-bold text-sm uppercase text-mono-700"
-          >{{ link.label }}</a
-        >
+        <a :href="link.url" class="font-bold text-sm uppercase text-mono-700">{{
+          link.label
+        }}</a>
       </li>
     </ul>
   </div>

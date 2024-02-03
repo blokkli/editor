@@ -13,10 +13,10 @@ import { settingsOverride } from '#blokkli/config'
 type SettingType<S> = S extends { type: 'checkbox' }
   ? boolean
   : S extends { type: 'radios'; options: infer O }
-  ? keyof O
-  : S extends { type: 'slider'; default: infer N }
-  ? N
-  : never
+    ? keyof O
+    : S extends { type: 'slider'; default: infer N }
+      ? N
+      : never
 
 type SettingsTypes<S> = {
   [P in keyof S]: SettingType<S[P]>
