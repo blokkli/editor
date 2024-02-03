@@ -52,7 +52,7 @@
     @apply overflow-hidden;
   }
   #nuxt-root {
-    @apply bg-mono-200 overflow-hidden absolute right-0;
+    @apply bg-mono-200 overflow-hidden fixed right-0;
     left: 0;
     top: var(--bk-root-offset-top);
     bottom: var(--bk-root-offset-bottom);

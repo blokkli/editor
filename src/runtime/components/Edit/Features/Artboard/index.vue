@@ -63,7 +63,7 @@ const useArtboard = computed(
 )
 
 onBlokkliEvent('scrollIntoView', (e) => {
-  if (!useArtboard.value) {
+  if (useArtboard.value) {
     return
   }
   const item = dom.findBlock(e.uuid)
