@@ -24,7 +24,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
+import {
+  computed,
+  watch,
+  useBlokkli,
+  defineBlokkliFeature,
+  useLazyAsyncData,
+} from '#imports'
 import { PluginItemDropdown } from '#blokkli/plugins'
 import { onlyUnique } from '#blokkli/helpers'
 import type { TransformPlugin } from '#blokkli/types'
@@ -43,7 +49,22 @@ const { adapter } = defineBlokkliFeature({
 
 const { types, selection, state, $t } = useBlokkli()
 
-const plugins = await adapter.getTransformPlugins()
+const {
+  data: plugins,
+  execute,
+  status,
+} = await useLazyAsyncData(
+  () => {
+    return adapter.getTransformPlugins()
+  },
+  { immediate: false, default: () => [] },
+)
+
+watch(selection.uuids, async () => {
+  if (status.value === 'idle') {
+    execute()
+  }
+})
 
 async function onTransform(plugin: TransformPlugin, uuids: string[]) {
   await state.mutateWithLoadingState(
@@ -64,7 +85,7 @@ const itemBundleIds = computed(() =>
 
 const possibleTransforms = computed<TransformPlugin[]>(() =>
   filterTransforms(
-    plugins,
+    plugins.value || [],
     selection.uuids.value,
     itemBundleIds.value,
     types.allowedTypesInList.value,

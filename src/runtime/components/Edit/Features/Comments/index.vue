@@ -36,7 +36,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, onMounted, defineBlokkliFeature } from '#imports'
+import {
+  ref,
+  useBlokkli,
+  defineBlokkliFeature,
+  useLazyAsyncData,
+} from '#imports'
 import { PluginSidebar, PluginItemAction } from '#blokkli/plugins'
 import Comment from './Comment/index.vue'
 import CommentAddForm from './AddForm/index.vue'
@@ -53,10 +58,12 @@ const { adapter } = defineBlokkliFeature({
 })
 const { eventBus, $t } = useBlokkli()
 
-const comments = ref<CommentItem[]>([])
 const showAddComment = ref(false)
 
-const loadComments = async () => (comments.value = await adapter.loadComments())
+const { data: comments } = await useLazyAsyncData(
+  () => adapter.loadComments(),
+  { default: () => [] },
+)
 
 const onAddComment = async (body: string, uuids: string[]) => {
   comments.value = await adapter.addComment(uuids, body)
@@ -72,8 +79,6 @@ const onResolveComment = async (uuid: string) => {
 
 const onClickComment = (comment: CommentItem) =>
   eventBus.emit('select:end', comment.blockUuids || [])
-
-onMounted(loadComments)
 </script>
 
 <script lang="ts">

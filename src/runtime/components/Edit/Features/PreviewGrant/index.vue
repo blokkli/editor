@@ -33,7 +33,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, useAsyncData, defineBlokkliFeature } from '#imports'
+import {
+  ref,
+  useBlokkli,
+  defineBlokkliFeature,
+  useLazyAsyncData,
+} from '#imports'
 import { PluginToolbarButton } from '#blokkli/plugins'
 import QrCode from './QrCode/index.vue'
 import { DialogModal } from '#blokkli/components'
@@ -52,7 +57,7 @@ const { $t, ui } = useBlokkli()
 
 const qrCodeVisible = ref(false)
 
-const { data: previewGrantUrl } = await useAsyncData(() =>
+const { data: previewGrantUrl } = await useLazyAsyncData(() =>
   Promise.resolve(adapter.getPreviewGrantUrl()),
 )
 </script>

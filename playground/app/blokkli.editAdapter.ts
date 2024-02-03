@@ -137,9 +137,11 @@ export default defineBlokkliEditAdapter((ctx) => {
       return Promise.resolve(allTypes)
     },
     getConversions() {
+      console.log('Get conversion plugins')
       return Promise.resolve(conversions)
     },
     getTransformPlugins() {
+      console.log('Get transform plugins')
       return Promise.resolve(transforms)
     },
     applyTransformPlugin: (e) => addMutation('transform', e),
@@ -207,6 +209,7 @@ export default defineBlokkliEditAdapter((ctx) => {
       return mockResponse(editState.getMutatedState(getEntity()))
     },
     loadComments() {
+      console.log('Load comments')
       return loadComments()
     },
     addComment(blockUuids, body) {
@@ -283,6 +286,7 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     getLibraryItems(bundles: string[]) {
+      console.log('Get library items')
       const libraryItems = entityStorageManager.storages.library_item.loadAll()
 
       const items: LibraryItem[] = libraryItems
@@ -520,6 +524,7 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     getPreviewGrantUrl() {
+      console.log('Get preview grant URL')
       return route.fullPath
     },
 

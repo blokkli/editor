@@ -162,8 +162,6 @@ export class EntityStorageManager {
       this.addLibraryItem(libraryItem)
     })
 
-    console.log(this.storages.library_item.loadAll())
-
     videosData.forEach((item, i) => {
       this.createVideo((i + 100).toString(), item.url, item.title)
     })

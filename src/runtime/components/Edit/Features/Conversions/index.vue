@@ -18,7 +18,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
+import {
+  computed,
+  useBlokkli,
+  defineBlokkliFeature,
+  useLazyAsyncData,
+  watch,
+} from '#imports'
 import { ItemIcon } from '#blokkli/components'
 import { PluginItemDropdown } from '#blokkli/plugins'
 import { falsy, onlyUnique } from '#blokkli/helpers'
@@ -35,7 +41,20 @@ const { adapter } = defineBlokkliFeature({
 
 const { types, selection, state, $t } = useBlokkli()
 
-const conversions = await adapter.getConversions()
+const {
+  data: conversions,
+  execute,
+  status,
+} = await useLazyAsyncData(() => adapter.getConversions(), {
+  immediate: false,
+  default: () => [],
+})
+
+watch(selection.uuids, () => {
+  if (status.value === 'idle') {
+    execute()
+  }
+})
 
 async function onConvert(targetBundle?: string) {
   if (!targetBundle) {
@@ -60,7 +79,7 @@ const possibleConversions = computed<BlockBundleDefinition[]>(() => {
     return []
   }
   const sourceType = itemBundleIds.value[0]
-  return conversions
+  return conversions.value
     .filter(
       (v) =>
         v.sourceBundle === sourceType &&
