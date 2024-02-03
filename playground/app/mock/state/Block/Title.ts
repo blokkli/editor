@@ -23,7 +23,7 @@ export class BlockTitle extends Block {
       ...super.getFieldDefintions(),
       new FieldText('tagline', 'Tagline'),
       new FieldText('title', 'Title'),
-      new FieldTextarea('lead', 'Lead'),
+      new FieldText('lead', 'Lead'),
     ]
   }
 

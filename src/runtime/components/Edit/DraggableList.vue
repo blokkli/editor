@@ -18,7 +18,6 @@
     <BlokkliItem
       v-for="(item, i) in renderList"
       :key="item.uuid"
-      v-memo="[item.selected]"
       :uuid="item.uuid"
       :bundle="item.bundle"
       :is-new="item.isNew"

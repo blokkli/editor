@@ -3,6 +3,7 @@ import type { MutatedField, MutationItem } from '#blokkli/types'
 import { entityStorageManager } from '../entityStorage'
 import { createMutation, type MutationArgsMap } from '../plugins/mutations'
 import { mapBlockItem } from '../state'
+import { createBlock } from './Block'
 import type { Block } from './Block/Block'
 import type { Entity } from './Entity'
 import type { FieldBlocks } from './Field/Blocks'
@@ -30,7 +31,9 @@ export class BlockProxy {
   }
 
   static fromEntity(block: Block, hostField: string, entity: Entity) {
-    return new BlockProxy(block, entity.entityType, entity.uuid, hostField)
+    const clone = createBlock(block.bundle, block.uuid)
+    clone.setValues(block.getValues())
+    return new BlockProxy(clone, entity.entityType, entity.uuid, hostField)
   }
 
   markAsDeleted() {
