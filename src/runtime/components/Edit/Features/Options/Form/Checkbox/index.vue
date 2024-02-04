@@ -7,22 +7,43 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from '#imports'
+import defineCommands from '#blokkli/helpers/composables/defineCommands'
+import { computed, useBlokkli } from '#imports'
+
+const { $t } = useBlokkli()
+
 const props = defineProps<{
   label: string
-  value: string
+  property: string
+  modelValue: string
 }>()
 
-const emit = defineEmits(['update'])
+const emit = defineEmits(['update:modelValue'])
 
 const checked = computed({
   get() {
-    return props.value === '1'
+    return props.modelValue === '1'
   },
   set(v: any) {
-    emit('update', v ? '1' : '')
+    emit('update:modelValue', v ? '1' : '')
   },
+})
+
+defineCommands(() => {
+  return {
+    id: 'options:' + props.property + ':toggle',
+    label: $t('optionsCommand.setOption', 'Set option "@option" to "@value"')
+      .replace('@option', props.label)
+      .replace('@value', checked.value ? 'false' : 'true'),
+    group: 'selection',
+    icon: 'form',
+    callback: () => (checked.value = !checked.value),
+  }
 })
 </script>
 
-<style lang="postcss"></style>
+<script lang="ts">
+export default {
+  name: 'OptionsFormCheckbox',
+}
+</script>

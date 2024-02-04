@@ -9,19 +9,19 @@
           <tr>
             <th>Key</th>
             <th>Type</th>
-            <th>Value</th>
+            <th class="w-full">Value</th>
           </tr>
         </thead>
         <tbody>
           <tr>
+            <th>showAllOptions</th>
+            <td>checkbox</td>
+            <td>{{ JSON.stringify(options.showAllOptions) }}</td>
+          </tr>
+          <tr>
             <th>columns</th>
             <td>radios</td>
             <td>{{ JSON.stringify(options.columns) }}</td>
-          </tr>
-          <tr>
-            <th>mobile</th>
-            <td>checkbox</td>
-            <td>{{ JSON.stringify(options.mobile) }}</td>
           </tr>
           <tr>
             <th>countries</th>
@@ -66,6 +66,11 @@ const { options } = defineBlokkli({
   bundle: 'widget',
   globalOptions: ['background'],
   options: {
+    showAllOptions: {
+      type: 'checkbox',
+      label: 'Show all options',
+      default: true,
+    },
     columns: {
       type: 'radios',
       label: 'Columns',
@@ -77,11 +82,7 @@ const { options } = defineBlokkli({
         four: 'icon-blokkli-option-four',
       },
     },
-    mobile: {
-      type: 'checkbox',
-      label: 'Mobile',
-      default: true,
-    },
+
     countries: {
       type: 'checkboxes',
       label: 'Countries',
@@ -124,7 +125,7 @@ const { options } = defineBlokkli({
     color: {
       type: 'radios',
       label: 'Color',
-      default: 'white',
+      default: 'normal',
       displayAs: 'colors',
       options: {
         normal: '#FFFFFF', // White
@@ -135,6 +136,21 @@ const { options } = defineBlokkli({
   editor: {
     editTitle: (el) => el.dataset.widget,
     addBehaviour: 'no-form',
+    determineVisibleOptions: (ctx) => {
+      if (ctx.options.showAllOptions) {
+        return [
+          'showAllOptions',
+          'color',
+          'columns',
+          'anchorId',
+          'countries',
+          'background',
+          'columnsGrid',
+          'buttonType',
+        ]
+      }
+      return ['showAllOptions']
+    },
   },
 })
 </script>

@@ -5,7 +5,8 @@ your app, the options are managed by blökkli. Options are directly defined in
 the component.
 
 One important thing to note is that the data for the options is always stored as
-strings. For example, the value of a checkbox is stored as `'1'` or `'0'`.
+strings. For example, the value of a checkbox is stored as `'1'` or `'0'` and
+the value of the `checkboxes` type is stored as `'one,two,seven'`.
 
 The returned object from defineBlokkli() contains the `options` property which
 is a reactive computed property of the options for this component.
@@ -25,7 +26,7 @@ const { options } = defineBlokkli({
     box: {
       type: 'checkbox',
       label: translations.boxOptionLabel, // [!code error]
-      default: '1',
+      default: false,
     },
   },
 })
@@ -48,12 +49,12 @@ const { options } = defineBlokkli({
     box: {
       type: 'checkbox',
       label: 'Mobile',
-      default: '1',
+      default: true,
     },
   },
 })
 
-// Either '1', '0' or undefined.
+// Either true, false or undefined.
 console.log(options.value.box)
 </script>
 ```

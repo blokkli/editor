@@ -74,7 +74,6 @@ const key = computed(() => Object.values(filterValues.value))
 
 const { data } = await useLazyAsyncData(
   () => {
-    console.log('Media library')
     return adapter.mediaLibraryGetResults!({
       filters: filterValues.value,
       page: 0,

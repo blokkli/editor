@@ -28,6 +28,7 @@ import {
   INJECT_REUSABLE_OPTIONS,
   INJECT_PROVIDER_BLOCKS,
 } from '../helpers/symbols'
+import { getRuntimeOptionValue } from '#blokkli/helpers/runtimeHelpers'
 
 /**
  * Define a blokkli component.
@@ -36,37 +37,22 @@ export function defineBlokkli<
   T extends BlockDefinitionOptionsInput = {},
   G extends GlobalOptionsKey[] | undefined = undefined,
 >(config: BlockDefinitionInput<T, G>): DefineBlokkliContext<T, G> {
-  const optionKeys: string[] = []
-  // The default options are provided by the component definition itself.
-  const defaultOptions: Record<string, any> = {}
-  for (const key in config.options) {
-    optionKeys.push(key)
-    if (config.options[key] && 'default' in config.options[key]) {
-      defaultOptions[key] = config.options[key].default
-    }
-  }
-
-  // If the item uses global options, we add the default values from the
-  // global options to the default options of this item.
-  if (config.globalOptions) {
-    config.globalOptions.forEach((key) => {
-      optionKeys.push(key)
-      const defaultValue = (globalOptionsDefaults as any)[key as any]?.default
-      if (defaultValue !== undefined) {
-        defaultOptions[key] = defaultValue
-      }
-    })
-  }
+  const optionKeys: string[] = [
+    ...Object.keys(config.options || {}),
+    ...(config.globalOptions || []),
+  ]
 
   const fieldListType = inject<ComputedRef<ValidFieldListTypes>>(
     INJECT_FIELD_LIST_TYPE,
     computed(() => 'default'),
   )!
 
+  // All blocks in the same field as this block.
   const siblings = inject<ComputedRef<FieldListItemTyped[]>>(
     INJECT_FIELD_LIST_BLOCKS,
   )!
 
+  // All blocks in the root field.
   const rootBlocks = inject<ComputedRef<FieldListItemTyped[]>>(
     INJECT_PROVIDER_BLOCKS,
   )!
@@ -76,8 +62,6 @@ export function defineBlokkli<
   const uuid = item?.value.uuid || ''
   const index =
     item?.value.index !== undefined ? item.value.index : computed(() => 0)
-
-  const parentType = computed(() => item?.value.parentType)
 
   // This is injected by the "from_library" blokkli component.
   // If its present it means this blokkli is reusable. In this case it
@@ -101,6 +85,7 @@ export function defineBlokkli<
         ...(editContext?.mutatedOptions.value[uuid] || {}),
       }
     }
+
     const result = optionKeys.reduce<
       Record<string, string | boolean | string[]>
     >((acc, key) => {
@@ -114,6 +99,7 @@ export function defineBlokkli<
         }
       }
 
+      // Use the option inherited from the "from_library" block if this block is reusable.
       if (fromLibraryOptions) {
         if (fromLibraryOptions.value[key] !== undefined) {
           acc[key] = fromLibraryOptions.value[key]
@@ -127,31 +113,23 @@ export function defineBlokkli<
         return acc
       }
 
-      // Fallback to the default defined by the component.
-      acc[key] = defaultOptions[key]
       return acc
     }, {})
 
-    Object.keys(result).forEach((key) => {
+    // Map the values to the runtime value.
+    optionKeys.forEach((key) => {
       const definition = config.options?.[key] || globalOptionsDefaults[key]
       if (!definition) {
         return
       }
-
-      if (definition.type === 'checkbox') {
-        result[key] = result[key] === '1'
-      } else if (definition.type === 'checkboxes') {
-        const v = result[key] || ''
-        if (typeof v === 'string') {
-          result[key] = v.split(',')
-        } else if (v === null || v === undefined || typeof v === 'boolean') {
-          result[key] = []
-        }
-      }
+      result[key] = getRuntimeOptionValue(definition, result[key])
     })
 
     return result
   })
+
+  // The parent block type if this block is nested.
+  const parentType = computed(() => item?.value.parentType)
 
   const isEditing = !!item?.value.isEditing
 
@@ -166,11 +144,13 @@ export function defineBlokkli<
       editContext.dom.registerBlock(uuid, instance.vnode.el)
     }
   })
+
   onBeforeUnmount(() => {
     if (editContext && uuid) {
       editContext.dom.unregisterBlock(uuid)
     }
   })
+
   return {
     uuid,
     index,
@@ -180,5 +160,5 @@ export function defineBlokkli<
     fieldListType,
     siblings,
     rootBlocks,
-  } as any
+  } as any // Must be cast because type of options is inferred automatically.
 }

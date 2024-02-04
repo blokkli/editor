@@ -191,17 +191,19 @@
   }
 
   .bk-blokkli-item-options-text {
-    @apply cursor-pointer h-full;
+    @apply cursor-pointer h-full relative;
     input {
-      @apply bg-transparent h-full px-10 focus:outline-none focus:shadow-none focus:bg-mono-800;
+      @apply bg-transparent h-full px-10 focus:outline-none focus:shadow-none focus:bg-mono-800 absolute top-0 left-0 w-full;
+    }
+    > div {
+      @apply px-10 whitespace-pre pointer-events-none invisible;
+      @apply min-w-[100px] max-w-[250px];
+      @apply overflow-hidden;
     }
     @media not all and (hover: none) {
       &:hover {
         color: var(--gin-color-primary);
       }
-    }
-
-    &.bk-is-type-number {
     }
   }
 
@@ -247,14 +249,14 @@
     }
 
     button {
-      @apply flex items-center gap-10 h-full;
+      @apply flex items-center gap-10 h-full min-w-[200px];
       svg {
         fill: currentColor;
         @apply text-mono-100 w-20 h-15;
       }
 
-      span:nth-child(2) {
-        @apply ml-10;
+      > span:first-child {
+        @apply mr-auto;
       }
 
       .bk-pill {

@@ -301,6 +301,16 @@ export class EditState {
 
     const mutatedFields: Record<string, MutatedField> = {}
 
+    entity.getBlockFields().forEach((field) => {
+      const key = field.getFieldListKey()
+      mutatedFields[key] = {
+        name: field.id,
+        entityType: entity.entityType,
+        entityUuid: entity.uuid,
+        list: [],
+      }
+    })
+
     for (let i = 0; i < context.proxies.length; i++) {
       const proxy = context.proxies[i]
 

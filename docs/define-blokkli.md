@@ -49,7 +49,7 @@ const { options } = defineBlokkli({
     box: {
       type: 'checkbox',
       label: 'Box',
-      default: '1',
+      default: true,
     },
   },
 })

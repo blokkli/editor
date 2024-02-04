@@ -12,10 +12,10 @@
         <input
           :id="option.key"
           type="radio"
-          :name="name"
+          :name="property"
           :value="option.key"
-          :checked="value === option.key"
-          @change="$emit('update', option.key)"
+          :checked="modelValue === option.key"
+          @change="$emit('update:modelValue', option.key)"
         />
         <div
           v-if="displayAs === 'icons'"
@@ -35,17 +35,21 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from '#imports'
+import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/components'
+import defineCommands from '#blokkli/helpers/composables/defineCommands'
+
+const { $t } = useBlokkli()
 
 const props = defineProps<{
-  name: string
+  label: string
+  property: string
   displayAs?: 'radios' | 'colors' | 'grid' | 'icons'
   options: Record<string, string | number[]>
-  value: string
+  modelValue: string
 }>()
 
-defineEmits(['update'])
+const emit = defineEmits(['update:modelValue'])
 
 function getInputWrapperAttributes(value: string | number[]) {
   if (props.displayAs === 'colors' && typeof value === 'string') {
@@ -66,4 +70,33 @@ const mappedOptions = computed(() => {
     return { key, value }
   })
 })
+
+const setValue = (value: string) => {
+  emit('update:modelValue', value)
+}
+
+defineCommands(() => {
+  return mappedOptions.value
+    .filter((v) => v.key !== props.modelValue)
+    .map((option) => {
+      return {
+        id: 'options:' + props.property + option.key,
+        label: $t(
+          'optionsCommand.setOption',
+          'Set option "@option" to "@value"',
+        )
+          .replace('@option', props.label)
+          .replace('@value', option.key),
+        group: 'selection',
+        icon: 'form',
+        callback: () => setValue(option.key),
+      }
+    })
+})
+</script>
+
+<script lang="ts">
+export default {
+  name: 'OptionsFormRadios',
+}
 </script>

@@ -1,6 +1,7 @@
 import type { Command } from '#blokkli/types'
+import { falsy } from '.'
 
-type CommandsProviderFunction = () => Command[] | Command
+type CommandsProviderFunction = () => Command[] | Command | undefined
 
 export type CommandsProvider = {
   add: (fn: CommandsProviderFunction) => void
@@ -19,7 +20,7 @@ export default function (): CommandsProvider {
     functions = functions.filter((v) => v !== fn)
   }
 
-  const getCommands = () => functions.flatMap((fn) => fn())
+  const getCommands = () => functions.flatMap((fn) => fn()).filter(falsy)
 
   return {
     add,

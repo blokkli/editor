@@ -1,6 +1,7 @@
 <template>
   <div class="bk-blokkli-item-options-text" :class="'bk-is-type-' + type">
-    <input v-model="text" :type="type" :placeholder="label" :style="style" />
+    <input v-model="text" :type="type" :placeholder="label" />
+    <div>{{ text }}</div>
   </div>
 </template>
 
@@ -10,7 +11,7 @@ import { computed } from '#imports'
 const props = withDefaults(
   defineProps<{
     label: string
-    value: string
+    modelValue: string
     type?: string
   }>(),
   {
@@ -18,22 +19,20 @@ const props = withDefaults(
   },
 )
 
-const emit = defineEmits(['update'])
-
-const style = computed(() => {
-  return {
-    width: Math.max(text.value.length * 20, 100) + 'px',
-  }
-})
+const emit = defineEmits(['update:modelValue'])
 
 const text = computed<string>({
   get() {
-    return props.value || ''
+    return props.modelValue || ''
   },
   set(v: string | number | undefined) {
-    emit('update', (v === undefined ? '' : v).toString())
+    emit('update:modelValue', (v === undefined ? '' : v).toString())
   },
 })
 </script>
 
-<style lang="postcss"></style>
+<script lang="ts">
+export default {
+  name: 'OptionsFormText',
+}
+</script>
