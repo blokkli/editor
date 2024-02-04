@@ -5,7 +5,7 @@
     }}</label>
     <textarea
       id="comment_body"
-      v-model.lazy="comment"
+      v-model="comment"
       type="text"
       class="bk-form-input"
       rows="5"
@@ -23,4 +23,10 @@ import { ref, useBlokkli } from '#imports'
 const comment = ref('')
 defineEmits(['add'])
 const { $t } = useBlokkli()
+
+const getComment = (): string => {
+  return comment.value
+}
+
+defineExpose({ getComment })
 </script>

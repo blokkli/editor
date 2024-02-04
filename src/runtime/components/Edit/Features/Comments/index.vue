@@ -24,7 +24,7 @@
     @click="showAddComment = !showAddComment"
   >
     <template v-if="showAddComment" #default="{ uuids }">
-      <CommentAddForm @add="onAddComment($event, uuids)" />
+      <CommentAddForm ref="commentForm" @add="onAddComment($event, uuids)" />
     </template>
   </PluginItemAction>
 
@@ -37,6 +37,7 @@
 
 <script lang="ts" setup>
 import {
+  watch,
   ref,
   useBlokkli,
   defineBlokkliFeature,
@@ -56,9 +57,19 @@ const { adapter } = defineBlokkliFeature({
   description: 'Provides comment functionality for blocks.',
   screenshot: 'feature-comments.jpg',
 })
-const { eventBus, $t } = useBlokkli()
 
+const { eventBus, $t, selection } = useBlokkli()
+
+const commentForm = ref<InstanceType<typeof CommentAddForm> | null>(null)
 const showAddComment = ref(false)
+
+watch(selection.uuids, () => {
+  if (commentForm.value) {
+    if (!commentForm.value.getComment()) {
+      showAddComment.value = false
+    }
+  }
+})
 
 const { data: comments } = await useLazyAsyncData(
   () => adapter.loadComments(),
