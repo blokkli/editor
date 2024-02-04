@@ -52,6 +52,8 @@ export default defineNuxtConfig({
         default: 0.9,
       },
     },
+
+    featureImports: ['./blokkli/DemoFeature.vue'],
   },
 
   svgIconSprite: {

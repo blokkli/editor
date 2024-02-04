@@ -140,7 +140,7 @@ export type ModuleOptions = {
   defaultLanguage?: string
 
   /**
-   * Alter features by removing or adding new ones.
+   * Alter features.
    *
    * It's also possible to override builtin feature components with custom
    * implementations.
@@ -148,6 +148,11 @@ export type ModuleOptions = {
   alterFeatures?: (
     ctx: AlterFeatures,
   ) => Promise<ExtractedFeatureDefinition[]> | ExtractedFeatureDefinition[]
+
+  /**
+   * Add custom features by defining either a pattern or path to a feature component.
+   */
+  featureImports?: string[]
 
   /**
    * Theme colors for the editor.
@@ -252,21 +257,23 @@ export default defineNuxtModule<ModuleOptions>({
 
     const featureFolder = resolver.resolve('./runtime/components/Edit/Features')
     const featureExtractor = new FeatureExtractor(!nuxt.options.dev)
-    const features: ExtractedFeatureDefinition[] = await resolveFiles(
-      featureFolder,
-      ['*/index.vue'],
-      {
-        followSymbolicLinks: false,
-      },
-    ).then(async (files) => {
-      await featureExtractor.addFiles(files)
-      return featureExtractor.getFeatures().filter((v) => {
-        // Remove the theme editor feature if not enabled.
-        if (v.id === 'theme' && !moduleOptions.enableThemeEditor) {
-          return false
-        }
-        return true
-      })
+    const builtinFeatures = await resolveFiles(featureFolder, ['*/index.vue'], {
+      followSymbolicLinks: false,
+    })
+
+    const customFeatures = moduleOptions.featureImports
+      ? await resolveFiles(srcDir, moduleOptions.featureImports, {
+          followSymbolicLinks: false,
+        })
+      : []
+
+    await featureExtractor.addFiles([...builtinFeatures, ...customFeatures])
+    const features = featureExtractor.getFeatures().filter((v) => {
+      // Remove the theme editor feature if not enabled.
+      if (v.id === 'theme' && !moduleOptions.enableThemeEditor) {
+        return false
+      }
+      return true
     })
 
     const featuresContext: AlterFeatures = {

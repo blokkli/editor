@@ -5,7 +5,7 @@
       :class="[{ 'is-active': activeSidebar === id }, 'bk-is-' + region]"
       :disabled="editOnly && state.editMode.value !== 'editing'"
       :style="{ order: weight }"
-      @click.prevent.stop="toggleSidebar(id)"
+      @click.prevent.stop="toggleSidebar"
     >
       <slot name="icon">
         <Icon v-if="icon" :name="icon" />
@@ -18,7 +18,7 @@
           :shift="shift"
           :key-code="keyCode"
           :label="title"
-          @pressed="toggleSidebar(id)"
+          @pressed="toggleSidebar"
         />
       </div>
     </button>
@@ -53,6 +53,7 @@
               :is-detached="isRenderedDetached"
               :width="width"
               :height="height"
+              :toggle-sidebar="toggleSidebar"
             />
           </div>
         </div>
@@ -70,7 +71,7 @@
           <button v-if="!ui.isMobile.value" @click.prevent.stop="onDetach">
             <Icon name="expand" />
           </button>
-          <button @click.prevent.stop="toggleSidebar(id)">
+          <button @click.prevent.stop="toggleSidebar">
             <Icon name="close" />
           </button>
         </div>
@@ -83,6 +84,7 @@
             :is-detached="isRenderedDetached"
             :width="undefined"
             :height="undefined"
+            :toggle-sidebar="toggleSidebar"
           />
         </div>
       </div>
@@ -157,10 +159,14 @@ const onAttach = () => {
   emit('updated')
 }
 
-const toggleSidebar = (id: string) => {
-  activeSidebar.value === id
+const toggleSidebar = () => {
+  if (isDetached.value) {
+    isDetached.value = false
+    return
+  }
+  activeSidebar.value === props.id
     ? (activeSidebar.value = '')
-    : (activeSidebar.value = id)
+    : (activeSidebar.value = props.id)
   emit('updated')
 }
 
