@@ -1,6 +1,11 @@
 export default defineNuxtConfig({
   ssr: false,
-  modules: ['../src/module', '@nuxtjs/tailwindcss', 'nuxt-svg-icon-sprite'],
+  modules: [
+    '@nuxt/test-utils/module',
+    '../src/module',
+    '@nuxtjs/tailwindcss',
+    'nuxt-svg-icon-sprite',
+  ],
 
   imports: {
     autoImport: false,
