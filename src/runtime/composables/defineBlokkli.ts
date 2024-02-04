@@ -51,7 +51,7 @@ export function defineBlokkli<
   if (config.globalOptions) {
     config.globalOptions.forEach((key) => {
       optionKeys.push(key)
-      const defaultValue = (globalOptionsDefaults as any)[key as any]
+      const defaultValue = (globalOptionsDefaults as any)[key as any]?.default
       if (defaultValue !== undefined) {
         defaultOptions[key] = defaultValue
       }
@@ -101,7 +101,9 @@ export function defineBlokkli<
         ...(editContext?.mutatedOptions.value[uuid] || {}),
       }
     }
-    const result = optionKeys.reduce<Record<string, string>>((acc, key) => {
+    const result = optionKeys.reduce<
+      Record<string, string | boolean | string[]>
+    >((acc, key) => {
       // Use an override option if available.
       if (editContext) {
         const overrideOptions = editContext.mutatedOptions.value[uuid] || {}
@@ -129,6 +131,24 @@ export function defineBlokkli<
       acc[key] = defaultOptions[key]
       return acc
     }, {})
+
+    Object.keys(result).forEach((key) => {
+      const definition = config.options?.[key] || globalOptionsDefaults[key]
+      if (!definition) {
+        return
+      }
+
+      if (definition.type === 'checkbox') {
+        result[key] = result[key] === '1'
+      } else if (definition.type === 'checkboxes') {
+        const v = result[key] || ''
+        if (typeof v === 'string') {
+          result[key] = v.split(',')
+        } else if (v === null || v === undefined || typeof v === 'boolean') {
+          result[key] = []
+        }
+      }
+    })
 
     return result
   })

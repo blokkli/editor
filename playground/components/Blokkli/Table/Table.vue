@@ -41,7 +41,7 @@ defineProps<{
 
     tbody {
       tr {
-        @apply bg-white border-b;
+        @apply bg-white border-b border-b-mono-200;
       }
       th,
       td {

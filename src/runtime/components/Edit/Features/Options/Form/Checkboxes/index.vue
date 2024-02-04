@@ -40,7 +40,7 @@ import { Icon } from '#blokkli/components'
 
 const props = defineProps<{
   label: string
-  value?: string
+  value?: string | string[]
   options: Record<string, string>
 }>()
 
@@ -50,7 +50,12 @@ const isOpen = ref(false)
 
 const checked = computed<string[]>({
   get() {
-    return (props.value || '').split(',').filter(Boolean)
+    if (typeof props.value === 'string') {
+      return (props.value || '').split(',').filter(Boolean)
+    } else if (Array.isArray(props.value)) {
+      return props.value
+    }
+    return []
   },
   set(newValue: string[]) {
     emit('update', newValue.filter(Boolean).join(','))

@@ -6,9 +6,9 @@
   >
     <div
       :class="{
-        'p-10 lg:p-20 rounded shadow-lg border h-full': isBox,
-        'bg-mono-700 border-mono-600': isBox && isInverted,
-        'bg-white border-mono-300': isBox && !isInverted,
+        'p-10 lg:p-20 rounded shadow-lg border h-full': options.box,
+        'bg-mono-700 border-mono-600': options.box && isInverted,
+        'bg-white border-mono-300': options.box && !isInverted,
       }"
     >
       <div
@@ -53,7 +53,7 @@ const { parentType, options } = defineBlokkli({
     box: {
       type: 'checkbox',
       label: 'Box',
-      default: '1',
+      default: true,
     },
     color: {
       type: 'radios',
@@ -65,18 +65,6 @@ const { parentType, options } = defineBlokkli({
         lightYellow: 'bg-yellow-normal',
         lightGreen: 'bg-lime-normal',
         lightRed: 'bg-red-normal',
-      },
-    },
-    countries: {
-      type: 'checkboxes',
-      label: 'Countries',
-      default: 'ch,de,at',
-      options: {
-        ch: 'Switzerland',
-        de: 'Germany',
-        at: 'Austria',
-        it: 'Italy',
-        fr: 'France',
       },
     },
   },
@@ -95,8 +83,6 @@ const { parentType, options } = defineBlokkli({
 })
 
 defineProps<Props>()
-
-const isBox = computed(() => options.value.box === '1')
 
 const injectedInverted = inject<ComputedRef<boolean> | null>('isInverted', null)
 const isInverted = computed(() => !!injectedInverted?.value)

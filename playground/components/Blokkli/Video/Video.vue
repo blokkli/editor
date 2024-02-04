@@ -1,6 +1,6 @@
 <template>
   <div :class="{ 'container my-40': !parentType }">
-    <div :class="{ 'overflow-hidden shadow-xl rounded-lg': isElevated }">
+    <div :class="{ 'overflow-hidden shadow-xl rounded-lg': options.elevated }">
       <div v-if="url && src" class="aspect-[16/9] relative bg-gray">
         <a
           v-if="thumbnail && !isPlaying"
@@ -52,7 +52,7 @@ const { options, parentType } = defineBlokkli({
     elevated: {
       type: 'checkbox',
       label: 'Elevated',
-      default: '1',
+      default: true,
     },
   },
   editor: {
@@ -67,7 +67,6 @@ const props = defineProps<{
 const isPlaying = ref(false)
 
 const url = computed(() => props.video.url())
-const isElevated = computed(() => options.value.elevated == '1')
 const thumbnail = computed(() => props.video.thumbnail())
 const youtubeId = computed(() => props.video.getYouTubeID())
 const title = computed(() => props.video.title())

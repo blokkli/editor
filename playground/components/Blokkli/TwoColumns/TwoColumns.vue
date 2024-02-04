@@ -61,7 +61,7 @@ const { options } = defineBlokkli({
     reverse: {
       type: 'checkbox',
       label: 'Reverse',
-      default: '0',
+      default: false,
     },
   },
   editor: {

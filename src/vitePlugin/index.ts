@@ -24,7 +24,8 @@ type RuntimeDefinitionInput = {
   bundle: string
   options?: {
     [key: string]: {
-      default: string
+      default: string | string[]
+      type: string
     }
   }
   globalOptions?: string[]
@@ -82,10 +83,9 @@ function buildRuntimeDefinition(
     runtimeDefinition.options = {}
     Object.entries(definition.options).forEach(
       ([optionKey, optionDefinition]) => {
-        if (optionDefinition.default) {
-          runtimeDefinition.options![optionKey] = {
-            default: optionDefinition.default,
-          }
+        runtimeDefinition.options![optionKey] = {
+          type: optionDefinition.type,
+          default: optionDefinition.default,
         }
       },
     )

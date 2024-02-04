@@ -192,16 +192,26 @@ export const getDefinition = (bundle: string): BlockDefinitionInput<Record<strin
   generateDefaultGlobalOptions(
     globalOptions: BlockDefinitionOptionsInput = {},
   ): string {
-    const defaults = Object.entries(globalOptions).reduce<
-      Record<string, string>
-    >((acc, [key, option]) => {
-      if (option.default) {
-        acc[key] = option.default
-      }
-      return acc
-    }, {})
-    return `import type { GlobalOptionsKey } from '#blokkli/generated-types'
-export const globalOptionsDefaults: Record<GlobalOptionsKey, string> = ${JSON.stringify(
+    const defaults = Object.entries(globalOptions).reduce<Record<string, any>>(
+      (acc, [key, option]) => {
+        if (option.default) {
+          acc[key] = {
+            default: option.default,
+            type: option.type,
+          }
+        }
+        return acc
+      },
+      {},
+    )
+    return `import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
+
+type GlobalOptionsDefaults = {
+  type: BlockOptionDefinition['type']
+  default: any
+}
+
+export const globalOptionsDefaults: Record<string, GlobalOptionsDefaults> = ${JSON.stringify(
       defaults,
       null,
       2,

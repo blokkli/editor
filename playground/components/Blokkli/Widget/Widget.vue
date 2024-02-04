@@ -1,11 +1,68 @@
 <template>
-  <div>This block demonstrates all possible option types.</div>
+  <div class="container">
+    <h2 class="text-xl font-bold mb-25">
+      This block demonstrates all possible option types.
+    </h2>
+    <div class="table">
+      <table>
+        <thead>
+          <tr>
+            <th>Key</th>
+            <th>Type</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>columns</th>
+            <td>radios</td>
+            <td>{{ JSON.stringify(options.columns) }}</td>
+          </tr>
+          <tr>
+            <th>mobile</th>
+            <td>checkbox</td>
+            <td>{{ JSON.stringify(options.mobile) }}</td>
+          </tr>
+          <tr>
+            <th>countries</th>
+            <td>checkboxes</td>
+            <td>{{ JSON.stringify(options.countries) }}</td>
+          </tr>
+          <tr>
+            <th>anchorId</th>
+            <td>text</td>
+            <td>{{ JSON.stringify(options.anchorId) }}</td>
+          </tr>
+          <tr>
+            <th>buttonType</th>
+            <td>radios</td>
+            <td>{{ JSON.stringify(options.buttonType) }}</td>
+          </tr>
+          <tr>
+            <th>columnsGrid</th>
+            <td>radios</td>
+            <td>{{ JSON.stringify(options.columnsGrid) }}</td>
+          </tr>
+          <tr>
+            <th>color</th>
+            <td>radios</td>
+            <td>{{ JSON.stringify(options.color) }}</td>
+          </tr>
+          <tr>
+            <th>background</th>
+            <td>radios</td>
+            <td>{{ JSON.stringify(options.background) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { defineBlokkli } from '#imports'
 
-const { options, parentType } = defineBlokkli({
+const { options } = defineBlokkli({
   bundle: 'widget',
   globalOptions: ['background'],
   options: {
@@ -23,12 +80,12 @@ const { options, parentType } = defineBlokkli({
     mobile: {
       type: 'checkbox',
       label: 'Mobile',
-      default: '1',
+      default: true,
     },
     countries: {
       type: 'checkboxes',
       label: 'Countries',
-      default: 'ch,de,at',
+      default: ['ch', 'de', 'at'],
       options: {
         ch: 'Switzerland',
         de: 'Germany',

@@ -41,7 +41,7 @@ const { parentType, fieldListType, uuid } = defineBlokkli({
     showInMenu: {
       type: 'checkbox',
       label: 'Show in menu',
-      default: '1',
+      default: true,
     },
   },
   editor: {

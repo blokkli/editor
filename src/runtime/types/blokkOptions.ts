@@ -1,5 +1,3 @@
-export type StringBoolean = '0' | '1' | ''
-
 type DefinitionOptionText = {
   type: 'text'
   default: string
@@ -9,7 +7,7 @@ type DefinitionOptionText = {
 
 type DefinitionOptionCheckbox = {
   type: 'checkbox'
-  default: StringBoolean
+  default: boolean
   label: string
 }
 
@@ -17,9 +15,9 @@ type DefinitionOptionCheckboxes = {
   type: 'checkboxes'
   label: string
   /**
-   * The default values, separated by comma.
+   * The default values.
    */
-  default: string
+  default: string[]
   options: Record<string, string>
 }
 

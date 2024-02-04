@@ -1,7 +1,9 @@
 <template>
   <div :class="{ 'container my-40': !parentType }">
     <div
-      :class="{ 'overflow-hidden shadow-xl rounded-lg bg-white': isElevated }"
+      :class="{
+        'overflow-hidden shadow-xl rounded-lg bg-white': options.elevated,
+      }"
     >
       <img v-if="url" :src="url" :alt="alt" />
     </div>
@@ -18,7 +20,7 @@ const { options, parentType } = defineBlokkli({
     elevated: {
       type: 'checkbox',
       label: 'Elevated',
-      default: '1',
+      default: true,
     },
   },
   editor: {
@@ -45,6 +47,4 @@ const alt = computed(() => {
   }
   return ''
 })
-
-const isElevated = computed(() => options.value.elevated == '1')
 </script>

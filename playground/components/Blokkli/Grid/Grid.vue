@@ -19,7 +19,7 @@
       :list="blocks"
       class="container grid gap-20 lg:gap-40"
       :class="{
-        'grid-cols-2': options.mobile === '1',
+        'grid-cols-2': options.mobile,
         'lg:grid-cols-2': options.columns === 'two',
         'lg:grid-cols-3': options.columns === 'three',
         'lg:grid-cols-4': options.columns === 'four',
@@ -50,7 +50,7 @@ const { options } = defineBlokkli({
     mobile: {
       type: 'checkbox',
       label: 'Mobile',
-      default: '1',
+      default: true,
     },
   },
   editor: {
