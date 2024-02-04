@@ -227,7 +227,7 @@
         ],
         "title": ["Interactive $page building$ experience for Nuxt"],
         "lead": [
-          "Simple content pages or complex landing pages. Blokkli provides a solid modular framework to build your own editing experience - with any backend."
+          "Simple content pages or complex landing pages. blökkli provides a solid modular framework to build your own editing experience - with any backend."
         ],
         "buttons": [
           { "uuid": "0962e858-fbf6-4f98-bf6f-f7813bd5f9be" },
@@ -257,7 +257,7 @@
         "tagline": ["Simplicity"],
         "title": ["Essential Tools for Seamless Editing"],
         "lead": [
-          "Navigate the basics of page building with unparalleled ease. Blokkli's core functionalities are designed to enhance your productivity, from simple edits to complex page structures."
+          "Navigate the basics of page building with unparalleled ease. blökkli's core functionalities are designed to enhance your productivity, from simple edits to complex page structures."
         ]
       }
     },
@@ -376,7 +376,7 @@
         "tagline": ["Teamwork Made Easy"],
         "title": ["Facilitate Collaboration and Extend Functionality"],
         "lead": [
-          "Blokkli encourages teamwork and flexibility, allowing you to comment, share, and integrate seamlessly."
+          "blökkli encourages teamwork and flexibility, allowing you to comment, share, and integrate seamlessly."
         ]
       }
     },
@@ -446,7 +446,7 @@
         "tagline": ["Integration"],
         "title": ["It's just the editor"],
         "lead": [
-          "Blokkli only requires a simple data structure and integrates with any CMS using a single adapter interface."
+          "blökkli only requires a simple data structure and integrates with any CMS using a single adapter interface."
         ]
       }
     },
@@ -459,7 +459,7 @@
         "icon": ["adapter"],
         "title": ["Custom"],
         "text": [
-          "Write your own adapter for integrating Blokkli with your CMS or any backend."
+          "Write your own adapter for integrating blökkli with your CMS or any backend."
         ]
       }
     },
@@ -523,7 +523,7 @@
         "icon": ["lightbulb"],
         "title": ["Simple"],
         "text": [
-          "Blokkli provides an adapter to integrate the editor with any existing Paragraphs based Drupal setup."
+          "blökkli provides an adapter to integrate the editor with any existing Paragraphs based Drupal setup."
         ]
       }
     },
@@ -652,7 +652,7 @@
         "tagline": ["Multi Everything"],
         "title": ["Multilingual Support and Advanced Previewing"],
         "lead": [
-          "Blokkli transcends language barriers and offers advanced previewing options, ensuring your content resonates globally."
+          "blökkli transcends language barriers and offers advanced previewing options, ensuring your content resonates globally."
         ]
       }
     },
@@ -665,7 +665,7 @@
         "icon": ["translate"],
         "title": ["Multilanguage"],
         "text": [
-          "Blokkli supports a multilingual workflow. When translating content, the structure can not be altered."
+          "blökkli supports a multilingual workflow. When translating content, the structure can not be altered."
         ]
       }
     },
@@ -691,7 +691,7 @@
         "icon": ["qr"],
         "title": ["Hands-on Live-Preview"],
         "text": [
-          "If supported by the backend, Blokkli can generate a QR code that can be scanned on a smartphone to see and feel a preview of the page, with live reloading."
+          "If supported by the backend, blökkli can generate a QR code that can be scanned on a smartphone to see and feel a preview of the page, with live reloading."
         ]
       }
     },
@@ -751,8 +751,8 @@
       "uuid": "332bbf33-2368-4b56-8ae6-4855657bc5d4",
       "values": {
         "options": [{ "key": "color", "value": "primary" }],
-        "title": ["Explore Paragraphs Builder"],
-        "url": ["/"]
+        "title": ["Check out the module"],
+        "url": ["https://www.drupal.org/project/paragraphs_blokkli"]
       }
     },
     {
@@ -784,7 +784,7 @@
         "tagline": ["Drupal"],
         "title": ["Integration with Drupal Paragraphs"],
         "lead": [
-          "Blokkli comes with an adapter to integrate the editor in existing or new Paragraphs based setups. The \"Paragraphs Builder\" Drupal module implements all features required to use Blokkli as your editing experience."
+          "blökkli comes with an adapter to integrate the editor in existing or new Paragraphs based setups. The \"paragraphs_blokkli\" Drupal module implements all features required to use blökkli as your editing experience."
         ]
       }
     },
