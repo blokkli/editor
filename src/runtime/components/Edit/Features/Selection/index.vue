@@ -9,6 +9,7 @@
 </template>
 
 <script lang="ts" setup>
+import { calculateIntersection } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import Overlay from './Overlay/index.vue'
@@ -20,7 +21,7 @@ defineBlokkliFeature({
   description: 'Renders an overlay that highlights the selected blocks.',
 })
 
-const { selection, state, ui, eventBus } = useBlokkli()
+const { selection, state, ui, eventBus, animation, dom } = useBlokkli()
 
 const isVisible = computed(
   () =>
@@ -31,9 +32,61 @@ const isVisible = computed(
     !ui.isAnimating.value,
 )
 
+/**
+ * Find the block that is most visible for the user.
+ *
+ * Most visible is determined by how much of the block intersects with the
+ * padded visible viewport area.
+ */
+const findMostVisibleBlock = (): string | null => {
+  const blocks = dom.getAllBlocks()
+
+  let maxIntersection = 0
+  let mostVisibleUuid: string | undefined = blocks[0]?.uuid
+
+  for (let i = 0; i < blocks.length; i++) {
+    const block = blocks[i]
+
+    // Ignore nested blocks.
+    if (block.isNested) {
+      continue
+    }
+
+    const rect = block.element().getBoundingClientRect()
+
+    // The intersection as a value from 0 to 1.
+    const intersection = calculateIntersection(
+      rect,
+      ui.visibleViewportPadded.value,
+    )
+    if (intersection && intersection > maxIntersection) {
+      mostVisibleUuid = block.uuid
+      maxIntersection = intersection
+    }
+  }
+
+  return mostVisibleUuid
+}
+
 onBlokkliEvent('keyPressed', (e) => {
   if (e.code === 'Escape') {
-    eventBus.emit('select:end')
+    eventBus.emit('select:end', [])
+  } else if (e.code === 'Tab') {
+    e.originalEvent.preventDefault()
+
+    // No block is selected.
+    if (selection.blocks.value.length !== 1) {
+      // Select the most visible block for the user.
+      const uuid = findMostVisibleBlock()
+      if (uuid) {
+        eventBus.emit('select', uuid)
+        eventBus.emit('scrollIntoView', { uuid })
+      }
+      return
+    }
+
+    e.shift ? eventBus.emit('select:previous') : eventBus.emit('select:next')
+    animation.requestDraw()
   }
 })
 </script>

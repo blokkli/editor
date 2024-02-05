@@ -286,6 +286,9 @@ export function calculateIntersection(
   rectA: Rectangle,
   rectB: Rectangle,
 ): number {
+  if (!intersects(rectA, rectB)) {
+    return 0
+  }
   const xOverlap = Math.max(
     0,
     Math.min(rectA.x + rectA.width, rectB.x + rectB.width) -
