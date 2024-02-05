@@ -726,17 +726,18 @@ onBlokkliEvent('scrollIntoView', (e) => {
   }
 
   const rect = element.getBoundingClientRect()
+  const rectHeight = element.offsetHeight * scale.value
 
   let targetY: number | null = null
-  const rootHeight = ui.rootElement().offsetHeight
+  const rootHeight = ui.visibleViewportPadded.value.height
 
   if (e.center) {
     targetY =
-      offset.value.y - rect.y + props.padding + rootHeight / 2 - rect.height / 2
+      offset.value.y - rect.y + props.padding + rootHeight / 2 - rectHeight / 2
   } else if (rect.y < 70) {
     targetY = offset.value.y - (rect.y - props.padding) + 70
-  } else if (rect.y + rect.height > rootHeight) {
-    targetY = offset.value.y + (rootHeight - (rect.y + rect.height) - 40)
+  } else if (rect.y + rectHeight > rootHeight) {
+    targetY = offset.value.y + (rootHeight - (rect.y + rectHeight) - 40)
   }
 
   if (targetY) {

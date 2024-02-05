@@ -24,28 +24,74 @@ import type { RenderedBlock, StateProvider } from './stateProvider'
 import onBlokkliEvent from './composables/onBlokkliEvent'
 
 /**
+ * Find the longest common subsequence between two arrays.
+ */
+const findLCS = (a: string[], b: string[]): string[] => {
+  const dp = Array.from({ length: a.length + 1 }, () =>
+    Array(b.length + 1).fill(0),
+  )
+
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      if (a[i - 1] === b[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1])
+      }
+    }
+  }
+
+  let i = a.length,
+    j = b.length
+  const lcs: string[] = []
+  while (i > 0 && j > 0) {
+    if (a[i - 1] === b[j - 1]) {
+      lcs.unshift(a[i - 1])
+      i--
+      j--
+    } else if (dp[i - 1][j] > dp[i][j - 1]) {
+      i--
+    } else {
+      j--
+    }
+  }
+  return lcs
+}
+
+/**
  * Determine which blocks should be selected when the state changes.
  */
 const getSelectedAfterStateChange = (
   selected: string[],
   newBlocks: RenderedBlock[],
   oldBlocks: RenderedBlock[],
-): { scroll?: boolean; uuids: string[] } | undefined => {
+): string[] | undefined => {
   const newUuids = newBlocks.map((v) => v.item.uuid)
   const oldUuids = oldBlocks.map((v) => v.item.uuid)
-
-  const newBlock = newUuids.find((uuid) => !oldUuids.includes(uuid))
-  if (newBlock) {
-    return { uuids: [newBlock], scroll: true }
-  }
-
-  if (selected.length === 0) {
-    return
-  }
 
   const stillExisting = selected.filter((uuid) =>
     newUuids.find((v) => v === uuid),
   )
+
+  // Some currently selected blocks still exist, so let's keep that selection.
+  if (stillExisting.length) {
+    return stillExisting
+  }
+
+  // A new block was addded. Select this one.
+  const newBlock = newUuids.find((uuid) => !oldUuids.includes(uuid))
+  if (newBlock) {
+    return [newBlock]
+  }
+
+  // Same amount of blocks before and after, so blocks were likely moved.
+  if (newBlocks.length === oldBlocks.length) {
+    const lcs = findLCS(oldUuids, newUuids)
+    const toSelect = newUuids.filter((el) => !lcs.includes(el))
+    if (toSelect.length) {
+      return toSelect
+    }
+  }
 
   // No blocks exist anymore.
   if (stillExisting.length === 0) {
@@ -55,13 +101,11 @@ const getSelectedAfterStateChange = (
       if (index !== -1) {
         const previousUuid = oldBlocks[index - 1]?.item.uuid
         if (previousUuid) {
-          return { uuids: [previousUuid], scroll: true }
+          return [previousUuid]
         }
       }
     }
   }
-
-  return { scroll: true, uuids: stillExisting }
 }
 
 /**
@@ -221,13 +265,12 @@ export default function (
       prevBlocks,
     )
 
-    if (result) {
-      selectedUuids.value = result.uuids
-      if (result.scroll && selectedUuids.value.length) {
+    if (result && result.length) {
+      selectedUuids.value = result
+      if (selectedUuids.value.length) {
         nextTick(() => {
           eventBus.emit('scrollIntoView', {
-            uuid: result.uuids[0],
-            center: true,
+            uuid: result[0],
           })
         })
       }

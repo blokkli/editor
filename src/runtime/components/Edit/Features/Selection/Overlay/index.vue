@@ -94,14 +94,8 @@ const selectedRects = computed<SelectedRect[]>(() => {
     rects.push({
       x: (rect.x - artboardRect.x) / scale - bounds.value.x,
       y: (rect.y - artboardRect.y) / scale - bounds.value.y + artboardScroll,
-      width:
-        element instanceof HTMLElement
-          ? element.offsetWidth
-          : element.scrollWidth,
-      height:
-        element instanceof HTMLElement
-          ? element.offsetHeight
-          : element.scrollHeight,
+      width: element.scrollWidth,
+      height: element.scrollHeight,
       uuid: block.uuid,
       style,
     })
