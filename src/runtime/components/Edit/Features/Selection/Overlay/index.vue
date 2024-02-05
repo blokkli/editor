@@ -54,8 +54,8 @@ const bounds = computed<BoundsRectable | null>(() => {
         return {
           x: (rect.x - artboardRect.x) / scale,
           y: (rect.y - artboardRect.y) / scale,
-          width: element.offsetWidth,
-          height: element.offsetHeight,
+          width: element.scrollWidth,
+          height: element.scrollHeight,
         }
       }
     })
@@ -121,7 +121,7 @@ const styleSize = computed(() => {
 onMounted(() => {
   interval = setInterval(() => {
     delayedRefresh.value += 1
-  }, 200)
+  }, 100)
 })
 
 onBeforeUnmount(() => {

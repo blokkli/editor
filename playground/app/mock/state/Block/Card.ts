@@ -2,7 +2,6 @@ import { LOREM_LEAD, LOREM_TITLE } from '../../defaultText'
 import type { Field } from '../Field'
 import { FieldIcon } from '../Field/Icon'
 import { FieldText } from '../Field/Text'
-import { FieldTextarea } from '../Field/Textarea'
 import { Block } from './Block'
 
 export class BlockCard extends Block {
@@ -23,7 +22,7 @@ export class BlockCard extends Block {
       ...super.getFieldDefintions(),
       new FieldIcon('icon', 'Icon'),
       new FieldText('title', 'Title'),
-      new FieldTextarea('text', 'Text'),
+      new FieldText('text', 'Text'),
     ]
   }
 }

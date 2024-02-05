@@ -69,6 +69,13 @@ const getSelectedAfterStateChange = (
   const newUuids = newBlocks.map((v) => v.item.uuid)
   const oldUuids = oldBlocks.map((v) => v.item.uuid)
 
+  // A new block was addded. Select this one.
+  const newBlock = newUuids.find((uuid) => !oldUuids.includes(uuid))
+  if (newBlock) {
+    return [newBlock]
+  }
+
+  // All block UUIDs that still exist.
   const stillExisting = selected.filter((uuid) =>
     newUuids.find((v) => v === uuid),
   )
@@ -76,12 +83,6 @@ const getSelectedAfterStateChange = (
   // Some currently selected blocks still exist, so let's keep that selection.
   if (stillExisting.length) {
     return stillExisting
-  }
-
-  // A new block was addded. Select this one.
-  const newBlock = newUuids.find((uuid) => !oldUuids.includes(uuid))
-  if (newBlock) {
-    return [newBlock]
   }
 
   // Same amount of blocks before and after, so blocks were likely moved.

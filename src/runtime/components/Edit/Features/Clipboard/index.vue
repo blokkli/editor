@@ -204,6 +204,7 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
     return
   }
 
+  // @TODO: Paste into nested field if possible.
   const field = dom.getBlockField(selection.uuids.value[0])
 
   const pastedBlocks = pastedUuids
