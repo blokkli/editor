@@ -24,7 +24,7 @@ const { options, parentType } = defineBlokkli({
     color: {
       type: 'radios',
       label: 'Color',
-      default: 'white',
+      default: 'normal',
       displayAs: 'colors',
       options: {
         normal: 'bg-white',

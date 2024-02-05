@@ -122,7 +122,11 @@ export function defineBlokkli<
       if (!definition) {
         return
       }
-      result[key] = getRuntimeOptionValue(definition, result[key])
+      const value =
+        result[key] === undefined || result[key] === null
+          ? definition.default
+          : result[key]
+      result[key] = getRuntimeOptionValue(definition, value)
     })
 
     return result

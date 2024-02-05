@@ -70,7 +70,7 @@ import { ItemIcon, Icon } from '#blokkli/components'
 import type { PluginMountEvent } from '#blokkli/types'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
-const { selection, eventBus, $t, types, state, ui, animation } = useBlokkli()
+const { selection, $t, types, state, ui } = useBlokkli()
 
 const editingEnabled = computed(() => state.editMode.value === 'editing')
 
@@ -160,20 +160,6 @@ onBlokkliEvent('animationFrame', () => {
     x.value = ideal.x
     y.value = ideal.y
   }
-})
-
-onBlokkliEvent('keyPressed', (e) => {
-  if (selection.blocks.value.length !== 1) {
-    return
-  }
-  if (e.code !== 'Tab') {
-    return
-  }
-
-  e.originalEvent.preventDefault()
-
-  e.shift ? eventBus.emit('select:previous') : eventBus.emit('select:next')
-  animation.requestDraw()
 })
 
 const shouldRenderButton = computed(() =>

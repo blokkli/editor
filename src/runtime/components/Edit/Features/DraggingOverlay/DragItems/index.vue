@@ -243,7 +243,6 @@ onMounted(() => {
         : item.item.element()
     const baseRect = element.getBoundingClientRect()
     const targetScaleX = Math.min(bounds.width / item.element.scrollWidth, 1)
-    // const targetScaleY = Math.min(bounds.height / item.element.scrollHeight, 1)
     const targetScaleY = targetScaleX
 
     const originX = 0
