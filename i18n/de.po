@@ -496,9 +496,17 @@ msgctxt "multipleItemsLabel"
 msgid "Items"
 msgstr "Elemente"
 
+msgctxt "optionsCommand.selectCheckboxValue"
+msgid "Select \"@value\" in \"@option\""
+msgstr "«@value» in «@option» auswählen"
+
 msgctxt "optionsCommand.setOption"
 msgid "Set option \"@option\" to \"@value\""
 msgstr "Option «@option» «@value» setzen"
+
+msgctxt "optionsCommand.unselectCheckboxValue"
+msgid "Unselect \"@value\" in \"@option\""
+msgstr "«@value» in «@option» abwählen"
 
 msgctxt "ownershipError"
 msgid "Error in assigning"

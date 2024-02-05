@@ -467,9 +467,17 @@
     "source": "Items",
     "translation": "Elemente"
   },
+  "optionsCommand.selectCheckboxValue": {
+    "source": "Select \"@value\" in \"@option\"",
+    "translation": "«@value» in «@option» auswählen"
+  },
   "optionsCommand.setOption": {
     "source": "Set option \"@option\" to \"@value\"",
     "translation": "Option «@option» «@value» setzen"
+  },
+  "optionsCommand.unselectCheckboxValue": {
+    "source": "Unselect \"@value\" in \"@option\"",
+    "translation": "«@value» in «@option» abwählen"
   },
   "ownershipError": {
     "source": "Error in assigning",
