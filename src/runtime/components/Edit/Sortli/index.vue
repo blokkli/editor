@@ -1,19 +1,15 @@
 <template>
-  <TransitionGroup
+  <div
     ref="list"
-    :name="ui.useAnimations.value && !noTransition ? 'bk-sortli' : undefined"
-    tag="div"
     @mousedown.prevent.capture="onMouseDown"
     @mouseup.prevent.capture="onMouseUp"
     @click.prevent.capture="onClick"
     @touchstart="onTouchStart"
     @touchmove="onTouchMove"
     @touchend="onTouchEnd"
-    @before-leave="beforeLeave"
-    @leave="onLeave"
   >
     <slot></slot>
-  </TransitionGroup>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -33,7 +29,7 @@ const props = defineProps<{
   isNested?: boolean
 }>()
 
-const { selection, eventBus, dom, keyboard, ui } = useBlokkli()
+const { selection, eventBus, dom, keyboard } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'select', id: string): void
@@ -57,40 +53,6 @@ const shouldHandleEvent = (e: TouchEvent | MouseEvent) => {
   }
 
   return true
-}
-
-const beforeLeave = (el: Element) => {
-  if (!ui.useAnimations.value || props.noTransition) {
-    return
-  }
-  if (el instanceof HTMLElement) {
-    const animatorId = Math.round(Math.random() * 1000000000000).toString()
-    el.dataset.animatorId = animatorId
-    eventBus.emit('animator:add', { id: animatorId, mode: 'leave' })
-    const rect = el.getBoundingClientRect()
-    const computed = getComputedStyle(el)
-    const marginTop = parseInt(computed.marginTop.replace('px', ''))
-    const marginBottom = parseInt(computed.marginBottom.replace('px', ''))
-    el.style.marginBottom = '0px'
-    el.style.marginTop = '0px'
-    el.style.opacity = '0'
-    el.style.paddingTop = '0px'
-    el.style.paddingBottom = '0px'
-    el.style.overflow = 'hidden'
-    el.style.height = rect.height + marginTop + marginBottom + 'px'
-  }
-}
-
-const onLeave = (el: Element, done: Function) => {
-  if (!ui.useAnimations.value || props.noTransition) {
-    return done()
-  }
-  if (el instanceof HTMLElement) {
-    el.style.height = '0px'
-  }
-  setTimeout(() => {
-    done()
-  }, 310)
 }
 
 const onTouchStart = (e: TouchEvent) => {
