@@ -73,6 +73,7 @@ const {
   eventBus,
   $t,
   state,
+  dom,
 } = useBlokkli()
 
 const shouldRender = computed(() => state.editMode.value === 'editing')
@@ -331,39 +332,52 @@ const commandCallbackAppendEnd = (bundle: string, fieldName: string) => {
   })
 }
 
-const commandCallbackInsert = (bundle: string, fieldName: string) => {
-  const block = selection.blocks.value[0]
+const commandCallbackInsert = (
+  bundle: string,
+  fieldName: string,
+  hostType: string,
+  hostUuid: string,
+) => {
   const field = state.mutatedFields.value.find(
     (v) =>
       v.name === fieldName &&
-      v.entityType === runtimeConfig.itemEntityType &&
-      v.entityUuid === block.uuid,
+      v.entityType === hostType &&
+      v.entityUuid === hostUuid,
   )
   const afterUuid = field ? field.list[field.list.length - 1]?.uuid : undefined
   eventBus.emit('block:append', {
     bundle,
     afterUuid,
     host: {
-      type: runtimeConfig.itemEntityType,
-      uuid: block.uuid,
+      type: hostType,
+      uuid: hostUuid,
       fieldName,
     },
   })
 }
 
-const getInsertCommands = (): Command[] => {
-  if (selection.blocks.value.length !== 1) {
+const getInsertCommands = (
+  block: DraggableExistingBlock | undefined,
+): Command[] => {
+  if (!block) {
     return []
   }
 
-  const block = selection.blocks.value[0]
-  const fields = types.fieldConfig.value.filter(
-    (v) =>
-      v.entityType === runtimeConfig.itemEntityType &&
-      v.entityBundle === block.itemBundle,
-  )
+  // Find nested fields of the block.
+  const nestedFields = types.fieldConfig.value
+    .filter(
+      (v) =>
+        v.entityType === runtimeConfig.itemEntityType &&
+        v.entityBundle === block.itemBundle,
+    )
+    .map((field) => {
+      return {
+        ...field,
+        uuid: block.uuid,
+      }
+    })
 
-  return fields.flatMap((field) => {
+  const commands: Command[] = nestedFields.flatMap((field) => {
     return field.allowedBundles.map((bundle) => {
       const label =
         types.allTypes.value.find((v) => v.id === bundle)?.label || bundle
@@ -377,10 +391,27 @@ const getInsertCommands = (): Command[] => {
           .replace('@field', field.label),
         group: 'add',
         bundle,
-        callback: () => commandCallbackInsert(bundle, field.name),
+        callback: () =>
+          commandCallbackInsert(
+            bundle,
+            field.name,
+            field.entityType,
+            field.uuid,
+          ),
       }
     })
   })
+
+  if (block.hostType === runtimeConfig.itemEntityType) {
+    const parentBlock = dom.findBlock(block.hostUuid)
+    if (parentBlock) {
+      getInsertCommands(parentBlock).forEach((parentCommand) => {
+        commands.push(parentCommand)
+      })
+    }
+  }
+
+  return commands
 }
 
 const commandCallbackAppend = (bundle: string) => {
@@ -415,7 +446,7 @@ const getAppendCommands = (): Command[] => {
 defineCommands(() => {
   return [
     ...getAppendCommands(),
-    ...getInsertCommands(),
+    ...getInsertCommands(selection.blocks.value[0]),
     ...getAppendEndCommands(),
   ]
 })
