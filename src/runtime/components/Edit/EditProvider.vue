@@ -98,9 +98,6 @@ const features = featuresProvider()
 const theme = themeProvider()
 const commands = commandsProvider()
 
-const originalThemeColor = ref('')
-const THEME_COLOR = 'black'
-
 const onContextMenu = (e: Event) => {
   e.preventDefault()
   e.stopPropagation()
@@ -108,16 +105,6 @@ const onContextMenu = (e: Event) => {
 
 onMounted(() => {
   window.addEventListener('contextmenu', onContextMenu)
-  const el = document.head.querySelectorAll('[name="theme-color"]')
-  if (el instanceof HTMLMetaElement) {
-    originalThemeColor.value = el.content
-    el.content = THEME_COLOR
-  } else {
-    const meta = document.createElement('meta')
-    meta.name = 'theme-color'
-    meta.content = THEME_COLOR
-    document.getElementsByTagName('head')[0].appendChild(meta)
-  }
   nextTick(() => {
     isInitializing.value = false
   })
@@ -127,14 +114,6 @@ onBeforeUnmount(() => {
   window.removeEventListener('contextmenu', onContextMenu)
   isInitializing.value = true
   toolbarLoaded.value = false
-  const el = document.head.querySelectorAll('[name="theme-color"]')
-  if (el instanceof HTMLMetaElement) {
-    if (originalThemeColor.value) {
-      el.content = originalThemeColor.value
-    } else {
-      el.remove()
-    }
-  }
 })
 
 provide(INJECT_IS_EDITING, true)

@@ -11,7 +11,7 @@ import type {
   ThemeContextColors,
   ThemeName,
 } from '#blokkli/types/theme'
-import { type Ref, ref } from '#imports'
+import { type Ref, ref, onMounted, onBeforeUnmount } from '#imports'
 import { getDraggableStyle } from '.'
 
 export type ThemeProvider = {
@@ -33,6 +33,9 @@ export type ThemeProvider = {
 }
 
 export default function (): ThemeProvider {
+  const originalBrowserThemeColor = ref('')
+  const THEME_COLOR = 'black'
+
   const accent = ref<ThemeColors>(theme.accent)
   const mono = ref<ThemeColors>(theme.mono)
   const teal = ref<ThemeContextColors>(theme.teal)
@@ -96,6 +99,30 @@ export default function (): ThemeProvider {
       setColorsFromTheme(themeToApply)
     }
   }
+
+  onMounted(() => {
+    const el = document.head.querySelectorAll('[name="theme-color"]')
+    if (el instanceof HTMLMetaElement) {
+      originalBrowserThemeColor.value = el.content
+      el.content = THEME_COLOR
+    } else {
+      const meta = document.createElement('meta')
+      meta.name = 'theme-color'
+      meta.content = THEME_COLOR
+      document.getElementsByTagName('head')[0].appendChild(meta)
+    }
+  })
+
+  onBeforeUnmount(() => {
+    const el = document.head.querySelectorAll('[name="theme-color"]')
+    if (el instanceof HTMLMetaElement) {
+      if (originalBrowserThemeColor.value) {
+        el.content = originalBrowserThemeColor.value
+      } else {
+        el.remove()
+      }
+    }
+  })
 
   return {
     accent,
