@@ -102,6 +102,7 @@ const scrollHeight = ref(0)
 const loaded = ref(false)
 const originalText = ref(props.value || '')
 const modelValue = ref('')
+const width = ref(320)
 const inputStyle = ref<Record<string, any>>({})
 const form = ref<HTMLFormElement | null>(null)
 const root = ref<HTMLDivElement | null>(null)
@@ -115,7 +116,7 @@ const style = computed(() => {
     return {}
   } else {
     return {
-      width: props.element.offsetWidth + 'px',
+      width: width.value + 'px',
       top: y.value + 'px',
       left: x.value + 'px',
     }
@@ -251,24 +252,22 @@ const onAnimationFrame = () => {
   const elementRect = props.element.getBoundingClientRect()
 
   const height = form.value?.scrollHeight || 100
-  const width = Math.min(
-    Math.max(form.value?.scrollWidth || elementRect.width, 360),
-    760,
-  )
+  const newWidth = Math.min(Math.max(elementRect.width, 360), 1000)
 
   const ideal = findIdealRectPosition(
     ui.viewportBlockingRects.value,
     {
-      x: elementRect.x + (elementRect.width - width) / 2,
+      x: elementRect.x + (elementRect.width - newWidth) / 2,
       y: elementRect.y - height - 20,
       height,
-      width,
+      width: newWidth,
     },
     ui.visibleViewportPadded.value,
   )
 
   x.value = ideal.x
   y.value = ideal.y + height
+  width.value = newWidth
 }
 
 onAnimationFrame()
