@@ -1,25 +1,8 @@
 .bk {
-  .bk-multi-select-area {
-    @apply fixed top-0 left-0 pointer-events-none z-30 cursor-crosshair;
-    rect {
-      @apply stroke-mono-400 stroke-[2];
-      stroke-dasharray: 4 4;
-      stroke-dashoffset: 100;
-      animation: 0.1s bkSelectArea infinite;
-      animation-timing-function: linear;
-    }
-  }
-
-  .bk-multi-select-rectangle {
-    @apply absolute top-0 left-0 pointer-events-none;
-
-    &:not(.bk-is-active) {
-      @apply outline-dashed outline-2;
-    }
-
-    &.bk-is-active {
-      /* @apply bg-accent-500/20; */
-      background-color: var(--bk-tw-ring-color);
+  &.bk-multi-select {
+    canvas {
+      @apply fixed top-0 left-0 w-full h-full z-50 pointer-events-none;
+      image-rendering: crisp-edges;
     }
   }
 }
@@ -30,13 +13,4 @@
 
 .bk-multi-select-anchor {
   @apply absolute w-0 h-0 pointer-events-none;
-}
-
-@keyframes bkSelectArea {
-  from {
-    stroke-dashoffset: 0;
-  }
-  to {
-    stroke-dashoffset: 8;
-  }
 }

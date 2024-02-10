@@ -1,29 +1,7 @@
 <template>
   <Teleport to="body">
     <div class="bk bk-multi-select">
-      <svg
-        class="bk-multi-select-area"
-        v-bind="style"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <rect
-          :width="selectRect.width"
-          :height="selectRect.height"
-          :x="selectRect.x"
-          :y="selectRect.y"
-          :style="{ animationDuration }"
-        />
-      </svg>
-
-      <Item
-        v-for="(item, index) in selectable"
-        :key="index"
-        :rect="item.rect"
-        :is-intersecting="item.isIntersecting"
-        :offset-y="scrollY"
-        :style="item.style"
-      />
+      <canvas ref="canvasEl" v-bind="canvasAttributes"></canvas>
     </div>
   </Teleport>
   <Teleport to=".bk-main-canvas">
@@ -40,10 +18,11 @@ import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import type { DraggableStyle } from '#blokkli/types'
 import type { Rectangle } from '#blokkli/types'
 import { intersects } from '#blokkli/helpers'
-import Item from './Item/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { keyboard, eventBus, ui, dom, theme } = useBlokkli()
+
+const canvasEl = ref<HTMLCanvasElement | null>(null)
 
 export type SelectableElement = {
   uuid: string
@@ -67,7 +46,7 @@ const anchorY = ref(0)
 const anchor = ref<HTMLDivElement | null>(null)
 const scrollY = ref(0)
 
-const selectable = ref<SelectableElement[]>([])
+const selected = ref<string[]>([])
 const viewportWidth = ref(window.innerWidth)
 const viewportHeight = ref(window.innerHeight)
 
@@ -82,38 +61,22 @@ const getAnchorRect = () => {
   }
 }
 
-const animationDuration = computed(() => {
-  const perimeter = 2 * (selectRect.value.width + selectRect.value.height)
-  const animationDuration = 200 - perimeter / 100
-  return animationDuration + 'ms'
-})
+const rgba = (rgb: [number, number, number], a = 1) =>
+  `rgba(${rgb.join(',')},${a})`
 
-const selectRect = ref<Rectangle>({
-  x: 0,
-  y: 0,
-  width: 0,
-  height: 0,
-})
-
-const style = computed(() => {
+const themeColors = computed(() => {
   return {
-    width: viewportWidth.value,
-    height: viewportHeight.value,
-    viewBox: `0 0 ${Math.round(viewportWidth.value)} ${Math.round(
-      viewportHeight.value,
-    )}`,
+    selectRectBg: 'rgba(255,255,255,0.8)',
+    selectRectFg: rgba(theme.mono.value[700], 0.8),
   }
 })
 
-function emitSelected() {
-  const selected = selectable.value.filter((item) => {
-    return intersects(selectRect.value, item.rect)
-  })
-  eventBus.emit(
-    'select:end',
-    selected.map((v) => v.uuid),
-  )
-}
+const canvasAttributes = computed(() => {
+  return {
+    width: viewportWidth.value,
+    height: viewportHeight.value,
+  }
+})
 
 const blocks = computed(() =>
   dom.getAllBlocks().map((block) => {
@@ -137,19 +100,33 @@ onBlokkliEvent('animationFrame', (e) => {
 
   scrollY.value = window.scrollY
 
-  if (ui.isMobile.value) {
+  const ctx = canvasEl.value?.getContext('2d')
+  if (!ctx) {
     return
   }
+  const ax = startX > e.mouseX ? e.mouseX : startX
+  const ay = startY > e.mouseY ? e.mouseY : startY
+  const bx = startX > e.mouseX ? startX : e.mouseX
+  const by = startY > e.mouseY ? startY : e.mouseY
+  const selectRect = {
+    x: ax,
+    y: ay,
+    width: bx - ax,
+    height: by - ay,
+  }
+  ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
+  ctx.lineWidth = 2
+  ctx.lineDashOffset = 0
+
+  const newSelected: string[] = []
 
   let hasNested = false
   const newSelectable: SelectableElement[] = []
   for (let i = 0; i < blocks.value.length; i++) {
     const block = blocks.value[i]
     const rect = block.element.getBoundingClientRect()
-    if (!intersects(rect, ui.visibleViewportPadded.value)) {
-      continue
-    }
-    const isIntersecting = intersects(selectRect.value, rect)
+
+    const isIntersecting = intersects(selectRect, rect)
     if (isIntersecting && block.isNested) {
       hasNested = true
     }
@@ -163,26 +140,59 @@ onBlokkliEvent('animationFrame', (e) => {
     })
   }
 
-  // If any of the intersecting blocks are nested and the user isn't pressing
-  // Control, only select the nested blocks. This allows the user to use multi
-  // select to target nested blocks. It's likely not desireable to select both
-  // the host block and the child blocks at the same time.
-  if (hasNested && !keyboard.isPressingControl.value) {
-    selectable.value = newSelectable.filter((v) => v.nested)
-  } else {
-    selectable.value = newSelectable
+  for (let i = 0; i < newSelectable.length; i++) {
+    const block = newSelectable[i]
+    if (!intersects(block.rect, ui.visibleViewportPadded.value)) {
+      continue
+    }
+    ctx.beginPath()
+    ctx.setLineDash([5, 5])
+    ctx.fillStyle = block.style.contrastColorTranslucent
+    ctx.strokeStyle = block.style.contrastColor
+
+    if (
+      (hasNested &&
+        !keyboard.isPressingControl.value &&
+        block.isIntersecting &&
+        block.nested) ||
+      ((!hasNested || keyboard.isPressingControl.value) && block.isIntersecting)
+    ) {
+      ctx.setLineDash([])
+      ctx.roundRect(
+        block.rect.x,
+        block.rect.y,
+        block.rect.width,
+        block.rect.height,
+        block.style.radius,
+      )
+      ctx.fill()
+      newSelected.push(block.uuid)
+    }
+    ctx.roundRect(
+      block.rect.x,
+      block.rect.y,
+      block.rect.width,
+      block.rect.height,
+      block.style.radius,
+    )
+    ctx.stroke()
   }
 
-  const ax = startX > e.mouseX ? e.mouseX : startX
-  const ay = startY > e.mouseY ? e.mouseY : startY
-  const bx = startX > e.mouseX ? startX : e.mouseX
-  const by = startY > e.mouseY ? startY : e.mouseY
-  selectRect.value = {
-    x: ax,
-    y: ay,
-    width: bx - ax,
-    height: by - ay,
-  }
+  ctx.lineWidth = 2
+  ctx.strokeStyle = themeColors.value.selectRectBg
+  ctx.setLineDash([])
+  ctx.beginPath()
+  ctx.rect(ax, ay, bx - ax, by - ay)
+  ctx.stroke()
+
+  ctx.lineDashOffset = Math.round(Date.now() / 10) % 10
+  ctx.strokeStyle = themeColors.value.selectRectFg
+  ctx.beginPath()
+  ctx.setLineDash([5, 5])
+  ctx.rect(ax, ay, bx - ax, by - ay)
+  ctx.stroke()
+
+  selected.value = newSelected
 })
 
 onMounted(() => {
@@ -198,6 +208,6 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  emitSelected()
+  eventBus.emit('select:end', selected.value)
 })
 </script>
