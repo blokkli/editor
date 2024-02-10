@@ -93,6 +93,17 @@ html {
   }
 }
 
+.bk-draggable {
+  @apply select-none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  * {
+    @apply select-none;
+    -webkit-touch-callout: none;
+    -webkit-user-drag: none;
+  }
+}
+
 .bk-draggable-list-container {
   @apply pointer-events-auto select-none;
   .bk-list-item {
@@ -194,7 +205,7 @@ html {
 
 .bk-body.bk-is-selecting {
   .bk-main-canvas {
-    .draggable[data-is-selected='false'] {
+    .bk-draggable[data-is-selected='false'] {
       @apply mobile-only:outline-dashed mobile-only:outline-mono-400 mobile-only:outline-offset-0 mobile-only:outline-1;
     }
   }
@@ -239,7 +250,7 @@ html {
   --bk-radius: 4;
   --bk-artboard-scale: 1;
 
-  .draggable {
+  .bk-draggable {
     scroll-margin: calc(var(--bk-root-offset-top) + 20px);
   }
 }

@@ -42,7 +42,7 @@
       :data-is-selected="item.selected"
       :data-refresh-key="state.refreshKey.value"
       :class="{ 'bk-is-selected': item.selected }"
-      class="draggable"
+      class="bk-draggable"
     />
   </Sortli>
 </template>
