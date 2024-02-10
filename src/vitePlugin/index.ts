@@ -97,7 +97,10 @@ function buildRuntimeDefinition(
   return runtimeDefinition
 }
 
-export const DefinitionPlugin = (nuxt: Nuxt, composableName: string) =>
+export const DefinitionPlugin = (
+  nuxt: Nuxt,
+  composableName = 'defineBlokkli',
+) =>
   createUnplugin(() => {
     return {
       name: 'transform-file',

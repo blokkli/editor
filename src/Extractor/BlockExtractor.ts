@@ -26,9 +26,9 @@ export default class BlockExtractor {
   isBuild = false
   composableName: string
 
-  constructor(isBuild = false, composableName: string) {
+  constructor(isBuild = false) {
     this.isBuild = isBuild
-    this.composableName = composableName
+    this.composableName = 'defineBlokkli'
   }
 
   /**

@@ -88,11 +88,6 @@ export type ModuleOptions = {
   pattern?: string[]
 
   /**
-   * The name of the composable to define a blokkli component.
-   */
-  composableName?: string
-
-  /**
    * Define reusable options that can be used in blokkli item components by
    * referencing the option name.
    */
@@ -240,7 +235,6 @@ export default defineNuxtModule<ModuleOptions>({
     pattern: ['components/Blokkli/**/*.{js,ts,vue}'],
     globalOptions: {} as BlockDefinitionOptionsInput,
     chunkNames: ['global'] as string[],
-    composableName: 'defineBlokkli',
     itemEntityType: 'block',
   },
   async setup(moduleOptions, nuxt) {
@@ -425,10 +419,7 @@ ${featuresArray}
     })
 
     // Create extractor instance and add initial set of files.
-    const blockExtractor = new BlockExtractor(
-      !nuxt.options.dev,
-      moduleOptions.composableName!,
-    )
+    const blockExtractor = new BlockExtractor(!nuxt.options.dev)
     await blockExtractor.addFiles(files)
 
     // The definitions.
@@ -531,13 +522,13 @@ ${featuresArray}
     })
 
     // Only add the vite plugin when building.
-    addBuildPlugin(DefinitionPlugin(nuxt, moduleOptions.composableName!))
+    addBuildPlugin(DefinitionPlugin(nuxt))
 
     // Add composables.
     addImports({
       name: 'defineBlokkli',
       from: resolver.resolve('./runtime/composables/defineBlokkli'),
-      as: moduleOptions.composableName,
+      as: 'defineBlokkli',
     })
     addImports({
       name: 'defineBlokkliFeature',
