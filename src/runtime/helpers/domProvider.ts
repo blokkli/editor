@@ -5,6 +5,7 @@ import type {
   DraggableItem,
 } from '#blokkli/types'
 import { buildDraggableItem, falsy } from '#blokkli/helpers'
+import type { ComponentInternalInstance } from 'nuxt/dist/app/compat/capi'
 
 /**
  * Recursively clone an element and inline its styles.
@@ -126,14 +127,47 @@ export type DomProvider = {
     fieldName: string,
   ): BlokkliFieldElement | undefined
 
-  registerBlock: (uuid: string, el: HTMLElement) => void
+  registerBlock: (
+    uuid: string,
+    instance: ComponentInternalInstance | null,
+  ) => void
   unregisterBlock: (uuid: string) => void
+}
+
+const getVisibleBlockElement = (
+  instance: ComponentInternalInstance,
+): HTMLElement | undefined => {
+  if (instance.vnode.el instanceof HTMLElement) {
+    return instance.vnode.el
+  } else if (instance?.vnode.el instanceof Text) {
+    // In case of text nodes (e.g. when the first node of the component
+    // is a comment, find the first matching sibling that is an element.
+    if (instance?.vnode.el.nextElementSibling instanceof HTMLElement) {
+      return instance.vnode.el.nextElementSibling
+    }
+  }
 }
 
 export default function (): DomProvider {
   const registeredBlocks = ref<Record<string, HTMLElement | undefined>>({})
 
-  const registerBlock = (uuid: string, el: HTMLElement) => {
+  const registerBlock = (
+    uuid: string,
+    instance: ComponentInternalInstance | null,
+  ) => {
+    if (!instance) {
+      console.error(
+        `Failed to get component instance of block with UUID "${uuid}"`,
+      )
+      return
+    }
+    const el = getVisibleBlockElement(instance)
+    if (!el) {
+      console.error(
+        `Failed to locate block component element for UUID "${uuid}". Make sure the block renders at least one root element that is always visible.`,
+      )
+      return
+    }
     registeredBlocks.value[uuid] = el
   }
 

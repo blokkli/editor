@@ -144,9 +144,7 @@ export function defineBlokkli<
 
     // Register the DOM element of this block.
     const instance = getCurrentInstance()
-    if (instance?.vnode.el instanceof HTMLElement) {
-      editContext.dom.registerBlock(uuid, instance.vnode.el)
-    }
+    editContext.dom.registerBlock(uuid, instance)
   })
 
   onBeforeUnmount(() => {
