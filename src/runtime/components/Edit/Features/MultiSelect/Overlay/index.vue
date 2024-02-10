@@ -17,8 +17,8 @@
       </svg>
 
       <Item
-        v-for="item in selectable"
-        :key="item.uuid"
+        v-for="(item, index) in selectable"
+        :key="index"
         :rect="item.rect"
         :is-intersecting="item.isIntersecting"
         :offset-y="scrollY"
@@ -137,10 +137,18 @@ onBlokkliEvent('animationFrame', (e) => {
 
   scrollY.value = window.scrollY
 
+  if (ui.isMobile.value) {
+    return
+  }
+
   let hasNested = false
   const newSelectable: SelectableElement[] = []
-  blocks.value.forEach((block) => {
+  for (let i = 0; i < blocks.value.length; i++) {
+    const block = blocks.value[i]
     const rect = block.element.getBoundingClientRect()
+    if (!intersects(rect, ui.visibleViewportPadded.value)) {
+      continue
+    }
     const isIntersecting = intersects(selectRect.value, rect)
     if (isIntersecting && block.isNested) {
       hasNested = true
@@ -153,10 +161,6 @@ onBlokkliEvent('animationFrame', (e) => {
       isIntersecting,
       style: block.style,
     })
-  })
-
-  if (ui.isMobile.value) {
-    return
   }
 
   // If any of the intersecting blocks are nested and the user isn't pressing
