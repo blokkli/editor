@@ -1,9 +1,9 @@
 .bk {
   .bk-toolbar {
-    @apply relative top-0 left-0 right-0 z-toolbar lg:right-50 lg:border-r lg:border-r-mono-700;
-    @apply bg-mono-950/90 backdrop-blur-lg lg:backdrop-blur-none lg:bg-mono-900;
+    @apply relative top-0 left-0 right-0 z-toolbar lg:right-50 lg:border-r lg:border-r-mono-700 pt-100 lg:pt-0;
+    @apply lg:bg-mono-900;
     @apply select-none;
-    @apply h-40 text-base flex;
+    @apply h-[140px] text-base flex;
     @apply lg:fixed;
     @screen lg {
       @apply h-50;
@@ -18,7 +18,11 @@
   }
 
   &.bk-top {
-    @apply fixed top-0 left-0 w-full lg:static z-toolbar lg:z-auto;
+    @apply fixed -top-100 left-0 w-full lg:static z-toolbar lg:z-auto lg:top-0;
+    @apply bg-mono-950/90 backdrop-blur-lg;
+    @screen lg {
+      backdrop-filter: none;
+    }
   }
 
   .bk-tooltip {
