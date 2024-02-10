@@ -314,15 +314,13 @@ export default function (
   }
 
   function onWindowMouseDown(e: MouseEvent) {
+    console.log('window mouse down')
     if (e.ctrlKey) {
       return
     }
     eventBus.emit('window:clickAway')
     if (e.target && e.target instanceof Element) {
       if (e.target.closest('.bk-blokkli-item-actions')) {
-        return
-      }
-      if (e.target.closest('.bk-draggable-list-container')) {
         return
       }
       if (e.target.closest('.bk-control')) {

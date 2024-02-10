@@ -1,7 +1,7 @@
 .bk {
   &.bk-multi-select {
     canvas {
-      @apply fixed top-0 left-0 w-full h-full z-50 pointer-events-none;
+      @apply fixed top-0 left-0 w-screen h-full z-50 pointer-events-none;
       image-rendering: crisp-edges;
     }
   }

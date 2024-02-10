@@ -43,6 +43,7 @@
   margin-top: var(--bk-root-offset-top);
   margin-left: var(--bk-root-offset-left);
   margin-bottom: var(--bk-root-offset-bottom);
+  overflow: hidden;
 }
 
 .bk-html-root.bk-is-artboard {
@@ -63,10 +64,11 @@
   .bk-main-canvas {
     @apply shadow-xl absolute top-0 left-0 xl:w-[80vw] w-screen lg:w-full lg:min-w-[1280px] max-w-[1920px] pointer-events-none;
     user-select: none;
-    image-rendering: crisp-edges;
+    /* image-rendering: crisp-edges; */
     backface-visibility: hidden;
     transform-origin: 0 0;
     transform: translateZ(0);
+    /* will-change: translate, scale; */
   }
 
   .bk-body.bk-is-pressing-space {
