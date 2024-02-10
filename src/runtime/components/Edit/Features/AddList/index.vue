@@ -21,7 +21,7 @@
       ref="wrapper"
       class="bk bk-add-list bk-control"
       :class="[
-        { 'bk-is-active': isActive },
+        { 'bk-is-active': isActive || hasContextMenuOpen },
         'bk-is-' + ui.addListOrientation.value,
       ]"
       :style="style"
@@ -86,6 +86,10 @@ const { settings } = defineBlokkliFeature({
 
 const { state, $t, eventBus, ui } = useBlokkli()
 
+const hasContextMenuOpen = computed(() =>
+  ui.openContextMenu.value.startsWith('add_list_item_'),
+)
+
 const isSidebar = computed(() => ui.addListOrientation.value === 'sidebar')
 const shouldRender = computed(() => state.editMode.value === 'editing')
 
@@ -106,7 +110,7 @@ let mouseTimeout: any = null
 const style = computed(() => {
   if (
     settings.value.orientation === 'vertical' &&
-    isActive.value &&
+    (isActive.value || hasContextMenuOpen.value) &&
     wrapper.value
   ) {
     const labels = [

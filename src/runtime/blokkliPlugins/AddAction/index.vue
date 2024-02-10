@@ -8,6 +8,7 @@
       :color="color"
       data-element-type="action"
       :data-action-type="type"
+      no-context-menu
     />
   </Teleport>
 </template>

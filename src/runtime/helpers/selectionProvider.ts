@@ -317,6 +317,7 @@ export default function (
     if (e.ctrlKey) {
       return
     }
+    eventBus.emit('window:clickAway')
     if (e.target && e.target instanceof Element) {
       if (e.target.closest('.bk-blokkli-item-actions')) {
         return

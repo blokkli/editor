@@ -169,7 +169,7 @@
     }
   }
 
-  /* Content Editable. */
+  /* Command Palette . */
   .bk-command-palette-enter-active,
   .bk-command-palette-leave-active {
     transition: 0.1s ease-in-out;
@@ -178,5 +178,15 @@
   .bk-command-palette-enter-from,
   .bk-command-palette-leave-to {
     @apply opacity-0 translate-y-10 scale-95;
+  }
+
+  .bk-context-menu-enter-active,
+  .bk-context-menu-leave-active {
+    transition: 0.2s ease-in-out;
+    transition-timing-function: cubic-bezier(0.13, 0.63, 0.55, 1);
+  }
+  .bk-context-menu-enter-from,
+  .bk-context-menu-leave-to {
+    @apply scale-0;
   }
 }

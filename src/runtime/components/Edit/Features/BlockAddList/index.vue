@@ -13,6 +13,7 @@
       :bundle="type.id"
       :orientation="ui.addListOrientation.value"
       :disabled="!type.id || !selectableBundles.includes(type.id)"
+      :color="type.isFavorite ? 'yellow' : 'default'"
       data-element-type="new"
       :data-item-bundle="type.id"
     />
@@ -82,7 +83,7 @@ const searchText = ref('')
 
 const itemEntityType = runtimeConfig.itemEntityType
 
-const sorts = storage.use<string[]>('sorts', [])
+const favorites = storage.use<string[]>('blockFavorites', [])
 
 const activeField = computed(() => {
   if (selection.activeFieldKey.value) {
@@ -218,17 +219,18 @@ const sortedList = computed(() => {
   }
   return [...generallyAvailableBundles.value]
     .filter((v) => v.id !== 'from_library')
-    .sort((a, b) => {
-      if (a.id && b.id) {
-        return sorts.value.indexOf(a.id) - sorts.value.indexOf(b.id)
-      }
-      return 9999
-    })
     .map((v) => {
       return {
         ...v,
         isVisible: determineVisibility(v.id, v.label),
+        isFavorite: favorites.value.includes(v.id),
       }
+    })
+    .sort((a, b) => {
+      if (a.isFavorite && !b.isFavorite) return -1
+      if (!a.isFavorite && b.isFavorite) return 1
+
+      return a.label.localeCompare(b.label)
     })
 })
 

@@ -23,6 +23,14 @@ msgctxt "addListInputPlaceholder"
 msgid "Search available blocks"
 msgstr "Blöcke durchsuchen"
 
+msgctxt "addListItemFavoriteAdd"
+msgid "Add to favorites"
+msgstr "Zu Favoriten hinzufügen"
+
+msgctxt "addListItemFavoriteRemove"
+msgid "Remove from favorites"
+msgstr "Aus Favoriten entfernen"
+
 msgctxt "addListSidebarTitle"
 msgid "Add blocks"
 msgstr "Block hinzufügen"

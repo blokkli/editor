@@ -34,6 +34,7 @@ const zIndex = [
   'touch-action-bar',
   'dialog',
   'init-overlay',
+  'context-menu',
 ].reduce((acc, key, index) => {
   acc[key] = z(index * 10000)
   return acc

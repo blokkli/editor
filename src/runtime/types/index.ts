@@ -829,6 +829,7 @@ export type EventbusEvents = {
 
   'ui:resized': undefined
   'add-list:change': undefined
+  'window:clickAway': undefined
 }
 
 export type BlockAppendEvent = {
@@ -1034,5 +1035,18 @@ export type Command = {
   disabled?: boolean
   callback: () => any
 }
+
+export type ContextMenuRule = {
+  type: 'rule'
+}
+
+export type ContextMenuButton = {
+  type: 'button'
+  label: string
+  icon: BlokkliIcon
+  callback: () => void
+}
+
+export type ContextMenu = ContextMenuButton | ContextMenuRule
 
 export default {}

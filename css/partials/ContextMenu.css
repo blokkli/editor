@@ -1,0 +1,16 @@
+.bk {
+  &.bk-context-menu {
+    @apply fixed z-context-menu;
+  }
+
+  .bk-context-menu-inner {
+    @apply absolute bg-mono-950 text-mono-100 shadow-xl-even border border-mono-600 rounded overflow-hidden;
+    button {
+      @apply px-15 py-15 whitespace-nowrap text-left flex items-center gap-10 font-sans font-semibold;
+      @apply hover:bg-mono-800;
+      .bk-icon svg {
+        @apply w-25 h-25 fill-current;
+      }
+    }
+  }
+}

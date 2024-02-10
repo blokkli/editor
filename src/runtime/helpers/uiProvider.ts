@@ -36,6 +36,8 @@ export type UiProvider = {
   viewportBlockingRects: ComputedRef<Rectangle[]>
 
   appViewport: ComputedRef<Viewport>
+
+  openContextMenu: Ref<string>
 }
 
 export default function (storage: StorageProvider): UiProvider {
@@ -45,6 +47,7 @@ export default function (storage: StorageProvider): UiProvider {
 
   const menuIsOpen = ref(false)
   const isAnimating = ref(false)
+  const openContextMenu = ref('')
   const useAnimationsSetting = storage.use('useAnimations', true)
   const useAnimations = computed(() => useAnimationsSetting.value)
   const viewportBlockingRectsMap = ref<Record<string, Rectangle>>({})
@@ -260,5 +263,6 @@ export default function (storage: StorageProvider): UiProvider {
     setViewportBlockingRectangle,
     viewportBlockingRects,
     appViewport,
+    openContextMenu,
   }
 }

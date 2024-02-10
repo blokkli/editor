@@ -1,7 +1,10 @@
 <template>
-  <button
+  <PluginContextMenu
+    :id="'add_list_item_' + id"
+    tag="button"
     class="bk-list-item bk-clone"
     data-element-type="action"
+    :menu="menu"
     :data-sortli-id="id"
     :class="[
       {
@@ -36,26 +39,28 @@
       </div>
       <span>{{ label }}</span>
     </div>
-  </button>
+  </PluginContextMenu>
 </template>
 
 <script lang="ts" setup>
 import type { BlokkliIcon } from '#blokkli/icons'
-import type { AddListOrientation } from '#blokkli/types'
+import type { AddListOrientation, ContextMenu } from '#blokkli/types'
 import { useBlokkli, computed } from '#imports'
 import { ItemIcon, Icon } from '#blokkli/components'
+import { PluginContextMenu } from '#blokkli/plugins'
 
-const { ui } = useBlokkli()
+const { ui, storage, $t } = useBlokkli()
 
 const props = withDefaults(
   defineProps<{
     id: string
     label: string
     orientation: AddListOrientation
-    color?: 'rose' | 'lime' | 'default'
+    color?: 'rose' | 'lime' | 'default' | 'yellow'
     bundle?: string
     icon?: BlokkliIcon
     disabled?: boolean
+    noContextMenu?: boolean
   }>(),
   {
     color: 'default',
@@ -63,9 +68,38 @@ const props = withDefaults(
     icon: undefined,
   },
 )
+
+const favorites = storage.use<string[]>('blockFavorites', [])
+
+const isFavorite = computed(() => favorites.value.includes(props.id))
+
 const isDark = computed(
   () => props.orientation !== 'sidebar' && props.color === 'default',
 )
+
+const toggleFavorite = () => {
+  if (favorites.value.includes(props.id)) {
+    favorites.value = favorites.value.filter((v) => v !== props.id)
+  } else {
+    favorites.value = [...favorites.value, props.id]
+  }
+}
+
+const menu = computed<ContextMenu[]>(() => {
+  if (props.noContextMenu) {
+    return []
+  }
+  return [
+    {
+      type: 'button',
+      label: isFavorite.value
+        ? $t('addListItemFavoriteRemove', 'Remove from favorites')
+        : $t('addListItemFavoriteAdd', 'Add to favorites'),
+      icon: isFavorite.value ? 'unstar' : 'star',
+      callback: toggleFavorite,
+    },
+  ]
+})
 </script>
 
 <script lang="ts">

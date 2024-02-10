@@ -19,6 +19,14 @@
     "source": "Search available blocks",
     "translation": "Blöcke durchsuchen"
   },
+  "addListItemFavoriteAdd": {
+    "source": "Add to favorites",
+    "translation": "Zu Favoriten hinzufügen"
+  },
+  "addListItemFavoriteRemove": {
+    "source": "Remove from favorites",
+    "translation": "Aus Favoriten entfernen"
+  },
   "addListSidebarTitle": {
     "source": "Add blocks",
     "translation": "Block hinzufügen"
