@@ -334,6 +334,30 @@ msgctxt "fieldIsRequired"
 msgid "This field is required"
 msgstr "Feld darf nicht leer sein"
 
+msgctxt "fragmentsAddFragmentAction"
+msgid "Add fragment"
+msgstr "Fragment hinzufügen"
+
+msgctxt "fragmentsPlaceDialogLead"
+msgid "Select a block fragment to add to the page."
+msgstr "Wählen Sie ein Block-Fragment aus."
+
+msgctxt "fragmentsPlaceDialogSearchLabel"
+msgid "Filter fragments"
+msgstr "Fragmente filtern"
+
+msgctxt "fragmentsPlaceDialogSearchPlaceholder"
+msgid "Search fragments"
+msgstr "Fragmente durchsuchen"
+
+msgctxt "fragmentsPlaceDialogSubmitButton"
+msgid "Add selected fragment"
+msgstr "Ausgewähltes Fragment hinzufügen"
+
+msgctxt "fragmentsPlaceDialogTitle"
+msgid "Add fragment block"
+msgstr "Fragment hinzufügen"
+
 msgctxt "gridHide"
 msgid "Hide grid"
 msgstr "Spalten verstecken"

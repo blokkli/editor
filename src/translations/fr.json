@@ -319,6 +319,30 @@
     "source": "This field is required",
     "translation": "Ce champ est obligatoire"
   },
+  "fragmentsAddFragmentAction": {
+    "source": "Add fragment",
+    "translation": ""
+  },
+  "fragmentsPlaceDialogLead": {
+    "source": "Select a block fragment to add to the page.",
+    "translation": ""
+  },
+  "fragmentsPlaceDialogSearchLabel": {
+    "source": "Filter fragments",
+    "translation": ""
+  },
+  "fragmentsPlaceDialogSearchPlaceholder": {
+    "source": "Search fragments",
+    "translation": ""
+  },
+  "fragmentsPlaceDialogSubmitButton": {
+    "source": "Add selected fragment",
+    "translation": ""
+  },
+  "fragmentsPlaceDialogTitle": {
+    "source": "Add fragment block",
+    "translation": ""
+  },
   "gridHide": {
     "source": "Hide grid",
     "translation": "Masquer la grille"
