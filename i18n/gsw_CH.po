@@ -1,0 +1,734 @@
+msgid ""
+msgstr ""
+"Language: gsw_CH\n"
+"Content-Type: text/plain\n"
+
+msgctxt "addBlockCommand.appendInField"
+msgid "Append \"@block\" in \"@field\""
+msgstr "«@block» in «@field» drzüefüege"
+
+msgctxt "addBlockCommand.appendRoot"
+msgid "Append \"@block\""
+msgstr "«@block» drzuefüege"
+
+msgctxt "addBlockCommand.insertInField"
+msgid "Insert \"@block\" into \"@field\""
+msgstr "«@block» in «@field» drzuefüege"
+
+msgctxt "addCommentToItem"
+msgid "Comment"
+msgstr "Kommentiere"
+
+msgctxt "addListInputPlaceholder"
+msgid "Search available blocks"
+msgstr "Blöck durchsueche"
+
+msgctxt "addListItemFavoriteAdd"
+msgid "Add to favorites"
+msgstr "Zu de Favorite drzuefüege"
+
+msgctxt "addListItemFavoriteRemove"
+msgid "Remove from favorites"
+msgstr "Us de Favorite entfärne"
+
+msgctxt "addListSidebarTitle"
+msgid "Add blocks"
+msgstr "Block drzuefüege"
+
+msgctxt "artboard"
+msgid "Artboard"
+msgstr "Zeichenflächi"
+
+msgctxt "artboardResetZoom"
+msgid "Reset zoom"
+msgstr "Zoom zruggsetze"
+
+msgctxt "artboardScaleToFit"
+msgid "Scale to fit"
+msgstr "And Höchi aapasse"
+
+msgctxt "artboardScrollDown"
+msgid "Scroll down"
+msgstr "abescrolle"
+
+msgctxt "artboardScrollOnePageDown"
+msgid "Scroll one page down"
+msgstr "E Sitte ufescrolle"
+
+msgctxt "artboardScrollOnePageUp"
+msgid "Scroll one page up"
+msgstr "E Sitte abescrolle"
+
+msgctxt "artboardScrollToEnd"
+msgid "Scroll to end"
+msgstr "Zum Schluss scrolle"
+
+msgctxt "artboardScrollToTop"
+msgid "Scroll to top"
+msgstr "Zum Aafang scrolle"
+
+msgctxt "artboardScrollUp"
+msgid "Scroll up"
+msgstr "ufescrolle"
+
+msgctxt "assistantAddAction"
+msgid "Add with AI Assistant"
+msgstr "Mitem KI-Assischtänt drzuefüege"
+
+msgctxt "assistantAddResultError"
+msgid "Failed to add block from assistant."
+msgstr "Es het e Fähler gäh bim drzuefüege mitem KI Assischtänt"
+
+msgctxt "assistantDialogLead"
+msgid "Please enter what you'd like the assistant to generate."
+msgstr "Bitte git iih, was dr KI-Assischtänt söll generiere. "
+
+msgctxt "assistantDialogSubmit"
+msgid "Create blocks"
+msgstr "Blöck erstelle"
+
+msgctxt "assistantDialogTitle"
+msgid "Generate content with AI assistant"
+msgstr "Inhalt mit KI generiere"
+
+msgctxt "assistantPromptLabel"
+msgid "Prompt"
+msgstr "Aawiisig"
+
+msgctxt "assistantPromptPlaceholder"
+msgid "Generate content for a page about how taxes work in Switzerland"
+msgstr "Schrib e Teggscht zum Thema Stüüre in dr Schwiz"
+
+msgctxt "cancel"
+msgid "Cancel"
+msgstr "Abbräche"
+
+msgctxt "clipboard"
+msgid "Clipboard"
+msgstr "Zwüscheablag"
+
+msgctxt "clipboardCopyShortcutHelp"
+msgid "Copy selected blocks"
+msgstr "Usgwählti Blöck kopiere"
+
+msgctxt "clipboardEmpty"
+msgid "No items in the clipboard"
+msgstr "In dr Zwüscheablag hets nüt"
+
+msgctxt "clipboardExplanation"
+msgid ""
+"<p>\n"
+"    Use Ctrl-V on the page to paste content. These\n"
+"    will then be displayed here.\n"
+"  </p>\n"
+"  <p>\n"
+"    Use Ctrl-F to search for existing content and paste it into\n"
+"    the clipboard.\n"
+"  </p>"
+msgstr ""
+"<p>Bruch Ctrl+V zum öbbis iifüege. D'Inhält wärde denn do "
+"aazeigt.</p><p>Bruch Ctrl+F zum bestehendi Inhält z'sueche und ind "
+"Zwüscheablag iizfüege. </p>"
+
+msgctxt "clipboardPastePlaceholder"
+msgid "Paste text or media here"
+msgstr "Teggscht oder Medie iifüege"
+
+msgctxt "clipboardPasteShortcutHelp"
+msgid "Paste text, image or copied blocks"
+msgstr "Teggscht, Bild oder kopierti Blöck iifüege"
+
+msgctxt "close"
+msgid "Close"
+msgstr "Zuemache"
+
+msgctxt "commandGroup.action"
+msgid "Actions"
+msgstr "Aktione"
+
+msgctxt "commandGroup.add"
+msgid "Add new"
+msgstr "Drzuefüege"
+
+msgctxt "commandGroup.misc"
+msgid "Miscellaneous"
+msgstr "Divärses"
+
+msgctxt "commandGroup.selection"
+msgid "Selection"
+msgstr "Uswahl"
+
+msgctxt "commandGroup.ui"
+msgid "Interface"
+msgstr "Oberflächi"
+
+msgctxt "commandPalette.inputPlaceholder"
+msgid "Search commands..."
+msgstr "Aktione durchsueche..."
+
+msgctxt "commandPalette.open"
+msgid "Open Command Palette"
+msgstr "Mach d'Befähl uf"
+
+msgctxt "commentAdd"
+msgid "Add comment"
+msgstr "Kommentar drzuefüege"
+
+msgctxt "commentBody"
+msgid "Comment"
+msgstr "Kommentar"
+
+msgctxt "commentBodyPlaceholder"
+msgid "Add reply"
+msgstr "Antwort drzuefüege"
+
+msgctxt "commentSave"
+msgid "Submit comment"
+msgstr "Kommentar speichere"
+
+msgctxt "comments"
+msgid "Comments"
+msgstr "Kommentär"
+
+msgctxt "convertTo"
+msgid "Convert to..."
+msgstr "Konvertiere"
+
+msgctxt "deleteButton"
+msgid "Delete"
+msgstr "Lösche"
+
+msgctxt "deleteError"
+msgid "The block could not be deleted."
+msgstr "S'Elemänt het nid chönne entfärnt wärde. "
+
+msgctxt "duplicate"
+msgid "Duplicate"
+msgstr "Dupliziere"
+
+msgctxt "duplicateError"
+msgid "The items could not be duplicated."
+msgstr "D'Elemänt hän nid chönne dupliziert wärde. "
+
+msgctxt "edit"
+msgid "Edit"
+msgstr "Bearbeite"
+
+msgctxt "editFormBlockAdd"
+msgid "Add @label"
+msgstr "@label drzuefüege"
+
+msgctxt "editFormBlockEdit"
+msgid "Edit @label"
+msgstr "@label bearbeite"
+
+msgctxt "editFormBlockTranslate"
+msgid "Translate @label (@language)"
+msgstr "@label übersetze (@language)"
+
+msgctxt "editFormEntityEdit"
+msgid "Edit @label"
+msgstr "\"@label\" bearbeite"
+
+msgctxt "editFormEntityTranslate"
+msgid "Translate \"@label\" (@language)"
+msgstr "\"@label\" übersetze (@language)"
+
+msgctxt "editIndicatorLabel"
+msgid "Edit blocks"
+msgstr "Elemänt bearbeite"
+
+msgctxt "exitDescription"
+msgid "Close editor without publishing"
+msgstr "Dr Editor zuemache ohni z'veröffentliche"
+
+msgctxt "exitTitle"
+msgid "Close"
+msgstr "Zuemache"
+
+msgctxt "failedToConvert"
+msgid "The block could not be converted."
+msgstr "S'Elemänt het nid chönne konvertiert wärde. "
+
+msgctxt "failedToTransform"
+msgid "The action \"@name\" could not be executed."
+msgstr "D'Aktion «@name» het nid chönne usgfüert wärde."
+
+msgctxt "featureHelpShortcuts"
+msgid "Shortcuts"
+msgstr "Taschtekombinatione"
+
+msgctxt "featureHelpTitle"
+msgid "Help"
+msgstr "Hilf"
+
+msgctxt "feature_add-list_setting_orientation_label"
+msgid "Add List"
+msgstr "Block-Leischte"
+
+msgctxt "feature_add-list_setting_orientation_option_horizontal"
+msgid "Horizontal"
+msgstr "Horizontal"
+
+msgctxt "feature_add-list_setting_orientation_option_sidebar"
+msgid "Sidebar"
+msgstr "Sitteleischte"
+
+msgctxt "feature_add-list_setting_orientation_option_vertical"
+msgid "Vertical"
+msgstr "Vertikal"
+
+msgctxt "feature_artboard_setting_persist_label"
+msgid "Persist position and zoom"
+msgstr "Position und Zoom speichere"
+
+msgctxt "feature_artboard_setting_scrollSpeed_label"
+msgid "Artboard scroll speed"
+msgstr "Scrollgschwindigkeit vo dr Zeicheflächi"
+
+msgctxt "feature_artboard_setting_useArtboard_label"
+msgid "Page editing"
+msgstr "Sittebearbeitig"
+
+msgctxt "feature_artboard_setting_useArtboard_option_no"
+msgid "Normal display"
+msgstr "Normali Darstellig"
+
+msgctxt "feature_artboard_setting_useArtboard_option_yes"
+msgid "Use artboard"
+msgstr "Zeicheflächi bruche"
+
+msgctxt "feature_clipboard_setting_openSidebarOnPaste_label"
+msgid "Open sidebar when pasting from clipboard"
+msgstr "Sitteleischte bim Iifüege us dr Zwüscheablag ufmache"
+
+msgctxt "feature_history_setting_useMouseButtons_label"
+msgid "Use mouse buttons for undo/redo"
+msgstr "Muustaschte für Rückgängig/Wiederhärstelle bruche"
+
+msgctxt "feature_import-existing_setting_showDialogWhenEmpty_label"
+msgid "Show import dialog at start when page is empty"
+msgstr "Importdialog bim Start aazeige wenn d'Sitte leer isch"
+
+msgctxt "feature_settings_setting_resetAllSettings_label"
+msgid "Reset all settings"
+msgstr "Alli Iistellige Zruggsetze"
+
+msgctxt "feature_settings_setting_useAnimations_label"
+msgid "Use animations"
+msgstr "Animatione aazeige"
+
+msgctxt "fieldAreasHide"
+msgid "Hide content areas"
+msgstr "Inhaltsbereich verstecke"
+
+msgctxt "fieldAreasShow"
+msgid "Show content areas"
+msgstr "Inhaltsbereich aazeige"
+
+msgctxt "fieldAreasToggle"
+msgid "Toggle content areas"
+msgstr "Inhaltsbereich aazeige"
+
+msgctxt "fieldIsRequired"
+msgid "This field is required"
+msgstr "Das Fäld dörf nid leer sii"
+
+msgctxt "gridHide"
+msgid "Hide grid"
+msgstr "Spalte verstecke"
+
+msgctxt "gridShow"
+msgid "Show grid"
+msgstr "Spalte aazeige"
+
+msgctxt "gridToggle"
+msgid "Toggle grid"
+msgstr "Spalte aazeige"
+
+msgctxt "history"
+msgid "History"
+msgstr "Ändergie"
+
+msgctxt "historyCurrentRevision"
+msgid "Current revision"
+msgstr "Aktuelli Revision"
+
+msgctxt "historyRedo"
+msgid "Redo"
+msgstr "Wiederhole"
+
+msgctxt "historyShowMore"
+msgid "Show @count more"
+msgstr "@count meeh aazeige"
+
+msgctxt "historyUndo"
+msgid "Undo"
+msgstr "Rückgängig"
+
+msgctxt "importExistingDescription"
+msgid "Import from an existing page"
+msgstr "Von enere bestehende Sitte importiere"
+
+msgctxt "importExistingDialogLead"
+msgid ""
+"Import content from an existing page. The items will be added to the end of "
+"the list. This action can be undone."
+msgstr ""
+"Inhält chönne vonere bestehende Sitte importiert wärde. Die Elemänt wärde "
+"am Ändi vo dr lischte denn drzuegfüegt. Die Aktion chame nid ruckgängig "
+"mache. "
+
+msgctxt "importExistingDialogSubmit"
+msgid "Import content"
+msgstr "Inhält importiere"
+
+msgctxt "importExistingDialogTitle"
+msgid "Import from existing page"
+msgstr "Vonere bestehende Sitte importiere"
+
+msgctxt "importExistingError"
+msgid "Content could not be imported."
+msgstr "D'Inhält hän nid chönne übernoh wärde"
+
+msgctxt "importExistingFieldsLabel"
+msgid "Which content would you like to import?"
+msgstr "Weli Inhält sölle importiert wärde?"
+
+msgctxt "importExistingPagesLabel"
+msgid "From which page would you like to import?"
+msgstr "Von welere Sitte willsch öbbis importiere?"
+
+msgctxt "importExistingResultsTitle"
+msgid "@count of @total pages"
+msgstr "@count vo @total Sitte"
+
+msgctxt "importExistingSearchPlaceholder"
+msgid "Search pages"
+msgstr "Sitte durchsueche"
+
+msgctxt "importExistingSuccess"
+msgid "Content imported successfully."
+msgstr "Inhält erfolgriich importiert"
+
+msgctxt "importExistingTitle"
+msgid "Import..."
+msgstr "Importiere..."
+
+msgctxt "libraryAdd"
+msgid "Add to library"
+msgstr "Zur Bibliothek drzuefüege"
+
+msgctxt "libraryAddFromLibrary"
+msgid "Add from library"
+msgstr "Us dr Bibliothek drzuefüege"
+
+msgctxt "libraryDetach"
+msgid "Detach from library"
+msgstr "Von der Bibliothek loslöse"
+
+msgctxt "libraryDialogDescriptionLabel"
+msgid "Description"
+msgstr "Beschriibig"
+
+msgctxt "libraryDialogLead"
+msgid ""
+"When you add an item to the library, you can use it on multiple pages at "
+"the same time. Changes to this item are then immediately published on all "
+"pages."
+msgstr ""
+"Wenn es Elemänt in dr Bibliothek isch, cha das Elemänt uf mehrere Sitte "
+"gliichzittig brucht wärde. D'Änderige an däm Elemänt wärde denn sofort uf "
+"allne Sitte publiziert. "
+
+msgctxt "libraryDialogSubmit"
+msgid "Add to library"
+msgstr "Zur Bibliothe drzuefüege"
+
+msgctxt "libraryDialogTitle"
+msgid "Add to library"
+msgstr "Zur Bibliothe drzuefüege"
+
+msgctxt "libraryDialogTitleInputPlaceholder"
+msgid "e.g. Teaser Campaign 2024"
+msgstr "z.B. Teaser Kampagne 2023"
+
+msgctxt "libraryError"
+msgid "Failed to add block to library."
+msgstr "Das Elemänt het nid chönne zur Bibliothek drzuegfüegt wärde. "
+
+msgctxt "libraryPlaceDialogLead"
+msgid ""
+"Select a reusable block from the library to add it to your layout. You can "
+"detach the block later."
+msgstr ""
+"Wähl e wiederverwändbare Block us dr Bibliothek zum dä drzuefüege. Dr Block "
+"cha spöter wider entfärnt wärde. "
+
+msgctxt "libraryPlaceDialogSubmit"
+msgid "Add reusable block"
+msgstr "E widerverwändbare Block drzuefüege"
+
+msgctxt "libraryPlaceDialogTitle"
+msgid "Add block from library"
+msgstr "Block us dr Bibliothek drzuefüege"
+
+msgctxt "libraryPlaceSearchInputPlaceholder"
+msgid "Search library items"
+msgstr "Suchbegriff iigeh"
+
+msgctxt "libraryPlaceSearchLabel"
+msgid "Filter library items"
+msgstr "Bibliothek durchsueche"
+
+msgctxt "libraryPreviewLabel"
+msgid "Preview"
+msgstr "Vorschau"
+
+msgctxt "maskHide"
+msgid "Hide content fields"
+msgstr "Inhaltsfälder verstecke"
+
+msgctxt "maskShow"
+msgid "Show content fields"
+msgstr "Inhaltsfelder aazeige"
+
+msgctxt "maskToggle"
+msgid "Show content fields"
+msgstr "Inhaltsfelder aazeige"
+
+msgctxt "mediaLibrary"
+msgid "Media Library"
+msgstr "Mediebibliothek"
+
+msgctxt "multipleItemsLabel"
+msgid "Items"
+msgstr "Elemänt"
+
+msgctxt "optionsCommand.selectCheckboxValue"
+msgid "Select \"@value\" in \"@option\""
+msgstr "«@value» in «@option» uswähle"
+
+msgctxt "optionsCommand.setOption"
+msgid "Set option \"@option\" to \"@value\""
+msgstr "Option «@option» «@value» setze"
+
+msgctxt "optionsCommand.unselectCheckboxValue"
+msgid "Unselect \"@value\" in \"@option\""
+msgstr "«@value» in «@option» abwähle"
+
+msgctxt "ownershipError"
+msgid "Error in assigning"
+msgstr "Fähler bim Zuewiise"
+
+msgctxt "ownershipNote"
+msgid ""
+"This page is currently being edited by @name. Changes can only be made by "
+"one person at a time."
+msgstr ""
+"Diese Sitte wird aktuell vo @name bearbeitet. Änderige chönne nur vo einere "
+"Person glichzittig gmacht wärde. "
+
+msgctxt "ownershipSuccess"
+msgid "You are now the owner."
+msgstr "Du bisch jetzt dr Bsitzer."
+
+msgctxt "ownershipTakeOwnership"
+msgid "Assign to me"
+msgstr "Mir zuewiise"
+
+msgctxt "pageIsNotPublished"
+msgid "Page is not published"
+msgstr "Die Sitte isch nid publiziert"
+
+msgctxt "pageIsPublished"
+msgid "Page is published"
+msgstr "Die Sitte isch Publiziert"
+
+msgctxt "pageIsPublishedWithPendingChanges"
+msgid "Page is published (changes pending)"
+msgstr "Die Sitte isch publiziert (es sin aber no Änderige usstehend)"
+
+msgctxt "previewDialogLead"
+msgid "Scan the QR code with your smartphone to open the preview."
+msgstr "Scan dr QR-Code zum ufem Smartphone d'Vorschau aaluege. "
+
+msgctxt "previewDialogTitle"
+msgid "Preview with smartphone"
+msgstr "Vorschau mitem Smartphone"
+
+msgctxt "previewNewWindow"
+msgid "Preview (new window)"
+msgstr "Vorschau (neus Fänschter)"
+
+msgctxt "previewQrCodeText"
+msgid "You can also copy the link and share it."
+msgstr "Dä Link chame au kopiere und teile."
+
+msgctxt "previewWithSmartphone"
+msgid "Preview (with smartphone)"
+msgstr "Vorschau (mitem Smartphone)"
+
+msgctxt "publishDescription"
+msgid "Make all changes public"
+msgstr "Alli änderige öffentlich mache."
+
+msgctxt "publishError"
+msgid "Changes could not be published."
+msgstr "D'Änderige hän nid chönne publiziert wärde."
+
+msgctxt "publishLabel"
+msgid "Publish"
+msgstr "Publiziere"
+
+msgctxt "publishSuccess"
+msgid "Changes published successfully."
+msgstr "Änderige erfolgriich publiziert."
+
+msgctxt "responsivePreviewCustomViewport"
+msgid "Custom"
+msgstr "Benutzerdefiniert"
+
+msgctxt "responsivePreviewTitle"
+msgid "Responsive Preview"
+msgstr "Responsivi Vorschau"
+
+msgctxt "revertDialogLead"
+msgid ""
+"This will delete all changes and restore the currently published state. "
+"This action cannot be undone."
+msgstr ""
+"Alli Änderige wärde glöscht und dr jetzt publizierti Zuestand wird wider "
+"härgstellt. Die Aktion chame nid rückgängig mache. "
+
+msgctxt "revertDialogSubmit"
+msgid "Discard changes"
+msgstr "Änderige verwärfe"
+
+msgctxt "revertDialogTitle"
+msgid "Irrevocably discard changes"
+msgstr "Änderige ändgültig verwärfe. "
+
+msgctxt "revertError"
+msgid "Changes could not be discarded."
+msgstr "D'Änderige hän nid chönne verworfe wärde."
+
+msgctxt "revertMenuDescription"
+msgid "Restore currently published state"
+msgstr "Dr aktuell publizierti Stand widerhärstelle."
+
+msgctxt "revertMenuTitle"
+msgid "Discard..."
+msgstr "Verwärfe..."
+
+msgctxt "revertSuccess"
+msgid "All changes have been discarded."
+msgstr "Alli Änderige sin glöcht worde."
+
+msgctxt "save"
+msgid "Save"
+msgstr "Speichere"
+
+msgctxt "searchBoxNoResultsFound"
+msgid "No results found"
+msgstr "Keini Resultat gfunde"
+
+msgctxt "searchBoxOnThisPage"
+msgid "On this page"
+msgstr "Uf dere Sitte"
+
+msgctxt "searchBoxPlaceholder"
+msgid "Enter search term"
+msgstr "Suechbegriff iigeh"
+
+msgctxt "searchToolbarLabel"
+msgid "Search content"
+msgstr "Inhält sueche"
+
+msgctxt "settingsAdvanced"
+msgid "Advanced"
+msgstr "Erwitteret"
+
+msgctxt "settingsAppearance"
+msgid "Appearance"
+msgstr "Darstellig"
+
+msgctxt "settingsBehaviour"
+msgid "Behaviour"
+msgstr "Verhalte"
+
+msgctxt "settingsDialogTitle"
+msgid "Change settings"
+msgstr "Iistellige"
+
+msgctxt "settingsMenuDescription"
+msgid "Personal settings for the editor"
+msgstr "Persönlichi Iistellige füre Editor"
+
+msgctxt "settingsMenuTitle"
+msgid "Settings"
+msgstr "Iistellige"
+
+msgctxt "shortcutGroupBlocks"
+msgid "Blocks"
+msgstr "Blöck"
+
+msgctxt "shortcutGroupGeneral"
+msgid "General"
+msgstr "Allgemein"
+
+msgctxt "shortcutGroupUi"
+msgid "UI"
+msgstr "Oberflächi"
+
+msgctxt "sidebar.hide"
+msgid "Hide @title"
+msgstr "@title usblände"
+
+msgctxt "sidebar.show"
+msgid "Show @title"
+msgstr "@title aazeige"
+
+msgctxt "singleComment"
+msgid "comment"
+msgstr "Kommentar"
+
+msgctxt "structureToolbarLabel"
+msgid "Structure"
+msgstr "Struktur"
+
+msgctxt "theme"
+msgid "Theme"
+msgstr "Farbe"
+
+msgctxt "touchBarCancelDragging"
+msgid "Cancel dragging"
+msgstr "Platziere abbräche"
+
+msgctxt "touchBarFinishSelecting"
+msgid "Finish selecting"
+msgstr "Merfachuswahl beände"
+
+msgctxt "transformTo"
+msgid "Other actions"
+msgstr "Anderi Aktione"
+
+msgctxt "translationsBatchTranslateMenuDescription"
+msgid "Translate all blocks"
+msgstr "Alli Elemänt übersetze"
+
+msgctxt "translationsBatchTranslateMenuTitle"
+msgid "Translate..."
+msgstr "Übersetze..."
+
+msgctxt "translationsItemAction"
+msgid "Translate"
+msgstr "Übersetze..."
+
+msgctxt "validationsNoneFound"
+msgid "No validation errors found."
+msgstr "Keini Validierigsfähler gfunde."
+
+msgctxt "validationsToolbarLabel"
+msgid "Validations"
+msgstr "Validierige"

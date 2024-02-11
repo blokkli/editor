@@ -7,7 +7,7 @@ import { glob } from 'glob'
 import { format } from './../helpers'
 import { po as PO, type GetTextTranslation } from 'gettext-parser'
 
-const LANGUAGES = ['de', 'fr', 'it']
+const LANGUAGES = ['de', 'fr', 'it', 'gsw_CH']
 
 function extractFunctionCalls(name: string, sourceCode: string): string[] {
   let inTCall = false

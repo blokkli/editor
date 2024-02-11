@@ -1,0 +1,698 @@
+{
+  "addBlockCommand.appendInField": {
+    "source": "Append \"@block\" in \"@field\"",
+    "translation": "«@block» in «@field» drzüefüege"
+  },
+  "addBlockCommand.appendRoot": {
+    "source": "Append \"@block\"",
+    "translation": "«@block» drzuefüege"
+  },
+  "addBlockCommand.insertInField": {
+    "source": "Insert \"@block\" into \"@field\"",
+    "translation": "«@block» in «@field» drzuefüege"
+  },
+  "addCommentToItem": {
+    "source": "Comment",
+    "translation": "Kommentiere"
+  },
+  "addListInputPlaceholder": {
+    "source": "Search available blocks",
+    "translation": "Blöck durchsueche"
+  },
+  "addListItemFavoriteAdd": {
+    "source": "Add to favorites",
+    "translation": "Zu de Favorite drzuefüege"
+  },
+  "addListItemFavoriteRemove": {
+    "source": "Remove from favorites",
+    "translation": "Us de Favorite entfärne"
+  },
+  "addListSidebarTitle": {
+    "source": "Add blocks",
+    "translation": "Block drzuefüege"
+  },
+  "artboard": {
+    "source": "Artboard",
+    "translation": "Zeichenflächi"
+  },
+  "artboardResetZoom": {
+    "source": "Reset zoom",
+    "translation": "Zoom zruggsetze"
+  },
+  "artboardScaleToFit": {
+    "source": "Scale to fit",
+    "translation": "And Höchi aapasse"
+  },
+  "artboardScrollDown": {
+    "source": "Scroll down",
+    "translation": "abescrolle"
+  },
+  "artboardScrollOnePageDown": {
+    "source": "Scroll one page down",
+    "translation": "E Sitte ufescrolle"
+  },
+  "artboardScrollOnePageUp": {
+    "source": "Scroll one page up",
+    "translation": "E Sitte abescrolle"
+  },
+  "artboardScrollToEnd": {
+    "source": "Scroll to end",
+    "translation": "Zum Schluss scrolle"
+  },
+  "artboardScrollToTop": {
+    "source": "Scroll to top",
+    "translation": "Zum Aafang scrolle"
+  },
+  "artboardScrollUp": {
+    "source": "Scroll up",
+    "translation": "ufescrolle"
+  },
+  "assistantAddAction": {
+    "source": "Add with AI Assistant",
+    "translation": "Mitem KI-Assischtänt drzuefüege"
+  },
+  "assistantAddResultError": {
+    "source": "Failed to add block from assistant.",
+    "translation": "Es het e Fähler gäh bim drzuefüege mitem KI Assischtänt"
+  },
+  "assistantDialogLead": {
+    "source": "Please enter what you'd like the assistant to generate.",
+    "translation": "Bitte git iih, was dr KI-Assischtänt söll generiere. "
+  },
+  "assistantDialogSubmit": {
+    "source": "Create blocks",
+    "translation": "Blöck erstelle"
+  },
+  "assistantDialogTitle": {
+    "source": "Generate content with AI assistant",
+    "translation": "Inhalt mit KI generiere"
+  },
+  "assistantPromptLabel": {
+    "source": "Prompt",
+    "translation": "Aawiisig"
+  },
+  "assistantPromptPlaceholder": {
+    "source": "Generate content for a page about how taxes work in Switzerland",
+    "translation": "Schrib e Teggscht zum Thema Stüüre in dr Schwiz"
+  },
+  "cancel": {
+    "source": "Cancel",
+    "translation": "Abbräche"
+  },
+  "clipboard": {
+    "source": "Clipboard",
+    "translation": "Zwüscheablag"
+  },
+  "clipboardCopyShortcutHelp": {
+    "source": "Copy selected blocks",
+    "translation": "Usgwählti Blöck kopiere"
+  },
+  "clipboardEmpty": {
+    "source": "No items in the clipboard",
+    "translation": "In dr Zwüscheablag hets nüt"
+  },
+  "clipboardExplanation": {
+    "source": "<p>\n    Use Ctrl-V on the page to paste content. These\n    will then be displayed here.\n  </p>\n  <p>\n    Use Ctrl-F to search for existing content and paste it into\n    the clipboard.\n  </p>",
+    "translation": "<p>Bruch Ctrl+V zum öbbis iifüege. D'Inhält wärde denn do aazeigt.</p><p>Bruch Ctrl+F zum bestehendi Inhält z'sueche und ind Zwüscheablag iizfüege. </p>"
+  },
+  "clipboardPastePlaceholder": {
+    "source": "Paste text or media here",
+    "translation": "Teggscht oder Medie iifüege"
+  },
+  "clipboardPasteShortcutHelp": {
+    "source": "Paste text, image or copied blocks",
+    "translation": "Teggscht, Bild oder kopierti Blöck iifüege"
+  },
+  "close": {
+    "source": "Close",
+    "translation": "Zuemache"
+  },
+  "commandGroup.action": {
+    "source": "Actions",
+    "translation": "Aktione"
+  },
+  "commandGroup.add": {
+    "source": "Add new",
+    "translation": "Drzuefüege"
+  },
+  "commandGroup.misc": {
+    "source": "Miscellaneous",
+    "translation": "Divärses"
+  },
+  "commandGroup.selection": {
+    "source": "Selection",
+    "translation": "Uswahl"
+  },
+  "commandGroup.ui": {
+    "source": "Interface",
+    "translation": "Oberflächi"
+  },
+  "commandPalette.inputPlaceholder": {
+    "source": "Search commands...",
+    "translation": "Aktione durchsueche..."
+  },
+  "commandPalette.open": {
+    "source": "Open Command Palette",
+    "translation": "Mach d'Befähl uf"
+  },
+  "commentAdd": {
+    "source": "Add comment",
+    "translation": "Kommentar drzuefüege"
+  },
+  "commentBody": {
+    "source": "Comment",
+    "translation": "Kommentar"
+  },
+  "commentBodyPlaceholder": {
+    "source": "Add reply",
+    "translation": "Antwort drzuefüege"
+  },
+  "commentSave": {
+    "source": "Submit comment",
+    "translation": "Kommentar speichere"
+  },
+  "comments": {
+    "source": "Comments",
+    "translation": "Kommentär"
+  },
+  "convertTo": {
+    "source": "Convert to...",
+    "translation": "Konvertiere"
+  },
+  "deleteButton": {
+    "source": "Delete",
+    "translation": "Lösche"
+  },
+  "deleteError": {
+    "source": "The block could not be deleted.",
+    "translation": "S'Elemänt het nid chönne entfärnt wärde. "
+  },
+  "duplicate": {
+    "source": "Duplicate",
+    "translation": "Dupliziere"
+  },
+  "duplicateError": {
+    "source": "The items could not be duplicated.",
+    "translation": "D'Elemänt hän nid chönne dupliziert wärde. "
+  },
+  "edit": {
+    "source": "Edit",
+    "translation": "Bearbeite"
+  },
+  "editFormBlockAdd": {
+    "source": "Add @label",
+    "translation": "@label drzuefüege"
+  },
+  "editFormBlockEdit": {
+    "source": "Edit @label",
+    "translation": "@label bearbeite"
+  },
+  "editFormBlockTranslate": {
+    "source": "Translate @label (@language)",
+    "translation": "@label übersetze (@language)"
+  },
+  "editFormEntityEdit": {
+    "source": "Edit @label",
+    "translation": "\"@label\" bearbeite"
+  },
+  "editFormEntityTranslate": {
+    "source": "Translate \"@label\" (@language)",
+    "translation": "\"@label\" übersetze (@language)"
+  },
+  "editIndicatorLabel": {
+    "source": "Edit blocks",
+    "translation": "Elemänt bearbeite"
+  },
+  "exitDescription": {
+    "source": "Close editor without publishing",
+    "translation": "Dr Editor zuemache ohni z'veröffentliche"
+  },
+  "exitTitle": {
+    "source": "Close",
+    "translation": "Zuemache"
+  },
+  "failedToConvert": {
+    "source": "The block could not be converted.",
+    "translation": "S'Elemänt het nid chönne konvertiert wärde. "
+  },
+  "failedToTransform": {
+    "source": "The action \"@name\" could not be executed.",
+    "translation": "D'Aktion «@name» het nid chönne usgfüert wärde."
+  },
+  "featureHelpShortcuts": {
+    "source": "Shortcuts",
+    "translation": "Taschtekombinatione"
+  },
+  "featureHelpTitle": {
+    "source": "Help",
+    "translation": "Hilf"
+  },
+  "feature_add-list_setting_orientation_label": {
+    "source": "Add List",
+    "translation": "Block-Leischte"
+  },
+  "feature_add-list_setting_orientation_option_horizontal": {
+    "source": "Horizontal",
+    "translation": "Horizontal"
+  },
+  "feature_add-list_setting_orientation_option_sidebar": {
+    "source": "Sidebar",
+    "translation": "Sitteleischte"
+  },
+  "feature_add-list_setting_orientation_option_vertical": {
+    "source": "Vertical",
+    "translation": "Vertikal"
+  },
+  "feature_artboard_setting_persist_label": {
+    "source": "Persist position and zoom",
+    "translation": "Position und Zoom speichere"
+  },
+  "feature_artboard_setting_scrollSpeed_label": {
+    "source": "Artboard scroll speed",
+    "translation": "Scrollgschwindigkeit vo dr Zeicheflächi"
+  },
+  "feature_artboard_setting_useArtboard_label": {
+    "source": "Page editing",
+    "translation": "Sittebearbeitig"
+  },
+  "feature_artboard_setting_useArtboard_option_no": {
+    "source": "Normal display",
+    "translation": "Normali Darstellig"
+  },
+  "feature_artboard_setting_useArtboard_option_yes": {
+    "source": "Use artboard",
+    "translation": "Zeicheflächi bruche"
+  },
+  "feature_clipboard_setting_openSidebarOnPaste_label": {
+    "source": "Open sidebar when pasting from clipboard",
+    "translation": "Sitteleischte bim Iifüege us dr Zwüscheablag ufmache"
+  },
+  "feature_history_setting_useMouseButtons_label": {
+    "source": "Use mouse buttons for undo/redo",
+    "translation": "Muustaschte für Rückgängig/Wiederhärstelle bruche"
+  },
+  "feature_import-existing_setting_showDialogWhenEmpty_label": {
+    "source": "Show import dialog at start when page is empty",
+    "translation": "Importdialog bim Start aazeige wenn d'Sitte leer isch"
+  },
+  "feature_settings_setting_resetAllSettings_label": {
+    "source": "Reset all settings",
+    "translation": "Alli Iistellige Zruggsetze"
+  },
+  "feature_settings_setting_useAnimations_label": {
+    "source": "Use animations",
+    "translation": "Animatione aazeige"
+  },
+  "fieldAreasHide": {
+    "source": "Hide content areas",
+    "translation": "Inhaltsbereich verstecke"
+  },
+  "fieldAreasShow": {
+    "source": "Show content areas",
+    "translation": "Inhaltsbereich aazeige"
+  },
+  "fieldAreasToggle": {
+    "source": "Toggle content areas",
+    "translation": "Inhaltsbereich aazeige"
+  },
+  "fieldIsRequired": {
+    "source": "This field is required",
+    "translation": "Das Fäld dörf nid leer sii"
+  },
+  "gridHide": {
+    "source": "Hide grid",
+    "translation": "Spalte verstecke"
+  },
+  "gridShow": {
+    "source": "Show grid",
+    "translation": "Spalte aazeige"
+  },
+  "gridToggle": {
+    "source": "Toggle grid",
+    "translation": "Spalte aazeige"
+  },
+  "history": {
+    "source": "History",
+    "translation": "Ändergie"
+  },
+  "historyCurrentRevision": {
+    "source": "Current revision",
+    "translation": "Aktuelli Revision"
+  },
+  "historyRedo": {
+    "source": "Redo",
+    "translation": "Wiederhole"
+  },
+  "historyShowMore": {
+    "source": "Show @count more",
+    "translation": "@count meeh aazeige"
+  },
+  "historyUndo": {
+    "source": "Undo",
+    "translation": "Rückgängig"
+  },
+  "importExistingDescription": {
+    "source": "Import from an existing page",
+    "translation": "Von enere bestehende Sitte importiere"
+  },
+  "importExistingDialogLead": {
+    "source": "Import content from an existing page. The items will be added to the end of the list. This action can be undone.",
+    "translation": "Inhält chönne vonere bestehende Sitte importiert wärde. Die Elemänt wärde am Ändi vo dr lischte denn drzuegfüegt. Die Aktion chame nid ruckgängig mache. "
+  },
+  "importExistingDialogSubmit": {
+    "source": "Import content",
+    "translation": "Inhält importiere"
+  },
+  "importExistingDialogTitle": {
+    "source": "Import from existing page",
+    "translation": "Vonere bestehende Sitte importiere"
+  },
+  "importExistingError": {
+    "source": "Content could not be imported.",
+    "translation": "D'Inhält hän nid chönne übernoh wärde"
+  },
+  "importExistingFieldsLabel": {
+    "source": "Which content would you like to import?",
+    "translation": "Weli Inhält sölle importiert wärde?"
+  },
+  "importExistingPagesLabel": {
+    "source": "From which page would you like to import?",
+    "translation": "Von welere Sitte willsch öbbis importiere?"
+  },
+  "importExistingResultsTitle": {
+    "source": "@count of @total pages",
+    "translation": "@count vo @total Sitte"
+  },
+  "importExistingSearchPlaceholder": {
+    "source": "Search pages",
+    "translation": "Sitte durchsueche"
+  },
+  "importExistingSuccess": {
+    "source": "Content imported successfully.",
+    "translation": "Inhält erfolgriich importiert"
+  },
+  "importExistingTitle": {
+    "source": "Import...",
+    "translation": "Importiere..."
+  },
+  "libraryAdd": {
+    "source": "Add to library",
+    "translation": "Zur Bibliothek drzuefüege"
+  },
+  "libraryAddFromLibrary": {
+    "source": "Add from library",
+    "translation": "Us dr Bibliothek drzuefüege"
+  },
+  "libraryDetach": {
+    "source": "Detach from library",
+    "translation": "Von der Bibliothek loslöse"
+  },
+  "libraryDialogDescriptionLabel": {
+    "source": "Description",
+    "translation": "Beschriibig"
+  },
+  "libraryDialogLead": {
+    "source": "When you add an item to the library, you can use it on multiple pages at the same time. Changes to this item are then immediately published on all pages.",
+    "translation": "Wenn es Elemänt in dr Bibliothek isch, cha das Elemänt uf mehrere Sitte gliichzittig brucht wärde. D'Änderige an däm Elemänt wärde denn sofort uf allne Sitte publiziert. "
+  },
+  "libraryDialogSubmit": {
+    "source": "Add to library",
+    "translation": "Zur Bibliothe drzuefüege"
+  },
+  "libraryDialogTitle": {
+    "source": "Add to library",
+    "translation": "Zur Bibliothe drzuefüege"
+  },
+  "libraryDialogTitleInputPlaceholder": {
+    "source": "e.g. Teaser Campaign 2024",
+    "translation": "z.B. Teaser Kampagne 2023"
+  },
+  "libraryError": {
+    "source": "Failed to add block to library.",
+    "translation": "Das Elemänt het nid chönne zur Bibliothek drzuegfüegt wärde. "
+  },
+  "libraryPlaceDialogLead": {
+    "source": "Select a reusable block from the library to add it to your layout. You can detach the block later.",
+    "translation": "Wähl e wiederverwändbare Block us dr Bibliothek zum dä drzuefüege. Dr Block cha spöter wider entfärnt wärde. "
+  },
+  "libraryPlaceDialogSubmit": {
+    "source": "Add reusable block",
+    "translation": "E widerverwändbare Block drzuefüege"
+  },
+  "libraryPlaceDialogTitle": {
+    "source": "Add block from library",
+    "translation": "Block us dr Bibliothek drzuefüege"
+  },
+  "libraryPlaceSearchInputPlaceholder": {
+    "source": "Search library items",
+    "translation": "Suchbegriff iigeh"
+  },
+  "libraryPlaceSearchLabel": {
+    "source": "Filter library items",
+    "translation": "Bibliothek durchsueche"
+  },
+  "libraryPreviewLabel": {
+    "source": "Preview",
+    "translation": "Vorschau"
+  },
+  "maskHide": {
+    "source": "Hide content fields",
+    "translation": "Inhaltsfälder verstecke"
+  },
+  "maskShow": {
+    "source": "Show content fields",
+    "translation": "Inhaltsfelder aazeige"
+  },
+  "maskToggle": {
+    "source": "Show content fields",
+    "translation": "Inhaltsfelder aazeige"
+  },
+  "mediaLibrary": {
+    "source": "Media Library",
+    "translation": "Mediebibliothek"
+  },
+  "multipleItemsLabel": {
+    "source": "Items",
+    "translation": "Elemänt"
+  },
+  "optionsCommand.selectCheckboxValue": {
+    "source": "Select \"@value\" in \"@option\"",
+    "translation": "«@value» in «@option» uswähle"
+  },
+  "optionsCommand.setOption": {
+    "source": "Set option \"@option\" to \"@value\"",
+    "translation": "Option «@option» «@value» setze"
+  },
+  "optionsCommand.unselectCheckboxValue": {
+    "source": "Unselect \"@value\" in \"@option\"",
+    "translation": "«@value» in «@option» abwähle"
+  },
+  "ownershipError": {
+    "source": "Error in assigning",
+    "translation": "Fähler bim Zuewiise"
+  },
+  "ownershipNote": {
+    "source": "This page is currently being edited by @name. Changes can only be made by one person at a time.",
+    "translation": "Diese Sitte wird aktuell vo @name bearbeitet. Änderige chönne nur vo einere Person glichzittig gmacht wärde. "
+  },
+  "ownershipSuccess": {
+    "source": "You are now the owner.",
+    "translation": "Du bisch jetzt dr Bsitzer."
+  },
+  "ownershipTakeOwnership": {
+    "source": "Assign to me",
+    "translation": "Mir zuewiise"
+  },
+  "pageIsNotPublished": {
+    "source": "Page is not published",
+    "translation": "Die Sitte isch nid publiziert"
+  },
+  "pageIsPublished": {
+    "source": "Page is published",
+    "translation": "Die Sitte isch Publiziert"
+  },
+  "pageIsPublishedWithPendingChanges": {
+    "source": "Page is published (changes pending)",
+    "translation": "Die Sitte isch publiziert (es sin aber no Änderige usstehend)"
+  },
+  "previewDialogLead": {
+    "source": "Scan the QR code with your smartphone to open the preview.",
+    "translation": "Scan dr QR-Code zum ufem Smartphone d'Vorschau aaluege. "
+  },
+  "previewDialogTitle": {
+    "source": "Preview with smartphone",
+    "translation": "Vorschau mitem Smartphone"
+  },
+  "previewNewWindow": {
+    "source": "Preview (new window)",
+    "translation": "Vorschau (neus Fänschter)"
+  },
+  "previewQrCodeText": {
+    "source": "You can also copy the link and share it.",
+    "translation": "Dä Link chame au kopiere und teile."
+  },
+  "previewWithSmartphone": {
+    "source": "Preview (with smartphone)",
+    "translation": "Vorschau (mitem Smartphone)"
+  },
+  "publishDescription": {
+    "source": "Make all changes public",
+    "translation": "Alli änderige öffentlich mache."
+  },
+  "publishError": {
+    "source": "Changes could not be published.",
+    "translation": "D'Änderige hän nid chönne publiziert wärde."
+  },
+  "publishLabel": {
+    "source": "Publish",
+    "translation": "Publiziere"
+  },
+  "publishSuccess": {
+    "source": "Changes published successfully.",
+    "translation": "Änderige erfolgriich publiziert."
+  },
+  "responsivePreviewCustomViewport": {
+    "source": "Custom",
+    "translation": "Benutzerdefiniert"
+  },
+  "responsivePreviewTitle": {
+    "source": "Responsive Preview",
+    "translation": "Responsivi Vorschau"
+  },
+  "revertDialogLead": {
+    "source": "This will delete all changes and restore the currently published state. This action cannot be undone.",
+    "translation": "Alli Änderige wärde glöscht und dr jetzt publizierti Zuestand wird wider härgstellt. Die Aktion chame nid rückgängig mache. "
+  },
+  "revertDialogSubmit": {
+    "source": "Discard changes",
+    "translation": "Änderige verwärfe"
+  },
+  "revertDialogTitle": {
+    "source": "Irrevocably discard changes",
+    "translation": "Änderige ändgültig verwärfe. "
+  },
+  "revertError": {
+    "source": "Changes could not be discarded.",
+    "translation": "D'Änderige hän nid chönne verworfe wärde."
+  },
+  "revertMenuDescription": {
+    "source": "Restore currently published state",
+    "translation": "Dr aktuell publizierti Stand widerhärstelle."
+  },
+  "revertMenuTitle": {
+    "source": "Discard...",
+    "translation": "Verwärfe..."
+  },
+  "revertSuccess": {
+    "source": "All changes have been discarded.",
+    "translation": "Alli Änderige sin glöcht worde."
+  },
+  "save": {
+    "source": "Save",
+    "translation": "Speichere"
+  },
+  "searchBoxNoResultsFound": {
+    "source": "No results found",
+    "translation": "Keini Resultat gfunde"
+  },
+  "searchBoxOnThisPage": {
+    "source": "On this page",
+    "translation": "Uf dere Sitte"
+  },
+  "searchBoxPlaceholder": {
+    "source": "Enter search term",
+    "translation": "Suechbegriff iigeh"
+  },
+  "searchToolbarLabel": {
+    "source": "Search content",
+    "translation": "Inhält sueche"
+  },
+  "settingsAdvanced": {
+    "source": "Advanced",
+    "translation": "Erwitteret"
+  },
+  "settingsAppearance": {
+    "source": "Appearance",
+    "translation": "Darstellig"
+  },
+  "settingsBehaviour": {
+    "source": "Behaviour",
+    "translation": "Verhalte"
+  },
+  "settingsDialogTitle": {
+    "source": "Change settings",
+    "translation": "Iistellige"
+  },
+  "settingsMenuDescription": {
+    "source": "Personal settings for the editor",
+    "translation": "Persönlichi Iistellige füre Editor"
+  },
+  "settingsMenuTitle": {
+    "source": "Settings",
+    "translation": "Iistellige"
+  },
+  "shortcutGroupBlocks": {
+    "source": "Blocks",
+    "translation": "Blöck"
+  },
+  "shortcutGroupGeneral": {
+    "source": "General",
+    "translation": "Allgemein"
+  },
+  "shortcutGroupUi": {
+    "source": "UI",
+    "translation": "Oberflächi"
+  },
+  "sidebar.hide": {
+    "source": "Hide @title",
+    "translation": "@title usblände"
+  },
+  "sidebar.show": {
+    "source": "Show @title",
+    "translation": "@title aazeige"
+  },
+  "singleComment": {
+    "source": "comment",
+    "translation": "Kommentar"
+  },
+  "structureToolbarLabel": {
+    "source": "Structure",
+    "translation": "Struktur"
+  },
+  "theme": {
+    "source": "Theme",
+    "translation": "Farbe"
+  },
+  "touchBarCancelDragging": {
+    "source": "Cancel dragging",
+    "translation": "Platziere abbräche"
+  },
+  "touchBarFinishSelecting": {
+    "source": "Finish selecting",
+    "translation": "Merfachuswahl beände"
+  },
+  "transformTo": {
+    "source": "Other actions",
+    "translation": "Anderi Aktione"
+  },
+  "translationsBatchTranslateMenuDescription": {
+    "source": "Translate all blocks",
+    "translation": "Alli Elemänt übersetze"
+  },
+  "translationsBatchTranslateMenuTitle": {
+    "source": "Translate...",
+    "translation": "Übersetze..."
+  },
+  "translationsItemAction": {
+    "source": "Translate",
+    "translation": "Übersetze..."
+  },
+  "validationsNoneFound": {
+    "source": "No validation errors found.",
+    "translation": "Keini Validierigsfähler gfunde."
+  },
+  "validationsToolbarLabel": {
+    "source": "Validations",
+    "translation": "Validierige"
+  }
+}
