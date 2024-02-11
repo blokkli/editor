@@ -3,9 +3,11 @@ import path from 'path'
 import type {
   BlockDefinitionInput,
   BlockDefinitionOptionsInput,
+  FragmentDefinitionInput,
 } from '../runtime/types'
 
 type ExtractedBlockDefinitionInput = BlockDefinitionInput<{}, []>
+type ExtractedFragmentDefinitionInput = FragmentDefinitionInput<{}, []>
 
 type ExtractedDefinition = {
   filePath: string
@@ -18,17 +20,29 @@ type ExtractedDefinition = {
   hasBlokkliField: boolean
 }
 
+type ExtractedFragmentDefinition = {
+  filePath: string
+  chunkName: string
+  componentName: string
+  definition: ExtractedFragmentDefinitionInput
+  source: string
+  fileSource: string
+}
+
 /**
  * Service to handle text extractions across multiple files.
  */
 export default class BlockExtractor {
   definitions: Record<string, ExtractedDefinition> = {}
+  fragmentDefinitions: Record<string, ExtractedFragmentDefinition> = {}
   isBuild = false
   composableName: string
+  fragmentComposableName: string
 
   constructor(isBuild = false) {
     this.isBuild = isBuild
     this.composableName = 'defineBlokkli'
+    this.fragmentComposableName = 'defineBlokkliFragment'
   }
 
   /**
@@ -65,25 +79,39 @@ export default class BlockExtractor {
         return true
       }
 
+      if (this.fragmentDefinitions[filePath]) {
+        delete this.fragmentDefinitions[filePath]
+        return true
+      }
+
       return false
     }
 
-    const { definition, source } = extracted
+    if ('bundle' in extracted.definition) {
+      const icon = await this.getIcon(filePath)
 
-    const icon = await this.getIcon(filePath)
-
-    this.definitions[filePath] = {
-      filePath,
-      definition,
-      icon,
-      chunkName: (definition.chunkName || 'global') as any,
-      componentName: 'BlokkliComponent_' + definition.bundle,
-      source,
-      fileSource,
-      hasBlokkliField:
-        fileSource.includes('<BlokkliField') ||
-        fileSource.includes('<blokkli-field') ||
-        fileSource.includes(':is="BlokkliField"'),
+      this.definitions[filePath] = {
+        filePath,
+        definition: extracted.definition,
+        icon,
+        chunkName: (extracted.definition.chunkName || 'global') as any,
+        componentName: 'BlokkliComponent_' + extracted.definition.bundle,
+        source: extracted.source,
+        fileSource,
+        hasBlokkliField:
+          fileSource.includes('<BlokkliField') ||
+          fileSource.includes('<blokkli-field') ||
+          fileSource.includes(':is="BlokkliField"'),
+      }
+    } else if ('name' in extracted.definition) {
+      this.fragmentDefinitions[filePath] = {
+        filePath,
+        definition: extracted.definition,
+        chunkName: (extracted.definition.chunkName || 'global') as any,
+        componentName: 'BlokkliFragmentComponent_' + extracted.definition.name,
+        source: extracted.source,
+        fileSource,
+      }
     }
 
     return true
@@ -95,10 +123,19 @@ export default class BlockExtractor {
   extractSingle(
     code: string,
     filePath: string,
-  ): { definition: ExtractedBlockDefinitionInput; source: string } | undefined {
-    const pattern = this.composableName + '\\((\\{.+?\\})\\)'
+  ):
+    | {
+        definition:
+          | ExtractedBlockDefinitionInput
+          | ExtractedFragmentDefinitionInput
+        source: string
+      }
+    | undefined {
+    const pattern =
+      `(${this.composableName}|${this.fragmentComposableName})` +
+      '\\((\\{.+?\\})\\)'
     const rgx = new RegExp(pattern, 'gms')
-    const source = rgx.exec(code)?.[1]
+    const source = rgx.exec(code)?.[2]
     if (source) {
       try {
         // @ts-ignore
@@ -131,6 +168,12 @@ export default class BlockExtractor {
       return `${v.definition.bundle}: ${v.source}`
     })
 
+    const allFragmentDefinitions = Object.values(this.fragmentDefinitions).map(
+      (v) => {
+        return `${v.definition.name}: ${v.source}`
+      },
+    )
+
     const icons = Object.values(this.definitions).reduce<
       Record<string, string>
     >((acc, v) => {
@@ -141,7 +184,7 @@ export default class BlockExtractor {
     }, {})
 
     return `import type { GlobalOptionsKey, BundlePropsMap } from './generated-types'
-import type { BlockDefinitionInput, BlockDefinitionOptionsInput } from '#blokkli/types'
+import type { BlockDefinitionInput, BlockDefinitionOptionsInput, FragmentDefinitionInput } from '#blokkli/types'
 export const globalOptions = ${JSON.stringify(globalOptions, null, 2)} as const
 
 export const icons: Record<string, string> = ${JSON.stringify(icons)}
@@ -152,9 +195,15 @@ export const definitionsMap: Record<string, BlockDefinitionInput<BlockDefinition
   ${allDefinitions.join(',\n')}
 }
 
+export const fragmentDefinitionsMap: Record<string, FragmentDefinitionInput<BlockDefinitionOptionsInput, GlobalOptionsKey[]>> = {
+  ${allFragmentDefinitions.join(',\n')}
+}
+
 export const definitions: BlockDefinitionInput<any, GlobalOptionsKey[]>[] = Object.values(definitionsMap)
+export const fragmentDefinitions: FragmentDefinitionInput<any, GlobalOptionsKey[]>[] = Object.values(fragmentDefinitionsMap)
 
 export const getDefinition = (bundle: string): BlockDefinitionInput<Record<string, any>, GlobalOptionsKey[]>|undefined => definitionsMap[bundle]
+export const getFragmentDefinition = (name: string): FragmentDefinitionInput<Record<string, any>, GlobalOptionsKey[]>|undefined => fragmentDefinitionsMap[name]
 `
   }
 
@@ -345,6 +394,7 @@ export type BundlePropsMap = {
    * Generate the template.
    */
   generateImportsTemplate(chunkNames: string[]): string {
+    console.log(this.fragmentDefinitions)
     const chunkImports = chunkNames
       .filter((v) => v !== 'global')
       .map((chunkName) => {
@@ -355,14 +405,28 @@ export type BundlePropsMap = {
       Record<string, string>
     >((acc, v) => {
       if (v.chunkName !== 'global') {
-        acc[v.definition.bundle] = v.chunkName
+        acc['block_' + v.definition.bundle] = v.chunkName
+      }
+      return acc
+    }, {})
+
+    const nonGlobalFragmentChunkMapping = Object.values(
+      this.fragmentDefinitions,
+    ).reduce<Record<string, string>>((acc, v) => {
+      if (v.chunkName !== 'global') {
+        acc['fragment_' + v.definition.name] = v.chunkName
       }
       return acc
     }, {})
 
     return `
     import { defineAsyncComponent } from '#imports'
-    ${this.generateChunkGroup('global')}
+    ${this.generateChunkGroup('global', 'global', this.definitions)}
+    ${this.generateChunkGroup(
+      'global',
+      'globalFragments',
+      this.fragmentDefinitions,
+    )}
 
 const chunks: Record<string, () => Promise<any>> = {
   ${chunkImports.join(',\n  ')}
@@ -374,41 +438,73 @@ const chunkMapping: Record<string, string> = ${JSON.stringify(
       2,
     )}
 
+const fragmentChunkMapping: Record<string, string> = ${JSON.stringify(
+      nonGlobalFragmentChunkMapping,
+      null,
+      2,
+    )}
+
 export function getBlokkliItemComponent(bundle: string): any {
-  if (global[bundle]) {
-    return global[bundle]
+  const key = 'block_' + bundle
+  if (global[key]) {
+    return global[key]
   }
-  const chunkName = chunkMapping[bundle]
+  const chunkName = chunkMapping[key]
   if (chunkName) {
     return defineAsyncComponent(() => chunks[chunkName]().then(chunk => {
-      return chunk.default[bundle]
+      return chunk.default[key]
     }))
   }
-}`
+}
+
+export function getBlokkliFragmentComponent(name: string): any {
+  const key = 'fragment_' + name
+  if (globalFragments[key]) {
+    return globalFragments[key]
+  }
+  const chunkName = chunkMapping[key]
+  if (chunkName) {
+    return defineAsyncComponent(() => chunks[chunkName]().then(chunk => {
+      return chunk.default[key]
+    }))
+  }
+}
+`
   }
 
   /**
    * Generate the template.
    */
-  generateChunkGroup(chunkName: string, addExport?: boolean): string {
-    const definitions = Object.values(this.definitions).filter((v) => {
+  generateChunkGroup(
+    chunkName: string,
+    exportName: string,
+    inputDefinitions: Record<
+      string,
+      ExtractedDefinition | ExtractedFragmentDefinition
+    >,
+    addExport?: boolean,
+  ): string {
+    const definitions = Object.values(inputDefinitions).filter((v) => {
       return v.chunkName === chunkName
     })
     const imports = definitions.map((v) => {
       return `import ${v.componentName} from '${v.filePath}'`
     })
     const map = definitions.map((v) => {
-      return `${v.definition.bundle}: ${v.componentName}`
+      if ('bundle' in v.definition) {
+        return `block_${v.definition.bundle}: ${v.componentName}`
+      }
+      return `fragment_${v.definition.name}: ${v.componentName}`
     })
     let content = `
 ${imports.join('\n')}
 
-const ${chunkName}: Record<string, any> = {
+const ${exportName}: Record<string, any> = {
   ${map.join(',\n  ')}
 }
 `
     if (addExport) {
-      content += `export default ${chunkName}`
+      content += `export default ${exportName}`
     }
     return content
   }

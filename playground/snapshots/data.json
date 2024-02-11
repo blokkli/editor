@@ -17,8 +17,7 @@
         "c414a773-406c-4200-aef6-ada9349b3f11",
         "90d01577-babc-45b5-a03b-2ba266822425",
         "958fba1e-400f-42c5-b310-11f59db59e2f",
-        "2139b0fa-f407-4014-9d49-1c8a7f090190",
-        "7ea2581f-d5d1-42ff-96d0-d68a667dd2f3"
+        "0039cbfb-6ee7-48db-9e9f-7117c488299b"
       ]
     },
     {
@@ -1246,6 +1245,15 @@
           { "key": "color", "value": "lightGreen" }
         ],
         "libraryItem": ["7ba5e09a-6f8c-479a-a4d5-ec46c1224a0c"]
+      }
+    },
+    {
+      "entityType": "block",
+      "bundle": "fragment",
+      "uuid": "0039cbfb-6ee7-48db-9e9f-7117c488299b",
+      "values": {
+        "options": [],
+        "name": ["cta"]
       }
     }
   ],

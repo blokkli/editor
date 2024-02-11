@@ -254,7 +254,7 @@ export type BlockDefinitionInput<
   GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
 > = {
   /**
-   * The type ID of the item, e.g. "text" or "section_title".
+   * The bundle ID of the block, e.g. "text" or "section_title".
    */
   bundle: string
 
@@ -1048,5 +1048,52 @@ export type ContextMenuButton = {
 }
 
 export type ContextMenu = ContextMenuButton | ContextMenuRule
+
+export type FragmentDefinitionInput<
+  Options extends BlockDefinitionOptionsInput = {},
+  GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
+> = {
+  /**
+   * The unique name of this fragment.
+   */
+  name: string
+
+  /**
+   * The label of the fragment.
+   */
+  label: string
+
+  /**
+   * A short description.
+   */
+  description?: string
+
+  /**
+   * The name of the chunk group.
+   *
+   * If this value is set, the component will be assigned to this
+   * import chunk. Multiple components can have the same chunk name.
+   *
+   * See the `chunkNames` option on the module's configuration for more details.
+   */
+  chunkName?: ValidChunkNames
+
+  /**
+   * Define options available for this block.
+   */
+  options?: Options
+
+  /**
+   * Global options to use.
+   *
+   * These options will be merged with the component-specific options.
+   */
+  globalOptions?: GlobalOptions
+
+  /**
+   * Settings for the behaviour in the editor.
+   */
+  editor?: BlokkliDefinitionInputEditor<Options, GlobalOptions>
+}
 
 export default {}

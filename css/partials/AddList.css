@@ -27,6 +27,20 @@
       }
     }
 
+    .bk-list-item.bk-is-accent .bk-list-item-inner {
+      @apply bg-accent-900 border-accent-500 text-accent-50;
+    }
+
+    .bk-list-item.bk-is-accent {
+      @media not all and (hover: none) {
+        &:hover {
+          .bk-list-item-inner {
+            @apply bg-accent-700  border-accent-400 text-white;
+          }
+        }
+      }
+    }
+
     .bk-list-item.bk-is-rose .bk-list-item-inner {
       @apply bg-red-dark border-red-normal text-red-light;
     }
@@ -229,6 +243,10 @@
     flex: 0 0 auto;
   }
 
+  &.bk-is-accent {
+    @apply bg-accent-800 text-white;
+  }
+
   &.bk-is-rose {
     @apply bg-red-normal text-white;
   }
@@ -289,6 +307,21 @@
   }
   .bk-list-item-icon {
     @apply text-3xl text-mono-500 bg-mono-50 p-[0.2em] rounded border border-mono-300;
+  }
+
+  &.bk-is-accent .bk-list-item-icon {
+    @apply bg-accent-100 border-accent-400 text-accent-500;
+  }
+
+  &.bk-is-accent {
+    @media not all and (hover: none) {
+      &:hover {
+        @apply text-accent-700;
+        .bk-list-item-icon {
+          @apply bg-accent-600 border-accent-900 text-white;
+        }
+      }
+    }
   }
 
   &.bk-is-rose .bk-list-item-icon {

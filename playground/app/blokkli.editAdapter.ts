@@ -553,6 +553,19 @@ export default defineBlokkliEditAdapter((ctx) => {
         })
       }
     },
+
+    fragmentsAddBlock(e) {
+      return addMutation('add', {
+        bundle: 'fragment',
+        values: {
+          name: [e.name],
+        },
+        hostEntityType: e.host.type,
+        hostEntityUuid: e.host.uuid,
+        hostField: e.host.fieldName,
+        preceedingUuid: e.preceedingUuid,
+      })
+    },
   }
 
   return adapter

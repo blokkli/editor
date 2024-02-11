@@ -1,7 +1,6 @@
 import { LOREM_LEAD, LOREM_TITLE } from '../../defaultText'
 import type { Field } from '../Field'
 import { FieldText } from '../Field/Text'
-import { FieldTextarea } from '../Field/Textarea'
 import { Block } from './Block'
 
 export class BlockTitle extends Block {

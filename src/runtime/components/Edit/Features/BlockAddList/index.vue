@@ -64,6 +64,8 @@ defineBlokkliFeature({
   screnshot: 'feature-block-add-list.jpg',
 })
 
+const reservedBundles = ['from_library', 'fragment']
+
 const {
   selection,
   storage,
@@ -218,7 +220,7 @@ const sortedList = computed(() => {
     return []
   }
   return [...generallyAvailableBundles.value]
-    .filter((v) => v.id !== 'from_library')
+    .filter((v) => !reservedBundles.includes(v.id))
     .map((v) => {
       return {
         ...v,
@@ -261,7 +263,7 @@ const getBundlesForAppendCommands = () => {
         }
       }
     }
-    return field.allowedBundles.filter((v) => v !== 'from_library')
+    return field.allowedBundles.filter((v) => !reservedBundles.includes(v))
   }
 
   return []
@@ -291,7 +293,7 @@ const getAppendEndCommands = (): Command[] => {
       }
     }
     return field.allowedBundles
-      .filter((v) => v !== 'from_library')
+      .filter((v) => !reservedBundles.includes(v))
       .map((bundle) => {
         const definition = types.allTypes.value.find((v) => v.id === bundle)
         return {

@@ -31,22 +31,18 @@ export class ContentPage extends Content {
         'card',
         'image',
         'from_library',
+        'fragment',
         'video',
         'table',
         'on_this_page',
         'widget',
       ]),
-      new FieldBlocks('footer', 'Footer', -1, ['text']),
       new FieldBlocks('header', 'Header', 1, ['hero']),
     ]
   }
 
   content(): FieldBlocks {
     return this.get('content')
-  }
-
-  footer(): FieldBlocks {
-    return this.get('footer')
   }
 
   header(): FieldBlocks {

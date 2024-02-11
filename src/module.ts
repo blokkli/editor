@@ -413,6 +413,10 @@ ${featuresArray}
       )
     }
 
+    importPattern.push(
+      resolver.resolve('./runtime/components/Blocks/Fragment/*.vue'),
+    )
+
     // Get all files.
     const files = await resolveFiles(srcDir, importPattern, {
       followSymbolicLinks: false,
@@ -529,6 +533,11 @@ ${featuresArray}
       name: 'defineBlokkli',
       from: resolver.resolve('./runtime/composables/defineBlokkli'),
       as: 'defineBlokkli',
+    })
+    addImports({
+      name: 'defineBlokkliFragment',
+      from: resolver.resolve('./runtime/composables/defineBlokkliFragment'),
+      as: 'defineBlokkliFragment',
     })
     addImports({
       name: 'defineBlokkliFeature',
@@ -661,7 +670,9 @@ export const settingsOverride: ModuleOptionsSettings = ${JSON.stringify(
           write: true,
           filename: `blokkli/chunk-${chunkName}.ts`,
           getContents: () => {
-            return blockExtractor.generateChunkGroup(chunkName, true)
+            // @TODO
+            return ''
+            // return blockExtractor.generateChunkGroup(chunkName, true)
           },
           options: {
             blokkli: true,

@@ -55,7 +55,6 @@ const props = defineProps<{
   option: BlockOptionDefinition
   property: string
   uuids: string[]
-  bundle: string
 }>()
 
 const validateValue = (

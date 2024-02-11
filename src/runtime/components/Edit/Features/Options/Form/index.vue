@@ -11,7 +11,6 @@
       :option="plugin.option"
       :property="plugin.property"
       :uuids="uuids"
-      :bundle="itemBundle"
       class="bk-blokkli-item-options-item"
       :class="{
         'bk-is-disabled':
@@ -25,10 +24,14 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli, onBeforeUnmount, onMounted } from '#imports'
-import { globalOptions, getDefinition } from '#blokkli/definitions'
+import { globalOptions } from '#blokkli/definitions'
 import { falsy } from '#blokkli/helpers'
 import OptionsFormItem from './Item.vue'
-import type { BlockDefinitionOptionsInput } from '#blokkli/types'
+import type {
+  BlockDefinitionInput,
+  BlockDefinitionOptionsInput,
+  FragmentDefinitionInput,
+} from '#blokkli/types'
 import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
 import { optionValueToStorable } from '#blokkli/helpers/options'
 import { getRuntimeOptionValue } from '#blokkli/helpers/runtimeHelpers'
@@ -45,7 +48,7 @@ const onMouseLeave = () => {
 
 const props = defineProps<{
   uuids: string[]
-  itemBundle: string
+  definition: BlockDefinitionInput | FragmentDefinitionInput
 }>()
 
 class OptionCollector {
@@ -85,16 +88,14 @@ class OptionCollector {
 const original = new OptionCollector()
 const updated = new OptionCollector()
 
-const definition = computed(() => getDefinition(props.itemBundle))
-
 const availableOptions = computed(() => {
-  if (!definition.value) {
+  if (!props.definition) {
     return []
   }
-  const options = (definition.value.options ||
+  const options = (props.definition.options ||
     {}) as BlockDefinitionOptionsInput
   const global = (
-    (definition.value.globalOptions || []) as string[]
+    (props.definition.globalOptions || []) as string[]
   ).reduce<BlockDefinitionOptionsInput>((acc, v) => {
     const globalDefinition: BlockOptionDefinition | null =
       (globalOptions as any)[v] || null
@@ -146,7 +147,7 @@ const currentValues = computed(() => {
 })
 
 const visibleOptions = computed(() => {
-  if (!definition.value?.editor?.determineVisibleOptions) {
+  if (!props.definition.editor?.determineVisibleOptions) {
     return availableOptions.value
   }
 
@@ -164,7 +165,7 @@ const visibleOptions = computed(() => {
 
   const visibleKeys: string[] =
     // We have to cast to any here because the types are guaranteed to be correct.
-    definition.value?.editor!.determineVisibleOptions({
+    props.definition.editor!.determineVisibleOptions({
       options: currentValues.value as any,
       parentType: parentType as any,
       props: ctxProps as any,

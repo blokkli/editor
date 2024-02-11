@@ -318,6 +318,19 @@ export interface BlokkliAdapter<T> {
   mediaLibraryAddBlock?: (
     e: MediaLibraryAddBlockEvent,
   ) => Promise<MutationResponseLike<T>> | undefined
+
+  /**
+   * Add a fragment block.
+   */
+  fragmentsAddBlock?: (
+    e: AdapterFragmentsAddBlock,
+  ) => Promise<MutationResponseLike<T>> | undefined
+}
+
+export type AdapterFragmentsAddBlock = {
+  name: string
+  host: DraggableHostData
+  preceedingUuid?: string
 }
 
 export type MediaLibraryAddBlockEvent = {

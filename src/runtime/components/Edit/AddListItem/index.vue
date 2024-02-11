@@ -56,7 +56,7 @@ const props = withDefaults(
     id: string
     label: string
     orientation: AddListOrientation
-    color?: 'rose' | 'lime' | 'default' | 'yellow'
+    color?: 'rose' | 'lime' | 'default' | 'yellow' | 'accent'
     bundle?: string
     icon?: BlokkliIcon
     disabled?: boolean

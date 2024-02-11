@@ -40,7 +40,7 @@ import defineCommands from '#blokkli/helpers/composables/defineCommands'
 
 const { adapter } = defineBlokkliFeature({
   id: 'transform',
-  icon: 'puzzle',
+  icon: 'script',
   label: 'Transform',
   requiredAdapterMethods: ['getTransformPlugins', 'applyTransformPlugin'],
   description: 'Provides integration for block transform plugins.',
@@ -97,7 +97,7 @@ defineCommands(() =>
     id: 'transform:' + transform.id,
     label: transform.label,
     group: 'selection',
-    icon: 'puzzle',
+    icon: 'script',
     callback: () => onTransform(transform, selection.uuids.value),
   })),
 )

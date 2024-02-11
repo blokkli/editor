@@ -24,7 +24,7 @@ const props = defineProps<{
   type: string
   title: string
   icon: BlokkliIcon
-  color: 'rose' | 'lime'
+  color: 'rose' | 'lime' | 'accent'
   description?: string
   disabled?: boolean
   weight?: number
