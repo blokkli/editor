@@ -13,6 +13,9 @@ const componentProps = defineProps<{
 
 const ctx = defineBlokkli({
   bundle: 'fragment',
+  editor: {
+    disableEdit: true,
+  },
 })
 
 const component = getBlokkliFragmentComponent(componentProps.name)

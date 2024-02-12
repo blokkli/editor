@@ -402,20 +402,21 @@ ${featuresArray}
 
     const importPattern = moduleOptions.pattern || []
 
-    const libraryEnabled = featuresContext.features.some(
-      (v) => v.id === 'library',
-    )
+    const featureIsEnabled = (id: string) =>
+      featuresContext.features.some((v) => v.id === id)
 
     // Add the from_library blokkli item.
-    if (libraryEnabled) {
+    if (featureIsEnabled('library')) {
       importPattern.push(
-        resolver.resolve('./runtime/components/FromLibrary/*.vue'),
+        resolver.resolve('./runtime/components/Blocks/FromLibrary/*.vue'),
       )
     }
 
-    importPattern.push(
-      resolver.resolve('./runtime/components/Blocks/Fragment/*.vue'),
-    )
+    if (featureIsEnabled('fragments')) {
+      importPattern.push(
+        resolver.resolve('./runtime/components/Blocks/Fragment/*.vue'),
+      )
+    }
 
     // Get all files.
     const files = await resolveFiles(srcDir, importPattern, {

@@ -17,7 +17,7 @@ import {
   INJECT_IS_IN_REUSABLE,
   INJECT_REUSABLE_OPTIONS,
 } from '#blokkli/helpers/symbols'
-import type { FieldListItem } from '../../types'
+import type { FieldListItem } from '#blokkli/types'
 
 interface LibraryItem {
   block?: FieldListItem
@@ -29,6 +29,9 @@ const props = defineProps<{
 
 const { index, options, parentType } = defineBlokkli({
   bundle: 'from_library',
+  editor: {
+    disableEdit: true,
+  },
 })
 
 // Reusable items inherit the options from this wrapper paragraph.
