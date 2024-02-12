@@ -117,6 +117,12 @@
         @apply bg-lime-dark border-lime-normal text-white;
       }
     }
+
+    &.bk-is-fragment {
+      .bk-blokkli-item-actions-title-icon {
+        @apply bg-accent-900 border-accent-500 text-accent-50;
+      }
+    }
   }
 
   #bk-blokkli-item-actions {

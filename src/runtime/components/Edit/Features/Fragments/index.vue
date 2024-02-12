@@ -3,7 +3,7 @@
     v-if="adapter.addLibraryItem && adapter.getLibraryItems"
     type="fragment"
     :title="$t('fragmentsAddFragmentAction', 'Add fragment')"
-    icon="puzzle"
+    icon="fragment"
     color="accent"
     @placed="placedAction = $event"
   />
@@ -28,7 +28,7 @@ import type { ActionPlacedEvent } from '#blokkli/types'
 
 const { adapter } = defineBlokkliFeature({
   id: 'fragments',
-  icon: 'puzzle',
+  icon: 'fragment',
   label: 'Fragments',
   description: 'Provides way to add content fragments defined by the frontend.',
   requiredAdapterMethods: ['fragmentsAddBlock'],

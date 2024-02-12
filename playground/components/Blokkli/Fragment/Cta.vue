@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-accent-700 py-50">
-    <div class="md:max-w-3xl md:mx-auto md:text-center">
+  <div class="bg-accent-700 py-30 md:py-50">
+    <div class="md:max-w-3xl md:mx-auto text-center">
       <p
         class="uppercase font-semibold border px-10 py-1 rounded-full inline-block text-xs mb-20 text-accent-100 bg-accent-300/40 border-accent-900"
       >

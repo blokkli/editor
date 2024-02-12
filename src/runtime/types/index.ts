@@ -299,7 +299,7 @@ export type FieldListItem = {
   bundle: string
   isNew?: boolean
   options?: Record<string, any>
-  props?: unknown
+  props?: Record<string, any>
 }
 
 export type MutatedField = {

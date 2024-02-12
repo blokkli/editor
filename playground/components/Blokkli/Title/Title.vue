@@ -1,7 +1,7 @@
 <template>
   <div
     :id="'title-' + uuid"
-    :class="{ 'container mx-auto mt-20 lg:mt-50': !parentType }"
+    :class="{ 'container mx-auto mt-20 lg:mt-50 text-center': !parentType }"
   >
     <div :class="{ 'md:max-w-3xl md:mx-auto md:text-center': isCentered }">
       <p

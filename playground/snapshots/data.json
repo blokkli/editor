@@ -474,8 +474,10 @@
       "values": {
         "options": [],
         "tagline": ["Features"],
-        "title": ["All features available"],
-        "lead": []
+        "title": ["All features available in blökkli"],
+        "lead": [
+          "By the way, this list is built dynamically and is possible thanks to the 'Fragments' feature!"
+        ]
       }
     },
     {

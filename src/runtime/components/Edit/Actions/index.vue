@@ -24,6 +24,7 @@
                 'is-open': showDropdown,
                 'is-interactive': shouldRenderButton,
                 'bk-is-reusable': itemBundle?.id === 'from_library',
+                'bk-is-fragment': itemBundle?.id === 'fragment',
               }"
               @click.prevent="showDropdown = !showDropdown"
             >
@@ -35,10 +36,8 @@
                 title
               }}</span>
               <span
+                v-if="selection.blocks.value.length > 1"
                 class="bk-blokkli-item-actions-title-count"
-                :class="{
-                  'bk-is-hidden': selection.blocks.value.length <= 1,
-                }"
                 >{{ selection.blocks.value.length }}</span
               >
               <Icon v-if="shouldRenderButton" name="caret" class="bk-caret" />
@@ -64,11 +63,12 @@
 
 <script lang="ts" setup>
 import { watch, ref, computed, useBlokkli } from '#imports'
-import { onlyUnique, findIdealRectPosition } from '#blokkli/helpers'
+import { onlyUnique, findIdealRectPosition, falsy } from '#blokkli/helpers'
 import type { Rectangle } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
 import type { PluginMountEvent } from '#blokkli/types'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { getFragmentDefinition } from '#blokkli/definitions'
 
 const { selection, $t, types, state, ui } = useBlokkli()
 
@@ -88,6 +88,22 @@ watch(selection.blocks, () => {
 
 const title = computed(() => {
   if (itemBundle.value) {
+    if (itemBundle.value.id === 'fragment') {
+      const fragments = state.renderedBlocks.value
+        .filter((v) => selection.uuids.value.includes(v.item.uuid))
+        .map((v) => {
+          const name = v.item.props?.name
+          if (name) {
+            const definition = getFragmentDefinition(name)
+            return definition?.label
+          }
+        })
+        .filter(falsy)
+
+      if (fragments.length && fragments.length < 3) {
+        return fragments.join(', ')
+      }
+    }
     return itemBundle.value.label
   }
 
