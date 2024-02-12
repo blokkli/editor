@@ -90,6 +90,12 @@ export default class BlockExtractor {
     if ('bundle' in extracted.definition) {
       const icon = await this.getIcon(filePath)
 
+      if (this.definitions[filePath]) {
+        if (this.definitions[filePath].source === extracted.source) {
+          return false
+        }
+      }
+
       this.definitions[filePath] = {
         filePath,
         definition: extracted.definition,
@@ -104,6 +110,12 @@ export default class BlockExtractor {
           fileSource.includes(':is="BlokkliField"'),
       }
     } else if ('name' in extracted.definition) {
+      if (this.fragmentDefinitions[filePath]) {
+        if (this.fragmentDefinitions[filePath].source === extracted.source) {
+          return false
+        }
+      }
+
       this.fragmentDefinitions[filePath] = {
         filePath,
         definition: extracted.definition,
@@ -394,7 +406,6 @@ export type BundlePropsMap = {
    * Generate the template.
    */
   generateImportsTemplate(chunkNames: string[]): string {
-    console.log(this.fragmentDefinitions)
     const chunkImports = chunkNames
       .filter((v) => v !== 'global')
       .map((chunkName) => {
