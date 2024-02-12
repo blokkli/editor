@@ -3,7 +3,7 @@
     id="preview_new_window"
     :title="$t('previewNewWindow', 'Preview (new window)')"
     region="after-menu"
-    icon="openinnew"
+    icon="open_in_new"
     @click="openPreview"
   />
 </template>

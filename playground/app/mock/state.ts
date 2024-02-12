@@ -62,8 +62,6 @@ const exportState = () => {
     }
   })
 
-  const allBlocks = entityStorageManager.storages.block.loadAll()
-
   const libraryItems = entityStorageManager.storages.library_item
     .loadAll()
     .map((v) => {
@@ -73,6 +71,15 @@ const exportState = () => {
         block: v.getBlocks().list[0].uuid,
       }
     })
+
+  const usedBlocks = [
+    ...fields.flatMap((v) => v.field),
+    ...libraryItems.map((v) => v.block),
+  ]
+
+  const allBlocks = entityStorageManager.storages.block
+    .loadAll()
+    .filter((v) => usedBlocks.includes(v.uuid))
 
   const data = {
     fields,

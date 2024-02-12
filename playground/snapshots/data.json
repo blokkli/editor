@@ -16,9 +16,17 @@
         "ce8afc60-2f42-4b99-8a44-c5a46eb15f7a",
         "c414a773-406c-4200-aef6-ada9349b3f11",
         "90d01577-babc-45b5-a03b-2ba266822425",
-        "958fba1e-400f-42c5-b310-11f59db59e2f",
+        "d8d3ad51-7c37-4a27-ad64-e04ee8a4f842",
+        "ab4f48ef-a397-4390-b52e-b867ce25fbf3",
+        "ab4f48ef-a397-4390-b52e-b867ce25fbf3",
         "0039cbfb-6ee7-48db-9e9f-7117c488299b"
       ]
+    },
+    {
+      "name": "header",
+      "entityType": "content",
+      "entityUuid": "1",
+      "field": ["18a7ed49-7355-4d0d-9004-6623c98a999f"]
     },
     {
       "name": "header",
@@ -162,49 +170,6 @@
       "field": ["1be4ab78-8265-48a6-a1aa-ff852d2507b5"]
     },
     {
-      "name": "header",
-      "entityType": "block",
-      "entityUuid": "958fba1e-400f-42c5-b310-11f59db59e2f",
-      "field": ["d8d3ad51-7c37-4a27-ad64-e04ee8a4f842"]
-    },
-    {
-      "name": "blocks",
-      "entityType": "block",
-      "entityUuid": "958fba1e-400f-42c5-b310-11f59db59e2f",
-      "field": [
-        "fb92c962-1d8e-44b3-ab01-694579b4af04",
-        "acff013c-ff59-4ec8-95b9-916e6291531e",
-        "a8c2f652-c446-417e-ad38-758c66391408",
-        "37594bf6-47db-4d8f-9cde-8c3c4b2bdacf",
-        "7c0a8a92-1619-4dd9-b351-3ad7a8580409",
-        "b850c14b-cf1b-4b57-9b9e-32609dc8f7a8",
-        "0bb54dcf-51d1-4ef2-a6a8-45c018fc69ea",
-        "0aed8ca0-dc8e-40b8-9135-7de8d59f4115",
-        "bbb78511-9ef1-473f-a96b-a07dc71760e3",
-        "468642cd-396e-4372-b339-56c5ca65642d",
-        "a9918c5a-f393-4356-809a-cb5f53dc27d3",
-        "22137d66-d9d6-4328-9ca7-538bf6a71c7a",
-        "8c1c4260-8c0d-48b2-939d-2151adb63d99",
-        "8a51d72c-79b6-49d7-a76a-5f1c83252920",
-        "56a392ea-65cb-42c5-a1a9-97d7fc2718b4",
-        "149f66f8-fb41-4eb4-a765-ea649dcebc10",
-        "8085ec5a-b345-4a6f-9ff7-ad1fabea898b",
-        "baf3810c-25f3-42f6-8ecd-048ef4f5c8fe",
-        "e01cbcda-c815-4325-8f27-ff977a60c5f9",
-        "5f46fde3-ccca-489b-afa4-456d2649de5b",
-        "3bbb964a-93a0-4b85-91dd-52e8bc8425fc",
-        "a7a3b4bf-c891-4387-a012-a9cb2da8b1b4",
-        "34344398-bb04-450f-9fa9-d3763f5bae0c",
-        "5407ef47-dfbc-456b-9900-8e2577185380"
-      ]
-    },
-    {
-      "name": "header",
-      "entityType": "content",
-      "entityUuid": "1",
-      "field": ["18a7ed49-7355-4d0d-9004-6623c98a999f"]
-    },
-    {
       "name": "buttons",
       "entityType": "block",
       "entityUuid": "18a7ed49-7355-4d0d-9004-6623c98a999f",
@@ -345,7 +310,7 @@
         "header": [{ "uuid": "d6020cd0-45f0-4200-8690-e297a38a1cca" }],
         "blocks": [
           { "uuid": "72633ab5-2353-45ce-8a1b-3726c7da8679" },
-          { "uuid": "25cdf719-d6ef-4a27-a828-ba6ed8b78ee6" },
+          { "uuid": "96f7fbda-04d9-4662-9a6c-6aa3bcf964f2" },
           { "uuid": "59b6db95-f4ca-4dd7-86a4-3ad53e66571b" }
         ]
       }
@@ -619,7 +584,7 @@
         "blocks": [
           { "uuid": "87098bb1-d849-4afc-8845-05ef2d08d160" },
           { "uuid": "a3bcf0de-589c-44d2-9ca7-b8184cfe5028" },
-          { "uuid": "c3f229a1-7bb7-4d0a-8820-51a48acd73b0" }
+          { "uuid": "b7288437-c229-463c-840e-b454b9f41416" }
         ]
       }
     },
@@ -691,46 +656,6 @@
         "title": ["Hands-on Live-Preview"],
         "text": [
           "If supported by the backend, blökkli can generate a QR code that can be scanned on a smartphone to see and feel a preview of the page, with live reloading."
-        ]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "grid",
-      "uuid": "958fba1e-400f-42c5-b310-11f59db59e2f",
-      "values": {
-        "options": [
-          { "key": "columns", "value": "four" },
-          { "key": "showHeader", "value": "1" },
-          { "key": "background", "value": "white" },
-          { "key": "mobile", "value": "1" }
-        ],
-        "header": [{ "uuid": "d8d3ad51-7c37-4a27-ad64-e04ee8a4f842" }],
-        "blocks": [
-          { "uuid": "fb92c962-1d8e-44b3-ab01-694579b4af04" },
-          { "uuid": "acff013c-ff59-4ec8-95b9-916e6291531e" },
-          { "uuid": "a8c2f652-c446-417e-ad38-758c66391408" },
-          { "uuid": "37594bf6-47db-4d8f-9cde-8c3c4b2bdacf" },
-          { "uuid": "7c0a8a92-1619-4dd9-b351-3ad7a8580409" },
-          { "uuid": "b850c14b-cf1b-4b57-9b9e-32609dc8f7a8" },
-          { "uuid": "0bb54dcf-51d1-4ef2-a6a8-45c018fc69ea" },
-          { "uuid": "0aed8ca0-dc8e-40b8-9135-7de8d59f4115" },
-          { "uuid": "bbb78511-9ef1-473f-a96b-a07dc71760e3" },
-          { "uuid": "468642cd-396e-4372-b339-56c5ca65642d" },
-          { "uuid": "a9918c5a-f393-4356-809a-cb5f53dc27d3" },
-          { "uuid": "22137d66-d9d6-4328-9ca7-538bf6a71c7a" },
-          { "uuid": "8c1c4260-8c0d-48b2-939d-2151adb63d99" },
-          { "uuid": "8a51d72c-79b6-49d7-a76a-5f1c83252920" },
-          { "uuid": "56a392ea-65cb-42c5-a1a9-97d7fc2718b4" },
-          { "uuid": "149f66f8-fb41-4eb4-a765-ea649dcebc10" },
-          { "uuid": "8085ec5a-b345-4a6f-9ff7-ad1fabea898b" },
-          { "uuid": "baf3810c-25f3-42f6-8ecd-048ef4f5c8fe" },
-          { "uuid": "e01cbcda-c815-4325-8f27-ff977a60c5f9" },
-          { "uuid": "5f46fde3-ccca-489b-afa4-456d2649de5b" },
-          { "uuid": "3bbb964a-93a0-4b85-91dd-52e8bc8425fc" },
-          { "uuid": "a7a3b4bf-c891-4387-a012-a9cb2da8b1b4" },
-          { "uuid": "34344398-bb04-450f-9fa9-d3763f5bae0c" },
-          { "uuid": "5407ef47-dfbc-456b-9900-8e2577185380" }
         ]
       }
     },
@@ -820,293 +745,6 @@
     {
       "entityType": "block",
       "bundle": "card",
-      "uuid": "fb92c962-1d8e-44b3-ab01-694579b4af04",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Add List"],
-        "text": ["List to easily drag and drop new blocks"]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "acff013c-ff59-4ec8-95b9-916e6291531e",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Artboard"],
-        "text": ["Pan and zoom pages for easy overview"]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "a8c2f652-c446-417e-ad38-758c66391408",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Clipboard"],
-        "text": ["Paste text, images or links to create new blocks"]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "37594bf6-47db-4d8f-9cde-8c3c4b2bdacf",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Comments"],
-        "text": [
-          "Add comments to one or more blocks and mark comments as resolved."
-        ]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "7c0a8a92-1619-4dd9-b351-3ad7a8580409",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Conversions"],
-        "text": [
-          "Convert one or more blocks to different types while preserving their content."
-        ]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "b850c14b-cf1b-4b57-9b9e-32609dc8f7a8",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Entity Title & Form"],
-        "text": [
-          "Seamlessly integrate CMS forms to edit non-block content like page title, metatags, etc."
-        ]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "0bb54dcf-51d1-4ef2-a6a8-45c018fc69ea",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Grid"],
-        "text": ["Show a grid overlay in the editor."]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "0aed8ca0-dc8e-40b8-9135-7de8d59f4115",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Form"],
-        "text": [
-          "Integrates forms from a CMS via iframe. Render your own forms directly inside the editor."
-        ]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "bbb78511-9ef1-473f-a96b-a07dc71760e3",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["History"],
-        "text": [
-          "Quickly undo or redo changes or jump to any point in the history stack."
-        ]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "468642cd-396e-4372-b339-56c5ca65642d",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Import Existing"],
-        "text": [
-          "Offer a way to import content from existing pages or templates."
-        ]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "a9918c5a-f393-4356-809a-cb5f53dc27d3",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Library"],
-        "text": [
-          "Make blocks reusable by adding them to a library. Easily drag and drop library blocks into the page."
-        ]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "22137d66-d9d6-4328-9ca7-538bf6a71c7a",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Mask"],
-        "text": [
-          "Hide parts of the page that can't be changed via the editor (header, footer, etc.)"
-        ]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "8c1c4260-8c0d-48b2-939d-2151adb63d99",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Multiselect"],
-        "text": ["Select one or more blocks using a selection rectangle."]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "8a51d72c-79b6-49d7-a76a-5f1c83252920",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Options"],
-        "text": [
-          "Implement block options that are rendered directly in the editor, with instant preview."
-        ]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "56a392ea-65cb-42c5-a1a9-97d7fc2718b4",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Ownership"],
-        "text": ["Restrict editing to a single person."]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "149f66f8-fb41-4eb4-a765-ea649dcebc10",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Preview"],
-        "text": [
-          "Live mobile preview via iframe, separate URL or by scanning a QR code to preview on a smartphone."
-        ]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "8085ec5a-b345-4a6f-9ff7-ad1fabea898b",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Publish"],
-        "text": [
-          "Apply changes from the history stack and publish them. Implement custom publishing workflows by extending the feature."
-        ]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "baf3810c-25f3-42f6-8ecd-048ef4f5c8fe",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Search"],
-        "text": [
-          "Find blocks on the current page. Implement custom providers to search existing content or images. Drag and drop search items to create blocks."
-        ]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "e01cbcda-c815-4325-8f27-ff977a60c5f9",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Settings"],
-        "text": [
-          "Let users configure the editor. Add custom settings to the form."
-        ]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "5f46fde3-ccca-489b-afa4-456d2649de5b",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Structure"],
-        "text": [
-          "Quick overview of the page structure. Click to jump to block."
-        ]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "3bbb964a-93a0-4b85-91dd-52e8bc8425fc",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Transform"],
-        "text": [
-          "Implement custom actions to transform one or more blocks, like merging or splitting."
-        ]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "a7a3b4bf-c891-4387-a012-a9cb2da8b1b4",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Translations"],
-        "text": [
-          "Adds support for multilingual content. Easy switch between enabled languages."
-        ]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
-      "uuid": "34344398-bb04-450f-9fa9-d3763f5bae0c",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Validations"],
-        "text": [
-          "Give hints about validation errors like missing alt texts, empty blocks or excessive use of line breaks."
-        ]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "card",
       "uuid": "72633ab5-2353-45ce-8a1b-3726c7da8679",
       "values": {
         "options": [
@@ -1168,19 +806,6 @@
     },
     {
       "entityType": "block",
-      "bundle": "card",
-      "uuid": "5407ef47-dfbc-456b-9900-8e2577185380",
-      "values": {
-        "options": [{ "key": "box", "value": "" }],
-        "icon": [],
-        "title": ["Validations"],
-        "text": [
-          "blökkli is free for everyone to use and published under the MIT License"
-        ]
-      }
-    },
-    {
-      "entityType": "block",
       "bundle": "title",
       "uuid": "ba696dbe-8f34-4d83-857d-c1c805cf3aec",
       "values": {
@@ -1188,16 +813,6 @@
         "tagline": ["Let's go!"],
         "title": ["Start creating impressive content now"],
         "lead": ["Give blökkli a try - setup just takes 5 minutes*"]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "button",
-      "uuid": "7ea2581f-d5d1-42ff-96d0-d68a667dd2f3",
-      "values": {
-        "options": [{ "key": "color", "value": "primary" }],
-        "title": ["Try it now"],
-        "url": ["https://github.com/dulnan/blokkli"]
       }
     },
     {
@@ -1215,15 +830,6 @@
         "text": [
           "<ul><li>Fully responsive</li><li>Touch gestures and interactions</li><li>All editing features available</li></ul>"
         ]
-      }
-    },
-    {
-      "entityType": "block",
-      "bundle": "from_library",
-      "uuid": "2139b0fa-f407-4014-9d49-1c8a7f090190",
-      "values": {
-        "options": [],
-        "libraryItem": ["0b91dc6e-3ac3-4c1b-9eb3-74d5d1f82267"]
       }
     },
     {
@@ -1251,10 +857,13 @@
       "entityType": "block",
       "bundle": "fragment",
       "uuid": "0039cbfb-6ee7-48db-9e9f-7117c488299b",
-      "values": {
-        "options": [],
-        "name": ["cta"]
-      }
+      "values": { "options": [], "name": ["cta"] }
+    },
+    {
+      "entityType": "block",
+      "bundle": "fragment",
+      "uuid": "ab4f48ef-a397-4390-b52e-b867ce25fbf3",
+      "values": { "options": [], "name": ["features_list"] }
     }
   ],
   "libraryItems": [

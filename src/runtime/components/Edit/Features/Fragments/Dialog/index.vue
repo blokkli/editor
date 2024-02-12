@@ -42,6 +42,7 @@
             v-show="visible === null || visible.includes(item.name)"
             :name="item.name"
             :label="item.label"
+            :description="item.description"
             :index="index"
           />
         </li>

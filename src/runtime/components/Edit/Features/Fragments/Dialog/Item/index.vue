@@ -1,9 +1,8 @@
 <template>
   <div class="bk-library-list-item" :class="backgroundClass">
     <div class="bk bk-library-list-item-header">
-      <div class="bk-blokkli-item-label">
-        <span>{{ label || name }}</span>
-      </div>
+      <h3>{{ label || name }}</h3>
+      <p v-if="description">{{ description }}</p>
     </div>
     <div
       v-if="renderPreview"
@@ -36,6 +35,7 @@ const props = defineProps<{
   name: string
   index: number
   label?: string
+  description?: string
 }>()
 
 const item = computed(() => {
