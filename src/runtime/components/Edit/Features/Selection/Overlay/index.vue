@@ -54,7 +54,7 @@ const bounds = computed<BoundsRectable | null>(() => {
         return {
           x: (rect.x - artboardRect.x) / scale,
           y: (rect.y - artboardRect.y) / scale,
-          width: element.scrollWidth,
+          width: element.offsetWidth,
           height: element.scrollHeight,
         }
       }
@@ -94,7 +94,8 @@ const selectedRects = computed<SelectedRect[]>(() => {
     rects.push({
       x: (rect.x - artboardRect.x) / scale - bounds.value.x,
       y: (rect.y - artboardRect.y) / scale - bounds.value.y + artboardScroll,
-      width: element.scrollWidth,
+      width:
+        'offsetWidth' in element ? element.offsetWidth : element.scrollWidth,
       height: element.scrollHeight,
       uuid: block.uuid,
       style,
