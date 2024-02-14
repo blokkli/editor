@@ -402,6 +402,15 @@ export type BundlePropsMap = {
 `
   }
 
+  generateChunkGroupTemplate(chunkName: string) {
+    return this.generateChunkGroup(
+      chunkName,
+      chunkName,
+      { ...this.definitions, ...this.fragmentDefinitions },
+      true,
+    )
+  }
+
   /**
    * Generate the template.
    */
@@ -473,7 +482,7 @@ export function getBlokkliFragmentComponent(name: string): any {
   if (globalFragments[key]) {
     return globalFragments[key]
   }
-  const chunkName = chunkMapping[key]
+  const chunkName = fragmentChunkMapping[key]
   if (chunkName) {
     return defineAsyncComponent(() => chunks[chunkName]().then(chunk => {
       return chunk.default[key]

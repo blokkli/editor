@@ -29,6 +29,7 @@ import featuresData from '#build/blokkli/features.json'
 defineBlokkliFragment({
   name: 'features_list',
   label: 'Features List',
+  chunkName: 'rare',
   description: 'Renders a list of blökkli features',
   editor: {
     previewWidth: 1000,

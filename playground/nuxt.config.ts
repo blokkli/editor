@@ -40,6 +40,8 @@ export default defineNuxtConfig({
       },
     },
 
+    chunkNames: ['rare', 'global'],
+
     theme: 'arctic',
 
     enableThemeEditor: true,

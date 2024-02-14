@@ -707,9 +707,7 @@ export const forceDefaultLanguage: boolean = ${JSON.stringify(
           write: true,
           filename: `blokkli/chunk-${chunkName}.ts`,
           getContents: () => {
-            // @TODO
-            return ''
-            // return blockExtractor.generateChunkGroup(chunkName, true)
+            return blockExtractor.generateChunkGroupTemplate(chunkName)
           },
           options: {
             blokkli: true,

@@ -38,6 +38,7 @@ import { defineBlokkli, computed } from '#imports'
 
 const { isEditing } = defineBlokkli({
   bundle: 'hero',
+  chunkName: 'rare',
   editor: {
     editTitle: (el) => el.querySelector('h1')?.innerText,
     maxInstances: 1,
