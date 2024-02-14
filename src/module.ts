@@ -142,6 +142,15 @@ export type ModuleOptions = {
   defaultLanguage?: string
 
   /**
+   * Force the editor to always be in the default language.
+   *
+   * The default behaviour is that the editor is rendered in the same language
+   * as the page entity. Setting this value to true will always render the
+   * editor in the default language.
+   */
+  forceDefaultLanguage?: boolean
+
+  /**
    * Alter features.
    *
    * It's also possible to override builtin feature components with custom
@@ -626,6 +635,12 @@ export const settingsOverride: ModuleOptionsSettings = ${JSON.stringify(
 
 export const storageDefaults: Record<string, string|boolean|string[]> = ${JSON.stringify(
           moduleOptions.storageDefaults || {},
+        )}
+export const defaultLanguage: string = ${JSON.stringify(
+          moduleOptions.defaultLanguage || 'en',
+        )}
+export const forceDefaultLanguage: boolean = ${JSON.stringify(
+          !!moduleOptions.forceDefaultLanguage,
         )}
 `
       },

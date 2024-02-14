@@ -50,6 +50,8 @@ export default defineNuxtConfig({
       },
     },
 
+    forceDefaultLanguage: true,
+
     schemaOptionsPath: '~/options-schema.json',
 
     settingsOverride: {
