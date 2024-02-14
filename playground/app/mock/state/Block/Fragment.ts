@@ -3,7 +3,7 @@ import { FieldText } from '../Field/Text'
 import { Block } from './Block'
 
 export class BlockFragment extends Block {
-  static bundle = 'fragment'
+  static bundle = 'blokkli_fragment'
   static label = 'Fragment'
   static allowReusable = true
   static isTranslatable = true

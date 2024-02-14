@@ -40,7 +40,7 @@ const props = defineProps<{
 
 const item = computed(() => {
   return {
-    bundle: 'fragment',
+    bundle: 'blokkli_fragment',
     uuid: props.index.toString(),
     props: {
       name: props.name,

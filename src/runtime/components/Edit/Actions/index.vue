@@ -24,7 +24,7 @@
                 'is-open': showDropdown,
                 'is-interactive': shouldRenderButton,
                 'bk-is-reusable': itemBundle?.id === 'from_library',
-                'bk-is-fragment': itemBundle?.id === 'fragment',
+                'bk-is-fragment': itemBundle?.id === 'blokkli_fragment',
               }"
               @click.prevent="showDropdown = !showDropdown"
             >
@@ -88,7 +88,7 @@ watch(selection.blocks, () => {
 
 const title = computed(() => {
   if (itemBundle.value) {
-    if (itemBundle.value.id === 'fragment') {
+    if (itemBundle.value.id === 'blokkli_fragment') {
       const fragments = state.renderedBlocks.value
         .filter((v) => selection.uuids.value.includes(v.item.uuid))
         .map((v) => {

@@ -12,7 +12,7 @@ const componentProps = defineProps<{
 }>()
 
 const ctx = defineBlokkli({
-  bundle: 'fragment',
+  bundle: 'blokkli_fragment',
   editor: {
     disableEdit: true,
   },

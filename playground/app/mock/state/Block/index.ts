@@ -45,7 +45,7 @@ export const createBlock = (bundle: string, uuid: string): Block => {
       return new BlockTable(uuid)
     case 'on_this_page':
       return new BlockOnThisPage(uuid)
-    case 'fragment':
+    case 'blokkli_fragment':
       return new BlockFragment(uuid)
   }
 

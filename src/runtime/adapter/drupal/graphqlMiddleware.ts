@@ -459,6 +459,16 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       ).url
     }
 
+    const fragmentsAddBlock: DrupalAdapter['fragmentsAddBlock'] = (e) =>
+      useGraphqlMutation('pbAddFragmentParagraph', {
+        ...ctx.value,
+        hostType: e.host.type,
+        hostFieldName: e.host.fieldName,
+        hostUuid: e.host.uuid,
+        afterUuid: e.afterUuid,
+        name: e.name,
+      }).then(mapMutation)
+
     return {
       buildEditableFrameUrl,
       getTransformPlugins,
@@ -495,6 +505,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       pasteExistingBlocks,
       updateFieldValue,
       getEditableFieldConfig,
+      fragmentsAddBlock,
     }
   },
 )

@@ -857,13 +857,13 @@
     },
     {
       "entityType": "block",
-      "bundle": "fragment",
+      "bundle": "blokkli_fragment",
       "uuid": "0039cbfb-6ee7-48db-9e9f-7117c488299b",
       "values": { "options": [], "name": ["cta"] }
     },
     {
       "entityType": "block",
-      "bundle": "fragment",
+      "bundle": "blokkli_fragment",
       "uuid": "ab4f48ef-a397-4390-b52e-b867ce25fbf3",
       "values": { "options": [], "name": ["features_list"] }
     }

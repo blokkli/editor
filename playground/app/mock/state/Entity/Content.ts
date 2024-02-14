@@ -31,7 +31,7 @@ export class ContentPage extends Content {
         'card',
         'image',
         'from_library',
-        'fragment',
+        'blokkli_fragment',
         'video',
         'table',
         'on_this_page',

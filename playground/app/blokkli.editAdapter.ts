@@ -556,7 +556,7 @@ export default defineBlokkliEditAdapter((ctx) => {
 
     fragmentsAddBlock(e) {
       return addMutation('add', {
-        bundle: 'fragment',
+        bundle: 'blokkli_fragment',
         values: {
           name: [e.name],
         },

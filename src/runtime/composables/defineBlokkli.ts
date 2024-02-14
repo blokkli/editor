@@ -79,7 +79,10 @@ export function defineBlokkli<
   const editContext = inject<ItemEditContext | null>(INJECT_EDIT_CONTEXT, null)
 
   const options = computed(() => {
-    if (config.bundle === 'from_library' || config.bundle === 'fragment') {
+    if (
+      config.bundle === 'from_library' ||
+      config.bundle === 'blokkli_fragment'
+    ) {
       return {
         ...(item?.value.options || {}),
         ...(editContext?.mutatedOptions.value[uuid] || {}),

@@ -55,7 +55,7 @@ const onAddFragment = async (name: string) => {
 }
 
 const allowedInList = computed(() =>
-  types.allowedTypesInList.value.includes('fragment'),
+  types.allowedTypesInList.value.includes('blokkli_fragment'),
 )
 </script>
 

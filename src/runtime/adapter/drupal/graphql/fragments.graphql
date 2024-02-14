@@ -1,0 +1,25 @@
+mutation pbAddFragmentParagraph(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $name: String!
+  $hostType: String!
+  $hostUuid: String!
+  $hostFieldName: String!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: add_fragment(
+      name: $name
+      afterUuid: $afterUuid
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

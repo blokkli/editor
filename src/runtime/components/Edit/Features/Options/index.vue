@@ -44,9 +44,9 @@ const definition = computed<
 
   const bundle = bundles[0]
 
-  if (bundle === 'fragment') {
+  if (bundle === 'blokkli_fragment') {
     const fragments = selection.blocks.value.filter(
-      (v) => v.itemBundle === 'fragment',
+      (v) => v.itemBundle === 'blokkli_fragment',
     )
 
     const fragmentNames = fragments

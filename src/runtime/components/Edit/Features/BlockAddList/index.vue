@@ -64,7 +64,7 @@ defineBlokkliFeature({
   screnshot: 'feature-block-add-list.jpg',
 })
 
-const reservedBundles = ['from_library', 'fragment']
+const reservedBundles = ['from_library', 'blokkli_fragment']
 
 const {
   selection,
