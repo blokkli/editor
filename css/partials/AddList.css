@@ -159,6 +159,20 @@
 
     #blokkli-add-list-blocks {
       @apply flex-1 overflow-auto overflow-x-hidden;
+
+      /* Overflow indicator so it's clear that the pane can be scrolled. */
+      &:after {
+        content: '';
+        @apply block w-full h-50 sticky bottom-0 z-50 pointer-events-none;
+        background: linear-gradient(
+          theme('colors.mono.900/0') 30%,
+          theme('colors.mono.900')
+        );
+      }
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
     }
 
     &.bk-is-active {
