@@ -1,5 +1,5 @@
-import { type ComputedRef, computed, ref } from 'vue'
-import type { WritableComputedRef } from 'nuxt/dist/app/compat/capi'
+import { type ComputedRef, type WritableComputedRef, computed, ref } from 'vue'
+import { storageDefaults } from '#blokkli/config'
 
 const PREFIX = 'blokkli:'
 
@@ -35,17 +35,40 @@ export default function (): StorageProvider {
   const values = ref<Record<string, any>>({})
   const defaults = ref<Record<string, any>>({})
 
-  const use = <T>(key: string | ComputedRef<string>, defaultValue: T) => {
+  const use = <T>(
+    key: string | ComputedRef<string>,
+    providedDefaultValue: T,
+  ) => {
     const storageKey = computed(
       () => PREFIX + (typeof key === 'string' ? key : key.value),
     )
+
+    const storageDefaultsValue =
+      storageDefaults[typeof key === 'string' ? key : key.value]
+    const defaultValue =
+      storageDefaultsValue &&
+      typeof storageDefaultsValue === typeof providedDefaultValue
+        ? storageDefaultsValue
+        : providedDefaultValue
+
+    // Only set the defaults if they're not already set.
+    // This is avoiding a side effect, where when the settings dialog gets the
+    // settings storage value it has no idea about their defaults and thus
+    // provides a {} as the default value. This would override the previously
+    // set default value from defineBlokkliFeature, resulting in the defaults
+    // beeing lost.
+    // We can do this because the feature settings are always loaded before
+    // the settings dialog can be opened.
+    if (!defaults.value[storageKey.value]) {
+      defaults.value[storageKey.value] = defaultValue
+    }
+
     if (values.value[storageKey.value] === undefined) {
       const existing = getExisting(storageKey.value)
       if (existing !== undefined) {
         values.value[storageKey.value] = existing
       } else {
         values.value[storageKey.value] = defaultValue
-        defaults.value[storageKey.value] = defaultValue
       }
     }
 
@@ -53,7 +76,7 @@ export default function (): StorageProvider {
       get() {
         const v = values.value[storageKey.value]
         if (v === undefined) {
-          return defaultValue
+          return defaults.value[storageKey.value]
         }
         return v
       },
@@ -65,7 +88,7 @@ export default function (): StorageProvider {
   }
 
   const clearAll = () => {
-    values.value = JSON.parse(JSON.stringify(defaults.value))
+    values.value = {}
     Object.keys(window.localStorage).forEach((key) => {
       if (key.startsWith(PREFIX)) {
         window.localStorage.removeItem(key)

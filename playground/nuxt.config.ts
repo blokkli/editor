@@ -58,13 +58,20 @@ export default defineNuxtConfig({
       },
     },
 
+    storageDefaults: {
+      blockFavorites: ['title', 'text', 'card', 'button'],
+    },
+
     featureImports: ['./blokkli/DemoFeature.vue'],
   },
 
   svgIconSprite: {
     sprites: {
       default: {
-        importPatterns: ['./assets/icons/**/*.svg', './../src/icons/logo.svg'],
+        importPatterns: [
+          './assets/icons/**/*.svg',
+          './../src/runtime/icons/**/*.svg',
+        ],
       },
     },
   },

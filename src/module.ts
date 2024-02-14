@@ -78,6 +78,13 @@ type AlterFeatures = {
   features: ExtractedFeatureDefinition[]
 }
 
+type ModuleOptionsStorageDefaults = {
+  /**
+   * The default favorite block bundles.
+   */
+  blockFavorites?: string[]
+}
+
 /**
  * Options for the module.
  */
@@ -173,9 +180,19 @@ export type ModuleOptions = {
   schemaOptionsPath?: string
 
   /**
-   * Override the settings.
+   * Override the feature settings.
    */
   settingsOverride?: ModuleOptionsSettings
+
+  /**
+   * The default storage values for non-settings values.
+   *
+   * These values are not visible in the settings dialog, but are still
+   * "settable" by the user through interactions. This option allows you to
+   * define default values for these settings, like default favorite block
+   * bundles.
+   */
+  storageDefaults?: ModuleOptionsStorageDefaults
 }
 
 const buildThemeData = (themeOption?: ThemeName | Partial<Theme>) => {
@@ -605,6 +622,10 @@ export const theme: Theme = ${JSON.stringify(fullTheme, null, 2)}
 
 export const settingsOverride: ModuleOptionsSettings = ${JSON.stringify(
           settingsOverride,
+        )}
+
+export const storageDefaults: Record<string, string|boolean|string[]> = ${JSON.stringify(
+          moduleOptions.storageDefaults || {},
         )}
 `
       },
