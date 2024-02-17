@@ -20,6 +20,8 @@ import type {
   DraggableExistingBlock,
 } from '#blokkli/types'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import defineCommands from '#blokkli/helpers/composables/defineCommands'
+import { falsy } from '#blokkli/helpers'
 
 defineBlokkliFeature({
   id: 'editable-field',
@@ -31,6 +33,7 @@ defineBlokkliFeature({
 
 type Editable = {
   fieldName: string
+  label: string
   block: DraggableExistingBlock
   element: HTMLElement
   args?: BlokkliEditableDirectiveArgs
@@ -38,7 +41,7 @@ type Editable = {
   value?: string
 }
 
-const { selection, adapter, dom } = useBlokkli()
+const { selection, adapter, dom, types, $t } = useBlokkli()
 const editable = ref<Editable | null>(null)
 const hasTransition = ref(false)
 
@@ -73,9 +76,17 @@ const buildEditable = (
     return
   }
 
+  const label =
+    args?.label ||
+    types.editableFieldConfig.value.find(
+      (v) => v.name === fieldName && v.entityBundle === block.itemBundle,
+    )?.label ||
+    fieldName
+
   return {
     fieldName,
     block,
+    label,
     element: fieldEl,
     args,
     isComponent: fieldEl.dataset.blokkliEditableComponent === 'true',
@@ -89,6 +100,56 @@ onBlokkliEvent('editable:focus', (e) => {
   if (editable.value) {
     selection.editableActive.value = true
   }
+})
+
+defineCommands(() => {
+  // Find editable fields in the current selection.
+  const editables: Editable[] = selection.blocks.value.flatMap((v) => {
+    return [...v.element().querySelectorAll('[data-blokkli-editable-field]')]
+      .map((el) => {
+        if (!(el instanceof HTMLElement)) {
+          return
+        }
+
+        // Find closest block.
+        const block = el.closest('[data-uuid]')
+        if (!(block instanceof HTMLElement)) {
+          return
+        }
+
+        // Skip editable fields of nested blocks because this would lead to a
+        // ton of commands with the same name, e.g. when the selected block
+        // has 20 nested blocks with editable fields. This would be pretty
+        // useless.
+        if (block.dataset.uuid !== v.uuid) {
+          return
+        }
+
+        const name = el.dataset.blokkliEditableField
+        if (!name) {
+          return
+        }
+
+        return buildEditable(name, v.uuid)
+      })
+      .filter(falsy)
+  })
+
+  return editables.map((v) => {
+    return {
+      id: 'feature:editable:edit:' + v.fieldName,
+      group: 'selection',
+      label: $t('editableCommandEdit', 'Edit field "@name"').replace(
+        '@name',
+        v.label,
+      ),
+      icon: 'textbox',
+      disabled: false,
+      callback: () => {
+        editable.value = v
+      },
+    }
+  })
 })
 
 watch(selection.editableActive, (isActive) => {

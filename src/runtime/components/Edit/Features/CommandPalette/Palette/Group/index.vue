@@ -32,7 +32,6 @@ const props = defineProps<{
   label: string
   commands: Array<Command & { _id: number }>
   visibleIds: { id: number; positions: number[] }[] | undefined
-  regex?: RegExp
   focusedId: string
 }>()
 

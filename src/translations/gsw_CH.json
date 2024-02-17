@@ -223,6 +223,10 @@
     "source": "Edit blocks",
     "translation": "Elemänt bearbeite"
   },
+  "editableCommandEdit": {
+    "source": "Edit field \"@name\"",
+    "translation": "Fäld «@name» bearbeite"
+  },
   "exitDescription": {
     "source": "Close editor without publishing",
     "translation": "Dr Editor zuemache ohni z'veröffentliche"

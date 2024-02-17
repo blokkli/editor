@@ -238,6 +238,10 @@ msgctxt "editIndicatorLabel"
 msgid "Edit blocks"
 msgstr "Elemente bearbeiten"
 
+msgctxt "editableCommandEdit"
+msgid "Edit field \"@name\""
+msgstr "Feld «@name» bearbeiten"
+
 msgctxt "exitDescription"
 msgid "Close editor without publishing"
 msgstr "Editor schliessen ohne veröffentlichen"

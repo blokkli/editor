@@ -9,7 +9,7 @@
       <div class="bk bk-editable-field-buttons">
         <h3>
           <ItemIcon :bundle="itemBundle" />
-          <span>{{ label }}</span>
+          <span>{{ title }}</span>
         </h3>
         <button type="submit">
           <Icon name="close" />
@@ -90,6 +90,7 @@ const { eventBus, ui, selection, state, adapter, $t, types } = useBlokkli()
 const props = defineProps<{
   fieldName: string
   block: DraggableExistingBlock
+  label: string
   element: HTMLElement
   args?: BlokkliEditableDirectiveArgs
   isComponent?: boolean
@@ -123,23 +124,12 @@ const style = computed(() => {
   }
 })
 
-const fieldLabel = computed(
-  () =>
-    types.editableFieldConfig.value.find(
-      (v) =>
-        v.name === props.fieldName && v.entityBundle === props.block.itemBundle,
-    )?.label || props.fieldName,
-)
-
 const hasChanged = computed(() => modelValue.value !== originalText.value)
 const itemBundle = computed(() => props.block.itemBundle)
 const maxlength = computed(() => props.args?.maxlength)
 const required = computed(() => !!props.args?.required)
-const label = computed(() =>
-  [
-    types.getType(itemBundle.value)?.label,
-    props.args?.label || fieldLabel.value,
-  ]
+const title = computed(() =>
+  [types.getType(itemBundle.value)?.label, props.label]
     .filter(falsy)
     .join(' » '),
 )
