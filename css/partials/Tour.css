@@ -1,6 +1,6 @@
 .bk.bk-tour {
   @apply fixed z-tour-item top-0 left-0 rounded;
-  @apply bg-white shadow-xl transition-all duration-300 overflow-hidden ease-swing;
+  @apply bg-white shadow-xl transition-all duration-200 overflow-hidden ease-swing;
 
   button {
     @apply focus:outline-0 focus:ring-0 focus:border-0;
@@ -57,11 +57,11 @@
   opacity: 0.8;
 
   > div {
-    @apply bg-white transition-all duration-300 ease-swing;
+    @apply bg-white transition-all duration-200 ease-swing;
   }
 }
 
 .bk.bk-tour-overlay-element {
   @apply fixed top-0 left-0 w-full h-full z-tour-overlay pointer-events-none;
-  @apply border-3 border-yellow-normal transition-all duration-300 ease-swing;
+  @apply border-3 border-yellow-normal transition-all duration-200 ease-swing;
 }

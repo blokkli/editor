@@ -31,6 +31,10 @@
     "source": "Add blocks",
     "translation": "Block drzuefüege"
   },
+  "addListTourText": {
+    "source": "<p>This shows the list of available blocks that can be placed. Add a block by dragging the icon into the page.</p><p>When an existing block is selected, some blocks may be greyed out. This indicates which blocks can be placed inside or after the selected block.</p>",
+    "translation": ""
+  },
   "artboard": {
     "source": "Artboard",
     "translation": "Zeichenflächi"
@@ -67,9 +71,17 @@
     "source": "Scroll up",
     "translation": "ufescrolle"
   },
+  "artboardToolbarButtonTourText": {
+    "source": "Shows the current zoom factor. Click on it to reset the zoom back to 100%.",
+    "translation": ""
+  },
   "assistantAddAction": {
     "source": "Add with AI Assistant",
     "translation": "Mitem KI-Assischtänt drzuefüege"
+  },
+  "assistantAddActionDescription": {
+    "source": "Add content using an AI assistant.",
+    "translation": ""
   },
   "assistantAddResultError": {
     "source": "Failed to add block from assistant.",
@@ -94,6 +106,14 @@
   "assistantPromptPlaceholder": {
     "source": "Generate content for a page about how taxes work in Switzerland",
     "translation": "Schrib e Teggscht zum Thema Stüüre in dr Schwiz"
+  },
+  "blockAddListTourText": {
+    "source": "Right-click on a block to add or remove them from your favorites. Favorites are highlighted and always displayed at the top of the list.",
+    "translation": ""
+  },
+  "blockAddListTourTitle": {
+    "source": "Favorite blocks",
+    "translation": ""
   },
   "cancel": {
     "source": "Cancel",
@@ -122,6 +142,10 @@
   "clipboardPasteShortcutHelp": {
     "source": "Paste text, image or copied blocks",
     "translation": "Teggscht, Bild oder kopierti Blöck iifüege"
+  },
+  "clipboardTourText": {
+    "source": "Drag and drop content pasted from your clipboard into the page to create a matching block.",
+    "translation": ""
   },
   "close": {
     "source": "Close",
@@ -175,6 +199,10 @@
     "source": "Comments",
     "translation": "Kommentär"
   },
+  "commentsTourText": {
+    "source": "Shows all comments for the current page.",
+    "translation": ""
+  },
   "convertTo": {
     "source": "Convert to...",
     "translation": "Konvertiere"
@@ -226,6 +254,14 @@
   "editableCommandEdit": {
     "source": "Edit field \"@name\"",
     "translation": "Fäld «@name» bearbeite"
+  },
+  "entityTitleTourText": {
+    "source": "<p>Shows the title and status of the current page.</p><p>Click on the title to open the page edit form.</p>",
+    "translation": ""
+  },
+  "entityTitleTourTitle": {
+    "source": "Page",
+    "translation": ""
   },
   "exitDescription": {
     "source": "Close editor without publishing",
@@ -319,12 +355,20 @@
     "source": "Toggle content areas",
     "translation": "Inhaltsbereich aazeige"
   },
+  "fieldAreasTourText": {
+    "source": "Toggle between showing or hiding the areas where blocks can be placed.",
+    "translation": ""
+  },
   "fieldIsRequired": {
     "source": "This field is required",
     "translation": "Das Fäld dörf nid leer sii"
   },
   "fragmentsAddFragmentAction": {
     "source": "Add fragment",
+    "translation": ""
+  },
+  "fragmentsAddFragmentDescription": {
+    "source": "<p>Drag the icon into the page to add a fragment block.</p><p>Fragments are reusable blocks that always render the same content.</p>",
     "translation": ""
   },
   "fragmentsPlaceDialogLead": {
@@ -359,6 +403,14 @@
     "source": "Toggle grid",
     "translation": "Spalte aazeige"
   },
+  "gridTourText": {
+    "source": "Display a layout grid overlay on top of the page.",
+    "translation": ""
+  },
+  "helpTourText": {
+    "source": "Shows a list of available shortcuts.",
+    "translation": ""
+  },
   "history": {
     "source": "History",
     "translation": "Ändergie"
@@ -371,13 +423,25 @@
     "source": "Redo",
     "translation": "Wiederhole"
   },
+  "historyRedoTourText": {
+    "source": "Redo the previous change.",
+    "translation": ""
+  },
   "historyShowMore": {
     "source": "Show @count more",
     "translation": "@count meeh aazeige"
   },
+  "historyTourText": {
+    "source": "See a list of all changes made so far and switch back and forth between changes.",
+    "translation": ""
+  },
   "historyUndo": {
     "source": "Undo",
     "translation": "Rückgängig"
+  },
+  "historyUndoTourText": {
+    "source": "Undo the last change.",
+    "translation": ""
   },
   "importExistingDescription": {
     "source": "Import from an existing page",
@@ -426,6 +490,10 @@
   "libraryAdd": {
     "source": "Add to library",
     "translation": "Zur Bibliothek drzuefüege"
+  },
+  "libraryAddDescription": {
+    "source": "Add a reusable block from the block library.",
+    "translation": ""
   },
   "libraryAddFromLibrary": {
     "source": "Add from library",
@@ -495,9 +563,17 @@
     "source": "Show content fields",
     "translation": "Inhaltsfelder aazeige"
   },
+  "maskTourText": {
+    "source": "Toggle between showing or hiding non-editable parts of the page.",
+    "translation": ""
+  },
   "mediaLibrary": {
     "source": "Media Library",
     "translation": "Mediebibliothek"
+  },
+  "mediaLibraryTourText": {
+    "source": "Search for media like images and drag and drop them into the page.",
+    "translation": ""
   },
   "multipleItemsLabel": {
     "source": "Items",
@@ -555,6 +631,10 @@
     "source": "Preview (new window)",
     "translation": "Vorschau (neus Fänschter)"
   },
+  "previewNewWindowTourText": {
+    "source": "Opens a preview of the current changes in a new window.",
+    "translation": ""
+  },
   "previewQrCodeText": {
     "source": "You can also copy the link and share it.",
     "translation": "Dä Link chame au kopiere und teile."
@@ -562,6 +642,10 @@
   "previewWithSmartphone": {
     "source": "Preview (with smartphone)",
     "translation": "Vorschau (mitem Smartphone)"
+  },
+  "previewWithSmartphoneTourText": {
+    "source": "Shows a QR code to quickly open a preview of the changes with your smartphone.",
+    "translation": ""
   },
   "publishDescription": {
     "source": "Make all changes public",
@@ -586,6 +670,10 @@
   "responsivePreviewTitle": {
     "source": "Responsive Preview",
     "translation": "Responsivi Vorschau"
+  },
+  "responsivePreviewTourText": {
+    "source": "See how your changes look like on smaller screens, such as smartphones. Click on the \"detach\" button to be able to select additional viewport sizes.",
+    "translation": ""
   },
   "revertDialogLead": {
     "source": "This will delete all changes and restore the currently published state. This action cannot be undone.",
@@ -634,6 +722,10 @@
   "searchToolbarLabel": {
     "source": "Search content",
     "translation": "Inhält sueche"
+  },
+  "searchTourText": {
+    "source": "Quickly find blocks on the current page or existing content to drag and drop as blocks into the page.",
+    "translation": ""
   },
   "settingsAdvanced": {
     "source": "Advanced",
@@ -687,9 +779,17 @@
     "source": "Structure",
     "translation": "Struktur"
   },
+  "structureTourText": {
+    "source": "Shows a structured list of all blocks on the current page. Click on any block to quickly jump to it.",
+    "translation": ""
+  },
   "theme": {
     "source": "Theme",
     "translation": "Farbe"
+  },
+  "themeTourText": {
+    "source": "Change the colors of the theme and generate a theme file.",
+    "translation": ""
   },
   "touchBarCancelDragging": {
     "source": "Cancel dragging",
@@ -698,6 +798,22 @@
   "touchBarFinishSelecting": {
     "source": "Finish selecting",
     "translation": "Merfachuswahl beände"
+  },
+  "tourDescription": {
+    "source": "Explore the features of the editor",
+    "translation": ""
+  },
+  "tourLabel": {
+    "source": "Take a tour",
+    "translation": ""
+  },
+  "tourNext": {
+    "source": "Next",
+    "translation": ""
+  },
+  "tourPrev": {
+    "source": "Previous",
+    "translation": ""
   },
   "transformTo": {
     "source": "Other actions",
@@ -715,6 +831,14 @@
     "source": "Translate",
     "translation": "Übersetze..."
   },
+  "translationsTourText": {
+    "source": "Quickly switch between available translations. A greyed out language indicates the content is not yet translated. Clicking on it opens the form to create a new translation for this language.",
+    "translation": ""
+  },
+  "translationsTourTitle": {
+    "source": "Translations",
+    "translation": ""
+  },
   "validationsNoneFound": {
     "source": "No validation errors found.",
     "translation": "Keini Validierigsfähler gfunde."
@@ -722,5 +846,9 @@
   "validationsToolbarLabel": {
     "source": "Validations",
     "translation": "Validierige"
+  },
+  "validationsTourText": {
+    "source": "See validation errors for content or structure on the current page.",
+    "translation": ""
   }
 }

@@ -20,17 +20,12 @@
       </div>
       <div class="bk-tooltip">
         <span v-if="entity.status && !mutations.length">{{
-          $t('pageIsPublished', 'Page is published')
+          statusPublished
         }}</span>
         <span v-else-if="entity.status && mutations.length">{{
-          $t(
-            'pageIsPublishedWithPendingChanges',
-            'Page is published (changes pending)',
-          )
+          statusPending
         }}</span>
-        <span v-else>{{
-          $t('pageIsNotPublished', 'Page is not published')
-        }}</span>
+        <span v-else>{{ statusUnpublished }}</span>
       </div>
     </button>
   </Teleport>
@@ -38,7 +33,7 @@
 
 <script lang="ts" setup>
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
-import { useBlokkli, defineBlokkliFeature, ref } from '#imports'
+import { useBlokkli, defineBlokkliFeature, ref, computed } from '#imports'
 import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 
 defineBlokkliFeature({
@@ -51,6 +46,21 @@ defineBlokkliFeature({
 const { state, eventBus, $t } = useBlokkli()
 const { entity, mutations } = state
 const buttonEl = ref<HTMLButtonElement | null>(null)
+
+const statusPublished = computed(() =>
+  $t('pageIsPublished', 'Page is published'),
+)
+
+const statusPending = computed(() =>
+  $t(
+    'pageIsPublishedWithPendingChanges',
+    'Page is published (changes pending)',
+  ),
+)
+
+const statusUnpublished = computed(() =>
+  $t('pageIsNotPublished', 'Page is not published'),
+)
 
 defineCommands(() => {
   return {
@@ -65,11 +75,27 @@ defineCommands(() => {
   }
 })
 
+const tourText = computed(() => {
+  const intro = $t(
+    'entityTitleTourText',
+    '<p>Shows the title and status of the current page.</p><p>Click on the title to open the page edit form.</p>',
+  )
+
+  return `
+${intro}
+<ul>
+<li><div class="bk-status-indicator"></div>${statusUnpublished.value}</li>
+<li><div class="bk-status-indicator bk-is-warning"></div>${statusPending.value}</li>
+<li><div class="bk-status-indicator bk-is-success"></div>${statusPublished.value}</li>
+</ul>
+`
+})
+
 defineTourItem(() => {
   return {
     id: 'entity-title',
     title: $t('entityTitleTourTitle', 'Page'),
-    text: $t('entityTitleTourText', 'Shows the title of the current page.'),
+    text: tourText.value,
     element: buttonEl.value,
   }
 })
