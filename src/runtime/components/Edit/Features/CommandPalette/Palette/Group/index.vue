@@ -17,7 +17,7 @@
           <Icon v-if="item.icon" :name="item.icon" />
           <ItemIcon v-else :bundle="item.bundle" />
         </div>
-        <Highlight :text="item.label" tag="span" :regex="regex" />
+        <Highlight :text="item.label" tag="span" :positions="item.positions" />
       </button>
     </div>
   </div>
@@ -31,7 +31,7 @@ import type { Command } from '#blokkli/types'
 const props = defineProps<{
   label: string
   commands: Array<Command & { _id: number }>
-  visibleIds: number[] | undefined
+  visibleIds: { id: number; positions: number[] }[] | undefined
   regex?: RegExp
   focusedId: string
 }>()
@@ -45,15 +45,16 @@ defineEmits<{
 const mapped = computed(() => {
   return props.commands
     .map((v) => {
+      const found = props.visibleIds?.find((w) => w.id === v._id)
       return {
         ...v,
-        visible:
-          props.visibleIds === undefined || props.visibleIds.includes(v._id),
+        visible: props.visibleIds === undefined || !!found,
+        positions: found?.positions,
       }
     })
     .sort((a, b) => {
-      const indexA = props.visibleIds?.indexOf(a._id) || -1
-      const indexB = props.visibleIds?.indexOf(b._id) || -1
+      const indexA = props.visibleIds?.findIndex((w) => w.id === a._id) || -1
+      const indexB = props.visibleIds?.findIndex((w) => w.id === b._id) || -1
 
       if (indexA === -1 && indexB === -1) {
         return 0

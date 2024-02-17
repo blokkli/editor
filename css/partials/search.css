@@ -107,6 +107,7 @@
 }
 
 .bk-highlight {
+  @apply whitespace-pre;
   em {
     @apply not-italic relative inline-block rounded;
     @apply bg-yellow-normal/30 outline outline-[1px] outline-yellow-normal;

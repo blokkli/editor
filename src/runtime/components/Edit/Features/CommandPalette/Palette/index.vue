@@ -16,14 +16,13 @@
         "
       />
     </div>
-    <div class="bk-command-palette-results">
+    <div class="bk-command-palette-results bk-scrollbar-dark">
       <Group
         v-for="group in groups"
         :key="group.id"
         :label="group.label"
         :commands="group.commands"
         :visible-ids="visibleIds"
-        :regex="regex"
         :focused-id="focusedId"
         @close="$emit('close')"
         @focus="focusedId = $event"
@@ -46,8 +45,8 @@ import {
 import { Icon } from '#blokkli/components'
 import type { Command, CommandGroup } from '#blokkli/types'
 import Group from './Group/index.vue'
-import FlexSearch from 'flexsearch'
 import { falsy } from '#blokkli/helpers'
+import { Fzf } from 'fzf'
 
 const { commands, $t, selection } = useBlokkli()
 
@@ -56,27 +55,6 @@ const emit = defineEmits(['close'])
 const inputEl = ref<HTMLInputElement | null>(null)
 const text = ref('')
 const focusedId = ref('')
-
-const words = computed(() =>
-  text.value
-    .toLowerCase()
-    .trim()
-    .split(' ')
-    .map((v) => v.trim())
-    .filter(Boolean),
-)
-
-const regex = computed(() => {
-  if (!words.value.length) {
-    return
-  }
-  // Join all words into a regex.
-  const pattern = words.value
-    .map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-    .join('|')
-
-  return new RegExp(pattern, 'gi')
-})
 
 type GroupedCommands = {
   id: CommandGroup
@@ -120,24 +98,27 @@ const items = computed<Array<Command & { _id: number }>>(() =>
     }),
 )
 
-const index = new FlexSearch.Index({ preset: 'match', tokenize: 'full' })
-
-items.value.forEach((item) => {
-  index.add(item._id, item.label)
+const fzf = new Fzf(items.value, {
+  // With selector you tell FZF where it can find
+  // the string that you want to query on
+  selector: (item) => item.label,
 })
 
-const visibleIds = computed<number[] | undefined>(() => {
-  if (!text.value) {
-    return undefined
-  }
-
-  return index.search(text.value).map((v) => {
-    if (typeof v === 'number') {
-      return v
+const visibleIds = computed<{ id: number; positions: number[] }[] | undefined>(
+  () => {
+    if (!text.value) {
+      return undefined
     }
-    return parseInt(v)
-  })
-})
+
+    const results = fzf.find(text.value)
+    return results.map((v) => {
+      return {
+        id: v.item._id,
+        positions: [...v.positions],
+      }
+    })
+  },
+)
 
 const groups = computed<GroupedCommands[]>(() => {
   return Object.values(

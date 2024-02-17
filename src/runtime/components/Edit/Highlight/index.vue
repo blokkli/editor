@@ -17,12 +17,52 @@ const props = defineProps<{
   regex?: RegExp
 
   /**
+   * The indices of the matches.
+   */
+  positions?: number[]
+
+  /**
    * The tag for the wrapper.
    */
   tag?: string
 }>()
 
+const highlightPositions = (text: string, positions: number[]): string => {
+  let result = ''
+  let inTag = false // Flag to indicate if we are currently adding text inside <em></em>.
+
+  for (let i = 0; i < text.length; i++) {
+    // Check if the current character's index is in the positions array.
+    if (positions.includes(i)) {
+      // If the previous character was not a match, we start a new <em>.
+      if (!inTag) {
+        result += '<em>'
+        inTag = true
+      }
+      result += text[i]
+    } else {
+      // If the previous character was a match, we close the <em> tag.
+      if (inTag) {
+        result += '</em>'
+        inTag = false
+      }
+      result += text[i]
+    }
+  }
+
+  // Close the <em> tag if the last character in text was a match.
+  if (inTag) {
+    result += '</em>'
+  }
+
+  return result
+}
+
 const markup = computed(() => {
+  if (props.positions?.length) {
+    return highlightPositions(props.text, props.positions)
+  }
+
   if (!props.regex) {
     return props.text
   }
