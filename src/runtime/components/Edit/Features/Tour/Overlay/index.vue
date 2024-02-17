@@ -30,9 +30,6 @@
 
       <div class="bk-tour-caret"></div>
     </div>
-    <div class="bk bk-tour-overlay">
-      <div :style="rectStyle" />
-    </div>
     <div :style="rectStyle" class="bk bk-tour-overlay-element"></div>
   </Teleport>
 </template>
@@ -58,7 +55,9 @@ const tooltipStyle = computed(() => {
   const x = Math.max(
     Math.min(
       activeItem.value.x - tooltipWidth.value / 2,
-      ui.visibleViewportPadded.value.width - tooltipWidth.value,
+      ui.visibleViewportPadded.value.x +
+        ui.visibleViewportPadded.value.width -
+        tooltipWidth.value,
     ),
     ui.visibleViewportPadded.value.x,
   )
@@ -119,7 +118,7 @@ const items = computed<PositionedTourItem[]>(() =>
       }
       const element =
         typeof item.element === 'function' ? item.element() : item.element
-      if (!element) {
+      if (!(element instanceof HTMLElement)) {
         return
       }
       const rect = element.getBoundingClientRect()
@@ -232,6 +231,12 @@ onBlokkliEvent('keyPressed', (e) => {
   } else if (e.code === 'Escape') {
     e.originalEvent.preventDefault()
     emit('close')
+  } else if (e.code === 'ArrowLeft') {
+    e.originalEvent.preventDefault()
+    prev()
+  } else if (e.code === 'ArrowRight') {
+    e.originalEvent.preventDefault()
+    next()
   }
 })
 

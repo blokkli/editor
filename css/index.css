@@ -60,9 +60,6 @@ html {
   @apply font-sans;
 
   border-color: theme('colors.mono.200');
-  * {
-    border-color: theme('colors.mono.200');
-  }
 
   letter-spacing: 0;
 
