@@ -1,45 +1,53 @@
 <template>
   <Teleport to="#bk-toolbar-after-title">
-    <div
+    <PluginTourItem
       v-if="items.length"
-      class="bk-translations"
-      :class="{ 'bk-is-dropdown': isDropdown }"
+      id="translations"
+      :title="$t('translationsTourTitle', 'Translations')"
+      :text="
+        $t(
+          'translationsTourText',
+          'Quickly switch between available translations. A greyed out language indicates the content is not yet translated. Clicking on it opens the form to create a new translation for this language.',
+        )
+      "
     >
-      <button
-        v-if="isDropdown"
-        class="bk-toolbar-button"
-        :class="{ 'bk-is-active': isOpen }"
-        @click.stop.prevent="isOpen = !isOpen"
-      >
-        {{ activeLangcode }}
-      </button>
-      <div
-        v-if="isOpen || !isDropdown"
-        :class="
-          isDropdown
-            ? 'bk-translations-dropdown'
-            : 'bk-blokkli-item-options-radios bk-is-language'
-        "
-      >
-        <label
-          v-for="item in items"
-          :key="item.id"
-          :class="{ 'bk-is-muted': !item.translation }"
+      <div class="bk-translations" :class="{ 'bk-is-dropdown': isDropdown }">
+        <button
+          v-if="isDropdown"
+          class="bk-toolbar-button"
+          :class="{ 'bk-is-active': isOpen }"
+          @click.stop.prevent="isOpen = !isOpen"
         >
-          <div>
-            <input
-              type="radio"
-              :checked="item.checked"
-              :value="item.id"
-              name="pb_language"
-              @click.stop.prevent="onClick(item, $event)"
-            />
-            <span>{{ item.code }}</span>
-            <div :class="{ 'bk-tooltip': !isDropdown }">{{ item.label }}</div>
-          </div>
-        </label>
+          {{ activeLangcode }}
+        </button>
+        <div
+          v-if="isOpen || !isDropdown"
+          :class="
+            isDropdown
+              ? 'bk-translations-dropdown'
+              : 'bk-blokkli-item-options-radios bk-is-language'
+          "
+        >
+          <label
+            v-for="item in items"
+            :key="item.id"
+            :class="{ 'bk-is-muted': !item.translation }"
+          >
+            <div>
+              <input
+                type="radio"
+                :checked="item.checked"
+                :value="item.id"
+                name="pb_language"
+                @click.stop.prevent="onClick(item, $event)"
+              />
+              <span>{{ item.code }}</span>
+              <div :class="{ 'bk-tooltip': !isDropdown }">{{ item.label }}</div>
+            </div>
+          </label>
+        </div>
       </div>
-    </div>
+    </PluginTourItem>
   </Teleport>
 
   <PluginMenuButton
@@ -66,7 +74,11 @@
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import { falsy } from '#blokkli/helpers'
-import { PluginMenuButton, PluginItemAction } from '#blokkli/plugins'
+import {
+  PluginMenuButton,
+  PluginItemAction,
+  PluginTourItem,
+} from '#blokkli/plugins'
 import type { DraggableExistingBlock, EntityTranslation } from '#blokkli/types'
 
 const { adapter } = defineBlokkliFeature({

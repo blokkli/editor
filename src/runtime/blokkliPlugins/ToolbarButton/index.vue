@@ -1,6 +1,7 @@
 <template>
   <Teleport :to="'#bk-toolbar-' + region">
     <button
+      ref="el"
       class="bk-toolbar-button"
       :disabled="disabled"
       :class="[{ 'is-active': active }, id ? 'bk-is-' + id : undefined]"
@@ -30,7 +31,9 @@
 import { ShortcutIndicator } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon } from '#blokkli/components'
+import { computed, onBeforeUnmount, onMounted, ref, useBlokkli } from '#imports'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
+import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 
 const props = defineProps<{
   id: string
@@ -50,6 +53,7 @@ const props = defineProps<{
   keyCode?: string
   icon?: BlokkliIcon
   shortcutGroup?: string
+  tourText?: string
 
   /**
    * The weight, used for positioning the button.
@@ -57,7 +61,11 @@ const props = defineProps<{
   weight?: number | string
 }>()
 
+const { tour } = useBlokkli()
+
 const emit = defineEmits(['click'])
+
+const el = ref<HTMLButtonElement | null>(null)
 
 function onClick() {
   if (props.disabled) {
@@ -75,6 +83,19 @@ defineCommands(() => {
     icon: props.icon,
     disabled: props.disabled,
     callback: () => emit('click'),
+  }
+})
+
+defineTourItem(() => {
+  if (!props.tourText) {
+    return
+  }
+
+  return {
+    id: 'plugin:toolbar-button:' + props.id,
+    title: props.title,
+    text: props.tourText,
+    element: () => el.value,
   }
 })
 </script>

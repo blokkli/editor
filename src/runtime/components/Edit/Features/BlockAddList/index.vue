@@ -17,6 +17,17 @@
       data-element-type="new"
       :data-item-bundle="type.id"
     />
+    <PluginTourItem
+      id="block-add-list"
+      :title="$t('blockAddListTourTitle', 'Favorite blocks')"
+      :text="
+        $t(
+          'blockAddListTourText',
+          'Right-click on a block to add or remove them from your favorites. Favorites are highlighted and always displayed at the top of the list.',
+        )
+      "
+      selector="#blokkli-add-list-blocks"
+    />
   </Teleport>
   <Teleport
     v-if="
@@ -53,6 +64,7 @@ import type { Command, DraggableExistingBlock } from '#blokkli/types'
 import { getDefinition } from '#blokkli/definitions'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { PluginTourItem } from '#blokkli/plugins'
 
 defineBlokkliFeature({
   id: 'block-add-list',

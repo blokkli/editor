@@ -6,16 +6,14 @@
     :disabled="!mutations.length || !canEdit"
     type="success"
     :weight="0"
+    icon="publish"
     @click="onClick"
-  >
-    <Icon name="publish" />
-  </PluginMenuButton>
+  />
 </template>
 
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
-import { Icon } from '#blokkli/components'
 
 const { adapter } = defineBlokkliFeature({
   id: 'publish',

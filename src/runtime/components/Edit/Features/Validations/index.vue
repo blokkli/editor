@@ -2,6 +2,12 @@
   <PluginSidebar
     id="violations"
     :title="$t('validationsToolbarLabel', 'Validations')"
+    :tour-text="
+      $t(
+        'validationsTourText',
+        'See validation errors for content or structure on the current page.',
+      )
+    "
     icon="check"
     weight="-10"
   >

@@ -2,6 +2,12 @@
   <PluginSidebar
     id="theme"
     :title="$t('theme', 'Theme')"
+    :tour-text="
+      $t(
+        'themeTourText',
+        'Change the colors of the theme and generate a theme file.',
+      )
+    "
     icon="palette"
     weight="-100"
   >

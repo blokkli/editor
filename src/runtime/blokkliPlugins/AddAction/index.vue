@@ -2,6 +2,7 @@
   <Teleport v-if="shouldRender" :key="renderKey" to="#blokkli-add-list-actions">
     <AddListItem
       :id="type"
+      ref="item"
       :label="title"
       :icon="icon"
       :orientation="ui.addListOrientation.value"
@@ -19,6 +20,7 @@ import type { BlokkliIcon } from '#blokkli/icons'
 import type { ActionPlacedEvent } from '#blokkli/types'
 import { AddListItem } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 
 const props = defineProps<{
   type: string
@@ -29,6 +31,8 @@ const props = defineProps<{
   disabled?: boolean
   weight?: number
 }>()
+
+const item = ref<InstanceType<typeof AddListItem> | null>(null)
 
 const emit = defineEmits<{
   (e: 'placed', data: ActionPlacedEvent): void
@@ -58,6 +62,15 @@ onBlokkliEvent('action:placed', (e) => {
   }
 
   emit('placed', e)
+})
+
+defineTourItem(() => {
+  return {
+    id: 'plugin:add_action:' + props.type,
+    title: props.title,
+    text: props.description,
+    element: () => item.value?.getElement(),
+  }
 })
 </script>
 

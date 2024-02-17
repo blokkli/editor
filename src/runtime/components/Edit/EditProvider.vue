@@ -52,6 +52,7 @@ import broadcastProvider from './../../helpers/broadcastProvider'
 import featuresProvider from './../../helpers/featuresProvider'
 import themeProvider from './../../helpers/themeProvider'
 import commandsProvider from './../../helpers/commandsProvider'
+import tourProvider from './../../helpers/tourProvider'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import '#blokkli/theme'
 import '#blokkli/styles'
@@ -97,6 +98,7 @@ const types = await typesProvider(adapter, selection)
 const features = featuresProvider()
 const theme = themeProvider()
 const commands = commandsProvider()
+const tour = tourProvider()
 
 const onContextMenu = (e: Event) => {
   e.preventDefault()
@@ -140,5 +142,6 @@ provide<BlokkliApp>(INJECT_APP, {
   features,
   theme,
   commands,
+  tour,
 })
 </script>

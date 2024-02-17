@@ -3,6 +3,12 @@
     id="history"
     v-slot="{ scrolledToEnd }"
     :title="$t('history', 'History')"
+    :tour-text="
+      $t(
+        'historyTourText',
+        'See a list of all changes made so far and switch back and forth between changes.',
+      )
+    "
     icon="history"
     weight="-100"
   >
@@ -79,6 +85,7 @@
     key-code="Z"
     region="before-title"
     :disabled="!canUndo"
+    :tour-text="$t('historyUndoTourText', 'Undo the last change.')"
     icon="undo"
     @click="undo"
   />
@@ -91,6 +98,7 @@
     key-code="Z"
     region="before-title"
     :disabled="!canRedo"
+    :tour-text="$t('historyRedoTourText', 'Redo the previous change.')"
     icon="redo"
     @click="redo"
   />

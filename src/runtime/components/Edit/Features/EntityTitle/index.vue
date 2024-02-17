@@ -1,6 +1,10 @@
 <template>
   <Teleport to="#bk-toolbar-title">
-    <button class="bk-toolbar-button" @click="eventBus.emit('editEntity')">
+    <button
+      ref="buttonEl"
+      class="bk-toolbar-button"
+      @click="eventBus.emit('editEntity')"
+    >
       <div class="bk-toolbar-title">
         <div>
           <span
@@ -34,7 +38,8 @@
 
 <script lang="ts" setup>
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
-import { useBlokkli, defineBlokkliFeature } from '#imports'
+import { useBlokkli, defineBlokkliFeature, ref } from '#imports'
+import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 
 defineBlokkliFeature({
   id: 'entity-title',
@@ -45,6 +50,7 @@ defineBlokkliFeature({
 
 const { state, eventBus, $t } = useBlokkli()
 const { entity, mutations } = state
+const buttonEl = ref<HTMLButtonElement | null>(null)
 
 defineCommands(() => {
   return {
@@ -56,6 +62,15 @@ defineCommands(() => {
     ),
     callback: () => eventBus.emit('editEntity'),
     icon: 'edit',
+  }
+})
+
+defineTourItem(() => {
+  return {
+    id: 'entity-title',
+    title: $t('entityTitleTourTitle', 'Page'),
+    text: $t('entityTitleTourText', 'Shows the title of the current page.'),
+    element: buttonEl.value,
   }
 })
 </script>

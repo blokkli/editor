@@ -4,6 +4,12 @@
     id="clipboard"
     ref="plugin"
     :title="$t('clipboard', 'Clipboard')"
+    :tour-text="
+      $t(
+        'clipboardTourText',
+        'Drag and drop content pasted from your clipboard into the page to create a matching block.',
+      )
+    "
     edit-only
     icon="clipboard"
     weight="-30"

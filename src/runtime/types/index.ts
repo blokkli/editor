@@ -27,6 +27,7 @@ import type {
 import type { globalOptions } from '#blokkli/definitions'
 import type { ThemeProvider } from '#blokkli/helpers/themeProvider'
 import type { CommandsProvider } from '#blokkli/helpers/commandsProvider'
+import type { TourProvider } from '#blokkli/helpers/tourProvider'
 
 interface MutationResponseLike<T> {
   success?: boolean
@@ -893,6 +894,7 @@ export interface BlokkliApp {
   features: FeaturesProvider
   theme: ThemeProvider
   commands: CommandsProvider
+  tour: TourProvider
 }
 
 export interface Rectangle {
@@ -1094,6 +1096,17 @@ export type FragmentDefinitionInput<
    * Settings for the behaviour in the editor.
    */
   editor?: BlokkliDefinitionInputEditor<Options, GlobalOptions>
+}
+
+export type TourItem = {
+  id: string
+  title: string
+  text: string
+  element:
+    | HTMLElement
+    | (() => HTMLElement | undefined | null)
+    | undefined
+    | null
 }
 
 export default {}

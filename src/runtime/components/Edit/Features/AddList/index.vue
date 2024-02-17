@@ -2,7 +2,8 @@
   <PluginSidebar
     v-if="isSidebar && shouldRender"
     id="add_list"
-    :title="$t('addListSidebarTitle', 'Add blocks')"
+    :title="sidebarTitle"
+    :tour-text="tourText"
     render-always
     icon="plus"
     weight="-10"
@@ -34,6 +35,12 @@
         <div id="blokkli-add-list-actions"></div>
       </Sortli>
     </div>
+    <PluginTourItem
+      id="add-blocks"
+      selector=".bk-list"
+      :title="sidebarTitle"
+      :text="tourText"
+    />
   </Teleport>
 </template>
 
@@ -49,7 +56,7 @@ import {
   defineBlokkliFeature,
 } from '#imports'
 import { Sortli } from '#blokkli/components'
-import { PluginSidebar } from '#blokkli/plugins'
+import { PluginSidebar, PluginTourItem } from '#blokkli/plugins'
 
 const { settings } = defineBlokkliFeature({
   id: 'add-list',
@@ -166,6 +173,15 @@ function setRootClasses() {
     document.documentElement.classList.add('bk-has-add-list-left')
   }
 }
+
+const sidebarTitle = computed(() => $t('addListSidebarTitle', 'Add blocks'))
+
+const tourText = computed(() =>
+  $t(
+    'addListTourText',
+    '<p>This shows the list of available blocks that can be placed. Add a block by dragging the icon into the page.</p><p>When an existing block is selected, some blocks may be greyed out. This indicates which blocks can be placed inside or after the selected block.</p>',
+  ),
+)
 
 onMounted(() => {
   setRootClasses()

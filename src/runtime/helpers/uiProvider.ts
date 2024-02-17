@@ -38,6 +38,8 @@ export type UiProvider = {
   appViewport: ComputedRef<Viewport>
 
   openContextMenu: Ref<string>
+
+  viewport: ComputedRef<{ width: number; height: number }>
 }
 
 export default function (storage: StorageProvider): UiProvider {
@@ -241,6 +243,13 @@ export default function (storage: StorageProvider): UiProvider {
     clearTimeout(resizeTimeout)
   })
 
+  const viewport = computed(() => {
+    return {
+      width: viewportWidth.value,
+      height: viewportHeight.value,
+    }
+  })
+
   return {
     menu: {
       isOpen: menuIsOpen,
@@ -264,5 +273,6 @@ export default function (storage: StorageProvider): UiProvider {
     viewportBlockingRects,
     appViewport,
     openContextMenu,
+    viewport,
   }
 }

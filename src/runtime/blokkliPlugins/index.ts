@@ -6,6 +6,7 @@ import PluginToolbarButton from './ToolbarButton/index.vue'
 import PluginViewOption from './ViewOption/index.vue'
 import PluginAddAction from './AddAction/index.vue'
 import PluginContextMenu from './ContextMenu/index.vue'
+import PluginTourItem from './TourItem/index.vue'
 
 export {
   PluginMenuButton,
@@ -16,4 +17,5 @@ export {
   PluginItemDropdown,
   PluginAddAction,
   PluginContextMenu,
+  PluginTourItem,
 }

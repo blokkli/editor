@@ -22,6 +22,12 @@
     v-if="adapter.addLibraryItem && adapter.getLibraryItems"
     type="library"
     :title="$t('libraryAddFromLibrary', 'Add from library')"
+    :description="
+      $t(
+        'libraryAddDescription',
+        'Add a reusable block from the block library.',
+      )
+    "
     icon="reusable"
     color="lime"
     @placed="placedAction = $event"

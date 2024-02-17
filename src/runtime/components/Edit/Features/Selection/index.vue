@@ -21,7 +21,7 @@ defineBlokkliFeature({
   description: 'Renders an overlay that highlights the selected blocks.',
 })
 
-const { selection, state, ui, eventBus, animation, dom } = useBlokkli()
+const { selection, state, ui, eventBus, animation, dom, tour } = useBlokkli()
 
 const isVisible = computed(
   () =>
@@ -72,6 +72,9 @@ onBlokkliEvent('keyPressed', (e) => {
   if (e.code === 'Escape') {
     eventBus.emit('select:end', [])
   } else if (e.code === 'Tab') {
+    if (tour.isTouring.value) {
+      return
+    }
     e.originalEvent.preventDefault()
 
     // No block is selected.

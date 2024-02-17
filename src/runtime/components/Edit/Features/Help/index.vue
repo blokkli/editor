@@ -2,6 +2,7 @@
   <PluginSidebar
     id="help"
     :title="$t('featureHelpTitle', 'Help')"
+    :tour-text="$t('helpTourText', 'Shows a list of available shortcuts.')"
     icon="help"
     weight="100"
     key-code="F1"

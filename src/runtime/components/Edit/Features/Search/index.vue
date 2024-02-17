@@ -21,6 +21,12 @@
     meta
     key-code="F"
     region="before-sidebar-right"
+    :tour-text="
+      $t(
+        'searchTourText',
+        'Quickly find blocks on the current page or existing content to drag and drop as blocks into the page.',
+      )
+    "
     icon="search"
     @click="onClick"
   />

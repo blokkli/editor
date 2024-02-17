@@ -5,6 +5,9 @@
     :label="$t('gridToggle', 'Toggle grid')"
     :title-on="$t('gridShow', 'Show grid')"
     :title-off="$t('gridHide', 'Hide grid')"
+    :tour-text="
+      $t('gridTourText', 'Display a layout grid overlay on top of the page.')
+    "
     key-code="G"
     icon="grid"
   >

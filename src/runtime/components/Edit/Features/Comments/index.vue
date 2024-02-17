@@ -2,6 +2,9 @@
   <PluginSidebar
     id="comments"
     :title="$t('comments', 'Comments')"
+    :tour-text="
+      $t('commentsTourText', 'Shows all comments for the current page.')
+    "
     icon="comment"
     weight="-20"
   >

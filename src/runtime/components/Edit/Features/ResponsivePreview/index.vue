@@ -3,6 +3,7 @@
     id="mobile-preview"
     v-slot="{ width, height, isDetached }"
     :title="$t('responsivePreviewTitle', 'Responsive Preview')"
+    :tour-text="tourText"
     :min-width="375"
     :min-height="375"
     :size="size"
@@ -202,6 +203,13 @@ const viewportOptions = computed<ViewportOption[]>(() => {
     } as ViewportOption
   })
 })
+
+const tourText = computed(() =>
+  $t(
+    'responsivePreviewTourText',
+    `See how your changes look like on smaller screens, such as smartphones. Click on the "detach" button to be able to select additional viewport sizes.`,
+  ),
+)
 </script>
 
 <script lang="ts">

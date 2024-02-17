@@ -2,6 +2,7 @@
   <Teleport to="#bk-toolbar-view-options">
     <button
       v-if="!ui.isMobile.value"
+      ref="button"
       class="bk-toolbar-button"
       :class="{ 'bk-is-inactive': !isActive }"
       @click.prevent.stop="onClick"
@@ -28,10 +29,11 @@
 </template>
 
 <script setup lang="ts">
-import { useBlokkli, computed } from '#imports'
+import { useBlokkli, computed, ref } from '#imports'
 import { ShortcutIndicator, Icon } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli/icons'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
+import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 
 const { storage, ui } = useBlokkli()
 
@@ -43,9 +45,11 @@ const props = defineProps<{
   editOnly?: boolean
   keyCode?: string
   icon?: BlokkliIcon
+  tourText?: string
 }>()
 
 const storageKey = 'view_option_' + props.id
+const button = ref<HTMLElement | null>(null)
 
 const isActive = storage.use(storageKey, false)
 
@@ -62,6 +66,18 @@ defineCommands(() => {
     icon: props.icon,
     group: 'ui',
     callback: () => (isActive.value = !isActive.value),
+  }
+})
+
+defineTourItem(() => {
+  if (!props.tourText) {
+    return
+  }
+  return {
+    id: 'plugin:view_option:' + props.id,
+    title: props.label,
+    text: props.tourText,
+    element: () => button.value,
   }
 })
 </script>

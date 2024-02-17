@@ -1,6 +1,7 @@
 <template>
   <Teleport to="#bk-blokkli-item-actions">
     <button
+      ref="el"
       :disabled="isDisabled"
       :class="{ 'bk-is-active': active, 'bk-is-last': weight === 'last' }"
       :style="weight !== 'last' ? { order: weight || 0 } : undefined"
@@ -28,15 +29,18 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli } from '#imports'
+import { computed, ref, useBlokkli } from '#imports'
 
 import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon } from '#blokkli/components'
 import type { DraggableExistingBlock } from '#blokkli/types'
 import { ShortcutIndicator } from '#blokkli/components'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
+import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 
 const { selection } = useBlokkli()
+
+const el = ref<HTMLElement | null>(null)
 
 const uuids = computed(() => selection.uuids.value)
 
@@ -78,6 +82,8 @@ const props = defineProps<{
   weight?: number | string | 'last'
 
   icon?: BlokkliIcon
+
+  tourText?: string
 }>()
 
 const isDisabled = computed(
@@ -105,6 +111,19 @@ defineCommands(() => ({
   disabled: props.disabled || !selection.blocks.value.length,
   callback: onClick,
 }))
+
+defineTourItem(() => {
+  if (!props.tourText) {
+    return
+  }
+
+  return {
+    id: 'plugin:item_action:' + props.id,
+    title: props.title,
+    text: props.tourText,
+    element: () => el.value,
+  }
+})
 </script>
 
 <script lang="ts">

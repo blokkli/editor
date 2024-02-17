@@ -3,6 +3,12 @@
     v-if="adapter.addLibraryItem && adapter.getLibraryItems"
     type="fragment"
     :title="$t('fragmentsAddFragmentAction', 'Add fragment')"
+    :description="
+      $t(
+        'fragmentsAddFragmentDescription',
+        '<p>Drag the icon into the page to add a fragment block.</p><p>Fragments are reusable blocks that always render the same content.</p>',
+      )
+    "
     icon="fragment"
     color="accent"
     @placed="placedAction = $event"

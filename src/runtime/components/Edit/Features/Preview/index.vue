@@ -4,6 +4,12 @@
     :title="$t('previewNewWindow', 'Preview (new window)')"
     region="after-menu"
     icon="open_in_new"
+    :tour-text="
+      $t(
+        'previewNewWindowTourText',
+        'Opens a preview of the current changes in a new window.',
+      )
+    "
     @click="openPreview"
   />
 </template>

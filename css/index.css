@@ -36,6 +36,7 @@
 @import './partials/MediaLibrary.css';
 @import './partials/CommandPalette.css';
 @import './partials/ContextMenu.css';
+@import './partials/Tour.css';
 @import './indicator.css';
 
 @tailwind base;

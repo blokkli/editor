@@ -5,6 +5,12 @@
     :label="$t('maskToggle', 'Show content fields')"
     :title-on="$t('maskShow', 'Show content fields')"
     :title-off="$t('maskHide', 'Hide content fields')"
+    :tour-text="
+      $t(
+        'maskTourText',
+        'Toggle between showing or hiding non-editable parts of the page.',
+      )
+    "
     icon="texturebox"
     key-code="M"
   >

@@ -3,6 +3,12 @@
     v-if="previewGrantUrl && !ui.isMobile.value"
     id="preview_with_smartphone"
     :title="$t('previewWithSmartphone', 'Preview (with smartphone)')"
+    :tour-text="
+      $t(
+        'previewWithSmartphoneTourText',
+        'Shows a QR code to quickly open a preview of the changes with your smartphone.',
+      )
+    "
     region="after-menu"
     icon="qrcode"
     @click="qrCodeVisible = true"

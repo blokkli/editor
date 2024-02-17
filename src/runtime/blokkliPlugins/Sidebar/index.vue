@@ -1,6 +1,7 @@
 <template>
   <Teleport v-if="!isRenderedDetached" :to="'#bk-sidebar-tabs-' + region">
     <button
+      ref="tourElement"
       class="bk-toolbar-button"
       :class="[{ 'is-active': activeSidebar === id }, 'bk-is-' + region]"
       :disabled="editOnly && state.editMode.value !== 'editing'"
@@ -31,6 +32,7 @@
     <SidebarDetached
       v-if="isRenderedDetached"
       :id="id"
+      ref="tourElement"
       :title="title"
       :icon="icon"
       :min-width="minWidth"
@@ -100,11 +102,13 @@ import SidebarDetached from './Detached/index.vue'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import useAnimationFrame from '#blokkli/helpers/composables/useAnimationFrame'
+import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 
 const props = withDefaults(
   defineProps<{
     id: string
     title: string
+    tourText?: string
     editOnly?: boolean
     icon: BlokkliIcon
     weight?: string | number
@@ -119,6 +123,7 @@ const props = withDefaults(
   }>(),
   {
     region: 'right',
+    tourText: undefined,
     weight: 0,
     minWidth: undefined,
     minHeight: undefined,
@@ -132,6 +137,8 @@ const emit = defineEmits<{
 }>()
 
 const { storage, state, ui, $t } = useBlokkli()
+
+const tourElement = ref<HTMLElement | null>(null)
 
 const detachedKey = computed(() => 'sidebar:detached:' + props.id)
 const storageKey = computed(() => 'sidebar:active:' + props.region)
@@ -239,6 +246,18 @@ onBlokkliEvent('item:dropped', () => {
 })
 
 defineExpose({ showSidebar })
+
+defineTourItem(() => {
+  if (!props.tourText) {
+    return
+  }
+  return {
+    id: 'plugin:sidebar:' + props.id,
+    title: props.title,
+    text: props.tourText,
+    element: () => tourElement.value,
+  }
+})
 </script>
 
 <script lang="ts">

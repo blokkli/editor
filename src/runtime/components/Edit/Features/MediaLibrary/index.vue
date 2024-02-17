@@ -2,6 +2,12 @@
   <PluginSidebar
     id="media_library"
     :title="$t('mediaLibrary', 'Media Library')"
+    :tour-text="
+      $t(
+        'mediaLibraryTourText',
+        'Search for media like images and drag and drop them into the page.',
+      )
+    "
     edit-only
     icon="image"
     weight="-100"

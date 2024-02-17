@@ -5,6 +5,12 @@
     :label="$t('fieldAreasToggle', 'Toggle content areas')"
     :title-on="$t('fieldAreasShow', 'Show content areas')"
     :title-off="$t('fieldAreasHide', 'Hide content areas')"
+    :tour-text="
+      $t(
+        'fieldAreasTourText',
+        'Toggle between showing or hiding the areas where blocks can be placed.',
+      )
+    "
     icon="area"
     key-code="I"
   >

@@ -1,0 +1,67 @@
+.bk.bk-tour {
+  @apply fixed z-tour-item top-0 left-0 rounded;
+  @apply bg-white shadow-xl transition-all duration-300 overflow-hidden ease-swing;
+
+  button {
+    @apply focus:outline-0 focus:ring-0 focus:border-0;
+  }
+}
+
+.bk-tour-inner {
+  @apply absolute top-0 left-0 w-full;
+}
+
+.bk-tour-title {
+  @apply font-bold text-xl pl-20 border-b border-b-mono-300 flex items-center justify-between;
+
+  button {
+    @apply p-15;
+  }
+
+  svg {
+    @apply w-20 h-20;
+  }
+}
+.bk-tour-content {
+  @apply p-20 pt-[17px] min-h-[120px];
+
+  p:not(:last-child) {
+    @apply mb-18;
+  }
+}
+
+.bk-tour-buttons {
+  @apply border-t border-t-mono-300 h-50 absolute bottom-0 left-0 w-full bg-white;
+  @apply flex justify-between items-center;
+
+  > div {
+    @apply text-mono-400 text-sm;
+  }
+
+  button {
+    @apply text-accent-700 font-semibold py-15 px-20 flex items-center leading-none -mx-5 hover:bg-mono-100;
+
+    .bk-icon {
+      @apply w-20 h-20;
+      svg {
+        @apply fill-current;
+      }
+    }
+  }
+}
+
+.bk.bk-tour-overlay {
+  @apply fixed top-0 left-0 w-full h-full z-tour-overlay pointer-events-none;
+  @apply bg-mono-800;
+  @apply mix-blend-multiply;
+  opacity: 0.8;
+
+  > div {
+    @apply bg-white transition-all duration-300 ease-swing;
+  }
+}
+
+.bk.bk-tour-overlay-element {
+  @apply fixed top-0 left-0 w-full h-full z-tour-overlay pointer-events-none;
+  @apply border-3 border-yellow-normal transition-all duration-300 ease-swing;
+}

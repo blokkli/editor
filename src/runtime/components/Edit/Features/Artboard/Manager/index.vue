@@ -3,6 +3,12 @@
     id="artboard_reset_zoom"
     :title="$t('artboardResetZoom', 'Reset zoom')"
     :shortcut-group="$t('artboard', 'Artboard')"
+    :tour-text="
+      $t(
+        'artboardToolbarButtonTourText',
+        'Shows the current zoom factor. Click on it to reset the zoom back to 100%.',
+      )
+    "
     icon="magnifier"
     meta
     key-code="0"

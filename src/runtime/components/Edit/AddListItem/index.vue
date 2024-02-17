@@ -1,6 +1,7 @@
 <template>
   <PluginContextMenu
     :id="'add_list_item_' + id"
+    ref="el"
     tag="button"
     class="bk-list-item bk-clone"
     data-element-type="action"
@@ -45,7 +46,7 @@
 <script lang="ts" setup>
 import type { BlokkliIcon } from '#blokkli/icons'
 import type { AddListOrientation, ContextMenu } from '#blokkli/types'
-import { useBlokkli, computed } from '#imports'
+import { useBlokkli, computed, ref } from '#imports'
 import { ItemIcon, Icon } from '#blokkli/components'
 import { PluginContextMenu } from '#blokkli/plugins'
 
@@ -68,6 +69,8 @@ const props = withDefaults(
     icon: undefined,
   },
 )
+
+const el = ref<InstanceType<typeof PluginContextMenu> | null>(null)
 
 const favorites = storage.use<string[]>('blockFavorites', [])
 
@@ -100,6 +103,10 @@ const menu = computed<ContextMenu[]>(() => {
     },
   ]
 })
+
+const getElement = (): HTMLElement | null => el.value?.$el
+
+defineExpose({ getElement })
 </script>
 
 <script lang="ts">
