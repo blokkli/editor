@@ -99,8 +99,8 @@ type PositionedTourItem = {
 
 function calculateCenterPoint(rect: DOMRect): { x: number; y: number } {
   return {
-    x: rect.left + rect.width / 2,
-    y: rect.top + rect.height / 2,
+    x: rect.x,
+    y: rect.y,
   }
 }
 
