@@ -1,9 +1,9 @@
 <template>
   <PluginSidebar
     id="demo-feature"
+    v-slot="{ toggleSidebar }"
     title="Playground Demo"
     icon="logo"
-    v-slot="{ toggleSidebar }"
   >
     <div class="p-20 ck-content">
       <h3>Welcome to the blökkli demo!</h3>

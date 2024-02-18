@@ -217,12 +217,14 @@ export default defineConfig({
       {
         text: 'Features',
         collapsed: true,
-        items: features.map((v) => {
-          return {
-            text: v.definition.label,
-            link: '/features/' + v.id,
-          }
-        }),
+        items: features
+          .filter((v) => v.id !== 'demo-feature')
+          .map((v) => {
+            return {
+              text: v.definition.label,
+              link: '/features/' + v.id,
+            }
+          }),
       },
       {
         text: 'Adapter',
