@@ -10,6 +10,7 @@ import FormOverlay from './FormOverlay/index.vue'
 import AddListItem from './AddListItem/index.vue'
 import Loading from './Loading/index.vue'
 import Highlight from './Highlight/index.vue'
+import ViewportBlockingRect from './ViewportBlockingRect/index.vue'
 
 export {
   ItemIcon,
@@ -24,4 +25,5 @@ export {
   AddListItem,
   Loading,
   Highlight,
+  ViewportBlockingRect,
 }

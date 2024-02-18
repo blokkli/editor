@@ -1,5 +1,6 @@
 <template>
-  <div
+  <ViewportBlockingRect
+    :id="storageKey"
     ref="el"
     class="bk-sidebar-detached"
     :class="{ 'bk-is-focused': focusedSidebar === id }"
@@ -45,22 +46,20 @@
         />
       </template>
     </div>
-  </div>
+  </ViewportBlockingRect>
 </template>
 
 <script lang="ts" setup>
 import {
   useBlokkli,
   ref,
-  onMounted,
   onBeforeUnmount,
   computed,
   watch,
   useState,
 } from '#imports'
-import { Icon } from '#blokkli/components'
+import { Icon, ViewportBlockingRect } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli/icons'
-import type { Rectangle } from '#blokkli/types'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const props = withDefaults(
@@ -158,17 +157,6 @@ const height = computed(() => {
 })
 
 const headerHeight = computed(() => 40)
-
-const blockingRectangle = computed<Rectangle>(() => {
-  return {
-    x: x.value - offsetX.value,
-    y: y.value,
-    width: width.value,
-    height: isMinimized.value
-      ? headerHeight.value
-      : height.value + headerHeight.value,
-  }
-})
 
 const startMouseX = ref(0)
 const startMouseY = ref(0)
@@ -323,10 +311,6 @@ const recalculatePositions = () => {
 
 recalculatePositions()
 
-watch(blockingRectangle, (rect) => {
-  ui.setViewportBlockingRectangle(storageKey.value, rect)
-})
-
 watch(offsetX, () => {
   updateStored()
 })
@@ -336,13 +320,8 @@ onBlokkliEvent('ui:resized', () => {
   updateStored()
 })
 
-onMounted(() => {
-  ui.setViewportBlockingRectangle(storageKey.value, blockingRectangle.value)
-})
-
 onBeforeUnmount(() => {
   window.removeEventListener('mousemove', onMouseMove)
   window.removeEventListener('mouseup', onMouseUp)
-  ui.setViewportBlockingRectangle(storageKey.value)
 })
 </script>
