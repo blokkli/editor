@@ -89,7 +89,7 @@
   }
 
   .bk-search-tabs {
-    @apply flex border-b justify-between bg-white;
+    @apply flex border-b justify-between bg-white border-b-mono-300;
     li {
       button {
         @apply px-15 py-[12px] lg:p-20 w-full text-center uppercase text-xs md:text-sm text-mono-500;

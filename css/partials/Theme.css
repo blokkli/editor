@@ -12,7 +12,7 @@
   @apply w-full text-sm;
 
   tr {
-    @apply border-b;
+    @apply border-b border-b-mono-300;
   }
 
   td {

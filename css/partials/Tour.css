@@ -15,7 +15,10 @@
   @apply font-bold text-lg pl-20 border-b border-b-yellow-dark/30 flex items-center justify-between bg-yellow-normal;
 
   button {
-    @apply p-15;
+    @apply p-15 hover:bg-yellow-dark/10;
+    svg {
+      @apply fill-yellow-dark;
+    }
   }
 
   svg {
@@ -40,7 +43,7 @@
   }
 
   button {
-    @apply text-yellow-dark font-semibold py-15 px-20 flex items-center leading-none -mx-5 hover:bg-yellow-dark/10;
+    @apply text-yellow-dark font-semibold py-15 px-20 flex items-center leading-none -mx-5 hover:bg-yellow-dark/5;
 
     .bk-icon {
       @apply w-20 h-20;
@@ -58,7 +61,7 @@
 }
 
 .bk.bk-tour-popup {
-  @apply fixed top-60 left-80 bg-white shadow-xl w-[360px] rounded-md hyphens-auto;
+  @apply fixed top-60 left-80 bg-white shadow-xl w-[360px] rounded-md hyphens-auto overflow-hidden;
   @apply border border-mono-200;
 
   h2 {

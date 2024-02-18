@@ -46,7 +46,7 @@ body {
 }
 
 .entity-form-footer {
-  @apply fixed bottom-0 left-0 w-full p-20 border-t bg-white z-50;
+  @apply fixed bottom-0 left-0 w-full p-20 border-t bg-white z-50 border-t-mono-300;
 
   input {
     @apply rounded bg-accent-700 text-white font-bold px-10 py-15 cursor-pointer;

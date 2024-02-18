@@ -5,7 +5,7 @@
 
 .bk-media-library-filters {
   > div {
-    @apply border-b;
+    @apply border-b border-b-mono-300;
 
     select {
       @apply w-full py-15 px-20 cursor-pointer;

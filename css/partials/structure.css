@@ -4,7 +4,7 @@
     @apply text-base;
 
     > li {
-      @apply p-20 border-b;
+      @apply p-20 border-b border-b-mono-300;
       > ul {
         @apply mt-10;
       }
