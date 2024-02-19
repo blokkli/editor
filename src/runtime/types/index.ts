@@ -45,8 +45,8 @@ type GetType<T> = T extends { options: infer O }
     ? Array<keyof O>
     : keyof O
   : T extends { type: 'checkbox' }
-  ? boolean
-  : string
+    ? boolean
+    : string
 
 type WithOptions<T extends BlockDefinitionOptionsInput> = {
   [K in keyof T]: GetType<T[K]>

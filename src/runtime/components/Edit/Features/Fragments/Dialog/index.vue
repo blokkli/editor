@@ -64,11 +64,11 @@ import type { BlokkliFieldElement } from '#blokkli/types'
 import { ref, useBlokkli, computed, watch } from '#imports'
 import FragmentItem from './Item/index.vue'
 
-const props = defineProps<{
+defineProps<{
   field: BlokkliFieldElement
 }>()
 
-const { $t, types } = useBlokkli()
+const { $t } = useBlokkli()
 const emit = defineEmits<{
   (e: 'close'): void
   (e: 'submit', uuid: string): void
@@ -80,18 +80,6 @@ const selectedItem = ref('')
 
 const fragments = computed(() => {
   return fragmentDefinitions
-})
-
-const allowedBundles = computed<string[]>(() => {
-  return (
-    types.fieldConfig.value.filter((v) => {
-      return (
-        v.name === props.field.name &&
-        v.entityBundle === props.field.hostEntityBundle &&
-        v.entityType === props.field.hostEntityType
-      )
-    })[0]?.allowedBundles || []
-  )
 })
 
 const onSubmit = () => {

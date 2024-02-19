@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli, defineBlokkliFeature } from '#imports'
+import { ref, useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginAddAction } from '#blokkli/plugins'
 import FragmentsDialog from './Dialog/index.vue'
 import type { ActionPlacedEvent } from '#blokkli/types'
@@ -40,7 +40,7 @@ const { adapter } = defineBlokkliFeature({
   requiredAdapterMethods: ['fragmentsAddBlock'],
 })
 
-const { state, types, $t } = useBlokkli()
+const { state, $t } = useBlokkli()
 
 const placedAction = ref<ActionPlacedEvent | null>(null)
 
@@ -59,10 +59,6 @@ const onAddFragment = async (name: string) => {
 
   placedAction.value = null
 }
-
-const allowedInList = computed(() =>
-  types.allowedTypesInList.value.includes('blokkli_fragment'),
-)
 </script>
 
 <script lang="ts">

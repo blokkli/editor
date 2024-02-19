@@ -31,7 +31,7 @@
 import { ShortcutIndicator } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli/icons'
 import { Icon } from '#blokkli/components'
-import { computed, onBeforeUnmount, onMounted, ref, useBlokkli } from '#imports'
+import { ref } from '#imports'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 
@@ -60,8 +60,6 @@ const props = defineProps<{
    */
   weight?: number | string
 }>()
-
-const { tour } = useBlokkli()
 
 const emit = defineEmits(['click'])
 
