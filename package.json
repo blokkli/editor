@@ -42,7 +42,6 @@
   "license": "ISC",
   "dependencies": {
     "@nuxt/kit": "^3.8.2",
-    "flexsearch": "^0.7.43",
     "fzf": "^0.5.2",
     "mitt": "^3.0.1",
     "qrcode.vue": "^3.4.1"
