@@ -24,7 +24,7 @@ type RuntimeDefinitionInput = {
   bundle: string
   options?: {
     [key: string]: {
-      default: string | string[]
+      default: string | string[] | boolean
       type: string
     }
   }

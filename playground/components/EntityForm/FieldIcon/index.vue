@@ -1,11 +1,11 @@
 <template>
   <div class="icon-selector">
-    <label v-for="symbol in SYMBOLS" :key="symbol">
+    <label v-for="symbol in ALL_SYMBOL_KEYS" :key="symbol">
       <input
         type="radio"
         :value="symbol"
-        @change="$emit('update:modelValue', symbol)"
         name="icon_selector"
+        @change="$emit('update:modelValue', symbol)"
       />
       <div>
         <SpriteSymbol :name="symbol" class="aspect-square" />
@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { SYMBOLS } from '#nuxt-svg-sprite'
+import { ALL_SYMBOL_KEYS } from '#nuxt-svg-sprite/data'
 
 defineProps<{
   modelValue: string

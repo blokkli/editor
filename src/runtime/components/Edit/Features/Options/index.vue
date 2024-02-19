@@ -17,7 +17,7 @@ import OptionsForm from './Form/index.vue'
 import type {
   BlockDefinitionInput,
   FragmentDefinitionInput,
-} from '~/src/runtime/types'
+} from '#blokkli/types'
 
 defineBlokkliFeature({
   id: 'options',

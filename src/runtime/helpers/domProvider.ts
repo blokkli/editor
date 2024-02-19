@@ -5,7 +5,7 @@ import type {
   DraggableItem,
 } from '#blokkli/types'
 import { buildDraggableItem, falsy } from '#blokkli/helpers'
-import type { ComponentInternalInstance } from 'nuxt/dist/app/compat/capi'
+import type { ComponentInternalInstance } from 'vue'
 
 /**
  * Recursively clone an element and inline its styles.

@@ -1,11 +1,7 @@
-import type { BlokkliEditableDirectiveArgs } from '#blokkli/types'
 import { defineNuxtPlugin } from '#imports'
-import type { Directive } from 'vue'
 
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.directive('blokkli-editable', <
-    Directive<HTMLElement, BlokkliEditableDirectiveArgs>
-  >{
+  nuxtApp.vueApp.directive('blokkli-editable', {
     created(el: HTMLElement, binding) {
       if (process.client) {
         if (!window.location.search.includes('blokkliEditing')) {

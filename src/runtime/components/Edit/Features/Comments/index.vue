@@ -8,7 +8,7 @@
     icon="comment"
     weight="-20"
   >
-    <div class="bk bk-comments bk-control">
+    <div v-if="comments.length" class="bk bk-comments bk-control">
       <ul>
         <li v-for="comment in comments" :key="comment.uuid">
           <Comment v-bind="comment" @click-comment="onClickComment(comment)" />
@@ -39,13 +39,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  watch,
-  ref,
-  useBlokkli,
-  defineBlokkliFeature,
-  useLazyAsyncData,
-} from '#imports'
+import { watch, ref, useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginSidebar, PluginItemAction } from '#blokkli/plugins'
 import Comment from './Comment/index.vue'
 import CommentAddForm from './AddForm/index.vue'
@@ -74,10 +68,8 @@ watch(selection.uuids, () => {
   }
 })
 
-const { data: comments } = await useLazyAsyncData(
-  () => adapter.loadComments(),
-  { default: () => [] },
-)
+const comments = ref<CommentItem[]>([])
+comments.value = await adapter.loadComments()
 
 const onAddComment = async (body: string, uuids: string[]) => {
   comments.value = await adapter.addComment(uuids, body)

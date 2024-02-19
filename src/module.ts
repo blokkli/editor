@@ -666,7 +666,9 @@ export const forceDefaultLanguage: boolean = ${JSON.stringify(
     nuxt.options.alias['#blokkli/default-global-options'] =
       templateDefaultGlobalOptions.dst
 
-    let optionsSchemaTemplate: ResolvedNuxtTemplate | null = null
+    let optionsSchemaTemplate: ResolvedNuxtTemplate<{
+      blokkli: true
+    }> | null = null
 
     const generateOptionsSchema = async () => {
       const outputPath = moduleOptions.schemaOptionsPath

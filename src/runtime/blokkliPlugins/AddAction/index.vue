@@ -65,6 +65,9 @@ onBlokkliEvent('action:placed', (e) => {
 })
 
 defineTourItem(() => {
+  if (!props.description) {
+    return
+  }
   return {
     id: 'plugin:add_action:' + props.type,
     title: props.title,
