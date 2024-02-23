@@ -43,7 +43,7 @@ impact on performance.
 ## Backends
 
 Currently blökkli ships with an adapter to integrate it with the paragraphs
-module of Drupal. The blökkli Drupal module implements all features available in
+module of Drupal. The [Paragraphs blökkli](https://www.drupal.org/project/paragraphs_blokkli) module implements all features available in
 the editor. It provides a new edit state entity that stores the applied
 mutations and implements a GraphQL schema extension to integrate the adapter.
 
