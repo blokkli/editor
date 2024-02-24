@@ -657,11 +657,11 @@ msgstr "Medienbibliothek"
 
 msgctxt "mediaLibraryReplaceFailed"
 msgid "Failed to replace media."
-msgstr ""
+msgstr "Das Medienelement konnte nicht ersetzt werden."
 
 msgctxt "mediaLibraryReplaceMedia"
 msgid "Replace media"
-msgstr ""
+msgstr "Medienelement ersetzen"
 
 msgctxt "mediaLibraryTourText"
 msgid "Search for media like images and drag and drop them into the page."
@@ -941,7 +941,7 @@ msgstr "Zurück"
 
 msgctxt "tourStartButton"
 msgid "Start the tour"
-msgstr ""
+msgstr "Tour starten"
 
 msgctxt "transformTo"
 msgid "Other actions"

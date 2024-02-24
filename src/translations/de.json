@@ -585,11 +585,11 @@
   },
   "mediaLibraryReplaceFailed": {
     "source": "Failed to replace media.",
-    "translation": ""
+    "translation": "Das Medienelement konnte nicht ersetzt werden."
   },
   "mediaLibraryReplaceMedia": {
     "source": "Replace media",
-    "translation": ""
+    "translation": "Medienelement ersetzen"
   },
   "mediaLibraryTourText": {
     "source": "Search for media like images and drag and drop them into the page.",
@@ -841,7 +841,7 @@
   },
   "tourStartButton": {
     "source": "Start the tour",
-    "translation": ""
+    "translation": "Tour starten"
   },
   "transformTo": {
     "source": "Other actions",
