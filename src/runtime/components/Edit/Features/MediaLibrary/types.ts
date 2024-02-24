@@ -36,6 +36,7 @@ export type MediaLibraryItem = {
   blockBundle: string
   thumbnail?: string
   icon?: BlokkliIcon
+  mediaBundle?: string
 }
 
 // Extend MediaLibraryGetResults to be generic
@@ -44,10 +45,10 @@ export type MediaLibraryGetResults<F extends Record<string, FilterTypes>> = {
     [K in keyof F]: F[K] extends 'checkbox'
       ? MediaLibraryFilterCheckbox
       : F[K] extends 'checkboxes'
-        ? MediaLibraryFilterCheckboxes
-        : F[K] extends 'text'
-          ? MediaLibraryFilterText
-          : MediaLibraryFilterSelect
+      ? MediaLibraryFilterCheckboxes
+      : F[K] extends 'text'
+      ? MediaLibraryFilterText
+      : MediaLibraryFilterSelect
   }
   items: MediaLibraryItem[]
   total: number

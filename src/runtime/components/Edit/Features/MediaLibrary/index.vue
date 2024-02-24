@@ -20,6 +20,9 @@
 import { useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
 import Library from './Library/index.vue'
+import defineDropAreas from '#blokkli/helpers/composables/defineDropAreas'
+import { falsy } from '#blokkli/helpers'
+import type { DropArea } from '#blokkli/types'
 
 defineBlokkliFeature({
   id: 'media-library',
@@ -30,7 +33,57 @@ defineBlokkliFeature({
   requiredAdapterMethods: ['mediaLibraryGetResults', 'mediaLibraryAddBlock'],
 })
 
-const { $t } = useBlokkli()
+const { $t, dom, adapter, state } = useBlokkli()
+
+defineDropAreas((items) => {
+  // Not supported by adapter.
+  if (!adapter.mediaLibraryReplaceMedia) {
+    return
+  }
+
+  // Only a single item is supported.
+  if (items.length !== 1) {
+    return
+  }
+  const item = items[0]
+
+  // Not a media library item.
+  if (item.itemType !== 'media_library') {
+    return
+  }
+
+  // Generate a drop area for every matching droppable field.
+  return [...document.querySelectorAll('[data-blokkli-droppable-field]')]
+    .map<DropArea | undefined>((element) => {
+      if (!(element instanceof HTMLElement)) {
+        return
+      }
+      const fieldName = element.dataset.blokkliDroppableField
+      if (!fieldName) {
+        return
+      }
+      const block = dom.findClosestBlock(element)
+      if (!block) {
+        return
+      }
+      return {
+        id: `replace-media:${block.uuid}:${fieldName}`,
+        label: $t('mediaLibraryReplaceMedia', 'Replace media'),
+        element,
+        icon: 'swap-horizontal',
+        onDrop: () => {
+          state.mutateWithLoadingState(
+            adapter.mediaLibraryReplaceMedia!({
+              blockUuid: block.uuid,
+              droppableFieldName: fieldName,
+              mediaId: item.mediaId,
+            }),
+          )
+        },
+      }
+    })
+    .filter(falsy)
+})
 </script>
 
 <script lang="ts">

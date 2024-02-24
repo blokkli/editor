@@ -1,6 +1,7 @@
 <template>
   <div :class="{ 'container my-40': !parentType }">
     <div
+      v-blokkli-droppable:imageReference
       :class="{
         'overflow-hidden shadow-xl rounded-lg bg-white': options.elevated,
       }"

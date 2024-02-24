@@ -28,6 +28,7 @@ import type { globalOptions } from '#blokkli/definitions'
 import type { ThemeProvider } from '#blokkli/helpers/themeProvider'
 import type { CommandsProvider } from '#blokkli/helpers/commandsProvider'
 import type { TourProvider } from '#blokkli/helpers/tourProvider'
+import type { DropAreaProvider } from '#blokkli/helpers/dropAreaProvider'
 
 interface MutationResponseLike<T> {
   success?: boolean
@@ -45,8 +46,8 @@ type GetType<T> = T extends { options: infer O }
     ? Array<keyof O>
     : keyof O
   : T extends { type: 'checkbox' }
-    ? boolean
-    : string
+  ? boolean
+  : string
 
 type WithOptions<T extends BlockDefinitionOptionsInput> = {
   [K in keyof T]: GetType<T[K]>
@@ -612,6 +613,7 @@ export interface DraggableMediaLibraryItem {
   element: () => HTMLElement
   itemBundle: string
   mediaId: string
+  mediaBundle: string
 }
 
 export type DraggableItem =
@@ -895,6 +897,7 @@ export interface BlokkliApp {
   theme: ThemeProvider
   commands: CommandsProvider
   tour: TourProvider
+  dropAreas: DropAreaProvider
 }
 
 export interface Rectangle {
@@ -1036,6 +1039,14 @@ export type Command = {
   bundle?: string
   disabled?: boolean
   callback: () => any
+}
+
+export type DropArea = {
+  id: string
+  label: string
+  icon?: BlokkliIcon
+  element: HTMLElement
+  onDrop: () => any
 }
 
 export type ContextMenuRule = {

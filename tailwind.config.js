@@ -29,6 +29,7 @@ const zIndex = [
   'edit-form',
   'resizable',
   'edit-form-header',
+  'drop-areas',
   'dragging-overlay',
   'command-palette',
   'touch-action-bar',

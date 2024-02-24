@@ -35,19 +35,19 @@ const props = defineProps<{
 
 const allItems = computed(() => dom.getAllBlocks())
 
-const bundleMap = computed(() => {
-  return allItems.value.reduce<Record<string, string>>((acc, item) => {
+const bundleMap = computed(() =>
+  allItems.value.reduce<Record<string, string>>((acc, item) => {
     acc[item.uuid] = item.itemBundle
     return acc
-  }, {})
-})
+  }, {}),
+)
 
 const hoveredUuid = ref('')
 const hoveredRect = ref<Rectangle | null>(null)
 
-const hoveredBundle = computed(() => {
-  return hoveredUuid.value ? bundleMap.value[hoveredUuid.value] : undefined
-})
+const hoveredBundle = computed(() =>
+  hoveredUuid.value ? bundleMap.value[hoveredUuid.value] : undefined,
+)
 
 const allowedBundlesInList = computed<string[]>(() => {
   if (!hoveredBundle.value) {

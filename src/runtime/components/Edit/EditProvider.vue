@@ -53,6 +53,7 @@ import featuresProvider from './../../helpers/featuresProvider'
 import themeProvider from './../../helpers/themeProvider'
 import commandsProvider from './../../helpers/commandsProvider'
 import tourProvider from './../../helpers/tourProvider'
+import dropAreasProvider from './../../helpers/dropAreaProvider'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import '#blokkli/theme'
 import '#blokkli/styles'
@@ -99,6 +100,7 @@ const features = featuresProvider()
 const theme = themeProvider()
 const commands = commandsProvider()
 const tour = tourProvider()
+const dropAreas = dropAreasProvider()
 
 const onContextMenu = (e: Event) => {
   e.preventDefault()
@@ -143,5 +145,6 @@ provide<BlokkliApp>(INJECT_APP, {
   theme,
   commands,
   tour,
+  dropAreas,
 })
 </script>

@@ -320,6 +320,16 @@ export interface BlokkliAdapter<T> {
   ) => Promise<MutationResponseLike<T>> | undefined
 
   /**
+   * Replace an existing media from a block with a new one.
+   *
+   * This method is called when the user drag and drops an item from the media
+   * library onto an v-blokkli-droppable element.
+   */
+  mediaLibraryReplaceMedia?: (
+    e: MediaLibraryReplaceMediaEvent,
+  ) => Promise<MutationResponseLike<T>> | undefined
+
+  /**
    * Add a fragment block.
    */
   fragmentsAddBlock?: (
@@ -337,6 +347,23 @@ export type MediaLibraryAddBlockEvent = {
   host: DraggableHostData
   preceedingUuid?: string
   item: DraggableMediaLibraryItem
+}
+
+export type MediaLibraryReplaceMediaEvent = {
+  /**
+   * The UUID of the block on which the media was dropped.
+   */
+  blockUuid: string
+
+  /**
+   * The name of the field on which the media was dropped.
+   */
+  droppableFieldName: string
+
+  /**
+   * The ID of the media that was dropped.
+   */
+  mediaId: string
 }
 
 type AdapterAssistantAddBlockFromResult = {

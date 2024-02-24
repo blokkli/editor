@@ -137,11 +137,13 @@ export function buildDraggableItem(
   } else if (dataset.elementType === 'media_library') {
     const mediaId = dataset.mediaId
     const itemBundle = dataset.itemBundle
-    if (mediaId && itemBundle) {
+    const mediaBundle = dataset.mediaBundle
+    if (mediaId && itemBundle && mediaBundle) {
       return {
         itemType: 'media_library',
         mediaId,
         itemBundle,
+        mediaBundle,
         element: () =>
           document.querySelector(
             `[data-element-type="media_library"][data-media-id="${mediaId}"]`,

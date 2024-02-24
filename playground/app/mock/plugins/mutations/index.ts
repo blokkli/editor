@@ -28,6 +28,10 @@ import {
 } from './Mutation/MakeReusable'
 import { MutationMove, type MutationMoveArgs } from './Mutation/Move'
 import {
+  MutationReplaceMedia,
+  type MutationReplaceMediaArgs,
+} from './Mutation/ReplaceMedia'
+import {
   MutationTransform,
   type MutationTransformArgs,
 } from './Mutation/Transform'
@@ -54,6 +58,7 @@ export type MutationArgsMap = {
   transform: MutationTransformArgs
   detach_reusable: MutationDetachReusableArgs
   edit_entity: MutationEditEntityArgs
+  replace_media: MutationReplaceMediaArgs
 }
 
 export const createMutation = <T extends keyof MutationArgsMap>(
@@ -87,6 +92,8 @@ export const createMutation = <T extends keyof MutationArgsMap>(
       return new MutationDetachReusable(configuration)
     case 'edit_entity':
       return new MutationEditEntity(configuration)
+    case 'replace_media':
+      return new MutationReplaceMedia(configuration)
   }
 
   throw new Error('Missing mutation plugin with ID: ' + id)

@@ -45,6 +45,7 @@
         data-element-type="media_library"
         :data-item-bundle="item.blockBundle"
         :data-media-id="item.mediaId"
+        :data-media-bundle="item.mediaBundle"
       >
         <img :src="item.thumbnail" />
         <div>

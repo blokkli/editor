@@ -23,6 +23,7 @@ import { FieldBlocks } from './mock/state/Field/Blocks'
 import type { MediaImage, MediaVideo } from './mock/state/Media/Media'
 import { transforms } from './mock/transforms'
 import type { MediaLibraryItem } from '#blokkli/components/Features/MediaLibrary/types'
+import type { MutationArgsMap } from './mock/plugins/mutations'
 
 export default defineBlokkliEditAdapter((ctx) => {
   const router = useRouter()
@@ -39,9 +40,9 @@ export default defineBlokkliEditAdapter((ctx) => {
   const getEntity = () =>
     entityStorageManager.getContent(ctx.value.entityUuid) as ContentPage
 
-  const addMutation = (
-    id: any,
-    args: any,
+  const addMutation = <T extends keyof MutationArgsMap>(
+    id: T,
+    args: MutationArgsMap[T],
   ): Promise<MutationResponseLike<MutatedState>> => {
     editState.addMutation(id, args)
     const entity = getEntity()
@@ -83,6 +84,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           context: media.bundle,
           thumbnail: media.thumbnail(),
           blockBundle: bundle,
+          mediaBundle: media.bundle,
         }
       })
       .filter((v) => {
@@ -552,6 +554,14 @@ export default defineBlokkliEditAdapter((ctx) => {
           preceedingUuid: e.preceedingUuid,
         })
       }
+    },
+
+    mediaLibraryReplaceMedia(e) {
+      return addMutation('replace_media', {
+        blockUuid: e.blockUuid,
+        fieldName: e.droppableFieldName,
+        mediaUuid: e.mediaId,
+      })
     },
 
     fragmentsAddBlock(e) {

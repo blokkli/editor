@@ -18,6 +18,13 @@
     :is-touch="isTouching"
     @drop="onDrop"
   />
+  <DropAreas
+    v-if="dragItems.length && isVisible"
+    :items="dragItems"
+    :x="mouseX"
+    :y="mouseY"
+    :is-touch="isTouching"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -30,6 +37,7 @@ import {
 } from '#imports'
 import DropTargets, { type DropTargetEvent } from './DropTargets/index.vue'
 import DragItems from './DragItems/index.vue'
+import DropAreas from './DropAreas/index.vue'
 
 import type {
   AnimationFrameEvent,
