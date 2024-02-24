@@ -6,6 +6,7 @@
         :key="rect.id"
         :style="rect.style"
         :class="{ 'bk-is-active': rect.active }"
+        @click="handleDrop(rect.id)"
       >
         <div>
           <Icon v-if="rect.icon" :name="rect.icon" />
@@ -14,6 +15,7 @@
       </div>
     </div>
   </Teleport>
+  <slot :is-active="isActive"></slot>
 </template>
 
 <script lang="ts" setup>
@@ -31,7 +33,7 @@ const props = defineProps<{
   y: number
 }>()
 
-const { dropAreas, theme } = useBlokkli()
+const { dropAreas, theme, eventBus } = useBlokkli()
 
 const areas = dropAreas.getDropAreas(props.items).map((area) => {
   const style = getDraggableStyle(area.element, theme.teal.value.normal)
@@ -51,27 +53,50 @@ type DropAreaRect = {
 
 const rects = ref<DropAreaRect[]>([])
 
+const isActive = ref(false)
+
 onBlokkliEvent('animationFrame', () => {
   if (!areas.length) {
     return
   }
 
-  rects.value = areas.map((v) => {
-    const rect = v.element.getBoundingClientRect()
-    return {
-      id: v.id,
-      label: v.label,
-      icon: v.icon,
-      active: isInsideRect(props.x, props.y, rect),
+  const newRects: DropAreaRect[] = []
+  let hasActive = false
+
+  for (let i = 0; i < areas.length; i++) {
+    const area = areas[i]
+    const rect = area.element.getBoundingClientRect()
+    const isInside = !props.isTouch && isInsideRect(props.x, props.y, rect)
+    if (isInside) {
+      hasActive = true
+    }
+    newRects.push({
+      id: area.id,
+      label: area.label,
+      icon: area.icon,
+      active: isInside,
       style: {
-        borderRadius: v.radius,
+        borderRadius: area.radius,
         width: rect.width + 'px',
         height: rect.height + 'px',
         transform: `translate(${rect.x}px, ${rect.y}px)`,
       },
-    }
-  })
+    })
+  }
+
+  rects.value = newRects
+  isActive.value = hasActive
 })
+
+const handleDrop = async (id: string) => {
+  const dropArea = areas.find((v) => v.id === id)
+  if (!dropArea) {
+    return
+  }
+  await dropArea.onDrop()
+  eventBus.emit('dragging:end')
+  eventBus.emit('item:dropped')
+}
 
 const onMouseUp = () => {
   const active = rects.value.find((v) => v.active)
@@ -79,12 +104,7 @@ const onMouseUp = () => {
     return
   }
 
-  const dropArea = areas.find((v) => v.id === active.id)
-  if (!dropArea) {
-    return
-  }
-
-  dropArea.onDrop()
+  handleDrop(active.id)
 }
 
 onMounted(() => {

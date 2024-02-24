@@ -14,13 +14,6 @@
       </div>
     </button>
   </PluginItemDropdown>
-  <Overlay
-    v-if="selection.isDragging.value && selection.uuids.value.length"
-    :selected-uuids="selection.uuids.value"
-    :selected-bundles="itemBundleIds"
-    :plugins="plugins"
-    @transform="onTransform($event.plugin, $event.uuids)"
-  />
 </template>
 
 <script lang="ts" setup>
@@ -33,10 +26,14 @@ import {
 } from '#imports'
 import { PluginItemDropdown } from '#blokkli/plugins'
 import { onlyUnique } from '#blokkli/helpers'
-import type { TransformPlugin } from '#blokkli/types'
-import Overlay from './Overlay/index.vue'
+import type {
+  DraggableExistingBlock,
+  DropArea,
+  TransformPlugin,
+} from '#blokkli/types'
 import { filterTransforms } from '#blokkli/helpers/transform'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
+import defineDropAreas from '#blokkli/helpers/composables/defineDropAreas'
 
 const { adapter } = defineBlokkliFeature({
   id: 'transform',
@@ -47,7 +44,7 @@ const { adapter } = defineBlokkliFeature({
   screenshot: 'feature-transform.jpg',
 })
 
-const { types, selection, state, $t } = useBlokkli()
+const { types, selection, state, $t, dom } = useBlokkli()
 
 const {
   data: plugins,
@@ -101,6 +98,75 @@ defineCommands(() =>
     callback: () => onTransform(transform, selection.uuids.value),
   })),
 )
+
+const getPossibleDropTransforms = (
+  plugins: TransformPlugin[],
+  allBlocks: DraggableExistingBlock[],
+  dragItems: DraggableExistingBlock[],
+): PossibleTransform[] => {
+  // Filter out the dragged items from allBlocks.
+  const notDraggedBlocks = allBlocks.filter(
+    (block) => !dragItems.find((dragItem) => dragItem.uuid === block.uuid),
+  )
+
+  // Determine possible plugins based on the dragged items.
+  const validPlugins = plugins.filter((plugin) => {
+    const draggedBundles = dragItems.map((item) => item.itemBundle)
+    const isPluginValidForDraggedItems =
+      draggedBundles.every((bundle) => plugin.bundles.includes(bundle)) &&
+      dragItems.length + 1 >= plugin.min &&
+      (plugin.max === -1 || dragItems.length + 1 <= plugin.max)
+    return isPluginValidForDraggedItems
+  })
+
+  // Find possible transformations for each valid plugin
+  const possibleTransforms: PossibleTransform[] = []
+  validPlugins.forEach((plugin) => {
+    notDraggedBlocks.forEach((block) => {
+      if (plugin.targetBundles.includes(block.itemBundle)) {
+        possibleTransforms.push({
+          plugin,
+          block,
+        })
+      }
+    })
+  })
+
+  return possibleTransforms
+}
+
+type PossibleTransform = {
+  plugin: TransformPlugin
+  block: DraggableExistingBlock
+}
+
+defineDropAreas((dragItems) => {
+  const existing = dragItems.filter(
+    (v) => v.itemType === 'existing',
+  ) as DraggableExistingBlock[]
+
+  if (!existing.length) {
+    return
+  }
+
+  const uuids = existing.map((v) => v.uuid)
+
+  return getPossibleDropTransforms(
+    plugins.value,
+    dom.getAllBlocks(),
+    existing,
+  ).map<DropArea>((v) => {
+    return {
+      id: `transform:${v.plugin.id}:${v.block.uuid}`,
+      label: v.plugin.label,
+      element: v.block.element(),
+      onDrop: () => {
+        const transformUuids = [v.block.uuid, ...uuids]
+        return onTransform(v.plugin, transformUuids)
+      },
+    }
+  })
+})
 </script>
 
 <script lang="ts">

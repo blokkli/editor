@@ -1046,7 +1046,7 @@ export type DropArea = {
   label: string
   icon?: BlokkliIcon
   element: HTMLElement
-  onDrop: () => any
+  onDrop: () => Promise<any>
 }
 
 export type ContextMenuRule = {

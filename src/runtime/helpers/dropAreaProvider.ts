@@ -3,7 +3,7 @@ import { falsy } from '.'
 
 type DropAreaProviderFunction = (
   items: DraggableItem[],
-) => DropArea[] | DropArea | undefined
+) => (DropArea[] | DropArea | undefined) | void
 
 export type DropAreaProvider = {
   add: (fn: DropAreaProviderFunction) => void
@@ -23,7 +23,15 @@ export default function (): DropAreaProvider {
   }
 
   const getDropAreas = (items: DraggableItem[]) =>
-    functions.flatMap((fn) => fn(items)).filter(falsy)
+    functions
+      .flatMap((fn) => {
+        const v = fn(items)
+        if (v) {
+          return v
+        }
+        return null
+      })
+      .filter(falsy)
 
   return {
     add,

@@ -92,6 +92,7 @@ const props = defineProps<{
   mouseX: number
   mouseY: number
   isTouch: boolean
+  disabled: boolean
 }>()
 
 const onChildClick = (field: FieldRect, child: FieldRectChild) => {
@@ -429,6 +430,9 @@ const buildFieldRects = (): FieldRect[] => {
 type IntersectingRectangle = Rectangle & { key: string; intersection: number }
 
 const getSelectedRect = (): string | undefined => {
+  if (props.disabled) {
+    return
+  }
   const elements = [...document.querySelectorAll('[data-drop-target-key]')]
 
   const intersectingRects: IntersectingRectangle[] = []

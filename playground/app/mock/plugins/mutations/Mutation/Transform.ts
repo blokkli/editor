@@ -26,7 +26,7 @@ export class MutationTransform extends Mutation {
     const proxies = context.getProxies(args.uuids)
 
     if (args.pluginId === 'merge_texts') {
-      this.mergeTexts(proxies)
+      this.mergeTexts(proxies, args.uuids[0])
     } else if (args.pluginId === 'button_to_text') {
       this.buttonToText(proxies, context)
     } else if (args.pluginId === 'extract_text_to_blocks') {
@@ -34,11 +34,14 @@ export class MutationTransform extends Mutation {
     }
   }
 
-  mergeTexts(proxies: BlockProxy[]) {
+  mergeTexts(proxies: BlockProxy[], firstUuid: string) {
     if (proxies.length < 2) {
       return
     }
-    let first: BlockText | null = null
+    const first = proxies.find((v) => v.block.uuid === firstUuid)?.block
+    if (!(first instanceof BlockText)) {
+      return
+    }
     let text = ''
 
     for (let i = 0; i < proxies.length; i++) {
@@ -46,9 +49,7 @@ export class MutationTransform extends Mutation {
       const block = proxy.block
       if (block instanceof BlockText) {
         text += block.text().getText()
-        if (!first) {
-          first = block
-        } else {
+        if (block.uuid !== firstUuid) {
           proxy.markAsDeleted()
         }
       }

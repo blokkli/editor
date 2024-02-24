@@ -35,17 +35,18 @@ defineBlokkliFeature({
 
 const { $t, dom, adapter, state } = useBlokkli()
 
-defineDropAreas((items) => {
+defineDropAreas((dragItems) => {
   // Not supported by adapter.
   if (!adapter.mediaLibraryReplaceMedia) {
     return
   }
 
   // Only a single item is supported.
-  if (items.length !== 1) {
+  if (dragItems.length !== 1) {
     return
   }
-  const item = items[0]
+
+  const item = dragItems[0]
 
   // Not a media library item.
   if (item.itemType !== 'media_library') {
@@ -72,12 +73,13 @@ defineDropAreas((items) => {
         element,
         icon: 'swap-horizontal',
         onDrop: () => {
-          state.mutateWithLoadingState(
+          return state.mutateWithLoadingState(
             adapter.mediaLibraryReplaceMedia!({
               blockUuid: block.uuid,
               droppableFieldName: fieldName,
               mediaId: item.mediaId,
             }),
+            $t('mediaLibraryReplaceFailed', 'Failed to replace media.'),
           )
         },
       }

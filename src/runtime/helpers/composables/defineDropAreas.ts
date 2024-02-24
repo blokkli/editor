@@ -2,7 +2,7 @@ import { onBeforeUnmount, onMounted, useBlokkli } from '#imports'
 import type { DraggableItem, DropArea } from '#blokkli/types'
 
 export default function (
-  cb: (items: DraggableItem[]) => DropArea | DropArea[] | undefined,
+  cb: (items: DraggableItem[]) => DropArea | DropArea[] | undefined | void,
 ) {
   const { dropAreas } = useBlokkli()
 

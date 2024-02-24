@@ -314,7 +314,6 @@ export default function (
   }
 
   function onWindowMouseDown(e: MouseEvent) {
-    console.log('window mouse down')
     if (e.ctrlKey) {
       return
     }

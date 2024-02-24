@@ -1,29 +1,29 @@
 .bk-drop-areas {
-  @apply fixed top-0 left-0 w-full h-full z-drop-areas;
+  @apply fixed top-0 left-0 w-full h-full z-drop-areas pointer-events-none;
 
   > div {
-    @apply absolute top-0 left-0 bg-teal-normal/20;
+    @apply absolute top-0 left-0 bg-teal-normal/30 pointer-events-auto;
     @apply outline-teal-normal outline-[3px] outline-dashed;
     @apply flex items-center justify-center;
 
     .bk-icon {
       @apply w-25 h-25;
       svg {
-        @apply fill-white;
-      }
-    }
-
-    &.bk-is-active {
-      @apply bg-teal-normal/70;
-      > div {
-        @apply bg-white text-teal-normal;
+        @apply fill-current;
       }
     }
 
     > div {
-      @apply bg-teal-dark text-white px-10 py-3 rounded-full font-semibold;
+      @apply bg-white text-teal-dark px-10 py-3 rounded-full font-semibold;
       @apply flex items-center gap-5;
       transform: scale(var(--bk-artboard-scale));
+    }
+
+    &.bk-is-active {
+      @apply bg-teal-normal;
+      > div {
+        @apply bg-teal-dark text-white;
+      }
     }
   }
 }
