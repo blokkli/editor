@@ -37,6 +37,7 @@
 @import './partials/ContextMenu.css';
 @import './partials/Tour.css';
 @import './partials/DropAreas.css';
+@import './partials/Error.css';
 @import './indicator.css';
 
 @tailwind base;

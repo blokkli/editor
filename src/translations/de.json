@@ -279,6 +279,18 @@
     "source": "The action \"@name\" could not be executed.",
     "translation": "Die Aktion «@name» konnte nicht ausgeführt werden."
   },
+  "fatalErrorButton": {
+    "source": "Continue anyway...",
+    "translation": "Trotzdem fortfahren..."
+  },
+  "fatalErrorText": {
+    "source": "Unfortunately blökkli has encountered a fatal error which prevents it from working normally. You may be able to continue using it, but things may not work as expected.",
+    "translation": "Leider hat blökkli einen schwerwiegenden Fehler festgestellt. Möglicherweise können Sie den Editor weiterhin verwenden, aber es kann sein, dass nicht alles wie erwartet funktioniert."
+  },
+  "fatalErrorTitle": {
+    "source": "blökkli has stopped working",
+    "translation": "blökkli funktioniert nicht mehr"
+  },
   "featureHelpShortcuts": {
     "source": "Shortcuts",
     "translation": "Tastenkombinationen"
@@ -571,6 +583,14 @@
     "source": "Media Library",
     "translation": "Medienbibliothek"
   },
+  "mediaLibraryReplaceFailed": {
+    "source": "Failed to replace media.",
+    "translation": ""
+  },
+  "mediaLibraryReplaceMedia": {
+    "source": "Replace media",
+    "translation": ""
+  },
   "mediaLibraryTourText": {
     "source": "Search for media like images and drag and drop them into the page.",
     "translation": "Suchen Sie nach Medien wie Bildern und ziehen Sie diese in die Seite."
@@ -803,6 +823,10 @@
     "source": "Explore the features of the editor",
     "translation": "Entdecken Sie die Funktionen vom Editor."
   },
+  "tourIntro": {
+    "source": "Explore the most important features of the editor and learn how to get started using blökkli.",
+    "translation": ""
+  },
   "tourLabel": {
     "source": "Take a tour",
     "translation": "Tour machen"
@@ -814,6 +838,10 @@
   "tourPrev": {
     "source": "Previous",
     "translation": "Zurück"
+  },
+  "tourStartButton": {
+    "source": "Start the tour",
+    "translation": ""
   },
   "transformTo": {
     "source": "Other actions",

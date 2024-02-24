@@ -279,6 +279,18 @@
     "source": "The action \"@name\" could not be executed.",
     "translation": "The action \"@name\" could not be executed."
   },
+  "fatalErrorButton": {
+    "source": "Continue anyway...",
+    "translation": ""
+  },
+  "fatalErrorText": {
+    "source": "Unfortunately blökkli has encountered a fatal error which prevents it from working normally. You may be able to continue using it, but things may not work as expected.",
+    "translation": ""
+  },
+  "fatalErrorTitle": {
+    "source": "blökkli has stopped working",
+    "translation": ""
+  },
   "featureHelpShortcuts": {
     "source": "Shortcuts",
     "translation": ""
@@ -571,6 +583,14 @@
     "source": "Media Library",
     "translation": ""
   },
+  "mediaLibraryReplaceFailed": {
+    "source": "Failed to replace media.",
+    "translation": ""
+  },
+  "mediaLibraryReplaceMedia": {
+    "source": "Replace media",
+    "translation": ""
+  },
   "mediaLibraryTourText": {
     "source": "Search for media like images and drag and drop them into the page.",
     "translation": ""
@@ -803,6 +823,10 @@
     "source": "Explore the features of the editor",
     "translation": ""
   },
+  "tourIntro": {
+    "source": "Explore the most important features of the editor and learn how to get started using blökkli.",
+    "translation": ""
+  },
   "tourLabel": {
     "source": "Take a tour",
     "translation": ""
@@ -813,6 +837,10 @@
   },
   "tourPrev": {
     "source": "Previous",
+    "translation": ""
+  },
+  "tourStartButton": {
+    "source": "Start the tour",
     "translation": ""
   },
   "transformTo": {

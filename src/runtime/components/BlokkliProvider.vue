@@ -3,7 +3,7 @@
     :data-provider-uuid="entityUuid"
     :data-blokkli-provider-active="isInEditor || undefined"
   >
-    <template v-if="isInEditor">
+    <BlokkliErrorBoundary v-if="isInEditor">
       <PreviewProvider
         v-if="isPreviewing"
         :entity-type="entityType"
@@ -30,7 +30,7 @@
           :is-preview="isPreviewing"
         />
       </EditProvider>
-    </template>
+    </BlokkliErrorBoundary>
 
     <slot
       v-else
@@ -64,6 +64,10 @@ const PreviewProvider = defineAsyncComponent(
 
 const EditProvider = defineAsyncComponent(
   () => import('./Edit/EditProvider.vue'),
+)
+
+const BlokkliErrorBoundary = defineAsyncComponent(
+  () => import('./Edit/BlokkliErrorBoundary.vue'),
 )
 
 const EditIndicator = defineAsyncComponent(

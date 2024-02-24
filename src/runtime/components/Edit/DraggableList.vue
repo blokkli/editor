@@ -50,7 +50,7 @@
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
 import { Sortli } from '#blokkli/components'
-import type { FieldListItem, EntityContext } from '#blokkli/types'
+import type { FieldListItem, EntityContext, FieldConfig } from '#blokkli/types'
 
 const { state, eventBus, dom, keyboard, selection, types } = useBlokkli()
 
@@ -63,13 +63,21 @@ const props = defineProps<{
   isNested: boolean
 }>()
 
-const fieldConfig = computed(() => {
-  return types.fieldConfig.value.find(
+const fieldConfig = computed<FieldConfig>(() => {
+  const match = types.fieldConfig.value.find(
     (v) =>
       v.name === props.name &&
       v.entityType === props.entity.type &&
       v.entityBundle === props.entity.bundle,
   )
+
+  if (!match) {
+    throw new Error(
+      `Missing field configuration for field "${props.name}" on entity type "${props.entity.type}" with bundle "${props.entity.bundle}". Make sure the "name" prop passed to <BlokkliField> is correct.`,
+    )
+  }
+
+  return match
 })
 
 type RenderedListItem = FieldListItem & { selected: boolean }
@@ -87,15 +95,14 @@ const renderList = computed<RenderedListItem[]>(() => {
  * The allowed item bundles in this list.
  */
 const allowedBundles = computed<string>(() => {
-  return (
-    types.fieldConfig.value.find((v) => {
-      return (
-        v.entityType === props.entity.type &&
-        v.entityBundle === props.entity.bundle &&
-        v.name === props.name
-      )
-    })?.allowedBundles || []
-  ).join(',')
+  const bundles = fieldConfig.value.allowedBundles
+  if (!bundles.length) {
+    console.error(
+      `Field with name "${props.name}" on entity "${props.entity.type}" with bundle "${props.entity.bundle}" does not define any allowed bundles.`,
+    )
+  }
+
+  return bundles.join(',')
 })
 
 function onSelect(uuid: string) {

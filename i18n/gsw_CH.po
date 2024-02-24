@@ -304,6 +304,21 @@ msgctxt "failedToTransform"
 msgid "The action \"@name\" could not be executed."
 msgstr "D'Aktion «@name» het nid chönne usgfüert wärde."
 
+msgctxt "fatalErrorButton"
+msgid "Continue anyway..."
+msgstr ""
+
+msgctxt "fatalErrorText"
+msgid ""
+"Unfortunately blökkli has encountered a fatal error which prevents it from "
+"working normally. You may be able to continue using it, but things may not "
+"work as expected."
+msgstr ""
+
+msgctxt "fatalErrorTitle"
+msgid "blökkli has stopped working"
+msgstr ""
+
 msgctxt "featureHelpShortcuts"
 msgid "Shortcuts"
 msgstr "Taschtekombinatione"
@@ -615,6 +630,14 @@ msgctxt "mediaLibrary"
 msgid "Media Library"
 msgstr "Mediebibliothek"
 
+msgctxt "mediaLibraryReplaceFailed"
+msgid "Failed to replace media."
+msgstr ""
+
+msgctxt "mediaLibraryReplaceMedia"
+msgid "Replace media"
+msgstr ""
+
 msgctxt "mediaLibraryTourText"
 msgid "Search for media like images and drag and drop them into the page."
 msgstr ""
@@ -864,6 +887,12 @@ msgctxt "tourDescription"
 msgid "Explore the features of the editor"
 msgstr ""
 
+msgctxt "tourIntro"
+msgid ""
+"Explore the most important features of the editor and learn how to get "
+"started using blökkli."
+msgstr ""
+
 msgctxt "tourLabel"
 msgid "Take a tour"
 msgstr ""
@@ -874,6 +903,10 @@ msgstr ""
 
 msgctxt "tourPrev"
 msgid "Previous"
+msgstr ""
+
+msgctxt "tourStartButton"
+msgid "Start the tour"
 msgstr ""
 
 msgctxt "transformTo"
