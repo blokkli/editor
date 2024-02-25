@@ -49,7 +49,7 @@
       @apply mr-auto;
     }
     button {
-      @apply h-full px-15 text-mono-700 hover:bg-mono-100 hover:text-mono-900;
+      @apply h-full px-15 text-mono-700 hover:bg-mono-100 hover:text-mono-900 min-w-[50px];
       svg {
         @apply w-[1em] h-[1em] fill-current;
       }

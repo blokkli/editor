@@ -54,15 +54,6 @@ const mapped = computed(() => {
     .sort((a, b) => {
       const indexA = props.visibleIds?.findIndex((w) => w.id === a._id) || -1
       const indexB = props.visibleIds?.findIndex((w) => w.id === b._id) || -1
-
-      if (indexA === -1 && indexB === -1) {
-        return 0
-      } else if (indexA === -1) {
-        return 1
-      } else if (indexB === -1) {
-        return -1
-      }
-
       return indexA - indexB
     })
 })
