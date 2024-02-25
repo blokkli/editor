@@ -243,6 +243,9 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
 }
 
 function onPaste(e: ClipboardEvent, fromInput?: boolean) {
+  if (state.editMode.value !== 'editing') {
+    return
+  }
   if (
     !fromInput &&
     (e.target instanceof HTMLInputElement ||

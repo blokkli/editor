@@ -29,7 +29,10 @@
         :key="'tab_' + item.key"
         :class="{ 'bk-is-active': tabIndex === i }"
       >
-        <button @click="tabIndex = i">
+        <button
+          :disabled="!item.enabled"
+          @click="item.enabled ? (tabIndex = i) : undefined"
+        >
           {{ item.label }}
         </button>
       </li>
@@ -48,7 +51,7 @@
             @close="$emit('close')"
           />
           <ResultsContent
-            v-else
+            v-else-if="item.enabled"
             ref="searchComponents"
             :visible="tab === item.key"
             :search="searchCleaned"
@@ -72,7 +75,7 @@ const props = defineProps<{
   visible: boolean
 }>()
 
-const { adapter, $t } = useBlokkli()
+const { adapter, $t, state } = useBlokkli()
 
 const emit = defineEmits(['close'])
 
@@ -82,20 +85,26 @@ type SearchComponent =
 
 const searchComponents = ref<SearchComponent[]>([])
 
-const tabsMap: Record<string, string> = {
-  on_this_page: $t('searchBoxOnThisPage', 'On this page'),
-  ...(adapter.getContentSearchTabs ? adapter.getContentSearchTabs() : {}),
-}
+const tabsMap = computed(() => {
+  return {
+    on_this_page: $t('searchBoxOnThisPage', 'On this page'),
+    ...(adapter.getContentSearchTabs ? adapter.getContentSearchTabs() : {}),
+  }
+})
 
 const tabItems = computed(() => {
-  return Object.entries(tabsMap).map(([key, label]) => {
-    return { key, label }
+  return Object.entries(tabsMap.value).map(([key, label]) => {
+    return {
+      key,
+      label,
+      enabled: key === 'on_this_page' || state.editMode.value === 'editing',
+    }
   })
 })
 
-const tabs = Object.keys(tabsMap) as string[]
+const tabs = computed(() => Object.keys(tabsMap.value) as string[])
 const tabIndex = ref(0)
-const tab = computed<string>(() => tabs[tabIndex.value])
+const tab = computed<string>(() => tabs.value[tabIndex.value])
 
 const search = ref('')
 const input = ref<HTMLInputElement | null>(null)
@@ -163,10 +172,10 @@ const onKeyDown = (e: KeyboardEvent) => {
     emit('close')
     stop()
   } else if (e.code === 'ArrowLeft') {
-    tabIndex.value = modulo(tabIndex.value - 1, tabs.length)
+    tabIndex.value = modulo(tabIndex.value - 1, tabs.value.length)
     stop()
   } else if (e.code === 'ArrowRight') {
-    tabIndex.value = modulo(tabIndex.value + 1, tabs.length)
+    tabIndex.value = modulo(tabIndex.value + 1, tabs.value.length)
     stop()
   } else if (e.code === 'Escape') {
     emit('close')

@@ -460,6 +460,9 @@ const getAppendCommands = (): Command[] => {
 }
 
 defineCommands(() => {
+  if (state.editMode.value !== 'editing') {
+    return
+  }
   return [
     ...getAppendCommands(),
     ...getInsertCommands(selection.blocks.value[0]),

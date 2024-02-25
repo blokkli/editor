@@ -4,7 +4,7 @@
       ref="tourElement"
       class="bk-toolbar-button"
       :class="[{ 'is-active': activeSidebar === id }, 'bk-is-' + region]"
-      :disabled="editOnly && state.editMode.value !== 'editing'"
+      :disabled="isDisabled"
       :style="{ order: weight }"
       @click.prevent.stop="toggleSidebar"
     >
@@ -143,6 +143,9 @@ const tourElement = ref<HTMLElement | null>(null)
 const detachedKey = computed(() => 'sidebar:detached:' + props.id)
 const storageKey = computed(() => 'sidebar:active:' + props.region)
 const isDetached = storage.use(detachedKey, false)
+const isDisabled = computed(
+  () => props.editOnly && state.editMode.value !== 'editing',
+)
 const activeSidebar = storage.use(storageKey, '')
 
 const isRenderedDetached = computed(
@@ -224,6 +227,9 @@ const commandCallback = () => {
 }
 
 defineCommands(() => {
+  if (isDisabled.value) {
+    return
+  }
   return {
     id: 'plugin:sidebar:' + props.id,
     label: commandTitle.value,

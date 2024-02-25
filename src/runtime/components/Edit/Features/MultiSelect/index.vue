@@ -27,9 +27,11 @@ defineBlokkliFeature({
   viewports: ['desktop'],
 })
 
-const { keyboard, eventBus, selection } = useBlokkli()
+const { keyboard, eventBus, selection, state } = useBlokkli()
 
-const enabled = computed(() => !selection.editableActive.value)
+const enabled = computed(
+  () => !selection.editableActive.value && state.editMode.value === 'editing',
+)
 
 const shouldRender = ref(false)
 const downX = ref(0)

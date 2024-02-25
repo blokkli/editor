@@ -1,6 +1,6 @@
 <template>
   <Sortli
-    use-selection
+    :use-selection="canDragAndDrop"
     class="bk-draggable-list-container"
     :class="{ 'is-empty': !list.length }"
     :data-field-name="name"
@@ -62,6 +62,8 @@ const props = defineProps<{
   tag?: string
   isNested: boolean
 }>()
+
+const canDragAndDrop = computed(() => state.editMode.value === 'editing')
 
 const fieldConfig = computed<FieldConfig>(() => {
   const match = types.fieldConfig.value.find(

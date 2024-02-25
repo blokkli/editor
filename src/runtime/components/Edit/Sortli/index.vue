@@ -350,6 +350,10 @@ const onMouseDown = (e: MouseEvent) => {
     }
   }
 
+  if (!props.useSelection) {
+    return
+  }
+
   start.value.x = e.clientX
   start.value.y = e.clientY
   mouseIsDown.value = true
