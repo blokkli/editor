@@ -354,7 +354,7 @@ const onMouseDown = (e: MouseEvent) => {
     }
   }
 
-  if (!props.useSelection) {
+  if (state.editMode.value !== 'editing') {
     return
   }
 
