@@ -8,6 +8,15 @@
     key-code="F1"
   >
     <div class="bk-help">
+      <div v-if="isTourEnabled" class="bk-help-section">
+        <button
+          class="bk-button bk-is-warning bk-is-fullwidth"
+          :disabled="tour.isTouring.value"
+          @click="tour.isTouring.value = true"
+        >
+          {{ $t('tourLabel', 'Take a tour') }}
+        </button>
+      </div>
       <div class="bk-help-section">
         <h3>{{ $t('featureHelpShortcuts', 'Shortcuts') }}</h3>
         <Shortcuts />
@@ -17,7 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature } from '#imports'
+import { useBlokkli, defineBlokkliFeature, computed } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
 import Shortcuts from './Shortcuts/index.vue'
 
@@ -30,7 +39,11 @@ defineBlokkliFeature({
   viewports: ['desktop'],
 })
 
-const { $t } = useBlokkli()
+const { $t, features, tour } = useBlokkli()
+
+const isTourEnabled = computed(() =>
+  features.features.value.find((v) => v.id === 'tour'),
+)
 </script>
 
 <script lang="ts">

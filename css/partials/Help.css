@@ -4,6 +4,9 @@
 }
 
 .bk-help-section {
+  &:not(:last-child) {
+    @apply mb-20;
+  }
   > h3 {
     @apply text-lg font-bold;
   }

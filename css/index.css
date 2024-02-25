@@ -119,18 +119,29 @@ html {
 }
 
 .bk-button {
-  @apply h-50 !px-20 inline-flex justify-center items-center gap-10 rounded-md !font-semibold  focus:outline-none !font-sans !text-base focus:ring-[3px] focus:ring-offset-2;
+  @apply h-50 !px-20 inline-flex justify-center items-center gap-10 rounded-md !font-semibold  focus-visible:outline-none !font-sans !text-base focus-visible:ring-[3px] focus-visible:ring-offset-2;
   @apply !text-mono-900 hover:!text-white;
   @apply !bg-mono-200 hover:!bg-mono-600;
 
   &.bk-is-primary {
-    @apply !bg-accent-700 !text-white hover:!bg-accent-800 focus:ring-accent-600 focus:ring-offset-accent-100;
+    @apply !bg-accent-700 !text-white hover:!bg-accent-800 focus-visible:ring-accent-600 focus-visible:ring-offset-accent-100;
     &[disabled] {
       @apply opacity-30;
     }
   }
   &.bk-is-danger {
-    @apply !bg-red-normal !text-white hover:!bg-red-dark focus:ring-red-dark;
+    @apply !bg-red-normal !text-white hover:!bg-red-dark focus-visible:ring-red-dark;
+    &[disabled] {
+      @apply opacity-30;
+    }
+  }
+
+  &.bk-is-fullwidth {
+    @apply w-full;
+  }
+
+  &.bk-is-warning {
+    @apply !bg-yellow-normal !text-yellow-dark hover:!bg-yellow-normal/80 focus-visible:ring-yellow-dark/30;
     &[disabled] {
       @apply opacity-30;
     }
