@@ -57,6 +57,14 @@ defineDropAreas((dragItems) => {
   return dom
     .getAllDroppableFields()
     .map<DropArea | undefined>((field) => {
+      // @TODO: This should be provided by the adapter on the item.
+      if (field.droppableEntityType !== 'media') {
+        return
+      }
+
+      if (!field.droppableEntityBundles.includes(item.mediaBundle)) {
+        return
+      }
       return {
         id: `replace-media:${field.host.uuid}:${field.fieldName}`,
         label: $t('mediaLibraryReplaceMedia', 'Replace media'),
