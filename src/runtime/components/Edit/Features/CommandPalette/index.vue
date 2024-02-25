@@ -6,12 +6,26 @@
       </Transition>
     </div>
   </Teleport>
+  <PluginToolbarButton
+    id="command_palette"
+    :title="label"
+    meta
+    key-code="K"
+    region="before-sidebar"
+    :tour-text="
+      $t(
+        'searchTourText',
+        'Quickly find blocks on the current page or existing content to drag and drop as blocks into the page.',
+      )
+    "
+    icon="command"
+    @click="isVisible = true"
+  />
 </template>
 
 <script lang="ts" setup>
-import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import { useBlokkli, defineBlokkliFeature, ref } from '#imports'
+import { useBlokkli, defineBlokkliFeature, ref, computed } from '#imports'
+import { PluginToolbarButton } from '#blokkli/plugins'
 import Palette from './Palette/index.vue'
 
 defineBlokkliFeature({
@@ -20,25 +34,14 @@ defineBlokkliFeature({
   label: 'Command Palette',
   description:
     'Provides a command palette with search to access most UI features with a keyboard.',
+  viewports: ['desktop'],
 })
 
 const { $t } = useBlokkli()
 
 const isVisible = ref(false)
 
-onBlokkliEvent('keyPressed', (e) => {
-  if (e.code === 'k' && e.meta) {
-    e.originalEvent.preventDefault()
-    isVisible.value = !isVisible.value
-  }
-})
-
-defineShortcut({
-  meta: true,
-  code: 'k',
-  label: $t('commandPalette.open', 'Open Command Palette'),
-  group: 'general',
-})
+const label = computed(() => $t('commandPaletteOpen', 'Open Command Palette'))
 </script>
 
 <script lang="ts">

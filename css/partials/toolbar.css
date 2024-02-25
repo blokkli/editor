@@ -96,6 +96,12 @@
         @apply text-mono-100;
       }
     }
+
+    &#bk-toolbar-before-sidebar {
+      .bk-tooltip {
+        @apply left-auto right-[9px];
+      }
+    }
   }
   .bk-status-indicator {
     @apply w-[0.9em] h-[0.9em] inline-block bg-red-normal rounded-full shrink-0 mr-[0.3em] align-middle;
