@@ -11,6 +11,7 @@
 <script lang="ts" setup>
 import { calculateIntersection } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import type { DraggableExistingBlock } from '#blokkli/types'
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import Overlay from './Overlay/index.vue'
 
@@ -21,7 +22,8 @@ defineBlokkliFeature({
   description: 'Renders an overlay that highlights the selected blocks.',
 })
 
-const { selection, state, ui, eventBus, animation, dom, tour } = useBlokkli()
+const { selection, state, ui, eventBus, animation, dom, tour, runtimeConfig } =
+  useBlokkli()
 
 const isVisible = computed(
   () =>
@@ -68,6 +70,51 @@ const findMostVisibleBlock = (): string | null => {
   return mostVisibleUuid
 }
 
+const getSelectAllUuids = (
+  allBlocks: DraggableExistingBlock[],
+  currentlySelected: DraggableExistingBlock[],
+): string[] => {
+  // One or more blocks are selected.
+  if (currentlySelected.length >= 1) {
+    const selectedHostUuids = currentlySelected.map((block) => block.hostUuid)
+    const selectedHostTypes = currentlySelected.map((block) => block.hostType)
+    const selectedHostFieldNames = currentlySelected.map(
+      (block) => block.hostFieldName,
+    )
+    const selectedUuids = currentlySelected.map((v) => v.uuid)
+
+    const commonHostUuids = selectedHostUuids.filter(
+      (uuid, index, self) => self.indexOf(uuid) === index,
+    )
+    const commonHostTypes = selectedHostTypes.filter(
+      (type, index, self) => self.indexOf(type) === index,
+    )
+    const commonHostFieldNames = selectedHostFieldNames.filter(
+      (fieldName, index, self) => self.indexOf(fieldName) === index,
+    )
+
+    // Find all blocks that share the same host.
+    const newUuids = allBlocks
+      .filter(
+        (block) =>
+          commonHostUuids.includes(block.hostUuid) &&
+          commonHostTypes.includes(block.hostType) &&
+          commonHostFieldNames.includes(block.hostFieldName),
+      )
+      .map((block) => block.uuid)
+
+    const isSame = newUuids.every((uuid) => selectedUuids.includes(uuid))
+
+    if (!isSame) {
+      return newUuids
+    }
+  }
+
+  return allBlocks
+    .filter((block) => block.hostType !== 'block')
+    .map((block) => block.uuid)
+}
+
 onBlokkliEvent('keyPressed', (e) => {
   if (e.code === 'Escape') {
     eventBus.emit('select:end', [])
@@ -90,6 +137,12 @@ onBlokkliEvent('keyPressed', (e) => {
 
     e.shift ? eventBus.emit('select:previous') : eventBus.emit('select:next')
     animation.requestDraw()
+  } else if (e.code === 'a' && e.meta) {
+    e.originalEvent.preventDefault()
+    eventBus.emit(
+      'select:end',
+      getSelectAllUuids(dom.getAllBlocks(), selection.blocks.value),
+    )
   }
 })
 </script>
