@@ -29,7 +29,7 @@ const props = defineProps<{
   isNested?: boolean
 }>()
 
-const { selection, eventBus, dom, keyboard } = useBlokkli()
+const { selection, eventBus, dom, keyboard, state } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'select', id: string): void
@@ -207,7 +207,11 @@ const onClick = (e: MouseEvent) => {
   }
   clickStart = Date.now()
 
-  if (!props.useSelection && isTouching.value) {
+  if (
+    !props.useSelection &&
+    isTouching.value &&
+    state.editMode.value === 'editing'
+  ) {
     const el = findItem(e)?.element
     if (!el) {
       return
