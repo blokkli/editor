@@ -18,7 +18,7 @@
   />
   <component
     :is="tag"
-    v-else-if="!editOnly"
+    v-else-if="!editOnly && filteredList.length"
     :class="[
       attrs.class,
       {
