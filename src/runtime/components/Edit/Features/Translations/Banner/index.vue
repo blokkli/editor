@@ -1,7 +1,7 @@
 <template>
   <div class="bk bk-translations-banner">
     <Icon name="translate" />
-    <div v-html="text" />
+    <p v-html="text" />
     <button class="bk-translations-banner-close" @click="onClick">
       {{ $t('translationsBannerButton', 'Edit source language instead') }}
       <Icon name="close" />

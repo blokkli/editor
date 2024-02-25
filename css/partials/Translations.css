@@ -1,9 +1,13 @@
 .bk.bk-translations-banner {
-  @apply fixed z-translations-banner-mobile lg:z-translations-banner-desktop bg-yellow-normal left-0 bottom-0 text-yellow-dark text-xs;
+  @apply fixed z-translations-banner-mobile lg:z-translations-banner-desktop bg-yellow-normal left-0 bottom-0 text-yellow-dark text-xs lg:text-base;
   right: var(--bk-root-offset-right);
   @apply p-10;
+
+  p {
+    @apply lg:py-10;
+  }
   @screen lg {
-    @apply h-[50px] flex items-center p-0;
+    @apply min-h-[50px] flex items-center p-0;
   }
 
   > .bk-icon {
