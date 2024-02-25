@@ -6,31 +6,11 @@
   }
 
   > div {
-    @apply absolute top-0 left-0 origin-top-left rounded;
-    @apply rounded bg-white;
+    @apply absolute w-full h-full top-0 left-0;
+  }
 
-    > * {
-      /* display: none !important; */
-      position: absolute !important;
-      top: 0 !important;
-      left: 0 !important;
-      margin: 0 !important;
-      /* Prevent text wrapping for cloned ghost elements (in particular: buttons). */
-      width: calc(100% + 1px) !important;
-      height: 100% !important;
-      @apply !pointer-events-none;
-      @apply !select-none !shadow-none;
-    }
-    @screen md {
-      &:before {
-        content: '';
-        @apply absolute top-0 left-0 w-full h-full z-50 rounded;
-      }
-    }
-
-    &.bk-is-top {
-      @apply shadow-xl-even z-50;
-    }
+  > div.bk-is-top {
+    @apply shadow-xl-even z-50;
   }
 }
 
@@ -128,6 +108,58 @@
 
     &.bk-is-vertical {
       @apply origin-top;
+    }
+  }
+}
+
+.bk-dragging-overlay-markup {
+  @apply absolute top-0 left-0 origin-top-left rounded;
+  @apply rounded bg-white;
+
+  > * {
+    /* display: none !important; */
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    margin: 0 !important;
+    /* Prevent text wrapping for cloned ghost elements (in particular: buttons). */
+    width: calc(100% + 1px) !important;
+    height: 100% !important;
+    @apply !pointer-events-none;
+    @apply !select-none !shadow-none;
+  }
+  @screen md {
+    &:before {
+      content: '';
+      @apply absolute top-0 left-0 w-full h-full z-50 rounded;
+    }
+  }
+}
+
+.bk-dragging-overlay-fallback {
+  @apply relative h-full w-full text-xl lg:text-4xl pt-30 lg:pt-0 lg:flex lg:items-center lg:justify-center;
+
+  &.bk-is-top {
+    @apply shadow-xl-even z-50;
+  }
+
+  > div {
+    @apply flex flex-col items-center font-bold origin-top lg:origin-center;
+  }
+
+  .bk-blokkli-item-icon,
+  .bk-icon {
+    @apply relative overflow-hidden;
+    @apply text-[1.8em] mb-[0.2em];
+    @apply w-full h-full max-w-[1em] max-h-[1em] rounded-[0.2em] p-[0.1em] border-[0.02em];
+
+    svg {
+      @apply relative z-10;
+    }
+
+    &:before {
+      content: '';
+      @apply absolute top-0 left-0 w-full h-full bg-current opacity-10;
     }
   }
 }

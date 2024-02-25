@@ -119,7 +119,7 @@ export type DomProvider = {
   /**
    * Return the droppable markup for a draggable item.
    */
-  getDropElementMarkup(item: DraggableItem): string
+  getDropElementMarkup(item: DraggableItem, checkSize?: boolean): string
 
   getBlockField(uuid: string): BlokkliFieldElement
   findField(
@@ -230,10 +230,17 @@ export default function (): DomProvider {
       .filter(falsy)
   }
 
-  const getDropElementMarkup = (item: DraggableItem): string => {
+  const getDropElementMarkup = (
+    item: DraggableItem,
+    checkSize?: boolean,
+  ): string => {
     const el =
       item.itemType === 'existing' ? item.dragElement() : item.element()
     const dropElement = el.querySelector('.bk-drop-element') || el
+    const childCount = dropElement.querySelectorAll('*').length
+    if (checkSize && childCount > 80) {
+      return ''
+    }
     return cloneElementWithStyles(dropElement, true).replace(
       /\sdata-\w+="[^"]*"/g,
       '',

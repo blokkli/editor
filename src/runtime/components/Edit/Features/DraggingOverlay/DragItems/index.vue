@@ -17,8 +17,24 @@
         transformOrigin: rect.transformOrigin,
         borderRadius: rect.borderRadius,
       }"
-      v-html="rect.markup"
-    />
+    >
+      <div
+        class="bk-dragging-overlay-markup"
+        v-if="rect.markup"
+        v-html="rect.markup"
+      />
+      <div
+        v-else
+        class="bk-dragging-overlay-fallback"
+        :style="{ color: rect.fallbackColor }"
+      >
+        <div :style="{ transform: `scale(${1 / rect.to.scaleX})` }">
+          <ItemIcon v-if="rect.bundle" :bundle="rect.bundle" />
+          <Icon v-else-if="rect.icon" :name="rect.icon" />
+          <div v-if="rect.label">{{ rect.label }}</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -26,10 +42,11 @@
 import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import type { Coord, DraggableItem, Rectangle } from '#blokkli/types'
 import { isInsideRect, realBackgroundColor, lerp } from '#blokkli/helpers'
+import { Icon, ItemIcon } from '#blokkli/components'
 import { easeOutElastic } from '#blokkli/helpers/easing'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
-const { dom, ui, animation, theme } = useBlokkli()
+const { dom, ui, animation, theme, types } = useBlokkli()
 
 const props = defineProps<{
   /**
@@ -106,6 +123,10 @@ type AnimationRectangle = Rectangle &
     transformOrigin: string
     element: HTMLElement
     borderRadius: string
+    bundle?: string
+    icon?: string
+    label?: string
+    fallbackColor: string
   }
 
 const rects = ref<AnimationRectangle[]>([])
@@ -272,6 +293,31 @@ onMounted(() => {
     }
 
     const style = theme.getDraggableStyle(element)
+    // Get the markup and let the method check the size of the clone.
+    // For elements with a very large DOM the cloning can become quite a
+    // performance issue which results in a noticeable lag. In this case
+    // we instead render a simple fallback.
+    const markup = dom.getDropElementMarkup(item.item, true)
+    let bundle: string | undefined = undefined
+    let label = ''
+
+    if (!markup) {
+      if (item.item.itemType === 'existing') {
+        if (item.item.editTitle) {
+          label = item.item.editTitle
+        }
+      }
+
+      if ('itemBundle' in item.item) {
+        bundle = item.item.itemBundle
+        if (bundle) {
+          const definition = types.getType(bundle)
+          if (definition) {
+            label = definition.label
+          }
+        }
+      }
+    }
 
     return {
       isTop,
@@ -283,7 +329,7 @@ onMounted(() => {
       opacity: 1,
 
       transformOrigin: `${originX}px ${originY}px`,
-      markup: dom.getDropElementMarkup(item.item),
+      markup,
       background: realBackgroundColor(item.element),
       elementOpacity:
         item.item.itemType === 'existing'
@@ -291,6 +337,9 @@ onMounted(() => {
           : undefined,
       element: item.element,
       borderRadius: style.radiusString,
+      bundle,
+      label,
+      fallbackColor: style.textColor,
     }
   })
 

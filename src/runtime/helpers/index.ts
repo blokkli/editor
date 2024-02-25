@@ -513,11 +513,17 @@ export const getDraggableStyle = (
     getNumericStyleValue(style.borderBottomLeftRadius, 4),
   ]
 
-  const backgroundColor = parseColorString(
-    realBackgroundColor(el.parentElement),
-  )
+  const backgroundColor = parseColorString(realBackgroundColor(el))
   const contrastColor = findHighestContrastColor(
     [[255, 255, 255], accentColor],
+    backgroundColor,
+  )
+
+  const textColor = findHighestContrastColor(
+    [
+      [0, 0, 0],
+      [255, 255, 255],
+    ],
     backgroundColor,
   )
 
@@ -526,6 +532,7 @@ export const getDraggableStyle = (
     radiusString: radius.map((v) => v + 'px').join(' '),
     contrastColor: rgbaToString(contrastColor),
     contrastColorTranslucent: rgbaToString(contrastColor, 0.25),
+    textColor: rgbaToString(textColor),
   }
 }
 
