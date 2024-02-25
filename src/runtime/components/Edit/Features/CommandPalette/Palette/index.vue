@@ -2,7 +2,8 @@
   <div
     class="bk-command-palette bk-control"
     @wheel.stop
-    @keydown="onKeyDown"
+    @keydown.stop="onKeyDown"
+    @keyup.stop
     @click.stop
   >
     <div class="bk-command-palette-input">
@@ -238,25 +239,21 @@ const onSelect = (id: string) => {
 }
 
 const onKeyDown = (e: KeyboardEvent) => {
-  const stop = () => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
   if (e.code === 'Tab') {
+    e.preventDefault()
     e.shiftKey ? focusPrev() : focusNext()
-    stop()
   } else if (e.code === 'ArrowDown') {
-    stop()
+    e.preventDefault()
     focusNext()
   } else if (e.code === 'ArrowUp') {
-    stop()
+    e.preventDefault()
     focusPrev()
   } else if (e.code === 'Enter') {
+    e.preventDefault()
     onSelect(focusedId.value)
-    stop()
   } else if (e.code === 'Escape') {
+    e.preventDefault()
     emit('close')
-    stop()
   }
 }
 
