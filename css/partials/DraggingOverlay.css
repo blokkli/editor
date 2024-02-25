@@ -113,8 +113,8 @@
 }
 
 .bk-dragging-overlay-markup {
-  @apply absolute top-0 left-0 origin-top-left rounded;
-  @apply rounded bg-white;
+  @apply absolute top-0 left-0 origin-top-left rounded w-full h-full;
+  @apply rounded;
 
   > * {
     /* display: none !important; */

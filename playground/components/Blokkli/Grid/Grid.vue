@@ -10,7 +10,7 @@
     <BlokkliField
       name="header"
       :list="header"
-      class="container"
+      list-class="container"
       non-empty-class="mb-30 md:mb-70"
       field-list-type="header"
     />

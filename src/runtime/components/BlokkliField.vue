@@ -1,44 +1,46 @@
 <template>
-  <slot :items="filteredList" />
-  <DraggableList
-    v-if="isEditing && canEdit && !isInReusable"
-    :list="filteredList"
-    :name="name"
-    :entity="entity"
-    :field-key="fieldKey!"
-    :class="[
-      attrs.class,
-      listClass,
-      { 'bk-is-empty': !list.length, [nonEmptyClass]: filteredList.length },
-    ]"
-    :is-nested="isNested"
-    :data-field-block-count="filteredList.length"
-    class="bk-field-list"
-    :tag="tag"
-  />
-  <component
-    :is="tag"
-    v-else-if="!editOnly && filteredList.length"
-    :class="[
-      attrs.class,
-      {
-        'bk-field-list': canEdit && !isNested && !isPreview,
-        [nonEmptyClass]: filteredList.length,
-      },
-      listClass,
-    ]"
-    :data-field-key="fieldKey"
-  >
-    <BlokkliItem
-      v-for="(item, i) in filteredList"
-      :key="item.uuid"
-      v-bind="item"
-      :parent-type="isNested ? entity?.bundle : ''"
-      :data-uuid="item.uuid"
-      :index="i"
+  <template v-if="filteredList.length || isEditing">
+    <slot :items="filteredList" />
+    <DraggableList
+      v-if="isEditing && canEdit && !isInReusable"
+      :list="filteredList"
+      :name="name"
+      :entity="entity"
+      :field-key="fieldKey!"
+      :class="[
+        attrs.class,
+        listClass,
+        { 'bk-is-empty': !list.length, [nonEmptyClass]: filteredList.length },
+      ]"
+      :is-nested="isNested"
+      :data-field-block-count="filteredList.length"
+      class="bk-field-list"
+      :tag="tag"
     />
-  </component>
-  <slot name="after" :items="filteredList" />
+    <component
+      :is="tag"
+      v-else-if="!editOnly"
+      :class="[
+        attrs.class,
+        {
+          'bk-field-list': canEdit && !isNested && !isPreview,
+          [nonEmptyClass]: filteredList.length,
+        },
+        listClass,
+      ]"
+      :data-field-key="fieldKey"
+    >
+      <BlokkliItem
+        v-for="(item, i) in filteredList"
+        :key="item.uuid"
+        v-bind="item"
+        :parent-type="isNested ? entity?.bundle : ''"
+        :data-uuid="item.uuid"
+        :index="i"
+      />
+    </component>
+    <slot name="after" :items="filteredList" />
+  </template>
 </template>
 
 <script lang="ts" setup>
