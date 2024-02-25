@@ -513,12 +513,15 @@ export const getDraggableStyle = (
     getNumericStyleValue(style.borderBottomLeftRadius, 4),
   ]
 
-  const backgroundColor = parseColorString(realBackgroundColor(el))
+  const backgroundColorForSelection = parseColorString(
+    realBackgroundColor(el.parentElement),
+  )
   const contrastColor = findHighestContrastColor(
     [[255, 255, 255], accentColor],
-    backgroundColor,
+    backgroundColorForSelection,
   )
 
+  const backgroundColor = parseColorString(realBackgroundColor(el))
   const textColor = findHighestContrastColor(
     [
       [0, 0, 0],
