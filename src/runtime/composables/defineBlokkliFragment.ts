@@ -57,7 +57,7 @@ export function defineBlokkliFragment<
   })
 
   onMounted(() => {
-    if (editContext) {
+    if (editContext && editContext.dom) {
       // Block registration in defineBlokkli() is skipped for fragment blocks.
       // So we need to do it here.
       const instance = getCurrentInstance()
@@ -66,7 +66,7 @@ export function defineBlokkliFragment<
   })
 
   onBeforeUnmount(() => {
-    if (editContext && ctx.uuid) {
+    if (editContext && ctx.uuid && editContext.dom) {
       editContext.dom.unregisterBlock(ctx.uuid)
     }
   })

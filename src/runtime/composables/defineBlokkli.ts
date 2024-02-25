@@ -144,6 +144,7 @@ export function defineBlokkli<
     if (
       !isEditing ||
       !editContext ||
+      !editContext.dom ||
       // Block is already registered by the from_library block.
       fromLibraryOptions ||
       // The defineBlokkliFragment composable registers the block itself.
@@ -158,7 +159,12 @@ export function defineBlokkli<
   })
 
   onBeforeUnmount(() => {
-    if (editContext && uuid && config.bundle !== 'blokkli_fragment') {
+    if (
+      editContext &&
+      editContext.dom &&
+      uuid &&
+      config.bundle !== 'blokkli_fragment'
+    ) {
       editContext.dom.unregisterBlock(uuid)
     }
   })

@@ -887,7 +887,7 @@ export type Eventbus = Emitter<EventbusEvents>
 export type ItemEditContext = {
   eventBus: Eventbus
   mutatedOptions: Ref<MutatedOptions>
-  dom: DomProvider
+  dom?: DomProvider
 }
 
 export interface BlokkliApp {
