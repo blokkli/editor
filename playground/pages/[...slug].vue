@@ -1,16 +1,26 @@
 <template>
-  <BlokkliProvider
-    v-if="page"
-    :key="language"
-    entity-type="content"
-    entity-bundle="page"
-    :entity-uuid="page.uuid"
-    :can-edit="true"
-    :language="language"
-  >
-    <BlokkliField name="header" :list="fieldHeader" tag="header" />
-    <BlokkliField name="content" :list="fieldContent" />
-  </BlokkliProvider>
+  <div v-if="page">
+    <BlokkliProvider
+      v-slot="{ entity, isEditing }"
+      :key="language"
+      entity-type="content"
+      entity-bundle="page"
+      :entity-uuid="page.uuid"
+      :can-edit="true"
+      :language="language"
+      :entity="pageValues"
+    >
+      <Hero :is-editing="isEditing" :title="entity?.title" :lead="entity?.lead">
+        <BlokkliField
+          name="buttons"
+          :list="fieldButtons"
+          list-class="mt-20 lg:mt-40 flex gap-10 flex-wrap"
+          field-list-type="inline"
+        />
+      </Hero>
+      <BlokkliField name="content" :list="fieldContent" />
+    </BlokkliProvider>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -18,6 +28,7 @@ import { useRoute, computed } from '#imports'
 import { mapMockField } from '@/app/mock/state'
 import { entityStorageManager } from '~/app/mock/entityStorage'
 import { ContentPage } from '~/app/mock/state/Entity/Content'
+import Hero from '~/components/Hero/index.vue'
 
 const route = useRoute()
 
@@ -44,6 +55,10 @@ if (!(page instanceof ContentPage)) {
 
 page.getTranslation(language.value)
 
-const fieldHeader = computed(() => mapMockField(page.header()))
+const fieldButtons = computed(() => mapMockField(page.buttons()))
 const fieldContent = computed(() => mapMockField(page.content()))
+
+const pageValues = computed(() => {
+  return page.getData()
+})
 </script>

@@ -344,3 +344,7 @@ html.bk-html-root:not(.bk-use-animations) {
     @apply font-medium mb-5 inline-block;
   }
 }
+
+[data-blokkli-editable-field] {
+  @apply pointer-events-auto;
+}

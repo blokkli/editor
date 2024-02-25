@@ -1,8 +1,8 @@
 <template>
-  <slot />
+  <slot :mutated-entity="mutatedEntity" />
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="T">
 import {
   ref,
   computed,
@@ -28,6 +28,7 @@ import { frameEventBus } from '#blokkli/helpers/frameEventBus'
 import broadcastProvider from '#blokkli/helpers/broadcastProvider'
 
 const props = defineProps<{
+  entity?: T
   entityType: string
   entityUuid: string
   entityBundle: string
@@ -43,6 +44,11 @@ let timeout: any = null
 let lastChanged: number = 0
 const mutatedFields = ref<MutatedField[]>([])
 const mutatedOptions = ref<MutatedOptions>({})
+const mutatedEntityFromState = ref<T | null>(null)
+
+const mutatedEntity = computed(
+  () => mutatedEntityFromState.value || props.entity,
+)
 
 const { data, refresh } = await useAsyncData(() =>
   adapter.loadState().then((v) => adapter.mapState(v)),
@@ -51,6 +57,7 @@ const { data, refresh } = await useAsyncData(() =>
 const updateState = () => {
   mutatedOptions.value = data.value?.mutatedState?.mutatedOptions || {}
   mutatedFields.value = data.value?.mutatedState?.fields || []
+  mutatedEntityFromState.value = data.value?.mutatedEntity
 }
 
 updateState()

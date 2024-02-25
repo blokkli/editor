@@ -36,6 +36,10 @@ import {
   type MutationTransformArgs,
 } from './Mutation/Transform'
 import {
+  MutationUpdateEntityFieldValue,
+  type MutationUpdateEntityFieldValueArgs,
+} from './Mutation/UpdateEntityFieldValue'
+import {
   MutationUpdateFieldValue,
   type MutationUpdateFieldValueArgs,
 } from './Mutation/UpdateFieldValue'
@@ -55,6 +59,7 @@ export type MutationArgsMap = {
   make_reusable: MutationMakeReusableArgs
   add_reusable_item: MutationAddReusableItemArgs
   update_field_value: MutationUpdateFieldValueArgs
+  update_entity_field_value: MutationUpdateEntityFieldValueArgs
   transform: MutationTransformArgs
   detach_reusable: MutationDetachReusableArgs
   edit_entity: MutationEditEntityArgs
@@ -86,6 +91,8 @@ export const createMutation = <T extends keyof MutationArgsMap>(
       return new MutationAddReusableItem(configuration)
     case 'update_field_value':
       return new MutationUpdateFieldValue(configuration)
+    case 'update_entity_field_value':
+      return new MutationUpdateEntityFieldValue(configuration)
     case 'transform':
       return new MutationTransform(configuration)
     case 'detach_reusable':

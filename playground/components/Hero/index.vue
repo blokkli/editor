@@ -19,36 +19,22 @@
           class="mt-20 text-lg lg:text-xl text-mono-700"
           v-text="lead"
         />
-        <BlokkliField
-          name="buttons"
-          :list="buttons"
-          list-class="mt-20 lg:mt-40 flex gap-10 flex-wrap"
-        />
+        <slot></slot>
       </div>
       <div class="col-span-4 max-w-[340px] lg:w-full mx-auto mb-30 lg:mb-0">
-        <BlokkliHeroAnimation :animated="!isEditing" />
+        <HeroAnimation :animated="!isEditing" />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import type { FieldListItemTyped } from '#blokkli/generated-types'
-import { defineBlokkli, computed } from '#imports'
-
-const { isEditing } = defineBlokkli({
-  bundle: 'hero',
-  chunkName: 'rare',
-  editor: {
-    editTitle: (el) => el.querySelector('h1')?.innerText,
-    maxInstances: 1,
-  },
-})
+import { computed } from '#imports'
 
 const props = defineProps<{
+  isEditing: boolean
   title: string
   lead: string
-  buttons: FieldListItemTyped[]
 }>()
 
 const titleValue = computed(() => props.title.toString())

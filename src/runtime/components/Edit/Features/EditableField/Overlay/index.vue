@@ -34,7 +34,7 @@
           v-model="modelValue"
           :type="editableType"
           :field-name="fieldName"
-          :uuid="block.uuid"
+          :host="host"
           :initial-height="scrollHeight"
           @close="close"
         />
@@ -68,6 +68,7 @@ import type {
   BlokkliEditableDirectiveArgs,
   EditableType,
   DraggableExistingBlock,
+  EntityContext,
 } from '#blokkli/types'
 import { Icon, ItemIcon } from '#blokkli/components'
 import {
@@ -89,7 +90,7 @@ const { eventBus, ui, selection, state, adapter, $t, types } = useBlokkli()
 
 const props = defineProps<{
   fieldName: string
-  block: DraggableExistingBlock
+  host: DraggableExistingBlock | EntityContext
   label: string
   element: HTMLElement
   args?: BlokkliEditableDirectiveArgs
@@ -125,14 +126,22 @@ const style = computed(() => {
 })
 
 const hasChanged = computed(() => modelValue.value !== originalText.value)
-const itemBundle = computed(() => props.block.itemBundle)
+const itemBundle = computed(() => {
+  if ('itemBundle' in props.host) {
+    return props.host.itemBundle
+  }
+})
 const maxlength = computed(() => props.args?.maxlength)
 const required = computed(() => !!props.args?.required)
-const title = computed(() =>
-  [types.getType(itemBundle.value)?.label, props.label]
-    .filter(falsy)
-    .join(' » '),
-)
+const title = computed(() => {
+  if (itemBundle.value) {
+    return [types.getType(itemBundle.value)?.label, props.label]
+      .filter(falsy)
+      .join(' » ')
+  }
+
+  return props.label
+})
 const editableType = computed<EditableType>(
   () => props.args?.type || 'plaintext',
 )
@@ -167,14 +176,23 @@ const close = async (save?: boolean) => {
 
   const el = getElement()
 
-  if (save && props.block && modelValue.value !== originalText.value) {
-    await state.mutateWithLoadingState(
-      adapter.updateFieldValue!({
-        uuid: props.block.uuid,
-        fieldName: props.fieldName,
-        fieldValue: modelValue.value,
-      }),
-    )
+  if (save && modelValue.value !== originalText.value) {
+    if ('itemBundle' in props.host) {
+      await state.mutateWithLoadingState(
+        adapter.updateFieldValue!({
+          uuid: props.host.uuid,
+          fieldName: props.fieldName,
+          fieldValue: modelValue.value,
+        }),
+      )
+    } else if (adapter.updateEntityFieldValue) {
+      await state.mutateWithLoadingState(
+        adapter.updateEntityFieldValue({
+          fieldName: props.fieldName,
+          fieldValue: modelValue.value,
+        }),
+      )
+    }
   }
   if (!save && el) {
     if (!props.isComponent) {
@@ -204,7 +222,7 @@ watch(modelValue, (newText) => {
   if (props.isComponent) {
     eventBus.emit('editable:update', {
       name: props.fieldName,
-      entityUuid: props.block.uuid,
+      entityUuid: props.host.uuid,
       value: newText,
     })
   }

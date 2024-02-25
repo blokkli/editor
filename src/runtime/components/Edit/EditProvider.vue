@@ -17,10 +17,10 @@
     @loaded="featuresLoaded = true"
   />
   <Animator v-if="!isInitializing" />
-  <slot />
+  <slot :mutated-entity="mutatedEntity" />
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="T">
 import {
   ref,
   computed,
@@ -66,6 +66,7 @@ import {
 
 const props = withDefaults(
   defineProps<{
+    entity?: T
     entityType: string
     entityUuid: string
     entityBundle: string
@@ -73,6 +74,7 @@ const props = withDefaults(
   }>(),
   {
     language: 'en',
+    entity: undefined,
   },
 )
 
@@ -101,6 +103,8 @@ const theme = themeProvider()
 const commands = commandsProvider()
 const tour = tourProvider()
 const dropAreas = dropAreasProvider()
+
+const mutatedEntity = computed(() => state.mutatedEntity.value || props.entity)
 
 const onContextMenu = (e: Event) => {
   e.preventDefault()

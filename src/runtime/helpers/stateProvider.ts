@@ -52,6 +52,7 @@ export type StateProvider = {
   violations: Readonly<Ref<Validation[]>>
   mutateWithLoadingState: MutateWithLoadingStateFunction
   editMode: Readonly<Ref<EditMode>>
+  mutatedEntity: Readonly<Ref<EditMode>>
   canEdit: ComputedRef<boolean>
   isLoading: Readonly<Ref<boolean>>
   renderedBlocks: ComputedRef<RenderedBlock[]>
@@ -67,6 +68,7 @@ export default async function (
   const mutatedFields = ref<MutatedField[]>([])
   const mutations = ref<MutationItem[]>([])
   const violations = ref<Validation[]>([])
+  const mutatedEntity = ref<any>(null)
   const currentMutationIndex = ref(-1)
   const isLoading = ref(false)
   const entity = ref<EditEntity>({
@@ -142,6 +144,7 @@ export default async function (
       },
     )
     mutatedFields.value = newMutatedFields
+    mutatedEntity.value = context?.mutatedEntity
 
     eventBus.emit('updateMutatedFields', { fields: newMutatedFields })
 
@@ -255,5 +258,6 @@ export default async function (
     isLoading: readonly(isLoading),
     renderedBlocks,
     getRenderedBlock,
+    mutatedEntity: mutatedEntity,
   }
 }

@@ -139,11 +139,9 @@ export default defineBlokkliEditAdapter((ctx) => {
       return Promise.resolve(allTypes)
     },
     getConversions() {
-      console.log('Get conversion plugins')
       return Promise.resolve(conversions)
     },
     getTransformPlugins() {
-      console.log('Get transform plugins')
       return Promise.resolve(transforms)
     },
     applyTransformPlugin: (e) => addMutation('transform', e),
@@ -153,6 +151,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         mutations: editState.getMutationItems(),
         currentUserIsOwner: true,
         ownerName: state.owner.name,
+        mutatedEntity: inputState.context.entity.getData(),
         mutatedState: {
           mutatedOptions: inputState.mutatedOptions,
           fields: inputState.fields,
@@ -275,6 +274,12 @@ export default defineBlokkliEditAdapter((ctx) => {
     updateFieldValue: (e) =>
       addMutation('update_field_value', {
         uuid: e.uuid,
+        fieldName: e.fieldName,
+        fieldValue: e.fieldValue,
+      }),
+
+    updateEntityFieldValue: (e) =>
+      addMutation('update_entity_field_value', {
         fieldName: e.fieldName,
         fieldValue: e.fieldValue,
       }),

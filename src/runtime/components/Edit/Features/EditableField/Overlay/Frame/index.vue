@@ -10,7 +10,11 @@
 
 <script lang="ts" setup>
 import { useBlokkli, ref, computed, onMounted, onBeforeUnmount } from '#imports'
-import type { EditableType } from '#blokkli/types'
+import type {
+  DraggableExistingBlock,
+  EditableType,
+  EntityContext,
+} from '#blokkli/types'
 
 const { adapter } = useBlokkli()
 
@@ -18,17 +22,19 @@ const props = defineProps<{
   modelValue: string
   type: EditableType
   fieldName: string
-  uuid: string
+  host: DraggableExistingBlock | EntityContext
   initialHeight: number
 }>()
 
 const height = ref(props.initialHeight)
 
 const url = computed(() => {
-  return adapter.buildEditableFrameUrl!({
-    uuid: props.uuid,
-    fieldName: props.fieldName,
-  })
+  if ('itemBundle' in props.host) {
+    return adapter.buildEditableFrameUrl!({
+      uuid: props.host.uuid,
+      fieldName: props.fieldName,
+    })
+  }
 })
 
 const original = ref('')

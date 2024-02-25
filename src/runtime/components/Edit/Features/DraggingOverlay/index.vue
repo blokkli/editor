@@ -305,9 +305,16 @@ const onDrop = async (e: DropTargetEvent) => {
       return
     }
 
+    const editableFieldElement = newItem
+      .element()
+      .querySelector(`[data-blokkli-editable-field="${editableField}"]`)
+    if (!(editableFieldElement instanceof HTMLElement)) {
+      return
+    }
+
     eventBus.emit('editable:focus', {
       fieldName: editableField,
-      uuid: newBlock.item.uuid,
+      element: editableFieldElement,
     })
   })
 }

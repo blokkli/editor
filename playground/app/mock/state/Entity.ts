@@ -122,4 +122,8 @@ export class Entity {
       values: this.fields,
     }
   }
+
+  getData() {
+    return {}
+  }
 }

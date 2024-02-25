@@ -18,6 +18,7 @@ import Overlay from './Overlay/index.vue'
 import type {
   BlokkliEditableDirectiveArgs,
   DraggableExistingBlock,
+  EntityContext,
 } from '#blokkli/types'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
@@ -34,14 +35,14 @@ defineBlokkliFeature({
 type Editable = {
   fieldName: string
   label: string
-  block: DraggableExistingBlock
+  host: DraggableExistingBlock | EntityContext
   element: HTMLElement
   args?: BlokkliEditableDirectiveArgs
   isComponent?: boolean
   value?: string
 }
 
-const { selection, adapter, dom, types, $t } = useBlokkli()
+const { selection, adapter, types, $t, dom } = useBlokkli()
 const editable = ref<Editable | null>(null)
 const hasTransition = ref(false)
 
@@ -49,24 +50,29 @@ const key = computed(() => {
   if (!editable.value) {
     return ''
   }
-  return editable.value.block.uuid + editable.value.fieldName
+  return editable.value.host.uuid + editable.value.fieldName
 })
+
+const getHost = (
+  el: HTMLElement,
+): DraggableExistingBlock | EntityContext | undefined => {
+  const block = dom.findClosestBlock(el)
+  if (block) {
+    return block
+  }
+
+  return dom.findClosestEntityContext(el)
+}
 
 const buildEditable = (
   fieldName: string,
-  uuid: string,
+  element: HTMLElement,
 ): Editable | undefined => {
-  const block = dom.findBlock(uuid)
-  if (!block) {
+  const host = getHost(element)
+  if (!host) {
     return
   }
-  const fieldEl = block
-    .element()
-    .querySelector(`[data-blokkli-editable-field="${fieldName}"]`)
-  if (!(fieldEl instanceof HTMLElement)) {
-    return
-  }
-  const argsValue = fieldEl.dataset.blokkliEditableFieldConfig
+  const argsValue = element.dataset.blokkliEditableFieldConfig
   const args: BlokkliEditableDirectiveArgs = argsValue
     ? JSON.parse(argsValue)
     : undefined
@@ -79,24 +85,27 @@ const buildEditable = (
   const label =
     args?.label ||
     types.editableFieldConfig.value.find(
-      (v) => v.name === fieldName && v.entityBundle === block.itemBundle,
+      (v) =>
+        v.name === fieldName &&
+        v.entityBundle ===
+          ('itemBundle' in host ? host.itemBundle : host.bundle),
     )?.label ||
     fieldName
 
   return {
     fieldName,
-    block,
+    host,
     label,
-    element: fieldEl,
+    element,
     args,
-    isComponent: fieldEl.dataset.blokkliEditableComponent === 'true',
-    value: fieldEl.dataset.blokkliEditableValue || '',
+    isComponent: element.dataset.blokkliEditableComponent === 'true',
+    value: element.dataset.blokkliEditableValue || '',
   }
 }
 
 onBlokkliEvent('editable:focus', (e) => {
   hasTransition.value = !editable.value
-  editable.value = buildEditable(e.fieldName, e.uuid) || null
+  editable.value = buildEditable(e.fieldName, e.element) || null
   if (editable.value) {
     selection.editableActive.value = true
   }
@@ -130,7 +139,7 @@ defineCommands(() => {
           return
         }
 
-        return buildEditable(name, v.uuid)
+        return buildEditable(name, el)
       })
       .filter(falsy)
   })

@@ -282,6 +282,13 @@ export interface BlokkliAdapter<T> {
   ) => Promise<MutationResponseLike<T>> | undefined
 
   /**
+   * Update the value of a single entity field.
+   */
+  updateEntityFieldValue?: (
+    e: UpdateEntityFieldValueEvent,
+  ) => Promise<MutationResponseLike<T>> | undefined
+
+  /**
    * Build the iframe URL for an editable of type "frame".
    */
   buildEditableFrameUrl?: (
@@ -335,6 +342,11 @@ export interface BlokkliAdapter<T> {
   fragmentsAddBlock?: (
     e: AdapterFragmentsAddBlock,
   ) => Promise<MutationResponseLike<T>> | undefined
+}
+
+export type UpdateEntityFieldValueEvent = {
+  fieldName: string
+  fieldValue: string
 }
 
 export type AdapterFragmentsAddBlock = {

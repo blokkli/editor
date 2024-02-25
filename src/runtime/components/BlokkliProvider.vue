@@ -1,17 +1,22 @@
 <template>
   <div
     :data-provider-uuid="entityUuid"
+    :data-provider-entity-type="entityType"
+    :data-provider-entity-bundle="entityBundle"
     :data-blokkli-provider-active="isInEditor || undefined"
   >
     <BlokkliErrorBoundary v-if="isInEditor">
       <PreviewProvider
         v-if="isPreviewing"
+        v-slot="{ mutatedEntity }"
+        :entity="entity"
         :entity-type="entityType"
         :entity-uuid="entityUuid"
         :entity-bundle="entityBundle"
         :language="language"
       >
         <slot
+          :entity="mutatedEntity"
           :is-editing="isEditing"
           :can-edit="canEdit"
           :is-preview="isPreviewing"
@@ -19,6 +24,8 @@
       </PreviewProvider>
       <EditProvider
         v-else-if="isEditing"
+        v-slot="{ mutatedEntity }"
+        :entity="entity"
         :entity-type="entityType"
         :entity-uuid="entityUuid"
         :entity-bundle="entityBundle"
@@ -28,6 +35,7 @@
           :is-editing="isEditing"
           :can-edit="canEdit"
           :is-preview="isPreviewing"
+          :entity="mutatedEntity"
         />
       </EditProvider>
     </BlokkliErrorBoundary>
@@ -37,6 +45,7 @@
       :is-editing="isEditing"
       :can-edit="canEdit"
       :is-preview="isPreviewing"
+      :entity="entity"
     />
 
     <EditIndicator
@@ -48,7 +57,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="T">
 import {
   computed,
   defineAsyncComponent,
@@ -79,6 +88,7 @@ const router = useRouter()
 
 const props = withDefaults(
   defineProps<{
+    entity?: T
     entityType: string
     entityBundle: string
     entityUuid: string
@@ -91,6 +101,7 @@ const props = withDefaults(
     tag: 'div',
     language: '',
     editLabel: '',
+    entity: undefined,
   },
 )
 

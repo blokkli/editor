@@ -7,7 +7,7 @@ export abstract class Content extends Entity {
   static entityType = 'content'
 
   static getFieldDefintions(): Field<any>[] {
-    return [...super.getFieldDefintions(), new FieldText('title', 'Titel')]
+    return [...super.getFieldDefintions(), new FieldText('title', 'Title')]
   }
 
   title(): FieldText {
@@ -37,7 +37,8 @@ export class ContentPage extends Content {
         'on_this_page',
         'widget',
       ]),
-      new FieldBlocks('header', 'Header', 1, ['hero']),
+      new FieldBlocks('buttons', 'Buttons', 3, ['button']),
+      new FieldText('lead', 'Lead'),
     ]
   }
 
@@ -45,8 +46,19 @@ export class ContentPage extends Content {
     return this.get('content')
   }
 
-  header(): FieldBlocks {
-    return this.get('header')
+  buttons(): FieldBlocks {
+    return this.get('buttons')
+  }
+
+  lead(): FieldText {
+    return this.get('lead')
+  }
+
+  getData() {
+    return {
+      title: this.title().getText(),
+      lead: this.lead().getText(),
+    }
   }
 }
 

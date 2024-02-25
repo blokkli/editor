@@ -20,7 +20,7 @@ import {
   type ComponentPublicInstance,
 } from '#imports'
 import type { Coord } from '#blokkli/types'
-import { buildDraggableItem } from '#blokkli/helpers'
+import { buildDraggableItem, originatesFromEditable } from '#blokkli/helpers'
 import { getDefinition } from '#blokkli/definitions'
 
 const props = defineProps<{
@@ -301,15 +301,6 @@ const onMouseMove = (e: MouseEvent) => {
   }
 }
 
-const originatesFromEditable = (e: MouseEvent | TouchEvent) => {
-  if (e.target instanceof HTMLElement) {
-    const el = e.target.closest('[data-blokkli-editable-field]')
-    if (el) {
-      return true
-    }
-  }
-}
-
 const onMouseDown = (e: MouseEvent) => {
   if (props.isNested) {
     return
@@ -400,7 +391,7 @@ const emitEditableFocus = (eventTarget: HTMLElement): boolean => {
       if (block) {
         eventBus.emit('editable:focus', {
           fieldName,
-          uuid: block.uuid,
+          element: el,
         })
         return true
       }

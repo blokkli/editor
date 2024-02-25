@@ -4,6 +4,7 @@ import type {
   BlokkliFieldElement,
   DraggableItem,
   DroppableEntityField,
+  EntityContext,
 } from '#blokkli/types'
 import {
   findClosestBlock,
@@ -143,6 +144,8 @@ export type DomProvider = {
    * Get all droppable entity fields.
    */
   getAllDroppableFields(): DroppableEntityField[]
+
+  findClosestEntityContext(el: HTMLElement): EntityContext | undefined
 }
 
 const getVisibleBlockElement = (
@@ -277,6 +280,23 @@ export default function (): DomProvider {
       mapDroppableField,
     )
 
+  const findClosestEntityContext = (el: HTMLElement) => {
+    const provider = el.closest('[data-blokkli-provider-active="true"]')
+    if (!(provider instanceof HTMLElement)) {
+      return
+    }
+    const uuid = provider.dataset.providerUuid
+    const type = provider.dataset.providerEntityType
+    const bundle = provider.dataset.providerEntityBundle
+    if (uuid && type && bundle) {
+      return {
+        uuid,
+        type,
+        bundle,
+      }
+    }
+  }
+
   return {
     findBlock,
     getAllBlocks,
@@ -288,5 +308,6 @@ export default function (): DomProvider {
     registerBlock,
     unregisterBlock,
     getAllDroppableFields,
+    findClosestEntityContext,
   }
 }

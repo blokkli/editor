@@ -120,8 +120,15 @@ export class EntityStorageManager {
     })
 
     const page = new ContentPage('1')
+    page.title().setText('Interactive $page building$ experience for Nuxt.')
+    page
+      .lead()
+      .setText(
+        'Simple content pages or complex landing pages. blökkli provides a solid modular framework to build your own editing experience - with any backend.',
+      )
+
     page.addTranslation('de', {
-      title: ['Interaktiver Page Builder für Nuxt'],
+      title: ['Interaktiver $Page Builder$ für Nuxt'],
     })
     this.storages.content.add(page)
 
@@ -181,7 +188,14 @@ export class EntityStorageManager {
   }
 
   getContent(uuid: string): Content | undefined {
-    return this.storages.content.load(uuid)
+    const entity = this.storages.content.load(uuid)
+    if (!entity) {
+      return
+    }
+    const values = entity.getValues()
+    const clone = new ContentPage(uuid)
+    clone.setValues(values)
+    return clone
   }
 
   getStorage<T extends keyof StorageMap>(key: T): StorageMap[T] {

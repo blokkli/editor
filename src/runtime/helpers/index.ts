@@ -673,3 +673,14 @@ export const mapDroppableField = (el: Element): DroppableEntityField => {
     cardinality,
   }
 }
+
+export const originatesFromEditable = (
+  e: MouseEvent | TouchEvent,
+): HTMLElement | undefined => {
+  if (e.target instanceof HTMLElement) {
+    const el = e.target.closest('[data-blokkli-editable-field]')
+    if (el instanceof HTMLElement) {
+      return el
+    }
+  }
+}

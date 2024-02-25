@@ -25,7 +25,7 @@ export default defineNuxtConfig({
 
   blokkli: {
     itemEntityType: 'block',
-    fieldListTypes: ['header'],
+    fieldListTypes: ['header', 'inline'],
     globalOptions: {
       background: {
         type: 'radios',

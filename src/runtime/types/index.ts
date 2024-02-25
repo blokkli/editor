@@ -440,6 +440,7 @@ export interface MappedState {
     violations?: Validation[]
   }
   entity: EditEntity
+  mutatedEntity?: any
   translationState: TranslationState
   previewUrl?: string
 }
@@ -791,7 +792,7 @@ export type BlokkliEditableDirectiveArgs = {
 
 export type EditableFieldFocusEvent = {
   fieldName: string
-  uuid: string
+  element: HTMLElement
 }
 
 export type EditableFieldUpdateEvent = {

@@ -17,6 +17,7 @@ import {
   modulo,
   intersects,
   getBounds,
+  originatesFromEditable,
 } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import type { DomProvider } from './domProvider'
@@ -313,6 +314,22 @@ export default function (
     selectItems([uuid])
   }
 
+  const onDoubleClick = (e: MouseEvent) => {
+    const element = originatesFromEditable(e)
+    if (!element) {
+      return
+    }
+    const fieldName = element.dataset.blokkliEditableField
+    if (!fieldName) {
+      return
+    }
+
+    eventBus.emit('editable:focus', {
+      fieldName,
+      element,
+    })
+  }
+
   function onWindowMouseDown(e: MouseEvent) {
     if (e.ctrlKey) {
       return
@@ -423,10 +440,12 @@ export default function (
 
   onMounted(() => {
     document.documentElement.addEventListener('mousedown', onWindowMouseDown)
+    document.documentElement.addEventListener('dblclick', onDoubleClick)
   })
 
   onBeforeUnmount(() => {
     document.documentElement.removeEventListener('mousedown', onWindowMouseDown)
+    document.documentElement.removeEventListener('dblclick', onDoubleClick)
   })
 
   return {
