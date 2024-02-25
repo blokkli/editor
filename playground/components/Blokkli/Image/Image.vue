@@ -1,7 +1,11 @@
 <template>
   <div :class="{ 'container my-40': !parentType }">
     <div
-      v-blokkli-droppable:imageReference="{ type: 'media', bundle: 'image' }"
+      v-blokkli-droppable:imageReference="{
+        entityType: 'media',
+        entityBundles: ['image'],
+        cardinality: 1,
+      }"
       :class="{
         'overflow-hidden shadow-xl rounded-lg bg-white': options.elevated,
       }"

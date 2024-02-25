@@ -54,29 +54,19 @@ defineDropAreas((dragItems) => {
   }
 
   // Generate a drop area for every matching droppable field.
-  return [...document.querySelectorAll('[data-blokkli-droppable-field]')]
-    .map<DropArea | undefined>((element) => {
-      if (!(element instanceof HTMLElement)) {
-        return
-      }
-      const fieldName = element.dataset.blokkliDroppableField
-      if (!fieldName) {
-        return
-      }
-      const block = dom.findClosestBlock(element)
-      if (!block) {
-        return
-      }
+  return dom
+    .getAllDroppableFields()
+    .map<DropArea | undefined>((field) => {
       return {
-        id: `replace-media:${block.uuid}:${fieldName}`,
+        id: `replace-media:${field.host.uuid}:${field.fieldName}`,
         label: $t('mediaLibraryReplaceMedia', 'Replace media'),
-        element,
+        element: field.element,
         icon: 'swap-horizontal',
         onDrop: () => {
           return state.mutateWithLoadingState(
             adapter.mediaLibraryReplaceMedia!({
-              blockUuid: block.uuid,
-              droppableFieldName: fieldName,
+              blockUuid: field.host.uuid,
+              droppableFieldName: field.fieldName,
               mediaId: item.mediaId,
             }),
             $t('mediaLibraryReplaceFailed', 'Failed to replace media.'),

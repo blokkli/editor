@@ -29,6 +29,7 @@ import type { ThemeProvider } from '#blokkli/helpers/themeProvider'
 import type { CommandsProvider } from '#blokkli/helpers/commandsProvider'
 import type { TourProvider } from '#blokkli/helpers/tourProvider'
 import type { DropAreaProvider } from '#blokkli/helpers/dropAreaProvider'
+import { on } from 'events'
 
 interface MutationResponseLike<T> {
   success?: boolean
@@ -1138,6 +1139,41 @@ export type TourItem = {
     | (() => HTMLElement | undefined | null)
     | undefined
     | null
+}
+
+/**
+ * Defines a droppable entity field.
+ */
+export type DroppableEntityField = {
+  /**
+   * The droppable field element.
+   */
+  element: HTMLElement
+
+  /**
+   * The host.
+   */
+  host: DraggableExistingBlock
+
+  /**
+   * The name of the field on which entities can be dropped.
+   */
+  fieldName: string
+
+  /**
+   * The entity type that can be dropped.
+   */
+  droppableEntityType: string
+
+  /**
+   * The entity bundles that can be dropped.
+   */
+  droppableEntityBundles: string[]
+
+  /**
+   * The max number of items.
+   */
+  cardinality: number
 }
 
 export default {}

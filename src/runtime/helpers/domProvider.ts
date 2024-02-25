@@ -3,8 +3,14 @@ import type {
   DraggableExistingBlock,
   BlokkliFieldElement,
   DraggableItem,
+  DroppableEntityField,
 } from '#blokkli/types'
-import { buildDraggableItem, falsy } from '#blokkli/helpers'
+import {
+  findClosestBlock,
+  buildDraggableItem,
+  falsy,
+  mapDroppableField,
+} from '#blokkli/helpers'
 import type { ComponentInternalInstance } from 'vue'
 
 /**
@@ -132,6 +138,11 @@ export type DomProvider = {
     instance: ComponentInternalInstance | null,
   ) => void
   unregisterBlock: (uuid: string) => void
+
+  /**
+   * Get all droppable entity fields.
+   */
+  getAllDroppableFields(): DroppableEntityField[]
 }
 
 const getVisibleBlockElement = (
@@ -201,23 +212,6 @@ export default function (): DomProvider {
       .filter(falsy)
   }
 
-  const findClosestBlock = (
-    el: Element | EventTarget,
-  ): DraggableExistingBlock | undefined => {
-    if (!(el instanceof Element)) {
-      return
-    }
-    const closest = el.closest('[data-element-type="existing"]')
-    if (!closest) {
-      return
-    }
-    const item = buildDraggableItem(closest)
-    if (item?.itemType !== 'existing') {
-      return
-    }
-    return item
-  }
-
   const getAllFields = (): BlokkliFieldElement[] => {
     const elements = [...document.querySelectorAll('.bk-field-list')]
 
@@ -278,6 +272,11 @@ export default function (): DomProvider {
     return buildFieldElement(el)
   }
 
+  const getAllDroppableFields = () =>
+    [...document.querySelectorAll('[data-blokkli-droppable-field]')].map(
+      mapDroppableField,
+    )
+
   return {
     findBlock,
     getAllBlocks,
@@ -288,5 +287,6 @@ export default function (): DomProvider {
     findField,
     registerBlock,
     unregisterBlock,
+    getAllDroppableFields,
   }
 }
