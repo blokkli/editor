@@ -25,6 +25,7 @@
       ref="scrollbar"
       class="bk-artboard-scrollbar"
       :class="{ 'bk-is-active': isDraggingThumb }"
+      :style="scrollbarWrapperStyle"
       @mousedown.stop.prevent="onClickScrollbar"
     >
       <button
@@ -76,6 +77,15 @@ const debugValues = ref<any>({})
 const scrollbar = ref<HTMLElement | null>(null)
 const isDraggingThumb = ref(false)
 const isTouchMoving = ref(false)
+
+const scrollbarWrapperStyle = computed(() => ({
+  right:
+    Math.round(
+      ui.viewport.value.width -
+        ui.visibleViewportPadded.value.width -
+        ui.visibleViewportPadded.value.x,
+    ) + 'px',
+}))
 
 watch(selection.isDragging, () => {
   isTouchMoving.value = false

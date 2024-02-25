@@ -1,6 +1,6 @@
 .bk.bk-debug {
   section {
-    @apply p-20 border-b;
+    @apply p-20 border-b border-b-mono-300;
     > h2 {
       @apply font-semibold uppercase text-sm mb-5;
     }
@@ -23,7 +23,7 @@
   }
 
   > div {
-    @apply flex gap-5 py-10 border-b;
+    @apply flex gap-5 py-10 border-b border-b-mono-300;
   }
 }
 

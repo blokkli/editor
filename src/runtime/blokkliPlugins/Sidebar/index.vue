@@ -26,7 +26,10 @@
   </Teleport>
 
   <Teleport
-    v-if="activeSidebar === id || isRenderedDetached || renderAlways"
+    v-if="
+      (activeSidebar === id || isRenderedDetached || renderAlways) &&
+      !isDisabled
+    "
     :to="isRenderedDetached ? 'body' : '#bk-sidebar-content-' + region"
   >
     <SidebarDetached
@@ -151,6 +154,12 @@ const activeSidebar = storage.use(storageKey, '')
 const isRenderedDetached = computed(
   () => isDetached.value && !ui.isMobile.value,
 )
+
+watch(isDisabled, (v) => {
+  if (v && activeSidebar.value === props.id) {
+    activeSidebar.value = ''
+  }
+})
 
 const onWheel = (e: WheelEvent) => {
   if (isOverflowing.value) {

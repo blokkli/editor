@@ -5,7 +5,6 @@
 
 .bk-html-root {
   --bk-root-offset-left-sidebar: 0px;
-  --bk-root-offset-right-sidebar: 0px;
   --bk-root-offset-left-add-list: 0px;
   --bk-root-offset-left: calc(
     var(--bk-root-offset-left-sidebar) + var(--bk-root-offset-left-add-list)
@@ -18,10 +17,6 @@
     --bk-root-offset-top: 50px;
     --bk-actions-height: 50px;
     --bk-root-offset-right: 50px;
-
-    &.bk-has-sidebar-right {
-      --bk-root-offset-right-sidebar: 350px;
-    }
   }
   &.bk-has-add-list-left {
     --bk-root-offset-left-add-list: 70px;
@@ -83,9 +78,6 @@
     @apply fixed w-10 bg-mono-500/10 z-artboard-scrollbar rounded-full transition overflow-hidden;
     top: calc(var(--bk-root-offset-top) + 5px);
     bottom: calc(var(--bk-root-offset-bottom) + 5px);
-    right: calc(
-      var(--bk-root-offset-right) + var(--bk-root-offset-right-sidebar) + 8px
-    );
 
     button {
       @apply bg-mono-500/50  w-full block rounded-full;
