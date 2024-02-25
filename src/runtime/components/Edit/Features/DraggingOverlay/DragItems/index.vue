@@ -297,7 +297,10 @@ onMounted(() => {
     // For elements with a very large DOM the cloning can become quite a
     // performance issue which results in a noticeable lag. In this case
     // we instead render a simple fallback.
-    const markup = dom.getDropElementMarkup(item.item, true)
+    const markup =
+      elRects.length < 6 || isTop
+        ? dom.getDropElementMarkup(item.item, true)
+        : ''
     let bundle: string | undefined = undefined
     let label = ''
 

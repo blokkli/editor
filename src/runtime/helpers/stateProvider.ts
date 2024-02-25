@@ -52,7 +52,7 @@ export type StateProvider = {
   violations: Readonly<Ref<Validation[]>>
   mutateWithLoadingState: MutateWithLoadingStateFunction
   editMode: Readonly<Ref<EditMode>>
-  mutatedEntity: Readonly<Ref<EditMode>>
+  mutatedEntity: Readonly<Ref<any>>
   canEdit: ComputedRef<boolean>
   isLoading: Readonly<Ref<boolean>>
   renderedBlocks: ComputedRef<RenderedBlock[]>
