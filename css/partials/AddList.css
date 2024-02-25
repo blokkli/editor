@@ -7,7 +7,7 @@
     .bk-list-item-icon {
       @apply overflow-hidden;
       svg {
-        @apply fill-current;
+        @apply fill-current pointer-events-none;
       }
       flex: 0 0 auto;
       display: flex;
