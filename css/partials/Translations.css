@@ -1,5 +1,5 @@
 .bk.bk-translations-banner {
-  @apply fixed z-translations-banner bg-yellow-normal left-0 bottom-0 text-yellow-dark text-xs;
+  @apply fixed z-translations-banner-mobile lg:z-translations-banner-desktop bg-yellow-normal left-0 bottom-0 text-yellow-dark text-xs;
   right: var(--bk-root-offset-right);
   @apply p-10;
   @screen lg {
