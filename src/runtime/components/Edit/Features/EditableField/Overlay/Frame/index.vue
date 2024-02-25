@@ -1,6 +1,10 @@
 <template>
   <div class="bk-editable-field-frame">
-    <iframe ref="iframe" :style="{ height: height + 'px' }" :src="url" />
+    <iframe
+      ref="iframe"
+      :style="{ height: Math.max(height, 150) + 'px' }"
+      :src="url"
+    />
   </div>
 </template>
 

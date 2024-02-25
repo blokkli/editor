@@ -93,7 +93,7 @@ onBeforeUnmount(() => {
 .field-value-editor .ck-editor {
   @apply overscroll-contain;
   .ck-editor__editable_inline {
-    @apply min-h-[200px] max-h-[500px];
+    @apply min-h-[100px] max-h-[500px];
   }
 }
 </style>
