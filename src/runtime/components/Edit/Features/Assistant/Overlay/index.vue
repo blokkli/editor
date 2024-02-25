@@ -34,7 +34,7 @@
             required
           />
           <button
-            class="bk-button is-small"
+            class="bk-button bk-is-small"
             :class="{ 'bk-is-loading': isGenerating }"
             @click.prevent="onGenerate"
           >

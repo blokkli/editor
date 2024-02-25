@@ -52,7 +52,7 @@ export default defineNuxtConfig({
       },
     },
 
-    forceDefaultLanguage: true,
+    forceDefaultLanguage: false,
 
     schemaOptionsPath: '~/options-schema.json',
 

@@ -52,7 +52,7 @@
         />
         <button
           v-if="showFullForm && commentText"
-          class="bk-button bk-is-primary is-small"
+          class="bk-button bk-is-primary bk-is-small"
           @click="addComment"
         >
           {{ $t('commentAdd', 'Add comment') }}

@@ -18,6 +18,7 @@ const zIndex = [
   'artboard-scrollbar',
   'actions',
   'add-list',
+  'translations-banner',
   'sidebar',
   'sidebar-detached',
   'sidebar-tabs',

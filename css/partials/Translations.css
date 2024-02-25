@@ -1,0 +1,25 @@
+.bk.bk-translations-banner {
+  @apply fixed z-translations-banner bg-yellow-normal left-0 bottom-0 text-yellow-dark text-xs;
+  right: var(--bk-root-offset-right);
+  @apply p-10;
+  @screen lg {
+    @apply h-[50px] flex items-center p-0;
+  }
+
+  > .bk-icon {
+    @apply h-full items-center justify-center mr-15 ml-20 hidden lg:flex;
+    svg {
+      @apply w-25 h-25 fill-yellow-dark;
+    }
+  }
+
+  .bk-translations-banner-close {
+    @apply lg:h-50 flex items-center lg:justify-center hover:bg-yellow-dark/15 lg:ml-auto lg:px-15 font-bold font-sans leading-none;
+    @apply w-full lg:w-auto text-left mt-5 lg:mt-0;
+    @apply text-yellow-dark;
+
+    svg {
+      @apply w-20 h-20 fill-current ml-5;
+    }
+  }
+}

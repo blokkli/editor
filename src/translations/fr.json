@@ -847,6 +847,14 @@
     "source": "Other actions",
     "translation": "Other actions"
   },
+  "translationsBannerButton": {
+    "source": "Edit source language instead",
+    "translation": ""
+  },
+  "translationsBannerText": {
+    "source": "You are currently editing the <strong>@language</strong> translation. Some features like adding, moving or deleting blocks are not available.",
+    "translation": ""
+  },
   "translationsBatchTranslateMenuDescription": {
     "source": "Translate all blocks",
     "translation": "Traduire tous les éléments"

@@ -50,6 +50,13 @@
     </PluginTourItem>
   </Teleport>
 
+  <Teleport to="body">
+    <Banner
+      v-if="state.editMode.value === 'translating'"
+      :active-language="activeLanguage"
+    />
+  </Teleport>
+
   <PluginMenuButton
     id="translations"
     :title="$t('translationsBatchTranslateMenuTitle', 'Translate...')"
@@ -79,7 +86,12 @@ import {
   PluginItemAction,
   PluginTourItem,
 } from '#blokkli/plugins'
-import type { DraggableExistingBlock, EntityTranslation } from '#blokkli/types'
+import type {
+  DraggableExistingBlock,
+  EntityTranslation,
+  Language,
+} from '#blokkli/types'
+import Banner from './Banner/index.vue'
 
 const { adapter } = defineBlokkliFeature({
   id: 'translations',
@@ -97,6 +109,16 @@ const isDropdown = computed(() => ui.isMobile.value || items.value.length > 5)
 const isOpen = ref(false)
 
 const activeLangcode = computed(() => context.value.language)
+const activeLanguage = computed<Language>(() => {
+  return (
+    translation.value.availableLanguages?.find(
+      (v) => v.id === activeLangcode.value,
+    ) || {
+      id: activeLangcode.value,
+      name: activeLangcode.value,
+    }
+  )
+})
 
 type TranslationStateItem = {
   id: string

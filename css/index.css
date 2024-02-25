@@ -38,6 +38,7 @@
 @import './partials/Tour.css';
 @import './partials/DropAreas.css';
 @import './partials/Error.css';
+@import './partials/Translations.css';
 @import './indicator.css';
 
 @tailwind base;
@@ -134,8 +135,8 @@ html {
       @apply opacity-30;
     }
   }
-  &.is-small {
-    @apply h-40 !px-10 text-sm;
+  &.bk-is-small {
+    @apply h-[30px] !px-[8px] !text-sm;
   }
   &.is-icon-only {
     @apply !px-0 !w-50;

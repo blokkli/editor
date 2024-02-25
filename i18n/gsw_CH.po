@@ -913,6 +913,16 @@ msgctxt "transformTo"
 msgid "Other actions"
 msgstr "Anderi Aktione"
 
+msgctxt "translationsBannerButton"
+msgid "Edit source language instead"
+msgstr ""
+
+msgctxt "translationsBannerText"
+msgid ""
+"You are currently editing the <strong>@language</strong> translation. Some "
+"features like adding, moving or deleting blocks are not available."
+msgstr ""
+
 msgctxt "translationsBatchTranslateMenuDescription"
 msgid "Translate all blocks"
 msgstr "Alli Elemänt übersetze"
