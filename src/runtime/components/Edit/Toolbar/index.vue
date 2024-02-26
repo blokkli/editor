@@ -15,7 +15,11 @@
 
     <Transition name="bk-toolbar">
       <div v-show="showToolbar" class="bk bk-top">
-        <div class="bk-toolbar bk-control" @touchstart.stop @touchmove.stop>
+        <div
+          class="bk-toolbar bk-control"
+          @touchstart.stop.passive
+          @touchmove.stop.passive
+        >
           <div id="bk-toolbar-menu" class="bk-toolbar-area bk-is-menu" />
           <div class="bk-toolbar-container bk-is-sidebar">
             <div

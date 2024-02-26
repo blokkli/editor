@@ -2,7 +2,7 @@
   <div
     class="bk-search-box"
     @keydown="onKeyDown"
-    @wheel.stop
+    @wheel.stop.passive
     @mousedown.stop
     @click.stop
   >

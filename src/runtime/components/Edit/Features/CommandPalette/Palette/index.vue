@@ -1,7 +1,7 @@
 <template>
   <div
     class="bk-command-palette bk-control"
-    @wheel.stop
+    @wheel.passive.stop
     @keydown.stop="onKeyDown"
     @keyup.stop
     @click.stop

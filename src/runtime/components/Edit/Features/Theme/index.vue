@@ -11,7 +11,7 @@
     icon="palette"
     weight="-100"
   >
-    <div class="bk bk-theme-editor bk-control" @wheel.capture.stop>
+    <div class="bk bk-theme-editor bk-control" @wheel.capture.stop.passive>
       <div class="bk-theme-editor-select">
         <select v-model="selectedTheme">
           <option v-for="option in themeOptions" :key="option" :value="option">

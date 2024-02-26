@@ -43,7 +43,7 @@
       :size="size"
       :is-left="region === 'left'"
       class="bk-sidebar-inner"
-      @wheel="onWheel"
+      @wheel.passive="onWheel"
       @close="onAttach"
     >
       <template #icon>
@@ -68,7 +68,7 @@
       v-else
       v-show="activeSidebar === id"
       class="bk-sidebar-inner"
-      @wheel="onWheel"
+      @wheel.passive="onWheel"
     >
       <div class="bk">
         <div class="bk-sidebar-title">

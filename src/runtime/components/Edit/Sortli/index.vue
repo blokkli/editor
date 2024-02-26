@@ -4,9 +4,9 @@
     @mousedown.prevent.capture="onMouseDown"
     @mouseup.prevent.capture="onMouseUp"
     @click.prevent.capture="onClick"
-    @touchstart="onTouchStart"
-    @touchmove="onTouchMove"
-    @touchend="onTouchEnd"
+    @touchstart.passive="onTouchStart"
+    @touchmove.passive="onTouchMove"
+    @touchend.passive="onTouchEnd"
   >
     <slot></slot>
   </div>

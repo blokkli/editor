@@ -26,7 +26,7 @@
         'bk-is-' + ui.addListOrientation.value,
       ]"
       :style="style"
-      @wheel.capture="onWheel"
+      @wheel.capture.passive="onWheel"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
     >

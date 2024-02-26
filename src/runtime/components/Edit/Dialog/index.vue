@@ -2,10 +2,10 @@
   <div
     ref="rootEl"
     class="bk bk-dialog bk-control"
-    @wheel.stop
+    @wheel.passive.stop
     @keydown.stop="onKeyDown"
     @keyup.stop
-    @touchstart.stop
+    @touchstart.passive.stop
     @touchmove.stop
     @touchend.stop
   >

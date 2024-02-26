@@ -5,10 +5,10 @@
     <div
       v-if="errors.length"
       class="bk bk-fatal-error-overlay"
-      @wheel.stop
+      @wheel.passive.stop
       @click.stop
       @mousedown.stop
-      @touchstart.stop
+      @touchstart.passive.stop
       @mousemove.stop
     >
       <div class="bk-fatal-error-overlay-info">
