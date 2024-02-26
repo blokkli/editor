@@ -32,6 +32,22 @@
       ]
     },
     {
+      "name": "icons",
+      "entityType": "content",
+      "entityUuid": "1",
+      "field": [
+        "c1d4278d-c0e1-439d-8849-558d17b9cc5f",
+        "762c4159-aaa8-49dc-9111-2910be58d5c2",
+        "5d49b533-b3bc-4c06-895b-7ee489875a54",
+        "c377fd74-dcb3-447f-a6ff-2ad279c3274a",
+        "7fac3370-9563-4b61-a099-be58a3e71858",
+        "5d2a1a79-e56d-47cf-baa7-fb7bb797f66a",
+        "35753850-9cda-400a-8416-ec9ba7e8d9a7",
+        "80f53678-cbfb-452a-8f00-e00c4d393db5",
+        "aaad7afb-ea3c-450f-b683-a47cf79e281b"
+      ]
+    },
+    {
       "name": "blocks",
       "entityType": "block",
       "entityUuid": "bf4acf60-e0a2-43bb-b4fc-9f32a41a4816",
@@ -177,6 +193,87 @@
     }
   ],
   "blocks": [
+    {
+      "entityType": "block",
+      "bundle": "icon",
+      "uuid": "c1d4278d-c0e1-439d-8849-558d17b9cc5f",
+      "values": {
+        "options": [],
+        "icon": ["title"]
+      }
+    },
+    {
+      "entityType": "block",
+      "bundle": "icon",
+      "uuid": "762c4159-aaa8-49dc-9111-2910be58d5c2",
+      "values": {
+        "options": [],
+        "icon": ["clipboard"]
+      }
+    },
+    {
+      "entityType": "block",
+      "bundle": "icon",
+      "uuid": "5d49b533-b3bc-4c06-895b-7ee489875a54",
+      "values": {
+        "options": [],
+        "icon": ["button"]
+      }
+    },
+    {
+      "entityType": "block",
+      "bundle": "icon",
+      "uuid": "c377fd74-dcb3-447f-a6ff-2ad279c3274a",
+      "values": {
+        "options": [],
+        "icon": ["image"]
+      }
+    },
+    {
+      "entityType": "block",
+      "bundle": "icon",
+      "uuid": "7fac3370-9563-4b61-a099-be58a3e71858",
+      "values": {
+        "options": [],
+        "icon": ["heading"]
+      }
+    },
+    {
+      "entityType": "block",
+      "bundle": "icon",
+      "uuid": "5d2a1a79-e56d-47cf-baa7-fb7bb797f66a",
+      "values": {
+        "options": [],
+        "icon": ["zoom"]
+      }
+    },
+    {
+      "entityType": "block",
+      "bundle": "icon",
+      "uuid": "35753850-9cda-400a-8416-ec9ba7e8d9a7",
+      "values": {
+        "options": [],
+        "icon": ["palette"]
+      }
+    },
+    {
+      "entityType": "block",
+      "bundle": "icon",
+      "uuid": "80f53678-cbfb-452a-8f00-e00c4d393db5",
+      "values": {
+        "options": [],
+        "icon": ["edit"]
+      }
+    },
+    {
+      "entityType": "block",
+      "bundle": "icon",
+      "uuid": "aaad7afb-ea3c-450f-b683-a47cf79e281b",
+      "values": {
+        "options": [],
+        "icon": ["adapter"]
+      }
+    },
     {
       "entityType": "block",
       "bundle": "title",
