@@ -11,6 +11,7 @@ import {
   buildDraggableItem,
   falsy,
   mapDroppableField,
+  findClosestEntityContext,
 } from '#blokkli/helpers'
 import type { ComponentInternalInstance } from 'vue'
 
@@ -279,23 +280,6 @@ export default function (): DomProvider {
     [...document.querySelectorAll('[data-blokkli-droppable-field]')].map(
       mapDroppableField,
     )
-
-  const findClosestEntityContext = (el: HTMLElement) => {
-    const provider = el.closest('[data-blokkli-provider-active="true"]')
-    if (!(provider instanceof HTMLElement)) {
-      return
-    }
-    const uuid = provider.dataset.providerUuid
-    const type = provider.dataset.providerEntityType
-    const bundle = provider.dataset.providerEntityBundle
-    if (uuid && type && bundle) {
-      return {
-        uuid,
-        type,
-        bundle,
-      }
-    }
-  }
 
   return {
     findBlock,

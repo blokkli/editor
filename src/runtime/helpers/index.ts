@@ -5,6 +5,7 @@ import type {
   DraggableStyle,
   DroppableEntityField,
   DraggableExistingBlock,
+  EntityContext,
 } from '#blokkli/types'
 import { useRuntimeConfig } from '#imports'
 import { getDefinition } from '#blokkli/definitions'
@@ -606,9 +607,41 @@ export const findClosestBlock = (
 }
 
 /**
+ * Find the closest entity context from a BlokkliProvider.
+ */
+export const findClosestEntityContext = (
+  el: HTMLElement,
+): EntityContext | undefined => {
+  const provider = el.closest('[data-blokkli-provider-active="true"]')
+  if (!(provider instanceof HTMLElement)) {
+    return
+  }
+  const uuid = provider.dataset.providerUuid
+  const type = provider.dataset.providerEntityType
+  const bundle = provider.dataset.providerEntityBundle
+  if (uuid && type && bundle) {
+    return {
+      uuid,
+      type,
+      bundle,
+    }
+  }
+}
+
+export const findParentContext = (
+  el: HTMLElement,
+): EntityContext | DraggableExistingBlock | undefined => {
+  const block = findClosestBlock(el)
+  if (block) {
+    return block
+  }
+
+  return findClosestEntityContext(el)
+}
+
+/**
  * Maps a HTMLElement to a DroppableEntityField.
  */
-
 export const mapDroppableField = (el: Element): DroppableEntityField => {
   if (!(el instanceof HTMLElement)) {
     throw new Error(
@@ -657,16 +690,16 @@ export const mapDroppableField = (el: Element): DroppableEntityField => {
     )
   }
 
-  const block = findClosestBlock(el)
-  if (!block) {
+  const host = findParentContext(el)
+  if (!host) {
     throw new Error(
-      `Failed to locale parent block for v-blokkli-droppable field with name "${fieldName}". Make sure the element is always rendered inside a block.`,
+      `Failed to locate parent context for v-blokkli-droppable field with name "${fieldName}". Make sure the element is always rendered inside a block component or inside a <BlokkliProvider>.`,
     )
   }
 
   return {
     element: el,
-    host: block,
+    host,
     fieldName,
     droppableEntityType: entityType,
     droppableEntityBundles: entityBundles,

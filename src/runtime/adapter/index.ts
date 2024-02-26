@@ -337,6 +337,16 @@ export interface BlokkliAdapter<T> {
   ) => Promise<MutationResponseLike<T>> | undefined
 
   /**
+   * Replace an existing media on a field of the page entity.
+   *
+   * This method is called when the user drag and drops an item from the media
+   * library onto an v-blokkli-droppable element where the host is the page entity..
+   */
+  mediaLibraryReplaceEntityMedia?: (
+    e: MediaLibraryReplaceMediaEvent,
+  ) => Promise<MutationResponseLike<T>> | undefined
+
+  /**
    * Add a fragment block.
    */
   fragmentsAddBlock?: (
@@ -365,12 +375,7 @@ export type MediaLibraryReplaceMediaEvent = {
   /**
    * The UUID of the block on which the media was dropped.
    */
-  blockUuid: string
-
-  /**
-   * The name of the field on which the media was dropped.
-   */
-  droppableFieldName: string
+  host: DraggableHostData
 
   /**
    * The ID of the media that was dropped.

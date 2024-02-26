@@ -22,7 +22,7 @@ import { PluginSidebar } from '#blokkli/plugins'
 import Library from './Library/index.vue'
 import defineDropAreas from '#blokkli/helpers/composables/defineDropAreas'
 import { falsy } from '#blokkli/helpers'
-import type { DropArea } from '#blokkli/types'
+import type { DraggableHostData, DropArea } from '#blokkli/types'
 
 defineBlokkliFeature({
   id: 'media-library',
@@ -33,7 +33,7 @@ defineBlokkliFeature({
   requiredAdapterMethods: ['mediaLibraryGetResults', 'mediaLibraryAddBlock'],
 })
 
-const { $t, dom, adapter, state } = useBlokkli()
+const { $t, dom, adapter, state, runtimeConfig } = useBlokkli()
 
 defineDropAreas((dragItems) => {
   // Not supported by adapter.
@@ -65,21 +65,47 @@ defineDropAreas((dragItems) => {
       if (!field.droppableEntityBundles.includes(item.mediaBundle)) {
         return
       }
-      return {
-        id: `replace-media:${field.host.uuid}:${field.fieldName}`,
-        label: $t('mediaLibraryReplaceMedia', 'Replace media'),
-        element: field.element,
-        icon: 'swap-horizontal',
-        onDrop: () => {
-          return state.mutateWithLoadingState(
-            adapter.mediaLibraryReplaceMedia!({
-              blockUuid: field.host.uuid,
-              droppableFieldName: field.fieldName,
-              mediaId: item.mediaId,
-            }),
-            $t('mediaLibraryReplaceFailed', 'Failed to replace media.'),
-          )
-        },
+      const isBlock = 'itemBundle' in field.host
+      const draggableHost: DraggableHostData = {
+        uuid: field.host.uuid,
+        type:
+          'itemBundle' in field.host
+            ? runtimeConfig.itemEntityType
+            : field.host.type,
+        fieldName: field.fieldName,
+      }
+      if (adapter.mediaLibraryReplaceMedia && isBlock) {
+        return {
+          id: `replace-media:${field.host.uuid}:${field.fieldName}`,
+          label: $t('mediaLibraryReplaceMedia', 'Replace media'),
+          element: field.element,
+          icon: 'swap-horizontal',
+          onDrop: () => {
+            return state.mutateWithLoadingState(
+              adapter.mediaLibraryReplaceMedia!({
+                host: draggableHost,
+                mediaId: item.mediaId,
+              }),
+              $t('mediaLibraryReplaceFailed', 'Failed to replace media.'),
+            )
+          },
+        }
+      } else if (adapter.mediaLibraryReplaceEntityMedia && !isBlock) {
+        return {
+          id: `replace-entity-media:${field.host.uuid}:${field.fieldName}`,
+          label: $t('mediaLibraryReplaceMedia', 'Replace media'),
+          element: field.element,
+          icon: 'swap-horizontal',
+          onDrop: () => {
+            return state.mutateWithLoadingState(
+              adapter.mediaLibraryReplaceEntityMedia!({
+                host: draggableHost,
+                mediaId: item.mediaId,
+              }),
+              $t('mediaLibraryReplaceFailed', 'Failed to replace media.'),
+            )
+          },
+        }
       }
     })
     .filter(falsy)

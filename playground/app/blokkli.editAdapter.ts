@@ -563,8 +563,15 @@ export default defineBlokkliEditAdapter((ctx) => {
 
     mediaLibraryReplaceMedia(e) {
       return addMutation('replace_media', {
-        blockUuid: e.blockUuid,
-        fieldName: e.droppableFieldName,
+        blockUuid: e.host.uuid,
+        fieldName: e.host.fieldName,
+        mediaUuid: e.mediaId,
+      })
+    },
+
+    mediaLibraryReplaceEntityMedia(e) {
+      return addMutation('replace_entity_media', {
+        fieldName: e.host.fieldName,
         mediaUuid: e.mediaId,
       })
     },

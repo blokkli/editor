@@ -1154,7 +1154,7 @@ export type DroppableEntityField = {
   /**
    * The host.
    */
-  host: DraggableExistingBlock
+  host: DraggableExistingBlock | EntityContext
 
   /**
    * The name of the field on which entities can be dropped.
