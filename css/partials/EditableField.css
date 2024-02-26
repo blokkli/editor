@@ -89,6 +89,10 @@
         pointer-events: none !important;
       }
     }
+
+    [data-blokkli-droppable-field] {
+      @apply pointer-events-auto;
+    }
     @media (hover: none) {
       [data-is-selected='true'] {
         [data-blokkli-editable-field]:not(

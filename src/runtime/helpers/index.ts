@@ -717,3 +717,14 @@ export const originatesFromEditable = (
     }
   }
 }
+
+export const getOriginatingDroppableElement = (
+  e: MouseEvent | TouchEvent,
+): HTMLElement | undefined => {
+  if (e.target instanceof HTMLElement) {
+    const el = e.target.closest('[data-blokkli-droppable-field]')
+    if (el instanceof HTMLElement) {
+      return el
+    }
+  }
+}

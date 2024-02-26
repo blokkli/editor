@@ -12,17 +12,31 @@
     icon="image"
     weight="-100"
   >
-    <Library />
+    <Library is-sortli />
   </PluginSidebar>
+
+  <PluginDroppableEdit
+    id="media-replace"
+    title="Replace media"
+    icon="image"
+    entity-type="media"
+    @save="onDroppableEditSave"
+  >
+    <Library v-model="selected" />
+  </PluginDroppableEdit>
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature } from '#imports'
-import { PluginSidebar } from '#blokkli/plugins'
+import { useBlokkli, defineBlokkliFeature, ref } from '#imports'
+import { PluginSidebar, PluginDroppableEdit } from '#blokkli/plugins'
 import Library from './Library/index.vue'
 import defineDropAreas from '#blokkli/helpers/composables/defineDropAreas'
 import { falsy } from '#blokkli/helpers'
-import type { DraggableHostData, DropArea } from '#blokkli/types'
+import type {
+  DraggableHostData,
+  DropArea,
+  DroppableEntityField,
+} from '#blokkli/types'
 
 defineBlokkliFeature({
   id: 'media-library',
@@ -34,6 +48,39 @@ defineBlokkliFeature({
 })
 
 const { $t, dom, adapter, state, runtimeConfig } = useBlokkli()
+
+const selected = ref('')
+
+const onDroppableEditSave = async (e: DroppableEntityField) => {
+  if (!selected.value) {
+    return
+  }
+  if ('itemBundle' in e.host && adapter.mediaLibraryReplaceMedia) {
+    await state.mutateWithLoadingState(
+      adapter.mediaLibraryReplaceMedia!({
+        host: {
+          uuid: e.host.uuid,
+          type: runtimeConfig.itemEntityType,
+          fieldName: e.fieldName,
+        },
+        mediaId: selected.value,
+      }),
+      $t('mediaLibraryReplaceFailed', 'Failed to replace media.'),
+    )
+  } else if ('type' in e.host && adapter.mediaLibraryReplaceEntityMedia) {
+    await state.mutateWithLoadingState(
+      adapter.mediaLibraryReplaceEntityMedia!({
+        host: {
+          uuid: e.host.uuid,
+          type: e.host.type,
+          fieldName: e.fieldName,
+        },
+        mediaId: selected.value,
+      }),
+      $t('mediaLibraryReplaceFailed', 'Failed to replace media.'),
+    )
+  }
+}
 
 defineDropAreas((dragItems) => {
   // Not supported by adapter.

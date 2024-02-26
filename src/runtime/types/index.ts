@@ -846,6 +846,8 @@ export type EventbusEvents = {
   'editable:update': EditableFieldUpdateEvent
   'editable:save': undefined
 
+  'droppable:focus': DroppableEntityField
+
   'sidebar:close': undefined
 
   'action:placed': ActionPlacedEvent

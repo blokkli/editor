@@ -40,6 +40,14 @@
 
 .bk-media-library-items {
   @apply grid grid-cols-2 gap-15 p-20;
+  &:not(.bk-is-sortli) {
+    img {
+      @apply select-none;
+      user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-user-drag: none;
+    }
+  }
   @container (min-width: 400px) {
     @apply grid-cols-3;
   }
@@ -80,6 +88,10 @@
     @apply text-sm cursor-pointer select-none;
     img {
       @apply aspect-square object-cover border border-mono-300 rounded block;
+    }
+
+    &.bk-is-selected {
+      @apply outline outline-accent-700;
     }
 
     &:hover {

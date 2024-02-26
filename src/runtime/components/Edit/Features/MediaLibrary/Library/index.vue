@@ -37,15 +37,22 @@
         </label>
       </div>
     </div>
-    <Sortli class="bk-media-library-items" no-transition>
+    <Component
+      :is="isSortli ? Sortli : 'div'"
+      class="bk-media-library-items"
+      :class="{ 'bk-is-sortli': isSortli }"
+      no-transition
+    >
       <div
         v-for="item in items"
         :key="item.mediaId"
+        :class="{ 'bk-is-selected': modelValue === item.mediaId }"
         :data-sortli-id="'media_library_' + item.mediaId"
         data-element-type="media_library"
         :data-item-bundle="item.blockBundle"
         :data-media-id="item.mediaId"
         :data-media-bundle="item.mediaBundle"
+        @click="onClick(item.mediaId)"
       >
         <img :src="item.thumbnail" />
         <div>
@@ -53,7 +60,7 @@
           <p>{{ item.context }}</p>
         </div>
       </div>
-    </Sortli>
+    </Component>
   </div>
 </template>
 
@@ -61,6 +68,21 @@
 import { ref, computed, useLazyAsyncData, useBlokkli } from '#imports'
 import { Sortli, Icon } from '#blokkli/components'
 import type { MediaLibraryFilter } from './../types'
+
+const props = defineProps<{
+  isSortli?: boolean
+  modelValue?: string
+}>()
+
+const emit = defineEmits(['update:modelValue'])
+
+const onClick = (id: string) => {
+  if (props.isSortli) {
+    return
+  }
+
+  emit('update:modelValue', id)
+}
 
 type RenderedFilter = {
   key: string

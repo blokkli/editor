@@ -18,6 +18,8 @@ import {
   intersects,
   getBounds,
   originatesFromEditable,
+  getOriginatingDroppableElement,
+  mapDroppableField,
 } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import type { DomProvider } from './domProvider'
@@ -316,18 +318,26 @@ export default function (
 
   const onDoubleClick = (e: MouseEvent) => {
     const element = originatesFromEditable(e)
-    if (!element) {
-      return
-    }
-    const fieldName = element.dataset.blokkliEditableField
-    if (!fieldName) {
+    if (element) {
+      const fieldName = element.dataset.blokkliEditableField
+      if (fieldName) {
+        eventBus.emit('editable:focus', {
+          fieldName,
+          element,
+        })
+      }
+
       return
     }
 
-    eventBus.emit('editable:focus', {
-      fieldName,
-      element,
-    })
+    const droppableElement = getOriginatingDroppableElement(e)
+
+    if (!droppableElement) {
+      return
+    }
+
+    const droppable = mapDroppableField(droppableElement)
+    eventBus.emit('droppable:focus', droppable)
   }
 
   function onWindowMouseDown(e: MouseEvent) {

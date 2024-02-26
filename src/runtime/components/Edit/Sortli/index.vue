@@ -20,7 +20,11 @@ import {
   type ComponentPublicInstance,
 } from '#imports'
 import type { Coord } from '#blokkli/types'
-import { buildDraggableItem, originatesFromEditable } from '#blokkli/helpers'
+import {
+  buildDraggableItem,
+  getOriginatingDroppableElement,
+  originatesFromEditable,
+} from '#blokkli/helpers'
 import { getDefinition } from '#blokkli/definitions'
 
 const props = defineProps<{
@@ -416,6 +420,9 @@ const onDoubleClick = (e: MouseEvent | TouchEvent) => {
       e.stopPropagation()
       return
     }
+  }
+  if (getOriginatingDroppableElement(e)) {
+    return
   }
   const id = findItem(e)?.id
   if (id) {

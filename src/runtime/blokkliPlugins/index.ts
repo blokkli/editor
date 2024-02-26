@@ -7,6 +7,7 @@ import PluginViewOption from './ViewOption/index.vue'
 import PluginAddAction from './AddAction/index.vue'
 import PluginContextMenu from './ContextMenu/index.vue'
 import PluginTourItem from './TourItem/index.vue'
+import PluginDroppableEdit from './DroppableEdit/index.vue'
 
 export {
   PluginMenuButton,
@@ -18,4 +19,5 @@ export {
   PluginAddAction,
   PluginContextMenu,
   PluginTourItem,
+  PluginDroppableEdit,
 }
