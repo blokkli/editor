@@ -1,28 +1,42 @@
 <template>
-  <div class="hero py-20 md:py-50 lg:py-100 overflow-hidden relative">
-    <div class="container lg:grid grid-cols-12 gap-20 lg:gap-40">
-      <div class="col-span-8 hero-content">
-        <BlokkliEditable
-          v-slot="{ value }"
-          :value="titleValue"
-          required
-          name="title"
-        >
-          <h1
-            class="text-4xl lg:text-6xl hero-title"
-            v-html="getTitleMarkup(value)"
+  <div>
+    <div class="hero py-20 md:py-50 lg:py-100 overflow-hidden relative">
+      <div class="container lg:grid grid-cols-12 gap-20 lg:gap-40">
+        <div class="col-span-8 hero-content">
+          <BlokkliEditable
+            v-slot="{ value }"
+            :value="titleValue"
+            required
+            name="title"
+          >
+            <h1
+              class="text-4xl lg:text-6xl hero-title"
+              v-html="getTitleMarkup(value)"
+            />
+          </BlokkliEditable>
+          <p
+            v-if="lead"
+            v-blokkli-editable:lead="{ required: true }"
+            class="mt-20 text-lg lg:text-xl text-mono-700"
+            v-text="lead"
           />
-        </BlokkliEditable>
-        <p
-          v-if="lead"
-          v-blokkli-editable:lead="{ required: true }"
-          class="mt-20 text-lg lg:text-xl text-mono-700"
-          v-text="lead"
-        />
-        <slot></slot>
+          <slot></slot>
+        </div>
+        <div class="col-span-4 max-w-[340px] lg:w-full mx-auto mb-30 lg:mb-0">
+          <HeroAnimation :animated="!isEditing" />
+        </div>
       </div>
-      <div class="col-span-4 max-w-[340px] lg:w-full mx-auto mb-30 lg:mb-0">
-        <HeroAnimation :animated="!isEditing" />
+    </div>
+    <div class="container">
+      <div
+        class="overflow-hidden shadow-xl rounded-lg bg-white"
+        v-blokkli-droppable:heroImage="{
+          entityType: 'media',
+          entityBundles: ['image'],
+          cardinality: 1,
+        }"
+      >
+        <img v-if="image" :src="image.url" :alt="image.alt" />
       </div>
     </div>
   </div>
@@ -35,6 +49,10 @@ const props = defineProps<{
   isEditing: boolean
   title: string
   lead: string
+  image?: {
+    url?: string
+    alt?: string
+  }
 }>()
 
 const titleValue = computed(() => props.title.toString())

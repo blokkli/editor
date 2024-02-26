@@ -42,6 +42,13 @@ export class MediaImage extends Media {
   title(): string {
     return this.alt()
   }
+
+  getData() {
+    return {
+      url: this.url(),
+      alt: this.alt(),
+    }
+  }
 }
 
 export class MediaVideo extends Media {

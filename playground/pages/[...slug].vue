@@ -10,7 +10,12 @@
       :language="language"
       :entity="pageValues"
     >
-      <Hero :is-editing="isEditing" :title="entity?.title" :lead="entity?.lead">
+      <Hero
+        :is-editing="isEditing"
+        :title="entity?.title"
+        :lead="entity?.lead"
+        :image="entity.heroImage"
+      >
         <BlokkliField
           name="buttons"
           :list="fieldButtons"
@@ -57,8 +62,5 @@ page.getTranslation(language.value)
 
 const fieldButtons = computed(() => mapMockField(page.buttons()))
 const fieldContent = computed(() => mapMockField(page.content()))
-
-const pageValues = computed(() => {
-  return page.getData()
-})
+const pageValues = computed(() => page.getData())
 </script>

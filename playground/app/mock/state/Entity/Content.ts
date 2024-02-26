@@ -1,7 +1,9 @@
 import { Entity } from '../Entity'
 import type { Field } from '../Field'
 import { FieldBlocks } from '../Field/Blocks'
+import { FieldReference } from '../Field/Reference'
 import { FieldText } from '../Field/Text'
+import type { MediaImage } from '../Media/Media'
 
 export abstract class Content extends Entity {
   static entityType = 'content'
@@ -38,6 +40,7 @@ export class ContentPage extends Content {
         'widget',
       ]),
       new FieldBlocks('buttons', 'Buttons', 3, ['button']),
+      new FieldReference('heroImage', 'Hero Image', 1, 'media', ['image']),
       new FieldText('lead', 'Lead'),
     ]
   }
@@ -54,10 +57,17 @@ export class ContentPage extends Content {
     return this.get('lead')
   }
 
+  heroImage(): MediaImage | undefined {
+    const field = this.get('heroImage') as FieldReference<MediaImage>
+    const entities = field.getReferencedEntities()
+    return entities[0]
+  }
+
   getData() {
     return {
       title: this.title().getText(),
       lead: this.lead().getText(),
+      heroImage: this.heroImage()?.getData(),
     }
   }
 }
