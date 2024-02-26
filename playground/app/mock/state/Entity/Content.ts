@@ -40,6 +40,7 @@ export class ContentPage extends Content {
         'widget',
       ]),
       new FieldBlocks('buttons', 'Buttons', 3, ['button']),
+      new FieldBlocks('icons', 'Icons', 9, ['icon']),
       new FieldReference('heroImage', 'Hero Image', 1, 'media', ['image']),
       new FieldText('lead', 'Lead'),
     ]
@@ -51,6 +52,10 @@ export class ContentPage extends Content {
 
   buttons(): FieldBlocks {
     return this.get('buttons')
+  }
+
+  icons(): FieldBlocks {
+    return this.get('icons')
   }
 
   lead(): FieldText {

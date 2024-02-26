@@ -14,7 +14,7 @@
         :is-editing="isEditing"
         :title="entity?.title"
         :lead="entity?.lead"
-        :image="entity.heroImage"
+        :image="entity?.heroImage"
       >
         <BlokkliField
           name="buttons"
@@ -22,6 +22,13 @@
           list-class="mt-20 lg:mt-40 flex gap-10 flex-wrap"
           field-list-type="inline"
         />
+        <template #animation>
+          <BlokkliField
+            name="icons"
+            :list="fieldIcons"
+            class="relative hero-animation"
+          />
+        </template>
       </Hero>
       <BlokkliField name="content" :list="fieldContent" />
     </BlokkliProvider>
@@ -62,5 +69,6 @@ page.getTranslation(language.value)
 
 const fieldButtons = computed(() => mapMockField(page.buttons()))
 const fieldContent = computed(() => mapMockField(page.content()))
+const fieldIcons = computed(() => mapMockField(page.icons()))
 const pageValues = computed(() => page.getData())
 </script>

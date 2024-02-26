@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :style="{ '--hero-step': step }">
     <div class="hero py-20 md:py-50 lg:py-100 overflow-hidden relative">
       <div class="container lg:grid grid-cols-12 gap-20 lg:gap-40">
         <div class="col-span-8 hero-content">
@@ -23,18 +23,18 @@
           <slot></slot>
         </div>
         <div class="col-span-4 max-w-[340px] lg:w-full mx-auto mb-30 lg:mb-0">
-          <HeroAnimation :animated="!isEditing" />
+          <slot name="animation"></slot>
         </div>
       </div>
     </div>
     <div class="container">
       <div
-        class="overflow-hidden shadow-xl rounded-lg bg-white"
         v-blokkli-droppable:heroImage="{
           entityType: 'media',
           entityBundles: ['image'],
           cardinality: 1,
         }"
+        class="overflow-hidden shadow-xl rounded-lg bg-white"
       >
         <img v-if="image" :src="image.url" :alt="image.alt" />
       </div>
@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from '#imports'
+import { computed, onBeforeUnmount, onMounted, provide, ref } from '#imports'
 
 const props = defineProps<{
   isEditing: boolean
@@ -76,6 +76,30 @@ const getTitleMarkup = (text: string): string => {
 
   return result
 }
+
+let raf: any = null
+const step = ref(0)
+const isMobile = ref(false)
+
+const loop = () => {
+  step.value = window.scrollY
+  isMobile.value = window.innerWidth < 768
+  if (!props.isEditing) {
+    raf = window.requestAnimationFrame(loop)
+  }
+}
+
+onMounted(() => {
+  if (!props.isEditing) {
+    loop()
+  }
+})
+
+onBeforeUnmount(() => {
+  window.cancelAnimationFrame(raf)
+})
+
+provide('hero_step', step)
 </script>
 
 <style lang="postcss">
@@ -99,5 +123,21 @@ const getTitleMarkup = (text: string): string => {
 
 .hero-content {
   @apply relative z-10;
+}
+
+.hero-animation {
+  perspective: 1200px;
+  transform-style: preserve-3d;
+  @apply inline-grid grid-cols-3 gap-50 w-full mt-[120px] -mb-[50px] md:mt-0 md:mb-0;
+  @screen lg {
+    perspective: 700px;
+  }
+
+  svg {
+    @apply w-full h-full leading-none;
+  }
+}
+.hero-animation-icon {
+  @apply flex relative w-full items-center justify-center aspect-square;
 }
 </style>
