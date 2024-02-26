@@ -26,6 +26,7 @@ import {
 } from '#blokkli/helpers/symbols'
 import { frameEventBus } from '#blokkli/helpers/frameEventBus'
 import broadcastProvider from '#blokkli/helpers/broadcastProvider'
+import { intersects } from '#blokkli/helpers'
 
 const props = defineProps<{
   entity?: T
@@ -127,12 +128,21 @@ const onMutatedFields = (fields: MutatedField[]) => {
 const onFocusItem = (uuid: string) => {
   const el = document.querySelector(`[data-uuid="${uuid}"]`)
   if (el) {
-    const position = el.getBoundingClientRect()
-    window.scrollTo({
-      left: position.left,
-      top: position.top + window.scrollY - 200,
-      behavior: 'smooth',
-    })
+    const elRect = el.getBoundingClientRect()
+    if (
+      !intersects(elRect, {
+        x: 0,
+        y: 0,
+        width: window.innerWidth,
+        height: window.innerHeight,
+      })
+    ) {
+      el.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'center',
+      })
+    }
   }
 }
 const onUpdateOption = (option: UpdateBlockOptionEvent) => {
