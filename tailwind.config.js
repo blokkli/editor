@@ -24,6 +24,7 @@ const zIndex = [
   'sidebar-detached',
   'sidebar-tabs',
   'toolbar',
+  'tour-popup',
   'preview',
   'toolbar-dropdown',
   'search',

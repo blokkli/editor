@@ -61,11 +61,16 @@
 }
 
 .bk.bk-tour-popup {
-  @apply fixed top-60 left-80 bg-white shadow-xl w-[360px] rounded-md hyphens-auto overflow-hidden;
+  @apply fixed top-80 left-0 w-full bg-white shadow-xl  hyphens-auto overflow-hidden;
+  @apply z-tour-popup;
   @apply border border-mono-200;
 
+  @screen lg {
+    @apply top-60 left-80 right-auto w-[360px] rounded-md;
+  }
+
   h2 {
-    @apply font-bold text-xl;
+    @apply font-bold lg:text-xl;
   }
 
   .bk-button {
