@@ -100,6 +100,26 @@ const props = defineProps<{
 
 const getElement = (): HTMLElement => props.element
 
+type Alignment = 'left' | 'center' | 'right'
+
+const alignment = computed<Alignment>(() => {
+  if (props.element) {
+    const style = window.getComputedStyle(props.element)
+    if (
+      style.textAlign === 'left' ||
+      style.textAlign === 'center' ||
+      style.textAlign === 'right'
+    ) {
+      return style.textAlign
+    } else if (style.textAlign === 'start') {
+      return 'left'
+    } else if (style.textAlign === 'end') {
+      return 'right'
+    }
+  }
+  return 'center'
+})
+
 const scrollHeight = ref(0)
 const loaded = ref(false)
 const originalText = ref(props.value || '')
@@ -265,7 +285,10 @@ const onAnimationFrame = () => {
   const ideal = findIdealRectPosition(
     ui.viewportBlockingRects.value,
     {
-      x: elementRect.x + (elementRect.width - newWidth) / 2,
+      x:
+        alignment.value === 'left'
+          ? elementRect.x
+          : elementRect.x + (Math.max(elementRect.width, 360) - newWidth) / 2,
       y: elementRect.y - height - 20,
       height,
       width: newWidth,
