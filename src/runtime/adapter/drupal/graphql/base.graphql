@@ -18,6 +18,7 @@ fragment paragraphsBlokkliEditState on ParagraphsBlokkliEditState {
       ...paragraphsBlokkliViolation
     }
   }
+
   bundleLabel
   entity {
     id
@@ -43,6 +44,10 @@ fragment paragraphsBlokkliEditState on ParagraphsBlokkliEditState {
         }
       }
     }
+  }
+
+  mutatedEntity: entity {
+    ...pbMutatedEntity
   }
 
   translationState {
@@ -501,6 +506,71 @@ mutation pbTakeOwnership(
     entityUuid: $entityUuid
   ) {
     action: takeOwnership {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}
+
+mutation pbReplaceMedia(
+  $langcode: String!
+  $entityType: EntityType!
+  $entityUuid: String!
+  $uuid: String!
+  $fieldName: String!
+  $mediaId: String!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: replace_media(
+      uuid: $uuid
+      langcode: $langcode
+      fieldName: $fieldName
+      mediaId: $mediaId
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}
+
+mutation pbReplaceHostEntityMedia(
+  $langcode: String!
+  $entityType: EntityType!
+  $entityUuid: String!
+  $fieldName: String!
+  $mediaId: String!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: replace_host_entity_media(
+      langcode: $langcode
+      fieldName: $fieldName
+      mediaId: $mediaId
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}
+
+mutation pbUpdateHostEntityFieldValue(
+  $langcode: String!
+  $entityType: EntityType!
+  $entityUuid: String!
+  $fieldName: String!
+  $value: String!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: update_host_entity_field_value(
+      langcode: $langcode
+      fieldName: $fieldName
+      value: $value
+    ) {
       ...paragraphsBlokkliMutationResult
     }
   }

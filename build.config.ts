@@ -14,6 +14,7 @@ export default defineBuildConfig({
     '#blokkli/helpers/themeProvider',
     '#blokkli/helpers/tourProvider',
     '#blokkli/helpers/commandsProvider',
+    '#blokkli/helpers/dropAreaProvider',
     '#blokkli/translations',
     '#blokkli/generated-types',
     '#blokkli/types/generatedModuleTypes',

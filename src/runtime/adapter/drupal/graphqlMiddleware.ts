@@ -297,6 +297,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           bundleLabel,
           editUrl,
         },
+        mutatedEntity: state.mutatedEntity,
         translationState,
       }
     }
@@ -469,6 +470,35 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         name: e.name,
       }).then(mapMutation)
 
+    const mediaLibraryReplaceMedia: DrupalAdapter['mediaLibraryReplaceMedia'] =
+      (e) =>
+        useGraphqlMutation('pbReplaceMedia', {
+          ...ctx.value,
+          langcode: providedContext.value.language,
+          uuid: e.host.uuid,
+          fieldName: e.host.fieldName,
+          mediaId: e.mediaId,
+        }).then(mapMutation)
+
+    const mediaLibraryReplaceEntityMedia: DrupalAdapter['mediaLibraryReplaceEntityMedia'] =
+      (e) =>
+        useGraphqlMutation('pbReplaceHostEntityMedia', {
+          ...ctx.value,
+          langcode: providedContext.value.language,
+          fieldName: e.host.fieldName,
+          mediaId: e.mediaId,
+        }).then(mapMutation)
+
+    const updateEntityFieldValue: DrupalAdapter['updateEntityFieldValue'] = (
+      e,
+    ) =>
+      useGraphqlMutation('pbUpdateHostEntityFieldValue', {
+        ...ctx.value,
+        langcode: providedContext.value.language,
+        fieldName: e.fieldName,
+        value: e.fieldValue,
+      }).then(mapMutation)
+
     return {
       buildEditableFrameUrl,
       getTransformPlugins,
@@ -506,6 +536,9 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       updateFieldValue,
       getEditableFieldConfig,
       fragmentsAddBlock,
+      mediaLibraryReplaceMedia,
+      mediaLibraryReplaceEntityMedia,
+      updateEntityFieldValue,
     }
   },
 )
