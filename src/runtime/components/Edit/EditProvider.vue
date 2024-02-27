@@ -63,6 +63,7 @@ import {
   INJECT_EDIT_CONTEXT,
   INJECT_IS_EDITING,
 } from '#blokkli/helpers/symbols'
+import type { AdapterContext } from '#blokkli/adapter'
 
 const props = withDefaults(
   defineProps<{
@@ -78,7 +79,14 @@ const props = withDefaults(
   },
 )
 
-const context = computed(() => props)
+const context = computed<AdapterContext>(() => {
+  return {
+    entityType: props.entityType,
+    entityUuid: props.entityUuid,
+    entityBundle: props.entityBundle,
+    language: props.language,
+  }
+})
 const adapter = getAdapter(context)
 
 const route = useRoute()
