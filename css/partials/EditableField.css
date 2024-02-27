@@ -80,7 +80,7 @@
 
       @screen lg {
         &:hover {
-          @apply outline-2 outline-teal-normal outline-offset-1 outline-dotted;
+          @apply outline-[3px] outline-teal-normal outline-offset-1 outline-dashed;
         }
       }
     }
@@ -92,13 +92,18 @@
 
     [data-blokkli-droppable-field] {
       @apply pointer-events-auto;
+      @screen lg {
+        &:hover {
+          @apply outline-[3px] outline-teal-normal outline-offset-4 outline-dashed;
+        }
+      }
     }
     @media (hover: none) {
       [data-is-selected='true'] {
         [data-blokkli-editable-field]:not(
             [data-blokkli-editable-active='true']
           ) {
-          @apply outline-1 outline-teal-normal outline-dashed -outline-offset-2;
+          @apply outline-[3px] outline-teal-normal outline-dashed -outline-offset-2;
         }
       }
     }
