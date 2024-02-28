@@ -266,38 +266,32 @@ html {
   }
 }
 
-.bk,
-.bk-html-preview {
-  * {
-    scrollbar-width: thin;
-  }
-
-  /* Works on Chrome, Edge, and Safari */
-  *::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  *::-webkit-scrollbar-track {
-    @apply bg-mono-100;
-  }
-
-  *::-webkit-scrollbar-thumb {
-    @apply bg-mono-400;
-    border-radius: 20px;
-  }
-}
-
 .bk-scrollbar-dark {
   &::-webkit-scrollbar {
     width: 8px;
   }
 
   &::-webkit-scrollbar-track {
-    @apply bg-mono-900;
+    @apply bg-mono-700;
   }
 
   &::-webkit-scrollbar-thumb {
     @apply bg-mono-500 border-mono-900 border-3;
+    border-radius: 20px;
+  }
+}
+
+.bk-scrollbar-light {
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    @apply bg-mono-300;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    @apply bg-mono-400 border-mono-900 border-3;
     border-radius: 20px;
   }
 }

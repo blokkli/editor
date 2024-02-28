@@ -39,7 +39,7 @@
     </ul>
 
     <div class="bk-search-results">
-      <div ref="resultsEl" class="bk-search-list">
+      <div ref="resultsEl" class="bk-search-list bk-scrollbar-light">
         <template v-for="item in tabItems" :key="item.key">
           <ResultsPage
             v-if="item.key === 'on_this_page'"
