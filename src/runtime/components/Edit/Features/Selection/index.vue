@@ -9,7 +9,10 @@
 </template>
 
 <script lang="ts" setup>
-import { calculateIntersection } from '#blokkli/helpers'
+import {
+  calculateIntersection,
+  originatesFromTextInput,
+} from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { DraggableExistingBlock } from '#blokkli/types'
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
@@ -138,6 +141,10 @@ onBlokkliEvent('keyPressed', (e) => {
     e.shift ? eventBus.emit('select:previous') : eventBus.emit('select:next')
     animation.requestDraw()
   } else if (e.code === 'a' && e.meta) {
+    // Regular native CTRL+A behaviour should not be overriden.
+    if (originatesFromTextInput(e.originalEvent)) {
+      return
+    }
     e.originalEvent.preventDefault()
     eventBus.emit(
       'select:end',

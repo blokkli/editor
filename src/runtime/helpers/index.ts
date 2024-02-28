@@ -728,3 +728,7 @@ export const getOriginatingDroppableElement = (
     }
   }
 }
+
+export const originatesFromTextInput = (e: Event): boolean =>
+  e.target instanceof HTMLInputElement ||
+  e.target instanceof HTMLTextAreaElement
