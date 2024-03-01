@@ -175,7 +175,7 @@
     "source": "Search commands...",
     "translation": ""
   },
-  "commandPalette.open": {
+  "commandPaletteOpen": {
     "source": "Open Command Palette",
     "translation": ""
   },
@@ -214,6 +214,10 @@
   "deleteError": {
     "source": "The block could not be deleted.",
     "translation": "L'elemento non può essere rimosso."
+  },
+  "droppableEditFormSave": {
+    "source": "Save",
+    "translation": ""
   },
   "duplicate": {
     "source": "Duplicate",

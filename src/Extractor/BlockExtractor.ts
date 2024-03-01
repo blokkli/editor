@@ -5,6 +5,7 @@ import type {
   BlockDefinitionOptionsInput,
   FragmentDefinitionInput,
 } from '../runtime/types'
+import { sortObjectKeys } from './../helpers'
 
 type ExtractedBlockDefinitionInput = BlockDefinitionInput<{}, []>
 type ExtractedFragmentDefinitionInput = FragmentDefinitionInput<{}, []>
@@ -244,7 +245,8 @@ export const getFragmentDefinition = (name: string): FragmentDefinitionInput<Rec
       {},
     )
 
-    return JSON.stringify(schema, null, 2)
+    const sorted = sortObjectKeys(schema)
+    return JSON.stringify(sorted, null, 2)
   }
 
   /**

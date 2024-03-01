@@ -208,9 +208,9 @@ msgstr "Oberfläche"
 
 msgctxt "commandPalette.inputPlaceholder"
 msgid "Search commands..."
-msgstr "Aktionen durchsuchen..."
+msgstr "Befehle durchsuchen..."
 
-msgctxt "commandPalette.open"
+msgctxt "commandPaletteOpen"
 msgid "Open Command Palette"
 msgstr "Befehle öffnen"
 
@@ -249,6 +249,10 @@ msgstr "Löschen"
 msgctxt "deleteError"
 msgid "The block could not be deleted."
 msgstr "Das Element konnte nicht entfernt werden."
+
+msgctxt "droppableEditFormSave"
+msgid "Save"
+msgstr "Speichern"
 
 msgctxt "duplicate"
 msgid "Duplicate"

@@ -173,9 +173,9 @@
   },
   "commandPalette.inputPlaceholder": {
     "source": "Search commands...",
-    "translation": "Aktionen durchsuchen..."
+    "translation": "Befehle durchsuchen..."
   },
-  "commandPalette.open": {
+  "commandPaletteOpen": {
     "source": "Open Command Palette",
     "translation": "Befehle öffnen"
   },
@@ -214,6 +214,10 @@
   "deleteError": {
     "source": "The block could not be deleted.",
     "translation": "Das Element konnte nicht entfernt werden."
+  },
+  "droppableEditFormSave": {
+    "source": "Save",
+    "translation": "Speichern"
   },
   "duplicate": {
     "source": "Duplicate",

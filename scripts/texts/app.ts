@@ -5,6 +5,7 @@ import { parse } from 'acorn'
 import chalk from 'chalk'
 import { glob } from 'glob'
 import { format } from './../helpers'
+import { sortObjectKeys } from './../../src/helpers'
 import { po as PO, type GetTextTranslation } from 'gettext-parser'
 
 const LANGUAGES = ['de', 'fr', 'it', 'gsw_CH']
@@ -253,15 +254,6 @@ class Extractor {
   getTexts() {
     return Object.values(this.texts)
   }
-}
-
-function sortObjectKeys(obj: Record<string, any>): Record<string, any> {
-  const sortedKeys = Object.keys(obj).sort()
-  const sortedObj: Record<string, any> = {}
-  sortedKeys.forEach((key) => {
-    sortedObj[key] = obj[key]
-  })
-  return sortedObj
 }
 
 async function getSourceTexts(): Promise<Record<string, string>> {

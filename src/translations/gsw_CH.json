@@ -175,9 +175,9 @@
     "source": "Search commands...",
     "translation": "Aktione durchsueche..."
   },
-  "commandPalette.open": {
+  "commandPaletteOpen": {
     "source": "Open Command Palette",
-    "translation": "Mach d'Befähl uf"
+    "translation": ""
   },
   "commentAdd": {
     "source": "Add comment",
@@ -214,6 +214,10 @@
   "deleteError": {
     "source": "The block could not be deleted.",
     "translation": "S'Elemänt het nid chönne entfärnt wärde. "
+  },
+  "droppableEditFormSave": {
+    "source": "Save",
+    "translation": ""
   },
   "duplicate": {
     "source": "Duplicate",
