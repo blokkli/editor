@@ -46,6 +46,7 @@
       <div
         v-for="item in items"
         :key="item.mediaId"
+        class="bk-media-library-items-item"
         :class="{ 'bk-is-selected': modelValue === item.mediaId }"
         :data-sortli-id="'media_library_' + item.mediaId"
         data-element-type="media_library"
@@ -54,8 +55,10 @@
         :data-media-bundle="item.mediaBundle"
         @click="onClick(item.mediaId)"
       >
-        <img :src="item.thumbnail" />
-        <div>
+        <div class="bk-media-library-items-item-image">
+          <img :src="item.thumbnail" />
+        </div>
+        <div class="bk-media-library-items-item-text">
           <h3>{{ item.label }}</h3>
           <p>{{ item.context }}</p>
         </div>

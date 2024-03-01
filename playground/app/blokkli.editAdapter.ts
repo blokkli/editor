@@ -20,7 +20,7 @@ import { getBlockBundles } from './mock/state/Block'
 import type { MutatedState } from './mock/state/EditState'
 import type { ContentPage } from './mock/state/Entity/Content'
 import { FieldBlocks } from './mock/state/Field/Blocks'
-import type { MediaImage, MediaVideo } from './mock/state/Media/Media'
+import { MediaImage, type MediaVideo } from './mock/state/Media/Media'
 import { transforms } from './mock/transforms'
 import type { MediaLibraryItem } from '#blokkli/components/Features/MediaLibrary/types'
 import type { MutationArgsMap } from './mock/plugins/mutations'
@@ -78,10 +78,12 @@ export default defineBlokkliEditAdapter((ctx) => {
       .getStorage('media')
       .query({ bundle })
       .map((media) => {
+        const context =
+          media instanceof MediaImage ? media.filename() : media.bundle
         return {
           mediaId: media.uuid,
           label: media.title(),
-          context: media.bundle,
+          context,
           thumbnail: media.thumbnail(),
           blockBundle: bundle,
           mediaBundle: media.bundle,

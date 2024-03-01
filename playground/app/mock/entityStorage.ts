@@ -76,25 +76,42 @@ export class EntityStorageManager {
 
     this.createImage('1', '/search.png', 'Search functionality in Blokkli')
 
-    this.createImage('2', '/code.png', 'Vue Component of a Blokkli Block')
+    this.createImage(
+      '2',
+      '/code.png',
+      'Vue Component of a Blokkli Block with a very long title to test how it renders in the media library grid',
+      'code.png',
+    )
 
     this.createImage(
       '3',
       '/editor-screenshot.png',
-      'Vue Component of a Blokkli Block',
+      'editor_screenshot_with_a_very_weird_title_that_should_actually_not_be_a_file-name.png',
+      'editor_screenshot_with_a_very_weird_title_that_should_actually_not_be_a_file-name.png',
     )
 
-    this.createImage('4', '/toolbar.png', 'Vue Component of a Blokkli Block')
+    this.createImage(
+      '4',
+      '/toolbar.png',
+      'Vue Component of a Blokkli Block',
+      'toolbar.png',
+    )
 
-    this.createImage('5', '/drupal-logo.svg', 'Drupal Logo')
+    this.createImage('5', '/drupal-logo.svg', 'Drupal Logo', 'drupal-logo.svg')
     this.createImage(
       '6',
       '/basel-logo.svg',
       'Logo of the canton of Basel-Stadt',
+      'basel-logo.svg',
     )
 
-    this.createImage('7', '/placeholder.jpg', 'Placeholder')
-    this.createImage('8', '/mobile-screenshot.png', 'Mobile Screenshot')
+    this.createImage('7', '/placeholder.jpg', 'Placeholder', 'placeholder.jpg')
+    this.createImage(
+      '8',
+      '/mobile-screenshot.png',
+      'Mobile Screenshot',
+      'mobile-screenshot.png',
+    )
 
     this.addUser('1', 'John Miller', 'john@example.com')
     this.addUser('2', 'Martin Faux', 'martin@example.com')
@@ -231,11 +248,12 @@ export class EntityStorageManager {
     return block
   }
 
-  createImage(uuid: string, url: string, alt: string) {
+  createImage(uuid: string, url: string, alt: string, filename?: string) {
     const image = new MediaImage(uuid)
     image.setValues({
       url,
       alt,
+      filename,
     })
     this.storages.media.add(image)
   }

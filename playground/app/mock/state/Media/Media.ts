@@ -24,6 +24,7 @@ export class MediaImage extends Media {
       ...super.getFieldDefintions(),
       new FieldUrl('url', 'URL'),
       new FieldText('alt', 'Alt Text'),
+      new FieldText('filename', 'File name'),
     ]
   }
 
@@ -39,6 +40,10 @@ export class MediaImage extends Media {
     return this.get<FieldText>('alt').getText()
   }
 
+  filename(): string {
+    return this.get<FieldText>('filename').getText()
+  }
+
   title(): string {
     return this.alt()
   }
@@ -47,6 +52,7 @@ export class MediaImage extends Media {
     return {
       url: this.url(),
       alt: this.alt(),
+      filename: this.filename(),
     }
   }
 }
