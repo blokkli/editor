@@ -433,6 +433,24 @@ const getSelectedRect = (): string | undefined => {
   if (props.disabled) {
     return
   }
+
+  // Check if the cursor position is over a viewport blocking rect.
+  const isInsideBlockingRect = ui.viewportBlockingRects.value.find((rect) =>
+    isInsideRect(props.mouseX, props.mouseY, rect),
+  )
+  if (isInsideBlockingRect) {
+    return
+  }
+
+  // Check if the cursor position is inside the visible viewport area.
+  const isInsideVisibleViewport = isInsideRect(
+    props.mouseX,
+    props.mouseY,
+    ui.visibleViewport.value,
+  )
+  if (!isInsideVisibleViewport) {
+    return
+  }
   const elements = [...document.querySelectorAll('[data-drop-target-key]')]
 
   const intersectingRects: IntersectingRectangle[] = []
