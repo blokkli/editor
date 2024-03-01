@@ -1,6 +1,11 @@
 <template>
   <div class="bk bk-media-library">
     <div class="bk-media-library-filters">
+      <div class="bk-media-library-filters-listview">
+        <button @click="toggleListView">
+          <Icon :name="listViewIcon" />
+        </button>
+      </div>
       <div v-for="filter in filters" :key="filter.key">
         <label v-if="filter.filter.type === 'text'" class="bk-form-text">
           <Icon name="search" />
@@ -37,10 +42,11 @@
         </label>
       </div>
     </div>
+
     <Component
       :is="isSortli ? Sortli : 'div'"
       class="bk-media-library-items"
-      :class="{ 'bk-is-sortli': isSortli }"
+      :class="[{ 'bk-is-sortli': isSortli }, 'bk-is-' + listView]"
       no-transition
     >
       <div
@@ -55,8 +61,10 @@
         :data-media-bundle="item.mediaBundle"
         @click="onClick(item.mediaId)"
       >
-        <div class="bk-media-library-items-item-image">
-          <img :src="item.thumbnail" />
+        <div>
+          <div class="bk-media-library-items-item-image">
+            <img :src="item.thumbnail" />
+          </div>
         </div>
         <div class="bk-media-library-items-item-text">
           <h3>{{ item.label }}</h3>
@@ -71,6 +79,7 @@
 import { ref, computed, useLazyAsyncData, useBlokkli } from '#imports'
 import { Sortli, Icon } from '#blokkli/components'
 import type { MediaLibraryFilter } from './../types'
+import type { BlokkliIcon } from '#blokkli/icons'
 
 const props = defineProps<{
   isSortli?: boolean
@@ -92,7 +101,24 @@ type RenderedFilter = {
   filter: MediaLibraryFilter
 }
 
-const { adapter } = useBlokkli()
+const { adapter, storage } = useBlokkli()
+
+const listView = storage.use<'horizontal' | 'grid'>(
+  'mediaLibraryListView',
+  'grid',
+)
+
+const listViewIcon = computed<BlokkliIcon>(() => {
+  if (listView.value === 'grid') {
+    return 'list-view-grid'
+  }
+
+  return 'list-view-horizontal'
+})
+
+const toggleListView = () => {
+  listView.value = listView.value === 'grid' ? 'horizontal' : 'grid'
+}
 
 const filterValues = ref<Record<string, any>>({})
 

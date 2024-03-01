@@ -20,6 +20,7 @@ export type MediaLibraryFilterText = {
 export type MediaLibraryFilterSelect = {
   label: string
   type: 'select'
+  default: string
   options: Record<string, string>
 }
 

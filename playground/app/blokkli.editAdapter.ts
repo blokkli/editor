@@ -70,7 +70,6 @@ export default defineBlokkliEditAdapter((ctx) => {
 
   const mediaLibraryGetResults: GetMediaLibraryFunction<{
     bundle: 'select'
-    foobar: 'checkbox'
     text: 'text'
   }> = (e) => {
     const bundle = e.filters.bundle || 'image'
@@ -101,14 +100,11 @@ export default defineBlokkliEditAdapter((ctx) => {
         bundle: {
           type: 'select',
           label: 'Bundle',
+          default: 'image',
           options: {
             image: 'Image',
             video: 'Video',
           },
-        },
-        foobar: {
-          type: 'checkbox',
-          label: 'Do you want to do that',
         },
         text: {
           type: 'text',
