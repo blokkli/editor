@@ -23,8 +23,8 @@
             'bk-is-' + child.orientation,
           ]"
           @click.stop.prevent.capture="onChildClick(field, child)"
-          @touchstart="activeKey = child.key"
-          @touchend="activeKey = ''"
+          @touchstart.passive="activeKey = child.key"
+          @touchend.passive="activeKey = ''"
         >
           <span>{{ field.label }}</span>
         </div>

@@ -41,6 +41,7 @@
       :data-is-new="item.isNew"
       :data-is-selected="item.selected"
       :data-refresh-key="state.refreshKey.value"
+      :data-entity-type="runtimeConfig.itemEntityType"
       :class="{ 'bk-is-selected': item.selected }"
       class="bk-draggable"
     />
@@ -52,7 +53,8 @@ import { computed, useBlokkli } from '#imports'
 import { Sortli } from '#blokkli/components'
 import type { FieldListItem, EntityContext, FieldConfig } from '#blokkli/types'
 
-const { state, eventBus, dom, keyboard, selection, types } = useBlokkli()
+const { state, eventBus, dom, keyboard, selection, types, runtimeConfig } =
+  useBlokkli()
 
 const props = defineProps<{
   name: string

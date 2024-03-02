@@ -572,6 +572,7 @@ export interface DraggableExistingBlock {
   itemType: 'existing'
   element: () => HTMLElement
   dragElement: () => HTMLElement | SVGElement
+  entityType: string
   hostType: string
   hostBundle: string
   hostUuid: string
@@ -1138,6 +1139,17 @@ export type TourItem = {
     | null
 }
 
+export type DroppableFieldConfig = {
+  name: string
+  label: string
+  entityType: string
+  entityBundle: string
+  allowedEntityType: string
+  allowedBundles: string[]
+  cardinality: number
+  required: boolean
+}
+
 /**
  * Defines a droppable entity field.
  */
@@ -1156,21 +1168,6 @@ export type DroppableEntityField = {
    * The name of the field on which entities can be dropped.
    */
   fieldName: string
-
-  /**
-   * The entity type that can be dropped.
-   */
-  droppableEntityType: string
-
-  /**
-   * The entity bundles that can be dropped.
-   */
-  droppableEntityBundles: string[]
-
-  /**
-   * The max number of items.
-   */
-  cardinality: number
 }
 
 export default {}

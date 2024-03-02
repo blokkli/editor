@@ -6,6 +6,9 @@ import type {
   EditableFieldConfig,
   BlockDefinitionInput,
   BlockDefinitionOptionsInput,
+  DroppableFieldConfig,
+  DraggableExistingBlock,
+  EntityContext,
 } from '../types'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import type { BlokkliAdapter } from '../adapter'
@@ -25,6 +28,11 @@ export type BlockDefinitionProvider = {
   getType: (bundle: string) => BlokkliBlockType | undefined
   fieldConfig: ComputedRef<FieldConfig[]>
   editableFieldConfig: ComputedRef<EditableFieldConfig[]>
+  droppableFieldConfig: ComputedRef<DroppableFieldConfig[]>
+  getDroppableFieldConfig: (
+    fieldName: string,
+    host: DraggableExistingBlock | EntityContext,
+  ) => DroppableFieldConfig
 }
 
 export default async function (
@@ -40,7 +48,11 @@ export default async function (
   const loadedEditableFieldConfig = adapter.getEditableFieldConfig
     ? await adapter.getEditableFieldConfig()
     : []
+  const loadedDroppableFieldConfig = adapter.getDroppableFieldConfig
+    ? await adapter.getDroppableFieldConfig()
+    : []
   const editableFieldConfig = computed(() => loadedEditableFieldConfig)
+  const droppableFieldConfig = computed(() => loadedDroppableFieldConfig)
 
   /**
    * The allowed bundles in the current field item list.
@@ -135,6 +147,37 @@ export default async function (
     }
   }
 
+  const getDroppableFieldConfig = (
+    fieldName: string,
+    host: DraggableExistingBlock | EntityContext,
+  ): DroppableFieldConfig => {
+    const entityType = 'entityType' in host ? host.entityType : host.type
+    const entityBundle = 'itemBundle' in host ? host.itemBundle : host.bundle
+    const config = droppableFieldConfig.value.find((v) => {
+      if (v.name !== fieldName) {
+        return false
+      }
+
+      if (v.entityType !== entityType) {
+        return false
+      }
+
+      if (v.entityBundle !== entityBundle) {
+        return false
+      }
+
+      return true
+    })
+
+    if (!config) {
+      throw new Error(
+        `Missing droppable field config for field name "${fieldName}" on entity type "${entityType}" of bundle "${entityBundle}"`,
+      )
+    }
+
+    return config
+  }
+
   return {
     itemBundlesWithNested,
     allowedTypesInList,
@@ -142,5 +185,7 @@ export default async function (
     getType,
     fieldConfig,
     editableFieldConfig,
+    droppableFieldConfig,
+    getDroppableFieldConfig,
   }
 }

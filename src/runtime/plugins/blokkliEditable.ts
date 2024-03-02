@@ -12,10 +12,6 @@ export default defineNuxtPlugin((nuxtApp) => {
           return
         }
         el.dataset.blokkliEditableField = fieldName
-
-        if (binding.value && typeof binding.value === 'object') {
-          el.dataset.blokkliEditableFieldConfig = JSON.stringify(binding.value)
-        }
       }
     },
   })
@@ -31,10 +27,6 @@ export default defineNuxtPlugin((nuxtApp) => {
           return
         }
         el.dataset.blokkliDroppableField = fieldName
-
-        if (binding.value && typeof binding.value === 'object') {
-          el.dataset.blokkliDroppableFieldConfig = JSON.stringify(binding.value)
-        }
       }
     },
   })

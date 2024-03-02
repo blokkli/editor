@@ -9,6 +9,7 @@ import { falsy } from '#blokkli/helpers'
 import type {
   AssistantResultMarkup,
   CommentItem,
+  DroppableFieldConfig,
   EditableFieldConfig,
   FieldConfig,
   LibraryItem,
@@ -29,6 +30,7 @@ import { FieldText } from './mock/state/Field/Text'
 import { FieldTextarea } from './mock/state/Field/Textarea'
 import type { Entity } from './mock/state/Entity'
 import type { Block } from './mock/state/Block/Block'
+import { FieldReference } from './mock/state/Field/Reference'
 
 export default defineBlokkliEditAdapter((ctx) => {
   const router = useRouter()
@@ -621,6 +623,34 @@ export default defineBlokkliEditAdapter((ctx) => {
       const contentFields: EditableFieldConfig[] = mapEntityFields(ContentPage)
 
       return Promise.resolve([...contentFields, ...blockFields])
+    },
+
+    getDroppableFieldConfig() {
+      const mapEntityFields = (
+        entity: typeof Content | typeof Block,
+      ): DroppableFieldConfig[] => {
+        return entity
+          .getFieldDefintions()
+          .map<DroppableFieldConfig | undefined>((field) => {
+            if (field instanceof FieldReference) {
+              return {
+                name: field.id,
+                label: field.label,
+                entityType: entity.entityType,
+                entityBundle: entity.bundle,
+                allowedEntityType: field.targetEntityType,
+                allowedBundles: field.allowedBundles,
+                cardinality: field.cardinality,
+                required: field.required,
+              }
+            }
+          })
+          .filter(falsy)
+      }
+      return Promise.resolve([
+        ...getBlockBundles().flatMap((v) => mapEntityFields(v)),
+        ...mapEntityFields(ContentPage),
+      ])
     },
   }
 

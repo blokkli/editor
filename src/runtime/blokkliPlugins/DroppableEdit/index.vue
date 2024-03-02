@@ -23,7 +23,7 @@
 import { FormOverlay } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { BlokkliIcon } from '#blokkli/icons'
-import type { DroppableEntityField } from '#blokkli/types'
+import type { DroppableEntityField, DroppableFieldConfig } from '#blokkli/types'
 import { ref, useBlokkli } from '#imports'
 
 const props = defineProps<{
@@ -37,9 +37,14 @@ const emit = defineEmits<{
   (e: 'save', data: DroppableEntityField): void
 }>()
 
-const { $t } = useBlokkli()
+const { $t, types } = useBlokkli()
 
-const droppable = ref<DroppableEntityField | null>(null)
+type DroppableField = {
+  field: DroppableEntityField
+  config: DroppableFieldConfig
+}
+
+const droppable = ref<DroppableField | null>(null)
 
 const isVisible = ref(false)
 
@@ -49,16 +54,17 @@ const onClose = () => {
 
 const onSubmit = () => {
   if (droppable.value) {
-    emit('save', droppable.value)
+    emit('save', droppable.value.field)
   }
   isVisible.value = false
   droppable.value = null
 }
 
-onBlokkliEvent('droppable:focus', (e) => {
-  if (e.droppableEntityType === props.entityType) {
+onBlokkliEvent('droppable:focus', (field) => {
+  const config = types.getDroppableFieldConfig(field.fieldName, field.host)
+  if (config.allowedEntityType === props.entityType) {
     isVisible.value = true
-    droppable.value = e
+    droppable.value = { field, config }
   }
 })
 </script>

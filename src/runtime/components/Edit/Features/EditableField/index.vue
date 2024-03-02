@@ -16,7 +16,6 @@ import {
 } from '#imports'
 import Overlay from './Overlay/index.vue'
 import type {
-  BlokkliEditableDirectiveArgs,
   DraggableExistingBlock,
   EditableFieldConfig,
   EntityContext,
@@ -29,7 +28,7 @@ defineBlokkliFeature({
   id: 'editable-field',
   icon: 'textbox',
   label: 'Editable Field',
-  requiredAdapterMethods: ['updateFieldValue'],
+  requiredAdapterMethods: ['updateFieldValue', 'getEditableFieldConfig'],
   description: 'Implements a form overlay to edit a single field of a block.',
 })
 
@@ -75,15 +74,6 @@ const buildEditable = (
   const hostEntityType =
     'type' in host ? host.type : runtimeConfig.itemEntityType
   const hostEntityBundle = 'bundle' in host ? host.bundle : host.itemBundle
-  const argsValue = element.dataset.blokkliEditableFieldConfig
-  const args: BlokkliEditableDirectiveArgs = argsValue
-    ? JSON.parse(argsValue)
-    : undefined
-
-  // Adapter doesn't support editable frames, return.
-  if (args?.type === 'frame' && !adapter.buildEditableFrameUrl) {
-    return
-  }
 
   const config = types.editableFieldConfig.value.find((v) => {
     return (
@@ -97,6 +87,11 @@ const buildEditable = (
     throw new Error(
       `Failed to load editable field config for field "${fieldName}" on entity type "${hostEntityType}" of bundle "${hostEntityBundle}"`,
     )
+  }
+
+  // Adapter doesn't support editable frames, return.
+  if (config.type === 'frame' && !adapter.buildEditableFrameUrl) {
+    return
   }
 
   return {
@@ -156,7 +151,7 @@ defineCommands(() => {
       group: 'selection',
       label: $t('editableCommandEdit', 'Edit field "@name"').replace(
         '@name',
-        v.label,
+        v.config.label,
       ),
       icon: 'textbox',
       disabled: false,

@@ -27,6 +27,7 @@ import type {
   FieldConfig,
   EditableFieldConfig,
   DraggableMediaLibraryItem,
+  DroppableFieldConfig,
 } from './../types'
 
 import type { GetMediaLibraryFunction } from './../components/Edit/Features/MediaLibrary/types'
@@ -79,6 +80,11 @@ export interface BlokkliAdapter<T> {
    * Get the editable field configurations.
    */
   getEditableFieldConfig?: () => Promise<EditableFieldConfig[]>
+
+  /**
+   * Get the droppable field configurations.
+   */
+  getDroppableFieldConfig?: () => Promise<DroppableFieldConfig[]>
 
   /**
    * Get all possible conversions.

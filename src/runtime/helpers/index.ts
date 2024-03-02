@@ -38,6 +38,7 @@ export function buildDraggableItem(
   if (dataset.elementType === 'existing') {
     const uuid = dataset.uuid
     const itemBundle = dataset.itemBundle
+    const entityType = dataset.entityType
     const hostType = dataset.hostType
     const hostUuid = dataset.hostUuid
     const hostBundle = dataset.hostBundle
@@ -51,7 +52,8 @@ export function buildDraggableItem(
       hostUuid &&
       hostFieldName &&
       itemBundle &&
-      hostBundle
+      hostBundle &&
+      entityType
     ) {
       const definition = getDefinition(itemBundle)
       const editTitle = definition?.editor?.editTitle
@@ -71,6 +73,7 @@ export function buildDraggableItem(
           return document.querySelector(`[data-uuid="${uuid}"]`) as HTMLElement
         },
         itemBundle,
+        entityType,
         isNested: hostType === itemEntityType,
         uuid,
         hostType,
@@ -654,42 +657,6 @@ export const mapDroppableField = (el: Element): DroppableEntityField => {
     throw new Error(`Missing field name in v-blokkli-droppable directive.`)
   }
 
-  const fieldConfig = el.dataset.blokkliDroppableFieldConfig
-  if (!fieldConfig) {
-    throw new Error('Missind v-blokkli-droppable directive args.')
-  }
-
-  const parsed = JSON.parse(fieldConfig)
-  if (!parsed || typeof parsed !== 'object') {
-    throw new Error('Failed to parse v-blokkli-droppable directive args.')
-  }
-
-  const entityType: unknown = parsed.entityType
-  if (typeof entityType !== 'string' || !entityType) {
-    throw new Error(
-      `Missing "entityType" in v-blokkli-droppable directive args on field "${fieldName}".`,
-    )
-  }
-
-  const entityBundles: undefined | string[] = parsed.entityBundles
-  if (!entityBundles) {
-    throw new Error(
-      `Missing "entityBundles" in v-blokkli-droppable directive args on field "${fieldName}"`,
-    )
-  } else if (!Array.isArray(entityBundles)) {
-    throw new Error(
-      `Directive argument "entityBundles" in v-blokkli-droppable on field "${fieldName}" must be an array of strings.`,
-    )
-  }
-
-  const cardinality: undefined | number = parsed.cardinality
-
-  if (typeof cardinality !== 'number') {
-    throw new Error(
-      `Directive argument "cardinality" in v-blokkli-droppable on field "${fieldName}" must be a number.`,
-    )
-  }
-
   const host = findParentContext(el)
   if (!host) {
     throw new Error(
@@ -701,9 +668,6 @@ export const mapDroppableField = (el: Element): DroppableEntityField => {
     element: el,
     host,
     fieldName,
-    droppableEntityType: entityType,
-    droppableEntityBundles: entityBundles,
-    cardinality,
   }
 }
 

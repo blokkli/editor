@@ -29,11 +29,7 @@
     </div>
     <div class="container">
       <div
-        v-blokkli-droppable:heroImage="{
-          entityType: 'media',
-          entityBundles: ['image'],
-          cardinality: 1,
-        }"
+        v-blokkli-droppable:heroImage
         class="overflow-hidden shadow-xl rounded-lg bg-white"
       >
         <img v-if="image" :src="image.url" :alt="image.alt" />

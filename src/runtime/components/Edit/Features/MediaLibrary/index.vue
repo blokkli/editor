@@ -47,7 +47,7 @@ defineBlokkliFeature({
   requiredAdapterMethods: ['mediaLibraryGetResults', 'mediaLibraryAddBlock'],
 })
 
-const { $t, dom, adapter, state, runtimeConfig } = useBlokkli()
+const { $t, dom, adapter, state, runtimeConfig, types } = useBlokkli()
 
 const selected = ref('')
 
@@ -104,12 +104,13 @@ defineDropAreas((dragItems) => {
   return dom
     .getAllDroppableFields()
     .map<DropArea | undefined>((field) => {
+      const config = types.getDroppableFieldConfig(field.fieldName, field.host)
       // @TODO: This should be provided by the adapter on the item.
-      if (field.droppableEntityType !== 'media') {
+      if (config.allowedEntityType !== 'media') {
         return
       }
 
-      if (!field.droppableEntityBundles.includes(item.mediaBundle)) {
+      if (!config.allowedBundles.includes(item.mediaBundle)) {
         return
       }
       const isBlock = 'itemBundle' in field.host
