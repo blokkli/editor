@@ -21,7 +21,6 @@
   .bk-comments-overlay-comments {
     @apply bg-white shadow-xl  origin-top-left absolute top-40  z-10;
     @apply w-300;
-    /* transform: scale(calc(1 / var(--bk-artboard-scale))); */
     &.bk-is-right {
       @apply right-0;
     }

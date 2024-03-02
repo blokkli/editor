@@ -257,10 +257,6 @@ html {
 }
 
 .bk-html-root {
-  --bk-outline-width: 2;
-  --bk-radius: 4;
-  --bk-artboard-scale: 1;
-
   .bk-draggable {
     scroll-margin: calc(var(--bk-root-offset-top) + 20px);
   }
@@ -324,7 +320,7 @@ html.bk-html-root:not(.bk-use-animations) {
   @apply outline outline-1 outline-accent-700;
   &.bk-is-active {
     @apply ring-accent-400/30 ring-[7px];
-    outline-width: calc(var(--bk-outline-width) * 1px);
+    outline-width: 2px;
   }
 }
 

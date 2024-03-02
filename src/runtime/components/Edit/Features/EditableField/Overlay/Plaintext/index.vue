@@ -46,7 +46,7 @@ const inputAttributes = computed(() => {
   if (props.required) {
     attrs.required = true
   }
-  if (props.maxlength) {
+  if (props.maxlength && props.maxlength >= 1) {
     attrs.maxlength = props.maxlength
   }
   return attrs

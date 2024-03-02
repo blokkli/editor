@@ -113,7 +113,11 @@ onBlokkliEvent('animationFrame', (e) => {
             comments: [],
             uuids,
             style: {
-              transform: `translate(${x}px, ${y}px) scale(calc(1 / var(--bk-artboard-scale)))`,
+              // @TODO: Because the --bk-artboard-scale CSS variable was
+              // removed, the comment box now scaled with the artboard.
+              // This should be fixed by not positioning the box inside the
+              // artboard element so it does not scale.
+              transform: `translate(${x}px, ${y}px)`,
             },
           }
         }

@@ -64,7 +64,7 @@
         </div>
         <div class="bk-editable-field-info-count">
           <span>{{ count }}</span>
-          <span v-if="maxlength">&nbsp;/&nbsp;{{ maxlength }}</span>
+          <span v-if="maxlength >= 1">&nbsp;/&nbsp;{{ maxlength }}</span>
         </div>
       </div>
     </form>
