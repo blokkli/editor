@@ -11,7 +11,14 @@ export class BlockFromLibrary extends Block {
   static getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
-      new FieldReference('libraryItem', 'Library Item', 1, 'library_item', []),
+      new FieldReference(
+        'libraryItem',
+        'Library Item',
+        1,
+        true,
+        'library_item',
+        [],
+      ),
     ]
   }
 

@@ -4,7 +4,6 @@ import { BlockCard } from './Card'
 import { BlockFragment } from './Fragment'
 import { BlockFromLibrary } from './FromLibrary'
 import { BlockGrid } from './Grid'
-import { BlockHero } from './Hero'
 import { BlockIcon } from './Icon'
 import { BlockImage } from './Image'
 import { BlockOnThisPage } from './OnThisPage'
@@ -30,8 +29,6 @@ export const createBlock = (bundle: string, uuid: string): Block => {
       return new BlockTwoColumns(uuid)
     case 'button':
       return new BlockButton(uuid)
-    case 'hero':
-      return new BlockHero(uuid)
     case 'card':
       return new BlockCard(uuid)
     case 'image':
@@ -64,7 +61,6 @@ export const getBlockBundles = (): Array<typeof Block> => {
     BlockImage,
     BlockTwoColumns,
     BlockButton,
-    BlockHero,
     BlockFragment,
     BlockCard,
     BlockVideo,

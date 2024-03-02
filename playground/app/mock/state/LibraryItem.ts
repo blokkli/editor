@@ -1,4 +1,3 @@
-import type { Block } from './Block/Block'
 import { Entity } from './Entity'
 import type { Field } from './Field'
 import { FieldBlocks } from './Field/Blocks'
@@ -12,7 +11,7 @@ export class LibraryItem extends Entity {
     return [
       ...super.getFieldDefintions(),
       new FieldText('title', 'Title'),
-      new FieldBlocks('blocks', 'Blocks', 1, []),
+      new FieldBlocks('blocks', 'Blocks', 1, true, []),
     ]
   }
 

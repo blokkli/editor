@@ -1,10 +1,6 @@
 <template>
   <div :class="{ 'container mx-auto my-20': !parentType }">
-    <div
-      v-blokkli-editable:markup="{ type: 'table' }"
-      class="table"
-      v-html="markup"
-    />
+    <div v-blokkli-editable:markup class="table" v-html="markup" />
   </div>
 </template>
 

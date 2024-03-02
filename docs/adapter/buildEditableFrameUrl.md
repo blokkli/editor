@@ -14,7 +14,7 @@ This block component defines an editable field of type `frame`:
 
 ```vue [Text.vue]
 <template>
-  <div v-blokkli-editable:text="{ type: 'frame' }" v-html="text" />
+  <div v-blokkli-editable:text v-html="text" />
 </template>
 
 <script lang="ts" setup>

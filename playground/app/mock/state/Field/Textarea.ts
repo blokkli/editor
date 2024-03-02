@@ -1,8 +1,17 @@
 import { Field } from '../Field'
 
 export class FieldTextarea extends Field<string> {
-  constructor(id: string, label: string) {
-    super('textarea', id, label, 1)
+  maxLength: number
+
+  constructor(
+    id: string,
+    label: string,
+    cardinality = 1,
+    required = false,
+    maxLength = -1,
+  ) {
+    super('textarea', id, label, cardinality, required)
+    this.maxLength = maxLength
   }
 
   getText(): string {

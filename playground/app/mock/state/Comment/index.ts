@@ -25,11 +25,12 @@ export class Comment extends Entity {
       new FieldBoolean('isResolved', 'Is Resolved'),
       new FieldText('parentEntityType', 'Parent Entity Type'),
       new FieldText('parentEntityUuid', 'Parent Entity UUID'),
-      new FieldReference('user', 'User', 1, 'user', []),
+      new FieldReference('user', 'User', 1, false, 'user', []),
       new FieldReference(
         'referencedBlocks',
         'Referenced Blocks',
         -1,
+        false,
         'block',
         [],
       ),

@@ -1,8 +1,8 @@
 import { Field } from '../Field'
 
 export class FieldBoolean extends Field<boolean> {
-  constructor(id: string, label: string) {
-    super('boolean', id, label, 1)
+  constructor(id: string, label: string, required = false) {
+    super('boolean', id, label, 1, required)
   }
 
   toString() {

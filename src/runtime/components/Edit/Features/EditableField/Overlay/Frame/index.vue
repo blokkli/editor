@@ -12,7 +12,7 @@
 import { useBlokkli, ref, computed, onMounted, onBeforeUnmount } from '#imports'
 import type {
   DraggableExistingBlock,
-  EditableType,
+  EditableFieldType,
   EntityContext,
 } from '#blokkli/types'
 
@@ -20,7 +20,7 @@ const { adapter } = useBlokkli()
 
 const props = defineProps<{
   modelValue: string
-  type: EditableType
+  type: EditableFieldType
   fieldName: string
   host: DraggableExistingBlock | EntityContext
   initialHeight: number

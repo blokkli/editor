@@ -16,7 +16,7 @@
           </BlokkliEditable>
           <p
             v-if="lead"
-            v-blokkli-editable:lead="{ required: true }"
+            v-blokkli-editable:lead
             class="mt-20 text-lg lg:text-xl text-mono-700"
             v-text="lead"
           />

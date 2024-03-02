@@ -11,10 +11,11 @@ export class FieldReference<T extends Entity> extends Field<string> {
     id: string,
     label: string,
     cardinality: number,
+    required: boolean,
     entityType: ValidStorageKey,
     allowedBundles: string[],
   ) {
-    super('reference', id, label, cardinality)
+    super('reference', id, label, cardinality, required)
     this.targetEntityType = entityType
     this.allowedBundles = allowedBundles
   }

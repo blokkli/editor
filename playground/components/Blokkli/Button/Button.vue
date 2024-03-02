@@ -9,7 +9,7 @@
         'is-inverted': options.color === 'normal' && isInverted,
       }"
     >
-      <span v-blokkli-editable:title="{ label: 'CTA' }">{{ title }}</span>
+      <span v-blokkli-editable:title>{{ title }}</span>
     </Component>
   </div>
 </template>

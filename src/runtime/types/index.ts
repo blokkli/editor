@@ -29,7 +29,6 @@ import type { ThemeProvider } from '#blokkli/helpers/themeProvider'
 import type { CommandsProvider } from '#blokkli/helpers/commandsProvider'
 import type { TourProvider } from '#blokkli/helpers/tourProvider'
 import type { DropAreaProvider } from '#blokkli/helpers/dropAreaProvider'
-import { on } from 'events'
 
 interface MutationResponseLike<T> {
   success?: boolean
@@ -322,11 +321,16 @@ export type FieldConfig = {
   allowedBundles: string[]
 }
 
+export type EditableFieldType = 'plain' | 'markup' | 'table' | 'frame'
+
 export type EditableFieldConfig = {
   name: string
   entityType: string
   entityBundle: string
   label: string
+  type: EditableFieldType
+  required: boolean
+  maxLength: number
 }
 
 export type EntityContext = {
@@ -778,16 +782,6 @@ export type PluginMountEvent = {
 export type PluginUnmountEvent = {
   type: 'ItemDropdown'
   id: string
-}
-
-export type EditableType = 'plaintext' | 'markup' | 'table' | 'frame'
-
-export type BlokkliEditableDirectiveArgs = {
-  label?: string
-  name?: string
-  maxlength?: number
-  required?: boolean
-  type?: EditableType
 }
 
 export type EditableFieldFocusEvent = {

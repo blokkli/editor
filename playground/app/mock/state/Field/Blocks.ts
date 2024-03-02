@@ -15,9 +15,10 @@ export class FieldBlocks extends Field<{ uuid: string }> {
     id: string,
     label: string,
     cardinality: number,
+    required: boolean,
     allowedBundles: string[],
   ) {
-    super('blocks', id, label, cardinality)
+    super('blocks', id, label, cardinality, required)
     this.allowedBundles = allowedBundles
   }
 

@@ -18,6 +18,7 @@ import Overlay from './Overlay/index.vue'
 import type {
   BlokkliEditableDirectiveArgs,
   DraggableExistingBlock,
+  EditableFieldConfig,
   EntityContext,
 } from '#blokkli/types'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
@@ -34,15 +35,14 @@ defineBlokkliFeature({
 
 type Editable = {
   fieldName: string
-  label: string
   host: DraggableExistingBlock | EntityContext
   element: HTMLElement
-  args?: BlokkliEditableDirectiveArgs
+  config: EditableFieldConfig
   isComponent?: boolean
   value?: string
 }
 
-const { selection, adapter, types, $t, dom } = useBlokkli()
+const { selection, adapter, types, $t, dom, runtimeConfig } = useBlokkli()
 const editable = ref<Editable | null>(null)
 const hasTransition = ref(false)
 
@@ -72,6 +72,9 @@ const buildEditable = (
   if (!host) {
     return
   }
+  const hostEntityType =
+    'type' in host ? host.type : runtimeConfig.itemEntityType
+  const hostEntityBundle = 'bundle' in host ? host.bundle : host.itemBundle
   const argsValue = element.dataset.blokkliEditableFieldConfig
   const args: BlokkliEditableDirectiveArgs = argsValue
     ? JSON.parse(argsValue)
@@ -82,24 +85,27 @@ const buildEditable = (
     return
   }
 
-  const label =
-    args?.label ||
-    types.editableFieldConfig.value.find(
-      (v) =>
-        v.name === fieldName &&
-        v.entityBundle ===
-          ('itemBundle' in host ? host.itemBundle : host.bundle),
-    )?.label ||
-    fieldName
+  const config = types.editableFieldConfig.value.find((v) => {
+    return (
+      v.entityType === hostEntityType &&
+      v.entityBundle === hostEntityBundle &&
+      v.name === fieldName
+    )
+  })
+
+  if (!config) {
+    throw new Error(
+      `Failed to load editable field config for field "${fieldName}" on entity type "${hostEntityType}" of bundle "${hostEntityBundle}"`,
+    )
+  }
 
   return {
     fieldName,
     host,
-    label,
     element,
-    args,
     isComponent: element.dataset.blokkliEditableComponent === 'true',
     value: element.dataset.blokkliEditableValue || '',
+    config,
   }
 }
 

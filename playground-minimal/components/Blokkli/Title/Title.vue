@@ -1,7 +1,7 @@
 <template>
   <div>
     <Component :is="options.level || 'h2'">
-      <span v-blokkli-editable:title="{ required: true }" v-text="title" />
+      <span v-blokkli-editable:title v-text="title" />
     </Component>
   </div>
 </template>

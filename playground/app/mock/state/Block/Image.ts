@@ -9,7 +9,9 @@ export class BlockImage extends Block {
   static getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
-      new FieldReference('imageReference', 'Image', 1, 'media', ['image']),
+      new FieldReference('imageReference', 'Image', 1, true, 'media', [
+        'image',
+      ]),
     ]
   }
 

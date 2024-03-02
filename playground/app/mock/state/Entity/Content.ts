@@ -24,7 +24,7 @@ export class ContentPage extends Content {
   static getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
-      new FieldBlocks('content', 'Content', -1, [
+      new FieldBlocks('content', 'Content', -1, false, [
         'text',
         'title',
         'grid',
@@ -39,9 +39,11 @@ export class ContentPage extends Content {
         'on_this_page',
         'widget',
       ]),
-      new FieldBlocks('buttons', 'Buttons', 3, ['button']),
-      new FieldBlocks('icons', 'Icons', 9, ['icon']),
-      new FieldReference('heroImage', 'Hero Image', 1, 'media', ['image']),
+      new FieldBlocks('buttons', 'Buttons', 3, false, ['button']),
+      new FieldBlocks('icons', 'Icons', 9, false, ['icon']),
+      new FieldReference('heroImage', 'Hero Image', 1, false, 'media', [
+        'image',
+      ]),
       new FieldText('lead', 'Lead'),
     ]
   }

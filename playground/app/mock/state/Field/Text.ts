@@ -1,8 +1,17 @@
 import { Field } from '../Field'
 
 export class FieldText extends Field<string> {
-  constructor(id: string, label: string, cardinality = 1) {
-    super('text', id, label, cardinality)
+  maxLength: number
+
+  constructor(
+    id: string,
+    label: string,
+    cardinality = 1,
+    required = false,
+    maxLength = -1,
+  ) {
+    super('text', id, label, cardinality, required)
+    this.maxLength = maxLength
   }
 
   getText(): string {

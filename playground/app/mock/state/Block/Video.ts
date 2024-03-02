@@ -9,7 +9,7 @@ export class BlockVideo extends Block {
   static getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
-      new FieldReference('video', 'Video', 1, 'media', ['video']),
+      new FieldReference('video', 'Video', 1, true, 'media', ['video']),
     ]
   }
 }

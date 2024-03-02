@@ -5,14 +5,22 @@ export abstract class Field<T> {
   id: string
   label: string
   cardinality: number
+  required: boolean
   list: T[]
   _entity: Entity | null = null
 
-  constructor(type: string, id: string, label: string, cardinality: number) {
+  constructor(
+    type: string,
+    id: string,
+    label: string,
+    cardinality: number,
+    required = false,
+  ) {
     this.type = type
     this.id = id
     this.label = label
     this.cardinality = cardinality
+    this.required = required
     this.list = []
   }
 

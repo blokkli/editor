@@ -9,15 +9,15 @@ export class BlockTwoColumns extends Block {
   static getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
-      new FieldBlocks('header', 'Header', 1, ['title']),
-      new FieldBlocks('left', 'Left', -1, [
+      new FieldBlocks('header', 'Header', 1, false, ['title']),
+      new FieldBlocks('left', 'Left', -1, true, [
         'text',
         'title',
         'button',
         'card',
         'from_library',
       ]),
-      new FieldBlocks('right', 'Right', -1, ['image', 'card']),
+      new FieldBlocks('right', 'Right', -1, true, ['image', 'card']),
     ]
   }
 }

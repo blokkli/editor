@@ -9,6 +9,7 @@ import { falsy } from '#blokkli/helpers'
 import type {
   AssistantResultMarkup,
   CommentItem,
+  EditableFieldConfig,
   FieldConfig,
   LibraryItem,
 } from '#blokkli/types'
@@ -18,12 +19,16 @@ import { entityStorageManager } from './mock/entityStorage'
 import { state, editState, mapBlockItem } from './mock/state'
 import { getBlockBundles } from './mock/state/Block'
 import type { MutatedState } from './mock/state/EditState'
-import type { ContentPage } from './mock/state/Entity/Content'
+import { ContentPage, type Content } from './mock/state/Entity/Content'
 import { FieldBlocks } from './mock/state/Field/Blocks'
 import { MediaImage, type MediaVideo } from './mock/state/Media/Media'
 import { transforms } from './mock/transforms'
 import type { MediaLibraryItem } from '#blokkli/components/Features/MediaLibrary/types'
 import type { MutationArgsMap } from './mock/plugins/mutations'
+import { FieldText } from './mock/state/Field/Text'
+import { FieldTextarea } from './mock/state/Field/Textarea'
+import type { Entity } from './mock/state/Entity'
+import type { Block } from './mock/state/Block/Block'
 
 export default defineBlokkliEditAdapter((ctx) => {
   const router = useRouter()
@@ -585,6 +590,37 @@ export default defineBlokkliEditAdapter((ctx) => {
         hostField: e.host.fieldName,
         preceedingUuid: e.preceedingUuid,
       })
+    },
+
+    getEditableFieldConfig() {
+      const mapEntityFields = (
+        entity: typeof Content | typeof Block,
+      ): EditableFieldConfig[] => {
+        return entity
+          .getFieldDefintions()
+          .map<EditableFieldConfig | undefined>((field) => {
+            if (field instanceof FieldText || field instanceof FieldTextarea) {
+              return {
+                name: field.id,
+                entityType: entity.entityType,
+                entityBundle: entity.bundle,
+                label: field.label,
+                type: field instanceof FieldText ? 'plain' : 'frame',
+                required: field.required,
+                maxLength: field.maxLength,
+              }
+            }
+          })
+          .filter(falsy)
+      }
+
+      const blockFields: EditableFieldConfig[] = getBlockBundles().flatMap(
+        (v) => mapEntityFields(v),
+      )
+
+      const contentFields: EditableFieldConfig[] = mapEntityFields(ContentPage)
+
+      return Promise.resolve([...contentFields, ...blockFields])
     },
   }
 

@@ -20,9 +20,9 @@ export class BlockTitle extends Block {
   static getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
-      new FieldText('tagline', 'Tagline'),
-      new FieldText('title', 'Title'),
-      new FieldText('lead', 'Lead'),
+      new FieldText('tagline', 'Tagline', 1, false, 20),
+      new FieldText('title', 'Title', 1, true, 50),
+      new FieldText('lead', 'Lead', 1, false, 100),
     ]
   }
 

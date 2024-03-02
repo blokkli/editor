@@ -9,8 +9,8 @@ export class BlockGrid extends Block {
   static getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
-      new FieldBlocks('header', 'Header', 1, ['title']),
-      new FieldBlocks('blocks', 'Blocks', -1, [
+      new FieldBlocks('header', 'Header', 1, false, ['title']),
+      new FieldBlocks('blocks', 'Blocks', -1, false, [
         'teaser',
         'card',
         'text',

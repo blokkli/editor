@@ -5,17 +5,25 @@
     :style="style"
     class="bk-editable-field bk-control"
   >
-    <form ref="form" class="bk-editable-field-input" @submit.prevent="cancel">
+    <form
+      ref="form"
+      class="bk-editable-field-input"
+      @submit.prevent="close(true)"
+    >
       <div class="bk bk-editable-field-buttons">
         <h3>
           <ItemIcon :bundle="itemBundle" />
           <span>{{ title }}</span>
         </h3>
-        <button type="submit">
+        <button @click.prevent="close(false)">
           <Icon name="close" />
           <span>{{ $t('cancel', 'Cancel') }}</span>
         </button>
-        <button :disabled="!hasChanged" @click.prevent="close(true)">
+        <button
+          :disabled="!hasChanged"
+          type="submit"
+          @click.prevent="close(true)"
+        >
           <Icon name="save" />
           <span>{{ $t('save', 'Save') }}</span>
         </button>
@@ -23,16 +31,16 @@
 
       <div ref="input">
         <InputContenteditable
-          v-if="editableType === 'markup'"
+          v-if="config.type === 'markup'"
           v-model="modelValue"
-          :type="editableType"
+          :type="config.type"
           @close="close"
         />
 
         <InputFrame
-          v-else-if="editableType === 'frame'"
+          v-else-if="config.type === 'frame'"
           v-model="modelValue"
-          :type="editableType"
+          :type="config.type"
           :field-name="fieldName"
           :host="host"
           :initial-height="scrollHeight"
@@ -65,10 +73,9 @@
 
 <script lang="ts" setup>
 import type {
-  BlokkliEditableDirectiveArgs,
-  EditableType,
   DraggableExistingBlock,
   EntityContext,
+  EditableFieldConfig,
 } from '#blokkli/types'
 import { Icon, ItemIcon } from '#blokkli/components'
 import {
@@ -91,9 +98,8 @@ const { eventBus, ui, selection, state, adapter, $t, types } = useBlokkli()
 const props = defineProps<{
   fieldName: string
   host: DraggableExistingBlock | EntityContext
-  label: string
   element: HTMLElement
-  args?: BlokkliEditableDirectiveArgs
+  config: EditableFieldConfig
   isComponent?: boolean
   value?: string
 }>()
@@ -151,25 +157,22 @@ const itemBundle = computed(() => {
     return props.host.itemBundle
   }
 })
-const maxlength = computed(() => props.args?.maxlength)
-const required = computed(() => !!props.args?.required)
+const maxlength = computed(() => props.config.maxLength)
+const required = computed(() => !!props.config.required)
 const title = computed(() => {
   if (itemBundle.value) {
-    return [types.getType(itemBundle.value)?.label, props.label]
+    return [types.getType(itemBundle.value)?.label, props.config.label]
       .filter(falsy)
       .join(' » ')
   }
 
-  return props.label
+  return props.config.label
 })
-const editableType = computed<EditableType>(
-  () => props.args?.type || 'plaintext',
-)
 const isMarkup = computed(
   () =>
-    editableType.value === 'table' ||
-    editableType.value === 'markup' ||
-    editableType.value === 'frame',
+    props.config.type === 'table' ||
+    props.config.type === 'markup' ||
+    props.config.type === 'frame',
 )
 
 const count = computed(() => modelValue.value.length)
@@ -179,10 +182,6 @@ const errorText = computed(() => {
     return $t('fieldIsRequired', 'This field is required')
   }
 })
-
-const cancel = () => {
-  close(false)
-}
 
 const close = async (save?: boolean) => {
   // Weird iOS bug: Close method is called twice, so we have to check if we
@@ -232,7 +231,7 @@ const close = async (save?: boolean) => {
 watch(modelValue, (newText) => {
   if (props.element && selection.editableActive.value && !props.isComponent) {
     const el = getElement()
-    if (editableType.value === 'plaintext') {
+    if (props.config.type === 'plain') {
       el.textContent = newText
     } else {
       el.innerHTML = newText

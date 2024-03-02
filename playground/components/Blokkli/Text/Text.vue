@@ -1,7 +1,7 @@
 <template>
   <div :class="{ 'container mx-auto my-20': !parentType }">
     <div
-      v-blokkli-editable:text="{ type: 'frame' }"
+      v-blokkli-editable:text
       class="ck-content"
       :class="{ 'is-inverted': isInverted }"
       v-html="text"
