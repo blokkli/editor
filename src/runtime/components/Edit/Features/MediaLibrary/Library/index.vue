@@ -1,5 +1,8 @@
 <template>
-  <div class="bk bk-media-library">
+  <div class="bk bk-media-library" @wheel.stop>
+    <div v-if="status === 'pending'" class="bk-loading">
+      <Icon name="loader" />
+    </div>
     <div class="bk-media-library-filters">
       <div class="bk-media-library-filters-listview">
         <button @click="toggleListView">
@@ -42,41 +45,58 @@
         </label>
       </div>
     </div>
-
-    <Component
-      :is="isSortli ? Sortli : 'div'"
+    <div
+      ref="listEl"
       class="bk-media-library-items"
       :class="[{ 'bk-is-sortli': isSortli }, 'bk-is-' + listView]"
-      no-transition
     >
-      <div
-        v-for="item in items"
-        :key="item.mediaId"
-        class="bk-media-library-items-item"
-        :class="{ 'bk-is-selected': modelValue === item.mediaId }"
-        :data-sortli-id="'media_library_' + item.mediaId"
-        data-element-type="media_library"
-        :data-item-bundle="item.blockBundle"
-        :data-media-id="item.mediaId"
-        :data-media-bundle="item.mediaBundle"
-        @click="onClick(item.mediaId)"
-      >
-        <div>
-          <div class="bk-media-library-items-item-image">
-            <img :src="item.thumbnail" />
+      <Component :is="isSortli ? Sortli : 'div'" no-transition>
+        <div
+          v-for="item in items"
+          :key="item.mediaId"
+          class="bk-media-library-items-item"
+          :class="{ 'bk-is-selected': modelValue === item.mediaId }"
+          :data-sortli-id="'media_library_' + item.mediaId"
+          data-element-type="media_library"
+          :data-item-bundle="item.blockBundle"
+          :data-media-id="item.mediaId"
+          :data-media-bundle="item.mediaBundle"
+          @click="onClick(item.mediaId)"
+        >
+          <div>
+            <div class="bk-media-library-items-item-image">
+              <img :src="item.thumbnail" />
+            </div>
+          </div>
+          <div class="bk-media-library-items-item-text">
+            <h3>{{ item.label }}</h3>
+            <p>{{ item.context }}</p>
           </div>
         </div>
-        <div class="bk-media-library-items-item-text">
-          <h3>{{ item.label }}</h3>
-          <p>{{ item.context }}</p>
-        </div>
-      </div>
-    </Component>
+      </Component>
+    </div>
+
+    <div class="bk-media-library-pagination">
+      <button :disabled="page === 0" @click="page--">
+        <Icon name="arrow-left" />
+      </button>
+      <div>{{ page + 1 }} / {{ totalPages }}</div>
+      <button :disabled="page >= totalPages - 1" @click="page++">
+        <Icon name="arrow-right" />
+      </button>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useLazyAsyncData, useBlokkli } from '#imports'
+import {
+  ref,
+  computed,
+  useLazyAsyncData,
+  useBlokkli,
+  watch,
+  nextTick,
+} from '#imports'
 import { Sortli, Icon } from '#blokkli/components'
 import type { MediaLibraryFilter } from './../types'
 import type { BlokkliIcon } from '#blokkli/icons'
@@ -122,22 +142,43 @@ const toggleListView = () => {
 
 const filterValues = ref<Record<string, any>>({})
 
-const key = computed(() => Object.values(filterValues.value))
+const listEl = ref<HTMLDivElement | null>(null)
+const page = ref(0)
+const key = computed(() => Object.values(filterValues.value).join(','))
 
-const { data } = await useLazyAsyncData(
+watch(key, () => {
+  page.value = 0
+})
+
+const { data, status } = await useLazyAsyncData(
   () => {
     return adapter.mediaLibraryGetResults!({
       filters: filterValues.value,
-      page: 0,
+      page: page.value,
     })
   },
-  { watch: [key] },
+  { watch: [key, page] },
 )
+
+watch(data, () => {
+  nextTick(() => {
+    if (listEl.value) {
+      listEl.value.scrollTop = 0
+    }
+  })
+})
 
 const items = computed(() => data.value?.items || [])
 const filters = computed<RenderedFilter[]>(() => {
   return Object.entries(data.value?.filters || {}).map(([key, filter]) => {
     return { key, filter }
   })
+})
+
+const total = computed(() => data.value?.total || 0)
+const perPage = computed(() => data.value?.perPage || 0)
+
+const totalPages = computed(() => {
+  return Math.ceil(total.value / perPage.value)
 })
 </script>

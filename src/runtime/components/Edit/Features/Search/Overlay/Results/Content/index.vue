@@ -10,7 +10,7 @@
           :key="tab + item.id"
           ref="listItems"
           data-element-type="clipboard"
-          class="bk bk-search-item"
+          class="bk bk-search-item bk-is-content"
           :class="{ 'bk-is-active': i === index }"
           :data-sortli-id="'search_' + tab + i"
           :data-item-bundle="item.targetBundles[0]"

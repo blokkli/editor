@@ -1,10 +1,11 @@
 .bk-media-library {
-  @apply w-full overscroll-contain;
+  @apply w-full flex flex-col h-full;
   container-type: inline-size;
 }
 
 .bk-media-library-filters {
   @apply flex whitespace-nowrap flex-wrap overflow-hidden;
+  flex: 0 0 auto;
   > div {
     @apply border-b border-b-mono-300 border-r border-r-mono-300 h-[54px] flex-1;
 
@@ -42,6 +43,10 @@
 }
 
 .bk-media-library-items {
+  @apply overflow-auto overscroll-contain flex-1 w-full min-w-0;
+  > div {
+    @apply w-full min-w-0;
+  }
   &:not(.bk-is-sortli) {
     img {
       @apply select-none;
@@ -51,7 +56,7 @@
     }
   }
 
-  &.bk-is-grid {
+  &.bk-is-grid > div {
     @apply grid grid-cols-2 gap-15 p-20;
     @container (min-width: 400px) {
       @apply grid-cols-3;
@@ -96,13 +101,13 @@
     }
   }
 
-  &.bk-is-horizontal {
+  &.bk-is-horizontal > div {
     @apply p-20 grid gap-15;
     .bk-media-library-items-item {
       @apply flex w-full min-w-0 gap-15;
     }
     .bk-media-library-items-item-image {
-      @apply w-100;
+      @apply w-90;
     }
     .bk-media-library-items-item-text {
       @apply flex-1;
@@ -154,5 +159,33 @@
     svg {
       @apply fill-current;
     }
+  }
+}
+
+.bk-media-library-pagination {
+  @apply flex justify-between border-t border-t-mono-300 items-center;
+  flex: 0 0 auto;
+
+  > div {
+    @apply text-sm;
+  }
+
+  button {
+    @apply p-20 hover:bg-mono-100;
+
+    &:disabled {
+      @apply text-mono-300 pointer-events-none;
+    }
+    svg {
+      @apply w-20 h-20 fill-current;
+    }
+  }
+}
+
+.bk-loading {
+  @apply absolute inset-0 flex items-center justify-center bg-white/80 z-40;
+
+  svg {
+    @apply w-50 h-50 fill-mono-400;
   }
 }
