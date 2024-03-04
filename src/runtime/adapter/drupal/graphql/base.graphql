@@ -678,11 +678,33 @@ query pbGetFieldConfig {
   }
 }
 
-query pbGetEditableFieldConfig {
-  pbGetEditableFieldConfig {
+query pbGetEditableFieldConfig($entityType: String!, $entityBundle: String!) {
+  pbGetEditableFieldConfig(
+    entityType: $entityType
+    entityBundle: $entityBundle
+  ) {
     name
     label
     entityType
     entityBundle
+    type
+    required
+    maxLength
+  }
+}
+
+query pbGetDroppableFieldConfig($entityType: String!, $entityBundle: String!) {
+  pbGetDroppableFieldConfig(
+    entityType: $entityType
+    entityBundle: $entityBundle
+  ) {
+    name
+    label
+    entityType
+    entityBundle
+    cardinality
+    canEdit
+    allowedEntityType
+    allowedBundles
   }
 }

@@ -32,7 +32,7 @@
   <Teleport
     v-if="
       ui.addListOrientation.value === 'sidebar' &&
-      generallyAvailableBundles.length > 10 &&
+      types.generallyAvailableBundles.value.length > 10 &&
       shouldRender
     "
     :key="renderKey"
@@ -168,35 +168,7 @@ const selectableBundles = computed(() => {
     )
   }
 
-  return generallyAvailableBundles.value.map((v) => v.id || '')
-})
-
-const generallyAvailableBundles = computed(() => {
-  const typesOnEntity = (
-    types.fieldConfig.value.filter((v) => {
-      return (
-        v.entityType === context.value.entityType &&
-        v.entityBundle === context.value.entityBundle
-      )
-    }) || []
-  )
-    .flatMap((v) => v.allowedBundles)
-    .filter(Boolean)
-
-  const typesOnItems =
-    types.fieldConfig.value
-      .filter((v) => {
-        return typesOnEntity.includes(v.entityBundle)
-      })
-      .flatMap((v) => v.allowedBundles) || []
-
-  const allAllowedTypes = [...typesOnEntity, ...typesOnItems]
-
-  return (
-    types.allTypes.value.filter(
-      (v) => v.id && allAllowedTypes.includes(v.id),
-    ) || []
-  )
+  return types.generallyAvailableBundles.value.map((v) => v.id || '')
 })
 
 const existingBlockBundles = computed(() =>
@@ -228,10 +200,10 @@ const determineVisibility = (bundle: string, label: string): boolean => {
 }
 
 const sortedList = computed(() => {
-  if (!generallyAvailableBundles.value) {
+  if (!types.generallyAvailableBundles.value) {
     return []
   }
-  return [...generallyAvailableBundles.value]
+  return [...types.generallyAvailableBundles.value]
     .filter((v) => !reservedBundles.includes(v.id))
     .map((v) => {
       return {

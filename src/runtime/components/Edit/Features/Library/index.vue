@@ -19,7 +19,9 @@
   />
 
   <PluginAddAction
-    v-if="adapter.addLibraryItem && adapter.getLibraryItems"
+    v-if="
+      adapter.addLibraryItem && adapter.getLibraryItems && isSupportedOnEntity
+    "
     type="library"
     :title="$t('libraryAddFromLibrary', 'Add from library')"
     :description="
@@ -30,6 +32,7 @@
     "
     icon="reusable"
     color="lime"
+    :disabled="!fromLibraryAllowedInList"
     @placed="placedAction = $event"
   />
 
@@ -155,6 +158,10 @@ async function onMakeReusable(label: string) {
   )
   eventBus.emit('select:end')
 }
+
+const isSupportedOnEntity = computed(() =>
+  types.generallyAvailableBundles.value.find((v) => v.id === 'from_library'),
+)
 
 const fromLibraryAllowedInList = computed(() =>
   types.allowedTypesInList.value.includes('from_library'),

@@ -439,9 +439,17 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
 
     const getEditableFieldConfig: DrupalAdapter['getEditableFieldConfig'] =
       () =>
-        useGraphqlQuery('pbGetEditableFieldConfig').then(
-          (v) => v.data.pbGetEditableFieldConfig || [],
-        )
+        useGraphqlQuery('pbGetEditableFieldConfig', {
+          entityType: providedContext.value.entityType,
+          entityBundle: providedContext.value.entityBundle,
+        }).then((v) => v.data.pbGetEditableFieldConfig || [])
+
+    const getDroppableFieldConfig: DrupalAdapter['getDroppableFieldConfig'] =
+      () =>
+        useGraphqlQuery('pbGetDroppableFieldConfig', {
+          entityType: providedContext.value.entityType,
+          entityBundle: providedContext.value.entityBundle,
+        }).then((v) => v.data.pbGetDroppableFieldConfig || [])
 
     const updateFieldValue: DrupalAdapter['updateFieldValue'] = (e) =>
       useGraphqlMutation('pbUpdateFieldValue', {
@@ -539,6 +547,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       mediaLibraryReplaceMedia,
       mediaLibraryReplaceEntityMedia,
       updateEntityFieldValue,
+      getDroppableFieldConfig,
     }
   },
 )

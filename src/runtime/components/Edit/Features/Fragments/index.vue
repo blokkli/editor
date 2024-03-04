@@ -1,6 +1,8 @@
 <template>
   <PluginAddAction
-    v-if="adapter.addLibraryItem && adapter.getLibraryItems"
+    v-if="
+      adapter.addLibraryItem && adapter.getLibraryItems && isSupportedOnEntity
+    "
     type="fragment"
     :title="$t('fragmentsAddFragmentAction', 'Add fragment')"
     :description="
@@ -27,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, defineBlokkliFeature } from '#imports'
+import { ref, useBlokkli, defineBlokkliFeature, computed } from '#imports'
 import { PluginAddAction } from '#blokkli/plugins'
 import FragmentsDialog from './Dialog/index.vue'
 import type { ActionPlacedEvent } from '#blokkli/types'
@@ -40,7 +42,7 @@ const { adapter } = defineBlokkliFeature({
   requiredAdapterMethods: ['fragmentsAddBlock'],
 })
 
-const { state, $t } = useBlokkli()
+const { state, $t, types } = useBlokkli()
 
 const placedAction = ref<ActionPlacedEvent | null>(null)
 
@@ -59,6 +61,12 @@ const onAddFragment = async (name: string) => {
 
   placedAction.value = null
 }
+
+const isSupportedOnEntity = computed(() =>
+  types.generallyAvailableBundles.value.find(
+    (v) => v.id === 'blokkli_fragment',
+  ),
+)
 </script>
 
 <script lang="ts">

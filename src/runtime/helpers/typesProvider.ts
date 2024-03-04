@@ -11,7 +11,7 @@ import type {
   EntityContext,
 } from '../types'
 import { eventBus } from '#blokkli/helpers/eventBus'
-import type { BlokkliAdapter } from '../adapter'
+import type { AdapterContext, BlokkliAdapter } from '../adapter'
 import type { SelectionProvider } from './selectionProvider'
 import { getDefinition } from '#blokkli/definitions'
 
@@ -24,6 +24,7 @@ export type BlokkliBlockType = BlockBundleDefinition & {
 export type BlockDefinitionProvider = {
   itemBundlesWithNested: ComputedRef<string[]>
   allowedTypesInList: ComputedRef<string[]>
+  generallyAvailableBundles: ComputedRef<BlockBundleDefinition[]>
   allTypes: ComputedRef<BlockBundleDefinition[]>
   getType: (bundle: string) => BlokkliBlockType | undefined
   fieldConfig: ComputedRef<FieldConfig[]>
@@ -38,6 +39,7 @@ export type BlockDefinitionProvider = {
 export default async function (
   adapter: BlokkliAdapter<any>,
   selection: SelectionProvider,
+  context: ComputedRef<AdapterContext>,
 ): Promise<BlockDefinitionProvider> {
   const allTypesData = await adapter.getAllBundles()
   const allTypes = computed(() => allTypesData || [])
@@ -178,6 +180,32 @@ export default async function (
     return config
   }
 
+  const generallyAvailableBundles = computed(() => {
+    const typesOnEntity = (
+      fieldConfig.value.filter((v) => {
+        return (
+          v.entityType === context.value.entityType &&
+          v.entityBundle === context.value.entityBundle
+        )
+      }) || []
+    )
+      .flatMap((v) => v.allowedBundles)
+      .filter(Boolean)
+
+    const typesOnItems =
+      fieldConfig.value
+        .filter((v) => {
+          return typesOnEntity.includes(v.entityBundle)
+        })
+        .flatMap((v) => v.allowedBundles) || []
+
+    const allAllowedTypes = [...typesOnEntity, ...typesOnItems]
+
+    return (
+      allTypes.value.filter((v) => v.id && allAllowedTypes.includes(v.id)) || []
+    )
+  })
+
   return {
     itemBundlesWithNested,
     allowedTypesInList,
@@ -187,5 +215,6 @@ export default async function (
     editableFieldConfig,
     droppableFieldConfig,
     getDroppableFieldConfig,
+    generallyAvailableBundles,
   }
 }

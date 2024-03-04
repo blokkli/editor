@@ -130,7 +130,7 @@ const filteredList = computed<FieldListItemTyped[]>(() => {
         field.entityUuid === entity.uuid,
     )?.list || []) as FieldListItemTyped[]
   }
-  return props.list as FieldListItemTyped[]
+  return props.list.filter(Boolean) as FieldListItemTyped[]
 })
 
 provide(INJECT_IS_NESTED, true)

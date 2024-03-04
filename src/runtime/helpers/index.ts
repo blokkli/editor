@@ -12,9 +12,6 @@ import { getDefinition } from '#blokkli/definitions'
 import type { RGB } from '#blokkli/types/theme'
 import { easeOutSine } from './easing'
 
-// @ts-ignore
-const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
-
 /**
  * Type check for falsy values.
  *
@@ -34,6 +31,7 @@ export function buildDraggableItem(
   if (!(element instanceof HTMLElement)) {
     return
   }
+  const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
   const dataset = element.dataset
   if (dataset.elementType === 'existing') {
     const uuid = dataset.uuid
