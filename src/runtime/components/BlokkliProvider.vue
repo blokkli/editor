@@ -30,6 +30,7 @@
         :entity-uuid="entityUuid"
         :entity-bundle="entityBundle"
         :language="language"
+        :isolate="isolate"
       >
         <slot
           :is-editing="isEditing"
@@ -96,6 +97,11 @@ const props = withDefaults(
     tag?: string
     language?: string
     editLabel?: string
+
+    /**
+     * When set to true, during editing, everything except the provider element will be hidden.
+     */
+    isolate?: boolean
   }>(),
   {
     tag: 'div',

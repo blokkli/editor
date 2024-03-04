@@ -338,3 +338,9 @@ html.bk-html-root:not(.bk-use-animations) {
 [data-blokkli-editable-field] {
   @apply pointer-events-auto;
 }
+
+html.bk-isolate-provider {
+  [data-provider-uuid]:not([data-blokkli-provider-active='true']) {
+    @apply !hidden;
+  }
+}

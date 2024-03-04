@@ -3,4 +3,10 @@
   top: 0;
   right: 10px;
   z-index: 100;
+  @apply shadow-lg;
+}
+
+.bk-edit-indicator-overlay {
+  @apply fixed top-0 left-0 z-[99] bg-accent-500/20 outline outline-accent-700 -outline-offset-2;
+  @apply pointer-events-none;
 }

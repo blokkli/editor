@@ -72,6 +72,7 @@ const props = withDefaults(
     entityUuid: string
     entityBundle: string
     language?: string
+    isolate?: boolean
   }>(),
   {
     language: 'en',
@@ -105,7 +106,7 @@ const ui = uiProvider(storage)
 const $t = textProvider(context)
 const state = await editStateProvider(adapter, context)
 const selection = selectionProvider(dom, state)
-const types = await typesProvider(adapter, selection)
+const types = await typesProvider(adapter, selection, context)
 const features = featuresProvider()
 const theme = themeProvider()
 const commands = commandsProvider()
@@ -121,6 +122,9 @@ const onContextMenu = (e: Event) => {
 
 onMounted(() => {
   window.addEventListener('contextmenu', onContextMenu)
+  if (props.isolate) {
+    document.documentElement.classList.add('bk-isolate-provider')
+  }
   nextTick(() => {
     isInitializing.value = false
   })
@@ -130,6 +134,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('contextmenu', onContextMenu)
   isInitializing.value = true
   toolbarLoaded.value = false
+  document.documentElement.classList.remove('bk-isolate-provider')
 })
 
 provide(INJECT_IS_EDITING, true)
