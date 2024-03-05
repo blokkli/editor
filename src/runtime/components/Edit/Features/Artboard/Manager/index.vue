@@ -270,6 +270,15 @@ function resetZoom() {
   const currentCenterOnArtboard =
     (-offset.value.y + viewportCenterY) / scale.value
 
+  // If the height of the artboard is smaller than the visible viewport height
+  // always set the position in such a way that it is perfectly centered in the
+  // viewport.
+  if (artboard.offsetHeight < ui.visibleViewport.value.height) {
+    const newYOffset =
+      ui.visibleViewport.value.height / 2 - artboard.offsetHeight / 2
+    return animateTo(getCenterX(1), newYOffset, 1)
+  }
+
   // Calculate the new offset so that whatever is in the center of the
   // viewport remains the center after applying the scale.
   const newYOffset = Math.min(
