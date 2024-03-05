@@ -275,13 +275,6 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         translations,
       }
 
-      const bundleLabel = state?.bundleLabel || ''
-
-      const editUrl =
-        state?.entity && 'editUrl' in state.entity
-          ? state.entity.editUrl?.path
-          : ''
-
       return {
         currentIndex,
         mutations,
@@ -292,11 +285,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           violations,
           mutatedOptions,
         },
-        entity: {
-          ...(entity || {}),
-          bundleLabel,
-          editUrl,
-        },
+        entity,
         mutatedEntity: state.mutatedEntity,
         translationState,
       }

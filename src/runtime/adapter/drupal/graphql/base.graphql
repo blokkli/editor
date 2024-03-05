@@ -19,34 +19,13 @@ fragment paragraphsBlokkliEditState on ParagraphsBlokkliEditState {
     }
   }
 
-  bundleLabel
   entity {
-    id
+    status
     label
-    ... on Node {
-      status
-    }
-    ... on EntityLinkable {
-      editUrl: url(rel: "edit-form") {
-        path
-      }
-    }
-    ... on EntityTranslatable {
-      translations {
-        ... on Node {
-          status
-        }
-        langcode
-        ... on EntityLinkable {
-          url {
-            path
-          }
-        }
-      }
-    }
+    bundleLabel
   }
 
-  mutatedEntity: entity {
+  mutatedEntity {
     ...pbMutatedEntity
   }
 
