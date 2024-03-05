@@ -79,7 +79,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli, defineBlokkliFeature } from '#imports'
+import {
+  ref,
+  computed,
+  useBlokkli,
+  defineBlokkliFeature,
+  onMounted,
+} from '#imports'
 import { falsy } from '#blokkli/helpers'
 import {
   PluginMenuButton,
@@ -104,10 +110,9 @@ const { adapter } = defineBlokkliFeature({
 const { eventBus, state, context, $t, ui } = useBlokkli()
 const { translation, editMode } = state
 
-const isDropdown = computed(() => ui.isMobile.value || items.value.length > 5)
-
 const isOpen = ref(false)
 
+const isDropdown = computed(() => ui.isMobile.value || items.value.length > 5)
 const activeLangcode = computed(() => context.value.language)
 const activeLanguage = computed<Language>(() => {
   return (
@@ -162,6 +167,21 @@ function onTranslate(items: DraggableExistingBlock[]) {
     bundle: items[0].itemBundle,
   })
 }
+
+onMounted(() => {
+  // Make sure the user is not trying to edit a translation that does not exist.
+  const translationExists = !!translation.value.translations?.find(
+    (v) => v.id === context.value.language,
+  )
+  if (!translationExists) {
+    const sourceTranslation = translation.value.translations?.find(
+      (v) => v.id === translation.value.sourceLanguage,
+    )
+    if (sourceTranslation) {
+      return adapter.changeLanguage(sourceTranslation)
+    }
+  }
+})
 </script>
 
 <script lang="ts">
