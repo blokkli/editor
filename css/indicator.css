@@ -1,8 +1,5 @@
 .bk-edit-indicator {
-  position: fixed;
-  top: 0;
-  right: 10px;
-  z-index: 100;
+  @apply fixed top-0 right-10 z-[100];
   @apply shadow-lg;
 }
 
