@@ -123,6 +123,10 @@
 .bk.bk-search-item {
   @apply px-20 text-mono-700 py-15 md:py-20 cursor-pointer relative flex gap-10 text-left w-full items-stretch;
 
+  &.bk-is-content {
+    @apply cursor-grab;
+  }
+
   &:after {
     content: '';
     @apply absolute bottom-0 left-0 w-full h-[0.5px] bg-mono-200;
