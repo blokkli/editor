@@ -10,7 +10,7 @@
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import { computed, useBlokkli } from '#imports'
 
-const { $t } = useBlokkli()
+const { $t, state } = useBlokkli()
 
 const props = defineProps<{
   label: string
@@ -30,6 +30,9 @@ const checked = computed({
 })
 
 defineCommands(() => {
+  if (state.editMode.value !== 'editing') {
+    return
+  }
   return {
     id: 'options:' + props.property + ':toggle',
     label: $t('optionsCommand.setOption', 'Set option "@option" to "@value"')

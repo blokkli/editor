@@ -37,7 +37,7 @@ const emit = defineEmits<{
   (e: 'save', data: DroppableEntityField): void
 }>()
 
-const { $t, types } = useBlokkli()
+const { $t, types, state } = useBlokkli()
 
 type DroppableField = {
   field: DroppableEntityField
@@ -61,6 +61,9 @@ const onSubmit = () => {
 }
 
 onBlokkliEvent('droppable:focus', (field) => {
+  if (state.editMode.value !== 'editing') {
+    return
+  }
   const config = types.getDroppableFieldConfig(field.fieldName, field.host)
   if (config.allowedEntityType === props.entityType) {
     isVisible.value = true

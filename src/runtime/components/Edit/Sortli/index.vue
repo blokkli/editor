@@ -421,7 +421,7 @@ const onDoubleClick = (e: MouseEvent | TouchEvent) => {
       return
     }
   }
-  if (getOriginatingDroppableElement(e)) {
+  if (state.editMode.value === 'editing' && getOriginatingDroppableElement(e)) {
     return
   }
   const id = findItem(e)?.id

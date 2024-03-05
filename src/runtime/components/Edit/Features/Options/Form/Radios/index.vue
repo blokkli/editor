@@ -39,7 +39,7 @@ import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/components'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 
-const { $t } = useBlokkli()
+const { $t, state } = useBlokkli()
 
 const props = defineProps<{
   label: string
@@ -76,6 +76,9 @@ const setValue = (value: string) => {
 }
 
 defineCommands(() => {
+  if (state.editMode.value !== 'editing') {
+    return
+  }
   return mappedOptions.value
     .filter((v) => v.key !== props.modelValue)
     .map((option) => {
