@@ -1,25 +1,21 @@
 .bk-fatal-error-overlay {
-  @apply fixed top-0 left-0 w-full h-full overflow-auto;
+  @apply fixed top-0 left-0 w-full h-full overflow-auto backdrop-blur-3xl;
   @apply z-[9999999999999]; /* TO THE MOON */
-  @apply bg-red-dark/95;
-  @apply text-red-light;
+  @apply bg-red-light/95;
+  @apply text-mono-900;
   @apply flex flex-col;
   @apply px-20 py-40;
 
   .bk-icon {
     @apply w-200 h-200 mb-5;
     svg {
-      @apply fill-current;
+      @apply fill-red-normal;
     }
   }
 }
 
-.bk-fatal-error-overlay-text {
-  @apply font-mono bg-red-dark text-white p-5 rounded-md mt-20;
-}
-
 .bk-fatal-error-overlay-list {
-  @apply inline-block mx-auto mt-60;
+  @apply inline-block mx-auto mt-60 bg-white p-20 shadow-2xl;
   h3 {
     @apply font-bold mb-30 max-w-xl text-center mx-auto;
   }
@@ -32,10 +28,10 @@
   @apply flex flex-col items-center text-center justify-center mt-[10%] max-w-2xl mx-auto;
 
   h2 {
-    @apply text-5xl font-bold mb-10;
+    @apply text-5xl font-bold mb-10 text-red-normal;
   }
   p {
-    @apply text-2xl;
+    @apply text-2xl text-red-dark/50;
   }
 
   em {
