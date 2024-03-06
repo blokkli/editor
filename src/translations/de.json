@@ -179,6 +179,10 @@
     "source": "Open Command Palette",
     "translation": "Befehle öffnen"
   },
+  "commandPaletteTourText": {
+    "source": "Easily perform actions using your keyboard by launching the command palette. Most of the features available using clicks is also available in the command palette.",
+    "translation": "Führen Sie Aktionen ganz einfach mit Ihrer Tastatur aus, indem Sie «Befehle» öffnen. Fast alle Funktionen sind auch über «Befehle» ausführbar."
+  },
   "commentAdd": {
     "source": "Add comment",
     "translation": "Kommentar hinzufügen"
@@ -592,7 +596,7 @@
     "translation": "Das Medienelement konnte nicht ersetzt werden."
   },
   "mediaLibraryReplaceMedia": {
-    "source": "Replace media",
+    "source": "Replace @field",
     "translation": "Medienelement ersetzen"
   },
   "mediaLibraryTourText": {

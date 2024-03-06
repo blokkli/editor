@@ -14,8 +14,8 @@
     region="before-sidebar"
     :tour-text="
       $t(
-        'searchTourText',
-        'Quickly find blocks on the current page or existing content to drag and drop as blocks into the page.',
+        'commandPaletteTourText',
+        'Easily perform an action using your keyboard by launching the command palette and fuzzy find menu links, change options and perform actions.',
       )
     "
     icon="command"

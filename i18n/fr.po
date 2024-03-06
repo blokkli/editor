@@ -207,6 +207,13 @@ msgctxt "commandPaletteOpen"
 msgid "Open Command Palette"
 msgstr ""
 
+msgctxt "commandPaletteTourText"
+msgid ""
+"Easily perform actions using your keyboard by launching the command "
+"palette. Most of the features available using clicks is also available in "
+"the command palette."
+msgstr ""
+
 msgctxt "commentAdd"
 msgid "Add comment"
 msgstr ""
@@ -641,7 +648,7 @@ msgid "Failed to replace media."
 msgstr ""
 
 msgctxt "mediaLibraryReplaceMedia"
-msgid "Replace media"
+msgid "Replace @field"
 msgstr ""
 
 msgctxt "mediaLibraryTourText"

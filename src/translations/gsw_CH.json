@@ -179,6 +179,10 @@
     "source": "Open Command Palette",
     "translation": ""
   },
+  "commandPaletteTourText": {
+    "source": "Easily perform actions using your keyboard by launching the command palette. Most of the features available using clicks is also available in the command palette.",
+    "translation": ""
+  },
   "commentAdd": {
     "source": "Add comment",
     "translation": "Kommentar drzuefüege"
@@ -592,7 +596,7 @@
     "translation": ""
   },
   "mediaLibraryReplaceMedia": {
-    "source": "Replace media",
+    "source": "Replace @field",
     "translation": ""
   },
   "mediaLibraryTourText": {
