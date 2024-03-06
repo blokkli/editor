@@ -54,7 +54,12 @@ import {
   type Ref,
 } from '#imports'
 
-import type { FieldListItem, MutatedField, EntityContext } from '#blokkli/types'
+import type {
+  FieldListItem,
+  MutatedField,
+  EntityContext,
+  ItemEditContext,
+} from '#blokkli/types'
 import type {
   ValidFieldListTypes,
   FieldListItemTyped,
@@ -69,6 +74,7 @@ import {
   INJECT_MUTATED_FIELDS,
   INJECT_FIELD_LIST_BLOCKS,
   INJECT_PROVIDER_BLOCKS,
+  INJECT_EDIT_CONTEXT,
 } from '../helpers/symbols'
 
 const DraggableList = defineAsyncComponent(() => {
@@ -85,6 +91,7 @@ const mutatedFields = inject<Ref<MutatedField[]> | null>(
   INJECT_MUTATED_FIELDS,
   null,
 )
+const editContext = inject<ItemEditContext | null>(INJECT_EDIT_CONTEXT, null)
 const entity = inject<EntityContext>(INJECT_ENTITY_CONTEXT)
 
 if (!entity) {
@@ -122,13 +129,24 @@ const fieldKey = computed(() => {
 const fieldListType = computed(() => props.fieldListType)
 
 const filteredList = computed<FieldListItemTyped[]>(() => {
-  if (mutatedFields?.value && !isInReusable) {
-    return (mutatedFields.value.find(
-      (field: MutatedField) =>
-        field.name === props.name &&
-        field.entityType === entity.type &&
-        field.entityUuid === entity.uuid,
-    )?.list || []) as FieldListItemTyped[]
+  if (mutatedFields?.value && !isInReusable && editContext) {
+    return (
+      (mutatedFields.value.find(
+        (field: MutatedField) =>
+          field.name === props.name &&
+          field.entityType === entity.type &&
+          field.entityUuid === entity.uuid,
+      )?.list || []) as FieldListItemTyped[]
+    ).map((v) => {
+      const mutatedOptions = editContext.mutatedOptions.value[v.uuid] || {}
+      return {
+        ...v,
+        options: {
+          ...v.options,
+          ...mutatedOptions,
+        },
+      }
+    })
   }
   return props.list.filter(Boolean) as FieldListItemTyped[]
 })
