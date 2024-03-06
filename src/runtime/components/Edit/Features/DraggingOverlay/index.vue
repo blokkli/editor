@@ -370,6 +370,8 @@ const onMouseUp = (e: MouseEvent) => {
 }
 
 onBlokkliEvent('dragging:start', (e) => {
+  activeDropArea.value = null
+  activeDropTarget.value = null
   isTouching.value = e.mode === 'touch'
   startCoords.value = e.coords
   animation.requestDraw()
