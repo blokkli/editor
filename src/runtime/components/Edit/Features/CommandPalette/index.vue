@@ -15,7 +15,7 @@
     :tour-text="
       $t(
         'commandPaletteTourText',
-        'Easily perform an action using your keyboard by launching the command palette and fuzzy find menu links, change options and perform actions.',
+        'Easily perform actions using your keyboard by launching the command palette. Most of the features available using clicks is also available in the command palette.',
       )
     "
     icon="command"

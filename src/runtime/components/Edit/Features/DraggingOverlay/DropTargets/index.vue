@@ -80,7 +80,7 @@ export type DropTargetEvent = {
   preceedingUuid?: string
 }
 
-const { dom, ui } = useBlokkli()
+const { dom, ui, $t } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'drop', data: DropTargetEvent): void
@@ -394,6 +394,7 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
 const fieldRects = ref<FieldRect[]>([])
 
 const buildFieldRects = (): FieldRect[] => {
+  const insertText = $t('draggingOverlayInsertText', 'Insert into @field')
   const artboardEl = ui.artboardElement()
   const artboardRect = artboardEl.getBoundingClientRect()
   const scale = ui.getArtboardScale()
@@ -420,7 +421,7 @@ const buildFieldRects = (): FieldRect[] => {
       },
       backgroundColor,
       children,
-      label: field.label,
+      label: insertText.replace('@field', field.label),
     })
   }
 

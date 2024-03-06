@@ -66,6 +66,7 @@ onBlokkliEvent('animationFrame', () => {
   for (let i = 0; i < areas.length; i++) {
     const area = areas[i]
     const rect = area.element.getBoundingClientRect()
+    rect.height = Math.max(rect.height, 20)
     const isInside = !props.isTouch && isInsideRect(props.x, props.y, rect)
     if (isInside) {
       hasActive = true
