@@ -352,6 +352,6 @@ html.bk-isolate-provider {
   }
 
   select {
-    @apply px-20 cursor-pointer font-medium;
+    @apply px-20 cursor-pointer font-medium bg-white;
   }
 }

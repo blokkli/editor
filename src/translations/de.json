@@ -219,6 +219,10 @@
     "source": "The block could not be deleted.",
     "translation": "Das Element konnte nicht entfernt werden."
   },
+  "draggingOverlayInsertText": {
+    "source": "Insert into @field",
+    "translation": "In «@field» einfügen"
+  },
   "droppableEditFormSave": {
     "source": "Save",
     "translation": "Speichern"

@@ -245,6 +245,10 @@ msgctxt "deleteError"
 msgid "The block could not be deleted."
 msgstr "S'Elemänt het nid chönne entfärnt wärde. "
 
+msgctxt "draggingOverlayInsertText"
+msgid "Insert into @field"
+msgstr ""
+
 msgctxt "droppableEditFormSave"
 msgid "Save"
 msgstr ""
