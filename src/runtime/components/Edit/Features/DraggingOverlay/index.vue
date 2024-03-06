@@ -7,24 +7,26 @@
       :start-coords="startCoords"
       :items="dragItems"
       :is-touch="isTouching"
+      :active="active"
     />
   </Teleport>
 
   <DropAreas
     v-if="dragItems.length && isVisible"
-    v-slot="{ isActive }"
+    v-model="activeDropArea"
     :items="dragItems"
     :x="mouseX"
     :y="mouseY"
     :is-touch="isTouching"
   >
     <DropTargets
+      v-model="activeDropTarget"
       :items="dragItems"
       :box="box"
       :mouse-x="mouseX"
       :mouse-y="mouseY"
       :is-touch="isTouching"
-      :disabled="isActive"
+      :disabled="!!activeDropArea"
       @drop="onDrop"
     />
   </DropAreas>
@@ -37,6 +39,7 @@ import {
   onUnmounted,
   defineBlokkliFeature,
   nextTick,
+  computed,
 } from '#imports'
 import DropTargets, { type DropTargetEvent } from './DropTargets/index.vue'
 import DragItems from './DragItems/index.vue'
@@ -59,6 +62,25 @@ import type {
 } from '#blokkli/types'
 import { getDefinition } from '#blokkli/definitions'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+
+const activeDropTarget = ref<{
+  id: string
+  label: string
+} | null>(null)
+const activeDropArea = ref<{ id: string; label: string } | null>(null)
+
+const active = computed(() => {
+  if (activeDropArea.value) {
+    return { ...activeDropArea.value, type: 'area' }
+  } else if (activeDropTarget.value) {
+    return {
+      ...activeDropTarget.value,
+      type: 'field',
+    }
+  }
+
+  return null
+})
 
 const { adapter } = defineBlokkliFeature({
   icon: 'drag',

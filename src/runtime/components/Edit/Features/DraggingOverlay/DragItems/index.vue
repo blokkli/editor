@@ -2,8 +2,19 @@
   <div
     class="bk-dragging-overlay"
     :style="style"
-    :class="{ 'bk-is-touch': isTouch }"
+    :class="[
+      { 'bk-is-touch': isTouch },
+      active ? 'bk-is-' + active.type : undefined,
+    ]"
   >
+    <Transition name="bk-drag-item">
+      <span
+        v-if="active"
+        class="bk-dragging-overlay-label"
+        :class="'bk-is-' + active.type"
+        >{{ active.label }}</span
+      >
+    </Transition>
     <div
       v-for="(rect, i) in rects"
       :key="i"
@@ -19,8 +30,8 @@
       }"
     >
       <div
-        class="bk-dragging-overlay-markup"
         v-if="rect.markup"
+        class="bk-dragging-overlay-markup"
         v-html="rect.markup"
       />
       <div
@@ -70,6 +81,8 @@ const props = defineProps<{
   startCoords: Coord
 
   isTouch: boolean
+
+  active: { id: string; label: string; type: string } | null
 }>()
 
 const width = ref(10)

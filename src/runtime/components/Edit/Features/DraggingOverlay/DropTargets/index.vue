@@ -18,16 +18,16 @@
           :data-field-label="field.label"
           class="bk-drop-targets-field-child"
           :class="[
-            { 'bk-is-active': activeKey === child.key },
+            { 'bk-is-active': modelValue?.id === child.key },
             { 'bk-is-nested': child.isNested },
             'bk-is-' + child.orientation,
           ]"
           @click.stop.prevent.capture="onChildClick(field, child)"
-          @touchstart.passive="activeKey = child.key"
-          @touchend.passive="activeKey = ''"
-        >
-          <span>{{ field.label }}</span>
-        </div>
+          @touchstart.passive="
+            $emit('update:modelValue', { id: child.key, label: field.label })
+          "
+          @touchend.passive="$emit('update:modelValue', null)"
+        />
       </div>
     </div>
   </Teleport>
@@ -50,8 +50,6 @@ import type {
   Rectangle,
 } from '#blokkli/types'
 import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
-
-const activeKey = ref('')
 
 type Orientation = 'horizontal' | 'vertical'
 
@@ -84,6 +82,7 @@ const { dom, ui, $t } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'drop', data: DropTargetEvent): void
+  (e: 'update:modelValue', data: { id: string; label: string } | null): void
 }>()
 
 const props = defineProps<{
@@ -93,6 +92,8 @@ const props = defineProps<{
   mouseY: number
   isTouch: boolean
   disabled: boolean
+  activeColor?: string
+  modelValue?: { id: string; label: string }
 }>()
 
 const onChildClick = (field: FieldRect, child: FieldRectChild) => {
@@ -109,11 +110,11 @@ const onChildClick = (field: FieldRect, child: FieldRectChild) => {
 }
 
 const onMouseUp = (e: MouseEvent) => {
-  if (activeKey.value) {
+  if (props.modelValue?.id) {
     e.preventDefault()
     e.stopPropagation()
     const el = document.querySelector(
-      `[data-drop-target-key="${activeKey.value}"]`,
+      `[data-drop-target-key="${props.modelValue.id}"]`,
     )
     if (!(el instanceof HTMLElement)) {
       return
@@ -428,9 +429,13 @@ const buildFieldRects = (): FieldRect[] => {
   return rects
 }
 
-type IntersectingRectangle = Rectangle & { key: string; intersection: number }
+type IntersectingRectangle = Rectangle & {
+  key: string
+  intersection: number
+  label: string
+}
 
-const getSelectedRect = (): string | undefined => {
+const getSelectedRect = (): { id: string; label: string } | undefined => {
   if (props.disabled) {
     return
   }
@@ -466,8 +471,9 @@ const getSelectedRect = (): string | undefined => {
     if (!key) {
       continue
     }
+    const label = el.dataset.fieldLabel || key
     if (isInsideRect(props.mouseX, props.mouseY, rect)) {
-      return key
+      return { id: key, label }
     }
     if (intersects(props.box, rect)) {
       const intersection = calculateIntersection(rect, props.box)
@@ -477,6 +483,7 @@ const getSelectedRect = (): string | undefined => {
         width: rect.width,
         height: rect.height,
         key,
+        label,
         intersection,
       })
     }
@@ -485,7 +492,7 @@ const getSelectedRect = (): string | undefined => {
   if (intersectingRects.length === 0) {
     return
   } else if (intersectingRects.length === 1) {
-    return intersectingRects[0].key
+    return { id: intersectingRects[0].key, label: intersectingRects[0].label }
   }
 
   // Sort by intersection area.
@@ -497,7 +504,7 @@ const getSelectedRect = (): string | undefined => {
   // If the difference of area overlap between the first and second candidate
   // is larger than the threshold, return the first.
   if (diff > 0.1) {
-    return first.key
+    return { id: first.key, label: first.label }
   }
 
   // Fallback: Return the rectangle that is closest to the cursor.
@@ -506,7 +513,7 @@ const getSelectedRect = (): string | undefined => {
     props.mouseY,
     intersectingRects,
   )
-  return closest.key
+  return { id: closest.key, label: closest.label }
 }
 
 let prevMouseX = 0
@@ -522,7 +529,7 @@ onBlokkliEvent('animationFrame', () => {
 
   // Only do the calculations if the mouse position has actually changed.
   if (prevMouseX !== mouseX || prevMouseY !== mouseY) {
-    activeKey.value = getSelectedRect() || ''
+    emit('update:modelValue', getSelectedRect() || null)
     prevMouseX = mouseX
     prevMouseY = mouseY
   }

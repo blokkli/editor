@@ -25,7 +25,7 @@
     }
 
     &.bk-is-active {
-      @apply bg-teal-normal/70;
+      @apply bg-teal-normal/40;
       > div {
         @apply opacity-100 translate-y-0;
       }

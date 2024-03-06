@@ -189,4 +189,13 @@
   .bk-context-menu-leave-to {
     @apply scale-0;
   }
+
+  .bk-drag-item-enter-active,
+  .bk-drag-item-leave-active {
+    @apply transition duration-100 ease-swing;
+  }
+  .bk-drag-item-enter-from,
+  .bk-drag-item-leave-to {
+    @apply translate-y-25 opacity-0;
+  }
 }

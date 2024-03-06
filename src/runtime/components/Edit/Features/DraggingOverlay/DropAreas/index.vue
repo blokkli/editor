@@ -5,23 +5,17 @@
         v-for="rect in rects"
         :key="rect.id"
         :style="rect.style"
-        :class="{ 'bk-is-active': rect.active }"
+        :class="{ 'bk-is-active': modelValue?.id === rect.id }"
         @click="handleDrop(rect.id)"
-      >
-        <div>
-          <Icon v-if="rect.icon" :name="rect.icon" />
-          <div>{{ rect.label }}</div>
-        </div>
-      </div>
+      />
     </div>
   </Teleport>
-  <slot :is-active="isActive"></slot>
+  <slot></slot>
 </template>
 
 <script lang="ts" setup>
 import { getDraggableStyle, isInsideRect } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import { Icon } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli/icons'
 import type { DraggableItem } from '#blokkli/types'
 import { useBlokkli, ref, onMounted, onBeforeUnmount } from '#imports'
@@ -31,6 +25,11 @@ const props = defineProps<{
   isTouch: boolean
   x: number
   y: number
+  modelValue: { id: string; label: string } | null
+}>()
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', data: { id: string; label: string } | null): void
 }>()
 
 const { dropAreas, theme, eventBus } = useBlokkli()
@@ -47,13 +46,10 @@ type DropAreaRect = {
   id: string
   label: string
   icon?: BlokkliIcon
-  active: boolean
   style: Record<string, string>
 }
 
 const rects = ref<DropAreaRect[]>([])
-
-const isActive = ref(false)
 
 onBlokkliEvent('animationFrame', () => {
   if (!areas.length) {
@@ -61,7 +57,7 @@ onBlokkliEvent('animationFrame', () => {
   }
 
   const newRects: DropAreaRect[] = []
-  let hasActive = false
+  let active: { id: string; label: string } | null = null
 
   for (let i = 0; i < areas.length; i++) {
     const area = areas[i]
@@ -69,13 +65,12 @@ onBlokkliEvent('animationFrame', () => {
     rect.height = Math.max(rect.height, 20)
     const isInside = !props.isTouch && isInsideRect(props.x, props.y, rect)
     if (isInside) {
-      hasActive = true
+      active = area
     }
     newRects.push({
       id: area.id,
       label: area.label,
       icon: area.icon,
-      active: isInside,
       style: {
         borderRadius: area.radius,
         width: rect.width + 'px',
@@ -86,7 +81,10 @@ onBlokkliEvent('animationFrame', () => {
   }
 
   rects.value = newRects
-  isActive.value = hasActive
+
+  if (props.modelValue?.id !== active?.id) {
+    emit('update:modelValue', active)
+  }
 })
 
 const handleDrop = async (id: string) => {
@@ -100,7 +98,7 @@ const handleDrop = async (id: string) => {
 }
 
 const onMouseUp = () => {
-  const active = rects.value.find((v) => v.active)
+  const active = rects.value.find((v) => props.modelValue?.id === v.id)
   if (!active) {
     return
   }
