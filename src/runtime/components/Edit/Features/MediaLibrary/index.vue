@@ -122,10 +122,15 @@ defineDropAreas((dragItems) => {
             : field.host.type,
         fieldName: field.fieldName,
       }
+      const label = $t('mediaLibraryReplaceMedia', 'Replace @field').replace(
+        '@field',
+        config.label,
+      )
+
       if (adapter.mediaLibraryReplaceMedia && isBlock) {
         return {
           id: `replace-media:${field.host.uuid}:${field.fieldName}`,
-          label: $t('mediaLibraryReplaceMedia', 'Replace media'),
+          label,
           element: field.element,
           icon: 'swap-horizontal',
           onDrop: () => {
@@ -141,7 +146,7 @@ defineDropAreas((dragItems) => {
       } else if (adapter.mediaLibraryReplaceEntityMedia && !isBlock) {
         return {
           id: `replace-entity-media:${field.host.uuid}:${field.fieldName}`,
-          label: $t('mediaLibraryReplaceMedia', 'Replace media'),
+          label,
           element: field.element,
           icon: 'swap-horizontal',
           onDrop: () => {

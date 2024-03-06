@@ -10,7 +10,7 @@
     @apply border-b border-b-mono-300 border-r border-r-mono-300 h-[54px] flex-1;
 
     select {
-      @apply w-full h-full px-20 cursor-pointer;
+      @apply w-full h-full;
       @apply min-w-[150px];
     }
 
@@ -57,7 +57,7 @@
   }
 
   &.bk-is-grid > div {
-    @apply grid grid-cols-2 gap-15 p-20;
+    @apply grid grid-cols-2 pt-10;
     @container (min-width: 400px) {
       @apply grid-cols-3;
     }
@@ -95,6 +95,7 @@
     }
 
     .bk-media-library-items-item {
+      @apply p-10 hover:bg-mono-100;
       h3 {
         @apply mt-5;
       }
@@ -102,9 +103,9 @@
   }
 
   &.bk-is-horizontal > div {
-    @apply p-20 grid gap-15;
+    @apply grid;
     .bk-media-library-items-item {
-      @apply flex w-full min-w-0 gap-15;
+      @apply flex w-full min-w-0 gap-15 p-15 hover:bg-mono-100;
     }
     .bk-media-library-items-item-image {
       @apply w-90;
@@ -116,7 +117,7 @@
 }
 
 .bk-media-library-items-item {
-  @apply text-sm cursor-pointer select-none;
+  @apply text-sm cursor-grab select-none;
 
   &.bk-is-selected {
     @apply outline outline-accent-700;

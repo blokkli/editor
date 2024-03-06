@@ -28,7 +28,6 @@ import type { MediaLibraryItem } from '#blokkli/components/Features/MediaLibrary
 import type { MutationArgsMap } from './mock/plugins/mutations'
 import { FieldText } from './mock/state/Field/Text'
 import { FieldTextarea } from './mock/state/Field/Textarea'
-import type { Entity } from './mock/state/Entity'
 import type { Block } from './mock/state/Block/Block'
 import { FieldReference } from './mock/state/Field/Reference'
 
@@ -79,10 +78,10 @@ export default defineBlokkliEditAdapter((ctx) => {
     bundle: 'select'
     text: 'text'
   }> = (e) => {
-    const bundle = e.filters.bundle || 'image'
+    const bundle = e.filters.bundle
     const items: MediaLibraryItem[] = entityStorageManager
       .getStorage('media')
-      .query({ bundle })
+      .query(bundle && bundle !== 'all' ? { bundle } : {})
       .map((media) => {
         const context =
           media instanceof MediaImage ? media.filename() : media.bundle
@@ -91,7 +90,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           label: media.title(),
           context,
           thumbnail: media.thumbnail(),
-          blockBundle: bundle,
+          blockBundle: media.bundle === 'image' ? 'image' : 'video',
           mediaBundle: media.bundle,
         }
       })
@@ -104,19 +103,20 @@ export default defineBlokkliEditAdapter((ctx) => {
       })
     return Promise.resolve({
       filters: {
+        text: {
+          type: 'text',
+          label: 'Text',
+          placeholder: 'Enter a search term',
+        },
         bundle: {
           type: 'select',
           label: 'Bundle',
           default: 'image',
           options: {
+            all: 'All',
             image: 'Image',
             video: 'Video',
           },
-        },
-        text: {
-          type: 'text',
-          label: 'Text',
-          placeholder: 'Enter a search term',
         },
       },
       items,

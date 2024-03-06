@@ -344,3 +344,14 @@ html.bk-isolate-provider {
     @apply !hidden;
   }
 }
+
+.bk-form-select {
+  @apply relative;
+  > div {
+    @apply absolute top-0 h-full flex items-center pl-20 font-medium;
+  }
+
+  select {
+    @apply px-20 cursor-pointer font-medium;
+  }
+}

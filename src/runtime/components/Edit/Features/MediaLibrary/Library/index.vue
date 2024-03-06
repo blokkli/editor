@@ -22,10 +22,10 @@
           v-else-if="filter.filter.type === 'select'"
           class="bk-form-select"
         >
+          <div v-if="!filterValues[filter.key]">
+            {{ Object.values(filter.filter.options)[0] }}
+          </div>
           <select v-model="filterValues[filter.key]">
-            <option value="" disabled selected>
-              {{ filter.filter.label }}
-            </option>
             <option
               v-for="option in Object.entries(filter.filter.options)"
               :key="option[0]"
@@ -47,7 +47,7 @@
     </div>
     <div
       ref="listEl"
-      class="bk-media-library-items"
+      class="bk-media-library-items bk-scrollbar-light"
       :class="[{ 'bk-is-sortli': isSortli }, 'bk-is-' + listView]"
     >
       <Component :is="isSortli ? Sortli : 'div'" no-transition>
