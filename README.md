@@ -5,6 +5,8 @@
 blökkli is an interactive page editor that integrates with any backend and
 offers various features to edit content quick and easy.
 
+![Screenshot of the blökkli editor](./playground/public/editor-screenshot.png)
+
 ## Features
 
 - Smooth drag and drop editing
