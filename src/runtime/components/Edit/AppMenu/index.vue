@@ -1,7 +1,7 @@
 <template>
   <Teleport to="#bk-toolbar-menu">
     <div class="bk-toolbar-menu">
-      <button class="bk-toolbar-menu-button" @click.prevent.stop="ui.menu.open">
+      <button class="bk-toolbar-menu-button" @click.prevent.stop="onClick">
         <Icon name="menu" />
       </button>
     </div>
@@ -32,9 +32,14 @@
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/components'
 
-const { ui } = useBlokkli()
+const { ui, eventBus } = useBlokkli()
 
 const menuOpen = computed(() => ui.menu.isOpen.value)
+
+const onClick = () => {
+  eventBus.emit('select', '')
+  ui.menu.open()
+}
 </script>
 
 <script lang="ts">
