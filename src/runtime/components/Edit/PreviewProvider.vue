@@ -27,6 +27,7 @@ import {
 import { frameEventBus } from '#blokkli/helpers/frameEventBus'
 import broadcastProvider from '#blokkli/helpers/broadcastProvider'
 import { intersects } from '#blokkli/helpers'
+import type { AdapterContext } from '../../adapter'
 
 const props = defineProps<{
   entity?: T
@@ -36,7 +37,14 @@ const props = defineProps<{
   language: string
 }>()
 
-const context = computed(() => props)
+const context = computed<AdapterContext>(() => {
+  return {
+    entityType: props.entityType,
+    entityBundle: props.entityBundle,
+    entityUuid: props.entityUuid,
+    language: props.language,
+  }
+})
 const adapter = getAdapter(context)
 const router = useRouter()
 const broadcast = broadcastProvider()
