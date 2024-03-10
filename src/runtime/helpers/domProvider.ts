@@ -90,6 +90,7 @@ const buildFieldElement = (
   const hostEntityUuid = element.dataset.hostEntityUuid
   const cardinality = parseInt(element.dataset.fieldCardinality || '-1')
   const allowedBundles = (element.dataset.fieldAllowedBundles || '').split(',')
+  const allowedFragments = (element.dataset.allowedFragments || '').split(',')
 
   if (
     key &&
@@ -109,6 +110,7 @@ const buildFieldElement = (
       hostEntityBundle,
       cardinality: isNaN(cardinality) ? -1 : cardinality,
       allowedBundles,
+      allowedFragments,
       element,
       blockCount: isNaN(blockCount) ? 0 : blockCount,
     }

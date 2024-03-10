@@ -5,7 +5,11 @@
     entity-uuid="1"
     :can-edit="true"
   >
-    <BlokkliField name="content_blocks" :list="blocks" />
+    <BlokkliField
+      name="content_blocks"
+      :list="blocks"
+      :allowed-fragments="['cta']"
+    />
   </BlokkliProvider>
 </template>
 

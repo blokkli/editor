@@ -196,6 +196,10 @@ export default class BlockExtractor {
       return acc
     }, {})
 
+    const allFragmentNames = Object.values(this.fragmentDefinitions)
+      .map((v) => `'${v.definition.name}'`)
+      .join(' | ')
+
     return `import type { GlobalOptionsKey, BundlePropsMap } from './generated-types'
 import type { BlockDefinitionInput, BlockDefinitionOptionsInput, FragmentDefinitionInput } from '#blokkli/types'
 export const globalOptions = ${JSON.stringify(globalOptions, null, 2)} as const
@@ -211,6 +215,8 @@ export const definitionsMap: Record<string, BlockDefinitionInput<BlockDefinition
 export const fragmentDefinitionsMap: Record<string, FragmentDefinitionInput<BlockDefinitionOptionsInput, GlobalOptionsKey[]>> = {
   ${allFragmentDefinitions.join(',\n')}
 }
+
+export type BlokkliFragmentName = ${allFragmentNames || 'never'}
 
 export const definitions: BlockDefinitionInput<any, GlobalOptionsKey[]>[] = Object.values(definitionsMap)
 export const fragmentDefinitions: FragmentDefinitionInput<any, GlobalOptionsKey[]>[] = Object.values(fragmentDefinitionsMap)

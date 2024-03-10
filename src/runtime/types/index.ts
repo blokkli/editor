@@ -940,6 +940,7 @@ export type BlokkliFieldElement = {
   hostEntityBundle: string
   hostEntityUuid: string
   allowedBundles: string[]
+  allowedFragments: string[]
   cardinality: number
   element: HTMLElement
   blockCount: number

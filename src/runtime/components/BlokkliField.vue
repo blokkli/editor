@@ -7,6 +7,7 @@
       :name="name"
       :entity="entity"
       :field-key="fieldKey!"
+      :allowed-fragments="allowedFragments"
       :class="[
         attrs.class,
         listClass,
@@ -53,6 +54,7 @@ import {
   ref,
   type Ref,
 } from '#imports'
+import { type BlokkliFragmentName } from '#blokkli/definitions'
 
 import type {
   FieldListItem,
@@ -107,6 +109,7 @@ const props = withDefaults(
     editOnly?: boolean
     listClass?: string
     nonEmptyClass?: string
+    allowedFragments?: BlokkliFragmentName[]
   }>(),
   {
     list: () => [],
@@ -114,6 +117,7 @@ const props = withDefaults(
     fieldListType: 'default',
     listClass: '',
     nonEmptyClass: '',
+    allowedFragments: () => [],
   },
 )
 

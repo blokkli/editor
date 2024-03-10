@@ -10,6 +10,7 @@
     :data-host-entity-uuid="entity.uuid"
     :data-host-entity-bundle="entity.bundle"
     :data-field-key="fieldKey"
+    :data-allowed-fragments="allowedFragments.join(',')"
     :data-field-allowed-bundles="allowedBundles"
     :data-field-cardinality="fieldConfig?.cardinality"
     @select="onSelect"
@@ -52,6 +53,7 @@
 import { computed, useBlokkli } from '#imports'
 import { Sortli } from '#blokkli/components'
 import type { FieldListItem, EntityContext, FieldConfig } from '#blokkli/types'
+import type { BlokkliFragmentName } from '#blokkli/definitions'
 
 const { state, eventBus, dom, keyboard, selection, types, runtimeConfig } =
   useBlokkli()
@@ -63,6 +65,7 @@ const props = defineProps<{
   entity: EntityContext
   tag?: string
   isNested: boolean
+  allowedFragments: BlokkliFragmentName[]
 }>()
 
 const fieldConfig = computed<FieldConfig>(() => {
