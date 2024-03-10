@@ -328,10 +328,7 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
           },
         })
       } else {
-        const width = Math.max(
-          gap,
-          fieldWidth - (el.offsetLeft + el.offsetWidth),
-        )
+        const width = gap
         children.push({
           prevUuid: uuid,
           key: 'last_' + uuid,
@@ -340,11 +337,7 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
           style: {
             width: width + 'px',
             height: el.offsetHeight + 'px',
-            left:
-              Math.min(
-                el.offsetLeft + el.offsetWidth,
-                window.innerWidth - width,
-              ) + 'px',
+            left: el.offsetLeft + el.offsetWidth + 'px',
             top: el.offsetTop + 'px',
           },
         })
@@ -381,7 +374,7 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
         style: {
           width: gap + 'px',
           height: Math.max(el.offsetHeight, 30) + 'px',
-          left: Math.max(el.offsetLeft - gap, 0) + 'px',
+          left: Math.max(el.offsetLeft - gap, -gap) + 'px',
           top: el.offsetTop + 'px',
         },
       })
