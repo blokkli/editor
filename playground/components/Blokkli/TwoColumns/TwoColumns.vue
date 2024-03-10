@@ -53,9 +53,9 @@ const { options } = defineBlokkli({
       default: 'equal',
       displayAs: 'grid',
       options: {
-        equal: [1, 1],
-        oneTwo: [1, 2],
-        twoOne: [2, 1],
+        equal: { columns: [1, 1], label: 'Equal' },
+        oneTwo: { columns: [1, 2], label: 'One / Two' },
+        twoOne: { columns: [2, 1], label: 'Two / One' },
       },
     },
     reverse: {

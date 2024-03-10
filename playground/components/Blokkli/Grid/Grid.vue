@@ -42,9 +42,9 @@ const { options } = defineBlokkli({
       default: 'two',
       displayAs: 'icons',
       options: {
-        two: 'icon-blokkli-option-two',
-        three: 'icon-blokkli-option-three',
-        four: 'icon-blokkli-option-four',
+        two: { icon: 'icon-blokkli-option-two', label: 'Two' },
+        three: { icon: 'icon-blokkli-option-three', label: 'Three' },
+        four: { icon: 'icon-blokkli-option-four', label: 'Four' },
       },
     },
     mobile: {

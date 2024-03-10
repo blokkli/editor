@@ -56,8 +56,8 @@ const { options } = defineBlokkli({
       default: 'lightBlue',
       displayAs: 'colors',
       options: {
-        blue: '#0550e6',
-        red: '#ff4800',
+        blue: { hex: '#0550e6', label: 'Blue' },
+        red: { hex: '#ff4800', label: 'Red' },
       },
     },
   },

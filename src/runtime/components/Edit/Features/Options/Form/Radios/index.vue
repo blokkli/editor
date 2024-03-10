@@ -18,17 +18,37 @@
           @change="$emit('update:modelValue', option.key)"
         />
         <div
-          v-if="displayAs === 'icons'"
+          v-if="
+            displayAs === 'icons' &&
+            typeof option.value === 'object' &&
+            option.value.icon
+          "
           class="bk-blokkli-item-options-radios-icon"
         >
-          <Icon :name="option.value as any" />
+          <Icon :name="option.value.icon" />
         </div>
-        <span v-else-if="typeof option.value === 'string'" class="bk-is-text">
-          {{ option.value }}
+
+        <div
+          v-else-if="typeof option.value === 'object' && option.value.columns"
+          class="bk-blokkli-item-options-radios-flex"
+        >
+          <div
+            v-for="(v, i) in option.value.columns"
+            :key="i"
+            :style="{ flex: v }"
+          />
+        </div>
+        <span
+          v-else-if="
+            typeof option.value === 'string' ||
+            (typeof option.value === 'object' && displayAs === 'colors')
+          "
+          class="bk-is-text"
+        >
+          {{
+            typeof option.value === 'string' ? option.value : option.value.label
+          }}
         </span>
-        <div v-else class="bk-blokkli-item-options-radios-flex">
-          <div v-for="(v, i) in option.value" :key="i" :style="{ flex: v }" />
-        </div>
       </div>
     </label>
   </div>
@@ -41,25 +61,36 @@ import defineCommands from '#blokkli/helpers/composables/defineCommands'
 
 const { $t, state } = useBlokkli()
 
+type PossibleOptionType =
+  | string
+  | {
+      hex?: string
+      class?: string
+      columns?: number[]
+      icon?: string
+      label: string
+    }
+
 const props = defineProps<{
   label: string
   property: string
   displayAs?: 'radios' | 'colors' | 'grid' | 'icons'
-  options: Record<string, string | number[]>
+  options: Record<string, PossibleOptionType>
   modelValue: string
 }>()
 
 const emit = defineEmits(['update:modelValue'])
 
-function getInputWrapperAttributes(value: string | number[]) {
-  if (props.displayAs === 'colors' && typeof value === 'string') {
-    if (value.indexOf('#') === 0) {
+function getInputWrapperAttributes(value: PossibleOptionType) {
+  if (props.displayAs === 'colors' && typeof value !== 'string') {
+    if (value.hex && value.hex.indexOf('#') === 0) {
       return {
-        style: 'background-color: ' + value,
+        style: 'background-color: ' + value.hex,
       }
-    }
-    return {
-      class: value,
+    } else if (value.class) {
+      return {
+        class: value.class,
+      }
     }
   }
   return {}

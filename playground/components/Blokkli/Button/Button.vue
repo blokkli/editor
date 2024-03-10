@@ -27,8 +27,8 @@ const { options, parentType, fieldListType } = defineBlokkli({
       default: 'normal',
       displayAs: 'colors',
       options: {
-        normal: 'bg-white',
-        primary: 'bg-accent-700',
+        normal: { class: 'bg-white', label: 'White' },
+        primary: { class: 'bg-accent-700', label: 'Primary' },
       },
     },
   },

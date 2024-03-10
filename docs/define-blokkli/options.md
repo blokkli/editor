@@ -186,10 +186,9 @@ const { options } = defineBlokkli({
       default: 'equal',
       displayAs: 'grid',
       options: {
-        equal: [1, 1], // 50% / 50%
-        oneTwo: [1, 2], // 33% / 66%
-        twoOne: [2, 1], // 66% / 33%
-        quarterOne: [3, 1], // 75% / 25%
+        equal: { columns: [1, 1], label: 'Equal' },
+        oneTwo: { columns: [1, 2], label: 'One / Two' },
+        twoOne: { columns: [2, 1], label: 'Two / One' },
       },
     },
   },
@@ -214,8 +213,8 @@ const { options } = defineBlokkli({
       default: 'white',
       displayAs: 'colors',
       options: {
-        normal: '#FFFFFF', // White
-        primary: '#0550e6', // Blue
+        normal: { class: 'bg-white', label: 'White' },
+        primary: { class: 'bg-accent-700', label: 'Primary' },
       },
     },
   },
@@ -255,9 +254,9 @@ const { options } = defineBlokkli({
       default: 'two',
       displayAs: 'icons',
       options: {
-        two: 'icon-blokkli-option-two',
-        three: 'icon-blokkli-option-three',
-        four: 'icon-blokkli-option-four',
+        two: { icon: 'icon-blokkli-option-two', label: 'Two' },
+        three: { icon: 'icon-blokkli-option-three', label: 'Three' },
+        four: { icon: 'icon-blokkli-option-four', label: 'Four' },
       },
     },
   },

@@ -21,14 +21,25 @@ type DefinitionOptionCheckboxes = {
   options: Record<string, string>
 }
 
+type DefinitionOptionRadiosGridOption = {
+  columns: number[]
+  label: string
+}
+
 type DefinitionOptionRadiosGrid = {
   displayAs: 'grid'
-  options: Record<string, number[]>
+  options: Record<string, DefinitionOptionRadiosGridOption>
+}
+
+type DefinitionOptionRadiosColorsOption = {
+  hex?: `#${string}`
+  class?: string
+  label: string
 }
 
 type DefinitionOptionRadiosColors = {
   displayAs: 'colors'
-  options: Record<string, string>
+  options: Record<string, DefinitionOptionRadiosColorsOption>
 }
 
 type DefinitionOptionRadiosRadios = {
@@ -36,9 +47,14 @@ type DefinitionOptionRadiosRadios = {
   options: Record<string, string>
 }
 
+type DefinitionOptionRadiosIconsOption = {
+  icon: `icon-blokkli-option-${string}`
+  label: string
+}
+
 type DefinitionOptionRadiosIcons = {
   displayAs: 'icons'
-  options: Record<string, `icon-blokkli-option-${string}`>
+  options: Record<string, DefinitionOptionRadiosIconsOption>
 }
 
 type DefinitionOptionRadios = {

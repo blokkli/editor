@@ -77,9 +77,9 @@ const { options } = defineBlokkli({
       default: 'two',
       displayAs: 'icons',
       options: {
-        two: 'icon-blokkli-option-two',
-        three: 'icon-blokkli-option-three',
-        four: 'icon-blokkli-option-four',
+        two: { icon: 'icon-blokkli-option-two', label: 'Two' },
+        three: { icon: 'icon-blokkli-option-three', label: 'Three' },
+        four: { icon: 'icon-blokkli-option-four', label: 'Four' },
       },
     },
 
@@ -116,10 +116,10 @@ const { options } = defineBlokkli({
       default: 'equal',
       displayAs: 'grid',
       options: {
-        equal: [1, 1], // 50% / 50%
-        oneTwo: [1, 2], // 33% / 66%
-        twoOne: [2, 1], // 66% / 33%
-        quarterOne: [3, 1], // 75% / 25%
+        equal: { columns: [1, 1], label: '50% / 50%' },
+        oneTwo: { columns: [1, 2], label: '33% / 66%' },
+        twoOne: { columns: [2, 1], label: '66% / 33%' },
+        quarterOne: { columns: [3, 1], label: '75% / 25%' },
       },
     },
     color: {
@@ -128,8 +128,8 @@ const { options } = defineBlokkli({
       default: 'normal',
       displayAs: 'colors',
       options: {
-        normal: '#FFFFFF', // White
-        primary: '#0550e6', // Blue
+        normal: { hex: '#FFFFFF', label: 'White' },
+        primary: { hex: '#0550e6', label: 'Blue' },
       },
     },
   },
