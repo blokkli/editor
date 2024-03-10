@@ -240,9 +240,7 @@ export const getFragmentDefinition = (name: string): FragmentDefinitionInput<Rec
 
         globalOptionKeys.forEach((name) => {
           if (globalOptions[name]) {
-            acc[v.definition.bundle] = {
-              [name]: globalOptions[name],
-            }
+            acc[v.definition.bundle][name] = globalOptions[name]
           }
         })
 
