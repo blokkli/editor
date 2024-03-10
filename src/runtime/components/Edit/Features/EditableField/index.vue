@@ -1,7 +1,7 @@
 <template>
   <Teleport to="body">
     <Transition :name="hasTransition ? 'bk-editable' : undefined">
-      <Overlay v-if="editable" v-bind="editable" :key="key" />
+      <Overlay v-if="editable" v-bind="editable" :key="key" @close="close" />
     </Transition>
   </Teleport>
 </template>
@@ -162,10 +162,25 @@ defineCommands(() => {
   })
 })
 
+onBlokkliEvent('editable:save', () => {
+  editable.value = null
+})
+
 watch(selection.editableActive, (isActive) => {
   if (!isActive) {
     hasTransition.value = true
     editable.value = null
   }
 })
+
+watch(editable, (v) => {
+  if (!v && selection.editableActive.value) {
+    selection.editableActive.value = false
+  }
+})
+
+const close = () => {
+  editable.value = null
+  selection.editableActive.value = false
+}
 </script>

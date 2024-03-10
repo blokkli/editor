@@ -5,25 +5,17 @@
     :style="style"
     class="bk-editable-field bk-control"
   >
-    <form
-      ref="form"
-      class="bk-editable-field-input"
-      @submit.prevent="close(true)"
-    >
+    <form ref="form" class="bk-editable-field-input" @submit.prevent="close">
       <div class="bk bk-editable-field-buttons">
         <h3>
           <ItemIcon :bundle="itemBundle" />
           <span>{{ title }}</span>
         </h3>
-        <button @click.prevent="close(false)">
+        <button @click.prevent="cancel">
           <Icon name="close" />
           <span>{{ $t('cancel', 'Cancel') }}</span>
         </button>
-        <button
-          :disabled="!hasChanged"
-          type="submit"
-          @click.prevent="close(true)"
-        >
+        <button :disabled="!hasChanged" type="submit" @click.prevent="save">
           <Icon name="save" />
           <span>{{ $t('save', 'Save') }}</span>
         </button>
@@ -34,7 +26,7 @@
           v-if="config.type === 'markup'"
           v-model="modelValue"
           :type="config.type"
-          @close="close"
+          @close="save"
         />
 
         <InputFrame
@@ -44,7 +36,7 @@
           :field-name="fieldName"
           :host="host"
           :initial-height="scrollHeight"
-          @close="close"
+          @close="save"
         />
 
         <InputPlaintext
@@ -53,8 +45,8 @@
           :element="element"
           :required="required"
           :maxlength="maxlength"
-          @close="close"
-          @save="close(true)"
+          @close="cancel"
+          @save="save"
         />
       </div>
 
@@ -103,6 +95,22 @@ const props = defineProps<{
   isComponent?: boolean
   value?: string
 }>()
+
+const emit = defineEmits(['close'])
+
+const shouldSave = ref(true)
+
+const cancel = () => {
+  shouldSave.value = false
+  close()
+  emit('close')
+}
+
+const save = () => {
+  shouldSave.value = true
+  close()
+  emit('close')
+}
 
 const getElement = (): HTMLElement => props.element
 
@@ -183,19 +191,19 @@ const errorText = computed(() => {
   }
 })
 
-const close = async (save?: boolean) => {
+const close = async () => {
   // Weird iOS bug: Close method is called twice, so we have to check if we
   // are actually still editing.
   if (!selection.editableActive.value) {
     return
   }
-  if (save && errorText.value) {
+  if (shouldSave.value && errorText.value) {
     return
   }
 
   const el = getElement()
 
-  if (save && modelValue.value !== originalText.value) {
+  if (shouldSave.value && modelValue.value !== originalText.value) {
     if ('itemBundle' in props.host) {
       await state.mutateWithLoadingState(
         adapter.updateFieldValue!({
@@ -213,7 +221,7 @@ const close = async (save?: boolean) => {
       )
     }
   }
-  if (!save && el) {
+  if (!shouldSave.value && el) {
     if (!props.isComponent) {
       if (isMarkup.value) {
         el.innerHTML = originalText.value
@@ -225,7 +233,6 @@ const close = async (save?: boolean) => {
   if (el) {
     el.dataset.blokkliEditableActive = undefined
   }
-  selection.editableActive.value = false
 }
 
 watch(modelValue, (newText) => {
@@ -303,7 +310,6 @@ const onAnimationFrame = () => {
 onAnimationFrame()
 
 onBlokkliEvent('animationFrame', onAnimationFrame)
-onBlokkliEvent('editable:save', () => close(true))
 
 onMounted(() => {
   const el = getElement()
@@ -337,8 +343,9 @@ onMounted(() => {
   })
 })
 
-onBeforeUnmount(() => {
+onBeforeUnmount(async () => {
   const el = getElement()
+  await close()
   el.dataset.blokkliEditableActive = undefined
 })
 </script>
