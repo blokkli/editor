@@ -155,8 +155,8 @@ onBlokkliEvent('animationFrame', () => {
   const newRects: AnimationRectangle[] = []
 
   const elapsed = Date.now() - animationStart
-  const alphaX = easeOutElastic(elapsed / duration, 1.92, 0.51)
-  const alphaY = easeOutElastic(elapsed / duration, 2.2, 0.46)
+  const alphaX = easeOutElastic(elapsed / duration, 1.92, 0.91)
+  const alphaY = easeOutElastic(elapsed / duration, 2.2, 0.76)
   const opacityAlpha = Math.min(Math.max(elapsed - 300, 0) / 200, 1)
 
   for (let i = 0; i < rects.value.length; i++) {
@@ -256,7 +256,8 @@ onMounted(() => {
   const bounds = getDraggingBounds(
     props.startCoords,
     boundRect.rect,
-    props.isTouch ? 250 : 500,
+    // Limit width to 250px
+    250,
   )
   const boundsX = props.isTouch ? 0 : bounds.x
   const boundsY = props.isTouch ? translateY.value : bounds.y
@@ -299,8 +300,8 @@ onMounted(() => {
 
     const to: AnimationRectangleValues = {
       opacity: isTop ? (props.isTouch ? 1 : 1) : 0.1,
-      x: isTop ? 0 : (bounds.width - rect.width * targetScaleX) / 2,
-      y: isTop ? 0 : (bounds.height - rect.height * targetScaleX) / 2,
+      x: isTop ? 0 : 0,
+      y: isTop ? 0 : 0,
       scaleX: targetScaleX,
       scaleY: targetScaleY,
     }
