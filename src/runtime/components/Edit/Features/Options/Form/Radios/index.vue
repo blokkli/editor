@@ -25,7 +25,7 @@
           "
           class="bk-blokkli-item-options-radios-icon"
         >
-          <Icon :name="option.value.icon" />
+          <Icon :name="option.value.icon as any" />
         </div>
 
         <div

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { defineBlokkliEditAdapter } from '#blokkli/adapter'
 import { falsy } from '#blokkli/helpers'
 import { useGraphqlQuery, useGraphqlMutation, computed } from '#imports'

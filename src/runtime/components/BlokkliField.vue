@@ -141,7 +141,7 @@ const filteredList = computed<FieldListItemTyped[]>(() => {
           field.entityType === entity.type &&
           field.entityUuid === entity.uuid,
       )?.list || []) as FieldListItemTyped[]
-    ).map((v) => {
+    ).map<any>((v) => {
       const mutatedOptions = editContext.mutatedOptions.value[v.uuid] || {}
       return {
         ...v,

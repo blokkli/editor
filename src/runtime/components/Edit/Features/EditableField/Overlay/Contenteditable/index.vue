@@ -11,12 +11,12 @@
 </template>
 
 <script lang="ts" setup>
-import type { EditableType } from '#blokkli/types'
 import { ref, onMounted } from '#imports'
 
 const props = defineProps<{
   modelValue: string
-  type: EditableType
+  // @TODO: Probably not needed anymore.
+  type: any
 }>()
 
 const original = ref('')

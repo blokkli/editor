@@ -1,6 +1,6 @@
 {
   "name": "blokkli-beta",
-  "version": "0.0.1-beta.17",
+  "version": "0.0.1-beta.18",
   "description": "Interactive page building experience for Nuxt",
   "repository": "blokkli/editor",
   "type": "module",

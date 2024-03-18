@@ -7,11 +7,9 @@
 <script setup lang="ts">
 import { ref, computed, inject, onMounted, onBeforeUnmount } from '#imports'
 import type {
-  EditableType,
-  BlokkliEditableDirectiveArgs,
-  EntityContext,
   ItemEditContext,
   EditableFieldUpdateEvent,
+  EntityContext,
 } from '#blokkli/types'
 import {
   INJECT_EDIT_CONTEXT,
@@ -24,16 +22,9 @@ const props = withDefaults(
     name: string
     value: string
     tag?: string
-    label?: string
-    maxlength?: number
-    required?: boolean
-    type?: EditableType
   }>(),
   {
-    label: '',
     tag: 'div',
-    type: 'plaintext',
-    maxlength: -1,
   },
 )
 
@@ -46,27 +37,12 @@ if (!entity) {
   throw new Error('Missing entity context.')
 }
 
-const renderedValue = computed(() => {
-  return valueOverride.value || props.value
-})
-
-const fieldConfig = computed<BlokkliEditableDirectiveArgs>(() => {
-  return {
-    label: props.label,
-    name: props.name,
-    maxlength: props.maxlength,
-    required: props.required,
-    type: props.type,
-  }
-})
+const renderedValue = computed(() => valueOverride.value || props.value)
 
 const attrs = computed(() => {
   if (isEditing && props.name) {
     return {
       'data-blokkli-editable-field': props.name,
-      'data-blokkli-editable-component': true,
-      'data-blokkli-editable-value': props.value,
-      'data-blokkli-editable-field-config': JSON.stringify(fieldConfig.value),
     }
   }
 })

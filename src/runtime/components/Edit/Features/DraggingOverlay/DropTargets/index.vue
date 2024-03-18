@@ -93,7 +93,7 @@ const props = defineProps<{
   isTouch: boolean
   disabled: boolean
   activeColor?: string
-  modelValue?: { id: string; label: string }
+  modelValue?: { id: string; label: string } | null | undefined
 }>()
 
 const onChildClick = (field: FieldRect, child: FieldRectChild) => {

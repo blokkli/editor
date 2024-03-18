@@ -41,7 +41,7 @@
       >
         <div :style="{ transform: `scale(${1 / rect.to.scaleX})` }">
           <ItemIcon v-if="rect.bundle" :bundle="rect.bundle" />
-          <Icon v-else-if="rect.icon" :name="rect.icon" />
+          <Icon v-else-if="rect.icon" :name="rect.icon as any" />
           <div v-if="rect.label">{{ rect.label }}</div>
         </div>
       </div>

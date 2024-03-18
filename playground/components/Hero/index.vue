@@ -43,15 +43,15 @@ import { computed, onBeforeUnmount, onMounted, provide, ref } from '#imports'
 
 const props = defineProps<{
   isEditing: boolean
-  title: string
-  lead: string
+  title?: string
+  lead?: string
   image?: {
     url?: string
     alt?: string
   }
 }>()
 
-const titleValue = computed(() => props.title.toString())
+const titleValue = computed(() => (props.title || '').toString())
 
 const getTitleMarkup = (text: string): string => {
   let result = ''
