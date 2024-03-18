@@ -444,7 +444,7 @@ type AdapterFormFrameBuilderEntityEdit = {
 
 type AdapterFormFrameBuilderEntityTranslate = {
   id: 'entity:translate'
-  langcode: string
+  translation: EntityTranslation
 }
 
 type AdapterFormFrameBuilderBatchTranslate = {

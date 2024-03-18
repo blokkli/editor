@@ -353,6 +353,8 @@ export interface Language {
 export interface EntityTranslation {
   id: string
   url: string
+  editUrl?: string
+  exists: boolean
   status: boolean
 }
 
@@ -809,7 +811,7 @@ export type EventbusEvents = {
   message: Message
   keyPressed: KeyPressedEvent
   editEntity: undefined
-  translateEntity: string
+  translateEntity: EntityTranslation
   reloadState: undefined
   reloadEntity: undefined
 

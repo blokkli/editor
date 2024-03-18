@@ -31,7 +31,7 @@
           <label
             v-for="item in items"
             :key="item.id"
-            :class="{ 'bk-is-muted': !item.translation }"
+            :class="{ 'bk-is-muted': !item.translation?.exists }"
           >
             <div>
               <input
@@ -153,12 +153,14 @@ const items = computed<TranslationStateItem[]>(() => {
 })
 
 function onClick(item: TranslationStateItem, event: Event) {
-  if (item.translation) {
+  if (item.translation?.exists) {
     return adapter.changeLanguage(item.translation)
   }
 
   event.preventDefault()
-  eventBus.emit('translateEntity', item.id)
+  if (item.translation) {
+    eventBus.emit('translateEntity', item.translation)
+  }
 }
 
 function onTranslate(items: DraggableExistingBlock[]) {

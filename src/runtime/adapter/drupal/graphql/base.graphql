@@ -36,7 +36,13 @@ fragment paragraphsBlokkliEditState on ParagraphsBlokkliEditState {
       id
       name
     }
-    translations
+    translations {
+      id
+      url
+      editUrl
+      exists
+      status
+    }
   }
 }
 

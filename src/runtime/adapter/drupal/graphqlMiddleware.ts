@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { defineBlokkliEditAdapter } from '#blokkli/adapter'
 import { falsy } from '#blokkli/helpers'
 import { useGraphqlQuery, useGraphqlMutation, computed } from '#imports'
@@ -7,7 +6,7 @@ import {
   ParagraphsBlokkliCommentFragment,
   ParagraphsBlokkliEditStateFragment,
 } from '#build/graphql-operations'
-import type { BlockBundleDefinition } from '#blokkli/types'
+import type { BlockBundleDefinition, TranslationState } from '#blokkli/types'
 
 type DrupalAdapter = BlokkliAdapter<ParagraphsBlokkliEditStateFragment>
 
@@ -252,27 +251,11 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           mutatedOptions[uuid]?.paragraphs_blokkli_data || {}
       })
 
-      const translations: EntityTranslation[] =
-        entity && 'translations' in entity
-          ? entity.translations
-              ?.map((v) => {
-                if (v.langcode && 'url' in v && v.url?.path) {
-                  return {
-                    id: v.langcode,
-                    url: v.url.path,
-                    status: 'status' in v ? !!v.status : true,
-                  }
-                }
-                return null
-              })
-              .filter(falsy) || []
-          : []
-
       const translationState: TranslationState = {
         isTranslatable: !!state.translationState?.isTranslatable,
         sourceLanguage: state.translationState?.sourceLanguage || '',
         availableLanguages: state.translationState?.availableLanguages || [],
-        translations,
+        translations: state.translationState?.translations || [],
       }
 
       return {
@@ -463,7 +446,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         hostType: e.host.type,
         hostFieldName: e.host.fieldName,
         hostUuid: e.host.uuid,
-        afterUuid: e.afterUuid,
+        afterUuid: e.preceedingUuid,
         name: e.name,
       }).then(mapMutation)
 

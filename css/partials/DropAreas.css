@@ -2,7 +2,7 @@
   @apply fixed top-0 left-0 w-full h-full z-drop-areas pointer-events-none;
 
   > div {
-    @apply absolute top-0 left-0 bg-teal-normal/30 pointer-events-auto p-5;
+    @apply absolute top-0 left-0 bg-teal-normal/10 pointer-events-auto p-5;
     @apply outline-teal-normal outline-[3px] outline;
     @apply flex items-center justify-center;
 

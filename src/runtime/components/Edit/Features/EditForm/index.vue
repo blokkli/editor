@@ -26,6 +26,7 @@ import { getDefinition } from '#blokkli/definitions'
 import FormFrame from './Frame/index.vue'
 import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import type { EntityTranslation } from '#blokkli/types'
 
 const { adapter } = defineBlokkliFeature({
   id: 'edit-form',
@@ -42,6 +43,12 @@ const form = ref<AdapterFormFrameBuilder | null>(null)
 
 const formUrl = computed<string | undefined>(() => {
   if (form.value) {
+    if (
+      form.value.id === 'entity:translate' &&
+      form.value.translation.editUrl
+    ) {
+      return form.value.translation.editUrl
+    }
     return adapter.formFrameBuilder(form.value)?.url
   }
 })
@@ -152,10 +159,10 @@ onBlokkliEvent('item:edit', (e) => {
   }
 })
 
-onBlokkliEvent('translateEntity', (langcode: string) => {
+onBlokkliEvent('translateEntity', (translation: EntityTranslation) => {
   form.value = {
     id: 'entity:translate',
-    langcode,
+    translation,
   }
 })
 
