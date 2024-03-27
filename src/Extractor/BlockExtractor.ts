@@ -234,7 +234,7 @@ export const getFragmentDefinition = (name: string): FragmentDefinitionInput<Rec
   ): string {
     const schema = Object.values(this.definitions).reduce<Record<string, any>>(
       (acc, v) => {
-        acc[v.definition.bundle] = v.definition.options
+        acc[v.definition.bundle] = v.definition.options || {}
 
         const globalOptionKeys = v.definition.globalOptions || []
 
