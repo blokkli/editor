@@ -229,7 +229,7 @@ export default function (storage: StorageProvider): UiProvider {
     }
   })
 
-  onMounted(async () => {
+  onMounted(() => {
     viewportWidth.value = window.innerWidth
     viewportHeight.value = window.innerHeight
     window.addEventListener('resize', onResize)

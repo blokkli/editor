@@ -40,6 +40,8 @@ export type MediaLibraryItem = {
   mediaBundle?: string
 }
 
+export type FilterTypes = 'checkbox' | 'checkboxes' | 'text' | 'select'
+
 // Extend MediaLibraryGetResults to be generic
 export type MediaLibraryGetResults<F extends Record<string, FilterTypes>> = {
   filters: {
@@ -71,8 +73,6 @@ export type MediaLibraryGetResultsData<F extends Record<string, FilterTypes>> =
       [K in keyof F]: FilterValueTypes[F[K]]
     }
   }
-
-export type FilterTypes = 'checkbox' | 'checkboxes' | 'text' | 'select'
 
 export type FilterTypeMapping = {
   [key in FilterTypes]: MediaLibraryFilter

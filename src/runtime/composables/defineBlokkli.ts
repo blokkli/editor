@@ -1,4 +1,12 @@
 import {
+  INJECT_BLOCK_ITEM,
+  INJECT_EDIT_CONTEXT,
+  INJECT_FIELD_LIST_BLOCKS,
+  INJECT_FIELD_LIST_TYPE,
+  INJECT_REUSABLE_OPTIONS,
+  INJECT_PROVIDER_BLOCKS,
+} from '../helpers/symbols'
+import {
   computed,
   inject,
   type ComputedRef,
@@ -20,14 +28,6 @@ import type {
   GlobalOptionsKey,
   ValidFieldListTypes,
 } from '#blokkli/generated-types'
-import {
-  INJECT_BLOCK_ITEM,
-  INJECT_EDIT_CONTEXT,
-  INJECT_FIELD_LIST_BLOCKS,
-  INJECT_FIELD_LIST_TYPE,
-  INJECT_REUSABLE_OPTIONS,
-  INJECT_PROVIDER_BLOCKS,
-} from '../helpers/symbols'
 import { getRuntimeOptionValue } from '#blokkli/helpers/runtimeHelpers'
 
 /**

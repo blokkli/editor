@@ -60,9 +60,7 @@ export default class BlockExtractor {
       await fs.promises.access(iconPath, fs.constants.F_OK)
       const data = await fs.promises.readFile(iconPath)
       return data.toString()
-    } catch (e) {
-      return
-    }
+    } catch (e) {}
   }
 
   /**
@@ -151,10 +149,11 @@ export default class BlockExtractor {
     const source = rgx.exec(code)?.[2]
     if (source) {
       try {
-        // @ts-ignore
+        // eslint-disable-next-line no-eval
         const definition = eval(`(${source})`)
         return { definition, source }
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.error(
           `Failed to parse component "${filePath}": ${this.composableName} does not contain a valid object literal. No variables and methods are allowed inside ${this.composableName}().`,
         )

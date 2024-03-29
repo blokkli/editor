@@ -1,7 +1,6 @@
 import type { Ref, ComputedRef } from 'vue'
 import type { Emitter } from 'mitt'
 import type { DomProvider } from '../helpers/domProvider'
-import type { BlokkliAdapter, AdapterContext } from './../adapter'
 import type { StorageProvider } from '../helpers/storageProvider'
 import type { BlockDefinitionProvider } from '../helpers/typesProvider'
 import type { SelectionProvider } from '../helpers/selectionProvider'
@@ -9,9 +8,10 @@ import type { KeyboardProvider } from '../helpers/keyboardProvider'
 import type { UiProvider } from '../helpers/uiProvider'
 import type { AnimationProvider } from '../helpers/animationProvider'
 import type { StateProvider } from '../helpers/stateProvider'
+import type { TextProvider } from '../helpers/textProvider'
 import type { eventBus } from './../helpers/eventBus'
 import type { BlockOptionDefinition } from './blokkOptions'
-import type { TextProvider } from '../helpers/textProvider'
+import type { BlokkliAdapter, AdapterContext } from './../adapter'
 import type { BroadcastProvider } from '#blokkli/helpers/broadcastProvider'
 import type { FeaturesProvider } from '#blokkli/helpers/featuresProvider'
 import type { BlokkliIcon } from '#blokkli/icons'
@@ -46,8 +46,12 @@ type GetType<T> = T extends { options: infer O }
     ? Array<keyof O>
     : keyof O
   : T extends { type: 'checkbox' }
-  ? boolean
-  : string
+    ? boolean
+    : string
+
+export type BlockDefinitionOptionsInput = {
+  [key: string]: BlockOptionDefinition
+}
 
 type WithOptions<T extends BlockDefinitionOptionsInput> = {
   [K in keyof T]: GetType<T[K]>
@@ -108,10 +112,6 @@ export type DefineBlokkliContext<
     (T extends BlockDefinitionOptionsInput ? WithOptions<T> : {}) &
       (G extends ValidGlobalConfigKeys ? GlobalOptionsKeyTypes<G> : {})
   >
-}
-
-export type BlockDefinitionOptionsInput = {
-  [key: string]: BlockOptionDefinition
 }
 
 type DetermineVisibleOptionsContext<
@@ -654,6 +654,25 @@ export type DraggableItem =
   | DraggableSearchContentItem
   | DraggableMediaLibraryItem
 
+/**
+ * Defines a droppable entity field.
+ */
+export type DroppableEntityField = {
+  /**
+   * The droppable field element.
+   */
+  element: HTMLElement
+
+  /**
+   * The host.
+   */
+  host: DraggableExistingBlock | EntityContext
+
+  /**
+   * The name of the field on which entities can be dropped.
+   */
+  fieldName: string
+}
 export type MoveBlockEvent = {
   afterUuid?: string
   item: DraggableExistingBlock
@@ -733,6 +752,18 @@ export type Message = {
 
 export type DraggingMode = 'touch' | 'mouse'
 
+export interface Rectangle {
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
+export type Coord = {
+  x: number
+  y: number
+}
+
 export type DraggableStartEvent = {
   items: DraggableItem[]
   coords: Coord
@@ -798,6 +829,47 @@ export type EditableFieldUpdateEvent = {
   value: string
 }
 
+export type BlockAppendEvent = {
+  bundle: string
+  host: DraggableHostData
+  afterUuid?: string
+}
+
+export type UiResizedEvent = {
+  width: number
+  height: number
+}
+
+export type AnimateElementMode = 'leave' | 'enter'
+
+export type AnimatorAddEvent = {
+  id: string
+  mode: AnimateElementMode
+  height?: number
+}
+
+export type BlokkliFieldElement = {
+  key: string
+  name: string
+  label: string
+  isNested: boolean
+  hostEntityType: string
+  hostEntityBundle: string
+  hostEntityUuid: string
+  allowedBundles: string[]
+  allowedFragments: string[]
+  cardinality: number
+  element: HTMLElement
+  blockCount: number
+}
+
+export type ActionPlacedEvent = {
+  action: DraggableActionItem
+  preceedingUuid?: string
+  host: DraggableHostData
+  field: BlokkliFieldElement
+}
+
 export type EventbusEvents = {
   select: string
   'item:edit': EditBlockEvent
@@ -856,32 +928,6 @@ export type EventbusEvents = {
   'window:clickAway': undefined
 }
 
-export type BlockAppendEvent = {
-  bundle: string
-  host: DraggableHostData
-  afterUuid?: string
-}
-
-export type UiResizedEvent = {
-  width: number
-  height: number
-}
-
-export type AnimateElementMode = 'leave' | 'enter'
-
-export type AnimatorAddEvent = {
-  id: string
-  mode: AnimateElementMode
-  height?: number
-}
-
-export type ActionPlacedEvent = {
-  action: DraggableActionItem
-  preceedingUuid?: string
-  host: DraggableHostData
-  field: BlokkliFieldElement
-}
-
 export type Eventbus = Emitter<EventbusEvents>
 
 export type ItemEditContext = {
@@ -919,33 +965,6 @@ export interface BlokkliApp {
   commands: CommandsProvider
   tour: TourProvider
   dropAreas: DropAreaProvider
-}
-
-export interface Rectangle {
-  x: number
-  y: number
-  width: number
-  height: number
-}
-
-export type Coord = {
-  x: number
-  y: number
-}
-
-export type BlokkliFieldElement = {
-  key: string
-  name: string
-  label: string
-  isNested: boolean
-  hostEntityType: string
-  hostEntityBundle: string
-  hostEntityUuid: string
-  allowedBundles: string[]
-  allowedFragments: string[]
-  cardinality: number
-  element: HTMLElement
-  blockCount: number
 }
 
 export type PasteExistingBlocksEvent = {
@@ -1151,26 +1170,6 @@ export type DroppableFieldConfig = {
   allowedBundles: string[]
   cardinality: number
   required: boolean
-}
-
-/**
- * Defines a droppable entity field.
- */
-export type DroppableEntityField = {
-  /**
-   * The droppable field element.
-   */
-  element: HTMLElement
-
-  /**
-   * The host.
-   */
-  host: DraggableExistingBlock | EntityContext
-
-  /**
-   * The name of the field on which entities can be dropped.
-   */
-  fieldName: string
 }
 
 export default {}

@@ -1,3 +1,4 @@
+import { easeOutSine } from './easing'
 import type {
   DraggableItem,
   SearchContentItem,
@@ -10,7 +11,6 @@ import type {
 import { useRuntimeConfig } from '#imports'
 import { getDefinition } from '#blokkli/definitions'
 import type { RGB } from '#blokkli/types/theme'
-import { easeOutSine } from './easing'
 
 /**
  * Type check for falsy values.
@@ -645,7 +645,7 @@ export const findParentContext = (
  */
 export const mapDroppableField = (el: Element): DroppableEntityField => {
   if (!(el instanceof HTMLElement)) {
-    throw new Error(
+    throw new TypeError(
       `v-blokkli-droppable directive is only allowed on elements of type HTMLElement.`,
     )
   }

@@ -1,5 +1,4 @@
 import { type ComputedRef } from 'vue'
-import { useRuntimeConfig, computed, watch } from '#imports'
 import type {
   FieldConfig,
   BlockBundleDefinition,
@@ -10,9 +9,10 @@ import type {
   DraggableExistingBlock,
   EntityContext,
 } from '../types'
-import { eventBus } from '#blokkli/helpers/eventBus'
 import type { AdapterContext, BlokkliAdapter } from '../adapter'
 import type { SelectionProvider } from './selectionProvider'
+import { eventBus } from '#blokkli/helpers/eventBus'
+import { useRuntimeConfig, computed, watch } from '#imports'
 import { getDefinition } from '#blokkli/definitions'
 
 export type BlokkliBlockType = BlockBundleDefinition & {

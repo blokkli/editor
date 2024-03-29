@@ -1,3 +1,4 @@
+import { getDraggableStyle } from '.'
 import { theme, themes } from '#blokkli/config'
 import type { DraggableStyle } from '#blokkli/types'
 import type {
@@ -12,7 +13,6 @@ import type {
   ThemeName,
 } from '#blokkli/types/theme'
 import { type Ref, ref, onMounted, onBeforeUnmount } from '#imports'
-import { getDraggableStyle } from '.'
 
 export type ThemeProvider = {
   accent: Ref<ThemeColors>

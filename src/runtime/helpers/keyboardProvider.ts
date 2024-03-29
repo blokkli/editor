@@ -8,8 +8,8 @@ import {
   watch,
   computed,
 } from 'vue'
-import { eventBus } from '#blokkli/helpers/eventBus'
 import type { AnimationProvider } from './animationProvider'
+import { eventBus } from '#blokkli/helpers/eventBus'
 import type { KeyboardShortcut } from '#blokkli/types'
 
 type RegisteredShortcut = {

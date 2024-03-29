@@ -121,7 +121,7 @@ export const DefinitionPlugin = (
           ecmaVersion: 'latest',
         })
         walk(parsed, {
-          enter: async (node) => {
+          enter: (node) => {
             // We only care about calls to a method.
             if (
               node.type !== 'CallExpression' ||

@@ -1,6 +1,6 @@
+import { useBlokkli } from '../../composables/useBlokkli'
 import type { KeyboardShortcut } from '#blokkli/types'
 import { onBeforeUnmount, onMounted } from '#imports'
-import { useBlokkli } from '../../composables/useBlokkli'
 
 export default function (shortcut: KeyboardShortcut[] | KeyboardShortcut) {
   const { keyboard } = useBlokkli()

@@ -1,3 +1,5 @@
+import { extname, basename } from 'path'
+import { promises as fsp, existsSync } from 'fs'
 import {
   addBuildPlugin,
   addComponent,
@@ -9,19 +11,17 @@ import {
   resolveFiles,
   updateTemplates,
 } from '@nuxt/kit'
+import { defu, createDefu } from 'defu'
+import type { ResolvedNuxtTemplate } from '@nuxt/schema'
 import BlockExtractor from './Extractor/BlockExtractor'
 import FeatureExtractor, {
   type ExtractedFeatureDefinition,
 } from './Extractor/FeatureExtractor'
-import { extname, basename } from 'path'
 import type { BlockDefinitionOptionsInput } from './runtime/types'
-import { promises as fsp, existsSync } from 'fs'
 import { DefinitionPlugin } from './vitePlugin'
-import defu, { createDefu } from 'defu'
 import defaultTranslations from './translations'
 import { getTheme, themes } from './themes'
 import type { ThemeName, RGB, Theme } from './runtime/types/theme'
-import type { ResolvedNuxtTemplate } from '@nuxt/schema'
 import type { ModuleOptionsSettings } from '#blokkli/types/generatedModuleTypes'
 
 function hexToRgb(hex: string): RGB {
@@ -270,8 +270,6 @@ export default defineNuxtModule<ModuleOptions>({
 
     const moduleDir = import.meta.url
 
-    const isPlayground = srcDir.includes('/playground')
-
     // The path of this module.
     const resolver = createResolver(moduleDir)
 
@@ -310,7 +308,7 @@ export default defineNuxtModule<ModuleOptions>({
     const featureComponents = addTemplate({
       write: true,
       filename: 'blokkli/features.ts',
-      getContents: async () => {
+      getContents: () => {
         const features = featuresContext.features.map((v) => {
           const importName = `Feature_${v.componentName}`
           return {
@@ -776,7 +774,7 @@ export type BlokkliIcon = keyof typeof icons`
     nuxt.options.alias['#blokkli/helpers'] = resolver.resolve('runtime/helpers')
     nuxt.options.alias['#blokkli/adapter'] = resolver.resolve('runtime/adapter')
 
-    nuxt.hook('nitro:config', async (nitroConfig) => {
+    nuxt.hook('nitro:config', (nitroConfig) => {
       nitroConfig.publicAssets ||= []
       nitroConfig.publicAssets.push({
         dir: resolver.resolve('./runtime/public'),

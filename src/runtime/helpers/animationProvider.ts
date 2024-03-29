@@ -1,8 +1,8 @@
+import onBlokkliEvent from './composables/onBlokkliEvent'
+import useAnimationFrame from './composables/useAnimationFrame'
 import { onMounted, onBeforeUnmount } from '#imports'
 import { falsy, isInsideRect } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
-import onBlokkliEvent from './composables/onBlokkliEvent'
-import useAnimationFrame from './composables/useAnimationFrame'
 
 export type AnimationProvider = {
   /**

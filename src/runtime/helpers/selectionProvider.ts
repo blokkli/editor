@@ -1,3 +1,6 @@
+import type { DomProvider } from './domProvider'
+import type { RenderedBlock, StateProvider } from './stateProvider'
+import onBlokkliEvent from './composables/onBlokkliEvent'
 import {
   type Ref,
   type ComputedRef,
@@ -22,9 +25,6 @@ import {
   mapDroppableField,
 } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
-import type { DomProvider } from './domProvider'
-import type { RenderedBlock, StateProvider } from './stateProvider'
-import onBlokkliEvent from './composables/onBlokkliEvent'
 
 /**
  * Find the longest common subsequence between two arrays.
@@ -44,8 +44,8 @@ const findLCS = (a: string[], b: string[]): string[] => {
     }
   }
 
-  let i = a.length,
-    j = b.length
+  let i = a.length
+  let j = b.length
   const lcs: string[] = []
   while (i > 0 && j > 0) {
     if (a[i - 1] === b[j - 1]) {

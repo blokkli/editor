@@ -1,6 +1,6 @@
+import { eventBus } from '../eventBus'
 import type { EventbusEvents } from '#blokkli/types'
 import { onBeforeUnmount, onMounted } from '#imports'
-import { eventBus } from '../eventBus'
 
 export default function <T extends keyof EventbusEvents>(
   name: T,

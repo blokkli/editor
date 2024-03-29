@@ -1,6 +1,6 @@
+import { falsy } from '.'
 import type { TourItem } from '#blokkli/types'
 import { ref, type Ref } from '#imports'
-import { falsy } from '.'
 
 type TourProviderFunction = () => TourItem[] | TourItem | undefined
 

@@ -6,6 +6,10 @@ import {
   readonly,
   provide,
 } from 'vue'
+import { refreshNuxtData } from 'nuxt/app'
+import type { BlokkliAdapter, AdapterContext } from '../adapter'
+import { INJECT_MUTATED_FIELDS } from './symbols'
+import onBlokkliEvent from './composables/onBlokkliEvent'
 import type {
   MutatedField,
   EditEntity,
@@ -20,11 +24,7 @@ import type {
 } from '#blokkli/types'
 import { removeDroppedElements, falsy } from '#blokkli/helpers'
 import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
-import type { BlokkliAdapter, AdapterContext } from '../adapter'
-import { INJECT_MUTATED_FIELDS } from './symbols'
-import { refreshNuxtData } from 'nuxt/app'
 import { nextTick, useRuntimeConfig } from '#imports'
-import onBlokkliEvent from './composables/onBlokkliEvent'
 
 const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
 
@@ -258,6 +258,6 @@ export default async function (
     isLoading: readonly(isLoading),
     renderedBlocks,
     getRenderedBlock,
-    mutatedEntity: mutatedEntity,
+    mutatedEntity,
   }
 }

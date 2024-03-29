@@ -1,7 +1,7 @@
 import { type ComputedRef, computed } from 'vue'
+import type { AdapterContext } from '../adapter'
 import { translations } from '#blokkli/translations'
 import { defaultLanguage, forceDefaultLanguage } from '#blokkli/config'
-import type { AdapterContext } from '../adapter'
 
 export type TextProvider = (key: string, defaultValue?: string) => string
 

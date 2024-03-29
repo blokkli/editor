@@ -1,3 +1,4 @@
+import type { ComponentInternalInstance } from 'vue'
 import { ref } from '#imports'
 import type {
   DraggableExistingBlock,
@@ -13,7 +14,6 @@ import {
   mapDroppableField,
   findClosestEntityContext,
 } from '#blokkli/helpers'
-import type { ComponentInternalInstance } from 'vue'
 
 /**
  * Recursively clone an element and inline its styles.
@@ -173,6 +173,7 @@ export default function (): DomProvider {
     instance: ComponentInternalInstance | null,
   ) => {
     if (!instance) {
+      // eslint-disable-next-line no-console
       console.error(
         `Failed to get component instance of block with UUID "${uuid}"`,
       )
@@ -180,6 +181,7 @@ export default function (): DomProvider {
     }
     const el = getVisibleBlockElement(instance)
     if (!el) {
+      // eslint-disable-next-line no-console
       console.error(
         `Failed to locate block component element for UUID "${uuid}". Make sure the block renders at least one root element that is always visible.`,
       )
@@ -254,7 +256,7 @@ export default function (): DomProvider {
     }
     const el = block.element().closest('.bk-field-list')
     if (!(el instanceof HTMLElement)) {
-      throw new Error('Failed to locate field element for block: ' + uuid)
+      throw new TypeError('Failed to locate field element for block: ' + uuid)
     }
 
     const field = buildFieldElement(el)

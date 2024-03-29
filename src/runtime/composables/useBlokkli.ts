@@ -1,6 +1,6 @@
+import { INJECT_APP } from '../helpers/symbols'
 import { inject } from '#imports'
 import type { BlokkliApp } from '#blokkli/types'
-import { INJECT_APP } from '../helpers/symbols'
 
 /**
  * Use the blokkli editor app.

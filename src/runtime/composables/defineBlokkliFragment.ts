@@ -1,4 +1,9 @@
 import {
+  INJECT_EDIT_CONTEXT,
+  INJECT_FRAGMENT_CONTEXT,
+} from '../helpers/symbols'
+import { getRuntimeOptionValue } from '../helpers/runtimeHelpers'
+import {
   computed,
   getCurrentInstance,
   inject,
@@ -11,13 +16,8 @@ import type {
   FragmentDefinitionInput,
   ItemEditContext,
 } from '#blokkli/types'
-import {
-  INJECT_EDIT_CONTEXT,
-  INJECT_FRAGMENT_CONTEXT,
-} from '../helpers/symbols'
 import type { GlobalOptionsKey } from '#blokkli/generated-types'
 import { globalOptionsDefaults } from '#blokkli/default-global-options'
-import { getRuntimeOptionValue } from '../helpers/runtimeHelpers'
 
 export function defineBlokkliFragment<
   T extends BlockDefinitionOptionsInput = {},

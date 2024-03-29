@@ -44,6 +44,112 @@ type AdapterApplyTransformPlugin = {
   uuids: string[]
 }
 
+export type UpdateEntityFieldValueEvent = {
+  fieldName: string
+  fieldValue: string
+}
+
+export type AdapterFragmentsAddBlock = {
+  name: string
+  host: DraggableHostData
+  preceedingUuid?: string
+}
+
+export type MediaLibraryAddBlockEvent = {
+  host: DraggableHostData
+  preceedingUuid?: string
+  item: DraggableMediaLibraryItem
+}
+
+export type MediaLibraryReplaceMediaEvent = {
+  /**
+   * The UUID of the block on which the media was dropped.
+   */
+  host: DraggableHostData
+
+  /**
+   * The ID of the media that was dropped.
+   */
+  mediaId: string
+}
+
+type AdapterAssistantAddBlockFromResult = {
+  result: AssistantResult
+  host: DraggableHostData
+  preceedingUuid?: string
+}
+
+type AdapterAssistantGetResultsCreate = {
+  type: 'create'
+  prompt: string
+}
+
+type AdapterAssistantGetResultsEdit = {
+  type: 'edit'
+  /**
+   * The text that should be edited.
+   */
+  text: string
+  prompt: string
+}
+
+type AdapterAssistantGetResults =
+  | AdapterAssistantGetResultsCreate
+  | AdapterAssistantGetResultsEdit
+
+type AdapterBuildEditableFrameUrl = {
+  fieldName: string
+  uuid?: string
+}
+
+type AdapterFormFrameBuilderResult = {
+  url: string
+}
+
+type AdapterFormFrameBuilderBlockAdd = {
+  id: 'block:add'
+  data: AddNewBlockEvent
+}
+
+type AdapterFormFrameBuilderBlockTranslate = {
+  id: 'block:translate'
+  data: EditBlockEvent
+  langcode: string
+}
+
+type AdapterFormFrameBuilderBlockEdit = {
+  id: 'block:edit'
+  data: EditBlockEvent
+}
+
+type AdapterFormFrameBuilderEntityEdit = {
+  id: 'entity:edit'
+}
+
+type AdapterFormFrameBuilderEntityTranslate = {
+  id: 'entity:translate'
+  translation: EntityTranslation
+}
+
+type AdapterFormFrameBuilderBatchTranslate = {
+  id: 'batchTranslate'
+}
+
+export type AdapterFormFrameBuilder =
+  | AdapterFormFrameBuilderBlockAdd
+  | AdapterFormFrameBuilderBlockEdit
+  | AdapterFormFrameBuilderBlockTranslate
+  | AdapterFormFrameBuilderEntityEdit
+  | AdapterFormFrameBuilderEntityTranslate
+  | AdapterFormFrameBuilderBatchTranslate
+
+export interface AdapterContext {
+  entityType: string
+  entityUuid: string
+  entityBundle: string
+  language: string
+}
+
 export interface BlokkliAdapter<T> {
   /**
    * Load the state for the given langcode.
@@ -358,112 +464,6 @@ export interface BlokkliAdapter<T> {
   fragmentsAddBlock?: (
     e: AdapterFragmentsAddBlock,
   ) => Promise<MutationResponseLike<T>> | undefined
-}
-
-export type UpdateEntityFieldValueEvent = {
-  fieldName: string
-  fieldValue: string
-}
-
-export type AdapterFragmentsAddBlock = {
-  name: string
-  host: DraggableHostData
-  preceedingUuid?: string
-}
-
-export type MediaLibraryAddBlockEvent = {
-  host: DraggableHostData
-  preceedingUuid?: string
-  item: DraggableMediaLibraryItem
-}
-
-export type MediaLibraryReplaceMediaEvent = {
-  /**
-   * The UUID of the block on which the media was dropped.
-   */
-  host: DraggableHostData
-
-  /**
-   * The ID of the media that was dropped.
-   */
-  mediaId: string
-}
-
-type AdapterAssistantAddBlockFromResult = {
-  result: AssistantResult
-  host: DraggableHostData
-  preceedingUuid?: string
-}
-
-type AdapterAssistantGetResultsCreate = {
-  type: 'create'
-  prompt: string
-}
-
-type AdapterAssistantGetResultsEdit = {
-  type: 'edit'
-  /**
-   * The text that should be edited.
-   */
-  text: string
-  prompt: string
-}
-
-type AdapterAssistantGetResults =
-  | AdapterAssistantGetResultsCreate
-  | AdapterAssistantGetResultsEdit
-
-type AdapterBuildEditableFrameUrl = {
-  fieldName: string
-  uuid?: string
-}
-
-type AdapterFormFrameBuilderResult = {
-  url: string
-}
-
-type AdapterFormFrameBuilderBlockAdd = {
-  id: 'block:add'
-  data: AddNewBlockEvent
-}
-
-type AdapterFormFrameBuilderBlockTranslate = {
-  id: 'block:translate'
-  data: EditBlockEvent
-  langcode: string
-}
-
-type AdapterFormFrameBuilderBlockEdit = {
-  id: 'block:edit'
-  data: EditBlockEvent
-}
-
-type AdapterFormFrameBuilderEntityEdit = {
-  id: 'entity:edit'
-}
-
-type AdapterFormFrameBuilderEntityTranslate = {
-  id: 'entity:translate'
-  translation: EntityTranslation
-}
-
-type AdapterFormFrameBuilderBatchTranslate = {
-  id: 'batchTranslate'
-}
-
-export type AdapterFormFrameBuilder =
-  | AdapterFormFrameBuilderBlockAdd
-  | AdapterFormFrameBuilderBlockEdit
-  | AdapterFormFrameBuilderBlockTranslate
-  | AdapterFormFrameBuilderEntityEdit
-  | AdapterFormFrameBuilderEntityTranslate
-  | AdapterFormFrameBuilderBatchTranslate
-
-export interface AdapterContext {
-  entityType: string
-  entityUuid: string
-  entityBundle: string
-  language: string
 }
 
 export type BlokkliAdapterFactory<T> = (
