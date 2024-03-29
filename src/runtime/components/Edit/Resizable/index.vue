@@ -43,7 +43,10 @@ function onMouseMove(e: MouseEvent) {
   e.stopPropagation()
   e.preventDefault()
   width.value = Math.max(
-    Math.min(startWidth.value + (startX.value - e.x), window.innerWidth - 200),
+    Math.min(
+      startWidth.value + (startX.value - e.clientX),
+      window.innerWidth - 200,
+    ),
     350,
   )
 }
@@ -64,7 +67,7 @@ function onMouseDown(e: MouseEvent) {
   if (ui.isMobile.value || e.button !== 0) {
     return
   }
-  startX.value = e.x
+  startX.value = e.clientX
   startWidth.value = width.value
   isResizing.value = true
   e.preventDefault()

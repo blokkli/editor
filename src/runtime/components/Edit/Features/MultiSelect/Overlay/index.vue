@@ -15,8 +15,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
-import type { DraggableStyle } from '#blokkli/types'
-import type { Rectangle } from '#blokkli/types'
+import type { DraggableStyle, Rectangle } from '#blokkli/types'
 import { intersects } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 

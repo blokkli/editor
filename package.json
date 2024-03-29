@@ -36,7 +36,8 @@
     "prettier:fix": "prettier --write .",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "cypress:open": "cypress open"
   },
   "author": "",
   "license": "ISC",
@@ -62,6 +63,7 @@
     "@types/node": "^20.11.19",
     "@vue/test-utils": "^2.4.4",
     "changelogen": "^0.5.5",
+    "cypress": "^13.7.1",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",

@@ -69,8 +69,8 @@ function onWindowMouseMove(e: MouseEvent) {
   e.preventDefault()
   e.stopPropagation()
 
-  const diffX = Math.abs(downX.value - e.x)
-  const diffY = Math.abs(downY.value - e.y)
+  const diffX = Math.abs(downX.value - e.clientX)
+  const diffY = Math.abs(downY.value - e.clientY)
   if (diffX > 3 || diffY > 3) {
     shouldRender.value = true
   }
@@ -89,8 +89,8 @@ function onWindowMouseDown(e: MouseEvent) {
   }
   if (e.target && e.target instanceof Element) {
     if (shouldStartMultiSelect(e.target)) {
-      downX.value = e.x
-      downY.value = e.y
+      downX.value = e.clientX
+      downY.value = e.clientY
       window.addEventListener('mousemove', onWindowMouseMove)
       window.addEventListener('mouseup', onWindowMouseUp)
     }

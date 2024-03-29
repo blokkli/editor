@@ -42,8 +42,8 @@ const onContextMenu = (e: MouseEvent) => {
   if (!props.id || typeof props.id !== 'string' || !props.menu.length) {
     return
   }
-  x.value = e.x
-  y.value = e.y
+  x.value = e.clientX
+  y.value = e.clientY
   ui.openContextMenu.value = props.id
 }
 </script>

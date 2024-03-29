@@ -11,17 +11,6 @@ import videosData from './../../snapshots/videos.json'
 import type { FieldBlocks } from './state/Field/Blocks'
 import { generateUUID } from './uuid'
 
-type StorageMap = {
-  content: EntityStorage<Content>
-  comment: EntityStorage<Comment>
-  user: EntityStorage<User>
-  block: EntityStorage<Block>
-  media: EntityStorage<Media>
-  library_item: EntityStorage<LibraryItem>
-}
-
-export type ValidStorageKey = keyof StorageMap
-
 export class EntityStorage<T extends Entity> {
   private entities: Record<string, T>
 
@@ -60,6 +49,17 @@ export class EntityStorage<T extends Entity> {
     }
   }
 }
+
+type StorageMap = {
+  content: EntityStorage<Content>
+  comment: EntityStorage<Comment>
+  user: EntityStorage<User>
+  block: EntityStorage<Block>
+  media: EntityStorage<Media>
+  library_item: EntityStorage<LibraryItem>
+}
+
+export type ValidStorageKey = keyof StorageMap
 
 export class EntityStorageManager {
   storages: StorageMap
@@ -148,6 +148,11 @@ export class EntityStorageManager {
       title: ['Interaktiver $Page Builder$ für Nuxt'],
     })
     this.storages.content.add(page)
+
+    const cypressPage = new ContentPage('2')
+    cypressPage.title().setText('Interactive $page building$ cypress test.')
+    cypressPage.lead().setText('Test page for cypress tests.')
+    this.storages.content.add(cypressPage)
 
     const usedBlocks: string[] = []
 

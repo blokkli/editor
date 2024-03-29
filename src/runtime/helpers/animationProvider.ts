@@ -1,7 +1,7 @@
 import onBlokkliEvent from './composables/onBlokkliEvent'
 import useAnimationFrame from './composables/useAnimationFrame'
 import { onMounted, onBeforeUnmount } from '#imports'
-import { falsy, isInsideRect } from '#blokkli/helpers'
+import { falsy } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
 
 export type AnimationProvider = {
@@ -21,8 +21,8 @@ export default function (): AnimationProvider {
   let iterator = 120
 
   const onMouseMoveGlobal = (e: MouseEvent) => {
-    mouseX = e.x
-    mouseY = e.y
+    mouseX = e.clientX
+    mouseY = e.clientY
     iterator = 120
   }
 

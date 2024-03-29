@@ -59,7 +59,15 @@ const language = computed(() => {
   return 'en'
 })
 
-const page = entityStorageManager.getContent('1')
+const uuid = computed(() => {
+  if (route.path.includes('page/2')) {
+    return '2'
+  }
+
+  return '1'
+})
+
+const page = entityStorageManager.getContent(uuid.value)
 
 if (!page) {
   throw new Error('Failed to load page with UUID: 1')

@@ -312,7 +312,7 @@ const onMouseDown = (e: MouseEvent) => {
   if (isTouching.value) {
     return
   }
-  if (e.button !== 0) {
+  if (e.button && e.button !== 0) {
     return
   }
   if (selection.isDragging.value) {

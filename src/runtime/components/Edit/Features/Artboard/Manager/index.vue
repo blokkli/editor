@@ -314,8 +314,8 @@ watch(keyboard.isPressingSpace, (isPressing) => {
 function onMouseMove(e: MouseEvent) {
   if (mouseIsDown.value) {
     // e.preventDefault()
-    const diffX = startMoveoffset.x - e.x
-    const diffY = startMoveoffset.y - e.y
+    const diffX = startMoveoffset.x - e.clientX
+    const diffY = startMoveoffset.y - e.clientY
 
     updateOffset(startMoveOffset.x - diffX, startMoveOffset.y - diffY)
   }
@@ -329,8 +329,8 @@ function onMouseDown(e: MouseEvent) {
   }
   e.preventDefault()
   e.stopPropagation()
-  startMoveoffset.x = e.x
-  startMoveoffset.y = e.y
+  startMoveoffset.x = e.clientX
+  startMoveoffset.y = e.clientY
   startMoveOffset.x = offset.value.x
   startMoveOffset.y = offset.value.y
   mouseIsDown.value = true
