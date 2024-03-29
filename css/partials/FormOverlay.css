@@ -1,4 +1,4 @@
-.bk-form-overlay-footer {
+.bk.bk-form-overlay-footer {
   @apply p-20 bg-white border-t sticky bottom-0 z-50 flex gap-20;
   .bk-button {
     @apply w-full;
@@ -26,7 +26,7 @@
     @apply h-full flex flex-col;
   }
 
-  .bk-overlay-header {
+  .bk.bk-overlay-header {
     @apply z-edit-form-header;
     @screen md {
       @apply pl-15 h-50 bg-mono-900;

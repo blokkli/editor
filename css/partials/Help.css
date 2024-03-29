@@ -1,54 +1,54 @@
-.bk-help {
+.bk.bk-help {
   @apply p-20;
   container-type: inline-size;
-}
 
-.bk-help-section {
-  &:not(:last-child) {
-    @apply mb-20;
-  }
-  > h3 {
-    @apply text-lg font-bold;
-  }
-}
-
-.bk-help-shortcuts {
-  table {
-    @apply w-full text-sm;
-
-    @container (min-width: 500px) {
-      @apply text-lg;
+  .bk-help-section {
+    &:not(:last-child) {
+      @apply mb-20;
     }
+    > h3 {
+      @apply text-lg font-bold;
+    }
+  }
 
-    .bk-shortcut {
-      > kbd {
-        @apply bg-mono-100 text-mono-800 border border-mono-300;
-      }
+  .bk-help-shortcuts {
+    table {
+      @apply w-full text-sm;
+
       @container (min-width: 500px) {
-        @apply text-base;
+        @apply text-lg;
+      }
+
+      .bk-shortcut {
         > kbd {
+          @apply !bg-mono-100 !text-mono-800 !border !border-mono-300;
+        }
+        @container (min-width: 500px) {
           @apply text-base;
+          > kbd {
+            @apply text-base;
+          }
         }
       }
-    }
 
-    tr {
-      @apply border-b border-b-mono-300;
+      tr {
+        @apply border-b border-b-mono-300;
 
-      &.bk-is-heading {
-        @apply border-b-2 border-b-mono-300;
+        &.bk-is-heading {
+          @apply border-b-2 border-b-mono-300;
+        }
       }
-    }
 
-    th {
-      @apply text-left font-semibold pt-30 uppercase text-xs pb-10 text-mono-900;
-    }
+      th {
+        @apply text-left font-semibold pt-30 uppercase text-xs pb-10 text-mono-900;
+      }
 
-    td {
-      @apply py-10;
-      &:first-child {
-        width: 0;
-        @apply pr-10;
+      td {
+        @apply py-10;
+        &:first-child {
+          width: 0;
+          @apply pr-10;
+        }
       }
     }
   }

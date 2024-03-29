@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <div v-show="isVisible" class="pb">
+    <div v-show="isVisible" class="bk">
       <div class="bk-edit-indicator" :style="style">
         <button
           ref="button"

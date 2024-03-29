@@ -17,5 +17,6 @@ module.exports = {
         '*, ::before, ::after': ':root',
       },
     },
+    '@thedutchcoder/postcss-rem-to-px': { baseValue: 16 },
   },
 }

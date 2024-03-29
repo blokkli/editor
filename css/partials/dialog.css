@@ -62,7 +62,7 @@
   @apply font-sans text-base bg-yellow-light p-10 border border-yellow-normal rounded text-yellow-dark my-20;
 }
 
-.bk-overlay-header {
+.bk.bk-overlay-header {
   @apply bg-black text-white flex items-center pl-10 text-base leading-none;
 
   > .bk-icon,

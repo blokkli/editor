@@ -82,7 +82,7 @@
         }
       }
       button {
-        @apply text-left w-full block relative py-10 text-sm cursor-pointer pl-[22px];
+        @apply text-left w-full block relative py-10 text-sm cursor-pointer pl-[22px] text-black;
 
         > div {
           @apply pointer-events-none;

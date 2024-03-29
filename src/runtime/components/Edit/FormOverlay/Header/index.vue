@@ -1,5 +1,5 @@
 <template>
-  <div class="bk-overlay-header">
+  <div class="bk bk-overlay-header">
     <ItemIcon v-if="bundle" :bundle="bundle" />
     <div v-else class="bk-blokkli-item-icon">
       <Icon :name="icon" />

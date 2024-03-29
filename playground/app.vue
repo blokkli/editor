@@ -21,6 +21,9 @@ useHead({
 </script>
 
 <style lang="postcss">
+/* Includes the CSS of all kinds of CSS frameworks/libraries to debug how they affect editor styles. */
+/* @import '~/assets/css/css-madness.css'; */
+
 .bk-grid-overlay {
   @apply fixed top-0 left-0 w-full z-[99999999] h-full pointer-events-none;
   .container {

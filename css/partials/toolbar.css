@@ -150,9 +150,10 @@
 }
 
 .bk-shortcut {
-  @apply text-xs flex gap-5 font-semibold items-center h-[1.5em];
+  @apply text-xs flex gap-5 font-semibold items-center h-[1.5em] bg-transparent;
+  color: inherit;
   > kbd {
-    @apply bg-mono-500 px-5 text-mono-100 rounded flex items-center min-w-[1.5em] justify-center h-full leading-none pt-[0.15em] font-sans text-xs;
+    @apply !bg-mono-500 px-5 text-mono-100 rounded flex items-center min-w-[1.5em] justify-center h-full leading-none pt-[0.15em] font-sans text-xs;
   }
 }
 

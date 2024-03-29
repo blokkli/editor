@@ -7,7 +7,7 @@
     weight="100"
     key-code="F1"
   >
-    <div class="bk-help">
+    <div class="bk bk-help">
       <div v-if="isTourEnabled" class="bk-help-section">
         <button
           class="bk-button bk-is-warning bk-is-fullwidth"

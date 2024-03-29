@@ -83,52 +83,51 @@
       }
     }
   }
-}
 
-.bk-list-item.bk-is-horizontal,
-.bk-list-item.bk-is-vertical {
-  @apply touch-manipulation relative;
-  &.bk-is-disabled {
-    @apply pointer-events-none;
-    .bk-list-item-inner {
-      @apply opacity-25 !bg-transparent;
-    }
-    .bk-list-item-label {
-      @apply text-mono-700;
-    }
-    .bk-list-item-icon {
-      @apply opacity-40;
-    }
-  }
-
-  .bk-icon {
-    @apply w-[1em] h-[1em];
-  }
-  flex: 0 0 auto;
-
-  @media not all and (hover: none) {
-    &:hover {
+  .bk-list-item.bk-is-horizontal,
+  .bk-list-item.bk-is-vertical {
+    @apply touch-manipulation relative;
+    &.bk-is-disabled {
+      @apply pointer-events-none;
       .bk-list-item-inner {
-        @apply bg-mono-700 text-white border-mono-400;
+        @apply opacity-25 !bg-transparent;
       }
-      .bk-list-item-label span {
-        @apply text-white;
+      .bk-list-item-label {
+        @apply text-mono-700;
+      }
+      .bk-list-item-icon {
+        @apply opacity-40;
+      }
+    }
+
+    .bk-icon {
+      @apply w-[1em] h-[1em];
+    }
+    flex: 0 0 auto;
+
+    @media not all and (hover: none) {
+      &:hover {
+        .bk-list-item-inner {
+          @apply bg-mono-700 text-white border-mono-400;
+        }
+        .bk-list-item-label span {
+          @apply text-white;
+        }
       }
     }
   }
-}
-
-.bk-list-item.bk-is-vertical {
-  .bk-list-item-label {
-    @apply absolute whitespace-nowrap opacity-0 text-mono-100/50  transition text-left;
-    @apply top-0 left-full p-10 h-full ml-[7px];
-    @apply text-lg font-semibold;
-    width: calc(var(--bk-add-list-width) * 1px);
-  }
-  @apply w-70 px-10 py-5 cursor-grab block;
-  @screen lg {
-    &:first-child {
-      @apply pt-10;
+  .bk-list-item.bk-is-vertical {
+    .bk-list-item-label {
+      @apply absolute whitespace-nowrap opacity-0 text-mono-100/50  transition text-left;
+      @apply top-0 left-full p-10 h-full ml-[7px];
+      @apply text-lg font-semibold;
+      width: calc(var(--bk-add-list-width) * 1px);
+    }
+    @apply w-70 px-10 py-5 cursor-grab block;
+    @screen lg {
+      &:first-child {
+        @apply pt-10;
+      }
     }
   }
 }
@@ -215,7 +214,7 @@
       }
     }
     .bk-list-item {
-      @apply px-5 py-5 cursor-grab;
+      @apply px-5 py-5 cursor-grab !rounded-none;
       &:hover {
         .bk-list-item-label {
           @apply opacity-100;
@@ -250,199 +249,201 @@
   }
 }
 
-.bk-add-list-drop {
-  @apply absolute top-0 left-0 w-[300px] pointer-events-none py-10;
-  @apply bg-mono-200 text-mono-900 flex gap-10 text-base font-semibold items-center rounded-md whitespace-nowrap px-15;
-  .bk-blokkli-item-icon {
-    flex: 0 0 auto;
-  }
-
-  &.bk-is-accent {
-    @apply bg-accent-800 text-white;
-  }
-
-  &.bk-is-rose {
-    @apply bg-red-normal text-white;
-  }
-
-  &.bk-is-lime {
-    @apply bg-lime-normal text-white;
-  }
-
-  &.bk-is-dark {
-    @apply bg-mono-900 text-white;
-  }
-
-  &.bk-is-yellow {
-    @apply bg-mono-900 text-white;
-  }
-
-  .bk-add-list-drop-icon {
-    .bk-icon,
+.bk {
+  .bk-add-list-drop {
+    @apply absolute top-0 left-0 w-[300px] pointer-events-none py-10;
+    @apply bg-mono-200 text-mono-900 flex gap-10 text-base font-semibold items-center rounded-md whitespace-nowrap px-15;
     .bk-blokkli-item-icon {
-      @apply !w-auto !h-auto;
+      flex: 0 0 auto;
+    }
 
+    &.bk-is-accent {
+      @apply bg-accent-800 text-white;
+    }
+
+    &.bk-is-rose {
+      @apply bg-red-normal text-white;
+    }
+
+    &.bk-is-lime {
+      @apply bg-lime-normal text-white;
+    }
+
+    &.bk-is-dark {
+      @apply bg-mono-900 text-white;
+    }
+
+    &.bk-is-yellow {
+      @apply bg-mono-900 text-white;
+    }
+
+    .bk-add-list-drop-icon {
+      .bk-icon,
+      .bk-blokkli-item-icon {
+        @apply !w-auto !h-auto;
+
+        svg {
+          @apply fill-current;
+          @apply w-40 h-40;
+        }
+      }
+    }
+  }
+
+  .bk-list-item.bk-is-sidebar {
+    @apply relative;
+    @apply block text-lg bg-white px-15 py-10 text-mono-600;
+
+    &.bk-is-disabled {
+      @apply text-mono-300;
+      .bk-list-item-icon {
+        @apply opacity-30;
+      }
+    }
+
+    &:hover {
+      @apply text-mono-950;
+      .bk-list-item-icon {
+        @apply bg-mono-200 border-mono-600 text-mono-700;
+      }
+    }
+    .bk-list-item-label {
+      @apply font-medium text-base;
+    }
+    .bk-list-item-inner {
+      @apply flex items-center gap-15 h-full;
+    }
+    .bk-icon {
+      @apply w-[1em] h-[1em];
       svg {
         @apply fill-current;
-        @apply w-40 h-40;
       }
     }
-  }
-}
-
-.bk-list-item.bk-is-sidebar {
-  @apply relative;
-  @apply block text-lg bg-white px-15 py-10 text-mono-600;
-
-  &.bk-is-disabled {
-    @apply text-mono-300;
     .bk-list-item-icon {
-      @apply opacity-30;
+      @apply text-3xl text-mono-500 bg-mono-50 p-[0.2em] rounded border border-mono-300;
     }
-  }
 
-  &:hover {
-    @apply text-mono-950;
-    .bk-list-item-icon {
-      @apply bg-mono-200 border-mono-600 text-mono-700;
+    &.bk-is-accent .bk-list-item-icon {
+      @apply bg-accent-100 border-accent-400 text-accent-500;
     }
-  }
-  .bk-list-item-label {
-    @apply font-medium text-base;
-  }
-  .bk-list-item-inner {
-    @apply flex items-center gap-15 h-full;
-  }
-  .bk-icon {
-    @apply w-[1em] h-[1em];
-    svg {
-      @apply fill-current;
+
+    &.bk-is-accent {
+      @media not all and (hover: none) {
+        &:hover {
+          @apply text-accent-700;
+          .bk-list-item-icon {
+            @apply bg-accent-600 border-accent-900 text-white;
+          }
+        }
+      }
     }
-  }
-  .bk-list-item-icon {
-    @apply text-3xl text-mono-500 bg-mono-50 p-[0.2em] rounded border border-mono-300;
-  }
 
-  &.bk-is-accent .bk-list-item-icon {
-    @apply bg-accent-100 border-accent-400 text-accent-500;
-  }
+    &.bk-is-rose .bk-list-item-icon {
+      @apply bg-red-light border-red-normal text-red-normal;
+    }
 
-  &.bk-is-accent {
-    @media not all and (hover: none) {
-      &:hover {
-        @apply text-accent-700;
-        .bk-list-item-icon {
-          @apply bg-accent-600 border-accent-900 text-white;
+    &.bk-is-rose {
+      @media not all and (hover: none) {
+        &:hover {
+          @apply text-red-dark;
+          .bk-list-item-icon {
+            @apply bg-red-normal border-red-dark text-red-light;
+          }
+        }
+      }
+    }
+
+    &.bk-is-lime .bk-list-item-icon {
+      @apply bg-lime-light border-lime-normal text-lime-normal;
+    }
+
+    &.bk-is-lime {
+      @media not all and (hover: none) {
+        &:hover {
+          @apply text-lime-dark;
+          .bk-list-item-icon {
+            @apply bg-lime-normal border-lime-dark text-lime-light;
+          }
+        }
+      }
+    }
+
+    &.bk-is-yellow .bk-list-item-icon {
+      @apply bg-yellow-light border-yellow-dark/60 text-yellow-dark;
+    }
+
+    &.bk-is-yellow {
+      @media not all and (hover: none) {
+        &:hover {
+          @apply text-yellow-dark;
+          .bk-list-item-icon {
+            @apply bg-yellow-normal/30 border-yellow-dark/70;
+          }
         }
       }
     }
   }
 
-  &.bk-is-rose .bk-list-item-icon {
-    @apply bg-red-light border-red-normal text-red-normal;
-  }
-
-  &.bk-is-rose {
-    @media not all and (hover: none) {
-      &:hover {
-        @apply text-red-dark;
-        .bk-list-item-icon {
-          @apply bg-red-normal border-red-dark text-red-light;
+  .bk-list-sidebar {
+    container-type: inline-size;
+    #blokkli-add-list-blocks,
+    #blokkli-add-list-actions {
+      @apply grid grid-cols-1 text-mono-950;
+      @container (min-width: 400px) {
+        @apply grid-cols-2;
+        .bk-list-item {
+          @apply py-15;
+        }
+        .bk-list-item-inner {
+          @apply flex-col;
         }
       }
-    }
-  }
-
-  &.bk-is-lime .bk-list-item-icon {
-    @apply bg-lime-light border-lime-normal text-lime-normal;
-  }
-
-  &.bk-is-lime {
-    @media not all and (hover: none) {
-      &:hover {
-        @apply text-lime-dark;
-        .bk-list-item-icon {
-          @apply bg-lime-normal border-lime-dark text-lime-light;
+      @container (min-width: 500px) {
+        @apply grid-cols-3;
+        .bk-list-item {
+          @apply py-20;
+        }
+        .bk-list-item-inner {
+          .bk-list-item-icon {
+            @apply text-4xl;
+          }
         }
       }
-    }
-  }
-
-  &.bk-is-yellow .bk-list-item-icon {
-    @apply bg-yellow-light border-yellow-dark/60 text-yellow-dark;
-  }
-
-  &.bk-is-yellow {
-    @media not all and (hover: none) {
-      &:hover {
-        @apply text-yellow-dark;
-        .bk-list-item-icon {
-          @apply bg-yellow-normal/30 border-yellow-dark/70;
+      @container (min-width: 600px) {
+        @apply grid-cols-4;
+        .bk-list-item-inner {
+          @apply text-lg;
+          .bk-list-item-icon {
+            @apply text-5xl;
+          }
         }
       }
+      @container (min-width: 800px) {
+        @apply grid-cols-5;
+      }
+      @container (min-width: 1000px) {
+        @apply grid-cols-6;
+      }
+      @container (min-width: 1200px) {
+        @apply grid-cols-7;
+      }
+      @container (min-width: 1400px) {
+        @apply grid-cols-8;
+      }
+      @container (min-width: 1600px) {
+        @apply grid-cols-9;
+      }
     }
-  }
-}
+    #blokkli-add-list-actions {
+      @apply border-t border-t-mono-200;
+    }
 
-.bk-list-sidebar {
-  container-type: inline-size;
-  #blokkli-add-list-blocks,
-  #blokkli-add-list-actions {
-    @apply grid grid-cols-1 text-mono-950;
-    @container (min-width: 400px) {
-      @apply grid-cols-2;
-      .bk-list-item {
-        @apply py-15;
-      }
-      .bk-list-item-inner {
-        @apply flex-col;
-      }
+    .bk-add-list-drop {
+      @apply opacity-0;
     }
-    @container (min-width: 500px) {
-      @apply grid-cols-3;
-      .bk-list-item {
-        @apply py-20;
-      }
-      .bk-list-item-inner {
-        .bk-list-item-icon {
-          @apply text-4xl;
-        }
-      }
-    }
-    @container (min-width: 600px) {
-      @apply grid-cols-4;
-      .bk-list-item-inner {
-        @apply text-lg;
-        .bk-list-item-icon {
-          @apply text-5xl;
-        }
-      }
-    }
-    @container (min-width: 800px) {
-      @apply grid-cols-5;
-    }
-    @container (min-width: 1000px) {
-      @apply grid-cols-6;
-    }
-    @container (min-width: 1200px) {
-      @apply grid-cols-7;
-    }
-    @container (min-width: 1400px) {
-      @apply grid-cols-8;
-    }
-    @container (min-width: 1600px) {
-      @apply grid-cols-9;
-    }
-  }
-  #blokkli-add-list-actions {
-    @apply border-t border-t-mono-200;
   }
 
-  .bk-add-list-drop {
-    @apply opacity-0;
+  .bk-list-sidebar-form {
+    @apply p-15;
   }
-}
-
-.bk-list-sidebar-form {
-  @apply p-15;
 }
