@@ -81,27 +81,7 @@ export default function (): AnimationProvider {
       if (canvasRect && rootRect && sidebarRect) {
         rootRect.width = rootRect.width - sidebarRect.width
         const scale = parseFloat(wrapperEl.style.scale)
-        const rects: Record<string, DOMRect> = {}
-        let hoveredUuid = ''
-        const elements = [
-          ...document.querySelectorAll(
-            '[data-blokkli-provider-active="true"] [data-element-type="existing"]',
-          ),
-        ]
 
-        for (let i = 0; i < elements.length; i++) {
-          const el = elements[i]
-          if (el instanceof HTMLElement) {
-            const uuid = el.dataset.uuid
-            if (uuid) {
-              const rect = el.getBoundingClientRect()
-              rects[uuid] = rect
-              if (isInsideRect(mouseX, mouseY, rect)) {
-                hoveredUuid = uuid
-              }
-            }
-          }
-        }
         eventBus.emit('animationFrame', {
           mouseX,
           mouseY,
@@ -109,8 +89,6 @@ export default function (): AnimationProvider {
           rootRect,
           canvasRect,
           fieldAreas,
-          rects,
-          hoveredUuid,
         })
       }
     }

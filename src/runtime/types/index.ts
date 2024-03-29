@@ -735,11 +735,9 @@ type AnimationFrameFieldArea = {
 }
 
 export type AnimationFrameEvent = {
-  rects: Record<string, DOMRect>
   rootRect: DOMRect
   canvasRect: DOMRect
   fieldAreas: AnimationFrameFieldArea[]
-  hoveredUuid: string
   scale: number
   mouseX: number
   mouseY: number
