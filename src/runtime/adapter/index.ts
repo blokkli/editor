@@ -150,6 +150,11 @@ export interface AdapterContext {
   language: string
 }
 
+export type ClipboardMapBundleEvent = {
+  type: 'youtube_video' | 'plaintext'
+  data: string
+}
+
 export interface BlokkliAdapter<T> {
   /**
    * Load the state for the given langcode.
@@ -228,6 +233,11 @@ export interface BlokkliAdapter<T> {
   updateOptions?: (
     options: UpdateBlockOptionEvent[],
   ) => Promise<MutationResponseLike<T>>
+
+  /**
+   * Determine the block bundle for the given clipboard item.
+   */
+  clipboardMapBundle?: (e: ClipboardMapBundleEvent) => string | undefined
 
   /**
    * Add a clipboard item.

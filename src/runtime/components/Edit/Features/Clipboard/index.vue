@@ -148,7 +148,7 @@ function removeAttributes(el: Element) {
   }
 }
 
-const onManualPaste = async (e: ClipboardEvent) => {
+const onManualPaste = (e: ClipboardEvent) => {
   onPaste(e, true)
 }
 
@@ -243,6 +243,7 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
 }
 
 function onPaste(e: ClipboardEvent, fromInput?: boolean) {
+  console.log(e)
   if (state.editMode.value !== 'editing') {
     return
   }
@@ -290,12 +291,22 @@ function onPaste(e: ClipboardEvent, fromInput?: boolean) {
 }
 
 const handlePastedText = (text: string) => {
+  if (!adapter.clipboardMapBundle) {
+    return
+  }
   const youtubeId = getYouTubeID(text)
 
   if (youtubeId) {
+    const itemBundle = adapter.clipboardMapBundle({
+      type: 'youtube_video',
+      data: text,
+    })
+    if (!itemBundle) {
+      return
+    }
     pastedItems.value.push({
       type: 'youtube',
-      itemBundle: 'video_remote',
+      itemBundle,
       data: youtubeId,
     })
     showClipboardSidebar()
@@ -307,10 +318,17 @@ const handlePastedText = (text: string) => {
 
   removeAttributes(div)
   if (div.innerText) {
+    const itemBundle = adapter.clipboardMapBundle({
+      type: 'plaintext',
+      data: div.innerHTML,
+    })
+    if (!itemBundle) {
+      return
+    }
     showClipboardSidebar()
     pastedItems.value.push({
       type: 'text',
-      itemBundle: 'text',
+      itemBundle,
       data: div.innerHTML,
     })
   }

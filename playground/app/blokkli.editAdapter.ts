@@ -373,7 +373,6 @@ export default defineBlokkliEditAdapter((ctx) => {
       if (url) {
         return { url: `${prefix}${url}?${params.toString()}` }
       }
-      return
     },
 
     updateOptions: (options) =>
@@ -388,6 +387,13 @@ export default defineBlokkliEditAdapter((ctx) => {
         images: 'Images',
         videos: 'Videos',
       }
+    },
+
+    clipboardMapBundle(e) {
+      if (e.type === 'youtube_video') {
+        return 'video'
+      }
+      return 'text'
     },
 
     getContentSearchResults(tab, text) {
@@ -458,6 +464,14 @@ export default defineBlokkliEditAdapter((ctx) => {
           values: {
             text: e.item.clipboardData,
           },
+          hostEntityType: e.host.type,
+          hostEntityUuid: e.host.uuid,
+          hostField: e.host.fieldName,
+          preceedingUuid: e.afterUuid,
+        })
+      } else if (e.item.itemBundle === 'video') {
+        return addMutation('add_video_from_url', {
+          url: 'https://www.youtube.com/watch?v=' + e.item.clipboardData,
           hostEntityType: e.host.type,
           hostEntityUuid: e.host.uuid,
           hostField: e.host.fieldName,

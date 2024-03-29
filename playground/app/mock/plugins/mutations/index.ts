@@ -4,6 +4,10 @@ import {
   MutationAddReusableItem,
   type MutationAddReusableItemArgs,
 } from './Mutation/AddReusableItem'
+import {
+  MutationAddVideoFromUrl,
+  type MutationAddVideoFromUrlArgs,
+} from './Mutation/AddVideoFromUrl'
 import { MutationDelete, type MutationDeleteArgs } from './Mutation/Delete'
 import {
   MutationDetachReusable,
@@ -69,6 +73,7 @@ export type MutationArgsMap = {
   edit_entity: MutationEditEntityArgs
   replace_media: MutationReplaceMediaArgs
   replace_entity_media: MutationReplaceEntityMediaArgs
+  add_video_from_url: MutationAddVideoFromUrlArgs
 }
 
 export const createMutation = <T extends keyof MutationArgsMap>(
@@ -108,6 +113,8 @@ export const createMutation = <T extends keyof MutationArgsMap>(
       return new MutationReplaceMedia(configuration)
     case 'replace_entity_media':
       return new MutationReplaceEntityMedia(configuration)
+    case 'add_video_from_url':
+      return new MutationAddVideoFromUrl(configuration)
   }
 
   throw new Error('Missing mutation plugin with ID: ' + id)

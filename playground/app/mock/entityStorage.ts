@@ -270,6 +270,7 @@ export class EntityStorageManager {
       title,
     })
     this.storages.media.add(video)
+    return video
   }
 
   cloneBlock(entity: Block, newUuid: string): Entity {
