@@ -46,12 +46,29 @@ const props = defineProps<{
   keyCode?: string
   icon?: BlokkliIcon
   tourText?: string
+  modelValue?: boolean
+}>()
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', data: boolean): void
 }>()
 
 const storageKey = 'view_option_' + props.id
 const button = ref<HTMLElement | null>(null)
 
-const isActive = storage.use(storageKey, false)
+const isActiveStorage = storage.use(storageKey, false)
+
+const isActive = computed({
+  get() {
+    return isActiveStorage.value
+  },
+  set(v: boolean) {
+    isActiveStorage.value = v
+    emit('update:modelValue', v)
+  },
+})
+
+emit('update:modelValue', isActiveStorage.value)
 
 const title = computed(() => (isActive.value ? props.titleOff : props.titleOn))
 

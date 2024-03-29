@@ -355,3 +355,17 @@ html.bk-isolate-provider {
     @apply px-20 cursor-pointer font-medium bg-white;
   }
 }
+
+html.bk-hide-non-editable {
+  .bk-main-canvas {
+    > * {
+      @apply invisible;
+    }
+
+    .bk-selection,
+    [data-field-name],
+    [data-blokkli-editable-field] {
+      @apply visible;
+    }
+  }
+}

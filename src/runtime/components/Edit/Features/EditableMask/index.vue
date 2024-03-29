@@ -1,10 +1,10 @@
 <template>
   <PluginViewOption
     id="mask"
-    v-slot="{ isActive }"
-    :label="$t('maskToggle', 'Show content fields')"
-    :title-on="$t('maskShow', 'Show content fields')"
-    :title-off="$t('maskHide', 'Hide content fields')"
+    v-model="isActive"
+    :label="$t('maskToggle', 'Show editable areas')"
+    :title-on="$t('maskShow', 'Show editable areas')"
+    :title-off="$t('maskHide', 'Hide non-editable areas')"
     :tour-text="
       $t(
         'maskTourText',
@@ -13,17 +13,19 @@
     "
     icon="texturebox"
     key-code="M"
-  >
-    <Teleport to="body">
-      <Overlay v-if="isActive" />
-    </Teleport>
-  </PluginViewOption>
+  />
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature } from '#imports'
+import {
+  useBlokkli,
+  defineBlokkliFeature,
+  ref,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+} from '#imports'
 import { PluginViewOption } from '#blokkli/plugins'
-import Overlay from './Overlay/index.vue'
 
 defineBlokkliFeature({
   id: 'editable-mask',
@@ -34,6 +36,24 @@ defineBlokkliFeature({
 })
 
 const { $t } = useBlokkli()
+
+const isActive = ref(false)
+
+const setRootClass = () => {
+  console.log({ isActive: isActive.value })
+  document.documentElement.classList.remove('bk-hide-non-editable')
+  if (isActive.value) {
+    document.documentElement.classList.add('bk-hide-non-editable')
+  }
+}
+
+watch(isActive, setRootClass)
+
+onMounted(setRootClass)
+
+onBeforeUnmount(() => {
+  document.documentElement.classList.remove('bk-hide-non-editable')
+})
 </script>
 
 <script lang="ts">
