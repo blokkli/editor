@@ -11,7 +11,11 @@
     <div v-if="comments.length" class="bk bk-comments bk-control">
       <ul>
         <li v-for="comment in comments" :key="comment.uuid">
-          <Comment v-bind="comment" @click-comment="onClickComment(comment)" />
+          <Comment
+            v-bind="comment"
+            @click-comment="onClickComment(comment)"
+            @resolve="onResolveComment(comment.uuid)"
+          />
         </li>
       </ul>
     </div>

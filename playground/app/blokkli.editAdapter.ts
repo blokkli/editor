@@ -218,7 +218,10 @@ export default defineBlokkliEditAdapter((ctx) => {
       return mockResponse(editState.getMutatedState(getEntity()))
     },
     loadComments() {
-      console.log('Load comments')
+      return loadComments()
+    },
+    resolveComment(uuid) {
+      console.log('Resolve comment')
       return loadComments()
     },
     addComment(blockUuids, body) {
