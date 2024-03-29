@@ -13,15 +13,15 @@
     weight="-100"
   >
     <div class="bk bk-history bk-control">
-      <ul>
+      <ul v-if="mapped.length">
         <li
           v-for="item in mapped"
           :key="item.index"
           :class="{
-            'is-first': item.index === mutations.length - 1,
-            'is-not-active': item.index > currentMutationIndex,
-            'is-active': item.index === currentMutationIndex,
-            'is-applied': item.index < currentMutationIndex,
+            'bk-is-first': item.index === mutations.length - 1,
+            'bk-is-not-active': item.index > currentMutationIndex,
+            'bk-is-active': item.index === currentMutationIndex,
+            'bk-is-applied': item.index < currentMutationIndex,
           }"
         >
           <button :disabled="!canEdit" @click="setHistoryIndex(item.index)">
@@ -52,9 +52,9 @@
           </button>
         </li>
         <li
-          class="is-last"
+          class="bk-is-last"
           :class="[
-            currentMutationIndex === -1 ? 'is-active' : 'is-applied',
+            currentMutationIndex === -1 ? 'bk-is-active' : 'bk-is-applied',
             { 'bk-has-shadow': !scrolledToEnd },
           ]"
         >
@@ -75,6 +75,9 @@
           </button>
         </li>
       </ul>
+      <div v-else class="bk-history-empty-message">
+        {{ $t('historyEmpty', 'There are now changes yet.') }}
+      </div>
     </div>
   </PluginSidebar>
 
