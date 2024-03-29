@@ -30,7 +30,11 @@
           />
         </template>
       </Hero>
-      <BlokkliField name="content" :list="fieldContent" />
+      <BlokkliField
+        name="content"
+        :list="fieldContent"
+        :allowed-fragments="['cta']"
+      />
     </BlokkliProvider>
   </div>
 </template>
@@ -62,7 +66,7 @@ if (!page) {
 }
 
 if (!(page instanceof ContentPage)) {
-  throw new Error('Failed to load page with UUID: 1')
+  throw new TypeError('Failed to load page with UUID: 1')
 }
 
 page.getTranslation(language.value)

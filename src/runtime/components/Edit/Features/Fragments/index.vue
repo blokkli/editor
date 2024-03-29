@@ -11,6 +11,8 @@
         '<p>Drag the icon into the page to add a fragment block.</p><p>Fragments are reusable blocks that always render the same content.</p>',
       )
     "
+    :disabled="!isEnabled"
+    item-bundle="blokkli_fragment"
     icon="fragment"
     color="accent"
     @placed="placedAction = $event"
@@ -42,7 +44,17 @@ const { adapter } = defineBlokkliFeature({
   requiredAdapterMethods: ['fragmentsAddBlock'],
 })
 
-const { state, $t, types } = useBlokkli()
+const { state, $t, types, selection, dom } = useBlokkli()
+
+const isEnabled = computed<boolean>(() => {
+  if (selection.blocks.value.length === 1) {
+    const block = selection.blocks.value[0]
+    const field = dom.findField(block.hostUuid, block.hostFieldName)
+    return !!field?.allowedFragments.length
+  }
+
+  return true
+})
 
 const placedAction = ref<ActionPlacedEvent | null>(null)
 

@@ -7,8 +7,10 @@
       :icon="icon"
       :orientation="ui.addListOrientation.value"
       :color="color"
+      :disabled="disabled"
       data-element-type="action"
       :data-action-type="type"
+      :data-item-bundle="itemBundle"
       no-context-menu
     />
   </Teleport>
@@ -26,6 +28,7 @@ const props = defineProps<{
   type: string
   title: string
   icon: BlokkliIcon
+  itemBundle?: string
   color: 'rose' | 'lime' | 'accent'
   description?: string
   disabled?: boolean

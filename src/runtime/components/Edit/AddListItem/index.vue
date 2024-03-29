@@ -17,8 +17,8 @@
   >
     <div class="bk-list-item-inner">
       <div class="bk-list-item-icon">
-        <ItemIcon v-if="bundle" :bundle="bundle" />
-        <Icon v-else-if="icon" :name="icon" />
+        <Icon v-if="icon" :name="icon" />
+        <ItemIcon v-else-if="bundle" :bundle="bundle" />
       </div>
       <div
         class="bk-list-item-label"

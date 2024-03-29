@@ -64,7 +64,7 @@ import type { BlokkliFieldElement } from '#blokkli/types'
 import { ref, useBlokkli, computed, watch } from '#imports'
 import FragmentItem from './Item/index.vue'
 
-defineProps<{
+const props = defineProps<{
   field: BlokkliFieldElement
 }>()
 
@@ -78,9 +78,11 @@ const searchText = ref('')
 const listEl = ref<HTMLDivElement | null>(null)
 const selectedItem = ref('')
 
-const fragments = computed(() => {
-  return fragmentDefinitions
-})
+const allowedInField = computed(() => props.field.allowedFragments || [])
+
+const fragments = computed(() =>
+  fragmentDefinitions.filter((v) => allowedInField.value.includes(v.name)),
+)
 
 const onSubmit = () => {
   if (selectedItem.value) {

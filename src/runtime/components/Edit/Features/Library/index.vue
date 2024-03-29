@@ -32,6 +32,7 @@
     "
     icon="reusable"
     color="lime"
+    item-bundle="from_library"
     :disabled="!fromLibraryAllowedInList"
     @placed="placedAction = $event"
   />
@@ -163,9 +164,14 @@ const isSupportedOnEntity = computed(() =>
   types.generallyAvailableBundles.value.find((v) => v.id === 'from_library'),
 )
 
-const fromLibraryAllowedInList = computed(() =>
-  types.allowedTypesInList.value.includes('from_library'),
-)
+const fromLibraryAllowedInList = computed(() => {
+  if (!selection.uuids.value.length) {
+    return !!types.generallyAvailableBundles.value.find(
+      (v) => v.id === 'from_library',
+    )
+  }
+  return types.allowedTypesInList.value.includes('from_library')
+})
 
 const canMakeReusable = computed(
   () =>

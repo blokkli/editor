@@ -89,8 +89,12 @@ const buildFieldElement = (
   const hostEntityBundle = element.dataset.hostEntityBundle
   const hostEntityUuid = element.dataset.hostEntityUuid
   const cardinality = parseInt(element.dataset.fieldCardinality || '-1')
-  const allowedBundles = (element.dataset.fieldAllowedBundles || '').split(',')
-  const allowedFragments = (element.dataset.allowedFragments || '').split(',')
+  const allowedBundles = (element.dataset.fieldAllowedBundles || '')
+    .split(',')
+    .filter(Boolean)
+  const allowedFragments = (element.dataset.allowedFragments || '')
+    .split(',')
+    .filter(Boolean)
 
   if (
     key &&

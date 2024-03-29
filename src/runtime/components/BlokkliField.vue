@@ -83,6 +83,10 @@ const DraggableList = defineAsyncComponent(() => {
 
 const attrs = useAttrs()
 
+defineOptions({
+  inheritAttrs: false,
+})
+
 const isEditing = inject(INJECT_IS_EDITING, false)
 const isInReusable = inject(INJECT_IS_IN_REUSABLE, false)
 const isPreview = inject<boolean>(INJECT_IS_PREVIEW, false)

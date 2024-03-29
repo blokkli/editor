@@ -184,10 +184,6 @@ const draggingBundles = computed<string[]>(() =>
     .filter(falsy),
 )
 
-const isAction = computed(
-  () => props.items.length === 1 && props.items[0].itemType === 'action',
-)
-
 const selectionUuids = computed<string[]>(() =>
   props.items
     .map((item) => {
@@ -226,7 +222,6 @@ function getGapSize(orientation: Orientation, element: HTMLElement): number {
 
 const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
   const children: FieldRectChild[] = []
-  const fieldWidth = field.element.offsetWidth
   const fieldHeight = field.element.offsetHeight
 
   const orientation = getChildrenOrientation(field.element)
@@ -249,11 +244,10 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
   }
 
   const allBundlesAllowed =
-    isAction.value ||
-    (draggingBundles.value.length &&
-      draggingBundles.value.every((bundle) =>
-        field.allowedBundles.includes(bundle),
-      ))
+    !draggingBundles.value.length ||
+    draggingBundles.value.every((bundle) =>
+      field.allowedBundles.includes(bundle),
+    )
   if (!allBundlesAllowed) {
     return []
   }
