@@ -1,6 +1,7 @@
 <template>
   <Teleport v-if="!isRenderedDetached" :to="'#bk-sidebar-tabs-' + region">
     <button
+      :id="'bk-sidebar-button-' + id"
       ref="tourElement"
       class="bk-toolbar-button"
       :class="[{ 'is-active': activeSidebar === id }, 'bk-is-' + region]"

@@ -1,6 +1,7 @@
 <template>
   <Teleport :to="to">
     <button
+      :id="'bk-menu-list-button-' + id"
       class="bk-menu-list-button"
       :disabled="disabled"
       :class="type ? 'bk-is-' + type : ''"
