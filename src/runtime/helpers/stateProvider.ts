@@ -8,7 +8,7 @@ import {
 } from 'vue'
 import { refreshNuxtData } from 'nuxt/app'
 import type { BlokkliAdapter, AdapterContext } from '../adapter'
-import { INJECT_MUTATED_FIELDS } from './symbols'
+import { INJECT_MUTATED_FIELDS_MAP } from './symbols'
 import onBlokkliEvent from './composables/onBlokkliEvent'
 import type {
   MutatedField,
@@ -22,7 +22,7 @@ import type {
   EditMode,
   FieldListItem,
 } from '#blokkli/types'
-import { removeDroppedElements, falsy } from '#blokkli/helpers'
+import { removeDroppedElements, falsy, getFieldKey } from '#blokkli/helpers'
 import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
 import { nextTick, useRuntimeConfig } from '#imports'
 
@@ -235,10 +235,15 @@ export default async function (
     await loadState()
   })
 
-  provide(
-    INJECT_MUTATED_FIELDS,
-    computed(() => mutatedFields.value),
+  const mutatedFieldsMap = computed(() =>
+    mutatedFields.value.reduce<Record<string, MutatedField>>((acc, field) => {
+      const key = getFieldKey(field.entityUuid, field.name)
+      acc[key] = field
+      return acc
+    }, {}),
   )
+
+  provide(INJECT_MUTATED_FIELDS_MAP, mutatedFieldsMap)
 
   await loadState()
 

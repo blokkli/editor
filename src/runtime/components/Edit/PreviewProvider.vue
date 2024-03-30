@@ -22,11 +22,11 @@ import getAdapter from '#blokkli/compiled-edit-adapter'
 import {
   INJECT_EDIT_CONTEXT,
   INJECT_IS_PREVIEW,
-  INJECT_MUTATED_FIELDS,
+  INJECT_MUTATED_FIELDS_MAP,
 } from '#blokkli/helpers/symbols'
 import { frameEventBus } from '#blokkli/helpers/frameEventBus'
 import broadcastProvider from '#blokkli/helpers/broadcastProvider'
-import { intersects } from '#blokkli/helpers'
+import { getFieldKey, intersects } from '#blokkli/helpers'
 import type { AdapterContext } from '../../adapter'
 
 const props = defineProps<{
@@ -71,7 +71,15 @@ const updateState = () => {
 
 updateState()
 
-provide(INJECT_MUTATED_FIELDS, mutatedFields)
+const mutatedFieldsMap = computed(() =>
+  mutatedFields.value.reduce<Record<string, MutatedField>>((acc, field) => {
+    const key = getFieldKey(field.entityUuid, field.name)
+    acc[key] = field
+    return acc
+  }, {}),
+)
+
+provide(INJECT_MUTATED_FIELDS_MAP, mutatedFieldsMap)
 provide(INJECT_IS_PREVIEW, true)
 provide(INJECT_EDIT_CONTEXT, {
   mutatedOptions,

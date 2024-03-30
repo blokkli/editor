@@ -51,6 +51,7 @@ import {
   provide,
   ref,
   type Ref,
+  type ComputedRef,
 } from '#imports'
 import { type BlokkliFragmentName } from '#blokkli/definitions'
 
@@ -71,10 +72,10 @@ import {
   INJECT_IS_IN_REUSABLE,
   INJECT_IS_NESTED,
   INJECT_IS_PREVIEW,
-  INJECT_MUTATED_FIELDS,
   INJECT_FIELD_LIST_BLOCKS,
   INJECT_PROVIDER_BLOCKS,
   INJECT_EDIT_CONTEXT,
+  INJECT_MUTATED_FIELDS_MAP,
 } from '../helpers/symbols'
 
 const DraggableList = defineAsyncComponent(() => {
@@ -91,8 +92,8 @@ const isEditing = inject(INJECT_IS_EDITING, false)
 const isInReusable = inject(INJECT_IS_IN_REUSABLE, false)
 const isPreview = inject<boolean>(INJECT_IS_PREVIEW, false)
 const isNested = inject(INJECT_IS_NESTED, false)
-const mutatedFields = inject<Ref<MutatedField[]> | null>(
-  INJECT_MUTATED_FIELDS,
+const mutatedFields = inject<ComputedRef<Record<string, MutatedField>> | null>(
+  INJECT_MUTATED_FIELDS_MAP,
   null,
 )
 const editContext = inject<ItemEditContext | null>(INJECT_EDIT_CONTEXT, null)
@@ -135,24 +136,20 @@ const fieldKey = computed(() => {
 const fieldListType = computed(() => props.fieldListType)
 
 const filteredList = computed<FieldListItemTyped[]>(() => {
-  if (mutatedFields?.value && !isInReusable && editContext) {
-    return (
-      (mutatedFields.value.find(
-        (field: MutatedField) =>
-          field.name === props.name &&
-          field.entityType === entity.type &&
-          field.entityUuid === entity.uuid,
-      )?.list || []) as FieldListItemTyped[]
-    ).map<any>((v) => {
-      const mutatedOptions = editContext.mutatedOptions.value[v.uuid] || {}
-      return {
-        ...v,
-        options: {
-          ...v.options,
-          ...mutatedOptions,
-        },
-      }
-    })
+  if (mutatedFields?.value && !isInReusable && editContext && fieldKey.value) {
+    const field = mutatedFields.value[fieldKey.value]
+    if (field) {
+      return field.list.map<any>((v) => {
+        const mutatedOptions = editContext.mutatedOptions.value[v.uuid] || {}
+        return {
+          ...v,
+          options: {
+            ...v.options,
+            ...mutatedOptions,
+          },
+        }
+      })
+    }
   }
   return props.list.filter(Boolean) as FieldListItemTyped[]
 })
