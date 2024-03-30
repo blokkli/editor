@@ -63,7 +63,7 @@ const anchorY = ref(0)
 const anchor = ref<HTMLDivElement | null>(null)
 const scrollY = ref(0)
 
-const selected = ref<string[]>([])
+let selected: string[] = []
 const viewportWidth = ref(window.innerWidth)
 const viewportHeight = ref(window.innerHeight)
 
@@ -173,9 +173,12 @@ onBlokkliEvent('animationFrame', (e) => {
       hasNested = true
     }
 
-    if (!intersects(rect, ui.visibleViewportPadded.value)) {
+    // Skip blocks that are outside of the visible viewport and that are not
+    // intersecting with the selection rectangle.
+    if (!intersects(rect, ui.visibleViewportPadded.value) && !isIntersecting) {
       continue
     }
+
     newSelectable.push({
       uuid: block.uuid,
       nested: block.isNested,
@@ -234,7 +237,7 @@ onBlokkliEvent('animationFrame', (e) => {
   ctx.rect(ax, ay, bx - ax, by - ay)
   ctx.stroke()
 
-  selected.value = newSelected
+  selected = newSelected
 })
 
 onMounted(() => {
@@ -250,6 +253,6 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  eventBus.emit('select:end', selected.value)
+  eventBus.emit('select:end', selected)
 })
 </script>
