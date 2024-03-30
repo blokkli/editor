@@ -63,9 +63,7 @@
   }
 }
 
-.bk-body:not(.bk-is-pressing-control):not(.bk-is-dragging):not(
-    .bk-is-selecting
-  ) {
+.bk-body:not(.bk-is-pressing-control):not(.bk-is-dragging) {
   /* Only target blocks inside the editing area (e.g. not inside the library pane) */
   [data-blokkli-provider-active='true'] {
     [data-blokkli-editable-active='true'] {

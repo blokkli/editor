@@ -9,11 +9,3 @@
     @apply opacity-0;
   }
 }
-
-.bk-body.bk-is-selecting {
-  .bk.bk-selection {
-    > div {
-      @apply mobile-only:bg-accent-500/40;
-    }
-  }
-}

@@ -391,9 +391,13 @@ export default function (
   const setActiveFieldKey = (key: string) => (activeFieldKey.value = key)
 
   watch(isMultiSelecting, (is) => {
-    is
-      ? document.body.classList.add('bk-is-selecting')
-      : document.body.classList.remove('bk-is-selecting')
+    if (is) {
+      document.body.style.cursor = 'crosshair'
+      document.body.style.pointerEvents = 'none'
+    } else {
+      document.body.style.cursor = 'auto'
+      document.body.style.pointerEvents = 'auto'
+    }
   })
 
   onBlokkliEvent('select', onSelect)

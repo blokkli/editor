@@ -209,31 +209,6 @@ html {
   min-height: 30px;
 }
 
-@screen lg {
-  .bk-body.bk-is-selecting {
-    @apply !cursor-crosshair;
-
-    .bk-main-canvas * {
-      @apply !pointer-events-none;
-    }
-  }
-}
-
-.bk-body.bk-is-selecting {
-  .bk-main-canvas {
-    .bk-draggable[data-is-selected='false'] {
-      @apply mobile-only:outline-dashed mobile-only:outline-mono-400 mobile-only:outline-offset-0 mobile-only:outline-1;
-    }
-  }
-}
-
-.bk-body.bk-is-selecting * {
-  @apply select-none;
-  @screen md {
-    /* pointer-events: none !important; */
-  }
-}
-
 .bk-body {
   .bk-main-canvas {
     background: white;
