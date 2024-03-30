@@ -2,9 +2,9 @@
   <PluginViewOption
     id="fieldAreas"
     v-slot="{ isActive }"
-    :label="$t('fieldAreasToggle', 'Toggle content areas')"
-    :title-on="$t('fieldAreasShow', 'Show content areas')"
-    :title-off="$t('fieldAreasHide', 'Hide content areas')"
+    :label="$t('fieldAreasToggle', 'Toggle block fields')"
+    :title-on="$t('fieldAreasShow', 'Show block fields')"
+    :title-off="$t('fieldAreasHide', 'Hide block fields')"
     :tour-text="
       $t(
         'fieldAreasTourText',

@@ -2,8 +2,8 @@
   <PluginViewOption
     id="mask"
     v-model="isActive"
-    :label="$t('maskToggle', 'Show editable areas')"
-    :title-on="$t('maskShow', 'Show editable areas')"
+    :label="$t('maskToggle', 'Toggle non-editable areas')"
+    :title-on="$t('maskShow', 'Show non-editable areas')"
     :title-off="$t('maskHide', 'Hide non-editable areas')"
     :tour-text="
       $t(
