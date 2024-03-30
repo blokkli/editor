@@ -194,6 +194,39 @@ export class EntityStorageManager {
     videosData.forEach((item, i) => {
       this.createVideo((i + 100).toString(), item.url, item.title)
     })
+
+    const stressTestPage = new ContentPage('3')
+    stressTestPage.title().setText('A $stress test$ page with lots of blocks.')
+    stressTestPage.lead().setText('Will it crash?')
+
+    const stressUuids: string[] = []
+    let counter = 0
+    for (let i = 0; i < 500; i++) {
+      const cardUuids: string[] = []
+      for (let j = 0; j < 4; j++) {
+        const cardUuid = 'stress-test-card-' + counter
+        this.createBlock('card', cardUuid, {
+          title: 'Card ' + counter,
+          text: 'This is the text of card number ' + counter,
+        })
+        counter++
+        cardUuids.push(cardUuid)
+      }
+      const gridUuid = 'stress-test-grid-' + i
+      const block = this.createBlock('grid', gridUuid)
+      block.get('blocks').setList(cardUuids)
+
+      const titleUuid = 'stress-test-title-' + i
+      this.createBlock('title', titleUuid, {
+        title: 'Title ' + i,
+        tagline: 'Tagline ' + i,
+        lead: 'This is the text of title number ' + i,
+      })
+      block.get('header').setList([titleUuid])
+      stressUuids.push(gridUuid)
+    }
+    stressTestPage.get('content').setList(stressUuids)
+    this.storages.content.add(stressTestPage)
   }
 
   getUser(uuid: string): User | undefined {
