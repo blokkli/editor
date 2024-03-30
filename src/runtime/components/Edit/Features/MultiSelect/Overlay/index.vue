@@ -16,19 +16,37 @@
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import type { DraggableStyle, Rectangle } from '#blokkli/types'
-import { intersects } from '#blokkli/helpers'
+import { falsy, intersects } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { getDefinition } from '#blokkli/definitions'
 
-const { keyboard, eventBus, ui, dom, theme } = useBlokkli()
+const { keyboard, eventBus, ui, dom, theme, runtimeConfig } = useBlokkli()
 
 const canvasEl = ref<HTMLCanvasElement | null>(null)
 
-export type SelectableElement = {
+type SelectableElement = {
   uuid: string
   nested: boolean
   rect: Rectangle
   isIntersecting: boolean
   style: DraggableStyle
+}
+
+type MultiSelectBlock = {
+  uuid: string
+  isNested: boolean
+  element: HTMLElement | SVGElement
+}
+
+const styleCache: Record<string, DraggableStyle> = {}
+
+const getDraggableStyle = (block: MultiSelectBlock): DraggableStyle => {
+  if (styleCache[block.uuid]) {
+    return styleCache[block.uuid]
+  }
+  const style = theme.getDraggableStyle(block.element)
+  styleCache[block.uuid] = style
+  return style
 }
 
 const props = defineProps<{
@@ -77,17 +95,42 @@ const canvasAttributes = computed(() => {
   }
 })
 
-const blocks = computed(() =>
-  dom.getAllBlocks().map((block) => {
-    const element = block.dragElement()
-    const style = theme.getDraggableStyle(element)
-    return {
-      uuid: block.uuid,
-      isNested: block.isNested,
-      element,
-      style,
-    }
-  }),
+const blocks = computed<MultiSelectBlock[]>(() =>
+  [
+    ...document.querySelectorAll(
+      '[data-blokkli-provider-active="true"] [data-uuid]',
+    ),
+  ]
+    .map((block) => {
+      if (!(block instanceof HTMLElement)) {
+        return
+      }
+      const dataset = block.dataset
+      const itemBundle = dataset.itemBundle
+      const hostType = dataset.hostType
+      const uuid = dataset.uuid
+      if (!itemBundle || !uuid) {
+        return
+      }
+      const definition = getDefinition(itemBundle)
+      if (!definition) {
+        return
+      }
+      const isNested = hostType === runtimeConfig.itemEntityType
+      const element =
+        (definition.editor?.getDraggableElement
+          ? definition.editor.getDraggableElement(block)
+          : block) || block
+      if (!(element instanceof HTMLElement)) {
+        return
+      }
+      return {
+        uuid,
+        isNested,
+        element,
+      }
+    })
+    .filter(falsy),
 )
 
 onBlokkliEvent('animationFrame', (e) => {
@@ -130,20 +173,20 @@ onBlokkliEvent('animationFrame', (e) => {
       hasNested = true
     }
 
+    if (!intersects(rect, ui.visibleViewportPadded.value)) {
+      continue
+    }
     newSelectable.push({
       uuid: block.uuid,
       nested: block.isNested,
       rect,
       isIntersecting,
-      style: block.style,
+      style: getDraggableStyle(block),
     })
   }
 
   for (let i = 0; i < newSelectable.length; i++) {
     const block = newSelectable[i]
-    if (!intersects(block.rect, ui.visibleViewportPadded.value)) {
-      continue
-    }
     ctx.beginPath()
     ctx.setLineDash([5, 5])
     ctx.fillStyle = block.style.contrastColorTranslucent
