@@ -30,6 +30,7 @@ const { selection, state, ui, eventBus, animation, dom, tour, runtimeConfig } =
 
 const isVisible = computed(
   () =>
+    selection.blocks.value.length &&
     !selection.isChangingOptions.value &&
     !selection.isDragging.value &&
     !selection.editableActive.value &&

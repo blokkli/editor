@@ -42,6 +42,9 @@ type SelectedRect = Rectangle & {
 type BoundsRectable = Rectangle & { isVisible: boolean }
 
 const bounds = computed<BoundsRectable | null>(() => {
+  if (!props.blocks.length) {
+    return null
+  }
   const artboardEl = ui.artboardElement()
   const artboardRect = artboardEl.getBoundingClientRect()
   const artboardScroll = artboardEl.scrollTop
