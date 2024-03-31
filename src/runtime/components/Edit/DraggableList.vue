@@ -17,7 +17,7 @@
     @action="onAction"
   >
     <BlokkliItem
-      v-for="(item, i) in renderList"
+      v-for="(item, i) in list"
       :key="item.uuid"
       :uuid="item.uuid"
       :bundle="item.bundle"
@@ -40,10 +40,8 @@
       :data-host-field-name="name"
       :data-is-nested="isNested"
       :data-is-new="item.isNew"
-      :data-is-selected="item.selected"
       :data-refresh-key="state.refreshKey.value"
       :data-entity-type="runtimeConfig.itemEntityType"
-      :class="{ 'bk-is-selected': item.selected }"
       class="bk-draggable"
     />
   </Sortli>
@@ -55,8 +53,7 @@ import { Sortli } from '#blokkli/components'
 import type { FieldListItem, EntityContext, FieldConfig } from '#blokkli/types'
 import type { BlokkliFragmentName } from '#blokkli/definitions'
 
-const { state, eventBus, dom, keyboard, selection, types, runtimeConfig } =
-  useBlokkli()
+const { state, eventBus, dom, keyboard, types, runtimeConfig } = useBlokkli()
 
 const props = defineProps<{
   name: string
@@ -83,17 +80,6 @@ const fieldConfig = computed<FieldConfig>(() => {
   }
 
   return match
-})
-
-type RenderedListItem = FieldListItem & { selected: boolean }
-
-const renderList = computed<RenderedListItem[]>(() => {
-  return props.list.map((item) => {
-    return {
-      ...item,
-      selected: selection.uuids.value.includes(item.uuid),
-    }
-  })
 })
 
 /**

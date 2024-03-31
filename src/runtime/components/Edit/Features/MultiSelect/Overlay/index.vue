@@ -13,7 +13,8 @@ import { intersects } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { getDefinition } from '#blokkli/definitions'
 
-const { keyboard, eventBus, ui, dom, theme, runtimeConfig } = useBlokkli()
+const { keyboard, eventBus, ui, dom, theme, runtimeConfig, selection } =
+  useBlokkli()
 
 const canvasEl = ref<HTMLCanvasElement | null>(null)
 

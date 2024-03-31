@@ -231,7 +231,7 @@ export type SelectionProvider = {
   /**
    * Whether the user is currently in multi select mode.
    */
-  isMultiSelecting: Readonly<Ref<boolean>>
+  isMultiSelecting: Ref<boolean>
 
   /**
    * Update the active field key.
