@@ -392,10 +392,10 @@ export default function (
 
   watch(isMultiSelecting, (is) => {
     if (is) {
-      document.body.style.cursor = 'crosshair'
+      document.documentElement.style.cursor = 'crosshair'
       document.body.style.pointerEvents = 'none'
     } else {
-      document.body.style.cursor = 'auto'
+      document.documentElement.style.cursor = 'auto'
       document.body.style.pointerEvents = 'auto'
     }
   })

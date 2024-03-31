@@ -1,5 +1,5 @@
 import type { ComponentInternalInstance } from 'vue'
-import { ref } from '#imports'
+import { onBeforeUnmount, ref } from '#imports'
 import type {
   DraggableExistingBlock,
   BlokkliFieldElement,
@@ -153,6 +153,9 @@ export type DomProvider = {
   getAllDroppableFields(): DroppableEntityField[]
 
   findClosestEntityContext(el: HTMLElement): EntityContext | undefined
+
+  getBlockVisibilities(): Record<string, boolean>
+  getVisibleBlocks(): string[]
 }
 
 const getVisibleBlockElement = (
@@ -170,6 +173,31 @@ const getVisibleBlockElement = (
 }
 
 export default function (): DomProvider {
+  const blockVisibility: Record<string, boolean> = {}
+  const visibleBlocks: Set<string> = new Set()
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.target instanceof HTMLElement) {
+          const uuid = entry.target.dataset.uuid
+          if (uuid) {
+            if (entry.isIntersecting) {
+              visibleBlocks.add(uuid)
+            } else {
+              visibleBlocks.delete(uuid)
+            }
+            blockVisibility[uuid] = entry.isIntersecting
+          }
+        }
+      }
+    },
+    {
+      root: document.querySelector('.bk-main-canvas'),
+      threshold: 0,
+    },
+  )
+
   const registeredBlocks = ref<Record<string, HTMLElement | undefined>>({})
 
   const registerBlock = (
@@ -191,10 +219,15 @@ export default function (): DomProvider {
       )
       return
     }
+    observer.observe(el)
     registeredBlocks.value[uuid] = el
   }
 
   const unregisterBlock = (uuid: string) => {
+    const el = registeredBlocks.value[uuid]
+    if (el) {
+      observer.unobserve(el)
+    }
     registeredBlocks.value[uuid] = undefined
   }
 
@@ -289,6 +322,18 @@ export default function (): DomProvider {
       mapDroppableField,
     )
 
+  onBeforeUnmount(() => {
+    observer.disconnect()
+  })
+
+  const getBlockVisibilities = () => {
+    return blockVisibility
+  }
+
+  const getVisibleBlocks = () => {
+    return Array.from(visibleBlocks)
+  }
+
   return {
     findBlock,
     getAllBlocks,
@@ -301,5 +346,7 @@ export default function (): DomProvider {
     unregisterBlock,
     getAllDroppableFields,
     findClosestEntityContext,
+    getBlockVisibilities,
+    getVisibleBlocks,
   }
 }

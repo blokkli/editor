@@ -56,6 +56,9 @@ import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
 const { keyboard, dom, context, storage, ui, animation, $t, selection } =
   useBlokkli()
 
+const scale = ui.artboardScale
+const offset = ui.artboardOffset
+
 const props = withDefaults(
   defineProps<{
     padding?: number
@@ -127,11 +130,6 @@ function onClickScrollbar(e: MouseEvent) {
   }
 }
 
-const scale = ref(1)
-const offset = ref<Coord>({
-  x: 0,
-  y: 0,
-})
 const zoomTarget: Coord = { x: 0, y: 0 }
 const zoomPoint: Coord = { x: 0, y: 0 }
 const startMoveoffset: Coord = {
@@ -755,7 +753,9 @@ onMounted(() => {
 
   document.addEventListener('touchmove', onTouchMove, { passive: false })
   document.addEventListener('touchend', onTouchEnd, { passive: false })
-  document.body.addEventListener('wheel', onWheel, { passive: false })
+  document.documentElement.addEventListener('wheel', onWheel, {
+    passive: false,
+  })
 
   document.documentElement.classList.add('bk-is-artboard')
   window.addEventListener('beforeunload', saveState)
@@ -773,7 +773,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   document.body.removeEventListener('mousemove', onMouseMove)
-  document.body.removeEventListener('wheel', onWheel)
+  document.documentElement.removeEventListener('wheel', onWheel)
   document.body.removeEventListener('mousedown', onMouseDown)
   window.removeEventListener('mouseup', onMouseUp)
   document.removeEventListener('touchmove', onTouchMove)

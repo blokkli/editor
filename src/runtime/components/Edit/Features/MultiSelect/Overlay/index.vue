@@ -4,19 +4,12 @@
       <canvas ref="canvasEl" v-bind="canvasAttributes"></canvas>
     </div>
   </Teleport>
-  <Teleport to=".bk-main-canvas">
-    <div
-      ref="anchor"
-      class="bk-multi-select-anchor"
-      :style="{ top: anchorY + 'px', left: anchorX + 'px' }"
-    />
-  </Teleport>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
-import type { DraggableStyle, Rectangle } from '#blokkli/types'
-import { falsy, intersects } from '#blokkli/helpers'
+import type { Coord, DraggableStyle, Rectangle } from '#blokkli/types'
+import { intersects } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { getDefinition } from '#blokkli/definitions'
 
@@ -38,7 +31,51 @@ type MultiSelectBlock = {
   element: HTMLElement | SVGElement
 }
 
+const artboardOffsetStart = { ...ui.artboardOffset.value }
+const artboardScaleStart = ui.artboardScale.value
+
+const buildMultiSelectBlock = (uuid: string): MultiSelectBlock | undefined => {
+  const el = document.querySelector(
+    `[data-blokkli-provider-active="true"] [data-uuid="${uuid}"]`,
+  )
+
+  if (!(el instanceof HTMLElement)) {
+    return
+  }
+  const dataset = el.dataset
+  const itemBundle = dataset.itemBundle
+  const hostType = dataset.hostType
+  if (!itemBundle || !uuid) {
+    return
+  }
+  const definition = getDefinition(itemBundle)
+  if (!definition) {
+    return
+  }
+  const isNested = hostType === runtimeConfig.itemEntityType
+  const element =
+    (definition.editor?.getDraggableElement
+      ? definition.editor.getDraggableElement(el)
+      : el) || el
+  if (!(element instanceof HTMLElement)) {
+    return
+  }
+  return {
+    uuid,
+    isNested,
+    element,
+  }
+}
+
+type MultiSelectRect = {
+  rect: DOMRect
+  scale: number
+  artboardOffset: Coord
+}
+
 const styleCache: Record<string, DraggableStyle> = {}
+const rectCache: Record<string, MultiSelectRect> = {}
+const blockCache: Record<string, MultiSelectBlock> = {}
 
 const getDraggableStyle = (block: MultiSelectBlock): DraggableStyle => {
   if (styleCache[block.uuid]) {
@@ -47,6 +84,35 @@ const getDraggableStyle = (block: MultiSelectBlock): DraggableStyle => {
   const style = theme.getDraggableStyle(block.element)
   styleCache[block.uuid] = style
   return style
+}
+
+const getBlockRect = (block: MultiSelectBlock): MultiSelectRect => {
+  if (rectCache[block.uuid]) {
+    return rectCache[block.uuid]
+  }
+  const rect = block.element.getBoundingClientRect()
+  rectCache[block.uuid] = {
+    rect,
+    scale: ui.artboardScale.value,
+    artboardOffset: { ...ui.artboardOffset.value },
+  }
+  return rectCache[block.uuid]
+}
+
+const getBlock = (uuid: string): MultiSelectBlock | undefined => {
+  if (blockCache[uuid]) {
+    return blockCache[uuid]
+  }
+
+  const block = buildMultiSelectBlock(uuid)
+
+  if (!block) {
+    return
+  }
+
+  blockCache[uuid] = block
+
+  return block
 }
 
 const props = defineProps<{
@@ -58,25 +124,7 @@ defineEmits<{
   (e: 'select', uuids: string[]): void
 }>()
 
-const anchorX = ref(0)
-const anchorY = ref(0)
-const anchor = ref<HTMLDivElement | null>(null)
-const scrollY = ref(0)
-
 let selected: string[] = []
-const viewportWidth = ref(window.innerWidth)
-const viewportHeight = ref(window.innerHeight)
-
-const getAnchorRect = () => {
-  if (!anchor.value) {
-    return { x: 0, y: 0 }
-  }
-  const rect = anchor.value.getBoundingClientRect()
-  return {
-    x: rect.x,
-    y: rect.y,
-  }
-}
 
 const rgba = (rgb: [number, number, number], a = 1) =>
   `rgba(${rgb.join(',')},${a})`
@@ -90,57 +138,28 @@ const themeColors = computed(() => {
 
 const canvasAttributes = computed(() => {
   return {
-    width: viewportWidth.value,
-    height: viewportHeight.value,
+    width: ui.viewport.value.width,
+    height: ui.viewport.value.height,
   }
 })
 
-const blocks = computed<MultiSelectBlock[]>(() =>
-  [
-    ...document.querySelectorAll(
-      '[data-blokkli-provider-active="true"] [data-uuid]',
-    ),
-  ]
-    .map((block) => {
-      if (!(block instanceof HTMLElement)) {
-        return
-      }
-      const dataset = block.dataset
-      const itemBundle = dataset.itemBundle
-      const hostType = dataset.hostType
-      const uuid = dataset.uuid
-      if (!itemBundle || !uuid) {
-        return
-      }
-      const definition = getDefinition(itemBundle)
-      if (!definition) {
-        return
-      }
-      const isNested = hostType === runtimeConfig.itemEntityType
-      const element =
-        (definition.editor?.getDraggableElement
-          ? definition.editor.getDraggableElement(block)
-          : block) || block
-      if (!(element instanceof HTMLElement)) {
-        return
-      }
-      return {
-        uuid,
-        isNested,
-        element,
-      }
-    })
-    .filter(falsy),
-)
+// Collect the UUIDs that have become visible at least once during multi select.
+const seenUuids: Set<string> = new Set()
 
 onBlokkliEvent('animationFrame', (e) => {
-  viewportWidth.value = window.innerWidth
-  viewportHeight.value = window.innerHeight
-  const anchorRect = getAnchorRect()
-  const startX = anchorRect.x
-  const startY = anchorRect.y
+  const artboardOffset = { ...ui.artboardOffset.value }
+  const scale = ui.artboardScale.value
+  const startX =
+    (props.startX / artboardScaleStart +
+      (ui.artboardOffset.value.x / scale -
+        artboardOffsetStart.x / artboardScaleStart)) *
+    scale
 
-  scrollY.value = window.scrollY
+  const startY =
+    (props.startY / artboardScaleStart +
+      (ui.artboardOffset.value.y / scale -
+        artboardOffsetStart.y / artboardScaleStart)) *
+    scale
 
   const ctx = canvasEl.value?.getContext('2d')
   if (!ctx) {
@@ -163,10 +182,33 @@ onBlokkliEvent('animationFrame', (e) => {
   const newSelected: string[] = []
 
   let hasNested = false
+  const visibleUuids = dom.getVisibleBlocks()
+  visibleUuids.forEach((v) => seenUuids.add(v))
+  const uuids = Array.from(seenUuids)
   const newSelectable: SelectableElement[] = []
-  for (let i = 0; i < blocks.value.length; i++) {
-    const block = blocks.value[i]
-    const rect = block.element.getBoundingClientRect()
+
+  for (let i = 0; i < uuids.length; i++) {
+    const uuid = uuids[i]
+    const block = getBlock(uuid)
+    if (!block) {
+      continue
+    }
+    const blockRect = getBlockRect(block)
+
+    const rect: Rectangle = {
+      x:
+        (blockRect.rect.x / blockRect.scale +
+          (artboardOffset.x / scale -
+            blockRect.artboardOffset.x / blockRect.scale)) *
+        scale,
+      y:
+        (blockRect.rect.y / blockRect.scale +
+          (artboardOffset.y / scale -
+            blockRect.artboardOffset.y / blockRect.scale)) *
+        scale,
+      width: (blockRect.rect.width / blockRect.scale) * scale,
+      height: (blockRect.rect.height / blockRect.scale) * scale,
+    }
 
     const isIntersecting = intersects(selectRect, rect)
     if (isIntersecting && block.isNested) {
@@ -241,14 +283,6 @@ onBlokkliEvent('animationFrame', (e) => {
 })
 
 onMounted(() => {
-  const artboard = ui.artboardElement()
-  const artboardRect = artboard.getBoundingClientRect()
-  const scale = ui.getArtboardScale()
-  const newX = props.startX
-  const newY = props.startY
-  anchorX.value = (newX - artboardRect.left) / scale
-  anchorY.value = (newY - artboardRect.top) / scale
-
   eventBus.emit('select:start')
 })
 

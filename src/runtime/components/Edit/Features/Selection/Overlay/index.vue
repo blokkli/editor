@@ -82,6 +82,7 @@ const selectedRects = computed<SelectedRect[]>(() => {
   if (!bounds.value || !delayedRefresh.value) {
     return []
   }
+
   const scale = ui.getArtboardScale()
   const artboardEl = ui.artboardElement()
   const artboardRect = artboardEl.getBoundingClientRect()

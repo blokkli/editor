@@ -9,7 +9,7 @@ import {
 } from 'vue'
 import { eventBus } from './eventBus'
 import type { StorageProvider } from './storageProvider'
-import type { AddListOrientation, Rectangle } from '#blokkli/types'
+import type { AddListOrientation, Coord, Rectangle, Size } from '#blokkli/types'
 import type { Viewport } from '#blokkli/constants'
 
 export type UiProvider = {
@@ -39,7 +39,10 @@ export type UiProvider = {
 
   openContextMenu: Ref<string>
 
-  viewport: ComputedRef<{ width: number; height: number }>
+  viewport: ComputedRef<Size>
+  artboardSize: ComputedRef<Size>
+  artboardScale: Ref<number>
+  artboardOffset: Ref<Coord>
 }
 
 export default function (storage: StorageProvider): UiProvider {
@@ -53,6 +56,30 @@ export default function (storage: StorageProvider): UiProvider {
   const useAnimationsSetting = storage.use('useAnimations', true)
   const useAnimations = computed(() => useAnimationsSetting.value)
   const viewportBlockingRectsMap = ref<Record<string, Rectangle>>({})
+  const artboardSize = ref<Size>({
+    width: 1,
+    height: 1,
+  })
+  const artboardOffset = ref<Coord>({
+    x: 0,
+    x: 0,
+  })
+  const artboardScale = ref(1)
+
+  const resizeObserver = new ResizeObserver((entries) => {
+    const entry = entries[0]
+    if (!entry) {
+      return
+    }
+
+    const size = entry.contentBoxSize[0]
+    if (!size) {
+      return
+    }
+
+    artboardSize.value.width = size.inlineSize
+    artboardSize.value.height = size.blockSize
+  })
 
   const setViewportBlockingRectangle = (key: string, rect?: Rectangle) => {
     if (!rect) {
@@ -235,12 +262,18 @@ export default function (storage: StorageProvider): UiProvider {
     window.addEventListener('resize', onResize)
     document.documentElement.classList.add('bk-html-root')
     document.body.classList.add('bk-body')
+
+    const artboard = artboardElement()
+    resizeObserver.observe(artboard)
   })
   onBeforeUnmount(() => {
     window.removeEventListener('resize', onResize)
     document.documentElement.classList.remove('bk-html-root')
     document.body.classList.remove('bk-body')
     clearTimeout(resizeTimeout)
+    const artboard = artboardElement()
+    resizeObserver.unobserve(artboard)
+    resizeObserver.disconnect()
   })
 
   const viewport = computed(() => {
@@ -274,5 +307,8 @@ export default function (storage: StorageProvider): UiProvider {
     appViewport,
     openContextMenu,
     viewport,
+    artboardSize: computed(() => artboardSize.value),
+    artboardScale,
+    artboardOffset,
   }
 }

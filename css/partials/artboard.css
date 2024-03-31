@@ -50,7 +50,8 @@
   #nuxt-root {
     @apply bg-mono-200 overflow-hidden fixed right-0;
     left: 0;
-    top: var(--bk-root-offset-top);
+    /* top: var(--bk-root-offset-top); */
+    top: 0;
     bottom: var(--bk-root-offset-bottom);
     &.bk-has-preview-open {
       @apply left-[445px];

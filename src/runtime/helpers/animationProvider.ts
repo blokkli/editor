@@ -1,7 +1,6 @@
 import onBlokkliEvent from './composables/onBlokkliEvent'
 import useAnimationFrame from './composables/useAnimationFrame'
 import { onMounted, onBeforeUnmount } from '#imports'
-import { falsy } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
 
 export type AnimationProvider = {
@@ -47,50 +46,12 @@ export default function (): AnimationProvider {
     eventBus.emit('animationFrame:before')
 
     const wrapperEl = document.querySelector('.bk-main-canvas')
-    const nuxtRootEl = document.querySelector('#nuxt-root')
-    const sidebarEl = document.querySelector('.bk-sidebar')
     if (wrapperEl instanceof HTMLElement) {
-      const canvasRect = wrapperEl?.getBoundingClientRect()
-      const rootRect = nuxtRootEl?.getBoundingClientRect()
-      const sidebarRect = sidebarEl?.getBoundingClientRect()
-      const fieldAreas = [
-        ...document.querySelectorAll(
-          '[data-blokkli-provider-active="true"] [data-field-label]',
-        ),
-      ]
-        .map((el) => {
-          if (el instanceof HTMLElement) {
-            const rect = el.getBoundingClientRect()
-            const label = el.dataset.fieldLabel
-            const name = el.dataset.fieldName
-            const key = el.dataset.fieldKey
-            const isNested = el.dataset.fieldIsNested === 'true'
-            if (label && name && key) {
-              return {
-                key,
-                label,
-                name,
-                isNested,
-                rect,
-                isVisible: !!el.offsetHeight,
-              }
-            }
-          }
-        })
-        .filter(falsy)
-      if (canvasRect && rootRect && sidebarRect) {
-        rootRect.width = rootRect.width - sidebarRect.width
-        const scale = parseFloat(wrapperEl.style.scale)
-
-        eventBus.emit('animationFrame', {
-          mouseX,
-          mouseY,
-          scale: isNaN(scale) ? 1 : scale,
-          rootRect,
-          canvasRect,
-          fieldAreas,
-        })
-      }
+      eventBus.emit('animationFrame', {
+        mouseX,
+        mouseY,
+        fieldAreas: [],
+      })
     }
   })
 

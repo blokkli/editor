@@ -46,8 +46,8 @@ type GetType<T> = T extends { options: infer O }
     ? Array<keyof O>
     : keyof O
   : T extends { type: 'checkbox' }
-    ? boolean
-    : string
+  ? boolean
+  : string
 
 export type BlockDefinitionOptionsInput = {
   [key: string]: BlockOptionDefinition
@@ -735,10 +735,7 @@ type AnimationFrameFieldArea = {
 }
 
 export type AnimationFrameEvent = {
-  rootRect: DOMRect
-  canvasRect: DOMRect
   fieldAreas: AnimationFrameFieldArea[]
-  scale: number
   mouseX: number
   mouseY: number
 }
@@ -750,9 +747,7 @@ export type Message = {
 
 export type DraggingMode = 'touch' | 'mouse'
 
-export interface Rectangle {
-  x: number
-  y: number
+export type Size = {
   width: number
   height: number
 }
@@ -761,6 +756,8 @@ export type Coord = {
   x: number
   y: number
 }
+
+export type Rectangle = Size & Coord
 
 export type DraggableStartEvent = {
   items: DraggableItem[]
