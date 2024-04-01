@@ -117,10 +117,20 @@ Object.values(areas).forEach((area) => {
 })
 
 const canvas = ref<HTMLCanvasElement | null>(null)
+const ratio = computed(() => {
+  if (ui.isMobile.value) {
+    return window.devicePixelRatio
+  }
+  return Math.min(window.devicePixelRatio, 2)
+})
 const canvasAttributes = computed(() => {
   return {
-    width: ui.viewport.value.width,
-    height: ui.viewport.value.height,
+    width: ui.viewport.value.width * ratio.value,
+    height: ui.viewport.value.height * ratio.value,
+    style: {
+      width: ui.viewport.value.width + 'px',
+      height: ui.viewport.value.height + 'px',
+    },
   }
 })
 
@@ -540,6 +550,8 @@ const colorTealAlpha = rgbaToString(theme.teal.value.normal, 0.7)
 const colorAccent = rgbaToString(theme.accent.value[800])
 const colorAccentAlpha = rgbaToString(theme.accent.value[800], 0.7)
 
+let first = true
+
 onBlokkliEvent('animationFrame', () => {
   if (!canvas.value) {
     return
@@ -550,6 +562,10 @@ onBlokkliEvent('animationFrame', () => {
   if (!ctx) {
     return
   }
+
+  canvas.value.width = ui.viewport.value.width * ratio.value
+  canvas.value.height = ui.viewport.value.height * ratio.value
+  ctx.scale(ratio.value, ratio.value)
 
   const scale = ui.artboardScale.value
   const offset = { ...ui.artboardOffset.value }
