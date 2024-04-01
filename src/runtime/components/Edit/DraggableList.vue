@@ -41,7 +41,6 @@
       :data-host-field-name="name"
       :data-is-nested="isNested"
       :data-is-new="item.isNew"
-      :data-refresh-key="state.refreshKey.value"
       :data-entity-type="runtimeConfig.itemEntityType"
       class="bk-draggable"
     />
@@ -61,7 +60,7 @@ import { Sortli } from '#blokkli/components'
 import type { FieldListItem, EntityContext, FieldConfig } from '#blokkli/types'
 import type { BlokkliFragmentName } from '#blokkli/definitions'
 
-const { state, eventBus, dom, keyboard, types, runtimeConfig } = useBlokkli()
+const { eventBus, dom, keyboard, types, runtimeConfig } = useBlokkli()
 
 const sortli = ref<ComponentPublicInstance | null>(null)
 

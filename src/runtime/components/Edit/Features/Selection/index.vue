@@ -9,6 +9,7 @@
 </template>
 
 <script lang="ts" setup>
+import Overlay from './Overlay/index.vue'
 import {
   calculateIntersection,
   originatesFromTextInput,
@@ -16,7 +17,6 @@ import {
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { DraggableExistingBlock } from '#blokkli/types'
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
-import Overlay from './Overlay/index.vue'
 
 defineBlokkliFeature({
   id: 'selection',
@@ -25,8 +25,7 @@ defineBlokkliFeature({
   description: 'Renders an overlay that highlights the selected blocks.',
 })
 
-const { selection, state, ui, eventBus, animation, dom, tour, runtimeConfig } =
-  useBlokkli()
+const { selection, state, ui, eventBus, animation, dom, tour } = useBlokkli()
 
 const isVisible = computed(
   () =>

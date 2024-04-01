@@ -240,6 +240,11 @@ export default function (): DomProvider {
     uuid: string,
     instance: ComponentInternalInstance | null,
   ) => {
+    if (registeredBlocks.value[uuid]) {
+      throw new Error(
+        'Trying to register block with already existing UUID: ' + uuid,
+      )
+    }
     if (!instance) {
       // eslint-disable-next-line no-console
       console.error(

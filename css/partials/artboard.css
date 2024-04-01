@@ -35,7 +35,7 @@
 
 .bk-html-root:not(.bk-is-artboard) .bk-main-canvas {
   @apply relative;
-  margin-top: var(--bk-root-offset-top);
+  padding-top: var(--bk-root-offset-top);
   margin-left: var(--bk-root-offset-left);
   margin-bottom: var(--bk-root-offset-bottom);
   overflow: hidden;

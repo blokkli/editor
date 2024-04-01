@@ -150,6 +150,7 @@ const filteredList = computed<FieldListItemTyped[]>(() => {
         }
       })
     }
+    return []
   }
   return props.list.filter(Boolean) as FieldListItemTyped[]
 })

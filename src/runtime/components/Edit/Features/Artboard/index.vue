@@ -7,9 +7,15 @@
 </template>
 
 <script lang="ts" setup>
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import ArtboardManager from './Manager/index.vue'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import {
+  computed,
+  useBlokkli,
+  defineBlokkliFeature,
+  onMounted,
+  onBeforeUnmount,
+} from '#imports'
 
 const { settings } = defineBlokkliFeature({
   id: 'artboard',

@@ -127,7 +127,7 @@ const canvasAttributes = computed(() => {
 const onTouchStart = (e: TouchEvent) => {
   const touch = e.touches[0]
   const match = drawnRects.find((v) =>
-    isInsideRect(touch.pageX, touch.pageY, v),
+    isInsideRect(touch.clientX, touch.clientY, v),
   )
 
   if (match) {
@@ -142,7 +142,7 @@ const onTouchEnd = () => {
 const onClick = (e: MouseEvent) => {
   e.preventDefault()
   e.stopPropagation()
-  const match = drawnRects.find((v) => isInsideRect(e.pageX, e.pageY, v))
+  const match = drawnRects.find((v) => isInsideRect(e.clientX, e.clientY, v))
   if (match) {
     active.value = match
     emitDrop()
@@ -536,9 +536,9 @@ const buildDropAreaRect = (area: DropArea): Rectangle => {
 }
 
 const colorTeal = rgbaToString(theme.teal.value.normal)
-const colorTealAlpha = rgbaToString(theme.teal.value.normal, 0.4)
+const colorTealAlpha = rgbaToString(theme.teal.value.normal, 0.7)
 const colorAccent = rgbaToString(theme.accent.value[800])
-const colorAccentAlpha = rgbaToString(theme.accent.value[800], 0.4)
+const colorAccentAlpha = rgbaToString(theme.accent.value[800], 0.7)
 
 onBlokkliEvent('animationFrame', () => {
   if (!canvas.value) {
@@ -552,7 +552,10 @@ onBlokkliEvent('animationFrame', () => {
   }
 
   const scale = ui.artboardScale.value
-  const offset = ui.artboardOffset.value
+  const offset = { ...ui.artboardOffset.value }
+  if (offset.y === 0) {
+    offset.y = -window.scrollY
+  }
 
   const visibleFields = dom.getVisibleFields()
   const visibleBlocks = dom.getVisibleBlocks()
@@ -606,6 +609,12 @@ onBlokkliEvent('animationFrame', () => {
     if (!props.isTouch && intersects(props.box, drawnRect)) {
       intersectingRects.push(drawnRect)
     }
+    if (active.value?.id === drawnRect.id) {
+      ctx.fillStyle = colorTealAlpha
+      ctx.beginPath()
+      ctx.roundRect(x, y, width, height, 3)
+      ctx.fill()
+    }
   }
 
   ctx.fillStyle = colorAccentAlpha
@@ -644,6 +653,13 @@ onBlokkliEvent('animationFrame', () => {
       if (!props.isTouch && intersects(props.box, drawnRect)) {
         intersectingRects.push(drawnRect)
       }
+
+      if (active.value?.id === drawnRect.id) {
+        ctx.fillStyle = colorAccentAlpha
+        ctx.beginPath()
+        ctx.roundRect(x, y, width, height, 3)
+        ctx.fill()
+      }
     }
   }
 
@@ -655,19 +671,6 @@ onBlokkliEvent('animationFrame', () => {
     )
 
     active.value = closest
-  }
-
-  if (active.value) {
-    ctx.fillStyle = active.value.colorAlpha
-    ctx.beginPath()
-    ctx.roundRect(
-      active.value.x,
-      active.value.y,
-      active.value.width,
-      active.value.height,
-      3,
-    )
-    ctx.fill()
   }
 })
 
