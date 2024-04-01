@@ -2,18 +2,14 @@
   <div
     class="bk-dragging-overlay"
     :style="style"
-    :class="[
-      { 'bk-is-touch': isTouch },
-      mappedActive ? 'bk-is-' + mappedActive.type : undefined,
-    ]"
+    :class="[{ 'bk-is-touch': isTouch }, { 'bk-is-active': !!activeLabel }]"
   >
     <Transition name="bk-drag-item">
       <span
-        v-if="mappedActive"
-        :key="mappedActive.id"
+        v-if="activeLabel"
         class="bk-dragging-overlay-label"
-        :class="'bk-is-' + mappedActive.type"
-        >{{ mappedActive.label }}</span
+        :style="{ backgroundColor: activeColor }"
+        >{{ activeLabel }}</span
       >
     </Transition>
     <div
@@ -51,14 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  watch,
-  ref,
-  computed,
-  useBlokkli,
-  onMounted,
-  onBeforeUnmount,
-} from '#imports'
+import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import type { Coord, DraggableItem, Rectangle } from '#blokkli/types'
 import { isInsideRect, realBackgroundColor, lerp } from '#blokkli/helpers'
 import { Icon, ItemIcon } from '#blokkli/components'
@@ -90,10 +79,9 @@ const props = defineProps<{
 
   isTouch: boolean
 
-  active: { id: string; label: string; type: string } | null
+  activeColor?: string
+  activeLabel?: string
 }>()
-
-const mappedActive = computed(() => props.active)
 
 const width = ref(10)
 const height = ref(10)
@@ -124,6 +112,7 @@ const style = computed(() => {
     width: width.value + 'px',
     height: height.value + 'px',
     transform: `translate(${translateX.value}px, ${translateY.value}px)`,
+    '--bk-active-color': props.activeColor || 'rgba(255,255,255,0)',
   }
 })
 
@@ -325,7 +314,7 @@ onMounted(() => {
       elRects.length < 6 || isTop
         ? dom.getDropElementMarkup(item.item, true)
         : ''
-    let bundle: string | undefined = undefined
+    let bundle: string | undefined
     let label = ''
 
     if (!markup) {

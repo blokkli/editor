@@ -9,16 +9,24 @@
         @touchend="onTouchEnd"
       />
     </div>
+    <slot :color="active?.color" :label="active?.label"></slot>
   </Teleport>
 </template>
 
 <script lang="ts">
-import { falsy, intersects, isInsideRect, rgbaToString } from '#blokkli/helpers'
+import {
+  falsy,
+  findClosestRectangle,
+  intersects,
+  isInsideRect,
+  rgbaToString,
+} from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type {
   BlokkliFieldElement,
   DraggableHostData,
   DraggableItem,
+  DropArea,
   Rectangle,
 } from '#blokkli/types'
 import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
@@ -34,7 +42,7 @@ export type DropTargetEvent = {
 type Orientation = 'horizontal' | 'vertical'
 
 type FieldRectChild = Rectangle & {
-  key: string
+  id: string
   label: string
 }
 
@@ -49,7 +57,64 @@ type FieldRect = Rectangle & {
   childrenElements: HTMLElement[]
 }
 
-const { dom, ui, $t, theme } = useBlokkli()
+const props = defineProps<{
+  items: DraggableItem[]
+  box: Rectangle
+  mouseX: number
+  mouseY: number
+  isTouch: boolean
+}>()
+
+type DrawnRect = Rectangle & {
+  id: string
+  type: 'field' | 'drop-area'
+  label: string
+  color: string
+  colorAlpha: string
+}
+
+let drawnRects: DrawnRect[] = []
+const active = ref<DrawnRect | null>(null)
+
+const emit = defineEmits<{
+  (e: 'drop', data: DropTargetEvent): void
+}>()
+
+const { dom, ui, $t, theme, dropAreas, eventBus } = useBlokkli()
+
+const areas = dropAreas
+  .getDropAreas(props.items)
+  .reduce<Record<string, DropArea>>((acc, v) => {
+    acc[v.id] = v
+    return acc
+  }, {})
+
+const visibleDropAreas: Set<string> = new Set()
+
+const areasObserver = new IntersectionObserver(
+  (entries) => {
+    for (const entry of entries) {
+      if (entry.target instanceof HTMLElement) {
+        const id = entry.target.dataset.dropAreaId
+        if (id) {
+          if (entry.isIntersecting) {
+            visibleDropAreas.add(id)
+          } else {
+            visibleDropAreas.delete(id)
+          }
+        }
+      }
+    }
+  },
+  {
+    threshold: 0,
+  },
+)
+
+Object.values(areas).forEach((area) => {
+  area.element.dataset.dropAreaId = area.id
+  areasObserver.observe(area.element)
+})
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 const canvasAttributes = computed(() => {
@@ -59,22 +124,6 @@ const canvasAttributes = computed(() => {
   }
 })
 
-const emit = defineEmits<{
-  (e: 'drop', data: DropTargetEvent): void
-  (e: 'update:modelValue', data: { id: string; label: string } | null): void
-}>()
-
-const props = defineProps<{
-  items: DraggableItem[]
-  box: Rectangle
-  mouseX: number
-  mouseY: number
-  isTouch: boolean
-  disabled: boolean
-  activeColor?: string
-  modelValue?: { id: string; label: string } | null | undefined
-}>()
-
 const onTouchStart = (e: TouchEvent) => {
   const touch = e.touches[0]
   const match = drawnRects.find((v) =>
@@ -82,12 +131,12 @@ const onTouchStart = (e: TouchEvent) => {
   )
 
   if (match) {
-    emit('update:modelValue', { id: match.key, label: match.label })
+    active.value = match
   }
 }
 
 const onTouchEnd = () => {
-  emit('update:modelValue', null)
+  active.value = null
 }
 
 const onClick = (e: MouseEvent) => {
@@ -95,36 +144,51 @@ const onClick = (e: MouseEvent) => {
   e.stopPropagation()
   const match = drawnRects.find((v) => isInsideRect(e.pageX, e.pageY, v))
   if (match) {
-    emitDrop(match.key)
+    active.value = match
+    emitDrop()
   }
 }
 
-const emitDrop = (key: string) => {
-  const [hostUuid, fieldName, preceedingUuid] = key.split(':')
+const emitDrop = async () => {
+  if (active.value) {
+    if (active.value.type === 'field') {
+      const [hostUuid, fieldName, preceedingUuid] = active.value.id.split(':')
 
-  const field = dom.findField(hostUuid, fieldName)
+      const field = dom.findField(hostUuid, fieldName)
 
-  if (!field) {
-    return
+      if (!field) {
+        return
+      }
+
+      emit('drop', {
+        field,
+        preceedingUuid,
+        items: [...props.items],
+        host: {
+          type: field.hostEntityType,
+          uuid: field.hostEntityUuid,
+          fieldName: field.name,
+        },
+      })
+      return
+    } else if (active.value.type === 'drop-area') {
+      const area = areas[active.value.id]
+      if (!area) {
+        return
+      }
+      await area.onDrop()
+    }
   }
 
-  emit('drop', {
-    field,
-    preceedingUuid,
-    items: [...props.items],
-    host: {
-      type: field.hostEntityType,
-      uuid: field.hostEntityUuid,
-      fieldName: field.name,
-    },
-  })
+  eventBus.emit('dragging:end')
+  eventBus.emit('item:dropped')
 }
 
 const onMouseUp = (e: MouseEvent) => {
-  if (props.modelValue?.id) {
+  if (active.value) {
     e.preventDefault()
     e.stopPropagation()
-    emitDrop(props.modelValue.id)
+    emitDrop()
   }
 }
 
@@ -207,7 +271,7 @@ function getGapSize(orientation: Orientation, element: HTMLElement): number {
 
 const fieldChildCache: Record<string, FieldRectChild[]> = {}
 
-const buildChildKey = (
+const buildChildId = (
   field: BlokkliFieldElement,
   preceedingUuid?: string | undefined | null,
   type?: string | undefined | null,
@@ -269,10 +333,10 @@ const buildChildren = (
 
     // Last element.
     if (isLast) {
-      const key = buildChildKey(field.field, uuid, 'last', uuid)
+      const id = buildChildId(field.field, uuid, 'last', uuid)
       if (field.orientation === 'vertical') {
         childrenForUuid.push({
-          key,
+          id,
           width: field.width,
           height: field.gap,
           x: 0,
@@ -281,7 +345,7 @@ const buildChildren = (
         })
       } else {
         childrenForUuid.push({
-          key,
+          id,
           width: field.gap,
           height: el.offsetHeight,
           x: el.offsetLeft + el.offsetWidth,
@@ -300,11 +364,11 @@ const buildChildren = (
       continue
     }
 
-    const key = buildChildKey(field.field, prevUuid, 'between', uuid)
+    const id = buildChildId(field.field, prevUuid, 'between', uuid)
 
     if (field.orientation === 'vertical') {
       childrenForUuid.push({
-        key,
+        id,
         width: field.width,
         height: field.gap,
         x: 0,
@@ -313,7 +377,7 @@ const buildChildren = (
       })
     } else {
       childrenForUuid.push({
-        key,
+        id,
         width: field.gap,
         height: Math.max(el.offsetHeight, 30),
         x: Math.max(el.offsetLeft - field.gap, -field.gap),
@@ -375,10 +439,10 @@ const buildEmptyChild = (
   fieldHeight: number,
 ): FieldRectChild | undefined => {
   if (children.length === 0) {
-    const key = buildChildKey(field, null, 'empty')
+    const id = buildChildId(field, null, 'empty')
     if (orientation === 'horizontal') {
       return {
-        key,
+        id,
         x: 0,
         y: 0,
         width: fieldWidth,
@@ -387,7 +451,7 @@ const buildEmptyChild = (
       }
     } else {
       return {
-        key,
+        id,
         x: 0,
         y: 0,
         width: fieldWidth,
@@ -449,19 +513,34 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
   return fieldRect
 }
 
-let prevMouseX = 0
-let prevMouseY = 0
+const cachedDropAreaRects: Record<string, Rectangle> = {}
 
-const colorAccentOne = rgbaToString(theme.accent.value[700])
-const colorAccentOneActive = rgbaToString(theme.accent.value[800])
+const buildDropAreaRect = (area: DropArea): Rectangle => {
+  if (cachedDropAreaRects[area.id]) {
+    return cachedDropAreaRects[area.id]
+  }
 
-let drawnRects: FieldRectChild[] = []
+  const artboardEl = ui.artboardElement()
+  const scale = ui.getArtboardScale()
+  const artboardRect = artboardEl.getBoundingClientRect()
+  const rect = area.element.getBoundingClientRect()
+  const x = rect.x / scale - artboardRect.x / scale
+  const y = rect.y / scale - artboardRect.y / scale + artboardEl.scrollTop
+  const height = Math.max(area.element.offsetHeight, 30)
+  const width = Math.max(area.element.offsetWidth, 30)
+
+  const dropAreaRect: Rectangle = { x, y, width, height }
+
+  // cachedDropAreaRects[area.id] = dropAreaRect
+  return dropAreaRect
+}
+
+const colorTeal = rgbaToString(theme.teal.value.normal)
+const colorTealAlpha = rgbaToString(theme.teal.value.normal, 0.4)
+const colorAccent = rgbaToString(theme.accent.value[800])
+const colorAccentAlpha = rgbaToString(theme.accent.value[800], 0.4)
 
 onBlokkliEvent('animationFrame', () => {
-  // We only want to do the calculations for changes in 5px steps.
-  const mouseX = Math.round(props.mouseX / 5)
-  const mouseY = Math.round(props.mouseY / 5)
-
   if (!canvas.value) {
     return
   }
@@ -479,7 +558,6 @@ onBlokkliEvent('animationFrame', () => {
   const visibleBlocks = dom.getVisibleBlocks()
   const fields = visibleFields.map((key) => buildFieldRect(key))
 
-  let intersecting = false
   drawnRects = []
 
   ctx.clearRect(
@@ -489,8 +567,49 @@ onBlokkliEvent('animationFrame', () => {
     canvasAttributes.value.height,
   )
 
-  ctx.fillStyle = colorAccentOneActive
-  ctx.strokeStyle = colorAccentOneActive
+  const visibleAreas = Array.from(visibleDropAreas)
+
+  ctx.strokeStyle = colorTeal
+  ctx.fillStyle = colorTealAlpha
+  ctx.lineWidth = 2
+
+  const intersectingRects: DrawnRect[] = []
+
+  for (let i = 0; i < visibleAreas.length; i++) {
+    const area = areas[visibleAreas[i]]
+    if (!area) {
+      continue
+    }
+    const areaRect = buildDropAreaRect(area)
+
+    const x = (areaRect.x + offset.x / scale) * scale
+    const y = (areaRect.y + offset.y / scale) * scale
+    const width = areaRect.width * scale
+    const height = areaRect.height * scale
+
+    ctx.beginPath()
+    ctx.roundRect(x, y, width, height, 3)
+    ctx.stroke()
+    const drawnRect: DrawnRect = {
+      id: area.id,
+      type: 'drop-area',
+      label: area.label,
+      color: colorTeal,
+      colorAlpha: colorTealAlpha,
+      x,
+      y,
+      width,
+      height,
+    }
+    drawnRects.push(drawnRect)
+
+    if (!props.isTouch && intersects(props.box, drawnRect)) {
+      intersectingRects.push(drawnRect)
+    }
+  }
+
+  ctx.fillStyle = colorAccentAlpha
+  ctx.strokeStyle = colorAccent
 
   for (let i = 0; i < fields.length; i++) {
     const field = fields[i]
@@ -507,42 +626,64 @@ onBlokkliEvent('animationFrame', () => {
       const y = (field.y + child.y + offset.y / scale) * scale
       const width = child.width * scale
       const height = child.height * scale
-      ctx.roundRect(x, y, width, height, 8)
-      drawnRects.push({
+      ctx.roundRect(x, y, width, height, 3)
+      ctx.stroke()
+      const drawnRect: DrawnRect = {
+        id: child.id,
+        type: 'field',
+        label: child.label,
+        color: colorAccent,
+        colorAlpha: colorAccentAlpha,
         x,
         y,
         width,
         height,
-        key: child.key,
-        label: child.label,
-      })
-
-      if (!intersecting) {
-        if (!props.isTouch && intersects(props.box, { x, y, width, height })) {
-          intersecting = true
-          if (props.modelValue?.id !== child.key && !props.isTouch) {
-            emit('update:modelValue', { id: child.key, label: field.label })
-          }
-        }
       }
-      if (child.key === props.modelValue?.id) {
-        ctx.fill()
-      } else {
-        ctx.stroke()
+      drawnRects.push(drawnRect)
+
+      if (!props.isTouch && intersects(props.box, drawnRect)) {
+        intersectingRects.push(drawnRect)
       }
     }
   }
 
-  if (!intersecting && !props.isTouch) {
-    emit('update:modelValue', null)
+  if (!props.isTouch) {
+    const closest = getClosestDrawnRect(
+      intersectingRects,
+      props.mouseX,
+      props.mouseY,
+    )
+
+    active.value = closest
   }
 
-  // Only do the calculations if the mouse position has actually changed.
-  if (prevMouseX !== mouseX || prevMouseY !== mouseY) {
-    prevMouseX = mouseX
-    prevMouseY = mouseY
+  if (active.value) {
+    ctx.fillStyle = active.value.colorAlpha
+    ctx.beginPath()
+    ctx.roundRect(
+      active.value.x,
+      active.value.y,
+      active.value.width,
+      active.value.height,
+      3,
+    )
+    ctx.fill()
   }
 })
+
+const getClosestDrawnRect = (
+  rects: DrawnRect[],
+  x: number,
+  y: number,
+): DrawnRect | null => {
+  if (rects.length === 0) {
+    return null
+  } else if (rects.length === 1) {
+    return rects[0]
+  }
+
+  return findClosestRectangle(x, y, rects)
+}
 
 onMounted(() => {
   // document.body.classList.add('bk-is-dragging')
@@ -554,5 +695,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   // document.body.classList.remove('bk-is-dragging')
   document.body.removeEventListener('mouseup', onMouseUp)
+  areasObserver.disconnect()
 })
 </script>

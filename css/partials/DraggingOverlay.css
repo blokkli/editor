@@ -1,5 +1,5 @@
 .bk-dragging-overlay {
-  @apply fixed bottom-auto top-0 left-0 pointer-events-none z-dragging-overlay rounded select-none;
+  @apply fixed bottom-auto top-0 left-0 pointer-events-none z-dragging-overlay rounded select-none will-change-transform;
 
   * {
     @apply !pointer-events-none;
@@ -19,21 +19,12 @@
     &:before {
       content: '';
       @apply absolute top-0 left-0 w-full h-full z-50 rounded-md;
+      background: var(--bk-active-color);
+      @apply !opacity-70;
     }
   }
-
-  &.bk-is-area > div.bk-is-top {
-    @apply !opacity-70;
-    &:before {
-      @apply outline outline-4 outline-teal-normal -outline-offset-2 bg-teal-normal/70 ring-white ring-8 ring-offset-white;
-    }
-  }
-
-  &.bk-is-field > div.bk-is-top {
-    @apply !opacity-70;
-    &:before {
-      @apply outline outline-4 outline-accent-700 -outline-offset-2 bg-accent-700/70 ring-white;
-    }
+  &.bk-is-active > div.bk-is-top {
+    @apply !opacity-80;
   }
 }
 
@@ -171,15 +162,8 @@
 }
 
 .bk-dragging-overlay-label {
-  @apply absolute bottom-full left-1/2 -translate-x-1/2 mb-40 rounded-full;
+  @apply absolute bottom-full left-1/2 -translate-x-1/2 mb-40 rounded-full text-white;
   @apply px-10 py-5 font-bold whitespace-nowrap;
-  @apply bg-white shadow;
-
-  &.bk-is-field {
-    @apply bg-accent-700 text-white;
-  }
-
-  &.bk-is-area {
-    @apply bg-teal-dark text-white;
-  }
+  @apply shadow;
+  will-change: transform, contents;
 }

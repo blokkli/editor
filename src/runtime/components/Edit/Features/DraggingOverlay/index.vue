@@ -1,41 +1,36 @@
 <template>
-  <Teleport to="body">
-    <DragItems
-      v-if="isVisible"
-      :x="mouseX"
-      :y="mouseY"
-      :start-coords="startCoords"
-      :items="dragItems"
-      :is-touch="isTouching"
-      :active="active"
-    />
-  </Teleport>
-
   <DropTargets
     v-if="dragItems.length && isVisible"
-    v-model="activeDropTarget"
+    v-slot="{ color, label }"
     :items="dragItems"
     :box="box"
     :mouse-x="mouseX"
     :mouse-y="mouseY"
     :is-touch="isTouching"
-    :disabled="!!activeDropArea"
     @drop="onDrop"
-  />
+  >
+    <DragItems
+      :x="mouseX"
+      :y="mouseY"
+      :start-coords="startCoords"
+      :items="dragItems"
+      :is-touch="isTouching"
+      :active-color="color"
+      :active-label="label"
+    />
+  </DropTargets>
 </template>
 
 <script lang="ts" setup>
+import DragItems from './DragItems/index.vue'
+import DropTargets, { type DropTargetEvent } from './DropTargets/index.vue'
 import {
   ref,
   useBlokkli,
   onUnmounted,
   defineBlokkliFeature,
   nextTick,
-  computed,
 } from '#imports'
-import DropTargets, { type DropTargetEvent } from './DropTargets/index.vue'
-import DragItems from './DragItems/index.vue'
-import DropAreas from './DropAreas/index.vue'
 
 import type {
   AnimationFrameEvent,
@@ -54,25 +49,6 @@ import type {
 } from '#blokkli/types'
 import { getDefinition } from '#blokkli/definitions'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-
-const activeDropTarget = ref<{
-  id: string
-  label: string
-} | null>(null)
-const activeDropArea = ref<{ id: string; label: string } | null>(null)
-
-const active = computed(() => {
-  if (activeDropArea.value) {
-    return { ...activeDropArea.value, type: 'area' }
-  } else if (activeDropTarget.value) {
-    return {
-      ...activeDropTarget.value,
-      type: 'field',
-    }
-  }
-
-  return null
-})
 
 const { adapter } = defineBlokkliFeature({
   icon: 'drag',
@@ -242,7 +218,7 @@ const onDropSearchContentItem = async (
   await state.mutateWithLoadingState(
     adapter.addContentSearchItem({
       item: item.searchItem,
-      host: host,
+      host,
       bundle: item.itemBundle,
       afterUuid,
     }),
@@ -263,7 +239,7 @@ const onDropAction = (
   })
 }
 
-const onDrop = async (e: DropTargetEvent) => {
+const onDrop = (e: DropTargetEvent) => {
   // All the existing UUIDs on the page.
   const existingUuids = state.renderedBlocks.value.map((v) => v.item.uuid)
 
@@ -362,8 +338,6 @@ const onMouseUp = (e: MouseEvent) => {
 }
 
 onBlokkliEvent('dragging:start', (e) => {
-  activeDropArea.value = null
-  activeDropTarget.value = null
   isTouching.value = e.mode === 'touch'
   startCoords.value = e.coords
   animation.requestDraw()

@@ -201,9 +201,9 @@ export class EntityStorageManager {
 
     const stressUuids: string[] = []
     let counter = 0
-    for (let i = 0; i < 500; i++) {
+    for (let i = 0; i < 10; i++) {
       const cardUuids: string[] = []
-      for (let j = 0; j < 4; j++) {
+      for (let j = 0; j < 3; j++) {
         const cardUuid = 'stress-test-card-' + counter
         this.createBlock('card', cardUuid, {
           title: 'Card ' + counter,
@@ -212,6 +212,12 @@ export class EntityStorageManager {
         counter++
         cardUuids.push(cardUuid)
       }
+      const imageUuid = 'stress-test-image-' + counter
+      this.createBlock('image', imageUuid, {
+        imageReference: ['7'],
+      })
+      counter++
+      cardUuids.push(imageUuid)
       const gridUuid = 'stress-test-grid-' + i
       const block = this.createBlock('grid', gridUuid)
       block.get('blocks').setList(cardUuids)
