@@ -190,13 +190,12 @@ const limitOffset = (
   providedScale?: number,
 ): Coord => {
   const targetScale = providedScale || scale.value
-  const rootRect = ui.rootElement().getBoundingClientRect()
-  const wrapperHeight = ui.artboardElement().offsetHeight * targetScale
-  const wrapperWidth = ui.artboardElement().offsetWidth * targetScale
+  const wrapperWidth = ui.artboardSize.value.width * targetScale
+  const wrapperHeight = ui.artboardSize.value.height * targetScale
   const minX = -(wrapperWidth - props.padding)
-  const maxX = rootRect.width - props.padding
+  const maxX = ui.viewport.value.width - props.padding
   const minY = -(wrapperHeight - props.padding)
-  const maxY = rootRect.height - props.padding
+  const maxY = ui.viewport.value.height - props.padding
   const x = Math.max(Math.min(providedX, maxX), minX)
   const y = Math.max(Math.min(providedY, maxY), minY)
   return { x, y }
@@ -229,9 +228,8 @@ function onWheel(e: WheelEvent) {
   stopAnimate()
   e.preventDefault()
 
-  const rect = ui.rootElement().getBoundingClientRect()
-  zoomPoint.x = e.pageX - rect.left
-  zoomPoint.y = e.pageY - rect.top
+  zoomPoint.x = e.pageX
+  zoomPoint.y = e.pageY
 
   if (e.ctrlKey) {
     zoomTarget.x = (zoomPoint.x - offset.value.x) / scale.value
@@ -261,19 +259,17 @@ function updateStyles() {
 }
 
 function resetZoom() {
-  const artboard = ui.artboardElement()
-  const root = ui.rootElement()
   // Calculate the center of the viewport in the current scale.
-  const viewportCenterY = root.offsetHeight / 2
+  const viewportCenterY = ui.viewport.value.height / 2
   const currentCenterOnArtboard =
     (-offset.value.y + viewportCenterY) / scale.value
 
   // If the height of the artboard is smaller than the visible viewport height
   // always set the position in such a way that it is perfectly centered in the
   // viewport.
-  if (artboard.offsetHeight < ui.visibleViewport.value.height) {
+  if (ui.artboardSize.value.height < ui.visibleViewport.value.height) {
     const newYOffset =
-      ui.visibleViewport.value.height / 2 - artboard.offsetHeight / 2
+      ui.visibleViewport.value.height / 2 - ui.artboardSize.value.height / 2
     return animateTo(getCenterX(1), newYOffset, 1)
   }
 
@@ -282,9 +278,9 @@ function resetZoom() {
   const newYOffset = Math.min(
     Math.max(
       -currentCenterOnArtboard + viewportCenterY,
-      -artboard.offsetHeight + root.offsetHeight - props.padding,
+      -ui.artboardSize.value.height + ui.viewport.value.height - props.padding,
     ),
-    props.padding,
+    props.padding * 2,
   )
   animateTo(getCenterX(1), newYOffset, 1)
 }
@@ -397,9 +393,8 @@ onBlokkliEvent('keyPressed', (e) => {
 })
 
 const getEndY = () => {
-  const rect = ui.rootElement().getBoundingClientRect()
-  const wrapperRect = ui.artboardElement().getBoundingClientRect()
-  return -wrapperRect.height + rect.height - props.padding
+  const artboardHeight = ui.artboardSize.value.height * ui.artboardScale.value
+  return -artboardHeight + ui.viewport.value.height - props.padding
 }
 
 const animateOrJumpBy = (y: number) => {
@@ -428,7 +423,7 @@ const scrollPageDown = () =>
   animateOrJumpTo(
     Math.max(offset.value.y - ui.rootElement().offsetHeight, getEndY()),
   )
-const scrollToTop = () => animateOrJumpTo(props.padding)
+const scrollToTop = () => animateOrJumpTo(props.padding * 2)
 const scrollToEnd = () => {
   animateOrJumpTo(getEndY())
 }
@@ -646,9 +641,13 @@ function onTouchEnd(e: TouchEvent) {
     // Reset initial values for pinch
     initialTouchDistance.value = null
     initialScale.value = 1
-    const newPosition = calculateNewPosition(prevTouchMoveCoords, offset.value)
-    animateTo(newPosition.x, newPosition.y)
-    console.log(newPosition.velocity, offset.value, newPosition)
+    if (prevTouchMoveCoords.length === 2) {
+      const newPosition = calculateNewPosition(
+        prevTouchMoveCoords,
+        offset.value,
+      )
+      animateTo(newPosition.x, newPosition.y)
+    }
     prevTouchMoveCoords = []
   }
 }
@@ -704,6 +703,13 @@ const findElementToScrollTo = (uuid: string): HTMLElement | undefined => {
 }
 
 onBlokkliEvent('scrollIntoView', (e) => {
+  const visibleBlocks = dom.getVisibleBlocks()
+
+  // Return if block is already visible and centering was not requested.
+  if (!e.center && visibleBlocks.includes(e.uuid)) {
+    return
+  }
+
   const element = findElementToScrollTo(e.uuid)
   if (!element) {
     return
