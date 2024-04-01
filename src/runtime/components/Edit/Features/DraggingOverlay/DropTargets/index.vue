@@ -1,47 +1,19 @@
 <template>
-  <Teleport to=".bk-main-canvas">
-    <div class="bk bk-drop-targets">
-      <div
-        v-for="field in fieldRects"
-        v-show="field.children.length"
-        :key="field.key"
-        class="bk-drop-targets-field"
-        :data-drop-target-field="field.key"
-        :style="field.style"
-      >
-        <div
-          v-for="child in field.children"
-          :key="child.key"
-          :style="child.style"
-          :data-prev-uuid="child.prevUuid"
-          :data-drop-target-key="child.key"
-          :data-field-label="field.label"
-          class="bk-drop-targets-field-child"
-          :class="[
-            { 'bk-is-active': modelValue?.id === child.key },
-            { 'bk-is-nested': child.isNested },
-            'bk-is-' + child.orientation,
-          ]"
-          @click.stop.prevent.capture="onChildClick(field, child)"
-          @touchstart.passive="
-            $emit('update:modelValue', { id: child.key, label: field.label })
-          "
-          @touchend.passive="$emit('update:modelValue', null)"
-        />
-      </div>
+  <Teleport to="body">
+    <div class="bk-drop-targets-canvas">
+      <canvas
+        ref="canvas"
+        v-bind="canvasAttributes"
+        @click.stop.prevent="onClick"
+        @touchstart="onTouchStart"
+        @touchend="onTouchEnd"
+      />
     </div>
   </Teleport>
 </template>
 
-<script lang="ts" setup>
-import {
-  falsy,
-  intersects,
-  isInsideRect,
-  findClosestRectangle,
-  calculateIntersection,
-  realBackgroundColor,
-} from '#blokkli/helpers'
+<script lang="ts">
+import { falsy, intersects, isInsideRect, rgbaToString } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type {
   BlokkliFieldElement,
@@ -50,35 +22,42 @@ import type {
   Rectangle,
 } from '#blokkli/types'
 import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
-
-type Orientation = 'horizontal' | 'vertical'
-
-type FieldRectChild = {
-  key: string
-  style: Record<string, any>
-  orientation: Orientation
-  prevUuid?: string
-  isNested: boolean
-}
-
-type FieldRect = {
-  key: string
-  disabled: boolean
-  field: BlokkliFieldElement
-  style: Record<string, any>
-  backgroundColor: string
-  children: FieldRectChild[]
-  label: string
-}
-
 export type DropTargetEvent = {
   items: DraggableItem[]
   field: BlokkliFieldElement
   host: DraggableHostData
   preceedingUuid?: string
 }
+</script>
 
-const { dom, ui, $t } = useBlokkli()
+<script lang="ts" setup>
+type Orientation = 'horizontal' | 'vertical'
+
+type FieldRectChild = Rectangle & {
+  key: string
+  label: string
+}
+
+type FieldRect = Rectangle & {
+  key: string
+  field: BlokkliFieldElement
+  label: string
+  canAddChildren: boolean
+  emptyChild?: FieldRectChild
+  orientation: Orientation
+  gap: number
+  childrenElements: HTMLElement[]
+}
+
+const { dom, ui, $t, theme } = useBlokkli()
+
+const canvas = ref<HTMLCanvasElement | null>(null)
+const canvasAttributes = computed(() => {
+  return {
+    width: ui.viewport.value.width,
+    height: ui.viewport.value.height,
+  }
+})
 
 const emit = defineEmits<{
   (e: 'drop', data: DropTargetEvent): void
@@ -96,15 +75,47 @@ const props = defineProps<{
   modelValue?: { id: string; label: string } | null | undefined
 }>()
 
-const onChildClick = (field: FieldRect, child: FieldRectChild) => {
+const onTouchStart = (e: TouchEvent) => {
+  const touch = e.touches[0]
+  const match = drawnRects.find((v) =>
+    isInsideRect(touch.pageX, touch.pageY, v),
+  )
+
+  if (match) {
+    emit('update:modelValue', { id: match.key, label: match.label })
+  }
+}
+
+const onTouchEnd = () => {
+  emit('update:modelValue', null)
+}
+
+const onClick = (e: MouseEvent) => {
+  e.preventDefault()
+  e.stopPropagation()
+  const match = drawnRects.find((v) => isInsideRect(e.pageX, e.pageY, v))
+  if (match) {
+    emitDrop(match.key)
+  }
+}
+
+const emitDrop = (key: string) => {
+  const [hostUuid, fieldName, preceedingUuid] = key.split(':')
+
+  const field = dom.findField(hostUuid, fieldName)
+
+  if (!field) {
+    return
+  }
+
   emit('drop', {
-    field: field.field,
-    preceedingUuid: child.prevUuid,
+    field,
+    preceedingUuid,
     items: [...props.items],
     host: {
-      type: field.field.hostEntityType,
-      uuid: field.field.hostEntityUuid,
-      fieldName: field.field.name,
+      type: field.hostEntityType,
+      uuid: field.hostEntityUuid,
+      fieldName: field.name,
     },
   })
 }
@@ -113,33 +124,7 @@ const onMouseUp = (e: MouseEvent) => {
   if (props.modelValue?.id) {
     e.preventDefault()
     e.stopPropagation()
-    const el = document.querySelector(
-      `[data-drop-target-key="${props.modelValue.id}"]`,
-    )
-    if (!(el instanceof HTMLElement)) {
-      return
-    }
-    const prevUuid = el.dataset.prevUuid
-    const fieldKey = el.parentElement?.dataset.dropTargetField
-    if (!fieldKey) {
-      return
-    }
-
-    const field = fieldRects.value.find((v) => v.key === fieldKey)
-
-    if (!field) {
-      return
-    }
-    emit('drop', {
-      field: field.field,
-      preceedingUuid: prevUuid,
-      items: [...props.items],
-      host: {
-        type: field.field.hostEntityType,
-        uuid: field.field.hostEntityUuid,
-        fieldName: field.field.name,
-      },
-    })
+    emitDrop(props.modelValue.id)
   }
 }
 
@@ -220,80 +205,58 @@ function getGapSize(orientation: Orientation, element: HTMLElement): number {
   return 30
 }
 
-const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
-  const children: FieldRectChild[] = []
-  const fieldHeight = field.element.offsetHeight
+const fieldChildCache: Record<string, FieldRectChild[]> = {}
 
-  const orientation = getChildrenOrientation(field.element)
-  const childElements = [...field.element.children] as HTMLElement[]
+const buildChildKey = (
+  field: BlokkliFieldElement,
+  preceedingUuid?: string | undefined | null,
+  type?: string | undefined | null,
+  uuid?: string | undefined | null,
+) => {
+  return `${field.key}:${preceedingUuid || ''}:${type || ''}:${uuid || ''}`
+}
 
-  // Check cardinality of field.
-  if (field.cardinality !== -1) {
-    if (childElements.length >= field.cardinality) {
-      const selectionAreChildren =
-        selectionUuids.value.length &&
-        selectionUuids.value.every((uuid) =>
-          childElements.find((v) => v.dataset.uuid === uuid),
-        )
-      // Return no drop targets if any of the selected blocks is not part of the field.
-      // That way we can still return drop targets when a block is moved inside the field.
-      if (!selectionAreChildren) {
-        return []
-      }
-    }
-  }
-
-  const allBundlesAllowed =
-    !draggingBundles.value.length ||
-    draggingBundles.value.every((bundle) =>
-      field.allowedBundles.includes(bundle),
-    )
-  if (!allBundlesAllowed) {
+const buildChildren = (
+  field: FieldRect,
+  visible: string[],
+): FieldRectChild[] => {
+  if (!field.canAddChildren) {
     return []
   }
+
+  if (field.emptyChild) {
+    return [field.emptyChild]
+  }
+
+  const children: FieldRectChild[] = []
 
   let prevWasInSelection = false
   let prevUuid: string | undefined = ''
 
-  if (childElements.length === 0) {
-    if (orientation === 'horizontal') {
-      children.push({
-        key: field.key + '_empty',
-        orientation,
-        isNested: field.isNested,
-        style: {
-          left: '0px',
-          top: '0px',
-          width: '100%',
-          height: '100%',
-        },
-      })
-    } else {
-      children.push({
-        key: field.key + '_empty',
-        isNested: field.isNested,
-        orientation,
-        style: {
-          left: '0px',
-          top: '0px',
-          width: '100%',
-          height: fieldHeight > 30 ? '100%' : '30px',
-          // height: '100%',
-        },
-      })
-    }
-  }
+  for (let i = 0; i < field.childrenElements.length; i++) {
+    const childrenForUuid: FieldRectChild[] = []
 
-  const gap = Math.max(getGapSize(orientation, field.element), 30)
+    const isLast = i === field.childrenElements.length - 1
 
-  for (let i = 0; i < childElements.length; i++) {
-    const el = childElements[i]
+    const el = field.childrenElements[i]
     if (!(el instanceof HTMLElement)) {
       continue
     }
 
     const uuid = el.dataset.uuid
     if (!uuid) {
+      continue
+    }
+
+    if (!visible.includes(uuid)) {
+      prevUuid = uuid
+      continue
+    }
+
+    const cached = fieldChildCache[uuid]
+    if (cached) {
+      children.push(...cached)
+      prevUuid = uuid
       continue
     }
 
@@ -304,36 +267,26 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
       continue
     }
 
-    const isLast = i === childElements.length - 1
-
     // Last element.
     if (isLast) {
-      if (orientation === 'vertical') {
-        children.push({
-          prevUuid: uuid,
-          key: 'last_' + uuid,
-          orientation,
-          isNested: field.isNested,
-          style: {
-            width: '100%',
-            height: gap + 'px',
-            left: '0px',
-            top: el.offsetTop + el.scrollHeight + 'px',
-          },
+      const key = buildChildKey(field.field, uuid, 'last', uuid)
+      if (field.orientation === 'vertical') {
+        childrenForUuid.push({
+          key,
+          width: field.width,
+          height: field.gap,
+          x: 0,
+          y: el.offsetTop + el.scrollHeight,
+          label: field.label,
         })
       } else {
-        const width = gap
-        children.push({
-          prevUuid: uuid,
-          key: 'last_' + uuid,
-          orientation,
-          isNested: field.isNested,
-          style: {
-            width: width + 'px',
-            height: el.offsetHeight + 'px',
-            left: el.offsetLeft + el.offsetWidth + 'px',
-            top: el.offsetTop + 'px',
-          },
+        childrenForUuid.push({
+          key,
+          width: field.gap,
+          height: el.offsetHeight,
+          x: el.offsetLeft + el.offsetWidth,
+          y: el.offsetTop,
+          label: field.label,
         })
       }
     }
@@ -343,195 +296,263 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
     if (prevWasInSelection) {
       prevWasInSelection = false
       prevUuid = uuid
+      children.push(...childrenForUuid)
       continue
     }
 
-    if (orientation === 'vertical') {
-      children.push({
-        prevUuid,
-        key: uuid,
-        orientation,
-        isNested: field.isNested,
-        style: {
-          width: '100%',
-          height: gap + 'px',
-          left: '0px',
-          top: el.offsetTop - gap / 2 + 'px',
-        },
+    const key = buildChildKey(field.field, prevUuid, 'between', uuid)
+
+    if (field.orientation === 'vertical') {
+      childrenForUuid.push({
+        key,
+        width: field.width,
+        height: field.gap,
+        x: 0,
+        y: el.offsetTop - field.gap / 2,
+        label: field.label,
       })
     } else {
-      children.push({
-        prevUuid,
-        key: uuid,
-        orientation,
-        isNested: field.isNested,
-        style: {
-          width: gap + 'px',
-          height: Math.max(el.offsetHeight, 30) + 'px',
-          left: Math.max(el.offsetLeft - gap, -gap) + 'px',
-          top: el.offsetTop + 'px',
-        },
+      childrenForUuid.push({
+        key,
+        width: field.gap,
+        height: Math.max(el.offsetHeight, 30),
+        x: Math.max(el.offsetLeft - field.gap, -field.gap),
+        y: el.offsetTop,
+        label: field.label,
       })
     }
+
+    fieldChildCache[uuid] = childrenForUuid
+
+    children.push(...childrenForUuid)
 
     prevUuid = uuid
   }
   return children
 }
 
-const fieldRects = ref<FieldRect[]>([])
+const fieldCache: Record<string, FieldRect> = {}
 
-const buildFieldRects = (): FieldRect[] => {
-  const insertText = $t('draggingOverlayInsertText', 'Insert into @field')
+const insertText = $t('draggingOverlayInsertText', 'Insert into @field')
+
+const determineCanAddChildren = (
+  field: BlokkliFieldElement,
+  children: HTMLElement[],
+) => {
+  // Check cardinality of field.
+  if (field.cardinality !== -1) {
+    if (children.length >= field.cardinality) {
+      const selectionAreChildren =
+        selectionUuids.value.length &&
+        selectionUuids.value.every((uuid) =>
+          children.find((v) => v.dataset.uuid === uuid),
+        )
+      // Return no drop targets if any of the selected blocks is not part of the field.
+      // That way we can still return drop targets when a block is moved inside the field.
+      if (!selectionAreChildren) {
+        return false
+      }
+    }
+  }
+
+  const allBundlesAllowed =
+    !draggingBundles.value.length ||
+    draggingBundles.value.every((bundle) =>
+      field.allowedBundles.includes(bundle),
+    )
+  if (!allBundlesAllowed) {
+    return false
+  }
+
+  return true
+}
+
+const buildEmptyChild = (
+  field: BlokkliFieldElement,
+  children: HTMLElement[],
+  orientation: Orientation,
+  fieldWidth: number,
+  fieldHeight: number,
+): FieldRectChild | undefined => {
+  if (children.length === 0) {
+    const key = buildChildKey(field, null, 'empty')
+    if (orientation === 'horizontal') {
+      return {
+        key,
+        x: 0,
+        y: 0,
+        width: fieldWidth,
+        height: fieldHeight,
+        label: insertText,
+      }
+    } else {
+      return {
+        key,
+        x: 0,
+        y: 0,
+        width: fieldWidth,
+        height: fieldHeight > 30 ? 0 : 30,
+        label: insertText,
+      }
+    }
+  }
+}
+
+const buildFieldRect = (key: string): FieldRect | undefined => {
+  if (fieldCache[key]) {
+    return fieldCache[key]
+  }
+
   const artboardEl = ui.artboardElement()
   const artboardRect = artboardEl.getBoundingClientRect()
   const scale = ui.getArtboardScale()
-  const rects: FieldRect[] = []
-  const allFields = dom.getAllFields()
-  for (let i = 0; i < allFields.length; i++) {
-    const field = allFields[i]
-    const rect = field.element.getBoundingClientRect()
-    const x = rect.x / scale - artboardRect.x / scale
-    const y = rect.y / scale - artboardRect.y / scale + artboardEl.scrollTop
-    const children = getChildren(field)
-    const backgroundColor = realBackgroundColor(field.element)
-    const height = Math.max(field.element.offsetHeight, 30)
-    const width = Math.max(field.element.offsetWidth, 30)
-
-    rects.push({
-      key: field.key,
-      field,
-      disabled: children.length === 0,
-      style: {
-        width: width + 'px',
-        height: height + 'px',
-        transform: `translate(${x}px, ${y}px)`,
-      },
-      backgroundColor,
-      children,
-      label: insertText.replace('@field', field.label),
-    })
-  }
-
-  return rects
-}
-
-type IntersectingRectangle = Rectangle & {
-  key: string
-  intersection: number
-  label: string
-}
-
-const getSelectedRect = (): { id: string; label: string } | undefined => {
-  if (props.disabled) {
+  const [uuid, name] = key.split(':')
+  const field = dom.findField(uuid, name)
+  if (!field) {
     return
   }
+  const childElements = [...field.element.children] as HTMLElement[]
 
-  // Check if the cursor position is over a viewport blocking rect.
-  const isInsideBlockingRect = ui.viewportBlockingRects.value.find((rect) =>
-    isInsideRect(props.mouseX, props.mouseY, rect),
+  const canAddChildren = determineCanAddChildren(field, childElements)
+  const orientation = getChildrenOrientation(field.element)
+
+  const rect = field.element.getBoundingClientRect()
+  const x = rect.x / scale - artboardRect.x / scale
+  const y = rect.y / scale - artboardRect.y / scale + artboardEl.scrollTop
+  const height = Math.max(field.element.offsetHeight, 30)
+  const width = Math.max(field.element.offsetWidth, 30)
+  const emptyChild = buildEmptyChild(
+    field,
+    childElements,
+    orientation,
+    width,
+    height,
   )
-  if (isInsideBlockingRect) {
-    return
+  const gap = Math.max(getGapSize(orientation, field.element), 30)
+
+  const fieldRect = {
+    key: field.key,
+    field,
+    width,
+    height,
+    x,
+    y,
+    label: insertText.replace('@field', field.label),
+    canAddChildren,
+    emptyChild,
+    orientation,
+    gap,
+    childrenElements: childElements,
   }
 
-  // Check if the cursor position is inside the visible viewport area.
-  const isInsideVisibleViewport = isInsideRect(
-    props.mouseX,
-    props.mouseY,
-    ui.visibleViewport.value,
-  )
-  if (!isInsideVisibleViewport) {
-    return
-  }
-  const elements = [...document.querySelectorAll('[data-drop-target-key]')]
-
-  const intersectingRects: IntersectingRectangle[] = []
-
-  for (let i = 0; i < elements.length; i++) {
-    const el = elements[i]
-    if (!(el instanceof HTMLElement)) {
-      continue
-    }
-    const rect = el.getBoundingClientRect()
-    const key = el.dataset.dropTargetKey
-    if (!key) {
-      continue
-    }
-    const label = el.dataset.fieldLabel || key
-    if (isInsideRect(props.mouseX, props.mouseY, rect)) {
-      return { id: key, label }
-    }
-    if (intersects(props.box, rect)) {
-      const intersection = calculateIntersection(rect, props.box)
-      intersectingRects.push({
-        x: rect.x,
-        y: rect.y,
-        width: rect.width,
-        height: rect.height,
-        key,
-        label,
-        intersection,
-      })
-    }
-  }
-
-  if (intersectingRects.length === 0) {
-    return
-  } else if (intersectingRects.length === 1) {
-    return { id: intersectingRects[0].key, label: intersectingRects[0].label }
-  }
-
-  // Sort by intersection area.
-  intersectingRects.sort((a, b) => b.intersection - a.intersection)
-
-  const first = intersectingRects[0]
-  const second = intersectingRects[1]
-  const diff = first.intersection - second.intersection
-  // If the difference of area overlap between the first and second candidate
-  // is larger than the threshold, return the first.
-  if (diff > 0.1) {
-    return { id: first.key, label: first.label }
-  }
-
-  // Fallback: Return the rectangle that is closest to the cursor.
-  const closest = findClosestRectangle(
-    props.mouseX,
-    props.mouseY,
-    intersectingRects,
-  )
-  return { id: closest.key, label: closest.label }
+  fieldCache[key] = fieldRect
+  return fieldRect
 }
 
 let prevMouseX = 0
 let prevMouseY = 0
 
+const colorAccentOne = rgbaToString(theme.accent.value[700])
+const colorAccentOneActive = rgbaToString(theme.accent.value[800])
+
+let drawnRects: FieldRectChild[] = []
+
 onBlokkliEvent('animationFrame', () => {
-  if (props.isTouch) {
-    return
-  }
   // We only want to do the calculations for changes in 5px steps.
   const mouseX = Math.round(props.mouseX / 5)
   const mouseY = Math.round(props.mouseY / 5)
 
+  if (!canvas.value) {
+    return
+  }
+
+  const ctx = canvas.value.getContext('2d')
+
+  if (!ctx) {
+    return
+  }
+
+  const scale = ui.artboardScale.value
+  const offset = ui.artboardOffset.value
+
+  const visibleFields = dom.getVisibleFields()
+  const visibleBlocks = dom.getVisibleBlocks()
+  const fields = visibleFields.map((key) => buildFieldRect(key))
+
+  let intersecting = false
+  drawnRects = []
+
+  ctx.clearRect(
+    0,
+    0,
+    canvasAttributes.value.width,
+    canvasAttributes.value.height,
+  )
+
+  ctx.fillStyle = colorAccentOneActive
+  ctx.strokeStyle = colorAccentOneActive
+
+  for (let i = 0; i < fields.length; i++) {
+    const field = fields[i]
+    if (!field) {
+      continue
+    }
+
+    const children = buildChildren(field, visibleBlocks)
+
+    for (let j = 0; j < children.length; j++) {
+      const child = children[j]
+      ctx.beginPath()
+      const x = (field.x + child.x + offset.x / scale) * scale
+      const y = (field.y + child.y + offset.y / scale) * scale
+      const width = child.width * scale
+      const height = child.height * scale
+      ctx.roundRect(x, y, width, height, 8)
+      drawnRects.push({
+        x,
+        y,
+        width,
+        height,
+        key: child.key,
+        label: child.label,
+      })
+
+      if (!intersecting) {
+        if (!props.isTouch && intersects(props.box, { x, y, width, height })) {
+          intersecting = true
+          if (props.modelValue?.id !== child.key && !props.isTouch) {
+            emit('update:modelValue', { id: child.key, label: field.label })
+          }
+        }
+      }
+      if (child.key === props.modelValue?.id) {
+        ctx.fill()
+      } else {
+        ctx.stroke()
+      }
+    }
+  }
+
+  if (!intersecting && !props.isTouch) {
+    emit('update:modelValue', null)
+  }
+
   // Only do the calculations if the mouse position has actually changed.
   if (prevMouseX !== mouseX || prevMouseY !== mouseY) {
-    emit('update:modelValue', getSelectedRect() || null)
     prevMouseX = mouseX
     prevMouseY = mouseY
   }
 })
 
 onMounted(() => {
-  document.body.classList.add('bk-is-dragging')
-  fieldRects.value = buildFieldRects()
+  // document.body.classList.add('bk-is-dragging')
   if (!props.isTouch) {
     document.body.addEventListener('mouseup', onMouseUp)
   }
 })
 
 onBeforeUnmount(() => {
-  document.body.classList.remove('bk-is-dragging')
+  // document.body.classList.remove('bk-is-dragging')
   document.body.removeEventListener('mouseup', onMouseUp)
 })
 </script>

@@ -11,25 +11,17 @@
     />
   </Teleport>
 
-  <DropAreas
+  <DropTargets
     v-if="dragItems.length && isVisible"
-    v-model="activeDropArea"
+    v-model="activeDropTarget"
     :items="dragItems"
-    :x="mouseX"
-    :y="mouseY"
+    :box="box"
+    :mouse-x="mouseX"
+    :mouse-y="mouseY"
     :is-touch="isTouching"
-  >
-    <DropTargets
-      v-model="activeDropTarget"
-      :items="dragItems"
-      :box="box"
-      :mouse-x="mouseX"
-      :mouse-y="mouseY"
-      :is-touch="isTouching"
-      :disabled="!!activeDropArea"
-      @drop="onDrop"
-    />
-  </DropAreas>
+    :disabled="!!activeDropArea"
+    @drop="onDrop"
+  />
 </template>
 
 <script lang="ts" setup>

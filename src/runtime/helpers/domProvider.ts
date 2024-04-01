@@ -147,6 +147,13 @@ export type DomProvider = {
   ) => void
   unregisterBlock: (uuid: string) => void
 
+  registerField: (
+    uuid: string,
+    fieldName: string,
+    instance: HTMLElement,
+  ) => void
+  unregisterField: (uuid: string, fieldName: string) => void
+
   /**
    * Get all droppable entity fields.
    */
@@ -156,6 +163,7 @@ export type DomProvider = {
 
   getBlockVisibilities(): Record<string, boolean>
   getVisibleBlocks(): string[]
+  getVisibleFields(): string[]
 }
 
 const getVisibleBlockElement = (
@@ -175,12 +183,14 @@ const getVisibleBlockElement = (
 export default function (): DomProvider {
   const blockVisibility: Record<string, boolean> = {}
   const visibleBlocks: Set<string> = new Set()
+  const visibleFields: Set<string> = new Set()
 
   const observer = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
         if (entry.target instanceof HTMLElement) {
           const uuid = entry.target.dataset.uuid
+          const fieldKey = entry.target.dataset.fieldKey
           if (uuid) {
             if (entry.isIntersecting) {
               visibleBlocks.add(uuid)
@@ -188,6 +198,12 @@ export default function (): DomProvider {
               visibleBlocks.delete(uuid)
             }
             blockVisibility[uuid] = entry.isIntersecting
+          } else if (fieldKey) {
+            if (entry.isIntersecting) {
+              visibleFields.add(fieldKey)
+            } else {
+              visibleFields.delete(fieldKey)
+            }
           }
         }
       }
@@ -199,6 +215,26 @@ export default function (): DomProvider {
   )
 
   const registeredBlocks = ref<Record<string, HTMLElement | undefined>>({})
+  const registeredFields = ref<Record<string, HTMLElement | undefined>>({})
+
+  const registerField = (
+    uuid: string,
+    fieldName: string,
+    element: HTMLElement,
+  ) => {
+    const key = `${uuid}:${fieldName}`
+    registeredFields.value[key] = element
+    observer.observe(element)
+  }
+
+  const unregisterField = (uuid: string, fieldName: string) => {
+    const key = `${uuid}:${fieldName}`
+    const el = registeredFields.value[key]
+    if (el) {
+      observer.unobserve(el)
+    }
+    registeredFields.value[key] = undefined
+  }
 
   const registerBlock = (
     uuid: string,
@@ -330,9 +366,8 @@ export default function (): DomProvider {
     return blockVisibility
   }
 
-  const getVisibleBlocks = () => {
-    return Array.from(visibleBlocks)
-  }
+  const getVisibleBlocks = () => Array.from(visibleBlocks)
+  const getVisibleFields = () => Array.from(visibleFields)
 
   return {
     findBlock,
@@ -348,5 +383,8 @@ export default function (): DomProvider {
     findClosestEntityContext,
     getBlockVisibilities,
     getVisibleBlocks,
+    getVisibleFields,
+    registerField,
+    unregisterField,
   }
 }

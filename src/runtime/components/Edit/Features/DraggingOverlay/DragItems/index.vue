@@ -4,15 +4,16 @@
     :style="style"
     :class="[
       { 'bk-is-touch': isTouch },
-      active ? 'bk-is-' + active.type : undefined,
+      mappedActive ? 'bk-is-' + mappedActive.type : undefined,
     ]"
   >
     <Transition name="bk-drag-item">
       <span
-        v-if="active"
+        v-if="mappedActive"
+        :key="mappedActive.id"
         class="bk-dragging-overlay-label"
-        :class="'bk-is-' + active.type"
-        >{{ active.label }}</span
+        :class="'bk-is-' + mappedActive.type"
+        >{{ mappedActive.label }}</span
       >
     </Transition>
     <div
@@ -50,7 +51,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+import {
+  watch,
+  ref,
+  computed,
+  useBlokkli,
+  onMounted,
+  onBeforeUnmount,
+} from '#imports'
 import type { Coord, DraggableItem, Rectangle } from '#blokkli/types'
 import { isInsideRect, realBackgroundColor, lerp } from '#blokkli/helpers'
 import { Icon, ItemIcon } from '#blokkli/components'
@@ -84,6 +92,8 @@ const props = defineProps<{
 
   active: { id: string; label: string; type: string } | null
 }>()
+
+const mappedActive = computed(() => props.active)
 
 const width = ref(10)
 const height = ref(10)

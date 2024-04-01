@@ -1,0 +1,7 @@
+.bk-drop-targets-canvas {
+  @apply fixed top-0 left-0 w-full h-full;
+
+  canvas {
+    @apply absolute top-0 left-0 w-full h-full;
+  }
+}

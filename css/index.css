@@ -39,6 +39,7 @@
 @import './partials/DropAreas.css';
 @import './partials/Error.css';
 @import './partials/Translations.css';
+@import './partials/DropTargets.css';
 @import './indicator.css';
 
 @tailwind base;
@@ -215,7 +216,7 @@ html {
   }
 }
 
-.bk-blokkli-item-label {
+.bk .bk-blokkli-item-label {
   @apply flex items-center text-mono-700 text-left;
   > div {
     @apply shrink-0;

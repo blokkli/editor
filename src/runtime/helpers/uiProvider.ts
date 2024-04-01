@@ -62,7 +62,7 @@ export default function (storage: StorageProvider): UiProvider {
   })
   const artboardOffset = ref<Coord>({
     x: 0,
-    x: 0,
+    y: 0,
   })
   const artboardScale = ref(1)
 
