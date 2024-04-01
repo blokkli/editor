@@ -176,7 +176,12 @@ onBlokkliEvent('animationFrame', (e) => {
     width: bx - ax,
     height: by - ay,
   }
-  ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
+  ctx.clearRect(
+    0,
+    0,
+    canvasAttributes.value.width,
+    canvasAttributes.value.height,
+  )
   ctx.lineWidth = 2
   ctx.lineDashOffset = 0
 

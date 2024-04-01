@@ -1,6 +1,10 @@
 .bk-dragging-overlay {
   @apply fixed bottom-auto top-0 left-0 pointer-events-none z-dragging-overlay rounded select-none;
 
+  * {
+    @apply !pointer-events-none;
+  }
+
   &.bk-is-touch {
     @apply bottom-0 top-auto;
   }
@@ -111,8 +115,12 @@
 }
 
 .bk-dragging-overlay-markup {
-  @apply absolute top-0 left-0 origin-top-left rounded w-full h-full;
+  @apply absolute top-0 left-0 origin-top-left rounded w-full h-full pointer-events-none;
   @apply rounded;
+
+  * {
+    @apply !pointer-events-none;
+  }
 
   > * {
     /* display: none !important; */

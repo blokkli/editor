@@ -36,6 +36,7 @@
   </PluginItemAction>
 
   <CommentsOverlay
+    v-if="comments.length"
     :comments="comments"
     @add-comment="onAddComment($event.body, $event.uuids)"
     @resolve-comment="onResolveComment($event)"

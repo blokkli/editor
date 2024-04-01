@@ -11,6 +11,7 @@
 
 <script lang="ts" setup>
 import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
+
 const { parentType } = defineBlokkli({
   bundle: 'text',
   editor: {

@@ -1,5 +1,6 @@
 <template>
   <Sortli
+    ref="sortli"
     use-selection
     class="bk-draggable-list-container"
     :class="{ 'is-empty': !list.length }"
@@ -48,12 +49,21 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli } from '#imports'
+import {
+  computed,
+  useBlokkli,
+  ref,
+  type ComponentPublicInstance,
+  onMounted,
+  onBeforeUnmount,
+} from '#imports'
 import { Sortli } from '#blokkli/components'
 import type { FieldListItem, EntityContext, FieldConfig } from '#blokkli/types'
 import type { BlokkliFragmentName } from '#blokkli/definitions'
 
 const { state, eventBus, dom, keyboard, types, runtimeConfig } = useBlokkli()
+
+const sortli = ref<ComponentPublicInstance | null>(null)
 
 const props = defineProps<{
   name: string
@@ -118,4 +128,15 @@ function onAction(uuid: string) {
     bundle: item.itemBundle,
   })
 }
+
+onMounted(() => {
+  const el = sortli.value?.$el
+  if (el instanceof HTMLElement) {
+    dom.registerField(props.entity.uuid, props.name, el)
+  }
+})
+
+onBeforeUnmount(() => {
+  dom.unregisterField(props.entity.uuid, props.name)
+})
 </script>

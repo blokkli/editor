@@ -185,7 +185,7 @@ const findItem = (
 }
 
 const onClick = (e: MouseEvent) => {
-  if (props.isNested) {
+  if (props.isNested || selection.isDragging.value) {
     return
   }
   if (!shouldHandleEvent(e)) {
@@ -306,7 +306,7 @@ const onMouseMove = (e: MouseEvent) => {
 }
 
 const onMouseDown = (e: MouseEvent) => {
-  if (props.isNested) {
+  if (props.isNested || selection.isDragging.value) {
     return
   }
   if (isTouching.value) {
@@ -360,7 +360,7 @@ const onMouseDown = (e: MouseEvent) => {
 }
 
 const onMouseUp = () => {
-  if (props.isNested) {
+  if (props.isNested || selection.isDragging.value) {
     return
   }
   if (isTouching.value) {
@@ -380,10 +380,6 @@ const onMouseUp = () => {
     return
   }
   mouseIsDown.value = false
-
-  if (selection.editableActive.value) {
-    return
-  }
 }
 
 const emitEditableFocus = (eventTarget: HTMLElement): boolean => {
