@@ -1,14 +1,14 @@
 <template>
-  <Teleport to="body">
+  <Teleport to="#nuxt-root">
     <div class="bk-drop-targets-canvas">
       <canvas
         ref="canvas"
         v-bind="canvasAttributes"
         @click.stop.prevent="onClick"
         @touchstart="onTouchStart"
-        @touchend="onTouchEnd"
       />
     </div>
+    <svg xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox"></svg>
     <slot :color="active?.color" :label="active?.label"></slot>
   </Teleport>
 </template>
@@ -82,6 +82,10 @@ const emit = defineEmits<{
 
 const { dom, ui, $t, theme, dropAreas, eventBus } = useBlokkli()
 
+const viewBox = computed(() => {
+  return `0 0 ${ui.viewport.value.width} ${ui.viewport.value.height}`
+})
+
 const areas = dropAreas
   .getDropAreas(props.items)
   .reduce<Record<string, DropArea>>((acc, v) => {
@@ -139,10 +143,7 @@ const onTouchStart = (e: TouchEvent) => {
   const match = drawnRects.find((v) =>
     isInsideRect(touch.clientX, touch.clientY, v),
   )
-
-  if (match) {
-    active.value = match
-  }
+  active.value = match || null
 }
 
 const onTouchEnd = () => {
@@ -709,11 +710,17 @@ onMounted(() => {
   if (!props.isTouch) {
     document.body.addEventListener('mouseup', onMouseUp)
   }
+  document.body.addEventListener('touchend', onTouchEnd, {
+    capture: true,
+  })
 })
 
 onBeforeUnmount(() => {
   // document.body.classList.remove('bk-is-dragging')
   document.body.removeEventListener('mouseup', onMouseUp)
   areasObserver.disconnect()
+  document.body.removeEventListener('touchend', onTouchEnd, {
+    capture: true,
+  })
 })
 </script>

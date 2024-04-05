@@ -63,7 +63,6 @@ const onTouchStart = (e: TouchEvent) => {
   if (props.isNested) {
     return
   }
-  e.stopPropagation()
   isTouching.value = true
   clearTimeout(touchTimeout)
   if (!shouldHandleEvent(e)) {

@@ -52,6 +52,7 @@ import { lerp, calculateCenterPosition } from '#blokkli/helpers'
 import { easeOutQuad } from '#blokkli/helpers/easing'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
+import Artboard from '#blokkli/helpers/Artboard'
 
 const { keyboard, dom, context, storage, ui, animation, $t, selection } =
   useBlokkli()
@@ -251,13 +252,6 @@ function onWheel(e: WheelEvent) {
   animation.requestDraw()
 }
 
-function updateStyles() {
-  ui.artboardElement().style.scale = scale.value.toString()
-  ui.artboardElement().style.translate = `${Math.round(
-    offset.value.x,
-  )}px ${Math.round(offset.value.y)}px`
-}
-
 function resetZoom() {
   // Calculate the center of the viewport in the current scale.
   const viewportCenterY = ui.viewport.value.height / 2
@@ -393,8 +387,8 @@ onBlokkliEvent('keyPressed', (e) => {
 })
 
 const getEndY = () => {
-  const artboardHeight = ui.artboardSize.value.height * ui.artboardScale.value
-  return -artboardHeight + ui.viewport.value.height - props.padding
+  const v = ui.artboardSize.value.height * ui.artboardScale.value
+  return -v + ui.viewport.value.height - props.padding
 }
 
 const animateOrJumpBy = (y: number) => {
@@ -485,14 +479,14 @@ onBlokkliEvent('animationFrame:before', () => {
     }
     animation.requestDraw()
   }
-  const artboard = ui.artboardElement()
+  const artboardEl = ui.artboardElement()
   rootHeight.value = ui.rootElement().offsetHeight
-  artboardHeight.value = artboard.offsetHeight
+  artboardHeight.value = artboardEl.offsetHeight
   if (scrollbar.value) {
     scrollbarHeight.value = scrollbar.value.offsetHeight
   }
 
-  updateStyles()
+  artboard.updateStyles()
 })
 
 const zoomLevel = computed(
@@ -749,6 +743,8 @@ const saveState = () => {
   savedState.value = { offset: offset.value, scale: scale.value }
 }
 
+const artboard = new Artboard(ui.artboardElement())
+
 onMounted(() => {
   // Scroll to the top left to prevent overflow issues when artboard is enabled
   // /disabled (e.g. switching from mobile to destop viewport).
@@ -774,7 +770,7 @@ onMounted(() => {
     offset.value.x = getCenterX()
     offset.value.y = 20
   }
-  updateStyles()
+  artboard.updateStyles()
 })
 
 onBeforeUnmount(() => {

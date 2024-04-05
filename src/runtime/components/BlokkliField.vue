@@ -36,6 +36,7 @@
       v-bind="item"
       :parent-type="isNested ? entity?.bundle : ''"
       :data-uuid="item.uuid"
+      :data-bk-block-item="isEditing ? 'true' : undefined"
       :index="i"
     />
   </component>

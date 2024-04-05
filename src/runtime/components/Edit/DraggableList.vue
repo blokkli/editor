@@ -1,7 +1,6 @@
 <template>
-  <Sortli
-    ref="sortli"
-    use-selection
+  <div
+    ref="root"
     class="bk-draggable-list-container"
     :class="{ 'is-empty': !list.length }"
     :data-field-name="name"
@@ -14,8 +13,6 @@
     :data-allowed-fragments="allowedFragments.join(',')"
     :data-field-allowed-bundles="allowedBundles"
     :data-field-cardinality="fieldConfig?.cardinality"
-    @select="onSelect"
-    @action="onAction"
   >
     <BlokkliItem
       v-for="(item, i) in list"
@@ -44,25 +41,17 @@
       :data-entity-type="runtimeConfig.itemEntityType"
       class="bk-draggable"
     />
-  </Sortli>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  useBlokkli,
-  ref,
-  type ComponentPublicInstance,
-  onMounted,
-  onBeforeUnmount,
-} from '#imports'
-import { Sortli } from '#blokkli/components'
+import { computed, useBlokkli, ref, onMounted, onBeforeUnmount } from '#imports'
 import type { FieldListItem, EntityContext, FieldConfig } from '#blokkli/types'
 import type { BlokkliFragmentName } from '#blokkli/definitions'
 
-const { eventBus, dom, keyboard, types, runtimeConfig } = useBlokkli()
+const { dom, types, runtimeConfig } = useBlokkli()
 
-const sortli = ref<ComponentPublicInstance | null>(null)
+const root = ref<HTMLElement | null>(null)
 
 const props = defineProps<{
   name: string
@@ -105,33 +94,9 @@ const allowedBundles = computed<string>(() => {
   return bundles.join(',')
 })
 
-function onSelect(uuid: string) {
-  const item = dom.findBlock(uuid)
-  if (!item) {
-    return
-  }
-  if (keyboard.isPressingControl.value) {
-    eventBus.emit('select:toggle', uuid)
-  } else {
-    eventBus.emit('select', uuid)
-  }
-}
-
-function onAction(uuid: string) {
-  const item = dom.findBlock(uuid)
-  if (!item) {
-    return
-  }
-  eventBus.emit('item:edit', {
-    uuid: item.uuid,
-    bundle: item.itemBundle,
-  })
-}
-
 onMounted(() => {
-  const el = sortli.value?.$el
-  if (el instanceof HTMLElement) {
-    dom.registerField(props.entity.uuid, props.name, el)
+  if (root.value) {
+    dom.registerField(props.entity.uuid, props.name, root.value)
   }
 })
 

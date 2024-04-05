@@ -7,15 +7,9 @@
 </template>
 
 <script lang="ts" setup>
-import ArtboardManager from './Manager/index.vue'
+import ArtboardManager from './ManagerNew/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import {
-  computed,
-  useBlokkli,
-  defineBlokkliFeature,
-  onMounted,
-  onBeforeUnmount,
-} from '#imports'
+import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 
 const { settings } = defineBlokkliFeature({
   id: 'artboard',
@@ -64,9 +58,7 @@ const { settings } = defineBlokkliFeature({
 
 const { ui, dom } = useBlokkli()
 
-const useArtboard = computed(
-  () => settings.value.useArtboard === 'yes' && !ui.isMobile.value,
-)
+const useArtboard = computed(() => settings.value.useArtboard === 'yes')
 
 onBlokkliEvent('scrollIntoView', (e) => {
   if (useArtboard.value) {

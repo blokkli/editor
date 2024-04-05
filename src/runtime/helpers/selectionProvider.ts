@@ -23,6 +23,7 @@ import {
   originatesFromEditable,
   getOriginatingDroppableElement,
   mapDroppableField,
+  onlyUnique,
 } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
 
@@ -340,16 +341,19 @@ export default function (
     eventBus.emit('droppable:focus', droppable)
   }
 
-  function onWindowMouseDown(e: MouseEvent) {
-    if (e.ctrlKey) {
+  function onWindowMouseUp(e: MouseEvent) {
+    if (e.ctrlKey || isDragging.value) {
       return
     }
-    eventBus.emit('window:clickAway')
+    // @TODO: Refactor.
     if (e.target && e.target instanceof Element) {
       if (e.target.closest('.bk-blokkli-item-actions')) {
         return
       }
       if (e.target.closest('.bk-control')) {
+        return
+      }
+      if (e.target.closest("[data-blokkli-provider-active='true']")) {
         return
       }
 
@@ -363,6 +367,7 @@ export default function (
         eventBus.emit('editable:save')
       }
     }
+    eventBus.emit('window:clickAway')
     unselectItems()
   }
 
@@ -402,7 +407,7 @@ export default function (
 
   onBlokkliEvent('select', onSelect)
   onBlokkliEvent('select:start', (uuids) => {
-    selectedUuids.value = uuids || []
+    selectedUuids.value = (uuids || []).filter(onlyUnique)
     isMultiSelecting.value = true
   })
   onBlokkliEvent('select:toggle', (uuid) => {
@@ -453,12 +458,12 @@ export default function (
   })
 
   onMounted(() => {
-    document.documentElement.addEventListener('mousedown', onWindowMouseDown)
+    document.documentElement.addEventListener('mouseup', onWindowMouseUp)
     document.documentElement.addEventListener('dblclick', onDoubleClick)
   })
 
   onBeforeUnmount(() => {
-    document.documentElement.removeEventListener('mousedown', onWindowMouseDown)
+    document.documentElement.removeEventListener('mouseup', onWindowMouseUp)
     document.documentElement.removeEventListener('dblclick', onDoubleClick)
   })
 

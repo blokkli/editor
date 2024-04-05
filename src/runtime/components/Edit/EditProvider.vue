@@ -16,8 +16,9 @@
     :key="route.fullPath"
     @loaded="featuresLoaded = true"
   />
-  <Animator v-if="!isInitializing" />
-  <slot :mutated-entity="mutatedEntity" />
+  <DragInteractions v-if="!isInitializing">
+    <slot :mutated-entity="mutatedEntity" />
+  </DragInteractions>
 </template>
 
 <script lang="ts" setup generic="T">
@@ -38,7 +39,7 @@ import Loading from './Loading/index.vue'
 import Messages from './Messages/index.vue'
 import Features from './Features/index.vue'
 import AppMenu from './AppMenu/index.vue'
-import Animator from './Animator/index.vue'
+import DragInteractions from './DragInteractions/index.vue'
 import animationProvider from './../../helpers/animationProvider'
 import keyboardProvider from './../../helpers/keyboardProvider'
 import selectionProvider from './../../helpers/selectionProvider'
@@ -120,6 +121,16 @@ const onContextMenu = (e: Event) => {
   e.stopPropagation()
 }
 
+function onTouchMove(e: TouchEvent) {
+  e.preventDefault()
+}
+
+function onTouchStart(e: TouchEvent) {
+  if (e.touches.length === 2) {
+    e.preventDefault()
+  }
+}
+
 onMounted(() => {
   window.addEventListener('contextmenu', onContextMenu)
   if (props.isolate) {
@@ -128,6 +139,9 @@ onMounted(() => {
   nextTick(() => {
     isInitializing.value = false
   })
+
+  document.documentElement.addEventListener('touchmove', onTouchMove)
+  document.documentElement.addEventListener('touchstart', onTouchStart)
 })
 
 onBeforeUnmount(() => {
@@ -135,6 +149,8 @@ onBeforeUnmount(() => {
   isInitializing.value = true
   toolbarLoaded.value = false
   document.documentElement.classList.remove('bk-isolate-provider')
+  document.documentElement.removeEventListener('touchmove', onTouchMove)
+  document.documentElement.removeEventListener('touchstart', onTouchStart)
 })
 
 provide(INJECT_IS_EDITING, true)

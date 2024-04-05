@@ -164,6 +164,8 @@ export type DomProvider = {
   getBlockVisibilities(): Record<string, boolean>
   getVisibleBlocks(): string[]
   getVisibleFields(): string[]
+
+  getActiveProviderElement: () => HTMLElement
 }
 
 const getVisibleBlockElement = (
@@ -374,6 +376,20 @@ export default function (): DomProvider {
   const getVisibleBlocks = () => Array.from(visibleBlocks)
   const getVisibleFields = () => Array.from(visibleFields)
 
+  const getActiveProviderElement = () => {
+    const el = document.querySelector('[data-blokkli-provider-active="true"]')
+    if (!el) {
+      throw new Error('Failed to find active <BlokkliProvider> element.')
+    }
+
+    if (!(el instanceof HTMLElement)) {
+      throw new TypeError(
+        'The root element of the active <BlokkliProvider> is not an HTMLElement.',
+      )
+    }
+    return el
+  }
+
   return {
     findBlock,
     getAllBlocks,
@@ -391,5 +407,6 @@ export default function (): DomProvider {
     getVisibleFields,
     registerField,
     unregisterField,
+    getActiveProviderElement,
   }
 }

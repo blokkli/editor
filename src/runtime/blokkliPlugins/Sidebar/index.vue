@@ -44,7 +44,7 @@
       :size="size"
       :is-left="region === 'left'"
       class="bk-sidebar-inner"
-      @wheel.passive="onWheel"
+      @wheel="onWheel"
       @close="onAttach"
     >
       <template #icon>
@@ -69,7 +69,7 @@
       v-else
       v-show="activeSidebar === id"
       class="bk-sidebar-inner"
-      @wheel.passive="onWheel"
+      @wheel="onWheel"
     >
       <div class="bk">
         <div class="bk-sidebar-title">
@@ -140,7 +140,7 @@ const emit = defineEmits<{
   (e: 'updated'): void
 }>()
 
-const { storage, state, ui, $t } = useBlokkli()
+const { storage, state, ui, $t, keyboard } = useBlokkli()
 
 const tourElement = ref<HTMLElement | null>(null)
 
@@ -163,6 +163,10 @@ watch(isDisabled, (v) => {
 })
 
 const onWheel = (e: WheelEvent) => {
+  e.stopPropagation()
+  if (e.ctrlKey || e.metaKey || keyboard.isPressingControl.value) {
+    e.preventDefault()
+  }
   if (isOverflowing.value) {
     e.stopPropagation()
   }

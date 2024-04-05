@@ -201,7 +201,7 @@ export class EntityStorageManager {
 
     const stressUuids: string[] = []
     let counter = 0
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 500; i++) {
       const cardUuids: string[] = []
       for (let j = 0; j < 3; j++) {
         const cardUuid = 'stress-test-card-' + counter

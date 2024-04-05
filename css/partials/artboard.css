@@ -98,3 +98,16 @@
     }
   }
 }
+
+.bk-artboard-debug-canvas {
+  @apply fixed top-0 left-0 w-screen h-screen z-[9999999] pointer-events-none;
+}
+
+.bk-artboard-debug {
+  @apply fixed top-0 left-0 w-screen  z-[9999999] pointer-events-none;
+  @apply pt-80 p-10 bg-white/75;
+
+  > div {
+    @apply flex justify-between;
+  }
+}

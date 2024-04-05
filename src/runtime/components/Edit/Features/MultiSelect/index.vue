@@ -56,10 +56,19 @@ function shouldStartMultiSelect(target: Element): boolean {
     return false
   }
 
+  const isInBlock = !!target.closest('[data-uuid]')
+  if (isInBlock) {
+    return false
+  }
+
   return true
 }
 
-function onWindowMouseUp() {
+function onWindowMouseUp(e: MouseEvent) {
+  if (shouldRender.value) {
+    e.preventDefault()
+    e.stopImmediatePropagation()
+  }
   shouldRender.value = false
   window.removeEventListener('mousemove', onWindowMouseMove)
   window.removeEventListener('mouseup', onWindowMouseUp)
@@ -92,7 +101,7 @@ function onWindowMouseDown(e: MouseEvent) {
       downX.value = e.clientX
       downY.value = e.clientY
       window.addEventListener('mousemove', onWindowMouseMove)
-      window.addEventListener('mouseup', onWindowMouseUp)
+      window.addEventListener('mouseup', onWindowMouseUp, { capture: true })
     }
   }
 }
@@ -100,13 +109,13 @@ function onWindowMouseDown(e: MouseEvent) {
 const cleanup = () => {
   window.removeEventListener('mousemove', onWindowMouseMove)
   window.removeEventListener('mousedown', onWindowMouseDown)
-  window.removeEventListener('mouseup', onWindowMouseUp)
+  window.removeEventListener('mouseup', onWindowMouseUp, { capture: true })
 }
 
 const init = () => {
   cleanup()
   window.addEventListener('mousedown', onWindowMouseDown)
-  window.addEventListener('mouseup', onWindowMouseUp)
+  window.addEventListener('mouseup', onWindowMouseUp, { capture: true })
 }
 
 onMounted(() => {

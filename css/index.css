@@ -104,6 +104,17 @@ html {
   }
 }
 
+.bk-main-canvas {
+  @apply select-none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  * {
+    @apply select-none;
+    -webkit-touch-callout: none;
+    -webkit-user-drag: none;
+  }
+}
+
 .bk-draggable-list-container {
   @apply pointer-events-auto select-none;
   .bk-list-item {
@@ -388,5 +399,18 @@ html.bk-hide-non-editable {
   @apply !rounded-none;
   &:after {
     @apply !hidden;
+  }
+}
+
+[data-blokkli-provider-active='true'] {
+  @apply pointer-events-auto;
+}
+
+.bk-body {
+  touch-action: none;
+  @apply select-none;
+
+  svg {
+    @apply select-none;
   }
 }
