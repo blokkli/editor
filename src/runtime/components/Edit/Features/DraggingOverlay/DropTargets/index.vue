@@ -57,6 +57,15 @@ type FieldRect = Rectangle & {
   childrenElements: HTMLElement[]
 }
 
+type DrawnRect = Rectangle & {
+  id: string
+  type: 'field' | 'drop-area'
+  label: string
+  color: string
+  colorAlpha: string
+  field?: FieldRect
+}
+
 const props = defineProps<{
   items: DraggableItem[]
   box: Rectangle
@@ -65,13 +74,7 @@ const props = defineProps<{
   isTouch: boolean
 }>()
 
-type DrawnRect = Rectangle & {
-  id: string
-  type: 'field' | 'drop-area'
-  label: string
-  color: string
-  colorAlpha: string
-}
+let dragStart = Date.now()
 
 let drawnRects: DrawnRect[] = []
 const active = ref<DrawnRect | null>(null)
@@ -127,6 +130,7 @@ const ratio = computed(() => {
   }
   return Math.min(window.devicePixelRatio, 2)
 })
+
 const canvasAttributes = computed(() => {
   return {
     width: ui.viewport.value.width * ratio.value,
@@ -161,7 +165,10 @@ const onClick = (e: MouseEvent) => {
 }
 
 const emitDrop = async () => {
-  if (active.value) {
+  const timeDelta = Date.now() - dragStart
+  // Prevent accidental drops. At least 400ms should have passed between the
+  // time the drag was initiated and when the drop was made.
+  if (active.value && timeDelta > 400) {
     if (active.value.type === 'field') {
       const [hostUuid, fieldName, preceedingUuid] = active.value.id.split(':')
 
@@ -550,8 +557,7 @@ const colorTeal = rgbaToString(theme.teal.value.normal)
 const colorTealAlpha = rgbaToString(theme.teal.value.normal, 0.7)
 const colorAccent = rgbaToString(theme.accent.value[800])
 const colorAccentAlpha = rgbaToString(theme.accent.value[800], 0.7)
-
-let first = true
+const colorAccentAlphaLight = rgbaToString(theme.accent.value[800], 0.1)
 
 onBlokkliEvent('animationFrame', () => {
   if (!canvas.value) {
@@ -664,6 +670,7 @@ onBlokkliEvent('animationFrame', () => {
         y,
         width,
         height,
+        field,
       }
       drawnRects.push(drawnRect)
 
@@ -688,6 +695,21 @@ onBlokkliEvent('animationFrame', () => {
     )
 
     active.value = closest
+  }
+
+  if (active.value && active.value.field) {
+    const field = active.value.field
+    const x = (field.x + offset.x / scale - 10) * scale
+    const y = (field.y + offset.y / scale - 10) * scale
+    const width = (field.width + 20) * scale
+    const height = (field.height + 20) * scale
+    ctx.strokeStyle = colorAccentAlpha
+    ctx.lineWidth = 2
+    ctx.fillStyle = colorAccentAlphaLight
+    ctx.beginPath()
+    ctx.roundRect(x, y, width, height, 3)
+    ctx.stroke()
+    ctx.fill()
   }
 })
 

@@ -76,12 +76,48 @@
   }
 
   .bk-artboard-scrollbar {
-    @apply fixed w-10 bg-mono-500/10 z-artboard-scrollbar rounded-full transition overflow-hidden;
-    top: calc(var(--bk-root-offset-top) + 5px);
-    bottom: calc(var(--bk-root-offset-bottom) + 5px);
-
+    @apply fixed bg-mono-500/10 z-artboard-scrollbar rounded-full transition overflow-hidden;
     button {
-      @apply bg-mono-500/50  w-full block rounded-full;
+      @apply bg-mono-500/50 block rounded-full;
+    }
+    --bk-artboard-scrollbar-padding: 1px;
+    --bk-artboard-scrollbar-size: 4px;
+    @screen md {
+      --bk-artboard-scrollbar-padding: 5px;
+      --bk-artboard-scrollbar-size: 10px;
+    }
+
+    &.bk-orientation-height {
+      width: var(--bk-artboard-scrollbar-size);
+      top: calc(
+        var(--bk-root-offset-top) + var(--bk-artboard-scrollbar-padding)
+      );
+      bottom: calc(
+        var(--bk-root-offset-bottom) + var(--bk-artboard-scrollbar-padding)
+      );
+      right: calc(
+        var(--bk-root-offset-right) + var(--bk-artboard-scrollbar-padding)
+      );
+
+      button {
+        @apply w-full;
+      }
+    }
+
+    &.bk-orientation-width {
+      height: var(--bk-artboard-scrollbar-size);
+      left: calc(
+        var(--bk-root-offset-left) + var(--bk-artboard-scrollbar-padding)
+      );
+      right: calc(
+        var(--bk-root-offset-right) + var(--bk-artboard-scrollbar-padding)
+      );
+      bottom: calc(
+        var(--bk-root-offset-bottom) + var(--bk-artboard-scrollbar-padding)
+      );
+      button {
+        @apply h-full;
+      }
     }
 
     &.bk-is-active,

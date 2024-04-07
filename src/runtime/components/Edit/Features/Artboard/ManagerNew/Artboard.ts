@@ -418,6 +418,11 @@ export class Artboard {
   }
 
   onMouseMove(e: MouseEvent) {
+    if (!this.isPressingSpace) {
+      this.onDragEnd()
+      document.removeEventListener('mousemove', this.listeners.onMouseMove)
+      return
+    }
     this.onDragMove([e])
   }
 
@@ -852,12 +857,20 @@ export class Artboard {
   }
 
   scrollPageUp() {
+    this.animateOrJumpBy(this.rootSize.height)
+  }
+
+  scrollPageDown() {
+    this.animateOrJumpBy(this.rootSize.height)
+  }
+
+  scrollPageLeft() {
     this.animateOrJumpTo(
       Math.min(this.offset.y + this.rootSize.height, this.padding),
     )
   }
 
-  scrollPageDown() {
+  scrollPageRight() {
     this.animateOrJumpTo(
       Math.max(this.offset.y - this.rootSize.height, this.getEndY()),
     )

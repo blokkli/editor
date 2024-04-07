@@ -342,15 +342,25 @@ export default function (
   }
 
   function onWindowMouseUp(e: MouseEvent) {
+    if (e.button !== 0) {
+      return
+    }
     if (e.ctrlKey || isDragging.value) {
       return
     }
     // @TODO: Refactor.
     if (e.target && e.target instanceof Element) {
+      console.log(e.target)
       if (e.target.closest('.bk-blokkli-item-actions')) {
         return
       }
       if (e.target.closest('.bk-control')) {
+        return
+      }
+      if (e.target.closest('.bk-sidebar')) {
+        return
+      }
+      if (e.target.closest('.bk-sidebar-detached')) {
         return
       }
       if (e.target.closest("[data-blokkli-provider-active='true']")) {

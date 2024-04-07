@@ -190,11 +190,13 @@ export default function (storage: StorageProvider): UiProvider {
 
   const visibleViewportX = computed<number>(() => {
     let x = 0
-    if (addListOrientation.value === 'vertical') {
-      x += 70
-    }
-    if (activeSidebarLeft.value) {
-      x += 400
+    if (!isMobile.value) {
+      if (addListOrientation.value === 'vertical') {
+        x += 70
+      }
+      if (activeSidebarLeft.value) {
+        x += 400
+      }
     }
     return x
   })
@@ -202,6 +204,9 @@ export default function (storage: StorageProvider): UiProvider {
     return toolbarHeight.value
   })
   const visibleViewportWidth = computed<number>(() => {
+    if (isMobile.value) {
+      return viewportWidth.value
+    }
     let width = viewportWidth.value - visibleViewportX.value - 50
     if (activeSidebarRight.value) {
       // Chosen by fair dice roll.

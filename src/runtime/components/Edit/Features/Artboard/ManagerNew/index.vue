@@ -21,7 +21,31 @@
     </div>
   </PluginToolbarButton>
 
-  <Teleport to="body" v-if="showDebug">
+  <Scrollbar
+    :padding="props.padding"
+    :offset="ui.artboardOffset.value.y"
+    :root-size="ui.viewport.value.height"
+    :artboard-size="ui.artboardSize.value.height"
+    :scale="ui.artboardScale.value"
+    orientation="height"
+    @page-down="onPageDown"
+    @page-up="onPageUp"
+    @set-offset="setOffset('y', $event)"
+  />
+
+  <Scrollbar
+    :padding="props.padding"
+    :offset="ui.artboardOffset.value.x"
+    :root-size="ui.viewport.value.width"
+    :artboard-size="ui.artboardSize.value.width"
+    :scale="ui.artboardScale.value"
+    orientation="width"
+    @page-down="onPageDown"
+    @page-up="onPageUp"
+    @set-offset="setOffset('x', $event)"
+  />
+
+  <Teleport v-if="showDebug" to="body">
     <div class="bk-artboard-debug">
       <div v-for="v in debugValues" :key="v.key">
         <div>{{ v.key }}</div>
@@ -41,16 +65,14 @@ import {
   onBeforeUnmount,
   onUnmounted,
 } from '#imports'
-import type { Coord, Size } from '#blokkli/types'
+import type { Coord } from '#blokkli/types'
 import { PluginToolbarButton } from '#blokkli/plugins'
-import { lerp, calculateCenterPosition } from '#blokkli/helpers'
-import { easeOutQuad } from '#blokkli/helpers/easing'
+import Scrollbar from './Scrollbar/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
 import { Artboard, type ArtboardOptions } from './Artboard'
 
-const { keyboard, dom, context, storage, ui, animation, $t, selection } =
-  useBlokkli()
+const { context, storage, ui, animation, $t } = useBlokkli()
 
 const zoomLevel = computed(() => Math.round(ui.artboardScale.value * 100) + '%')
 
@@ -107,6 +129,11 @@ function getArtboard(): Artboard {
 }
 
 const artboard = getArtboard()
+
+function setOffset(key: 'x' | 'y', value: number) {
+  artboard.stopAnimate()
+  artboard.offset[key] = value
+}
 
 type DebugValue = {
   key: string
@@ -176,6 +203,16 @@ const resetZoom = () => {
 
 onUnmounted(() => {})
 
+function onPageUp() {
+  artboard.scrollPageUp()
+  animation.requestDraw()
+}
+
+function onPageDown() {
+  artboard.scrollPageDown()
+  animation.requestDraw()
+}
+
 onBlokkliEvent('keyPressed', (e) => {
   if (e.code === 'Home') {
     artboard.scrollToTop()
@@ -184,11 +221,9 @@ onBlokkliEvent('keyPressed', (e) => {
     artboard.scrollToEnd()
     animation.requestDraw()
   } else if (e.code === 'PageUp') {
-    artboard.scrollPageUp()
-    animation.requestDraw()
+    onPageUp()
   } else if (e.code === 'PageDown') {
-    artboard.scrollPageDown()
-    animation.requestDraw()
+    onPageDown()
   } else if (e.code === 'ArrowUp') {
     artboard.animateOrJumpBy(200)
     animation.requestDraw()
@@ -203,6 +238,42 @@ onBlokkliEvent('keyPressed', (e) => {
     animation.requestDraw()
   }
 })
+
+defineShortcut(
+  [
+    {
+      code: 'Home',
+      label: $t('artboardScrollToTop', 'Scroll to top'),
+    },
+    {
+      code: 'End',
+      label: $t('artboardScrollToEnd', 'Scroll to end'),
+    },
+    {
+      code: 'PageUp',
+      label: $t('artboardScrollOnePageUp', 'Scroll one page up'),
+    },
+    {
+      code: 'PageDown',
+      label: $t('artboardScrollOnePageDown', 'Scroll one page down'),
+    },
+    {
+      code: 'ArrowUp',
+      label: $t('artboardScrollUp', 'Scroll up'),
+    },
+    {
+      code: 'ArrowDown',
+      label: $t('artboardScrollDown', 'Scroll down'),
+    },
+    {
+      code: '1',
+      label: $t('artboardScaleToFit', 'Scale to fit'),
+      meta: true,
+    },
+  ].map((v) => {
+    return { ...v, group: $t('artboard', 'Artboard') }
+  }),
+)
 </script>
 
 <script lang="ts">
