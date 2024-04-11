@@ -43,6 +43,8 @@ const attrs = computed(() => {
   if (isEditing && props.name) {
     return {
       'data-blokkli-editable-field': props.name,
+      'data-blokkli-editable-component': 'true',
+      'data-blokkli-editable-value': props.value,
     }
   }
 })
