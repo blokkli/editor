@@ -51,7 +51,7 @@
       }
     }
     button {
-      @apply px-10 flex items-center font-semibold font-sans leading-none gap-5 h-full;
+      @apply px-10 flex items-center font-semibold font-sans leading-none gap-5 h-full text-teal-dark;
       @apply hover:bg-teal-dark/10;
       svg {
         @apply w-15 h-15 fill-current;

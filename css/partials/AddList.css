@@ -384,7 +384,7 @@
     }
   }
 
-  .bk-list-sidebar {
+  &.bk-list-sidebar {
     container-type: inline-size;
     #blokkli-add-list-blocks,
     #blokkli-add-list-actions {
@@ -396,6 +396,9 @@
         }
         .bk-list-item-inner {
           @apply flex-col;
+        }
+        .bk-list-item-label {
+          @apply text-center;
         }
       }
       @container (min-width: 500px) {
