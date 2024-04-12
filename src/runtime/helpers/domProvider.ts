@@ -88,6 +88,7 @@ const buildFieldElement = (
   const hostEntityType = element.dataset.hostEntityType
   const hostEntityBundle = element.dataset.hostEntityBundle
   const hostEntityUuid = element.dataset.hostEntityUuid
+  const dropAlignment = element.dataset.fieldDropAlignment
   const cardinality = parseInt(element.dataset.fieldCardinality || '-1')
   const allowedBundles = (element.dataset.fieldAllowedBundles || '')
     .split(',')
@@ -117,6 +118,10 @@ const buildFieldElement = (
       allowedFragments,
       element,
       blockCount: isNaN(blockCount) ? 0 : blockCount,
+      dropAlignment:
+        dropAlignment === 'vertical' || dropAlignment === 'horizontal'
+          ? dropAlignment
+          : undefined,
     }
   }
 }
