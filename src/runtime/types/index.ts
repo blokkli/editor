@@ -859,6 +859,7 @@ export type BlokkliFieldElement = {
   cardinality: number
   element: HTMLElement
   blockCount: number
+  dropAlignment?: 'vertical' | 'horizontal'
 }
 
 export type ActionPlacedEvent = {

@@ -7,6 +7,7 @@
     :entity="entity"
     :field-key="fieldKey!"
     :allowed-fragments="allowedFragments"
+    :drop-alignment="dropAlignment"
     :class="[
       attrs.class,
       listClass,
@@ -112,6 +113,7 @@ const props = withDefaults(
     listClass?: string
     nonEmptyClass?: string
     allowedFragments?: BlokkliFragmentName[]
+    dropAlignment?: 'vertical' | 'horizontal'
   }>(),
   {
     list: () => [],
@@ -120,6 +122,7 @@ const props = withDefaults(
     listClass: '',
     nonEmptyClass: '',
     allowedFragments: () => [],
+    dropAlignment: undefined,
   },
 )
 

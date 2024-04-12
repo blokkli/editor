@@ -224,7 +224,8 @@ const getChildren = (field: BlokkliFieldElement): FieldRectChild[] => {
   const children: FieldRectChild[] = []
   const fieldHeight = field.element.offsetHeight
 
-  const orientation = getChildrenOrientation(field.element)
+  const orientation =
+    field.dropAlignment || getChildrenOrientation(field.element)
   const childElements = [...field.element.children] as HTMLElement[]
 
   // Check cardinality of field.
