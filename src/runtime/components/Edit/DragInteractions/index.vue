@@ -3,6 +3,7 @@
 </template>
 
 <script setup lang="ts">
+import { originatesFromEditable } from '#blokkli/helpers'
 import type { Coord } from '#blokkli/types'
 import { onBeforeUnmount, onMounted, useBlokkli } from '#imports'
 
@@ -27,13 +28,13 @@ const findBlock = (targets: EventTarget[]) => {
 }
 
 function onClick(e: MouseEvent) {
+  // Generally prevent anything from happening on click. This should catch any links, including <NuxtLink>.
   e.preventDefault()
+  e.stopImmediatePropagation()
 }
 
 function handleBlockClick(uuid: string) {
   if (keyboard.isPressingControl.value || selection.isMultiSelecting.value) {
-    eventBus.emit('select:toggle', uuid)
-  } else if (selection.uuids.value.includes(uuid)) {
     eventBus.emit('select:toggle', uuid)
   } else {
     eventBus.emit('select', uuid)
@@ -102,14 +103,60 @@ function onTouchEnd() {
 
 let mouseStartCoordinates: Coord | null = null
 
+type LastMouseAction = {
+  uuid: string
+  fieldName?: string
+  time: number
+}
+
+let lastMouseAction: LastMouseAction | null = null
+
 function onMouseDown(e: MouseEvent) {
   const uuid = findBlock(e.composedPath())
   if (!uuid) {
+    eventBus.emit('select:end', [])
     return
+  }
+  e.preventDefault()
+  e.stopImmediatePropagation()
+  e.stopPropagation()
+
+  const editable = originatesFromEditable(e)
+  const fieldName = editable?.dataset.blokkliEditableField
+
+  if (lastMouseAction && lastMouseAction.uuid === uuid) {
+    const delta = Date.now() - lastMouseAction.time
+    if (delta < 400) {
+      rootEl.removeEventListener('mousemove', onMouseMove)
+      if (
+        fieldName &&
+        lastMouseAction.fieldName &&
+        fieldName === lastMouseAction.fieldName
+      ) {
+        eventBus.emit('editable:focus', {
+          fieldName,
+          uuid: lastMouseAction.uuid,
+        })
+      } else {
+        const bundle = dom.findBlock(lastMouseAction.uuid)?.itemBundle
+        if (bundle) {
+          eventBus.emit('item:edit', {
+            uuid: lastMouseAction.uuid,
+            bundle,
+          })
+        }
+      }
+      return
+    }
   }
 
   rootEl.addEventListener('mousemove', onMouseMove)
   mouseStartCoordinates = { x: e.clientX, y: e.clientY }
+  lastMouseAction = {
+    uuid,
+    fieldName,
+    time: Date.now(),
+  }
 }
 
 function onMouseMove(e: MouseEvent) {
@@ -141,7 +188,7 @@ function onMouseMove(e: MouseEvent) {
 onMounted(() => {
   rootEl.addEventListener('touchend', onTouchEnd)
   rootEl.addEventListener('touchstart', onTouchStart)
-  rootEl.addEventListener('mousedown', onMouseDown)
+  rootEl.addEventListener('mousedown', onMouseDown, { capture: true })
   rootEl.addEventListener('mouseup', onMouseUp)
   rootEl.addEventListener('click', onClick, {
     capture: true,
@@ -153,7 +200,7 @@ onBeforeUnmount(() => {
   rootEl.removeEventListener('touchmove', onTouchMove)
   rootEl.removeEventListener('touchstart', onTouchStart)
   rootEl.removeEventListener('mouseup', onMouseUp)
-  rootEl.removeEventListener('mousedown', onMouseDown)
+  rootEl.removeEventListener('mousedown', onMouseDown, { capture: true })
   rootEl.removeEventListener('mousemove', onMouseMove)
   rootEl.removeEventListener('click', onClick, {
     capture: true,

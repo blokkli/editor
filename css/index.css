@@ -104,14 +104,16 @@ html {
   }
 }
 
-.bk-main-canvas {
-  @apply select-none;
-  -webkit-touch-callout: none;
-  -webkit-user-drag: none;
-  * {
+.bk-body {
+  .bk-main-canvas {
     @apply select-none;
     -webkit-touch-callout: none;
     -webkit-user-drag: none;
+    * {
+      @apply select-none;
+      -webkit-touch-callout: none;
+      -webkit-user-drag: none;
+    }
   }
 }
 

@@ -23,6 +23,7 @@
 
 <script lang="ts" setup generic="T">
 import {
+  watch,
   ref,
   computed,
   provide,
@@ -131,6 +132,16 @@ function onTouchStart(e: TouchEvent) {
   }
 }
 
+const setRootClasses = (unmount?: boolean) => {
+  document.documentElement.classList.remove('bk-use-animations')
+
+  if (ui.useAnimations.value && !unmount) {
+    document.documentElement.classList.add('bk-use-animations')
+  }
+}
+
+watch(ui.useAnimations, setRootClasses)
+
 onMounted(() => {
   window.addEventListener('contextmenu', onContextMenu)
   if (props.isolate) {
@@ -142,6 +153,7 @@ onMounted(() => {
 
   document.documentElement.addEventListener('touchmove', onTouchMove)
   document.documentElement.addEventListener('touchstart', onTouchStart)
+  setRootClasses()
 })
 
 onBeforeUnmount(() => {
@@ -151,6 +163,7 @@ onBeforeUnmount(() => {
   document.documentElement.classList.remove('bk-isolate-provider')
   document.documentElement.removeEventListener('touchmove', onTouchMove)
   document.documentElement.removeEventListener('touchstart', onTouchStart)
+  setRootClasses(true)
 })
 
 provide(INJECT_IS_EDITING, true)

@@ -46,8 +46,8 @@ type GetType<T> = T extends { options: infer O }
     ? Array<keyof O>
     : keyof O
   : T extends { type: 'checkbox' }
-  ? boolean
-  : string
+    ? boolean
+    : string
 
 export type BlockDefinitionOptionsInput = {
   [key: string]: BlockOptionDefinition
@@ -815,7 +815,7 @@ export type PluginUnmountEvent = {
 
 export type EditableFieldFocusEvent = {
   fieldName: string
-  element: HTMLElement
+  uuid: string
 }
 
 export type EditableFieldUpdateEvent = {
@@ -1166,6 +1166,13 @@ export type DroppableFieldConfig = {
   allowedBundles: string[]
   cardinality: number
   required: boolean
+}
+
+export type DropTargetEvent = {
+  items: DraggableItem[]
+  field: BlokkliFieldElement
+  host: DraggableHostData
+  preceedingUuid?: string
 }
 
 export default {}

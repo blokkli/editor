@@ -13,7 +13,7 @@
   </Teleport>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import {
   falsy,
   findClosestRectangle,
@@ -23,22 +23,14 @@ import {
 } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type {
+  DropTargetEvent,
   BlokkliFieldElement,
-  DraggableHostData,
   DraggableItem,
   DropArea,
   Rectangle,
 } from '#blokkli/types'
 import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
-export type DropTargetEvent = {
-  items: DraggableItem[]
-  field: BlokkliFieldElement
-  host: DraggableHostData
-  preceedingUuid?: string
-}
-</script>
 
-<script lang="ts" setup>
 type Orientation = 'horizontal' | 'vertical'
 
 type FieldRectChild = Rectangle & {
@@ -465,7 +457,7 @@ const buildEmptyChild = (
         y: 0,
         width: fieldWidth,
         height: fieldHeight,
-        label: insertText,
+        label: insertText.replace('@field', field.label),
       }
     } else {
       return {
@@ -474,7 +466,7 @@ const buildEmptyChild = (
         y: 0,
         width: fieldWidth,
         height: fieldHeight > 30 ? 0 : 30,
-        label: insertText,
+        label: insertText.replace('@field', field.label),
       }
     }
   }
@@ -496,7 +488,8 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
   const childElements = [...field.element.children] as HTMLElement[]
 
   const canAddChildren = determineCanAddChildren(field, childElements)
-  const orientation = getChildrenOrientation(field.element)
+  const orientation =
+    field.dropAlignment || getChildrenOrientation(field.element)
 
   const rect = field.element.getBoundingClientRect()
   const x = rect.x / scale - artboardRect.x / scale

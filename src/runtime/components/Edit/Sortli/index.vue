@@ -23,7 +23,6 @@ import type { Coord } from '#blokkli/types'
 import {
   buildDraggableItem,
   getOriginatingDroppableElement,
-  originatesFromEditable,
 } from '#blokkli/helpers'
 import { getDefinition } from '#blokkli/definitions'
 
@@ -33,7 +32,7 @@ const props = defineProps<{
   isNested?: boolean
 }>()
 
-const { selection, eventBus, dom, keyboard, state } = useBlokkli()
+const { selection, eventBus, keyboard, state } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'select', id: string): void
@@ -330,28 +329,6 @@ const onMouseDown = (e: MouseEvent) => {
   e.stopPropagation()
   e.preventDefault()
 
-  const fromEditable = originatesFromEditable(e)
-
-  if (selection.editableActive.value && !fromEditable) {
-    eventBus.emit('editable:save')
-    return
-  }
-
-  if (fromEditable) {
-    if (
-      selection.editableActive.value &&
-      e.target instanceof HTMLElement &&
-      emitEditableFocus(e.target)
-    ) {
-      e.stopPropagation()
-      return
-    }
-  }
-
-  if (state.editMode.value !== 'editing') {
-    return
-  }
-
   start.value.x = e.clientX
   start.value.y = e.clientY
   mouseIsDown.value = true
@@ -381,41 +358,13 @@ const onMouseUp = () => {
   mouseIsDown.value = false
 }
 
-const emitEditableFocus = (eventTarget: HTMLElement): boolean => {
-  const el = eventTarget.closest('[data-blokkli-editable-field]')
-  if (el instanceof HTMLElement) {
-    const fieldName = el.dataset.blokkliEditableField
-    if (fieldName) {
-      const block = dom.findClosestBlock(el)
-      if (block) {
-        eventBus.emit('editable:focus', {
-          fieldName,
-          element: el,
-        })
-        return true
-      }
-    }
-  }
-
-  return false
-}
-
 const onDoubleClick = (e: MouseEvent | TouchEvent) => {
   if (selection.isMultiSelecting.value) {
     e.stopPropagation()
     e.preventDefault()
     return
   }
-  if (
-    originatesFromEditable(e) &&
-    e.target instanceof HTMLElement &&
-    !keyboard.isPressingControl.value
-  ) {
-    if (emitEditableFocus(e.target)) {
-      e.stopPropagation()
-      return
-    }
-  }
+
   if (state.editMode.value === 'editing' && getOriginatingDroppableElement(e)) {
     return
   }

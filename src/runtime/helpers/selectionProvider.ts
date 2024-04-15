@@ -317,31 +317,7 @@ export default function (
     selectItems([uuid])
   }
 
-  const onDoubleClick = (e: MouseEvent) => {
-    const element = originatesFromEditable(e)
-    if (element) {
-      const fieldName = element.dataset.blokkliEditableField
-      if (fieldName) {
-        eventBus.emit('editable:focus', {
-          fieldName,
-          element,
-        })
-      }
-
-      return
-    }
-
-    const droppableElement = getOriginatingDroppableElement(e)
-
-    if (!droppableElement) {
-      return
-    }
-
-    const droppable = mapDroppableField(droppableElement)
-    eventBus.emit('droppable:focus', droppable)
-  }
-
-  function onWindowMouseUp(e: MouseEvent) {
+  function onWindowMouseDown(e: MouseEvent) {
     if (e.button !== 0) {
       return
     }
@@ -350,7 +326,6 @@ export default function (
     }
     // @TODO: Refactor.
     if (e.target && e.target instanceof Element) {
-      console.log(e.target)
       if (e.target.closest('.bk-blokkli-item-actions')) {
         return
       }
@@ -468,13 +443,11 @@ export default function (
   })
 
   onMounted(() => {
-    document.documentElement.addEventListener('mouseup', onWindowMouseUp)
-    document.documentElement.addEventListener('dblclick', onDoubleClick)
+    document.documentElement.addEventListener('mousedown', onWindowMouseDown)
   })
 
   onBeforeUnmount(() => {
-    document.documentElement.removeEventListener('mouseup', onWindowMouseUp)
-    document.documentElement.removeEventListener('dblclick', onDoubleClick)
+    document.documentElement.removeEventListener('mousedown', onWindowMouseDown)
   })
 
   return {

@@ -32,7 +32,6 @@ const isVisible = computed(
     selection.blocks.value.length &&
     !selection.isChangingOptions.value &&
     !selection.isDragging.value &&
-    !selection.editableActive.value &&
     !!state.refreshKey.value &&
     !ui.isAnimating.value,
 )

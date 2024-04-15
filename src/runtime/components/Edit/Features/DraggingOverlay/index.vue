@@ -23,7 +23,7 @@
 
 <script lang="ts" setup>
 import DragItems from './DragItems/index.vue'
-import DropTargets, { type DropTargetEvent } from './DropTargets/index.vue'
+import DropTargets from './DropTargets/index.vue'
 import {
   ref,
   useBlokkli,
@@ -33,6 +33,7 @@ import {
 } from '#imports'
 
 import type {
+  DropTargetEvent,
   AnimationFrameEvent,
   BlokkliDefinitionAddBehaviour,
   BlokkliFieldElement,

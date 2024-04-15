@@ -32,6 +32,10 @@
             <div>Is dragging</div>
             <div>{{ selection.isDragging.value }}</div>
           </div>
+          <div>
+            <div>Is multiselecting</div>
+            <div>{{ selection.isMultiSelecting.value }}</div>
+          </div>
         </div>
       </section>
 

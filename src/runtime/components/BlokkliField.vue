@@ -52,7 +52,6 @@ import {
   inject,
   provide,
   ref,
-  type Ref,
   type ComputedRef,
 } from '#imports'
 import { type BlokkliFragmentName } from '#blokkli/definitions'
@@ -82,6 +81,10 @@ import {
 
 const DraggableList = defineAsyncComponent(() => {
   return import('./Edit/DraggableList.vue')
+})
+
+const BlokkliItem = defineAsyncComponent(() => {
+  return import('./BlokkliItem.vue')
 })
 
 const attrs = useAttrs()

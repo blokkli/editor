@@ -134,7 +134,7 @@
 }
 
 .bk-dragging-overlay-fallback {
-  @apply relative h-full w-full text-xl lg:text-4xl pt-30 lg:pt-0 lg:flex lg:items-center lg:justify-center;
+  @apply relative h-full w-full text-xl pt-30 lg:pt-0 lg:flex lg:items-center lg:justify-center;
 
   &.bk-is-top {
     @apply shadow-xl-even z-50;
