@@ -35,6 +35,10 @@ const url = computed(() => {
       fieldName: props.fieldName,
     })
   }
+
+  return adapter.buildEditableFrameUrl!({
+    fieldName: props.fieldName,
+  })
 })
 
 const original = ref('')

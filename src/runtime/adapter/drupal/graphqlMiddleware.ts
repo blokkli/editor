@@ -436,9 +436,20 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     const buildEditableFrameUrl: DrupalAdapter['buildEditableFrameUrl'] = (
       e,
     ) => {
-      return buildFormUrl(
-        `/paragraphs_blokkli/${ctx.value.entityType}/${ctx.value.entityUuid}/edit/${e.uuid}/rich_text/${e.fieldName}`,
-      ).url
+      const url =
+        '/' +
+        [
+          'paragraphs_blokkli',
+          ctx.value.entityType,
+          ctx.value.entityUuid,
+          'edit',
+          'rich_text',
+          e.fieldName,
+          e.uuid,
+        ]
+          .filter(falsy)
+          .join('/')
+      return buildFormUrl(url).url
     }
 
     const fragmentsAddBlock: DrupalAdapter['fragmentsAddBlock'] = (e) =>
