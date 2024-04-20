@@ -275,7 +275,7 @@ export default function (
   const isDragging = computed(() => !!draggingMode.value)
 
   const rects = computed(() => {
-    const scale = ui.artboardScale.value
+    const scale = ui.getArtboardScale()
     const artboardRect = ui.artboardElement().getBoundingClientRect()
     return blocks.value.map((v) => {
       const el = v.dragElement()

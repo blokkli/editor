@@ -8,8 +8,8 @@
           !selection.editableActive.value &&
           !ui.isAnimating.value
         "
+        ref="el"
         class="bk-blokkli-item-actions-inner"
-        :style="innerStyle"
       >
         <div
           id="bk-blokkli-item-actions-controls"
@@ -62,7 +62,14 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, computed, useBlokkli } from '#imports'
+import {
+  watch,
+  ref,
+  computed,
+  useBlokkli,
+  onMounted,
+  onBeforeUnmount,
+} from '#imports'
 import { onlyUnique, findIdealRectPosition, falsy } from '#blokkli/helpers'
 import type { Rectangle, PluginMountEvent } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
@@ -75,11 +82,11 @@ const editingEnabled = computed(() => state.editMode.value === 'editing')
 
 const ACTIONS_HEIGHT = 50
 
+const el = ref<HTMLDivElement | null>(null)
+
 const controlsEl = ref<HTMLElement | null>(null)
 const mountedPlugins = ref<PluginMountEvent[]>([])
 const showDropdown = ref(false)
-const x = ref(0)
-const y = ref(0)
 
 watch(selection.blocks, () => {
   showDropdown.value = false
@@ -122,35 +129,46 @@ const itemBundle = computed(() => {
     : undefined
 })
 
-const innerStyle = computed(() => {
-  if (ui.isMobile.value) {
-    return {}
-  }
-  return {
-    transform: `translate(${Math.round(x.value)}px, ${Math.round(y.value)}px)`,
-  }
-})
-
-const limitPlacedRect = (rect: Rectangle): Rectangle => {
+const limitPlacedRect = (rect: Rectangle, padding: Rectangle): Rectangle => {
   return {
     width: rect.width,
     height: rect.height,
     x: Math.min(
-      Math.max(rect.x, ui.visibleViewportPadded.value.x),
-      ui.visibleViewportPadded.value.x +
-        ui.visibleViewportPadded.value.width -
-        rect.width,
+      Math.max(rect.x, padding.x),
+      padding.x + padding.width - rect.width,
     ),
     y: Math.min(
-      Math.max(ui.visibleViewportPadded.value.y, rect.y),
-      ui.visibleViewportPadded.value.height +
-        ui.visibleViewportPadded.value.y -
-        rect.height,
+      Math.max(padding.y, rect.y),
+      padding.height + padding.y - rect.height,
     ),
   }
 }
 
-onBlokkliEvent('animationFrame', () => {
+let scrollWidth = 0
+
+const observer = new ResizeObserver((entries) => {
+  const size = entries[0]?.contentBoxSize?.[0]
+  if (!size) {
+    return
+  }
+
+  scrollWidth = size.inlineSize
+})
+
+onMounted(() => {
+  if (controlsEl.value) {
+    observer.observe(controlsEl.value)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (controlsEl.value) {
+    observer.unobserve(controlsEl.value)
+    observer.disconnect()
+  }
+})
+
+onBlokkliEvent('canvas:draw', () => {
   if (!selection.blocks.value.length || ui.isMobile.value) {
     return
   }
@@ -173,22 +191,28 @@ onBlokkliEvent('animationFrame', () => {
     }
   }
 
-  const controlsWidth = controlsEl.value ? controlsEl.value.scrollWidth : 500
-  const rect = limitPlacedRect({
-    x: minX,
-    y: minY - ACTIONS_HEIGHT - 15,
-    width: controlsWidth,
-    height: ACTIONS_HEIGHT,
-  })
+  const padding = ui.visibleViewportPadded.value
+  const rect = limitPlacedRect(
+    {
+      x: minX,
+      y: minY - ACTIONS_HEIGHT - 15,
+      width: scrollWidth,
+      height: ACTIONS_HEIGHT,
+    },
+    padding,
+  )
 
   const ideal = findIdealRectPosition(
     ui.viewportBlockingRects.value,
     rect,
-    ui.visibleViewportPadded.value,
+    padding,
   )
 
-  x.value = ideal.x
-  y.value = ideal.y
+  if (el.value) {
+    el.value.style.transform = ui.isMobile.value
+      ? ''
+      : `translate3d(${Math.round(ideal.x)}px, ${Math.round(ideal.y)}px, 0)`
+  }
 })
 
 const shouldRenderButton = computed(() =>

@@ -3,6 +3,7 @@
     v-if="shouldRender"
     :start-x="downX"
     :start-y="downY"
+    :is-pressing-control="keyboard.isPressingControl.value"
     @select="onSelect"
   />
 </template>

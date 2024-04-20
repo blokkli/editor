@@ -15,7 +15,7 @@
   }
 
   > div.bk-is-top {
-    @apply shadow-xl-even z-50 rounded-md overflow-hidden;
+    @apply shadow-xl-even z-50 rounded-md overflow-hidden will-change-transform;
 
     &:before {
       content: '';
@@ -89,5 +89,5 @@
   @apply absolute bottom-full left-1/2 -translate-x-1/2 mb-40 rounded-full text-white;
   @apply px-10 py-5 font-bold whitespace-nowrap;
   @apply shadow;
-  will-change: transform, contents;
+  will-change: transform, contents, opacity;
 }

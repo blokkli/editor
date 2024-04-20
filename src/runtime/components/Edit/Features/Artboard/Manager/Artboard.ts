@@ -256,7 +256,6 @@ export class Artboard {
    * Construct a new Artboard.
    */
   constructor(el: HTMLElement, rootEl: HTMLElement, options?: ArtboardOptions) {
-    document.documentElement.classList.add('bk-is-artboard')
     this.artboardEl = el
     this.rootEl = rootEl
     this.offset = {
@@ -655,7 +654,6 @@ export class Artboard {
 
   destroy() {
     this.resizeObserver.disconnect()
-    document.documentElement.classList.remove('bk-is-artboard')
     this.rootEl.removeEventListener('touchstart', this.listeners.onTouchStart)
     this.rootEl.removeEventListener('touchmove', this.listeners.onTouchMove)
     this.rootEl.removeEventListener('touchend', this.listeners.onTouchEnd, {
@@ -953,6 +951,8 @@ export class Artboard {
     // Update the offset with the rubber band effect applied
     this.offset.x = adjustedX
     this.offset.y = adjustedY
+    // this.offset.x = 0
+    // this.offset.y = 0
   }
 
   stopAnimate() {

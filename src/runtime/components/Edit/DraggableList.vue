@@ -25,7 +25,6 @@
       :props="item.props"
       :is-editing="true"
       :index="i"
-      :data-id="item"
       :parent-type="isNested ? entity.bundle : ''"
       data-editing="true"
       data-element-type="existing"

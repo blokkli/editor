@@ -33,7 +33,7 @@
       <BlokkliField
         name="content"
         :list="fieldContent"
-        :allowed-fragments="['cta']"
+        :allowed-fragments="['cta', 'shader_debug']"
       />
     </BlokkliProvider>
   </div>

@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import ArtboardManager from './ManagerNew/index.vue'
+import ArtboardManager from './Manager/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 
@@ -56,7 +56,7 @@ const { settings } = defineBlokkliFeature({
   screenshot: 'feature-artboard.jpg',
 })
 
-const { ui, dom } = useBlokkli()
+const { dom } = useBlokkli()
 
 const useArtboard = computed(() => settings.value.useArtboard === 'yes')
 

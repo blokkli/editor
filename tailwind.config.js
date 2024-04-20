@@ -7,6 +7,7 @@ const z = (index) => {
 }
 
 const zIndex = [
+  'animation-canvas',
   'selection',
   'interaction-overlay',
   'comments-overlay',
@@ -27,7 +28,6 @@ const zIndex = [
   'preview',
   'toolbar-dropdown',
   'drop-targets',
-  'animation-canvas',
   'dragging-overlay',
   'command-palette',
   'touch-action-bar',

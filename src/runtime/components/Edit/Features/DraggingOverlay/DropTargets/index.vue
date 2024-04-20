@@ -11,6 +11,7 @@ import {
   intersects,
   isInsideRect,
   rgbaToString,
+  toShaderColor,
 } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type {
@@ -19,8 +20,24 @@ import type {
   DraggableItem,
   DropArea,
   Rectangle,
+  Coord,
 } from '#blokkli/types'
-import { ref, computed, useBlokkli } from '#imports'
+import { ref, computed, useBlokkli, onBeforeUnmount } from '#imports'
+import {
+  createProgramInfo,
+  setBuffersAndAttributes,
+  drawBufferInfo,
+  setUniforms,
+  type BufferInfo,
+} from 'twgl.js'
+import vs from './vertex.glsl?raw'
+import fs from './fragment.glsl?raw'
+import { RectangleBufferCollector } from '#blokkli/helpers/webgl'
+
+enum RectRenderType {
+  FIELD,
+  DROP_AREA,
+}
 
 type Orientation = 'horizontal' | 'vertical'
 
@@ -47,6 +64,7 @@ type DrawnRect = Rectangle & {
   color: string
   colorAlpha: string
   field?: FieldRect
+  index: number
 }
 
 const props = defineProps<{
@@ -59,18 +77,22 @@ const props = defineProps<{
 
 const dragStart = Date.now()
 
-const cursorIsInsideClipped = computed(() =>
-  isInsideRect(props.mouseX, props.mouseY, ui.visibleViewport.value),
-)
+const cursorIsInsideClipped = () =>
+  isInsideRect(props.mouseX, props.mouseY, ui.visibleViewport.value) &&
+  !ui.viewportBlockingRects.value.some((v) =>
+    isInsideRect(props.mouseX, props.mouseY, v),
+  )
 
-let drawnRects: DrawnRect[] = []
 const active = ref<DrawnRect | null>(null)
 
 const emit = defineEmits<{
   (e: 'drop', data: DropTargetEvent): void
 }>()
 
-const { dom, ui, $t, theme, dropAreas, eventBus } = useBlokkli()
+const { dom, ui, $t, theme, dropAreas, eventBus, animation } = useBlokkli()
+
+const gl = animation.gl()
+const programInfo = createProgramInfo(gl, [vs, fs])
 
 const areas = dropAreas
   .getDropAreas(props.items)
@@ -107,16 +129,30 @@ Object.values(areas).forEach((area) => {
 })
 
 onBlokkliEvent('mouse:down', (e) => {
-  const match = drawnRects.find((v) => isInsideRect(e.x, e.y, v))
+  const coord = toCanvasSpaceCoordinates(e.x, e.y)
+  const match = collector.getRectAtPosition(coord)
   active.value = match || null
 })
 
 onBlokkliEvent('mouse:up', (e) => {
-  if (e.distance > 7 && active.value) {
-    emitDrop()
+  if (!active.value) {
     return
   }
-  active.value = null
+
+  // On touch devices, if the distance is greater than the threshold, the user
+  // has likely interacted with the artboard (panning, zooming).
+  if (props.isTouch && e.distance > 10) {
+    active.value = null
+    return
+  }
+
+  // On desktop, only emit drop if the distance is greater than the threshold.
+  // This prevents accidentally moving a block.
+  if (!props.isTouch && e.distance < 7) {
+    return
+  }
+
+  emitDrop()
 })
 
 const emitDrop = async () => {
@@ -505,162 +541,192 @@ const colorTeal = rgbaToString(theme.teal.value.normal)
 const colorTealAlpha = rgbaToString(theme.teal.value.normal, 0.7)
 const colorAccent = rgbaToString(theme.accent.value[800])
 const colorAccentAlpha = rgbaToString(theme.accent.value[800], 0.7)
-const colorAccentAlphaLight = rgbaToString(theme.accent.value[800], 0.1)
 
-onBlokkliEvent('animationFrame', (e) => {
-  const ctx = e.ctx
+class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnRect> {
+  getBufferInfo(): { info: BufferInfo | null; hasChanged: boolean } {
+    const visibleFields = dom.getVisibleFields()
+    const visibleBlocks = dom.getVisibleBlocks()
 
-  const scale = ui.artboardScale.value
-  const offset = { ...ui.artboardOffset.value }
-  if (offset.y === 0) {
-    offset.y = -window.scrollY
-  }
+    const lengthBefore = this.positions.length
 
-  const visibleFields = dom.getVisibleFields()
-  const visibleBlocks = dom.getVisibleBlocks()
-  const fields = visibleFields.map((key) => buildFieldRect(key))
-
-  drawnRects = []
-
-  const visibleAreas = Array.from(visibleDropAreas)
-
-  ctx.strokeStyle = colorTeal
-  ctx.fillStyle = colorTealAlpha
-  ctx.lineWidth = 2
-
-  const intersectingRects: DrawnRect[] = []
-
-  for (let i = 0; i < visibleAreas.length; i++) {
-    const area = areas[visibleAreas[i]]
-    if (!area) {
-      continue
-    }
-    const areaRect = buildDropAreaRect(area)
-
-    const x = (areaRect.x + offset.x / scale) * scale
-    const y = (areaRect.y + offset.y / scale) * scale
-    const width = areaRect.width * scale
-    const height = areaRect.height * scale
-
-    ctx.beginPath()
-    ctx.roundRect(x, y, width, height, 3)
-    ctx.stroke()
-    const drawnRect: DrawnRect = {
-      id: area.id,
-      type: 'drop-area',
-      label: area.label,
-      color: colorTeal,
-      colorAlpha: colorTealAlpha,
-      x,
-      y,
-      width,
-      height,
-    }
-    drawnRects.push(drawnRect)
-
-    if (
-      cursorIsInsideClipped.value &&
-      !props.isTouch &&
-      intersects(props.box, drawnRect)
-    ) {
-      intersectingRects.push(drawnRect)
-    }
-    if (active.value?.id === drawnRect.id) {
-      ctx.fillStyle = colorTealAlpha
-      ctx.beginPath()
-      ctx.roundRect(x, y, width, height, 3)
-      ctx.fill()
-    }
-  }
-
-  ctx.fillStyle = colorAccentAlpha
-  ctx.strokeStyle = colorAccent
-
-  for (let i = 0; i < fields.length; i++) {
-    const field = fields[i]
-    if (!field) {
-      continue
-    }
-
-    const children = buildChildren(field, visibleBlocks)
-
-    for (let j = 0; j < children.length; j++) {
-      const child = children[j]
-      ctx.beginPath()
-      const x = (field.x + child.x + offset.x / scale) * scale
-      const y = (field.y + child.y + offset.y / scale) * scale
-      const width = child.width * scale
-      const height = child.height * scale
-      ctx.roundRect(x, y, width, height, 3)
-      ctx.stroke()
-      const drawnRect: DrawnRect = {
-        id: child.id,
-        type: 'field',
-        label: child.label,
-        color: colorAccent,
-        colorAlpha: colorAccentAlpha,
-        x,
-        y,
-        width,
-        height,
-        field,
+    for (let i = 0; i < visibleFields.length; i++) {
+      const key = visibleFields[i]
+      const fieldRect = buildFieldRect(key)
+      if (!fieldRect) {
+        continue
       }
-      drawnRects.push(drawnRect)
-
-      if (
-        cursorIsInsideClipped.value &&
-        !props.isTouch &&
-        intersects(props.box, drawnRect)
-      ) {
-        intersectingRects.push(drawnRect)
-      }
-
-      if (active.value?.id === drawnRect.id) {
-        ctx.fillStyle = colorAccentAlpha
-        ctx.beginPath()
-        ctx.roundRect(x, y, width, height, 3)
-        ctx.fill()
+      const children = buildChildren(fieldRect, visibleBlocks)
+      for (let j = 0; j < children.length; j++) {
+        const child = children[j]
+        if (this.added.has(child.id)) {
+          continue
+        }
+        this.addRectangle(
+          {
+            id: child.id,
+            type: 'field',
+            label: child.label,
+            color: colorAccent,
+            colorAlpha: colorAccentAlpha,
+            x: fieldRect.x + child.x,
+            y: fieldRect.y + child.y,
+            width: child.width,
+            height: child.height,
+            field: fieldRect,
+          },
+          RectRenderType.FIELD,
+        )
       }
     }
+
+    const visibleAreas = Array.from(visibleDropAreas)
+
+    for (let i = 0; i < visibleAreas.length; i++) {
+      const area = areas[visibleAreas[i]]
+      if (!area) {
+        continue
+      }
+      if (this.added.has(area.id)) {
+        continue
+      }
+      const areaRect = buildDropAreaRect(area)
+
+      this.addRectangle(
+        {
+          id: area.id,
+          type: 'drop-area',
+          label: area.label,
+          color: colorTeal,
+          colorAlpha: colorTealAlpha,
+          x: areaRect.x,
+          y: areaRect.y,
+          width: areaRect.width,
+          height: areaRect.height,
+        },
+        RectRenderType.DROP_AREA,
+      )
+    }
+
+    const hasChanged = lengthBefore !== this.positions.length
+
+    // Only update the buffer info if it has changed.
+    if (hasChanged) {
+      this.bufferInfo = this.createBufferInfo()
+    }
+
+    return { info: this.bufferInfo, hasChanged }
   }
 
-  if (!props.isTouch) {
-    const closest = getClosestDrawnRect(
-      intersectingRects,
-      props.mouseX,
-      props.mouseY,
-    )
+  getClosestIntersectingRect(box: Rectangle, coords: Coord): DrawnRect | null {
+    const candidates: DrawnRect[] = []
+    const rects = Object.values(this.rects)
+    for (let i = 0; i < rects.length; i++) {
+      const rect = rects[i]
+      if (intersects(box, rect)) {
+        candidates.push(rect)
+      }
+    }
 
-    active.value = closest
+    if (candidates.length === 0) {
+      return null
+    } else if (candidates.length === 1) {
+      return candidates[0]
+    }
+
+    return findClosestRectangle(coords.x, coords.y, candidates)
   }
 
-  if (active.value && active.value.field) {
-    const field = active.value.field
-    const x = (field.x + offset.x / scale - 10) * scale
-    const y = (field.y + offset.y / scale - 10) * scale
-    const width = (field.width + 20) * scale
-    const height = (field.height + 20) * scale
-    ctx.strokeStyle = colorAccentAlpha
-    ctx.lineWidth = 2
-    ctx.fillStyle = colorAccentAlphaLight
-    ctx.beginPath()
-    ctx.roundRect(x, y, width, height, 3)
-    ctx.stroke()
-    ctx.fill()
+  getRectAtPosition(coord: Coord): DrawnRect | null {
+    const rects = Object.values(this.rects)
+
+    for (let i = 0; i < rects.length; i++) {
+      const rect = rects[i]
+      if (isInsideRect(coord.x, coord.y, rect)) {
+        return rect
+      }
+    }
+
+    return null
+  }
+}
+
+const collector = new DropTargetRectangleBufferCollector(gl)
+
+const uniforms = computed(() => {
+  const index = active.value?.index
+  return {
+    u_color_field_active: toShaderColor(theme.accent.value[700]),
+    u_color_field_default: toShaderColor(theme.mono.value[400]),
+    u_color_area_active: toShaderColor(theme.teal.value.normal),
+    u_color_area_default: toShaderColor(theme.teal.value.normal),
+    u_active_rect_id: index === undefined ? -1 : index,
   }
 })
 
-const getClosestDrawnRect = (
-  rects: DrawnRect[],
-  x: number,
-  y: number,
-): DrawnRect | null => {
-  if (rects.length === 0) {
-    return null
-  } else if (rects.length === 1) {
-    return rects[0]
+const dragBox = ref<Rectangle>({
+  x: 0,
+  y: 0,
+  width: 0,
+  height: 0,
+})
+
+function toCanvasSpaceCoordinates(x: number, y: number): Coord {
+  const scale = ui.artboardScale.value
+  const offset = { ...ui.artboardOffset.value }
+  return {
+    x: (x - offset.x) / scale,
+    y: (y - offset.y) / scale,
+  }
+}
+
+onBlokkliEvent('canvas:draw', () => {
+  const scale = ui.artboardScale.value
+  const offset = { ...ui.artboardOffset.value }
+
+  dragBox.value = {
+    x: (props.box.x - offset.x) / scale,
+    y: (props.box.y - offset.y) / scale,
+    width: props.box.width / scale,
+    height: props.box.height / scale,
   }
 
-  return findClosestRectangle(x, y, rects)
-}
+  const mouseAbsolute = toCanvasSpaceCoordinates(props.mouseX, props.mouseY)
+
+  gl.useProgram(programInfo.program)
+  animation.setSharedUniforms(gl, programInfo)
+
+  const isInsideClipped = cursorIsInsideClipped()
+
+  if (!props.isTouch) {
+    if (isInsideClipped) {
+      const closest = collector.getClosestIntersectingRect(
+        dragBox.value,
+        mouseAbsolute,
+      )
+
+      active.value = closest || null
+    } else {
+      active.value = null
+    }
+  }
+
+  setUniforms(programInfo, uniforms.value)
+
+  const { info, hasChanged } = collector.getBufferInfo()
+  // Nothing to draw.
+  if (!info) {
+    return
+  }
+
+  // Only update buffer and attributes when they have changed.
+  if (hasChanged) {
+    setBuffersAndAttributes(gl, programInfo, info)
+  }
+
+  drawBufferInfo(gl, info, gl.TRIANGLES)
+})
+
+onBeforeUnmount(() => {
+  gl.clear(gl.COLOR_BUFFER_BIT)
+})
 </script>

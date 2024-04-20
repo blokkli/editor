@@ -4,37 +4,114 @@
 
 <script lang="ts" setup>
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import type { DraggableExistingBlock } from '#blokkli/types'
-import { useBlokkli } from '#imports'
+import type { Coord, DraggableExistingBlock, Rectangle } from '#blokkli/types'
+import { useBlokkli, onBeforeUnmount } from '#imports'
+import {
+  createProgramInfo,
+  setBuffersAndAttributes,
+  drawBufferInfo,
+  type BufferInfo,
+  setUniforms,
+} from 'twgl.js'
+import vs from './vertex.glsl?raw'
+import fs from './fragment.glsl?raw'
+import { RectangleBufferCollector } from '#blokkli/helpers/webgl'
+import { toShaderColor } from '#blokkli/helpers'
 
-defineProps<{
+const props = defineProps<{
   blocks: DraggableExistingBlock[]
 }>()
 
-const { ui, selection } = useBlokkli()
+const { animation, theme } = useBlokkli()
 
-onBlokkliEvent('animationFrame', ({ ctx }) => {
-  const scale = ui.artboardScale.value
-  const offset = ui.artboardOffset.value
-  const rects = selection.rects.value
-  ctx.lineDashOffset = 0
-  ctx.setLineDash([])
+const gl = animation.gl()
+const programInfo = createProgramInfo(gl, [vs, fs])
 
-  for (let i = 0; i < rects.length; i++) {
-    const { x, y, width, height, style } = rects[i]
-    const rectX = (x + offset.x / scale) * scale
-    const rectY = (y + offset.y / scale) * scale
-    ctx.strokeStyle = style.contrastColor
-    ctx.lineWidth = 3
-    ctx.beginPath()
-    ctx.roundRect(rectX, rectY, width * scale, height * scale, [
-      style.radius[0] * scale,
-      style.radius[1] * scale,
-      style.radius[2] * scale,
-      style.radius[3] * scale,
-    ])
-    ctx.stroke()
+type SelectionRectangle = Rectangle & {
+  id: string
+  index: number
+  isInverted: boolean
+  radius: [number, number, number, number]
+}
+
+class SelectionRectangleBufferCollector extends RectangleBufferCollector<SelectionRectangle> {
+  uuids: string[] = []
+  getBufferInfo(
+    offset: Coord,
+    scale: number,
+  ): { info: BufferInfo | null; hasChanged: boolean } {
+    const uuidsNew = props.blocks.map((v) => v.uuid)
+    const uuidsCurrent = [...this.added.values()]
+    const hasChanged =
+      uuidsCurrent.length !== uuidsNew.length ||
+      uuidsNew.some((v) => !uuidsCurrent.includes(v))
+    if (hasChanged) {
+      this.reset()
+      for (let i = 0; i < props.blocks.length; i++) {
+        const block = props.blocks[i]
+        if (this.added.has(block.uuid)) {
+          continue
+        }
+        this.added.add(block.uuid)
+        const el = block.dragElement()
+        const rect = el.getBoundingClientRect()
+        const style = theme.getDraggableStyle(el)
+        this.addRectangle(
+          {
+            id: block.uuid,
+            x: rect.x / scale - offset.x / scale,
+            y: rect.y / scale - offset.y / scale,
+            width: rect.width / scale,
+            height: rect.height / scale,
+            radius: style.radius,
+            isInverted: style.isInverted,
+          },
+          style.isInverted ? 1 : 0,
+        )
+      }
+    }
+
+    // Only update the buffer info if it has changed.
+    if (hasChanged) {
+      this.bufferInfo = this.createBufferInfo()
+    }
+
+    return { info: this.bufferInfo, hasChanged }
   }
+}
+
+const collector = new SelectionRectangleBufferCollector(gl)
+
+const uniforms = {
+  u_color_default: toShaderColor(theme.accent.value[700]),
+  u_color_inverted: [255, 255, 255],
+}
+
+onBlokkliEvent('canvas:draw', (e) => {
+  gl.useProgram(programInfo.program)
+
+  setUniforms(programInfo, uniforms)
+  animation.setSharedUniforms(gl, programInfo)
+  const { info, hasChanged } = collector.getBufferInfo(
+    e.artboardOffset,
+    e.artboardScale,
+  )
+
+  // Nothing to draw.
+  if (!info) {
+    return
+  }
+
+  // Only update buffer and attributes when they have changed.
+  if (hasChanged) {
+    setBuffersAndAttributes(gl, programInfo, info)
+  }
+
+  drawBufferInfo(gl, info, gl.TRIANGLES)
+})
+
+onBeforeUnmount(() => {
+  gl.clear(gl.COLOR_BUFFER_BIT)
 })
 </script>
 

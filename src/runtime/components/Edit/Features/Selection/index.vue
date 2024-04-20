@@ -1,11 +1,9 @@
 <template>
-  <Teleport to=".bk-main-canvas">
-    <Overlay
-      v-if="isVisible"
-      :key="state.refreshKey.value"
-      :blocks="selection.blocks.value"
-    />
-  </Teleport>
+  <Overlay
+    v-if="isVisible"
+    :key="state.refreshKey.value"
+    :blocks="selection.blocks.value"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -16,7 +14,7 @@ import {
 } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { DraggableExistingBlock } from '#blokkli/types'
-import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
+import { computed, useBlokkli, defineBlokkliFeature, onMounted } from '#imports'
 
 defineBlokkliFeature({
   id: 'selection',
@@ -150,6 +148,13 @@ onBlokkliEvent('keyPressed', (e) => {
       getSelectAllUuids(dom.getAllBlocks(), selection.blocks.value),
     )
   }
+})
+
+onMounted(() => {
+  eventBus.emit('select:end', [
+    'dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf',
+    '6d0bde10-a05b-4c7d-a8cf-fafc8e0001f1',
+  ])
 })
 </script>
 

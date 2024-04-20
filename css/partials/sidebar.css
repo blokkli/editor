@@ -72,8 +72,9 @@
 }
 
 .bk-sidebar-detached {
-  @apply fixed top-0 left-0 bg-white z-sidebar-detached rounded-md flex flex-col overflow-hidden;
+  @apply fixed top-0 left-0 bg-white z-sidebar-detached rounded-md flex flex-col overflow-hidden will-change-transform;
   @apply border border-mono-200;
+  contain: layout paint style;
   &.bk-is-focused {
     @apply shadow-xl border-mono-700;
     .bk-sidebar-title {
@@ -155,6 +156,7 @@ html.bk-is-sidebar-interacting {
 
 .bk-sidebar-tabs {
   @apply relative bg-mono-900 z-sidebar-tabs left-0 w-full flex justify-between flex-row-reverse overflow-auto lg:overflow-visible;
+  contain: style size;
 
   > div {
     @apply flex;

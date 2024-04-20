@@ -243,6 +243,8 @@ const onDropAction = (
 const onDrop = (e: DropTargetEvent) => {
   // All the existing UUIDs on the page.
   const existingUuids = state.renderedBlocks.value.map((v) => v.item.uuid)
+  mouseX.value = 0
+  mouseY.value = 0
 
   eventBus.emit('dragging:end')
   eventBus.emit('item:dropped')
@@ -334,7 +336,6 @@ const onMouseUp = (e: MouseEvent) => {
   e.preventDefault()
   e.stopPropagation()
   if (!ui.isMobile.value) {
-    console.log('DRAGGING END EMIT')
     eventBus.emit('dragging:end')
   }
 }
@@ -350,7 +351,6 @@ onBlokkliEvent('dragging:start', (e) => {
   if ('element' in item) {
     eventBus.on('animationFrame', loop)
     if (!isTouching.value) {
-      console.log('Add event listener')
       document.removeEventListener('pointerup', onMouseUp)
       document.addEventListener('pointerup', onMouseUp)
     }

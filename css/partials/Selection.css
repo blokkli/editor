@@ -9,3 +9,7 @@
     @apply opacity-0;
   }
 }
+
+.bk-multi-select-ants {
+  @apply fill-none stroke-accent-700;
+}

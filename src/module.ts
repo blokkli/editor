@@ -6,6 +6,7 @@ import {
   addImports,
   addPlugin,
   addTemplate,
+  addVitePlugin,
   createResolver,
   defineNuxtModule,
   resolveFiles,

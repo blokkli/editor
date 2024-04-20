@@ -8,7 +8,7 @@
     tabindex="10"
     @mousedown.stop="onSidebarMouseDown"
     @mouseup.stop
-    @mousemove.stop
+    @pointermove="onPointerMove"
     @focus.capture="onFocus"
   >
     <div class="bk">
@@ -86,9 +86,17 @@ const props = withDefaults(
 
 defineEmits(['close'])
 
-const { storage, ui } = useBlokkli()
+const { storage, ui, keyboard, selection } = useBlokkli()
 
-const BASE_Z = 60011
+function onPointerMove(e: PointerEvent) {
+  if (keyboard.isPressingSpace.value || selection.isDragging.value) {
+    return
+  }
+
+  e.stopPropagation()
+}
+
+const BASE_Z = 190000
 
 const isMinimized = storage.use(
   computed(() => 'sidebar:detached:minimized:' + props.id),
@@ -96,8 +104,8 @@ const isMinimized = storage.use(
 )
 const storageKey = computed(() => 'sidebar:detached:size:' + props.id)
 const focusedSidebar = storage.use('sidebar:focused', '')
-const zStorageKey = computed(() => 'sidebar:detached:z:' + props.id)
-const globalZ = useState('blokkli:z', () => BASE_Z)
+const zStorageKey = computed(() => 'sidebar:detached:zIndex:' + props.id)
+const globalZ = useState('blokkli:zIndex', () => BASE_Z)
 const z = storage.use(zStorageKey.value, BASE_Z)
 
 if (z.value > globalZ.value) {

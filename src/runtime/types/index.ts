@@ -29,6 +29,7 @@ import type { ThemeProvider } from '#blokkli/helpers/themeProvider'
 import type { CommandsProvider } from '#blokkli/helpers/commandsProvider'
 import type { TourProvider } from '#blokkli/helpers/tourProvider'
 import type { DropAreaProvider } from '#blokkli/helpers/dropAreaProvider'
+import type { RGB } from './theme'
 
 interface MutationResponseLike<T> {
   success?: boolean
@@ -550,6 +551,11 @@ export type DraggableStyle = {
   radius: [number, number, number, number]
 
   /**
+   * The smallest radius of the element.
+   */
+  radiusMin: number
+
+  /**
    * The border radius as a CSS property value.
    */
   radiusString: string
@@ -568,6 +574,9 @@ export type DraggableStyle = {
    * The color to make a text (mostly) readable when put on top of the element.
    */
   textColor: string
+
+  contrastColorRGB: RGB
+  isInverted: boolean
 }
 
 export interface DraggableExistingBlock {
@@ -738,7 +747,6 @@ export type AnimationFrameEvent = {
   fieldAreas: AnimationFrameFieldArea[]
   mouseX: number
   mouseY: number
-  ctx: CanvasRenderingContext2D
 }
 
 export type Message = {
@@ -758,10 +766,11 @@ export type Coord = {
 
 export type Rectangle = Size & Coord
 
-export type DraggableStartEvent = {
-  items: DraggableItem[]
-  coords: Coord
-  mode: InteractionMode
+export type CanvasDrawEvent = {
+  mouseX: number
+  mouseY: number
+  artboardOffset: Coord
+  artboardScale: number
 }
 
 export type MakeReusableEvent = {
@@ -867,11 +876,40 @@ export type ActionPlacedEvent = {
 
 export type InteractionMode = 'mouse' | 'touch'
 
+export type DraggableStartEvent = {
+  items: DraggableItem[]
+  coords: Coord
+  mode: InteractionMode
+}
+
 export type GlobalPointerEvent = {
+  /**
+   * The interaction mode.
+   */
   type: InteractionMode
+
+  /**
+   * The viewport relative x coordinate.
+   */
   x: number
+
+  /**
+   * The viewport relative y coordinate.
+   */
   y: number
+
+  /**
+   * The total distance travelled.
+   */
   distance: number
+}
+
+export type GlobalPointerUpEvent = GlobalPointerEvent & {
+  /**
+   * The total duration in miliseconds from the first click or touch to
+   * the last click or touch.
+   */
+  duration: number
 }
 
 export type SelectStartEvent = {
@@ -910,6 +948,7 @@ export type EventbusEvents = {
 
   scrollIntoView: ScrollIntoViewEvent
   'animationFrame:before': undefined
+  'canvas:draw': CanvasDrawEvent
 
   'state:reloaded': undefined
 
@@ -938,7 +977,7 @@ export type EventbusEvents = {
 
   'mouse:down': GlobalPointerEvent
   'mouse:move': GlobalPointerEvent
-  'mouse:up': GlobalPointerEvent
+  'mouse:up': GlobalPointerUpEvent
 }
 
 export type Eventbus = Emitter<EventbusEvents>

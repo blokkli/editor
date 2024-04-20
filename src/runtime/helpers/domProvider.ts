@@ -216,7 +216,6 @@ export default function (): DomProvider {
       }
     },
     {
-      root: document.querySelector('.bk-main-canvas'),
       threshold: 0,
     },
   )

@@ -1,0 +1,45 @@
+.bk.bk-artboard-scrollbar {
+  @apply fixed bg-mono-300 z-artboard-scrollbar transition overflow-hidden;
+  contain: strict;
+  button {
+    @apply bg-mono-500/50 block;
+  }
+  --bk-artboard-scrollbar-size: 4px;
+  @screen md {
+    --bk-artboard-scrollbar-size: 10px;
+  }
+
+  &.bk-orientation-height {
+    width: var(--bk-artboard-scrollbar-size);
+    top: calc(var(--bk-root-offset-top));
+    bottom: calc(var(--bk-root-offset-bottom));
+    right: calc(var(--bk-root-offset-right));
+
+    button {
+      @apply w-full;
+    }
+  }
+
+  &.bk-orientation-width {
+    height: var(--bk-artboard-scrollbar-size);
+    left: calc(var(--bk-root-offset-left));
+    right: calc(var(--bk-root-offset-right));
+    bottom: calc(var(--bk-root-offset-bottom) - 1px);
+    button {
+      @apply h-full;
+    }
+  }
+
+  &.bk-is-active,
+  &:hover {
+    @apply bg-mono-400;
+    button {
+      @apply bg-mono-600;
+    }
+  }
+
+  &.bk-is-active button,
+  button:hover {
+    @apply bg-mono-500;
+  }
+}

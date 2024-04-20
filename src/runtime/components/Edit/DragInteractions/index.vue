@@ -1,5 +1,4 @@
 <template>
-  <slot></slot>
   <Teleport to="body">
     <div
       class="bk-interaction-overlay"
@@ -89,22 +88,15 @@ function getInteractedElement(
 }
 
 function onPointerMove(e: PointerEvent) {
+  if (keyboard.isPressingSpace.value) {
+    return
+  }
   if (e.pointerType === 'touch') {
     return onTouchMove(e)
   }
   if (e.buttons !== 1) {
     return
   }
-  const coords = getInteractionCoordinates(e)
-  const distance = mouseStartCoordinates
-    ? getDistance(mouseStartCoordinates, coords)
-    : 0
-  eventBus.emit('mouse:move', {
-    x: e.clientX,
-    y: e.clientY,
-    type: 'mouse',
-    distance,
-  })
   if (
     !selection.uuids.value.length ||
     !mouseStartCoordinates ||
@@ -133,10 +125,13 @@ function onPointerMove(e: PointerEvent) {
   }
 }
 
+let pointerDownTimestamp = 0
+
 function onPointerDown(e: PointerEvent) {
   if (e.pointerType === 'touch') {
     return onTouchStart(e)
   }
+  pointerDownTimestamp = Date.now()
   const coords = { x: e.clientX, y: e.clientY }
   mouseStartCoordinates = coords
   const interacted = getInteractedElement(e)
@@ -163,6 +158,7 @@ function onPointerUp(e: PointerEvent) {
     y: e.clientY,
     type: 'mouse',
     distance,
+    duration: Date.now() - pointerDownTimestamp,
   })
 
   // Prevents selecting the block under the current pointer position when dragging or multi selecting is ending.
@@ -219,7 +215,12 @@ let touchStartInteraction: InteractedElement | null = null
 let touchStartCoords: Coord | null = null
 let longPressInteraction: InteractedElement | null = null
 
+let touchStartTimestamp = 0
+
 function onTouchStart(e: PointerEvent) {
+  if (e.isPrimary) {
+    touchStartTimestamp = Date.now()
+  }
   longPressInteraction = null
   const coords = getInteractionCoordinates(e)
   touchStartCoords = coords
@@ -280,7 +281,14 @@ function onTouchEnd(e: PointerEvent) {
   const wasDragging = selection.isDragging.value
   const coords = getInteractionCoordinates(e)
   const distance = touchStartCoords ? getDistance(touchStartCoords, coords) : 0
-  eventBus.emit('mouse:up', { ...coords, type: 'touch', distance })
+  if (e.isPrimary) {
+    eventBus.emit('mouse:up', {
+      ...coords,
+      type: 'touch',
+      distance,
+      duration: Date.now() - touchStartTimestamp,
+    })
+  }
   clearTimeout(longPressTimeout)
   longPressTimeout = null
   if (wasDragging) {

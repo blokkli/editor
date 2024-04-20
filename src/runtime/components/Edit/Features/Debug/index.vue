@@ -225,7 +225,11 @@ const onEvent = (name: string, data: any) => {
   if (!showDebug.value) {
     return
   }
-  if (name === 'animationFrame' || name === 'animationFrame:before') {
+  if (
+    name === 'animationFrame' ||
+    name === 'animationFrame:before' ||
+    name === 'canvas:draw'
+  ) {
     return
   }
   console.log({ name, data })

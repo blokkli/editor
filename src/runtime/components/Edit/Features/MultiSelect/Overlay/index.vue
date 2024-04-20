@@ -5,266 +5,256 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
-import type { Coord, DraggableStyle, Rectangle } from '#blokkli/types'
-import { intersects } from '#blokkli/helpers'
+import { useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+import { intersects, toShaderColor } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import { getDefinition } from '#blokkli/definitions'
+import vs from './vertex.glsl?raw'
+import fs from './fragment.glsl?raw'
+import {
+  createProgramInfo,
+  type BufferInfo,
+  setBuffersAndAttributes,
+  drawBufferInfo,
+  setUniforms,
+} from 'twgl.js'
+import type { Coord, Rectangle } from '#blokkli/types'
+import { RectangleBufferCollector } from '#blokkli/helpers/webgl'
 
-const { keyboard, eventBus, ui, dom, theme, runtimeConfig } = useBlokkli()
-
-type SelectableElement = {
-  uuid: string
-  nested: boolean
-  rect: Rectangle
-  isIntersecting: boolean
-  style: DraggableStyle
-}
-
-type MultiSelectBlock = {
-  uuid: string
-  isNested: boolean
-  element: HTMLElement | SVGElement
-}
-
-const artboardOffsetStart = { ...ui.artboardOffset.value }
-const artboardScaleStart = ui.artboardScale.value
-
-const buildMultiSelectBlock = (uuid: string): MultiSelectBlock | undefined => {
-  const el = document.querySelector(
-    `[data-blokkli-provider-active="true"] [data-uuid="${uuid}"]`,
-  )
-
-  if (!(el instanceof HTMLElement)) {
-    return
-  }
-  const dataset = el.dataset
-  const itemBundle = dataset.itemBundle
-  const hostType = dataset.hostType
-  if (!itemBundle || !uuid) {
-    return
-  }
-  const definition = getDefinition(itemBundle)
-  if (!definition) {
-    return
-  }
-  const isNested = hostType === runtimeConfig.itemEntityType
-  const element =
-    (definition.editor?.getDraggableElement
-      ? definition.editor.getDraggableElement(el)
-      : el) || el
-  if (!(element instanceof HTMLElement)) {
-    return
-  }
-  return {
-    uuid,
-    isNested,
-    element,
-  }
-}
-
-type MultiSelectRect = {
-  rect: DOMRect
-  scale: number
-  artboardOffset: Coord
-}
-
-const styleCache: Record<string, DraggableStyle> = {}
-const rectCache: Record<string, MultiSelectRect> = {}
-const blockCache: Record<string, MultiSelectBlock> = {}
-
-const getDraggableStyle = (block: MultiSelectBlock): DraggableStyle => {
-  if (styleCache[block.uuid]) {
-    return styleCache[block.uuid]
-  }
-  const style = theme.getDraggableStyle(block.element)
-  styleCache[block.uuid] = style
-  return style
-}
-
-const getBlockRect = (block: MultiSelectBlock): MultiSelectRect => {
-  if (rectCache[block.uuid]) {
-    return rectCache[block.uuid]
-  }
-  const rect = block.element.getBoundingClientRect()
-  rectCache[block.uuid] = {
-    rect,
-    scale: ui.artboardScale.value,
-    artboardOffset: { ...ui.artboardOffset.value },
-  }
-  return rectCache[block.uuid]
-}
-
-const getBlock = (uuid: string): MultiSelectBlock | undefined => {
-  if (blockCache[uuid]) {
-    return blockCache[uuid]
-  }
-
-  const block = buildMultiSelectBlock(uuid)
-
-  if (!block) {
-    return
-  }
-
-  blockCache[uuid] = block
-
-  return block
-}
+const { eventBus, dom, theme, animation, ui } = useBlokkli()
 
 const props = defineProps<{
   startX: number
   startY: number
+  isPressingControl: boolean
 }>()
 
 defineEmits<{
   (e: 'select', uuids: string[]): void
 }>()
 
-let selected: string[] = []
+const gl = animation.gl()
 
-const rgba = (rgb: [number, number, number], a = 1) =>
-  `rgba(${rgb.join(',')},${a})`
+type MultiSelectRectangle = Rectangle & {
+  id: string
+  index: number
+  isNested: boolean
+  radius: [number, number, number, number]
+}
 
-const themeColors = computed(() => {
-  return {
-    selectRectBg: 'rgba(255,255,255,0.8)',
-    selectRectFg: rgba(theme.mono.value[700], 0.8),
+class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<MultiSelectRectangle> {
+  getBufferInfo(
+    offset: Coord,
+    scale: number,
+  ): { info: BufferInfo | null; hasChanged: boolean } {
+    const visibleBlocks = dom.getVisibleBlocks()
+
+    const lengthBefore = this.positions.length
+
+    for (let i = 0; i < visibleBlocks.length; i++) {
+      const uuid = visibleBlocks[i]
+      if (this.added.has(uuid)) {
+        continue
+      }
+      const block = dom.findBlock(uuid)
+      if (!block) {
+        continue
+      }
+      const el = block.dragElement()
+      const rect = el.getBoundingClientRect()
+      const style = theme.getDraggableStyle(el)
+      this.addRectangle(
+        {
+          id: uuid,
+          x: rect.x / scale - offset.x / scale,
+          y: rect.y / scale - offset.y / scale,
+          width: rect.width / scale,
+          height: rect.height / scale,
+          isNested: block.isNested,
+          radius: style.radius,
+        },
+        block.isNested ? 6 : 5,
+      )
+    }
+
+    const hasChanged = lengthBefore !== this.positions.length
+
+    // Only update the buffer info if it has changed.
+    if (hasChanged) {
+      this.bufferInfo = this.createBufferInfo()
+    }
+
+    return { info: this.bufferInfo, hasChanged }
   }
-})
 
-// Collect the UUIDs that have become visible at least once during multi select.
-const seenUuids: Set<string> = new Set()
+  getSelectedUuids(box: Rectangle): { nested: string[]; notNested: string[] } {
+    const nested: string[] = []
+    const notNested: string[] = []
+    const rects = Object.values(this.rects)
 
-onBlokkliEvent('animationFrame', (e) => {
-  const artboardOffset = { ...ui.artboardOffset.value }
-  const scale = ui.artboardScale.value
+    for (let i = 0; i < rects.length; i++) {
+      const rect = rects[i]
+      if (intersects(box, rect)) {
+        if (rect.isNested) {
+          nested.push(rect.id)
+        } else {
+          notNested.push(rect.id)
+        }
+      }
+    }
+
+    return { nested, notNested }
+  }
+
+  isSelectingNested(box: Rectangle): boolean {
+    const rects = Object.values(this.rects)
+    for (let i = 0; i < rects.length; i++) {
+      const rect = rects[i]
+      if (intersects(box, rect) && rect.isNested) {
+        return true
+      }
+    }
+    return false
+  }
+}
+
+const collector = new MultiSelectRectangleBufferCollector(gl)
+const thick = 100
+collector.addRectangle(
+  {
+    width: 1000,
+    height: thick,
+    x: 100,
+    y: 100,
+    id: 'select-rect-top',
+    isNested: false,
+    radius: [0, 0, 0, 0],
+  },
+  0,
+)
+collector.addRectangle(
+  {
+    width: thick,
+    height: 1000,
+    x: 1000 + thick,
+    y: thick,
+    id: 'select-rect-right',
+    isNested: false,
+    radius: [0, 0, 0, 0],
+  },
+  0,
+)
+collector.addRectangle(
+  {
+    width: 1000,
+    height: thick,
+    x: 100 + thick,
+    y: 1000 + thick,
+    id: 'select-rect-bottom',
+    isNested: false,
+    radius: [0, 0, 0, 0],
+  },
+  0,
+)
+collector.addRectangle(
+  {
+    width: thick,
+    height: 1000,
+    x: 100,
+    y: 100 + thick,
+    id: 'select-rect-left',
+    isNested: false,
+    radius: [0, 0, 0, 0],
+  },
+  0,
+)
+
+const artboardOffsetStart = { ...ui.artboardOffset.value }
+const artboardScaleStart = ui.artboardScale.value
+
+const programInfo = createProgramInfo(gl, [vs, fs])
+const uniforms = {
+  u_color_field_active: toShaderColor(theme.accent.value[700]),
+  u_color_field_default: toShaderColor(theme.mono.value[400]),
+  u_color_area_active: toShaderColor(theme.teal.value.normal),
+  u_color_area_default: toShaderColor(theme.teal.value.normal),
+}
+
+let mouseX = 0
+let mouseY = 0
+
+function getSelectRect(
+  offset: Coord,
+  scale: number,
+): { shader: Rectangle; check: Rectangle } {
   const startX =
     (props.startX / artboardScaleStart +
-      (ui.artboardOffset.value.x / scale -
-        artboardOffsetStart.x / artboardScaleStart)) *
+      (offset.x / scale - artboardOffsetStart.x / artboardScaleStart)) *
     scale
 
   const startY =
     (props.startY / artboardScaleStart +
-      (ui.artboardOffset.value.y / scale -
-        artboardOffsetStart.y / artboardScaleStart)) *
+      (offset.y / scale - artboardOffsetStart.y / artboardScaleStart)) *
     scale
 
-  const ctx = e.ctx
-  const ax = startX > e.mouseX ? e.mouseX : startX
-  const ay = startY > e.mouseY ? e.mouseY : startY
-  const bx = startX > e.mouseX ? startX : e.mouseX
-  const by = startY > e.mouseY ? startY : e.mouseY
-  const selectRect = {
+  const ax = startX > mouseX ? mouseX : startX
+  const ay = startY > mouseY ? mouseY : startY
+  const bx = startX > mouseX ? startX : mouseX
+  const by = startY > mouseY ? startY : mouseY
+  const shader = {
     x: ax,
     y: ay,
     width: bx - ax,
     height: by - ay,
   }
-  ctx.lineWidth = 2
-  ctx.lineDashOffset = 0
-
-  const newSelected: string[] = []
-
-  let hasNested = false
-  const visibleUuids = dom.getVisibleBlocks()
-  visibleUuids.forEach((v) => seenUuids.add(v))
-  const uuids = Array.from(seenUuids)
-  const newSelectable: SelectableElement[] = []
-
-  for (let i = 0; i < uuids.length; i++) {
-    const uuid = uuids[i]
-    const block = getBlock(uuid)
-    if (!block) {
-      continue
-    }
-    const blockRect = getBlockRect(block)
-
-    const rect: Rectangle = {
-      x:
-        (blockRect.rect.x / blockRect.scale +
-          (artboardOffset.x / scale -
-            blockRect.artboardOffset.x / blockRect.scale)) *
-        scale,
-      y:
-        (blockRect.rect.y / blockRect.scale +
-          (artboardOffset.y / scale -
-            blockRect.artboardOffset.y / blockRect.scale)) *
-        scale,
-      width: (blockRect.rect.width / blockRect.scale) * scale,
-      height: (blockRect.rect.height / blockRect.scale) * scale,
-    }
-
-    const isIntersecting = intersects(selectRect, rect)
-    if (isIntersecting && block.isNested) {
-      hasNested = true
-    }
-
-    // Skip blocks that are outside of the visible viewport and that are not
-    // intersecting with the selection rectangle.
-    if (!intersects(rect, ui.visibleViewportPadded.value) && !isIntersecting) {
-      continue
-    }
-
-    newSelectable.push({
-      uuid: block.uuid,
-      nested: block.isNested,
-      rect,
-      isIntersecting,
-      style: getDraggableStyle(block),
-    })
+  const check = {
+    x: shader.x / scale - offset.x / scale,
+    y: shader.y / scale - offset.y / scale,
+    width: shader.width / scale,
+    height: shader.height / scale,
   }
 
-  for (let i = 0; i < newSelectable.length; i++) {
-    const block = newSelectable[i]
-    ctx.beginPath()
-    ctx.setLineDash([5, 5])
-    ctx.fillStyle = block.style.contrastColorTranslucent
-    ctx.strokeStyle = block.style.contrastColor
+  return { shader, check }
+}
 
-    if (
-      (hasNested &&
-        !keyboard.isPressingControl.value &&
-        block.isIntersecting &&
-        block.nested) ||
-      ((!hasNested || keyboard.isPressingControl.value) && block.isIntersecting)
-    ) {
-      ctx.setLineDash([])
-      ctx.roundRect(
-        block.rect.x,
-        block.rect.y,
-        block.rect.width,
-        block.rect.height,
-        block.style.radius,
-      )
-      ctx.fill()
-      newSelected.push(block.uuid)
-    }
-    ctx.roundRect(
-      block.rect.x,
-      block.rect.y,
-      block.rect.width,
-      block.rect.height,
-      block.style.radius,
-    )
-    ctx.stroke()
+const now = Date.now()
+
+onBlokkliEvent('canvas:draw', (e) => {
+  mouseX = e.mouseX
+  mouseY = e.mouseY
+
+  const { shader, check } = getSelectRect(e.artboardOffset, e.artboardScale)
+
+  const { nested } = collector.getSelectedUuids(check)
+  const shouldSelectAll = props.isPressingControl || !nested.length
+
+  gl.useProgram(programInfo.program)
+
+  const time = (Date.now() - now) / 1000
+
+  setUniforms(programInfo, uniforms)
+  setUniforms(programInfo, {
+    u_select_all: shouldSelectAll ? 1 : 0,
+    u_select_rect: [shader.x, shader.y, shader.width, shader.height],
+    u_time: time,
+  })
+
+  animation.setSharedUniforms(gl, programInfo)
+  const { info, hasChanged } = collector.getBufferInfo(
+    e.artboardOffset,
+    e.artboardScale,
+  )
+
+  // Nothing to draw.
+  if (!info) {
+    return
   }
 
-  ctx.lineWidth = 2
-  ctx.strokeStyle = themeColors.value.selectRectBg
-  ctx.setLineDash([])
-  ctx.beginPath()
-  ctx.rect(ax, ay, bx - ax, by - ay)
-  ctx.stroke()
+  // Only update buffer and attributes when they have changed.
+  if (hasChanged) {
+    setBuffersAndAttributes(gl, programInfo, info)
+  }
 
-  ctx.lineDashOffset = Math.round(Date.now() / 10) % 10
-  ctx.strokeStyle = themeColors.value.selectRectFg
-  ctx.beginPath()
-  ctx.setLineDash([5, 5])
-  ctx.rect(ax, ay, bx - ax, by - ay)
-  ctx.stroke()
-
-  selected = newSelected
+  drawBufferInfo(gl, info, gl.TRIANGLES)
 })
 
 onMounted(() => {
@@ -275,6 +265,20 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  eventBus.emit('select:end', selected)
+  gl.clear(gl.COLOR_BUFFER_BIT)
+
+  const { check } = getSelectRect(
+    ui.artboardOffset.value,
+    ui.artboardScale.value,
+  )
+
+  const { nested, notNested } = collector.getSelectedUuids(check)
+  if (props.isPressingControl) {
+    eventBus.emit('select:end', [...nested, ...notNested])
+  } else if (!nested.length) {
+    eventBus.emit('select:end', notNested)
+  } else {
+    eventBus.emit('select:end', nested)
+  }
 })
 </script>

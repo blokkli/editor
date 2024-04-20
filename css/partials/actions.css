@@ -14,6 +14,9 @@
   }
   .bk-blokkli-item-actions-inner {
     @apply fixed left-0 p-0 z-actions w-full will-change-transform;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    contain: layout style paint;
     bottom: var(--bk-root-offset-bottom);
     @screen lg {
       @apply top-0 w-auto;
@@ -21,15 +24,15 @@
     }
   }
   .bk-blokkli-item-actions-controls {
-    @apply flex items-stretch whitespace-nowrap h-full lg:shadow-xl flex-wrap lg:flex-nowrap;
-    @apply bg-mono-950/90 backdrop-blur lg:bg-mono-900 lg:backdrop-blur-none;
+    @apply flex items-stretch whitespace-nowrap h-full flex-wrap lg:flex-nowrap;
+    @apply bg-mono-950/90 backdrop-blur lg:bg-mono-900;
     @apply relative z-50;
 
     &::-webkit-scrollbar {
       display: none;
     }
     @screen lg {
-      @apply rounded-md border-b-0;
+      @apply rounded-md filter-none border border-mono-200;
     }
   }
 

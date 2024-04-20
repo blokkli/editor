@@ -315,8 +315,6 @@ export function calculateIntersection(
 
 /**
  * Return the closest rectangle.
- *
- * Distance is measured from the center pooint of the rectangle to the given x and y coords.
  */
 export function findClosestRectangle<T extends Rectangle>(
   x: number,
@@ -324,11 +322,11 @@ export function findClosestRectangle<T extends Rectangle>(
   rects: T[],
 ): T {
   let closestRect: T = rects[0]
-  let minDistance = distanceToRectangle(x, y, rects[0])
+  let minDistance = distanceToClosestRectangleEdge(x, y, rects[0])
 
   for (let i = 1; i < rects.length; i++) {
     const rect = rects[i]
-    const distance = distanceToRectangle(x, y, rect)
+    const distance = distanceToClosestRectangleEdge(x, y, rect)
 
     if (distance < minDistance) {
       closestRect = rect
@@ -351,6 +349,27 @@ export function distanceToRectangle(
   const minY = rect.y
   const maxX = rect.x + rect.width
   const maxY = rect.y + rect.height
+  const dx = Math.max(minX - x, 0, x - maxX)
+  const dy = Math.max(minY - y, 0, y - maxY)
+  return Math.sqrt(dx * dx + dy * dy)
+}
+
+/**
+ * Return the distance from the given coordinates to the center of the rectangle.
+ */
+export function distanceToClosestRectangleEdge(
+  x: number,
+  y: number,
+  rect: Rectangle,
+): number {
+  if (isInsideRect(x, y, rect)) {
+    return 0
+  }
+  const minX = rect.x
+  const minY = rect.y
+  const maxX = rect.x + rect.width
+  const maxY = rect.y + rect.height
+
   const dx = Math.max(minX - x, 0, x - maxX)
   const dy = Math.max(minY - y, 0, y - maxY)
   return Math.sqrt(dx * dx + dy * dy)
@@ -518,11 +537,12 @@ export const getDraggableStyle = (
   const style = getComputedStyle(el)
 
   const radius: [number, number, number, number] = [
-    getNumericStyleValue(style.borderTopLeftRadius, 4),
-    getNumericStyleValue(style.borderTopRightRadius, 4),
-    getNumericStyleValue(style.borderBottomRightRadius, 4),
-    getNumericStyleValue(style.borderBottomLeftRadius, 4),
+    getNumericStyleValue(style.borderTopLeftRadius, 0),
+    getNumericStyleValue(style.borderTopRightRadius, 0),
+    getNumericStyleValue(style.borderBottomRightRadius, 0),
+    getNumericStyleValue(style.borderBottomLeftRadius, 0),
   ]
+  const radiusMin = Math.min(...radius)
 
   const backgroundColorForSelection = parseColorString(
     realBackgroundColor(el.parentElement),
@@ -540,13 +560,18 @@ export const getDraggableStyle = (
     ],
     backgroundColor,
   )
+  const bg = backgroundColorForSelection || [255, 255, 255]
+  const ratio = getContrastRatio(accentColor, bg)
 
   return {
     radius,
+    radiusMin,
     radiusString: radius.map((v) => v + 'px').join(' '),
     contrastColor: rgbaToString(contrastColor),
+    contrastColorRGB: contrastColor,
     contrastColorTranslucent: rgbaToString(contrastColor, 0.25),
     textColor: rgbaToString(textColor),
+    isInverted: ratio < 5,
   }
 }
 
@@ -718,4 +743,8 @@ export function getInteractionCoordinates(e: MouseEvent | TouchEvent): Coord {
     x: e.clientX,
     y: e.clientY,
   }
+}
+
+export function toShaderColor(rgba: RGB): RGB {
+  return rgba.map((v) => v / 255) as RGB
 }

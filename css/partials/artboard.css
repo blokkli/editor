@@ -33,14 +33,6 @@
   }
 }
 
-.bk-html-root:not(.bk-is-artboard) .bk-main-canvas {
-  @apply relative;
-  padding-top: var(--bk-root-offset-top);
-  margin-left: var(--bk-root-offset-left);
-  margin-bottom: var(--bk-root-offset-bottom);
-  overflow: hidden;
-}
-
 .bk-html-root.bk-is-artboard {
   @apply overflow-hidden;
 
@@ -53,77 +45,9 @@
     /* top: var(--bk-root-offset-top); */
     top: 0;
     bottom: var(--bk-root-offset-bottom);
+    contain: strict;
     &.bk-has-preview-open {
       @apply left-[445px];
-    }
-  }
-  .bk-main-canvas {
-    @apply shadow-xl absolute top-0 left-0 xl:w-[80vw] w-screen lg:w-full lg:min-w-[1280px] max-w-[1920px] pointer-events-none;
-    user-select: none;
-    /* image-rendering: crisp-edges; */
-    backface-visibility: hidden;
-    transform-origin: 0 0;
-    transform: translateZ(0);
-    /* contain: layout; */
-    /* will-change: translate, scale; */
-  }
-
-  .bk-artboard-scrollbar {
-    @apply fixed bg-mono-500/10 z-artboard-scrollbar rounded-full transition overflow-hidden;
-    button {
-      @apply bg-mono-500/50 block rounded-full;
-    }
-    --bk-artboard-scrollbar-padding: 1px;
-    --bk-artboard-scrollbar-size: 4px;
-    @screen md {
-      --bk-artboard-scrollbar-padding: 5px;
-      --bk-artboard-scrollbar-size: 10px;
-    }
-
-    &.bk-orientation-height {
-      width: var(--bk-artboard-scrollbar-size);
-      top: calc(
-        var(--bk-root-offset-top) + var(--bk-artboard-scrollbar-padding)
-      );
-      bottom: calc(
-        var(--bk-root-offset-bottom) + var(--bk-artboard-scrollbar-padding)
-      );
-      right: calc(
-        var(--bk-root-offset-right) + var(--bk-artboard-scrollbar-padding)
-      );
-
-      button {
-        @apply w-full;
-      }
-    }
-
-    &.bk-orientation-width {
-      height: var(--bk-artboard-scrollbar-size);
-      left: calc(
-        var(--bk-root-offset-left) + var(--bk-artboard-scrollbar-padding)
-      );
-      right: calc(
-        var(--bk-root-offset-right) + var(--bk-artboard-scrollbar-padding)
-      );
-      bottom: calc(
-        var(--bk-root-offset-bottom) + var(--bk-artboard-scrollbar-padding)
-      );
-      button {
-        @apply h-full;
-      }
-    }
-
-    &.bk-is-active,
-    &:hover {
-      @apply opacity-100 bg-mono-500/40;
-      button {
-        @apply bg-mono-600;
-      }
-    }
-
-    &.bk-is-active button,
-    button:hover {
-      @apply bg-mono-500;
     }
   }
 }

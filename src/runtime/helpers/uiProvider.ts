@@ -164,12 +164,11 @@ export default function (storage: StorageProvider): UiProvider {
   let resizeTimeout: any = null
 
   const onResize = () => {
-    viewportWidth.value = window.innerWidth
-    viewportHeight.value = window.innerHeight
-
     clearTimeout(resizeTimeout)
 
     resizeTimeout = setTimeout(() => {
+      viewportWidth.value = window.innerWidth
+      viewportHeight.value = window.innerHeight
       eventBus.emit('ui:resized')
     }, 400)
   }
@@ -277,11 +276,12 @@ export default function (storage: StorageProvider): UiProvider {
   })
 
   onMounted(() => {
+    document.documentElement.classList.add('bk-html-root')
+    document.body.classList.add('bk-body')
+    document.documentElement.classList.add('bk-is-artboard')
     viewportWidth.value = window.innerWidth
     viewportHeight.value = window.innerHeight
     window.addEventListener('resize', onResize)
-    document.documentElement.classList.add('bk-html-root')
-    document.body.classList.add('bk-body')
 
     const artboard = artboardElement()
     resizeObserver.observe(artboard)
@@ -290,6 +290,7 @@ export default function (storage: StorageProvider): UiProvider {
     window.removeEventListener('resize', onResize)
     document.documentElement.classList.remove('bk-html-root')
     document.body.classList.remove('bk-body')
+    document.documentElement.classList.remove('bk-is-artboard')
     clearTimeout(resizeTimeout)
     const artboard = artboardElement()
     resizeObserver.unobserve(artboard)

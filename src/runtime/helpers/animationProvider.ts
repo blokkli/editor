@@ -1,16 +1,35 @@
 import onBlokkliEvent from './composables/onBlokkliEvent'
 import useAnimationFrame from './composables/useAnimationFrame'
-import { onMounted, onBeforeUnmount } from '#imports'
+import {
+  computed,
+  onMounted,
+  onBeforeUnmount,
+  type ComputedRef,
+} from '#imports'
 import { eventBus } from '#blokkli/helpers/eventBus'
+import type { UiProvider } from './uiProvider'
+import type { ProgramInfo } from 'twgl.js'
 
 export type AnimationProvider = {
   /**
    * Request an animation loop. Should be called when UI state changes.
    */
   requestDraw: () => void
+
+  /**
+   * Get the WebGL rendering context.
+   */
+  gl: () => WebGLRenderingContext
+
+  setSharedUniforms: (
+    gl: WebGLRenderingContext,
+    programInfo: ProgramInfo,
+  ) => void
+
+  dpi: ComputedRef<number>
 }
 
-export default function (): AnimationProvider {
+export default function (ui: UiProvider): AnimationProvider {
   let mouseX = 0
   let mouseY = 0
 
@@ -38,20 +57,11 @@ export default function (): AnimationProvider {
     // before triggering the main animation loop event.
     eventBus.emit('animationFrame:before')
 
-    const el = document.getElementById('bk-animation-canvas')
-    const ctx = el instanceof HTMLCanvasElement ? el.getContext('2d') : null
-
-    if (ctx) {
-      const wrapperEl = document.querySelector('.bk-main-canvas')
-      if (wrapperEl instanceof HTMLElement) {
-        eventBus.emit('animationFrame', {
-          mouseX,
-          mouseY,
-          fieldAreas: [],
-          ctx,
-        })
-      }
-    }
+    eventBus.emit('animationFrame', {
+      mouseX,
+      mouseY,
+      fieldAreas: [],
+    })
   })
 
   onMounted(() => {
@@ -77,5 +87,58 @@ export default function (): AnimationProvider {
   onBlokkliEvent('option:update', requestDraw)
   onBlokkliEvent('state:reloaded', requestDraw)
 
-  return { requestDraw }
+  const dpi = computed(() => {
+    return 2.0
+    return 2.5
+    if (ui.isMobile.value) {
+      return window.devicePixelRatio
+    }
+    return Math.min(window.devicePixelRatio, 2.5)
+  })
+
+  function setSharedUniforms(
+    gl: WebGLRenderingContext,
+    programInfo: ProgramInfo,
+  ) {
+    const resolution = [ui.viewport.value.width, ui.viewport.value.height]
+    gl.uniform2fv(
+      gl.getUniformLocation(programInfo.program, 'u_resolution'),
+      resolution,
+    )
+
+    const offset = ui.artboardOffset.value
+    gl.uniform1f(
+      gl.getUniformLocation(programInfo.program, 'u_offset_x'),
+      offset.x,
+    )
+    gl.uniform1f(
+      gl.getUniformLocation(programInfo.program, 'u_offset_y'),
+      offset.y,
+    )
+    gl.uniform1f(
+      gl.getUniformLocation(programInfo.program, 'u_scale'),
+      ui.artboardScale.value,
+    )
+    gl.uniform1f(gl.getUniformLocation(programInfo.program, 'u_dpi'), dpi.value)
+  }
+
+  return {
+    requestDraw,
+    gl: function () {
+      const el = document.querySelector('#bk-animation-canvas-webgl')
+      if (!(el instanceof HTMLCanvasElement)) {
+        throw new TypeError('Failed to locate WebGL canvas.')
+      }
+      const gl = el.getContext('webgl2', {
+        premultipliedAlpha: true,
+      })
+      if (!gl) {
+        throw new Error('Failed to get WebGL context.')
+      }
+
+      return gl
+    },
+    setSharedUniforms,
+    dpi,
+  }
 }

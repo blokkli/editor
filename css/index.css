@@ -38,6 +38,7 @@
 @import './partials/Error.css';
 @import './partials/Translations.css';
 @import './partials/AnimationCanvas.css';
+@import './partials/Scrollbar.css';
 @import './indicator.css';
 
 @tailwind base;
@@ -92,27 +93,17 @@ html {
   }
 }
 
-.bk-draggable {
-  @apply select-none;
-  -webkit-touch-callout: none;
-  -webkit-user-drag: none;
-  * {
-    @apply select-none;
-    -webkit-touch-callout: none;
-    -webkit-user-drag: none;
-  }
-}
-
 .bk-body {
   .bk-main-canvas {
-    @apply select-none;
-    -webkit-touch-callout: none;
-    -webkit-user-drag: none;
-    * {
-      @apply select-none;
-      -webkit-touch-callout: none;
-      -webkit-user-drag: none;
-    }
+    @apply fixed top-0 left-0 xl:w-[80vw] w-screen lg:w-full lg:min-w-[1280px] max-w-[1920px] pointer-events-none z-10;
+    background: white;
+    user-select: none;
+    image-rendering: crisp-edges;
+    backface-visibility: hidden;
+    transform-origin: 0 0;
+    transform: translate3d(0, 0, 0);
+    will-change: translate, scale;
+    contain: layout paint inline-size style;
   }
 }
 
@@ -221,12 +212,6 @@ html {
   min-height: 30px;
 }
 
-.bk-body {
-  .bk-main-canvas {
-    background: white;
-  }
-}
-
 .bk .bk-blokkli-item-label {
   @apply flex items-center text-mono-700 text-left;
   > div {
@@ -246,12 +231,6 @@ html {
 
 .bk-blokkli-item-label-icon {
   @apply w-25 h-25 border rounded bg-mono-100 flex items-center justify-center text-mono-500 mr-[7px] relative z-20 border-mono-300;
-}
-
-.bk-html-root {
-  .bk-draggable {
-    scroll-margin: calc(var(--bk-root-offset-top) + 20px);
-  }
 }
 
 .bk-scrollbar-dark {
@@ -401,10 +380,6 @@ html.bk-hide-non-editable {
   &:after {
     @apply !hidden;
   }
-}
-
-[data-blokkli-provider-active='true'] {
-  @apply pointer-events-auto;
 }
 
 .bk-body {

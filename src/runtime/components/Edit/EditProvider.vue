@@ -16,10 +16,9 @@
     :key="route.fullPath"
     @loaded="featuresLoaded = true"
   />
-  <DragInteractions v-if="!isInitializing">
-    <slot :mutated-entity="mutatedEntity" />
-  </DragInteractions>
-  <AnimationCanvas />
+  <DragInteractions v-if="!isInitializing" />
+  <AnimationCanvas v-if="!isInitializing" />
+  <slot :mutated-entity="mutatedEntity" />
 </template>
 
 <script lang="ts" setup generic="T">
@@ -107,11 +106,11 @@ const commands = commandsProvider()
 const tour = tourProvider()
 const dropAreas = dropAreasProvider()
 const broadcast = broadcastProvider()
-const animation = animationProvider()
-const keyboard = keyboardProvider(animation)
-const dom = domProvider()
 const storage = storageProvider()
 const ui = uiProvider(storage)
+const dom = domProvider(ui)
+const animation = animationProvider(ui)
+const keyboard = keyboardProvider(animation)
 const $t = textProvider(context)
 const state = await editStateProvider(adapter, context)
 const selection = selectionProvider(dom, state, ui, theme)
