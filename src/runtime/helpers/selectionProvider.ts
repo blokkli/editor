@@ -6,13 +6,11 @@ import {
   type ComputedRef,
   computed,
   ref,
-  onMounted,
-  onBeforeUnmount,
   watch,
   nextTick,
 } from '#imports'
 
-import type { DraggableExistingBlock, DraggingMode } from '#blokkli/types'
+import type { DraggableExistingBlock, InteractionMode } from '#blokkli/types'
 import {
   findElement,
   buildDraggableItem,
@@ -20,9 +18,6 @@ import {
   modulo,
   intersects,
   getBounds,
-  originatesFromEditable,
-  getOriginatingDroppableElement,
-  mapDroppableField,
   onlyUnique,
 } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
@@ -227,7 +222,12 @@ export type SelectionProvider = {
   /**
    * Whether the user is currently dragging a block.
    */
-  draggingMode: Readonly<Ref<DraggingMode | null>>
+  draggingMode: Readonly<Ref<InteractionMode | null>>
+
+  /**
+   * Whether the user is currently dragging a block.
+   */
+  interactionMode: Readonly<Ref<InteractionMode | null>>
 
   /**
    * Whether the user is currently in multi select mode.
@@ -256,10 +256,11 @@ export default function (
 ): SelectionProvider {
   const selectedUuids = ref<string[]>([])
   const activeFieldKey = ref('')
-  const draggingMode = ref<DraggingMode | null>(null)
+  const draggingMode = ref<InteractionMode | null>(null)
   const editableActive = ref(false)
   const isChangingOptions = ref(false)
   const isMultiSelecting = ref(false)
+  const interactionMode = ref<InteractionMode>('mouse')
 
   const isDragging = computed(() => !!draggingMode.value)
 
@@ -317,45 +318,6 @@ export default function (
     selectItems([uuid])
   }
 
-  function onWindowMouseDown(e: MouseEvent) {
-    if (e.button !== 0) {
-      return
-    }
-    if (e.ctrlKey || isDragging.value) {
-      return
-    }
-    // @TODO: Refactor.
-    if (e.target && e.target instanceof Element) {
-      if (e.target.closest('.bk-blokkli-item-actions')) {
-        return
-      }
-      if (e.target.closest('.bk-control')) {
-        return
-      }
-      if (e.target.closest('.bk-sidebar')) {
-        return
-      }
-      if (e.target.closest('.bk-sidebar-detached')) {
-        return
-      }
-      if (e.target.closest("[data-blokkli-provider-active='true']")) {
-        return
-      }
-
-      const closestField = e.target.closest('[data-field-key]')
-      if (closestField && closestField instanceof HTMLElement) {
-        activeFieldKey.value = closestField.dataset.fieldKey || ''
-      } else {
-        activeFieldKey.value = ''
-      }
-      if (editableActive.value) {
-        eventBus.emit('editable:save')
-      }
-    }
-    eventBus.emit('window:clickAway')
-    unselectItems()
-  }
-
   const selectInList = (prev?: boolean) => {
     const items = dom.getAllBlocks()
     if (!items.length) {
@@ -380,20 +342,11 @@ export default function (
 
   const setActiveFieldKey = (key: string) => (activeFieldKey.value = key)
 
-  watch(isMultiSelecting, (is) => {
-    if (is) {
-      document.documentElement.style.cursor = 'crosshair'
-      document.body.style.pointerEvents = 'none'
-    } else {
-      document.documentElement.style.cursor = 'auto'
-      document.body.style.pointerEvents = 'auto'
-    }
-  })
-
   onBlokkliEvent('select', onSelect)
-  onBlokkliEvent('select:start', (uuids) => {
-    selectedUuids.value = (uuids || []).filter(onlyUnique)
+  onBlokkliEvent('select:start', (e) => {
+    selectedUuids.value = (e.uuids || []).filter(onlyUnique)
     isMultiSelecting.value = true
+    interactionMode.value = e.mode
   })
   onBlokkliEvent('select:toggle', (uuid) => {
     if (selectedUuids.value.includes(uuid)) {
@@ -442,12 +395,9 @@ export default function (
     draggingMode.value = null
   })
 
-  onMounted(() => {
-    document.documentElement.addEventListener('mousedown', onWindowMouseDown)
-  })
-
-  onBeforeUnmount(() => {
-    document.documentElement.removeEventListener('mousedown', onWindowMouseDown)
+  onBlokkliEvent('window:clickAway', () => {
+    unselectItems()
+    activeFieldKey.value = ''
   })
 
   return {
@@ -460,5 +410,6 @@ export default function (
     isChangingOptions,
     isMultiSelecting,
     draggingMode,
+    interactionMode,
   }
 }

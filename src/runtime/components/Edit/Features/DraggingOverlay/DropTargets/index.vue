@@ -1,12 +1,7 @@
 <template>
-  <Teleport to="#nuxt-root">
+  <Teleport to="body">
     <div class="bk-drop-targets-canvas">
-      <canvas
-        ref="canvas"
-        v-bind="canvasAttributes"
-        @click.stop.prevent="onClick"
-        @touchstart="onTouchStart"
-      />
+      <canvas ref="canvas" v-bind="canvasAttributes" />
     </div>
     <svg xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox"></svg>
     <slot :color="active?.color" :label="active?.label"></slot>
@@ -29,7 +24,7 @@ import type {
   DropArea,
   Rectangle,
 } from '#blokkli/types'
-import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+import { ref, computed, useBlokkli } from '#imports'
 
 type Orientation = 'horizontal' | 'vertical'
 
@@ -66,7 +61,11 @@ const props = defineProps<{
   isTouch: boolean
 }>()
 
-let dragStart = Date.now()
+const dragStart = Date.now()
+
+const cursorIsInsideClipped = computed(() =>
+  isInsideRect(props.mouseX, props.mouseY, ui.visibleViewport.value),
+)
 
 let drawnRects: DrawnRect[] = []
 const active = ref<DrawnRect | null>(null)
@@ -134,27 +133,18 @@ const canvasAttributes = computed(() => {
   }
 })
 
-const onTouchStart = (e: TouchEvent) => {
-  const touch = e.touches[0]
-  const match = drawnRects.find((v) =>
-    isInsideRect(touch.clientX, touch.clientY, v),
-  )
+onBlokkliEvent('mouse:down', (e) => {
+  const match = drawnRects.find((v) => isInsideRect(e.x, e.y, v))
   active.value = match || null
-}
+})
 
-const onTouchEnd = () => {
-  active.value = null
-}
-
-const onClick = (e: MouseEvent) => {
-  e.preventDefault()
-  e.stopPropagation()
-  const match = drawnRects.find((v) => isInsideRect(e.clientX, e.clientY, v))
-  if (match) {
-    active.value = match
+onBlokkliEvent('mouse:up', (e) => {
+  if (e.distance > 7 && active.value) {
     emitDrop()
+    return
   }
-}
+  active.value = null
+})
 
 const emitDrop = async () => {
   const timeDelta = Date.now() - dragStart
@@ -192,14 +182,6 @@ const emitDrop = async () => {
 
   eventBus.emit('dragging:end')
   eventBus.emit('item:dropped')
-}
-
-const onMouseUp = (e: MouseEvent) => {
-  if (active.value) {
-    e.preventDefault()
-    e.stopPropagation()
-    emitDrop()
-  }
 }
 
 function getChildrenOrientation(element: HTMLElement): Orientation {
@@ -586,6 +568,12 @@ onBlokkliEvent('animationFrame', () => {
     canvasAttributes.value.height,
   )
 
+  const clipRect = ui.visibleViewport.value
+
+  ctx.beginPath()
+  ctx.rect(clipRect.x, clipRect.y, clipRect.width, clipRect.height)
+  ctx.clip()
+
   const visibleAreas = Array.from(visibleDropAreas)
 
   ctx.strokeStyle = colorTeal
@@ -622,7 +610,11 @@ onBlokkliEvent('animationFrame', () => {
     }
     drawnRects.push(drawnRect)
 
-    if (!props.isTouch && intersects(props.box, drawnRect)) {
+    if (
+      cursorIsInsideClipped.value &&
+      !props.isTouch &&
+      intersects(props.box, drawnRect)
+    ) {
       intersectingRects.push(drawnRect)
     }
     if (active.value?.id === drawnRect.id) {
@@ -667,7 +659,11 @@ onBlokkliEvent('animationFrame', () => {
       }
       drawnRects.push(drawnRect)
 
-      if (!props.isTouch && intersects(props.box, drawnRect)) {
+      if (
+        cursorIsInsideClipped.value &&
+        !props.isTouch &&
+        intersects(props.box, drawnRect)
+      ) {
         intersectingRects.push(drawnRect)
       }
 
@@ -719,23 +715,4 @@ const getClosestDrawnRect = (
 
   return findClosestRectangle(x, y, rects)
 }
-
-onMounted(() => {
-  // document.body.classList.add('bk-is-dragging')
-  if (!props.isTouch) {
-    document.body.addEventListener('mouseup', onMouseUp)
-  }
-  document.body.addEventListener('touchend', onTouchEnd, {
-    capture: true,
-  })
-})
-
-onBeforeUnmount(() => {
-  // document.body.classList.remove('bk-is-dragging')
-  document.body.removeEventListener('mouseup', onMouseUp)
-  areasObserver.disconnect()
-  document.body.removeEventListener('touchend', onTouchEnd, {
-    capture: true,
-  })
-})
 </script>

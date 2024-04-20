@@ -1,5 +1,6 @@
 .bk-dragging-overlay {
-  @apply fixed bottom-auto top-0 left-0 pointer-events-none z-dragging-overlay rounded select-none will-change-transform;
+  @apply fixed bottom-auto top-0 left-0 pointer-events-none z-dragging-overlay rounded select-none will-change-transform cursor-grabbing;
+  z-index: 9999999999999 !important;
 
   * {
     @apply !pointer-events-none;
@@ -25,83 +26,6 @@
   }
   &.bk-is-active > div.bk-is-top {
     @apply !opacity-80;
-  }
-}
-
-.bk.bk-drop-targets {
-  @apply absolute top-0 left-0 w-full h-full z-drop-targets pointer-events-auto select-none;
-
-  .bk-drop-targets-field {
-    @apply absolute top-0 left-0;
-  }
-
-  .bk-drop-targets-field-child {
-    @apply border border-transparent;
-    @apply absolute rounded;
-    @apply transition duration-75;
-    @apply flex items-center justify-center;
-    @apply text-base font-semibold text-mono-500;
-
-    &.bk-is-nested {
-      &:before,
-      &:after {
-        @apply bg-accent-500;
-      }
-    }
-
-    &:not(.bk-is-nested) {
-      &:before,
-      &:after {
-        @apply bg-accent-900;
-      }
-    }
-
-    &:before {
-      content: '';
-      @apply absolute top-1/2 left-1/2 w-full h-full -translate-x-1/2 -translate-y-1/2 rounded;
-      @apply transition pointer-events-none;
-      @apply z-50;
-      @apply outline outline-2 outline-white;
-    }
-
-    &:after {
-      content: '';
-      @apply absolute pointer-events-none outline outline-2 outline-white;
-    }
-
-    &.bk-is-horizontal {
-      &:before {
-        @apply scale-x-0;
-        @apply max-w-[40px];
-      }
-      &:after {
-        @apply w-5 h-full top-0 left-1/2 -translate-x-1/2 rounded;
-      }
-    }
-
-    &.bk-is-vertical {
-      &:before {
-        @apply scale-y-0;
-      }
-      &:after {
-        @apply h-5 w-full top-1/2 left-0 -translate-y-1/2 rounded;
-      }
-    }
-
-    &.bk-is-active {
-      @apply z-50;
-      &:before {
-        @apply scale-100;
-      }
-    }
-
-    &.bk-is-horizontal {
-      @apply origin-left;
-    }
-
-    &.bk-is-vertical {
-      @apply origin-top;
-    }
   }
 }
 

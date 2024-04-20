@@ -2,12 +2,17 @@
   <Teleport to="body">
     <Transition name="bk-touch-bar">
       <Bar
-        v-if="selection.isMultiSelecting.value && ui.isMobile.value"
+        v-if="
+          selection.isMultiSelecting.value &&
+          selection.interactionMode.value === 'touch'
+        "
         :label="$t('touchBarFinishSelecting', 'Finish selecting')"
         @click="eventBus.emit('select:end', [...selection.uuids.value])"
       />
       <Bar
-        v-else-if="selection.isDragging.value && isTouch"
+        v-else-if="
+          selection.isDragging.value && selection.draggingMode.value === 'touch'
+        "
         :label="$t('touchBarCancelDragging', 'Cancel dragging')"
         danger
         @click="eventBus.emit('dragging:end')"
@@ -17,12 +22,10 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature, computed } from '#imports'
+import { useBlokkli, defineBlokkliFeature } from '#imports'
 import Bar from './Bar/index.vue'
 
-const { eventBus, selection, ui, $t } = useBlokkli()
-
-const isTouch = computed(() => selection.draggingMode.value === 'touch')
+const { eventBus, selection, $t } = useBlokkli()
 
 defineBlokkliFeature({
   id: 'touch-action-bar',

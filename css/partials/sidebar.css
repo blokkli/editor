@@ -142,6 +142,7 @@
 }
 
 html.bk-is-sidebar-interacting {
+  .bk-interaction-overlay,
   .bk-sidebar-detached,
   iframe,
   button,

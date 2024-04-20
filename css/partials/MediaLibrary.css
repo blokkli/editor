@@ -171,7 +171,7 @@
     }
 
     button {
-      @apply p-20 hover:bg-mono-100;
+      @apply p-20 hover:bg-mono-100 text-black;
 
       &:disabled {
         @apply text-mono-300 pointer-events-none;

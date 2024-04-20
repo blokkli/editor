@@ -745,8 +745,6 @@ export type Message = {
   message: string
 }
 
-export type DraggingMode = 'touch' | 'mouse'
-
 export type Size = {
   width: number
   height: number
@@ -762,7 +760,7 @@ export type Rectangle = Size & Coord
 export type DraggableStartEvent = {
   items: DraggableItem[]
   coords: Coord
-  mode: DraggingMode
+  mode: InteractionMode
 }
 
 export type MakeReusableEvent = {
@@ -866,6 +864,20 @@ export type ActionPlacedEvent = {
   field: BlokkliFieldElement
 }
 
+export type InteractionMode = 'mouse' | 'touch'
+
+export type GlobalPointerEvent = {
+  type: InteractionMode
+  x: number
+  y: number
+  distance: number
+}
+
+export type SelectStartEvent = {
+  uuids: string[]
+  mode: InteractionMode
+}
+
 export type EventbusEvents = {
   select: string
   'item:edit': EditBlockEvent
@@ -884,7 +896,7 @@ export type EventbusEvents = {
   reloadEntity: undefined
 
   // Selection.
-  'select:start': string[] | undefined
+  'select:start': SelectStartEvent
   'select:toggle': string
   'select:shiftToggle': string
   'select:end': string[] | undefined
@@ -922,6 +934,10 @@ export type EventbusEvents = {
   'ui:resized': undefined
   'add-list:change': undefined
   'window:clickAway': undefined
+
+  'mouse:down': GlobalPointerEvent
+  'mouse:move': GlobalPointerEvent
+  'mouse:up': GlobalPointerEvent
 }
 
 export type Eventbus = Emitter<EventbusEvents>

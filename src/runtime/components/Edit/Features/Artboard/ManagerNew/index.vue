@@ -119,7 +119,10 @@ const saveState = () => {
 }
 
 function getArtboard(): Artboard {
-  const v = new Artboard(ui.artboardElement(), ui.rootElement(), {
+  const rootEl = document.querySelector(
+    '.bk-interaction-overlay',
+  ) as HTMLElement
+  const v = new Artboard(ui.artboardElement(), rootEl, {
     x: savedState.value?.offset.x,
     y: savedState.value?.offset.y,
     scale: savedState.value?.scale,

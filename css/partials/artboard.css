@@ -67,14 +67,6 @@
     /* will-change: translate, scale; */
   }
 
-  .bk-body.bk-is-pressing-space {
-    @apply cursor-move;
-    .bk-main-canvas,
-    .bk-draggable-list-container * {
-      @apply !pointer-events-none;
-    }
-  }
-
   .bk-artboard-scrollbar {
     @apply fixed bg-mono-500/10 z-artboard-scrollbar rounded-full transition overflow-hidden;
     button {

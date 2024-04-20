@@ -15,34 +15,54 @@
         }}
       </p>
       <div class="bk bk-library-dialog-form">
-        <label class="bk-form-label" for="library_search">
-          {{ $t('libraryPlaceSearchLabel', 'Filter library items') }}
-        </label>
-        <input
-          id="library_search"
-          v-model="searchText"
-          type="text"
-          class="bk-form-input"
-          :placeholder="
-            $t('libraryPlaceSearchInputPlaceholder', 'Search library items')
-          "
-          required
-        />
+        <div class="bk-form-group">
+          <div>
+            <label class="bk-form-label" for="library_search">
+              {{ $t('libraryPlaceSearchLabel', 'Filter library items') }}
+            </label>
+            <input
+              id="library_search"
+              v-model="searchText"
+              type="text"
+              class="bk-form-input"
+              :placeholder="
+                $t('libraryPlaceSearchInputPlaceholder', 'Search library items')
+              "
+              required
+            />
+          </div>
+          <div>
+            <label class="bk-form-label" for="library_bundle">
+              {{ $t('libraryPlaceBundleSelectLabel', 'Bundle') }}
+            </label>
+            <select
+              id="library_bundle"
+              v-model="selectedBundle"
+              class="bk-form-input"
+              @change="buildElements"
+            >
+              <option
+                v-for="v in bundleOptions"
+                :key="v.bundle"
+                :value="v.bundle"
+              >
+                {{ v.label }}
+              </option>
+            </select>
+          </div>
+        </div>
       </div>
-      <ul class="bk-library-dialog-list">
+      <ul ref="listEl" class="bk-library-dialog-list">
         <li
           v-for="item in data"
+          v-show="visible === null || visible.includes(item.uuid)"
           :key="item.uuid"
           :class="{
             'bk-is-selected': selectedItem === item.uuid,
           }"
           @click="selectedItem = item.uuid"
         >
-          <LibraryListItem
-            v-show="visible === null || visible.includes(item.uuid)"
-            :data-sortli-id="item.uuid"
-            v-bind="item"
-          />
+          <LibraryListItem v-bind="item" />
         </li>
       </ul>
     </div>
@@ -66,12 +86,14 @@ const props = defineProps<{
 }>()
 
 const { $t, adapter, types } = useBlokkli()
+
 const emit = defineEmits<{
   (e: 'close'): void
   (e: 'submit', uuid: string): void
 }>()
 
 const searchText = ref('')
+const selectedBundle = ref('all')
 const listEl = ref<HTMLDivElement | null>(null)
 const selectedItem = ref('')
 
@@ -96,29 +118,35 @@ const onClose = () => {
   emit('close')
 }
 
-const { data } = await useAsyncData<LibraryItem[]>(() =>
-  adapter.getLibraryItems!(allowedBundles.value),
+const { data } = await useAsyncData<LibraryItem[]>(
+  () => adapter.getLibraryItems!(allowedBundles.value),
+  {
+    default: () => [],
+  },
 )
 
 type SearchElement = {
   uuid: string
   text: string
+  bundle: string
 }
 
 const elements = ref<SearchElement[]>([])
 
 const buildElements = () => {
-  if (!listEl.value) {
+  if (!listEl.value || elements.value.length) {
     return
   }
   elements.value = [...listEl.value.querySelectorAll('.bk-library-list-item')]
     .map((el) => {
       if (el instanceof HTMLElement) {
         const uuid = el.dataset.libraryItemUuid
-        if (uuid) {
+        const bundle = el.dataset.itemBundle
+        if (uuid && bundle) {
           return {
             uuid,
             text: el.innerText.toLowerCase(),
+            bundle,
           }
         }
       }
@@ -132,13 +160,46 @@ watch(searchText, () => {
   }
 })
 
-const visible = computed<string[] | null>(() => {
-  if (!searchText.value || !elements.value.length) {
-    return null
-  }
+const bundleOptions = computed(() => {
+  const bundles = Object.values(
+    data.value?.reduce<Record<string, { bundle: string; label: string }>>(
+      (acc, item) => {
+        if (!acc[item.bundle]) {
+          const definition = types.getType(item.bundle)
+          acc[item.bundle] = {
+            bundle: item.bundle,
+            label: definition?.label || item.bundle,
+          }
+        }
+        return acc
+      },
+      {},
+    ),
+  )
 
-  return elements.value
-    .filter((v) => v.text.includes(searchText.value.toLowerCase()))
-    .map((v) => v.uuid)
+  return [{ bundle: 'all', label: $t('all', 'All') }, ...bundles]
+})
+
+const visible = computed<string[] | null>(() => {
+  if (searchText.value || selectedBundle.value !== 'all') {
+    return elements.value
+      .filter((v) => {
+        if (searchText.value) {
+          if (!v.text.includes(searchText.value.toLowerCase())) {
+            return false
+          }
+        }
+
+        if (selectedBundle.value !== 'all') {
+          if (v.bundle !== selectedBundle.value) {
+            return false
+          }
+        }
+
+        return true
+      })
+      .map((v) => v.uuid)
+  }
+  return null
 })
 </script>

@@ -19,16 +19,9 @@ export default function (): AnimationProvider {
   // render a maximum of 2 seconds.
   let iterator = 120
 
-  const onMouseMoveGlobal = (e: MouseEvent) => {
+  const onPointerMove = (e: PointerEvent) => {
     mouseX = e.clientX
     mouseY = e.clientY
-    iterator = 120
-  }
-
-  const onTouchMoveGlobal = (e: TouchEvent) => {
-    const touch = e.touches[0]
-    mouseX = touch.pageX
-    mouseY = touch.pageY
     iterator = 120
   }
 
@@ -58,17 +51,13 @@ export default function (): AnimationProvider {
   onMounted(() => {
     document.addEventListener('scroll', requestDraw)
     document.body.addEventListener('wheel', requestDraw, { passive: false })
-    window.addEventListener('mousemove', onMouseMoveGlobal, {
-      passive: false,
-    })
-    window.addEventListener('touchmove', onTouchMoveGlobal, {
+    window.addEventListener('pointermove', onPointerMove, {
       passive: false,
     })
   })
 
   onBeforeUnmount(() => {
-    window.removeEventListener('mousemove', onMouseMoveGlobal)
-    window.removeEventListener('touchmove', onTouchMoveGlobal)
+    window.removeEventListener('pointermove', onPointerMove)
     document.body.removeEventListener('wheel', requestDraw)
     document.removeEventListener('scroll', requestDraw)
   })

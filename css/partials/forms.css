@@ -53,4 +53,11 @@
       @apply border-t pt-20 my-20 border-t-mono-300;
     }
   }
+
+  .bk-form-group {
+    @apply flex gap-5 my-20;
+    > div {
+      @apply flex-1;
+    }
+  }
 }

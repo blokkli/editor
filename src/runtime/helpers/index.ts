@@ -7,6 +7,7 @@ import type {
   DroppableEntityField,
   DraggableExistingBlock,
   EntityContext,
+  Coord,
 } from '#blokkli/types'
 import { useRuntimeConfig } from '#imports'
 import { getDefinition } from '#blokkli/definitions'
@@ -355,6 +356,12 @@ export function distanceToRectangle(
   return Math.sqrt(dx * dx + dy * dy)
 }
 
+export function getDistance(a: Coord, b: Coord) {
+  const dx = a.x - b.x
+  const dy = a.y - b.y
+  return Math.sqrt(dx * dx + dy * dy)
+}
+
 export const parseColorString = (color: string): RGB | undefined => {
   const rgbaRegex =
     /^rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})(?:,\s*(0|1|0?\.\d+))?\)$/
@@ -697,4 +704,18 @@ export const originatesFromTextInput = (e: Event): boolean =>
 
 export function getFieldKey(uuid: string, fieldName: string) {
   return uuid + ':' + fieldName
+}
+
+export function getInteractionCoordinates(e: MouseEvent | TouchEvent): Coord {
+  if ('touches' in e) {
+    const touch = e.touches[0] || e.changedTouches[0]
+    return {
+      x: touch.clientX,
+      y: touch.clientY,
+    }
+  }
+  return {
+    x: e.clientX,
+    y: e.clientY,
+  }
 }

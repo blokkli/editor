@@ -8,14 +8,8 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  ref,
-  useBlokkli,
-  onMounted,
-  onBeforeUnmount,
-  defineBlokkliFeature,
-  computed,
-} from '#imports'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { ref, useBlokkli, defineBlokkliFeature, computed } from '#imports'
 import Overlay from './Overlay/index.vue'
 
 defineBlokkliFeature({
@@ -42,88 +36,27 @@ const onSelect = (uuids: string[]) => {
   eventBus.emit('select:end', uuids)
 }
 
-function shouldStartMultiSelect(target: Element): boolean {
-  if (!enabled.value) {
-    return false
-  }
-  const isInsideControl = !!target.closest('.bk-control')
-  if (isInsideControl) {
-    return false
-  }
+let startTimeout: any = null
 
-  const isInSidebar = !!target.closest('.bk-sidebar')
-  if (isInSidebar) {
-    return false
-  }
-
-  const isInBlock = !!target.closest('[data-uuid]')
-  if (isInBlock) {
-    return false
-  }
-
-  return true
-}
-
-function onWindowMouseUp(e: MouseEvent) {
-  if (shouldRender.value) {
-    e.preventDefault()
-    e.stopImmediatePropagation()
-  }
-  shouldRender.value = false
-  window.removeEventListener('mousemove', onWindowMouseMove)
-  window.removeEventListener('mouseup', onWindowMouseUp)
-}
-
-function onWindowMouseMove(e: MouseEvent) {
-  e.preventDefault()
-  e.stopPropagation()
-
-  const diffX = Math.abs(downX.value - e.clientX)
-  const diffY = Math.abs(downY.value - e.clientY)
-  if (diffX > 3 || diffY > 3) {
-    shouldRender.value = true
-  }
-}
-
-function onWindowMouseDown(e: MouseEvent) {
-  if (
-    e.ctrlKey ||
-    keyboard.isPressingSpace.value ||
-    keyboard.isPressingControl.value ||
-    !enabled.value ||
-    selection.isDragging.value ||
-    e.button !== 0
-  ) {
+onBlokkliEvent('mouse:down', (e) => {
+  if (!enabled.value || e.type !== 'mouse') {
     return
   }
-  if (e.target && e.target instanceof Element) {
-    if (shouldStartMultiSelect(e.target)) {
-      downX.value = e.clientX
-      downY.value = e.clientY
-      window.addEventListener('mousemove', onWindowMouseMove)
-      window.addEventListener('mouseup', onWindowMouseUp, { capture: true })
-    }
+  if (keyboard.isPressingSpace.value || keyboard.isPressingControl.value) {
+    return
   }
-}
+  clearTimeout(startTimeout)
+  downX.value = e.x
+  downY.value = e.y
 
-const cleanup = () => {
-  window.removeEventListener('mousemove', onWindowMouseMove)
-  window.removeEventListener('mousedown', onWindowMouseDown)
-  window.removeEventListener('mouseup', onWindowMouseUp, { capture: true })
-}
-
-const init = () => {
-  cleanup()
-  window.addEventListener('mousedown', onWindowMouseDown)
-  window.addEventListener('mouseup', onWindowMouseUp, { capture: true })
-}
-
-onMounted(() => {
-  init()
+  startTimeout = setTimeout(() => {
+    shouldRender.value = true
+  }, 100)
 })
 
-onBeforeUnmount(() => {
-  cleanup()
+onBlokkliEvent('mouse:up', () => {
+  shouldRender.value = false
+  clearTimeout(startTimeout)
 })
 </script>
 

@@ -334,6 +334,7 @@ const onMouseUp = (e: MouseEvent) => {
   e.preventDefault()
   e.stopPropagation()
   if (!ui.isMobile.value) {
+    console.log('DRAGGING END EMIT')
     eventBus.emit('dragging:end')
   }
 }
@@ -349,8 +350,9 @@ onBlokkliEvent('dragging:start', (e) => {
   if ('element' in item) {
     eventBus.on('animationFrame', loop)
     if (!isTouching.value) {
-      document.removeEventListener('mouseup', onMouseUp)
-      document.addEventListener('mouseup', onMouseUp)
+      console.log('Add event listener')
+      document.removeEventListener('pointerup', onMouseUp)
+      document.addEventListener('pointerup', onMouseUp)
     }
   }
   dragItems.value = e.items
@@ -360,12 +362,12 @@ onBlokkliEvent('dragging:end', () => {
   isVisible.value = false
   dragItems.value = []
   eventBus.off('animationFrame', loop)
-  document.removeEventListener('mouseup', onMouseUp)
+  document.removeEventListener('pointerup', onMouseUp)
 })
 
 onBlokkliEvent('keyPressed', (e) => {
   if (e.code === 'Escape') {
-    document.removeEventListener('mouseup', onMouseUp)
+    document.removeEventListener('pointerup', onMouseUp)
     eventBus.emit('dragging:end')
   }
 })
@@ -375,7 +377,7 @@ onBlokkliEvent('block:append', (e) => {
 })
 
 onUnmounted(() => {
-  document.removeEventListener('mouseup', onMouseUp)
+  document.removeEventListener('pointerup', onMouseUp)
 })
 </script>
 

@@ -408,6 +408,7 @@ export class Artboard {
       e.preventDefault()
       this.onDragStart([e])
       this.listeners.onMouseMove = this.onMouseMove.bind(this)
+      document.removeEventListener('mousemove', this.listeners.onMouseMove)
       document.addEventListener('mousemove', this.listeners.onMouseMove)
     }
   }
@@ -861,7 +862,7 @@ export class Artboard {
   }
 
   scrollPageDown() {
-    this.animateOrJumpBy(this.rootSize.height)
+    this.animateOrJumpBy(-this.rootSize.height)
   }
 
   scrollPageLeft() {

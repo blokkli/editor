@@ -1,209 +1,312 @@
 <template>
   <slot></slot>
+  <Teleport to="body">
+    <div
+      class="bk-interaction-overlay"
+      :style="overlayStyle"
+      @pointerdown="onPointerDown"
+      @pointerup="onPointerUp"
+      @pointermove="onPointerMove"
+    />
+  </Teleport>
 </template>
 
 <script setup lang="ts">
-import { originatesFromEditable } from '#blokkli/helpers'
+import { getDistance, getInteractionCoordinates } from '#blokkli/helpers'
 import type { Coord } from '#blokkli/types'
-import { onBeforeUnmount, onMounted, useBlokkli } from '#imports'
+import { useBlokkli, computed } from '#imports'
 
-const { dom, eventBus, selection, keyboard } = useBlokkli()
+const { dom, eventBus, selection, keyboard, ui } = useBlokkli()
 
-const rootEl = dom.getActiveProviderElement()
+const cursor = computed(() => {
+  if (selection.isMultiSelecting.value) {
+    return 'crosshair'
+  } else if (keyboard.isPressingSpace.value) {
+    return 'move'
+  }
+
+  return 'default'
+})
+
+const overlayStyle = computed(() => {
+  return {
+    top: ui.visibleViewport.value.y + 'px',
+    left: ui.visibleViewport.value.x + 'px',
+    width: ui.visibleViewport.value.width + 'px',
+    height: ui.visibleViewport.value.height + 'px',
+    cursor: cursor.value,
+  }
+})
+
+type InteractedElement = {
+  uuid?: string
+  editableFieldName?: string
+  timestamp: number
+  x: number
+  y: number
+}
+
+let lastInteractedElement: InteractedElement | null = null
+let mouseStartCoordinates: Coord | null = null
+
+function getInteractedElement(
+  e: MouseEvent | TouchEvent,
+): InteractedElement | null {
+  const { x, y } = getInteractionCoordinates(e)
+  const elements = document.elementsFromPoint(x, y)
+
+  let editableFieldName = ''
+  let uuid = ''
+
+  for (let i = 0; i < elements.length; i++) {
+    const el = elements[i]
+    if (!(el instanceof HTMLElement)) {
+      continue
+    }
+    if (el.dataset.blokkliEditableField) {
+      editableFieldName = el.dataset.blokkliEditableField
+    }
+    if (!el.dataset.uuid) {
+      continue
+    }
+    const block = dom.findBlock(el.dataset.uuid)
+    if (!block) {
+      continue
+    }
+    const draggableEl = block.dragElement()
+    if (el !== draggableEl && !elements.includes(draggableEl)) {
+      continue
+    }
+    uuid = el.dataset.uuid
+    break
+  }
+
+  if (editableFieldName || uuid) {
+    return { editableFieldName, uuid, timestamp: Date.now(), x, y }
+  }
+
+  return null
+}
+
+function onPointerMove(e: PointerEvent) {
+  if (e.pointerType === 'touch') {
+    return onTouchMove(e)
+  }
+  if (e.buttons !== 1) {
+    return
+  }
+  const coords = getInteractionCoordinates(e)
+  const distance = mouseStartCoordinates
+    ? getDistance(mouseStartCoordinates, coords)
+    : 0
+  eventBus.emit('mouse:move', {
+    x: e.clientX,
+    y: e.clientY,
+    type: 'mouse',
+    distance,
+  })
+  if (
+    !selection.uuids.value.length ||
+    !mouseStartCoordinates ||
+    selection.isDragging.value
+  ) {
+    return
+  }
+
+  const diffX = Math.abs(mouseStartCoordinates.x - e.clientX)
+  const diffY = Math.abs(mouseStartCoordinates.y - e.clientY)
+  // Only start dragging if at least 6px in any direction were moved.
+  if (diffX > 6 || diffY > 6) {
+    const interacted = getInteractedElement(e)
+    if (
+      interacted &&
+      interacted.uuid &&
+      selection.uuids.value.includes(interacted.uuid)
+    ) {
+      eventBus.emit('dragging:start', {
+        items: [...selection.blocks.value],
+        coords: { x: e.clientX, y: e.clientY },
+        mode: 'mouse',
+      })
+    }
+  }
+}
+
+function onPointerDown(e: PointerEvent) {
+  if (e.pointerType === 'touch') {
+    return onTouchStart(e)
+  }
+  const coords = { x: e.clientX, y: e.clientY }
+  mouseStartCoordinates = coords
+  const interacted = getInteractedElement(e)
+  if (interacted) {
+    return
+  }
+  eventBus.emit('mouse:down', { ...coords, type: 'mouse', distance: 0 })
+}
+
+function onPointerUp(e: PointerEvent) {
+  // This is required because emitting the mouse:up event would set this value to false.
+  const wasDragging = selection.isDragging.value
+  const wasMultiSelecting = selection.isMultiSelecting.value
+
+  if (e.pointerType === 'touch') {
+    return onTouchEnd(e)
+  }
+  const coords = getInteractionCoordinates(e)
+  const distance = mouseStartCoordinates
+    ? getDistance(mouseStartCoordinates, coords)
+    : 0
+  eventBus.emit('mouse:up', {
+    x: e.clientX,
+    y: e.clientY,
+    type: 'mouse',
+    distance,
+  })
+
+  // Prevents selecting the block under the current pointer position when dragging or multi selecting is ending.
+  if (wasDragging || wasMultiSelecting) {
+    return
+  }
+  if (keyboard.isPressingSpace.value) {
+    return
+  }
+  if (selection.editableActive.value) {
+    eventBus.emit('editable:save')
+    lastInteractedElement = null
+    return
+  }
+  const clicked = getInteractedElement(e)
+
+  // Handle double clicking.
+  if (
+    clicked?.uuid &&
+    lastInteractedElement &&
+    clicked.uuid === lastInteractedElement.uuid
+  ) {
+    const deltaTime = Date.now() - lastInteractedElement.timestamp
+    const deltaX = Math.abs(lastInteractedElement.x - e.clientX)
+    const deltaY = Math.abs(lastInteractedElement.y - e.clientY)
+    if (deltaTime < 400 && deltaX < 3 && deltaY < 3) {
+      if (clicked.editableFieldName) {
+        eventBus.emit('editable:focus', {
+          fieldName: clicked.editableFieldName,
+          uuid: clicked.uuid,
+        })
+        return
+      }
+    }
+  }
+  lastInteractedElement = clicked
+  if (clicked?.uuid) {
+    if (keyboard.isPressingControl.value || selection.isMultiSelecting.value) {
+      // Toggle the clicked block.
+      eventBus.emit('select:toggle', clicked.uuid)
+    } else if (keyboard.isPressingShift.value) {
+      eventBus.emit('select:shiftToggle', clicked.uuid)
+    } else {
+      eventBus.emit('select', clicked.uuid)
+    }
+    return
+  }
+  eventBus.emit('window:clickAway')
+}
 
 let longPressTimeout: any = null
 
-const findBlock = (targets: EventTarget[]) => {
-  for (let i = 0; i < targets.length; i++) {
-    const target = targets[i]
-    if (target instanceof HTMLElement) {
-      if (target.dataset.elementType === 'existing') {
-        const uuid = target.dataset.uuid
-        if (uuid) {
-          return uuid
-        }
-      }
-    }
-  }
-}
+let touchStartInteraction: InteractedElement | null = null
+let touchStartCoords: Coord | null = null
+let longPressInteraction: InteractedElement | null = null
 
-function onClick(e: MouseEvent) {
-  // Generally prevent anything from happening on click. This should catch any links, including <NuxtLink>.
-  e.preventDefault()
-  e.stopImmediatePropagation()
-}
-
-function handleBlockClick(uuid: string) {
-  if (keyboard.isPressingControl.value || selection.isMultiSelecting.value) {
-    eventBus.emit('select:toggle', uuid)
-  } else {
-    eventBus.emit('select', uuid)
-  }
-}
-
-function onMouseUp(e: MouseEvent) {
-  rootEl.removeEventListener('mousemove', onMouseMove)
+function onTouchStart(e: PointerEvent) {
+  longPressInteraction = null
+  const coords = getInteractionCoordinates(e)
+  touchStartCoords = coords
+  eventBus.emit('mouse:down', { ...coords, type: 'touch', distance: 0 })
   if (selection.isDragging.value) {
     return
   }
-  const uuid = findBlock(e.composedPath())
-  if (!uuid) {
-    return
-  }
-  e.stopPropagation()
-  handleBlockClick(uuid)
-}
-
-let touchStartCoordinates: Coord | null = null
-
-function onTouchStart(e: TouchEvent) {
   clearTimeout(longPressTimeout)
-  window.removeEventListener('touchmove', onTouchMove)
 
-  const uuid = findBlock(e.composedPath())
-  if (!uuid) {
+  const interacted = getInteractedElement(e)
+  if (!interacted?.uuid) {
     return
   }
 
-  rootEl.addEventListener('touchmove', onTouchMove)
-  touchStartCoordinates = { x: e.touches[0].clientX, y: e.touches[0].clientY }
+  touchStartInteraction = interacted
 
   longPressTimeout = setTimeout(() => {
-    rootEl.removeEventListener('touchmove', onTouchMove)
     // Block is already selected. Start dragging.
-    if (selection.uuids.value.includes(uuid) && touchStartCoordinates) {
-      eventBus.emit('dragging:start', {
-        items: [...selection.blocks.value],
-        coords: touchStartCoordinates,
+    if (touchStartInteraction?.uuid) {
+      longPressInteraction = touchStartInteraction
+      if (selection.uuids.value.includes(touchStartInteraction.uuid)) {
+        eventBus.emit('dragging:start', {
+          items: [...selection.blocks.value],
+          coords: {
+            x: touchStartInteraction.x,
+            y: touchStartInteraction.y,
+          },
+          mode: 'touch',
+        })
+        return
+      }
+
+      // Start multiselecting.
+      eventBus.emit('select:start', {
+        uuids: [...selection.uuids.value, touchStartInteraction.uuid],
         mode: 'touch',
       })
-      return
     }
-    // Start multiselecting.
-    eventBus.emit('select:start', [...selection.uuids.value, uuid])
   }, 500)
 }
 
-function onTouchMove(e: TouchEvent) {
-  if (!touchStartCoordinates) {
+function onTouchMove(e: PointerEvent) {
+  if (!longPressTimeout || !touchStartInteraction) {
     return
   }
-  const diffX = Math.abs(e.touches[0].clientX - touchStartCoordinates.x)
-  const diffY = Math.abs(e.touches[0].clientY - touchStartCoordinates.y)
-  if (diffX > 10 || diffY > 10) {
+  const coords = getInteractionCoordinates(e)
+
+  const deltaX = Math.abs(coords.x - touchStartInteraction.x)
+  const deltaY = Math.abs(coords.y - touchStartInteraction.y)
+
+  if (deltaX > 10 || deltaY > 10) {
     clearTimeout(longPressTimeout)
-    rootEl.removeEventListener('touchmove', onTouchMove)
+    longPressTimeout = null
   }
 }
 
-function onTouchEnd() {
+function onTouchEnd(e: PointerEvent) {
+  const wasDragging = selection.isDragging.value
+  const coords = getInteractionCoordinates(e)
+  const distance = touchStartCoords ? getDistance(touchStartCoords, coords) : 0
+  eventBus.emit('mouse:up', { ...coords, type: 'touch', distance })
   clearTimeout(longPressTimeout)
-  rootEl.removeEventListener('touchmove', onTouchMove)
-}
-
-let mouseStartCoordinates: Coord | null = null
-
-type LastMouseAction = {
-  uuid: string
-  fieldName?: string
-  time: number
-}
-
-let lastMouseAction: LastMouseAction | null = null
-
-function onMouseDown(e: MouseEvent) {
-  const uuid = findBlock(e.composedPath())
-  if (!uuid) {
-    eventBus.emit('select:end', [])
+  longPressTimeout = null
+  if (wasDragging) {
     return
   }
-  e.preventDefault()
-  e.stopImmediatePropagation()
-  e.stopPropagation()
-
-  const editable = originatesFromEditable(e)
-  const fieldName = editable?.dataset.blokkliEditableField
-
-  if (lastMouseAction && lastMouseAction.uuid === uuid) {
-    const delta = Date.now() - lastMouseAction.time
-    if (delta < 400) {
-      rootEl.removeEventListener('mousemove', onMouseMove)
-      if (
-        fieldName &&
-        lastMouseAction.fieldName &&
-        fieldName === lastMouseAction.fieldName
-      ) {
-        eventBus.emit('editable:focus', {
-          fieldName,
-          uuid: lastMouseAction.uuid,
-        })
-      } else {
-        const bundle = dom.findBlock(lastMouseAction.uuid)?.itemBundle
-        if (bundle) {
-          eventBus.emit('item:edit', {
-            uuid: lastMouseAction.uuid,
-            bundle,
-          })
-        }
-      }
-      return
-    }
-  }
-
-  rootEl.addEventListener('mousemove', onMouseMove)
-  mouseStartCoordinates = { x: e.clientX, y: e.clientY }
-  lastMouseAction = {
-    uuid,
-    fieldName,
-    time: Date.now(),
-  }
-}
-
-function onMouseMove(e: MouseEvent) {
-  if (!mouseStartCoordinates) {
-    rootEl.removeEventListener('mousemove', onMouseMove)
+  if (!touchStartCoords) {
     return
   }
-  const deltaX = Math.abs(mouseStartCoordinates.x - e.clientX)
-  const deltaY = Math.abs(mouseStartCoordinates.y - e.clientY)
-  if (deltaX > 3 || deltaY > 3) {
-    rootEl.removeEventListener('mousemove', onMouseMove)
-    const uuid = findBlock(e.composedPath())
-    if (!uuid) {
+
+  // If the distance is abve this value, don't do anything. The user is likely scrolling.
+  if (distance > 7) {
+    return
+  }
+  const interacted = getInteractedElement(e)
+  if (interacted?.uuid) {
+    // Prevent unselecting the block after a long press interaction, which has already selected the block.
+    if (longPressInteraction && longPressInteraction.uuid === interacted.uuid) {
       return
     }
-
-    // Move happened over another block. Drag this one instead.
-    if (!selection.uuids.value.includes(uuid)) {
-      eventBus.emit('select', uuid)
+    if (selection.isMultiSelecting.value) {
+      eventBus.emit('select:toggle', interacted.uuid)
+    } else {
+      eventBus.emit('select', interacted.uuid)
     }
-    eventBus.emit('dragging:start', {
-      items: [...selection.blocks.value],
-      coords: mouseStartCoordinates,
-      mode: 'mouse',
-    })
+  } else {
+    eventBus.emit('window:clickAway')
   }
+  longPressInteraction = null
 }
-
-onMounted(() => {
-  rootEl.addEventListener('touchend', onTouchEnd)
-  rootEl.addEventListener('touchstart', onTouchStart)
-  rootEl.addEventListener('mousedown', onMouseDown, { capture: true })
-  rootEl.addEventListener('mouseup', onMouseUp)
-  rootEl.addEventListener('click', onClick, {
-    capture: true,
-  })
-})
-
-onBeforeUnmount(() => {
-  rootEl.removeEventListener('touchend', onTouchEnd)
-  rootEl.removeEventListener('touchmove', onTouchMove)
-  rootEl.removeEventListener('touchstart', onTouchStart)
-  rootEl.removeEventListener('mouseup', onMouseUp)
-  rootEl.removeEventListener('mousedown', onMouseDown, { capture: true })
-  rootEl.removeEventListener('mousemove', onMouseMove)
-  rootEl.removeEventListener('click', onClick, {
-    capture: true,
-  })
-})
 </script>

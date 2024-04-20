@@ -5,6 +5,7 @@
         v-if="isRendered"
         v-show="isVisible"
         class="bk bk-search"
+        :class="{ 'bk-is-translucent': selection.isDragging.value }"
         @click.stop.prevent="isVisible = false"
       >
         <Overlay
@@ -46,7 +47,7 @@ defineBlokkliFeature({
     'Provides an overlay with shortcut to search for blocks on the current page or existing content to add as blocks.',
 })
 
-const { $t } = useBlokkli()
+const { $t, selection } = useBlokkli()
 
 const isRendered = ref(false)
 const isVisible = ref(false)

@@ -7,10 +7,15 @@
     :style="style"
     tabindex="10"
     @mousedown.stop="onSidebarMouseDown"
+    @mouseup.stop
+    @mousemove.stop
     @focus.capture="onFocus"
   >
     <div class="bk">
-      <div class="bk-sidebar-title" @mousedown="onMouseDown($event, 'move')">
+      <div
+        class="bk-sidebar-title"
+        @mousedown.stop="onMouseDown($event, 'move')"
+      >
         <slot name="icon">
           <Icon v-if="icon" :name="icon" />
         </slot>

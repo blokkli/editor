@@ -288,7 +288,10 @@ onBlokkliEvent('animationFrame', (e) => {
 })
 
 onMounted(() => {
-  eventBus.emit('select:start')
+  eventBus.emit('select:start', {
+    uuids: [],
+    mode: 'mouse',
+  })
 })
 
 onBeforeUnmount(() => {
