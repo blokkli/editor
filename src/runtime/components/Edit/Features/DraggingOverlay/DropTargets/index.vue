@@ -1,9 +1,5 @@
 <template>
   <Teleport to="body">
-    <div class="bk-drop-targets-canvas">
-      <canvas ref="canvas" v-bind="canvasAttributes" />
-    </div>
-    <svg xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox"></svg>
     <slot :color="active?.color" :label="active?.label"></slot>
   </Teleport>
 </template>
@@ -76,10 +72,6 @@ const emit = defineEmits<{
 
 const { dom, ui, $t, theme, dropAreas, eventBus } = useBlokkli()
 
-const viewBox = computed(() => {
-  return `0 0 ${ui.viewport.value.width} ${ui.viewport.value.height}`
-})
-
 const areas = dropAreas
   .getDropAreas(props.items)
   .reduce<Record<string, DropArea>>((acc, v) => {
@@ -112,25 +104,6 @@ const areasObserver = new IntersectionObserver(
 Object.values(areas).forEach((area) => {
   area.element.dataset.dropAreaId = area.id
   areasObserver.observe(area.element)
-})
-
-const canvas = ref<HTMLCanvasElement | null>(null)
-const ratio = computed(() => {
-  if (ui.isMobile.value) {
-    return window.devicePixelRatio
-  }
-  return Math.min(window.devicePixelRatio, 2)
-})
-
-const canvasAttributes = computed(() => {
-  return {
-    width: ui.viewport.value.width * ratio.value,
-    height: ui.viewport.value.height * ratio.value,
-    style: {
-      width: ui.viewport.value.width + 'px',
-      height: ui.viewport.value.height + 'px',
-    },
-  }
 })
 
 onBlokkliEvent('mouse:down', (e) => {
@@ -534,20 +507,8 @@ const colorAccent = rgbaToString(theme.accent.value[800])
 const colorAccentAlpha = rgbaToString(theme.accent.value[800], 0.7)
 const colorAccentAlphaLight = rgbaToString(theme.accent.value[800], 0.1)
 
-onBlokkliEvent('animationFrame', () => {
-  if (!canvas.value) {
-    return
-  }
-
-  const ctx = canvas.value.getContext('2d')
-
-  if (!ctx) {
-    return
-  }
-
-  canvas.value.width = ui.viewport.value.width * ratio.value
-  canvas.value.height = ui.viewport.value.height * ratio.value
-  ctx.scale(ratio.value, ratio.value)
+onBlokkliEvent('animationFrame', (e) => {
+  const ctx = e.ctx
 
   const scale = ui.artboardScale.value
   const offset = { ...ui.artboardOffset.value }
@@ -560,19 +521,6 @@ onBlokkliEvent('animationFrame', () => {
   const fields = visibleFields.map((key) => buildFieldRect(key))
 
   drawnRects = []
-
-  ctx.clearRect(
-    0,
-    0,
-    canvasAttributes.value.width,
-    canvasAttributes.value.height,
-  )
-
-  const clipRect = ui.visibleViewport.value
-
-  ctx.beginPath()
-  ctx.rect(clipRect.x, clipRect.y, clipRect.width, clipRect.height)
-  ctx.clip()
 
   const visibleAreas = Array.from(visibleDropAreas)
 

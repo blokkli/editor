@@ -64,6 +64,7 @@
     backface-visibility: hidden;
     transform-origin: 0 0;
     transform: translateZ(0);
+    /* contain: layout; */
     /* will-change: translate, scale; */
   }
 

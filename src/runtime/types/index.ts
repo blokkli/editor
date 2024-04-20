@@ -738,6 +738,7 @@ export type AnimationFrameEvent = {
   fieldAreas: AnimationFrameFieldArea[]
   mouseX: number
   mouseY: number
+  ctx: CanvasRenderingContext2D
 }
 
 export type Message = {
@@ -1189,6 +1190,11 @@ export type DropTargetEvent = {
   field: BlokkliFieldElement
   host: DraggableHostData
   preceedingUuid?: string
+}
+
+export type SelectedRect = Rectangle & {
+  uuid: string
+  style: DraggableStyle
 }
 
 export default {}

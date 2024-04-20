@@ -22,7 +22,6 @@
 @import './partials/debug.css';
 @import './partials/scaleToFit.css';
 @import './partials/DraggingOverlay.css';
-@import './partials/MultiSelect.css';
 @import './partials/Selection.css';
 @import './partials/EditableField.css';
 @import './partials/Assistant.css';
@@ -38,7 +37,7 @@
 @import './partials/Tour.css';
 @import './partials/Error.css';
 @import './partials/Translations.css';
-@import './partials/DropTargets.css';
+@import './partials/AnimationCanvas.css';
 @import './indicator.css';
 
 @tailwind base;

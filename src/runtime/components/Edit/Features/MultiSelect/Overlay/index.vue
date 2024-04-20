@@ -1,21 +1,17 @@
 <template>
   <Teleport to="body">
-    <div class="bk bk-multi-select">
-      <canvas ref="canvasEl" v-bind="canvasAttributes"></canvas>
-    </div>
+    <div />
   </Teleport>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import type { Coord, DraggableStyle, Rectangle } from '#blokkli/types'
 import { intersects } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { getDefinition } from '#blokkli/definitions'
 
 const { keyboard, eventBus, ui, dom, theme, runtimeConfig } = useBlokkli()
-
-const canvasEl = ref<HTMLCanvasElement | null>(null)
 
 type SelectableElement = {
   uuid: string
@@ -136,13 +132,6 @@ const themeColors = computed(() => {
   }
 })
 
-const canvasAttributes = computed(() => {
-  return {
-    width: ui.viewport.value.width,
-    height: ui.viewport.value.height,
-  }
-})
-
 // Collect the UUIDs that have become visible at least once during multi select.
 const seenUuids: Set<string> = new Set()
 
@@ -161,10 +150,7 @@ onBlokkliEvent('animationFrame', (e) => {
         artboardOffsetStart.y / artboardScaleStart)) *
     scale
 
-  const ctx = canvasEl.value?.getContext('2d')
-  if (!ctx) {
-    return
-  }
+  const ctx = e.ctx
   const ax = startX > e.mouseX ? e.mouseX : startX
   const ay = startY > e.mouseY ? e.mouseY : startY
   const bx = startX > e.mouseX ? startX : e.mouseX
@@ -175,12 +161,6 @@ onBlokkliEvent('animationFrame', (e) => {
     width: bx - ax,
     height: by - ay,
   }
-  ctx.clearRect(
-    0,
-    0,
-    canvasAttributes.value.width,
-    canvasAttributes.value.height,
-  )
   ctx.lineWidth = 2
   ctx.lineDashOffset = 0
 

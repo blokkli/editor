@@ -27,6 +27,7 @@ const zIndex = [
   'preview',
   'toolbar-dropdown',
   'drop-targets',
+  'animation-canvas',
   'dragging-overlay',
   'command-palette',
   'touch-action-bar',

@@ -1,0 +1,7 @@
+.bk.bk-animation-canvas {
+  @apply fixed top-0 left-0 w-full h-full z-animation-canvas pointer-events-none;
+  canvas {
+    @apply absolute top-0 left-0 w-full h-full;
+    image-rendering: crisp-edges;
+  }
+}

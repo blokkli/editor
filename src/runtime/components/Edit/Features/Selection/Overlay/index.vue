@@ -1,136 +1,40 @@
 <template>
-  <div v-if="styleSize" :style="styleSize" class="bk bk-selection">
-    <div
-      v-for="rect in selectedRects"
-      :key="rect.uuid"
-      class="bk-selectable bk-is-active"
-      :style="{
-        width: rect.width + 'px',
-        height: rect.height + 'px',
-        transform: `translate(${rect.x}px, ${rect.y}px)`,
-        borderRadius: rect.style.radiusString,
-        outlineColor: rect.style.contrastColor,
-        '--bk-tw-ring-color': rect.style.contrastColorTranslucent,
-      }"
-    />
-  </div>
+  <div />
 </template>
 
 <script lang="ts" setup>
-import { falsy, getBounds } from '#blokkli/helpers'
-import type {
-  DraggableExistingBlock,
-  DraggableStyle,
-  Rectangle,
-} from '#blokkli/types'
-import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import type { DraggableExistingBlock } from '#blokkli/types'
+import { useBlokkli } from '#imports'
 
-const props = defineProps<{
+defineProps<{
   blocks: DraggableExistingBlock[]
 }>()
 
-const { ui, theme } = useBlokkli()
+const { ui, selection } = useBlokkli()
 
-const delayedRefresh = ref(1)
-let interval: any = null
+onBlokkliEvent('animationFrame', ({ ctx }) => {
+  const scale = ui.artboardScale.value
+  const offset = ui.artboardOffset.value
+  const rects = selection.rects.value
+  ctx.lineDashOffset = 0
+  ctx.setLineDash([])
 
-type SelectedRect = Rectangle & {
-  uuid: string
-  style: DraggableStyle
-}
-
-type BoundsRectable = Rectangle & { isVisible: boolean }
-
-const bounds = computed<BoundsRectable | null>(() => {
-  if (!props.blocks.length) {
-    return null
+  for (let i = 0; i < rects.length; i++) {
+    const { x, y, width, height, style } = rects[i]
+    const rectX = (x + offset.x / scale) * scale
+    const rectY = (y + offset.y / scale) * scale
+    ctx.strokeStyle = style.contrastColor
+    ctx.lineWidth = 3
+    ctx.beginPath()
+    ctx.roundRect(rectX, rectY, width * scale, height * scale, [
+      style.radius[0] * scale,
+      style.radius[1] * scale,
+      style.radius[2] * scale,
+      style.radius[3] * scale,
+    ])
+    ctx.stroke()
   }
-  const artboardEl = ui.artboardElement()
-  const artboardRect = artboardEl.getBoundingClientRect()
-  const artboardScroll = artboardEl.scrollTop
-  const scale = ui.getArtboardScale()
-  const rects = props.blocks
-    .map((block) => {
-      const element = block.dragElement()
-      if (element instanceof HTMLElement) {
-        const rect = element.getBoundingClientRect()
-        return {
-          x: (rect.x - artboardRect.x) / scale,
-          y: (rect.y - artboardRect.y) / scale,
-          width: element.offsetWidth,
-          height: element.scrollHeight,
-        }
-      }
-    })
-    .filter(falsy)
-
-  const boundingBox = getBounds(rects)
-  if (!boundingBox) {
-    return null
-  }
-
-  return {
-    x: boundingBox.x,
-    y: boundingBox.y + artboardScroll,
-    width: boundingBox.width / scale,
-    height: boundingBox.height / scale,
-    isVisible: !!delayedRefresh.value,
-  }
-})
-
-const selectedRects = computed<SelectedRect[]>(() => {
-  if (!bounds.value || !delayedRefresh.value) {
-    return []
-  }
-
-  const scale = ui.getArtboardScale()
-  const artboardEl = ui.artboardElement()
-  const artboardRect = artboardEl.getBoundingClientRect()
-  const artboardScroll = artboardEl.scrollTop
-
-  const rects: SelectedRect[] = []
-
-  for (let i = 0; i < props.blocks.length; i++) {
-    const block = props.blocks[i]
-    const element = block.dragElement()
-    const rect = element.getBoundingClientRect()
-    const style = theme.getDraggableStyle(element)
-    rects.push({
-      x: (rect.x - artboardRect.x) / scale - bounds.value.x,
-      y: (rect.y - artboardRect.y) / scale - bounds.value.y + artboardScroll,
-      width:
-        'offsetWidth' in element ? element.offsetWidth : element.scrollWidth,
-      height: element.scrollHeight,
-      uuid: block.uuid,
-      style,
-    })
-  }
-
-  return rects
-})
-
-const styleSize = computed(() => {
-  if (!bounds.value) {
-    return null
-  }
-
-  const { width, height, x, y } = bounds.value
-
-  return {
-    transform: `translate(${x}px, ${y}px)`,
-    width: width + 'px',
-    height: height + 'px',
-  }
-})
-
-onMounted(() => {
-  interval = setInterval(() => {
-    delayedRefresh.value += 1
-  }, 100)
-})
-
-onBeforeUnmount(() => {
-  clearInterval(interval)
 })
 </script>
 

@@ -10,7 +10,11 @@ import {
   nextTick,
 } from '#imports'
 
-import type { DraggableExistingBlock, InteractionMode } from '#blokkli/types'
+import type {
+  DraggableExistingBlock,
+  InteractionMode,
+  SelectedRect,
+} from '#blokkli/types'
 import {
   findElement,
   buildDraggableItem,
@@ -21,6 +25,8 @@ import {
   onlyUnique,
 } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
+import type { UiProvider } from './uiProvider'
+import type { ThemeProvider } from './themeProvider'
 
 /**
  * Find the longest common subsequence between two arrays.
@@ -209,6 +215,8 @@ export type SelectionProvider = {
    */
   blocks: ComputedRef<DraggableExistingBlock[]>
 
+  rects: ComputedRef<SelectedRect[]>
+
   /**
    * The active field key.
    */
@@ -253,6 +261,8 @@ export type SelectionProvider = {
 export default function (
   dom: DomProvider,
   state: StateProvider,
+  ui: UiProvider,
+  theme: ThemeProvider,
 ): SelectionProvider {
   const selectedUuids = ref<string[]>([])
   const activeFieldKey = ref('')
@@ -263,6 +273,24 @@ export default function (
   const interactionMode = ref<InteractionMode>('mouse')
 
   const isDragging = computed(() => !!draggingMode.value)
+
+  const rects = computed(() => {
+    const scale = ui.artboardScale.value
+    const artboardRect = ui.artboardElement().getBoundingClientRect()
+    return blocks.value.map((v) => {
+      const el = v.dragElement()
+      const rect = el.getBoundingClientRect()
+      const style = theme.getDraggableStyle(el)
+      return {
+        x: rect.x / scale - artboardRect.x / scale,
+        y: rect.y / scale - artboardRect.y / scale,
+        width: rect.width / scale,
+        height: rect.height / scale,
+        style,
+        uuid: v.uuid,
+      }
+    })
+  })
 
   watch(state.renderedBlocks, (newBlocks, prevBlocks) => {
     const result = getSelectedAfterStateChange(
@@ -411,5 +439,6 @@ export default function (
     isMultiSelecting,
     draggingMode,
     interactionMode,
+    rects,
   }
 }

@@ -64,9 +64,8 @@
 <script lang="ts" setup>
 import { watch, ref, computed, useBlokkli } from '#imports'
 import { onlyUnique, findIdealRectPosition, falsy } from '#blokkli/helpers'
-import type { Rectangle } from '#blokkli/types'
+import type { Rectangle, PluginMountEvent } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
-import type { PluginMountEvent } from '#blokkli/types'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { getFragmentDefinition } from '#blokkli/definitions'
 
@@ -156,26 +155,40 @@ onBlokkliEvent('animationFrame', () => {
     return
   }
 
-  const el = document.querySelector('.bk-selection')
-  const controlsWidth = controlsEl.value ? controlsEl.value.scrollWidth : 500
-  if (el && el instanceof HTMLElement) {
-    const boundingRect = el.getBoundingClientRect()
-    const rect = limitPlacedRect({
-      x: boundingRect.x,
-      y: boundingRect.y - ACTIONS_HEIGHT - 15,
-      width: controlsWidth,
-      height: ACTIONS_HEIGHT,
-    })
+  let minX = 0
+  let minY = 0
+  const rects = selection.rects.value
+  const offset = ui.artboardOffset.value
+  const scale = ui.artboardScale.value
 
-    const ideal = findIdealRectPosition(
-      ui.viewportBlockingRects.value,
-      rect,
-      ui.visibleViewportPadded.value,
-    )
-
-    x.value = ideal.x
-    y.value = ideal.y
+  for (let i = 0; i < rects.length; i++) {
+    const { x, y } = rects[i]
+    const rectX = (x + offset.x / scale) * scale
+    const rectY = (y + offset.y / scale) * scale
+    if (i === 0 || rectX < minX) {
+      minX = rectX
+    }
+    if (i === 0 || rectY < minY) {
+      minY = rectY
+    }
   }
+
+  const controlsWidth = controlsEl.value ? controlsEl.value.scrollWidth : 500
+  const rect = limitPlacedRect({
+    x: minX,
+    y: minY - ACTIONS_HEIGHT - 15,
+    width: controlsWidth,
+    height: ACTIONS_HEIGHT,
+  })
+
+  const ideal = findIdealRectPosition(
+    ui.viewportBlockingRects.value,
+    rect,
+    ui.visibleViewportPadded.value,
+  )
+
+  x.value = ideal.x
+  y.value = ideal.y
 })
 
 const shouldRenderButton = computed(() =>

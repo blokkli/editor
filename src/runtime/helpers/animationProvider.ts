@@ -38,13 +38,19 @@ export default function (): AnimationProvider {
     // before triggering the main animation loop event.
     eventBus.emit('animationFrame:before')
 
-    const wrapperEl = document.querySelector('.bk-main-canvas')
-    if (wrapperEl instanceof HTMLElement) {
-      eventBus.emit('animationFrame', {
-        mouseX,
-        mouseY,
-        fieldAreas: [],
-      })
+    const el = document.getElementById('bk-animation-canvas')
+    const ctx = el instanceof HTMLCanvasElement ? el.getContext('2d') : null
+
+    if (ctx) {
+      const wrapperEl = document.querySelector('.bk-main-canvas')
+      if (wrapperEl instanceof HTMLElement) {
+        eventBus.emit('animationFrame', {
+          mouseX,
+          mouseY,
+          fieldAreas: [],
+          ctx,
+        })
+      }
     }
   })
 

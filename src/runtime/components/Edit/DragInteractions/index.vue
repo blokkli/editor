@@ -108,7 +108,8 @@ function onPointerMove(e: PointerEvent) {
   if (
     !selection.uuids.value.length ||
     !mouseStartCoordinates ||
-    selection.isDragging.value
+    selection.isDragging.value ||
+    keyboard.isPressingSpace.value
   ) {
     return
   }

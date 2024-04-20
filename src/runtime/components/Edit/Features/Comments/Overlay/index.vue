@@ -60,6 +60,8 @@ function toggle(item: Indicator) {
 const indicators = ref<Indicator[]>([])
 
 onBlokkliEvent('animationFrame', () => {
+  // @TODO
+  return
   const visible = dom.getVisibleBlocks()
 
   const scale = ui.artboardScale.value

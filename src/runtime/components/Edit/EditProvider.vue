@@ -19,6 +19,7 @@
   <DragInteractions v-if="!isInitializing">
     <slot :mutated-entity="mutatedEntity" />
   </DragInteractions>
+  <AnimationCanvas />
 </template>
 
 <script lang="ts" setup generic="T">
@@ -41,6 +42,7 @@ import Messages from './Messages/index.vue'
 import Features from './Features/index.vue'
 import AppMenu from './AppMenu/index.vue'
 import DragInteractions from './DragInteractions/index.vue'
+import AnimationCanvas from './AnimationCanvas/index.vue'
 import animationProvider from './../../helpers/animationProvider'
 import keyboardProvider from './../../helpers/keyboardProvider'
 import selectionProvider from './../../helpers/selectionProvider'
@@ -99,6 +101,11 @@ const toolbarLoaded = ref(false)
 const featuresLoaded = ref(false)
 const isInitializing = ref(true)
 
+const features = featuresProvider()
+const theme = themeProvider()
+const commands = commandsProvider()
+const tour = tourProvider()
+const dropAreas = dropAreasProvider()
 const broadcast = broadcastProvider()
 const animation = animationProvider()
 const keyboard = keyboardProvider(animation)
@@ -107,13 +114,8 @@ const storage = storageProvider()
 const ui = uiProvider(storage)
 const $t = textProvider(context)
 const state = await editStateProvider(adapter, context)
-const selection = selectionProvider(dom, state)
+const selection = selectionProvider(dom, state, ui, theme)
 const types = await typesProvider(adapter, selection, context)
-const features = featuresProvider()
-const theme = themeProvider()
-const commands = commandsProvider()
-const tour = tourProvider()
-const dropAreas = dropAreasProvider()
 
 const mutatedEntity = computed(() => state.mutatedEntity.value || props.entity)
 

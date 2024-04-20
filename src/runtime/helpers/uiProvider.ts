@@ -43,16 +43,20 @@ export type UiProvider = {
   artboardSize: ComputedRef<Size>
   artboardScale: Ref<number>
   artboardOffset: Ref<Coord>
+
+  selectionTopLeft: Ref<Coord>
 }
 
 export default function (storage: StorageProvider): UiProvider {
   let cachedRootElement: HTMLElement | null = null
   let cachedArtboardElement: HTMLElement | null = null
   let cachedProviderElement: HTMLElement | null = null
+  let cachedMainCanvasElement: HTMLCanvasElement | null = null
 
   const menuIsOpen = ref(false)
   const isAnimating = ref(false)
   const openContextMenu = ref('')
+  const selectionTopLeft = ref({ x: 0, y: 0 })
   const useAnimationsSetting = storage.use('useAnimations', true)
   const useAnimations = computed(() => useAnimationsSetting.value)
   const viewportBlockingRectsMap = ref<Record<string, Rectangle>>({})
@@ -100,6 +104,17 @@ export default function (storage: StorageProvider): UiProvider {
     }
     cachedArtboardElement = el
     return el
+  }
+
+  const getCanvasContext = (): CanvasRenderingContext2D => {
+    if (!cachedMainCanvasElement) {
+      const el = document.querySelector('.bk-main-canvas')
+      if (el instanceof HTMLCanvasElement) {
+        cachedMainCanvasElement = el
+      }
+    }
+
+    return cachedMainCanvasElement?.getContext('2d')
   }
 
   const rootElement = () => {
@@ -315,5 +330,6 @@ export default function (storage: StorageProvider): UiProvider {
     artboardSize: computed(() => artboardSize.value),
     artboardScale,
     artboardOffset,
+    selectionTopLeft,
   }
 }
