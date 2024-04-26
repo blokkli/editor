@@ -51,8 +51,12 @@ onBlokkliEvent('mouse:down', (e) => {
   downY.value = e.y
 
   startTimeout = setTimeout(() => {
+    eventBus.emit('select:start', {
+      uuids: [],
+      mode: 'mouse',
+    })
     shouldRender.value = true
-  }, 100)
+  }, 70)
 })
 
 onBlokkliEvent('mouse:up', () => {

@@ -266,7 +266,7 @@ onMounted(() => {
   width.value = bounds.width
   height.value = bounds.height
 
-  const artboardScale = ui.getArtboardScale()
+  const artboardScale = ui.artboardScale.value
 
   rects.value = elRects.map((item) => {
     const isTop = item.index === boundRect.index

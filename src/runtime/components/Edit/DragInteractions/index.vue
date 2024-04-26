@@ -46,6 +46,7 @@ type InteractedElement = {
 }
 
 let lastInteractedElement: InteractedElement | null = null
+let pointerDownElement: InteractedElement | null = null
 let mouseStartCoordinates: Coord | null = null
 
 function getInteractedElement(
@@ -98,10 +99,11 @@ function onPointerMove(e: PointerEvent) {
     return
   }
   if (
-    !selection.uuids.value.length ||
+    !pointerDownElement ||
     !mouseStartCoordinates ||
     selection.isDragging.value ||
-    keyboard.isPressingSpace.value
+    keyboard.isPressingSpace.value ||
+    selection.isMultiSelecting.value
   ) {
     return
   }
@@ -109,18 +111,21 @@ function onPointerMove(e: PointerEvent) {
   const diffX = Math.abs(mouseStartCoordinates.x - e.clientX)
   const diffY = Math.abs(mouseStartCoordinates.y - e.clientY)
   // Only start dragging if at least 6px in any direction were moved.
-  if (diffX > 6 || diffY > 6) {
-    const interacted = getInteractedElement(e)
-    if (
-      interacted &&
-      interacted.uuid &&
-      selection.uuids.value.includes(interacted.uuid)
-    ) {
+  if (diffX < 6 && diffY < 6) {
+    return
+  }
+
+  const interacted = getInteractedElement(e)
+  if (interacted && interacted.uuid) {
+    // The interacted block is part of the current selection.
+    if (selection.uuids.value.includes(interacted.uuid)) {
       eventBus.emit('dragging:start', {
         items: [...selection.blocks.value],
         coords: { x: e.clientX, y: e.clientY },
         mode: 'mouse',
       })
+    } else {
+      eventBus.emit('select', interacted.uuid)
     }
   }
 }
@@ -135,6 +140,7 @@ function onPointerDown(e: PointerEvent) {
   const coords = { x: e.clientX, y: e.clientY }
   mouseStartCoordinates = coords
   const interacted = getInteractedElement(e)
+  pointerDownElement = interacted
   if (interacted) {
     return
   }
@@ -181,7 +187,7 @@ function onPointerUp(e: PointerEvent) {
     lastInteractedElement &&
     clicked.uuid === lastInteractedElement.uuid
   ) {
-    const deltaTime = Date.now() - lastInteractedElement.timestamp
+    const deltaTime = Date.now() - pointerDownTimestamp
     const deltaX = Math.abs(lastInteractedElement.x - e.clientX)
     const deltaY = Math.abs(lastInteractedElement.y - e.clientY)
     if (deltaTime < 400 && deltaX < 3 && deltaY < 3) {

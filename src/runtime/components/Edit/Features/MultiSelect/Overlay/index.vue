@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+import { useBlokkli, onBeforeUnmount } from '#imports'
 import { intersects, toShaderColor } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import vs from './vertex.glsl?raw'
@@ -255,13 +255,6 @@ onBlokkliEvent('canvas:draw', (e) => {
   }
 
   drawBufferInfo(gl, info, gl.TRIANGLES)
-})
-
-onMounted(() => {
-  eventBus.emit('select:start', {
-    uuids: [],
-    mode: 'mouse',
-  })
 })
 
 onBeforeUnmount(() => {

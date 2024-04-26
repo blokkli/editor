@@ -102,7 +102,7 @@ html {
     backface-visibility: hidden;
     transform-origin: 0 0;
     transform: translate3d(0, 0, 0);
-    will-change: translate, scale;
+    will-change: transform;
     contain: layout paint inline-size style;
   }
 }

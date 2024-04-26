@@ -27,6 +27,7 @@ const { selection, state, ui, eventBus, animation, dom, tour } = useBlokkli()
 
 const isVisible = computed(
   () =>
+    !selection.editableActive.value &&
     selection.blocks.value.length &&
     !selection.isChangingOptions.value &&
     !selection.isDragging.value &&

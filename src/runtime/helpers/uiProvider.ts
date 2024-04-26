@@ -21,7 +21,6 @@ export type UiProvider = {
     close: () => void
     open: () => void
   }
-  getArtboardScale: () => number
   isMobile: ComputedRef<boolean>
   isDesktop: ComputedRef<boolean>
   isArtboard: () => boolean
@@ -139,15 +138,6 @@ export default function (storage: StorageProvider): UiProvider {
     }
     cachedProviderElement = el
     return el
-  }
-
-  const getArtboardScale = () => {
-    const el = artboardElement()
-    const scaleValue = parseFloat(el.style.scale || '1')
-    if (isNaN(scaleValue)) {
-      return 1
-    }
-    return scaleValue
   }
 
   const appViewport = computed<Viewport>(() => {
@@ -313,7 +303,6 @@ export default function (storage: StorageProvider): UiProvider {
     artboardElement,
     rootElement,
     providerElement,
-    getArtboardScale,
     isMobile,
     isDesktop,
     isArtboard,

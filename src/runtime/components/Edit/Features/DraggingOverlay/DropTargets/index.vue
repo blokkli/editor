@@ -470,7 +470,7 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
 
   const artboardEl = ui.artboardElement()
   const artboardRect = artboardEl.getBoundingClientRect()
-  const scale = ui.getArtboardScale()
+  const scale = ui.artboardScale.value
   const [uuid, name] = key.split(':')
   const field = dom.findField(uuid, name)
   if (!field) {
@@ -523,7 +523,7 @@ const buildDropAreaRect = (area: DropArea): Rectangle => {
   }
 
   const artboardEl = ui.artboardElement()
-  const scale = ui.getArtboardScale()
+  const scale = ui.artboardScale.value
   const artboardRect = artboardEl.getBoundingClientRect()
   const rect = area.element.getBoundingClientRect()
   const x = rect.x / scale - artboardRect.x / scale

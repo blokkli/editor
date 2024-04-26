@@ -548,7 +548,7 @@ export class Artboard {
       const deltaY = Math.abs(midpoint.y - this.initialTouchPoint.y)
 
       // Adjust the threshold for detecting diagonal gestures
-      const thresholdRatio = 0.6
+      const thresholdRatio = 0.9
       const ratio = deltaY > 0 ? deltaX / deltaY : deltaX
 
       if (ratio > 1 + thresholdRatio) {
@@ -594,7 +594,7 @@ export class Artboard {
     const velocity = this.velocityQueue.getVelocity()
     const totalVelocity = Math.abs(velocity.x) + Math.abs(velocity.y)
 
-    if (totalVelocity < 20) {
+    if (totalVelocity < 40) {
       this.velocity = { x: 0, y: 0 }
       this.isMomentumScrolling = false
     } else {
@@ -612,7 +612,6 @@ export class Artboard {
       }
       this.isMomentumScrolling = true
     }
-    this.isMomentumScrolling = true
 
     const scaleVelocity = this.scaleVelocityQueue.getVelocity() / 7
     if (scaleVelocity > 0.01) {
@@ -653,6 +652,7 @@ export class Artboard {
   }
 
   destroy() {
+    this.artboardEl.style.transform = ''
     this.resizeObserver.disconnect()
     this.rootEl.removeEventListener('touchstart', this.listeners.onTouchStart)
     this.rootEl.removeEventListener('touchmove', this.listeners.onTouchMove)
@@ -916,8 +916,7 @@ export class Artboard {
   }
 
   updateStyles() {
-    this.artboardEl.style.scale = this.scale.toString()
-    this.artboardEl.style.translate = `${Math.round(this.offset.x * 10) / 10}px ${Math.round(this.offset.y * 10) / 10}px`
+    this.artboardEl.style.transform = `translate3d(${Math.round(this.offset.x * 10) / 10}px, ${Math.round(this.offset.y * 10) / 10}px, 0px) scale(${this.scale.toString()}) `
   }
 
   getBoundaries(providedScale?: number) {
