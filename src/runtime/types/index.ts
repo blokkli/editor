@@ -863,7 +863,6 @@ export type BlokkliFieldElement = {
   allowedFragments: string[]
   cardinality: number
   element: HTMLElement
-  blockCount: number
   dropAlignment?: 'vertical' | 'horizontal'
 }
 

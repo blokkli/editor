@@ -83,7 +83,6 @@ const buildFieldElement = (
   const key = element.dataset.fieldKey
   const name = element.dataset.fieldName
   const label = element.dataset.fieldLabel
-  const blockCount = parseInt(element.dataset.fieldBlockCount || '0')
   const isNested = element.dataset.fieldIsNested === 'true'
   const hostEntityType = element.dataset.hostEntityType
   const hostEntityBundle = element.dataset.hostEntityBundle
@@ -117,7 +116,6 @@ const buildFieldElement = (
       allowedBundles,
       allowedFragments,
       element,
-      blockCount: isNaN(blockCount) ? 0 : blockCount,
       dropAlignment:
         dropAlignment === 'vertical' || dropAlignment === 'horizontal'
           ? dropAlignment

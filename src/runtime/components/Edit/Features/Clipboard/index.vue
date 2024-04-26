@@ -222,9 +222,10 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
     return
   }
 
+  const count = state.getFieldBlockCount(field.key)
   if (
     field.cardinality !== -1 &&
-    field.blockCount + pastedBlocks.length > field.cardinality
+    count + pastedBlocks.length > field.cardinality
   ) {
     return
   }

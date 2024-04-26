@@ -8,11 +8,7 @@
     :field-key="fieldKey!"
     :allowed-fragments="allowedFragments"
     :drop-alignment="dropAlignment"
-    :class="[
-      attrs.class,
-      listClass,
-      { 'bk-is-empty': !list.length, [nonEmptyClass]: filteredList.length },
-    ]"
+    :class="[attrs.class, listClass, { [nonEmptyClass]: filteredList.length }]"
     :is-nested="isNested"
     :data-field-block-count="filteredList.length"
     class="bk-field-list"

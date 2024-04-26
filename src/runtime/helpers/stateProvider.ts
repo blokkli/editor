@@ -57,6 +57,7 @@ export type StateProvider = {
   isLoading: Readonly<Ref<boolean>>
   renderedBlocks: ComputedRef<RenderedBlock[]>
   getRenderedBlock: (uuid: string) => RenderedBlock | undefined
+  getFieldBlockCount: (key: string) => number
 }
 
 export default async function (
@@ -76,6 +77,7 @@ export default async function (
     status: false,
     bundleLabel: '',
   })
+  const fieldBlockCount: Record<string, number> = {}
 
   const mutatedOptions = ref<MutatedOptions>({})
   const translation = ref<TranslationState>({
@@ -146,12 +148,22 @@ export default async function (
     mutatedFields.value = newMutatedFields
     mutatedEntity.value = context?.mutatedEntity
 
+    for (let i = 0; i < newMutatedFields.length; i++) {
+      const field = newMutatedFields[i]
+      const key = getFieldKey(field.entityUuid, field.name)
+      fieldBlockCount[key] = field.list.length
+    }
+
     eventBus.emit('updateMutatedFields', { fields: newMutatedFields })
 
     eventBus.emit('state:reloaded')
     nextTick(() => {
       refreshKey.value = Date.now().toString()
     })
+  }
+
+  function getFieldBlockCount(key: string) {
+    return fieldBlockCount[key] || 0
   }
 
   function lockBody() {
@@ -264,5 +276,6 @@ export default async function (
     renderedBlocks,
     getRenderedBlock,
     mutatedEntity,
+    getFieldBlockCount,
   }
 }
