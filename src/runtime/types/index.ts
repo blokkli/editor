@@ -917,7 +917,7 @@ export type SelectStartEvent = {
 }
 
 export type EventbusEvents = {
-  select: string
+  select: string | string[]
   'item:edit': EditBlockEvent
   batchTranslate: undefined
   'dragging:start': DraggableStartEvent

@@ -13,8 +13,6 @@ import {
   buildDraggableItem,
   falsy,
   modulo,
-  intersects,
-  getBounds,
   onlyUnique,
 } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
@@ -105,96 +103,6 @@ const getSelectedAfterStateChange = (
       }
     }
   }
-}
-
-/**
- * Determine which blocks to select when the user is clicking on a block with the shift key.
- */
-const visuallySelectBlocks = (
-  all: DraggableExistingBlock[],
-  selected: DraggableExistingBlock[],
-  toggleBlock: DraggableExistingBlock,
-): string[] => {
-  // Nothing selected yet, so we select the new block.
-  if (selected.length === 0) {
-    return [toggleBlock.uuid]
-  }
-
-  const toggleRect = toggleBlock.element().getBoundingClientRect()
-  const isToggleSelected = selected.some((el) => el.uuid === toggleBlock.uuid)
-
-  // One block selected.
-  if (selected.length === 1) {
-    if (isToggleSelected) {
-      return []
-    }
-
-    const selectedRect = selected[0].element().getBoundingClientRect()
-    const encompassingRect = getBounds([selectedRect, toggleRect])!
-
-    return all
-      .filter(
-        (el) =>
-          el.isNested === toggleBlock.isNested ||
-          selected[0].isNested === el.isNested,
-      )
-      .filter((el) =>
-        intersects(el.element().getBoundingClientRect(), encompassingRect),
-      )
-      .map((el) => el.uuid)
-  }
-
-  // More than one selected.
-  if (isToggleSelected) {
-    // Find the most upper left element excluding the toggleElement.
-    const upperLeftElement = selected
-      .filter((el) => el.uuid !== toggleBlock.uuid)
-      .reduce((prev, current) => {
-        const prevRect = prev.element().getBoundingClientRect()
-        const currentRect = current.element().getBoundingClientRect()
-        return prevRect.x <= currentRect.x && prevRect.y <= currentRect.y
-          ? prev
-          : current
-      })
-
-    const upperLeftRect = upperLeftElement.element().getBoundingClientRect()
-    const encompassingRect = getBounds([upperLeftRect, toggleRect])!
-
-    return all
-      .filter(
-        (el) =>
-          el.isNested === toggleBlock.isNested ||
-          selected.some((sel) => sel.isNested === el.isNested),
-      )
-      .filter((el) =>
-        intersects(el.element().getBoundingClientRect(), encompassingRect),
-      )
-      .map((el) => el.uuid)
-  }
-
-  // toggleBlock is not in the selection, select blocks that are visually
-  // between the most upper left block and toggleBlock.
-  const upperLeftElement = selected.reduce((prev, current) => {
-    const prevRect = prev.element().getBoundingClientRect()
-    const currentRect = current.element().getBoundingClientRect()
-    return prevRect.x <= currentRect.x && prevRect.y <= currentRect.y
-      ? prev
-      : current
-  })
-
-  const upperLeftRect = upperLeftElement.element().getBoundingClientRect()
-  const encompassingRect = getBounds([upperLeftRect, toggleRect])!
-
-  return all
-    .filter(
-      (el) =>
-        el.isNested === toggleBlock.isNested ||
-        selected.some((sel) => sel.isNested === el.isNested),
-    )
-    .filter((el) =>
-      intersects(el.element().getBoundingClientRect(), encompassingRect),
-    )
-    .map((el) => el.uuid)
 }
 
 export type SelectionProvider = {
@@ -315,8 +223,12 @@ export default function (
     selectedUuids.value = []
   }
 
-  function onSelect(uuid: string) {
-    selectItems([uuid])
+  function onSelect(v: string | string[]) {
+    if (typeof v === 'string') {
+      selectItems([v])
+    } else {
+      selectItems(v)
+    }
   }
 
   const selectInList = (prev?: boolean) => {
@@ -356,17 +268,7 @@ export default function (
       selectedUuids.value.push(uuid)
     }
   })
-  onBlokkliEvent('select:shiftToggle', (uuid) => {
-    const block = dom.findBlock(uuid)
-    if (!block) {
-      return
-    }
-    selectedUuids.value = visuallySelectBlocks(
-      dom.getAllBlocks(),
-      blocks.value,
-      block,
-    )
-  })
+
   onBlokkliEvent('select:end', (uuids) => {
     isMultiSelecting.value = false
     if (!uuids || (uuids.length === 0 && selectedUuids.value.length === 0)) {

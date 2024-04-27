@@ -10,10 +10,12 @@
 import Overlay from './Overlay/index.vue'
 import {
   calculateIntersection,
+  getBounds,
+  intersects,
   originatesFromTextInput,
 } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import type { DraggableExistingBlock } from '#blokkli/types'
+import type { DraggableExistingBlock, Rectangle } from '#blokkli/types'
 import { computed, useBlokkli, defineBlokkliFeature, onMounted } from '#imports'
 
 defineBlokkliFeature({
@@ -115,6 +117,117 @@ const getSelectAllUuids = (
     .filter((block) => block.hostType !== 'block')
     .map((block) => block.uuid)
 }
+
+/**
+ * Determine which blocks to select when the user is clicking on a block with the shift key.
+ */
+const visuallySelectBlocks = (toggleUuid: string): string[] | undefined => {
+  const rects = dom.getBlockRects()
+  const allUuids = Object.keys(rects)
+  const selected = selection.uuids.value
+  // Nothing selected yet, so we select the new block.
+  if (selected.length === 0) {
+    return [toggleUuid]
+  }
+
+  const toggleRect = rects[toggleUuid]
+  if (!toggleRect) {
+    return
+  }
+  const toggleBlock = dom.findBlock(toggleUuid)
+  if (!toggleBlock) {
+    return
+  }
+  const filter = (encompassingRect: Rectangle): string[] => {
+    const candidates: string[] = []
+    for (let i = 0; i < allUuids.length; i++) {
+      const uuid = allUuids[i]
+      const rect = rects[uuid]
+      if (!rect) {
+        continue
+      }
+
+      if (!intersects(rect, encompassingRect)) {
+        continue
+      }
+
+      const block = dom.findBlock(uuid)
+
+      if (!block) {
+        continue
+      }
+
+      if (block.isNested !== toggleBlock.isNested) {
+        continue
+      }
+
+      candidates.push(uuid)
+    }
+
+    return candidates
+  }
+  const isToggleSelected = selected.includes(toggleUuid)
+
+  // One block selected.
+  if (selected.length === 1) {
+    if (isToggleSelected) {
+      return []
+    }
+
+    const selectedUuid = selected[0]
+    const selectedRect = rects[selectedUuid]
+    if (!selectedRect) {
+      return
+    }
+    const encompassingRect = getBounds([selectedRect, toggleRect])
+    if (!encompassingRect) {
+      return
+    }
+
+    return filter(encompassingRect)
+
+    // return all
+    //   .filter(
+    //     (el) =>
+    //       el.isNested === toggleBlock.isNested ||
+    //       selected[0].isNested === el.isNested,
+    //   )
+    //   .filter((el) =>
+    //     intersects(el.element().getBoundingClientRect(), encompassingRect),
+    //   )
+    //   .map((el) => el.uuid)
+  }
+
+  // More than one selected.
+  // Find the most upper left element excluding the toggleElement.
+  const upperLeftUuid = selected
+    .filter((uuid) => (isToggleSelected ? uuid !== toggleUuid : true))
+    .reduce((prev, current) => {
+      const prevRect = rects[prev]
+      const currentRect = rects[current]
+      return currentRect &&
+        prevRect &&
+        prevRect.x <= currentRect.x &&
+        prevRect.y <= currentRect.y
+        ? prev
+        : current
+    })
+
+  const upperLeftRect = rects[upperLeftUuid]
+  const encompassingRect = getBounds([upperLeftRect, toggleRect])
+  if (!encompassingRect) {
+    return
+  }
+
+  return filter(encompassingRect)
+}
+
+onBlokkliEvent('select:shiftToggle', (uuid) => {
+  const uuids = visuallySelectBlocks(uuid)
+  if (uuids) {
+    eventBus.emit('select', uuids)
+  }
+})
 
 onBlokkliEvent('keyPressed', (e) => {
   if (e.code === 'Escape') {
