@@ -69,7 +69,7 @@ const { parentType, options } = defineBlokkli({
   editor: {
     previewWidth: 380,
     addBehaviour: 'no-form',
-    editTitle: (el) => el.querySelector('h3')?.innerText,
+    editTitle: (el) => el.querySelector('h3')?.textContent,
     determineVisibleOptions: (ctx) => {
       if (ctx.props.icon) {
         return ['box', 'color']

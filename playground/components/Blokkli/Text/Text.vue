@@ -16,7 +16,7 @@ const { parentType } = defineBlokkli({
   bundle: 'text',
   editor: {
     previewWidth: 700,
-    editTitle: (el) => el.innerText,
+    editTitle: (el) => el.textContent,
     addBehaviour: 'editable:text',
     getDraggableElement: (el) => el.querySelector('.ck-content'),
   },

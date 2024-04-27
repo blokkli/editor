@@ -132,7 +132,7 @@ const scrollItemIntoView = () => {
 }
 
 const buildSearchText = (el: HTMLElement): string => {
-  let text = el.innerText || ''
+  let text = el.textContent || ''
 
   // Add alt and title attributes.
   el.querySelectorAll('img').forEach((img) => {

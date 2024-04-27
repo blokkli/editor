@@ -11,7 +11,7 @@ const { parentType } = defineBlokkli({
   bundle: 'table',
   editor: {
     addBehaviour: 'no-form',
-    editTitle: (el) => el.innerText,
+    editTitle: (el) => el.textContent,
     getDraggableElement: (el) => el.querySelector('.table'),
   },
 })

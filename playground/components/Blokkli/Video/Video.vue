@@ -56,7 +56,7 @@ const { options, parentType } = defineBlokkli({
     },
   },
   editor: {
-    editTitle: (el) => el.querySelector('h3')?.innerText,
+    editTitle: (el) => el.querySelector('h3')?.textContent,
   },
 })
 

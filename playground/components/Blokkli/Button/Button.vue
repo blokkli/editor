@@ -34,7 +34,7 @@ const { options, parentType, fieldListType } = defineBlokkli({
   },
   editor: {
     addBehaviour: 'no-form',
-    editTitle: (el) => el.querySelector('a')?.innerText,
+    editTitle: (el) => el.querySelector('a')?.textContent,
     getDraggableElement: (el) => el.querySelector('a'),
   },
 })

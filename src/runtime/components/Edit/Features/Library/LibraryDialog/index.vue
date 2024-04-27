@@ -145,7 +145,7 @@ const buildElements = () => {
         if (uuid && bundle) {
           return {
             uuid,
-            text: el.innerText.toLowerCase(),
+            text: (el.textContent || '').toLowerCase(),
             bundle,
           }
         }
