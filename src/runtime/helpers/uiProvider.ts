@@ -45,6 +45,18 @@ export type UiProvider = {
   artboardOffset: Ref<Coord>
 
   selectionTopLeft: Ref<Coord>
+
+  getAbsoluteElementRect: (
+    v: HTMLElement | Rectangle,
+    scale?: number,
+    offset?: Coord,
+  ) => Rectangle
+
+  getViewportRelativeRect: (
+    rect: Rectangle,
+    scale?: number,
+    offset?: Coord,
+  ) => Rectangle
 }
 
 export default function (storage: StorageProvider): UiProvider {
@@ -297,6 +309,36 @@ export default function (storage: StorageProvider): UiProvider {
     }
   })
 
+  function getAbsoluteElementRect(
+    v: HTMLElement | Rectangle,
+    providedScale?: number,
+    providedOffset?: Coord,
+  ): Rectangle {
+    const rect =
+      'x' in v && 'y' in v && 'width' in v && 'height' in v
+        ? v
+        : v.getBoundingClientRect()
+    const scale = providedScale || artboardScale.value
+    const offset = providedOffset || artboardOffset.value
+    return {
+      x: rect.x / scale - offset.x / scale,
+      y: rect.y / scale - offset.y / scale,
+      width: rect.width / scale,
+      height: rect.height / scale,
+    }
+  }
+
+  function getViewportRelativeRect(rect: Rectangle): Rectangle {
+    const scale = artboardScale.value
+    const offset = artboardOffset.value
+    return {
+      x: rect.x * scale + offset.x,
+      y: rect.y * scale + offset.y,
+      width: rect.width * scale,
+      height: rect.height * scale,
+    }
+  }
+
   return {
     menu: {
       isOpen: menuIsOpen,
@@ -325,5 +367,7 @@ export default function (storage: StorageProvider): UiProvider {
     artboardOffset,
     selectionTopLeft,
     lowPerformanceMode,
+    getAbsoluteElementRect,
+    getViewportRelativeRect,
   }
 }

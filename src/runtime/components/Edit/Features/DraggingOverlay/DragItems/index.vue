@@ -15,7 +15,7 @@
     <div
       v-for="(rect, i) in rects"
       :key="i"
-      :class="{ 'bk-is-top': rect.isTop }"
+      :class="{ 'bk-is-top': rect.isTop, 'bk-is-fallback': !rect.markup }"
       :style="{
         width: rect.width + 'px',
         height: rect.height + 'px',
@@ -37,9 +37,11 @@
         :style="{ color: rect.fallbackColor }"
       >
         <div :style="{ transform: `scale(${1 / rect.to.scaleX})` }">
-          <ItemIcon v-if="rect.bundle" :bundle="rect.bundle" />
-          <Icon v-else-if="rect.icon" :name="rect.icon as any" />
-          <div v-if="rect.label">{{ rect.label }}</div>
+          <template v-if="rect.isTop">
+            <ItemIcon v-if="rect.bundle" :bundle="rect.bundle" />
+            <Icon v-else-if="rect.icon" :name="rect.icon as any" />
+            <div v-if="rect.label">{{ rect.label }}</div>
+          </template>
         </div>
       </div>
     </div>

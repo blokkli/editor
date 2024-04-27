@@ -1,5 +1,5 @@
 import type { ComponentInternalInstance } from 'vue'
-import { ref, reactive } from '#imports'
+import { reactive } from '#imports'
 import type {
   DraggableExistingBlock,
   BlokkliFieldElement,
@@ -118,6 +118,8 @@ export type DomProvider = {
 
   getBlockRects: () => Record<string, Rectangle>
   getBlockRect: (uuid: string) => Rectangle | undefined
+
+  getFieldRect: (key: string) => Rectangle | undefined
 }
 
 const getVisibleBlockElement = (
@@ -134,24 +136,12 @@ const getVisibleBlockElement = (
   }
 }
 
-function getAbsoluteRect(
-  rect: DOMRect,
-  scale: number,
-  offset: Coord,
-): Rectangle {
-  return {
-    x: rect.x / scale - offset.x / scale,
-    y: rect.y / scale - offset.y / scale,
-    width: rect.width / scale,
-    height: rect.height / scale,
-  }
-}
-
 export default function (ui: UiProvider): DomProvider {
   const blockVisibility: Record<string, boolean> = {}
   const visibleBlocks: Set<string> = new Set()
   const visibleFields: Set<string> = new Set()
   const blockRects: Record<string, Rectangle> = {}
+  const fieldRects: Record<string, Rectangle> = {}
 
   function intersectionCallback(entries: IntersectionObserverEntry[]) {
     const scale = ui.artboardScale.value
@@ -170,8 +160,9 @@ export default function (ui: UiProvider): DomProvider {
           } else {
             visibleFields.delete(fieldKey)
           }
+          fieldRects[fieldKey] = ui.getAbsoluteElementRect(rect, scale, offset)
         } else if (uuid) {
-          blockRects[uuid] = getAbsoluteRect(rect, scale, offset)
+          blockRects[uuid] = ui.getAbsoluteElementRect(rect, scale, offset)
           if (entry.isIntersecting) {
             visibleBlocks.add(uuid)
           } else {
@@ -186,7 +177,7 @@ export default function (ui: UiProvider): DomProvider {
   const observer = useDelayedIntersectionObserver(intersectionCallback)
 
   const registeredBlocks = reactive<Record<string, HTMLElement | undefined>>({})
-  const registeredFields = ref<Record<string, HTMLElement | undefined>>({})
+  const registeredFields = reactive<Record<string, HTMLElement | undefined>>({})
 
   const registerField = (
     uuid: string,
@@ -194,17 +185,17 @@ export default function (ui: UiProvider): DomProvider {
     element: HTMLElement,
   ) => {
     const key = `${uuid}:${fieldName}`
-    registeredFields.value[key] = element
+    registeredFields[key] = element
     observer.observe(element)
   }
 
   const unregisterField = (uuid: string, fieldName: string) => {
     const key = `${uuid}:${fieldName}`
-    const el = registeredFields.value[key]
+    const el = registeredFields[key]
     if (el) {
       observer.unobserve(el)
     }
-    registeredFields.value[key] = undefined
+    registeredFields[key] = undefined
   }
 
   function getElementToObserve(el: HTMLElement, bundle: string): HTMLElement {
@@ -382,6 +373,10 @@ export default function (ui: UiProvider): DomProvider {
     return blockRects[uuid]
   }
 
+  function getFieldRect(key: string): Rectangle | undefined {
+    return fieldRects[key]
+  }
+
   // After the state has been updated, update the rects of all currently visible blocks.
   onBlokkliEvent('state:reloaded', () => {
     const visible = getVisibleBlocks()
@@ -400,8 +395,22 @@ export default function (ui: UiProvider): DomProvider {
       }
       const observableElement = getElementToObserve(el, bundle)
 
-      blockRects[uuid] = getAbsoluteRect(
+      blockRects[uuid] = ui.getAbsoluteElementRect(
         observableElement.getBoundingClientRect(),
+        scale,
+        offset,
+      )
+    }
+
+    const visibleFieldKeys = getVisibleFields()
+    for (let i = 0; i < visibleFieldKeys.length; i++) {
+      const key = visibleFieldKeys[i]
+      const field = registeredFields[key]
+      if (!field) {
+        continue
+      }
+      fieldRects[key] = ui.getAbsoluteElementRect(
+        field.getBoundingClientRect(),
         scale,
         offset,
       )
@@ -428,5 +437,6 @@ export default function (ui: UiProvider): DomProvider {
     getActiveProviderElement,
     getBlockRects,
     getBlockRect,
+    getFieldRect,
   }
 }

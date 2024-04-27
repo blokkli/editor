@@ -471,9 +471,6 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
     return fieldCache[key]
   }
 
-  const artboardEl = ui.artboardElement()
-  const artboardRect = artboardEl.getBoundingClientRect()
-  const scale = ui.artboardScale.value
   const [uuid, name] = key.split(':')
   const field = dom.findField(uuid, name)
   if (!field) {
@@ -485,11 +482,14 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
   const orientation =
     field.dropAlignment || getChildrenOrientation(field.element)
 
-  const rect = field.element.getBoundingClientRect()
-  const x = rect.x / scale - artboardRect.x / scale
-  const y = rect.y / scale - artboardRect.y / scale + artboardEl.scrollTop
-  const height = Math.max(field.element.offsetHeight, 30)
-  const width = Math.max(field.element.offsetWidth, 30)
+  const rect = dom.getFieldRect(field.key)
+  if (!rect) {
+    throw new Error('Failed to get rect for field: ' + field.key)
+  }
+  const x = rect.x
+  const y = rect.y
+  const height = Math.max(rect.height, 30)
+  const width = Math.max(rect.width, 30)
   const emptyChild = buildEmptyChild(
     field,
     childElements,
@@ -525,18 +525,16 @@ const buildDropAreaRect = (area: DropArea): Rectangle => {
     return cachedDropAreaRects[area.id]
   }
 
-  const artboardEl = ui.artboardElement()
-  const scale = ui.artboardScale.value
-  const artboardRect = artboardEl.getBoundingClientRect()
-  const rect = area.element.getBoundingClientRect()
-  const x = rect.x / scale - artboardRect.x / scale
-  const y = rect.y / scale - artboardRect.y / scale + artboardEl.scrollTop
-  const height = Math.max(area.element.offsetHeight, 30)
-  const width = Math.max(area.element.offsetWidth, 30)
+  const rect = ui.getAbsoluteElementRect(area.element)
 
-  const dropAreaRect: Rectangle = { x, y, width, height }
+  const dropAreaRect: Rectangle = {
+    x: rect.x,
+    y: rect.y,
+    width: Math.max(rect.width, 30),
+    height: Math.max(rect.height, 30),
+  }
 
-  // cachedDropAreaRects[area.id] = dropAreaRect
+  cachedDropAreaRects[area.id] = dropAreaRect
   return dropAreaRect
 }
 

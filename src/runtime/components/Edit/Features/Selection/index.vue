@@ -44,29 +44,30 @@ const isVisible = computed(
  * padded visible viewport area.
  */
 const findMostVisibleBlock = (): string | null => {
-  const blocks = dom.getAllBlocks()
+  const viewport = ui.visibleViewportPadded.value
+  const uuids = dom.getVisibleBlocks()
 
   let maxIntersection = 0
-  let mostVisibleUuid: string | undefined = blocks[0]?.uuid
+  let maxY = 9999
+  let mostVisibleUuid: string | null = null
 
-  for (let i = 0; i < blocks.length; i++) {
-    const block = blocks[i]
-
-    // Ignore nested blocks.
-    if (block.isNested) {
+  for (let i = 0; i < uuids.length; i++) {
+    const uuid = uuids[i]
+    const absoluteRect = dom.getBlockRect(uuid)
+    if (!absoluteRect) {
       continue
     }
 
-    const rect = block.element().getBoundingClientRect()
+    const rect = ui.getViewportRelativeRect(absoluteRect)
 
     // The intersection as a value from 0 to 1.
-    const intersection = calculateIntersection(
-      rect,
-      ui.visibleViewportPadded.value,
-    )
+    const intersection = calculateIntersection(rect, viewport)
     if (intersection && intersection > maxIntersection) {
-      mostVisibleUuid = block.uuid
-      maxIntersection = intersection
+      if (rect.y < maxY && rect.y > 0) {
+        mostVisibleUuid = uuid
+        maxIntersection = intersection
+        maxY = rect.y
+      }
     }
   }
 

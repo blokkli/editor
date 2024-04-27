@@ -278,24 +278,6 @@ defineShortcut(
   }),
 )
 
-const findElementToScrollTo = (uuid: string): HTMLElement | undefined => {
-  try {
-    const item = dom.findBlock(uuid)
-    if (!item) {
-      return
-    }
-
-    const element = item.element()
-    if (!element) {
-      return
-    }
-
-    return element
-  } catch (_e) {
-    // Noop.
-  }
-}
-
 onBlokkliEvent('scrollIntoView', (e) => {
   artboard.stopAnimate()
   const visible = dom.getBlockVisibilities()[e.uuid]
@@ -303,13 +285,12 @@ onBlokkliEvent('scrollIntoView', (e) => {
     return
   }
 
-  const element = findElementToScrollTo(e.uuid)
-  if (!element) {
+  const rect = dom.getBlockRect(e.uuid)
+  if (!rect) {
     return
   }
 
-  const rect = element.getBoundingClientRect()
-  const rectHeight = element.offsetHeight * artboard.scale
+  const rectY = rect.y * artboard.scale + artboard.offset.y
 
   let targetY: number | null = null
   const currentY = artboard.animationTarget?.y || artboard.offset.y
@@ -317,11 +298,11 @@ onBlokkliEvent('scrollIntoView', (e) => {
 
   if (e.center) {
     targetY =
-      currentY - rect.y + props.padding + rootHeight / 2 - rectHeight / 2
-  } else if (rect.y < 70) {
-    targetY = currentY - (rect.y - props.padding) + 70
-  } else if (rect.y + rectHeight > rootHeight) {
-    targetY = currentY + (rootHeight - (rect.y + rectHeight) - 40)
+      currentY - rectY + props.padding + rootHeight / 2 - rect.height / 2
+  } else if (rectY < 70) {
+    targetY = currentY - (rectY - props.padding) + 70
+  } else if (rectY + rect.height > rootHeight) {
+    targetY = currentY + (rootHeight - (rectY + rect.height) - 40)
   }
 
   if (targetY) {

@@ -293,6 +293,13 @@ export default function (
   onBlokkliEvent('dragging:start', (e) => {
     draggingMode.value = e.mode
     isMultiSelecting.value = false
+    const blocks = e.items.filter(
+      (v) => v.itemType === 'existing',
+    ) as DraggableExistingBlock[]
+
+    if (blocks.length) {
+      selectItems(blocks.map((v) => v.uuid))
+    }
   })
   onBlokkliEvent('dragging:end', () => {
     draggingMode.value = null

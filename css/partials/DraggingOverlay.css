@@ -24,6 +24,9 @@
       @apply !opacity-70;
     }
   }
+  > div.bk-is-fallback {
+    @apply border border-mono-500;
+  }
   &.bk-is-active > div.bk-is-top {
     @apply !opacity-80;
   }

@@ -125,7 +125,14 @@ function onPointerMove(e: PointerEvent) {
         mode: 'mouse',
       })
     } else {
-      eventBus.emit('select', interacted.uuid)
+      const block = dom.findBlock(interacted.uuid)
+      if (block) {
+        eventBus.emit('dragging:start', {
+          items: [block],
+          coords: { x: e.clientX, y: e.clientY },
+          mode: 'mouse',
+        })
+      }
     }
   }
 }
