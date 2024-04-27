@@ -76,6 +76,9 @@ function setScissor(v: Rectangle) {
 
 watch(scissor, setScissor)
 
+let lastCanvasWidth = 0
+let lastCanvasHeight = 0
+
 onBlokkliEvent('animationFrame', (e) => {
   if (!gl || !canvasGl.value) {
     return
@@ -84,13 +87,12 @@ onBlokkliEvent('animationFrame', (e) => {
   const canvasHeight = canvasAttributes.value.height
 
   // Only update width and height if they have changed.
-  if (
-    canvasWidth !== canvasGl.value.width ||
-    canvasHeight !== canvasGl.value.height
-  ) {
+  if (canvasWidth !== lastCanvasWidth || canvasHeight !== lastCanvasHeight) {
     canvasGl.value.width = canvasWidth
     canvasGl.value.height = canvasHeight
     gl.viewport(0, 0, canvasWidth, canvasHeight)
+    lastCanvasWidth = canvasWidth
+    lastCanvasHeight = canvasHeight
   }
   const offset = ui.artboardOffset.value
   const scale = ui.artboardScale.value
