@@ -113,7 +113,7 @@ const animation = animationProvider(ui)
 const keyboard = keyboardProvider(animation)
 const $t = textProvider(context)
 const state = await editStateProvider(adapter, context)
-const selection = selectionProvider(dom, ui, theme)
+const selection = selectionProvider(dom)
 const types = await typesProvider(adapter, selection, context)
 
 const mutatedEntity = computed(() => state.mutatedEntity.value || props.entity)

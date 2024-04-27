@@ -13,6 +13,7 @@ import type {
   ThemeName,
 } from '#blokkli/types/theme'
 import { type Ref, ref, onMounted, onBeforeUnmount } from '#imports'
+import onBlokkliEvent from './composables/onBlokkliEvent'
 
 export type ThemeProvider = {
   accent: Ref<ThemeColors>
@@ -124,6 +125,23 @@ export default function (): ThemeProvider {
     }
   })
 
+  let draggableStyleCache: WeakMap<HTMLElement | SVGElement, DraggableStyle> =
+    new WeakMap()
+
+  function cachedGetDraggableStyle(el: HTMLElement | SVGElement) {
+    const cached = draggableStyleCache.get(el)
+    if (cached) {
+      return cached
+    }
+    const style = getDraggableStyle(el, accent.value[700])
+    draggableStyleCache.set(el, style)
+    return style
+  }
+
+  onBlokkliEvent('state:reloaded', function () {
+    draggableStyleCache = new WeakMap()
+  })
+
   return {
     accent,
     mono,
@@ -131,7 +149,7 @@ export default function (): ThemeProvider {
     yellow,
     red,
     lime,
-    getDraggableStyle: (el) => getDraggableStyle(el, accent.value[700]),
+    getDraggableStyle: cachedGetDraggableStyle,
     setColor,
     applyTheme,
   }
