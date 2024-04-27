@@ -33,6 +33,14 @@ import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/helpers/webgl'
 
+const props = defineProps<{
+  items: DraggableItem[]
+  box: Rectangle
+  mouseX: number
+  mouseY: number
+  isTouch: boolean
+}>()
+
 enum RectRenderType {
   FIELD,
   DROP_AREA,
@@ -66,14 +74,6 @@ type DrawnRect = Rectangle & {
   index: number
 }
 
-const props = defineProps<{
-  items: DraggableItem[]
-  box: Rectangle
-  mouseX: number
-  mouseY: number
-  isTouch: boolean
-}>()
-
 const dragStart = Date.now()
 
 const cursorIsInsideClipped = () =>
@@ -88,7 +88,8 @@ const emit = defineEmits<{
   (e: 'drop', data: DropTargetEvent): void
 }>()
 
-const { dom, ui, $t, theme, dropAreas, eventBus, animation } = useBlokkli()
+const { dom, ui, $t, theme, dropAreas, eventBus, animation, state } =
+  useBlokkli()
 
 const gl = animation.gl()
 const programInfo = animation.registerProgram('drop_targets', gl, [vs, fs])
@@ -405,17 +406,20 @@ const determineCanAddChildren = (
 ) => {
   // Check cardinality of field.
   if (field.cardinality !== -1) {
-    if (children.length >= field.cardinality) {
-      const selectionAreChildren =
-        selectionUuids.value.length &&
-        selectionUuids.value.every((uuid) =>
-          children.find((v) => v.dataset.uuid === uuid),
-        )
-      // Return no drop targets if any of the selected blocks is not part of the field.
-      // That way we can still return drop targets when a block is moved inside the field.
-      if (!selectionAreChildren) {
+    // Current block count.
+    const count = state.getFieldBlockCount(field.key)
+
+    // Count of children that are also part of the selection.
+    const childrenThatAreSelection = children.filter((child) => {
+      const uuid = child.dataset.uuid
+      if (!uuid) {
         return false
       }
+      return selectionUuids.value.includes(uuid)
+    }).length
+    const countAfter = count - childrenThatAreSelection + props.items.length
+    if (countAfter > field.cardinality) {
+      return false
     }
   }
 
