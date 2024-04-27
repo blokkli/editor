@@ -21,7 +21,7 @@ const props = defineProps<{
   blocks: DraggableExistingBlock[]
 }>()
 
-const { animation, theme } = useBlokkli()
+const { animation, theme, dom } = useBlokkli()
 
 const gl = animation.gl()
 const programInfo = animation.registerProgram('selection', gl, [vs, fs])
@@ -35,10 +35,7 @@ type SelectionRectangle = Rectangle & {
 
 class SelectionRectangleBufferCollector extends RectangleBufferCollector<SelectionRectangle> {
   uuids: string[] = []
-  getBufferInfo(
-    offset: Coord,
-    scale: number,
-  ): { info: BufferInfo | null; hasChanged: boolean } {
+  getBufferInfo(): { info: BufferInfo | null; hasChanged: boolean } {
     const uuidsNew = props.blocks.map((v) => v.uuid)
     const uuidsCurrent = [...this.added.values()]
     const hasChanged =
@@ -53,15 +50,15 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
         }
         this.added.add(block.uuid)
         const el = block.dragElement()
-        const rect = el.getBoundingClientRect()
+        const rect = dom.getBlockRect(block.uuid)
+        if (!rect) {
+          continue
+        }
         const style = theme.getDraggableStyle(el)
         this.addRectangle(
           {
             id: block.uuid,
-            x: rect.x / scale - offset.x / scale,
-            y: rect.y / scale - offset.y / scale,
-            width: rect.width / scale,
-            height: rect.height / scale,
+            ...rect,
             radius: style.radius,
             isInverted: style.isInverted,
           },
@@ -86,15 +83,12 @@ const uniforms = {
   u_color_inverted: [255, 255, 255],
 }
 
-onBlokkliEvent('canvas:draw', (e) => {
+onBlokkliEvent('canvas:draw', () => {
   gl.useProgram(programInfo.program)
 
   setUniforms(programInfo, uniforms)
   animation.setSharedUniforms(gl, programInfo)
-  const { info, hasChanged } = collector.getBufferInfo(
-    e.artboardOffset,
-    e.artboardScale,
-  )
+  const { info, hasChanged } = collector.getBufferInfo()
 
   // Nothing to draw.
   if (!info) {

@@ -20,6 +20,7 @@ import type { UiProvider } from './uiProvider'
 import { cloneElementWithStyles } from './dom'
 import onBlokkliEvent from './composables/onBlokkliEvent'
 import useDelayedIntersectionObserver from './composables/useDelayedIntersectionObserver'
+import { getDefinition } from '#blokkli/definitions'
 
 const buildFieldElement = (
   element: HTMLElement,
@@ -91,6 +92,7 @@ export type DomProvider = {
   registerBlock: (
     uuid: string,
     instance: ComponentInternalInstance | null,
+    bundle: string,
   ) => void
   unregisterBlock: (uuid: string) => void
 
@@ -115,6 +117,7 @@ export type DomProvider = {
   getActiveProviderElement: () => HTMLElement
 
   getBlockRects: () => Record<string, Rectangle>
+  getBlockRect: (uuid: string) => Rectangle | undefined
 }
 
 const getVisibleBlockElement = (
@@ -155,10 +158,19 @@ export default function (ui: UiProvider): DomProvider {
     const offset = ui.artboardOffset.value
     for (const entry of entries) {
       if (entry.target instanceof HTMLElement) {
-        const uuid = entry.target.dataset.uuid
+        const uuid =
+          entry.target.dataset.uuid ||
+          (entry.target.closest('[data-uuid]') as HTMLElement | undefined)
+            ?.dataset.uuid
         const fieldKey = entry.target.dataset.fieldKey
         const rect = entry.boundingClientRect
-        if (uuid) {
+        if (fieldKey) {
+          if (entry.isIntersecting) {
+            visibleFields.add(fieldKey)
+          } else {
+            visibleFields.delete(fieldKey)
+          }
+        } else if (uuid) {
           blockRects[uuid] = getAbsoluteRect(rect, scale, offset)
           if (entry.isIntersecting) {
             visibleBlocks.add(uuid)
@@ -166,12 +178,6 @@ export default function (ui: UiProvider): DomProvider {
             visibleBlocks.delete(uuid)
           }
           blockVisibility[uuid] = entry.isIntersecting
-        } else if (fieldKey) {
-          if (entry.isIntersecting) {
-            visibleFields.add(fieldKey)
-          } else {
-            visibleFields.delete(fieldKey)
-          }
         }
       }
     }
@@ -201,9 +207,26 @@ export default function (ui: UiProvider): DomProvider {
     registeredFields.value[key] = undefined
   }
 
+  function getElementToObserve(el: HTMLElement, bundle: string): HTMLElement {
+    const definition = getDefinition(bundle)
+    if (!definition) {
+      throw new Error('Failed to load definition for bundle: ' + bundle)
+    }
+    const observableElement =
+      (definition.editor?.getDraggableElement
+        ? definition.editor.getDraggableElement(el)
+        : el) || el
+    if (observableElement instanceof HTMLElement) {
+      return observableElement
+    }
+
+    return el
+  }
+
   const registerBlock = (
     uuid: string,
     instance: ComponentInternalInstance | null,
+    bundle: string,
   ) => {
     if (registeredBlocks[uuid]) {
       console.error(
@@ -225,7 +248,8 @@ export default function (ui: UiProvider): DomProvider {
       )
       return
     }
-    observer.observe(el)
+    const observableElement = getElementToObserve(el, bundle)
+    observer.observe(observableElement)
     registeredBlocks[uuid] = el
   }
 
@@ -235,6 +259,7 @@ export default function (ui: UiProvider): DomProvider {
       observer.unobserve(el)
     }
     registeredBlocks[uuid] = undefined
+    delete blockRects[uuid]
   }
 
   const findBlock = (uuid: string): DraggableExistingBlock | undefined => {
@@ -353,6 +378,10 @@ export default function (ui: UiProvider): DomProvider {
     return blockRects
   }
 
+  function getBlockRect(uuid: string): Rectangle | undefined {
+    return blockRects[uuid]
+  }
+
   // After the state has been updated, update the rects of all currently visible blocks.
   onBlokkliEvent('state:reloaded', () => {
     const visible = getVisibleBlocks()
@@ -364,9 +393,15 @@ export default function (ui: UiProvider): DomProvider {
       if (!el) {
         continue
       }
+      const bundle = el.dataset.itemBundle
+
+      if (!bundle) {
+        continue
+      }
+      const observableElement = getElementToObserve(el, bundle)
 
       blockRects[uuid] = getAbsoluteRect(
-        el.getBoundingClientRect(),
+        observableElement.getBoundingClientRect(),
         scale,
         offset,
       )
@@ -392,5 +427,6 @@ export default function (ui: UiProvider): DomProvider {
     unregisterField,
     getActiveProviderElement,
     getBlockRects,
+    getBlockRect,
   }
 }

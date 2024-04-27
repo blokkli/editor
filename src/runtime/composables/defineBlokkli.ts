@@ -155,7 +155,7 @@ export function defineBlokkli<
 
     // Register the DOM element of this block.
     const instance = getCurrentInstance()
-    editContext.dom.registerBlock(uuid, instance)
+    editContext.dom.registerBlock(uuid, instance, config.bundle)
   })
 
   onBeforeUnmount(() => {

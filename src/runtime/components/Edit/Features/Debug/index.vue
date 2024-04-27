@@ -135,6 +135,7 @@ import { icons, type BlokkliIcon } from '#blokkli/icons'
 import type { Rectangle } from '#blokkli/types'
 import { featureComponents } from '#blokkli-runtime/features'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { intersects } from '#blokkli/helpers'
 
 defineBlokkliFeature({
   id: 'debug',
@@ -263,19 +264,23 @@ onBlokkliEvent('canvas:draw', (e) => {
   }
   ctx.clearRect(0, 0, ui.viewport.value.width, ui.viewport.value.height)
   const blockRects = dom.getBlockRects()
+  const viewport = ui.visibleViewport.value
 
   const rects = Object.values(blockRects)
 
   for (let i = 0; i < rects.length; i++) {
     const rect = rects[i]
 
-    ctx.rect(
-      rect.x * e.artboardScale + e.artboardOffset.x,
-      rect.y * e.artboardScale + e.artboardOffset.y,
-      rect.width * e.artboardScale,
-      rect.height * e.artboardScale,
-    )
-    ctx.stroke()
+    const drawnRect = {
+      x: rect.x * e.artboardScale + e.artboardOffset.x,
+      y: rect.y * e.artboardScale + e.artboardOffset.y,
+      width: rect.width * e.artboardScale,
+      height: rect.height * e.artboardScale,
+    }
+    if (intersects(drawnRect, viewport)) {
+      ctx.rect(drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height)
+      ctx.stroke()
+    }
   }
 })
 

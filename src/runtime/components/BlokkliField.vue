@@ -139,7 +139,6 @@ const fieldListType = computed(() => props.fieldListType)
 
 const filteredList = computed<FieldListItemTyped[]>(() => {
   if (mutatedFields && !isInReusable && editContext && fieldKey.value) {
-    console.log('UPDATED')
     return ((mutatedFields[fieldKey.value] || {}).list || []).map((v) => {
       const mutatedOptions = editContext.mutatedOptions[v.uuid] || {}
       return {

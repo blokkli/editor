@@ -130,6 +130,9 @@ const visuallySelectBlocks = (toggleUuid: string): string[] | undefined => {
     return [toggleUuid]
   }
 
+  const singleSelectedBlock =
+    selected.length === 1 ? dom.findBlock(selected[0]) : null
+
   const toggleRect = rects[toggleUuid]
   if (!toggleRect) {
     return
@@ -157,11 +160,12 @@ const visuallySelectBlocks = (toggleUuid: string): string[] | undefined => {
         continue
       }
 
-      if (block.isNested !== toggleBlock.isNested) {
-        continue
+      if (
+        block.isNested === toggleBlock.isNested ||
+        singleSelectedBlock?.isNested === block.isNested
+      ) {
+        candidates.push(uuid)
       }
-
-      candidates.push(uuid)
     }
 
     return candidates
@@ -185,17 +189,6 @@ const visuallySelectBlocks = (toggleUuid: string): string[] | undefined => {
     }
 
     return filter(encompassingRect)
-
-    // return all
-    //   .filter(
-    //     (el) =>
-    //       el.isNested === toggleBlock.isNested ||
-    //       selected[0].isNested === el.isNested,
-    //   )
-    //   .filter((el) =>
-    //     intersects(el.element().getBoundingClientRect(), encompassingRect),
-    //   )
-    //   .map((el) => el.uuid)
   }
 
   // More than one selected.
