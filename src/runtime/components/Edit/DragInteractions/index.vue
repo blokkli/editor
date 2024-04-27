@@ -151,6 +151,7 @@ function onPointerUp(e: PointerEvent) {
   // This is required because emitting the mouse:up event would set this value to false.
   const wasDragging = selection.isDragging.value
   const wasMultiSelecting = selection.isMultiSelecting.value
+  pointerDownElement = null
 
   if (e.pointerType === 'touch') {
     return onTouchEnd(e)

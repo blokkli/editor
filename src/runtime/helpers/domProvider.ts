@@ -6,6 +6,7 @@ import type {
   DraggableItem,
   DroppableEntityField,
   EntityContext,
+  Rectangle,
 } from '#blokkli/types'
 import {
   findClosestBlock,
@@ -189,6 +190,7 @@ export default function (): DomProvider {
   const blockVisibility: Record<string, boolean> = {}
   const visibleBlocks: Set<string> = new Set()
   const visibleFields: Set<string> = new Set()
+  const blockRects: Record<string, Rectangle> = {}
 
   const observer = new IntersectionObserver(
     (entries) => {

@@ -1,6 +1,5 @@
 <template>
   <div
-    ref="list"
     @pointerdown.capture.prevent="onPointerDown"
     @pointerup.capture.prevent="onPointerUp"
     @pointermove.capture.prevent="onPointerMove"
@@ -11,27 +10,23 @@
 
 <script lang="ts" setup>
 import type { Coord, DraggableItem } from '#blokkli/types'
-import { useBlokkli, ref, type ComponentPublicInstance } from '#imports'
+import { useBlokkli } from '#imports'
 import {
   buildDraggableItem,
   getDistance,
   getInteractionCoordinates,
 } from '#blokkli/helpers'
 
-defineProps<{}>()
-
-const { selection, eventBus } = useBlokkli()
+const { eventBus } = useBlokkli()
 
 let pointerStartCoords: Coord | null = null
 let activeItem: DraggableItem | null = null
-let pointerStartTimestamp = 0
 
 function onPointerDown(e: PointerEvent) {
   if (!(e.target instanceof HTMLElement || e.target instanceof SVGElement)) {
     return
   }
   pointerStartCoords = getInteractionCoordinates(e)
-  pointerStartTimestamp = Date.now()
 
   const sortliItem = e.target.closest('[data-sortli-id]')
   if (!sortliItem) {
@@ -48,7 +43,7 @@ function onPointerDown(e: PointerEvent) {
 }
 
 function onPointerMove(e: PointerEvent) {
-  if (!pointerStartCoords || !activeItem) {
+  if (!pointerStartCoords || !activeItem || e.pointerType === 'touch') {
     return
   }
 
@@ -67,6 +62,19 @@ function onPointerMove(e: PointerEvent) {
 }
 
 function onPointerUp(e: PointerEvent) {
+  if (!pointerStartCoords || !activeItem) {
+    return
+  }
+  const coords = getInteractionCoordinates(e)
+  const distance = getDistance(coords, pointerStartCoords)
+  if (e.pointerType === 'touch' && distance < 5) {
+    eventBus.emit('dragging:start', {
+      items: [activeItem],
+      coords,
+      mode: 'touch',
+    })
+  }
+
   pointerStartCoords = null
 }
 </script>

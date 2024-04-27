@@ -1,6 +1,6 @@
 <template>
   <div
-    class="aspect-square bg-accent-700 rounded-full w-340 mx-auto"
+    class="aspect-square bg-accent-700 rounded-full w-340 mx-auto my-80"
     :class="options.color"
     :style="style"
   />
@@ -47,9 +47,7 @@ const { options } = defineBlokkliFragment({
   },
 })
 
-const style = computed(() => {
-  return {
-    borderRadius: options.value.radius + 'px',
-  }
-})
+const style = computed(() => ({
+  borderRadius: options.value.radius + 'px',
+}))
 </script>
