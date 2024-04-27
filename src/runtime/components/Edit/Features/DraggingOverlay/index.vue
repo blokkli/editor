@@ -10,6 +10,7 @@
     @drop="onDrop"
   >
     <DragItems
+      ref="dragItemsComponent"
       :x="mouseX"
       :y="mouseY"
       :start-coords="startCoords"
@@ -61,6 +62,7 @@ const { adapter } = defineBlokkliFeature({
 
 const { eventBus, state, ui, animation, dom } = useBlokkli()
 
+const dragItemsComponent = ref<InstanceType<typeof DragItems> | null>(null)
 const isVisible = ref(false)
 const isTouching = ref(false)
 const mouseX = ref(0)
@@ -241,13 +243,9 @@ const onDropAction = (
 }
 
 const onDrop = (e: DropTargetEvent) => {
-  // All the existing UUIDs on the page.
-  const existingUuids = state.renderedBlocks.value.map((v) => v.item.uuid)
   mouseX.value = 0
   mouseY.value = 0
 
-  eventBus.emit('dragging:end')
-  eventBus.emit('item:dropped')
   nextTick(async () => {
     const afterUuid = e.preceedingUuid
     const host = e.host
@@ -268,10 +266,12 @@ const onDrop = (e: DropTargetEvent) => {
       await onDropMediaLibraryItem(typed.item, host, afterUuid)
     }
 
+    eventBus.emit('dragging:end')
+    eventBus.emit('item:dropped')
+
+    // @TODO: Reimplement feature.
     // Try to find the new block that has been added.
-    const newBlock = state.renderedBlocks.value.find(
-      (v) => !existingUuids.includes(v.item.uuid),
-    )
+    const newBlock: any = null
     if (!newBlock) {
       return
     }
@@ -319,17 +319,11 @@ function loop(e: AnimationFrameEvent) {
     isVisible.value = true
   }
 
-  const rect = document
-    .querySelector('.bk-dragging-overlay')
-    ?.getBoundingClientRect()
-  if (rect) {
-    box.value = {
-      x: rect.x,
-      y: rect.y,
-      width: rect.width,
-      height: rect.height,
-    }
+  if (!dragItemsComponent.value) {
+    return
   }
+
+  box.value = dragItemsComponent.value.getRect()
 }
 
 const onMouseUp = (e: MouseEvent) => {

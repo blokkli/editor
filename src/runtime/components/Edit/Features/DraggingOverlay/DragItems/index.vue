@@ -6,7 +6,7 @@
   >
     <Transition name="bk-drag-item">
       <span
-        v-if="activeLabel"
+        v-show="activeLabel"
         class="bk-dragging-overlay-label"
         :style="{ backgroundColor: activeColor }"
         >{{ activeLabel }}</span
@@ -116,6 +116,17 @@ const style = computed(() => {
   }
 })
 
+function getRect(): Rectangle {
+  return {
+    x: translateX.value,
+    y: translateY.value,
+    width: width.value,
+    height: height.value,
+  }
+}
+
+defineExpose({ getRect })
+
 type AnimationRectangleValues = {
   opacity: number
   scaleX: number
@@ -131,7 +142,7 @@ type AnimationRectangle = Rectangle &
     to: AnimationRectangleValues
     markup: string
     background: string
-    elementOpacity?: string
+    prevVisibility?: string
     transformOrigin: string
     element: HTMLElement
     borderRadius: string
@@ -179,7 +190,11 @@ onBlokkliEvent('animationFrame', () => {
     })
   }
 
-  if (elapsed > duration || !ui.useAnimations.value) {
+  if (
+    elapsed > duration ||
+    !ui.useAnimations.value ||
+    ui.lowPerformanceMode.value
+  ) {
     rects.value = newRects.map((v) => {
       return {
         ...v,
@@ -311,7 +326,7 @@ onMounted(() => {
     // performance issue which results in a noticeable lag. In this case
     // we instead render a simple fallback.
     const markup =
-      elRects.length < 6 || isTop
+      (elRects.length < 6 || isTop) && !ui.lowPerformanceMode.value
         ? dom.getDropElementMarkup(item.item, true)
         : ''
     let bundle: string | undefined
@@ -347,9 +362,9 @@ onMounted(() => {
       transformOrigin: `${originX}px ${originY}px`,
       markup,
       background: realBackgroundColor(item.element),
-      elementOpacity:
+      prevVisibility:
         item.item.itemType === 'existing'
-          ? item.element.style.opacity
+          ? item.element.style.visibility
           : undefined,
       element: item.element,
       borderRadius: style.radiusString,
@@ -361,16 +376,18 @@ onMounted(() => {
 
   elRects.forEach((item) => {
     if (item.item.itemType === 'existing') {
-      item.element.style.opacity = '0.2'
+      // Set the visibility to hidden. Unlike setting opacity or filter, this
+      // does not trigger layout trashing and style recalculation.
+      item.element.style.visibility = 'hidden'
     }
   })
 })
 
 onBeforeUnmount(() => {
-  // Restore the original opacity on the blocks.
+  // Restore the original visibility on the blocks.
   rects.value.forEach((item) => {
-    if (item.elementOpacity !== undefined) {
-      item.element.style.opacity = item.elementOpacity
+    if (item.prevVisibility !== undefined) {
+      item.element.style.visibility = item.prevVisibility
     }
   })
 })

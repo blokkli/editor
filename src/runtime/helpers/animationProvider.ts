@@ -8,7 +8,7 @@ import {
 } from '#imports'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import type { UiProvider } from './uiProvider'
-import type { ProgramInfo } from 'twgl.js'
+import { createProgramInfo, type ProgramInfo } from 'twgl.js'
 
 export type AnimationProvider = {
   /**
@@ -27,6 +27,17 @@ export type AnimationProvider = {
   ) => void
 
   dpi: ComputedRef<number>
+
+  /**
+   * Register a WebGL program.
+   *
+   * The programs are cached by the given ID.
+   */
+  registerProgram: (
+    id: string,
+    gl: WebGLRenderingContext,
+    shaders: string[],
+  ) => ProgramInfo
 }
 
 export default function (ui: UiProvider): AnimationProvider {
@@ -88,8 +99,10 @@ export default function (ui: UiProvider): AnimationProvider {
   onBlokkliEvent('state:reloaded', requestDraw)
 
   const dpi = computed(() => {
-    return 2.0
-    return 2.5
+    // Use a reduced DPI when low performance mode is enabled.
+    if (ui.lowPerformanceMode.value) {
+      return 0.5
+    }
     if (ui.isMobile.value) {
       return window.devicePixelRatio
     }
@@ -122,6 +135,19 @@ export default function (ui: UiProvider): AnimationProvider {
     gl.uniform1f(gl.getUniformLocation(programInfo.program, 'u_dpi'), dpi.value)
   }
 
+  const registeredPrograms: Record<string, ProgramInfo> = {}
+  function registerProgram(
+    id: string,
+    gl: WebGLRenderingContext,
+    shaders: string[],
+  ) {
+    if (!registeredPrograms[id]) {
+      registeredPrograms[id] = createProgramInfo(gl, shaders)
+    }
+
+    return registeredPrograms[id]
+  }
+
   return {
     requestDraw,
     gl: function () {
@@ -140,5 +166,6 @@ export default function (ui: UiProvider): AnimationProvider {
     },
     setSharedUniforms,
     dpi,
+    registerProgram,
   }
 }

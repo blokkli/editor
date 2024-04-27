@@ -91,9 +91,9 @@ const validateValue = (
 const mutatedValue = computed<string | undefined>(() => {
   for (let i = 0; i < props.uuids.length; i++) {
     const uuid = props.uuids[i]
-    const mutatedOptions = state.mutatedOptions.value[uuid]
+    const mutatedOptions = state.mutatedOptions[uuid]
     if (mutatedOptions) {
-      const mutatedOption = state.mutatedOptions.value[uuid]?.[props.property]
+      const mutatedOption = state.mutatedOptions[uuid]?.[props.property]
       if (mutatedOption !== undefined) {
         return validateValue(mutatedOption)
       }

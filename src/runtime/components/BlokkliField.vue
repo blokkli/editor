@@ -10,7 +10,6 @@
     :drop-alignment="dropAlignment"
     :class="[attrs.class, listClass, { [nonEmptyClass]: filteredList.length }]"
     :is-nested="isNested"
-    :data-field-block-count="filteredList.length"
     class="bk-field-list"
     :tag="tag"
   />
@@ -48,7 +47,7 @@ import {
   inject,
   provide,
   ref,
-  type ComputedRef,
+  type Reactive,
 } from '#imports'
 import { type BlokkliFragmentName } from '#blokkli/definitions'
 
@@ -93,7 +92,7 @@ const isEditing = inject(INJECT_IS_EDITING, false)
 const isInReusable = inject(INJECT_IS_IN_REUSABLE, false)
 const isPreview = inject<boolean>(INJECT_IS_PREVIEW, false)
 const isNested = inject(INJECT_IS_NESTED, false)
-const mutatedFields = inject<ComputedRef<Record<string, MutatedField>> | null>(
+const mutatedFields = inject<Reactive<Record<string, MutatedField>> | null>(
   INJECT_MUTATED_FIELDS_MAP,
   null,
 )
@@ -139,21 +138,18 @@ const fieldKey = computed(() => {
 const fieldListType = computed(() => props.fieldListType)
 
 const filteredList = computed<FieldListItemTyped[]>(() => {
-  if (mutatedFields?.value && !isInReusable && editContext && fieldKey.value) {
-    const field = mutatedFields.value[fieldKey.value]
-    if (field) {
-      return field.list.map<any>((v) => {
-        const mutatedOptions = editContext.mutatedOptions.value[v.uuid] || {}
-        return {
-          ...v,
-          options: {
-            ...v.options,
-            ...mutatedOptions,
-          },
-        }
-      })
-    }
-    return []
+  if (mutatedFields && !isInReusable && editContext && fieldKey.value) {
+    console.log('UPDATED')
+    return ((mutatedFields[fieldKey.value] || {}).list || []).map((v) => {
+      const mutatedOptions = editContext.mutatedOptions[v.uuid] || {}
+      return {
+        ...v,
+        options: {
+          ...v.options,
+          ...mutatedOptions,
+        },
+      }
+    })
   }
   return props.list.filter(Boolean) as FieldListItemTyped[]
 })

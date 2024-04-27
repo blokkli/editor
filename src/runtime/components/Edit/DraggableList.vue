@@ -2,7 +2,6 @@
   <div
     ref="root"
     class="bk-draggable-list-container"
-    :class="{ 'is-empty': !list.length }"
     :data-field-name="name"
     :data-field-label="fieldConfig?.label"
     :data-field-is-nested="isNested"
@@ -30,7 +29,6 @@
       data-element-type="existing"
       :data-sortli-id="item.uuid"
       :data-uuid="item.uuid"
-      :data-action-key="name + ':' + item.uuid"
       :data-host-type="entity.type"
       :data-host-bundle="entity.bundle"
       :data-host-uuid="entity.uuid"

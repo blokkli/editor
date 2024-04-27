@@ -245,7 +245,7 @@ export default function (): DomProvider {
     instance: ComponentInternalInstance | null,
   ) => {
     if (registeredBlocks.value[uuid]) {
-      throw new Error(
+      console.error(
         'Trying to register block with already existing UUID: ' + uuid,
       )
     }

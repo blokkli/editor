@@ -51,7 +51,7 @@ const definition = computed<
 
     const fragmentNames = fragments
       .map((v) => {
-        const props: any = state.getRenderedBlock(v.uuid)?.item?.props
+        const props: any = state.getFieldListItem(v.uuid)?.props
         if (props && props.name) {
           return props.name
         }

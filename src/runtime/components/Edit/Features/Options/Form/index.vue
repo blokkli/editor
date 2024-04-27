@@ -125,12 +125,12 @@ const currentValues = computed(() => {
     if (!uuid) {
       return ''
     }
-    const blockMutatedOptions = state.mutatedOptions.value[uuid]
+    const blockMutatedOptions = state.mutatedOptions[uuid]
     if (
       blockMutatedOptions !== undefined &&
       blockMutatedOptions[key] !== undefined
     ) {
-      return state.mutatedOptions.value[uuid][key]
+      return state.mutatedOptions[uuid][key]
     }
     return defaultValue
   }
@@ -151,17 +151,19 @@ const visibleOptions = computed(() => {
     return availableOptions.value
   }
 
-  const renderedBlock = state.getRenderedBlock(props.uuids[0])
+  const uuid = props.uuids[0]
+  const item = state.getFieldListItem(props.uuids[0])
+  const block = selection.blocks.value.find((v) => v.uuid === uuid)
 
   const parentType =
-    renderedBlock?.parentEntityType === runtimeConfig.itemEntityType
-      ? renderedBlock.parentEntityBundle
+    block?.hostType === runtimeConfig.itemEntityType
+      ? block.parentBlockBundle
       : undefined
 
   const ctxProps =
-    renderedBlock?.item.bundle === 'from_library'
-      ? (renderedBlock.item.props as any)?.libraryItem?.block?.props
-      : renderedBlock?.item.props
+    item?.bundle === 'from_library'
+      ? (item?.props as any)?.libraryItem?.block?.props
+      : item?.props
 
   const visibleKeys: string[] =
     // We have to cast to any here because the types are guaranteed to be correct.
@@ -178,10 +180,10 @@ function setOptionValue(key: string, value: string) {
   props.uuids.forEach((uuid) => {
     updated.set(uuid, key, value)
 
-    if (!state.mutatedOptions.value[uuid]) {
-      state.mutatedOptions.value[uuid] = {}
+    if (!state.mutatedOptions[uuid]) {
+      state.mutatedOptions[uuid] = {}
     }
-    state.mutatedOptions.value[uuid][key] = value
+    state.mutatedOptions[uuid][key] = value
     eventBus.emit('option:update', { uuid, key, value })
   })
 }

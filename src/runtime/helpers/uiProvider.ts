@@ -26,6 +26,7 @@ export type UiProvider = {
   isArtboard: () => boolean
   isAnimating: Ref<boolean>
   useAnimations: ComputedRef<boolean>
+  lowPerformanceMode: ComputedRef<boolean>
   toolbarHeight: ComputedRef<number>
   visibleViewport: ComputedRef<Rectangle>
   visibleViewportPadded: ComputedRef<Rectangle>
@@ -58,6 +59,8 @@ export default function (storage: StorageProvider): UiProvider {
   const selectionTopLeft = ref({ x: 0, y: 0 })
   const useAnimationsSetting = storage.use('useAnimations', true)
   const useAnimations = computed(() => useAnimationsSetting.value)
+  const lowPerformanceModeSetting = storage.use('lowPerformanceMode', false)
+  const lowPerformanceMode = computed(() => lowPerformanceModeSetting.value)
   const viewportBlockingRectsMap = ref<Record<string, Rectangle>>({})
   const artboardSize = ref<Size>({
     width: 1,
@@ -321,5 +324,6 @@ export default function (storage: StorageProvider): UiProvider {
     artboardScale,
     artboardOffset,
     selectionTopLeft,
+    lowPerformanceMode,
   }
 }

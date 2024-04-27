@@ -36,6 +36,12 @@ defineBlokkliFeature({
       label: 'Use animations',
       group: 'advanced',
     },
+    lowPerformanceMode: {
+      type: 'checkbox',
+      default: false,
+      label: 'Enable low performance mode',
+      group: 'advanced',
+    },
     resetAllSettings: {
       type: 'method',
       label: 'Reset all settings',

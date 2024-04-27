@@ -76,16 +76,6 @@ function setScissor(v: Rectangle) {
 
 watch(scissor, setScissor)
 
-function calculateMaxDevicePixelRatio(
-  maxTextureSize: number,
-  width: number,
-  height: number,
-) {
-  const maxRatioWidth = maxTextureSize / width
-  const maxRatioHeight = maxTextureSize / height
-  return Math.floor(Math.min(maxRatioWidth, maxRatioHeight))
-}
-
 onBlokkliEvent('animationFrame', (e) => {
   if (!gl || !canvasGl.value) {
     return

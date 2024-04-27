@@ -7,7 +7,6 @@ import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { Coord, DraggableExistingBlock, Rectangle } from '#blokkli/types'
 import { useBlokkli, onBeforeUnmount } from '#imports'
 import {
-  createProgramInfo,
   setBuffersAndAttributes,
   drawBufferInfo,
   type BufferInfo,
@@ -25,7 +24,7 @@ const props = defineProps<{
 const { animation, theme } = useBlokkli()
 
 const gl = animation.gl()
-const programInfo = createProgramInfo(gl, [vs, fs])
+const programInfo = animation.registerProgram('selection', gl, [vs, fs])
 
 type SelectionRectangle = Rectangle & {
   id: string

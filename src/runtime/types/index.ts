@@ -1,4 +1,4 @@
-import type { Ref, ComputedRef } from 'vue'
+import type { ComputedRef } from 'vue'
 import type { Emitter } from 'mitt'
 import type { DomProvider } from '../helpers/domProvider'
 import type { StorageProvider } from '../helpers/storageProvider'
@@ -983,7 +983,7 @@ export type Eventbus = Emitter<EventbusEvents>
 
 export type ItemEditContext = {
   eventBus: Eventbus
-  mutatedOptions: Ref<MutatedOptions>
+  mutatedOptions: MutatedOptions
   dom?: DomProvider
 }
 

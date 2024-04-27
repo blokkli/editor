@@ -65,6 +65,7 @@ import { getDefinition } from '#blokkli/definitions'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { PluginTourItem } from '#blokkli/plugins'
+import { getFieldKey } from '#blokkli/helpers'
 
 defineBlokkliFeature({
   id: 'block-add-list',
@@ -171,10 +172,6 @@ const selectableBundles = computed(() => {
   return types.generallyAvailableBundles.value.map((v) => v.id || '')
 })
 
-const existingBlockBundles = computed(() =>
-  state.renderedBlocks.value.map((v) => v.item.bundle),
-)
-
 const determineVisibility = (bundle: string, label: string): boolean => {
   if (ui.isMobile.value && !selectableBundles.value.includes(bundle)) {
     return false
@@ -190,10 +187,8 @@ const determineVisibility = (bundle: string, label: string): boolean => {
   const definition = getDefinition(bundle)
 
   if (definition?.editor?.maxInstances) {
-    const existingInstancesOfBundle = existingBlockBundles.value.filter(
-      (v) => v === bundle,
-    )
-    return existingInstancesOfBundle.length < definition.editor.maxInstances
+    const existingInstancesOfBundle = state.getBlockBundleCount(bundle)
+    return existingInstancesOfBundle < definition.editor.maxInstances
   }
 
   return true
@@ -237,14 +232,11 @@ const getBundlesForAppendCommands = () => {
 
   if (field) {
     if (field.cardinality !== -1) {
-      const mutatedField = state.mutatedFields.value.find(
-        (v) => v.name === field.name && v.entityType === field.entityType,
-      )
-      if (mutatedField) {
-        // No more blocks allowed.
-        if (mutatedField.list.length >= field.cardinality) {
-          return []
-        }
+      const key = getFieldKey(block.hostUuid, block.hostFieldName)
+      const count = state.getFieldBlockCount(key)
+      // No more blocks allowed.
+      if (count >= field.cardinality) {
+        return []
       }
     }
     return field.allowedBundles.filter((v) => !reservedBundles.includes(v))
@@ -266,14 +258,11 @@ const getAppendEndCommands = (): Command[] => {
 
   return fields.flatMap((field) => {
     if (field.cardinality !== -1) {
-      const mutatedField = state.mutatedFields.value.find(
-        (v) => v.name === field.name && v.entityType === field.entityType,
-      )
-      if (mutatedField) {
-        // No more blocks allowed.
-        if (mutatedField.list.length >= field.cardinality) {
-          return []
-        }
+      const key = getFieldKey(context.value.entityUuid, field.name)
+      const count = state.getFieldBlockCount(key)
+      // No more blocks allowed.
+      if (count >= field.cardinality) {
+        return []
       }
     }
     return field.allowedBundles

@@ -1,14 +1,7 @@
 import type { DomProvider } from './domProvider'
-import type { RenderedBlock, StateProvider } from './stateProvider'
+import type { RenderedBlock } from './stateProvider'
 import onBlokkliEvent from './composables/onBlokkliEvent'
-import {
-  type Ref,
-  type ComputedRef,
-  computed,
-  ref,
-  watch,
-  nextTick,
-} from '#imports'
+import { type Ref, type ComputedRef, computed, ref } from '#imports'
 
 import type {
   DraggableExistingBlock,
@@ -260,7 +253,6 @@ export type SelectionProvider = {
 
 export default function (
   dom: DomProvider,
-  state: StateProvider,
   ui: UiProvider,
   theme: ThemeProvider,
 ): SelectionProvider {
@@ -290,25 +282,6 @@ export default function (
         uuid: v.uuid,
       }
     })
-  })
-
-  watch(state.renderedBlocks, (newBlocks, prevBlocks) => {
-    const result = getSelectedAfterStateChange(
-      selectedUuids.value,
-      newBlocks,
-      prevBlocks,
-    )
-
-    if (result && result.length) {
-      selectedUuids.value = result
-      if (selectedUuids.value.length) {
-        nextTick(() => {
-          eventBus.emit('scrollIntoView', {
-            uuid: result[0],
-          })
-        })
-      }
-    }
   })
 
   const blocks = computed<DraggableExistingBlock[]>(() =>

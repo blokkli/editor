@@ -108,9 +108,6 @@ const onAddLibraryItem = async (uuid: string) => {
     return
   }
 
-  // All the existing UUIDs on the page.
-  const existingUuids = state.renderedBlocks.value.map((v) => v.item.uuid)
-
   await state.mutateWithLoadingState(
     adapter.addLibraryItem({
       libraryItemUuid: uuid,
@@ -119,14 +116,6 @@ const onAddLibraryItem = async (uuid: string) => {
     }),
   )
   placedAction.value = null
-
-  // Try to find the new block that has been added.
-  const newUuid = state.renderedBlocks.value.find(
-    (v) => !existingUuids.includes(v.item.uuid),
-  )?.item.uuid
-  if (newUuid) {
-    eventBus.emit('select', newUuid)
-  }
 }
 
 const definition = computed(() =>

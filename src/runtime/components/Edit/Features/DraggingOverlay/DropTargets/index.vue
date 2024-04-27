@@ -24,7 +24,6 @@ import type {
 } from '#blokkli/types'
 import { ref, computed, useBlokkli, onBeforeUnmount } from '#imports'
 import {
-  createProgramInfo,
   setBuffersAndAttributes,
   drawBufferInfo,
   setUniforms,
@@ -92,7 +91,7 @@ const emit = defineEmits<{
 const { dom, ui, $t, theme, dropAreas, eventBus, animation } = useBlokkli()
 
 const gl = animation.gl()
-const programInfo = createProgramInfo(gl, [vs, fs])
+const programInfo = animation.registerProgram('drop_targets', gl, [vs, fs])
 
 const areas = dropAreas
   .getDropAreas(props.items)

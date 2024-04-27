@@ -95,14 +95,18 @@ watch(selection.blocks, () => {
 const title = computed(() => {
   if (itemBundle.value) {
     if (itemBundle.value.id === 'blokkli_fragment') {
-      const fragments = state.renderedBlocks.value
-        .filter((v) => selection.uuids.value.includes(v.item.uuid))
-        .map((v) => {
-          const name = v.item.props?.name
-          if (name) {
-            const definition = getFragmentDefinition(name)
-            return definition?.label
+      const fragments = selection.uuids.value
+        .map((uuid) => {
+          const item = state.getFieldListItem(uuid)
+          if (!item) {
+            return
           }
+          const name = item.props?.name
+          if (!name) {
+            return
+          }
+          const definition = getFragmentDefinition(name)
+          return definition?.label
         })
         .filter(falsy)
 

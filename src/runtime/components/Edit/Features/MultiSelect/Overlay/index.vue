@@ -11,7 +11,6 @@ import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import {
-  createProgramInfo,
   type BufferInfo,
   setBuffersAndAttributes,
   drawBufferInfo,
@@ -171,7 +170,10 @@ collector.addRectangle(
 const artboardOffsetStart = { ...ui.artboardOffset.value }
 const artboardScaleStart = ui.artboardScale.value
 
-const programInfo = createProgramInfo(gl, [vs, fs])
+const programInfo = animation.registerProgram('multi_select_overlay', gl, [
+  vs,
+  fs,
+])
 const uniforms = {
   u_color_field_active: toShaderColor(theme.accent.value[700]),
   u_color_field_default: toShaderColor(theme.mono.value[400]),
