@@ -116,8 +116,6 @@ export type SelectionProvider = {
    */
   blocks: ComputedRef<DraggableExistingBlock[]>
 
-  rects: ComputedRef<SelectedRect[]>
-
   /**
    * The active field key.
    */
@@ -159,11 +157,7 @@ export type SelectionProvider = {
   isChangingOptions: Ref<boolean>
 }
 
-export default function (
-  dom: DomProvider,
-  ui: UiProvider,
-  theme: ThemeProvider,
-): SelectionProvider {
+export default function (dom: DomProvider): SelectionProvider {
   const selectedUuids = ref<string[]>([])
   const activeFieldKey = ref('')
   const draggingMode = ref<InteractionMode | null>(null)
@@ -173,24 +167,6 @@ export default function (
   const interactionMode = ref<InteractionMode>('mouse')
 
   const isDragging = computed(() => !!draggingMode.value)
-
-  const rects = computed(() => {
-    const scale = ui.artboardScale.value
-    const artboardRect = ui.artboardElement().getBoundingClientRect()
-    return blocks.value.map((v) => {
-      const el = v.dragElement()
-      const rect = el.getBoundingClientRect()
-      const style = theme.getDraggableStyle(el)
-      return {
-        x: rect.x / scale - artboardRect.x / scale,
-        y: rect.y / scale - artboardRect.y / scale,
-        width: rect.width / scale,
-        height: rect.height / scale,
-        style,
-        uuid: v.uuid,
-      }
-    })
-  })
 
   const blocks = computed<DraggableExistingBlock[]>(() =>
     selectedUuids.value
@@ -217,6 +193,7 @@ export default function (
   }
 
   function unselectItems() {
+    activeFieldKey.value = ''
     if (selectedUuids.value.length === 0) {
       return
     }
@@ -260,6 +237,7 @@ export default function (
     selectedUuids.value = (e.uuids || []).filter(onlyUnique)
     isMultiSelecting.value = true
     interactionMode.value = e.mode
+    activeFieldKey.value = ''
   })
   onBlokkliEvent('select:toggle', (uuid) => {
     if (selectedUuids.value.includes(uuid)) {
@@ -321,6 +299,5 @@ export default function (
     isMultiSelecting,
     draggingMode,
     interactionMode,
-    rects,
   }
 }

@@ -76,7 +76,7 @@ import { ItemIcon, Icon } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { getFragmentDefinition } from '#blokkli/definitions'
 
-const { selection, $t, types, state, ui } = useBlokkli()
+const { selection, $t, types, state, ui, dom } = useBlokkli()
 
 const editingEnabled = computed(() => state.editMode.value === 'editing')
 
@@ -179,7 +179,9 @@ onBlokkliEvent('canvas:draw', () => {
 
   let minX = 0
   let minY = 0
-  const rects = selection.rects.value
+  const rects = selection.uuids.value
+    .map((uuid) => dom.getBlockRect(uuid))
+    .filter(falsy)
   const offset = ui.artboardOffset.value
   const scale = ui.artboardScale.value
 
