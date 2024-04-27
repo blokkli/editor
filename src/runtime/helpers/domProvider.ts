@@ -1,5 +1,5 @@
 import type { ComponentInternalInstance } from 'vue'
-import { onBeforeUnmount, ref } from '#imports'
+import { ref, reactive } from '#imports'
 import type {
   DraggableExistingBlock,
   BlokkliFieldElement,
@@ -7,6 +7,7 @@ import type {
   DroppableEntityField,
   EntityContext,
   Rectangle,
+  Coord,
 } from '#blokkli/types'
 import {
   findClosestBlock,
@@ -15,68 +16,10 @@ import {
   mapDroppableField,
   findClosestEntityContext,
 } from '#blokkli/helpers'
-
-/**
- * Recursively clone an element and inline its styles.
- */
-const cloneWithInlineStyles = (node: Element): Element => {
-  // Clone the element.
-  const clone = node.cloneNode(false) as Element
-
-  // Remove attributes.
-  clone.removeAttribute('class')
-  clone.removeAttribute('id')
-  clone.removeAttribute('name')
-  clone.removeAttribute('for')
-  clone.removeAttribute('style')
-
-  // Remove all data attributes.
-  if (clone instanceof HTMLElement || clone instanceof SVGElement) {
-    Object.keys(clone.dataset).forEach((key) => {
-      delete clone.dataset[key]
-    })
-  }
-
-  // Get the computed styles and inline them as a style attribute.
-  const computedStyle = getComputedStyle(node)
-  for (let i = 0; i < computedStyle.length; i++) {
-    const propName = computedStyle[i] as any
-    if (clone instanceof HTMLElement || clone instanceof SVGElement) {
-      clone.style[propName] = computedStyle.getPropertyValue(propName)
-    }
-  }
-
-  // Recursively clone and append child nodes.
-  Array.from(node.childNodes).forEach((child) => {
-    if (child.nodeType === Node.ELEMENT_NODE) {
-      // Clone child elements.
-      clone.appendChild(cloneWithInlineStyles(child as Element))
-    } else if (child.nodeType === Node.TEXT_NODE) {
-      // Directly append text nodes.
-      clone.appendChild(child.cloneNode(true))
-    }
-  })
-
-  return clone
-}
-
-const cloneElementWithStyles = (element: Element, isRoot?: boolean): string => {
-  // Create a deep clone of the element with inline styles
-  const clonedElement = cloneWithInlineStyles(element)
-  if (
-    isRoot &&
-    (clonedElement instanceof HTMLElement ||
-      clonedElement instanceof SVGElement)
-  ) {
-    clonedElement.style.opacity = '1'
-  }
-
-  // Create a temporary container to generate the outer HTML
-  const container = document.createElement('div')
-  container.appendChild(clonedElement)
-
-  return container.innerHTML
-}
+import type { UiProvider } from './uiProvider'
+import { cloneElementWithStyles } from './dom'
+import onBlokkliEvent from './composables/onBlokkliEvent'
+import useDelayedIntersectionObserver from './composables/useDelayedIntersectionObserver'
 
 const buildFieldElement = (
   element: HTMLElement,
@@ -170,6 +113,8 @@ export type DomProvider = {
   getVisibleFields(): string[]
 
   getActiveProviderElement: () => HTMLElement
+
+  getBlockRects: () => Record<string, Rectangle>
 }
 
 const getVisibleBlockElement = (
@@ -186,41 +131,55 @@ const getVisibleBlockElement = (
   }
 }
 
-export default function (): DomProvider {
+function getAbsoluteRect(
+  rect: DOMRect,
+  scale: number,
+  offset: Coord,
+): Rectangle {
+  return {
+    x: rect.x / scale - offset.x / scale,
+    y: rect.y / scale - offset.y / scale,
+    width: rect.width / scale,
+    height: rect.height / scale,
+  }
+}
+
+export default function (ui: UiProvider): DomProvider {
   const blockVisibility: Record<string, boolean> = {}
   const visibleBlocks: Set<string> = new Set()
   const visibleFields: Set<string> = new Set()
   const blockRects: Record<string, Rectangle> = {}
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        if (entry.target instanceof HTMLElement) {
-          const uuid = entry.target.dataset.uuid
-          const fieldKey = entry.target.dataset.fieldKey
-          if (uuid) {
-            if (entry.isIntersecting) {
-              visibleBlocks.add(uuid)
-            } else {
-              visibleBlocks.delete(uuid)
-            }
-            blockVisibility[uuid] = entry.isIntersecting
-          } else if (fieldKey) {
-            if (entry.isIntersecting) {
-              visibleFields.add(fieldKey)
-            } else {
-              visibleFields.delete(fieldKey)
-            }
+  function intersectionCallback(entries: IntersectionObserverEntry[]) {
+    const scale = ui.artboardScale.value
+    const offset = ui.artboardOffset.value
+    for (const entry of entries) {
+      if (entry.target instanceof HTMLElement) {
+        const uuid = entry.target.dataset.uuid
+        const fieldKey = entry.target.dataset.fieldKey
+        const rect = entry.boundingClientRect
+        if (uuid) {
+          blockRects[uuid] = getAbsoluteRect(rect, scale, offset)
+          if (entry.isIntersecting) {
+            visibleBlocks.add(uuid)
+          } else {
+            visibleBlocks.delete(uuid)
+          }
+          blockVisibility[uuid] = entry.isIntersecting
+        } else if (fieldKey) {
+          if (entry.isIntersecting) {
+            visibleFields.add(fieldKey)
+          } else {
+            visibleFields.delete(fieldKey)
           }
         }
       }
-    },
-    {
-      threshold: 0,
-    },
-  )
+    }
+  }
 
-  const registeredBlocks = ref<Record<string, HTMLElement | undefined>>({})
+  const observer = useDelayedIntersectionObserver(intersectionCallback)
+
+  const registeredBlocks = reactive<Record<string, HTMLElement | undefined>>({})
   const registeredFields = ref<Record<string, HTMLElement | undefined>>({})
 
   const registerField = (
@@ -246,7 +205,7 @@ export default function (): DomProvider {
     uuid: string,
     instance: ComponentInternalInstance | null,
   ) => {
-    if (registeredBlocks.value[uuid]) {
+    if (registeredBlocks[uuid]) {
       console.error(
         'Trying to register block with already existing UUID: ' + uuid,
       )
@@ -267,19 +226,19 @@ export default function (): DomProvider {
       return
     }
     observer.observe(el)
-    registeredBlocks.value[uuid] = el
+    registeredBlocks[uuid] = el
   }
 
   const unregisterBlock = (uuid: string) => {
-    const el = registeredBlocks.value[uuid]
+    const el = registeredBlocks[uuid]
     if (el) {
       observer.unobserve(el)
     }
-    registeredBlocks.value[uuid] = undefined
+    registeredBlocks[uuid] = undefined
   }
 
   const findBlock = (uuid: string): DraggableExistingBlock | undefined => {
-    const el = registeredBlocks.value[uuid]
+    const el = registeredBlocks[uuid]
     if (!el) {
       return
     }
@@ -369,10 +328,6 @@ export default function (): DomProvider {
       mapDroppableField,
     )
 
-  onBeforeUnmount(() => {
-    observer.disconnect()
-  })
-
   const getBlockVisibilities = () => {
     return blockVisibility
   }
@@ -394,6 +349,30 @@ export default function (): DomProvider {
     return el
   }
 
+  function getBlockRects() {
+    return blockRects
+  }
+
+  // After the state has been updated, update the rects of all currently visible blocks.
+  onBlokkliEvent('state:reloaded', () => {
+    const visible = getVisibleBlocks()
+    const offset = ui.artboardOffset.value
+    const scale = ui.artboardScale.value
+    for (let i = 0; i < visible.length; i++) {
+      const uuid = visible[i]
+      const el = registeredBlocks[uuid]
+      if (!el) {
+        continue
+      }
+
+      blockRects[uuid] = getAbsoluteRect(
+        el.getBoundingClientRect(),
+        scale,
+        offset,
+      )
+    }
+  })
+
   return {
     findBlock,
     getAllBlocks,
@@ -412,5 +391,6 @@ export default function (): DomProvider {
     registerField,
     unregisterField,
     getActiveProviderElement,
+    getBlockRects,
   }
 }

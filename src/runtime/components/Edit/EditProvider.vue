@@ -108,7 +108,7 @@ const dropAreas = dropAreasProvider()
 const broadcast = broadcastProvider()
 const storage = storageProvider()
 const ui = uiProvider(storage)
-const dom = domProvider()
+const dom = domProvider(ui)
 const animation = animationProvider(ui)
 const keyboard = keyboardProvider(animation)
 const $t = textProvider(context)
@@ -155,6 +155,8 @@ onMounted(() => {
   document.documentElement.addEventListener('touchmove', onTouchMove)
   document.documentElement.addEventListener('touchstart', onTouchStart)
   setRootClasses()
+
+  console.log('EditProvider mounted')
 })
 
 onBeforeUnmount(() => {

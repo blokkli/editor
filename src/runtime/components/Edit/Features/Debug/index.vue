@@ -107,10 +107,22 @@
       :style="line"
     />
   </Teleport>
+  <Teleport v-if="showDebug" to="body">
+    <div class="bk-debug-rects">
+      <canvas
+        ref="canvasRects"
+        :style="{
+          width: ui.viewport.value.width + 'px',
+          height: ui.viewport.value.height + 'px',
+        }"
+      />
+    </div>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
 import {
+  ref,
   useBlokkli,
   onMounted,
   onBeforeUnmount,
@@ -131,10 +143,12 @@ defineBlokkliFeature({
   description: 'Provides debugging functionality.',
 })
 
-const { keyboard, selection, storage, eventBus, ui, features } = useBlokkli()
+const { keyboard, selection, storage, eventBus, ui, features, dom } =
+  useBlokkli()
 
 const showDebug = storage.use('showDebug', false)
 const showDebugViewport = storage.use('showDebugViewport', false)
+const canvasRects = ref<HTMLCanvasElement | null>(null)
 
 const viewportBlockingRects = computed(() =>
   ui.viewportBlockingRects.value.map(rectToStyle),
@@ -234,6 +248,36 @@ const onEvent = (name: string, data: any) => {
   }
   console.log({ name, data })
 }
+
+onBlokkliEvent('canvas:draw', (e) => {
+  if (!canvasRects.value) {
+    return
+  }
+
+  canvasRects.value.width = ui.viewport.value.width
+  canvasRects.value.height = ui.viewport.value.height
+
+  const ctx = canvasRects.value.getContext('2d')
+  if (!ctx) {
+    return
+  }
+  ctx.clearRect(0, 0, ui.viewport.value.width, ui.viewport.value.height)
+  const blockRects = dom.getBlockRects()
+
+  const rects = Object.values(blockRects)
+
+  for (let i = 0; i < rects.length; i++) {
+    const rect = rects[i]
+
+    ctx.rect(
+      rect.x * e.artboardScale + e.artboardOffset.x,
+      rect.y * e.artboardScale + e.artboardOffset.y,
+      rect.width * e.artboardScale,
+      rect.height * e.artboardScale,
+    )
+    ctx.stroke()
+  }
+})
 
 onMounted(() => {
   eventBus.on('*', onEvent)

@@ -197,8 +197,10 @@ export default async function (
 
     eventBus.emit('updateMutatedFields', { fields: newMutatedFields })
 
-    eventBus.emit('state:reloaded')
     nextTick(() => {
+      if (refreshKey.value) {
+        eventBus.emit('state:reloaded')
+      }
       refreshKey.value = Date.now().toString()
     })
   }
