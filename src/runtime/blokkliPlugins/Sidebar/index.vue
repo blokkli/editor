@@ -12,6 +12,7 @@
       <slot name="icon">
         <Icon v-if="icon" :name="icon" />
       </slot>
+      <slot name="badge" />
       <div class="bk-tooltip">
         <span>{{ title }}</span>
         <ShortcutIndicator

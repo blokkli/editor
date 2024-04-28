@@ -1,5 +1,5 @@
 import type { ComponentInternalInstance } from 'vue'
-import { reactive } from '#imports'
+import { reactive, ref, computed, type ComputedRef } from '#imports'
 import type {
   DraggableExistingBlock,
   BlokkliFieldElement,
@@ -120,6 +120,8 @@ export type DomProvider = {
   refreshBlockRect: (uuid: string) => void
 
   getFieldRect: (key: string) => Rectangle | undefined
+
+  isReady: ComputedRef<boolean>
 }
 
 const getVisibleBlockElement = (
@@ -137,6 +139,7 @@ const getVisibleBlockElement = (
 }
 
 export default function (ui: UiProvider): DomProvider {
+  const isReady = ref(false)
   const blockVisibility: Record<string, boolean> = {}
   const visibleBlocks: Set<string> = new Set()
   const visibleFields: Set<string> = new Set()
@@ -172,6 +175,10 @@ export default function (ui: UiProvider): DomProvider {
           blockVisibility[uuid] = entry.isIntersecting
         }
       }
+    }
+
+    if (!isReady.value) {
+      isReady.value = true
     }
   }
 
@@ -473,5 +480,6 @@ export default function (ui: UiProvider): DomProvider {
     getBlockRect,
     getFieldRect,
     refreshBlockRect,
+    isReady: computed(() => isReady.value),
   }
 }

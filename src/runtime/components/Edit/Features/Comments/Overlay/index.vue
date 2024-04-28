@@ -59,20 +59,19 @@ function toggle(item: Indicator) {
 
 const indicators = ref<Indicator[]>([])
 
-onBlokkliEvent('animationFrame', () => {
-  // @TODO
-  return
-  const visible = dom.getVisibleBlocks()
-
-  const scale = ui.artboardScale.value
+onBlokkliEvent('canvas:draw', (e) => {
+  const scale = e.artboardScale
+  const offset = e.artboardOffset
   const artboardEl = ui.artboardElement()
   const artboardScroll = artboardEl.scrollTop
 
   const x = Math.min(
-    ui.artboardOffset.value.x + ui.artboardSize.value.width * scale + 10,
-    ui.viewport.value.width - 120,
+    offset.x + ui.artboardSize.value.width * scale + 10,
+    ui.visibleViewportPadded.value.x +
+      ui.visibleViewportPadded.value.width -
+      30,
   )
-  isReduced.value = ui.artboardScale.value < 0.8
+  isReduced.value = scale < 0.8
   isLeft.value =
     x + 300 <
     ui.visibleViewportPadded.value.x + ui.visibleViewportPadded.value.width
@@ -93,19 +92,24 @@ onBlokkliEvent('animationFrame', () => {
     const comment = props.comments[i]
     const uuids = comment.blockUuids || []
     const rects = uuids
-      .map((uuid) => dom.findBlock(uuid))
       .filter(falsy)
-      .map((block) => {
-        const rect = block.element().getBoundingClientRect()
+      .map((uuid) => {
+        const blockRect = dom.getBlockRect(uuid)
+        if (!blockRect) {
+          return
+        }
+
+        const rect = ui.getViewportRelativeRect(blockRect)
 
         return {
           x: rect.x,
           y: rect.y,
-          width: rect.width / scale,
-          height: rect.height / scale,
-          uuid: block.uuid,
+          width: rect.width,
+          height: rect.height,
+          uuid,
         }
       })
+      .filter(falsy)
     if (!rects.length) {
       orphaned.push(comment)
     } else {

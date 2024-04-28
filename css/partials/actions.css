@@ -16,7 +16,7 @@
     @apply fixed left-0 p-0 z-actions w-full will-change-transform;
     transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
-    contain: layout style paint;
+    /* contain: layout style paint; */
     bottom: var(--bk-root-offset-bottom);
     @screen lg {
       @apply top-0 w-auto;

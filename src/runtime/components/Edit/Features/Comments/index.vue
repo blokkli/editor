@@ -19,6 +19,9 @@
         </li>
       </ul>
     </div>
+    <template v-if="unresolvedCount" #badge>
+      <div class="bk-comments-sidebar-badge">{{ unresolvedCount }}</div>
+    </template>
   </PluginSidebar>
 
   <PluginItemAction
@@ -44,7 +47,13 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, useBlokkli, defineBlokkliFeature } from '#imports'
+import {
+  watch,
+  ref,
+  useBlokkli,
+  defineBlokkliFeature,
+  computed,
+} from '#imports'
 import { PluginSidebar, PluginItemAction } from '#blokkli/plugins'
 import Comment from './Comment/index.vue'
 import CommentAddForm from './AddForm/index.vue'
@@ -75,6 +84,10 @@ watch(selection.uuids, () => {
 
 const comments = ref<CommentItem[]>([])
 comments.value = await adapter.loadComments()
+
+const unresolvedCount = computed(
+  () => comments.value.filter((v) => !v.resolved).length,
+)
 
 const onAddComment = async (body: string, uuids: string[]) => {
   comments.value = await adapter.addComment(uuids, body)

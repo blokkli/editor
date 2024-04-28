@@ -224,6 +224,9 @@ onBlokkliEvent('select:shiftToggle', (uuid) => {
 })
 
 onBlokkliEvent('keyPressed', (e) => {
+  if (selection.isDragging.value || selection.isMultiSelecting.value) {
+    return
+  }
   if (e.code === 'Escape') {
     eventBus.emit('select:end', [])
   } else if (e.code === 'Tab') {

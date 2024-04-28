@@ -1,7 +1,7 @@
 .bk.bk-comments-overlay {
-  @apply fixed top-0 left-0 w-full h-full pointer-events-none;
+  @apply fixed top-0 left-0 w-full h-full pointer-events-none z-comments-overlay;
   .bk-comments-overlay-item {
-    @apply absolute top-0 left-0 z-comments-overlay pointer-events-auto w-40 h-40 origin-top-left;
+    @apply absolute top-0 left-0  pointer-events-auto w-40 h-40 origin-top-left;
     &.bk-is-active {
       @apply z-comments-overlay-active;
     }
@@ -69,4 +69,8 @@
       @apply w-15 h-15 fill-current mr-5;
     }
   }
+}
+
+.bk-comments-sidebar-badge {
+  @apply absolute top-3 right-3 w-15 h-15 rounded-full bg-yellow-normal text-yellow-dark text-xs flex items-center justify-center;
 }
