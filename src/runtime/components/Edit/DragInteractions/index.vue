@@ -206,6 +206,16 @@ function onPointerUp(e: PointerEvent) {
         })
         return
       }
+      if (lastInteractedElement.uuid) {
+        const block = dom.findBlock(lastInteractedElement.uuid)
+        if (!block) {
+          return
+        }
+        eventBus.emit('item:edit', {
+          uuid: lastInteractedElement.uuid,
+          bundle: block.itemBundle,
+        })
+      }
     }
   }
   lastInteractedElement = clicked
