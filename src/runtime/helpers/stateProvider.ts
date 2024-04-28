@@ -25,9 +25,7 @@ import type {
 } from '#blokkli/types'
 import { removeDroppedElements, falsy, getFieldKey } from '#blokkli/helpers'
 import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
-import { nextTick, useRuntimeConfig } from '#imports'
-
-const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
+import { nextTick } from '#imports'
 
 export type BlokkliOwner = {
   name: string | undefined

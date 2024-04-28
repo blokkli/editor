@@ -1,6 +1,5 @@
 .bk-dragging-overlay {
   @apply fixed bottom-auto top-0 left-0 pointer-events-none z-dragging-overlay rounded select-none will-change-transform cursor-grabbing;
-  z-index: 9999999999999 !important;
 
   * {
     @apply !pointer-events-none;

@@ -2,8 +2,8 @@
   <div
     v-if="availableOptions.length"
     class="bk-blokkli-item-options"
-    @click="onClick"
-    @mouseleave="onMouseLeave"
+    @pointerup="onPointerUp"
+    @mouseleave="stopChangingOptions"
   >
     <OptionsFormItem
       v-for="plugin in visibleOptions"
@@ -36,20 +36,47 @@ import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
 import { optionValueToStorable } from '#blokkli/helpers/options'
 import { getRuntimeOptionValue } from '#blokkli/helpers/runtimeHelpers'
 
-const { adapter, eventBus, state, selection, runtimeConfig } = useBlokkli()
-
-const onClick = () => {
-  selection.isChangingOptions.value = true
-}
-
-const onMouseLeave = () => {
-  selection.isChangingOptions.value = false
-}
+const { adapter, eventBus, state, selection, runtimeConfig, dom, theme } =
+  useBlokkli()
 
 const props = defineProps<{
   uuids: string[]
   definition: BlockDefinitionInput | FragmentDefinitionInput
 }>()
+
+let pointerTimeout: null | number = null
+
+function onPointerUp(e: PointerEvent) {
+  if (pointerTimeout) {
+    clearTimeout(pointerTimeout)
+  }
+  selection.isChangingOptions.value = true
+
+  if (e.pointerType === 'touch') {
+    pointerTimeout = window.setTimeout(() => {
+      stopChangingOptions()
+    }, 2000)
+  }
+}
+
+function stopChangingOptions() {
+  if (pointerTimeout) {
+    clearTimeout(pointerTimeout)
+  }
+  if (!selection.isChangingOptions.value) {
+    return
+  }
+
+  // Refresh the rects of the blocks because they might have changed.
+  props.uuids.forEach((uuid) => {
+    dom.refreshBlockRect(uuid)
+    const el = dom.findBlock(uuid)?.dragElement()
+    if (el) {
+      theme.invalidateCachedStyle(el)
+    }
+  })
+  selection.isChangingOptions.value = false
+}
 
 class OptionCollector {
   options: Record<string, Record<string, string>>

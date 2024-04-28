@@ -7,7 +7,6 @@ import type {
   DroppableEntityField,
   EntityContext,
   Rectangle,
-  Coord,
 } from '#blokkli/types'
 import {
   findClosestBlock,
@@ -118,6 +117,7 @@ export type DomProvider = {
 
   getBlockRects: () => Record<string, Rectangle>
   getBlockRect: (uuid: string) => Rectangle | undefined
+  refreshBlockRect: (uuid: string) => void
 
   getFieldRect: (key: string) => Rectangle | undefined
 }
@@ -142,6 +142,7 @@ export default function (ui: UiProvider): DomProvider {
   const visibleFields: Set<string> = new Set()
   const blockRects: Record<string, Rectangle> = {}
   const fieldRects: Record<string, Rectangle> = {}
+  let draggableBlockCache: Record<string, DraggableExistingBlock> = {}
 
   function intersectionCallback(entries: IntersectionObserverEntry[]) {
     const scale = ui.artboardScale.value
@@ -254,12 +255,17 @@ export default function (ui: UiProvider): DomProvider {
   }
 
   const findBlock = (uuid: string): DraggableExistingBlock | undefined => {
+    const cached = draggableBlockCache[uuid]
+    if (cached) {
+      return cached
+    }
     const el = registeredBlocks[uuid]
     if (!el) {
       return
     }
     const item = buildDraggableItem(el)
     if (item?.itemType === 'existing') {
+      draggableBlockCache[uuid] = item
       return item
     }
   }
@@ -377,8 +383,31 @@ export default function (ui: UiProvider): DomProvider {
     return fieldRects[key]
   }
 
+  function refreshBlockRect(uuid: string) {
+    const block = findBlock(uuid)
+    if (!block) {
+      return
+    }
+
+    blockRects[uuid] = ui.getAbsoluteElementRect(
+      block.dragElement().getBoundingClientRect(),
+    )
+  }
+
+  function refreshFieldRect(key: string) {
+    const el = document.querySelector(
+      `.bk-draggable-list-container[data-field-key="${key}"]`,
+    )
+    if (!(el instanceof HTMLElement)) {
+      return
+    }
+
+    blockRects[key] = ui.getAbsoluteElementRect(el.getBoundingClientRect())
+  }
+
   // After the state has been updated, update the rects of all currently visible blocks.
   onBlokkliEvent('state:reloaded', () => {
+    draggableBlockCache = {}
     const visible = getVisibleBlocks()
     const offset = ui.artboardOffset.value
     const scale = ui.artboardScale.value
@@ -417,6 +446,11 @@ export default function (ui: UiProvider): DomProvider {
     }
   })
 
+  onBlokkliEvent('ui:resized', function () {
+    getVisibleBlocks().forEach(refreshBlockRect)
+    getVisibleFields().forEach(refreshFieldRect)
+  })
+
   return {
     findBlock,
     getAllBlocks,
@@ -438,5 +472,6 @@ export default function (ui: UiProvider): DomProvider {
     getBlockRects,
     getBlockRect,
     getFieldRect,
+    refreshBlockRect,
   }
 }

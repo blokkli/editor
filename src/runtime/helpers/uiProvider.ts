@@ -63,7 +63,6 @@ export default function (storage: StorageProvider): UiProvider {
   let cachedRootElement: HTMLElement | null = null
   let cachedArtboardElement: HTMLElement | null = null
   let cachedProviderElement: HTMLElement | null = null
-  let cachedMainCanvasElement: HTMLCanvasElement | null = null
 
   const menuIsOpen = ref(false)
   const isAnimating = ref(false)
@@ -118,17 +117,6 @@ export default function (storage: StorageProvider): UiProvider {
     }
     cachedArtboardElement = el
     return el
-  }
-
-  const getCanvasContext = (): CanvasRenderingContext2D => {
-    if (!cachedMainCanvasElement) {
-      const el = document.querySelector('.bk-main-canvas')
-      if (el instanceof HTMLCanvasElement) {
-        cachedMainCanvasElement = el
-      }
-    }
-
-    return cachedMainCanvasElement?.getContext('2d')
   }
 
   const rootElement = () => {

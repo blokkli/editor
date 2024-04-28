@@ -31,6 +31,7 @@ export type ThemeProvider = {
     value: RGB,
   ) => void
   applyTheme: (name: ThemeName | 'custom') => void
+  invalidateCachedStyle: (el: HTMLElement | SVGElement) => void
 }
 
 export default function (): ThemeProvider {
@@ -125,6 +126,7 @@ export default function (): ThemeProvider {
     }
   })
 
+  // Cache draggable styles because building them forces a style recalcuation.
   let draggableStyleCache: WeakMap<HTMLElement | SVGElement, DraggableStyle> =
     new WeakMap()
 
@@ -136,6 +138,10 @@ export default function (): ThemeProvider {
     const style = getDraggableStyle(el, accent.value[700])
     draggableStyleCache.set(el, style)
     return style
+  }
+
+  function invalidateCachedStyle(el: HTMLElement | SVGElement) {
+    draggableStyleCache.delete(el)
   }
 
   onBlokkliEvent('state:reloaded', function () {
@@ -150,6 +156,7 @@ export default function (): ThemeProvider {
     red,
     lime,
     getDraggableStyle: cachedGetDraggableStyle,
+    invalidateCachedStyle,
     setColor,
     applyTheme,
   }

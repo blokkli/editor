@@ -103,6 +103,10 @@ onBlokkliEvent('canvas:draw', () => {
   drawBufferInfo(gl, info, gl.TRIANGLES)
 })
 
+onBlokkliEvent('ui:resized', function () {
+  collector.reset()
+})
+
 onBeforeUnmount(() => {
   gl.clear(gl.COLOR_BUFFER_BIT)
 })
