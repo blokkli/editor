@@ -152,10 +152,15 @@ onBlokkliEvent('animationFrame:before', () => {
   artboard.loop()
   ui.artboardSize.value.height = artboard.artboardSize.height
   ui.artboardSize.value.width = artboard.artboardSize.width
-  ui.artboardOffset.value.x = artboard.offset.x
-  ui.artboardOffset.value.y = artboard.offset.y
+  // We don't need much precision here, so we can round it.
+  // This also prevents updating rects in WebGL buffers for small changes.
+  ui.artboardOffset.value.x = Math.round(artboard.offset.x)
+  ui.artboardOffset.value.y = Math.round(artboard.offset.y)
   ui.artboardScale.value = artboard.scale
   animation.requestDraw()
+  if (!showDebug.value) {
+    return
+  }
   debugValues.value = [
     {
       key: 'scale',
@@ -203,8 +208,6 @@ onBeforeUnmount(() => {
 const resetZoom = () => {
   artboard.resetZoom()
 }
-
-onUnmounted(() => {})
 
 function onPageUp() {
   artboard.scrollPageUp()

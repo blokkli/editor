@@ -6,6 +6,16 @@ import type {
   FragmentDefinitionInput,
 } from '../runtime/types'
 import { sortObjectKeys } from './../helpers'
+import { falsy } from '../vitePlugin'
+
+function toPascalCase(name: string): string {
+  return name
+    .replace(/[^a-zA-Z0-9]+/g, ' ') // Replace any non-alphanumeric characters with spaces
+    .trim() // Trim spaces around the string
+    .split(/\s+/) // Split by spaces
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
+    .join('') // Join all words into a single PascalCase string
+}
 
 type ExtractedBlockDefinitionInput = BlockDefinitionInput<{}, []>
 type ExtractedFragmentDefinitionInput = FragmentDefinitionInput<{}, []>
@@ -168,6 +178,96 @@ export default class BlockExtractor {
     return fs.promises.readFile(filePath).then((v) => {
       return v.toString()
     })
+  }
+
+  generateBlokkliItemComponent(
+    globalOptions: BlockDefinitionOptionsInput = {},
+  ): string {
+    const globalImports = Object.values(this.definitions)
+      .map((v) => {
+        if (v.chunkName === 'global') {
+          const name = 'Block' + toPascalCase(v.definition.bundle)
+          return `import ${name} from '${v.filePath}'`
+        }
+        return null
+      })
+      .filter(falsy)
+      .join('\n')
+
+    const components = Object.values(this.definitions)
+      .map((v, i) => {
+        if (v.chunkName !== 'global') {
+          return null
+        }
+        const name = 'Block' + toPascalCase(v.definition.bundle)
+        if (i === 0) {
+          return `<${name} v-if="bundle === '${v.definition.bundle}'" v-bind="props" />`
+        }
+        return `  <${name} v-else-if="bundle === '${v.definition.bundle}'" v-bind="props" />`
+      })
+      .filter(falsy)
+      .join('\n')
+    return `
+<template>
+  ${components}
+  <Component v-else-if="chunkComponent" :is="chunkComponent" v-bind="props" />
+  <div v-else-if="isEditing">Block not implemented</div>
+</template>
+
+<script lang="ts" setup>
+import { computed, provide, useRuntimeConfig } from '#imports'
+import type { InjectedBlokkliItem } from '#blokkli/types'
+import { getComponentFromChunk } from '#blokkli/imports'
+import { INJECT_BLOCK_ITEM, INJECT_ENTITY_CONTEXT } from '#blokkli/helpers/symbols'
+${globalImports}
+
+const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
+
+const componentProps = withDefaults(
+  defineProps<{
+    uuid: string
+    bundle: string
+    isNew?: boolean
+    options?: any
+    props?: any
+    index?: number
+    parentType?: string
+    isEditing?: boolean
+  }>(),
+  {
+    index: 0,
+    isEditing: false,
+    parentType: '',
+    options: () => ({}),
+    props: () => ({}),
+  },
+)
+
+const chunkComponent = getComponentFromChunk(componentProps.bundle)
+
+const index = computed(() => componentProps.index)
+const item = computed(() => ({
+  index,
+  uuid: componentProps.uuid || '',
+  options: componentProps.options || {},
+  isEditing: componentProps.isEditing,
+  parentType: componentProps.parentType,
+}))
+
+provide<InjectedBlokkliItem>(INJECT_BLOCK_ITEM, item)
+provide(INJECT_ENTITY_CONTEXT, {
+  uuid: componentProps.uuid,
+  type: itemEntityType,
+  bundle: componentProps.bundle,
+})
+</script>
+
+<script lang="ts">
+export default {
+  name: 'BlokkliItemDynamic',
+}
+</script>
+`
   }
 
   /**
@@ -474,6 +574,16 @@ export function getBlokkliItemComponent(bundle: string): any {
   if (global[key]) {
     return global[key]
   }
+  const chunkName = chunkMapping[key]
+  if (chunkName) {
+    return defineAsyncComponent(() => chunks[chunkName]().then(chunk => {
+      return chunk.default[key]
+    }))
+  }
+}
+
+export function getComponentFromChunk(bundle: string): any {
+  const key = 'block_' + bundle
   const chunkName = chunkMapping[key]
   if (chunkName) {
     return defineAsyncComponent(() => chunks[chunkName]().then(chunk => {

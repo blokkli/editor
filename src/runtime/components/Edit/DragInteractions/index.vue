@@ -6,16 +6,35 @@
       @pointerdown="onPointerDown"
       @pointerup="onPointerUp"
       @pointermove="onPointerMove"
-    />
+    >
+      <!-- <svg -->
+      <!--   v-if="dom.isReady.value" -->
+      <!--   v-bind="svgAttributes" -->
+      <!--   ref="svg" -->
+      <!--   class="bk-drag-interactions-svg" -->
+      <!-- > -->
+      <!--   <rect -->
+      <!--     v-for="rect in rects" -->
+      <!--     :key="rect.uuid" -->
+      <!--     :x="rect.rect.x" -->
+      <!--     :y="rect.rect.y" -->
+      <!--     :width="rect.rect.width" -->
+      <!--     :height="rect.rect.height" -->
+      <!--   /> -->
+      <!-- </svg> -->
+    </div>
   </Teleport>
 </template>
 
 <script setup lang="ts">
-import { getDistance, getInteractionCoordinates } from '#blokkli/helpers'
-import type { Coord } from '#blokkli/types'
-import { useBlokkli, computed } from '#imports'
+import { falsy, getDistance, getInteractionCoordinates } from '#blokkli/helpers'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import type { Coord, Rectangle } from '#blokkli/types'
+import { watch, ref, useBlokkli, computed } from '#imports'
 
 const { dom, eventBus, selection, keyboard, ui } = useBlokkli()
+
+const svg = ref<SVGElement | null>(null)
 
 const cursor = computed(() => {
   if (selection.isMultiSelecting.value) {
@@ -36,6 +55,33 @@ const overlayStyle = computed(() => {
     cursor: cursor.value,
   }
 })
+
+const svgAttributes = computed(() => {
+  const width = ui.artboardSize.value.width
+  const height = ui.artboardSize.value.height
+  return {
+    width,
+    height,
+    viewBox: `0 0 ${width} ${height}`,
+  }
+})
+
+const rects = ref<{ uuid: string; rect: Rectangle }[]>([])
+
+function buildRects() {
+  const visible = dom.getVisibleBlocks()
+  rects.value = visible
+    .map((uuid) => {
+      const rect = dom.getBlockRect(uuid)
+      if (!rect) {
+        return
+      }
+      return { uuid, rect }
+    })
+    .filter(falsy)
+}
+
+watch(dom.isReady, buildRects)
 
 type InteractedElement = {
   uuid?: string
@@ -342,4 +388,23 @@ function onTouchEnd(e: PointerEvent) {
   }
   longPressInteraction = null
 }
+
+let lastRectUpdate: number = Date.now()
+
+onBlokkliEvent('canvas:draw', (e) => {
+  // if (!svg.value) {
+  //   return
+  // }
+  // svg.value.style.transform = `translate3d(${e.artboardOffset.x}px, ${e.artboardOffset.y}px, 0) scale(${e.artboardScale})`
+  // if (
+  //   Date.now() - lastRectUpdate > 1000 &&
+  //   !selection.isDragging.value &&
+  //   !selection.isMultiSelecting.value &&
+  //   !keyboard.isPressingSpace.value &&
+  //   !keyboard.isPressingControl.value
+  // ) {
+  //   buildRects()
+  //   lastRectUpdate = Date.now()
+  // }
+})
 </script>

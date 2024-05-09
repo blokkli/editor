@@ -481,7 +481,7 @@ export const calculateCenterPosition = (
   return (x + width) / 2 - widthToPlace / 2
 }
 
-function getContrastRatio(color1: RGB, color2: RGB): number {
+export function getContrastRatio(color1: RGB, color2: RGB): number {
   const luminance1 = getLuminance(color1)
   const luminance2 = getLuminance(color2)
 
@@ -528,51 +528,6 @@ export const getNumericStyleValue = (str: string, fallback = 0): number => {
     return fallback
   }
   return num
-}
-
-export const getDraggableStyle = (
-  el: HTMLElement | SVGElement,
-  accentColor: RGB,
-): DraggableStyle => {
-  const style = getComputedStyle(el)
-
-  const radius: [number, number, number, number] = [
-    getNumericStyleValue(style.borderTopLeftRadius, 0),
-    getNumericStyleValue(style.borderTopRightRadius, 0),
-    getNumericStyleValue(style.borderBottomRightRadius, 0),
-    getNumericStyleValue(style.borderBottomLeftRadius, 0),
-  ]
-  const radiusMin = Math.min(...radius)
-
-  const backgroundColorForSelection = parseColorString(
-    realBackgroundColor(el.parentElement),
-  )
-  const contrastColor = findHighestContrastColor(
-    [[255, 255, 255], accentColor],
-    backgroundColorForSelection,
-  )
-
-  const backgroundColor = parseColorString(realBackgroundColor(el))
-  const textColor = findHighestContrastColor(
-    [
-      [0, 0, 0],
-      [255, 255, 255],
-    ],
-    backgroundColor,
-  )
-  const bg = backgroundColorForSelection || [255, 255, 255]
-  const ratio = getContrastRatio(accentColor, bg)
-
-  return {
-    radius,
-    radiusMin,
-    radiusString: radius.map((v) => v + 'px').join(' '),
-    contrastColor: rgbaToString(contrastColor),
-    contrastColorRGB: contrastColor,
-    contrastColorTranslucent: rgbaToString(contrastColor, 0.25),
-    textColor: rgbaToString(textColor),
-    isInverted: ratio < 5,
-  }
 }
 
 /**

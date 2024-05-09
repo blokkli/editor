@@ -24,15 +24,12 @@
       },
       listClass,
     ]"
-    :data-field-key="fieldKey"
   >
-    <BlokkliItem
+    <BlokkliItemDynamic
       v-for="(item, i) in filteredList"
       :key="item.uuid"
       v-bind="item"
       :parent-type="isNested ? entity?.bundle : ''"
-      :data-uuid="item.uuid"
-      :data-bk-block-item="isEditing ? 'true' : undefined"
       :index="i"
     />
   </component>
@@ -47,9 +44,9 @@ import {
   inject,
   provide,
   ref,
-  type Reactive,
 } from '#imports'
 import { type BlokkliFragmentName } from '#blokkli/definitions'
+import BlokkliItemDynamic from '#blokkli/blokkli-item-component'
 
 import type {
   FieldListItem,
@@ -78,9 +75,9 @@ const DraggableList = defineAsyncComponent(() => {
   return import('./Edit/DraggableList.vue')
 })
 
-const BlokkliItem = defineAsyncComponent(() => {
-  return import('./BlokkliItem.vue')
-})
+// const BlokkliItem = defineAsyncComponent(() => {
+//   return import('./BlokkliItem.vue')
+// })
 
 const attrs = useAttrs()
 
@@ -92,7 +89,7 @@ const isEditing = inject(INJECT_IS_EDITING, false)
 const isInReusable = inject(INJECT_IS_IN_REUSABLE, false)
 const isPreview = inject<boolean>(INJECT_IS_PREVIEW, false)
 const isNested = inject(INJECT_IS_NESTED, false)
-const mutatedFields = inject<Reactive<Record<string, MutatedField>> | null>(
+const mutatedFields = inject<Record<string, MutatedField> | null>(
   INJECT_MUTATED_FIELDS_MAP,
   null,
 )

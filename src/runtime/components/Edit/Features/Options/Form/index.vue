@@ -181,6 +181,9 @@ const visibleOptions = computed(() => {
   const uuid = props.uuids[0]
   const item = state.getFieldListItem(props.uuids[0])
   const block = selection.blocks.value.find((v) => v.uuid === uuid)
+  if (!item) {
+    return []
+  }
 
   const parentType =
     block?.hostType === runtimeConfig.itemEntityType

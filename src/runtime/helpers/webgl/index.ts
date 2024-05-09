@@ -5,6 +5,7 @@ type RectangleBufferRect = Rectangle & {
   id: string
   index: number
   radius?: [number, number, number, number]
+  state?: number
 }
 
 type RectangleBufferCollectorOptions = {
@@ -20,6 +21,7 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
   rectId: number[] = []
   types: number[] = []
   quad: number[] = []
+  state: number[] = []
   radius: number[] = []
   index = 0
   bufferInfo: BufferInfo | null = null
@@ -38,6 +40,7 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
     this.indices = []
     this.rectId = []
     this.types = []
+    this.state = []
     this.quad = []
     this.radius = []
     this.index = 0
@@ -86,6 +89,8 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
     this.quad.push(x, y, width, height)
     this.quad.push(x, y, width, height)
     this.quad.push(x, y, width, height)
+    const state = rect.state || 0
+    this.state.push(state, state, state, state)
 
     this.rects[rect.id] = {
       ...rect,
@@ -100,6 +105,12 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
     this.index++
   }
 
+  getIndex(id: string): number | undefined {
+    return this.rects[id].index || undefined
+  }
+
+  updateRectangle() {}
+
   createBufferInfo(): BufferInfo {
     return createBufferInfoFromArrays(this.gl, {
       a_position: {
@@ -110,6 +121,11 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
       a_rect_id: {
         numComponents: 1,
         data: this.rectId,
+        type: this.gl.FLOAT,
+      },
+      a_state: {
+        numComponents: 1,
+        data: this.state,
         type: this.gl.FLOAT,
       },
       a_rect_type: {

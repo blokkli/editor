@@ -309,10 +309,10 @@ export default function (storage: StorageProvider): UiProvider {
     const scale = providedScale || artboardScale.value
     const offset = providedOffset || artboardOffset.value
     return {
-      x: rect.x / scale - offset.x / scale,
-      y: rect.y / scale - offset.y / scale,
-      width: rect.width / scale,
-      height: rect.height / scale,
+      x: Math.ceil(rect.x / scale - offset.x / scale),
+      y: Math.ceil(rect.y / scale - offset.y / scale),
+      width: Math.ceil(rect.width / scale),
+      height: Math.ceil(rect.height / scale),
     }
   }
 

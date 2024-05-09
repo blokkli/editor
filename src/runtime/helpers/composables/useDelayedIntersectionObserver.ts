@@ -5,10 +5,9 @@ export default function (
   timeoutDuration = 500,
 ) {
   let observer: IntersectionObserver | null = null
-  let timeout: number | null = null
   let collected: HTMLElement[] = []
 
-  function initObserver() {
+  function init() {
     observer = new IntersectionObserver(callback, {
       threshold: 0,
     })
@@ -24,15 +23,7 @@ export default function (
       observer.observe(el)
       return
     }
-    if (timeout) {
-      clearTimeout(timeout)
-    }
-
     collected.push(el)
-
-    timeout = window.setTimeout(() => {
-      initObserver()
-    }, timeoutDuration)
   }
 
   function unobserve(el: HTMLElement) {
@@ -42,5 +33,5 @@ export default function (
   }
 
   onBeforeUnmount(() => {})
-  return { observe, unobserve }
+  return { observe, unobserve, init }
 }

@@ -65,6 +65,7 @@ import { defineBlokkli } from '#imports'
 const { options } = defineBlokkli({
   bundle: 'widget',
   globalOptions: ['background'],
+  chunkName: 'rare',
   options: {
     showAllOptions: {
       type: 'checkbox',

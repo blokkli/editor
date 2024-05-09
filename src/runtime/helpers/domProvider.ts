@@ -1,5 +1,12 @@
 import type { ComponentInternalInstance } from 'vue'
-import { reactive, ref, computed, type ComputedRef } from '#imports'
+import {
+  reactive,
+  ref,
+  computed,
+  type ComputedRef,
+  onMounted,
+  onBeforeUnmount,
+} from '#imports'
 import type {
   DraggableExistingBlock,
   BlokkliFieldElement,
@@ -139,7 +146,8 @@ const getVisibleBlockElement = (
 }
 
 export default function (ui: UiProvider): DomProvider {
-  const isReady = ref(false)
+  const mutationsReady = ref(false)
+  const intersectionReady = ref(false)
   const blockVisibility: Record<string, boolean> = {}
   const visibleBlocks: Set<string> = new Set()
   const visibleFields: Set<string> = new Set()
@@ -147,6 +155,7 @@ export default function (ui: UiProvider): DomProvider {
   const fieldRects: Record<string, Rectangle> = {}
   let draggableBlockCache: Record<string, DraggableExistingBlock> = {}
 
+  let intersectionTimeout: number | null = null
   function intersectionCallback(entries: IntersectionObserverEntry[]) {
     const scale = ui.artboardScale.value
     const offset = ui.artboardOffset.value
@@ -177,9 +186,12 @@ export default function (ui: UiProvider): DomProvider {
       }
     }
 
-    if (!isReady.value) {
-      isReady.value = true
+    if (intersectionTimeout) {
+      clearTimeout(intersectionTimeout)
     }
+    intersectionTimeout = window.setTimeout(() => {
+      intersectionReady.value = true
+    }, 500)
   }
 
   const observer = useDelayedIntersectionObserver(intersectionCallback)
@@ -458,6 +470,33 @@ export default function (ui: UiProvider): DomProvider {
     getVisibleFields().forEach(refreshFieldRect)
   })
 
+  const providerEl = ui.providerElement()
+  let mutationTimeout: number | null = null
+  const mutationObserver = new MutationObserver(() => {
+    if (mutationTimeout) {
+      clearTimeout(mutationTimeout)
+    }
+
+    mutationTimeout = window.setTimeout(() => {
+      observer.init()
+      mutationObserver.disconnect()
+      mutationsReady.value = true
+      console.log('DOM READY')
+    }, 2000)
+  })
+
+  onMounted(() => {
+    mutationObserver.observe(providerEl, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+    })
+  })
+
+  onBeforeUnmount(() => {
+    mutationObserver.disconnect()
+  })
+
   return {
     findBlock,
     getAllBlocks,
@@ -480,6 +519,6 @@ export default function (ui: UiProvider): DomProvider {
     getBlockRect,
     getFieldRect,
     refreshBlockRect,
-    isReady: computed(() => isReady.value),
+    isReady: computed(() => mutationsReady.value && intersectionReady.value),
   }
 }

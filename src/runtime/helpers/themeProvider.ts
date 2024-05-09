@@ -1,4 +1,3 @@
-import { getDraggableStyle } from '.'
 import { theme, themes } from '#blokkli/config'
 import type { DraggableStyle } from '#blokkli/types'
 import type {
@@ -13,6 +12,15 @@ import type {
   ThemeName,
 } from '#blokkli/types/theme'
 import { type Ref, ref, onMounted, onBeforeUnmount } from '#imports'
+import {
+  findHighestContrastColor,
+  getContrastRatio,
+  getNumericStyleValue,
+  parseColorString,
+  realBackgroundColor,
+  rgbaToString,
+} from '.'
+import { DragStyle } from './DragStyle'
 import onBlokkliEvent from './composables/onBlokkliEvent'
 
 export type ThemeProvider = {
@@ -126,26 +134,14 @@ export default function (): ThemeProvider {
     }
   })
 
-  // Cache draggable styles because building them forces a style recalcuation.
-  let draggableStyleCache: WeakMap<HTMLElement | SVGElement, DraggableStyle> =
-    new WeakMap()
-
-  function cachedGetDraggableStyle(el: HTMLElement | SVGElement) {
-    const cached = draggableStyleCache.get(el)
-    if (cached) {
-      return cached
-    }
-    const style = getDraggableStyle(el, accent.value[700])
-    draggableStyleCache.set(el, style)
-    return style
-  }
+  const dragStyle = new DragStyle()
 
   function invalidateCachedStyle(el: HTMLElement | SVGElement) {
-    draggableStyleCache.delete(el)
+    dragStyle.invalidateStyle(el)
   }
 
   onBlokkliEvent('state:reloaded', function () {
-    draggableStyleCache = new WeakMap()
+    dragStyle.reset()
   })
 
   return {
@@ -155,7 +151,9 @@ export default function (): ThemeProvider {
     yellow,
     red,
     lime,
-    getDraggableStyle: cachedGetDraggableStyle,
+    getDraggableStyle: function (el: HTMLElement | SVGElement) {
+      return dragStyle.getStyle(el, theme.accent[700])
+    },
     invalidateCachedStyle,
     setColor,
     applyTheme,

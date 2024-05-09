@@ -392,5 +392,23 @@ html.bk-hide-non-editable {
 }
 
 .bk-interaction-overlay {
-  @apply fixed z-interaction-overlay;
+  @apply absolute z-interaction-overlay;
+}
+
+.bk-drag-interactions-svg {
+  @apply fixed top-0 left-0 z-[99999999] pointer-events-auto origin-top-left;
+  will-change: transform contents;
+
+  rect {
+    @apply fill-transparent stroke-1 stroke-transparent hover:stroke-black;
+    stroke-dasharray: 2 2;
+  }
+}
+
+.foo {
+  @apply absolute top-0 left-0 w-0 h-0 z-[9999999999999];
+
+  > div {
+    @apply absolute w-20 h-20 rounded-full bg-red-normal top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2;
+  }
 }

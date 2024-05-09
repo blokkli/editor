@@ -465,6 +465,21 @@ ${featuresArray}
     })
     nuxt.options.alias['#blokkli/definitions'] = templateDefinitions.dst
 
+    const templateBlokkliItem = addTemplate({
+      write: true,
+      filename: 'blokkli/BlokkliItemDynamic.vue',
+      getContents: () => {
+        return blockExtractor.generateBlokkliItemComponent(
+          moduleOptions.globalOptions,
+        )
+      },
+      options: {
+        blokkli: true,
+      },
+    })
+    nuxt.options.alias['#blokkli/blokkli-item-component'] =
+      templateBlokkliItem.dst
+
     // The definitions.
     const templateTranslations = addTemplate({
       write: true,

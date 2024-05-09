@@ -1,13 +1,13 @@
 <template>
   <Overlay
     v-if="isVisible"
-    :key="state.refreshKey.value"
     :blocks="selection.blocks.value"
+    :uuids="selection.uuids.value"
   />
 </template>
 
 <script lang="ts" setup>
-import Overlay from './Overlay/index.vue'
+import Overlay from './OverlayNew/index.vue'
 import {
   calculateIntersection,
   getBounds,
@@ -16,7 +16,7 @@ import {
 } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { DraggableExistingBlock, Rectangle } from '#blokkli/types'
-import { computed, useBlokkli, defineBlokkliFeature, onMounted } from '#imports'
+import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 
 defineBlokkliFeature({
   id: 'selection',
@@ -25,15 +25,15 @@ defineBlokkliFeature({
   description: 'Renders an overlay that highlights the selected blocks.',
 })
 
-const { selection, state, ui, eventBus, animation, dom, tour } = useBlokkli()
+const { selection, ui, eventBus, animation, dom, tour } = useBlokkli()
 
 const isVisible = computed(
   () =>
+    dom.isReady.value &&
+    !selection.isMultiSelecting.value &&
     !selection.editableActive.value &&
-    selection.blocks.value.length &&
     !selection.isChangingOptions.value &&
     !selection.isDragging.value &&
-    !!state.refreshKey.value &&
     !ui.isAnimating.value,
 )
 
@@ -259,13 +259,6 @@ onBlokkliEvent('keyPressed', (e) => {
       getSelectAllUuids(dom.getAllBlocks(), selection.blocks.value),
     )
   }
-})
-
-onMounted(() => {
-  eventBus.emit('select:end', [
-    'dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf',
-    '6d0bde10-a05b-4c7d-a8cf-fafc8e0001f1',
-  ])
 })
 </script>
 

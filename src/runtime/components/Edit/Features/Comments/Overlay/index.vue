@@ -60,6 +60,7 @@ function toggle(item: Indicator) {
 const indicators = ref<Indicator[]>([])
 
 onBlokkliEvent('canvas:draw', (e) => {
+  return
   const scale = e.artboardScale
   const offset = e.artboardOffset
   const artboardEl = ui.artboardElement()

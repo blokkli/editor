@@ -14,7 +14,7 @@
     :data-field-allowed-bundles="allowedBundles"
     :data-field-cardinality="fieldConfig?.cardinality"
   >
-    <BlokkliItem
+    <BlokkliItemDynamic
       v-for="(item, i) in list"
       :key="item.uuid"
       :uuid="item.uuid"
@@ -46,6 +46,7 @@
 import { computed, useBlokkli, ref, onMounted, onBeforeUnmount } from '#imports'
 import type { FieldListItem, EntityContext, FieldConfig } from '#blokkli/types'
 import type { BlokkliFragmentName } from '#blokkli/definitions'
+import BlokkliItemDynamic from '#blokkli/blokkli-item-component'
 
 const { dom, types, runtimeConfig } = useBlokkli()
 
