@@ -40,6 +40,7 @@ import Loading from './Loading/index.vue'
 import Messages from './Messages/index.vue'
 import Features from './Features/index.vue'
 import AppMenu from './AppMenu/index.vue'
+import DraggableList from './DraggableList.vue'
 import DragInteractions from './DragInteractions/index.vue'
 import AnimationCanvas from './AnimationCanvas/index.vue'
 import animationProvider from './../../helpers/animationProvider'
@@ -64,6 +65,7 @@ import getAdapter from '#blokkli/compiled-edit-adapter'
 import {
   INJECT_APP,
   INJECT_EDIT_CONTEXT,
+  INJECT_EDIT_FIELD_LIST_COMPONENT,
   INJECT_IS_EDITING,
 } from '#blokkli/helpers/symbols'
 import type { AdapterContext } from '#blokkli/adapter'
@@ -157,6 +159,7 @@ onMounted(() => {
   setRootClasses()
 
   console.log('EditProvider mounted')
+  dom.init()
 })
 
 onBeforeUnmount(() => {
@@ -169,6 +172,9 @@ onBeforeUnmount(() => {
   setRootClasses(true)
 })
 
+// Provide the edit <BlokkliField> component to it doesn't have to be loaded
+// async every time.
+provide(INJECT_EDIT_FIELD_LIST_COMPONENT, DraggableList)
 provide(INJECT_IS_EDITING, true)
 provide(INJECT_EDIT_CONTEXT, {
   eventBus,

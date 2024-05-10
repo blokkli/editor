@@ -1,7 +1,8 @@
 <template>
   <slot :items="filteredList" />
-  <DraggableList
-    v-if="isEditing && canEdit && !isInReusable"
+  <Component
+    :is="DraggableList"
+    v-if="DraggableList && isEditing && canEdit && !isInReusable"
     :list="filteredList"
     :name="name"
     :entity="entity"
@@ -37,14 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  defineAsyncComponent,
-  useAttrs,
-  inject,
-  provide,
-  ref,
-} from '#imports'
+import { computed, useAttrs, inject, provide, ref } from '#imports'
 import { type BlokkliFragmentName } from '#blokkli/definitions'
 import BlokkliItemDynamic from '#blokkli/blokkli-item-component'
 
@@ -69,15 +63,10 @@ import {
   INJECT_PROVIDER_BLOCKS,
   INJECT_EDIT_CONTEXT,
   INJECT_MUTATED_FIELDS_MAP,
+  INJECT_EDIT_FIELD_LIST_COMPONENT,
 } from '../helpers/symbols'
 
-const DraggableList = defineAsyncComponent(() => {
-  return import('./Edit/DraggableList.vue')
-})
-
-// const BlokkliItem = defineAsyncComponent(() => {
-//   return import('./BlokkliItem.vue')
-// })
+const DraggableList = inject(INJECT_EDIT_FIELD_LIST_COMPONENT, null)
 
 const attrs = useAttrs()
 
@@ -103,7 +92,7 @@ if (!entity) {
 const props = withDefaults(
   defineProps<{
     name: string
-    list?: FieldListItem[]
+    list?: FieldListItem[] | FieldListItem
     tag?: string
     fieldListType?: ValidFieldListTypes
     editOnly?: boolean
@@ -147,7 +136,8 @@ const filteredList = computed<FieldListItemTyped[]>(() => {
       }
     })
   }
-  return props.list.filter(Boolean) as FieldListItemTyped[]
+  const list = Array.isArray(props.list) ? props.list : [props.list]
+  return list.filter(Boolean) as FieldListItemTyped[]
 })
 
 provide(INJECT_IS_NESTED, true)
