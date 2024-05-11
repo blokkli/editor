@@ -21,11 +21,14 @@ import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/helpers/webgl'
 import { toShaderColor } from '#blokkli/helpers'
+import useDebugLogger from '#blokkli/helpers/composables/useDebugLogger'
 
 const props = defineProps<{
   blocks: DraggableExistingBlock[]
   uuids: string[]
 }>()
+
+const logger = useDebugLogger()
 
 const { animation, theme, dom } = useBlokkli()
 
@@ -42,7 +45,7 @@ type SelectionRectangle = Rectangle & {
 class SelectionRectangleBufferCollector extends RectangleBufferCollector<SelectionRectangle> {
   removed: string[] = []
   getBufferInfo(): BufferInfo {
-    console.log('Rebuilding buffer')
+    logger.log('Rebuilding buffer')
     const rects = Object.entries(dom.getBlockRects()).sort((a, b) => {
       return a[1].y - b[1].y
     })
@@ -89,7 +92,7 @@ onMounted(() => {
 })
 
 function updateState(index: number, state: number) {
-  console.log(`Updated index "${index}" with state "${state}"`)
+  logger.log(`Updated index "${index}" with state "${state}"`)
   const newStateArray = new Float32Array([state, state, state, state])
   setAttribInfoBufferFromArray(
     gl,
@@ -103,7 +106,7 @@ function updateState(index: number, state: number) {
  * Update the position and quad attributes for the given index.
  */
 function updatePosition(index: number, rect: Rectangle) {
-  console.log(
+  logger.log(
     `Updated index "${index}" with rectangle "${JSON.stringify(rect)}"`,
   )
   const x = rect.x
@@ -257,7 +260,7 @@ onBlokkliEvent('state:reloaded', function () {
 })
 
 onBeforeUnmount(function () {
-  console.log('SELECTION UNMOUNTED')
+  logger.log('SelectionOverlay unmounted')
   gl.clear(gl.COLOR_BUFFER_BIT)
 })
 </script>

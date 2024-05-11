@@ -40,7 +40,6 @@ const { $t } = useBlokkli()
 const isActive = ref(false)
 
 const setRootClass = () => {
-  console.log({ isActive: isActive.value })
   document.documentElement.classList.remove('bk-hide-non-editable')
   if (isActive.value) {
     document.documentElement.classList.add('bk-hide-non-editable')

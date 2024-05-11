@@ -12,7 +12,9 @@ import { featureComponents } from '#blokkli-runtime/features'
 
 const emit = defineEmits(['loaded'])
 
-const { adapter, features, ui } = useBlokkli()
+const { adapter, features, ui, debug } = useBlokkli()
+
+const logger = debug.createLogger('Features')
 
 const renderedFeatures = computed(() =>
   features.features.value.map((v) => v.id),
@@ -47,10 +49,7 @@ const availableFeatures = computed(() => {
     }
 
     // Feature is not enabled for this viewport.
-    if (
-      v.viewports.length &&
-      !v.viewports.some((viewport) => ui.appViewport.value === viewport)
-    ) {
+    if (v.viewports.length && !v.viewports.includes(ui.appViewport.value)) {
       return false
     }
 
@@ -62,6 +61,7 @@ const availableFeatures = computed(() => {
 onMounted(() => {
   nextTick(() => {
     emit('loaded')
+    logger.log('Features loaded', renderedFeatures.value)
   })
 })
 </script>

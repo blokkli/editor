@@ -57,6 +57,7 @@ import featuresProvider from './../../helpers/featuresProvider'
 import themeProvider from './../../helpers/themeProvider'
 import commandsProvider from './../../helpers/commandsProvider'
 import tourProvider from './../../helpers/tourProvider'
+import debugProvider from './../../helpers/debugProvider'
 import dropAreasProvider from './../../helpers/dropAreaProvider'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import '#blokkli/theme'
@@ -66,6 +67,7 @@ import {
   INJECT_APP,
   INJECT_EDIT_CONTEXT,
   INJECT_EDIT_FIELD_LIST_COMPONENT,
+  INJECT_EDIT_LOGGER,
   INJECT_IS_EDITING,
 } from '#blokkli/helpers/symbols'
 import type { AdapterContext } from '#blokkli/adapter'
@@ -102,15 +104,16 @@ const toolbarLoaded = ref(false)
 const featuresLoaded = ref(false)
 const isInitializing = ref(true)
 
+const storage = storageProvider()
+const debug = debugProvider(storage)
 const features = featuresProvider()
 const theme = themeProvider()
 const commands = commandsProvider()
 const tour = tourProvider()
 const dropAreas = dropAreasProvider()
 const broadcast = broadcastProvider()
-const storage = storageProvider()
 const ui = uiProvider(storage)
-const dom = domProvider(ui)
+const dom = domProvider(ui, debug)
 const animation = animationProvider(ui)
 const keyboard = keyboardProvider(animation)
 const $t = textProvider(context)
@@ -145,6 +148,8 @@ const setRootClasses = (unmount?: boolean) => {
 
 watch(ui.useAnimations, setRootClasses)
 
+const baseLogger = debug.createLogger('EditProvider')
+
 onMounted(() => {
   window.addEventListener('contextmenu', onContextMenu)
   if (props.isolate) {
@@ -157,8 +162,7 @@ onMounted(() => {
   document.documentElement.addEventListener('touchmove', onTouchMove)
   document.documentElement.addEventListener('touchstart', onTouchStart)
   setRootClasses()
-
-  console.log('EditProvider mounted')
+  baseLogger.log('EditProvider mounted')
   dom.init()
 })
 
@@ -171,6 +175,7 @@ onBeforeUnmount(() => {
   document.documentElement.removeEventListener('touchstart', onTouchStart)
   setRootClasses(true)
 })
+provide(INJECT_EDIT_LOGGER, baseLogger)
 
 // Provide the edit <BlokkliField> component to it doesn't have to be loaded
 // async every time.
@@ -201,5 +206,6 @@ provide<BlokkliApp>(INJECT_APP, {
   commands,
   tour,
   dropAreas,
+  debug,
 })
 </script>

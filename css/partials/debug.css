@@ -10,6 +10,9 @@
 .bk-debug-list {
   > div {
     @apply flex justify-between;
+    &:not(:last-child) {
+      @apply mb-5;
+    }
   }
 }
 
