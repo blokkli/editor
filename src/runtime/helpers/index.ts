@@ -12,6 +12,7 @@ import type {
 import { useRuntimeConfig } from '#imports'
 import { getDefinition } from '#blokkli/definitions'
 import type { RGB } from '#blokkli/types/theme'
+import type { ValidFieldListTypes } from '#blokkli/generated-types'
 
 /**
  * Type check for falsy values.
@@ -43,8 +44,13 @@ export function buildDraggableItem(
     const hostBundle = dataset.hostBundle
     const hostFieldName = dataset.hostFieldName
     const reusableBundle = dataset.reusableBundle
+    const hostFieldListType = dataset.hostFieldListType as
+      | ValidFieldListTypes
+      | undefined
     const reusableUuid = dataset.reusableUuid
     const isNew = dataset.isNew === 'true'
+    const parentBlockBundle =
+      hostType === itemEntityType ? (hostBundle as any) : undefined
     if (
       uuid &&
       hostType &&
@@ -52,9 +58,14 @@ export function buildDraggableItem(
       hostFieldName &&
       itemBundle &&
       hostBundle &&
-      entityType
+      entityType &&
+      hostFieldListType
     ) {
-      const definition = getDefinition(itemBundle)
+      const definition = getDefinition(
+        itemBundle,
+        hostFieldListType,
+        parentBlockBundle,
+      )
       const editTitle = definition?.editor?.editTitle
         ? definition?.editor.editTitle(element)
         : undefined
@@ -79,12 +90,12 @@ export function buildDraggableItem(
         hostBundle,
         hostUuid,
         hostFieldName,
+        hostFieldListType,
         reusableBundle,
         reusableUuid,
         editTitle: editTitle || undefined,
         isNew,
-        parentBlockBundle:
-          hostType === itemEntityType ? (hostBundle as any) : undefined,
+        parentBlockBundle,
       }
     }
   } else if (dataset.elementType === 'new') {

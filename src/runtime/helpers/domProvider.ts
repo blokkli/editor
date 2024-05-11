@@ -1,5 +1,5 @@
 import type { ComponentInternalInstance } from 'vue'
-import { reactive, ref, computed, type ComputedRef, onMounted } from '#imports'
+import { reactive, ref, computed, type ComputedRef } from '#imports'
 import type {
   DraggableExistingBlock,
   BlokkliFieldElement,
@@ -20,6 +20,11 @@ import { cloneElementWithStyles } from './dom'
 import onBlokkliEvent from './composables/onBlokkliEvent'
 import useDelayedIntersectionObserver from './composables/useDelayedIntersectionObserver'
 import { getDefinition } from '#blokkli/definitions'
+import type {
+  BlockBundleWithNested,
+  ValidFieldListTypes,
+} from '#blokkli/generated-types'
+import type { DebugProvider } from './debugProvider'
 
 const buildFieldElement = (
   element: HTMLElement,
@@ -28,6 +33,9 @@ const buildFieldElement = (
   const name = element.dataset.fieldName
   const label = element.dataset.fieldLabel
   const isNested = element.dataset.fieldIsNested === 'true'
+  const fieldListType = element.dataset.fieldListType as
+    | ValidFieldListTypes
+    | undefined
   const hostEntityType = element.dataset.hostEntityType
   const hostEntityBundle = element.dataset.hostEntityBundle
   const hostEntityUuid = element.dataset.hostEntityUuid
@@ -46,7 +54,8 @@ const buildFieldElement = (
     label &&
     hostEntityType &&
     hostEntityUuid &&
-    hostEntityBundle
+    hostEntityBundle &&
+    fieldListType
   ) {
     return {
       key,
@@ -59,6 +68,7 @@ const buildFieldElement = (
       cardinality: isNaN(cardinality) ? -1 : cardinality,
       allowedBundles,
       allowedFragments,
+      fieldListType,
       element,
       dropAlignment:
         dropAlignment === 'vertical' || dropAlignment === 'horizontal'
@@ -92,6 +102,8 @@ export type DomProvider = {
     uuid: string,
     instance: ComponentInternalInstance | null,
     bundle: string,
+    fieldListType: ValidFieldListTypes,
+    parentBlockBundle?: BlockBundleWithNested,
   ) => void
   unregisterBlock: (uuid: string) => void
 
@@ -140,7 +152,8 @@ const getVisibleBlockElement = (
   }
 }
 
-export default function (ui: UiProvider): DomProvider {
+export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
+  const logger = debug.createLogger('DomProvider')
   const mutationsReady = ref(true)
   const intersectionReady = ref(false)
   const blockVisibility: Record<string, boolean> = {}
@@ -194,7 +207,6 @@ export default function (ui: UiProvider): DomProvider {
     const key = `${uuid}:${fieldName}`
     registeredFields[key] = element
     observer.observe(element)
-    console.log('FIELD REGISTERED')
   }
 
   const unregisterField = (uuid: string, fieldName: string) => {
@@ -206,8 +218,13 @@ export default function (ui: UiProvider): DomProvider {
     registeredFields[key] = undefined
   }
 
-  function getElementToObserve(el: HTMLElement, bundle: string): HTMLElement {
-    const definition = getDefinition(bundle)
+  function getElementToObserve(
+    el: HTMLElement,
+    bundle: string,
+    fieldListType: ValidFieldListTypes,
+    parentBlockBundle?: BlockBundleWithNested,
+  ): HTMLElement {
+    const definition = getDefinition(bundle, fieldListType, parentBlockBundle)
     if (!definition) {
       throw new Error('Failed to load definition for bundle: ' + bundle)
     }
@@ -226,6 +243,8 @@ export default function (ui: UiProvider): DomProvider {
     uuid: string,
     instance: ComponentInternalInstance | null,
     bundle: string,
+    fieldListType: ValidFieldListTypes,
+    parentBlockBundle?: BlockBundleWithNested,
   ) => {
     if (registeredBlocks[uuid]) {
       console.error(
@@ -247,7 +266,12 @@ export default function (ui: UiProvider): DomProvider {
       )
       return
     }
-    const observableElement = getElementToObserve(el, bundle)
+    const observableElement = getElementToObserve(
+      el,
+      bundle,
+      fieldListType,
+      parentBlockBundle,
+    )
     observer.observe(observableElement)
     registeredBlocks[uuid] = el
   }
@@ -456,11 +480,13 @@ export default function (ui: UiProvider): DomProvider {
   onBlokkliEvent('ui:resized', function () {
     getVisibleBlocks().forEach(refreshBlockRect)
     getVisibleFields().forEach(refreshFieldRect)
+    logger.log('Refreshed all visible rects')
   })
 
   function init() {
     observer.init()
     intersectionReady.value = true
+    logger.log('IntersectionObserver initialized')
   }
 
   return {

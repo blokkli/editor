@@ -34,7 +34,7 @@
 <script setup lang="ts">
 import { computed, provide } from '#imports'
 
-import { getDefinition } from '#blokkli/definitions'
+import { getDefaultDefinition } from '#blokkli/definitions'
 import type { FieldListItem } from '#blokkli/types'
 import { ItemIcon, ScaleToFit } from '#blokkli/components'
 import {
@@ -51,7 +51,7 @@ const componentProps = defineProps<{
   item: FieldListItem
 }>()
 
-const definition = computed(() => getDefinition(componentProps.bundle))
+const definition = computed(() => getDefaultDefinition(componentProps.bundle))
 
 const previewWidth = computed(() => definition.value?.editor?.previewWidth)
 const renderPreview = computed(

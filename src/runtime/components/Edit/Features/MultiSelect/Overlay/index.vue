@@ -18,8 +18,10 @@ import {
 } from 'twgl.js'
 import type { Coord, Rectangle } from '#blokkli/types'
 import { RectangleBufferCollector } from '#blokkli/helpers/webgl'
+import useDebugLogger from '#blokkli/helpers/composables/useDebugLogger'
 
 const { eventBus, dom, theme, animation, ui } = useBlokkli()
+const logger = useDebugLogger()
 
 const props = defineProps<{
   startX: number
@@ -275,5 +277,7 @@ onBeforeUnmount(() => {
   } else {
     eventBus.emit('select:end', nested)
   }
+
+  logger.log('MultiSelectOverlay unmounted')
 })
 </script>

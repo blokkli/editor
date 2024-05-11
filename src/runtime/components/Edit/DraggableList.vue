@@ -12,9 +12,10 @@
     :data-field-drop-alignment="dropAlignment"
     :data-allowed-fragments="allowedFragments.join(',')"
     :data-field-allowed-bundles="allowedBundles"
+    :data-field-list-type="fieldListType"
     :data-field-cardinality="fieldConfig?.cardinality"
   >
-    <BlokkliItemDynamic
+    <BlokkliItem
       v-for="(item, i) in list"
       :key="item.uuid"
       :uuid="item.uuid"
@@ -34,6 +35,7 @@
       :data-host-uuid="entity.uuid"
       :data-item-bundle="item.bundle"
       :data-host-field-name="name"
+      :data-host-field-list-type="fieldListType"
       :data-is-nested="isNested"
       :data-is-new="item.isNew"
       :data-entity-type="runtimeConfig.itemEntityType"
@@ -46,7 +48,7 @@
 import { computed, useBlokkli, ref, onMounted, onBeforeUnmount } from '#imports'
 import type { FieldListItem, EntityContext, FieldConfig } from '#blokkli/types'
 import type { BlokkliFragmentName } from '#blokkli/definitions'
-import BlokkliItemDynamic from '#blokkli/blokkli-item-component'
+import BlokkliItem from './../BlokkliItem.vue'
 
 const { dom, types, runtimeConfig } = useBlokkli()
 
@@ -59,6 +61,7 @@ const props = defineProps<{
   entity: EntityContext
   tag?: string
   isNested: boolean
+  fieldListType: string
   allowedFragments: BlokkliFragmentName[]
   dropAlignment?: 'vertical' | 'horizontal'
 }>()

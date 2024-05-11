@@ -1,32 +1,34 @@
 <template>
-  <div
-    class="container mt-25"
+  <Component
+    :is="isExternal ? 'a' : NuxtLink"
+    v-bind="attributes"
+    class="button shrink-0 grow-0 max-w-fit"
     :class="{
-      'text-left': options.align === 'left',
-      'text-center': options.align === 'center',
-      'text-right': options.align === 'right',
+      'is-primary': options.color === 'primary',
+      'is-inverted': options.color === 'normal' && isInverted,
     }"
   >
-    <Component
-      :is="isExternal ? 'a' : NuxtLink"
-      v-bind="attributes"
-      class="button"
-      :class="{
-        'is-primary': options.color === 'primary',
-        'is-inverted': options.color === 'normal' && isInverted,
-      }"
-    >
-      <span v-blokkli-editable:title>{{ title }}</span>
-    </Component>
-  </div>
+    <span v-blokkli-editable:title>{{ title }}</span>
+  </Component>
 </template>
 
 <script lang="ts" setup>
 import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
 import { NuxtLink } from '#components'
 
-const { options } = defineBlokkli({
+const { options, parentType, fieldListType } = defineBlokkli({
   bundle: 'button',
+  renderFor: [
+    {
+      parentBundle: 'two_columns',
+    },
+    {
+      parentBundle: 'grid',
+    },
+    {
+      fieldList: 'inline',
+    },
+  ],
   options: {
     color: {
       type: 'radios',
@@ -38,16 +40,6 @@ const { options } = defineBlokkli({
         primary: { class: 'bg-accent-700', label: 'Primary' },
       },
     },
-    align: {
-      type: 'radios',
-      label: 'Align',
-      default: 'center',
-      options: {
-        left: 'Left',
-        center: 'Center',
-        right: 'Right',
-      },
-    },
   },
   editor: {
     addBehaviour: 'no-form',
@@ -55,6 +47,10 @@ const { options } = defineBlokkli({
     getDraggableElement: (el) => el.querySelector('a'),
   },
 })
+
+const isInline = computed(
+  () => parentType.value || fieldListType.value === 'inline',
+)
 
 const props = defineProps<{
   url: string

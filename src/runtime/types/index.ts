@@ -30,6 +30,7 @@ import type { CommandsProvider } from '#blokkli/helpers/commandsProvider'
 import type { TourProvider } from '#blokkli/helpers/tourProvider'
 import type { DropAreaProvider } from '#blokkli/helpers/dropAreaProvider'
 import type { RGB } from './theme'
+import type { DebugProvider } from '#blokkli/helpers/debugProvider'
 
 interface MutationResponseLike<T> {
   success?: boolean
@@ -252,6 +253,17 @@ export type BlokkliDefinitionInputEditor<
   getDraggableElement?: (el: HTMLElement) => Element | undefined | null
 }
 
+export type BlockDefinitionRenderForParent = {
+  parentBundle: BlockBundleWithNested
+}
+
+export type BlockDefinitionRenderForFieldListType = {
+  fieldList: ValidFieldListTypes
+}
+export type BlockDefinitionRenderFor =
+  | BlockDefinitionRenderForParent
+  | BlockDefinitionRenderForFieldListType
+
 export type BlockDefinitionInput<
   Options extends BlockDefinitionOptionsInput = {},
   GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
@@ -260,6 +272,13 @@ export type BlockDefinitionInput<
    * The bundle ID of the block, e.g. "text" or "section_title".
    */
   bundle: string
+
+  /**
+   * Define the name of a block bundle that supports nested blocks.
+   * If a bundle is defined, then this component will be rendered if the
+   * parent matches the given bundle.
+   */
+  renderFor?: BlockDefinitionRenderFor | BlockDefinitionRenderFor[]
 
   /**
    * The name of the chunk group.
@@ -294,7 +313,8 @@ export type InjectedBlokkliItem = ComputedRef<{
   uuid: string
   options?: Record<string, string> | undefined
   isEditing: boolean
-  parentType?: string
+  parentType?: BlockBundleWithNested
+  fieldListType?: ValidFieldListTypes
 }>
 
 export type FieldListItem = {
@@ -588,6 +608,7 @@ export interface DraggableExistingBlock {
   hostBundle: string
   hostUuid: string
   hostFieldName: string
+  hostFieldListType: ValidFieldListTypes
   itemBundle: string
   isNew: boolean
   uuid: string
@@ -856,6 +877,7 @@ export type BlokkliFieldElement = {
   name: string
   label: string
   isNested: boolean
+  fieldListType: ValidFieldListTypes
   hostEntityType: string
   hostEntityBundle: string
   hostEntityUuid: string
@@ -1016,6 +1038,7 @@ export interface BlokkliApp {
   commands: CommandsProvider
   tour: TourProvider
   dropAreas: DropAreaProvider
+  debug: DebugProvider
 }
 
 export type PasteExistingBlocksEvent = {

@@ -4,10 +4,21 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, provide, useRuntimeConfig } from '#imports'
+import {
+  computed,
+  provide,
+  useRuntimeConfig,
+  inject,
+  type ComputedRef,
+} from '#imports'
 import type { InjectedBlokkliItem } from '#blokkli/types'
 import { getBlokkliItemComponent } from '#blokkli/imports'
-import { INJECT_BLOCK_ITEM, INJECT_ENTITY_CONTEXT } from '../helpers/symbols'
+import {
+  INJECT_BLOCK_ITEM,
+  INJECT_ENTITY_CONTEXT,
+  INJECT_FIELD_LIST_TYPE,
+} from '../helpers/symbols'
+import type { ValidFieldListTypes } from '#blokkli/generated-types'
 
 const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
 
@@ -31,7 +42,15 @@ const componentProps = withDefaults(
   },
 )
 
-const component = getBlokkliItemComponent(componentProps.bundle)
+const fieldListType = inject<ComputedRef<ValidFieldListTypes> | undefined>(
+  INJECT_FIELD_LIST_TYPE,
+)
+
+const component = getBlokkliItemComponent(
+  componentProps.bundle,
+  fieldListType?.value || 'default',
+  componentProps.parentType,
+)
 
 const index = computed(() => componentProps.index)
 const item = computed(() => ({

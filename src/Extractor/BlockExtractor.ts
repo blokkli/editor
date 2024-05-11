@@ -6,7 +6,6 @@ import type {
   FragmentDefinitionInput,
 } from '../runtime/types'
 import { sortObjectKeys } from './../helpers'
-import { falsy } from '../vitePlugin'
 
 function toPascalCase(name: string): string {
   return name
@@ -105,12 +104,19 @@ export default class BlockExtractor {
         }
       }
 
+      const extension = path.extname(filePath)
+      const componentFileName = path.basename(filePath, extension)
+
       this.definitions[filePath] = {
         filePath,
         definition: extracted.definition,
         icon,
         chunkName: (extracted.definition.chunkName || 'global') as any,
-        componentName: 'BlokkliComponent_' + extracted.definition.bundle,
+        componentName:
+          'BlokkliComponent_' +
+          extracted.definition.bundle +
+          '_' +
+          componentFileName,
         source: extracted.source,
         fileSource,
         hasBlokkliField:
@@ -180,105 +186,43 @@ export default class BlockExtractor {
     })
   }
 
-  generateBlokkliItemComponent(
-    globalOptions: BlockDefinitionOptionsInput = {},
-  ): string {
-    const globalImports = Object.values(this.definitions)
-      .map((v) => {
-        if (v.chunkName === 'global') {
-          const name = 'Block' + toPascalCase(v.definition.bundle)
-          return `import ${name} from '${v.filePath}'`
-        }
-        return null
-      })
-      .filter(falsy)
-      .join('\n')
-
-    const components = Object.values(this.definitions)
-      .map((v, i) => {
-        if (v.chunkName !== 'global') {
-          return null
-        }
-        const name = 'Block' + toPascalCase(v.definition.bundle)
-        if (i === 0) {
-          return `<${name} v-if="bundle === '${v.definition.bundle}'" v-bind="props" />`
-        }
-        return `  <${name} v-else-if="bundle === '${v.definition.bundle}'" v-bind="props" />`
-      })
-      .filter(falsy)
-      .join('\n')
-    return `
-<template>
-  ${components}
-  <Component v-else-if="chunkComponent" :is="chunkComponent" v-bind="props" />
-  <div v-else-if="isEditing">Block not implemented</div>
-</template>
-
-<script lang="ts" setup>
-import { computed, provide, useRuntimeConfig } from '#imports'
-import type { InjectedBlokkliItem } from '#blokkli/types'
-import { getComponentFromChunk } from '#blokkli/imports'
-import { INJECT_BLOCK_ITEM, INJECT_ENTITY_CONTEXT } from '#blokkli/helpers/symbols'
-${globalImports}
-
-const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
-
-const componentProps = withDefaults(
-  defineProps<{
-    uuid: string
-    bundle: string
-    isNew?: boolean
-    options?: any
-    props?: any
-    index?: number
-    parentType?: string
-    isEditing?: boolean
-  }>(),
-  {
-    index: 0,
-    isEditing: false,
-    parentType: '',
-    options: () => ({}),
-    props: () => ({}),
-  },
-)
-
-const chunkComponent = getComponentFromChunk(componentProps.bundle)
-
-const index = computed(() => componentProps.index)
-const item = computed(() => ({
-  index,
-  uuid: componentProps.uuid || '',
-  options: componentProps.options || {},
-  isEditing: componentProps.isEditing,
-  parentType: componentProps.parentType,
-}))
-
-provide<InjectedBlokkliItem>(INJECT_BLOCK_ITEM, item)
-provide(INJECT_ENTITY_CONTEXT, {
-  uuid: componentProps.uuid,
-  type: itemEntityType,
-  bundle: componentProps.bundle,
-})
-</script>
-
-<script lang="ts">
-export default {
-  name: 'BlokkliItemDynamic',
-}
-</script>
-`
-  }
-
   /**
    * Generate the template.
    */
   generateDefinitionTemplate(
     globalOptions: BlockDefinitionOptionsInput = {},
   ): string {
-    const allDefinitions = Object.values(this.definitions).map((v) => {
-      return `${v.definition.bundle}: ${v.source}`
-    })
+    const definitionDeclarations = Object.values(this.definitions).map((v) => {
+      return `const ${v.componentName}: DefinitionItem = ${v.source}`
+    }, {})
+
+    const allDefinitions = Object.values(this.definitions).reduce<string[]>(
+      (acc, v) => {
+        const bundle = v.definition.bundle
+        const renderFor = v.definition.renderFor
+        if (renderFor) {
+          const renderForList = Array.isArray(renderFor)
+            ? renderFor
+            : [renderFor]
+          renderForList.forEach((entry) => {
+            if ('parentBundle' in entry) {
+              acc.push(
+                `${bundle}__parent_block_${entry.parentBundle}: ${v.componentName}`,
+              )
+            } else {
+              acc.push(
+                `${bundle}__field_list_type_${entry.fieldList}: ${v.componentName}`,
+              )
+            }
+          })
+        } else {
+          acc.push(`${bundle}: ${v.componentName}`)
+        }
+        return acc
+        // return `${v.definition.bundle}: ${v.source}`
+      },
+      [],
+    )
 
     const allFragmentDefinitions = Object.values(this.fragmentDefinitions).map(
       (v) => {
@@ -299,15 +243,19 @@ export default {
       .map((v) => `'${v.definition.name}'`)
       .join(' | ')
 
-    return `import type { GlobalOptionsKey, BundlePropsMap } from './generated-types'
+    return `import type { GlobalOptionsKey, BundlePropsMap, ValidFieldListTypes, BlockBundleWithNested } from './generated-types'
 import type { BlockDefinitionInput, BlockDefinitionOptionsInput, FragmentDefinitionInput } from '#blokkli/types'
 export const globalOptions = ${JSON.stringify(globalOptions, null, 2)} as const
+
+type DefinitionItem = BlockDefinitionInput<BlockDefinitionOptionsInput, GlobalOptionsKey[]>
+
+${definitionDeclarations.join('\n')}
 
 export const icons: Record<string, string> = ${JSON.stringify(icons)}
 
 export type PossibleDefinitionBundle = keyof BundlePropsMap | 'from_library'
 
-export const definitionsMap: Record<string, BlockDefinitionInput<BlockDefinitionOptionsInput, GlobalOptionsKey[]>> = {
+export const definitionsMap: Record<string, DefinitionItem> = {
   ${allDefinitions.join(',\n')}
 }
 
@@ -320,7 +268,30 @@ export type BlokkliFragmentName = ${allFragmentNames || 'never'}
 export const definitions: BlockDefinitionInput<any, GlobalOptionsKey[]>[] = Object.values(definitionsMap)
 export const fragmentDefinitions: FragmentDefinitionInput<any, GlobalOptionsKey[]>[] = Object.values(fragmentDefinitionsMap)
 
-export const getDefinition = (bundle: string): BlockDefinitionInput<Record<string, any>, GlobalOptionsKey[]>|undefined => definitionsMap[bundle]
+/**
+ * Get the block definition for the given field and parent context.
+ */
+export function getDefinition(bundle: string, fieldListType: ValidFieldListTypes, parentBundle?: BlockBundleWithNested): BlockDefinitionInput<Record<string, any>, GlobalOptionsKey[]>|undefined {
+  const forFieldListType = bundle + '__field_list_type_' + fieldListType
+  if (definitionsMap[forFieldListType]) {
+    return definitionsMap[forFieldListType]
+  }
+  if (parentBundle) {
+    const forParentBundle = bundle + '__parent_block_' + parentBundle
+    if (definitionsMap[forParentBundle]) {
+      return definitionsMap[forParentBundle]
+    }
+  }
+
+  return definitionsMap[bundle]
+}
+
+/**
+ * Get the definition of the default block component.
+ */
+export function getDefaultDefinition(bundle: string): BlockDefinitionInput<Record<string, any>, GlobalOptionsKey[]>|undefined {
+  return definitionsMap[bundle]
+}
 export const getFragmentDefinition = (name: string): FragmentDefinitionInput<Record<string, any>, GlobalOptionsKey[]>|undefined => fragmentDefinitionsMap[name]
 `
   }
@@ -569,21 +540,21 @@ const fragmentChunkMapping: Record<string, string> = ${JSON.stringify(
       2,
     )}
 
-export function getBlokkliItemComponent(bundle: string): any {
+export function getBlokkliItemComponent(bundle: string, fieldListType?: string, parentBundle?: string): any {
+  const forFieldListType = 'block_' + bundle + '__field_list_type_' + fieldListType
+  if (global[forFieldListType]) {
+    return global[forFieldListType]
+  }
+  if (parentBundle) {
+    const forParentBundle = 'block_' + bundle + '__parent_block_' + parentBundle
+    if (global[forParentBundle]) {
+      return global[forParentBundle]
+    }
+  }
   const key = 'block_' + bundle
   if (global[key]) {
     return global[key]
   }
-  const chunkName = chunkMapping[key]
-  if (chunkName) {
-    return defineAsyncComponent(() => chunks[chunkName]().then(chunk => {
-      return chunk.default[key]
-    }))
-  }
-}
-
-export function getComponentFromChunk(bundle: string): any {
-  const key = 'block_' + bundle
   const chunkName = chunkMapping[key]
   if (chunkName) {
     return defineAsyncComponent(() => chunks[chunkName]().then(chunk => {
@@ -625,12 +596,34 @@ export function getBlokkliFragmentComponent(name: string): any {
     const imports = definitions.map((v) => {
       return `import ${v.componentName} from '${v.filePath}'`
     })
-    const map = definitions.map((v) => {
+    const map = definitions.reduce<string[]>((acc, v) => {
       if ('bundle' in v.definition) {
-        return `block_${v.definition.bundle}: ${v.componentName}`
+        const bundle = v.definition.bundle
+        const renderFor = v.definition.renderFor
+        if (!renderFor) {
+          acc.push(`block_${v.definition.bundle}: ${v.componentName}`)
+        } else {
+          const renderForList = Array.isArray(renderFor)
+            ? renderFor
+            : [renderFor]
+
+          renderForList.forEach((entry) => {
+            if ('parentBundle' in entry) {
+              acc.push(
+                `block_${bundle}__parent_block_${entry.parentBundle}: ${v.componentName}`,
+              )
+            } else {
+              acc.push(
+                `block_${bundle}__field_list_type_${entry.fieldList}: ${v.componentName}`,
+              )
+            }
+          })
+        }
+      } else {
+        acc.push(`fragment_${v.definition.name}: ${v.componentName}`)
       }
-      return `fragment_${v.definition.name}: ${v.componentName}`
-    })
+      return acc
+    }, [])
     let content = `
 ${imports.join('\n')}
 

@@ -38,6 +38,7 @@ const definition = computed<
     .map((v) => v.reusableBundle || v.itemBundle)
     .filter(onlyUnique)
 
+  // @TODO: Support shared global options.
   if (bundles.length !== 1) {
     return
   }
@@ -66,7 +67,17 @@ const definition = computed<
     return getFragmentDefinition(fragmentNames[0])
   }
 
-  return getDefinition(bundles[0])
+  const definitions = selection.blocks.value
+    .map((block) => {
+      return getDefinition(
+        block.itemBundle,
+        block.hostFieldListType,
+        block.parentBlockBundle,
+      )
+    })
+    .filter(falsy)
+
+  return definitions[0]
 })
 </script>
 

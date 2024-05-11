@@ -1,8 +1,6 @@
 <template>
   <Teleport to=".bk-main-canvas">
-    <div class="foo">
-      <div />
-    </div>
+    <div />
   </Teleport>
 </template>
 

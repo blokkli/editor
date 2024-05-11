@@ -61,7 +61,7 @@ import {
 } from '#imports'
 import { AddListItem } from '#blokkli/components'
 import type { Command, DraggableExistingBlock } from '#blokkli/types'
-import { getDefinition } from '#blokkli/definitions'
+import { getDefaultDefinition, getDefinition } from '#blokkli/definitions'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { PluginTourItem } from '#blokkli/plugins'
@@ -184,7 +184,7 @@ const determineVisibility = (bundle: string, label: string): boolean => {
     return false
   }
 
-  const definition = getDefinition(bundle)
+  const definition = getDefaultDefinition(bundle)
 
   if (definition?.editor?.maxInstances) {
     const existingInstancesOfBundle = state.getBlockBundleCount(bundle)

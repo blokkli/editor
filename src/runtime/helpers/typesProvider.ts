@@ -13,7 +13,6 @@ import type { AdapterContext, BlokkliAdapter } from '../adapter'
 import type { SelectionProvider } from './selectionProvider'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import { useRuntimeConfig, computed, watch } from '#imports'
-import { getDefinition } from '#blokkli/definitions'
 
 export type BlokkliBlockType = BlockBundleDefinition & {
   definition:
@@ -138,15 +137,8 @@ export default async function (
     )
   })
 
-  const getType = (bundle: string): BlokkliBlockType | undefined => {
-    const type = allTypes.value.find((v) => v.id === bundle)
-    const definition = getDefinition(bundle)
-    if (type) {
-      return {
-        ...type,
-        definition,
-      }
-    }
+  const getType = (bundle: string): BlockBundleDefinition | undefined => {
+    return allTypes.value.find((v) => v.id === bundle)
   }
 
   const getDroppableFieldConfig = (

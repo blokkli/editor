@@ -31,7 +31,6 @@ type OnThisPageLink = {
 const mapItem = (
   item: FieldListItemTyped,
 ): OnThisPageLink | undefined | OnThisPageLink[] => {
-  console.log(item)
   if (item.bundle === 'title') {
     const label = item.props.tagline || item.props.title
     if (item.options.showInMenu === '1' && label) {

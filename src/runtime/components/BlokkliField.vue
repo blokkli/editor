@@ -9,6 +9,7 @@
     :field-key="fieldKey!"
     :allowed-fragments="allowedFragments"
     :drop-alignment="dropAlignment"
+    :field-list-type="fieldListType"
     :class="[attrs.class, listClass, { [nonEmptyClass]: filteredList.length }]"
     :is-nested="isNested"
     class="bk-field-list"
@@ -26,7 +27,7 @@
       listClass,
     ]"
   >
-    <BlokkliItemDynamic
+    <BlokkliItem
       v-for="(item, i) in filteredList"
       :key="item.uuid"
       v-bind="item"
@@ -40,7 +41,7 @@
 <script lang="ts" setup>
 import { computed, useAttrs, inject, provide, ref } from '#imports'
 import { type BlokkliFragmentName } from '#blokkli/definitions'
-import BlokkliItemDynamic from '#blokkli/blokkli-item-component'
+import BlokkliItem from './BlokkliItem.vue'
 
 import type {
   FieldListItem,

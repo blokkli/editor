@@ -404,11 +404,3 @@ html.bk-hide-non-editable {
     stroke-dasharray: 2 2;
   }
 }
-
-.foo {
-  @apply absolute top-0 left-0 w-0 h-0 z-[9999999999999];
-
-  > div {
-    @apply absolute w-20 h-20 rounded-full bg-red-normal top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2;
-  }
-}

@@ -119,7 +119,13 @@ const onAddLibraryItem = async (uuid: string) => {
 }
 
 const definition = computed(() =>
-  selectedItem?.value ? getDefinition(selectedItem.value.itemBundle) : null,
+  selectedItem?.value
+    ? getDefinition(
+        selectedItem.value.itemBundle,
+        selectedItem.value.hostFieldListType,
+        selectedItem.value.parentBlockBundle,
+      )
+    : null,
 )
 
 const itemBundle = computed(() =>

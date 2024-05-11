@@ -142,6 +142,7 @@ export function defineBlokkli<
 
   onMounted(() => {
     if (
+      !item?.value ||
       !isEditing ||
       !editContext ||
       !editContext.dom ||
@@ -155,7 +156,13 @@ export function defineBlokkli<
 
     // Register the DOM element of this block.
     const instance = getCurrentInstance()
-    editContext.dom.registerBlock(uuid, instance, config.bundle)
+    editContext.dom.registerBlock(
+      uuid,
+      instance,
+      config.bundle,
+      fieldListType.value,
+      item.value.parentType,
+    )
   })
 
   onBeforeUnmount(() => {

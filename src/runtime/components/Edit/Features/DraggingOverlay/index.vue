@@ -120,7 +120,17 @@ const onDropNew = async (
   host: DraggableHostData,
   afterUuid?: string,
 ) => {
-  const definition = getDefinition(bundle)
+  const field = dom.findField(host.uuid, host.fieldName)
+  if (!field) {
+    throw new Error(
+      `Failed to locate field with name "${host.fieldName}" on UUID "${host.uuid}"`,
+    )
+  }
+  const definition = getDefinition(
+    bundle,
+    field.fieldListType,
+    field.hostEntityBundle as any,
+  )
   const addBehaviour: BlokkliDefinitionAddBehaviour =
     definition?.editor?.addBehaviour || 'form'
   if (
@@ -286,7 +296,8 @@ const onDrop = (e: DropTargetEvent) => {
       return
     }
 
-    const definition = getDefinition(newBlock.item.bundle)
+    // @ts-ignore
+    const definition = getDefinition(newBlock.item.bundle, 'TODO')
 
     if (!definition?.editor?.addBehaviour?.startsWith('editable:')) {
       return
