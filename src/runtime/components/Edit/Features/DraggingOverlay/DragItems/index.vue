@@ -354,7 +354,7 @@ onMounted(() => {
 
     return {
       isTop,
-      from,
+      from: ui.lowPerformanceMode.value ? to : from,
       to,
       ...from,
       width: item.element.offsetWidth,

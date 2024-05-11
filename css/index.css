@@ -265,6 +265,9 @@ html {
 
 .bk-overlay {
   @apply bg-mono-800/90 backdrop-blur-md;
+  html.bk-low-performance-mode & {
+    @apply backdrop-filter-none bg-mono-800/95;
+  }
 }
 
 .bk-touch-action-bar {

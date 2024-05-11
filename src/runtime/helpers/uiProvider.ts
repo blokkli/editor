@@ -70,8 +70,10 @@ export default function (storage: StorageProvider): UiProvider {
   const selectionTopLeft = ref({ x: 0, y: 0 })
   const useAnimationsSetting = storage.use('useAnimations', true)
   const useAnimations = computed(() => useAnimationsSetting.value)
-  const lowPerformanceModeSetting = storage.use('lowPerformanceMode', false)
-  const lowPerformanceMode = computed(() => lowPerformanceModeSetting.value)
+  const baseSettings = storage.use('feature:settings:settings', {} as any)
+  const lowPerformanceMode = computed(
+    () => baseSettings.value.lowPerformanceMode,
+  )
   const viewportBlockingRectsMap = ref<Record<string, Rectangle>>({})
   const artboardSize = ref<Size>({
     width: 1,

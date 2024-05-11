@@ -28,11 +28,15 @@
     @apply bg-mono-950/90 backdrop-blur lg:bg-mono-900;
     @apply relative z-50;
 
+    html.bk-low-performance-mode & {
+      @apply backdrop-filter-none;
+    }
+
     &::-webkit-scrollbar {
       display: none;
     }
     @screen lg {
-      @apply rounded-md filter-none border border-mono-200;
+      @apply rounded-md filter-none border border-mono-200 backdrop-filter-none;
     }
   }
 
