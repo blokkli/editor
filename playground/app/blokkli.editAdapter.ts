@@ -303,8 +303,7 @@ export default defineBlokkliEditAdapter((ctx) => {
       return Promise.resolve() as any
     },
 
-    getLibraryItems(bundles: string[]) {
-      console.log('Get library items')
+    getLibraryItems(data) {
       const libraryItems = entityStorageManager.storages.library_item.loadAll()
 
       const items: LibraryItem[] = libraryItems
@@ -313,7 +312,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           if (!block) {
             return
           }
-          if (!bundles.includes(block.bundle)) {
+          if (!data.bundles.includes(block.bundle)) {
             return
           }
           return {
@@ -325,7 +324,11 @@ export default defineBlokkliEditAdapter((ctx) => {
         })
         .filter(falsy)
 
-      return Promise.resolve(items)
+      return Promise.resolve({
+        items,
+        total: items.length,
+        perPage: 100,
+      })
     },
 
     addLibraryItem: (e) =>

@@ -18,7 +18,10 @@ import {
   INJECT_ENTITY_CONTEXT,
   INJECT_FIELD_LIST_TYPE,
 } from '../helpers/symbols'
-import type { ValidFieldListTypes } from '#blokkli/generated-types'
+import type {
+  BlockBundleWithNested,
+  ValidFieldListTypes,
+} from '#blokkli/generated-types'
 
 const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
 
@@ -58,7 +61,7 @@ const item = computed(() => ({
   uuid: componentProps.uuid || '',
   options: componentProps.options || {},
   isEditing: componentProps.isEditing,
-  parentType: componentProps.parentType,
+  parentType: componentProps.parentType as BlockBundleWithNested,
 }))
 
 provide<InjectedBlokkliItem>(INJECT_BLOCK_ITEM, item)

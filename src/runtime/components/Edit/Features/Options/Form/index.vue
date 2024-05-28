@@ -70,9 +70,12 @@ function stopChangingOptions() {
   // Refresh the rects of the blocks because they might have changed.
   props.uuids.forEach((uuid) => {
     dom.refreshBlockRect(uuid)
-    const el = dom.findBlock(uuid)?.dragElement()
-    if (el) {
-      theme.invalidateCachedStyle(el)
+    const block = dom.findBlock(uuid)
+    if (block) {
+      const el = dom.getDragElement(block)
+      if (el) {
+        theme.invalidateCachedStyle(el)
+      }
     }
   })
   selection.isChangingOptions.value = false

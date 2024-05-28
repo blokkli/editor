@@ -107,7 +107,7 @@ function getInteractedElement(
     if (!block) {
       continue
     }
-    const draggableEl = block.dragElement()
+    const draggableEl = dom.getDragElement(block)
     if (el !== draggableEl && !elements.includes(draggableEl)) {
       continue
     }

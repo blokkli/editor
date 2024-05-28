@@ -10,7 +10,9 @@
     :data-host-entity-bundle="entity.bundle"
     :data-field-key="fieldKey"
     :data-field-drop-alignment="dropAlignment"
-    :data-allowed-fragments="allowedFragments.join(',')"
+    :data-allowed-fragments="
+      allowedFragments ? allowedFragments.join(',') : undefined
+    "
     :data-field-allowed-bundles="allowedBundles"
     :data-field-list-type="fieldListType"
     :data-field-cardinality="fieldConfig?.cardinality"
@@ -62,7 +64,7 @@ const props = defineProps<{
   tag?: string
   isNested: boolean
   fieldListType: string
-  allowedFragments: BlokkliFragmentName[]
+  allowedFragments?: BlokkliFragmentName[]
   dropAlignment?: 'vertical' | 'horizontal'
 }>()
 

@@ -251,7 +251,7 @@ function getDraggingBounds(
 onMounted(() => {
   const elRects = props.items.map((item, index) => {
     const itemElement =
-      item.itemType === 'existing' ? item.dragElement() : item.element()
+      item.itemType === 'existing' ? dom.getDragElement(item) : item.element()
     const element = (itemElement.querySelector('.bk-drop-element') ||
       itemElement) as HTMLElement
 
@@ -290,7 +290,7 @@ onMounted(() => {
     const rect = item.rect
     const element =
       item.item.itemType === 'existing'
-        ? item.item.dragElement()
+        ? dom.getDragElement(item.item)
         : item.item.element()
     const baseRect = element.getBoundingClientRect()
     const targetScaleX = Math.min(bounds.width / item.element.offsetWidth, 1)

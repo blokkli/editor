@@ -2,7 +2,7 @@
   <slot :items="filteredList" />
   <Component
     :is="DraggableList"
-    v-if="DraggableList && isEditing && canEdit && !isInReusable"
+    v-if="DraggableList && isEditing && canEdit && !isInReusable && entity"
     :list="filteredList"
     :name="name"
     :entity="entity"
@@ -66,8 +66,12 @@ import {
   INJECT_MUTATED_FIELDS_MAP,
   INJECT_EDIT_FIELD_LIST_COMPONENT,
 } from '../helpers/symbols'
+import type DraggableListComponent from './Edit/DraggableList.vue'
 
-const DraggableList = inject(INJECT_EDIT_FIELD_LIST_COMPONENT, null)
+const DraggableList = inject<typeof DraggableListComponent | null>(
+  INJECT_EDIT_FIELD_LIST_COMPONENT,
+  null,
+)
 
 const attrs = useAttrs()
 
@@ -134,7 +138,7 @@ const filteredList = computed<FieldListItemTyped[]>(() => {
           ...v.options,
           ...mutatedOptions,
         },
-      }
+      } as FieldListItemTyped
     })
   }
   const list = Array.isArray(props.list) ? props.list : [props.list]

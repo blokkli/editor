@@ -48,7 +48,10 @@ const src = computed(() =>
 onBlokkliEvent('updateMutatedFields', (e) =>
   frameEventBus.emit('mutatedFields', e.fields),
 )
-onBlokkliEvent('select', (uuid) => frameEventBus.emit('focus', uuid))
+onBlokkliEvent('select', (uuids) => {
+  const uuid = Array.isArray(uuids) ? uuids[0] : uuids
+  frameEventBus.emit('focus', uuid)
+})
 onBlokkliEvent('option:update', (e) => frameEventBus.emit('updateOption', e))
 
 /**

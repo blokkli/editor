@@ -60,7 +60,7 @@ class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<Multi
       if (!block) {
         continue
       }
-      const el = block.dragElement()
+      const el = dom.getDragElement(block)
       const rect = el.getBoundingClientRect()
       const style = theme.getDraggableStyle(el)
       this.addRectangle(

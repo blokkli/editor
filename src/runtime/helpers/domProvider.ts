@@ -136,6 +136,11 @@ export type DomProvider = {
   isReady: ComputedRef<boolean>
 
   init: () => void
+
+  /**
+   * Get the drag element for a block.
+   */
+  getDragElement: (block: DraggableExistingBlock) => HTMLElement
 }
 
 const getVisibleBlockElement = (
@@ -333,7 +338,7 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     checkSize?: boolean,
   ): string => {
     const el =
-      item.itemType === 'existing' ? item.dragElement() : item.element()
+      item.itemType === 'existing' ? getDragElement(item) : item.element()
     const dropElement = el.querySelector('.bk-drop-element') || el
     const childCount = dropElement.querySelectorAll('*').length
     if (checkSize && childCount > 80) {
@@ -421,7 +426,7 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     }
 
     blockRects[uuid] = ui.getAbsoluteElementRect(
-      block.dragElement().getBoundingClientRect(),
+      getDragElement(block).getBoundingClientRect(),
     )
   }
 
@@ -500,6 +505,42 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     logger.log('IntersectionObserver initialized')
   }
 
+  const dragElementUuidMap = new WeakMap<Node, string>()
+  const dragElementCache: Record<string, HTMLElement> = {}
+
+  // Callback function to execute when mutations are observed
+  const callback = function (mutationsList: MutationRecord[]) {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'childList') {
+        mutation.removedNodes.forEach((node) => {
+          const uuid = dragElementUuidMap.get(node)
+          // Delete the drag element from the map.
+          dragElementUuidMap.delete(node)
+          if (uuid) {
+            delete dragElementCache[uuid]
+          }
+        })
+      }
+    }
+  }
+
+  // Create an observer instance linked to the callback function
+  const mutationObserver = new MutationObserver(callback)
+
+  function getDragElement(block: DraggableExistingBlock) {
+    const cached = dragElementCache[block.uuid]
+    if (cached) {
+      return cached
+    }
+    const el = block.element()
+    if (el.parentNode) {
+      mutationObserver.observe(el.parentNode, { childList: true })
+    }
+    dragElementUuidMap.set(el, block.uuid)
+    dragElementCache[block.uuid] = el
+    return el
+  }
+
   return {
     findBlock,
     getAllBlocks,
@@ -524,5 +565,6 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     refreshBlockRect,
     isReady: computed(() => mutationsReady.value && intersectionReady.value),
     init,
+    getDragElement,
   }
 }

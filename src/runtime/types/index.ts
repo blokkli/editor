@@ -602,7 +602,6 @@ export type DraggableStyle = {
 export interface DraggableExistingBlock {
   itemType: 'existing'
   element: () => HTMLElement
-  dragElement: () => HTMLElement | SVGElement
   entityType: string
   hostType: string
   hostBundle: string

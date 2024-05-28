@@ -49,7 +49,7 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
           continue
         }
         this.added.add(block.uuid)
-        const el = block.dragElement()
+        const el = dom.getDragElement(block)
         const rect = dom.getBlockRect(block.uuid)
         if (!rect) {
           continue

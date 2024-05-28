@@ -281,23 +281,27 @@ const onDrop = (e: DropTargetEvent) => {
 
     // @TODO: Reimplement feature.
     // Try to find the new block that has been added.
-    const newBlock: any = null
+    const newUuid =
+      state.mutations.value[state.mutations.value.length - 1]?.plugin
+        ?.affectedItemUuid
+    if (!newUuid) {
+      return
+    }
+    const newBlock = dom.findBlock(newUuid)
     if (!newBlock) {
       return
     }
-    const newItem = dom.findBlock(newBlock.item.uuid)
-    if (!newItem) {
-      return
-    }
 
-    eventBus.emit('select', newBlock.item.uuid)
+    eventBus.emit('select', newBlock.uuid)
 
     if (typed.itemType !== 'new') {
       return
     }
 
-    // @ts-ignore
-    const definition = getDefinition(newBlock.item.bundle, 'TODO')
+    const definition = getDefinition(
+      newBlock.itemBundle,
+      newBlock.hostFieldListType,
+    )
 
     if (!definition?.editor?.addBehaviour?.startsWith('editable:')) {
       return
@@ -309,7 +313,7 @@ const onDrop = (e: DropTargetEvent) => {
       return
     }
 
-    const editableFieldElement = newItem
+    const editableFieldElement = newBlock
       .element()
       .querySelector(`[data-blokkli-editable-field="${editableField}"]`)
     if (!(editableFieldElement instanceof HTMLElement)) {
@@ -318,7 +322,7 @@ const onDrop = (e: DropTargetEvent) => {
 
     eventBus.emit('editable:focus', {
       fieldName: editableField,
-      element: editableFieldElement,
+      uuid: newUuid,
     })
   })
 }

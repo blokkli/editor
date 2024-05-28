@@ -227,10 +227,21 @@ function getChildrenOrientation(element: HTMLElement): Orientation {
 
 /**
  * The bundles being dragged.
+ *
+ * In case of dragging a from_library block, the bundle of the reusable block is also returned here.
  */
 const draggingBundles = computed<string[]>(() =>
   props.items
-    .flatMap((item) => ('itemBundle' in item ? item.itemBundle : null))
+    .flatMap((item) => {
+      const bundles: string[] = []
+      if ('itemBundle' in item && item.itemBundle) {
+        bundles.push(item.itemBundle)
+      }
+      if ('reusableBundle' in item && item.reusableBundle) {
+        bundles.push(item.reusableBundle)
+      }
+      return bundles
+    })
     .filter(falsy),
 )
 
@@ -428,6 +439,7 @@ const determineCanAddChildren = (
     draggingBundles.value.every((bundle) =>
       field.allowedBundles.includes(bundle),
     )
+
   if (!allBundlesAllowed) {
     return false
   }

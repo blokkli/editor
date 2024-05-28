@@ -51,7 +51,10 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
       const [uuid, rect] = rects[i]
       this.added.add(uuid)
       const block = dom.findBlock(uuid)
-      const el = block?.dragElement()
+      if (!block) {
+        continue
+      }
+      const el = dom.getDragElement(block)
       const style =
         el instanceof HTMLElement ? theme.getDraggableStyle(el) : undefined
       this.addRectangle(
