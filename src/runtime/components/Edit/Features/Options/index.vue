@@ -70,7 +70,7 @@ const definition = computed<
   const definitions = selection.blocks.value
     .map((block) => {
       return getDefinition(
-        block.itemBundle,
+        bundle,
         block.hostFieldListType,
         block.parentBlockBundle,
       )
