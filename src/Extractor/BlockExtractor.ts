@@ -243,7 +243,7 @@ export default class BlockExtractor {
       .map((v) => `'${v.definition.name}'`)
       .join(' | ')
 
-    return `import type { GlobalOptionsKey, BundlePropsMap, ValidFieldListTypes, BlockBundleWithNested } from './generated-types'
+    return `import type { GlobalOptionsKey, ValidFieldListTypes, BlockBundleWithNested } from './generated-types'
 import type { BlockDefinitionInput, BlockDefinitionOptionsInput, FragmentDefinitionInput } from '#blokkli/types'
 export const globalOptions = ${JSON.stringify(globalOptions, null, 2)} as const
 
@@ -252,8 +252,6 @@ type DefinitionItem = BlockDefinitionInput<BlockDefinitionOptionsInput, GlobalOp
 ${definitionDeclarations.join('\n')}
 
 export const icons: Record<string, string> = ${JSON.stringify(icons)}
-
-export type PossibleDefinitionBundle = keyof BundlePropsMap | 'from_library'
 
 export const definitionsMap: Record<string, DefinitionItem> = {
   ${allDefinitions.join(',\n')}
@@ -391,9 +389,12 @@ export const globalOptionsDefaults: Record<string, GlobalOptionsDefaults> = ${JS
       })
       .join(' | ')
 
-    const typedFieldListItems = Object.values(this.definitions)
+    const possibleOptionTypes = Object.values(this.definitions)
       .filter((v) => v.definition.bundle !== 'from_library')
-      .map((v) => {
+      .reduce<Record<string, string[]>>((acc, v) => {
+        if (!acc[v.definition.bundle]) {
+          acc[v.definition.bundle] = []
+        }
         const definedOptions = v.definition
           .options as BlockDefinitionOptionsInput
 
@@ -404,6 +405,7 @@ export const globalOptionsDefaults: Record<string, GlobalOptionsDefaults> = ${JS
             definedOptions[key] = globalOptions[key]
           }
         })
+
         const options = Object.entries(definedOptions || {})
           .map(([key, option]) => {
             if (option.type === 'text') {
@@ -422,35 +424,31 @@ export const globalOptionsDefaults: Record<string, GlobalOptionsDefaults> = ${JS
           })
           .join('\n    ')
 
-        const typeName = `FieldListItem_${v.definition.bundle}`
+        acc[v.definition.bundle].push(
+          `{
+ ${options}
+}`,
+        )
+
+        return acc
+      }, {})
+
+    const typedFieldListItems = Object.entries(possibleOptionTypes).map(
+      ([bundle, options]) => {
+        const typeName = `FieldListItem_${bundle}`
         const typeDefinition = `
-type Props_${v.definition.bundle} = ExtractPublicPropTypes<InstanceType<typeof ${v.componentName}>>
 type ${typeName} = {
-  bundle: '${v.definition.bundle}'
-  props: Props_${v.definition.bundle}
-  options: {
-    ${options}
-  }
+  bundle: '${bundle}'
+  options: ${options.join(' | ')}
 }`
         return {
           typeName,
           typeDefinition,
-          import: `import type ${v.componentName} from '${v.filePath}'`,
         }
-      })
-
-    const componentImports = typedFieldListItems.map((v) => v.import).join('\n')
-
-    const bundlePropsMap = Object.values(this.definitions)
-      .filter((v) => v.definition.bundle !== 'from_library')
-      .map((v) => {
-        return `${v.definition.bundle}: Props_${v.definition.bundle}`
-      })
-      .join('\n')
+      },
+    )
 
     return `
-${componentImports}
-import type { ExtractPublicPropTypes } from '#imports'
 import type { FieldListItem } from "#blokkli/types"
 
 export type ValidFieldListTypes = ${validFieldListTypes}
@@ -471,10 +469,6 @@ export type FieldListItemTyped = FieldListItem & (${typedFieldListItems
       .map((v) => v.typeName)
       .join(' | ')})
 export type FieldListItemTypedArray = Array<FieldListItemTyped>
-
-export type BundlePropsMap = {
-  ${bundlePropsMap}
-}
 `
   }
 
