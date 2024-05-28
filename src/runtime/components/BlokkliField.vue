@@ -17,7 +17,7 @@
   />
   <component
     :is="tag"
-    v-else-if="!editOnly && (filteredList.length || isEditing)"
+    v-else-if="!editOnly && (filteredList.length || isEditing || isPreview)"
     :class="[
       attrs.class,
       {
@@ -32,6 +32,7 @@
       :key="item.uuid"
       v-bind="item"
       :parent-type="isNested ? entity?.bundle : ''"
+      :data-uuid="isPreview ? item.uuid : undefined"
       :index="i"
     />
   </component>
@@ -121,7 +122,7 @@ const props = withDefaults(
 const canEdit = ref(true)
 
 const fieldKey = computed(() => {
-  if (canEdit.value && !isPreview) {
+  if (canEdit.value) {
     return entity.uuid + ':' + props.name
   }
 })

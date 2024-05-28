@@ -5,6 +5,7 @@
 <script lang="ts" setup generic="T">
 import {
   ref,
+  reactive,
   computed,
   provide,
   onMounted,
@@ -16,6 +17,7 @@ import type {
   MutatedOptions,
   MutatedField,
   UpdateBlockOptionEvent,
+  ItemEditContext,
 } from '#blokkli/types'
 import '#blokkli/styles'
 import getAdapter from '#blokkli/compiled-edit-adapter'
@@ -28,6 +30,7 @@ import { frameEventBus } from '#blokkli/helpers/frameEventBus'
 import broadcastProvider from '#blokkli/helpers/broadcastProvider'
 import { getFieldKey, intersects } from '#blokkli/helpers'
 import type { AdapterContext } from '../../adapter'
+import { eventBus } from '#blokkli/helpers/eventBus'
 
 const props = defineProps<{
   entity?: T
@@ -51,8 +54,8 @@ const broadcast = broadcastProvider()
 
 let timeout: any = null
 let lastChanged: number = 0
-const mutatedFields = ref<MutatedField[]>([])
-const mutatedOptions = ref<MutatedOptions>({})
+const mutatedFieldsMap = reactive<Record<string, MutatedField | undefined>>({})
+const mutatedOptions = reactive<MutatedOptions>({})
 const mutatedEntityFromState = ref<T | null>(null)
 
 const mutatedEntity = computed(
@@ -63,26 +66,39 @@ const { data, refresh } = await useAsyncData(() =>
   adapter.loadState().then((v) => adapter.mapState(v)),
 )
 
+function updateMutatedFields(fields: MutatedField[]) {
+  fields.forEach((field) => {
+    const key = getFieldKey(field.entityUuid, field.name)
+    mutatedFieldsMap[key] = field
+  })
+}
+
 const updateState = () => {
-  mutatedOptions.value = data.value?.mutatedState?.mutatedOptions || {}
-  mutatedFields.value = data.value?.mutatedState?.fields || []
+  const fields = data.value?.mutatedState?.fields || []
+  updateMutatedFields(fields)
   mutatedEntityFromState.value = data.value?.mutatedEntity
+
+  const options = (mutatedOptions.value =
+    data.value?.mutatedState?.mutatedOptions || {})
+  const optionKeys = Object.keys(options)
+
+  for (let i = 0; i < optionKeys.length; i++) {
+    const key = optionKeys[i]
+    const newOptions = options[key]
+    const existing = mutatedOptions[key]
+    if (!existing || JSON.stringify(existing) !== JSON.stringify(newOptions)) {
+      mutatedOptions[key] = newOptions
+    }
+  }
 }
 
 updateState()
 
-const mutatedFieldsMap = computed(() =>
-  mutatedFields.value.reduce<Record<string, MutatedField>>((acc, field) => {
-    const key = getFieldKey(field.entityUuid, field.name)
-    acc[key] = field
-    return acc
-  }, {}),
-)
-
 provide(INJECT_MUTATED_FIELDS_MAP, mutatedFieldsMap)
 provide(INJECT_IS_PREVIEW, true)
-provide(INJECT_EDIT_CONTEXT, {
+provide<ItemEditContext>(INJECT_EDIT_CONTEXT, {
   mutatedOptions,
+  eventBus,
 })
 
 /**
@@ -110,7 +126,7 @@ const onMouseDown = () => {
  * Check the last changed date and update the mutated state if there is an
  * update.
  */
-async function checkChangedDate() {
+function checkChangedDate() {
   clearTimeout(timeout)
 
   const delay = adapter.getLastChanged ? 1000 : 5000
@@ -138,9 +154,6 @@ const onWheel = (e: WheelEvent) => {
 
 const isInIframe = () => window.parent !== window
 
-const onMutatedFields = (fields: MutatedField[]) => {
-  mutatedFields.value = [...fields]
-}
 const onFocusItem = (uuid: string) => {
   const el = document.querySelector(`[data-uuid="${uuid}"]`)
   if (el) {
@@ -165,17 +178,17 @@ const onUpdateOption = (option: UpdateBlockOptionEvent) => {
   const { uuid, key, value } = option
 
   if (!mutatedOptions.value[uuid]) {
-    mutatedOptions.value[uuid] = {}
+    mutatedOptions[uuid] = {}
   }
   if (!mutatedOptions.value[uuid]) {
-    mutatedOptions.value[uuid] = {}
+    mutatedOptions[uuid] = {}
   }
-  mutatedOptions.value[uuid][key] = value
+  mutatedOptions[uuid][key] = value
 }
 
 onMounted(() => {
   if (isInIframe()) {
-    frameEventBus.on('mutatedFields', onMutatedFields)
+    frameEventBus.on('mutatedFields', updateMutatedFields)
     frameEventBus.on('focus', onFocusItem)
     frameEventBus.on('updateOption', onUpdateOption)
     // We are a preview inside the iframe of the main editing app.
@@ -203,7 +216,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('wheel', onWheel)
   window.removeEventListener('message', onMessage)
   document.documentElement.removeEventListener('mousedown', onMouseDown)
-  frameEventBus.off('mutatedFields', onMutatedFields)
+  frameEventBus.off('mutatedFields', updateMutatedFields)
   frameEventBus.off('focus', onFocusItem)
   frameEventBus.off('updateOption', onUpdateOption)
 })

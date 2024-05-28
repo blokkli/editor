@@ -93,11 +93,14 @@ onMounted(() => {
 })
 
 function updateState(index: number, state: number) {
+  if (!collector.bufferInfo?.attribs?.a_state) {
+    return
+  }
   logger.log(`Updated index "${index}" with state "${state}"`)
   const newStateArray = new Float32Array([state, state, state, state])
   setAttribInfoBufferFromArray(
     gl,
-    collector.bufferInfo!.attribs!.a_state,
+    collector.bufferInfo.attribs.a_state,
     newStateArray,
     index * 16,
   )
