@@ -16,7 +16,7 @@
 import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
 import { NuxtLink } from '#components'
 
-const { options, parentType, fieldListType } = defineBlokkli({
+const { options } = defineBlokkli({
   bundle: 'button',
   renderFor: [
     {
@@ -47,10 +47,6 @@ const { options, parentType, fieldListType } = defineBlokkli({
     getDraggableElement: (el) => el.querySelector('a'),
   },
 })
-
-const isInline = computed(
-  () => parentType.value || fieldListType.value === 'inline',
-)
 
 const props = defineProps<{
   url: string

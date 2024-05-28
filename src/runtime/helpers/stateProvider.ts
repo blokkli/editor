@@ -265,7 +265,9 @@ export default async function (
 
   const canEdit = computed(() => !!owner.value?.currentUserIsOwner)
   const isTranslation = computed(
-    () => context.value.language !== translation.value.sourceLanguage,
+    () =>
+      context.value.language !== translation.value.sourceLanguage &&
+      translation.value.isTranslatable,
   )
 
   const editMode = computed<EditMode>(() => {

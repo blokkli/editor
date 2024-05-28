@@ -25,7 +25,7 @@ export type BlockDefinitionProvider = {
   allowedTypesInList: ComputedRef<string[]>
   generallyAvailableBundles: ComputedRef<BlockBundleDefinition[]>
   allTypes: ComputedRef<BlockBundleDefinition[]>
-  getType: (bundle: string) => BlokkliBlockType | undefined
+  getType: (bundle: string) => BlockBundleDefinition | undefined
   fieldConfig: ComputedRef<FieldConfig[]>
   editableFieldConfig: ComputedRef<EditableFieldConfig[]>
   droppableFieldConfig: ComputedRef<DroppableFieldConfig[]>

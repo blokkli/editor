@@ -7,7 +7,7 @@
 <script lang="ts" setup>
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { DraggableExistingBlock, Rectangle } from '#blokkli/types'
-import { useBlokkli, onBeforeUnmount, onMounted, ref } from '#imports'
+import { useBlokkli, onBeforeUnmount, onMounted } from '#imports'
 import {
   setBuffersAndAttributes,
   drawBufferInfo,

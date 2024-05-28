@@ -449,11 +449,22 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
         continue
       }
       const bundle = el.dataset.itemBundle
+      const hostBundle = el.dataset.hostBundle as
+        | BlockBundleWithNested
+        | undefined
+      const hostFieldListType = el.dataset.hostFieldListType as
+        | ValidFieldListTypes
+        | undefined
 
-      if (!bundle) {
+      if (!bundle || !hostFieldListType) {
         continue
       }
-      const observableElement = getElementToObserve(el, bundle)
+      const observableElement = getElementToObserve(
+        el,
+        bundle,
+        hostFieldListType,
+        hostBundle,
+      )
 
       blockRects[uuid] = ui.getAbsoluteElementRect(
         observableElement.getBoundingClientRect(),

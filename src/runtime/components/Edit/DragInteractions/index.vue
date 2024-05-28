@@ -34,8 +34,6 @@ import { watch, ref, useBlokkli, computed } from '#imports'
 
 const { dom, eventBus, selection, keyboard, ui } = useBlokkli()
 
-const svg = ref<SVGElement | null>(null)
-
 const cursor = computed(() => {
   if (selection.isMultiSelecting.value) {
     return 'crosshair'
@@ -53,16 +51,6 @@ const overlayStyle = computed(() => {
     width: ui.visibleViewport.value.width + 'px',
     height: ui.visibleViewport.value.height + 'px',
     cursor: cursor.value,
-  }
-})
-
-const svgAttributes = computed(() => {
-  const width = ui.artboardSize.value.width
-  const height = ui.artboardSize.value.height
-  return {
-    width,
-    height,
-    viewBox: `0 0 ${width} ${height}`,
   }
 })
 
@@ -390,6 +378,10 @@ function onTouchEnd(e: PointerEvent) {
 }
 
 let lastRectUpdate: number = Date.now()
+
+onBlokkliEvent('dragging:start', (e) => {
+  mouseStartCoordinates = e.coords
+})
 
 onBlokkliEvent('canvas:draw', (e) => {
   // if (!svg.value) {

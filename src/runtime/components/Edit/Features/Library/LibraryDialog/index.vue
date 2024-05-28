@@ -54,8 +54,7 @@
       </div>
       <ul ref="listEl" class="bk-library-dialog-list">
         <li
-          v-for="item in data"
-          v-show="visible === null || visible.includes(item.uuid)"
+          v-for="item in items"
           :key="item.uuid"
           :class="{
             'bk-is-selected': selectedItem === item.uuid,
@@ -75,9 +74,13 @@
 </template>
 
 <script setup lang="ts">
+import type {
+  BlokkliAdapterGetLibraryItemsData,
+  BlokkliAdapterGetLibraryItemsResult,
+} from '#blokkli/adapter'
 import { FormOverlay } from '#blokkli/components'
 import { falsy } from '#blokkli/helpers'
-import type { BlokkliFieldElement, LibraryItem } from '#blokkli/types'
+import type { BlokkliFieldElement } from '#blokkli/types'
 import { ref, useBlokkli, useAsyncData, computed, watch } from '#imports'
 import LibraryListItem from './Item/index.vue'
 
@@ -106,7 +109,9 @@ const allowedBundles = computed<string[]>(() => {
         v.entityType === props.field.hostEntityType
       )
     })[0]?.allowedBundles || []
-  )
+  ).filter((v) => {
+    return types.getType(v)?.allowReusable
+  })
 })
 
 const onSubmit = () => {
@@ -118,12 +123,32 @@ const onClose = () => {
   emit('close')
 }
 
-const { data } = await useAsyncData<LibraryItem[]>(
-  () => adapter.getLibraryItems!(allowedBundles.value),
+const searchParams = computed<BlokkliAdapterGetLibraryItemsData>(() => {
+  return {
+    bundles:
+      selectedBundle.value !== 'all'
+        ? [selectedBundle.value]
+        : allowedBundles.value,
+    page: 0,
+    text: searchText.value,
+  }
+})
+
+const { data } = await useAsyncData<BlokkliAdapterGetLibraryItemsResult>(
+  () => adapter.getLibraryItems!(searchParams.value),
   {
-    default: () => [],
+    watch: [searchParams],
+    default: () => {
+      return {
+        items: [],
+        total: 0,
+        perPage: 50,
+      }
+    },
   },
 )
+
+const items = computed(() => data.value.items)
 
 type SearchElement = {
   uuid: string
@@ -161,45 +186,14 @@ watch(searchText, () => {
 })
 
 const bundleOptions = computed(() => {
-  const bundles = Object.values(
-    data.value?.reduce<Record<string, { bundle: string; label: string }>>(
-      (acc, item) => {
-        if (!acc[item.bundle]) {
-          const definition = types.getType(item.bundle)
-          acc[item.bundle] = {
-            bundle: item.bundle,
-            label: definition?.label || item.bundle,
-          }
-        }
-        return acc
-      },
-      {},
-    ),
-  )
+  const bundles = allowedBundles.value.map((bundle) => {
+    const definition = types.getType(bundle)
+    return {
+      bundle,
+      label: definition?.label || bundle,
+    }
+  })
 
   return [{ bundle: 'all', label: $t('all', 'All') }, ...bundles]
-})
-
-const visible = computed<string[] | null>(() => {
-  if (searchText.value || selectedBundle.value !== 'all') {
-    return elements.value
-      .filter((v) => {
-        if (searchText.value) {
-          if (!v.text.includes(searchText.value.toLowerCase())) {
-            return false
-          }
-        }
-
-        if (selectedBundle.value !== 'all') {
-          if (v.bundle !== selectedBundle.value) {
-            return false
-          }
-        }
-
-        return true
-      })
-      .map((v) => v.uuid)
-  }
-  return null
 })
 </script>

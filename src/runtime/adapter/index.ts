@@ -155,6 +155,17 @@ export type ClipboardMapBundleEvent = {
   data: string
 }
 
+export type BlokkliAdapterGetLibraryItemsData = {
+  bundles: string[]
+  page: number
+}
+
+export type BlokkliAdapterGetLibraryItemsResult = {
+  items: LibraryItem[]
+  total: number
+  perPage: number
+}
+
 export interface BlokkliAdapter<T> {
   /**
    * Load the state for the given langcode.
@@ -344,7 +355,9 @@ export interface BlokkliAdapter<T> {
   /**
    * Get all library items.
    */
-  getLibraryItems?: (bundles: string[]) => Promise<LibraryItem[]>
+  getLibraryItems?: (
+    data: BlokkliAdapterGetLibraryItemsData,
+  ) => Promise<BlokkliAdapterGetLibraryItemsResult>
 
   /**
    * Get the last changed timestamp for the edit state.

@@ -39,6 +39,7 @@ import type { FieldListItem } from '#blokkli/types'
 import { ItemIcon, ScaleToFit } from '#blokkli/components'
 import {
   INJECT_FIELD_LIST_BLOCKS,
+  INJECT_FIELD_LIST_TYPE,
   INJECT_IS_EDITING,
   INJECT_IS_IN_REUSABLE,
   INJECT_PROVIDER_BLOCKS,
@@ -63,9 +64,11 @@ const backgroundClass = computed(
 )
 
 const blocks = computed(() => [])
+const fieldListType = computed(() => 'default')
 
 provide(INJECT_IS_IN_REUSABLE, true)
 provide(INJECT_IS_EDITING, false)
 provide(INJECT_FIELD_LIST_BLOCKS, blocks)
 provide(INJECT_PROVIDER_BLOCKS, blocks)
+provide(INJECT_FIELD_LIST_TYPE, fieldListType)
 </script>
