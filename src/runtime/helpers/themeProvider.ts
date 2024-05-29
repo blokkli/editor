@@ -1,4 +1,3 @@
-import { getDraggableStyle } from '.'
 import { theme, themes } from '#blokkli/config'
 import type { DraggableStyle } from '#blokkli/types'
 import type {
@@ -13,6 +12,16 @@ import type {
   ThemeName,
 } from '#blokkli/types/theme'
 import { type Ref, ref, onMounted, onBeforeUnmount } from '#imports'
+import {
+  findHighestContrastColor,
+  getContrastRatio,
+  getNumericStyleValue,
+  parseColorString,
+  realBackgroundColor,
+  rgbaToString,
+} from '.'
+import { DragStyle } from './DragStyle'
+import onBlokkliEvent from './composables/onBlokkliEvent'
 
 export type ThemeProvider = {
   accent: Ref<ThemeColors>
@@ -30,6 +39,7 @@ export type ThemeProvider = {
     value: RGB,
   ) => void
   applyTheme: (name: ThemeName | 'custom') => void
+  invalidateCachedStyle: (el: HTMLElement | SVGElement) => void
 }
 
 export default function (): ThemeProvider {
@@ -124,6 +134,16 @@ export default function (): ThemeProvider {
     }
   })
 
+  const dragStyle = new DragStyle()
+
+  function invalidateCachedStyle(el: HTMLElement | SVGElement) {
+    dragStyle.invalidateStyle(el)
+  }
+
+  onBlokkliEvent('state:reloaded', function () {
+    dragStyle.reset()
+  })
+
   return {
     accent,
     mono,
@@ -131,7 +151,10 @@ export default function (): ThemeProvider {
     yellow,
     red,
     lime,
-    getDraggableStyle: (el) => getDraggableStyle(el, accent.value[700]),
+    getDraggableStyle: function (el: HTMLElement | SVGElement) {
+      return dragStyle.getStyle(el, theme.accent[700])
+    },
+    invalidateCachedStyle,
     setColor,
     applyTheme,
   }

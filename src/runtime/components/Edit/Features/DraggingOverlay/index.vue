@@ -1,51 +1,40 @@
 <template>
-  <Teleport to="body">
+  <DropTargets
+    v-if="dragItems.length && isVisible"
+    v-slot="{ color, label }"
+    :items="dragItems"
+    :box="box"
+    :mouse-x="mouseX"
+    :mouse-y="mouseY"
+    :is-touch="isTouching"
+    @drop="onDrop"
+  >
     <DragItems
-      v-if="isVisible"
+      ref="dragItemsComponent"
       :x="mouseX"
       :y="mouseY"
       :start-coords="startCoords"
       :items="dragItems"
       :is-touch="isTouching"
-      :active="active"
+      :active-color="color"
+      :active-label="label"
     />
-  </Teleport>
-
-  <DropAreas
-    v-if="dragItems.length && isVisible"
-    v-model="activeDropArea"
-    :items="dragItems"
-    :x="mouseX"
-    :y="mouseY"
-    :is-touch="isTouching"
-  >
-    <DropTargets
-      v-model="activeDropTarget"
-      :items="dragItems"
-      :box="box"
-      :mouse-x="mouseX"
-      :mouse-y="mouseY"
-      :is-touch="isTouching"
-      :disabled="!!activeDropArea"
-      @drop="onDrop"
-    />
-  </DropAreas>
+  </DropTargets>
 </template>
 
 <script lang="ts" setup>
+import DragItems from './DragItems/index.vue'
+import DropTargets from './DropTargets/index.vue'
 import {
   ref,
   useBlokkli,
   onUnmounted,
   defineBlokkliFeature,
   nextTick,
-  computed,
 } from '#imports'
-import DropTargets, { type DropTargetEvent } from './DropTargets/index.vue'
-import DragItems from './DragItems/index.vue'
-import DropAreas from './DropAreas/index.vue'
 
 import type {
+  DropTargetEvent,
   AnimationFrameEvent,
   BlokkliDefinitionAddBehaviour,
   BlokkliFieldElement,
@@ -63,25 +52,6 @@ import type {
 import { getDefinition } from '#blokkli/definitions'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
-const activeDropTarget = ref<{
-  id: string
-  label: string
-} | null>(null)
-const activeDropArea = ref<{ id: string; label: string } | null>(null)
-
-const active = computed(() => {
-  if (activeDropArea.value) {
-    return { ...activeDropArea.value, type: 'area' }
-  } else if (activeDropTarget.value) {
-    return {
-      ...activeDropTarget.value,
-      type: 'field',
-    }
-  }
-
-  return null
-})
-
 const { adapter } = defineBlokkliFeature({
   icon: 'drag',
   id: 'dragging-overlay',
@@ -92,6 +62,7 @@ const { adapter } = defineBlokkliFeature({
 
 const { eventBus, state, ui, animation, dom } = useBlokkli()
 
+const dragItemsComponent = ref<InstanceType<typeof DragItems> | null>(null)
 const isVisible = ref(false)
 const isTouching = ref(false)
 const mouseX = ref(0)
@@ -149,7 +120,17 @@ const onDropNew = async (
   host: DraggableHostData,
   afterUuid?: string,
 ) => {
-  const definition = getDefinition(bundle)
+  const field = dom.findField(host.uuid, host.fieldName)
+  if (!field) {
+    throw new Error(
+      `Failed to locate field with name "${host.fieldName}" on UUID "${host.uuid}"`,
+    )
+  }
+  const definition = getDefinition(
+    bundle,
+    field.fieldListType,
+    field.hostEntityBundle as any,
+  )
   const addBehaviour: BlokkliDefinitionAddBehaviour =
     definition?.editor?.addBehaviour || 'form'
   if (
@@ -250,7 +231,7 @@ const onDropSearchContentItem = async (
   await state.mutateWithLoadingState(
     adapter.addContentSearchItem({
       item: item.searchItem,
-      host: host,
+      host,
       bundle: item.itemBundle,
       afterUuid,
     }),
@@ -271,12 +252,10 @@ const onDropAction = (
   })
 }
 
-const onDrop = async (e: DropTargetEvent) => {
-  // All the existing UUIDs on the page.
-  const existingUuids = state.renderedBlocks.value.map((v) => v.item.uuid)
+const onDrop = (e: DropTargetEvent) => {
+  mouseX.value = 0
+  mouseY.value = 0
 
-  eventBus.emit('dragging:end')
-  eventBus.emit('item:dropped')
   nextTick(async () => {
     const afterUuid = e.preceedingUuid
     const host = e.host
@@ -297,25 +276,32 @@ const onDrop = async (e: DropTargetEvent) => {
       await onDropMediaLibraryItem(typed.item, host, afterUuid)
     }
 
+    eventBus.emit('dragging:end')
+    eventBus.emit('item:dropped')
+
+    // @TODO: Reimplement feature.
     // Try to find the new block that has been added.
-    const newBlock = state.renderedBlocks.value.find(
-      (v) => !existingUuids.includes(v.item.uuid),
-    )
+    const newUuid =
+      state.mutations.value[state.mutations.value.length - 1]?.plugin
+        ?.affectedItemUuid
+    if (!newUuid) {
+      return
+    }
+    const newBlock = dom.findBlock(newUuid)
     if (!newBlock) {
       return
     }
-    const newItem = dom.findBlock(newBlock.item.uuid)
-    if (!newItem) {
-      return
-    }
 
-    eventBus.emit('select', newBlock.item.uuid)
+    eventBus.emit('select', newBlock.uuid)
 
     if (typed.itemType !== 'new') {
       return
     }
 
-    const definition = getDefinition(newBlock.item.bundle)
+    const definition = getDefinition(
+      newBlock.itemBundle,
+      newBlock.hostFieldListType,
+    )
 
     if (!definition?.editor?.addBehaviour?.startsWith('editable:')) {
       return
@@ -327,7 +313,7 @@ const onDrop = async (e: DropTargetEvent) => {
       return
     }
 
-    const editableFieldElement = newItem
+    const editableFieldElement = newBlock
       .element()
       .querySelector(`[data-blokkli-editable-field="${editableField}"]`)
     if (!(editableFieldElement instanceof HTMLElement)) {
@@ -336,7 +322,7 @@ const onDrop = async (e: DropTargetEvent) => {
 
     eventBus.emit('editable:focus', {
       fieldName: editableField,
-      element: editableFieldElement,
+      uuid: newUuid,
     })
   })
 }
@@ -348,17 +334,11 @@ function loop(e: AnimationFrameEvent) {
     isVisible.value = true
   }
 
-  const rect = document
-    .querySelector('.bk-dragging-overlay')
-    ?.getBoundingClientRect()
-  if (rect) {
-    box.value = {
-      x: rect.x,
-      y: rect.y,
-      width: rect.width,
-      height: rect.height,
-    }
+  if (!dragItemsComponent.value) {
+    return
   }
+
+  box.value = dragItemsComponent.value.getRect()
 }
 
 const onMouseUp = (e: MouseEvent) => {
@@ -370,8 +350,6 @@ const onMouseUp = (e: MouseEvent) => {
 }
 
 onBlokkliEvent('dragging:start', (e) => {
-  activeDropArea.value = null
-  activeDropTarget.value = null
   isTouching.value = e.mode === 'touch'
   startCoords.value = e.coords
   animation.requestDraw()
@@ -382,8 +360,8 @@ onBlokkliEvent('dragging:start', (e) => {
   if ('element' in item) {
     eventBus.on('animationFrame', loop)
     if (!isTouching.value) {
-      document.removeEventListener('mouseup', onMouseUp)
-      document.addEventListener('mouseup', onMouseUp)
+      document.removeEventListener('pointerup', onMouseUp)
+      document.addEventListener('pointerup', onMouseUp)
     }
   }
   dragItems.value = e.items
@@ -393,12 +371,12 @@ onBlokkliEvent('dragging:end', () => {
   isVisible.value = false
   dragItems.value = []
   eventBus.off('animationFrame', loop)
-  document.removeEventListener('mouseup', onMouseUp)
+  document.removeEventListener('pointerup', onMouseUp)
 })
 
 onBlokkliEvent('keyPressed', (e) => {
   if (e.code === 'Escape') {
-    document.removeEventListener('mouseup', onMouseUp)
+    document.removeEventListener('pointerup', onMouseUp)
     eventBus.emit('dragging:end')
   }
 })
@@ -408,7 +386,7 @@ onBlokkliEvent('block:append', (e) => {
 })
 
 onUnmounted(() => {
-  document.removeEventListener('mouseup', onMouseUp)
+  document.removeEventListener('pointerup', onMouseUp)
 })
 </script>
 

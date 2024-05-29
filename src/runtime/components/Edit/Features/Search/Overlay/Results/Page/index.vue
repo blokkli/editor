@@ -132,7 +132,7 @@ const scrollItemIntoView = () => {
 }
 
 const buildSearchText = (el: HTMLElement): string => {
-  let text = el.innerText || ''
+  let text = el.textContent || ''
 
   // Add alt and title attributes.
   el.querySelectorAll('img').forEach((img) => {
@@ -175,7 +175,7 @@ onMounted(() => {
 
 const visibleItems = computed(() => {
   if (!words.value.length || !regex.value) {
-    return items.value
+    return items.value.slice(0, 50)
   }
   const scored = items.value
     .map((item) => {
@@ -191,7 +191,7 @@ const visibleItems = computed(() => {
 
   scored.sort((a, b) => b.score - a.score)
 
-  return scored.map((v) => v.item)
+  return scored.map((v) => v.item).slice(0, 50)
 })
 
 watch(visibleItems, () => {

@@ -1,5 +1,5 @@
 <template>
-  <div class="bk bk-media-library" @wheel.stop>
+  <div class="bk bk-media-library">
     <div v-if="status === 'pending'" class="bk-loading">
       <Icon name="loader" />
     </div>

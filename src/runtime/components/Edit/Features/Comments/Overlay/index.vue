@@ -1,5 +1,5 @@
 <template>
-  <Teleport to=".bk-main-canvas">
+  <Teleport to="body">
     <div class="bk bk-comments-overlay bk-control">
       <Item
         v-for="item in indicators"
@@ -22,6 +22,15 @@ import type { CommentItem } from '#blokkli/types'
 import { falsy, getBounds } from '#blokkli/helpers'
 import Item from './Item/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+
+type Indicator = {
+  id: string
+  comments: CommentItem[]
+  uuids: string[]
+  style: {
+    transform: string
+  }
+}
 
 const { eventBus, ui, dom } = useBlokkli()
 
@@ -48,27 +57,23 @@ function toggle(item: Indicator) {
   }
 }
 
-type Indicator = {
-  id: string
-  comments: CommentItem[]
-  uuids: string[]
-  style: {
-    transform: string
-  }
-}
-
 const indicators = ref<Indicator[]>([])
 
-onBlokkliEvent('animationFrame', (e) => {
-  const scale = ui.getArtboardScale()
+onBlokkliEvent('canvas:draw', (e) => {
+  const scale = e.artboardScale
+  const offset = e.artboardOffset
   const artboardEl = ui.artboardElement()
-  const artboardRect = artboardEl.getBoundingClientRect()
   const artboardScroll = artboardEl.scrollTop
 
-  const x = Math.min(artboardRect.width / scale + 10, window.innerWidth - 54)
-  isReduced.value = e.scale < 0.8
+  const x = Math.min(
+    offset.x + ui.artboardSize.value.width * scale + 10,
+    ui.visibleViewportPadded.value.x +
+      ui.visibleViewportPadded.value.width -
+      30,
+  )
+  isReduced.value = scale < 0.8
   isLeft.value =
-    x * scale + artboardRect.x + 300 <
+    x + 300 <
     ui.visibleViewportPadded.value.x + ui.visibleViewportPadded.value.width
 
   const newIndicators: Record<string, Indicator> = {}
@@ -87,19 +92,24 @@ onBlokkliEvent('animationFrame', (e) => {
     const comment = props.comments[i]
     const uuids = comment.blockUuids || []
     const rects = uuids
-      .map((uuid) => dom.findBlock(uuid))
       .filter(falsy)
-      .map((block) => {
-        const rect = block.element().getBoundingClientRect()
+      .map((uuid) => {
+        const blockRect = dom.getBlockRect(uuid)
+        if (!blockRect) {
+          return
+        }
+
+        const rect = ui.getViewportRelativeRect(blockRect)
 
         return {
-          x: (rect.x - artboardRect.x) / scale,
-          y: (rect.y - artboardRect.y) / scale - +artboardScroll,
-          width: rect.width / scale,
-          height: rect.height / scale,
-          uuid: block.uuid,
+          x: rect.x,
+          y: rect.y,
+          width: rect.width,
+          height: rect.height,
+          uuid,
         }
       })
+      .filter(falsy)
     if (!rects.length) {
       orphaned.push(comment)
     } else {

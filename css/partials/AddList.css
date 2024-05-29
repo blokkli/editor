@@ -105,6 +105,10 @@
     }
     flex: 0 0 auto;
 
+    @screen md {
+      @apply w-60;
+    }
+
     @media not all and (hover: none) {
       &:hover {
         .bk-list-item-inner {
@@ -214,7 +218,7 @@
       }
     }
     .bk-list-item {
-      @apply px-5 py-5 cursor-grab !rounded-none;
+      @apply px-5 py-5 cursor-grab !rounded-none min-w-0;
       &:hover {
         .bk-list-item-label {
           @apply opacity-100;
@@ -233,6 +237,7 @@
       }
     }
     .bk-list-item-inner {
+      @apply min-w-0;
       @screen lg {
         @apply w-auto h-full;
       }

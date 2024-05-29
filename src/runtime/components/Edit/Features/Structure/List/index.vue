@@ -11,7 +11,7 @@ import { onMounted, useBlokkli, ref, nextTick } from '#imports'
 import { falsy } from '#blokkli/helpers'
 import Field from './Field/index.vue'
 import type { StructureTreeField, StructureTreeItem } from './types'
-import { getDefinition } from '#blokkli/definitions'
+import { getDefaultDefinition } from '#blokkli/definitions'
 
 const { types, context, eventBus } = useBlokkli()
 
@@ -35,7 +35,7 @@ const onKeydown = (e: KeyboardEvent) => {
 function mapItem(el: Element): StructureTreeItem | undefined {
   if (el instanceof HTMLElement) {
     const bundle = el.dataset.itemBundle || ''
-    const definition = getDefinition(bundle)
+    const definition = getDefaultDefinition(bundle)
     const title = definition?.editor?.editTitle
       ? definition.editor.editTitle(el)
       : undefined

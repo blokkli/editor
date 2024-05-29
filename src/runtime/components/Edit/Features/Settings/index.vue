@@ -17,13 +17,20 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, defineBlokkliFeature } from '#imports'
+import {
+  ref,
+  useBlokkli,
+  defineBlokkliFeature,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+} from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
 import SettingsDialog from './Dialog/index.vue'
 
 const { $t, storage } = useBlokkli()
 
-defineBlokkliFeature({
+const { settings } = defineBlokkliFeature({
   id: 'settings',
   label: 'Settings',
   icon: 'cog',
@@ -34,6 +41,12 @@ defineBlokkliFeature({
       type: 'checkbox',
       default: true,
       label: 'Use animations',
+      group: 'advanced',
+    },
+    lowPerformanceMode: {
+      type: 'checkbox',
+      default: false,
+      label: 'Enable low performance mode',
       group: 'advanced',
     },
     resetAllSettings: {
@@ -50,6 +63,24 @@ defineBlokkliFeature({
 const showSettings = ref(false)
 
 const onClick = () => (showSettings.value = true)
+
+function setRootClass() {
+  if (settings.value.lowPerformanceMode) {
+    document.documentElement.classList.add('bk-low-performance-mode')
+  } else {
+    document.documentElement.classList.remove('bk-low-performance-mode')
+  }
+}
+
+watch(settings, setRootClass)
+
+onMounted(() => {
+  setRootClass()
+})
+
+onBeforeUnmount(() => {
+  document.documentElement.classList.remove('bk-low-performance-mode')
+})
 </script>
 
 <script lang="ts">

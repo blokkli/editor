@@ -22,7 +22,6 @@
 @import './partials/debug.css';
 @import './partials/scaleToFit.css';
 @import './partials/DraggingOverlay.css';
-@import './partials/MultiSelect.css';
 @import './partials/Selection.css';
 @import './partials/EditableField.css';
 @import './partials/Assistant.css';
@@ -36,9 +35,10 @@
 @import './partials/CommandPalette.css';
 @import './partials/ContextMenu.css';
 @import './partials/Tour.css';
-@import './partials/DropAreas.css';
 @import './partials/Error.css';
 @import './partials/Translations.css';
+@import './partials/AnimationCanvas.css';
+@import './partials/Scrollbar.css';
 @import './indicator.css';
 
 @tailwind base;
@@ -93,14 +93,17 @@ html {
   }
 }
 
-.bk-draggable {
-  @apply select-none;
-  -webkit-touch-callout: none;
-  -webkit-user-drag: none;
-  * {
-    @apply select-none;
-    -webkit-touch-callout: none;
-    -webkit-user-drag: none;
+.bk-body {
+  .bk-main-canvas {
+    @apply fixed top-0 left-0 xl:w-[80vw] w-screen lg:w-full lg:min-w-[1280px] max-w-[1920px] pointer-events-none z-10;
+    background: white;
+    user-select: none;
+    image-rendering: crisp-edges;
+    backface-visibility: hidden;
+    transform-origin: 0 0;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+    contain: layout paint inline-size style;
   }
 }
 
@@ -209,38 +212,7 @@ html {
   min-height: 30px;
 }
 
-@screen lg {
-  .bk-body.bk-is-selecting {
-    @apply !cursor-crosshair;
-
-    .bk-main-canvas * {
-      @apply !pointer-events-none;
-    }
-  }
-}
-
-.bk-body.bk-is-selecting {
-  .bk-main-canvas {
-    .bk-draggable[data-is-selected='false'] {
-      @apply mobile-only:outline-dashed mobile-only:outline-mono-400 mobile-only:outline-offset-0 mobile-only:outline-1;
-    }
-  }
-}
-
-.bk-body.bk-is-selecting * {
-  @apply select-none;
-  @screen md {
-    /* pointer-events: none !important; */
-  }
-}
-
-.bk-body {
-  .bk-main-canvas {
-    background: white;
-  }
-}
-
-.bk-blokkli-item-label {
+.bk .bk-blokkli-item-label {
   @apply flex items-center text-mono-700 text-left;
   > div {
     @apply shrink-0;
@@ -259,12 +231,6 @@ html {
 
 .bk-blokkli-item-label-icon {
   @apply w-25 h-25 border rounded bg-mono-100 flex items-center justify-center text-mono-500 mr-[7px] relative z-20 border-mono-300;
-}
-
-.bk-html-root {
-  .bk-draggable {
-    scroll-margin: calc(var(--bk-root-offset-top) + 20px);
-  }
 }
 
 .bk-scrollbar-dark {
@@ -299,13 +265,16 @@ html {
 
 .bk-overlay {
   @apply bg-mono-800/90 backdrop-blur-md;
+  html.bk-low-performance-mode & {
+    @apply backdrop-filter-none bg-mono-800/95;
+  }
 }
 
 .bk-touch-action-bar {
   @apply fixed bottom-0 left-0 w-full z-touch-action-bar bg-mono-900 h-50 pointer-events-auto;
 
   button {
-    @apply w-full  h-full min-h-0 rounded-none;
+    @apply w-full  h-full min-h-0 !rounded-none;
   }
 }
 
@@ -413,5 +382,28 @@ html.bk-hide-non-editable {
   @apply !rounded-none;
   &:after {
     @apply !hidden;
+  }
+}
+
+.bk-body {
+  touch-action: none;
+  @apply select-none;
+
+  svg {
+    @apply select-none;
+  }
+}
+
+.bk-interaction-overlay {
+  @apply absolute z-interaction-overlay;
+}
+
+.bk-drag-interactions-svg {
+  @apply fixed top-0 left-0 z-[99999999] pointer-events-auto origin-top-left;
+  will-change: transform contents;
+
+  rect {
+    @apply fill-transparent stroke-1 stroke-transparent hover:stroke-black;
+    stroke-dasharray: 2 2;
   }
 }

@@ -1,4 +1,4 @@
-import type { Ref, ComputedRef } from 'vue'
+import type { ComputedRef } from 'vue'
 import type { Emitter } from 'mitt'
 import type { DomProvider } from '../helpers/domProvider'
 import type { StorageProvider } from '../helpers/storageProvider'
@@ -29,6 +29,8 @@ import type { ThemeProvider } from '#blokkli/helpers/themeProvider'
 import type { CommandsProvider } from '#blokkli/helpers/commandsProvider'
 import type { TourProvider } from '#blokkli/helpers/tourProvider'
 import type { DropAreaProvider } from '#blokkli/helpers/dropAreaProvider'
+import type { RGB } from './theme'
+import type { DebugProvider } from '#blokkli/helpers/debugProvider'
 
 interface MutationResponseLike<T> {
   success?: boolean
@@ -251,6 +253,17 @@ export type BlokkliDefinitionInputEditor<
   getDraggableElement?: (el: HTMLElement) => Element | undefined | null
 }
 
+export type BlockDefinitionRenderForParent = {
+  parentBundle: BlockBundleWithNested
+}
+
+export type BlockDefinitionRenderForFieldListType = {
+  fieldList: ValidFieldListTypes
+}
+export type BlockDefinitionRenderFor =
+  | BlockDefinitionRenderForParent
+  | BlockDefinitionRenderForFieldListType
+
 export type BlockDefinitionInput<
   Options extends BlockDefinitionOptionsInput = {},
   GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
@@ -259,6 +272,13 @@ export type BlockDefinitionInput<
    * The bundle ID of the block, e.g. "text" or "section_title".
    */
   bundle: string
+
+  /**
+   * Define the name of a block bundle that supports nested blocks.
+   * If a bundle is defined, then this component will be rendered if the
+   * parent matches the given bundle.
+   */
+  renderFor?: BlockDefinitionRenderFor | BlockDefinitionRenderFor[]
 
   /**
    * The name of the chunk group.
@@ -293,7 +313,8 @@ export type InjectedBlokkliItem = ComputedRef<{
   uuid: string
   options?: Record<string, string> | undefined
   isEditing: boolean
-  parentType?: string
+  parentType?: BlockBundleWithNested
+  fieldListType?: ValidFieldListTypes
 }>
 
 export type FieldListItem = {
@@ -550,6 +571,11 @@ export type DraggableStyle = {
   radius: [number, number, number, number]
 
   /**
+   * The smallest radius of the element.
+   */
+  radiusMin: number
+
+  /**
    * The border radius as a CSS property value.
    */
   radiusString: string
@@ -568,17 +594,20 @@ export type DraggableStyle = {
    * The color to make a text (mostly) readable when put on top of the element.
    */
   textColor: string
+
+  contrastColorRGB: RGB
+  isInverted: boolean
 }
 
 export interface DraggableExistingBlock {
   itemType: 'existing'
   element: () => HTMLElement
-  dragElement: () => HTMLElement | SVGElement
   entityType: string
   hostType: string
   hostBundle: string
   hostUuid: string
   hostFieldName: string
+  hostFieldListType: ValidFieldListTypes
   itemBundle: string
   isNew: boolean
   uuid: string
@@ -735,10 +764,7 @@ type AnimationFrameFieldArea = {
 }
 
 export type AnimationFrameEvent = {
-  rootRect: DOMRect
-  canvasRect: DOMRect
   fieldAreas: AnimationFrameFieldArea[]
-  scale: number
   mouseX: number
   mouseY: number
 }
@@ -748,11 +774,7 @@ export type Message = {
   message: string
 }
 
-export type DraggingMode = 'touch' | 'mouse'
-
-export interface Rectangle {
-  x: number
-  y: number
+export type Size = {
   width: number
   height: number
 }
@@ -762,10 +784,13 @@ export type Coord = {
   y: number
 }
 
-export type DraggableStartEvent = {
-  items: DraggableItem[]
-  coords: Coord
-  mode: DraggingMode
+export type Rectangle = Size & Coord
+
+export type CanvasDrawEvent = {
+  mouseX: number
+  mouseY: number
+  artboardOffset: Coord
+  artboardScale: number
 }
 
 export type MakeReusableEvent = {
@@ -818,7 +843,7 @@ export type PluginUnmountEvent = {
 
 export type EditableFieldFocusEvent = {
   fieldName: string
-  element: HTMLElement
+  uuid: string
 }
 
 export type EditableFieldUpdateEvent = {
@@ -851,6 +876,7 @@ export type BlokkliFieldElement = {
   name: string
   label: string
   isNested: boolean
+  fieldListType: ValidFieldListTypes
   hostEntityType: string
   hostEntityBundle: string
   hostEntityUuid: string
@@ -858,7 +884,6 @@ export type BlokkliFieldElement = {
   allowedFragments: string[]
   cardinality: number
   element: HTMLElement
-  blockCount: number
   dropAlignment?: 'vertical' | 'horizontal'
 }
 
@@ -869,8 +894,51 @@ export type ActionPlacedEvent = {
   field: BlokkliFieldElement
 }
 
+export type InteractionMode = 'mouse' | 'touch'
+
+export type DraggableStartEvent = {
+  items: DraggableItem[]
+  coords: Coord
+  mode: InteractionMode
+}
+
+export type GlobalPointerEvent = {
+  /**
+   * The interaction mode.
+   */
+  type: InteractionMode
+
+  /**
+   * The viewport relative x coordinate.
+   */
+  x: number
+
+  /**
+   * The viewport relative y coordinate.
+   */
+  y: number
+
+  /**
+   * The total distance travelled.
+   */
+  distance: number
+}
+
+export type GlobalPointerUpEvent = GlobalPointerEvent & {
+  /**
+   * The total duration in miliseconds from the first click or touch to
+   * the last click or touch.
+   */
+  duration: number
+}
+
+export type SelectStartEvent = {
+  uuids: string[]
+  mode: InteractionMode
+}
+
 export type EventbusEvents = {
-  select: string
+  select: string | string[]
   'item:edit': EditBlockEvent
   batchTranslate: undefined
   'dragging:start': DraggableStartEvent
@@ -887,7 +955,7 @@ export type EventbusEvents = {
   reloadEntity: undefined
 
   // Selection.
-  'select:start': string[] | undefined
+  'select:start': SelectStartEvent
   'select:toggle': string
   'select:shiftToggle': string
   'select:end': string[] | undefined
@@ -900,6 +968,7 @@ export type EventbusEvents = {
 
   scrollIntoView: ScrollIntoViewEvent
   'animationFrame:before': undefined
+  'canvas:draw': CanvasDrawEvent
 
   'state:reloaded': undefined
 
@@ -925,13 +994,17 @@ export type EventbusEvents = {
   'ui:resized': undefined
   'add-list:change': undefined
   'window:clickAway': undefined
+
+  'mouse:down': GlobalPointerEvent
+  'mouse:move': GlobalPointerEvent
+  'mouse:up': GlobalPointerUpEvent
 }
 
 export type Eventbus = Emitter<EventbusEvents>
 
 export type ItemEditContext = {
   eventBus: Eventbus
-  mutatedOptions: Ref<MutatedOptions>
+  mutatedOptions: MutatedOptions
   dom?: DomProvider
 }
 
@@ -964,6 +1037,7 @@ export interface BlokkliApp {
   commands: CommandsProvider
   tour: TourProvider
   dropAreas: DropAreaProvider
+  debug: DebugProvider
 }
 
 export type PasteExistingBlocksEvent = {
@@ -1169,6 +1243,18 @@ export type DroppableFieldConfig = {
   allowedBundles: string[]
   cardinality: number
   required: boolean
+}
+
+export type DropTargetEvent = {
+  items: DraggableItem[]
+  field: BlokkliFieldElement
+  host: DraggableHostData
+  preceedingUuid?: string
+}
+
+export type SelectedRect = Rectangle & {
+  uuid: string
+  style: DraggableStyle
 }
 
 export default {}

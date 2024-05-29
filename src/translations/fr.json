@@ -203,6 +203,10 @@
     "source": "Comments",
     "translation": "Commentaires"
   },
+  "commentsMarkAsResolved": {
+    "source": "Resolve",
+    "translation": ""
+  },
   "commentsTourText": {
     "source": "Shows all comments for the current page.",
     "translation": ""
@@ -368,15 +372,15 @@
     "translation": ""
   },
   "fieldAreasHide": {
-    "source": "Hide content areas",
+    "source": "Hide block fields",
     "translation": "Masquer les zones de contenu"
   },
   "fieldAreasShow": {
-    "source": "Show content areas",
+    "source": "Show block fields",
     "translation": "Afficher les zones de contenu"
   },
   "fieldAreasToggle": {
-    "source": "Toggle content areas",
+    "source": "Toggle block fields",
     "translation": ""
   },
   "fieldAreasTourText": {
@@ -442,6 +446,10 @@
   "historyCurrentRevision": {
     "source": "Current revision",
     "translation": "Révision actuelle"
+  },
+  "historyEmpty": {
+    "source": "There are now changes yet.",
+    "translation": ""
   },
   "historyRedo": {
     "source": "Redo",
@@ -576,15 +584,15 @@
     "translation": "Aperçu"
   },
   "maskHide": {
-    "source": "Hide content fields",
+    "source": "Hide non-editable areas",
     "translation": "Masquer les champs de contenu"
   },
   "maskShow": {
-    "source": "Show content fields",
+    "source": "Show non-editable areas",
     "translation": "Afficher les champs de contenu"
   },
   "maskToggle": {
-    "source": "Show content fields",
+    "source": "Toggle non-editable areas",
     "translation": ""
   },
   "maskTourText": {

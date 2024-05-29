@@ -2,23 +2,20 @@
   <div
     class="bk-dragging-overlay"
     :style="style"
-    :class="[
-      { 'bk-is-touch': isTouch },
-      active ? 'bk-is-' + active.type : undefined,
-    ]"
+    :class="[{ 'bk-is-touch': isTouch }, { 'bk-is-active': !!activeLabel }]"
   >
     <Transition name="bk-drag-item">
       <span
-        v-if="active"
+        v-show="activeLabel"
         class="bk-dragging-overlay-label"
-        :class="'bk-is-' + active.type"
-        >{{ active.label }}</span
+        :style="{ backgroundColor: activeColor }"
+        >{{ activeLabel }}</span
       >
     </Transition>
     <div
       v-for="(rect, i) in rects"
       :key="i"
-      :class="{ 'bk-is-top': rect.isTop }"
+      :class="{ 'bk-is-top': rect.isTop, 'bk-is-fallback': !rect.markup }"
       :style="{
         width: rect.width + 'px',
         height: rect.height + 'px',
@@ -40,9 +37,11 @@
         :style="{ color: rect.fallbackColor }"
       >
         <div :style="{ transform: `scale(${1 / rect.to.scaleX})` }">
-          <ItemIcon v-if="rect.bundle" :bundle="rect.bundle" />
-          <Icon v-else-if="rect.icon" :name="rect.icon as any" />
-          <div v-if="rect.label">{{ rect.label }}</div>
+          <template v-if="rect.isTop">
+            <ItemIcon v-if="rect.bundle" :bundle="rect.bundle" />
+            <Icon v-else-if="rect.icon" :name="rect.icon as any" />
+            <div v-if="rect.label">{{ rect.label }}</div>
+          </template>
         </div>
       </div>
     </div>
@@ -82,7 +81,8 @@ const props = defineProps<{
 
   isTouch: boolean
 
-  active: { id: string; label: string; type: string } | null
+  activeColor?: string
+  activeLabel?: string
 }>()
 
 const width = ref(10)
@@ -114,8 +114,20 @@ const style = computed(() => {
     width: width.value + 'px',
     height: height.value + 'px',
     transform: `translate(${translateX.value}px, ${translateY.value}px)`,
+    '--bk-active-color': props.activeColor || 'rgba(255,255,255,0)',
   }
 })
+
+function getRect(): Rectangle {
+  return {
+    x: translateX.value,
+    y: translateY.value,
+    width: width.value,
+    height: height.value,
+  }
+}
+
+defineExpose({ getRect })
 
 type AnimationRectangleValues = {
   opacity: number
@@ -132,7 +144,7 @@ type AnimationRectangle = Rectangle &
     to: AnimationRectangleValues
     markup: string
     background: string
-    elementOpacity?: string
+    prevVisibility?: string
     transformOrigin: string
     element: HTMLElement
     borderRadius: string
@@ -180,7 +192,11 @@ onBlokkliEvent('animationFrame', () => {
     })
   }
 
-  if (elapsed > duration || !ui.useAnimations.value) {
+  if (
+    elapsed > duration ||
+    !ui.useAnimations.value ||
+    ui.lowPerformanceMode.value
+  ) {
     rects.value = newRects.map((v) => {
       return {
         ...v,
@@ -235,7 +251,7 @@ function getDraggingBounds(
 onMounted(() => {
   const elRects = props.items.map((item, index) => {
     const itemElement =
-      item.itemType === 'existing' ? item.dragElement() : item.element()
+      item.itemType === 'existing' ? dom.getDragElement(item) : item.element()
     const element = (itemElement.querySelector('.bk-drop-element') ||
       itemElement) as HTMLElement
 
@@ -267,14 +283,14 @@ onMounted(() => {
   width.value = bounds.width
   height.value = bounds.height
 
-  const artboardScale = ui.getArtboardScale()
+  const artboardScale = ui.artboardScale.value
 
   rects.value = elRects.map((item) => {
     const isTop = item.index === boundRect.index
     const rect = item.rect
     const element =
       item.item.itemType === 'existing'
-        ? item.item.dragElement()
+        ? dom.getDragElement(item.item)
         : item.item.element()
     const baseRect = element.getBoundingClientRect()
     const targetScaleX = Math.min(bounds.width / item.element.offsetWidth, 1)
@@ -312,10 +328,10 @@ onMounted(() => {
     // performance issue which results in a noticeable lag. In this case
     // we instead render a simple fallback.
     const markup =
-      elRects.length < 6 || isTop
+      (elRects.length < 6 || isTop) && !ui.lowPerformanceMode.value
         ? dom.getDropElementMarkup(item.item, true)
         : ''
-    let bundle: string | undefined = undefined
+    let bundle: string | undefined
     let label = ''
 
     if (!markup) {
@@ -338,7 +354,7 @@ onMounted(() => {
 
     return {
       isTop,
-      from,
+      from: ui.lowPerformanceMode.value ? to : from,
       to,
       ...from,
       width: item.element.offsetWidth,
@@ -348,9 +364,9 @@ onMounted(() => {
       transformOrigin: `${originX}px ${originY}px`,
       markup,
       background: realBackgroundColor(item.element),
-      elementOpacity:
+      prevVisibility:
         item.item.itemType === 'existing'
-          ? item.element.style.opacity
+          ? item.element.style.visibility
           : undefined,
       element: item.element,
       borderRadius: style.radiusString,
@@ -362,16 +378,18 @@ onMounted(() => {
 
   elRects.forEach((item) => {
     if (item.item.itemType === 'existing') {
-      item.element.style.opacity = '0.2'
+      // Set the visibility to hidden. Unlike setting opacity or filter, this
+      // does not trigger layout trashing and style recalculation.
+      item.element.style.visibility = 'hidden'
     }
   })
 })
 
 onBeforeUnmount(() => {
-  // Restore the original opacity on the blocks.
+  // Restore the original visibility on the blocks.
   rects.value.forEach((item) => {
-    if (item.elementOpacity !== undefined) {
-      item.element.style.opacity = item.elementOpacity
+    if (item.prevVisibility !== undefined) {
+      item.element.style.visibility = item.prevVisibility
     }
   })
 })

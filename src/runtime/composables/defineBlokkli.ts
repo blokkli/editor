@@ -85,7 +85,7 @@ export function defineBlokkli<
     ) {
       return {
         ...(item?.value.options || {}),
-        ...(editContext?.mutatedOptions.value[uuid] || {}),
+        ...(editContext?.mutatedOptions[uuid] || {}),
       }
     }
 
@@ -94,7 +94,7 @@ export function defineBlokkli<
     >((acc, key) => {
       // Use an override option if available.
       if (editContext) {
-        const overrideOptions = editContext.mutatedOptions.value[uuid] || {}
+        const overrideOptions = editContext.mutatedOptions[uuid] || {}
 
         if (overrideOptions[key] !== undefined) {
           acc[key] = overrideOptions[key]
@@ -142,6 +142,7 @@ export function defineBlokkli<
 
   onMounted(() => {
     if (
+      !item?.value ||
       !isEditing ||
       !editContext ||
       !editContext.dom ||
@@ -155,7 +156,13 @@ export function defineBlokkli<
 
     // Register the DOM element of this block.
     const instance = getCurrentInstance()
-    editContext.dom.registerBlock(uuid, instance)
+    editContext.dom.registerBlock(
+      uuid,
+      instance,
+      config.bundle,
+      fieldListType.value,
+      item.value.parentType,
+    )
   })
 
   onBeforeUnmount(() => {

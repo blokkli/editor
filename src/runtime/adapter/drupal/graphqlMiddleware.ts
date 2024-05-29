@@ -314,9 +314,14 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         uuid,
       }).then((v) => mapComments(v.data.state?.action || []))
 
-    const getLibraryItems: DrupalAdapter['getLibraryItems'] = () =>
-      useGraphqlQuery('pbLibraryItems').then((response) => {
-        return (
+    const getLibraryItems: DrupalAdapter['getLibraryItems'] = (data) => {
+      const perPage = 50
+      return useGraphqlQuery('pbLibraryItems', {
+        bundles: data.bundles,
+        text: '%' + data.text + '%',
+        offset: data.page * perPage,
+      }).then((response) => {
+        const items =
           response.data.entityQuery.items
             ?.map((v) => {
               if (v && 'uuid' in v && v.uuid) {
@@ -334,8 +339,14 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
               return null
             })
             .filter(falsy) || []
-        )
+
+        return {
+          items,
+          perPage,
+          total: response.data.entityQuery?.total || 0,
+        }
       })
+    }
 
     const getLastChanged: DrupalAdapter['getLastChanged'] = () =>
       $fetch<{ changed: number }>(

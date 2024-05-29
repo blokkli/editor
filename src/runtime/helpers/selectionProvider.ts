@@ -1,30 +1,23 @@
 import type { DomProvider } from './domProvider'
-import type { RenderedBlock, StateProvider } from './stateProvider'
+import type { RenderedBlock } from './stateProvider'
 import onBlokkliEvent from './composables/onBlokkliEvent'
-import {
-  type Ref,
-  type ComputedRef,
-  computed,
-  ref,
-  onMounted,
-  onBeforeUnmount,
-  watch,
-  nextTick,
-} from '#imports'
+import { type Ref, type ComputedRef, computed, ref } from '#imports'
 
-import type { DraggableExistingBlock, DraggingMode } from '#blokkli/types'
+import type {
+  DraggableExistingBlock,
+  InteractionMode,
+  SelectedRect,
+} from '#blokkli/types'
 import {
   findElement,
   buildDraggableItem,
   falsy,
   modulo,
-  intersects,
-  getBounds,
-  originatesFromEditable,
-  getOriginatingDroppableElement,
-  mapDroppableField,
+  onlyUnique,
 } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
+import type { UiProvider } from './uiProvider'
+import type { ThemeProvider } from './themeProvider'
 
 /**
  * Find the longest common subsequence between two arrays.
@@ -112,96 +105,6 @@ const getSelectedAfterStateChange = (
   }
 }
 
-/**
- * Determine which blocks to select when the user is clicking on a block with the shift key.
- */
-const visuallySelectBlocks = (
-  all: DraggableExistingBlock[],
-  selected: DraggableExistingBlock[],
-  toggleBlock: DraggableExistingBlock,
-): string[] => {
-  // Nothing selected yet, so we select the new block.
-  if (selected.length === 0) {
-    return [toggleBlock.uuid]
-  }
-
-  const toggleRect = toggleBlock.element().getBoundingClientRect()
-  const isToggleSelected = selected.some((el) => el.uuid === toggleBlock.uuid)
-
-  // One block selected.
-  if (selected.length === 1) {
-    if (isToggleSelected) {
-      return []
-    }
-
-    const selectedRect = selected[0].element().getBoundingClientRect()
-    const encompassingRect = getBounds([selectedRect, toggleRect])!
-
-    return all
-      .filter(
-        (el) =>
-          el.isNested === toggleBlock.isNested ||
-          selected[0].isNested === el.isNested,
-      )
-      .filter((el) =>
-        intersects(el.element().getBoundingClientRect(), encompassingRect),
-      )
-      .map((el) => el.uuid)
-  }
-
-  // More than one selected.
-  if (isToggleSelected) {
-    // Find the most upper left element excluding the toggleElement.
-    const upperLeftElement = selected
-      .filter((el) => el.uuid !== toggleBlock.uuid)
-      .reduce((prev, current) => {
-        const prevRect = prev.element().getBoundingClientRect()
-        const currentRect = current.element().getBoundingClientRect()
-        return prevRect.x <= currentRect.x && prevRect.y <= currentRect.y
-          ? prev
-          : current
-      })
-
-    const upperLeftRect = upperLeftElement.element().getBoundingClientRect()
-    const encompassingRect = getBounds([upperLeftRect, toggleRect])!
-
-    return all
-      .filter(
-        (el) =>
-          el.isNested === toggleBlock.isNested ||
-          selected.some((sel) => sel.isNested === el.isNested),
-      )
-      .filter((el) =>
-        intersects(el.element().getBoundingClientRect(), encompassingRect),
-      )
-      .map((el) => el.uuid)
-  }
-
-  // toggleBlock is not in the selection, select blocks that are visually
-  // between the most upper left block and toggleBlock.
-  const upperLeftElement = selected.reduce((prev, current) => {
-    const prevRect = prev.element().getBoundingClientRect()
-    const currentRect = current.element().getBoundingClientRect()
-    return prevRect.x <= currentRect.x && prevRect.y <= currentRect.y
-      ? prev
-      : current
-  })
-
-  const upperLeftRect = upperLeftElement.element().getBoundingClientRect()
-  const encompassingRect = getBounds([upperLeftRect, toggleRect])!
-
-  return all
-    .filter(
-      (el) =>
-        el.isNested === toggleBlock.isNested ||
-        selected.some((sel) => sel.isNested === el.isNested),
-    )
-    .filter((el) =>
-      intersects(el.element().getBoundingClientRect(), encompassingRect),
-    )
-    .map((el) => el.uuid)
-}
-
 export type SelectionProvider = {
   /**
    * The currently selected UUIDs.
@@ -226,12 +129,17 @@ export type SelectionProvider = {
   /**
    * Whether the user is currently dragging a block.
    */
-  draggingMode: Readonly<Ref<DraggingMode | null>>
+  draggingMode: Readonly<Ref<InteractionMode | null>>
+
+  /**
+   * Whether the user is currently dragging a block.
+   */
+  interactionMode: Readonly<Ref<InteractionMode | null>>
 
   /**
    * Whether the user is currently in multi select mode.
    */
-  isMultiSelecting: Readonly<Ref<boolean>>
+  isMultiSelecting: Ref<boolean>
 
   /**
    * Update the active field key.
@@ -249,37 +157,16 @@ export type SelectionProvider = {
   isChangingOptions: Ref<boolean>
 }
 
-export default function (
-  dom: DomProvider,
-  state: StateProvider,
-): SelectionProvider {
+export default function (dom: DomProvider): SelectionProvider {
   const selectedUuids = ref<string[]>([])
   const activeFieldKey = ref('')
-  const draggingMode = ref<DraggingMode | null>(null)
+  const draggingMode = ref<InteractionMode | null>(null)
   const editableActive = ref(false)
   const isChangingOptions = ref(false)
   const isMultiSelecting = ref(false)
+  const interactionMode = ref<InteractionMode>('mouse')
 
   const isDragging = computed(() => !!draggingMode.value)
-
-  watch(state.renderedBlocks, (newBlocks, prevBlocks) => {
-    const result = getSelectedAfterStateChange(
-      selectedUuids.value,
-      newBlocks,
-      prevBlocks,
-    )
-
-    if (result && result.length) {
-      selectedUuids.value = result
-      if (selectedUuids.value.length) {
-        nextTick(() => {
-          eventBus.emit('scrollIntoView', {
-            uuid: result[0],
-          })
-        })
-      }
-    }
-  })
 
   const blocks = computed<DraggableExistingBlock[]>(() =>
     selectedUuids.value
@@ -306,64 +193,19 @@ export default function (
   }
 
   function unselectItems() {
+    activeFieldKey.value = ''
     if (selectedUuids.value.length === 0) {
       return
     }
     selectedUuids.value = []
   }
 
-  function onSelect(uuid: string) {
-    selectItems([uuid])
-  }
-
-  const onDoubleClick = (e: MouseEvent) => {
-    const element = originatesFromEditable(e)
-    if (element) {
-      const fieldName = element.dataset.blokkliEditableField
-      if (fieldName) {
-        eventBus.emit('editable:focus', {
-          fieldName,
-          element,
-        })
-      }
-
-      return
+  function onSelect(v: string | string[]) {
+    if (typeof v === 'string') {
+      selectItems([v])
+    } else {
+      selectItems(v)
     }
-
-    const droppableElement = getOriginatingDroppableElement(e)
-
-    if (!droppableElement) {
-      return
-    }
-
-    const droppable = mapDroppableField(droppableElement)
-    eventBus.emit('droppable:focus', droppable)
-  }
-
-  function onWindowMouseDown(e: MouseEvent) {
-    if (e.ctrlKey) {
-      return
-    }
-    eventBus.emit('window:clickAway')
-    if (e.target && e.target instanceof Element) {
-      if (e.target.closest('.bk-blokkli-item-actions')) {
-        return
-      }
-      if (e.target.closest('.bk-control')) {
-        return
-      }
-
-      const closestField = e.target.closest('[data-field-key]')
-      if (closestField && closestField instanceof HTMLElement) {
-        activeFieldKey.value = closestField.dataset.fieldKey || ''
-      } else {
-        activeFieldKey.value = ''
-      }
-      if (editableActive.value) {
-        eventBus.emit('editable:save')
-      }
-    }
-    unselectItems()
   }
 
   const selectInList = (prev?: boolean) => {
@@ -390,16 +232,12 @@ export default function (
 
   const setActiveFieldKey = (key: string) => (activeFieldKey.value = key)
 
-  watch(isMultiSelecting, (is) => {
-    is
-      ? document.body.classList.add('bk-is-selecting')
-      : document.body.classList.remove('bk-is-selecting')
-  })
-
   onBlokkliEvent('select', onSelect)
-  onBlokkliEvent('select:start', (uuids) => {
-    selectedUuids.value = uuids || []
+  onBlokkliEvent('select:start', (e) => {
+    selectedUuids.value = (e.uuids || []).filter(onlyUnique)
     isMultiSelecting.value = true
+    interactionMode.value = e.mode
+    activeFieldKey.value = ''
   })
   onBlokkliEvent('select:toggle', (uuid) => {
     if (selectedUuids.value.includes(uuid)) {
@@ -408,17 +246,7 @@ export default function (
       selectedUuids.value.push(uuid)
     }
   })
-  onBlokkliEvent('select:shiftToggle', (uuid) => {
-    const block = dom.findBlock(uuid)
-    if (!block) {
-      return
-    }
-    selectedUuids.value = visuallySelectBlocks(
-      dom.getAllBlocks(),
-      blocks.value,
-      block,
-    )
-  })
+
   onBlokkliEvent('select:end', (uuids) => {
     isMultiSelecting.value = false
     if (!uuids || (uuids.length === 0 && selectedUuids.value.length === 0)) {
@@ -443,19 +271,21 @@ export default function (
   onBlokkliEvent('dragging:start', (e) => {
     draggingMode.value = e.mode
     isMultiSelecting.value = false
+    const blocks = e.items.filter(
+      (v) => v.itemType === 'existing',
+    ) as DraggableExistingBlock[]
+
+    if (blocks.length) {
+      selectItems(blocks.map((v) => v.uuid))
+    }
   })
   onBlokkliEvent('dragging:end', () => {
     draggingMode.value = null
   })
 
-  onMounted(() => {
-    document.documentElement.addEventListener('mousedown', onWindowMouseDown)
-    document.documentElement.addEventListener('dblclick', onDoubleClick)
-  })
-
-  onBeforeUnmount(() => {
-    document.documentElement.removeEventListener('mousedown', onWindowMouseDown)
-    document.documentElement.removeEventListener('dblclick', onDoubleClick)
+  onBlokkliEvent('window:clickAway', () => {
+    unselectItems()
+    activeFieldKey.value = ''
   })
 
   return {
@@ -468,5 +298,6 @@ export default function (
     isChangingOptions,
     isMultiSelecting,
     draggingMode,
+    interactionMode,
   }
 }

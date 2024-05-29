@@ -94,17 +94,11 @@ export default function (
     document.removeEventListener('visibilitychange', onVisibilityChange)
   })
 
-  watch(isPressingSpace, (is) => {
-    is
-      ? document.body.classList.add('bk-is-pressing-space')
-      : document.body.classList.remove('bk-is-pressing-space')
+  watch(isPressingSpace, () => {
     animationProvider.requestDraw()
   })
 
-  watch(isPressingControl, (is) => {
-    is
-      ? document.body.classList.add('bk-is-pressing-control')
-      : document.body.classList.remove('bk-is-pressing-control')
+  watch(isPressingControl, () => {
     animationProvider.requestDraw()
   })
 

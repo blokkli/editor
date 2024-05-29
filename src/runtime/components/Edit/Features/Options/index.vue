@@ -38,6 +38,7 @@ const definition = computed<
     .map((v) => v.reusableBundle || v.itemBundle)
     .filter(onlyUnique)
 
+  // @TODO: Support shared global options.
   if (bundles.length !== 1) {
     return
   }
@@ -51,7 +52,7 @@ const definition = computed<
 
     const fragmentNames = fragments
       .map((v) => {
-        const props: any = state.getRenderedBlock(v.uuid)?.item?.props
+        const props: any = state.getFieldListItem(v.uuid)?.props
         if (props && props.name) {
           return props.name
         }
@@ -66,7 +67,17 @@ const definition = computed<
     return getFragmentDefinition(fragmentNames[0])
   }
 
-  return getDefinition(bundles[0])
+  const definitions = selection.blocks.value
+    .map((block) => {
+      return getDefinition(
+        bundle,
+        block.hostFieldListType,
+        block.parentBlockBundle,
+      )
+    })
+    .filter(falsy)
+
+  return definitions[0]
 })
 </script>
 

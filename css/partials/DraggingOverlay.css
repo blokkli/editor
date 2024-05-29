@@ -1,5 +1,9 @@
 .bk-dragging-overlay {
-  @apply fixed bottom-auto top-0 left-0 pointer-events-none z-dragging-overlay rounded select-none;
+  @apply fixed bottom-auto top-0 left-0 pointer-events-none z-dragging-overlay rounded select-none will-change-transform cursor-grabbing;
+
+  * {
+    @apply !pointer-events-none;
+  }
 
   &.bk-is-touch {
     @apply bottom-0 top-auto;
@@ -10,109 +14,30 @@
   }
 
   > div.bk-is-top {
-    @apply shadow-xl-even z-50 rounded-md overflow-hidden;
+    @apply shadow-xl-even z-50 rounded-md overflow-hidden will-change-transform;
 
     &:before {
       content: '';
       @apply absolute top-0 left-0 w-full h-full z-50 rounded-md;
+      background: var(--bk-active-color);
+      @apply !opacity-70;
     }
   }
-
-  &.bk-is-area > div.bk-is-top {
-    @apply !opacity-70;
-    &:before {
-      @apply outline outline-4 outline-teal-normal -outline-offset-2 bg-teal-normal/70 ring-white ring-8 ring-offset-white;
-    }
+  > div.bk-is-fallback {
+    @apply border border-mono-500;
   }
-
-  &.bk-is-field > div.bk-is-top {
-    @apply !opacity-70;
-    &:before {
-      @apply outline outline-4 outline-accent-700 -outline-offset-2 bg-accent-700/70 ring-white;
-    }
-  }
-}
-
-.bk.bk-drop-targets {
-  @apply absolute top-0 left-0 w-full h-full z-drop-targets pointer-events-auto select-none;
-
-  .bk-drop-targets-field {
-    @apply absolute top-0 left-0;
-  }
-
-  .bk-drop-targets-field-child {
-    @apply border border-transparent;
-    @apply absolute rounded;
-    @apply transition duration-75;
-    @apply flex items-center justify-center;
-    @apply text-base font-semibold text-mono-500;
-
-    &.bk-is-nested {
-      &:before,
-      &:after {
-        @apply bg-accent-500;
-      }
-    }
-
-    &:not(.bk-is-nested) {
-      &:before,
-      &:after {
-        @apply bg-accent-900;
-      }
-    }
-
-    &:before {
-      content: '';
-      @apply absolute top-1/2 left-1/2 w-full h-full -translate-x-1/2 -translate-y-1/2 rounded;
-      @apply transition pointer-events-none;
-      @apply z-50;
-      @apply outline outline-2 outline-white;
-    }
-
-    &:after {
-      content: '';
-      @apply absolute pointer-events-none outline outline-2 outline-white;
-    }
-
-    &.bk-is-horizontal {
-      &:before {
-        @apply scale-x-0;
-        @apply max-w-[40px];
-      }
-      &:after {
-        @apply w-5 h-full top-0 left-1/2 -translate-x-1/2 rounded;
-      }
-    }
-
-    &.bk-is-vertical {
-      &:before {
-        @apply scale-y-0;
-      }
-      &:after {
-        @apply h-5 w-full top-1/2 left-0 -translate-y-1/2 rounded;
-      }
-    }
-
-    &.bk-is-active {
-      @apply z-50;
-      &:before {
-        @apply scale-100;
-      }
-    }
-
-    &.bk-is-horizontal {
-      @apply origin-left;
-    }
-
-    &.bk-is-vertical {
-      @apply origin-top;
-    }
+  &.bk-is-active > div.bk-is-top {
+    @apply !opacity-80;
   }
 }
 
 .bk-dragging-overlay-markup {
-  @apply absolute top-0 left-0 origin-top-left rounded w-full h-full;
+  @apply absolute top-0 left-0 origin-top-left rounded w-full h-full pointer-events-none;
   @apply rounded;
+
+  * {
+    @apply !pointer-events-none;
+  }
 
   > * {
     /* display: none !important; */
@@ -135,7 +60,7 @@
 }
 
 .bk-dragging-overlay-fallback {
-  @apply relative h-full w-full text-xl lg:text-4xl pt-30 lg:pt-0 lg:flex lg:items-center lg:justify-center;
+  @apply relative h-full w-full text-xl pt-30 lg:pt-0 lg:flex lg:items-center lg:justify-center;
 
   &.bk-is-top {
     @apply shadow-xl-even z-50;
@@ -163,15 +88,8 @@
 }
 
 .bk-dragging-overlay-label {
-  @apply absolute bottom-full left-1/2 -translate-x-1/2 mb-40 rounded-full;
+  @apply absolute bottom-full left-1/2 -translate-x-1/2 mb-40 rounded-full text-white;
   @apply px-10 py-5 font-bold whitespace-nowrap;
-  @apply bg-white shadow;
-
-  &.bk-is-field {
-    @apply bg-accent-700 text-white;
-  }
-
-  &.bk-is-area {
-    @apply bg-teal-dark text-white;
-  }
+  @apply shadow;
+  will-change: transform, contents, opacity;
 }

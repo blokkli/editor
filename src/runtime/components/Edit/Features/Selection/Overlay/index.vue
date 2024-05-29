@@ -1,132 +1,114 @@
 <template>
-  <div v-if="styleSize" :style="styleSize" class="bk bk-selection">
-    <div
-      v-for="rect in selectedRects"
-      :key="rect.uuid"
-      class="bk-selectable bk-is-active"
-      :style="{
-        width: rect.width + 'px',
-        height: rect.height + 'px',
-        transform: `translate(${rect.x}px, ${rect.y}px)`,
-        borderRadius: rect.style.radiusString,
-        outlineColor: rect.style.contrastColor,
-        '--bk-tw-ring-color': rect.style.contrastColorTranslucent,
-      }"
-    />
-  </div>
+  <div />
 </template>
 
 <script lang="ts" setup>
-import { falsy, getBounds } from '#blokkli/helpers'
-import type {
-  DraggableExistingBlock,
-  DraggableStyle,
-  Rectangle,
-} from '#blokkli/types'
-import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import type { Coord, DraggableExistingBlock, Rectangle } from '#blokkli/types'
+import { useBlokkli, onBeforeUnmount } from '#imports'
+import {
+  setBuffersAndAttributes,
+  drawBufferInfo,
+  type BufferInfo,
+  setUniforms,
+} from 'twgl.js'
+import vs from './vertex.glsl?raw'
+import fs from './fragment.glsl?raw'
+import { RectangleBufferCollector } from '#blokkli/helpers/webgl'
+import { toShaderColor } from '#blokkli/helpers'
 
 const props = defineProps<{
   blocks: DraggableExistingBlock[]
 }>()
 
-const { ui, theme } = useBlokkli()
+const { animation, theme, dom } = useBlokkli()
 
-const delayedRefresh = ref(1)
-let interval: any = null
+const gl = animation.gl()
+const programInfo = animation.registerProgram('selection', gl, [vs, fs])
 
-type SelectedRect = Rectangle & {
-  uuid: string
-  style: DraggableStyle
+type SelectionRectangle = Rectangle & {
+  id: string
+  index: number
+  isInverted: boolean
+  radius: [number, number, number, number]
 }
 
-type BoundsRectable = Rectangle & { isVisible: boolean }
-
-const bounds = computed<BoundsRectable | null>(() => {
-  const artboardEl = ui.artboardElement()
-  const artboardRect = artboardEl.getBoundingClientRect()
-  const artboardScroll = artboardEl.scrollTop
-  const scale = ui.getArtboardScale()
-  const rects = props.blocks
-    .map((block) => {
-      const element = block.dragElement()
-      if (element instanceof HTMLElement) {
-        const rect = element.getBoundingClientRect()
-        return {
-          x: (rect.x - artboardRect.x) / scale,
-          y: (rect.y - artboardRect.y) / scale,
-          width: element.offsetWidth,
-          height: element.scrollHeight,
+class SelectionRectangleBufferCollector extends RectangleBufferCollector<SelectionRectangle> {
+  uuids: string[] = []
+  getBufferInfo(): { info: BufferInfo | null; hasChanged: boolean } {
+    const uuidsNew = props.blocks.map((v) => v.uuid)
+    const uuidsCurrent = [...this.added.values()]
+    const hasChanged =
+      uuidsCurrent.length !== uuidsNew.length ||
+      uuidsNew.some((v) => !uuidsCurrent.includes(v))
+    if (hasChanged) {
+      this.reset()
+      for (let i = 0; i < props.blocks.length; i++) {
+        const block = props.blocks[i]
+        if (this.added.has(block.uuid)) {
+          continue
         }
+        this.added.add(block.uuid)
+        const el = dom.getDragElement(block)
+        const rect = dom.getBlockRect(block.uuid)
+        if (!rect) {
+          continue
+        }
+        const style = theme.getDraggableStyle(el)
+        this.addRectangle(
+          {
+            id: block.uuid,
+            ...rect,
+            radius: style.radius,
+            isInverted: style.isInverted,
+          },
+          style.isInverted ? 1 : 0,
+        )
       }
-    })
-    .filter(falsy)
+    }
 
-  const boundingBox = getBounds(rects)
-  if (!boundingBox) {
-    return null
+    // Only update the buffer info if it has changed.
+    if (hasChanged) {
+      this.bufferInfo = this.createBufferInfo()
+    }
+
+    return { info: this.bufferInfo, hasChanged }
+  }
+}
+
+const collector = new SelectionRectangleBufferCollector(gl)
+
+const uniforms = {
+  u_color_default: toShaderColor(theme.accent.value[700]),
+  u_color_inverted: [255, 255, 255],
+}
+
+onBlokkliEvent('canvas:draw', () => {
+  gl.useProgram(programInfo.program)
+
+  setUniforms(programInfo, uniforms)
+  animation.setSharedUniforms(gl, programInfo)
+  const { info, hasChanged } = collector.getBufferInfo()
+
+  // Nothing to draw.
+  if (!info) {
+    return
   }
 
-  return {
-    x: boundingBox.x,
-    y: boundingBox.y + artboardScroll,
-    width: boundingBox.width / scale,
-    height: boundingBox.height / scale,
-    isVisible: !!delayedRefresh.value,
+  // Only update buffer and attributes when they have changed.
+  if (hasChanged) {
+    setBuffersAndAttributes(gl, programInfo, info)
   }
+
+  drawBufferInfo(gl, info, gl.TRIANGLES)
 })
 
-const selectedRects = computed<SelectedRect[]>(() => {
-  if (!bounds.value || !delayedRefresh.value) {
-    return []
-  }
-  const scale = ui.getArtboardScale()
-  const artboardEl = ui.artboardElement()
-  const artboardRect = artboardEl.getBoundingClientRect()
-  const artboardScroll = artboardEl.scrollTop
-
-  const rects: SelectedRect[] = []
-
-  for (let i = 0; i < props.blocks.length; i++) {
-    const block = props.blocks[i]
-    const element = block.dragElement()
-    const rect = element.getBoundingClientRect()
-    const style = theme.getDraggableStyle(element)
-    rects.push({
-      x: (rect.x - artboardRect.x) / scale - bounds.value.x,
-      y: (rect.y - artboardRect.y) / scale - bounds.value.y + artboardScroll,
-      width:
-        'offsetWidth' in element ? element.offsetWidth : element.scrollWidth,
-      height: element.scrollHeight,
-      uuid: block.uuid,
-      style,
-    })
-  }
-
-  return rects
-})
-
-const styleSize = computed(() => {
-  if (!bounds.value) {
-    return null
-  }
-
-  const { width, height, x, y } = bounds.value
-
-  return {
-    transform: `translate(${x}px, ${y}px)`,
-    width: width + 'px',
-    height: height + 'px',
-  }
-})
-
-onMounted(() => {
-  interval = setInterval(() => {
-    delayedRefresh.value += 1
-  }, 100)
+onBlokkliEvent('ui:resized', function () {
+  collector.reset()
 })
 
 onBeforeUnmount(() => {
-  clearInterval(interval)
+  gl.clear(gl.COLOR_BUFFER_BIT)
 })
 </script>
 

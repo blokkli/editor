@@ -1,5 +1,6 @@
 <template>
   <div
+    class="card-test"
     :class="{
       'container mx-auto mt-50 h-full': !parentType,
     }"
@@ -68,7 +69,7 @@ const { parentType, options } = defineBlokkli({
   editor: {
     previewWidth: 380,
     addBehaviour: 'no-form',
-    editTitle: (el) => el.querySelector('h3')?.innerText,
+    editTitle: (el) => el.querySelector('h3')?.textContent,
     determineVisibleOptions: (ctx) => {
       if (ctx.props.icon) {
         return ['box', 'color']
@@ -103,3 +104,18 @@ const iconClass = computed(() => {
     : 'bg-accent-50 text-accent-950 border-accent-400'
 })
 </script>
+
+<style lang="postcss">
+@keyframes card-test {
+  from {
+    transform: scaleX(0.7);
+  }
+  to {
+    transform: scaleX(1.2);
+  }
+}
+
+.card-test {
+  /* animation: 2s card-test infinite; */
+}
+</style>

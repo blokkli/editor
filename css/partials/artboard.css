@@ -33,14 +33,6 @@
   }
 }
 
-.bk-html-root:not(.bk-is-artboard) .bk-main-canvas {
-  @apply relative;
-  margin-top: var(--bk-root-offset-top);
-  margin-left: var(--bk-root-offset-left);
-  margin-bottom: var(--bk-root-offset-bottom);
-  overflow: hidden;
-}
-
 .bk-html-root.bk-is-artboard {
   @apply overflow-hidden;
 
@@ -50,50 +42,25 @@
   #nuxt-root {
     @apply bg-mono-200 overflow-hidden fixed right-0;
     left: 0;
-    top: var(--bk-root-offset-top);
+    /* top: var(--bk-root-offset-top); */
+    top: 0;
     bottom: var(--bk-root-offset-bottom);
+    contain: strict;
     &.bk-has-preview-open {
       @apply left-[445px];
     }
   }
-  .bk-main-canvas {
-    @apply shadow-xl absolute top-0 left-0 xl:w-[80vw] w-screen lg:w-full lg:min-w-[1280px] max-w-[1920px] pointer-events-none;
-    user-select: none;
-    /* image-rendering: crisp-edges; */
-    backface-visibility: hidden;
-    transform-origin: 0 0;
-    transform: translateZ(0);
-    /* will-change: translate, scale; */
-  }
+}
 
-  .bk-body.bk-is-pressing-space {
-    @apply cursor-move;
-    .bk-main-canvas,
-    .bk-draggable-list-container * {
-      @apply !pointer-events-none;
-    }
-  }
+.bk-artboard-debug-canvas {
+  @apply fixed top-0 left-0 w-screen h-screen z-[9999999] pointer-events-none;
+}
 
-  .bk-artboard-scrollbar {
-    @apply fixed w-10 bg-mono-500/10 z-artboard-scrollbar rounded-full transition overflow-hidden;
-    top: calc(var(--bk-root-offset-top) + 5px);
-    bottom: calc(var(--bk-root-offset-bottom) + 5px);
+.bk-artboard-debug {
+  @apply fixed top-0 left-0 w-screen  z-[9999999] pointer-events-none;
+  @apply pt-80 p-10 bg-white/75;
 
-    button {
-      @apply bg-mono-500/50  w-full block rounded-full;
-    }
-
-    &.bk-is-active,
-    &:hover {
-      @apply opacity-100 bg-mono-500/40;
-      button {
-        @apply bg-mono-600;
-      }
-    }
-
-    &.bk-is-active button,
-    button:hover {
-      @apply bg-mono-500;
-    }
+  > div {
+    @apply flex justify-between;
   }
 }

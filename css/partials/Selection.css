@@ -10,10 +10,6 @@
   }
 }
 
-.bk-body.bk-is-selecting {
-  .bk.bk-selection {
-    > div {
-      @apply mobile-only:bg-accent-500/40;
-    }
-  }
+.bk-multi-select-ants {
+  @apply fill-none stroke-accent-700;
 }

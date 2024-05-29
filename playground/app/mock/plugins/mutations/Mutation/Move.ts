@@ -1,5 +1,5 @@
-import type { MutationContext } from '~/app/mock/state/EditState'
 import { Mutation } from '../Mutation'
+import type { MutationContext } from '~/app/mock/state/EditState'
 import { falsy } from '#blokkli/helpers'
 
 export type MutationMoveArgs = {

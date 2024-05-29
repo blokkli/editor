@@ -7,6 +7,15 @@ import type {
 } from '../runtime/types'
 import { sortObjectKeys } from './../helpers'
 
+function toPascalCase(name: string): string {
+  return name
+    .replace(/[^a-zA-Z0-9]+/g, ' ') // Replace any non-alphanumeric characters with spaces
+    .trim() // Trim spaces around the string
+    .split(/\s+/) // Split by spaces
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
+    .join('') // Join all words into a single PascalCase string
+}
+
 type ExtractedBlockDefinitionInput = BlockDefinitionInput<{}, []>
 type ExtractedFragmentDefinitionInput = FragmentDefinitionInput<{}, []>
 
@@ -95,12 +104,19 @@ export default class BlockExtractor {
         }
       }
 
+      const extension = path.extname(filePath)
+      const componentFileName = path.basename(filePath, extension)
+
       this.definitions[filePath] = {
         filePath,
         definition: extracted.definition,
         icon,
         chunkName: (extracted.definition.chunkName || 'global') as any,
-        componentName: 'BlokkliComponent_' + extracted.definition.bundle,
+        componentName:
+          'BlokkliComponent_' +
+          extracted.definition.bundle +
+          '_' +
+          componentFileName,
         source: extracted.source,
         fileSource,
         hasBlokkliField:
@@ -176,9 +192,37 @@ export default class BlockExtractor {
   generateDefinitionTemplate(
     globalOptions: BlockDefinitionOptionsInput = {},
   ): string {
-    const allDefinitions = Object.values(this.definitions).map((v) => {
-      return `${v.definition.bundle}: ${v.source}`
-    })
+    const definitionDeclarations = Object.values(this.definitions).map((v) => {
+      return `const ${v.componentName}: DefinitionItem = ${v.source}`
+    }, {})
+
+    const allDefinitions = Object.values(this.definitions).reduce<string[]>(
+      (acc, v) => {
+        const bundle = v.definition.bundle
+        const renderFor = v.definition.renderFor
+        if (renderFor) {
+          const renderForList = Array.isArray(renderFor)
+            ? renderFor
+            : [renderFor]
+          renderForList.forEach((entry) => {
+            if ('parentBundle' in entry) {
+              acc.push(
+                `${bundle}__parent_block_${entry.parentBundle}: ${v.componentName}`,
+              )
+            } else {
+              acc.push(
+                `${bundle}__field_list_type_${entry.fieldList}: ${v.componentName}`,
+              )
+            }
+          })
+        } else {
+          acc.push(`${bundle}: ${v.componentName}`)
+        }
+        return acc
+        // return `${v.definition.bundle}: ${v.source}`
+      },
+      [],
+    )
 
     const allFragmentDefinitions = Object.values(this.fragmentDefinitions).map(
       (v) => {
@@ -199,15 +243,17 @@ export default class BlockExtractor {
       .map((v) => `'${v.definition.name}'`)
       .join(' | ')
 
-    return `import type { GlobalOptionsKey, BundlePropsMap } from './generated-types'
+    return `import type { GlobalOptionsKey, ValidFieldListTypes, BlockBundleWithNested } from './generated-types'
 import type { BlockDefinitionInput, BlockDefinitionOptionsInput, FragmentDefinitionInput } from '#blokkli/types'
 export const globalOptions = ${JSON.stringify(globalOptions, null, 2)} as const
 
+type DefinitionItem = BlockDefinitionInput<BlockDefinitionOptionsInput, GlobalOptionsKey[]>
+
+${definitionDeclarations.join('\n')}
+
 export const icons: Record<string, string> = ${JSON.stringify(icons)}
 
-export type PossibleDefinitionBundle = keyof BundlePropsMap | 'from_library'
-
-export const definitionsMap: Record<string, BlockDefinitionInput<BlockDefinitionOptionsInput, GlobalOptionsKey[]>> = {
+export const definitionsMap: Record<string, DefinitionItem> = {
   ${allDefinitions.join(',\n')}
 }
 
@@ -220,7 +266,30 @@ export type BlokkliFragmentName = ${allFragmentNames || 'never'}
 export const definitions: BlockDefinitionInput<any, GlobalOptionsKey[]>[] = Object.values(definitionsMap)
 export const fragmentDefinitions: FragmentDefinitionInput<any, GlobalOptionsKey[]>[] = Object.values(fragmentDefinitionsMap)
 
-export const getDefinition = (bundle: string): BlockDefinitionInput<Record<string, any>, GlobalOptionsKey[]>|undefined => definitionsMap[bundle]
+/**
+ * Get the block definition for the given field and parent context.
+ */
+export function getDefinition(bundle: string, fieldListType: ValidFieldListTypes, parentBundle?: BlockBundleWithNested): BlockDefinitionInput<Record<string, any>, GlobalOptionsKey[]>|undefined {
+  const forFieldListType = bundle + '__field_list_type_' + fieldListType
+  if (definitionsMap[forFieldListType]) {
+    return definitionsMap[forFieldListType]
+  }
+  if (parentBundle) {
+    const forParentBundle = bundle + '__parent_block_' + parentBundle
+    if (definitionsMap[forParentBundle]) {
+      return definitionsMap[forParentBundle]
+    }
+  }
+
+  return definitionsMap[bundle]
+}
+
+/**
+ * Get the definition of the default block component.
+ */
+export function getDefaultDefinition(bundle: string): BlockDefinitionInput<Record<string, any>, GlobalOptionsKey[]>|undefined {
+  return definitionsMap[bundle]
+}
 export const getFragmentDefinition = (name: string): FragmentDefinitionInput<Record<string, any>, GlobalOptionsKey[]>|undefined => fragmentDefinitionsMap[name]
 `
   }
@@ -320,9 +389,12 @@ export const globalOptionsDefaults: Record<string, GlobalOptionsDefaults> = ${JS
       })
       .join(' | ')
 
-    const typedFieldListItems = Object.values(this.definitions)
+    const possibleOptionTypes = Object.values(this.definitions)
       .filter((v) => v.definition.bundle !== 'from_library')
-      .map((v) => {
+      .reduce<Record<string, string[]>>((acc, v) => {
+        if (!acc[v.definition.bundle]) {
+          acc[v.definition.bundle] = []
+        }
         const definedOptions = v.definition
           .options as BlockDefinitionOptionsInput
 
@@ -333,6 +405,7 @@ export const globalOptionsDefaults: Record<string, GlobalOptionsDefaults> = ${JS
             definedOptions[key] = globalOptions[key]
           }
         })
+
         const options = Object.entries(definedOptions || {})
           .map(([key, option]) => {
             if (option.type === 'text') {
@@ -351,35 +424,31 @@ export const globalOptionsDefaults: Record<string, GlobalOptionsDefaults> = ${JS
           })
           .join('\n    ')
 
-        const typeName = `FieldListItem_${v.definition.bundle}`
+        acc[v.definition.bundle].push(
+          `{
+ ${options}
+}`,
+        )
+
+        return acc
+      }, {})
+
+    const typedFieldListItems = Object.entries(possibleOptionTypes).map(
+      ([bundle, options]) => {
+        const typeName = `FieldListItem_${bundle}`
         const typeDefinition = `
-type Props_${v.definition.bundle} = ExtractPublicPropTypes<InstanceType<typeof ${v.componentName}>>
 type ${typeName} = {
-  bundle: '${v.definition.bundle}'
-  props: Props_${v.definition.bundle}
-  options: {
-    ${options}
-  }
+  bundle: '${bundle}'
+  options: ${options.join(' | ')}
 }`
         return {
           typeName,
           typeDefinition,
-          import: `import type ${v.componentName} from '${v.filePath}'`,
         }
-      })
-
-    const componentImports = typedFieldListItems.map((v) => v.import).join('\n')
-
-    const bundlePropsMap = Object.values(this.definitions)
-      .filter((v) => v.definition.bundle !== 'from_library')
-      .map((v) => {
-        return `${v.definition.bundle}: Props_${v.definition.bundle}`
-      })
-      .join('\n')
+      },
+    )
 
     return `
-${componentImports}
-import type { ExtractPublicPropTypes } from '#imports'
 import type { FieldListItem } from "#blokkli/types"
 
 export type ValidFieldListTypes = ${validFieldListTypes}
@@ -400,10 +469,6 @@ export type FieldListItemTyped = FieldListItem & (${typedFieldListItems
       .map((v) => v.typeName)
       .join(' | ')})
 export type FieldListItemTypedArray = Array<FieldListItemTyped>
-
-export type BundlePropsMap = {
-  ${bundlePropsMap}
-}
 `
   }
 
@@ -469,7 +534,17 @@ const fragmentChunkMapping: Record<string, string> = ${JSON.stringify(
       2,
     )}
 
-export function getBlokkliItemComponent(bundle: string): any {
+export function getBlokkliItemComponent(bundle: string, fieldListType?: string, parentBundle?: string): any {
+  const forFieldListType = 'block_' + bundle + '__field_list_type_' + fieldListType
+  if (global[forFieldListType]) {
+    return global[forFieldListType]
+  }
+  if (parentBundle) {
+    const forParentBundle = 'block_' + bundle + '__parent_block_' + parentBundle
+    if (global[forParentBundle]) {
+      return global[forParentBundle]
+    }
+  }
   const key = 'block_' + bundle
   if (global[key]) {
     return global[key]
@@ -515,12 +590,34 @@ export function getBlokkliFragmentComponent(name: string): any {
     const imports = definitions.map((v) => {
       return `import ${v.componentName} from '${v.filePath}'`
     })
-    const map = definitions.map((v) => {
+    const map = definitions.reduce<string[]>((acc, v) => {
       if ('bundle' in v.definition) {
-        return `block_${v.definition.bundle}: ${v.componentName}`
+        const bundle = v.definition.bundle
+        const renderFor = v.definition.renderFor
+        if (!renderFor) {
+          acc.push(`block_${v.definition.bundle}: ${v.componentName}`)
+        } else {
+          const renderForList = Array.isArray(renderFor)
+            ? renderFor
+            : [renderFor]
+
+          renderForList.forEach((entry) => {
+            if ('parentBundle' in entry) {
+              acc.push(
+                `block_${bundle}__parent_block_${entry.parentBundle}: ${v.componentName}`,
+              )
+            } else {
+              acc.push(
+                `block_${bundle}__field_list_type_${entry.fieldList}: ${v.componentName}`,
+              )
+            }
+          })
+        }
+      } else {
+        acc.push(`fragment_${v.definition.name}: ${v.componentName}`)
       }
-      return `fragment_${v.definition.name}: ${v.componentName}`
-    })
+      return acc
+    }, [])
     let content = `
 ${imports.join('\n')}
 

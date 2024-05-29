@@ -81,7 +81,7 @@ import { Icon } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
 
-const { settings } = defineBlokkliFeature({
+const { settings, logger } = defineBlokkliFeature({
   id: 'clipboard',
   label: 'Clipboard',
   icon: 'clipboard',
@@ -222,9 +222,10 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
     return
   }
 
+  const count = state.getFieldBlockCount(field.key)
   if (
     field.cardinality !== -1 &&
-    field.blockCount + pastedBlocks.length > field.cardinality
+    count + pastedBlocks.length > field.cardinality
   ) {
     return
   }
@@ -243,7 +244,7 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
 }
 
 function onPaste(e: ClipboardEvent, fromInput?: boolean) {
-  console.log(e)
+  logger.log('Paste Event', e)
   if (state.editMode.value !== 'editing') {
     return
   }

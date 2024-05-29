@@ -16,12 +16,14 @@
     :key="route.fullPath"
     @loaded="featuresLoaded = true"
   />
-  <Animator v-if="!isInitializing" />
+  <DragInteractions v-if="!isInitializing" />
+  <AnimationCanvas v-if="!isInitializing" />
   <slot :mutated-entity="mutatedEntity" />
 </template>
 
 <script lang="ts" setup generic="T">
 import {
+  watch,
   ref,
   computed,
   provide,
@@ -38,7 +40,9 @@ import Loading from './Loading/index.vue'
 import Messages from './Messages/index.vue'
 import Features from './Features/index.vue'
 import AppMenu from './AppMenu/index.vue'
-import Animator from './Animator/index.vue'
+import DraggableList from './DraggableList.vue'
+import DragInteractions from './DragInteractions/index.vue'
+import AnimationCanvas from './AnimationCanvas/index.vue'
 import animationProvider from './../../helpers/animationProvider'
 import keyboardProvider from './../../helpers/keyboardProvider'
 import selectionProvider from './../../helpers/selectionProvider'
@@ -53,6 +57,7 @@ import featuresProvider from './../../helpers/featuresProvider'
 import themeProvider from './../../helpers/themeProvider'
 import commandsProvider from './../../helpers/commandsProvider'
 import tourProvider from './../../helpers/tourProvider'
+import debugProvider from './../../helpers/debugProvider'
 import dropAreasProvider from './../../helpers/dropAreaProvider'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import '#blokkli/theme'
@@ -61,6 +66,8 @@ import getAdapter from '#blokkli/compiled-edit-adapter'
 import {
   INJECT_APP,
   INJECT_EDIT_CONTEXT,
+  INJECT_EDIT_FIELD_LIST_COMPONENT,
+  INJECT_EDIT_LOGGER,
   INJECT_IS_EDITING,
 } from '#blokkli/helpers/symbols'
 import type { AdapterContext } from '#blokkli/adapter'
@@ -97,21 +104,22 @@ const toolbarLoaded = ref(false)
 const featuresLoaded = ref(false)
 const isInitializing = ref(true)
 
-const broadcast = broadcastProvider()
-const animation = animationProvider()
-const keyboard = keyboardProvider(animation)
-const dom = domProvider()
 const storage = storageProvider()
-const ui = uiProvider(storage)
-const $t = textProvider(context)
-const state = await editStateProvider(adapter, context)
-const selection = selectionProvider(dom, state)
-const types = await typesProvider(adapter, selection, context)
+const debug = debugProvider(storage)
 const features = featuresProvider()
 const theme = themeProvider()
 const commands = commandsProvider()
 const tour = tourProvider()
 const dropAreas = dropAreasProvider()
+const broadcast = broadcastProvider()
+const ui = uiProvider(storage)
+const dom = domProvider(ui, debug)
+const animation = animationProvider(ui)
+const keyboard = keyboardProvider(animation)
+const $t = textProvider(context)
+const state = await editStateProvider(adapter, context)
+const selection = selectionProvider(dom)
+const types = await typesProvider(adapter, selection, context)
 
 const mutatedEntity = computed(() => state.mutatedEntity.value || props.entity)
 
@@ -119,6 +127,28 @@ const onContextMenu = (e: Event) => {
   e.preventDefault()
   e.stopPropagation()
 }
+
+function onTouchMove(e: TouchEvent) {
+  e.preventDefault()
+}
+
+function onTouchStart(e: TouchEvent) {
+  if (e.touches.length === 2) {
+    e.preventDefault()
+  }
+}
+
+const setRootClasses = (unmount?: boolean) => {
+  document.documentElement.classList.remove('bk-use-animations')
+
+  if (ui.useAnimations.value && !unmount) {
+    document.documentElement.classList.add('bk-use-animations')
+  }
+}
+
+watch(ui.useAnimations, setRootClasses)
+
+const baseLogger = debug.createLogger('EditProvider')
 
 onMounted(() => {
   window.addEventListener('contextmenu', onContextMenu)
@@ -128,6 +158,12 @@ onMounted(() => {
   nextTick(() => {
     isInitializing.value = false
   })
+
+  document.documentElement.addEventListener('touchmove', onTouchMove)
+  document.documentElement.addEventListener('touchstart', onTouchStart)
+  setRootClasses()
+  baseLogger.log('EditProvider mounted')
+  dom.init()
 })
 
 onBeforeUnmount(() => {
@@ -135,8 +171,15 @@ onBeforeUnmount(() => {
   isInitializing.value = true
   toolbarLoaded.value = false
   document.documentElement.classList.remove('bk-isolate-provider')
+  document.documentElement.removeEventListener('touchmove', onTouchMove)
+  document.documentElement.removeEventListener('touchstart', onTouchStart)
+  setRootClasses(true)
 })
+provide(INJECT_EDIT_LOGGER, baseLogger)
 
+// Provide the edit <BlokkliField> component to it doesn't have to be loaded
+// async every time.
+provide(INJECT_EDIT_FIELD_LIST_COMPONENT, DraggableList)
 provide(INJECT_IS_EDITING, true)
 provide(INJECT_EDIT_CONTEXT, {
   eventBus,
@@ -163,5 +206,6 @@ provide<BlokkliApp>(INJECT_APP, {
   commands,
   tour,
   dropAreas,
+  debug,
 })
 </script>

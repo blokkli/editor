@@ -4,6 +4,9 @@
   .bk-dialog-background {
     @apply absolute top-0 left-0 w-full h-full;
     @apply bg-black md:bg-mono-800/90 md:backdrop-blur-md;
+    html.bk-low-performance-mode & {
+      @apply backdrop-filter-none;
+    }
   }
 
   .bk-dialog-inner {

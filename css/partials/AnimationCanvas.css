@@ -1,0 +1,6 @@
+#bk-animation-canvas-webgl {
+  @apply fixed top-0 left-0 w-full h-full z-animation-canvas pointer-events-none;
+  /* image-rendering: crisp-edges; */
+  image-rendering: auto;
+  contain: strict;
+}

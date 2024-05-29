@@ -7,10 +7,12 @@ import type {
   DroppableEntityField,
   DraggableExistingBlock,
   EntityContext,
+  Coord,
 } from '#blokkli/types'
 import { useRuntimeConfig } from '#imports'
 import { getDefinition } from '#blokkli/definitions'
 import type { RGB } from '#blokkli/types/theme'
+import type { ValidFieldListTypes } from '#blokkli/generated-types'
 
 /**
  * Type check for falsy values.
@@ -42,8 +44,13 @@ export function buildDraggableItem(
     const hostBundle = dataset.hostBundle
     const hostFieldName = dataset.hostFieldName
     const reusableBundle = dataset.reusableBundle
+    const hostFieldListType = dataset.hostFieldListType as
+      | ValidFieldListTypes
+      | undefined
     const reusableUuid = dataset.reusableUuid
     const isNew = dataset.isNew === 'true'
+    const parentBlockBundle =
+      hostType === itemEntityType ? (hostBundle as any) : undefined
     if (
       uuid &&
       hostType &&
@@ -51,9 +58,14 @@ export function buildDraggableItem(
       hostFieldName &&
       itemBundle &&
       hostBundle &&
-      entityType
+      entityType &&
+      hostFieldListType
     ) {
-      const definition = getDefinition(itemBundle)
+      const definition = getDefinition(
+        itemBundle,
+        hostFieldListType,
+        parentBlockBundle,
+      )
       const editTitle = definition?.editor?.editTitle
         ? definition?.editor.editTitle(element)
         : undefined
@@ -61,15 +73,6 @@ export function buildDraggableItem(
         itemType: 'existing',
         element: () =>
           document.querySelector(`[data-uuid="${uuid}"]`) as HTMLElement,
-        dragElement: () => {
-          const el = definition?.editor?.getDraggableElement
-            ? definition.editor.getDraggableElement(element)
-            : undefined
-          if (el instanceof HTMLElement || el instanceof SVGElement) {
-            return el
-          }
-          return document.querySelector(`[data-uuid="${uuid}"]`) as HTMLElement
-        },
         itemBundle,
         entityType,
         isNested: hostType === itemEntityType,
@@ -78,12 +81,12 @@ export function buildDraggableItem(
         hostBundle,
         hostUuid,
         hostFieldName,
+        hostFieldListType,
         reusableBundle,
         reusableUuid,
         editTitle: editTitle || undefined,
         isNew,
-        parentBlockBundle:
-          hostType === itemEntityType ? (hostBundle as any) : undefined,
+        parentBlockBundle,
       }
     }
   } else if (dataset.elementType === 'new') {
@@ -314,8 +317,6 @@ export function calculateIntersection(
 
 /**
  * Return the closest rectangle.
- *
- * Distance is measured from the center pooint of the rectangle to the given x and y coords.
  */
 export function findClosestRectangle<T extends Rectangle>(
   x: number,
@@ -323,11 +324,11 @@ export function findClosestRectangle<T extends Rectangle>(
   rects: T[],
 ): T {
   let closestRect: T = rects[0]
-  let minDistance = distanceToRectangle(x, y, rects[0])
+  let minDistance = distanceToClosestRectangleEdge(x, y, rects[0])
 
   for (let i = 1; i < rects.length; i++) {
     const rect = rects[i]
-    const distance = distanceToRectangle(x, y, rect)
+    const distance = distanceToClosestRectangleEdge(x, y, rect)
 
     if (distance < minDistance) {
       closestRect = rect
@@ -352,6 +353,33 @@ export function distanceToRectangle(
   const maxY = rect.y + rect.height
   const dx = Math.max(minX - x, 0, x - maxX)
   const dy = Math.max(minY - y, 0, y - maxY)
+  return Math.sqrt(dx * dx + dy * dy)
+}
+
+/**
+ * Return the distance from the given coordinates to the center of the rectangle.
+ */
+export function distanceToClosestRectangleEdge(
+  x: number,
+  y: number,
+  rect: Rectangle,
+): number {
+  if (isInsideRect(x, y, rect)) {
+    return 0
+  }
+  const minX = rect.x
+  const minY = rect.y
+  const maxX = rect.x + rect.width
+  const maxY = rect.y + rect.height
+
+  const dx = Math.max(minX - x, 0, x - maxX)
+  const dy = Math.max(minY - y, 0, y - maxY)
+  return Math.sqrt(dx * dx + dy * dy)
+}
+
+export function getDistance(a: Coord, b: Coord) {
+  const dx = a.x - b.x
+  const dy = a.y - b.y
   return Math.sqrt(dx * dx + dy * dy)
 }
 
@@ -455,7 +483,7 @@ export const calculateCenterPosition = (
   return (x + width) / 2 - widthToPlace / 2
 }
 
-function getContrastRatio(color1: RGB, color2: RGB): number {
+export function getContrastRatio(color1: RGB, color2: RGB): number {
   const luminance1 = getLuminance(color1)
   const luminance2 = getLuminance(color2)
 
@@ -502,45 +530,6 @@ export const getNumericStyleValue = (str: string, fallback = 0): number => {
     return fallback
   }
   return num
-}
-
-export const getDraggableStyle = (
-  el: HTMLElement | SVGElement,
-  accentColor: RGB,
-): DraggableStyle => {
-  const style = getComputedStyle(el)
-
-  const radius: [number, number, number, number] = [
-    getNumericStyleValue(style.borderTopLeftRadius, 4),
-    getNumericStyleValue(style.borderTopRightRadius, 4),
-    getNumericStyleValue(style.borderBottomRightRadius, 4),
-    getNumericStyleValue(style.borderBottomLeftRadius, 4),
-  ]
-
-  const backgroundColorForSelection = parseColorString(
-    realBackgroundColor(el.parentElement),
-  )
-  const contrastColor = findHighestContrastColor(
-    [[255, 255, 255], accentColor],
-    backgroundColorForSelection,
-  )
-
-  const backgroundColor = parseColorString(realBackgroundColor(el))
-  const textColor = findHighestContrastColor(
-    [
-      [0, 0, 0],
-      [255, 255, 255],
-    ],
-    backgroundColor,
-  )
-
-  return {
-    radius,
-    radiusString: radius.map((v) => v + 'px').join(' '),
-    contrastColor: rgbaToString(contrastColor),
-    contrastColorTranslucent: rgbaToString(contrastColor, 0.25),
-    textColor: rgbaToString(textColor),
-  }
 }
 
 /**
@@ -694,3 +683,25 @@ export const getOriginatingDroppableElement = (
 export const originatesFromTextInput = (e: Event): boolean =>
   e.target instanceof HTMLInputElement ||
   e.target instanceof HTMLTextAreaElement
+
+export function getFieldKey(uuid: string, fieldName: string) {
+  return uuid + ':' + fieldName
+}
+
+export function getInteractionCoordinates(e: MouseEvent | TouchEvent): Coord {
+  if ('touches' in e) {
+    const touch = e.touches[0] || e.changedTouches[0]
+    return {
+      x: touch.clientX,
+      y: touch.clientY,
+    }
+  }
+  return {
+    x: e.clientX,
+    y: e.clientY,
+  }
+}
+
+export function toShaderColor(rgba: RGB): RGB {
+  return rgba.map((v) => v / 255) as RGB
+}

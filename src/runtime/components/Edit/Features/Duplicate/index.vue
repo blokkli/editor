@@ -62,8 +62,10 @@ const canDuplicate = computed<boolean>(() => {
       return false
     }
 
+    const count = state.getFieldBlockCount(field.key)
+
     // Early return if the field is already full.
-    if (field.cardinality !== -1 && field.blockCount >= field.cardinality) {
+    if (field.cardinality !== -1 && count >= field.cardinality) {
       return false
     }
 
@@ -78,11 +80,9 @@ const canDuplicate = computed<boolean>(() => {
   for (let i = 0; i < entries.length; i++) {
     const [fieldKey, blocks] = entries[i]
     const field = fieldsByKey[fieldKey]
+    const count = state.getFieldBlockCount(field.key)
     // Check cardinality of the field.
-    if (
-      field.cardinality !== -1 &&
-      field.blockCount + blocks.length > field.cardinality
-    ) {
+    if (field.cardinality !== -1 && count + blocks.length > field.cardinality) {
       return false
     }
 

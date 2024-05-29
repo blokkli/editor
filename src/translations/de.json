@@ -203,6 +203,10 @@
     "source": "Comments",
     "translation": "Kommentare"
   },
+  "commentsMarkAsResolved": {
+    "source": "Resolve",
+    "translation": "Erledigen"
+  },
   "commentsTourText": {
     "source": "Shows all comments for the current page.",
     "translation": "Zeigt alle Kommentare auf der aktuellen Seite an."
@@ -368,16 +372,16 @@
     "translation": "Animationen verwenden"
   },
   "fieldAreasHide": {
-    "source": "Hide content areas",
-    "translation": "Inhaltsbereiche verstecken"
+    "source": "Hide block fields",
+    "translation": "Blockfelder verstecken"
   },
   "fieldAreasShow": {
-    "source": "Show content areas",
-    "translation": "Inhaltsbereiche anzeigen"
+    "source": "Show block fields",
+    "translation": "Blockfelder anzeigen"
   },
   "fieldAreasToggle": {
-    "source": "Toggle content areas",
-    "translation": "Inhaltsbereiche anzeigen"
+    "source": "Toggle block fields",
+    "translation": "Blockfelder anzeigen"
   },
   "fieldAreasTourText": {
     "source": "Toggle between showing or hiding the areas where blocks can be placed.",
@@ -442,6 +446,10 @@
   "historyCurrentRevision": {
     "source": "Current revision",
     "translation": "Aktuelle Revision"
+  },
+  "historyEmpty": {
+    "source": "There are now changes yet.",
+    "translation": "Es gibt noch keine Änderungen."
   },
   "historyRedo": {
     "source": "Redo",
@@ -576,16 +584,16 @@
     "translation": "Vorschau"
   },
   "maskHide": {
-    "source": "Hide content fields",
-    "translation": "Inhaltsfelder verstecken"
+    "source": "Hide non-editable areas",
+    "translation": "Nicht-editierbare Bereiche verstecken"
   },
   "maskShow": {
-    "source": "Show content fields",
-    "translation": "Inhaltsfelder anzeigen"
+    "source": "Show non-editable areas",
+    "translation": "Nicht-editierbare Bereiche anzeigen"
   },
   "maskToggle": {
-    "source": "Show content fields",
-    "translation": "Inhaltsfelder anzeigen"
+    "source": "Toggle non-editable areas",
+    "translation": "Nicht-editierbare Bereiche anzeigen"
   },
   "maskTourText": {
     "source": "Toggle between showing or hiding non-editable parts of the page.",

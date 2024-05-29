@@ -53,21 +53,21 @@ const key = computed(() => {
 })
 
 const getHost = (
-  el: HTMLElement,
+  uuid: string,
 ): DraggableExistingBlock | EntityContext | undefined => {
-  const block = dom.findClosestBlock(el)
+  const block = dom.findBlock(uuid)
   if (block) {
     return block
   }
 
-  return dom.findClosestEntityContext(el)
+  return dom.findClosestEntityContext(dom.getActiveProviderElement())
 }
 
 const buildEditable = (
   fieldName: string,
-  element: HTMLElement,
+  uuid: string,
 ): Editable | undefined => {
-  const host = getHost(element)
+  const host = getHost(uuid)
   if (!host) {
     return
   }
@@ -94,6 +94,16 @@ const buildEditable = (
     return
   }
 
+  const hostElement =
+    'itemBundle' in host ? host.element() : dom.getActiveProviderElement()
+  const element = hostElement.querySelector(
+    `[data-blokkli-editable-field="${fieldName}"]`,
+  )
+
+  if (!(element instanceof HTMLElement)) {
+    return
+  }
+
   return {
     fieldName,
     host,
@@ -106,7 +116,7 @@ const buildEditable = (
 
 onBlokkliEvent('editable:focus', (e) => {
   hasTransition.value = !editable.value
-  editable.value = buildEditable(e.fieldName, e.element) || null
+  editable.value = buildEditable(e.fieldName, e.uuid) || null
   if (editable.value) {
     selection.editableActive.value = true
   }
@@ -140,7 +150,7 @@ defineCommands(() => {
           return
         }
 
-        return buildEditable(name, el)
+        return buildEditable(name, block.dataset.uuid)
       })
       .filter(falsy)
   })

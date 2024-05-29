@@ -5,6 +5,7 @@
     @apply select-none;
     @apply h-[140px] text-base flex;
     @apply lg:fixed;
+    contain: style size;
     @screen lg {
       @apply h-50;
     }

@@ -10,6 +10,9 @@
 .bk-debug-list {
   > div {
     @apply flex justify-between;
+    &:not(:last-child) {
+      @apply mb-5;
+    }
   }
 }
 
@@ -63,4 +66,8 @@
   svg {
     @apply w-full aspect-square h-auto;
   }
+}
+
+.bk-debug-rects {
+  @apply fixed top-0 left-0 w-full h-full pointer-events-none z-[99999999999];
 }

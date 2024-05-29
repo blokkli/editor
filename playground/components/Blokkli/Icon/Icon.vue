@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="icon"
-    class="hero-animation-icon bg-white rounded-lg overflow-hidden p-15 shadow-lg"
+    class="hero-animation-icon bg-white rounded-full overflow-hidden p-15 shadow-lg"
     :style="style"
   >
     <SpriteSymbol :name="icon" class="h-full w-full fill-mono-700" />

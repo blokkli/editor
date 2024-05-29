@@ -33,7 +33,7 @@
       <BlokkliField
         name="content"
         :list="fieldContent"
-        :allowed-fragments="['cta']"
+        :allowed-fragments="['cta', 'shader_debug']"
       />
     </BlokkliProvider>
   </div>
@@ -62,6 +62,8 @@ const language = computed(() => {
 const uuid = computed(() => {
   if (route.path.includes('page/2')) {
     return '2'
+  } else if (route.path.includes('page/3')) {
+    return '3'
   }
 
   return '1'

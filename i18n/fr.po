@@ -234,6 +234,10 @@ msgctxt "comments"
 msgid "Comments"
 msgstr "Commentaires"
 
+msgctxt "commentsMarkAsResolved"
+msgid "Resolve"
+msgstr ""
+
 msgctxt "commentsTourText"
 msgid "Shows all comments for the current page."
 msgstr ""
@@ -404,15 +408,15 @@ msgid "Use animations"
 msgstr ""
 
 msgctxt "fieldAreasHide"
-msgid "Hide content areas"
+msgid "Hide block fields"
 msgstr "Masquer les zones de contenu"
 
 msgctxt "fieldAreasShow"
-msgid "Show content areas"
+msgid "Show block fields"
 msgstr "Afficher les zones de contenu"
 
 msgctxt "fieldAreasToggle"
-msgid "Toggle content areas"
+msgid "Toggle block fields"
 msgstr ""
 
 msgctxt "fieldAreasTourText"
@@ -480,6 +484,10 @@ msgstr "Historique"
 msgctxt "historyCurrentRevision"
 msgid "Current revision"
 msgstr "Révision actuelle"
+
+msgctxt "historyEmpty"
+msgid "There are now changes yet."
+msgstr ""
 
 msgctxt "historyRedo"
 msgid "Redo"
@@ -628,15 +636,15 @@ msgid "Preview"
 msgstr "Aperçu"
 
 msgctxt "maskHide"
-msgid "Hide content fields"
+msgid "Hide non-editable areas"
 msgstr "Masquer les champs de contenu"
 
 msgctxt "maskShow"
-msgid "Show content fields"
+msgid "Show non-editable areas"
 msgstr "Afficher les champs de contenu"
 
 msgctxt "maskToggle"
-msgid "Show content fields"
+msgid "Toggle non-editable areas"
 msgstr ""
 
 msgctxt "maskTourText"

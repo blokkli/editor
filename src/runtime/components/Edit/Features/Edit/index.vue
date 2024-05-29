@@ -31,12 +31,17 @@ const disabled = computed(() => {
   if (state.editMode.value !== 'editing') {
     return true
   }
-  if (selection.blocks.value.length > 1) {
+  if (selection.blocks.value.length !== 1) {
     return true
   }
 
-  const type = selection.blocks.value[0]?.itemBundle
-  return !type || getDefinition(type)?.editor?.disableEdit === true
+  const block = selection.blocks.value[0]
+  const definition = getDefinition(
+    block.itemBundle,
+    block.hostFieldListType,
+    block.parentBlockBundle,
+  )
+  return definition?.editor?.disableEdit === true
 })
 
 function onClick(items: DraggableExistingBlock[]) {

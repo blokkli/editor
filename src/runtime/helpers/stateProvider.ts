@@ -3,12 +3,13 @@ import {
   type ComputedRef,
   computed,
   ref,
+  reactive,
   readonly,
   provide,
 } from 'vue'
 import { refreshNuxtData } from 'nuxt/app'
 import type { BlokkliAdapter, AdapterContext } from '../adapter'
-import { INJECT_MUTATED_FIELDS } from './symbols'
+import { INJECT_MUTATED_FIELDS_MAP } from './symbols'
 import onBlokkliEvent from './composables/onBlokkliEvent'
 import type {
   MutatedField,
@@ -22,11 +23,9 @@ import type {
   EditMode,
   FieldListItem,
 } from '#blokkli/types'
-import { removeDroppedElements, falsy } from '#blokkli/helpers'
+import { removeDroppedElements, falsy, getFieldKey } from '#blokkli/helpers'
 import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
-import { nextTick, useRuntimeConfig } from '#imports'
-
-const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
+import { nextTick } from '#imports'
 
 export type BlokkliOwner = {
   name: string | undefined
@@ -45,7 +44,7 @@ export type StateProvider = {
   refreshKey: Readonly<Ref<string>>
   mutatedFields: Readonly<Ref<MutatedField[]>>
   entity: Readonly<Ref<EditEntity>>
-  mutatedOptions: Ref<MutatedOptions>
+  mutatedOptions: MutatedOptions
   translation: Readonly<Ref<TranslationState>>
   mutations: Readonly<Ref<MutationItem[]>>
   currentMutationIndex: Readonly<Ref<number>>
@@ -55,8 +54,9 @@ export type StateProvider = {
   mutatedEntity: Readonly<Ref<any>>
   canEdit: ComputedRef<boolean>
   isLoading: Readonly<Ref<boolean>>
-  renderedBlocks: ComputedRef<RenderedBlock[]>
-  getRenderedBlock: (uuid: string) => RenderedBlock | undefined
+  getFieldBlockCount: (key: string) => number
+  getBlockBundleCount: (bundle: string) => number
+  getFieldListItem: (uuid: string) => FieldListItem | undefined
 }
 
 export default async function (
@@ -66,6 +66,9 @@ export default async function (
   const owner = ref<BlokkliOwner | null>(null)
   const refreshKey = ref('')
   const mutatedFields = ref<MutatedField[]>([])
+  const mutatedFieldsMap = reactive<Record<string, MutatedField | undefined>>(
+    {},
+  )
   const mutations = ref<MutationItem[]>([])
   const violations = ref<Validation[]>([])
   const mutatedEntity = ref<any>(null)
@@ -76,8 +79,26 @@ export default async function (
     status: false,
     bundleLabel: '',
   })
+  const fieldBlockCount: Record<string, number> = {}
+  const blockBundleCount: Ref<Record<string, number>> = ref({})
+  const fieldListItemMap: Record<string, string> = {}
 
-  const mutatedOptions = ref<MutatedOptions>({})
+  function getFieldListItem(uuid: string): FieldListItem | undefined {
+    const fieldKey = fieldListItemMap[uuid]
+    if (!fieldKey) {
+      return
+    }
+
+    const field = mutatedFieldsMap[fieldKey]
+
+    if (!field) {
+      return
+    }
+
+    return field.list.find((v) => v.uuid === uuid)
+  }
+
+  const mutatedOptions = reactive<MutatedOptions>({})
   const translation = ref<TranslationState>({
     isTranslatable: false,
     sourceLanguage: '',
@@ -85,35 +106,22 @@ export default async function (
     translations: [],
   })
 
-  const blockUuidMap = computed<Record<string, FieldListItem>>(() => {
-    return mutatedFields.value
-      .flatMap((v) => v.list)
-      .reduce<Record<string, FieldListItem>>((acc, v) => {
-        acc[v.uuid] = v
-        return acc
-      }, {})
-  })
-
-  const renderedBlocks = computed<RenderedBlock[]>(() => {
-    return mutatedFields.value.flatMap((field) => {
-      return field.list.map((item) => {
-        return {
-          item,
-          parentEntityType: field.entityType,
-          parentEntityUuid: field.entityUuid,
-          parentEntityBundle:
-            field.entityType === itemEntityType
-              ? blockUuidMap.value[field.entityUuid]?.bundle
-              : context.value.entityBundle,
-        }
-      })
-    })
-  })
-
   function setContext(context?: MappedState) {
     removeDroppedElements()
+    const options = context?.mutatedState?.mutatedOptions || {}
+    const optionKeys = Object.keys(options)
 
-    mutatedOptions.value = context?.mutatedState?.mutatedOptions || {}
+    for (let i = 0; i < optionKeys.length; i++) {
+      const key = optionKeys[i]
+      const newOptions = options[key]
+      const existing = mutatedOptions[key]
+      if (
+        !existing ||
+        JSON.stringify(existing) !== JSON.stringify(newOptions)
+      ) {
+        mutatedOptions[key] = newOptions
+      }
+    }
     mutations.value = context?.mutations || []
     violations.value = context?.mutatedState?.violations || []
     const currentIndex = context?.currentIndex
@@ -146,12 +154,61 @@ export default async function (
     mutatedFields.value = newMutatedFields
     mutatedEntity.value = context?.mutatedEntity
 
+    const visitedFieldKeys: string[] = []
+    const newBlockBundleCount: Record<string, number> = {}
+    for (let i = 0; i < newMutatedFields.length; i++) {
+      const field = newMutatedFields[i]
+      const key = getFieldKey(field.entityUuid, field.name)
+      visitedFieldKeys.push(key)
+      fieldBlockCount[key] = field.list.length
+
+      const existing = mutatedFieldsMap[key]
+      if (
+        !existing ||
+        existing.list.length !== field.list.length ||
+        JSON.stringify(existing.list) !== JSON.stringify(field.list)
+      ) {
+        mutatedFieldsMap[key] = field
+      }
+
+      for (let j = 0; j < field.list.length; j++) {
+        const item = field.list[j]
+
+        if (!newBlockBundleCount[item.bundle]) {
+          newBlockBundleCount[item.bundle] = 0
+        }
+        newBlockBundleCount[item.bundle]++
+        fieldListItemMap[item.uuid] = key
+      }
+    }
+
+    blockBundleCount.value = newBlockBundleCount
+
+    const existingKeys = Object.keys(mutatedFieldsMap)
+
+    for (let i = 0; i < existingKeys.length; i++) {
+      const key = existingKeys[i]
+      if (!visitedFieldKeys.includes(key)) {
+        mutatedFieldsMap[key] = undefined
+      }
+    }
+
     eventBus.emit('updateMutatedFields', { fields: newMutatedFields })
 
-    eventBus.emit('state:reloaded')
     nextTick(() => {
+      if (refreshKey.value) {
+        eventBus.emit('state:reloaded')
+      }
       refreshKey.value = Date.now().toString()
     })
+  }
+
+  function getBlockBundleCount(bundle: string): number {
+    return blockBundleCount.value[bundle] || 0
+  }
+
+  function getFieldBlockCount(key: string) {
+    return fieldBlockCount[key] || 0
   }
 
   function lockBody() {
@@ -208,7 +265,9 @@ export default async function (
 
   const canEdit = computed(() => !!owner.value?.currentUserIsOwner)
   const isTranslation = computed(
-    () => context.value.language !== translation.value.sourceLanguage,
+    () =>
+      context.value.language !== translation.value.sourceLanguage &&
+      translation.value.isTranslatable,
   )
 
   const editMode = computed<EditMode>(() => {
@@ -222,9 +281,6 @@ export default async function (
     return 'editing'
   })
 
-  const getRenderedBlock: StateProvider['getRenderedBlock'] = (uuid) =>
-    renderedBlocks.value.find((v) => v.item.uuid === uuid)
-
   onBlokkliEvent('reloadState', async () => {
     removeDroppedElements()
     await loadState()
@@ -235,10 +291,7 @@ export default async function (
     await loadState()
   })
 
-  provide(
-    INJECT_MUTATED_FIELDS,
-    computed(() => mutatedFields.value),
-  )
+  provide(INJECT_MUTATED_FIELDS_MAP, mutatedFieldsMap)
 
   await loadState()
 
@@ -256,8 +309,9 @@ export default async function (
     editMode,
     canEdit,
     isLoading: readonly(isLoading),
-    renderedBlocks,
-    getRenderedBlock,
     mutatedEntity,
+    getFieldBlockCount,
+    getBlockBundleCount,
+    getFieldListItem,
   }
 }

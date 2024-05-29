@@ -61,7 +61,13 @@ export function defineBlokkliFragment<
       // Block registration in defineBlokkli() is skipped for fragment blocks.
       // So we need to do it here.
       const instance = getCurrentInstance()
-      editContext.dom.registerBlock(ctx.uuid, instance)
+      editContext.dom.registerBlock(
+        ctx.uuid,
+        instance,
+        'blokkli_fragment',
+        ctx.fieldListType.value,
+        ctx.parentType.value,
+      )
     }
   })
 

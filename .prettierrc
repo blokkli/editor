@@ -4,5 +4,6 @@
   "singleQuote": true,
   "arrowParens": "always",
   "printWidth": 80,
-  "trailingComma": "all"
+  "trailingComma": "all",
+  "plugins": ["prettier-plugin-glsl"]
 }

@@ -1,17 +1,46 @@
 import onBlokkliEvent from './composables/onBlokkliEvent'
 import useAnimationFrame from './composables/useAnimationFrame'
-import { onMounted, onBeforeUnmount } from '#imports'
-import { falsy } from '#blokkli/helpers'
+import {
+  computed,
+  onMounted,
+  onBeforeUnmount,
+  type ComputedRef,
+} from '#imports'
 import { eventBus } from '#blokkli/helpers/eventBus'
+import type { UiProvider } from './uiProvider'
+import { createProgramInfo, type ProgramInfo } from 'twgl.js'
 
 export type AnimationProvider = {
   /**
    * Request an animation loop. Should be called when UI state changes.
    */
   requestDraw: () => void
+
+  /**
+   * Get the WebGL rendering context.
+   */
+  gl: () => WebGLRenderingContext
+
+  setSharedUniforms: (
+    gl: WebGLRenderingContext,
+    programInfo: ProgramInfo,
+  ) => void
+
+  dpi: ComputedRef<number>
+
+  /**
+   * Register a WebGL program.
+   *
+   * The programs are cached by the given ID.
+   */
+  registerProgram: (
+    id: string,
+    gl: WebGLRenderingContext,
+    shaders: string[],
+  ) => ProgramInfo
 }
 
-export default function (): AnimationProvider {
+export default function (ui: UiProvider): AnimationProvider {
   let mouseX = 0
   let mouseY = 0
 
@@ -20,16 +49,9 @@ export default function (): AnimationProvider {
   // render a maximum of 2 seconds.
   let iterator = 120
 
-  const onMouseMoveGlobal = (e: MouseEvent) => {
+  const onPointerMove = (e: PointerEvent) => {
     mouseX = e.clientX
     mouseY = e.clientY
-    iterator = 120
-  }
-
-  const onTouchMoveGlobal = (e: TouchEvent) => {
-    const touch = e.touches[0]
-    mouseX = touch.pageX
-    mouseY = touch.pageY
     iterator = 120
   }
 
@@ -46,68 +68,23 @@ export default function (): AnimationProvider {
     // before triggering the main animation loop event.
     eventBus.emit('animationFrame:before')
 
-    const wrapperEl = document.querySelector('.bk-main-canvas')
-    const nuxtRootEl = document.querySelector('#nuxt-root')
-    const sidebarEl = document.querySelector('.bk-sidebar')
-    if (wrapperEl instanceof HTMLElement) {
-      const canvasRect = wrapperEl?.getBoundingClientRect()
-      const rootRect = nuxtRootEl?.getBoundingClientRect()
-      const sidebarRect = sidebarEl?.getBoundingClientRect()
-      const fieldAreas = [
-        ...document.querySelectorAll(
-          '[data-blokkli-provider-active="true"] [data-field-label]',
-        ),
-      ]
-        .map((el) => {
-          if (el instanceof HTMLElement) {
-            const rect = el.getBoundingClientRect()
-            const label = el.dataset.fieldLabel
-            const name = el.dataset.fieldName
-            const key = el.dataset.fieldKey
-            const isNested = el.dataset.fieldIsNested === 'true'
-            if (label && name && key) {
-              return {
-                key,
-                label,
-                name,
-                isNested,
-                rect,
-                isVisible: !!el.offsetHeight,
-              }
-            }
-          }
-        })
-        .filter(falsy)
-      if (canvasRect && rootRect && sidebarRect) {
-        rootRect.width = rootRect.width - sidebarRect.width
-        const scale = parseFloat(wrapperEl.style.scale)
-
-        eventBus.emit('animationFrame', {
-          mouseX,
-          mouseY,
-          scale: isNaN(scale) ? 1 : scale,
-          rootRect,
-          canvasRect,
-          fieldAreas,
-        })
-      }
-    }
+    eventBus.emit('animationFrame', {
+      mouseX,
+      mouseY,
+      fieldAreas: [],
+    })
   })
 
   onMounted(() => {
     document.addEventListener('scroll', requestDraw)
     document.body.addEventListener('wheel', requestDraw, { passive: false })
-    window.addEventListener('mousemove', onMouseMoveGlobal, {
-      passive: false,
-    })
-    window.addEventListener('touchmove', onTouchMoveGlobal, {
+    window.addEventListener('pointermove', onPointerMove, {
       passive: false,
     })
   })
 
   onBeforeUnmount(() => {
-    window.removeEventListener('mousemove', onMouseMoveGlobal)
-    window.removeEventListener('touchmove', onTouchMoveGlobal)
+    window.removeEventListener('pointermove', onPointerMove)
     document.body.removeEventListener('wheel', requestDraw)
     document.removeEventListener('scroll', requestDraw)
   })
@@ -121,5 +98,74 @@ export default function (): AnimationProvider {
   onBlokkliEvent('option:update', requestDraw)
   onBlokkliEvent('state:reloaded', requestDraw)
 
-  return { requestDraw }
+  const dpi = computed(() => {
+    // Use a reduced DPI when low performance mode is enabled.
+    if (ui.lowPerformanceMode.value) {
+      return 0.5
+    }
+    if (ui.isMobile.value) {
+      return window.devicePixelRatio
+    }
+    return Math.min(window.devicePixelRatio, 2.5)
+  })
+
+  function setSharedUniforms(
+    gl: WebGLRenderingContext,
+    programInfo: ProgramInfo,
+  ) {
+    const resolution = [ui.viewport.value.width, ui.viewport.value.height]
+    gl.uniform2fv(
+      gl.getUniformLocation(programInfo.program, 'u_resolution'),
+      resolution,
+    )
+
+    const offset = ui.artboardOffset.value
+    gl.uniform1f(
+      gl.getUniformLocation(programInfo.program, 'u_offset_x'),
+      offset.x,
+    )
+    gl.uniform1f(
+      gl.getUniformLocation(programInfo.program, 'u_offset_y'),
+      offset.y,
+    )
+    gl.uniform1f(
+      gl.getUniformLocation(programInfo.program, 'u_scale'),
+      ui.artboardScale.value,
+    )
+    gl.uniform1f(gl.getUniformLocation(programInfo.program, 'u_dpi'), dpi.value)
+  }
+
+  const registeredPrograms: Record<string, ProgramInfo> = {}
+  function registerProgram(
+    id: string,
+    gl: WebGLRenderingContext,
+    shaders: string[],
+  ) {
+    if (!registeredPrograms[id]) {
+      registeredPrograms[id] = createProgramInfo(gl, shaders)
+    }
+
+    return registeredPrograms[id]
+  }
+
+  return {
+    requestDraw,
+    gl: function () {
+      const el = document.querySelector('#bk-animation-canvas-webgl')
+      if (!(el instanceof HTMLCanvasElement)) {
+        throw new TypeError('Failed to locate WebGL canvas.')
+      }
+      const gl = el.getContext('webgl2', {
+        premultipliedAlpha: true,
+      })
+      if (!gl) {
+        throw new Error('Failed to get WebGL context.')
+      }
+
+      return gl
+    },
+    setSharedUniforms,
+    dpi,
+    registerProgram,
+  }
 }

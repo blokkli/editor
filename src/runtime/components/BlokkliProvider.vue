@@ -23,7 +23,7 @@
         />
       </PreviewProvider>
       <EditProvider
-        v-else-if="isEditing"
+        v-else-if="isEditing && shouldRender"
         v-slot="{ mutatedEntity }"
         :entity="entity"
         :entity-type="entityType"
@@ -65,6 +65,8 @@ import {
   useRoute,
   useRouter,
   provide,
+  ref,
+  onMounted,
 } from '#imports'
 import { INJECT_ENTITY_CONTEXT } from '../helpers/symbols'
 
@@ -111,6 +113,8 @@ const props = withDefaults(
   },
 )
 
+const shouldRender = ref(false)
+
 const isInEditor = computed(
   () =>
     props.entityUuid &&
@@ -148,5 +152,9 @@ provide(INJECT_ENTITY_CONTEXT, {
   uuid: props.entityUuid,
   type: props.entityType,
   bundle: props.entityBundle,
+})
+
+onMounted(() => {
+  shouldRender.value = true
 })
 </script>

@@ -1,5 +1,12 @@
 <template>
-  <div :class="isInline ? 'inline-block' : 'container text-center mt-25'">
+  <div
+    class="container mt-25"
+    :class="{
+      'text-left': options.align === 'left',
+      'text-center': options.align === 'center',
+      'text-right': options.align === 'right',
+    }"
+  >
     <Component
       :is="isExternal ? 'a' : NuxtLink"
       v-bind="attributes"
@@ -18,7 +25,7 @@
 import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
 import { NuxtLink } from '#components'
 
-const { options, parentType, fieldListType } = defineBlokkli({
+const { options } = defineBlokkli({
   bundle: 'button',
   options: {
     color: {
@@ -31,17 +38,23 @@ const { options, parentType, fieldListType } = defineBlokkli({
         primary: { class: 'bg-accent-700', label: 'Primary' },
       },
     },
+    align: {
+      type: 'radios',
+      label: 'Align',
+      default: 'center',
+      options: {
+        left: 'Left',
+        center: 'Center',
+        right: 'Right',
+      },
+    },
   },
   editor: {
     addBehaviour: 'no-form',
-    editTitle: (el) => el.querySelector('a')?.innerText,
+    editTitle: (el) => el.querySelector('a')?.textContent,
     getDraggableElement: (el) => el.querySelector('a'),
   },
 })
-
-const isInline = computed(
-  () => parentType.value || fieldListType.value === 'inline',
-)
 
 const props = defineProps<{
   url: string
