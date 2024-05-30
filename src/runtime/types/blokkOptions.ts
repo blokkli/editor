@@ -11,6 +11,12 @@ type DefinitionOptionCheckbox = {
   label: string
 }
 
+type DefinitionOptionColor = {
+  type: 'color'
+  default: `#${string}`
+  label: string
+}
+
 type DefinitionOptionCheckboxes = {
   type: 'checkboxes'
   label: string
@@ -69,6 +75,7 @@ type DefinitionOptionRadios = {
 )
 
 export type BlockOptionDefinition =
+  | DefinitionOptionColor
   | DefinitionOptionCheckbox
   | DefinitionOptionCheckboxes
   | DefinitionOptionRadios

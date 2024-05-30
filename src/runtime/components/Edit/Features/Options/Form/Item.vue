@@ -29,10 +29,13 @@
     <OptionText
       v-else-if="option.type === 'text'"
       v-model="value"
-      :property="property"
       :label="option.label"
       :type="option.inputType"
-      :value="value"
+    />
+    <OptionColor
+      v-else-if="option.type === 'color'"
+      v-model="value"
+      :label="option.label"
     />
   </div>
 </template>
@@ -43,6 +46,7 @@ import OptionRadios from './Radios/index.vue'
 import OptionCheckbox from './Checkbox/index.vue'
 import OptionCheckboxes from './Checkboxes/index.vue'
 import OptionText from './Text/index.vue'
+import OptionColor from './Color/index.vue'
 import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
 
 const { state } = useBlokkli()
@@ -62,6 +66,10 @@ const validateValue = (
 ): string | undefined => {
   if (props.option.type === 'text') {
     if (typeof v === 'string') {
+      return v
+    }
+  } else if (props.option.type === 'color') {
+    if (typeof v === 'string' && v.startsWith('#') && v.length === 7) {
       return v
     }
   } else if (props.option.type === 'radios') {

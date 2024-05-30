@@ -6,6 +6,7 @@ import type {
   FragmentDefinitionInput,
 } from '../runtime/types'
 import { sortObjectKeys } from './../helpers'
+import { defu } from 'defu'
 
 function toPascalCase(name: string): string {
   return name
@@ -302,7 +303,8 @@ export const getFragmentDefinition = (name: string): FragmentDefinitionInput<Rec
   ): string {
     const schema = Object.values(this.definitions).reduce<Record<string, any>>(
       (acc, v) => {
-        acc[v.definition.bundle] = v.definition.options || {}
+        const existing = acc[v.definition.bundle] || {}
+        acc[v.definition.bundle] = defu(existing, v.definition.options || {})
 
         const globalOptionKeys = v.definition.globalOptions || []
 

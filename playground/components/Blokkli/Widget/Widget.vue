@@ -1,6 +1,11 @@
 <template>
   <div class="container">
-    <h2 class="text-xl font-bold mb-25">
+    <h2
+      class="text-xl font-bold mb-25"
+      :style="{
+        color: options.textColor,
+      }"
+    >
       This block demonstrates all possible option types.
     </h2>
     <div class="table">
@@ -71,6 +76,11 @@ const { options } = defineBlokkli({
       type: 'checkbox',
       label: 'Show all options',
       default: true,
+    },
+    textColor: {
+      type: 'color',
+      label: 'Text color',
+      default: '#ffffff',
     },
     columns: {
       type: 'radios',
@@ -148,6 +158,7 @@ const { options } = defineBlokkli({
           'background',
           'columnsGrid',
           'buttonType',
+          'textColor',
         ]
       }
       return ['showAllOptions']

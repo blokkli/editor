@@ -124,6 +124,28 @@ console.log(options.value.text)
 </script>
 ```
 
+## Color
+
+This option type renders a HTML color input. The resulting value is a 6-digit
+HEX color string with a `#` prefix, e.g. `#f83b42`.
+
+```vue
+<script lang="ts" setup>
+const { options } = defineBlokkli({
+  bundle: 'card',
+
+  options: {
+    backgroundColor: {
+      type: 'color',
+      label: 'Background Color',
+      // The default value must be a valid HEX color.
+      default: '#000000',
+    },
+  },
+})
+</script>
+```
+
 ## Radios
 
 ![Screenshot of the text option type](/assets/option-radios-default.png)
