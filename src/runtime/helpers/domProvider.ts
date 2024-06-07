@@ -530,7 +530,9 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
   function getDragElement(block: DraggableExistingBlock) {
     const cached = dragElementCache[block.uuid]
     if (cached) {
-      return cached
+      if (document.body.contains(cached)) {
+        return cached
+      }
     }
     const el = block.element()
     if (el.parentNode) {

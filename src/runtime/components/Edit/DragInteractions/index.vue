@@ -93,13 +93,30 @@ function getInteractedElement(
   let uuid = ''
 
   for (let i = 0; i < elements.length; i++) {
-    const el = elements[i]
+    let el: Element = elements[i]
+
     if (!(el instanceof HTMLElement)) {
       continue
     }
+
     if (el.dataset.blokkliEditableField) {
       editableFieldName = el.dataset.blokkliEditableField
     }
+
+    // elementsFromPoint() does not contain the <tr> element if the deepest element is a <td> or <th>.
+    // In this case, we have to use direct parent element which is always going to be <tr>.
+    // This fixes the scenario where the root element of a block is a <tr>.
+    if (el instanceof HTMLTableCellElement) {
+      const parent = el.parentElement
+      if (parent instanceof HTMLTableRowElement) {
+        el = parent
+      }
+    }
+
+    if (!(el instanceof HTMLElement)) {
+      continue
+    }
+
     if (!el.dataset.uuid) {
       continue
     }
@@ -180,6 +197,7 @@ function onPointerDown(e: PointerEvent) {
   pointerDownTimestamp = Date.now()
   const coords = { x: e.clientX, y: e.clientY }
   mouseStartCoordinates = coords
+
   const interacted = getInteractedElement(e)
   pointerDownElement = interacted
   if (interacted) {

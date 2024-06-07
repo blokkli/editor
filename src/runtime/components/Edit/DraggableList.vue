@@ -1,5 +1,6 @@
 <template>
-  <div
+  <Component
+    :is="tag"
     ref="root"
     class="bk-draggable-list-container"
     :data-field-name="name"
@@ -43,7 +44,7 @@
       :data-entity-type="runtimeConfig.itemEntityType"
       class="bk-draggable"
     />
-  </div>
+  </Component>
 </template>
 
 <script lang="ts" setup>

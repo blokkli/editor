@@ -63,7 +63,6 @@ onBlokkliEvent('canvas:draw', (e) => {
   const scale = e.artboardScale
   const offset = e.artboardOffset
   const artboardEl = ui.artboardElement()
-  const artboardScroll = artboardEl.scrollTop
 
   const x = Math.min(
     offset.x + ui.artboardSize.value.width * scale + 10,
@@ -117,7 +116,7 @@ onBlokkliEvent('canvas:draw', (e) => {
       const id = uuids.join(',')
       if (bounds) {
         if (!newIndicators[id]) {
-          const y = findY(Math.round(bounds.y + artboardScroll))
+          const y = findY(Math.round(bounds.y))
           newIndicators[id] = {
             id,
             comments: [],

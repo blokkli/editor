@@ -43,12 +43,13 @@ type SelectionRectangle = Rectangle & {
 class SelectionRectangleBufferCollector extends RectangleBufferCollector<SelectionRectangle> {
   removed: string[] = []
   getBufferInfo(): BufferInfo {
-    logger.log('Rebuilding buffer')
-    const rects = Object.entries(dom.getBlockRects()).sort((a, b) => {
-      return a[1].y - b[1].y
-    })
-    for (let i = 0; i < rects.length; i++) {
-      const [uuid, rect] = rects[i]
+    const uuids = dom.getVisibleBlocks()
+    for (let i = 0; i < uuids.length; i++) {
+      const uuid = uuids[i]
+      const rect = dom.getBlockRect(uuid)
+      if (!rect) {
+        continue
+      }
       this.added.add(uuid)
       const block = dom.findBlock(uuid)
       if (!block) {
@@ -247,6 +248,7 @@ onBlokkliEvent('canvas:draw', function (e) {
   updateActiveIndexes(props.uuids)
   updateChangedPositions()
 
+  setBuffersAndAttributes(gl, programInfo, collector.bufferInfo!)
   drawBufferInfo(gl, collector.bufferInfo!, gl.TRIANGLES)
 })
 
