@@ -5,16 +5,19 @@
     :class="[{ 'bk-is-touch': isTouch }, { 'bk-is-active': !!activeLabel }]"
   >
     <Transition name="bk-drag-item">
-      <span
+      <div
         v-show="activeLabel"
         class="bk-dragging-overlay-label"
         :style="{ backgroundColor: activeColor }"
-        >{{ activeLabel }}</span
       >
+        <Icon name="cursor-move" />
+        <p v-html="activeLabel" />
+      </div>
     </Transition>
     <div
       v-for="(rect, i) in rects"
       :key="i"
+      class="bk-dragging-overlay-item"
       :class="{ 'bk-is-top': rect.isTop, 'bk-is-fallback': !rect.markup }"
       :style="{
         width: rect.width + 'px',

@@ -26,6 +26,9 @@ const { options } = defineBlokkli({
       parentBundle: 'grid',
     },
     {
+      parentBundle: 'button_list',
+    },
+    {
       fieldList: 'inline',
     },
   ],

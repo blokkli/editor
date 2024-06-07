@@ -16,6 +16,7 @@ export class BlockTwoColumns extends Block {
         'button',
         'card',
         'from_library',
+        'button_list',
       ]),
       new FieldBlocks('right', 'Right', -1, true, ['image', 'card']),
     ]

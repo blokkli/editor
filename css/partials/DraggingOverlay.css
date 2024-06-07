@@ -9,11 +9,11 @@
     @apply bottom-0 top-auto;
   }
 
-  > div {
+  > .bk-dragging-overlay-item {
     @apply absolute w-full h-full top-0 left-0;
   }
 
-  > div.bk-is-top {
+  > .bk-dragging-overlay-item.bk-is-top {
     @apply shadow-xl-even z-50 rounded-md overflow-hidden will-change-transform;
 
     &:before {
@@ -23,10 +23,10 @@
       @apply !opacity-70;
     }
   }
-  > div.bk-is-fallback {
+  > .bk-dragging-overlay-item.bk-is-fallback {
     @apply border border-mono-500;
   }
-  &.bk-is-active > div.bk-is-top {
+  &.bk-is-active > .bk-dragging-overlay-item.bk-is-top {
     @apply !opacity-80;
   }
 }
@@ -89,7 +89,20 @@
 
 .bk-dragging-overlay-label {
   @apply absolute bottom-full left-1/2 -translate-x-1/2 mb-40 rounded-full text-white;
-  @apply px-10 py-5 font-bold whitespace-nowrap;
+  @apply px-15 py-10 whitespace-nowrap;
   @apply shadow;
+  @apply flex items-center gap-5 leading-none font-sans text-lg;
   will-change: transform, contents, opacity;
+
+  .bk-icon {
+    @apply w-15 h-15;
+  }
+
+  strong {
+    @apply font-bold;
+  }
+
+  svg {
+    @apply fill-current;
+  }
 }

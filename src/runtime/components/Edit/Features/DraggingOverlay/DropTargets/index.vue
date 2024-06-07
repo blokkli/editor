@@ -88,8 +88,18 @@ const emit = defineEmits<{
   (e: 'drop', data: DropTargetEvent): void
 }>()
 
-const { dom, ui, $t, theme, dropAreas, eventBus, animation, state } =
-  useBlokkli()
+const {
+  dom,
+  ui,
+  $t,
+  theme,
+  dropAreas,
+  eventBus,
+  animation,
+  state,
+  runtimeConfig,
+  types,
+} = useBlokkli()
 
 const gl = animation.gl()
 const programInfo = animation.registerProgram('drop_targets', gl, [vs, fs])
@@ -409,7 +419,25 @@ const buildChildren = (
 
 const fieldCache: Record<string, FieldRect> = {}
 
-const insertText = $t('draggingOverlayInsertText', 'Insert into @field')
+const insertText = $t(
+  'draggingOverlayInsertText',
+  'Insert into @bundle » @field',
+)
+
+function getBundleLabel(field: BlokkliFieldElement): string {
+  if (field.hostEntityType === runtimeConfig.itemEntityType) {
+    return (
+      types.getType(field.hostEntityBundle)?.label || field.hostEntityBundle
+    )
+  }
+
+  return state.entity.value.bundleLabel || field.hostEntityBundle
+}
+
+function getInsertText(field: BlokkliFieldElement): string {
+  const bundleLabel = getBundleLabel(field)
+  return `${bundleLabel} » <strong>${field.label}</strong>`
+}
 
 const determineCanAddChildren = (
   field: BlokkliFieldElement,
@@ -463,7 +491,7 @@ const buildEmptyChild = (
         y: 0,
         width: fieldWidth,
         height: fieldHeight,
-        label: insertText.replace('@field', field.label),
+        label: getInsertText(field),
       }
     } else {
       return {
@@ -472,7 +500,7 @@ const buildEmptyChild = (
         y: 0,
         width: fieldWidth,
         height: fieldHeight > 30 ? 0 : 30,
-        label: insertText.replace('@field', field.label),
+        label: getInsertText(field),
       }
     }
   }
@@ -518,7 +546,7 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
     height,
     x,
     y,
-    label: insertText.replace('@field', field.label),
+    label: getInsertText(field),
     canAddChildren,
     emptyChild,
     orientation,
