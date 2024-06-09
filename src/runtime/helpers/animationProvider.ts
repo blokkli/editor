@@ -38,6 +38,8 @@ export type AnimationProvider = {
     gl: WebGLRenderingContext,
     shaders: string[],
   ) => ProgramInfo
+
+  setMouseCoords: (x: number, y: number) => void
 }
 
 export default function (ui: UiProvider): AnimationProvider {
@@ -48,12 +50,6 @@ export default function (ui: UiProvider): AnimationProvider {
   // Assuming 60 fps, this value means after every draw request we will only
   // render a maximum of 2 seconds.
   let iterator = 120
-
-  const onPointerMove = (e: PointerEvent) => {
-    mouseX = e.clientX
-    mouseY = e.clientY
-    iterator = 120
-  }
 
   useAnimationFrame(() => {
     // Make sure we don't loop when it's not needed.
@@ -78,13 +74,9 @@ export default function (ui: UiProvider): AnimationProvider {
   onMounted(() => {
     document.addEventListener('scroll', requestDraw)
     document.body.addEventListener('wheel', requestDraw, { passive: false })
-    window.addEventListener('pointermove', onPointerMove, {
-      passive: false,
-    })
   })
 
   onBeforeUnmount(() => {
-    window.removeEventListener('pointermove', onPointerMove)
     document.body.removeEventListener('wheel', requestDraw)
     document.removeEventListener('scroll', requestDraw)
   })
@@ -148,6 +140,12 @@ export default function (ui: UiProvider): AnimationProvider {
     return registeredPrograms[id]
   }
 
+  function setMouseCoords(x: number, y: number) {
+    mouseX = x
+    mouseY = y
+    iterator = 120
+  }
+
   return {
     requestDraw,
     gl: function () {
@@ -167,5 +165,6 @@ export default function (ui: UiProvider): AnimationProvider {
     setSharedUniforms,
     dpi,
     registerProgram,
+    setMouseCoords,
   }
 }

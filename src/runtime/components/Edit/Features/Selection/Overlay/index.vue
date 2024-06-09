@@ -4,7 +4,7 @@
 
 <script lang="ts" setup>
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import type { Coord, DraggableExistingBlock, Rectangle } from '#blokkli/types'
+import type { DraggableExistingBlock, Rectangle } from '#blokkli/types'
 import { useBlokkli, onBeforeUnmount } from '#imports'
 import {
   setBuffersAndAttributes,
@@ -104,6 +104,10 @@ onBlokkliEvent('canvas:draw', () => {
 })
 
 onBlokkliEvent('ui:resized', function () {
+  collector.reset()
+})
+
+onBlokkliEvent('state:reloaded', function () {
   collector.reset()
 })
 

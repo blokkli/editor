@@ -168,6 +168,12 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
   const fieldRects: Record<string, Rectangle> = {}
   let draggableBlockCache: Record<string, DraggableExistingBlock> = {}
 
+  const resizeObserver = new ResizeObserver(function (
+    entries: ResizeObserverEntry[],
+  ) {
+    console.log(entries)
+  })
+
   function intersectionCallback(entries: IntersectionObserverEntry[]) {
     const scale = ui.artboardScale.value
     const offset = ui.artboardOffset.value
@@ -277,6 +283,7 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
       fieldListType,
       parentBlockBundle,
     )
+    resizeObserver.observe(observableElement)
     observer.observe(observableElement)
     registeredBlocks[uuid] = el
   }
@@ -285,6 +292,7 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     const el = registeredBlocks[uuid]
     if (el) {
       observer.unobserve(el)
+      resizeObserver.unobserve(el)
     }
     registeredBlocks[uuid] = undefined
     delete blockRects[uuid]

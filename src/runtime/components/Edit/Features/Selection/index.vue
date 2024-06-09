@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import Overlay from './OverlayNew/index.vue'
+import Overlay from './Overlay/index.vue'
 import {
   calculateIntersection,
   getBounds,
@@ -34,7 +34,8 @@ const isVisible = computed(
     !selection.editableActive.value &&
     !selection.isChangingOptions.value &&
     !selection.isDragging.value &&
-    !ui.isAnimating.value,
+    !ui.isAnimating.value &&
+    selection.uuids.value.length,
 )
 
 /**

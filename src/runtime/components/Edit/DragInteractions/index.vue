@@ -1,38 +1,21 @@
 <template>
-  <Teleport to="body">
-    <div
-      class="bk-interaction-overlay"
-      :style="overlayStyle"
-      @pointerdown="onPointerDown"
-      @pointerup="onPointerUp"
-      @pointermove="onPointerMove"
-    >
-      <!-- <svg -->
-      <!--   v-if="dom.isReady.value" -->
-      <!--   v-bind="svgAttributes" -->
-      <!--   ref="svg" -->
-      <!--   class="bk-drag-interactions-svg" -->
-      <!-- > -->
-      <!--   <rect -->
-      <!--     v-for="rect in rects" -->
-      <!--     :key="rect.uuid" -->
-      <!--     :x="rect.rect.x" -->
-      <!--     :y="rect.rect.y" -->
-      <!--     :width="rect.rect.width" -->
-      <!--     :height="rect.rect.height" -->
-      <!--   /> -->
-      <!-- </svg> -->
-    </div>
-  </Teleport>
+  <div />
 </template>
 
 <script setup lang="ts">
 import { falsy, getDistance, getInteractionCoordinates } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { Coord, Rectangle } from '#blokkli/types'
-import { watch, ref, useBlokkli, computed } from '#imports'
+import {
+  watch,
+  ref,
+  useBlokkli,
+  computed,
+  onMounted,
+  onBeforeUnmount,
+} from '#imports'
 
-const { dom, eventBus, selection, keyboard, ui } = useBlokkli()
+const { dom, eventBus, selection, keyboard, ui, animation } = useBlokkli()
 
 const cursor = computed(() => {
   if (selection.isMultiSelecting.value) {
@@ -42,16 +25,6 @@ const cursor = computed(() => {
   }
 
   return 'default'
-})
-
-const overlayStyle = computed(() => {
-  return {
-    top: ui.visibleViewport.value.y + 'px',
-    left: ui.visibleViewport.value.x + 'px',
-    width: ui.visibleViewport.value.width + 'px',
-    height: ui.visibleViewport.value.height + 'px',
-    cursor: cursor.value,
-  }
 })
 
 const rects = ref<{ uuid: string; rect: Rectangle }[]>([])
@@ -140,6 +113,10 @@ function getInteractedElement(
 }
 
 function onPointerMove(e: PointerEvent) {
+  e.preventDefault()
+  e.stopPropagation()
+  e.stopImmediatePropagation()
+  animation.setMouseCoords(e.clientX, e.clientY)
   if (keyboard.isPressingSpace.value) {
     return
   }
@@ -191,6 +168,11 @@ function onPointerMove(e: PointerEvent) {
 let pointerDownTimestamp = 0
 
 function onPointerDown(e: PointerEvent) {
+  if (!keyboard.isPressingSpace.value) {
+    e.preventDefault()
+    e.stopPropagation()
+    e.stopImmediatePropagation()
+  }
   if (e.pointerType === 'touch') {
     return onTouchStart(e)
   }
@@ -207,6 +189,9 @@ function onPointerDown(e: PointerEvent) {
 }
 
 function onPointerUp(e: PointerEvent) {
+  e.preventDefault()
+  e.stopPropagation()
+  e.stopImmediatePropagation()
   // This is required because emitting the mouse:up event would set this value to false.
   const wasDragging = selection.isDragging.value
   const wasMultiSelecting = selection.isMultiSelecting.value
@@ -229,6 +214,7 @@ function onPointerUp(e: PointerEvent) {
 
   // Prevents selecting the block under the current pointer position when dragging or multi selecting is ending.
   if (wasDragging || wasMultiSelecting) {
+    eventBus.emit('dragging:end')
     return
   }
   if (keyboard.isPressingSpace.value) {
@@ -416,5 +402,49 @@ onBlokkliEvent('canvas:draw', (e) => {
   //   buildRects()
   //   lastRectUpdate = Date.now()
   // }
+})
+
+function onClick(e: MouseEvent) {
+  e.preventDefault()
+}
+
+onMounted(() => {
+  const el = ui.rootElement()
+
+  el.addEventListener('click', onClick, {
+    capture: true,
+  })
+
+  el.addEventListener('pointerdown', onPointerDown, {
+    capture: true,
+  })
+
+  el.addEventListener('pointermove', onPointerMove, {
+    capture: true,
+  })
+
+  el.addEventListener('pointerup', onPointerUp, {
+    capture: true,
+  })
+})
+
+onBeforeUnmount(() => {
+  const el = ui.rootElement()
+
+  el.removeEventListener('click', onClick, {
+    capture: true,
+  })
+
+  el.removeEventListener('pointerdown', onPointerDown, {
+    capture: true,
+  })
+
+  el.removeEventListener('pointermove', onPointerMove, {
+    capture: true,
+  })
+
+  el.removeEventListener('pointerup', onPointerUp, {
+    capture: true,
+  })
 })
 </script>

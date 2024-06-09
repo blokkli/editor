@@ -205,6 +205,10 @@ html {
   * {
     @apply select-none cursor-default;
   }
+
+  &:hover {
+    @apply outline-mono-500/90 outline-2 outline-dashed;
+  }
 }
 
 .bk-field-list {
@@ -391,19 +395,5 @@ html.bk-hide-non-editable {
 
   svg {
     @apply select-none;
-  }
-}
-
-.bk-interaction-overlay {
-  @apply absolute z-interaction-overlay;
-}
-
-.bk-drag-interactions-svg {
-  @apply fixed top-0 left-0 z-[99999999] pointer-events-auto origin-top-left;
-  will-change: transform contents;
-
-  rect {
-    @apply fill-transparent stroke-1 stroke-transparent hover:stroke-black;
-    stroke-dasharray: 2 2;
   }
 }

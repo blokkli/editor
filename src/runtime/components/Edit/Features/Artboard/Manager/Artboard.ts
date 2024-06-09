@@ -364,6 +364,7 @@ export class Artboard {
     this.listeners.onMouseDown = this.onMouseDown.bind(this)
     this.rootEl.addEventListener('mousedown', this.listeners.onMouseDown, {
       passive: false,
+      capture: true,
     })
 
     this.listeners.onMouseUp = this.onMouseUp.bind(this)
@@ -395,6 +396,7 @@ export class Artboard {
   }
 
   onMouseDown(e: MouseEvent) {
+    console.log('on MOUSE DOWN')
     if (this.isMomentumScrolling || this.isPressingSpace) {
       e.preventDefault()
       e.stopPropagation()

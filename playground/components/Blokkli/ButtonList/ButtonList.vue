@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BlokkliField name="blocks" :list="blocks" class="flex gap-10" />
+    <BlokkliField name="blocks" :list="blocks" class="flex gap-10 flex-wrap" />
   </div>
 </template>
 
