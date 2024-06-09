@@ -27,6 +27,11 @@ export type BlockDefinitionProvider = {
   allTypes: ComputedRef<BlockBundleDefinition[]>
   getType: (bundle: string) => BlockBundleDefinition | undefined
   fieldConfig: ComputedRef<FieldConfig[]>
+  getFieldConfig: (
+    entityType: string,
+    entityBundle: string,
+    fieldName: string,
+  ) => FieldConfig | undefined
   editableFieldConfig: ComputedRef<EditableFieldConfig[]>
   droppableFieldConfig: ComputedRef<DroppableFieldConfig[]>
   getDroppableFieldConfig: (
@@ -45,7 +50,7 @@ export default async function (
   const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
 
   const loadedFieldConfig = await adapter.getFieldConfig()
-  const fieldConfig = computed(() => loadedFieldConfig)
+  const fieldConfig = computed<FieldConfig[]>(() => loadedFieldConfig)
   const loadedEditableFieldConfig = adapter.getEditableFieldConfig
     ? await adapter.getEditableFieldConfig()
     : []
@@ -137,8 +142,38 @@ export default async function (
     )
   })
 
+  const typeMap = computed(() => {
+    return allTypes.value.reduce<Record<string, BlockBundleDefinition>>(
+      (acc, type) => {
+        acc[type.id] = type
+        return acc
+      },
+      {},
+    )
+  })
+
   const getType = (bundle: string): BlockBundleDefinition | undefined => {
-    return allTypes.value.find((v) => v.id === bundle)
+    return typeMap.value[bundle]
+  }
+
+  const fieldConfigMap = computed<Record<string, FieldConfig>>(() => {
+    return fieldConfig.value.reduce<Record<string, FieldConfig>>(
+      (acc, config) => {
+        const key = `${config.entityType}:${config.entityBundle}:${config.name}`
+        acc[key] = config
+        return acc
+      },
+      {},
+    )
+  })
+
+  function getFieldConfig(
+    entityType: string,
+    entityBundle: string,
+    fieldName: string,
+  ): FieldConfig | undefined {
+    const key = `${entityType}:${entityBundle}:${fieldName}`
+    return fieldConfigMap.value[key]
   }
 
   const getDroppableFieldConfig = (
@@ -208,5 +243,6 @@ export default async function (
     droppableFieldConfig,
     getDroppableFieldConfig,
     generallyAvailableBundles,
+    getFieldConfig,
   }
 }

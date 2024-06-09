@@ -12,20 +12,16 @@
     icon="tree"
     weight="-90"
   >
-    <List :key="listRefreshKey" />
+    <div class="bk bk-structure bk-control" @wheel.stop>
+      <List :fields="fields" :entity-bundle="context.entityBundle" />
+    </div>
   </PluginSidebar>
 </template>
 
 <script lang="ts" setup>
-import {
-  useBlokkli,
-  onMounted,
-  defineBlokkliFeature,
-  ref,
-  onBeforeUnmount,
-} from '#imports'
+import { useBlokkli, defineBlokkliFeature, computed } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
-import List from './List/index.vue'
+import List from './ListNew/index.vue'
 
 defineBlokkliFeature({
   id: 'structure',
@@ -35,34 +31,12 @@ defineBlokkliFeature({
     'Provides a sidebar button to render a structured list of all blocks on the current page.',
 })
 
-const { $t, state, ui, selection } = useBlokkli()
+const { $t, state, runtimeConfig, context } = useBlokkli()
 
-const targetNode = ui.providerElement()
-
-const listRefreshKey = ref('')
-
-const observer = new MutationObserver(() => {
-  if (
-    listRefreshKey.value === state.refreshKey.value ||
-    selection.isDragging.value ||
-    selection.isMultiSelecting.value ||
-    selection.isChangingOptions.value
-  ) {
-    return
-  }
-  listRefreshKey.value = state.refreshKey.value
-})
-
-onMounted(() => {
-  observer.observe(targetNode, {
-    childList: true,
-    subtree: true,
-    attributes: false,
-  })
-})
-
-onBeforeUnmount(() => {
-  observer.disconnect()
+const fields = computed(() => {
+  return state.mutatedFields.value.filter(
+    (v) => v.entityType !== runtimeConfig.itemEntityType,
+  )
 })
 </script>
 
