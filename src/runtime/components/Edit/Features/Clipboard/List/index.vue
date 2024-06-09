@@ -75,6 +75,6 @@ defineEmits<{
 const { types } = useBlokkli()
 
 function getLabel(bundle: string): string {
-  return types.allTypes.value.find((v) => v.id === bundle)?.label || bundle
+  return types.getBlockBundleDefinition(bundle)?.label || bundle
 }
 </script>

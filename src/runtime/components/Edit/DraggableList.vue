@@ -70,11 +70,10 @@ const props = defineProps<{
 }>()
 
 const fieldConfig = computed<FieldConfig>(() => {
-  const match = types.fieldConfig.value.find(
-    (v) =>
-      v.name === props.name &&
-      v.entityType === props.entity.type &&
-      v.entityBundle === props.entity.bundle,
+  const match = types.getFieldConfig(
+    props.entity.type,
+    props.entity.bundle,
+    props.name,
   )
 
   if (!match) {

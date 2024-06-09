@@ -427,7 +427,8 @@ const insertText = $t(
 function getBundleLabel(field: BlokkliFieldElement): string {
   if (field.hostEntityType === runtimeConfig.itemEntityType) {
     return (
-      types.getType(field.hostEntityBundle)?.label || field.hostEntityBundle
+      types.getBlockBundleDefinition(field.hostEntityBundle)?.label ||
+      field.hostEntityBundle
     )
   }
 

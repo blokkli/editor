@@ -64,15 +64,6 @@ const { eventBus, state, types, dom } = useBlokkli()
 
 const buildForKey = ref('')
 
-const typeLabelMap = computed(() => {
-  return types.allTypes.value.reduce<Record<string, string>>((acc, v) => {
-    if (v.id && v.label) {
-      acc[v.id] = v.label
-    }
-    return acc
-  }, {})
-})
-
 const items = ref<SearchItem[]>([])
 const index = ref(0)
 
@@ -154,7 +145,9 @@ const buildIndex = () => {
   const newItems = dom
     .getAllBlocks()
     .map((item) => {
-      const title = typeLabelMap.value[item.itemBundle] || item.itemBundle
+      const title =
+        types.getBlockBundleDefinition(item.itemBundle)?.label ||
+        item.itemBundle
       const searchItem = {
         item,
         title: item.editTitle || title,

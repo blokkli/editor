@@ -128,9 +128,8 @@ const itemBundle = computed(() => {
   if (itemBundleIds.value.length !== 1) {
     return
   }
-  return itemBundleIds.value
-    ? types.allTypes.value.find((v) => v.id === itemBundleIds.value[0])
-    : undefined
+  const bundle = itemBundleIds.value[0]
+  return types.getBlockBundleDefinition(bundle)
 })
 
 const limitPlacedRect = (rect: Rectangle, padding: Rectangle): Rectangle => {

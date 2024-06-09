@@ -9,7 +9,7 @@
         :key="item.uuid"
         class="bk-structure-field-item"
       >
-        <Item :uuid="item.uuid" :bundle="item.bundle" />
+        <Item :uuid="item.uuid" :bundle="item.bundle" :level="level" />
       </li>
     </ul>
   </div>
@@ -18,14 +18,20 @@
 <script lang="ts" setup>
 import { useBlokkli, computed } from '#imports'
 import Item from './../Item/index.vue'
-import type { FieldListItem, MutatedField } from '#blokkli/types'
+import type { MutatedField } from '#blokkli/types'
 
-const props = defineProps<{
-  field: MutatedField
-  entityBundle: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    field: MutatedField
+    entityBundle: string
+    level?: number
+  }>(),
+  {
+    level: 0,
+  },
+)
 
-const { selection, types } = useBlokkli()
+const { types } = useBlokkli()
 
 const config = computed(() =>
   types.getFieldConfig(
@@ -35,11 +41,11 @@ const config = computed(() =>
   ),
 )
 
-const totalFieldsOfType = computed(() => {
-  return types.fieldConfig.value.filter(
-    (v) =>
-      v.entityType === props.field.entityType &&
-      v.entityBundle === props.entityBundle,
-  ).length
-})
+const totalFieldsOfType = computed(
+  () =>
+    types.fieldConfig.forEntityTypeAndBundle(
+      props.field.entityType,
+      props.entityBundle,
+    ).length,
+)
 </script>

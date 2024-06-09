@@ -347,7 +347,7 @@ onMounted(() => {
       if ('itemBundle' in item.item) {
         bundle = item.item.itemBundle
         if (bundle) {
-          const definition = types.getType(bundle)
+          const definition = types.getBlockBundleDefinition(bundle)
           if (definition) {
             label = definition.label
           }

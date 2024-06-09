@@ -85,7 +85,7 @@ const possibleConversions = computed<BlockBundleDefinition[]>(() => {
         v.sourceBundle === sourceType &&
         types.allowedTypesInList.value.includes(v.targetBundle),
     )
-    .map((v) => types.allTypes.value.find((t) => t.id === v.targetBundle))
+    .map((v) => types.getBlockBundleDefinition(v.targetBundle))
     .filter(falsy)
 })
 </script>

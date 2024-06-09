@@ -61,7 +61,7 @@ const labelReplacement = computed(() => {
   }
 
   if (bundle.value) {
-    const definition = types.getType(bundle.value)
+    const definition = types.getBlockBundleDefinition(bundle.value)
     if (definition) {
       return definition.label
     }
@@ -141,7 +141,7 @@ onBlokkliEvent('item:edit', (e) => {
     return
   }
   if (state.editMode.value === 'translating') {
-    const type = types.allTypes.value.find((v) => v.id === e.bundle)
+    const type = types.getBlockBundleDefinition(e.bundle)
     if (!type) {
       return
     }

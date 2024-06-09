@@ -130,7 +130,7 @@ const definition = computed(() =>
 
 const itemBundle = computed(() =>
   selectedItem?.value
-    ? types.allTypes.value.find((v) => v.id === selectedItem.value?.itemBundle)
+    ? types.getBlockBundleDefinition(selectedItem.value.itemBundle)
     : null,
 )
 
@@ -156,12 +156,12 @@ async function onMakeReusable(label: string) {
 }
 
 const isSupportedOnEntity = computed(() =>
-  types.generallyAvailableBundles.value.find((v) => v.id === 'from_library'),
+  types.generallyAvailableBundles.find((v) => v.id === 'from_library'),
 )
 
 const fromLibraryAllowedInList = computed(() => {
   if (!selection.uuids.value.length) {
-    return !!types.generallyAvailableBundles.value.find(
+    return !!types.generallyAvailableBundles.find(
       (v) => v.id === 'from_library',
     )
   }

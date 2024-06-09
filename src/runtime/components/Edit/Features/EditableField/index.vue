@@ -75,13 +75,11 @@ const buildEditable = (
     'type' in host ? host.type : runtimeConfig.itemEntityType
   const hostEntityBundle = 'bundle' in host ? host.bundle : host.itemBundle
 
-  const config = types.editableFieldConfig.value.find((v) => {
-    return (
-      v.entityType === hostEntityType &&
-      v.entityBundle === hostEntityBundle &&
-      v.name === fieldName
-    )
-  })
+  const config = types.editableFieldConfig.forName(
+    hostEntityType,
+    hostEntityBundle,
+    fieldName,
+  )
 
   if (!config) {
     throw new Error(

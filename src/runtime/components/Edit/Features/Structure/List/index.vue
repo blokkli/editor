@@ -42,7 +42,7 @@ function mapItem(el: Element): StructureTreeItem | undefined {
     return {
       uuid: el.dataset.uuid || '',
       bundle,
-      type: types.allTypes.value.find((v) => v.id === bundle),
+      type: types.getBlockBundleDefinition(bundle),
       items: [...el.querySelectorAll('[data-uuid]')].map(mapItem).filter(falsy),
       title: title || undefined,
     }

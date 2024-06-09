@@ -102,15 +102,13 @@ const selectedItem = ref('')
 
 const allowedBundles = computed<string[]>(() => {
   return (
-    types.fieldConfig.value.filter((v) => {
-      return (
-        v.name === props.field.name &&
-        v.entityBundle === props.field.hostEntityBundle &&
-        v.entityType === props.field.hostEntityType
-      )
-    })[0]?.allowedBundles || []
+    types.getFieldConfig(
+      props.field.hostEntityType,
+      props.field.hostEntityBundle,
+      props.field.name,
+    )?.allowedBundles || []
   ).filter((v) => {
-    return types.getType(v)?.allowReusable
+    return types.getBlockBundleDefinition(v)?.allowReusable
   })
 })
 
@@ -187,7 +185,7 @@ watch(searchText, () => {
 
 const bundleOptions = computed(() => {
   const bundles = allowedBundles.value.map((bundle) => {
-    const definition = types.getType(bundle)
+    const definition = types.getBlockBundleDefinition(bundle)
     return {
       bundle,
       label: definition?.label || bundle,

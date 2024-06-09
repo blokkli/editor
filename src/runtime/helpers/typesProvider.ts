@@ -20,20 +20,93 @@ export type BlokkliBlockType = BlockBundleDefinition & {
     | undefined
 }
 
+interface MappableConfig {
+  entityType: string
+  entityBundle: string
+  name: string
+}
+
+class ConfigMap<T extends MappableConfig> {
+  private configs: T[] = []
+  private mapEntityType: Record<string, T[]> = {}
+  private mapEntityTypeBundle: Record<string, Record<string, T[]>> = {}
+  private mapEntityTypeBundleName: Record<
+    string,
+    Record<string, Record<string, T>>
+  > = {}
+
+  constructor(items: T[]) {
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i]
+      this.configs.push(item)
+
+      // Map by entity type.
+      if (!this.mapEntityType[item.entityType]) {
+        this.mapEntityType[item.entityType] = []
+      }
+      this.mapEntityType[item.entityType].push(item)
+
+      // Map by entity type and bundle.
+      if (!this.mapEntityTypeBundle[item.entityType]) {
+        this.mapEntityTypeBundle[item.entityType] = {}
+      }
+
+      if (!this.mapEntityTypeBundle[item.entityType][item.entityBundle]) {
+        this.mapEntityTypeBundle[item.entityType][item.entityBundle] = []
+      }
+
+      this.mapEntityTypeBundle[item.entityType][item.entityBundle].push(item)
+
+      // Map by entity type, bundle and name.
+      if (!this.mapEntityTypeBundleName[item.entityType]) {
+        this.mapEntityTypeBundleName[item.entityType] = {}
+      }
+
+      if (!this.mapEntityTypeBundleName[item.entityType][item.entityBundle]) {
+        this.mapEntityTypeBundleName[item.entityType][item.entityBundle] = {}
+      }
+      this.mapEntityTypeBundleName[item.entityType][item.entityBundle][
+        item.name
+      ] = item
+    }
+  }
+
+  forEntityType(entityType: string): T[] {
+    return this.mapEntityType[entityType] || []
+  }
+
+  forEntityTypeAndBundle(entityType: string, entityBundle: string): T[] {
+    return this.mapEntityTypeBundle[entityType]?.[entityBundle] || []
+  }
+
+  forName(
+    entityType: string,
+    entityBundle: string,
+    name: string,
+  ): T | undefined {
+    return this.mapEntityTypeBundleName[entityType]?.[entityBundle]?.[name]
+  }
+
+  all(): T[] {
+    return this.configs
+  }
+}
+
 export type BlockDefinitionProvider = {
-  itemBundlesWithNested: ComputedRef<string[]>
+  itemBundlesWithNested: string[]
   allowedTypesInList: ComputedRef<string[]>
-  generallyAvailableBundles: ComputedRef<BlockBundleDefinition[]>
-  allTypes: ComputedRef<BlockBundleDefinition[]>
-  getType: (bundle: string) => BlockBundleDefinition | undefined
-  fieldConfig: ComputedRef<FieldConfig[]>
+  generallyAvailableBundles: BlockBundleDefinition[]
+  getBlockBundleDefinition: (
+    bundle: string,
+  ) => BlockBundleDefinition | undefined
   getFieldConfig: (
     entityType: string,
     entityBundle: string,
     fieldName: string,
   ) => FieldConfig | undefined
-  editableFieldConfig: ComputedRef<EditableFieldConfig[]>
-  droppableFieldConfig: ComputedRef<DroppableFieldConfig[]>
+  fieldConfig: ConfigMap<FieldConfig>
+  editableFieldConfig: ConfigMap<EditableFieldConfig>
+  droppableFieldConfig: ConfigMap<DroppableFieldConfig>
   getDroppableFieldConfig: (
     fieldName: string,
     host: DraggableExistingBlock | EntityContext,
@@ -45,20 +118,20 @@ export default async function (
   selection: SelectionProvider,
   context: ComputedRef<AdapterContext>,
 ): Promise<BlockDefinitionProvider> {
-  const allTypesData = await adapter.getAllBundles()
-  const allTypes = computed(() => allTypesData || [])
+  const bundleDefinitions = await adapter.getAllBundles()
   const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
 
-  const loadedFieldConfig = await adapter.getFieldConfig()
-  const fieldConfig = computed<FieldConfig[]>(() => loadedFieldConfig)
-  const loadedEditableFieldConfig = adapter.getEditableFieldConfig
+  const fieldConfigData = await adapter.getFieldConfig()
+  const fieldConfig = new ConfigMap(fieldConfigData)
+  const editableFieldConfigData = adapter.getEditableFieldConfig
     ? await adapter.getEditableFieldConfig()
     : []
-  const loadedDroppableFieldConfig = adapter.getDroppableFieldConfig
+  const editableFieldConfig = new ConfigMap(editableFieldConfigData)
+  const droppableFieldConfigData = adapter.getDroppableFieldConfig
     ? await adapter.getDroppableFieldConfig()
     : []
-  const editableFieldConfig = computed(() => loadedEditableFieldConfig)
-  const droppableFieldConfig = computed(() => loadedDroppableFieldConfig)
+
+  const droppableFieldConfig = new ConfigMap(droppableFieldConfigData)
 
   /**
    * The allowed bundles in the current field item list.
@@ -91,7 +164,7 @@ export default async function (
       fieldName = block.hostFieldName
     }
 
-    return fieldConfig.value
+    return fieldConfigData
       .filter(
         (v) =>
           v.entityType === hostType &&
@@ -108,11 +181,11 @@ export default async function (
     }
     const item = selection.blocks.value[0]
     // Determine if the selected item has nested items.
-    const hasNested = itemBundlesWithNested.value.includes(item.itemBundle)
+    const hasNested = itemBundlesWithNested.includes(item.itemBundle)
     if (hasNested) {
       // Get the nested item fields.
       const nestedFields =
-        fieldConfig.value
+        fieldConfigData
           .filter(
             (v) =>
               v.entityType === itemEntityType &&
@@ -134,46 +207,30 @@ export default async function (
   /**
    * All item bundles that themselves have nested items.
    */
-  const itemBundlesWithNested = computed<string[]>(() => {
-    return (
-      fieldConfig.value
-        .filter((v) => v.entityType === itemEntityType)
-        .map((v) => v.entityBundle) || []
-    )
-  })
+  const itemBundlesWithNested =
+    fieldConfigData
+      .filter((v) => v.entityType === itemEntityType)
+      .map((v) => v.entityBundle) || []
 
-  const typeMap = computed(() => {
-    return allTypes.value.reduce<Record<string, BlockBundleDefinition>>(
-      (acc, type) => {
-        acc[type.id] = type
-        return acc
-      },
-      {},
-    )
-  })
+  const typeMap = bundleDefinitions.reduce<
+    Record<string, BlockBundleDefinition>
+  >((acc, type) => {
+    acc[type.id] = type
+    return acc
+  }, {})
 
-  const getType = (bundle: string): BlockBundleDefinition | undefined => {
-    return typeMap.value[bundle]
+  const getBlockBundleDefinition = (
+    bundle: string,
+  ): BlockBundleDefinition | undefined => {
+    return typeMap[bundle]
   }
-
-  const fieldConfigMap = computed<Record<string, FieldConfig>>(() => {
-    return fieldConfig.value.reduce<Record<string, FieldConfig>>(
-      (acc, config) => {
-        const key = `${config.entityType}:${config.entityBundle}:${config.name}`
-        acc[key] = config
-        return acc
-      },
-      {},
-    )
-  })
 
   function getFieldConfig(
     entityType: string,
     entityBundle: string,
     fieldName: string,
   ): FieldConfig | undefined {
-    const key = `${entityType}:${entityBundle}:${fieldName}`
-    return fieldConfigMap.value[key]
+    return fieldConfig.forName(entityType, entityBundle, fieldName)
   }
 
   const getDroppableFieldConfig = (
@@ -182,21 +239,11 @@ export default async function (
   ): DroppableFieldConfig => {
     const entityType = 'entityType' in host ? host.entityType : host.type
     const entityBundle = 'itemBundle' in host ? host.itemBundle : host.bundle
-    const config = droppableFieldConfig.value.find((v) => {
-      if (v.name !== fieldName) {
-        return false
-      }
-
-      if (v.entityType !== entityType) {
-        return false
-      }
-
-      if (v.entityBundle !== entityBundle) {
-        return false
-      }
-
-      return true
-    })
+    const config = droppableFieldConfig.forName(
+      entityType,
+      entityBundle,
+      fieldName,
+    )
 
     if (!config) {
       throw new Error(
@@ -207,42 +254,39 @@ export default async function (
     return config
   }
 
-  const generallyAvailableBundles = computed(() => {
-    const typesOnEntity = (
-      fieldConfig.value.filter((v) => {
-        return (
-          v.entityType === context.value.entityType &&
-          v.entityBundle === context.value.entityBundle
-        )
-      }) || []
-    )
-      .flatMap((v) => v.allowedBundles)
-      .filter(Boolean)
+  const bundlesAllowedOnPage = (
+    fieldConfigData.filter((v) => {
+      return (
+        v.entityType === context.value.entityType &&
+        v.entityBundle === context.value.entityBundle
+      )
+    }) || []
+  )
+    .flatMap((v) => v.allowedBundles)
+    .filter(Boolean)
 
-    const typesOnItems =
-      fieldConfig.value
-        .filter((v) => {
-          return typesOnEntity.includes(v.entityBundle)
-        })
-        .flatMap((v) => v.allowedBundles) || []
+  const bundlesAllowedOnBlocks =
+    fieldConfigData
+      .filter((v) => {
+        return bundlesAllowedOnPage.includes(v.entityBundle)
+      })
+      .flatMap((v) => v.allowedBundles) || []
 
-    const allAllowedTypes = [...typesOnEntity, ...typesOnItems]
+  const allAllowedBundles = [...bundlesAllowedOnPage, ...bundlesAllowedOnBlocks]
 
-    return (
-      allTypes.value.filter((v) => v.id && allAllowedTypes.includes(v.id)) || []
-    )
-  })
+  const generallyAvailableBundles = bundleDefinitions.filter((v) =>
+    allAllowedBundles.includes(v.id),
+  )
 
   return {
     itemBundlesWithNested,
     allowedTypesInList,
-    allTypes,
-    getType,
-    fieldConfig,
-    editableFieldConfig,
-    droppableFieldConfig,
+    getBlockBundleDefinition,
     getDroppableFieldConfig,
     generallyAvailableBundles,
     getFieldConfig,
+    editableFieldConfig,
+    droppableFieldConfig,
+    fieldConfig,
   }
 }

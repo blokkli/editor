@@ -75,9 +75,7 @@ const onAddFragment = async (name: string) => {
 }
 
 const isSupportedOnEntity = computed(() =>
-  types.generallyAvailableBundles.value.find(
-    (v) => v.id === 'blokkli_fragment',
-  ),
+  types.generallyAvailableBundles.find((v) => v.id === 'blokkli_fragment'),
 )
 </script>
 

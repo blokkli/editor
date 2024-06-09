@@ -169,7 +169,10 @@ const maxlength = computed(() => props.config.maxLength)
 const required = computed(() => !!props.config.required)
 const title = computed(() => {
   if (itemBundle.value) {
-    return [types.getType(itemBundle.value)?.label, props.config.label]
+    return [
+      types.getBlockBundleDefinition(itemBundle.value)?.label,
+      props.config.label,
+    ]
       .filter(falsy)
       .join(' » ')
   }

@@ -32,7 +32,7 @@
   <Teleport
     v-if="
       ui.addListOrientation.value === 'sidebar' &&
-      types.generallyAvailableBundles.value.length > 10 &&
+      types.generallyAvailableBundles.length > 10 &&
       shouldRender
     "
     :key="renderKey"
@@ -61,7 +61,7 @@ import {
 } from '#imports'
 import { AddListItem } from '#blokkli/components'
 import type { Command, DraggableExistingBlock } from '#blokkli/types'
-import { getDefaultDefinition, getDefinition } from '#blokkli/definitions'
+import { getDefaultDefinition } from '#blokkli/definitions'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { PluginTourItem } from '#blokkli/plugins'
@@ -120,34 +120,26 @@ const activeField = computed(() => {
 
 const getAllowedTypesForSelected = (p: DraggableExistingBlock): string[] => {
   // If the selected bundle allows nested items, return the allowed bundles for it instead.
-  if (types.itemBundlesWithNested.value.includes(p.itemBundle)) {
-    return types.fieldConfig.value
-      .filter(
-        (v) =>
-          v.entityType === itemEntityType && v.entityBundle === p.itemBundle,
-      )
+  if (types.itemBundlesWithNested.includes(p.itemBundle)) {
+    return types.fieldConfig
+      .forEntityTypeAndBundle(itemEntityType, p.itemBundle)
       .flatMap((v) => v.allowedBundles)
       .filter(Boolean) as string[]
   }
   // If the selected bundle is inside a nested item, return the allowed bundles of the parent bundle.
   if (p.hostType === itemEntityType) {
-    return types.fieldConfig.value
-      .filter(
-        (v) =>
-          v.entityType === itemEntityType && v.entityBundle === p.hostBundle,
-      )
+    return types.fieldConfig
+      .forEntityTypeAndBundle(itemEntityType, p.hostBundle)
       .flatMap((v) => v.allowedBundles)
       .filter(Boolean) as string[]
   } else {
-    return types.fieldConfig.value
-      .filter(
-        (v) =>
-          v.entityType === context.value.entityType &&
-          v.entityBundle === context.value.entityBundle &&
-          v.name === p.hostFieldName,
-      )
-      .flatMap((v) => v.allowedBundles)
-      .filter(Boolean) as string[]
+    return (
+      types.getFieldConfig(
+        context.value.entityType,
+        context.value.entityBundle,
+        p.hostFieldName,
+      )?.allowedBundles || []
+    )
   }
 }
 
@@ -160,16 +152,15 @@ const selectableBundles = computed(() => {
     activeField.value.hostEntityType === context.value.entityType
   ) {
     return (
-      types.fieldConfig.value.find((v) => {
-        return (
-          v.entityBundle === context.value.entityBundle &&
-          v.name === activeField.value?.name
-        )
-      })?.allowedBundles || []
+      types.getFieldConfig(
+        context.value.entityType,
+        context.value.entityBundle,
+        activeField.value.name,
+      )?.allowedBundles || []
     )
   }
 
-  return types.generallyAvailableBundles.value.map((v) => v.id || '')
+  return types.generallyAvailableBundles.map((v) => v.id || '')
 })
 
 const determineVisibility = (bundle: string, label: string): boolean => {
@@ -195,10 +186,7 @@ const determineVisibility = (bundle: string, label: string): boolean => {
 }
 
 const sortedList = computed(() => {
-  if (!types.generallyAvailableBundles.value) {
-    return []
-  }
-  return [...types.generallyAvailableBundles.value]
+  return [...types.generallyAvailableBundles]
     .filter((v) => !reservedBundles.includes(v.id))
     .map((v) => {
       return {
@@ -223,11 +211,10 @@ const getBundlesForAppendCommands = () => {
   }
 
   const block = selection.blocks.value[0]
-  const field = types.fieldConfig.value.find(
-    (v) =>
-      v.entityType === block.hostType &&
-      v.entityBundle === block.hostBundle &&
-      v.name === block.hostFieldName,
+  const field = types.getFieldConfig(
+    block.hostType,
+    block.hostBundle,
+    block.hostFieldName,
   )
 
   if (field) {
@@ -250,39 +237,38 @@ const getAppendEndCommands = (): Command[] => {
     return []
   }
 
-  const fields = types.fieldConfig.value.filter(
-    (v) =>
-      v.entityType === context.value.entityType &&
-      v.entityBundle === context.value.entityBundle,
-  )
-
-  return fields.flatMap((field) => {
-    if (field.cardinality !== -1) {
-      const key = getFieldKey(context.value.entityUuid, field.name)
-      const count = state.getFieldBlockCount(key)
-      // No more blocks allowed.
-      if (count >= field.cardinality) {
-        return []
-      }
-    }
-    return field.allowedBundles
-      .filter((v) => !reservedBundles.includes(v))
-      .map((bundle) => {
-        const definition = types.allTypes.value.find((v) => v.id === bundle)
-        return {
-          id: 'block_add_list:append_end:' + bundle + field.name,
-          label: $t(
-            'addBlockCommand.appendInField',
-            'Append "@block" in "@field"',
-          )
-            .replace('@block', definition?.label || bundle)
-            .replace('@field', field.label),
-          group: 'add',
-          bundle,
-          callback: () => commandCallbackAppendEnd(bundle, field.name),
+  return types.fieldConfig
+    .forEntityTypeAndBundle(
+      context.value.entityType,
+      context.value.entityBundle,
+    )
+    .flatMap((field) => {
+      if (field.cardinality !== -1) {
+        const key = getFieldKey(context.value.entityUuid, field.name)
+        const count = state.getFieldBlockCount(key)
+        // No more blocks allowed.
+        if (count >= field.cardinality) {
+          return []
         }
-      })
-  })
+      }
+      return field.allowedBundles
+        .filter((v) => !reservedBundles.includes(v))
+        .map((bundle) => {
+          const definition = types.getBlockBundleDefinition(bundle)
+          return {
+            id: 'block_add_list:append_end:' + bundle + field.name,
+            label: $t(
+              'addBlockCommand.appendInField',
+              'Append "@block" in "@field"',
+            )
+              .replace('@block', definition?.label || bundle)
+              .replace('@field', field.label),
+            group: 'add',
+            bundle,
+            callback: () => commandCallbackAppendEnd(bundle, field.name),
+          }
+        })
+    })
 }
 
 const commandCallbackAppendEnd = (bundle: string, fieldName: string) => {
@@ -341,12 +327,8 @@ const getInsertCommands = (
   }
 
   // Find nested fields of the block.
-  const nestedFields = types.fieldConfig.value
-    .filter(
-      (v) =>
-        v.entityType === runtimeConfig.itemEntityType &&
-        v.entityBundle === block.itemBundle,
-    )
+  const nestedFields = types.fieldConfig
+    .forEntityTypeAndBundle(itemEntityType, block.itemBundle)
     .map((field) => {
       return {
         ...field,
@@ -356,8 +338,7 @@ const getInsertCommands = (
 
   const commands: Command[] = nestedFields.flatMap((field) => {
     return field.allowedBundles.map((bundle) => {
-      const label =
-        types.allTypes.value.find((v) => v.id === bundle)?.label || bundle
+      const label = types.getBlockBundleDefinition(bundle)?.label || bundle
       return {
         id: 'block_add_list:insert:' + field.name + ':' + bundle,
         label: $t(
@@ -406,7 +387,7 @@ const commandCallbackAppend = (bundle: string) => {
 
 const getAppendCommands = (): Command[] => {
   return getBundlesForAppendCommands().map((bundle) => {
-    const definition = types.allTypes.value.find((v) => v.id === bundle)
+    const definition = types.getBlockBundleDefinition(bundle)
     return {
       id: 'block_add_list:append:' + bundle,
       label: $t('addBlockCommand.appendRoot', 'Append "@block"').replace(

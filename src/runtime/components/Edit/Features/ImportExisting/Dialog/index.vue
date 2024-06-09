@@ -123,13 +123,12 @@ function onSubmit() {
   isLoading.value = true
 }
 
-const fields = computed(() => {
-  return types.fieldConfig.value.filter(
-    (v) =>
-      v.entityType === context.value.entityType &&
-      v.entityBundle === context.value.entityBundle,
-  )
-})
+const fields = computed(() =>
+  types.fieldConfig.forEntityTypeAndBundle(
+    context.value.entityType,
+    context.value.entityBundle,
+  ),
+)
 
 onMounted(() => {
   loadResults()
