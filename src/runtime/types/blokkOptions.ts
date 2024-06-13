@@ -3,6 +3,7 @@ type DefinitionOptionText = {
   default: string
   label: string
   inputType?: 'text' | 'number' | 'date'
+  group?: string
 }
 
 type DefinitionOptionRange = {
@@ -12,18 +13,21 @@ type DefinitionOptionRange = {
   min: number
   max: number
   step: number
+  group?: string
 }
 
 type DefinitionOptionCheckbox = {
   type: 'checkbox'
   default: boolean
   label: string
+  group?: string
 }
 
 type DefinitionOptionColor = {
   type: 'color'
   default: `#${string}`
   label: string
+  group?: string
 }
 
 type DefinitionOptionCheckboxes = {
@@ -34,6 +38,7 @@ type DefinitionOptionCheckboxes = {
    */
   default: string[]
   options: Record<string, string>
+  group?: string
 }
 
 type DefinitionOptionRadiosGridOption = {
@@ -76,6 +81,7 @@ type DefinitionOptionRadios = {
   type: 'radios'
   label: string
   default: string
+  group?: string
 } & (
   | DefinitionOptionRadiosColors
   | DefinitionOptionRadiosGrid

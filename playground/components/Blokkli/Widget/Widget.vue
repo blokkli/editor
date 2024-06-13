@@ -95,6 +95,42 @@ const { options } = defineBlokkli({
       max: 1,
       step: 0.01,
     },
+    paddingTop: {
+      type: 'range',
+      label: 'Top',
+      default: 0,
+      min: 0,
+      max: 100,
+      step: 1,
+      group: 'Padding',
+    },
+    paddingBottom: {
+      type: 'range',
+      label: 'Bottom',
+      default: 0,
+      min: 0,
+      max: 100,
+      step: 1,
+      group: 'Padding',
+    },
+    paddingLeft: {
+      type: 'range',
+      label: 'Left',
+      default: 0,
+      min: 0,
+      max: 100,
+      step: 1,
+      group: 'Padding',
+    },
+    paddingRight: {
+      type: 'range',
+      label: 'Right',
+      default: 0,
+      min: 0,
+      max: 100,
+      step: 1,
+      group: 'Padding',
+    },
     columns: {
       type: 'radios',
       label: 'Columns',
@@ -173,6 +209,10 @@ const { options } = defineBlokkli({
           'buttonType',
           'textColor',
           'range',
+          'paddingTop',
+          'paddingLeft',
+          'paddingRight',
+          'paddingBottom',
         ]
       }
       return ['showAllOptions']

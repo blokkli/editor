@@ -6,7 +6,7 @@
     @mouseleave="stopChangingOptions"
   >
     <OptionsFormItem
-      v-for="plugin in visibleOptions"
+      v-for="plugin in singleVisibleOptions"
       :key="plugin.property"
       :option="plugin.option"
       :property="plugin.property"
@@ -19,6 +19,28 @@
       @keydown.stop
       @update="setOptionValue(plugin.property, $event)"
     />
+
+    <OptionsFormGroup
+      v-for="group in optionGroups"
+      :key="'group_' + group.label"
+      :label="group.label"
+    >
+      <OptionsFormItem
+        v-for="plugin in group.options"
+        :key="plugin.property"
+        :option="plugin.option"
+        :property="plugin.property"
+        :uuids="uuids"
+        class="bk-blokkli-item-options-item"
+        :class="{
+          'bk-is-disabled':
+            !state.canEdit.value || state.editMode.value !== 'editing',
+        }"
+        is-grouped
+        @keydown.stop
+        @update="setOptionValue(plugin.property, $event)"
+      />
+    </OptionsFormGroup>
   </div>
 </template>
 
@@ -27,6 +49,7 @@ import { computed, useBlokkli, onBeforeUnmount, onMounted } from '#imports'
 import { globalOptions } from '#blokkli/definitions'
 import { falsy } from '#blokkli/helpers'
 import OptionsFormItem from './Item.vue'
+import OptionsFormGroup from './Group.vue'
 import type {
   BlockDefinitionInput,
   BlockDefinitionOptionsInput,
@@ -35,6 +58,16 @@ import type {
 import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
 import { optionValueToStorable } from '#blokkli/helpers/options'
 import { getRuntimeOptionValue } from '#blokkli/helpers/runtimeHelpers'
+
+type OptionItem = {
+  property: string
+  option: BlockOptionDefinition
+}
+
+type OptionGroup = {
+  label: string
+  options: OptionItem[]
+}
 
 const { adapter, eventBus, state, selection, runtimeConfig, dom, theme } =
   useBlokkli()
@@ -118,7 +151,7 @@ class OptionCollector {
 const original = new OptionCollector()
 const updated = new OptionCollector()
 
-const availableOptions = computed(() => {
+const availableOptions = computed<OptionItem[]>(() => {
   if (!props.definition) {
     return []
   }
@@ -176,7 +209,7 @@ const currentValues = computed(() => {
   }, {})
 })
 
-const visibleOptions = computed(() => {
+const visibleOptions = computed<OptionItem[]>(() => {
   if (!props.definition.editor?.determineVisibleOptions) {
     return availableOptions.value
   }
@@ -207,6 +240,28 @@ const visibleOptions = computed(() => {
     })
 
   return availableOptions.value.filter((v) => visibleKeys.includes(v.property))
+})
+
+const singleVisibleOptions = computed(() =>
+  visibleOptions.value.filter((v) => !v.option.group),
+)
+
+const optionGroups = computed<OptionGroup[]>(() => {
+  return Object.values(
+    visibleOptions.value.reduce<Record<string, OptionGroup>>((acc, option) => {
+      if (option.option.group) {
+        if (!acc[option.option.group]) {
+          acc[option.option.group] = {
+            label: option.option.group,
+            options: [],
+          }
+        }
+
+        acc[option.option.group].options.push(option)
+      }
+      return acc
+    }, {}),
+  )
 })
 
 function setOptionValue(key: string, value: string) {

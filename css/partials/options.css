@@ -333,4 +333,55 @@
       @apply min-w-40 text-right font-mono;
     }
   }
+
+  .bk-blokkli-item-options-group {
+    @apply relative;
+    > button {
+      @apply flex items-center gap-10 h-full min-w-[200px] w-full px-10;
+      @media not all and (hover: none) {
+        @apply hover:bg-mono-700;
+      }
+      .bk-icon {
+        @apply ml-auto;
+      }
+      svg {
+        fill: currentColor;
+        @apply text-mono-100 w-20 h-15;
+      }
+    }
+
+    &.bk-is-active {
+      @apply bg-mono-800;
+      > button {
+        svg {
+          @apply rotate-180;
+        }
+      }
+    }
+  }
+  .bk-blokkli-item-options-group-content {
+    @apply absolute top-full left-0;
+    @apply fixed left-0 grid bg-mono-900 overflow-hidden min-w-full rounded-b-none rounded-t;
+    @apply bottom-full;
+    @screen md {
+      @apply absolute top-full bottom-auto rounded-t-none rounded-b;
+    }
+    label {
+      @apply py-10;
+      @media not all and (hover: none) {
+        @apply hover:bg-mono-800;
+      }
+    }
+
+    .bk-blokkli-item-options-item {
+      @apply py-10;
+      &:not(:last-child) {
+        @apply border-b border-b-mono-600;
+      }
+      .bk-blokkli-item-options-item-label {
+        @apply px-10 font-semibold text-mono-300 mb-3;
+      }
+      @apply block;
+    }
+  }
 }

@@ -1,6 +1,8 @@
 <template>
   <div class="bk-blokkli-item-options-item" @keydown.stop>
-    <div class="bk-tooltip">
+    <div
+      :class="isGrouped ? 'bk-blokkli-item-options-item-label' : 'bk-tooltip'"
+    >
       <span>{{ option.label }}</span>
     </div>
     <OptionRadios
@@ -68,6 +70,7 @@ const props = defineProps<{
   option: BlockOptionDefinition
   property: string
   uuids: string[]
+  isGrouped?: boolean
 }>()
 
 const validateValue = (
