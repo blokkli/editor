@@ -169,10 +169,8 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
   let draggableBlockCache: Record<string, DraggableExistingBlock> = {}
 
   const resizeObserver = new ResizeObserver(function (
-    entries: ResizeObserverEntry[],
-  ) {
-    console.log(entries)
-  })
+    _entries: ResizeObserverEntry[],
+  ) {})
 
   function intersectionCallback(entries: IntersectionObserverEntry[]) {
     const scale = ui.artboardScale.value

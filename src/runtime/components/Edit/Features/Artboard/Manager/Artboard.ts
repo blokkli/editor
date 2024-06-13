@@ -396,7 +396,6 @@ export class Artboard {
   }
 
   onMouseDown(e: MouseEvent) {
-    console.log('on MOUSE DOWN')
     if (this.isMomentumScrolling || this.isPressingSpace) {
       e.preventDefault()
       e.stopPropagation()

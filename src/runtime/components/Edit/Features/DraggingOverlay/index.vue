@@ -328,8 +328,6 @@ const onDrop = (e: DropTargetEvent) => {
 }
 
 function loop(e: AnimationFrameEvent) {
-  mouseX.value = e.mouseX
-  mouseY.value = e.mouseY
   if (!isVisible.value) {
     isVisible.value = true
   }
@@ -349,6 +347,11 @@ const onMouseUp = (e: MouseEvent) => {
   }
 }
 
+function onMouseMove(e: MouseEvent) {
+  mouseX.value = e.clientX
+  mouseY.value = e.clientY
+}
+
 onBlokkliEvent('dragging:start', (e) => {
   isTouching.value = e.mode === 'touch'
   startCoords.value = e.coords
@@ -362,6 +365,10 @@ onBlokkliEvent('dragging:start', (e) => {
     if (!isTouching.value) {
       document.removeEventListener('pointerup', onMouseUp)
       document.addEventListener('pointerup', onMouseUp)
+      document.removeEventListener('pointermove', onMouseMove, {
+        capture: true,
+      })
+      document.addEventListener('pointermove', onMouseMove, { capture: true })
     }
   }
   dragItems.value = e.items
@@ -372,11 +379,11 @@ onBlokkliEvent('dragging:end', () => {
   dragItems.value = []
   eventBus.off('animationFrame', loop)
   document.removeEventListener('pointerup', onMouseUp)
+  document.removeEventListener('pointermove', onMouseMove, { capture: true })
 })
 
 onBlokkliEvent('keyPressed', (e) => {
   if (e.code === 'Escape') {
-    document.removeEventListener('pointerup', onMouseUp)
     eventBus.emit('dragging:end')
   }
 })
@@ -387,6 +394,7 @@ onBlokkliEvent('block:append', (e) => {
 
 onUnmounted(() => {
   document.removeEventListener('pointerup', onMouseUp)
+  document.removeEventListener('pointermove', onMouseMove, { capture: true })
 })
 </script>
 
