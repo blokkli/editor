@@ -48,6 +48,10 @@ msgstr ""
 "dass nur die hervorgehobenen Blöcke im oder nach dem ausgewählten Block "
 "hinzugefügt werden können.</p>"
 
+msgctxt "all"
+msgid "All"
+msgstr "Alle"
+
 msgctxt "artboard"
 msgid "Artboard"
 msgstr "Zeichenfläche"
@@ -264,7 +268,7 @@ msgid "The block could not be deleted."
 msgstr "Das Element konnte nicht entfernt werden."
 
 msgctxt "draggingOverlayInsertText"
-msgid "Insert into @field"
+msgid "Insert into @bundle » @field"
 msgstr "In «@field» einfügen"
 
 msgctxt "droppableEditFormSave"
@@ -412,6 +416,10 @@ msgstr "Maustasten für Rückgängig/Wiederherstellen verwenden"
 msgctxt "feature_import-existing_setting_showDialogWhenEmpty_label"
 msgid "Show import dialog at start when page is empty"
 msgstr "Importdialog beim Start anzeigen, wenn die Seite leer ist"
+
+msgctxt "feature_settings_setting_lowPerformanceMode_label"
+msgid "Enable low performance mode"
+msgstr "Modus für niedrige Leistung aktivieren"
 
 msgctxt "feature_settings_setting_resetAllSettings_label"
 msgid "Reset all settings"
@@ -629,6 +637,10 @@ msgstr "z.B. Teaser Kampagne 2023"
 msgctxt "libraryError"
 msgid "Failed to add block to library."
 msgstr "Das Element konnte nicht wiederverwendbar gemacht werden."
+
+msgctxt "libraryPlaceBundleSelectLabel"
+msgid "Bundle"
+msgstr "Typ"
 
 msgctxt "libraryPlaceDialogLead"
 msgid ""

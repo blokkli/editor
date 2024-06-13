@@ -26,6 +26,11 @@ export type ModuleOptionsSettings = {
   }
   // Use animations
   'feature:settings:useAnimations'?: { disable?: boolean; default?: boolean }
+  // Enable low performance mode
+  'feature:settings:lowPerformanceMode'?: {
+    disable?: boolean
+    default?: boolean
+  }
   // Reset all settings
   'feature:settings:resetAllSettings'?: { disable?: boolean }
 }

@@ -35,6 +35,10 @@
     "source": "<p>This shows the list of available blocks that can be placed. Add a block by dragging the icon into the page.</p><p>When an existing block is selected, some blocks may be greyed out. This indicates which blocks can be placed inside or after the selected block.</p>",
     "translation": ""
   },
+  "all": {
+    "source": "All",
+    "translation": ""
+  },
   "artboard": {
     "source": "Artboard",
     "translation": ""
@@ -224,7 +228,7 @@
     "translation": "L'élément n'a pas pu être supprimé."
   },
   "draggingOverlayInsertText": {
-    "source": "Insert into @field",
+    "source": "Insert into @bundle » @field",
     "translation": ""
   },
   "droppableEditFormSave": {
@@ -361,6 +365,10 @@
   },
   "feature_import-existing_setting_showDialogWhenEmpty_label": {
     "source": "Show import dialog at start when page is empty",
+    "translation": ""
+  },
+  "feature_settings_setting_lowPerformanceMode_label": {
+    "source": "Enable low performance mode",
     "translation": ""
   },
   "feature_settings_setting_resetAllSettings_label": {
@@ -558,6 +566,10 @@
   "libraryError": {
     "source": "Failed to add block to library.",
     "translation": "L'élément n’a pas pu être rendu réutilisable."
+  },
+  "libraryPlaceBundleSelectLabel": {
+    "source": "Bundle",
+    "translation": ""
   },
   "libraryPlaceDialogLead": {
     "source": "Select a reusable block from the library to add it to your layout. You can detach the block later.",

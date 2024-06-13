@@ -43,6 +43,10 @@ msgid ""
 "placed inside or after the selected block.</p>"
 msgstr ""
 
+msgctxt "all"
+msgid "All"
+msgstr ""
+
 msgctxt "artboard"
 msgid "Artboard"
 msgstr "Zeichenflächi"
@@ -250,7 +254,7 @@ msgid "The block could not be deleted."
 msgstr "S'Elemänt het nid chönne entfärnt wärde. "
 
 msgctxt "draggingOverlayInsertText"
-msgid "Insert into @field"
+msgid "Insert into @bundle » @field"
 msgstr ""
 
 msgctxt "droppableEditFormSave"
@@ -393,6 +397,10 @@ msgstr "Muustaschte für Rückgängig/Wiederhärstelle bruche"
 msgctxt "feature_import-existing_setting_showDialogWhenEmpty_label"
 msgid "Show import dialog at start when page is empty"
 msgstr "Importdialog bim Start aazeige wenn d'Sitte leer isch"
+
+msgctxt "feature_settings_setting_lowPerformanceMode_label"
+msgid "Enable low performance mode"
+msgstr ""
 
 msgctxt "feature_settings_setting_resetAllSettings_label"
 msgid "Reset all settings"
@@ -604,6 +612,10 @@ msgstr "z.B. Teaser Kampagne 2023"
 msgctxt "libraryError"
 msgid "Failed to add block to library."
 msgstr "Das Elemänt het nid chönne zur Bibliothek drzuegfüegt wärde. "
+
+msgctxt "libraryPlaceBundleSelectLabel"
+msgid "Bundle"
+msgstr ""
 
 msgctxt "libraryPlaceDialogLead"
 msgid ""

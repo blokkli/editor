@@ -35,6 +35,10 @@
     "source": "<p>This shows the list of available blocks that can be placed. Add a block by dragging the icon into the page.</p><p>When an existing block is selected, some blocks may be greyed out. This indicates which blocks can be placed inside or after the selected block.</p>",
     "translation": "<p>Hier sehen Sie die Liste der verfügbaren Blöcke. Ziehen Sie einen Block auf die Seite um ihn hinzuzufügen.</p><p>Wenn ein bestehender Block ausgewählt ist sind möglicherweise einige Blöcke ausgegraut. Das bedeutet, dass nur die hervorgehobenen Blöcke im oder nach dem ausgewählten Block hinzugefügt werden können.</p>"
   },
+  "all": {
+    "source": "All",
+    "translation": "Alle"
+  },
   "artboard": {
     "source": "Artboard",
     "translation": "Zeichenfläche"
@@ -224,7 +228,7 @@
     "translation": "Das Element konnte nicht entfernt werden."
   },
   "draggingOverlayInsertText": {
-    "source": "Insert into @field",
+    "source": "Insert into @bundle » @field",
     "translation": "In «@field» einfügen"
   },
   "droppableEditFormSave": {
@@ -362,6 +366,10 @@
   "feature_import-existing_setting_showDialogWhenEmpty_label": {
     "source": "Show import dialog at start when page is empty",
     "translation": "Importdialog beim Start anzeigen, wenn die Seite leer ist"
+  },
+  "feature_settings_setting_lowPerformanceMode_label": {
+    "source": "Enable low performance mode",
+    "translation": "Modus für niedrige Leistung aktivieren"
   },
   "feature_settings_setting_resetAllSettings_label": {
     "source": "Reset all settings",
@@ -558,6 +566,10 @@
   "libraryError": {
     "source": "Failed to add block to library.",
     "translation": "Das Element konnte nicht wiederverwendbar gemacht werden."
+  },
+  "libraryPlaceBundleSelectLabel": {
+    "source": "Bundle",
+    "translation": "Typ"
   },
   "libraryPlaceDialogLead": {
     "source": "Select a reusable block from the library to add it to your layout. You can detach the block later.",

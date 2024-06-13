@@ -43,6 +43,10 @@ msgid ""
 "placed inside or after the selected block.</p>"
 msgstr ""
 
+msgctxt "all"
+msgid "All"
+msgstr ""
+
 msgctxt "artboard"
 msgid "Artboard"
 msgstr ""
@@ -255,7 +259,7 @@ msgid "The block could not be deleted."
 msgstr "L'elemento non può essere rimosso."
 
 msgctxt "draggingOverlayInsertText"
-msgid "Insert into @field"
+msgid "Insert into @bundle » @field"
 msgstr ""
 
 msgctxt "droppableEditFormSave"
@@ -397,6 +401,10 @@ msgstr ""
 
 msgctxt "feature_import-existing_setting_showDialogWhenEmpty_label"
 msgid "Show import dialog at start when page is empty"
+msgstr ""
+
+msgctxt "feature_settings_setting_lowPerformanceMode_label"
+msgid "Enable low performance mode"
 msgstr ""
 
 msgctxt "feature_settings_setting_resetAllSettings_label"
@@ -608,6 +616,10 @@ msgstr "es. Anteprima Campagna 2023"
 msgctxt "libraryError"
 msgid "Failed to add block to library."
 msgstr "L'elemento non può essere reso riutilizzabile."
+
+msgctxt "libraryPlaceBundleSelectLabel"
+msgid "Bundle"
+msgstr ""
 
 msgctxt "libraryPlaceDialogLead"
 msgid ""
