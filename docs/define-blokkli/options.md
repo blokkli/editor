@@ -285,3 +285,31 @@ const { options } = defineBlokkli({
 })
 </script>
 ```
+
+## Range
+
+![Screenshot of the range option type](/assets/option-range.png)
+
+Renders a HTML range input to select a single numeric value.
+
+```vue
+<script lang="ts" setup>
+const { options } = defineBlokkli({
+  bundle: 'badge',
+
+  options: {
+    rotation: {
+      type: 'range',
+      label: 'Rotation',
+      default: 0,
+      min: 0,
+      max: 360,
+      step: 1,
+    },
+  },
+})
+
+// A valid (not NaN) number.
+console.log(options.value.rotation)
+</script>
+```

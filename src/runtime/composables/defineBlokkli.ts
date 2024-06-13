@@ -90,7 +90,7 @@ export function defineBlokkli<
     }
 
     const result = optionKeys.reduce<
-      Record<string, string | boolean | string[]>
+      Record<string, string | boolean | string[] | number>
     >((acc, key) => {
       // Use an override option if available.
       if (editContext) {

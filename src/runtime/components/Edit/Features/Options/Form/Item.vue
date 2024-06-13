@@ -37,6 +37,14 @@
       v-model="value"
       :label="option.label"
     />
+    <OptionRange
+      v-else-if="option.type === 'range'"
+      v-model="value"
+      :label="option.label"
+      :min="option.min"
+      :max="option.max"
+      :step="option.step"
+    />
   </div>
 </template>
 
@@ -47,6 +55,7 @@ import OptionCheckbox from './Checkbox/index.vue'
 import OptionCheckboxes from './Checkboxes/index.vue'
 import OptionText from './Text/index.vue'
 import OptionColor from './Color/index.vue'
+import OptionRange from './Range/index.vue'
 import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
 
 const { state } = useBlokkli()
@@ -62,7 +71,7 @@ const props = defineProps<{
 }>()
 
 const validateValue = (
-  v: string | string[] | boolean | undefined | null,
+  v: string | string[] | boolean | undefined | null | number,
 ): string | undefined => {
   if (props.option.type === 'text') {
     if (typeof v === 'string') {
@@ -93,6 +102,12 @@ const validateValue = (
         return options.includes(key)
       })
       .join(',')
+  } else if (props.option.type === 'range') {
+    if (typeof v === 'number') {
+      return v.toString()
+    } else if (typeof v === 'string') {
+      return v
+    }
   }
 }
 

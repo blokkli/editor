@@ -34,7 +34,7 @@ export function defineBlokkliFragment<
 
   const options = computed(() => {
     const result = optionKeys.reduce<
-      Record<string, string | boolean | string[]>
+      Record<string, string | boolean | string[] | number>
     >((acc, key) => {
       acc[key] = ctx!.options.value[key]
       return acc

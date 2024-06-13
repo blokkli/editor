@@ -149,7 +149,7 @@ const availableOptions = computed(() => {
 const currentValues = computed(() => {
   const getOptionValue = (
     key: string,
-    defaultValue: string | boolean | string[],
+    defaultValue: string | boolean | string[] | number,
   ) => {
     const uuid = props.uuids[0]
     if (!uuid) {
@@ -166,7 +166,7 @@ const currentValues = computed(() => {
   }
 
   return availableOptions.value.reduce<
-    Record<string, string | string[] | boolean>
+    Record<string, string | string[] | boolean | number>
   >((acc, v) => {
     acc[v.property] = getRuntimeOptionValue(
       v.option,

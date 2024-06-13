@@ -307,4 +307,30 @@
       @apply font-mono ml-10;
     }
   }
+
+  .bk-blokkli-item-options-range {
+    @apply flex px-10 items-center gap-5;
+    input {
+      @apply w-120 appearance-none h-5 rounded-full bg-mono-500;
+
+      /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+      &::-webkit-slider-thumb {
+        @apply appearance-none rounded-full bg-white;
+        width: 15px; /* Set a specific slider handle width */
+        height: 15px; /* Slider handle height */
+        cursor: pointer; /* Cursor on hover */
+      }
+
+      &::-moz-range-thumb {
+        @apply rounded-full bg-white;
+        width: 15px; /* Set a specific slider handle width */
+        height: 15px; /* Slider handle height */
+        cursor: pointer; /* Cursor on hover */
+      }
+    }
+
+    > div {
+      @apply min-w-40 text-right font-mono;
+    }
+  }
 }

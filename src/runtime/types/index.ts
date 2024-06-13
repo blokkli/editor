@@ -49,7 +49,9 @@ type GetType<T> = T extends { options: infer O }
     : keyof O
   : T extends { type: 'checkbox' }
     ? boolean
-    : string
+    : T extends { type: 'range' }
+      ? number
+      : string
 
 export type BlockDefinitionOptionsInput = {
   [key: string]: BlockOptionDefinition
@@ -843,7 +845,7 @@ export type PluginUnmountEvent = {
 
 export type EditableFieldFocusEvent = {
   fieldName: string
-  uuid: string
+  uuid?: string
 }
 
 export type EditableFieldUpdateEvent = {

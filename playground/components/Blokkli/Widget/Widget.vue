@@ -29,6 +29,11 @@
             <td>{{ JSON.stringify(options.columns) }}</td>
           </tr>
           <tr>
+            <th>range</th>
+            <td>range</td>
+            <td>{{ JSON.stringify(options.range) }}</td>
+          </tr>
+          <tr>
             <th>countries</th>
             <td>checkboxes</td>
             <td>{{ JSON.stringify(options.countries) }}</td>
@@ -81,6 +86,14 @@ const { options } = defineBlokkli({
       type: 'color',
       label: 'Text color',
       default: '#ffffff',
+    },
+    range: {
+      type: 'range',
+      label: 'Number',
+      default: 0,
+      min: 0,
+      max: 1,
+      step: 0.01,
     },
     columns: {
       type: 'radios',
@@ -159,6 +172,7 @@ const { options } = defineBlokkli({
           'columnsGrid',
           'buttonType',
           'textColor',
+          'range',
         ]
       }
       return ['showAllOptions']

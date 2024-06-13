@@ -5,6 +5,15 @@ type DefinitionOptionText = {
   inputType?: 'text' | 'number' | 'date'
 }
 
+type DefinitionOptionRange = {
+  type: 'range'
+  default: number
+  label: string
+  min: number
+  max: number
+  step: number
+}
+
 type DefinitionOptionCheckbox = {
   type: 'checkbox'
   default: boolean
@@ -80,3 +89,4 @@ export type BlockOptionDefinition =
   | DefinitionOptionCheckboxes
   | DefinitionOptionRadios
   | DefinitionOptionText
+  | DefinitionOptionRange

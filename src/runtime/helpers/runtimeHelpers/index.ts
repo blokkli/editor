@@ -12,7 +12,7 @@ import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
 export function getRuntimeOptionValue(
   definition: Pick<BlockOptionDefinition, 'type' | 'default'>,
   value: string | string[] | boolean | undefined | null | number,
-): string | string[] | boolean {
+): string | string[] | boolean | number {
   if (definition.type === 'checkbox') {
     if (typeof value === 'string') {
       return value === '1' || value === 'true'
@@ -32,6 +32,15 @@ export function getRuntimeOptionValue(
       return value
     }
     return []
+  } else if (definition.type === 'range') {
+    if (typeof value === 'number' && !isNaN(value)) {
+      return value
+    } else if (typeof value === 'string') {
+      const parsed = parseFloat(value)
+      if (!isNaN(parsed)) {
+        return parsed
+      }
+    }
   }
 
   if (typeof value === 'string') {
