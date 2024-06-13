@@ -12,14 +12,6 @@ import type {
   ThemeName,
 } from '#blokkli/types/theme'
 import { type Ref, ref, onMounted, onBeforeUnmount } from '#imports'
-import {
-  findHighestContrastColor,
-  getContrastRatio,
-  getNumericStyleValue,
-  parseColorString,
-  realBackgroundColor,
-  rgbaToString,
-} from '.'
 import { DragStyle } from './DragStyle'
 import onBlokkliEvent from './composables/onBlokkliEvent'
 

@@ -229,9 +229,10 @@ function onPointerUp(e: PointerEvent) {
 
   // Handle double clicking.
   if (
-    clicked?.uuid &&
+    clicked &&
     lastInteractedElement &&
-    clicked.uuid === lastInteractedElement.uuid
+    (clicked.uuid === lastInteractedElement.uuid ||
+      clicked.editableFieldName === lastInteractedElement.editableFieldName)
   ) {
     const deltaTime = Date.now() - pointerDownTimestamp
     const deltaX = Math.abs(lastInteractedElement.x - e.clientX)

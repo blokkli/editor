@@ -13,6 +13,7 @@ import type { AdapterContext, BlokkliAdapter } from '../adapter'
 import type { SelectionProvider } from './selectionProvider'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import { useRuntimeConfig, computed, watch } from '#imports'
+import { onlyUnique } from '.'
 
 export type BlokkliBlockType = BlockBundleDefinition & {
   definition:
@@ -121,8 +122,7 @@ export default async function (
   const bundleDefinitions = await adapter.getAllBundles()
   const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
 
-  const fieldConfigData = await adapter.getFieldConfig()
-  const fieldConfig = new ConfigMap(fieldConfigData)
+  const fieldConfig = new ConfigMap(await adapter.getFieldConfig())
   const editableFieldConfigData = adapter.getEditableFieldConfig
     ? await adapter.getEditableFieldConfig()
     : []
@@ -164,15 +164,9 @@ export default async function (
       fieldName = block.hostFieldName
     }
 
-    return fieldConfigData
-      .filter(
-        (v) =>
-          v.entityType === hostType &&
-          v.entityBundle === hostBundle &&
-          v.name === fieldName,
-      )
-      .flatMap((v) => v.allowedBundles)
-      .filter(Boolean) as string[]
+    return (
+      fieldConfig.forName(hostType, hostBundle, fieldName)?.allowedBundles || []
+    )
   })
 
   watch(selection.blocks, () => {
@@ -185,12 +179,8 @@ export default async function (
     if (hasNested) {
       // Get the nested item fields.
       const nestedFields =
-        fieldConfigData
-          .filter(
-            (v) =>
-              v.entityType === itemEntityType &&
-              v.entityBundle === item.itemBundle,
-          )
+        fieldConfig
+          .forEntityTypeAndBundle(itemEntityType, item.itemBundle)
           .map((v) => v.name) || []
 
       // When we have exactly one nested item field, we can set the active
@@ -208,9 +198,7 @@ export default async function (
    * All item bundles that themselves have nested items.
    */
   const itemBundlesWithNested =
-    fieldConfigData
-      .filter((v) => v.entityType === itemEntityType)
-      .map((v) => v.entityBundle) || []
+    fieldConfig.forEntityType(itemEntityType).map((v) => v.entityBundle) || []
 
   const typeMap = bundleDefinitions.reduce<
     Record<string, BlockBundleDefinition>
@@ -219,9 +207,9 @@ export default async function (
     return acc
   }, {})
 
-  const getBlockBundleDefinition = (
+  function getBlockBundleDefinition(
     bundle: string,
-  ): BlockBundleDefinition | undefined => {
+  ): BlockBundleDefinition | undefined {
     return typeMap[bundle]
   }
 
@@ -233,10 +221,10 @@ export default async function (
     return fieldConfig.forName(entityType, entityBundle, fieldName)
   }
 
-  const getDroppableFieldConfig = (
+  function getDroppableFieldConfig(
     fieldName: string,
     host: DraggableExistingBlock | EntityContext,
-  ): DroppableFieldConfig => {
+  ): DroppableFieldConfig {
     const entityType = 'entityType' in host ? host.entityType : host.type
     const entityBundle = 'itemBundle' in host ? host.itemBundle : host.bundle
     const config = droppableFieldConfig.forName(
@@ -254,25 +242,25 @@ export default async function (
     return config
   }
 
-  const bundlesAllowedOnPage = (
-    fieldConfigData.filter((v) => {
-      return (
-        v.entityType === context.value.entityType &&
-        v.entityBundle === context.value.entityBundle
-      )
-    }) || []
-  )
+  const bundlesAllowedOnPage = fieldConfig
+    .forEntityTypeAndBundle(
+      context.value.entityType,
+      context.value.entityBundle,
+    )
     .flatMap((v) => v.allowedBundles)
     .filter(Boolean)
 
   const bundlesAllowedOnBlocks =
-    fieldConfigData
-      .filter((v) => {
-        return bundlesAllowedOnPage.includes(v.entityBundle)
-      })
+    bundlesAllowedOnPage
+      .flatMap((bundle) =>
+        fieldConfig.forEntityTypeAndBundle(itemEntityType, bundle),
+      )
       .flatMap((v) => v.allowedBundles) || []
 
-  const allAllowedBundles = [...bundlesAllowedOnPage, ...bundlesAllowedOnBlocks]
+  const allAllowedBundles = [
+    ...bundlesAllowedOnPage,
+    ...bundlesAllowedOnBlocks,
+  ].filter(onlyUnique)
 
   const generallyAvailableBundles = bundleDefinitions.filter((v) =>
     allAllowedBundles.includes(v.id),

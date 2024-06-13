@@ -53,11 +53,13 @@ const key = computed(() => {
 })
 
 const getHost = (
-  uuid: string,
+  uuid?: string,
 ): DraggableExistingBlock | EntityContext | undefined => {
-  const block = dom.findBlock(uuid)
-  if (block) {
-    return block
+  if (uuid) {
+    const block = dom.findBlock(uuid)
+    if (block) {
+      return block
+    }
   }
 
   return dom.findClosestEntityContext(dom.getActiveProviderElement())
@@ -65,7 +67,7 @@ const getHost = (
 
 const buildEditable = (
   fieldName: string,
-  uuid: string,
+  uuid?: string,
 ): Editable | undefined => {
   const host = getHost(uuid)
   if (!host) {

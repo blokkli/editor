@@ -1,105 +1,40 @@
-/* .bk.bk-structure { */
-/*   @apply min-h-full; */
-/*   .bk-structure-list { */
-/*     @apply text-base; */
-/**/
-/*     > li { */
-/*       @apply p-20 border-b border-b-mono-300; */
-/*       > ul { */
-/*         @apply mt-10; */
-/*       } */
-/*     } */
-/**/
-/*     .bk-blokkli-item-icon { */
-/*       font-size: 18px; */
-/*     } */
-/**/
-/*     p { */
-/*       @apply font-medium uppercase text-xs text-mono-800; */
-/*     } */
-/*   } */
-/**/
-/*   button { */
-/*     @apply py-10 w-full; */
-/*   } */
-/**/
-/*   .bk-structure-field-items { */
-/*     li { */
-/*       &.bk-is-active > button { */
-/*         .bk-blokkli-item-label-icon { */
-/*           @apply bg-accent-600 text-white border-accent-900; */
-/*         } */
-/**/
-/*         span { */
-/*           @apply text-mono-950 font-semibold; */
-/*         } */
-/*       } */
-/**/
-/*       &.bk-is-inside-active > button { */
-/*         .bk-blokkli-item-label-icon { */
-/*           @apply bg-accent-50 text-accent-700 border-accent-300; */
-/*         } */
-/**/
-/*         span { */
-/*           @apply text-mono-950 font-medium; */
-/*         } */
-/*       } */
-/*     } */
-/*   } */
-/**/
-/*   .bk-structure-field-nested-items { */
-/*     li { */
-/*       @apply pl-25 relative; */
-/*       &:before { */
-/*         content: ''; */
-/*         @apply absolute top-[-22px] h-full w-0  left-[11.5px] border-l border-l-mono-400 border-dashed; */
-/*       } */
-/*       &:after { */
-/*         content: ''; */
-/*         @apply absolute left-[11.5px] w-[15px] h-0  top-[22px] border-t border-t-mono-400 border-dashed; */
-/*       } */
-/**/
-/*       &.bk-is-inside-active { */
-/*         &:before { */
-/*           @apply !border-l-accent-400 border-solid; */
-/*         } */
-/*         &:after { */
-/*           @apply !border-t-accent-400 border-solid; */
-/*         } */
-/*       } */
-/*     } */
-/*   } */
-/* } */
-
 .bk.bk-structure {
   @apply h-full overflow-auto;
-  ul {
-  }
 
   > .bk-structure-list {
     > li {
-      @apply border-b border-b-mono-800;
+      @apply border-b border-b-mono-300 py-10;
+
+      > .bk-structure-item {
+        @apply border-l-0 border-r-0;
+      }
     }
     .bk-structure-list {
-      @apply relative;
+      @apply relative pl-[11px];
+
+      > li:not(:first-child) > .bk-structure-field > .bk-structure-field-label {
+        @apply mt-10;
+      }
       &:before {
         content: '';
-        @apply absolute top-0 left-0 w-0 border-l border-l-mono-800 bottom-[19px];
+        @apply absolute top-[-9px] left-[11px] w-0 border-l border-l-mono-400 bottom-[23px];
       }
 
       .bk-structure-item-label {
         &:before {
           content: '';
-          @apply absolute h-1 left-[-15px] w-[15px] top-[15px] border-t border-t-mono-500;
+          @apply absolute h-1 left-[-20px] w-[19px] top-[22px] border-t border-t-mono-400;
         }
       }
     }
   }
 
   .bk-structure-item {
-    @apply hover:bg-mono-300/20 pl-15;
+    @apply border border-transparent;
+    @apply pl-20 hover:border-mono-300;
+    @apply hover:bg-mono-300/20;
     .bk-blokkli-item-icon {
-      @apply w-25 h-25 bg-mono-100 p-3 rounded border border-mono-300;
+      @apply w-25 h-25 bg-mono-100 p-3 rounded border border-mono-400;
 
       &.bk-is-selected {
         @apply bg-accent-700 text-white border-accent-900;
@@ -110,9 +45,16 @@
       > .bk-structure-item-label {
         @apply font-semibold;
       }
+      .bk-structure-list:before {
+        @apply border-l-accent-500;
+      }
+
       .bk-structure-item {
+        .bk-structure-item-label:before {
+          @apply border-t-accent-500;
+        }
         .bk-blokkli-item-icon {
-          @apply bg-accent-50 text-accent-800 border-accent-200;
+          @apply bg-accent-50 text-accent-800 border-accent-400;
         }
       }
     }
@@ -123,6 +65,6 @@
   }
 
   .bk-structure-field-label {
-    @apply uppercase text-xs text-mono-600 font-medium h-20 flex items-center;
+    @apply uppercase text-xs text-mono-600 font-medium h-20 flex items-center pl-[17px] mb-5;
   }
 }
