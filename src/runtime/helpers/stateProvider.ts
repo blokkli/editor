@@ -57,6 +57,7 @@ export type StateProvider = {
   getFieldBlockCount: (key: string) => number
   getBlockBundleCount: (bundle: string) => number
   getFieldListItem: (uuid: string) => FieldListItem | undefined
+  getMutatedField: (uuid: string, fieldName: string) => MutatedField | undefined
 }
 
 export default async function (
@@ -203,6 +204,11 @@ export default async function (
     })
   }
 
+  function getMutatedField(entityUuid: string, fieldName: string) {
+    const key = getFieldKey(entityUuid, fieldName)
+    return mutatedFieldsMap[key]
+  }
+
   function getBlockBundleCount(bundle: string): number {
     return blockBundleCount.value[bundle] || 0
   }
@@ -313,5 +319,6 @@ export default async function (
     getFieldBlockCount,
     getBlockBundleCount,
     getFieldListItem,
+    getMutatedField,
   }
 }

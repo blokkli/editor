@@ -603,6 +603,13 @@ export type DraggableStyle = {
   isInverted: boolean
 }
 
+export interface DraggableExistingStructureBlock {
+  itemType: 'existing_structure'
+  uuid: string
+  itemBundle: string
+  element: () => HTMLElement
+}
+
 export interface DraggableExistingBlock {
   itemType: 'existing'
   element: () => HTMLElement
@@ -683,6 +690,7 @@ export type DraggableItem =
   | DraggableNewItem
   | DraggableActionItem
   | DraggableExistingBlock
+  | DraggableExistingStructureBlock
   | DraggableReusableItem
   | DraggableSearchContentItem
   | DraggableMediaLibraryItem
@@ -941,11 +949,24 @@ export type SelectStartEvent = {
   mode: InteractionMode
 }
 
+export type StructureDragStart = {
+  uuid: string
+  bundle: string
+}
+
+export type DropTargetEvent = {
+  items: DraggableItem[]
+  field: BlokkliFieldElement
+  host: DraggableHostData
+  preceedingUuid?: string
+}
+
 export type EventbusEvents = {
   select: string | string[]
   'item:edit': EditBlockEvent
   batchTranslate: undefined
   'dragging:start': DraggableStartEvent
+  'dragging:drop': DropTargetEvent
   'dragging:end': undefined
   setActiveFieldKey: string
   'add:block:new': AddNewBlockEvent
@@ -1002,6 +1023,8 @@ export type EventbusEvents = {
   'mouse:down': GlobalPointerEvent
   'mouse:move': GlobalPointerEvent
   'mouse:up': GlobalPointerUpEvent
+
+  'structure:drag:start': StructureDragStart
 }
 
 export type Eventbus = Emitter<EventbusEvents>
@@ -1247,13 +1270,6 @@ export type DroppableFieldConfig = {
   allowedBundles: string[]
   cardinality: number
   required: boolean
-}
-
-export type DropTargetEvent = {
-  items: DraggableItem[]
-  field: BlokkliFieldElement
-  host: DraggableHostData
-  preceedingUuid?: string
 }
 
 export type SelectedRect = Rectangle & {

@@ -1,86 +1,160 @@
 <template>
-  <li v-for="field in fields" :key="field.name" class="bk-structure-field">
-    <p class="bk-is-field">
-      {{ field.label }}
-    </p>
-    <ul v-if="field.items?.length" class="bk-structure-field-items">
-      <li
-        v-for="item in field.items"
+  <div ref="el" class="bk-structure-field" :data-structure-field-key="key">
+    <div v-if="totalFieldsOfType > 1" class="bk-structure-field-label">
+      {{ config?.label || name }}
+    </div>
+    <div class="bk-structure-field-items">
+      <div
+        v-for="(item, index) in list"
         :key="item.uuid"
-        :class="{ 'bk-is-active': isSelected(item.uuid) }"
+        class="bk-structure-field-item"
       >
-        <button
-          class="bk-blokkli-item-label"
-          :data-blokkli-structure-uuid="item.uuid"
-          @click="select(item.uuid)"
-        >
-          <div class="bk-blokkli-item-label-icon">
-            <ItemIcon :bundle="item.bundle" />
-          </div>
-          <span>{{ item.title || item.type?.label || item.bundle }}</span>
-        </button>
-        <ul v-if="item.items?.length" class="bk-structure-field-nested-items">
-          <li
-            v-for="child in item.items"
-            :key="child.uuid"
-            class="bk-parent"
-            :class="{
-              'bk-is-active': isSelected(child.uuid),
-              'bk-is-inside-active': isSelected(item.uuid),
-            }"
-          >
-            <button
-              class="bk-blokkli-item-label"
-              :data-blokkli-structure-uuid="child.uuid"
-              data-blokkli-structure-nested="true"
-              @click="select(child.uuid)"
-            >
-              <div class="bk-blokkli-item-label-icon">
-                <ItemIcon :bundle="child.bundle" />
-              </div>
-              <span>{{
-                child.title || child.type?.label || child.bundle
-              }}</span>
-            </button>
-          </li>
-        </ul>
-      </li>
-    </ul>
-  </li>
+        <div
+          v-if="
+            index === 0 && showTargets && !selection.uuidsMap.value[item.uuid]
+          "
+          :style="targetStyle"
+          class="bk-structure-field-target bk-is-before"
+          @pointerup="onMouseUp()"
+        />
+        <Item
+          :uuid="item.uuid"
+          :bundle="item.bundle"
+          :level="level"
+          :visible-field-keys="visibleFieldKeys"
+          :is-selected-from-parent="isSelectedFromParent"
+        />
+        <div
+          v-if="
+            showTargets &&
+            !selection.uuidsMap.value[item.uuid] &&
+            (!list[index + 1] ||
+              !selection.uuidsMap.value[list[index + 1].uuid])
+          "
+          :style="targetStyle"
+          class="bk-structure-field-target bk-is-after"
+          @pointerup="onMouseUp(item.uuid)"
+        />
+      </div>
+      <div
+        v-if="!list.length && showTargets"
+        class="bk-structure-field-target bk-is-after"
+        :style="targetStyle"
+        @pointerup="onMouseUp()"
+      />
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, computed } from '#imports'
-import { ItemIcon } from '#blokkli/components'
-import type { StructureTreeField } from './../types'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import {
+  ref,
+  useBlokkli,
+  computed,
+  inject,
+  onMounted,
+  onBeforeUnmount,
+  watch,
+} from '#imports'
+import Item from './../Item/index.vue'
 
-const { selection, eventBus, ui } = useBlokkli()
+const props = withDefaults(
+  defineProps<{
+    name: string
+    entityUuid: string
+    entityType: string
+    entityBundle: string
+    allowedBundles: string[]
+    cardinality: number
+    level?: number
+    visibleFieldKeys: Record<string, boolean>
+    isSelectedFromParent?: boolean
+  }>(),
+  {
+    level: 0,
+  },
+)
 
-const uuids = computed(() => selection.blocks.value.map((v) => v.uuid))
-
-const isSelected = (uuid: string) => uuids.value.includes(uuid)
-
-const select = (uuid: string) => {
-  if (ui.isMobile.value) {
-    eventBus.emit('sidebar:close')
+const targetStyle = computed(() => {
+  return {
+    zIndex: 50 + props.level,
   }
-  eventBus.emit('select', uuid)
-  eventBus.emit('scrollIntoView', { uuid })
+})
+
+const { types, state, selection, dom, eventBus } = useBlokkli()
+
+const mutatedField = computed(() =>
+  state.getMutatedField(props.entityUuid, props.name),
+)
+
+const list = computed(() => mutatedField.value?.list || [])
+const key = computed(() => props.entityUuid + ':' + props.name)
+
+function onMouseUp(preceedingUuid?: string) {
+  const field = dom.findField(props.entityUuid, props.name)
+
+  if (!field) {
+    return
+  }
+
+  eventBus.emit('dragging:drop', {
+    field,
+    preceedingUuid,
+    items: selection.dragItems.value,
+    host: {
+      type: field.hostEntityType,
+      uuid: field.hostEntityUuid,
+      fieldName: field.name,
+    },
+  })
 }
 
-defineProps<{
-  fields?: StructureTreeField[]
-}>()
+const el = ref<HTMLDivElement | null>(null)
 
-onBlokkliEvent('scrollIntoView', (e) => {
-  const el = document.querySelector(`[data-blokkli-structure-uuid="${e.uuid}"]`)
-  if (el instanceof HTMLElement) {
-    el.scrollIntoView({
-      block: 'nearest',
-      behavior: 'instant',
-    })
-    el.focus()
+const observer = inject<IntersectionObserver>('bk_structure_observer')
+
+const isVisible = computed(() => !!props.visibleFieldKeys[key.value])
+
+const bundlesAllowed = computed(() =>
+  selection.dragItemsBundles.value.every((bundle) =>
+    props.allowedBundles.includes(bundle),
+  ),
+)
+
+const showTargets = computed(
+  () =>
+    selection.isDragging.value &&
+    isVisible.value &&
+    !props.isSelectedFromParent &&
+    (props.cardinality === -1 || list.value.length < props.cardinality) &&
+    bundlesAllowed.value,
+)
+
+const config = computed(() =>
+  types.getFieldConfig(props.entityType, props.entityBundle, props.name),
+)
+
+const totalFieldsOfType = computed(
+  () =>
+    types.fieldConfig.forEntityTypeAndBundle(
+      props.entityType,
+      props.entityBundle,
+    ).length,
+)
+
+onMounted(() => {
+  if (el.value && observer) {
+    observer.observe(el.value)
   }
+})
+
+onBeforeUnmount(() => {
+  if (el.value && observer) {
+    observer.unobserve(el.value)
+  }
+})
+
+defineOptions({
+  name: 'StructureListField',
 })
 </script>

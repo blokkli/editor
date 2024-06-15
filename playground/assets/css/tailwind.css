@@ -21,7 +21,7 @@ body {
   }
 
   .button {
-    @apply inline-block font-semibold focus:ring-4 focus:ring-accent-300 rounded-full px-20 py-15 focus:outline-none border border-mono-400 hover:border-accent-700 hover:text-accent-700;
+    @apply inline-block font-semibold focus:ring-4 focus:ring-accent-300 rounded-full px-20 py-15 focus:outline-none border border-mono-400 hover:border-accent-700 hover:text-accent-700 whitespace-nowrap;
     &.is-primary {
       @apply text-white bg-accent-700 hover:bg-accent-800 border-accent-700 hover:border-accent-700 hover:text-white;
     }

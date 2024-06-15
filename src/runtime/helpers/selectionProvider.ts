@@ -5,8 +5,9 @@ import { type Ref, type ComputedRef, computed, ref } from '#imports'
 
 import type {
   DraggableExistingBlock,
+  DraggableItem,
   InteractionMode,
-  SelectedRect,
+  StructureDragStart,
 } from '#blokkli/types'
 import {
   findElement,
@@ -16,8 +17,6 @@ import {
   onlyUnique,
 } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
-import type { UiProvider } from './uiProvider'
-import type { ThemeProvider } from './themeProvider'
 
 /**
  * Find the longest common subsequence between two arrays.
@@ -112,6 +111,11 @@ export type SelectionProvider = {
   uuids: Readonly<Ref<string[]>>
 
   /**
+   * The currently selected UUIDs as a map.
+   */
+  uuidsMap: ComputedRef<Record<string, boolean>>
+
+  /**
    * The currently selected blocks.
    */
   blocks: ComputedRef<DraggableExistingBlock[]>
@@ -155,6 +159,11 @@ export type SelectionProvider = {
    * Whether the user is currently changing block options.
    */
   isChangingOptions: Ref<boolean>
+
+  getDraggedStructureItem: () => StructureDragStart | null
+
+  dragItems: Ref<DraggableItem[]>
+  dragItemsBundles: ComputedRef<string[]>
 }
 
 export default function (dom: DomProvider): SelectionProvider {
@@ -165,6 +174,18 @@ export default function (dom: DomProvider): SelectionProvider {
   const isChangingOptions = ref(false)
   const isMultiSelecting = ref(false)
   const interactionMode = ref<InteractionMode>('mouse')
+
+  const dragItems = ref<DraggableItem[]>([])
+  const dragItemsBundles = computed(() =>
+    dragItems.value.map((v) => v.itemBundle).filter(falsy),
+  )
+
+  const uuidsMap = computed(() => {
+    return selectedUuids.value.reduce<Record<string, boolean>>((acc, uuid) => {
+      acc[uuid] = true
+      return acc
+    }, {})
+  })
 
   const isDragging = computed(() => !!draggingMode.value)
 
@@ -271,6 +292,7 @@ export default function (dom: DomProvider): SelectionProvider {
   onBlokkliEvent('dragging:start', (e) => {
     draggingMode.value = e.mode
     isMultiSelecting.value = false
+    dragItems.value = e.items
     const blocks = e.items.filter(
       (v) => v.itemType === 'existing',
     ) as DraggableExistingBlock[]
@@ -291,6 +313,16 @@ export default function (dom: DomProvider): SelectionProvider {
     }
   })
 
+  let draggedStructureItem: StructureDragStart | null = null
+
+  function getDraggedStructureItem() {
+    return draggedStructureItem
+  }
+
+  onBlokkliEvent('structure:drag:start', function (e) {
+    draggedStructureItem = e
+  })
+
   return {
     uuids: selectedUuids,
     blocks,
@@ -302,5 +334,9 @@ export default function (dom: DomProvider): SelectionProvider {
     isMultiSelecting,
     draggingMode,
     interactionMode,
+    getDraggedStructureItem,
+    dragItems,
+    uuidsMap,
+    dragItemsBundles,
   }
 }

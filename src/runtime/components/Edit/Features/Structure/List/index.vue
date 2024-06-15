@@ -1,86 +1,55 @@
 <template>
-  <div class="bk bk-structure bk-control" tabindex="1" @keydown="onKeydown">
-    <ul class="bk-structure-list">
-      <Field :fields="tree" />
-    </ul>
-  </div>
+  <ul v-if="fields.length" class="bk-structure-list" :data-level="level">
+    <li
+      v-for="field in fields"
+      :key="field.entityType + field.entityBundle + field.name + entityUuid"
+      :data-bundle="entityBundle"
+      :data-name="field.name"
+    >
+      <Field
+        :name="field.name"
+        :cardinality="field.cardinality"
+        :allowed-bundles="field.allowedBundles"
+        :entity-uuid="entityUuid"
+        :entity-type="entityType"
+        :entity-bundle="entityBundle"
+        :show-label="fields.length > 1"
+        :level="level"
+        :visible-field-keys="visibleFieldKeys"
+        :is-selected-from-parent="isSelectedFromParent"
+      />
+    </li>
+  </ul>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useBlokkli, ref, nextTick } from '#imports'
-import { falsy } from '#blokkli/helpers'
+import { computed, useBlokkli } from '#imports'
 import Field from './Field/index.vue'
-import type { StructureTreeField, StructureTreeItem } from './types'
-import { getDefaultDefinition } from '#blokkli/definitions'
 
-const { types, context, eventBus } = useBlokkli()
+const props = withDefaults(
+  defineProps<{
+    entityUuid: string
+    entityType: string
+    entityBundle: string
+    visibleFieldKeys: Record<string, boolean>
+    level?: number
+    isSelectedFromParent?: boolean
+  }>(),
+  {
+    level: 0,
+  },
+)
 
-const tree = ref<StructureTreeField[]>([])
+const { types } = useBlokkli()
 
-const onKeydown = (e: KeyboardEvent) => {
-  if (e.code === 'Tab') {
-    return
-  }
-  if (e.code === 'ArrowUp') {
-    e.stopPropagation()
-    e.preventDefault()
-    eventBus.emit('select:previous')
-  } else if (e.code === 'ArrowDown') {
-    e.stopPropagation()
-    e.preventDefault()
-    eventBus.emit('select:next')
-  }
-}
-
-function mapItem(el: Element): StructureTreeItem | undefined {
-  if (el instanceof HTMLElement) {
-    const bundle = el.dataset.itemBundle || ''
-    const definition = getDefaultDefinition(bundle)
-    const title = definition?.editor?.editTitle
-      ? definition.editor.editTitle(el)
-      : undefined
-    return {
-      uuid: el.dataset.uuid || '',
-      bundle,
-      type: types.getBlockBundleDefinition(bundle),
-      items: [...el.querySelectorAll('[data-uuid]')].map(mapItem).filter(falsy),
-      title: title || undefined,
-    }
-  }
-}
-
-function buildItemsForField(element: HTMLElement): StructureTreeItem[] {
-  return [...element.children].map(mapItem).filter(falsy)
-}
-
-function buildTree() {
-  const fields = document.body.querySelectorAll(
-    `[data-host-entity-uuid="${context.value.entityUuid}"]`,
+const fields = computed(() => {
+  return types.fieldConfig.forEntityTypeAndBundle(
+    props.entityType,
+    props.entityBundle,
   )
-  tree.value = [...fields]
-    .map((field) => {
-      if (field instanceof HTMLElement) {
-        return {
-          name: field.dataset.fieldName || '',
-          label: field.dataset.fieldLabel || '',
-          items: buildItemsForField(field),
-        }
-      }
-    })
-    .filter(falsy)
-}
+})
 
-onMounted(() => {
-  buildTree()
-
-  nextTick(() => {
-    // Scroll the active element into view.
-    const el = document.querySelector(
-      '.bk-structure-field-items li.bk-is-active',
-    )
-    if (el instanceof HTMLElement) {
-      el.scrollIntoView({ block: 'center', behavior: 'instant' })
-    }
-  })
+defineOptions({
+  name: 'StructureList',
 })
 </script>

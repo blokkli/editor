@@ -10,7 +10,7 @@
   }
 
   > .bk-dragging-overlay-item {
-    @apply absolute w-full h-full top-0 left-0;
+    @apply absolute h-full top-0 left-0;
   }
 
   > .bk-dragging-overlay-item.bk-is-top {

@@ -7,7 +7,6 @@
     :mouse-x="mouseX"
     :mouse-y="mouseY"
     :is-touch="isTouching"
-    @drop="onDrop"
   >
     <DragItems
       ref="dragItemsComponent"
@@ -48,6 +47,7 @@ import type {
   DraggableReusableItem,
   DraggableSearchContentItem,
   Rectangle,
+  DraggableExistingStructureBlock,
 } from '#blokkli/types'
 import { getDefinition } from '#blokkli/definitions'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
@@ -89,7 +89,9 @@ type FilteredItemType<T extends DraggableItem> = T extends {
   itemType: 'existing'
 }
   ? { itemType: 'existing'; items: T[] }
-  : { itemType: T['itemType']; item: T }
+  : T extends { itemType: 'existing_structure' }
+    ? { itemType: 'existing_structure'; items: T[] }
+    : { itemType: T['itemType']; item: T }
 
 function filterItemType<T extends DraggableItem>(
   items: T[],
@@ -104,7 +106,7 @@ function filterItemType<T extends DraggableItem>(
 
   const itemType = items[0].itemType
 
-  if (itemType === 'existing') {
+  if (itemType === 'existing' || itemType === 'existing_structure') {
     return { itemType, items } as any
   }
 
@@ -156,7 +158,7 @@ const onDropNew = async (
 }
 
 const onDropExisting = async (
-  items: DraggableExistingBlock[],
+  items: Array<DraggableExistingBlock | DraggableExistingStructureBlock>,
   host: DraggableHostData,
   afterUuid?: string,
 ) => {
@@ -260,7 +262,10 @@ const onDrop = (e: DropTargetEvent) => {
     const afterUuid = e.preceedingUuid
     const host = e.host
     const typed = filterItemType(e.items)
-    if (typed.itemType === 'existing') {
+    if (
+      typed.itemType === 'existing' ||
+      typed.itemType === 'existing_structure'
+    ) {
       await onDropExisting(typed.items, host, afterUuid)
     } else if (typed.itemType === 'new') {
       await onDropNew(typed.item.itemBundle, host, afterUuid)
@@ -326,6 +331,8 @@ const onDrop = (e: DropTargetEvent) => {
     })
   })
 }
+
+onBlokkliEvent('dragging:drop', onDrop)
 
 function loop(e: AnimationFrameEvent) {
   if (!isVisible.value) {

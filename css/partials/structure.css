@@ -1,5 +1,5 @@
 .bk.bk-structure {
-  @apply h-full overflow-auto;
+  @apply h-full overflow-auto bg-white;
 
   > .bk-structure-list {
     > li {
@@ -13,14 +13,15 @@
       @apply relative pl-[11px];
 
       > li:not(:first-child) > .bk-structure-field > .bk-structure-field-label {
-        @apply mt-10;
+        @apply mt-[20px];
       }
       &:before {
         content: '';
-        @apply absolute top-[-9px] left-[11px] w-0 border-l border-l-mono-400 bottom-[23px];
+        @apply absolute top-[-9px] left-[11px] w-0 border-l border-l-mono-400 bottom-[18px];
       }
 
       .bk-structure-item-label {
+        @apply h-[40px];
         &:before {
           content: '';
           @apply absolute h-1 left-[-20px] w-[19px] top-[22px] border-t border-t-mono-400;
@@ -66,5 +67,38 @@
 
   .bk-structure-field-label {
     @apply uppercase text-xs text-mono-600 font-medium h-20 flex items-center pl-[17px] mb-5;
+  }
+
+  /* .bk-structure-field { */
+  /*   .bk-structure-field-label { */
+  /*     @apply bg-white sticky top-0 z-50; */
+  /*   } */
+  /*   .bk-structure-field { */
+  /*     .bk-structure-field-label { */
+  /*       @apply top-20; */
+  /*     } */
+  /*   } */
+  /* } */
+
+  .bk-structure-field-item {
+    @apply relative;
+  }
+
+  .bk-structure-field-items {
+    @apply relative;
+  }
+
+  .bk-structure-field-target {
+    @apply h-[40px] w-full absolute;
+    @apply opacity-0 hover:opacity-100;
+    @apply border-b-4 border-b-accent-700;
+
+    &.bk-is-before {
+      @apply -top-[40px];
+    }
+
+    &.bk-is-after {
+      @apply bottom-0;
+    }
   }
 }

@@ -12,16 +12,29 @@
     icon="tree"
     weight="-90"
   >
-    <div class="bk bk-structure bk-control" @wheel.stop>
-      <List :fields="fields" :entity-bundle="context.entityBundle" />
+    <div v-if="isLoaded" class="bk bk-structure bk-control" @wheel.stop>
+      <List
+        :entity-bundle="context.entityBundle"
+        :entity-type="context.entityType"
+        :entity-uuid="context.entityUuid"
+        :visible-field-keys="visibleFieldKeys"
+      />
     </div>
   </PluginSidebar>
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature, computed } from '#imports'
+import {
+  ref,
+  useBlokkli,
+  defineBlokkliFeature,
+  provide,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+} from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
-import List from './ListNew/index.vue'
+import List from './List/index.vue'
 
 defineBlokkliFeature({
   id: 'structure',
@@ -31,12 +44,31 @@ defineBlokkliFeature({
     'Provides a sidebar button to render a structured list of all blocks on the current page.',
 })
 
-const { $t, state, runtimeConfig, context } = useBlokkli()
+const { $t, context } = useBlokkli()
 
-const fields = computed(() => {
-  return state.mutatedFields.value.filter(
-    (v) => v.entityType !== runtimeConfig.itemEntityType,
-  )
+const isLoaded = ref(false)
+
+const visibleFieldKeys = reactive<Record<string, boolean>>({})
+
+const observer = new IntersectionObserver(function (entries) {
+  for (const entry of entries) {
+    if (entry.target instanceof HTMLElement) {
+      const key = entry.target.dataset.structureFieldKey
+      if (key) {
+        visibleFieldKeys[key] = entry.isIntersecting
+      }
+    }
+  }
+})
+
+provide('bk_structure_observer', observer)
+
+onMounted(() => {
+  isLoaded.value = true
+})
+
+onBeforeUnmount(() => {
+  observer.disconnect()
 })
 </script>
 

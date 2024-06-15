@@ -3,7 +3,6 @@ import type {
   DraggableItem,
   SearchContentItem,
   Rectangle,
-  DraggableStyle,
   DroppableEntityField,
   DraggableExistingBlock,
   EntityContext,

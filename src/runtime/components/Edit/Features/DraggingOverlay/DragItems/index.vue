@@ -276,7 +276,7 @@ onMounted(() => {
     props.startCoords,
     boundRect.rect,
     // Limit width to 250px
-    250,
+    340,
   )
   const boundsX = props.isTouch ? 0 : bounds.x
   const boundsY = props.isTouch ? translateY.value : bounds.y
@@ -368,7 +368,8 @@ onMounted(() => {
       markup,
       background: realBackgroundColor(item.element),
       prevVisibility:
-        item.item.itemType === 'existing'
+        item.item.itemType === 'existing' ||
+        item.item.itemType === 'existing_structure'
           ? item.element.style.visibility
           : undefined,
       element: item.element,
@@ -380,7 +381,10 @@ onMounted(() => {
   })
 
   elRects.forEach((item) => {
-    if (item.item.itemType === 'existing') {
+    if (
+      item.item.itemType === 'existing' ||
+      item.item.itemType === 'existing_structure'
+    ) {
       // Set the visibility to hidden. Unlike setting opacity or filter, this
       // does not trigger layout trashing and style recalculation.
       item.element.style.visibility = 'hidden'

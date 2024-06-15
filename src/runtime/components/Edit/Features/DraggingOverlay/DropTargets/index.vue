@@ -91,7 +91,6 @@ const emit = defineEmits<{
 const {
   dom,
   ui,
-  $t,
   theme,
   dropAreas,
   eventBus,
@@ -179,7 +178,7 @@ const emitDrop = async () => {
         return
       }
 
-      emit('drop', {
+      eventBus.emit('dragging:drop', {
         field,
         preceedingUuid,
         items: [...props.items],
@@ -418,11 +417,6 @@ const buildChildren = (
 }
 
 const fieldCache: Record<string, FieldRect> = {}
-
-const insertText = $t(
-  'draggingOverlayInsertText',
-  'Insert into @bundle » @field',
-)
 
 function getBundleLabel(field: BlokkliFieldElement): string {
   if (field.hostEntityType === runtimeConfig.itemEntityType) {
