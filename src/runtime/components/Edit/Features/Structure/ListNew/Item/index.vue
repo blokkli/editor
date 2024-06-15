@@ -45,5 +45,10 @@ const fields = computed(() => {
 
 function onClick() {
   eventBus.emit('select', props.uuid)
+  eventBus.emit('scrollIntoView', {
+    uuid: props.uuid,
+    immediate: true,
+    center: true,
+  })
 }
 </script>
