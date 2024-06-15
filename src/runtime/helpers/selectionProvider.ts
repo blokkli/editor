@@ -286,6 +286,9 @@ export default function (dom: DomProvider): SelectionProvider {
   onBlokkliEvent('window:clickAway', () => {
     unselectItems()
     activeFieldKey.value = ''
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur()
+    }
   })
 
   return {
