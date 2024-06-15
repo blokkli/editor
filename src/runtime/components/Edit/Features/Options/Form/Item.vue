@@ -5,48 +5,57 @@
     >
       <span>{{ option.label }}</span>
     </div>
-    <OptionRadios
-      v-if="option.type === 'radios'"
-      v-model="value"
-      :label="option.label"
-      :options="option.options"
-      :property="property"
-      :display-as="option.displayAs"
-    />
-    <OptionCheckbox
-      v-else-if="option.type === 'checkbox'"
-      v-model="value"
-      :property="property"
-      :label="option.label"
-      :value="value"
-    />
-    <OptionCheckboxes
-      v-else-if="option.type === 'checkboxes'"
-      v-model="value"
-      :property="property"
-      :label="option.label"
-      :options="option.options"
-      :value="value"
-    />
-    <OptionText
-      v-else-if="option.type === 'text'"
-      v-model="value"
-      :label="option.label"
-      :type="option.inputType"
-    />
-    <OptionColor
-      v-else-if="option.type === 'color'"
-      v-model="value"
-      :label="option.label"
-    />
-    <OptionRange
-      v-else-if="option.type === 'range'"
-      v-model="value"
-      :label="option.label"
-      :min="option.min"
-      :max="option.max"
-      :step="option.step"
-    />
+    <div class="bk-blokkli-item-options-item-content">
+      <OptionRadios
+        v-if="option.type === 'radios'"
+        v-model="value"
+        :label="option.label"
+        :options="option.options"
+        :property="property"
+        :display-as="option.displayAs"
+      />
+      <OptionCheckbox
+        v-else-if="option.type === 'checkbox'"
+        v-model="value"
+        :property="property"
+        :label="option.label"
+        :value="value"
+      />
+      <OptionCheckboxes
+        v-else-if="option.type === 'checkboxes'"
+        v-model="value"
+        :property="property"
+        :label="option.label"
+        :options="option.options"
+        :value="value"
+      />
+      <OptionText
+        v-else-if="option.type === 'text'"
+        v-model="value"
+        :label="option.label"
+        :type="option.inputType"
+      />
+      <OptionColor
+        v-else-if="option.type === 'color'"
+        v-model="value"
+        :label="option.label"
+      />
+      <OptionRange
+        v-else-if="option.type === 'range'"
+        v-model="value"
+        :label="option.label"
+        :min="option.min"
+        :max="option.max"
+        :step="option.step"
+      />
+      <OptionNumber
+        v-else-if="option.type === 'number'"
+        v-model="value"
+        :label="option.label"
+        :min="option.min"
+        :max="option.max"
+      />
+    </div>
   </div>
 </template>
 
@@ -58,6 +67,7 @@ import OptionCheckboxes from './Checkboxes/index.vue'
 import OptionText from './Text/index.vue'
 import OptionColor from './Color/index.vue'
 import OptionRange from './Range/index.vue'
+import OptionNumber from './Number/index.vue'
 import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
 
 const { state } = useBlokkli()
@@ -105,7 +115,7 @@ const validateValue = (
         return options.includes(key)
       })
       .join(',')
-  } else if (props.option.type === 'range') {
+  } else if (props.option.type === 'range' || props.option.type === 'number') {
     if (typeof v === 'number') {
       return v.toString()
     } else if (typeof v === 'string') {

@@ -17,6 +17,9 @@
       @apply border-b border-b-mono-500/25 lg:border-b-0;
     }
   }
+  .bk-blokkli-item-options-item-content {
+    @apply h-full;
+  }
   .bk-blokkli-item-options-item {
     @apply relative flex items-center;
     &.bk-is-disabled {
@@ -309,7 +312,7 @@
   }
 
   .bk-blokkli-item-options-range {
-    @apply flex px-10 items-center gap-5;
+    @apply flex px-10 items-center gap-5 h-full;
     input {
       @apply w-120 appearance-none h-5 rounded-full bg-mono-500;
 
@@ -360,28 +363,53 @@
     }
   }
   .bk-blokkli-item-options-group-content {
-    @apply absolute top-full left-0;
+    @apply absolute bottom-full left-0;
     @apply fixed left-0 grid bg-mono-900 overflow-hidden min-w-full rounded-b-none rounded-t;
     @apply bottom-full;
     @screen md {
       @apply absolute top-full bottom-auto rounded-t-none rounded-b;
     }
-    label {
+    > label {
       @apply py-10;
       @media not all and (hover: none) {
         @apply hover:bg-mono-800;
       }
     }
+    .bk-blokkli-item-options-item-content {
+      @apply h-50;
+    }
 
     .bk-blokkli-item-options-item {
-      @apply py-10;
+      @apply block;
       &:not(:last-child) {
         @apply border-b border-b-mono-600;
       }
       .bk-blokkli-item-options-item-label {
-        @apply px-10 font-semibold text-mono-300 mb-3;
+        @apply px-10 font-semibold text-mono-300 mt-10;
       }
-      @apply block;
+    }
+  }
+
+  .bk-blokkli-item-options-number {
+    @apply h-full relative flex px-10 items-center;
+    input {
+      @apply appearance-none bg-transparent h-full focus:outline-0 focus:border-none focus:shadow-none font-mono text-center;
+
+      &::-webkit-inner-spin-button {
+        @apply appearance-none w-0 h-0 hidden;
+      }
+    }
+
+    button {
+      @apply w-20 h-20 flex items-center justify-center rounded-full;
+      @apply hover:bg-mono-700;
+
+      &[disabled] {
+        @apply pointer-events-none bg-transparent text-mono-600;
+      }
+      .bk-icon {
+        @apply w-15 h-15 fill-current;
+      }
     }
   }
 }

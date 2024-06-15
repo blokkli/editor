@@ -32,7 +32,7 @@ export function getRuntimeOptionValue(
       return value
     }
     return []
-  } else if (definition.type === 'range') {
+  } else if (definition.type === 'range' || definition.type === 'number') {
     if (typeof value === 'number' && !isNaN(value)) {
       return value
     } else if (typeof value === 'string') {

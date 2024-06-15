@@ -29,6 +29,11 @@
             <td>{{ JSON.stringify(options.columns) }}</td>
           </tr>
           <tr>
+            <th>rows</th>
+            <td>radios</td>
+            <td>{{ JSON.stringify(options.rows) }}</td>
+          </tr>
+          <tr>
             <th>range</th>
             <td>range</td>
             <td>{{ JSON.stringify(options.range) }}</td>
@@ -89,11 +94,18 @@ const { options } = defineBlokkli({
     },
     range: {
       type: 'range',
-      label: 'Number',
+      label: 'Range',
       default: 0,
       min: 0,
       max: 1,
       step: 0.01,
+    },
+    rows: {
+      type: 'number',
+      label: 'Number',
+      default: 0,
+      min: 0,
+      max: 8,
     },
     paddingTop: {
       type: 'range',
@@ -136,6 +148,7 @@ const { options } = defineBlokkli({
       label: 'Columns',
       default: 'two',
       displayAs: 'icons',
+      group: 'Radios',
       options: {
         two: { icon: 'icon-blokkli-option-two', label: 'Two' },
         three: { icon: 'icon-blokkli-option-three', label: 'Three' },
@@ -163,6 +176,7 @@ const { options } = defineBlokkli({
     },
     buttonType: {
       type: 'radios',
+      group: 'Radios',
       label: 'Button Type',
       default: 'primary',
       options: {
@@ -172,6 +186,7 @@ const { options } = defineBlokkli({
     },
     columnsGrid: {
       type: 'radios',
+      group: 'Radios',
       label: 'Columns',
       default: 'equal',
       displayAs: 'grid',
@@ -184,6 +199,7 @@ const { options } = defineBlokkli({
     },
     color: {
       type: 'radios',
+      group: 'Radios',
       label: 'Color',
       default: 'normal',
       displayAs: 'colors',
@@ -213,6 +229,7 @@ const { options } = defineBlokkli({
           'paddingLeft',
           'paddingRight',
           'paddingBottom',
+          'rows',
         ]
       }
       return ['showAllOptions']

@@ -6,6 +6,15 @@ type DefinitionOptionText = {
   group?: string
 }
 
+type DefinitionOptionNumber = {
+  type: 'number'
+  default: number
+  label: string
+  min: number
+  max: number
+  group?: string
+}
+
 type DefinitionOptionRange = {
   type: 'range'
   default: number
@@ -96,3 +105,4 @@ export type BlockOptionDefinition =
   | DefinitionOptionRadios
   | DefinitionOptionText
   | DefinitionOptionRange
+  | DefinitionOptionNumber

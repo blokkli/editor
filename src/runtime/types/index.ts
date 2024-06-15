@@ -51,7 +51,9 @@ type GetType<T> = T extends { options: infer O }
     ? boolean
     : T extends { type: 'range' }
       ? number
-      : string
+      : T extends { type: 'number' }
+        ? number
+        : string
 
 export type BlockDefinitionOptionsInput = {
   [key: string]: BlockOptionDefinition

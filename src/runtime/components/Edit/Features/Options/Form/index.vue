@@ -24,6 +24,8 @@
       v-for="group in optionGroups"
       :key="'group_' + group.label"
       :label="group.label"
+      :is-active="group.label === activeGroup"
+      @toggle="onToggleGroup(group.label)"
     >
       <OptionsFormItem
         v-for="plugin in group.options"
@@ -45,7 +47,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli, onBeforeUnmount, onMounted } from '#imports'
+import { ref, computed, useBlokkli, onBeforeUnmount, onMounted } from '#imports'
 import { globalOptions } from '#blokkli/definitions'
 import { falsy } from '#blokkli/helpers'
 import OptionsFormItem from './Item.vue'
@@ -67,6 +69,16 @@ type OptionItem = {
 type OptionGroup = {
   label: string
   options: OptionItem[]
+}
+
+const activeGroup = ref('')
+
+function onToggleGroup(label: string) {
+  if (activeGroup.value === label) {
+    activeGroup.value = ''
+  } else {
+    activeGroup.value = label
+  }
 }
 
 const { adapter, eventBus, state, selection, runtimeConfig, dom, theme } =

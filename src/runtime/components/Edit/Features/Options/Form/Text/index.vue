@@ -1,5 +1,5 @@
 <template>
-  <div class="bk-blokkli-item-options-text" :class="'bk-is-type-' + type">
+  <div class="bk-blokkli-item-options-text">
     <input v-model="text" :type="type" :placeholder="label" />
     <div>{{ text }}</div>
   </div>

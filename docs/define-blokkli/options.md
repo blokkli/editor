@@ -313,3 +313,66 @@ const { options } = defineBlokkli({
 console.log(options.value.rotation)
 </script>
 ```
+
+## Number
+
+![Screenshot of the number option type](/assets/option-number.png)
+
+Renders a HTML number input to enter an integer number.
+
+```vue
+<script lang="ts" setup>
+const { options } = defineBlokkli({
+  bundle: 'badge',
+
+  options: {
+    rows: {
+      type: 'number',
+      label: 'Rows',
+      default: 3,
+      min: 0,
+      max: 8,
+    },
+  },
+})
+
+// A valid (not NaN) number.
+console.log(options.value.rows)
+</script>
+```
+
+## Grouping
+
+![Screenshot of the option grouping feature](/assets/option-grouping.png)
+
+If your block defines a lot of options the horizontal space available might not
+be enough. To solve this, you can group options into a dropdown.
+
+To do this, just define the desired group label using the `group` property when
+defining options:
+
+```typescript
+const { options } = defineBlokkli({
+  bundle: 'card',
+
+  options: {
+    showOnMobile: {
+      type: 'checkbox',
+      label: 'Show on mobile',
+      default: false,
+      group: 'Mobile', // [!code focus:1]
+    },
+
+    mobileStyle: {
+      type: 'radios',
+      label: 'Mobile Style',
+      default: 'primary',
+      group: 'Mobile', // [!code focus:1]
+      options: {
+        primary: 'Primary',
+        secondary: 'Secondary',
+      },
+    },
+  },
+})
+```
