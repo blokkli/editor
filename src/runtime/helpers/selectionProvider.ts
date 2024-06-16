@@ -7,7 +7,6 @@ import type {
   DraggableExistingBlock,
   DraggableItem,
   InteractionMode,
-  StructureDragStart,
 } from '#blokkli/types'
 import {
   findElement,
@@ -160,9 +159,14 @@ export type SelectionProvider = {
    */
   isChangingOptions: Ref<boolean>
 
-  getDraggedStructureItem: () => StructureDragStart | null
-
+  /**
+   * The items that are currently being dragged.
+   */
   dragItems: Ref<DraggableItem[]>
+
+  /**
+   * The block bundles of the items being dragged.
+   */
   dragItemsBundles: ComputedRef<string[]>
 }
 
@@ -313,16 +317,6 @@ export default function (dom: DomProvider): SelectionProvider {
     }
   })
 
-  let draggedStructureItem: StructureDragStart | null = null
-
-  function getDraggedStructureItem() {
-    return draggedStructureItem
-  }
-
-  onBlokkliEvent('structure:drag:start', function (e) {
-    draggedStructureItem = e
-  })
-
   return {
     uuids: selectedUuids,
     blocks,
@@ -334,7 +328,6 @@ export default function (dom: DomProvider): SelectionProvider {
     isMultiSelecting,
     draggingMode,
     interactionMode,
-    getDraggedStructureItem,
     dragItems,
     uuidsMap,
     dragItemsBundles,

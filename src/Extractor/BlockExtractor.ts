@@ -8,15 +8,6 @@ import type {
 import { sortObjectKeys } from './../helpers'
 import { defu } from 'defu'
 
-function toPascalCase(name: string): string {
-  return name
-    .replace(/[^a-zA-Z0-9]+/g, ' ') // Replace any non-alphanumeric characters with spaces
-    .trim() // Trim spaces around the string
-    .split(/\s+/) // Split by spaces
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
-    .join('') // Join all words into a single PascalCase string
-}
-
 type ExtractedBlockDefinitionInput = BlockDefinitionInput<{}, []>
 type ExtractedFragmentDefinitionInput = FragmentDefinitionInput<{}, []>
 

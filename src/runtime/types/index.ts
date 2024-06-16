@@ -1023,8 +1023,6 @@ export type EventbusEvents = {
   'mouse:down': GlobalPointerEvent
   'mouse:move': GlobalPointerEvent
   'mouse:up': GlobalPointerUpEvent
-
-  'structure:drag:start': StructureDragStart
 }
 
 export type Eventbus = Emitter<EventbusEvents>

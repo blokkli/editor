@@ -2,7 +2,6 @@ import { onBeforeUnmount } from '#imports'
 
 export default function (
   callback: (entries: IntersectionObserverEntry[]) => void,
-  timeoutDuration = 500,
 ) {
   let observer: IntersectionObserver | null = null
   let collected: HTMLElement[] = []

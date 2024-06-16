@@ -256,6 +256,7 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     parentBlockBundle?: BlockBundleWithNested,
   ) => {
     if (registeredBlocks[uuid]) {
+      // eslint-disable-next-line no-console
       console.error(
         'Trying to register block with already existing UUID: ' + uuid,
       )
