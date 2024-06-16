@@ -253,10 +253,6 @@ msgctxt "deleteError"
 msgid "The block could not be deleted."
 msgstr "S'Elemänt het nid chönne entfärnt wärde. "
 
-msgctxt "draggingOverlayInsertText"
-msgid "Insert into @bundle » @field"
-msgstr ""
-
 msgctxt "droppableEditFormSave"
 msgid "Save"
 msgstr ""
@@ -385,6 +381,10 @@ msgstr "Normali Darstellig"
 msgctxt "feature_artboard_setting_useArtboard_option_yes"
 msgid "Use artboard"
 msgstr "Zeicheflächi bruche"
+
+msgctxt "feature_block-add-list_setting_hideDisabledBlocks_label"
+msgid "Hide blocks that can't be added"
+msgstr ""
 
 msgctxt "feature_clipboard_setting_openSidebarOnPaste_label"
 msgid "Open sidebar when pasting from clipboard"

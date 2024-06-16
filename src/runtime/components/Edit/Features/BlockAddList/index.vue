@@ -12,7 +12,7 @@
       :label="type.label"
       :bundle="type.id"
       :orientation="ui.addListOrientation.value"
-      :disabled="!type.id || !selectableBundles.includes(type.id)"
+      :disabled="type.isDisabled"
       :color="type.isFavorite ? 'yellow' : 'default'"
       data-element-type="new"
       :data-item-bundle="type.id"
@@ -67,7 +67,7 @@ import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { PluginTourItem } from '#blokkli/plugins'
 import { getFieldKey } from '#blokkli/helpers'
 
-defineBlokkliFeature({
+const { settings } = defineBlokkliFeature({
   id: 'block-add-list',
   label: 'Block Add List',
   icon: 'plus',
@@ -75,6 +75,14 @@ defineBlokkliFeature({
     'Renders a list of block bundles that can be added to the current page.',
   dependencies: ['add-list'],
   screnshot: 'feature-block-add-list.jpg',
+  settings: {
+    hideDisabledBlocks: {
+      type: 'checkbox',
+      label: "Hide blocks that can't be added",
+      group: 'appearance',
+      default: false,
+    },
+  },
 })
 
 const reservedBundles = ['from_library', 'blokkli_fragment']
@@ -189,9 +197,13 @@ const sortedList = computed(() => {
   return [...types.generallyAvailableBundles]
     .filter((v) => !reservedBundles.includes(v.id))
     .map((v) => {
+      const isVisible = determineVisibility(v.id, v.label)
+      const isDisabled = !v.id || !selectableBundles.value.includes(v.id)
       return {
         ...v,
-        isVisible: determineVisibility(v.id, v.label),
+        isDisabled,
+        isVisible:
+          isVisible && (!settings.value.hideDisabledBlocks || !isDisabled),
         isFavorite: favorites.value.includes(v.id),
       }
     })

@@ -267,10 +267,6 @@ msgctxt "deleteError"
 msgid "The block could not be deleted."
 msgstr "Das Element konnte nicht entfernt werden."
 
-msgctxt "draggingOverlayInsertText"
-msgid "Insert into @bundle » @field"
-msgstr "In «@field» einfügen"
-
 msgctxt "droppableEditFormSave"
 msgid "Save"
 msgstr "Speichern"
@@ -404,6 +400,10 @@ msgstr "Normale Darstellung"
 msgctxt "feature_artboard_setting_useArtboard_option_yes"
 msgid "Use artboard"
 msgstr "Zeichenfläche verwenden"
+
+msgctxt "feature_block-add-list_setting_hideDisabledBlocks_label"
+msgid "Hide blocks that can't be added"
+msgstr "Blöcke ausblenden, die nicht hinzugefügt werden können"
 
 msgctxt "feature_clipboard_setting_openSidebarOnPaste_label"
 msgid "Open sidebar when pasting from clipboard"

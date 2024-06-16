@@ -127,12 +127,7 @@
       @apply text-lg font-semibold;
       width: calc(var(--bk-add-list-width) * 1px);
     }
-    @apply w-70 px-10 py-5 cursor-grab block;
-    @screen lg {
-      &:first-child {
-        @apply pt-10;
-      }
-    }
+    @apply w-70 px-10 cursor-grab block pt-10;
   }
 }
 

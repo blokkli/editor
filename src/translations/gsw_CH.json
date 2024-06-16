@@ -227,10 +227,6 @@
     "source": "The block could not be deleted.",
     "translation": "S'Elemänt het nid chönne entfärnt wärde. "
   },
-  "draggingOverlayInsertText": {
-    "source": "Insert into @bundle » @field",
-    "translation": ""
-  },
   "droppableEditFormSave": {
     "source": "Save",
     "translation": ""
@@ -354,6 +350,10 @@
   "feature_artboard_setting_useArtboard_option_yes": {
     "source": "Use artboard",
     "translation": "Zeicheflächi bruche"
+  },
+  "feature_block-add-list_setting_hideDisabledBlocks_label": {
+    "source": "Hide blocks that can't be added",
+    "translation": ""
   },
   "feature_clipboard_setting_openSidebarOnPaste_label": {
     "source": "Open sidebar when pasting from clipboard",
