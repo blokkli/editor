@@ -1,7 +1,7 @@
 <template>
   <Teleport v-if="activeItem" to="body">
     <div class="bk bk-tour" :style="tooltipStyle">
-      <div ref="contentEl" class="bk-tour-inner">
+      <div class="bk-tour-inner">
         <div class="bk-tour-title">
           <span>{{ activeItem.title }}</span>
           <button @click.prevent="$emit('close')">
@@ -9,13 +9,27 @@
           </button>
         </div>
         <div class="bk-tour-content">
-          <div v-html="activeItem.text" />
+          <div
+            :style="{
+              height: tooltipHeight + 'px',
+            }"
+          >
+            <div
+              ref="contentEl"
+              class="bk-tour-content-text"
+              v-html="activeItem.text"
+            />
+          </div>
         </div>
       </div>
       <div class="bk-tour-buttons">
         <button @click.stop.prevent="prev">
           <Icon name="chevron-left" />
           <span>{{ $t('tourPrev', 'Previous') }}</span>
+          <div class="bk-tooltip">
+            <span>Arrow Left</span>
+            <ShortcutIndicator label="Prev Tour Item" key-code="ArrowLeft" />
+          </div>
         </button>
         <div>
           <span>{{ activeIndex + 1 }}</span
@@ -25,6 +39,10 @@
         <button @click.stop.prevent="next">
           <span>{{ $t('tourNext', 'Next') }}</span>
           <Icon name="chevron-right" />
+          <div class="bk-tooltip">
+            <span>Arrow Left</span>
+            <ShortcutIndicator label="Next Tour Item" key-code="ArrowRight" />
+          </div>
         </button>
       </div>
 
@@ -37,7 +55,7 @@
 <script lang="ts" setup>
 import { useBlokkli, computed, ref } from '#imports'
 import { falsy, modulo } from '#blokkli/helpers'
-import { Icon } from '#blokkli/components'
+import { Icon, ShortcutIndicator } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import useAnimationFrame from '#blokkli/helpers/composables/useAnimationFrame'
 
@@ -72,7 +90,6 @@ const tooltipStyle = computed(() => {
   )
   return {
     width: tooltipWidth.value + 'px',
-    height: tooltipHeight.value + 'px',
     transform: `translate(${x}px, ${y}px)`,
   }
 })

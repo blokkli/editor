@@ -32,9 +32,8 @@
 import { computed, ref, useBlokkli } from '#imports'
 
 import type { BlokkliIcon } from '#blokkli/icons'
-import { Icon } from '#blokkli/components'
+import { Icon, ShortcutIndicator } from '#blokkli/components'
 import type { DraggableExistingBlock } from '#blokkli/types'
-import { ShortcutIndicator } from '#blokkli/components'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 

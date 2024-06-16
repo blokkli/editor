@@ -1,6 +1,6 @@
 .bk.bk-tour {
   @apply fixed z-tour-item top-0 left-0 rounded-md;
-  @apply bg-white shadow-xl transition-all duration-200 overflow-hidden ease-swing text-yellow-dark;
+  @apply bg-white shadow-xl transition-all duration-200 ease-swing text-yellow-dark;
 
   button {
     @apply focus:outline-0 focus:ring-0 focus:border-0;
@@ -8,7 +8,7 @@
 }
 
 .bk-tour-inner {
-  @apply absolute top-0 left-0 w-full;
+  /* @apply absolute top-0 left-0 w-full; */
 }
 
 .bk-tour-title {
@@ -26,29 +26,59 @@
   }
 }
 .bk-tour-content {
-  @apply p-20 pt-[17px] min-h-[120px];
+  @apply p-20 pt-[17px];
+
+  > div {
+    @apply relative ease-swing transition-all overflow-hidden;
+  }
 
   p:not(:last-child) {
     @apply mb-18;
   }
 }
+.bk-tour-content-text {
+  @apply absolute top-0 left-0 w-full;
+}
 
-.bk-tour-buttons {
-  @apply border-t h-50 absolute bottom-0 left-0 w-full bg-white;
-  @apply border-t-yellow-dark/20;
-  @apply flex justify-between items-center;
+.bk {
+  .bk-tour-buttons {
+    @apply border-t h-50 absolute bottom-0 left-0 w-full bg-white;
+    @apply border-t-yellow-dark/20;
+    @apply flex justify-between items-center;
 
-  > div {
-    @apply text-yellow-dark/80 text-sm;
-  }
+    > div {
+      @apply text-yellow-dark/80 text-sm;
+    }
 
-  button {
-    @apply text-yellow-dark font-semibold py-15 px-20 flex items-center leading-none -mx-5 hover:bg-yellow-dark/5;
+    button {
+      @apply text-yellow-dark font-semibold py-15 px-15 flex items-center leading-none hover:bg-yellow-dark/5 relative;
 
-    .bk-icon {
-      @apply w-20 h-20;
-      svg {
-        @apply fill-current;
+      .bk-icon {
+        @apply w-20 h-20;
+        svg {
+          @apply fill-current;
+        }
+      }
+
+      .bk-tooltip {
+        @apply absolute top-full hidden mt-10;
+      }
+
+      &:first-child {
+        .bk-tooltip {
+          @apply left-0;
+        }
+      }
+      &:last-child {
+        .bk-tooltip {
+          @apply right-0;
+        }
+      }
+
+      &:hover {
+        .bk-tooltip {
+          @apply flex;
+        }
       }
     }
   }
@@ -61,7 +91,7 @@
 }
 
 .bk.bk-tour-popup {
-  @apply fixed top-80 left-0 w-full bg-white shadow-xl  hyphens-auto overflow-hidden;
+  @apply fixed top-80 left-0 w-full bg-white shadow-xl  hyphens-auto;
   @apply z-tour-popup;
   @apply border border-mono-200;
 

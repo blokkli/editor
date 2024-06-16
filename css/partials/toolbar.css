@@ -27,7 +27,7 @@
   }
 
   .bk-tooltip {
-    @apply bg-mono-800/80 backdrop-blur p-5 text-mono-50 font-semibold text-sm rounded select-none pointer-events-none hidden items-center justify-between px-10 leading-none whitespace-nowrap h-30;
+    @apply bg-mono-800/80 p-5 text-mono-50 font-semibold text-sm rounded select-none pointer-events-none hidden items-center justify-between px-10 leading-none whitespace-nowrap h-[38px];
     @screen lg {
       @apply flex;
     }
@@ -151,10 +151,17 @@
 }
 
 .bk-shortcut {
-  @apply text-xs flex gap-5 font-semibold items-center h-[1.5em] bg-transparent;
+  @apply text-xs flex gap-5 font-bold items-center h-[1.5em] bg-transparent;
   color: inherit;
   > kbd {
-    @apply !bg-mono-500 px-5 text-mono-100 rounded flex items-center min-w-[1.5em] justify-center h-full leading-none pt-[0.15em] font-sans text-xs;
+    @apply px-5 rounded flex items-center min-w-[2em] justify-center h-full leading-none pt-[0.15em] font-sans text-xs;
+    @apply text-mono-950;
+    @apply border border-mono-50;
+    box-shadow: 0 2px 0 0 theme('colors.mono.400');
+    background: linear-gradient(
+      theme('colors.mono.300'),
+      theme('colors.mono.100')
+    );
   }
 }
 
