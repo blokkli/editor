@@ -63,7 +63,6 @@ import {
   useBlokkli,
   onMounted,
   onBeforeUnmount,
-  onUnmounted,
 } from '#imports'
 import type { Coord } from '#blokkli/types'
 import { PluginToolbarButton } from '#blokkli/plugins'

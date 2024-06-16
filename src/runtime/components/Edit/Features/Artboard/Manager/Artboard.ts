@@ -948,11 +948,16 @@ export class Artboard {
     const adjustedX = applyRubberBandEffect(x, xMin, xMax)
     const adjustedY = applyRubberBandEffect(y, yMin, yMax)
 
-    // Update the offset with the rubber band effect applied
-    this.offset.x = adjustedX
+    if (this.rootSize.width < 500) {
+      // On mobile devices, the anchor point should always be the center of the screen,
+      // because zooming into the page does not make a lot of sense on mobile.
+      this.offset.x =
+        this.rootSize.width / 2 - (this.artboardSize.width * this.scale) / 2
+    } else {
+      // Update the offset with the rubber band effect applied
+      this.offset.x = adjustedX
+    }
     this.offset.y = adjustedY
-    // this.offset.x = 0
-    // this.offset.y = 0
   }
 
   stopAnimate() {
