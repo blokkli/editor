@@ -202,8 +202,12 @@ html {
 
 [data-element-type='existing'] {
   @apply select-none cursor-default;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
   * {
     @apply select-none cursor-default;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
   }
 
   &:hover {

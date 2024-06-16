@@ -21,7 +21,7 @@
       }
 
       .bk-structure-item-label {
-        @apply h-[40px];
+        @apply h-[40px] cursor-grab;
         &:before {
           content: '';
           @apply absolute h-1 left-[-20px] w-[19px] top-[22px] border-t border-t-mono-400;
@@ -90,7 +90,7 @@
 
   .bk-structure-field-target {
     @apply h-[40px] w-full absolute;
-    @apply opacity-0 hover:opacity-100;
+    @apply opacity-20 hover:opacity-100;
     @apply border-b-4 border-b-accent-700;
 
     &.bk-is-before {

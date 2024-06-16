@@ -149,7 +149,7 @@ html.bk-is-sidebar-interacting {
   input,
   textarea,
   a {
-    @apply !pointer-events-none;
+    /* @apply !pointer-events-none; */
   }
 }
 

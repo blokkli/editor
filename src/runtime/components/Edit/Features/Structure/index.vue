@@ -12,7 +12,12 @@
     icon="tree"
     weight="-90"
   >
-    <div v-if="isLoaded" class="bk bk-structure bk-control" @wheel.stop>
+    <div
+      v-if="isLoaded"
+      id="bk-structure"
+      class="bk bk-structure bk-control"
+      @wheel.stop
+    >
       <List
         :entity-bundle="context.entityBundle"
         :entity-type="context.entityType"

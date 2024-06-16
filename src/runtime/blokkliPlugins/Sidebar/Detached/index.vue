@@ -6,8 +6,6 @@
     :class="{ 'bk-is-focused': focusedSidebar === id }"
     :style="style"
     tabindex="10"
-    @mousedown.stop="onSidebarMouseDown"
-    @mouseup.stop
     @pointermove="onPointerMove"
     @focus.capture="onFocus"
   >
@@ -115,7 +113,7 @@ if (z.value > globalZ.value) {
 const onSidebarMouseDown = () => {
   onFocus()
   isResizing.value = true
-  window.addEventListener('mouseup', onMouseUp)
+  window.addEventListener('mouseup', onMouseUp, { capture: true })
 }
 
 const offsetX = computed(() => {
@@ -242,8 +240,8 @@ const onMouseDown = (e: MouseEvent, mode: MouseMode) => {
   startMouseX.value = e.clientX
   startMouseY.value = e.clientY
 
-  window.addEventListener('mousemove', onMouseMove)
-  window.addEventListener('mouseup', onMouseUp)
+  window.addEventListener('pointermove', onMouseMove, { capture: true })
+  window.addEventListener('pointerup', onMouseUp, { capture: true })
 }
 
 const setCoordinates = (newX: number, newY: number) => {
@@ -296,8 +294,8 @@ const onMouseUp = () => {
   isDragging.value = false
   isResizing.value = false
   mouseMode.value = ''
-  window.removeEventListener('mousemove', onMouseMove)
-  window.removeEventListener('mouseup', onMouseUp)
+  window.removeEventListener('pointermove', onMouseMove, { capture: true })
+  window.removeEventListener('pointerup', onMouseUp, { capture: true })
 
   updateStored()
 }
@@ -334,7 +332,7 @@ onBlokkliEvent('ui:resized', () => {
 })
 
 onBeforeUnmount(() => {
-  window.removeEventListener('mousemove', onMouseMove)
-  window.removeEventListener('mouseup', onMouseUp)
+  window.removeEventListener('pointermove', onMouseMove, { capture: true })
+  window.removeEventListener('pointerup', onMouseUp, { capture: true })
 })
 </script>

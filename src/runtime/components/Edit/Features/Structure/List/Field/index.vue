@@ -1,8 +1,12 @@
 <template>
   <div ref="el" class="bk-structure-field" :data-structure-field-key="key">
-    <div v-if="totalFieldsOfType > 1" class="bk-structure-field-label">
+    <button
+      v-if="totalFieldsOfType > 1"
+      class="bk-structure-field-label"
+      @click.prevent.stop.capture="onClickFieldLabel"
+    >
       {{ config?.label || name }}
-    </div>
+    </button>
     <div class="bk-structure-field-items">
       <div
         v-for="(item, index) in list"
@@ -15,7 +19,7 @@
           "
           :style="targetStyle"
           class="bk-structure-field-target bk-is-before"
-          @pointerup="onMouseUp()"
+          @pointerup.stop.capture="onMouseUp()"
         />
         <Item
           :uuid="item.uuid"
@@ -23,6 +27,7 @@
           :level="level"
           :visible-field-keys="visibleFieldKeys"
           :is-selected-from-parent="isSelectedFromParent"
+          :is-visible="isVisible"
         />
         <div
           v-if="
@@ -33,14 +38,14 @@
           "
           :style="targetStyle"
           class="bk-structure-field-target bk-is-after"
-          @pointerup="onMouseUp(item.uuid)"
+          @pointerup.stop.capture="onMouseUp(item.uuid)"
         />
       </div>
       <div
         v-if="!list.length && showTargets"
         class="bk-structure-field-target bk-is-after"
         :style="targetStyle"
-        @pointerup="onMouseUp()"
+        @pointerup.stop.capture="onMouseUp()"
       />
     </div>
   </div>
@@ -54,7 +59,7 @@ import {
   inject,
   onMounted,
   onBeforeUnmount,
-  watch,
+  nextTick,
 } from '#imports'
 import Item from './../Item/index.vue'
 
@@ -107,6 +112,20 @@ function onMouseUp(preceedingUuid?: string) {
       fieldName: field.name,
     },
   })
+
+  const uuid = selection.uuids.value[0]
+  if (uuid) {
+    nextTick(() => {
+      eventBus.emit('scrollIntoView', { uuid, center: true })
+    })
+  }
+}
+
+function onClickFieldLabel() {
+  eventBus.emit(
+    'select',
+    list.value.map((v) => v.uuid),
+  )
 }
 
 const el = ref<HTMLDivElement | null>(null)

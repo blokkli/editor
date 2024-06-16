@@ -3,7 +3,7 @@
     class="bk-structure-item"
     :class="{ 'bk-is-selected': isSelected }"
     :bk-structure-uuid="uuid"
-    @mousedown.stop="onMouseDown"
+    @pointerdown.stop.prevent="onMouseDown"
   >
     <button class="bk-structure-item-label">
       <ItemIcon :bundle="bundle" :class="{ 'bk-is-selected': isSelected }" />
@@ -32,12 +32,23 @@ const props = withDefaults(
     bundle: string
     level?: number
     visibleFieldKeys: Record<string, boolean>
+    isVisible: boolean
     isSelectedFromParent?: boolean
   }>(),
   {
     level: 0,
   },
 )
+
+function getRootEl(): HTMLElement {
+  const rootEl = document.querySelector('#bk-structure')
+
+  if (!(rootEl instanceof HTMLElement)) {
+    throw new TypeError('Failed to locate root structure element.')
+  }
+
+  return rootEl
+}
 
 const { runtimeConfig, types, selection, eventBus } = useBlokkli()
 
@@ -51,8 +62,8 @@ let startX = 0
 let startY = 0
 
 function onMouseUp(e: MouseEvent) {
-  window.removeEventListener('mousemove', onMouseMove)
-  window.removeEventListener('mouseup', onMouseUp)
+  getRootEl().removeEventListener('pointermove', onMouseMove)
+  getRootEl().removeEventListener('pointerup', onMouseUp)
   if (isDragging) {
     isDragging = false
     return
@@ -86,7 +97,7 @@ function onMouseMove(e: MouseEvent) {
   const diff = Math.abs(startX - e.clientX) + Math.abs(startY - e.clientY)
 
   if (diff > 10) {
-    window.removeEventListener('mousemove', onMouseMove)
+    getRootEl().removeEventListener('pointermove', onMouseMove)
     isMouseDown = false
     isDragging = true
     startX = 0
@@ -108,13 +119,13 @@ function onMouseDown(e: MouseEvent) {
   startX = e.clientX
   startY = e.clientY
 
-  window.addEventListener('mousemove', onMouseMove)
-  window.addEventListener('mouseup', onMouseUp)
+  getRootEl().addEventListener('pointermove', onMouseMove)
+  getRootEl().addEventListener('pointerup', onMouseUp)
 }
 
 onBeforeUnmount(() => {
-  window.removeEventListener('mousemove', onMouseMove)
-  window.removeEventListener('mouseup', onMouseUp)
+  getRootEl().removeEventListener('pointermove', onMouseMove)
+  getRootEl().removeEventListener('pointerup', onMouseUp)
 })
 
 defineOptions({
