@@ -96,6 +96,7 @@ const props = withDefaults(
 const options = computed<ArtboardOptions>(() => {
   return {
     maxScale: ui.isMobile.value ? 1 : 3,
+    scrollSpeed: props.scrollSpeed,
   }
 })
 

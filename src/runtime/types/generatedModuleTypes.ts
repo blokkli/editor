@@ -6,19 +6,17 @@ export type ModuleOptionsSettings = {
     disable?: boolean
     default?: 'vertical' | 'horizontal' | 'sidebar'
   }
-  // Page editing
-  'feature:artboard:useArtboard'?: { disable?: boolean; default?: 'yes' | 'no' }
   // Persist position and zoom
   'feature:artboard:persist'?: { disable?: boolean; default?: boolean }
   // Artboard scroll speed
   'feature:artboard:scrollSpeed'?: { disable?: boolean; default?: number }
-  // Hide blocks that can't be added
-  'feature:block-add-list:hideDisabledBlocks'?: {
+  // Open sidebar when pasting from clipboard
+  'feature:clipboard:openSidebarOnPaste'?: {
     disable?: boolean
     default?: boolean
   }
-  // Open sidebar when pasting from clipboard
-  'feature:clipboard:openSidebarOnPaste'?: {
+  // Hide blocks that can't be added
+  'feature:block-add-list:hideDisabledBlocks'?: {
     disable?: boolean
     default?: boolean
   }

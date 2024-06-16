@@ -29,6 +29,14 @@ const { options } = defineBlokkliFragment({
         '9999': '9999',
       },
     },
+    radiusValue: {
+      type: 'range',
+      label: 'Radius',
+      default: 0,
+      min: 0,
+      max: 100,
+      step: 1,
+    },
     color: {
       type: 'radios',
       label: 'Color',
@@ -48,6 +56,6 @@ const { options } = defineBlokkliFragment({
 })
 
 const style = computed(() => ({
-  borderRadius: options.value.radius + 'px',
+  borderRadius: (options.value.radiusValue / 100) * 340 + 'px',
 }))
 </script>

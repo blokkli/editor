@@ -1,6 +1,5 @@
 <template>
   <ArtboardManager
-    v-if="useArtboard"
     :persist="settings.persist"
     :scroll-speed="settings.scrollSpeed"
   />
@@ -9,7 +8,7 @@
 <script lang="ts" setup>
 import ArtboardManager from './Manager/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
+import { useBlokkli, defineBlokkliFeature } from '#imports'
 
 const { settings } = defineBlokkliFeature({
   id: 'artboard',
@@ -18,23 +17,6 @@ const { settings } = defineBlokkliFeature({
   description:
     'Wraps the entire page in an artboard that can be zoomed and moved using the mouse.',
   settings: {
-    useArtboard: {
-      type: 'radios',
-      default: 'yes',
-      label: 'Page editing',
-      group: 'appearance',
-      viewports: ['desktop'],
-      options: {
-        yes: {
-          label: 'Use artboard',
-          icon: 'artboard-enabled',
-        },
-        no: {
-          label: 'Normal display',
-          icon: 'artboard-disabled',
-        },
-      },
-    },
     persist: {
       type: 'checkbox',
       default: true,
@@ -58,12 +40,7 @@ const { settings } = defineBlokkliFeature({
 
 const { dom } = useBlokkli()
 
-const useArtboard = computed(() => settings.value.useArtboard === 'yes')
-
 onBlokkliEvent('scrollIntoView', (e) => {
-  if (useArtboard.value) {
-    return
-  }
   const item = dom.findBlock(e.uuid)
   if (!item) {
     return

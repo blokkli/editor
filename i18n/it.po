@@ -375,18 +375,6 @@ msgctxt "feature_artboard_setting_scrollSpeed_label"
 msgid "Artboard scroll speed"
 msgstr ""
 
-msgctxt "feature_artboard_setting_useArtboard_label"
-msgid "Page editing"
-msgstr ""
-
-msgctxt "feature_artboard_setting_useArtboard_option_no"
-msgid "Normal display"
-msgstr ""
-
-msgctxt "feature_artboard_setting_useArtboard_option_yes"
-msgid "Use artboard"
-msgstr ""
-
 msgctxt "feature_block-add-list_setting_hideDisabledBlocks_label"
 msgid "Hide blocks that can't be added"
 msgstr ""

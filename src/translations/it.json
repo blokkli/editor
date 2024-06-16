@@ -339,18 +339,6 @@
     "source": "Artboard scroll speed",
     "translation": ""
   },
-  "feature_artboard_setting_useArtboard_label": {
-    "source": "Page editing",
-    "translation": ""
-  },
-  "feature_artboard_setting_useArtboard_option_no": {
-    "source": "Normal display",
-    "translation": ""
-  },
-  "feature_artboard_setting_useArtboard_option_yes": {
-    "source": "Use artboard",
-    "translation": ""
-  },
   "feature_block-add-list_setting_hideDisabledBlocks_label": {
     "source": "Hide blocks that can't be added",
     "translation": ""
