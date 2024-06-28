@@ -382,35 +382,23 @@ function onTouchEnd(e: PointerEvent) {
   longPressInteraction = null
 }
 
-let lastRectUpdate: number = Date.now()
-
 onBlokkliEvent('dragging:start', (e) => {
   mouseStartCoordinates = e.coords
 })
 
-onBlokkliEvent('canvas:draw', (e) => {
-  // if (!svg.value) {
-  //   return
-  // }
-  // svg.value.style.transform = `translate3d(${e.artboardOffset.x}px, ${e.artboardOffset.y}px, 0) scale(${e.artboardScale})`
-  // if (
-  //   Date.now() - lastRectUpdate > 1000 &&
-  //   !selection.isDragging.value &&
-  //   !selection.isMultiSelecting.value &&
-  //   !keyboard.isPressingSpace.value &&
-  //   !keyboard.isPressingControl.value
-  // ) {
-  //   buildRects()
-  //   lastRectUpdate = Date.now()
-  // }
-})
-
 function onClick(e: MouseEvent) {
   e.preventDefault()
+  e.stopImmediatePropagation()
+  e.stopPropagation()
 }
 
 onMounted(() => {
   const el = ui.rootElement()
+  const providerElement = ui.providerElement()
+
+  providerElement.addEventListener('click', onClick, {
+    capture: true,
+  })
 
   el.addEventListener('click', onClick, {
     capture: true,
@@ -431,6 +419,11 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   const el = ui.rootElement()
+  const providerElement = ui.providerElement()
+
+  providerElement.removeEventListener('click', onClick, {
+    capture: true,
+  })
 
   el.removeEventListener('click', onClick, {
     capture: true,
