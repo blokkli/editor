@@ -7,8 +7,7 @@
 
 <script lang="ts" setup>
 import ArtboardManager from './Manager/index.vue'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import { useBlokkli, defineBlokkliFeature } from '#imports'
+import { defineBlokkliFeature } from '#imports'
 
 const { settings } = defineBlokkliFeature({
   id: 'artboard',
@@ -36,25 +35,6 @@ const { settings } = defineBlokkliFeature({
     },
   },
   screenshot: 'feature-artboard.jpg',
-})
-
-const { dom } = useBlokkli()
-
-onBlokkliEvent('scrollIntoView', (e) => {
-  const item = dom.findBlock(e.uuid)
-  if (!item) {
-    return
-  }
-
-  const options: ScrollIntoViewOptions = {}
-
-  if (e.center) {
-    options.block = 'center'
-  }
-
-  options.behavior = e.immediate ? 'instant' : 'smooth'
-
-  item.element().scrollIntoView(options)
 })
 </script>
 
