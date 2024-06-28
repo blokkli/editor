@@ -81,8 +81,16 @@ function onToggleGroup(label: string) {
   }
 }
 
-const { adapter, eventBus, state, selection, runtimeConfig, dom, theme } =
-  useBlokkli()
+const {
+  adapter,
+  eventBus,
+  state,
+  selection,
+  runtimeConfig,
+  dom,
+  theme,
+  context,
+} = useBlokkli()
 
 const props = defineProps<{
   uuids: string[]
@@ -249,6 +257,7 @@ const visibleOptions = computed<OptionItem[]>(() => {
       options: currentValues.value as any,
       parentType: parentType as any,
       props: ctxProps as any,
+      entity: context.value,
     })
 
   return availableOptions.value.filter((v) => visibleKeys.includes(v.property))

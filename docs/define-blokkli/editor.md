@@ -31,6 +31,10 @@ The parent block bundle, if the blcok is nested.
 The current options set on the block. The type is inferred at runtime from the
 options defined on the block.
 
+### entity: `[type.AdapterContext]`
+
+Information about the current page entity, including the current language.
+
 ### Example
 
 Let's say we have a card component that can have an option icon (passed in via
@@ -60,11 +64,20 @@ const { options } = defineBlokkli({
         red: { hex: '#ff4800', label: 'Red' },
       },
     },
+    hideGerman: {
+      type: 'checkbox',
+      label: 'Hide in German',
+      default: false,
+    },
   },
   editor: {
     determineVisibleOptions: (ctx) => {
       if (ctx.props.icon) {
+        // Show the color option only if the component actually renders an icon.
         return ['color']
+      } else if (ctx.entity.language === 'de') {
+        // Show this option only if the current language is German.
+        return ['hideGerman']
       }
       return []
     },

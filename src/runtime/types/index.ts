@@ -128,6 +128,7 @@ type DetermineVisibleOptionsContext<
     (G extends ValidGlobalConfigKeys ? GlobalOptionsKeyTypes<G> : {})
   parentType: BlockBundleWithNested | undefined
   props: Record<string, any>
+  entity: AdapterContext
 }
 
 type ExtractGlobalOptions<G extends GlobalOptionsKey[]> =
