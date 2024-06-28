@@ -80,7 +80,7 @@ export default async function (
     status: false,
     bundleLabel: '',
   })
-  const fieldBlockCount: Record<string, number> = {}
+  let fieldBlockCount: Record<string, number> = {}
   const blockBundleCount: Ref<Record<string, number>> = ref({})
   const fieldListItemMap: Record<string, string> = {}
 
@@ -157,11 +157,13 @@ export default async function (
 
     const visitedFieldKeys: string[] = []
     const newBlockBundleCount: Record<string, number> = {}
+
+    // Reset the count cache.
+    fieldBlockCount = {}
     for (let i = 0; i < newMutatedFields.length; i++) {
       const field = newMutatedFields[i]
       const key = getFieldKey(field.entityUuid, field.name)
       visitedFieldKeys.push(key)
-      fieldBlockCount[key] = field.list.length
 
       const existing = mutatedFieldsMap[key]
       if (
@@ -214,7 +216,15 @@ export default async function (
   }
 
   function getFieldBlockCount(key: string) {
-    return fieldBlockCount[key] || 0
+    // Return a cached value.
+    if (fieldBlockCount[key] !== undefined) {
+      return fieldBlockCount[key]
+    }
+
+    // Get the value and cache it.
+    const count = mutatedFieldsMap[key]?.list.length || 0
+    fieldBlockCount[key] = count
+    return count
   }
 
   function lockBody() {
