@@ -144,7 +144,7 @@ onBlokkliEvent('keyPressed', (e) => {
   }
 })
 
-const onEvent = (name: string, data: any) => {
+const onEvent = (name: string | number | symbol, data: any) => {
   if (!debug.isEnabled.value) {
     return
   }
@@ -155,7 +155,7 @@ const onEvent = (name: string, data: any) => {
   ) {
     return
   }
-  logger.log('Event: ' + name, data)
+  logger.log('Event: ' + String(name), data)
 }
 
 onMounted(() => {
