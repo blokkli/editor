@@ -1,5 +1,4 @@
 import type { DomProvider } from './domProvider'
-import type { RenderedBlock } from './stateProvider'
 import onBlokkliEvent from './composables/onBlokkliEvent'
 import { type Ref, type ComputedRef, computed, ref } from '#imports'
 
@@ -16,92 +15,6 @@ import {
   onlyUnique,
 } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
-
-/**
- * Find the longest common subsequence between two arrays.
- */
-const findLCS = (a: string[], b: string[]): string[] => {
-  const dp = Array.from({ length: a.length + 1 }, () =>
-    Array(b.length + 1).fill(0),
-  )
-
-  for (let i = 1; i <= a.length; i++) {
-    for (let j = 1; j <= b.length; j++) {
-      if (a[i - 1] === b[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1])
-      }
-    }
-  }
-
-  let i = a.length
-  let j = b.length
-  const lcs: string[] = []
-  while (i > 0 && j > 0) {
-    if (a[i - 1] === b[j - 1]) {
-      lcs.unshift(a[i - 1])
-      i--
-      j--
-    } else if (dp[i - 1][j] > dp[i][j - 1]) {
-      i--
-    } else {
-      j--
-    }
-  }
-  return lcs
-}
-
-/**
- * Determine which blocks should be selected when the state changes.
- */
-const getSelectedAfterStateChange = (
-  selected: string[],
-  newBlocks: RenderedBlock[],
-  oldBlocks: RenderedBlock[],
-): string[] | undefined => {
-  const newUuids = newBlocks.map((v) => v.item.uuid)
-  const oldUuids = oldBlocks.map((v) => v.item.uuid)
-
-  // A new block was addded. Select this one.
-  const newBlock = newUuids.find((uuid) => !oldUuids.includes(uuid))
-  if (newBlock) {
-    return [newBlock]
-  }
-
-  // All block UUIDs that still exist.
-  const stillExisting = selected.filter((uuid) =>
-    newUuids.find((v) => v === uuid),
-  )
-
-  // Some currently selected blocks still exist, so let's keep that selection.
-  if (stillExisting.length) {
-    return stillExisting
-  }
-
-  // Same amount of blocks before and after, so blocks were likely moved.
-  if (newBlocks.length === oldBlocks.length) {
-    const lcs = findLCS(oldUuids, newUuids)
-    const toSelect = newUuids.filter((el) => !lcs.includes(el))
-    if (toSelect.length) {
-      return toSelect
-    }
-  }
-
-  // No blocks exist anymore.
-  if (stillExisting.length === 0) {
-    // Only one block was selected.
-    if (selected.length === 1) {
-      const index = oldBlocks.findIndex((v) => v.item.uuid === selected[0])
-      if (index !== -1) {
-        const previousUuid = oldBlocks[index - 1]?.item.uuid
-        if (previousUuid) {
-          return [previousUuid]
-        }
-      }
-    }
-  }
-}
 
 export type SelectionProvider = {
   /**
@@ -279,19 +192,20 @@ export default function (dom: DomProvider): SelectionProvider {
     }
     selectItems(uuids)
   })
+
   onBlokkliEvent('select:previous', () => selectInList(true))
   onBlokkliEvent('select:next', selectInList)
   onBlokkliEvent('setActiveFieldKey', setActiveFieldKey)
   onBlokkliEvent('state:reloaded', () => {
-    selectedUuids.value = selectedUuids.value.filter((uuid) => {
-      // Check if the currently selected item is still in the DOM.
-      const el = findElement(uuid)
-      if (el) {
-        return true
-      }
-
-      return false
-    })
+    // selectedUuids.value = selectedUuids.value.filter((uuid) => {
+    //   // Check if the currently selected item is still in the DOM.
+    //   const el = findElement(uuid)
+    //   if (el) {
+    //     return true
+    //   }
+    //
+    //   return false
+    // })
   })
   onBlokkliEvent('dragging:start', (e) => {
     draggingMode.value = e.mode

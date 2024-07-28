@@ -51,7 +51,9 @@ function getRootEl(): HTMLElement {
   return rootEl
 }
 
-const { runtimeConfig, types, selection, eventBus } = useBlokkli()
+const { runtimeConfig, types, selection, eventBus, state } = useBlokkli()
+
+const canMove = computed(() => state.editMode.value === 'editing')
 
 const isSelected = computed(() => selection.uuids.value.includes(props.uuid))
 
@@ -100,6 +102,9 @@ function buildDraggableItems(): DraggableExistingStructureBlock[] {
 }
 
 function onMouseMove(e: MouseEvent) {
+  if (!canMove.value) {
+    return
+  }
   const diff = Math.abs(startX - e.clientX) + Math.abs(startY - e.clientY)
 
   if (diff > 10) {

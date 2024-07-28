@@ -1,0 +1,31 @@
+ul.bk-system-requirements {
+  @apply grid gap-10 mb-15;
+  li {
+    @apply flex gap-10 items-center border border-mono-300 p-10 rounded;
+
+    h3 {
+      @apply font-bold text-lg flex gap-2 items-center;
+    }
+
+    &.bk-is-success {
+      .bk-system-requirements-icon {
+        @apply bg-lime-normal text-lime-light;
+      }
+    }
+
+    &.bk-is-error {
+      @apply bg-red-light border-red-normal text-red-dark;
+      .bk-system-requirements-icon {
+        @apply bg-red-normal text-red-light;
+      }
+    }
+  }
+}
+
+.bk-system-requirements-icon {
+  @apply size-[18px] relative rounded-full p-2 shrink-0;
+
+  svg {
+    @apply fill-current;
+  }
+}

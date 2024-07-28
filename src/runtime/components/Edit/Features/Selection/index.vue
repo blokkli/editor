@@ -5,10 +5,7 @@
     :uuids="selection.uuids.value"
     :gl="gl"
   />
-  <OverlayFallback
-    v-if="isVisible && !animation.webglSupported.value"
-    :uuids="selection.uuids.value"
-  />
+  <OverlayFallback v-if="isVisible && !gl" :uuids="selection.uuids.value" />
 </template>
 
 <script lang="ts" setup>

@@ -15,7 +15,8 @@ import {
   onBeforeUnmount,
 } from '#imports'
 
-const { dom, eventBus, selection, keyboard, ui, animation } = useBlokkli()
+const { dom, eventBus, selection, keyboard, ui, animation, state } =
+  useBlokkli()
 
 const cursor = computed(() => {
   if (selection.isMultiSelecting.value) {
@@ -117,7 +118,7 @@ function onPointerMove(e: PointerEvent) {
   e.stopPropagation()
   e.stopImmediatePropagation()
   animation.setMouseCoords(e.clientX, e.clientY)
-  if (keyboard.isPressingSpace.value) {
+  if (keyboard.isPressingSpace.value || state.editMode.value !== 'editing') {
     return
   }
   if (e.pointerType === 'touch') {
@@ -304,7 +305,10 @@ function onTouchStart(e: PointerEvent) {
     // Block is already selected. Start dragging.
     if (touchStartInteraction?.uuid) {
       longPressInteraction = touchStartInteraction
-      if (selection.uuids.value.includes(touchStartInteraction.uuid)) {
+      if (
+        selection.uuids.value.includes(touchStartInteraction.uuid) &&
+        state.editMode.value === 'editing'
+      ) {
         eventBus.emit('dragging:start', {
           items: [...selection.blocks.value],
           coords: {

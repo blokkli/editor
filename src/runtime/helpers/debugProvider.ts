@@ -44,6 +44,7 @@ export default function (storage: StorageProvider): DebugProvider {
       return
     }
 
+    // eslint-disable-next-line no-console
     console.log(v)
   }
 
@@ -53,12 +54,14 @@ export default function (storage: StorageProvider): DebugProvider {
         if (!showDebug.value) {
           return
         }
+        // eslint-disable-next-line no-console
         console.log(`[${name}]: `, ...v)
       },
       error(...v: any) {
         if (!showDebug.value) {
           return
         }
+        // eslint-disable-next-line no-console
         console.error(`[${name}]: `, ...v)
       },
     }

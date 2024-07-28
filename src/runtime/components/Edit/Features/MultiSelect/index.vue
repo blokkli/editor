@@ -29,9 +29,7 @@ const gl = animation.gl()
 
 const enabled = computed(
   () =>
-    !selection.editableActive.value &&
-    state.editMode.value === 'editing' &&
-    animation.webglSupported.value,
+    !selection.editableActive.value && state.editMode.value === 'editing' && gl,
 )
 
 const shouldRender = ref(false)

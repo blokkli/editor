@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { defineBlokkliEditAdapter } from '#blokkli/adapter'
 import { falsy } from '#blokkli/helpers'
+// eslint-disable-next-line import/named
 import { useGraphqlQuery, useGraphqlMutation, computed } from '#imports'
 import type { BlokkliAdapter } from '#blokkli/adapter'
 import {

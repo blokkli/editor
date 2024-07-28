@@ -10,13 +10,13 @@ export type ModuleOptionsSettings = {
   'feature:artboard:persist'?: { disable?: boolean; default?: boolean }
   // Artboard scroll speed
   'feature:artboard:scrollSpeed'?: { disable?: boolean; default?: number }
-  // Open sidebar when pasting from clipboard
-  'feature:clipboard:openSidebarOnPaste'?: {
+  // Hide blocks that can't be added
+  'feature:block-add-list:hideDisabledBlocks'?: {
     disable?: boolean
     default?: boolean
   }
-  // Hide blocks that can't be added
-  'feature:block-add-list:hideDisabledBlocks'?: {
+  // Open sidebar when pasting from clipboard
+  'feature:clipboard:openSidebarOnPaste'?: {
     disable?: boolean
     default?: boolean
   }
@@ -27,8 +27,6 @@ export type ModuleOptionsSettings = {
     disable?: boolean
     default?: boolean
   }
-  // Use animations
-  'feature:settings:useAnimations'?: { disable?: boolean; default?: boolean }
   // Enable low performance mode
   'feature:settings:lowPerformanceMode'?: {
     disable?: boolean
@@ -36,4 +34,6 @@ export type ModuleOptionsSettings = {
   }
   // Reset all settings
   'feature:settings:resetAllSettings'?: { disable?: boolean }
+  // Use animations
+  'feature:settings:useAnimations'?: { disable?: boolean; default?: boolean }
 }

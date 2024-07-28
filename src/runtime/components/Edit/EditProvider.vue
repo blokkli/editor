@@ -18,6 +18,7 @@
   />
   <DragInteractions v-if="!isInitializing" />
   <AnimationCanvas v-if="!isInitializing" />
+  <SystemRequirements />
   <slot :mutated-entity="mutatedEntity" />
 </template>
 
@@ -43,6 +44,7 @@ import AppMenu from './AppMenu/index.vue'
 import DraggableList from './DraggableList.vue'
 import DragInteractions from './DragInteractions/index.vue'
 import AnimationCanvas from './AnimationCanvas/index.vue'
+import SystemRequirements from './SystemRequirements/index.vue'
 import animationProvider from './../../helpers/animationProvider'
 import keyboardProvider from './../../helpers/keyboardProvider'
 import selectionProvider from './../../helpers/selectionProvider'

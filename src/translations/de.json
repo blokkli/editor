@@ -823,6 +823,26 @@
     "source": "Shows a structured list of all blocks on the current page. Click on any block to quickly jump to it.",
     "translation": "Zeigt eine strukturierte Liste aller Blöcke auf der aktuellen Seite. Klicken Sie auf einen Block, um ihn auf der Seite anzuzeigen."
   },
+  "systemRequirementsDialogButton": {
+    "source": "Continue anyway",
+    "translation": "Trotzdem fortfahren"
+  },
+  "systemRequirementsDialogLead": {
+    "source": "blökkli has detected that your browser does not meet one or more system requirements. For the best experience, please use a browser that supports all the listed requirements.",
+    "translation": "blökkli hat festgestellt, dass Ihr Browser eine oder mehrere Systemanforderungen nicht erfüllt. Für die beste Erfahrung verwenden Sie bitte einen Browser, der alle aufgeführten Anforderungen unterstützt."
+  },
+  "systemRequirementsDialogText": {
+    "source": "blökkli has been tested and optimized for the latest versions of Chrome, Firefox, Edge, and Safari. Features like WebGL are well supported, but they may sometimes be disabled for performance or security reasons.",
+    "translation": "blökkli wurde für die neuesten Versionen von Chrome, Firefox, Edge und Safari getestet und optimiert. Funktionen wie WebGL werden in der Regel unterstützt, können jedoch manchmal aus Leistungs- oder Sicherheitsgründen deaktiviert sein."
+  },
+  "systemRequirementsDialogTitle": {
+    "source": "System Requirements",
+    "translation": "Systemanforderungen"
+  },
+  "systemRequirementsWebglText": {
+    "source": "blökkli uses WebGL for fast rendering of UI elements such as selected blocks and drag-and-drop indicators. If WebGL is not supported, Blökkli will resort to fallback rendering, which is slower and lacks full feature support.",
+    "translation": "blökkli verwendet WebGL für die schnelle Darstellung von GUI-Elementen wie ausgewählten Blöcken und Drag-and-Drop-Indikatoren. Wenn WebGL nicht unterstützt wird, verwendet blökkli einen Fallback, der langsamer ist und nicht alle Funktionen unterstützt."
+  },
   "theme": {
     "source": "Theme",
     "translation": "Farben"
@@ -845,7 +865,7 @@
   },
   "tourIntro": {
     "source": "Explore the most important features of the editor and learn how to get started using blökkli.",
-    "translation": ""
+    "translation": "Lernen Sie die wichtigsten Funktionen des Editors kennen und erfahren Sie, wie Sie mit blökkli loslegen können."
   },
   "tourLabel": {
     "source": "Take a tour",

@@ -8,7 +8,6 @@
         'Shows a structured list of all blocks on the current page. Click on any block to quickly jump to it.',
       )
     "
-    edit-only
     icon="tree"
     weight="-90"
   >

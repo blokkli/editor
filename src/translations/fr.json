@@ -823,6 +823,26 @@
     "source": "Shows a structured list of all blocks on the current page. Click on any block to quickly jump to it.",
     "translation": ""
   },
+  "systemRequirementsDialogButton": {
+    "source": "Continue anyway",
+    "translation": ""
+  },
+  "systemRequirementsDialogLead": {
+    "source": "blökkli has detected that your browser does not meet one or more system requirements. For the best experience, please use a browser that supports all the listed requirements.",
+    "translation": ""
+  },
+  "systemRequirementsDialogText": {
+    "source": "blökkli has been tested and optimized for the latest versions of Chrome, Firefox, Edge, and Safari. Features like WebGL are well supported, but they may sometimes be disabled for performance or security reasons.",
+    "translation": ""
+  },
+  "systemRequirementsDialogTitle": {
+    "source": "System Requirements",
+    "translation": ""
+  },
+  "systemRequirementsWebglText": {
+    "source": "blökkli uses WebGL for fast rendering of UI elements such as selected blocks and drag-and-drop indicators. If WebGL is not supported, Blökkli will resort to fallback rendering, which is slower and lacks full feature support.",
+    "translation": ""
+  },
   "theme": {
     "source": "Theme",
     "translation": ""

@@ -60,9 +60,7 @@ const { adapter } = defineBlokkliFeature({
   screenshot: 'feature-dragging-overlay.jpg',
 })
 
-const { eventBus, state, ui, animation, dom } = useBlokkli()
-
-const gl = animation.gl()
+const { eventBus, state, ui, animation, dom, selection } = useBlokkli()
 
 const dragItemsComponent = ref<InstanceType<typeof DragItems> | null>(null)
 const isVisible = ref(false)
@@ -299,7 +297,9 @@ const onDrop = (e: DropTargetEvent) => {
       return
     }
 
-    eventBus.emit('select', newBlock.uuid)
+    const allSelected = [...selection.uuids.value, newBlock.uuid]
+
+    eventBus.emit('select', allSelected)
 
     if (typed.itemType !== 'new') {
       return

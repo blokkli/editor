@@ -177,6 +177,8 @@ export default function (ui: UiProvider): AnimationProvider {
         return
       }
 
+      webglSupported.value = true
+
       return gl
     },
     setSharedUniforms,
