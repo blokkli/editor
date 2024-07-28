@@ -107,8 +107,7 @@ function getOffsetFromThumb(newThumb: number): number {
   const maxThumb = scrollbarSize - scrollThumbSize()
   const newScrollProgress = newThumb / maxThumb
   const newScrollOffset = newScrollProgress * scrollSize()
-  const newOffset = newScrollOffset + props.rootSize - props.padding
-  return newOffset
+  return newScrollOffset + props.rootSize - props.padding
 }
 
 function onThumbMouseMove(e: MouseEvent) {

@@ -26,7 +26,7 @@ export class FieldTextarea extends Field<string> {
     this.list[0] = text
   }
 
-  toString() {
+  override toString() {
     return this.getText()
   }
 }

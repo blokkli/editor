@@ -164,16 +164,14 @@ function handleFiles(data: DataTransfer | FileList) {
   files.forEach((file) => {
     const fr = new FileReader()
     fr.onload = function () {
-      if (typeof fr.result === 'string') {
-        if (TYPES_IMAGE.includes(file.type)) {
-          pastedItems.value.push({
-            type: 'image',
-            itemBundle: 'image',
-            data: fr.result,
-            additional: file.name,
-          })
-          showClipboardSidebar()
-        }
+      if (typeof fr.result === 'string' && TYPES_IMAGE.includes(file.type)) {
+        pastedItems.value.push({
+          type: 'image',
+          itemBundle: 'image',
+          data: fr.result,
+          additional: file.name,
+        })
+        showClipboardSidebar()
       }
     }
     fr.readAsDataURL(file)
@@ -315,10 +313,10 @@ const handlePastedText = (text: string) => {
   }
 
   const div = document.createElement('div')
-  div.innerHTML = text.replace(/(?:&nbsp;|<br>)/g, '')
+  div.innerHTML = text.replace(/&nbsp;|<br>/g, '')
 
   removeAttributes(div)
-  if (div.innerText) {
+  if (div.textContent) {
     const itemBundle = adapter.clipboardMapBundle({
       type: 'plaintext',
       data: div.innerHTML,
@@ -370,7 +368,7 @@ onBlokkliEvent('search:selectContentItem', (item) => {
     pastedItems.value.push({
       type: 'search_content',
       itemBundle: bundle,
-      data: item.title.replace(/<\/?[^>]+(>|$)/g, ''),
+      data: item.title.replace(/<[^>]+(>|$)/g, ''),
       item,
     })
   })

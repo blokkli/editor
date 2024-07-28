@@ -14,7 +14,7 @@
           )
         }}
       </p>
-      <div class="bk bk-library-dialog-form">
+      <div class="bk">
         <div class="bk-form-group">
           <div>
             <label class="bk-form-label" for="library_search">

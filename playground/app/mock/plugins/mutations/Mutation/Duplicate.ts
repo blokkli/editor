@@ -1,7 +1,7 @@
 import { falsy } from '#blokkli/helpers'
 import { entityStorageManager } from '~/app/mock/entityStorage'
 import type { Block } from '../../../state/Block/Block'
-import { BlockProxy, MutationContext } from '../../../state/EditState'
+import { BlockProxy, type MutationContext } from '../../../state/EditState'
 import { Mutation } from './../Mutation'
 
 export type MutationDuplicateArgs = {
@@ -17,11 +17,11 @@ export class MutationDuplicate extends Mutation {
     super('duplicate', configuration)
   }
 
-  getAffectedUuid(args: MutationDuplicateArgs): string | undefined {
+  override getAffectedUuid(args: MutationDuplicateArgs): string | undefined {
     return args.uuids[0]
   }
 
-  execute(context: MutationContext, args: MutationDuplicateArgs) {
+  override execute(context: MutationContext, args: MutationDuplicateArgs) {
     const sorted = args.uuids
       .map((uuid) => {
         const index = context.getIndex(uuid)

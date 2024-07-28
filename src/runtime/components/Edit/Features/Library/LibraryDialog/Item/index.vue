@@ -1,6 +1,5 @@
 <template>
   <div
-    class="bk-library-list-item"
     data-element-type="reusable"
     :data-item-bundle="bundle"
     :data-library-item-uuid="uuid"

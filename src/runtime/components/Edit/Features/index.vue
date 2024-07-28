@@ -48,13 +48,7 @@ const availableFeatures = computed(() => {
       return false
     }
 
-    // Feature is not enabled for this viewport.
-    if (v.viewports.length && !v.viewports.includes(ui.appViewport.value)) {
-      return false
-    }
-
-    // Feature can be rendered.
-    return true
+    return !v.viewports.length || v.viewports.includes(ui.appViewport.value)
   })
 })
 

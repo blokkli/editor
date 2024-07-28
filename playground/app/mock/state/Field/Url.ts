@@ -5,7 +5,7 @@ export class FieldUrl extends Field<string> {
     super('url', id, label, cardinality, required)
   }
 
-  toString(): string {
+  override toString(): string {
     return this.list[0] || ''
   }
 }

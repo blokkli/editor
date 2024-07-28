@@ -12,7 +12,7 @@ export class MutationUpdateEntityFieldValue extends Mutation {
     super('update_entity_field_value', configuration)
   }
 
-  execute(context: MutationContext, args: MutationUpdateEntityFieldValueArgs) {
+  override execute(context: MutationContext, args: MutationUpdateEntityFieldValueArgs) {
     const field = context.entity.get(args.fieldName)
     if (field instanceof FieldText) {
       field.setList([JSON.parse(JSON.stringify(args.fieldValue))])

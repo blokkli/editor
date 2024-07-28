@@ -168,5 +168,3 @@ defineBlokkli({
 })
 </script>
 ```
-
-

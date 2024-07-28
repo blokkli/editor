@@ -13,7 +13,7 @@ export class MutationDetachReusable extends Mutation {
     super('detach_reusable', configuration)
   }
 
-  execute(context: MutationContext, args: MutationDetachReusableArgs) {
+  override execute(context: MutationContext, args: MutationDetachReusableArgs) {
     args.uuids.forEach((uuid) => {
       const proxy = context.getProxy(uuid)
 

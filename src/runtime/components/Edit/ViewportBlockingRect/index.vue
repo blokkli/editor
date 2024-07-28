@@ -1,6 +1,6 @@
 <template>
   <div ref="el">
-    <slot></slot>
+    <slot />
   </div>
 </template>
 

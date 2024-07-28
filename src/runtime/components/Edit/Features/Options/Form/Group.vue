@@ -8,7 +8,7 @@
       <Icon name="caret" />
     </button>
     <div v-if="isActive" class="bk-blokkli-item-options-group-content">
-      <slot></slot>
+      <slot />
     </div>
   </div>
 </template>

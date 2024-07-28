@@ -54,7 +54,12 @@
 <script setup lang="ts">
 import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import type { Coord, DraggableItem, Rectangle } from '#blokkli/types'
-import { isInsideRect, realBackgroundColor, lerp } from '#blokkli/helpers'
+import {
+  isInsideRect,
+  realBackgroundColor,
+  lerp,
+  falsy,
+} from '#blokkli/helpers'
 import { Icon, ItemIcon } from '#blokkli/components'
 import { easeOutElastic } from '#blokkli/helpers/easing'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
@@ -252,19 +257,24 @@ function getDraggingBounds(
 }
 
 onMounted(() => {
-  const elRects = props.items.map((item, index) => {
-    const itemElement =
-      item.itemType === 'existing' ? dom.getDragElement(item) : item.element()
-    const element = (itemElement.querySelector('.bk-drop-element') ||
-      itemElement) as HTMLElement
+  const elRects = props.items
+    .map((item, index) => {
+      const itemElement =
+        item.itemType === 'existing' ? dom.getDragElement(item) : item.element()
+      if (!itemElement) {
+        return
+      }
+      const element = (itemElement.querySelector('.bk-drop-element') ||
+        itemElement) as HTMLElement
 
-    return {
-      rect: element.getBoundingClientRect(),
-      element,
-      item,
-      index,
-    }
-  })
+      return {
+        rect: element.getBoundingClientRect(),
+        element,
+        item,
+        index,
+      }
+    })
+    .filter(falsy)
 
   // Find the matching bound rectangle that will determine the size of the box that is being dragged.
   const boundRect =
@@ -288,97 +298,100 @@ onMounted(() => {
 
   const artboardScale = ui.artboardScale.value
 
-  rects.value = elRects.map((item) => {
-    const isTop = item.index === boundRect.index
-    const rect = item.rect
-    const element =
-      item.item.itemType === 'existing'
-        ? dom.getDragElement(item.item)
-        : item.item.element()
-    const baseRect = element.getBoundingClientRect()
-    const targetScaleX = Math.min(bounds.width / item.element.offsetWidth, 1)
-    const targetScaleY = targetScaleX
+  rects.value = elRects
+    .map((item) => {
+      const isTop = item.index === boundRect.index
+      const rect = item.rect
+      const element =
+        item.item.itemType === 'existing'
+          ? dom.getDragElement(item.item)
+          : item.item.element()
+      if (!element) {
+        return
+      }
+      const baseRect = element.getBoundingClientRect()
+      const targetScaleX = Math.min(bounds.width / item.element.offsetWidth, 1)
+      const targetScaleY = targetScaleX
 
-    const originX = 0
-    const originY = 0
+      const originX = 0
+      const originY = 0
 
-    const from: AnimationRectangleValues = {
-      opacity: isTop ? 1 : 0.9,
-      scaleX: Math.min(baseRect.width / rect.width, 1) * artboardScale,
-      scaleY: Math.min(baseRect.width / rect.width, 1) * artboardScale,
-      x: props.isTouch ? rect.x - translateX.value : rect.x - boundsX,
-      y: props.isTouch
-        ? -rect.height -
-          (window.innerHeight -
-            bounds.height -
-            rect.y -
-            rect.height +
-            translateY.value)
-        : rect.y - boundsY,
-    }
-
-    const to: AnimationRectangleValues = {
-      opacity: isTop ? (props.isTouch ? 1 : 1) : 0.1,
-      x: isTop ? 0 : 0,
-      y: isTop ? 0 : 0,
-      scaleX: targetScaleX,
-      scaleY: targetScaleY,
-    }
-
-    const style = theme.getDraggableStyle(element)
-    // Get the markup and let the method check the size of the clone.
-    // For elements with a very large DOM the cloning can become quite a
-    // performance issue which results in a noticeable lag. In this case
-    // we instead render a simple fallback.
-    const markup =
-      (elRects.length < 6 || isTop) && !ui.lowPerformanceMode.value
-        ? dom.getDropElementMarkup(item.item, true)
-        : ''
-    let bundle: string | undefined
-    let label = ''
-
-    if (!markup) {
-      if (item.item.itemType === 'existing') {
-        if (item.item.editTitle) {
-          label = item.item.editTitle
-        }
+      const from: AnimationRectangleValues = {
+        opacity: isTop ? 1 : 0.9,
+        scaleX: Math.min(baseRect.width / rect.width, 1) * artboardScale,
+        scaleY: Math.min(baseRect.width / rect.width, 1) * artboardScale,
+        x: props.isTouch ? rect.x - translateX.value : rect.x - boundsX,
+        y: props.isTouch
+          ? -rect.height -
+            (window.innerHeight -
+              bounds.height -
+              rect.y -
+              rect.height +
+              translateY.value)
+          : rect.y - boundsY,
       }
 
-      if ('itemBundle' in item.item) {
-        bundle = item.item.itemBundle
-        if (bundle) {
-          const definition = types.getBlockBundleDefinition(bundle)
-          if (definition) {
-            label = definition.label
+      const to: AnimationRectangleValues = {
+        opacity: isTop ? 1 : 0.1,
+        x: 0,
+        y: 0,
+        scaleX: targetScaleX,
+        scaleY: targetScaleY,
+      }
+
+      const style = theme.getDraggableStyle(element)
+      // Get the markup and let the method check the size of the clone.
+      // For elements with a very large DOM the cloning can become quite a
+      // performance issue which results in a noticeable lag. In this case
+      // we instead render a simple fallback.
+      const markup =
+        (elRects.length < 6 || isTop) && !ui.lowPerformanceMode.value
+          ? dom.getDropElementMarkup(item.item, true)
+          : ''
+      let bundle: string | undefined
+      let label = ''
+
+      if (!markup) {
+        if (item.item.itemType === 'existing' && item.item.editTitle) {
+          label = item.item.editTitle
+        }
+
+        if ('itemBundle' in item.item) {
+          bundle = item.item.itemBundle
+          if (bundle) {
+            const definition = types.getBlockBundleDefinition(bundle)
+            if (definition) {
+              label = definition.label
+            }
           }
         }
       }
-    }
 
-    return {
-      isTop,
-      from: ui.lowPerformanceMode.value ? to : from,
-      to,
-      ...from,
-      width: item.element.offsetWidth,
-      height: item.element.offsetHeight,
-      opacity: 1,
+      return {
+        isTop,
+        from: ui.lowPerformanceMode.value ? to : from,
+        to,
+        ...from,
+        width: item.element.offsetWidth,
+        height: item.element.offsetHeight,
+        opacity: 1,
 
-      transformOrigin: `${originX}px ${originY}px`,
-      markup,
-      background: realBackgroundColor(item.element),
-      prevVisibility:
-        item.item.itemType === 'existing' ||
-        item.item.itemType === 'existing_structure'
-          ? item.element.style.visibility
-          : undefined,
-      element: item.element,
-      borderRadius: style.radiusString,
-      bundle,
-      label,
-      fallbackColor: style.textColor,
-    }
-  })
+        transformOrigin: `${originX}px ${originY}px`,
+        markup,
+        background: realBackgroundColor(item.element),
+        prevVisibility:
+          item.item.itemType === 'existing' ||
+          item.item.itemType === 'existing_structure'
+            ? item.element.style.visibility
+            : undefined,
+        element: item.element,
+        borderRadius: style.radiusString,
+        bundle,
+        label,
+        fallbackColor: style.textColor,
+      }
+    })
+    .filter(falsy)
 
   elRects.forEach((item) => {
     if (

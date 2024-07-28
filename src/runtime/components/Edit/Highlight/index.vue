@@ -1,4 +1,5 @@
 <template>
+  <!-- eslint-disable-next-line vue/no-v-text-v-html-on-component -->
   <Component :is="tag || 'div'" class="bk-highlight" v-html="markup" />
 </template>
 

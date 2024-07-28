@@ -3,7 +3,7 @@ import type { DraggableItem, DropArea } from '#blokkli/types'
 
 type DropAreaProviderFunction = (
   items: DraggableItem[],
-) => (DropArea[] | DropArea | undefined) | void
+) => DropArea[] | DropArea | undefined
 
 export type DropAreaProvider = {
   add: (fn: DropAreaProviderFunction) => void

@@ -3,10 +3,10 @@ import { FieldBlocks } from '../Field/Blocks'
 import { Block } from './Block'
 
 export class BlockGrid extends Block {
-  static bundle = 'grid'
-  static label = 'Grid'
+  static override bundle = 'grid'
+  static override label = 'Grid'
 
-  static getFieldDefintions(): Field<any>[] {
+  static override getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
       new FieldBlocks('header', 'Header', 1, false, ['title']),

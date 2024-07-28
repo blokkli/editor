@@ -1,5 +1,5 @@
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
 import type {
   BlockDefinitionInput,
   BlockDefinitionOptionsInput,
@@ -7,9 +7,10 @@ import type {
 } from '../runtime/types'
 import { sortObjectKeys } from './../helpers'
 import { defu } from 'defu'
+import { falsy } from '../vitePlugin'
 
-type ExtractedBlockDefinitionInput = BlockDefinitionInput<{}, []>
-type ExtractedFragmentDefinitionInput = FragmentDefinitionInput<{}, []>
+type ExtractedBlockDefinitionInput = BlockDefinitionInput
+type ExtractedFragmentDefinitionInput = FragmentDefinitionInput
 
 type ExtractedDefinition = {
   filePath: string
@@ -35,8 +36,9 @@ type ExtractedFragmentDefinition = {
  * Service to handle text extractions across multiple files.
  */
 export default class BlockExtractor {
-  definitions: Record<string, ExtractedDefinition> = {}
-  fragmentDefinitions: Record<string, ExtractedFragmentDefinition> = {}
+  definitions: Record<string, ExtractedDefinition | undefined> = {}
+  fragmentDefinitions: Record<string, ExtractedFragmentDefinition | undefined> =
+    {}
   isBuild = false
   composableName: string
   fragmentComposableName: string
@@ -61,7 +63,9 @@ export default class BlockExtractor {
       await fs.promises.access(iconPath, fs.constants.F_OK)
       const data = await fs.promises.readFile(iconPath)
       return data.toString()
-    } catch (e) {}
+    } catch (_e) {
+      // Noop.
+    }
   }
 
   /**
@@ -75,12 +79,12 @@ export default class BlockExtractor {
     const extracted = this.extractSingle(fileSource, filePath)
     if (!extracted) {
       if (this.definitions[filePath]) {
-        delete this.definitions[filePath]
+        this.definitions[filePath] = undefined
         return true
       }
 
       if (this.fragmentDefinitions[filePath]) {
-        delete this.fragmentDefinitions[filePath]
+        this.fragmentDefinitions[filePath] = undefined
         return true
       }
 
@@ -90,10 +94,11 @@ export default class BlockExtractor {
     if ('bundle' in extracted.definition) {
       const icon = await this.getIcon(filePath)
 
-      if (this.definitions[filePath]) {
-        if (this.definitions[filePath].source === extracted.source) {
-          return false
-        }
+      if (
+        this.definitions[filePath] &&
+        this.definitions[filePath]?.source === extracted.source
+      ) {
+        return false
       }
 
       const extension = path.extname(filePath)
@@ -117,10 +122,11 @@ export default class BlockExtractor {
           fileSource.includes(':is="BlokkliField"'),
       }
     } else if ('name' in extracted.definition) {
-      if (this.fragmentDefinitions[filePath]) {
-        if (this.fragmentDefinitions[filePath].source === extracted.source) {
-          return false
-        }
+      if (
+        this.fragmentDefinitions[filePath] &&
+        this.fragmentDefinitions[filePath]?.source === extracted.source
+      ) {
+        return false
       }
 
       this.fragmentDefinitions[filePath] = {
@@ -157,11 +163,9 @@ export default class BlockExtractor {
     const source = rgx.exec(code)?.[2]
     if (source) {
       try {
-        // eslint-disable-next-line no-eval
         const definition = eval(`(${source})`)
         return { definition, source }
       } catch (e) {
-        // eslint-disable-next-line no-console
         console.error(
           `Failed to parse component "${filePath}": ${this.composableName} does not contain a valid object literal. No variables and methods are allowed inside ${this.composableName}().`,
         )
@@ -184,12 +188,15 @@ export default class BlockExtractor {
   generateDefinitionTemplate(
     globalOptions: BlockDefinitionOptionsInput = {},
   ): string {
-    const definitionDeclarations = Object.values(this.definitions).map((v) => {
-      return `const ${v.componentName}: DefinitionItem = ${v.source}`
-    }, {})
+    const definitionDeclarations = Object.values(this.definitions)
+      .filter(falsy)
+      .map((v) => {
+        return `const ${v.componentName}: DefinitionItem = ${v.source}`
+      }, {})
 
-    const allDefinitions = Object.values(this.definitions).reduce<string[]>(
-      (acc, v) => {
+    const allDefinitions = Object.values(this.definitions)
+      .filter(falsy)
+      .reduce<string[]>((acc, v) => {
         const bundle = v.definition.bundle
         const renderFor = v.definition.renderFor
         if (renderFor) {
@@ -212,26 +219,25 @@ export default class BlockExtractor {
         }
         return acc
         // return `${v.definition.bundle}: ${v.source}`
-      },
-      [],
-    )
+      }, [])
 
-    const allFragmentDefinitions = Object.values(this.fragmentDefinitions).map(
-      (v) => {
+    const allFragmentDefinitions = Object.values(this.fragmentDefinitions)
+      .filter(falsy)
+      .map((v) => {
         return `${v.definition.name}: ${v.source}`
-      },
-    )
+      })
 
-    const icons = Object.values(this.definitions).reduce<
-      Record<string, string>
-    >((acc, v) => {
-      if (v.icon) {
-        acc[v.definition.bundle] = v.icon
-      }
-      return acc
-    }, {})
+    const icons = Object.values(this.definitions)
+      .filter(falsy)
+      .reduce<Record<string, string>>((acc, v) => {
+        if (v.icon) {
+          acc[v.definition.bundle] = v.icon
+        }
+        return acc
+      }, {})
 
     const allFragmentNames = Object.values(this.fragmentDefinitions)
+      .filter(falsy)
       .map((v) => `'${v.definition.name}'`)
       .join(' | ')
 
@@ -292,8 +298,9 @@ export const getFragmentDefinition = (name: string): FragmentDefinitionInput<Rec
   generateOptionsSchema(
     globalOptions: BlockDefinitionOptionsInput = {},
   ): string {
-    const schema = Object.values(this.definitions).reduce<Record<string, any>>(
-      (acc, v) => {
+    const schema = Object.values(this.definitions)
+      .filter(falsy)
+      .reduce<Record<string, any>>((acc, v) => {
         const existing = acc[v.definition.bundle] || {}
         acc[v.definition.bundle] = defu(existing, v.definition.options || {})
 
@@ -306,9 +313,7 @@ export const getFragmentDefinition = (name: string): FragmentDefinitionInput<Rec
         })
 
         return acc
-      },
-      {},
-    )
+      }, {})
 
     const sorted = sortObjectKeys(schema)
     return JSON.stringify(sorted, null, 2)
@@ -353,7 +358,10 @@ export const globalOptionsDefaults: Record<string, GlobalOptionsDefaults> = ${JS
   ): string {
     const allDefintions: ExtractedBlockDefinitionInput[] = Object.values(
       this.definitions,
-    ).map((v) => v.definition)
+    )
+      .map((v) => v?.definition)
+      .filter(falsy)
+
     const validChunkNames = chunkNames
       .map((v) => {
         return `'${v}'`
@@ -370,6 +378,7 @@ export const globalOptionsDefaults: Record<string, GlobalOptionsDefaults> = ${JS
       })
       .join(' | ')
     const blockBundlesWithNested = Object.values(this.definitions)
+      .filter(falsy)
       .filter((v) => v.hasBlokkliField)
       .map((v) => {
         return `'${v.definition.bundle}'`
@@ -383,6 +392,7 @@ export const globalOptionsDefaults: Record<string, GlobalOptionsDefaults> = ${JS
       .join(' | ')
 
     const possibleOptionTypes = Object.values(this.definitions)
+      .filter(falsy)
       .filter((v) => v.definition.bundle !== 'from_library')
       .reduce<Record<string, string[]>>((acc, v) => {
         if (!acc[v.definition.bundle]) {
@@ -487,7 +497,7 @@ export type FieldListItemTypedArray = Array<FieldListItemTyped>
     const nonGlobalChunkMapping = Object.values(this.definitions).reduce<
       Record<string, string>
     >((acc, v) => {
-      if (v.chunkName !== 'global') {
+      if (v && v.chunkName !== 'global') {
         acc['block_' + v.definition.bundle] = v.chunkName
       }
       return acc
@@ -496,7 +506,7 @@ export type FieldListItemTypedArray = Array<FieldListItemTyped>
     const nonGlobalFragmentChunkMapping = Object.values(
       this.fragmentDefinitions,
     ).reduce<Record<string, string>>((acc, v) => {
-      if (v.chunkName !== 'global') {
+      if (v && v.chunkName !== 'global') {
         acc['fragment_' + v.definition.name] = v.chunkName
       }
       return acc
@@ -573,13 +583,15 @@ export function getBlokkliFragmentComponent(name: string): any {
     exportName: string,
     inputDefinitions: Record<
       string,
-      ExtractedDefinition | ExtractedFragmentDefinition
+      ExtractedDefinition | ExtractedFragmentDefinition | undefined
     >,
     addExport?: boolean,
   ): string {
-    const definitions = Object.values(inputDefinitions).filter((v) => {
-      return v.chunkName === chunkName
-    })
+    const definitions = Object.values(inputDefinitions)
+      .filter((v) => {
+        return v?.chunkName === chunkName
+      })
+      .filter(falsy)
     const imports = definitions.map((v) => {
       return `import ${v.componentName} from '${v.filePath}'`
     })

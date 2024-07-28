@@ -1,6 +1,6 @@
 <template>
   <div class="bk bk-comment" @click="$emit('clickComment')">
-    <h3 class="bk-comment-title">
+    <h3>
       {{ user?.label }}
     </h3>
     <RelativeTime v-slot="{ formatted }" :timestamp="timestamp">
@@ -29,8 +29,7 @@ const { adapter, $t } = useBlokkli()
 const resolveImplemeted = computed(() => !!adapter.resolveComment)
 
 defineEmits<{
-  (e: 'resolve'): void
-  (e: 'clickComment'): void
+  (e: 'resolve' | 'clickComment'): void
 }>()
 
 const props = defineProps<{
@@ -43,7 +42,7 @@ const props = defineProps<{
 }>()
 
 const timestamp = computed(() =>
-  props.created ? parseInt(props.created.toString()) : 0,
+  props.created ? Number.parseInt(props.created.toString()) : 0,
 )
 </script>
 

@@ -15,7 +15,7 @@ export function cloneWithInlineStyles(node: Element): Element {
   // Remove all data attributes.
   if (clone instanceof HTMLElement || clone instanceof SVGElement) {
     Object.keys(clone.dataset).forEach((key) => {
-      delete clone.dataset[key]
+      clone.dataset[key] = ''
     })
   }
 

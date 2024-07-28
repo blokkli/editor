@@ -11,7 +11,7 @@
         )
       "
     >
-      <div class="bk-translations" :class="{ 'bk-is-dropdown': isDropdown }">
+      <div class="bk-translations">
         <button
           v-if="isDropdown"
           class="bk-toolbar-button"

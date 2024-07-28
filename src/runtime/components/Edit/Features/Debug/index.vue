@@ -75,7 +75,7 @@
               <span
                 class="bk-status-indicator"
                 :class="feature.mounted ? 'bk-is-success' : 'bk-is-danger'"
-              ></span>
+              />
             </div>
             <div>
               <h3>{{ feature.label }}</h3>

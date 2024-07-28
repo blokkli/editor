@@ -1,5 +1,5 @@
 <template>
-  <div class="bk-library-list-item" :class="backgroundClass">
+  <div :class="backgroundClass">
     <div class="bk bk-library-list-item-header">
       <h3>{{ label || name }}</h3>
       <p v-if="description">{{ description }}</p>

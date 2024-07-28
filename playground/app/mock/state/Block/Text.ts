@@ -4,18 +4,18 @@ import { FieldTextarea } from '../Field/Textarea'
 import { Block } from './Block'
 
 export class BlockText extends Block {
-  static bundle = 'text'
-  static label = 'Text'
-  static allowReusable = true
-  static isTranslatable = true
+  static override bundle = 'text'
+  static override label = 'Text'
+  static override allowReusable = true
+  static override isTranslatable = true
 
-  static getDefaultValues(): Record<string, any> {
+  static override getDefaultValues(): Record<string, any> {
     return {
       text: `<p>${LOREM_TEXT}</p>`,
     }
   }
 
-  static getFieldDefintions(): Field<any>[] {
+  static override getFieldDefintions(): Field<any>[] {
     return [...super.getFieldDefintions(), new FieldTextarea('text', 'Text')]
   }
 

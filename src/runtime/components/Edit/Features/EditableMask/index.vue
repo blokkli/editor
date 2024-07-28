@@ -27,6 +27,8 @@ import {
 } from '#imports'
 import { PluginViewOption } from '#blokkli/plugins'
 
+const HIDE_CLASS = 'bk-hide-non-editable'
+
 defineBlokkliFeature({
   id: 'editable-mask',
   icon: 'texturebox',
@@ -40,9 +42,9 @@ const { $t } = useBlokkli()
 const isActive = ref(false)
 
 const setRootClass = () => {
-  document.documentElement.classList.remove('bk-hide-non-editable')
+  document.documentElement.classList.remove(HIDE_CLASS)
   if (isActive.value) {
-    document.documentElement.classList.add('bk-hide-non-editable')
+    document.documentElement.classList.add(HIDE_CLASS)
   }
 }
 
@@ -51,7 +53,7 @@ watch(isActive, setRootClass)
 onMounted(setRootClass)
 
 onBeforeUnmount(() => {
-  document.documentElement.classList.remove('bk-hide-non-editable')
+  document.documentElement.classList.remove(HIDE_CLASS)
 })
 </script>
 

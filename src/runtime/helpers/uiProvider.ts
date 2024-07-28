@@ -11,6 +11,9 @@ import { eventBus } from './eventBus'
 import type { StorageProvider } from './storageProvider'
 import type { AddListOrientation, Coord, Rectangle, Size } from '#blokkli/types'
 import type { Viewport } from '#blokkli/constants'
+import { falsy } from '.'
+
+const ARTBOARD_CLASS = 'bk-is-artboard'
 
 export type UiProvider = {
   rootElement: () => HTMLElement
@@ -74,7 +77,9 @@ export default function (storage: StorageProvider): UiProvider {
   const lowPerformanceMode = computed(
     () => baseSettings.value.lowPerformanceMode,
   )
-  const viewportBlockingRectsMap = ref<Record<string, Rectangle>>({})
+  const viewportBlockingRectsMap = ref<Record<string, Rectangle | undefined>>(
+    {},
+  )
   const artboardSize = ref<Size>({
     width: 1,
     height: 1,
@@ -102,7 +107,7 @@ export default function (storage: StorageProvider): UiProvider {
 
   const setViewportBlockingRectangle = (key: string, rect?: Rectangle) => {
     if (!rect) {
-      delete viewportBlockingRectsMap.value[key]
+      viewportBlockingRectsMap.value[key] = undefined
       return
     }
 
@@ -169,7 +174,7 @@ export default function (storage: StorageProvider): UiProvider {
   }
 
   const isArtboard = () => {
-    return document.documentElement.classList.contains('bk-is-artboard')
+    return document.documentElement.classList.contains(ARTBOARD_CLASS)
   }
 
   watch(isAnimating, (is) => {
@@ -242,14 +247,19 @@ export default function (storage: StorageProvider): UiProvider {
   const blockingPaddingY = computed(() => 50)
 
   const viewportBlockingRects = computed<Rectangle[]>(() => {
-    return Object.values(viewportBlockingRectsMap.value).map((rect) => {
-      return {
-        x: rect.x - blockingPaddingX.value,
-        y: rect.y - blockingPaddingY.value,
-        width: rect.width + blockingPaddingX.value * 2,
-        height: rect.height + blockingPaddingY.value * 2,
-      }
-    })
+    return Object.values(viewportBlockingRectsMap.value)
+      .map((rect) => {
+        if (!rect) {
+          return
+        }
+        return {
+          x: rect.x - blockingPaddingX.value,
+          y: rect.y - blockingPaddingY.value,
+          width: rect.width + blockingPaddingX.value * 2,
+          height: rect.height + blockingPaddingY.value * 2,
+        }
+      })
+      .filter(falsy)
   })
 
   const visibleViewport = computed<Rectangle>(() => {
@@ -273,7 +283,7 @@ export default function (storage: StorageProvider): UiProvider {
   onMounted(() => {
     document.documentElement.classList.add('bk-html-root')
     document.body.classList.add('bk-body')
-    document.documentElement.classList.add('bk-is-artboard')
+    document.documentElement.classList.add(ARTBOARD_CLASS)
     viewportWidth.value = window.innerWidth
     viewportHeight.value = window.innerHeight
     window.addEventListener('resize', onResize)
@@ -285,7 +295,7 @@ export default function (storage: StorageProvider): UiProvider {
     window.removeEventListener('resize', onResize)
     document.documentElement.classList.remove('bk-html-root')
     document.body.classList.remove('bk-body')
-    document.documentElement.classList.remove('bk-is-artboard')
+    document.documentElement.classList.remove(ARTBOARD_CLASS)
     clearTimeout(resizeTimeout)
     const artboard = artboardElement()
     resizeObserver.unobserve(artboard)

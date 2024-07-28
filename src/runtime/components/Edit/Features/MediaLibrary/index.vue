@@ -51,6 +51,11 @@ const { $t, dom, adapter, state, runtimeConfig, types } = useBlokkli()
 
 const selected = ref('')
 
+const ERROR_MESSAGE = $t(
+  'mediaLibraryReplaceFailed',
+  'Failed to replace media.',
+)
+
 const onDroppableEditSave = async (e: DroppableEntityField) => {
   if (!selected.value) {
     return
@@ -65,7 +70,7 @@ const onDroppableEditSave = async (e: DroppableEntityField) => {
         },
         mediaId: selected.value,
       }),
-      $t('mediaLibraryReplaceFailed', 'Failed to replace media.'),
+      ERROR_MESSAGE,
     )
   } else if ('type' in e.host && adapter.mediaLibraryReplaceEntityMedia) {
     await state.mutateWithLoadingState(
@@ -77,7 +82,7 @@ const onDroppableEditSave = async (e: DroppableEntityField) => {
         },
         mediaId: selected.value,
       }),
-      $t('mediaLibraryReplaceFailed', 'Failed to replace media.'),
+      ERROR_MESSAGE,
     )
   }
 }
@@ -139,7 +144,7 @@ defineDropAreas((dragItems) => {
                 host: draggableHost,
                 mediaId: item.mediaId,
               }),
-              $t('mediaLibraryReplaceFailed', 'Failed to replace media.'),
+              ERROR_MESSAGE,
             )
           },
         }
@@ -155,7 +160,7 @@ defineDropAreas((dragItems) => {
                 host: draggableHost,
                 mediaId: item.mediaId,
               }),
-              $t('mediaLibraryReplaceFailed', 'Failed to replace media.'),
+              ERROR_MESSAGE,
             )
           },
         }

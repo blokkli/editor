@@ -1,18 +1,18 @@
 # Context based block components
 
-It's possible to define multiple components for the same block bundle and
-render them based on the context. This is done using the `renderFor` property
-in `defineBlokkli`.
+It's possible to define multiple components for the same block bundle and render
+them based on the context. This is done using the `renderFor` property in
+`defineBlokkli`.
 
-There are two ways to define a constraint: Based on parent bundle, e.g. `{
-parentBundle: 'grid' }` or based on the field list type: `{ fieldListType:
-'inline' }`.
+There are two ways to define a constraint: Based on parent bundle, e.g.
+`{ parentBundle: 'grid' }` or based on the field list type:
+`{ fieldListType: 'inline' }`.
 
 ::: warning
 
 You must define at least one component without any `renderFor` constraints that
-is used as a fallback for rendering, but also for editor-specific things such
-as rendering inside the library, determining the editWidth, etc.
+is used as a fallback for rendering, but also for editor-specific things such as
+rendering inside the library, determining the editWidth, etc.
 
 :::
 
@@ -22,9 +22,9 @@ component.
 
 ::: info Multiple Constraints
 
-blökkli determines which component to render using **the first match**.
-Meaning: If you define multiple `renderFor` constraints, they follow an **OR**
-logic, so the first one that matches will be used.
+blökkli determines which component to render using **the first match**. Meaning:
+If you define multiple `renderFor` constraints, they follow an **OR** logic, so
+the first one that matches will be used.
 
 :::
 
@@ -84,7 +84,8 @@ defineBlokkli({
 </script>
 ```
 
-This will use this component if it's rendered as a child of a `two_columns` block.
+This will use this component if it's rendered as a child of a `two_columns`
+block.
 
 ## Based on field list type
 

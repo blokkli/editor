@@ -3,11 +3,11 @@ import { FieldOptions } from '../Field/Options'
 import { Entity } from './../Entity'
 
 export abstract class Block extends Entity {
-  public static entityType = 'block'
+  public static override entityType = 'block'
   static allowReusable = false
   static isTranslatable = false
 
-  static getFieldDefintions(): Field<any>[] {
+  static override getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
       new FieldOptions('options', 'Options'),
@@ -24,8 +24,6 @@ export abstract class Block extends Entity {
 
   getProps(): Record<string, any> {
     const translation = this.getTranslation(this.langcode)
-    if (this.uuid === '49e2da9e-4e87-4570-9909-458494c9cf3d') {
-    }
     const props: Record<string, any> = {}
     Object.values(translation.fields).forEach((field) => {
       props[field.id] = field.getPropValue()

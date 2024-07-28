@@ -1,6 +1,6 @@
 <template>
   <Component :is="tag" @contextmenu.stop.prevent="onContextMenu">
-    <slot></slot>
+    <slot />
     <Teleport to="body">
       <Transition name="bk-context-menu">
         <ContextMenuMenu

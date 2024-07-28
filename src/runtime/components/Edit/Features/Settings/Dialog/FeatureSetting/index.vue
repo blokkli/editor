@@ -51,7 +51,7 @@
           @input="setSliderValue($event)"
         />
         <datalist id="tickmarks">
-          <option v-for="tick in tickmarks" :key="tick" :value="tick"></option>
+          <option v-for="tick in tickmarks" :key="tick" :value="tick" />
         </datalist>
       </label>
     </div>
@@ -117,7 +117,7 @@ const setSliderValue = (e: Event) => {
   if (e.target instanceof HTMLInputElement) {
     settingsStorage.value = {
       ...settingsStorage.value,
-      [props.settingsKey]: parseFloat(e.target.value),
+      [props.settingsKey]: Number.parseFloat(e.target.value),
     }
   }
 }

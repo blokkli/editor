@@ -124,6 +124,8 @@ const activeField = computed(() => {
       }
     }
   }
+
+  return undefined
 })
 
 const getAllowedTypesForSelected = (p: DraggableExistingBlock): string[] => {

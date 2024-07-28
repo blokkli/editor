@@ -6,7 +6,7 @@
     icon="cog"
     @cancel="$emit('cancel')"
   >
-    <div class="bk bk-dialog-form bk-settings">
+    <div class="bk bk-settings">
       <div v-for="group in groups" :key="group.key" class="bk-form-section">
         <h3 class="bk-settings-group-title">
           <span>{{ group.label }}</span>
@@ -80,7 +80,7 @@ const shouldRenderSetting = (
     return false
   }
   if (setting.viewports?.length) {
-    return setting.viewports.some((v) => ui.appViewport.value === v)
+    return setting.viewports.includes(ui.appViewport.value)
   }
   return true
 }

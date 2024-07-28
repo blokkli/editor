@@ -1,6 +1,6 @@
 <template>
   <component :is="tag" v-bind="attrs">
-    <slot :value="renderedValue"></slot>
+    <slot :value="renderedValue" />
   </component>
 </template>
 
@@ -47,6 +47,8 @@ const attrs = computed(() => {
       'data-blokkli-editable-value': props.value,
     }
   }
+
+  return undefined
 })
 
 const onEditableUpdateValue = (e: EditableFieldUpdateEvent) => {

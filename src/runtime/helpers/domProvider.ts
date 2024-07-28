@@ -40,7 +40,7 @@ const buildFieldElement = (
   const hostEntityBundle = element.dataset.hostEntityBundle
   const hostEntityUuid = element.dataset.hostEntityUuid
   const dropAlignment = element.dataset.fieldDropAlignment
-  const cardinality = parseInt(element.dataset.fieldCardinality || '-1')
+  const cardinality = Number.parseInt(element.dataset.fieldCardinality || '-1')
   const allowedBundles = (element.dataset.fieldAllowedBundles || '')
     .split(',')
     .filter(Boolean)
@@ -65,7 +65,7 @@ const buildFieldElement = (
       hostEntityType,
       hostEntityUuid,
       hostEntityBundle,
-      cardinality: isNaN(cardinality) ? -1 : cardinality,
+      cardinality: Number.isNaN(cardinality) ? -1 : cardinality,
       allowedBundles,
       allowedFragments,
       fieldListType,
@@ -140,7 +140,7 @@ export type DomProvider = {
   /**
    * Get the drag element for a block.
    */
-  getDragElement: (block: DraggableExistingBlock) => HTMLElement
+  getDragElement: (block: DraggableExistingBlock) => HTMLElement | undefined
 }
 
 const getVisibleBlockElement = (
@@ -148,12 +148,13 @@ const getVisibleBlockElement = (
 ): HTMLElement | undefined => {
   if (instance.vnode.el instanceof HTMLElement) {
     return instance.vnode.el
-  } else if (instance?.vnode.el instanceof Text) {
+  } else if (
+    instance?.vnode.el instanceof Text &&
+    instance?.vnode.el.nextElementSibling instanceof HTMLElement
+  ) {
     // In case of text nodes (e.g. when the first node of the component
     // is a comment, find the first matching sibling that is an element.
-    if (instance?.vnode.el.nextElementSibling instanceof HTMLElement) {
-      return instance.vnode.el.nextElementSibling
-    }
+    return instance.vnode.el.nextElementSibling
   }
 }
 
@@ -256,13 +257,11 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     parentBlockBundle?: BlockBundleWithNested,
   ) => {
     if (registeredBlocks[uuid]) {
-      // eslint-disable-next-line no-console
       console.error(
         'Trying to register block with already existing UUID: ' + uuid,
       )
     }
     if (!instance) {
-      // eslint-disable-next-line no-console
       console.error(
         `Failed to get component instance of block with UUID "${uuid}"`,
       )
@@ -270,7 +269,6 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     }
     const el = getVisibleBlockElement(instance)
     if (!el) {
-      // eslint-disable-next-line no-console
       console.error(
         `Failed to locate block component element for UUID "${uuid}". Make sure the block renders at least one root element that is always visible.`,
       )
@@ -294,6 +292,7 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
       resizeObserver.unobserve(el)
     }
     registeredBlocks[uuid] = undefined
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete blockRects[uuid]
   }
 
@@ -346,6 +345,9 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
   ): string => {
     const el =
       item.itemType === 'existing' ? getDragElement(item) : item.element()
+    if (!el) {
+      return ''
+    }
     const dropElement = el.querySelector('.bk-drop-element') || el
     const childCount = dropElement.querySelectorAll('*').length
     if (checkSize && childCount > 80) {
@@ -431,10 +433,12 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     if (!block) {
       return
     }
+    const el = getDragElement(block)
+    if (!el) {
+      return
+    }
 
-    blockRects[uuid] = ui.getAbsoluteElementRect(
-      getDragElement(block).getBoundingClientRect(),
-    )
+    blockRects[uuid] = ui.getAbsoluteElementRect(el.getBoundingClientRect())
   }
 
   function refreshFieldRect(key: string) {
@@ -513,7 +517,7 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
   }
 
   const dragElementUuidMap = new WeakMap<Node, string>()
-  const dragElementCache: Record<string, HTMLElement> = {}
+  const dragElementCache: Map<string, HTMLElement> = new Map()
 
   // Callback function to execute when mutations are observed
   const callback = function (mutationsList: MutationRecord[]) {
@@ -524,7 +528,7 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
           // Delete the drag element from the map.
           dragElementUuidMap.delete(node)
           if (uuid) {
-            delete dragElementCache[uuid]
+            dragElementCache.delete(uuid)
           }
         })
       }
@@ -535,18 +539,19 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
   const mutationObserver = new MutationObserver(callback)
 
   function getDragElement(block: DraggableExistingBlock) {
-    const cached = dragElementCache[block.uuid]
-    if (cached) {
-      if (document.body.contains(cached)) {
-        return cached
-      }
+    const cached = dragElementCache.get(block.uuid)
+    if (cached && document.body.contains(cached)) {
+      return cached
     }
     const el = block.element()
+    if (!el) {
+      return
+    }
     if (el.parentNode) {
       mutationObserver.observe(el.parentNode, { childList: true })
     }
     dragElementUuidMap.set(el, block.uuid)
-    dragElementCache[block.uuid] = el
+    dragElementCache.set(block.uuid, el)
     return el
   }
 

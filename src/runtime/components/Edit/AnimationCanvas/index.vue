@@ -97,8 +97,8 @@ onBlokkliEvent('animationFrame', (e) => {
   }
   const offset = ui.artboardOffset.value
   const scale = ui.artboardScale.value
-  const size = ui.artboardSize.value
-  const dpi = animation.dpi.value
+  // const size = ui.artboardSize.value
+  // const dpi = animation.dpi.value
   // Restrict drawing to area on and 20px around artboard.
   // gl.scissor(
   //   offset.x * dpi - 20,

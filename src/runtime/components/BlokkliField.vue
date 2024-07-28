@@ -121,10 +121,11 @@ const props = withDefaults(
 // @TODO: How to canEdit?
 const canEdit = ref(true)
 
-const fieldKey = computed(() => {
+const fieldKey = computed<string | undefined>(() => {
   if (canEdit.value) {
     return entity.uuid + ':' + props.name
   }
+  return undefined
 })
 
 const fieldListType = computed(() => props.fieldListType)

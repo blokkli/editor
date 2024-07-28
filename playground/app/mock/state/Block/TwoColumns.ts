@@ -3,10 +3,10 @@ import { FieldBlocks } from '../Field/Blocks'
 import { Block } from './Block'
 
 export class BlockTwoColumns extends Block {
-  static bundle = 'two_columns'
-  static label = 'Two Columns'
+  static override bundle = 'two_columns'
+  static override label = 'Two Columns'
 
-  static getFieldDefintions(): Field<any>[] {
+  static override getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
       new FieldBlocks('header', 'Header', 1, false, ['title']),

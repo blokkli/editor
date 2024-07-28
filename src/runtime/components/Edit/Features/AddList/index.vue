@@ -12,8 +12,8 @@
     <div>
       <div id="blokkli-add-list-sidebar-before" />
       <Sortli class="bk bk-list-sidebar">
-        <div id="blokkli-add-list-blocks"></div>
-        <div id="blokkli-add-list-actions"></div>
+        <div id="blokkli-add-list-blocks" />
+        <div id="blokkli-add-list-actions" />
       </Sortli>
     </div>
   </PluginSidebar>
@@ -31,8 +31,8 @@
       @mouseleave="onMouseLeave"
     >
       <Sortli class="bk-list">
-        <div id="blokkli-add-list-blocks"></div>
-        <div id="blokkli-add-list-actions"></div>
+        <div id="blokkli-add-list-blocks" />
+        <div id="blokkli-add-list-actions" />
       </Sortli>
     </div>
     <PluginTourItem
@@ -110,6 +110,9 @@ watch(shouldRender, () => {
   setRootClasses()
 })
 
+const CLASS_LEFT = 'bk-has-add-list-left'
+const CLASS_BOTTOM = 'bk-has-add-list-bottom'
+
 const wrapper = ref<HTMLDivElement | null>(null)
 const isActive = ref(false)
 let mouseTimeout: any = null
@@ -135,6 +138,8 @@ const style = computed(() => {
       '--bk-add-list-width': width + 90,
     }
   }
+
+  return undefined
 })
 
 function onMouseEnter() {
@@ -160,17 +165,17 @@ const onWheel = (e: WheelEvent) => {
 }
 
 function setRootClasses() {
-  document.documentElement.classList.remove('bk-has-add-list-bottom')
-  document.documentElement.classList.remove('bk-has-add-list-left')
+  document.documentElement.classList.remove(CLASS_BOTTOM)
+  document.documentElement.classList.remove(CLASS_LEFT)
 
   if (!shouldRender.value) {
     return
   }
 
   if (ui.addListOrientation.value === 'horizontal') {
-    document.documentElement.classList.add('bk-has-add-list-bottom')
+    document.documentElement.classList.add(CLASS_BOTTOM)
   } else if (ui.addListOrientation.value === 'vertical') {
-    document.documentElement.classList.add('bk-has-add-list-left')
+    document.documentElement.classList.add(CLASS_LEFT)
   }
 }
 
@@ -188,8 +193,8 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  document.documentElement.classList.remove('bk-has-add-list-bottom')
-  document.documentElement.classList.remove('bk-has-add-list-left')
+  document.documentElement.classList.remove(CLASS_BOTTOM)
+  document.documentElement.classList.remove(CLASS_LEFT)
 })
 </script>
 

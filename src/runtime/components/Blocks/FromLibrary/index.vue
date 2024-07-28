@@ -44,6 +44,8 @@ const item = computed(() => {
   if (v && 'uuid' in v) {
     return v
   }
+
+  return undefined
 })
 </script>
 

@@ -30,6 +30,8 @@ import SettingsDialog from './Dialog/index.vue'
 
 const { $t, storage } = useBlokkli()
 
+const LOW_PERFORMANCE_CLASS = 'bk-low-performance-mode'
+
 const { settings } = defineBlokkliFeature({
   id: 'settings',
   label: 'Settings',
@@ -66,9 +68,9 @@ const onClick = () => (showSettings.value = true)
 
 function setRootClass() {
   if (settings.value.lowPerformanceMode) {
-    document.documentElement.classList.add('bk-low-performance-mode')
+    document.documentElement.classList.add(LOW_PERFORMANCE_CLASS)
   } else {
-    document.documentElement.classList.remove('bk-low-performance-mode')
+    document.documentElement.classList.remove(LOW_PERFORMANCE_CLASS)
   }
 }
 
@@ -79,7 +81,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  document.documentElement.classList.remove('bk-low-performance-mode')
+  document.documentElement.classList.remove(LOW_PERFORMANCE_CLASS)
 })
 </script>
 

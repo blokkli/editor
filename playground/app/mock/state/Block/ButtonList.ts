@@ -3,11 +3,11 @@ import { FieldBlocks } from '../Field/Blocks'
 import { Block } from './Block'
 
 export class BlockButtonList extends Block {
-  static bundle = 'button_list'
-  static label = 'Button List'
-  static isTranslatable = true
+  static override bundle = 'button_list'
+  static override label = 'Button List'
+  static override isTranslatable = true
 
-  static getFieldDefintions(): Field<any>[] {
+  static override getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
       new FieldBlocks('blocks', 'Buttons', -1, false, ['button']),

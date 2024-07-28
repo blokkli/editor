@@ -6,27 +6,10 @@
 import { falsy, getDistance, getInteractionCoordinates } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { Coord, Rectangle } from '#blokkli/types'
-import {
-  watch,
-  ref,
-  useBlokkli,
-  computed,
-  onMounted,
-  onBeforeUnmount,
-} from '#imports'
+import { watch, ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
 const { dom, eventBus, selection, keyboard, ui, animation, state } =
   useBlokkli()
-
-const cursor = computed(() => {
-  if (selection.isMultiSelecting.value) {
-    return 'crosshair'
-  } else if (keyboard.isPressingSpace.value) {
-    return 'move'
-  }
-
-  return 'default'
-})
 
 const rects = ref<{ uuid: string; rect: Rectangle }[]>([])
 
@@ -99,7 +82,7 @@ function getInteractedElement(
       continue
     }
     const draggableEl = dom.getDragElement(block)
-    if (el !== draggableEl && !elements.includes(draggableEl)) {
+    if (draggableEl && el !== draggableEl && !elements.includes(draggableEl)) {
       continue
     }
     uuid = el.dataset.uuid

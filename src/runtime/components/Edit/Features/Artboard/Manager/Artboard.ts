@@ -714,6 +714,8 @@ export class Artboard {
 
       // Stop momentum scrolling if necessary
       if (
+        !isOutsideY &&
+        !isOutsideX &&
         (stopMomentumX ||
           (this.touchDirection !== 'horizontal' &&
             this.touchDirection !== 'both')) &&
@@ -721,11 +723,9 @@ export class Artboard {
           (this.touchDirection !== 'vertical' &&
             this.touchDirection !== 'both'))
       ) {
-        if (!isOutsideY && !isOutsideX) {
-          this.isMomentumScrolling = false
-          this.velocity = { x: 0, y: 0 }
-          this.touchDirection = 'none' // Reset direction for the next gesture
-        }
+        this.isMomentumScrolling = false
+        this.velocity = { x: 0, y: 0 }
+        this.touchDirection = 'none' // Reset direction for the next gesture
       }
     } else if (this.animationTarget) {
       const easedAlpha = easeOutQuad(this.animationTarget.alpha)

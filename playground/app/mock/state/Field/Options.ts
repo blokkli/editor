@@ -11,12 +11,10 @@ export class FieldOptions extends Field<FieldOptionsItem> {
   }
 
   getOptions() {
-    const options = this.list.reduce<Record<string, string>>((acc, v) => {
+    return this.list.reduce<Record<string, string>>((acc, v) => {
       acc[v.key] = v.value
       return acc
     }, {})
-
-    return options
   }
 
   getOption(key: string): FieldOptionsItem | undefined {

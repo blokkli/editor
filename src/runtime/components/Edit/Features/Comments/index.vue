@@ -8,7 +8,7 @@
     icon="comment"
     weight="-20"
   >
-    <div v-if="comments.length" class="bk bk-comments bk-control">
+    <div v-if="comments.length" class="bk bk-control">
       <ul>
         <li v-for="comment in comments" :key="comment.uuid">
           <Comment
@@ -75,10 +75,8 @@ const commentForm = ref<InstanceType<typeof CommentAddForm> | null>(null)
 const showAddComment = ref(false)
 
 watch(selection.uuids, () => {
-  if (commentForm.value) {
-    if (!commentForm.value.getComment()) {
-      showAddComment.value = false
-    }
+  if (commentForm.value && !commentForm.value.getComment()) {
+    showAddComment.value = false
   }
 })
 

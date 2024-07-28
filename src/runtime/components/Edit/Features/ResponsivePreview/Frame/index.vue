@@ -4,7 +4,7 @@
       <Icon name="spinner" />
     </div>
     <div v-if="detached" class="bk-preview-controls">
-      <slot></slot>
+      <slot />
     </div>
     <div class="bk-preview-iframe">
       <iframe ref="iframe" :src="src" @load="isLoading = false" />

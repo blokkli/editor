@@ -251,7 +251,7 @@ const visibleOptions = computed<OptionItem[]>(() => {
       ? (item?.props as any)?.libraryItem?.block?.props
       : item?.props
 
-  const visibleKeys: string[] =
+  const visibleKeys =
     // We have to cast to any here because the types are guaranteed to be correct.
     props.definition.editor!.determineVisibleOptions({
       options: currentValues.value as any,

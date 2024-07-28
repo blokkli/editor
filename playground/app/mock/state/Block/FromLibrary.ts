@@ -5,10 +5,10 @@ import type { LibraryItem } from '../LibraryItem'
 import { Block } from './Block'
 
 export class BlockFromLibrary extends Block {
-  static bundle = 'from_library'
-  static label = 'From Library'
+  static override bundle = 'from_library'
+  static override label = 'From Library'
 
-  static getFieldDefintions(): Field<any>[] {
+  static override getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
       new FieldReference(
@@ -28,7 +28,7 @@ export class BlockFromLibrary extends Block {
     ).getReferencedEntities()[0]
   }
 
-  getProps() {
+  override getProps() {
     const libraryItem = this.getLibraryItem()
     if (!libraryItem) {
       return {}

@@ -33,7 +33,7 @@
       </div>
     </div>
     <div class="bk-sidebar-detached-inner" :style="innerStyle">
-      <slot :width="userWidth" :height="userHeight"></slot>
+      <slot :width="userWidth" :height="userHeight" />
       <template v-if="!size && !isMinimized">
         <div
           class="bk-sidebar-detached-handle bk-is-bottom"
@@ -108,12 +108,6 @@ const z = storage.use(zStorageKey.value, BASE_Z)
 
 if (z.value > globalZ.value) {
   globalZ.value = z.value
-}
-
-const onSidebarMouseDown = () => {
-  onFocus()
-  isResizing.value = true
-  window.addEventListener('mouseup', onMouseUp, { capture: true })
 }
 
 const offsetX = computed(() => {

@@ -20,7 +20,7 @@ import type { GlobalOptionsKey } from '#blokkli/generated-types'
 import { globalOptionsDefaults } from '#blokkli/default-global-options'
 
 export function defineBlokkliFragment<
-  T extends BlockDefinitionOptionsInput = {},
+  T extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
   G extends GlobalOptionsKey[] | undefined = undefined,
 >(config: FragmentDefinitionInput<T, G>): DefineBlokkliContext<T, G> {
   // Provided by the <BlokkliFragment> component.

@@ -62,7 +62,6 @@ const indicators = ref<Indicator[]>([])
 onBlokkliEvent('canvas:draw', (e) => {
   const scale = e.artboardScale
   const offset = e.artboardOffset
-  const artboardEl = ui.artboardElement()
 
   const x = Math.min(
     offset.x + ui.artboardSize.value.width * scale + 10,
@@ -76,7 +75,6 @@ onBlokkliEvent('canvas:draw', (e) => {
     ui.visibleViewportPadded.value.x + ui.visibleViewportPadded.value.width
 
   const newIndicators: Record<string, Indicator> = {}
-  const orphaned: CommentItem[] = []
   const yMap = new Set<number>()
 
   const findY = (y: number): number => {
@@ -109,26 +107,22 @@ onBlokkliEvent('canvas:draw', (e) => {
         }
       })
       .filter(falsy)
-    if (!rects.length) {
-      orphaned.push(comment)
-    } else {
+    if (rects.length) {
       const bounds = getBounds(rects)
       const id = uuids.join(',')
-      if (bounds) {
-        if (!newIndicators[id]) {
-          const y = findY(Math.round(bounds.y))
-          newIndicators[id] = {
-            id,
-            comments: [],
-            uuids,
-            style: {
-              // @TODO: Because the --bk-artboard-scale CSS variable was
-              // removed, the comment box now scaled with the artboard.
-              // This should be fixed by not positioning the box inside the
-              // artboard element so it does not scale.
-              transform: `translate(${x}px, ${y}px)`,
-            },
-          }
+      if (bounds && !newIndicators[id]) {
+        const y = findY(Math.round(bounds.y))
+        newIndicators[id] = {
+          id,
+          comments: [],
+          uuids,
+          style: {
+            // @TODO: Because the --bk-artboard-scale CSS variable was
+            // removed, the comment box now scaled with the artboard.
+            // This should be fixed by not positioning the box inside the
+            // artboard element so it does not scale.
+            transform: `translate(${x}px, ${y}px)`,
+          },
         }
       }
       newIndicators[id].comments.push(comment)

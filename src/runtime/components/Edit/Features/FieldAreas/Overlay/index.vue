@@ -1,5 +1,5 @@
 <template>
-  <div v-show="!selection.isDragging.value" class="bk bk-field-areas">
+  <div v-show="!selection.isDragging.value" class="bk">
     <div
       v-for="area in areas"
       :key="area.key"
@@ -17,7 +17,6 @@
 
 <script lang="ts" setup>
 import { ref, useBlokkli } from '#imports'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { eventBus, selection } = useBlokkli()
 

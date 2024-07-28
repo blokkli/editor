@@ -33,11 +33,11 @@ export function getRuntimeOptionValue(
     }
     return []
   } else if (definition.type === 'range' || definition.type === 'number') {
-    if (typeof value === 'number' && !isNaN(value)) {
+    if (typeof value === 'number' && !Number.isNaN(value)) {
       return value
     } else if (typeof value === 'string') {
-      const parsed = parseFloat(value)
-      if (!isNaN(parsed)) {
+      const parsed = Number.parseFloat(value)
+      if (!Number.isNaN(parsed)) {
         return parsed
       }
     }

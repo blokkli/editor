@@ -8,16 +8,16 @@ import { FieldTimestamp } from '../Field/Timestamp'
 import type { User } from '../User'
 
 export class Comment extends Entity {
-  static entityType = 'comment'
-  static bundle = 'comment'
-  static label = 'Comment'
+  static override entityType = 'comment'
+  static override bundle = 'comment'
+  static override label = 'Comment'
 
   constructor(uuid: string) {
     super(uuid)
     this.fields.created.list = [Date.now()]
   }
 
-  static getFieldDefintions(): Field<any>[] {
+  static override getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
       new FieldTimestamp('created', 'Created'),

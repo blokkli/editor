@@ -8,7 +8,7 @@
         :icon="icon"
         @close="onClose"
       >
-        <slot></slot>
+        <slot />
         <template #footer>
           <button class="bk-button bk-is-primary" @click="onSubmit">
             {{ $t('droppableEditFormSave', 'Save') }}

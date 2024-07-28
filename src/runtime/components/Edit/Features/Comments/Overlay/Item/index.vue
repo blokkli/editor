@@ -34,11 +34,7 @@
           }}</span
         >
       </div>
-      <div
-        v-for="comment in comments"
-        :key="comment.uuid"
-        class="bk-comments-overlay-comments-item"
-      >
+      <div v-for="comment in comments" :key="comment.uuid">
         <Comment v-bind="comment" @resolve="resolveComment(comment.uuid)" />
       </div>
       <div class="bk-comments-overlay-form" @keydown.capture.stop>
@@ -74,8 +70,7 @@ const commentText = ref('')
 const showFullForm = ref(false)
 const emit = defineEmits<{
   (e: 'toggle'): void
-  (e: 'addComment', text: string): void
-  (e: 'resolveComment', uuid: string): void
+  (e: 'addComment' | 'resolveComment', text: string): void
 }>()
 
 const props = defineProps<{

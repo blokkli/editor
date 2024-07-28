@@ -3,7 +3,7 @@
     <div
       v-for="(item, index) in items"
       :key="index + item.data + renderKey"
-      class="bk-clone bk-parent bk-sidebar-padding"
+      class="bk-parent bk-sidebar-padding"
       data-element-type="clipboard"
       :data-sortli-id="'clipboard_' + index"
       :data-item-bundle="item.itemBundle"
@@ -22,10 +22,7 @@
             </div>
             <span>{{ getLabel(item.itemBundle) }}</span>
           </div>
-          <button
-            class="bk-no-drag"
-            @click.prevent.stop.capture="$emit('remove', index)"
-          >
+          <button @click.prevent.stop.capture="$emit('remove', index)">
             <Icon name="delete" />
           </button>
         </div>

@@ -14,7 +14,7 @@
     @submit="onSubmit"
     @cancel="$emit('cancel')"
   >
-    <div class="bk bk-dialog-form">
+    <div class="bk">
       <div class="bk-form-section">
         <h3 class="bk-form-label">
           {{

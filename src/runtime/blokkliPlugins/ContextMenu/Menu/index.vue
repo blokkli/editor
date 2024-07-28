@@ -77,10 +77,11 @@ const onMouseDown = (e: MouseEvent) => {
     return
   }
 
-  if (e.target instanceof HTMLElement || e.target instanceof SVGElement) {
-    if (!e.target.contains(rootEl.value)) {
-      emit('close')
-    }
+  if (
+    (e.target instanceof HTMLElement || e.target instanceof SVGElement) &&
+    !e.target.contains(rootEl.value)
+  ) {
+    emit('close')
   }
 }
 

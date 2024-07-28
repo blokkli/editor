@@ -80,5 +80,3 @@ useAnimationFrame(() => {
   }
 })
 </script>
-
-<style lang="postcss"></style>

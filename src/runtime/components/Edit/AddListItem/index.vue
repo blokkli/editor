@@ -3,7 +3,7 @@
     :id="'add_list_item_' + id"
     ref="el"
     tag="button"
-    class="bk-list-item bk-clone"
+    class="bk-list-item"
     data-element-type="action"
     :menu="menu"
     :data-sortli-id="id"

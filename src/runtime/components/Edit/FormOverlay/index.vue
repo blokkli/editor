@@ -15,10 +15,10 @@
         @close="onClose"
       />
       <div class="bk-form-overlay-content">
-        <slot></slot>
+        <slot />
       </div>
       <div v-if="$slots.footer" class="bk bk-form-overlay-footer">
-        <slot name="footer"></slot>
+        <slot name="footer" />
       </div>
     </Resizable>
   </div>

@@ -1,5 +1,5 @@
-import { extname, basename } from 'path'
-import { promises as fsp, existsSync } from 'fs'
+import { extname, basename } from 'node:path'
+import { promises as fsp, existsSync } from 'node:fs'
 import {
   addBuildPlugin,
   addComponent,
@@ -39,9 +39,9 @@ function hexToRgb(hex: string): RGB {
   }
 
   // Convert the hex string to RGB
-  const r = parseInt(hex.slice(0, 2), 16)
-  const g = parseInt(hex.slice(2, 4), 16)
-  const b = parseInt(hex.slice(4, 6), 16)
+  const r = Number.parseInt(hex.slice(0, 2), 16)
+  const g = Number.parseInt(hex.slice(2, 4), 16)
+  const b = Number.parseInt(hex.slice(4, 6), 16)
 
   return [r, g, b]
 }
@@ -287,11 +287,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     await featureExtractor.addFiles([...builtinFeatures, ...customFeatures])
     const features = featureExtractor.getFeatures().filter((v) => {
-      // Remove the theme editor feature if not enabled.
-      if (v.id === 'theme' && !moduleOptions.enableThemeEditor) {
-        return false
-      }
-      return true
+      return v.id !== 'theme' || moduleOptions.enableThemeEditor
     })
 
     const featuresContext: AlterFeatures = {
@@ -787,12 +783,12 @@ export type BlokkliIcon = keyof typeof icons`
     })
 
     // Checks if the given file path is handled by this module.
-    const applies = (path: string): Promise<string | undefined | void> => {
+    const applies = (path: string): Promise<string | undefined> => {
       const filePath = srcResolver.resolve(path)
 
       // Check that only the globally possible file types are used.
       if (!POSSIBLE_EXTENSIONS.includes(extname(filePath))) {
-        return Promise.resolve()
+        return Promise.resolve(undefined)
       }
 
       // Get all files based on pattern and check if there is a match.

@@ -4,7 +4,7 @@
     @pointerup.capture.prevent="onPointerUp"
     @pointermove.capture.prevent="onPointerMove"
   >
-    <slot></slot>
+    <slot />
   </div>
 </template>
 
@@ -24,6 +24,10 @@ let activeItem: DraggableItem | null = null
 
 function onPointerDown(e: PointerEvent) {
   if (!(e.target instanceof HTMLElement || e.target instanceof SVGElement)) {
+    return
+  }
+  if (e.button !== 0) {
+    pointerStartCoords = null
     return
   }
   pointerStartCoords = getInteractionCoordinates(e)
@@ -63,6 +67,8 @@ function onPointerMove(e: PointerEvent) {
 
 function onPointerUp(e: PointerEvent) {
   if (!pointerStartCoords || !activeItem) {
+    pointerStartCoords = null
+    activeItem = null
     return
   }
   const coords = getInteractionCoordinates(e)

@@ -1,5 +1,5 @@
 <template>
-  <slot></slot>
+  <slot />
 
   <Teleport to="body">
     <Transition name="bk-fade">

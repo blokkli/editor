@@ -3,11 +3,11 @@ import type { Field } from '../Field'
 import { FieldText } from '../Field/Text'
 
 export class User extends Entity {
-  static entityType = 'user'
-  static bundle = 'user'
-  static label = 'User'
+  static override entityType = 'user'
+  static override bundle = 'user'
+  static override label = 'User'
 
-  static getFieldDefintions(): Field<any>[] {
+  static override getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
       new FieldText('name', 'Name'),

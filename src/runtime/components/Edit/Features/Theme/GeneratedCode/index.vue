@@ -1,6 +1,6 @@
 <template>
   <div class="bk-theme-editor-code">
-    <textarea :value="code" rows="10"></textarea>
+    <textarea :value="code" rows="10" />
   </div>
 </template>
 

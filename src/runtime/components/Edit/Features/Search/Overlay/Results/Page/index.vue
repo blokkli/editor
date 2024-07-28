@@ -9,7 +9,7 @@
       @click.stop="clickItem"
       @mouseenter="index = i"
     >
-      <div class="bk-search-item-icon bk-is-icon">
+      <div class="bk-search-item-icon">
         <ItemIcon :bundle="item.item.itemBundle" />
       </div>
       <div class="bk-search-item-content">
@@ -148,13 +148,12 @@ const buildIndex = () => {
       const title =
         types.getBlockBundleDefinition(item.itemBundle)?.label ||
         item.itemBundle
-      const searchItem = {
+      return {
         item,
         title: item.editTitle || title,
         context: title,
         text: buildSearchText(item.element()),
       }
-      return searchItem
     })
     .filter(falsy)
 

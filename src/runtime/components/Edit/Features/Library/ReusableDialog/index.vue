@@ -14,7 +14,7 @@
     @submit="$emit('confirm', label)"
     @cancel="$emit('cancel')"
   >
-    <div class="bk-dialog-form">
+    <div>
       <label for="reusable_label" class="bk-form-label">{{
         $t('libraryDialogDescriptionLabel', 'Description')
       }}</label>

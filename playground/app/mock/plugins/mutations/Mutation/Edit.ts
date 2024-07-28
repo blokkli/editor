@@ -11,11 +11,11 @@ export class MutationEdit extends Mutation {
     super('edit', configuration)
   }
 
-  getAffectedUuid(args: MutationEditArgs): string | undefined {
+  override getAffectedUuid(args: MutationEditArgs): string | undefined {
     return args.uuid
   }
 
-  execute(context: MutationContext, args: MutationEditArgs) {
+  override execute(context: MutationContext, args: MutationEditArgs) {
     const proxy = context.getProxy(args.uuid)
     if (!proxy) {
       return

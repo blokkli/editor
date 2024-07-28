@@ -45,10 +45,8 @@
           </div>
         </button>
       </div>
-
-      <div class="bk-tour-caret"></div>
     </div>
-    <div :style="rectStyle" class="bk bk-tour-overlay-element"></div>
+    <div :style="rectStyle" class="bk bk-tour-overlay-element" />
   </Teleport>
 </template>
 

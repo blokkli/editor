@@ -59,6 +59,7 @@ const onSubmit = async (result: AssistantResult) => {
   onClose()
 }
 </script>
+
 <script lang="ts">
 export default {
   name: 'Assistant',

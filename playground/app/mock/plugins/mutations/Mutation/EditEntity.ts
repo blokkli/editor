@@ -10,7 +10,7 @@ export class MutationEditEntity extends Mutation {
     super('edit_entity', configuration)
   }
 
-  execute(context: MutationContext, args: MutationEditEntityArgs) {
+  override execute(context: MutationContext, args: MutationEditEntityArgs) {
     context.entity.setValues(args.values)
   }
 }

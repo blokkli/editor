@@ -3,10 +3,10 @@ import { FieldReference } from '../Field/Reference'
 import { Block } from './Block'
 
 export class BlockImage extends Block {
-  static bundle = 'image'
-  static label = 'Image'
+  static override bundle = 'image'
+  static override label = 'Image'
 
-  static getFieldDefintions(): Field<any>[] {
+  static override getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
       new FieldReference('imageReference', 'Image', 1, true, 'media', [
@@ -15,7 +15,7 @@ export class BlockImage extends Block {
     ]
   }
 
-  static getDefaultValues(): Record<string, any> {
+  static override getDefaultValues(): Record<string, any> {
     return {
       imageReference: ['7'],
     }

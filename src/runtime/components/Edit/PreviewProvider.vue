@@ -105,16 +105,16 @@ provide<ItemEditContext>(INJECT_EDIT_CONTEXT, {
  * Listen to window messages and emit the matching frameEventBus event.
  */
 function onMessage(e: MessageEvent) {
-  if (e.data && typeof e.data === 'object') {
-    if (
-      e.data.name &&
-      typeof e.data.name === 'string' &&
-      e.data.name.startsWith('blokkli__')
-    ) {
-      const name = e.data.name.replace('blokkli__', '')
-      const data = e.data.data
-      frameEventBus.emit(name, data)
-    }
+  if (
+    e.data &&
+    typeof e.data === 'object' &&
+    e.data.name &&
+    typeof e.data.name === 'string' &&
+    e.data.name.startsWith('blokkli__')
+  ) {
+    const name = e.data.name.replace('blokkli__', '')
+    const data = e.data.data
+    frameEventBus.emit(name, data)
   }
 }
 

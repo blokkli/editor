@@ -40,10 +40,11 @@
 
     <div class="bk-search-results">
       <div ref="resultsEl" class="bk-search-list bk-scrollbar-light">
-        <template v-for="item in tabItems" :key="item.key">
+        <template v-for="item in tabItems">
           <ResultsPage
             v-if="item.key === 'on_this_page'"
             ref="searchComponents"
+            :key="'page_' + item.key"
             :visible="tab === item.key"
             :search="searchCleaned"
             :search-box-visible="visible"
@@ -53,6 +54,7 @@
           <ResultsContent
             v-else-if="item.enabled"
             ref="searchComponents"
+            :key="'content_' + item.key"
             :visible="tab === item.key"
             :search="searchCleaned"
             :tab="item.key"
@@ -186,10 +188,8 @@ const onKeyDown = (e: KeyboardEvent) => {
 watch(
   () => props.visible,
   (isVisible) => {
-    if (isVisible) {
-      if (input.value) {
-        input.value.focus()
-      }
+    if (isVisible && input.value) {
+      input.value.focus()
     }
   },
 )

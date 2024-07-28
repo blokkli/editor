@@ -13,7 +13,7 @@ export class MutationMakeReusable extends Mutation {
     super('make_reusable', configuration)
   }
 
-  execute(context: MutationContext, args: MutationMakeReusableArgs) {
+  override execute(context: MutationContext, args: MutationMakeReusableArgs) {
     let libraryItemId = this.configuration['libraryItemId']
     const newUuid = this.getUuidForNewEntity()
     const proxy = context.getProxy(args.uuid)

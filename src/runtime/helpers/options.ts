@@ -11,11 +11,7 @@ export function optionValueToStorable(
       return value === true ? '1' : '0'
     }
     return '0'
-  } else if (definition.type === 'text') {
-    if (typeof value === 'string') {
-      return value
-    }
-  } else if (definition.type === 'radios') {
+  } else if (definition.type === 'text' || definition.type === 'radios') {
     if (typeof value === 'string') {
       return value
     }

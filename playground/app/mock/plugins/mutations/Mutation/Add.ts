@@ -17,7 +17,7 @@ export class MutationAdd extends Mutation {
     super('add', configuration)
   }
 
-  execute(context: MutationContext, args: MutationAddArgs) {
+  override execute(context: MutationContext, args: MutationAddArgs) {
     const uuid = this.getUuidForNewEntity()
 
     const block = entityStorageManager.createBlock(args.bundle, uuid)

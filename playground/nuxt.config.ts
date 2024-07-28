@@ -1,5 +1,6 @@
 export default defineNuxtConfig({
   ssr: false,
+
   modules: [
     '@nuxt/test-utils/module',
     '../src/module',
@@ -79,4 +80,6 @@ export default defineNuxtConfig({
       },
     },
   },
+
+  compatibilityDate: '2024-07-28',
 })

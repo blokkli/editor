@@ -1,5 +1,5 @@
 <template>
-  <tr class="bk-theme-editor-color">
+  <tr>
     <td class="bk-theme-editor-color-shade">{{ shade }}</td>
     <td class="bk-theme-editor-color-hex">
       <input v-model="inputValue" type="text" maxlength="7" />
@@ -55,9 +55,9 @@ function hexToRgb(v: string): RGB | null {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(v)
   return result
     ? [
-        parseInt(result[1], 16),
-        parseInt(result[2], 16),
-        parseInt(result[3], 16),
+        Number.parseInt(result[1], 16),
+        Number.parseInt(result[2], 16),
+        Number.parseInt(result[3], 16),
       ]
     : null
 }

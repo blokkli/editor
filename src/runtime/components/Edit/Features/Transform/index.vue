@@ -112,11 +112,11 @@ const getPossibleDropTransforms = (
   // Determine possible plugins based on the dragged items.
   const validPlugins = plugins.filter((plugin) => {
     const draggedBundles = dragItems.map((item) => item.itemBundle)
-    const isPluginValidForDraggedItems =
+    return (
       draggedBundles.every((bundle) => plugin.bundles.includes(bundle)) &&
       dragItems.length + 1 >= plugin.min &&
       (plugin.max === -1 || dragItems.length + 1 <= plugin.max)
-    return isPluginValidForDraggedItems
+    )
   })
 
   // Find possible transformations for each valid plugin

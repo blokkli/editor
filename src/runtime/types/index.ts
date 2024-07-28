@@ -70,7 +70,7 @@ type GlobalOptionsKeyTypes<T extends ValidGlobalConfigKeys> = {
 }
 
 export type DefineBlokkliContext<
-  T extends BlockDefinitionOptionsInput = {},
+  T extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
   G extends ValidGlobalConfigKeys | undefined = undefined,
 > = {
   /**
@@ -115,17 +115,17 @@ export type DefineBlokkliContext<
    * options.
    */
   options: ComputedRef<
-    (T extends BlockDefinitionOptionsInput ? WithOptions<T> : {}) &
-      (G extends ValidGlobalConfigKeys ? GlobalOptionsKeyTypes<G> : {})
+    (T extends BlockDefinitionOptionsInput ? WithOptions<T> : object) &
+      (G extends ValidGlobalConfigKeys ? GlobalOptionsKeyTypes<G> : object)
   >
 }
 
 type DetermineVisibleOptionsContext<
-  T extends BlockDefinitionOptionsInput = {},
+  T extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
   G extends GlobalOptionsKey[] | undefined = undefined,
 > = {
-  options: (T extends BlockDefinitionOptionsInput ? WithOptions<T> : {}) &
-    (G extends ValidGlobalConfigKeys ? GlobalOptionsKeyTypes<G> : {})
+  options: (T extends BlockDefinitionOptionsInput ? WithOptions<T> : object) &
+    (G extends ValidGlobalConfigKeys ? GlobalOptionsKeyTypes<G> : object)
   parentType: BlockBundleWithNested | undefined
   props: Record<string, any>
   entity: AdapterContext
@@ -145,7 +145,7 @@ export type BlokkliDefinitionAddBehaviour =
   | `editable:${string}`
 
 export type BlokkliDefinitionInputEditor<
-  Options extends BlockDefinitionOptionsInput = {},
+  Options extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
   GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
 > = {
   /**
@@ -270,7 +270,7 @@ export type BlockDefinitionRenderFor =
   | BlockDefinitionRenderForFieldListType
 
 export type BlockDefinitionInput<
-  Options extends BlockDefinitionOptionsInput = {},
+  Options extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
   GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
 > = {
   /**
@@ -1203,7 +1203,7 @@ export type ContextMenuButton = {
 export type ContextMenu = ContextMenuButton | ContextMenuRule
 
 export type FragmentDefinitionInput<
-  Options extends BlockDefinitionOptionsInput = {},
+  Options extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
   GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
 > = {
   /**

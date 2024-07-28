@@ -44,7 +44,7 @@
       </div>
       <div class="bk-assistant-form-result">
         <div class="bk-form-label">Result</div>
-        <div class="bk-assistant-dialog-result-inner">
+        <div>
           <template v-if="result">
             <ResultMarkup
               v-if="result.type === 'markup'"

@@ -17,7 +17,7 @@ import { useBlokkli, defineBlokkliFeature } from '#imports'
 import type { DraggableExistingBlock } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
 
-const { state, $t } = useBlokkli()
+const { state, $t, eventBus } = useBlokkli()
 
 const { adapter } = defineBlokkliFeature({
   id: 'delete',
@@ -28,6 +28,7 @@ const { adapter } = defineBlokkliFeature({
 })
 
 async function onClick(items: DraggableExistingBlock[]) {
+  eventBus.emit('select', [])
   await state.mutateWithLoadingState(
     adapter.deleteBlocks(items.map((v) => v.uuid)),
     $t('deleteError', 'The block could not be deleted.'),

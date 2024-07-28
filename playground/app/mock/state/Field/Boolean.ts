@@ -5,7 +5,7 @@ export class FieldBoolean extends Field<boolean> {
     super('boolean', id, label, 1, required)
   }
 
-  toString() {
+  override toString() {
     return this.list[0] === true ? 'Yes' : 'No'
   }
 }

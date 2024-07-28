@@ -4,7 +4,7 @@ import { FieldText } from '../Field/Text'
 import { FieldUrl } from '../Field/Url'
 
 export abstract class Media extends Entity {
-  static entityType = 'media'
+  static override entityType = 'media'
 
   thumbnail(): string | undefined {
     return
@@ -16,10 +16,10 @@ export abstract class Media extends Entity {
 }
 
 export class MediaImage extends Media {
-  static bundle = 'image'
-  static label = 'Image'
+  static override bundle = 'image'
+  static override label = 'Image'
 
-  static getFieldDefintions(): Field<any>[] {
+  static override getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
       new FieldUrl('url', 'URL'),
@@ -32,7 +32,7 @@ export class MediaImage extends Media {
     return this.fields.url.list[0] || ''
   }
 
-  thumbnail(): string | undefined {
+  override thumbnail(): string | undefined {
     return this.url()
   }
 
@@ -44,11 +44,11 @@ export class MediaImage extends Media {
     return this.get<FieldText>('filename').getText()
   }
 
-  title(): string {
+  override title(): string {
     return this.alt()
   }
 
-  getData() {
+  override getData() {
     return {
       url: this.url(),
       alt: this.alt(),
@@ -58,10 +58,10 @@ export class MediaImage extends Media {
 }
 
 export class MediaVideo extends Media {
-  static bundle = 'video'
-  static label = 'Video'
+  static override bundle = 'video'
+  static override label = 'Video'
 
-  static getFieldDefintions(): Field<any>[] {
+  static override getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
       new FieldUrl('url', 'URL'),
@@ -73,7 +73,7 @@ export class MediaVideo extends Media {
     return this.fields.url.list[0] || ''
   }
 
-  title(): string {
+  override title(): string {
     return this.get<FieldText>('title').getText()
   }
 
@@ -85,7 +85,7 @@ export class MediaVideo extends Media {
     return match && match[7].length === 11 ? match[7] : null
   }
 
-  thumbnail() {
+  override thumbnail() {
     return `https://i3.ytimg.com/vi/${this.getYouTubeID()}/maxresdefault.jpg`
   }
 }

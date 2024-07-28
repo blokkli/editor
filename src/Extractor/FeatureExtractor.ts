@@ -1,6 +1,7 @@
-import fs from 'fs'
+import fs from 'node:fs'
 import type { FeatureDefinition } from '../runtime/types'
 import type { AdapterMethods } from '../runtime/adapter/index'
+import { falsy } from '../vitePlugin'
 
 export type ExtractedFeatureDefinition = {
   id: string
@@ -15,7 +16,7 @@ export type ExtractedFeatureDefinition = {
  * Service to handle text extractions across multiple files.
  */
 export default class Extractor {
-  definitions: Record<string, ExtractedFeatureDefinition> = {}
+  definitions: Record<string, ExtractedFeatureDefinition | undefined> = {}
   isBuild = false
   composableName: string
 
@@ -42,7 +43,7 @@ export default class Extractor {
     const extracted = this.extractSingle(fileSource, filePath)
     if (!extracted) {
       if (this.definitions[filePath]) {
-        delete this.definitions[filePath]
+        this.definitions[filePath] = undefined
         return true
       }
 
@@ -67,12 +68,12 @@ export default class Extractor {
     }
 
     // If the the definition didn't change, return.
-    if (this.definitions[filePath].definition === definition) {
+    if (this.definitions[filePath]?.definition === definition) {
       return false
     }
 
     // Update the definition.
-    this.definitions[filePath].definition = definition
+    this.definitions[filePath]!.definition = definition
 
     return true
   }
@@ -89,11 +90,9 @@ export default class Extractor {
     const source = rgx.exec(code)?.[1]
     if (source) {
       try {
-        // eslint-disable-next-line no-eval
         const definition = eval(`(${source})`)
         return { definition, source }
       } catch (e) {
-        // eslint-disable-next-line no-console
         console.error(
           `Failed to parse component "${filePath}": ${this.composableName} does not contain a valid object literal. No variables and methods are allowed inside ${this.composableName}().`,
         )
@@ -111,6 +110,6 @@ export default class Extractor {
   }
 
   getFeatures(): ExtractedFeatureDefinition[] {
-    return Object.values(this.definitions)
+    return Object.values(this.definitions).filter(falsy)
   }
 }

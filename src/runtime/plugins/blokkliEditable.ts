@@ -3,7 +3,7 @@ import { defineNuxtPlugin } from '#imports'
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.directive('blokkli-editable', {
     created(el: HTMLElement, binding) {
-      if (process.client) {
+      if (import.meta.client) {
         if (!window.location.search.includes('blokkliEditing')) {
           return
         }
@@ -18,7 +18,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   nuxtApp.vueApp.directive('blokkli-droppable', {
     created(el: HTMLElement, binding) {
-      if (process.client) {
+      if (import.meta.client) {
         if (!window.location.search.includes('blokkliEditing')) {
           return
         }

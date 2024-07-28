@@ -227,18 +227,6 @@ export function getRelativeTimeString(
   return rtf.format(Math.floor(deltaSeconds / divisor), units[unitIndex])
 }
 
-export function removeDroppedElements() {
-  document
-    .querySelectorAll('.bk-draggable-list-container .bk-clone')
-    .forEach((v) => v.remove())
-  document
-    .querySelectorAll('.bk-draggable-list-container .bk-moved-item')
-    .forEach((v) => v.remove())
-  document
-    .querySelectorAll('.bk-multi-select-hidden')
-    .forEach((v) => v.classList.remove('bk-multi-select-hidden'))
-}
-
 export function modulo(n: number, m: number) {
   return ((n % m) + m) % m
 }
@@ -391,12 +379,12 @@ export const parseColorString = (color: string): RGB | undefined => {
     return
   }
 
-  const r = parseInt(match[1])
-  const g = parseInt(match[2])
-  const b = parseInt(match[3])
-  const a = match[4] !== undefined ? parseFloat(match[4]) : 1
+  const r = Number.parseInt(match[1])
+  const g = Number.parseInt(match[2])
+  const b = Number.parseInt(match[3])
+  const a = match[4] !== undefined ? Number.parseFloat(match[4]) : 1
 
-  if ([r, g, b, a].some((val) => isNaN(val))) {
+  if ([r, g, b, a].some((val) => Number.isNaN(val))) {
     throw new Error('Invalid color values')
   }
 
@@ -456,11 +444,10 @@ export const calculateCenterPosition = (
     // If the rectangle is left of the center.
     if (
       rect.x < viewportCenterX &&
-      viewportCenterX - rect.x > blockingThreshold
+      viewportCenterX - rect.x > blockingThreshold &&
+      rect.x + rect.width > acc
     ) {
-      if (rect.x + rect.width > acc) {
-        return rect.x + rect.width
-      }
+      return rect.x + rect.width
     }
     return acc
   }, viewport.x)
@@ -469,11 +456,10 @@ export const calculateCenterPosition = (
     // If the rectangle is right of the center.
     if (
       rect.x > viewportCenterX &&
-      rect.x - viewportCenterX > blockingThreshold
+      rect.x - viewportCenterX > blockingThreshold &&
+      rect.x < acc
     ) {
-      if (rect.x < acc) {
-        return rect.x
-      }
+      return rect.x
     }
     return acc
   }, viewport.width + viewport.x)
@@ -524,8 +510,8 @@ export const rgbaToString = (color: RGB, alpha = 1): string =>
 
 export const getNumericStyleValue = (str: string, fallback = 0): number => {
   const v = str.replace('px', '')
-  const num = parseFloat(v)
-  if (isNaN(num) || num === 0) {
+  const num = Number.parseFloat(v)
+  if (Number.isNaN(num) || num === 0) {
     return fallback
   }
   return num

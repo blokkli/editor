@@ -407,7 +407,7 @@ export interface BlokkliAdapter<T> {
    */
   formFrameBuilder?: (
     e: AdapterFormFrameBuilder,
-  ) => AdapterFormFrameBuilderResult | undefined | void
+  ) => AdapterFormFrameBuilderResult | undefined
 
   /**
    * Update the value of a single block field.

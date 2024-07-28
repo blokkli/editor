@@ -79,5 +79,5 @@ export type FilterTypeMapping = {
 }
 
 export type GetMediaLibraryFunction<
-  F extends Record<string, FilterTypes> = {},
+  F extends Record<string, FilterTypes> = Record<string, FilterTypes>,
 > = (e: MediaLibraryGetResultsData<F>) => Promise<MediaLibraryGetResults<F>>

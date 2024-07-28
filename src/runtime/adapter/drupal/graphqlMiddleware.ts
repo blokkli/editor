@@ -1,10 +1,10 @@
 // @ts-nocheck
 import { defineBlokkliEditAdapter } from '#blokkli/adapter'
 import { falsy } from '#blokkli/helpers'
-// eslint-disable-next-line import/named
+
 import { useGraphqlQuery, useGraphqlMutation, computed } from '#imports'
 import type { BlokkliAdapter } from '#blokkli/adapter'
-import {
+import type {
   ParagraphsBlokkliCommentFragment,
   ParagraphsBlokkliEditStateFragment,
 } from '#build/graphql-operations'
@@ -49,10 +49,9 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
 
     const getAllBundles: DrupalAdapter['getAllBundles'] = () =>
       useGraphqlQuery('pbAllTypes').then((v) => {
-        const allTypes = v.data.entityQuery.items?.filter(
+        return v.data.entityQuery.items?.filter(
           (v) => v && 'icon' in v,
         ) as BlockBundleDefinition[]
-        return allTypes
       })
 
     const loadState: DrupalAdapter['loadState'] = (langcode) =>
@@ -276,9 +275,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       }
     }
 
-    const mapComments = (
-      comments: Array<ParagraphsBlokkliCommentFragment | {}>,
-    ) =>
+    const mapComments = (comments: Array<ParagraphsBlokkliCommentFragment>) =>
       comments
         .map((item) => {
           if ('uuid' in item) {

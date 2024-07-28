@@ -34,7 +34,6 @@ import {
 
 import type {
   DropTargetEvent,
-  AnimationFrameEvent,
   BlokkliDefinitionAddBehaviour,
   BlokkliFieldElement,
   Coord,
@@ -336,7 +335,7 @@ const onDrop = (e: DropTargetEvent) => {
 
 onBlokkliEvent('dragging:drop', onDrop)
 
-function loop(e: AnimationFrameEvent) {
+function loop() {
   if (!isVisible.value) {
     isVisible.value = true
   }

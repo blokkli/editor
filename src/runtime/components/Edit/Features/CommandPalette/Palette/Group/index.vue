@@ -37,8 +37,7 @@ const props = defineProps<{
 
 defineEmits<{
   (e: 'close'): void
-  (e: 'focus', id: string): void
-  (e: 'select', id: string): void
+  (e: 'focus' | 'select', id: string): void
 }>()
 
 const mapped = computed(() => {

@@ -12,11 +12,11 @@ export class MutationReplaceMedia extends Mutation {
     super('replace_media', configuration)
   }
 
-  getAffectedUuid(args: MutationReplaceMediaArgs): string | undefined {
+  override getAffectedUuid(args: MutationReplaceMediaArgs): string | undefined {
     return args.blockUuid
   }
 
-  execute(context: MutationContext, args: MutationReplaceMediaArgs) {
+  override execute(context: MutationContext, args: MutationReplaceMediaArgs) {
     const proxy = context.getProxy(args.blockUuid)
     if (!proxy) {
       return

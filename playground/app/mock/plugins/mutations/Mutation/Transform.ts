@@ -16,13 +16,13 @@ export class MutationTransform extends Mutation {
     super('transform', configuration)
   }
 
-  getAffectedUuid(): string | undefined {
+  override getAffectedUuid(): string | undefined {
     return Object.entries(this.configuration).find(([key]) =>
       key.startsWith('new_uuid_'),
     )?.[1]
   }
 
-  execute(context: MutationContext, args: MutationTransformArgs) {
+  override execute(context: MutationContext, args: MutationTransformArgs) {
     const proxies = context.getProxies(args.uuids)
 
     if (args.pluginId === 'merge_texts') {

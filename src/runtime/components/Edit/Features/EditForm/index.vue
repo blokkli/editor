@@ -51,6 +51,8 @@ const formUrl = computed<string | undefined>(() => {
     }
     return adapter.formFrameBuilder(form.value)?.url
   }
+
+  return undefined
 })
 
 const labelReplacement = computed(() => {
@@ -108,16 +110,16 @@ const title = computed(() =>
 )
 
 const bundle = computed(() => {
-  if (!form.value) {
-    return
-  }
-  if (form.value.id === 'block:add') {
-    return form.value.data.bundle
-  } else if (form.value.id === 'block:edit') {
-    return form.value.data.bundle
-  } else if (form.value.id === 'block:translate') {
+  if (
+    form.value &&
+    (form.value.id === 'block:add' ||
+      form.value.id === 'block:edit' ||
+      form.value.id === 'block:translate')
+  ) {
     return form.value.data.bundle
   }
+
+  return undefined
 })
 
 const onClose = () => {

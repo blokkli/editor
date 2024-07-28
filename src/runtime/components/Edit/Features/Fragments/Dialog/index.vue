@@ -14,7 +14,7 @@
           )
         }}
       </p>
-      <div class="bk bk-library-dialog-form">
+      <div class="bk">
         <label class="bk-form-label" for="library_search">
           {{ $t('fragmentsPlaceDialogSearchLabel', 'Filter fragments') }}
         </label>
@@ -111,7 +111,7 @@ const buildElements = () => {
         if (uuid) {
           return {
             uuid,
-            text: el.innerText.toLowerCase(),
+            text: el.textContent?.toLowerCase() || '',
           }
         }
       }

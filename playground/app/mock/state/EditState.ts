@@ -187,8 +187,8 @@ export class EditState {
     try {
       const data = window.localStorage.getItem(this.getStorageKey('index'))
       if (data !== null) {
-        const v = parseInt(data)
-        if (!isNaN(v)) {
+        const v = Number.parseInt(data)
+        if (!Number.isNaN(v)) {
           return v
         }
       }

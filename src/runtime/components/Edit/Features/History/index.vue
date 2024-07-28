@@ -18,7 +18,6 @@
           v-for="item in mapped"
           :key="item.index"
           :class="{
-            'bk-is-first': item.index === mutations.length - 1,
             'bk-is-not-active': item.index > currentMutationIndex,
             'bk-is-active': item.index === currentMutationIndex,
             'bk-is-applied': item.index < currentMutationIndex,
@@ -170,7 +169,7 @@ const mapped = computed<HistoryItem[]>(() =>
       return {
         index,
         mutation,
-        timestamp: mutation.timestamp ? parseInt(mutation.timestamp) : 0,
+        timestamp: mutation.timestamp ? Number.parseInt(mutation.timestamp) : 0,
       }
     })
     .sort((a, b) => {

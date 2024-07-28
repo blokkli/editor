@@ -50,8 +50,8 @@ const text = computed<string>({
 })
 
 const numeric = computed(() => {
-  const v = parseInt(props.modelValue)
-  if (isNaN(v)) {
+  const v = Number.parseInt(props.modelValue)
+  if (Number.isNaN(v)) {
     return 0
   }
 

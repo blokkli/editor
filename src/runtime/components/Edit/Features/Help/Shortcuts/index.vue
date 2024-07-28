@@ -2,6 +2,7 @@
   <div class="bk-help-shortcuts">
     <table>
       <tbody>
+        <!-- eslint-disable-next-line vue/no-v-for-template-key -->
         <template v-for="group in groups" :key="group.group">
           <tr class="bk-is-heading">
             <th colspan="2">{{ group.group }}</th>
@@ -23,6 +24,7 @@
     </table>
   </div>
 </template>
+
 <script lang="ts" setup>
 import { useBlokkli, computed } from '#imports'
 import { ShortcutIndicator } from '#blokkli/components'

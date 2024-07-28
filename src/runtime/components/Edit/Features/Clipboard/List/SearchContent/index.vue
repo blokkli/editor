@@ -11,7 +11,7 @@
 import { computed, provide } from '#imports'
 
 import { getBlokkliItemComponent } from '#blokkli/imports'
-import { getDefaultDefinition, getDefinition } from '#blokkli/definitions'
+import { getDefaultDefinition } from '#blokkli/definitions'
 import { INJECT_BLOCK_ITEM } from '#blokkli/helpers/symbols'
 import { ScaleToFit } from '#blokkli/components'
 
@@ -25,6 +25,8 @@ const mockProps = computed(() => {
   if (definition?.editor?.mockProps) {
     return definition.editor.mockProps(props.data)
   }
+
+  return undefined
 })
 
 const component = await getBlokkliItemComponent(props.targetBundle)

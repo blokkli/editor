@@ -43,7 +43,6 @@
             typeof option.value === 'string' ||
             (typeof option.value === 'object' && displayAs === 'colors')
           "
-          class="bk-is-text"
         >
           {{
             typeof option.value === 'string' ? option.value : option.value.label

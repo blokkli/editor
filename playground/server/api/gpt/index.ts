@@ -1,7 +1,7 @@
 import type { AssistantResultMarkup } from '#blokkli/types'
 import OpenAI from 'openai'
 import { useRuntimeConfig } from '#imports'
-import { defineEventHandler } from 'h3'
+import { defineEventHandler, readBody, createError } from 'h3'
 
 const config = useRuntimeConfig()
 

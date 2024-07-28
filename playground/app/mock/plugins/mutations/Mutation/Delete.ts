@@ -10,7 +10,7 @@ export class MutationDelete extends Mutation {
     super('delete', configuration)
   }
 
-  execute(context: MutationContext, args: MutationDeleteArgs) {
+  override execute(context: MutationContext, args: MutationDeleteArgs) {
     args.uuids.forEach((uuid) => {
       const proxy = context.getProxy(uuid)
       if (proxy) {

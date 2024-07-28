@@ -1,7 +1,6 @@
 import { BlockProxy, type MutationContext } from '~/app/mock/state/EditState'
 import { Mutation } from '../Mutation'
 import { entityStorageManager } from '~/app/mock/entityStorage'
-import { getBlockBundles } from '~/app/mock/state/Block'
 
 export type MutationAddVideoFromUrlArgs = {
   url: string
@@ -16,7 +15,10 @@ export class MutationAddVideoFromUrl extends Mutation {
     super('add_video_from_url', configuration)
   }
 
-  execute(context: MutationContext, args: MutationAddVideoFromUrlArgs) {
+  override execute(
+    context: MutationContext,
+    args: MutationAddVideoFromUrlArgs,
+  ) {
     const uuid = this.getUuidForNewEntity()
 
     const block = entityStorageManager.createBlock('video', uuid)

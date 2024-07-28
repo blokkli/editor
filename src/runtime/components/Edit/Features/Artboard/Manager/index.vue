@@ -119,13 +119,12 @@ const saveState = () => {
 }
 
 function getArtboard(): Artboard {
-  const v = new Artboard(ui.artboardElement(), ui.rootElement(), {
+  return new Artboard(ui.artboardElement(), ui.rootElement(), {
     x: savedState.value?.offset.x,
     y: savedState.value?.offset.y,
     scale: savedState.value?.scale,
     ...options.value,
   })
-  return v
 }
 
 const artboard = getArtboard()

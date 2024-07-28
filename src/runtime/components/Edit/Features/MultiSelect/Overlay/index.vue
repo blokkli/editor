@@ -60,6 +60,9 @@ class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<Multi
         continue
       }
       const el = dom.getDragElement(block)
+      if (!el) {
+        continue
+      }
       const rect = el.getBoundingClientRect()
       const style = theme.getDraggableStyle(el)
       this.addRectangle(
@@ -261,9 +264,7 @@ onBlokkliEvent('canvas:draw', (e) => {
   drawBufferInfo(props.gl, info, props.gl.TRIANGLES)
 })
 
-onBeforeUnmount(() => {
-  props.gl.clear(props.gl.COLOR_BUFFER_BIT)
-
+function getUuidsToSelect(): string[] {
   const { check } = getSelectRect(
     ui.artboardOffset.value,
     ui.artboardScale.value,
@@ -271,12 +272,17 @@ onBeforeUnmount(() => {
 
   const { nested, notNested } = collector.getSelectedUuids(check)
   if (props.isPressingControl) {
-    eventBus.emit('select:end', [...nested, ...notNested])
+    return [...nested, ...notNested]
   } else if (!nested.length) {
-    eventBus.emit('select:end', notNested)
-  } else {
-    eventBus.emit('select:end', nested)
+    return notNested
   }
+  return nested
+}
+
+onBeforeUnmount(() => {
+  props.gl.clear(props.gl.COLOR_BUFFER_BIT)
+
+  eventBus.emit('select:end', getUuidsToSelect())
 
   logger.log('MultiSelectOverlay unmounted')
 })

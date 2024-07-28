@@ -118,11 +118,7 @@ const onKeyDown = (e: KeyboardEvent) => {
       return false
     }
 
-    if (el.disabled) {
-      return false
-    }
-
-    return true
+    return !el.disabled
   }) as HTMLElement[]
 
   const activeIndex = Math.max(

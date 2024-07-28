@@ -20,7 +20,6 @@
       </button>
       <div class="bk-dropdown">
         <button
-          class="bk-dropdown-toggle"
           :class="{ 'bk-is-open': dropdownOpen }"
           @click="dropdownOpen = !dropdownOpen"
         >
@@ -122,6 +121,7 @@ const size = computed(() => {
       height: (rotate ? w : h) + 50,
     }
   }
+  return undefined
 })
 
 const buildViewportSubtitle = (
@@ -135,8 +135,6 @@ const buildViewportSubtitle = (
       isRotated.value && canRotate ? w : h,
     ].join(' x ')
   }
-
-  return
 }
 
 const viewportOptions = computed<ViewportOption[]>(() => {

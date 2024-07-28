@@ -20,7 +20,7 @@ export class FieldReference<T extends Entity> extends Field<string> {
     this.allowedBundles = allowedBundles
   }
 
-  getPropValueItem(uuid: string) {
+  override getPropValueItem(uuid: string) {
     return entityStorageManager.load(this.targetEntityType, uuid)
   }
 

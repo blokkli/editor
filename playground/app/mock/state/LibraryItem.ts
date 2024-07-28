@@ -4,10 +4,10 @@ import { FieldBlocks } from './Field/Blocks'
 import { FieldText } from './Field/Text'
 
 export class LibraryItem extends Entity {
-  static entityType = 'library_item'
-  static bundle = 'library_item'
+  static override entityType = 'library_item'
+  static override bundle = 'library_item'
 
-  static getFieldDefintions(): Field<any>[] {
+  static override getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
       new FieldText('title', 'Title'),

@@ -26,7 +26,7 @@
       :is-new="item.isNew"
       :options="item.options"
       :props="item.props"
-      :is-editing="true"
+      is-editing
       :index="i"
       :parent-type="isNested ? entity.bundle : ''"
       data-editing="true"
@@ -42,7 +42,6 @@
       :data-is-nested="isNested"
       :data-is-new="item.isNew"
       :data-entity-type="runtimeConfig.itemEntityType"
-      class="bk-draggable"
     />
   </Component>
 </template>

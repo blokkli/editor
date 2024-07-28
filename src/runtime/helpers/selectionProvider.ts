@@ -142,7 +142,7 @@ export default function (dom: DomProvider): SelectionProvider {
     if (typeof v === 'string') {
       selectItems([v])
     } else {
-      selectItems(v)
+      selectItems(v.filter(onlyUnique))
     }
   }
 

@@ -68,12 +68,15 @@ const findMostVisibleBlock = (): string | null => {
 
     // The intersection as a value from 0 to 1.
     const intersection = calculateIntersection(rect, viewport)
-    if (intersection && intersection > maxIntersection) {
-      if (rect.y < maxY && rect.y > 0) {
-        mostVisibleUuid = uuid
-        maxIntersection = intersection
-        maxY = rect.y
-      }
+    if (
+      intersection &&
+      intersection > maxIntersection &&
+      rect.y < maxY &&
+      rect.y > 0
+    ) {
+      mostVisibleUuid = uuid
+      maxIntersection = intersection
+      maxY = rect.y
     }
   }
 

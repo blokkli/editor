@@ -15,7 +15,7 @@
       </div>
       <Icon name="caret" />
     </button>
-    <div v-if="isOpen" class="bk-blokkli-item-options-checkboxes-dropdown">
+    <div v-if="isOpen">
       <label
         v-for="option in mappedOptions"
         :key="option.key"

@@ -94,11 +94,9 @@ const validateValue = (
     if (typeof v === 'string' && v.startsWith('#') && v.length === 7) {
       return v
     }
-  } else if (props.option.type === 'radios') {
-    if (typeof v === 'string') {
-      if (props.option.options[v]) {
-        return v
-      }
+  } else if (props.option.type === 'radios' && typeof v === 'string') {
+    if (props.option.options[v]) {
+      return v
     }
   } else if (props.option.type === 'checkbox') {
     if (typeof v === 'boolean') {
@@ -135,6 +133,8 @@ const mutatedValue = computed<string | undefined>(() => {
       }
     }
   }
+
+  return undefined
 })
 
 const defaultValue = computed<string>(

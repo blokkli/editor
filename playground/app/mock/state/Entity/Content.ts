@@ -6,9 +6,9 @@ import { FieldText } from '../Field/Text'
 import type { MediaImage } from '../Media/Media'
 
 export abstract class Content extends Entity {
-  static entityType = 'content'
+  static override entityType = 'content'
 
-  static getFieldDefintions(): Field<any>[] {
+  static override getFieldDefintions(): Field<any>[] {
     return [...super.getFieldDefintions(), new FieldText('title', 'Title')]
   }
 
@@ -18,10 +18,10 @@ export abstract class Content extends Entity {
 }
 
 export class ContentPage extends Content {
-  static bundle = 'page'
-  static label = 'Page'
+  static override bundle = 'page'
+  static override label = 'Page'
 
-  static getFieldDefintions(): Field<any>[] {
+  static override getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
       new FieldBlocks('content', 'Content', -1, false, [
@@ -70,7 +70,7 @@ export class ContentPage extends Content {
     return entities[0]
   }
 
-  getData() {
+  override getData() {
     return {
       title: this.title().getText(),
       lead: this.lead().getText(),

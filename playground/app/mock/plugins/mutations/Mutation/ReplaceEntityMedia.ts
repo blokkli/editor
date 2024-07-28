@@ -12,7 +12,7 @@ export class MutationReplaceEntityMedia extends Mutation {
     super('replace_entity_media', configuration)
   }
 
-  execute(context: MutationContext, args: MutationReplaceEntityMediaArgs) {
+  override execute(context: MutationContext, args: MutationReplaceEntityMediaArgs) {
     const field = context.entity.get(args.fieldName)
     if (!(field instanceof FieldReference)) {
       return

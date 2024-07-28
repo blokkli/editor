@@ -23,7 +23,7 @@ import type {
   EditMode,
   FieldListItem,
 } from '#blokkli/types'
-import { removeDroppedElements, falsy, getFieldKey } from '#blokkli/helpers'
+import { falsy, getFieldKey } from '#blokkli/helpers'
 import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
 import { nextTick } from '#imports'
 
@@ -35,7 +35,7 @@ export type BlokkliOwner = {
 export type RenderedBlock = {
   item: FieldListItem
   parentEntityType: string
-  parentEntityBundle: String
+  parentEntityBundle: string
   parentEntityUuid: string
 }
 
@@ -108,7 +108,6 @@ export default async function (
   })
 
   function setContext(context?: MappedState) {
-    removeDroppedElements()
     const options = context?.mutatedState?.mutatedOptions || {}
     const optionKeys = Object.keys(options)
 
@@ -199,10 +198,8 @@ export default async function (
     eventBus.emit('updateMutatedFields', { fields: newMutatedFields })
 
     nextTick(() => {
-      if (refreshKey.value) {
-        eventBus.emit('state:reloaded')
-      }
       refreshKey.value = Date.now().toString()
+      eventBus.emit('state:reloaded')
     })
   }
 
@@ -298,7 +295,6 @@ export default async function (
   })
 
   onBlokkliEvent('reloadState', async () => {
-    removeDroppedElements()
     await loadState()
   })
 

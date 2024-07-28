@@ -1,7 +1,7 @@
 <template>
   <div class="bk-blokkli-item-options-range">
     <input v-model="text" type="range" :min="min" :max="max" :step="step" />
-    <div class="bk-blokkli-item-options-range-label">{{ formatted }}</div>
+    <div>{{ formatted }}</div>
   </div>
 </template>
 
@@ -30,15 +30,13 @@ const text = computed<string>({
 const formatted = computed(() => {
   // Ensure the value is treated as a number
   const numValue =
-    typeof text.value === 'string' ? parseFloat(text.value) : text.value
+    typeof text.value === 'string' ? Number.parseFloat(text.value) : text.value
 
   // Determine the precision of the step
   const stepPrecision = (props.step.toString().split('.')[1] || '').length
 
   // Format the number to match the step precision
-  const formattedValue = numValue.toFixed(stepPrecision)
-
-  return formattedValue
+  return numValue.toFixed(stepPrecision)
 })
 </script>
 

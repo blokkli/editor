@@ -5,11 +5,11 @@ import { FieldUrl } from '../Field/Url'
 import { Block } from './Block'
 
 export class BlockButton extends Block {
-  static bundle = 'button'
-  static label = 'Button'
-  static isTranslatable = true
+  static override bundle = 'button'
+  static override label = 'Button'
+  static override isTranslatable = true
 
-  static getFieldDefintions(): Field<any>[] {
+  static override getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
       new FieldText('title', 'Title'),
@@ -17,7 +17,7 @@ export class BlockButton extends Block {
     ]
   }
 
-  static getDefaultValues(): Record<string, any> {
+  static override getDefaultValues(): Record<string, any> {
     return {
       title: LOREM_SHORT,
       url: 'https://www.example.com',

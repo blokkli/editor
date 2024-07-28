@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <slot :color="active?.color" :label="active?.label"></slot>
+    <slot :color="active?.color" :label="active?.label" />
   </Teleport>
 </template>
 
@@ -84,7 +84,7 @@ const cursorIsInsideClipped = () =>
 
 const active = ref<DrawnRect | null>(null)
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'drop', data: DropTargetEvent): void
 }>()
 
@@ -288,7 +288,7 @@ function getGapSize(orientation: Orientation, element: HTMLElement): number {
       const gapParts = gap.split(' ')
       const gapValue = gapParts[0]
       if (gapValue.endsWith('px')) {
-        return parseFloat(gapValue)
+        return Number.parseFloat(gapValue)
       }
     }
   }
@@ -463,17 +463,12 @@ const determineCanAddChildren = (
     }
   }
 
-  const allBundlesAllowed =
+  return (
     !draggingBundles.value.length ||
     draggingBundles.value.every((bundle) =>
       field.allowedBundles.includes(bundle),
     )
-
-  if (!allBundlesAllowed) {
-    return false
-  }
-
-  return true
+  )
 }
 
 const buildEmptyChild = (

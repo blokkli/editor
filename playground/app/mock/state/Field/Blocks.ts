@@ -39,16 +39,16 @@ export class FieldBlocks extends Field<{ uuid: string }> {
     })
   }
 
-  append(v: PossibleItem) {
+  override append(v: PossibleItem) {
     const item = this.mapItem(v)
     this.list.push(item)
   }
 
-  setList(items: PossibleItem[] = []) {
+  override setList(items: PossibleItem[] = []) {
     super.setList(items.map(this.mapItem))
   }
 
-  getPropValue() {
+  override getPropValue() {
     return mapMockField(this)
   }
 

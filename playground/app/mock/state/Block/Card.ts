@@ -5,19 +5,19 @@ import { FieldText } from '../Field/Text'
 import { Block } from './Block'
 
 export class BlockCard extends Block {
-  static bundle = 'card'
-  static label = 'Card'
-  static allowReusable = true
-  static isTranslatable = true
+  static override bundle = 'card'
+  static override label = 'Card'
+  static override allowReusable = true
+  static override isTranslatable = true
 
-  static getDefaultValues(): Record<string, any> {
+  static override getDefaultValues(): Record<string, any> {
     return {
       text: LOREM_LEAD,
       title: LOREM_TITLE,
     }
   }
 
-  static getFieldDefintions(): Field<any>[] {
+  static override getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
       new FieldIcon('icon', 'Icon'),

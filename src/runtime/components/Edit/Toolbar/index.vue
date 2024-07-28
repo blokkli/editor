@@ -79,10 +79,11 @@ const focusedSidebar = storage.use('sidebar:focused', '')
 const emit = defineEmits(['loaded'])
 
 const onWindowMouseDown = (e: MouseEvent) => {
-  if (e.target instanceof HTMLElement || e.target instanceof SVGElement) {
-    if (!e.target.closest('.bk-sidebar-detached')) {
-      focusedSidebar.value = ''
-    }
+  if (
+    (e.target instanceof HTMLElement || e.target instanceof SVGElement) &&
+    !e.target.closest('.bk-sidebar-detached')
+  ) {
+    focusedSidebar.value = ''
   }
 }
 

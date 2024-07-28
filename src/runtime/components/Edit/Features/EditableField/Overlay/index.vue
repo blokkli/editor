@@ -164,6 +164,7 @@ const itemBundle = computed(() => {
   if ('itemBundle' in props.host) {
     return props.host.itemBundle
   }
+  return undefined
 })
 const maxlength = computed(() => props.config.maxLength)
 const required = computed(() => !!props.config.required)
@@ -192,6 +193,8 @@ const errorText = computed(() => {
   if (required.value && !modelValue.value) {
     return $t('fieldIsRequired', 'This field is required')
   }
+
+  return undefined
 })
 
 const close = async () => {
@@ -224,13 +227,11 @@ const close = async () => {
       )
     }
   }
-  if (!shouldSave.value && el) {
-    if (!props.isComponent) {
-      if (isMarkup.value) {
-        el.innerHTML = originalText.value
-      } else {
-        el.textContent = originalText.value
-      }
+  if (!shouldSave.value && el && !props.isComponent) {
+    if (isMarkup.value) {
+      el.innerHTML = originalText.value
+    } else {
+      el.textContent = originalText.value
     }
   }
   if (el) {
@@ -278,7 +279,6 @@ const focusInput = (el?: HTMLElement | Document | null) => {
 
   if (iframe?.contentDocument) {
     focusInput(iframe.contentDocument)
-    return
   }
 }
 

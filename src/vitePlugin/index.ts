@@ -1,6 +1,6 @@
 import { createUnplugin } from 'unplugin'
 import MagicString from 'magic-string'
-import { walk } from 'estree-walker'
+import { walk, type Node } from 'estree-walker'
 import type { Nuxt } from '@nuxt/schema'
 import type { CallExpression, Expression, ObjectExpression } from 'estree'
 import type {
@@ -18,7 +18,7 @@ export function falsy<T>(value: T): value is NonNullable<T> {
   return value !== null && value !== undefined
 }
 
-const fileRegex = /\.(vue)$/
+const fileRegex = /\.vue$/
 
 type RuntimeDefinitionInput = {
   bundle: string
@@ -40,24 +40,22 @@ function estreeToObject(
   return Object.fromEntries(
     expression.properties
       .map((prop) => {
-        if (prop.type === 'Property') {
-          if ('name' in prop.key) {
-            if (prop.value.type === 'Literal') {
-              return [prop.key.name, prop.value.value]
-            } else if (prop.value.type === 'ObjectExpression') {
-              return [prop.key.name, estreeToObject(prop.value)]
-            } else if (prop.value.type === 'ArrayExpression') {
-              return [
-                prop.key.name,
-                prop.value.elements
-                  .map((v) => {
-                    if (v && 'value' in v) {
-                      return v.value
-                    }
-                  })
-                  .filter(falsy),
-              ]
-            }
+        if (prop.type === 'Property' && 'name' in prop.key) {
+          if (prop.value.type === 'Literal') {
+            return [prop.key.name, prop.value.value]
+          } else if (prop.value.type === 'ObjectExpression') {
+            return [prop.key.name, estreeToObject(prop.value)]
+          } else if (prop.value.type === 'ArrayExpression') {
+            return [
+              prop.key.name,
+              prop.value.elements
+                .map((v) => {
+                  if (v && 'value' in v) {
+                    return v.value
+                  }
+                })
+                .filter(falsy),
+            ]
           }
         }
         return null
@@ -116,10 +114,10 @@ export const DefinitionPlugin = (
         }
 
         const s = new MagicString(source)
-        const parsed: any = this.parse(source, {
+        const parsed = this.parse(source, {
           sourceType: 'module',
           ecmaVersion: 'latest',
-        })
+        }) as Node
         walk(parsed, {
           enter: (node) => {
             // We only care about calls to a method.

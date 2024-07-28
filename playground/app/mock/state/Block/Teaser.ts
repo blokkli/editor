@@ -4,11 +4,11 @@ import { FieldTextarea } from '../Field/Textarea'
 import { Block } from './Block'
 
 export class BlockTeaser extends Block {
-  static bundle = 'teaser'
-  static label = 'Teaser'
-  static isTranslatable = true
+  static override bundle = 'teaser'
+  static override label = 'Teaser'
+  static override isTranslatable = true
 
-  static getFieldDefintions(): Field<any>[] {
+  static override getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
       new FieldText('title', 'Title'),

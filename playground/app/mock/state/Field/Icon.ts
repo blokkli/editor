@@ -17,7 +17,7 @@ export class FieldIcon extends Field<string> {
     this.list[0] = name
   }
 
-  toString() {
+  override toString() {
     return this.getIconName()
   }
 }

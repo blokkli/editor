@@ -34,7 +34,7 @@ import { getRuntimeOptionValue } from '#blokkli/helpers/runtimeHelpers'
  * Define a blokkli component.
  */
 export function defineBlokkli<
-  T extends BlockDefinitionOptionsInput = {},
+  T extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
   G extends GlobalOptionsKey[] | undefined = undefined,
 >(config: BlockDefinitionInput<T, G>): DefineBlokkliContext<T, G> {
   const optionKeys: string[] = [
@@ -103,11 +103,9 @@ export function defineBlokkli<
       }
 
       // Use the option inherited from the "from_library" block if this block is reusable.
-      if (fromLibraryOptions) {
-        if (fromLibraryOptions.value[key] !== undefined) {
-          acc[key] = fromLibraryOptions.value[key]
-          return acc
-        }
+      if (fromLibraryOptions && fromLibraryOptions.value[key] !== undefined) {
+        acc[key] = fromLibraryOptions.value[key]
+        return acc
       }
 
       if (item?.value.options && item.value.options[key] !== undefined) {

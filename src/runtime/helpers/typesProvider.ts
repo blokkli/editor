@@ -149,15 +149,14 @@ export default async function (
     let fieldName = ''
     for (let i = 0; i < selection.blocks.value.length; i++) {
       const block = selection.blocks.value[i]
-      if (i !== 0) {
-        if (
-          hostType !== block.hostType ||
+      if (
+        i !== 0 &&
+        (hostType !== block.hostType ||
           hostBundle !== block.hostBundle ||
-          fieldName !== block.hostFieldName
-        ) {
-          // Not all blocks are in the same field. Return empty array.
-          return []
-        }
+          fieldName !== block.hostFieldName)
+      ) {
+        // Not all blocks are in the same field. Return empty array.
+        return []
       }
       hostType = block.hostType
       hostBundle = block.hostBundle
