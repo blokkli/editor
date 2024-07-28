@@ -101,7 +101,13 @@ const {
 } = useBlokkli()
 
 const gl = animation.gl()
-const programInfo = animation.registerProgram('drop_targets', gl, [vs, fs])
+const canvas = animation.getCanvasElement()
+const ctx: CanvasRenderingContext2D | null =
+  !gl && canvas ? canvas.getContext('2d') : null
+
+const programInfo = gl
+  ? animation.registerProgram('drop_targets', gl, [vs, fs])
+  : null
 
 const areas = dropAreas
   .getDropAreas(props.items)
@@ -728,8 +734,10 @@ onBlokkliEvent('canvas:draw', () => {
 
   const mouseAbsolute = toCanvasSpaceCoordinates(props.mouseX, props.mouseY)
 
-  gl.useProgram(programInfo.program)
-  animation.setSharedUniforms(gl, programInfo)
+  if (gl && programInfo) {
+    gl.useProgram(programInfo.program)
+    animation.setSharedUniforms(gl, programInfo)
+  }
 
   const isInsideClipped = cursorIsInsideClipped()
 
@@ -746,23 +754,60 @@ onBlokkliEvent('canvas:draw', () => {
     }
   }
 
-  setUniforms(programInfo, uniforms.value)
-
   const { info, hasChanged } = collector.getBufferInfo()
-  // Nothing to draw.
-  if (!info) {
+
+  // WebGL rendering.
+  if (programInfo && gl) {
+    setUniforms(programInfo, uniforms.value)
+
+    // Nothing to draw.
+    if (info) {
+      // Only update buffer and attributes when they have changed.
+      if (hasChanged && gl && programInfo) {
+        setBuffersAndAttributes(gl, programInfo, info)
+      }
+
+      if (gl) {
+        drawBufferInfo(gl, info, gl.TRIANGLES)
+      }
+    }
+
     return
   }
 
-  // Only update buffer and attributes when they have changed.
-  if (hasChanged) {
-    setBuffersAndAttributes(gl, programInfo, info)
+  // Fallback rendering.
+  if (!ctx) {
+    return
   }
 
-  drawBufferInfo(gl, info, gl.TRIANGLES)
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+  const rects = Object.values(collector.rects)
+
+  for (let i = 0; i < rects.length; i++) {
+    const rect = rects[i]
+    if (active.value?.id === rect.id) {
+      ctx.fillStyle = rect.color
+    } else {
+      ctx.fillStyle = rect.colorAlpha
+    }
+
+    ctx.fillRect(
+      (rect.x * scale + offset.x) * animation.dpi.value,
+      (rect.y * scale + offset.y) * animation.dpi.value,
+      rect.width * animation.dpi.value * scale,
+      rect.height * animation.dpi.value * scale,
+    )
+  }
 })
 
 onBeforeUnmount(() => {
-  gl.clear(gl.COLOR_BUFFER_BIT)
+  if (gl) {
+    gl.clear(gl.COLOR_BUFFER_BIT)
+  }
+
+  if (ctx) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+  }
 })
 </script>

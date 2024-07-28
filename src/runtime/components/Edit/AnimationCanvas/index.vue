@@ -24,21 +24,20 @@ const canvasAttributes = computed(() => {
   }
 })
 
-let gl: WebGLRenderingContext | null = null
+let gl: WebGLRenderingContext | null | undefined = null
 
 function initGl() {
   if (!canvasGl.value) {
     return
   }
-  gl = canvasGl.value.getContext('webgl2', {
-    premultipliedAlpha: true,
-  })
-  if (!gl) {
-    return
-  }
+  gl = animation.gl()
 
   canvasGl.value.width = canvasAttributes.value.width
   canvasGl.value.height = canvasAttributes.value.height
+
+  if (!gl) {
+    return
+  }
 
   gl.enable(gl.BLEND)
   gl.enable(gl.SCISSOR_TEST)
@@ -80,7 +79,7 @@ let lastCanvasWidth = 0
 let lastCanvasHeight = 0
 
 onBlokkliEvent('animationFrame', (e) => {
-  if (!gl || !canvasGl.value) {
+  if (!canvasGl.value) {
     return
   }
   const canvasWidth = canvasAttributes.value.width
@@ -90,7 +89,9 @@ onBlokkliEvent('animationFrame', (e) => {
   if (canvasWidth !== lastCanvasWidth || canvasHeight !== lastCanvasHeight) {
     canvasGl.value.width = canvasWidth
     canvasGl.value.height = canvasHeight
-    gl.viewport(0, 0, canvasWidth, canvasHeight)
+    if (gl) {
+      gl.viewport(0, 0, canvasWidth, canvasHeight)
+    }
     lastCanvasWidth = canvasWidth
     lastCanvasHeight = canvasHeight
   }

@@ -1,13 +1,19 @@
 <template>
   <Overlay
-    v-if="isVisible"
+    v-if="isVisible && gl"
     :blocks="selection.blocks.value"
+    :uuids="selection.uuids.value"
+    :gl="gl"
+  />
+  <OverlayFallback
+    v-if="isVisible && !animation.webglSupported.value"
     :uuids="selection.uuids.value"
   />
 </template>
 
 <script lang="ts" setup>
 import Overlay from './Overlay/index.vue'
+import OverlayFallback from './OverlayFallback/index.vue'
 import {
   calculateIntersection,
   getBounds,
@@ -26,6 +32,8 @@ defineBlokkliFeature({
 })
 
 const { selection, ui, eventBus, animation, dom, tour } = useBlokkli()
+
+const gl = animation.gl()
 
 const isVisible = computed(
   () =>

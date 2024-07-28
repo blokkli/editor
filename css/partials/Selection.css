@@ -13,3 +13,11 @@
 .bk-multi-select-ants {
   @apply fill-none stroke-accent-700;
 }
+
+.bk.bk-selection-overlay-fallback {
+  @apply absolute top-0 left-0 w-full h-full z-selection;
+
+  > div {
+    @apply bg-accent-600/20 absolute border-3 border-accent-700 rounded;
+  }
+}

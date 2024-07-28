@@ -13,7 +13,7 @@ type RectangleBufferCollectorOptions = {
 }
 
 export class RectangleBufferCollector<T extends RectangleBufferRect> {
-  gl: WebGLRenderingContext
+  gl?: WebGLRenderingContext
   added: Set<string> = new Set()
   rects: Record<string, T> = {}
   positions: number[] = []
@@ -27,7 +27,7 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
   bufferInfo: BufferInfo | null = null
 
   constructor(
-    gl: WebGLRenderingContext,
+    gl?: WebGLRenderingContext,
     _options?: RectangleBufferCollectorOptions,
   ) {
     this.gl = gl
@@ -111,7 +111,10 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
 
   updateRectangle() {}
 
-  createBufferInfo(): BufferInfo {
+  createBufferInfo(): BufferInfo | null {
+    if (!this.gl) {
+      return null
+    }
     return createBufferInfoFromArrays(this.gl, {
       a_position: {
         numComponents: 3,

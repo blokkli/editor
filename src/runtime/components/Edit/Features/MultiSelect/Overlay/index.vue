@@ -27,13 +27,12 @@ const props = defineProps<{
   startX: number
   startY: number
   isPressingControl: boolean
+  gl: WebGLRenderingContext
 }>()
 
 defineEmits<{
   (e: 'select', uuids: string[]): void
 }>()
-
-const gl = animation.gl()
 
 type MultiSelectRectangle = Rectangle & {
   id: string
@@ -118,7 +117,7 @@ class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<Multi
   }
 }
 
-const collector = new MultiSelectRectangleBufferCollector(gl)
+const collector = new MultiSelectRectangleBufferCollector(props.gl)
 const thick = 100
 collector.addRectangle(
   {
@@ -172,10 +171,11 @@ collector.addRectangle(
 const artboardOffsetStart = { ...ui.artboardOffset.value }
 const artboardScaleStart = ui.artboardScale.value
 
-const programInfo = animation.registerProgram('multi_select_overlay', gl, [
-  vs,
-  fs,
-])
+const programInfo = animation.registerProgram(
+  'multi_select_overlay',
+  props.gl,
+  [vs, fs],
+)
 const uniforms = {
   u_color_field_active: toShaderColor(theme.accent.value[700]),
   u_color_field_default: toShaderColor(theme.mono.value[400]),
@@ -231,7 +231,7 @@ onBlokkliEvent('canvas:draw', (e) => {
   const { nested } = collector.getSelectedUuids(check)
   const shouldSelectAll = props.isPressingControl || !nested.length
 
-  gl.useProgram(programInfo.program)
+  props.gl.useProgram(programInfo.program)
 
   const time = (Date.now() - now) / 1000
 
@@ -242,7 +242,7 @@ onBlokkliEvent('canvas:draw', (e) => {
     u_time: time,
   })
 
-  animation.setSharedUniforms(gl, programInfo)
+  animation.setSharedUniforms(props.gl, programInfo)
   const { info, hasChanged } = collector.getBufferInfo(
     e.artboardOffset,
     e.artboardScale,
@@ -255,14 +255,14 @@ onBlokkliEvent('canvas:draw', (e) => {
 
   // Only update buffer and attributes when they have changed.
   if (hasChanged) {
-    setBuffersAndAttributes(gl, programInfo, info)
+    setBuffersAndAttributes(props.gl, programInfo, info)
   }
 
-  drawBufferInfo(gl, info, gl.TRIANGLES)
+  drawBufferInfo(props.gl, info, props.gl.TRIANGLES)
 })
 
 onBeforeUnmount(() => {
-  gl.clear(gl.COLOR_BUFFER_BIT)
+  props.gl.clear(props.gl.COLOR_BUFFER_BIT)
 
   const { check } = getSelectRect(
     ui.artboardOffset.value,

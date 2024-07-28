@@ -1,6 +1,7 @@
 import onBlokkliEvent from './composables/onBlokkliEvent'
 import useAnimationFrame from './composables/useAnimationFrame'
 import {
+  ref,
   computed,
   onMounted,
   onBeforeUnmount,
@@ -19,7 +20,7 @@ export type AnimationProvider = {
   /**
    * Get the WebGL rendering context.
    */
-  gl: () => WebGLRenderingContext
+  gl: () => WebGLRenderingContext | undefined
 
   setSharedUniforms: (
     gl: WebGLRenderingContext,
@@ -27,6 +28,10 @@ export type AnimationProvider = {
   ) => void
 
   dpi: ComputedRef<number>
+
+  webglSupported: ComputedRef<boolean | null>
+
+  getCanvasElement: () => HTMLCanvasElement
 
   /**
    * Register a WebGL program.
@@ -50,6 +55,8 @@ export default function (ui: UiProvider): AnimationProvider {
   // Assuming 60 fps, this value means after every draw request we will only
   // render a maximum of 2 seconds.
   let iterator = 120
+
+  const webglSupported = ref<boolean | null>(null)
 
   useAnimationFrame(() => {
     // Make sure we don't loop when it's not needed.
@@ -146,18 +153,28 @@ export default function (ui: UiProvider): AnimationProvider {
     iterator = 120
   }
 
+  function getCanvasElement(): HTMLCanvasElement {
+    const el = document.querySelector('#bk-animation-canvas-webgl')
+    if (!(el instanceof HTMLCanvasElement)) {
+      throw new TypeError('Failed to locate WebGL canvas.')
+    }
+
+    return el
+  }
+
   return {
     requestDraw,
     gl: function () {
-      const el = document.querySelector('#bk-animation-canvas-webgl')
-      if (!(el instanceof HTMLCanvasElement)) {
-        throw new TypeError('Failed to locate WebGL canvas.')
+      if (webglSupported.value === false) {
+        return
       }
-      const gl = el.getContext('webgl2', {
+      const canvas = getCanvasElement()
+      const gl = canvas.getContext('webgl2', {
         premultipliedAlpha: true,
       })
       if (!gl) {
-        throw new Error('Failed to get WebGL context.')
+        webglSupported.value = false
+        return
       }
 
       return gl
@@ -166,5 +183,7 @@ export default function (ui: UiProvider): AnimationProvider {
     dpi,
     registerProgram,
     setMouseCoords,
+    webglSupported: computed(() => webglSupported.value),
+    getCanvasElement,
   }
 }

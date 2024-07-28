@@ -1,9 +1,10 @@
 <template>
   <Overlay
-    v-if="shouldRender"
+    v-if="shouldRender && gl"
     :start-x="downX"
     :start-y="downY"
     :is-pressing-control="keyboard.isPressingControl.value"
+    :gl="gl"
     @select="onSelect"
   />
 </template>
@@ -22,10 +23,15 @@ defineBlokkliFeature({
   viewports: ['desktop'],
 })
 
-const { keyboard, eventBus, selection, state } = useBlokkli()
+const { keyboard, eventBus, selection, state, animation } = useBlokkli()
+
+const gl = animation.gl()
 
 const enabled = computed(
-  () => !selection.editableActive.value && state.editMode.value === 'editing',
+  () =>
+    !selection.editableActive.value &&
+    state.editMode.value === 'editing' &&
+    animation.webglSupported.value,
 )
 
 const shouldRender = ref(false)

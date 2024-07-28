@@ -62,6 +62,8 @@ const { adapter } = defineBlokkliFeature({
 
 const { eventBus, state, ui, animation, dom } = useBlokkli()
 
+const gl = animation.gl()
+
 const dragItemsComponent = ref<InstanceType<typeof DragItems> | null>(null)
 const isVisible = ref(false)
 const isTouching = ref(false)

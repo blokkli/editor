@@ -19,12 +19,12 @@ import { toShaderColor } from '#blokkli/helpers'
 
 const props = defineProps<{
   blocks: DraggableExistingBlock[]
+  gl: WebGLRenderingContext
 }>()
 
 const { animation, theme, dom } = useBlokkli()
 
-const gl = animation.gl()
-const programInfo = animation.registerProgram('selection', gl, [vs, fs])
+const programInfo = animation.registerProgram('selection', props.gl, [vs, fs])
 
 type SelectionRectangle = Rectangle & {
   id: string
@@ -76,7 +76,7 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
   }
 }
 
-const collector = new SelectionRectangleBufferCollector(gl)
+const collector = new SelectionRectangleBufferCollector(props.gl)
 
 const uniforms = {
   u_color_default: toShaderColor(theme.accent.value[700]),
@@ -84,10 +84,10 @@ const uniforms = {
 }
 
 onBlokkliEvent('canvas:draw', () => {
-  gl.useProgram(programInfo.program)
+  props.gl.useProgram(programInfo.program)
 
   setUniforms(programInfo, uniforms)
-  animation.setSharedUniforms(gl, programInfo)
+  animation.setSharedUniforms(props.gl, programInfo)
   const { info, hasChanged } = collector.getBufferInfo()
 
   // Nothing to draw.
@@ -97,10 +97,10 @@ onBlokkliEvent('canvas:draw', () => {
 
   // Only update buffer and attributes when they have changed.
   if (hasChanged) {
-    setBuffersAndAttributes(gl, programInfo, info)
+    setBuffersAndAttributes(props.gl, programInfo, info)
   }
 
-  drawBufferInfo(gl, info, gl.TRIANGLES)
+  drawBufferInfo(props.gl, info, props.gl.TRIANGLES)
 })
 
 onBlokkliEvent('ui:resized', function () {
@@ -112,7 +112,7 @@ onBlokkliEvent('state:reloaded', function () {
 })
 
 onBeforeUnmount(() => {
-  gl.clear(gl.COLOR_BUFFER_BIT)
+  props.gl.clear(props.gl.COLOR_BUFFER_BIT)
 })
 </script>
 

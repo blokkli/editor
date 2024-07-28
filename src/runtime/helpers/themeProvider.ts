@@ -12,8 +12,18 @@ import type {
   ThemeName,
 } from '#blokkli/types/theme'
 import { type Ref, ref, onMounted, onBeforeUnmount } from '#imports'
+import { rgbaToString } from '.'
 import { DragStyle } from './DragStyle'
 import onBlokkliEvent from './composables/onBlokkliEvent'
+
+type ThemeMap = {
+  accent: Ref<ThemeColors>
+  mono: Ref<ThemeColors>
+  teal: Ref<ThemeContextColors>
+  yellow: Ref<ThemeContextColors>
+  red: Ref<ThemeContextColors>
+  lime: Ref<ThemeContextColors>
+}
 
 export type ThemeProvider = {
   accent: Ref<ThemeColors>
@@ -32,6 +42,16 @@ export type ThemeProvider = {
   ) => void
   applyTheme: (name: ThemeName | 'custom') => void
   invalidateCachedStyle: (el: HTMLElement | SVGElement) => void
+  getColor<K extends keyof ThemeMap, T extends ThemeMap[K]['value']>(
+    color: K,
+    key: keyof T,
+  ): RGB
+
+  getColorString<K extends keyof ThemeMap, T extends ThemeMap[K]['value']>(
+    color: K,
+    key: keyof T,
+    alpha?: number,
+  ): string
 }
 
 export default function (): ThemeProvider {
@@ -44,6 +64,30 @@ export default function (): ThemeProvider {
   const yellow = ref<ThemeContextColors>(theme.yellow)
   const red = ref<ThemeContextColors>(theme.red)
   const lime = ref<ThemeContextColors>(theme.lime)
+
+  const themeMap: ThemeMap = {
+    accent,
+    mono,
+    teal,
+    yellow,
+    red,
+    lime,
+  }
+
+  function getColor<K extends keyof ThemeMap, T extends ThemeMap[K]['value']>(
+    color: K,
+    key: keyof T,
+  ): RGB {
+    return (themeMap[color].value as any)[key] as RGB
+  }
+
+  function getColorString<
+    K extends keyof ThemeMap,
+    T extends ThemeMap[K]['value'],
+  >(color: K, key: keyof T, alpha = 1): string {
+    const rgb = getColor(color, key)
+    return rgbaToString(rgb, alpha)
+  }
 
   const customTheme = ref<Theme>(theme)
 
@@ -149,5 +193,7 @@ export default function (): ThemeProvider {
     invalidateCachedStyle,
     setColor,
     applyTheme,
+    getColor,
+    getColorString,
   }
 }
