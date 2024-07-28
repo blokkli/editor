@@ -27,7 +27,7 @@
           <Icon name="chevron-left" />
           <span>{{ $t('tourPrev', 'Previous') }}</span>
           <div class="bk-tooltip">
-            <span>Arrow Left</span>
+            <span>Arrow Right</span>
             <ShortcutIndicator label="Prev Tour Item" key-code="ArrowLeft" />
           </div>
         </button>
@@ -61,6 +61,8 @@ import useAnimationFrame from '#blokkli/helpers/composables/useAnimationFrame'
 
 const emit = defineEmits(['close'])
 
+type ItemPosition = 'top' | 'left' | 'bottom' | 'right'
+
 const rectStyle = computed(() => {
   return {
     width: activeItem.value.rect.width + 'px',
@@ -84,7 +86,8 @@ const tooltipStyle = computed(() => {
       activeItem.value.y - tooltipHeight.value / 2,
       ui.visibleViewportPadded.value.y +
         ui.visibleViewportPadded.value.height -
-        tooltipHeight.value,
+        tooltipHeight.value -
+        100,
     ),
     ui.visibleViewportPadded.value.y,
   )
@@ -177,8 +180,6 @@ const prev = () => {
 const next = () => {
   activeIndex.value = modulo(activeIndex.value + 1, items.value.length)
 }
-
-type ItemPosition = 'top' | 'left' | 'bottom' | 'right'
 
 const getIdealPosition = (rect: DOMRect): ItemPosition => {
   if (rect.y < 20) {
