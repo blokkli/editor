@@ -19,7 +19,13 @@ import {
 } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { DraggableExistingBlock, Rectangle } from '#blokkli/types'
-import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
+import {
+  computed,
+  useBlokkli,
+  defineBlokkliFeature,
+  ref,
+  watch,
+} from '#imports'
 
 defineBlokkliFeature({
   id: 'selection',
@@ -32,6 +38,13 @@ const { selection, ui, eventBus, animation, dom, tour } = useBlokkli()
 
 const gl = animation.gl()
 
+const hasSelectedOnce = ref(false)
+
+const stop = watch(selection.uuids, function () {
+  hasSelectedOnce.value = true
+  stop()
+})
+
 const isVisible = computed(
   () =>
     dom.isReady.value &&
@@ -40,7 +53,7 @@ const isVisible = computed(
     !selection.isChangingOptions.value &&
     !selection.isDragging.value &&
     !ui.isAnimating.value &&
-    selection.uuids.value.length,
+    hasSelectedOnce.value,
 )
 
 /**

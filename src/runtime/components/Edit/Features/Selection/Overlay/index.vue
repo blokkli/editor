@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { DraggableExistingBlock, Rectangle } from '#blokkli/types'
-import { useBlokkli, onBeforeUnmount } from '#imports'
+import { useBlokkli, onBeforeUnmount, onMounted } from '#imports'
 import {
   setBuffersAndAttributes,
   drawBufferInfo,
@@ -35,14 +35,29 @@ type SelectionRectangle = Rectangle & {
 
 class SelectionRectangleBufferCollector extends RectangleBufferCollector<SelectionRectangle> {
   uuids: string[] = []
-  getBufferInfo(): { info: BufferInfo | null; hasChanged: boolean } {
-    const uuidsNew = props.blocks.map((v) => v.uuid)
-    const uuidsCurrent = [...this.added.values()]
-    const hasChanged =
-      uuidsCurrent.length !== uuidsNew.length ||
-      uuidsNew.some((v) => !uuidsCurrent.includes(v))
+  lastCount = 0
+  prevKey = ''
+
+  getBufferInfo(force?: boolean): {
+    info: BufferInfo | null
+    hasChanged: boolean
+  } {
+    const key = props.blocks
+      .map((block) => {
+        const uuid = block.uuid
+        const rect = dom.getBlockRect(uuid)
+        if (!rect) {
+          return uuid + 'no_rect'
+        }
+
+        return uuid + rect.time
+      })
+      .join('_')
+
+    const hasChanged = force || this.prevKey !== key
     if (hasChanged) {
       this.reset()
+      this.lastCount = 0
       for (let i = 0; i < props.blocks.length; i++) {
         const block = props.blocks[i]
         if (this.added.has(block.uuid)) {
@@ -58,13 +73,19 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
         this.addRectangle(
           {
             id: block.uuid,
-            ...rect,
+            height: rect.height,
+            width: rect.width,
+            x: rect.x,
+            y: rect.y,
             radius: style.radius,
             isInverted: style.isInverted,
           },
           style.isInverted ? 1 : 0,
         )
+        this.lastCount++
       }
+
+      this.prevKey = key
     }
 
     // Only update the buffer info if it has changed.

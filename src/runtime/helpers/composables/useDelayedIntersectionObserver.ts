@@ -1,5 +1,3 @@
-import { onBeforeUnmount } from '#imports'
-
 export default function (
   callback: (entries: IntersectionObserverEntry[]) => void,
 ) {
@@ -31,6 +29,5 @@ export default function (
     }
   }
 
-  onBeforeUnmount(() => {})
   return { observe, unobserve, init }
 }

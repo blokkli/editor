@@ -165,6 +165,7 @@ export default function (dom: DomProvider): SelectionProvider {
       return
     }
     onSelect(targetItem.uuid)
+    dom.refreshBlockRect(targetItem.uuid)
     eventBus.emit('scrollIntoView', { uuid: targetItem.uuid })
   }
 

@@ -6,7 +6,7 @@
         'overflow-hidden shadow-xl rounded-lg bg-white': options.elevated,
       }"
     >
-      <img v-if="url" :src="url" :alt="alt" />
+      <img v-if="url" :src="url" :alt="alt" loading="lazy" />
     </div>
   </div>
 </template>

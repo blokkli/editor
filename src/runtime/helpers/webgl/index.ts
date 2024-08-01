@@ -109,7 +109,10 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
     return this.rects[id].index || undefined
   }
 
-  updateRectangle() {}
+  updateRectangle() {
+    // @TODO: Explore possibility to update individual rectangles in the
+    // buffer.
+  }
 
   createBufferInfo(): BufferInfo | null {
     if (!this.gl) {

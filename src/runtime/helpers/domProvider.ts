@@ -78,6 +78,8 @@ const buildFieldElement = (
   }
 }
 
+type MeasuredBlockRect = Rectangle & { time: number }
+
 export type DomProvider = {
   findBlock(uuid: string): DraggableExistingBlock | undefined
   getAllBlocks(): DraggableExistingBlock[]
@@ -127,8 +129,8 @@ export type DomProvider = {
 
   getActiveProviderElement: () => HTMLElement
 
-  getBlockRects: () => Record<string, Rectangle>
-  getBlockRect: (uuid: string) => Rectangle | undefined
+  getBlockRects: () => Record<string, MeasuredBlockRect>
+  getBlockRect: (uuid: string) => MeasuredBlockRect | undefined
   refreshBlockRect: (uuid: string) => void
 
   getFieldRect: (key: string) => Rectangle | undefined
@@ -158,6 +160,13 @@ const getVisibleBlockElement = (
   }
 }
 
+function rectWithTime(rect: Rectangle, time?: number): MeasuredBlockRect {
+  return {
+    ...rect,
+    time: time || performance.now(),
+  }
+}
+
 export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
   const logger = debug.createLogger('DomProvider')
   const mutationsReady = ref(true)
@@ -165,13 +174,52 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
   const blockVisibility: Record<string, boolean> = {}
   const visibleBlocks: Set<string> = new Set()
   const visibleFields: Set<string> = new Set()
-  const blockRects: Record<string, Rectangle> = {}
+  const blockRects: Record<string, MeasuredBlockRect> = {}
   const fieldRects: Record<string, Rectangle> = {}
   let draggableBlockCache: Record<string, DraggableExistingBlock> = {}
 
   const resizeObserver = new ResizeObserver(function (
-    _entries: ResizeObserverEntry[],
-  ) {})
+    entries: ResizeObserverEntry[],
+  ) {
+    for (const entry of entries) {
+      if (!(entry.target instanceof HTMLElement)) {
+        return
+      }
+
+      const uuid =
+        entry.target.dataset.uuid ||
+        (entry.target.closest('[data-uuid]') as HTMLElement | undefined)
+          ?.dataset.uuid
+      if (!uuid) {
+        return
+      }
+
+      const currentRect = blockRects[uuid]
+
+      const now = performance.now()
+
+      if (!currentRect) {
+        blockRects[uuid] = rectWithTime(
+          {
+            x: entry.contentRect.x,
+            y: entry.contentRect.y,
+            width: entry.borderBoxSize[0].inlineSize,
+            height: entry.borderBoxSize[0].blockSize,
+          },
+          now,
+        )
+        return
+      }
+
+      if (currentRect.time > now) {
+        return
+      }
+
+      blockRects[uuid].width = entry.borderBoxSize[0].inlineSize
+      blockRects[uuid].height = entry.borderBoxSize[0].blockSize
+      blockRects[uuid].time = now
+    }
+  })
 
   function intersectionCallback(entries: IntersectionObserverEntry[]) {
     const scale = ui.artboardScale.value
@@ -192,7 +240,23 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
           }
           fieldRects[fieldKey] = ui.getAbsoluteElementRect(rect, scale, offset)
         } else if (uuid) {
-          blockRects[uuid] = ui.getAbsoluteElementRect(rect, scale, offset)
+          const newRect = ui.getAbsoluteElementRect(rect, scale, offset)
+          const currentRect = blockRects[uuid]
+
+          // Rect already exists.
+          if (currentRect) {
+            // The time of the rect is larger than the time of the entry.
+            // This indicates that the resize observer has already updated the width and/or height.
+            // We only need to update the X and Y coordinates.
+            if (currentRect.time > entry.time) {
+              blockRects[uuid].x = newRect.x
+              blockRects[uuid].y = newRect.y
+            } else {
+              blockRects[uuid] = rectWithTime(newRect, entry.time)
+            }
+          } else {
+            blockRects[uuid] = rectWithTime(newRect, entry.time)
+          }
           if (entry.isIntersecting) {
             visibleBlocks.add(uuid)
           } else {
@@ -280,8 +344,8 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
       fieldListType,
       parentBlockBundle,
     )
-    resizeObserver.observe(observableElement)
     observer.observe(observableElement)
+    resizeObserver.observe(observableElement)
     registeredBlocks[uuid] = el
   }
 
@@ -416,11 +480,11 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     return el
   }
 
-  function getBlockRects() {
+  function getBlockRects(): Record<string, MeasuredBlockRect> {
     return blockRects
   }
 
-  function getBlockRect(uuid: string): Rectangle | undefined {
+  function getBlockRect(uuid: string): MeasuredBlockRect | undefined {
     return blockRects[uuid]
   }
 
@@ -438,7 +502,9 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
       return
     }
 
-    blockRects[uuid] = ui.getAbsoluteElementRect(el.getBoundingClientRect())
+    blockRects[uuid] = rectWithTime(
+      ui.getAbsoluteElementRect(el.getBoundingClientRect()),
+    )
   }
 
   function refreshFieldRect(key: string) {
@@ -449,12 +515,12 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
       return
     }
 
-    blockRects[key] = ui.getAbsoluteElementRect(el.getBoundingClientRect())
+    fieldRects[key] = ui.getAbsoluteElementRect(el.getBoundingClientRect())
   }
 
-  // After the state has been updated, update the rects of all currently visible blocks.
-  onBlokkliEvent('state:reloaded', () => {
-    draggableBlockCache = {}
+  let stateReloadTimeout: number | null = null
+
+  function updateVisibleRects() {
     const visible = getVisibleBlocks()
     const offset = ui.artboardOffset.value
     const scale = ui.artboardScale.value
@@ -482,10 +548,12 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
         hostBundle,
       )
 
-      blockRects[uuid] = ui.getAbsoluteElementRect(
-        observableElement.getBoundingClientRect(),
-        scale,
-        offset,
+      blockRects[uuid] = rectWithTime(
+        ui.getAbsoluteElementRect(
+          observableElement.getBoundingClientRect(),
+          scale,
+          offset,
+        ),
       )
     }
 
@@ -502,6 +570,17 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
         offset,
       )
     }
+  }
+
+  // After the state has been updated, update the rects of all currently visible blocks.
+  onBlokkliEvent('state:reloaded', () => {
+    draggableBlockCache = {}
+
+    if (stateReloadTimeout) {
+      window.clearTimeout(stateReloadTimeout)
+    }
+
+    stateReloadTimeout = window.setTimeout(updateVisibleRects, 300)
   })
 
   onBlokkliEvent('ui:resized', function () {
