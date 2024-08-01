@@ -1,6 +1,3 @@
-#import "~/components/Paragraph/fragment.paragraphsFieldItem.graphql";
-#import "~/components/Paragraph/fragment.paragraph.graphql";
-
 mutation pbAddReusableParagraph(
   $entityType: EntityType!
   $entityUuid: String!
