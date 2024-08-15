@@ -6,6 +6,7 @@
     :index="index"
     :data-reusable-bundle="item.bundle"
     :data-reusable-uuid="item.uuid"
+    :data-bk-library-label="libraryItem?.label"
     data-blokkli-is-reusable="true"
     :parent-type="parentType"
   />
@@ -21,6 +22,7 @@ import type { FieldListItem } from '#blokkli/types'
 
 interface LibraryItem {
   block?: FieldListItem
+  label?: string
 }
 
 const props = defineProps<{

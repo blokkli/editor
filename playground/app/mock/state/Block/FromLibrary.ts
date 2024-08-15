@@ -38,6 +38,7 @@ export class BlockFromLibrary extends Block {
     return {
       libraryItem: {
         block: mapMockField(blocks)[0],
+        label: libraryItem.title(),
       },
     }
   }

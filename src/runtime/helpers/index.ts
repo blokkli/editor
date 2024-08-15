@@ -65,9 +65,12 @@ export function buildDraggableItem(
         hostFieldListType,
         parentBlockBundle,
       )
-      const editTitle = definition?.editor?.editTitle
-        ? definition?.editor.editTitle(element)
-        : undefined
+      const libraryLabel = dataset.bkLibraryLabel
+      const editTitle =
+        libraryLabel ||
+        (definition?.editor?.editTitle
+          ? definition?.editor.editTitle(element)
+          : undefined)
       return {
         itemType: 'existing',
         element: () =>

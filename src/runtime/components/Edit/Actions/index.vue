@@ -20,6 +20,7 @@
             <button
               class="bk-blokkli-item-actions-type-button"
               :disabled="!shouldRenderButton"
+              :title="title"
               :class="{
                 'is-open': showDropdown,
                 'is-interactive': shouldRenderButton,
@@ -29,7 +30,7 @@
               @click.prevent="showDropdown = !showDropdown"
             >
               <div class="bk-blokkli-item-actions-title-icon">
-                <ItemIcon v-if="itemBundle" :bundle="itemBundle.id" />
+                <ItemIcon v-if="bundleIcon" :bundle="bundleIcon" />
                 <Icon v-else name="selection" />
               </div>
               <span class="bk-blokkli-item-actions-title-label">{{
@@ -92,6 +93,17 @@ watch(selection.blocks, () => {
   showDropdown.value = false
 })
 
+const bundleIcon = computed(() => {
+  if (itemBundle.value?.id === 'from_library') {
+    const reusableBundle = selection.blocks.value[0]?.reusableBundle
+    if (reusableBundle) {
+      return reusableBundle
+    }
+  }
+
+  return itemBundle.value?.id
+})
+
 const title = computed(() => {
   if (itemBundle.value) {
     if (itemBundle.value.id === 'blokkli_fragment') {
@@ -112,6 +124,11 @@ const title = computed(() => {
 
       if (fragments.length && fragments.length < 3) {
         return fragments.join(', ')
+      }
+    } else if (itemBundle.value.id === 'from_library') {
+      const title = selection.blocks.value[0]?.editTitle
+      if (title) {
+        return title
       }
     }
     return itemBundle.value.label
