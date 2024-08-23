@@ -70,7 +70,3 @@
     }
   }
 }
-
-.bk-comments-sidebar-badge {
-  @apply absolute top-3 right-3 w-15 h-15 rounded-full bg-yellow-normal text-yellow-dark text-xs flex items-center justify-center;
-}

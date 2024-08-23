@@ -56,6 +56,8 @@ fragment paragraphsBlokkliViolation on ParagraphsEditViolation {
   message
   code
   propertyPath
+  entityUuid
+  entityType
 }
 
 fragment paragraphsBlokkliMutatedField on ParagraphsBlokkliMutatedField {

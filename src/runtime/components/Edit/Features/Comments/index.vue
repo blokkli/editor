@@ -20,7 +20,7 @@
       </ul>
     </div>
     <template v-if="unresolvedCount" #badge>
-      <div class="bk-comments-sidebar-badge">{{ unresolvedCount }}</div>
+      <div class="bk-sidebar-badge bk-is-yellow">{{ unresolvedCount }}</div>
     </template>
   </PluginSidebar>
 

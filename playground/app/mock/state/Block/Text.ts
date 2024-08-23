@@ -1,6 +1,7 @@
 import { LOREM_TEXT } from '../../defaultText'
 import type { Field } from '../Field'
 import { FieldTextarea } from '../Field/Textarea'
+import type { EntityValidation } from '../Validation'
 import { Block } from './Block'
 
 export class BlockText extends Block {
@@ -21,5 +22,18 @@ export class BlockText extends Block {
 
   text(): FieldTextarea {
     return this.get('text')
+  }
+
+  override validate(): EntityValidation[] {
+    if (this.text().getText().includes('Windows')) {
+      return [
+        {
+          propertyPath: 'text',
+          message: `The word "Windows" is not allowed!`,
+        },
+      ]
+    }
+
+    return []
   }
 }

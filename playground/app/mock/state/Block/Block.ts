@@ -1,5 +1,6 @@
 import type { Field } from '../Field'
 import { FieldOptions } from '../Field/Options'
+import type { EntityValidation } from '../Validation'
 import { Entity } from './../Entity'
 
 export abstract class Block extends Entity {
@@ -29,5 +30,9 @@ export abstract class Block extends Entity {
       props[field.id] = field.getPropValue()
     })
     return props
+  }
+
+  validate(): EntityValidation[] {
+    return []
   }
 }

@@ -161,7 +161,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         mutatedState: {
           mutatedOptions: inputState.mutatedOptions,
           fields: inputState.fields,
-          violations: [],
+          violations: inputState.violations,
         },
         entity: {
           id: ctx.value.entityUuid,

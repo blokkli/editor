@@ -1,0 +1,28 @@
+.bk.bk-validations-overlay {
+  @apply absolute top-0 left-0 w-full h-full pointer-events-none;
+
+  > div {
+    @apply absolute top-0 left-0 border-3 border-red-normal bg-red-normal/10 box-border;
+
+    > div {
+      @apply bg-red-normal text-white px-10 py-5;
+      @apply absolute -left-2 -right-2 font-bold;
+      @apply bottom-full;
+    }
+  }
+}
+
+.bk {
+  .bk-validation-item {
+    @apply text-base text-mono-800 p-15 hover:bg-mono-50 w-full;
+    @apply border-b border-b-mono-300;
+
+    .bk-blokkli-item-icon {
+      @apply size-25 bg-mono-200 p-3 border border-mono-400 rounded;
+    }
+
+    .bk-validation-item-header {
+      @apply flex items-center gap-5 font-medium mb-10;
+    }
+  }
+}

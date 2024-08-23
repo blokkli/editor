@@ -459,6 +459,8 @@ export interface Validation {
   message: string
   code?: string
   propertyPath?: string
+  entityType?: string
+  entityUuid?: string
 }
 
 export interface MappedState {
@@ -1024,6 +1026,11 @@ export type EventbusEvents = {
   'mouse:down': GlobalPointerEvent
   'mouse:move': GlobalPointerEvent
   'mouse:up': GlobalPointerUpEvent
+
+  /**
+   * Emitted when publishing failed.
+   */
+  'publish:failed': undefined
 }
 
 export type Eventbus = Emitter<EventbusEvents>

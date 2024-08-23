@@ -1,5 +1,5 @@
 import { falsy } from '#blokkli/helpers'
-import type { MutatedField, MutationItem } from '#blokkli/types'
+import type { MutatedField, MutationItem, Validation } from '#blokkli/types'
 import { entityStorageManager } from '../entityStorage'
 import { createMutation, type MutationArgsMap } from '../plugins/mutations'
 import { mapBlockItem } from '../state'
@@ -170,6 +170,7 @@ export type MutatedState = {
   mutatedOptions: any
   fields: MutatedField[]
   context: MutationContext
+  violations: Validation[]
 }
 
 export class EditState {
@@ -271,6 +272,8 @@ export class EditState {
       }
     }
 
+    const violations: Validation[] = []
+
     this.persistMutations(mutations)
 
     const mutatedOptions: Record<string, any> = {}
@@ -328,6 +331,15 @@ export class EditState {
         }
       }
 
+      const blockValidations = proxy.block.validate().map((v) => {
+        return {
+          ...v,
+          entityType: 'block',
+          entityUuid: proxy.block.uuid,
+        }
+      })
+      violations.push(...blockValidations)
+
       mutatedFields[key].list.push(
         mapBlockItem(proxy.block, proxy.overrideOptions),
       )
@@ -341,6 +353,7 @@ export class EditState {
       mutatedOptions,
       fields: Object.values(mutatedFields),
       context,
+      violations,
     }
   }
 }
