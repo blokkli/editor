@@ -40,6 +40,8 @@
 @import './partials/AnimationCanvas.css';
 @import './partials/Scrollbar.css';
 @import './partials/SystemRequirements.css';
+@import './partials/Pagination.css';
+@import './partials/Validations.css';
 @import './indicator.css';
 
 @tailwind base;

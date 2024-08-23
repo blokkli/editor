@@ -51,6 +51,10 @@
   }
 }
 
+.bk-library-dialog-content {
+  @apply relative;
+}
+
 .bk-library-dialog {
   @apply p-20;
 }

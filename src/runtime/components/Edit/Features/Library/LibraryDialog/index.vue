@@ -22,7 +22,7 @@
             </label>
             <input
               id="library_search"
-              v-model="searchText"
+              v-model.lazy="searchText"
               type="text"
               class="bk-form-input"
               :placeholder="
@@ -39,7 +39,6 @@
               id="library_bundle"
               v-model="selectedBundle"
               class="bk-form-input"
-              @change="buildElements"
             >
               <option
                 v-for="v in bundleOptions"
@@ -52,18 +51,32 @@
           </div>
         </div>
       </div>
-      <ul ref="listEl" class="bk-library-dialog-list">
-        <li
-          v-for="item in items"
-          :key="item.uuid"
-          :class="{
-            'bk-is-selected': selectedItem === item.uuid,
-          }"
-          @click="selectedItem = item.uuid"
-        >
-          <LibraryListItem v-bind="item" />
-        </li>
-      </ul>
+      <div class="bk-library-dialog-content">
+        <Loading v-if="status === 'pending'" />
+        <ul ref="listEl" class="bk-library-dialog-list">
+          <li
+            v-for="item in items"
+            :key="item.uuid"
+            :class="{
+              'bk-is-selected': selectedItem === item.uuid,
+            }"
+            @click="selectedItem = item.uuid"
+          >
+            <LibraryListItem v-bind="item" />
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="bk">
+      <div class="bk-pagination">
+        <button :disabled="page === 0" @click="page--">
+          <Icon name="arrow-left" />
+        </button>
+        <div>{{ page + 1 }} / {{ totalPages }}</div>
+        <button :disabled="page >= totalPages - 1" @click="page++">
+          <Icon name="arrow-right" />
+        </button>
+      </div>
     </div>
     <template #footer>
       <button class="bk-button bk-is-primary" @click="onSubmit">
@@ -78,8 +91,8 @@ import type {
   BlokkliAdapterGetLibraryItemsData,
   BlokkliAdapterGetLibraryItemsResult,
 } from '#blokkli/adapter'
-import { FormOverlay } from '#blokkli/components'
-import { falsy } from '#blokkli/helpers'
+import { FormOverlay, Icon } from '#blokkli/components'
+import Loading from './../../../Loading/index.vue'
 import type { BlokkliFieldElement } from '#blokkli/types'
 import { ref, useBlokkli, useAsyncData, computed, watch } from '#imports'
 import LibraryListItem from './Item/index.vue'
@@ -99,6 +112,7 @@ const searchText = ref('')
 const selectedBundle = ref('all')
 const listEl = ref<HTMLDivElement | null>(null)
 const selectedItem = ref('')
+const page = ref(0)
 
 const allowedBundles = computed<string[]>(() => {
   return (
@@ -127,61 +141,34 @@ const searchParams = computed<BlokkliAdapterGetLibraryItemsData>(() => {
       selectedBundle.value !== 'all'
         ? [selectedBundle.value]
         : allowedBundles.value,
-    page: 0,
+    page: page.value,
     text: searchText.value,
   }
 })
 
-const { data } = await useAsyncData<BlokkliAdapterGetLibraryItemsResult>(
-  () => adapter.getLibraryItems!(searchParams.value),
-  {
-    watch: [searchParams],
-    default: () => {
-      return {
-        items: [],
-        total: 0,
-        perPage: 50,
-      }
+watch(searchText, function () {
+  page.value = 0
+})
+
+const { data, status } =
+  await useAsyncData<BlokkliAdapterGetLibraryItemsResult>(
+    () => adapter.getLibraryItems!(searchParams.value),
+    {
+      watch: [searchParams],
+      default: () => {
+        return {
+          items: [],
+          total: 0,
+          perPage: 50,
+        }
+      },
     },
-  },
-)
+  )
+
+const perPage = computed(() => data.value.perPage)
+const totalPages = computed(() => Math.ceil(data.value.total / perPage.value))
 
 const items = computed(() => data.value.items)
-
-type SearchElement = {
-  uuid: string
-  text: string
-  bundle: string
-}
-
-const elements = ref<SearchElement[]>([])
-
-const buildElements = () => {
-  if (!listEl.value || elements.value.length) {
-    return
-  }
-  elements.value = [...listEl.value.querySelectorAll('.bk-library-list-item')]
-    .map((el) => {
-      if (el instanceof HTMLElement) {
-        const uuid = el.dataset.libraryItemUuid
-        const bundle = el.dataset.itemBundle
-        if (uuid && bundle) {
-          return {
-            uuid,
-            text: (el.textContent || '').toLowerCase(),
-            bundle,
-          }
-        }
-      }
-    })
-    .filter(falsy)
-}
-
-watch(searchText, () => {
-  if (!elements.value.length) {
-    buildElements()
-  }
-})
 
 const bundleOptions = computed(() => {
   const bundles = allowedBundles.value.map((bundle) => {

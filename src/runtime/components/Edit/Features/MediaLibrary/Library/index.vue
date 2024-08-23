@@ -76,7 +76,7 @@
       </Component>
     </div>
 
-    <div class="bk-media-library-pagination">
+    <div class="bk-pagination">
       <button :disabled="page === 0" @click="page--">
         <Icon name="arrow-left" />
       </button>

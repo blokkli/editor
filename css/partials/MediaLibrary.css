@@ -162,26 +162,6 @@
     }
   }
 
-  .bk-media-library-pagination {
-    @apply flex justify-between border-t border-t-mono-300 items-center;
-    flex: 0 0 auto;
-
-    > div {
-      @apply text-sm;
-    }
-
-    button {
-      @apply p-20 hover:bg-mono-100 text-black;
-
-      &:disabled {
-        @apply text-mono-300 pointer-events-none;
-      }
-      svg {
-        @apply w-20 h-20 fill-current;
-      }
-    }
-  }
-
   .bk-loading {
     @apply absolute inset-0 flex items-center justify-center bg-white/80 z-40;
 

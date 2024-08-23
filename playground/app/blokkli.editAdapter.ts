@@ -306,6 +306,9 @@ export default defineBlokkliEditAdapter((ctx) => {
     getLibraryItems(data) {
       const libraryItems = entityStorageManager.storages.library_item.loadAll()
 
+      const perPage = 2
+      const offset = data.page * perPage
+
       const items: LibraryItem[] = libraryItems
         .map((item) => {
           const block = item.getBlocks().getBlocks()[0]
@@ -325,9 +328,9 @@ export default defineBlokkliEditAdapter((ctx) => {
         .filter(falsy)
 
       return Promise.resolve({
-        items,
+        items: items.slice(offset, offset + perPage),
         total: items.length,
-        perPage: 100,
+        perPage,
       })
     },
 
