@@ -521,25 +521,25 @@ ${featuresArray}
     nuxt.options.build.transpile.push(resolver.resolve('runtime'))
 
     addComponent({
-      filePath: resolver.resolve('./runtime/components/BlokkliField.vue'),
+      filePath: resolver.resolve('./runtime/components/BlokkliField'),
       name: 'BlokkliField',
       global: true,
     })
 
     addComponent({
-      filePath: resolver.resolve('./runtime/components/BlokkliEditable.vue'),
+      filePath: resolver.resolve('./runtime/components/BlokkliEditable'),
       name: 'BlokkliEditable',
       global: true,
     })
 
     addComponent({
-      filePath: resolver.resolve('./runtime/components/BlokkliProvider.vue'),
+      filePath: resolver.resolve('./runtime/components/BlokkliProvider'),
       name: 'BlokkliProvider',
       global: true,
     })
 
     addComponent({
-      filePath: resolver.resolve('./runtime/components/BlokkliItem.vue'),
+      filePath: resolver.resolve('./runtime/components/BlokkliItem'),
       name: 'BlokkliItem',
       global: true,
     })
