@@ -12,7 +12,7 @@
     icon="history"
     weight="-100"
   >
-    <div class="bk bk-history bk-control">
+    <div class="bk bk-history bk-control" @wheel.capture.stop>
       <ul v-if="mapped.length">
         <li
           v-for="item in mapped"
@@ -20,10 +20,15 @@
           :class="{
             'bk-is-not-active': item.index > currentMutationIndex,
             'bk-is-active': item.index === currentMutationIndex,
-            'bk-is-applied': item.index < currentMutationIndex,
+            'bk-is-disabled': !item.enabled,
+            'bk-is-applied': item.index < currentMutationIndex && item.enabled,
           }"
         >
-          <button :disabled="!canEdit" @click="setHistoryIndex(item.index)">
+          <button
+            :disabled="!canEdit"
+            class="bk-history-item-button"
+            @click="setHistoryIndex(item.index)"
+          >
             <div>
               <div>
                 <strong>{{ item.mutation.plugin?.label }}</strong>
@@ -37,9 +42,16 @@
               </RelativeTime>
             </div>
           </button>
+          <div v-if="canSetStatus" class="bk-history-item-actions">
+            <button
+              @click.prevent="setMutationItemStatus(item.index, !item.enabled)"
+            >
+              <Icon name="close" />
+            </button>
+          </div>
         </li>
         <li v-if="totalMutations > showAmount" class="bk-history-load-more">
-          <button @click="showAmount += 100">
+          <button @click="showAmount += 100" class="bk-history-item-button">
             <strong
               >{{
                 $t('historyShowMore', 'Show @count more').replace(
@@ -57,7 +69,7 @@
             { 'bk-has-shadow': !scrolledToEnd },
           ]"
         >
-          <button @click="setHistoryIndex(-1)">
+          <button @click="setHistoryIndex(-1)" class="bk-history-item-button">
             <div>
               <strong>{{
                 $t('historyCurrentRevision', 'Current revision')
@@ -117,7 +129,7 @@ import {
   onBeforeUnmount,
 } from '#imports'
 import { PluginSidebar, PluginToolbarButton } from '#blokkli/plugins'
-import { RelativeTime } from '#blokkli/components'
+import { RelativeTime, Icon } from '#blokkli/components'
 import type { MutationItem } from '#blokkli/types'
 
 const { adapter, settings } = defineBlokkliFeature({
@@ -140,6 +152,8 @@ const { adapter, settings } = defineBlokkliFeature({
 
 const { state, $t, ui } = useBlokkli()
 
+const canSetStatus = !!adapter.setMutationItemStatus
+
 const { mutations, currentMutationIndex, canEdit, mutateWithLoadingState } =
   state
 
@@ -161,6 +175,7 @@ type HistoryItem = {
   index: number
   mutation: MutationItem
   timestamp: number
+  enabled: boolean
 }
 
 const mapped = computed<HistoryItem[]>(() =>
@@ -170,6 +185,7 @@ const mapped = computed<HistoryItem[]>(() =>
         index,
         mutation,
         timestamp: mutation.timestamp ? Number.parseInt(mutation.timestamp) : 0,
+        enabled: mutation.enabled !== false,
       }
     })
     .sort((a, b) => {
@@ -194,6 +210,15 @@ const redo = () =>
   mutateWithLoadingState(() =>
     adapter.setHistoryIndex(currentMutationIndex.value + 1),
   )
+
+async function setMutationItemStatus(index: number, status: boolean) {
+  if (!adapter.setMutationItemStatus) {
+    return
+  }
+  await mutateWithLoadingState(() =>
+    adapter.setMutationItemStatus!(index, status),
+  )
+}
 
 const onMouseUp = (e: MouseEvent) => {
   if (e.button === 3) {

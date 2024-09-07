@@ -52,7 +52,7 @@
           @apply border-solid border-mono-400;
         }
 
-        &.bk-is-not-active button {
+        &.bk-is-not-active .bk-history-item-button {
           @apply text-mono-400;
           em {
             @apply text-mono-400;
@@ -61,21 +61,29 @@
             @apply text-mono-300 scale-50;
           }
         }
+        &.bk-is-disabled .bk-history-item-button {
+          @apply text-red-normal/50 line-through pointer-events-none;
+          em {
+            @apply text-red-normal/50;
+          }
+          &:before {
+            @apply text-mono-300 scale-50;
+          }
+        }
         &.bk-is-active {
-          @apply pointer-events-none;
-          button {
+          .bk-history-item-button {
             &:before {
               @apply bg-accent-800 scale-100;
             }
           }
         }
 
-        &.bk-is-applied button {
+        &.bk-is-applied .bk-history-item-button {
           &:before {
             @apply border-accent-200 bg-accent-200;
           }
         }
-        &:not(.bk-is-active) button {
+        &:not(.bk-is-active) .bk-history-item-button {
           &:hover {
             @apply text-accent-800;
             &:before {
@@ -83,8 +91,13 @@
             }
           }
         }
+        &:hover {
+          .bk-history-item-actions {
+            @apply block;
+          }
+        }
       }
-      button {
+      .bk-history-item-button {
         @apply text-left w-full block relative py-10 text-sm cursor-pointer pl-[22px] text-black;
 
         > div {
@@ -107,6 +120,24 @@
         }
         em {
           @apply text-mono-500 text-xs not-italic;
+        }
+      }
+    }
+
+    .bk-history-item-actions {
+      @apply absolute right-15 top-1/2 -translate-y-1/2 hidden;
+
+      button {
+        @apply rounded-full p-3;
+        svg {
+          @apply fill-mono-500 size-20;
+        }
+
+        &:hover {
+          @apply bg-red-normal;
+          svg {
+            @apply fill-white;
+          }
         }
       }
     }

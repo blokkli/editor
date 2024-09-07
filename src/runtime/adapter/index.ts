@@ -348,6 +348,14 @@ export interface BlokkliAdapter<T> {
   setHistoryIndex?: (index: number) => Promise<MutationResponseLike<T>>
 
   /**
+   * Set the status of a mutation item.
+   */
+  setMutationItemStatus?: (
+    index: number,
+    status: boolean,
+  ) => Promise<MutationResponseLike<T>>
+
+  /**
    * Take ownership of the edit state.
    */
   takeOwnership?: () => Promise<MutationResponseLike<T>>
