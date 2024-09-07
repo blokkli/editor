@@ -2,7 +2,7 @@
   <div
     class="bk-search-box"
     @keydown="onKeyDown"
-    @wheel.stop.passive
+    @wheel="onWheel"
     @mousedown.stop
     @click.stop
   >
@@ -75,6 +75,7 @@ import ResultsContent from './Results/Content/index.vue'
 
 const props = defineProps<{
   visible: boolean
+  isDragging: boolean
 }>()
 
 const { adapter, $t, state } = useBlokkli()
@@ -87,10 +88,23 @@ type SearchComponent =
 
 const searchComponents = ref<SearchComponent[]>([])
 
+const focusInput = () => {
+  if (input.value) {
+    input.value.focus()
+    input.value.select()
+  }
+}
+
+defineExpose({ focusInput })
+
+const adapterContentSearchTabs = adapter.getContentSearchTabs
+  ? await adapter.getContentSearchTabs()
+  : {}
+
 const tabsMap = computed(() => {
   return {
     on_this_page: $t('searchBoxOnThisPage', 'On this page'),
-    ...(adapter.getContentSearchTabs ? adapter.getContentSearchTabs() : {}),
+    ...adapterContentSearchTabs,
   }
 })
 
@@ -138,18 +152,9 @@ const getResultsComponent = (): SearchComponent | undefined => {
   return searchComponents.value.find((v) => v.isActive())
 }
 
-const focusInput = () => {
-  if (input.value) {
-    input.value.focus()
-    input.value.select()
-  }
-}
-
 onMounted(() => {
   focusInput()
 })
-
-defineExpose({ focusInput })
 
 const onKeyDown = (e: KeyboardEvent) => {
   const resultsComponent = getResultsComponent()
@@ -183,6 +188,15 @@ const onKeyDown = (e: KeyboardEvent) => {
     emit('close')
     stop()
   }
+}
+
+function onWheel(e: WheelEvent) {
+  if (props.isDragging) {
+    return
+  }
+
+  e.preventDefault()
+  e.stopImmediatePropagation()
 }
 
 watch(

@@ -505,9 +505,24 @@ export type SearchContentItem = {
   id: string
 
   /**
+   * The entity type of the item.
+   */
+  entityType: string
+
+  /**
+   * The entity bundle of the item.
+   */
+  entityBundle: string
+
+  /**
    * The title displayed to the user.
    */
   title: string
+
+  /**
+   * The possible bundles for which a block may be added using this content item.
+   */
+  targetBundles: string[]
 
   /**
    * Additional context displayed alongside the title.
@@ -517,12 +532,7 @@ export type SearchContentItem = {
   /**
    * The text displayed to the user.
    */
-  text: string
-
-  /**
-   * The possible bundles for which a block may be added using this content item.
-   */
-  targetBundles: string[]
+  text?: string
 
   /**
    * An optional image URL that is used instead of an icon.
@@ -553,19 +563,10 @@ interface ClipboardItemImage {
   additional: string
 }
 
-interface ClipboardItemSearchContent {
-  type: 'search_content'
-  itemBundle: string
-  data: string
-  item: SearchContentItem
-  additional?: string
-}
-
 export type ClipboardItem =
   | ClipboardItemText
   | ClipboardItemVideo
   | ClipboardItemImage
-  | ClipboardItemSearchContent
 
 export interface DraggableHostData {
   type: string
@@ -1004,7 +1005,6 @@ export type EventbusEvents = {
 
   'state:reloaded': undefined
 
-  'search:selectContentItem': SearchContentItem
   addContentSearchItem: AddContentSearchItemEvent
   'option:update': UpdateBlockOptionEvent
 

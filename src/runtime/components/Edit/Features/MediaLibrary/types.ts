@@ -34,7 +34,7 @@ export type MediaLibraryItem = {
   mediaId: string
   label: string
   context: string
-  blockBundle: string
+  targetBundles: string[]
   thumbnail?: string
   icon?: BlokkliIcon
   mediaBundle?: string

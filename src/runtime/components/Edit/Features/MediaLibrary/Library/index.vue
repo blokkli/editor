@@ -58,7 +58,7 @@
           :class="{ 'bk-is-selected': modelValue === item.mediaId }"
           :data-sortli-id="'media_library_' + item.mediaId"
           data-element-type="media_library"
-          :data-item-bundle="item.blockBundle"
+          :data-item-bundle="item.targetBundles[0]"
           :data-media-id="item.mediaId"
           :data-media-bundle="item.mediaBundle"
           @click="onClick(item.mediaId)"

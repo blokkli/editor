@@ -11,6 +11,7 @@
         <Overlay
           ref="overlay"
           :visible="isVisible"
+          :is-dragging="selection.isDragging.value"
           @close="isVisible = false"
         />
       </div>

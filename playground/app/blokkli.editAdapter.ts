@@ -91,7 +91,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           label: media.title(),
           context,
           thumbnail: media.thumbnail(),
-          blockBundle: media.bundle === 'image' ? 'image' : 'video',
+          targetBundles: [media.bundle === 'image' ? 'image' : 'video'],
           mediaBundle: media.bundle,
         }
       })
@@ -396,10 +396,11 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     clipboardMapBundle(e) {
-      if (e.type === 'youtube_video') {
+      if (e.type === 'video' && e.videoService === 'youtube') {
         return 'video'
+      } else if (e.type === 'plaintext') {
+        return 'text'
       }
-      return 'text'
     },
 
     getContentSearchResults(tab, text) {
@@ -414,6 +415,8 @@ export default defineBlokkliEditAdapter((ctx) => {
                 text: image.alt(),
                 targetBundles: ['image'],
                 imageUrl: image.url(),
+                entityType: image.entityType,
+                entityBundle: image.bundle,
               }
             })
             .filter((v) => v.title.toLowerCase().includes(text.toLowerCase())),
@@ -429,6 +432,8 @@ export default defineBlokkliEditAdapter((ctx) => {
                 text: image.title(),
                 targetBundles: ['video'],
                 imageUrl: image.thumbnail(),
+                entityType: image.entityType,
+                entityBundle: image.bundle,
               }
             })
             .filter((v) => v.title.toLowerCase().includes(text.toLowerCase())),

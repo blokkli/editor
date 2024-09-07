@@ -11,9 +11,6 @@
       :data-clipboard-data="item.data"
       :data-clipboard-additional="item.additional"
       :data-clipboard-item="JSON.stringify(item)"
-      :data-clipboard-search-item="
-        item.type === 'search_content' ? JSON.stringify(item.item) : undefined
-      "
     >
       <div class="bk-clipboard-item">
         <div class="bk bk-clipboard-item-header">
@@ -46,15 +43,6 @@
           <div v-else-if="item.type === 'image'">
             <img :src="item.data" />
           </div>
-          <div v-else-if="item.type === 'search_content' && item.item.imageUrl">
-            <img :src="item.item.imageUrl" />
-          </div>
-          <div v-else-if="item.type === 'search_content'">
-            <SearchContentItem
-              :target-bundle="item.itemBundle"
-              :data="item.data"
-            />
-          </div>
         </div>
       </div>
     </div>
@@ -65,7 +53,6 @@
 import { ref, useBlokkli } from '#imports'
 import { ItemIcon, Icon, Sortli } from '#blokkli/components'
 import type { ClipboardItem } from '#blokkli/types'
-import SearchContentItem from './SearchContent/index.vue'
 
 const renderKey = ref(0)
 

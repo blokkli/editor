@@ -126,17 +126,6 @@ export function buildDraggableItem(
       : undefined
     const id = dataset.sortliId
     if (clipboardData && itemBundle && clipboardItem) {
-      const searchItemData = dataset.clipboardSearchItem
-      if (searchItemData) {
-        const searchItem = JSON.parse(searchItemData) as SearchContentItem
-        return {
-          itemType: 'search_content',
-          element: () =>
-            document.querySelector(`[data-sortli-id="${id}"]`) as HTMLElement,
-          itemBundle,
-          searchItem,
-        }
-      }
       return {
         itemType: 'clipboard',
         element: () =>
@@ -161,6 +150,19 @@ export function buildDraggableItem(
           document.querySelector(
             `[data-element-type="media_library"][data-media-id="${mediaId}"]`,
           ) as HTMLElement,
+      }
+    }
+  } else if (dataset.elementType === 'search_content') {
+    const searchItemData = dataset.searchItem
+    const id = dataset.sortliId
+    if (searchItemData && id) {
+      const searchItem = JSON.parse(searchItemData) as SearchContentItem
+      return {
+        itemType: 'search_content',
+        element: () =>
+          document.querySelector(`[data-sortli-id="${id}"]`) as HTMLElement,
+        itemBundle: searchItem.targetBundles[0],
+        searchItem,
       }
     }
   }

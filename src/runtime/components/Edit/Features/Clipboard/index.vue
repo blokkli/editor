@@ -370,19 +370,6 @@ onBlokkliEvent('keyPressed', (e) => {
   )
 })
 
-onBlokkliEvent('search:selectContentItem', (item) => {
-  item.targetBundles.forEach((bundle) => {
-    pastedItems.value.push({
-      type: 'search_content',
-      itemBundle: bundle,
-      data: item.title.replace(/<[^>]+(>|$)/g, ''),
-      item,
-    })
-  })
-
-  showClipboardSidebar()
-})
-
 defineShortcut([
   {
     code: 'C',
