@@ -26,6 +26,7 @@ import type {
 import { falsy, getFieldKey } from '#blokkli/helpers'
 import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
 import { nextTick } from '#imports'
+import type { TextProvider } from './textProvider'
 
 export type BlokkliOwner = {
   name: string | undefined
@@ -63,6 +64,7 @@ export type StateProvider = {
 export default async function (
   adapter: BlokkliAdapter<any>,
   context: ComputedRef<AdapterContext>,
+  $t: TextProvider,
 ): Promise<StateProvider> {
   const owner = ref<BlokkliOwner | null>(null)
   const refreshKey = ref('')
@@ -235,23 +237,29 @@ export default async function (
   }
 
   const mutateWithLoadingState: MutateWithLoadingStateFunction = async (
-    promise,
+    callback,
     errorMessage,
     successMessage,
   ) => {
-    if (!promise) {
+    if (!callback) {
       return true
     }
     lockBody()
     try {
+      const promise = callback()
       const result = await promise
+      if (!result) {
+        throw new Error('Unexpected error')
+      }
       unlockBody()
       if (result.state) {
         setContext(adapter.mapState(result.state))
       }
 
       if (!result.success) {
-        const errorMessage = result.errors?.join('\n') || 'Unexpected error.'
+        const errorMessage =
+          result.errors?.join('\n') ||
+          $t('unexpectedMutationError', 'An unexpected error happened.')
         throw new Error(errorMessage)
       }
 
@@ -261,7 +269,8 @@ export default async function (
       return true
     } catch (e) {
       emitMessage(
-        errorMessage || 'Es ist ein unerwarteter Fehler aufgetreten.',
+        errorMessage ||
+          $t('unexpectedMutationError', 'An unexpected error happened.'),
         'error',
         e,
       )

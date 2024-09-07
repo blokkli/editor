@@ -65,10 +65,11 @@ watch(selection.uuids, async () => {
 
 async function onTransform(plugin: TransformPlugin, uuids: string[]) {
   await state.mutateWithLoadingState(
-    adapter.applyTransformPlugin({
-      uuids,
-      pluginId: plugin.id,
-    }),
+    () =>
+      adapter.applyTransformPlugin({
+        uuids,
+        pluginId: plugin.id,
+      }),
     $t(
       'failedToTransform',
       'The action "@name" could not be executed.',

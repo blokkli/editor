@@ -33,7 +33,7 @@ const { adapter } = defineBlokkliFeature({
 
 function onClick(items: DraggableExistingBlock[]) {
   state.mutateWithLoadingState(
-    adapter.duplicateBlocks(items.map((v) => v.uuid)),
+    () => adapter.duplicateBlocks(items.map((v) => v.uuid)),
     $t('duplicateError', 'The items could not be duplicated.'),
   )
 }

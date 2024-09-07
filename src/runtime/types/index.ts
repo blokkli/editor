@@ -38,7 +38,7 @@ import type { DebugProvider } from '#blokkli/helpers/debugProvider'
 import type getVideoId from 'get-video-id'
 
 export type MutateWithLoadingStateFunction = (
-  promise: Promise<MutationResponseLike<any>> | undefined,
+  promise: () => Promise<MutationResponseLike<any>> | undefined,
   errorMessage?: string,
   successMessage?: string,
 ) => Promise<boolean>

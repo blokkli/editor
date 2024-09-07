@@ -1,6 +1,6 @@
 <template>
   <PluginToolbarButton
-    v-if="previewGrantUrl && !ui.isMobile.value"
+    v-if="!ui.isMobile.value"
     id="preview_with_smartphone"
     :title="$t('previewWithSmartphone', 'Preview (with smartphone)')"
     :tour-text="
@@ -17,7 +17,7 @@
   <Teleport to="body">
     <Transition appear name="bk-slide-up">
       <DialogModal
-        v-if="qrCodeVisible && previewGrantUrl"
+        v-if="qrCodeVisible"
         :title="$t('previewDialogTitle', 'Preview with smartphone')"
         :lead="
           $t(
@@ -32,19 +32,14 @@
         @submit="qrCodeVisible = false"
         @cancel="qrCodeVisible = false"
       >
-        <QrCode :url="previewGrantUrl" />
+        <QrCode v-if="previewGrantUrl" :url="previewGrantUrl" />
       </DialogModal>
     </Transition>
   </Teleport>
 </template>
 
 <script lang="ts" setup>
-import {
-  ref,
-  useBlokkli,
-  defineBlokkliFeature,
-  useLazyAsyncData,
-} from '#imports'
+import { ref, watch, useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginToolbarButton } from '#blokkli/plugins'
 import QrCode from './QrCode/index.vue'
 import { DialogModal } from '#blokkli/components'
@@ -62,10 +57,13 @@ const { adapter } = defineBlokkliFeature({
 const { $t, ui } = useBlokkli()
 
 const qrCodeVisible = ref(false)
+const previewGrantUrl = ref<string | undefined | null>('')
 
-const { data: previewGrantUrl } = await useLazyAsyncData(() =>
-  Promise.resolve(adapter.getPreviewGrantUrl()),
-)
+watch(qrCodeVisible, async function (isVisible) {
+  if (isVisible && !previewGrantUrl.value) {
+    previewGrantUrl.value = await adapter.getPreviewGrantUrl()
+  }
+})
 </script>
 
 <script lang="ts">

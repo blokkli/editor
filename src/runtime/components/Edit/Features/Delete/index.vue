@@ -30,7 +30,7 @@ const { adapter } = defineBlokkliFeature({
 async function onClick(items: DraggableExistingBlock[]) {
   eventBus.emit('select', [])
   await state.mutateWithLoadingState(
-    adapter.deleteBlocks(items.map((v) => v.uuid)),
+    () => adapter.deleteBlocks(items.map((v) => v.uuid)),
     $t('deleteError', 'The block could not be deleted.'),
   )
 }

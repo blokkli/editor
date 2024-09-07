@@ -62,26 +62,29 @@ const onDroppableEditSave = async (e: DroppableEntityField) => {
   }
   if ('itemBundle' in e.host && adapter.mediaLibraryReplaceMedia) {
     await state.mutateWithLoadingState(
-      adapter.mediaLibraryReplaceMedia!({
-        host: {
-          uuid: e.host.uuid,
-          type: runtimeConfig.itemEntityType,
-          fieldName: e.fieldName,
-        },
-        mediaId: selected.value,
-      }),
+      () =>
+        adapter.mediaLibraryReplaceMedia!({
+          host: {
+            uuid: e.host.uuid,
+            type: runtimeConfig.itemEntityType,
+            fieldName: e.fieldName,
+          },
+          mediaId: selected.value,
+        }),
       ERROR_MESSAGE,
     )
   } else if ('type' in e.host && adapter.mediaLibraryReplaceEntityMedia) {
+    const type = e.host.type
     await state.mutateWithLoadingState(
-      adapter.mediaLibraryReplaceEntityMedia!({
-        host: {
-          uuid: e.host.uuid,
-          type: e.host.type,
-          fieldName: e.fieldName,
-        },
-        mediaId: selected.value,
-      }),
+      () =>
+        adapter.mediaLibraryReplaceEntityMedia!({
+          host: {
+            uuid: e.host.uuid,
+            type,
+            fieldName: e.fieldName,
+          },
+          mediaId: selected.value,
+        }),
       ERROR_MESSAGE,
     )
   }
@@ -140,10 +143,11 @@ defineDropAreas((dragItems) => {
           icon: 'swap-horizontal',
           onDrop: () => {
             return state.mutateWithLoadingState(
-              adapter.mediaLibraryReplaceMedia!({
-                host: draggableHost,
-                mediaId: item.mediaId,
-              }),
+              () =>
+                adapter.mediaLibraryReplaceMedia!({
+                  host: draggableHost,
+                  mediaId: item.mediaId,
+                }),
               ERROR_MESSAGE,
             )
           },
@@ -156,10 +160,11 @@ defineDropAreas((dragItems) => {
           icon: 'swap-horizontal',
           onDrop: () => {
             return state.mutateWithLoadingState(
-              adapter.mediaLibraryReplaceEntityMedia!({
-                host: draggableHost,
-                mediaId: item.mediaId,
-              }),
+              () =>
+                adapter.mediaLibraryReplaceEntityMedia!({
+                  host: draggableHost,
+                  mediaId: item.mediaId,
+                }),
               ERROR_MESSAGE,
             )
           },

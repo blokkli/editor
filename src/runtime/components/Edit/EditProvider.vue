@@ -119,7 +119,7 @@ const dom = domProvider(ui, debug)
 const animation = animationProvider(ui)
 const keyboard = keyboardProvider(animation)
 const $t = textProvider(context)
-const state = await editStateProvider(adapter, context)
+const state = await editStateProvider(adapter, context, $t)
 const selection = selectionProvider(dom)
 const types = await typesProvider(adapter, selection, context)
 

@@ -60,7 +60,7 @@ const props = withDefaults(
   defineProps<{
     title: string
     lead?: string
-    width?: number
+    width?: number | string
     submitLabel?: string
     canSubmit?: boolean
     isDanger?: boolean
@@ -82,8 +82,14 @@ const style = computed(() => {
     return {}
   }
 
+  if (typeof props.width === 'number') {
+    return {
+      maxWidth: props.width + 'px',
+    }
+  }
+
   return {
-    width: props.width + 'px',
+    width: props.width,
   }
 })
 

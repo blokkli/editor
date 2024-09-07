@@ -15,7 +15,6 @@
           :data-sortli-id="'search_' + tab + i"
           :data-search-item="JSON.stringify(item)"
           @mouseenter="index = i"
-          @action="clickItem"
         >
           <div
             class="bk-search-item-icon"
@@ -73,7 +72,7 @@ const isLoading = ref(true)
 
 const emit = defineEmits(['close'])
 
-const { eventBus, adapter, $t } = useBlokkli()
+const { adapter, $t } = useBlokkli()
 
 const items = ref<SearchContentItem[]>([])
 let timeout: any = null
@@ -122,12 +121,7 @@ const setIndex = (newIndex: number) => {
 }
 
 const clickItem = () => {
-  const item = items.value[index.value]
-  if (!item) {
-    return
-  }
-
-  eventBus.emit('search:selectContentItem', item)
+  // @TODO: Start dragging.
   emit('close')
 }
 

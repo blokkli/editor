@@ -53,7 +53,7 @@ const showConfirm = ref(false)
 
 async function onSubmit() {
   await mutateWithLoadingState(
-    adapter.revertAllChanges(),
+    () => adapter.revertAllChanges(),
     $t('revertError', 'Changes could not be discarded.'),
     $t('revertSuccess', 'All changes have been discarded.'),
   )

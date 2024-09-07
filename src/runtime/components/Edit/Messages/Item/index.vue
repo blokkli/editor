@@ -1,20 +1,55 @@
 <template>
-  <button
+  <div
     class="bk-message"
     :class="[{ 'bk-has-timer': hasTimer }, 'bk-is-' + type]"
-    @click="$emit('close')"
     @mouseenter="stopTimer"
     @mouseleave="startTimer"
   >
-    <p>{{ message }}</p>
-    <p v-if="additionalText" class="bk-message-additional">
-      {{ additionalText }}
-    </p>
-  </button>
+    <button class="bk-message-content" @click="$emit('close')">
+      <p>{{ message }}</p>
+      <p v-if="additionalText" class="bk-message-additional">
+        {{ additionalText }}
+      </p>
+    </button>
+
+    <div
+      v-if="additional && additional instanceof Error"
+      class="bk-message-actions"
+    >
+      <button
+        class="bk-button bk-is-danger"
+        @click.prevent="showDetails = true"
+      >
+        <Icon name="bug" />
+        Details
+      </button>
+    </div>
+    <Teleport
+      v-if="additional && additional instanceof Error && showDetails"
+      to="body"
+    >
+      <DialogModal
+        title="Error Details"
+        hide-buttons
+        width="100%"
+        @cancel="showDetails = false"
+      >
+        <div class="bk bk-message-error">
+          <code>
+            <div v-text="additional.message" />
+            <div v-text="additional.name" />
+            <div v-text="additional.cause" />
+            <div v-text="additional.stack" />
+          </code>
+        </div>
+      </DialogModal>
+    </Teleport>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount, computed } from '#imports'
+import { ref, onMounted, onBeforeUnmount, computed, watch } from '#imports'
+import { Icon, DialogModal } from '#blokkli/components'
 
 const props = defineProps<{
   type: 'success' | 'error'
@@ -24,6 +59,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['close'])
 const hasTimer = ref(true)
+const showDetails = ref(false)
 
 const additionalText = computed(() => {
   if (!props.additional) {
@@ -37,6 +73,12 @@ const additionalText = computed(() => {
   return null
 })
 
+watch(showDetails, function (isVisible) {
+  if (isVisible) {
+    stopTimer()
+  }
+})
+
 function stopTimer() {
   clearTimeout(timeout)
   hasTimer.value = false
@@ -44,6 +86,9 @@ function stopTimer() {
 
 function startTimer() {
   clearTimeout(timeout)
+  if (showDetails.value) {
+    return
+  }
   hasTimer.value = true
   timeout = setTimeout(() => {
     emit('close')

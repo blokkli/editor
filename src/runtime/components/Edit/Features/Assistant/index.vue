@@ -47,11 +47,12 @@ const onClose = () => {
 const onSubmit = async (result: AssistantResult) => {
   if (adapter.assistantAddBlockFromResult && placedAction.value) {
     await state.mutateWithLoadingState(
-      adapter.assistantAddBlockFromResult({
-        result,
-        host: placedAction.value.host,
-        preceedingUuid: placedAction.value.preceedingUuid,
-      }),
+      () =>
+        adapter.assistantAddBlockFromResult({
+          result,
+          host: placedAction.value!.host,
+          preceedingUuid: placedAction.value!.preceedingUuid,
+        }),
       $t('assistantAddResultError', 'Failed to add block from assistant.'),
     )
   }

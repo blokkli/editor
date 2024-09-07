@@ -62,10 +62,11 @@ async function onConvert(targetBundle?: string) {
   }
 
   await state.mutateWithLoadingState(
-    adapter.convertBlocks(
-      selection.blocks.value.map((v) => v.uuid),
-      targetBundle,
-    ),
+    () =>
+      adapter.convertBlocks(
+        selection.blocks.value.map((v) => v.uuid),
+        targetBundle,
+      ),
     $t('failedToConvert', 'The block could not be converted.'),
   )
 }

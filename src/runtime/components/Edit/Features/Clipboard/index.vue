@@ -233,8 +233,8 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
     return
   }
 
-  state.mutateWithLoadingState(
-    adapter.pasteExistingBlocks({
+  state.mutateWithLoadingState(() =>
+    adapter.pasteExistingBlocks!({
       uuids: pastedBlocks.map((v) => v.uuid),
       host: {
         type: field.hostEntityType,

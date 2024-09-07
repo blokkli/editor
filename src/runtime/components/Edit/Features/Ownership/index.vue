@@ -35,7 +35,7 @@ const { state, $t } = useBlokkli()
 
 const takeOwnership = () =>
   state.mutateWithLoadingState(
-    adapter.takeOwnership(),
+    () => adapter.takeOwnership(),
     $t('ownershipError', 'Error in assigning'),
     $t('ownershipSuccess', 'You are now the owner.'),
   )

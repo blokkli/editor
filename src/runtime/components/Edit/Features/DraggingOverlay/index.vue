@@ -140,7 +140,7 @@ const onDropNew = async (
     addBehaviour.startsWith('editable:') ||
     !adapter.formFrameBuilder
   ) {
-    await state.mutateWithLoadingState(
+    await state.mutateWithLoadingState(() =>
       adapter.addNewBlock({
         bundle,
         host,
@@ -162,7 +162,7 @@ const onDropExisting = async (
   afterUuid?: string,
 ) => {
   const uuids = items.map((v) => v.uuid)
-  await state.mutateWithLoadingState(
+  await state.mutateWithLoadingState(() =>
     adapter.moveMultipleBlocks({
       uuids,
       afterUuid,
@@ -183,7 +183,7 @@ const onDropReusable = async (
   host: DraggableHostData,
   afterUuid?: string,
 ) => {
-  await state.mutateWithLoadingState(
+  await state.mutateWithLoadingState(() =>
     adapter.addLibraryItem({
       libraryItemUuid: item.libraryItemUuid,
       host,
@@ -198,7 +198,7 @@ const onDropClipboardItem = async (
   afterUuid?: string,
 ) => {
   if (adapter.addBlockFromClipboardItem) {
-    await state.mutateWithLoadingState(
+    await state.mutateWithLoadingState(() =>
       adapter.addBlockFromClipboardItem({
         afterUuid,
         item,
@@ -214,7 +214,7 @@ const onDropMediaLibraryItem = async (
   afterUuid?: string,
 ) => {
   if (adapter.mediaLibraryAddBlock) {
-    await state.mutateWithLoadingState(
+    await state.mutateWithLoadingState(() =>
       adapter.mediaLibraryAddBlock({
         preceedingUuid: afterUuid,
         host,
@@ -229,7 +229,7 @@ const onDropSearchContentItem = async (
   host: DraggableHostData,
   afterUuid?: string,
 ) => {
-  await state.mutateWithLoadingState(
+  await state.mutateWithLoadingState(() =>
     adapter.addContentSearchItem({
       item: item.searchItem,
       host,

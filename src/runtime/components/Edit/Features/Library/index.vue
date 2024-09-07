@@ -93,7 +93,7 @@ const onDetach = async () => {
   if (!adapter.detachReusableBlock || !selection.uuids.value.length) {
     return
   }
-  await state.mutateWithLoadingState(
+  await state.mutateWithLoadingState(() =>
     adapter.detachReusableBlock({
       uuids: selection.uuids.value,
     }),
@@ -108,11 +108,11 @@ const onAddLibraryItem = async (uuid: string) => {
     return
   }
 
-  await state.mutateWithLoadingState(
+  await state.mutateWithLoadingState(() =>
     adapter.addLibraryItem({
       libraryItemUuid: uuid,
-      host: placedAction.value.host,
-      afterUuid: placedAction.value.preceedingUuid,
+      host: placedAction.value!.host,
+      afterUuid: placedAction.value!.preceedingUuid,
     }),
   )
   placedAction.value = null
@@ -146,10 +146,11 @@ async function onMakeReusable(label: string) {
     return
   }
   await state.mutateWithLoadingState(
-    adapter.makeBlockReusable({
-      label,
-      uuid: selectedItem.value.uuid,
-    }),
+    () =>
+      adapter.makeBlockReusable({
+        label,
+        uuid: selectedItem.value!.uuid,
+      }),
     $t('libraryError', 'Failed to add block to library.'),
   )
   eventBus.emit('select:end')

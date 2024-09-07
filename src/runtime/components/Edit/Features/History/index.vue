@@ -182,16 +182,16 @@ const mapped = computed<HistoryItem[]>(() =>
 
 async function setHistoryIndex(index: number) {
   if (index !== currentMutationIndex.value) {
-    await mutateWithLoadingState(adapter.setHistoryIndex(index))
+    await mutateWithLoadingState(() => adapter.setHistoryIndex(index))
   }
 }
 
 const undo = () =>
-  mutateWithLoadingState(
+  mutateWithLoadingState(() =>
     adapter.setHistoryIndex(currentMutationIndex.value - 1),
   )
 const redo = () =>
-  mutateWithLoadingState(
+  mutateWithLoadingState(() =>
     adapter.setHistoryIndex(currentMutationIndex.value + 1),
   )
 

@@ -63,11 +63,11 @@ const onAddFragment = async (name: string) => {
     return
   }
 
-  await state.mutateWithLoadingState(
+  await state.mutateWithLoadingState(() =>
     adapter.fragmentsAddBlock({
       name,
-      host: placedAction.value.host,
-      preceedingUuid: placedAction.value.preceedingUuid,
+      host: placedAction.value!.host,
+      preceedingUuid: placedAction.value!.preceedingUuid,
     }),
   )
 

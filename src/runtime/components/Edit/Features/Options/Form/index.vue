@@ -331,7 +331,7 @@ onBeforeUnmount(() => {
     return
   }
 
-  state.mutateWithLoadingState(adapter.updateOptions!(values))
+  state.mutateWithLoadingState(() => adapter.updateOptions!(values))
 })
 </script>
 

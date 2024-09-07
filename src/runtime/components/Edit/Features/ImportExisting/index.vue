@@ -63,10 +63,11 @@ const showModal = ref(false)
 function onSubmit(sourceUuid: string, sourceFields: string[]) {
   showModal.value = false
   state.mutateWithLoadingState(
-    adapter.importFromExisting({
-      sourceFields,
-      sourceUuid,
-    }),
+    () =>
+      adapter.importFromExisting({
+        sourceFields,
+        sourceUuid,
+      }),
     $t('importExistingError', 'Content could not be imported.'),
     $t('importExistingSuccess', 'Content imported successfully.'),
   )

@@ -211,7 +211,7 @@ const close = async () => {
 
   if (shouldSave.value && modelValue.value !== originalText.value) {
     if ('itemBundle' in props.host) {
-      await state.mutateWithLoadingState(
+      await state.mutateWithLoadingState(() =>
         adapter.updateFieldValue!({
           uuid: props.host.uuid,
           fieldName: props.fieldName,
@@ -219,8 +219,8 @@ const close = async () => {
         }),
       )
     } else if (adapter.updateEntityFieldValue) {
-      await state.mutateWithLoadingState(
-        adapter.updateEntityFieldValue({
+      await state.mutateWithLoadingState(() =>
+        adapter.updateEntityFieldValue!({
           fieldName: props.fieldName,
           fieldValue: modelValue.value,
         }),

@@ -29,7 +29,7 @@ const { mutations, canEdit, mutateWithLoadingState } = state
 
 const onClick = async () => {
   const success = await mutateWithLoadingState(
-    adapter.publish(),
+    adapter.publish,
     $t('publishError', 'Changes could not be published.'),
     $t('publishSuccess', 'Changes published successfully.'),
   )
