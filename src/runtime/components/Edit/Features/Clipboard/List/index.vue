@@ -35,13 +35,21 @@
               v-if="item.videoService === 'youtube'"
               :src="`http://i3.ytimg.com/vi/${item.videoId}/hqdefault.jpg`"
             />
-            <div v-else>
-              Video: {{ item.videoService }}<br />
-              {{ item.data }}
+            <div v-else class="bk-clipboard-item-box">
+              <Icon name="video-outline" />
+              <h3>Video: {{ item.videoService }}</h3>
+              <p>{{ item.data }}</p>
             </div>
           </div>
           <div v-else-if="item.type === 'image'">
             <img :src="item.data" />
+          </div>
+          <div v-else-if="item.type === 'file'">
+            <div class="bk-clipboard-item-box">
+              <Icon name="file" />
+              <h3>{{ item.fileName }}</h3>
+              <p>{{ item.fileType }}</p>
+            </div>
           </div>
         </div>
       </div>

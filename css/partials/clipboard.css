@@ -67,3 +67,16 @@
     }
   }
 }
+
+.bk-clipboard-item-box {
+  @apply bg-mono-100 aspect-video flex items-center justify-center flex-col border border-mono-200;
+  @apply rounded;
+
+  h3 {
+    @apply font-bold;
+  }
+
+  svg {
+    @apply size-100 fill-accent-600;
+  }
+}

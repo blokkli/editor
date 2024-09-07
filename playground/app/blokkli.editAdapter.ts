@@ -396,7 +396,10 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     clipboardMapBundle(e) {
-      if (e.type === 'video' && e.videoService === 'youtube') {
+      if (
+        e.type === 'video' &&
+        (e.videoService === 'youtube' || e.videoService === 'vimeo')
+      ) {
         return 'video'
       } else if (e.type === 'plaintext') {
         return 'text'

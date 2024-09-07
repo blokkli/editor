@@ -163,6 +163,12 @@ export type ClipboardMapBundleEventImage = {
   fileSize: number
 }
 
+export type ClipboardMapBundleEventFile = {
+  type: 'file'
+  fileType: string
+  fileSize: number
+}
+
 export type ClipboardMapBundleEventVideo = {
   type: 'video'
   videoService: ReturnType<typeof getVideoId>['service']
@@ -172,6 +178,7 @@ export type ClipboardMapBundleEventVideo = {
 export type ClipboardMapBundleEvent =
   | ClipboardMapBundleEventVideo
   | ClipboardMapBundleEventImage
+  | ClipboardMapBundleEventFile
   | ClipboardMapBundleEventPlaintext
 
 export type BlokkliAdapterGetLibraryItemsData = {

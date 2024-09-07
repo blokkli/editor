@@ -81,5 +81,7 @@ const src = computed(() => {
       youtubeId.value
     }?${params.toString()}`
   }
+
+  return null
 })
 </script>

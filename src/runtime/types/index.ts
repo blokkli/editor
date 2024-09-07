@@ -453,6 +453,7 @@ export interface MutationItem {
   timestamp?: string
   pluginId?: string
   plugin?: { label?: string; affectedItemUuid?: string }
+  enabled?: boolean
 }
 
 export interface Validation {
@@ -561,12 +562,26 @@ interface ClipboardItemImage {
   itemBundle: string
   data: string
   additional: string
+  fileName: string
+  fileSize: number
+  fileType: string
+}
+
+interface ClipboardItemFile {
+  type: 'file'
+  itemBundle: string
+  data: string
+  additional: string
+  fileName: string
+  fileSize: number
+  fileType: string
 }
 
 export type ClipboardItem =
   | ClipboardItemText
   | ClipboardItemVideo
   | ClipboardItemImage
+  | ClipboardItemFile
 
 export interface DraggableHostData {
   type: string

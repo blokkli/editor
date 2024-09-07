@@ -159,23 +159,34 @@ function handleFiles(data: DataTransfer | FileList) {
       if (!adapter.clipboardMapBundle) {
         return
       }
+
       if (typeof fr.result !== 'string') {
         return
       }
+
+      const type: 'image' | 'file' = file.type.startsWith('image/')
+        ? 'image'
+        : 'file'
+
+      // Let the adapter decide which block bundle can be created from this clipboard item.
       const itemBundle = adapter.clipboardMapBundle({
-        type: 'image',
+        type,
         fileType: file.type,
         fileSize: file.size,
       })
+
       if (!itemBundle) {
         return
       }
 
       pastedItems.value.push({
-        type: 'image',
+        type,
         itemBundle,
         data: fr.result,
         additional: file.name,
+        fileSize: file.size,
+        fileType: file.type,
+        fileName: file.name,
       })
       showClipboardSidebar()
     }

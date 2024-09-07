@@ -159,8 +159,12 @@ html {
     &.bk-is-small {
       @apply h-[30px] !px-[8px] !text-sm;
     }
-    &.is-icon-only {
+    &.bk-is-icon-only {
       @apply !px-0 !w-50;
+
+      &.bk-is-small {
+        @apply !size-30;
+      }
     }
     &[disabled] {
       @apply !pointer-events-none;
