@@ -22,6 +22,16 @@
         <div class="bk-menu-list-inner">
           <div id="bk-menu-primary" />
           <div id="bk-menu-secondary" />
+          <aside class="bk-menu-meta">
+            <div class="bk-menu-meta-logo">
+              <Icon name="logo" />
+              <div><strong>@blokkli/editor</strong> {{ blokkliVersion }}</div>
+            </div>
+
+            <div>
+              <a href="https://www.blokk.li" target="_blank">blokk.li</a>
+            </div>
+          </aside>
         </div>
       </div>
     </transition>
@@ -31,6 +41,7 @@
 <script setup lang="ts">
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/components'
+import { blokkliVersion } from '#blokkli/config'
 
 const { ui, eventBus } = useBlokkli()
 

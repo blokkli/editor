@@ -89,3 +89,20 @@
     @apply w-25 h-25 fill-current pointer-events-none;
   }
 }
+
+.bk-menu-meta {
+  @apply px-15 py-10 text-xs bg-mono-100 text-mono-600 items-center leading-none flex justify-between;
+
+  a {
+    @apply hover:text-accent-700 hover:underline;
+  }
+}
+.bk-menu-meta-logo {
+  @apply flex gap-5 items-center;
+  .bk-icon {
+    @apply bg-accent-700 size-20 flex items-center justify-center rounded;
+  }
+  svg {
+    @apply text-white;
+  }
+}

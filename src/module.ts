@@ -1,5 +1,6 @@
 import { extname, basename } from 'node:path'
 import { promises as fsp, existsSync } from 'node:fs'
+import { version } from './../package.json'
 import {
   addBuildPlugin,
   addComponent,
@@ -253,6 +254,7 @@ export default defineNuxtModule<ModuleOptions>({
   meta: {
     name: 'blokkli',
     configKey: 'blokkli',
+    version,
     compatibility: {
       nuxt: '^3.4.0',
     },
@@ -624,6 +626,8 @@ export const theme: Theme = ${JSON.stringify(fullTheme, null, 2)}
 export const settingsOverride: ModuleOptionsSettings = ${JSON.stringify(
           settingsOverride,
         )}
+
+export const blokkliVersion = ${JSON.stringify(version)}
 
 export const storageDefaults: Record<string, string|boolean|string[]> = ${JSON.stringify(
           moduleOptions.storageDefaults || {},
