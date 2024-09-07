@@ -10,6 +10,7 @@
       :data-clipboard-type="item.type"
       :data-clipboard-data="item.data"
       :data-clipboard-additional="item.additional"
+      :data-clipboard-item="JSON.stringify(item)"
       :data-clipboard-search-item="
         item.type === 'search_content' ? JSON.stringify(item.item) : undefined
       "
@@ -32,8 +33,15 @@
             class="bk-clipboard-item-inner"
             v-html="item.data"
           />
-          <div v-if="item.type === 'youtube'">
-            <img :src="`http://i3.ytimg.com/vi/${item.data}/hqdefault.jpg`" />
+          <div v-if="item.type === 'video'">
+            <img
+              v-if="item.videoService === 'youtube'"
+              :src="`http://i3.ytimg.com/vi/${item.videoId}/hqdefault.jpg`"
+            />
+            <div v-else>
+              Video: {{ item.videoService }}<br />
+              {{ item.data }}
+            </div>
           </div>
           <div v-else-if="item.type === 'image'">
             <img :src="item.data" />

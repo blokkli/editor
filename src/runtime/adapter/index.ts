@@ -29,6 +29,7 @@ import type {
   DraggableMediaLibraryItem,
   DroppableFieldConfig,
 } from './../types'
+import type getVideoId from 'get-video-id'
 
 import type { GetMediaLibraryFunction } from './../components/Edit/Features/MediaLibrary/types'
 
@@ -151,14 +152,32 @@ export interface AdapterContext {
   language: string
 }
 
-export type ClipboardMapBundleEvent = {
-  type: 'youtube_video' | 'plaintext'
-  data: string
+export type ClipboardMapBundleEventPlaintext = {
+  type: 'plaintext'
+  text: string
 }
+
+export type ClipboardMapBundleEventImage = {
+  type: 'image'
+  fileType: string
+  fileSize: number
+}
+
+export type ClipboardMapBundleEventVideo = {
+  type: 'video'
+  videoService: ReturnType<typeof getVideoId>['service']
+  videoId: string
+}
+
+export type ClipboardMapBundleEvent =
+  | ClipboardMapBundleEventVideo
+  | ClipboardMapBundleEventImage
+  | ClipboardMapBundleEventPlaintext
 
 export type BlokkliAdapterGetLibraryItemsData = {
   bundles: string[]
   page: number
+  text: string
 }
 
 export type BlokkliAdapterGetLibraryItemsResult = {
@@ -379,7 +398,9 @@ export interface BlokkliAdapter<T> {
   /**
    * Return the possible content search tabs.
    */
-  getContentSearchTabs?: () => Record<string, string>
+  getContentSearchTabs?: () =>
+    | Record<string, string>
+    | Promise<Record<string, string>>
 
   /**
    * Return items for the "content" search.
@@ -492,7 +513,7 @@ export interface BlokkliAdapter<T> {
 
 export type BlokkliAdapterFactory<T> = (
   ctx: ComputedRef<AdapterContext>,
-) => BlokkliAdapter<T>
+) => Promise<BlokkliAdapter<T>> | BlokkliAdapter<T>
 
 export type AdapterMethods = keyof BlokkliAdapter<any>
 

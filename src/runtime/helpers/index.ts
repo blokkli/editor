@@ -121,8 +121,11 @@ export function buildDraggableItem(
     const clipboardData = dataset.clipboardData
     const additional = dataset.clipboardAdditional
     const itemBundle = dataset.itemBundle
+    const clipboardItem = dataset.clipboardItem
+      ? JSON.parse(dataset.clipboardItem)
+      : undefined
     const id = dataset.sortliId
-    if (clipboardData && itemBundle) {
+    if (clipboardData && itemBundle && clipboardItem) {
       const searchItemData = dataset.clipboardSearchItem
       if (searchItemData) {
         const searchItem = JSON.parse(searchItemData) as SearchContentItem
@@ -141,6 +144,7 @@ export function buildDraggableItem(
         itemBundle,
         clipboardData,
         additional,
+        clipboardItem,
       }
     }
   } else if (dataset.elementType === 'media_library') {

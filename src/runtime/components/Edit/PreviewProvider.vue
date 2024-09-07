@@ -48,7 +48,7 @@ const context = computed<AdapterContext>(() => {
     language: props.language,
   }
 })
-const adapter = getAdapter(context)
+const adapter = await getAdapter(context)
 const router = useRouter()
 const broadcast = broadcastProvider()
 

@@ -97,7 +97,7 @@ const context = computed<AdapterContext>(() => {
     language: props.language,
   }
 })
-const adapter = getAdapter(context)
+const adapter = await getAdapter(context)
 
 const route = useRoute()
 const runtimeConfig = useRuntimeConfig().public.blokkli

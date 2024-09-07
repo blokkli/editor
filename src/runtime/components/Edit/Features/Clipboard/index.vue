@@ -80,6 +80,7 @@ import { falsy } from '#blokkli/helpers'
 import { Icon } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
+import getVideoId from 'get-video-id'
 
 const { settings, logger } = defineBlokkliFeature({
   id: 'clipboard',
@@ -117,13 +118,6 @@ const onFileInput = (e: Event) => {
   }
 }
 
-function getYouTubeID(url: string): string | null {
-  const regExp =
-    /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/
-  const match = url.match(regExp)
-  return match && match[7].length === 11 ? match[7] : null
-}
-
 function removeAllAttrs(element: Element) {
   for (let i = element.attributes.length; i-- > 0; ) {
     const attribute = element.attributes[i]
@@ -152,8 +146,6 @@ const onManualPaste = (e: ClipboardEvent) => {
   onPaste(e, true)
 }
 
-const TYPES_IMAGE = ['image/jpeg', 'image/png', 'image/jpg']
-
 function handleFiles(data: DataTransfer | FileList) {
   if (!FileReader) {
     return
@@ -164,15 +156,28 @@ function handleFiles(data: DataTransfer | FileList) {
   files.forEach((file) => {
     const fr = new FileReader()
     fr.onload = function () {
-      if (typeof fr.result === 'string' && TYPES_IMAGE.includes(file.type)) {
-        pastedItems.value.push({
-          type: 'image',
-          itemBundle: 'image',
-          data: fr.result,
-          additional: file.name,
-        })
-        showClipboardSidebar()
+      if (!adapter.clipboardMapBundle) {
+        return
       }
+      if (typeof fr.result !== 'string') {
+        return
+      }
+      const itemBundle = adapter.clipboardMapBundle({
+        type: 'image',
+        fileType: file.type,
+        fileSize: file.size,
+      })
+      if (!itemBundle) {
+        return
+      }
+
+      pastedItems.value.push({
+        type: 'image',
+        itemBundle,
+        data: fr.result,
+        additional: file.name,
+      })
+      showClipboardSidebar()
     }
     fr.readAsDataURL(file)
   })
@@ -293,20 +298,22 @@ const handlePastedText = (text: string) => {
   if (!adapter.clipboardMapBundle) {
     return
   }
-  const youtubeId = getYouTubeID(text)
-
-  if (youtubeId) {
+  const video = getVideoId(text)
+  if (video.id && video.service) {
     const itemBundle = adapter.clipboardMapBundle({
-      type: 'youtube_video',
-      data: text,
+      type: 'video',
+      videoService: video.service,
+      videoId: video.id,
     })
     if (!itemBundle) {
       return
     }
     pastedItems.value.push({
-      type: 'youtube',
+      type: 'video',
       itemBundle,
-      data: youtubeId,
+      data: text,
+      videoService: video.service,
+      videoId: video.id,
     })
     showClipboardSidebar()
     return
@@ -319,7 +326,7 @@ const handlePastedText = (text: string) => {
   if (div.textContent) {
     const itemBundle = adapter.clipboardMapBundle({
       type: 'plaintext',
-      data: div.innerHTML,
+      text: div.innerHTML,
     })
     if (!itemBundle) {
       return

@@ -46,6 +46,7 @@
     "@nuxt/content": "^2.13.2",
     "@nuxt/kit": "^3.10.2",
     "fzf": "^0.5.2",
+    "get-video-id": "^4.1.7",
     "mitt": "^3.0.1",
     "qrcode.vue": "^3.4.1",
     "twgl.js": "^5.5.4"

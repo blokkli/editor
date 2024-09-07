@@ -35,7 +35,7 @@ import type { TourProvider } from '#blokkli/helpers/tourProvider'
 import type { DropAreaProvider } from '#blokkli/helpers/dropAreaProvider'
 import type { RGB } from './theme'
 import type { DebugProvider } from '#blokkli/helpers/debugProvider'
-
+import type getVideoId from 'get-video-id'
 
 export type MutateWithLoadingStateFunction = (
   promise: Promise<MutationResponseLike<any>> | undefined,
@@ -537,11 +537,13 @@ interface ClipboardItemText {
   additional?: string
 }
 
-interface ClipboardItemYouTube {
-  type: 'youtube'
+interface ClipboardItemVideo {
+  type: 'video'
   itemBundle: string
   data: string
   additional?: string
+  videoService: ReturnType<typeof getVideoId>['service']
+  videoId: string
 }
 
 interface ClipboardItemImage {
@@ -561,7 +563,7 @@ interface ClipboardItemSearchContent {
 
 export type ClipboardItem =
   | ClipboardItemText
-  | ClipboardItemYouTube
+  | ClipboardItemVideo
   | ClipboardItemImage
   | ClipboardItemSearchContent
 
@@ -671,6 +673,7 @@ export interface DraggableClipboardItem {
   itemBundle: string
   clipboardData: string
   additional?: string
+  clipboardItem: ClipboardItem
 }
 
 export interface DraggableSearchContentItem {
