@@ -11,7 +11,11 @@ import type { StateProvider } from '../helpers/stateProvider'
 import type { TextProvider } from '../helpers/textProvider'
 import type { eventBus } from './../helpers/eventBus'
 import type { BlockOptionDefinition } from './blokkOptions'
-import type { BlokkliAdapter, AdapterContext } from './../adapter'
+import type {
+  BlokkliAdapter,
+  AdapterContext,
+  MutationResponseLike,
+} from './../adapter'
 import type { BroadcastProvider } from '#blokkli/helpers/broadcastProvider'
 import type { FeaturesProvider } from '#blokkli/helpers/featuresProvider'
 import type { BlokkliIcon } from '#blokkli/icons'
@@ -32,10 +36,6 @@ import type { DropAreaProvider } from '#blokkli/helpers/dropAreaProvider'
 import type { RGB } from './theme'
 import type { DebugProvider } from '#blokkli/helpers/debugProvider'
 
-interface MutationResponseLike<T> {
-  success?: boolean
-  state?: T
-}
 
 export type MutateWithLoadingStateFunction = (
   promise: Promise<MutationResponseLike<any>> | undefined,
@@ -787,6 +787,7 @@ export type AnimationFrameEvent = {
 export type Message = {
   type: 'success' | 'error'
   message: string
+  additional?: string | Error | unknown
 }
 
 export type Size = {

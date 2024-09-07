@@ -6,20 +6,36 @@
     @mouseenter="stopTimer"
     @mouseleave="startTimer"
   >
-    {{ message }}
+    <p>{{ message }}</p>
+    <p v-if="additionalText" class="bk-message-additional">
+      {{ additionalText }}
+    </p>
   </button>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount } from '#imports'
+import { ref, onMounted, onBeforeUnmount, computed } from '#imports'
 
-defineProps<{
+const props = defineProps<{
   type: 'success' | 'error'
   message: string
+  additional?: string | Error | unknown
 }>()
 
 const emit = defineEmits(['close'])
 const hasTimer = ref(true)
+
+const additionalText = computed(() => {
+  if (!props.additional) {
+    return null
+  }
+
+  if (props.additional instanceof Error) {
+    return props.additional.message
+  }
+
+  return null
+})
 
 function stopTimer() {
   clearTimeout(timeout)

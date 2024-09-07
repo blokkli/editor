@@ -37,6 +37,7 @@ export type { GetMediaLibraryFunction }
 export interface MutationResponseLike<T> {
   success: boolean
   state: T
+  errors?: string[]
 }
 
 type AdapterApplyTransformPlugin = {

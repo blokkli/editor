@@ -15,6 +15,10 @@
   .bk-message {
     @apply p-20 w-full text-white font-bold text-lg text-center relative;
 
+    .bk-message-additional {
+      @apply text-base font-normal mt-5;
+    }
+
     &.bk-has-timer {
       &:before {
         content: '';

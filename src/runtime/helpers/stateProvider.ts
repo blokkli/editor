@@ -251,17 +251,19 @@ export default async function (
       }
 
       if (!result.success) {
-        throw new Error('Unexpected error.')
+        const errorMessage = result.errors?.join('\n') || 'Unexpected error.'
+        throw new Error(errorMessage)
       }
 
       if (successMessage) {
         emitMessage(successMessage)
       }
       return true
-    } catch (_e) {
+    } catch (e) {
       emitMessage(
         errorMessage || 'Es ist ein unerwarteter Fehler aufgetreten.',
         'error',
+        e,
       )
     }
 
