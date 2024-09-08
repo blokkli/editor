@@ -1,23 +1,52 @@
-// @ts-nocheck
+// @ts-ignore
 import { defineBlokkliEditAdapter } from '#blokkli/adapter'
 import { falsy } from '#blokkli/helpers'
-
-import { useGraphqlQuery, useGraphqlMutation, computed } from '#imports'
-import type { BlokkliAdapter } from '#blokkli/adapter'
-import type {
-  ParagraphsBlokkliCommentFragment,
-  ParagraphsBlokkliEditStateFragment,
-} from '#build/graphql-operations'
 import type { BlockBundleDefinition, TranslationState } from '#blokkli/types'
+import type { BlokkliAdapter, GetMediaLibraryFunction } from '#blokkli/adapter'
+import {
+  useGraphqlQuery,
+  useGraphqlMutation,
+  computed,
+  useRoute,
+  useRouter,
+} from '#imports'
+import {
+  ParagraphsBlokkliRemoteVideoProvider,
+  type ParagraphsBlokkliCommentFragment,
+  type ParagraphsBlokkliEditStateFragment,
+} from '#graphql-operations'
 
 type DrupalAdapter = BlokkliAdapter<ParagraphsBlokkliEditStateFragment>
 
 export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
-  (providedContext) => {
+  async (providedContext) => {
     const ctx = computed(() => {
       return {
         ...providedContext.value,
         entityType: providedContext.value.entityType.toUpperCase() as any,
+      }
+    })
+
+    const config = await useGraphqlQuery('pbConfig', {
+      entityType: providedContext.value.entityType,
+      entityBundle: providedContext.value.entityBundle,
+    }).then((v) => {
+      return {
+        clipboard: v.data.clipboards || [],
+        availableFeatures: v.data.features,
+        allTypes: (v.data.allTypes.items || []).filter(
+          (v) => v && 'icon' in v,
+        ) as BlockBundleDefinition[],
+        fieldConfig: v.data.fieldConfig || [],
+        editableFieldConfig: v.data.editableFieldConfig || [],
+        droppableFieldConfig: v.data.droppableFieldConfig || [],
+        urlPrefixes: v.data.urlPrefixes.reduce<Record<string, string>>(
+          (acc, item) => {
+            acc[item.langcode] = item.prefix
+            return acc
+          },
+          {},
+        ),
       }
     })
 
@@ -47,12 +76,9 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         (v) => v?.data.paragraphsBlokkliConversions || [],
       )
 
-    const getAllBundles: DrupalAdapter['getAllBundles'] = () =>
-      useGraphqlQuery('pbAllTypes').then((v) => {
-        return v.data.entityQuery.items?.filter(
-          (v) => v && 'icon' in v,
-        ) as BlockBundleDefinition[]
-      })
+    const getAllBundles: DrupalAdapter['getAllBundles'] = () => {
+      return Promise.resolve(config.allTypes)
+    }
 
     const loadState: DrupalAdapter['loadState'] = (langcode) =>
       useGraphqlQuery('pbEditState', {
@@ -60,29 +86,26 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         langcode: langcode || undefined,
       }).then((v) => v?.data.state)
 
-    const getDisabledFeatures: DrupalAdapter['getDisabledFeatures'] =
-      async () => {
-        const data = await useGraphqlQuery('pbAvailableFeatures').then(
-          (v) => v.data.features,
-        )
-        const disabled: string[] = []
-        const mutations = data?.mutations || []
-        if (!data?.comment) {
-          disabled.push('Comments')
-        }
-        if (!data?.conversion) {
-          disabled.push('Conversions')
-        }
-        if (!data?.library) {
-          disabled.push('Library')
-        }
-        if (!mutations.includes('duplicate')) {
-          disabled.push('Duplicate')
-        }
-        return disabled
+    const getDisabledFeatures: DrupalAdapter['getDisabledFeatures'] = () => {
+      const features = config.availableFeatures
+      const disabled: string[] = []
+      const mutations = features?.mutations || []
+      if (!features?.comment) {
+        disabled.push('Comments')
       }
+      if (!features?.conversion) {
+        disabled.push('Conversions')
+      }
+      if (!features?.library) {
+        disabled.push('Library')
+      }
+      if (!mutations.includes('duplicate')) {
+        disabled.push('Duplicate')
+      }
+      return Promise.resolve(disabled)
+    }
 
-    const mapMutation = (v: any) => v.data.state.action
+    const mapMutation = (v: any) => v.data?.state?.action
 
     const takeOwnership: DrupalAdapter['takeOwnership'] = () =>
       useGraphqlMutation('pbTakeOwnership', ctx.value).then(mapMutation)
@@ -91,6 +114,16 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       useGraphqlMutation('pbSetHistoryIndex', {
         ...ctx.value,
         index,
+      }).then(mapMutation)
+
+    const setMutationItemStatus: DrupalAdapter['setMutationItemStatus'] = (
+      index,
+      status,
+    ) =>
+      useGraphqlMutation('pbSetMutationItemStatus', {
+        ...ctx.value,
+        index,
+        status,
       }).then(mapMutation)
 
     const publish: DrupalAdapter['publish'] = () =>
@@ -238,7 +271,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       const ownerName = state?.ownerName || ''
       const fields = state?.mutatedState?.fields || []
       const violations = state.mutatedState?.violations || []
-      const entity = state?.entity
+      const entity = state.entity
 
       // The options are in the form of:
       // uuid: {
@@ -255,8 +288,28 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       const translationState: TranslationState = {
         isTranslatable: !!state.translationState?.isTranslatable,
         sourceLanguage: state.translationState?.sourceLanguage || '',
-        availableLanguages: state.translationState?.availableLanguages || [],
-        translations: state.translationState?.translations || [],
+        availableLanguages: (
+          state.translationState?.availableLanguages || []
+        ).map((language) => {
+          return {
+            id: language.id!,
+            name: language.name,
+          }
+        }),
+        translations: (state.translationState?.translations || [])
+          .map((v) => {
+            if (v.id && v.url && v.editUrl) {
+              return {
+                id: v.id,
+                url: v.url,
+                editUrl: v.editUrl,
+                exists: !!v.exists,
+                status: !!v.status,
+              }
+            }
+            return null
+          })
+          .filter(falsy),
       }
 
       return {
@@ -378,8 +431,11 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         ...e,
       }).then(mapMutation)
 
-    const buildFormUrl = (parts: string | string[]) => {
-      const prefix = `$PREFIX$`
+    const buildFormUrl = (parts: string | string[], langcode: string) => {
+      const prefix = config.urlPrefixes[langcode]
+      if (prefix === null || prefix === undefined) {
+        throw new Error('Failed to get URL prefix for langcode: ' + langcode)
+      }
       const url = typeof parts === 'string' ? parts : '/' + parts.join('/')
       return { url: prefix + url + `?paragraphsBlokkli=true` }
     }
@@ -387,51 +443,62 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     const formFrameBuilder: DrupalAdapter['formFrameBuilder'] = (e) => {
       const entityType = ctx.value.entityType.toLowerCase()
       if (e.id === 'block:add') {
-        return buildFormUrl([
-          'paragraphs_blokkli',
-          entityType,
-          ctx.value.entityUuid,
-          'add',
-          e.data.bundle,
-          e.data.host.type,
-          e.data.host.uuid,
-          e.data.host.fieldName,
-          e.data.afterUuid,
-        ])
-      } else if (e.id === 'block:edit' || e.id === 'block:translate') {
+        return buildFormUrl(
+          [
+            'paragraphs_blokkli',
+            entityType,
+            ctx.value.entityUuid,
+            'add',
+            e.data.bundle,
+            e.data.host.type,
+            e.data.host.uuid,
+            e.data.host.fieldName,
+            e.data.afterUuid,
+          ],
+          ctx.value.language,
+        )
+      } else if (e.id === 'block:edit') {
         return buildFormUrl(
           `/paragraphs_blokkli/${entityType}/${ctx.value.entityUuid}/edit/${e.data.uuid}`,
+          ctx.value.language,
         )
-      } else if (e.id === 'entity:edit' || e.id === 'entity:translate') {
-        const langcode = 'langcode' in e ? e.langcode : ctx.value.language
+      } else if (e.id === 'block:translate') {
         return buildFormUrl(
-          `/paragraphs_blokkli/${entityType}/${ctx.value.entityUuid}/edit_entity/${langcode}`,
+          `/paragraphs_blokkli/${entityType}/${ctx.value.entityUuid}/edit/${e.data.uuid}`,
+          e.langcode,
+        )
+      } else if (e.id === 'entity:edit') {
+        return buildFormUrl(
+          `/paragraphs_blokkli/${entityType}/${ctx.value.entityUuid}/edit_entity/${ctx.value.language}`,
+          ctx.value.language,
+        )
+      } else if (e.id === 'entity:translate') {
+        return buildFormUrl(
+          `/paragraphs_blokkli/${entityType}/${ctx.value.entityUuid}/edit_entity/${e.translation.id}`,
+          e.translation.id,
         )
       } else if (e.id === 'batchTranslate') {
         buildFormUrl(
           `/paragraphs_blokkli/${entityType}/${ctx.value.entityUuid}/translate-paragraphs`,
+          ctx.value.language,
         )
       }
     }
 
-    const getFieldConfig: DrupalAdapter['getFieldConfig'] = () =>
-      useGraphqlQuery('pbGetFieldConfig').then(
-        (v) => v.data.pbGetFieldConfig || [],
-      )
+    const getFieldConfig: DrupalAdapter['getFieldConfig'] = () => {
+      return Promise.resolve(config.fieldConfig)
+    }
 
     const getEditableFieldConfig: DrupalAdapter['getEditableFieldConfig'] =
-      () =>
-        useGraphqlQuery('pbGetEditableFieldConfig', {
-          entityType: providedContext.value.entityType,
-          entityBundle: providedContext.value.entityBundle,
-        }).then((v) => v.data.pbGetEditableFieldConfig || [])
+      () => {
+        return Promise.resolve(config.editableFieldConfig)
+      }
 
+    // @TODO: Required property.
     const getDroppableFieldConfig: DrupalAdapter['getDroppableFieldConfig'] =
-      () =>
-        useGraphqlQuery('pbGetDroppableFieldConfig', {
-          entityType: providedContext.value.entityType,
-          entityBundle: providedContext.value.entityBundle,
-        }).then((v) => v.data.pbGetDroppableFieldConfig || [])
+      () => {
+        return Promise.resolve(config.droppableFieldConfig)
+      }
 
     const updateFieldValue: DrupalAdapter['updateFieldValue'] = (e) =>
       useGraphqlMutation('pbUpdateFieldValue', {
@@ -458,7 +525,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         ]
           .filter(falsy)
           .join('/')
-      return buildFormUrl(url).url
+      return buildFormUrl(url, ctx.value.language).url
     }
 
     const fragmentsAddBlock: DrupalAdapter['fragmentsAddBlock'] = (e) =>
@@ -500,6 +567,178 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         value: e.fieldValue,
       }).then(mapMutation)
 
+    const mediaLibraryGetResults: GetMediaLibraryFunction<any> = (e) => {
+      return useGraphqlQuery('pbMediaLibraryGetResults', {
+        text: e.filters.text,
+        bundle: e.filters.bundle,
+        page: e.page,
+      }).then((data) => {
+        return {
+          filters: (data.data.pbMediaLibraryGetResults?.filters || []).reduce<
+            Record<any, any>
+          >((acc, filter) => {
+            if (
+              filter.__typename === 'ParagraphsBlokkliMediaLibraryFilterText'
+            ) {
+              acc[filter.id] = {
+                type: 'text',
+                placeholder: filter.placeholder,
+                label: filter.label,
+              }
+            } else if (
+              filter.__typename === 'ParagraphsBlokkliMediaLibraryFilterSelect'
+            ) {
+              acc[filter.id] = {
+                type: 'select',
+                label: filter.label,
+                default: filter.default,
+                options: filter.options,
+              }
+            }
+            return acc
+          }, {} as any),
+          items: data.data.pbMediaLibraryGetResults?.items || [],
+          total: data.data.pbMediaLibraryGetResults?.total || 0,
+          perPage: data.data.pbMediaLibraryGetResults?.perPage || 50,
+        }
+      })
+    }
+
+    const mediaLibraryAddBlock: DrupalAdapter['mediaLibraryAddBlock'] = (e) => {
+      return useGraphqlMutation('pbAddEntityReference', {
+        ...ctx.value,
+        targetId: e.item.mediaId,
+        targetBundle: e.item.mediaBundle,
+        targetType: 'media',
+        paragraphBundle: e.item.itemBundle,
+        hostType: e.host.type,
+        hostUuid: e.host.uuid,
+        hostFieldName: e.host.fieldName,
+        afterUuid: e.preceedingUuid,
+      }).then(mapMutation)
+    }
+
+    const getContentSearchTabs: DrupalAdapter['getContentSearchTabs'] = () => {
+      return useGraphqlQuery('pbSearchTabs').then((v) => {
+        return (v.data.tabs || []).reduce<Record<string, string>>(
+          (acc, tab) => {
+            acc[tab.id] = tab.label
+            return acc
+          },
+          {},
+        )
+      })
+    }
+
+    const getContentSearchResults: DrupalAdapter['getContentSearchResults'] = (
+      id,
+      text,
+    ) => {
+      return useGraphqlQuery('pbSearch', {
+        id,
+        text,
+      }).then((v) => v.data.paragraphsBlokkliSearch || [])
+    }
+
+    const addContentSearchItem: DrupalAdapter['addContentSearchItem'] = (e) => {
+      return useGraphqlMutation('pbAddEntityReference', {
+        ...ctx.value,
+        targetId: e.item.id,
+        targetType: e.item.entityType,
+        targetBundle: e.item.entityBundle,
+        paragraphBundle: e.bundle,
+        hostType: e.host.type,
+        hostUuid: e.host.uuid,
+        hostFieldName: e.host.fieldName,
+        afterUuid: e.afterUuid,
+      }).then(mapMutation)
+    }
+
+    const clipboardMapBundle: DrupalAdapter['clipboardMapBundle'] = (e) => {
+      if (e.type === 'video') {
+        return config.clipboard.find((v) => {
+          if (
+            v.__typename === 'ParagraphsBlokkliSupportedClipboardRemoteVideo'
+          ) {
+            const providers = v.videoProviders
+            if (e.videoService === 'vimeo') {
+              return providers.includes(
+                ParagraphsBlokkliRemoteVideoProvider.VIMEO,
+              )
+            } else if (e.videoService === 'youtube') {
+              return providers.includes(
+                ParagraphsBlokkliRemoteVideoProvider.YOUTUBE,
+              )
+            }
+          }
+
+          return false
+        })?.possibleParagraphBundles?.[0]
+      } else if (e.type === 'plaintext') {
+        return config.clipboard.find((v) => {
+          return v.__typename === 'ParagraphsBlokkliSupportedClipboardRichText'
+        })?.possibleParagraphBundles?.[0]
+      } else if (e.type === 'image') {
+        return config.clipboard.find((v) => {
+          return v.__typename === 'ParagraphsBlokkliSupportedClipboardImage'
+        })?.possibleParagraphBundles?.[0]
+      } else if (e.type === 'file') {
+        return config.clipboard.find((v) => {
+          return v.__typename === 'ParagraphsBlokkliSupportedClipboardFile'
+        })?.possibleParagraphBundles?.[0]
+      }
+    }
+
+    const addBlockFromClipboardItem: DrupalAdapter['addBlockFromClipboardItem'] =
+      (e) => {
+        if (e.item.clipboardItem.type === 'text') {
+          return useGraphqlMutation('pbAddClipboardText', {
+            ...ctx.value,
+            text: e.item.clipboardData,
+            hostType: e.host.type,
+            hostUuid: e.host.uuid,
+            hostFieldName: e.host.fieldName,
+            afterUuid: e.afterUuid,
+          }).then(mapMutation)
+        } else if (e.item.clipboardItem.type === 'image') {
+          return useGraphqlMutation('pbAddImage', {
+            ...ctx.value,
+            data: e.item.clipboardData,
+            fileName: e.item.additional || '',
+            hostType: e.host.type,
+            hostUuid: e.host.uuid,
+            hostFieldName: e.host.fieldName,
+            afterUuid: e.afterUuid,
+          }).then(mapMutation)
+        } else if (e.item.clipboardItem.type === 'file') {
+          return useGraphqlMutation('pbAddFile', {
+            ...ctx.value,
+            data: e.item.clipboardData,
+            fileName: e.item.additional || '',
+            hostType: e.host.type,
+            hostUuid: e.host.uuid,
+            hostFieldName: e.host.fieldName,
+            afterUuid: e.afterUuid,
+          }).then(mapMutation)
+        } else if (e.item.clipboardItem.type === 'video') {
+          return useGraphqlMutation('pbAddVideoRemote', {
+            ...ctx.value,
+            url: e.item.clipboardItem.data,
+            hostType: e.host.type,
+            hostUuid: e.host.uuid,
+            hostFieldName: e.host.fieldName,
+            afterUuid: e.afterUuid,
+          }).then(mapMutation)
+        }
+      }
+
+    const route = useRoute()
+    const router = useRouter()
+
+    const changeLanguage: DrupalAdapter['changeLanguage'] = (translation) => {
+      return router.push({ path: translation.url, query: route.query })
+    }
+
     return {
       buildEditableFrameUrl,
       getTransformPlugins,
@@ -511,6 +750,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       getDisabledFeatures,
       takeOwnership,
       setHistoryIndex,
+      setMutationItemStatus,
       publish,
       importFromExisting,
       revertAllChanges,
@@ -541,6 +781,14 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       mediaLibraryReplaceEntityMedia,
       updateEntityFieldValue,
       getDroppableFieldConfig,
+      mediaLibraryGetResults,
+      mediaLibraryAddBlock,
+      getContentSearchTabs,
+      getContentSearchResults,
+      addContentSearchItem,
+      clipboardMapBundle,
+      addBlockFromClipboardItem,
+      changeLanguage,
     }
   },
 )

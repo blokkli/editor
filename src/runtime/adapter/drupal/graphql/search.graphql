@@ -1,0 +1,19 @@
+query pbSearch($id: String!, $text: String!) {
+  paragraphsBlokkliSearch(id: $id, text: $text) {
+    text
+    title
+    context
+    id: entityId
+    imageUrl
+    entityType
+    entityBundle
+    targetBundles
+  }
+}
+
+query pbSearchTabs {
+  tabs: paragraphsBlokkliSearchTabs {
+    id
+    label
+  }
+}

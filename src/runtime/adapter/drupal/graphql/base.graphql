@@ -46,6 +46,7 @@ fragment paragraphsBlokkliEditState on ParagraphsBlokkliEditState {
 fragment paragraphsBlokkliMutationItem on FieldItemTypeParagraphsBlokkliMutation {
   timestamp
   pluginId
+  enabled
   plugin {
     label
     affectedItemUuid: affectedParagraphUuid
@@ -74,6 +75,7 @@ fragment paragraphsBlokkliMutatedField on ParagraphsBlokkliMutatedField {
 
 fragment paragraphsBlokkliMutationResult on ParagraphsBlokkliMutationResult {
   success
+  errors
   state {
     ...paragraphsBlokkliEditState
   }
@@ -89,12 +91,6 @@ query pbEditState(
     entityUuid: $entityUuid
   ) {
     ...paragraphsBlokkliEditState
-  }
-}
-
-query pbAvailableFeatures {
-  features: paragraphsBlokkliAvailableFeatures {
-    ...paragraphsBlokkliAvailableFeatures
   }
 }
 
@@ -560,14 +556,6 @@ mutation pbUpdateHostEntityFieldValue(
   }
 }
 
-query pbAllTypes {
-  entityQuery(entityType: PARAGRAPHS_TYPE, limit: 999) {
-    items {
-      ...paragraphsType
-    }
-  }
-}
-
 query pbAllowedTypes {
   paragraphsBlokkliAllowedTypes {
     ...paragraphsBlokkliAllowedType
@@ -650,8 +638,81 @@ fragment paragraphsBlokkliAllowedType on ParagraphsBlokkliAllowedType {
   allowedTypes
 }
 
-query pbGetFieldConfig {
-  pbGetFieldConfig {
+query pbMediaLibraryGetResults($text: String, $bundle: String, $page: Int) {
+  pbMediaLibraryGetResults(text: $text, bundle: $bundle, page: $page) {
+    items {
+      label
+      mediaId
+      context
+      thumbnail
+      targetBundles
+      mediaBundle
+    }
+    total
+    perPage
+    filters {
+      __typename
+      id
+      label
+      type
+      ... on ParagraphsBlokkliMediaLibraryFilterText {
+        placeholder
+      }
+
+      ... on ParagraphsBlokkliMediaLibraryFilterSelect {
+        default
+        options
+      }
+    }
+  }
+}
+
+mutation pbAddEntityReference(
+  $langcode: String
+  $entityType: EntityType!
+  $entityUuid: String!
+  $targetId: String!
+  $targetType: String!
+  $targetBundle: String!
+  $paragraphBundle: String!
+  $hostType: String!
+  $hostUuid: String!
+  $hostFieldName: String!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: add_entity_reference(
+      targetType: $targetType
+      targetBundle: $targetBundle
+      targetId: $targetId
+      paragraphBundle: $paragraphBundle
+      afterUuid: $afterUuid
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}
+
+query pbConfig($entityType: String!, $entityBundle: String!) {
+  clipboards: pbGetSupportedClipboards {
+    ...paragraphsBlokkliSupportedClipboard
+  }
+  features: paragraphsBlokkliAvailableFeatures {
+    ...paragraphsBlokkliAvailableFeatures
+  }
+  allTypes: entityQuery(entityType: PARAGRAPHS_TYPE, limit: 999) {
+    items {
+      ...paragraphsType
+    }
+  }
+
+  fieldConfig: pbGetFieldConfig {
     name
     label
     entityType
@@ -660,10 +721,8 @@ query pbGetFieldConfig {
     canEdit
     allowedBundles
   }
-}
 
-query pbGetEditableFieldConfig($entityType: String!, $entityBundle: String!) {
-  pbGetEditableFieldConfig(
+  editableFieldConfig: pbGetEditableFieldConfig(
     entityType: $entityType
     entityBundle: $entityBundle
   ) {
@@ -675,10 +734,8 @@ query pbGetEditableFieldConfig($entityType: String!, $entityBundle: String!) {
     required
     maxLength
   }
-}
 
-query pbGetDroppableFieldConfig($entityType: String!, $entityBundle: String!) {
-  pbGetDroppableFieldConfig(
+  droppableFieldConfig: pbGetDroppableFieldConfig(
     entityType: $entityType
     entityBundle: $entityBundle
   ) {
@@ -690,5 +747,160 @@ query pbGetDroppableFieldConfig($entityType: String!, $entityBundle: String!) {
     canEdit
     allowedEntityType
     allowedBundles
+    required
+  }
+
+  urlPrefixes: pbGetUrlPrefixes {
+    langcode
+    prefix
+  }
+}
+
+fragment paragraphsBlokkliSupportedClipboard on ParagraphsBlokkliSupportedClipboard {
+  __typename
+  ... on ParagraphsBlokkliSupportedClipboardImage {
+    possibleParagraphBundles
+    maxFileSize
+    fileExtensions
+  }
+
+  ... on ParagraphsBlokkliSupportedClipboardFile {
+    possibleParagraphBundles
+    maxFileSize
+    fileExtensions
+  }
+
+  ... on ParagraphsBlokkliSupportedClipboardRichText {
+    possibleParagraphBundles
+  }
+
+  ... on ParagraphsBlokkliSupportedClipboardRemoteVideo {
+    possibleParagraphBundles
+    videoProviders
+  }
+}
+
+mutation pbAddClipboardText(
+  $langcode: String
+  $entityType: EntityType!
+  $entityUuid: String!
+  $text: String!
+  $hostType: String!
+  $hostUuid: String!
+  $hostFieldName: String!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: add_clipboard_text(
+      text: $text
+      afterUuid: $afterUuid
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}
+
+mutation pbAddImage(
+  $langcode: String
+  $entityType: EntityType!
+  $entityUuid: String!
+  $data: String!
+  $fileName: String!
+  $hostType: String!
+  $hostUuid: String!
+  $hostFieldName: String!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: add_image(
+      data: $data
+      fileName: $fileName
+      afterUuid: $afterUuid
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}
+
+mutation pbAddFile(
+  $langcode: String
+  $entityType: EntityType!
+  $entityUuid: String!
+  $data: String!
+  $fileName: String!
+  $hostType: String!
+  $hostUuid: String!
+  $hostFieldName: String!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: add_file(
+      data: $data
+      fileName: $fileName
+      afterUuid: $afterUuid
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}
+
+mutation pbAddVideoRemote(
+  $langcode: String
+  $entityType: EntityType!
+  $entityUuid: String!
+  $url: String!
+  $hostType: String!
+  $hostUuid: String!
+  $hostFieldName: String!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: add_video_remote(
+      url: $url
+      afterUuid: $afterUuid
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}
+
+mutation pbSetMutationItemStatus(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $index: Int!
+  $status: Boolean!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: setMutationStatus(index: $index, status: $status) {
+      ...paragraphsBlokkliMutationResult
+    }
   }
 }
