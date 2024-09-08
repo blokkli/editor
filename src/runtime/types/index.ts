@@ -548,7 +548,7 @@ interface ClipboardItemText {
   additional?: string
 }
 
-interface ClipboardItemVideo {
+export interface ClipboardItemVideo {
   type: 'video'
   itemBundle: string
   data: string
@@ -567,7 +567,7 @@ interface ClipboardItemImage {
   fileType: string
 }
 
-interface ClipboardItemFile {
+export interface ClipboardItemFile {
   type: 'file'
   itemBundle: string
   data: string

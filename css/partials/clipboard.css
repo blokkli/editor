@@ -17,11 +17,9 @@
 }
 
 .bk-clipboard-item {
-  @apply !relative  !overflow-hidden !rounded !font-sans;
+  @apply !relative !rounded !font-sans;
   @apply hover:border-mono-500;
-  img {
-    @apply block aspect-[4/3] object-cover;
-  }
+
   > * {
     &:first-child {
       margin-top: 0;
@@ -32,10 +30,64 @@
   }
 }
 
-.bk-clipboard-item-header {
+.bk-clipboard-item-image {
+  img {
+    @apply block aspect-[4/3] object-cover;
+  }
+}
+.bk-clipboard-item-video {
+  @apply relative aspect-video overflow-hidden border border-mono-300;
+  @apply bg-mono-900 text-mono-50;
+  img {
+    @apply block object-cover absolute top-0 left-0 w-full h-full;
+  }
+
+  > div {
+    @apply absolute z-30 left-0 w-full bottom-0 p-10;
+    @apply bg-gradient-to-b from-mono-900/0 to-mono-900;
+    svg {
+      @apply size-20 fill-current;
+    }
+
+    p {
+      @apply text-xs;
+    }
+
+    > div {
+      @apply flex gap-5 font-bold;
+    }
+  }
+}
+
+.bk-clipboard-item-file {
+  @apply aspect-[210/297] bg-white shadow-lg border border-mono-200 flex flex-col;
+  @apply p-10;
+
+  h3 {
+    @apply font-bold text-lg;
+  }
+
+  ul {
+    @apply flex gap-5 text-sm pt-10 border-t border-t-mono-200 mt-5 leading-none;
+  }
+
+  .bk-clipboard-item-file-lines {
+    @apply grid gap-10 mb-auto;
+
+    > div {
+      @apply bg-mono-200 h-15;
+
+      &:first-child {
+        @apply h-30;
+      }
+    }
+  }
+}
+
+.bk.bk-clipboard-item-header {
   @apply !flex !items-center !gap-10 !text-lg !font-semibold mb-15;
   button {
-    @apply !ml-auto !text-lg !p-5 !rounded text-mono-500;
+    @apply !ml-auto !text-lg !p-5 !rounded text-mono-900 bg-mono-200;
     @apply hover:bg-accent-700 hover:text-white;
     svg {
       @apply !w-20 !h-20 !fill-current;

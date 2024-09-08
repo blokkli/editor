@@ -30,27 +30,14 @@
             class="bk-clipboard-item-inner"
             v-html="item.data"
           />
-          <div v-if="item.type === 'video'">
-            <img
-              v-if="item.videoService === 'youtube'"
-              :src="`http://i3.ytimg.com/vi/${item.videoId}/hqdefault.jpg`"
-            />
-            <div v-else class="bk-clipboard-item-box">
-              <Icon name="video-outline" />
-              <h3>Video: {{ item.videoService }}</h3>
-              <p>{{ item.data }}</p>
-            </div>
-          </div>
-          <div v-else-if="item.type === 'image'">
+          <ClipboardItemVideo v-if="item.type === 'video'" v-bind="item" />
+          <div
+            v-else-if="item.type === 'image'"
+            class="bk-clipboard-item-image"
+          >
             <img :src="item.data" />
           </div>
-          <div v-else-if="item.type === 'file'">
-            <div class="bk-clipboard-item-box">
-              <Icon name="file" />
-              <h3>{{ item.fileName }}</h3>
-              <p>{{ item.fileType }}</p>
-            </div>
-          </div>
+          <ClipboardItemFile v-else-if="item.type === 'file'" v-bind="item" />
         </div>
       </div>
     </div>
@@ -61,6 +48,8 @@
 import { ref, useBlokkli } from '#imports'
 import { ItemIcon, Icon, Sortli } from '#blokkli/components'
 import type { ClipboardItem } from '#blokkli/types'
+import ClipboardItemVideo from './Item/Video.vue'
+import ClipboardItemFile from './Item/File.vue'
 
 const renderKey = ref(0)
 

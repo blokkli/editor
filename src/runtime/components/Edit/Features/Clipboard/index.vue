@@ -106,7 +106,45 @@ const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
 
 const ALLOWED_HTML_ATTRIBUTES = ['href']
 
-const pastedItems = ref<ClipboardItem[]>([])
+const pastedItems = ref<ClipboardItem[]>([
+  {
+    type: 'text',
+    itemBundle: 'text',
+    data: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
+  },
+  {
+    type: 'file',
+    itemBundle: 'image',
+    data: 'asdfasdf',
+    additional: 'asdfasdfasdf',
+    fileName: 'my-little-document.pdf',
+    fileSize: 26624,
+    fileType: 'application/pdf',
+  },
+  {
+    type: 'file',
+    itemBundle: 'image',
+    data: 'asdfasdf',
+    additional: 'asdfasdfasdf',
+    fileName: 'my-little-document.pdf',
+    fileSize: 36623,
+    fileType: 'application/pdf',
+  },
+  {
+    type: 'video',
+    itemBundle: 'video',
+    data: 'https://vimeo.com/684577811',
+    videoService: 'vimeo',
+    videoId: '684577811',
+  },
+  {
+    type: 'video',
+    itemBundle: 'video',
+    data: 'https://www.youtube.com/watch?v=zsvYVVRAk0c',
+    videoService: 'youtube',
+    videoId: 'zsvYVVRAk0c',
+  },
+])
 
 const onFileInput = (e: Event) => {
   e.preventDefault()
