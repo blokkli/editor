@@ -118,22 +118,18 @@ export function buildDraggableItem(
       }
     }
   } else if (dataset.elementType === 'clipboard') {
-    const clipboardData = dataset.clipboardData
     const additional = dataset.clipboardAdditional
     const itemBundle = dataset.itemBundle
-    const clipboardItem = dataset.clipboardItem
-      ? JSON.parse(dataset.clipboardItem)
-      : undefined
+    const clipboardId = dataset.clipboardId
     const id = dataset.sortliId
-    if (clipboardData && itemBundle && clipboardItem) {
+    if (itemBundle && clipboardId) {
       return {
         itemType: 'clipboard',
         element: () =>
           document.querySelector(`[data-sortli-id="${id}"]`) as HTMLElement,
         itemBundle,
-        clipboardData,
         additional,
-        clipboardItem,
+        clipboardId,
       }
     }
   } else if (dataset.elementType === 'media_library') {
@@ -698,4 +694,30 @@ export function getInteractionCoordinates(e: MouseEvent | TouchEvent): Coord {
 
 export function toShaderColor(rgba: RGB): RGB {
   return rgba.map((v) => v / 255) as RGB
+}
+
+export function generateUUID() {
+  try {
+    return crypto.randomUUID()
+  } catch (_e) {
+    // Noop.
+  }
+
+  let d = new Date().getTime(),
+    d2 =
+      (typeof performance !== 'undefined' &&
+        performance.now &&
+        performance.now() * 1000) ||
+      0
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    let r = Math.random() * 16
+    if (d > 0) {
+      r = (d + r) % 16 | 0
+      d = Math.floor(d / 16)
+    } else {
+      r = (d2 + r) % 16 | 0
+      d2 = Math.floor(d2 / 16)
+    }
+    return (c == 'x' ? r : (r & 0x7) | 0x8).toString(16)
+  })
 }

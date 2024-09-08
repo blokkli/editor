@@ -543,6 +543,7 @@ export type SearchContentItem = {
 
 interface ClipboardItemText {
   type: 'text'
+  id: string
   itemBundle: string
   data: string
   additional?: string
@@ -550,6 +551,7 @@ interface ClipboardItemText {
 
 export interface ClipboardItemVideo {
   type: 'video'
+  id: string
   itemBundle: string
   data: string
   additional?: string
@@ -559,6 +561,7 @@ export interface ClipboardItemVideo {
 
 interface ClipboardItemImage {
   type: 'image'
+  id: string
   itemBundle: string
   data: string
   additional: string
@@ -569,6 +572,7 @@ interface ClipboardItemImage {
 
 export interface ClipboardItemFile {
   type: 'file'
+  id: string
   itemBundle: string
   data: string
   additional: string
@@ -687,9 +691,8 @@ export interface DraggableClipboardItem {
   itemType: 'clipboard'
   element: () => HTMLElement
   itemBundle: string
-  clipboardData: string
   additional?: string
-  clipboardItem: ClipboardItem
+  clipboardId: string
 }
 
 export interface DraggableSearchContentItem {
@@ -755,7 +758,8 @@ export type AddNewBlockEvent = {
 }
 
 export type AddClipboardItemEvent = {
-  item: DraggableClipboardItem
+  item: ClipboardItem
+  blockBundle: string
   host: DraggableHostData
   afterUuid?: string
 }
@@ -984,6 +988,13 @@ export type DropTargetEvent = {
   preceedingUuid?: string
 }
 
+export type DropClipboardItemEvent = {
+  id: string
+  blockBundle: string
+  host: DraggableHostData
+  afterUuid?: string
+}
+
 export type EventbusEvents = {
   select: string | string[]
   'item:edit': EditBlockEvent
@@ -1031,6 +1042,8 @@ export type EventbusEvents = {
   'editable:save': undefined
 
   'droppable:focus': DroppableEntityField
+
+  'drop:clipboardItem': DropClipboardItemEvent
 
   'sidebar:close': undefined
 

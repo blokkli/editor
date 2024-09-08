@@ -197,15 +197,12 @@ const onDropClipboardItem = async (
   host: DraggableHostData,
   afterUuid?: string,
 ) => {
-  if (adapter.addBlockFromClipboardItem) {
-    await state.mutateWithLoadingState(() =>
-      adapter.addBlockFromClipboardItem({
-        afterUuid,
-        item,
-        host,
-      }),
-    )
-  }
+  eventBus.emit('drop:clipboardItem', {
+    id: item.clipboardId,
+    host,
+    blockBundle: item.itemBundle,
+    afterUuid,
+  })
 }
 
 const onDropMediaLibraryItem = async (

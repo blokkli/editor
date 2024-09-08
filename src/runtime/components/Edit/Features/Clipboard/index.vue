@@ -76,7 +76,7 @@ import {
 import { PluginSidebar } from '#blokkli/plugins'
 import ClipboardList from './List/index.vue'
 import type { ClipboardItem } from '#blokkli/types'
-import { falsy } from '#blokkli/helpers'
+import { falsy, generateUUID } from '#blokkli/helpers'
 import { Icon } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
@@ -106,14 +106,16 @@ const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
 
 const ALLOWED_HTML_ATTRIBUTES = ['href']
 
-const pastedItems = ref<ClipboardItem[]>([
+const MOCK: ClipboardItem[] = [
   {
     type: 'text',
+    id: generateUUID(),
     itemBundle: 'text',
     data: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
   },
   {
     type: 'file',
+    id: generateUUID(),
     itemBundle: 'image',
     data: 'asdfasdf',
     additional: 'asdfasdfasdf',
@@ -123,6 +125,7 @@ const pastedItems = ref<ClipboardItem[]>([
   },
   {
     type: 'file',
+    id: generateUUID(),
     itemBundle: 'image',
     data: 'asdfasdf',
     additional: 'asdfasdfasdf',
@@ -132,19 +135,23 @@ const pastedItems = ref<ClipboardItem[]>([
   },
   {
     type: 'video',
+    id: generateUUID(),
     itemBundle: 'video',
-    data: 'https://vimeo.com/684577811',
+    data: 'https://vimeo.com/53520224',
     videoService: 'vimeo',
-    videoId: '684577811',
+    videoId: '53520224',
   },
   {
     type: 'video',
+    id: generateUUID(),
     itemBundle: 'video',
     data: 'https://www.youtube.com/watch?v=zsvYVVRAk0c',
     videoService: 'youtube',
     videoId: 'zsvYVVRAk0c',
   },
-])
+]
+
+const pastedItems = ref<ClipboardItem[]>(MOCK)
 
 const onFileInput = (e: Event) => {
   e.preventDefault()
@@ -220,6 +227,7 @@ function handleFiles(data: DataTransfer | FileList) {
       pastedItems.value.push({
         type,
         itemBundle,
+        id: generateUUID(),
         data: fr.result,
         additional: file.name,
         fileSize: file.size,
@@ -359,6 +367,7 @@ const handlePastedText = (text: string) => {
     }
     pastedItems.value.push({
       type: 'video',
+      id: generateUUID(),
       itemBundle,
       data: text,
       videoService: video.service,
@@ -383,6 +392,7 @@ const handlePastedText = (text: string) => {
     showClipboardSidebar()
     pastedItems.value.push({
       type: 'text',
+      id: generateUUID(),
       itemBundle,
       data: div.innerHTML,
     })
@@ -434,6 +444,23 @@ defineShortcut([
     meta: true,
   },
 ])
+
+onBlokkliEvent('drop:clipboardItem', (data) => {
+  const item = pastedItems.value.find((v) => v.id === data.id)
+  if (!item) {
+    return
+  }
+  if (adapter.addBlockFromClipboardItem) {
+    state.mutateWithLoadingState(() =>
+      adapter.addBlockFromClipboardItem!({
+        afterUuid: data.afterUuid,
+        item: item,
+        blockBundle: data.blockBundle,
+        host: data.host,
+      }),
+    )
+  }
+})
 
 onMounted(() => {
   document.addEventListener('paste', onPaste)

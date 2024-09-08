@@ -1,4 +1,4 @@
-// @ts-ignore
+// @ts-nocheck
 import { defineBlokkliEditAdapter } from '#blokkli/adapter'
 import { falsy } from '#blokkli/helpers'
 import type { BlockBundleDefinition, TranslationState } from '#blokkli/types'
@@ -691,39 +691,39 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
 
     const addBlockFromClipboardItem: DrupalAdapter['addBlockFromClipboardItem'] =
       (e) => {
-        if (e.item.clipboardItem.type === 'text') {
+        if (e.item.type === 'text') {
           return useGraphqlMutation('pbAddClipboardText', {
             ...ctx.value,
-            text: e.item.clipboardData,
+            text: e.item.data,
             hostType: e.host.type,
             hostUuid: e.host.uuid,
             hostFieldName: e.host.fieldName,
             afterUuid: e.afterUuid,
           }).then(mapMutation)
-        } else if (e.item.clipboardItem.type === 'image') {
+        } else if (e.item.type === 'image') {
           return useGraphqlMutation('pbAddImage', {
             ...ctx.value,
-            data: e.item.clipboardData,
+            data: e.item.data,
             fileName: e.item.additional || '',
             hostType: e.host.type,
             hostUuid: e.host.uuid,
             hostFieldName: e.host.fieldName,
             afterUuid: e.afterUuid,
           }).then(mapMutation)
-        } else if (e.item.clipboardItem.type === 'file') {
+        } else if (e.item.type === 'file') {
           return useGraphqlMutation('pbAddFile', {
             ...ctx.value,
-            data: e.item.clipboardData,
+            data: e.item.data,
             fileName: e.item.additional || '',
             hostType: e.host.type,
             hostUuid: e.host.uuid,
             hostFieldName: e.host.fieldName,
             afterUuid: e.afterUuid,
           }).then(mapMutation)
-        } else if (e.item.clipboardItem.type === 'video') {
+        } else if (e.item.type === 'video') {
           return useGraphqlMutation('pbAddVideoRemote', {
             ...ctx.value,
-            url: e.item.clipboardItem.data,
+            url: e.item.data,
             hostType: e.host.type,
             hostUuid: e.host.uuid,
             hostFieldName: e.host.fieldName,

@@ -476,16 +476,16 @@ export default defineBlokkliEditAdapter((ctx) => {
         return addMutation('add', {
           bundle: 'text',
           values: {
-            text: e.item.clipboardData,
+            text: e.item.data,
           },
           hostEntityType: e.host.type,
           hostEntityUuid: e.host.uuid,
           hostField: e.host.fieldName,
           preceedingUuid: e.afterUuid,
         })
-      } else if (e.item.itemBundle === 'video') {
+      } else if (e.item.type === 'video') {
         return addMutation('add_video_from_url', {
-          url: 'https://www.youtube.com/watch?v=' + e.item.clipboardData,
+          url: 'https://www.youtube.com/watch?v=' + e.item.videoId,
           hostEntityType: e.host.type,
           hostEntityUuid: e.host.uuid,
           hostField: e.host.fieldName,

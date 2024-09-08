@@ -8,9 +8,9 @@
       :data-sortli-id="'clipboard_' + index"
       :data-item-bundle="item.itemBundle"
       :data-clipboard-type="item.type"
+      :data-clipboard-id="item.id"
       :data-clipboard-data="item.data"
       :data-clipboard-additional="item.additional"
-      :data-clipboard-item="JSON.stringify(item)"
     >
       <div class="bk-clipboard-item">
         <div class="bk bk-clipboard-item-header">
