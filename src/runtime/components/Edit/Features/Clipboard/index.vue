@@ -445,13 +445,13 @@ defineShortcut([
   },
 ])
 
-onBlokkliEvent('drop:clipboardItem', (data) => {
+onBlokkliEvent('drop:clipboardItem', async (data) => {
   const item = pastedItems.value.find((v) => v.id === data.id)
   if (!item) {
     return
   }
   if (adapter.addBlockFromClipboardItem) {
-    state.mutateWithLoadingState(() =>
+    await state.mutateWithLoadingState(() =>
       adapter.addBlockFromClipboardItem!({
         afterUuid: data.afterUuid,
         item: item,
@@ -459,6 +459,9 @@ onBlokkliEvent('drop:clipboardItem', (data) => {
         host: data.host,
       }),
     )
+
+    // Remove the pasted item.
+    pastedItems.value = pastedItems.value.filter((v) => v.id !== item.id)
   }
 })
 
