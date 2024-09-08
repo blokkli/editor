@@ -296,10 +296,14 @@ onMounted(() => {
   width.value = bounds.width
   height.value = bounds.height
 
-  const artboardScale = ui.artboardScale.value
-
   rects.value = elRects
     .map((item) => {
+      // If the item is an existing one, we have to take the current artboard
+      // scale into account when resizing the drag item.
+      // All other item types (such as clipboard or search) are always rendered
+      // at a 1 scale, since they are not inside the artboard.
+      const artboardScale =
+        item.item.itemType === 'existing' ? ui.artboardScale.value : 1
       const isTop = item.index === boundRect.index
       const rect = item.rect
       const element =
