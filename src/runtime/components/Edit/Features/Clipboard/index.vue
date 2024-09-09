@@ -151,7 +151,7 @@ const MOCK: ClipboardItem[] = [
   },
 ]
 
-const pastedItems = ref<ClipboardItem[]>(MOCK)
+const pastedItems = ref<ClipboardItem[]>([])
 
 const onFileInput = (e: Event) => {
   e.preventDefault()

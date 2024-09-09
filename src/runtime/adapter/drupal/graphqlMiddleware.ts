@@ -366,14 +366,13 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       }).then((v) => mapComments(v.data.state?.action || []))
 
     const getLibraryItems: DrupalAdapter['getLibraryItems'] = (data) => {
-      const perPage = 50
       return useGraphqlQuery('pbLibraryItems', {
         bundles: data.bundles,
-        text: '%' + data.text + '%',
-        offset: data.page * perPage,
+        text: data.text,
+        page: data.page,
       }).then((response) => {
         const items =
-          response.data.entityQuery.items
+          response.data.result.items
             ?.map((v) => {
               if (v && 'uuid' in v && v.uuid) {
                 const paragraph = v.paragraphs
@@ -393,8 +392,8 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
 
         return {
           items,
-          perPage,
-          total: response.data.entityQuery?.total || 0,
+          perPage: response.data.result?.perPage || 16,
+          total: response.data.result?.total || 0,
         }
       })
     }

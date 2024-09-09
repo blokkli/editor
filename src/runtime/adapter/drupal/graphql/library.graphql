@@ -40,22 +40,13 @@ mutation pbDetachReusableParagraph(
   }
 }
 
-query pbLibraryItems(
-  $bundles: [String]
-  $offset: Int = 0
-  $text: String = "%%"
-) {
-  entityQuery(
-    entityType: PARAGRAPHS_LIBRARY_ITEM
-    limit: 50
-    offset: $offset
-    filter: {
-      conditions: [
-        { field: "paragraphs.target_id.entity:paragraph.type", value: $bundles }
-        { field: "label", value: [$text], operator: LIKE }
-      ]
-    }
+query pbLibraryItems($bundles: [String]!, $page: Int, $text: String) {
+  result: paragraphsBlokkliSearchLibraryItems(
+    bundles: $bundles
+    text: $text
+    page: $page
   ) {
+    perPage
     total
     items {
       ...paragraphsBlokkliLibraryItem
