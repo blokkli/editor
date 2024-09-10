@@ -477,7 +477,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           e.translation.id,
         )
       } else if (e.id === 'batchTranslate') {
-        buildFormUrl(
+        return buildFormUrl(
           `/paragraphs_blokkli/${entityType}/${ctx.value.entityUuid}/translate-paragraphs`,
           ctx.value.language,
         )
