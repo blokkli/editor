@@ -63,8 +63,8 @@ export default class BlockExtractor {
       await fs.promises.access(iconPath, fs.constants.F_OK)
       const data = await fs.promises.readFile(iconPath)
       return data.toString()
-    } catch (e) {
-      console.log(e)
+    } catch {
+      // Noop, the icon is optional.
     }
   }
 
