@@ -1,9 +1,10 @@
 {
-  "name": "blokkli-beta",
-  "version": "0.0.1-beta.36",
+  "name": "@blokkli/editor",
+  "version": "1.0.0",
   "description": "Interactive page building experience for Nuxt",
   "repository": "blokkli/editor",
   "type": "module",
+  "private": false,
   "exports": {
     ".": {
       "import": "./dist/module.mjs",
@@ -40,8 +41,12 @@
     "docs:preview": "vitepress preview docs",
     "cypress:open": "cypress open"
   },
-  "author": "",
-  "license": "ISC",
+  "author": {
+    "name": "Jan Hug",
+    "url": "https://dulnan.net",
+    "email": "me@dulnan.net"
+  },
+  "license": "MIT",
   "dependencies": {
     "@nuxt/kit": "^3.13.1",
     "estree-walker-ts": "^1.0.1",

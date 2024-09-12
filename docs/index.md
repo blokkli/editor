@@ -5,7 +5,7 @@ blökkli is an interactive page builder for Nuxt.
 ## Install package
 
 ```sh
-npm install --save blokkli-beta
+npm install --save @blokkli/editor
 ```
 
 ## Configure module
@@ -14,7 +14,7 @@ Add the module in your Nuxt config, together with the minimum blokkli config:
 
 ```typescript
 export default defineNuxtConfig({
-  modules: ['blokkli-beta'],
+  modules: ['@blokkli/editor'],
 
   blokkli: {
     // Only required configuration.
