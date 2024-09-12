@@ -157,18 +157,25 @@ function onPointerDown(e: PointerEvent) {
     e.stopPropagation()
     e.stopImmediatePropagation()
   }
+
+  // If we are already dragging, return.
+  // This might be the case if a dragging:start event was manually triggered,
+  // e.g. when selecting a draggable item using the keyboard.
+  if (selection.isDragging.value) {
+    return
+  }
   if (e.pointerType === 'touch') {
     return onTouchStart(e)
   }
   pointerDownTimestamp = Date.now()
   const coords = { x: e.clientX, y: e.clientY }
-  mouseStartCoordinates = coords
 
   const interacted = getInteractedElement(e)
   pointerDownElement = interacted
   if (interacted) {
     return
   }
+  mouseStartCoordinates = coords
   eventBus.emit('mouse:down', { ...coords, type: 'mouse', distance: 0 })
 }
 

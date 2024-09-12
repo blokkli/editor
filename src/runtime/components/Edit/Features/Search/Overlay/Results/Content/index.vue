@@ -56,7 +56,7 @@
 <script lang="ts" setup>
 import { watch, ref, useBlokkli, onMounted } from '#imports'
 import { ItemIcon, Icon, Sortli } from '#blokkli/components'
-import { modulo } from '#blokkli/helpers'
+import { buildDraggableItem, modulo } from '#blokkli/helpers'
 import type { SearchContentItem } from '#blokkli/types'
 
 const listItems = ref<HTMLLIElement[]>([])
@@ -72,7 +72,7 @@ const isLoading = ref(true)
 
 const emit = defineEmits(['close'])
 
-const { adapter, $t } = useBlokkli()
+const { adapter, $t, eventBus } = useBlokkli()
 
 const items = ref<SearchContentItem[]>([])
 let timeout: any = null
@@ -122,6 +122,24 @@ const setIndex = (newIndex: number) => {
 
 const clickItem = () => {
   // @TODO: Start dragging.
+  const element = listItems.value[index.value]
+  if (!element) {
+    return
+  }
+  const item = buildDraggableItem(element)
+  if (!item) {
+    return
+  }
+  const rect = element.getBoundingClientRect()
+
+  eventBus.emit('dragging:start', {
+    items: [item],
+    coords: {
+      x: rect.x,
+      y: rect.y,
+    },
+    mode: 'mouse',
+  })
   emit('close')
 }
 

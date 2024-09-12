@@ -71,10 +71,6 @@
   }
   .bk-search-item-context {
     @apply whitespace-nowrap uppercase text-xs align-baseline font-semibold inline;
-    &:after {
-      content: '-';
-      @apply inline-block mx-5;
-    }
   }
 
   .bk-search-item-subtitle {
