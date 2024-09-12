@@ -212,7 +212,7 @@ function onPointerUp(e: PointerEvent) {
     return
   }
   if (selection.editableActive.value) {
-    eventBus.emit('editable:save')
+    eventBus.emit('window:clickAway')
     lastInteractedElement = null
     return
   }

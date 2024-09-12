@@ -112,6 +112,9 @@ const save = () => {
   emit('close')
 }
 
+// Save the editable when clicking away from the text area.
+onBlokkliEvent('window:clickAway', save)
+
 const getElement = (): HTMLElement => props.element
 
 type Alignment = 'left' | 'center' | 'right'

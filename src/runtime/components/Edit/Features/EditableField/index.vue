@@ -172,10 +172,6 @@ defineCommands(() => {
   })
 })
 
-onBlokkliEvent('editable:save', () => {
-  editable.value = null
-})
-
 watch(selection.editableActive, (isActive) => {
   if (!isActive) {
     hasTransition.value = true
