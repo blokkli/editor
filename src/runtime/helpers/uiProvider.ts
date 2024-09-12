@@ -178,9 +178,11 @@ export default function (storage: StorageProvider): UiProvider {
   }
 
   watch(isAnimating, (is) => {
-    is
-      ? document.documentElement.classList.add('bk-is-animating')
-      : document.documentElement.classList.remove('bk-is-animating')
+    if (is) {
+      document.documentElement.classList.add('bk-is-animating')
+    } else {
+      document.documentElement.classList.remove('bk-is-animating')
+    }
   })
 
   const toolbarHeight = computed(() => {

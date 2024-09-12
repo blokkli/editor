@@ -189,9 +189,7 @@ const toggleSidebar = () => {
     isDetached.value = false
     return
   }
-  activeSidebar.value === props.id
-    ? (activeSidebar.value = '')
-    : (activeSidebar.value = props.id)
+  activeSidebar.value = activeSidebar.value === props.id ? '' : props.id
   emit('updated')
 }
 

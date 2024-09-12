@@ -63,8 +63,8 @@ export default class BlockExtractor {
       await fs.promises.access(iconPath, fs.constants.F_OK)
       const data = await fs.promises.readFile(iconPath)
       return data.toString()
-    } catch (_e) {
-      // Noop.
+    } catch (e) {
+      console.log(e)
     }
   }
 
@@ -168,6 +168,7 @@ export default class BlockExtractor {
       } catch (e) {
         console.error(
           `Failed to parse component "${filePath}": ${this.composableName} does not contain a valid object literal. No variables and methods are allowed inside ${this.composableName}().`,
+          e,
         )
       }
     }

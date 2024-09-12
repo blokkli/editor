@@ -166,7 +166,11 @@ const onKeyDown = (e: KeyboardEvent) => {
     e.stopPropagation()
   }
   if (e.code === 'Tab') {
-    e.shiftKey ? resultsComponent.prev() : resultsComponent.next()
+    if (e.shiftKey) {
+      resultsComponent.prev()
+    } else {
+      resultsComponent.next()
+    }
     stop()
   } else if (e.code === 'ArrowDown') {
     resultsComponent.next()

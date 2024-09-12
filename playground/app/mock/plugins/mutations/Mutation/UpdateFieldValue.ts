@@ -12,11 +12,16 @@ export class MutationUpdateFieldValue extends Mutation {
     super('update_field_value', configuration)
   }
 
-  override getAffectedUuid(args: MutationUpdateFieldValueArgs): string | undefined {
+  override getAffectedUuid(
+    args: MutationUpdateFieldValueArgs,
+  ): string | undefined {
     return args.uuid
   }
 
-  override execute(context: MutationContext, args: MutationUpdateFieldValueArgs) {
+  override execute(
+    context: MutationContext,
+    args: MutationUpdateFieldValueArgs,
+  ) {
     const proxy = context.getProxy(args.uuid)
     if (!proxy) {
       return

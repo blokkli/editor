@@ -1,4 +1,4 @@
-import { type ComputedRef } from 'vue'
+import type { ComputedRef } from 'vue'
 import type {
   FieldConfig,
   BlockBundleDefinition,

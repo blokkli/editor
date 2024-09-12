@@ -15,7 +15,10 @@ export class MutationAddReusableItem extends Mutation {
     super('add_reusable_item', configuration)
   }
 
-  override execute(context: MutationContext, args: MutationAddReusableItemArgs) {
+  override execute(
+    context: MutationContext,
+    args: MutationAddReusableItemArgs,
+  ) {
     const uuid = this.getUuidForNewEntity()
 
     const block = entityStorageManager.createBlock('from_library', uuid)

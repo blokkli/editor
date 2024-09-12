@@ -11,7 +11,9 @@ export class MutationUpdateOptions extends Mutation {
     super('update_options', configuration)
   }
 
-  override getAffectedUuid(args: MutationUpdateOptionsArgs): string | undefined {
+  override getAffectedUuid(
+    args: MutationUpdateOptionsArgs,
+  ): string | undefined {
     return args.options[0]?.uuid
   }
 

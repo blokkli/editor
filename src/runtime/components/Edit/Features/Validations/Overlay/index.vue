@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import { falsy } from '#blokkli/helpers'
-import { type Validation } from '#blokkli/types'
+import type { Validation } from '#blokkli/types'
 import { useBlokkli, computed } from '#imports'
 import OverlayItem from './Item.vue'
 

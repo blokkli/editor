@@ -241,7 +241,11 @@ const onSelect = (id: string) => {
 const onKeyDown = (e: KeyboardEvent) => {
   if (e.code === 'Tab') {
     e.preventDefault()
-    e.shiftKey ? focusPrev() : focusNext()
+    if (e.shiftKey) {
+      focusPrev()
+    } else {
+      focusNext()
+    }
   } else if (e.code === 'ArrowDown') {
     e.preventDefault()
     focusNext()

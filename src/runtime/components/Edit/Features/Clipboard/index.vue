@@ -106,7 +106,7 @@ const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
 
 const ALLOWED_HTML_ATTRIBUTES = ['href']
 
-const MOCK: ClipboardItem[] = [
+const _MOCK: ClipboardItem[] = [
   {
     type: 'text',
     id: generateUUID(),

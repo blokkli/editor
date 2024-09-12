@@ -6,7 +6,7 @@
 import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 import { getCurrentInstance } from '#imports'
 
-import { type RendererNode } from 'vue'
+import type { RendererNode } from 'vue'
 
 const props = defineProps<{
   id: string

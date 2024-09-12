@@ -268,7 +268,11 @@ onBlokkliEvent('keyPressed', (e) => {
       return
     }
 
-    e.shift ? eventBus.emit('select:previous') : eventBus.emit('select:next')
+    if (e.shift) {
+      eventBus.emit('select:previous')
+    } else {
+      eventBus.emit('select:next')
+    }
     animation.requestDraw()
   } else if (e.code === 'a' && e.meta) {
     // Regular native CTRL+A behaviour should not be overriden.

@@ -1,6 +1,6 @@
 {
   "name": "blokkli-beta",
-  "version": "0.0.1-beta.35",
+  "version": "0.0.1-beta.36",
   "description": "Interactive page building experience for Nuxt",
   "repository": "blokkli/editor",
   "type": "module",
@@ -69,7 +69,7 @@
     "@vue/test-utils": "^2.4.6",
     "changelogen": "^0.5.5",
     "cypress": "^13.14.2",
-    "eslint": "^9.10.0",
+    "eslint": "^8.57.0",
     "eslint-plugin-sonarjs": "^2.0.2",
     "eslint-plugin-tailwindcss": "^3.17.4",
     "gettext-parser": "^8.0.0",

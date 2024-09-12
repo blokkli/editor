@@ -699,7 +699,7 @@ export function toShaderColor(rgba: RGB): RGB {
 export function generateUUID() {
   try {
     return crypto.randomUUID()
-  } catch (_e) {
+  } catch {
     // Noop.
   }
 

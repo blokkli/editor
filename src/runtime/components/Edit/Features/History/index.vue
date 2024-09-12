@@ -51,7 +51,7 @@
           </div>
         </li>
         <li v-if="totalMutations > showAmount" class="bk-history-load-more">
-          <button @click="showAmount += 100" class="bk-history-item-button">
+          <button class="bk-history-item-button" @click="showAmount += 100">
             <strong
               >{{
                 $t('historyShowMore', 'Show @count more').replace(
@@ -69,7 +69,7 @@
             { 'bk-has-shadow': !scrolledToEnd },
           ]"
         >
-          <button @click="setHistoryIndex(-1)" class="bk-history-item-button">
+          <button class="bk-history-item-button" @click="setHistoryIndex(-1)">
             <div>
               <strong>{{
                 $t('historyCurrentRevision', 'Current revision')

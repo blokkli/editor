@@ -37,9 +37,10 @@
 
 <script lang="ts" setup>
 import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
+import type { NuxtSvgSpriteSymbol } from '#nuxt-svg-sprite/runtime'
 
 type Props = {
-  icon?: string
+  icon?: NuxtSvgSpriteSymbol
   title: string
   text: string
 }

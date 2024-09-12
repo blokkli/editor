@@ -243,7 +243,11 @@ function calculatePosition(rect: DOMRect): {
 onBlokkliEvent('keyPressed', (e) => {
   if (e.code === 'Tab') {
     e.originalEvent.preventDefault()
-    e.shift ? prev() : next()
+    if (e.shift) {
+      prev()
+    } else {
+      next()
+    }
   } else if (e.code === 'Escape') {
     e.originalEvent.preventDefault()
     emit('close')

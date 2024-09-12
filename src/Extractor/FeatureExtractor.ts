@@ -95,6 +95,7 @@ export default class Extractor {
       } catch (e) {
         console.error(
           `Failed to parse component "${filePath}": ${this.composableName} does not contain a valid object literal. No variables and methods are allowed inside ${this.composableName}().`,
+          e,
         )
       }
     }

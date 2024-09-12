@@ -18,7 +18,7 @@ const getExisting = (key: string): any => {
     if (value) {
       return JSON.parse(value)
     }
-  } catch (_e) {
+  } catch {
     // Noop.
   }
 }

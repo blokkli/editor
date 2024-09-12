@@ -186,9 +186,11 @@ watch(rootCursor, (cursor) => {
 })
 
 watch(mouseMode, (mode) => {
-  mode
-    ? document.documentElement.classList.add('bk-is-sidebar-interacting')
-    : document.documentElement.classList.remove('bk-is-sidebar-interacting')
+  if (mode) {
+    document.documentElement.classList.add('bk-is-sidebar-interacting')
+  } else {
+    document.documentElement.classList.remove('bk-is-sidebar-interacting')
+  }
 })
 
 const updateStored = () => {

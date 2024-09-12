@@ -41,7 +41,7 @@
 
 <script lang="ts" setup>
 import { computed, useAttrs, inject, provide, ref } from '#imports'
-import { type BlokkliFragmentName } from '#blokkli/definitions'
+import type { BlokkliFragmentName } from '#blokkli/definitions'
 import BlokkliItem from './BlokkliItem.vue'
 
 import type {

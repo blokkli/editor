@@ -10,9 +10,10 @@
 
 <script lang="ts" setup>
 import { computed, defineBlokkli, inject, type Ref } from '#imports'
+import type { NuxtSvgSpriteSymbol } from '#nuxt-svg-sprite/runtime'
 
 type Props = {
-  icon: string
+  icon: NuxtSvgSpriteSymbol
 }
 
 const step = inject<Ref<number>>('hero_step')!
