@@ -1,6 +1,6 @@
 import { createUnplugin } from 'unplugin'
 import MagicString from 'magic-string'
-import { walk, type Node } from 'estree-walker'
+import { walk, type Node } from 'estree-walker-ts'
 import type { Nuxt } from '@nuxt/schema'
 import type { CallExpression, Expression, ObjectExpression } from 'estree'
 import type {
@@ -149,6 +149,7 @@ export const DefinitionPlugin = (
               }
             }
           },
+          leave: () => {},
         })
 
         if (s.hasChanged()) {

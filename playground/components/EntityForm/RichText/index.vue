@@ -1,7 +1,6 @@
 <template>
   <div class="rich-text">
-    <Component
-      :is="CKEditor.component"
+    <Ckeditor
       v-model="markup"
       :editor="ClassicEditor"
       @input="$emit('update:modelValue', $event)"
@@ -13,7 +12,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from '#imports'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
-import CKEditor from '@ckeditor/ckeditor5-vue'
+import { Ckeditor } from '@ckeditor/ckeditor5-vue'
 
 const props = defineProps<{
   modelValue: string
