@@ -51,6 +51,10 @@ const adapterDocs = [
   { text: 'getAllBundles()', link: '/adapter/getAllBundles' },
   { text: 'getFieldConfig()', link: '/adapter/getFieldConfig' },
   { text: 'getEditableFieldConfig()', link: '/adapter/getEditableFieldConfig' },
+  {
+    text: 'getDroppableFieldConfig()',
+    link: '/adapter/getDroppableFieldConfig',
+  },
   { text: 'getConversions()', link: '/adapter/getConversions' },
   { text: 'convertBlocks()', link: '/adapter/convertBlocks' },
   { text: 'getTransformPlugins()', link: '/adapter/getTransformPlugins' },
@@ -195,6 +199,7 @@ export default defineConfig({
             link: '/define-blokkli/render-for',
           },
           { text: 'Block Context', link: '/define-blokkli/block-context' },
+          { text: 'Editable / Droppable', link: '/define-blokkli/editable' },
           { text: 'Editor behaviour', link: '/define-blokkli/editor' },
         ],
       },
