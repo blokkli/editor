@@ -43,6 +43,11 @@ export type SelectionProvider = {
   isDragging: ComputedRef<boolean>
 
   /**
+   * Whether the user is currently dragging at least one existing block.
+   */
+  isDraggingExisting: ComputedRef<boolean>
+
+  /**
    * Whether the user is currently dragging a block.
    */
   draggingMode: Readonly<Ref<InteractionMode | null>>
@@ -232,11 +237,22 @@ export default function (dom: DomProvider): SelectionProvider {
     }
   })
 
+  const isDraggingExisting = computed(() => {
+    return (
+      isDragging.value &&
+      !!dragItems.value.length &&
+      dragItems.value.some(
+        (v) => v.itemType === 'existing' || v.itemType === 'existing_structure',
+      )
+    )
+  })
+
   return {
     uuids: selectedUuids,
     blocks,
     activeFieldKey,
     isDragging,
+    isDraggingExisting,
     setActiveFieldKey,
     editableActive,
     isChangingOptions,

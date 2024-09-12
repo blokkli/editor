@@ -29,8 +29,12 @@
             <div>{{ selection.uuids.value.length }}</div>
           </div>
           <div>
-            <div>Is dragging</div>
+            <div>isDragging</div>
             <div>{{ selection.isDragging.value }}</div>
+          </div>
+          <div>
+            <div>isDraggingExisting</div>
+            <div>{{ selection.isDraggingExisting.value }}</div>
           </div>
           <div>
             <div>Is multiselecting</div>

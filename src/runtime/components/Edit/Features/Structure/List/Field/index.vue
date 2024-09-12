@@ -32,8 +32,10 @@
         <div
           v-if="
             showTargets &&
-            !selection.uuidsMap.value[item.uuid] &&
+            (!selection.isDraggingExisting.value ||
+              !selection.uuidsMap.value[item.uuid]) &&
             (!list[index + 1] ||
+              !selection.isDraggingExisting.value ||
               !selection.uuidsMap.value[list[index + 1].uuid])
           "
           :style="targetStyle"
