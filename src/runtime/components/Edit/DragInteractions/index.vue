@@ -250,6 +250,7 @@ function onPointerUp(e: PointerEvent) {
   }
   lastInteractedElement = clicked
   if (clicked?.uuid) {
+    dom.refreshBlockRect(clicked.uuid)
     if (keyboard.isPressingControl.value || selection.isMultiSelecting.value) {
       // Toggle the clicked block.
       eventBus.emit('select:toggle', clicked.uuid)
