@@ -288,13 +288,16 @@ export default defineNuxtModule<ModuleOptions>({
       : []
 
     await featureExtractor.addFiles([...builtinFeatures, ...customFeatures])
-    const features = featureExtractor.getFeatures().filter((v) => {
+    const extractedFeatures = featureExtractor.getFeatures()
+    const features = extractedFeatures.filter((v) => {
       return v.id !== 'theme' || moduleOptions.enableThemeEditor
     })
 
     const featuresContext: AlterFeatures = {
       features,
     }
+
+    const allFeatureIds = extractedFeatures.map((v) => v.id)
 
     if (moduleOptions.alterFeatures) {
       featuresContext.features = await Promise.resolve(
@@ -353,7 +356,7 @@ export const availableFeaturesAtBuild = ${JSON.stringify(
           availableFeaturesAtBuild,
         )} as const
 
-export type ValidFeatureKey = typeof availableFeaturesAtBuild[number]
+export type ValidFeatureKey = ${allFeatureIds.map((v) => '"' + v + '"').join(' | ')}
 
 type FeatureComponent = {
   id: string
