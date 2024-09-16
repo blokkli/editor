@@ -111,7 +111,7 @@ defineDropAreas((dragItems) => {
   // Generate a drop area for every matching droppable field.
   return dom
     .getAllDroppableFields()
-    .map<DropArea | undefined>((field) => {
+    .map<DropArea | undefined>((field: DroppableEntityField) => {
       const config = types.getDroppableFieldConfig(field.fieldName, field.host)
       // @TODO: This should be provided by the adapter on the item.
       if (config.allowedEntityType !== 'media') {

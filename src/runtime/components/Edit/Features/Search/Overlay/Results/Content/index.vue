@@ -96,7 +96,7 @@ const doSearch = () => {
     // This component can only ever be rendered if this adapter method exists,
     // so we can safely assume it's there.
     adapter.getContentSearchResults!(props.tab, props.search).then(
-      (newItems) => {
+      (newItems: SearchContentItem[]) => {
         items.value = newItems
         itemsSearchTerm.value = searchTerm
         isLoading.value = false

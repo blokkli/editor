@@ -98,7 +98,7 @@ import {
   nextTick,
 } from '#imports'
 import { Sortli, Icon } from '#blokkli/components'
-import type { MediaLibraryFilter } from './../types'
+import type { MediaLibraryFilter, MediaLibraryGetResults } from './../types'
 import type { BlokkliIcon } from '#blokkli/icons'
 
 const props = defineProps<{
@@ -150,15 +150,16 @@ watch(key, () => {
   page.value = 0
 })
 
-const { data, status } = await useLazyAsyncData(
-  () => {
-    return adapter.mediaLibraryGetResults!({
-      filters: filterValues.value,
-      page: page.value,
-    })
-  },
-  { watch: [key, page] },
-)
+const { data, status } =
+  await useLazyAsyncData<MediaLibraryGetResults<any> | null>(
+    () => {
+      return adapter.mediaLibraryGetResults!({
+        filters: filterValues.value,
+        page: page.value,
+      })
+    },
+    { watch: [key, page] },
+  )
 
 watch(data, () => {
   nextTick(() => {

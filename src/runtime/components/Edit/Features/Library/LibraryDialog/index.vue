@@ -93,7 +93,7 @@ import type {
 } from '#blokkli/adapter'
 import { FormOverlay, Icon } from '#blokkli/components'
 import Loading from './../../../Loading/index.vue'
-import type { BlokkliFieldElement } from '#blokkli/types'
+import type { BlokkliFieldElement, FieldConfig } from '#blokkli/types'
 import { ref, useBlokkli, useAsyncData, computed, watch } from '#imports'
 import LibraryListItem from './Item/index.vue'
 
@@ -115,13 +115,12 @@ const selectedItem = ref('')
 const page = ref(0)
 
 const allowedBundles = computed<string[]>(() => {
-  return (
-    types.getFieldConfig(
-      props.field.hostEntityType,
-      props.field.hostEntityBundle,
-      props.field.name,
-    )?.allowedBundles || []
-  ).filter((v) => {
+  const fieldConfig: FieldConfig | undefined = types.getFieldConfig(
+    props.field.hostEntityType,
+    props.field.hostEntityBundle,
+    props.field.name,
+  )
+  return (fieldConfig?.allowedBundles || []).filter((v) => {
     return types.getBlockBundleDefinition(v)?.allowReusable
   })
 })

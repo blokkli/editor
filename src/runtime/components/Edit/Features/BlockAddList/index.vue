@@ -60,7 +60,11 @@ import {
   nextTick,
 } from '#imports'
 import { AddListItem } from '#blokkli/components'
-import type { Command, DraggableExistingBlock } from '#blokkli/types'
+import type {
+  Command,
+  DraggableExistingBlock,
+  FieldConfig,
+} from '#blokkli/types'
 import { getDefaultDefinition } from '#blokkli/definitions'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
@@ -225,7 +229,7 @@ const getBundlesForAppendCommands = () => {
   }
 
   const block = selection.blocks.value[0]
-  const field = types.getFieldConfig(
+  const field: FieldConfig | undefined = types.getFieldConfig(
     block.hostType,
     block.hostBundle,
     block.hostFieldName,
@@ -256,7 +260,7 @@ const getAppendEndCommands = (): Command[] => {
       context.value.entityType,
       context.value.entityBundle,
     )
-    .flatMap((field) => {
+    .flatMap((field: FieldConfig) => {
       if (field.cardinality !== -1) {
         const key = getFieldKey(context.value.entityUuid, field.name)
         const count = state.getFieldBlockCount(key)
@@ -267,7 +271,7 @@ const getAppendEndCommands = (): Command[] => {
       }
       return field.allowedBundles
         .filter((v) => !reservedBundles.includes(v))
-        .map((bundle) => {
+        .map((bundle: string) => {
           const definition = types.getBlockBundleDefinition(bundle)
           return {
             id: 'block_add_list:append_end:' + bundle + field.name,
@@ -350,29 +354,31 @@ const getInsertCommands = (
       }
     })
 
-  const commands: Command[] = nestedFields.flatMap((field) => {
-    return field.allowedBundles.map((bundle) => {
-      const label = types.getBlockBundleDefinition(bundle)?.label || bundle
-      return {
-        id: 'block_add_list:insert:' + field.name + ':' + bundle,
-        label: $t(
-          'addBlockCommand.insertInField',
-          'Insert "@block" into "@field"',
-        )
-          .replace('@block', label)
-          .replace('@field', field.label),
-        group: 'add',
-        bundle,
-        callback: () =>
-          commandCallbackInsert(
-            bundle,
-            field.name,
-            field.entityType,
-            field.uuid,
-          ),
-      }
-    })
-  })
+  const commands: Command[] = nestedFields.flatMap(
+    (field: FieldConfig & { uuid: string }) => {
+      return field.allowedBundles.map((bundle: string) => {
+        const label = types.getBlockBundleDefinition(bundle)?.label || bundle
+        return {
+          id: 'block_add_list:insert:' + field.name + ':' + bundle,
+          label: $t(
+            'addBlockCommand.insertInField',
+            'Insert "@block" into "@field"',
+          )
+            .replace('@block', label)
+            .replace('@field', field.label),
+          group: 'add',
+          bundle,
+          callback: () =>
+            commandCallbackInsert(
+              bundle,
+              field.name,
+              field.entityType,
+              field.uuid,
+            ),
+        }
+      })
+    },
+  )
 
   if (block.hostType === runtimeConfig.itemEntityType) {
     const parentBlock = dom.findBlock(block.hostUuid)
