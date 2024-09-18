@@ -58,3 +58,47 @@
 .bk-library-dialog {
   @apply p-20;
 }
+
+.bk.bk-library-edit-overlay {
+  @apply fixed top-50 left-0 w-screen bottom-0 flex flex-col z-library-edit-dialog;
+
+  iframe {
+    @apply absolute top-0 left-0 w-full h-full;
+  }
+}
+
+.bk.bk-library-edit-overlay-header {
+  @apply h-50 bg-lime-normal;
+  @apply flex items-center;
+  @apply fixed top-0 left-0 w-full z-library-edit-dialog;
+
+  h2 {
+    @apply font-bold text-black/60 text-base leading-none px-25;
+
+    span:nth-child(2) {
+      @apply font-normal;
+    }
+  }
+
+  > button {
+    @apply h-50 flex items-center px-10 gap-10 font-semibold leading-none;
+    @apply text-lime-light hover:bg-lime-dark/30;
+    @apply text-black/60;
+    @apply ml-auto;
+
+    svg {
+      @apply size-20 fill-current;
+    }
+  }
+}
+
+.bk-use-animations {
+  .bk-library-edit-header-enter-active,
+  .bk-library-edit-header-leave-active {
+    @apply transition duration-300 ease-swing;
+  }
+  .bk-library-edit-header-enter-from,
+  .bk-library-edit-header-leave-to {
+    @apply -translate-y-full;
+  }
+}

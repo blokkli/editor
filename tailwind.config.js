@@ -42,6 +42,7 @@ const zIndex = [
   'edit-form-header',
   'menu-overlay',
   'menu',
+  'library-edit-dialog',
 ].reduce((acc, key, index) => {
   acc[key] = z(index * 10000)
   return acc

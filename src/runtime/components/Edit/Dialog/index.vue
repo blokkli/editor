@@ -19,7 +19,12 @@
         </button>
       </div>
 
-      <div class="bk-dialog-content">
+      <div
+        class="bk-dialog-content"
+        :class="{
+          'bk-is-fullscreen': fullScreen,
+        }"
+      >
         <div class="bk-dialog-content-inner">
           <div v-if="lead" class="bk bk-dialog-lead">
             {{ lead }}
@@ -67,6 +72,7 @@ const props = withDefaults(
     isLoading?: boolean
     hideButtons?: boolean
     icon?: BlokkliIcon
+    fullScreen?: boolean
   }>(),
   {
     width: 600,
@@ -80,6 +86,13 @@ const props = withDefaults(
 const style = computed(() => {
   if (ui.isMobile.value) {
     return {}
+  }
+
+  if (props.fullScreen) {
+    return {
+      maxWidth: '100vw',
+      height: '100vh',
+    }
   }
 
   if (typeof props.width === 'number') {

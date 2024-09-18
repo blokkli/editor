@@ -16,6 +16,7 @@ import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import type { DraggableExistingBlock } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
 import { getDefinition } from '#blokkli/definitions'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 defineBlokkliFeature({
   id: 'edit',
@@ -36,10 +37,7 @@ const block = computed(() => {
 })
 
 const canEdit = computed(() => {
-  if (state.editMode.value !== 'editing') {
-    return false
-  }
-
+  // Editing is only possible when a single block is selected.
   if (!block.value) {
     return false
   }
@@ -58,10 +56,15 @@ const canEdit = computed(() => {
   // For reusable blocks, editing is only possible if the adapter implements
   // the getLibraryItemEditUrl method.
   if (block.value.libraryItemUuid) {
-    return !!adapter.getLibraryItemEditUrl
+    return (
+      !!adapter.getLibraryItemEditUrl &&
+      (state.editMode.value === 'editing' ||
+        state.editMode.value === 'translating') &&
+      !block.value.isNew
+    )
   }
 
-  return true
+  return state.editMode.value === 'editing'
 })
 
 function onClick(items: DraggableExistingBlock[]) {
@@ -80,9 +83,11 @@ function onClick(items: DraggableExistingBlock[]) {
   // context is the library item entity.
   if (item.libraryItemUuid && adapter.getLibraryItemEditUrl) {
     const url = adapter.getLibraryItemEditUrl(item.libraryItemUuid)
-
-    // Open the edit URL in a new window.
-    window.open(url, '_blank')?.focus()
+    eventBus.emit('library:edit-item', {
+      url,
+      label: item.editTitle,
+      uuid: item.libraryItemUuid,
+    })
     return
   }
 
@@ -91,6 +96,10 @@ function onClick(items: DraggableExistingBlock[]) {
     bundle: item.itemBundle,
   })
 }
+
+onBlokkliEvent('item:doubleClick', function (block) {
+  onClick([block])
+})
 </script>
 
 <script lang="ts">

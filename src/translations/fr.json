@@ -555,6 +555,14 @@
     "source": "Failed to add block to library.",
     "translation": "L'élément n’a pas pu être rendu réutilisable."
   },
+  "libraryItemEditOverlayBack": {
+    "source": "Back to page",
+    "translation": ""
+  },
+  "libraryItemEditOverlayTitle": {
+    "source": "Edit reusable block",
+    "translation": ""
+  },
   "libraryPlaceBundleSelectLabel": {
     "source": "Bundle",
     "translation": ""
