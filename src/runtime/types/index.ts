@@ -655,9 +655,9 @@ export interface DraggableExistingBlock {
   reusableBundle?: string
 
   /**
-   * The reusable UUID if this block is a from_library type.
+   * The UUID of the library item this block belongs to.
    */
-  reusableUuid?: string
+  libraryItemUuid?: string
 
   /**
    * The title to use when displaying the block in lists during editing.
