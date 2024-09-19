@@ -24,7 +24,7 @@ const { adapter } = defineBlokkliFeature({
     'Provides a menu button to publish the changes of the current entity.',
 })
 
-const { state, $t, eventBus } = useBlokkli()
+const { state, $t, eventBus, broadcast, context } = useBlokkli()
 const { mutations, canEdit, mutateWithLoadingState } = state
 
 const onClick = async () => {
@@ -39,7 +39,10 @@ const onClick = async () => {
     if (validations.length) {
       eventBus.emit('publish:failed')
     }
+    return
   }
+
+  broadcast.emit('published', { uuid: context.value.entityUuid })
 }
 </script>
 

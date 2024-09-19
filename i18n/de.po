@@ -626,6 +626,14 @@ msgctxt "libraryError"
 msgid "Failed to add block to library."
 msgstr "Das Element konnte nicht wiederverwendbar gemacht werden."
 
+msgctxt "libraryItemEditOverlayBack"
+msgid "Back to page"
+msgstr "Zurück zur Seite"
+
+msgctxt "libraryItemEditOverlayTitle"
+msgid "Edit reusable block"
+msgstr "Wiederverwendbaren Block bearbeiten"
+
 msgctxt "libraryPlaceBundleSelectLabel"
 msgid "Bundle"
 msgstr "Typ"

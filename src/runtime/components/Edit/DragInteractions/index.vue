@@ -241,10 +241,7 @@ function onPointerUp(e: PointerEvent) {
         if (!block) {
           return
         }
-        eventBus.emit('item:edit', {
-          uuid: lastInteractedElement.uuid,
-          bundle: block.itemBundle,
-        })
+        eventBus.emit('item:doubleClick', block)
       }
     }
   }

@@ -555,6 +555,14 @@
     "source": "Failed to add block to library.",
     "translation": "Das Element konnte nicht wiederverwendbar gemacht werden."
   },
+  "libraryItemEditOverlayBack": {
+    "source": "Back to page",
+    "translation": "Zurück zur Seite"
+  },
+  "libraryItemEditOverlayTitle": {
+    "source": "Edit reusable block",
+    "translation": "Wiederverwendbaren Block bearbeiten"
+  },
   "libraryPlaceBundleSelectLabel": {
     "source": "Bundle",
     "translation": "Typ"

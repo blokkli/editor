@@ -555,6 +555,14 @@
     "source": "Failed to add block to library.",
     "translation": "Das Elemänt het nid chönne zur Bibliothek drzuegfüegt wärde. "
   },
+  "libraryItemEditOverlayBack": {
+    "source": "Back to page",
+    "translation": ""
+  },
+  "libraryItemEditOverlayTitle": {
+    "source": "Edit reusable block",
+    "translation": ""
+  },
   "libraryPlaceBundleSelectLabel": {
     "source": "Bundle",
     "translation": ""

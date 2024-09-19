@@ -7,6 +7,7 @@
     :data-reusable-bundle="item.bundle"
     :data-reusable-uuid="item.uuid"
     :data-bk-library-label="libraryItem?.label"
+    :data-bk-library-item-uuid="libraryItem?.uuid"
     data-blokkli-is-reusable="true"
     :parent-type="parentType"
   />
@@ -23,6 +24,7 @@ import type { FieldListItem } from '#blokkli/types'
 interface LibraryItem {
   block?: FieldListItem
   label?: string
+  uuid?: string
 }
 
 const props = defineProps<{
@@ -31,9 +33,6 @@ const props = defineProps<{
 
 const { index, options, parentType } = defineBlokkli({
   bundle: 'from_library',
-  editor: {
-    disableEdit: true,
-  },
 })
 
 // Reusable items inherit the options from this wrapper paragraph.

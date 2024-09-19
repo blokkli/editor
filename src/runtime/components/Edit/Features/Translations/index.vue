@@ -72,6 +72,7 @@
   <PluginItemAction
     v-if="editMode === 'translating'"
     id="translate"
+    :disabled="!canTranslateBlock"
     :title="$t('translationsItemAction', 'Translate')"
     icon="translate"
     @click="onTranslate"
@@ -98,6 +99,7 @@ import type {
   Language,
 } from '#blokkli/types'
 import Banner from './Banner/index.vue'
+import { getDefinition } from '#blokkli/definitions'
 
 const { adapter } = defineBlokkliFeature({
   id: 'translations',
@@ -107,7 +109,7 @@ const { adapter } = defineBlokkliFeature({
   description: 'Adds support for block translations.',
 })
 
-const { eventBus, state, context, $t, ui } = useBlokkli()
+const { eventBus, state, context, $t, ui, selection } = useBlokkli()
 const { translation, editMode } = state
 
 const isOpen = ref(false)
@@ -150,6 +152,29 @@ const items = computed<TranslationStateItem[]>(() => {
       return null
     })
     .filter(falsy)
+})
+
+const canTranslateBlock = computed(() => {
+  if (selection.blocks.value.length !== 1) {
+    return false
+  }
+  const block = selection.blocks.value[0]
+
+  if (block.libraryItemUuid) {
+    return false
+  }
+
+  const definition = getDefinition(
+    block.itemBundle,
+    block.hostFieldListType,
+    block.parentBlockBundle,
+  )
+
+  if (definition?.editor?.disableEdit) {
+    return false
+  }
+
+  return true
 })
 
 function onClick(item: TranslationStateItem, event: Event) {

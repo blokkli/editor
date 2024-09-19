@@ -50,7 +50,7 @@
   </Teleport>
 
   <Teleport to="body">
-    <transition name="bk-slide-in" :duration="200">
+    <transition name="bk-slide-up" :duration="200">
       <LibraryDialog
         v-if="placedAction && adapter.getLibraryItems"
         :field="placedAction.field"
@@ -59,6 +59,12 @@
       />
     </transition>
   </Teleport>
+  <EditReusable
+    v-if="editingLibraryItem"
+    v-bind="editingLibraryItem"
+    @submit="onSubmitLibraryItem"
+    @close="cancelLibraryItemEdit"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -66,8 +72,10 @@ import { ref, computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginItemAction, PluginAddAction } from '#blokkli/plugins'
 import ReusableDialog from './ReusableDialog/index.vue'
 import LibraryDialog from './LibraryDialog/index.vue'
+import EditReusable from './EditReusable/index.vue'
 import { getDefinition } from '#blokkli/definitions'
-import type { ActionPlacedEvent } from '#blokkli/types'
+import type { ActionPlacedEvent, LibraryEditItemEvent } from '#blokkli/types'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { adapter } = defineBlokkliFeature({
   id: 'library',
@@ -175,6 +183,21 @@ const canMakeReusable = computed(
     itemBundle?.value?.allowReusable &&
     fromLibraryAllowedInList.value,
 )
+
+const editingLibraryItem = ref<LibraryEditItemEvent | null>(null)
+
+onBlokkliEvent('library:edit-item', function (e) {
+  editingLibraryItem.value = e
+})
+
+function cancelLibraryItemEdit() {
+  editingLibraryItem.value = null
+}
+
+function onSubmitLibraryItem() {
+  eventBus.emit('reloadState')
+  cancelLibraryItemEdit()
+}
 </script>
 
 <script lang="ts">

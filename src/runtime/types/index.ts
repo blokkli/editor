@@ -655,9 +655,9 @@ export interface DraggableExistingBlock {
   reusableBundle?: string
 
   /**
-   * The reusable UUID if this block is a from_library type.
+   * The UUID of the library item this block belongs to.
    */
-  reusableUuid?: string
+  libraryItemUuid?: string
 
   /**
    * The title to use when displaying the block in lists during editing.
@@ -995,6 +995,12 @@ export type DropClipboardItemEvent = {
   afterUuid?: string
 }
 
+export type LibraryEditItemEvent = {
+  url: string
+  uuid: string
+  label?: string
+}
+
 export type EventbusEvents = {
   select: string | string[]
   'item:edit': EditBlockEvent
@@ -1024,6 +1030,8 @@ export type EventbusEvents = {
   // Add action dropped.
   'item:dropped': undefined
   'block:append': BlockAppendEvent
+
+  'item:doubleClick': DraggableExistingBlock
 
   scrollIntoView: ScrollIntoViewEvent
   'animationFrame:before': undefined
@@ -1063,6 +1071,11 @@ export type EventbusEvents = {
    * Emitted when publishing failed.
    */
   'publish:failed': undefined
+
+  /**
+   * Edit a library item.
+   */
+  'library:edit-item': LibraryEditItemEvent
 }
 
 export type Eventbus = Emitter<EventbusEvents>

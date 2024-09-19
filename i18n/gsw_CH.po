@@ -601,6 +601,14 @@ msgctxt "libraryError"
 msgid "Failed to add block to library."
 msgstr "Das Elemänt het nid chönne zur Bibliothek drzuegfüegt wärde. "
 
+msgctxt "libraryItemEditOverlayBack"
+msgid "Back to page"
+msgstr ""
+
+msgctxt "libraryItemEditOverlayTitle"
+msgid "Edit reusable block"
+msgstr ""
+
 msgctxt "libraryPlaceBundleSelectLabel"
 msgid "Bundle"
 msgstr ""

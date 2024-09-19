@@ -1,8 +1,11 @@
 import mitt, { type Emitter } from 'mitt'
 import { onBeforeUnmount } from 'vue'
 
-type BroadcastEvents = {
+export type BroadcastEvents = {
   previewFocused: undefined
+  published: { uuid: string }
+  closeEditor: { uuid: string }
+  editorLoaded: { uuid: string }
 }
 
 export type BroadcastProvider = Emitter<BroadcastEvents>

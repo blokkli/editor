@@ -686,6 +686,11 @@ export default defineBlokkliEditAdapter((ctx) => {
         ...mapEntityFields(ContentPage),
       ])
     },
+
+    // @TODO: Implement in playground.
+    // getLibraryItemEditUrl(uuid) {
+    //   return 'http://localhost:3000/de?blokkliEditing=1'
+    // },
   }
 
   return adapter

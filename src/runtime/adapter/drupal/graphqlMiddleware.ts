@@ -439,6 +439,18 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       return { url: prefix + url + `?paragraphsBlokkli=true` }
     }
 
+    const getLibraryItemEditUrl: DrupalAdapter['getLibraryItemEditUrl'] = (
+      uuid,
+    ) => {
+      const url = buildFormUrl(
+        ['blokkli', 'library-item', uuid],
+        ctx.value.language,
+      ).url
+
+      // Directly build the URL to start blökkli for the paragraphs_library_item.
+      return `${url}&blokkliEditing=${uuid}&language=${ctx.value.language}`
+    }
+
     const formFrameBuilder: DrupalAdapter['formFrameBuilder'] = (e) => {
       const entityType = ctx.value.entityType.toLowerCase()
       if (e.id === 'block:add') {
@@ -788,6 +800,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       clipboardMapBundle,
       addBlockFromClipboardItem,
       changeLanguage,
+      getLibraryItemEditUrl,
     }
   },
 )

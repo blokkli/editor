@@ -20,12 +20,13 @@ defineBlokkliFeature({
   description: 'Provides a menu button to exit the editor without saving.',
 })
 
-const { $t } = useBlokkli()
+const { $t, broadcast, context } = useBlokkli()
 
 const route = useRoute()
 
 function onClick() {
   nextTick(() => {
+    broadcast.emit('closeEditor', { uuid: context.value.entityUuid })
     window.location.href = route.path
   })
 }

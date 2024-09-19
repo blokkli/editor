@@ -302,6 +302,11 @@ export interface BlokkliAdapter<T> {
   addLibraryItem?: (e: AddReusableItemEvent) => Promise<MutationResponseLike<T>>
 
   /**
+   * Build the URL to edit a library item.
+   */
+  getLibraryItemEditUrl?: (uuid: string) => string
+
+  /**
    * Delete multiple items.
    */
   deleteBlocks?: (uuids: string[]) => Promise<MutationResponseLike<T>>

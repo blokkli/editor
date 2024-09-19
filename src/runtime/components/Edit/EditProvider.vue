@@ -166,6 +166,7 @@ onMounted(() => {
   setRootClasses()
   baseLogger.log('EditProvider mounted')
   dom.init()
+  broadcast.emit('editorLoaded', { uuid: props.entityUuid })
 })
 
 onBeforeUnmount(() => {
