@@ -18,7 +18,6 @@
         "90d01577-babc-45b5-a03b-2ba266822425",
         "d8d3ad51-7c37-4a27-ad64-e04ee8a4f842",
         "ab4f48ef-a397-4390-b52e-b867ce25fbf3",
-        "ab4f48ef-a397-4390-b52e-b867ce25fbf3",
         "0039cbfb-6ee7-48db-9e9f-7117c488299b"
       ]
     },
@@ -815,8 +814,8 @@
       "uuid": "49e2da9e-4e87-4570-9909-458494c9cf3d",
       "values": {
         "options": [{ "key": "color", "value": "normal" }],
-        "title": ["Documentation"],
-        "url": ["https://docs.blokk.li"]
+        "title": ["Explore Drupal Starterkit"],
+        "url": ["https://blokkli-starterkit.netlify.app/"]
       }
     },
     {
