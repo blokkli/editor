@@ -5,6 +5,14 @@
 import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
 
 /**
+ * Map all kinds of truthy values for a checkbox.
+ * Returns our "internal" value of a checkbox state.
+ */
+export function mapCheckboxTrue(v?: unknown): '1' | '0' {
+  return v === true || v === '1' || v === 1 || v === 'true' ? '1' : '0'
+}
+
+/**
  * Get the runtime value for an option.
  *
  * Internally, all option values are stored as strings. This function maps the stored data to the runtime value.
@@ -14,12 +22,7 @@ export function getRuntimeOptionValue(
   value: string | string[] | boolean | undefined | null | number,
 ): string | string[] | boolean | number {
   if (definition.type === 'checkbox') {
-    if (typeof value === 'string') {
-      return value === '1' || value === 'true'
-    } else if (typeof value === 'boolean') {
-      return value
-    }
-    return false
+    return mapCheckboxTrue(value) === '1'
   } else if (definition.type === 'radios') {
     if (typeof value === 'string') {
       return value

@@ -69,6 +69,7 @@ import OptionColor from './Color/index.vue'
 import OptionRange from './Range/index.vue'
 import OptionNumber from './Number/index.vue'
 import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
+import { mapCheckboxTrue } from '#blokkli/helpers/runtimeHelpers'
 
 const { state } = useBlokkli()
 
@@ -99,10 +100,7 @@ const validateValue = (
       return v
     }
   } else if (props.option.type === 'checkbox') {
-    if (typeof v === 'boolean') {
-      return v ? '1' : '0'
-    }
-    return v === '1' ? '1' : '0'
+    return mapCheckboxTrue(v)
   } else if (props.option.type === 'checkboxes') {
     const options = Object.keys(props.option.options || {})
     const items = Array.isArray(v)

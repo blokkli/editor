@@ -79,6 +79,11 @@ export function defineBlokkli<
   const editContext = inject<ItemEditContext | null>(INJECT_EDIT_CONTEXT, null)
 
   const options = computed(() => {
+    // For these two "special" bundles, at this stage we just return the raw
+    // options defined on the item itself and the mutated options of the item.
+    // These options will never be directly returned in defineBlokkli().
+    // For example the from_library block renders the "actual" block again, at
+    // which point this computed property is built again.
     if (
       config.bundle === 'from_library' ||
       config.bundle === 'blokkli_fragment'

@@ -291,7 +291,12 @@
       "bundle": "title",
       "uuid": "3284016a-aa33-4994-8e4d-c0a6f9bd91c7",
       "values": {
-        "options": [],
+        "options": [
+          {
+            "key": "showInMenu",
+            "value": 1
+          }
+        ],
         "tagline": ["Simplicity"],
         "title": ["Essential Tools for Seamless Editing"],
         "lead": [
