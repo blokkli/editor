@@ -44,7 +44,7 @@ const onSelect = (uuids: string[]) => {
 let startTimeout: any = null
 
 onBlokkliEvent('mouse:down', (e) => {
-  if (!enabled.value || e.type !== 'mouse') {
+  if (!enabled.value || e.type !== 'mouse' || selection.isDragging.value) {
     return
   }
   if (keyboard.isPressingSpace.value || keyboard.isPressingControl.value) {

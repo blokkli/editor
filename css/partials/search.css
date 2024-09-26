@@ -1,7 +1,7 @@
 .bk.bk-search {
   @apply fixed right-0 bottom-0 z-search overflow-hidden md:shadow-xl-left top-40 md:top-0 w-full md:w-[600px] transition;
   &.bk-is-translucent {
-    @apply opacity-0;
+    @apply opacity-0 pointer-events-none;
   }
 }
 
