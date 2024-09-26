@@ -75,6 +75,7 @@
     :disabled="!canTranslateBlock"
     :title="$t('translationsItemAction', 'Translate')"
     icon="translate"
+    :weight="-100"
     @click="onTranslate"
   />
 </template>
@@ -100,6 +101,7 @@ import type {
 } from '#blokkli/types'
 import Banner from './Banner/index.vue'
 import { getDefinition } from '#blokkli/definitions'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { adapter } = defineBlokkliFeature({
   id: 'translations',
@@ -109,7 +111,7 @@ const { adapter } = defineBlokkliFeature({
   description: 'Adds support for block translations.',
 })
 
-const { eventBus, state, context, $t, ui, selection } = useBlokkli()
+const { eventBus, state, context, $t, ui, selection, types } = useBlokkli()
 const { translation, editMode } = state
 
 const isOpen = ref(false)
@@ -173,6 +175,15 @@ const canTranslateBlock = computed(() => {
   if (definition?.editor?.disableEdit) {
     return false
   }
+  const type = types.getBlockBundleDefinition(block.itemBundle)
+
+  if (!type) {
+    return false
+  }
+
+  if (!type.isTranslatable) {
+    return false
+  }
 
   return true
 })
@@ -194,6 +205,12 @@ function onTranslate(items: DraggableExistingBlock[]) {
     bundle: items[0].itemBundle,
   })
 }
+
+onBlokkliEvent('item:doubleClick', function (block) {
+  if (editMode.value === 'translating' && canTranslateBlock.value) {
+    onTranslate([block])
+  }
+})
 
 onMounted(() => {
   // Make sure the user is not trying to edit a translation that does not exist.

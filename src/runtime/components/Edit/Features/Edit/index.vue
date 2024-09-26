@@ -1,5 +1,6 @@
 <template>
   <PluginItemAction
+    v-if="isEditing"
     id="edit"
     :title="$t('edit', 'Edit')"
     :disabled="!canEdit"
@@ -35,6 +36,8 @@ const block = computed(() => {
 
   return selection.blocks.value[0]
 })
+
+const isEditing = computed(() => state.editMode.value === 'editing')
 
 const canEdit = computed(() => {
   // Editing is only possible when a single block is selected.
