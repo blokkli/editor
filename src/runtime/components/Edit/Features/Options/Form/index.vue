@@ -258,6 +258,7 @@ const visibleOptions = computed<OptionItem[]>(() => {
       parentType: parentType as any,
       props: ctxProps as any,
       entity: context.value,
+      fieldListType: block?.hostFieldListType || 'default',
     })
 
   return availableOptions.value.filter((v) => visibleKeys.includes(v.property))

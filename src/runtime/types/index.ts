@@ -127,6 +127,7 @@ type DetermineVisibleOptionsContext<
   options: (T extends BlockDefinitionOptionsInput ? WithOptions<T> : object) &
     (G extends ValidGlobalConfigKeys ? GlobalOptionsKeyTypes<G> : object)
   parentType: BlockBundleWithNested | undefined
+  fieldListType: ValidFieldListTypes
   props: Record<string, any>
   entity: AdapterContext
 }
