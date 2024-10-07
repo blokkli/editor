@@ -1,3 +1,5 @@
+import packageJson from './../package.json'
+
 export default defineNuxtConfig({
   ssr: false,
 
@@ -14,6 +16,9 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     openaiKey: process.env.OPENAI_KEY || '',
+    public: {
+      version: packageJson.version,
+    },
   },
 
   app: {

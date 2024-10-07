@@ -51,12 +51,6 @@ implements all features available in the editor. It provides a new edit state
 entity that stores the applied mutations and implements a GraphQL schema
 extension to integrate the adapter.
 
-## Roadmap
-
-blökkli is currently still in beta and therefore subject to change. If you're
-considering integrating it in production sites you should probably wait until
-the first stable release.
-
 ## Acknowledgments
 
 blökkli was developed by [dulnan](https://github.com/dulnan) at

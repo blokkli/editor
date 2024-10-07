@@ -9,9 +9,8 @@
         </div>
         <NuxtLink to="/" class="text-lg md:text-2xl text-mono-800">
           <span class="font-extrabold">blökkli</span>
-          <sup
-            class="ml-5 text-[0.5em] uppercase align-middle font-bold text-red-normal"
-            >beta</sup
+          <sup class="ml-5 text-[0.5em] align-middle text-mono-800"
+            >v{{ version }}</sup
           >
         </NuxtLink>
       </div>
@@ -39,4 +38,8 @@
   </header>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { useRuntimeConfig } from '#imports'
+
+const version = useRuntimeConfig().public.version
+</script>
