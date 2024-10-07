@@ -20,7 +20,7 @@
   >
     <BlokkliItem
       v-for="(item, i) in list"
-      :key="item.uuid"
+      :key="item.uuid + fieldListType"
       :uuid="item.uuid"
       :bundle="item.bundle"
       :is-new="item.isNew"
