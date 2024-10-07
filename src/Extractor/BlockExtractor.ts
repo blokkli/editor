@@ -209,9 +209,13 @@ export default class BlockExtractor {
               acc.push(
                 `${bundle}__parent_block_${entry.parentBundle}: ${v.componentName}`,
               )
-            } else {
+            } else if ('fieldList' in entry) {
               acc.push(
                 `${bundle}__field_list_type_${entry.fieldList}: ${v.componentName}`,
+              )
+            } else if ('fieldListType' in entry) {
+              acc.push(
+                `${bundle}__field_list_type_${entry.fieldListType}: ${v.componentName}`,
               )
             }
           })
@@ -612,9 +616,13 @@ export function getBlokkliFragmentComponent(name: string): any {
               acc.push(
                 `block_${bundle}__parent_block_${entry.parentBundle}: ${v.componentName}`,
               )
-            } else {
+            } else if ('fieldList' in entry) {
               acc.push(
                 `block_${bundle}__field_list_type_${entry.fieldList}: ${v.componentName}`,
+              )
+            } else if ('fieldListType' in entry) {
+              acc.push(
+                `block_${bundle}__field_list_type_${entry.fieldListType}: ${v.componentName}`,
               )
             }
           })

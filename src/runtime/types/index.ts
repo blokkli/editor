@@ -262,11 +262,19 @@ export type BlockDefinitionRenderForParent = {
   parentBundle: BlockBundleWithNested
 }
 
-export type BlockDefinitionRenderForFieldListType = {
+export type BlockDefinitionRenderForFieldList = {
+  /**
+   * @deprecated Use `fieldListType` instead.
+   */
   fieldList: ValidFieldListTypes
+}
+
+export type BlockDefinitionRenderForFieldListType = {
+  fieldListType: ValidFieldListTypes
 }
 export type BlockDefinitionRenderFor =
   | BlockDefinitionRenderForParent
+  | BlockDefinitionRenderForFieldList
   | BlockDefinitionRenderForFieldListType
 
 export type BlockDefinitionInput<
