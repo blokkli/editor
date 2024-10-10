@@ -126,8 +126,11 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         status,
       }).then(mapMutation)
 
-    const publish: DrupalAdapter['publish'] = () =>
-      useGraphqlMutation('pbPublish', ctx.value).then(mapMutation)
+    const publish: DrupalAdapter['publish'] = (options) =>
+      useGraphqlMutation('pbPublish', {
+        ...ctx.value,
+        createNewState: !options.closeAfterPublish,
+      }).then(mapMutation)
 
     const importFromExisting: DrupalAdapter['importFromExisting'] = (e) =>
       useGraphqlMutation('pbCopyFromExisting', {

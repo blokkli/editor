@@ -405,6 +405,10 @@ msgctxt "feature_import-existing_setting_showDialogWhenEmpty_label"
 msgid "Show import dialog at start when page is empty"
 msgstr "Importdialog beim Start anzeigen, wenn die Seite leer ist"
 
+msgctxt "feature_publish_setting_closeAfterPublish_label"
+msgid "Close editor after publishing"
+msgstr "Nach «Veröffentlichen» den Editor schliessen"
+
 msgctxt "feature_settings_setting_lowPerformanceMode_label"
 msgid "Enable low performance mode"
 msgstr "Modus für niedrige Leistung aktivieren"
@@ -780,9 +784,21 @@ msgstr ""
 "Zeigt einen QR-Code an, um eine Vorschau der Änderungen mit Ihrem "
 "Smartphone zu öffnen."
 
+msgctxt "publishAndCloseLabel"
+msgid "Publish & Close"
+msgstr "Veröffentlichen & Schliessen"
+
+msgctxt "publishAndCloseLabelUnpublished"
+msgid "Save & Close"
+msgstr "Speichern & Schliessen"
+
 msgctxt "publishDescription"
-msgid "Make all changes public"
-msgstr "Alle Änderungen öffentlich machen"
+msgid "Publish all changes."
+msgstr "Alle Änderungen veröffentlichen"
+
+msgctxt "publishDescriptionUnpublished"
+msgid "Save all changes while keeping page unpublished"
+msgstr "Alle Änderungen speichern ohne die Seite zu publizieren"
 
 msgctxt "publishError"
 msgid "Changes could not be published."
@@ -791,6 +807,10 @@ msgstr "Änderungen konnten nicht publiziert werden."
 msgctxt "publishLabel"
 msgid "Publish"
 msgstr "Veröffentlichen"
+
+msgctxt "publishLabelUnpublished"
+msgid "Save"
+msgstr "Speichern"
 
 msgctxt "publishSuccess"
 msgid "Changes published successfully."
@@ -836,7 +856,7 @@ msgstr "Änderungen konnten nicht verworfen werden."
 
 msgctxt "revertMenuDescription"
 msgid "Restore currently published state"
-msgstr "Aktuell veröffentlichter Zustand Wiederherstellen"
+msgstr "Aktuell veröffentlichten Zustand wiederherstellen"
 
 msgctxt "revertMenuTitle"
 msgid "Discard..."
