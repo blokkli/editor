@@ -687,6 +687,10 @@ export default defineBlokkliEditAdapter((ctx) => {
       ])
     },
 
+    publish() {
+      throw new Error('Publish is not supported on the demo page.')
+    },
+
     // @TODO: Implement in playground.
     // getLibraryItemEditUrl(uuid) {
     //   return 'http://localhost:3000/de?blokkliEditing=1'

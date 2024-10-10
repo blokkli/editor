@@ -27,6 +27,8 @@ export type ModuleOptionsSettings = {
     disable?: boolean
     default?: boolean
   }
+  // Close editor after publishing
+  'feature:publish:closeAfterPublish'?: { disable?: boolean; default?: boolean }
   // Enable low performance mode
   'feature:settings:lowPerformanceMode'?: {
     disable?: boolean

@@ -386,6 +386,10 @@ msgctxt "feature_import-existing_setting_showDialogWhenEmpty_label"
 msgid "Show import dialog at start when page is empty"
 msgstr "Importdialog bim Start aazeige wenn d'Sitte leer isch"
 
+msgctxt "feature_publish_setting_closeAfterPublish_label"
+msgid "Close editor after publishing"
+msgstr ""
+
 msgctxt "feature_settings_setting_lowPerformanceMode_label"
 msgid "Enable low performance mode"
 msgstr ""
@@ -751,9 +755,21 @@ msgid ""
 "smartphone."
 msgstr ""
 
+msgctxt "publishAndCloseLabel"
+msgid "Publish & Close"
+msgstr ""
+
+msgctxt "publishAndCloseLabelUnpublished"
+msgid "Save & Close"
+msgstr ""
+
 msgctxt "publishDescription"
-msgid "Make all changes public"
+msgid "Publish all changes."
 msgstr "Alli änderige öffentlich mache."
+
+msgctxt "publishDescriptionUnpublished"
+msgid "Save all changes while keeping page unpublished"
+msgstr ""
 
 msgctxt "publishError"
 msgid "Changes could not be published."
@@ -762,6 +778,10 @@ msgstr "D'Änderige hän nid chönne publiziert wärde."
 msgctxt "publishLabel"
 msgid "Publish"
 msgstr "Publiziere"
+
+msgctxt "publishLabelUnpublished"
+msgid "Save"
+msgstr ""
 
 msgctxt "publishSuccess"
 msgid "Changes published successfully."
