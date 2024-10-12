@@ -9,7 +9,7 @@ import { sortObjectKeys } from './../helpers'
 import { defu } from 'defu'
 import { falsy } from '../vitePlugin'
 
-type ExtractedBlockDefinitionInput = BlockDefinitionInput
+type ExtractedBlockDefinitionInput = BlockDefinitionInput<any, any>
 type ExtractedFragmentDefinitionInput = FragmentDefinitionInput
 
 type ExtractedDefinition = {
@@ -342,12 +342,23 @@ export const getFragmentDefinition = (name: string): FragmentDefinitionInput<Rec
       },
       {},
     )
+    const bundlesWithVisibleLanguage = Object.values(this.definitions)
+      .map((definition) => {
+        if (
+          definition?.definition.globalOptions?.includes('bkVisibleLanguages')
+        ) {
+          return definition.definition.bundle
+        }
+      })
+      .filter(falsy)
     return `import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
 
 type GlobalOptionsDefaults = {
   type: BlockOptionDefinition['type']
   default: any
 }
+
+export const bundlesWithVisibleLanguage = ${JSON.stringify(bundlesWithVisibleLanguage)}
 
 export const globalOptionsDefaults: Record<string, GlobalOptionsDefaults> = ${JSON.stringify(
       defaults,

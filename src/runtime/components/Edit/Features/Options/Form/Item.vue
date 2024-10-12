@@ -1,11 +1,17 @@
 <template>
   <div class="bk-blokkli-item-options-item" @keydown.stop>
     <div
+      v-if="showLabel"
       :class="isGrouped ? 'bk-blokkli-item-options-item-label' : 'bk-tooltip'"
     >
       <span>{{ option.label }}</span>
     </div>
-    <div class="bk-blokkli-item-options-item-content">
+    <div
+      class="bk-blokkli-item-options-item-content"
+      :class="{
+        'bk-is-grouped': isGrouped,
+      }"
+    >
       <OptionRadios
         v-if="option.type === 'radios'"
         v-model="value"
@@ -26,8 +32,9 @@
         v-model="value"
         :property="property"
         :label="option.label"
-        :options="option.options"
+        :options="checkboxOptions"
         :value="value"
+        :is-grouped="isGrouped"
       />
       <OptionText
         v-else-if="option.type === 'text'"
@@ -84,6 +91,44 @@ const props = defineProps<{
   isGrouped?: boolean
 }>()
 
+const showLabel = computed(() => {
+  if (props.isGrouped) {
+    if (props.option.type === 'checkbox') {
+      return false
+    }
+  }
+
+  return true
+})
+
+const checkboxOptions = computed<{ value: string; label: string }[]>(() => {
+  if (props.option.type !== 'checkboxes') {
+    return []
+  }
+
+  if (props.property === 'bkVisibleLanguages') {
+    return (state.translation.value.availableLanguages || []).map(
+      (language) => {
+        return {
+          value: language.id,
+          label: language.name,
+        }
+      },
+    )
+  }
+
+  return Object.entries(props.option.options).map(([value, label]) => {
+    return {
+      value,
+      label,
+    }
+  })
+})
+
+const validCheckboxValues = computed(() =>
+  checkboxOptions.value.map((v) => v.value),
+)
+
 const validateValue = (
   v: string | string[] | boolean | undefined | null | number,
 ): string | undefined => {
@@ -102,13 +147,12 @@ const validateValue = (
   } else if (props.option.type === 'checkbox') {
     return mapCheckboxTrue(v)
   } else if (props.option.type === 'checkboxes') {
-    const options = Object.keys(props.option.options || {})
     const items = Array.isArray(v)
       ? v
       : (typeof v === 'string' ? v : '').split(',')
     return items
       .filter((key) => {
-        return options.includes(key)
+        return validCheckboxValues.value.includes(key)
       })
       .join(',')
   } else if (props.option.type === 'range' || props.option.type === 'number') {

@@ -11,6 +11,7 @@ export const INJECT_PROVIDER_BLOCKS = Symbol('blokkli_provider_blocks')
 export const INJECT_BLOCK_ITEM = Symbol('blokkli_block_item')
 export const INJECT_MUTATED_FIELDS_MAP = Symbol('blokkli_mutated_fields_map')
 export const INJECT_ENTITY_CONTEXT = Symbol('blokkli_entity_context')
+export const INJECT_PROVIDER_CONTEXT = Symbol('blokkli_provider_context')
 export const INJECT_FRAGMENT_CONTEXT = Symbol('blokkli_fragment_context')
 export const INJECT_EDIT_FIELD_LIST_COMPONENT = Symbol(
   'blokkli_edit_field_list_component',

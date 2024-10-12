@@ -1,10 +1,10 @@
 <template>
   <div
     class="bk-blokkli-item-options-checkboxes"
-    :class="{ 'bk-is-active': isOpen }"
+    :class="{ 'bk-is-active': isOpen, 'bk-is-grouped': isGrouped }"
   >
-    <button @click="isOpen = !isOpen">
-      <span>{{ label }}</span>
+    <button v-if="!isGrouped" @click="isOpen = !isOpen">
+      <span>{{ visibleLabel }}</span>
       <div>
         <template v-if="checked.length < 4">
           <span v-for="item in checked" :key="item" class="bk-pill">{{
@@ -15,20 +15,20 @@
       </div>
       <Icon name="caret" />
     </button>
-    <div v-if="isOpen">
+    <div v-if="isOpen || isGrouped">
       <label
-        v-for="option in mappedOptions"
-        :key="option.key"
+        v-for="option in options"
+        :key="option.value"
         class="bk-blokkli-item-options-checkbox"
       >
         <input
           v-model="checked"
           type="checkbox"
           class="peer"
-          :value="option.key"
+          :value="option.value"
         />
         <div />
-        <span>{{ option.value }}</span>
+        <span>{{ option.label }}</span>
       </label>
     </div>
   </div>
@@ -45,14 +45,15 @@ const props = defineProps<{
   label: string
   property: string
   modelValue: string
-  options: Record<string, string>
+  options: { value: string; label: string }[]
+  isGrouped?: boolean
 }>()
 
 const emit = defineEmits(['update:modelValue'])
 
 const isOpen = ref(false)
 
-const optionOrder = computed(() => Object.keys(props.options))
+const optionOrder = computed(() => props.options.map((v) => v.value))
 
 const checked = computed<string[]>({
   get() {
@@ -72,6 +73,13 @@ const checked = computed<string[]>({
   },
 })
 
+const visibleLabel = computed(() => {
+  if (props.property === 'bkVisibleLanguages' && !checked.value.length) {
+    return $t('optionBkVisibleLanguagesAll', 'Always visible')
+  }
+  return props.label
+})
+
 const toggle = (key: string) => {
   if (!checked.value.includes(key)) {
     checked.value = [...checked.value, key]
@@ -80,43 +88,37 @@ const toggle = (key: string) => {
   }
 }
 
-const mappedOptions = computed(() => {
-  return Object.entries(props.options).map(([key, value]) => {
-    return { key, value }
-  })
-})
-
 defineCommands(() => {
   if (state.editMode.value !== 'editing') {
     return
   }
-  return optionOrder.value.map((key) => {
-    if (checked.value.includes(key)) {
+  return props.options.map((option) => {
+    if (checked.value.includes(option.value)) {
       return {
-        id: 'options:' + props.property + ':select:' + key,
+        id: 'options:' + props.property + ':select:' + option.value,
         label: $t(
           'optionsCommand.unselectCheckboxValue',
           'Unselect "@value" in "@option"',
         )
           .replace('@option', props.label)
-          .replace('@value', props.options[key]),
+          .replace('@value', option.label),
         group: 'selection',
         icon: 'form',
-        callback: () => toggle(key),
+        callback: () => toggle(option.value),
       }
     }
 
     return {
-      id: 'options:' + props.property + ':unselect:' + key,
+      id: 'options:' + props.property + ':unselect:' + option.value,
       label: $t(
         'optionsCommand.selectCheckboxValue',
         'Select "@value" in "@option"',
       )
         .replace('@option', props.label)
-        .replace('@value', props.options[key]),
+        .replace('@value', option.label),
       group: 'selection',
       icon: 'form',
-      callback: () => toggle(key),
+      callback: () => toggle(option.value),
     }
   })
 })

@@ -261,7 +261,19 @@ export default defineNuxtModule<ModuleOptions>({
   },
   defaults: {
     pattern: ['components/Blokkli/**/*.{js,ts,vue}'],
-    globalOptions: {} as BlockDefinitionOptionsInput,
+    globalOptions: {
+      bkVisibleLanguages: {
+        type: 'checkboxes',
+        label: 'Visible languages',
+        options: {},
+        default: [],
+      },
+      bkHiddenGlobally: {
+        type: 'checkbox',
+        label: 'Hide globally',
+        default: false,
+      },
+    },
     chunkNames: ['global'] as string[],
     itemEntityType: 'block',
   },
