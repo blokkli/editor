@@ -526,12 +526,30 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
 
   let stateReloadTimeout: number | null = null
 
+  function getUuidsToUpdateRectsFor(): string[] {
+    const allUuids = Object.keys(registeredBlocks)
+
+    // Up until a certain amount of blocks, it's still reasonable to call
+    // getBoundingClientRect() on a lot of elements. This has the benefit
+    // of making sure that the rects are always up to date.
+    if (allUuids.length < 150) {
+      return allUuids
+    }
+
+    // For performance reasons, only update rects for blocks that are
+    // currently visible. This will result in weird behaviour, e.g. in the
+    // artboard overview or when using Tab to select the next one.
+    // However, performance is more important at this point, or else the editor
+    // might become too sluggish to actually use.
+    return getVisibleBlocks()
+  }
+
   function updateVisibleRects() {
-    const visible = getVisibleBlocks()
+    const toUpdate = getUuidsToUpdateRectsFor()
     const offset = ui.artboardOffset.value
     const scale = ui.artboardScale.value
-    for (let i = 0; i < visible.length; i++) {
-      const uuid = visible[i]
+    for (let i = 0; i < toUpdate.length; i++) {
+      const uuid = toUpdate[i]
       const el = registeredBlocks[uuid]
       if (!el) {
         continue
