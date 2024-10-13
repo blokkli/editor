@@ -102,17 +102,18 @@ Cypress.Commands.add('bkGetAllBlocks', (bundle) => {
 })
 
 Cypress.Commands.add('shouldBeVisible', { prevSubject: true }, (element) => {
-  // eslint-disable-next-line no-unused-expressions
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   expect(element[0].checkVisibility()).to.be.true
   return element
 })
 
 Cypress.Commands.add('shouldNotBeVisible', { prevSubject: true }, (element) => {
-  // eslint-disable-next-line no-unused-expressions
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   expect(element[0].checkVisibility()).to.be.false
   return element
 })
 
+// @ts-ignore
 Cypress.Commands.add('bkUnselect', () => cy.get('body').type('{esc}'))
 
 Cypress.Commands.add('bkOpenMenu', () => {
@@ -155,6 +156,7 @@ Cypress.Commands.add('bkOpenSidebar', (id) => {
 
 Cypress.Commands.add(
   'bkGetIframeDocument',
+  // @ts-ignore
   { prevSubject: true },
   (subject) => {
     const getIframeDocument = () => {

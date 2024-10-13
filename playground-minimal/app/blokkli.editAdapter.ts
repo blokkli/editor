@@ -1,6 +1,6 @@
 import { defineBlokkliEditAdapter } from '#blokkli/adapter'
 import type { FieldListItem } from '#blokkli/types'
-import { getBlocks } from '~/helpers/minimalState'
+import { getBlocks } from './../helpers/minimalState'
 
 type CustomMinimalState = {
   blocks: FieldListItem[]
@@ -20,7 +20,7 @@ const getPropsForNewBlock = (bundle: string) => {
   return {}
 }
 
-export default defineBlokkliEditAdapter<CustomMinimalState>((ctx) => {
+export default defineBlokkliEditAdapter<CustomMinimalState>((_ctx) => {
   const minimalState: CustomMinimalState = {
     blocks: getBlocks(),
   }
@@ -123,8 +123,8 @@ export default defineBlokkliEditAdapter<CustomMinimalState>((ctx) => {
     addNewBlock(e) {
       const newBlock = {
         uuid: Math.round(Date.now() + Math.random() * 100000000).toString(),
-        bundle: e.type,
-        props: getPropsForNewBlock(e.type),
+        bundle: e.bundle,
+        props: getPropsForNewBlock(e.bundle),
       }
 
       const afterIndex = e.afterUuid

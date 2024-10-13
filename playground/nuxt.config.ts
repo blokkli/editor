@@ -37,6 +37,10 @@ export default defineNuxtConfig({
     },
   },
 
+  typescript: {
+    shim: true,
+  },
+
   blokkli: {
     itemEntityType: 'block',
     fieldListTypes: ['header', 'inline'],
