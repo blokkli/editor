@@ -1,7 +1,6 @@
 <template>
-  <div
+  <ScrollBoundary
     class="bk-command-palette bk-control"
-    @wheel.passive.stop
     @keydown.stop="onKeyDown"
     @keyup.stop
     @click.stop
@@ -30,7 +29,7 @@
         @select="onSelect($event)"
       />
     </div>
-  </div>
+  </ScrollBoundary>
 </template>
 
 <script lang="ts" setup>
@@ -43,7 +42,7 @@ import {
   nextTick,
   onBeforeUnmount,
 } from '#imports'
-import { Icon } from '#blokkli/components'
+import { Icon, ScrollBoundary } from '#blokkli/components'
 import type { Command, CommandGroup } from '#blokkli/types'
 import Group from './Group/index.vue'
 import { falsy } from '#blokkli/helpers'

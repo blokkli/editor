@@ -12,7 +12,7 @@
     icon="history"
     weight="-100"
   >
-    <div class="bk bk-history bk-control" @wheel.capture.stop>
+    <div class="bk bk-history bk-control">
       <ul v-if="mapped.length">
         <li
           v-for="item in mapped"

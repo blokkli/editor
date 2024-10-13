@@ -1,8 +1,7 @@
 <template>
-  <div
+  <ScrollBoundary
     class="bk-search-box"
     @keydown="onKeyDown"
-    @wheel="onWheel"
     @mousedown.stop
     @click.stop
   >
@@ -63,12 +62,12 @@
         </template>
       </div>
     </div>
-  </div>
+  </ScrollBoundary>
 </template>
 
 <script lang="ts" setup>
 import { watch, ref, computed, useBlokkli, onMounted, nextTick } from '#imports'
-import { Icon } from '#blokkli/components'
+import { Icon, ScrollBoundary } from '#blokkli/components'
 import { modulo } from '#blokkli/helpers'
 import ResultsPage from './Results/Page/index.vue'
 import ResultsContent from './Results/Content/index.vue'
@@ -192,15 +191,6 @@ const onKeyDown = (e: KeyboardEvent) => {
     emit('close')
     stop()
   }
-}
-
-function onWheel(e: WheelEvent) {
-  if (props.isDragging) {
-    return
-  }
-
-  e.preventDefault()
-  e.stopImmediatePropagation()
 }
 
 watch(

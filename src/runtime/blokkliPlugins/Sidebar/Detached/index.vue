@@ -9,46 +9,48 @@
     @pointermove="onPointerMove"
     @focus.capture="onFocus"
   >
-    <div class="bk">
-      <div
-        class="bk-sidebar-title"
-        @mousedown.stop="onMouseDown($event, 'move')"
-      >
-        <slot name="icon">
-          <Icon v-if="icon" :name="icon" />
-        </slot>
-        <span>{{ title }}</span>
-        <button
-          @click.prevent.stop.capture="isMinimized = !isMinimized"
-          @mousedown.capture.stop
+    <ScrollBoundary>
+      <div class="bk">
+        <div
+          class="bk-sidebar-title"
+          @mousedown.stop="onMouseDown($event, 'move')"
         >
-          <Icon :name="isMinimized ? 'window-maximize' : 'window-minimize'" />
-        </button>
-        <button
-          @click.prevent.stop.capture="$emit('close')"
-          @mousedown.capture.stop
-        >
-          <Icon name="close" />
-        </button>
+          <slot name="icon">
+            <Icon v-if="icon" :name="icon" />
+          </slot>
+          <span>{{ title }}</span>
+          <button
+            @click.prevent.stop.capture="isMinimized = !isMinimized"
+            @mousedown.capture.stop
+          >
+            <Icon :name="isMinimized ? 'window-maximize' : 'window-minimize'" />
+          </button>
+          <button
+            @click.prevent.stop.capture="$emit('close')"
+            @mousedown.capture.stop
+          >
+            <Icon name="close" />
+          </button>
+        </div>
       </div>
-    </div>
-    <div class="bk-sidebar-detached-inner" :style="innerStyle">
-      <slot :width="userWidth" :height="userHeight" />
-      <template v-if="!size && !isMinimized">
-        <div
-          class="bk-sidebar-detached-handle bk-is-bottom"
-          @mousedown.stop.prevent="onMouseDown($event, 'resize-bottom')"
-        />
-        <div
-          class="bk-sidebar-detached-handle bk-is-right"
-          @mousedown.stop.prevent="onMouseDown($event, 'resize-right')"
-        />
-        <div
-          class="bk-sidebar-detached-handle bk-is-bottom-right"
-          @mousedown.stop.prevent="onMouseDown($event, 'resize-bottom-right')"
-        />
-      </template>
-    </div>
+      <div class="bk-sidebar-detached-inner" :style="innerStyle">
+        <slot :width="userWidth" :height="userHeight" />
+        <template v-if="!size && !isMinimized">
+          <div
+            class="bk-sidebar-detached-handle bk-is-bottom"
+            @mousedown.stop.prevent="onMouseDown($event, 'resize-bottom')"
+          />
+          <div
+            class="bk-sidebar-detached-handle bk-is-right"
+            @mousedown.stop.prevent="onMouseDown($event, 'resize-right')"
+          />
+          <div
+            class="bk-sidebar-detached-handle bk-is-bottom-right"
+            @mousedown.stop.prevent="onMouseDown($event, 'resize-bottom-right')"
+          />
+        </template>
+      </div>
+    </ScrollBoundary>
   </ViewportBlockingRect>
 </template>
 
@@ -61,7 +63,7 @@ import {
   watch,
   useState,
 } from '#imports'
-import { Icon, ViewportBlockingRect } from '#blokkli/components'
+import { Icon, ViewportBlockingRect, ScrollBoundary } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli/icons'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
