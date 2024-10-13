@@ -64,7 +64,7 @@ export default createConfigForNuxt(
       'tailwindcss/no-custom-classname': [
         'error',
         {
-          whitelist: ['bk-grid-overlay', 'bk-drop-element'],
+          whitelist: ['bk-grid-overlay', 'bk-drop-element', 'dragboard-thumb'],
         },
       ],
     },

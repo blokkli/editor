@@ -25,6 +25,8 @@ export class MediaImage extends Media {
       new FieldUrl('url', 'URL'),
       new FieldText('alt', 'Alt Text'),
       new FieldText('filename', 'File name'),
+      new FieldText('width', 'Width'),
+      new FieldText('height', 'Height'),
     ]
   }
 
@@ -44,6 +46,14 @@ export class MediaImage extends Media {
     return this.get<FieldText>('filename').getText()
   }
 
+  width(): string {
+    return this.get<FieldText>('width').getText()
+  }
+
+  height(): string {
+    return this.get<FieldText>('height').getText()
+  }
+
   override title(): string {
     return this.alt()
   }
@@ -53,6 +63,8 @@ export class MediaImage extends Media {
       url: this.url(),
       alt: this.alt(),
       filename: this.filename(),
+      width: this.width(),
+      height: this.height(),
     }
   }
 }

@@ -97,13 +97,13 @@ function getInteractedElement(
 }
 
 function onPointerMove(e: PointerEvent) {
-  e.preventDefault()
-  e.stopPropagation()
-  e.stopImmediatePropagation()
   animation.setMouseCoords(e.clientX, e.clientY)
   if (keyboard.isPressingSpace.value || state.editMode.value !== 'editing') {
     return
   }
+  e.preventDefault()
+  e.stopPropagation()
+  e.stopImmediatePropagation()
   if (e.pointerType === 'touch') {
     return onTouchMove(e)
   }

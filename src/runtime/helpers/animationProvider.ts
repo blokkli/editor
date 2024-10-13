@@ -58,7 +58,7 @@ export default function (ui: UiProvider): AnimationProvider {
 
   const webglSupported = ref<boolean | null>(null)
 
-  useAnimationFrame(() => {
+  useAnimationFrame((time) => {
     // Make sure we don't loop when it's not needed.
     if (iterator < 1) {
       return
@@ -69,7 +69,7 @@ export default function (ui: UiProvider): AnimationProvider {
 
     // Let the "Artboard" feature alter the position/scale of the root element
     // before triggering the main animation loop event.
-    eventBus.emit('animationFrame:before')
+    eventBus.emit('animationFrame:before', time)
 
     eventBus.emit('animationFrame', {
       mouseX,

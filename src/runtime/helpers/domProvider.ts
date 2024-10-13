@@ -126,6 +126,7 @@ export type DomProvider = {
   getBlockVisibilities(): Record<string, boolean>
   getVisibleBlocks(): string[]
   getVisibleFields(): string[]
+  isBlockVisible(uuid: string): boolean
 
   getActiveProviderElement: () => HTMLElement
 
@@ -231,7 +232,12 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
           (entry.target.closest('[data-uuid]') as HTMLElement | undefined)
             ?.dataset.uuid
         const fieldKey = entry.target.dataset.fieldKey
-        const rect = entry.boundingClientRect
+        // Using entry.boundingClientRect here would result in wrong values,
+        // because the IntersectionObserver is queued and could be delayed.
+        // If we were to derive the document-relative position for a block
+        // using these potentially stale values, it would result in completely
+        // wrong position data.
+        const rect = entry.target.getBoundingClientRect()
         if (fieldKey) {
           if (entry.isIntersecting) {
             visibleFields.add(fieldKey)
@@ -634,6 +640,10 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     return el
   }
 
+  function isBlockVisible(uuid: string): boolean {
+    return visibleBlocks.has(uuid)
+  }
+
   return {
     findBlock,
     getAllBlocks,
@@ -656,6 +666,7 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     getBlockRect,
     getFieldRect,
     refreshBlockRect,
+    isBlockVisible,
     isReady: computed(() => mutationsReady.value && intersectionReady.value),
     init,
     getDragElement,

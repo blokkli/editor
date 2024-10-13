@@ -56,6 +56,22 @@ msgctxt "artboard"
 msgid "Artboard"
 msgstr "Zeichenfläche"
 
+msgctxt "artboardOverviewHide"
+msgid "Hide overview"
+msgstr "Übersicht verstecken"
+
+msgctxt "artboardOverviewShow"
+msgid "Show overview"
+msgstr "Übersicht anzeigen"
+
+msgctxt "artboardOverviewToggle"
+msgid "Toggle overview"
+msgstr "Übersicht umschalten"
+
+msgctxt "artboardOverviewTourText"
+msgid "Displays a top level overview of your content."
+msgstr "Zeigt eine schematische Übersicht aller Inhalte an."
+
 msgctxt "artboardResetZoom"
 msgid "Reset zoom"
 msgstr "Zoom zurücksetzen"

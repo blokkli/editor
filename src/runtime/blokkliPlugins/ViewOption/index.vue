@@ -5,6 +5,7 @@
       ref="button"
       class="bk-toolbar-button"
       :class="{ 'bk-is-inactive': !isActive }"
+      :style="{ order: weight || 0 }"
       @click.prevent.stop="onClick"
     >
       <slot name="icon">
@@ -47,6 +48,7 @@ const props = defineProps<{
   icon?: BlokkliIcon
   tourText?: string
   modelValue?: boolean
+  weight?: number | string
 }>()
 
 const emit = defineEmits<{

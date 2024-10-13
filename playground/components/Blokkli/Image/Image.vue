@@ -6,7 +6,14 @@
         'overflow-hidden shadow-xl rounded-lg bg-white': options.elevated,
       }"
     >
-      <img v-if="url" :src="url" :alt="alt" loading="lazy" />
+      <img
+        v-if="url"
+        :src="url"
+        :alt="alt"
+        loading="lazy"
+        :width="width"
+        :height="height"
+      />
     </div>
   </div>
 </template>
@@ -32,7 +39,7 @@ const { options, parentType } = defineBlokkli({
 })
 
 const props = defineProps<{
-  imageReference: MediaImage | object
+  imageReference: MediaImage
 }>()
 
 const url = computed(() => {
@@ -45,6 +52,20 @@ const url = computed(() => {
 const alt = computed(() => {
   if (props.imageReference instanceof MediaImage) {
     return props.imageReference.alt()
+  }
+  return ''
+})
+
+const width = computed(() => {
+  if (props.imageReference instanceof MediaImage) {
+    return props.imageReference.width()
+  }
+  return ''
+})
+
+const height = computed(() => {
+  if (props.imageReference instanceof MediaImage) {
+    return props.imageReference.height()
   }
   return ''
 })

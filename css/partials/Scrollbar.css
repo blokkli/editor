@@ -1,26 +1,43 @@
-.bk.bk-artboard-scrollbar {
-  @apply fixed bg-mono-300 z-artboard-scrollbar transition overflow-hidden;
-  contain: strict;
-  button {
-    @apply bg-mono-500/50 block;
-  }
+.bk-html-root {
   --bk-artboard-scrollbar-size: 4px;
   @screen md {
     --bk-artboard-scrollbar-size: 10px;
   }
 
-  &.bk-orientation-height {
+  @screen lg {
+    --bk-artboard-scrollbar-size: 16px;
+  }
+}
+
+.bk.bk-artboard-scrollbar {
+  @apply fixed bg-mono-300 z-artboard-scrollbar transition overflow-hidden;
+  contain: strict;
+  button {
+    @apply bg-mono-500/50 block rounded-full;
+  }
+
+  @apply py-5;
+
+  &.bk-orientation-y {
     width: var(--bk-artboard-scrollbar-size);
     top: calc(var(--bk-root-offset-top));
     bottom: calc(var(--bk-root-offset-bottom));
     right: calc(var(--bk-root-offset-right));
+
+    html.bk-has-sidebar-right & {
+      right: calc(var(--bk-root-offset-right) + var(--bk-sidebar-width-right));
+    }
+
+    > div {
+      @apply h-full;
+    }
 
     button {
       @apply w-full;
     }
   }
 
-  &.bk-orientation-width {
+  &.bk-orientation-x {
     height: var(--bk-artboard-scrollbar-size);
     left: calc(var(--bk-root-offset-left));
     right: calc(var(--bk-root-offset-right));
@@ -28,11 +45,14 @@
     button {
       @apply h-full;
     }
+    > div {
+      @apply w-full;
+    }
   }
 
   &.bk-is-active,
   &:hover {
-    @apply bg-mono-400;
+    @apply bg-mono-300;
     button {
       @apply bg-mono-600;
     }

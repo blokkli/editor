@@ -13,7 +13,7 @@
     meta
     key-code="0"
     region="view-options"
-    weight="10"
+    weight="100"
     @click="resetZoom"
   >
     <div class="bk-feature-canvas-button">
@@ -21,38 +21,28 @@
     </div>
   </PluginToolbarButton>
 
-  <Scrollbar
-    :padding="props.padding"
-    :offset="ui.artboardOffset.value.y"
-    :root-size="ui.viewport.value.height"
-    :artboard-size="ui.artboardSize.value.height"
-    :scale="ui.artboardScale.value"
-    orientation="height"
-    @page-down="onPageDown"
-    @page-up="onPageUp"
-    @set-offset="setOffset('y', $event)"
-  />
+  <PluginViewOption
+    id="artboardOverview"
+    v-model="showOverview"
+    :label="$t('artboardOverviewToggle', 'Toggle overview')"
+    :title-on="$t('artboardOverviewShow', 'Show overview')"
+    :title-off="$t('artboardOverviewHide', 'Hide overview')"
+    :tour-text="
+      $t(
+        'artboardOverviewTourText',
+        `Displays a top level overview of your content.`,
+      )
+    "
+    icon="eye"
+    key-code="O"
+    weight="90"
+  >
+    <Teleport v-if="showOverview" to="body">
+      <Overview :dragboard="artboard" />
+    </Teleport>
+  </PluginViewOption>
 
-  <Scrollbar
-    :padding="props.padding"
-    :offset="ui.artboardOffset.value.x"
-    :root-size="ui.viewport.value.width"
-    :artboard-size="ui.artboardSize.value.width"
-    :scale="ui.artboardScale.value"
-    orientation="width"
-    @page-down="onPageDown"
-    @page-up="onPageUp"
-    @set-offset="setOffset('x', $event)"
-  />
-
-  <Teleport v-if="showDebug" to="body">
-    <div class="bk-artboard-debug">
-      <div v-for="v in debugValues" :key="v.key">
-        <div>{{ v.key }}</div>
-        <div>{{ v.value }}</div>
-      </div>
-    </div>
-  </Teleport>
+  <Scrollbar :dragboard="artboard" orientation="y" />
 </template>
 
 <script lang="ts" setup>
@@ -65,17 +55,18 @@ import {
   onBeforeUnmount,
 } from '#imports'
 import type { Coord } from '#blokkli/types'
-import { PluginToolbarButton } from '#blokkli/plugins'
+import { PluginToolbarButton, PluginViewOption } from '#blokkli/plugins'
+import Overview from './Overview/index.vue'
 import Scrollbar from './Scrollbar/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
-import { Artboard, type ArtboardOptions } from './Artboard'
+import { DragboardDom, type DragboardOptions } from 'dragboard'
 
 const { context, storage, ui, animation, $t, dom } = useBlokkli()
 
 const zoomLevel = computed(() => Math.round(ui.artboardScale.value * 100) + '%')
 
-const showDebug = ref(false)
+const showOverview = ref(false)
 
 const props = withDefaults(
   defineProps<{
@@ -93,10 +84,21 @@ const props = withDefaults(
   },
 )
 
-const options = computed<ArtboardOptions>(() => {
+const options = computed<DragboardOptions>(() => {
   return {
     maxScale: ui.isMobile.value ? 1 : 3,
     scrollSpeed: props.scrollSpeed,
+    touchDirectionThresholdRatio: 0,
+    padding: {
+      top: ui.visibleViewport.value.y + props.padding,
+      left: ui.visibleViewport.value.x + props.padding,
+      right:
+        ui.viewport.value.width -
+        ui.visibleViewport.value.width -
+        ui.visibleViewport.value.x +
+        props.padding,
+      bottom: props.padding,
+    },
   }
 })
 
@@ -115,80 +117,44 @@ const saveState = () => {
   if (!props.persist) {
     return
   }
-  savedState.value = { offset: artboard.offset, scale: artboard.scale }
+  savedState.value = {
+    offset: artboard.getOffset(),
+    scale: artboard.getScale(),
+  }
 }
 
-function getArtboard(): Artboard {
-  return new Artboard(ui.artboardElement(), ui.rootElement(), {
-    x: savedState.value?.offset.x,
-    y: savedState.value?.offset.y,
-    scale: savedState.value?.scale,
-    ...options.value,
-  })
+function getArtboard(): DragboardDom {
+  if (savedState.value) {
+    return new DragboardDom(ui.artboardElement(), ui.rootElement(), {
+      initTransform: {
+        x: savedState.value.offset.x,
+        y: savedState.value.offset.y,
+        scale: savedState.value?.scale,
+      },
+      ...options.value,
+    })
+  }
+  return new DragboardDom(ui.artboardElement(), ui.rootElement(), options.value)
 }
 
 const artboard = getArtboard()
 
-function setOffset(key: 'x' | 'y', value: number) {
-  artboard.stopAnimate()
-  artboard.offset[key] = value
-}
+onBlokkliEvent('animationFrame:before', (time) => {
+  artboard.loop(time)
+  const artboardSize = artboard.getArtboardSize()
+  if (artboardSize) {
+    ui.artboardSize.value.height = artboardSize.height
+    ui.artboardSize.value.width = artboardSize.width
+  }
 
-type DebugValue = {
-  key: string
-  value: string | number | boolean
-}
+  const offset = artboard.getOffset()
 
-const debugValues = ref<DebugValue[]>([])
-
-const coordToString = (v: Coord): string =>
-  `x: ${Math.round(v.x)}, y: ${Math.round(v.y)}`
-
-onBlokkliEvent('animationFrame:before', () => {
-  artboard.loop()
-  ui.artboardSize.value.height = artboard.artboardSize.height
-  ui.artboardSize.value.width = artboard.artboardSize.width
   // We don't need much precision here, so we can round it.
   // This also prevents updating rects in WebGL buffers for small changes.
-  ui.artboardOffset.value.x = Math.round(artboard.offset.x)
-  ui.artboardOffset.value.y = Math.round(artboard.offset.y)
-  ui.artboardScale.value = artboard.scale
+  ui.artboardOffset.value.x = Math.round(offset.x)
+  ui.artboardOffset.value.y = Math.round(offset.y)
+  ui.artboardScale.value = artboard.getScale()
   animation.requestDraw()
-  if (!showDebug.value) {
-    return
-  }
-  debugValues.value = [
-    {
-      key: 'scale',
-      value: artboard.scale.toString(),
-    },
-    {
-      key: 'isScaling',
-      value: artboard.isScaling,
-    },
-    {
-      key: 'isDragging',
-      value: artboard.isDragging,
-    },
-    {
-      key: 'isTouching',
-      value: artboard.isTouching,
-    },
-    {
-      key: 'maxScale',
-      value: artboard.maxScale,
-    },
-    {
-      key: 'isMomentumScrolling',
-      value: artboard.isMomentumScrolling,
-    },
-    {
-      key: 'scaleMidpoint',
-      value: artboard.scaleMidpoint
-        ? coordToString(artboard.scaleMidpoint)
-        : 'undefined',
-    },
-  ]
 })
 
 onMounted(() => {
@@ -202,40 +168,40 @@ onBeforeUnmount(() => {
 })
 
 const resetZoom = () => {
-  artboard.resetZoom()
-}
-
-function onPageUp() {
-  artboard.scrollPageUp()
-  animation.requestDraw()
-}
-
-function onPageDown() {
-  artboard.scrollPageDown()
+  artboard.resetZoom(500)
   animation.requestDraw()
 }
 
 onBlokkliEvent('keyPressed', (e) => {
   if (e.code === 'Home') {
+    e.originalEvent.preventDefault()
     artboard.scrollToTop()
     animation.requestDraw()
   } else if (e.code === 'End') {
+    e.originalEvent.preventDefault()
     artboard.scrollToEnd()
     animation.requestDraw()
   } else if (e.code === 'PageUp') {
-    onPageUp()
+    e.originalEvent.preventDefault()
+    artboard.scrollPageUp()
+    animation.requestDraw()
   } else if (e.code === 'PageDown') {
-    onPageDown()
+    e.originalEvent.preventDefault()
+    artboard.scrollPageDown()
+    animation.requestDraw()
   } else if (e.code === 'ArrowUp') {
-    artboard.animateOrJumpBy(200)
+    e.originalEvent.preventDefault()
+    artboard.scrollUp()
     animation.requestDraw()
   } else if (e.code === 'ArrowDown') {
-    artboard.animateOrJumpBy(-200)
+    e.originalEvent.preventDefault()
+    artboard.scrollDown()
     animation.requestDraw()
   } else if (e.code === '0' && e.meta) {
-    artboard.resetZoom()
-    animation.requestDraw()
+    e.originalEvent.preventDefault()
+    resetZoom()
   } else if (e.code === '1' && e.meta) {
+    e.originalEvent.preventDefault()
     artboard.scaleToFit()
     animation.requestDraw()
   }
@@ -278,35 +244,22 @@ defineShortcut(
 )
 
 onBlokkliEvent('scrollIntoView', (e) => {
-  artboard.stopAnimate()
-  const visible = dom.getBlockVisibilities()[e.uuid]
-  if (visible) {
-    return
-  }
-
   const rect = dom.getBlockRect(e.uuid)
   if (!rect) {
     return
   }
 
-  const rectY = rect.y * artboard.scale + artboard.offset.y
-
-  let targetY: number | null = null
-  const currentY = artboard.animationTarget?.y || artboard.offset.y
-  const rootHeight = ui.visibleViewportPadded.value.height
-
-  if (e.center) {
-    targetY =
-      currentY - rectY + props.padding + rootHeight / 2 - rect.height / 2
-  } else if (rectY < 70) {
-    targetY = currentY - (rectY - props.padding) + 70
-  } else if (rectY + rect.height > rootHeight) {
-    targetY = currentY + (rootHeight - (rectY + rect.height) - 40)
+  if (dom.isBlockVisible(e.uuid)) {
+    return
   }
 
-  if (targetY) {
-    artboard.setOffset(artboard.offset.x, targetY)
-  }
+  // @TODO: Prevent scrolling into view when already
+
+  artboard.scrollIntoView(rect, {
+    scale: 'none',
+    axis: 'y',
+    behavior: e.immediate ? 'instant' : 'auto',
+  })
 })
 </script>
 

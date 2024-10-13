@@ -1043,7 +1043,7 @@ export type EventbusEvents = {
   'item:doubleClick': DraggableExistingBlock
 
   scrollIntoView: ScrollIntoViewEvent
-  'animationFrame:before': undefined
+  'animationFrame:before': number
   'canvas:draw': CanvasDrawEvent
 
   'state:reloaded': undefined

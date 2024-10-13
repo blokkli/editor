@@ -43,6 +43,22 @@
     "source": "Artboard",
     "translation": "Zeichenfläche"
   },
+  "artboardOverviewHide": {
+    "source": "Hide overview",
+    "translation": "Übersicht verstecken"
+  },
+  "artboardOverviewShow": {
+    "source": "Show overview",
+    "translation": "Übersicht anzeigen"
+  },
+  "artboardOverviewToggle": {
+    "source": "Toggle overview",
+    "translation": "Übersicht umschalten"
+  },
+  "artboardOverviewTourText": {
+    "source": "Displays a top level overview of your content.",
+    "translation": "Zeigt eine schematische Übersicht aller Inhalte an."
+  },
   "artboardResetZoom": {
     "source": "Reset zoom",
     "translation": "Zoom zurücksetzen"

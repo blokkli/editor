@@ -43,6 +43,22 @@
     "source": "Artboard",
     "translation": ""
   },
+  "artboardOverviewHide": {
+    "source": "Hide overview",
+    "translation": ""
+  },
+  "artboardOverviewShow": {
+    "source": "Show overview",
+    "translation": ""
+  },
+  "artboardOverviewToggle": {
+    "source": "Toggle overview",
+    "translation": ""
+  },
+  "artboardOverviewTourText": {
+    "source": "Displays a top level overview of your content.",
+    "translation": ""
+  },
   "artboardResetZoom": {
     "source": "Reset zoom",
     "translation": ""

@@ -25,7 +25,7 @@ export type SelectionProvider = {
   /**
    * The currently selected UUIDs as a map.
    */
-  uuidsMap: ComputedRef<Record<string, boolean>>
+  uuidsSet: ComputedRef<Set<string>>
 
   /**
    * The currently selected blocks.
@@ -86,6 +86,8 @@ export type SelectionProvider = {
    * The block bundles of the items being dragged.
    */
   dragItemsBundles: ComputedRef<string[]>
+
+  isBlockSelected(uuid: string): boolean
 }
 
 export default function (dom: DomProvider): SelectionProvider {
@@ -102,12 +104,7 @@ export default function (dom: DomProvider): SelectionProvider {
     dragItems.value.map((v) => v.itemBundle).filter(falsy),
   )
 
-  const uuidsMap = computed(() => {
-    return selectedUuids.value.reduce<Record<string, boolean>>((acc, uuid) => {
-      acc[uuid] = true
-      return acc
-    }, {})
-  })
+  const uuidsSet = computed(() => new Set(selectedUuids.value))
 
   const isDragging = computed(() => !!draggingMode.value)
 
@@ -247,6 +244,10 @@ export default function (dom: DomProvider): SelectionProvider {
     )
   })
 
+  function isBlockSelected(uuid: string) {
+    return uuidsSet.value.has(uuid)
+  }
+
   return {
     uuids: selectedUuids,
     blocks,
@@ -260,7 +261,8 @@ export default function (dom: DomProvider): SelectionProvider {
     draggingMode,
     interactionMode,
     dragItems,
-    uuidsMap,
+    uuidsSet,
     dragItemsBundles,
+    isBlockSelected,
   }
 }
