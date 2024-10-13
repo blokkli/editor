@@ -34,7 +34,7 @@
     "lint:fix": "eslint ./src --fix",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
+    "typecheck": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --write .",
     "docs:dev": "vitepress dev docs",

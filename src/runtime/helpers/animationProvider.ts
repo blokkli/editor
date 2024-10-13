@@ -78,14 +78,21 @@ export default function (ui: UiProvider): AnimationProvider {
     })
   })
 
+  function onWindowMouseMove(e: MouseEvent) {
+    mouseX = e.clientX
+    mouseY = e.clientY
+  }
+
   onMounted(() => {
-    document.addEventListener('scroll', requestDraw)
     document.body.addEventListener('wheel', requestDraw, { passive: false })
+    window.addEventListener('pointermove', onWindowMouseMove, { capture: true })
   })
 
   onBeforeUnmount(() => {
     document.body.removeEventListener('wheel', requestDraw)
-    document.removeEventListener('scroll', requestDraw)
+    window.removeEventListener('pointermove', onWindowMouseMove, {
+      capture: true,
+    })
   })
 
   const requestDraw = () => (iterator = 120)

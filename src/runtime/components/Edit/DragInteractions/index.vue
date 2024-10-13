@@ -8,8 +8,9 @@ import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { Coord, Rectangle } from '#blokkli/types'
 import { watch, ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
-const { dom, eventBus, selection, keyboard, ui, animation, state } =
-  useBlokkli()
+const { dom, eventBus, selection, keyboard, ui, state } = useBlokkli()
+
+const rootEl = ui.rootElement()
 
 const rects = ref<{ uuid: string; rect: Rectangle }[]>([])
 
@@ -97,7 +98,6 @@ function getInteractedElement(
 }
 
 function onPointerMove(e: PointerEvent) {
-  animation.setMouseCoords(e.clientX, e.clientY)
   if (keyboard.isPressingSpace.value || state.editMode.value !== 'editing') {
     return
   }
@@ -158,6 +158,9 @@ function onPointerDown(e: PointerEvent) {
     e.stopImmediatePropagation()
   }
 
+  rootEl.removeEventListener('pointermove', onPointerMove)
+  rootEl.addEventListener('pointermove', onPointerMove)
+
   if (e.pointerType === 'touch') {
     return onTouchStart(e)
   }
@@ -171,17 +174,19 @@ function onPointerDown(e: PointerEvent) {
 
   pointerDownTimestamp = Date.now()
   const coords = { x: e.clientX, y: e.clientY }
+  mouseStartCoordinates = coords
 
   const interacted = getInteractedElement(e)
   pointerDownElement = interacted
   if (interacted) {
     return
   }
-  mouseStartCoordinates = coords
+
   eventBus.emit('mouse:down', { ...coords, type: 'mouse', distance: 0 })
 }
 
 function onPointerUp(e: PointerEvent) {
+  rootEl.removeEventListener('pointermove', onPointerMove)
   e.preventDefault()
   e.stopPropagation()
   e.stopImmediatePropagation()
@@ -387,51 +392,42 @@ function onClick(e: MouseEvent) {
 }
 
 onMounted(() => {
-  const el = ui.rootElement()
   const providerElement = ui.providerElement()
 
   providerElement.addEventListener('click', onClick, {
     capture: true,
   })
 
-  el.addEventListener('click', onClick, {
+  rootEl.addEventListener('click', onClick, {
     capture: true,
   })
 
-  el.addEventListener('pointerdown', onPointerDown, {
+  rootEl.addEventListener('pointerdown', onPointerDown, {
     capture: true,
   })
 
-  el.addEventListener('pointermove', onPointerMove, {
-    capture: true,
-  })
-
-  el.addEventListener('pointerup', onPointerUp, {
+  rootEl.addEventListener('pointerup', onPointerUp, {
     capture: true,
   })
 })
 
 onBeforeUnmount(() => {
-  const el = ui.rootElement()
   const providerElement = ui.providerElement()
 
   providerElement.removeEventListener('click', onClick, {
     capture: true,
   })
 
-  el.removeEventListener('click', onClick, {
+  rootEl.removeEventListener('click', onClick, {
     capture: true,
   })
 
-  el.removeEventListener('pointerdown', onPointerDown, {
+  rootEl.removeEventListener('pointerdown', onPointerDown, {
     capture: true,
   })
+  rootEl.removeEventListener('pointermove', onPointerMove)
 
-  el.removeEventListener('pointermove', onPointerMove, {
-    capture: true,
-  })
-
-  el.removeEventListener('pointerup', onPointerUp, {
+  rootEl.removeEventListener('pointerup', onPointerUp, {
     capture: true,
   })
 })
