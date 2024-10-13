@@ -8,6 +8,7 @@
     :entity="entity"
     :field-key="fieldKey!"
     :allowed-fragments="allowedFragments"
+    :nesting-level="nestingLevel"
     :drop-alignment="dropAlignment"
     :field-list-type="fieldListType"
     :class="[attrs.class, listClass, { [nonEmptyClass]: filteredList.length }]"
@@ -61,6 +62,7 @@ import {
   INJECT_IS_IN_REUSABLE,
   INJECT_IS_NESTED,
   INJECT_IS_PREVIEW,
+  INJECT_NESTING_LEVEL,
   INJECT_FIELD_LIST_BLOCKS,
   INJECT_PROVIDER_BLOCKS,
   INJECT_EDIT_CONTEXT,
@@ -84,6 +86,7 @@ const isEditing = inject(INJECT_IS_EDITING, false)
 const isInReusable = inject(INJECT_IS_IN_REUSABLE, false)
 const isPreview = inject<boolean>(INJECT_IS_PREVIEW, false)
 const isNested = inject(INJECT_IS_NESTED, false)
+const nestingLevel = inject<number>(INJECT_NESTING_LEVEL, 0)
 const mutatedFields = inject<Record<string, MutatedField> | null>(
   INJECT_MUTATED_FIELDS_MAP,
   null,
@@ -148,6 +151,7 @@ const filteredList = computed<FieldListItemTyped[]>(() => {
 })
 
 provide(INJECT_IS_NESTED, true)
+provide(INJECT_NESTING_LEVEL, nestingLevel + 1)
 provide(INJECT_FIELD_LIST_TYPE, fieldListType)
 provide(INJECT_FIELD_LIST_BLOCKS, filteredList)
 

@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <slot :color="active?.color" :label="active?.label" />
+    <slot :color="activeColorHex" :label="active?.label" />
   </Teleport>
 </template>
 
@@ -689,10 +689,32 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
 
 const collector = new DropTargetRectangleBufferCollector(gl)
 
+const activeColorRgb = computed(() => {
+  if (active.value?.type === 'drop-area') {
+    return theme.teal.value.normal
+  }
+  const nestingLevel = active.value?.field?.field.nestingLevel || 0
+  if (nestingLevel >= 3) {
+    return theme.accent.value[200]
+  } else if (nestingLevel >= 2) {
+    return theme.accent.value[400]
+  } else if (nestingLevel >= 1) {
+    return theme.accent.value[600]
+  }
+  return theme.accent.value[800]
+})
+
+const activeColorHex = computed(() => {
+  if (activeColorRgb.value) {
+    return rgbaToString(activeColorRgb.value)
+  }
+  return ''
+})
+
 const uniforms = computed(() => {
   const index = active.value?.index
   return {
-    u_color_field_active: toShaderColor(theme.accent.value[700]),
+    u_color_field_active: toShaderColor(activeColorRgb.value),
     u_color_field_default: toShaderColor(theme.mono.value[400]),
     u_color_area_active: toShaderColor(theme.teal.value.normal),
     u_color_area_default: toShaderColor(theme.teal.value.normal),

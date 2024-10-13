@@ -33,7 +33,7 @@ void main() {
 
   float edgeSoftness = 1.0 * u_dpi;
   float radius =
-    min(radius_base * u_dpi, min(size.x, size.y) / 2.0) + thickness * 2.0;
+    min(radius_base * u_dpi, min(size.x, size.y) / 1.0) + thickness * 1.0;
 
   float distance = roundedBoxSDF(
     location - gl_FragCoord.xy,
@@ -52,7 +52,7 @@ void main() {
   gl_FragColor = vec4(
     color,
     is_intersecting
-      ? smoothedAlpha - 0.4
+      ? smoothedAlpha - 0.1
       : smoothedAlpha
   );
 }

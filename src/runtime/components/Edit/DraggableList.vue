@@ -8,6 +8,7 @@
     :data-field-is-nested="isNested"
     :data-host-entity-type="entity.type"
     :data-host-entity-uuid="entity.uuid"
+    :data-bk-nesting-level="nestingLevel"
     :data-host-entity-bundle="entity.bundle"
     :data-field-key="fieldKey"
     :data-field-drop-alignment="dropAlignment"
@@ -64,6 +65,7 @@ const props = defineProps<{
   tag?: string
   isNested: boolean
   fieldListType: string
+  nestingLevel: number
   allowedFragments?: BlokkliFragmentName[]
   dropAlignment?: 'vertical' | 'horizontal'
 }>()

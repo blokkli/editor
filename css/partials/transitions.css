@@ -192,7 +192,7 @@
 
   .bk-drag-item-enter-active,
   .bk-drag-item-leave-active {
-    @apply transition duration-100 ease-swing;
+    @apply transition duration-200 ease-swing;
   }
   .bk-drag-item-enter-from,
   .bk-drag-item-leave-to {

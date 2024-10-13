@@ -33,6 +33,7 @@ const buildFieldElement = (
   const name = element.dataset.fieldName
   const label = element.dataset.fieldLabel
   const isNested = element.dataset.fieldIsNested === 'true'
+  const nestingLevel = Number.parseInt(element.dataset.bkNestingLevel || '0')
   const fieldListType = element.dataset.fieldListType as
     | ValidFieldListTypes
     | undefined
@@ -62,6 +63,7 @@ const buildFieldElement = (
       name,
       label,
       isNested,
+      nestingLevel,
       hostEntityType,
       hostEntityUuid,
       hostEntityBundle,
@@ -608,7 +610,7 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
   })
 
   onBlokkliEvent('ui:resized', function () {
-    getVisibleBlocks().forEach(refreshBlockRect)
+    updateVisibleRects()
     getVisibleFields().forEach(refreshFieldRect)
     logger.log('Refreshed all visible rects')
   })

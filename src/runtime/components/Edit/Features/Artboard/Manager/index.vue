@@ -23,7 +23,7 @@
 
   <PluginViewOption
     id="artboardOverview"
-    v-model="showOverview"
+    v-slot="{ isActive }"
     :label="$t('artboardOverviewToggle', 'Toggle overview')"
     :title-on="$t('artboardOverviewShow', 'Show overview')"
     :title-off="$t('artboardOverviewHide', 'Hide overview')"
@@ -37,7 +37,7 @@
     key-code="O"
     weight="90"
   >
-    <Teleport v-if="showOverview" to="body">
+    <Teleport v-if="isActive" to="body">
       <Overview :dragboard="artboard" />
     </Teleport>
   </PluginViewOption>
@@ -47,7 +47,6 @@
 
 <script lang="ts" setup>
 import {
-  ref,
   watch,
   computed,
   useBlokkli,
@@ -65,8 +64,6 @@ import { DragboardDom, type DragboardOptions } from 'dragboard'
 const { context, storage, ui, animation, $t, dom } = useBlokkli()
 
 const zoomLevel = computed(() => Math.round(ui.artboardScale.value * 100) + '%')
-
-const showOverview = ref(false)
 
 const props = withDefaults(
   defineProps<{

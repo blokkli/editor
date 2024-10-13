@@ -11,7 +11,7 @@
         :style="{ backgroundColor: activeColor }"
       >
         <Icon name="cursor-move" />
-        <p v-html="activeLabel" />
+        <p v-html="prevActiveLabel" />
       </div>
     </Transition>
     <div
@@ -52,7 +52,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+import {
+  ref,
+  watch,
+  computed,
+  useBlokkli,
+  onMounted,
+  onBeforeUnmount,
+} from '#imports'
 import type { Coord, DraggableItem, Rectangle } from '#blokkli/types'
 import {
   isInsideRect,
@@ -93,6 +100,17 @@ const props = defineProps<{
   activeLabel?: string
 }>()
 
+const prevActiveLabel = ref('')
+
+watch(
+  () => props.activeLabel,
+  function (label) {
+    if (label) {
+      prevActiveLabel.value = label
+    }
+  },
+)
+
 const width = ref(10)
 const height = ref(10)
 
@@ -122,7 +140,10 @@ const style = computed(() => {
     width: width.value + 'px',
     height: height.value + 'px',
     transform: `translate(${translateX.value}px, ${translateY.value}px)`,
-    '--bk-active-color': props.activeColor || 'rgba(255,255,255,0)',
+    '--bk-active-color':
+      props.activeColor && props.activeLabel
+        ? props.activeColor
+        : 'rgba(255,255,255,0)',
   }
 })
 

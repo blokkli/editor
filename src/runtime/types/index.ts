@@ -924,6 +924,7 @@ export type BlokkliFieldElement = {
   name: string
   label: string
   isNested: boolean
+  nestingLevel: number
   fieldListType: ValidFieldListTypes
   hostEntityType: string
   hostEntityBundle: string
