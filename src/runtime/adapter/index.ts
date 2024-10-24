@@ -193,6 +193,18 @@ export type BlokkliAdapterGetLibraryItemsResult = {
   perPage: number
 }
 
+export type BlokkliAdapterPublishOptions = {
+  /**
+   * Whether the editor will be closed after publishing.
+   *
+   * If false, the adapter should return an empty state again, so that the
+   * editor UI shows the correct state (no pending changes).
+   * If true, the adapter may return no state at all, since the editor will
+   * be closed anyway after publishing.
+   */
+  closeAfterPublish?: boolean
+}
+
 export interface BlokkliAdapter<T> {
   /**
    * Load the state for the given langcode.
@@ -345,7 +357,9 @@ export interface BlokkliAdapter<T> {
   /**
    * Publish all changes.
    */
-  publish?: () => Promise<MutationResponseLike<T>>
+  publish?: (
+    options: BlokkliAdapterPublishOptions,
+  ) => Promise<MutationResponseLike<T | undefined | null>>
 
   /**
    * Set a specific history index.

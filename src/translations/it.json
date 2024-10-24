@@ -355,6 +355,10 @@
     "source": "Show import dialog at start when page is empty",
     "translation": ""
   },
+  "feature_publish_setting_closeAfterPublish_label": {
+    "source": "Close editor after publishing",
+    "translation": ""
+  },
   "feature_settings_setting_lowPerformanceMode_label": {
     "source": "Enable low performance mode",
     "translation": ""
@@ -695,9 +699,21 @@
     "source": "Shows a QR code to quickly open a preview of the changes with your smartphone.",
     "translation": ""
   },
+  "publishAndCloseLabel": {
+    "source": "Publish & Close",
+    "translation": ""
+  },
+  "publishAndCloseLabelUnpublished": {
+    "source": "Save & Close",
+    "translation": ""
+  },
   "publishDescription": {
-    "source": "Make all changes public",
+    "source": "Publish all changes.",
     "translation": "Rendi pubbliche tutte le modifiche"
+  },
+  "publishDescriptionUnpublished": {
+    "source": "Save all changes while keeping page unpublished",
+    "translation": ""
   },
   "publishError": {
     "source": "Changes could not be published.",
@@ -706,6 +722,10 @@
   "publishLabel": {
     "source": "Publish",
     "translation": "Pubblica"
+  },
+  "publishLabelUnpublished": {
+    "source": "Save",
+    "translation": ""
   },
   "publishSuccess": {
     "source": "Changes published successfully.",

@@ -355,6 +355,10 @@
     "source": "Show import dialog at start when page is empty",
     "translation": "Importdialog beim Start anzeigen, wenn die Seite leer ist"
   },
+  "feature_publish_setting_closeAfterPublish_label": {
+    "source": "Close editor after publishing",
+    "translation": "Nach «Veröffentlichen» den Editor schliessen"
+  },
   "feature_settings_setting_lowPerformanceMode_label": {
     "source": "Enable low performance mode",
     "translation": "Modus für niedrige Leistung aktivieren"
@@ -695,9 +699,21 @@
     "source": "Shows a QR code to quickly open a preview of the changes with your smartphone.",
     "translation": "Zeigt einen QR-Code an, um eine Vorschau der Änderungen mit Ihrem Smartphone zu öffnen."
   },
+  "publishAndCloseLabel": {
+    "source": "Publish & Close",
+    "translation": "Veröffentlichen & Schliessen"
+  },
+  "publishAndCloseLabelUnpublished": {
+    "source": "Save & Close",
+    "translation": "Speichern & Schliessen"
+  },
   "publishDescription": {
-    "source": "Make all changes public",
-    "translation": "Alle Änderungen öffentlich machen"
+    "source": "Publish all changes.",
+    "translation": "Alle Änderungen veröffentlichen"
+  },
+  "publishDescriptionUnpublished": {
+    "source": "Save all changes while keeping page unpublished",
+    "translation": "Alle Änderungen speichern ohne die Seite zu publizieren"
   },
   "publishError": {
     "source": "Changes could not be published.",
@@ -706,6 +722,10 @@
   "publishLabel": {
     "source": "Publish",
     "translation": "Veröffentlichen"
+  },
+  "publishLabelUnpublished": {
+    "source": "Save",
+    "translation": "Speichern"
   },
   "publishSuccess": {
     "source": "Changes published successfully.",
@@ -741,7 +761,7 @@
   },
   "revertMenuDescription": {
     "source": "Restore currently published state",
-    "translation": "Aktuell veröffentlichter Zustand Wiederherstellen"
+    "translation": "Aktuell veröffentlichten Zustand wiederherstellen"
   },
   "revertMenuTitle": {
     "source": "Discard...",
