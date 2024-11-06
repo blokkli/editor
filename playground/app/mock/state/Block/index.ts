@@ -8,6 +8,7 @@ import { BlockGrid } from './Grid'
 import { BlockIcon } from './Icon'
 import { BlockImage } from './Image'
 import { BlockOnThisPage } from './OnThisPage'
+import { BlockSlider } from './Slider'
 import { BlockTable } from './Table'
 import { BlockTeaser } from './Teaser'
 import { BlockText } from './Text'
@@ -28,6 +29,8 @@ export const createBlock = (bundle: string, uuid: string): Block => {
       return new BlockTeaser(uuid)
     case 'two_columns':
       return new BlockTwoColumns(uuid)
+    case 'slider':
+      return new BlockSlider(uuid)
     case 'button':
       return new BlockButton(uuid)
     case 'card':
@@ -73,5 +76,6 @@ export const getBlockBundles = (): Array<typeof Block> => {
     BlockOnThisPage,
     BlockIcon,
     BlockButtonList,
+    BlockSlider,
   ]
 }

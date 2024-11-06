@@ -1,5 +1,13 @@
 <template>
-  <component :is="component" v-if="component" v-bind="props" />
+  <Component
+    :is="component"
+    v-if="isProxyMode"
+    :bundle="bundle"
+    :uuid="uuid"
+    :field-list-type="fieldListType"
+    :parent-type="parentType"
+  />
+  <Component :is="component" v-else-if="component" v-bind="props" />
   <div v-else-if="isEditing">Block not implemented</div>
 </template>
 
@@ -9,6 +17,7 @@ import {
   provide,
   useRuntimeConfig,
   inject,
+  defineAsyncComponent,
   type ComputedRef,
 } from '#imports'
 import type { InjectedBlokkliItem } from '#blokkli/types'
@@ -17,6 +26,7 @@ import {
   INJECT_BLOCK_ITEM,
   INJECT_ENTITY_CONTEXT,
   INJECT_FIELD_LIST_TYPE,
+  INJECT_FIELD_PROXY_MODE,
 } from '../helpers/symbols'
 import type {
   BlockBundleWithNested,
@@ -45,15 +55,19 @@ const componentProps = withDefaults(
   },
 )
 
+const isProxyMode = inject(INJECT_FIELD_PROXY_MODE, false)
+
 const fieldListType = inject<ComputedRef<ValidFieldListTypes> | undefined>(
   INJECT_FIELD_LIST_TYPE,
 )
 
-const component = getBlokkliItemComponent(
-  componentProps.bundle,
-  fieldListType?.value || 'default',
-  componentProps.parentType,
-)
+const component = isProxyMode
+  ? defineAsyncComponent(() => import('./Edit/BlockProxy/index.vue'))
+  : getBlokkliItemComponent(
+      componentProps.bundle,
+      fieldListType?.value || 'default',
+      componentProps.parentType,
+    )
 
 const index = computed(() => componentProps.index)
 const item = computed(() => ({

@@ -42,6 +42,7 @@
 @import './partials/SystemRequirements.css';
 @import './partials/Pagination.css';
 @import './partials/Validations.css';
+@import './partials/ProxyField.css';
 @import './indicator.css';
 
 @tailwind base;

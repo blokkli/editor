@@ -14,11 +14,14 @@
     :is-nested="isNested"
     :language="providerEntity.language"
     class="bk-field-list"
+    :proxy-mode="proxyMode"
     :tag="tag"
   />
   <component
     :is="tag"
-    v-else-if="!editOnly && (filteredList.length || isEditing || isPreview)"
+    v-else-if="
+      !editOnly && (filteredList.length || isEditing || isPreview) && !proxyMode
+    "
     :class="[
       attrs.class,
       {
@@ -70,6 +73,7 @@ import {
   INJECT_MUTATED_FIELDS_MAP,
   INJECT_EDIT_FIELD_LIST_COMPONENT,
   INJECT_PROVIDER_CONTEXT,
+  INJECT_FIELD_PROXY_MODE,
 } from '../helpers/symbols'
 import type DraggableListComponent from './Edit/DraggableList.vue'
 
@@ -114,6 +118,10 @@ const props = withDefaults(
     nonEmptyClass?: string
     allowedFragments?: BlokkliFragmentName[]
     dropAlignment?: 'vertical' | 'horizontal'
+    /**
+     * Renders proxy blocks during editing.
+     */
+    proxyMode?: boolean
   }>(),
   {
     list: () => [],
@@ -169,6 +177,11 @@ const filteredList = computed<FieldListItemTyped[]>(() => {
 provide(INJECT_IS_NESTED, true)
 provide(INJECT_FIELD_LIST_TYPE, fieldListType)
 provide(INJECT_FIELD_LIST_BLOCKS, filteredList)
+
+if (props.proxyMode) {
+  provide(INJECT_IS_EDITING, false)
+  provide(INJECT_FIELD_PROXY_MODE, false)
+}
 
 if (!isNested) {
   provide(INJECT_PROVIDER_BLOCKS, filteredList)

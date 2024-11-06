@@ -1,0 +1,15 @@
+.bk-field-list-proxy {
+  @apply z-dialog w-full bg-mono-800 flex gap-15 min-h-40 p-20;
+
+  > div {
+    @apply text-mono-50 flex-1;
+    @apply border border-mono-300 p-15;
+  }
+}
+
+.bk-block-proxy-header {
+  @apply flex items-center gap-10 font-bold text-sm;
+  .bk-blokkli-item-icon {
+    @apply size-20 border border-mono-300 rounded;
+  }
+}
