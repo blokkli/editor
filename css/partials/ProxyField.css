@@ -1,15 +1,55 @@
-.bk-field-list-proxy {
-  @apply z-dialog w-full bg-mono-800 flex gap-15 min-h-40 p-20;
+.bk.bk-field-list-proxy {
+  @apply z-dialog w-full  min-h-40 p-20 absolute;
+  @apply w-full left-0 top-0;
 
-  > div {
-    @apply text-mono-50 flex-1;
-    @apply border border-mono-300 p-15;
+  @apply transition-opacity duration-100;
+
+  @apply opacity-0;
+
+  &.bk-is-visible {
+    @apply opacity-100;
+  }
+
+  .bk-field-list-proxy {
+    @apply p-0  static h-auto w-auto bg-none;
+    .bk-block-proxy {
+      @apply shadow-none;
+    }
+    .bk-field-list-proxy-list {
+      @apply gap-10;
+    }
   }
 }
 
+.bk-field-list-proxy-list {
+  @apply flex gap-20;
+}
+
+.bk-block-proxy {
+  @apply text-mono-900 flex-1;
+  @apply border border-mono-400 p-15 rounded bg-white shadow-lg;
+}
+
 .bk-block-proxy-header {
-  @apply flex items-center gap-10 font-bold text-sm;
+  @apply flex items-center gap-[7px] text-sm font-semibold text-mono-700;
   .bk-blokkli-item-icon {
-    @apply size-20 border border-mono-300 rounded;
+    @apply size-25 border border-mono-300 rounded p-[3px] bg-mono-100 text-mono-700;
+  }
+}
+
+.bk-block-proxy-fields {
+  @apply grid gap-10 mt-10;
+}
+
+.bk-block-proxy-fields-row {
+  @apply grid gap-10;
+}
+
+.bk-block-proxy-fields-row-field {
+  @apply border border-dashed border-mono-500 p-10 rounded;
+
+  > span {
+    @apply text-xs uppercase inline-block mb-10;
+    @apply font-semibold;
   }
 }

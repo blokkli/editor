@@ -1,40 +1,43 @@
 <template>
   <div
     v-if="proxyMode"
-    ref="root"
-    class="bk-field-list-proxy"
-    v-bind="fieldAttributes"
+    class="bk bk-field-list-proxy"
+    :class="{
+      'bk-is-visible': proxyVisible,
+    }"
   >
-    <BlokkliItem
-      v-for="(item, i) in list"
-      :key="item.uuid + fieldListType + i"
-      :uuid="item.uuid"
-      :bundle="item.bundle"
-      :is-new="item.isNew"
-      :options="item.options"
-      :props="item.props"
-      is-editing
-      :index="i"
-      :parent-type="isNested ? entity.bundle : ''"
-      data-editing="true"
-      data-element-type="existing"
-      :data-sortli-id="item.uuid"
-      :data-uuid="item.uuid"
-      :data-host-type="entity.type"
-      :data-host-bundle="entity.bundle"
-      :data-host-uuid="entity.uuid"
-      :data-item-bundle="item.bundle"
-      :data-host-field-name="name"
-      :data-host-field-list-type="fieldListType"
-      :data-is-nested="isNested"
-      :data-is-new="item.isNew"
-      :data-entity-type="runtimeConfig.itemEntityType"
-      :data-bk-is-muted="isMuted(item)"
-    />
+    <div ref="root" class="bk-field-list-proxy-list" v-bind="fieldAttributes">
+      <BlokkliItem
+        v-for="(item, i) in list"
+        :key="item.uuid + fieldListType"
+        :uuid="item.uuid"
+        :bundle="item.bundle"
+        :is-new="item.isNew"
+        :options="item.options"
+        :props="item.props"
+        is-editing
+        :index="i"
+        :parent-type="isNested ? entity.bundle : ''"
+        data-editing="true"
+        data-element-type="existing"
+        :data-sortli-id="item.uuid"
+        :data-uuid="item.uuid"
+        :data-host-type="entity.type"
+        :data-host-bundle="entity.bundle"
+        :data-host-uuid="entity.uuid"
+        :data-item-bundle="item.bundle"
+        :data-host-field-name="name"
+        :data-host-field-list-type="fieldListType"
+        :data-is-nested="isNested"
+        :data-is-new="item.isNew"
+        :data-entity-type="runtimeConfig.itemEntityType"
+        :data-bk-is-muted="isMuted(item)"
+      />
+    </div>
   </div>
   <Component
-    v-else
     :is="tag"
+    v-else
     ref="root"
     :class="['bk-draggable-list-container', attrs.class]"
     v-bind="fieldAttributes"
@@ -87,7 +90,7 @@ import {
   INJECT_IS_EDITING,
 } from '#blokkli/helpers/symbols'
 
-const { dom, types, runtimeConfig } = useBlokkli()
+const { dom, types, runtimeConfig, selection } = useBlokkli()
 
 const root = ref<HTMLElement | null>(null)
 
@@ -109,6 +112,14 @@ const attrs = useAttrs()
 
 provide(INJECT_FIELD_PROXY_MODE, props.proxyMode)
 provide(INJECT_IS_EDITING, true)
+
+const proxyVisible = computed(
+  () =>
+    props.proxyMode &&
+    (selection.uuids.value.length ||
+      selection.isDragging.value ||
+      selection.isMultiSelecting.value),
+)
 
 const fieldConfig = computed<FieldConfig>(() => {
   const match = types.getFieldConfig(

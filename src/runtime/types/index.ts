@@ -257,6 +257,25 @@ export type BlokkliDefinitionInputEditor<
    * appears to be selectable/draggable.
    */
   getDraggableElement?: (el: HTMLElement) => Element | undefined | null
+
+  /**
+   * The abstract grid layout that should be used when the block is rendered
+   * without its component, for example when rendering a <BlokkliField> using
+   * proxyMode: true.
+   *
+   * @example
+   * ```typescript
+   * defineBlokkli({
+   *   editor: {
+   *     fieldLayout: [
+   *       ['header'],
+   *       ['left', 'right'],
+   *     ]
+   *   }
+   * })
+   * ```
+   */
+  fieldLayout?: string[][]
 }
 
 export type BlockDefinitionRenderForParent = {
