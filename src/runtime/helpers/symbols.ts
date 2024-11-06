@@ -17,3 +17,6 @@ export const INJECT_EDIT_FIELD_LIST_COMPONENT = Symbol(
   'blokkli_edit_field_list_component',
 )
 export const INJECT_EDIT_LOGGER = Symbol('blokkli_edit_logger')
+
+export const BK_HIDDEN_GLOBALLY = 'bkHiddenGlobally'
+export const BK_VISIBLE_LANGUAGES = 'bkVisibleLanguages'

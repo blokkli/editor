@@ -77,6 +77,7 @@ import OptionRange from './Range/index.vue'
 import OptionNumber from './Number/index.vue'
 import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
 import { mapCheckboxTrue } from '#blokkli/helpers/runtimeHelpers'
+import { BK_VISIBLE_LANGUAGES } from '#blokkli/helpers/symbols'
 
 const { state } = useBlokkli()
 
@@ -106,7 +107,7 @@ const checkboxOptions = computed<{ value: string; label: string }[]>(() => {
     return []
   }
 
-  if (props.property === 'bkVisibleLanguages') {
+  if (props.property === BK_VISIBLE_LANGUAGES) {
     return (state.translation.value.availableLanguages || []).map(
       (language) => {
         return {

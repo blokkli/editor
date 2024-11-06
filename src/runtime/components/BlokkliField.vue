@@ -43,7 +43,7 @@
 <script lang="ts" setup>
 import { computed, useAttrs, inject, provide, ref } from '#imports'
 import type { BlokkliFragmentName } from '#blokkli/definitions'
-import { bundlesWithVisibleLanguage } from '#blokkli/default-global-options'
+import { isVisibleByOptions } from '#blokkli/helpers/runtimeHelpers'
 import BlokkliItem from './BlokkliItem.vue'
 
 import type {
@@ -139,24 +139,11 @@ const fieldKey = computed<string | undefined>(() => {
 const fieldListType = computed(() => props.fieldListType)
 
 function filterVisible(item?: FieldListItemTyped): boolean {
-  const option = item?.options?.bkVisibleLanguages
-  if (
-    !isEditing &&
-    typeof option === 'string' &&
-    item.bundle &&
-    bundlesWithVisibleLanguage.includes(item.bundle)
-  ) {
-    const languages = option.split(',').filter(Boolean)
-
-    if (
-      languages.length &&
-      !languages.includes(providerEntity.value.language)
-    ) {
-      return false
-    }
+  // The block is always rendered during editing.
+  if (isEditing) {
+    return true
   }
-
-  return true
+  return isVisibleByOptions(item, providerEntity.value.language)
 }
 
 const filteredList = computed<FieldListItemTyped[]>(() => {
@@ -174,6 +161,7 @@ const filteredList = computed<FieldListItemTyped[]>(() => {
       })
       .filter(filterVisible)
   }
+
   const list = Array.isArray(props.list) ? props.list : [props.list]
   return list.filter(filterVisible) as FieldListItemTyped[]
 })

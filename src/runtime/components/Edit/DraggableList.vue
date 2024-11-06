@@ -42,7 +42,7 @@
       :data-is-nested="isNested"
       :data-is-new="item.isNew"
       :data-entity-type="runtimeConfig.itemEntityType"
-      :data-bk-is-muted="isMuted(item.options)"
+      :data-bk-is-muted="isMuted(item)"
     />
   </Component>
 </template>
@@ -52,6 +52,7 @@ import { computed, useBlokkli, ref, onMounted, onBeforeUnmount } from '#imports'
 import type { FieldListItem, EntityContext, FieldConfig } from '#blokkli/types'
 import type { BlokkliFragmentName } from '#blokkli/definitions'
 import BlokkliItem from './../BlokkliItem.vue'
+import { isVisibleByOptions } from '#blokkli/helpers/runtimeHelpers'
 
 const { dom, types, runtimeConfig } = useBlokkli()
 
@@ -104,17 +105,8 @@ const allowedBundles = computed<string>(() => {
 // component when the options change.
 // Ideally this is handled as an overlay on top of the blocks, similar to how
 // selection or multi-select works.
-function isMuted(options?: Record<string, any>) {
-  if (
-    options &&
-    typeof options === 'object' &&
-    'bkVisibleLanguages' in options
-  ) {
-    const languages: string[] = options.bkVisibleLanguages.split(',')
-    return languages.length && !languages.includes(props.language)
-  }
-
-  return false
+function isMuted(item?: FieldListItem) {
+  return !isVisibleByOptions(item, props.language)
 }
 
 onMounted(() => {

@@ -38,6 +38,7 @@
 import { computed, ref, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/components'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
+import { BK_VISIBLE_LANGUAGES } from '#blokkli/helpers/symbols'
 
 const { $t, state } = useBlokkli()
 
@@ -74,7 +75,7 @@ const checked = computed<string[]>({
 })
 
 const visibleLabel = computed(() => {
-  if (props.property === 'bkVisibleLanguages' && !checked.value.length) {
+  if (props.property === BK_VISIBLE_LANGUAGES && !checked.value.length) {
     return $t('optionBkVisibleLanguagesAll', 'Always visible')
   }
   return props.label

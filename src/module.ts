@@ -24,6 +24,10 @@ import defaultTranslations from './translations'
 import { getTheme, themes } from './themes'
 import type { ThemeName, RGB, Theme } from './runtime/types/theme'
 import type { ModuleOptionsSettings } from '#blokkli/types/generatedModuleTypes'
+import {
+  BK_HIDDEN_GLOBALLY,
+  BK_VISIBLE_LANGUAGES,
+} from './runtime/helpers/symbols'
 
 function hexToRgb(hex: string): RGB {
   // Remove the hash symbol if present
@@ -262,13 +266,13 @@ export default defineNuxtModule<ModuleOptions>({
   defaults: {
     pattern: ['components/Blokkli/**/*.{js,ts,vue}'],
     globalOptions: {
-      bkVisibleLanguages: {
+      [BK_VISIBLE_LANGUAGES]: {
         type: 'checkboxes',
         label: 'Visible languages',
         options: {},
         default: [],
       },
-      bkHiddenGlobally: {
+      [BK_HIDDEN_GLOBALLY]: {
         type: 'checkbox',
         label: 'Hide globally',
         default: false,
