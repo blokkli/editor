@@ -14,7 +14,8 @@
       class="bk-blokkli-item-options-item"
       :class="{
         'bk-is-disabled':
-          !state.canEdit.value || state.editMode.value !== 'editing',
+          (!state.canEdit.value || state.editMode.value !== 'editing') &&
+          plugin.property !== 'bkVisibleLanguages',
       }"
       @keydown.stop
       @update="setOptionValue(plugin.property, $event)"
