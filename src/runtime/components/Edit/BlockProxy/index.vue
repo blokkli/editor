@@ -1,5 +1,5 @@
 <template>
-  <div class="bk-block-proxy">
+  <div ref="root" class="bk-block-proxy">
     <div class="bk-block-proxy-header">
       <ItemIcon :bundle="bundle" />
       {{ type?.label }}
@@ -19,7 +19,7 @@
           class="bk-block-proxy-fields-row-field"
         >
           <span>{{ field.label }}</span>
-          <BlokkliField :proxy-mode="true" :name="field.name" />
+          <BlokkliField proxy-mode :name="field.name" />
         </div>
       </div>
     </div>
@@ -31,13 +31,7 @@ import type {
   BlockBundleWithNested,
   ValidFieldListTypes,
 } from '#blokkli/generated-types'
-import {
-  computed,
-  useBlokkli,
-  getCurrentInstance,
-  onMounted,
-  onBeforeUnmount,
-} from '#imports'
+import { computed, useBlokkli, onMounted, onBeforeUnmount, ref } from '#imports'
 import { getDefinition } from '#blokkli/definitions'
 
 import { ItemIcon } from '#blokkli/components'
@@ -53,7 +47,7 @@ const props = defineProps<{
 
 const { dom, types, runtimeConfig } = useBlokkli()
 
-const instance = getCurrentInstance()
+const root = ref<HTMLElement | null>(null)
 
 const type = computed(() => types.getBlockBundleDefinition(props.bundle))
 
@@ -86,7 +80,7 @@ const fieldLayout = computed<FieldConfig[][]>(() => {
 onMounted(() => {
   dom.registerBlock(
     props.uuid,
-    instance,
+    root.value,
     props.bundle,
     props.fieldListType,
     props.parentType as BlockBundleWithNested,

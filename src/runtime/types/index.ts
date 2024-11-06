@@ -259,17 +259,20 @@ export type BlokkliDefinitionInputEditor<
   getDraggableElement?: (el: HTMLElement) => Element | undefined | null
 
   /**
-   * The abstract grid layout that should be used when the block is rendered
-   * without its component, for example when rendering a <BlokkliField> using
-   * proxyMode: true.
+   * Define how the nested fields should be structured when the block is
+   * rendered without its component, for example when using
+   * `:proxy-mode="true"` on <BlokkliField>.
+   *
+   * Each array should define an array of field names.
    *
    * @example
    * ```typescript
    * defineBlokkli({
+   *   bundle: 'three_columns',
    *   editor: {
    *     fieldLayout: [
    *       ['header'],
-   *       ['left', 'right'],
+   *       ['left', 'center', 'right'],
    *     ]
    *   }
    * })
