@@ -76,7 +76,7 @@ const checked = computed<string[]>({
 
 const visibleLabel = computed(() => {
   if (props.property === BK_VISIBLE_LANGUAGES && !checked.value.length) {
-    return $t('optionBkVisibleLanguagesAll', 'Always visible')
+    return $t('optionBkVisibleLanguagesAll', 'All languages')
   }
   return props.label
 })

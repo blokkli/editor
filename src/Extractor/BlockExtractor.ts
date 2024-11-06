@@ -313,7 +313,7 @@ export const getFragmentDefinition = (name: string): FragmentDefinitionInput<Rec
         const existing = acc[v.definition.bundle] || {}
         acc[v.definition.bundle] = defu(existing, v.definition.options || {})
 
-        const globalOptionKeys = v.definition.globalOptions || []
+        const globalOptionKeys: string[] = v.definition.globalOptions || []
 
         globalOptionKeys.forEach((name) => {
           if (globalOptions[name]) {

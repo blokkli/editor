@@ -129,6 +129,14 @@ msgctxt "blockAddListTourTitle"
 msgid "Favorite blocks"
 msgstr ""
 
+msgctxt "blockOption_bkHiddenGlobally_label"
+msgid "Hide globally"
+msgstr ""
+
+msgctxt "blockOption_bkVisibleLanguages_label"
+msgid "Visible languages"
+msgstr ""
+
 msgctxt "cancel"
 msgid "Cancel"
 msgstr "Annulla"
@@ -682,6 +690,10 @@ msgstr ""
 msgctxt "multipleItemsLabel"
 msgid "Items"
 msgstr "Elementi"
+
+msgctxt "optionBkVisibleLanguagesAll"
+msgid "All languages"
+msgstr ""
 
 msgctxt "optionsCommand.selectCheckboxValue"
 msgid "Select \"@value\" in \"@option\""

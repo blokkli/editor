@@ -4,7 +4,7 @@
       v-if="showLabel"
       :class="isGrouped ? 'bk-blokkli-item-options-item-label' : 'bk-tooltip'"
     >
-      <span>{{ option.label }}</span>
+      <span>{{ label }}</span>
     </div>
     <div
       class="bk-blokkli-item-options-item-content"
@@ -15,7 +15,7 @@
       <OptionRadios
         v-if="option.type === 'radios'"
         v-model="value"
-        :label="option.label"
+        :label="label"
         :options="option.options"
         :property="property"
         :display-as="option.displayAs"
@@ -24,14 +24,14 @@
         v-else-if="option.type === 'checkbox'"
         v-model="value"
         :property="property"
-        :label="option.label"
+        :label="label"
         :value="value"
       />
       <OptionCheckboxes
         v-else-if="option.type === 'checkboxes'"
         v-model="value"
         :property="property"
-        :label="option.label"
+        :label="label"
         :options="checkboxOptions"
         :value="value"
         :is-grouped="isGrouped"
@@ -39,18 +39,18 @@
       <OptionText
         v-else-if="option.type === 'text'"
         v-model="value"
-        :label="option.label"
+        :label="label"
         :type="option.inputType"
       />
       <OptionColor
         v-else-if="option.type === 'color'"
         v-model="value"
-        :label="option.label"
+        :label="label"
       />
       <OptionRange
         v-else-if="option.type === 'range'"
         v-model="value"
-        :label="option.label"
+        :label="label"
         :min="option.min"
         :max="option.max"
         :step="option.step"
@@ -58,7 +58,7 @@
       <OptionNumber
         v-else-if="option.type === 'number'"
         v-model="value"
-        :label="option.label"
+        :label="label"
         :min="option.min"
         :max="option.max"
       />
@@ -79,7 +79,7 @@ import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
 import { mapCheckboxTrue } from '#blokkli/helpers/runtimeHelpers'
 import { BK_VISIBLE_LANGUAGES } from '#blokkli/helpers/symbols'
 
-const { state } = useBlokkli()
+const { state, $t: $blokkliText } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'update', data: string): void
@@ -101,6 +101,10 @@ const showLabel = computed(() => {
 
   return true
 })
+
+const label = computed(() =>
+  $blokkliText(`blockOption_${props.property}_label`, props.option.label),
+)
 
 const checkboxOptions = computed<{ value: string; label: string }[]>(() => {
   if (props.option.type !== 'checkboxes') {
