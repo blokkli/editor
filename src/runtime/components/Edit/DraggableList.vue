@@ -42,6 +42,7 @@
       :data-is-nested="isNested"
       :data-is-new="item.isNew"
       :data-entity-type="runtimeConfig.itemEntityType"
+      :data-bk-is-muted="isMuted(item.options)"
     />
   </Component>
 </template>
@@ -61,6 +62,7 @@ const props = defineProps<{
   fieldKey: string
   list: FieldListItem[]
   entity: EntityContext
+  language: string
   tag?: string
   isNested: boolean
   fieldListType: string
@@ -97,6 +99,23 @@ const allowedBundles = computed<string>(() => {
 
   return bundles.join(',')
 })
+
+// @TODO: This should be handled differently to prevent constant updates in the
+// component when the options change.
+// Ideally this is handled as an overlay on top of the blocks, similar to how
+// selection or multi-select works.
+function isMuted(options?: Record<string, any>) {
+  if (
+    options &&
+    typeof options === 'object' &&
+    'bkVisibleLanguages' in options
+  ) {
+    const languages: string[] = options.bkVisibleLanguages.split(',')
+    return languages.length && !languages.includes(props.language)
+  }
+
+  return false
+}
 
 onMounted(() => {
   if (root.value) {

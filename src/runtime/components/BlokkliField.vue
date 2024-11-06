@@ -12,6 +12,7 @@
     :field-list-type="fieldListType"
     :class="[attrs.class, listClass, { [nonEmptyClass]: filteredList.length }]"
     :is-nested="isNested"
+    :language="providerEntity.language"
     class="bk-field-list"
     :tag="tag"
   />
