@@ -12,6 +12,7 @@
     :field-list-type="fieldListType"
     :class="[attrs.class, listClass, { [nonEmptyClass]: filteredList.length }]"
     :is-nested="isNested"
+    :language="providerEntity.language"
     class="bk-field-list"
     :tag="tag"
   />
@@ -42,6 +43,7 @@
 <script lang="ts" setup>
 import { computed, useAttrs, inject, provide, ref } from '#imports'
 import type { BlokkliFragmentName } from '#blokkli/definitions'
+import { isVisibleByOptions } from '#blokkli/helpers/runtimeHelpers'
 import BlokkliItem from './BlokkliItem.vue'
 
 import type {
@@ -49,6 +51,7 @@ import type {
   MutatedField,
   EntityContext,
   ItemEditContext,
+  BlokkliProviderEntityContext,
 } from '#blokkli/types'
 import type {
   ValidFieldListTypes,
@@ -66,6 +69,7 @@ import {
   INJECT_EDIT_CONTEXT,
   INJECT_MUTATED_FIELDS_MAP,
   INJECT_EDIT_FIELD_LIST_COMPONENT,
+  INJECT_PROVIDER_CONTEXT,
 } from '../helpers/symbols'
 import type DraggableListComponent from './Edit/DraggableList.vue'
 
@@ -94,6 +98,10 @@ const entity = inject<EntityContext>(INJECT_ENTITY_CONTEXT)
 if (!entity) {
   throw new Error('Missing entity context.')
 }
+
+const providerEntity = inject<BlokkliProviderEntityContext>(
+  INJECT_PROVIDER_CONTEXT,
+)
 
 const props = withDefaults(
   defineProps<{
@@ -130,21 +138,32 @@ const fieldKey = computed<string | undefined>(() => {
 
 const fieldListType = computed(() => props.fieldListType)
 
+function filterVisible(item?: FieldListItemTyped): boolean {
+  // The block is always rendered during editing.
+  if (isEditing) {
+    return true
+  }
+  return isVisibleByOptions(item, providerEntity.value.language)
+}
+
 const filteredList = computed<FieldListItemTyped[]>(() => {
   if (mutatedFields && !isInReusable && editContext && fieldKey.value) {
-    return ((mutatedFields[fieldKey.value] || {}).list || []).map((v) => {
-      const mutatedOptions = editContext.mutatedOptions[v.uuid] || {}
-      return {
-        ...v,
-        options: {
-          ...v.options,
-          ...mutatedOptions,
-        },
-      } as FieldListItemTyped
-    })
+    return ((mutatedFields[fieldKey.value] || {}).list || [])
+      .map((v) => {
+        const mutatedOptions = editContext.mutatedOptions[v.uuid] || {}
+        return {
+          ...v,
+          options: {
+            ...v.options,
+            ...mutatedOptions,
+          },
+        } as FieldListItemTyped
+      })
+      .filter(filterVisible)
   }
+
   const list = Array.isArray(props.list) ? props.list : [props.list]
-  return list.filter(Boolean) as FieldListItemTyped[]
+  return list.filter(filterVisible) as FieldListItemTyped[]
 })
 
 provide(INJECT_IS_NESTED, true)

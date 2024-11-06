@@ -407,4 +407,8 @@ html.bk-hide-non-editable {
   svg {
     @apply select-none;
   }
+
+  [data-bk-is-muted='true'] {
+    @apply opacity-30;
+  }
 }

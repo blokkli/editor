@@ -374,6 +374,13 @@ export type EntityContext = {
   bundle: string
 }
 
+export type BlokkliProviderEntityContext = {
+  uuid: string
+  type: string
+  bundle: string
+  language?: string
+}
+
 export type EditEntity = {
   label?: string
   status?: boolean

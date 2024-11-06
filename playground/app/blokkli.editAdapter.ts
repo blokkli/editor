@@ -166,7 +166,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         entity: {
           id: ctx.value.entityUuid,
           label: 'Demo Page',
-          status: true,
+          status: false,
           bundleLabel: 'Page',
         },
         translationState: {

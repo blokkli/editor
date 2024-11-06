@@ -37,6 +37,7 @@
 import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
 const { parentType, fieldListType, uuid } = defineBlokkli({
   bundle: 'title',
+  globalOptions: ['bkHiddenGlobally', 'bkVisibleLanguages'],
   options: {
     showInMenu: {
       type: 'checkbox',

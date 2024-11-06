@@ -8,8 +8,12 @@ import type {
 import { sortObjectKeys } from './../helpers'
 import { defu } from 'defu'
 import { falsy } from '../vitePlugin'
+import {
+  BK_HIDDEN_GLOBALLY,
+  BK_VISIBLE_LANGUAGES,
+} from './../runtime/helpers/symbols'
 
-type ExtractedBlockDefinitionInput = BlockDefinitionInput
+type ExtractedBlockDefinitionInput = BlockDefinitionInput<any, any>
 type ExtractedFragmentDefinitionInput = FragmentDefinitionInput
 
 type ExtractedDefinition = {
@@ -309,7 +313,7 @@ export const getFragmentDefinition = (name: string): FragmentDefinitionInput<Rec
         const existing = acc[v.definition.bundle] || {}
         acc[v.definition.bundle] = defu(existing, v.definition.options || {})
 
-        const globalOptionKeys = v.definition.globalOptions || []
+        const globalOptionKeys: string[] = v.definition.globalOptions || []
 
         globalOptionKeys.forEach((name) => {
           if (globalOptions[name]) {
@@ -322,6 +326,16 @@ export const getFragmentDefinition = (name: string): FragmentDefinitionInput<Rec
 
     const sorted = sortObjectKeys(schema)
     return JSON.stringify(sorted, null, 2)
+  }
+
+  getBundlesWithGlobalOptions(key: string) {
+    return Object.values(this.definitions)
+      .map((definition) => {
+        if (definition?.definition.globalOptions?.includes(key)) {
+          return definition.definition.bundle
+        }
+      })
+      .filter(falsy)
   }
 
   /**
@@ -348,6 +362,9 @@ type GlobalOptionsDefaults = {
   type: BlockOptionDefinition['type']
   default: any
 }
+
+export const bundlesWithVisibleLanguage = ${JSON.stringify(this.getBundlesWithGlobalOptions(BK_VISIBLE_LANGUAGES))}
+export const bundlesWithHiddenGlobally = ${JSON.stringify(this.getBundlesWithGlobalOptions(BK_HIDDEN_GLOBALLY))}
 
 export const globalOptionsDefaults: Record<string, GlobalOptionsDefaults> = ${JSON.stringify(
       defaults,

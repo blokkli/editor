@@ -68,7 +68,11 @@ import {
   ref,
   onMounted,
 } from '#imports'
-import { INJECT_ENTITY_CONTEXT } from '../helpers/symbols'
+import {
+  INJECT_ENTITY_CONTEXT,
+  INJECT_PROVIDER_CONTEXT,
+} from '../helpers/symbols'
+import type { BlokkliProviderEntityContext } from '#blokkli/types'
 
 const PreviewProvider = defineAsyncComponent(
   () => import('./Edit/PreviewProvider.vue'),
@@ -148,6 +152,18 @@ function edit() {
   })
 }
 
+const blokkliProviderEntityContext = computed<BlokkliProviderEntityContext>(
+  () => {
+    return {
+      uuid: props.entityUuid,
+      type: props.entityType,
+      bundle: props.entityBundle,
+      language: props.language,
+    }
+  },
+)
+
+provide(INJECT_PROVIDER_CONTEXT, blokkliProviderEntityContext)
 provide(INJECT_ENTITY_CONTEXT, {
   uuid: props.entityUuid,
   type: props.entityType,
