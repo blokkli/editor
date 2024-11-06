@@ -195,6 +195,10 @@ export default defineConfig({
           { text: 'defineBlokkli()', link: '/define-blokkli' },
           { text: 'Options', link: '/define-blokkli/options' },
           {
+            text: 'Built-in Options',
+            link: '/define-blokkli/built-in-options',
+          },
+          {
             text: 'Context based rendering',
             link: '/define-blokkli/render-for',
           },
