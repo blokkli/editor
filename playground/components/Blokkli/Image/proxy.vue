@@ -1,6 +1,6 @@
 <template>
   <div v-blokkli-droppable:imageReference>
-    <img v-if="url" :src="url" :alt="alt" loading="lazy" />
+    <img v-if="url" :src="url" />
   </div>
 </template>
 
@@ -15,13 +15,6 @@ const props = defineProps<{
 const url = computed(() => {
   if (props.imageReference instanceof MediaImage) {
     return props.imageReference.url()
-  }
-  return ''
-})
-
-const alt = computed(() => {
-  if (props.imageReference instanceof MediaImage) {
-    return props.imageReference.alt()
   }
   return ''
 })
