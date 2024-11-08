@@ -1,5 +1,5 @@
 <template>
-  <slot :items="filteredList" />
+  <slot v-if="!isGlobalProxyMode" :items="filteredList" />
   <Component
     :is="DraggableList"
     v-if="DraggableList && isEditing && canEdit && !isInReusable && entity"
@@ -16,11 +16,15 @@
     class="bk-field-list"
     :proxy-mode="proxyMode"
     :tag="tag"
+    :global-proxy-mode="isGlobalProxyMode"
   />
   <component
     :is="tag"
     v-else-if="
-      !editOnly && (filteredList.length || isEditing || isPreview) && !proxyMode
+      !editOnly &&
+      (filteredList.length || isEditing || isPreview) &&
+      !proxyMode &&
+      !isGlobalProxyMode
     "
     :class="[
       attrs.class,
@@ -40,11 +44,18 @@
       :index="i"
     />
   </component>
-  <slot name="after" :items="filteredList" />
+  <slot v-if="!isGlobalProxyMode" name="after" :items="filteredList" />
 </template>
 
 <script lang="ts" setup>
-import { computed, useAttrs, inject, provide, ref } from '#imports'
+import {
+  computed,
+  useAttrs,
+  inject,
+  provide,
+  ref,
+  type ComputedRef,
+} from '#imports'
 import type { BlokkliFragmentName } from '#blokkli/definitions'
 import { isVisibleByOptions } from '#blokkli/helpers/runtimeHelpers'
 import BlokkliItem from './BlokkliItem.vue'
@@ -74,6 +85,7 @@ import {
   INJECT_EDIT_FIELD_LIST_COMPONENT,
   INJECT_PROVIDER_CONTEXT,
   INJECT_FIELD_PROXY_MODE,
+  INJECT_GLOBAL_PROXY_MODE,
 } from '../helpers/symbols'
 import type DraggableListComponent from './Edit/DraggableList.vue'
 
@@ -89,6 +101,10 @@ defineOptions({
 })
 
 const isEditing = inject(INJECT_IS_EDITING, false)
+const isGlobalProxyMode = inject<ComputedRef<boolean> | null>(
+  INJECT_GLOBAL_PROXY_MODE,
+  null,
+)
 const isInReusable = inject(INJECT_IS_IN_REUSABLE, false)
 const isPreview = inject<boolean>(INJECT_IS_PREVIEW, false)
 const isNested = inject(INJECT_IS_NESTED, false)

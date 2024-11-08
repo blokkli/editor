@@ -259,22 +259,26 @@ export default class BlockExtractor {
         return acc
       }, {})
 
-    const proxyImports = Object.values(this.definitions)
-      .map((v) => {
-        if (v?.proxyComponentPath) {
-          return `import proxyComponent_${v.definition.bundle} from '${v.proxyComponentPath}'`
-        }
+    const proxyComponents = Object.values(this.definitions).reduce<
+      Record<string, string>
+    >((acc, v) => {
+      if (v?.proxyComponentPath) {
+        acc[v.definition.bundle] = v.proxyComponentPath
+      }
+
+      return acc
+    }, {})
+
+    const proxyImports = Object.entries(proxyComponents)
+      .map(([bundle, proxyComponentPath]) => {
+        return `import proxyComponent_${bundle} from '${proxyComponentPath}'`
       })
-      .filter(falsy)
       .join('\n')
 
-    const proxyMaps = Object.values(this.definitions)
-      .map((v) => {
-        if (v?.proxyComponentPath) {
-          return `'${v.definition.bundle}': proxyComponent_${v.definition.bundle}`
-        }
+    const proxyMaps = Object.keys(proxyComponents)
+      .map((bundle) => {
+        return `'${bundle}': proxyComponent_${bundle}`
       })
-      .filter(falsy)
       .join(',  \n')
 
     const allFragmentNames = Object.values(this.fragmentDefinitions)

@@ -1,7 +1,7 @@
 <template>
   <Component
     :is="component"
-    v-if="isProxyMode"
+    v-if="isProxyMode || isGlobalProxyMode"
     :bundle="bundle"
     :uuid="uuid"
     :field-list-type="fieldListType"
@@ -28,6 +28,7 @@ import {
   INJECT_ENTITY_CONTEXT,
   INJECT_FIELD_LIST_TYPE,
   INJECT_FIELD_PROXY_MODE,
+  INJECT_GLOBAL_PROXY_MODE,
 } from '../helpers/symbols'
 import type {
   BlockBundleWithNested,
@@ -57,18 +58,23 @@ const componentProps = withDefaults(
 )
 
 const isProxyMode = inject(INJECT_FIELD_PROXY_MODE, false)
+const isGlobalProxyMode = inject<ComputedRef<boolean> | null>(
+  INJECT_GLOBAL_PROXY_MODE,
+  null,
+)
 
 const fieldListType = inject<ComputedRef<ValidFieldListTypes> | undefined>(
   INJECT_FIELD_LIST_TYPE,
 )
 
-const component = isProxyMode
-  ? defineAsyncComponent(() => import('./Edit/BlockProxy/index.vue'))
-  : getBlokkliItemComponent(
-      componentProps.bundle,
-      fieldListType?.value || 'default',
-      componentProps.parentType,
-    )
+const component =
+  isProxyMode || isGlobalProxyMode?.value
+    ? defineAsyncComponent(() => import('./Edit/BlockProxy/index.vue'))
+    : getBlokkliItemComponent(
+        componentProps.bundle,
+        fieldListType?.value || 'default',
+        componentProps.parentType,
+      )
 
 const index = computed(() => componentProps.index)
 const item = computed(() => ({

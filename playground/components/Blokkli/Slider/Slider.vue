@@ -1,6 +1,12 @@
 <template>
   <div class="relative">
-    <BlokkliField v-slot="{ items }" name="slides" :list="slides" proxy-mode>
+    <BlokkliField
+      v-slot="{ items }"
+      name="slides"
+      :list="slides"
+      proxy-mode
+      drop-alignment="horizontal"
+    >
       <BlokkliSliderView :items="items" />
     </BlokkliField>
   </div>

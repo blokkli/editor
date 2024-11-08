@@ -1,10 +1,13 @@
 <template>
   <div
-    v-if="proxyMode"
+    v-if="proxyMode || globalProxyMode"
     class="bk bk-field-list-proxy"
-    :class="{
-      'bk-is-visible': proxyVisible,
-    }"
+    :class="[
+      {
+        'bk-is-visible': proxyVisible,
+      },
+      'bk-is-' + dropAlignment,
+    ]"
   >
     <div ref="root" class="bk-field-list-proxy-list" v-bind="fieldAttributes">
       <BlokkliItem
@@ -94,19 +97,27 @@ const { dom, types, runtimeConfig, selection } = useBlokkli()
 
 const root = ref<HTMLElement | null>(null)
 
-const props = defineProps<{
-  name: string
-  fieldKey: string
-  list: FieldListItem[]
-  entity: EntityContext
-  language: string
-  tag?: string
-  isNested: boolean
-  fieldListType: string
-  allowedFragments?: BlokkliFragmentName[]
-  dropAlignment?: 'vertical' | 'horizontal'
-  proxyMode?: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    name: string
+    fieldKey: string
+    list: FieldListItem[]
+    entity: EntityContext
+    language: string
+    tag?: string
+    isNested: boolean
+    fieldListType: string
+    allowedFragments?: BlokkliFragmentName[]
+    dropAlignment?: 'vertical' | 'horizontal'
+    proxyMode?: boolean
+    globalProxyMode?: boolean
+  }>(),
+  {
+    tag: 'div',
+    allowedFragments: undefined,
+    dropAlignment: 'vertical',
+  },
+)
 
 const attrs = useAttrs()
 
