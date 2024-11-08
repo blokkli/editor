@@ -53,3 +53,7 @@
     @apply font-semibold;
   }
 }
+
+.bk-block-proxy-component {
+  @apply my-10;
+}

@@ -1092,6 +1092,7 @@ export type EventbusEvents = {
   'drop:clipboardItem': DropClipboardItemEvent
 
   'sidebar:close': undefined
+  'sidebar:open': string
 
   'action:placed': ActionPlacedEvent
 

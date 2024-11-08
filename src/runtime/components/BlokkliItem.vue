@@ -6,6 +6,7 @@
     :uuid="uuid"
     :field-list-type="fieldListType"
     :parent-type="parentType"
+    :item-props="props"
   />
   <Component :is="component" v-else-if="component" v-bind="props" />
   <div v-else-if="isEditing">Block not implemented</div>

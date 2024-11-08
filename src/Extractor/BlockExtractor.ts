@@ -21,6 +21,7 @@ type ExtractedDefinition = {
   icon?: string
   chunkName: string
   componentName: string
+  proxyComponentPath?: string
   definition: ExtractedBlockDefinitionInput
   source: string
   fileSource: string
@@ -72,6 +73,17 @@ export default class BlockExtractor {
     }
   }
 
+  async getProxyComponent(componentPath: string): Promise<string | undefined> {
+    const folder = path.dirname(componentPath)
+    const proxyComponentPath = path.join(folder, '/proxy.vue')
+    try {
+      await fs.promises.access(proxyComponentPath, fs.constants.F_OK)
+      return proxyComponentPath
+    } catch {
+      // Noop, the icon is optional.
+    }
+  }
+
   /**
    * Read the file and extract the blokkli component definitions.
    *
@@ -97,6 +109,7 @@ export default class BlockExtractor {
 
     if ('bundle' in extracted.definition) {
       const icon = await this.getIcon(filePath)
+      const proxyComponentPath = await this.getProxyComponent(filePath)
 
       if (
         this.definitions[filePath] &&
@@ -112,6 +125,7 @@ export default class BlockExtractor {
         filePath,
         definition: extracted.definition,
         icon,
+        proxyComponentPath,
         chunkName: (extracted.definition.chunkName || 'global') as any,
         componentName:
           'BlokkliComponent_' +
@@ -245,6 +259,24 @@ export default class BlockExtractor {
         return acc
       }, {})
 
+    const proxyImports = Object.values(this.definitions)
+      .map((v) => {
+        if (v?.proxyComponentPath) {
+          return `import proxyComponent_${v.definition.bundle} from '${v.proxyComponentPath}'`
+        }
+      })
+      .filter(falsy)
+      .join('\n')
+
+    const proxyMaps = Object.values(this.definitions)
+      .map((v) => {
+        if (v?.proxyComponentPath) {
+          return `'${v.definition.bundle}': proxyComponent_${v.definition.bundle}`
+        }
+      })
+      .filter(falsy)
+      .join(',  \n')
+
     const allFragmentNames = Object.values(this.fragmentDefinitions)
       .filter(falsy)
       .map((v) => `'${v.definition.name}'`)
@@ -253,10 +285,15 @@ export default class BlockExtractor {
     return `import type { GlobalOptionsKey, ValidFieldListTypes, BlockBundleWithNested } from './generated-types'
 import type { BlockDefinitionInput, BlockDefinitionOptionsInput, FragmentDefinitionInput } from '#blokkli/types'
 export const globalOptions = ${JSON.stringify(globalOptions, null, 2)} as const
+${proxyImports}
 
 type DefinitionItem = BlockDefinitionInput<BlockDefinitionOptionsInput, GlobalOptionsKey[]>
 
 ${definitionDeclarations.join('\n')}
+
+const PROXY_COMPONENTS: Record<string, any> = {
+  ${proxyMaps}
+}
 
 export const icons: Record<string, string> = ${JSON.stringify(icons)}
 
@@ -289,6 +326,10 @@ export function getDefinition(bundle: string, fieldListType: ValidFieldListTypes
   }
 
   return definitionsMap[bundle]
+}
+
+export function getBlokkliItemProxyComponent(bundle: string): any {
+  return PROXY_COMPONENTS[bundle]
 }
 
 /**

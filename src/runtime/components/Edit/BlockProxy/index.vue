@@ -4,6 +4,9 @@
       <ItemIcon :bundle="bundle" />
       {{ type?.label }}
     </div>
+    <div v-if="proxyComponent" class="bk-block-proxy-component">
+      <Component :is="proxyComponent" v-bind="itemProps" />
+    </div>
     <div v-if="fieldLayout.length" class="bk-block-proxy-fields">
       <div
         v-for="(row, i) in fieldLayout"
@@ -32,7 +35,10 @@ import type {
   ValidFieldListTypes,
 } from '#blokkli/generated-types'
 import { computed, useBlokkli, onMounted, onBeforeUnmount, ref } from '#imports'
-import { getDefinition } from '#blokkli/definitions'
+import {
+  getDefinition,
+  getBlokkliItemProxyComponent,
+} from '#blokkli/definitions'
 
 import { ItemIcon } from '#blokkli/components'
 import type { FieldConfig } from '#blokkli/types'
@@ -43,6 +49,7 @@ const props = defineProps<{
   bundle: string
   fieldListType: ValidFieldListTypes
   parentType: BlockBundleWithNested
+  itemProps?: any
 }>()
 
 const { dom, types, runtimeConfig } = useBlokkli()
@@ -50,6 +57,8 @@ const { dom, types, runtimeConfig } = useBlokkli()
 const root = ref<HTMLElement | null>(null)
 
 const type = computed(() => types.getBlockBundleDefinition(props.bundle))
+
+const proxyComponent = getBlokkliItemProxyComponent(props.bundle)
 
 const definition = getDefinition(
   props.bundle,

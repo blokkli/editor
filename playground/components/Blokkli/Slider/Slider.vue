@@ -1,9 +1,7 @@
 <template>
   <div class="relative">
-    <BlokkliField name="slides" :list="slides" proxy-mode>
-      <template #after="{ items }">
-        <BlokkliSliderView :items="items" />
-      </template>
+    <BlokkliField v-slot="{ items }" name="slides" :list="slides" proxy-mode>
+      <BlokkliSliderView :items="items" />
     </BlokkliField>
   </div>
 </template>

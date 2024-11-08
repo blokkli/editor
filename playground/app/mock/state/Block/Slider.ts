@@ -9,7 +9,11 @@ export class BlockSlider extends Block {
   static override getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
-      new FieldBlocks('slides', 'Slides', -1, true, ['two_columns', 'grid']),
+      new FieldBlocks('slides', 'Slides', -1, true, [
+        'two_columns',
+        'grid',
+        'image',
+      ]),
     ]
   }
 }
