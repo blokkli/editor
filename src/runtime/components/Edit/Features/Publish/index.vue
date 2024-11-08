@@ -79,6 +79,8 @@ const onClick = async () => {
     const validations = state.violations.value
     if (validations.length) {
       eventBus.emit('publish:failed')
+      // Open the validations sidebar when there are validation errors.
+      eventBus.emit('sidebar:open', 'violations')
     }
     return
   }

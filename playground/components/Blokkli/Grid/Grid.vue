@@ -18,6 +18,7 @@
       name="blocks"
       :list="blocks"
       class="container grid gap-20 lg:gap-40"
+      drop-alignment="horizontal"
       :class="{
         'grid-cols-2': options.mobile,
         'lg:grid-cols-2': options.columns === 'two',

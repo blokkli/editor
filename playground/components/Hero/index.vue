@@ -22,7 +22,9 @@
           />
           <slot></slot>
         </div>
-        <div class="col-span-4 max-w-[340px] lg:w-full mx-auto mb-30 lg:mb-0">
+        <div
+          class="col-span-4 max-w-[340px] lg:w-full mx-auto mb-30 lg:mb-0 relative"
+        >
           <slot name="animation"></slot>
         </div>
       </div>

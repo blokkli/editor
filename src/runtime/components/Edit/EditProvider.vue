@@ -70,6 +70,7 @@ import {
   INJECT_EDIT_CONTEXT,
   INJECT_EDIT_FIELD_LIST_COMPONENT,
   INJECT_EDIT_LOGGER,
+  INJECT_GLOBAL_PROXY_MODE,
   INJECT_IS_EDITING,
 } from '#blokkli/helpers/symbols'
 import type { AdapterContext } from '#blokkli/adapter'
@@ -211,4 +212,7 @@ provide<BlokkliApp>(INJECT_APP, {
   dropAreas,
   debug,
 })
+
+const isProxyMode = computed(() => ui.isProxyMode.value)
+provide(INJECT_GLOBAL_PROXY_MODE, isProxyMode)
 </script>

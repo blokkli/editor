@@ -67,6 +67,7 @@ const { options } = defineBlokkli({
   editor: {
     disableEdit: true,
     editTitle: (el) => el.querySelector('h2')?.textContent,
+    fieldLayout: [['header'], ['left', 'right']],
   },
 })
 
@@ -89,5 +90,3 @@ const colorClass = computed(() => {
 const isInverted = computed(() => options.value.background === 'dark')
 provide('isInverted', isInverted)
 </script>
-
-<style></style>
