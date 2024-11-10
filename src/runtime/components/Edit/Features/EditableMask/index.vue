@@ -3,8 +3,8 @@
     id="mask"
     v-model="isActive"
     :label="$t('maskToggle', 'Toggle non-editable areas')"
-    :title-on="$t('maskShow', 'Show non-editable areas')"
-    :title-off="$t('maskHide', 'Hide non-editable areas')"
+    :title-on="$t('maskHide', 'Hide non-editable areas')"
+    :title-off="$t('maskShow', 'Show non-editable areas')"
     :tour-text="
       $t(
         'maskTourText',
