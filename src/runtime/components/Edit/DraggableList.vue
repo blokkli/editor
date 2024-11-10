@@ -103,7 +103,7 @@ const props = withDefaults(
     fieldKey: string
     list: FieldListItem[]
     entity: EntityContext
-    language: string
+    language?: string
     tag?: string
     isNested: boolean
     fieldListType: string

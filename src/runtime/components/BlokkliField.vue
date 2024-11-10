@@ -13,11 +13,11 @@
     :field-list-type="fieldListType"
     :class="[attrs.class, listClass, { [nonEmptyClass]: filteredList.length }]"
     :is-nested="isNested"
-    :language="providerEntity.language"
+    :language="providerEntity?.language"
     class="bk-field-list"
     :proxy-mode="proxyMode"
     :tag="tag"
-    :global-proxy-mode="isGlobalProxyMode"
+    :global-proxy-mode="!!isGlobalProxyMode"
   />
   <component
     :is="tag"
@@ -122,9 +122,15 @@ if (!entity) {
   throw new Error('Missing entity context.')
 }
 
-const providerEntity = inject<BlokkliProviderEntityContext>(
+const providerEntity = inject<ComputedRef<BlokkliProviderEntityContext>>(
   INJECT_PROVIDER_CONTEXT,
-)
+)!
+
+if (!providerEntity) {
+  throw new Error(
+    'Missing blökkli injection: ' + INJECT_PROVIDER_CONTEXT.toString(),
+  )
+}
 
 const props = withDefaults(
   defineProps<{
@@ -165,7 +171,7 @@ const fieldKey = computed<string | undefined>(() => {
 
 const fieldListType = computed(() => props.fieldListType)
 
-function filterVisible(item?: FieldListItemTyped): boolean {
+function filterVisible(item?: FieldListItemTyped | FieldListItem): boolean {
   // The block is always rendered during editing.
   if (isEditing) {
     return true
