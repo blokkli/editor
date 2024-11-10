@@ -63,10 +63,12 @@ import {
   createArtboard,
   type ArtboardOptions,
   type Artboard,
+  type PluginWheelOptions,
   touch,
   wheel,
   mouse,
   dom as domPlugin,
+  type PluginWheel,
 } from 'dragboard'
 
 const { context, storage, ui, animation, $t, dom } = useBlokkli()
@@ -92,8 +94,6 @@ const options = computed<ArtboardOptions>(() => {
   return {
     maxScale: ui.isMobile.value ? 1 : 3,
     minScale: 0.1,
-    scrollSpeed: props.scrollSpeed,
-    touchDirectionThresholdRatio: 0,
     overscrollBounds: {
       top: ui.visibleViewport.value.y + PADDING,
       left: ui.visibleViewport.value.x + PADDING,
@@ -128,33 +128,49 @@ const saveState = () => {
   }
 }
 
-function getArtboard(): Artboard {
-  if (savedState.value) {
-    return createArtboard(
-      ui.rootElement(),
-      [
-        mouse(),
-        touch(),
-        wheel({
-          useMomentumZoom: true,
-          useMomentumScroll: true,
-          interceptWheel: true,
-        }),
-        domPlugin({
-          element: ui.artboardElement(),
-        }),
-      ],
-      {
-        initTransform: {
-          x: savedState.value.offset.x,
-          y: savedState.value.offset.y,
-          scale: savedState.value?.scale || 1,
-        },
-        ...options.value,
-      },
-    )
+let pluginWheel: PluginWheel | null = null
+
+const wheelOptions = computed<PluginWheelOptions>(() => {
+  return {
+    useMomentumZoom: props.momentum,
+    useMomentumScroll: props.momentum,
+    interceptWheel: true,
+    scrollSpeed: props.scrollSpeed,
+    wheelZoomFactor: props.scrollSpeed,
   }
-  return createArtboard(ui.rootElement(), [], options.value)
+})
+
+watch(wheelOptions, function (newOptions) {
+  if (pluginWheel) {
+    pluginWheel.options.setAll(newOptions)
+  }
+})
+
+function getArtboard(): Artboard {
+  pluginWheel = wheel(wheelOptions.value)
+  return createArtboard(
+    ui.rootElement(),
+    [
+      mouse(),
+      touch(),
+      pluginWheel,
+      domPlugin({
+        element: ui.artboardElement(),
+        setInitTransformFromRect: !savedState.value || !props.persist,
+      }),
+    ],
+    {
+      initTransform:
+        savedState.value && props.persist
+          ? {
+              x: savedState.value.offset.x,
+              y: savedState.value.offset.y,
+              scale: savedState.value?.scale || 1,
+            }
+          : undefined,
+      ...options.value,
+    },
+  )
 }
 
 const artboard = getArtboard()
