@@ -5,7 +5,7 @@
       :class="'bk-orientation-' + orientation"
     >
       <div ref="el">
-        <button ref="thumb" class="dragboard-thumb" />
+        <button ref="thumb" />
       </div>
     </div>
   </Teleport>
@@ -39,5 +39,9 @@ onBeforeUnmount(() => {
   if (scrollbarPlugin) {
     props.artboard.removePlugin(scrollbarPlugin)
   }
+})
+
+defineOptions({
+  name: 'ArtboardScrollbar',
 })
 </script>

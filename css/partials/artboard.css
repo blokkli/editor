@@ -77,7 +77,7 @@
     );
   }
 
-  .dragboard-overview-artboard {
+  .bk-artboard-overview-artboard {
     @apply bg-white absolute top-0 left-0 outline-mono-400 outline-1 outline pointer-events-none overflow-hidden;
 
     canvas {

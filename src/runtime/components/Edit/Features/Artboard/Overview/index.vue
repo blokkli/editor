@@ -7,7 +7,7 @@
     @mousedown.stop
     @mousemove.stop
   >
-    <div ref="overviewArtboardEl" class="dragboard-overview-artboard">
+    <div ref="overviewArtboardEl" class="bk-artboard-overview-artboard">
       <canvas ref="canvas" />
     </div>
     <div class="bk-artboard-overview-visible">
@@ -103,5 +103,9 @@ onBeforeUnmount(() => {
   if (pluginOverview) {
     props.artboard.removePlugin(pluginOverview)
   }
+})
+
+defineOptions({
+  name: 'ArtboardOverview',
 })
 </script>
