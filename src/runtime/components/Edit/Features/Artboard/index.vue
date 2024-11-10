@@ -27,7 +27,7 @@ const { settings } = defineBlokkliFeature({
     momentum: {
       type: 'checkbox',
       default: true,
-      label: 'Use momentum scrolling',
+      label: 'Use smooth scrolling',
       group: 'artboard',
       viewports: ['desktop'],
     },

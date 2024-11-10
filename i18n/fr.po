@@ -391,6 +391,10 @@ msgctxt "feature_add-list_setting_orientation_option_vertical"
 msgid "Vertical"
 msgstr ""
 
+msgctxt "feature_artboard_setting_momentum_label"
+msgid "Use smooth scrolling"
+msgstr ""
+
 msgctxt "feature_artboard_setting_persist_label"
 msgid "Persist position and zoom"
 msgstr ""
@@ -785,6 +789,22 @@ msgid ""
 "smartphone."
 msgstr ""
 
+msgctxt "proxyViewHide"
+msgid "Show content preview"
+msgstr ""
+
+msgctxt "proxyViewShow"
+msgid "Show structure view"
+msgstr ""
+
+msgctxt "proxyViewToggle"
+msgid "Toggle structure view"
+msgstr ""
+
+msgctxt "proxyViewTourText"
+msgid "Displays the content blocks as a structured view."
+msgstr ""
+
 msgctxt "publishAndCloseLabel"
 msgid "Publish & Close"
 msgstr ""
@@ -896,6 +916,10 @@ msgstr ""
 
 msgctxt "settingsAppearance"
 msgid "Appearance"
+msgstr ""
+
+msgctxt "settingsArtboard"
+msgid "Artboard"
 msgstr ""
 
 msgctxt "settingsBehaviour"

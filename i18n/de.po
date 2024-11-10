@@ -54,7 +54,7 @@ msgstr "Alle"
 
 msgctxt "artboard"
 msgid "Artboard"
-msgstr "Zeichenfläche"
+msgstr "Vorschau"
 
 msgctxt "artboardOverviewHide"
 msgid "Hide overview"
@@ -405,13 +405,17 @@ msgctxt "feature_add-list_setting_orientation_option_vertical"
 msgid "Vertical"
 msgstr "Vertikal"
 
+msgctxt "feature_artboard_setting_momentum_label"
+msgid "Use smooth scrolling"
+msgstr "Sanftes Scrollen verwenden"
+
 msgctxt "feature_artboard_setting_persist_label"
 msgid "Persist position and zoom"
 msgstr "Position und Zoom speichern"
 
 msgctxt "feature_artboard_setting_scrollSpeed_label"
 msgid "Artboard scroll speed"
-msgstr "Scrollgeschwindigkeit der Zeichenfläche"
+msgstr "Scrollgeschwindigkeit der Vorschau"
 
 msgctxt "feature_block-add-list_setting_hideDisabledBlocks_label"
 msgid "Hide blocks that can't be added"
@@ -812,6 +816,22 @@ msgstr ""
 "Zeigt einen QR-Code an, um eine Vorschau der Änderungen mit Ihrem "
 "Smartphone zu öffnen."
 
+msgctxt "proxyViewHide"
+msgid "Show content preview"
+msgstr "Inhaltsvorschau anzeigen"
+
+msgctxt "proxyViewShow"
+msgid "Show structure view"
+msgstr "Strukturierte Vorschau anzeigen"
+
+msgctxt "proxyViewToggle"
+msgid "Toggle structure view"
+msgstr "Vorschau wechseln"
+
+msgctxt "proxyViewTourText"
+msgid "Displays the content blocks as a structured view."
+msgstr "Stellt die Inhaltsblöcke in strukturierter Form dar."
+
 msgctxt "publishAndCloseLabel"
 msgid "Publish & Close"
 msgstr "Veröffentlichen & Schliessen"
@@ -929,6 +949,10 @@ msgstr "Erweitert"
 msgctxt "settingsAppearance"
 msgid "Appearance"
 msgstr "Darstellung"
+
+msgctxt "settingsArtboard"
+msgid "Artboard"
+msgstr "Vorschau"
 
 msgctxt "settingsBehaviour"
 msgid "Behaviour"

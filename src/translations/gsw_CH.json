@@ -355,6 +355,10 @@
     "source": "Vertical",
     "translation": "Vertikal"
   },
+  "feature_artboard_setting_momentum_label": {
+    "source": "Use smooth scrolling",
+    "translation": ""
+  },
   "feature_artboard_setting_persist_label": {
     "source": "Persist position and zoom",
     "translation": "Position und Zoom speichere"
@@ -727,6 +731,22 @@
     "source": "Shows a QR code to quickly open a preview of the changes with your smartphone.",
     "translation": ""
   },
+  "proxyViewHide": {
+    "source": "Show content preview",
+    "translation": ""
+  },
+  "proxyViewShow": {
+    "source": "Show structure view",
+    "translation": ""
+  },
+  "proxyViewToggle": {
+    "source": "Toggle structure view",
+    "translation": ""
+  },
+  "proxyViewTourText": {
+    "source": "Displays the content blocks as a structured view.",
+    "translation": ""
+  },
   "publishAndCloseLabel": {
     "source": "Publish & Close",
     "translation": ""
@@ -830,6 +850,10 @@
   "settingsAppearance": {
     "source": "Appearance",
     "translation": "Darstellig"
+  },
+  "settingsArtboard": {
+    "source": "Artboard",
+    "translation": ""
   },
   "settingsBehaviour": {
     "source": "Behaviour",
