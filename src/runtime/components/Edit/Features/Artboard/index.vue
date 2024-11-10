@@ -115,6 +115,7 @@ const PADDING = 50
 const options = computed<ArtboardOptions>(() => {
   return {
     maxScale: ui.isMobile.value ? 1 : 3,
+    direction: ui.isMobile.value ? 'vertical' : 'both',
     minScale: 0.1,
     overscrollBounds: {
       top: ui.visibleViewport.value.y + PADDING,
@@ -196,6 +197,10 @@ function getArtboard(): Artboard {
 }
 
 const artboard = getArtboard()
+
+watch(options, function (newOptions) {
+  artboard.setOptions(newOptions)
+})
 
 onBlokkliEvent('animationFrame:before', (time) => {
   artboard.loop(time)
