@@ -257,6 +257,28 @@ export type BlokkliDefinitionInputEditor<
    * appears to be selectable/draggable.
    */
   getDraggableElement?: (el: HTMLElement) => Element | undefined | null
+
+  /**
+   * Define how the nested fields should be structured when the block is
+   * rendered without its component, for example when using
+   * `:proxy-mode="true"` on <BlokkliField>.
+   *
+   * Each array should define an array of field names.
+   *
+   * @example
+   * ```typescript
+   * defineBlokkli({
+   *   bundle: 'three_columns',
+   *   editor: {
+   *     fieldLayout: [
+   *       ['header'],
+   *       ['left', 'center', 'right'],
+   *     ]
+   *   }
+   * })
+   * ```
+   */
+  fieldLayout?: string[][]
 }
 
 export type BlockDefinitionRenderForParent = {
@@ -372,6 +394,13 @@ export type EntityContext = {
   uuid: string
   type: string
   bundle: string
+}
+
+export type BlokkliProviderEntityContext = {
+  uuid: string
+  type: string
+  bundle: string
+  language?: string
 }
 
 export type EditEntity = {
@@ -1064,6 +1093,7 @@ export type EventbusEvents = {
   'drop:clipboardItem': DropClipboardItemEvent
 
   'sidebar:close': undefined
+  'sidebar:open': string
 
   'action:placed': ActionPlacedEvent
 

@@ -8,8 +8,12 @@ import type {
 import { sortObjectKeys } from './../helpers'
 import { defu } from 'defu'
 import { falsy } from '../vitePlugin'
+import {
+  BK_HIDDEN_GLOBALLY,
+  BK_VISIBLE_LANGUAGES,
+} from './../runtime/helpers/symbols'
 
-type ExtractedBlockDefinitionInput = BlockDefinitionInput
+type ExtractedBlockDefinitionInput = BlockDefinitionInput<any, any>
 type ExtractedFragmentDefinitionInput = FragmentDefinitionInput
 
 type ExtractedDefinition = {
@@ -17,6 +21,7 @@ type ExtractedDefinition = {
   icon?: string
   chunkName: string
   componentName: string
+  proxyComponentPath?: string
   definition: ExtractedBlockDefinitionInput
   source: string
   fileSource: string
@@ -68,6 +73,17 @@ export default class BlockExtractor {
     }
   }
 
+  async getProxyComponent(componentPath: string): Promise<string | undefined> {
+    const folder = path.dirname(componentPath)
+    const proxyComponentPath = path.join(folder, '/proxy.vue')
+    try {
+      await fs.promises.access(proxyComponentPath, fs.constants.F_OK)
+      return proxyComponentPath
+    } catch {
+      // Noop, the icon is optional.
+    }
+  }
+
   /**
    * Read the file and extract the blokkli component definitions.
    *
@@ -93,6 +109,7 @@ export default class BlockExtractor {
 
     if ('bundle' in extracted.definition) {
       const icon = await this.getIcon(filePath)
+      const proxyComponentPath = await this.getProxyComponent(filePath)
 
       if (
         this.definitions[filePath] &&
@@ -108,6 +125,7 @@ export default class BlockExtractor {
         filePath,
         definition: extracted.definition,
         icon,
+        proxyComponentPath,
         chunkName: (extracted.definition.chunkName || 'global') as any,
         componentName:
           'BlokkliComponent_' +
@@ -241,6 +259,28 @@ export default class BlockExtractor {
         return acc
       }, {})
 
+    const proxyComponents = Object.values(this.definitions).reduce<
+      Record<string, string>
+    >((acc, v) => {
+      if (v?.proxyComponentPath) {
+        acc[v.definition.bundle] = v.proxyComponentPath
+      }
+
+      return acc
+    }, {})
+
+    const proxyImports = Object.entries(proxyComponents)
+      .map(([bundle, proxyComponentPath]) => {
+        return `import proxyComponent_${bundle} from '${proxyComponentPath}'`
+      })
+      .join('\n')
+
+    const proxyMaps = Object.keys(proxyComponents)
+      .map((bundle) => {
+        return `'${bundle}': proxyComponent_${bundle}`
+      })
+      .join(',  \n')
+
     const allFragmentNames = Object.values(this.fragmentDefinitions)
       .filter(falsy)
       .map((v) => `'${v.definition.name}'`)
@@ -249,10 +289,15 @@ export default class BlockExtractor {
     return `import type { GlobalOptionsKey, ValidFieldListTypes, BlockBundleWithNested } from './generated-types'
 import type { BlockDefinitionInput, BlockDefinitionOptionsInput, FragmentDefinitionInput } from '#blokkli/types'
 export const globalOptions = ${JSON.stringify(globalOptions, null, 2)} as const
+${proxyImports}
 
 type DefinitionItem = BlockDefinitionInput<BlockDefinitionOptionsInput, GlobalOptionsKey[]>
 
 ${definitionDeclarations.join('\n')}
+
+const PROXY_COMPONENTS: Record<string, any> = {
+  ${proxyMaps}
+}
 
 export const icons: Record<string, string> = ${JSON.stringify(icons)}
 
@@ -287,6 +332,10 @@ export function getDefinition(bundle: string, fieldListType: ValidFieldListTypes
   return definitionsMap[bundle]
 }
 
+export function getBlokkliItemProxyComponent(bundle: string): any {
+  return PROXY_COMPONENTS[bundle]
+}
+
 /**
  * Get the definition of the default block component.
  */
@@ -309,7 +358,7 @@ export const getFragmentDefinition = (name: string): FragmentDefinitionInput<Rec
         const existing = acc[v.definition.bundle] || {}
         acc[v.definition.bundle] = defu(existing, v.definition.options || {})
 
-        const globalOptionKeys = v.definition.globalOptions || []
+        const globalOptionKeys: string[] = v.definition.globalOptions || []
 
         globalOptionKeys.forEach((name) => {
           if (globalOptions[name]) {
@@ -322,6 +371,16 @@ export const getFragmentDefinition = (name: string): FragmentDefinitionInput<Rec
 
     const sorted = sortObjectKeys(schema)
     return JSON.stringify(sorted, null, 2)
+  }
+
+  getBundlesWithGlobalOptions(key: string) {
+    return Object.values(this.definitions)
+      .map((definition) => {
+        if (definition?.definition.globalOptions?.includes(key)) {
+          return definition.definition.bundle
+        }
+      })
+      .filter(falsy)
   }
 
   /**
@@ -348,6 +407,9 @@ type GlobalOptionsDefaults = {
   type: BlockOptionDefinition['type']
   default: any
 }
+
+export const bundlesWithVisibleLanguage = ${JSON.stringify(this.getBundlesWithGlobalOptions(BK_VISIBLE_LANGUAGES))}
+export const bundlesWithHiddenGlobally = ${JSON.stringify(this.getBundlesWithGlobalOptions(BK_HIDDEN_GLOBALLY))}
 
 export const globalOptionsDefaults: Record<string, GlobalOptionsDefaults> = ${JSON.stringify(
       defaults,

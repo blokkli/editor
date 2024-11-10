@@ -135,6 +135,14 @@
     "source": "Favorite blocks",
     "translation": "Favoriten-Blöcke"
   },
+  "blockOption_bkHiddenGlobally_label": {
+    "source": "Hide globally",
+    "translation": "Global verstecken"
+  },
+  "blockOption_bkVisibleLanguages_label": {
+    "source": "Visible languages",
+    "translation": "Sichtbare Sprachen"
+  },
   "cancel": {
     "source": "Cancel",
     "translation": "Abbrechen"
@@ -646,6 +654,10 @@
   "multipleItemsLabel": {
     "source": "Items",
     "translation": "Elemente"
+  },
+  "optionBkVisibleLanguagesAll": {
+    "source": "All languages",
+    "translation": "Alle Sprachen"
   },
   "optionsCommand.selectCheckboxValue": {
     "source": "Select \"@value\" in \"@option\"",

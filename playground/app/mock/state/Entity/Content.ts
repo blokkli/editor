@@ -29,6 +29,7 @@ export class ContentPage extends Content {
         'title',
         'grid',
         'two_columns',
+        'slider',
         'button',
         'card',
         'image',

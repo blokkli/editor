@@ -252,6 +252,12 @@ onBlokkliEvent('item:dropped', () => {
   }
 })
 
+onBlokkliEvent('sidebar:open', (id) => {
+  if (id === props.id) {
+    activeSidebar.value = props.id
+  }
+})
+
 defineExpose({ showSidebar })
 
 defineTourItem(() => {

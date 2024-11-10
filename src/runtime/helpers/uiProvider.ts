@@ -14,6 +14,7 @@ import type { Viewport } from '#blokkli/constants'
 import { falsy } from '.'
 
 const ARTBOARD_CLASS = 'bk-is-artboard'
+const CLASS_PROXY_MODE = 'bk-is-proxy-mode'
 
 export type UiProvider = {
   rootElement: () => HTMLElement
@@ -28,6 +29,7 @@ export type UiProvider = {
   isDesktop: ComputedRef<boolean>
   isArtboard: () => boolean
   isAnimating: Ref<boolean>
+  isProxyMode: Ref<boolean>
   useAnimations: ComputedRef<boolean>
   lowPerformanceMode: ComputedRef<boolean>
   toolbarHeight: ComputedRef<number>
@@ -67,6 +69,7 @@ export default function (storage: StorageProvider): UiProvider {
   let cachedArtboardElement: HTMLElement | null = null
   let cachedProviderElement: HTMLElement | null = null
 
+  const isProxyMode = ref(false)
   const menuIsOpen = ref(false)
   const isAnimating = ref(false)
   const openContextMenu = ref('')
@@ -282,10 +285,21 @@ export default function (storage: StorageProvider): UiProvider {
     }
   })
 
+  function setProxyModeClass() {
+    document.documentElement.classList.remove(CLASS_PROXY_MODE)
+
+    if (isProxyMode.value) {
+      document.documentElement.classList.add(CLASS_PROXY_MODE)
+    }
+  }
+
+  watch(isProxyMode, setProxyModeClass)
+
   onMounted(() => {
     document.documentElement.classList.add('bk-html-root')
     document.body.classList.add('bk-body')
     document.documentElement.classList.add(ARTBOARD_CLASS)
+    setProxyModeClass()
     viewportWidth.value = window.innerWidth
     viewportHeight.value = window.innerHeight
     window.addEventListener('resize', onResize)
@@ -298,6 +312,7 @@ export default function (storage: StorageProvider): UiProvider {
     document.documentElement.classList.remove('bk-html-root')
     document.body.classList.remove('bk-body')
     document.documentElement.classList.remove(ARTBOARD_CLASS)
+    document.documentElement.classList.remove(CLASS_PROXY_MODE)
     clearTimeout(resizeTimeout)
     const artboard = artboardElement()
     resizeObserver.unobserve(artboard)
@@ -365,6 +380,7 @@ export default function (storage: StorageProvider): UiProvider {
     openContextMenu,
     viewport,
     artboardSize: computed(() => artboardSize.value),
+    isProxyMode,
     artboardScale,
     artboardOffset,
     selectionTopLeft,

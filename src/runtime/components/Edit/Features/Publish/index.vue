@@ -67,7 +67,10 @@ const icon = computed<BlokkliIcon>(() =>
 
 const onClick = async () => {
   const success = await mutateWithLoadingState(
-    adapter.publish,
+    () =>
+      adapter.publish({
+        closeAfterPublish: settings.value.closeAfterPublish,
+      }),
     $t('publishError', 'Changes could not be published.'),
     $t('publishSuccess', 'Changes published successfully.'),
   )
@@ -76,6 +79,8 @@ const onClick = async () => {
     const validations = state.violations.value
     if (validations.length) {
       eventBus.emit('publish:failed')
+      // Open the validations sidebar when there are validation errors.
+      eventBus.emit('sidebar:open', 'violations')
     }
     return
   }

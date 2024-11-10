@@ -166,7 +166,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         entity: {
           id: ctx.value.entityUuid,
           label: 'Demo Page',
-          status: true,
+          status: false,
           bundleLabel: 'Page',
         },
         translationState: {
@@ -687,7 +687,14 @@ export default defineBlokkliEditAdapter((ctx) => {
       ])
     },
 
-    publish() {
+    publish(options) {
+      if (options.closeAfterPublish) {
+        return Promise.resolve({
+          success: true,
+          state: null,
+          errors: [],
+        })
+      }
       throw new Error('Publish is not supported on the demo page.')
     },
 

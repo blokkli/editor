@@ -1,0 +1,73 @@
+.bk.bk-field-list-proxy {
+  @apply z-dialog w-full min-h-40 p-20 absolute;
+  @apply w-full left-0 top-0;
+
+  @apply transition-opacity duration-100;
+
+  @apply opacity-0 pointer-events-none;
+
+  html.bk-is-proxy-mode & {
+    @apply opacity-100 pointer-events-auto static;
+    @apply mx-10 max-w-full min-w-0 w-auto;
+
+    .bk-block-proxy {
+      @apply min-w-[200px];
+    }
+  }
+
+  &.bk-is-visible {
+    @apply opacity-100 pointer-events-auto;
+  }
+
+  &.bk-is-horizontal {
+    > .bk-field-list-proxy-list {
+      @apply flex gap-15;
+    }
+  }
+
+  &.bk-is-vertical {
+    > .bk-field-list-proxy-list {
+      @apply grid gap-15;
+    }
+  }
+
+  .bk-field-list-proxy {
+    @apply p-0 relative h-auto w-auto bg-none z-auto !mx-0;
+    .bk-block-proxy {
+      @apply shadow-none;
+    }
+  }
+}
+
+.bk-block-proxy {
+  @apply text-mono-900 flex-1;
+  @apply border border-mono-400 p-15 rounded bg-white shadow-lg;
+}
+
+.bk-block-proxy-header {
+  @apply flex items-center gap-[7px] text-sm font-semibold text-mono-700;
+  .bk-blokkli-item-icon {
+    @apply size-25 border border-mono-300 rounded p-[3px] bg-mono-100 text-mono-700;
+  }
+}
+
+.bk-block-proxy-fields {
+  @apply grid gap-15 mt-15;
+}
+
+.bk-block-proxy-fields-row {
+  @apply grid gap-15;
+}
+
+.bk-block-proxy-fields-row-field {
+  @apply border border-mono-300 p-15 rounded bg-mono-50;
+
+  > span {
+    @apply text-xs uppercase inline-block mb-15 text-mono-400;
+    @apply font-semibold;
+  }
+}
+
+.bk-block-proxy-component {
+  @apply my-15 line-clamp-3 last:mb-0;
+}

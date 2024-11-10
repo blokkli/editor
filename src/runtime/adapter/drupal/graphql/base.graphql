@@ -105,12 +105,13 @@ mutation pbPublish(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
+  $createNewState: Boolean
 ) {
   state: paragraphsEditMutationState(
     entityType: $entityType
     entityUuid: $entityUuid
   ) {
-    action: publish {
+    action: publish(createNewState: $createNewState) {
       ...paragraphsBlokkliMutationResult
     }
   }

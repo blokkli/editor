@@ -104,7 +104,7 @@ export type DomProvider = {
 
   registerBlock: (
     uuid: string,
-    instance: ComponentInternalInstance | null,
+    instance: ComponentInternalInstance | null | HTMLElement,
     bundle: string,
     fieldListType: ValidFieldListTypes,
     parentBlockBundle?: BlockBundleWithNested,
@@ -149,8 +149,11 @@ export type DomProvider = {
 }
 
 const getVisibleBlockElement = (
-  instance: ComponentInternalInstance,
+  instance: ComponentInternalInstance | HTMLElement,
 ): HTMLElement | undefined => {
+  if (instance instanceof HTMLElement) {
+    return instance
+  }
   if (instance.vnode.el instanceof HTMLElement) {
     return instance.vnode.el
   } else if (
@@ -323,7 +326,7 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
 
   const registerBlock = (
     uuid: string,
-    instance: ComponentInternalInstance | null,
+    instance: ComponentInternalInstance | null | HTMLElement,
     bundle: string,
     fieldListType: ValidFieldListTypes,
     parentBlockBundle?: BlockBundleWithNested,

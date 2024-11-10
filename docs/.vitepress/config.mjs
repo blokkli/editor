@@ -195,12 +195,17 @@ export default defineConfig({
           { text: 'defineBlokkli()', link: '/define-blokkli' },
           { text: 'Options', link: '/define-blokkli/options' },
           {
+            text: 'Built-in Options',
+            link: '/define-blokkli/built-in-options',
+          },
+          {
             text: 'Context based rendering',
             link: '/define-blokkli/render-for',
           },
           { text: 'Block Context', link: '/define-blokkli/block-context' },
           { text: 'Editable / Droppable', link: '/define-blokkli/editable' },
           { text: 'Editor behaviour', link: '/define-blokkli/editor' },
+          { text: 'Proxy Mode', link: '/define-blokkli/proxy-mode' },
         ],
       },
       {

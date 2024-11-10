@@ -13,8 +13,7 @@
       :uuids="uuids"
       class="bk-blokkli-item-options-item"
       :class="{
-        'bk-is-disabled':
-          !state.canEdit.value || state.editMode.value !== 'editing',
+        'bk-is-disabled': isDisabled(plugin),
       }"
       @keydown.stop
       @update="setOptionValue(plugin.property, $event)"
@@ -35,8 +34,7 @@
         :uuids="uuids"
         class="bk-blokkli-item-options-item"
         :class="{
-          'bk-is-disabled':
-            !state.canEdit.value || state.editMode.value !== 'editing',
+          'bk-is-disabled': isDisabled(plugin),
         }"
         is-grouped
         @keydown.stop
@@ -60,6 +58,10 @@ import type {
 import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
 import { optionValueToStorable } from '#blokkli/helpers/options'
 import { getRuntimeOptionValue } from '#blokkli/helpers/runtimeHelpers'
+import {
+  BK_HIDDEN_GLOBALLY,
+  BK_VISIBLE_LANGUAGES,
+} from '#blokkli/helpers/symbols'
 
 type OptionItem = {
   property: string
@@ -229,9 +231,21 @@ const currentValues = computed(() => {
   }, {})
 })
 
+function filterInternal(item: OptionItem) {
+  if (currentValues.value[BK_HIDDEN_GLOBALLY]) {
+    return item.property !== BK_VISIBLE_LANGUAGES
+  }
+
+  return true
+}
+
+function isInternalOption(property: string) {
+  return property === BK_VISIBLE_LANGUAGES || property === BK_HIDDEN_GLOBALLY
+}
+
 const visibleOptions = computed<OptionItem[]>(() => {
   if (!props.definition.editor?.determineVisibleOptions) {
-    return availableOptions.value
+    return availableOptions.value.filter(filterInternal)
   }
 
   const uuid = props.uuids[0]
@@ -261,8 +275,24 @@ const visibleOptions = computed<OptionItem[]>(() => {
       fieldListType: block?.hostFieldListType || 'default',
     })
 
-  return availableOptions.value.filter((v) => visibleKeys.includes(v.property))
+  return availableOptions.value
+    .filter(
+      (v) => isInternalOption(v.property) || visibleKeys.includes(v.property),
+    )
+    .filter(filterInternal)
 })
+
+function isDisabled(plugin: OptionItem) {
+  if (!state.canEdit.value || state.editMode.value === 'readonly') {
+    return true
+  }
+
+  if (isInternalOption(plugin.property)) {
+    return false
+  }
+
+  return state.editMode.value !== 'editing'
+}
 
 const singleVisibleOptions = computed(() =>
   visibleOptions.value.filter((v) => !v.option.group),

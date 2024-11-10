@@ -21,6 +21,7 @@
           :list="fieldButtons"
           list-class="mt-20 lg:mt-40 flex gap-10 flex-wrap"
           field-list-type="inline"
+          drop-alignment="horizontal"
         />
         <template #animation>
           <BlokkliField

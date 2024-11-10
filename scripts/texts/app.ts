@@ -7,6 +7,15 @@ import { glob } from 'glob'
 import { format } from './../helpers'
 import { sortObjectKeys } from './../../src/helpers'
 import { po as PO, type GetTextTranslation } from 'gettext-parser'
+import {
+  BK_HIDDEN_GLOBALLY,
+  BK_VISIBLE_LANGUAGES,
+} from '../../src/runtime/helpers/symbols'
+
+const INTERNAL_TRANSLATIONS = {
+  [`blockOption_${BK_VISIBLE_LANGUAGES}_label`]: 'Visible languages',
+  [`blockOption_${BK_HIDDEN_GLOBALLY}_label`]: 'Hide globally',
+}
 
 const LANGUAGES = ['de', 'fr', 'it', 'gsw_CH']
 
@@ -347,7 +356,11 @@ async function generatePO(
 async function main() {
   const sourceTexts = await getSourceTexts()
 
-  await Promise.all(LANGUAGES.map((v) => updateTranslationFile(v, sourceTexts)))
+  await Promise.all(
+    LANGUAGES.map((v) =>
+      updateTranslationFile(v, { ...sourceTexts, ...INTERNAL_TRANSLATIONS }),
+    ),
+  )
 }
 
 main()
