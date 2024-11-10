@@ -150,6 +150,7 @@ function onPointerMove(e: PointerEvent) {
 }
 
 let pointerDownTimestamp = 0
+let pointerUpTimestamp = 0
 
 function onPointerDown(e: PointerEvent) {
   if (!keyboard.isPressingSpace.value) {
@@ -228,11 +229,12 @@ function onPointerUp(e: PointerEvent) {
   // Handle double clicking.
   if (
     clicked &&
+    pointerUpTimestamp &&
     lastInteractedElement &&
     (clicked.uuid === lastInteractedElement.uuid ||
       clicked.editableFieldName === lastInteractedElement.editableFieldName)
   ) {
-    const deltaTime = Date.now() - pointerDownTimestamp
+    const deltaTime = Date.now() - pointerUpTimestamp
     const deltaX = Math.abs(lastInteractedElement.x - e.clientX)
     const deltaY = Math.abs(lastInteractedElement.y - e.clientY)
     if (deltaTime < 400 && deltaX < 3 && deltaY < 3) {
@@ -253,6 +255,7 @@ function onPointerUp(e: PointerEvent) {
     }
   }
   lastInteractedElement = clicked
+  pointerUpTimestamp = Date.now()
   if (clicked?.uuid) {
     dom.refreshBlockRect(clicked.uuid)
     if (keyboard.isPressingControl.value || selection.isMultiSelecting.value) {
