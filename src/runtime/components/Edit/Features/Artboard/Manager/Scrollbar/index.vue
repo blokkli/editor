@@ -5,36 +5,39 @@
       :class="'bk-orientation-' + orientation"
     >
       <div ref="el">
-        <button class="dragboard-thumb" />
+        <button ref="thumb" class="dragboard-thumb" />
       </div>
     </div>
   </Teleport>
 </template>
 
 <script setup lang="ts">
-import { type DragboardDom, Scrollbar } from 'dragboard'
+import { type Artboard, type ArtboardPlugin, scrollbar } from 'dragboard'
 import { onBeforeUnmount, onMounted, ref } from '#imports'
 
 const props = defineProps<{
-  dragboard: DragboardDom
+  artboard: Artboard
   orientation: 'x' | 'y'
 }>()
 
 const el = ref<HTMLDivElement>()
-let scrollbar: Scrollbar | null = null
+const thumb = ref<HTMLButtonElement>()
+let scrollbarPlugin: ArtboardPlugin | null = null
 
 onMounted(() => {
-  if (el.value) {
-    scrollbar = new Scrollbar(el.value, {
+  if (el.value && thumb.value) {
+    const plugin = scrollbar({
+      element: el.value,
+      thumbElement: thumb.value,
       orientation: props.orientation,
     })
-    props.dragboard.addPlugin(scrollbar)
+    scrollbarPlugin = props.artboard.addPlugin(plugin)
   }
 })
 
 onBeforeUnmount(() => {
-  if (scrollbar) {
-    props.dragboard.removePlugin(scrollbar)
+  if (scrollbarPlugin) {
+    props.artboard.removePlugin(scrollbarPlugin)
   }
 })
 </script>

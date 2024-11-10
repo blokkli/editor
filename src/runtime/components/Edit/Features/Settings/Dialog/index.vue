@@ -56,6 +56,8 @@ const getGroupLabel = (key: SettingsGroup): string => {
     return $t('settingsAppearance', 'Appearance')
   } else if (key === 'advanced') {
     return $t('settingsAdvanced', 'Advanced')
+  } else if (key === 'artboard') {
+    return $t('settingsArtboard', 'Artboard')
   }
   return key
 }

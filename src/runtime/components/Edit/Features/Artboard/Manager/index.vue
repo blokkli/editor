@@ -38,11 +38,11 @@
     weight="90"
   >
     <Teleport v-if="isActive" to="body">
-      <Overview :dragboard="artboard" />
+      <Overview :artboard="artboard" />
     </Teleport>
   </PluginViewOption>
 
-  <Scrollbar :dragboard="artboard" orientation="y" />
+  <Scrollbar :artboard="artboard" orientation="y" />
 </template>
 
 <script lang="ts" setup>
@@ -59,7 +59,15 @@ import Overview from './Overview/index.vue'
 import Scrollbar from './Scrollbar/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
-import { DragboardDom, type DragboardOptions } from 'dragboard'
+import {
+  createArtboard,
+  type ArtboardOptions,
+  type Artboard,
+  touch,
+  wheel,
+  mouse,
+  dom as domPlugin,
+} from 'dragboard'
 
 const { context, storage, ui, animation, $t, dom } = useBlokkli()
 
@@ -67,34 +75,34 @@ const zoomLevel = computed(() => Math.round(ui.artboardScale.value * 100) + '%')
 
 const props = withDefaults(
   defineProps<{
-    padding?: number
-    minScale?: number
-    maxScale?: number
     persist?: boolean
+    momentum?: boolean
     scrollSpeed?: number
   }>(),
   {
-    padding: 50,
-    minScale: 0.05,
-    maxScale: 3.5,
     scrollSpeed: 1,
+    persist: false,
+    momentum: false,
   },
 )
 
-const options = computed<DragboardOptions>(() => {
+const PADDING = 50
+
+const options = computed<ArtboardOptions>(() => {
   return {
     maxScale: ui.isMobile.value ? 1 : 3,
+    minScale: 0.1,
     scrollSpeed: props.scrollSpeed,
     touchDirectionThresholdRatio: 0,
-    padding: {
-      top: ui.visibleViewport.value.y + props.padding,
-      left: ui.visibleViewport.value.x + props.padding,
+    overscrollBounds: {
+      top: ui.visibleViewport.value.y + PADDING,
+      left: ui.visibleViewport.value.x + PADDING,
       right:
         ui.viewport.value.width -
         ui.visibleViewport.value.width -
         ui.visibleViewport.value.x +
-        props.padding,
-      bottom: props.padding,
+        PADDING,
+      bottom: PADDING,
     },
   }
 })
@@ -120,18 +128,33 @@ const saveState = () => {
   }
 }
 
-function getArtboard(): DragboardDom {
+function getArtboard(): Artboard {
   if (savedState.value) {
-    return new DragboardDom(ui.artboardElement(), ui.rootElement(), {
-      initTransform: {
-        x: savedState.value.offset.x,
-        y: savedState.value.offset.y,
-        scale: savedState.value?.scale,
+    return createArtboard(
+      ui.rootElement(),
+      [
+        mouse(),
+        touch(),
+        wheel({
+          useMomentumZoom: true,
+          useMomentumScroll: true,
+          interceptWheel: true,
+        }),
+        domPlugin({
+          element: ui.artboardElement(),
+        }),
+      ],
+      {
+        initTransform: {
+          x: savedState.value.offset.x,
+          y: savedState.value.offset.y,
+          scale: savedState.value?.scale || 1,
+        },
+        ...options.value,
       },
-      ...options.value,
-    })
+    )
   }
-  return new DragboardDom(ui.artboardElement(), ui.rootElement(), options.value)
+  return createArtboard(ui.rootElement(), [], options.value)
 }
 
 const artboard = getArtboard()
@@ -165,7 +188,9 @@ onBeforeUnmount(() => {
 })
 
 const resetZoom = () => {
-  artboard.resetZoom(500)
+  artboard.resetZoom({
+    duration: 500,
+  })
   animation.requestDraw()
 }
 

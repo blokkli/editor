@@ -17,12 +17,12 @@
 </template>
 
 <script setup lang="ts">
-import { type DragboardDom, Overview } from 'dragboard'
+import { type Artboard, type ArtboardPlugin, overview } from 'dragboard'
 import { onBeforeUnmount, onMounted, ref, useBlokkli, computed } from '#imports'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const props = defineProps<{
-  dragboard: DragboardDom
+  artboard: Artboard
 }>()
 
 const { theme, dom, ui, selection } = useBlokkli()
@@ -40,7 +40,7 @@ const overviewArtboardEl = ref<HTMLDivElement>()
 const overviewVisibleEl = ref<HTMLDivElement>()
 const canvas = ref<HTMLCanvasElement>()
 
-let overview: Overview | null = null
+let pluginOverview: ArtboardPlugin | null = null
 
 function updateCanvas() {
   const ctx = canvas.value?.getContext('2d')
@@ -87,19 +87,21 @@ onBlokkliEvent('animationFrame', updateCanvas)
 
 onMounted(() => {
   if (overviewEl.value && overviewArtboardEl.value && overviewVisibleEl.value) {
-    overview = new Overview(overviewEl.value, {
-      artboardElement: overviewArtboardEl.value,
-      visibleAreaElement: overviewVisibleEl.value,
-      padding: 20,
-    })
-
-    props.dragboard.addPlugin(overview)
+    pluginOverview = props.artboard.addPlugin(
+      overview({
+        element: overviewEl.value,
+        artboardElement: overviewArtboardEl.value,
+        visibleAreaElement: overviewVisibleEl.value,
+        padding: 20,
+        autoHeight: true,
+      }),
+    )
   }
 })
 
 onBeforeUnmount(() => {
-  if (overview) {
-    props.dragboard.removePlugin(overview)
+  if (pluginOverview) {
+    props.artboard.removePlugin(pluginOverview)
   }
 })
 </script>

@@ -66,7 +66,7 @@
 }
 
 .bk.bk-artboard-overview {
-  @apply fixed top-offset-t right-offset-r w-[140px] h-[500px] z-artboard-overview bg-mono-100;
+  @apply fixed top-offset-t right-offset-r w-[180px] h-[500px] z-artboard-overview bg-mono-100;
   @apply overflow-hidden contain-strict border border-mono-400;
   margin-top: 16px;
   margin-right: calc(var(--bk-artboard-scrollbar-size) + 16px);

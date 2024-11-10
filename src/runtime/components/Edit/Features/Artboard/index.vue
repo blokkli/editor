@@ -1,6 +1,7 @@
 <template>
   <ArtboardManager
     :persist="settings.persist"
+    :momentum="settings.momentum"
     :scroll-speed="settings.scrollSpeed"
   />
 </template>
@@ -20,14 +21,21 @@ const { settings } = defineBlokkliFeature({
       type: 'checkbox',
       default: true,
       label: 'Persist position and zoom',
-      group: 'behavior',
+      group: 'artboard',
+      viewports: ['desktop'],
+    },
+    momentum: {
+      type: 'checkbox',
+      default: true,
+      label: 'Use momentum scrolling',
+      group: 'artboard',
       viewports: ['desktop'],
     },
     scrollSpeed: {
       type: 'slider',
       default: 1,
       label: 'Artboard scroll speed',
-      group: 'behavior',
+      group: 'artboard',
       viewports: ['desktop'],
       min: 0.5,
       max: 1.5,
