@@ -70,7 +70,7 @@ import {
   mouse,
   dom as domPlugin,
   type PluginWheel,
-} from 'dragboard'
+} from 'artboard-deluxe'
 const { settings } = defineBlokkliFeature({
   id: 'artboard',
   label: 'Artboard',

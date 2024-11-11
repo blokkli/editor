@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { type Artboard, type ArtboardPlugin, overview } from 'dragboard'
+import { type Artboard, type ArtboardPlugin, overview } from 'artboard-deluxe'
 import { onBeforeUnmount, onMounted, ref, useBlokkli, computed } from '#imports'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 

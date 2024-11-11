@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { type Artboard, type ArtboardPlugin, scrollbar } from 'dragboard'
+import { type Artboard, type ArtboardPlugin, scrollbar } from 'artboard-deluxe'
 import { onBeforeUnmount, onMounted, ref } from '#imports'
 
 const props = defineProps<{
