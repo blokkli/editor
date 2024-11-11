@@ -535,9 +535,13 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
     throw new Error('Failed to get rect for field: ' + field.key)
   }
   const x = rect.x
-  const y = rect.y
+  let y = rect.y
   const height = Math.max(rect.height, 30)
   const width = Math.max(rect.width, 30)
+
+  if (rect.height < 1) {
+    y -= 60
+  }
   const emptyChild = buildEmptyChild(
     field,
     childElements,
