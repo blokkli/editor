@@ -828,7 +828,7 @@ function toCanvasSpaceCoordinates(x: number, y: number): Coord {
   }
 }
 
-function setHoveredFieldArea(coords: Coord) {
+function setHoveredFieldArea(box: Rectangle, mouse: Coord) {
   if (active.value?.field) {
     if (activeHoverField.value?.key !== active.value.field.key) {
       activeHoverField.value = active.value.field
@@ -842,9 +842,19 @@ function setHoveredFieldArea(coords: Coord) {
 
   for (let i = 0; i < fields.length; i++) {
     const field = fields[i]
+    if (!field.canAddChildren) {
+      continue
+    }
     if (
-      field.canAddChildren &&
-      isInsideRect(coords.x, coords.y, field) &&
+      isInsideRect(mouse.x, mouse.y, field) &&
+      field.field.nestingLevel >= highestNestingLevel
+    ) {
+      candidate = field
+      highestNestingLevel = field.field.nestingLevel
+      continue
+    }
+    if (
+      intersects(box, field) &&
       field.field.nestingLevel >= highestNestingLevel
     ) {
       highestNestingLevel = field.field.nestingLevel
@@ -892,7 +902,7 @@ onBlokkliEvent('canvas:draw', () => {
 
   // WebGL rendering.
   if (programInfo && gl) {
-    setHoveredFieldArea(mouseAbsolute)
+    setHoveredFieldArea(dragBox.value, mouseAbsolute)
     setUniforms(programInfo, uniforms.value)
 
     // Nothing to draw.
