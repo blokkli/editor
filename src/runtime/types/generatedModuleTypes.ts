@@ -6,15 +6,17 @@ export type ModuleOptionsSettings = {
     disable?: boolean
     default?: 'vertical' | 'horizontal' | 'sidebar'
   }
-  // Persist position and zoom
-  'feature:artboard:persist'?: { disable?: boolean; default?: boolean }
-  // Artboard scroll speed
-  'feature:artboard:scrollSpeed'?: { disable?: boolean; default?: number }
   // Hide blocks that can't be added
   'feature:block-add-list:hideDisabledBlocks'?: {
     disable?: boolean
     default?: boolean
   }
+  // Use smooth scrolling
+  'feature:artboard:momentum'?: { disable?: boolean; default?: boolean }
+  // Persist position and zoom
+  'feature:artboard:persist'?: { disable?: boolean; default?: boolean }
+  // Artboard scroll speed
+  'feature:artboard:scrollSpeed'?: { disable?: boolean; default?: number }
   // Open sidebar when pasting from clipboard
   'feature:clipboard:openSidebarOnPaste'?: {
     disable?: boolean
