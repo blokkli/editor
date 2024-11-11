@@ -21,7 +21,7 @@
 
   &.bk-is-horizontal {
     > .bk-field-list-proxy-list {
-      @apply flex gap-15;
+      @apply flex gap-15 flex-wrap;
     }
   }
 

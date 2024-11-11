@@ -7,7 +7,7 @@
         'bk-is-visible': proxyVisible,
       },
       'bk-is-' +
-        (dropAlignment || nestingLevel === 0 ? 'vertical' : 'horizontal'),
+        (dropAlignment || (nestingLevel === 0 ? 'vertical' : 'horizontal')),
     ]"
   >
     <div
