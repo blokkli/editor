@@ -100,7 +100,7 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
 const collector = new SelectionRectangleBufferCollector(props.gl)
 
 const uniforms = {
-  u_color_default: toShaderColor(theme.accent.value[700]),
+  u_color_default: toShaderColor(theme.accent.value[600]),
   u_color_inverted: [255, 255, 255],
 }
 

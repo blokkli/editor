@@ -47,6 +47,7 @@ enum RectRenderType {
   FIELD_2,
   FIELD_3,
   FIELD_4,
+  ACTIVE_AREA,
 }
 
 type Orientation = 'horizontal' | 'vertical'
@@ -69,7 +70,7 @@ type FieldRect = Rectangle & {
 
 type DrawnRect = Rectangle & {
   id: string
-  type: 'field' | 'drop-area'
+  type: 'field' | 'drop-area' | 'active-area'
   label: string
   color: string
   colorAlpha: string
@@ -688,6 +689,9 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
     const rects = Object.values(this.rects)
     for (let i = 0; i < rects.length; i++) {
       const rect = rects[i]
+      if (rect.type === 'active-area') {
+        continue
+      }
       if (intersects(box, rect)) {
         candidates.push(rect)
       }
@@ -707,6 +711,9 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
 
     for (let i = 0; i < rects.length; i++) {
       const rect = rects[i]
+      if (rect.type === 'active-area') {
+        continue
+      }
       if (isInsideRect(coord.x, coord.y, rect)) {
         return rect
       }
@@ -718,20 +725,34 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
 
 const collector = new DropTargetRectangleBufferCollector(gl)
 
+// Add a rectangle that we will use to display the hovered field area.
+// The vertex shader will dynamically transform the quad to match the currently hovered field area.
+collector.addRectangle(
+  {
+    id: 'active-hover-rect',
+    type: 'active-area',
+    label: 'Field Area',
+    color: 'red',
+    colorAlpha: 'red',
+    x: 0,
+    y: 0,
+    width: ui.artboardSize.value.width,
+    height: ui.artboardSize.value.height,
+  },
+  RectRenderType.ACTIVE_AREA,
+)
+
 const fieldColors = computed(() => {
   return {
-    '0': theme.accent.value[800],
+    '0': theme.accent.value[900],
     '1': theme.accent.value[400],
     '2': theme.accent.value[600],
     '3': theme.accent.value[500],
   }
 })
 
-const activeColorRgb = computed(() => {
-  if (active.value?.type === 'drop-area') {
-    return theme.teal.value.normal
-  }
-  const nestingLevel = active.value?.field?.field.nestingLevel || 0
+function getColorForField(field?: FieldRect | null) {
+  const nestingLevel = field?.field.nestingLevel || 0
   if (nestingLevel >= 3) {
     return fieldColors.value[3]
   } else if (nestingLevel >= 2) {
@@ -740,6 +761,13 @@ const activeColorRgb = computed(() => {
     return fieldColors.value[1]
   }
   return fieldColors.value[0]
+}
+
+const activeColorRgb = computed(() => {
+  if (active.value?.type === 'drop-area') {
+    return theme.teal.value.normal
+  }
+  return getColorForField(active.value?.field)
 })
 
 const activeColorHex = computed(() => {
@@ -749,6 +777,27 @@ const activeColorHex = computed(() => {
   return ''
 })
 
+const activeHoverField = ref<FieldRect | null>(null)
+
+const activeHoverRect = computed(() => {
+  if (!activeHoverField.value) {
+    return [0, 0, 0, 0]
+  }
+
+  const outset = activeHoverField.value.field.nestingLevel === 0 ? 0 : 20
+
+  return [
+    activeHoverField.value.x - outset,
+    activeHoverField.value.y - outset,
+    activeHoverField.value.width + 2 * outset,
+    activeHoverField.value.height + 2 * outset,
+  ]
+})
+
+const activeHoverColor = computed(() => {
+  return getColorForField(activeHoverField.value)
+})
+
 const uniforms = computed(() => {
   const index = active.value?.index
   return {
@@ -756,8 +805,10 @@ const uniforms = computed(() => {
     u_color_field_1: toShaderColor(fieldColors.value[1]),
     u_color_field_2: toShaderColor(fieldColors.value[2]),
     u_color_field_3: toShaderColor(fieldColors.value[3]),
+    u_color_hover_area: toShaderColor(activeHoverColor.value),
     u_color_area: toShaderColor(theme.teal.value.normal),
     u_active_rect_id: index === undefined ? -1 : index,
+    u_active_hover_rect: activeHoverRect.value,
   }
 })
 
@@ -774,6 +825,35 @@ function toCanvasSpaceCoordinates(x: number, y: number): Coord {
   return {
     x: (x - offset.x) / scale,
     y: (y - offset.y) / scale,
+  }
+}
+
+function setHoveredFieldArea(coords: Coord) {
+  if (active.value?.field) {
+    if (activeHoverField.value?.key !== active.value.field.key) {
+      activeHoverField.value = active.value.field
+    }
+    return
+  }
+  const fields = Object.values(fieldCache)
+
+  let highestNestingLevel = 0
+  let candidate: FieldRect | null = null
+
+  for (let i = 0; i < fields.length; i++) {
+    const field = fields[i]
+    if (
+      field.canAddChildren &&
+      isInsideRect(coords.x, coords.y, field) &&
+      field.field.nestingLevel >= highestNestingLevel
+    ) {
+      highestNestingLevel = field.field.nestingLevel
+      candidate = field
+    }
+  }
+
+  if (candidate && candidate.key !== activeHoverField.value?.key) {
+    activeHoverField.value = candidate
   }
 }
 
@@ -795,10 +875,8 @@ onBlokkliEvent('canvas:draw', () => {
     animation.setSharedUniforms(gl, programInfo)
   }
 
-  const isInsideClipped = cursorIsInsideClipped()
-
   if (!props.isTouch) {
-    if (isInsideClipped) {
+    if (cursorIsInsideClipped()) {
       const closest = collector.getClosestIntersectingRect(
         dragBox.value,
         mouseAbsolute,
@@ -814,6 +892,7 @@ onBlokkliEvent('canvas:draw', () => {
 
   // WebGL rendering.
   if (programInfo && gl) {
+    setHoveredFieldArea(mouseAbsolute)
     setUniforms(programInfo, uniforms.value)
 
     // Nothing to draw.

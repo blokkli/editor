@@ -1,6 +1,7 @@
 precision mediump float;
 
 varying float v_intersecting;
+varying float v_is_hover_area;
 varying vec4 v_quad;
 varying vec3 v_color;
 
@@ -14,10 +15,11 @@ float roundedBoxSDF(vec2 CenterPosition, vec2 Size, float Radius) {
 
 void main() {
   float radiusBase = 4.0 * u_scale;
+
   float thickness = max(min(1.0 * u_scale, 3.0), 0.5);
 
   // Calculate the resulting inset so that we draw the rounded box and border *inside* the quad (vs. that it would bleed outside the quad).
-  float inset = max(min(2.0 * u_scale, 1.0), 2.0) * thickness;
+  float inset = max(min(2.0 * u_scale, 1.0), 3.0) * thickness;
 
   // Rectangle dimensions with inset.
   float u_rect_x = v_quad.x + inset;
@@ -66,8 +68,12 @@ void main() {
   // Adjust alphas based on intersection.
   float adjustedAlphaFill =
     v_intersecting >= 0.5
-      ? alphaInner * 0.9
-      : alphaInner - 0.8;
+      ? alphaInner * 0.95
+      : alphaInner * 0.4;
+
+  if (v_is_hover_area >= 1.0) {
+    adjustedAlphaFill *= 0.12;
+  }
 
   if (alphaBorder > 0.0) {
     gl_FragColor = vec4(v_color, 1.0);
