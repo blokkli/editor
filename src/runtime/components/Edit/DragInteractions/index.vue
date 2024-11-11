@@ -3,7 +3,12 @@
 </template>
 
 <script setup lang="ts">
-import { falsy, getDistance, getInteractionCoordinates } from '#blokkli/helpers'
+import {
+  falsy,
+  getDistance,
+  getInteractionCoordinates,
+  isInsideRect,
+} from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { Coord, Rectangle } from '#blokkli/types'
 import { watch, ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
@@ -92,6 +97,26 @@ function getInteractedElement(
 
   if (editableFieldName || uuid) {
     return { editableFieldName, uuid, timestamp: Date.now(), x, y }
+  }
+
+  // Try to find a block to select by matching its rects.
+  // Some blocks might not render anything and thus have a height of 0.
+  // All registered block rects enfore a minimum height. That way we might
+  // still be able to select a block.
+  const visibleUuids = dom.getVisibleBlocks()
+  for (let i = 0; i < visibleUuids.length; i++) {
+    const rect = dom.getBlockRect(visibleUuids[i])
+    if (rect) {
+      const relativeRect = ui.getViewportRelativeRect(rect)
+      if (isInsideRect(x, y, relativeRect)) {
+        return {
+          uuid: visibleUuids[i],
+          timestamp: Date.now(),
+          x,
+          y,
+        }
+      }
+    }
   }
 
   return null

@@ -340,8 +340,9 @@ export default function (storage: StorageProvider): UiProvider {
     return {
       x: rect.x / scale - offset.x / scale,
       y: rect.y / scale - offset.y / scale,
-      width: rect.width / scale,
-      height: rect.height / scale,
+      // Force at least a size of 24.
+      width: Math.max(rect.width / scale, 24),
+      height: Math.max(rect.height / scale, 24),
     }
   }
 
