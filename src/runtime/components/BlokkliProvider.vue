@@ -145,6 +145,7 @@ const showIndicator = computed(
 
 function edit() {
   router.push({
+    path: route.path,
     query: {
       blokkliEditing: props.entityUuid,
       language: props.language,
