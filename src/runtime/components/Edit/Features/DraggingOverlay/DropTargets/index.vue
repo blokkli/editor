@@ -716,10 +716,10 @@ const collector = new DropTargetRectangleBufferCollector(gl)
 
 const fieldColors = computed(() => {
   return {
-    '3': theme.accent.value[200],
-    '2': theme.accent.value[400],
-    '1': theme.accent.value[600],
     '0': theme.accent.value[800],
+    '1': theme.accent.value[400],
+    '2': theme.accent.value[600],
+    '3': theme.accent.value[500],
   }
 })
 
