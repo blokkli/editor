@@ -107,7 +107,6 @@ html {
     transform-origin: 0 0;
     /* Set initial position to be centered. The artboard feature will update it on mount. */
     transform: translateX(-50%) translateY(100px);
-    will-change: transform;
     contain: layout paint inline-size style;
   }
 }
