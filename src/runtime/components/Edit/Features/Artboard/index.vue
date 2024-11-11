@@ -181,6 +181,7 @@ function getArtboard(): Artboard {
         element: ui.artboardElement(),
         setInitTransformFromRect: !savedState.value || !settings.value.persist,
         precision: 0.1,
+        restoreStyles: true,
       }),
     ],
     {
