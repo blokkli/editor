@@ -29,6 +29,18 @@ export default defineNuxtConfig({
     },
   },
 
+  vite: {
+    server: {
+      watch: {
+        usePolling: true,
+      },
+    },
+  },
+
+  typescript: {
+    shim: true,
+  },
+
   blokkli: {
     itemEntityType: 'block',
     fieldListTypes: ['header', 'inline'],

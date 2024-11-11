@@ -11,6 +11,7 @@ import AddListItem from './AddListItem/index.vue'
 import Loading from './Loading/index.vue'
 import Highlight from './Highlight/index.vue'
 import ViewportBlockingRect from './ViewportBlockingRect/index.vue'
+import ScrollBoundary from './ScrollBoundary/index.vue'
 
 export {
   ItemIcon,
@@ -26,4 +27,5 @@ export {
   Loading,
   Highlight,
   ViewportBlockingRect,
+  ScrollBoundary,
 }

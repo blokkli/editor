@@ -408,8 +408,8 @@ type GlobalOptionsDefaults = {
   default: any
 }
 
-export const bundlesWithVisibleLanguage = ${JSON.stringify(this.getBundlesWithGlobalOptions(BK_VISIBLE_LANGUAGES))}
-export const bundlesWithHiddenGlobally = ${JSON.stringify(this.getBundlesWithGlobalOptions(BK_HIDDEN_GLOBALLY))}
+export const bundlesWithVisibleLanguage: string[] = ${JSON.stringify(this.getBundlesWithGlobalOptions(BK_VISIBLE_LANGUAGES))}
+export const bundlesWithHiddenGlobally: string[] = ${JSON.stringify(this.getBundlesWithGlobalOptions(BK_HIDDEN_GLOBALLY))}
 
 export const globalOptionsDefaults: Record<string, GlobalOptionsDefaults> = ${JSON.stringify(
       defaults,

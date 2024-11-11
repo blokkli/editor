@@ -41,7 +41,23 @@
   },
   "artboard": {
     "source": "Artboard",
-    "translation": "Zeichenfläche"
+    "translation": "Vorschau"
+  },
+  "artboardOverviewHide": {
+    "source": "Hide overview",
+    "translation": "Übersicht verstecken"
+  },
+  "artboardOverviewShow": {
+    "source": "Show overview",
+    "translation": "Übersicht anzeigen"
+  },
+  "artboardOverviewToggle": {
+    "source": "Toggle overview",
+    "translation": "Übersicht umschalten"
+  },
+  "artboardOverviewTourText": {
+    "source": "Displays a top level overview of your content.",
+    "translation": "Zeigt eine schematische Übersicht aller Inhalte an."
   },
   "artboardResetZoom": {
     "source": "Reset zoom",
@@ -339,13 +355,17 @@
     "source": "Vertical",
     "translation": "Vertikal"
   },
+  "feature_artboard_setting_momentum_label": {
+    "source": "Use smooth scrolling",
+    "translation": "Sanftes Scrollen verwenden"
+  },
   "feature_artboard_setting_persist_label": {
     "source": "Persist position and zoom",
     "translation": "Position und Zoom speichern"
   },
   "feature_artboard_setting_scrollSpeed_label": {
     "source": "Artboard scroll speed",
-    "translation": "Scrollgeschwindigkeit der Zeichenfläche"
+    "translation": "Scrollgeschwindigkeit der Vorschau"
   },
   "feature_block-add-list_setting_hideDisabledBlocks_label": {
     "source": "Hide blocks that can't be added",
@@ -711,6 +731,22 @@
     "source": "Shows a QR code to quickly open a preview of the changes with your smartphone.",
     "translation": "Zeigt einen QR-Code an, um eine Vorschau der Änderungen mit Ihrem Smartphone zu öffnen."
   },
+  "proxyViewHide": {
+    "source": "Show content preview",
+    "translation": "Inhaltsvorschau anzeigen"
+  },
+  "proxyViewShow": {
+    "source": "Show structure view",
+    "translation": "Strukturierte Vorschau anzeigen"
+  },
+  "proxyViewToggle": {
+    "source": "Toggle structure view",
+    "translation": "Vorschau wechseln"
+  },
+  "proxyViewTourText": {
+    "source": "Displays the content blocks as a structured view.",
+    "translation": "Stellt die Inhaltsblöcke in strukturierter Form dar."
+  },
   "publishAndCloseLabel": {
     "source": "Publish & Close",
     "translation": "Veröffentlichen & Schliessen"
@@ -814,6 +850,10 @@
   "settingsAppearance": {
     "source": "Appearance",
     "translation": "Darstellung"
+  },
+  "settingsArtboard": {
+    "source": "Artboard",
+    "translation": "Vorschau"
   },
   "settingsBehaviour": {
     "source": "Behaviour",

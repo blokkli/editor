@@ -78,12 +78,9 @@ function extractLiteral(
     }
   }
   if (literal) {
-    if (literal.type !== 'Literal' && literal.type !== 'TemplateLiteral') {
+    if (literal.type !== 'Literal') {
       throw new Error("Variables can't be used as arguments.")
-    } else if (
-      literal.type === 'Literal' &&
-      typeof literal.value !== 'string'
-    ) {
+    } else if (typeof literal.value !== 'string') {
       throw new TypeError('Only strings can be used as arguments.')
     }
   }
@@ -111,17 +108,6 @@ type ExtractedFeature = {
   label: string
   description: string
   settings: Record<string, ExtractedFeatureSettings>
-}
-
-function extractFeature(program: any): ExtractedFeature | undefined {
-  const node = getExpression(program)
-
-  if (node.arguments.length) {
-    if (node.arguments[0].type === 'ObjectExpression') {
-    }
-  }
-
-  return
 }
 
 /**
@@ -177,7 +163,6 @@ class Extractor {
         ? e.message
         : 'Failed to parse text arguments.'
 
-    // eslint-disable-next-line no-console
     console.error(message + filePath + '\n' + chalk.red(code))
 
     if (this.isBuild) {
@@ -206,7 +191,7 @@ class Extractor {
       .filter(falsy)
   }
 
-  extractFeatureSettings(source: string, filePath: string): Extraction[] {
+  extractFeatureSettings(source: string, _filePath: string): Extraction[] {
     return extractFunctionCalls('defineBlokkliFeature(', source)
       .map((code) => {
         const extractions: Extraction[] = []
@@ -215,7 +200,7 @@ class Extractor {
           .substring(0, code.length - 1)
           .replace('defineBlokkliFeature(', '')
 
-        // @ts-ignore
+        // eslint-disable-next-line prefer-const
         let result: ExtractedFeature | null = null
         eval('result = ' + obj)
         const feature: ExtractedFeature | null = result as any
@@ -323,6 +308,7 @@ async function updateTranslationFile(
   // Remove keys that are not needed anymore.
   Object.keys(existingTexts).forEach((key) => {
     if (!sourceTexts[key]) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete existingTexts[key]
       return
     }

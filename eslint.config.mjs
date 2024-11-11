@@ -1,4 +1,3 @@
-// @ts-check
 import { createConfigForNuxt } from '@nuxt/eslint-config/flat'
 import tailwind from 'eslint-plugin-tailwindcss'
 // import sonarjs from 'eslint-plugin-sonarjs'

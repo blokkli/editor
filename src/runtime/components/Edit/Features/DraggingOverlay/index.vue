@@ -376,6 +376,10 @@ onBlokkliEvent('dragging:start', (e) => {
       document.addEventListener('pointermove', onMouseMove, { capture: true })
     }
   }
+
+  // Before showing the drop targets we update all currently visible rects to
+  // ensure the user sees the correct drop targets right away.
+  dom.updateVisibleRects()
   dragItems.value = e.items
 })
 

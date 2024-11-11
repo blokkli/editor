@@ -17,7 +17,7 @@ import { onlyUnique } from '.'
 
 export type BlokkliBlockType = BlockBundleDefinition & {
   definition:
-    | BlockDefinitionInput<BlockDefinitionOptionsInput, any[]>
+    | BlockDefinitionInput<BlockDefinitionOptionsInput, never[]>
     | undefined
 }
 

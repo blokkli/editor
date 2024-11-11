@@ -19,12 +19,12 @@
   "scripts": {
     "prepack": "nuxt-module-build build && find dist/ -type f -name '*.*' | grep '.spec.' | xargs rm -f",
     "dev": "nuxi dev playground --host",
-    "typecheck": "nuxi typecheck",
+    "typecheck": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
     "dev:minimal": "nuxi dev playground-minimal --host",
     "dev:content": "nuxi dev playground-content --host",
     "styles:build": "postcss ./css/index.css -o ./src/runtime/css/output.css",
     "styles:watch": "postcss ./css/index.css -o ./src/runtime/css/output.css --watch",
-    "dev:build": "nuxi generate playground",
+    "dev:build": "npm run dev:prepare && nuxi generate playground",
     "dev:start": "npx serve playground/.output/public",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
     "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
@@ -49,6 +49,7 @@
   "license": "MIT",
   "dependencies": {
     "@nuxt/kit": "^3.13.1",
+    "artboard-deluxe": "^0.0.1",
     "estree-walker-ts": "^1.0.1",
     "fzf": "^0.5.2",
     "get-video-id": "^4.1.7",
@@ -95,7 +96,8 @@
     "tailwindcss": "^3.4.11",
     "vite-plugin-glsl": "^1.3.0",
     "vitepress": "^1.3.4",
-    "vitest": "^2.0.5"
+    "vitest": "^2.0.5",
+    "vue-tsc": "^2.1.6"
   },
   "overrides": {
     "@parcel/watcher": "~2.1.0"

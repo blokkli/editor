@@ -15,7 +15,7 @@
       >
         <div
           v-if="
-            index === 0 && showTargets && !selection.uuidsMap.value[item.uuid]
+            index === 0 && showTargets && !selection.isBlockSelected(item.uuid)
           "
           :style="targetStyle"
           class="bk-structure-field-target bk-is-before"
@@ -33,10 +33,10 @@
           v-if="
             showTargets &&
             (!selection.isDraggingExisting.value ||
-              !selection.uuidsMap.value[item.uuid]) &&
+              !selection.isBlockSelected(item.uuid)) &&
             (!list[index + 1] ||
               !selection.isDraggingExisting.value ||
-              !selection.uuidsMap.value[list[index + 1].uuid])
+              !selection.isBlockSelected(list[index + 1].uuid))
           "
           :style="targetStyle"
           class="bk-structure-field-target bk-is-after"

@@ -19,8 +19,8 @@
     &:before {
       content: '';
       @apply absolute top-0 left-0 w-full h-full z-50 rounded-md;
-      background: var(--bk-active-color);
-      @apply !opacity-70;
+      outline: 5px solid var(--bk-active-color);
+      outline-offset: -4px;
     }
   }
   > .bk-dragging-overlay-item.bk-is-fallback {

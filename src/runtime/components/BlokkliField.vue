@@ -8,15 +8,15 @@
     :entity="entity"
     :field-key="fieldKey!"
     :allowed-fragments="allowedFragments"
+    :nesting-level="nestingLevel"
     :drop-alignment="dropAlignment"
     :field-list-type="fieldListType"
     :class="[attrs.class, listClass, { [nonEmptyClass]: filteredList.length }]"
     :is-nested="isNested"
-    :language="providerEntity.language"
-    class="bk-field-list"
+    :language="providerEntity?.language"
     :proxy-mode="proxyMode"
     :tag="tag"
-    :global-proxy-mode="isGlobalProxyMode"
+    :global-proxy-mode="!!isGlobalProxyMode"
   />
   <component
     :is="tag"
@@ -78,6 +78,7 @@ import {
   INJECT_IS_IN_REUSABLE,
   INJECT_IS_NESTED,
   INJECT_IS_PREVIEW,
+  INJECT_NESTING_LEVEL,
   INJECT_FIELD_LIST_BLOCKS,
   INJECT_PROVIDER_BLOCKS,
   INJECT_EDIT_CONTEXT,
@@ -108,6 +109,7 @@ const isGlobalProxyMode = inject<ComputedRef<boolean> | null>(
 const isInReusable = inject(INJECT_IS_IN_REUSABLE, false)
 const isPreview = inject<boolean>(INJECT_IS_PREVIEW, false)
 const isNested = inject(INJECT_IS_NESTED, false)
+const nestingLevel = inject<number>(INJECT_NESTING_LEVEL, 0)
 const mutatedFields = inject<Record<string, MutatedField> | null>(
   INJECT_MUTATED_FIELDS_MAP,
   null,
@@ -119,9 +121,15 @@ if (!entity) {
   throw new Error('Missing entity context.')
 }
 
-const providerEntity = inject<BlokkliProviderEntityContext>(
+const providerEntity = inject<ComputedRef<BlokkliProviderEntityContext>>(
   INJECT_PROVIDER_CONTEXT,
-)
+)!
+
+if (!providerEntity) {
+  throw new Error(
+    'Missing blökkli injection: ' + INJECT_PROVIDER_CONTEXT.toString(),
+  )
+}
 
 const props = withDefaults(
   defineProps<{
@@ -162,7 +170,7 @@ const fieldKey = computed<string | undefined>(() => {
 
 const fieldListType = computed(() => props.fieldListType)
 
-function filterVisible(item?: FieldListItemTyped): boolean {
+function filterVisible(item?: FieldListItemTyped | FieldListItem): boolean {
   // The block is always rendered during editing.
   if (isEditing) {
     return true
@@ -191,6 +199,7 @@ const filteredList = computed<FieldListItemTyped[]>(() => {
 })
 
 provide(INJECT_IS_NESTED, true)
+provide(INJECT_NESTING_LEVEL, nestingLevel + 1)
 provide(INJECT_FIELD_LIST_TYPE, fieldListType)
 provide(INJECT_FIELD_LIST_BLOCKS, filteredList)
 

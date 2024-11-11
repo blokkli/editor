@@ -154,6 +154,9 @@ function onMouseLeave() {
 }
 
 const onWheel = (e: WheelEvent) => {
+  if (e.ctrlKey || e.metaKey) {
+    return
+  }
   if (ui.addListOrientation.value === 'horizontal' && e.deltaX) {
     e.stopPropagation()
     return

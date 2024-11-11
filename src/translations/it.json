@@ -43,6 +43,22 @@
     "source": "Artboard",
     "translation": ""
   },
+  "artboardOverviewHide": {
+    "source": "Hide overview",
+    "translation": ""
+  },
+  "artboardOverviewShow": {
+    "source": "Show overview",
+    "translation": ""
+  },
+  "artboardOverviewToggle": {
+    "source": "Toggle overview",
+    "translation": ""
+  },
+  "artboardOverviewTourText": {
+    "source": "Displays a top level overview of your content.",
+    "translation": ""
+  },
   "artboardResetZoom": {
     "source": "Reset zoom",
     "translation": ""
@@ -337,6 +353,10 @@
   },
   "feature_add-list_setting_orientation_option_vertical": {
     "source": "Vertical",
+    "translation": ""
+  },
+  "feature_artboard_setting_momentum_label": {
+    "source": "Use smooth scrolling",
     "translation": ""
   },
   "feature_artboard_setting_persist_label": {
@@ -711,6 +731,22 @@
     "source": "Shows a QR code to quickly open a preview of the changes with your smartphone.",
     "translation": ""
   },
+  "proxyViewHide": {
+    "source": "Show content preview",
+    "translation": ""
+  },
+  "proxyViewShow": {
+    "source": "Show structure view",
+    "translation": ""
+  },
+  "proxyViewToggle": {
+    "source": "Toggle structure view",
+    "translation": ""
+  },
+  "proxyViewTourText": {
+    "source": "Displays the content blocks as a structured view.",
+    "translation": ""
+  },
   "publishAndCloseLabel": {
     "source": "Publish & Close",
     "translation": ""
@@ -813,6 +849,10 @@
   },
   "settingsAppearance": {
     "source": "Appearance",
+    "translation": ""
+  },
+  "settingsArtboard": {
+    "source": "Artboard",
     "translation": ""
   },
   "settingsBehaviour": {

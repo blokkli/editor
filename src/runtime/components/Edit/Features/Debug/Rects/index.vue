@@ -32,6 +32,7 @@ onBlokkliEvent('canvas:draw', (e) => {
     return
   }
   ctx.clearRect(0, 0, ui.viewport.value.width, ui.viewport.value.height)
+  ctx.strokeStyle = 'blue'
   const blockRects = dom.getBlockRects()
   const viewport = ui.visibleViewport.value
 
@@ -47,6 +48,32 @@ onBlokkliEvent('canvas:draw', (e) => {
       height: rect.height * e.artboardScale,
     }
     if (intersects(drawnRect, viewport)) {
+      ctx.beginPath()
+      ctx.rect(drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height)
+      ctx.stroke()
+    }
+  }
+
+  ctx.strokeStyle = 'red'
+
+  const visibleFieldRects = dom.getVisibleFields()
+  for (let i = 0; i < visibleFieldRects.length; i++) {
+    const key = visibleFieldRects[i]
+
+    const rect = dom.getFieldRect(key)
+
+    if (!rect) {
+      continue
+    }
+
+    const drawnRect = {
+      x: rect.x * e.artboardScale + e.artboardOffset.x,
+      y: rect.y * e.artboardScale + e.artboardOffset.y,
+      width: rect.width * e.artboardScale,
+      height: rect.height * e.artboardScale,
+    }
+    if (intersects(drawnRect, viewport)) {
+      ctx.beginPath()
       ctx.rect(drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height)
       ctx.stroke()
     }

@@ -74,13 +74,22 @@ export class EntityStorageManager {
       library_item: new EntityStorage(),
     }
 
-    this.createImage('1', '/search.png', 'Search functionality in Blokkli')
+    this.createImage(
+      '1',
+      '/search.png',
+      'Search functionality in Blokkli',
+      'search.png',
+      1703,
+      1290,
+    )
 
     this.createImage(
       '2',
       '/code.png',
       'Vue Component of a Blokkli Block with a very long title to test how it renders in the media library grid',
       'code.png',
+      800,
+      752,
     )
 
     this.createImage(
@@ -88,6 +97,8 @@ export class EntityStorageManager {
       '/editor-screenshot.png',
       'editor_screenshot_with_a_very_weird_title_that_should_actually_not_be_a_file-name.png',
       'editor_screenshot_with_a_very_weird_title_that_should_actually_not_be_a_file-name.png',
+      2880,
+      1760,
     )
 
     this.createImage(
@@ -95,22 +106,42 @@ export class EntityStorageManager {
       '/toolbar.png',
       'Vue Component of a Blokkli Block',
       'toolbar.png',
+      3642,
+      200,
     )
 
-    this.createImage('5', '/drupal-logo.svg', 'Drupal Logo', 'drupal-logo.svg')
+    this.createImage(
+      '5',
+      '/drupal-logo.svg',
+      'Drupal Logo',
+      'drupal-logo.svg',
+      380,
+      370,
+    )
     this.createImage(
       '6',
       '/basel-logo.svg',
       'Logo of the canton of Basel-Stadt',
       'basel-logo.svg',
+      380,
+      370,
     )
 
-    this.createImage('7', '/placeholder.jpg', 'Placeholder', 'placeholder.jpg')
+    this.createImage(
+      '7',
+      '/placeholder.jpg',
+      'Placeholder',
+      'placeholder.jpg',
+      1220,
+      915,
+    )
     this.createImage(
       '8',
       '/mobile-screenshot.png',
       'Mobile Screenshot',
       'mobile-screenshot.png',
+      750,
+      1400,
     )
 
     this.addUser('1', 'John Miller', 'john@example.com')
@@ -292,12 +323,21 @@ export class EntityStorageManager {
     return block
   }
 
-  createImage(uuid: string, url: string, alt: string, filename?: string) {
+  createImage(
+    uuid: string,
+    url: string,
+    alt: string,
+    filename: string,
+    width: number,
+    height: number,
+  ) {
     const image = new MediaImage(uuid)
     image.setValues({
       url,
       alt,
       filename,
+      width: width.toString(),
+      height: height.toString(),
     })
     this.storages.media.add(image)
   }

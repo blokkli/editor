@@ -11,11 +11,10 @@
     icon="tree"
     weight="-90"
   >
-    <div
+    <ScrollBoundary
       v-if="isLoaded"
       id="bk-structure"
       class="bk bk-structure bk-control"
-      @wheel.stop
     >
       <List
         :entity-bundle="context.entityBundle"
@@ -23,7 +22,7 @@
         :entity-uuid="context.entityUuid"
         :visible-field-keys="visibleFieldKeys"
       />
-    </div>
+    </ScrollBoundary>
   </PluginSidebar>
 </template>
 
@@ -38,6 +37,7 @@ import {
   reactive,
 } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
+import { ScrollBoundary } from '#blokkli/components'
 import List from './List/index.vue'
 
 defineBlokkliFeature({

@@ -45,7 +45,6 @@
       :size="size"
       :is-left="region === 'left'"
       class="bk-sidebar-inner"
-      @wheel="onWheel"
       @close="onAttach"
     >
       <template #icon>
@@ -66,11 +65,10 @@
         </div>
       </template>
     </SidebarDetached>
-    <div
+    <ScrollBoundary
       v-else
       v-show="activeSidebar === id"
       class="bk-sidebar-inner"
-      @wheel="onWheel"
     >
       <div class="bk">
         <div class="bk-sidebar-title">
@@ -95,14 +93,14 @@
           />
         </div>
       </div>
-    </div>
+    </ScrollBoundary>
   </Teleport>
 </template>
 
 <script setup lang="ts">
 import { computed, watch, ref, useBlokkli } from '#imports'
 import type { BlokkliIcon } from '#blokkli/icons'
-import { Icon, ShortcutIndicator } from '#blokkli/components'
+import { Icon, ShortcutIndicator, ScrollBoundary } from '#blokkli/components'
 import SidebarDetached from './Detached/index.vue'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
@@ -141,7 +139,7 @@ const emit = defineEmits<{
   (e: 'updated'): void
 }>()
 
-const { storage, state, ui, $t, keyboard } = useBlokkli()
+const { storage, state, ui, $t } = useBlokkli()
 
 const tourElement = ref<HTMLElement | null>(null)
 
@@ -162,16 +160,6 @@ watch(isDisabled, (v) => {
     activeSidebar.value = ''
   }
 })
-
-const onWheel = (e: WheelEvent) => {
-  e.stopPropagation()
-  if (e.ctrlKey || e.metaKey || keyboard.isPressingControl.value) {
-    e.preventDefault()
-  }
-  if (isOverflowing.value) {
-    e.stopPropagation()
-  }
-}
 
 const onDetach = () => {
   isDetached.value = true

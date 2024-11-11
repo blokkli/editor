@@ -33,6 +33,7 @@ const buildFieldElement = (
   const name = element.dataset.fieldName
   const label = element.dataset.fieldLabel
   const isNested = element.dataset.fieldIsNested === 'true'
+  const nestingLevel = Number.parseInt(element.dataset.bkNestingLevel || '0')
   const fieldListType = element.dataset.fieldListType as
     | ValidFieldListTypes
     | undefined
@@ -62,6 +63,7 @@ const buildFieldElement = (
       name,
       label,
       isNested,
+      nestingLevel,
       hostEntityType,
       hostEntityUuid,
       hostEntityBundle,
@@ -114,6 +116,11 @@ export type DomProvider = {
     fieldName: string,
     instance: HTMLElement,
   ) => void
+  updateFieldElement: (
+    uuid: string,
+    fieldName: string,
+    element: HTMLElement,
+  ) => void
   unregisterField: (uuid: string, fieldName: string) => void
 
   /**
@@ -126,6 +133,7 @@ export type DomProvider = {
   getBlockVisibilities(): Record<string, boolean>
   getVisibleBlocks(): string[]
   getVisibleFields(): string[]
+  isBlockVisible(uuid: string): boolean
 
   getActiveProviderElement: () => HTMLElement
 
@@ -134,6 +142,8 @@ export type DomProvider = {
   refreshBlockRect: (uuid: string) => void
 
   getFieldRect: (key: string) => Rectangle | undefined
+
+  updateVisibleRects: () => void
 
   isReady: ComputedRef<boolean>
 
@@ -234,7 +244,12 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
           (entry.target.closest('[data-uuid]') as HTMLElement | undefined)
             ?.dataset.uuid
         const fieldKey = entry.target.dataset.fieldKey
-        const rect = entry.boundingClientRect
+        // Using entry.boundingClientRect here would result in wrong values,
+        // because the IntersectionObserver is queued and could be delayed.
+        // If we were to derive the document-relative position for a block
+        // using these potentially stale values, it would result in completely
+        // wrong position data.
+        const rect = entry.target.getBoundingClientRect()
         if (fieldKey) {
           if (entry.isIntersecting) {
             visibleFields.add(fieldKey)
@@ -286,12 +301,27 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     observer.observe(element)
   }
 
+  const updateFieldElement = (
+    uuid: string,
+    fieldName: string,
+    element: HTMLElement,
+  ) => {
+    const key = `${uuid}:${fieldName}`
+    const existingElement = registeredFields[key]
+    if (existingElement) {
+      observer.unobserve(existingElement)
+    }
+    registeredFields[key] = element
+    observer.observe(element)
+  }
+
   const unregisterField = (uuid: string, fieldName: string) => {
     const key = `${uuid}:${fieldName}`
     const el = registeredFields[key]
     if (el) {
       observer.unobserve(el)
     }
+    visibleFields.delete(key)
     registeredFields[key] = undefined
   }
 
@@ -301,6 +331,10 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     fieldListType: ValidFieldListTypes,
     parentBlockBundle?: BlockBundleWithNested,
   ): HTMLElement {
+    // Always observe the root element for proxy blocks.
+    if (el.classList.contains('bk-block-proxy')) {
+      return el
+    }
     const definition = getDefinition(bundle, fieldListType, parentBlockBundle)
     if (!definition) {
       throw new Error('Failed to load definition for bundle: ' + bundle)
@@ -361,6 +395,7 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     registeredBlocks[uuid] = undefined
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete blockRects[uuid]
+    visibleBlocks.delete(uuid)
   }
 
   const findBlock = (uuid: string): DraggableExistingBlock | undefined => {
@@ -523,12 +558,30 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
 
   let stateReloadTimeout: number | null = null
 
+  function getUuidsToUpdateRectsFor(): string[] {
+    const allUuids = Object.keys(registeredBlocks)
+
+    // Up until a certain amount of blocks, it's still reasonable to call
+    // getBoundingClientRect() on a lot of elements. This has the benefit
+    // of making sure that the rects are always up to date.
+    if (allUuids.length < 150) {
+      return allUuids
+    }
+
+    // For performance reasons, only update rects for blocks that are
+    // currently visible. This will result in weird behaviour, e.g. in the
+    // artboard overview or when using Tab to select the next one.
+    // However, performance is more important at this point, or else the editor
+    // might become too sluggish to actually use.
+    return getVisibleBlocks()
+  }
+
   function updateVisibleRects() {
-    const visible = getVisibleBlocks()
+    const toUpdate = getUuidsToUpdateRectsFor()
     const offset = ui.artboardOffset.value
     const scale = ui.artboardScale.value
-    for (let i = 0; i < visible.length; i++) {
-      const uuid = visible[i]
+    for (let i = 0; i < toUpdate.length; i++) {
+      const uuid = toUpdate[i]
       const el = registeredBlocks[uuid]
       if (!el) {
         continue
@@ -587,7 +640,7 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
   })
 
   onBlokkliEvent('ui:resized', function () {
-    getVisibleBlocks().forEach(refreshBlockRect)
+    updateVisibleRects()
     getVisibleFields().forEach(refreshFieldRect)
     logger.log('Refreshed all visible rects')
   })
@@ -637,6 +690,10 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     return el
   }
 
+  function isBlockVisible(uuid: string): boolean {
+    return visibleBlocks.has(uuid)
+  }
+
   return {
     findBlock,
     getAllBlocks,
@@ -654,13 +711,16 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     getVisibleFields,
     registerField,
     unregisterField,
+    updateFieldElement,
     getActiveProviderElement,
     getBlockRects,
     getBlockRect,
     getFieldRect,
     refreshBlockRect,
+    isBlockVisible,
     isReady: computed(() => mutationsReady.value && intersectionReady.value),
     init,
     getDragElement,
+    updateVisibleRects,
   }
 }

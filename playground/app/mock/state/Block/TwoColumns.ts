@@ -9,7 +9,7 @@ export class BlockTwoColumns extends Block {
   static override getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
-      new FieldBlocks('header', 'Header', 1, false, ['title']),
+      new FieldBlocks('header', 'Header', 1, false, ['title', 'text']),
       new FieldBlocks('left', 'Left', -1, true, [
         'text',
         'title',
@@ -18,7 +18,12 @@ export class BlockTwoColumns extends Block {
         'from_library',
         'button_list',
       ]),
-      new FieldBlocks('right', 'Right', -1, true, ['image', 'card']),
+      new FieldBlocks('right', 'Right', -1, true, [
+        'image',
+        'card',
+        'text',
+        'title',
+      ]),
     ]
   }
 }

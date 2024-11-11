@@ -953,6 +953,7 @@ export type BlokkliFieldElement = {
   name: string
   label: string
   isNested: boolean
+  nestingLevel: number
   fieldListType: ValidFieldListTypes
   hostEntityType: string
   hostEntityBundle: string
@@ -1072,7 +1073,7 @@ export type EventbusEvents = {
   'item:doubleClick': DraggableExistingBlock
 
   scrollIntoView: ScrollIntoViewEvent
-  'animationFrame:before': undefined
+  'animationFrame:before': number
   'canvas:draw': CanvasDrawEvent
 
   'state:reloaded': undefined

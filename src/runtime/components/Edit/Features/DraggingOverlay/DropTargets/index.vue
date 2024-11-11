@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <slot :color="active?.color" :label="active?.label" />
+    <slot :color="activeColorHex" :label="active?.label" />
   </Teleport>
 </template>
 
@@ -42,8 +42,12 @@ const props = defineProps<{
 }>()
 
 enum RectRenderType {
-  FIELD,
   DROP_AREA,
+  FIELD_1,
+  FIELD_2,
+  FIELD_3,
+  FIELD_4,
+  ACTIVE_AREA,
 }
 
 type Orientation = 'horizontal' | 'vertical'
@@ -66,7 +70,7 @@ type FieldRect = Rectangle & {
 
 type DrawnRect = Rectangle & {
   id: string
-  type: 'field' | 'drop-area'
+  type: 'field' | 'drop-area' | 'active-area'
   label: string
   color: string
   colorAlpha: string
@@ -358,6 +362,15 @@ const buildChildren = (
       continue
     }
 
+    // Get the rect of the block. Use a cached one if possible.
+    const elRect =
+      dom.getBlockRect(uuid) ||
+      ui.getAbsoluteElementRect(el.getBoundingClientRect())
+
+    // Calculate the offset to the parent. We can not use el.offsetTop/el.offsetLeft here because the value could be 0.
+    const elOffsetTop = elRect.y - field.y
+    const elOffsetLeft = elRect.x - field.x
+
     // Last element.
     if (isLast) {
       const id = buildChildId(field.field, uuid, 'last', uuid)
@@ -367,7 +380,7 @@ const buildChildren = (
           width: field.width,
           height: field.gap,
           x: 0,
-          y: el.offsetTop + el.scrollHeight,
+          y: elOffsetTop + el.scrollHeight,
           label: field.label,
         })
       } else {
@@ -375,8 +388,8 @@ const buildChildren = (
           id,
           width: field.gap,
           height: el.offsetHeight,
-          x: el.offsetLeft + el.offsetWidth,
-          y: el.offsetTop,
+          x: elOffsetLeft + el.offsetWidth,
+          y: elOffsetTop,
           label: field.label,
         })
       }
@@ -399,7 +412,7 @@ const buildChildren = (
         width: field.width,
         height: field.gap,
         x: 0,
-        y: el.offsetTop - field.gap / 2,
+        y: elOffsetTop - field.gap / 2,
         label: field.label,
       })
     } else {
@@ -407,8 +420,8 @@ const buildChildren = (
         id,
         width: field.gap,
         height: Math.max(el.offsetHeight, 30),
-        x: Math.max(el.offsetLeft - field.gap, -field.gap),
-        y: el.offsetTop,
+        x: Math.max(elOffsetLeft - field.gap, -field.gap),
+        y: elOffsetTop,
         label: field.label,
       })
     }
@@ -523,9 +536,13 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
     throw new Error('Failed to get rect for field: ' + field.key)
   }
   const x = rect.x
-  const y = rect.y
+  let y = rect.y
   const height = Math.max(rect.height, 30)
   const width = Math.max(rect.width, 30)
+
+  if (rect.height < 1) {
+    y -= 60
+  }
   const emptyChild = buildEmptyChild(
     field,
     childElements,
@@ -579,6 +596,17 @@ const colorTealAlpha = rgbaToString(theme.teal.value.normal, 0.7)
 const colorAccent = rgbaToString(theme.accent.value[800])
 const colorAccentAlpha = rgbaToString(theme.accent.value[800], 0.7)
 
+function getRectType(field: BlokkliFieldElement): RectRenderType {
+  if (field.nestingLevel >= 3) {
+    return RectRenderType.FIELD_4
+  } else if (field.nestingLevel >= 2) {
+    return RectRenderType.FIELD_3
+  } else if (field.nestingLevel >= 1) {
+    return RectRenderType.FIELD_2
+  }
+  return RectRenderType.FIELD_1
+}
+
 class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnRect> {
   getBufferInfo(): { info: BufferInfo | null; hasChanged: boolean } {
     const visibleFields = dom.getVisibleFields()
@@ -589,6 +617,7 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
     for (let i = 0; i < visibleFields.length; i++) {
       const key = visibleFields[i]
       const fieldRect = buildFieldRect(key)
+
       if (!fieldRect) {
         continue
       }
@@ -598,6 +627,7 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
         if (this.added.has(child.id)) {
           continue
         }
+        const type = getRectType(fieldRect.field)
         this.addRectangle(
           {
             id: child.id,
@@ -611,7 +641,7 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
             height: child.height,
             field: fieldRect,
           },
-          RectRenderType.FIELD,
+          type,
         )
       }
     }
@@ -659,6 +689,9 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
     const rects = Object.values(this.rects)
     for (let i = 0; i < rects.length; i++) {
       const rect = rects[i]
+      if (rect.type === 'active-area') {
+        continue
+      }
       if (intersects(box, rect)) {
         candidates.push(rect)
       }
@@ -678,6 +711,9 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
 
     for (let i = 0; i < rects.length; i++) {
       const rect = rects[i]
+      if (rect.type === 'active-area') {
+        continue
+      }
       if (isInsideRect(coord.x, coord.y, rect)) {
         return rect
       }
@@ -689,14 +725,90 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
 
 const collector = new DropTargetRectangleBufferCollector(gl)
 
+// Add a rectangle that we will use to display the hovered field area.
+// The vertex shader will dynamically transform the quad to match the currently hovered field area.
+collector.addRectangle(
+  {
+    id: 'active-hover-rect',
+    type: 'active-area',
+    label: 'Field Area',
+    color: 'red',
+    colorAlpha: 'red',
+    x: 0,
+    y: 0,
+    width: ui.artboardSize.value.width,
+    height: ui.artboardSize.value.height,
+  },
+  RectRenderType.ACTIVE_AREA,
+)
+
+const fieldColors = computed(() => {
+  return {
+    '0': theme.accent.value[900],
+    '1': theme.accent.value[400],
+    '2': theme.accent.value[600],
+    '3': theme.accent.value[500],
+  }
+})
+
+function getColorForField(field?: FieldRect | null) {
+  const nestingLevel = field?.field.nestingLevel || 0
+  if (nestingLevel >= 3) {
+    return fieldColors.value[3]
+  } else if (nestingLevel >= 2) {
+    return fieldColors.value[2]
+  } else if (nestingLevel >= 1) {
+    return fieldColors.value[1]
+  }
+  return fieldColors.value[0]
+}
+
+const activeColorRgb = computed(() => {
+  if (active.value?.type === 'drop-area') {
+    return theme.teal.value.normal
+  }
+  return getColorForField(active.value?.field)
+})
+
+const activeColorHex = computed(() => {
+  if (activeColorRgb.value) {
+    return rgbaToString(activeColorRgb.value)
+  }
+  return ''
+})
+
+const activeHoverField = ref<FieldRect | null>(null)
+
+const activeHoverRect = computed(() => {
+  if (!activeHoverField.value) {
+    return [0, 0, 0, 0]
+  }
+
+  const outset = activeHoverField.value.field.nestingLevel === 0 ? 0 : 20
+
+  return [
+    activeHoverField.value.x - outset,
+    activeHoverField.value.y - outset,
+    activeHoverField.value.width + 2 * outset,
+    activeHoverField.value.height + 2 * outset,
+  ]
+})
+
+const activeHoverColor = computed(() => {
+  return getColorForField(activeHoverField.value)
+})
+
 const uniforms = computed(() => {
   const index = active.value?.index
   return {
-    u_color_field_active: toShaderColor(theme.accent.value[700]),
-    u_color_field_default: toShaderColor(theme.mono.value[400]),
-    u_color_area_active: toShaderColor(theme.teal.value.normal),
-    u_color_area_default: toShaderColor(theme.teal.value.normal),
+    u_color_field_0: toShaderColor(fieldColors.value[0]),
+    u_color_field_1: toShaderColor(fieldColors.value[1]),
+    u_color_field_2: toShaderColor(fieldColors.value[2]),
+    u_color_field_3: toShaderColor(fieldColors.value[3]),
+    u_color_hover_area: toShaderColor(activeHoverColor.value),
+    u_color_area: toShaderColor(theme.teal.value.normal),
     u_active_rect_id: index === undefined ? -1 : index,
+    u_active_hover_rect: activeHoverRect.value,
   }
 })
 
@@ -713,6 +825,45 @@ function toCanvasSpaceCoordinates(x: number, y: number): Coord {
   return {
     x: (x - offset.x) / scale,
     y: (y - offset.y) / scale,
+  }
+}
+
+function setHoveredFieldArea(box: Rectangle, mouse: Coord) {
+  if (active.value?.field) {
+    if (activeHoverField.value?.key !== active.value.field.key) {
+      activeHoverField.value = active.value.field
+    }
+    return
+  }
+  const fields = Object.values(fieldCache)
+
+  let highestNestingLevel = 0
+  let candidate: FieldRect | null = null
+
+  for (let i = 0; i < fields.length; i++) {
+    const field = fields[i]
+    if (!field.canAddChildren) {
+      continue
+    }
+    if (
+      isInsideRect(mouse.x, mouse.y, field) &&
+      field.field.nestingLevel >= highestNestingLevel
+    ) {
+      candidate = field
+      highestNestingLevel = field.field.nestingLevel
+      continue
+    }
+    if (
+      intersects(box, field) &&
+      field.field.nestingLevel >= highestNestingLevel
+    ) {
+      highestNestingLevel = field.field.nestingLevel
+      candidate = field
+    }
+  }
+
+  if (candidate && candidate.key !== activeHoverField.value?.key) {
+    activeHoverField.value = candidate
   }
 }
 
@@ -734,10 +885,8 @@ onBlokkliEvent('canvas:draw', () => {
     animation.setSharedUniforms(gl, programInfo)
   }
 
-  const isInsideClipped = cursorIsInsideClipped()
-
   if (!props.isTouch) {
-    if (isInsideClipped) {
+    if (cursorIsInsideClipped()) {
       const closest = collector.getClosestIntersectingRect(
         dragBox.value,
         mouseAbsolute,
@@ -753,6 +902,7 @@ onBlokkliEvent('canvas:draw', () => {
 
   // WebGL rendering.
   if (programInfo && gl) {
+    setHoveredFieldArea(dragBox.value, mouseAbsolute)
     setUniforms(programInfo, uniforms.value)
 
     // Nothing to draw.
