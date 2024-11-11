@@ -358,6 +358,15 @@ const buildChildren = (
       continue
     }
 
+    // Get the rect of the block. Use a cached one if possible.
+    const elRect =
+      dom.getBlockRect(uuid) ||
+      ui.getAbsoluteElementRect(el.getBoundingClientRect())
+
+    // Calculate the offset to the parent. We can not use el.offsetTop/el.offsetLeft here because the value could be 0.
+    const elOffsetTop = elRect.y - field.y
+    const elOffsetLeft = elRect.x - field.x
+
     // Last element.
     if (isLast) {
       const id = buildChildId(field.field, uuid, 'last', uuid)
@@ -367,7 +376,7 @@ const buildChildren = (
           width: field.width,
           height: field.gap,
           x: 0,
-          y: el.offsetTop + el.scrollHeight,
+          y: elOffsetTop + el.scrollHeight,
           label: field.label,
         })
       } else {
@@ -375,8 +384,8 @@ const buildChildren = (
           id,
           width: field.gap,
           height: el.offsetHeight,
-          x: el.offsetLeft + el.offsetWidth,
-          y: el.offsetTop,
+          x: elOffsetLeft + el.offsetWidth,
+          y: elOffsetTop,
           label: field.label,
         })
       }
@@ -399,7 +408,7 @@ const buildChildren = (
         width: field.width,
         height: field.gap,
         x: 0,
-        y: el.offsetTop - field.gap / 2,
+        y: elOffsetTop - field.gap / 2,
         label: field.label,
       })
     } else {
@@ -407,8 +416,8 @@ const buildChildren = (
         id,
         width: field.gap,
         height: Math.max(el.offsetHeight, 30),
-        x: Math.max(el.offsetLeft - field.gap, -field.gap),
-        y: el.offsetTop,
+        x: Math.max(elOffsetLeft - field.gap, -field.gap),
+        y: elOffsetTop,
         label: field.label,
       })
     }
@@ -589,6 +598,7 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
     for (let i = 0; i < visibleFields.length; i++) {
       const key = visibleFields[i]
       const fieldRect = buildFieldRect(key)
+
       if (!fieldRect) {
         continue
       }

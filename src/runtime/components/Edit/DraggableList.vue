@@ -6,10 +6,15 @@
       {
         'bk-is-visible': proxyVisible,
       },
-      'bk-is-' + dropAlignment,
+      'bk-is-' +
+        (dropAlignment || nestingLevel === 0 ? 'vertical' : 'horizontal'),
     ]"
   >
-    <div ref="root" class="bk-field-list-proxy-list" v-bind="fieldAttributes">
+    <div
+      ref="root"
+      class="bk-field-list-proxy-list bk-draggable-list-container bk-field-list"
+      v-bind="fieldAttributes"
+    >
       <BlokkliItem
         v-for="(item, i) in list"
         :key="item.uuid + fieldListType"
@@ -83,6 +88,7 @@ import {
   onBeforeUnmount,
   useAttrs,
   provide,
+  watch,
 } from '#imports'
 import type { FieldListItem, EntityContext, FieldConfig } from '#blokkli/types'
 import type { BlokkliFragmentName } from '#blokkli/definitions'
@@ -103,7 +109,7 @@ const props = withDefaults(
     fieldKey: string
     list: FieldListItem[]
     entity: EntityContext
-    language?: string
+    language: string
     tag?: string
     isNested: boolean
     fieldListType: string
@@ -116,7 +122,7 @@ const props = withDefaults(
   {
     tag: 'div',
     allowedFragments: undefined,
-    dropAlignment: 'vertical',
+    dropAlignment: undefined,
   },
 )
 
@@ -190,6 +196,12 @@ const fieldAttributes = computed(() => {
 function isMuted(item?: FieldListItem) {
   return !isVisibleByOptions(item, props.language)
 }
+
+watch(root, function (newRoot) {
+  if (newRoot) {
+    dom.updateFieldElement(props.entity.uuid, props.name, newRoot)
+  }
+})
 
 onMounted(() => {
   if (root.value) {

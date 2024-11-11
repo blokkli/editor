@@ -116,6 +116,11 @@ export type DomProvider = {
     fieldName: string,
     instance: HTMLElement,
   ) => void
+  updateFieldElement: (
+    uuid: string,
+    fieldName: string,
+    element: HTMLElement,
+  ) => void
   unregisterField: (uuid: string, fieldName: string) => void
 
   /**
@@ -137,6 +142,8 @@ export type DomProvider = {
   refreshBlockRect: (uuid: string) => void
 
   getFieldRect: (key: string) => Rectangle | undefined
+
+  updateVisibleRects: () => void
 
   isReady: ComputedRef<boolean>
 
@@ -294,12 +301,27 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     observer.observe(element)
   }
 
+  const updateFieldElement = (
+    uuid: string,
+    fieldName: string,
+    element: HTMLElement,
+  ) => {
+    const key = `${uuid}:${fieldName}`
+    const existingElement = registeredFields[key]
+    if (existingElement) {
+      observer.unobserve(existingElement)
+    }
+    registeredFields[key] = element
+    observer.observe(element)
+  }
+
   const unregisterField = (uuid: string, fieldName: string) => {
     const key = `${uuid}:${fieldName}`
     const el = registeredFields[key]
     if (el) {
       observer.unobserve(el)
     }
+    visibleFields.delete(key)
     registeredFields[key] = undefined
   }
 
@@ -309,6 +331,10 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     fieldListType: ValidFieldListTypes,
     parentBlockBundle?: BlockBundleWithNested,
   ): HTMLElement {
+    // Always observe the root element for proxy blocks.
+    if (el.classList.contains('bk-block-proxy')) {
+      return el
+    }
     const definition = getDefinition(bundle, fieldListType, parentBlockBundle)
     if (!definition) {
       throw new Error('Failed to load definition for bundle: ' + bundle)
@@ -369,6 +395,7 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     registeredBlocks[uuid] = undefined
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete blockRects[uuid]
+    visibleBlocks.delete(uuid)
   }
 
   const findBlock = (uuid: string): DraggableExistingBlock | undefined => {
@@ -684,6 +711,7 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     getVisibleFields,
     registerField,
     unregisterField,
+    updateFieldElement,
     getActiveProviderElement,
     getBlockRects,
     getBlockRect,
@@ -693,5 +721,6 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     isReady: computed(() => mutationsReady.value && intersectionReady.value),
     init,
     getDragElement,
+    updateVisibleRects,
   }
 }

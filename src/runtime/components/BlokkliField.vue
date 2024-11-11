@@ -14,7 +14,6 @@
     :class="[attrs.class, listClass, { [nonEmptyClass]: filteredList.length }]"
     :is-nested="isNested"
     :language="providerEntity?.language"
-    class="bk-field-list"
     :proxy-mode="proxyMode"
     :tag="tag"
     :global-proxy-mode="!!isGlobalProxyMode"
