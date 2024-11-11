@@ -14,12 +14,14 @@ float roundedBoxSDF(vec2 CenterPosition, vec2 Size, float Radius) {
 }
 
 void main() {
-  float radiusBase = 4.0 * u_scale;
+  bool isHoverArea = v_is_hover_area >= 1.0;
+  float stroke = isHoverArea ? 0.75 : 2.0;
+  float radiusBase = stroke * u_scale;
 
   float thickness = max(min(1.0 * u_scale, 3.0), 0.5);
 
   // Calculate the resulting inset so that we draw the rounded box and border *inside* the quad (vs. that it would bleed outside the quad).
-  float inset = max(min(2.0 * u_scale, 1.0), 3.0) * thickness;
+  float inset = max(min(2.0 * u_scale, 1.0), 3.0) * thickness + stroke;
 
   // Rectangle dimensions with inset.
   float u_rect_x = v_quad.x + inset;
@@ -36,7 +38,7 @@ void main() {
   // Make sure the edges of the border are not too harsh.
   float edgeSoftness = 0.5 * u_dpi;
 
-  float borderWidth = 2.0 * u_scale * u_dpi;
+  float borderWidth = stroke * u_scale * u_dpi;
 
   // Different radius for inner and outer.
   float radiusOutside =
@@ -69,14 +71,15 @@ void main() {
   float adjustedAlphaFill =
     v_intersecting >= 0.5
       ? alphaInner * 0.95
-      : alphaInner * 0.4;
+      : alphaInner * 0.2;
 
   if (v_is_hover_area >= 1.0) {
     adjustedAlphaFill *= 0.12;
   }
 
   if (alphaBorder > 0.0) {
-    gl_FragColor = vec4(v_color, 1.0);
+    float a = isHoverArea ? 0.6 : 1.0;
+    gl_FragColor = vec4(v_color, a);
     return;
   } else if (adjustedAlphaFill > 0.0) {
     gl_FragColor = vec4(v_color, adjustedAlphaFill);

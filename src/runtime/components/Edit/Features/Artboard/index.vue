@@ -215,8 +215,8 @@ onBlokkliEvent('animationFrame:before', (time) => {
 
   // We don't need much precision here, so we can round it.
   // This also prevents updating rects in WebGL buffers for small changes.
-  ui.artboardOffset.value.x = Math.round(offset.x)
-  ui.artboardOffset.value.y = Math.round(offset.y)
+  ui.artboardOffset.value.x = Math.ceil(offset.x)
+  ui.artboardOffset.value.y = Math.ceil(offset.y)
   ui.artboardScale.value = artboard.getScale()
   animation.requestDraw()
 })

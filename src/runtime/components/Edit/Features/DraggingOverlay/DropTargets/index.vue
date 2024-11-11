@@ -540,7 +540,7 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
   const height = Math.max(rect.height, 30)
   const width = Math.max(rect.width, 30)
 
-  if (rect.height < 1) {
+  if (rect.height <= 24) {
     y -= 60
   }
   const emptyChild = buildEmptyChild(
