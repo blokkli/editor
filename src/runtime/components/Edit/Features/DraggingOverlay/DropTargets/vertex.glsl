@@ -10,16 +10,16 @@ uniform float u_offset_x;
 uniform float u_offset_y;
 uniform vec2 u_resolution;
 uniform float u_active_rect_id;
-uniform vec3 u_color_field_default;
-uniform vec3 u_color_field_active;
-uniform vec3 u_color_area_default;
-uniform vec3 u_color_area_active;
+uniform vec3 u_color_field_0;
+uniform vec3 u_color_field_1;
+uniform vec3 u_color_field_2;
+uniform vec3 u_color_field_3;
+uniform vec3 u_color_area;
 uniform float u_dpi;
 
 varying vec4 v_quad;
 varying float v_intersecting;
-varying vec3 v_color_default;
-varying vec3 v_color_active;
+varying vec3 v_color;
 
 void main() {
   vec2 offsetPosition = a_position * u_scale;
@@ -48,10 +48,14 @@ void main() {
 
   // Set correct colors based on type.
   if (a_rect_type < 0.5) {
-    v_color_default = u_color_field_default;
-    v_color_active = u_color_field_active;
+    v_color = u_color_area;
+  } else if (a_rect_type < 1.5) {
+    v_color = u_color_field_0;
+  } else if (a_rect_type < 2.5) {
+    v_color = u_color_field_1;
+  } else if (a_rect_type < 3.5) {
+    v_color = u_color_field_2;
   } else {
-    v_color_default = u_color_area_default;
-    v_color_active = u_color_area_active;
+    v_color = u_color_field_3;
   }
 }

@@ -2,8 +2,7 @@ precision mediump float;
 
 varying float v_intersecting;
 varying vec4 v_quad;
-varying vec3 v_color_default;
-varying vec3 v_color_active;
+varying vec3 v_color;
 
 uniform float u_scale;
 uniform float u_dpi;
@@ -43,16 +42,15 @@ void main() {
 
   bool is_intersecting = v_intersecting >= 0.5;
 
-  vec3 color = is_intersecting ? v_color_active : v_color_default;
-  float mixedDistance = is_intersecting ? distance : abs(distance);
+  float mixedDistance = distance;
 
   float smoothedAlpha =
     1.0 - smoothstep(-edgeSoftness, edgeSoftness, mixedDistance - thickness);
 
   gl_FragColor = vec4(
-    color,
+    v_color,
     is_intersecting
-      ? smoothedAlpha - 0.1
-      : smoothedAlpha
+      ? smoothedAlpha
+      : smoothedAlpha - 0.6
   );
 }

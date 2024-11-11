@@ -42,8 +42,11 @@ const props = defineProps<{
 }>()
 
 enum RectRenderType {
-  FIELD,
   DROP_AREA,
+  FIELD_1,
+  FIELD_2,
+  FIELD_3,
+  FIELD_4,
 }
 
 type Orientation = 'horizontal' | 'vertical'
@@ -588,6 +591,17 @@ const colorTealAlpha = rgbaToString(theme.teal.value.normal, 0.7)
 const colorAccent = rgbaToString(theme.accent.value[800])
 const colorAccentAlpha = rgbaToString(theme.accent.value[800], 0.7)
 
+function getRectType(field: BlokkliFieldElement): RectRenderType {
+  if (field.nestingLevel >= 3) {
+    return RectRenderType.FIELD_4
+  } else if (field.nestingLevel >= 2) {
+    return RectRenderType.FIELD_3
+  } else if (field.nestingLevel >= 1) {
+    return RectRenderType.FIELD_2
+  }
+  return RectRenderType.FIELD_1
+}
+
 class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnRect> {
   getBufferInfo(): { info: BufferInfo | null; hasChanged: boolean } {
     const visibleFields = dom.getVisibleFields()
@@ -608,6 +622,7 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
         if (this.added.has(child.id)) {
           continue
         }
+        const type = getRectType(fieldRect.field)
         this.addRectangle(
           {
             id: child.id,
@@ -621,7 +636,7 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
             height: child.height,
             field: fieldRect,
           },
-          RectRenderType.FIELD,
+          type,
         )
       }
     }
@@ -699,19 +714,28 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
 
 const collector = new DropTargetRectangleBufferCollector(gl)
 
+const fieldColors = computed(() => {
+  return {
+    '3': theme.accent.value[200],
+    '2': theme.accent.value[400],
+    '1': theme.accent.value[600],
+    '0': theme.accent.value[800],
+  }
+})
+
 const activeColorRgb = computed(() => {
   if (active.value?.type === 'drop-area') {
     return theme.teal.value.normal
   }
   const nestingLevel = active.value?.field?.field.nestingLevel || 0
   if (nestingLevel >= 3) {
-    return theme.accent.value[200]
+    return fieldColors.value[3]
   } else if (nestingLevel >= 2) {
-    return theme.accent.value[400]
+    return fieldColors.value[2]
   } else if (nestingLevel >= 1) {
-    return theme.accent.value[600]
+    return fieldColors.value[1]
   }
-  return theme.accent.value[800]
+  return fieldColors.value[0]
 })
 
 const activeColorHex = computed(() => {
@@ -724,10 +748,11 @@ const activeColorHex = computed(() => {
 const uniforms = computed(() => {
   const index = active.value?.index
   return {
-    u_color_field_active: toShaderColor(activeColorRgb.value),
-    u_color_field_default: toShaderColor(theme.mono.value[400]),
-    u_color_area_active: toShaderColor(theme.teal.value.normal),
-    u_color_area_default: toShaderColor(theme.teal.value.normal),
+    u_color_field_0: toShaderColor(fieldColors.value[0]),
+    u_color_field_1: toShaderColor(fieldColors.value[1]),
+    u_color_field_2: toShaderColor(fieldColors.value[2]),
+    u_color_field_3: toShaderColor(fieldColors.value[3]),
+    u_color_area: toShaderColor(theme.teal.value.normal),
     u_active_rect_id: index === undefined ? -1 : index,
   }
 })
