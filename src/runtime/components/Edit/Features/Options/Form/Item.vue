@@ -88,6 +88,7 @@ const emit = defineEmits<{
 const props = defineProps<{
   option: BlockOptionDefinition
   property: string
+  mutatedValue: any
   uuids: string[]
   isGrouped?: boolean
 }>()
@@ -169,34 +170,12 @@ const validateValue = (
   }
 }
 
-const mutatedValue = computed<string | undefined>(() => {
-  for (let i = 0; i < props.uuids.length; i++) {
-    const uuid = props.uuids[i]
-    const mutatedOptions = state.mutatedOptions[uuid]
-    if (mutatedOptions) {
-      const mutatedOption = state.mutatedOptions[uuid]?.[props.property]
-      if (mutatedOption !== undefined) {
-        return validateValue(mutatedOption)
-      }
-    }
-  }
-
-  return undefined
-})
-
-const defaultValue = computed<string>(
-  () => validateValue(props.option.default) || '',
-)
-
-const value = computed<string>({
+const value = computed<string | undefined>({
   get() {
-    if (mutatedValue.value === undefined) {
-      return defaultValue.value
-    }
-    return mutatedValue.value
+    return validateValue(props.mutatedValue)
   },
-  set(value: string) {
-    emit('update', value)
+  set(value: string | undefined) {
+    emit('update', value === undefined ? '' : value)
   },
 })
 </script>

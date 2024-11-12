@@ -109,7 +109,7 @@ const props = withDefaults(
     fieldKey: string
     list: FieldListItem[]
     entity: EntityContext
-    language: string
+    language?: string
     tag?: string
     isNested: boolean
     fieldListType: string
@@ -123,6 +123,7 @@ const props = withDefaults(
     tag: 'div',
     allowedFragments: undefined,
     dropAlignment: undefined,
+    language: undefined,
   },
 )
 

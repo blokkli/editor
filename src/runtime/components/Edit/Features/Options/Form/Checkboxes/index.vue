@@ -45,7 +45,7 @@ const { $t, state } = useBlokkli()
 const props = defineProps<{
   label: string
   property: string
-  modelValue: string
+  modelValue?: string
   options: { value: string; label: string }[]
   isGrouped?: boolean
 }>()

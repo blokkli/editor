@@ -16,7 +16,7 @@ import { computed } from '#imports'
 
 const props = defineProps<{
   label: string
-  modelValue: string
+  modelValue?: string
 }>()
 
 const emit = defineEmits(['update:modelValue'])

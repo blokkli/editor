@@ -10,7 +10,7 @@ import { computed } from '#imports'
 
 const props = defineProps<{
   label: string
-  modelValue: string
+  modelValue?: string
   min: number
   max: number
   step: number
@@ -20,7 +20,7 @@ const emit = defineEmits(['update:modelValue'])
 
 const text = computed<string>({
   get() {
-    return props.modelValue || ''
+    return props.modelValue || '0'
   },
   set(v: string | number | undefined) {
     emit('update:modelValue', (v === undefined ? '' : v).toString())

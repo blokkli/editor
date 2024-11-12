@@ -75,7 +75,7 @@ const props = defineProps<{
   property: string
   displayAs?: 'radios' | 'colors' | 'grid' | 'icons'
   options: Record<string, PossibleOptionType>
-  modelValue: string
+  modelValue?: string
 }>()
 
 const emit = defineEmits(['update:modelValue'])

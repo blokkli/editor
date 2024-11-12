@@ -11,11 +11,12 @@ import { computed } from '#imports'
 const props = withDefaults(
   defineProps<{
     label: string
-    modelValue: string
+    modelValue?: string
     type?: string
   }>(),
   {
     type: 'text',
+    modelValue: '',
   },
 )
 

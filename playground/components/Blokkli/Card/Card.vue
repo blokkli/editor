@@ -54,11 +54,6 @@ const { parentType, options } = defineBlokkli({
       label: 'Box',
       default: true,
     },
-    easyLanguageVisibility: {
-      type: 'checkbox',
-      label: 'Box',
-      default: true,
-    },
     color: {
       type: 'radios',
       label: 'Color',
@@ -77,9 +72,6 @@ const { parentType, options } = defineBlokkli({
     addBehaviour: 'no-form',
     editTitle: (el) => el.querySelector('h3')?.textContent,
     determineVisibleOptions: (ctx) => {
-      if (ctx.entity.language === 'ls') {
-        return ['easyLanguageVisibility']
-      }
       if (ctx.props.icon) {
         return ['box', 'color']
       }

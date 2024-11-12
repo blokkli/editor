@@ -386,7 +386,7 @@
       @apply h-50;
 
       &.bk-is-grouped {
-        @apply h-auto;
+        @apply h-auto min-h-50;
 
         .bk-blokkli-item-options-checkbox {
           @apply h-50 w-full;
@@ -395,7 +395,7 @@
     }
 
     .bk-blokkli-item-options-item {
-      @apply block;
+      @apply flex flex-col items-start;
       &:not(:last-child) {
         @apply border-b border-b-mono-600;
       }

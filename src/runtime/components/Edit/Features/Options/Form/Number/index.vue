@@ -26,13 +26,14 @@ import { Icon } from '#blokkli/components'
 const props = withDefaults(
   defineProps<{
     label: string
-    modelValue: string
+    modelValue?: string
     min: number
     max: number
     type?: string
   }>(),
   {
     type: 'text',
+    modelValue: '0',
   },
 )
 
@@ -42,7 +43,7 @@ const emit = defineEmits(['update:modelValue'])
 
 const text = computed<string>({
   get() {
-    return props.modelValue || '0'
+    return props.modelValue
   },
   set(v: string | number | undefined) {
     emit('update:modelValue', (v === undefined ? '' : v).toString())
@@ -50,6 +51,9 @@ const text = computed<string>({
 })
 
 const numeric = computed(() => {
+  if (props.modelValue === undefined) {
+    return 0
+  }
   const v = Number.parseInt(props.modelValue)
   if (Number.isNaN(v)) {
     return 0

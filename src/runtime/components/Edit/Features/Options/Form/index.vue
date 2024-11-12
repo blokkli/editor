@@ -10,6 +10,7 @@
       :key="plugin.property"
       :option="plugin.option"
       :property="plugin.property"
+      :mutated-value="currentValues[plugin.property]"
       :uuids="uuids"
       class="bk-blokkli-item-options-item"
       :class="{
@@ -31,6 +32,7 @@
         :key="plugin.property"
         :option="plugin.option"
         :property="plugin.property"
+        :mutated-value="currentValues[plugin.property]"
         :uuids="uuids"
         class="bk-blokkli-item-options-item"
         :class="{
@@ -47,7 +49,7 @@
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, onBeforeUnmount, onMounted } from '#imports'
 import { globalOptions } from '#blokkli/definitions'
-import { falsy } from '#blokkli/helpers'
+import { falsy, onlyUnique } from '#blokkli/helpers'
 import OptionsFormItem from './Item.vue'
 import OptionsFormGroup from './Group.vue'
 import type {
@@ -220,14 +222,29 @@ function getOptionValue(
  * The current mapped values, same as provided by defineBlokkli.
  */
 const currentValues = computed(() => {
-  const uuid = props.uuids[0]
   return availableOptions.value.reduce<
     Record<string, string | string[] | boolean | number>
   >((acc, v) => {
-    acc[v.property] = getRuntimeOptionValue(
-      v.option,
-      getOptionValue(uuid, v.property, v.option.default),
-    )
+    // Get all current values.
+    const values = props.uuids
+      .map((uuid) => {
+        return JSON.stringify(
+          getRuntimeOptionValue(
+            v.option,
+            getOptionValue(uuid, v.property, v.option.default),
+          ),
+        )
+      })
+      .filter(onlyUnique)
+    if (values.length === 1) {
+      acc[v.property] = getRuntimeOptionValue(
+        v.option,
+        getOptionValue(props.uuids[0], v.property, v.option.default),
+      )
+    } else {
+      acc[v.property] = ''
+    }
+
     return acc
   }, {})
 })

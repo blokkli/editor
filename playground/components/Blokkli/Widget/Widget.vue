@@ -208,6 +208,12 @@ const { options } = defineBlokkli({
         primary: { hex: '#0550e6', label: 'Blue' },
       },
     },
+    nestedCheckbox: {
+      type: 'checkbox',
+      label: 'Nested Checkbox',
+      default: true,
+      group: 'Radios',
+    },
   },
   editor: {
     editTitle: (el) => el.dataset.widget,
@@ -230,6 +236,7 @@ const { options } = defineBlokkli({
           'paddingRight',
           'paddingBottom',
           'rows',
+          'nestedCheckbox',
         ]
       }
       return ['showAllOptions']
