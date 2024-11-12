@@ -38,14 +38,6 @@ function onClick(items: DraggableExistingBlock[]) {
   )
 }
 
-const findField = (uuid: string): BlokkliFieldElement | undefined => {
-  try {
-    return dom.getBlockField(uuid)
-  } catch (_e) {
-    // Noop.
-  }
-}
-
 const canDuplicate = computed<boolean>(() => {
   if (state.editMode.value !== 'editing') {
     return false
@@ -57,11 +49,7 @@ const canDuplicate = computed<boolean>(() => {
   const selectedCount = selection.blocks.value.length
   for (let i = 0; i < selectedCount; i++) {
     const block = selection.blocks.value[i]
-    const field = findField(block.uuid)
-    if (!field) {
-      return false
-    }
-
+    const field = dom.getBlockField(block.uuid)
     const count = state.getFieldBlockCount(field.key)
 
     // Early return if the field is already full.
