@@ -5,6 +5,7 @@ import {
   INJECT_FIELD_LIST_TYPE,
   INJECT_REUSABLE_OPTIONS,
   INJECT_PROVIDER_BLOCKS,
+  INJECT_FIELD_USES_PROXY,
 } from '../helpers/symbols'
 import {
   computed,
@@ -143,8 +144,12 @@ export function defineBlokkli<
 
   const isEditing = !!item?.value.isEditing
 
+  const fieldUsesProxy = inject(INJECT_FIELD_USES_PROXY, false)
+
   onMounted(() => {
     if (
+      // If the field uses proxy mode we don't want to register the block here.
+      fieldUsesProxy ||
       !item?.value ||
       !isEditing ||
       !editContext ||
@@ -170,6 +175,8 @@ export function defineBlokkli<
 
   onBeforeUnmount(() => {
     if (
+      !fieldUsesProxy &&
+      isEditing &&
       editContext &&
       editContext.dom &&
       uuid &&
