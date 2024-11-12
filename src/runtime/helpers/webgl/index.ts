@@ -1,5 +1,6 @@
 import type { Rectangle } from '#blokkli/types'
 import { createBufferInfoFromArrays, type BufferInfo } from 'twgl.js'
+import { intersects } from '..'
 
 type RectangleBufferRect = Rectangle & {
   id: string
@@ -11,6 +12,8 @@ type RectangleBufferRect = Rectangle & {
 type RectangleBufferCollectorOptions = {
   padding?: number
 }
+
+type PlacedRectangle = Rectangle & { originalY: number }
 
 export class RectangleBufferCollector<T extends RectangleBufferRect> {
   gl?: WebGLRenderingContext
@@ -25,6 +28,7 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
   radius: number[] = []
   index = 0
   bufferInfo: BufferInfo | null = null
+  placedRects: PlacedRectangle[] = []
 
   constructor(
     gl?: WebGLRenderingContext,
@@ -47,11 +51,59 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
     this.bufferInfo = null
   }
 
-  addRectangle(rect: Omit<T, 'index'>, type: number) {
-    const x = rect.x
-    const y = rect.y
-    const width = rect.width
-    const height = rect.height
+  getIdealPosition(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ): Rectangle {
+    const rect: PlacedRectangle = {
+      x,
+      y,
+      width,
+      height,
+      originalY: y,
+    }
+
+    const intersections: PlacedRectangle[] = []
+    for (let i = 0; i < this.placedRects.length; i++) {
+      if (intersects(rect, this.placedRects[i])) {
+        intersections.push(this.placedRects[i])
+      }
+    }
+
+    if (intersections.length === 0) {
+      this.placedRects.push(rect)
+      return rect
+    }
+
+    intersections.sort((a, b) => b.originalY - a.originalY)
+
+    for (let i = 0; i < intersections.length; i++) {
+      const existingRect = intersections[i]
+      let iterations = 0
+      const direction = y > existingRect.originalY ? -1 : 1
+      while (intersects(rect, existingRect) && iterations < 10) {
+        rect.y = y + direction * (10 * (iterations + 1))
+        iterations++
+      }
+
+      if (iterations >= 10) {
+        // Set the original y coordinate when we had too many iterations, so
+        // that the rectangle is not completely off where it should be.
+        rect.y = y
+      }
+    }
+
+    this.placedRects.push(rect)
+    return rect
+  }
+
+  addRectangle(rect: Omit<T, 'index'>, type: number, checkOverlap = false) {
+    const { x, y, width, height } = checkOverlap
+      ? this.getIdealPosition(rect.x, rect.y, rect.width, rect.height)
+      : rect
+
     // Push the positions of the corners of the rectangle
     this.positions.push(
       x,

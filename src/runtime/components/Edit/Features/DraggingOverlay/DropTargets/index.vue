@@ -380,7 +380,7 @@ const buildChildren = (
         childrenForUuid.push({
           id,
           width: field.width,
-          height: field.gap,
+          height: MIN_GAP,
           x: 0,
           y: elOffsetTop + el.scrollHeight,
           label: field.label,
@@ -388,9 +388,9 @@ const buildChildren = (
       } else {
         childrenForUuid.push({
           id,
-          width: field.gap,
+          width: MIN_GAP,
           height: el.offsetHeight,
-          x: elOffsetLeft + el.offsetWidth,
+          x: elOffsetLeft + el.offsetWidth + (field.gap - MIN_GAP) / 2,
           y: elOffsetTop,
           label: field.label,
         })
@@ -412,7 +412,7 @@ const buildChildren = (
       childrenForUuid.push({
         id,
         width: field.width,
-        height: field.gap,
+        height: MIN_GAP,
         x: 0,
         y: elOffsetTop - field.gap / 2,
         label: field.label,
@@ -420,9 +420,11 @@ const buildChildren = (
     } else {
       childrenForUuid.push({
         id,
-        width: field.gap,
+        width: MIN_GAP,
         height: Math.max(el.offsetHeight, MIN_GAP),
-        x: Math.max(elOffsetLeft - field.gap, -field.gap),
+        x:
+          Math.max(elOffsetLeft - field.gap, -field.gap) +
+          (field.gap - MIN_GAP) / 2,
         y: elOffsetTop,
         label: field.label,
       })
@@ -538,13 +540,10 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
     throw new Error('Failed to get rect for field: ' + field.key)
   }
   const x = rect.x
-  let y = rect.y
-  const height = Math.max(rect.height, MIN_GAP)
+  const y = rect.y
   const width = Math.max(rect.width, MIN_GAP)
 
-  if (rect.height <= 24) {
-    y -= 60
-  }
+  const height = Math.max(rect.height, MIN_GAP)
   const emptyChild = buildEmptyChild(
     field,
     childElements,
@@ -552,6 +551,7 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
     width,
     height,
   )
+
   const gap = Math.max(getGapSize(orientation, field.element), MIN_GAP)
 
   const fieldRect = {
@@ -644,6 +644,7 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
             field: fieldRect,
           },
           type,
+          true,
         )
       }
     }
@@ -673,6 +674,7 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
           height: areaRect.height,
         },
         RectRenderType.DROP_AREA,
+        false,
       )
     }
 
@@ -742,6 +744,7 @@ collector.addRectangle(
     height: ui.artboardSize.value.height,
   },
   RectRenderType.ACTIVE_AREA,
+  false,
 )
 
 const fieldColors = computed(() => {
