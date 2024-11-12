@@ -8,7 +8,12 @@
     :parent-type="parentType"
     :item-props="props"
   />
-  <Component :is="component" v-else-if="component" v-bind="props" />
+  <Component
+    :is="component"
+    v-else-if="component"
+    v-bind="props"
+    :data-bk-in-proxy="fieldUsesProxy || undefined"
+  />
   <div v-else-if="isEditing">Block not implemented</div>
 </template>
 
@@ -28,6 +33,7 @@ import {
   INJECT_ENTITY_CONTEXT,
   INJECT_FIELD_LIST_TYPE,
   INJECT_FIELD_PROXY_MODE,
+  INJECT_FIELD_USES_PROXY,
   INJECT_GLOBAL_PROXY_MODE,
 } from '../helpers/symbols'
 import type {
@@ -58,6 +64,7 @@ const componentProps = withDefaults(
 )
 
 const isProxyMode = inject(INJECT_FIELD_PROXY_MODE, false)
+const fieldUsesProxy = inject(INJECT_FIELD_USES_PROXY, false)
 const isGlobalProxyMode = inject<ComputedRef<boolean> | null>(
   INJECT_GLOBAL_PROXY_MODE,
   null,

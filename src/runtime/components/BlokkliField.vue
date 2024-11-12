@@ -87,6 +87,7 @@ import {
   INJECT_PROVIDER_CONTEXT,
   INJECT_FIELD_PROXY_MODE,
   INJECT_GLOBAL_PROXY_MODE,
+  INJECT_FIELD_USES_PROXY,
 } from '../helpers/symbols'
 import type DraggableListComponent from './Edit/DraggableList.vue'
 
@@ -206,6 +207,7 @@ provide(INJECT_FIELD_LIST_BLOCKS, filteredList)
 if (props.proxyMode) {
   provide(INJECT_IS_EDITING, false)
   provide(INJECT_FIELD_PROXY_MODE, false)
+  provide(INJECT_FIELD_USES_PROXY, true)
 }
 
 if (!isNested) {

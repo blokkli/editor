@@ -493,9 +493,12 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
   }
 
   const getAllDroppableFields = () =>
-    [...document.querySelectorAll('[data-blokkli-droppable-field]')].map(
-      mapDroppableField,
-    )
+    [...document.querySelectorAll('[data-blokkli-droppable-field]')]
+      .filter((el) => {
+        // Ignore elements that are rendered inside a field that uses proxy mode, since implementations might use <BlokkliItem> to render blocks in a proxy-mode field.
+        return !el.closest('[data-bk-in-proxy="true"]')
+      })
+      .map(mapDroppableField)
 
   const getBlockVisibilities = () => {
     return blockVisibility

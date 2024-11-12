@@ -1,6 +1,12 @@
 <template>
-  <div v-blokkli-droppable:imageReference>
-    <img v-if="url" :src="url" class="max-w-120 max-h-120" />
+  <div>
+    <img
+      id="foobar"
+      v-if="url"
+      v-blokkli-droppable:imageReference
+      :src="url"
+      class="max-w-120 max-h-120"
+    />
   </div>
 </template>
 
