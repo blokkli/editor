@@ -41,6 +41,8 @@ const props = defineProps<{
   isTouch: boolean
 }>()
 
+const MIN_GAP = 20
+
 enum RectRenderType {
   DROP_AREA,
   FIELD_1,
@@ -297,7 +299,7 @@ function getGapSize(orientation: Orientation, element: HTMLElement): number {
     }
   }
 
-  return 30
+  return MIN_GAP
 }
 
 const fieldChildCache: Record<string, FieldRectChild[]> = {}
@@ -419,7 +421,7 @@ const buildChildren = (
       childrenForUuid.push({
         id,
         width: field.gap,
-        height: Math.max(el.offsetHeight, 30),
+        height: Math.max(el.offsetHeight, MIN_GAP),
         x: Math.max(elOffsetLeft - field.gap, -field.gap),
         y: elOffsetTop,
         label: field.label,
@@ -508,7 +510,7 @@ const buildEmptyChild = (
         x: 0,
         y: 0,
         width: fieldWidth,
-        height: fieldHeight > 30 ? 0 : 30,
+        height: Math.max(fieldHeight, MIN_GAP),
         label: getInsertText(field),
       }
     }
@@ -537,8 +539,8 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
   }
   const x = rect.x
   let y = rect.y
-  const height = Math.max(rect.height, 30)
-  const width = Math.max(rect.width, 30)
+  const height = Math.max(rect.height, MIN_GAP)
+  const width = Math.max(rect.width, MIN_GAP)
 
   if (rect.height <= 24) {
     y -= 60
@@ -550,7 +552,7 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
     width,
     height,
   )
-  const gap = Math.max(getGapSize(orientation, field.element), 30)
+  const gap = Math.max(getGapSize(orientation, field.element), MIN_GAP)
 
   const fieldRect = {
     key: field.key,
@@ -583,8 +585,8 @@ const buildDropAreaRect = (area: DropArea): Rectangle => {
   const dropAreaRect: Rectangle = {
     x: rect.x,
     y: rect.y,
-    width: Math.max(rect.width, 30),
-    height: Math.max(rect.height, 30),
+    width: Math.max(rect.width, MIN_GAP),
+    height: Math.max(rect.height, MIN_GAP),
   }
 
   cachedDropAreaRects[area.id] = dropAreaRect
