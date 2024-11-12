@@ -25,7 +25,7 @@ const checked = computed({
     return props.modelValue === '1'
   },
   set(v: any) {
-    emit('update:modelValue', v ? '1' : '')
+    emit('update:modelValue', v ? '1' : '0')
   },
 })
 
