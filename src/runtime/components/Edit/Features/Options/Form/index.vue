@@ -198,34 +198,35 @@ const availableOptions = computed<OptionItem[]>(() => {
   })
 })
 
+function getOptionValue(
+  uuid: string,
+  key: string,
+  defaultValue: string | boolean | string[] | number,
+) {
+  if (!uuid) {
+    return ''
+  }
+  const blockMutatedOptions = state.mutatedOptions[uuid]
+  if (
+    blockMutatedOptions !== undefined &&
+    blockMutatedOptions[key] !== undefined
+  ) {
+    return state.mutatedOptions[uuid][key]
+  }
+  return defaultValue
+}
+
 /**
  * The current mapped values, same as provided by defineBlokkli.
  */
 const currentValues = computed(() => {
-  const getOptionValue = (
-    key: string,
-    defaultValue: string | boolean | string[] | number,
-  ) => {
-    const uuid = props.uuids[0]
-    if (!uuid) {
-      return ''
-    }
-    const blockMutatedOptions = state.mutatedOptions[uuid]
-    if (
-      blockMutatedOptions !== undefined &&
-      blockMutatedOptions[key] !== undefined
-    ) {
-      return state.mutatedOptions[uuid][key]
-    }
-    return defaultValue
-  }
-
+  const uuid = props.uuids[0]
   return availableOptions.value.reduce<
     Record<string, string | string[] | boolean | number>
   >((acc, v) => {
     acc[v.property] = getRuntimeOptionValue(
       v.option,
-      getOptionValue(v.property, v.option.default),
+      getOptionValue(uuid, v.property, v.option.default),
     )
     return acc
   }, {})
@@ -331,13 +332,15 @@ function setOptionValue(key: string, value: string) {
 onMounted(() => {
   props.uuids.forEach((uuid) => {
     availableOptions.value.forEach((option) => {
+      const currentValue = getOptionValue(
+        uuid,
+        option.property,
+        option.option.default,
+      )
       original.set(
         uuid,
         option.property,
-        optionValueToStorable(
-          option.option,
-          currentValues.value[option.property],
-        ),
+        optionValueToStorable(option.option, currentValue),
       )
     })
   })
