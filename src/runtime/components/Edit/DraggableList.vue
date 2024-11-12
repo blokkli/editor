@@ -12,7 +12,7 @@
   >
     <div
       ref="root"
-      class="bk-field-list-proxy-list bk-draggable-list-container bk-field-list"
+      class="bk-field-list-proxy-list bk-draggable-list-container"
       v-bind="fieldAttributes"
     >
       <BlokkliItem

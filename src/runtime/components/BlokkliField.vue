@@ -29,7 +29,6 @@
     :class="[
       attrs.class,
       {
-        'bk-field-list': canEdit && !isNested && !isPreview,
         [nonEmptyClass]: filteredList.length,
       },
       listClass,

@@ -223,11 +223,6 @@ html {
   }
 }
 
-.bk-field-list {
-  position: relative;
-  min-height: 30px;
-}
-
 .bk .bk-blokkli-item-label {
   @apply flex items-center text-mono-700 text-left;
   > div {

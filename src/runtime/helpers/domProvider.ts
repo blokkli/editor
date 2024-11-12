@@ -89,8 +89,6 @@ export type DomProvider = {
     el: Element | EventTarget,
   ): DraggableExistingBlock | undefined
 
-  getAllFields(): BlokkliFieldElement[]
-
   /**
    * Return the droppable markup for a draggable item.
    */
@@ -429,18 +427,6 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
       .filter(falsy)
   }
 
-  const getAllFields = (): BlokkliFieldElement[] => {
-    const elements = [...document.querySelectorAll('.bk-field-list')]
-
-    return elements
-      .map((element) => {
-        if (element instanceof HTMLElement) {
-          return buildFieldElement(element)
-        }
-      })
-      .filter(falsy)
-  }
-
   const getDropElementMarkup = (
     item: DraggableItem,
     checkSize?: boolean,
@@ -466,7 +452,7 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     if (!block) {
       throw new Error('Block does not exist: ' + uuid)
     }
-    const el = block.element().closest('.bk-field-list')
+    const el = block.element().closest('.bk-draggable-list-container')
     if (!(el instanceof HTMLElement)) {
       throw new TypeError('Failed to locate field element for block: ' + uuid)
     }
@@ -701,7 +687,6 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     findBlock,
     getAllBlocks,
     findClosestBlock,
-    getAllFields,
     getDropElementMarkup,
     getBlockField,
     findField,
