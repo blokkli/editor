@@ -331,10 +331,7 @@ export default function (storage: StorageProvider): UiProvider {
     providedScale?: number,
     providedOffset?: Coord,
   ): Rectangle {
-    const rect =
-      'x' in v && 'y' in v && 'width' in v && 'height' in v
-        ? v
-        : v.getBoundingClientRect()
+    const rect = v instanceof HTMLElement ? v.getBoundingClientRect() : v
     const scale = providedScale || artboardScale.value
     const offset = providedOffset || artboardOffset.value
     return {
