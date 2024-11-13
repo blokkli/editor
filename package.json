@@ -1,6 +1,6 @@
 {
   "name": "@blokkli/editor",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "Interactive page building experience for Nuxt",
   "repository": "blokkli/editor",
   "type": "module",
@@ -27,7 +27,7 @@
     "dev:build": "npm run dev:prepare && nuxi generate playground",
     "dev:start": "npx serve playground/.output/public",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
-    "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
+    "release": "npm run lint && npm run prepack && changelogen --release",
     "texts": "node ./scripts/texts/index.cjs",
     "generate-types": "node ./scripts/generateTypes/index.cjs",
     "lint": "eslint ./src",
