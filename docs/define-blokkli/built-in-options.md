@@ -21,8 +21,6 @@ option. The data is therefore stored as a comma-separated string.
 The available language options are determined at runtime based on the available
 languages for the current page entity.
 
-### Enabling the Option
-
 You can enable the option like any global option:
 
 ```vue [~/components/Blocks/Card.vue]
@@ -33,3 +31,22 @@ const { options } = defineBlokkli({
 })
 </script>
 ```
+
+## `bkHiddenGlobally` - Hide the block in all languages and contexts
+
+This option renders a checkbox to mark a block as hidden globally. If set, the
+block won't be rendered at all, in any language, when not in edit mode.
+
+You can enable the option like any global option:
+
+```vue [~/components/Blocks/Card.vue]
+<script lang="ts" setup>
+const { options } = defineBlokkli({
+  bundle: 'card',
+  globalOptions: ['bkHiddenGlobally'],
+})
+</script>
+```
+
+The value is stored as a normal [checkbox](/define-blokkli/options#checkbox)
+value: `'0'` or `'1'`.
