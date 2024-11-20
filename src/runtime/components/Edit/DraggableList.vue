@@ -200,18 +200,18 @@ function isMuted(item?: FieldListItem) {
 
 watch(root, function (newRoot) {
   if (newRoot) {
-    dom.updateFieldElement(props.entity.uuid, props.name, newRoot)
+    dom.updateFieldElement(props.entity, props.name, newRoot)
   }
 })
 
 onMounted(() => {
   if (root.value) {
-    dom.registerField(props.entity.uuid, props.name, root.value)
+    dom.registerField(props.entity, props.name, root.value)
   }
 })
 
 onBeforeUnmount(() => {
-  dom.unregisterField(props.entity.uuid, props.name)
+  dom.unregisterField(props.entity, props.name)
 })
 
 defineOptions({

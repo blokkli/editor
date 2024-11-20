@@ -26,6 +26,18 @@ import type {
 } from '#blokkli/generated-types'
 import type { DebugProvider } from './debugProvider'
 
+type RegisteredField = {
+  element: HTMLElement
+  entity: EntityContext
+  fieldName: string
+}
+
+type RegisteredFieldType = {
+  entityType: string
+  entityBundle: string
+  fieldName: string
+}
+
 const buildFieldElement = (
   element: HTMLElement,
 ): BlokkliFieldElement | undefined => {
@@ -110,16 +122,18 @@ export type DomProvider = {
   unregisterBlock: (uuid: string) => void
 
   registerField: (
-    uuid: string,
+    entity: EntityContext,
     fieldName: string,
     instance: HTMLElement,
   ) => void
   updateFieldElement: (
-    uuid: string,
+    entity: EntityContext,
     fieldName: string,
     element: HTMLElement,
   ) => void
-  unregisterField: (uuid: string, fieldName: string) => void
+  unregisterField: (entity: EntityContext, fieldName: string) => void
+
+  registeredFieldTypes: ComputedRef<RegisteredFieldType[]>
 
   /**
    * Get all droppable entity fields.
@@ -287,35 +301,60 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
   const observer = useDelayedIntersectionObserver(intersectionCallback)
 
   const registeredBlocks = reactive<Record<string, HTMLElement | undefined>>({})
-  const registeredFields = reactive<Record<string, HTMLElement | undefined>>({})
+  const registeredFields = reactive<
+    Record<string, RegisteredField | undefined>
+  >({})
+
+  const registeredFieldTypes = computed<RegisteredFieldType[]>(() => {
+    const fields = Object.values(registeredFields)
+    const found = new Set<string>()
+    const uniqueFieldTypes: RegisteredFieldType[] = []
+
+    for (let i = 0; i < fields.length; i++) {
+      const field = fields[i]
+      if (field) {
+        const key = `${field.entity.type}:${field.entity.bundle}:${field.fieldName}`
+        if (!found.has(key)) {
+          uniqueFieldTypes.push({
+            entityType: field.entity.type,
+            entityBundle: field.entity.bundle,
+            fieldName: field.fieldName,
+          })
+          found.add(key)
+        }
+      }
+    }
+
+    return uniqueFieldTypes
+  })
 
   const registerField = (
-    uuid: string,
+    entity: EntityContext,
     fieldName: string,
     element: HTMLElement,
   ) => {
-    const key = `${uuid}:${fieldName}`
-    registeredFields[key] = element
+    const key = `${entity.uuid}:${fieldName}`
+    registeredFields[key] = { element, entity, fieldName }
     observer.observe(element)
   }
 
   const updateFieldElement = (
-    uuid: string,
+    entity: EntityContext,
     fieldName: string,
     element: HTMLElement,
   ) => {
-    const key = `${uuid}:${fieldName}`
-    const existingElement = registeredFields[key]
+    const key = `${entity.uuid}:${fieldName}`
+    const existingElement = registeredFields[key]?.element
     if (existingElement) {
       observer.unobserve(existingElement)
     }
-    registeredFields[key] = element
+    registeredFields[key] = { entity, fieldName, element }
     observer.observe(element)
   }
 
-  const unregisterField = (uuid: string, fieldName: string) => {
-    const key = `${uuid}:${fieldName}`
-    const el = registeredFields[key]
+  const unregisterField = (entity: EntityContext, fieldName: string) => {
+    const key = `${entity.uuid}:${fieldName}`
+    const el = registeredFields[key]?.element
     if (el) {
       observer.unobserve(el)
     }
@@ -610,7 +649,7 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
         continue
       }
       fieldRects[key] = ui.getAbsoluteElementRect(
-        field.getBoundingClientRect(),
+        field.element.getBoundingClientRect(),
         scale,
         offset,
       )
@@ -710,5 +749,6 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     init,
     getDragElement,
     updateVisibleRects,
+    registeredFieldTypes,
   }
 }

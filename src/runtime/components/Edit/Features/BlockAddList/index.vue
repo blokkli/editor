@@ -69,7 +69,7 @@ import { getDefaultDefinition } from '#blokkli/definitions'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { PluginTourItem } from '#blokkli/plugins'
-import { getFieldKey } from '#blokkli/helpers'
+import { getFieldKey, onlyUnique } from '#blokkli/helpers'
 
 const { settings } = defineBlokkliFeature({
   id: 'block-add-list',
@@ -157,6 +157,31 @@ const getAllowedTypesForSelected = (p: DraggableExistingBlock): string[] => {
   }
 }
 
+// All allowed bundles for which a field is being rendered currently.
+// Some blocks may have nested blocks, however they may not render them via
+// a <BlokkliField>. This would make it so that these nested block bundles
+// show up in the add list, but there is no place where these could be added.
+const bundlesForRenderedFields = computed(() =>
+  dom.registeredFieldTypes.value
+    .flatMap((field) => {
+      return (
+        types.getFieldConfig(
+          field.entityType,
+          field.entityBundle,
+          field.fieldName,
+        )?.allowedBundles || []
+      )
+    })
+    .filter(onlyUnique),
+)
+
+const generallyAvailableBundles = computed(() =>
+  types.generallyAvailableBundles.filter((v) =>
+    // Exclude bundles for which no field is currently being rendered.
+    bundlesForRenderedFields.value.includes(v.id),
+  ),
+)
+
 const selectableBundles = computed(() => {
   if (selection.blocks.value.length) {
     return selection.blocks.value.flatMap((v) => getAllowedTypesForSelected(v))
@@ -174,10 +199,10 @@ const selectableBundles = computed(() => {
     )
   }
 
-  return types.generallyAvailableBundles.map((v) => v.id || '')
+  return generallyAvailableBundles.value.map((v) => v.id || '')
 })
 
-const determineVisibility = (bundle: string, label: string): boolean => {
+function determineVisibility(bundle: string, label: string): boolean {
   if (ui.isMobile.value && !selectableBundles.value.includes(bundle)) {
     return false
   }
@@ -200,7 +225,7 @@ const determineVisibility = (bundle: string, label: string): boolean => {
 }
 
 const sortedList = computed(() => {
-  return [...types.generallyAvailableBundles]
+  return [...generallyAvailableBundles.value]
     .filter((v) => !reservedBundles.includes(v.id))
     .map((v) => {
       const isVisible = determineVisibility(v.id, v.label)
