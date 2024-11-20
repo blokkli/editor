@@ -1,0 +1,403 @@
+{
+  "blokkli_fragment": {},
+  "button": {
+    "align": {
+      "default": "center",
+      "label": "Align",
+      "options": {
+        "bottom": "Bottom",
+        "center": "Center",
+        "left": "Left",
+        "right": "Right",
+        "top": "Top"
+      },
+      "type": "radios"
+    },
+    "color": {
+      "default": "normal",
+      "displayAs": "colors",
+      "label": "Color",
+      "options": {
+        "normal": {
+          "class": "bg-white",
+          "label": "White"
+        },
+        "primary": {
+          "class": "bg-accent-700",
+          "label": "Primary"
+        }
+      },
+      "type": "radios"
+    }
+  },
+  "button_list": {},
+  "card": {
+    "box": {
+      "default": true,
+      "label": "Box",
+      "type": "checkbox"
+    },
+    "color": {
+      "default": "lightBlue",
+      "displayAs": "colors",
+      "label": "Color",
+      "options": {
+        "lightBlue": {
+          "class": "bg-accent-100",
+          "label": "Blue"
+        },
+        "lightGreen": {
+          "class": "bg-lime-normal",
+          "label": "Green"
+        },
+        "lightRed": {
+          "class": "bg-red-normal",
+          "label": "Red"
+        },
+        "lightYellow": {
+          "class": "bg-yellow-normal",
+          "label": "Yellow"
+        }
+      },
+      "type": "radios"
+    }
+  },
+  "from_library": {},
+  "grid": {
+    "background": {
+      "default": "white",
+      "displayAs": "colors",
+      "label": "Background",
+      "options": {
+        "dark": {
+          "class": "bg-mono-800",
+          "label": "Dark"
+        },
+        "light": {
+          "class": "bg-mono-100",
+          "label": "Light"
+        },
+        "white": {
+          "class": "bg-white",
+          "label": "White"
+        }
+      },
+      "type": "radios"
+    },
+    "columns": {
+      "default": "two",
+      "displayAs": "icons",
+      "label": "Columns",
+      "options": {
+        "four": {
+          "icon": "icon-blokkli-option-four",
+          "label": "Four"
+        },
+        "three": {
+          "icon": "icon-blokkli-option-three",
+          "label": "Three"
+        },
+        "two": {
+          "icon": "icon-blokkli-option-two",
+          "label": "Two"
+        }
+      },
+      "type": "radios"
+    },
+    "mobile": {
+      "default": true,
+      "label": "Mobile",
+      "type": "checkbox"
+    }
+  },
+  "icon": {},
+  "image": {
+    "elevated": {
+      "default": true,
+      "label": "Elevated",
+      "type": "checkbox"
+    }
+  },
+  "on_this_page": {},
+  "slider": {},
+  "table": {},
+  "teaser": {},
+  "text": {},
+  "title": {
+    "bkHiddenGlobally": {
+      "default": false,
+      "label": "Hide globally",
+      "type": "checkbox"
+    },
+    "bkVisibleLanguages": {
+      "default": [],
+      "label": "Visible languages",
+      "options": {},
+      "type": "checkboxes"
+    },
+    "showInMenu": {
+      "default": true,
+      "label": "Show in menu",
+      "type": "checkbox"
+    }
+  },
+  "two_columns": {
+    "background": {
+      "default": "white",
+      "displayAs": "colors",
+      "label": "Background",
+      "options": {
+        "dark": {
+          "class": "bg-mono-800",
+          "label": "Dark"
+        },
+        "light": {
+          "class": "bg-mono-100",
+          "label": "Light"
+        },
+        "white": {
+          "class": "bg-white",
+          "label": "White"
+        }
+      },
+      "type": "radios"
+    },
+    "columns": {
+      "default": "equal",
+      "displayAs": "grid",
+      "label": "Columns",
+      "options": {
+        "equal": {
+          "columns": [
+            1,
+            1
+          ],
+          "label": "Equal"
+        },
+        "oneTwo": {
+          "columns": [
+            1,
+            2
+          ],
+          "label": "One / Two"
+        },
+        "twoOne": {
+          "columns": [
+            2,
+            1
+          ],
+          "label": "Two / One"
+        }
+      },
+      "type": "radios"
+    },
+    "reverse": {
+      "default": false,
+      "label": "Reverse",
+      "type": "checkbox"
+    }
+  },
+  "video": {
+    "elevated": {
+      "default": true,
+      "label": "Elevated",
+      "type": "checkbox"
+    }
+  },
+  "widget": {
+    "anchorId": {
+      "default": "",
+      "inputType": "text",
+      "label": "Anchor ID",
+      "type": "text"
+    },
+    "background": {
+      "default": "white",
+      "displayAs": "colors",
+      "label": "Background",
+      "options": {
+        "dark": {
+          "class": "bg-mono-800",
+          "label": "Dark"
+        },
+        "light": {
+          "class": "bg-mono-100",
+          "label": "Light"
+        },
+        "white": {
+          "class": "bg-white",
+          "label": "White"
+        }
+      },
+      "type": "radios"
+    },
+    "buttonType": {
+      "default": "primary",
+      "group": "Radios",
+      "label": "Button Type",
+      "options": {
+        "primary": "Primary",
+        "secondary": "Secondary"
+      },
+      "type": "radios"
+    },
+    "color": {
+      "default": "normal",
+      "displayAs": "colors",
+      "group": "Radios",
+      "label": "Color",
+      "options": {
+        "normal": {
+          "hex": "#FFFFFF",
+          "label": "White"
+        },
+        "primary": {
+          "hex": "#0550e6",
+          "label": "Blue"
+        }
+      },
+      "type": "radios"
+    },
+    "columns": {
+      "default": "two",
+      "displayAs": "icons",
+      "group": "Radios",
+      "label": "Columns",
+      "options": {
+        "four": {
+          "icon": "icon-blokkli-option-four",
+          "label": "Four"
+        },
+        "three": {
+          "icon": "icon-blokkli-option-three",
+          "label": "Three"
+        },
+        "two": {
+          "icon": "icon-blokkli-option-two",
+          "label": "Two"
+        }
+      },
+      "type": "radios"
+    },
+    "columnsGrid": {
+      "default": "equal",
+      "displayAs": "grid",
+      "group": "Radios",
+      "label": "Columns",
+      "options": {
+        "equal": {
+          "columns": [
+            1,
+            1
+          ],
+          "label": "50% / 50%"
+        },
+        "oneTwo": {
+          "columns": [
+            1,
+            2
+          ],
+          "label": "33% / 66%"
+        },
+        "quarterOne": {
+          "columns": [
+            3,
+            1
+          ],
+          "label": "75% / 25%"
+        },
+        "twoOne": {
+          "columns": [
+            2,
+            1
+          ],
+          "label": "66% / 33%"
+        }
+      },
+      "type": "radios"
+    },
+    "countries": {
+      "default": [
+        "ch",
+        "de",
+        "at"
+      ],
+      "label": "Countries",
+      "options": {
+        "at": "Austria",
+        "ch": "Switzerland",
+        "de": "Germany",
+        "fr": "France",
+        "it": "Italy"
+      },
+      "type": "checkboxes"
+    },
+    "nestedCheckbox": {
+      "default": true,
+      "group": "Radios",
+      "label": "Nested Checkbox",
+      "type": "checkbox"
+    },
+    "paddingBottom": {
+      "default": 0,
+      "group": "Padding",
+      "label": "Bottom",
+      "max": 100,
+      "min": 0,
+      "step": 1,
+      "type": "range"
+    },
+    "paddingLeft": {
+      "default": 0,
+      "group": "Padding",
+      "label": "Left",
+      "max": 100,
+      "min": 0,
+      "step": 1,
+      "type": "range"
+    },
+    "paddingRight": {
+      "default": 0,
+      "group": "Padding",
+      "label": "Right",
+      "max": 100,
+      "min": 0,
+      "step": 1,
+      "type": "range"
+    },
+    "paddingTop": {
+      "default": 0,
+      "group": "Padding",
+      "label": "Top",
+      "max": 100,
+      "min": 0,
+      "step": 1,
+      "type": "range"
+    },
+    "range": {
+      "default": 0,
+      "label": "Range",
+      "max": 1,
+      "min": 0,
+      "step": 0.01,
+      "type": "range"
+    },
+    "rows": {
+      "default": 0,
+      "label": "Number",
+      "max": 8,
+      "min": 0,
+      "type": "number"
+    },
+    "showAllOptions": {
+      "default": true,
+      "label": "Show all options",
+      "type": "checkbox"
+    },
+    "textColor": {
+      "default": "#ffffff",
+      "label": "Text color",
+      "type": "color"
+    }
+  }
+}

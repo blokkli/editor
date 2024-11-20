@@ -1,12 +1,13 @@
 export function sortObjectKeys(obj: Record<string, any>): Record<string, any> {
-  const sortedKeys = Object.keys(obj).sort()
-  const sortedObj: Record<string, any> = {}
-  sortedKeys.forEach((key) => {
-    const value = obj[key]
-    sortedObj[key] =
-      typeof value === 'object' && value !== null
-        ? sortObjectKeys(value)
-        : value
-  })
-  return sortedObj
+  if (Array.isArray(obj)) {
+    return obj.map(sortObjectKeys)
+  } else if (obj && typeof obj === 'object') {
+    const sortedObj: any = {}
+    const keys = Object.keys(obj).sort()
+    for (const key of keys) {
+      sortedObj[key] = sortObjectKeys(obj[key])
+    }
+    return sortedObj
+  }
+  return obj
 }

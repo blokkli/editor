@@ -56,5 +56,4 @@ Temporary Items
 .apdisk
 src/runtime/css
 
-playground/options-schema.json
 docs/.vitepress/cache
