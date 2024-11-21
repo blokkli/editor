@@ -76,7 +76,7 @@ import {
 import { PluginSidebar } from '#blokkli/plugins'
 import ClipboardList from './List/index.vue'
 import type { ClipboardItem } from '#blokkli/types'
-import { falsy, generateUUID } from '#blokkli/helpers'
+import { falsy, generateUUID, getFieldKey } from '#blokkli/helpers'
 import { Icon } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
@@ -100,7 +100,7 @@ const { settings, logger } = defineBlokkliFeature({
   screenshot: 'feature-clipboard.jpg',
 })
 
-const { selection, $t, adapter, dom, state, ui } = useBlokkli()
+const { selection, $t, adapter, dom, state, ui, types } = useBlokkli()
 
 const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
 
@@ -271,21 +271,39 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
   }
 
   // @TODO: Paste into nested field if possible.
-  const field = dom.getBlockField(selection.uuids.value[0])
+  const block = selection.blocks.value[0]
+  if (!block) {
+    return
+  }
+  const field = state.getMutatedField(block.hostUuid, block.hostFieldName)
+  if (!field) {
+    return
+  }
+  const fieldConfig = types.getFieldConfig(
+    field.entityType,
+    block.hostBundle,
+    field.name,
+  )
+
+  if (!fieldConfig) {
+    return
+  }
+
+  const fieldKey = getFieldKey(field.entityUuid, field.name)
 
   const pastedBlocks = pastedUuids
     .map((uuid) => dom.findBlock(uuid))
     .filter(falsy)
-    .filter((block) => field.allowedBundles.includes(block.itemBundle))
+    .filter((block) => fieldConfig.allowedBundles.includes(block.itemBundle))
 
   if (!pastedBlocks.length) {
     return
   }
 
-  const count = state.getFieldBlockCount(field.key)
+  const count = state.getFieldBlockCount(fieldKey)
   if (
-    field.cardinality !== -1 &&
-    count + pastedBlocks.length > field.cardinality
+    fieldConfig.cardinality !== -1 &&
+    count + pastedBlocks.length > fieldConfig.cardinality
   ) {
     return
   }
@@ -294,8 +312,8 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
     adapter.pasteExistingBlocks!({
       uuids: pastedBlocks.map((v) => v.uuid),
       host: {
-        type: field.hostEntityType,
-        uuid: field.hostEntityUuid,
+        type: field.entityType,
+        uuid: field.entityUuid,
         fieldName: field.name,
       },
       preceedingUuid: selection.uuids.value[0],

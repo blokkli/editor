@@ -106,7 +106,6 @@ export type DomProvider = {
    */
   getDropElementMarkup(item: DraggableItem, checkSize?: boolean): string
 
-  getBlockField(uuid: string): BlokkliFieldElement
   findField(
     entityUuid: string,
     fieldName: string,
@@ -142,7 +141,6 @@ export type DomProvider = {
 
   findClosestEntityContext(el: HTMLElement): EntityContext | undefined
 
-  getBlockVisibilities(): Record<string, boolean>
   getVisibleBlocks(): string[]
   getVisibleFields(): string[]
   isBlockVisible(uuid: string): boolean
@@ -196,7 +194,6 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
   const logger = debug.createLogger('DomProvider')
   const mutationsReady = ref(true)
   const intersectionReady = ref(false)
-  const blockVisibility: Record<string, boolean> = {}
   const visibleBlocks: Set<string> = new Set()
   const visibleFields: Set<string> = new Set()
   const blockRects: Record<string, MeasuredBlockRect> = {}
@@ -292,7 +289,6 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
           } else {
             visibleBlocks.delete(uuid)
           }
-          blockVisibility[uuid] = entry.isIntersecting
         }
       }
     }
@@ -486,24 +482,6 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     )
   }
 
-  const getBlockField = (uuid: string): BlokkliFieldElement => {
-    const block = findBlock(uuid)
-    if (!block) {
-      throw new Error('Block does not exist: ' + uuid)
-    }
-    const el = block.element().closest('.bk-draggable-list-container')
-    if (!(el instanceof HTMLElement)) {
-      throw new TypeError('Failed to locate field element for block: ' + uuid)
-    }
-
-    const field = buildFieldElement(el)
-    if (!field) {
-      throw new Error('Failed to build field for block: ' + uuid)
-    }
-
-    return field
-  }
-
   const findField = (
     uuid: string,
     fieldName: string,
@@ -524,10 +502,6 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
         return !el.closest('[data-bk-in-proxy="true"]')
       })
       .map(mapDroppableField)
-
-  const getBlockVisibilities = () => {
-    return blockVisibility
-  }
 
   const getVisibleBlocks = () => Array.from(visibleBlocks)
   const getVisibleFields = () => Array.from(visibleFields)
@@ -727,13 +701,11 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     getAllBlocks,
     findClosestBlock,
     getDropElementMarkup,
-    getBlockField,
     findField,
     registerBlock,
     unregisterBlock,
     getAllDroppableFields,
     findClosestEntityContext,
-    getBlockVisibilities,
     getVisibleBlocks,
     getVisibleFields,
     registerField,
