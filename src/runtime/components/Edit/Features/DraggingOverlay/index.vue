@@ -365,8 +365,15 @@ onBlokkliEvent('dragging:start', (e) => {
   if (!item) {
     return
   }
+
+  mouseX.value = e.coords.x
+  mouseY.value = e.coords.y
+
+  // Before showing the drop targets we update all currently visible rects to
+  // ensure the user sees the correct drop targets right away.
+  dom.updateVisibleRects()
+  dragItems.value = e.items
   if ('element' in item) {
-    eventBus.on('animationFrame', loop)
     if (!isTouching.value) {
       document.removeEventListener('pointerup', onMouseUp)
       document.addEventListener('pointerup', onMouseUp)
@@ -375,12 +382,8 @@ onBlokkliEvent('dragging:start', (e) => {
       })
       document.addEventListener('pointermove', onMouseMove, { capture: true })
     }
+    eventBus.on('animationFrame', loop)
   }
-
-  // Before showing the drop targets we update all currently visible rects to
-  // ensure the user sees the correct drop targets right away.
-  dom.updateVisibleRects()
-  dragItems.value = e.items
 })
 
 onBlokkliEvent('dragging:end', () => {
