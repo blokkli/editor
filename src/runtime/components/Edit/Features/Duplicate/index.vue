@@ -14,14 +14,11 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
-
-import type {
-  BlokkliFieldElement,
-  DraggableExistingBlock,
-} from '#blokkli/types'
+import type { DraggableExistingBlock } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
+import { getFieldKey } from '#blokkli/helpers'
 
-const { state, $t, selection, dom } = useBlokkli()
+const { state, $t, selection, types } = useBlokkli()
 
 const { adapter } = defineBlokkliFeature({
   id: 'duplicate',
@@ -44,31 +41,52 @@ const canDuplicate = computed<boolean>(() => {
   }
 
   const blocksByField: Record<string, DraggableExistingBlock[]> = {}
-  const fieldsByKey: Record<string, BlokkliFieldElement> = {}
+  const fieldsByKey: Record<
+    string,
+    { cardinality: number; allowedBundles: string[]; count: number }
+  > = {}
 
   const selectedCount = selection.blocks.value.length
   for (let i = 0; i < selectedCount; i++) {
     const block = selection.blocks.value[i]
-    const field = dom.getBlockField(block.uuid)
-    const count = state.getFieldBlockCount(field.key)
+    const field = state.getMutatedField(block.hostUuid, block.hostFieldName)
+    if (!field) {
+      continue
+    }
+
+    const fieldKey = getFieldKey(field.entityUuid, field.name)
+
+    const fieldConfig = types.getFieldConfig(
+      field.entityType,
+      block.hostBundle,
+      field.name,
+    )
+    if (!fieldConfig) {
+      continue
+    }
+    const count = field.list.length
 
     // Early return if the field is already full.
-    if (field.cardinality !== -1 && count >= field.cardinality) {
+    if (fieldConfig.cardinality !== -1 && count >= fieldConfig.cardinality) {
       return false
     }
 
-    if (!blocksByField[field.key]) {
-      blocksByField[field.key] = []
+    if (!blocksByField[fieldKey]) {
+      blocksByField[fieldKey] = []
     }
-    blocksByField[field.key].push(block)
-    fieldsByKey[field.key] = field
+    blocksByField[fieldKey].push(block)
+    fieldsByKey[fieldKey] = {
+      cardinality: fieldConfig.cardinality,
+      allowedBundles: fieldConfig.allowedBundles,
+      count,
+    }
   }
 
   const entries = Object.entries(blocksByField)
   for (let i = 0; i < entries.length; i++) {
     const [fieldKey, blocks] = entries[i]
     const field = fieldsByKey[fieldKey]
-    const count = state.getFieldBlockCount(field.key)
+    const count = state.getFieldBlockCount(fieldKey)
     // Check cardinality of the field.
     if (field.cardinality !== -1 && count + blocks.length > field.cardinality) {
       return false
