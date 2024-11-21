@@ -198,14 +198,17 @@ function onPointerDown(e: PointerEvent) {
     return
   }
 
-  pointerDownTimestamp = Date.now()
   const coords = { x: e.clientX, y: e.clientY }
-  mouseStartCoordinates = coords
+  // Only handle click interactions when not pressing the shift key.
+  if (!e.shiftKey) {
+    pointerDownTimestamp = Date.now()
+    mouseStartCoordinates = coords
 
-  const interacted = getInteractedElement(e)
-  pointerDownElement = interacted
-  if (interacted) {
-    return
+    const interacted = getInteractedElement(e)
+    pointerDownElement = interacted
+    if (interacted) {
+      return
+    }
   }
 
   eventBus.emit('mouse:down', { ...coords, type: 'mouse', distance: 0 })
