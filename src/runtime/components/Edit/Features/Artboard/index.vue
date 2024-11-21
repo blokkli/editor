@@ -106,7 +106,7 @@ const { settings } = defineBlokkliFeature({
   screenshot: 'feature-artboard.jpg',
 })
 
-const { context, storage, ui, animation, $t, dom } = useBlokkli()
+const { context, storage, ui, animation, $t, dom, selection } = useBlokkli()
 
 const zoomLevel = computed(() => Math.round(ui.artboardScale.value * 100) + '%')
 
@@ -166,6 +166,12 @@ const wheelOptions = computed<PluginWheelOptions>(() => {
 watch(wheelOptions, function (newOptions) {
   if (pluginWheel) {
     pluginWheel.options.setAll(newOptions)
+  }
+})
+
+watch(selection.uuids, function () {
+  if (artboard.getMomentum()) {
+    artboard.cancelAnimation()
   }
 })
 
