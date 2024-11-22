@@ -198,6 +198,11 @@ onBlokkliEvent('canvas:draw', () => {
   const rects = selection.uuids.value
     .map((uuid) => dom.getBlockRect(uuid))
     .filter(falsy)
+
+  if (!rects.length) {
+    return
+  }
+
   const offset = ui.artboardOffset.value
   const scale = ui.artboardScale.value
 
