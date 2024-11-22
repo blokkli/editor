@@ -183,6 +183,8 @@ function onPointerDown(e: PointerEvent) {
     e.stopPropagation()
     e.stopImmediatePropagation()
   }
+  // Set the state of the pressed shortcuts.
+  keyboard.setShortcutStateFromEvent(e)
 
   rootEl.removeEventListener('pointermove', onPointerMove)
   rootEl.addEventListener('pointermove', onPointerMove)
