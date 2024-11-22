@@ -15,6 +15,7 @@
       v-if="isLoaded"
       id="bk-structure"
       class="bk bk-structure bk-control"
+      dragging
     >
       <List
         :entity-bundle="context.entityBundle"
