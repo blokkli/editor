@@ -50,7 +50,6 @@ export default defineBlokkliEditAdapter((ctx) => {
     id: T,
     args: MutationArgsMap[T],
   ): Promise<MutationResponseLike<MutatedState>> => {
-    console.log({ id, args })
     editState.addMutation(id, args)
     const entity = getEntity()
     const mutatedState = editState.getMutatedState(entity)

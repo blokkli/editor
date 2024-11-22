@@ -1042,6 +1042,7 @@ export type LibraryEditItemEvent = {
 
 export type EventbusEvents = {
   select: string | string[]
+  'select:unselect': undefined
   'item:edit': EditBlockEvent
   batchTranslate: undefined
   'dragging:start': DraggableStartEvent

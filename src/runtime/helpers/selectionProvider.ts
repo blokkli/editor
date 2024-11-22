@@ -226,6 +226,10 @@ export default function (dom: DomProvider): SelectionProvider {
     draggingMode.value = null
   })
 
+  onBlokkliEvent('select:unselect', () => {
+    selectedUuids.value = []
+  })
+
   onBlokkliEvent('window:clickAway', () => {
     unselectItems()
     activeFieldKey.value = ''
