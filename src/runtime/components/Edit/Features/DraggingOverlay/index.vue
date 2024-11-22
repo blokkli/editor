@@ -169,6 +169,11 @@ const onDropExisting = async (
       host,
     }),
   )
+  if (uuids.length >= 1 && uuids.length <= 10) {
+    for (let i = 0; i < uuids.length; i++) {
+      dom.refreshBlockRect(uuids[i])
+    }
+  }
 
   if (ui.isMobile.value) {
     eventBus.emit('scrollIntoView', {
