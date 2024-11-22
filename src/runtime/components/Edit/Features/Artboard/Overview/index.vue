@@ -60,8 +60,10 @@ function updateCanvas() {
 
   const scale = rect.width / ui.artboardSize.value.width
 
+  const LINE_WIDTH = 2.5
+
   ctx.fillStyle = overviewFillColor.value
-  ctx.lineWidth = 1
+  ctx.lineWidth = LINE_WIDTH
   ctx.strokeStyle = selectedColor.value
 
   for (let i = 0; i < rects.length; i++) {
@@ -74,10 +76,10 @@ function updateCanvas() {
     )
     if (selection.isBlockSelected(uuid)) {
       ctx.strokeRect(
-        Math.round(blockRect.x * scale) + 0.5,
-        Math.round(blockRect.y * scale) + 0.5,
-        Math.round(blockRect.width * scale),
-        Math.round(blockRect.height * scale),
+        Math.round(blockRect.x * scale) + LINE_WIDTH / 2,
+        Math.round(blockRect.y * scale) + LINE_WIDTH / 2,
+        Math.round(blockRect.width * scale) - LINE_WIDTH,
+        Math.round(blockRect.height * scale) - LINE_WIDTH,
       )
     }
   }
