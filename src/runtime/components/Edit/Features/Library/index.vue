@@ -50,7 +50,7 @@
   </Teleport>
 
   <Teleport to="body">
-    <transition name="bk-slide-up" :duration="200">
+    <transition appear name="bk-slide-in" :duration="200">
       <LibraryDialog
         v-if="placedAction && adapter.getLibraryItems"
         :field="placedAction.field"
