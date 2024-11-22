@@ -58,6 +58,7 @@ export type StateProvider = {
   getFieldBlockCount: (key: string) => number
   getBlockBundleCount: (bundle: string) => number
   getFieldListItem: (uuid: string) => FieldListItem | undefined
+  getFieldListForBlock: (uuid: string) => MutatedField | undefined
   getMutatedField: (uuid: string, fieldName: string) => MutatedField | undefined
 }
 
@@ -99,6 +100,15 @@ export default async function (
     }
 
     return field.list.find((v) => v.uuid === uuid)
+  }
+
+  function getFieldListForBlock(uuid: string): MutatedField | undefined {
+    const fieldKey = fieldListItemMap[uuid]
+    if (!fieldKey) {
+      return
+    }
+
+    return mutatedFieldsMap[fieldKey]
   }
 
   const mutatedOptions = reactive<MutatedOptions>({})
@@ -337,5 +347,6 @@ export default async function (
     getBlockBundleCount,
     getFieldListItem,
     getMutatedField,
+    getFieldListForBlock,
   }
 }
