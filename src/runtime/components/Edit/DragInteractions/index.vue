@@ -201,8 +201,10 @@ function onPointerDown(e: PointerEvent) {
   }
 
   const coords = { x: e.clientX, y: e.clientY }
-  // Only handle click interactions when not pressing the shift key.
-  if (!e.shiftKey) {
+  // Only handle click interactions when:
+  // - not pressing the shift key
+  // - using the left mouse button
+  if (!e.shiftKey && e.buttons !== 2) {
     pointerDownTimestamp = Date.now()
     mouseStartCoordinates = coords
 
@@ -213,6 +215,8 @@ function onPointerDown(e: PointerEvent) {
     }
   }
 
+  // Either pressing shift or right mouse button.
+  // Features may handle this via event (e.g. start multi select).
   eventBus.emit('mouse:down', { ...coords, type: 'mouse', distance: 0 })
 }
 
