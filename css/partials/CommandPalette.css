@@ -1,8 +1,8 @@
 .bk {
   .bk-command-palette {
     @apply fixed bg-mono-900 z-command-palette w-[600px] left-1/2 -translate-x-1/2 rounded;
-    @apply top-70;
-    @apply shadow-2xl;
+    @apply top-120;
+    @apply shadow-2xl shadow-mono-950/70;
     @apply border border-mono-600;
 
     --bk-command-palette-item-height: 46px;

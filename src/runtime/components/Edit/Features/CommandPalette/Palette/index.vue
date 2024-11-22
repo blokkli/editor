@@ -1,7 +1,7 @@
 <template>
   <ScrollBoundary
     class="bk-command-palette bk-control"
-    @keydown.stop="onKeyDown"
+    @keydown="onKeyDown"
     @keyup.stop
     @click.stop
   >
@@ -238,6 +238,12 @@ const onSelect = (id: string) => {
 }
 
 const onKeyDown = (e: KeyboardEvent) => {
+  e.stopPropagation()
+  if (e.code === 'KeyK' && (e.ctrlKey || e.metaKey)) {
+    e.preventDefault()
+    emit('close')
+    return
+  }
   if (e.code === 'Tab') {
     e.preventDefault()
     if (e.shiftKey) {

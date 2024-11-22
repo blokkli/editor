@@ -19,7 +19,7 @@
       )
     "
     icon="command"
-    @click="isVisible = true"
+    @click="isVisible = !isVisible"
   />
 </template>
 
