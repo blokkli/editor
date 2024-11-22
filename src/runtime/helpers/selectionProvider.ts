@@ -23,7 +23,7 @@ export type SelectionProvider = {
   uuids: Readonly<Ref<string[]>>
 
   /**
-   * The currently selected UUIDs as a map.
+   * The currently selected UUIDs as a Set.
    */
   uuidsSet: ComputedRef<Set<string>>
 
@@ -200,15 +200,10 @@ export default function (dom: DomProvider): SelectionProvider {
   onBlokkliEvent('select:next', selectInList)
   onBlokkliEvent('setActiveFieldKey', setActiveFieldKey)
   onBlokkliEvent('state:reloaded', () => {
-    // selectedUuids.value = selectedUuids.value.filter((uuid) => {
-    //   // Check if the currently selected item is still in the DOM.
-    //   const el = findElement(uuid)
-    //   if (el) {
-    //     return true
-    //   }
-    //
-    //   return false
-    // })
+    selectedUuids.value = selectedUuids.value.filter((uuid) => {
+      // Check if the currently selected item is still in the DOM.
+      return !!dom.findBlock(uuid)
+    })
   })
   onBlokkliEvent('dragging:start', (e) => {
     draggingMode.value = e.mode
