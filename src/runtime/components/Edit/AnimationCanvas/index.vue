@@ -60,8 +60,8 @@ const scissor = computed(() => {
       canvasAttributes.value.height -
       ui.visibleViewport.value.y * dpi -
       ui.visibleViewport.value.height * dpi,
-    width: ui.visibleViewport.value.width * dpi,
-    height: ui.visibleViewport.value.height * dpi,
+    width: Math.max(ui.visibleViewport.value.width * dpi, 1),
+    height: Math.max(ui.visibleViewport.value.height * dpi, 1),
   }
 })
 
