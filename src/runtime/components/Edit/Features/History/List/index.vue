@@ -88,10 +88,6 @@ defineProps<{
   scrolledToEnd: boolean
 }>()
 
-const emit = defineEmits<{
-  (e: 'setIndex', data: number): void
-}>()
-
 const { state, $t, adapter } = useBlokkli()
 
 const { mutations, currentMutationIndex, canEdit, mutateWithLoadingState } =

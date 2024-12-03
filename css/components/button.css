@@ -1,0 +1,56 @@
+.bk {
+  .bk-button {
+    @apply h-50 !px-20 inline-flex justify-center items-center gap-10 rounded-md !font-semibold  focus-visible:outline-none !font-sans !text-base focus-visible:ring-[3px] focus-visible:ring-offset-2;
+    @apply !text-mono-900 hover:!text-white;
+    @apply !bg-mono-200 hover:!bg-mono-600;
+    @apply !border-none;
+
+    &.bk-is-primary {
+      @apply !bg-accent-700 !text-white hover:!bg-accent-800 focus-visible:ring-accent-600 focus-visible:ring-offset-accent-100;
+      &[disabled] {
+        @apply opacity-30;
+      }
+    }
+    &.bk-is-danger {
+      @apply !bg-red-normal !text-white hover:!bg-red-dark focus-visible:ring-red-dark;
+      &[disabled] {
+        @apply opacity-30;
+      }
+    }
+
+    &.bk-is-fullwidth {
+      @apply w-full;
+    }
+
+    &.bk-is-warning {
+      @apply !bg-yellow-normal !text-yellow-dark hover:!bg-yellow-normal/80 focus-visible:ring-yellow-dark/30;
+      &[disabled] {
+        @apply opacity-30;
+      }
+    }
+    &.bk-is-small {
+      @apply h-[30px] !px-[8px] !text-sm;
+    }
+    &.bk-is-icon-only {
+      @apply !px-0 !w-50;
+
+      &.bk-is-small {
+        @apply !size-30;
+      }
+    }
+    &[disabled] {
+      @apply !pointer-events-none;
+    }
+    svg {
+      @apply !fill-current;
+      width: 1.5em;
+      height: 1.5em;
+    }
+
+    &.bk-is-loading {
+      @apply bg-no-repeat bg-center pointer-events-none;
+      background-image: url(./loader.svg);
+      @apply !text-transparent;
+    }
+  }
+}
