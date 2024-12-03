@@ -13,6 +13,8 @@ export class BlockSlider extends Block {
         'two_columns',
         'grid',
         'image',
+        'card',
+        'from_library',
       ]),
     ]
   }

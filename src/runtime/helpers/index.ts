@@ -7,6 +7,7 @@ import type {
   DraggableExistingBlock,
   EntityContext,
   Coord,
+  LibraryItemProps,
 } from '#blokkli/types'
 import { useRuntimeConfig } from '#imports'
 import { getDefinition } from '#blokkli/definitions'
@@ -720,4 +721,16 @@ export function generateUUID() {
     }
     return (c == 'x' ? r : (r & 0x7) | 0x8).toString(16)
   })
+}
+
+export function buildAttributesForLibraryItem(
+  props: LibraryItemProps,
+): Record<string, string | undefined> {
+  return {
+    'data-reusable-bundle': props.block?.bundle,
+    'data-reusable-uuid': props.block?.uuid,
+    'data-bk-library-label': props.label,
+    'data-bk-library-item-uuid': props.uuid,
+    'data-blokkli-is-reusable': 'true',
+  }
 }

@@ -1369,4 +1369,10 @@ export type SelectedRect = Rectangle & {
   style: DraggableStyle
 }
 
+export interface LibraryItemProps {
+  block?: FieldListItem
+  label?: string
+  uuid?: string
+}
+
 export default {}

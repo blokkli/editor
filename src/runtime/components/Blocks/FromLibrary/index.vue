@@ -19,16 +19,10 @@ import {
   INJECT_IS_IN_REUSABLE,
   INJECT_REUSABLE_OPTIONS,
 } from '#blokkli/helpers/symbols'
-import type { FieldListItem } from '#blokkli/types'
-
-interface LibraryItem {
-  block?: FieldListItem
-  label?: string
-  uuid?: string
-}
+import type { LibraryItemProps } from '#blokkli/types'
 
 const props = defineProps<{
-  libraryItem?: LibraryItem
+  libraryItem?: LibraryItemProps
 }>()
 
 const { index, options, parentType } = defineBlokkli({

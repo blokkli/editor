@@ -1,11 +1,11 @@
 <template>
-  <div ref="root" class="bk-block-proxy">
+  <div ref="root" class="bk-block-proxy" v-bind="rootProps">
     <div class="bk-block-proxy-header">
       <ItemIcon :bundle="bundle" />
       {{ type?.label }}
     </div>
     <div v-if="proxyComponent" class="bk-block-proxy-component">
-      <Component :is="proxyComponent" v-bind="itemProps" />
+      <Component :is="proxyComponent" v-bind="proxyComponentProps" />
     </div>
     <div v-if="fieldLayout.length" class="bk-block-proxy-fields">
       <div
@@ -41,8 +41,8 @@ import {
 } from '#blokkli/definitions'
 
 import { ItemIcon } from '#blokkli/components'
-import type { FieldConfig } from '#blokkli/types'
-import { falsy } from '#blokkli/helpers'
+import type { FieldConfig, LibraryItemProps } from '#blokkli/types'
+import { buildAttributesForLibraryItem, falsy } from '#blokkli/helpers'
 
 const props = defineProps<{
   uuid: string
@@ -52,16 +52,47 @@ const props = defineProps<{
   itemProps?: any
 }>()
 
+// Props of the library item, if this is a 'from_library' block.
+const libraryItemProps = computed<LibraryItemProps | null>(() => {
+  if (props.bundle === 'from_library') {
+    const v = props.itemProps?.libraryItem
+    return v as LibraryItemProps
+  }
+
+  return null
+})
+
+const proxyComponentProps = computed(() => {
+  if (props.bundle === 'from_library') {
+    // Pass the props of the reusable block to the proxy component.
+    return libraryItemProps.value?.block?.props
+  }
+
+  return props.itemProps
+})
+
+const rootProps = computed(() => {
+  if (libraryItemProps.value) {
+    return buildAttributesForLibraryItem(libraryItemProps.value)
+  }
+
+  return {}
+})
+
+const proxyBundle = computed(
+  () => libraryItemProps.value?.block?.bundle || props.bundle,
+)
+
 const { dom, types, runtimeConfig } = useBlokkli()
 
 const root = ref<HTMLElement | null>(null)
 
-const type = computed(() => types.getBlockBundleDefinition(props.bundle))
+const type = computed(() => types.getBlockBundleDefinition(proxyBundle.value))
 
-const proxyComponent = getBlokkliItemProxyComponent(props.bundle)
+const proxyComponent = getBlokkliItemProxyComponent(proxyBundle.value)
 
 const definition = getDefinition(
-  props.bundle,
+  proxyBundle.value,
   props.fieldListType,
   props.parentType,
 )
@@ -73,7 +104,7 @@ const fieldLayout = computed<FieldConfig[][]>(() => {
         .map((fieldName) => {
           return types.fieldConfig.forName(
             runtimeConfig.itemEntityType,
-            props.bundle,
+            proxyBundle.value,
             fieldName,
           )
         })
@@ -82,7 +113,7 @@ const fieldLayout = computed<FieldConfig[][]>(() => {
   }
 
   return types.fieldConfig
-    .forEntityTypeAndBundle(runtimeConfig.itemEntityType, props.bundle)
+    .forEntityTypeAndBundle(runtimeConfig.itemEntityType, proxyBundle.value)
     .map((config) => [config])
 })
 
