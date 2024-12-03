@@ -51,15 +51,21 @@ export function defineBlokkli<
   // All blocks in the same field as this block.
   const siblings = inject<ComputedRef<FieldListItemTyped[]>>(
     INJECT_FIELD_LIST_BLOCKS,
+    computed(function () {
+      return []
+    }),
   )!
 
   // All blocks in the root field.
   const rootBlocks = inject<ComputedRef<FieldListItemTyped[]>>(
     INJECT_PROVIDER_BLOCKS,
+    computed(function () {
+      return []
+    }),
   )!
 
   // Inject the data from the BlokkliItem component.
-  const item = inject<InjectedBlokkliItem>(INJECT_BLOCK_ITEM)
+  const item = inject<InjectedBlokkliItem | null>(INJECT_BLOCK_ITEM, null)
   const uuid = item?.value.uuid || ''
   const index =
     item?.value.index !== undefined ? item.value.index : computed(() => 0)
@@ -189,11 +195,12 @@ export function defineBlokkli<
   return {
     uuid,
     index,
-    options,
+    // Must be cast because type of options is inferred automatically.
+    options: options as any,
     isEditing,
     parentType,
     fieldListType,
     siblings,
     rootBlocks,
-  } as any // Must be cast because type of options is inferred automatically.
+  }
 }

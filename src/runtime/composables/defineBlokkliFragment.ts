@@ -24,7 +24,10 @@ export function defineBlokkliFragment<
   G extends GlobalOptionsKey[] | undefined = undefined,
 >(config: FragmentDefinitionInput<T, G>): DefineBlokkliContext<T, G> {
   // Provided by the <BlokkliFragment> component.
-  const ctx = inject<DefineBlokkliContext<T, G>>(INJECT_FRAGMENT_CONTEXT)!
+  const ctx = inject<DefineBlokkliContext<T, G> | null>(
+    INJECT_FRAGMENT_CONTEXT,
+    null,
+  )
   const editContext = inject<ItemEditContext | null>(INJECT_EDIT_CONTEXT, null)
 
   const optionKeys: string[] = [
@@ -57,7 +60,7 @@ export function defineBlokkliFragment<
   })
 
   onMounted(() => {
-    if (editContext && editContext.dom) {
+    if (editContext && editContext.dom && ctx) {
       // Block registration in defineBlokkli() is skipped for fragment blocks.
       // So we need to do it here.
       const instance = getCurrentInstance()
@@ -72,7 +75,7 @@ export function defineBlokkliFragment<
   })
 
   onBeforeUnmount(() => {
-    if (editContext && ctx.uuid && editContext.dom) {
+    if (editContext && ctx && ctx.uuid && editContext.dom) {
       editContext.dom.unregisterBlock(ctx.uuid)
     }
   })

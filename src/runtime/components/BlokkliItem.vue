@@ -72,6 +72,7 @@ const isGlobalProxyMode = inject<ComputedRef<boolean> | null>(
 
 const fieldListType = inject<ComputedRef<ValidFieldListTypes> | undefined>(
   INJECT_FIELD_LIST_TYPE,
+  undefined,
 )
 
 const component =
