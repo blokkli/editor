@@ -18,9 +18,10 @@
 
     &:before {
       content: '';
-      @apply absolute top-0 left-0 w-full h-full z-50 rounded-md;
+      @apply absolute top-0 left-0 w-full h-full z-50;
       outline: 5px solid var(--bk-active-color);
       outline-offset: -4px;
+      border-radius: inherit;
     }
   }
   > .bk-dragging-overlay-item.bk-is-fallback {

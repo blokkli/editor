@@ -178,9 +178,9 @@ onBlokkliEvent('mouse:up', (e) => {
 
 const emitDrop = async () => {
   const timeDelta = Date.now() - dragStart
-  // Prevent accidental drops. At least 400ms should have passed between the
+  // Prevent accidental drops. At least 200ms should have passed between the
   // time the drag was initiated and when the drop was made.
-  if (active.value && timeDelta > 400) {
+  if (active.value && timeDelta > 200) {
     if (active.value.type === 'field') {
       const [hostUuid, fieldName, preceedingUuid] = active.value.id.split(':')
 
