@@ -98,6 +98,15 @@ const definition = getDefinition(
 )
 
 const fieldLayout = computed<FieldConfig[][]>(() => {
+  // Currently structure view does not work for reusable blocks with
+  // nested blocks. As a workaround no fields are displayed. Since the fields
+  // Are not editable anyway this is not that big of a problem. However, the
+  // proxy block will just display the name of the block with no context.
+  // @TOOD: Figure out how to render a non-editable structure view of reusable
+  // blocks.
+  if (libraryItemProps.value) {
+    return []
+  }
   if (definition?.editor?.fieldLayout) {
     return definition.editor.fieldLayout.map((row) => {
       return row
