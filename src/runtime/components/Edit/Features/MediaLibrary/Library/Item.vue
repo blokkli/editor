@@ -9,10 +9,10 @@
     :data-media-id="mediaId"
     :data-media-bundle="mediaBundle"
   >
-    <label @click.stop>
-      <input v-model="selected" type="checkbox" :value="mediaId" />
-    </label>
-    <div>
+    <div class="bk-media-library-items-item-box">
+      <label @click.stop>
+        <input v-model="selected" type="checkbox" :value="mediaId" />
+      </label>
       <div class="bk-media-library-items-item-image">
         <img :src="thumbnail" />
       </div>

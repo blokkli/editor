@@ -118,21 +118,6 @@
   .bk-media-library-items-item {
     @apply text-sm cursor-grab select-none relative;
 
-    > label {
-      @apply absolute top-0 right-0 z-50 p-15 cursor-pointer opacity-0;
-
-      &:hover {
-        input {
-          @apply bg-accent-700;
-        }
-      }
-
-      input {
-        @apply cursor-pointer checked:bg-accent-700;
-        @apply bg-white border border-mono-400;
-      }
-    }
-
     &.bk-is-selected {
       .bk-media-library-items-item-image {
         &:before {
@@ -163,6 +148,24 @@
 
     p {
       @apply break-words;
+    }
+  }
+
+  .bk-media-library-items-item-box {
+    @apply relative;
+    > label {
+      @apply absolute top-0 right-0 z-50 cursor-pointer opacity-0 p-5;
+
+      &:hover {
+        input {
+          @apply bg-accent-700;
+        }
+      }
+
+      input {
+        @apply cursor-pointer checked:bg-accent-700;
+        @apply bg-white border border-mono-400;
+      }
     }
   }
 
