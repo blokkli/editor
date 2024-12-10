@@ -167,6 +167,10 @@ msgctxt "cancel"
 msgid "Cancel"
 msgstr "Abbrechen"
 
+msgctxt "cancelSelection"
+msgid "Cancel selection"
+msgstr "Auswahl abbrechen"
+
 msgctxt "clipboard"
 msgid "Clipboard"
 msgstr "Zwischenablage"

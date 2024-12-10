@@ -1,6 +1,6 @@
 .bk {
   .bk-pagination {
-    @apply flex justify-between border-t border-t-mono-300 items-center;
+    @apply flex justify-between border-t border-t-mono-300 items-center min-h-70;
     flex: 0 0 auto;
 
     > div {

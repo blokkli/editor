@@ -57,7 +57,7 @@ import {
 } from './Mutation/UpdateOptions'
 
 export type MutationArgsMap = {
-  add: MutationAddArgs
+  add: MutationAddArgs | MutationAddArgs[]
   delete: MutationDeleteArgs
   move: MutationMoveArgs
   duplicate: MutationDuplicateArgs

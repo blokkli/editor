@@ -157,6 +157,10 @@ msgctxt "cancel"
 msgid "Cancel"
 msgstr "Abbräche"
 
+msgctxt "cancelSelection"
+msgid "Cancel selection"
+msgstr ""
+
 msgctxt "clipboard"
 msgid "Clipboard"
 msgstr "Zwüscheablag"

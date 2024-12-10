@@ -632,6 +632,26 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       }).then(mapMutation)
     }
 
+    const mediaLibraryAddBlocks: DrupalAdapter['mediaLibraryAddBlocks'] = (
+      e,
+    ) => {
+      return useGraphqlMutation('pbAddEntityReferenceMultiple', {
+        ...ctx.value,
+        references: e.items.map((item) => {
+          return {
+            targetId: item.mediaId,
+            targetType: 'media',
+            targetBundle: item.mediaBundle,
+            paragraphBundle: item.itemBundle,
+          }
+        }),
+        hostType: e.host.type,
+        hostUuid: e.host.uuid,
+        hostFieldName: e.host.fieldName,
+        afterUuid: e.preceedingUuid,
+      }).then(mapMutation)
+    }
+
     const getContentSearchTabs: DrupalAdapter['getContentSearchTabs'] = () => {
       return useGraphqlQuery('pbSearchTabs').then((v) => {
         return (v.data.tabs || []).reduce<Record<string, string>>(
@@ -797,6 +817,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       getDroppableFieldConfig,
       mediaLibraryGetResults,
       mediaLibraryAddBlock,
+      mediaLibraryAddBlocks,
       getContentSearchTabs,
       getContentSearchResults,
       addContentSearchItem,

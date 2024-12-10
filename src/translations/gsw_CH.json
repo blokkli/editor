@@ -147,6 +147,10 @@
     "source": "Cancel",
     "translation": "Abbräche"
   },
+  "cancelSelection": {
+    "source": "Cancel selection",
+    "translation": ""
+  },
   "clipboard": {
     "source": "Clipboard",
     "translation": "Zwüscheablag"

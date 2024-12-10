@@ -50,30 +50,24 @@
       class="bk-media-library-items bk-scrollbar-light"
       :class="[{ 'bk-is-sortli': isSortli }, 'bk-is-' + listView]"
     >
-      <Component :is="isSortli ? Sortli : 'div'" no-transition>
-        <div
+      <Sortli v-if="isSortli" no-transition :get-drag-items="getDragItems">
+        <Item
           v-for="item in items"
           :key="item.mediaId"
-          class="bk-media-library-items-item"
-          :class="{ 'bk-is-selected': modelValue === item.mediaId }"
-          :data-sortli-id="'media_library_' + item.mediaId"
-          data-element-type="media_library"
-          :data-item-bundle="item.targetBundles[0]"
-          :data-media-id="item.mediaId"
-          :data-media-bundle="item.mediaBundle"
-          @click="onClick(item.mediaId)"
-        >
-          <div>
-            <div class="bk-media-library-items-item-image">
-              <img :src="item.thumbnail" />
-            </div>
-          </div>
-          <div class="bk-media-library-items-item-text">
-            <h3>{{ item.label }}</h3>
-            <p>{{ item.context }}</p>
-          </div>
-        </div>
-      </Component>
+          v-bind="item"
+          v-model="selected"
+        />
+      </Sortli>
+
+      <div v-else>
+        <Item v-for="item in items" :key="item.mediaId" v-bind="item" />
+      </div>
+    </div>
+
+    <div v-if="selected.length" class="bk-media-library-cancel">
+      <button class="bk-button bk-is-primary" @click.prevent="selected = []">
+        {{ $t('cancelSelection', 'Cancel selection') }}
+      </button>
     </div>
 
     <div class="bk-pagination">
@@ -100,28 +94,66 @@ import {
 import { Sortli, Icon } from '#blokkli/components'
 import type { MediaLibraryFilter, MediaLibraryGetResults } from './../types'
 import type { BlokkliIcon } from '#blokkli/icons'
+import Item from './Item.vue'
+import type { DraggableItem, DraggableMediaLibraryItem } from '#blokkli/types'
+import { buildDraggableItem, falsy } from '#blokkli/helpers'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
-const props = defineProps<{
+defineProps<{
   isSortli?: boolean
   modelValue?: string
 }>()
 
-const emit = defineEmits(['update:modelValue'])
+const { adapter, storage, $t } = useBlokkli()
 
-const onClick = (id: string) => {
-  if (props.isSortli) {
-    return
+const selected = ref<string[]>([])
+const listEl = ref<HTMLDivElement | null>(null)
+const page = ref(0)
+const key = computed(() => Object.values(filterValues.value).join(','))
+
+function getDragItems(activeItem?: DraggableItem): DraggableItem[] | null {
+  if (!selected.value.length || !listEl.value) {
+    return null
   }
 
-  emit('update:modelValue', id)
+  const activeId =
+    activeItem?.itemType === 'media_library' ? activeItem.mediaId : null
+
+  const items: DraggableMediaLibraryItem[] = selected.value
+    .map((id) => {
+      const el = listEl.value?.querySelector(
+        `[data-sortli-id="media_library_${id}"]`,
+      )
+      if (!(el instanceof HTMLElement)) {
+        return null
+      }
+
+      const item = buildDraggableItem(el)
+      if (item?.itemType === 'media_library') {
+        return item
+      }
+
+      return null
+    })
+    .filter(falsy)
+
+  if (!activeId) {
+    return items
+  }
+
+  const activeIsInSelection = items.find((v) => v.mediaId === activeId)
+
+  if (activeIsInSelection) {
+    return items
+  }
+
+  return null
 }
 
 type RenderedFilter = {
   key: string
   filter: MediaLibraryFilter
 }
-
-const { adapter, storage } = useBlokkli()
 
 const listView = storage.use<'horizontal' | 'grid'>(
   'mediaLibraryListView',
@@ -141,10 +173,6 @@ const toggleListView = () => {
 }
 
 const filterValues = ref<Record<string, any>>({})
-
-const listEl = ref<HTMLDivElement | null>(null)
-const page = ref(0)
-const key = computed(() => Object.values(filterValues.value).join(','))
 
 watch(key, () => {
   page.value = 0
@@ -181,5 +209,9 @@ const perPage = computed(() => data.value?.perPage || 0)
 
 const totalPages = computed(() => {
   return Math.ceil(total.value / perPage.value)
+})
+
+onBlokkliEvent('item:dropped', function () {
+  selected.value = []
 })
 </script>

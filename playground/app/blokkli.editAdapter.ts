@@ -30,6 +30,7 @@ import { FieldText } from './mock/state/Field/Text'
 import { FieldTextarea } from './mock/state/Field/Textarea'
 import type { Block } from './mock/state/Block/Block'
 import { FieldReference } from './mock/state/Field/Reference'
+import type { MutationAddArgs } from './mock/plugins/mutations/Mutation/Add'
 
 export default defineBlokkliEditAdapter((ctx) => {
   const router = useRouter()
@@ -597,6 +598,38 @@ export default defineBlokkliEditAdapter((ctx) => {
           preceedingUuid: e.preceedingUuid,
         })
       }
+    },
+
+    mediaLibraryAddBlocks(e) {
+      const args: MutationAddArgs[] = e.items
+        .map((item) => {
+          if (item.itemBundle === 'image') {
+            return {
+              bundle: 'image',
+              values: {
+                imageReference: [item.mediaId],
+              },
+              hostEntityType: e.host.type,
+              hostEntityUuid: e.host.uuid,
+              hostField: e.host.fieldName,
+              preceedingUuid: e.preceedingUuid,
+            }
+          } else if (item.itemBundle === 'video') {
+            return {
+              bundle: 'video',
+              values: {
+                video: [item.mediaId],
+              },
+              hostEntityType: e.host.type,
+              hostEntityUuid: e.host.uuid,
+              hostField: e.host.fieldName,
+              preceedingUuid: e.preceedingUuid,
+            }
+          }
+        })
+        .filter(falsy)
+
+      return addMutation('add', args)
     },
 
     mediaLibraryReplaceMedia(e) {

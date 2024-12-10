@@ -90,7 +90,9 @@ type FilteredItemType<T extends DraggableItem> = T extends {
   ? { itemType: 'existing'; items: T[] }
   : T extends { itemType: 'existing_structure' }
     ? { itemType: 'existing_structure'; items: T[] }
-    : { itemType: T['itemType']; item: T }
+    : T extends { itemType: 'media_library' }
+      ? { itemType: 'media_library'; items: T[] }
+      : { itemType: T['itemType']; item: T }
 
 function filterItemType<T extends DraggableItem>(
   items: T[],
@@ -105,7 +107,11 @@ function filterItemType<T extends DraggableItem>(
 
   const itemType = items[0].itemType
 
-  if (itemType === 'existing' || itemType === 'existing_structure') {
+  if (
+    itemType === 'existing' ||
+    itemType === 'existing_structure' ||
+    itemType === 'media_library'
+  ) {
     return { itemType, items } as any
   }
 
@@ -211,16 +217,24 @@ const onDropClipboardItem = async (
 }
 
 const onDropMediaLibraryItem = async (
-  item: DraggableMediaLibraryItem,
+  items: DraggableMediaLibraryItem[],
   host: DraggableHostData,
   afterUuid?: string,
 ) => {
-  if (adapter.mediaLibraryAddBlock) {
+  if (adapter.mediaLibraryAddBlock && items.length === 1) {
     await state.mutateWithLoadingState(() =>
       adapter.mediaLibraryAddBlock({
         preceedingUuid: afterUuid,
         host,
-        item,
+        item: items[0],
+      }),
+    )
+  } else if (adapter.mediaLibraryAddBlocks && items.length > 1) {
+    await state.mutateWithLoadingState(() =>
+      adapter.mediaLibraryAddBlocks({
+        preceedingUuid: afterUuid,
+        host,
+        items,
       }),
     )
   }
@@ -279,7 +293,7 @@ const onDrop = (e: DropTargetEvent) => {
     } else if (typed.itemType === 'action') {
       onDropAction(typed.item, host, e.field, afterUuid)
     } else if (typed.itemType === 'media_library') {
-      await onDropMediaLibraryItem(typed.item, host, afterUuid)
+      await onDropMediaLibraryItem(typed.items, host, afterUuid)
     }
 
     eventBus.emit('dragging:end')
