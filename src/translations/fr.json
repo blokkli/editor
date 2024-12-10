@@ -147,6 +147,10 @@
     "source": "Cancel",
     "translation": "Annuler"
   },
+  "cancelSelection": {
+    "source": "Cancel selection",
+    "translation": ""
+  },
   "clipboard": {
     "source": "Clipboard",
     "translation": "Presse-papiers"

@@ -700,6 +700,32 @@ mutation pbAddEntityReference(
   }
 }
 
+mutation pbAddEntityReferenceMultiple(
+  $langcode: String
+  $entityType: EntityType!
+  $entityUuid: String!
+  $references: [ParagraphsBlokkliAddEntityReferenceMultipleInput]!
+  $hostType: String!
+  $hostUuid: String!
+  $hostFieldName: String!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: add_entity_reference_multiple(
+      references: $references
+      afterUuid: $afterUuid
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}
+
 query pbConfig($entityType: String!, $entityBundle: String!) {
   clipboards: pbGetSupportedClipboards {
     ...paragraphsBlokkliSupportedClipboard

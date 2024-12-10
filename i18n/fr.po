@@ -157,6 +157,10 @@ msgctxt "cancel"
 msgid "Cancel"
 msgstr "Annuler"
 
+msgctxt "cancelSelection"
+msgid "Cancel selection"
+msgstr ""
+
 msgctxt "clipboard"
 msgid "Clipboard"
 msgstr "Presse-papiers"

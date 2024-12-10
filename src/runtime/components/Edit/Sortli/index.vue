@@ -19,6 +19,10 @@ import {
 
 const { eventBus } = useBlokkli()
 
+const props = defineProps<{
+  getDragItems?: (activeItem?: DraggableItem) => DraggableItem[] | null
+}>()
+
 let pointerStartCoords: Coord | null = null
 let activeItem: DraggableItem | null = null
 
@@ -55,8 +59,9 @@ function onPointerMove(e: PointerEvent) {
   const distance = getDistance(coords, pointerStartCoords)
 
   if (distance > 7) {
+    const dragItems = props.getDragItems ? props.getDragItems(activeItem) : null
     eventBus.emit('dragging:start', {
-      items: [activeItem],
+      items: dragItems && dragItems.length ? dragItems : [activeItem],
       coords,
       mode: 'mouse',
     })

@@ -17,27 +17,34 @@ export class MutationAdd extends Mutation {
     super('add', configuration)
   }
 
-  override execute(context: MutationContext, args: MutationAddArgs) {
-    const uuid = this.getUuidForNewEntity()
+  override execute(
+    context: MutationContext,
+    arg: MutationAddArgs[] | MutationAddArgs,
+  ) {
+    const items: MutationAddArgs[] = Array.isArray(arg) ? arg : [arg]
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i]
+      const uuid = this.getUuidForNewEntity(i.toString())
 
-    const block = entityStorageManager.createBlock(args.bundle, uuid)
-    if (args.values) {
-      block.setValues(args.values)
-    } else {
-      const blockBundle = getBlockBundles().find(
-        (v) => v.bundle === args.bundle,
-      )!
-      const defaultValues = blockBundle.getDefaultValues()
-      block.setValues(defaultValues)
+      const block = entityStorageManager.createBlock(item.bundle, uuid)
+      if (item.values) {
+        block.setValues(item.values)
+      } else {
+        const blockBundle = getBlockBundles().find(
+          (v) => v.bundle === item.bundle,
+        )!
+        const defaultValues = blockBundle.getDefaultValues()
+        block.setValues(defaultValues)
+      }
+
+      const proxy = new BlockProxy(
+        block,
+        item.hostEntityType,
+        item.hostEntityUuid,
+        item.hostField,
+      )
+
+      context.addProxy(proxy, item.preceedingUuid)
     }
-
-    const proxy = new BlockProxy(
-      block,
-      args.hostEntityType,
-      args.hostEntityUuid,
-      args.hostField,
-    )
-
-    context.addProxy(proxy, args.preceedingUuid)
   }
 }

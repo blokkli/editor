@@ -147,6 +147,10 @@
     "source": "Cancel",
     "translation": "Abbrechen"
   },
+  "cancelSelection": {
+    "source": "Cancel selection",
+    "translation": "Auswahl abbrechen"
+  },
   "clipboard": {
     "source": "Clipboard",
     "translation": "Zwischenablage"

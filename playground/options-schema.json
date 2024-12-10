@@ -168,24 +168,15 @@
       "label": "Columns",
       "options": {
         "equal": {
-          "columns": [
-            1,
-            1
-          ],
+          "columns": [1, 1],
           "label": "Equal"
         },
         "oneTwo": {
-          "columns": [
-            1,
-            2
-          ],
+          "columns": [1, 2],
           "label": "One / Two"
         },
         "twoOne": {
-          "columns": [
-            2,
-            1
-          ],
+          "columns": [2, 1],
           "label": "Two / One"
         }
       },
@@ -286,42 +277,26 @@
       "label": "Columns",
       "options": {
         "equal": {
-          "columns": [
-            1,
-            1
-          ],
+          "columns": [1, 1],
           "label": "50% / 50%"
         },
         "oneTwo": {
-          "columns": [
-            1,
-            2
-          ],
+          "columns": [1, 2],
           "label": "33% / 66%"
         },
         "quarterOne": {
-          "columns": [
-            3,
-            1
-          ],
+          "columns": [3, 1],
           "label": "75% / 25%"
         },
         "twoOne": {
-          "columns": [
-            2,
-            1
-          ],
+          "columns": [2, 1],
           "label": "66% / 33%"
         }
       },
       "type": "radios"
     },
     "countries": {
-      "default": [
-        "ch",
-        "de",
-        "at"
-      ],
+      "default": ["ch", "de", "at"],
       "label": "Countries",
       "options": {
         "at": "Austria",

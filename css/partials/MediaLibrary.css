@@ -116,15 +116,44 @@
   }
 
   .bk-media-library-items-item {
-    @apply text-sm cursor-grab select-none;
+    @apply text-sm cursor-grab select-none relative;
+
+    > label {
+      @apply absolute top-0 right-0 z-50 p-15 cursor-pointer opacity-0;
+
+      &:hover {
+        input {
+          @apply bg-accent-700;
+        }
+      }
+
+      input {
+        @apply cursor-pointer checked:bg-accent-700;
+        @apply bg-white border border-mono-400;
+      }
+    }
 
     &.bk-is-selected {
-      @apply outline outline-accent-700;
+      .bk-media-library-items-item-image {
+        &:before {
+          content: '';
+          @apply absolute top-0 left-0 size-full bg-accent-700/35 z-50 pointer-events-none;
+          @apply border-3 border-accent-700;
+          border-radius: inherit;
+        }
+      }
+      label {
+        @apply opacity-100;
+      }
     }
 
     &:hover {
       .bk-media-library-items-item-image {
         @apply border-mono-400;
+      }
+
+      label {
+        @apply opacity-100;
       }
     }
 
@@ -167,6 +196,14 @@
 
     svg {
       @apply w-50 h-50 fill-mono-400;
+    }
+  }
+
+  .bk-media-library-cancel {
+    @apply absolute bottom-0 left-0 w-full p-10 bg-white;
+
+    button {
+      @apply w-full;
     }
   }
 }

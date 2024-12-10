@@ -63,6 +63,12 @@ export type MediaLibraryAddBlockEvent = {
   item: DraggableMediaLibraryItem
 }
 
+export type MediaLibraryAddBlocksEvent = {
+  host: DraggableHostData
+  preceedingUuid?: string
+  items: DraggableMediaLibraryItem[]
+}
+
 export type MediaLibraryReplaceMediaEvent = {
   /**
    * The UUID of the block on which the media was dropped.
@@ -515,6 +521,13 @@ export interface BlokkliAdapter<T> {
    */
   mediaLibraryAddBlock?: (
     e: MediaLibraryAddBlockEvent,
+  ) => Promise<MutationResponseLike<T>> | undefined
+
+  /**
+   * Create new blocks from the given media library items.
+   */
+  mediaLibraryAddBlocks?: (
+    e: MediaLibraryAddBlocksEvent,
   ) => Promise<MutationResponseLike<T>> | undefined
 
   /**
