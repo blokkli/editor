@@ -22,7 +22,7 @@ const props = defineProps<{
   gl: WebGLRenderingContext
 }>()
 
-const { animation, theme, dom } = useBlokkli()
+const { animation, theme, dom, ui } = useBlokkli()
 
 const programInfo = animation.registerProgram('selection', props.gl, [vs, fs])
 
@@ -99,15 +99,15 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
 
 const collector = new SelectionRectangleBufferCollector(props.gl)
 
-const uniforms = {
-  u_color_default: toShaderColor(theme.accent.value[600]),
-  u_color_inverted: [255, 255, 255],
-}
-
-onBlokkliEvent('canvas:draw', () => {
+onBlokkliEvent('canvas:draw', (e) => {
   props.gl.useProgram(programInfo.program)
 
-  setUniforms(programInfo, uniforms)
+  setUniforms(programInfo, {
+    u_color_default: toShaderColor(theme.accent.value[600]),
+    u_color_inverted: [255, 255, 255],
+    u_is_transforming: ui.isTransforming.value ? 1 : 0,
+    u_time: e.time,
+  })
   animation.setSharedUniforms(props.gl, programInfo)
   const { info, hasChanged } = collector.getBufferInfo()
 

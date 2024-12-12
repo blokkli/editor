@@ -30,6 +30,11 @@ export type UiProvider = {
   isArtboard: () => boolean
   isAnimating: Ref<boolean>
   isProxyMode: Ref<boolean>
+
+  isTransforming: ComputedRef<boolean>
+  setTransform: (label?: string | null | undefined) => void
+  transformLabel: ComputedRef<string>
+
   useAnimations: ComputedRef<boolean>
   lowPerformanceMode: ComputedRef<boolean>
   toolbarHeight: ComputedRef<number>
@@ -72,6 +77,7 @@ export default function (storage: StorageProvider): UiProvider {
   const isProxyMode = ref(false)
   const menuIsOpen = ref(false)
   const isAnimating = ref(false)
+  const transformLabel = ref('')
   const openContextMenu = ref('')
   const selectionTopLeft = ref({ x: 0, y: 0 })
   const useAnimationsSetting = storage.use('useAnimations', true)
@@ -83,6 +89,7 @@ export default function (storage: StorageProvider): UiProvider {
   const viewportBlockingRectsMap = ref<Record<string, Rectangle | undefined>>(
     {},
   )
+  const isTransforming = computed<boolean>(() => !!transformLabel.value)
   const artboardSize = ref<Size>({
     width: 1,
     height: 1,
@@ -354,6 +361,10 @@ export default function (storage: StorageProvider): UiProvider {
     }
   }
 
+  function setTransform(label?: string | null | undefined) {
+    transformLabel.value = label || ''
+  }
+
   return {
     menu: {
       isOpen: menuIsOpen,
@@ -367,6 +378,9 @@ export default function (storage: StorageProvider): UiProvider {
     isDesktop,
     isArtboard,
     isAnimating,
+    isTransforming,
+    setTransform,
+    transformLabel: computed(() => transformLabel.value),
     useAnimations,
     visibleViewport,
     visibleViewportPadded,

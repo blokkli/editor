@@ -187,6 +187,9 @@ function onPointerDown(e: PointerEvent) {
   keyboard.setShortcutStateFromEvent(e)
 
   rootEl.removeEventListener('pointermove', onPointerMove)
+  if (state.isLoading.value) {
+    return
+  }
   rootEl.addEventListener('pointermove', onPointerMove)
 
   if (e.pointerType === 'touch') {
@@ -229,6 +232,10 @@ function onPointerUp(e: PointerEvent) {
   const wasDragging = selection.isDragging.value
   const wasMultiSelecting = selection.isMultiSelecting.value
   pointerDownElement = null
+
+  if (state.isLoading.value) {
+    return
+  }
 
   if (e.pointerType === 'touch') {
     return onTouchEnd(e)

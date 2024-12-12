@@ -75,6 +75,7 @@ export default function (ui: UiProvider): AnimationProvider {
       mouseX,
       mouseY,
       fieldAreas: [],
+      time,
     })
   })
 

@@ -44,7 +44,7 @@ const { adapter } = defineBlokkliFeature({
   screenshot: 'feature-transform.jpg',
 })
 
-const { types, selection, state, $t, dom } = useBlokkli()
+const { types, selection, state, $t, dom, ui } = useBlokkli()
 
 const {
   data: plugins,
@@ -64,6 +64,8 @@ watch(selection.uuids, async () => {
 })
 
 async function onTransform(plugin: TransformPlugin, uuids: string[]) {
+  ui.setTransform(plugin.label)
+
   await state.mutateWithLoadingState(
     () =>
       adapter.applyTransformPlugin({
@@ -75,6 +77,8 @@ async function onTransform(plugin: TransformPlugin, uuids: string[]) {
       'The action "@name" could not be executed.',
     ).replace('@name', plugin.label),
   )
+
+  ui.setTransform()
 }
 
 const itemBundleIds = computed(() =>
