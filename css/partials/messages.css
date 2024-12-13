@@ -8,11 +8,7 @@
 }
 
 .bk.bk-messages {
-  @apply fixed z-messages;
-  left: var(--bk-root-offset-left);
-  right: var(--bk-root-offset-right);
-  bottom: var(--bk-root-offset-bottom);
-
+  @apply overflow-hidden;
   .bk-message {
     @apply relative flex items-center flex-col md:flex-row;
 

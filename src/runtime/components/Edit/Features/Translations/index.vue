@@ -50,7 +50,7 @@
     </PluginTourItem>
   </Teleport>
 
-  <Teleport to="body">
+  <Teleport to="#bk-banner-container">
     <Banner
       v-if="state.editMode.value === 'translating'"
       :active-language="activeLanguage"

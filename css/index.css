@@ -354,3 +354,10 @@ html.bk-hide-non-editable {
     @apply opacity-30;
   }
 }
+
+#bk-banner-container {
+  @apply fixed z-translations-banner-mobile lg:z-translations-banner-desktop grid;
+  left: var(--bk-root-offset-left);
+  bottom: var(--bk-root-offset-bottom);
+  right: var(--bk-root-offset-right);
+}

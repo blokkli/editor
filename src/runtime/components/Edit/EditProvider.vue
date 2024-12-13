@@ -6,9 +6,12 @@
         screen
       />
     </Transition>
+
+    <div id="bk-banner-container">
+      <Messages />
+    </div>
   </Teleport>
   <Actions v-if="!isInitializing" />
-  <Messages />
   <Toolbar @loaded="toolbarLoaded = true" />
   <AppMenu v-if="toolbarLoaded" />
   <Features
