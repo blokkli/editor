@@ -83,7 +83,11 @@ import { getFragmentDefinition } from '#blokkli/definitions'
 
 const { selection, $t, types, state, ui, dom } = useBlokkli()
 
-const editingEnabled = computed(() => state.editMode.value === 'editing')
+const editingEnabled = computed(
+  () =>
+    state.editMode.value === 'editing' ||
+    state.editMode.value === 'translating',
+)
 
 const ACTIONS_HEIGHT = 50
 
