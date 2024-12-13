@@ -8,10 +8,10 @@
       <div
         v-show="activeLabel"
         class="bk-dragging-overlay-label"
-        :style="{ backgroundColor: activeColor }"
+        :style="{ backgroundColor: currentActiveColor }"
       >
         <Icon name="cursor-move" />
-        <p v-html="prevActiveLabel" />
+        <p v-html="currentActiveLabel" />
       </div>
     </Transition>
     <div
@@ -100,13 +100,23 @@ const props = defineProps<{
   activeLabel?: string
 }>()
 
-const prevActiveLabel = ref('')
+const currentActiveLabel = ref('')
+const currentActiveColor = ref('')
 
 watch(
   () => props.activeLabel,
   function (label) {
     if (label) {
-      prevActiveLabel.value = label
+      currentActiveLabel.value = label
+    }
+  },
+)
+
+watch(
+  () => props.activeColor,
+  function (color) {
+    if (color) {
+      currentActiveColor.value = color
     }
   },
 )
