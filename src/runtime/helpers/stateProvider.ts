@@ -319,9 +319,12 @@ export default async function (
     await loadState()
   })
 
-  onBlokkliEvent('reloadEntity', async () => {
+  onBlokkliEvent('reloadEntity', async (cb) => {
     await refreshNuxtData()
     await loadState()
+    if (cb) {
+      cb()
+    }
   })
 
   provide(INJECT_MUTATED_FIELDS_MAP, mutatedFieldsMap)

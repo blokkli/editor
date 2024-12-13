@@ -53,7 +53,14 @@ function onMessage(e: MessageEvent): void {
       props.form.id === 'entity:edit' ||
       props.form.id === 'entity:translate'
     ) {
-      eventBus.emit('reloadEntity')
+      if (props.form.id === 'entity:translate') {
+        const langcode = props.form.translation.id
+        eventBus.emit('reloadEntity', () => {
+          eventBus.emit('entity:translated', langcode)
+        })
+      } else {
+        eventBus.emit('reloadEntity')
+      }
     } else {
       eventBus.emit('reloadState')
     }

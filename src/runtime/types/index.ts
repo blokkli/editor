@@ -1059,7 +1059,8 @@ export type EventbusEvents = {
   editEntity: undefined
   translateEntity: EntityTranslation
   reloadState: undefined
-  reloadEntity: undefined
+  reloadEntity: (() => void) | undefined
+  'entity:translated': string
 
   // Selection.
   'select:start': SelectStartEvent

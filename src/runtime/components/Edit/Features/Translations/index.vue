@@ -212,6 +212,15 @@ onBlokkliEvent('item:doubleClick', function (block) {
   }
 })
 
+onBlokkliEvent('entity:translated', (langcode) => {
+  const targetTranslation = translation.value.translations?.find(
+    (v) => v.id === langcode,
+  )
+  if (targetTranslation) {
+    adapter.changeLanguage(targetTranslation)
+  }
+})
+
 onMounted(() => {
   // Make sure the user is not trying to edit a translation that does not exist.
   const translationExists = !!translation.value.translations?.find(
