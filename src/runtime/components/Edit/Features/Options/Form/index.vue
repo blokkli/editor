@@ -3,7 +3,8 @@
     v-if="availableOptions.length"
     class="bk-blokkli-item-options"
     @pointerup="onPointerUp"
-    @mouseleave="stopChangingOptions"
+    @mouseleave="onMouseLeave"
+    @mouseenter="onMouseEnter"
   >
     <OptionsFormItem
       v-for="plugin in singleVisibleOptions"
@@ -102,6 +103,18 @@ const props = defineProps<{
 }>()
 
 let pointerTimeout: null | number = null
+let mouseLeaveTimeout: null | number = null
+
+function onMouseLeave() {
+  onMouseEnter()
+  mouseLeaveTimeout = window.setTimeout(stopChangingOptions, 500)
+}
+
+function onMouseEnter() {
+  if (mouseLeaveTimeout) {
+    window.clearTimeout(mouseLeaveTimeout)
+  }
+}
 
 function onPointerUp(e: PointerEvent) {
   if (pointerTimeout) {

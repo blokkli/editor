@@ -66,7 +66,7 @@ float getStripePattern(vec2 quadRelativePos, float time) {
   float movement = t * 2.0 * PI;
 
   float normalizedSin =
-    (sin((quadRelativePos.y + quadRelativePos.x) / d - movement + v_rect_id) +
+    (sin((quadRelativePos.y + quadRelativePos.x) / d + movement + v_rect_id) +
       1.0) /
     2.0;
 

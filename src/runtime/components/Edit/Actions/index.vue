@@ -200,7 +200,11 @@ onBeforeUnmount(() => {
 })
 
 onBlokkliEvent('canvas:draw', () => {
-  if (!selection.blocks.value.length || ui.isMobile.value) {
+  if (
+    !selection.blocks.value.length ||
+    ui.isMobile.value ||
+    selection.isChangingOptions.value
+  ) {
     return
   }
 
