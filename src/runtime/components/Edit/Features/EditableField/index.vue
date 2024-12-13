@@ -159,7 +159,7 @@ defineCommands(() => {
 
   return editables.map((v) => {
     return {
-      id: 'feature:editable:edit:' + v.fieldName,
+      id: 'feature:editable:edit:' + v.host.uuid + ':' + v.fieldName,
       group: 'selection',
       label: $t('editableCommandEdit', 'Edit field "@name"').replace(
         '@name',
