@@ -215,7 +215,7 @@ export interface BlokkliAdapter<T> {
   /**
    * Load the state for the given langcode.
    */
-  loadState(langcode?: string | undefined | null): Promise<T | undefined>
+  loadState(): Promise<T | undefined>
 
   /*
    * Map the state returned by mutations.
