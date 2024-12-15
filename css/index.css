@@ -43,6 +43,7 @@
 @import './partials/Pagination.css';
 @import './partials/Validations.css';
 @import './partials/ProxyField.css';
+@import './partials/infobox.css';
 @import './indicator.css';
 
 @import './components/button.css';

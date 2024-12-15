@@ -14,7 +14,15 @@
     @submit="$emit('confirm', label)"
     @cancel="$emit('cancel')"
   >
-    <div>
+    <div class="bk-reusable-dialog-form">
+      <InfoBox
+        :text="
+          $t(
+            'libraryDialogReusableInfo',
+            'The library item will be available for placement on other pages once this page has been published.',
+          )
+        "
+      />
       <label for="reusable_label" class="bk-form-label">{{
         $t('libraryDialogDescriptionLabel', 'Description')
       }}</label>
@@ -44,8 +52,7 @@
 
 <script lang="ts" setup>
 import { ref, useBlokkli, onMounted } from '#imports'
-
-import { DialogModal } from '#blokkli/components'
+import { DialogModal, InfoBox } from '#blokkli/components'
 import { realBackgroundColor } from '#blokkli/helpers'
 
 defineEmits<{

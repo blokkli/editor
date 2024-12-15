@@ -575,6 +575,10 @@
     "source": "When you add an item to the library, you can use it on multiple pages at the same time. Changes to this item are then immediately published on all pages.",
     "translation": "Wenn es Elemänt in dr Bibliothek isch, cha das Elemänt uf mehrere Sitte gliichzittig brucht wärde. D'Änderige an däm Elemänt wärde denn sofort uf allne Sitte publiziert. "
   },
+  "libraryDialogReusableInfo": {
+    "source": "The library item will be available for placement on other pages once this page has been published.",
+    "translation": ""
+  },
   "libraryDialogSubmit": {
     "source": "Add to library",
     "translation": "Zur Bibliothe drzuefüege"
