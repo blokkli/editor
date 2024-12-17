@@ -12,6 +12,7 @@ import type { StorageProvider } from './storageProvider'
 import type { AddListOrientation, Coord, Rectangle, Size } from '#blokkli/types'
 import type { Viewport } from '#blokkli/constants'
 import { falsy } from '.'
+import type { StateProvider } from './stateProvider'
 
 const ARTBOARD_CLASS = 'bk-is-artboard'
 const CLASS_PROXY_MODE = 'bk-is-proxy-mode'
@@ -69,7 +70,10 @@ export type UiProvider = {
   ) => Rectangle
 }
 
-export default function (storage: StorageProvider): UiProvider {
+export default function (
+  storage: StorageProvider,
+  state: StateProvider,
+): UiProvider {
   let cachedRootElement: HTMLElement | null = null
   let cachedArtboardElement: HTMLElement | null = null
   let cachedProviderElement: HTMLElement | null = null
@@ -217,7 +221,10 @@ export default function (storage: StorageProvider): UiProvider {
   const visibleViewportX = computed<number>(() => {
     let x = 0
     if (!isMobile.value) {
-      if (addListOrientation.value === 'vertical') {
+      if (
+        addListOrientation.value === 'vertical' &&
+        state.editMode.value === 'editing'
+      ) {
         x += 70
       }
       if (activeSidebarLeft.value) {
