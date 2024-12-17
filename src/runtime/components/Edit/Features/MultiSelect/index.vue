@@ -29,7 +29,10 @@ const gl = animation.gl()
 
 const enabled = computed(
   () =>
-    !selection.editableActive.value && state.editMode.value === 'editing' && gl,
+    !selection.editableActive.value &&
+    (state.editMode.value === 'editing' ||
+      state.editMode.value === 'translating') &&
+    gl,
 )
 
 const shouldRender = ref(false)
