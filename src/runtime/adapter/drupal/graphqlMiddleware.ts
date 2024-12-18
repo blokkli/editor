@@ -448,11 +448,11 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     ) => {
       const url = buildFormUrl(
         ['blokkli', 'library-item', uuid],
-        ctx.value.language,
+        ctx.value.langcode,
       ).url
 
       // Directly build the URL to start blökkli for the paragraphs_library_item.
-      return `${url}&blokkliEditing=${uuid}&language=${ctx.value.language}`
+      return `${url}&blokkliEditing=${uuid}&language=${ctx.value.langcode}`
     }
 
     const formFrameBuilder: DrupalAdapter['formFrameBuilder'] = (e) => {
@@ -470,12 +470,12 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             e.data.host.fieldName,
             e.data.afterUuid,
           ],
-          ctx.value.language,
+          ctx.value.langcode,
         )
       } else if (e.id === 'block:edit') {
         return buildFormUrl(
           `/paragraphs_blokkli/${entityType}/${ctx.value.entityUuid}/edit/${e.data.uuid}`,
-          ctx.value.language,
+          ctx.value.langcode,
         )
       } else if (e.id === 'block:translate') {
         return buildFormUrl(
@@ -484,8 +484,8 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         )
       } else if (e.id === 'entity:edit') {
         return buildFormUrl(
-          `/paragraphs_blokkli/${entityType}/${ctx.value.entityUuid}/edit_entity/${ctx.value.language}`,
-          ctx.value.language,
+          `/paragraphs_blokkli/${entityType}/${ctx.value.entityUuid}/edit_entity/${ctx.value.langcode}`,
+          ctx.value.langcode,
         )
       } else if (e.id === 'entity:translate') {
         return buildFormUrl(
@@ -495,7 +495,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       } else if (e.id === 'batchTranslate') {
         return buildFormUrl(
           `/paragraphs_blokkli/${entityType}/${ctx.value.entityUuid}/translate-paragraphs`,
-          ctx.value.language,
+          ctx.value.langcode,
         )
       }
     }
@@ -539,7 +539,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         ]
           .filter(falsy)
           .join('/')
-      return buildFormUrl(url, ctx.value.language).url
+      return buildFormUrl(url, ctx.value.langcode).url
     }
 
     const fragmentsAddBlock: DrupalAdapter['fragmentsAddBlock'] = (e) =>
