@@ -772,6 +772,9 @@ const activeColorRgb = computed(() => {
   if (active.value?.type === 'drop-area') {
     return theme.teal.value.normal
   }
+  if (!active.value) {
+    return
+  }
   return getColorForField(active.value?.field)
 })
 

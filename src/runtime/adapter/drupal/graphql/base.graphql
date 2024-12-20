@@ -84,11 +84,12 @@ fragment paragraphsBlokkliMutationResult on ParagraphsBlokkliMutationResult {
 query pbEditState(
   $entityType: EntityType!
   $entityUuid: String!
-  $langcode: String
+  $langcode: String!
 ) {
   state: getParagraphsEditState(
     entityType: $entityType
     entityUuid: $entityUuid
+    langcode: $langcode
   ) {
     ...paragraphsBlokkliEditState
   }
@@ -436,8 +437,16 @@ mutation pbUndo(
   }
 }
 
-query pbGetPreviewGrantUrl($entityType: EntityType!, $entityUuid: String!) {
-  getParagraphsEditState(entityType: $entityType, entityUuid: $entityUuid) {
+query pbGetPreviewGrantUrl(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String!
+) {
+  getParagraphsEditState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+    langcode: $langcode
+  ) {
     previewUrl
   }
 }

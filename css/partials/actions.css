@@ -13,7 +13,7 @@
     @apply text-mono-50  select-none text-sm;
   }
   .bk-blokkli-item-actions-inner {
-    @apply fixed left-0 p-0 z-actions w-full will-change-transform;
+    @apply fixed left-0 p-0 z-actions w-full;
     transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
     /* contain: layout style paint; */
@@ -27,6 +27,14 @@
     @apply flex items-stretch whitespace-nowrap h-full flex-wrap lg:flex-nowrap;
     @apply bg-mono-950/90 backdrop-blur lg:bg-mono-900;
     @apply relative z-50;
+
+    &.bk-is-locked {
+      @apply pointer-events-none;
+      .bk-blokkli-item-actions-buttons > button,
+      .bk-blokkli-item-options > .bk-blokkli-item-options-item {
+        @apply opacity-20;
+      }
+    }
 
     html.bk-low-performance-mode & {
       @apply backdrop-filter-none;
@@ -86,6 +94,7 @@
     }
     .bk-blokkli-item-actions-title-icon {
       @apply text-xl lg:text-[34px] mr-[0.25em] bg-mono-800 w-[1em] h-[1em] rounded border border-mono-600 relative text-white;
+      flex: 0 0 auto;
       svg {
         @apply w-[0.7em] h-[0.7em] fill-current absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
       }

@@ -113,6 +113,7 @@ onBlokkliEvent('animationFrame', (e) => {
     ...e,
     artboardOffset: offset,
     artboardScale: scale,
+    time: e.time,
   })
 })
 

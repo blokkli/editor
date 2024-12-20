@@ -12,6 +12,7 @@ import Loading from './Loading/index.vue'
 import Highlight from './Highlight/index.vue'
 import ViewportBlockingRect from './ViewportBlockingRect/index.vue'
 import ScrollBoundary from './ScrollBoundary/index.vue'
+import InfoBox from './InfoBox/index.vue'
 
 export {
   ItemIcon,
@@ -28,4 +29,5 @@ export {
   Highlight,
   ViewportBlockingRect,
   ScrollBoundary,
+  InfoBox,
 }

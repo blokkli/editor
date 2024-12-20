@@ -1,0 +1,13 @@
+.bk .bk-info-box {
+  @apply p-15 rounded-md font-medium;
+  @apply bg-yellow-light text-yellow-dark border border-yellow-normal;
+  @apply flex gap-10 items-center;
+
+  .bk-icon {
+    @apply size-30;
+
+    svg {
+      @apply fill-current;
+    }
+  }
+}

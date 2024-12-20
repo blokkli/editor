@@ -13,10 +13,15 @@ fragment paragraphsBlokkliComment on CommentBlokkliNode {
   }
 }
 
-query pbComments($entityType: EntityType!, $entityUuid: String!) {
+query pbComments(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String!
+) {
   state: getParagraphsEditState(
     entityType: $entityType
     entityUuid: $entityUuid
+    langcode: $langcode
   ) {
     comments {
       ...paragraphsBlokkliComment

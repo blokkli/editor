@@ -55,6 +55,12 @@
   @apply relative;
 }
 
+.bk-reusable-dialog-form {
+  .bk-info-box {
+    @apply my-20;
+  }
+}
+
 .bk-library-dialog {
   @apply p-20;
 }

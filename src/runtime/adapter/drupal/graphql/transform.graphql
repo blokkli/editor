@@ -1,5 +1,13 @@
-query pbGetTransformPlugins {
-  paragraphsBlokkliGetTransformPlugins {
+query pbGetTransformPlugins(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String!
+) {
+  paragraphsBlokkliGetTransformPlugins(
+    entityType: $entityType
+    entityUuid: $entityUuid
+    langcode: $langcode
+  ) {
     id
     label
     bundles

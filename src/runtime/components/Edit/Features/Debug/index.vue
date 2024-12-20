@@ -51,11 +51,21 @@
               <input
                 :checked="overlay.active"
                 type="checkbox"
-                class="peer"
                 @change="debug.toggleOverlay(overlay.id)"
               />
               <div />
               <span>{{ overlay.label }}</span>
+            </label>
+          </div>
+          <div>
+            <label class="bk-checkbox-toggle">
+              <input
+                :checked="ui.isTransforming.value"
+                type="checkbox"
+                @change="toggleTransforming"
+              />
+              <div />
+              <span>Set transforming</span>
             </label>
           </div>
         </div>
@@ -124,7 +134,7 @@ const { logger } = defineBlokkliFeature({
   description: 'Provides debugging functionality.',
 })
 
-const { keyboard, selection, eventBus, features, debug } = useBlokkli()
+const { keyboard, selection, eventBus, features, debug, ui } = useBlokkli()
 
 const iconItems = computed(() => Object.keys(icons) as BlokkliIcon[])
 
@@ -160,6 +170,14 @@ const onEvent = (name: string | number | symbol, data: any) => {
     return
   }
   logger.log('Event: ' + String(name), data)
+}
+
+function toggleTransforming() {
+  if (ui.isTransforming.value) {
+    ui.setTransform()
+  } else {
+    ui.setTransform('Transform plugin label')
+  }
 }
 
 onMounted(() => {

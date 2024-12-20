@@ -843,6 +843,7 @@ export type AnimationFrameEvent = {
   fieldAreas: AnimationFrameFieldArea[]
   mouseX: number
   mouseY: number
+  time: number
 }
 
 export type Message = {
@@ -868,6 +869,7 @@ export type CanvasDrawEvent = {
   mouseY: number
   artboardOffset: Coord
   artboardScale: number
+  time: number
 }
 
 export type MakeReusableEvent = {
@@ -1057,7 +1059,8 @@ export type EventbusEvents = {
   editEntity: undefined
   translateEntity: EntityTranslation
   reloadState: undefined
-  reloadEntity: undefined
+  reloadEntity: (() => void) | undefined
+  'entity:translated': string
 
   // Selection.
   'select:start': SelectStartEvent

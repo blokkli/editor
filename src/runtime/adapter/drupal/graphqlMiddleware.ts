@@ -22,8 +22,10 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
   async (providedContext) => {
     const ctx = computed(() => {
       return {
-        ...providedContext.value,
         entityType: providedContext.value.entityType.toUpperCase() as any,
+        entityBundle: providedContext.value.entityBundle,
+        entityUuid: providedContext.value.entityUuid,
+        langcode: providedContext.value.language,
       }
     })
 
@@ -80,10 +82,9 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       return Promise.resolve(config.allTypes)
     }
 
-    const loadState: DrupalAdapter['loadState'] = (langcode) =>
+    const loadState: DrupalAdapter['loadState'] = () =>
       useGraphqlQuery('pbEditState', {
         ...ctx.value,
-        langcode: langcode || undefined,
       }).then((v) => v?.data.state)
 
     const getDisabledFeatures: DrupalAdapter['getDisabledFeatures'] = () => {
@@ -412,7 +413,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       )
 
     const getTransformPlugins: DrupalAdapter['getTransformPlugins'] = () =>
-      useGraphqlQuery('pbGetTransformPlugins')
+      useGraphqlQuery('pbGetTransformPlugins', ctx.value)
         .then((v) => v.data.paragraphsBlokkliGetTransformPlugins || [])
         .then((plugins) =>
           plugins.map((plugin) => {
@@ -447,11 +448,11 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     ) => {
       const url = buildFormUrl(
         ['blokkli', 'library-item', uuid],
-        ctx.value.language,
+        ctx.value.langcode,
       ).url
 
       // Directly build the URL to start blökkli for the paragraphs_library_item.
-      return `${url}&blokkliEditing=${uuid}&language=${ctx.value.language}`
+      return `${url}&blokkliEditing=${uuid}&language=${ctx.value.langcode}`
     }
 
     const formFrameBuilder: DrupalAdapter['formFrameBuilder'] = (e) => {
@@ -469,12 +470,12 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             e.data.host.fieldName,
             e.data.afterUuid,
           ],
-          ctx.value.language,
+          ctx.value.langcode,
         )
       } else if (e.id === 'block:edit') {
         return buildFormUrl(
           `/paragraphs_blokkli/${entityType}/${ctx.value.entityUuid}/edit/${e.data.uuid}`,
-          ctx.value.language,
+          ctx.value.langcode,
         )
       } else if (e.id === 'block:translate') {
         return buildFormUrl(
@@ -483,8 +484,8 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         )
       } else if (e.id === 'entity:edit') {
         return buildFormUrl(
-          `/paragraphs_blokkli/${entityType}/${ctx.value.entityUuid}/edit_entity/${ctx.value.language}`,
-          ctx.value.language,
+          `/paragraphs_blokkli/${entityType}/${ctx.value.entityUuid}/edit_entity/${ctx.value.langcode}`,
+          ctx.value.langcode,
         )
       } else if (e.id === 'entity:translate') {
         return buildFormUrl(
@@ -494,7 +495,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       } else if (e.id === 'batchTranslate') {
         return buildFormUrl(
           `/paragraphs_blokkli/${entityType}/${ctx.value.entityUuid}/translate-paragraphs`,
-          ctx.value.language,
+          ctx.value.langcode,
         )
       }
     }
@@ -517,7 +518,6 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     const updateFieldValue: DrupalAdapter['updateFieldValue'] = (e) =>
       useGraphqlMutation('pbUpdateFieldValue', {
         ...ctx.value,
-        langcode: ctx.value.language,
         uuid: e.uuid,
         fieldName: e.fieldName,
         value: e.fieldValue,
@@ -539,7 +539,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         ]
           .filter(falsy)
           .join('/')
-      return buildFormUrl(url, ctx.value.language).url
+      return buildFormUrl(url, ctx.value.langcode).url
     }
 
     const fragmentsAddBlock: DrupalAdapter['fragmentsAddBlock'] = (e) =>
@@ -556,7 +556,6 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       (e) =>
         useGraphqlMutation('pbReplaceMedia', {
           ...ctx.value,
-          langcode: providedContext.value.language,
           uuid: e.host.uuid,
           fieldName: e.host.fieldName,
           mediaId: e.mediaId,
@@ -566,7 +565,6 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       (e) =>
         useGraphqlMutation('pbReplaceHostEntityMedia', {
           ...ctx.value,
-          langcode: providedContext.value.language,
           fieldName: e.host.fieldName,
           mediaId: e.mediaId,
         }).then(mapMutation)
@@ -576,7 +574,6 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     ) =>
       useGraphqlMutation('pbUpdateHostEntityFieldValue', {
         ...ctx.value,
-        langcode: providedContext.value.language,
         fieldName: e.fieldName,
         value: e.fieldValue,
       }).then(mapMutation)

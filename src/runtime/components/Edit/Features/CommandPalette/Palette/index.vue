@@ -4,6 +4,7 @@
     @keydown="onKeyDown"
     @keyup.stop
     @click.stop
+    @mousemove.once="hasUsedMouse = true"
   >
     <div class="bk-command-palette-input">
       <Icon name="command" />
@@ -25,7 +26,7 @@
         :visible-ids="visibleIds"
         :focused-id="focusedId"
         @close="$emit('close')"
-        @focus="focusedId = $event"
+        @focus="onFocus"
         @select="onSelect($event)"
       />
     </div>
@@ -55,6 +56,14 @@ const emit = defineEmits(['close'])
 const inputEl = ref<HTMLInputElement | null>(null)
 const text = ref('')
 const focusedId = ref('')
+const hasUsedMouse = ref(false)
+
+function onFocus(id: string) {
+  if (!hasUsedMouse.value) {
+    return
+  }
+  focusedId.value = id
+}
 
 type GroupedCommands = {
   id: CommandGroup
@@ -251,7 +260,10 @@ const onKeyDown = (e: KeyboardEvent) => {
     } else {
       focusNext()
     }
-  } else if (e.code === 'ArrowDown') {
+  } else if (
+    e.code === 'ArrowDown' ||
+    (e.code === 'KeyJ' && (e.ctrlKey || e.metaKey))
+  ) {
     e.preventDefault()
     focusNext()
   } else if (e.code === 'ArrowUp') {

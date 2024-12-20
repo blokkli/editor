@@ -6,9 +6,12 @@
         screen
       />
     </Transition>
+
+    <div id="bk-banner-container">
+      <Messages />
+    </div>
   </Teleport>
   <Actions v-if="!isInitializing" />
-  <Messages />
   <Toolbar @loaded="toolbarLoaded = true" />
   <AppMenu v-if="toolbarLoaded" />
   <Features
@@ -107,6 +110,8 @@ const toolbarLoaded = ref(false)
 const featuresLoaded = ref(false)
 const isInitializing = ref(true)
 
+const $t = textProvider(context)
+const state = await editStateProvider(adapter, context, $t)
 const storage = storageProvider()
 const debug = debugProvider(storage)
 const features = featuresProvider()
@@ -115,12 +120,10 @@ const commands = commandsProvider()
 const tour = tourProvider()
 const dropAreas = dropAreasProvider()
 const broadcast = broadcastProvider()
-const ui = uiProvider(storage)
+const ui = uiProvider(storage, state)
 const dom = domProvider(ui, debug)
 const animation = animationProvider(ui)
 const keyboard = keyboardProvider(animation)
-const $t = textProvider(context)
-const state = await editStateProvider(adapter, context, $t)
 const selection = selectionProvider(dom)
 const types = await typesProvider(adapter, selection, context)
 

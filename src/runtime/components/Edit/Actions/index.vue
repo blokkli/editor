@@ -15,6 +15,9 @@
           id="bk-blokkli-item-actions-controls"
           ref="controlsEl"
           class="bk-blokkli-item-actions-controls"
+          :class="{
+            'bk-is-locked': ui.isTransforming.value,
+          }"
         >
           <div id="bk-blokkli-item-actions-title">
             <button
@@ -30,7 +33,8 @@
               @click.prevent="showDropdown = !showDropdown"
             >
               <div class="bk-blokkli-item-actions-title-icon">
-                <ItemIcon v-if="bundleIcon" :bundle="bundleIcon" />
+                <Icon v-if="ui.isTransforming.value" name="loader" />
+                <ItemIcon v-else-if="bundleIcon" :bundle="bundleIcon" />
                 <Icon v-else name="selection" />
               </div>
               <span class="bk-blokkli-item-actions-title-label">{{
@@ -79,7 +83,11 @@ import { getFragmentDefinition } from '#blokkli/definitions'
 
 const { selection, $t, types, state, ui, dom } = useBlokkli()
 
-const editingEnabled = computed(() => state.editMode.value === 'editing')
+const editingEnabled = computed(
+  () =>
+    state.editMode.value === 'editing' ||
+    state.editMode.value === 'translating',
+)
 
 const ACTIONS_HEIGHT = 50
 
@@ -105,6 +113,9 @@ const bundleIcon = computed(() => {
 })
 
 const title = computed(() => {
+  if (ui.transformLabel.value) {
+    return ui.transformLabel.value
+  }
   if (itemBundle.value) {
     if (itemBundle.value.id === 'blokkli_fragment') {
       const fragments = selection.uuids.value
@@ -189,7 +200,11 @@ onBeforeUnmount(() => {
 })
 
 onBlokkliEvent('canvas:draw', () => {
-  if (!selection.blocks.value.length || ui.isMobile.value) {
+  if (
+    !selection.blocks.value.length ||
+    ui.isMobile.value ||
+    selection.isChangingOptions.value
+  ) {
     return
   }
 
@@ -221,8 +236,8 @@ onBlokkliEvent('canvas:draw', () => {
   const padding = ui.visibleViewportPadded.value
   const rect = limitPlacedRect(
     {
-      x: minX,
-      y: minY - ACTIONS_HEIGHT - 15,
+      x: minX - 5 * Math.min(scale, 1),
+      y: minY - ACTIONS_HEIGHT - 15 * Math.min(scale, 1),
       width: scrollWidth,
       height: ACTIONS_HEIGHT,
     },
@@ -238,7 +253,7 @@ onBlokkliEvent('canvas:draw', () => {
   if (el.value) {
     el.value.style.transform = ui.isMobile.value
       ? ''
-      : `translate3d(${Math.round(ideal.x)}px, ${Math.round(ideal.y)}px, 0)`
+      : `translate3d(${ideal.x}px, ${ideal.y}px, 0)`
   }
 })
 
@@ -258,6 +273,12 @@ onBlokkliEvent('plugin:unmount', (e) => {
     return
   }
   mountedPlugins.value = mountedPlugins.value.filter((v) => v.type !== e.id)
+})
+
+watch(ui.isTransforming, function (isTransforming) {
+  if (isTransforming) {
+    showDropdown.value = false
+  }
 })
 </script>
 

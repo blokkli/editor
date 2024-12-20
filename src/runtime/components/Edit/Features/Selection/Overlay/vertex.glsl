@@ -27,11 +27,13 @@ varying float v_thickness;
 varying vec2 v_rect_size;
 varying vec2 v_rect_center;
 varying float v_transition;
+varying float v_rect_id;
+varying float v_rect_width;
 
 void main() {
   // Define the increase size in viewport terms (not affected by u_scale)
   float thickness = (0.5 + smoothstep(0.3, 1.0, u_scale) * 2.5) * u_dpi;
-  float increaseSize = max(thickness, 15.0);
+  float increaseSize = max(thickness, 25.0);
 
   // Calculate the new dimensions of the quad
   vec4 adjusted_quad = a_quad;
@@ -75,10 +77,13 @@ void main() {
   );
   v_quad = transformed_quad;
 
+  v_rect_width = adjusted_quad.x;
+
   // Set color and other varying variables
   v_color = a_rect_type > 0.5 ? u_color_inverted : u_color_default;
   v_rect_radius = a_rect_radius * u_dpi;
   v_thickness = thickness;
+  v_rect_id = a_rect_id;
   v_rect_size = vec2(v_quad.z, v_quad.w);
   v_rect_center = vec2(v_quad.x + v_quad.z / 2.0, v_quad.y + v_quad.w / 2.0); // The pixel-space rectangle center location
   v_transition = smoothstep(0.5, 0.8, u_scale);

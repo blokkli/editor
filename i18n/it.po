@@ -625,6 +625,12 @@ msgstr ""
 "contemporaneamente. Le modifiche a questo elemento saranno pubblicate "
 "immediatamente su tutte le pagine."
 
+msgctxt "libraryDialogReusableInfo"
+msgid ""
+"The library item will be available for placement on other pages once this "
+"page has been published."
+msgstr ""
+
 msgctxt "libraryDialogSubmit"
 msgid "Add to library"
 msgstr "Aggiungi alla biblioteca"

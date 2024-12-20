@@ -84,9 +84,11 @@ const buildEditable = (
   )
 
   if (!config) {
-    throw new Error(
-      `Failed to load editable field config for field "${fieldName}" on entity type "${hostEntityType}" of bundle "${hostEntityBundle}"`,
-    )
+    let message = `Failed to load editable field config for field "${fieldName}" on entity type "${hostEntityType}" of bundle "${hostEntityBundle}"`
+    if (uuid) {
+      message += ` with uuid "${uuid}"`
+    }
+    throw new Error(message)
   }
 
   // Adapter doesn't support editable frames, return.
@@ -157,7 +159,7 @@ defineCommands(() => {
 
   return editables.map((v) => {
     return {
-      id: 'feature:editable:edit:' + v.fieldName,
+      id: 'feature:editable:edit:' + v.host.uuid + ':' + v.fieldName,
       group: 'selection',
       label: $t('editableCommandEdit', 'Edit field "@name"').replace(
         '@name',

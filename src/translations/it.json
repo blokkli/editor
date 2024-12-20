@@ -575,6 +575,10 @@
     "source": "When you add an item to the library, you can use it on multiple pages at the same time. Changes to this item are then immediately published on all pages.",
     "translation": "Aggiungendo un elemento alla biblioteca, puoi utilizzarlo su più pagine contemporaneamente. Le modifiche a questo elemento saranno pubblicate immediatamente su tutte le pagine."
   },
+  "libraryDialogReusableInfo": {
+    "source": "The library item will be available for placement on other pages once this page has been published.",
+    "translation": ""
+  },
   "libraryDialogSubmit": {
     "source": "Add to library",
     "translation": "Aggiungi alla biblioteca"

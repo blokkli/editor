@@ -50,7 +50,7 @@
     </PluginTourItem>
   </Teleport>
 
-  <Teleport to="body">
+  <Teleport to="#bk-banner-container">
     <Banner
       v-if="state.editMode.value === 'translating'"
       :active-language="activeLanguage"
@@ -209,6 +209,15 @@ function onTranslate(items: DraggableExistingBlock[]) {
 onBlokkliEvent('item:doubleClick', function (block) {
   if (editMode.value === 'translating' && canTranslateBlock.value) {
     onTranslate([block])
+  }
+})
+
+onBlokkliEvent('entity:translated', (langcode) => {
+  const targetTranslation = translation.value.translations?.find(
+    (v) => v.id === langcode,
+  )
+  if (targetTranslation) {
+    adapter.changeLanguage(targetTranslation)
   }
 })
 

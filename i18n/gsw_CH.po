@@ -621,6 +621,12 @@ msgstr ""
 "gliichzittig brucht wärde. D'Änderige an däm Elemänt wärde denn sofort uf "
 "allne Sitte publiziert. "
 
+msgctxt "libraryDialogReusableInfo"
+msgid ""
+"The library item will be available for placement on other pages once this "
+"page has been published."
+msgstr ""
+
 msgctxt "libraryDialogSubmit"
 msgid "Add to library"
 msgstr "Zur Bibliothe drzuefüege"
