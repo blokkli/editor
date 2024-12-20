@@ -6,7 +6,7 @@
       $t('diffSidebarTourText', 'Displays all the changes made during editing.')
     "
     icon="diff"
-    weight="-100"
+    weight="-400"
   >
     <DiffView />
   </PluginSidebar>

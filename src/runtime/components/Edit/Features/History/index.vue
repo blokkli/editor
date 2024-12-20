@@ -10,7 +10,7 @@
       )
     "
     icon="history"
-    weight="-100"
+    weight="-800"
   >
     <HistoryList :scrolled-to-end="scrolledToEnd" />
   </PluginSidebar>

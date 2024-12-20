@@ -36,12 +36,16 @@
               :rowspan="Math.max(1, item.props.length)"
               class="bk-diff-bundle"
             >
-              <div class="bk-blokkli-item-label">
+              <button
+                class="bk-blokkli-item-label"
+                :disabled="item.status === 'removed'"
+                @click="scrollToBlock(item.uuid)"
+              >
                 <div class="bk-blokkli-item-label-icon">
                   <ItemIcon :bundle="item.bundle" />
                 </div>
                 <span>{{ getLabel(item.bundle) }}</span>
-              </div>
+              </button>
             </td>
 
             <template v-if="item.props.length > 0">
@@ -124,7 +128,7 @@ interface DiffItem {
   props: DiffItemProp[]
 }
 
-const { types, $t, adapter, state } = useBlokkli()
+const { types, $t, adapter, state, eventBus, dom } = useBlokkli()
 
 const stateBefore = await adapter.loadStateAtIndex!(-1).then((v) =>
   adapter.mapState(v),
@@ -214,10 +218,19 @@ const diffItems = computed<DiffItem[]>(() => {
     }
   })
 
-  return Array.from(diffMap.values())
+  return Array.from(diffMap.values()).sort((a, b) => {
+    const aY = dom.getBlockRect(a.uuid)?.y || 0
+    const bY = dom.getBlockRect(b.uuid)?.y || 0
+    return aY - bY
+  })
 })
 
 function getLabel(bundle: string): string {
   return types.getBlockBundleDefinition(bundle)?.label || bundle
+}
+
+function scrollToBlock(uuid: string) {
+  eventBus.emit('scrollIntoView', { uuid, center: true })
+  eventBus.emit('select', uuid)
 }
 </script>

@@ -4,7 +4,9 @@
     @apply absolute top-0 left-0 w-full h-full;
     container-type: inline-size;
     .bk-blokkli-item-label {
-      @apply pointer-events-none;
+      &[disabled] {
+        @apply pointer-events-none;
+      }
     }
 
     @container (max-width: 600px) {
