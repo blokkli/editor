@@ -92,7 +92,9 @@ const { settings, logger } = defineBlokkliFeature({
     openSidebarOnPaste: {
       type: 'checkbox',
       default: true,
-      label: 'Open sidebar when pasting from clipboard',
+      label: 'Open sidebar when pasting',
+      description:
+        'Automatically opens the sidebar when pasting content from the clipboard.',
       group: 'behavior',
     },
   },

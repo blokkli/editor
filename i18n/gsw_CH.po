@@ -426,8 +426,16 @@ msgctxt "feature_add-list_setting_orientation_option_vertical"
 msgid "Vertical"
 msgstr "Vertikal"
 
+msgctxt "feature_artboard_setting_momentum_description"
+msgid "Applies smooth animations when scrolling or zooming the artboard."
+msgstr ""
+
 msgctxt "feature_artboard_setting_momentum_label"
 msgid "Use smooth scrolling"
+msgstr ""
+
+msgctxt "feature_artboard_setting_persist_description"
+msgid "Stores and restores the last position and zoom factor of the artboard."
 msgstr ""
 
 msgctxt "feature_artboard_setting_persist_label"
@@ -438,24 +446,52 @@ msgctxt "feature_artboard_setting_scrollSpeed_label"
 msgid "Artboard scroll speed"
 msgstr "Scrollgschwindigkeit vo dr Zeicheflächi"
 
+msgctxt "feature_block-add-list_setting_hideDisabledBlocks_description"
+msgid "Hides blocks from the \"Add List\" if they can't be added to anywhere."
+msgstr ""
+
 msgctxt "feature_block-add-list_setting_hideDisabledBlocks_label"
 msgid "Hide blocks that can't be added"
 msgstr ""
 
+msgctxt "feature_clipboard_setting_openSidebarOnPaste_description"
+msgid "Automatically opens the sidebar when pasting content from the clipboard."
+msgstr ""
+
 msgctxt "feature_clipboard_setting_openSidebarOnPaste_label"
-msgid "Open sidebar when pasting from clipboard"
+msgid "Open sidebar when pasting"
 msgstr "Sitteleischte bim Iifüege us dr Zwüscheablag ufmache"
+
+msgctxt "feature_history_setting_useMouseButtons_description"
+msgid ""
+"When enabled you can use the backwards/forwards buttons on your mouse to "
+"undo and redo."
+msgstr ""
 
 msgctxt "feature_history_setting_useMouseButtons_label"
 msgid "Use mouse buttons for undo/redo"
 msgstr "Muustaschte für Rückgängig/Wiederhärstelle bruche"
 
+msgctxt "feature_import-existing_setting_showDialogWhenEmpty_description"
+msgid "Displays the import dialog when starting blökkli if the page is empty."
+msgstr ""
+
 msgctxt "feature_import-existing_setting_showDialogWhenEmpty_label"
-msgid "Show import dialog at start when page is empty"
+msgid "Show import dialog at start"
 msgstr "Importdialog bim Start aazeige wenn d'Sitte leer isch"
+
+msgctxt "feature_publish_setting_closeAfterPublish_description"
+msgid "Immediately closes the editor after successfully publishing or saving."
+msgstr ""
 
 msgctxt "feature_publish_setting_closeAfterPublish_label"
 msgid "Close editor after publishing"
+msgstr ""
+
+msgctxt "feature_settings_setting_lowPerformanceMode_description"
+msgid ""
+"Reduces the animations and interactivity to a minimum for devices with low "
+"performance."
 msgstr ""
 
 msgctxt "feature_settings_setting_lowPerformanceMode_label"
@@ -465,6 +501,12 @@ msgstr ""
 msgctxt "feature_settings_setting_resetAllSettings_label"
 msgid "Reset all settings"
 msgstr "Alli Iistellige Zruggsetze"
+
+msgctxt "feature_settings_setting_useAnimations_description"
+msgid ""
+"Animates UI elements like dialogs or drawers or interactions like drag and "
+"drop or scroll changes."
+msgstr ""
 
 msgctxt "feature_settings_setting_useAnimations_label"
 msgid "Use animations"
@@ -969,6 +1011,10 @@ msgstr ""
 msgctxt "settingsBehaviour"
 msgid "Behaviour"
 msgstr "Verhalte"
+
+msgctxt "settingsBeta"
+msgid "New Features"
+msgstr ""
 
 msgctxt "settingsDialogTitle"
 msgid "Change settings"

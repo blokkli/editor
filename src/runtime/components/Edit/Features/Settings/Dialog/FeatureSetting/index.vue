@@ -10,8 +10,8 @@
       <div class="bk-checkbox-toggle-toggle" />
       <div class="bk-checkbox-toggle-label">
         <div>{{ settingLabel }}</div>
-        <div v-if="setting.description">
-          {{ setting.description }}
+        <div v-if="settingDescription">
+          {{ settingDescription }}
         </div>
       </div>
     </label>
@@ -83,6 +83,22 @@ const settingLabel = computed(() => {
       'feature_' + props.featureId + '_setting_' + props.settingsKey + '_label',
     ) || props.setting.label
   )
+})
+
+const settingDescription = computed(() => {
+  const translated = textTranslation(
+    'feature_' +
+      props.featureId +
+      '_setting_' +
+      props.settingsKey +
+      '_description',
+  )
+
+  if (!translated && 'description' in props.setting) {
+    return props.setting.description
+  }
+
+  return null
 })
 
 const getOptionLabel = (key: string, defaultLabel: string) => {

@@ -46,7 +46,9 @@ const { adapter, settings } = defineBlokkliFeature({
     showDialogWhenEmpty: {
       type: 'checkbox',
       default: true,
-      label: 'Show import dialog at start when page is empty',
+      label: 'Show import dialog at start',
+      description:
+        'Displays the import dialog when starting blökkli if the page is empty.',
       group: 'behavior',
     },
   },

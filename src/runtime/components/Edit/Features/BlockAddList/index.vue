@@ -83,6 +83,7 @@ const { settings } = defineBlokkliFeature({
     hideDisabledBlocks: {
       type: 'checkbox',
       label: "Hide blocks that can't be added",
+      description: `Hides blocks from the "Add List" if they can't be added to anywhere.`,
       group: 'appearance',
       default: false,
     },

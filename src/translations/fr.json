@@ -395,8 +395,16 @@
     "source": "Vertical",
     "translation": ""
   },
+  "feature_artboard_setting_momentum_description": {
+    "source": "Applies smooth animations when scrolling or zooming the artboard.",
+    "translation": ""
+  },
   "feature_artboard_setting_momentum_label": {
     "source": "Use smooth scrolling",
+    "translation": ""
+  },
+  "feature_artboard_setting_persist_description": {
+    "source": "Stores and restores the last position and zoom factor of the artboard.",
     "translation": ""
   },
   "feature_artboard_setting_persist_label": {
@@ -407,24 +415,48 @@
     "source": "Artboard scroll speed",
     "translation": ""
   },
+  "feature_block-add-list_setting_hideDisabledBlocks_description": {
+    "source": "Hides blocks from the \"Add List\" if they can't be added to anywhere.",
+    "translation": ""
+  },
   "feature_block-add-list_setting_hideDisabledBlocks_label": {
     "source": "Hide blocks that can't be added",
     "translation": ""
   },
+  "feature_clipboard_setting_openSidebarOnPaste_description": {
+    "source": "Automatically opens the sidebar when pasting content from the clipboard.",
+    "translation": ""
+  },
   "feature_clipboard_setting_openSidebarOnPaste_label": {
-    "source": "Open sidebar when pasting from clipboard",
+    "source": "Open sidebar when pasting",
+    "translation": ""
+  },
+  "feature_history_setting_useMouseButtons_description": {
+    "source": "When enabled you can use the backwards/forwards buttons on your mouse to undo and redo.",
     "translation": ""
   },
   "feature_history_setting_useMouseButtons_label": {
     "source": "Use mouse buttons for undo/redo",
     "translation": ""
   },
+  "feature_import-existing_setting_showDialogWhenEmpty_description": {
+    "source": "Displays the import dialog when starting blökkli if the page is empty.",
+    "translation": ""
+  },
   "feature_import-existing_setting_showDialogWhenEmpty_label": {
-    "source": "Show import dialog at start when page is empty",
+    "source": "Show import dialog at start",
+    "translation": ""
+  },
+  "feature_publish_setting_closeAfterPublish_description": {
+    "source": "Immediately closes the editor after successfully publishing or saving.",
     "translation": ""
   },
   "feature_publish_setting_closeAfterPublish_label": {
     "source": "Close editor after publishing",
+    "translation": ""
+  },
+  "feature_settings_setting_lowPerformanceMode_description": {
+    "source": "Reduces the animations and interactivity to a minimum for devices with low performance.",
     "translation": ""
   },
   "feature_settings_setting_lowPerformanceMode_label": {
@@ -433,6 +465,10 @@
   },
   "feature_settings_setting_resetAllSettings_label": {
     "source": "Reset all settings",
+    "translation": ""
+  },
+  "feature_settings_setting_useAnimations_description": {
+    "source": "Animates UI elements like dialogs or drawers or interactions like drag and drop or scroll changes.",
     "translation": ""
   },
   "feature_settings_setting_useAnimations_label": {
@@ -902,6 +938,10 @@
   "settingsBehaviour": {
     "source": "Behaviour",
     "translation": "Comportement"
+  },
+  "settingsBeta": {
+    "source": "New Features",
+    "translation": ""
   },
   "settingsDialogTitle": {
     "source": "Change settings",

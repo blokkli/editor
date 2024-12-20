@@ -100,6 +100,7 @@ function extractText(program: any): Extraction | undefined {
 
 type ExtractedFeatureSettings = {
   label: string
+  description?: string
   options?: Record<string, { label: string }>
 }
 
@@ -212,6 +213,14 @@ class Extractor {
               key: 'feature_' + feature.id + '_setting_' + key + '_label',
               defaultText: setting.label,
             })
+
+            if (setting.description) {
+              extractions.push({
+                key:
+                  'feature_' + feature.id + '_setting_' + key + '_description',
+                defaultText: setting.description,
+              })
+            }
 
             if (setting.options) {
               Object.entries(setting.options).forEach(([optionKey, option]) => {

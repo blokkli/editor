@@ -1,7 +1,7 @@
 <template>
   <DialogModal
     :title="$t('settingsDialogTitle', 'Change settings')"
-    :width="700"
+    :width="1000"
     hide-buttons
     icon="cog"
     @cancel="$emit('cancel')"
@@ -12,13 +12,15 @@
           <span>{{ group.label }}</span>
           <span v-if="group.id === 'beta'" class="bk-beta-indicator">BETA</span>
         </h3>
-        <FeatureSetting
-          v-for="setting in group.settings"
-          :key="group.key + setting.settingsKey"
-          :feature-id="setting.featureId"
-          :settings-key="setting.settingsKey"
-          :setting="setting.setting"
-        />
+        <div>
+          <FeatureSetting
+            v-for="setting in group.settings"
+            :key="group.key + setting.settingsKey"
+            :feature-id="setting.featureId"
+            :settings-key="setting.settingsKey"
+            :setting="setting.setting"
+          />
+        </div>
       </div>
     </div>
   </DialogModal>

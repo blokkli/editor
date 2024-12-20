@@ -82,6 +82,8 @@ const { settings } = defineBlokkliFeature({
       type: 'checkbox',
       default: true,
       label: 'Persist position and zoom',
+      description:
+        'Stores and restores the last position and zoom factor of the artboard.',
       group: 'artboard',
       viewports: ['desktop'],
     },
@@ -89,6 +91,8 @@ const { settings } = defineBlokkliFeature({
       type: 'checkbox',
       default: true,
       label: 'Use smooth scrolling',
+      description:
+        'Applies smooth animations when scrolling or zooming the artboard.',
       group: 'artboard',
       viewports: ['desktop'],
     },

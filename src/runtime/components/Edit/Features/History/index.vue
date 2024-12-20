@@ -64,6 +64,8 @@ const { adapter, settings } = defineBlokkliFeature({
     useMouseButtons: {
       type: 'checkbox',
       label: 'Use mouse buttons for undo/redo',
+      description:
+        'When enabled you can use the backwards/forwards buttons on your mouse to undo and redo.',
       default: true,
       group: 'behavior',
       viewports: ['desktop'],

@@ -43,12 +43,16 @@ const { settings } = defineBlokkliFeature({
       type: 'checkbox',
       default: true,
       label: 'Use animations',
+      description:
+        'Animates UI elements like dialogs or drawers or interactions like drag and drop or scroll changes.',
       group: 'advanced',
     },
     lowPerformanceMode: {
       type: 'checkbox',
       default: false,
       label: 'Enable low performance mode',
+      description:
+        'Reduces the animations and interactivity to a minimum for devices with low performance.',
       group: 'advanced',
     },
     resetAllSettings: {

@@ -27,6 +27,8 @@ const { adapter, settings } = defineBlokkliFeature({
     closeAfterPublish: {
       type: 'checkbox',
       label: 'Close editor after publishing',
+      description:
+        'Immediately closes the editor after successfully publishing or saving.',
       default: true,
       group: 'behavior',
     },

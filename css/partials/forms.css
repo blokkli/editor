@@ -50,7 +50,7 @@
 
   .bk-form-section {
     &:not(:first-child) {
-      @apply border-t pt-20 my-20 border-t-mono-300;
+      @apply mt-30;
     }
   }
 
