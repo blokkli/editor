@@ -84,6 +84,7 @@ import diff from 'html-diff-ts'
 
 function getProps(bundle: string, props: any): Record<string, string> {
   const definition = getDefaultDefinition(bundle)
+  // Use custom method that builds the diff props.
   if (definition?.editor?.mapDiffProps) {
     return definition.editor.mapDiffProps(props)
   }
@@ -91,11 +92,16 @@ function getProps(bundle: string, props: any): Record<string, string> {
   if (typeof props === 'object') {
     return Object.entries(props).reduce<Record<string, string>>(
       (acc, [key, value]) => {
-        if (typeof value === 'string') {
-          acc[key] = value
+        if (typeof value === 'string' || typeof value === 'number') {
+          acc[key] = value.toString()
         } else if (typeof value === 'object') {
-          const json = JSON.stringify(value, null, 2)
-          acc[key] = `<pre>${json}</pre>`
+          try {
+            // Fallback to a JSON representation of the data.
+            const json = JSON.stringify(value, null, 2)
+            acc[key] = `<pre>${json}</pre>`
+          } catch {
+            // Noop.
+          }
         }
         return acc
       },
