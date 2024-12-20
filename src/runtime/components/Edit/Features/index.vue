@@ -48,6 +48,10 @@ const availableFeatures = computed(() => {
       return false
     }
 
+    if (v.beta && !features.enabledBetaFeatures.value.includes(v.id)) {
+      return false
+    }
+
     return !v.viewports.length || v.viewports.includes(ui.appViewport.value)
   })
 })

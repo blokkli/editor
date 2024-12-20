@@ -73,6 +73,7 @@
       <div class="bk">
         <div class="bk-sidebar-title">
           <span>{{ title }}</span>
+          <div v-if="beta" class="bk-beta-indicator">BETA</div>
           <button v-if="!ui.isMobile.value" @click.prevent.stop="onDetach">
             <Icon name="expand" />
           </button>
@@ -123,6 +124,7 @@ const props = withDefaults(
     meta?: boolean
     shift?: boolean
     keyCode?: string
+    beta?: boolean
   }>(),
   {
     region: 'right',

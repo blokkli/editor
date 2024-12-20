@@ -10,6 +10,7 @@
       <div v-for="group in groups" :key="group.key" class="bk-form-section">
         <h3 class="bk-settings-group-title">
           <span>{{ group.label }}</span>
+          <span v-if="group.id === 'beta'" class="bk-beta-indicator">BETA</span>
         </h3>
         <FeatureSetting
           v-for="setting in group.settings"
@@ -58,6 +59,8 @@ const getGroupLabel = (key: SettingsGroup): string => {
     return $t('settingsAdvanced', 'Advanced')
   } else if (key === 'artboard') {
     return $t('settingsArtboard', 'Artboard')
+  } else if (key === 'beta') {
+    return $t('settingsBeta', 'New Features')
   }
   return key
 }
@@ -90,37 +93,60 @@ const shouldRenderSetting = (
 const settingTypeOrder = ['checkbox', 'slider', 'method']
 
 const groups = computed<GroupedSettings[]>(() => {
-  return Object.values(
-    features.features.value.reduce<Record<string, GroupedSettings>>(
-      (acc, feature) => {
-        Object.entries(feature.settings || {}).forEach(
-          ([settingsKey, setting]) => {
-            const key: any = `feature:${feature.id}:${settingsKey}`
-            if (shouldRenderSetting(key, setting)) {
-              const group = setting.group || 'advanced'
-              if (!acc[group]) {
-                acc[group] = {
-                  id: group as any,
-                  key: group,
-                  label: getGroupLabel(group),
-                  icon: getGroupIcon(group),
-                  settings: [],
-                }
-              }
+  const settingGroups = features.features.value.reduce<
+    Partial<Record<SettingsGroup, GroupedSettings>>
+  >((acc, feature) => {
+    Object.entries(feature.settings || {}).forEach(([settingsKey, setting]) => {
+      const key: any = `feature:${feature.id}:${settingsKey}`
+      if (shouldRenderSetting(key, setting)) {
+        const group = setting.group || 'advanced'
+        if (!acc[group]) {
+          acc[group] = {
+            id: group as any,
+            key: group,
+            label: getGroupLabel(group),
+            icon: getGroupIcon(group),
+            settings: [],
+          }
+        }
 
-              acc[group].settings.push({
-                featureId: feature.id,
-                settingsKey,
-                setting,
-              })
-            }
-          },
-        )
-        return acc
-      },
-      {},
-    ),
-  )
+        acc[group].settings.push({
+          featureId: feature.id,
+          settingsKey,
+          setting,
+        })
+      }
+    })
+    return acc
+  }, {})
+
+  if (features.betaFeatures.value.length) {
+    if (!settingGroups.beta) {
+      settingGroups.beta = {
+        id: 'beta',
+        key: 'betaFeatures',
+        label: getGroupLabel('beta'),
+        icon: 'bug',
+        settings: [],
+      }
+    }
+
+    features.betaFeatures.value.forEach((v) => {
+      settingGroups.beta!.settings.push({
+        featureId: 'settings',
+        settingsKey: 'beta:' + v.id,
+        setting: {
+          type: 'checkbox',
+          default: false,
+          label: v.label,
+          description: v.description,
+          group: 'beta',
+        },
+      })
+    })
+  }
+
+  return Object.values(settingGroups)
     .map((group) => {
       group.settings
         .sort((a, b) => b.settingsKey.localeCompare(a.settingsKey))

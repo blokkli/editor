@@ -45,44 +45,7 @@
       }
     }
   }
-  .bk-checkbox-toggle {
-    @apply relative flex items-center cursor-pointer h-full text-mono-800 leading-none;
 
-    &:focus-within {
-      input + div {
-        @apply outline outline-accent-950/80 outline-offset-2;
-      }
-    }
-
-    span {
-      @apply font-medium;
-    }
-
-    @media not all and (hover: none) {
-      @apply hover:text-mono-950;
-    }
-    input {
-      @apply sr-only;
-    }
-    input:checked + div {
-      @apply after:translate-x-full after:border-white bg-accent-800;
-    }
-    @media not all and (hover: none) {
-      input:not(:checked):hover + div {
-        @apply bg-mono-500;
-      }
-      input:checked:hover + div {
-        @apply bg-accent-700;
-      }
-    }
-    > div {
-      @apply relative w-[36px] h-20 bg-mono-400 rounded-full;
-      @apply after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-[16px] after:w-[16px];
-    }
-    > span {
-      @apply inline-block pl-10 text-base;
-    }
-  }
   .bk-blokkli-item-options-checkbox {
     @apply relative inline-flex items-center cursor-pointer h-full px-10 text-mono-200;
     @media not all and (hover: none) {

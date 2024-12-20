@@ -9,6 +9,10 @@
 .bk.bk-settings {
   .bk-settings-group-title {
     @apply font-bold mt-10 mb-30 text-xl;
+
+    .bk-beta-indicator {
+      @apply ml-10;
+    }
   }
   .bk-settings-feature-setting + .bk-settings-feature-setting {
     @apply mt-20;

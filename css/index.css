@@ -48,6 +48,7 @@
 @import './indicator.css';
 
 @import './components/button.css';
+@import './components/toggle.css';
 
 @tailwind base;
 @tailwind components;
@@ -362,4 +363,10 @@ html.bk-hide-non-editable {
   left: var(--bk-root-offset-left);
   bottom: var(--bk-root-offset-bottom);
   right: var(--bk-root-offset-right);
+}
+
+.bk {
+  .bk-beta-indicator {
+    @apply bg-accent-700 text-white text-xs uppercase rounded-full font-semibold px-[7px] py-[1px];
+  }
 }

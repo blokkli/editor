@@ -53,8 +53,10 @@
                 type="checkbox"
                 @change="debug.toggleOverlay(overlay.id)"
               />
-              <div />
-              <span>{{ overlay.label }}</span>
+              <div class="bk-checkbox-toggle-toggle" />
+              <div class="bk-checkbox-toggle-label">
+                <div>{{ overlay.label }}</div>
+              </div>
             </label>
           </div>
           <div>
@@ -64,8 +66,10 @@
                 type="checkbox"
                 @change="toggleTransforming"
               />
-              <div />
-              <span>Set transforming</span>
+              <div class="bk-checkbox-toggle-toggle" />
+              <div class="bk-checkbox-toggle-label">
+                <div>Set transforming</div>
+              </div>
             </label>
           </div>
         </div>

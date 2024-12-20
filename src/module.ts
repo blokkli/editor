@@ -349,17 +349,18 @@ export default defineNuxtModule<ModuleOptions>({
 
         const featuresArray = features
           .map((v) => {
-            return `{ id: "${v.id}", dependencies: ${JSON.stringify(
-              v.definition.dependencies || [],
-            )}, viewports: ${JSON.stringify(
-              v.definition.viewports || [],
-            )}, component: ${
-              v.importName
-            }, requiredAdapterMethods: ${JSON.stringify(
-              v.definition.requiredAdapterMethods || [],
-            )}, label: ${JSON.stringify(
-              v.definition.label || '',
-            )}, description: "${v.definition.description || ''}" }`
+            return `{
+  id: "${v.id}",
+  dependencies: ${JSON.stringify(v.definition.dependencies || [])},
+  viewports: ${JSON.stringify(v.definition.viewports || [])},
+  component: ${v.importName},
+  requiredAdapterMethods: ${JSON.stringify(
+    v.definition.requiredAdapterMethods || [],
+  )},
+  label: ${JSON.stringify(v.definition.label || '')},
+  beta: ${JSON.stringify(!!v.definition.beta)},
+  description: "${v.definition.description || ''}"
+}`
           })
           .join(',\n')
 
@@ -375,12 +376,13 @@ export const availableFeaturesAtBuild = ${JSON.stringify(
 export type ValidFeatureKey = ${allFeatureIds.map((v) => '"' + v + '"').join(' | ')}
 
 type FeatureComponent = {
-  id: string
+  id: ValidFeatureKey
   component: any
   requiredAdapterMethods: AdapterMethods[]
   dependencies: ValidFeatureKey[]
   description: string
   label: string
+  beta: boolean
   viewports: Viewport[]
 }
 

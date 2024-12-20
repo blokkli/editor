@@ -3,6 +3,7 @@ export const SETTINGS_GROUP = [
   'artboard',
   'behavior',
   'advanced',
+  'beta',
 ] as const
 export const VIEWPORT = ['mobile', 'desktop'] as const
 

@@ -7,8 +7,13 @@
         class="peer"
         @change="toggleCheckbox"
       />
-      <div />
-      <span>{{ settingLabel }}</span>
+      <div class="bk-checkbox-toggle-toggle" />
+      <div class="bk-checkbox-toggle-label">
+        <div>{{ settingLabel }}</div>
+        <div v-if="setting.description">
+          {{ setting.description }}
+        </div>
+      </div>
     </label>
     <div v-else-if="setting.type === 'radios'">
       <h3 class="bk-form-label">

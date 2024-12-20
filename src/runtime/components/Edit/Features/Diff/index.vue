@@ -7,6 +7,7 @@
     "
     icon="diff"
     weight="-400"
+    beta
   >
     <DiffView />
   </PluginSidebar>
@@ -23,6 +24,7 @@ defineBlokkliFeature({
   icon: 'diff',
   description: 'Displays a diff of all changes in the edit state.',
   requiredAdapterMethods: ['loadStateAtIndex'],
+  beta: true,
 })
 
 const { $t } = useBlokkli()

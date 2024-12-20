@@ -52,10 +52,14 @@
     @apply !font-semibold !font-sans !pl-15 md:!pl-20 !border-b !border-b-mono-300 flex items-center h-50;
     @apply select-none;
 
-    > span {
-      @apply mr-auto;
+    .bk-beta-indicator {
+      @apply mr-auto ml-5;
     }
+
     button {
+      &:first-of-type {
+        @apply ml-auto;
+      }
       @apply h-full px-15 text-mono-700 hover:bg-mono-100 hover:text-mono-900 min-w-[50px] flex items-center justify-center;
       svg {
         @apply w-[1em] h-[1em] fill-current;

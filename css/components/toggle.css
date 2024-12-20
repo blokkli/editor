@@ -1,0 +1,43 @@
+.bk {
+  .bk-checkbox-toggle {
+    @apply relative flex cursor-pointer h-full text-mono-800 leading-none;
+
+    &:focus-within {
+      input + .bk-checkbox-toggle-toggle {
+        @apply outline outline-accent-950/80 outline-offset-2;
+      }
+    }
+
+    .bk-checkbox-toggle-label {
+      div:first-child {
+        @apply font-semibold;
+      }
+      div:nth-child(2) {
+        @apply text-sm text-mono-600;
+      }
+      @apply inline-block pl-10 text-base;
+    }
+
+    @media not all and (hover: none) {
+      @apply hover:text-mono-950;
+    }
+    input {
+      @apply sr-only;
+    }
+    input:checked + .bk-checkbox-toggle-toggle {
+      @apply after:translate-x-full after:border-white bg-accent-800;
+    }
+    @media not all and (hover: none) {
+      input:not(:checked):hover + .bk-checkbox-toggle-toggle {
+        @apply bg-mono-500;
+      }
+      input:checked:hover + .bk-checkbox-toggle-toggle {
+        @apply bg-accent-700;
+      }
+    }
+    .bk-checkbox-toggle-toggle {
+      @apply relative w-[36px] h-20 bg-mono-400 rounded-full mt-[1px];
+      @apply after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-[16px] after:w-[16px];
+    }
+  }
+}
