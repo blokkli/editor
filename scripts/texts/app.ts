@@ -206,6 +206,20 @@ class Extractor {
         eval('result = ' + obj)
         const feature: ExtractedFeature | null = result as any
 
+        if (feature?.label) {
+          extractions.push({
+            key: 'feature_' + feature.id + '_label',
+            defaultText: feature.label,
+          })
+        }
+
+        if (feature?.description) {
+          extractions.push({
+            key: 'feature_' + feature.id + '_description',
+            defaultText: feature.description,
+          })
+        }
+
         if (feature?.settings) {
           Object.keys(feature.settings).forEach((key) => {
             const setting = feature.settings[key]

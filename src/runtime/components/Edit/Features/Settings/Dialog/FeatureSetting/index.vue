@@ -98,7 +98,7 @@ const settingDescription = computed(() => {
     return props.setting.description
   }
 
-  return null
+  return translated
 })
 
 const getOptionLabel = (key: string, defaultLabel: string) => {

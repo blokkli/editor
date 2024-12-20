@@ -1,7 +1,7 @@
 <template>
   <DialogModal
     :title="$t('settingsDialogTitle', 'Change settings')"
-    :width="1000"
+    :width="900"
     hide-buttons
     icon="cog"
     @cancel="$emit('cancel')"
@@ -37,6 +37,8 @@ import type { BlokkliIcon } from '#blokkli/icons'
 import { settingsOverride } from '#blokkli/config'
 
 const { $t, features, ui } = useBlokkli()
+
+const getTranslation = $t
 
 type FeatureSetting = {
   featureId: ValidFeatureKey
@@ -134,14 +136,17 @@ const groups = computed<GroupedSettings[]>(() => {
     }
 
     features.betaFeatures.value.forEach((v) => {
+      const label = getTranslation(`feature_${v.id}_label`) || v.label
+      const description =
+        getTranslation(`feature_${v.id}_description`) || v.description
       settingGroups.beta!.settings.push({
         featureId: 'settings',
         settingsKey: 'beta:' + v.id,
         setting: {
           type: 'checkbox',
           default: false,
-          label: v.label,
-          description: v.description,
+          label,
+          description,
           group: 'beta',
         },
       })

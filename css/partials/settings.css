@@ -9,10 +9,10 @@
 .bk.bk-settings {
   container-type: inline-size;
   .bk-settings-group-title {
-    @apply font-bold mb-15 text-xl;
+    @apply font-bold mb-15 text-xl flex items-center;
 
     .bk-beta-indicator {
-      @apply ml-10;
+      @apply ml-5;
     }
   }
   .bk-settings-feature-setting {
@@ -27,7 +27,7 @@
 
   @container (min-width: 700px) {
     .bk-form-section {
-      @apply grid grid-cols-[250px_1fr] py-15 mt-0;
+      @apply grid grid-cols-[250px_1fr] py-15 mt-0 items-start;
       @apply border-t border-t-mono-300;
       &:first-child {
         @apply border-t-0 pt-0;
