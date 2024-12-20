@@ -41,4 +41,6 @@ const props = defineProps<{
 const selected = defineModel<string[]>()
 
 const isSelected = computed(() => selected.value?.includes(props.mediaId))
+
+// @TODO: Shift-click to select all media items inbetween.
 </script>

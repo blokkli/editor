@@ -257,12 +257,15 @@ export class EditState {
     })
   }
 
-  getMutatedState(entity: Entity, save?: boolean): MutatedState {
+  getMutatedState(
+    entity: Entity,
+    options?: { save?: boolean; index?: number },
+  ): MutatedState {
     const langcode = entity.langcode
     const context = new MutationContext(entity)
 
     const mutations = this.getMutations()
-    const currentIndex = this.currentIndex
+    const currentIndex = options?.index || this.currentIndex
     for (let i = 0; i <= currentIndex; i++) {
       const item = mutations[i]
       if (item) {
@@ -271,10 +274,11 @@ export class EditState {
         mutations[i].configuration = plugin.configuration
       }
     }
+    if (!options?.index) {
+      this.persistMutations(mutations)
+    }
 
     const violations: Validation[] = []
-
-    this.persistMutations(mutations)
 
     const mutatedOptions: Record<string, any> = {}
     const proxiesByFieldKey: Record<string, BlockProxy[]> = {}
@@ -286,11 +290,11 @@ export class EditState {
           ...JSON.parse(JSON.stringify(proxy.overrideOptions)),
         }
       } else {
-        if (save) {
+        if (options?.save) {
           entityStorageManager.storages.block.delete(proxy.block.uuid)
         }
       }
-      if (save) {
+      if (options?.save) {
         Object.entries(proxy.overrideOptions).forEach(([key, value]) => {
           proxy.block.options().setOptionValue(key, value)
         })
@@ -340,13 +344,11 @@ export class EditState {
       })
       violations.push(...blockValidations)
 
-      mutatedFields[key].list.push(
-        mapBlockItem(proxy.block, proxy.overrideOptions),
-      )
-    }
-
-    if (save) {
-      const blockFields: FieldBlocks[] = []
+      if (!proxy.isDeleted) {
+        mutatedFields[key].list.push(
+          mapBlockItem(proxy.block, proxy.overrideOptions),
+        )
+      }
     }
 
     return {

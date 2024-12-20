@@ -286,6 +286,42 @@ msgctxt "deleteError"
 msgid "The block could not be deleted."
 msgstr "L'élément n'a pas pu être supprimé."
 
+msgctxt "diffSidebarTitle"
+msgid "Changes"
+msgstr ""
+
+msgctxt "diffSidebarTourText"
+msgid "Displays all the changes made during editing."
+msgstr ""
+
+msgctxt "diffStatusAdded"
+msgid "Added"
+msgstr ""
+
+msgctxt "diffStatusDeleted"
+msgid "Deleted"
+msgstr ""
+
+msgctxt "diffStatusEdited"
+msgid "Edited"
+msgstr ""
+
+msgctxt "diffTableBundle"
+msgid "Type"
+msgstr ""
+
+msgctxt "diffTableChange"
+msgid "Change"
+msgstr ""
+
+msgctxt "diffTableDiff"
+msgid "Diff"
+msgstr ""
+
+msgctxt "diffTableProperty"
+msgid "Property"
+msgstr ""
+
 msgctxt "droppableEditFormSave"
 msgid "Save"
 msgstr ""

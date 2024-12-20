@@ -295,6 +295,42 @@ msgctxt "deleteError"
 msgid "The block could not be deleted."
 msgstr "Das Element konnte nicht entfernt werden."
 
+msgctxt "diffSidebarTitle"
+msgid "Changes"
+msgstr "Änderungen"
+
+msgctxt "diffSidebarTourText"
+msgid "Displays all the changes made during editing."
+msgstr "Zeigt die Änderungen an die während dem Bearbeiten durchgeführt wurden."
+
+msgctxt "diffStatusAdded"
+msgid "Added"
+msgstr "Hinzugefügt"
+
+msgctxt "diffStatusDeleted"
+msgid "Deleted"
+msgstr "Gelöscht"
+
+msgctxt "diffStatusEdited"
+msgid "Edited"
+msgstr "Bearbeitet"
+
+msgctxt "diffTableBundle"
+msgid "Type"
+msgstr "Typ"
+
+msgctxt "diffTableChange"
+msgid "Change"
+msgstr "Änderung"
+
+msgctxt "diffTableDiff"
+msgid "Diff"
+msgstr "Unterschied"
+
+msgctxt "diffTableProperty"
+msgid "Property"
+msgstr "Eigenschaft"
+
 msgctxt "droppableEditFormSave"
 msgid "Save"
 msgstr "Speichern"
@@ -530,7 +566,7 @@ msgstr "Zeigt eine Liste von verfügbaren Tastenkombinationen an."
 
 msgctxt "history"
 msgid "History"
-msgstr "Änderungen"
+msgstr "Änderungsverlauf"
 
 msgctxt "historyCurrentRevision"
 msgid "Current revision"
@@ -557,8 +593,8 @@ msgid ""
 "See a list of all changes made so far and switch back and forth between "
 "changes."
 msgstr ""
-"Zeigt eine Liste aller Änderungen die gemacht wurden. Springen Sie beliebig "
-"zwischen Änderungen vor und zurück."
+"Zeigt den Verlauf aller Änderungen die gemacht wurden. Springen Sie "
+"beliebig zwischen Änderungen vor und zurück."
 
 msgctxt "historyUndo"
 msgid "Undo"

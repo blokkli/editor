@@ -53,6 +53,7 @@
     "estree-walker-ts": "^1.0.1",
     "fzf": "^0.5.2",
     "get-video-id": "^4.1.7",
+    "html-diff-ts": "^1.4.2",
     "mitt": "^3.0.1",
     "qrcode.vue": "^3.4.1",
     "twgl.js": "^5.5.4"
