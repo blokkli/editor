@@ -213,9 +213,14 @@ export type BlokkliAdapterPublishOptions = {
 
 export interface BlokkliAdapter<T> {
   /**
-   * Load the state for the given langcode.
+   * Load the state.
    */
   loadState(): Promise<T | undefined>
+
+  /**
+   * Load the unchanged state.
+   */
+  loadStateAtIndex?: (index: number) => Promise<T | undefined>
 
   /*
    * Map the state returned by mutations.

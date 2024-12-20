@@ -24,7 +24,7 @@ export default createConfigForNuxt(
       'vue/multi-word-component-names': 'off',
       'vue/no-empty-component-block': 'error',
       'vue/padding-line-between-blocks': 'error',
-      'vue/no-v-for-template-key': 'error',
+      'vue/no-v-for-template-key-on-child': 'error',
       'vue/prefer-true-attribute-shorthand': 'error',
       'vue/component-api-style': 'error',
       'vue/block-lang': [

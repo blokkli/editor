@@ -85,11 +85,13 @@ query pbEditState(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String!
+  $historyIndex: Int
 ) {
   state: getParagraphsEditState(
     entityType: $entityType
     entityUuid: $entityUuid
     langcode: $langcode
+    historyIndex: $historyIndex
   ) {
     ...paragraphsBlokkliEditState
   }

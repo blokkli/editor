@@ -87,6 +87,14 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         ...ctx.value,
       }).then((v) => v?.data.state)
 
+    const loadStateAtIndex: DrupalAdapter['loadStateAtIndex'] = (
+      historyIndex,
+    ) =>
+      useGraphqlQuery('pbEditState', {
+        ...ctx.value,
+        historyIndex,
+      }).then((v) => v?.data.state)
+
     const getDisabledFeatures: DrupalAdapter['getDisabledFeatures'] = () => {
       const features = config.availableFeatures
       const disabled: string[] = []
@@ -822,6 +830,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       addBlockFromClipboardItem,
       changeLanguage,
       getLibraryItemEditUrl,
+      loadStateAtIndex,
     }
   },
 )

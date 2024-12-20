@@ -22,6 +22,10 @@
 import { defineBlokkli, computed } from '#imports'
 import { MediaImage } from '~/app/mock/state/Media/Media'
 
+type Props = {
+  imageReference: MediaImage
+}
+
 const { options, parentType } = defineBlokkli({
   bundle: 'image',
   options: {
@@ -35,12 +39,17 @@ const { options, parentType } = defineBlokkli({
     addBehaviour: 'no-form',
     editTitle: (el) => el.querySelector('img')?.alt,
     getDraggableElement: (el) => el.querySelector('div'),
+    mapDiffProps: (diffProps) => {
+      const url = diffProps.imageReference.url()
+      return {
+        'imageReference.title': diffProps.imageReference.title(),
+        'imageReference.image': `<img src="${url}">`,
+      }
+    },
   },
 })
 
-const props = defineProps<{
-  imageReference: MediaImage
-}>()
+const props = defineProps<Props>()
 
 const url = computed(() => {
   if (props.imageReference instanceof MediaImage) {

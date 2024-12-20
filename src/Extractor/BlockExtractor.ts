@@ -21,7 +21,8 @@ type ExtractedDefinition = {
   icon?: string
   chunkName: string
   componentName: string
-  proxyComponentPath?: string
+  proxyComponent?: string
+  diffComponent?: string
   definition: ExtractedBlockDefinitionInput
   source: string
   fileSource: string
@@ -73,14 +74,17 @@ export default class BlockExtractor {
     }
   }
 
-  async getProxyComponent(componentPath: string): Promise<string | undefined> {
-    const folder = path.dirname(componentPath)
-    const proxyComponentPath = path.join(folder, '/proxy.vue')
+  async getContextComponent(
+    baseComponentPath: string,
+    name: string,
+  ): Promise<string | undefined> {
+    const folder = path.dirname(baseComponentPath)
+    const componentPath = path.join(folder, `/${name}.vue`)
     try {
-      await fs.promises.access(proxyComponentPath, fs.constants.F_OK)
-      return proxyComponentPath
+      await fs.promises.access(componentPath, fs.constants.F_OK)
+      return componentPath
     } catch {
-      // Noop, the icon is optional.
+      // Noop, the component is optional.
     }
   }
 
@@ -109,7 +113,8 @@ export default class BlockExtractor {
 
     if ('bundle' in extracted.definition) {
       const icon = await this.getIcon(filePath)
-      const proxyComponentPath = await this.getProxyComponent(filePath)
+      const proxyComponent = await this.getContextComponent(filePath, 'proxy')
+      const diffComponent = await this.getContextComponent(filePath, 'diff')
 
       if (
         this.definitions[filePath] &&
@@ -125,7 +130,8 @@ export default class BlockExtractor {
         filePath,
         definition: extracted.definition,
         icon,
-        proxyComponentPath,
+        proxyComponent,
+        diffComponent,
         chunkName: (extracted.definition.chunkName || 'global') as any,
         componentName:
           'BlokkliComponent_' +
@@ -259,27 +265,39 @@ export default class BlockExtractor {
         return acc
       }, {})
 
-    const proxyComponents = Object.values(this.definitions).reduce<
-      Record<string, string>
-    >((acc, v) => {
-      if (v?.proxyComponentPath) {
-        acc[v.definition.bundle] = v.proxyComponentPath
+    const buildContextComponents = (
+      name: keyof Pick<ExtractedDefinition, 'diffComponent' | 'proxyComponent'>,
+    ) => {
+      const proxyComponents = Object.values(this.definitions).reduce<
+        Record<string, string>
+      >((acc, v) => {
+        if (v?.[name]) {
+          acc[v.definition.bundle] = v[name]
+        }
+
+        return acc
+      }, {})
+
+      const imports = Object.entries(proxyComponents)
+        .map(([bundle, proxyComponentPath]) => {
+          return `import ${name}_${bundle} from '${proxyComponentPath}'`
+        })
+        .join('\n')
+
+      const maps = Object.keys(proxyComponents)
+        .map((bundle) => {
+          return `'${bundle}': ${name}_${bundle}`
+        })
+        .join(',  \n')
+
+      return {
+        imports,
+        maps,
       }
+    }
 
-      return acc
-    }, {})
-
-    const proxyImports = Object.entries(proxyComponents)
-      .map(([bundle, proxyComponentPath]) => {
-        return `import proxyComponent_${bundle} from '${proxyComponentPath}'`
-      })
-      .join('\n')
-
-    const proxyMaps = Object.keys(proxyComponents)
-      .map((bundle) => {
-        return `'${bundle}': proxyComponent_${bundle}`
-      })
-      .join(',  \n')
+    const proxy = buildContextComponents('proxyComponent')
+    const diff = buildContextComponents('diffComponent')
 
     const allFragmentNames = Object.values(this.fragmentDefinitions)
       .filter(falsy)
@@ -289,14 +307,19 @@ export default class BlockExtractor {
     return `import type { GlobalOptionsKey, ValidFieldListTypes, BlockBundleWithNested } from './generated-types'
 import type { BlockDefinitionInput, BlockDefinitionOptionsInput, FragmentDefinitionInput } from '#blokkli/types'
 export const globalOptions = ${JSON.stringify(globalOptions, null, 2)} as const
-${proxyImports}
+${proxy.imports}
+${diff.imports}
 
 type DefinitionItem = BlockDefinitionInput<BlockDefinitionOptionsInput, GlobalOptionsKey[]>
 
 ${definitionDeclarations.join('\n')}
 
 const PROXY_COMPONENTS: Record<string, any> = {
-  ${proxyMaps}
+  ${proxy.maps}
+}
+
+const DIFF_COMPONENTS: Record<string, any> = {
+  ${diff.maps}
 }
 
 export const icons: Record<string, string> = ${JSON.stringify(icons)}
@@ -334,6 +357,10 @@ export function getDefinition(bundle: string, fieldListType: ValidFieldListTypes
 
 export function getBlokkliItemProxyComponent(bundle: string): any {
   return PROXY_COMPONENTS[bundle]
+}
+
+export function getBlokkliItemDiffComponent(bundle: string): any {
+  return DIFF_COMPONENTS[bundle]
 }
 
 /**

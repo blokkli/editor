@@ -85,6 +85,10 @@ export default defineNuxtConfig({
     },
 
     featureImports: ['./blokkli/DemoFeature.vue'],
+
+    diff: {
+      component: '~/components/Blokkli/Diff.vue',
+    },
   },
 
   svgIconSprite: {

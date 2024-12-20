@@ -16,6 +16,14 @@ export class MutationDelete extends Mutation {
       if (proxy) {
         proxy.markAsDeleted()
       }
+      proxy?.block.getBlockFields().forEach((blockField) => {
+        blockField.list.forEach((childItem) => {
+          const childProxy = context.getProxy(childItem.uuid)
+          if (childProxy) {
+            childProxy.markAsDeleted()
+          }
+        })
+      })
     })
   }
 }

@@ -138,6 +138,16 @@ export default defineBlokkliEditAdapter((ctx) => {
       const mutatedState = editState.getMutatedState(page)
       return Promise.resolve(mutatedState)
     },
+    loadStateAtIndex(index: number) {
+      const page = entityStorageManager.getContent(ctx.value.entityUuid)
+      if (!page) {
+        throw new Error(
+          'Failed to load page with UUID: ' + ctx.value.entityUuid,
+        )
+      }
+      const mutatedState = editState.getMutatedState(page, { index })
+      return Promise.resolve(mutatedState)
+    },
     getDisabledFeatures() {
       return Promise.resolve([])
     },
