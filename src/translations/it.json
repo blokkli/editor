@@ -255,6 +255,42 @@
     "source": "The block could not be deleted.",
     "translation": "L'elemento non può essere rimosso."
   },
+  "diffSidebarTitle": {
+    "source": "Changes",
+    "translation": ""
+  },
+  "diffSidebarTourText": {
+    "source": "Displays all the changes made during editing.",
+    "translation": ""
+  },
+  "diffStatusAdded": {
+    "source": "Added",
+    "translation": ""
+  },
+  "diffStatusDeleted": {
+    "source": "Deleted",
+    "translation": ""
+  },
+  "diffStatusEdited": {
+    "source": "Edited",
+    "translation": ""
+  },
+  "diffTableBundle": {
+    "source": "Type",
+    "translation": ""
+  },
+  "diffTableChange": {
+    "source": "Change",
+    "translation": ""
+  },
+  "diffTableDiff": {
+    "source": "Diff",
+    "translation": ""
+  },
+  "diffTableProperty": {
+    "source": "Property",
+    "translation": ""
+  },
   "droppableEditFormSave": {
     "source": "Save",
     "translation": ""

@@ -1,8 +1,10 @@
 <template>
   <PluginSidebar
     id="diff"
-    :title="$t('diffSidebarTitle', 'Diff')"
-    :tour-text="$t('diffSidebarTourText', 'Displays all the changes made.')"
+    :title="$t('diffSidebarTitle', 'Changes')"
+    :tour-text="
+      $t('diffSidebarTourText', 'Displays all the changes made during editing.')
+    "
     icon="diff"
     weight="-100"
   >

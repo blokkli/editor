@@ -255,6 +255,42 @@
     "source": "The block could not be deleted.",
     "translation": "Das Element konnte nicht entfernt werden."
   },
+  "diffSidebarTitle": {
+    "source": "Changes",
+    "translation": "Änderungen"
+  },
+  "diffSidebarTourText": {
+    "source": "Displays all the changes made during editing.",
+    "translation": "Zeigt die Änderungen an die während dem Bearbeiten durchgeführt wurden."
+  },
+  "diffStatusAdded": {
+    "source": "Added",
+    "translation": "Hinzugefügt"
+  },
+  "diffStatusDeleted": {
+    "source": "Deleted",
+    "translation": "Gelöscht"
+  },
+  "diffStatusEdited": {
+    "source": "Edited",
+    "translation": "Bearbeitet"
+  },
+  "diffTableBundle": {
+    "source": "Type",
+    "translation": "Typ"
+  },
+  "diffTableChange": {
+    "source": "Change",
+    "translation": "Änderung"
+  },
+  "diffTableDiff": {
+    "source": "Diff",
+    "translation": "Unterschied"
+  },
+  "diffTableProperty": {
+    "source": "Property",
+    "translation": "Eigenschaft"
+  },
   "droppableEditFormSave": {
     "source": "Save",
     "translation": "Speichern"
@@ -473,7 +509,7 @@
   },
   "history": {
     "source": "History",
-    "translation": "Änderungen"
+    "translation": "Änderungsverlauf"
   },
   "historyCurrentRevision": {
     "source": "Current revision",
@@ -497,7 +533,7 @@
   },
   "historyTourText": {
     "source": "See a list of all changes made so far and switch back and forth between changes.",
-    "translation": "Zeigt eine Liste aller Änderungen die gemacht wurden. Springen Sie beliebig zwischen Änderungen vor und zurück."
+    "translation": "Zeigt den Verlauf aller Änderungen die gemacht wurden. Springen Sie beliebig zwischen Änderungen vor und zurück."
   },
   "historyUndo": {
     "source": "Undo",
