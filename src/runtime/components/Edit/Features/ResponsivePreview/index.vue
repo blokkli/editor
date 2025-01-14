@@ -4,6 +4,7 @@
     v-slot="{ width, height, isDetached }"
     :title="$t('responsivePreviewTitle', 'Responsive Preview')"
     :tour-text="tourText"
+    :disabled="!state.canEdit.value"
     :min-width="375"
     :min-height="375"
     :size="size"
@@ -83,7 +84,7 @@ defineBlokkliFeature({
     'Provides a responsive preview of the current edit state in an iframe.',
 })
 
-const { $t, storage } = useBlokkli()
+const { $t, storage, state } = useBlokkli()
 
 const selectedViewportId = storage.use('mobile-preview:viewport', 'iphone-se')
 const isRotated = storage.use('mobile-preview:rotated', false)

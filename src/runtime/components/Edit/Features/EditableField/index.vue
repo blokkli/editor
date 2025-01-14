@@ -41,7 +41,8 @@ type Editable = {
   value?: string
 }
 
-const { selection, adapter, types, $t, dom, runtimeConfig } = useBlokkli()
+const { selection, adapter, types, $t, dom, runtimeConfig, state } =
+  useBlokkli()
 const editable = ref<Editable | null>(null)
 const hasTransition = ref(false)
 
@@ -117,6 +118,9 @@ const buildEditable = (
 }
 
 onBlokkliEvent('editable:focus', (e) => {
+  if (!state.canEdit.value) {
+    return
+  }
   hasTransition.value = !editable.value
   editable.value = buildEditable(e.fieldName, e.uuid) || null
   if (editable.value) {

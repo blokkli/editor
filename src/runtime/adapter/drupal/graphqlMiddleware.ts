@@ -82,10 +82,17 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       return Promise.resolve(config.allTypes)
     }
 
-    const loadState: DrupalAdapter['loadState'] = () =>
-      useGraphqlQuery('pbEditState', {
+    const loadState: DrupalAdapter['loadState'] = async () => {
+      const state = await useGraphqlQuery('pbEditState', {
         ...ctx.value,
       }).then((v) => v?.data.state)
+
+      if (!state) {
+        throw new Error('Failed to load state.')
+      }
+
+      return state
+    }
 
     const loadStateAtIndex: DrupalAdapter['loadStateAtIndex'] = (
       historyIndex,

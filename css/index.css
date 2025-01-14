@@ -365,6 +365,18 @@ html.bk-hide-non-editable {
   right: var(--bk-root-offset-right);
 }
 
+.bk-state-unavailable {
+  @apply bg-red-normal p-20 text-white;
+
+  h2 {
+    @apply text-2xl font-bold;
+  }
+
+  p {
+    @apply text-lg;
+  }
+}
+
 .bk {
   .bk-beta-indicator {
     @apply bg-accent-700 text-white text-xs uppercase rounded-full font-semibold px-[7px] py-[1px];

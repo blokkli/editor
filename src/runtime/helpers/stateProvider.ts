@@ -54,6 +54,7 @@ export type StateProvider = {
   editMode: Readonly<Ref<EditMode>>
   mutatedEntity: Readonly<Ref<any>>
   canEdit: ComputedRef<boolean>
+  stateAvailable: ComputedRef<boolean>
   isLoading: Readonly<Ref<boolean>>
   getFieldBlockCount: (key: string) => number
   getBlockBundleCount: (bundle: string) => number
@@ -67,6 +68,8 @@ export default async function (
   context: ComputedRef<AdapterContext>,
   $t: TextProvider,
 ): Promise<StateProvider> {
+  const stateLoaded = ref(false)
+  const stateLoadError = ref(false)
   const owner = ref<BlokkliOwner | null>(null)
   const refreshKey = ref('')
   const mutatedFields = ref<MutatedField[]>([])
@@ -291,13 +294,26 @@ export default async function (
   }
 
   async function loadState() {
-    const state = await adapter.loadState()
-    if (state) {
+    try {
+      const state = await adapter.loadState()
+      if (!state) {
+        throw new Error('Missing state.')
+      }
       setContext(adapter.mapState(state))
+      stateLoadError.value = false
+      stateLoaded.value = true
+    } catch {
+      stateLoadError.value = true
+      stateLoaded.value = false
     }
   }
 
-  const canEdit = computed(() => !!owner.value?.currentUserIsOwner)
+  const canEdit = computed(
+    () =>
+      stateLoaded.value &&
+      !!owner.value?.currentUserIsOwner &&
+      !stateLoadError.value,
+  )
   const isTranslation = computed(
     () =>
       context.value.language !== translation.value.sourceLanguage &&
@@ -331,7 +347,12 @@ export default async function (
 
   await loadState()
 
+  const stateAvailable = computed(
+    () => stateLoaded.value && !stateLoadError.value,
+  )
+
   return {
+    stateAvailable,
     refreshKey,
     owner: readonly(owner),
     mutatedFields,

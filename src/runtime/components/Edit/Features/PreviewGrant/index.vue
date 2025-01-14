@@ -3,6 +3,7 @@
     v-if="!ui.isMobile.value"
     id="preview_with_smartphone"
     :title="$t('previewWithSmartphone', 'Preview (with smartphone)')"
+    :disabled="!state.canEdit.value"
     :tour-text="
       $t(
         'previewWithSmartphoneTourText',
@@ -54,7 +55,7 @@ const { adapter } = defineBlokkliFeature({
   viewports: ['desktop'],
 })
 
-const { $t, ui } = useBlokkli()
+const { $t, ui, state } = useBlokkli()
 
 const qrCodeVisible = ref(false)
 const previewGrantUrl = ref<string | undefined | null>('')

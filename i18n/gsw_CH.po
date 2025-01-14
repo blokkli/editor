@@ -1438,6 +1438,16 @@ msgctxt "singleComment"
 msgid "comment"
 msgstr "Kommentar"
 
+msgctxt "stateUnavailableText"
+msgid ""
+"This could be due to missing permissions or a temporary problem. Please try "
+"again later."
+msgstr ""
+
+msgctxt "stateUnavailableTitle"
+msgid "The edit state could not be loaded."
+msgstr ""
+
 msgctxt "structureToolbarLabel"
 msgid "Structure"
 msgstr "Struktur"

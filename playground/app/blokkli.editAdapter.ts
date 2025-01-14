@@ -129,6 +129,7 @@ export default defineBlokkliEditAdapter((ctx) => {
   const adapter: BlokkliAdapter<MutatedState> = {
     mediaLibraryGetResults,
     loadState() {
+      // throw new Error('Failed to load state')
       const page = entityStorageManager.getContent(ctx.value.entityUuid)
       if (!page) {
         throw new Error(

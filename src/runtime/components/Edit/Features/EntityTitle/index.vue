@@ -3,6 +3,7 @@
     <button
       ref="buttonEl"
       class="bk-toolbar-button"
+      :disabled="!state.canEdit.value"
       @click="eventBus.emit('editEntity')"
     >
       <div class="bk-toolbar-title">

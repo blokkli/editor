@@ -107,7 +107,7 @@ const isGlobalProxyMode = inject<ComputedRef<boolean> | null>(
   null,
 )
 const isInReusable = inject(INJECT_IS_IN_REUSABLE, false)
-const isPreview = inject<boolean>(INJECT_IS_PREVIEW, false)
+const isPreview = inject<ComputedRef<boolean> | null>(INJECT_IS_PREVIEW, null)
 const isNested = inject(INJECT_IS_NESTED, false)
 const nestingLevel = inject<number>(INJECT_NESTING_LEVEL, 0)
 const mutatedFields = inject<Record<string, MutatedField> | null>(
@@ -179,7 +179,13 @@ function filterVisible(item?: FieldListItemTyped | FieldListItem): boolean {
 }
 
 const filteredList = computed<FieldListItemTyped[]>(() => {
-  if (mutatedFields && !isInReusable && editContext && fieldKey.value) {
+  if (
+    mutatedFields &&
+    !isInReusable &&
+    editContext &&
+    fieldKey.value &&
+    (isPreview?.value || isEditing)
+  ) {
     return ((mutatedFields[fieldKey.value] || {}).list || [])
       .map((v) => {
         const mutatedOptions = editContext.mutatedOptions[v.uuid] || {}

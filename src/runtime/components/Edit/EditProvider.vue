@@ -9,6 +9,21 @@
 
     <div id="bk-banner-container">
       <Messages />
+      <div v-if="!state.stateAvailable.value" class="bk-state-unavailable">
+        <h2>
+          {{
+            $t('stateUnavailableTitle', 'The edit state could not be loaded.')
+          }}
+        </h2>
+        <p>
+          {{
+            $t(
+              'stateUnavailableText',
+              'This could be due to missing permissions or a temporary problem. Please try again later.',
+            )
+          }}
+        </p>
+      </div>
     </div>
   </Teleport>
   <Actions v-if="!isInitializing" />

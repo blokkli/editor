@@ -117,6 +117,7 @@ const props = withDefaults(
     icon: BlokkliIcon
     weight?: string | number
     renderAlways?: boolean
+    disabled?: boolean
     region?: 'left' | 'right'
     minWidth?: number
     minHeight?: number
@@ -149,7 +150,7 @@ const detachedKey = computed(() => 'sidebar:detached:' + props.id)
 const storageKey = computed(() => 'sidebar:active:' + props.region)
 const isDetached = storage.use(detachedKey, false)
 const isDisabled = computed(
-  () => props.editOnly && state.editMode.value !== 'editing',
+  () => props.editOnly && state.editMode.value !== 'editing' && !props.disabled,
 )
 const activeSidebar = storage.use(storageKey, '')
 

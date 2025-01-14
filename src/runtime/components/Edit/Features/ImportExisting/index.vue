@@ -80,7 +80,8 @@ onMounted(() => {
   if (
     isEmpty.value &&
     !state.mutations.value.length &&
-    settings.value.showDialogWhenEmpty
+    settings.value.showDialogWhenEmpty &&
+    state.canEdit.value
   ) {
     showModal.value = true
   }

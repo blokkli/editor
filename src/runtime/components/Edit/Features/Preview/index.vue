@@ -4,6 +4,7 @@
     :title="$t('previewNewWindow', 'Preview (new window)')"
     region="after-menu"
     icon="open_in_new"
+    :disabled="!state.canEdit.value"
     :tour-text="
       $t(
         'previewNewWindowTourText',
@@ -25,7 +26,7 @@ defineBlokkliFeature({
   description: 'Provides a button to open a preview in a new window.',
 })
 
-const { $t } = useBlokkli()
+const { $t, state } = useBlokkli()
 
 const route = useRoute()
 

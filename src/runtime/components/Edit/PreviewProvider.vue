@@ -62,7 +62,7 @@ const mutatedEntity = computed(
   () => mutatedEntityFromState.value || props.entity,
 )
 
-const { data, refresh } = await useAsyncData(() =>
+const { data, refresh, error } = await useAsyncData(() =>
   adapter.loadState().then((v) => adapter.mapState(v)),
 )
 
@@ -94,8 +94,10 @@ const updateState = () => {
 
 updateState()
 
+const isPreview = computed(() => !error.value)
+
 provide(INJECT_MUTATED_FIELDS_MAP, mutatedFieldsMap)
-provide(INJECT_IS_PREVIEW, true)
+provide(INJECT_IS_PREVIEW, isPreview)
 provide<ItemEditContext>(INJECT_EDIT_CONTEXT, {
   mutatedOptions,
   eventBus,
@@ -127,6 +129,11 @@ const onMouseDown = () => {
  * update.
  */
 function checkChangedDate() {
+  // State loading has failed, so we can return here; no need to poll.
+  if (!isPreview.value) {
+    return
+  }
+
   clearTimeout(timeout)
 
   const delay = adapter.getLastChanged ? 1000 : 5000

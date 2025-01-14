@@ -1347,6 +1347,14 @@
     "source": "comment",
     "translation": ""
   },
+  "stateUnavailableText": {
+    "source": "This could be due to missing permissions or a temporary problem. Please try again later.",
+    "translation": ""
+  },
+  "stateUnavailableTitle": {
+    "source": "The edit state could not be loaded.",
+    "translation": ""
+  },
   "structureToolbarLabel": {
     "source": "Structure",
     "translation": "Structure"
