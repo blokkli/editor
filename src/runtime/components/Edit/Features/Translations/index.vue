@@ -116,7 +116,20 @@ const { translation, editMode } = state
 
 const isOpen = ref(false)
 
-const isDropdown = computed(() => ui.isMobile.value || items.value.length > 5)
+const isDropdown = computed(() => {
+  // Always a dropdown on mobile.
+  if (ui.isMobile.value) {
+    return true
+  }
+
+  // It is a dropdown if all langcodes combined is greater than 15.
+  // That way up to 7 languages with 2-char langcodes are displayed as radio buttons.
+  // This handles cases where langcodes are e.g. 'en-US', 'en-GB', 'de-CH', etc.
+  // In this case it switches to a dropdown. This is better than relying on the number
+  // languages.
+  const allCodes = items.value.map((v) => v.code).join('')
+  return allCodes.length > 15
+})
 const activeLangcode = computed(() => context.value.language)
 const activeLanguage = computed<Language>(() => {
   return (

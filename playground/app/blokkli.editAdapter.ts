@@ -187,10 +187,18 @@ export default defineBlokkliEditAdapter((ctx) => {
               id: 'en',
               name: 'English',
             },
+            // {
+            //   id: 'en-US',
+            //   name: 'English (United States)',
+            // },
             {
               id: 'de',
               name: 'German',
             },
+            // {
+            //   id: 'de-CH',
+            //   name: 'German (Switzerland)',
+            // },
             {
               id: 'fr',
               name: 'French',
