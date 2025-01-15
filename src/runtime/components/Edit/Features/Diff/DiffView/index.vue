@@ -130,7 +130,7 @@ interface DiffItem {
 
 const { types, $t, adapter, state, eventBus, dom } = useBlokkli()
 
-const stateBefore = await adapter.loadStateAtIndex!(-1).then((v) =>
+const stateBefore = await adapter.loadStateAtIndex!(-1).then((v: any) =>
   adapter.mapState(v),
 )
 
