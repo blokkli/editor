@@ -103,6 +103,7 @@ const props = withDefaults(
     tag?: string
     language?: string
     editLabel?: string
+    editPath?: string
 
     /**
      * When set to true, during editing, everything except the provider element will be hidden.
@@ -114,6 +115,7 @@ const props = withDefaults(
     language: '',
     editLabel: '',
     entity: undefined,
+    editPath: undefined,
   },
 )
 
@@ -145,7 +147,7 @@ const showIndicator = computed(
 
 function edit() {
   router.push({
-    path: route.path,
+    path: props.editPath || route.path,
     query: {
       blokkliEditing: props.entityUuid,
       language: props.language,
