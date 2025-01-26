@@ -17,6 +17,7 @@
     :proxy-mode="proxyMode"
     :tag="tag"
     :global-proxy-mode="!!isGlobalProxyMode"
+    :should-render-item="shouldRenderItem"
   />
   <component
     :is="tag"
@@ -146,6 +147,11 @@ const props = withDefaults(
      * Renders proxy blocks during editing.
      */
     proxyMode?: boolean
+
+    /**
+     * Determine whether an item should be rendered.
+     */
+    shouldRenderItem?: (item: FieldListItem | FieldListItemTyped) => boolean
   }>(),
   {
     list: () => [],
@@ -155,6 +161,7 @@ const props = withDefaults(
     nonEmptyClass: '',
     allowedFragments: () => [],
     dropAlignment: undefined,
+    shouldRenderItem: undefined,
   },
 )
 
@@ -171,11 +178,20 @@ const fieldKey = computed<string | undefined>(() => {
 const fieldListType = computed(() => props.fieldListType)
 
 function filterVisible(item?: FieldListItemTyped | FieldListItem): boolean {
+  if (!item) {
+    return false
+  }
+
   // The block is always rendered during editing.
   if (isEditing) {
     return true
   }
-  return isVisibleByOptions(item, providerEntity.value.language)
+
+  const isVisible = isVisibleByOptions(item, providerEntity.value.language)
+  const isVisibleCustom = props.shouldRenderItem
+    ? props.shouldRenderItem(item)
+    : true
+  return isVisible && isVisibleCustom
 }
 
 const filteredList = computed<FieldListItemTyped[]>(() => {

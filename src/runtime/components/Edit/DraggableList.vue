@@ -98,6 +98,7 @@ import {
   INJECT_FIELD_PROXY_MODE,
   INJECT_IS_EDITING,
 } from '#blokkli/helpers/symbols'
+import type { FieldListItemTyped } from '#blokkli/generated-types'
 
 const { dom, types, runtimeConfig, selection } = useBlokkli()
 
@@ -118,12 +119,14 @@ const props = withDefaults(
     proxyMode?: boolean
     globalProxyMode?: boolean
     nestingLevel: number
+    shouldRenderItem?: (item: FieldListItem | FieldListItemTyped) => boolean
   }>(),
   {
     tag: 'div',
     allowedFragments: undefined,
     dropAlignment: undefined,
     language: undefined,
+    shouldRenderItem: undefined,
   },
 )
 
@@ -195,7 +198,16 @@ const fieldAttributes = computed(() => {
 // Ideally this is handled as an overlay on top of the blocks, similar to how
 // selection or multi-select works.
 function isMuted(item?: FieldListItem) {
-  return !isVisibleByOptions(item, props.language)
+  if (!item) {
+    return true
+  }
+
+  const isVisible = isVisibleByOptions(item, props.language)
+  const isVisibleCustom = props.shouldRenderItem
+    ? props.shouldRenderItem(item)
+    : true
+
+  return !(isVisible && isVisibleCustom)
 }
 
 watch(root, function (newRoot) {
