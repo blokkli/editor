@@ -313,13 +313,13 @@ export default defineNuxtModule<ModuleOptions>({
       features,
     }
 
-    const allFeatureIds = extractedFeatures.map((v) => v.id)
-
     if (moduleOptions.alterFeatures) {
       featuresContext.features = await Promise.resolve(
         moduleOptions.alterFeatures(featuresContext),
       )
     }
+
+    const allFeatureIds = extractedFeatures.map((v) => v.id)
 
     // The custom feature components.
     const featureComponents = addTemplate({
