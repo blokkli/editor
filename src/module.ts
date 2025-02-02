@@ -319,7 +319,12 @@ export default defineNuxtModule<ModuleOptions>({
       )
     }
 
-    const allFeatureIds = extractedFeatures.map((v) => v.id)
+    // Create an array of all feature IDs, including onces that have been
+    // removed or added by users.
+    const allFeatureIds = [
+      ...extractedFeatures.map((v) => v.id),
+      ...featuresContext.features.map((v) => v.id),
+    ].filter(onlyUnique)
 
     // The custom feature components.
     const featureComponents = addTemplate({
