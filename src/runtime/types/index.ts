@@ -1262,7 +1262,7 @@ export type FeatureDefinition<
   /**
    * The unique ID of the feature.
    */
-  id: T
+  id: string
 
   /**
    * The label of the feature.
