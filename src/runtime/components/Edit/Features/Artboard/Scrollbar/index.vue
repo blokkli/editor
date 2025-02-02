@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { type Artboard, type ArtboardPlugin, scrollbar } from 'artboard-deluxe'
+import { type Artboard, type PluginScrollbar, scrollbar } from 'artboard-deluxe'
 import { onBeforeUnmount, onMounted, ref } from '#imports'
 
 const props = defineProps<{
@@ -22,7 +22,7 @@ const props = defineProps<{
 
 const el = ref<HTMLDivElement>()
 const thumb = ref<HTMLButtonElement>()
-let scrollbarPlugin: ArtboardPlugin | null = null
+let scrollbarPlugin: PluginScrollbar | null = null
 
 onMounted(() => {
   if (el.value && thumb.value) {

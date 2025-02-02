@@ -65,11 +65,11 @@ import {
   type ArtboardOptions,
   type Artboard,
   type PluginWheelOptions,
+  type PluginWheelFactory,
   touch,
   wheel,
   mouse,
   dom as domPlugin,
-  type PluginWheel,
 } from 'artboard-deluxe'
 const { settings } = defineBlokkliFeature({
   id: 'artboard',
@@ -155,7 +155,7 @@ const saveState = () => {
   }
 }
 
-let pluginWheel: PluginWheel | null = null
+let pluginWheel: PluginWheelFactory | null = null
 
 const wheelOptions = computed<PluginWheelOptions>(() => {
   return {

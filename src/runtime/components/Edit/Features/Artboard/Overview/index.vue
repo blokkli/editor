@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { type Artboard, type ArtboardPlugin, overview } from 'artboard-deluxe'
+import { type Artboard, type PluginOverview, overview } from 'artboard-deluxe'
 import { onBeforeUnmount, onMounted, ref, useBlokkli, computed } from '#imports'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
@@ -40,7 +40,7 @@ const overviewArtboardEl = ref<HTMLDivElement>()
 const overviewVisibleEl = ref<HTMLDivElement>()
 const canvas = ref<HTMLCanvasElement>()
 
-let pluginOverview: ArtboardPlugin | null = null
+let pluginOverview: PluginOverview | null = null
 
 function updateCanvas() {
   const ctx = canvas.value?.getContext('2d')
