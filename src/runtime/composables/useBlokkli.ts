@@ -9,5 +9,12 @@ import type { BlokkliApp } from '#blokkli/types'
  * composable in normal rendering does not work.
  */
 export function useBlokkli(): BlokkliApp {
-  return inject(INJECT_APP) as BlokkliApp
+  const app = inject<BlokkliApp>(INJECT_APP)
+  if (!app) {
+    throw new Error(
+      'The useBlokkli composable was called while not in edit mode.',
+    )
+  }
+
+  return app
 }
