@@ -37,7 +37,7 @@
   <DragInteractions v-if="!isInitializing" />
   <AnimationCanvas v-if="!isInitializing" />
   <SystemRequirements />
-  <slot :mutated-entity="mutatedEntity" />
+  <slot v-if="!isInitializing" :mutated-entity="mutatedEntity" />
 </template>
 
 <script lang="ts" setup generic="T">
@@ -176,15 +176,13 @@ onMounted(() => {
   if (props.isolate) {
     document.documentElement.classList.add('bk-isolate-provider')
   }
-  nextTick(() => {
-    isInitializing.value = false
-  })
 
   document.documentElement.addEventListener('touchmove', onTouchMove)
   document.documentElement.addEventListener('touchstart', onTouchStart)
   setRootClasses()
   baseLogger.log('EditProvider mounted')
   dom.init()
+  isInitializing.value = false
   broadcast.emit('editorLoaded', { uuid: props.entityUuid })
 })
 

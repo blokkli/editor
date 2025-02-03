@@ -583,7 +583,11 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
   const dragElementCache: Map<string, HTMLElement> = new Map()
 
   function handleNodeAdded(node: Node) {
-    if (node instanceof HTMLElement && node.dataset.uuid) {
+    if (!(node instanceof HTMLElement)) {
+      return
+    }
+
+    if (node.dataset.uuid) {
       const item = buildDraggableItem(node)
       if (item && item.itemType === 'existing') {
         const observableElement = getElementToObserve(
@@ -596,6 +600,15 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
         resizeObserver.observe(observableElement)
         registeredBlocks[item.uuid] = node
       }
+    } else if (
+      node.dataset.fieldName &&
+      node.dataset.fieldKey &&
+      node.dataset.fieldCardinality
+    ) {
+      const blocks = node.querySelectorAll('[data-element-type="existing"]')
+      for (const block of blocks) {
+        handleNodeAdded(block)
+      }
     }
   }
 
@@ -603,6 +616,10 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     if (node instanceof HTMLElement && node.dataset.uuid) {
       const uuid = node.dataset.uuid
       const el = registeredBlocks[uuid]
+      // The block has already been added before, but the
+      if (el !== node) {
+        return
+      }
       if (el) {
         intersectionObserver.unobserve(el)
         resizeObserver.unobserve(el)
@@ -621,8 +638,13 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
   const mutationObserverCallback = function (mutationsList: MutationRecord[]) {
     for (const mutation of mutationsList) {
       if (mutation.type === 'childList') {
-        mutation.addedNodes.forEach(handleNodeAdded)
-        mutation.removedNodes.forEach(handleNodeRemoved)
+        for (const node of mutation.removedNodes) {
+          handleNodeRemoved(node)
+        }
+
+        for (const node of mutation.addedNodes) {
+          handleNodeAdded(node)
+        }
       }
     }
   }
