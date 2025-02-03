@@ -115,7 +115,7 @@ const groups = computed<GroupedSettings[]>(() => {
         }
 
         acc[group].settings.push({
-          featureId: feature.id,
+          featureId: feature.id as ValidFeatureKey,
           settingsKey,
           setting,
         })
