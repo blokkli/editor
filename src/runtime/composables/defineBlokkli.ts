@@ -5,16 +5,8 @@ import {
   INJECT_FIELD_LIST_TYPE,
   INJECT_REUSABLE_OPTIONS,
   INJECT_PROVIDER_BLOCKS,
-  INJECT_FIELD_USES_PROXY,
 } from '../helpers/symbols'
-import {
-  computed,
-  inject,
-  type ComputedRef,
-  getCurrentInstance,
-  onMounted,
-  onBeforeUnmount,
-} from '#imports'
+import { computed, inject, type ComputedRef } from '#imports'
 import type {
   BlockDefinitionInput,
   BlockDefinitionOptionsInput,
@@ -149,48 +141,6 @@ export function defineBlokkli<
   const parentType = computed(() => item?.value.parentType)
 
   const isEditing = !!item?.value.isEditing
-
-  const fieldUsesProxy = inject(INJECT_FIELD_USES_PROXY, false)
-
-  onMounted(() => {
-    if (
-      // If the field uses proxy mode we don't want to register the block here.
-      fieldUsesProxy ||
-      !item?.value ||
-      !isEditing ||
-      !editContext ||
-      !editContext.dom ||
-      // Block is already registered by the from_library block.
-      fromLibraryOptions ||
-      // The defineBlokkliFragment composable registers the block itself.
-      config.bundle === 'blokkli_fragment'
-    ) {
-      return
-    }
-
-    // Register the DOM element of this block.
-    const instance = getCurrentInstance()
-    editContext.dom.registerBlock(
-      uuid,
-      instance,
-      config.bundle,
-      fieldListType.value,
-      item.value.parentType,
-    )
-  })
-
-  onBeforeUnmount(() => {
-    if (
-      !fieldUsesProxy &&
-      isEditing &&
-      editContext &&
-      editContext.dom &&
-      uuid &&
-      config.bundle !== 'blokkli_fragment'
-    ) {
-      editContext.dom.unregisterBlock(uuid)
-    }
-  })
 
   return {
     uuid,

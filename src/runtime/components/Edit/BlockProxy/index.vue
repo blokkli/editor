@@ -34,7 +34,7 @@ import type {
   BlockBundleWithNested,
   ValidFieldListTypes,
 } from '#blokkli/generated-types'
-import { computed, useBlokkli, onMounted, onBeforeUnmount, ref } from '#imports'
+import { computed, useBlokkli, ref } from '#imports'
 import {
   getDefinition,
   getBlokkliItemProxyComponent,
@@ -83,7 +83,7 @@ const proxyBundle = computed(
   () => libraryItemProps.value?.block?.bundle || props.bundle,
 )
 
-const { dom, types, runtimeConfig } = useBlokkli()
+const { types, runtimeConfig } = useBlokkli()
 
 const root = ref<HTMLElement | null>(null)
 
@@ -124,19 +124,5 @@ const fieldLayout = computed<FieldConfig[][]>(() => {
   return types.fieldConfig
     .forEntityTypeAndBundle(runtimeConfig.itemEntityType, proxyBundle.value)
     .map((config) => [config])
-})
-
-onMounted(() => {
-  dom.registerBlock(
-    props.uuid,
-    root.value,
-    props.bundle,
-    props.fieldListType,
-    props.parentType as BlockBundleWithNested,
-  )
-})
-
-onBeforeUnmount(() => {
-  dom.unregisterBlock(props.uuid)
 })
 </script>

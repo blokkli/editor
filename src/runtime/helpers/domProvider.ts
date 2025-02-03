@@ -1,4 +1,3 @@
-import type { ComponentInternalInstance } from 'vue'
 import { reactive, ref, computed, type ComputedRef } from '#imports'
 import type {
   DraggableExistingBlock,
@@ -111,15 +110,6 @@ export type DomProvider = {
     fieldName: string,
   ): BlokkliFieldElement | undefined
 
-  registerBlock: (
-    uuid: string,
-    instance: ComponentInternalInstance | null | HTMLElement,
-    bundle: string,
-    fieldListType: ValidFieldListTypes,
-    parentBlockBundle?: BlockBundleWithNested,
-  ) => void
-  unregisterBlock: (uuid: string) => void
-
   registerField: (
     entity: EntityContext,
     fieldName: string,
@@ -165,24 +155,6 @@ export type DomProvider = {
   getDragElement: (block: DraggableExistingBlock) => HTMLElement | undefined
 }
 
-const getVisibleBlockElement = (
-  instance: ComponentInternalInstance | HTMLElement,
-): HTMLElement | undefined => {
-  if (instance instanceof HTMLElement) {
-    return instance
-  }
-  if (instance.vnode.el instanceof HTMLElement) {
-    return instance.vnode.el
-  } else if (
-    instance?.vnode.el instanceof Text &&
-    instance?.vnode.el.nextElementSibling instanceof HTMLElement
-  ) {
-    // In case of text nodes (e.g. when the first node of the component
-    // is a comment, find the first matching sibling that is an element.
-    return instance.vnode.el.nextElementSibling
-  }
-}
-
 function rectWithTime(rect: Rectangle, time?: number): MeasuredBlockRect {
   return {
     ...rect,
@@ -191,6 +163,7 @@ function rectWithTime(rect: Rectangle, time?: number): MeasuredBlockRect {
 }
 
 export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
+  const artboardElement = ui.artboardElement()
   const logger = debug.createLogger('DomProvider')
   const mutationsReady = ref(true)
   const intersectionReady = ref(false)
@@ -294,7 +267,8 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     }
   }
 
-  const observer = useDelayedIntersectionObserver(intersectionCallback)
+  const intersectionObserver =
+    useDelayedIntersectionObserver(intersectionCallback)
 
   const registeredBlocks = reactive<Record<string, HTMLElement | undefined>>({})
   const registeredFields = reactive<
@@ -331,7 +305,7 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
   ) => {
     const key = `${entity.uuid}:${fieldName}`
     registeredFields[key] = { element, entity, fieldName }
-    observer.observe(element)
+    intersectionObserver.observe(element)
   }
 
   const updateFieldElement = (
@@ -342,17 +316,17 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     const key = `${entity.uuid}:${fieldName}`
     const existingElement = registeredFields[key]?.element
     if (existingElement) {
-      observer.unobserve(existingElement)
+      intersectionObserver.unobserve(existingElement)
     }
     registeredFields[key] = { entity, fieldName, element }
-    observer.observe(element)
+    intersectionObserver.observe(element)
   }
 
   const unregisterField = (entity: EntityContext, fieldName: string) => {
     const key = `${entity.uuid}:${fieldName}`
     const el = registeredFields[key]?.element
     if (el) {
-      observer.unobserve(el)
+      intersectionObserver.unobserve(el)
     }
     visibleFields.delete(key)
     registeredFields[key] = undefined
@@ -381,54 +355,6 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     }
 
     return el
-  }
-
-  const registerBlock = (
-    uuid: string,
-    instance: ComponentInternalInstance | null | HTMLElement,
-    bundle: string,
-    fieldListType: ValidFieldListTypes,
-    parentBlockBundle?: BlockBundleWithNested,
-  ) => {
-    if (registeredBlocks[uuid]) {
-      console.error(
-        'Trying to register block with already existing UUID: ' + uuid,
-      )
-    }
-    if (!instance) {
-      console.error(
-        `Failed to get component instance of block with UUID "${uuid}"`,
-      )
-      return
-    }
-    const el = getVisibleBlockElement(instance)
-    if (!el) {
-      console.error(
-        `Failed to locate block component element for UUID "${uuid}". Make sure the block renders at least one root element that is always visible.`,
-      )
-      return
-    }
-    const observableElement = getElementToObserve(
-      el,
-      bundle,
-      fieldListType,
-      parentBlockBundle,
-    )
-    observer.observe(observableElement)
-    resizeObserver.observe(observableElement)
-    registeredBlocks[uuid] = el
-  }
-
-  const unregisterBlock = (uuid: string) => {
-    const el = registeredBlocks[uuid]
-    if (el) {
-      observer.unobserve(el)
-      resizeObserver.unobserve(el)
-    }
-    registeredBlocks[uuid] = undefined
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    delete blockRects[uuid]
-    visibleBlocks.delete(uuid)
   }
 
   const findBlock = (uuid: string): DraggableExistingBlock | undefined => {
@@ -648,7 +574,7 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
   })
 
   function init() {
-    observer.init()
+    intersectionObserver.init()
     intersectionReady.value = true
     logger.log('IntersectionObserver initialized')
   }
@@ -656,24 +582,57 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
   const dragElementUuidMap = new WeakMap<Node, string>()
   const dragElementCache: Map<string, HTMLElement> = new Map()
 
-  // Callback function to execute when mutations are observed
-  const callback = function (mutationsList: MutationRecord[]) {
-    for (const mutation of mutationsList) {
-      if (mutation.type === 'childList') {
-        mutation.removedNodes.forEach((node) => {
-          const uuid = dragElementUuidMap.get(node)
-          // Delete the drag element from the map.
-          dragElementUuidMap.delete(node)
-          if (uuid) {
-            dragElementCache.delete(uuid)
-          }
-        })
+  function handleNodeAdded(node: Node) {
+    if (node instanceof HTMLElement && node.dataset.uuid) {
+      const item = buildDraggableItem(node)
+      if (item && item.itemType === 'existing') {
+        const observableElement = getElementToObserve(
+          node,
+          item.itemBundle,
+          item.hostFieldListType,
+          item.hostBundle as BlockBundleWithNested,
+        )
+        intersectionObserver.observe(observableElement)
+        resizeObserver.observe(observableElement)
+        registeredBlocks[item.uuid] = node
       }
     }
   }
 
-  // Create an observer instance linked to the callback function
-  const mutationObserver = new MutationObserver(callback)
+  function handleNodeRemoved(node: Node) {
+    if (node instanceof HTMLElement && node.dataset.uuid) {
+      const uuid = node.dataset.uuid
+      const el = registeredBlocks[uuid]
+      if (el) {
+        intersectionObserver.unobserve(el)
+        resizeObserver.unobserve(el)
+        dragElementUuidMap.delete(el)
+      }
+      dragElementUuidMap.delete(node)
+      dragElementCache.delete(uuid)
+      registeredBlocks[uuid] = undefined
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete blockRects[uuid]
+      visibleBlocks.delete(uuid)
+    }
+  }
+
+  // Callback function to execute when mutations are observed
+  const mutationObserverCallback = function (mutationsList: MutationRecord[]) {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'childList') {
+        mutation.addedNodes.forEach(handleNodeAdded)
+        mutation.removedNodes.forEach(handleNodeRemoved)
+      }
+    }
+  }
+
+  const mutationObserver = new MutationObserver(mutationObserverCallback)
+
+  mutationObserver.observe(artboardElement, {
+    subtree: true,
+    childList: true,
+  })
 
   function getDragElement(block: DraggableExistingBlock) {
     const cached = dragElementCache.get(block.uuid)
@@ -702,8 +661,6 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     findClosestBlock,
     getDropElementMarkup,
     findField,
-    registerBlock,
-    unregisterBlock,
     getAllDroppableFields,
     findClosestEntityContext,
     getVisibleBlocks,

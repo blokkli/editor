@@ -1,20 +1,10 @@
-import {
-  INJECT_EDIT_CONTEXT,
-  INJECT_FRAGMENT_CONTEXT,
-} from '../helpers/symbols'
+import { INJECT_FRAGMENT_CONTEXT } from '../helpers/symbols'
 import { getRuntimeOptionValue } from '../helpers/runtimeHelpers'
-import {
-  computed,
-  getCurrentInstance,
-  inject,
-  onBeforeUnmount,
-  onMounted,
-} from '#imports'
+import { computed, inject } from '#imports'
 import type {
   BlockDefinitionOptionsInput,
   DefineBlokkliContext,
   FragmentDefinitionInput,
-  ItemEditContext,
 } from '#blokkli/types'
 import type { GlobalOptionsKey } from '#blokkli/generated-types'
 import { globalOptionsDefaults } from '#blokkli/default-global-options'
@@ -28,8 +18,6 @@ export function defineBlokkliFragment<
     INJECT_FRAGMENT_CONTEXT,
     null,
   )
-  const editContext = inject<ItemEditContext | null>(INJECT_EDIT_CONTEXT, null)
-
   const optionKeys: string[] = [
     ...Object.keys(config.options || {}),
     ...(config.globalOptions || []),
@@ -57,27 +45,6 @@ export function defineBlokkliFragment<
     })
 
     return result
-  })
-
-  onMounted(() => {
-    if (editContext && editContext.dom && ctx) {
-      // Block registration in defineBlokkli() is skipped for fragment blocks.
-      // So we need to do it here.
-      const instance = getCurrentInstance()
-      editContext.dom.registerBlock(
-        ctx.uuid,
-        instance,
-        'blokkli_fragment',
-        ctx.fieldListType.value,
-        ctx.parentType.value,
-      )
-    }
-  })
-
-  onBeforeUnmount(() => {
-    if (editContext && ctx && ctx.uuid && editContext.dom) {
-      editContext.dom.unregisterBlock(ctx.uuid)
-    }
   })
 
   return { ...ctx, options } as any
