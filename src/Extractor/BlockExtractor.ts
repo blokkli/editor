@@ -132,7 +132,9 @@ export default class BlockExtractor {
         icon,
         proxyComponent,
         diffComponent,
-        chunkName: (extracted.definition.chunkName || 'global') as any,
+        chunkName: this.isBuild
+          ? ((extracted.definition.chunkName || 'global') as any)
+          : 'global',
         componentName:
           'BlokkliComponent_' +
           extracted.definition.bundle +
@@ -156,7 +158,9 @@ export default class BlockExtractor {
       this.fragmentDefinitions[filePath] = {
         filePath,
         definition: extracted.definition,
-        chunkName: (extracted.definition.chunkName || 'global') as any,
+        chunkName: this.isBuild
+          ? ((extracted.definition.chunkName || 'global') as any)
+          : 'global',
         componentName: 'BlokkliFragmentComponent_' + extracted.definition.name,
         source: extracted.source,
         fileSource,
@@ -631,20 +635,28 @@ const fragmentChunkMapping: Record<string, string> = ${JSON.stringify(
       2,
     )}
 
+function componentOrFunction(component: any) {
+  if (typeof component === 'object') {
+    return component
+  }
+
+  return defineAsyncComponent(() => component())
+}
+
 export function getBlokkliItemComponent(bundle: string, fieldListType?: string, parentBundle?: string): any {
   const forFieldListType = 'block_' + bundle + '__field_list_type_' + fieldListType
   if (global[forFieldListType]) {
-    return global[forFieldListType]
+    return componentOrFunction(global[forFieldListType])
   }
   if (parentBundle) {
     const forParentBundle = 'block_' + bundle + '__parent_block_' + parentBundle
     if (global[forParentBundle]) {
-      return global[forParentBundle]
+      return componentOrFunction(global[forParentBundle])
     }
   }
   const key = 'block_' + bundle
   if (global[key]) {
-    return global[key]
+    return componentOrFunction(global[key])
   }
   const chunkName = chunkMapping[key]
   if (chunkName) {
@@ -657,7 +669,7 @@ export function getBlokkliItemComponent(bundle: string, fieldListType?: string, 
 export function getBlokkliFragmentComponent(name: string): any {
   const key = 'fragment_' + name
   if (globalFragments[key]) {
-    return globalFragments[key]
+    return componentOrFunction(globalFragments[key])
   }
   const chunkName = fragmentChunkMapping[key]
   if (chunkName) {
@@ -687,7 +699,16 @@ export function getBlokkliFragmentComponent(name: string): any {
       })
       .filter(falsy)
     const imports = definitions.map((v) => {
-      return `import ${v.componentName} from '${v.filePath}'`
+      if (this.isBuild) {
+        // In the build bundle the component can directly be imported.
+        return `import ${v.componentName} from '${v.filePath}'`
+      } else {
+        // In dev mode, we always want to async import the component. This is
+        // the only way to prevent circular dependencies which would trigger a
+        // full refresh whenever a block component with a <BlokkliField> is
+        // updated, esentially breaking HMR.
+        return `const ${v.componentName} = () => import('${v.filePath}')`
+      }
     })
     const map = definitions.reduce<string[]>((acc, v) => {
       if ('bundle' in v.definition) {

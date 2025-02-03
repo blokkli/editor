@@ -726,7 +726,7 @@ export const forceDefaultLanguage: boolean = ${JSON.stringify(
     await generateOptionsSchema()
 
     getChunkNames().forEach((chunkName) => {
-      if (chunkName !== 'global') {
+      if (chunkName !== 'global' && !nuxt.options.dev) {
         const template = addTemplate({
           write: true,
           filename: `blokkli/chunk-${chunkName}.ts`,
@@ -745,7 +745,9 @@ export const forceDefaultLanguage: boolean = ${JSON.stringify(
       write: true,
       filename: 'blokkli/imports.ts',
       getContents: () => {
-        return blockExtractor.generateImportsTemplate(getChunkNames())
+        return blockExtractor.generateImportsTemplate(
+          nuxt.options.dev ? ['global'] : getChunkNames(),
+        )
       },
       options: {
         blokkli: true,
