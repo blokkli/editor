@@ -68,11 +68,8 @@ html {
 }
 
 .bk {
-  @apply font-sans;
-
+  @apply font-sans text-base text-mono-950 tracking-normal;
   border-color: theme('colors.mono.200');
-
-  letter-spacing: 0;
 
   &.bk-loading-overlay {
     @apply bg-mono-100/90 absolute top-0 left-0 w-full h-full z-init-overlay  flex items-center justify-center;
