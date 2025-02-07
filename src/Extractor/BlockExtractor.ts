@@ -422,7 +422,7 @@ export const getFragmentDefinition = (name: string): FragmentDefinitionInput<Rec
   ): string {
     const defaults = Object.entries(globalOptions).reduce<Record<string, any>>(
       (acc, [key, option]) => {
-        if (option.default) {
+        if (option.default !== undefined && option.default !== null) {
           acc[key] = {
             default: option.default,
             type: option.type,
