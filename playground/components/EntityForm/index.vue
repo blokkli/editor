@@ -39,7 +39,7 @@
 
 <script lang="ts" setup>
 import { computed, ref } from '#imports'
-import { falsy } from '#blokkli/helpers'
+import { falsy } from '~/helpers'
 import { Field } from '~/app/mock/state/Field'
 import { FieldIcon } from '~/app/mock/state/Field/Icon'
 import { FieldText } from '~/app/mock/state/Field/Text'

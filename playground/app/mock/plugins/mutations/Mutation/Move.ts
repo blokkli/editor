@@ -1,6 +1,6 @@
 import { Mutation } from '../Mutation'
 import type { MutationContext } from '~/app/mock/state/EditState'
-import { falsy } from '#blokkli/helpers'
+import { falsy } from '~/helpers'
 
 export type MutationMoveArgs = {
   uuids: string[]

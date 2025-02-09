@@ -5,7 +5,7 @@ import type {
   GetMediaLibraryFunction,
   MutationResponseLike,
 } from '#blokkli/adapter'
-import { falsy } from '#blokkli/helpers'
+import { falsy } from '~/helpers'
 import type {
   AssistantResultMarkup,
   CommentItem,

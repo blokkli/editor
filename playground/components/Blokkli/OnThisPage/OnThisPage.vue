@@ -13,7 +13,7 @@
 
 <script lang="ts" setup>
 import type { FieldListItemTyped } from '#blokkli/generated-types'
-import { falsy } from '#blokkli/helpers'
+import { falsy } from '~/helpers'
 import { defineBlokkli, computed } from '#imports'
 
 const { rootBlocks } = defineBlokkli({

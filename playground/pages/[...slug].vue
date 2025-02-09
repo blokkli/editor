@@ -6,7 +6,7 @@
       entity-type="content"
       entity-bundle="page"
       :entity-uuid="page.uuid"
-      :can-edit="true"
+      :can-edit
       :language="language"
       :entity="pageValues"
     >
@@ -69,6 +69,8 @@ const uuid = computed(() => {
 
   return '1'
 })
+
+const canEdit = computed(() => !!route.query.blokkliEditing)
 
 const page = entityStorageManager.getContent(uuid.value)
 

@@ -1,4 +1,4 @@
-import { falsy } from '#blokkli/helpers'
+import { falsy } from '~/helpers'
 import { BlockText } from '~/app/mock/state/Block/Text'
 import { BlockProxy, type MutationContext } from '../../../state/EditState'
 import { Mutation } from './../Mutation'
