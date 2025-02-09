@@ -1,5 +1,5 @@
 .bk-library-dialog-list {
-  @apply grid gap-20 mt-20;
+  @apply grid gap-20;
   @container (min-width: 700px) {
     @apply grid-cols-2;
   }
@@ -71,7 +71,18 @@
 }
 
 .bk-library-dialog {
-  @apply p-20;
+  .bk-form-group,
+  .bk-lead {
+    @apply px-20 mt-20;
+  }
+
+  .bk-library-dialog-content {
+    @apply px-20 mb-20;
+  }
+}
+
+.bk-library-pagination {
+  @apply bg-white sticky bottom-0 z-50;
 }
 
 .bk.bk-library-edit-overlay {

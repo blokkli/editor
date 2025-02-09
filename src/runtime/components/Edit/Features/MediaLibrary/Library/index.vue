@@ -70,15 +70,7 @@
       </button>
     </div>
 
-    <div class="bk-pagination">
-      <button :disabled="page === 0" @click="page--">
-        <Icon name="arrow-left" />
-      </button>
-      <div>{{ page + 1 }} / {{ totalPages }}</div>
-      <button :disabled="page >= totalPages - 1" @click="page++">
-        <Icon name="arrow-right" />
-      </button>
-    </div>
+    <Pagination v-model="page" :total-pages />
   </div>
 </template>
 
@@ -91,7 +83,7 @@ import {
   watch,
   nextTick,
 } from '#imports'
-import { Sortli, Icon } from '#blokkli/components'
+import { Sortli, Icon, Pagination } from '#blokkli/components'
 import type { MediaLibraryFilter, MediaLibraryGetResults } from './../types'
 import type { BlokkliIcon } from '#blokkli/icons'
 import Item from './Item.vue'

@@ -13,6 +13,7 @@ import Highlight from './Highlight/index.vue'
 import ViewportBlockingRect from './ViewportBlockingRect/index.vue'
 import ScrollBoundary from './ScrollBoundary/index.vue'
 import InfoBox from './InfoBox/index.vue'
+import Pagination from './Pagination/index.vue'
 
 export {
   ItemIcon,
@@ -30,4 +31,5 @@ export {
   ViewportBlockingRect,
   ScrollBoundary,
   InfoBox,
+  Pagination,
 }

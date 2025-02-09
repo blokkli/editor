@@ -79,8 +79,9 @@ export default defineBlokkliEditAdapter((ctx) => {
     bundle: 'select'
     text: 'text'
   }> = (e) => {
+    const perPage = 4
     const bundle = e.filters.bundle
-    const items: MediaLibraryItem[] = entityStorageManager
+    const allItems: MediaLibraryItem[] = entityStorageManager
       .getStorage('media')
       .query(bundle && bundle !== 'all' ? { bundle } : {})
       .map((media) => {
@@ -102,6 +103,8 @@ export default defineBlokkliEditAdapter((ctx) => {
 
         return true
       })
+
+    const items = allItems.slice(e.page * perPage, e.page * perPage + perPage)
     return Promise.resolve({
       filters: {
         text: {
@@ -121,8 +124,8 @@ export default defineBlokkliEditAdapter((ctx) => {
         },
       },
       items,
-      total: 253,
-      perPage: 16,
+      total: allItems.length,
+      perPage,
     })
   }
 
