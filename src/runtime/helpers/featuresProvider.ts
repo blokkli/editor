@@ -1,8 +1,5 @@
 import type { FeatureDefinition, AdapterMethods } from '#blokkli/types'
-import {
-  type ValidFeatureKey,
-  featureComponents,
-} from '#blokkli-runtime/features'
+import { type ValidFeatureKey, featureComponents } from '#blokkli/features'
 import { computed, ref, type ComputedRef } from '#imports'
 import type { StorageProvider } from './storageProvider'
 import { falsy } from '.'

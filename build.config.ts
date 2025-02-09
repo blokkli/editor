@@ -24,6 +24,7 @@ export default defineBuildConfig({
     'magic-string',
     'estree-walker',
     'acorn',
+    'pathe',
     'webpack-sources',
     'webpack-virtual-modules',
     '@jridgewell/sourcemap-codec',

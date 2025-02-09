@@ -8,7 +8,7 @@ import {
 } from '#imports'
 import type { BlokkliAdapter, AdapterMethods } from '#blokkli/adapter'
 import type { FeatureDefinition } from '#blokkli/types'
-import type { ValidFeatureKey } from '#blokkli-runtime/features'
+import type { ValidFeatureKey } from '#blokkli/features'
 import { settingsOverride } from '#blokkli/config'
 import type { DebugLogger } from '#blokkli/helpers/debugProvider'
 import { INJECT_EDIT_LOGGER } from '#blokkli/helpers/symbols'

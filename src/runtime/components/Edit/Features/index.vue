@@ -8,7 +8,7 @@
 
 <script lang="ts" setup>
 import { useBlokkli, onMounted, nextTick, computed } from '#imports'
-import { featureComponents } from '#blokkli-runtime/features'
+import { featureComponents } from '#blokkli/features'
 
 const emit = defineEmits(['loaded'])
 

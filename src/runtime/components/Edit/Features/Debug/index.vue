@@ -126,7 +126,7 @@ import {
 import { PluginSidebar, PluginDebugOverlay } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 import { icons, type BlokkliIcon } from '#blokkli/icons'
-import { featureComponents } from '#blokkli-runtime/features'
+import { featureComponents } from '#blokkli/features'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import DebugViewport from './Viewport/index.vue'
 import DebugRects from './Rects/index.vue'

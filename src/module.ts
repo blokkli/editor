@@ -483,7 +483,7 @@ ${featuresArray}
         blokkli: true,
       },
     })
-    nuxt.options.alias['#blokkli-runtime/features'] = featureComponents.dst
+    nuxt.options.alias['#blokkli/features'] = featureComponents.dst
 
     // Generate the features JSON file when the playground is built.
     // This is used for generating the blökkli feature docs.
