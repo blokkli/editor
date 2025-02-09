@@ -12,7 +12,7 @@
         <div class="bk-blokkli-item-label-icon">
           <ItemIcon :bundle="bundle" />
         </div>
-        <span>{{ label }}</span>
+        <span>{{ bundleLabel }}: {{ label }}</span>
       </div>
     </div>
     <div
@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, provide } from '#imports'
+import { computed, provide, useBlokkli } from '#imports'
 
 import { getDefaultDefinition } from '#blokkli/definitions'
 import type { FieldListItem } from '#blokkli/types'
@@ -45,14 +45,20 @@ import {
   INJECT_PROVIDER_BLOCKS,
 } from '#blokkli/helpers/symbols'
 
-const componentProps = defineProps<{
+const props = defineProps<{
   uuid: string
   label?: string
   bundle: string
   item: FieldListItem
 }>()
 
-const definition = computed(() => getDefaultDefinition(componentProps.bundle))
+const { types } = useBlokkli()
+
+const bundleLabel = computed(
+  () => types.getBlockBundleDefinition(props.bundle)?.label || props.bundle,
+)
+
+const definition = computed(() => getDefaultDefinition(props.bundle))
 
 const previewWidth = computed(() => definition.value?.editor?.previewWidth)
 const renderPreview = computed(

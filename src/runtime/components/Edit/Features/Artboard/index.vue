@@ -56,6 +56,7 @@ import {
 } from '#imports'
 import type { Coord } from '#blokkli/types'
 import { PluginToolbarButton, PluginViewOption } from '#blokkli/plugins'
+import { asValidNumber } from '#blokkli/helpers'
 import Overview from './Overview/index.vue'
 import Scrollbar from './Scrollbar/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
@@ -71,6 +72,7 @@ import {
   mouse,
   dom as domPlugin,
 } from 'artboard-deluxe'
+
 const { settings } = defineBlokkliFeature({
   id: 'artboard',
   label: 'Artboard',
@@ -189,8 +191,7 @@ function getArtboard(): Artboard {
       pluginWheel,
       domPlugin({
         element: ui.artboardElement(),
-        setInitTransformFromRect: !savedState.value || !settings.value.persist,
-        precision: 0.1,
+        precision: 1,
         restoreStyles: true,
       }),
     ],
@@ -198,9 +199,9 @@ function getArtboard(): Artboard {
       initTransform:
         savedState.value && settings.value.persist
           ? {
-              x: savedState.value.offset.x,
-              y: savedState.value.offset.y,
-              scale: savedState.value?.scale || 1,
+              x: asValidNumber(savedState.value.offset.x, 0),
+              y: asValidNumber(savedState.value.offset.y, 0),
+              scale: asValidNumber(savedState.value?.scale, 1),
             }
           : undefined,
       ...options.value,
@@ -226,9 +227,9 @@ onBlokkliEvent('animationFrame:before', (time) => {
 
   // We don't need much precision here, so we can round it.
   // This also prevents updating rects in WebGL buffers for small changes.
-  ui.artboardOffset.value.x = Math.ceil(offset.x)
-  ui.artboardOffset.value.y = Math.ceil(offset.y)
-  ui.artboardScale.value = artboard.getScale()
+  ui.artboardOffset.value.x = asValidNumber(Math.ceil(offset.x), 0)
+  ui.artboardOffset.value.y = asValidNumber(Math.ceil(offset.y), 0)
+  ui.artboardScale.value = asValidNumber(artboard.getScale(), 1)
   animation.requestDraw()
 })
 

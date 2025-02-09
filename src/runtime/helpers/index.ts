@@ -734,3 +734,11 @@ export function buildAttributesForLibraryItem(
     'data-blokkli-is-reusable': 'true',
   }
 }
+
+export function asValidNumber(v: unknown, defaultValue: number): number {
+  if (typeof v === 'number' && !Number.isNaN(v)) {
+    return v
+  }
+
+  return defaultValue
+}
