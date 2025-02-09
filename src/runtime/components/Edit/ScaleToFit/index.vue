@@ -27,7 +27,7 @@ const computedHeight = ref(0)
 
 const scale = computed(() => {
   const contentWidth = props.width || nativeWidth.value
-  const widthScale = rootWidth.value / contentWidth
+  const widthScale = Math.min(rootWidth.value, contentWidth) / contentWidth
 
   if (!props.maxHeight) {
     return widthScale
