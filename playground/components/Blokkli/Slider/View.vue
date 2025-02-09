@@ -23,12 +23,14 @@
 </template>
 
 <script setup lang="ts">
-import type { FieldListItem } from '#blokkli/types'
+import type { FieldListItemTyped } from '#blokkli/generated-types'
 import { ref, computed } from '#imports'
 
 const props = defineProps<{
-  items: FieldListItem[]
+  items: FieldListItemTyped[]
 }>()
+
+const item = props.items[0]
 
 const activeIndex = ref(0)
 

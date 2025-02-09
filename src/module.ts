@@ -28,6 +28,7 @@ import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
 } from './runtime/helpers/symbols'
+import type { GetBundlePropsType } from './module/types'
 
 function hexToRgb(hex: string): RGB {
   // Remove the hash symbol if present
@@ -207,6 +208,57 @@ export type ModuleOptions = {
    * bundles.
    */
   storageDefaults?: ModuleOptionsStorageDefaults
+
+  /**
+   * Method that is called for each block bundle component to generate the
+   * prop types.
+   *
+   * These types are used if you access a block item with the generated
+   * FieldListItemTyped type, for example through:
+   * const { rootBlocks } = defineBlokkli().
+   *
+   * or using <BlokkliField v-slot="{ items }">.
+   *
+   * The method receives the name of the bundle and the extracted block
+   * definition as the second argument.
+   * The return value should be an object with these properties:
+   *
+   * - typeName: The name of the type
+   * - from: Where the type can be imported from
+   *
+   * For example, if the method returns this object:
+   * ```typescript
+   * {
+   *   typeName: 'ParagraphTextWithImageFragment',
+   *   from: '#graphql-operations'
+   * }
+   * ```
+   *
+   * Then the module will generate this TypeScript code:
+   *
+   * ```typescript
+   * import type { ParagraphTextWithImageFragment } from '#graphql-operations'
+   * ```
+   *
+   * And assign the imported type as the type for the `props` property for this bundle.
+   *
+   * Then, for example in a block component:
+   *
+   * ```typescript
+   * const { siblings, index } = defineBlokkli()
+   *
+   * const previousBlock = computed(() => siblings.value[index.value - 1])
+   *
+   * const previousTitle = computed(() => {
+   *   // The previous block in the list is a title.
+   *   if (previousBlock.value?.bundle === 'title') {
+   *     // The type of the props are now typed correctly.
+   *     const title = previousBlock.value.props.title
+   *   }
+   * })
+   * ```
+   */
+  getBundlePropsType?: GetBundlePropsType
 }
 
 const buildThemeData = (themeOption?: ThemeName | Partial<Theme>) => {
@@ -611,6 +663,7 @@ ${featuresArray}
           moduleOptions.globalOptions || {},
           getChunkNames(),
           getFieldListTypes(),
+          moduleOptions.getBundlePropsType,
         )
       },
       options: {

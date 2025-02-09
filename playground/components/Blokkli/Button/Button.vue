@@ -56,10 +56,12 @@ const { options } = defineBlokkli({
   },
 })
 
-const props = defineProps<{
+export type Props = {
   url: string
   title: string
-}>()
+}
+
+const props = defineProps<Props>()
 
 const injectedInverted = inject<ComputedRef<boolean> | null>('isInverted', null)
 const isInverted = computed(() => !!injectedInverted?.value)

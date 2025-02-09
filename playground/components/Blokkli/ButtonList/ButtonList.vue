@@ -12,9 +12,9 @@ defineBlokkli({
   bundle: 'button_list',
 })
 
-defineProps<{
+export type Props = {
   blocks: FieldListItemTyped[]
-}>()
-</script>
+}
 
-<style></style>
+defineProps<Props>()
+</script>

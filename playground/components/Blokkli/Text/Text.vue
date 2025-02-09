@@ -22,9 +22,11 @@ const { parentType } = defineBlokkli({
   },
 })
 
-defineProps<{
+export type Props = {
   text: string
-}>()
+}
+
+defineProps<Props>()
 
 const injectedInverted = inject<ComputedRef<boolean> | null>('isInverted', null)
 const isInverted = computed(() => !!injectedInverted?.value)

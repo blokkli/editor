@@ -16,11 +16,13 @@ defineBlokkli({
   bundle: 'teaser',
 })
 
-const props = defineProps<{
+export type Props = {
   title: FieldText
   text: FieldTextarea
   url: FieldText
-}>()
+}
+
+const props = defineProps<Props>()
 
 const href = computed(() => props.url.toString())
 </script>

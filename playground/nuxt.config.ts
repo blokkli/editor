@@ -85,6 +85,14 @@ export default defineNuxtConfig({
     },
 
     featureImports: ['./blokkli/DemoFeature.vue'],
+
+    getBundlePropsType: function (_bundle, definition) {
+      // Every component exports its props as a type called Props.
+      return {
+        typeName: 'Props',
+        from: definition.filePath,
+      }
+    },
   },
 
   svgIconSprite: {

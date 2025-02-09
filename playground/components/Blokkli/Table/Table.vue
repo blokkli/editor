@@ -27,9 +27,11 @@ const { parentType } = defineBlokkli({
   },
 })
 
-defineProps<{
+export type Props = {
   rows: FieldListItemTyped[]
-}>()
+}
+
+defineProps<Props>()
 </script>
 
 <style lang="postcss">

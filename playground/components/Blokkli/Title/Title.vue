@@ -56,11 +56,13 @@ const { parentType, fieldListType, uuid } = defineBlokkli({
 const injectedInverted = inject<ComputedRef<boolean> | null>('isInverted', null)
 const isInverted = computed(() => !!injectedInverted?.value)
 
-const props = defineProps<{
+export type Props = {
   title: string
   tagline?: string
   lead?: string
-}>()
+}
+
+const props = defineProps<Props>()
 
 const isCentered = computed(
   () =>

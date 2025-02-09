@@ -21,9 +21,11 @@ import {
 } from '#blokkli/helpers/symbols'
 import type { LibraryItemProps } from '#blokkli/types'
 
-const props = defineProps<{
+export type Props = {
   libraryItem?: LibraryItemProps
-}>()
+}
+
+const props = defineProps<Props>()
 
 const { index, options, parentType } = defineBlokkli({
   bundle: 'from_library',

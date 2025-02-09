@@ -1,10 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import type {
-  BlockDefinitionInput,
-  BlockDefinitionOptionsInput,
-  FragmentDefinitionInput,
-} from '../runtime/types'
+import type { BlockDefinitionOptionsInput } from '../runtime/types'
 import { sortObjectKeys } from './../helpers'
 import { defu } from 'defu'
 import { falsy } from '../vitePlugin'
@@ -12,31 +8,14 @@ import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
 } from './../runtime/helpers/symbols'
-
-type ExtractedBlockDefinitionInput = BlockDefinitionInput<any, any>
-type ExtractedFragmentDefinitionInput = FragmentDefinitionInput
-
-type ExtractedDefinition = {
-  filePath: string
-  icon?: string
-  chunkName: string
-  componentName: string
-  proxyComponent?: string
-  diffComponent?: string
-  definition: ExtractedBlockDefinitionInput
-  source: string
-  fileSource: string
-  hasBlokkliField: boolean
-}
-
-type ExtractedFragmentDefinition = {
-  filePath: string
-  chunkName: string
-  componentName: string
-  definition: ExtractedFragmentDefinitionInput
-  source: string
-  fileSource: string
-}
+import type {
+  ExtractedBlockDefinitionInput,
+  ExtractedDefinition,
+  ExtractedFragmentDefinition,
+  ExtractedFragmentDefinitionInput,
+  GetBundlePropsType,
+  GetBundlePropsTypeResult,
+} from '../module/types'
 
 /**
  * Service to handle text extractions across multiple files.
@@ -453,6 +432,7 @@ export const globalOptionsDefaults: Record<string, GlobalOptionsDefaults> = ${JS
     globalOptions: BlockDefinitionOptionsInput,
     chunkNames: string[],
     fieldListTypes: string[],
+    getBundlePropsType?: GetBundlePropsType,
   ): string {
     const allDefintions: ExtractedBlockDefinitionInput[] = Object.values(
       this.definitions,
@@ -489,67 +469,119 @@ export const globalOptionsDefaults: Record<string, GlobalOptionsDefaults> = ${JS
       })
       .join(' | ')
 
-    const possibleOptionTypes = Object.values(this.definitions)
-      .filter(falsy)
-      .filter((v) => v.definition.bundle !== 'from_library')
-      .reduce<Record<string, string[]>>((acc, v) => {
-        if (!acc[v.definition.bundle]) {
-          acc[v.definition.bundle] = []
-        }
-        const definedOptions = v.definition
-          .options as BlockDefinitionOptionsInput
+    function getOptionTypes(definition: ExtractedBlockDefinitionInput) {
+      const definedOptions = (definition.options ||
+        {}) as BlockDefinitionOptionsInput
 
-        // Add global options used.
-        const blockGlobalOptions: string[] = (v as any).globalOptions || []
-        blockGlobalOptions.forEach((key) => {
-          if (globalOptions[key]) {
-            definedOptions[key] = globalOptions[key]
+      // Add global options used.
+      const blockGlobalOptions: string[] = definition.globalOptions || []
+      blockGlobalOptions.forEach((key) => {
+        if (globalOptions[key]) {
+          definedOptions[key] = globalOptions[key]
+        }
+      })
+
+      const options = Object.entries(definedOptions || {})
+        .map(([key, option]) => {
+          if (option.type === 'text') {
+            return `${key}: string | undefined`
+          } else if (option.type === 'checkbox') {
+            return `${key}: '1' | '0' | undefined`
+          } else if (option.type === 'radios' || option.type === 'checkboxes') {
+            const possibleValues = Object.keys(option.options)
+              .map((v) => `'${v}'`)
+              .join(' | ')
+            return `${key}: ${possibleValues} | undefined`
           }
         })
+        .join('\n    ')
 
-        const options = Object.entries(definedOptions || {})
-          .map(([key, option]) => {
-            if (option.type === 'text') {
-              return `${key}: string | undefined`
-            } else if (option.type === 'checkbox') {
-              return `${key}: '1' | '0' | undefined`
-            } else if (
-              option.type === 'radios' ||
-              option.type === 'checkboxes'
-            ) {
-              const possibleValues = Object.keys(option.options)
-                .map((v) => `'${v}'`)
-                .join(' | ')
-              return `${key}: ${possibleValues} | undefined`
-            }
-          })
-          .join('\n    ')
+      return `{
+    ${options}
+  }`
+    }
 
-        acc[v.definition.bundle].push(
-          `{
- ${options}
-}`,
-        )
+    const propTypeImports: Record<
+      string,
+      { bundle: string; typeName: string }[]
+    > = {}
+    const typedFieldListItems: { typeName: string; typeDefinition: string }[] =
+      []
 
-        return acc
-      }, {})
+    const definitions = Object.entries(this.definitions)
 
-    const typedFieldListItems = Object.entries(possibleOptionTypes).map(
-      ([bundle, options]) => {
-        const typeName = `FieldListItem_${bundle}`
-        const typeDefinition = `
-type ${typeName} = {
-  bundle: '${bundle}'
-  options: ${options.join(' | ')}
-}`
+    const mappedGetBundlePropsType = (
+      bundle: string,
+      definition: ExtractedDefinition,
+    ): GetBundlePropsTypeResult | null => {
+      if (bundle === 'from_library' || bundle === 'blokkli_fragment') {
         return {
-          typeName,
-          typeDefinition,
+          typeName: 'Props',
+          from: definition.filePath,
         }
-      },
-    )
+      } else if (getBundlePropsType) {
+        return getBundlePropsType(bundle, definition)
+      }
+
+      return null
+    }
+
+    for (let i = 0; i < definitions.length; i++) {
+      const [_, definition] = definitions[i]
+      if (!definition) {
+        continue
+      }
+
+      if (definition.definition.renderFor) {
+        continue
+      }
+
+      const bundle = definition.definition.bundle
+      if (bundle === 'blokkli_fragment') {
+        // @TODO: Generate prop type based on built-in type.
+        continue
+      }
+      const options = getOptionTypes(definition.definition)
+      const generatedTypeName = `FieldListItem_${bundle}`
+      const lines: string[] = [`  bundle: '${bundle}'`, `options: ${options}`]
+      const bundlePropsType = mappedGetBundlePropsType(bundle, definition)
+      if (bundlePropsType) {
+        const { typeName, from } = bundlePropsType
+
+        if (!propTypeImports[from]) {
+          propTypeImports[from] = []
+        }
+
+        propTypeImports[from].push({ bundle, typeName })
+
+        lines.push(`props: Bundle_${bundle}_Props`)
+      }
+
+      const typeDefinition = `
+type ${generatedTypeName} = {
+${lines.join('\n  ')}
+}`
+      typedFieldListItems.push({
+        typeName: generatedTypeName,
+        typeDefinition,
+      })
+    }
+
+    const propTypeImportStatements = Object.entries(propTypeImports)
+      .map(([from, items]) => {
+        const imports = items
+          .map((v) => {
+            return `${v.typeName} as Bundle_${v.bundle}_Props`
+          })
+          .join(',\n  ')
+        return `import type {
+  ${imports}
+} from '${from}'`
+      })
+      .join('\n')
 
     return `
+${propTypeImportStatements}
 import type { FieldListItem } from "#blokkli/types"
 
 export type ValidFieldListTypes = ${validFieldListTypes}
@@ -566,7 +598,7 @@ export type ValidGlobalConfigKeys = Array<GlobalOptionsKey>
 
 ${typedFieldListItems.map((v) => v.typeDefinition).join('\n\n')}
 
-export type FieldListItemTyped = FieldListItem & (${typedFieldListItems
+export type FieldListItemTyped = Omit<FieldListItem, 'props'> & (${typedFieldListItems
       .map((v) => v.typeName)
       .join(' | ')})
 export type FieldListItemTypedArray = Array<FieldListItemTyped>

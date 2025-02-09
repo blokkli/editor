@@ -39,7 +39,7 @@
 import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
 import type { NuxtSvgSpriteSymbol } from '#nuxt-svg-sprite/runtime'
 
-type Props = {
+export type Props = {
   icon?: NuxtSvgSpriteSymbol
   title: string
   text: string

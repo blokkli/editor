@@ -6,10 +6,13 @@
 import { getBlokkliFragmentComponent } from '#blokkli/imports'
 import { provide, defineBlokkli } from '#imports'
 import { INJECT_FRAGMENT_CONTEXT } from '#blokkli/helpers/symbols'
+import type { BlokkliFragmentName } from '#blokkli/definitions'
 
-const componentProps = defineProps<{
-  name: string
-}>()
+export type Props = {
+  name: BlokkliFragmentName
+}
+
+const componentProps = defineProps<Props>()
 
 const ctx = defineBlokkli({
   bundle: 'blokkli_fragment',

@@ -22,7 +22,7 @@
 import { defineBlokkli, computed } from '#imports'
 import { MediaImage } from '~/app/mock/state/Media/Media'
 
-type Props = {
+export type Props = {
   imageReference: MediaImage
 }
 

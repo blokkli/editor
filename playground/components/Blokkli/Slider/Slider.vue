@@ -23,9 +23,11 @@ defineBlokkli({
   },
 })
 
-defineProps<{
+export type Props = {
   slides: FieldListItemTypedArray
-}>()
+}
+
+defineProps<Props>()
 </script>
 
 <style lang="postcss">

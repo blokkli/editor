@@ -60,10 +60,12 @@ const { options } = defineBlokkli({
   },
 })
 
-defineProps<{
+export type Props = {
   header: FieldListItemTyped[]
   blocks: FieldListItemTyped[]
-}>()
+}
+
+defineProps<Props>()
 
 const colorClass = computed(() => {
   switch (options.value.background) {

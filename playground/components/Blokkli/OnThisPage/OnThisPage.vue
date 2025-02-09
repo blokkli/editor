@@ -23,6 +23,8 @@ const { rootBlocks } = defineBlokkli({
   },
 })
 
+export type Props = {}
+
 type OnThisPageLink = {
   label: string
   url: string

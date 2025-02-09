@@ -65,9 +65,11 @@ const { options, parentType } = defineBlokkli({
   },
 })
 
-const props = defineProps<{
+export type Props = {
   video: MediaVideo
-}>()
+}
+
+const props = defineProps<Props>()
 
 const isPlaying = ref(false)
 
