@@ -33,6 +33,11 @@
     }
   }
 }
+
+.bk-library-list-item {
+  @apply h-full flex flex-col;
+}
+
 .bk-library-list-item-header {
   @apply p-15 bg-mono-100;
 
@@ -42,7 +47,11 @@
 }
 
 .bk-library-list-item-inner {
-  @apply p-20 max-h-[250px] overflow-hidden relative;
+  @apply p-20 overflow-hidden relative flex items-center justify-center h-full;
+
+  > .bk-scale-to-fit {
+    @apply w-full;
+  }
 
   &:after {
     content: '';

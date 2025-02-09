@@ -9,7 +9,7 @@
       class="bk-library-list-item-inner"
       :class="backgroundClass"
     >
-      <ScaleToFit :width="previewWidth">
+      <ScaleToFit :width="previewWidth" :max-height="500">
         <BlokkliItem
           v-bind="item"
           parent-type="nested"

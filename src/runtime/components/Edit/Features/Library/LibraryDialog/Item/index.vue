@@ -5,6 +5,7 @@
     :data-library-item-uuid="uuid"
     :data-label="label"
     :class="backgroundClass"
+    class="bk-library-list-item"
   >
     <div class="bk bk-library-list-item-header">
       <div class="bk-blokkli-item-label">
@@ -19,7 +20,7 @@
       class="bk-library-list-item-inner"
       :class="backgroundClass"
     >
-      <ScaleToFit :width="previewWidth">
+      <ScaleToFit :width="previewWidth" :max-height="400">
         <BlokkliItem
           v-bind="item"
           parent-type="nested"
