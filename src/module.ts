@@ -576,6 +576,19 @@ ${featuresArray}
     nuxt.options.alias['#blokkli/definitions'] = templateDefinitions.dst
 
     // The definitions.
+    const templateEditComponents = addTemplate({
+      write: true,
+      filename: 'blokkli/edit-components.ts',
+      getContents: () => {
+        return blockExtractor.generateEditComponents()
+      },
+      options: {
+        blokkli: true,
+      },
+    })
+    nuxt.options.alias['#blokkli/edit-components'] = templateEditComponents.dst
+
+    // The definitions.
     const templateTranslations = addTemplate({
       write: true,
       filename: 'blokkli/translations.ts',

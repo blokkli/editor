@@ -35,10 +35,8 @@ import type {
   ValidFieldListTypes,
 } from '#blokkli/generated-types'
 import { computed, useBlokkli, ref } from '#imports'
-import {
-  getDefinition,
-  getBlokkliItemProxyComponent,
-} from '#blokkli/definitions'
+import { getDefinition } from '#blokkli/definitions'
+import { getBlokkliItemProxyComponent } from '#blokkli/edit-components'
 
 import { ItemIcon } from '#blokkli/components'
 import type { FieldConfig, LibraryItemProps } from '#blokkli/types'

@@ -258,40 +258,6 @@ export default class BlockExtractor {
         return acc
       }, {})
 
-    const buildContextComponents = (
-      name: keyof Pick<ExtractedDefinition, 'diffComponent' | 'proxyComponent'>,
-    ) => {
-      const proxyComponents = Object.values(this.definitions).reduce<
-        Record<string, string>
-      >((acc, v) => {
-        if (v?.[name]) {
-          acc[v.definition.bundle] = v[name]
-        }
-
-        return acc
-      }, {})
-
-      const imports = Object.entries(proxyComponents)
-        .map(([bundle, proxyComponentPath]) => {
-          return `import ${name}_${bundle} from '${this.toBuildRelativePath(proxyComponentPath)}'`
-        })
-        .join('\n')
-
-      const maps = Object.keys(proxyComponents)
-        .map((bundle) => {
-          return `'${bundle}': ${name}_${bundle}`
-        })
-        .join(',  \n')
-
-      return {
-        imports,
-        maps,
-      }
-    }
-
-    const proxy = buildContextComponents('proxyComponent')
-    const diff = buildContextComponents('diffComponent')
-
     const allFragmentNames = Object.values(this.fragmentDefinitions)
       .filter(falsy)
       .map((v) => `'${v.definition.name}'`)
@@ -300,20 +266,10 @@ export default class BlockExtractor {
     return `import type { GlobalOptionsKey, ValidFieldListTypes, BlockBundleWithNested } from './generated-types'
 import type { BlockDefinitionInput, BlockDefinitionOptionsInput, FragmentDefinitionInput } from '${this.imports.TYPES}'
 export const globalOptions = ${JSON.stringify(globalOptions, null, 2)} as const
-${proxy.imports}
-${diff.imports}
 
 type DefinitionItem = BlockDefinitionInput<BlockDefinitionOptionsInput, GlobalOptionsKey[]>
 
 ${definitionDeclarations.join('\n')}
-
-const PROXY_COMPONENTS: Record<string, any> = {
-  ${proxy.maps}
-}
-
-const DIFF_COMPONENTS: Record<string, any> = {
-  ${diff.maps}
-}
 
 export const icons: Record<string, string> = ${JSON.stringify(icons)}
 
@@ -348,14 +304,6 @@ export function getDefinition(bundle: string, fieldListType: ValidFieldListTypes
   return definitionsMap[bundle]
 }
 
-export function getBlokkliItemProxyComponent(bundle: string): any {
-  return PROXY_COMPONENTS[bundle]
-}
-
-export function getBlokkliItemDiffComponent(bundle: string): any {
-  return DIFF_COMPONENTS[bundle]
-}
-
 /**
  * Get the definition of the default block component.
  */
@@ -363,6 +311,63 @@ export function getDefaultDefinition(bundle: string): BlockDefinitionInput<Recor
   return definitionsMap[bundle]
 }
 export const getFragmentDefinition = (name: string): FragmentDefinitionInput<Record<string, any>, GlobalOptionsKey[]>|undefined => fragmentDefinitionsMap[name]
+`
+  }
+
+  generateEditComponents(): string {
+    const buildContextComponents = (
+      name: keyof Pick<ExtractedDefinition, 'diffComponent' | 'proxyComponent'>,
+    ) => {
+      const proxyComponents = Object.values(this.definitions).reduce<
+        Record<string, string>
+      >((acc, v) => {
+        if (v?.[name]) {
+          acc[v.definition.bundle] = v[name]
+        }
+
+        return acc
+      }, {})
+
+      const imports = Object.entries(proxyComponents)
+        .map(([bundle, proxyComponentPath]) => {
+          return `import ${name}_${bundle} from '${this.toBuildRelativePath(proxyComponentPath)}'`
+        })
+        .join('\n')
+
+      const maps = Object.keys(proxyComponents)
+        .map((bundle) => {
+          return `'${bundle}': ${name}_${bundle}`
+        })
+        .join(',  \n')
+
+      return {
+        imports,
+        maps,
+      }
+    }
+
+    const proxy = buildContextComponents('proxyComponent')
+    const diff = buildContextComponents('diffComponent')
+
+    return `
+${proxy.imports}
+${diff.imports}
+
+const PROXY_COMPONENTS: Record<string, any> = {
+  ${proxy.maps}
+}
+
+const DIFF_COMPONENTS: Record<string, any> = {
+  ${diff.maps}
+}
+
+export function getBlokkliItemProxyComponent(bundle: string): any {
+  return PROXY_COMPONENTS[bundle]
+}
+
+export function getBlokkliItemDiffComponent(bundle: string): any {
+  return DIFF_COMPONENTS[bundle]
+}
 `
   }
 
