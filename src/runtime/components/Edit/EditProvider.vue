@@ -48,7 +48,6 @@ import {
   provide,
   onMounted,
   onBeforeUnmount,
-  nextTick,
   useRoute,
   useRuntimeConfig,
 } from '#imports'

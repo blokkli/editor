@@ -13,6 +13,7 @@ import {
   updateTemplates,
 } from '@nuxt/kit'
 import { defu, createDefu } from 'defu'
+import { relative } from 'pathe'
 import type { ResolvedNuxtTemplate } from '@nuxt/schema'
 import BlockExtractor from './Extractor/BlockExtractor'
 import FeatureExtractor, {
@@ -23,12 +24,12 @@ import { DefinitionPlugin } from './vitePlugin'
 import defaultTranslations from './translations'
 import { getTheme, themes } from './themes'
 import type { ThemeName, RGB, Theme } from './runtime/types/theme'
-import type { ModuleOptionsSettings } from '#blokkli/types/generatedModuleTypes'
+import type { ModuleOptionsSettings } from './runtime/types/generatedModuleTypes'
 import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
 } from './runtime/helpers/symbols'
-import type { GetBundlePropsType } from './module/types'
+import type { BuildRelativeImports, GetBundlePropsType } from './module/types'
 
 function hexToRgb(hex: string): RGB {
   // Remove the hash symbol if present
@@ -343,6 +344,36 @@ export default defineNuxtModule<ModuleOptions>({
     // The path of this module.
     const resolver = createResolver(moduleDir)
 
+    const buildResolver = createResolver(nuxt.options.buildDir)
+    const blokkliBuildDir = buildResolver.resolve('blokkli')
+
+    const IMPORTS: BuildRelativeImports = {
+      TYPES: relative(
+        blokkliBuildDir,
+        resolver.resolve('./runtime/types/index.ts'),
+      ),
+      CONSTANTS: relative(
+        blokkliBuildDir,
+        resolver.resolve('./runtime/constants/index.ts'),
+      ),
+      ADAPTER: relative(
+        blokkliBuildDir,
+        resolver.resolve('./runtime/adapter/index.ts'),
+      ),
+      TYPES_THEME: relative(
+        blokkliBuildDir,
+        resolver.resolve('./runtime/types/theme.ts'),
+      ),
+      TYPES_GENERATED_MODULE_TYPED: relative(
+        blokkliBuildDir,
+        resolver.resolve('./runtime/types/generatedModuleTypes.ts'),
+      ),
+      TYPES_BLOKK_OPTIONS: relative(
+        blokkliBuildDir,
+        resolver.resolve('./runtime/types/blokkOptions.ts'),
+      ),
+    }
+
     const featureFolder = resolver.resolve('./runtime/components/Edit/Features')
     const featureExtractor = new FeatureExtractor(!nuxt.options.dev)
     const builtinFeatures = await resolveFiles(featureFolder, ['*/index.vue'], {
@@ -389,7 +420,7 @@ export default defineNuxtModule<ModuleOptions>({
             id: v.id,
             componentName: v.componentPath,
             importName,
-            importStatement: `import ${importName} from '${v.componentPath}'`,
+            importStatement: `import ${importName} from '${relative(blokkliBuildDir, v.componentPath)}'`,
             definition: v.definition,
           }
         })
@@ -422,8 +453,8 @@ export default defineNuxtModule<ModuleOptions>({
           .join(',\n')
 
         return `${imports}
-import type { BlokkliAdapter } from '#blokkli/adapter'
-import type { Viewport } from '#blokkli/constants'
+import type { BlokkliAdapter } from '${IMPORTS.ADAPTER}'
+import type { Viewport } from '${IMPORTS.CONSTANTS}'
 type AdapterMethods = keyof BlokkliAdapter<any>
 
 export const availableFeaturesAtBuild = ${JSON.stringify(
@@ -522,7 +553,11 @@ ${featuresArray}
     })
 
     // Create extractor instance and add initial set of files.
-    const blockExtractor = new BlockExtractor(!nuxt.options.dev)
+    const blockExtractor = new BlockExtractor(
+      !nuxt.options.dev,
+      blokkliBuildDir,
+      IMPORTS,
+    )
     await blockExtractor.addFiles(files)
 
     // The definitions.
@@ -574,7 +609,7 @@ ${featuresArray}
       .replace(/^(~|@)/, nuxt.options.srcDir)
     // nuxt.options.build.transpile.push(resolvedPath)
     const adapterTemplate = (() => {
-      const resolvedFilename = `blokkli.editAdapter.ts`
+      const resolvedFilename = `blokkli/editAdapter.ts`
 
       const maybeUserFile = fileExists(resolvedPath, ['ts'])
 
@@ -587,8 +622,8 @@ ${featuresArray}
         filename: resolvedFilename,
         write: true,
         getContents: () => `
-        import type { BlokkliAdapterFactory } from '#blokkli/adapter'
-        import adapter from '${resolvedPath}'
+        import type { BlokkliAdapterFactory } from '${IMPORTS.ADAPTER}'
+        import adapter from '${relative(blokkliBuildDir, resolvedPath)}'
 
         export default adapter as BlokkliAdapterFactory<any>
         `,
@@ -695,8 +730,8 @@ ${featuresArray}
       getContents: () => {
         const settingsOverride = moduleOptions.settingsOverride || {}
 
-        return `import type { Theme } from '#blokkli/types/theme'
-import type { ModuleOptionsSettings } from '#blokkli/types/generatedModuleTypes'
+        return `import type { Theme } from '${IMPORTS.TYPES_THEME}'
+import type { ModuleOptionsSettings } from '${IMPORTS.TYPES_GENERATED_MODULE_TYPED}'
 
 export const hasCustomTheme = ${JSON.stringify(hasCustomTheme)}
 export const themes: Record<string, Theme> = ${JSON.stringify(themes, null, 2)}

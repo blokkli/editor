@@ -37,3 +37,12 @@ export type GetBundlePropsType = (
   name: string,
   definition: ExtractedDefinition,
 ) => GetBundlePropsTypeResult
+
+export type BuildRelativeImports = {
+  TYPES: string
+  CONSTANTS: string
+  ADAPTER: string
+  TYPES_THEME: string
+  TYPES_GENERATED_MODULE_TYPED: string
+  TYPES_BLOKK_OPTIONS: string
+}

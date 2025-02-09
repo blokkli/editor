@@ -6,7 +6,7 @@
     @close="onClose"
   >
     <div class="bk-library-dialog">
-      <div class="bk-library-dialog-inner">
+      <div>
         <p class="bk-lead">
           {{
             $t(

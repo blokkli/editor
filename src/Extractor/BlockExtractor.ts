@@ -1,4 +1,5 @@
 import fs from 'node:fs'
+import { relative } from 'pathe'
 import path from 'node:path'
 import type { BlockDefinitionOptionsInput } from '../runtime/types'
 import { sortObjectKeys } from './../helpers'
@@ -9,6 +10,7 @@ import {
   BK_VISIBLE_LANGUAGES,
 } from './../runtime/helpers/symbols'
 import type {
+  BuildRelativeImports,
   ExtractedBlockDefinitionInput,
   ExtractedDefinition,
   ExtractedFragmentDefinition,
@@ -27,9 +29,17 @@ export default class BlockExtractor {
   isBuild = false
   composableName: string
   fragmentComposableName: string
+  buildDir: string
+  imports: BuildRelativeImports
 
-  constructor(isBuild = false) {
+  constructor(
+    isBuild = false,
+    buildDir: string,
+    imports: BuildRelativeImports,
+  ) {
     this.isBuild = isBuild
+    this.buildDir = buildDir
+    this.imports = imports
     this.composableName = 'defineBlokkli'
     this.fragmentComposableName = 'defineBlokkliFragment'
   }
@@ -263,7 +273,7 @@ export default class BlockExtractor {
 
       const imports = Object.entries(proxyComponents)
         .map(([bundle, proxyComponentPath]) => {
-          return `import ${name}_${bundle} from '${proxyComponentPath}'`
+          return `import ${name}_${bundle} from '${this.toBuildRelativePath(proxyComponentPath)}'`
         })
         .join('\n')
 
@@ -288,7 +298,7 @@ export default class BlockExtractor {
       .join(' | ')
 
     return `import type { GlobalOptionsKey, ValidFieldListTypes, BlockBundleWithNested } from './generated-types'
-import type { BlockDefinitionInput, BlockDefinitionOptionsInput, FragmentDefinitionInput } from '#blokkli/types'
+import type { BlockDefinitionInput, BlockDefinitionOptionsInput, FragmentDefinitionInput } from '${this.imports.TYPES}'
 export const globalOptions = ${JSON.stringify(globalOptions, null, 2)} as const
 ${proxy.imports}
 ${diff.imports}
@@ -411,7 +421,7 @@ export const getFragmentDefinition = (name: string): FragmentDefinitionInput<Rec
       },
       {},
     )
-    return `import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
+    return `import type { BlockOptionDefinition } from '${this.imports.TYPES_BLOKK_OPTIONS}'
 
 type GlobalOptionsDefaults = {
   type: BlockOptionDefinition['type']
@@ -574,15 +584,16 @@ ${lines.join('\n  ')}
             return `${v.typeName} as Bundle_${v.bundle}_Props`
           })
           .join(',\n  ')
+        const importPath = this.toBuildRelativePath(from)
         return `import type {
   ${imports}
-} from '${from}'`
+} from '${importPath}'`
       })
       .join('\n')
 
     return `
 ${propTypeImportStatements}
-import type { FieldListItem } from "#blokkli/types"
+import type { FieldListItem } from "${this.imports.TYPES}"
 
 export type ValidFieldListTypes = ${validFieldListTypes}
 
@@ -713,6 +724,10 @@ export function getBlokkliFragmentComponent(name: string): any {
 `
   }
 
+  toBuildRelativePath(path: string): string {
+    return relative(this.buildDir, path)
+  }
+
   /**
    * Generate the template.
    */
@@ -733,13 +748,13 @@ export function getBlokkliFragmentComponent(name: string): any {
     const imports = definitions.map((v) => {
       if (this.isBuild) {
         // In the build bundle the component can directly be imported.
-        return `import ${v.componentName} from '${v.filePath}'`
+        return `import ${v.componentName} from '${this.toBuildRelativePath(v.filePath)}'`
       } else {
         // In dev mode, we always want to async import the component. This is
         // the only way to prevent circular dependencies which would trigger a
         // full refresh whenever a block component with a <BlokkliField> is
         // updated, esentially breaking HMR.
-        return `const ${v.componentName} = () => import('${v.filePath}')`
+        return `const ${v.componentName} = () => import('${this.toBuildRelativePath(v.filePath)}')`
       }
     })
     const map = definitions.reduce<string[]>((acc, v) => {
