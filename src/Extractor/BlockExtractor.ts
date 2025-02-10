@@ -240,7 +240,6 @@ export default class BlockExtractor {
           acc.push(`${bundle}: ${v.componentName}`)
         }
         return acc
-        // return `${v.definition.bundle}: ${v.source}`
       }, [])
 
     const allFragmentDefinitions = Object.values(this.fragmentDefinitions)
@@ -263,7 +262,8 @@ export default class BlockExtractor {
       .map((v) => `'${v.definition.name}'`)
       .join(' | ')
 
-    return `import type { GlobalOptionsKey, ValidFieldListTypes, BlockBundleWithNested } from './generated-types'
+    return `
+import type { GlobalOptionsKey, ValidFieldListTypes, BlockBundleWithNested } from './generated-types'
 import type { BlockDefinitionInput, BlockDefinitionOptionsInput, FragmentDefinitionInput } from '${this.imports.TYPES}'
 export const globalOptions = ${JSON.stringify(globalOptions, null, 2)} as const
 
@@ -311,6 +311,113 @@ export function getDefaultDefinition(bundle: string): BlockDefinitionInput<Recor
   return definitionsMap[bundle]
 }
 export const getFragmentDefinition = (name: string): FragmentDefinitionInput<Record<string, any>, GlobalOptionsKey[]>|undefined => fragmentDefinitionsMap[name]
+`
+  }
+
+  /**
+   * Generate the template for the block item options used for runtime (e.g. not during editing).
+   */
+  generateRuntimeOptionsTemplate(
+    globalOptions: BlockDefinitionOptionsInput = {},
+  ): string {
+    const bundles = Object.values(this.definitions)
+      .filter(falsy)
+      .reduce<Record<string, any>>((acc, definition) => {
+        if (definition.definition.renderFor) {
+          return acc
+        }
+        const bundle = definition.definition.bundle
+        const optionDefinitions = Object.entries(
+          definition.definition.options || {},
+        )
+
+        const options: Record<string, any> = {}
+
+        if (definition.definition.globalOptions) {
+          definition.definition.globalOptions.forEach((name) => {
+            const option = globalOptions[name]
+            options[name] = [option.type, option.default]
+          })
+        }
+
+        optionDefinitions.forEach(([name, option]) => {
+          options[name] = [option.type, option.default]
+        })
+
+        if (Object.values(options).length) {
+          acc[bundle] = options
+        }
+
+        return acc
+      }, {})
+
+    function getOptionTypes(definition: ExtractedBlockDefinitionInput) {
+      const definedOptions = (definition.options ||
+        {}) as BlockDefinitionOptionsInput
+
+      // Add global options used.
+      const blockGlobalOptions: string[] = definition.globalOptions || []
+      blockGlobalOptions.forEach((key) => {
+        if (globalOptions[key]) {
+          definedOptions[key] = globalOptions[key]
+        }
+      })
+
+      return Object.entries(definedOptions || {}).map(([key, option]) => {
+        if (option.type === 'text') {
+          return `${key}: string`
+        } else if (option.type === 'checkbox') {
+          return `${key}: boolean`
+        } else if (option.type === 'checkboxes') {
+          const possibleValues =
+            Object.keys(option.options)
+              .map((v) => `'${v}'`)
+              .join(' | ') || 'string'
+          return `${key}: Array<${possibleValues}>`
+        } else if (option.type === 'radios') {
+          const possibleValues =
+            Object.keys(option.options)
+              .map((v) => `'${v}'`)
+              .join(' | ') || 'string'
+          return `${key}: ${possibleValues}`
+        } else if (option.type === 'color') {
+          return key + ': ' + '`#${string}`'
+        } else if (option.type === 'range' || option.type === 'number') {
+          return `${key}: number`
+        }
+      })
+    }
+
+    const runtimeMappedOptionTypes = Object.values(this.definitions)
+      .filter(falsy)
+      .map((definition) => {
+        if (definition.definition.renderFor) {
+          return null
+        }
+        const bundle = definition.definition.bundle
+        const options = getOptionTypes(definition.definition).join('\n    ')
+        if (!options) {
+          return `  ${bundle}: {}`
+        }
+        return `  ${bundle}: {
+    ${options}
+  }`
+      })
+      .filter(falsy)
+      .join(',\n')
+
+    return `
+import type { BlockOptionDefinition } from '${this.imports.TYPES_BLOKK_OPTIONS}'
+
+export type RuntimeBlockOptionArray = {
+  [T in BlockOptionDefinition as T['type']]: [T['type'], T['default']]
+}[BlockOptionDefinition['type']]
+
+export type RuntimeBlockOptions = {
+${runtimeMappedOptionTypes}
+}
+
+export const BLOCK_OPTIONS: Record<string, Record<string, RuntimeBlockOptionArray>> = ${JSON.stringify(bundles, null, 2)}
 `
   }
 
@@ -401,7 +508,8 @@ export function getBlokkliItemDiffComponent(bundle: string): any {
   getBundlesWithGlobalOptions(key: string) {
     return Object.values(this.definitions)
       .map((definition) => {
-        if (definition?.definition.globalOptions?.includes(key)) {
+        const globalOptions = definition?.definition.globalOptions as string[]
+        if (definition && globalOptions && globalOptions.includes(key)) {
           return definition.definition.bundle
         }
       })
@@ -503,10 +611,11 @@ export const globalOptionsDefaults: Record<string, GlobalOptionsDefaults> = ${JS
           } else if (option.type === 'checkbox') {
             return `${key}: '1' | '0' | undefined`
           } else if (option.type === 'radios' || option.type === 'checkboxes') {
-            const possibleValues = Object.keys(option.options)
-              .map((v) => `'${v}'`)
-              .join(' | ')
-            return `${key}: ${possibleValues} | undefined`
+            return `${key}: string | undefined`
+          } else if (option.type === 'color') {
+            return `${key}: string | undefined`
+          } else if (option.type === 'range' || option.type === 'number') {
+            return `${key}: number | string | undefined`
           }
         })
         .join('\n    ')
@@ -547,15 +656,13 @@ export const globalOptionsDefaults: Record<string, GlobalOptionsDefaults> = ${JS
         continue
       }
 
+      // Skip components renderFor components, because we only want to generate
+      // option and prop types for the "main" component.
       if (definition.definition.renderFor) {
         continue
       }
 
       const bundle = definition.definition.bundle
-      if (bundle === 'blokkli_fragment') {
-        // @TODO: Generate prop type based on built-in type.
-        continue
-      }
       const options = getOptionTypes(definition.definition)
       const generatedTypeName = `FieldListItem_${bundle}`
       const lines: string[] = [`  bundle: '${bundle}'`, `options: ${options}`]
@@ -730,6 +837,9 @@ export function getBlokkliFragmentComponent(name: string): any {
   }
 
   toBuildRelativePath(path: string): string {
+    if (!path.startsWith('/')) {
+      return path
+    }
     return relative(this.buildDir, path)
   }
 

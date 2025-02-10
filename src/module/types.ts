@@ -3,7 +3,7 @@ import type {
   FragmentDefinitionInput,
 } from '../runtime/types'
 
-export type ExtractedBlockDefinitionInput = BlockDefinitionInput<any, any>
+export type ExtractedBlockDefinitionInput = BlockDefinitionInput
 export type ExtractedFragmentDefinitionInput = FragmentDefinitionInput
 
 export type ExtractedDefinition = {

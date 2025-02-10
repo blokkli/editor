@@ -575,6 +575,20 @@ ${featuresArray}
     })
     nuxt.options.alias['#blokkli/definitions'] = templateDefinitions.dst
 
+    const templateRuntimeOptions = addTemplate({
+      write: true,
+      filename: 'blokkli/runtime-options.ts',
+      getContents: () => {
+        return blockExtractor.generateRuntimeOptionsTemplate(
+          moduleOptions.globalOptions,
+        )
+      },
+      options: {
+        blokkli: true,
+      },
+    })
+    nuxt.options.alias['#blokkli/runtime-options'] = templateRuntimeOptions.dst
+
     // The definitions.
     const templateEditComponents = addTemplate({
       write: true,
@@ -902,6 +916,9 @@ export type BlokkliIcon = keyof typeof icons`
     )
     nuxt.options.alias['#blokkli/helpers'] = resolver.resolve('runtime/helpers')
     nuxt.options.alias['#blokkli/adapter'] = resolver.resolve('runtime/adapter')
+    nuxt.options.alias['#blokkli/runtime-helpers'] = resolver.resolve(
+      'runtime/helpers/runtimeHelpers',
+    )
 
     nuxt.hook('nitro:config', (nitroConfig) => {
       nitroConfig.publicAssets ||= []

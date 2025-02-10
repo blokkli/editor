@@ -3,13 +3,14 @@
     v-if="item"
     :key="item.uuid"
     v-bind="item"
-    :index="index"
+    :index
     :data-reusable-bundle="item.bundle"
     :data-reusable-uuid="item.uuid"
     :data-bk-library-label="libraryItem?.label"
     :data-bk-library-item-uuid="libraryItem?.uuid"
     data-blokkli-is-reusable="true"
-    :parent-type="parentType"
+    :parent-type
+    :is-editing
   />
 </template>
 
@@ -27,7 +28,7 @@ export type Props = {
 
 const props = defineProps<Props>()
 
-const { index, options, parentType } = defineBlokkli({
+const { index, options, parentType, isEditing } = defineBlokkli({
   bundle: 'from_library',
 })
 

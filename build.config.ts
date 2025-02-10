@@ -29,4 +29,7 @@ export default defineBuildConfig({
     'webpack-virtual-modules',
     '@jridgewell/sourcemap-codec',
   ],
+  replace: {
+    'import.meta.dev': 'undefined',
+  },
 })

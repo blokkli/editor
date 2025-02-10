@@ -13,15 +13,15 @@ import type {
   DefineBlokkliContext,
   InjectedBlokkliItem,
   ItemEditContext,
+  RuntimeBlockDefinitionInput,
 } from '#blokkli/types'
-import { globalOptionsDefaults } from '#blokkli/default-global-options'
-
 import type {
   FieldListItemTyped,
   GlobalOptionsKey,
   ValidFieldListTypes,
 } from '#blokkli/generated-types'
 import { getRuntimeOptionValue } from '#blokkli/helpers/runtimeHelpers'
+import { BLOCK_OPTIONS } from '#blokkli/runtime-options'
 
 /**
  * Define a blokkli component.
@@ -29,11 +29,11 @@ import { getRuntimeOptionValue } from '#blokkli/helpers/runtimeHelpers'
 export function defineBlokkli<
   T extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
   G extends GlobalOptionsKey[] | undefined = undefined,
->(config: BlockDefinitionInput<T, G>): DefineBlokkliContext<T, G> {
-  const optionKeys: string[] = [
-    ...Object.keys(config.options || {}),
-    ...(config.globalOptions || []),
-  ]
+>(arg: BlockDefinitionInput<T, G>): DefineBlokkliContext<T, G> {
+  // The vite plugin removes all properties from the passed object except for
+  // bundle, so we have to cast it as this type here.
+  const config = arg as RuntimeBlockDefinitionInput
+  const bundle = config.bundle
 
   const fieldListType = inject<ComputedRef<ValidFieldListTypes>>(
     INJECT_FIELD_LIST_TYPE,
@@ -77,62 +77,65 @@ export function defineBlokkli<
   // the component, we use this state to override the options.
   const editContext = inject<ItemEditContext | null>(INJECT_EDIT_CONTEXT, null)
 
+  const runtimeOptionDefinitions = BLOCK_OPTIONS[bundle] || {}
+
   const options = computed(() => {
     // For these two "special" bundles, at this stage we just return the raw
     // options defined on the item itself and the mutated options of the item.
     // These options will never be directly returned in defineBlokkli().
     // For example the from_library block renders the "actual" block again, at
     // which point this computed property is built again.
-    if (
-      config.bundle === 'from_library' ||
-      config.bundle === 'blokkli_fragment'
-    ) {
+    if (bundle === 'from_library' || bundle === 'blokkli_fragment') {
       return {
         ...(item?.value.options || {}),
         ...(editContext?.mutatedOptions[uuid] || {}),
       }
     }
 
-    const result = optionKeys.reduce<
+    const result = Object.entries(runtimeOptionDefinitions).reduce<
       Record<string, string | boolean | string[] | number>
-    >((acc, key) => {
+    >((acc, [key, definition]) => {
       // Use an override option if available.
       if (editContext) {
         const overrideOptions = editContext.mutatedOptions[uuid] || {}
 
-        if (overrideOptions[key] !== undefined) {
-          acc[key] = overrideOptions[key]
+        if (
+          overrideOptions[key] !== undefined &&
+          overrideOptions[key] !== null
+        ) {
+          acc[key] = getRuntimeOptionValue(definition, overrideOptions[key])
           return acc
         }
       }
 
       // Use the option inherited from the "from_library" block if this block is reusable.
-      if (fromLibraryOptions && fromLibraryOptions.value[key] !== undefined) {
-        acc[key] = fromLibraryOptions.value[key]
+      if (
+        fromLibraryOptions &&
+        fromLibraryOptions.value[key] !== undefined &&
+        fromLibraryOptions.value[key] !== null
+      ) {
+        acc[key] = getRuntimeOptionValue(
+          definition,
+          fromLibraryOptions.value[key],
+        )
         return acc
       }
 
-      if (item?.value.options && item.value.options[key] !== undefined) {
+      if (
+        item?.value.options &&
+        item.value.options[key] !== undefined &&
+        item.value.options[key] !== null
+      ) {
         // Use the persisted option value on the item itself.
-        acc[key] = item.value.options[key]
+        acc[key] = getRuntimeOptionValue(definition, item.value.options[key])
         return acc
       }
+
+      // Use the default value.
+      acc[key] = definition[1]
 
       return acc
     }, {})
-
-    // Map the values to the runtime value.
-    optionKeys.forEach((key) => {
-      const definition = config.options?.[key] || globalOptionsDefaults[key]
-      if (!definition) {
-        return
-      }
-      const value =
-        result[key] === undefined || result[key] === null
-          ? definition.default
-          : result[key]
-      result[key] = getRuntimeOptionValue(definition, value)
-    })
 
     return result
   })

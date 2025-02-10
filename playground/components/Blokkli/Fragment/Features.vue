@@ -7,8 +7,8 @@
       :key="feature.id"
       class="flex flex-col items-center text-center md:gap-5"
     >
-      <Icon
-        :name="feature.icon as any"
+      <div
+        v-html="(icons as any)[feature.icon]"
         class="fragment-feature-icon fill-current w-70 h-70 flex-none bg-accent-50 rounded-full p-15 text-accent-950"
       />
       <div>
@@ -23,8 +23,8 @@
 
 <script setup lang="ts">
 import { computed, defineBlokkliFragment } from '#imports'
-import { Icon } from '#blokkli/components'
 import featuresData from '#build/blokkli/features.json'
+import { icons } from '#blokkli/icons'
 
 defineBlokkliFragment({
   name: 'features_list',

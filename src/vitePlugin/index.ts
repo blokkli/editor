@@ -22,13 +22,6 @@ const fileRegex = /\.vue$/
 
 type RuntimeDefinitionInput = {
   bundle: string
-  options?: {
-    [key: string]: {
-      default: string | string[] | boolean | number
-      type: string
-    }
-  }
-  globalOptions?: string[]
 }
 
 /**
@@ -73,26 +66,9 @@ function estreeToObject(
 function buildRuntimeDefinition(
   definition: BlockDefinitionInput<BlockDefinitionOptionsInput, []>,
 ): RuntimeDefinitionInput {
-  const runtimeDefinition: RuntimeDefinitionInput = {
+  return {
     bundle: definition.bundle,
   }
-
-  if (definition.options) {
-    runtimeDefinition.options = {}
-    Object.entries(definition.options).forEach(
-      ([optionKey, optionDefinition]) => {
-        runtimeDefinition.options![optionKey] = {
-          type: optionDefinition.type,
-          default: optionDefinition.default,
-        }
-      },
-    )
-  }
-  if (definition.globalOptions) {
-    runtimeDefinition.globalOptions = definition.globalOptions
-  }
-
-  return runtimeDefinition
 }
 
 export const DefinitionPlugin = (

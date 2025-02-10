@@ -15,38 +15,44 @@
         }}
       </p>
       <div class="bk">
-        <label class="bk-form-label" for="library_search">
-          {{ $t('fragmentsPlaceDialogSearchLabel', 'Filter fragments') }}
-        </label>
-        <input
-          id="fragments_search"
-          v-model="searchText"
-          type="text"
-          class="bk-form-input"
-          :placeholder="
-            $t('fragmentsPlaceDialogSearchPlaceholder', 'Search fragments')
-          "
-          required
-        />
+        <div class="bk-form-group">
+          <div>
+            <label class="bk-form-label" for="library_search">
+              {{ $t('fragmentsPlaceDialogSearchLabel', 'Filter fragments') }}
+            </label>
+            <input
+              id="fragments_search"
+              v-model="searchText"
+              type="text"
+              class="bk-form-input"
+              :placeholder="
+                $t('fragmentsPlaceDialogSearchPlaceholder', 'Search fragments')
+              "
+              required
+            />
+          </div>
+        </div>
       </div>
-      <ul class="bk-library-dialog-list">
-        <li
-          v-for="(item, index) in fragments"
-          :key="item.name"
-          :class="{
-            'bk-is-selected': selectedItem === item.name,
-          }"
-          @click="selectedItem = item.name"
-        >
-          <FragmentItem
-            v-show="visible === null || visible.includes(item.name)"
-            :name="item.name"
-            :label="item.label"
-            :description="item.description"
-            :index="index"
-          />
-        </li>
-      </ul>
+      <div class="bk-library-dialog-content">
+        <ul class="bk-library-dialog-list">
+          <li
+            v-for="(item, index) in fragments"
+            :key="item.name"
+            :class="{
+              'bk-is-selected': selectedItem === item.name,
+            }"
+            @click="selectedItem = item.name"
+          >
+            <FragmentItem
+              v-show="visible === null || visible.includes(item.name)"
+              :name="item.name"
+              :label="item.label"
+              :description="item.description"
+              :index="index"
+            />
+          </li>
+        </ul>
+      </div>
     </div>
     <template #footer>
       <button class="bk-button bk-is-primary" @click="onSubmit">

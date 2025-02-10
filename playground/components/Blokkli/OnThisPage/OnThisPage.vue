@@ -15,6 +15,7 @@
 import type { FieldListItemTyped } from '#blokkli/generated-types'
 import { falsy } from '~/helpers'
 import { defineBlokkli, computed } from '#imports'
+import { getRuntimeOptions, getItemsforBundles } from '#blokkli/runtime-helpers'
 
 const { rootBlocks } = defineBlokkli({
   bundle: 'on_this_page',
@@ -23,7 +24,7 @@ const { rootBlocks } = defineBlokkli({
   },
 })
 
-export type Props = {}
+export type Props = object
 
 type OnThisPageLink = {
   label: string
@@ -34,21 +35,22 @@ const mapItem = (
   item: FieldListItemTyped,
 ): OnThisPageLink | undefined | OnThisPageLink[] => {
   if (item.bundle === 'title') {
+    const options = getRuntimeOptions(item)
     const label = item.props?.tagline || item.props?.title
-    if (item.options.showInMenu === '1' && label) {
+    if (options.showInMenu) {
       return {
         label,
         url: '#title-' + item.uuid,
       }
     }
   } else if (item.bundle === 'two_columns' || item.bundle === 'grid') {
-    // For some reason the type here is not an array, even though the prop is actually an array.
-    const headerItems: FieldListItemTyped[] = (item.props as any).header || []
-    return headerItems.flatMap((v) => mapItem(v)).filter(falsy)
+    return item.props.header.flatMap((v) => mapItem(v)).filter(falsy)
   }
 }
 
-const links = computed<OnThisPageLink[]>(() => {
-  return rootBlocks.value.flatMap((item) => mapItem(item)).filter(falsy)
-})
+const links = computed<OnThisPageLink[]>(() =>
+  getItemsforBundles(rootBlocks.value, ['title', 'two_columns', 'grid'])
+    .flatMap(mapItem)
+    .filter(falsy),
+)
 </script>

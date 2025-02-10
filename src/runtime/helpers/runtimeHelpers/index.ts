@@ -1,7 +1,11 @@
 /**
  * This file should contain all helpers that are meant for runtime functionality, such as defineBlokkli composable or <BlokkliProvider>.
  */
-
+import {
+  BLOCK_OPTIONS,
+  type RuntimeBlockOptionArray,
+  type RuntimeBlockOptions,
+} from '#blokkli/runtime-options'
 import type { FieldListItemTyped } from '#blokkli/generated-types'
 import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
 import {
@@ -25,24 +29,35 @@ export function mapCheckboxTrue(v?: unknown): '1' | '0' {
  * Internally, all option values are stored as strings. This function maps the stored data to the runtime value.
  */
 export function getRuntimeOptionValue(
-  definition: Pick<BlockOptionDefinition, 'type' | 'default'>,
+  definition:
+    | Pick<BlockOptionDefinition, 'type' | 'default'>
+    | RuntimeBlockOptionArray,
   value: string | string[] | boolean | undefined | null | number,
 ): string | string[] | boolean | number {
-  if (definition.type === 'checkbox') {
+  const type = Array.isArray(definition) ? definition[0] : definition.type
+
+  const defaultValue = Array.isArray(definition)
+    ? definition[1]
+    : definition.default
+
+  // If no value is provided, return the default value.
+  if (value === null || value === undefined) {
+    return defaultValue
+  }
+
+  if (type === 'checkbox') {
     return mapCheckboxTrue(value) === '1'
-  } else if (definition.type === 'radios') {
+  } else if (type === 'radios') {
     if (typeof value === 'string') {
       return value
     }
-    return ''
-  } else if (definition.type === 'checkboxes') {
+  } else if (type === 'checkboxes') {
     if (typeof value === 'string') {
       return value.split(',')
     } else if (Array.isArray(value)) {
       return value
     }
-    return []
-  } else if (definition.type === 'range' || definition.type === 'number') {
+  } else if (type === 'range' || type === 'number') {
     if (typeof value === 'number' && !Number.isNaN(value)) {
       return value
     } else if (typeof value === 'string') {
@@ -51,13 +66,19 @@ export function getRuntimeOptionValue(
         return parsed
       }
     }
-  }
-
-  if (typeof value === 'string') {
+  } else if (type === 'color') {
+    if (typeof value === 'string') {
+      if (value.startsWith('#')) {
+        return value
+      } else if (value.length === 6) {
+        return `#${value}`
+      }
+    }
+  } else if (type === 'text' && typeof value === 'string') {
     return value
   }
 
-  return ''
+  return defaultValue
 }
 
 /**
@@ -96,4 +117,106 @@ export function isVisibleByOptions(
   }
 
   return true
+}
+
+/**
+ * Returns the runtime options for a block.
+ *
+ * If the provided item's bundle is 'from_library', the method will merge the
+ * options defined in the reusable block with the options defined in the
+ * from_library block.
+ */
+export function getRuntimeOptions<K extends keyof RuntimeBlockOptions>(
+  item: FieldListItemTyped & { bundle: K },
+  fromLibraryOptions?: Record<string, any>,
+): RuntimeBlockOptions[K] {
+  if (item.bundle === 'from_library' && 'libraryItem' in item.props) {
+    const actualBlock = item.props.libraryItem?.block
+    if (!actualBlock) {
+      throw new Error('Missing block')
+    }
+
+    return getRuntimeOptions(
+      actualBlock as FieldListItemTyped,
+      item.options,
+    ) as RuntimeBlockOptions[K]
+  }
+
+  const availableOptions = BLOCK_OPTIONS[item.bundle] || {}
+
+  return Object.entries(availableOptions).reduce<Record<string, any>>(
+    (acc, [key, definition]) => {
+      // Use the option inherited from the "from_library" block if this block is reusable.
+      if (
+        fromLibraryOptions &&
+        fromLibraryOptions[key] !== undefined &&
+        fromLibraryOptions[key] !== null
+      ) {
+        acc[key] = getRuntimeOptionValue(
+          definition,
+          fromLibraryOptions.value[key],
+        )
+        return acc
+      }
+
+      if (
+        item.options &&
+        item.options[key] !== undefined &&
+        item.options[key] !== null
+      ) {
+        // Use the persisted option value on the item itself.
+        acc[key] = getRuntimeOptionValue(definition, item.options[key])
+        return acc
+      }
+
+      // Use the default value.
+      acc[key] = definition[1]
+
+      return acc
+    },
+    {},
+  ) as RuntimeBlockOptions[K]
+}
+
+/**
+ * Get the actual block for reusable blocks.
+ *
+ * If the provided bundle is 'from_library', the method will merge the options
+ * from both the from_library block and the actual block.
+ */
+export function getActualBlock(
+  item: FieldListItemTyped,
+): FieldListItemTyped | null {
+  if (item.bundle === 'from_library') {
+    const block = item.props.libraryItem?.block
+    if (!block) {
+      return null
+    }
+    const mergedOptions = {
+      ...(item.options || {}),
+      ...(block.options || {}),
+    }
+    return { ...block, options: mergedOptions } as FieldListItemTyped
+  }
+
+  return item
+}
+
+export function getItemsforBundles<K extends FieldListItemTyped['bundle']>(
+  items: FieldListItemTyped[],
+  bundles: K[],
+): Extract<FieldListItemTyped, { bundle: K }>[] {
+  const filtered: FieldListItemTyped[] = []
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i]
+    if (item.bundle === 'from_library') {
+      const actual = getActualBlock(item)
+      if (actual && bundles.includes(actual.bundle as K)) {
+        filtered.push(actual)
+      }
+    } else if (bundles.includes(item.bundle as K)) {
+      filtered.push(item)
+    }
+  }
+  return filtered as Extract<FieldListItemTyped, { bundle: K }>[]
 }

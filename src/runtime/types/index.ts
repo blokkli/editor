@@ -320,7 +320,7 @@ export type BlockDefinitionRenderFor =
 
 export type BlockDefinitionInput<
   Options extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
-  GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
+  GlobalOptions extends GlobalOptionsKey[] | undefined = [],
 > = {
   /**
    * The bundle ID of the block, e.g. "text" or "section_title".
@@ -360,6 +360,10 @@ export type BlockDefinitionInput<
    * Settings for the behaviour in the editor.
    */
   editor?: BlokkliDefinitionInputEditor<Options, GlobalOptions>
+}
+
+export type RuntimeBlockDefinitionInput = {
+  bundle: string
 }
 
 export type InjectedBlokkliItem = ComputedRef<{
