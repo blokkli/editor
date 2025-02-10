@@ -21,7 +21,7 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
-import type { BlokkliIcon } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon } from '#blokkli/components'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 

@@ -21,7 +21,7 @@
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/components'
-import { theme as configTheme } from '#blokkli/config'
+import { theme as configTheme } from '#blokkli-build/config'
 import type {
   RGB,
   ThemeColorGroup,

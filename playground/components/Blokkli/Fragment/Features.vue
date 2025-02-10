@@ -24,7 +24,7 @@
 <script setup lang="ts">
 import { computed, defineBlokkliFragment } from '#imports'
 import featuresData from '#build/blokkli/features.json'
-import { icons } from '#blokkli/icons'
+import { icons } from '#blokkli-build/icons'
 
 defineBlokkliFragment({
   name: 'features_list',

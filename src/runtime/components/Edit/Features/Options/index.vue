@@ -12,7 +12,10 @@
 <script lang="ts" setup>
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import { falsy, onlyUnique } from '#blokkli/helpers'
-import { getDefinition, getFragmentDefinition } from '#blokkli/definitions'
+import {
+  getDefinition,
+  getFragmentDefinition,
+} from '#blokkli-build/definitions'
 import OptionsForm from './Form/index.vue'
 import type {
   BlockDefinitionInput,

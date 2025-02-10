@@ -48,7 +48,7 @@ import type {
   Rectangle,
   DraggableExistingStructureBlock,
 } from '#blokkli/types'
-import { getDefinition } from '#blokkli/definitions'
+import { getDefinition } from '#blokkli-build/definitions'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { adapter } = defineBlokkliFeature({

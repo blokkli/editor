@@ -33,10 +33,10 @@
 import type {
   BlockBundleWithNested,
   ValidFieldListTypes,
-} from '#blokkli/generated-types'
+} from '#blokkli-build/generated-types'
 import { computed, useBlokkli, ref } from '#imports'
-import { getDefinition } from '#blokkli/definitions'
-import { getBlokkliItemProxyComponent } from '#blokkli/edit-components'
+import { getDefinition } from '#blokkli-build/definitions'
+import { getBlokkliItemProxyComponent } from '#blokkli-build/edit-components'
 
 import { ItemIcon } from '#blokkli/components'
 import type { FieldConfig, LibraryItemProps } from '#blokkli/types'

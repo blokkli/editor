@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { BlokkliIcon } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { AddListOrientation, ContextMenu } from '#blokkli/types'
 import { useBlokkli, computed, ref } from '#imports'
 import { ItemIcon, Icon } from '#blokkli/components'

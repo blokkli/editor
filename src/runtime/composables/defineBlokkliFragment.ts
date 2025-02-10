@@ -6,8 +6,8 @@ import type {
   DefineBlokkliContext,
   FragmentDefinitionInput,
 } from '#blokkli/types'
-import type { GlobalOptionsKey } from '#blokkli/generated-types'
-import { globalOptionsDefaults } from '#blokkli/default-global-options'
+import type { GlobalOptionsKey } from '#blokkli-build/generated-types'
+import { globalOptionsDefaults } from '#blokkli-build/default-global-options'
 
 export function defineBlokkliFragment<
   T extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,

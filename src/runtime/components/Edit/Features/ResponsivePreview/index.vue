@@ -73,7 +73,7 @@ import {
 import { PluginSidebar } from '#blokkli/plugins'
 import PreviewFrame from './Frame/index.vue'
 import { Icon } from '#blokkli/components'
-import type { BlokkliIcon } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 
 defineBlokkliFeature({
   id: 'responsive-preview',

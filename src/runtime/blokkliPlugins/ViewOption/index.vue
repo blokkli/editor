@@ -32,7 +32,7 @@
 <script setup lang="ts">
 import { useBlokkli, computed, ref } from '#imports'
 import { ShortcutIndicator, Icon } from '#blokkli/components'
-import type { BlokkliIcon } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 

@@ -91,14 +91,14 @@ import {
   watch,
 } from '#imports'
 import type { FieldListItem, EntityContext, FieldConfig } from '#blokkli/types'
-import type { BlokkliFragmentName } from '#blokkli/definitions'
+import type { BlokkliFragmentName } from '#blokkli-build/definitions'
 import BlokkliItem from './../BlokkliItem.vue'
 import { isVisibleByOptions } from '#blokkli/helpers/runtimeHelpers'
 import {
   INJECT_FIELD_PROXY_MODE,
   INJECT_IS_EDITING,
 } from '#blokkli/helpers/symbols'
-import type { FieldListItemTyped } from '#blokkli/generated-types'
+import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 
 const { dom, types, runtimeConfig, selection } = useBlokkli()
 

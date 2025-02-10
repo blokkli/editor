@@ -16,7 +16,7 @@
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import type { DraggableExistingBlock } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
-import { getDefinition } from '#blokkli/definitions'
+import { getDefinition } from '#blokkli-build/definitions'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 defineBlokkliFeature({

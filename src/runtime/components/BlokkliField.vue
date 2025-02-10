@@ -56,7 +56,7 @@ import {
   ref,
   type ComputedRef,
 } from '#imports'
-import type { BlokkliFragmentName } from '#blokkli/definitions'
+import type { BlokkliFragmentName } from '#blokkli-build/definitions'
 import { isVisibleByOptions } from '#blokkli/helpers/runtimeHelpers'
 import BlokkliItem from './BlokkliItem.vue'
 
@@ -70,7 +70,7 @@ import type {
 import type {
   ValidFieldListTypes,
   FieldListItemTyped,
-} from '#blokkli/generated-types'
+} from '#blokkli-build/generated-types'
 import {
   INJECT_ENTITY_CONTEXT,
   INJECT_FIELD_LIST_TYPE,

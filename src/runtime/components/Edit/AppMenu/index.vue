@@ -41,7 +41,7 @@
 <script setup lang="ts">
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/components'
-import { blokkliVersion } from '#blokkli/config'
+import { blokkliVersion } from '#blokkli-build/config'
 
 const { ui, eventBus } = useBlokkli()
 

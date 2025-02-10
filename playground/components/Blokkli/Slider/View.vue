@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import type { FieldListItemTyped } from '#blokkli/generated-types'
+import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 import { ref, computed } from '#imports'
 
 const props = defineProps<{

@@ -66,7 +66,7 @@
 <script lang="ts" setup>
 import type { FeatureDefinitionSetting } from '#blokkli/types'
 import { Icon } from '#blokkli/components'
-import type { ValidFeatureKey } from '#blokkli/features'
+import type { ValidFeatureKey } from '#blokkli-build/features'
 import { useBlokkli, computed } from '#imports'
 
 const props = defineProps<{

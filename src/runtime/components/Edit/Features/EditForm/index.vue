@@ -22,7 +22,7 @@
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import { FormOverlay } from '#blokkli/components'
-import { getDefinition } from '#blokkli/definitions'
+import { getDefinition } from '#blokkli-build/definitions'
 import FormFrame from './Frame/index.vue'
 import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'

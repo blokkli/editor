@@ -744,7 +744,7 @@ export type FieldListItemTypedArray = Array<FieldListItemTyped>
     const chunkImports = chunkNames
       .filter((v) => v !== 'global')
       .map((chunkName) => {
-        return `${chunkName}: () => import('#blokkli/chunk-${chunkName}')`
+        return `${chunkName}: () => import('./chunk-${chunkName}')`
       })
 
     const nonGlobalChunkMapping = Object.values(this.definitions).reduce<

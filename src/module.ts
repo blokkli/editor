@@ -483,7 +483,7 @@ ${featuresArray}
         blokkli: true,
       },
     })
-    nuxt.options.alias['#blokkli/features'] = featureComponents.dst
+    nuxt.options.alias['#blokkli-build/features'] = featureComponents.dst
 
     // Generate the features JSON file when the playground is built.
     // This is used for generating the blökkli feature docs.
@@ -573,7 +573,7 @@ ${featuresArray}
         blokkli: true,
       },
     })
-    nuxt.options.alias['#blokkli/definitions'] = templateDefinitions.dst
+    nuxt.options.alias['#blokkli-build/definitions'] = templateDefinitions.dst
 
     const templateRuntimeOptions = addTemplate({
       write: true,
@@ -587,7 +587,8 @@ ${featuresArray}
         blokkli: true,
       },
     })
-    nuxt.options.alias['#blokkli/runtime-options'] = templateRuntimeOptions.dst
+    nuxt.options.alias['#blokkli-build/runtime-options'] =
+      templateRuntimeOptions.dst
 
     // The definitions.
     const templateEditComponents = addTemplate({
@@ -600,7 +601,8 @@ ${featuresArray}
         blokkli: true,
       },
     })
-    nuxt.options.alias['#blokkli/edit-components'] = templateEditComponents.dst
+    nuxt.options.alias['#blokkli-build/edit-components'] =
+      templateEditComponents.dst
 
     // The definitions.
     const templateTranslations = addTemplate({
@@ -623,7 +625,7 @@ ${featuresArray}
         blokkli: true,
       },
     })
-    nuxt.options.alias['#blokkli/translations'] = templateTranslations.dst
+    nuxt.options.alias['#blokkli-build/translations'] = templateTranslations.dst
 
     nuxt.options.runtimeConfig.public.blokkli = {
       itemEntityType: moduleOptions.itemEntityType || '',
@@ -657,7 +659,8 @@ ${featuresArray}
       })
     })()
 
-    nuxt.options.alias['#blokkli/compiled-edit-adapter'] = adapterTemplate.dst
+    nuxt.options.alias['#blokkli-build/compiled-edit-adapter'] =
+      adapterTemplate.dst
 
     // Add plugin and transpile runtime directory.
     nuxt.options.build.transpile.push(resolver.resolve('runtime'))
@@ -712,7 +715,7 @@ ${featuresArray}
     })
 
     // The types template.
-    nuxt.options.alias['#blokkli/styles'] = resolver.resolve(
+    nuxt.options.alias['#blokkli-build/styles'] = resolver.resolve(
       './runtime/css/output.css',
     )
 
@@ -732,7 +735,8 @@ ${featuresArray}
         blokkli: true,
       },
     })
-    nuxt.options.alias['#blokkli/generated-types'] = templateGeneratedTypes.dst
+    nuxt.options.alias['#blokkli-build/generated-types'] =
+      templateGeneratedTypes.dst
 
     const { themeCss, fullTheme, hasCustomTheme } = buildThemeData(
       moduleOptions.theme,
@@ -749,7 +753,7 @@ ${featuresArray}
         blokkli: true,
       },
     })
-    nuxt.options.alias['#blokkli/theme'] = templateThemeCss.dst
+    nuxt.options.alias['#blokkli-build/theme'] = templateThemeCss.dst
 
     const templateConfig = addTemplate({
       write: true,
@@ -785,7 +789,7 @@ export const forceDefaultLanguage: boolean = ${JSON.stringify(
         blokkli: true,
       },
     })
-    nuxt.options.alias['#blokkli/config'] = templateConfig.dst
+    nuxt.options.alias['#blokkli-build/config'] = templateConfig.dst
 
     // The types template.
     const templateDefaultGlobalOptions = addTemplate({
@@ -800,7 +804,7 @@ export const forceDefaultLanguage: boolean = ${JSON.stringify(
         blokkli: true,
       },
     })
-    nuxt.options.alias['#blokkli/default-global-options'] =
+    nuxt.options.alias['#blokkli-build/default-global-options'] =
       templateDefaultGlobalOptions.dst
 
     let optionsSchemaTemplate: ResolvedNuxtTemplate<{
@@ -842,7 +846,7 @@ export const forceDefaultLanguage: boolean = ${JSON.stringify(
 
     getChunkNames().forEach((chunkName) => {
       if (chunkName !== 'global' && !nuxt.options.dev) {
-        const template = addTemplate({
+        addTemplate({
           write: true,
           filename: `blokkli/chunk-${chunkName}.ts`,
           getContents: () => {
@@ -852,7 +856,6 @@ export const forceDefaultLanguage: boolean = ${JSON.stringify(
             blokkli: true,
           },
         })
-        nuxt.options.alias['#blokkli/chunk-' + chunkName] = template.dst
       }
     })
 
@@ -903,8 +906,8 @@ export type BlokkliIcon = keyof typeof icons`
         blokkli: true,
       },
     })
-    nuxt.options.alias['#blokkli/icons'] = templateIcons.dst
-    nuxt.options.alias['#blokkli/imports'] = templateImports.dst
+    nuxt.options.alias['#blokkli-build/icons'] = templateIcons.dst
+    nuxt.options.alias['#blokkli-build/imports'] = templateImports.dst
     nuxt.options.alias['#blokkli/types'] = resolver.resolve('runtime/types')
     nuxt.options.alias['#blokkli/constants'] =
       resolver.resolve('runtime/constants')

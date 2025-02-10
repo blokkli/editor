@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { FieldListItemTyped } from '#blokkli/generated-types'
+import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 import { defineBlokkli, computed, provide } from '#imports'
 
 const { options } = defineBlokkli({

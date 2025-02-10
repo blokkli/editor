@@ -64,7 +64,7 @@
 
 <script setup lang="ts">
 import { FormOverlay } from '#blokkli/components'
-import { fragmentDefinitions } from '#blokkli/definitions'
+import { fragmentDefinitions } from '#blokkli-build/definitions'
 import { falsy } from '#blokkli/helpers'
 import type { BlokkliFieldElement } from '#blokkli/types'
 import { ref, useBlokkli, computed, watch } from '#imports'

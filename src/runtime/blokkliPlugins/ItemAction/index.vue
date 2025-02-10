@@ -31,7 +31,7 @@
 <script lang="ts" setup>
 import { computed, ref, useBlokkli } from '#imports'
 
-import type { BlokkliIcon } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon, ShortcutIndicator } from '#blokkli/components'
 import type { DraggableExistingBlock } from '#blokkli/types'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'

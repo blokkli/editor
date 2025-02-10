@@ -26,7 +26,7 @@
 
 <script lang="ts" setup>
 import FormHeader from './Header/index.vue'
-import type { BlokkliIcon } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Resizable } from '#blokkli/components'
 
 defineProps<{

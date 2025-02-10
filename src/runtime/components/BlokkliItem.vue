@@ -27,7 +27,7 @@ import {
   type ComputedRef,
 } from '#imports'
 import type { InjectedBlokkliItem } from '#blokkli/types'
-import { getBlokkliItemComponent } from '#blokkli/imports'
+import { getBlokkliItemComponent } from '#blokkli-build/imports'
 import {
   INJECT_BLOCK_ITEM,
   INJECT_ENTITY_CONTEXT,
@@ -39,7 +39,7 @@ import {
 import type {
   BlockBundleWithNested,
   ValidFieldListTypes,
-} from '#blokkli/generated-types'
+} from '#blokkli-build/generated-types'
 
 const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
 

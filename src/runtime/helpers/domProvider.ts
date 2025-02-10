@@ -18,11 +18,11 @@ import type { UiProvider } from './uiProvider'
 import { cloneElementWithStyles } from './dom'
 import onBlokkliEvent from './composables/onBlokkliEvent'
 import useDelayedIntersectionObserver from './composables/useDelayedIntersectionObserver'
-import { getDefinition } from '#blokkli/definitions'
+import { getDefinition } from '#blokkli-build/definitions'
 import type {
   BlockBundleWithNested,
   ValidFieldListTypes,
-} from '#blokkli/generated-types'
+} from '#blokkli-build/generated-types'
 import type { DebugProvider } from './debugProvider'
 
 type RegisteredField = {

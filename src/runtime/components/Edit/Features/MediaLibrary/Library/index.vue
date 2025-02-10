@@ -85,7 +85,7 @@ import {
 } from '#imports'
 import { Sortli, Icon, Pagination } from '#blokkli/components'
 import type { MediaLibraryFilter, MediaLibraryGetResults } from './../types'
-import type { BlokkliIcon } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 import Item from './Item.vue'
 import type { DraggableItem, DraggableMediaLibraryItem } from '#blokkli/types'
 import { buildDraggableItem, falsy } from '#blokkli/helpers'

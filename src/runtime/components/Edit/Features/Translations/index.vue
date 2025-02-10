@@ -100,7 +100,7 @@ import type {
   Language,
 } from '#blokkli/types'
 import Banner from './Banner/index.vue'
-import { getDefinition } from '#blokkli/definitions'
+import { getDefinition } from '#blokkli-build/definitions'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { adapter } = defineBlokkliFeature({

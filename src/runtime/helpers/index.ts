@@ -10,9 +10,9 @@ import type {
   LibraryItemProps,
 } from '#blokkli/types'
 import { useRuntimeConfig } from '#imports'
-import { getDefinition } from '#blokkli/definitions'
+import { getDefinition } from '#blokkli-build/definitions'
 import type { RGB } from '#blokkli/types/theme'
-import type { ValidFieldListTypes } from '#blokkli/generated-types'
+import type { ValidFieldListTypes } from '#blokkli-build/generated-types'
 
 /**
  * Type check for falsy values.

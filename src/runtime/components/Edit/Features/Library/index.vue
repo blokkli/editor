@@ -73,7 +73,7 @@ import { PluginItemAction, PluginAddAction } from '#blokkli/plugins'
 import ReusableDialog from './ReusableDialog/index.vue'
 import LibraryDialog from './LibraryDialog/index.vue'
 import EditReusable from './EditReusable/index.vue'
-import { getDefinition } from '#blokkli/definitions'
+import { getDefinition } from '#blokkli-build/definitions'
 import type { ActionPlacedEvent, LibraryEditItemEvent } from '#blokkli/types'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 

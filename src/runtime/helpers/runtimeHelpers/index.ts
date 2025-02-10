@@ -5,13 +5,13 @@ import {
   BLOCK_OPTIONS,
   type RuntimeBlockOptionArray,
   type RuntimeBlockOptions,
-} from '#blokkli/runtime-options'
-import type { FieldListItemTyped } from '#blokkli/generated-types'
+} from '#blokkli-build/runtime-options'
+import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
 import {
   bundlesWithVisibleLanguage,
   bundlesWithHiddenGlobally,
-} from '#blokkli/default-global-options'
+} from '#blokkli-build/default-global-options'
 import type { FieldListItem } from '#blokkli/types'
 import { BK_HIDDEN_GLOBALLY, BK_VISIBLE_LANGUAGES } from '../symbols'
 

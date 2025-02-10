@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import { ShortcutIndicator, Icon } from '#blokkli/components'
-import type { BlokkliIcon } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 import { ref } from '#imports'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import defineTourItem from '#blokkli/helpers/composables/defineTourItem'

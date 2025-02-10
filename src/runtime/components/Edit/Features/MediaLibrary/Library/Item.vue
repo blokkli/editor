@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import type { BlokkliIcon } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 import { computed } from '#imports'
 
 const props = defineProps<{

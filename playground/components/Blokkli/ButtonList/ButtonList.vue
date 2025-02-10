@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { FieldListItemTyped } from '#blokkli/generated-types'
+import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 import { defineBlokkli } from '#imports'
 
 defineBlokkli({

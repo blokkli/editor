@@ -10,7 +10,7 @@
 
 <script lang="ts" setup>
 import { computed } from '#imports'
-import { icons } from '#blokkli/definitions'
+import { icons } from '#blokkli-build/definitions'
 import { Icon } from '#blokkli/components'
 
 const props = defineProps<{

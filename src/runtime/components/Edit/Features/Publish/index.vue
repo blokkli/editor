@@ -14,7 +14,7 @@
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature, computed, useRoute } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
-import type { BlokkliIcon } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 
 const { adapter, settings } = defineBlokkliFeature({
   id: 'publish',

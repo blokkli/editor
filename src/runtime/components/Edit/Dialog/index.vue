@@ -51,7 +51,7 @@
 
 <script lang="ts" setup>
 import { useBlokkli, onMounted, computed, ref } from '#imports'
-import type { BlokkliIcon } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon } from '#blokkli/components'
 import { modulo } from '#blokkli/helpers'
 

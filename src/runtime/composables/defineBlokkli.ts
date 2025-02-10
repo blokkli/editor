@@ -19,9 +19,9 @@ import type {
   FieldListItemTyped,
   GlobalOptionsKey,
   ValidFieldListTypes,
-} from '#blokkli/generated-types'
+} from '#blokkli-build/generated-types'
 import { getRuntimeOptionValue } from '#blokkli/helpers/runtimeHelpers'
-import { BLOCK_OPTIONS } from '#blokkli/runtime-options'
+import { BLOCK_OPTIONS } from '#blokkli-build/runtime-options'
 
 /**
  * Define a blokkli component.

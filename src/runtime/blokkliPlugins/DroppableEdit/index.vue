@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import { FormOverlay } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import type { BlokkliIcon } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { DroppableEntityField, DroppableFieldConfig } from '#blokkli/types'
 import { ref, useBlokkli } from '#imports'
 

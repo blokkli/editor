@@ -1,5 +1,5 @@
 import { type ComputedRef, type WritableComputedRef, computed, ref } from 'vue'
-import { storageDefaults } from '#blokkli/config'
+import { storageDefaults } from '#blokkli-build/config'
 
 const PREFIX = 'blokkli:'
 

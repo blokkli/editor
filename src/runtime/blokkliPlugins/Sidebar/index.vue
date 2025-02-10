@@ -100,7 +100,7 @@
 
 <script setup lang="ts">
 import { computed, watch, ref, useBlokkli } from '#imports'
-import type { BlokkliIcon } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon, ShortcutIndicator, ScrollBoundary } from '#blokkli/components'
 import SidebarDetached from './Detached/index.vue'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'

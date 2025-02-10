@@ -30,11 +30,11 @@
 import { useBlokkli, computed } from '#imports'
 import { DialogModal } from '#blokkli/components'
 import FeatureSetting from './FeatureSetting/index.vue'
-import type { ValidFeatureKey } from '#blokkli/features'
+import type { ValidFeatureKey } from '#blokkli-build/features'
 import type { FeatureDefinitionSetting } from '#blokkli/types'
 import { SETTINGS_GROUP, type SettingsGroup } from '#blokkli/constants'
-import type { BlokkliIcon } from '#blokkli/icons'
-import { settingsOverride } from '#blokkli/config'
+import type { BlokkliIcon } from '#blokkli-build/icons'
+import { settingsOverride } from '#blokkli-build/config'
 
 const { $t, features, ui } = useBlokkli()
 

@@ -4,8 +4,8 @@
 
 <script lang="ts" setup>
 import { computed } from '#imports'
-import { icons } from '#blokkli/icons'
-import type { BlokkliIcon } from '#blokkli/icons'
+import { icons } from '#blokkli-build/icons'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 
 const props = defineProps<{
   name: BlokkliIcon

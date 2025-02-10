@@ -49,7 +49,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, onBeforeUnmount, onMounted } from '#imports'
-import { globalOptions } from '#blokkli/definitions'
+import { globalOptions } from '#blokkli-build/definitions'
 import { falsy, onlyUnique } from '#blokkli/helpers'
 import OptionsFormItem from './Item.vue'
 import OptionsFormGroup from './Group.vue'

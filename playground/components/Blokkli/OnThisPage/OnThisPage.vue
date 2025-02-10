@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { FieldListItemTyped } from '#blokkli/generated-types'
+import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 import { falsy } from '~/helpers'
 import { defineBlokkli, computed } from '#imports'
 import { getRuntimeOptions, getItemsforBundles } from '#blokkli/runtime-helpers'

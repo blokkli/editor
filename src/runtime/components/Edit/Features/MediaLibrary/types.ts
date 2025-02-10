@@ -1,4 +1,4 @@
-import type { BlokkliIcon } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 
 export type MediaLibraryFilterCheckbox = {
   label: string

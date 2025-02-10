@@ -18,7 +18,7 @@ import type {
 } from './../adapter'
 import type { BroadcastProvider } from '#blokkli/helpers/broadcastProvider'
 import type { FeaturesProvider } from '#blokkli/helpers/featuresProvider'
-import type { BlokkliIcon } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { SettingsGroup, Viewport } from '#blokkli/constants'
 import type {
   BlockBundleWithNested,
@@ -27,8 +27,8 @@ import type {
   ValidChunkNames,
   ValidFieldListTypes,
   ValidGlobalConfigKeys,
-} from '#blokkli/generated-types'
-import type { globalOptions } from '#blokkli/definitions'
+} from '#blokkli-build/generated-types'
+import type { globalOptions } from '#blokkli-build/definitions'
 import type { ThemeProvider } from '#blokkli/helpers/themeProvider'
 import type { CommandsProvider } from '#blokkli/helpers/commandsProvider'
 import type { TourProvider } from '#blokkli/helpers/tourProvider'

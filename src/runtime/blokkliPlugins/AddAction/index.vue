@@ -18,7 +18,7 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli, nextTick, ref } from '#imports'
-import type { BlokkliIcon } from '#blokkli/icons'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { ActionPlacedEvent } from '#blokkli/types'
 import { AddListItem } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
