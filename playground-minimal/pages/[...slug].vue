@@ -3,13 +3,9 @@
     entity-type="content"
     entity-bundle="page"
     entity-uuid="1"
-    :can-edit="true"
+    can-edit
   >
-    <BlokkliField
-      name="content_blocks"
-      :list="blocks"
-      :allowed-fragments="['cta']"
-    />
+    <BlokkliField name="content_blocks" :list="blocks" />
   </BlokkliProvider>
 </template>
 
