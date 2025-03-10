@@ -10,6 +10,8 @@ export default defineNuxtConfig({
     'nuxt-svg-icon-sprite',
   ],
 
+  debug: true,
+
   imports: {
     autoImport: false,
   },

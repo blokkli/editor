@@ -46,3 +46,15 @@ export type BuildRelativeImports = {
   TYPES_GENERATED_MODULE_TYPED: string
   TYPES_BLOKK_OPTIONS: string
 }
+
+export type ModuleContext = {
+  /**
+   * The absolute path to the blokkli build directory.
+   */
+  blokkliBuildDir: string
+
+  /**
+   * The srcDir of the Nuxt app.
+   */
+  srcDir: string
+}

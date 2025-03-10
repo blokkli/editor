@@ -14,6 +14,7 @@ import {
 } from '@nuxt/kit'
 import { defu, createDefu } from 'defu'
 import { relative } from 'pathe'
+import { hash } from 'ohash'
 import type { ResolvedNuxtTemplate } from '@nuxt/schema'
 import BlockExtractor from './Extractor/BlockExtractor'
 import FeatureExtractor, {
@@ -29,7 +30,13 @@ import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
 } from './runtime/helpers/symbols'
-import type { BuildRelativeImports, GetBundlePropsType } from './module/types'
+import type {
+  BuildRelativeImports,
+  GetBundlePropsType,
+  ModuleContext,
+} from './module/types'
+import { IconCollector } from './Collector/Icons'
+import type { Collector } from './Collector'
 
 function hexToRgb(hex: string): RGB {
   // Remove the hash symbol if present
@@ -401,6 +408,17 @@ export default defineNuxtModule<ModuleOptions>({
         moduleOptions.alterFeatures(featuresContext),
       )
     }
+
+    const moduleContext: ModuleContext = {
+      srcDir,
+      blokkliBuildDir,
+    }
+
+    const iconCollector = new IconCollector(moduleContext)
+    await iconCollector.init(resolver.resolve('./runtime/icons'))
+    console.log(iconCollector.files)
+
+    const collectors: Collector[] = [iconCollector]
 
     // Create an array of all feature IDs, including onces that have been
     // removed or added by users.
@@ -872,41 +890,14 @@ export const forceDefaultLanguage: boolean = ${JSON.stringify(
       },
     })
 
-    const templateIcons = addTemplate({
+    nuxt.options.alias['#blokkli-build/icons'] = addTemplate({
       write: true,
       filename: 'blokkli/icons.ts',
-      getContents: async () => {
-        const pathModule = resolver.resolve('./runtime/icons')
-        const filesModule = await resolveFiles(pathModule, '*.svg')
-        const filesApp = await resolveFiles(
-          srcDir,
-          'components/**/icon-blokkli-*.svg',
-        )
-        const icons = await Promise.all(
-          [...filesModule, ...filesApp].map((filePath) => {
-            return fsp.readFile(filePath).then((data) => {
-              const name = basename(filePath, '.svg').toLowerCase()
-              return {
-                markup: data.toString(),
-                name,
-              }
-            })
-          }),
-        )
-
-        const iconMap = icons.reduce<Record<string, string>>((acc, v) => {
-          acc[v.name] = v.markup
-          return acc
-        }, {})
-
-        return `export const icons = ${JSON.stringify(iconMap)} as const
-export type BlokkliIcon = keyof typeof icons`
-      },
+      getContents: () => iconCollector.generateTemplate(),
       options: {
         blokkli: true,
       },
-    })
-    nuxt.options.alias['#blokkli-build/icons'] = templateIcons.dst
+    }).dst
     nuxt.options.alias['#blokkli-build/imports'] = templateImports.dst
     nuxt.options.alias['#blokkli/types'] = resolver.resolve('runtime/types')
     nuxt.options.alias['#blokkli/constants'] =
@@ -954,38 +945,20 @@ export type BlokkliIcon = keyof typeof icons`
 
     // Watch for file changes in dev mode.
     if (nuxt.options.dev) {
-      nuxt.hook('vite:serverCreated', (viteServer) => {
-        nuxt.hook('builder:watch', async (_event, path) => {
-          const filePath = await applies(path)
-          if (!filePath) {
-            return
-          }
-          // Determine if the file has changed.
-          const hasChanged = await blockExtractor.handleFile(filePath)
+      nuxt.hook('builder:watch', async (event, filePath) => {
+        for (const collector of collectors) {
+          await collector.handleWatchEvent(event, filePath)
+        }
 
-          // Nothing to do.
-          if (!hasChanged) {
-            return
-          }
-
-          await updateTemplates({
-            filter: (template) => {
-              return template.options && template.options.blokkli
-            },
-          })
-
-          await generateOptionsSchema()
-
-          // Trigger HMR for the definitions file.
-          const modules = viteServer.moduleGraph.getModulesByFile(
-            templateDefinitions.dst,
-          )
-          if (modules) {
-            modules.forEach((v) => {
-              viteServer.reloadModule(v)
-            })
-          }
-        })
+        // // Trigger HMR for the definitions file.
+        // const modules = viteServer.moduleGraph.getModulesByFile(
+        //   templateDefinitions.dst,
+        // )
+        // if (modules) {
+        //   modules.forEach((v) => {
+        //     viteServer.reloadModule(v)
+        //   })
+        // }
       })
     }
   },
