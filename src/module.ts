@@ -11,12 +11,9 @@ import {
   defineNuxtModule,
   resolveFiles,
 } from '@nuxt/kit'
-import { createDefu } from 'defu'
 import type { ResolvedNuxtTemplate } from '@nuxt/schema'
 import BlockExtractor from './Extractor/BlockExtractor'
 import { DefinitionPlugin } from './vitePlugin'
-import { getTheme, themes } from './themes'
-import type { ThemeName, RGB, Theme } from './runtime/types/theme'
 import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
@@ -29,28 +26,7 @@ import { ModuleContext } from './module/ModuleContext'
 import { TEMPLATES } from './module/templates'
 import type { TemplateDependency } from './module/templates/defineTemplate'
 import { FeatureCollector } from './Collector/Features'
-
-function hexToRgb(hex: string): RGB {
-  // Remove the hash symbol if present
-  if (hex.startsWith('#')) {
-    hex = hex.slice(1)
-  }
-
-  // If it's a three-character hex, convert it to six characters
-  if (hex.length === 3) {
-    hex = hex
-      .split('')
-      .map((char) => char + char)
-      .join('')
-  }
-
-  // Convert the hex string to RGB
-  const r = Number.parseInt(hex.slice(0, 2), 16)
-  const g = Number.parseInt(hex.slice(2, 4), 16)
-  const b = Number.parseInt(hex.slice(4, 6), 16)
-
-  return [r, g, b]
-}
+import { ThemeData } from './module/ThemeData'
 
 function onlyUnique(value: string, index: number, self: Array<string>) {
   return self.indexOf(value) === index
@@ -61,51 +37,6 @@ function onlyUnique(value: string, index: number, self: Array<string>) {
  * can one allow JS-like file extensions.
  */
 const POSSIBLE_EXTENSIONS = ['.js', '.ts', '.vue', '.mjs']
-
-const buildThemeData = (themeOption?: ThemeName | Partial<Theme>) => {
-  const hasCustomTheme = !!themeOption
-  const mergeTheme = createDefu((obj, key, value) => {
-    // Don't merge RGB array.
-    if (Array.isArray(obj[key])) {
-      obj[key] = value
-      return true
-    }
-  })
-  const theme: Theme = mergeTheme(getTheme(themeOption), themes.arctic)
-
-  const vars = Object.entries(theme)
-    .map(([group, colors]) => {
-      return Object.entries(colors).map(([shade, color]) => {
-        const rgb = typeof color === 'string' ? hexToRgb(color) : color
-        return `--bk-theme-${group}-${shade}: ${rgb[0]} ${rgb[1]} ${rgb[2]}`
-      })
-    })
-    .flat()
-    .join(';\n')
-
-  const themeCss = `
-  :root {
-    ${vars}
-  }
-  `
-
-  const fullTheme = Object.entries(theme).reduce<Record<string, any>>(
-    (acc, [group, colors]) => {
-      acc[group] = Object.entries(colors).reduce<Record<string, any>>(
-        (colorAcc, [key, color]) => {
-          const rgb = typeof color === 'string' ? hexToRgb(color) : color
-          colorAcc[key] = rgb
-          return colorAcc
-        },
-        {},
-      )
-      return acc
-    },
-    {},
-  )
-
-  return { themeCss, fullTheme, hasCustomTheme }
-}
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
@@ -144,7 +75,14 @@ export default defineNuxtModule<ModuleOptions>({
 
     const collectors: Collector[] = [iconCollector, featureCollector]
 
-    const context = new ModuleContext(helper, iconCollector, featureCollector)
+    const theme = new ThemeData(helper)
+
+    const context = new ModuleContext(
+      helper,
+      iconCollector,
+      featureCollector,
+      theme,
+    )
 
     TEMPLATES.forEach((template) => context.addTemplate(template))
 
@@ -390,57 +328,6 @@ export default defineNuxtModule<ModuleOptions>({
     })
     nuxt.options.alias['#blokkli-build/generated-types'] =
       templateGeneratedTypes.dst
-
-    const { themeCss, fullTheme, hasCustomTheme } = buildThemeData(
-      moduleOptions.theme,
-    )
-
-    // The types template.
-    const templateThemeCss = addTemplate({
-      write: true,
-      filename: 'blokkli/theme.css',
-      getContents: () => themeCss,
-      options: {
-        blokkli: true,
-      },
-    })
-    nuxt.options.alias['#blokkli-build/theme'] = templateThemeCss.dst
-
-    const templateConfig = addTemplate({
-      write: true,
-      filename: 'blokkli/config.ts',
-      getContents: () => {
-        const settingsOverride = moduleOptions.settingsOverride || {}
-
-        return `import type { Theme } from '${helper.relativePaths.TYPES_THEME}'
-import type { ModuleOptionsSettings } from '${helper.relativePaths.TYPES_GENERATED_MODULE_TYPED}'
-
-export const hasCustomTheme = ${JSON.stringify(hasCustomTheme)}
-export const themes: Record<string, Theme> = ${JSON.stringify(themes, null, 2)}
-export const theme: Theme = ${JSON.stringify(fullTheme, null, 2)}
-
-export const settingsOverride: ModuleOptionsSettings = ${JSON.stringify(
-          settingsOverride,
-        )}
-
-export const blokkliVersion = ${JSON.stringify(version)}
-
-export const storageDefaults: Record<string, string|boolean|string[]> = ${JSON.stringify(
-          moduleOptions.storageDefaults || {},
-        )}
-export const defaultLanguage: string = ${JSON.stringify(
-          moduleOptions.defaultLanguage || 'en',
-        )}
-export const forceDefaultLanguage: boolean = ${JSON.stringify(
-          !!moduleOptions.forceDefaultLanguage,
-        )}
-`
-      },
-      options: {
-        blokkli: true,
-      },
-    })
-    nuxt.options.alias['#blokkli-build/config'] = templateConfig.dst
 
     // The types template.
     const templateDefaultGlobalOptions = addTemplate({

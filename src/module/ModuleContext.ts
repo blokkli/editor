@@ -6,6 +6,7 @@ import type {
   TemplateDependency,
 } from './templates/defineTemplate'
 import type { FeatureCollector } from '../Collector/Features'
+import type { ThemeData } from './ThemeData'
 
 export class ModuleContext {
   private templates: ModuleTemplate[] = []
@@ -15,9 +16,13 @@ export class ModuleContext {
     public helper: ModuleHelper,
     public icons: IconCollector,
     public features: FeatureCollector,
+    public theme: ThemeData,
   ) {}
 
-  private getTemplateContents(type: 'code' | 'types', name: string): string {
+  private getTemplateContents(
+    type: 'code' | 'types' | 'file',
+    name: string,
+  ): string {
     const contents = this.templateContents.get(type + name)
     if (contents === undefined) {
       throw new Error(
@@ -29,7 +34,7 @@ export class ModuleContext {
   }
 
   private setTemplateContents(
-    type: 'code' | 'types',
+    type: 'code' | 'types' | 'file',
     name: string,
     contents: string,
   ) {
@@ -48,32 +53,48 @@ export class ModuleContext {
         }
       }
 
-      this.setTemplateContents(
-        'code',
-        template.name,
-        await template.buildCode(this),
-      )
-      this.setTemplateContents(
-        'types',
-        template.name,
-        await template.buildTypes(this),
-      )
+      if (template.type === 'code') {
+        this.setTemplateContents(
+          'code',
+          template.name,
+          await template.buildCode(this),
+        )
+        this.setTemplateContents(
+          'types',
+          template.name,
+          await template.buildTypes(this),
+        )
+      } else {
+        this.setTemplateContents(
+          'file',
+          template.fileName,
+          await template.build(this),
+        )
+      }
     }
   }
 
   addTemplate(template: ModuleTemplate) {
     this.templates.push(template)
 
-    addTemplate({
-      filename: `blokkli/${template.name}.js`,
-      write: true,
-      getContents: () => this.getTemplateContents('code', template.name),
-    })
+    if (template.type === 'code') {
+      addTemplate({
+        filename: `blokkli/${template.name}.js`,
+        write: true,
+        getContents: () => this.getTemplateContents('code', template.name),
+      })
 
-    addTypeTemplate({
-      filename: `blokkli/${template.name}.d.ts`,
-      write: true,
-      getContents: () => this.getTemplateContents('types', template.name),
-    })
+      addTypeTemplate({
+        filename: `blokkli/${template.name}.d.ts`,
+        write: true,
+        getContents: () => this.getTemplateContents('types', template.name),
+      })
+    } else {
+      addTemplate({
+        filename: `blokkli/${template.fileName}`,
+        write: true,
+        getContents: () => this.getTemplateContents('file', template.fileName),
+      })
+    }
   }
 }

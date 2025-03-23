@@ -1,8 +1,8 @@
-import { defineTemplate } from '../defineTemplate'
+import { defineCodeTemplate } from '../defineTemplate'
 import { relative } from 'pathe'
 import { toValidVariableName } from './../../../helpers'
 
-export default defineTemplate(
+export default defineCodeTemplate(
   'features',
   (ctx) => {
     const features = ctx.features.getFeatures().map((v) => {

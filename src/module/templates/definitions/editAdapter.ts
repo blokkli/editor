@@ -1,4 +1,4 @@
-import { defineTemplate } from '../defineTemplate'
+import { defineCodeTemplate } from '../defineTemplate'
 import { existsSync } from 'node:fs'
 import { relative } from 'pathe'
 
@@ -20,7 +20,7 @@ const fileExists = (
   return extension ? `${path}.${extension}` : null
 }
 
-export default defineTemplate(
+export default defineCodeTemplate(
   'edit-adapter',
   (ctx) => {
     // Setup adapter.

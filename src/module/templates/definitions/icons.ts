@@ -1,9 +1,9 @@
-import { defineTemplate } from '../defineTemplate'
+import { defineCodeTemplate } from '../defineTemplate'
 import { basename } from 'node:path'
 import { relative } from 'pathe'
 import { toValidVariableName } from './../../../helpers'
 
-export default defineTemplate(
+export default defineCodeTemplate(
   'icons',
   (ctx) => {
     const imports: string[] = []

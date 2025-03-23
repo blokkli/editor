@@ -1,8 +1,8 @@
-import { defineTemplate } from '../defineTemplate'
+import { defineCodeTemplate } from '../defineTemplate'
 import { defu } from 'defu'
 import defaultTranslations from './../../../translations'
 
-export default defineTemplate(
+export default defineCodeTemplate(
   'translations',
   (ctx) => {
     const translations: Record<string, Record<string, string>> = {}
