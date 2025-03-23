@@ -88,6 +88,8 @@ export default defineNuxtModule<ModuleOptions>({
 
     await context.generateTemplates()
 
+    nuxt.options.alias['#blokkli-build'] = helper.paths.blokkliBuildDir
+
     // The path to the source directory of this module's consumer.
     const srcDir = nuxt.options.srcDir
     const srcResolver = createResolver(srcDir)
@@ -120,47 +122,6 @@ export default defineNuxtModule<ModuleOptions>({
     //   ...extractedFeatures.map((v) => v.id),
     //   ...featuresContext.features.map((v) => v.id),
     // ].filter(onlyUnique)
-
-    // The custom feature components.
-    // const featureComponents = addTemplate({
-    //   write: true,
-    //   filename: 'blokkli/features.ts',
-    //   getContents: () => {
-    //
-    //   },
-    //   options: {
-    //     blokkli: true,
-    //   },
-    // })
-    // nuxt.options.alias['#blokkli-build/features'] = featureComponents.dst
-
-    // Generate the features JSON file when the playground is built.
-    // This is used for generating the blökkli feature docs.
-    // addTemplate({
-    //   write: true,
-    //   filename: 'blokkli/features.json',
-    //   getContents: async () => {
-    //     const featuresData = await Promise.all(
-    //       featuresContext.features.map(async (v) => {
-    //         const docsPath = v.filePath.replace('index.vue', 'docs.md')
-    //         let docs = ''
-    //         if (fileExists(docsPath)) {
-    //           docs = await fsp.readFile(docsPath).then((v) => v.toString())
-    //         }
-    //         return {
-    //           ...v,
-    //           repoRelativePath: v.filePath.replace(/.*\/src/, '/src'),
-    //           docs,
-    //         }
-    //       }),
-    //     )
-    //
-    //     return JSON.stringify(featuresData, null, 2)
-    //   },
-    //   options: {
-    //     blokkli: true,
-    //   },
-    // })
 
     function getChunkNames(): string[] {
       const chunkNames = [...(moduleOptions.chunkNames || [])]
@@ -218,7 +179,6 @@ export default defineNuxtModule<ModuleOptions>({
         blokkli: true,
       },
     })
-    nuxt.options.alias['#blokkli-build/definitions'] = templateDefinitions.dst
 
     const templateRuntimeOptions = addTemplate({
       write: true,
@@ -232,8 +192,6 @@ export default defineNuxtModule<ModuleOptions>({
         blokkli: true,
       },
     })
-    nuxt.options.alias['#blokkli-build/runtime-options'] =
-      templateRuntimeOptions.dst
 
     // The definitions.
     const templateEditComponents = addTemplate({
@@ -246,8 +204,6 @@ export default defineNuxtModule<ModuleOptions>({
         blokkli: true,
       },
     })
-    nuxt.options.alias['#blokkli-build/edit-components'] =
-      templateEditComponents.dst
 
     nuxt.options.runtimeConfig.public.blokkli = {
       itemEntityType: moduleOptions.itemEntityType || '',
@@ -307,11 +263,6 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     // The types template.
-    nuxt.options.alias['#blokkli-build/styles'] = resolver.resolve(
-      './runtime/css/output.css',
-    )
-
-    // The types template.
     const templateGeneratedTypes = addTemplate({
       write: true,
       filename: 'blokkli/generated-types.ts',
@@ -326,8 +277,6 @@ export default defineNuxtModule<ModuleOptions>({
         blokkli: true,
       },
     })
-    nuxt.options.alias['#blokkli-build/generated-types'] =
-      templateGeneratedTypes.dst
 
     // The types template.
     const templateDefaultGlobalOptions = addTemplate({
@@ -341,8 +290,6 @@ export default defineNuxtModule<ModuleOptions>({
         blokkli: true,
       },
     })
-    nuxt.options.alias['#blokkli-build/default-global-options'] =
-      templateDefaultGlobalOptions.dst
 
     let optionsSchemaTemplate: ResolvedNuxtTemplate<{
       blokkli: true
@@ -406,7 +353,6 @@ export default defineNuxtModule<ModuleOptions>({
       },
     })
 
-    nuxt.options.alias['#blokkli-build/imports'] = templateImports.dst
     nuxt.options.alias['#blokkli/types'] = resolver.resolve('runtime/types')
     nuxt.options.alias['#blokkli/constants'] =
       resolver.resolve('runtime/constants')

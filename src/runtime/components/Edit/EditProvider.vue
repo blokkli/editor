@@ -79,8 +79,7 @@ import tourProvider from './../../helpers/tourProvider'
 import debugProvider from './../../helpers/debugProvider'
 import dropAreasProvider from './../../helpers/dropAreaProvider'
 import { eventBus } from '#blokkli/helpers/eventBus'
-import '#blokkli-build/theme'
-import '#blokkli-build/styles'
+import '#blokkli-build/styles.css'
 import getAdapter from '#blokkli-build/edit-adapter'
 import {
   INJECT_APP,

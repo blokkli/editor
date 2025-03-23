@@ -32,6 +32,7 @@ export default defineCodeTemplate(
   )},
   label: ${JSON.stringify(v.definition.label || '')},
   beta: ${JSON.stringify(!!v.definition.beta)},
+  icon: ${JSON.stringify(v.definition.icon)},
   description: "${v.definition.description || ''}"
 }`
       })
@@ -68,6 +69,7 @@ export type FeatureComponent = {
   description: string
   label: string
   beta: boolean
+  icon: string
   viewports: Viewport[]
 }
 

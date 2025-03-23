@@ -19,7 +19,7 @@ import type {
   UpdateBlockOptionEvent,
   ItemEditContext,
 } from '#blokkli/types'
-import '#blokkli-build/styles'
+import '#blokkli-build/styles.css'
 import getAdapter from '#blokkli-build/edit-adapter'
 import {
   INJECT_EDIT_CONTEXT,

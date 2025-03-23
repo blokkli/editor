@@ -1,24 +1,6 @@
+import { fileExists } from './../../../helpers'
 import { defineCodeTemplate } from '../defineTemplate'
-import { existsSync } from 'node:fs'
 import { relative } from 'pathe'
-
-const fileExists = (
-  path?: string,
-  extensions = ['js', 'ts'],
-): string | null => {
-  if (!path) {
-    return null
-  } else if (existsSync(path)) {
-    // If path already contains/forces the extension
-    return path
-  }
-
-  const extension = extensions.find((extension) =>
-    existsSync(`${path}.${extension}`),
-  )
-
-  return extension ? `${path}.${extension}` : null
-}
 
 export default defineCodeTemplate(
   'edit-adapter',
