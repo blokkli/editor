@@ -10,11 +10,11 @@ import {
   useRoute,
   useRouter,
 } from '#imports'
-import {
-  ParagraphsBlokkliRemoteVideoProvider,
-  type ParagraphsBlokkliCommentFragment,
-  type ParagraphsBlokkliEditStateFragment,
+import type {
+  ParagraphsBlokkliCommentFragment,
+  ParagraphsBlokkliEditStateFragment,
 } from '#graphql-operations'
+import { ParagraphsBlokkliRemoteVideoProvider } from '#graphql-operations'
 
 type DrupalAdapter = BlokkliAdapter<ParagraphsBlokkliEditStateFragment>
 

@@ -51,7 +51,7 @@ const { parentType, options } = defineBlokkli({
   options: {
     box: {
       type: 'checkbox',
-      label: 'Box',
+      label: 'Box FOOBAR',
       default: true,
     },
     color: {

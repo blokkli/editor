@@ -1,57 +1,38 @@
 import { resolveFiles } from '@nuxt/kit'
-import { basename } from 'node:path'
 import { Collector } from './index'
-import { relative } from 'pathe'
-
-function toValidVariableName(input: string): string {
-  // Replace non-alphanumeric characters with underscores.
-  let result = input.replace(/\W/g, '_')
-
-  // Ensure the first character is not a number.
-  if (/^\d/.test(result)) {
-    result = '_' + result
-  }
-
-  // Handle empty string edge case
-  if (result === '') {
-    result = '_empty'
-  }
-
-  return result
-}
+import type { TemplateDependency } from '../module/templates/defineTemplate'
+import * as micromatch from 'micromatch'
+import type { ModuleHelper } from '../module/ModuleHelper'
 
 export class IconCollector extends Collector {
-  async init(srcFromModule: string) {
+  protected override needsFileContents = false
+  private srcFromModule: string
+
+  constructor(helper: ModuleHelper) {
+    super(helper)
+    this.srcFromModule = helper.resolvers.module.resolve('./runtime/icons')
+  }
+
+  async init() {
+    const srcFromModule =
+      this.helper.resolvers.module.resolve('./runtime/icons')
     const filesModule = await resolveFiles(srcFromModule, '*.svg')
     const filesApp = await resolveFiles(
-      this.context.srcDir,
+      this.helper.paths.srcDir,
       '**/icon-blokkli-*.svg',
     )
     const allFiles = [...filesModule, ...filesApp]
-    allFiles.forEach((filePath) => this.addFile(filePath))
+    await Promise.all(allFiles.map((filePath) => this.addFile(filePath)))
   }
 
-  generateTemplate() {
-    const imports: string[] = []
-    const icons: string[] = []
+  public override applies(filePath: string): Promise<boolean> {
+    return Promise.resolve(
+      filePath.startsWith(this.srcFromModule) ||
+        micromatch.isMatch(filePath, 'icon-blokkli-*.svg'),
+    )
+  }
 
-    const files = this.files.values()
-
-    for (const file of files) {
-      const name = basename(file.filePath, '.svg').toLowerCase()
-      const importName = 'icon_' + toValidVariableName(name)
-      imports.push(
-        `import ${importName} from '${relative(this.context.blokkliBuildDir, file.filePath)}?raw'`,
-      )
-      icons.push(`'${name}': ${importName}`)
-    }
-
-    return `${imports.join('\n')}
-
-export const icons = {
-${icons.join(',\n  ')}
-}
-
-export type BlokkliIcon = keyof typeof icons`
+  override getDependencyTypes(): TemplateDependency[] {
+    return ['icons']
   }
 }

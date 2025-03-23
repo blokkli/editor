@@ -34,7 +34,7 @@
   "card": {
     "box": {
       "default": true,
-      "label": "Box",
+      "label": "Box FOOBAR",
       "type": "checkbox"
     },
     "color": {

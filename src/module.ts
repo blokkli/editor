@@ -1,4 +1,4 @@
-import { extname, basename } from 'node:path'
+import { extname } from 'node:path'
 import { promises as fsp, existsSync } from 'node:fs'
 import { version } from './../package.json'
 import {
@@ -10,33 +10,27 @@ import {
   createResolver,
   defineNuxtModule,
   resolveFiles,
-  updateTemplates,
 } from '@nuxt/kit'
 import { defu, createDefu } from 'defu'
 import { relative } from 'pathe'
-import { hash } from 'ohash'
 import type { ResolvedNuxtTemplate } from '@nuxt/schema'
 import BlockExtractor from './Extractor/BlockExtractor'
-import FeatureExtractor, {
-  type ExtractedFeatureDefinition,
-} from './Extractor/FeatureExtractor'
-import type { BlockDefinitionOptionsInput } from './runtime/types'
 import { DefinitionPlugin } from './vitePlugin'
 import defaultTranslations from './translations'
 import { getTheme, themes } from './themes'
 import type { ThemeName, RGB, Theme } from './runtime/types/theme'
-import type { ModuleOptionsSettings } from './runtime/types/generatedModuleTypes'
 import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
 } from './runtime/helpers/symbols'
-import type {
-  BuildRelativeImports,
-  GetBundlePropsType,
-  ModuleContext,
-} from './module/types'
+import type { ModuleOptions } from './module/types'
 import { IconCollector } from './Collector/Icons'
 import type { Collector } from './Collector'
+import { ModuleHelper } from './module/ModuleHelper'
+import { ModuleContext } from './module/ModuleContext'
+import { TEMPLATES } from './module/templates'
+import type { TemplateDependency } from './module/templates/defineTemplate'
+import { FeatureCollector } from './Collector/Features'
 
 function hexToRgb(hex: string): RGB {
   // Remove the hash symbol if present
@@ -87,187 +81,6 @@ const fileExists = (
  * can one allow JS-like file extensions.
  */
 const POSSIBLE_EXTENSIONS = ['.js', '.ts', '.vue', '.mjs']
-
-type AlterFeatures = {
-  features: ExtractedFeatureDefinition[]
-}
-
-type ModuleOptionsStorageDefaults = {
-  /**
-   * The default favorite block bundles.
-   */
-  blockFavorites?: string[]
-}
-
-/**
- * Options for the module.
- */
-export type ModuleOptions = {
-  /**
-   * The pattern of source files to scan for blokkli components.
-   */
-  pattern?: string[]
-
-  /**
-   * Define reusable options that can be used in blokkli item components by
-   * referencing the option name.
-   */
-  globalOptions?: BlockDefinitionOptionsInput
-
-  /**
-   * Define available chunk groups.
-   *
-   * The idea of this feature is to split rarely used components into separate
-   * chunks, so that they are not imported on each page.
-   *
-   * This value should only be set if the component is actually used rarely.
-   * Having too many chunks has the opposite effect, as rendering a page
-   * requires multiple requests.
-   *
-   * If left empty, all components are bundled in a default chunk, which should
-   * contain components that are used for most pages.
-   */
-  chunkNames?: string[]
-
-  /**
-   * Valid field list types.
-   *
-   * If one or more values are defined, they can be passed to the BlokkliField
-   * component as a prop. The value is made available to all blokkli items inside
-   * this field.
-   */
-  fieldListTypes?: string[]
-
-  /**
-   * The entity type of blokkli items.
-   *
-   * Using the paragraphs_blokkli integration this value should be set to "paragraph".
-   */
-  itemEntityType?: string
-
-  /**
-   * Provide overrides for the translations.
-   */
-  translations?: Record<string, Record<string, string>>
-
-  /**
-   * The default/fallback language for the editor.
-   */
-  defaultLanguage?: string
-
-  /**
-   * Force the editor to always be in the default language.
-   *
-   * The default behaviour is that the editor is rendered in the same language
-   * as the page entity. Setting this value to true will always render the
-   * editor in the default language.
-   */
-  forceDefaultLanguage?: boolean
-
-  /**
-   * Alter features.
-   *
-   * It's also possible to override builtin feature components with custom
-   * implementations.
-   */
-  alterFeatures?: (
-    ctx: AlterFeatures,
-  ) => Promise<ExtractedFeatureDefinition[]> | ExtractedFeatureDefinition[]
-
-  /**
-   * Add custom features by defining either a pattern or path to a feature component.
-   */
-  featureImports?: string[]
-
-  /**
-   * Theme colors for the editor.
-   *
-   * Accent colors are used for selections, highlights, buttons.
-   * Mono colors are used for the UI elements in the editor.
-   */
-  theme?: ThemeName | Partial<Theme>
-
-  /**
-   * Enable the theme editor feature.
-   */
-  enableThemeEditor?: boolean
-
-  /**
-   * blokkli generates a JSON file that contains all the defined block
-   * options, keyed by block bundle. By default the file is output to
-   * .nuxt/blokkli/options-schema.json, but the path can be overriden here.
-   *
-   * The path can use aliases like ~ or @ and must also contain the file
-   * name including the extension.
-   */
-  schemaOptionsPath?: string
-
-  /**
-   * Override the feature settings.
-   */
-  settingsOverride?: ModuleOptionsSettings
-
-  /**
-   * The default storage values for non-settings values.
-   *
-   * These values are not visible in the settings dialog, but are still
-   * "settable" by the user through interactions. This option allows you to
-   * define default values for these settings, like default favorite block
-   * bundles.
-   */
-  storageDefaults?: ModuleOptionsStorageDefaults
-
-  /**
-   * Method that is called for each block bundle component to generate the
-   * prop types.
-   *
-   * These types are used if you access a block item with the generated
-   * FieldListItemTyped type, for example through:
-   * const { rootBlocks } = defineBlokkli().
-   *
-   * or using <BlokkliField v-slot="{ items }">.
-   *
-   * The method receives the name of the bundle and the extracted block
-   * definition as the second argument.
-   * The return value should be an object with these properties:
-   *
-   * - typeName: The name of the type
-   * - from: Where the type can be imported from
-   *
-   * For example, if the method returns this object:
-   * ```typescript
-   * {
-   *   typeName: 'ParagraphTextWithImageFragment',
-   *   from: '#graphql-operations'
-   * }
-   * ```
-   *
-   * Then the module will generate this TypeScript code:
-   *
-   * ```typescript
-   * import type { ParagraphTextWithImageFragment } from '#graphql-operations'
-   * ```
-   *
-   * And assign the imported type as the type for the `props` property for this bundle.
-   *
-   * Then, for example in a block component:
-   *
-   * ```typescript
-   * const { siblings, index } = defineBlokkli()
-   *
-   * const previousBlock = computed(() => siblings.value[index.value - 1])
-   *
-   * const previousTitle = computed(() => {
-   *   // The previous block in the list is a title.
-   *   if (previousBlock.value?.bundle === 'title') {
-   *     // The type of the props are now typed correctly.
-   *     const title = previousBlock.value.props.title
-   *   }
-   * })
-   * ```
-   */
-  getBundlePropsType?: GetBundlePropsType
-}
 
 const buildThemeData = (themeOption?: ThemeName | Partial<Theme>) => {
   const hasCustomTheme = !!themeOption
@@ -342,6 +155,21 @@ export default defineNuxtModule<ModuleOptions>({
     itemEntityType: 'block',
   },
   async setup(moduleOptions, nuxt) {
+    const helper = new ModuleHelper(nuxt, import.meta.url, moduleOptions)
+    const iconCollector = new IconCollector(helper)
+    const featureCollector = new FeatureCollector(helper)
+
+    await iconCollector.init()
+    await featureCollector.init()
+
+    const collectors: Collector[] = [iconCollector, featureCollector]
+
+    const context = new ModuleContext(helper, iconCollector, featureCollector)
+
+    TEMPLATES.forEach((template) => context.addTemplate(template))
+
+    await context.generateTemplates()
+
     // The path to the source directory of this module's consumer.
     const srcDir = nuxt.options.srcDir
     const srcResolver = createResolver(srcDir)
@@ -354,182 +182,67 @@ export default defineNuxtModule<ModuleOptions>({
     const buildResolver = createResolver(nuxt.options.buildDir)
     const blokkliBuildDir = buildResolver.resolve('blokkli')
 
-    const IMPORTS: BuildRelativeImports = {
-      TYPES: relative(
-        blokkliBuildDir,
-        resolver.resolve('./runtime/types/index.ts'),
-      ),
-      CONSTANTS: relative(
-        blokkliBuildDir,
-        resolver.resolve('./runtime/constants/index.ts'),
-      ),
-      ADAPTER: relative(
-        blokkliBuildDir,
-        resolver.resolve('./runtime/adapter/index.ts'),
-      ),
-      TYPES_THEME: relative(
-        blokkliBuildDir,
-        resolver.resolve('./runtime/types/theme.ts'),
-      ),
-      TYPES_GENERATED_MODULE_TYPED: relative(
-        blokkliBuildDir,
-        resolver.resolve('./runtime/types/generatedModuleTypes.ts'),
-      ),
-      TYPES_BLOKK_OPTIONS: relative(
-        blokkliBuildDir,
-        resolver.resolve('./runtime/types/blokkOptions.ts'),
-      ),
-    }
+    // const features = extractedFeatures.filter((v) => {
+    //   return v.id !== 'theme' || moduleOptions.enableThemeEditor
+    // })
 
-    const featureFolder = resolver.resolve('./runtime/components/Edit/Features')
-    const featureExtractor = new FeatureExtractor(!nuxt.options.dev)
-    const builtinFeatures = await resolveFiles(featureFolder, ['*/index.vue'], {
-      followSymbolicLinks: false,
-    })
-
-    const customFeatures = moduleOptions.featureImports
-      ? await resolveFiles(srcDir, moduleOptions.featureImports, {
-          followSymbolicLinks: false,
-        })
-      : []
-
-    await featureExtractor.addFiles([...builtinFeatures, ...customFeatures])
-    const extractedFeatures = featureExtractor.getFeatures()
-    const features = extractedFeatures.filter((v) => {
-      return v.id !== 'theme' || moduleOptions.enableThemeEditor
-    })
-
-    const featuresContext: AlterFeatures = {
-      features,
-    }
-
-    if (moduleOptions.alterFeatures) {
-      featuresContext.features = await Promise.resolve(
-        moduleOptions.alterFeatures(featuresContext),
-      )
-    }
-
-    const moduleContext: ModuleContext = {
-      srcDir,
-      blokkliBuildDir,
-    }
-
-    const iconCollector = new IconCollector(moduleContext)
-    await iconCollector.init(resolver.resolve('./runtime/icons'))
-    console.log(iconCollector.files)
-
-    const collectors: Collector[] = [iconCollector]
-
-    // Create an array of all feature IDs, including onces that have been
-    // removed or added by users.
-    const allFeatureIds = [
-      ...extractedFeatures.map((v) => v.id),
-      ...featuresContext.features.map((v) => v.id),
-    ].filter(onlyUnique)
+    // const featuresContext: AlterFeatures = {
+    //   features,
+    // }
+    //
+    // if (moduleOptions.alterFeatures) {
+    //   featuresContext.features = await Promise.resolve(
+    //     moduleOptions.alterFeatures(featuresContext),
+    //   )
+    // }
+    //
+    // // Create an array of all feature IDs, including onces that have been
+    // // removed or added by users.
+    // const allFeatureIds = [
+    //   ...extractedFeatures.map((v) => v.id),
+    //   ...featuresContext.features.map((v) => v.id),
+    // ].filter(onlyUnique)
 
     // The custom feature components.
-    const featureComponents = addTemplate({
-      write: true,
-      filename: 'blokkli/features.ts',
-      getContents: () => {
-        const features = featuresContext.features.map((v) => {
-          const importName = `Feature_${v.componentName}`
-          return {
-            id: v.id,
-            componentName: v.componentPath,
-            importName,
-            importStatement: `import ${importName} from '${relative(blokkliBuildDir, v.componentPath)}'`,
-            definition: v.definition,
-          }
-        })
-
-        const imports = features
-          .map((v) => {
-            return v.importStatement
-          })
-          .join('\n')
-
-        const availableFeaturesAtBuild = featuresContext.features.map(
-          (v) => v.id,
-        )
-
-        const featuresArray = features
-          .map((v) => {
-            return `{
-  id: "${v.id}",
-  dependencies: ${JSON.stringify(v.definition.dependencies || [])},
-  viewports: ${JSON.stringify(v.definition.viewports || [])},
-  component: ${v.importName},
-  requiredAdapterMethods: ${JSON.stringify(
-    v.definition.requiredAdapterMethods || [],
-  )},
-  label: ${JSON.stringify(v.definition.label || '')},
-  beta: ${JSON.stringify(!!v.definition.beta)},
-  description: "${v.definition.description || ''}"
-}`
-          })
-          .join(',\n')
-
-        return `${imports}
-import type { BlokkliAdapter } from '${IMPORTS.ADAPTER}'
-import type { Viewport } from '${IMPORTS.CONSTANTS}'
-type AdapterMethods = keyof BlokkliAdapter<any>
-
-export const availableFeaturesAtBuild = ${JSON.stringify(
-          availableFeaturesAtBuild,
-        )} as const
-
-export type ValidFeatureKey = ${allFeatureIds.map((v) => '"' + v + '"').join(' | ')}
-
-type FeatureComponent = {
-  id: ValidFeatureKey
-  component: any
-  requiredAdapterMethods: AdapterMethods[]
-  dependencies: ValidFeatureKey[]
-  description: string
-  label: string
-  beta: boolean
-  viewports: Viewport[]
-}
-
-export const featureComponents: FeatureComponent[] = [
-${featuresArray}
-]
-`
-      },
-      options: {
-        blokkli: true,
-      },
-    })
-    nuxt.options.alias['#blokkli-build/features'] = featureComponents.dst
+    // const featureComponents = addTemplate({
+    //   write: true,
+    //   filename: 'blokkli/features.ts',
+    //   getContents: () => {
+    //
+    //   },
+    //   options: {
+    //     blokkli: true,
+    //   },
+    // })
+    // nuxt.options.alias['#blokkli-build/features'] = featureComponents.dst
 
     // Generate the features JSON file when the playground is built.
     // This is used for generating the blökkli feature docs.
-    addTemplate({
-      write: true,
-      filename: 'blokkli/features.json',
-      getContents: async () => {
-        const featuresData = await Promise.all(
-          featuresContext.features.map(async (v) => {
-            const docsPath = v.filePath.replace('index.vue', 'docs.md')
-            let docs = ''
-            if (fileExists(docsPath)) {
-              docs = await fsp.readFile(docsPath).then((v) => v.toString())
-            }
-            return {
-              ...v,
-              repoRelativePath: v.filePath.replace(/.*\/src/, '/src'),
-              docs,
-            }
-          }),
-        )
-
-        return JSON.stringify(featuresData, null, 2)
-      },
-      options: {
-        blokkli: true,
-      },
-    })
+    // addTemplate({
+    //   write: true,
+    //   filename: 'blokkli/features.json',
+    //   getContents: async () => {
+    //     const featuresData = await Promise.all(
+    //       featuresContext.features.map(async (v) => {
+    //         const docsPath = v.filePath.replace('index.vue', 'docs.md')
+    //         let docs = ''
+    //         if (fileExists(docsPath)) {
+    //           docs = await fsp.readFile(docsPath).then((v) => v.toString())
+    //         }
+    //         return {
+    //           ...v,
+    //           repoRelativePath: v.filePath.replace(/.*\/src/, '/src'),
+    //           docs,
+    //         }
+    //       }),
+    //     )
+    //
+    //     return JSON.stringify(featuresData, null, 2)
+    //   },
+    //   options: {
+    //     blokkli: true,
+    //   },
+    // })
 
     function getChunkNames(): string[] {
       const chunkNames = [...(moduleOptions.chunkNames || [])]
@@ -549,17 +262,13 @@ ${featuresArray}
 
     const importPattern = moduleOptions.pattern || []
 
-    const featureIsEnabled = (id: string) =>
-      featuresContext.features.some((v) => v.id === id)
-
-    // Add the from_library blokkli item.
-    if (featureIsEnabled('library')) {
+    if (featureCollector.isEnabled('library')) {
       importPattern.push(
         resolver.resolve('./runtime/components/Blocks/FromLibrary/*.vue'),
       )
     }
 
-    if (featureIsEnabled('fragments')) {
+    if (featureCollector.isEnabled('fragments')) {
       importPattern.push(
         resolver.resolve('./runtime/components/Blocks/Fragment/*.vue'),
       )
@@ -574,7 +283,7 @@ ${featuresArray}
     const blockExtractor = new BlockExtractor(
       !nuxt.options.dev,
       blokkliBuildDir,
-      IMPORTS,
+      helper.relativePaths,
     )
     await blockExtractor.addFiles(files)
 
@@ -669,7 +378,7 @@ ${featuresArray}
         filename: resolvedFilename,
         write: true,
         getContents: () => `
-        import type { BlokkliAdapterFactory } from '${IMPORTS.ADAPTER}'
+        import type { BlokkliAdapterFactory } from '${helper.relativePaths.ADAPTER}'
         import adapter from '${relative(blokkliBuildDir, resolvedPath)}'
 
         export default adapter as BlokkliAdapterFactory<any>
@@ -741,14 +450,13 @@ ${featuresArray}
     const templateGeneratedTypes = addTemplate({
       write: true,
       filename: 'blokkli/generated-types.ts',
-      getContents: () => {
-        return blockExtractor.generateTypesTemplate(
+      getContents: () =>
+        blockExtractor.generateTypesTemplate(
           moduleOptions.globalOptions || {},
           getChunkNames(),
           getFieldListTypes(),
           moduleOptions.getBundlePropsType,
-        )
-      },
+        ),
       options: {
         blokkli: true,
       },
@@ -764,9 +472,7 @@ ${featuresArray}
     const templateThemeCss = addTemplate({
       write: true,
       filename: 'blokkli/theme.css',
-      getContents: () => {
-        return themeCss
-      },
+      getContents: () => themeCss,
       options: {
         blokkli: true,
       },
@@ -779,8 +485,8 @@ ${featuresArray}
       getContents: () => {
         const settingsOverride = moduleOptions.settingsOverride || {}
 
-        return `import type { Theme } from '${IMPORTS.TYPES_THEME}'
-import type { ModuleOptionsSettings } from '${IMPORTS.TYPES_GENERATED_MODULE_TYPED}'
+        return `import type { Theme } from '${helper.relativePaths.TYPES_THEME}'
+import type { ModuleOptionsSettings } from '${helper.relativePaths.TYPES_GENERATED_MODULE_TYPED}'
 
 export const hasCustomTheme = ${JSON.stringify(hasCustomTheme)}
 export const themes: Record<string, Theme> = ${JSON.stringify(themes, null, 2)}
@@ -813,11 +519,10 @@ export const forceDefaultLanguage: boolean = ${JSON.stringify(
     const templateDefaultGlobalOptions = addTemplate({
       write: true,
       filename: 'blokkli/default-global-options.ts',
-      getContents: () => {
-        return blockExtractor.generateDefaultGlobalOptions(
+      getContents: () =>
+        blockExtractor.generateDefaultGlobalOptions(
           moduleOptions.globalOptions || {},
-        )
-      },
+        ),
       options: {
         blokkli: true,
       },
@@ -849,11 +554,10 @@ export const forceDefaultLanguage: boolean = ${JSON.stringify(
       optionsSchemaTemplate = addTemplate({
         write: true,
         filename: 'blokkli/options-schema.json',
-        getContents: () => {
-          return blockExtractor.generateOptionsSchema(
+        getContents: () =>
+          blockExtractor.generateOptionsSchema(
             moduleOptions.globalOptions || {},
-          )
-        },
+          ),
         options: {
           blokkli: true,
         },
@@ -867,9 +571,8 @@ export const forceDefaultLanguage: boolean = ${JSON.stringify(
         addTemplate({
           write: true,
           filename: `blokkli/chunk-${chunkName}.ts`,
-          getContents: () => {
-            return blockExtractor.generateChunkGroupTemplate(chunkName)
-          },
+          getContents: () =>
+            blockExtractor.generateChunkGroupTemplate(chunkName),
           options: {
             blokkli: true,
           },
@@ -880,24 +583,23 @@ export const forceDefaultLanguage: boolean = ${JSON.stringify(
     const templateImports = addTemplate({
       write: true,
       filename: 'blokkli/imports.ts',
-      getContents: () => {
-        return blockExtractor.generateImportsTemplate(
+      getContents: () =>
+        blockExtractor.generateImportsTemplate(
           nuxt.options.dev ? ['global'] : getChunkNames(),
-        )
-      },
+        ),
       options: {
         blokkli: true,
       },
     })
 
-    nuxt.options.alias['#blokkli-build/icons'] = addTemplate({
-      write: true,
-      filename: 'blokkli/icons.ts',
-      getContents: () => iconCollector.generateTemplate(),
-      options: {
-        blokkli: true,
-      },
-    }).dst
+    // nuxt.options.alias['#blokkli-build/icons'] = addTemplate({
+    //   write: true,
+    //   filename: 'blokkli/icons.ts',
+    //   getContents: () => iconCollector.generateTemplate(),
+    //   options: {
+    //     blokkli: true,
+    //   },
+    // }).dst
     nuxt.options.alias['#blokkli-build/imports'] = templateImports.dst
     nuxt.options.alias['#blokkli/types'] = resolver.resolve('runtime/types')
     nuxt.options.alias['#blokkli/constants'] =
@@ -938,16 +640,24 @@ export const forceDefaultLanguage: boolean = ${JSON.stringify(
       // Get all files based on pattern and check if there is a match.
       return resolveFiles(srcDir, importPattern, {
         followSymbolicLinks: false,
-      }).then((files) => {
-        return files.find((v) => v === filePath)
-      })
+      }).then((files) => files.find((v) => v === filePath))
     }
 
     // Watch for file changes in dev mode.
     if (nuxt.options.dev) {
       nuxt.hook('builder:watch', async (event, filePath) => {
+        const dependenciesToUpdate: TemplateDependency[] = []
+        helper.fileCache.delete(filePath)
+
         for (const collector of collectors) {
-          await collector.handleWatchEvent(event, filePath)
+          const result = await collector.handleWatchEvent(event, filePath)
+          if (result.hasChanged) {
+            dependenciesToUpdate.push(...collector.getDependencyTypes())
+          }
+        }
+
+        if (dependenciesToUpdate.length) {
+          await context.generateTemplates(dependenciesToUpdate)
         }
 
         // // Trigger HMR for the definitions file.
@@ -963,3 +673,5 @@ export const forceDefaultLanguage: boolean = ${JSON.stringify(
     }
   },
 })
+
+export type { ModuleOptions }
