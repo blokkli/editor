@@ -20,7 +20,7 @@ import type {
   ItemEditContext,
 } from '#blokkli/types'
 import '#blokkli-build/styles'
-import getAdapter from '#blokkli-build/compiled-edit-adapter'
+import getAdapter from '#blokkli-build/edit-adapter'
 import {
   INJECT_EDIT_CONTEXT,
   INJECT_IS_PREVIEW,

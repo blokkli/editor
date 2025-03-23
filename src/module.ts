@@ -1,5 +1,5 @@
 import { extname } from 'node:path'
-import { promises as fsp, existsSync } from 'node:fs'
+import { promises as fsp } from 'node:fs'
 import { version } from './../package.json'
 import {
   addBuildPlugin,
@@ -11,12 +11,10 @@ import {
   defineNuxtModule,
   resolveFiles,
 } from '@nuxt/kit'
-import { defu, createDefu } from 'defu'
-import { relative } from 'pathe'
+import { createDefu } from 'defu'
 import type { ResolvedNuxtTemplate } from '@nuxt/schema'
 import BlockExtractor from './Extractor/BlockExtractor'
 import { DefinitionPlugin } from './vitePlugin'
-import defaultTranslations from './translations'
 import { getTheme, themes } from './themes'
 import type { ThemeName, RGB, Theme } from './runtime/types/theme'
 import {
@@ -56,24 +54,6 @@ function hexToRgb(hex: string): RGB {
 
 function onlyUnique(value: string, index: number, self: Array<string>) {
   return self.indexOf(value) === index
-}
-
-const fileExists = (
-  path?: string,
-  extensions = ['js', 'ts'],
-): string | null => {
-  if (!path) {
-    return null
-  } else if (existsSync(path)) {
-    // If path already contains/forces the extension
-    return path
-  }
-
-  const extension = extensions.find((extension) =>
-    existsSync(`${path}.${extension}`),
-  )
-
-  return extension ? `${path}.${extension}` : null
 }
 
 /**
@@ -331,63 +311,10 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.alias['#blokkli-build/edit-components'] =
       templateEditComponents.dst
 
-    // The definitions.
-    const templateTranslations = addTemplate({
-      write: true,
-      filename: 'blokkli/translations.ts',
-      getContents: () => {
-        const translations: Record<string, Record<string, string>> = {}
-        Object.keys(defaultTranslations).forEach((language) => {
-          translations[language] = {}
-          Object.keys((defaultTranslations as any)[language]).forEach((key) => {
-            translations[language][key] = (defaultTranslations as any)[
-              language
-            ][key].translation
-          })
-        })
-        const merged = defu(moduleOptions.translations, translations)
-        return `export const translations = ${JSON.stringify(merged, null, 2)}`
-      },
-      options: {
-        blokkli: true,
-      },
-    })
-    nuxt.options.alias['#blokkli-build/translations'] = templateTranslations.dst
-
     nuxt.options.runtimeConfig.public.blokkli = {
       itemEntityType: moduleOptions.itemEntityType || '',
       defaultLanguage: moduleOptions.defaultLanguage || 'en',
     }
-
-    // Setup adapter.
-    const resolvedPath = '~/app/blokkli.editAdapter'
-      .replace(/^(~~|@@)/, nuxt.options.rootDir)
-      .replace(/^(~|@)/, nuxt.options.srcDir)
-    // nuxt.options.build.transpile.push(resolvedPath)
-    const adapterTemplate = (() => {
-      const resolvedFilename = `blokkli/editAdapter.ts`
-
-      const maybeUserFile = fileExists(resolvedPath, ['ts'])
-
-      if (!maybeUserFile) {
-        throw new Error(
-          'Missing blokkli adapter file in ~/app/blokkli.editAdapter.ts',
-        )
-      }
-      return addTemplate({
-        filename: resolvedFilename,
-        write: true,
-        getContents: () => `
-        import type { BlokkliAdapterFactory } from '${helper.relativePaths.ADAPTER}'
-        import adapter from '${relative(blokkliBuildDir, resolvedPath)}'
-
-        export default adapter as BlokkliAdapterFactory<any>
-        `,
-      })
-    })()
-
-    nuxt.options.alias['#blokkli-build/compiled-edit-adapter'] =
-      adapterTemplate.dst
 
     // Add plugin and transpile runtime directory.
     nuxt.options.build.transpile.push(resolver.resolve('runtime'))
@@ -592,14 +519,6 @@ export const forceDefaultLanguage: boolean = ${JSON.stringify(
       },
     })
 
-    // nuxt.options.alias['#blokkli-build/icons'] = addTemplate({
-    //   write: true,
-    //   filename: 'blokkli/icons.ts',
-    //   getContents: () => iconCollector.generateTemplate(),
-    //   options: {
-    //     blokkli: true,
-    //   },
-    // }).dst
     nuxt.options.alias['#blokkli-build/imports'] = templateImports.dst
     nuxt.options.alias['#blokkli/types'] = resolver.resolve('runtime/types')
     nuxt.options.alias['#blokkli/constants'] =

@@ -81,7 +81,7 @@ import dropAreasProvider from './../../helpers/dropAreaProvider'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import '#blokkli-build/theme'
 import '#blokkli-build/styles'
-import getAdapter from '#blokkli-build/compiled-edit-adapter'
+import getAdapter from '#blokkli-build/edit-adapter'
 import {
   INJECT_APP,
   INJECT_EDIT_CONTEXT,

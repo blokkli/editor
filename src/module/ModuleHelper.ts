@@ -30,7 +30,7 @@ export class ModuleHelper {
   public fileCache: FileCache
 
   constructor(
-    private nuxt: Nuxt,
+    public nuxt: Nuxt,
     moduleUrl: string,
     public readonly options: ModuleOptions,
   ) {
