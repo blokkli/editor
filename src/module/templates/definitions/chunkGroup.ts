@@ -1,5 +1,4 @@
 import { defineCodeTemplate, withHelper } from '../defineTemplate'
-import { relative } from 'pathe'
 
 export default withHelper((helper) => {
   return helper.getChunkNames().map((chunkName) => {
@@ -20,15 +19,13 @@ export default withHelper((helper) => {
 
           if (helper.isDev) {
             imports.push(
-              `const ${file.identifier} = () => import('${relative(ctx.helper.paths.blokkliBuildDir, file.filePath)}').then(v => v.default)`,
+              `const ${file.identifier} = () => import('${file.filePath}').then(v => v.default)`,
             )
             file.variations.forEach((variation) => {
               map[variation] = `{ loadComponent: ${file.identifier} }`
             })
           } else {
-            imports.push(
-              `import ${file.identifier} from '${relative(ctx.helper.paths.blokkliBuildDir, file.filePath)}'`,
-            )
+            imports.push(`import ${file.identifier} from '${file.filePath}'`)
             file.variations.forEach((variation) => {
               map[variation] = file.identifier!
             })
@@ -51,7 +48,7 @@ export const ${chunkName} = {
         return `
 import type { Component } from 'vue'
 
-export declare const ${chunkName}: Record<string, { loadComponent: () => Promise<Component> } | Component)>
+export declare const ${chunkName}: Record<string, { loadComponent: () => Promise<Component> } | Component>
 `
       },
       {

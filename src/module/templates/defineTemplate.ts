@@ -11,6 +11,7 @@ export type TemplateDependency =
 
 type TemplateOptions = {
   dependencies?: TemplateDependency[]
+  write?: boolean
 }
 
 export type ModuleCodeTemplate = {
@@ -43,6 +44,7 @@ export function defineCodeTemplate(
     buildTypes,
     options: {
       dependencies: options?.dependencies || [],
+      write: !!options?.write,
     },
   }
 }
@@ -57,6 +59,7 @@ export function defineFileTemplate(
     build,
     options: {
       dependencies: [],
+      write: true,
     },
   }
 }

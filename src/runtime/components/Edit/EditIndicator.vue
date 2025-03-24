@@ -25,7 +25,7 @@
 <script lang="ts" setup>
 import textProvider from '#blokkli/helpers/textProvider'
 import { ref, computed } from '#imports'
-import '#blokkli-build/theme'
+import '#blokkli-build/styles.css'
 import useAnimationFrame from '#blokkli/helpers/composables/useAnimationFrame'
 
 const props = defineProps<{

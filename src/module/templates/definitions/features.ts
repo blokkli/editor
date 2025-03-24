@@ -1,5 +1,4 @@
 import { defineCodeTemplate } from '../defineTemplate'
-import { relative } from 'pathe'
 import { toValidVariableName } from './../../../helpers'
 
 export default defineCodeTemplate(
@@ -11,7 +10,7 @@ export default defineCodeTemplate(
         id: v.id,
         componentName: v.componentPath,
         importName,
-        importStatement: `import ${importName} from '${relative(ctx.helper.paths.blokkliBuildDir, v.componentPath)}'`,
+        importStatement: `import ${importName} from '${v.componentPath}'`,
         definition: v.definition,
       }
     })

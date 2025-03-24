@@ -26,12 +26,12 @@ export default defineCodeTemplate(
         if (chunkName === 'global') {
           return null
         }
-        return `${chunkName}: () => import('./chunk-${chunkName}.js').then(v => v['${chunkName}'])`
+        return `${chunkName}: () => import('#blokkli-build/chunk-${chunkName}.js').then(v => v['${chunkName}'])`
       })
       .filter(falsy)
       .join(',\n  ')
     return `
-import { global } from './chunk-global'
+import { global } from '#blokkli-build/chunk-global.js'
 
 export const chunks = {
   global,

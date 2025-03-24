@@ -32,7 +32,7 @@ export const forceDefaultLanguage = ${JSON.stringify(
   (ctx) => {
     return `
 import type { Theme } from '${ctx.helper.relativePaths.TYPES_THEME}'
-import type { ModuleOptionsSettings } from './module-types'
+import type { ModuleOptionsSettings } from '#blokkli-build/module-types'
 
 /**
  * Whether the app uses a custom theme.

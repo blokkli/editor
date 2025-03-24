@@ -1,5 +1,4 @@
 import { defineCodeTemplate } from '../defineTemplate'
-import { relative } from 'pathe'
 import { isBlock } from '../../../Collector/Blocks'
 import { toImports, toObject } from '../helpers'
 
@@ -22,11 +21,7 @@ export default defineCodeTemplate(
         blocks.push(file.identifier)
         if (file.iconPath) {
           const iconVariable = 'icon_' + file.definition.bundle
-          const relativePath = relative(
-            ctx.helper.paths.blokkliBuildDir,
-            file.iconPath,
-          )
-          imports.set(iconVariable, relativePath + '?raw')
+          imports.set(iconVariable, file.iconPath + '?raw')
           icons.set(file.definition.bundle, iconVariable)
         }
       } else {
@@ -66,7 +61,7 @@ export const globalOptions = ${JSON.stringify(ctx.helper.options.globalOptions |
     }
 
     return `
-import type { GlobalOptionsKey, ValidFieldListTypes, BlockBundleWithNested } from './generated-types'
+import type { GlobalOptionsKey, ValidFieldListTypes, BlockBundleWithNested } from '#blokkli-build/generated-types'
 import type { BlockDefinitionInput, BlockDefinitionOptionsInput, FragmentDefinitionInput } from '${ctx.helper.relativePaths.TYPES}'
 
 export type BlockDefinition = BlockDefinitionInput<BlockDefinitionOptionsInput, GlobalOptionsKey[]>

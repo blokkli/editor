@@ -2,6 +2,9 @@ import packageJson from './../package.json'
 
 export default defineNuxtConfig({
   ssr: false,
+  devtools: {
+    enabled: true,
+  },
 
   modules: [
     '@nuxt/test-utils/module',

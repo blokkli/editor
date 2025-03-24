@@ -1,6 +1,5 @@
 import { defineCodeTemplate } from '../defineTemplate'
 import { basename } from 'node:path'
-import { relative } from 'pathe'
 import { toValidVariableName } from './../../../helpers'
 
 export default defineCodeTemplate(
@@ -14,9 +13,7 @@ export default defineCodeTemplate(
     for (const file of files) {
       const name = basename(file.filePath, '.svg').toLowerCase()
       const importName = 'icon_' + toValidVariableName(name)
-      imports.push(
-        `import ${importName} from '${relative(ctx.helper.paths.blokkliBuildDir, file.filePath)}?raw'`,
-      )
+      imports.push(`import ${importName} from '${file.filePath}?raw'`)
       icons.push(`'${name}': ${importName}`)
     }
 

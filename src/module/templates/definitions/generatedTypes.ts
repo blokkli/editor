@@ -132,11 +132,9 @@ ${lines.join('\n  ')}
           .map((v) => {
             return `${v.typeName} as Bundle_${v.bundle}_Props`
           })
-          .join(',\n  ')
+          .join(', ')
         const importPath = relative(ctx.helper.paths.blokkliBuildDir, from)
-        return `import type {
-  ${imports}
-} from '${importPath}'`
+        return `import type { ${imports} } from '${importPath}'`
       })
       .join('\n')
 

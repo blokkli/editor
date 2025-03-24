@@ -12,8 +12,6 @@ export default withHelper((helper) => {
     fileName = helper.resolvers.src.resolve(resolved)
   }
 
-  console.log({ fileName })
-
   return defineFileTemplate(fileName, (ctx) => {
     const globalOptions = ctx.helper.options.globalOptions || {}
 

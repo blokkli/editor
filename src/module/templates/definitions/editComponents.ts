@@ -1,6 +1,5 @@
 import { defineCodeTemplate } from '../defineTemplate'
 import { isBlock } from '../../../Collector/Blocks'
-import { relative } from 'pathe'
 import { toObject } from '../helpers'
 
 export default defineCodeTemplate(
@@ -18,17 +17,11 @@ export default defineCodeTemplate(
 
       if (file.proxyComponentPath) {
         const importName = 'proxy_' + bundle
-        imports[importName] = relative(
-          ctx.helper.paths.blokkliBuildDir,
-          file.proxyComponentPath,
-        )
+        imports[importName] = file.proxyComponentPath
         proxyComponents.set(bundle, importName)
       } else if (file.diffComponentPath) {
         const importName = 'diff_' + file.definition.bundle
-        imports[importName] = relative(
-          ctx.helper.paths.blokkliBuildDir,
-          file.diffComponentPath,
-        )
+        imports[importName] = file.diffComponentPath
         diffComponents.set(bundle, importName)
       }
     }

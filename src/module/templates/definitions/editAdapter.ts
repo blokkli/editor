@@ -1,6 +1,5 @@
 import { fileExists } from './../../../helpers'
 import { defineCodeTemplate } from '../defineTemplate'
-import { relative } from 'pathe'
 
 export default defineCodeTemplate(
   'edit-adapter',
@@ -19,7 +18,7 @@ export default defineCodeTemplate(
     }
 
     return `
-  import adapter from '${relative(ctx.helper.paths.blokkliBuildDir, resolvedPath)}'
+  import adapter from '${resolvedPath}'
 
 export default adapter
 `

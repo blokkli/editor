@@ -84,14 +84,35 @@ export class ModuleContext {
     if (template.type === 'code') {
       addTemplate({
         filename: `blokkli/${template.name}.js`,
-        write: true,
+        write: template.options.write,
         getContents: () => this.getTemplateContents('code', template.name),
       })
 
       addTypeTemplate({
         filename: `blokkli/${template.name}.d.ts`,
-        write: true,
-        getContents: () => this.getTemplateContents('types', template.name),
+        write: true, // Type files are always written.
+        getContents: () => {
+          const lines = this.getTemplateContents('types', template.name)
+            .trim()
+            .split('\n')
+
+          let imports = ''
+          let declarations = ''
+
+          for (const line of lines) {
+            if (line.startsWith('import ') && line.includes(' from ')) {
+              imports += line + '\n'
+            } else {
+              declarations += '  ' + line + '\n'
+            }
+          }
+
+          return `${imports}
+
+declare module '#blokkli-build/${template.name}' {
+${declarations}
+}`
+        },
       })
     } else {
       const filename = template.fileName.startsWith('/')
