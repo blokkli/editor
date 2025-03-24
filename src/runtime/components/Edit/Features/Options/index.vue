@@ -13,9 +13,9 @@
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import { falsy, onlyUnique } from '#blokkli/helpers'
 import {
-  getDefinition,
+  getBlockDefinition,
   getFragmentDefinition,
-} from '#blokkli-build/definitions'
+} from '#blokkli/helpers/definitions'
 import OptionsForm from './Form/index.vue'
 import type {
   BlockDefinitionInput,
@@ -72,7 +72,7 @@ const definition = computed<
 
   const definitions = selection.blocks.value
     .map((block) => {
-      return getDefinition(
+      return getBlockDefinition(
         bundle,
         block.hostFieldListType,
         block.parentBlockBundle,

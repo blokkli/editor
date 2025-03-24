@@ -79,7 +79,7 @@ import { onlyUnique, findIdealRectPosition, falsy } from '#blokkli/helpers'
 import type { Rectangle, PluginMountEvent } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import { getFragmentDefinition } from '#blokkli-build/definitions'
+import { getFragmentDefinition } from '#blokkli/helpers/definitions'
 
 const { selection, $t, types, state, ui, dom } = useBlokkli()
 

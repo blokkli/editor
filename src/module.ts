@@ -1,4 +1,3 @@
-import { extname } from 'node:path'
 import { promises as fsp } from 'node:fs'
 import { version } from './../package.json'
 import {
@@ -27,16 +26,11 @@ import { TEMPLATES } from './module/templates'
 import type { TemplateDependency } from './module/templates/defineTemplate'
 import { FeatureCollector } from './Collector/Features'
 import { ThemeData } from './module/ThemeData'
+import { BlockCollector } from './Collector/Blocks'
 
 function onlyUnique(value: string, index: number, self: Array<string>) {
   return self.indexOf(value) === index
 }
-
-/**
- * Since we have to parse JavaScript in order to figure out the arguments, we
- * can one allow JS-like file extensions.
- */
-const POSSIBLE_EXTENSIONS = ['.js', '.ts', '.vue', '.mjs']
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
@@ -69,11 +63,17 @@ export default defineNuxtModule<ModuleOptions>({
     const helper = new ModuleHelper(nuxt, import.meta.url, moduleOptions)
     const iconCollector = new IconCollector(helper)
     const featureCollector = new FeatureCollector(helper)
+    const blockCollector = new BlockCollector(helper)
 
     await iconCollector.init()
     await featureCollector.init()
+    await blockCollector.init()
 
-    const collectors: Collector[] = [iconCollector, featureCollector]
+    const collectors: Collector[] = [
+      iconCollector,
+      featureCollector,
+      blockCollector,
+    ]
 
     const theme = new ThemeData(helper)
 
@@ -81,6 +81,7 @@ export default defineNuxtModule<ModuleOptions>({
       helper,
       iconCollector,
       featureCollector,
+      blockCollector,
       theme,
     )
 
@@ -91,7 +92,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.alias['#blokkli-build'] = helper.paths.blokkliBuildDir
 
     // The path to the source directory of this module's consumer.
-    const srcDir = nuxt.options.srcDir
+    const srcDir = nuxt.options.dir.app
     const srcResolver = createResolver(srcDir)
 
     const moduleDir = import.meta.url
@@ -166,21 +167,7 @@ export default defineNuxtModule<ModuleOptions>({
     )
     await blockExtractor.addFiles(files)
 
-    // The definitions.
-    const templateDefinitions = addTemplate({
-      write: true,
-      filename: 'blokkli/definitions.ts',
-      getContents: () => {
-        return blockExtractor.generateDefinitionTemplate(
-          moduleOptions.globalOptions,
-        )
-      },
-      options: {
-        blokkli: true,
-      },
-    })
-
-    const templateRuntimeOptions = addTemplate({
+    addTemplate({
       write: true,
       filename: 'blokkli/runtime-options.ts',
       getContents: () => {
@@ -194,7 +181,7 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     // The definitions.
-    const templateEditComponents = addTemplate({
+    addTemplate({
       write: true,
       filename: 'blokkli/edit-components.ts',
       getContents: () => {
@@ -263,7 +250,7 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     // The types template.
-    const templateGeneratedTypes = addTemplate({
+    addTemplate({
       write: true,
       filename: 'blokkli/generated-types.ts',
       getContents: () =>
@@ -279,7 +266,7 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     // The types template.
-    const templateDefaultGlobalOptions = addTemplate({
+    addTemplate({
       write: true,
       filename: 'blokkli/default-global-options.ts',
       getContents: () =>
@@ -341,7 +328,7 @@ export default defineNuxtModule<ModuleOptions>({
       }
     })
 
-    const templateImports = addTemplate({
+    addTemplate({
       write: true,
       filename: 'blokkli/imports.ts',
       getContents: () =>
@@ -379,21 +366,6 @@ export default defineNuxtModule<ModuleOptions>({
     addPlugin({
       src: resolver.resolve('runtime/plugins/blokkliEditable'),
     })
-
-    // Checks if the given file path is handled by this module.
-    const applies = (path: string): Promise<string | undefined> => {
-      const filePath = srcResolver.resolve(path)
-
-      // Check that only the globally possible file types are used.
-      if (!POSSIBLE_EXTENSIONS.includes(extname(filePath))) {
-        return Promise.resolve(undefined)
-      }
-
-      // Get all files based on pattern and check if there is a match.
-      return resolveFiles(srcDir, importPattern, {
-        followSymbolicLinks: false,
-      }).then((files) => files.find((v) => v === filePath))
-    }
 
     // Watch for file changes in dev mode.
     if (nuxt.options.dev) {

@@ -16,6 +16,11 @@ type ModuleHelperResolvers = {
    * Resolver for files relative to the blökkli build directory.
    */
   build: Resolver
+
+  /**
+   * Resolver for files relative to the Nuxt app source directory.
+   */
+  src: Resolver
 }
 
 type ModuleHelperPaths = {
@@ -38,6 +43,7 @@ export class ModuleHelper {
     this.resolvers = {
       module: createResolver(moduleUrl),
       build: createResolver(nuxt.options.buildDir),
+      src: createResolver(nuxt.options.srcDir),
     }
     this.paths = {
       blokkliBuildDir: this.resolvers.build.resolve('blokkli'),
@@ -60,12 +66,6 @@ export class ModuleHelper {
       TYPES_THEME: relative(
         this.paths.blokkliBuildDir,
         this.resolvers.module.resolve('./runtime/types/theme.ts'),
-      ),
-      TYPES_GENERATED_MODULE_TYPED: relative(
-        this.paths.blokkliBuildDir,
-        this.resolvers.module.resolve(
-          './runtime/types/generatedModuleTypes.ts',
-        ),
       ),
       TYPES_BLOKK_OPTIONS: relative(
         this.paths.blokkliBuildDir,

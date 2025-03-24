@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { computed, provide } from '#imports'
-import { getFragmentDefinition } from '#blokkli-build/definitions'
+import { getFragmentDefinition } from '#blokkli/helpers/definitions'
 import { ScaleToFit } from '#blokkli/components'
 import {
   INJECT_FIELD_LIST_BLOCKS,

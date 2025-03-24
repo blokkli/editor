@@ -34,7 +34,7 @@
 <script setup lang="ts">
 import { computed, provide, useBlokkli } from '#imports'
 
-import { getDefaultDefinition } from '#blokkli-build/definitions'
+import { getDefaultDefinition } from '#blokkli/helpers/definitions'
 import type { FieldListItem } from '#blokkli/types'
 import { ItemIcon, ScaleToFit } from '#blokkli/components'
 import {

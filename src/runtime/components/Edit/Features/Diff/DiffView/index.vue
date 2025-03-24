@@ -83,7 +83,7 @@
 import { computed, useBlokkli } from '#imports'
 import type { FieldListItem, MutatedField } from '#blokkli/types'
 import { ItemIcon } from '#blokkli/components'
-import { getDefaultDefinition } from '#blokkli-build/definitions'
+import { getDefaultDefinition } from '#blokkli/helpers/definitions'
 import diff from 'html-diff-ts'
 
 function getProps(bundle: string, props: any): Record<string, string> {

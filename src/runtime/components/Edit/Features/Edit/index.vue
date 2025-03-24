@@ -16,7 +16,7 @@
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import type { DraggableExistingBlock } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
-import { getDefinition } from '#blokkli-build/definitions'
+import { getBlockDefinition } from '#blokkli/helpers/definitions'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 defineBlokkliFeature({
@@ -45,7 +45,7 @@ const canEdit = computed(() => {
     return false
   }
 
-  const definition = getDefinition(
+  const definition = getBlockDefinition(
     block.value.itemBundle,
     block.value.hostFieldListType,
     block.value.parentBlockBundle,

@@ -10,7 +10,7 @@ import type {
   LibraryItemProps,
 } from '#blokkli/types'
 import { useRuntimeConfig } from '#imports'
-import { getDefinition } from '#blokkli-build/definitions'
+import { getBlockDefinition } from './definitions'
 import type { RGB } from '#blokkli/types/theme'
 import type { ValidFieldListTypes } from '#blokkli-build/generated-types'
 
@@ -61,7 +61,7 @@ export function buildDraggableItem(
       entityType &&
       hostFieldListType
     ) {
-      const definition = getDefinition(
+      const definition = getBlockDefinition(
         itemBundle,
         hostFieldListType,
         parentBlockBundle,

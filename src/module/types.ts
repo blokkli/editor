@@ -1,10 +1,9 @@
-import type { ExtractedFeatureDefinition } from '../Extractor/FeatureExtractor'
 import type {
   BlockDefinitionInput,
   BlockDefinitionOptionsInput,
   FragmentDefinitionInput,
 } from '../runtime/types'
-import type { ModuleOptionsSettings } from '../runtime/types/generatedModuleTypes'
+import type { ModuleOptionsSettings } from '#blokkli-build/module-types'
 import type { Theme, ThemeName } from '../runtime/types/theme'
 
 export type ExtractedBlockDefinitionInput = BlockDefinitionInput
@@ -47,7 +46,6 @@ export type BuildRelativeImports = {
   CONSTANTS: string
   ADAPTER: string
   TYPES_THEME: string
-  TYPES_GENERATED_MODULE_TYPED: string
   TYPES_BLOKK_OPTIONS: string
 }
 
@@ -71,7 +69,8 @@ type ModuleOptionsStorageDefaults = {
 }
 
 export type AlterFeatures = {
-  features: ExtractedFeatureDefinition[]
+  // features: ExtractedFeatureDefinition[]
+  features: any[]
 }
 
 /**
@@ -145,9 +144,10 @@ export type ModuleOptions = {
    * It's also possible to override builtin feature components with custom
    * implementations.
    */
-  alterFeatures?: (
-    ctx: AlterFeatures,
-  ) => Promise<ExtractedFeatureDefinition[]> | ExtractedFeatureDefinition[]
+  // alterFeatures?: (
+  //   ctx: AlterFeatures,
+  // ) => Promise<ExtractedFeatureDefinition[]> | ExtractedFeatureDefinition[]
+  alterFeatures?: (ctx: AlterFeatures) => Promise<any[]> | any[]
 
   /**
    * Add custom features by defining either a pattern or path to a feature component.

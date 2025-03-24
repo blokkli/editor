@@ -1,43 +1,171 @@
 import { resolveFiles } from '@nuxt/kit'
+import path from 'node:path'
+import { existsSync } from 'node:fs'
 import { CollectedFile, Collector } from './index'
-import type { BlockDefinitionInput } from '../runtime/types'
+import * as micromatch from 'micromatch'
+import type { ModuleHelper } from '../module/ModuleHelper'
+import type {
+  ExtractedBlockDefinitionInput,
+  ExtractedFragmentDefinitionInput,
+} from '../module/types'
 
 const DEFINE_BLOKKLI = 'defineBlokkli'
 const DEFINE_BLOKKLI_FRAGMENT = 'defineBlokkliFragment'
 
-export class CollectedBlock extends CollectedFile {
-  private icon: string | null = null
-  private chunkName = 'global'
-  private componentName: string
-  private proxyComponent: string | null = null
-  private definition: BlockDefinitionInput
+type CollectedBlockType = 'main' | 'context' | 'proxy' | 'fragment'
 
-  constructor(filePath: string) {
-    super(filePath)
+type ExtractedDefinition =
+  | ExtractedBlockDefinitionInput
+  | ExtractedFragmentDefinitionInput
+
+export function isBlock(
+  definition: ExtractedDefinition,
+): definition is ExtractedBlockDefinitionInput {
+  return 'bundle' in definition
+}
+
+function getIdentifier(definition: ExtractedDefinition) {
+  const parts: string[] = []
+  if (isBlock(definition)) {
+    parts.push('block', definition.bundle)
+    if (definition.renderFor) {
+      const renderFor = Array.isArray(definition.renderFor)
+        ? definition.renderFor
+        : [definition.renderFor]
+      renderFor.forEach((entry) => {
+        if ('parentBundle' in entry) {
+          parts.push('parent_block', entry.parentBundle)
+        } else if ('fieldList' in entry) {
+          parts.push('field_list_type', entry.fieldList)
+        } else if ('fieldListType' in entry) {
+          parts.push('field_list_type', entry.fieldListType)
+        }
+      })
+    }
+  } else {
+    parts.push('fragment', definition.name)
   }
 
-  hasBlokkliField(): boolean {
-    return (
+  return parts.join('__')
+}
+
+export class CollectedBlockFile extends CollectedFile {
+  folder = ''
+  iconPath: string | null = null
+  type: CollectedBlockType | null = null
+  definitionSource: string | null = null
+  definition:
+    | ExtractedFragmentDefinitionInput
+    | ExtractedBlockDefinitionInput
+    | null = null
+  hasBlokkliField = false
+
+  identifier: string | null = ''
+  chunkName = 'global'
+
+  override async handleChange(): Promise<boolean> {
+    this.folder = path.dirname(this.filePath)
+    const iconPath = path.join(this.folder, '/icon.svg')
+    this.iconPath = existsSync(iconPath) ? iconPath : null
+
+    const extracted = this.extract()
+    this.definitionSource = extracted?.source || null
+    this.definition = extracted?.definition || null
+
+    this.hasBlokkliField =
       this.fileContents.includes('<BlokkliField') ||
-      this.fileContents.includes('<blokkli-field')
-    )
+      this.fileContents.includes('<blokkli-field') ||
+      this.fileContents.includes(':is="BlokkliField"')
+
+    this.chunkName = this.definition?.chunkName || 'global'
+    this.identifier = this.definition ? getIdentifier(this.definition) : null
+
+    return true
+  }
+
+  extract():
+    | {
+        definition:
+          | ExtractedBlockDefinitionInput
+          | ExtractedFragmentDefinitionInput
+        source: string
+      }
+    | undefined {
+    const pattern =
+      `(${DEFINE_BLOKKLI}|${DEFINE_BLOKKLI_FRAGMENT})` + '\\((\\{.+?\\})\\)'
+    const rgx = new RegExp(pattern, 's')
+    const matches = rgx.exec(this.fileContents)
+    if (!matches) {
+      return
+    }
+
+    const composableName = matches?.at(1)
+    const source = matches?.at(2)
+    if (!source) {
+      return
+    }
+
+    try {
+      const definition = eval(`(${source})`)
+      return { definition, source }
+    } catch (e) {
+      console.error(
+        `Failed to parse component "${this.filePath}": ${composableName} does not contain a valid object literal. No variables and methods are allowed inside ${composableName}().`,
+        e,
+      )
+    }
   }
 }
 
-export class BlockCollector extends Collector<CollectedBlock> {
-  async init(srcFromModule: string) {
-    const filesModule = await resolveFiles(srcFromModule, '*.svg')
-    const filesApp = await resolveFiles(
-      this.context.srcDir,
-      '**/icon-blokkli-*.svg',
-    )
-    const allFiles = [...filesModule, ...filesApp]
-    allFiles.forEach((filePath) => this.addFile(filePath))
+export class BlockCollector extends Collector<CollectedBlockFile> {
+  private patterns: string[]
+
+  constructor(helper: ModuleHelper) {
+    super(helper)
+
+    this.patterns = (helper.options.pattern || []).map((pattern) => {
+      if (pattern.startsWith('/')) {
+        return pattern
+      }
+      return helper.resolvers.src.resolve(pattern)
+    })
   }
 
-  build() {}
+  async init() {
+    const files = await resolveFiles(
+      this.helper.nuxt.options.srcDir,
+      this.patterns,
+    )
 
-  generateTemplate() {
-    return ''
+    for (const filePath of files) {
+      const applies = await this.applies(filePath)
+      if (applies) {
+        await this.addFile(filePath)
+      }
+    }
+  }
+
+  public override createCollectedFile(
+    filePath: string,
+    fileContents = '',
+  ): CollectedBlockFile {
+    return new CollectedBlockFile(filePath, fileContents)
+  }
+
+  public override async applies(filePath: string): Promise<boolean> {
+    if (!filePath.endsWith('.vue')) {
+      return false
+    }
+
+    if (!micromatch.isMatch(filePath, this.patterns)) {
+      return false
+    }
+
+    const content = await this.helper.fileCache.read(filePath)
+
+    return (
+      content.includes(DEFINE_BLOKKLI) ||
+      content.includes(DEFINE_BLOKKLI_FRAGMENT)
+    )
   }
 }

@@ -5,6 +5,8 @@ import translations from './definitions/translations'
 import editAdapter from './definitions/editAdapter'
 import styles from './definitions/styles'
 import config from './definitions/config'
+import definitions from './definitions/definitions'
+import moduleTypes from './definitions/moduleTypes'
 
 export const TEMPLATES = [
   icons,
@@ -14,4 +16,6 @@ export const TEMPLATES = [
   editAdapter,
   styles,
   config,
+  definitions,
+  moduleTypes,
 ]

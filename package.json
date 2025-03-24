@@ -29,7 +29,6 @@
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
     "release": "npm run lint && npm run prepack && changelogen --release",
     "texts": "node ./scripts/texts/index.cjs",
-    "generate-types": "node ./scripts/generateTypes/index.cjs",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",
     "test": "vitest run",

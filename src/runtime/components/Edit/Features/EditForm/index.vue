@@ -22,7 +22,7 @@
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import { FormOverlay } from '#blokkli/components'
-import { getDefinition } from '#blokkli-build/definitions'
+import { getBlockDefinition } from '#blokkli/helpers/definitions'
 import FormFrame from './Frame/index.vue'
 import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
@@ -134,7 +134,7 @@ onBlokkliEvent('item:edit', (e) => {
   if (!block) {
     return
   }
-  const definition = getDefinition(
+  const definition = getBlockDefinition(
     e.bundle,
     block.hostFieldListType,
     block.parentBlockBundle,
@@ -194,7 +194,7 @@ onBlokkliEvent('add:block:new', (e) => {
   }
   const field = dom.findField(e.host.uuid, e.host.fieldName)
   if (field) {
-    const definition = getDefinition(
+    const definition = getBlockDefinition(
       e.bundle,
       field.fieldListType,
       field.hostEntityBundle as any,

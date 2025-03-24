@@ -65,7 +65,7 @@ import type {
   DraggableExistingBlock,
   FieldConfig,
 } from '#blokkli/types'
-import { getDefaultDefinition } from '#blokkli-build/definitions'
+import { getDefaultDefinition } from '#blokkli/helpers/definitions'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { PluginTourItem } from '#blokkli/plugins'

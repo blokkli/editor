@@ -32,7 +32,7 @@ export const forceDefaultLanguage = ${JSON.stringify(
   (ctx) => {
     return `
 import type { Theme } from '${ctx.helper.relativePaths.TYPES_THEME}'
-import type { ModuleOptionsSettings } from '${ctx.helper.relativePaths.TYPES_GENERATED_MODULE_TYPED}'
+import type { ModuleOptionsSettings } from './module-types'
 
 /**
  * Whether the app uses a custom theme.

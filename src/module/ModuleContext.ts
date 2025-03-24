@@ -7,6 +7,7 @@ import type {
 } from './templates/defineTemplate'
 import type { FeatureCollector } from '../Collector/Features'
 import type { ThemeData } from './ThemeData'
+import type { BlockCollector } from '../Collector/Blocks'
 
 export class ModuleContext {
   private templates: ModuleTemplate[] = []
@@ -16,6 +17,7 @@ export class ModuleContext {
     public helper: ModuleHelper,
     public icons: IconCollector,
     public features: FeatureCollector,
+    public blocks: BlockCollector,
     public theme: ThemeData,
   ) {}
 

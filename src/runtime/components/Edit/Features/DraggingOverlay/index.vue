@@ -48,7 +48,7 @@ import type {
   Rectangle,
   DraggableExistingStructureBlock,
 } from '#blokkli/types'
-import { getDefinition } from '#blokkli-build/definitions'
+import { getBlockDefinition } from '#blokkli/helpers/definitions'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { adapter } = defineBlokkliFeature({
@@ -133,7 +133,7 @@ const onDropNew = async (
       `Failed to locate field with name "${host.fieldName}" on UUID "${host.uuid}"`,
     )
   }
-  const definition = getDefinition(
+  const definition = getBlockDefinition(
     bundle,
     field.fieldListType,
     field.hostEntityBundle as any,
@@ -320,7 +320,7 @@ const onDrop = (e: DropTargetEvent) => {
       return
     }
 
-    const definition = getDefinition(
+    const definition = getBlockDefinition(
       newBlock.itemBundle,
       newBlock.hostFieldListType,
     )

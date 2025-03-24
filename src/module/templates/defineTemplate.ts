@@ -2,7 +2,11 @@ import type { ModuleContext } from '../ModuleContext'
 
 type TemplateCallback = (context: ModuleContext) => string | Promise<string>
 
-export type TemplateDependency = 'icons' | 'features'
+export type TemplateDependency =
+  | 'icons'
+  | 'features'
+  | 'block-content'
+  | 'block-path'
 
 type TemplateOptions = {
   dependencies?: TemplateDependency[]

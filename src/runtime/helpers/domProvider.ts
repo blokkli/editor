@@ -18,7 +18,7 @@ import type { UiProvider } from './uiProvider'
 import { cloneElementWithStyles } from './dom'
 import onBlokkliEvent from './composables/onBlokkliEvent'
 import useDelayedIntersectionObserver from './composables/useDelayedIntersectionObserver'
-import { getDefinition } from '#blokkli-build/definitions'
+import { getBlockDefinition } from '#blokkli/helpers/definitions'
 import type {
   BlockBundleWithNested,
   ValidFieldListTypes,
@@ -342,7 +342,11 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     if (el.classList.contains('bk-block-proxy')) {
       return el
     }
-    const definition = getDefinition(bundle, fieldListType, parentBlockBundle)
+    const definition = getBlockDefinition(
+      bundle,
+      fieldListType,
+      parentBlockBundle,
+    )
     if (!definition) {
       throw new Error('Failed to load definition for bundle: ' + bundle)
     }

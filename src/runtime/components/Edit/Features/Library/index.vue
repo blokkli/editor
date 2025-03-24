@@ -73,7 +73,7 @@ import { PluginItemAction, PluginAddAction } from '#blokkli/plugins'
 import ReusableDialog from './ReusableDialog/index.vue'
 import LibraryDialog from './LibraryDialog/index.vue'
 import EditReusable from './EditReusable/index.vue'
-import { getDefinition } from '#blokkli-build/definitions'
+import { getBlockDefinition } from '#blokkli/helpers/definitions'
 import type { ActionPlacedEvent, LibraryEditItemEvent } from '#blokkli/types'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
@@ -128,7 +128,7 @@ const onAddLibraryItem = async (uuid: string) => {
 
 const definition = computed(() =>
   selectedItem?.value
-    ? getDefinition(
+    ? getBlockDefinition(
         selectedItem.value.itemBundle,
         selectedItem.value.hostFieldListType,
         selectedItem.value.parentBlockBundle,
