@@ -51,7 +51,7 @@ import {
   useRoute,
   useRuntimeConfig,
 } from '#imports'
-import type { BlokkliApp } from '#blokkli/types'
+import type { BlokkliApp, ItemEditContext } from '#blokkli/types'
 import Toolbar from './Toolbar/index.vue'
 import Actions from './Actions/index.vue'
 import Loading from './Loading/index.vue'
@@ -77,6 +77,7 @@ import themeProvider from './../../helpers/themeProvider'
 import commandsProvider from './../../helpers/commandsProvider'
 import tourProvider from './../../helpers/tourProvider'
 import debugProvider from './../../helpers/debugProvider'
+import definitionProvider from './../../helpers/definitionProvider'
 import dropAreasProvider from './../../helpers/dropAreaProvider'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import '#blokkli-build/styles.css'
@@ -123,6 +124,7 @@ const toolbarLoaded = ref(false)
 const featuresLoaded = ref(false)
 const isInitializing = ref(true)
 
+const definitions = definitionProvider()
 const $t = textProvider(context)
 const state = await editStateProvider(adapter, context, $t)
 const storage = storageProvider()
@@ -134,7 +136,7 @@ const tour = tourProvider()
 const dropAreas = dropAreasProvider()
 const broadcast = broadcastProvider()
 const ui = uiProvider(storage, state)
-const dom = domProvider(ui, debug)
+const dom = domProvider(ui, debug, definitions)
 const animation = animationProvider(ui)
 const keyboard = keyboardProvider(animation)
 const selection = selectionProvider(dom)
@@ -199,10 +201,11 @@ provide(INJECT_EDIT_LOGGER, baseLogger)
 // async every time.
 provide(INJECT_EDIT_FIELD_LIST_COMPONENT, DraggableList)
 provide(INJECT_IS_EDITING, true)
-provide(INJECT_EDIT_CONTEXT, {
+provide<ItemEditContext>(INJECT_EDIT_CONTEXT, {
   eventBus,
   mutatedOptions: state.mutatedOptions,
   dom,
+  definitions,
 })
 provide<BlokkliApp>(INJECT_APP, {
   adapter,
@@ -225,8 +228,17 @@ provide<BlokkliApp>(INJECT_APP, {
   tour,
   dropAreas,
   debug,
+  definitions,
 })
 
 const isProxyMode = computed(() => ui.isProxyMode.value)
 provide(INJECT_GLOBAL_PROXY_MODE, isProxyMode)
+
+if (import.meta.hot) {
+  import.meta.hot.accept('#blokkli/helpers/runtimeHelpers', () => {})
+}
+
+if (import.meta.hot) {
+  import.meta.hot.accept('#blokkli/runtime-helpers', () => {})
+}
 </script>

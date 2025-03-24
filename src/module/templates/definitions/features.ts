@@ -4,16 +4,19 @@ import { toValidVariableName } from './../../../helpers'
 export default defineCodeTemplate(
   'features',
   (ctx) => {
-    const features = ctx.features.getFeatures().map((v) => {
-      const importName = `Feature_${toValidVariableName(v.id)}`
-      return {
-        id: v.id,
-        componentName: v.componentPath,
-        importName,
-        importStatement: `import ${importName} from '${v.componentPath}'`,
-        definition: v.definition,
-      }
-    })
+    const features = ctx.features
+      .getEnabledFeatures()
+      .sort((a, b) => b.id.localeCompare(a.id))
+      .map((v) => {
+        const importName = `Feature_${toValidVariableName(v.id)}`
+        return {
+          id: v.id,
+          componentName: v.componentPath,
+          importName,
+          importStatement: `import ${importName} from '${v.componentPath}'`,
+          definition: v.definition,
+        }
+      })
 
     const imports = features.map((v) => v.importStatement).join('\n')
 
@@ -39,7 +42,7 @@ export default defineCodeTemplate(
 
     return `${imports}
 export const availableFeaturesAtBuild = ${JSON.stringify(
-      availableFeaturesAtBuild,
+      availableFeaturesAtBuild.sort(),
     )}
 
 export const featureComponents = [
@@ -48,7 +51,7 @@ ${featuresArray}
 `
   },
   (ctx) => {
-    const features = ctx.features.getFeatures().map((v) => v.id)
+    const features = ctx.features.getEnabledFeatures().map((v) => v.id)
 
     const availableFeaturesAtBuild = features
 

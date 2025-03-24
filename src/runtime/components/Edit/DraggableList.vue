@@ -229,4 +229,11 @@ onBeforeUnmount(() => {
 defineOptions({
   inheritAttrs: false,
 })
+
+if (import.meta.hot) {
+  // This is needed to make HMR work.
+  // The only thing imported is the "isVisibleByOptions", which is okay if
+  // it doesn't update.
+  import.meta.hot.accept('#blokkli/helpers/runtimeHelpers', () => {})
+}
 </script>

@@ -1,7 +1,12 @@
 import type { Nuxt } from 'nuxt/schema'
 import type { BuildRelativeImports, ModuleOptions } from './types'
 import { relative } from 'pathe'
-import { type Resolver, createResolver } from '@nuxt/kit'
+import {
+  type Resolver,
+  addComponent,
+  addImports,
+  createResolver,
+} from '@nuxt/kit'
 import { FileCache } from './FileCache'
 
 function onlyUnique(value: string, index: number, self: Array<string>) {
@@ -113,5 +118,20 @@ export class ModuleHelper {
 
   public getChunkNames(): string[] {
     return this.options.chunkNames || ['global']
+  }
+
+  public addComponent(name: string) {
+    addComponent({
+      filePath: this.resolvers.module.resolve('./runtime/components/' + name),
+      name,
+      global: true,
+    })
+  }
+
+  public addComposable(name: string) {
+    addImports({
+      name,
+      from: this.resolvers.module.resolve('./runtime/composables/' + name),
+    })
   }
 }

@@ -9,15 +9,18 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from '#imports'
-import { icons } from '#blokkli-build/definitions'
+import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/components'
 
 const props = defineProps<{
   bundle?: string
 }>()
 
-const markup = computed(() => (props.bundle ? icons[props.bundle] : undefined))
+const { definitions } = useBlokkli()
+
+const markup = computed(() =>
+  props.bundle ? definitions.getBlockIcon(props.bundle) : undefined,
+)
 </script>
 
 <script lang="ts">

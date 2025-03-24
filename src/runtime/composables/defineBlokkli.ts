@@ -21,7 +21,10 @@ import type {
   ValidFieldListTypes,
 } from '#blokkli-build/generated-types'
 import { getRuntimeOptionValue } from '#blokkli/helpers/runtimeHelpers'
-import { BLOCK_OPTIONS } from '#blokkli-build/runtime-options'
+import {
+  BLOCK_OPTIONS,
+  type RuntimeBlockOptionArray,
+} from '#blokkli-build/runtime-options'
 
 /**
  * Define a blokkli component.
@@ -77,9 +80,12 @@ export function defineBlokkli<
   // the component, we use this state to override the options.
   const editContext = inject<ItemEditContext | null>(INJECT_EDIT_CONTEXT, null)
 
-  const runtimeOptionDefinitions = BLOCK_OPTIONS[bundle] || {}
-
   const options = computed(() => {
+    const runtimeOptionDefinitions =
+      (editContext?.definitions.runtimeOptions.value || BLOCK_OPTIONS)[
+        bundle
+      ] || {}
+
     // For these two "special" bundles, at this stage we just return the raw
     // options defined on the item itself and the mutated options of the item.
     // These options will never be directly returned in defineBlokkli().
@@ -94,7 +100,9 @@ export function defineBlokkli<
 
     const result = Object.entries(runtimeOptionDefinitions).reduce<
       Record<string, string | boolean | string[] | number>
-    >((acc, [key, definition]) => {
+    >((acc, [key, v]) => {
+      const definition = v as unknown as RuntimeBlockOptionArray
+
       // Use an override option if available.
       if (editContext) {
         const overrideOptions = editContext.mutatedOptions[uuid] || {}
@@ -144,6 +152,11 @@ export function defineBlokkli<
   const parentType = computed(() => item?.value.parentType)
 
   const isEditing = !!item?.value.isEditing
+
+  if (import.meta.hot) {
+    import.meta.hot.accept('#blokkli-build/runtime-options', () => {})
+    import.meta.hot.accept('#blokkli/helpers/runtimeHelpers', () => {})
+  }
 
   return {
     uuid,

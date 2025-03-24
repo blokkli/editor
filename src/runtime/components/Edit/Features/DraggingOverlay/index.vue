@@ -48,7 +48,6 @@ import type {
   Rectangle,
   DraggableExistingStructureBlock,
 } from '#blokkli/types'
-import { getBlockDefinition } from '#blokkli/helpers/definitions'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { adapter } = defineBlokkliFeature({
@@ -59,7 +58,8 @@ const { adapter } = defineBlokkliFeature({
   screenshot: 'feature-dragging-overlay.jpg',
 })
 
-const { eventBus, state, ui, animation, dom, selection } = useBlokkli()
+const { eventBus, state, ui, animation, dom, selection, definitions } =
+  useBlokkli()
 
 const dragItemsComponent = ref<InstanceType<typeof DragItems> | null>(null)
 const isVisible = ref(false)
@@ -133,7 +133,7 @@ const onDropNew = async (
       `Failed to locate field with name "${host.fieldName}" on UUID "${host.uuid}"`,
     )
   }
-  const definition = getBlockDefinition(
+  const definition = definitions.getBlockDefinition(
     bundle,
     field.fieldListType,
     field.hostEntityBundle as any,
@@ -320,7 +320,7 @@ const onDrop = (e: DropTargetEvent) => {
       return
     }
 
-    const definition = getBlockDefinition(
+    const definition = definitions.getBlockDefinition(
       newBlock.itemBundle,
       newBlock.hostFieldListType,
     )

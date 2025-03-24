@@ -31,6 +31,7 @@ import broadcastProvider from '#blokkli/helpers/broadcastProvider'
 import { getFieldKey, intersects } from '#blokkli/helpers'
 import type { AdapterContext } from '../../adapter'
 import { eventBus } from '#blokkli/helpers/eventBus'
+import definitionProvider from '../../helpers/definitionProvider'
 
 const props = defineProps<{
   entity?: T
@@ -51,6 +52,7 @@ const context = computed<AdapterContext>(() => {
 const adapter = await getAdapter(context)
 const router = useRouter()
 const broadcast = broadcastProvider()
+const definitions = definitionProvider()
 
 let timeout: any = null
 let lastChanged: number = 0
@@ -101,6 +103,7 @@ provide(INJECT_IS_PREVIEW, isPreview)
 provide<ItemEditContext>(INJECT_EDIT_CONTEXT, {
   mutatedOptions,
   eventBus,
+  definitions,
 })
 
 /**

@@ -64,7 +64,6 @@
 
 <script setup lang="ts">
 import { FormOverlay } from '#blokkli/components'
-import { fragments as allFragments } from '#blokkli-build/definitions'
 import { falsy } from '#blokkli/helpers'
 import type { BlokkliFieldElement } from '#blokkli/types'
 import { ref, useBlokkli, computed, watch } from '#imports'
@@ -74,7 +73,7 @@ const props = defineProps<{
   field: BlokkliFieldElement
 }>()
 
-const { $t } = useBlokkli()
+const { $t, definitions } = useBlokkli()
 const emit = defineEmits<{
   (e: 'close'): void
   (e: 'submit', uuid: string): void
@@ -87,7 +86,9 @@ const selectedItem = ref('')
 const allowedInField = computed(() => props.field.allowedFragments || [])
 
 const fragments = computed(() =>
-  allFragments.filter((v) => allowedInField.value.includes(v.name)),
+  definitions.fragmentDefinitions.value.filter((v) =>
+    allowedInField.value.includes(v.name),
+  ),
 )
 
 const onSubmit = () => {

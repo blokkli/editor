@@ -79,9 +79,8 @@ import { onlyUnique, findIdealRectPosition, falsy } from '#blokkli/helpers'
 import type { Rectangle, PluginMountEvent } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import { getFragmentDefinition } from '#blokkli/helpers/definitions'
 
-const { selection, $t, types, state, ui, dom } = useBlokkli()
+const { selection, $t, types, state, ui, dom, definitions } = useBlokkli()
 
 const editingEnabled = computed(
   () =>
@@ -128,7 +127,7 @@ const title = computed(() => {
           if (!name) {
             return
           }
-          const definition = getFragmentDefinition(name)
+          const definition = definitions.getFragmentDefinition(name)
           return definition?.label
         })
         .filter(falsy)

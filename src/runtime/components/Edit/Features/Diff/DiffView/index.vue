@@ -83,11 +83,12 @@
 import { computed, useBlokkli } from '#imports'
 import type { FieldListItem, MutatedField } from '#blokkli/types'
 import { ItemIcon } from '#blokkli/components'
-import { getDefaultDefinition } from '#blokkli/helpers/definitions'
 import diff from 'html-diff-ts'
 
+const { types, $t, adapter, state, eventBus, dom, definitions } = useBlokkli()
+
 function getProps(bundle: string, props: any): Record<string, string> {
-  const definition = getDefaultDefinition(bundle)
+  const definition = definitions.getDefaultDefinition(bundle)
   // Use custom method that builds the diff props.
   if (definition?.editor?.mapDiffProps) {
     return definition.editor.mapDiffProps(props)
@@ -127,8 +128,6 @@ interface DiffItem {
   status: 'changed' | 'added' | 'removed'
   props: DiffItemProp[]
 }
-
-const { types, $t, adapter, state, eventBus, dom } = useBlokkli()
 
 const stateBefore = await adapter.loadStateAtIndex!(-1).then((v: any) =>
   adapter.mapState(v),

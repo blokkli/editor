@@ -18,12 +18,12 @@ import type { UiProvider } from './uiProvider'
 import { cloneElementWithStyles } from './dom'
 import onBlokkliEvent from './composables/onBlokkliEvent'
 import useDelayedIntersectionObserver from './composables/useDelayedIntersectionObserver'
-import { getBlockDefinition } from '#blokkli/helpers/definitions'
 import type {
   BlockBundleWithNested,
   ValidFieldListTypes,
 } from '#blokkli-build/generated-types'
 import type { DebugProvider } from './debugProvider'
+import type { DefinitionProvider } from './definitionProvider'
 
 type RegisteredField = {
   element: HTMLElement
@@ -162,7 +162,11 @@ function rectWithTime(rect: Rectangle, time?: number): MeasuredBlockRect {
   }
 }
 
-export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
+export default function (
+  ui: UiProvider,
+  debug: DebugProvider,
+  definitions: DefinitionProvider,
+): DomProvider {
   const artboardElement = ui.artboardElement()
   const logger = debug.createLogger('DomProvider')
   const mutationsReady = ref(true)
@@ -342,7 +346,7 @@ export default function (ui: UiProvider, debug: DebugProvider): DomProvider {
     if (el.classList.contains('bk-block-proxy')) {
       return el
     }
-    const definition = getBlockDefinition(
+    const definition = definitions.getBlockDefinition(
       bundle,
       fieldListType,
       parentBlockBundle,

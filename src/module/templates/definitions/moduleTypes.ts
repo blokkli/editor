@@ -6,7 +6,7 @@ export default defineCodeTemplate(
     return `export {}`
   },
   (ctx) => {
-    const features = ctx.features.getFeatures()
+    const features = ctx.features.getEnabledFeatures()
     const settings: string[] = []
 
     features.forEach((feature) => {
@@ -40,7 +40,7 @@ export default defineCodeTemplate(
 
     return `
 export type ModuleOptionsSettings = {
-  ${settings.join('\n  ')}
+  ${settings.sort().join('\n  ')}
 }
   `
   },

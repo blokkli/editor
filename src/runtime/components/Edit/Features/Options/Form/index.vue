@@ -49,7 +49,6 @@
 
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, onBeforeUnmount, onMounted } from '#imports'
-import { globalOptions } from '#blokkli-build/definitions'
 import { falsy, onlyUnique } from '#blokkli/helpers'
 import OptionsFormItem from './Item.vue'
 import OptionsFormGroup from './Group.vue'
@@ -64,6 +63,10 @@ import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
 } from '#blokkli/helpers/symbols'
+
+if (import.meta.hot) {
+  import.meta.hot.accept('#blokkli/runtime-helpers', () => {})
+}
 
 type OptionItem = {
   property: string
@@ -120,6 +123,7 @@ const {
   dom,
   theme,
   context,
+  definitions,
 } = useBlokkli()
 
 const props = defineProps<{
@@ -223,7 +227,7 @@ const availableOptions = computed<OptionItem[]>(() => {
     (props.definition.globalOptions || []) as string[]
   ).reduce<BlockDefinitionOptionsInput>((acc, v) => {
     const globalDefinition: BlockOptionDefinition | null =
-      (globalOptions as any)[v] || null
+      (definitions.globalOptions.value as any)[v] || null
     if (globalDefinition) {
       acc[v] = globalDefinition
     }

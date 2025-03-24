@@ -16,37 +16,36 @@ export default defineCodeTemplate(
         return null
       })
       .filter(falsy)
+      .sort((a, b) => b.bundle.localeCompare(a.bundle))
 
-    const bundles = Object.values(blocks)
-      .filter(falsy)
-      .reduce<Record<string, any>>((acc, definition) => {
-        if (definition.renderFor) {
-          return acc
-        }
-        const bundle = definition.bundle
-        const optionDefinitions = Object.entries(definition.options || {})
-
-        const options: Record<string, any> = {}
-
-        if (definition.globalOptions) {
-          definition.globalOptions.forEach((name) => {
-            const option = globalOptions[name]
-            if (option) {
-              options[name] = [option.type, option.default]
-            }
-          })
-        }
-
-        optionDefinitions.forEach(([name, option]) => {
-          options[name] = [option.type, option.default]
-        })
-
-        if (Object.values(options).length) {
-          acc[bundle] = options
-        }
-
+    const bundles = blocks.reduce<Record<string, any>>((acc, definition) => {
+      if (definition.renderFor) {
         return acc
-      }, {})
+      }
+      const bundle = definition.bundle
+      const optionDefinitions = Object.entries(definition.options || {})
+
+      const options: Record<string, any> = {}
+
+      if (definition.globalOptions) {
+        definition.globalOptions.forEach((name) => {
+          const option = globalOptions[name]
+          if (option) {
+            options[name] = [option.type, option.default]
+          }
+        })
+      }
+
+      optionDefinitions.forEach(([name, option]) => {
+        options[name] = [option.type, option.default]
+      })
+
+      if (Object.values(options).length) {
+        acc[bundle] = options
+      }
+
+      return acc
+    }, {})
 
     return `
 export const BLOCK_OPTIONS = ${JSON.stringify(bundles, null, 2)}

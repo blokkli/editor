@@ -6,6 +6,7 @@ import type {
 import type { ModuleOptionsSettings } from '#blokkli-build/module-types'
 import type { Theme, ThemeName } from '../runtime/types/theme'
 import type { CollectedBlockFile } from '../Collector/Blocks'
+import type { CollectedFeatureFile } from '../Collector/Features'
 
 export type ExtractedBlockDefinitionInput = BlockDefinitionInput
 export type ExtractedFragmentDefinitionInput = FragmentDefinitionInput
@@ -57,8 +58,7 @@ type ModuleOptionsStorageDefaults = {
 }
 
 export type AlterFeatures = {
-  // features: ExtractedFeatureDefinition[]
-  features: any[]
+  features: CollectedFeatureFile[]
 }
 
 /**

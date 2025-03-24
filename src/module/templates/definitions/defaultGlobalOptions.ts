@@ -41,8 +41,8 @@ export default defineCodeTemplate(
       }
     }
     return `
-export const bundlesWithVisibleLanguage = ${JSON.stringify(bundlesWithVisibleLanguage)}
-export const bundlesWithHiddenGlobally = ${JSON.stringify(bundlesWithHiddenGlobally)}
+export const bundlesWithVisibleLanguage = ${JSON.stringify(bundlesWithVisibleLanguage.sort())}
+export const bundlesWithHiddenGlobally = ${JSON.stringify(bundlesWithHiddenGlobally.sort())}
 
 export const globalOptionsDefaults = ${JSON.stringify(defaults, null, 2)}`
   },

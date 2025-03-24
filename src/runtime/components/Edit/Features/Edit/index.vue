@@ -16,7 +16,6 @@
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import type { DraggableExistingBlock } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
-import { getBlockDefinition } from '#blokkli/helpers/definitions'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 defineBlokkliFeature({
@@ -27,7 +26,7 @@ defineBlokkliFeature({
   requiredAdapterMethods: ['formFrameBuilder'],
 })
 
-const { eventBus, selection, state, $t, adapter } = useBlokkli()
+const { eventBus, selection, state, $t, adapter, definitions } = useBlokkli()
 
 const block = computed(() => {
   if (selection.blocks.value.length !== 1) {
@@ -45,7 +44,7 @@ const canEdit = computed(() => {
     return false
   }
 
-  const definition = getBlockDefinition(
+  const definition = definitions.getBlockDefinition(
     block.value.itemBundle,
     block.value.hostFieldListType,
     block.value.parentBlockBundle,

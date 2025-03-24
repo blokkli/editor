@@ -34,7 +34,7 @@
   "card": {
     "box": {
       "default": true,
-      "label": "Box AAAAAAAAAAA",
+      "label": "Box",
       "type": "checkbox"
     },
     "color": {

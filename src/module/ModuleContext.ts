@@ -96,21 +96,21 @@ export class ModuleContext {
             .trim()
             .split('\n')
 
-          let imports = ''
-          let declarations = ''
+          const imports: string[] = []
+          const declarations: string[] = []
 
           for (const line of lines) {
             if (line.startsWith('import ') && line.includes(' from ')) {
-              imports += line + '\n'
+              imports.push(line)
             } else {
-              declarations += '  ' + line + '\n'
+              declarations.push(line)
             }
           }
 
-          return `${imports}
+          return `${imports.join('\n')}
 
 declare module '#blokkli-build/${template.name}' {
-${declarations}
+  ${declarations.join('\n  ')}
 }`
         },
       })

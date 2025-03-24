@@ -16,6 +16,7 @@ export type ExtractedFeatureDefinition = {
 export class CollectedFeatureFile extends CollectedFile {
   private definition: ExtractedFeatureDefinition | null = null
   private composableName = 'defineBlokkliFeature'
+  private enabled = true
 
   getDefinition(): ExtractedFeatureDefinition | null {
     return this.definition
@@ -46,6 +47,17 @@ export class CollectedFeatureFile extends CollectedFile {
     }
     return Promise.resolve(true)
   }
+
+  public isEnabled(): boolean {
+    return this.enabled
+  }
+
+  /**
+   * Disable the feature.
+   */
+  public disable() {
+    this.enabled = false
+  }
 }
 
 export class FeatureCollector extends Collector<CollectedFeatureFile> {
@@ -60,13 +72,14 @@ export class FeatureCollector extends Collector<CollectedFeatureFile> {
     )
   }
 
-  public getFeatures(): ExtractedFeatureDefinition[] {
-    return [...this.files.values()].map((v) => v.getDefinition()).filter(falsy)
+  public getEnabledFeatures(): ExtractedFeatureDefinition[] {
+    return [...this.files.values()]
+      .filter((v) => v.isEnabled())
+      .map((v) => v.getDefinition())
+      .filter(falsy)
   }
 
   override async init() {
-    // @TODO: Add way to disable features.
-
     const builtinFeatures = await resolveFiles(
       this.srcFromModule,
       ['*/index.vue'],
@@ -85,9 +98,24 @@ export class FeatureCollector extends Collector<CollectedFeatureFile> {
         )
       : []
 
-    return Promise.all(
+    await Promise.all(
       [...builtinFeatures, ...customFeatures].map((v) => this.addFile(v)),
     )
+
+    const features = [...this.files.values()]
+
+    if (this.helper.options.alterFeatures) {
+      this.helper.options.alterFeatures({ features })
+    }
+
+    if (!this.helper.options.enableThemeEditor) {
+      const themeFeature = features.find(
+        (v) => v.getDefinition()?.id === 'theme',
+      )
+      if (themeFeature) {
+        themeFeature.disable()
+      }
+    }
   }
 
   public override createCollectedFile(

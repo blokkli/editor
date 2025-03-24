@@ -12,10 +12,6 @@
 <script lang="ts" setup>
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import { falsy, onlyUnique } from '#blokkli/helpers'
-import {
-  getBlockDefinition,
-  getFragmentDefinition,
-} from '#blokkli/helpers/definitions'
 import OptionsForm from './Form/index.vue'
 import type {
   BlockDefinitionInput,
@@ -30,7 +26,7 @@ defineBlokkliFeature({
   requiredAdapterMethods: ['updateOptions'],
 })
 
-const { selection, state, ui } = useBlokkli()
+const { selection, state, ui, definitions } = useBlokkli()
 
 const uuids = computed(() => selection.blocks.value.map((v) => v.uuid))
 
@@ -67,20 +63,19 @@ const definition = computed<
       return
     }
 
-    return getFragmentDefinition(fragmentNames[0])
+    return definitions.getFragmentDefinition(fragmentNames[0])
   }
 
-  const definitions = selection.blocks.value
+  return selection.blocks.value
     .map((block) => {
-      return getBlockDefinition(
+      return definitions.getBlockDefinition(
         bundle,
         block.hostFieldListType,
         block.parentBlockBundle,
       )
     })
     .filter(falsy)
-
-  return definitions[0]
+    .at(0)
 })
 </script>
 

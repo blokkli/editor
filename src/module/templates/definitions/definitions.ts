@@ -1,6 +1,6 @@
 import { defineCodeTemplate } from '../defineTemplate'
 import { isBlock } from '../../../Collector/Blocks'
-import { toImports, toObject } from '../helpers'
+import { toObject } from '../helpers'
 
 export default defineCodeTemplate(
   'definitions',
@@ -9,7 +9,6 @@ export default defineCodeTemplate(
     const blocks: string[] = []
     const fragments: string[] = []
     const icons = new Map<string, string>()
-    const imports = new Map<string, string>()
 
     // Iterate over all collected blocks.
     for (const file of ctx.blocks.files.values()) {
@@ -19,31 +18,36 @@ export default defineCodeTemplate(
       definitions.push(`const ${file.identifier} = ${file.definitionSource}`)
       if (isBlock(file.definition)) {
         blocks.push(file.identifier)
-        if (file.iconPath) {
-          const iconVariable = 'icon_' + file.definition.bundle
-          imports.set(iconVariable, file.iconPath + '?raw')
-          icons.set(file.definition.bundle, iconVariable)
+        if (file.iconContents) {
+          icons.set(file.definition.bundle, JSON.stringify(file.iconContents))
         }
       } else {
         fragments.push(file.identifier)
       }
     }
     return `
-${toImports(imports)}
-
 ${definitions.join('\n')}
 
-export const blocks = [
+const blocks = [
   ${blocks.join(',\n  ')}
 ]
 
-export const fragments = [
+const fragments = [
   ${fragments.join(',\n  ')}
 ]
 
-${toObject('icons', icons)}
+${toObject('icons', icons, true)}
 
-export const globalOptions = ${JSON.stringify(ctx.helper.options.globalOptions || {})}
+const globalOptions = ${JSON.stringify(ctx.helper.options.globalOptions || {})}
+
+const definitions = {
+  blocks,
+  fragments,
+  icons,
+  globalOptions,
+}
+
+export default definitions
 `
   },
   (ctx) => {
@@ -61,7 +65,7 @@ export const globalOptions = ${JSON.stringify(ctx.helper.options.globalOptions |
     }
 
     return `
-import type { GlobalOptionsKey, ValidFieldListTypes, BlockBundleWithNested } from '#blokkli-build/generated-types'
+import type { GlobalOptionsKey, ValidFieldListTypes, BlockBundleWithNested, ValidGlobalConfigKeys } from '#blokkli-build/generated-types'
 import type { BlockDefinitionInput, BlockDefinitionOptionsInput, FragmentDefinitionInput } from '${ctx.helper.relativePaths.TYPES}'
 
 export type BlockDefinition = BlockDefinitionInput<BlockDefinitionOptionsInput, GlobalOptionsKey[]>
@@ -69,12 +73,20 @@ export type FragmentDefinition = FragmentDefinitionInput<Record<string, any>, Gl
 
 export type BlokkliFragmentName = ${fragmentNames.join(' | ') || 'never'}
 
-export declare const blocks: BlockDefinition[]
-export declare const fragments: FragmentDefinition[]
+const globalOptions = ${JSON.stringify(ctx.helper.options.globalOptions || {})} as const
 
-export declare const icons: Record<string, string>
+export type GlobalOptionsType = typeof globalOptions
 
-export declare const globalOptions: BlockDefinitionOptionsInput
+export type Definitions = {
+  blocks: BlockDefinition[]
+  fragments: FragmentDefinition[]
+  icons: Record<string, string>
+  globalOptions: BlockDefinitionOptionsInput
+}
+
+const definitions: Definitions
+
+export default definitions
 `
   },
   {

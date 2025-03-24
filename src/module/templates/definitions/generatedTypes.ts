@@ -8,7 +8,12 @@ import type {
 import type { BlockDefinitionOptionsInput } from './../../../runtime/types'
 
 function toStringUnion(strings: string[]): string {
-  return strings.map((v) => `'${v}'`).join(' | ') || 'never'
+  return (
+    strings
+      .sort()
+      .map((v) => `'${v}'`)
+      .join(' | ') || 'never'
+  )
 }
 
 function getOptionTypes(
@@ -158,6 +163,7 @@ ${typedFieldListItems.map((v) => v.typeDefinition).join('\n\n')}
 
 export type FieldListItemTyped = Omit<FieldListItem, 'props'> & (${typedFieldListItems
       .map((v) => v.typeName)
+      .sort()
       .join(' | ')})
 export type FieldListItemTypedArray = Array<FieldListItemTyped>
 `

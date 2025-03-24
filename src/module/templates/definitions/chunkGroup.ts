@@ -37,17 +37,16 @@ export default withHelper((helper) => {
         })
 
         return `
-${imports.join('\n')}
+${imports.sort().join('\n')}
 
 export const ${chunkName} = {
-  ${lines.join(',\n  ')}
+  ${lines.sort().join(',\n  ')}
 }
 `
       },
       () => {
         return `
 import type { Component } from 'vue'
-
 export declare const ${chunkName}: Record<string, { loadComponent: () => Promise<Component> } | Component>
 `
       },

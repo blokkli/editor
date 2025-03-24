@@ -28,14 +28,15 @@ import type {
   ValidFieldListTypes,
   ValidGlobalConfigKeys,
 } from '#blokkli-build/generated-types'
-import type { globalOptions } from '#blokkli-build/definitions'
 import type { ThemeProvider } from '#blokkli/helpers/themeProvider'
+import type { GlobalOptionsType } from '#blokkli-build/definitions'
 import type { CommandsProvider } from '#blokkli/helpers/commandsProvider'
 import type { TourProvider } from '#blokkli/helpers/tourProvider'
 import type { DropAreaProvider } from '#blokkli/helpers/dropAreaProvider'
 import type { RGB } from './theme'
 import type { DebugProvider } from '#blokkli/helpers/debugProvider'
 import type getVideoId from 'get-video-id'
+import type { DefinitionProvider } from '../helpers/definitionProvider'
 
 export type MutateWithLoadingStateFunction = (
   promise: () => Promise<MutationResponseLike<any>> | undefined,
@@ -62,8 +63,6 @@ export type BlockDefinitionOptionsInput = {
 type WithOptions<T extends BlockDefinitionOptionsInput> = {
   [K in keyof T]: GetType<T[K]>
 }
-
-type GlobalOptionsType = typeof globalOptions
 
 type GlobalOptionsKeyTypes<T extends ValidGlobalConfigKeys> = {
   [K in T[number]]: GetType<GlobalOptionsType[K]>
@@ -1150,6 +1149,7 @@ export type ItemEditContext = {
   eventBus: Eventbus
   mutatedOptions: MutatedOptions
   dom?: DomProvider
+  definitions: DefinitionProvider
 }
 
 export interface BlokkliApp {
@@ -1172,6 +1172,7 @@ export interface BlokkliApp {
   keyboard: KeyboardProvider
   ui: UiProvider
   animation: AnimationProvider
+  definitions: DefinitionProvider
   state: StateProvider
   context: ComputedRef<AdapterContext>
   $t: TextProvider

@@ -65,7 +65,6 @@ import type {
   DraggableExistingBlock,
   FieldConfig,
 } from '#blokkli/types'
-import { getDefaultDefinition } from '#blokkli/helpers/definitions'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { PluginTourItem } from '#blokkli/plugins'
@@ -103,6 +102,7 @@ const {
   $t,
   state,
   dom,
+  definitions,
 } = useBlokkli()
 
 const shouldRender = computed(() => state.editMode.value === 'editing')
@@ -215,7 +215,7 @@ function determineVisibility(bundle: string, label: string): boolean {
     return false
   }
 
-  const definition = getDefaultDefinition(bundle)
+  const definition = definitions.getDefaultDefinition(bundle)
 
   if (definition?.editor?.maxInstances) {
     const existingInstancesOfBundle = state.getBlockBundleCount(bundle)

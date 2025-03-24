@@ -20,7 +20,7 @@ export default defineCodeTemplate(
     return `${imports.join('\n')}
 
 export const icons = {
-${icons.join(',\n  ')}
+${icons.sort().join(',\n  ')}
 }
 `
   },

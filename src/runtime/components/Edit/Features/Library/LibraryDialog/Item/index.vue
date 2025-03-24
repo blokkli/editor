@@ -33,8 +33,6 @@
 
 <script setup lang="ts">
 import { computed, provide, useBlokkli } from '#imports'
-
-import { getDefaultDefinition } from '#blokkli/helpers/definitions'
 import type { FieldListItem } from '#blokkli/types'
 import { ItemIcon, ScaleToFit } from '#blokkli/components'
 import {
@@ -52,13 +50,15 @@ const props = defineProps<{
   item: FieldListItem
 }>()
 
-const { types } = useBlokkli()
+const { types, definitions } = useBlokkli()
 
 const bundleLabel = computed(
   () => types.getBlockBundleDefinition(props.bundle)?.label || props.bundle,
 )
 
-const definition = computed(() => getDefaultDefinition(props.bundle))
+const definition = computed(() =>
+  definitions.getDefaultDefinition(props.bundle),
+)
 
 const previewWidth = computed(() => definition.value?.editor?.previewWidth)
 const renderPreview = computed(

@@ -12,7 +12,7 @@ export class CollectedFile {
     public fileContents: string,
   ) {}
 
-  async handleChange(): Promise<boolean> {
+  async handleChange(helper: ModuleHelper): Promise<boolean> {
     return Promise.resolve(true)
   }
 }
@@ -43,11 +43,11 @@ export class Collector<T extends CollectedFile = CollectedFile> {
     if (this.needsFileContents) {
       const contents = await this.helper.fileCache.read(filePath)
       const file = this.createCollectedFile(filePath, contents.toString())
-      await file.handleChange()
+      await file.handleChange(this.helper)
       this.files.set(filePath, file)
     } else {
       const file = this.createCollectedFile(filePath)
-      await file.handleChange()
+      await file.handleChange(this.helper)
       this.files.set(filePath, file)
     }
   }
@@ -62,7 +62,7 @@ export class Collector<T extends CollectedFile = CollectedFile> {
     return false
   }
 
-  private async handleChange(filePath: string): Promise<boolean> {
+  protected async handleChange(filePath: string): Promise<boolean> {
     const applies = await this.applies(filePath)
     if (!applies) {
       // It's possible the file applied before but not anymore.
@@ -78,7 +78,7 @@ export class Collector<T extends CollectedFile = CollectedFile> {
     if (this.needsFileContents) {
       const contents = await this.helper.fileCache.read(filePath)
       file.fileContents = contents.toString()
-      return await file.handleChange()
+      return await file.handleChange(this.helper)
     }
 
     return true

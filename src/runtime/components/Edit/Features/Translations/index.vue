@@ -100,7 +100,6 @@ import type {
   Language,
 } from '#blokkli/types'
 import Banner from './Banner/index.vue'
-import { getBlockDefinition } from '#blokkli/helpers/definitions'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { adapter } = defineBlokkliFeature({
@@ -111,7 +110,8 @@ const { adapter } = defineBlokkliFeature({
   description: 'Adds support for block translations.',
 })
 
-const { eventBus, state, context, $t, ui, selection, types } = useBlokkli()
+const { eventBus, state, context, $t, ui, selection, types, definitions } =
+  useBlokkli()
 const { translation, editMode } = state
 
 const isOpen = ref(false)
@@ -179,7 +179,7 @@ const canTranslateBlock = computed(() => {
     return false
   }
 
-  const definition = getBlockDefinition(
+  const definition = definitions.getBlockDefinition(
     block.itemBundle,
     block.hostFieldListType,
     block.parentBlockBundle,

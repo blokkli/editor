@@ -29,6 +29,7 @@ export default defineCodeTemplate(
         return `${chunkName}: () => import('#blokkli-build/chunk-${chunkName}.js').then(v => v['${chunkName}'])`
       })
       .filter(falsy)
+      .sort()
       .join(',\n  ')
     return `
 import { global } from '#blokkli-build/chunk-global.js'
@@ -39,7 +40,7 @@ export const chunks = {
 }
 
 export const chunkMapping = {
-  ${lines.join(',\n  ')}
+  ${lines.sort().join(',\n  ')}
 }
 `
   },

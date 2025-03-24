@@ -10,7 +10,6 @@ import type {
   LibraryItemProps,
 } from '#blokkli/types'
 import { useRuntimeConfig } from '#imports'
-import { getBlockDefinition } from './definitions'
 import type { RGB } from '#blokkli/types/theme'
 import type { ValidFieldListTypes } from '#blokkli-build/generated-types'
 
@@ -61,17 +60,9 @@ export function buildDraggableItem(
       entityType &&
       hostFieldListType
     ) {
-      const definition = getBlockDefinition(
-        itemBundle,
-        hostFieldListType,
-        parentBlockBundle,
-      )
       const libraryLabel = dataset.bkLibraryLabel
-      const editTitle =
-        libraryLabel ||
-        (definition?.editor?.editTitle
-          ? definition?.editor.editTitle(element)
-          : undefined)
+      // @TODO: Figure out how to best determine the edit title here.
+      const editTitle = libraryLabel || ''
       return {
         itemType: 'existing',
         element: () =>

@@ -21,8 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, provide } from '#imports'
-import { getFragmentDefinition } from '#blokkli/helpers/definitions'
+import { computed, provide, useBlokkli } from '#imports'
 import { ScaleToFit } from '#blokkli/components'
 import {
   INJECT_FIELD_LIST_BLOCKS,
@@ -38,6 +37,8 @@ const props = defineProps<{
   description?: string
 }>()
 
+const { definitions } = useBlokkli()
+
 const item = computed(() => {
   return {
     bundle: 'blokkli_fragment',
@@ -48,7 +49,7 @@ const item = computed(() => {
   }
 })
 
-const definition = computed(() => getFragmentDefinition(props.name))
+const definition = computed(() => definitions.getFragmentDefinition(props.name))
 
 const previewWidth = computed(() => definition.value?.editor?.previewWidth)
 const renderPreview = computed(

@@ -35,7 +35,6 @@ import type {
   ValidFieldListTypes,
 } from '#blokkli-build/generated-types'
 import { computed, useBlokkli, ref } from '#imports'
-import { getBlockDefinition } from '#blokkli/helpers/definitions'
 import { getBlokkliItemProxyComponent } from '#blokkli/helpers/editComponents'
 
 import { ItemIcon } from '#blokkli/components'
@@ -81,7 +80,7 @@ const proxyBundle = computed(
   () => libraryItemProps.value?.block?.bundle || props.bundle,
 )
 
-const { types, runtimeConfig } = useBlokkli()
+const { types, runtimeConfig, definitions } = useBlokkli()
 
 const root = ref<HTMLElement | null>(null)
 
@@ -89,7 +88,7 @@ const type = computed(() => types.getBlockBundleDefinition(proxyBundle.value))
 
 const proxyComponent = getBlokkliItemProxyComponent(proxyBundle.value)
 
-const definition = getBlockDefinition(
+const definition = definitions.getBlockDefinition(
   proxyBundle.value,
   props.fieldListType,
   props.parentType,

@@ -80,6 +80,7 @@ function getVariations(definition?: ExtractedDefinition | null): string[] {
 export class CollectedBlockFile extends CollectedFile {
   folder = ''
   iconPath: string | null = null
+  iconContents: string | null = null
   diffComponentPath: string | null = null
   proxyComponentPath: string | null = null
   type: CollectedBlockType | null = null
@@ -99,9 +100,8 @@ export class CollectedBlockFile extends CollectedFile {
     return existsSync(siblingFilePath) ? siblingFilePath : null
   }
 
-  override async handleChange(): Promise<boolean> {
+  override async handleChange(helper: ModuleHelper): Promise<boolean> {
     this.folder = path.dirname(this.filePath)
-    this.iconPath = this.hasSiblingFile('icon.svg')
     this.diffComponentPath = this.hasSiblingFile('diff.vue')
     this.proxyComponentPath = this.hasSiblingFile('proxy.vue')
 
@@ -127,6 +127,18 @@ export class CollectedBlockFile extends CollectedFile {
       }
     } else {
       this.type = 'fragment'
+    }
+
+    // Only collect the icon for the main block entry.
+    if (this.type === 'main') {
+      this.iconPath = this.hasSiblingFile('icon.svg')
+
+      if (this.iconPath) {
+        this.iconContents = await helper.fileCache.read(this.iconPath)
+      }
+    } else {
+      this.iconPath = null
+      this.iconContents = null
     }
 
     this.variations = getVariations(this.definition)
@@ -204,6 +216,20 @@ export class BlockCollector extends Collector<CollectedBlockFile> {
     fileContents = '',
   ): CollectedBlockFile {
     return new CollectedBlockFile(filePath, fileContents)
+  }
+
+  protected override async handleChange(filePath: string): Promise<boolean> {
+    if (filePath.includes('icon.svg')) {
+      const matchingBlock = [...this.files.values()].find(
+        (v) => v.iconPath === filePath,
+      )
+      if (matchingBlock) {
+        console.log('matching block: ' + matchingBlock.filePath)
+        return this.handleChange(matchingBlock.filePath)
+      }
+    }
+
+    return super.handleChange(filePath)
   }
 
   public override async applies(filePath: string): Promise<boolean> {

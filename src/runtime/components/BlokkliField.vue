@@ -91,6 +91,10 @@ import {
 } from '../helpers/symbols'
 import type DraggableListComponent from './Edit/DraggableList.vue'
 
+if (import.meta.hot) {
+  import.meta.hot.accept('#blokkli/helpers/runtimeHelpers', () => {})
+}
+
 const DraggableList = inject<typeof DraggableListComponent | null>(
   INJECT_EDIT_FIELD_LIST_COMPONENT,
   null,
@@ -202,18 +206,16 @@ const filteredList = computed<FieldListItemTyped[]>(() => {
     fieldKey.value &&
     (isPreview?.value || isEditing)
   ) {
-    return ((mutatedFields[fieldKey.value] || {}).list || [])
-      .map((v) => {
-        const mutatedOptions = editContext.mutatedOptions[v.uuid] || {}
-        return {
-          ...v,
-          options: {
-            ...v.options,
-            ...mutatedOptions,
-          },
-        } as FieldListItemTyped
-      })
-      .filter(filterVisible)
+    return ((mutatedFields[fieldKey.value] || {}).list || []).map((v) => {
+      const mutatedOptions = editContext.mutatedOptions[v.uuid] || {}
+      return {
+        ...v,
+        options: {
+          ...v.options,
+          ...mutatedOptions,
+        },
+      } as FieldListItemTyped
+    })
   }
 
   const list = Array.isArray(props.list) ? props.list : [props.list]

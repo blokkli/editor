@@ -1,8 +1,6 @@
 import { version } from './../package.json'
 import {
   addBuildPlugin,
-  addComponent,
-  addImports,
   addPlugin,
   createResolver,
   defineNuxtModule,
@@ -96,28 +94,6 @@ export default defineNuxtModule<ModuleOptions>({
     // The path of this module.
     const resolver = createResolver(moduleDir)
 
-    // const features = extractedFeatures.filter((v) => {
-    //   return v.id !== 'theme' || moduleOptions.enableThemeEditor
-    // })
-
-    // const featuresContext: AlterFeatures = {
-    //   features,
-    // }
-    //
-    // if (moduleOptions.alterFeatures) {
-    //   featuresContext.features = await Promise.resolve(
-    //     moduleOptions.alterFeatures(featuresContext),
-    //   )
-    // }
-    //
-    // // Create an array of all feature IDs, including onces that have been
-    // // removed or added by users.
-    // const allFeatureIds = [
-    //   ...extractedFeatures.map((v) => v.id),
-    //   ...featuresContext.features.map((v) => v.id),
-    // ].filter(onlyUnique)
-
-    // The definitions.
     nuxt.options.runtimeConfig.public.blokkli = {
       itemEntityType: moduleOptions.itemEntityType || '',
       defaultLanguage: moduleOptions.defaultLanguage || 'en',
@@ -126,54 +102,17 @@ export default defineNuxtModule<ModuleOptions>({
     // Add plugin and transpile runtime directory.
     nuxt.options.build.transpile.push(resolver.resolve('runtime'))
 
-    addComponent({
-      filePath: resolver.resolve('./runtime/components/BlokkliField'),
-      name: 'BlokkliField',
-      global: true,
-    })
+    helper.addComponent('BlokkliField')
+    helper.addComponent('BlokkliEditable')
+    helper.addComponent('BlokkliProvider')
+    helper.addComponent('BlokkliItem')
 
-    addComponent({
-      filePath: resolver.resolve('./runtime/components/BlokkliEditable'),
-      name: 'BlokkliEditable',
-      global: true,
-    })
+    helper.addComposable('defineBlokkli')
+    helper.addComposable('defineBlokkliFragment')
+    helper.addComposable('defineBlokkliFeature')
+    helper.addComposable('useBlokkli')
 
-    addComponent({
-      filePath: resolver.resolve('./runtime/components/BlokkliProvider'),
-      name: 'BlokkliProvider',
-      global: true,
-    })
-
-    addComponent({
-      filePath: resolver.resolve('./runtime/components/BlokkliItem'),
-      name: 'BlokkliItem',
-      global: true,
-    })
-
-    // Only add the vite plugin when building.
     addBuildPlugin(DefinitionPlugin(nuxt))
-
-    // Add composables.
-    addImports({
-      name: 'defineBlokkli',
-      from: resolver.resolve('./runtime/composables/defineBlokkli'),
-      as: 'defineBlokkli',
-    })
-    addImports({
-      name: 'defineBlokkliFragment',
-      from: resolver.resolve('./runtime/composables/defineBlokkliFragment'),
-      as: 'defineBlokkliFragment',
-    })
-    addImports({
-      name: 'defineBlokkliFeature',
-      from: resolver.resolve('./runtime/composables/defineBlokkliFeature'),
-      as: 'defineBlokkliFeature',
-    })
-    addImports({
-      name: 'useBlokkli',
-      from: resolver.resolve('./runtime/composables/useBlokkli'),
-      as: 'useBlokkli',
-    })
 
     nuxt.options.alias['#blokkli/types'] = resolver.resolve('runtime/types')
     nuxt.options.alias['#blokkli/constants'] =
@@ -205,6 +144,7 @@ export default defineNuxtModule<ModuleOptions>({
     // Watch for file changes in dev mode.
     if (nuxt.options.dev) {
       nuxt.hook('builder:watch', async (event, providedFilePath) => {
+        // In <= 3.15 this path is relative to src dir.
         const filePath = providedFilePath.startsWith('/')
           ? providedFilePath
           : helper.resolvers.src.resolve(providedFilePath)
@@ -212,30 +152,16 @@ export default defineNuxtModule<ModuleOptions>({
         const dependenciesToUpdate: TemplateDependency[] = []
         helper.fileCache.delete(filePath)
 
-        console.log({ event, filePath })
-
         for (const collector of collectors) {
           const result = await collector.handleWatchEvent(event, filePath)
-          console.log(result)
           if (result.hasChanged) {
             dependenciesToUpdate.push(...collector.getDependencyTypes())
           }
         }
 
         if (dependenciesToUpdate.length) {
-          console.log('Dependencies to update: ', dependenciesToUpdate)
           await context.generateTemplates(dependenciesToUpdate)
         }
-
-        // // Trigger HMR for the definitions file.
-        // const modules = viteServer.moduleGraph.getModulesByFile(
-        //   templateDefinitions.dst,
-        // )
-        // if (modules) {
-        //   modules.forEach((v) => {
-        //     viteServer.reloadModule(v)
-        //   })
-        // }
       })
     }
   },
