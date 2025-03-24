@@ -13,7 +13,7 @@ export class IconCollector extends Collector {
     this.srcFromModule = helper.resolvers.module.resolve('./runtime/icons')
   }
 
-  async init() {
+  override async init() {
     const srcFromModule =
       this.helper.resolvers.module.resolve('./runtime/icons')
     const filesModule = await resolveFiles(srcFromModule, '*.svg')

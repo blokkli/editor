@@ -89,8 +89,6 @@ export const DefinitionPlugin = (
           return
         }
 
-        console.log(id)
-
         const s = new MagicString(source)
         const parsed = this.parse(source, {
           sourceType: 'module',

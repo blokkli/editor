@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getBlokkliFragmentComponent } from '#blokkli-build/imports'
+import { getComponent } from '#blokkli/helpers/imports'
 import { provide, defineBlokkli } from '#imports'
 import { INJECT_FRAGMENT_CONTEXT } from '#blokkli/helpers/symbols'
 import type { BlokkliFragmentName } from '#blokkli-build/definitions'
@@ -21,7 +21,7 @@ const ctx = defineBlokkli({
   },
 })
 
-const component = getBlokkliFragmentComponent(componentProps.name)
+const component = getComponent('fragment', componentProps.name)
 
 provide(INJECT_FRAGMENT_CONTEXT, ctx)
 </script>

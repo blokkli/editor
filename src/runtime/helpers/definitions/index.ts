@@ -15,7 +15,7 @@ const blocksByKey = blocks.reduce<Record<string, BlockDefinition>>((acc, v) => {
     ? renderForValue
     : [renderForValue]
 
-  if (renderForList) {
+  if (renderForList.length) {
     renderForList.forEach((renderFor) => {
       if ('parentBundle' in renderFor) {
         acc[v.bundle + '__' + 'parent:' + renderFor.parentBundle] = v

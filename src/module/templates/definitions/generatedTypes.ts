@@ -5,10 +5,10 @@ import type {
   ExtractedBlockDefinitionInput,
   GetBundlePropsTypeResult,
 } from '../../types'
-import type { BlockDefinitionOptionsInput } from '~/src/runtime/types'
+import type { BlockDefinitionOptionsInput } from './../../../runtime/types'
 
 function toStringUnion(strings: string[]): string {
-  return strings.map((v) => `'${v}'`).join(' | ')
+  return strings.map((v) => `'${v}'`).join(' | ') || 'never'
 }
 
 function getOptionTypes(

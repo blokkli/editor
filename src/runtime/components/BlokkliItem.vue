@@ -27,7 +27,7 @@ import {
   type ComputedRef,
 } from '#imports'
 import type { InjectedBlokkliItem } from '#blokkli/types'
-import { getBlokkliItemComponent } from '#blokkli-build/imports'
+import { getComponent } from '#blokkli/helpers/imports'
 import {
   INJECT_BLOCK_ITEM,
   INJECT_ENTITY_CONTEXT,
@@ -78,7 +78,8 @@ const fieldListType = inject<ComputedRef<ValidFieldListTypes> | undefined>(
 const component =
   isProxyMode || isGlobalProxyMode?.value
     ? defineAsyncComponent(() => import('./Edit/BlockProxy/index.vue'))
-    : getBlokkliItemComponent(
+    : getComponent(
+        'block',
         componentProps.bundle,
         fieldListType?.value || 'default',
         componentProps.parentType,

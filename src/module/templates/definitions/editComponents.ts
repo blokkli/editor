@@ -1,13 +1,14 @@
 import { defineCodeTemplate } from '../defineTemplate'
 import { isBlock } from '../../../Collector/Blocks'
 import { relative } from 'pathe'
+import { toObject } from '../helpers'
 
 export default defineCodeTemplate(
   'edit-components',
   (ctx) => {
     const imports: Record<string, string> = {}
-    const proxyComponents: Record<string, string> = {}
-    const diffComponents: Record<string, string> = {}
+    const proxyComponents = new Map<string, string>()
+    const diffComponents = new Map<string, string>()
 
     for (const file of ctx.blocks.files.values()) {
       if (!file.definition || !isBlock(file.definition)) {
@@ -21,28 +22,15 @@ export default defineCodeTemplate(
           ctx.helper.paths.blokkliBuildDir,
           file.proxyComponentPath,
         )
-        proxyComponents[bundle] = importName
+        proxyComponents.set(bundle, importName)
       } else if (file.diffComponentPath) {
         const importName = 'diff_' + file.definition.bundle
         imports[importName] = relative(
           ctx.helper.paths.blokkliBuildDir,
           file.diffComponentPath,
         )
-        diffComponents[bundle] = importName
+        diffComponents.set(bundle, importName)
       }
-    }
-
-    const toObject = (name: string, map: Record<string, string>) => {
-      const lines = Object.entries(map)
-        .map(([key, value]) => {
-          return `${key}: ${value}`
-        })
-        .join(',\n  ')
-      return `
-export const ${name} = {
-${lines}
-}
-`
     }
 
     const importLines = Object.entries(imports)

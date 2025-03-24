@@ -4,6 +4,10 @@ import { relative } from 'pathe'
 import { type Resolver, createResolver } from '@nuxt/kit'
 import { FileCache } from './FileCache'
 
+function onlyUnique(value: string, index: number, self: Array<string>) {
+  return self.indexOf(value) === index
+}
+
 type ModulePaths = {}
 
 type ModuleHelperResolvers = {
@@ -33,12 +37,15 @@ export class ModuleHelper {
   paths: ModuleHelperPaths
   resolvers: ModuleHelperResolvers
   public fileCache: FileCache
+  public readonly options: ModuleOptions
+  public readonly isDev: boolean
 
   constructor(
     public nuxt: Nuxt,
     moduleUrl: string,
-    public readonly options: ModuleOptions,
+    providedOptions: ModuleOptions,
   ) {
+    this.isDev = nuxt.options.dev
     this.fileCache = new FileCache()
     this.resolvers = {
       module: createResolver(moduleUrl),
@@ -72,5 +79,39 @@ export class ModuleHelper {
         this.resolvers.module.resolve('./runtime/types/blokkOptions.ts'),
       ),
     }
+
+    const pattern: string[] = providedOptions.pattern || []
+    pattern.push(
+      this.resolvers.module.resolve(
+        './runtime/components/Blocks/FromLibrary/*.vue',
+      ),
+    )
+    pattern.push(
+      this.resolvers.module.resolve(
+        './runtime/components/Blocks/Fragment/*.vue',
+      ),
+    )
+
+    const fieldListTypes: string[] = providedOptions.fieldListTypes || []
+    if (!fieldListTypes.includes('default')) {
+      fieldListTypes.push('default')
+    }
+
+    const chunkNames: string[] = providedOptions.chunkNames || []
+
+    if (!chunkNames.includes('global')) {
+      chunkNames.push('global')
+    }
+
+    this.options = {
+      ...providedOptions,
+      pattern,
+      fieldListTypes: fieldListTypes.filter(onlyUnique),
+      chunkNames: chunkNames.filter(onlyUnique),
+    }
+  }
+
+  public getChunkNames(): string[] {
+    return this.options.chunkNames || ['global']
   }
 }

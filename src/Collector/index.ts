@@ -25,6 +25,8 @@ export class Collector<T extends CollectedFile = CollectedFile> {
     this.files = new Map()
   }
 
+  async init(): Promise<any> {}
+
   public async applies(filePath: string): Promise<boolean> {
     return Promise.resolve(false)
   }

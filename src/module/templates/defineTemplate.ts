@@ -1,4 +1,5 @@
 import type { ModuleContext } from '../ModuleContext'
+import type { ModuleHelper } from '../ModuleHelper'
 
 type TemplateCallback = (context: ModuleContext) => string | Promise<string>
 
@@ -58,4 +59,10 @@ export function defineFileTemplate(
       dependencies: [],
     },
   }
+}
+
+export function withHelper(
+  cb: (helper: ModuleHelper) => ModuleTemplate | ModuleTemplate[],
+): (helper: ModuleHelper) => ModuleTemplate | ModuleTemplate[] {
+  return cb
 }

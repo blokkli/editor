@@ -64,7 +64,7 @@ export class FeatureCollector extends Collector<CollectedFeatureFile> {
     return [...this.files.values()].map((v) => v.getDefinition()).filter(falsy)
   }
 
-  async init() {
+  override async init() {
     // @TODO: Add way to disable features.
 
     const builtinFeatures = await resolveFiles(

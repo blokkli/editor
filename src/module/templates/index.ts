@@ -11,8 +11,17 @@ import runtimeOptions from './definitions/runtimeOptions'
 import editComponents from './definitions/editComponents'
 import generatedTypes from './definitions/generatedTypes'
 import defaultGlobalOptions from './definitions/defaultGlobalOptions'
+import imports from './definitions/imports'
+import optionsSchema from './definitions/optionsSchema'
+import chunkGroup from './definitions/chunkGroup'
+import type { ModuleTemplate } from './defineTemplate'
+import type { ModuleHelper } from '../ModuleHelper'
 
-export const TEMPLATES = [
+type Template =
+  | ModuleTemplate
+  | ((helper: ModuleHelper) => ModuleTemplate | ModuleTemplate[])
+
+export const TEMPLATES: Template[] = [
   icons,
   features,
   featuresJson,
@@ -26,4 +35,7 @@ export const TEMPLATES = [
   editComponents,
   generatedTypes,
   defaultGlobalOptions,
+  imports,
+  optionsSchema,
+  chunkGroup,
 ]

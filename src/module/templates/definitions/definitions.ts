@@ -1,6 +1,7 @@
 import { defineCodeTemplate } from '../defineTemplate'
 import { relative } from 'pathe'
 import { isBlock } from '../../../Collector/Blocks'
+import { toImports, toObject } from '../helpers'
 
 export default defineCodeTemplate(
   'definitions',
@@ -8,8 +9,8 @@ export default defineCodeTemplate(
     const definitions: string[] = []
     const blocks: string[] = []
     const fragments: string[] = []
-    const icons: string[] = []
-    const imports: string[] = []
+    const icons = new Map<string, string>()
+    const imports = new Map<string, string>()
 
     // Iterate over all collected blocks.
     for (const file of ctx.blocks.files.values()) {
@@ -25,15 +26,15 @@ export default defineCodeTemplate(
             ctx.helper.paths.blokkliBuildDir,
             file.iconPath,
           )
-          imports.push(`import ${iconVariable} from '${relativePath}?raw'`)
-          icons.push(`${file.definition.bundle}: ${iconVariable}`)
+          imports.set(iconVariable, relativePath + '?raw')
+          icons.set(file.definition.bundle, iconVariable)
         }
       } else {
         fragments.push(file.identifier)
       }
     }
     return `
-${imports.join('\n')}
+${toImports(imports)}
 
 ${definitions.join('\n')}
 
@@ -45,9 +46,7 @@ export const fragments = [
   ${fragments.join(',\n  ')}
 ]
 
-export const icons = {
-  ${icons.join(',\n  ')}
-}
+${toObject('icons', icons)}
 
 export const globalOptions = ${JSON.stringify(ctx.helper.options.globalOptions || {})}
 `

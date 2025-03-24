@@ -8,6 +8,7 @@ import type {
   ExtractedBlockDefinitionInput,
   ExtractedFragmentDefinitionInput,
 } from '../module/types'
+import type { TemplateDependency } from '../module/templates/defineTemplate'
 
 const DEFINE_BLOKKLI = 'defineBlokkli'
 const DEFINE_BLOKKLI_FRAGMENT = 'defineBlokkliFragment'
@@ -49,6 +50,33 @@ function getIdentifier(definition: ExtractedDefinition) {
   return parts.join('__')
 }
 
+function getVariations(definition?: ExtractedDefinition | null): string[] {
+  if (!definition) {
+    return []
+  }
+
+  if (isBlock(definition)) {
+    const bundle = definition.bundle
+    if (!definition.renderFor) {
+      return ['block:' + bundle]
+    }
+    const renderFor = Array.isArray(definition.renderFor)
+      ? definition.renderFor
+      : [definition.renderFor]
+    return renderFor.map((v) => {
+      if ('parentBundle' in v) {
+        return `block:${bundle}__parent:${v.parentBundle}`
+      } else if ('fieldList' in v) {
+        return `block:${bundle}__field:${v.fieldList}`
+      } else {
+        return `block:${bundle}__field:${v.fieldListType}`
+      }
+    })
+  }
+
+  return [`fragment:${definition.name}`]
+}
+
 export class CollectedBlockFile extends CollectedFile {
   folder = ''
   iconPath: string | null = null
@@ -64,6 +92,7 @@ export class CollectedBlockFile extends CollectedFile {
 
   identifier: string | null = ''
   chunkName = 'global'
+  variations: string[] = []
 
   private hasSiblingFile(name: string): string | null {
     const siblingFilePath = path.join(this.folder, '/' + name)
@@ -99,6 +128,8 @@ export class CollectedBlockFile extends CollectedFile {
     } else {
       this.type = 'fragment'
     }
+
+    this.variations = getVariations(this.definition)
 
     return true
   }
@@ -151,18 +182,21 @@ export class BlockCollector extends Collector<CollectedBlockFile> {
     })
   }
 
-  async init() {
+  override async init() {
     const files = await resolveFiles(
       this.helper.nuxt.options.srcDir,
       this.patterns,
     )
+    const promises: Promise<any>[] = []
 
     for (const filePath of files) {
       const applies = await this.applies(filePath)
       if (applies) {
-        await this.addFile(filePath)
+        promises.push(this.addFile(filePath))
       }
     }
+
+    await Promise.all(promises)
   }
 
   public override createCollectedFile(
@@ -187,5 +221,9 @@ export class BlockCollector extends Collector<CollectedBlockFile> {
       content.includes(DEFINE_BLOKKLI) ||
       content.includes(DEFINE_BLOKKLI_FRAGMENT)
     )
+  }
+
+  override getDependencyTypes(): TemplateDependency[] {
+    return ['block-content', 'block-path']
   }
 }

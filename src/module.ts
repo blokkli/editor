@@ -1,17 +1,12 @@
-import { promises as fsp } from 'node:fs'
 import { version } from './../package.json'
 import {
   addBuildPlugin,
   addComponent,
   addImports,
   addPlugin,
-  addTemplate,
   createResolver,
   defineNuxtModule,
-  resolveFiles,
 } from '@nuxt/kit'
-import type { ResolvedNuxtTemplate } from '@nuxt/schema'
-import BlockExtractor from './Extractor/BlockExtractor'
 import { DefinitionPlugin } from './vitePlugin'
 import {
   BK_HIDDEN_GLOBALLY,
@@ -27,10 +22,6 @@ import type { TemplateDependency } from './module/templates/defineTemplate'
 import { FeatureCollector } from './Collector/Features'
 import { ThemeData } from './module/ThemeData'
 import { BlockCollector } from './Collector/Blocks'
-
-function onlyUnique(value: string, index: number, self: Array<string>) {
-  return self.indexOf(value) === index
-}
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
@@ -61,13 +52,12 @@ export default defineNuxtModule<ModuleOptions>({
   },
   async setup(moduleOptions, nuxt) {
     const helper = new ModuleHelper(nuxt, import.meta.url, moduleOptions)
+
+    const theme = new ThemeData(helper)
+
     const iconCollector = new IconCollector(helper)
     const featureCollector = new FeatureCollector(helper)
     const blockCollector = new BlockCollector(helper)
-
-    await iconCollector.init()
-    await featureCollector.init()
-    await blockCollector.init()
 
     const collectors: Collector[] = [
       iconCollector,
@@ -75,7 +65,7 @@ export default defineNuxtModule<ModuleOptions>({
       blockCollector,
     ]
 
-    const theme = new ThemeData(helper)
+    await Promise.all(collectors.map((v) => v.init()))
 
     const context = new ModuleContext(
       helper,
@@ -85,23 +75,26 @@ export default defineNuxtModule<ModuleOptions>({
       theme,
     )
 
-    TEMPLATES.forEach((template) => context.addTemplate(template))
+    TEMPLATES.forEach((v) => {
+      if (typeof v === 'function') {
+        const result = v(helper)
+        const templates = Array.isArray(result) ? result : [result]
+        templates.forEach((template) => {
+          context.addTemplate(template)
+        })
+      } else {
+        context.addTemplate(v)
+      }
+    })
 
     await context.generateTemplates()
 
     nuxt.options.alias['#blokkli-build'] = helper.paths.blokkliBuildDir
 
-    // The path to the source directory of this module's consumer.
-    const srcDir = nuxt.options.dir.app
-    const srcResolver = createResolver(srcDir)
-
     const moduleDir = import.meta.url
 
     // The path of this module.
     const resolver = createResolver(moduleDir)
-
-    const buildResolver = createResolver(nuxt.options.buildDir)
-    const blokkliBuildDir = buildResolver.resolve('blokkli')
 
     // const features = extractedFeatures.filter((v) => {
     //   return v.id !== 'theme' || moduleOptions.enableThemeEditor
@@ -123,49 +116,6 @@ export default defineNuxtModule<ModuleOptions>({
     //   ...extractedFeatures.map((v) => v.id),
     //   ...featuresContext.features.map((v) => v.id),
     // ].filter(onlyUnique)
-
-    function getChunkNames(): string[] {
-      const chunkNames = [...(moduleOptions.chunkNames || [])]
-      if (!chunkNames.includes('global')) {
-        chunkNames.push('global')
-      }
-      return chunkNames.filter(onlyUnique)
-    }
-
-    function getFieldListTypes(): string[] {
-      const types = [...(moduleOptions.fieldListTypes || [])]
-      if (!types.includes('default')) {
-        types.push('default')
-      }
-      return types.filter(onlyUnique)
-    }
-
-    const importPattern = moduleOptions.pattern || []
-
-    if (featureCollector.isEnabled('library')) {
-      importPattern.push(
-        resolver.resolve('./runtime/components/Blocks/FromLibrary/*.vue'),
-      )
-    }
-
-    if (featureCollector.isEnabled('fragments')) {
-      importPattern.push(
-        resolver.resolve('./runtime/components/Blocks/Fragment/*.vue'),
-      )
-    }
-
-    // Get all files.
-    const files = await resolveFiles(srcDir, importPattern, {
-      followSymbolicLinks: false,
-    })
-
-    // Create extractor instance and add initial set of files.
-    const blockExtractor = new BlockExtractor(
-      !nuxt.options.dev,
-      blokkliBuildDir,
-      helper.relativePaths,
-    )
-    await blockExtractor.addFiles(files)
 
     // The definitions.
     nuxt.options.runtimeConfig.public.blokkli = {
@@ -225,68 +175,6 @@ export default defineNuxtModule<ModuleOptions>({
       as: 'useBlokkli',
     })
 
-    let optionsSchemaTemplate: ResolvedNuxtTemplate<{
-      blokkli: true
-    }> | null = null
-
-    const generateOptionsSchema = async () => {
-      const outputPath = moduleOptions.schemaOptionsPath
-      if (outputPath) {
-        const resolvedPath = await srcResolver.resolvePath(outputPath)
-        const content = blockExtractor.generateOptionsSchema(
-          moduleOptions.globalOptions || {},
-        )
-
-        return fsp.writeFile(resolvedPath, content)
-      }
-
-      // Template was already generated.
-      if (optionsSchemaTemplate) {
-        return
-      }
-
-      // The types template.
-      optionsSchemaTemplate = addTemplate({
-        write: true,
-        filename: 'blokkli/options-schema.json',
-        getContents: () =>
-          blockExtractor.generateOptionsSchema(
-            moduleOptions.globalOptions || {},
-          ),
-        options: {
-          blokkli: true,
-        },
-      })
-    }
-
-    await generateOptionsSchema()
-
-    getChunkNames().forEach((chunkName) => {
-      if (chunkName !== 'global' && !nuxt.options.dev) {
-        addTemplate({
-          write: true,
-          filename: `blokkli/chunk-${chunkName}.ts`,
-          getContents: () =>
-            blockExtractor.generateChunkGroupTemplate(chunkName),
-          options: {
-            blokkli: true,
-          },
-        })
-      }
-    })
-
-    addTemplate({
-      write: true,
-      filename: 'blokkli/imports.ts',
-      getContents: () =>
-        blockExtractor.generateImportsTemplate(
-          nuxt.options.dev ? ['global'] : getChunkNames(),
-        ),
-      options: {
-        blokkli: true,
-      },
-    })
-
     nuxt.options.alias['#blokkli/types'] = resolver.resolve('runtime/types')
     nuxt.options.alias['#blokkli/constants'] =
       resolver.resolve('runtime/constants')
@@ -316,18 +204,26 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Watch for file changes in dev mode.
     if (nuxt.options.dev) {
-      nuxt.hook('builder:watch', async (event, filePath) => {
+      nuxt.hook('builder:watch', async (event, providedFilePath) => {
+        const filePath = providedFilePath.startsWith('/')
+          ? providedFilePath
+          : helper.resolvers.src.resolve(providedFilePath)
+
         const dependenciesToUpdate: TemplateDependency[] = []
         helper.fileCache.delete(filePath)
 
+        console.log({ event, filePath })
+
         for (const collector of collectors) {
           const result = await collector.handleWatchEvent(event, filePath)
+          console.log(result)
           if (result.hasChanged) {
             dependenciesToUpdate.push(...collector.getDependencyTypes())
           }
         }
 
         if (dependenciesToUpdate.length) {
+          console.log('Dependencies to update: ', dependenciesToUpdate)
           await context.generateTemplates(dependenciesToUpdate)
         }
 
