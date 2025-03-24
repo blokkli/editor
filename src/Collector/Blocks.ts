@@ -12,7 +12,7 @@ import type {
 const DEFINE_BLOKKLI = 'defineBlokkli'
 const DEFINE_BLOKKLI_FRAGMENT = 'defineBlokkliFragment'
 
-type CollectedBlockType = 'main' | 'context' | 'proxy' | 'fragment'
+type CollectedBlockType = 'main' | 'context' | 'fragment'
 
 type ExtractedDefinition =
   | ExtractedBlockDefinitionInput
@@ -52,6 +52,8 @@ function getIdentifier(definition: ExtractedDefinition) {
 export class CollectedBlockFile extends CollectedFile {
   folder = ''
   iconPath: string | null = null
+  diffComponentPath: string | null = null
+  proxyComponentPath: string | null = null
   type: CollectedBlockType | null = null
   definitionSource: string | null = null
   definition:
@@ -63,10 +65,16 @@ export class CollectedBlockFile extends CollectedFile {
   identifier: string | null = ''
   chunkName = 'global'
 
+  private hasSiblingFile(name: string): string | null {
+    const siblingFilePath = path.join(this.folder, '/' + name)
+    return existsSync(siblingFilePath) ? siblingFilePath : null
+  }
+
   override async handleChange(): Promise<boolean> {
     this.folder = path.dirname(this.filePath)
-    const iconPath = path.join(this.folder, '/icon.svg')
-    this.iconPath = existsSync(iconPath) ? iconPath : null
+    this.iconPath = this.hasSiblingFile('icon.svg')
+    this.diffComponentPath = this.hasSiblingFile('diff.vue')
+    this.proxyComponentPath = this.hasSiblingFile('proxy.vue')
 
     const extracted = this.extract()
     this.definitionSource = extracted?.source || null
@@ -79,6 +87,18 @@ export class CollectedBlockFile extends CollectedFile {
 
     this.chunkName = this.definition?.chunkName || 'global'
     this.identifier = this.definition ? getIdentifier(this.definition) : null
+
+    if (!this.definition) {
+      this.type = null
+    } else if (isBlock(this.definition)) {
+      if (this.definition.renderFor) {
+        this.type = 'context'
+      } else {
+        this.type = 'main'
+      }
+    } else {
+      this.type = 'fragment'
+    }
 
     return true
   }

@@ -5,22 +5,10 @@ import type {
 } from '../runtime/types'
 import type { ModuleOptionsSettings } from '#blokkli-build/module-types'
 import type { Theme, ThemeName } from '../runtime/types/theme'
+import type { CollectedBlockFile } from '../Collector/Blocks'
 
 export type ExtractedBlockDefinitionInput = BlockDefinitionInput
 export type ExtractedFragmentDefinitionInput = FragmentDefinitionInput
-
-export type ExtractedDefinition = {
-  filePath: string
-  icon?: string
-  chunkName: string
-  componentName: string
-  proxyComponent?: string
-  diffComponent?: string
-  definition: ExtractedBlockDefinitionInput
-  source: string
-  fileSource: string
-  hasBlokkliField: boolean
-}
 
 export type ExtractedFragmentDefinition = {
   filePath: string
@@ -38,7 +26,7 @@ export type GetBundlePropsTypeResult = {
 
 export type GetBundlePropsType = (
   name: string,
-  definition: ExtractedDefinition,
+  definition: CollectedBlockFile,
 ) => GetBundlePropsTypeResult
 
 export type BuildRelativeImports = {

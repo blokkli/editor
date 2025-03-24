@@ -167,31 +167,7 @@ export default defineNuxtModule<ModuleOptions>({
     )
     await blockExtractor.addFiles(files)
 
-    addTemplate({
-      write: true,
-      filename: 'blokkli/runtime-options.ts',
-      getContents: () => {
-        return blockExtractor.generateRuntimeOptionsTemplate(
-          moduleOptions.globalOptions,
-        )
-      },
-      options: {
-        blokkli: true,
-      },
-    })
-
     // The definitions.
-    addTemplate({
-      write: true,
-      filename: 'blokkli/edit-components.ts',
-      getContents: () => {
-        return blockExtractor.generateEditComponents()
-      },
-      options: {
-        blokkli: true,
-      },
-    })
-
     nuxt.options.runtimeConfig.public.blokkli = {
       itemEntityType: moduleOptions.itemEntityType || '',
       defaultLanguage: moduleOptions.defaultLanguage || 'en',
@@ -247,35 +223,6 @@ export default defineNuxtModule<ModuleOptions>({
       name: 'useBlokkli',
       from: resolver.resolve('./runtime/composables/useBlokkli'),
       as: 'useBlokkli',
-    })
-
-    // The types template.
-    addTemplate({
-      write: true,
-      filename: 'blokkli/generated-types.ts',
-      getContents: () =>
-        blockExtractor.generateTypesTemplate(
-          moduleOptions.globalOptions || {},
-          getChunkNames(),
-          getFieldListTypes(),
-          moduleOptions.getBundlePropsType,
-        ),
-      options: {
-        blokkli: true,
-      },
-    })
-
-    // The types template.
-    addTemplate({
-      write: true,
-      filename: 'blokkli/default-global-options.ts',
-      getContents: () =>
-        blockExtractor.generateDefaultGlobalOptions(
-          moduleOptions.globalOptions || {},
-        ),
-      options: {
-        blokkli: true,
-      },
     })
 
     let optionsSchemaTemplate: ResolvedNuxtTemplate<{

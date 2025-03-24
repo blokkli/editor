@@ -36,7 +36,7 @@ import type {
 } from '#blokkli-build/generated-types'
 import { computed, useBlokkli, ref } from '#imports'
 import { getBlockDefinition } from '#blokkli/helpers/definitions'
-import { getBlokkliItemProxyComponent } from '#blokkli-build/edit-components'
+import { getBlokkliItemProxyComponent } from '#blokkli/helpers/editComponents'
 
 import { ItemIcon } from '#blokkli/components'
 import type { FieldConfig, LibraryItemProps } from '#blokkli/types'
