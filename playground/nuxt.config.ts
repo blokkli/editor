@@ -13,7 +13,7 @@ export default defineNuxtConfig({
     'nuxt-svg-icon-sprite',
   ],
 
-  debug: true,
+  debug: false,
 
   imports: {
     autoImport: false,

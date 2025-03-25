@@ -1,3 +1,5 @@
+import * as ts from 'typescript'
+
 export function sortObjectKeys(obj: Record<string, any>): Record<string, any> {
   if (Array.isArray(obj)) {
     return obj.map(sortObjectKeys)
@@ -27,4 +29,48 @@ export function toValidVariableName(input: string): string {
   }
 
   return result
+}
+
+/**
+ * Parses a TypeScript object string into a JavaScript object.
+ *
+ * @param tsObjectStr The TypeScript object string (starting with { and ending with })
+ * @returns The parsed JavaScript object.
+ */
+export function parseTsObject<T>(tsObjectStr: string): {
+  object: T
+  source: string
+} {
+  const source = `(${tsObjectStr})`
+
+  // Transpile to JavaScript.
+  const result = ts.transpileModule(source, {
+    compilerOptions: {
+      target: ts.ScriptTarget.ESNext,
+      module: ts.ModuleKind.None,
+      removeComments: true,
+    },
+  })
+
+  const jsCode = result.outputText.trim()
+
+  // Safely evaluate the JavaScript which will return our definition object.
+  const createObj = new Function(`return ${jsCode}`)
+  const object = createObj()
+  return { object, source: jsCode }
+}
+
+export function extractObjectLiteral(
+  fileContents: string,
+  composables: string[],
+): string | undefined {
+  const composablesMatch = composables.join('|')
+  const pattern = `(${composablesMatch})` + '\\(\\s*(\\{[\\s\\S]+?\\})\\s*\\)'
+  const rgx = new RegExp(pattern)
+  const matches = rgx.exec(fileContents)
+  if (!matches) {
+    return
+  }
+
+  return matches?.at(2)
 }

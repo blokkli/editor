@@ -1,4 +1,4 @@
-import { computed, ref, readonly, type Ref } from '#imports'
+import { computed, ref, readonly, type Ref, type ComputedRef } from '#imports'
 import type {
   BlockDefinition,
   FragmentDefinition,
@@ -28,8 +28,8 @@ export type DefinitionProvider = {
 
   getBlockIcon: (bundle: string) => string | undefined
 
-  fragmentDefinitions: DeepReadonly<Ref<FragmentDefinition[]>>
-  blockDefinitions: DeepReadonly<Ref<BlockDefinition[]>>
+  fragmentDefinitions: ComputedRef<FragmentDefinition[]>
+  blockDefinitions: ComputedRef<BlockDefinition[]>
   globalOptions: DeepReadonly<Ref<BlockDefinitionOptionsInput>>
   runtimeOptions: DeepReadonly<
     Ref<Record<string, Record<string, RuntimeBlockOptionArray>>>
@@ -37,8 +37,9 @@ export type DefinitionProvider = {
 }
 
 export default function (): DefinitionProvider {
-  const blockDefinitions = ref(definitions.blocks)
-  const fragmentDefinitions = ref(definitions.fragments)
+  const blocks = ref<BlockDefinition[]>(definitions.blocks)
+  const fragments = ref<FragmentDefinition[]>(definitions.fragments)
+
   const blockIcons = ref<Record<string, string>>(definitions.icons)
   const allGlobalOptions = ref<BlockDefinitionOptionsInput>(
     definitions.globalOptions,
@@ -49,8 +50,8 @@ export default function (): DefinitionProvider {
   if (import.meta.hot) {
     import.meta.hot.accept('#blokkli-build/definitions', (mod) => {
       const newDefinitions = mod as any as { default: Definitions } | undefined
-      blockDefinitions.value = newDefinitions?.default?.blocks || []
-      fragmentDefinitions.value = newDefinitions?.default?.fragments || []
+      blocks.value = newDefinitions?.default?.blocks || []
+      fragments.value = newDefinitions?.default?.fragments || []
       blockIcons.value = newDefinitions?.default?.icons || {}
       allGlobalOptions.value = newDefinitions?.default?.globalOptions || {}
     })
@@ -62,8 +63,9 @@ export default function (): DefinitionProvider {
   }
 
   const blocksByKey = computed(() =>
-    blockDefinitions.value.reduce<Record<string, BlockDefinition>>((acc, v) => {
-      const renderForValue = v.renderFor || []
+    blocks.value.reduce<Record<string, BlockDefinition>>((acc, definition) => {
+      const bundle = definition.bundle
+      const renderForValue = definition.renderFor || []
       const renderForList = Array.isArray(renderForValue)
         ? renderForValue
         : [renderForValue]
@@ -71,24 +73,24 @@ export default function (): DefinitionProvider {
       if (renderForList.length) {
         renderForList.forEach((renderFor) => {
           if ('parentBundle' in renderFor) {
-            acc[v.bundle + '__' + 'parent:' + renderFor.parentBundle] = v
+            acc[bundle + '__' + 'parent:' + renderFor.parentBundle] = definition
           } else if ('fieldList' in renderFor) {
-            acc[v.bundle + '__' + 'field:' + renderFor.fieldList] = v
+            acc[bundle + '__' + 'field:' + renderFor.fieldList] = definition
           } else if ('fieldListType' in renderFor) {
-            acc[v.bundle + '__' + 'field:' + renderFor.fieldListType] = v
+            acc[bundle + '__' + 'field:' + renderFor.fieldListType] = definition
           }
         })
       } else {
-        acc[v.bundle] = v
+        acc[bundle] = definition
       }
       return acc
     }, {}),
   )
 
   const fragmentsByName = computed(() =>
-    fragmentDefinitions.value.reduce<Record<string, FragmentDefinition>>(
-      (acc, v) => {
-        acc[v.name] = v
+    fragments.value.reduce<Record<string, FragmentDefinition>>(
+      (acc, definition) => {
+        acc[definition.name] = definition
         return acc
       },
       {},
@@ -131,8 +133,8 @@ export default function (): DefinitionProvider {
     getFragmentDefinition,
     getDefaultDefinition,
     getBlockIcon,
-    fragmentDefinitions: readonly(fragmentDefinitions),
-    blockDefinitions: readonly(blockDefinitions),
+    fragmentDefinitions: computed(() => fragments.value),
+    blockDefinitions: computed(() => blocks.value),
     globalOptions: readonly(allGlobalOptions),
     runtimeOptions: readonly(runtimeOptions),
   }

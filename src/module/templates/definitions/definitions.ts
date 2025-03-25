@@ -1,32 +1,39 @@
 import { defineCodeTemplate } from '../defineTemplate'
 import { isBlock } from '../../../Collector/Blocks'
 import { toObject } from '../helpers'
+import { toValidVariableName } from './../../../helpers'
 
 export default defineCodeTemplate(
   'definitions',
   (ctx) => {
-    const definitions: string[] = []
     const blocks: string[] = []
     const fragments: string[] = []
     const icons = new Map<string, string>()
 
+    const definitions: string[] = []
+
+    const files = [...ctx.blocks.files.values()]
     // Iterate over all collected blocks.
-    for (const file of ctx.blocks.files.values()) {
-      if (!file.definition || !file.definitionSource || !file.identifier) {
-        continue
+    files.forEach((file) => {
+      if (!file.definition || !file.identifier || !file.definitionSource) {
+        return
       }
-      definitions.push(`const ${file.identifier} = ${file.definitionSource}`)
       if (isBlock(file.definition)) {
-        blocks.push(file.identifier)
+        const variableName = 'block_' + toValidVariableName(file.identifier)
+        definitions.push(`const ${variableName} = ${file.definitionSource}`)
+        blocks.push(variableName)
         if (file.iconContents) {
           icons.set(file.definition.bundle, JSON.stringify(file.iconContents))
         }
       } else {
-        fragments.push(file.identifier)
+        const variableName =
+          'fragment_' + toValidVariableName(file.definition.name)
+        definitions.push(`const ${variableName} = ${file.definitionSource}`)
+        fragments.push(variableName)
       }
-    }
+    })
     return `
-${definitions.join('\n')}
+${definitions.join('\n\n')}
 
 const blocks = [
   ${blocks.join(',\n  ')}
@@ -37,6 +44,7 @@ const fragments = [
 ]
 
 ${toObject('icons', icons, true)}
+
 
 const globalOptions = ${JSON.stringify(ctx.helper.options.globalOptions || {})}
 

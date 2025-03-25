@@ -8,15 +8,16 @@ import type {
   ExtractedFragmentDefinitionInput,
 } from '../module/types'
 import type { TemplateDependency } from '../module/templates/defineTemplate'
+import { extractObjectLiteral, parseTsObject } from '../helpers'
+
+type ExtractedDefinition =
+  | ExtractedBlockDefinitionInput
+  | ExtractedFragmentDefinitionInput
 
 const DEFINE_BLOKKLI = 'defineBlokkli'
 const DEFINE_BLOKKLI_FRAGMENT = 'defineBlokkliFragment'
 
 type CollectedBlockType = 'main' | 'context' | 'fragment'
-
-type ExtractedDefinition =
-  | ExtractedBlockDefinitionInput
-  | ExtractedFragmentDefinitionInput
 
 export function isBlock(
   definition: ExtractedDefinition,
@@ -83,16 +84,18 @@ export class CollectedBlockFile extends CollectedFile {
   diffComponentPath: string | null = null
   proxyComponentPath: string | null = null
   type: CollectedBlockType | null = null
-  definitionSource: string | null = null
   definition:
     | ExtractedFragmentDefinitionInput
     | ExtractedBlockDefinitionInput
     | null = null
+  definitionSource: string | null = null
   hasBlokkliField = false
 
   identifier: string | null = ''
   chunkName = 'global'
   variations: string[] = []
+
+  private objectLiteralString = ''
 
   private hasSiblingFile(name: string, helper: ModuleHelper): string | null {
     const siblingFilePath = path.join(this.folder, '/' + name)
@@ -109,9 +112,34 @@ export class CollectedBlockFile extends CollectedFile {
     this.diffComponentPath = this.hasSiblingFile('diff.vue', helper)
     this.proxyComponentPath = this.hasSiblingFile('proxy.vue', helper)
 
-    const extracted = this.extract()
-    this.definitionSource = extracted?.source || null
-    this.definition = extracted?.definition || null
+    const objectLiteralString = extractObjectLiteral(this.fileContents, [
+      DEFINE_BLOKKLI,
+      DEFINE_BLOKKLI_FRAGMENT,
+    ])
+
+    // Nothing changed.
+    if (objectLiteralString === this.objectLiteralString) {
+      return false
+    }
+
+    this.objectLiteralString = objectLiteralString || ''
+
+    try {
+      if (this.objectLiteralString) {
+        const result = parseTsObject<ExtractedDefinition>(
+          this.objectLiteralString,
+        )
+        this.definition = result.object
+        this.definitionSource = result.source
+      }
+    } catch (e) {
+      console.error(
+        `Failed to parse component "${this.filePath}": The composabe does not contain a valid object literal. No variables and methods are allowed inside the composable.`,
+        e,
+      )
+
+      return false
+    }
 
     this.hasBlokkliField =
       this.fileContents.includes('<BlokkliField') ||
@@ -148,39 +176,6 @@ export class CollectedBlockFile extends CollectedFile {
     this.variations = getVariations(this.definition)
 
     return true
-  }
-
-  extract():
-    | {
-        definition:
-          | ExtractedBlockDefinitionInput
-          | ExtractedFragmentDefinitionInput
-        source: string
-      }
-    | undefined {
-    const pattern =
-      `(${DEFINE_BLOKKLI}|${DEFINE_BLOKKLI_FRAGMENT})` + '\\((\\{.+?\\})\\)'
-    const rgx = new RegExp(pattern, 's')
-    const matches = rgx.exec(this.fileContents)
-    if (!matches) {
-      return
-    }
-
-    const composableName = matches?.at(1)
-    const source = matches?.at(2)
-    if (!source) {
-      return
-    }
-
-    try {
-      const definition = eval(`(${source})`)
-      return { definition, source }
-    } catch (e) {
-      console.error(
-        `Failed to parse component "${this.filePath}": ${composableName} does not contain a valid object literal. No variables and methods are allowed inside ${composableName}().`,
-        e,
-      )
-    }
   }
 }
 
@@ -222,21 +217,35 @@ export class BlockCollector extends Collector<CollectedBlockFile> {
     return new CollectedBlockFile(filePath, fileContents)
   }
 
-  protected override async handleChange(filePath: string): Promise<boolean> {
-    if (filePath.includes('icon.svg')) {
-      const matchingBlock = [...this.files.values()].find(
-        (v) => v.iconPath === filePath,
-      )
-      if (matchingBlock) {
-        console.log('matching block: ' + matchingBlock.filePath)
-        return this.handleChange(matchingBlock.filePath)
+  private findBlockForIcon(iconPath: string): string | null {
+    for (const file of this.files.values()) {
+      if (file.iconPath === iconPath) {
+        return file.filePath
       }
+    }
+
+    return null
+  }
+
+  protected override async handleChange(filePath: string): Promise<boolean> {
+    // Special handling for icon files: They don't directly exist as a
+    // collected file, but are part of one single collected file.
+    // Therefore, if we find a block that uses this icon, we have to update
+    // it.
+    if (filePath.includes('icon.svg')) {
+      const matchingBlockFilePath = this.findBlockForIcon(filePath)
+      if (matchingBlockFilePath) {
+        return this.handleChange(matchingBlockFilePath)
+      }
+
+      return false
     }
 
     return super.handleChange(filePath)
   }
 
   public override async applies(filePath: string): Promise<boolean> {
+    // Only Vue SFC are supported.
     if (!filePath.endsWith('.vue')) {
       return false
     }

@@ -113,6 +113,9 @@ export default defineNuxtModule<ModuleOptions>({
     helper.addComposable('useBlokkli')
 
     addBuildPlugin(DefinitionPlugin(nuxt))
+    // addBuildPlugin(DefinitionsPlugin(), {
+    //   prepend: true,
+    // })
 
     nuxt.options.alias['#blokkli/types'] = resolver.resolve('runtime/types')
     nuxt.options.alias['#blokkli/constants'] =

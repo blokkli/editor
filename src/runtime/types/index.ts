@@ -1415,6 +1415,20 @@ export type FragmentDefinitionInput<
   editor?: BlokkliDefinitionInputEditor<Options, GlobalOptions>
 }
 
+export type TransformedBlokkliDefinitionItem =
+  | {
+      type: 'block'
+      definition: BlockDefinitionInput
+    }
+  | {
+      type: 'fragment'
+      definition: FragmentDefinitionInput
+    }
+  | {
+      type: 'feature'
+      definition: FeatureDefinition
+    }
+
 export type TourItem = {
   id: string
   title: string

@@ -126,7 +126,6 @@ import {
 import { PluginSidebar, PluginDebugOverlay } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 import { icons, type BlokkliIcon } from '#blokkli-build/icons'
-import { featureComponents } from '#blokkli-build/features'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import DebugViewport from './Viewport/index.vue'
 import DebugRects from './Rects/index.vue'
@@ -143,13 +142,13 @@ const { keyboard, selection, eventBus, features, debug, ui } = useBlokkli()
 const iconItems = computed(() => Object.keys(icons) as BlokkliIcon[])
 
 const featuresList = computed(() => {
-  return featureComponents.map((v) => {
-    const feature = features.features.value.find((f) => f.id === v.id)
+  return features.features.value.map((v) => {
+    const feature = features.mountedFeatures.value.find((f) => f.id === v.id)
     return {
       id: v.id,
       label: v.label,
       description: v.description,
-      dependencies: v.dependencies.join(', '),
+      dependencies: v.dependencies?.join(', '),
       mounted: !!feature,
     }
   })

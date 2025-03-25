@@ -42,7 +42,7 @@ defineBlokkliFeature({
 const { $t, features, tour } = useBlokkli()
 
 const isTourEnabled = computed(() =>
-  features.features.value.find((v) => v.id === 'tour'),
+  features.mountedFeatures.value.find((v) => v.id === 'tour'),
 )
 </script>
 

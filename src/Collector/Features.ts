@@ -5,45 +5,58 @@ import * as micromatch from 'micromatch'
 import type { ModuleHelper } from '../module/ModuleHelper'
 import type { AdapterMethods, FeatureDefinition } from '../runtime/types'
 import { falsy } from '../vitePlugin'
+import { extractObjectLiteral, parseTsObject } from '../helpers'
 
 export type ExtractedFeatureDefinition = {
   id: string
   componentName: string
   componentPath: string
   definition: FeatureDefinition<AdapterMethods[]>
+  definitionSource: string
 }
 
 export class CollectedFeatureFile extends CollectedFile {
   private definition: ExtractedFeatureDefinition | null = null
   private composableName = 'defineBlokkliFeature'
   private enabled = true
+  private objectLiteral: string | undefined = undefined
 
   getDefinition(): ExtractedFeatureDefinition | null {
     return this.definition
   }
 
   override async handleChange(): Promise<boolean> {
-    const pattern = this.composableName + '\\((\\{.+?\\})\\)'
-    const rgx = new RegExp(pattern, 'gms')
-    const source = rgx.exec(this.fileContents)?.[1]
-    if (source) {
-      try {
-        const definition = eval(`(${source})`)
-        const regex = /\/Features\/([^/]+)\//
-        const componentName = this.filePath.match(regex)?.[1] || ''
-        // @TODO: Check if there was a change (compare source).
-        this.definition = {
-          id: definition.id,
-          componentName,
-          componentPath: this.filePath,
-          definition,
-        }
-      } catch (e) {
-        console.error(
-          `Failed to parse component "${this.filePath}": ${this.composableName} does not contain a valid object literal. No variables and methods are allowed inside ${this.composableName}().`,
-          e,
-        )
+    const objectLiteral = extractObjectLiteral(this.fileContents, [
+      this.composableName,
+    ])
+    if (this.objectLiteral === objectLiteral) {
+      return false
+    }
+
+    this.objectLiteral = objectLiteral
+
+    if (!this.objectLiteral) {
+      return false
+    }
+
+    try {
+      const { object: definition, source } = parseTsObject<FeatureDefinition>(
+        this.objectLiteral,
+      )
+      const regex = /\/Features\/([^/]+)\//
+      const componentName = this.filePath.match(regex)?.[1] || ''
+      this.definition = {
+        id: definition.id,
+        componentName,
+        componentPath: this.filePath,
+        definition,
+        definitionSource: source,
       }
+    } catch (e) {
+      console.error(
+        `Failed to parse component "${this.filePath}": ${this.composableName} does not contain a valid object literal. No variables and methods are allowed inside ${this.composableName}().`,
+        e,
+      )
     }
     return Promise.resolve(true)
   }

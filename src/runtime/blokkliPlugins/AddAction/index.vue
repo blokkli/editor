@@ -44,7 +44,7 @@ const emit = defineEmits<{
 const { ui, state, features } = useBlokkli()
 
 const addListAvailable = computed(
-  () => !!features.features.value.find((v) => v.id === 'add-list'),
+  () => !!features.mountedFeatures.value.find((v) => v.id === 'add-list'),
 )
 
 const shouldRender = computed(

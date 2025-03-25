@@ -97,7 +97,7 @@ const shouldRenderSetting = (
 const settingTypeOrder = ['checkbox', 'slider', 'method']
 
 const groups = computed<GroupedSettings[]>(() => {
-  const settingGroups = features.features.value.reduce<
+  const settingGroups = features.mountedFeatures.value.reduce<
     Partial<Record<SettingsGroup, GroupedSettings>>
   >((acc, feature) => {
     Object.entries(feature.settings || {}).forEach(([settingsKey, setting]) => {

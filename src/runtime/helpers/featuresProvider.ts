@@ -1,14 +1,17 @@
 import type { FeatureDefinition, AdapterMethods } from '#blokkli/types'
 import {
   type ValidFeatureKey,
-  featureComponents,
+  featureDefinitions,
 } from '#blokkli-build/features'
 import { computed, ref, type ComputedRef } from '#imports'
 import type { StorageProvider } from './storageProvider'
 import { falsy } from '.'
 
 export type FeaturesProvider = {
-  features: ComputedRef<FeatureDefinition<AdapterMethods[], ValidFeatureKey>[]>
+  features: ComputedRef<FeatureDefinition[]>
+  mountedFeatures: ComputedRef<
+    FeatureDefinition<AdapterMethods[], ValidFeatureKey>[]
+  >
   betaFeatures: ComputedRef<
     { id: ValidFeatureKey; label: string; description?: string }[]
   >
@@ -18,9 +21,20 @@ export type FeaturesProvider = {
 }
 
 export default function (storage: StorageProvider): FeaturesProvider {
+  const definitions = ref<FeatureDefinition[]>(featureDefinitions)
+  console.log(definitions.value)
   const mountedFeatures = ref<
     FeatureDefinition<AdapterMethods[], ValidFeatureKey>[]
   >([])
+
+  if (import.meta.hot) {
+    import.meta.hot.accept('#blokkli-build/features', (mod) => {
+      const newDefinitions = mod as any as
+        | { featureDefinitions: FeatureDefinition[] }
+        | undefined
+      definitions.value = newDefinitions?.featureDefinitions || []
+    })
+  }
 
   const settingsSettings = storage.use(
     'feature:settings:settings',
@@ -41,18 +55,18 @@ export default function (storage: StorageProvider): FeaturesProvider {
       .filter(falsy) as ValidFeatureKey[]
   })
 
-  const features = computed(() => mountedFeatures.value)
-
   const betaFeatures = computed(() =>
-    featureComponents
-      .filter((v) => v.beta)
+    definitions.value
       .map((v) => {
-        return {
-          id: v.id,
-          label: v.label,
-          description: v.description,
+        if (v.beta && v.label) {
+          return {
+            id: v.id as ValidFeatureKey,
+            label: v.label,
+            description: v.description,
+          }
         }
-      }),
+      })
+      .filter(falsy),
   )
 
   const unmount = (id: string) => {
@@ -66,7 +80,8 @@ export default function (storage: StorageProvider): FeaturesProvider {
   }
 
   return {
-    features,
+    features: computed(() => definitions.value),
+    mountedFeatures: computed(() => mountedFeatures.value),
     betaFeatures,
     enabledBetaFeatures,
     mount,

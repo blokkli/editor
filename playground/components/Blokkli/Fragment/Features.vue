@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import { computed, defineBlokkliFragment } from '#imports'
-import { featureComponents } from '#blokkli-build/features'
+import { featureDefinitions } from '#blokkli-build/features'
 import { icons } from '#blokkli-build/icons'
 
 defineBlokkliFragment({
@@ -37,7 +37,7 @@ defineBlokkliFragment({
 })
 
 const features = computed(() =>
-  featureComponents.filter((v) => v.id !== 'demo-feature').map((v) => v),
+  featureDefinitions.filter((v) => v.id !== 'demo-feature'),
 )
 </script>
 

@@ -77,7 +77,7 @@ export const DefinitionPlugin = (
 ) =>
   createUnplugin(() => {
     return {
-      name: 'transform-file',
+      name: 'blokkli:transform-file',
       enforce: 'post',
       transform(source, id) {
         if (!fileRegex.test(id)) {

@@ -1,5 +1,6 @@
-import { defineCodeTemplate } from '../defineTemplate'
 import { toValidVariableName } from './../../../helpers'
+import { defineCodeTemplate } from '../defineTemplate'
+import { toImports, toObject } from '../helpers'
 
 export default defineCodeTemplate(
   'features',
@@ -7,46 +8,37 @@ export default defineCodeTemplate(
     const features = ctx.features
       .getEnabledFeatures()
       .sort((a, b) => b.id.localeCompare(a.id))
-      .map((v) => {
-        const importName = `Feature_${toValidVariableName(v.id)}`
-        return {
-          id: v.id,
-          componentName: v.componentPath,
-          importName,
-          importStatement: `import ${importName} from '${v.componentPath}'`,
-          definition: v.definition,
-        }
-      })
 
-    const imports = features.map((v) => v.importStatement).join('\n')
+    const featuresComponents = new Map<string, string>()
+    const definitions: string[] = []
+    const declarations: string[] = []
+    const imports = new Map<string, string>()
+
+    for (const feature of features) {
+      const componentVarName = toValidVariableName(`component_${feature.id}`)
+      const declarationVarName = toValidVariableName(`feature_${feature.id}`)
+      declarations.push(
+        `const ${declarationVarName} = ${feature.definitionSource}`,
+      )
+      definitions.push(declarationVarName)
+      imports.set(componentVarName, feature.componentPath)
+      featuresComponents.set(feature.id, componentVarName)
+    }
 
     const availableFeaturesAtBuild = features.map((v) => v.id)
 
-    const featuresArray = features
-      .map((v) => {
-        return `{
-  id: "${v.id}",
-  dependencies: ${JSON.stringify(v.definition.dependencies || [])},
-  viewports: ${JSON.stringify(v.definition.viewports || [])},
-  component: ${v.importName},
-  requiredAdapterMethods: ${JSON.stringify(
-    v.definition.requiredAdapterMethods || [],
-  )},
-  label: ${JSON.stringify(v.definition.label || '')},
-  beta: ${JSON.stringify(!!v.definition.beta)},
-  icon: ${JSON.stringify(v.definition.icon)},
-  description: "${v.definition.description || ''}"
-}`
-      })
-      .join(',\n')
+    return `${toImports(imports)}
 
-    return `${imports}
 export const availableFeaturesAtBuild = ${JSON.stringify(
       availableFeaturesAtBuild.sort(),
     )}
 
-export const featureComponents = [
-${featuresArray}
+${toObject('featureComponents', featuresComponents)}
+
+${declarations.join('\n\n')}
+
+export const featureDefinitions = [
+  ${definitions.join(',\n  ')}
 ]
 `
   },
@@ -58,24 +50,15 @@ ${featuresArray}
     return `
 import type { BlokkliAdapter } from '${ctx.helper.relativePaths.ADAPTER}'
 import type { Viewport } from '${ctx.helper.relativePaths.CONSTANTS}'
+import type { Component } from 'vue'
+import type { TransformedBlokkliDefinitionItem } from '#blokkli/types'
 
 type AdapterMethods = keyof BlokkliAdapter<any>
 
 export type ValidFeatureKey = ${availableFeaturesAtBuild.map((v) => '"' + v + '"').join(' | ')}
 
-export type FeatureComponent = {
-  id: ValidFeatureKey
-  component: any
-  requiredAdapterMethods: AdapterMethods[]
-  dependencies: ValidFeatureKey[]
-  description: string
-  label: string
-  beta: boolean
-  icon: string
-  viewports: Viewport[]
-}
-
-export declare const featureComponents: FeatureComponent[]
+export declare const featureComponents: Record<ValidFeatureKey, Component>
+export declare const featureDefinitions: FeatureDefinition[]
 export declare const availableFeaturesAtBuild: ValidFeatureKey[]
 `
   },

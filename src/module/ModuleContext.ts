@@ -56,7 +56,6 @@ export class ModuleContext {
       }
 
       if (template.type === 'code') {
-        console.log('Building templates: ' + template.name)
         this.setTemplateContents(
           'code',
           template.name,
@@ -68,7 +67,6 @@ export class ModuleContext {
           await template.buildTypes(this),
         )
       } else {
-        console.log('Building templates: ' + template.fileName)
         this.setTemplateContents(
           'file',
           template.fileName,
@@ -119,11 +117,21 @@ declare module '#blokkli-build/${template.name}' {
         ? template.fileName
         : `blokkli/${template.fileName}`
 
-      addTemplate({
-        filename,
-        write: true,
-        getContents: () => this.getTemplateContents('file', template.fileName),
-      })
+      if (filename.endsWith('.d.ts')) {
+        addTypeTemplate({
+          filename,
+          write: true,
+          getContents: () =>
+            this.getTemplateContents('file', template.fileName),
+        })
+      } else {
+        addTemplate({
+          filename,
+          write: true,
+          getContents: () =>
+            this.getTemplateContents('file', template.fileName),
+        })
+      }
     }
   }
 }

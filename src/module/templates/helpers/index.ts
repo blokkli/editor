@@ -5,7 +5,7 @@ export function toObject(
 ): string {
   const lines = [...map.entries()]
     .map(([key, value]) => {
-      return `${key}: ${value}`
+      return `'${key}': ${value}`
     })
     .sort()
     .join(',\n  ')
