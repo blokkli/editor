@@ -1,17 +1,17 @@
-import { fileExists } from './../../../helpers'
 import { defineCodeTemplate } from '../defineTemplate'
 
 export default defineCodeTemplate(
   'edit-adapter',
   (ctx) => {
     // Setup adapter.
-    const resolvedPath = '~/app/blokkli.editAdapter'
-      .replace(/^(~~|@@)/, ctx.helper.nuxt.options.rootDir)
-      .replace(/^(~|@)/, ctx.helper.nuxt.options.srcDir)
+    const resolvedPath =
+      '~/app/blokkli.editAdapter'
+        .replace(/^(~~|@@)/, ctx.helper.nuxt.options.rootDir)
+        .replace(/^(~|@)/, ctx.helper.nuxt.options.srcDir) + '.ts'
 
-    const maybeUserFile = fileExists(resolvedPath, ['ts'])
+    const fileExists = ctx.helper.fileCache.fileExists(resolvedPath)
 
-    if (!maybeUserFile) {
+    if (!fileExists) {
       throw new Error(
         'Missing blokkli adapter file in ~/app/blokkli.editAdapter.ts',
       )

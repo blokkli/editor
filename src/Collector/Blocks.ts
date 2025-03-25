@@ -1,6 +1,5 @@
 import { resolveFiles } from '@nuxt/kit'
 import path from 'node:path'
-import { existsSync } from 'node:fs'
 import { CollectedFile, Collector } from './index'
 import * as micromatch from 'micromatch'
 import type { ModuleHelper } from '../module/ModuleHelper'
@@ -95,15 +94,20 @@ export class CollectedBlockFile extends CollectedFile {
   chunkName = 'global'
   variations: string[] = []
 
-  private hasSiblingFile(name: string): string | null {
+  private hasSiblingFile(name: string, helper: ModuleHelper): string | null {
     const siblingFilePath = path.join(this.folder, '/' + name)
-    return existsSync(siblingFilePath) ? siblingFilePath : null
+
+    if (helper.fileCache.fileExists(siblingFilePath)) {
+      return siblingFilePath
+    }
+
+    return null
   }
 
   override async handleChange(helper: ModuleHelper): Promise<boolean> {
     this.folder = path.dirname(this.filePath)
-    this.diffComponentPath = this.hasSiblingFile('diff.vue')
-    this.proxyComponentPath = this.hasSiblingFile('proxy.vue')
+    this.diffComponentPath = this.hasSiblingFile('diff.vue', helper)
+    this.proxyComponentPath = this.hasSiblingFile('proxy.vue', helper)
 
     const extracted = this.extract()
     this.definitionSource = extracted?.source || null
@@ -131,7 +135,7 @@ export class CollectedBlockFile extends CollectedFile {
 
     // Only collect the icon for the main block entry.
     if (this.type === 'main') {
-      this.iconPath = this.hasSiblingFile('icon.svg')
+      this.iconPath = this.hasSiblingFile('icon.svg', helper)
 
       if (this.iconPath) {
         this.iconContents = await helper.fileCache.read(this.iconPath)

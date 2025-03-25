@@ -1,5 +1,3 @@
-import { existsSync } from 'node:fs'
-
 export function sortObjectKeys(obj: Record<string, any>): Record<string, any> {
   if (Array.isArray(obj)) {
     return obj.map(sortObjectKeys)
@@ -29,22 +27,4 @@ export function toValidVariableName(input: string): string {
   }
 
   return result
-}
-
-export const fileExists = (
-  path?: string,
-  extensions = ['js', 'ts'],
-): string | null => {
-  if (!path) {
-    return null
-  } else if (existsSync(path)) {
-    // If path already contains/forces the extension
-    return path
-  }
-
-  const extension = extensions.find((extension) =>
-    existsSync(`${path}.${extension}`),
-  )
-
-  return extension ? `${path}.${extension}` : null
 }

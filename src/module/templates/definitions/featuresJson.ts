@@ -1,5 +1,4 @@
 import { defineFileTemplate } from '../defineTemplate'
-import { fileExists } from './../../../helpers'
 
 export default defineFileTemplate('features-data.json', async (ctx) => {
   const features = [...ctx.features.files.values()]
@@ -7,9 +6,11 @@ export default defineFileTemplate('features-data.json', async (ctx) => {
     features.map(async (v) => {
       const docsPath = v.filePath.replace('index.vue', 'docs.md')
       let docs = ''
-      if (fileExists(docsPath)) {
+
+      if (ctx.helper.fileCache.fileExists(docsPath)) {
         docs = await ctx.helper.fileCache.read(docsPath)
       }
+
       return {
         ...v,
         repoRelativePath: v.filePath.replace(/.*\/src/, '/src'),

@@ -8,6 +8,7 @@ export type TemplateDependency =
   | 'features'
   | 'block-content'
   | 'block-path'
+  | 'block-global-options'
 
 type TemplateOptions = {
   dependencies?: TemplateDependency[]

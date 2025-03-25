@@ -149,8 +149,9 @@ export default defineNuxtModule<ModuleOptions>({
           ? providedFilePath
           : helper.resolvers.src.resolve(providedFilePath)
 
+        helper.fileCache.handleWatchEvent(event, filePath)
+
         const dependenciesToUpdate: TemplateDependency[] = []
-        helper.fileCache.delete(filePath)
 
         for (const collector of collectors) {
           const result = await collector.handleWatchEvent(event, filePath)
