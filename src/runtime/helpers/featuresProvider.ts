@@ -22,7 +22,6 @@ export type FeaturesProvider = {
 
 export default function (storage: StorageProvider): FeaturesProvider {
   const definitions = ref<FeatureDefinition[]>(featureDefinitions)
-  console.log(definitions.value)
   const mountedFeatures = ref<
     FeatureDefinition<AdapterMethods[], ValidFeatureKey>[]
   >([])

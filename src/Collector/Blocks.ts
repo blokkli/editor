@@ -8,7 +8,12 @@ import type {
   ExtractedFragmentDefinitionInput,
 } from '../module/types'
 import type { TemplateDependency } from '../module/templates/defineTemplate'
-import { extractObjectLiteral, parseTsObject } from '../helpers'
+import {
+  extractObjectLiteral,
+  parseTsObject,
+  toValidVariableName,
+} from '../helpers'
+import { hash } from 'ohash'
 
 type ExtractedDefinition =
   | ExtractedBlockDefinitionInput
@@ -147,7 +152,11 @@ export class CollectedBlockFile extends CollectedFile {
       this.fileContents.includes(':is="BlokkliField"')
 
     this.chunkName = this.definition?.chunkName || 'global'
-    this.identifier = this.definition ? getIdentifier(this.definition) : null
+    this.identifier = this.definition
+      ? getIdentifier(this.definition) +
+        '_' +
+        toValidVariableName(hash(this.filePath))
+      : null
 
     if (!this.definition) {
       this.type = null

@@ -34,11 +34,13 @@ export type DefinitionProvider = {
   runtimeOptions: DeepReadonly<
     Ref<Record<string, Record<string, RuntimeBlockOptionArray>>>
   >
+  renderKey: DeepReadonly<Ref<string>>
 }
 
 export default function (): DefinitionProvider {
   const blocks = ref<BlockDefinition[]>(definitions.blocks)
   const fragments = ref<FragmentDefinition[]>(definitions.fragments)
+  const renderKey = ref(definitions.renderKey)
 
   const blockIcons = ref<Record<string, string>>(definitions.icons)
   const allGlobalOptions = ref<BlockDefinitionOptionsInput>(
@@ -50,6 +52,7 @@ export default function (): DefinitionProvider {
   if (import.meta.hot) {
     import.meta.hot.accept('#blokkli-build/definitions', (mod) => {
       const newDefinitions = mod as any as { default: Definitions } | undefined
+      renderKey.value = newDefinitions?.default.renderKey || ''
       blocks.value = newDefinitions?.default?.blocks || []
       fragments.value = newDefinitions?.default?.fragments || []
       blockIcons.value = newDefinitions?.default?.icons || {}
@@ -137,6 +140,7 @@ export default function (): DefinitionProvider {
     blockDefinitions: computed(() => blocks.value),
     globalOptions: readonly(allGlobalOptions),
     runtimeOptions: readonly(runtimeOptions),
+    renderKey: readonly(renderKey),
   }
 }
 

@@ -119,7 +119,7 @@ declare module '#blokkli-build/${template.name}' {
 
       if (filename.endsWith('.d.ts')) {
         addTypeTemplate({
-          filename,
+          filename: filename as any,
           write: true,
           getContents: () =>
             this.getTemplateContents('file', template.fileName),

@@ -2,6 +2,7 @@ import { defineCodeTemplate } from '../defineTemplate'
 import { isBlock } from '../../../Collector/Blocks'
 import { toObject } from '../helpers'
 import { toValidVariableName } from './../../../helpers'
+import { hash } from 'ohash'
 
 export default defineCodeTemplate(
   'definitions',
@@ -12,7 +13,10 @@ export default defineCodeTemplate(
 
     const definitions: string[] = []
 
-    const files = [...ctx.blocks.files.values()]
+    const files = [...ctx.blocks.files.values()].sort((a, b) =>
+      (b.identifier || '').localeCompare(a.identifier || ''),
+    )
+    let key = ''
     // Iterate over all collected blocks.
     files.forEach((file) => {
       if (!file.definition || !file.identifier || !file.definitionSource) {
@@ -25,13 +29,16 @@ export default defineCodeTemplate(
         if (file.iconContents) {
           icons.set(file.definition.bundle, JSON.stringify(file.iconContents))
         }
+        key += file.identifier
       } else {
         const variableName =
           'fragment_' + toValidVariableName(file.definition.name)
         definitions.push(`const ${variableName} = ${file.definitionSource}`)
         fragments.push(variableName)
+        key += file.definition.name
       }
     })
+    const renderKey = hash(key)
     return `
 ${definitions.join('\n\n')}
 
@@ -48,11 +55,14 @@ ${toObject('icons', icons, true)}
 
 const globalOptions = ${JSON.stringify(ctx.helper.options.globalOptions || {})}
 
+const renderKey = "${renderKey}"
+
 const definitions = {
   blocks,
   fragments,
   icons,
   globalOptions,
+  renderKey
 }
 
 export default definitions
@@ -90,6 +100,7 @@ export type Definitions = {
   fragments: FragmentDefinition[]
   icons: Record<string, string>
   globalOptions: BlockDefinitionOptionsInput
+  renderKey: string
 }
 
 const definitions: Definitions

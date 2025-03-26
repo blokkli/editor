@@ -17,7 +17,7 @@
     >
       <BlokkliItem
         v-for="(item, i) in list"
-        :key="item.uuid + fieldListType"
+        :key="item.uuid + fieldListType + definitions.renderKey.value"
         :uuid="item.uuid"
         :bundle="item.bundle"
         :is-new="item.isNew"
@@ -100,7 +100,7 @@ import {
 } from '#blokkli/helpers/symbols'
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 
-const { dom, types, runtimeConfig, selection } = useBlokkli()
+const { dom, types, runtimeConfig, selection, definitions } = useBlokkli()
 
 const root = ref<HTMLElement | null>(null)
 

@@ -8,7 +8,9 @@ export default defineCodeTemplate(
   (ctx) => {
     const globalOptions = ctx.helper.options.globalOptions || {}
 
-    const blocks = [...ctx.blocks.files.values()]
+    const files = [...ctx.blocks.files.values()]
+
+    const blocks = files
       .map((v) => {
         if (v.definition && isBlock(v.definition)) {
           return v.definition

@@ -37,7 +37,11 @@
   <DragInteractions v-if="!isInitializing" />
   <AnimationCanvas v-if="!isInitializing" />
   <SystemRequirements />
-  <slot v-if="!isInitializing" :mutated-entity="mutatedEntity" />
+  <slot
+    v-if="!isInitializing"
+    :key="definitions.renderKey.value"
+    :mutated-entity="mutatedEntity"
+  />
 </template>
 
 <script lang="ts" setup generic="T">
@@ -50,6 +54,7 @@ import {
   onBeforeUnmount,
   useRoute,
   useRuntimeConfig,
+  nextTick,
 } from '#imports'
 import type { BlokkliApp, ItemEditContext } from '#blokkli/types'
 import Toolbar from './Toolbar/index.vue'
@@ -235,10 +240,25 @@ const isProxyMode = computed(() => ui.isProxyMode.value)
 provide(INJECT_GLOBAL_PROXY_MODE, isProxyMode)
 
 if (import.meta.hot) {
-  import.meta.hot.accept('#blokkli/helpers/runtimeHelpers', () => {})
-}
-
-if (import.meta.hot) {
+  function onAfterUpdate() {
+    try {
+      eventBus.emit('state:reloaded')
+      dom.updateVisibleRects()
+      nextTick(() => {
+        const uuid = selection.uuids.value[0]
+        if (uuid) {
+          eventBus.emit('scrollIntoView', {
+            uuid,
+            center: true,
+          })
+        }
+      })
+    } catch {
+      // Noop.
+    }
+  }
   import.meta.hot.accept('#blokkli/runtime-helpers', () => {})
+  import.meta.hot.accept('#blokkli/helpers/runtimeHelpers', () => {})
+  // import.meta.hot.on('vite:afterUpdate', onAfterUpdate)
 }
 </script>

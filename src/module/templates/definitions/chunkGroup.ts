@@ -1,4 +1,5 @@
 import { defineCodeTemplate, withHelper } from '../defineTemplate'
+import fs from 'node:fs'
 
 export default withHelper((helper) => {
   return helper.getChunkNames().map((chunkName) => {
@@ -10,6 +11,10 @@ export default withHelper((helper) => {
 
         for (const file of ctx.blocks.files.values()) {
           if (!file.definition || !file.identifier) {
+            continue
+          }
+
+          if (!fs.existsSync(file.filePath)) {
             continue
           }
 
