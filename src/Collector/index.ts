@@ -17,7 +17,7 @@ export class CollectedFile {
   }
 }
 
-export class Collector<T extends CollectedFile = CollectedFile> {
+export abstract class Collector<T extends CollectedFile = CollectedFile> {
   files: Map<string, T>
   protected needsFileContents: boolean = true
 
@@ -25,19 +25,18 @@ export class Collector<T extends CollectedFile = CollectedFile> {
     this.files = new Map()
   }
 
-  async init(): Promise<any> {}
+  public abstract init(): Promise<any>
 
-  public async applies(filePath: string): Promise<boolean> {
-    return Promise.resolve(false)
-  }
+  public abstract runHooks(): Promise<any>
 
-  public createCollectedFile(filePath: string, fileContents = ''): T {
-    return new CollectedFile(filePath, fileContents) as T
-  }
+  public abstract applies(filePath: string): Promise<boolean>
 
-  public getDependencyTypes(): TemplateDependency[] {
-    return []
-  }
+  public abstract createCollectedFile(
+    filePath: string,
+    fileContents?: string,
+  ): T
+
+  public abstract getDependencyTypes(): TemplateDependency[]
 
   async addFile(filePath: string): Promise<void> {
     if (this.needsFileContents) {

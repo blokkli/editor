@@ -7,6 +7,7 @@ import type { ModuleOptionsSettings } from '#blokkli-build/module-types'
 import type { Theme, ThemeName } from '../runtime/types/theme'
 import type { CollectedBlockFile } from '../Collector/Blocks'
 import type { CollectedFeatureFile } from '../Collector/Features'
+import type { CollectedFile } from '../Collector'
 
 export type ExtractedBlockDefinitionInput = BlockDefinitionInput
 export type ExtractedFragmentDefinitionInput = FragmentDefinitionInput
@@ -57,8 +58,8 @@ type ModuleOptionsStorageDefaults = {
   blockFavorites?: string[]
 }
 
-export type AlterFeatures = {
-  features: CollectedFeatureFile[]
+export type AlterHookContext<K extends string, T extends CollectedFile> = {
+  [P in K]: T[]
 }
 
 /**
@@ -125,17 +126,6 @@ export type ModuleOptions = {
    * editor in the default language.
    */
   forceDefaultLanguage?: boolean
-
-  /**
-   * Alter features.
-   *
-   * It's also possible to override builtin feature components with custom
-   * implementations.
-   */
-  // alterFeatures?: (
-  //   ctx: AlterFeatures,
-  // ) => Promise<ExtractedFeatureDefinition[]> | ExtractedFeatureDefinition[]
-  alterFeatures?: (ctx: AlterFeatures) => Promise<any[]> | any[]
 
   /**
    * Add custom features by defining either a pattern or path to a feature component.
@@ -230,4 +220,27 @@ export type ModuleOptions = {
    * ```
    */
   getBundlePropsType?: GetBundlePropsType
+}
+
+export interface ModuleHooks {
+  /**
+   * Alter features.
+   */
+  'blokkli:alter-features': (
+    ctx: AlterHookContext<'features', CollectedFeatureFile>,
+  ) => void | Promise<void>
+
+  /**
+   * Alter icons.
+   */
+  'blokkli:alter-icons': (
+    ctx: AlterHookContext<'icons', CollectedFile>,
+  ) => void | Promise<void>
+
+  /**
+   * Alter blocks.
+   */
+  'blokkli:alter-blocks': (
+    ctx: AlterHookContext<'blocks', CollectedBlockFile>,
+  ) => void | Promise<void>
 }

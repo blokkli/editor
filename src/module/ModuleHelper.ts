@@ -13,8 +13,6 @@ function onlyUnique(value: string, index: number, self: Array<string>) {
   return self.indexOf(value) === index
 }
 
-type ModulePaths = {}
-
 type ModuleHelperResolvers = {
   /**
    * Resolver for files relative to the module src.
@@ -133,5 +131,9 @@ export class ModuleHelper {
       name,
       from: this.resolvers.module.resolve('./runtime/composables/' + name),
     })
+  }
+
+  public addAlias(name: string, path: string) {
+    this.nuxt.options.alias[name] = path
   }
 }

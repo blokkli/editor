@@ -39,7 +39,7 @@
       </ul>
     </div>
     <div v-else-if="setting.type === 'method'">
-      <button class="bk-button" @click="setting.method()">
+      <button class="bk-button" @click="setting.method(blokkliApp)">
         {{ settingLabel }}
       </button>
     </div>
@@ -76,6 +76,7 @@ const props = defineProps<{
 }>()
 
 const { storage, $t: textTranslation } = useBlokkli()
+const blokkliApp = useBlokkli()
 
 const settingLabel = computed(() => {
   return (

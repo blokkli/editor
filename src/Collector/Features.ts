@@ -117,10 +117,6 @@ export class FeatureCollector extends Collector<CollectedFeatureFile> {
 
     const features = [...this.files.values()]
 
-    if (this.helper.options.alterFeatures) {
-      this.helper.options.alterFeatures({ features })
-    }
-
     if (!this.helper.options.enableThemeEditor) {
       const themeFeature = features.find(
         (v) => v.getDefinition()?.id === 'theme',
@@ -129,6 +125,12 @@ export class FeatureCollector extends Collector<CollectedFeatureFile> {
         themeFeature.disable()
       }
     }
+  }
+
+  public runHooks() {
+    return this.helper.nuxt.hooks.callHook('blokkli:alter-features', {
+      features: [...this.files.values()],
+    })
   }
 
   public override createCollectedFile(
@@ -143,11 +145,6 @@ export class FeatureCollector extends Collector<CollectedFeatureFile> {
       filePath.startsWith(this.srcFromModule) ||
         micromatch.isMatch(filePath, 'icon-blokkli-*.svg'),
     )
-  }
-
-  public isEnabled(id: string): boolean {
-    // @TODO
-    return true
   }
 
   override getDependencyTypes(): TemplateDependency[] {

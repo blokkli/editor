@@ -27,6 +27,7 @@ import type {
   ValidChunkNames,
   ValidFieldListTypes,
   ValidGlobalConfigKeys,
+  BundleProps,
 } from '#blokkli-build/generated-types'
 import type { ThemeProvider } from '#blokkli/helpers/themeProvider'
 import type { GlobalOptionsType } from '#blokkli-build/definitions'
@@ -67,6 +68,8 @@ type WithOptions<T extends BlockDefinitionOptionsInput> = {
 type GlobalOptionsKeyTypes<T extends ValidGlobalConfigKeys> = {
   [K in T[number]]: GetType<GlobalOptionsType[K]>
 }
+
+export type BundleKey = keyof BundleProps
 
 export type DefineBlokkliContext<
   T extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
@@ -122,12 +125,13 @@ export type DefineBlokkliContext<
 type DetermineVisibleOptionsContext<
   T extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
   G extends GlobalOptionsKey[] | undefined = undefined,
+  B extends BundleKey | string = string,
 > = {
   options: (T extends BlockDefinitionOptionsInput ? WithOptions<T> : object) &
     (G extends ValidGlobalConfigKeys ? GlobalOptionsKeyTypes<G> : object)
   parentType: BlockBundleWithNested | undefined
   fieldListType: ValidFieldListTypes
-  props: Record<string, any>
+  props: B extends BundleKey ? BundleProps[B] : Record<string, any>
   entity: AdapterContext
 }
 
@@ -147,6 +151,7 @@ export type BlokkliDefinitionAddBehaviour =
 export type BlokkliDefinitionInputEditor<
   Options extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
   GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
+  Bundle extends BundleKey | string = string,
 > = {
   /**
    * Determine which options should be visible in the editor based on the
@@ -155,7 +160,7 @@ export type BlokkliDefinitionInputEditor<
    * If a method is defined, it is called whenever any of the options change.
    */
   determineVisibleOptions?: (
-    ctx: DetermineVisibleOptionsContext<Options, GlobalOptions>,
+    ctx: DetermineVisibleOptionsContext<Options, GlobalOptions, Bundle>,
   ) => Array<CombineKeysAndGlobalOptions<Options, GlobalOptions>>
 
   /**
@@ -320,11 +325,12 @@ export type BlockDefinitionRenderFor =
 export type BlockDefinitionInput<
   Options extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
   GlobalOptions extends GlobalOptionsKey[] | undefined = [],
+  Bundle extends BundleKey | string = string,
 > = {
   /**
    * The bundle ID of the block, e.g. "text" or "section_title".
    */
-  bundle: string
+  bundle: Bundle
 
   /**
    * Define the name of a block bundle that supports nested blocks.
@@ -358,7 +364,7 @@ export type BlockDefinitionInput<
   /**
    * Settings for the behaviour in the editor.
    */
-  editor?: BlokkliDefinitionInputEditor<Options, GlobalOptions>
+  editor?: BlokkliDefinitionInputEditor<Options, GlobalOptions, Bundle>
 }
 
 export type RuntimeBlockDefinitionInput = {
@@ -1249,7 +1255,7 @@ export type FeatureDefinitionSettingSlider = {
 export type FeatureDefinitionSettingMethod = {
   type: 'method'
   label: string
-  method: () => void
+  method: (app: BlokkliApp) => void
   group?: SettingsGroup
   viewports?: Viewport[]
 }

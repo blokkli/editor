@@ -10,6 +10,7 @@ import { computed, inject, type ComputedRef } from '#imports'
 import type {
   BlockDefinitionInput,
   BlockDefinitionOptionsInput,
+  BundleKey,
   DefineBlokkliContext,
   InjectedBlokkliItem,
   ItemEditContext,
@@ -32,7 +33,8 @@ import {
 export function defineBlokkli<
   T extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
   G extends GlobalOptionsKey[] | undefined = undefined,
->(arg: BlockDefinitionInput<T, G>): DefineBlokkliContext<T, G> {
+  B extends BundleKey | string = string,
+>(arg: BlockDefinitionInput<T, G, B>): DefineBlokkliContext<T, G> {
   // The vite plugin removes all properties from the passed object except for
   // bundle, so we have to cast it as this type here.
   const config = arg as RuntimeBlockDefinitionInput

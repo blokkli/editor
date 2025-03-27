@@ -10,7 +10,7 @@ import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
 } from './runtime/helpers/symbols'
-import type { ModuleOptions } from './module/types'
+import type { ModuleHooks, ModuleOptions } from './module/types'
 import { IconCollector } from './Collector/Icons'
 import type { Collector } from './Collector'
 import { ModuleHelper } from './module/ModuleHelper'
@@ -27,11 +27,11 @@ export default defineNuxtModule<ModuleOptions>({
     configKey: 'blokkli',
     version,
     compatibility: {
-      nuxt: '^3.12.0',
+      nuxt: '^3.15.0',
     },
   },
   defaults: {
-    pattern: ['components/Blokkli/**/*.{js,ts,vue}'],
+    pattern: ['components/Blokkli/**/*.vue'],
     globalOptions: {
       [BK_VISIBLE_LANGUAGES]: {
         type: 'checkboxes',
@@ -45,7 +45,7 @@ export default defineNuxtModule<ModuleOptions>({
         default: false,
       },
     },
-    chunkNames: ['global'] as string[],
+    chunkNames: ['global'],
     itemEntityType: 'block',
   },
   async setup(moduleOptions, nuxt) {
@@ -87,7 +87,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     await context.generateTemplates()
 
-    nuxt.options.alias['#blokkli-build'] = helper.paths.blokkliBuildDir
+    helper.addAlias('#blokkli-build', helper.paths.blokkliBuildDir)
 
     const moduleDir = import.meta.url
 
@@ -113,23 +113,24 @@ export default defineNuxtModule<ModuleOptions>({
     helper.addComposable('useBlokkli')
 
     addBuildPlugin(DefinitionPlugin(nuxt))
-    // addBuildPlugin(DefinitionsPlugin(), {
-    //   prepend: true,
-    // })
 
-    nuxt.options.alias['#blokkli/types'] = resolver.resolve('runtime/types')
-    nuxt.options.alias['#blokkli/constants'] =
-      resolver.resolve('runtime/constants')
-    nuxt.options.alias['#blokkli/plugins'] = resolver.resolve(
-      'runtime/blokkliPlugins',
+    helper.addAlias('#blokkli-build', helper.paths.blokkliBuildDir)
+    helper.addAlias('#blokkli/types', resolver.resolve('runtime/types'))
+    helper.addAlias('#blokkli/constants', resolver.resolve('runtime/constants'))
+    helper.addAlias(
+      '#blokkli/plugins',
+      resolver.resolve('runtime/blokkliPlugins'),
     )
-    nuxt.options.alias['#blokkli/components'] = resolver.resolve(
-      'runtime/components/Edit',
+    helper.addAlias(
+      '#blokkli/components',
+      resolver.resolve('runtime/components/Edit'),
     )
-    nuxt.options.alias['#blokkli/helpers'] = resolver.resolve('runtime/helpers')
-    nuxt.options.alias['#blokkli/adapter'] = resolver.resolve('runtime/adapter')
-    nuxt.options.alias['#blokkli/runtime-helpers'] = resolver.resolve(
-      'runtime/helpers/runtimeHelpers',
+
+    helper.addAlias('#blokkli/helpers', resolver.resolve('runtime/helpers'))
+    helper.addAlias('#blokkli/adapter', resolver.resolve('runtime/adapter'))
+    helper.addAlias(
+      '#blokkli/runtime-helpers',
+      resolver.resolve('runtime/helpers/runtimeHelpers'),
     )
 
     nuxt.hook('nitro:config', (nitroConfig) => {
@@ -172,3 +173,8 @@ export default defineNuxtModule<ModuleOptions>({
 })
 
 export type { ModuleOptions }
+
+declare module '@nuxt/schema' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface NuxtHooks extends ModuleHooks {}
+}

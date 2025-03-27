@@ -58,8 +58,8 @@ const { settings } = defineBlokkliFeature({
     resetAllSettings: {
       type: 'method',
       label: 'Reset all settings',
-      method: () => {
-        storage.clearAll()
+      method: (app) => {
+        app.storage.clearAll()
       },
       group: 'advanced',
     },

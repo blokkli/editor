@@ -15,24 +15,24 @@ export default defineCodeTemplate(
           .sort((a, b) => a[0].localeCompare(b[0]))
           .forEach(([key, setting]) => {
             const settingsKey = `feature:${feature.id}:${key}`
-            settings.push(`// ${setting.label}`)
+            settings.push(`/** ${setting.label} */`)
             if (setting.type === 'radios') {
               const type = Object.keys(setting.options)
                 .map((v) => `'${v}'`)
                 .join(' | ')
               settings.push(
-                `'${settingsKey}'?: { disable?: boolean, default?: ${type} }`,
+                `'${settingsKey}'?: { disable?: boolean, default?: ${type} }\n`,
               )
             } else if (setting.type === 'checkbox') {
               settings.push(
-                `'${settingsKey}'?: { disable?: boolean, default?: boolean }`,
+                `'${settingsKey}'?: { disable?: boolean, default?: boolean }\n`,
               )
             } else if (setting.type === 'slider') {
               settings.push(
-                `'${settingsKey}'?: { disable?: boolean, default?: number }`,
+                `'${settingsKey}'?: { disable?: boolean, default?: number }\n`,
               )
             } else {
-              settings.push(`'${settingsKey}'?: { disable?: boolean }`)
+              settings.push(`'${settingsKey}'?: { disable?: boolean }\n`)
             }
           })
       }
@@ -40,7 +40,7 @@ export default defineCodeTemplate(
 
     return `
 export type ModuleOptionsSettings = {
-  ${settings.sort().join('\n  ')}
+  ${settings.join('\n  ')}
 }
   `
   },

@@ -219,7 +219,13 @@ export class BlockCollector extends Collector<CollectedBlockFile> {
     await Promise.all(promises)
   }
 
-  public override createCollectedFile(
+  public runHooks() {
+    return this.helper.nuxt.hooks.callHook('blokkli:alter-blocks', {
+      blocks: [...this.files.values()],
+    })
+  }
+
+  public createCollectedFile(
     filePath: string,
     fileContents = '',
   ): CollectedBlockFile {

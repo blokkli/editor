@@ -85,6 +85,7 @@ export default defineCodeTemplate(
       string,
       { bundle: string; typeName: string }[]
     > = {}
+    const propTypes: Record<string, string> = {}
     const typedFieldListItems: { typeName: string; typeDefinition: string }[] =
       []
 
@@ -117,7 +118,9 @@ export default defineCodeTemplate(
 
           propTypeImports[from].push({ bundle, typeName })
 
-          lines.push(`props: Bundle_${bundle}_Props`)
+          const tsTypeName = `Bundle_${bundle}_Props`
+          lines.push(`props: ${tsTypeName}`)
+          propTypes[bundle] = tsTypeName
         }
 
         const typeDefinition = `
@@ -143,6 +146,12 @@ ${lines.join('\n  ')}
       })
       .join('\n')
 
+    const BundleProps = Object.entries(propTypes)
+      .map(([key, type]) => {
+        return `'${key}': ${type}`
+      })
+      .join('\n  ')
+
     return `
 ${propTypeImportStatements}
 import type { FieldListItem } from "${ctx.helper.relativePaths.TYPES}"
@@ -154,6 +163,10 @@ export type BlockBundle = ${toStringUnion(validBlockBundles)}
 export type BlockBundleWithNested = ${toStringUnion(blockBundlesWithNested)}
 
 export type ValidChunkNames = ${toStringUnion(chunkNames)}
+
+export type BundleProps = {
+  ${BundleProps}
+}
 
 export type GlobalOptionsKey = ${toStringUnion(validGlobalOptions)}
 

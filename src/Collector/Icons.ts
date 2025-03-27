@@ -1,5 +1,5 @@
 import { resolveFiles } from '@nuxt/kit'
-import { Collector } from './index'
+import { CollectedFile, Collector } from './index'
 import type { TemplateDependency } from '../module/templates/defineTemplate'
 import * as micromatch from 'micromatch'
 import type { ModuleHelper } from '../module/ModuleHelper'
@@ -25,6 +25,12 @@ export class IconCollector extends Collector {
     await Promise.all(allFiles.map((filePath) => this.addFile(filePath)))
   }
 
+  public runHooks() {
+    return this.helper.nuxt.hooks.callHook('blokkli:alter-icons', {
+      icons: [...this.files.values()],
+    })
+  }
+
   public override applies(filePath: string): Promise<boolean> {
     return Promise.resolve(
       filePath.startsWith(this.srcFromModule) ||
@@ -34,5 +40,12 @@ export class IconCollector extends Collector {
 
   override getDependencyTypes(): TemplateDependency[] {
     return ['icons']
+  }
+
+  public createCollectedFile(
+    filePath: string,
+    fileContents = '',
+  ): CollectedFile {
+    return new CollectedFile(filePath, fileContents)
   }
 }
