@@ -1,3 +1,5 @@
+import type { BlokkliIcon } from '#blokkli-build/icons'
+
 type DefinitionOptionText = {
   type: 'text'
   default: string
@@ -77,7 +79,7 @@ type DefinitionOptionRadiosRadios = {
 }
 
 type DefinitionOptionRadiosIconsOption = {
-  icon: `icon-blokkli-option-${string}`
+  icon: BlokkliIcon
   label: string
 }
 

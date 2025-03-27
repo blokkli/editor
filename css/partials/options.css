@@ -136,7 +136,7 @@
     .bk-blokkli-item-options-radios-icon {
       @apply opacity-30;
       svg {
-        @apply h-[24px] w-auto;
+        @apply h-[24px] w-auto fill-current;
         .bk-option-icon-fill {
           @apply fill-mono-700;
         }
