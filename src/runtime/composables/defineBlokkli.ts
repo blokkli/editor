@@ -14,7 +14,6 @@ import type {
   DefineBlokkliContext,
   InjectedBlokkliItem,
   ItemEditContext,
-  RuntimeBlockDefinitionInput,
 } from '#blokkli/types'
 import type {
   FieldListItemTyped,
@@ -23,7 +22,7 @@ import type {
 } from '#blokkli-build/generated-types'
 import { getRuntimeOptionValue } from '#blokkli/helpers/runtimeHelpers'
 import {
-  BLOCK_OPTIONS,
+  OPTIONS,
   type RuntimeBlockOptionArray,
 } from '#blokkli-build/runtime-options'
 
@@ -37,8 +36,7 @@ export function defineBlokkli<
 >(arg: BlockDefinitionInput<T, G, B>): DefineBlokkliContext<T, G> {
   // The vite plugin removes all properties from the passed object except for
   // bundle, so we have to cast it as this type here.
-  const config = arg as RuntimeBlockDefinitionInput
-  const bundle = config.bundle
+  const bundle = arg as unknown as string
 
   const fieldListType = inject<ComputedRef<ValidFieldListTypes>>(
     INJECT_FIELD_LIST_TYPE,
@@ -62,7 +60,10 @@ export function defineBlokkli<
   )!
 
   // Inject the data from the BlokkliItem component.
-  const item = inject<InjectedBlokkliItem | null>(INJECT_BLOCK_ITEM, null)
+  const item = inject<ComputedRef<InjectedBlokkliItem> | null>(
+    INJECT_BLOCK_ITEM,
+    null,
+  )
   const uuid = item?.value.uuid || ''
   const index =
     item?.value.index !== undefined ? item.value.index : computed(() => 0)
@@ -83,22 +84,35 @@ export function defineBlokkli<
   const editContext = inject<ItemEditContext | null>(INJECT_EDIT_CONTEXT, null)
 
   const options = computed(() => {
-    const runtimeOptionDefinitions =
-      (editContext?.definitions.runtimeOptions.value || BLOCK_OPTIONS)[
-        bundle
-      ] || {}
-
     // For these two "special" bundles, at this stage we just return the raw
     // options defined on the item itself and the mutated options of the item.
     // These options will never be directly returned in defineBlokkli().
     // For example the from_library block renders the "actual" block again, at
     // which point this computed property is built again.
-    if (bundle === 'from_library' || bundle === 'blokkli_fragment') {
+    if (bundle === 'from_library') {
       return {
         ...(item?.value.options || {}),
         ...(editContext?.mutatedOptions[uuid] || {}),
       }
     }
+
+    // The key to use for getting the block options.
+    // For fragments, the fragment name is injected by the blokkli_fragment
+    // component.
+    const optionKey =
+      bundle === 'blokkli_fragment'
+        ? 'fragment:' + item?.value.fragmentName
+        : 'block:' + bundle
+
+    if (import.meta.dev) {
+      console.log(
+        'Building options for key ' + optionKey + ' and UUID: ' + uuid,
+      )
+    }
+
+    const runtimeOptionDefinitions =
+      (editContext?.definitions.runtimeOptions.value || OPTIONS)[optionKey] ||
+      {}
 
     const result = Object.entries(runtimeOptionDefinitions).reduce<
       Record<string, string | boolean | string[] | number>

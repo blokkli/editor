@@ -86,15 +86,19 @@ const component =
       )
 
 const index = computed(() => componentProps.index)
-const item = computed(() => ({
+const item = computed<InjectedBlokkliItem>(() => ({
   index,
   uuid: componentProps.uuid || '',
   options: componentProps.options || {},
   isEditing: componentProps.isEditing,
   parentType: componentProps.parentType as BlockBundleWithNested,
+  fragmentName:
+    componentProps.bundle === 'blokkli_fragment'
+      ? componentProps.props?.name
+      : undefined,
 }))
 
-provide<InjectedBlokkliItem>(INJECT_BLOCK_ITEM, item)
+provide<ComputedRef<InjectedBlokkliItem>>(INJECT_BLOCK_ITEM, item)
 provide(INJECT_ENTITY_CONTEXT, {
   uuid: componentProps.uuid,
   type: itemEntityType,

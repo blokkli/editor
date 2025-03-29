@@ -2,7 +2,7 @@
  * This file should contain all helpers that are meant for runtime functionality, such as defineBlokkli composable or <BlokkliProvider>.
  */
 import {
-  BLOCK_OPTIONS,
+  OPTIONS,
   type RuntimeBlockOptionArray,
   type RuntimeBlockOptions,
 } from '#blokkli-build/runtime-options'
@@ -23,6 +23,15 @@ export function mapCheckboxTrue(v?: unknown): '1' | '0' {
   return v === true || v === '1' || v === 1 || v === 'true' ? '1' : '0'
 }
 
+export function isValidDatetimeLocalValue(value: string): boolean {
+  // Regular expression to validate the datetime-local format
+  // Format: YYYY-MM-DDThh:mm with optional :ss and .sss
+  const pattern =
+    /^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):([0-5]\d)(:[0-5]\d(\.\d{1,3})?)?$/
+
+  return pattern.test(value)
+}
+
 /**
  * Get the runtime value for an option.
  *
@@ -41,7 +50,7 @@ export function getRuntimeOptionValue(
     : definition.default
 
   // If no value is provided, return the default value.
-  if (value === null || value === undefined) {
+  if ((value === null || value === undefined) && defaultValue !== undefined) {
     return defaultValue
   }
 
@@ -76,6 +85,16 @@ export function getRuntimeOptionValue(
     }
   } else if (type === 'text' && typeof value === 'string') {
     return value
+  } else if (
+    type === 'datetime-local' &&
+    typeof value === 'string' &&
+    isValidDatetimeLocalValue(value)
+  ) {
+    return value
+  }
+
+  if (defaultValue === undefined) {
+    return ''
   }
 
   return defaultValue
@@ -142,7 +161,7 @@ export function getRuntimeOptions<K extends keyof RuntimeBlockOptions>(
     ) as RuntimeBlockOptions[K]
   }
 
-  const availableOptions = BLOCK_OPTIONS[item.bundle] || {}
+  const availableOptions = OPTIONS['block:' + item.bundle] || {}
 
   return Object.entries(availableOptions).reduce<Record<string, any>>(
     (acc, [key, definition]) => {

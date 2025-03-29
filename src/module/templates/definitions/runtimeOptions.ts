@@ -1,6 +1,6 @@
 import { defineCodeTemplate } from '../defineTemplate'
 import { isBlock } from '../../../Collector/Blocks'
-import { falsy } from '../../../vitePlugin'
+import { falsy } from '../../../helpers'
 import type { ExtractedBlockDefinitionInput } from '../../types'
 
 export default defineCodeTemplate(
@@ -10,47 +10,57 @@ export default defineCodeTemplate(
 
     const files = [...ctx.blocks.files.values()]
 
-    const blocks = files
+    const items = files
       .map((v) => {
-        if (v.definition && isBlock(v.definition)) {
-          return v.definition
+        if (v.definition) {
+          if (isBlock(v.definition)) {
+            return {
+              key: 'block:' + v.definition.bundle,
+              definition: v.definition,
+              renderFor: v.definition.renderFor,
+            }
+          }
+          return {
+            key: 'fragment:' + v.definition.name,
+            definition: v.definition,
+            renderFor: undefined,
+          }
         }
         return null
       })
       .filter(falsy)
-      .sort((a, b) => b.bundle.localeCompare(a.bundle))
+      .sort((a, b) => b.key.localeCompare(a.key))
+      .reduce<Record<string, any>>((acc, item) => {
+        if (item.renderFor) {
+          return acc
+        }
+        const key = item.key
+        const optionDefinitions = Object.entries(item.definition.options || {})
 
-    const bundles = blocks.reduce<Record<string, any>>((acc, definition) => {
-      if (definition.renderFor) {
-        return acc
-      }
-      const bundle = definition.bundle
-      const optionDefinitions = Object.entries(definition.options || {})
+        const options: Record<string, any> = {}
 
-      const options: Record<string, any> = {}
+        if (item.definition.globalOptions) {
+          item.definition.globalOptions.forEach((name) => {
+            const option = globalOptions[name]
+            if (option) {
+              options[name] = [option.type, option.default]
+            }
+          })
+        }
 
-      if (definition.globalOptions) {
-        definition.globalOptions.forEach((name) => {
-          const option = globalOptions[name]
-          if (option) {
-            options[name] = [option.type, option.default]
-          }
+        optionDefinitions.forEach(([name, option]) => {
+          options[name] = [option.type, option.default]
         })
-      }
 
-      optionDefinitions.forEach(([name, option]) => {
-        options[name] = [option.type, option.default]
-      })
+        if (Object.values(options).length) {
+          acc[key] = options
+        }
 
-      if (Object.values(options).length) {
-        acc[bundle] = options
-      }
-
-      return acc
-    }, {})
+        return acc
+      }, {})
 
     return `
-export const BLOCK_OPTIONS = ${JSON.stringify(bundles, null, 2)}
+export const OPTIONS = ${JSON.stringify(items, null, 2)}
 `
   },
   (ctx) => {
@@ -77,7 +87,7 @@ export const BLOCK_OPTIONS = ${JSON.stringify(bundles, null, 2)}
       })
 
       return Object.entries(definedOptions || {}).map(([key, option]) => {
-        if (option.type === 'text') {
+        if (option.type === 'text' || option.type === 'datetime-local') {
           return `${key}: string`
         } else if (option.type === 'checkbox') {
           return `${key}: boolean`
@@ -129,7 +139,7 @@ export type RuntimeBlockOptions = {
 ${runtimeMappedOptionTypes}
 }
 
-export declare const BLOCK_OPTIONS: Record<string, Record<string, RuntimeBlockOptionArray>>
+export declare const OPTIONS: Record<string, Record<string, RuntimeBlockOptionArray>>
 `
   },
   {

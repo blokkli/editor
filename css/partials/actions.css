@@ -27,6 +27,7 @@
     @apply flex items-stretch whitespace-nowrap h-full flex-wrap lg:flex-nowrap;
     @apply bg-mono-950/90 backdrop-blur lg:bg-mono-900;
     @apply relative z-50;
+    color-scheme: dark;
 
     &.bk-is-locked {
       @apply pointer-events-none;

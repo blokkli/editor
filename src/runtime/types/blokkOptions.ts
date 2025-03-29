@@ -27,6 +27,15 @@ type DefinitionOptionRange = {
   group?: string
 }
 
+type DefinitionOptionDateTimeLocal = {
+  type: 'datetime-local'
+  label: string
+  default?: string
+  min?: string
+  max?: string
+  group?: string
+}
+
 type DefinitionOptionCheckbox = {
   type: 'checkbox'
   default: boolean
@@ -108,3 +117,4 @@ export type BlockOptionDefinition =
   | DefinitionOptionText
   | DefinitionOptionRange
   | DefinitionOptionNumber
+  | DefinitionOptionDateTimeLocal

@@ -12,7 +12,7 @@ import type {
 import type { DeepReadonly } from 'vue'
 import type { BlockDefinitionOptionsInput } from '../types'
 import {
-  BLOCK_OPTIONS,
+  OPTIONS,
   type RuntimeBlockOptionArray,
 } from '#blokkli-build/runtime-options'
 
@@ -47,7 +47,7 @@ export default function (): DefinitionProvider {
     definitions.globalOptions,
   )
   const runtimeOptions =
-    ref<Record<string, Record<string, RuntimeBlockOptionArray>>>(BLOCK_OPTIONS)
+    ref<Record<string, Record<string, RuntimeBlockOptionArray>>>(OPTIONS)
 
   if (import.meta.hot) {
     import.meta.hot.accept('#blokkli-build/definitions', (mod) => {
@@ -59,8 +59,8 @@ export default function (): DefinitionProvider {
       allGlobalOptions.value = newDefinitions?.default?.globalOptions || {}
     })
     import.meta.hot.accept('#blokkli-build/runtime-options', (mod) => {
-      if (mod?.BLOCK_OPTIONS) {
-        runtimeOptions.value = mod.BLOCK_OPTIONS
+      if (mod?.OPTIONS) {
+        runtimeOptions.value = mod.OPTIONS
       }
     })
   }

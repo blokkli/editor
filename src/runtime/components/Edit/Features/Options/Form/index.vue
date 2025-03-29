@@ -91,7 +91,11 @@ function optionValueToStorable(
       return value === true ? '1' : '0'
     }
     return '0'
-  } else if (definition.type === 'text' || definition.type === 'radios') {
+  } else if (
+    definition.type === 'text' ||
+    definition.type === 'radios' ||
+    definition.type === 'datetime-local'
+  ) {
     if (typeof value === 'string') {
       return value
     }
@@ -245,7 +249,7 @@ const availableOptions = computed<OptionItem[]>(() => {
 function getOptionValue(
   uuid: string,
   key: string,
-  defaultValue: string | boolean | string[] | number,
+  defaultValue: string | boolean | string[] | number | undefined,
 ) {
   if (!uuid) {
     return ''

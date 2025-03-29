@@ -62,6 +62,13 @@
         :min="option.min"
         :max="option.max"
       />
+      <OptionDateTimeLocal
+        v-else-if="option.type === 'datetime-local'"
+        v-model="value"
+        :label="label"
+        :min="option.min"
+        :max="option.max"
+      />
     </div>
   </div>
 </template>
@@ -75,8 +82,12 @@ import OptionText from './Text/index.vue'
 import OptionColor from './Color/index.vue'
 import OptionRange from './Range/index.vue'
 import OptionNumber from './Number/index.vue'
+import OptionDateTimeLocal from './DateTimeLocal/index.vue'
 import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
-import { mapCheckboxTrue } from '#blokkli/helpers/runtimeHelpers'
+import {
+  isValidDatetimeLocalValue,
+  mapCheckboxTrue,
+} from '#blokkli/helpers/runtimeHelpers'
 import { BK_VISIBLE_LANGUAGES } from '#blokkli/helpers/symbols'
 
 const { state, $t: $blokkliText } = useBlokkli()
@@ -140,6 +151,10 @@ const validateValue = (
 ): string | undefined => {
   if (props.option.type === 'text') {
     if (typeof v === 'string') {
+      return v
+    }
+  } else if (props.option.type === 'datetime-local') {
+    if (typeof v === 'string' && isValidDatetimeLocalValue(v)) {
       return v
     }
   } else if (props.option.type === 'color') {

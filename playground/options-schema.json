@@ -89,6 +89,10 @@
       "displayAs": "icons",
       "label": "Columns",
       "options": {
+        "foobar": {
+          "icon": "youtube",
+          "label": "Four"
+        },
         "four": {
           "icon": "icon-blokkli-option-four",
           "label": "Four"
@@ -331,6 +335,10 @@
         "it": "Italy"
       },
       "type": "checkboxes"
+    },
+    "dateTimeLocal": {
+      "label": "Datetime Local",
+      "type": "datetime-local"
     },
     "nestedCheckbox": {
       "default": true,

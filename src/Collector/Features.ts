@@ -4,7 +4,7 @@ import type { TemplateDependency } from '../module/templates/defineTemplate'
 import * as micromatch from 'micromatch'
 import type { ModuleHelper } from '../module/ModuleHelper'
 import type { AdapterMethods, FeatureDefinition } from '../runtime/types'
-import { falsy } from '../vitePlugin'
+import { falsy } from '../helpers'
 import { extractObjectLiteral, parseTsObject } from '../helpers'
 
 export type ExtractedFeatureDefinition = {

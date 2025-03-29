@@ -68,6 +68,11 @@
             <td>radios</td>
             <td>{{ JSON.stringify(options.background) }}</td>
           </tr>
+          <tr>
+            <th>dateTimeLocal</th>
+            <td>datetime-local</td>
+            <td>{{ JSON.stringify(options.dateTimeLocal) }}</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -99,6 +104,10 @@ const { options } = defineBlokkli({
       min: 0,
       max: 1,
       step: 0.01,
+    },
+    dateTimeLocal: {
+      type: 'datetime-local',
+      label: 'Datetime Local',
     },
     rows: {
       type: 'number',
@@ -237,6 +246,7 @@ const { options } = defineBlokkli({
           'paddingBottom',
           'rows',
           'nestedCheckbox',
+          'dateTimeLocal',
         ]
       }
       return ['showAllOptions']

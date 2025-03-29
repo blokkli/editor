@@ -371,14 +371,15 @@ export type RuntimeBlockDefinitionInput = {
   bundle: string
 }
 
-export type InjectedBlokkliItem = ComputedRef<{
+export type InjectedBlokkliItem = {
   index: ComputedRef<number>
   uuid: string
   options?: Record<string, string> | undefined
   isEditing: boolean
   parentType?: BlockBundleWithNested
   fieldListType?: ValidFieldListTypes
-}>
+  fragmentName?: string
+}
 
 export type FieldListItem = {
   uuid: string
@@ -1420,20 +1421,6 @@ export type FragmentDefinitionInput<
    */
   editor?: BlokkliDefinitionInputEditor<Options, GlobalOptions>
 }
-
-export type TransformedBlokkliDefinitionItem =
-  | {
-      type: 'block'
-      definition: BlockDefinitionInput
-    }
-  | {
-      type: 'fragment'
-      definition: FragmentDefinitionInput
-    }
-  | {
-      type: 'feature'
-      definition: FeatureDefinition
-    }
 
 export type TourItem = {
   id: string

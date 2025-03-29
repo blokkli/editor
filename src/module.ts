@@ -5,7 +5,7 @@ import {
   createResolver,
   defineNuxtModule,
 } from '@nuxt/kit'
-import { DefinitionPlugin } from './vitePlugin'
+import { RuntimeDefinitionPlugin } from './buildPlugin/RuntimeDefinition'
 import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
@@ -112,8 +112,6 @@ export default defineNuxtModule<ModuleOptions>({
     helper.addComposable('defineBlokkliFeature')
     helper.addComposable('useBlokkli')
 
-    addBuildPlugin(DefinitionPlugin(nuxt))
-
     helper.addAlias('#blokkli-build', helper.paths.blokkliBuildDir)
     helper.addAlias('#blokkli/types', resolver.resolve('runtime/types'))
     helper.addAlias('#blokkli/constants', resolver.resolve('runtime/constants'))
@@ -144,6 +142,11 @@ export default defineNuxtModule<ModuleOptions>({
     addPlugin({
       src: resolver.resolve('runtime/plugins/blokkliEditable'),
     })
+
+    addBuildPlugin(RuntimeDefinitionPlugin(nuxt, 'defineBlokkli', 'bundle'))
+    addBuildPlugin(
+      RuntimeDefinitionPlugin(nuxt, 'defineBlokkliFragment', 'name'),
+    )
 
     // Watch for file changes in dev mode.
     if (nuxt.options.dev) {

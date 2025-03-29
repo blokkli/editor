@@ -166,6 +166,20 @@
       @apply min-w-[100px] max-w-[250px];
       @apply overflow-hidden;
     }
+
+    @media not all and (hover: none) {
+      &:hover {
+        color: var(--gin-color-primary);
+      }
+    }
+  }
+
+  .bk-blokkli-item-options-date {
+    @apply cursor-pointer h-full relative;
+    input {
+      @apply bg-transparent h-full px-10 focus:outline-none focus:shadow-none focus:bg-mono-800 accent-mono-100;
+    }
+
     @media not all and (hover: none) {
       &:hover {
         color: var(--gin-color-primary);

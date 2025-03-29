@@ -32,13 +32,15 @@ function getOptionTypes(
 
   const options = Object.entries(definedOptions || {})
     .map(([key, option]) => {
-      if (option.type === 'text') {
-        return `${key}: string | undefined`
-      } else if (option.type === 'checkbox') {
+      if (option.type === 'checkbox') {
         return `${key}: '1' | '0' | undefined`
-      } else if (option.type === 'radios' || option.type === 'checkboxes') {
-        return `${key}: string | undefined`
-      } else if (option.type === 'color') {
+      } else if (
+        option.type === 'text' ||
+        option.type === 'radios' ||
+        option.type === 'checkboxes' ||
+        option.type === 'color' ||
+        option.type === 'datetime-local'
+      ) {
         return `${key}: string | undefined`
       } else if (option.type === 'range' || option.type === 'number') {
         return `${key}: number | string | undefined`
