@@ -245,10 +245,6 @@
       > span:first-child {
         @apply mr-auto;
       }
-
-      .bk-pill {
-        @apply bg-mono-50 inline-block text-mono-900 ml-5 rounded-full px-5 py-[1px] uppercase text-xs font-semibold;
-      }
     }
 
     > div {

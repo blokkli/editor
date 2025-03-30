@@ -28,6 +28,8 @@ import type {
   EditableFieldConfig,
   DraggableMediaLibraryItem,
   DroppableFieldConfig,
+  PublishOptions,
+  GetEditStatesItem,
 } from './../types'
 import type getVideoId from 'get-video-id'
 
@@ -193,13 +195,28 @@ export type BlokkliAdapterGetLibraryItemsData = {
   text: string
 }
 
-export type BlokkliAdapterGetLibraryItemsResult = {
-  items: LibraryItem[]
+export type BlokkliAdapterSearchResults<T> = {
+  items: T[]
   total: number
   perPage: number
 }
 
+export type BlokkliAdapterGetLibraryItemsResult =
+  BlokkliAdapterSearchResults<LibraryItem>
+export type BlokkliAdapterGetEditStatesResult =
+  BlokkliAdapterSearchResults<GetEditStatesItem>
+
 export type BlokkliAdapterPublishOptions = {
+  /**
+   * The host entity type.
+   */
+  hostEntityType: string
+
+  /**
+   * The host entity UUID.
+   */
+  hostEntityUuid: string
+
   /**
    * Whether the editor will be closed after publishing.
    *
@@ -209,6 +226,16 @@ export type BlokkliAdapterPublishOptions = {
    * be closed anyway after publishing.
    */
   closeAfterPublish?: boolean
+
+  /**
+   * If the host entity is currently unpublished, publish it.
+   */
+  publishIfUnpublished?: boolean
+
+  /**
+   * The revision log message.
+   */
+  revisionLogMessage?: string
 }
 
 export interface BlokkliAdapter<T> {
@@ -298,7 +325,7 @@ export interface BlokkliAdapter<T> {
   /**
    * Determine the block bundle for the given clipboard item.
    */
-  clipboardMapBundle?: (e: ClipboardMapBundleEvent) => string | undefined
+  clipboardMapBundle?: (e: ClipboardMapBundleEvent) => string | undefined | null
 
   /**
    * Add a clipboard item.
@@ -404,6 +431,16 @@ export interface BlokkliAdapter<T> {
    * Resolve a comment.
    */
   resolveComment?: (uuid: string) => Promise<CommentItem[]>
+
+  /**
+   * Get the publish options.
+   */
+  getPublishOptions?: () => Promise<PublishOptions>
+
+  /**
+   * Search for edit states.
+   */
+  getEditStates?: (page?: number) => Promise<BlokkliAdapterGetEditStatesResult>
 
   /**
    * Make an item reusable.

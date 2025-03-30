@@ -89,10 +89,6 @@
       "displayAs": "icons",
       "label": "Columns",
       "options": {
-        "foobar": {
-          "icon": "youtube",
-          "label": "Four"
-        },
         "four": {
           "icon": "icon-blokkli-option-four",
           "label": "Four"

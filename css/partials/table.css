@@ -1,0 +1,22 @@
+.bk-table {
+  @apply w-full;
+  thead {
+    @apply sticky top-0 bg-white z-50;
+    box-shadow: 0px 1px 0 0 theme('colors.mono.300');
+    th {
+      @apply font-semibold text-left pb-5;
+      @apply text-xs uppercase tracking-wide;
+    }
+  }
+
+  tbody {
+    td {
+      @apply border-t border-t-mono-300 py-5;
+    }
+    tr:last-child {
+      td {
+        @apply border-b border-b-mono-300;
+      }
+    }
+  }
+}

@@ -32,6 +32,10 @@ import type { Block } from './mock/state/Block/Block'
 import { FieldReference } from './mock/state/Field/Reference'
 import type { MutationAddArgs } from './mock/plugins/mutations/Mutation/Add'
 
+function getRandomNumberInRange(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
 export default defineBlokkliEditAdapter((ctx) => {
   const router = useRouter()
   const route = useRoute()
@@ -742,14 +746,95 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     publish(options) {
-      if (options.closeAfterPublish) {
-        return Promise.resolve({
-          success: true,
-          state: null,
-          errors: [],
-        })
-      }
-      throw new Error('Publish is not supported on the demo page.')
+      const delay = getRandomNumberInRange(400, 1600)
+      console.log(delay)
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          if (options.hostEntityUuid === 'error') {
+            return resolve({
+              success: false,
+              state: null,
+              errors: [
+                'There was an internal server error, please try again later.',
+              ],
+            })
+          }
+          return resolve({
+            success: true,
+            state: null,
+            errors: [],
+          })
+        }, delay)
+      })
+    },
+
+    getPublishOptions() {
+      return Promise.resolve({
+        canPublish: true,
+        isRevisionable: true,
+        hasRevisionLogMessage: true,
+        lastChanged: '1725890401',
+      })
+    },
+
+    getEditStates() {
+      return Promise.resolve({
+        items: [
+          {
+            hostEntityType: 'page',
+            hostEntityUuid: '123456',
+            currentUserIsOwner: true,
+            entity: {
+              bundleLabel: 'Page',
+              status: true,
+              label: 'Homepage',
+            },
+          },
+          {
+            hostEntityType: 'page',
+            hostEntityUuid: '123459',
+            currentUserIsOwner: true,
+            entity: {
+              bundleLabel: 'Page',
+              status: true,
+              label: 'Contact',
+            },
+          },
+          {
+            hostEntityType: 'page',
+            hostEntityUuid: '123460',
+            currentUserIsOwner: false,
+            entity: {
+              bundleLabel: 'Page',
+              status: false,
+              label: 'Services and Products',
+            },
+          },
+          {
+            hostEntityType: 'page',
+            hostEntityUuid: '123465',
+            currentUserIsOwner: false,
+            entity: {
+              bundleLabel: 'Page',
+              status: true,
+              label:
+                'A page with a very long title to see what happens when the text breaks on a new line',
+            },
+          },
+          {
+            hostEntityType: 'page',
+            hostEntityUuid: 'error',
+            currentUserIsOwner: true,
+            entity: {
+              bundleLabel: 'Page',
+              status: true,
+              label: 'A page that will return a publish error',
+            },
+          },
+        ],
+        total: 3,
+        perPage: 16,
+      })
     },
 
     // @TODO: Implement in playground.

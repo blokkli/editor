@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { defineBlokkliEditAdapter } from '#blokkli/adapter'
 import { falsy } from '#blokkli/helpers'
 import type { BlockBundleDefinition, TranslationState } from '#blokkli/types'
@@ -44,7 +43,9 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         droppableFieldConfig: v.data.droppableFieldConfig || [],
         urlPrefixes: v.data.urlPrefixes.reduce<Record<string, string>>(
           (acc, item) => {
-            acc[item.langcode] = item.prefix
+            if (item?.langcode) {
+              acc[item.langcode] = item.prefix
+            }
             return acc
           },
           {},
@@ -62,14 +63,16 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       }).then((data) => {
         return {
           total: data?.data.pbGetImportSourceEntities?.total || 0,
-          items: (data?.data.pbGetImportSourceEntities?.items || []).map(
-            (item) => {
-              return {
-                uuid: item.uuid,
-                label: item.label || item.uuid,
+          items: (data?.data.pbGetImportSourceEntities?.items || [])
+            .map((item) => {
+              if (item?.uuid) {
+                return {
+                  uuid: item.uuid,
+                  label: item.label || item.uuid,
+                }
               }
-            },
-          ),
+            })
+            .filter(falsy),
         }
       })
 
@@ -144,8 +147,11 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
 
     const publish: DrupalAdapter['publish'] = (options) =>
       useGraphqlMutation('pbPublish', {
-        ...ctx.value,
+        entityType: options.hostEntityType.toUpperCase() as any,
+        entityUuid: options.hostEntityUuid,
         createNewState: !options.closeAfterPublish,
+        publishIfUnpublished: options.publishIfUnpublished,
+        revisionLogMessage: options.revisionLogMessage,
       }).then(mapMutation)
 
     const importFromExisting: DrupalAdapter['importFromExisting'] = (e) =>
@@ -285,7 +291,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         state?.currentIndex === null || state?.currentIndex === undefined
           ? -1
           : state.currentIndex
-      const mutations = state?.mutations || []
+      const mutations = (state?.mutations || []).filter(falsy)
       const currentUserIsOwner = !!state?.currentUserIsOwner
       const ownerName = state?.ownerName || ''
       const fields = state?.mutatedState?.fields || []
@@ -347,13 +353,15 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       }
     }
 
-    const mapComments = (comments: Array<ParagraphsBlokkliCommentFragment>) =>
+    const mapComments = (
+      comments: Array<ParagraphsBlokkliCommentFragment | null>,
+    ) =>
       comments
         .map((item) => {
-          if ('uuid' in item) {
+          if (item && 'uuid' in item) {
             return {
               uuid: item.uuid,
-              blockUuids: item.blockUuids || [],
+              blockUuids: (item.blockUuids || []).filter(falsy),
               resolved: !!item.resolved,
               body: item.body || '',
               created: item.created?.first?.value || '',
@@ -391,7 +399,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         page: data.page,
       }).then((response) => {
         const items =
-          response.data.result.items
+          response.data.result?.items
             ?.map((v) => {
               if (v && 'uuid' in v && v.uuid) {
                 const paragraph = v.paragraphs
@@ -604,7 +612,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             Record<any, any>
           >((acc, filter) => {
             if (
-              filter.__typename === 'ParagraphsBlokkliMediaLibraryFilterText'
+              filter?.__typename === 'ParagraphsBlokkliMediaLibraryFilterText'
             ) {
               acc[filter.id] = {
                 type: 'text',
@@ -612,7 +620,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
                 label: filter.label,
               }
             } else if (
-              filter.__typename === 'ParagraphsBlokkliMediaLibraryFilterSelect'
+              filter?.__typename === 'ParagraphsBlokkliMediaLibraryFilterSelect'
             ) {
               acc[filter.id] = {
                 type: 'select',
@@ -623,7 +631,9 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             }
             return acc
           }, {} as any),
-          items: data.data.pbMediaLibraryGetResults?.items || [],
+          items: (data.data.pbMediaLibraryGetResults?.items || []).filter(
+            falsy,
+          ),
           total: data.data.pbMediaLibraryGetResults?.total || 0,
           perPage: data.data.pbMediaLibraryGetResults?.perPage || 50,
         }
@@ -668,7 +678,9 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       return useGraphqlQuery('pbSearchTabs').then((v) => {
         return (v.data.tabs || []).reduce<Record<string, string>>(
           (acc, tab) => {
-            acc[tab.id] = tab.label
+            if (tab?.id) {
+              acc[tab.id] = tab.label
+            }
             return acc
           },
           {},
@@ -683,7 +695,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       return useGraphqlQuery('pbSearch', {
         id,
         text,
-      }).then((v) => v.data.paragraphsBlokkliSearch || [])
+      }).then((v) => (v.data.paragraphsBlokkliSearch || []).filter(falsy))
     }
 
     const addContentSearchItem: DrupalAdapter['addContentSearchItem'] = (e) => {
@@ -704,7 +716,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       if (e.type === 'video') {
         return config.clipboard.find((v) => {
           if (
-            v.__typename === 'ParagraphsBlokkliSupportedClipboardRemoteVideo'
+            v?.__typename === 'ParagraphsBlokkliSupportedClipboardRemoteVideo'
           ) {
             const providers = v.videoProviders
             if (e.videoService === 'vimeo') {
@@ -722,15 +734,15 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         })?.possibleParagraphBundles?.[0]
       } else if (e.type === 'plaintext') {
         return config.clipboard.find((v) => {
-          return v.__typename === 'ParagraphsBlokkliSupportedClipboardRichText'
+          return v?.__typename === 'ParagraphsBlokkliSupportedClipboardRichText'
         })?.possibleParagraphBundles?.[0]
       } else if (e.type === 'image') {
         return config.clipboard.find((v) => {
-          return v.__typename === 'ParagraphsBlokkliSupportedClipboardImage'
+          return v?.__typename === 'ParagraphsBlokkliSupportedClipboardImage'
         })?.possibleParagraphBundles?.[0]
       } else if (e.type === 'file') {
         return config.clipboard.find((v) => {
-          return v.__typename === 'ParagraphsBlokkliSupportedClipboardFile'
+          return v?.__typename === 'ParagraphsBlokkliSupportedClipboardFile'
         })?.possibleParagraphBundles?.[0]
       }
     }
@@ -783,6 +795,35 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
 
     const changeLanguage: DrupalAdapter['changeLanguage'] = (translation) => {
       return router.push({ path: translation.url, query: route.query })
+    }
+
+    const getEditStates: DrupalAdapter['getEditStates'] = (page) => {
+      return useGraphqlQuery('pbSearchEditStates', { page }).then((data) => {
+        return {
+          items: (data.data.pbSearchEditStates?.items || [])
+            .map((v) => {
+              if (
+                v &&
+                v.uuid &&
+                v.hostEntityType &&
+                v.hostEntityUuid &&
+                v.label
+              ) {
+                return {
+                  id: v.uuid,
+                  hostEntityType: v.hostEntityType,
+                  hostEntityUuid: v.hostEntityUuid,
+                  label: v.label,
+                  ...v,
+                }
+              }
+              return null
+            })
+            .filter(falsy),
+          total: data.data.pbSearchEditStates?.total || 0,
+          perPage: data.data.pbSearchEditStates?.perPage || 0,
+        }
+      })
     }
 
     return {
@@ -838,6 +879,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       changeLanguage,
       getLibraryItemEditUrl,
       loadStateAtIndex,
+      getEditStates,
     }
   },
 )

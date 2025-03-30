@@ -115,7 +115,7 @@ export function defineBlokkli<
       {}
 
     const result = Object.entries(runtimeOptionDefinitions).reduce<
-      Record<string, string | boolean | string[] | number>
+      Record<string, string | boolean | string[] | number | undefined>
     >((acc, [key, v]) => {
       const definition = v as unknown as RuntimeBlockOptionArray
 

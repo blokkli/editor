@@ -1,0 +1,14 @@
+fragment paragraph on Paragraph {
+  uuid
+}
+
+fragment paragraphsFieldItem on Paragraph {
+  uuid
+  bundle: entityBundle
+  isNew
+  options: paragraphsBlokkliOptions
+}
+
+fragment pbMutatedEntity on Entity {
+  uuid
+}

@@ -49,7 +49,7 @@
 
     &.bk-is-loading {
       @apply bg-no-repeat bg-center pointer-events-none;
-      background-image: url(./loader.svg);
+      background-image: url('/_blokkli-assets/loader.svg');
       @apply !text-transparent;
     }
   }

@@ -1455,4 +1455,18 @@ export interface LibraryItemProps {
   uuid?: string
 }
 
+export type PublishOptions = {
+  canPublish: boolean
+  isRevisionable: boolean
+  hasRevisionLogMessage: boolean
+  lastChanged?: string | null
+}
+
+export type GetEditStatesItem = {
+  hostEntityType: string
+  hostEntityUuid: string
+  entity: EditEntity
+  currentUserIsOwner: boolean
+}
+
 export default {}

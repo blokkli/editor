@@ -17,3 +17,22 @@ query pbSearchTabs {
     label
   }
 }
+
+query pbSearchEditStates($page: Int) {
+  pbSearchEditStates(page: $page) {
+    perPage
+    total
+    items {
+      uuid
+      hostEntityUuid
+      hostEntityType
+      label
+      currentUserIsOwner
+      entity {
+        label
+        status
+        bundleLabel
+      }
+    }
+  }
+}

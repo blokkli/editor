@@ -6,20 +6,32 @@
 .bk-form-input {
   @apply !bg-white !border !border-mono-400 !text-mono-900 !rounded-md focus:!outline-none focus:!border-transparent !block !w-full !p-10 !font-sans !text-base;
   @apply focus:ring-[3px] focus:ring-accent-700;
+
+  &[disabled] {
+    @apply !bg-mono-50 cursor-not-allowed;
+  }
 }
 .bk {
   .bk-checkbox,
   .bk-radio {
-    @apply flex items-center cursor-pointer py-5 hover:text-accent-600 relative;
+    @apply flex items-start cursor-pointer py-5 hover:text-accent-600 relative text-balance;
     input {
       @apply absolute opacity-0;
+    }
+
+    &:has(input[disabled]) {
+      @apply pointer-events-none;
+    }
+
+    input[disabled]:checked + span:before {
+      @apply !bg-mono-400;
     }
 
     input:checked ~ span:before {
       @apply bg-accent-700;
     }
-    span {
-      @apply font-medium flex items-center;
+    input + span {
+      @apply font-medium flex mt-[2px];
       &:before {
         content: '';
         @apply shrink-0 w-[18px] h-[18px] text-accent-600 bg-mono-100 border border-mono-400 focus:ring-accent-100 focus:ring-2 outline-none rounded block mr-[6px];
@@ -37,7 +49,7 @@
   }
   .bk-checkbox {
     input:checked ~ span:before {
-      background-image: url(./../check.svg);
+      background-image: url('/_blokkli-assets/check.svg');
       background-size: 80% 80%;
       background-repeat: no-repeat;
       background-position: center center;
@@ -54,10 +66,63 @@
     }
   }
 
+  .bk-form-description {
+    @apply text-sm text-mono-500 mt-10;
+  }
+
+  .bk-form-item {
+    @apply py-15 border-y border-y-mono-200;
+
+    &:last-child {
+      @apply border-b border-b-mono-200;
+    }
+  }
+
+  .bk-form-item + .bk-form-item {
+    @apply border-t-0;
+  }
+
   .bk-form-group {
-    @apply flex gap-5 my-20;
-    > div {
-      @apply flex-1;
+    container-type: inline-size;
+  }
+
+  .bk-form-group + .bk-form-group {
+    @apply mt-30 lg:mt-50;
+  }
+
+  .bk-form-group-title {
+    @apply font-bold text-lg mb-10 lg:text-xl;
+  }
+
+  .bk-form {
+    container-type: inline-size;
+
+    @container (min-width: 700px) {
+      .bk-form-group.bk-is-horizontal {
+        .bk-form-group-title {
+          @apply flex items-center !mt-10;
+        }
+        .bk-form-item:last-child {
+          @apply pb-0;
+        }
+        @apply grid grid-cols-[250px_1fr] py-15 mt-0 items-start;
+        @apply border-t border-t-mono-300;
+        &:first-child {
+          @apply border-t-0 pt-0;
+        }
+        .bk-form-group-title {
+          @apply mt-15;
+        }
+        .bk-form-item {
+          &:first-child {
+            @apply border-t-0;
+          }
+
+          &:last-child {
+            @apply border-b-0;
+          }
+        }
+      }
     }
   }
 }

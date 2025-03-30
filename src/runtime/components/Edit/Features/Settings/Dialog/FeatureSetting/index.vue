@@ -1,5 +1,5 @@
 <template>
-  <div class="bk-settings-feature-setting" :class="'bk-is-' + setting.type">
+  <div class="bk-form-item" :class="'bk-is-' + setting.type">
     <label v-if="setting.type === 'checkbox'" class="bk-checkbox-toggle">
       <input
         :checked="settingsStorage[settingsKey] as boolean"

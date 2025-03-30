@@ -14,6 +14,10 @@ import ViewportBlockingRect from './ViewportBlockingRect/index.vue'
 import ScrollBoundary from './ScrollBoundary/index.vue'
 import InfoBox from './InfoBox/index.vue'
 import Pagination from './Pagination/index.vue'
+import FormToggle from './Form/Toggle/index.vue'
+import FormTextarea from './Form/Textarea/index.vue'
+import FormItem from './Form/Item/index.vue'
+import FormGroup from './Form/Group/index.vue'
 
 export {
   ItemIcon,
@@ -32,4 +36,8 @@ export {
   ScrollBoundary,
   InfoBox,
   Pagination,
+  FormToggle,
+  FormTextarea,
+  FormItem,
+  FormGroup,
 }

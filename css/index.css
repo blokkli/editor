@@ -45,6 +45,8 @@
 @import './partials/ProxyField.css';
 @import './partials/infobox.css';
 @import './partials/Diff.css';
+@import './partials/table.css';
+
 @import './indicator.css';
 
 @import './components/button.css';
@@ -60,7 +62,7 @@
   font-display: swap;
   font-style: normal;
   font-named-instance: 'Regular';
-  src: url('/Inter.var.woff2') format('woff2');
+  src: url('/_blokkli-assets/Inter.var.woff2') format('woff2');
 }
 
 html {
@@ -377,5 +379,91 @@ html.bk-hide-non-editable {
 .bk {
   .bk-beta-indicator {
     @apply bg-accent-700 text-white text-xs uppercase rounded-full font-semibold px-[7px] py-[1px];
+  }
+}
+
+.bk {
+  .bk-publish-dialog-table {
+    td,
+    th {
+      &:nth-child(n + 2) {
+        @apply text-right whitespace-nowrap pl-18;
+      }
+
+      &:first-child {
+        @apply w-full;
+      }
+    }
+
+    tr:has(input:checked) td {
+      @apply bg-mono-100;
+    }
+
+    tr.bk-is-success {
+      td {
+        @apply !bg-lime-light/40;
+      }
+
+      input:checked + span {
+        &:before {
+          @apply !bg-lime-normal/50;
+        }
+      }
+    }
+
+    tr.bk-is-error {
+      td {
+        @apply !bg-red-normal/10;
+      }
+
+      input:checked + span {
+        &:before {
+          @apply !bg-red-normal/90;
+        }
+      }
+    }
+
+    td.bk-is-status {
+      > div {
+        @apply w-[60px];
+        @apply flex items-center justify-end gap-10;
+      }
+    }
+
+    tbody {
+      td:first-child {
+        @apply pl-3;
+      }
+    }
+
+    .bk-icon-arrow-right-thin svg {
+      @apply size-15;
+    }
+
+    .bk-icon-loader svg {
+      @apply w-30 h-30 fill-mono-500 mr-15;
+    }
+
+    .bk-status-indicator {
+      @apply mx-0;
+    }
+  }
+  .bk-publish-dialog-table + .bk-publish-dialog-table {
+    @apply mt-40;
+  }
+
+  .bk-dialog-publish-form {
+    .bk-heading-2 {
+      @apply font-bold text-xl mb-10;
+    }
+  }
+
+  .bk-pill {
+    @apply bg-accent-100 inline-block text-accent-800 ml-5 rounded-full px-5 py-[1px] uppercase text-xs font-semibold;
+  }
+}
+.bk.bk-is-publish-dialog {
+  .bk-dialog-content {
+    min-height: calc(100vh - 300px);
   }
 }

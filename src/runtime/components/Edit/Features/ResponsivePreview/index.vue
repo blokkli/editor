@@ -132,8 +132,8 @@ const buildViewportSubtitle = (
 ): string | undefined => {
   if (w && h) {
     return [
-      isRotated.value && canRotate ? h : w,
-      isRotated.value && canRotate ? w : h,
+      Math.round(isRotated.value && canRotate ? h : w),
+      Math.round(isRotated.value && canRotate ? w : h),
     ].join(' x ')
   }
 }
