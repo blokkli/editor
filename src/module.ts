@@ -64,6 +64,7 @@ export default defineNuxtModule<ModuleOptions>({
     ]
 
     await Promise.all(collectors.map((v) => v.init()))
+    await Promise.all(collectors.map((v) => v.runHooks()))
 
     const context = new ModuleContext(
       helper,

@@ -36,7 +36,7 @@ export function defineBlokkli<
 >(arg: BlockDefinitionInput<T, G, B>): DefineBlokkliContext<T, G> {
   // The vite plugin removes all properties from the passed object except for
   // bundle, so we have to cast it as this type here.
-  const bundle = arg as unknown as string
+  const [bundle, identifier] = (arg as unknown as string).split('::', 2)
 
   const fieldListType = inject<ComputedRef<ValidFieldListTypes>>(
     INJECT_FIELD_LIST_TYPE,
@@ -83,6 +83,11 @@ export function defineBlokkli<
   // the component, we use this state to override the options.
   const editContext = inject<ItemEditContext | null>(INJECT_EDIT_CONTEXT, null)
 
+  // The parent block type if this block is nested.
+  const parentType = computed(() => item?.value.parentType)
+
+  const isEditing = !!item?.value.isEditing
+
   const options = computed(() => {
     // For these two "special" bundles, at this stage we just return the raw
     // options defined on the item itself and the mutated options of the item.
@@ -101,14 +106,8 @@ export function defineBlokkli<
     // component.
     const optionKey =
       bundle === 'blokkli_fragment'
-        ? 'fragment:' + item?.value.fragmentName
-        : 'block:' + bundle
-
-    if (import.meta.dev) {
-      console.log(
-        'Building options for key ' + optionKey + ' and UUID: ' + uuid,
-      )
-    }
+        ? 'fragment:' + item?.value.fragmentName + '__default'
+        : identifier
 
     const runtimeOptionDefinitions =
       (editContext?.definitions.runtimeOptions.value || OPTIONS)[optionKey] ||
@@ -163,11 +162,6 @@ export function defineBlokkli<
 
     return result
   })
-
-  // The parent block type if this block is nested.
-  const parentType = computed(() => item?.value.parentType)
-
-  const isEditing = !!item?.value.isEditing
 
   if (import.meta.hot) {
     import.meta.hot.accept('#blokkli-build/runtime-options', () => {})

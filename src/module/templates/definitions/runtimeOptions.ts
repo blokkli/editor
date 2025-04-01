@@ -2,6 +2,7 @@ import { defineCodeTemplate } from '../defineTemplate'
 import { isBlock } from '../../../Collector/Blocks'
 import { falsy } from '../../../helpers'
 import type { ExtractedBlockDefinitionInput } from '../../types'
+import { toObject } from '../helpers'
 
 export default defineCodeTemplate(
   'runtime-options',
@@ -12,55 +13,63 @@ export default defineCodeTemplate(
 
     const items = files
       .map((v) => {
-        if (v.definition) {
+        if (v.definition && v.identifier) {
           if (isBlock(v.definition)) {
             return {
-              key: 'block:' + v.definition.bundle,
+              varName: v.identifier,
               definition: v.definition,
-              renderFor: v.definition.renderFor,
+              variations: v.variations,
             }
           }
           return {
-            key: 'fragment:' + v.definition.name,
+            varName: v.identifier,
             definition: v.definition,
-            renderFor: undefined,
+            variations: v.variations,
           }
         }
         return null
       })
       .filter(falsy)
-      .sort((a, b) => b.key.localeCompare(a.key))
-      .reduce<Record<string, any>>((acc, item) => {
-        if (item.renderFor) {
-          return acc
-        }
-        const key = item.key
-        const optionDefinitions = Object.entries(item.definition.options || {})
 
-        const options: Record<string, any> = {}
+    const declarations: string[] = []
+    const OPTIONS = new Map<string, string>()
 
-        if (item.definition.globalOptions) {
-          item.definition.globalOptions.forEach((name) => {
-            const option = globalOptions[name]
-            if (option) {
-              options[name] = [option.type, option.default]
-            }
-          })
-        }
+    for (const item of items) {
+      const optionDefinitions = Object.entries(item.definition.options || {})
 
-        optionDefinitions.forEach(([name, option]) => {
-          options[name] = [option.type, option.default]
+      const options: Record<string, any> = {}
+
+      if (item.definition.globalOptions) {
+        item.definition.globalOptions.forEach((name) => {
+          const option = globalOptions[name]
+          if (option) {
+            options[name] = [option.type, option.default]
+          }
         })
+      }
 
-        if (Object.values(options).length) {
-          acc[key] = options
+      optionDefinitions.forEach(([name, option]) => {
+        options[name] = [option.type, option.default]
+      })
+
+      const hasOptions = Object.keys(options).length > 0
+
+      if (hasOptions) {
+        declarations.push(`const ${item.varName} = ${JSON.stringify(options)}`)
+        OPTIONS.set(item.varName, item.varName)
+      }
+
+      item.variations.forEach((variation) => {
+        if (hasOptions) {
+          OPTIONS.set(variation, item.varName)
         }
-
-        return acc
-      }, {})
+      })
+    }
 
     return `
-export const OPTIONS = ${JSON.stringify(items, null, 2)}
+${declarations.join('\n')}
+
+${toObject('OPTIONS', OPTIONS)}
 `
   },
   (ctx) => {

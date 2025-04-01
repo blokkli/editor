@@ -5,6 +5,12 @@ import type { Nuxt } from '@nuxt/schema'
 import type { CallExpression, Expression, ObjectExpression } from 'estree'
 import { pathToFileURL } from 'node:url'
 import { parseQuery, parseURL } from 'ufo'
+import { falsy, parseTsObject } from '../helpers'
+import {
+  getIdentifier,
+  isBlock,
+  type ExtractedDefinition,
+} from '../Collector/Blocks'
 
 export function isVue(
   id: string,
@@ -48,39 +54,34 @@ export function isVue(
   return true
 }
 
-function extractPropertyValue(obj: ObjectExpression, name: string) {
-  for (let i = 0; i < obj.properties.length; i++) {
-    const property = obj.properties[i]
-    if (property.type !== 'Property') {
-      continue
-    }
-
-    if (property.key.type !== 'Identifier') {
-      continue
-    }
-
-    if (property.key.name !== name) {
-      continue
-    }
-
-    if (property.value.type !== 'Literal') {
-      continue
-    }
-
-    if (typeof property.value.value !== 'string') {
-      continue
-    }
-
-    return property.value.value
-  }
+function generateRuntimeArg(definition: ExtractedDefinition) {
+  const identifier = getIdentifier(definition)
+  const name = isBlock(definition) ? definition.bundle : definition.name
+  return `${name}::${getIdentifier(definition)}`
 }
 
 export const RuntimeDefinitionPlugin = (
   nuxt: Nuxt,
   composableName: string,
   property: string,
-) =>
-  createUnplugin(() => {
+) => {
+  const cache = new Map<string, ExtractedDefinition>()
+
+  function extract(source: string): ExtractedDefinition | null {
+    const fromCache = cache.get(source)
+    if (fromCache) {
+      return fromCache
+    }
+    const definition = parseTsObject<ExtractedDefinition>(source)
+    if (definition.object) {
+      cache.set(source, definition.object)
+      return definition.object
+    }
+
+    return null
+  }
+
+  return createUnplugin(() => {
     return {
       name: 'blokkli:runtime-definition',
       enforce: 'post',
@@ -121,11 +122,13 @@ export const RuntimeDefinitionPlugin = (
                 end: number
               }
               if (arg.type === 'ObjectExpression') {
-                const value = extractPropertyValue(arg, property)
-                if (value) {
-                  const start = meta.start
-                  const end = meta.end
-                  s.overwrite(start, end, `"${value}"`)
+                const start = meta.start
+                const end = meta.end
+                const objectSource = s.slice(start, end)
+                const object = extract(objectSource)
+                if (object) {
+                  const arg = generateRuntimeArg(object)
+                  s.overwrite(start, end, `"${arg}"`)
                 }
               }
             }
@@ -147,3 +150,4 @@ export const RuntimeDefinitionPlugin = (
       },
     }
   })
+}

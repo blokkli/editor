@@ -9,6 +9,8 @@ import type { FeatureCollector } from '../Collector/Features'
 import type { ThemeData } from './ThemeData'
 import type { BlockCollector } from '../Collector/Blocks'
 
+const WRITE = false
+
 export class ModuleContext {
   private templates: ModuleTemplate[] = []
   private templateContents: Map<string, string> = new Map()
@@ -82,7 +84,7 @@ export class ModuleContext {
     if (template.type === 'code') {
       addTemplate({
         filename: `blokkli/${template.name}.js`,
-        write: template.options.write,
+        write: template.options.write || WRITE,
         getContents: () => this.getTemplateContents('code', template.name),
       })
 

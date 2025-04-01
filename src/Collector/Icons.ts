@@ -1,7 +1,7 @@
 import { resolveFiles } from '@nuxt/kit'
 import { CollectedFile, Collector } from './index'
 import type { TemplateDependency } from '../module/templates/defineTemplate'
-import * as micromatch from 'micromatch'
+import micromatch from 'micromatch'
 import type { ModuleHelper } from '../module/ModuleHelper'
 
 export class IconCollector extends Collector {

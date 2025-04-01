@@ -1,7 +1,7 @@
 import { resolveFiles } from '@nuxt/kit'
 import path from 'node:path'
 import { CollectedFile, Collector } from './index'
-import * as micromatch from 'micromatch'
+import micromatch from 'micromatch'
 import type { ModuleHelper } from '../module/ModuleHelper'
 import type {
   ExtractedBlockDefinitionInput,
@@ -15,7 +15,7 @@ import {
 } from '../helpers'
 import { hash } from 'ohash'
 
-type ExtractedDefinition =
+export type ExtractedDefinition =
   | ExtractedBlockDefinitionInput
   | ExtractedFragmentDefinitionInput
 
@@ -28,31 +28,6 @@ export function isBlock(
   definition: ExtractedDefinition,
 ): definition is ExtractedBlockDefinitionInput {
   return 'bundle' in definition
-}
-
-function getIdentifier(definition: ExtractedDefinition) {
-  const parts: string[] = []
-  if (isBlock(definition)) {
-    parts.push('block', definition.bundle)
-    if (definition.renderFor) {
-      const renderFor = Array.isArray(definition.renderFor)
-        ? definition.renderFor
-        : [definition.renderFor]
-      renderFor.forEach((entry) => {
-        if ('parentBundle' in entry) {
-          parts.push('parent_block', entry.parentBundle)
-        } else if ('fieldList' in entry) {
-          parts.push('field_list_type', entry.fieldList)
-        } else if ('fieldListType' in entry) {
-          parts.push('field_list_type', entry.fieldListType)
-        }
-      })
-    }
-  } else {
-    parts.push('fragment', definition.name)
-  }
-
-  return parts.join('__')
 }
 
 function getVariations(definition?: ExtractedDefinition | null): string[] {
@@ -68,18 +43,28 @@ function getVariations(definition?: ExtractedDefinition | null): string[] {
     const renderFor = Array.isArray(definition.renderFor)
       ? definition.renderFor
       : [definition.renderFor]
-    return renderFor.map((v) => {
-      if ('parentBundle' in v) {
-        return `block:${bundle}__parent:${v.parentBundle}`
-      } else if ('fieldList' in v) {
-        return `block:${bundle}__field:${v.fieldList}`
-      } else {
-        return `block:${bundle}__field:${v.fieldListType}`
-      }
-    })
+    return renderFor
+      .map((v) => {
+        if ('parentBundle' in v) {
+          return `block:${bundle}__p:${v.parentBundle}`
+        } else if ('fieldList' in v) {
+          return `block:${bundle}__f:${v.fieldList}`
+        } else {
+          return `block:${bundle}__f:${v.fieldListType}`
+        }
+      })
+      .sort()
   }
 
   return [`fragment:${definition.name}`]
+}
+
+export function getIdentifier(definition: ExtractedDefinition) {
+  const type = isBlock(definition) ? 'b' : 'f'
+  let name = isBlock(definition) ? definition.bundle : definition.name
+  return toValidVariableName(
+    type + '_' + hash(name + getVariations(definition).join('__')),
+  )
 }
 
 export class CollectedBlockFile extends CollectedFile {
@@ -96,7 +81,7 @@ export class CollectedBlockFile extends CollectedFile {
   definitionSource: string | null = null
   hasBlokkliField = false
 
-  identifier: string | null = ''
+  identifier = ''
   chunkName = 'global'
   variations: string[] = []
 
@@ -152,11 +137,7 @@ export class CollectedBlockFile extends CollectedFile {
       this.fileContents.includes(':is="BlokkliField"')
 
     this.chunkName = this.definition?.chunkName || 'global'
-    this.identifier = this.definition
-      ? getIdentifier(this.definition) +
-        '_' +
-        toValidVariableName(hash(this.filePath))
-      : null
+    this.identifier = this.definition ? getIdentifier(this.definition) : ''
 
     if (!this.definition) {
       this.type = null

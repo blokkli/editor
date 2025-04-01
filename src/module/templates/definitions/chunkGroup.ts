@@ -10,7 +10,7 @@ export default withHelper((helper) => {
         const map: Record<string, string> = {}
 
         for (const file of ctx.blocks.files.values()) {
-          if (!file.definition || !file.identifier) {
+          if (!file.definition) {
             continue
           }
 

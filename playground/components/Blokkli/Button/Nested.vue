@@ -43,16 +43,6 @@ const { options } = defineBlokkli({
         primary: { class: 'bg-accent-700', label: 'Primary' },
       },
     },
-    align: {
-      type: 'radios',
-      label: 'Align',
-      default: 'center',
-      options: {
-        top: 'Top',
-        center: 'Center',
-        bottom: 'Bottom',
-      },
-    },
   },
   editor: {
     addBehaviour: 'no-form',

@@ -5,18 +5,16 @@
       "default": "center",
       "label": "Align",
       "options": {
-        "bottom": "Bottom",
         "center": "Center",
         "left": "Left",
-        "right": "Right",
-        "top": "Top"
+        "right": "Right"
       },
       "type": "radios"
     },
     "color": {
       "default": "normal",
       "displayAs": "colors",
-      "label": "Color",
+      "label": "Color FOOBAR",
       "options": {
         "normal": {
           "class": "bg-white",

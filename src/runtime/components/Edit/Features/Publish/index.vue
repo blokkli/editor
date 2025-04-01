@@ -55,14 +55,14 @@ const { adapter, settings } = defineBlokkliFeature({
 })
 
 const route = useRoute()
-const { state, $t, eventBus, broadcast, context } = useBlokkli()
-const { mutations, canEdit, mutateWithLoadingState } = state
+const { state, $t, broadcast, context } = useBlokkli()
+const { mutations, canEdit } = state
 
 const hasPublishOptions = !!adapter.getPublishOptions
 
 const isPublished = computed<boolean>(() => !!state.entity.value.status)
 
-const showDialog = ref(true)
+const showDialog = ref(false)
 
 const additionalEditStates = ref<string[]>([])
 const shouldPublish = ref(!!state.entity.value.status)
@@ -109,33 +109,33 @@ const onMenuClick = async () => {
 }
 
 async function publishCurrent() {
-  const success = await mutateWithLoadingState(
-    () =>
-      adapter.publish({
-        closeAfterPublish: settings.value.closeAfterPublish,
-      }),
-    $t('publishError', 'Changes could not be published.'),
-    $t('publishSuccess', 'Changes published successfully.'),
-  )
+  // const success = await mutateWithLoadingState(
+  //   () =>
+  //     adapter.publish({
+  //       closeAfterPublish: settings.value.closeAfterPublish,
+  //     }),
+  //   $t('publishError', 'Changes could not be published.'),
+  //   $t('publishSuccess', 'Changes published successfully.'),
+  // )
+  //
+  // if (!success) {
+  //   const validations = state.violations.value
+  //   if (validations.length) {
+  //     eventBus.emit('publish:failed')
+  //     // Open the validations sidebar when there are validation errors.
+  //     eventBus.emit('sidebar:open', 'violations')
+  //   }
+  //   return
+  // }
+}
 
-  if (!success) {
-    const validations = state.violations.value
-    if (validations.length) {
-      eventBus.emit('publish:failed')
-      // Open the validations sidebar when there are validation errors.
-      eventBus.emit('sidebar:open', 'violations')
-    }
-    return
-  }
-
+function onSubmit() {
   broadcast.emit('published', { uuid: context.value.entityUuid })
 
   if (settings.value.closeAfterPublish) {
     window.location.href = route.path
   }
 }
-
-function onSubmit() {}
 </script>
 
 <script lang="ts">

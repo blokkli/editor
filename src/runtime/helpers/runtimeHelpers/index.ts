@@ -147,6 +147,7 @@ export function isVisibleByOptions(
  */
 export function getRuntimeOptions<K extends keyof RuntimeBlockOptions>(
   item: FieldListItemTyped & { bundle: K },
+  context?: { parentType: string } | { fieldListType: string },
   fromLibraryOptions?: Record<string, any>,
 ): RuntimeBlockOptions[K] {
   if (item.bundle === 'from_library' && 'libraryItem' in item.props) {
@@ -157,6 +158,7 @@ export function getRuntimeOptions<K extends keyof RuntimeBlockOptions>(
 
     return getRuntimeOptions(
       actualBlock as FieldListItemTyped,
+      context,
       item.options,
     ) as RuntimeBlockOptions[K]
   }

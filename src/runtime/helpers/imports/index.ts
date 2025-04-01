@@ -37,13 +37,13 @@ export function getComponent(
   parentBundle?: string,
 ): any {
   if (fieldListType) {
-    const key = `${type}:${bundle}__field:${fieldListType}`
+    const key = `${type}:${bundle}__f:${fieldListType}`
     if (chunkMapping[key]) {
       return objectOrImport(key)
     }
   }
   if (parentBundle) {
-    const key = `${type}:${bundle}__parent:${parentBundle}`
+    const key = `${type}:${bundle}__p:${parentBundle}`
     if (chunkMapping[key]) {
       return objectOrImport(key)
     }
