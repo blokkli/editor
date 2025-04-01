@@ -14,7 +14,7 @@
     "color": {
       "default": "normal",
       "displayAs": "colors",
-      "label": "Color FOOBAR",
+      "label": "Color",
       "options": {
         "normal": {
           "class": "bg-white",
