@@ -6,7 +6,12 @@
     <div v-if="detached" class="bk-preview-controls">
       <slot />
     </div>
-    <div class="bk-preview-iframe">
+    <div
+      class="bk-preview-iframe"
+      :style="{
+        pointerEvents: isResizing ? 'none' : 'auto',
+      }"
+    >
       <iframe ref="iframe" :src="src" @load="isLoading = false" />
     </div>
   </div>
@@ -28,6 +33,7 @@ import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 defineProps<{
   detached?: boolean
+  isResizing?: boolean
 }>()
 
 const route = useRoute()

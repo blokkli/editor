@@ -50,7 +50,7 @@
       <template #icon>
         <slot name="icon" />
       </template>
-      <template #default="{ width, height }">
+      <template #default="{ width, height, isResizing }">
         <div class="bk-sidebar-content-wrapper">
           <div ref="sidebarContent" class="bk-sidebar-content">
             <slot
@@ -60,6 +60,7 @@
               :width="width"
               :height="height"
               :toggle-sidebar="toggleSidebar"
+              :is-resizing="isResizing"
             />
           </div>
         </div>
@@ -91,6 +92,7 @@
             :width="undefined"
             :height="undefined"
             :toggle-sidebar="toggleSidebar"
+            :is-resizing="false"
           />
         </div>
       </div>

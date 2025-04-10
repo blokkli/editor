@@ -1,7 +1,7 @@
 <template>
   <PluginSidebar
     id="mobile-preview"
-    v-slot="{ width, height, isDetached }"
+    v-slot="{ width, height, isDetached, isResizing }"
     :title="$t('responsivePreviewTitle', 'Responsive Preview')"
     :tour-text="tourText"
     :disabled="!state.canEdit.value"
@@ -11,7 +11,7 @@
     icon="preview"
     region="left"
   >
-    <PreviewFrame :detached="isDetached">
+    <PreviewFrame :detached="isDetached" :is-resizing="isResizing">
       <button
         :disabled="!selectedViewport.canRotate"
         class="bk-is-rotate"

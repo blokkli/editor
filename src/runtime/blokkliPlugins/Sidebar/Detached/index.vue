@@ -34,7 +34,11 @@
         </div>
       </div>
       <div class="bk-sidebar-detached-inner" :style="innerStyle">
-        <slot :width="userWidth" :height="userHeight" />
+        <slot
+          :width="userWidth"
+          :height="userHeight"
+          :is-resizing="isResizing"
+        />
         <template v-if="!size && !isMinimized">
           <div
             class="bk-sidebar-detached-handle bk-is-bottom"
@@ -146,9 +150,10 @@ type MouseMode =
   | ''
 
 const isDragging = ref(false)
-const isResizing = ref(false)
 
 const mouseMode = ref<MouseMode>('')
+
+const isResizing = computed(() => mouseMode.value.includes('resize'))
 
 const x = ref(0)
 const y = ref(0)
@@ -290,7 +295,6 @@ const onMouseMove = (e: MouseEvent) => {
 
 const onMouseUp = () => {
   isDragging.value = false
-  isResizing.value = false
   mouseMode.value = ''
   window.removeEventListener('pointermove', onMouseMove, { capture: true })
   window.removeEventListener('pointerup', onMouseUp, { capture: true })
