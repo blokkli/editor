@@ -261,7 +261,6 @@ export default function (
     return height
   })
 
-  const viewportPadding = computed(() => 10)
   const blockingPaddingX = computed(() => 15)
   const blockingPaddingY = computed(() => 50)
 
@@ -292,10 +291,10 @@ export default function (
 
   const visibleViewportPadded = computed<Rectangle>(() => {
     return {
-      x: visibleViewportX.value + viewportPadding.value,
-      y: visibleViewportY.value + viewportPadding.value,
-      width: visibleViewportWidth.value - 2 * viewportPadding.value,
-      height: visibleViewportHeight.value - 2 * viewportPadding.value,
+      x: visibleViewportX.value + 10,
+      y: visibleViewportY.value + 10,
+      width: visibleViewportWidth.value - 10 - 16 - 10,
+      height: visibleViewportHeight.value - 20,
     }
   })
 

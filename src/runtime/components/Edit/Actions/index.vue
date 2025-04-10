@@ -88,7 +88,7 @@ const editingEnabled = computed(
     state.editMode.value === 'translating',
 )
 
-const ACTIONS_HEIGHT = 50
+const ACTIONS_HEIGHT = 52
 
 const el = ref<HTMLDivElement | null>(null)
 
