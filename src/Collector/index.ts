@@ -51,7 +51,7 @@ export abstract class Collector<T extends CollectedFile = CollectedFile> {
     }
   }
 
-  private async handleAdd(filePath: string): Promise<boolean> {
+  protected async handleAdd(filePath: string): Promise<boolean> {
     const applies = await this.applies(filePath)
     if (applies) {
       await this.addFile(filePath)
@@ -83,7 +83,7 @@ export abstract class Collector<T extends CollectedFile = CollectedFile> {
     return true
   }
 
-  private handleUnlink(filePath: string): boolean {
+  protected handleUnlink(filePath: string): Promise<boolean> | boolean {
     if (this.files.has(filePath)) {
       this.files.delete(filePath)
       return true
@@ -117,7 +117,7 @@ export abstract class Collector<T extends CollectedFile = CollectedFile> {
     } else if (event === 'change') {
       hasChanged = await this.handleChange(filePath)
     } else if (event === 'unlink') {
-      hasChanged = this.handleUnlink(filePath)
+      hasChanged = await this.handleUnlink(filePath)
     } else if (event === 'addDir') {
       hasChanged = this.handleAddDir()
     } else if (event === 'unlinkDir') {

@@ -1,5 +1,6 @@
 import { resolveFiles } from '@nuxt/kit'
 import path from 'node:path'
+import { dirname } from 'pathe'
 import { CollectedFile, Collector } from './index'
 import micromatch from 'micromatch'
 import type { ModuleHelper } from '../module/ModuleHelper'
@@ -23,6 +24,10 @@ const DEFINE_BLOKKLI = 'defineBlokkli'
 const DEFINE_BLOKKLI_FRAGMENT = 'defineBlokkliFragment'
 
 type CollectedBlockType = 'main' | 'context' | 'fragment'
+
+function isEditComponent(filePath: string): boolean {
+  return filePath.endsWith('/diff.vue') || filePath.endsWith('/proxy.vue')
+}
 
 export function isBlock(
   definition: ExtractedDefinition,
@@ -98,9 +103,9 @@ export class CollectedBlockFile extends CollectedFile {
   }
 
   override async handleChange(helper: ModuleHelper): Promise<boolean> {
-    this.folder = path.dirname(this.filePath)
-    this.diffComponentPath = this.hasSiblingFile('diff.vue', helper)
-    this.proxyComponentPath = this.hasSiblingFile('proxy.vue', helper)
+    this.folder = dirname(this.filePath)
+    const diffComponentPath = this.hasSiblingFile('diff.vue', helper)
+    const proxyComponentPath = this.hasSiblingFile('proxy.vue', helper)
 
     const objectLiteralString = extractObjectLiteral(this.fileContents, [
       DEFINE_BLOKKLI,
@@ -108,11 +113,17 @@ export class CollectedBlockFile extends CollectedFile {
     ])
 
     // Nothing changed.
-    if (objectLiteralString === this.objectLiteralString) {
+    if (
+      objectLiteralString === this.objectLiteralString &&
+      diffComponentPath === this.diffComponentPath &&
+      proxyComponentPath === this.proxyComponentPath
+    ) {
       return false
     }
 
     this.objectLiteralString = objectLiteralString || ''
+    this.diffComponentPath = diffComponentPath
+    this.proxyComponentPath = proxyComponentPath
 
     try {
       if (this.objectLiteralString) {
@@ -213,14 +224,44 @@ export class BlockCollector extends Collector<CollectedBlockFile> {
     return new CollectedBlockFile(filePath, fileContents)
   }
 
-  private findBlockForIcon(iconPath: string): string | null {
+  private findBlockForFolderFile(iconPath: string): string | null {
     for (const file of this.files.values()) {
-      if (file.iconPath === iconPath) {
+      if (
+        file.iconPath === iconPath ||
+        file.proxyComponentPath === iconPath ||
+        file.diffComponentPath === iconPath
+      ) {
         return file.filePath
       }
     }
 
     return null
+  }
+
+  protected override async handleAdd(filePath: string): Promise<boolean> {
+    if (isEditComponent(filePath)) {
+      const folder = dirname(filePath)
+      for (const file of this.files.values()) {
+        if (file.folder === folder) {
+          return super.handleChange(file.filePath)
+        }
+      }
+    }
+
+    return super.handleAdd(filePath)
+  }
+
+  protected override async handleUnlink(filePath: string): Promise<boolean> {
+    if (isEditComponent(filePath)) {
+      const folder = dirname(filePath)
+      for (const file of this.files.values()) {
+        if (file.folder === folder) {
+          return super.handleChange(file.filePath)
+        }
+      }
+    }
+
+    return super.handleUnlink(filePath)
   }
 
   protected override async handleChange(filePath: string): Promise<boolean> {
@@ -229,7 +270,7 @@ export class BlockCollector extends Collector<CollectedBlockFile> {
     // Therefore, if we find a block that uses this icon, we have to update
     // it.
     if (filePath.includes('icon.svg')) {
-      const matchingBlockFilePath = this.findBlockForIcon(filePath)
+      const matchingBlockFilePath = this.findBlockForFolderFile(filePath)
       if (matchingBlockFilePath) {
         return this.handleChange(matchingBlockFilePath)
       }
@@ -248,6 +289,10 @@ export class BlockCollector extends Collector<CollectedBlockFile> {
 
     if (!micromatch.isMatch(filePath, this.patterns)) {
       return false
+    }
+
+    if (isEditComponent(filePath)) {
+      return true
     }
 
     const content = await this.helper.fileCache.read(filePath)
