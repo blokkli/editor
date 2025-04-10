@@ -11,6 +11,7 @@
       name="header"
       :list="header"
       list-class="container"
+      edit-class="min-h-[50px]"
       non-empty-class="mb-30 md:mb-70"
       field-list-type="header"
     />
@@ -18,6 +19,7 @@
       name="blocks"
       :list="blocks"
       class="container grid gap-20 lg:gap-40"
+      edit-class="min-h-[50px]"
       drop-alignment="horizontal"
       :class="{
         'grid-cols-2': options.mobile,

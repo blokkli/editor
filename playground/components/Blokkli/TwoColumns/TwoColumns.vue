@@ -11,6 +11,7 @@
       :list="header"
       class="container"
       non-empty-class="mb-30 md:mb-70"
+      edit-class="min-h-[50px]"
       field-list-type="header"
     />
     <div class="container mx-auto grid gap-30 lg:gap-40 grid-cols-12">
@@ -18,6 +19,7 @@
         name="left"
         :list="left"
         class="flex flex-col gap-20 col-span-12"
+        edit-class="min-h-[50px]"
         :class="{
           'md:col-span-6': options.columns === 'equal',
           'md:col-span-4': options.columns === 'oneTwo',
@@ -28,6 +30,7 @@
         name="right"
         :list="right"
         class="col-span-12"
+        edit-class="min-h-[50px]"
         :class="{
           'md:order-first': options.reverse,
           'md:col-span-6': options.columns === 'equal',

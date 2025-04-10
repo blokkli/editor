@@ -11,7 +11,12 @@
     :nesting-level="nestingLevel"
     :drop-alignment="dropAlignment"
     :field-list-type="fieldListType"
-    :class="[attrs.class, listClass, { [nonEmptyClass]: filteredList.length }]"
+    :class="[
+      attrs.class,
+      listClass,
+      editClass,
+      { [nonEmptyClass]: filteredList.length },
+    ]"
     :is-nested="isNested"
     :language="providerEntity?.language"
     :proxy-mode="proxyMode"
@@ -144,6 +149,7 @@ const props = withDefaults(
     fieldListType?: ValidFieldListTypes
     editOnly?: boolean
     listClass?: string
+    editClass?: string
     nonEmptyClass?: string
     allowedFragments?: BlokkliFragmentName[]
     dropAlignment?: 'vertical' | 'horizontal'
@@ -162,6 +168,7 @@ const props = withDefaults(
     tag: 'div',
     fieldListType: 'default',
     listClass: '',
+    editClass: '',
     nonEmptyClass: '',
     allowedFragments: () => [],
     dropAlignment: undefined,
