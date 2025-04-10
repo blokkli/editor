@@ -53,6 +53,16 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       }
     })
 
+    const getPublishOptions: DrupalAdapter['getPublishOptions'] = () =>
+      useGraphqlQuery('pbPublishOptions', ctx.value).then((v) => {
+        const options = v.data.state?.publishOptions
+        if (!options) {
+          throw new Error('Failed to load publish options.')
+        }
+
+        return options
+      })
+
     const getImportItems: DrupalAdapter['getImportItems'] = (
       searchText?: string,
     ) =>
@@ -880,6 +890,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       getLibraryItemEditUrl,
       loadStateAtIndex,
       getEditStates,
+      getPublishOptions,
     }
   },
 )

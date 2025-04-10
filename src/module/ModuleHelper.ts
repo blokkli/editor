@@ -135,5 +135,24 @@ export class ModuleHelper {
 
   public addAlias(name: string, path: string) {
     this.nuxt.options.alias[name] = path
+
+    this.nuxt.options.nitro.typescript ||= {}
+    this.nuxt.options.nitro.typescript.tsConfig ||= {}
+    this.nuxt.options.nitro.typescript.tsConfig.compilerOptions ||= {}
+    this.nuxt.options.nitro.typescript.tsConfig.compilerOptions.paths ||= {}
+    this.nuxt.options.nitro.typescript.tsConfig.compilerOptions.paths[name] = [
+      path,
+    ]
+    this.nuxt.options.nitro.typescript.tsConfig.compilerOptions.paths[
+      name + '/*'
+    ] = [path + '/*']
+
+    this.nuxt.options.typescript.tsConfig ||= {}
+    this.nuxt.options.typescript.tsConfig.compilerOptions ||= {}
+    this.nuxt.options.typescript.tsConfig.compilerOptions.paths ||= {}
+    this.nuxt.options.typescript.tsConfig.compilerOptions.paths[name] = [path]
+    this.nuxt.options.typescript.tsConfig.compilerOptions.paths[name + '/*'] = [
+      path + '/*',
+    ]
   }
 }

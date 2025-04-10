@@ -163,12 +163,14 @@ const stateItems = computed<Array<GetEditStatesItem & { id: string }>>(() => {
       currentUserIsOwner: !!state.owner.value?.currentUserIsOwner,
       entity: state.entity.value,
     },
-    ...editStates.value.items.map((v) => {
-      return {
-        ...v,
-        id: `${v.hostEntityType}:${v.hostEntityUuid}`,
-      }
-    }),
+    ...editStates.value.items
+      .map((v) => {
+        return {
+          ...v,
+          id: `${v.hostEntityType}:${v.hostEntityUuid}`,
+        }
+      })
+      .filter((v) => v.id !== currentId.value),
   ]
 })
 

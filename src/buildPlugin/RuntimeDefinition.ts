@@ -2,10 +2,10 @@ import { createUnplugin } from 'unplugin'
 import MagicString from 'magic-string'
 import { walk, type Node } from 'estree-walker-ts'
 import type { Nuxt } from '@nuxt/schema'
-import type { CallExpression, Expression, ObjectExpression } from 'estree'
+import type { CallExpression, Expression } from 'estree'
 import { pathToFileURL } from 'node:url'
 import { parseQuery, parseURL } from 'ufo'
-import { falsy, parseTsObject } from '../helpers'
+import { parseTsObject } from '../helpers'
 import {
   getIdentifier,
   isBlock,
@@ -55,16 +55,11 @@ export function isVue(
 }
 
 function generateRuntimeArg(definition: ExtractedDefinition) {
-  const identifier = getIdentifier(definition)
   const name = isBlock(definition) ? definition.bundle : definition.name
   return `${name}::${getIdentifier(definition)}`
 }
 
-export const RuntimeDefinitionPlugin = (
-  nuxt: Nuxt,
-  composableName: string,
-  property: string,
-) => {
+export const RuntimeDefinitionPlugin = (nuxt: Nuxt, composableName: string) => {
   const cache = new Map<string, ExtractedDefinition>()
 
   function extract(source: string): ExtractedDefinition | null {
@@ -145,8 +140,6 @@ export const RuntimeDefinitionPlugin = (
                 : null,
           }
         }
-
-        return source
       },
     }
   })

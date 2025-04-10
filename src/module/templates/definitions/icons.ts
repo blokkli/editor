@@ -1,27 +1,26 @@
 import { defineCodeTemplate } from '../defineTemplate'
 import { basename } from 'node:path'
 import { toValidVariableName } from './../../../helpers'
+import { toImports, toObject } from '../helpers'
 
 export default defineCodeTemplate(
   'icons',
   (ctx) => {
-    const imports: string[] = []
-    const icons: string[] = []
+    const imports = new Map<string, string>()
+    const icons = new Map<string, string>()
 
     const files = ctx.icons.files.values()
 
     for (const file of files) {
       const name = basename(file.filePath, '.svg').toLowerCase()
       const importName = 'icon_' + toValidVariableName(name)
-      imports.push(`import ${importName} from '${file.filePath}?raw'`)
-      icons.push(`'${name}': ${importName}`)
+      imports.set(importName, `${file.filePath}?raw`)
+      icons.set(name, importName)
     }
 
-    return `${imports.join('\n')}
+    return `${toImports(imports)}
 
-export const icons = {
-${icons.sort().join(',\n  ')}
-}
+${toObject('icons', icons)}
 `
   },
   (ctx) => {

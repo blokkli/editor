@@ -34,7 +34,14 @@ export default defineNuxtConfig({
     },
   },
 
+  nitro: {
+    minify: false,
+  },
+
   vite: {
+    build: {
+      minify: false,
+    },
     server: {
       watch: {
         usePolling: true,

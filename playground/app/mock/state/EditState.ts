@@ -6,7 +6,6 @@ import { mapBlockItem } from '../state'
 import { createBlock } from './Block'
 import type { Block } from './Block/Block'
 import type { Entity } from './Entity'
-import type { FieldBlocks } from './Field/Blocks'
 
 export class BlockProxy {
   hostEntityType: string

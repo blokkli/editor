@@ -1,5 +1,5 @@
-import { Field } from './Field'
-import { FieldBlocks } from './Field/Blocks'
+import type { Field } from './Field'
+import type { FieldBlocks } from './Field/Blocks'
 
 export class Entity {
   static entityType = ''

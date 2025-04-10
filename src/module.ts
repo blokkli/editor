@@ -144,10 +144,8 @@ export default defineNuxtModule<ModuleOptions>({
       src: resolver.resolve('runtime/plugins/blokkliEditable'),
     })
 
-    addBuildPlugin(RuntimeDefinitionPlugin(nuxt, 'defineBlokkli', 'bundle'))
-    addBuildPlugin(
-      RuntimeDefinitionPlugin(nuxt, 'defineBlokkliFragment', 'name'),
-    )
+    addBuildPlugin(RuntimeDefinitionPlugin(nuxt, 'defineBlokkli'))
+    addBuildPlugin(RuntimeDefinitionPlugin(nuxt, 'defineBlokkliFragment'))
 
     // Watch for file changes in dev mode.
     if (nuxt.options.dev) {
