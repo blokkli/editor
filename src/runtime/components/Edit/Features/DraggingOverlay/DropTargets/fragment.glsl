@@ -74,7 +74,7 @@ void main() {
       : alphaInner * 0.2;
 
   if (v_is_hover_area >= 1.0) {
-    adjustedAlphaFill *= 0.12;
+    adjustedAlphaFill *= 0.5;
   }
 
   if (alphaBorder > 0.0) {
