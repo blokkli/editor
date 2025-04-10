@@ -120,6 +120,11 @@ export type DefineBlokkliContext<
     (T extends BlockDefinitionOptionsInput ? WithOptions<T> : object) &
       (G extends ValidGlobalConfigKeys ? GlobalOptionsKeyTypes<G> : object)
   >
+
+  /**
+   * The provider context.
+   */
+  provider: ComputedRef<BlokkliProviderEntityContext | null>
 }
 
 type DetermineVisibleOptionsContext<

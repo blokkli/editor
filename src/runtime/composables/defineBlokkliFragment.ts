@@ -29,6 +29,7 @@ export function defineBlokkliFragment<
       siblings: computed(() => []),
       rootBlocks: computed(() => []),
       options: computed(() => ({}) as any),
+      provider: computed(() => null),
     }
   }
   return ctx as DefineBlokkliContext<T, G>

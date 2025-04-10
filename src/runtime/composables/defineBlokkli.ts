@@ -5,11 +5,13 @@ import {
   INJECT_FIELD_LIST_TYPE,
   INJECT_REUSABLE_OPTIONS,
   INJECT_PROVIDER_BLOCKS,
+  INJECT_PROVIDER_CONTEXT,
 } from '../helpers/symbols'
 import { computed, inject, type ComputedRef } from '#imports'
 import type {
   BlockDefinitionInput,
   BlockDefinitionOptionsInput,
+  BlokkliProviderEntityContext,
   BundleKey,
   DefineBlokkliContext,
   InjectedBlokkliItem,
@@ -82,6 +84,11 @@ export function defineBlokkli<
   // options popup. In order to have live preview of how these options affect
   // the component, we use this state to override the options.
   const editContext = inject<ItemEditContext | null>(INJECT_EDIT_CONTEXT, null)
+
+  const provider = inject<ComputedRef<BlokkliProviderEntityContext | null>>(
+    INJECT_PROVIDER_CONTEXT,
+    computed(() => null),
+  )
 
   // The parent block type if this block is nested.
   const parentType = computed(() => item?.value.parentType)
@@ -178,5 +185,6 @@ export function defineBlokkli<
     fieldListType,
     siblings,
     rootBlocks,
+    provider,
   }
 }
