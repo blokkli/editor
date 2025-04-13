@@ -67,8 +67,8 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
 
     const intersections: PlacedRectangle[] = []
     for (let i = 0; i < this.placedRects.length; i++) {
-      if (intersects(rect, this.placedRects[i])) {
-        intersections.push(this.placedRects[i])
+      if (intersects(rect, this.placedRects[i]!)) {
+        intersections.push(this.placedRects[i]!)
       }
     }
 
@@ -80,7 +80,7 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
     intersections.sort((a, b) => b.originalY - a.originalY)
 
     for (let i = 0; i < intersections.length; i++) {
-      const existingRect = intersections[i]
+      const existingRect = intersections[i]!
       let iterations = 0
       const direction = y > existingRect.originalY ? -1 : 1
       while (intersects(rect, existingRect) && iterations < 10) {
@@ -158,7 +158,7 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
   }
 
   getIndex(id: string): number | undefined {
-    return this.rects[id].index || undefined
+    return this.rects[id]?.index
   }
 
   updateRectangle() {

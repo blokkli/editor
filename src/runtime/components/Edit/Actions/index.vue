@@ -155,7 +155,7 @@ const itemBundle = computed(() => {
   if (itemBundleIds.value.length !== 1) {
     return
   }
-  const bundle = itemBundleIds.value[0]
+  const bundle = itemBundleIds.value[0]!
   return types.getBlockBundleDefinition(bundle)
 })
 
@@ -221,7 +221,7 @@ onBlokkliEvent('canvas:draw', () => {
   const scale = ui.artboardScale.value
 
   for (let i = 0; i < rects.length; i++) {
-    const { x, y } = rects[i]
+    const { x, y } = rects[i]!
     const rectX = (x + offset.x / scale) * scale
     const rectY = (y + offset.y / scale) * scale
     if (i === 0 || rectX < minX) {

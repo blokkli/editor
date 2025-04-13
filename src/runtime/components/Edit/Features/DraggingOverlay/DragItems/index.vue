@@ -211,7 +211,7 @@ onBlokkliEvent('animationFrame', () => {
   const opacityAlpha = Math.min(Math.max(elapsed - 300, 0) / 200, 1)
 
   for (let i = 0; i < rects.value.length; i++) {
-    const rect = rects.value[i]
+    const rect = rects.value[i]!
     const newX = lerp(rect.from.x, rect.to.x, alphaX)
     const newY = lerp(rect.from.y, rect.to.y, alphaY)
     const newOpacity = lerp(rect.from.opacity, rect.to.opacity, opacityAlpha)
@@ -312,6 +312,11 @@ onMounted(() => {
     elRects.find((v) =>
       isInsideRect(props.startCoords.x, props.startCoords.y, v.rect),
     ) || elRects[0]
+
+  if (!boundRect) {
+    // @todo: Fallback?
+    return
+  }
 
   const bounds = getDraggingBounds(
     props.startCoords,

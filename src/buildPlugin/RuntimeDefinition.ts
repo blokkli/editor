@@ -112,6 +112,9 @@ export const RuntimeDefinitionPlugin = (nuxt: Nuxt, composableName: string) => {
             const name = 'name' in callNode.callee && callNode.callee.name
             if (name === composableName) {
               const arg = callNode.arguments[0]
+              if (!arg) {
+                return
+              }
               const meta = callNode.arguments[0] as Expression & {
                 start: number
                 end: number

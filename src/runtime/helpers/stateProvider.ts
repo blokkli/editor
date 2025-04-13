@@ -127,7 +127,7 @@ export default async function (
     const optionKeys = Object.keys(options)
 
     for (let i = 0; i < optionKeys.length; i++) {
-      const key = optionKeys[i]
+      const key = optionKeys[i]!
       const newOptions = options[key]
       const existing = mutatedOptions[key]
       if (
@@ -175,7 +175,7 @@ export default async function (
     // Reset the count cache.
     fieldBlockCount = {}
     for (let i = 0; i < newMutatedFields.length; i++) {
-      const field = newMutatedFields[i]
+      const field = newMutatedFields[i]!
       const key = getFieldKey(field.entityUuid, field.name)
       visitedFieldKeys.push(key)
 
@@ -189,12 +189,12 @@ export default async function (
       }
 
       for (let j = 0; j < field.list.length; j++) {
-        const item = field.list[j]
+        const item = field.list[j]!
 
         if (!newBlockBundleCount[item.bundle]) {
           newBlockBundleCount[item.bundle] = 0
         }
-        newBlockBundleCount[item.bundle]++
+        newBlockBundleCount[item.bundle]!++
         fieldListItemMap[item.uuid] = key
       }
     }
@@ -204,7 +204,7 @@ export default async function (
     const existingKeys = Object.keys(mutatedFieldsMap)
 
     for (let i = 0; i < existingKeys.length; i++) {
-      const key = existingKeys[i]
+      const key = existingKeys[i]!
       if (!visitedFieldKeys.includes(key)) {
         mutatedFieldsMap[key] = undefined
       }

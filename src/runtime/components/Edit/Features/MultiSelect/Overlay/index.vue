@@ -52,6 +52,10 @@ class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<Multi
 
     for (let i = 0; i < visibleBlocks.length; i++) {
       const uuid = visibleBlocks[i]
+      if (!uuid) {
+        continue
+      }
+
       if (this.added.has(uuid)) {
         continue
       }
@@ -95,7 +99,7 @@ class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<Multi
     const rects = Object.values(this.rects)
 
     for (let i = 0; i < rects.length; i++) {
-      const rect = rects[i]
+      const rect = rects[i]!
       if (intersects(box, rect)) {
         if (rect.isNested) {
           nested.push(rect.id)
@@ -111,7 +115,7 @@ class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<Multi
   isSelectingNested(box: Rectangle): boolean {
     const rects = Object.values(this.rects)
     for (let i = 0; i < rects.length; i++) {
-      const rect = rects[i]
+      const rect = rects[i]!
       if (intersects(box, rect) && rect.isNested) {
         return true
       }

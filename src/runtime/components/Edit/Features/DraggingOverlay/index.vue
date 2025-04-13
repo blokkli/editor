@@ -81,7 +81,7 @@ const box = ref<Rectangle>({
 const dragItems = ref<DraggableItem[]>([])
 
 function isSameItemType(items: DraggableItem[]): boolean {
-  return items.every((item) => item.itemType === items[0].itemType)
+  return items.every((item) => item.itemType === items[0]!.itemType)
 }
 
 type FilteredItemType<T extends DraggableItem> = T extends {
@@ -105,7 +105,7 @@ function filterItemType<T extends DraggableItem>(
     throw new Error('Items of different types')
   }
 
-  const itemType = items[0].itemType
+  const itemType = items[0]!.itemType
 
   if (
     itemType === 'existing' ||
@@ -177,13 +177,13 @@ const onDropExisting = async (
   )
   if (uuids.length >= 1 && uuids.length <= 10) {
     for (let i = 0; i < uuids.length; i++) {
-      dom.refreshBlockRect(uuids[i])
+      dom.refreshBlockRect(uuids[i]!)
     }
   }
 
-  if (ui.isMobile.value) {
+  if (ui.isMobile.value && uuids.length) {
     eventBus.emit('scrollIntoView', {
-      uuid: uuids[0],
+      uuid: uuids[0]!,
       center: true,
     })
   }
@@ -226,7 +226,7 @@ const onDropMediaLibraryItem = async (
       adapter.mediaLibraryAddBlock({
         preceedingUuid: afterUuid,
         host,
-        item: items[0],
+        item: items[0]!,
       }),
     )
   } else if (adapter.mediaLibraryAddBlocks && items.length > 1) {

@@ -34,7 +34,7 @@ export default defineBlokkliEditAdapter<CustomMinimalState>((_ctx) => {
     }
 
     // Remove the block from the array.
-    const block = minimalState.blocks.splice(blockIndex, 1)[0]
+    const block = minimalState.blocks.splice(blockIndex, 1)[0]!
 
     // Determine the index at which we have to insert the block.
     const afterIndex = afterUuid
@@ -65,7 +65,7 @@ export default defineBlokkliEditAdapter<CustomMinimalState>((_ctx) => {
           >((acc, block) => {
             acc[block.uuid] = {}
             Object.entries(block.options || {}).forEach(([key, value]) => {
-              acc[block.uuid][key] = value
+              acc[block.uuid]![key] = value
             })
             return acc
           }, {}),

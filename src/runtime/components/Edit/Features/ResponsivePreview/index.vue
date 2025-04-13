@@ -107,7 +107,7 @@ const selectedViewport = computed<ViewportOption>(() => {
     (v) => v.id === selectedViewportId.value,
   )
   if (!selected) {
-    return viewportOptions.value[0]
+    return viewportOptions.value[0]!
   }
   return selected
 })

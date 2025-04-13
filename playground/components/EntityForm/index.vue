@@ -19,15 +19,15 @@
       />
       <RichText
         v-else-if="field.type === 'textarea'"
-        v-model="values[field.name]"
+        v-model="values[field.name]!"
       />
       <FieldIconInput
         v-else-if="field.type === 'icon'"
-        v-model="values[field.name]"
+        v-model="values[field.name]!"
       />
       <MediaSelector
         v-else-if="field.type === 'media'"
-        v-model="values[field.name]"
+        v-model="values[field.name]!"
         v-bind="field.props"
       />
     </div>
@@ -40,7 +40,7 @@
 <script lang="ts" setup>
 import { computed, ref } from '#imports'
 import { falsy } from '~/helpers'
-import { Field } from '~/app/mock/state/Field'
+import type { Field } from '~/app/mock/state/Field'
 import { FieldIcon } from '~/app/mock/state/Field/Icon'
 import { FieldText } from '~/app/mock/state/Field/Text'
 import { FieldTextarea } from '~/app/mock/state/Field/Textarea'

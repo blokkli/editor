@@ -50,10 +50,10 @@
 
             <template v-if="item.props.length > 0">
               <td>
-                <strong>{{ item.props[0].key }}</strong>
+                <strong>{{ item.props[0]!.key }}</strong>
               </td>
               <td class="bk-diff-monospace">
-                <div class="bk-diff-prop-diff" v-html="item.props[0].diff" />
+                <div class="bk-diff-prop-diff" v-html="item.props[0]!.diff" />
               </td>
             </template>
             <template v-else>
@@ -170,7 +170,7 @@ const diffItems = computed<DiffItem[]>(() => {
       const changedProps: DiffItemProp[] = []
 
       Object.entries(beforeProps).forEach(([key, beforeValue]) => {
-        const afterValue = afterProps[key]
+        const afterValue = afterProps[key]!
         if (beforeValue !== afterValue) {
           changedProps.push({
             key,
@@ -184,7 +184,7 @@ const diffItems = computed<DiffItem[]>(() => {
         if (!(key in beforeProps)) {
           changedProps.push({
             key,
-            diff: diff('', afterProps[key]),
+            diff: diff('', afterProps[key]!),
           })
         }
       })

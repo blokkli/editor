@@ -68,7 +68,7 @@ const exportState = () => {
       return {
         uuid: v.uuid,
         title: v.title(),
-        block: v.getBlocks().list[0].uuid,
+        block: v.getBlocks().list[0]?.uuid,
       }
     })
 

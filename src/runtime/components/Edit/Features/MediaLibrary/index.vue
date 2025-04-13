@@ -101,7 +101,7 @@ defineDropAreas((dragItems) => {
     return
   }
 
-  const item = dragItems[0]
+  const item = dragItems[0]!
 
   // Not a media library item.
   if (item.itemType !== 'media_library') {

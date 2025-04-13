@@ -34,7 +34,7 @@ export class MutationDuplicate extends Mutation {
       })
       .filter(falsy)
       .sort((a, b) => a.index - b.index)
-    let preceedingUuid = args.preceedingUuid || sorted[sorted.length - 1].uuid
+    let preceedingUuid = args.preceedingUuid || sorted[sorted.length - 1]?.uuid
 
     sorted.forEach((v) => {
       const proxy = context.getProxy(v.uuid)

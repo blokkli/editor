@@ -42,7 +42,7 @@ const definition = computed<
     return
   }
 
-  const bundle = bundles[0]
+  const bundle = bundles[0]!
 
   if (bundle === 'blokkli_fragment') {
     const fragments = selection.blocks.value.filter(

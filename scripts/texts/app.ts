@@ -222,7 +222,7 @@ class Extractor {
 
         if (feature?.settings) {
           Object.keys(feature.settings).forEach((key) => {
-            const setting = feature.settings[key]
+            const setting = feature.settings[key]!
             extractions.push({
               key: 'feature_' + feature.id + '_setting_' + key + '_label',
               defaultText: setting.label,
@@ -309,10 +309,12 @@ async function updateTranslationFile(
   const existingTexts: Record<string, TranslationEntry> = {}
 
   Object.entries(poFile.translations).forEach(([key, entry]) => {
-    const translation = Object.entries(entry)[0][1]
-    existingTexts[key] = {
-      source: translation.msgid,
-      translation: translation.msgstr[0],
+    const translation = Object.entries(entry)[0]?.[1]
+    if (translation?.msgid && translation.msgstr[0]) {
+      existingTexts[key] = {
+        source: translation.msgid,
+        translation: translation.msgstr[0],
+      }
     }
   })
 

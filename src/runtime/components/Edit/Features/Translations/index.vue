@@ -173,7 +173,7 @@ const canTranslateBlock = computed(() => {
   if (selection.blocks.value.length !== 1) {
     return false
   }
-  const block = selection.blocks.value[0]
+  const block = selection.blocks.value[0]!
 
   if (block.libraryItemUuid) {
     return false
@@ -213,10 +213,13 @@ function onClick(item: TranslationStateItem, event: Event) {
 }
 
 function onTranslate(items: DraggableExistingBlock[]) {
-  eventBus.emit('item:edit', {
-    uuid: items[0].uuid,
-    bundle: items[0].itemBundle,
-  })
+  const item = items[0]
+  if (item) {
+    eventBus.emit('item:edit', {
+      uuid: item.uuid,
+      bundle: item.itemBundle,
+    })
+  }
 }
 
 onBlokkliEvent('item:doubleClick', function (block) {

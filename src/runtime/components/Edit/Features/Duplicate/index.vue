@@ -48,7 +48,7 @@ const canDuplicate = computed<boolean>(() => {
 
   const selectedCount = selection.blocks.value.length
   for (let i = 0; i < selectedCount; i++) {
-    const block = selection.blocks.value[i]
+    const block = selection.blocks.value[i]!
     const field = state.getMutatedField(block.hostUuid, block.hostFieldName)
     if (!field) {
       continue
@@ -84,8 +84,13 @@ const canDuplicate = computed<boolean>(() => {
 
   const entries = Object.entries(blocksByField)
   for (let i = 0; i < entries.length; i++) {
-    const [fieldKey, blocks] = entries[i]
+    const [fieldKey, blocks] = entries[i]!
     const field = fieldsByKey[fieldKey]
+
+    if (!field) {
+      return false
+    }
+
     const count = state.getFieldBlockCount(fieldKey)
     // Check cardinality of the field.
     if (field.cardinality !== -1 && count + blocks.length > field.cardinality) {

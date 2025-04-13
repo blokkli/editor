@@ -39,7 +39,7 @@ onBlokkliEvent('canvas:draw', (e) => {
   const rects = Object.values(blockRects)
 
   for (let i = 0; i < rects.length; i++) {
-    const rect = rects[i]
+    const rect = rects[i]!
 
     const drawnRect = {
       x: rect.x * e.artboardScale + e.artboardOffset.x,
@@ -58,7 +58,7 @@ onBlokkliEvent('canvas:draw', (e) => {
 
   const visibleFieldRects = dom.getVisibleFields()
   for (let i = 0; i < visibleFieldRects.length; i++) {
-    const key = visibleFieldRects[i]
+    const key = visibleFieldRects[i]!
 
     const rect = dom.getFieldRect(key)
 

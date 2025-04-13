@@ -119,7 +119,7 @@ const tabItems = computed(() => {
 
 const tabs = computed(() => Object.keys(tabsMap.value) as string[])
 const tabIndex = ref(0)
-const tab = computed<string>(() => tabs.value[tabIndex.value])
+const tab = computed<string>(() => tabs.value[tabIndex.value]!)
 
 const search = ref('')
 const input = ref<HTMLInputElement | null>(null)

@@ -50,7 +50,10 @@ export abstract class Field<T> {
 
   getPropValue(): any {
     if (this.cardinality === 1) {
-      return this.getPropValueItem(this.list[0])
+      if (this.list.length) {
+        return this.getPropValueItem(this.list[0]!)
+      }
+      return undefined
     }
     return this.list.map((v) => this.getPropValueItem(v))
   }

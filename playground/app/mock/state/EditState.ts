@@ -192,7 +192,7 @@ export class EditState {
           return v
         }
       }
-    } catch (_e) {
+    } catch {
       // Noop.
     }
 
@@ -212,7 +212,7 @@ export class EditState {
           return parsed
         }
       }
-    } catch (_e) {
+    } catch {
       // Noop.
     }
 
@@ -270,7 +270,7 @@ export class EditState {
       if (item) {
         const plugin = createMutation(item.id as any, item.configuration)
         plugin.execute(context, item.args)
-        mutations[i].configuration = plugin.configuration
+        item.configuration = plugin.configuration
       }
     }
     if (!options?.index) {
@@ -318,7 +318,7 @@ export class EditState {
     })
 
     for (let i = 0; i < context.proxies.length; i++) {
-      const proxy = context.proxies[i]
+      const proxy = context.proxies[i]!
 
       if (proxy.isDeleted) {
         continue

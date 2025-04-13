@@ -259,7 +259,7 @@ function getOptionValue(
     blockMutatedOptions !== undefined &&
     blockMutatedOptions[key] !== undefined
   ) {
-    return state.mutatedOptions[uuid][key]
+    return blockMutatedOptions[key]
   }
   return defaultValue
 }
@@ -285,7 +285,7 @@ const currentValues = computed(() => {
     if (values.length === 1) {
       acc[v.property] = getRuntimeOptionValue(
         v.option,
-        getOptionValue(props.uuids[0], v.property, v.option.default),
+        getOptionValue(props.uuids[0]!, v.property, v.option.default),
       )
     } else {
       acc[v.property] = ''
@@ -312,8 +312,8 @@ const visibleOptions = computed<OptionItem[]>(() => {
     return availableOptions.value.filter(filterInternal)
   }
 
-  const uuid = props.uuids[0]
-  const item = state.getFieldListItem(props.uuids[0])
+  const uuid = props.uuids[0]!
+  const item = state.getFieldListItem(uuid)
   const block = selection.blocks.value.find((v) => v.uuid === uuid)
   if (!item) {
     return []
@@ -369,11 +369,11 @@ const optionGroups = computed<OptionGroup[]>(() => {
         if (!acc[option.option.group]) {
           acc[option.option.group] = {
             label: option.option.group,
-            options: [],
+            options: [option],
           }
+        } else {
+          acc[option.option.group]!.options.push(option)
         }
-
-        acc[option.option.group].options.push(option)
       }
       return acc
     }, {}),

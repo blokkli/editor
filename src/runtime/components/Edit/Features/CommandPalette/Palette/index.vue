@@ -200,32 +200,32 @@ const getCommandElements = () => {
 
 const focusPrev = () => {
   const elements = getCommandElements()
-  if (elements.length === -1) {
+  if (elements.length === 0) {
     return
   }
   const focusedIndex = elements.findIndex((v) => v.focused)
   // None or first is focused.
   if (focusedIndex <= 0) {
     // Focus last element.
-    focusedId.value = elements[elements.length - 1].id
+    focusedId.value = elements[elements.length - 1]!.id
   } else {
-    focusedId.value = elements[focusedIndex - 1].id
+    focusedId.value = elements[focusedIndex - 1]!.id
   }
   scrollFocusedIntoView()
 }
 
 const focusNext = () => {
   const elements = getCommandElements()
-  if (elements.length === -1) {
+  if (elements.length === 0) {
     return
   }
   const focusedIndex = elements.findIndex((v) => v.focused)
   // None or last is focused.
   if (focusedIndex === -1 || focusedIndex === elements.length - 1) {
     // Focus last element.
-    focusedId.value = elements[0].id
+    focusedId.value = elements[0]!.id
   } else {
-    focusedId.value = elements[focusedIndex + 1].id
+    focusedId.value = elements[focusedIndex + 1]!.id
   }
 
   scrollFocusedIntoView()

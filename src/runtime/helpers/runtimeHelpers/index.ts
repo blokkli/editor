@@ -229,7 +229,7 @@ export function getItemsforBundles<K extends FieldListItemTyped['bundle']>(
 ): Extract<FieldListItemTyped, { bundle: K }>[] {
   const filtered: FieldListItemTyped[] = []
   for (let i = 0; i < items.length; i++) {
-    const item = items[i]
+    const item = items[i]!
     if (item.bundle === 'from_library') {
       const actual = getActualBlock(item)
       if (actual && bundles.includes(actual.bundle as K)) {

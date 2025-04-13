@@ -51,6 +51,12 @@ export default defineNuxtConfig({
 
   typescript: {
     shim: true,
+    strict: true,
+    tsConfig: {
+      compilerOptions: {
+        noUncheckedIndexedAccess: true,
+      },
+    },
   },
 
   blokkli: {

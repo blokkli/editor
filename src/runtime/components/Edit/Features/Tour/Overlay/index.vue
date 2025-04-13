@@ -169,7 +169,9 @@ const items = computed<PositionedTourItem[]>(() =>
     }),
 )
 
-const activeItem = computed(() => items.value[activeIndex.value])
+const activeItem = computed<PositionedTourItem>(
+  () => items.value[activeIndex.value]!,
+)
 
 const prev = () => {
   activeIndex.value = modulo(activeIndex.value - 1, items.value.length)
@@ -202,7 +204,7 @@ const getIdealPosition = (rect: DOMRect): ItemPosition => {
     Object.entries(availableSpace) as [ItemPosition, number][]
   ).sort((a, b) => b[1] - a[1])
 
-  return sortedSpaces[0][0]
+  return sortedSpaces[0]![0]
 }
 
 function calculatePosition(rect: DOMRect): {

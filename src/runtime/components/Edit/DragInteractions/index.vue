@@ -50,13 +50,13 @@ function getInteractedElement(
   e: MouseEvent | TouchEvent,
 ): InteractedElement | null {
   const { x, y } = getInteractionCoordinates(e)
-  const elements = document.elementsFromPoint(x, y)
+  const elements: Element[] = document.elementsFromPoint(x, y)
 
   let editableFieldName = ''
   let uuid = ''
 
   for (let i = 0; i < elements.length; i++) {
-    let el: Element = elements[i]
+    let el = elements[i]!
 
     if (!(el instanceof HTMLElement)) {
       continue
@@ -105,7 +105,7 @@ function getInteractedElement(
   // still be able to select a block.
   const visibleUuids = dom.getVisibleBlocks()
   for (let i = 0; i < visibleUuids.length; i++) {
-    const rect = dom.getBlockRect(visibleUuids[i])
+    const rect = dom.getBlockRect(visibleUuids[i]!)
     if (rect) {
       const relativeRect = ui.getViewportRelativeRect(rect)
       if (isInsideRect(x, y, relativeRect)) {

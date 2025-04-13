@@ -67,7 +67,7 @@ function updateCanvas() {
   ctx.strokeStyle = selectedColor.value
 
   for (let i = 0; i < rects.length; i++) {
-    const [uuid, blockRect] = rects[i]
+    const [uuid, blockRect] = rects[i]!
     ctx.fillRect(
       Math.round(blockRect.x * scale),
       Math.round(blockRect.y * scale),

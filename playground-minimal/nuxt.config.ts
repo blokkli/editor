@@ -17,4 +17,13 @@ export default defineNuxtConfig({
   blokkli: {
     itemEntityType: 'block',
   },
+  typescript: {
+    shim: true,
+    strict: true,
+    tsConfig: {
+      compilerOptions: {
+        noUncheckedIndexedAccess: true,
+      },
+    },
+  },
 })

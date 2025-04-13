@@ -71,7 +71,7 @@ const findMostVisibleBlock = (): string | null => {
   let mostVisibleUuid: string | null = null
 
   for (let i = 0; i < uuids.length; i++) {
-    const uuid = uuids[i]
+    const uuid = uuids[i]!
     const absoluteRect = dom.getBlockRect(uuid)
     if (!absoluteRect) {
       continue
@@ -154,7 +154,7 @@ const visuallySelectBlocks = (toggleUuid: string): string[] | undefined => {
   }
 
   const singleSelectedBlock =
-    selected.length === 1 ? dom.findBlock(selected[0]) : null
+    selected.length === 1 ? dom.findBlock(selected[0]!) : null
 
   const toggleRect = rects[toggleUuid]
   if (!toggleRect) {
@@ -167,7 +167,7 @@ const visuallySelectBlocks = (toggleUuid: string): string[] | undefined => {
   const filter = (encompassingRect: Rectangle): string[] => {
     const candidates: string[] = []
     for (let i = 0; i < allUuids.length; i++) {
-      const uuid = allUuids[i]
+      const uuid = allUuids[i]!
       const rect = rects[uuid]
       if (!rect) {
         continue
@@ -201,7 +201,7 @@ const visuallySelectBlocks = (toggleUuid: string): string[] | undefined => {
       return []
     }
 
-    const selectedUuid = selected[0]
+    const selectedUuid = selected[0]!
     const selectedRect = rects[selectedUuid]
     if (!selectedRect) {
       return
@@ -230,6 +230,9 @@ const visuallySelectBlocks = (toggleUuid: string): string[] | undefined => {
     })
 
   const upperLeftRect = rects[upperLeftUuid]
+  if (!upperLeftRect) {
+    return
+  }
   const encompassingRect = getBounds([upperLeftRect, toggleRect])
   if (!encompassingRect) {
     return

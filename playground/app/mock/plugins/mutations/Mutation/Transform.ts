@@ -26,7 +26,10 @@ export class MutationTransform extends Mutation {
     const proxies = context.getProxies(args.uuids)
 
     if (args.pluginId === 'merge_texts') {
-      this.mergeTexts(proxies, args.uuids[0])
+      const uuid = args.uuids[0]
+      if (uuid) {
+        this.mergeTexts(proxies, uuid)
+      }
     } else if (args.pluginId === 'button_to_text') {
       this.buttonToText(proxies, context)
     } else if (args.pluginId === 'extract_text_to_blocks') {
@@ -45,7 +48,7 @@ export class MutationTransform extends Mutation {
     let text = ''
 
     for (let i = 0; i < proxies.length; i++) {
-      const proxy = proxies[i]
+      const proxy = proxies[i]!
       const block = proxy.block
       if (block instanceof BlockText) {
         text += block.text().getText()
@@ -66,7 +69,7 @@ export class MutationTransform extends Mutation {
     let firstProxy: BlockProxy | null = null
 
     for (let i = 0; i < proxies.length; i++) {
-      const proxy = proxies[i]
+      const proxy = proxies[i]!
       const block = proxy.block
       if (block instanceof BlockButton) {
         const title = block.getTitle()
@@ -107,7 +110,7 @@ export class MutationTransform extends Mutation {
     const textProxy = proxies[0]
     const textBlock = textProxy?.block
 
-    if (!(textBlock instanceof BlockText)) {
+    if (!(textBlock instanceof BlockText) || !textProxy) {
       return
     }
 

@@ -27,7 +27,10 @@ defineEmits(['update:modelValue'])
 
 const entities = computed(() => {
   const bundle = props.bundles[0]
-  return entityStorageManager.getStorage('media').query({ bundle })
+  if (bundle) {
+    return entityStorageManager.getStorage('media').query({ bundle })
+  }
+  return []
 })
 </script>
 

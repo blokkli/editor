@@ -11,6 +11,9 @@ function objectOrImport(
   }
 
   const chunkEntry = chunks[chunkName]
+  if (!chunkEntry) {
+    return
+  }
 
   if (typeof chunkEntry === 'function') {
     return defineAsyncComponent(() =>
@@ -23,10 +26,12 @@ function objectOrImport(
       }),
     )
   }
+
   const item = chunkEntry[key]
   if (item && 'loadComponent' in item) {
     return defineAsyncComponent(() => item.loadComponent())
   }
+
   return item
 }
 

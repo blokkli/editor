@@ -51,7 +51,7 @@ export class Entity {
       this.translationValues[langcode] = {}
     }
     Object.entries(valuesInput).forEach(([fieldName, value]) => {
-      this.translationValues[langcode][fieldName] = Array.isArray(value)
+      this.translationValues[langcode]![fieldName] = Array.isArray(value)
         ? value
         : [value]
     })
@@ -108,9 +108,9 @@ export class Entity {
 
   setValues(values: Record<string, any>) {
     Object.entries(values).forEach(([field, value]) => {
-      this.fields[field].list = (Array.isArray(value) ? value : [value]).filter(
-        Boolean,
-      )
+      this.fields[field]!.list = (
+        Array.isArray(value) ? value : [value]
+      ).filter(Boolean)
     })
   }
 

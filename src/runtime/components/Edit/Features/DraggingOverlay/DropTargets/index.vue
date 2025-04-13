@@ -183,6 +183,9 @@ const emitDrop = async () => {
   if (active.value && timeDelta > 200) {
     if (active.value.type === 'field') {
       const [hostUuid, fieldName, preceedingUuid] = active.value.id.split(':')
+      if (!hostUuid || !fieldName) {
+        return
+      }
 
       const field = dom.findField(hostUuid, fieldName)
 
@@ -293,7 +296,7 @@ function getGapSize(orientation: Orientation, element: HTMLElement): number {
       // Extract the first value.
       const gapParts = gap.split(' ')
       const gapValue = gapParts[0]
-      if (gapValue.endsWith('px')) {
+      if (gapValue?.endsWith('px')) {
         return Number.parseFloat(gapValue)
       }
     }
@@ -525,6 +528,9 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
   }
 
   const [uuid, name] = key.split(':')
+  if (!uuid || !name) {
+    return
+  }
   const field = dom.findField(uuid, name)
   if (!field) {
     return
@@ -577,7 +583,7 @@ const cachedDropAreaRects: Record<string, Rectangle> = {}
 
 const buildDropAreaRect = (area: DropArea): Rectangle => {
   if (cachedDropAreaRects[area.id]) {
-    return cachedDropAreaRects[area.id]
+    return cachedDropAreaRects[area.id]!
   }
 
   const rect = ui.getAbsoluteElementRect(area.element)
@@ -617,7 +623,7 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
     const lengthBefore = this.positions.length
 
     for (let i = 0; i < visibleFields.length; i++) {
-      const key = visibleFields[i]
+      const key = visibleFields[i]!
       const fieldRect = buildFieldRect(key)
 
       if (!fieldRect) {
@@ -625,7 +631,7 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
       }
       const children = buildChildren(fieldRect, visibleBlocks)
       for (let j = 0; j < children.length; j++) {
-        const child = children[j]
+        const child = children[j]!
         if (this.added.has(child.id)) {
           continue
         }
@@ -652,7 +658,7 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
     const visibleAreas = Array.from(visibleDropAreas)
 
     for (let i = 0; i < visibleAreas.length; i++) {
-      const area = areas[visibleAreas[i]]
+      const area = areas[visibleAreas[i]!]
       if (!area) {
         continue
       }
@@ -692,7 +698,7 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
     const candidates: DrawnRect[] = []
     const rects = Object.values(this.rects)
     for (let i = 0; i < rects.length; i++) {
-      const rect = rects[i]
+      const rect = rects[i]!
       if (rect.type === 'active-area') {
         continue
       }
@@ -704,7 +710,7 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
     if (candidates.length === 0) {
       return null
     } else if (candidates.length === 1) {
-      return candidates[0]
+      return candidates[0]!
     }
 
     return findClosestRectangle(coords.x, coords.y, candidates)
@@ -714,7 +720,7 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
     const rects = Object.values(this.rects)
 
     for (let i = 0; i < rects.length; i++) {
-      const rect = rects[i]
+      const rect = rects[i]!
       if (rect.type === 'active-area') {
         continue
       }
@@ -849,7 +855,7 @@ function setHoveredFieldArea(box: Rectangle, mouse: Coord) {
   let candidate: FieldRect | null = null
 
   for (let i = 0; i < fields.length; i++) {
-    const field = fields[i]
+    const field = fields[i]!
     if (!field.canAddChildren) {
       continue
     }
@@ -938,7 +944,7 @@ onBlokkliEvent('canvas:draw', () => {
   const rects = Object.values(collector.rects)
 
   for (let i = 0; i < rects.length; i++) {
-    const rect = rects[i]
+    const rect = rects[i]!
     if (active.value?.id === rect.id) {
       ctx.fillStyle = rect.color
     } else {

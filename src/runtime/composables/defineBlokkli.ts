@@ -38,7 +38,10 @@ export function defineBlokkli<
 >(arg: BlockDefinitionInput<T, G, B>): DefineBlokkliContext<T, G> {
   // The vite plugin removes all properties from the passed object except for
   // bundle, so we have to cast it as this type here.
-  const [bundle, identifier] = (arg as unknown as string).split('::', 2)
+  const [bundle, identifier] = (arg as unknown as string).split('::', 2) as [
+    string,
+    string,
+  ]
 
   const fieldListType = inject<ComputedRef<ValidFieldListTypes>>(
     INJECT_FIELD_LIST_TYPE,

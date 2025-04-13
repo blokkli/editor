@@ -37,7 +37,7 @@ function getSelectionAfterDelete(
     return
   }
 
-  const uuid = items[0].uuid
+  const uuid = items[0]!.uuid
   const field = state.getFieldListForBlock(uuid)
   if (!field) {
     return

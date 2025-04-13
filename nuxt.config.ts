@@ -9,4 +9,12 @@ export default defineNuxtConfig({
       './drupal/mocks.graphql',
     ],
   },
+  typescript: {
+    strict: true,
+    tsConfig: {
+      compilerOptions: {
+        noUncheckedIndexedAccess: true,
+      },
+    },
+  },
 })

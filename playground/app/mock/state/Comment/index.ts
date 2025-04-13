@@ -14,7 +14,9 @@ export class Comment extends Entity {
 
   constructor(uuid: string) {
     super(uuid)
-    this.fields.created.list = [Date.now()]
+    if (this.fields.created) {
+      this.fields.created.list = [Date.now()]
+    }
   }
 
   static override getFieldDefintions(): Field<any>[] {
@@ -54,6 +56,6 @@ export class Comment extends Entity {
   }
 
   getUser(): User {
-    return this.get<FieldReference<User>>('user').getReferencedEntities()[0]
+    return this.get<FieldReference<User>>('user').getReferencedEntities()[0]!
   }
 }

@@ -38,35 +38,35 @@ class ConfigMap<T extends MappableConfig> {
 
   constructor(items: T[]) {
     for (let i = 0; i < items.length; i++) {
-      const item = items[i]
+      const item = items[i]!
       this.configs.push(item)
 
       // Map by entity type.
       if (!this.mapEntityType[item.entityType]) {
         this.mapEntityType[item.entityType] = []
       }
-      this.mapEntityType[item.entityType].push(item)
+      this.mapEntityType[item.entityType]!.push(item)
 
       // Map by entity type and bundle.
       if (!this.mapEntityTypeBundle[item.entityType]) {
         this.mapEntityTypeBundle[item.entityType] = {}
       }
 
-      if (!this.mapEntityTypeBundle[item.entityType][item.entityBundle]) {
-        this.mapEntityTypeBundle[item.entityType][item.entityBundle] = []
+      if (!this.mapEntityTypeBundle[item.entityType]![item.entityBundle]) {
+        this.mapEntityTypeBundle[item.entityType]![item.entityBundle] = []
       }
 
-      this.mapEntityTypeBundle[item.entityType][item.entityBundle].push(item)
+      this.mapEntityTypeBundle[item.entityType]![item.entityBundle]!.push(item)
 
       // Map by entity type, bundle and name.
       if (!this.mapEntityTypeBundleName[item.entityType]) {
         this.mapEntityTypeBundleName[item.entityType] = {}
       }
 
-      if (!this.mapEntityTypeBundleName[item.entityType][item.entityBundle]) {
-        this.mapEntityTypeBundleName[item.entityType][item.entityBundle] = {}
+      if (!this.mapEntityTypeBundleName[item.entityType]![item.entityBundle]) {
+        this.mapEntityTypeBundleName[item.entityType]![item.entityBundle] = {}
       }
-      this.mapEntityTypeBundleName[item.entityType][item.entityBundle][
+      this.mapEntityTypeBundleName[item.entityType]![item.entityBundle]![
         item.name
       ] = item
     }
@@ -148,7 +148,7 @@ export default async function (
     let hostBundle = ''
     let fieldName = ''
     for (let i = 0; i < selection.blocks.value.length; i++) {
-      const block = selection.blocks.value[i]
+      const block = selection.blocks.value[i]!
       if (
         i !== 0 &&
         (hostType !== block.hostType ||
@@ -172,7 +172,7 @@ export default async function (
     if (selection.blocks.value.length !== 1) {
       return
     }
-    const item = selection.blocks.value[0]
+    const item = selection.blocks.value[0]!
     // Determine if the selected item has nested items.
     const hasNested = itemBundlesWithNested.includes(item.itemBundle)
     if (hasNested) {

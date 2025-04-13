@@ -23,7 +23,7 @@ export class MutationAdd extends Mutation {
   ) {
     const items: MutationAddArgs[] = Array.isArray(arg) ? arg : [arg]
     for (let i = 0; i < items.length; i++) {
-      const item = items[i]
+      const item = items[i]!
       const uuid = this.getUuidForNewEntity(i.toString())
 
       const block = entityStorageManager.createBlock(item.bundle, uuid)

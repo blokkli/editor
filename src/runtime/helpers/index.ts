@@ -149,7 +149,7 @@ export function buildDraggableItem(
         itemType: 'search_content',
         element: () =>
           document.querySelector(`[data-sortli-id="${id}"]`) as HTMLElement,
-        itemBundle: searchItem.targetBundles[0],
+        itemBundle: searchItem.targetBundles[0]!,
         searchItem,
       }
     }
@@ -217,11 +217,11 @@ export function getRelativeTimeString(
 
   // Get the divisor to divide from the seconds. E.g. if our unit is "day" our divisor
   // is one day in seconds, so we can divide our seconds by this to get the # of days
-  const divisor = unitIndex ? cutoffs[unitIndex - 1] : 1
+  const divisor = unitIndex ? cutoffs[unitIndex - 1]! : 1
 
   // Intl.RelativeTimeFormat do its magic
   const rtf = new Intl.RelativeTimeFormat(lang, { numeric: 'auto' })
-  return rtf.format(Math.floor(deltaSeconds / divisor), units[unitIndex])
+  return rtf.format(Math.floor(deltaSeconds / divisor), units[unitIndex]!)
 }
 
 export function modulo(n: number, m: number) {
@@ -233,7 +233,7 @@ export function getBounds(rects: Rectangle[]): Rectangle | undefined {
     return
   }
 
-  const firstRect = rects[0]
+  const firstRect = rects[0]!
   let minX = firstRect.x
   let minY = firstRect.y
   let maxX = minX + firstRect.width
@@ -307,11 +307,15 @@ export function findClosestRectangle<T extends Rectangle>(
   y: number,
   rects: T[],
 ): T {
-  let closestRect: T = rects[0]
-  let minDistance = distanceToClosestRectangleEdge(x, y, rects[0])
+  let closestRect: T | undefined = rects[0]
+  if (!closestRect) {
+    throw new Error('Need at least one rect.')
+  }
+
+  let minDistance = distanceToClosestRectangleEdge(x, y, closestRect)
 
   for (let i = 1; i < rects.length; i++) {
-    const rect = rects[i]
+    const rect = rects[i]!
     const distance = distanceToClosestRectangleEdge(x, y, rect)
 
     if (distance < minDistance) {
@@ -376,9 +380,9 @@ export const parseColorString = (color: string): RGB | undefined => {
     return
   }
 
-  const r = Number.parseInt(match[1])
-  const g = Number.parseInt(match[2])
-  const b = Number.parseInt(match[3])
+  const r = Number.parseInt(match[1]!)
+  const g = Number.parseInt(match[2]!)
+  const b = Number.parseInt(match[3]!)
   const a = match[4] !== undefined ? Number.parseFloat(match[4]) : 1
 
   if ([r, g, b, a].some((val) => Number.isNaN(val))) {
@@ -479,7 +483,7 @@ function getLuminance(color: RGB): number {
   const [r, g, b] = color.map((val) => {
     val /= 255
     return val <= 0.03928 ? val / 12.92 : Math.pow((val + 0.055) / 1.055, 2.4)
-  })
+  }) as [number, number, number]
 
   return 0.2126 * r + 0.7152 * g + 0.0722 * b
 }
@@ -489,7 +493,7 @@ export function findHighestContrastColor(
   backgroundColor: RGB = [255, 255, 255],
 ): RGB {
   let maxContrast = 0
-  let maxContrastColor: RGB = colors[0]
+  let maxContrastColor: RGB = colors[0]!
 
   for (const color of colors) {
     const contrast = getContrastRatio(color, backgroundColor)
@@ -673,9 +677,10 @@ export function getFieldKey(uuid: string, fieldName: string) {
 export function getInteractionCoordinates(e: MouseEvent | TouchEvent): Coord {
   if ('touches' in e) {
     const touch = e.touches[0] || e.changedTouches[0]
+    // @todo: Handle possible undefined.
     return {
-      x: touch.clientX,
-      y: touch.clientY,
+      x: touch!.clientX,
+      y: touch!.clientY,
     }
   }
   return {

@@ -78,7 +78,7 @@ function onClick(items: DraggableExistingBlock[]) {
     return
   }
 
-  const item = items[0]
+  const item = items[0]!
 
   // Because editing library items inside the current context is not (yet)
   // supported, editing has to happen in a separate window where the host

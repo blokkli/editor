@@ -254,7 +254,7 @@ const getBundlesForAppendCommands = () => {
     return []
   }
 
-  const block = selection.blocks.value[0]
+  const block = selection.blocks.value[0]!
   const field: FieldConfig | undefined = types.getFieldConfig(
     block.hostType,
     block.hostBundle,
@@ -420,6 +420,9 @@ const getInsertCommands = (
 
 const commandCallbackAppend = (bundle: string) => {
   const block = selection.blocks.value[0]
+  if (!block) {
+    return
+  }
   eventBus.emit('block:append', {
     bundle,
     afterUuid: selection.uuids.value[0],

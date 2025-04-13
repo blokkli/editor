@@ -91,7 +91,7 @@ const markupCompletion = async (
       ],
       model: 'gpt-3.5-turbo-1106',
     })
-    const content = completion.choices[0].message.content || ''
+    const content = completion.choices[0]?.message?.content || ''
     return {
       type: 'markup',
       content,

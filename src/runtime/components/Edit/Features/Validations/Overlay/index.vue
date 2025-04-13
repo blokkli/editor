@@ -34,10 +34,10 @@ const items = computed(() =>
       .filter(falsy)
       .reduce<Record<string, string[]>>((acc, v) => {
         if (!acc[v.uuid]) {
-          acc[v.uuid] = []
+          acc[v.uuid] = [v.message]
+        } else {
+          acc[v.uuid]!.push(v.message)
         }
-
-        acc[v.uuid].push(v.message)
 
         return acc
       }, {}),

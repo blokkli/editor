@@ -80,16 +80,21 @@ const updateState = () => {
   updateMutatedFields(fields)
   mutatedEntityFromState.value = data.value?.mutatedEntity
 
-  const options = (mutatedOptions.value =
-    data.value?.mutatedState?.mutatedOptions || {})
+  const options =
+    mutatedOptions.value || data.value?.mutatedState?.mutatedOptions || {}
   const optionKeys = Object.keys(options)
 
   for (let i = 0; i < optionKeys.length; i++) {
     const key = optionKeys[i]
-    const newOptions = options[key]
-    const existing = mutatedOptions[key]
-    if (!existing || JSON.stringify(existing) !== JSON.stringify(newOptions)) {
-      mutatedOptions[key] = newOptions
+    if (key) {
+      const newOptions = options[key]
+      const existing = mutatedOptions[key]
+      if (
+        !existing ||
+        JSON.stringify(existing) !== JSON.stringify(newOptions)
+      ) {
+        mutatedOptions[key] = newOptions
+      }
     }
   }
 }
@@ -187,12 +192,10 @@ const onFocusItem = (uuid: string) => {
 const onUpdateOption = (option: UpdateBlockOptionEvent) => {
   const { uuid, key, value } = option
 
-  if (!mutatedOptions.value[uuid]) {
+  if (!mutatedOptions[uuid]) {
     mutatedOptions[uuid] = {}
   }
-  if (!mutatedOptions.value[uuid]) {
-    mutatedOptions[uuid] = {}
-  }
+
   mutatedOptions[uuid][key] = value
 }
 

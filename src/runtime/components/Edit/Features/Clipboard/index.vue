@@ -167,9 +167,9 @@ const onFileInput = (e: Event) => {
 
 function removeAllAttrs(element: Element) {
   for (let i = element.attributes.length; i-- > 0; ) {
-    const attribute = element.attributes[i]
+    const attribute = element.attributes[i]!
     if (!ALLOWED_HTML_ATTRIBUTES.includes(attribute.name)) {
-      element.removeAttributeNode(element.attributes[i])
+      element.removeAttributeNode(attribute)
     }
   }
 }
@@ -181,7 +181,7 @@ function removeAttributes(el: Element) {
   }
   const children = el.children
   for (let i = 0; i < children.length; i++) {
-    const child = children[i]
+    const child = children[i]!
     removeAllAttrs(child)
     if (child.children.length) {
       removeAttributes(child)

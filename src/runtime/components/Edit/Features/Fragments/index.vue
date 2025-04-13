@@ -48,7 +48,7 @@ const { state, $t, types, selection, dom } = useBlokkli()
 
 const isEnabled = computed<boolean>(() => {
   if (selection.blocks.value.length === 1) {
-    const block = selection.blocks.value[0]
+    const block = selection.blocks.value[0]!
     const field = dom.findField(block.hostUuid, block.hostFieldName)
     return !!field?.allowedFragments.length
   }

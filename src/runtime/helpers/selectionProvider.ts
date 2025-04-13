@@ -155,7 +155,7 @@ export default function (dom: DomProvider): SelectionProvider {
     }
 
     const currentIndex = blocks.value[0]
-      ? items.findIndex((v) => v.uuid === blocks.value[0].uuid)
+      ? items.findIndex((v) => v.uuid === blocks.value[0]!.uuid)
       : -1
 
     const targetIndex = modulo(

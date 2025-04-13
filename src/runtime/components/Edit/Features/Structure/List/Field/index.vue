@@ -36,7 +36,7 @@
               !selection.isBlockSelected(item.uuid)) &&
             (!list[index + 1] ||
               !selection.isDraggingExisting.value ||
-              !selection.isBlockSelected(list[index + 1].uuid))
+              !selection.isBlockSelected(list[index + 1]!.uuid))
           "
           :style="targetStyle"
           class="bk-structure-field-target bk-is-after"

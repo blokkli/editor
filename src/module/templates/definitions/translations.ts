@@ -9,7 +9,7 @@ export default defineCodeTemplate(
     Object.keys(defaultTranslations).forEach((language) => {
       translations[language] = {}
       Object.keys((defaultTranslations as any)[language]).forEach((key) => {
-        translations[language][key] = (defaultTranslations as any)[language][
+        translations[language]![key] = (defaultTranslations as any)[language][
           key
         ].translation
       })

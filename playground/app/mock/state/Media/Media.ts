@@ -31,7 +31,7 @@ export class MediaImage extends Media {
   }
 
   url() {
-    return this.fields.url.list[0] || ''
+    return this.fields.url?.list[0] || ''
   }
 
   override thumbnail(): string | undefined {
@@ -82,7 +82,7 @@ export class MediaVideo extends Media {
   }
 
   url() {
-    return this.fields.url.list[0] || ''
+    return this.fields.url?.list[0] || ''
   }
 
   override title(): string {

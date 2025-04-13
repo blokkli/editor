@@ -184,7 +184,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       if (uuids.length === 1) {
         return useGraphqlMutation('pbDuplicateParagraph', {
           ...ctx.value,
-          uuid: uuids[0],
+          uuid: uuids[0]!,
         }).then(mapMutation)
       }
       return useGraphqlMutation('pbDuplicateMultipleParagraphs', {
@@ -215,7 +215,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       if (uuids.length === 1) {
         return useGraphqlMutation('pbConvertParagraph', {
           ...ctx.value,
-          uuid: uuids[0],
+          uuid: uuids[0]!,
           targetBundle,
         }).then(mapMutation)
       }
@@ -276,9 +276,9 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       if (options.length === 1) {
         return useGraphqlMutation('pbUpdateParagraphOption', {
           ...ctx.value,
-          uuid: options[0].uuid,
-          key: options[0].key,
-          value: options[0].value,
+          uuid: options[0]!.uuid,
+          key: options[0]!.key,
+          value: options[0]!.value,
           pluginId: 'paragraphs_blokkli_data',
         }).then(mapMutation)
       }

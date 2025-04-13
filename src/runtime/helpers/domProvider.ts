@@ -202,8 +202,8 @@ export default function (
           {
             x: entry.contentRect.x,
             y: entry.contentRect.y,
-            width: entry.borderBoxSize[0].inlineSize,
-            height: entry.borderBoxSize[0].blockSize,
+            width: entry.borderBoxSize[0]!.inlineSize,
+            height: entry.borderBoxSize[0]!.blockSize,
           },
           now,
         )
@@ -214,9 +214,9 @@ export default function (
         return
       }
 
-      blockRects[uuid].width = entry.borderBoxSize[0].inlineSize
-      blockRects[uuid].height = entry.borderBoxSize[0].blockSize
-      blockRects[uuid].time = now
+      blockRects[uuid]!.width = entry.borderBoxSize[0]!.inlineSize
+      blockRects[uuid]!.height = entry.borderBoxSize[0]!.blockSize
+      blockRects[uuid]!.time = now
     }
   })
 
@@ -245,7 +245,7 @@ export default function (
           fieldRects[fieldKey] = ui.getAbsoluteElementRect(rect, scale, offset)
         } else if (uuid) {
           const newRect = ui.getAbsoluteElementRect(rect, scale, offset)
-          const currentRect = blockRects[uuid]
+          const currentRect = blockRects[uuid]!
 
           // Rect already exists.
           if (currentRect) {
@@ -253,8 +253,8 @@ export default function (
             // This indicates that the resize observer has already updated the width and/or height.
             // We only need to update the X and Y coordinates.
             if (currentRect.time > entry.time) {
-              blockRects[uuid].x = newRect.x
-              blockRects[uuid].y = newRect.y
+              blockRects[uuid]!.x = newRect.x
+              blockRects[uuid]!.y = newRect.y
             } else {
               blockRects[uuid] = rectWithTime(newRect, entry.time)
             }
@@ -517,7 +517,7 @@ export default function (
     const offset = ui.artboardOffset.value
     const scale = ui.artboardScale.value
     for (let i = 0; i < toUpdate.length; i++) {
-      const uuid = toUpdate[i]
+      const uuid = toUpdate[i]!
       const el = registeredBlocks[uuid]
       if (!el) {
         continue
@@ -551,7 +551,7 @@ export default function (
 
     const visibleFieldKeys = getVisibleFields()
     for (let i = 0; i < visibleFieldKeys.length; i++) {
-      const key = visibleFieldKeys[i]
+      const key = visibleFieldKeys[i]!
       const field = registeredFields[key]
       if (!field) {
         continue

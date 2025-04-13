@@ -59,7 +59,7 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
       this.reset()
       this.lastCount = 0
       for (let i = 0; i < props.blocks.length; i++) {
-        const block = props.blocks[i]
+        const block = props.blocks[i]!
         if (this.added.has(block.uuid)) {
           continue
         }

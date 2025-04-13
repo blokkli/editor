@@ -56,7 +56,9 @@ onBlokkliEvent('updateMutatedFields', (e) =>
 )
 onBlokkliEvent('select', (uuids) => {
   const uuid = Array.isArray(uuids) ? uuids[0] : uuids
-  frameEventBus.emit('focus', uuid)
+  if (uuid) {
+    frameEventBus.emit('focus', uuid)
+  }
 })
 onBlokkliEvent('option:update', (e) => frameEventBus.emit('updateOption', e))
 

@@ -155,7 +155,10 @@ export default function (): ThemeProvider {
       const meta = document.createElement('meta')
       meta.name = 'theme-color'
       meta.content = THEME_COLOR
-      document.getElementsByTagName('head')[0].appendChild(meta)
+      const head = document.getElementsByTagName('head')[0]
+      if (head) {
+        head.appendChild(meta)
+      }
     }
   })
 
