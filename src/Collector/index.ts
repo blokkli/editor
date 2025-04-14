@@ -12,7 +12,7 @@ export class CollectedFile {
     public fileContents: string,
   ) {}
 
-  async handleChange(helper: ModuleHelper): Promise<boolean> {
+  async handleChange(_helper: ModuleHelper): Promise<boolean> {
     return Promise.resolve(true)
   }
 }

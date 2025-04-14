@@ -5,9 +5,9 @@
     :submit-label
     :is-loading="isLoading"
     :can-submit="!!selectedToPublishItems.length"
+    class="bk-is-publish-dialog"
     @submit="onSubmit"
     @cancel="$emit('close')"
-    class="bk-is-publish-dialog"
   >
     <div class="bk bk-form bk-dialog-publish-form">
       <FormGroup title="Einstellungen" horizontal>

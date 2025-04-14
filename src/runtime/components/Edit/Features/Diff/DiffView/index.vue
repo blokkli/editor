@@ -11,7 +11,7 @@
       </thead>
       <tbody>
         <template v-for="item in diffItems" :key="item.uuid">
-          <tr class="bk-diff-row">
+          <tr>
             <td
               :rowspan="Math.max(1, item.props.length)"
               class="bk-diff-status"

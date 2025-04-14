@@ -28,7 +28,7 @@ import {
 import { PluginMenuButton } from '#blokkli/plugins'
 import SettingsDialog from './Dialog/index.vue'
 
-const { $t, storage } = useBlokkli()
+const { $t } = useBlokkli()
 
 const LOW_PERFORMANCE_CLASS = 'bk-low-performance-mode'
 

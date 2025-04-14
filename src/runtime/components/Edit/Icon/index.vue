@@ -1,5 +1,5 @@
 <template>
-  <div class="bk-icon" v-html="markup" :class="'bk-icon-' + name" />
+  <div class="bk-icon" :class="'bk-icon-' + name" v-html="markup" />
 </template>
 
 <script lang="ts" setup>

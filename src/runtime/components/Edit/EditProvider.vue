@@ -259,6 +259,6 @@ if (import.meta.hot) {
   }
   import.meta.hot.accept('#blokkli/runtime-helpers', () => {})
   import.meta.hot.accept('#blokkli/helpers/runtimeHelpers', () => {})
-  // import.meta.hot.on('vite:afterUpdate', onAfterUpdate)
+  import.meta.hot.on('vite:afterUpdate', onAfterUpdate)
 }
 </script>

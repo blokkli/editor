@@ -109,6 +109,8 @@ const mutationStatusLabel = computed(() => {
       return 'Erfolgreich gespeichert'
     }
   }
+
+  return null
 })
 
 const isCurrentlyPublished = computed(() => props.entity.status)

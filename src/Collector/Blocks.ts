@@ -66,7 +66,7 @@ function getVariations(definition?: ExtractedDefinition | null): string[] {
 
 export function getIdentifier(definition: ExtractedDefinition) {
   const type = isBlock(definition) ? 'b' : 'f'
-  let name = isBlock(definition) ? definition.bundle : definition.name
+  const name = isBlock(definition) ? definition.bundle : definition.name
   return toValidVariableName(
     type + '_' + hash(name + getVariations(definition).join('__')),
   )

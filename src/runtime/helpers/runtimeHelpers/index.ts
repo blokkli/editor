@@ -27,6 +27,7 @@ export function isValidDatetimeLocalValue(value: string): boolean {
   // Regular expression to validate the datetime-local format
   // Format: YYYY-MM-DDThh:mm with optional :ss and .sss
   const pattern =
+    // eslint-disable-next-line regexp/no-unused-capturing-group
     /^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):([0-5]\d)(:[0-5]\d(\.\d{1,3})?)?$/
 
   return pattern.test(value)
