@@ -3,22 +3,12 @@ import { defineCodeTemplate } from '../defineTemplate'
 export default defineCodeTemplate(
   'edit-adapter',
   (ctx) => {
-    // Setup adapter.
-    const resolvedPath =
-      '~/app/blokkli.editAdapter'
-        .replace(/^(~~|@@)/, ctx.helper.nuxt.options.rootDir)
-        .replace(/^(~|@)/, ctx.helper.nuxt.options.srcDir) + '.ts'
-
-    const fileExists = ctx.helper.fileCache.fileExists(resolvedPath)
-
-    if (!fileExists) {
-      throw new Error(
-        'Missing blokkli adapter file in ~/app/blokkli.editAdapter.ts',
-      )
-    }
+    const pathRelative = ctx.helper.toModuleBuildRelative(
+      ctx.helper.paths.editAdapter,
+    )
 
     return `
-  import adapter from '${resolvedPath}'
+  import adapter from '${pathRelative}'
 
 export default adapter
 `

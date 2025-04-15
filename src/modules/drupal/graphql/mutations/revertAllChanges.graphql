@@ -1,0 +1,14 @@
+mutation pbRevertAllChanges(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: revertAllChanges {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

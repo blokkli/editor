@@ -1,0 +1,11 @@
+fragment paragraphsBlokkliMutatedField on ParagraphsBlokkliMutatedField {
+  name
+  entityType
+  entityUuid
+  list {
+    ...paragraphsFieldItem
+    props {
+      ...paragraph
+    }
+  }
+}

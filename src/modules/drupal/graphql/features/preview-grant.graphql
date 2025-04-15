@@ -1,0 +1,13 @@
+query pbGetPreviewGrantUrl(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String!
+) {
+  getParagraphsEditState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+    langcode: $langcode
+  ) {
+    previewUrl
+  }
+}

@@ -1,0 +1,25 @@
+mutation pbMoveParagraph(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $uuid: String!
+  $hostType: String!
+  $hostUuid: String!
+  $hostFieldName: String!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: move(
+      uuid: $uuid
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+      afterUuid: $afterUuid
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

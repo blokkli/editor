@@ -8,6 +8,7 @@ import type { Theme, ThemeName } from '../runtime/types/theme'
 import type { CollectedBlockFile } from '../Collector/Blocks'
 import type { CollectedFeatureFile } from '../Collector/Features'
 import type { CollectedFile } from '../Collector'
+import type { BlokkliModule } from '../modules/defineBlokkliModule'
 
 export type ExtractedBlockDefinitionInput = BlockDefinitionInput
 export type ExtractedFragmentDefinitionInput = FragmentDefinitionInput
@@ -67,6 +68,11 @@ export type AlterHookContext<K extends string, T extends CollectedFile> = {
  */
 export type ModuleOptions = {
   /**
+   * An array of blökkli modules to use.
+   */
+  modules?: BlokkliModule[]
+
+  /**
    * The pattern of source files to scan for blokkli components.
    */
   pattern?: string[]
@@ -76,6 +82,14 @@ export type ModuleOptions = {
    * referencing the option name.
    */
   globalOptions?: BlockDefinitionOptionsInput
+
+  /**
+   * Custom path where the blökkli edit adapter can be found.
+   *
+   * Must be an absolute path and the file must exist when the module
+   * is initialised.
+   */
+  editAdapterPath?: string
 
   /**
    * Define available chunk groups.

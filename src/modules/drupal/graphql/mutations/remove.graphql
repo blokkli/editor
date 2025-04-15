@@ -1,0 +1,15 @@
+mutation pbDeleteParagraph(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $uuid: String!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: remove(uuid: $uuid) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

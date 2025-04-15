@@ -1,0 +1,23 @@
+mutation pbUpdateParagraphOption(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $uuid: String!
+  $key: String!
+  $value: String!
+  $pluginId: String!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: update_behavior_setting(
+      pluginId: $pluginId
+      uuid: $uuid
+      key: $key
+      value: $value
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

@@ -1,0 +1,28 @@
+query pbMediaLibraryGetResults($text: String, $bundle: String, $page: Int) {
+  pbMediaLibraryGetResults(text: $text, bundle: $bundle, page: $page) {
+    items {
+      label
+      mediaId
+      context
+      thumbnail
+      targetBundles
+      mediaBundle
+    }
+    total
+    perPage
+    filters {
+      __typename
+      id
+      label
+      type
+      ... on ParagraphsBlokkliMediaLibraryFilterText {
+        placeholder
+      }
+
+      ... on ParagraphsBlokkliMediaLibraryFilterSelect {
+        default
+        options
+      }
+    }
+  }
+}

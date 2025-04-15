@@ -1,0 +1,14 @@
+mutation pbTakeOwnership(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: takeOwnership {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

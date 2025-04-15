@@ -1,0 +1,20 @@
+mutation pbUpdateHostEntityFieldValue(
+  $langcode: String!
+  $entityType: EntityType!
+  $entityUuid: String!
+  $fieldName: String!
+  $value: String!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: update_host_entity_field_value(
+      langcode: $langcode
+      fieldName: $fieldName
+      value: $value
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

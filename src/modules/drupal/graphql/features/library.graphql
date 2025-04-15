@@ -64,3 +64,20 @@ fragment paragraphsBlokkliLibraryItem on ParagraphsLibraryItem {
     }
   }
 }
+
+mutation pbMakeParagraphReusable(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $uuid: String!
+  $label: String!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: make_reusable(uuid: $uuid, label: $label) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

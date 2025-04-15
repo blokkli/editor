@@ -1,0 +1,59 @@
+mutation pbPublish(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $createNewState: Boolean
+  $publishIfUnpublished: Boolean
+  $revisionLogMessage: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: publish(
+      createNewState: $createNewState
+      publishIfUnpublished: $publishIfUnpublished
+      revisionLogMessage: $revisionLogMessage
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}
+
+query pbPublishOptions(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String!
+) {
+  state: getParagraphsEditState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+    langcode: $langcode
+  ) {
+    publishOptions {
+      canPublish
+      isRevisionable
+      hasRevisionLogMessage
+      lastChanged
+    }
+  }
+}
+
+query pbSearchEditStates($page: Int) {
+  pbSearchEditStates(page: $page) {
+    perPage
+    total
+    items {
+      uuid
+      hostEntityUuid
+      hostEntityType
+      label
+      currentUserIsOwner
+      entity {
+        label
+        status
+        bundleLabel
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+mutation pbBulkUpdateParagraphBehaviorSettings(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $items: [ParagraphsBlokkliBulkUpdateBehaviorSettingsInput]!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: bulk_update_behavior_settings(items: $items) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

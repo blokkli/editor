@@ -1,0 +1,7 @@
+fragment paragraphsBlokkliViolation on ParagraphsEditViolation {
+  message
+  code
+  propertyPath
+  entityUuid
+  entityType
+}

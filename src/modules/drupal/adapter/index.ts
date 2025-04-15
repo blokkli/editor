@@ -1,5 +1,6 @@
 import { defineBlokkliEditAdapter } from '#blokkli/adapter'
 import { falsy } from '#blokkli/helpers'
+import { availableFeaturesAtBuild } from '#blokkli-build/features'
 import type { BlockBundleDefinition, TranslationState } from '#blokkli/types'
 import type { BlokkliAdapter, GetMediaLibraryFunction } from '#blokkli/adapter'
 import {
@@ -19,6 +20,7 @@ type DrupalAdapter = BlokkliAdapter<ParagraphsBlokkliEditStateFragment>
 
 export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
   async (providedContext) => {
+    const availableFeatureIds = new Set(availableFeaturesAtBuild)
     const ctx = computed(() => {
       return {
         entityType: providedContext.value.entityType.toUpperCase() as any,
@@ -120,16 +122,16 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       const disabled: string[] = []
       const mutations = features?.mutations || []
       if (!features?.comment) {
-        disabled.push('Comments')
+        disabled.push('comments')
       }
       if (!features?.conversion) {
-        disabled.push('Conversions')
+        disabled.push('conversions')
       }
       if (!features?.library) {
-        disabled.push('Library')
+        disabled.push('library')
       }
       if (!mutations.includes('duplicate')) {
-        disabled.push('Duplicate')
+        disabled.push('duplicate')
       }
       return Promise.resolve(disabled)
     }
@@ -836,7 +838,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       })
     }
 
-    return {
+    const adapter: BlokkliAdapter<any> = {
       buildEditableFrameUrl,
       getTransformPlugins,
       applyTransformPlugin,
@@ -892,5 +894,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       getEditStates,
       getPublishOptions,
     }
+
+    return adapter
   },
 )

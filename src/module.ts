@@ -20,6 +20,7 @@ import type { TemplateDependency } from './module/templates/defineTemplate'
 import { FeatureCollector } from './Collector/Features'
 import { ThemeData } from './module/ThemeData'
 import { BlockCollector } from './Collector/Blocks'
+import type { Blokkli } from './modules/defineBlokkliModule'
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
@@ -49,6 +50,15 @@ export default defineNuxtModule<ModuleOptions>({
     itemEntityType: 'block',
   },
   async setup(moduleOptions, nuxt) {
+    const blokkliModules = moduleOptions.modules || []
+
+    // Let modules alter the options.
+    for (const module of blokkliModules) {
+      if (module.init.alterOptions) {
+        module.init.alterOptions(moduleOptions)
+      }
+    }
+
     const helper = new ModuleHelper(nuxt, import.meta.url, moduleOptions)
 
     const theme = new ThemeData(helper)
@@ -73,6 +83,16 @@ export default defineNuxtModule<ModuleOptions>({
       blockCollector,
       theme,
     )
+
+    const app: Blokkli = {
+      helper,
+      context,
+    }
+
+    // Setup blökkli modules.
+    for (const module of blokkliModules) {
+      await module.init.setup(app, module.options!)
+    }
 
     TEMPLATES.forEach((v) => {
       if (typeof v === 'function') {

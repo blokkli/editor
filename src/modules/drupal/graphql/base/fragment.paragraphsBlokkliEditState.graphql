@@ -1,0 +1,44 @@
+fragment paragraphsBlokkliEditState on ParagraphsBlokkliEditState {
+  mutations {
+    ...paragraphsBlokkliMutationItem
+  }
+
+  currentIndex
+  currentUserIsOwner
+  ownerName
+  mutatedState {
+    fields(langcode: $langcode) {
+      ...paragraphsBlokkliMutatedField
+    }
+    mutatedOptions: behaviorSettings
+    violations {
+      ...paragraphsBlokkliViolation
+    }
+  }
+
+  entity {
+    status
+    label
+    bundleLabel
+  }
+
+  mutatedEntity {
+    ...pbMutatedEntity
+  }
+
+  translationState {
+    isTranslatable
+    sourceLanguage
+    availableLanguages {
+      id
+      name
+    }
+    translations {
+      id
+      url
+      editUrl
+      exists
+      status
+    }
+  }
+}

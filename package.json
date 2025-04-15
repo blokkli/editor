@@ -4,15 +4,24 @@
   "description": "Interactive page building experience for Nuxt",
   "repository": "blokkli/editor",
   "type": "module",
-  "private": false,
   "exports": {
     ".": {
-      "import": "./dist/module.mjs",
-      "require": "./dist/module.cjs"
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
+    },
+    "./drupal": "./dist/modules/drupal/index.mjs"
+  },
+  "main": "./dist/module.mjs",
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./dist/types.d.mts"
+      ],
+      "drupal": [
+        "./dist/modules/drupal/index.d.mts"
+      ]
     }
   },
-  "main": "./dist/module.cjs",
-  "types": "./dist/types.d.ts",
   "files": [
     "dist"
   ],
@@ -25,7 +34,7 @@
     "styles:watch": "postcss ./css/index.css -o ./src/runtime/css/output.css --watch",
     "dev:build": "npm run dev:prepare && nuxi generate playground",
     "dev:start": "npx serve playground/.output/public",
-    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
+    "dev:prepare": "PLAYGROUND_MODULE_BUILD=true nuxt-module-build build --stub && PLAYGROUND_MODULE_BUILD=true nuxt-module-build prepare && nuxi prepare playground",
     "release": "npm run lint && npm run prepack && changelogen --release",
     "texts": "node ./scripts/texts/index.cjs",
     "drupal-types": "node ./scripts/drupal/index.cjs",
@@ -60,12 +69,11 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-build-classic": "^43.1.0",
     "@ckeditor/ckeditor5-vue": "^7.0.0",
-    "@nuxt/content": "^2.13.2",
     "@nuxt/devtools": "latest",
     "@nuxt/eslint-config": "^0.5.7",
-    "@nuxt/kit": "^3.16.1",
-    "@nuxt/module-builder": "^0.8.4",
-    "@nuxt/schema": "^3.16.1",
+    "@nuxt/kit": "^3.16.2",
+    "@nuxt/module-builder": "^1.0.1",
+    "@nuxt/schema": "^3.16.2",
     "@nuxt/test-utils": "^3.14.2",
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@tailwindcss/forms": "^0.5.9",
@@ -81,9 +89,9 @@
     "eslint-plugin-tailwindcss": "^3.17.4",
     "gettext-parser": "^8.0.0",
     "happy-dom": "^15.7.4",
-    "nuxt": "^3.16.1",
-    "nuxt-graphql-middleware": "^5.0.0-alpha.8",
-    "nuxt-svg-icon-sprite": "^1.0.2",
+    "nuxt": "^3.16.2",
+    "nuxt-graphql-middleware": "^5.0.0-alpha.17",
+    "nuxt-svg-icon-sprite": "^2.0.0-alpha.1",
     "openai": "^4.59.0",
     "playwright-core": "^1.47.0",
     "postcss": "^8.4.45",

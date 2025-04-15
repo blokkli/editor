@@ -1,0 +1,7 @@
+fragment paragraphsBlokkliMutationResult on ParagraphsBlokkliMutationResult {
+  success
+  errors
+  state {
+    ...paragraphsBlokkliEditState
+  }
+}

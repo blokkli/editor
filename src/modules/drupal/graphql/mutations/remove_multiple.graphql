@@ -1,0 +1,15 @@
+mutation pbDeleteMultipleParagraphs(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $uuids: [String]!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: remove_multiple(uuids: $uuids) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

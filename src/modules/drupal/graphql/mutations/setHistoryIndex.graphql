@@ -1,0 +1,15 @@
+mutation pbSetHistoryIndex(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $index: Int!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: setHistoryIndex(index: $index) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

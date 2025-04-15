@@ -1,0 +1,96 @@
+query pbConfig($entityType: String!, $entityBundle: String!) {
+  clipboards: pbGetSupportedClipboards {
+    ...paragraphsBlokkliSupportedClipboard
+  }
+  features: paragraphsBlokkliAvailableFeatures {
+    ...paragraphsBlokkliAvailableFeatures
+  }
+  allTypes: entityQuery(entityType: PARAGRAPHS_TYPE, limit: 999) {
+    items {
+      ...paragraphsType
+    }
+  }
+
+  fieldConfig: pbGetFieldConfig {
+    name
+    label
+    entityType
+    entityBundle
+    cardinality
+    canEdit
+    allowedBundles
+  }
+
+  editableFieldConfig: pbGetEditableFieldConfig(
+    entityType: $entityType
+    entityBundle: $entityBundle
+  ) {
+    name
+    label
+    entityType
+    entityBundle
+    type
+    required
+    maxLength
+  }
+
+  droppableFieldConfig: pbGetDroppableFieldConfig(
+    entityType: $entityType
+    entityBundle: $entityBundle
+  ) {
+    name
+    label
+    entityType
+    entityBundle
+    cardinality
+    canEdit
+    allowedEntityType
+    allowedBundles
+    required
+  }
+
+  urlPrefixes: pbGetUrlPrefixes {
+    langcode
+    prefix
+  }
+}
+
+fragment paragraphsBlokkliAvailableFeatures on ParagraphsBlokkliAvailableFeatures {
+  conversion
+  comment
+  library
+  mutations
+}
+
+fragment paragraphsBlokkliSupportedClipboard on ParagraphsBlokkliSupportedClipboard {
+  __typename
+  ... on ParagraphsBlokkliSupportedClipboardImage {
+    possibleParagraphBundles
+    maxFileSize
+    fileExtensions
+  }
+
+  ... on ParagraphsBlokkliSupportedClipboardFile {
+    possibleParagraphBundles
+    maxFileSize
+    fileExtensions
+  }
+
+  ... on ParagraphsBlokkliSupportedClipboardRichText {
+    possibleParagraphBundles
+  }
+
+  ... on ParagraphsBlokkliSupportedClipboardRemoteVideo {
+    possibleParagraphBundles
+    videoProviders
+  }
+}
+
+fragment paragraphsType on ParagraphsType {
+  id
+  label
+  icon: iconDefault
+  description
+  allowReusable
+  isTranslatable
+}

@@ -1,0 +1,33 @@
+mutation pbDuplicateParagraph(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $uuid: String!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: duplicate(uuid: $uuid, afterUuid: $afterUuid) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}
+
+mutation pbDuplicateMultipleParagraphs(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $uuids: [String]!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: duplicate_multiple(uuids: $uuids, afterUuid: $afterUuid) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

@@ -1,0 +1,20 @@
+mutation pbReplaceHostEntityMedia(
+  $langcode: String!
+  $entityType: EntityType!
+  $entityUuid: String!
+  $fieldName: String!
+  $mediaId: String!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: replace_host_entity_media(
+      langcode: $langcode
+      fieldName: $fieldName
+      mediaId: $mediaId
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

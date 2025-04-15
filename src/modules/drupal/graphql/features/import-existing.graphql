@@ -1,0 +1,34 @@
+query pbGetImportSourceEntities(
+  $entityType: String!
+  $entityUuid: String!
+  $searchText: String
+) {
+  pbGetImportSourceEntities(
+    entityType: $entityType
+    entityUuid: $entityUuid
+    searchText: $searchText
+  ) {
+    total
+    items {
+      uuid
+      label
+    }
+  }
+}
+
+mutation pbCopyFromExisting(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $fields: [String]!
+  $sourceUuid: String!
+  $langcode: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: copy_from_existing(fields: $fields, sourceUuid: $sourceUuid) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

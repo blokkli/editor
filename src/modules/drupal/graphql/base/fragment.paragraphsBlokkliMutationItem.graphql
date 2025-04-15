@@ -1,0 +1,9 @@
+fragment paragraphsBlokkliMutationItem on FieldItemTypeParagraphsBlokkliMutation {
+  timestamp
+  pluginId
+  enabled
+  plugin {
+    label
+    affectedItemUuid: affectedParagraphUuid
+  }
+}

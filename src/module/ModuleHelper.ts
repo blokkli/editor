@@ -28,11 +28,17 @@ type ModuleHelperResolvers = {
    * Resolver for files relative to the Nuxt app source directory.
    */
   src: Resolver
+
+  /**
+   * Resolver for the app directory.
+   */
+  app: Resolver
 }
 
 type ModuleHelperPaths = {
   blokkliBuildDir: string
   srcDir: string
+  editAdapter: string
 }
 
 export class ModuleHelper {
@@ -41,7 +47,9 @@ export class ModuleHelper {
   resolvers: ModuleHelperResolvers
   public fileCache: FileCache
   public readonly options: ModuleOptions
+
   public readonly isDev: boolean
+  public readonly isModuleBuild: boolean
 
   constructor(
     public nuxt: Nuxt,
@@ -49,15 +57,19 @@ export class ModuleHelper {
     providedOptions: ModuleOptions,
   ) {
     this.isDev = nuxt.options.dev
+    this.isModuleBuild = process.env.PLAYGROUND_MODULE_BUILD === 'true'
+
     this.fileCache = new FileCache()
     this.resolvers = {
       module: createResolver(moduleUrl),
       build: createResolver(nuxt.options.buildDir),
       src: createResolver(nuxt.options.srcDir),
+      app: createResolver(nuxt.options.dir.app),
     }
     this.paths = {
       blokkliBuildDir: this.resolvers.build.resolve('blokkli'),
       srcDir: nuxt.options.srcDir,
+      editAdapter: this.findEditAdapterPath(),
     }
 
     this.relativePaths = {
@@ -112,6 +124,34 @@ export class ModuleHelper {
       fieldListTypes: fieldListTypes.filter(onlyUnique),
       chunkNames: chunkNames.filter(onlyUnique),
     }
+  }
+
+  /**
+   * Transform the path relative to the module's build directory.
+   *
+   * @param path - The absolute path.
+   *
+   * @returns The path relative to the module's build directory.
+   */
+  public toModuleBuildRelative(path: string): string {
+    return relative(this.paths.blokkliBuildDir, path)
+  }
+
+  private findEditAdapterPath(): string {
+    const filePath = this.resolvers.app.resolve('blokkli.editAdapter.ts')
+
+    if (this.fileCache.fileExists(filePath)) {
+      return filePath
+    }
+
+    if (
+      this.options.editAdapterPath &&
+      this.fileCache.fileExists(this.options.editAdapterPath)
+    ) {
+      return this.options.editAdapterPath
+    }
+
+    throw new Error(`Missing blökkli edit adapter at "${filePath}"`)
   }
 
   public getChunkNames(): string[] {

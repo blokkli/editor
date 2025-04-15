@@ -1,0 +1,16 @@
+mutation pbSetMutationItemStatus(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $index: Int!
+  $status: Boolean!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: setMutationStatus(index: $index, status: $status) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

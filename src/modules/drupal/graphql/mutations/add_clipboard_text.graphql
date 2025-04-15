@@ -1,0 +1,25 @@
+mutation pbAddClipboardText(
+  $langcode: String
+  $entityType: EntityType!
+  $entityUuid: String!
+  $text: String!
+  $hostType: String!
+  $hostUuid: String!
+  $hostFieldName: String!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: add_clipboard_text(
+      text: $text
+      afterUuid: $afterUuid
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

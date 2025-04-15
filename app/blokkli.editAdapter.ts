@@ -1,3 +1,3 @@
-export default function () {
-  return {} as any
-}
+import adapter from './../playground/app/blokkli.editAdapter'
+
+export default adapter

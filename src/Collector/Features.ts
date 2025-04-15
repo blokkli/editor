@@ -75,6 +75,8 @@ export class CollectedFeatureFile extends CollectedFile {
 export class FeatureCollector extends Collector<CollectedFeatureFile> {
   protected override needsFileContents = true
 
+  private disabledFeatures = new Set<string>()
+
   private srcFromModule: string
 
   constructor(helper: ModuleHelper) {
@@ -89,6 +91,7 @@ export class FeatureCollector extends Collector<CollectedFeatureFile> {
       .filter((v) => v.isEnabled())
       .map((v) => v.getDefinition())
       .filter(falsy)
+      .filter((v) => !this.disabledFeatures.has(v.id))
   }
 
   override async init() {
@@ -148,5 +151,9 @@ export class FeatureCollector extends Collector<CollectedFeatureFile> {
 
   override getDependencyTypes(): TemplateDependency[] {
     return ['features']
+  }
+
+  public disableFeature(id: string) {
+    this.disabledFeatures.add(id)
   }
 }

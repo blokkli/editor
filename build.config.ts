@@ -1,6 +1,20 @@
 import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
+  entries: [
+    './src/modules/drupal/index.ts',
+    {
+      builder: 'copy',
+      input: './src/modules/drupal/graphql',
+      outDir: './dist/modules/drupal/graphql',
+    },
+    {
+      input: './src/modules/drupal/adapter/index.ts',
+      outDir: `./dist/modules/drupal/adapter/`,
+      addRelativeDeclarationExtensions: true,
+      ext: 'js',
+    },
+  ],
   externals: [
     '#imports',
     '#blokkli/adapter',
@@ -19,6 +33,7 @@ export default defineBuildConfig({
     '#blokkli/translations',
     '#blokkli/generated-types',
     '#blokkli-build/module-types',
+    '#blokkli-build/features',
     'defu',
     'unplugin',
     'magic-string',
@@ -29,9 +44,12 @@ export default defineBuildConfig({
     'micromatch',
     'acorn',
     'pathe',
+    'graphql',
     'webpack-sources',
     'webpack-virtual-modules',
     '@jridgewell/sourcemap-codec',
+    'nuxt-graphql-middleware/utils',
+    '#graphql-operations',
   ],
   replace: {
     'import.meta.dev': 'undefined',
