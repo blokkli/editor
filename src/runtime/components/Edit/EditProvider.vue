@@ -112,6 +112,10 @@ const props = withDefaults(
   },
 )
 
+defineSlots<{
+  default(props: { mutatedEntity: T; key: string }): any
+}>()
+
 const context = computed<AdapterContext>(() => {
   return {
     entityType: props.entityType,

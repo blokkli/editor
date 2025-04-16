@@ -28,6 +28,10 @@ const props = withDefaults(
   },
 )
 
+defineSlots<{
+  default(props: { value: string }): any
+}>()
+
 const valueOverride = ref('')
 const isEditing = inject<boolean>(INJECT_IS_EDITING, false)
 const entity = inject<EntityContext>(INJECT_ENTITY_CONTEXT)

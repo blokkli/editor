@@ -111,6 +111,11 @@ defineOptions({
   inheritAttrs: false,
 })
 
+defineSlots<{
+  default(props: { items: FieldListItemTyped[] }): any
+  after(props: { items: FieldListItemTyped[] }): any
+}>()
+
 const isEditing = inject(INJECT_IS_EDITING, false)
 const isGlobalProxyMode = inject<ComputedRef<boolean> | null>(
   INJECT_GLOBAL_PROXY_MODE,

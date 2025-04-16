@@ -46,7 +46,7 @@
       :is-editing="isEditing"
       :can-edit="canEdit"
       :is-preview="isPreviewing"
-      :entity="entity"
+      :entity="entity as any"
     />
 
     <EditIndicator
@@ -58,7 +58,7 @@
   </div>
 </template>
 
-<script lang="ts" setup generic="T">
+<script lang="ts" setup generic="T extends object">
 import {
   computed,
   defineAsyncComponent,
@@ -73,6 +73,15 @@ import {
   INJECT_PROVIDER_CONTEXT,
 } from '../helpers/symbols'
 import type { BlokkliProviderEntityContext } from '#blokkli/types'
+
+defineSlots<{
+  default(props: {
+    isEditing: boolean
+    canEdit: boolean
+    isPreview: boolean
+    entity?: T | undefined
+  }): any
+}>()
 
 const PreviewProvider = defineAsyncComponent(
   () => import('./Edit/PreviewProvider.vue'),
@@ -137,7 +146,7 @@ const isEditing = computed(
 )
 
 const isPreviewing = computed(
-  () => props.entityUuid && route.query.blokkliPreview === props.entityUuid,
+  () => !!props.entityUuid && route.query.blokkliPreview === props.entityUuid,
 )
 
 const showIndicator = computed(
