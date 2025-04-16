@@ -1,9 +1,18 @@
 import { createResolver } from '@nuxt/kit'
+import { fileURLToPath } from 'node:url'
 import { join } from 'pathe'
 import { isInterfaceType, isObjectType, type GraphQLField } from 'graphql'
 import { defineBlokkliModule } from '../defineBlokkliModule'
 import { useGraphqlModuleContext } from 'nuxt-graphql-middleware/utils'
 import { logger } from './../../module/logger'
+
+function toPascalCase(text: string) {
+  return text.replace(/(^\w|_\w)/g, clearAndUpper)
+}
+
+function clearAndUpper(text: string) {
+  return text.replace(/_/, '').toUpperCase()
+}
 
 export default defineBlokkliModule({
   alterOptions(options) {
@@ -23,9 +32,25 @@ export default defineBlokkliModule({
     // - no custom editAdapterPath is set
     // - and no custom editAdapter file exists.
     if (!options.editAdapterPath) {
-      const resolver = createResolver(join(import.meta.url))
+      const resolver = createResolver(
+        fileURLToPath(new URL('./', import.meta.url)),
+      )
       const filePath = resolver.resolve('./adapter/index.mjs')
       options.editAdapterPath = filePath
+    }
+
+    // Add a default implementation for generating prop types for paragraph
+    // bundles. This assumes the name of every paragraph fragment is always
+    // "paragraph" + the PascalCase string of the bundle, for example:
+    // bundle: "two_columns" has a fragment "paragraphTwoColumns", so the
+    // generated type is "ParagraphTwoColumnsFragment".
+    if (!options.getBundlePropsType) {
+      options.getBundlePropsType = function (bundle) {
+        return {
+          typeName: `Paragraph${toPascalCase(bundle)}Fragment`,
+          from: '#graphql-operations',
+        }
+      }
     }
   },
   setup({ context }) {
@@ -62,7 +87,9 @@ export default defineBlokkliModule({
     const editMutationStateFields = getTypeFields('ParagraphsEditMutationState')
 
     // Resolve GraphQL files.
-    const resolver = createResolver(join(import.meta.url, 'graphql'))
+    const resolver = createResolver(
+      join(fileURLToPath(new URL('./', import.meta.url)), 'graphql'),
+    )
 
     /**
      * Registers a GraphQL file.
@@ -194,9 +221,9 @@ export default defineBlokkliModule({
       editStateFields.has('publishOptions') &&
       queryFields.has('pbSearchEditStates')
     ) {
-      addGraphqlDocument('publishNew.graphql')
+      addGraphqlDocument('features/publishNew.graphql')
     } else {
-      addGraphqlDocument('publish.graphql')
+      addGraphqlDocument('features/publish.graphql')
     }
   },
 })

@@ -69,7 +69,7 @@ export class ModuleHelper {
     this.paths = {
       blokkliBuildDir: this.resolvers.build.resolve('blokkli'),
       srcDir: nuxt.options.srcDir,
-      editAdapter: this.findEditAdapterPath(),
+      editAdapter: '',
     }
 
     this.relativePaths = {
@@ -124,6 +124,8 @@ export class ModuleHelper {
       fieldListTypes: fieldListTypes.filter(onlyUnique),
       chunkNames: chunkNames.filter(onlyUnique),
     }
+
+    this.paths.editAdapter = this.findEditAdapterPath()
   }
 
   /**
