@@ -74,6 +74,6 @@ onBlokkliEvent('keyPressed', (e) => {
 
 <script lang="ts">
 export default {
-  name: 'Search',
+  name: 'ContentSearch',
 }
 </script>
