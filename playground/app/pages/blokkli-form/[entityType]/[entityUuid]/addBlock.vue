@@ -11,9 +11,9 @@ import {
   useRouter,
   useParamString,
 } from '#imports'
-import { entityStorageManager } from '~/app/mock/entityStorage'
-import { getEditState } from '~/app/mock/state'
-import { getBlockBundles } from '~/app/mock/state/Block'
+import { entityStorageManager } from '#mock/entityStorage'
+import { getEditState } from '#mock/state'
+import { getBlockBundles } from '#mock/state/Block'
 
 definePageMeta({
   layout: 'form',

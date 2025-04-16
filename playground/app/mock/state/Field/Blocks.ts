@@ -1,4 +1,4 @@
-import { falsy } from '~/helpers'
+import { falsy } from '~~/helpers'
 import { entityStorageManager } from '../../entityStorage'
 import { mapMockField } from '../../state'
 import { Block } from '../Block/Block'

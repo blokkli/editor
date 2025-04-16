@@ -49,9 +49,11 @@ export default defineBuildConfig({
     'webpack-virtual-modules',
     '@jridgewell/sourcemap-codec',
     'nuxt-graphql-middleware/utils',
+    '#nuxt-graphql-middleware/sources',
     '#graphql-operations',
   ],
   replace: {
     'import.meta.dev': 'undefined',
+    'process.env.PLAYGROUND_MODULE_BUILD': 'undefined',
   },
 })

@@ -1,9 +1,14 @@
 import packageJson from './../package.json'
+import { fileURLToPath } from 'node:url'
 
 export default defineNuxtConfig({
   ssr: false,
   devtools: {
     enabled: true,
+  },
+
+  alias: {
+    '#mock': fileURLToPath(new URL('./app/mock', import.meta.url)),
   },
 
   modules: [
@@ -118,11 +123,15 @@ export default defineNuxtConfig({
       default: {
         importPatterns: [
           './assets/icons/**/*.svg',
-          './../src/runtime/icons/**/*.svg',
+          './../../src/runtime/icons/**/*.svg',
         ],
       },
     },
   },
 
   compatibilityDate: '2024-07-28',
+
+  future: {
+    compatibilityVersion: 4,
+  },
 })

@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url'
+
 export default defineNuxtConfig({
   modules: ['nuxt-graphql-middleware'],
   graphqlMiddleware: {
@@ -5,7 +7,7 @@ export default defineNuxtConfig({
     schemaPath: './../blokkli_starterkit/frontend/schema.graphql',
     downloadSchema: false,
     autoImportPatterns: [
-      './src/runtime/adapter/drupal/graphql/*.graphql',
+      './src/modules/drupal/graphql/**/*.graphql',
       './drupal/mocks.graphql',
     ],
   },
@@ -15,6 +17,14 @@ export default defineNuxtConfig({
       compilerOptions: {
         noUncheckedIndexedAccess: true,
       },
+      exclude: ['../playground', '../playground-minimal', '../dist'],
     },
+  },
+
+  alias: {
+    '#mock': fileURLToPath(new URL('./playground/app/mock', import.meta.url)),
+    '~~/helpers': fileURLToPath(
+      new URL('./playground/helpers', import.meta.url),
+    ),
   },
 })

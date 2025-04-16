@@ -12,7 +12,7 @@
 
 <script lang="ts" setup>
 import { computed } from '#imports'
-import { MediaImage } from '~/app/mock/state/Media/Media'
+import { MediaImage } from '#mock/state/Media/Media'
 
 const props = defineProps<{
   imageReference: MediaImage | object

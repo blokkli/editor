@@ -14,9 +14,9 @@ import {
   onMounted,
   onBeforeUnmount,
 } from '#imports'
-import { entityStorageManager } from '~/app/mock/entityStorage'
-import { getEditState } from '~/app/mock/state'
-import type { FieldTextarea } from '~/app/mock/state/Field/Textarea'
+import { entityStorageManager } from '#mock/entityStorage'
+import { getEditState } from '#mock/state'
+import type { FieldTextarea } from '#mock/state/Field/Textarea'
 import RichText from '~/components/EntityForm/RichText/index.vue'
 
 definePageMeta({

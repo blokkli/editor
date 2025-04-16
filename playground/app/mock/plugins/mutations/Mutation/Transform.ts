@@ -1,10 +1,10 @@
-import { falsy } from '~/helpers'
-import { BlockText } from '~/app/mock/state/Block/Text'
+import { falsy } from '~~/helpers'
+import { BlockText } from '#mock/state/Block/Text'
 import { BlockProxy, type MutationContext } from '../../../state/EditState'
 import { Mutation } from './../Mutation'
-import { BlockButton } from '~/app/mock/state/Block/Button'
-import { entityStorageManager } from '~/app/mock/entityStorage'
-import type { Block } from '~/app/mock/state/Block/Block'
+import { BlockButton } from '#mock/state/Block/Button'
+import { entityStorageManager } from '#mock/entityStorage'
+import type { Block } from '#mock/state/Block/Block'
 
 export type MutationTransformArgs = {
   pluginId: string

@@ -1,7 +1,7 @@
-import { BlockProxy, type MutationContext } from '~/app/mock/state/EditState'
+import { BlockProxy, type MutationContext } from '#mock/state/EditState'
 import { Mutation } from '../Mutation'
-import { entityStorageManager } from '~/app/mock/entityStorage'
-import { getBlockBundles } from '~/app/mock/state/Block'
+import { entityStorageManager } from '#mock/entityStorage'
+import { getBlockBundles } from '#mock/state/Block'
 
 export type MutationAddArgs = {
   bundle: string

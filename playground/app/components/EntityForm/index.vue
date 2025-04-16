@@ -39,16 +39,16 @@
 
 <script lang="ts" setup>
 import { computed, ref } from '#imports'
-import { falsy } from '~/helpers'
-import type { Field } from '~/app/mock/state/Field'
-import { FieldIcon } from '~/app/mock/state/Field/Icon'
-import { FieldText } from '~/app/mock/state/Field/Text'
-import { FieldTextarea } from '~/app/mock/state/Field/Textarea'
-import { FieldUrl } from '~/app/mock/state/Field/Url'
+import { falsy } from '~~/helpers'
+import type { Field } from '#mock/state/Field'
+import { FieldIcon } from '#mock/state/Field/Icon'
+import { FieldText } from '#mock/state/Field/Text'
+import { FieldTextarea } from '#mock/state/Field/Textarea'
+import { FieldUrl } from '#mock/state/Field/Url'
 import FieldIconInput from './FieldIcon/index.vue'
 import MediaSelector from './MediaSelector/index.vue'
 import RichText from './RichText/index.vue'
-import { FieldReference } from '~/app/mock/state/Field/Reference'
+import { FieldReference } from '#mock/state/Field/Reference'
 
 const props = defineProps<{
   fields: Field<any>[]

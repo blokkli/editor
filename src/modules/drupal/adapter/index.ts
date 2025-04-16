@@ -387,6 +387,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           entityType: options.hostEntityType.toUpperCase() as any,
           entityUuid: options.hostEntityUuid,
           createNewState: !options.closeAfterPublish,
+          // @ts-expect-error Might not exist.
           publishIfUnpublished: options.publishIfUnpublished,
           revisionLogMessage: options.revisionLogMessage,
         }).then(mapMutation)

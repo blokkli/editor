@@ -1,7 +1,7 @@
-import { BlockProxy, type MutationContext } from '~/app/mock/state/EditState'
+import { BlockProxy, type MutationContext } from '#mock/state/EditState'
 import { Mutation } from '../Mutation'
-import { entityStorageManager } from '~/app/mock/entityStorage'
-import { LibraryItem } from '~/app/mock/state/LibraryItem'
+import { entityStorageManager } from '#mock/entityStorage'
+import { LibraryItem } from '#mock/state/LibraryItem'
 
 export type MutationMakeReusableArgs = {
   uuid: string

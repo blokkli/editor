@@ -16,7 +16,7 @@
 
 <script lang="ts" setup>
 import { computed } from '#imports'
-import { entityStorageManager } from '~/app/mock/entityStorage'
+import { entityStorageManager } from '#mock/entityStorage'
 
 const props = defineProps<{
   modelValue: string

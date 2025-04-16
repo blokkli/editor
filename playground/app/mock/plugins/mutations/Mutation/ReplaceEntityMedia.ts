@@ -1,6 +1,6 @@
-import { type MutationContext } from '~/app/mock/state/EditState'
+import { type MutationContext } from '#mock/state/EditState'
 import { Mutation } from '../Mutation'
-import { FieldReference } from '~/app/mock/state/Field/Reference'
+import { FieldReference } from '#mock/state/Field/Reference'
 
 export type MutationReplaceEntityMediaArgs = {
   fieldName: string

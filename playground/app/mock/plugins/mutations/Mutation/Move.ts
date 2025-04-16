@@ -1,6 +1,6 @@
 import { Mutation } from '../Mutation'
-import type { MutationContext } from '~/app/mock/state/EditState'
-import { falsy } from '~/helpers'
+import type { MutationContext } from '#mock/state/EditState'
+import { falsy } from '~~/helpers'
 
 export type MutationMoveArgs = {
   uuids: string[]

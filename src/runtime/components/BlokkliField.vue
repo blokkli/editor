@@ -144,7 +144,7 @@ if (!providerEntity) {
 const props = withDefaults(
   defineProps<{
     name: string
-    list?: FieldListItem[] | FieldListItem
+    list?: Array<FieldListItem | null | undefined> | FieldListItem | null
     tag?: string
     fieldListType?: ValidFieldListTypes
     editOnly?: boolean
@@ -188,7 +188,9 @@ const fieldKey = computed<string | undefined>(() => {
 
 const fieldListType = computed(() => props.fieldListType)
 
-function filterVisible(item?: FieldListItemTyped | FieldListItem): boolean {
+function filterVisible(
+  item?: FieldListItemTyped | FieldListItem | null,
+): boolean {
   if (!item) {
     return false
   }

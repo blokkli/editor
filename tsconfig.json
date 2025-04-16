@@ -1,4 +1,3 @@
 {
-  "extends": "./.nuxt/tsconfig.json",
-  "exclude": ["dist", "node_modules", "playground", "playground-drupal"]
+  "extends": "./.nuxt/tsconfig.json"
 }

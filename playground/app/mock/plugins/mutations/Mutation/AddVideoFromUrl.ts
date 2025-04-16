@@ -1,6 +1,6 @@
-import { BlockProxy, type MutationContext } from '~/app/mock/state/EditState'
+import { BlockProxy, type MutationContext } from '#mock/state/EditState'
 import { Mutation } from '../Mutation'
-import { entityStorageManager } from '~/app/mock/entityStorage'
+import { entityStorageManager } from '#mock/entityStorage'
 
 export type MutationAddVideoFromUrlArgs = {
   url: string

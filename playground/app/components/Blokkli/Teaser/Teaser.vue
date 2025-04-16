@@ -9,8 +9,8 @@
 
 <script lang="ts" setup>
 import { defineBlokkli, computed } from '#imports'
-import type { FieldText } from '~/app/mock/state/Field/Text'
-import type { FieldTextarea } from '~/app/mock/state/Field/Textarea'
+import type { FieldText } from '#mock/state/Field/Text'
+import type { FieldTextarea } from '#mock/state/Field/Textarea'
 
 defineBlokkli({
   bundle: 'teaser',

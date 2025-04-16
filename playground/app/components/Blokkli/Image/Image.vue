@@ -20,7 +20,7 @@
 
 <script lang="ts" setup>
 import { defineBlokkli, computed } from '#imports'
-import { MediaImage } from '~/app/mock/state/Media/Media'
+import { MediaImage } from '#mock/state/Media/Media'
 
 export type Props = {
   imageReference: MediaImage

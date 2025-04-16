@@ -1,4 +1,4 @@
-import { type MutationContext } from '~/app/mock/state/EditState'
+import { type MutationContext } from '#mock/state/EditState'
 import { Mutation } from '../Mutation'
 
 export type MutationReplaceMediaArgs = {

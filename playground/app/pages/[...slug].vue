@@ -42,9 +42,9 @@
 
 <script lang="ts" setup>
 import { useRoute, computed } from '#imports'
-import { mapMockField } from '@/app/mock/state'
-import { entityStorageManager } from '~/app/mock/entityStorage'
-import { ContentPage } from '~/app/mock/state/Entity/Content'
+import { mapMockField } from '#mock/state'
+import { entityStorageManager } from '#mock/entityStorage'
+import { ContentPage } from '#mock/state/Entity/Content'
 import Hero from '~/components/Hero/index.vue'
 
 const route = useRoute()

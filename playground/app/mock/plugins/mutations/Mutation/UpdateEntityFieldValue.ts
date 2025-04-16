@@ -1,6 +1,6 @@
-import { type MutationContext } from '~/app/mock/state/EditState'
+import type { MutationContext } from '#mock/state/EditState'
 import { Mutation } from '../Mutation'
-import { FieldText } from '~/app/mock/state/Field/Text'
+import { FieldText } from '#mock/state/Field/Text'
 
 export type MutationUpdateEntityFieldValueArgs = {
   fieldName: string
