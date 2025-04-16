@@ -1,8 +1,9 @@
 import { defineBlokkliEditAdapter } from '#blokkli/adapter'
 import { falsy } from '#blokkli/helpers'
 import { availableFeaturesAtBuild } from '#blokkli-build/features'
+import { operationSources } from '#nuxt-graphql-middleware/sources'
 import type { BlockBundleDefinition, TranslationState } from '#blokkli/types'
-import type { BlokkliAdapter, GetMediaLibraryFunction } from '#blokkli/adapter'
+import type { BlokkliAdapter } from '#blokkli/adapter'
 import {
   useGraphqlQuery,
   useGraphqlMutation,
@@ -15,12 +16,23 @@ import type {
   ParagraphsBlokkliEditStateFragment,
 } from '#graphql-operations'
 import { ParagraphsBlokkliRemoteVideoProvider } from '#graphql-operations'
+import type { Mutation, Query } from '#nuxt-graphql-middleware/operation-types'
 
 type DrupalAdapter = BlokkliAdapter<ParagraphsBlokkliEditStateFragment>
 
 export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
   async (providedContext) => {
     const availableFeatureIds = new Set(availableFeaturesAtBuild)
+    const availableGraphqlOperations = new Set(Object.keys(operationSources))
+
+    function hasQuery(name: keyof Query): boolean {
+      return availableGraphqlOperations.has('query_' + name)
+    }
+
+    function hasMutation(name: keyof Mutation): boolean {
+      return availableGraphqlOperations.has('mutation_' + name)
+    }
+
     const ctx = computed(() => {
       return {
         entityType: providedContext.value.entityType.toUpperCase() as any,
@@ -55,48 +67,6 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       }
     })
 
-    const getPublishOptions: DrupalAdapter['getPublishOptions'] = () =>
-      useGraphqlQuery('pbPublishOptions', ctx.value).then((v) => {
-        const options = v.data.state?.publishOptions
-        if (!options) {
-          throw new Error('Failed to load publish options.')
-        }
-
-        return options
-      })
-
-    const getImportItems: DrupalAdapter['getImportItems'] = (
-      searchText?: string,
-    ) =>
-      useGraphqlQuery('pbGetImportSourceEntities', {
-        entityType: (ctx.value.entityType as string).toLowerCase(),
-        entityUuid: ctx.value.entityUuid,
-        searchText,
-      }).then((data) => {
-        return {
-          total: data?.data.pbGetImportSourceEntities?.total || 0,
-          items: (data?.data.pbGetImportSourceEntities?.items || [])
-            .map((item) => {
-              if (item?.uuid) {
-                return {
-                  uuid: item.uuid,
-                  label: item.label || item.uuid,
-                }
-              }
-            })
-            .filter(falsy),
-        }
-      })
-
-    const getConversions: DrupalAdapter['getConversions'] = () =>
-      useGraphqlQuery('pbConversions').then(
-        (v) => v?.data.paragraphsBlokkliConversions || [],
-      )
-
-    const getAllBundles: DrupalAdapter['getAllBundles'] = () => {
-      return Promise.resolve(config.allTypes)
-    }
-
     const loadState: DrupalAdapter['loadState'] = async () => {
       const state = await useGraphqlQuery('pbEditState', {
         ...ctx.value,
@@ -109,193 +79,12 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       return state
     }
 
-    const loadStateAtIndex: DrupalAdapter['loadStateAtIndex'] = (
-      historyIndex,
-    ) =>
-      useGraphqlQuery('pbEditState', {
-        ...ctx.value,
-        historyIndex,
-      }).then((v) => v?.data.state)
-
-    const getDisabledFeatures: DrupalAdapter['getDisabledFeatures'] = () => {
-      const features = config.availableFeatures
-      const disabled: string[] = []
-      const mutations = features?.mutations || []
-      if (!features?.comment) {
-        disabled.push('comments')
-      }
-      if (!features?.conversion) {
-        disabled.push('conversions')
-      }
-      if (!features?.library) {
-        disabled.push('library')
-      }
-      if (!mutations.includes('duplicate')) {
-        disabled.push('duplicate')
-      }
-      return Promise.resolve(disabled)
+    const getAllBundles: DrupalAdapter['getAllBundles'] = () => {
+      return Promise.resolve(config.allTypes)
     }
 
-    const mapMutation = (v: any) => v.data?.state?.action
-
-    const takeOwnership: DrupalAdapter['takeOwnership'] = () =>
-      useGraphqlMutation('pbTakeOwnership', ctx.value).then(mapMutation)
-
-    const setHistoryIndex: DrupalAdapter['setHistoryIndex'] = (index) =>
-      useGraphqlMutation('pbSetHistoryIndex', {
-        ...ctx.value,
-        index,
-      }).then(mapMutation)
-
-    const setMutationItemStatus: DrupalAdapter['setMutationItemStatus'] = (
-      index,
-      status,
-    ) =>
-      useGraphqlMutation('pbSetMutationItemStatus', {
-        ...ctx.value,
-        index,
-        status,
-      }).then(mapMutation)
-
-    const publish: DrupalAdapter['publish'] = (options) =>
-      useGraphqlMutation('pbPublish', {
-        entityType: options.hostEntityType.toUpperCase() as any,
-        entityUuid: options.hostEntityUuid,
-        createNewState: !options.closeAfterPublish,
-        publishIfUnpublished: options.publishIfUnpublished,
-        revisionLogMessage: options.revisionLogMessage,
-      }).then(mapMutation)
-
-    const importFromExisting: DrupalAdapter['importFromExisting'] = (e) =>
-      useGraphqlMutation('pbCopyFromExisting', {
-        ...ctx.value,
-        sourceUuid: e.sourceUuid,
-        fields: e.sourceFields,
-      }).then(mapMutation)
-
-    const revertAllChanges: DrupalAdapter['revertAllChanges'] = () =>
-      useGraphqlMutation('pbRevertAllChanges', ctx.value).then(mapMutation)
-
-    const makeBlockReusable: DrupalAdapter['makeBlockReusable'] = (e) =>
-      useGraphqlMutation('pbMakeParagraphReusable', {
-        ...ctx.value,
-        ...e,
-      }).then(mapMutation)
-
-    const duplicateBlocks: DrupalAdapter['duplicateBlocks'] = (uuids) => {
-      if (uuids.length === 1) {
-        return useGraphqlMutation('pbDuplicateParagraph', {
-          ...ctx.value,
-          uuid: uuids[0]!,
-        }).then(mapMutation)
-      }
-      return useGraphqlMutation('pbDuplicateMultipleParagraphs', {
-        ...ctx.value,
-        uuids,
-      }).then(mapMutation)
-    }
-
-    const pasteExistingBlocks: DrupalAdapter['pasteExistingBlocks'] = (e) => {
-      return useGraphqlMutation('pbDuplicateMultipleParagraphs', {
-        ...ctx.value,
-        uuids: e.uuids,
-        afterUuid: e.preceedingUuid,
-      }).then(mapMutation)
-    }
-
-    const detachReusableBlock: DrupalAdapter['detachReusableBlock'] = (e) => {
-      return useGraphqlMutation('pbDetachReusableParagraph', {
-        ...ctx.value,
-        uuids: e.uuids,
-      }).then(mapMutation)
-    }
-
-    const convertBlocks: DrupalAdapter['convertBlocks'] = (
-      uuids,
-      targetBundle,
-    ) => {
-      if (uuids.length === 1) {
-        return useGraphqlMutation('pbConvertParagraph', {
-          ...ctx.value,
-          uuid: uuids[0]!,
-          targetBundle,
-        }).then(mapMutation)
-      }
-      return useGraphqlMutation('pbConvertMultiple', {
-        ...ctx.value,
-        uuids,
-        targetBundle,
-      }).then(mapMutation)
-    }
-
-    const deleteBlocks: DrupalAdapter['deleteBlocks'] = (uuids) =>
-      useGraphqlMutation('pbDeleteMultipleParagraphs', {
-        ...ctx.value,
-        uuids,
-      }).then(mapMutation)
-
-    const addLibraryItem: DrupalAdapter['addLibraryItem'] = (e) =>
-      useGraphqlMutation('pbAddReusableParagraph', {
-        ...ctx.value,
-        libraryItemUuid: e.libraryItemUuid,
-        hostType: e.host.type,
-        hostUuid: e.host.uuid,
-        hostFieldName: e.host.fieldName,
-        afterUuid: e.afterUuid,
-      }).then(mapMutation)
-
-    const moveMultipleBlocks: DrupalAdapter['moveMultipleBlocks'] = (e) =>
-      useGraphqlMutation('pbMoveMultipleItems', {
-        ...ctx.value,
-        uuids: e.uuids,
-        hostType: e.host.type,
-        hostUuid: e.host.uuid,
-        hostFieldName: e.host.fieldName,
-        afterUuid: e.afterUuid,
-      }).then(mapMutation)
-
-    const moveBlock: DrupalAdapter['moveBlock'] = (e) =>
-      useGraphqlMutation('pbMoveParagraph', {
-        ...ctx.value,
-        uuid: e.item.uuid,
-        hostType: e.host.type,
-        hostUuid: e.host.uuid,
-        hostFieldName: e.host.fieldName,
-        afterUuid: e.afterUuid,
-      }).then(mapMutation)
-
-    const addNewBlock: DrupalAdapter['addNewBlock'] = (e) =>
-      useGraphqlMutation('pbAddParagraph', {
-        ...ctx.value,
-        hostType: e.host.type,
-        hostFieldName: e.host.fieldName,
-        hostUuid: e.host.uuid,
-        afterUuid: e.afterUuid,
-        type: e.bundle,
-      }).then(mapMutation)
-
-    const updateOptions: DrupalAdapter['updateOptions'] = (options) => {
-      if (options.length === 1) {
-        return useGraphqlMutation('pbUpdateParagraphOption', {
-          ...ctx.value,
-          uuid: options[0]!.uuid,
-          key: options[0]!.key,
-          value: options[0]!.value,
-          pluginId: 'paragraphs_blokkli_data',
-        }).then(mapMutation)
-      }
-      const persistItems = options.map((v) => {
-        return {
-          uuid: v.uuid,
-          key: v.key,
-          value: v.value,
-          pluginId: 'paragraphs_blokkli_data',
-        }
-      })
-      return useGraphqlMutation('pbBulkUpdateParagraphBehaviorSettings', {
-        ...ctx.value,
-        items: persistItems,
-      }).then(mapMutation)
+    const getFieldConfig: DrupalAdapter['getFieldConfig'] = () => {
+      return Promise.resolve(config.fieldConfig)
     }
 
     const mapState: DrupalAdapter['mapState'] = (state) => {
@@ -365,130 +154,100 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       }
     }
 
-    const mapComments = (
-      comments: Array<ParagraphsBlokkliCommentFragment | null>,
-    ) =>
-      comments
-        .map((item) => {
-          if (item && 'uuid' in item) {
-            return {
-              uuid: item.uuid,
-              blockUuids: (item.blockUuids || []).filter(falsy),
-              resolved: !!item.resolved,
-              body: item.body || '',
-              created: item.created?.first?.value || '',
-              user: {
-                label: item.user?.label || '',
-              },
-            }
-          }
-          return null
-        })
-        .filter(falsy)
-
-    const loadComments: DrupalAdapter['loadComments'] = () =>
-      useGraphqlQuery('pbComments', ctx.value).then((v) =>
-        mapComments(v.data.state?.comments || []),
-      )
-
-    const addComment: DrupalAdapter['addComment'] = (blockUuids, body) =>
-      useGraphqlMutation('pbAddComment', {
+    const addNewBlock: DrupalAdapter['addNewBlock'] = (e) =>
+      useGraphqlMutation('pbAddParagraph', {
         ...ctx.value,
-        blockUuids,
-        body,
-      }).then((v) => mapComments(v.data.state?.action || []))
-
-    const resolveComment: DrupalAdapter['resolveComment'] = (uuid) =>
-      useGraphqlMutation('pbResolveComment', {
-        ...ctx.value,
-        uuid,
-      }).then((v) => mapComments(v.data.state?.action || []))
-
-    const getLibraryItems: DrupalAdapter['getLibraryItems'] = (data) => {
-      return useGraphqlQuery('pbLibraryItems', {
-        bundles: data.bundles,
-        text: data.text,
-        page: data.page,
-      }).then((response) => {
-        const items =
-          response.data.result?.items
-            ?.map((v) => {
-              if (v && 'uuid' in v && v.uuid) {
-                const paragraph = v.paragraphs
-                const bundle = paragraph?.bundle
-                if (bundle && paragraph && paragraph.props && paragraph) {
-                  return {
-                    uuid: v.uuid,
-                    label: v.label,
-                    bundle,
-                    item: paragraph,
-                  }
-                }
-              }
-              return null
-            })
-            .filter(falsy) || []
-
-        return {
-          items,
-          perPage: response.data.result?.perPage || 16,
-          total: response.data.result?.total || 0,
-        }
-      })
-    }
-
-    const getLastChanged: DrupalAdapter['getLastChanged'] = () =>
-      $fetch<{ changed: number }>(
-        `/paragraphs_blokkli/${ctx.value.entityType}/${ctx.value.entityUuid}/last_changed`,
-      ).then((v) => v.changed)
-
-    const getPreviewGrantUrl: DrupalAdapter['getPreviewGrantUrl'] = () =>
-      useGraphqlQuery('pbGetPreviewGrantUrl', ctx.value).then(
-        (v) => v.data.getParagraphsEditState?.previewUrl,
-      )
-
-    const getTransformPlugins: DrupalAdapter['getTransformPlugins'] = () =>
-      useGraphqlQuery('pbGetTransformPlugins', ctx.value)
-        .then((v) => v.data.paragraphsBlokkliGetTransformPlugins || [])
-        .then((plugins) =>
-          plugins.map((plugin) => {
-            return {
-              id: plugin.id,
-              label: plugin.label,
-              bundles: plugin.bundles,
-              targetBundles: plugin.targetBundles,
-              min: plugin.min,
-              max: plugin.max,
-            }
-          }),
-        )
-
-    const applyTransformPlugin: DrupalAdapter['applyTransformPlugin'] = (e) =>
-      useGraphqlMutation('pbApplyTransformPlugin', {
-        ...ctx.value,
-        ...e,
+        hostType: e.host.type,
+        hostFieldName: e.host.fieldName,
+        hostUuid: e.host.uuid,
+        afterUuid: e.afterUuid,
+        type: e.bundle,
       }).then(mapMutation)
 
-    const buildFormUrl = (parts: string | string[], langcode: string) => {
-      const prefix = config.urlPrefixes[langcode]
-      if (prefix === null || prefix === undefined) {
-        throw new Error('Failed to get URL prefix for langcode: ' + langcode)
+    const moveBlock: DrupalAdapter['moveBlock'] = (e) =>
+      useGraphqlMutation('pbMoveParagraph', {
+        ...ctx.value,
+        uuid: e.item.uuid,
+        hostType: e.host.type,
+        hostUuid: e.host.uuid,
+        hostFieldName: e.host.fieldName,
+        afterUuid: e.afterUuid,
+      }).then(mapMutation)
+
+    const moveMultipleBlocks: DrupalAdapter['moveMultipleBlocks'] = (e) =>
+      useGraphqlMutation('pbMoveMultipleItems', {
+        ...ctx.value,
+        uuids: e.uuids,
+        hostType: e.host.type,
+        hostUuid: e.host.uuid,
+        hostFieldName: e.host.fieldName,
+        afterUuid: e.afterUuid,
+      }).then(mapMutation)
+
+    const loadStateAtIndex: DrupalAdapter['loadStateAtIndex'] = (
+      historyIndex,
+    ) =>
+      useGraphqlQuery('pbEditState', {
+        ...ctx.value,
+        historyIndex,
+      }).then((v) => v?.data.state)
+
+    const getDisabledFeatures: DrupalAdapter['getDisabledFeatures'] = () => {
+      const features = config.availableFeatures
+      const disabled: string[] = []
+      const mutations = features?.mutations || []
+      if (!features?.comment) {
+        disabled.push('comments')
       }
-      const url = typeof parts === 'string' ? parts : '/' + parts.join('/')
-      return { url: prefix + url + `?paragraphsBlokkli=true` }
+      if (!features?.conversion) {
+        disabled.push('conversions')
+      }
+      if (!features?.library) {
+        disabled.push('library')
+      }
+      if (!mutations.includes('duplicate')) {
+        disabled.push('duplicate')
+      }
+      return Promise.resolve(disabled)
     }
 
-    const getLibraryItemEditUrl: DrupalAdapter['getLibraryItemEditUrl'] = (
-      uuid,
+    const mapMutation = (v: any) => v.data?.state?.action
+    const route = useRoute()
+    const router = useRouter()
+
+    const changeLanguage: DrupalAdapter['changeLanguage'] = (translation) => {
+      return router.push({ path: translation.url, query: route.query })
+    }
+
+    const buildEditableFrameUrl: DrupalAdapter['buildEditableFrameUrl'] = (
+      e,
     ) => {
-      const url = buildFormUrl(
-        ['blokkli', 'library-item', uuid],
-        ctx.value.langcode,
-      ).url
-
-      // Directly build the URL to start blökkli for the paragraphs_library_item.
-      return `${url}&blokkliEditing=${uuid}&language=${ctx.value.langcode}`
+      const url =
+        '/' +
+        [
+          'paragraphs_blokkli',
+          ctx.value.entityType,
+          ctx.value.entityUuid,
+          'edit',
+          'rich_text',
+          e.fieldName,
+          e.uuid,
+        ]
+          .filter(falsy)
+          .join('/')
+      return buildFormUrl(url, ctx.value.langcode).url
     }
+
+    const getEditableFieldConfig: DrupalAdapter['getEditableFieldConfig'] =
+      () => {
+        return Promise.resolve(config.editableFieldConfig)
+      }
+
+    // @TODO: Required property.
+    const getDroppableFieldConfig: DrupalAdapter['getDroppableFieldConfig'] =
+      () => {
+        return Promise.resolve(config.droppableFieldConfig)
+      }
 
     const formFrameBuilder: DrupalAdapter['formFrameBuilder'] = (e) => {
       const entityType = ctx.value.entityType.toLowerCase()
@@ -535,364 +294,639 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       }
     }
 
-    const getFieldConfig: DrupalAdapter['getFieldConfig'] = () => {
-      return Promise.resolve(config.fieldConfig)
+    const getLastChanged: DrupalAdapter['getLastChanged'] = () =>
+      $fetch<{ changed: number }>(
+        `/paragraphs_blokkli/${ctx.value.entityType}/${ctx.value.entityUuid}/last_changed`,
+      ).then((v) => v.changed)
+
+    const adapter: BlokkliAdapter<any> = {
+      addNewBlock,
+      buildEditableFrameUrl,
+      changeLanguage,
+      formFrameBuilder,
+      getAllBundles,
+      getDisabledFeatures,
+      getDroppableFieldConfig,
+      getEditableFieldConfig,
+      getFieldConfig,
+      getLastChanged,
+      loadState,
+      loadStateAtIndex,
+      mapState,
+      moveBlock,
+      moveMultipleBlocks,
     }
 
-    const getEditableFieldConfig: DrupalAdapter['getEditableFieldConfig'] =
-      () => {
-        return Promise.resolve(config.editableFieldConfig)
-      }
+    if (hasQuery('pbPublishOptions')) {
+      adapter.getPublishOptions = () =>
+        useGraphqlQuery('pbPublishOptions', ctx.value).then((v) => {
+          const options = v.data.state?.publishOptions
+          if (!options) {
+            throw new Error('Failed to load publish options.')
+          }
 
-    // @TODO: Required property.
-    const getDroppableFieldConfig: DrupalAdapter['getDroppableFieldConfig'] =
-      () => {
-        return Promise.resolve(config.droppableFieldConfig)
-      }
-
-    const updateFieldValue: DrupalAdapter['updateFieldValue'] = (e) =>
-      useGraphqlMutation('pbUpdateFieldValue', {
-        ...ctx.value,
-        uuid: e.uuid,
-        fieldName: e.fieldName,
-        value: e.fieldValue,
-      }).then(mapMutation)
-
-    const buildEditableFrameUrl: DrupalAdapter['buildEditableFrameUrl'] = (
-      e,
-    ) => {
-      const url =
-        '/' +
-        [
-          'paragraphs_blokkli',
-          ctx.value.entityType,
-          ctx.value.entityUuid,
-          'edit',
-          'rich_text',
-          e.fieldName,
-          e.uuid,
-        ]
-          .filter(falsy)
-          .join('/')
-      return buildFormUrl(url, ctx.value.langcode).url
+          return options
+        })
     }
 
-    const fragmentsAddBlock: DrupalAdapter['fragmentsAddBlock'] = (e) =>
-      useGraphqlMutation('pbAddFragmentParagraph', {
-        ...ctx.value,
-        hostType: e.host.type,
-        hostFieldName: e.host.fieldName,
-        hostUuid: e.host.uuid,
-        afterUuid: e.preceedingUuid,
-        name: e.name,
-      }).then(mapMutation)
+    if (hasQuery('pbGetImportSourceEntities')) {
+      adapter.getImportItems = (searchText?: string) =>
+        useGraphqlQuery('pbGetImportSourceEntities', {
+          entityType: (ctx.value.entityType as string).toLowerCase(),
+          entityUuid: ctx.value.entityUuid,
+          searchText,
+        }).then((data) => {
+          return {
+            total: data?.data.pbGetImportSourceEntities?.total || 0,
+            items: (data?.data.pbGetImportSourceEntities?.items || [])
+              .map((item) => {
+                if (item?.uuid) {
+                  return {
+                    uuid: item.uuid,
+                    label: item.label || item.uuid,
+                  }
+                }
+              })
+              .filter(falsy),
+          }
+        })
+    }
 
-    const mediaLibraryReplaceMedia: DrupalAdapter['mediaLibraryReplaceMedia'] =
-      (e) =>
+    if (hasQuery('pbConversions')) {
+      adapter.getConversions = () =>
+        useGraphqlQuery('pbConversions').then(
+          (v) => v?.data.paragraphsBlokkliConversions || [],
+        )
+    }
+
+    if (hasMutation('pbTakeOwnership')) {
+      adapter.takeOwnership = () =>
+        useGraphqlMutation('pbTakeOwnership', ctx.value).then(mapMutation)
+    }
+
+    if (hasMutation('pbSetHistoryIndex')) {
+      adapter.setHistoryIndex = (index) =>
+        useGraphqlMutation('pbSetHistoryIndex', {
+          ...ctx.value,
+          index,
+        }).then(mapMutation)
+    }
+
+    if (hasMutation('pbSetMutationItemStatus')) {
+      adapter.setMutationItemStatus = (index, status) =>
+        useGraphqlMutation('pbSetMutationItemStatus', {
+          ...ctx.value,
+          index,
+          status,
+        }).then(mapMutation)
+    }
+
+    if (hasMutation('pbPublish')) {
+      adapter.publish = (options) =>
+        useGraphqlMutation('pbPublish', {
+          entityType: options.hostEntityType.toUpperCase() as any,
+          entityUuid: options.hostEntityUuid,
+          createNewState: !options.closeAfterPublish,
+          publishIfUnpublished: options.publishIfUnpublished,
+          revisionLogMessage: options.revisionLogMessage,
+        }).then(mapMutation)
+    }
+
+    if (hasMutation('pbCopyFromExisting')) {
+      adapter.importFromExisting = (e) =>
+        useGraphqlMutation('pbCopyFromExisting', {
+          ...ctx.value,
+          sourceUuid: e.sourceUuid,
+          fields: e.sourceFields,
+        }).then(mapMutation)
+    }
+
+    if (hasMutation('pbRevertAllChanges')) {
+      adapter.revertAllChanges = () =>
+        useGraphqlMutation('pbRevertAllChanges', ctx.value).then(mapMutation)
+    }
+
+    if (hasMutation('pbMakeParagraphReusable')) {
+      adapter.makeBlockReusable = (e) =>
+        useGraphqlMutation('pbMakeParagraphReusable', {
+          ...ctx.value,
+          ...e,
+        }).then(mapMutation)
+    }
+
+    if (hasMutation('pbDuplicateParagraph')) {
+      adapter.duplicateBlocks = (uuids) => {
+        if (uuids.length === 1) {
+          return useGraphqlMutation('pbDuplicateParagraph', {
+            ...ctx.value,
+            uuid: uuids[0]!,
+          }).then(mapMutation)
+        }
+        return useGraphqlMutation('pbDuplicateMultipleParagraphs', {
+          ...ctx.value,
+          uuids,
+        }).then(mapMutation)
+      }
+    }
+
+    if (hasMutation('pbDuplicateMultipleParagraphs')) {
+      adapter.pasteExistingBlocks = (e) => {
+        return useGraphqlMutation('pbDuplicateMultipleParagraphs', {
+          ...ctx.value,
+          uuids: e.uuids,
+          afterUuid: e.preceedingUuid,
+        }).then(mapMutation)
+      }
+    }
+
+    if (hasMutation('pbDetachReusableParagraph')) {
+      adapter.detachReusableBlock = (e) => {
+        return useGraphqlMutation('pbDetachReusableParagraph', {
+          ...ctx.value,
+          uuids: e.uuids,
+        }).then(mapMutation)
+      }
+    }
+
+    if (hasMutation('pbConvertParagraph') && hasMutation('pbConvertMultiple')) {
+      adapter.convertBlocks = (uuids, targetBundle) => {
+        if (uuids.length === 1) {
+          return useGraphqlMutation('pbConvertParagraph', {
+            ...ctx.value,
+            uuid: uuids[0]!,
+            targetBundle,
+          }).then(mapMutation)
+        }
+        return useGraphqlMutation('pbConvertMultiple', {
+          ...ctx.value,
+          uuids,
+          targetBundle,
+        }).then(mapMutation)
+      }
+    }
+
+    if (hasMutation('pbDeleteMultipleParagraphs')) {
+      adapter.deleteBlocks = (uuids) =>
+        useGraphqlMutation('pbDeleteMultipleParagraphs', {
+          ...ctx.value,
+          uuids,
+        }).then(mapMutation)
+    }
+
+    if (hasMutation('pbAddReusableParagraph')) {
+      adapter.addLibraryItem = (e) =>
+        useGraphqlMutation('pbAddReusableParagraph', {
+          ...ctx.value,
+          libraryItemUuid: e.libraryItemUuid,
+          hostType: e.host.type,
+          hostUuid: e.host.uuid,
+          hostFieldName: e.host.fieldName,
+          afterUuid: e.afterUuid,
+        }).then(mapMutation)
+    }
+
+    if (
+      hasMutation('pbUpdateParagraphOption') &&
+      hasMutation('pbBulkUpdateParagraphBehaviorSettings')
+    ) {
+      adapter.updateOptions = (options) => {
+        if (options.length === 1) {
+          return useGraphqlMutation('pbUpdateParagraphOption', {
+            ...ctx.value,
+            uuid: options[0]!.uuid,
+            key: options[0]!.key,
+            value: options[0]!.value,
+            pluginId: 'paragraphs_blokkli_data',
+          }).then(mapMutation)
+        }
+        const persistItems = options.map((v) => {
+          return {
+            uuid: v.uuid,
+            key: v.key,
+            value: v.value,
+            pluginId: 'paragraphs_blokkli_data',
+          }
+        })
+        return useGraphqlMutation('pbBulkUpdateParagraphBehaviorSettings', {
+          ...ctx.value,
+          items: persistItems,
+        }).then(mapMutation)
+      }
+    }
+
+    const mapComments = (
+      comments: Array<ParagraphsBlokkliCommentFragment | null>,
+    ) =>
+      comments
+        .map((item) => {
+          if (item && 'uuid' in item) {
+            return {
+              uuid: item.uuid,
+              blockUuids: (item.blockUuids || []).filter(falsy),
+              resolved: !!item.resolved,
+              body: item.body || '',
+              created: item.created?.first?.value || '',
+              user: {
+                label: item.user?.label || '',
+              },
+            }
+          }
+          return null
+        })
+        .filter(falsy)
+
+    if (hasQuery('pbComments')) {
+      adapter.loadComments = () =>
+        useGraphqlQuery('pbComments', ctx.value).then((v) =>
+          mapComments(v.data.state?.comments || []),
+        )
+    }
+
+    if (hasMutation('pbAddComment')) {
+      adapter.addComment = (blockUuids, body) =>
+        useGraphqlMutation('pbAddComment', {
+          ...ctx.value,
+          blockUuids,
+          body,
+        }).then((v) => mapComments(v.data.state?.action || []))
+    }
+
+    if (hasMutation('pbResolveComment')) {
+      adapter.resolveComment = (uuid) =>
+        useGraphqlMutation('pbResolveComment', {
+          ...ctx.value,
+          uuid,
+        }).then((v) => mapComments(v.data.state?.action || []))
+    }
+
+    if (hasQuery('pbLibraryItems')) {
+      adapter.getLibraryItems = (data) => {
+        return useGraphqlQuery('pbLibraryItems', {
+          bundles: data.bundles,
+          text: data.text,
+          page: data.page,
+        }).then((response) => {
+          const items =
+            response.data.result?.items
+              ?.map((v) => {
+                if (v && 'uuid' in v && v.uuid) {
+                  const paragraph = v.paragraphs
+                  const bundle = paragraph?.bundle
+                  if (bundle && paragraph && paragraph.props && paragraph) {
+                    return {
+                      uuid: v.uuid,
+                      label: v.label,
+                      bundle,
+                      item: paragraph,
+                    }
+                  }
+                }
+                return null
+              })
+              .filter(falsy) || []
+
+          return {
+            items,
+            perPage: response.data.result?.perPage || 16,
+            total: response.data.result?.total || 0,
+          }
+        })
+      }
+    }
+
+    if (hasQuery('pbGetPreviewGrantUrl')) {
+      adapter.getPreviewGrantUrl = () =>
+        useGraphqlQuery('pbGetPreviewGrantUrl', ctx.value).then(
+          (v) => v.data.getParagraphsEditState?.previewUrl,
+        )
+    }
+
+    if (hasQuery('pbGetTransformPlugins')) {
+      adapter.getTransformPlugins = () =>
+        useGraphqlQuery('pbGetTransformPlugins', ctx.value)
+          .then((v) => v.data.paragraphsBlokkliGetTransformPlugins || [])
+          .then((plugins) =>
+            plugins.map((plugin) => {
+              return {
+                id: plugin.id,
+                label: plugin.label,
+                bundles: plugin.bundles,
+                targetBundles: plugin.targetBundles,
+                min: plugin.min,
+                max: plugin.max,
+              }
+            }),
+          )
+    }
+
+    if (hasMutation('pbApplyTransformPlugin')) {
+      adapter.applyTransformPlugin = (e) =>
+        useGraphqlMutation('pbApplyTransformPlugin', {
+          ...ctx.value,
+          ...e,
+        }).then(mapMutation)
+    }
+
+    const buildFormUrl = (parts: string | string[], langcode: string) => {
+      const prefix = config.urlPrefixes[langcode]
+      if (prefix === null || prefix === undefined) {
+        throw new Error('Failed to get URL prefix for langcode: ' + langcode)
+      }
+      const url = typeof parts === 'string' ? parts : '/' + parts.join('/')
+      return { url: prefix + url + `?paragraphsBlokkli=true` }
+    }
+
+    if (availableFeatureIds.has('library')) {
+      adapter.getLibraryItemEditUrl = (uuid) => {
+        const url = buildFormUrl(
+          ['blokkli', 'library-item', uuid],
+          ctx.value.langcode,
+        ).url
+
+        // Directly build the URL to start blökkli for the paragraphs_library_item.
+        return `${url}&blokkliEditing=${uuid}&language=${ctx.value.langcode}`
+      }
+    }
+
+    if (hasMutation('pbUpdateFieldValue')) {
+      adapter.updateFieldValue = (e) =>
+        useGraphqlMutation('pbUpdateFieldValue', {
+          ...ctx.value,
+          uuid: e.uuid,
+          fieldName: e.fieldName,
+          value: e.fieldValue,
+        }).then(mapMutation)
+    }
+
+    if (hasMutation('pbAddFragmentParagraph')) {
+      adapter.fragmentsAddBlock = (e) =>
+        useGraphqlMutation('pbAddFragmentParagraph', {
+          ...ctx.value,
+          hostType: e.host.type,
+          hostFieldName: e.host.fieldName,
+          hostUuid: e.host.uuid,
+          afterUuid: e.preceedingUuid,
+          name: e.name,
+        }).then(mapMutation)
+    }
+
+    if (hasMutation('pbReplaceMedia')) {
+      adapter.mediaLibraryReplaceMedia = (e) =>
         useGraphqlMutation('pbReplaceMedia', {
           ...ctx.value,
           uuid: e.host.uuid,
           fieldName: e.host.fieldName,
           mediaId: e.mediaId,
         }).then(mapMutation)
+    }
 
-    const mediaLibraryReplaceEntityMedia: DrupalAdapter['mediaLibraryReplaceEntityMedia'] =
-      (e) =>
+    if (hasMutation('pbReplaceHostEntityMedia')) {
+      adapter.mediaLibraryReplaceEntityMedia = (e) =>
         useGraphqlMutation('pbReplaceHostEntityMedia', {
           ...ctx.value,
           fieldName: e.host.fieldName,
           mediaId: e.mediaId,
         }).then(mapMutation)
-
-    const updateEntityFieldValue: DrupalAdapter['updateEntityFieldValue'] = (
-      e,
-    ) =>
-      useGraphqlMutation('pbUpdateHostEntityFieldValue', {
-        ...ctx.value,
-        fieldName: e.fieldName,
-        value: e.fieldValue,
-      }).then(mapMutation)
-
-    const mediaLibraryGetResults: GetMediaLibraryFunction<any> = (e) => {
-      return useGraphqlQuery('pbMediaLibraryGetResults', {
-        text: e.filters.text,
-        bundle: e.filters.bundle,
-        page: e.page,
-      }).then((data) => {
-        return {
-          filters: (data.data.pbMediaLibraryGetResults?.filters || []).reduce<
-            Record<any, any>
-          >((acc, filter) => {
-            if (
-              filter?.__typename === 'ParagraphsBlokkliMediaLibraryFilterText'
-            ) {
-              acc[filter.id] = {
-                type: 'text',
-                placeholder: filter.placeholder,
-                label: filter.label,
-              }
-            } else if (
-              filter?.__typename === 'ParagraphsBlokkliMediaLibraryFilterSelect'
-            ) {
-              acc[filter.id] = {
-                type: 'select',
-                label: filter.label,
-                default: filter.default,
-                options: filter.options,
-              }
-            }
-            return acc
-          }, {} as any),
-          items: (data.data.pbMediaLibraryGetResults?.items || []).filter(
-            falsy,
-          ),
-          total: data.data.pbMediaLibraryGetResults?.total || 0,
-          perPage: data.data.pbMediaLibraryGetResults?.perPage || 50,
-        }
-      })
     }
 
-    const mediaLibraryAddBlock: DrupalAdapter['mediaLibraryAddBlock'] = (e) => {
-      return useGraphqlMutation('pbAddEntityReference', {
-        ...ctx.value,
-        targetId: e.item.mediaId,
-        targetBundle: e.item.mediaBundle,
-        targetType: 'media',
-        paragraphBundle: e.item.itemBundle,
-        hostType: e.host.type,
-        hostUuid: e.host.uuid,
-        hostFieldName: e.host.fieldName,
-        afterUuid: e.preceedingUuid,
-      }).then(mapMutation)
+    if (hasMutation('pbUpdateHostEntityFieldValue')) {
+      adapter.updateEntityFieldValue = (e) =>
+        useGraphqlMutation('pbUpdateHostEntityFieldValue', {
+          ...ctx.value,
+          fieldName: e.fieldName,
+          value: e.fieldValue,
+        }).then(mapMutation)
     }
 
-    const mediaLibraryAddBlocks: DrupalAdapter['mediaLibraryAddBlocks'] = (
-      e,
-    ) => {
-      return useGraphqlMutation('pbAddEntityReferenceMultiple', {
-        ...ctx.value,
-        references: e.items.map((item) => {
+    if (hasQuery('pbMediaLibraryGetResults')) {
+      adapter.mediaLibraryGetResults = (e) => {
+        return useGraphqlQuery('pbMediaLibraryGetResults', {
+          text: e.filters.text,
+          bundle: e.filters.bundle,
+          page: e.page,
+        }).then((data) => {
           return {
-            targetId: item.mediaId,
-            targetType: 'media',
-            targetBundle: item.mediaBundle,
-            paragraphBundle: item.itemBundle,
-          }
-        }),
-        hostType: e.host.type,
-        hostUuid: e.host.uuid,
-        hostFieldName: e.host.fieldName,
-        afterUuid: e.preceedingUuid,
-      }).then(mapMutation)
-    }
-
-    const getContentSearchTabs: DrupalAdapter['getContentSearchTabs'] = () => {
-      return useGraphqlQuery('pbSearchTabs').then((v) => {
-        return (v.data.tabs || []).reduce<Record<string, string>>(
-          (acc, tab) => {
-            if (tab?.id) {
-              acc[tab.id] = tab.label
-            }
-            return acc
-          },
-          {},
-        )
-      })
-    }
-
-    const getContentSearchResults: DrupalAdapter['getContentSearchResults'] = (
-      id,
-      text,
-    ) => {
-      return useGraphqlQuery('pbSearch', {
-        id,
-        text,
-      }).then((v) => (v.data.paragraphsBlokkliSearch || []).filter(falsy))
-    }
-
-    const addContentSearchItem: DrupalAdapter['addContentSearchItem'] = (e) => {
-      return useGraphqlMutation('pbAddEntityReference', {
-        ...ctx.value,
-        targetId: e.item.id,
-        targetType: e.item.entityType,
-        targetBundle: e.item.entityBundle,
-        paragraphBundle: e.bundle,
-        hostType: e.host.type,
-        hostUuid: e.host.uuid,
-        hostFieldName: e.host.fieldName,
-        afterUuid: e.afterUuid,
-      }).then(mapMutation)
-    }
-
-    const clipboardMapBundle: DrupalAdapter['clipboardMapBundle'] = (e) => {
-      if (e.type === 'video') {
-        return config.clipboard.find((v) => {
-          if (
-            v?.__typename === 'ParagraphsBlokkliSupportedClipboardRemoteVideo'
-          ) {
-            const providers = v.videoProviders
-            if (e.videoService === 'vimeo') {
-              return providers.includes(
-                ParagraphsBlokkliRemoteVideoProvider.VIMEO,
-              )
-            } else if (e.videoService === 'youtube') {
-              return providers.includes(
-                ParagraphsBlokkliRemoteVideoProvider.YOUTUBE,
-              )
-            }
-          }
-
-          return false
-        })?.possibleParagraphBundles?.[0]
-      } else if (e.type === 'plaintext') {
-        return config.clipboard.find((v) => {
-          return v?.__typename === 'ParagraphsBlokkliSupportedClipboardRichText'
-        })?.possibleParagraphBundles?.[0]
-      } else if (e.type === 'image') {
-        return config.clipboard.find((v) => {
-          return v?.__typename === 'ParagraphsBlokkliSupportedClipboardImage'
-        })?.possibleParagraphBundles?.[0]
-      } else if (e.type === 'file') {
-        return config.clipboard.find((v) => {
-          return v?.__typename === 'ParagraphsBlokkliSupportedClipboardFile'
-        })?.possibleParagraphBundles?.[0]
-      }
-    }
-
-    const addBlockFromClipboardItem: DrupalAdapter['addBlockFromClipboardItem'] =
-      (e) => {
-        if (e.item.type === 'text') {
-          return useGraphqlMutation('pbAddClipboardText', {
-            ...ctx.value,
-            text: e.item.data,
-            hostType: e.host.type,
-            hostUuid: e.host.uuid,
-            hostFieldName: e.host.fieldName,
-            afterUuid: e.afterUuid,
-          }).then(mapMutation)
-        } else if (e.item.type === 'image') {
-          return useGraphqlMutation('pbAddImage', {
-            ...ctx.value,
-            data: e.item.data,
-            fileName: e.item.additional || '',
-            hostType: e.host.type,
-            hostUuid: e.host.uuid,
-            hostFieldName: e.host.fieldName,
-            afterUuid: e.afterUuid,
-          }).then(mapMutation)
-        } else if (e.item.type === 'file') {
-          return useGraphqlMutation('pbAddFile', {
-            ...ctx.value,
-            data: e.item.data,
-            fileName: e.item.additional || '',
-            hostType: e.host.type,
-            hostUuid: e.host.uuid,
-            hostFieldName: e.host.fieldName,
-            afterUuid: e.afterUuid,
-          }).then(mapMutation)
-        } else if (e.item.type === 'video') {
-          return useGraphqlMutation('pbAddVideoRemote', {
-            ...ctx.value,
-            url: e.item.data,
-            hostType: e.host.type,
-            hostUuid: e.host.uuid,
-            hostFieldName: e.host.fieldName,
-            afterUuid: e.afterUuid,
-          }).then(mapMutation)
-        }
-      }
-
-    const route = useRoute()
-    const router = useRouter()
-
-    const changeLanguage: DrupalAdapter['changeLanguage'] = (translation) => {
-      return router.push({ path: translation.url, query: route.query })
-    }
-
-    const getEditStates: DrupalAdapter['getEditStates'] = (page) => {
-      return useGraphqlQuery('pbSearchEditStates', { page }).then((data) => {
-        return {
-          items: (data.data.pbSearchEditStates?.items || [])
-            .map((v) => {
+            filters: (data.data.pbMediaLibraryGetResults?.filters || []).reduce<
+              Record<any, any>
+            >((acc, filter) => {
               if (
-                v &&
-                v.uuid &&
-                v.hostEntityType &&
-                v.hostEntityUuid &&
-                v.label
+                filter?.__typename === 'ParagraphsBlokkliMediaLibraryFilterText'
               ) {
-                return {
-                  id: v.uuid,
-                  hostEntityType: v.hostEntityType,
-                  hostEntityUuid: v.hostEntityUuid,
-                  label: v.label,
-                  ...v,
+                acc[filter.id] = {
+                  type: 'text',
+                  placeholder: filter.placeholder,
+                  label: filter.label,
+                }
+              } else if (
+                filter?.__typename ===
+                'ParagraphsBlokkliMediaLibraryFilterSelect'
+              ) {
+                acc[filter.id] = {
+                  type: 'select',
+                  label: filter.label,
+                  default: filter.default,
+                  options: filter.options,
                 }
               }
-              return null
-            })
-            .filter(falsy),
-          total: data.data.pbSearchEditStates?.total || 0,
-          perPage: data.data.pbSearchEditStates?.perPage || 0,
-        }
-      })
+              return acc
+            }, {} as any),
+            items: (data.data.pbMediaLibraryGetResults?.items || []).filter(
+              falsy,
+            ),
+            total: data.data.pbMediaLibraryGetResults?.total || 0,
+            perPage: data.data.pbMediaLibraryGetResults?.perPage || 50,
+          }
+        })
+      }
     }
 
-    const adapter: BlokkliAdapter<any> = {
-      buildEditableFrameUrl,
-      getTransformPlugins,
-      applyTransformPlugin,
-      getImportItems,
-      getConversions,
-      getAllBundles,
-      loadState,
-      getDisabledFeatures,
-      takeOwnership,
-      setHistoryIndex,
-      setMutationItemStatus,
-      publish,
-      importFromExisting,
-      revertAllChanges,
-      makeBlockReusable,
-      duplicateBlocks,
-      convertBlocks,
-      addLibraryItem,
-      moveMultipleBlocks,
-      moveBlock,
-      addNewBlock,
-      updateOptions,
-      mapState,
-      loadComments,
-      addComment,
-      resolveComment,
-      getLibraryItems,
-      detachReusableBlock,
-      getLastChanged,
-      getPreviewGrantUrl,
-      formFrameBuilder,
-      deleteBlocks,
-      getFieldConfig,
-      pasteExistingBlocks,
-      updateFieldValue,
-      getEditableFieldConfig,
-      fragmentsAddBlock,
-      mediaLibraryReplaceMedia,
-      mediaLibraryReplaceEntityMedia,
-      updateEntityFieldValue,
-      getDroppableFieldConfig,
-      mediaLibraryGetResults,
-      mediaLibraryAddBlock,
-      mediaLibraryAddBlocks,
-      getContentSearchTabs,
-      getContentSearchResults,
-      addContentSearchItem,
-      clipboardMapBundle,
-      addBlockFromClipboardItem,
-      changeLanguage,
-      getLibraryItemEditUrl,
-      loadStateAtIndex,
-      getEditStates,
-      getPublishOptions,
+    if (hasMutation('pbAddEntityReference')) {
+      adapter.mediaLibraryAddBlock = (e) => {
+        return useGraphqlMutation('pbAddEntityReference', {
+          ...ctx.value,
+          targetId: e.item.mediaId,
+          targetBundle: e.item.mediaBundle,
+          targetType: 'media',
+          paragraphBundle: e.item.itemBundle,
+          hostType: e.host.type,
+          hostUuid: e.host.uuid,
+          hostFieldName: e.host.fieldName,
+          afterUuid: e.preceedingUuid,
+        }).then(mapMutation)
+      }
+    }
+
+    if (hasMutation('pbAddEntityReferenceMultiple')) {
+      adapter.mediaLibraryAddBlocks = (e) => {
+        return useGraphqlMutation('pbAddEntityReferenceMultiple', {
+          ...ctx.value,
+          references: e.items.map((item) => {
+            return {
+              targetId: item.mediaId,
+              targetType: 'media',
+              targetBundle: item.mediaBundle,
+              paragraphBundle: item.itemBundle,
+            }
+          }),
+          hostType: e.host.type,
+          hostUuid: e.host.uuid,
+          hostFieldName: e.host.fieldName,
+          afterUuid: e.preceedingUuid,
+        }).then(mapMutation)
+      }
+    }
+
+    if (hasQuery('pbSearchTabs')) {
+      adapter.getContentSearchTabs = () => {
+        return useGraphqlQuery('pbSearchTabs').then((v) => {
+          return (v.data.tabs || []).reduce<Record<string, string>>(
+            (acc, tab) => {
+              if (tab?.id) {
+                acc[tab.id] = tab.label
+              }
+              return acc
+            },
+            {},
+          )
+        })
+      }
+    }
+
+    if (hasQuery('pbSearch')) {
+      adapter.getContentSearchResults = (id, text) => {
+        return useGraphqlQuery('pbSearch', {
+          id,
+          text,
+        }).then((v) => (v.data.paragraphsBlokkliSearch || []).filter(falsy))
+      }
+    }
+
+    if (hasMutation('pbAddEntityReference')) {
+      adapter.addContentSearchItem = (e) => {
+        return useGraphqlMutation('pbAddEntityReference', {
+          ...ctx.value,
+          targetId: e.item.id,
+          targetType: e.item.entityType,
+          targetBundle: e.item.entityBundle,
+          paragraphBundle: e.bundle,
+          hostType: e.host.type,
+          hostUuid: e.host.uuid,
+          hostFieldName: e.host.fieldName,
+          afterUuid: e.afterUuid,
+        }).then(mapMutation)
+      }
+    }
+
+    if (availableFeatureIds.has('comments')) {
+      adapter.clipboardMapBundle = (e) => {
+        if (e.type === 'video') {
+          return config.clipboard.find((v) => {
+            if (
+              v?.__typename === 'ParagraphsBlokkliSupportedClipboardRemoteVideo'
+            ) {
+              const providers = v.videoProviders
+              if (e.videoService === 'vimeo') {
+                return providers.includes(
+                  ParagraphsBlokkliRemoteVideoProvider.VIMEO,
+                )
+              } else if (e.videoService === 'youtube') {
+                return providers.includes(
+                  ParagraphsBlokkliRemoteVideoProvider.YOUTUBE,
+                )
+              }
+            }
+
+            return false
+          })?.possibleParagraphBundles?.[0]
+        } else if (e.type === 'plaintext') {
+          return config.clipboard.find((v) => {
+            return (
+              v?.__typename === 'ParagraphsBlokkliSupportedClipboardRichText'
+            )
+          })?.possibleParagraphBundles?.[0]
+        } else if (e.type === 'image') {
+          return config.clipboard.find((v) => {
+            return v?.__typename === 'ParagraphsBlokkliSupportedClipboardImage'
+          })?.possibleParagraphBundles?.[0]
+        } else if (e.type === 'file') {
+          return config.clipboard.find((v) => {
+            return v?.__typename === 'ParagraphsBlokkliSupportedClipboardFile'
+          })?.possibleParagraphBundles?.[0]
+        }
+      }
+    }
+
+    adapter.addBlockFromClipboardItem = (e) => {
+      if (e.item.type === 'text' && hasMutation('pbAddClipboardText')) {
+        return useGraphqlMutation('pbAddClipboardText', {
+          ...ctx.value,
+          text: e.item.data,
+          hostType: e.host.type,
+          hostUuid: e.host.uuid,
+          hostFieldName: e.host.fieldName,
+          afterUuid: e.afterUuid,
+        }).then(mapMutation)
+      } else if (e.item.type === 'image' && hasMutation('pbAddImage')) {
+        return useGraphqlMutation('pbAddImage', {
+          ...ctx.value,
+          data: e.item.data,
+          fileName: e.item.additional || '',
+          hostType: e.host.type,
+          hostUuid: e.host.uuid,
+          hostFieldName: e.host.fieldName,
+          afterUuid: e.afterUuid,
+        }).then(mapMutation)
+      } else if (e.item.type === 'file' && hasMutation('pbAddFile')) {
+        return useGraphqlMutation('pbAddFile', {
+          ...ctx.value,
+          data: e.item.data,
+          fileName: e.item.additional || '',
+          hostType: e.host.type,
+          hostUuid: e.host.uuid,
+          hostFieldName: e.host.fieldName,
+          afterUuid: e.afterUuid,
+        }).then(mapMutation)
+      } else if (e.item.type === 'video' && hasMutation('pbAddVideoRemote')) {
+        return useGraphqlMutation('pbAddVideoRemote', {
+          ...ctx.value,
+          url: e.item.data,
+          hostType: e.host.type,
+          hostUuid: e.host.uuid,
+          hostFieldName: e.host.fieldName,
+          afterUuid: e.afterUuid,
+        }).then(mapMutation)
+      }
+    }
+
+    if (hasQuery('pbSearchEditStates')) {
+      adapter.getEditStates = (page) => {
+        return useGraphqlQuery('pbSearchEditStates', { page }).then((data) => {
+          return {
+            items: (data.data.pbSearchEditStates?.items || [])
+              .map((v) => {
+                if (
+                  v &&
+                  v.uuid &&
+                  v.hostEntityType &&
+                  v.hostEntityUuid &&
+                  v.label
+                ) {
+                  return {
+                    id: v.uuid,
+                    hostEntityType: v.hostEntityType,
+                    hostEntityUuid: v.hostEntityUuid,
+                    label: v.label,
+                    ...v,
+                  }
+                }
+                return null
+              })
+              .filter(falsy),
+            total: data.data.pbSearchEditStates?.total || 0,
+            perPage: data.data.pbSearchEditStates?.perPage || 0,
+          }
+        })
+      }
     }
 
     return adapter
