@@ -65,6 +65,7 @@ export default defineNuxtConfig({
   },
 
   blokkli: {
+    pattern: ['components/Blokkli/**/*.vue'],
     itemEntityType: 'block',
     fieldListTypes: ['header', 'inline'],
     globalOptions: {

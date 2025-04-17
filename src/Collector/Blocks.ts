@@ -1,4 +1,4 @@
-import { resolveFiles } from '@nuxt/kit'
+import { resolveAlias, resolveFiles } from '@nuxt/kit'
 import path from 'node:path'
 import { dirname } from 'pathe'
 import { CollectedFile, Collector } from './index'
@@ -188,9 +188,15 @@ export class BlockCollector extends Collector<CollectedBlockFile> {
 
     this.patterns = (helper.options.pattern || []).map((pattern) => {
       if (pattern.startsWith('/')) {
+        // Absolute.
         return pattern
+      } else if (pattern.startsWith('.')) {
+        // Relative to nuxt.config.ts.
+        return helper.resolvers.src.resolve(pattern)
       }
-      return helper.resolvers.src.resolve(pattern)
+
+      // Starts with an alias (~, @ or any custom alias).
+      return resolveAlias(pattern)
     })
   }
 

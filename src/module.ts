@@ -32,7 +32,6 @@ export default defineNuxtModule<ModuleOptions>({
     },
   },
   defaults: {
-    pattern: ['components/Blokkli/**/*.vue'],
     globalOptions: {
       [BK_VISIBLE_LANGUAGES]: {
         type: 'checkboxes',
@@ -47,7 +46,6 @@ export default defineNuxtModule<ModuleOptions>({
       },
     },
     chunkNames: ['global'],
-    itemEntityType: 'block',
   },
   async setup(moduleOptions, nuxt) {
     const blokkliModules = moduleOptions.modules || []

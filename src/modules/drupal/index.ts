@@ -21,6 +21,8 @@ export default defineBlokkliModule({
       options.itemEntityType = 'paragraph'
     }
 
+    // Default pattern to look for blökkli components.
+    // ~ resolves to the app dir (./ in Nuxt 3, ./app in Nuxt 4).
     if (!options.pattern) {
       options.pattern = ['~/components/Paragraph/**/*.vue']
     }
