@@ -1,0 +1,8 @@
+fragment blokkliProps on ParagraphsBlokkliProps {
+  entityUuid
+  entityType
+  entityBundle
+  canEdit
+  editLabel
+  language
+}

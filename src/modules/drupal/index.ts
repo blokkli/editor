@@ -121,6 +121,8 @@ export default defineBlokkliModule({
       'fragment.paragraphsBlokkliMutationItem.graphql',
       'fragment.paragraphsBlokkliMutationResult.graphql',
       'fragment.paragraphsBlokkliViolation.graphql',
+      'fragment.blokkliProps.graphql',
+      'fragment.paragraphsFieldItem.graphql',
       'query.pbConfig.graphql',
       'query.pbEditState.graphql',
     ]
