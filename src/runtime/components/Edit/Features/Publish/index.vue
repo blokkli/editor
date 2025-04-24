@@ -55,8 +55,8 @@ const { adapter, settings } = defineBlokkliFeature({
 })
 
 const route = useRoute()
-const { state, $t, broadcast, context } = useBlokkli()
-const { mutations, canEdit } = state
+const { state, $t, broadcast, context, eventBus } = useBlokkli()
+const { mutations, canEdit, mutateWithLoadingState } = state
 
 const hasPublishOptions = !!adapter.getPublishOptions
 
@@ -109,24 +109,28 @@ const onMenuClick = async () => {
 }
 
 async function publishCurrent() {
-  // const success = await mutateWithLoadingState(
-  //   () =>
-  //     adapter.publish({
-  //       closeAfterPublish: settings.value.closeAfterPublish,
-  //     }),
-  //   $t('publishError', 'Changes could not be published.'),
-  //   $t('publishSuccess', 'Changes published successfully.'),
-  // )
-  //
-  // if (!success) {
-  //   const validations = state.violations.value
-  //   if (validations.length) {
-  //     eventBus.emit('publish:failed')
-  //     // Open the validations sidebar when there are validation errors.
-  //     eventBus.emit('sidebar:open', 'violations')
-  //   }
-  //   return
-  // }
+  const success = await mutateWithLoadingState(
+    () =>
+      adapter.publish({
+        hostEntityType: context.value.entityType,
+        hostEntityUuid: context.value.entityUuid,
+        closeAfterPublish: settings.value.closeAfterPublish,
+      }),
+    $t('publishError', 'Changes could not be published.'),
+    $t('publishSuccess', 'Changes published successfully.'),
+  )
+
+  if (!success) {
+    const validations = state.violations.value
+    if (validations.length) {
+      eventBus.emit('publish:failed')
+      // Open the validations sidebar when there are validation errors.
+      eventBus.emit('sidebar:open', 'violations')
+    }
+    return
+  }
+
+  onSubmit()
 }
 
 function onSubmit() {
