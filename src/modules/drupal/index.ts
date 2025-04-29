@@ -37,7 +37,7 @@ export default defineBlokkliModule({
       const resolver = createResolver(
         fileURLToPath(new URL('./', import.meta.url)),
       )
-      const filePath = resolver.resolve('./adapter/index.mjs')
+      const filePath = resolver.resolve('./runtime/adapter/index.js')
       options.editAdapterPath = filePath
     }
 
@@ -68,6 +68,13 @@ export default defineBlokkliModule({
     }
 
     const graphql = useGraphqlModuleContext()
+
+    const blokkliModuleResolver = createResolver(
+      fileURLToPath(new URL('./', import.meta.url)),
+    )
+
+    const filePath = blokkliModuleResolver.resolve('./runtime')
+    context.helper.addAlias('#blokkli/drupal', filePath)
 
     /**
      * Build a map of fields for an object or interface type.

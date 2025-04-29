@@ -9,8 +9,8 @@ export default defineBuildConfig({
       outDir: './dist/modules/drupal/graphql',
     },
     {
-      input: './src/modules/drupal/adapter/index.ts',
-      outDir: `./dist/modules/drupal/adapter/`,
+      input: './src/modules/drupal/runtime/',
+      outDir: `./dist/modules/drupal/runtime`,
       addRelativeDeclarationExtensions: true,
       ext: 'js',
     },
