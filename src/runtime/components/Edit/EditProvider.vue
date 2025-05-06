@@ -96,6 +96,7 @@ import {
   INJECT_IS_EDITING,
 } from '#blokkli/helpers/symbols'
 import type { AdapterContext } from '#blokkli/adapter'
+import { useBlockRegistration } from '#blokkli/helpers/composables/useBlockRegistration'
 
 const props = withDefaults(
   defineProps<{
@@ -215,6 +216,7 @@ provide<ItemEditContext>(INJECT_EDIT_CONTEXT, {
   mutatedOptions: state.mutatedOptions,
   dom,
   definitions,
+  useBlockRegistration,
 })
 provide<BlokkliApp>(INJECT_APP, {
   adapter,

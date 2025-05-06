@@ -1162,6 +1162,7 @@ export type ItemEditContext = {
   mutatedOptions: MutatedOptions
   dom?: DomProvider
   definitions: DefinitionProvider
+  useBlockRegistration?: (dom: DomProvider, uuid: string) => void
 }
 
 export interface BlokkliApp {

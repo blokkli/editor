@@ -22,4 +22,7 @@ declare const adapter: BlokkliAdapterFactory<any>
 export default adapter
 `
   },
+  {
+    write: true,
+  },
 )

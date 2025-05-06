@@ -110,6 +110,9 @@ export type DomProvider = {
     fieldName: string,
   ): BlokkliFieldElement | undefined
 
+  registerBlock: (key: string, uuid: string, el: HTMLElement | null) => void
+  unregisterBlock: (key: string, uuid: string) => void
+
   registerField: (
     entity: EntityContext,
     fieldName: string,
@@ -167,7 +170,6 @@ export default function (
   debug: DebugProvider,
   definitions: DefinitionProvider,
 ): DomProvider {
-  const artboardElement = ui.artboardElement()
   const logger = debug.createLogger('DomProvider')
   const mutationsReady = ref(true)
   const intersectionReady = ref(false)
@@ -175,6 +177,7 @@ export default function (
   const visibleFields: Set<string> = new Set()
   const blockRects: Record<string, MeasuredBlockRect> = {}
   const fieldRects: Record<string, Rectangle> = {}
+  const blockUuidCurrentKey: Record<string, string> = {}
   let draggableBlockCache: Record<string, DraggableExistingBlock> = {}
 
   const resizeObserver = new ResizeObserver(function (
@@ -590,80 +593,6 @@ export default function (
   const dragElementUuidMap = new WeakMap<Node, string>()
   const dragElementCache: Map<string, HTMLElement> = new Map()
 
-  function handleNodeAdded(node: Node) {
-    if (!(node instanceof HTMLElement)) {
-      return
-    }
-
-    if (node.dataset.uuid) {
-      const item = buildDraggableItem(node)
-      if (item && item.itemType === 'existing') {
-        const observableElement = getElementToObserve(
-          node,
-          item.itemBundle,
-          item.hostFieldListType,
-          item.hostBundle as BlockBundleWithNested,
-        )
-        intersectionObserver.observe(observableElement)
-        resizeObserver.observe(observableElement)
-        registeredBlocks[item.uuid] = node
-      }
-    } else if (
-      node.dataset.fieldName &&
-      node.dataset.fieldKey &&
-      node.dataset.fieldCardinality
-    ) {
-      const blocks = node.querySelectorAll('[data-element-type="existing"]')
-      for (const block of blocks) {
-        handleNodeAdded(block)
-      }
-    }
-  }
-
-  function handleNodeRemoved(node: Node) {
-    if (node instanceof HTMLElement && node.dataset.uuid) {
-      const uuid = node.dataset.uuid
-      const el = registeredBlocks[uuid]
-      // The block has already been added before, but the
-      if (el !== node) {
-        return
-      }
-      if (el) {
-        intersectionObserver.unobserve(el)
-        resizeObserver.unobserve(el)
-        dragElementUuidMap.delete(el)
-      }
-      dragElementUuidMap.delete(node)
-      dragElementCache.delete(uuid)
-      registeredBlocks[uuid] = undefined
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-      delete blockRects[uuid]
-      visibleBlocks.delete(uuid)
-    }
-  }
-
-  // Callback function to execute when mutations are observed
-  const mutationObserverCallback = function (mutationsList: MutationRecord[]) {
-    for (const mutation of mutationsList) {
-      if (mutation.type === 'childList') {
-        for (const node of mutation.removedNodes) {
-          handleNodeRemoved(node)
-        }
-
-        for (const node of mutation.addedNodes) {
-          handleNodeAdded(node)
-        }
-      }
-    }
-  }
-
-  const mutationObserver = new MutationObserver(mutationObserverCallback)
-
-  mutationObserver.observe(artboardElement, {
-    subtree: true,
-    childList: true,
-  })
-
   function getDragElement(block: DraggableExistingBlock) {
     const cached = dragElementCache.get(block.uuid)
     if (cached && document.body.contains(cached)) {
@@ -673,9 +602,6 @@ export default function (
     if (!el) {
       return
     }
-    if (el.parentNode) {
-      mutationObserver.observe(el.parentNode, { childList: true })
-    }
     dragElementUuidMap.set(el, block.uuid)
     dragElementCache.set(block.uuid, el)
     return el
@@ -683,6 +609,70 @@ export default function (
 
   function isBlockVisible(uuid: string): boolean {
     return visibleBlocks.has(uuid)
+  }
+
+  function registerBlock(key: string, uuid: string, el: HTMLElement | null) {
+    logger.log('registerBlock: ' + uuid)
+    blockUuidCurrentKey[uuid] = key
+
+    // No root node found on the block, unregister it.
+    if (!el) {
+      logger.log('registerBlock call unregisterBlock because no element', uuid)
+      unregisterBlock(key, uuid)
+      return
+    }
+
+    // Block is already registered, but the element has been updated.
+    if (registeredBlocks[uuid]) {
+      logger.log(
+        'registerBlock call unregisterBlock because already registered',
+        uuid,
+      )
+      unregisterBlock(key, uuid)
+    }
+
+    const item = buildDraggableItem(el)
+    if (item && item.itemType === 'existing') {
+      const observableElement = getElementToObserve(
+        el,
+        item.itemBundle,
+        item.hostFieldListType,
+        item.hostBundle as BlockBundleWithNested,
+      )
+      intersectionObserver.observe(observableElement)
+      resizeObserver.observe(observableElement)
+      registeredBlocks[item.uuid] = el
+    }
+  }
+
+  function unregisterBlock(key: string, uuid: string) {
+    const currentKey = blockUuidCurrentKey[uuid]
+
+    // This indicates that unregisterBlock was called *after* registerBlock,
+    // for example when a block was moved from one field to another.
+    // In such a case, the "new" location of the block calls registerBlock and
+    // the "old" location calls unregisterBlock. We would be immediately removing
+    // the block again.
+    // The key is unique by "location" basically, so we can use it to prevent
+    // this from happening.
+    if (currentKey && currentKey !== key) {
+      return
+    }
+
+    logger.log('unregisterBlock: ' + uuid)
+
+    const el = registeredBlocks[uuid]
+    if (el) {
+      intersectionObserver.unobserve(el)
+      resizeObserver.unobserve(el)
+      dragElementUuidMap.delete(el)
+      dragElementUuidMap.delete(el)
+    }
+    dragElementCache.delete(uuid)
+    registeredBlocks[uuid] = undefined
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    delete blockRects[uuid]
+    visibleBlocks.delete(uuid)
   }
 
   return {
@@ -709,5 +699,7 @@ export default function (
     getDragElement,
     updateVisibleRects,
     registeredFieldTypes,
+    registerBlock,
+    unregisterBlock,
   }
 }

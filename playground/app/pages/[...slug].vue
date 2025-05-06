@@ -31,11 +31,13 @@
           />
         </template>
       </Hero>
-      <BlokkliField
-        name="content"
-        :list="fieldContent"
-        :allowed-fragments="['cta', 'shader_debug', 'top_level_link']"
-      />
+      <div>
+        <BlokkliField
+          name="content"
+          :list="fieldContent"
+          :allowed-fragments="['cta', 'shader_debug', 'top_level_link']"
+        />
+      </div>
     </BlokkliProvider>
   </div>
 </template>

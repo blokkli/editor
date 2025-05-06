@@ -80,7 +80,8 @@ import type { Rectangle, PluginMountEvent } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
-const { selection, $t, types, state, ui, dom, definitions } = useBlokkli()
+const { selection, $t, types, state, ui, dom, definitions, debug } =
+  useBlokkli()
 
 const editingEnabled = computed(
   () =>
@@ -114,6 +115,9 @@ const bundleIcon = computed(() => {
 const title = computed(() => {
   if (ui.transformLabel.value) {
     return ui.transformLabel.value
+  }
+  if (debug.isEnabled.value && selection.uuids.value.length === 1) {
+    return selection.uuids.value[0]
   }
   if (itemBundle.value) {
     if (itemBundle.value.id === 'blokkli_fragment') {

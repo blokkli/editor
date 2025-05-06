@@ -27,6 +27,7 @@ import {
   OPTIONS,
   type RuntimeBlockOptionArray,
 } from '#blokkli-build/runtime-options'
+import { useBlockRegistration } from '#blokkli/helpers/composables/useBlockRegistration'
 
 /**
  * Define a blokkli component.
@@ -36,8 +37,9 @@ export function defineBlokkli<
   G extends GlobalOptionsKey[] | undefined = undefined,
   B extends BundleKey | string = string,
 >(arg: BlockDefinitionInput<T, G, B>): DefineBlokkliContext<T, G> {
-  // The vite plugin removes all properties from the passed object except for
-  // bundle, so we have to cast it as this type here.
+  // The vite plugin replaces the object that is passed in defineBlokkli()
+  // with a single string, which is the bundle and the unique identifier
+  // separated using ::.
   const [bundle, identifier] = (arg as unknown as string).split('::', 2) as [
     string,
     string,
@@ -176,6 +178,15 @@ export function defineBlokkli<
   if (import.meta.hot) {
     import.meta.hot.accept('#blokkli-build/runtime-options', () => {})
     import.meta.hot.accept('#blokkli/helpers/runtimeHelpers', () => {})
+  }
+
+  if (
+    editContext?.useBlockRegistration &&
+    editContext.dom &&
+    bundle !== 'from_library' &&
+    bundle !== 'blokkli_fragment'
+  ) {
+    editContext.useBlockRegistration(editContext.dom, uuid)
   }
 
   return {
