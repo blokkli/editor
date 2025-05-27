@@ -3,7 +3,7 @@
     <BlokkliItem v-if="activeItem" v-bind="activeItem" :key="activeItem.uuid" />
   </div>
   <div
-    class="flex items-center justify-center mb-25"
+    class="flex items-center justify-center mb-25 min-h-120"
     @click.stop.capture
     @mousedown.stop.capture
     @pointerdown.stop.capture

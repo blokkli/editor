@@ -25,8 +25,6 @@ import {
   inject,
   defineAsyncComponent,
   type ComputedRef,
-  getCurrentInstance,
-  onMounted,
 } from '#imports'
 import type { InjectedBlokkliItem } from '#blokkli/types'
 import { getComponent } from '#blokkli/helpers/imports'
@@ -64,8 +62,6 @@ const componentProps = withDefaults(
     props: () => ({}),
   },
 )
-
-const instance = componentProps.isEditing ? getCurrentInstance() : null
 
 const isProxyMode = inject(INJECT_FIELD_PROXY_MODE, false)
 const fieldUsesProxy = inject(INJECT_FIELD_USES_PROXY, false)

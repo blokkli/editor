@@ -6,6 +6,8 @@ import {
   INJECT_REUSABLE_OPTIONS,
   INJECT_PROVIDER_BLOCKS,
   INJECT_PROVIDER_CONTEXT,
+  INJECT_FIELD_PROXY_MODE,
+  INJECT_FIELD_USES_PROXY,
 } from '../helpers/symbols'
 import { computed, inject, type ComputedRef } from '#imports'
 import type {
@@ -186,7 +188,10 @@ export function defineBlokkli<
     bundle !== 'from_library' &&
     bundle !== 'blokkli_fragment'
   ) {
-    editContext.useBlockRegistration(editContext.dom, uuid)
+    const isProxyMode = inject(INJECT_FIELD_USES_PROXY, false)
+    if (!isProxyMode) {
+      editContext.useBlockRegistration(editContext.dom, uuid)
+    }
   }
 
   return {
