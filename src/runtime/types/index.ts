@@ -1075,6 +1075,12 @@ export type LibraryEditItemEvent = {
   label?: string
 }
 
+export type AnimationFrameBeforeEvent = {
+  time: number
+  mouseX: number
+  mouseY: number
+}
+
 export type EventbusEvents = {
   select: string | string[]
   'select:unselect': undefined
@@ -1110,7 +1116,7 @@ export type EventbusEvents = {
   'item:doubleClick': DraggableExistingBlock
 
   scrollIntoView: ScrollIntoViewEvent
-  'animationFrame:before': number
+  'animationFrame:before': AnimationFrameBeforeEvent
   'canvas:draw': CanvasDrawEvent
 
   'state:reloaded': undefined

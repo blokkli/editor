@@ -69,7 +69,7 @@ export default function (ui: UiProvider): AnimationProvider {
 
     // Let the "Artboard" feature alter the position/scale of the root element
     // before triggering the main animation loop event.
-    eventBus.emit('animationFrame:before', time)
+    eventBus.emit('animationFrame:before', { time, mouseX, mouseY })
 
     eventBus.emit('animationFrame', {
       mouseX,

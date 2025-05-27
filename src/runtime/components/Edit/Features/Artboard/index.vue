@@ -215,7 +215,46 @@ watch(options, function (newOptions) {
   artboard.setOptions(newOptions)
 })
 
-onBlokkliEvent('animationFrame:before', (time) => {
+const AUTOSCROLL_EDGE_ZONE = 130
+const AUTOSCROLL_SPEED = 12
+let autoScrollSpeed = 1
+
+function edgeStep(distance: number): number {
+  const ratio = distance / AUTOSCROLL_EDGE_ZONE
+  return Math.pow(ratio, 3) * AUTOSCROLL_SPEED
+}
+
+onBlokkliEvent('animationFrame:before', ({ time, mouseY }) => {
+  // When dragging, automatically scroll the artboard when the mouse is in the
+  // top or bottom edge of the viewport.
+  if (selection.isDragging.value) {
+    const viewportHeight = ui.viewport.value.height
+    const currentOffset = artboard.getOffset()
+    const y = Math.min(Math.max(mouseY, 0), viewportHeight)
+
+    let dy = 0
+
+    if (y < AUTOSCROLL_EDGE_ZONE) {
+      const dist = AUTOSCROLL_EDGE_ZONE - y
+      // scroll down.
+      dy = edgeStep(dist)
+    } else if (y > viewportHeight - AUTOSCROLL_EDGE_ZONE) {
+      const dist = y - (viewportHeight - AUTOSCROLL_EDGE_ZONE)
+      // scroll up.
+      dy = -edgeStep(dist)
+    } else {
+      // Reset the speed when leaving autoscroll zone area.
+      autoScrollSpeed = 1
+    }
+
+    if (dy !== 0) {
+      artboard.setOffset(null, currentOffset.y + dy * autoScrollSpeed)
+      autoScrollSpeed = Math.min(autoScrollSpeed * 1.01, 2.25)
+    }
+  } else {
+    autoScrollSpeed = 1
+  }
+
   artboard.loop(time)
   const artboardSize = artboard.getArtboardSize()
   if (artboardSize) {
@@ -331,8 +370,7 @@ onBlokkliEvent('scrollIntoView', (e) => {
     return
   }
 
-  // @TODO: Prevent scrolling into view when already
-
+  // @TODO: Prevent scrolling into view when already in view.
   artboard.scrollIntoView(rect, {
     scale: 'none',
     axis: 'y',
