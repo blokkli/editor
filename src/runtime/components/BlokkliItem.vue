@@ -12,7 +12,7 @@
     :is="component"
     v-else-if="component"
     v-bind="props"
-    :data-bk-in-proxy="fieldUsesProxy || undefined"
+    :data-bk-in-proxy="fieldUsesProxy || (isEditing ? 'false' : undefined)"
   />
   <div v-else-if="isEditing">Block not implemented</div>
 </template>

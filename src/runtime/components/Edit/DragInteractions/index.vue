@@ -62,7 +62,10 @@ function getInteractedElement(
       continue
     }
 
-    if (el.dataset.blokkliEditableField) {
+    if (
+      el.dataset.blokkliEditableField &&
+      !el.closest('[data-bk-in-proxy="true"]')
+    ) {
       editableFieldName = el.dataset.blokkliEditableField
     }
 

@@ -82,7 +82,8 @@
         }
       }
     }
-    [data-blokkli-is-reusable='true'] {
+    [data-blokkli-is-reusable='true'],
+    [data-bk-in-proxy='true'] {
       * {
         pointer-events: none !important;
       }
