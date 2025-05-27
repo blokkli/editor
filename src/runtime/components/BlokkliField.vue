@@ -221,12 +221,12 @@ const filteredList = computed<FieldListItemTyped[]>(() => {
     (isPreview?.value || isEditing)
   ) {
     return ((mutatedFields[fieldKey.value] || {}).list || []).map((v) => {
-      // const mutatedOptions = editContext.mutatedOptions[v.uuid] || {}
+      const mutatedOptions = editContext.mutatedOptions[v.uuid] || {}
       return {
         ...v,
         options: {
           ...v.options,
-          // ...mutatedOptions,
+          ...mutatedOptions,
         },
       } as FieldListItemTyped
     })
