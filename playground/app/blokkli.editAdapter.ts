@@ -37,6 +37,12 @@ function getRandomNumberInRange(min: number, max: number) {
 }
 
 export default defineBlokkliEditAdapter((ctx) => {
+  // =============================================================================
+  // Debugging
+  // =============================================================================
+  // Set to false to debug the "take ownership" flow.
+  let isOwner = false
+
   const router = useRouter()
   const route = useRoute()
   const mockResponse = (
@@ -169,11 +175,17 @@ export default defineBlokkliEditAdapter((ctx) => {
       return Promise.resolve(transforms)
     },
     applyTransformPlugin: (e) => addMutation('transform', e),
+    takeOwnership: () => {
+      isOwner = true
+      const entity = getEntity()
+      const mutatedState = editState.getMutatedState(entity)
+      return mockResponse(mutatedState)
+    },
     mapState(inputState) {
       return {
         currentIndex: editState.currentIndex,
         mutations: editState.getMutationItems(),
-        currentUserIsOwner: true,
+        currentUserIsOwner: isOwner,
         ownerName: state.owner.name,
         mutatedEntity: inputState.context.entity.getData(),
         mutatedState: {

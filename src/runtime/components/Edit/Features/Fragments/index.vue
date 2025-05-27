@@ -42,6 +42,7 @@ const { adapter } = defineBlokkliFeature({
   label: 'Fragments',
   description: 'Provides way to add content fragments defined by the frontend.',
   requiredAdapterMethods: ['fragmentsAddBlock'],
+  dependencies: ['add-list'],
 })
 
 const { state, $t, types, selection, dom } = useBlokkli()
