@@ -1,12 +1,13 @@
 import {
   INJECT_EDIT_CONTEXT,
+  INJECT_MUTATED_FIELDS_MAP,
   INJECT_PROVIDER_BLOCKS,
 } from '#blokkli/helpers/symbols'
 import { inject, type ComputedRef, computed, watch, ref } from '#imports'
 import { FIELD_MAPPING } from '#blokkli-build/runtime-options'
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 import { getActualBlock } from '#blokkli/helpers/runtimeHelpers'
-import type { ItemEditContext } from '#blokkli/types'
+import type { ItemEditContext, MutatedField } from '#blokkli/types'
 
 type BundleWithoutLibrary = Exclude<
   FieldListItemTyped['bundle'],
@@ -47,6 +48,7 @@ function walkBlocks(
   matches: FieldListItemTyped[],
   callback: (item: FieldListItemTyped) => CallbackResult,
   mutatedOptions: Record<string, any>,
+  mutatedFieldsMap?: Record<string, MutatedField> | null,
   list?: Array<FieldListItemTyped | null | undefined | object>,
 ) {
   if (!list) return
@@ -91,13 +93,23 @@ function walkBlocks(
     // Iterate over props that contain children.
     const propNames = Object.keys(nestedFieldMapping)
     for (const propName of propNames) {
-      const value = (mappedItem.props as any)[propName]
+      const fieldName = nestedFieldMapping[propName]
+      const key = mappedItem.uuid + ':' + fieldName
+      const value = mutatedFieldsMap
+        ? mutatedFieldsMap[key]?.list
+        : (mappedItem.props as any)?.[propName]
 
       if (!value) continue
 
       // A prop may be an array or a single field list item.
       const valueAsArray = Array.isArray(value) ? value : [value]
-      walkBlocks(matches, callback, mutatedOptions, valueAsArray)
+      walkBlocks(
+        matches,
+        callback,
+        mutatedOptions,
+        mutatedFieldsMap,
+        valueAsArray,
+      )
     }
   }
 }
@@ -110,6 +122,11 @@ export function useBlokkliHelper(): UseBlokkliHelper {
 
   const editContext = inject<ItemEditContext | null>(INJECT_EDIT_CONTEXT, null)
   const mutatedOptions = ref<Record<string, any>>({})
+
+  const mutatedFields = inject<Record<string, MutatedField> | null>(
+    INJECT_MUTATED_FIELDS_MAP,
+    null,
+  )
 
   // @todo: This is a dirty workaround during editing. The mutatedOptions
   // from editContext are not reactive when used in a computed property.
@@ -154,7 +171,7 @@ export function useBlokkliHelper(): UseBlokkliHelper {
         return []
       }
 
-      walkBlocks(matches, callback, mutatedOptions.value, list)
+      walkBlocks(matches, callback, mutatedOptions.value, mutatedFields, list)
 
       return matches
     })
