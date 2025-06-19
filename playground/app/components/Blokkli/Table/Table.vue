@@ -20,6 +20,9 @@ import { defineBlokkli } from '#imports'
 const { parentType } = defineBlokkli({
   bundle: 'table',
   chunkName: 'rare',
+  propsFieldMapping: {
+    rows: 'rows',
+  },
   editor: {
     addBehaviour: 'no-form',
     editTitle: (el) => el.textContent,

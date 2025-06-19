@@ -130,6 +130,7 @@ export default defineNuxtModule<ModuleOptions>({
     helper.addComposable('defineBlokkliFragment')
     helper.addComposable('defineBlokkliFeature')
     helper.addComposable('useBlokkli')
+    helper.addComposable('useBlokkliHelper')
 
     helper.addAlias('#blokkli-build', helper.paths.blokkliBuildDir)
     helper.addAlias('#blokkli/types', resolver.resolve('runtime/types'))

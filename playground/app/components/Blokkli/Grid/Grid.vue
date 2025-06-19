@@ -56,6 +56,10 @@ const { options } = defineBlokkli({
       default: true,
     },
   },
+  propsFieldMapping: {
+    header: 'header',
+    blocks: 'blocks',
+  },
   editor: {
     disableEdit: true,
     editTitle: (el) => el.querySelector('h2')?.textContent,

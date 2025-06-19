@@ -176,7 +176,7 @@ export function getRuntimeOptions<K extends keyof RuntimeBlockOptions>(
       ) {
         acc[key] = getRuntimeOptionValue(
           definition,
-          fromLibraryOptions.value[key],
+          fromLibraryOptions.value?.[key],
         )
         return acc
       }

@@ -18,6 +18,9 @@ import { defineBlokkli } from '#imports'
 
 defineBlokkli({
   bundle: 'slider',
+  propsFieldMapping: {
+    slides: 'slides',
+  },
   editor: {
     disableEdit: true,
   },

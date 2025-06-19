@@ -370,6 +370,40 @@ export type BlockDefinitionInput<
    * Settings for the behaviour in the editor.
    */
   editor?: BlokkliDefinitionInputEditor<Options, GlobalOptions, Bundle>
+
+  /**
+   * Map which component prop maps to which field name.
+   *
+   * For example, if the field is named "field_paragraphs_header" and the prop
+   * is named "headerParagraphs", you would define it as such:
+   *
+   * @example
+   * ```vue
+   * <template>
+   *   <div>
+   *     <BlokkliField :list="headerParagraphs" name="field_paragraphs_header" />
+   *   </div>
+   * <template>
+   *
+   * <script lang="ts" setup>
+   * import type { ParagraphTwoColumnsFragment } from '#graphql-operations'
+   *
+   * defineProps<{
+   *   headerParagraphs: ParagraphTwoColumnsFragment['headerParagraphs']
+   * }>()
+   *
+   * defineBlokkli({
+   *   bundle: 'section',
+   *   propsFieldMapping: {
+   *     headerParagraphs: 'field_paragraphs_header',
+   *   }
+   * })
+   * </script>
+   * ```
+   */
+  propsFieldMapping?: Bundle extends BundleKey
+    ? Partial<Record<keyof BundleProps[Bundle], string>>
+    : never
 }
 
 export type RuntimeBlockDefinitionInput = {

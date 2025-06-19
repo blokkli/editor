@@ -10,6 +10,9 @@ import { defineBlokkli } from '#imports'
 
 defineBlokkli({
   bundle: 'button_list',
+  propsFieldMapping: {
+    blocks: 'blocks',
+  },
 })
 
 export type Props = {

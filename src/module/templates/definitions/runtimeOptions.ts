@@ -33,6 +33,7 @@ export default defineCodeTemplate(
 
     const declarations: string[] = []
     const OPTIONS = new Map<string, string>()
+    const FIELD_MAPPING = new Map<string, string>()
 
     for (const item of items) {
       const optionDefinitions = Object.entries(item.definition.options || {})
@@ -64,12 +65,22 @@ export default defineCodeTemplate(
           OPTIONS.set(variation, item.varName)
         }
       })
+
+      if (isBlock(item.definition)) {
+        if (item.definition.propsFieldMapping) {
+          FIELD_MAPPING.set(
+            item.definition.bundle,
+            JSON.stringify(item.definition.propsFieldMapping, null, 2),
+          )
+        }
+      }
     }
 
     return `
 ${declarations.join('\n')}
 
 ${toObject('OPTIONS', OPTIONS)}
+${toObject('FIELD_MAPPING', FIELD_MAPPING)}
 `
   },
   (ctx) => {
@@ -149,6 +160,7 @@ ${runtimeMappedOptionTypes}
 }
 
 export declare const OPTIONS: Record<string, Record<string, RuntimeBlockOptionArray>>
+export declare const FIELD_MAPPING: Record<string, Record<string, string>>
 `
   },
   {

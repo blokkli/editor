@@ -143,7 +143,9 @@ ${lines.join('\n  ')}
             return `${v.typeName} as Bundle_${v.bundle}_Props`
           })
           .join(', ')
-        const importPath = relative(ctx.helper.paths.blokkliBuildDir, from)
+        const importPath = from.startsWith('/')
+          ? relative(ctx.helper.paths.blokkliBuildDir, from)
+          : from
         return `import type { ${imports} } from '${importPath}'`
       })
       .join('\n')

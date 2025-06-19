@@ -6,7 +6,6 @@ import {
   INJECT_REUSABLE_OPTIONS,
   INJECT_PROVIDER_BLOCKS,
   INJECT_PROVIDER_CONTEXT,
-  INJECT_FIELD_PROXY_MODE,
   INJECT_FIELD_USES_PROXY,
 } from '../helpers/symbols'
 import { computed, inject, type ComputedRef } from '#imports'
@@ -29,7 +28,6 @@ import {
   OPTIONS,
   type RuntimeBlockOptionArray,
 } from '#blokkli-build/runtime-options'
-import { useBlockRegistration } from '#blokkli/helpers/composables/useBlockRegistration'
 
 /**
  * Define a blokkli component.
