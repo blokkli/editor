@@ -818,7 +818,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       }
     }
 
-    if (availableFeatureIds.has('comments')) {
+    if (availableFeatureIds.has('clipboard')) {
       adapter.clipboardMapBundle = (e) => {
         if (e.type === 'video') {
           return config.clipboard.find((v) => {
