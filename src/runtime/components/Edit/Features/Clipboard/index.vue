@@ -335,6 +335,7 @@ function onPaste(e: ClipboardEvent, fromInput?: boolean) {
   ) {
     return
   }
+
   // Stop data actually being pasted into div
   e.stopPropagation()
   e.preventDefault()
@@ -345,30 +346,37 @@ function onPaste(e: ClipboardEvent, fromInput?: boolean) {
 
   // Get pasted data via clipboard API
   const clipboardData = e.clipboardData
-  if (clipboardData?.files.length) {
-    return handleFiles(clipboardData)
-  }
-  let pastedData = clipboardData?.getData('text/html')
-  if (!pastedData) {
-    pastedData = clipboardData?.getData('text')
-  }
-  if (!pastedData) {
+  if (!clipboardData) {
     return
   }
 
-  if (pastedData.startsWith('{')) {
-    try {
-      const data = JSON.parse(pastedData)
-      if (typeof data === 'object' && data.type && data.type === 'selection') {
-        const uuids: string[] = data.uuids
-        return handleSelectionPaste(uuids)
+  const pastedData =
+    clipboardData.getData('text/html') ||
+    clipboardData.getData('text/plain') ||
+    clipboardData.getData('text')
+
+  if (pastedData) {
+    if (pastedData.startsWith('{')) {
+      try {
+        const data = JSON.parse(pastedData)
+        if (
+          typeof data === 'object' &&
+          data.type &&
+          data.type === 'selection'
+        ) {
+          const uuids: string[] = data.uuids
+          return handleSelectionPaste(uuids)
+        }
+      } catch (_e) {
+        // Noop.
       }
-    } catch (_e) {
-      // Noop.
     }
+    handlePastedText(pastedData)
   }
 
-  handlePastedText(pastedData)
+  if (clipboardData.files.length) {
+    return handleFiles(clipboardData)
+  }
 }
 
 const handlePastedText = (text: string) => {
