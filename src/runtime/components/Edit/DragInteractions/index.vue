@@ -10,6 +10,7 @@ import {
   isInsideRect,
 } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { MOUSE_BUTTON, MOUSE_BUTTONS } from '#blokkli/helpers/dom'
 import type { Coord, Rectangle } from '#blokkli/types'
 import { watch, ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
@@ -126,7 +127,11 @@ function getInteractedElement(
 }
 
 function onPointerMove(e: PointerEvent) {
-  if (keyboard.isPressingSpace.value || state.editMode.value !== 'editing') {
+  if (
+    keyboard.isPressingSpace.value ||
+    state.editMode.value !== 'editing' ||
+    e.buttons === MOUSE_BUTTONS.AUXILIARY
+  ) {
     return
   }
   e.preventDefault()
@@ -181,6 +186,10 @@ let pointerDownTimestamp = 0
 let pointerUpTimestamp = 0
 
 function onPointerDown(e: PointerEvent) {
+  if (e.buttons === MOUSE_BUTTONS.AUXILIARY) {
+    return
+  }
+
   if (!keyboard.isPressingSpace.value) {
     e.preventDefault()
     e.stopPropagation()
@@ -210,7 +219,7 @@ function onPointerDown(e: PointerEvent) {
   // Only handle click interactions when:
   // - not pressing the shift key
   // - using the left mouse button
-  if (!e.shiftKey && e.buttons !== 2) {
+  if (!e.shiftKey && e.buttons === MOUSE_BUTTONS.PRIMARY) {
     pointerDownTimestamp = Date.now()
     mouseStartCoordinates = coords
 
@@ -228,6 +237,10 @@ function onPointerDown(e: PointerEvent) {
 
 function onPointerUp(e: PointerEvent) {
   rootEl.removeEventListener('pointermove', onPointerMove)
+  if (e.button === MOUSE_BUTTON.AUXILIARY) {
+    e.preventDefault()
+    return
+  }
   e.preventDefault()
   e.stopPropagation()
   e.stopImmediatePropagation()

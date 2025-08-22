@@ -62,3 +62,73 @@ export function cloneElementWithStyles(
 
   return container.innerHTML
 }
+
+/**
+ * Possible values for the MouseEvent.buttons property.
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
+ */
+export const MOUSE_BUTTONS = Object.freeze({
+  /**
+   *No button or un-initialized.
+   */
+  NONE: 0,
+
+  /**
+   * Primary button (usually the left button).
+   */
+  PRIMARY: 1,
+
+  /**
+   * Secondary button (usually the right button).
+   */
+  SECONDARY: 2,
+
+  /**
+   * Auxiliary button (usually the mouse wheel button or middle button).
+   */
+  AUXILIARY: 4,
+
+  /**
+   * 4th button (typically the "Browser Back" button).
+   */
+  FOURTH: 8,
+
+  /**
+   * 5th button (typically the "Browser Forward" button).
+   */
+  FIFTH: 16,
+})
+
+/**
+ * Possible values for the MouseEvent.button property.
+ * (Yes, they are different from the "buttons" property...)
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
+ */
+export const MOUSE_BUTTON = Object.freeze({
+  /**
+   * Main button, usually the left button or the un-initialized state.
+   */
+  MAIN: 0,
+
+  /**
+   * Auxiliary button, usually the wheel button or the middle button (if present).
+   */
+  AUXILIARY: 1,
+
+  /**
+   * Secondary button, usually the right button.
+   */
+  SECONDARY: 2,
+
+  /**
+   * Fourth button, typically the Browser Back button.
+   */
+  FOURTH: 3,
+
+  /**
+   * Fifth button, typically the Browser Forward button.
+   */
+  FIFTH: 4,
+})
