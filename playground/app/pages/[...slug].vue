@@ -38,7 +38,9 @@
           :allowed-fragments="['cta', 'shader_debug', 'top_level_link']"
           v-slot="{ items }"
         >
-          <TableOfContents :items />
+          <DevOnly>
+            <TableOfContents :items />
+          </DevOnly>
         </BlokkliField>
       </div>
     </BlokkliProvider>

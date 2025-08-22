@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { NuxtSvgSpriteSymbol } from '#nuxt-svg-sprite/runtime'
+import type { NuxtSvgSpriteSymbol } from '#nuxt-svg-icon-sprite/runtime'
 
 defineProps<{
   icon: NuxtSvgSpriteSymbol

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <ul>
       <li v-for="item in listItems" :key="item.uuid">
         {{ item.title }}

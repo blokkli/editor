@@ -3,6 +3,12 @@ module.exports = {
   corePlugins: {
     container: false,
   },
+  content: [
+    './app/app.vue',
+    './app/assets/css/*.css',
+    './app/components/**/*.{vue,ts,js}',
+    './app/error.vue',
+  ],
   theme: {
     fontFamily: {
       sans: ['PB Inter, sans-serif'],

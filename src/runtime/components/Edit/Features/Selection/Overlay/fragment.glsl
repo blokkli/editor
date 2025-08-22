@@ -15,7 +15,7 @@ uniform float u_time;
 uniform float u_is_transforming;
 uniform vec2 u_resolution;
 
-#define PI (3.141592653589793)
+#define PI 3.141592653589793
 
 int pseudoQuadrant(vec2 p) {
   return int(floor(step(0.0, p.x) + 2.0 * step(0.0, -p.y)));

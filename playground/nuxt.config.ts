@@ -17,6 +17,9 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     'nuxt-svg-icon-sprite',
   ],
+  tailwindcss: {
+    cssPath: './app/assets/css/tailwind.css',
+  },
 
   debug: false,
 
@@ -123,16 +126,12 @@ export default defineNuxtConfig({
     sprites: {
       default: {
         importPatterns: [
-          './assets/icons/**/*.svg',
-          './../../src/runtime/icons/**/*.svg',
+          './app/assets/icons/**/*.svg',
+          './../src/runtime/icons/**/*.svg',
         ],
       },
     },
   },
 
-  compatibilityDate: '2024-07-28',
-
-  future: {
-    compatibilityVersion: 4,
-  },
+  compatibilityDate: '2025-08-21',
 })
