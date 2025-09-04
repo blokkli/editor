@@ -1,4 +1,4 @@
-import { version } from './../package.json'
+import { version, name } from './../package.json'
 import {
   addBuildPlugin,
   addPlugin,
@@ -24,7 +24,7 @@ import type { Blokkli } from './modules/defineBlokkliModule'
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: 'blokkli',
+    name,
     configKey: 'blokkli',
     version,
     compatibility: {
