@@ -1,8 +1,13 @@
 <template>
   <Teleport to="#bk-blokkli-item-actions-controls">
     <OptionsForm
-      v-if="definition && !selection.isDragging.value && !ui.isAnimating.value"
-      :key="uuids.join('-') + state.refreshKey.value + ui.isAnimating.value"
+      v-if="
+        definition &&
+        !selection.isDragging.value &&
+        !ui.isAnimating.value &&
+        uuids
+      "
+      :key="key + state.refreshKey.value + ui.isAnimating.value"
       :uuids="uuids"
       :definition="definition"
     />
@@ -16,6 +21,7 @@ import OptionsForm from './Form/index.vue'
 import type {
   BlockDefinitionInput,
   FragmentDefinitionInput,
+  ProviderDefinitionInput,
 } from '#blokkli/types'
 
 defineBlokkliFeature({
@@ -26,13 +32,40 @@ defineBlokkliFeature({
   requiredAdapterMethods: ['updateOptions'],
 })
 
-const { selection, state, ui, definitions } = useBlokkli()
+const { selection, state, ui, definitions, context } = useBlokkli()
 
-const uuids = computed(() => selection.blocks.value.map((v) => v.uuid))
+const uuids = computed(() => {
+  const uuids = selection.blocks.value.map((v) => v.uuid)
+  if (uuids.length) {
+    return uuids
+  } else if (selection.hasHostSelected.value) {
+    return 'provider'
+  }
+})
+
+const key = computed(() => {
+  if (typeof uuids.value === 'string') {
+    return uuids.value
+  } else if (typeof uuids.value === 'object') {
+    return uuids.value.join('-')
+  }
+
+  return 'none'
+})
 
 const definition = computed<
-  BlockDefinitionInput<any, any> | FragmentDefinitionInput<any, any> | undefined
+  | BlockDefinitionInput<any, any>
+  | FragmentDefinitionInput<any, any>
+  | ProviderDefinitionInput
+  | undefined
 >(() => {
+  if (uuids.value === 'provider') {
+    return definitions.getProviderDefinition(
+      context.value.entityType,
+      context.value.entityBundle,
+    )
+  }
+
   const bundles = selection.blocks.value
     .map((v) => v.reusableBundle || v.itemBundle)
     .filter(onlyUnique)

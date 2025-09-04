@@ -5,4 +5,5 @@ fragment blokkliProps on ParagraphsBlokkliProps {
   canEdit
   editLabel
   language
+  hostOptions
 }

@@ -22,6 +22,9 @@ type DrupalAdapter = BlokkliAdapter<ParagraphsBlokkliEditStateFragment>
 
 export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
   async (providedContext) => {
+    if (import.meta.dev) {
+      console.log('initialise Drupal blökkli adapter')
+    }
     const availableFeatureIds = new Set(availableFeaturesAtBuild)
     const availableGraphqlOperations = new Set(Object.keys(operationSources))
 
@@ -138,6 +141,8 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           .filter(falsy),
       }
 
+      const mutatedHostOptions = state.mutatedState?.hostOptions || {}
+
       return {
         currentIndex,
         mutations,
@@ -147,6 +152,10 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           fields,
           violations,
           mutatedOptions,
+          // PHP and its arrays...
+          mutatedHostOptions: Array.isArray(mutatedHostOptions)
+            ? {}
+            : mutatedHostOptions,
         },
         entity,
         mutatedEntity: state.mutatedEntity,
@@ -364,6 +373,14 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         useGraphqlMutation('pbTakeOwnership', ctx.value).then(mapMutation)
     }
 
+    if (hasMutation('pbUpdateHostOptions')) {
+      adapter.updateHostOptions = (items) =>
+        useGraphqlMutation('pbUpdateHostOptions', {
+          ...ctx.value,
+          items,
+        }).then(mapMutation)
+    }
+
     if (hasMutation('pbSetHistoryIndex')) {
       adapter.setHistoryIndex = (index) =>
         useGraphqlMutation('pbSetHistoryIndex', {
@@ -387,7 +404,6 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           entityType: options.hostEntityType.toUpperCase() as any,
           entityUuid: options.hostEntityUuid,
           createNewState: !options.closeAfterPublish,
-          // @ts-expect-error Might not exist.
           publishIfUnpublished: options.publishIfUnpublished,
           revisionLogMessage: options.revisionLogMessage,
         }).then(mapMutation)

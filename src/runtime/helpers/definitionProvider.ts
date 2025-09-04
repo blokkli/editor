@@ -3,6 +3,7 @@ import type {
   BlockDefinition,
   FragmentDefinition,
   Definitions,
+  ProviderDefinition,
 } from '#blokkli-build/definitions'
 import definitions from '#blokkli-build/definitions'
 import type {
@@ -25,6 +26,10 @@ export type DefinitionProvider = {
   getDefaultDefinition: (bundle: string) => BlockDefinition | undefined
 
   getFragmentDefinition: (name: string) => FragmentDefinition | undefined
+  getProviderDefinition: (
+    entityType: string,
+    entityBundle: string,
+  ) => ProviderDefinition | undefined
 
   getBlockIcon: (bundle: string) => string | undefined
 
@@ -40,6 +45,7 @@ export type DefinitionProvider = {
 export default function (): DefinitionProvider {
   const blocks = ref<BlockDefinition[]>(definitions.blocks)
   const fragments = ref<FragmentDefinition[]>(definitions.fragments)
+  const providers = ref<ProviderDefinition[]>(definitions.providers)
   const renderKey = ref(definitions.renderKey)
 
   const blockIcons = ref<Record<string, string>>(definitions.icons)
@@ -55,6 +61,7 @@ export default function (): DefinitionProvider {
       renderKey.value = newDefinitions?.default.renderKey || ''
       blocks.value = newDefinitions?.default?.blocks || []
       fragments.value = newDefinitions?.default?.fragments || []
+      providers.value = newDefinitions?.default?.providers || []
       blockIcons.value = newDefinitions?.default?.icons || {}
       allGlobalOptions.value = newDefinitions?.default?.globalOptions || {}
     })
@@ -100,6 +107,17 @@ export default function (): DefinitionProvider {
     ),
   )
 
+  const providersByName = computed(() =>
+    providers.value.reduce<Record<string, ProviderDefinition>>(
+      (acc, definition) => {
+        const key = `${definition.entityType}:${definition.bundle}`
+        acc[key] = definition
+        return acc
+      },
+      {},
+    ),
+  )
+
   function getBlockDefinition(
     bundle: string,
     fieldListType: ValidFieldListTypes,
@@ -123,6 +141,14 @@ export default function (): DefinitionProvider {
     return fragmentsByName.value[name]
   }
 
+  function getProviderDefinition(
+    entityType: string,
+    entityBundle: string,
+  ): ProviderDefinition | undefined {
+    const key = `${entityType}:${entityBundle}`
+    return providersByName.value[key]
+  }
+
   function getDefaultDefinition(bundle: string): BlockDefinition | undefined {
     return blocksByKey.value[bundle]
   }
@@ -134,6 +160,7 @@ export default function (): DefinitionProvider {
   return {
     getBlockDefinition,
     getFragmentDefinition,
+    getProviderDefinition,
     getDefaultDefinition,
     getBlockIcon,
     fragmentDefinitions: computed(() => fragments.value),

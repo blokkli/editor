@@ -14,13 +14,6 @@ export default defineCodeTemplate(
     const items = files
       .map((v) => {
         if (v.definition && v.identifier) {
-          if (isBlock(v.definition)) {
-            return {
-              varName: v.identifier,
-              definition: v.definition,
-              variations: v.variations,
-            }
-          }
           return {
             varName: v.identifier,
             definition: v.definition,

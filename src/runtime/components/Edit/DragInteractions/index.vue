@@ -235,6 +235,18 @@ function onPointerDown(e: PointerEvent) {
   eventBus.emit('mouse:down', { ...coords, type: 'mouse', distance: 0 })
 }
 
+function isClickInArtboard(coords: Coord): boolean {
+  const size = ui.artboardSize.value
+  const scale = ui.artboardScale.value
+  const rect: Rectangle = {
+    x: ui.artboardOffset.value.x,
+    y: ui.artboardOffset.value.y,
+    width: size.width * scale,
+    height: size.height * scale,
+  }
+  return isInsideRect(coords.x, coords.y, rect)
+}
+
 function onPointerUp(e: PointerEvent) {
   rootEl.removeEventListener('pointermove', onPointerMove)
   if (e.button === MOUSE_BUTTON.AUXILIARY) {
@@ -325,7 +337,14 @@ function onPointerUp(e: PointerEvent) {
     }
     return
   }
+
   eventBus.emit('window:clickAway')
+
+  if (isClickInArtboard(coords)) {
+    eventBus.emit('select:host')
+  } else {
+    eventBus.emit('select:host:unselect')
+  }
 }
 
 let longPressTimeout: any = null

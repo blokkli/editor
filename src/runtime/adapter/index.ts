@@ -30,6 +30,7 @@ import type {
   DroppableFieldConfig,
   PublishOptions,
   GetEditStatesItem,
+  UpdateHostOptionEvent,
 } from './../types'
 import type getVideoId from 'get-video-id'
 
@@ -320,6 +321,13 @@ export interface BlokkliAdapter<T> {
    */
   updateOptions?: (
     options: UpdateBlockOptionEvent[],
+  ) => Promise<MutationResponseLike<T>>
+
+  /**
+   * Update multiple host options.
+   */
+  updateHostOptions?: (
+    options: UpdateHostOptionEvent[],
   ) => Promise<MutationResponseLike<T>>
 
   /**

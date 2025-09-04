@@ -24,7 +24,13 @@ export default defineBlokkliModule({
     // Default pattern to look for blökkli components.
     // ~ resolves to the app dir (./ in Nuxt 3, ./app in Nuxt 4).
     if (!options.pattern) {
-      options.pattern = ['~/components/Paragraph/**/*.vue']
+      options.pattern = [
+        '~/components/Paragraph/**/*.vue',
+        '~/components/Node/**/*.vue',
+        '~/components/TaxonomyTerm/**/*.vue',
+        '~/components/CommerceProduct/**/*.vue',
+        '~/components/Storage/**/*.vue',
+      ]
     }
 
     // Provide the default Drupal edit adapter if no custom adapter is defined.
@@ -163,6 +169,7 @@ export default defineBlokkliModule({
     addMutation('update_behavior_setting')
     addMutation('update_field_value')
     addMutation('update_host_entity_field_value')
+    addMutation('update_host_options')
 
     // Feature: Comments.
     if (graphql.schemaHasType('CommentBlokkliNode')) {

@@ -1,6 +1,6 @@
 import type { DomProvider } from './domProvider'
 import onBlokkliEvent from './composables/onBlokkliEvent'
-import { type Ref, type ComputedRef, computed, ref } from '#imports'
+import { type Ref, type ComputedRef, computed, ref, readonly } from '#imports'
 
 import type {
   DraggableExistingBlock,
@@ -21,6 +21,16 @@ export type SelectionProvider = {
    * The currently selected UUIDs.
    */
   uuids: Readonly<Ref<string[]>>
+
+  /**
+   * Whether the host is currently selected.
+   */
+  hasHostSelected: ComputedRef<boolean>
+
+  /**
+   * Whether anything is selected.
+   */
+  hasAnythingSelected: ComputedRef<boolean>
 
   /**
    * The currently selected UUIDs as a Set.
@@ -92,6 +102,7 @@ export type SelectionProvider = {
 
 export default function (dom: DomProvider): SelectionProvider {
   const selectedUuids = ref<string[]>([])
+  const hasHostSelected = ref(false)
   const activeFieldKey = ref('')
   const draggingMode = ref<InteractionMode | null>(null)
   const editableActive = ref(false)
@@ -225,6 +236,14 @@ export default function (dom: DomProvider): SelectionProvider {
     selectedUuids.value = []
   })
 
+  onBlokkliEvent('select:host', () => {
+    hasHostSelected.value = true
+  })
+
+  onBlokkliEvent('select:host:unselect', () => {
+    hasHostSelected.value = false
+  })
+
   onBlokkliEvent('window:clickAway', () => {
     unselectItems()
     activeFieldKey.value = ''
@@ -241,6 +260,10 @@ export default function (dom: DomProvider): SelectionProvider {
         (v) => v.itemType === 'existing' || v.itemType === 'existing_structure',
       )
     )
+  })
+
+  const hasAnythingSelected = computed<boolean>(() => {
+    return hasHostSelected.value || !!selectedUuids.value.length
   })
 
   function isBlockSelected(uuid: string) {
@@ -263,5 +286,9 @@ export default function (dom: DomProvider): SelectionProvider {
     uuidsSet,
     dragItemsBundles,
     isBlockSelected,
+    hasHostSelected: computed(() => {
+      return hasHostSelected.value && !selectedUuids.value.length
+    }),
+    hasAnythingSelected,
   }
 }

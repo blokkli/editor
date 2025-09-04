@@ -24,7 +24,7 @@ export default defineNuxtConfig({
   debug: false,
 
   imports: {
-    autoImport: false,
+    autoImport: true,
   },
 
   runtimeConfig: {
@@ -68,7 +68,7 @@ export default defineNuxtConfig({
   },
 
   blokkli: {
-    pattern: ['~/components/Blokkli/**/*.vue'],
+    pattern: ['~/components/Blokkli/**/*.vue', '~/pages/**/*.vue'],
     itemEntityType: 'block',
     fieldListTypes: ['header', 'inline'],
     globalOptions: {

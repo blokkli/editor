@@ -323,6 +323,7 @@ export default function (
   onBeforeUnmount(() => {
     window.removeEventListener('resize', onResize)
     document.documentElement.classList.remove('bk-html-root')
+    document.documentElement.classList.remove('bk-is-animating')
     document.body.classList.remove('bk-body')
     document.documentElement.classList.remove(ARTBOARD_CLASS)
     document.documentElement.classList.remove(CLASS_PROXY_MODE)

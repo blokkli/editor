@@ -100,7 +100,6 @@ const props = defineProps<{
   option: BlockOptionDefinition
   property: string
   mutatedValue: any
-  uuids: string[]
   isGrouped?: boolean
 }>()
 

@@ -7,7 +7,7 @@ import {
   readonly,
   provide,
 } from 'vue'
-import { refreshNuxtData } from 'nuxt/app'
+import { refreshNuxtData, useState } from 'nuxt/app'
 import type { BlokkliAdapter, AdapterContext } from '../adapter'
 import { INJECT_MUTATED_FIELDS_MAP } from './symbols'
 import onBlokkliEvent from './composables/onBlokkliEvent'
@@ -27,6 +27,8 @@ import { falsy, getFieldKey } from '#blokkli/helpers'
 import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
 import { nextTick } from '#imports'
 import type { TextProvider } from './textProvider'
+
+const HOST_OPTION_KEY = 'HOST'
 
 export type BlokkliOwner = {
   name: string | undefined
@@ -67,7 +69,9 @@ export default async function (
   adapter: BlokkliAdapter<any>,
   context: ComputedRef<AdapterContext>,
   $t: TextProvider,
+  providerKey: string,
 ): Promise<StateProvider> {
+  const overrideHostOptions = useState('options:' + providerKey)
   const stateLoaded = ref(false)
   const stateLoadError = ref(false)
   const owner = ref<BlokkliOwner | null>(null)
@@ -137,6 +141,15 @@ export default async function (
         mutatedOptions[key] = newOptions
       }
     }
+
+    const hostOptions = context?.mutatedState?.mutatedHostOptions ?? {}
+    const existing = mutatedOptions[HOST_OPTION_KEY]
+
+    if (!existing || JSON.stringify(existing) !== JSON.stringify(hostOptions)) {
+      mutatedOptions[HOST_OPTION_KEY] = hostOptions ?? ''
+      overrideHostOptions.value = hostOptions
+    }
+
     mutations.value = context?.mutations || []
     violations.value = context?.mutatedState?.violations || []
     const currentIndex = context?.currentIndex

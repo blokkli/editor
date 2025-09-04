@@ -55,6 +55,8 @@ import {
   useRoute,
   useRuntimeConfig,
   nextTick,
+  inject,
+  useState,
 } from '#imports'
 import type { BlokkliApp, ItemEditContext } from '#blokkli/types'
 import Toolbar from './Toolbar/index.vue'
@@ -94,6 +96,7 @@ import {
   INJECT_EDIT_LOGGER,
   INJECT_GLOBAL_PROXY_MODE,
   INJECT_IS_EDITING,
+  INJECT_PROVIDER_KEY,
 } from '#blokkli/helpers/symbols'
 import type { AdapterContext } from '#blokkli/adapter'
 import { useBlockRegistration } from '#blokkli/helpers/composables/useBlockRegistration'
@@ -126,6 +129,7 @@ const context = computed<AdapterContext>(() => {
   }
 })
 const adapter = await getAdapter(context)
+const providerKey = inject(INJECT_PROVIDER_KEY, '')
 
 const route = useRoute()
 const runtimeConfig = useRuntimeConfig().public.blokkli
@@ -136,7 +140,7 @@ const isInitializing = ref(true)
 
 const definitions = definitionProvider()
 const $t = textProvider(context)
-const state = await editStateProvider(adapter, context, $t)
+const state = await editStateProvider(adapter, context, $t, providerKey)
 const storage = storageProvider()
 const debug = debugProvider(storage)
 const features = featuresProvider(storage)

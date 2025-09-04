@@ -1,6 +1,7 @@
 import { Entity } from '../Entity'
 import type { Field } from '../Field'
 import { FieldBlocks } from '../Field/Blocks'
+import { FieldOptions } from '../Field/Options'
 import { FieldReference } from '../Field/Reference'
 import { FieldText } from '../Field/Text'
 import type { MediaImage } from '../Media/Media'
@@ -46,6 +47,7 @@ export class ContentPage extends Content {
         'image',
       ]),
       new FieldText('lead', 'Lead'),
+      new FieldOptions('options', 'Options'),
     ]
   }
 
@@ -65,6 +67,10 @@ export class ContentPage extends Content {
     return this.get('lead')
   }
 
+  options(): FieldOptions {
+    return this.fields.options as FieldOptions
+  }
+
   heroImage(): MediaImage | undefined {
     const field = this.get('heroImage') as FieldReference<MediaImage>
     const entities = field.getReferencedEntities()
@@ -76,6 +82,7 @@ export class ContentPage extends Content {
       title: this.title().getText(),
       lead: this.lead().getText(),
       heroImage: this.heroImage()?.getData(),
+      hostOptions: this.options().getOptions()
     }
   }
 }

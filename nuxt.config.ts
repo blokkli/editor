@@ -29,6 +29,7 @@ export default defineNuxtConfig({
         noUncheckedIndexedAccess: true,
       },
       exclude: ['../playground', '../playground-minimal', '../dist'],
+      include: ['../src/runtime/components/**/*'],
     },
   },
 

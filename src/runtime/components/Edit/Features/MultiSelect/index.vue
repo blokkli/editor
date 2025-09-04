@@ -63,7 +63,7 @@ onBlokkliEvent('mouse:down', (e) => {
       mode: 'mouse',
     })
     shouldRender.value = true
-  }, 70)
+  }, 300)
 })
 
 onBlokkliEvent('mouse:up', () => {

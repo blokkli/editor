@@ -127,6 +127,22 @@ export type DefineBlokkliContext<
   provider: ComputedRef<BlokkliProviderEntityContext | null>
 }
 
+export type DefineProviderContext<
+  T extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
+  G extends ValidGlobalConfigKeys | undefined = undefined,
+> = {
+  /**
+   * The reactive runtime options.
+   *
+   * This includes both the locally defined options and the inherited global
+   * options.
+   */
+  options: ComputedRef<
+    (T extends BlockDefinitionOptionsInput ? WithOptions<T> : object) &
+      (G extends ValidGlobalConfigKeys ? GlobalOptionsKeyTypes<G> : object)
+  >
+}
+
 type DetermineVisibleOptionsContext<
   T extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
   G extends GlobalOptionsKey[] | undefined = undefined,
@@ -576,6 +592,7 @@ export interface MappedState {
   ownerName: string
   mutatedState?: {
     mutatedOptions?: any
+    mutatedHostOptions?: Record<string, string>
     fields?: MutatedField[]
     violations?: Validation[]
   }
@@ -888,6 +905,11 @@ export type UpdateBlockOptionEvent = {
   value: string
 }
 
+export type UpdateHostOptionEvent = {
+  key: string
+  value: string
+}
+
 export type EditBlockEvent = {
   uuid: string
   bundle: string
@@ -1118,6 +1140,8 @@ export type AnimationFrameBeforeEvent = {
 export type EventbusEvents = {
   select: string | string[]
   'select:unselect': undefined
+  'select:host': undefined
+  'select:host:unselect': undefined
   'item:edit': EditBlockEvent
   batchTranslate: undefined
   'dragging:start': DraggableStartEvent
@@ -1466,6 +1490,33 @@ export type FragmentDefinitionInput<
    * Settings for the behaviour in the editor.
    */
   editor?: BlokkliDefinitionInputEditor<Options, GlobalOptions>
+}
+
+export type ProviderDefinitionInput<
+  Options extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
+  GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
+> = {
+  /**
+   * The entity type.
+   */
+  entityType: string
+
+  /**
+   * The bundle.
+   */
+  bundle: string
+
+  /**
+   * Define options available for this block.
+   */
+  options?: Options
+
+  /**
+   * Global options to use.
+   *
+   * These options will be merged with the component-specific options.
+   */
+  globalOptions?: GlobalOptions
 }
 
 export type TourItem = {

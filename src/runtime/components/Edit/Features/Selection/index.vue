@@ -6,6 +6,14 @@
     :gl="gl"
   />
   <OverlayFallback v-if="isVisible && !gl" :uuids="selection.uuids.value" />
+  <Teleport :to="artboardElement">
+    <div
+      class="bk bk-host-selection-overlay"
+      :style="{
+        visibility: selection.hasHostSelected.value ? 'visible' : 'hidden',
+      }"
+    ></div>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
@@ -36,14 +44,21 @@ defineBlokkliFeature({
 
 const { selection, ui, eventBus, animation, dom, tour } = useBlokkli()
 
+const artboardElement = ui.artboardElement()
+
 const gl = animation.gl()
 
 const hasSelectedOnce = ref(false)
 
-const stop = watch(selection.uuids, function () {
-  hasSelectedOnce.value = true
-  stop()
-})
+const stop = watch(
+  selection.hasAnythingSelected,
+  function (hasAnythingSelected) {
+    if (hasAnythingSelected) {
+      hasSelectedOnce.value = true
+    }
+    stop()
+  },
+)
 
 const isVisible = computed(
   () =>
@@ -254,6 +269,7 @@ onBlokkliEvent('keyPressed', (e) => {
   }
   if (e.code === 'Escape') {
     eventBus.emit('select:end', [])
+    eventBus.emit('select:host:unselect')
   } else if (e.code === 'Tab') {
     if (tour.isTouring.value) {
       return

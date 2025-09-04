@@ -190,6 +190,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         mutatedEntity: inputState.context.entity.getData(),
         mutatedState: {
           mutatedOptions: inputState.mutatedOptions,
+          mutatedHostOptions: inputState.mutatedHostOptions,
           fields: inputState.fields,
           violations: inputState.violations,
         },
@@ -848,6 +849,10 @@ export default defineBlokkliEditAdapter((ctx) => {
         perPage: 16,
       })
     },
+
+    updateHostOptions: (options) => addMutation('update_host_options', {
+      options,
+    }),
 
     // @TODO: Implement in playground.
     // getLibraryItemEditUrl(uuid) {

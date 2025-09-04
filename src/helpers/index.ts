@@ -65,7 +65,11 @@ export function extractObjectLiteral(
   composables: string[],
 ): string | undefined {
   const composablesMatch = composables.join('|')
-  const pattern = `(${composablesMatch})` + '\\(\\s*(\\{[\\s\\S]+?\\})\\s*\\)'
+  const pattern =
+    `(${composablesMatch})` +
+    `\\(\\s*` +
+    `(?:(?!\\{)[^,]*?,\\s*)?` +
+    `(\\{[\\s\\S]*?\\})\\s*\\)`
   const rgx = new RegExp(pattern)
   const matches = rgx.exec(fileContents)
   if (!matches) {

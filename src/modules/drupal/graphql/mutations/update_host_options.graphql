@@ -1,0 +1,15 @@
+mutation pbUpdateHostOptions(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $items: [ParagraphsBlokkliUpdateHostOptionsInput]!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: update_host_options(items: $items) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}
