@@ -140,21 +140,32 @@ function onPointerMove(e: PointerEvent) {
   if (e.pointerType === 'touch') {
     return onTouchMove(e)
   }
-  if (e.buttons !== 1) {
+  if (e.buttons !== MOUSE_BUTTONS.PRIMARY) {
     return
   }
   if (
-    !pointerDownElement ||
     !mouseStartCoordinates ||
+    selection.isMultiSelecting.value ||
     selection.isDragging.value ||
-    keyboard.isPressingSpace.value ||
-    selection.isMultiSelecting.value
+    keyboard.isPressingSpace.value
   ) {
     return
   }
 
   const diffX = Math.abs(mouseStartCoordinates.x - e.clientX)
   const diffY = Math.abs(mouseStartCoordinates.y - e.clientY)
+
+  if (!pointerDownElement) {
+    if (diffX > 6 || diffY > 6) {
+      rootEl.removeEventListener('pointermove', onPointerMove)
+      eventBus.emit('multi-select:start', {
+        x: e.clientX,
+        y: e.clientY,
+      })
+    }
+    return
+  }
+
   // Only start dragging if at least 6px in any direction were moved.
   if (diffX < 6 && diffY < 6) {
     return
@@ -179,6 +190,7 @@ function onPointerMove(e: PointerEvent) {
         })
       }
     }
+    rootEl.removeEventListener('pointermove', onPointerMove)
   }
 }
 

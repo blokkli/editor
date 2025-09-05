@@ -46,24 +46,17 @@ const onSelect = (uuids: string[]) => {
 
 let startTimeout: any = null
 
-onBlokkliEvent('mouse:down', (e) => {
-  if (!enabled.value || e.type !== 'mouse' || selection.isDragging.value) {
+onBlokkliEvent('multi-select:start', (e) => {
+  if (!enabled.value) {
     return
   }
-  if (keyboard.isPressingSpace.value || keyboard.isPressingControl.value) {
-    return
-  }
-  clearTimeout(startTimeout)
   downX.value = e.x
   downY.value = e.y
-
-  startTimeout = setTimeout(() => {
-    eventBus.emit('select:start', {
-      uuids: [],
-      mode: 'mouse',
-    })
-    shouldRender.value = true
-  }, 300)
+  eventBus.emit('select:start', {
+    uuids: [],
+    mode: 'mouse',
+  })
+  shouldRender.value = true
 })
 
 onBlokkliEvent('mouse:up', () => {

@@ -1137,11 +1137,17 @@ export type AnimationFrameBeforeEvent = {
   mouseY: number
 }
 
+type MultiSelectStartEvent = {
+  x: number
+  y: number
+}
+
 export type EventbusEvents = {
   select: string | string[]
   'select:unselect': undefined
   'select:host': undefined
   'select:host:unselect': undefined
+  'multi-select:start': MultiSelectStartEvent
   'item:edit': EditBlockEvent
   batchTranslate: undefined
   'dragging:start': DraggableStartEvent

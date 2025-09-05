@@ -30,6 +30,8 @@ const props = defineProps<{
   gl: WebGLRenderingContext
 }>()
 
+const startTimestamp = Date.now()
+
 defineEmits<{
   (e: 'select', uuids: string[]): void
 }>()
@@ -125,7 +127,7 @@ class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<Multi
 }
 
 const collector = new MultiSelectRectangleBufferCollector(props.gl)
-const thick = 100
+const thick = 300
 collector.addRectangle(
   {
     width: 1000,
@@ -227,8 +229,6 @@ function getSelectRect(
   return { shader, check }
 }
 
-const now = Date.now()
-
 onBlokkliEvent('canvas:draw', (e) => {
   mouseX = e.mouseX
   mouseY = e.mouseY
@@ -240,7 +240,7 @@ onBlokkliEvent('canvas:draw', (e) => {
 
   props.gl.useProgram(programInfo.program)
 
-  const time = (Date.now() - now) / 1000
+  const time = (Date.now() - startTimestamp) / 1000
 
   setUniforms(programInfo, uniforms)
   setUniforms(programInfo, {
@@ -286,7 +286,15 @@ function getUuidsToSelect(): string[] {
 onBeforeUnmount(() => {
   props.gl.clear(props.gl.COLOR_BUFFER_BIT)
 
-  eventBus.emit('select:end', getUuidsToSelect())
+  const diff = Date.now() - startTimestamp
+
+  // Only select if the entire duration of the interaction is above a certain threshold.
+  // This prevents the unwanted selection of blocks when the user attempts to select a single block, but ends up starting multi selecting.
+  if (diff > 175) {
+    eventBus.emit('select:end', getUuidsToSelect())
+  } else {
+    eventBus.emit('select:end')
+  }
 
   logger.log('MultiSelectOverlay unmounted')
 })
