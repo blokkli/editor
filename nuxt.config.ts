@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url'
 export default defineNuxtConfig({
   modules: ['nuxt-graphql-middleware'],
   graphqlMiddleware: {
-    graphqlEndpoint: 'https://exmaple.com',
+    graphqlEndpoint: 'https://example.com',
     schemaPath: './../blokkli_starterkit/frontend/schema.graphql',
     downloadSchema: false,
     autoImportPatterns: [
@@ -16,9 +16,11 @@ export default defineNuxtConfig({
       './src/modules/drupal/graphql/features/library.graphql',
       './src/modules/drupal/graphql/features/media-library.graphql',
       './src/modules/drupal/graphql/features/preview-grant.graphql',
-      './src/modules/drupal/graphql/features/publish.graphql',
+      // './src/modules/drupal/graphql/features/publish.graphql',
+      './src/modules/drupal/graphql/features/publishNew.graphql',
       './src/modules/drupal/graphql/features/search.graphql',
       './src/modules/drupal/graphql/features/transform.graphql',
+      './src/modules/drupal/graphql/features/transform_host.graphql',
       './drupal/mocks.graphql',
     ],
   },
@@ -29,7 +31,10 @@ export default defineNuxtConfig({
         noUncheckedIndexedAccess: true,
       },
       exclude: ['../playground', '../playground-minimal', '../dist'],
-      include: ['../src/runtime/components/**/*'],
+      include: [
+        '../src/runtime/components/**/*',
+        '../src/modules/drupal/runtime/**/*',
+      ],
     },
   },
 

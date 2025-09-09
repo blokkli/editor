@@ -18,6 +18,7 @@ import FormToggle from './Form/Toggle/index.vue'
 import FormTextarea from './Form/Textarea/index.vue'
 import FormItem from './Form/Item/index.vue'
 import FormGroup from './Form/Group/index.vue'
+import ConfigForm from './PluginConfigForm/index.vue'
 
 export {
   ItemIcon,
@@ -40,4 +41,5 @@ export {
   FormTextarea,
   FormItem,
   FormGroup,
+  ConfigForm,
 }

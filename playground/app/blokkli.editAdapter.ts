@@ -12,6 +12,7 @@ import type {
   DroppableFieldConfig,
   EditableFieldConfig,
   FieldConfig,
+  HostTransformPlugin,
   LibraryItem,
 } from '#blokkli/types'
 import { allTypes } from './mock/allTypes'
@@ -174,7 +175,45 @@ export default defineBlokkliEditAdapter((ctx) => {
     getTransformPlugins() {
       return Promise.resolve(transforms)
     },
+    getHostTransformPlugins() {
+      const hostPlugin: HostTransformPlugin = {
+        id: 'rewrite_contents',
+        label: 'Texte umschreiben',
+        configInputs: [
+
+          {
+            type: 'options',
+            name: 'type',
+            label: 'Schreibstil',
+            required: true,
+            variant: 'select',
+            defaultValue: 'normal',
+            description: 'Wählen Sie den gewünschten Schreibstil',
+            options: [
+              {
+              value: 'normal',
+              label: 'Normal'
+            },
+{
+              value: 'simple_german',
+              label: 'Einfache Sprache (Deutsch)'
+            },
+
+            ]
+          },
+        {
+            type: 'text',
+            name: 'prompt',
+            label: 'Anweisungen an KI',
+            description: 'Zusätzliche Anweisungen, z.B. "Verwende keine Fremdwörter".',
+            required: true
+          },
+        ]
+      }
+      return Promise.resolve([hostPlugin])
+    },
     applyTransformPlugin: (e) => addMutation('transform', e),
+    applyHostTransformPlugin: (e) => addMutation('transform_host', e),
     takeOwnership: () => {
       isOwner = true
       const entity = getEntity()

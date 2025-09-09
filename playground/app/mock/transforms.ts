@@ -25,6 +25,28 @@ export const transforms: TransformPlugin[] = [
     min: 1,
     max: 1,
   },
+  {
+    id: 'search_replace',
+    label: 'Search and Replace',
+    bundles: ['text', 'card', 'title'],
+    min: 1,
+    max: -1,
+    configInputs: [
+      {
+      type: 'text',
+      name: 'search',
+      label: 'Search',
+      required: true
+        },
+{
+      type: 'text',
+      name: 'replace',
+      label: 'Replace',
+      required: true
+        },
+
+    ]
+  },
 ]
 
 export function applyTransformPlugin(pluginId: string, uuids: string[]) {}

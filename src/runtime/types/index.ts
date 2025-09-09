@@ -517,6 +517,47 @@ export interface ConversionItem {
   targetBundle: string
 }
 
+export type PluginConfigInputText = {
+  type: 'text'
+  name: string
+  label: string
+  description?: string
+  required: boolean
+  defaultValue?: string
+  minLength?: number
+  maxLength?: number
+  placeholder?: string
+  pattern?: string
+  multiline?: boolean
+  rows?: number
+}
+
+export type PluginConfigInputCheckbox = {
+  type: 'checkbox'
+  name: string
+  label: string
+  description?: string
+  required: boolean
+  checkboxLabel?: string
+  defaultValue: Boolean
+}
+
+export type PluginConfigInputOptions = {
+  type: 'options'
+  name: string
+  label: string
+  description?: string
+  required: boolean
+  defaultValue?: string
+  variant: 'select' | 'radio'
+  options: { value: string; label: string }[]
+}
+
+export type PluginConfigInput =
+  | PluginConfigInputText
+  | PluginConfigInputCheckbox
+  | PluginConfigInputOptions
+
 export interface TransformPlugin {
   /**
    * The ID of the plugin.
@@ -536,7 +577,7 @@ export interface TransformPlugin {
   /**
    * The array of bundles that the transform might create.
    */
-  targetBundles: string[]
+  targetBundles?: string[]
 
   /**
    * The minimum number of items required.
@@ -547,6 +588,27 @@ export interface TransformPlugin {
    * The maximum number of items.
    */
   max: number
+
+  configInputs?: PluginConfigInput[]
+}
+
+export type PluginConfigInputItem = {
+  name: string
+  value: string
+}
+
+export interface HostTransformPlugin {
+  /**
+   * The ID of the plugin.
+   */
+  id: string
+
+  /**
+   * The label of the transform plugin which is shown in the editor.
+   */
+  label: string
+
+  configInputs?: PluginConfigInput[]
 }
 
 export interface LibraryItem {
@@ -1435,7 +1497,7 @@ export type DropArea = {
   label: string
   icon?: BlokkliIcon
   element: HTMLElement
-  onDrop: () => Promise<any>
+  onDrop: () => Promise<any> | void
 }
 
 export type ContextMenuRule = {

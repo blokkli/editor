@@ -74,7 +74,11 @@
     @apply py-15 border-y border-y-mono-200;
 
     &:last-child {
-      @apply border-b border-b-mono-200;
+      @apply border-b-0 pb-0;
+    }
+
+    &:first-child {
+      @apply border-t-0 pt-0;
     }
   }
 

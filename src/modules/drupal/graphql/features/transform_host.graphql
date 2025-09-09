@@ -1,37 +1,32 @@
-query pbGetTransformPlugins(
+query pbGetHostTransformPlugins(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String!
 ) {
-  paragraphsBlokkliGetTransformPlugins(
+  paragraphsBlokkliGetHostTransformPlugins(
     entityType: $entityType
     entityUuid: $entityUuid
     langcode: $langcode
   ) {
     id
     label
-    bundles
-    targetBundles
-    min
-    max
     configInputs {
       ...paragraphsBlokkliConfigInput
     }
   }
 }
 
-mutation pbApplyTransformPlugin(
+mutation pbApplyHostTransformPlugin(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
   $pluginId: String!
-  $uuids: [String]!
 ) {
   state: paragraphsEditMutationState(
     entityType: $entityType
     entityUuid: $entityUuid
   ) {
-    action: transform(pluginId: $pluginId, uuids: $uuids) {
+    action: host_transform(pluginId: $pluginId) {
       ...paragraphsBlokkliMutationResult
     }
   }

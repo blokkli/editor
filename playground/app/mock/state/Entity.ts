@@ -1,5 +1,7 @@
 import type { Field } from './Field'
 import type { FieldBlocks } from './Field/Blocks'
+import { FieldText } from './Field/Text'
+import { FieldTextarea } from './Field/Textarea'
 
 export class Entity {
   static entityType = ''
@@ -92,6 +94,12 @@ export class Entity {
 
   get<T extends Field<any>>(id: string): T {
     return this.fields[id] as T
+  }
+
+  getTextFields(): Array<FieldText|FieldTextarea> {
+    return Object.values(this.fields).filter(field => {
+      return field instanceof FieldText || field instanceof FieldTextarea
+    })
   }
 
   getValues(): Record<string, any> {

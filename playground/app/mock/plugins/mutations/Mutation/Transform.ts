@@ -5,10 +5,16 @@ import { Mutation } from './../Mutation'
 import { BlockButton } from '#mock/state/Block/Button'
 import { entityStorageManager } from '#mock/entityStorage'
 import type { Block } from '#mock/state/Block/Block'
+import type { PluginConfigInputItem } from '#blokkli/types'
+import { BlockCard } from '~/mock/state/Block/Card'
+import type { FieldTextarea } from '~/mock/state/Field/Textarea'
+import type { FieldText } from '~/mock/state/Field/Text'
+import { BlockTitle } from '~/mock/state/Block/Title'
 
 export type MutationTransformArgs = {
   pluginId: string
   uuids: string[]
+  config?: PluginConfigInputItem[]
 }
 
 export class MutationTransform extends Mutation {
@@ -25,6 +31,11 @@ export class MutationTransform extends Mutation {
   override execute(context: MutationContext, args: MutationTransformArgs) {
     const proxies = context.getProxies(args.uuids)
 
+    const config = (args.config ?? []).reduce<Record<string, string>>((acc, item) => {
+      acc[item.name] = item.value
+      return acc
+    }, {})
+
     if (args.pluginId === 'merge_texts') {
       const uuid = args.uuids[0]
       if (uuid) {
@@ -34,7 +45,26 @@ export class MutationTransform extends Mutation {
       this.buttonToText(proxies, context)
     } else if (args.pluginId === 'extract_text_to_blocks') {
       this.extractTextToBlocks(proxies, context)
+    } else if (args.pluginId === 'search_replace') {
+      this.searchAndReplace(proxies, config)
     }
+  }
+  searchAndReplace(proxies: BlockProxy[], config: Record<string, string>) {
+    const search = config.search
+    const replace = config.replace ?? ''
+
+    if (!search) {
+      return
+    }
+
+    proxies.forEach(proxy => {
+      const fields = proxy.block.getTextFields()
+
+      fields.forEach(field => {
+        const text = field.getText()
+        field.setText(text.replaceAll(search, replace))
+      })
+    })
   }
 
   mergeTexts(proxies: BlockProxy[], firstUuid: string) {

@@ -1,11 +1,12 @@
 <template>
   <div>
-    <label class="bk-form-label">
+    <label class="bk-form-label" :for="id">
       {{ label }}
     </label>
     <textarea
-      v-model="value"
+      v-model.lazy="value"
       class="bk-form-input"
+      :id
       :placeholder="placeholder"
       :required
       :disabled
@@ -17,6 +18,7 @@
 
 <script setup lang="ts">
 defineProps<{
+  id: string
   label: string
   description?: string
   placeholder?: string

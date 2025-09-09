@@ -31,6 +31,8 @@ import type {
   PublishOptions,
   GetEditStatesItem,
   UpdateHostOptionEvent,
+  HostTransformPlugin,
+  PluginConfigInputItem,
 } from './../types'
 import type getVideoId from 'get-video-id'
 
@@ -47,6 +49,12 @@ export interface MutationResponseLike<T> {
 type AdapterApplyTransformPlugin = {
   pluginId: string
   uuids: string[]
+  config?: PluginConfigInputItem[]
+}
+
+type AdapterApplyHostTransformPlugin = {
+  pluginId: string
+  config?: PluginConfigInputItem[]
 }
 
 export type UpdateEntityFieldValueEvent = {
@@ -305,10 +313,22 @@ export interface BlokkliAdapter<T> {
   getTransformPlugins?: () => Promise<TransformPlugin[]>
 
   /**
+   * Get all possible host transform plugins.
+   */
+  getHostTransformPlugins?: () => Promise<HostTransformPlugin[]>
+
+  /**
    * Apply a transform plugin.
    */
   applyTransformPlugin?: (
     e: AdapterApplyTransformPlugin,
+  ) => Promise<MutationResponseLike<T>>
+
+  /**
+   * Apply a host transform plugin.
+   */
+  applyHostTransformPlugin?: (
+    e: AdapterApplyHostTransformPlugin,
   ) => Promise<MutationResponseLike<T>>
 
   /**

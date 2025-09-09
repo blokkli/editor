@@ -109,6 +109,10 @@ watch(selection.blocks, () => {
   showDropdown.value = false
 })
 
+watch(selection.hasHostSelected, () => {
+  showDropdown.value = false
+})
+
 const bundleIcon = computed(() => {
   if (itemBundle.value?.id === 'from_library') {
     const reusableBundle = selection.blocks.value[0]?.reusableBundle

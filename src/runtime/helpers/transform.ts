@@ -16,9 +16,11 @@ export function filterTransforms(
     }
 
     // Check that the target bundles of the transform plugin are all allowed in the current field list.
-    const allAllowedInList = plugin.targetBundles.every((bundle) =>
-      allowedBundles.includes(bundle),
-    )
+    // If no targetBundles are defined, the plugin is available too, assuming that the plugin does not
+    // add any blocks in the process.
+    const allAllowedInList =
+      !plugin.targetBundles ||
+      plugin.targetBundles.every((bundle) => allowedBundles.includes(bundle))
     if (!allAllowedInList) {
       return false
     }

@@ -134,6 +134,7 @@ export default defineBlokkliModule({
       'fragment.paragraphsBlokkliMutationItem.graphql',
       'fragment.paragraphsBlokkliMutationResult.graphql',
       'fragment.paragraphsBlokkliViolation.graphql',
+      'fragment.ParagraphsBlokkliConfigInput.graphql',
       'fragment.blokkliProps.graphql',
       'fragment.paragraphsFieldItem.graphql',
       'query.pbConfig.graphql',
@@ -190,6 +191,11 @@ export default defineBlokkliModule({
       addGraphqlDocument('features/transform.graphql')
     } else {
       context.features.disableFeature('transform')
+    }
+
+    // Feature: Host Transform.
+    if (graphql.schemaHasType('ParagraphsBlokkliHostTransformPlugin')) {
+      addGraphqlDocument('features/transform_host.graphql')
     }
 
     // Feature: Library.

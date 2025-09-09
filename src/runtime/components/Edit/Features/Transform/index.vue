@@ -7,19 +7,51 @@
     <button
       v-for="transform in possibleTransforms"
       :key="transform.id"
-      @click.prevent="onTransform(transform, selection.uuids.value)"
+      @click.prevent="
+        onSelectBlockTransformPlugin(transform, selection.uuids.value)
+      "
     >
       <div>
-        <div>{{ transform.label }}</div>
+        <div>{{ getPluginLabel(transform) }}</div>
       </div>
     </button>
   </PluginItemDropdown>
+
+  <PluginItemDropdown
+    v-if="hostPlugins.length"
+    id="transform-host"
+    :title="$t('transformTo', 'Other actions')"
+    :enabled="selection.hasHostSelected.value"
+  >
+    <button
+      v-for="transform in hostPlugins"
+      :key="transform.id"
+      @click.prevent="onSelectHostTransformPlugin(transform)"
+    >
+      <div>
+        <div>{{ getPluginLabel(transform) }}</div>
+      </div>
+    </button>
+  </PluginItemDropdown>
+
+  <Teleport to="body">
+    <Transition appear name="bk-slide-up">
+      <TransformDialog
+        v-if="openPluginDefinition"
+        :title="openPluginDefinition.label"
+        :config="openPluginDefinition.configInputs ?? []"
+        @cancel="cancelTransform"
+        @submit="onSubmitDialog"
+      />
+    </Transition>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
 import {
   computed,
   watch,
+  ref,
   useBlokkli,
   defineBlokkliFeature,
   useLazyAsyncData,
@@ -29,11 +61,14 @@ import { onlyUnique } from '#blokkli/helpers'
 import type {
   DraggableExistingBlock,
   DropArea,
+  HostTransformPlugin,
+  PluginConfigInputItem,
   TransformPlugin,
 } from '#blokkli/types'
 import { filterTransforms } from '#blokkli/helpers/transform'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import defineDropAreas from '#blokkli/helpers/composables/defineDropAreas'
+import TransformDialog from './Dialog/index.vue'
 
 const { adapter } = defineBlokkliFeature({
   id: 'transform',
@@ -44,7 +79,14 @@ const { adapter } = defineBlokkliFeature({
   screenshot: 'feature-transform.jpg',
 })
 
+type TransformType = 'block' | 'host'
+
 const { types, selection, state, $t, dom, ui } = useBlokkli()
+
+const openPlugin = ref<{
+  type: TransformType
+  id: string
+} | null>(null)
 
 const {
   data: plugins,
@@ -57,20 +99,154 @@ const {
   { immediate: false, default: () => [] },
 )
 
+const {
+  data: hostPlugins,
+  status: statusHostPlugins,
+  execute: executeHostPlugins,
+} = await useLazyAsyncData(
+  () => {
+    if (adapter.getHostTransformPlugins) {
+      return adapter.getHostTransformPlugins()
+    }
+
+    return Promise.resolve([])
+  },
+  {
+    immediate: !openPlugin.value,
+    default: () => [],
+  },
+)
+
+const openPluginDefinition = computed<
+  TransformPlugin | HostTransformPlugin | null
+>(() => {
+  if (openPlugin.value) {
+    if (openPlugin.value.type === 'block') {
+      return plugins.value.find((v) => v.id === openPlugin.value?.id) ?? null
+    } else if (openPlugin.value.type === 'host') {
+      return (
+        hostPlugins.value.find((v) => v.id === openPlugin.value?.id) ?? null
+      )
+    }
+  }
+
+  return null
+})
+
+function getPluginLabel(plugin: TransformPlugin | HostTransformPlugin): string {
+  if (plugin.configInputs?.length) {
+    return plugin.label + '...'
+  }
+
+  return plugin.label
+}
+
+function cancelTransform() {
+  openPlugin.value = null
+}
+
 watch(selection.uuids, async () => {
   if (status.value === 'idle') {
     execute()
   }
 })
 
-async function onTransform(plugin: TransformPlugin, uuids: string[]) {
+watch(selection.hasHostSelected, () => {
+  if (statusHostPlugins.value === 'idle') {
+    executeHostPlugins()
+  }
+})
+
+function mapValues(values: Record<string, any>): PluginConfigInputItem[] {
+  return Object.entries(values).map(([name, value]) => {
+    return {
+      name,
+      value,
+    }
+  })
+}
+
+function onSelectBlockTransformPlugin(
+  plugin: TransformPlugin,
+  uuids: string[],
+) {
+  if (plugin.configInputs?.length) {
+    openPlugin.value = {
+      type: 'block',
+      id: plugin.id,
+    }
+
+    return
+  }
+
+  onTransformBlock(plugin, uuids, {})
+}
+
+function onSelectHostTransformPlugin(plugin: HostTransformPlugin) {
+  if (plugin.configInputs?.length) {
+    openPlugin.value = {
+      type: 'host',
+      id: plugin.id,
+    }
+
+    return
+  }
+
+  onTransformHost(plugin, {})
+}
+
+async function onTransformBlock(
+  plugin: TransformPlugin,
+  uuids: string[],
+  values: Record<string, any>,
+) {
   ui.setTransform(plugin.label)
+  openPlugin.value = null
 
   await state.mutateWithLoadingState(
     () =>
       adapter.applyTransformPlugin({
         uuids,
         pluginId: plugin.id,
+        config: mapValues(values),
+      }),
+    $t(
+      'failedToTransform',
+      'The action "@name" could not be executed.',
+    ).replace('@name', plugin.label),
+  )
+
+  ui.setTransform()
+}
+
+function onSubmitDialog(values: Record<string, any>) {
+  if (!openPluginDefinition.value) {
+    return
+  }
+
+  if ('bundles' in openPluginDefinition.value) {
+    onTransformBlock(openPluginDefinition.value, selection.uuids.value, values)
+  } else {
+    onTransformHost(openPluginDefinition.value, values)
+  }
+}
+
+async function onTransformHost(
+  plugin: HostTransformPlugin,
+  values: Record<string, any>,
+) {
+  if (!adapter.applyHostTransformPlugin) {
+    return
+  }
+
+  ui.setTransform(plugin.label)
+  openPlugin.value = null
+
+  await state.mutateWithLoadingState(
+    () =>
+      adapter.applyHostTransformPlugin({
+        pluginId: plugin.id,
+        config: mapValues(values),
       }),
     $t(
       'failedToTransform',
@@ -97,10 +273,12 @@ const possibleTransforms = computed<TransformPlugin[]>(() =>
 defineCommands(() =>
   possibleTransforms.value.map((transform) => ({
     id: 'transform:' + transform.id,
-    label: transform.label,
+    label: getPluginLabel(transform),
     group: 'selection',
     icon: 'script',
-    callback: () => onTransform(transform, selection.uuids.value),
+    callback: () => {
+      onSelectBlockTransformPlugin(transform, selection.uuids.value)
+    },
   })),
 )
 
@@ -128,7 +306,10 @@ const getPossibleDropTransforms = (
   const possibleTransforms: PossibleTransform[] = []
   validPlugins.forEach((plugin) => {
     notDraggedBlocks.forEach((block) => {
-      if (plugin.targetBundles.includes(block.itemBundle)) {
+      if (
+        !plugin.targetBundles ||
+        plugin.targetBundles.includes(block.itemBundle)
+      ) {
         possibleTransforms.push({
           plugin,
           block,
@@ -167,7 +348,7 @@ defineDropAreas((dragItems) => {
       element: v.block.element(),
       onDrop: () => {
         const transformUuids = [v.block.uuid, ...uuids]
-        return onTransform(v.plugin, transformUuids)
+        return onSelectBlockTransformPlugin(v.plugin, transformUuids)
       },
     }
   })

@@ -14,6 +14,7 @@
         <FormItem v-if="publishOptions?.hasRevisionLogMessage">
           <FormTextarea
             v-model="revisionMessage"
+            id="revision-message"
             label="Protokollnachricht der Revision"
             description="Beschreiben Sie kurz die vorgenommenen Änderungen"
             :disabled="isLoading"
