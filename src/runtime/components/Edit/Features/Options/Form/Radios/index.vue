@@ -1,13 +1,18 @@
 <template>
   <div
     class="bk-blokkli-item-options-radios"
+    @mouseleave="onMouseLeave"
     :class="{
       'bk-is-color': displayAs === 'colors',
       'bk-is-grid': displayAs === 'grid',
       'bk-is-icons': displayAs === 'icons',
     }"
   >
-    <label v-for="option in mappedOptions" :key="option.key">
+    <label
+      v-for="option in mappedOptions"
+      :key="option.key"
+      @mouseenter="active = option.label"
+    >
       <div v-bind="getInputWrapperAttributes(option.value)">
         <input
           :id="option.key"
@@ -15,7 +20,7 @@
           :name="property"
           :value="option.key"
           :checked="modelValue === option.key"
-          @change="$emit('update:modelValue', option.key)"
+          @change="value = option.key"
         />
         <div
           v-if="
@@ -54,7 +59,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli } from '#imports'
+import { computed, useBlokkli, onMounted } from '#imports'
 import { Icon } from '#blokkli/components'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 
@@ -75,10 +80,15 @@ const props = defineProps<{
   property: string
   displayAs?: 'radios' | 'colors' | 'grid' | 'icons'
   options: Record<string, PossibleOptionType>
-  modelValue?: string
 }>()
 
-const emit = defineEmits(['update:modelValue'])
+const value = defineModel<string>({
+  default: '',
+})
+
+const active = defineModel<string>('hovered', {
+  default: '',
+})
 
 function getInputWrapperAttributes(value: PossibleOptionType) {
   if (props.displayAs === 'colors' && typeof value !== 'string') {
@@ -97,12 +107,17 @@ function getInputWrapperAttributes(value: PossibleOptionType) {
 
 const mappedOptions = computed(() => {
   return Object.entries(props.options).map(([key, value]) => {
-    return { key, value }
+    const label = typeof value === 'string' ? value : value.label
+    return { key, value, label }
   })
 })
 
-const setValue = (value: string) => {
-  emit('update:modelValue', value)
+const selectedLabel = computed(() => {
+  return mappedOptions.value.find((v) => v.key === value.value)?.label
+})
+
+function onMouseLeave() {
+  active.value = selectedLabel.value ?? ''
 }
 
 defineCommands(() => {
@@ -110,7 +125,7 @@ defineCommands(() => {
     return
   }
   return mappedOptions.value
-    .filter((v) => v.key !== props.modelValue)
+    .filter((v) => v.key !== value.value)
     .map((option) => {
       return {
         id: 'options:' + props.property + option.key,
@@ -122,9 +137,15 @@ defineCommands(() => {
           .replace('@value', option.key),
         group: 'selection',
         icon: 'form',
-        callback: () => setValue(option.key),
+        callback: () => {
+          value.value = option.key
+        },
       }
     })
+})
+
+onMounted(() => {
+  active.value = selectedLabel.value ?? ''
 })
 </script>
 

@@ -4,7 +4,7 @@
       v-if="showLabel"
       :class="isGrouped ? 'bk-blokkli-item-options-item-label' : 'bk-tooltip'"
     >
-      <span>{{ label }}</span>
+      <span>{{ tooltipLabel }}</span>
     </div>
     <div
       class="bk-blokkli-item-options-item-content"
@@ -19,6 +19,7 @@
         :options="option.options"
         :property="property"
         :display-as="option.displayAs"
+        v-model:hovered="hoveredOption"
       />
       <OptionCheckbox
         v-else-if="option.type === 'checkbox'"
@@ -74,7 +75,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli } from '#imports'
+import { ref, computed, useBlokkli } from '#imports'
 import OptionRadios from './Radios/index.vue'
 import OptionCheckbox from './Checkbox/index.vue'
 import OptionCheckboxes from './Checkboxes/index.vue'
@@ -102,6 +103,8 @@ const props = defineProps<{
   mutatedValue: any
   isGrouped?: boolean
 }>()
+
+const hoveredOption = ref('')
 
 const showLabel = computed(() => {
   if (props.isGrouped) {
@@ -191,5 +194,13 @@ const value = computed<string | undefined>({
   set(value: string | undefined) {
     emit('update', value === undefined ? '' : value)
   },
+})
+
+const tooltipLabel = computed(() => {
+  if (hoveredOption.value) {
+    return `${label.value}: ${hoveredOption.value}`
+  }
+
+  return label.value
 })
 </script>
