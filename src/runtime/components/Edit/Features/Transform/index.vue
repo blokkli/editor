@@ -326,33 +326,35 @@ type PossibleTransform = {
   block: DraggableExistingBlock
 }
 
-defineDropAreas((dragItems) => {
-  const existing = dragItems.filter(
-    (v) => v.itemType === 'existing',
-  ) as DraggableExistingBlock[]
+// @todo disabled for now because the interaction can be challenging when there's lots of transform plugins.
 
-  if (!existing.length) {
-    return
-  }
-
-  const uuids = existing.map((v) => v.uuid)
-
-  return getPossibleDropTransforms(
-    plugins.value,
-    dom.getAllBlocks(),
-    existing,
-  ).map<DropArea>((v) => {
-    return {
-      id: `transform:${v.plugin.id}:${v.block.uuid}`,
-      label: v.plugin.label,
-      element: v.block.element(),
-      onDrop: () => {
-        const transformUuids = [v.block.uuid, ...uuids]
-        return onSelectBlockTransformPlugin(v.plugin, transformUuids)
-      },
-    }
-  })
-})
+// defineDropAreas((dragItems) => {
+//   const existing = dragItems.filter(
+//     (v) => v.itemType === 'existing',
+//   ) as DraggableExistingBlock[]
+//
+//   if (!existing.length) {
+//     return
+//   }
+//
+//   const uuids = existing.map((v) => v.uuid)
+//
+//   return getPossibleDropTransforms(
+//     plugins.value,
+//     dom.getAllBlocks(),
+//     existing,
+//   ).map<DropArea>((v) => {
+//     return {
+//       id: `transform:${v.plugin.id}:${v.block.uuid}`,
+//       label: v.plugin.label,
+//       element: v.block.element(),
+//       onDrop: () => {
+//         const transformUuids = [v.block.uuid, ...uuids]
+//         return onSelectBlockTransformPlugin(v.plugin, transformUuids)
+//       },
+//     }
+//   })
+// })
 </script>
 
 <script lang="ts">

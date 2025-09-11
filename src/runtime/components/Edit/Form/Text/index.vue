@@ -3,14 +3,14 @@
     <label class="bk-form-label" :for="id">
       {{ label }}
     </label>
-    <textarea
-      v-model.lazy="value"
-      class="bk-form-input"
+    <input
       :id
+      v-model.lazy="value"
+      type="text"
+      class="bk-form-input"
       :placeholder
       :required
       :disabled
-      :rows="rows ?? 5"
       :minlength
       :maxlength
     />
@@ -28,7 +28,6 @@ defineProps<{
   disabled?: boolean
   minlength?: string | number
   maxlength?: string | number
-  rows?: string | number
 }>()
 
 const value = defineModel<string>()

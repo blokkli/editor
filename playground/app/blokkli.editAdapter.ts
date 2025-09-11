@@ -201,12 +201,34 @@ export default defineBlokkliEditAdapter((ctx) => {
 
             ]
           },
+
+        {
+            type: 'options',
+            name: 'type_alt',
+            label: 'Schreibstil',
+            required: true,
+            variant: 'radio',
+            defaultValue: 'normal',
+            description: 'Wählen Sie den gewünschten Schreibstil',
+            options: [
+              {
+              value: 'normal',
+              label: 'Normal'
+            },
+{
+              value: 'simple_german',
+              label: 'Einfache Sprache (Deutsch)'
+            },
+
+            ]
+          },
         {
             type: 'text',
             name: 'prompt',
             label: 'Anweisungen an KI',
             description: 'Zusätzliche Anweisungen, z.B. "Verwende keine Fremdwörter".',
-            required: true
+            required: true,
+            multiline: true
           },
         ]
       }

@@ -1,23 +1,28 @@
 <template>
-  <div>
-    <label class="bk-form-label" :for="id">
-      {{ label }}
-    </label>
-    <select :id v-model="value" class="bk-form-input">
-      <option
-        v-for="option in options"
-        :key="option.value"
-        :value="option.value"
-      >
-        {{ option.label }}
-      </option>
-    </select>
-  </div>
+  <FormSelect
+    v-if="variant === 'select'"
+    v-model="value"
+    :id
+    :label
+    :description
+    :required
+    :options
+  />
+  <FormRadio
+    v-else
+    v-model="value"
+    :id
+    :label
+    :description
+    :required
+    :options
+  />
 </template>
 
 <script setup lang="ts">
 import { computed } from '#imports'
 import type { PluginConfigInputOptions } from '#blokkli/types'
+import { FormSelect, FormRadio } from '#blokkli/components'
 
 const props = defineProps<PluginConfigInputOptions>()
 

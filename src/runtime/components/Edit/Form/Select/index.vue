@@ -3,17 +3,15 @@
     <label class="bk-form-label" :for="id">
       {{ label }}
     </label>
-    <textarea
-      v-model.lazy="value"
-      class="bk-form-input"
-      :id
-      :placeholder
-      :required
-      :disabled
-      :rows="rows ?? 5"
-      :minlength
-      :maxlength
-    />
+    <select :id v-model="value" class="bk-form-input" :required :disabled>
+      <option
+        v-for="option in options"
+        :key="option.value"
+        :value="option.value"
+      >
+        {{ option.label }}
+      </option>
+    </select>
     <div v-if="description" class="bk-form-description">{{ description }}</div>
   </div>
 </template>
@@ -22,13 +20,10 @@
 defineProps<{
   id: string
   label: string
-  description?: string
-  placeholder?: string
+  options: { value: string; label: string }[]
   required?: boolean
   disabled?: boolean
-  minlength?: string | number
-  maxlength?: string | number
-  rows?: string | number
+  description?: string
 }>()
 
 const value = defineModel<string>()
