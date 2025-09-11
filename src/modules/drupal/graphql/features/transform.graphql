@@ -10,6 +10,7 @@ query pbGetTransformPlugins(
   ) {
     id
     label
+    description
     bundles
     targetBundles
     min

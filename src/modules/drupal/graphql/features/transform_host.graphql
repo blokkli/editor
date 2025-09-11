@@ -10,6 +10,7 @@ query pbGetHostTransformPlugins(
   ) {
     id
     label
+    description
     configInputs {
       ...paragraphsBlokkliConfigInput
     }

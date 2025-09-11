@@ -590,6 +590,8 @@ export interface TransformPlugin {
   max: number
 
   configInputs?: PluginConfigInput[]
+
+  description?: string
 }
 
 export type PluginConfigInputItem = {
@@ -609,6 +611,8 @@ export interface HostTransformPlugin {
   label: string
 
   configInputs?: PluginConfigInput[]
+
+  description?: string
 }
 
 export interface LibraryItem {

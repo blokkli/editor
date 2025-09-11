@@ -3,36 +3,20 @@
     id="transform"
     :title="$t('transformTo', 'Other actions')"
     :enabled="!!(itemBundleIds.length && possibleTransforms.length)"
-  >
-    <button
-      v-for="transform in possibleTransforms"
-      :key="transform.id"
-      @click.prevent="
-        onSelectBlockTransformPlugin(transform, selection.uuids.value)
-      "
-    >
-      <div>
-        <div>{{ getPluginLabel(transform) }}</div>
-      </div>
-    </button>
-  </PluginItemDropdown>
+    :items="possibleTransforms"
+    icon="script"
+    @select="onSelectBlockTransformPlugin($event, selection.uuids.value)"
+  />
 
   <PluginItemDropdown
     v-if="hostPlugins.length"
     id="transform-host"
     :title="$t('transformTo', 'Other actions')"
     :enabled="selection.hasHostSelected.value"
-  >
-    <button
-      v-for="transform in hostPlugins"
-      :key="transform.id"
-      @click.prevent="onSelectHostTransformPlugin(transform)"
-    >
-      <div>
-        <div>{{ getPluginLabel(transform) }}</div>
-      </div>
-    </button>
-  </PluginItemDropdown>
+    :items="hostPlugins"
+    icon="script"
+    @select="onSelectHostTransformPlugin($event)"
+  />
 
   <Teleport to="body">
     <Transition appear name="bk-slide-up">
@@ -40,6 +24,7 @@
         v-if="openPluginDefinition"
         :title="openPluginDefinition.label"
         :config="openPluginDefinition.configInputs ?? []"
+        :lead="openPluginDefinition.description"
         @cancel="cancelTransform"
         @submit="onSubmitDialog"
       />
@@ -60,14 +45,12 @@ import { PluginItemDropdown } from '#blokkli/plugins'
 import { onlyUnique } from '#blokkli/helpers'
 import type {
   DraggableExistingBlock,
-  DropArea,
   HostTransformPlugin,
   PluginConfigInputItem,
   TransformPlugin,
 } from '#blokkli/types'
 import { filterTransforms } from '#blokkli/helpers/transform'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
-import defineDropAreas from '#blokkli/helpers/composables/defineDropAreas'
 import TransformDialog from './Dialog/index.vue'
 
 const { adapter } = defineBlokkliFeature({
@@ -96,7 +79,18 @@ const {
   () => {
     return adapter.getTransformPlugins()
   },
-  { immediate: false, default: () => [] },
+  {
+    immediate: false,
+    default: () => [],
+    transform: function (plugins) {
+      return plugins.map((plugin) => {
+        return {
+          ...plugin,
+          label: getPluginLabel(plugin),
+        }
+      })
+    },
+  },
 )
 
 const {
@@ -114,6 +108,14 @@ const {
   {
     immediate: !openPlugin.value,
     default: () => [],
+    transform: function (plugins) {
+      return plugins.map((plugin) => {
+        return {
+          ...plugin,
+          label: getPluginLabel(plugin),
+        }
+      })
+    },
   },
 )
 

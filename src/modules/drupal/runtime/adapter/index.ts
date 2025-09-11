@@ -682,6 +682,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
               return {
                 id: plugin.id,
                 label: plugin.label,
+                description: plugin.description,
                 bundles: plugin.bundles,
                 targetBundles: plugin.targetBundles,
                 min: plugin.min,
@@ -701,6 +702,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
               return {
                 id: plugin.id,
                 label: plugin.label,
+                description: plugin.description,
                 configInputs: mapPluginConfigInputs(plugin.configInputs),
               }
             }),

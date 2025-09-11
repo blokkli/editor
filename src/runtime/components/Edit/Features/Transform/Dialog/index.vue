@@ -3,6 +3,7 @@
     :title
     :can-submit
     :width="500"
+    :lead
     icon="script"
     @cancel="$emit('cancel')"
     @submit="onSubmit"
@@ -21,6 +22,7 @@ import { DialogModal, ConfigForm } from '#blokkli/components'
 
 const props = defineProps<{
   title: string
+  lead?: string
   config: PluginConfigInput[]
 }>()
 
