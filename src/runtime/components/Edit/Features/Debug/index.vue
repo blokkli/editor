@@ -47,30 +47,18 @@
         <h2>Rendering</h2>
         <div class="bk-debug-list">
           <div v-for="overlay in debug.overlays.value" :key="overlay.id">
-            <label class="bk-checkbox-toggle">
-              <input
-                :checked="overlay.active"
-                type="checkbox"
-                @change="debug.toggleOverlay(overlay.id)"
-              />
-              <div class="bk-checkbox-toggle-toggle" />
-              <div class="bk-checkbox-toggle-label">
-                <div>{{ overlay.label }}</div>
-              </div>
-            </label>
+            <FormToggle
+              :label="overlay.label"
+              :model-value="overlay.active"
+              @update:model-value="debug.toggleOverlay(overlay.id)"
+            />
           </div>
           <div>
-            <label class="bk-checkbox-toggle">
-              <input
-                :checked="ui.isTransforming.value"
-                type="checkbox"
-                @change="toggleTransforming"
-              />
-              <div class="bk-checkbox-toggle-toggle" />
-              <div class="bk-checkbox-toggle-label">
-                <div>Set transforming</div>
-              </div>
-            </label>
+            <FormToggle
+              label="Set transforming"
+              :model-value="ui.isTransforming.value"
+              @update:model-value="toggleTransforming"
+            />
           </div>
         </div>
       </section>
@@ -124,7 +112,7 @@ import {
   computed,
 } from '#imports'
 import { PluginSidebar, PluginDebugOverlay } from '#blokkli/plugins'
-import { Icon } from '#blokkli/components'
+import { Icon, FormToggle } from '#blokkli/components'
 import { icons, type BlokkliIcon } from '#blokkli-build/icons'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import DebugViewport from './Viewport/index.vue'
