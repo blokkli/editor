@@ -38,6 +38,7 @@ import type { RGB } from './theme'
 import type { DebugProvider } from '#blokkli/helpers/debugProvider'
 import type getVideoId from 'get-video-id'
 import type { DefinitionProvider } from '../helpers/definitionProvider'
+import type { IndicatorsProvider } from '#blokkli/helpers/indicatorsProvider'
 
 export type MutateWithLoadingStateFunction = (
   promise: () => Promise<MutationResponseLike<any>> | undefined,
@@ -1005,6 +1006,7 @@ export type Message = {
   type: 'success' | 'error'
   message: string
   additional?: string | Error | unknown
+  replace?: boolean
 }
 
 export type Size = {
@@ -1289,6 +1291,11 @@ export type EventbusEvents = {
    * Edit a library item.
    */
   'library:edit-item': LibraryEditItemEvent
+
+  /**
+   * Emitted when a view option is being toggled.
+   */
+  'view-option:toggle': { id: string }
 }
 
 export type Eventbus = Emitter<EventbusEvents>
@@ -1332,6 +1339,7 @@ export interface BlokkliApp {
   tour: TourProvider
   dropAreas: DropAreaProvider
   debug: DebugProvider
+  indicators: IndicatorsProvider
 }
 
 export type PasteExistingBlocksEvent = {
@@ -1636,6 +1644,13 @@ export type GetEditStatesItem = {
   hostEntityUuid: string
   entity: EditEntity
   currentUserIsOwner: boolean
+}
+
+export type BlockIndicator = {
+  id: string
+  uuid: string
+  element: HTMLElement
+  position: 'left' | 'right'
 }
 
 export default {}

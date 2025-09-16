@@ -626,6 +626,11 @@ export interface BlokkliAdapter<T> {
   fragmentsAddBlock?: (
     e: AdapterFragmentsAddBlock,
   ) => Promise<MutationResponseLike<T>> | undefined
+
+  /**
+   * Build the link that is copied to the clipboard when clicking on an "anchor link" indicator.
+   */
+  buildAnchorLink?: (id: string, uuid: string) => string
 }
 
 export type BlokkliAdapterFactory<T> = (

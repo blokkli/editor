@@ -30,13 +30,13 @@
 </template>
 
 <script setup lang="ts">
-import { useBlokkli, computed, ref } from '#imports'
+import { useBlokkli, computed, ref, watch } from '#imports'
 import { ShortcutIndicator, Icon } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 
-const { storage, ui } = useBlokkli()
+const { storage, ui, eventBus } = useBlokkli()
 
 const props = defineProps<{
   id: string
@@ -68,6 +68,10 @@ const isActive = computed({
     isActiveStorage.value = v
     emit('update:modelValue', v)
   },
+})
+
+watch(isActive, () => {
+  eventBus.emit('view-option:toggle', { id: props.id })
 })
 
 emit('update:modelValue', isActiveStorage.value)

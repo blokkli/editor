@@ -141,7 +141,10 @@ export type DomProvider = {
   getActiveProviderElement: () => HTMLElement
 
   getBlockRects: () => Record<string, MeasuredBlockRect>
-  getBlockRect: (uuid: string) => MeasuredBlockRect | undefined
+  getBlockRect: (
+    uuid: string,
+    refresh?: boolean,
+  ) => MeasuredBlockRect | undefined
   refreshBlockRect: (uuid: string) => void
 
   getFieldRect: (key: string) => Rectangle | undefined
@@ -461,7 +464,13 @@ export default function (
     return blockRects
   }
 
-  function getBlockRect(uuid: string): MeasuredBlockRect | undefined {
+  function getBlockRect(
+    uuid: string,
+    refresh?: boolean,
+  ): MeasuredBlockRect | undefined {
+    if (refresh) {
+      refreshBlockRect(uuid)
+    }
     return blockRects[uuid]
   }
 

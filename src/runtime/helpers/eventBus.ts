@@ -7,6 +7,7 @@ export const emitMessage = (
   message: string,
   type: 'success' | 'error' = 'success',
   additional?: string | Error | unknown,
+  replace?: boolean,
 ) => {
-  eventBus.emit('message', { type, message, additional })
+  eventBus.emit('message', { type, message, additional, replace })
 }

@@ -1,0 +1,5 @@
+query pbEntityConfig($entityType: String!, $entityUuid: String!) {
+  config: pbGetEntityConfig(entityType: $entityType, entityUuid: $entityUuid) {
+    linkPath
+  }
+}

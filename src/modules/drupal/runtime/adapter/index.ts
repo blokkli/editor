@@ -80,6 +80,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     if (import.meta.dev) {
       console.log('initialise Drupal blökkli adapter')
     }
+
     const availableFeatureIds = new Set(availableFeaturesAtBuild)
     const availableGraphqlOperations = new Set(Object.keys(operationSources))
 
@@ -122,6 +123,15 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           },
           {},
         ),
+      }
+    })
+
+    const entityConfig = await useGraphqlQuery('pbEntityConfig', {
+      entityType: providedContext.value.entityType,
+      entityUuid: providedContext.value.entityUuid,
+    }).then((v) => {
+      return {
+        linkPath: v.data.config?.linkPath ?? '',
       }
     })
 
@@ -363,6 +373,13 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         `/paragraphs_blokkli/${ctx.value.entityType}/${ctx.value.entityUuid}/last_changed`,
       ).then((v) => v.changed)
 
+    const buildAnchorLink: DrupalAdapter['buildAnchorLink'] = (
+      id: string,
+      _uuid: string,
+    ) => {
+      return `${entityConfig.linkPath}#${id}`
+    }
+
     const adapter: BlokkliAdapter<any> = {
       addNewBlock,
       buildEditableFrameUrl,
@@ -379,6 +396,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       mapState,
       moveBlock,
       moveMultipleBlocks,
+      buildAnchorLink,
     }
 
     if (hasQuery('pbPublishOptions')) {

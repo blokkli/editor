@@ -359,7 +359,7 @@
       @apply h-50;
 
       &.bk-is-grouped {
-        @apply h-auto min-h-50;
+        @apply h-auto min-h-50 w-full;
 
         .bk-blokkli-item-options-checkbox {
           @apply h-50 w-full;

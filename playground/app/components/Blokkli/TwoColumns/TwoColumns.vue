@@ -1,6 +1,7 @@
 <template>
   <div
     class="py-30 md:py-60 lg:py-100"
+    :id="options.anchorId"
     :class="[
       colorClass,
       { 'border-t border-t-mono-200': options.background === 'white' },
@@ -65,6 +66,11 @@ const { options } = defineBlokkli({
       type: 'checkbox',
       label: 'Reverse',
       default: false,
+    },
+    anchorId: {
+      type: 'text',
+      label: 'Anchor ID',
+      default: ''
     },
   },
   propsFieldMapping: {

@@ -29,6 +29,7 @@
   <Actions v-if="!isInitializing" />
   <Toolbar @loaded="toolbarLoaded = true" />
   <AppMenu v-if="toolbarLoaded" />
+  <Indicators />
   <Features
     v-if="!isInitializing && toolbarLoaded"
     :key="route.fullPath"
@@ -56,7 +57,6 @@ import {
   useRuntimeConfig,
   nextTick,
   inject,
-  useState,
 } from '#imports'
 import type { BlokkliApp, ItemEditContext } from '#blokkli/types'
 import Toolbar from './Toolbar/index.vue'
@@ -64,6 +64,7 @@ import Actions from './Actions/index.vue'
 import Loading from './Loading/index.vue'
 import Messages from './Messages/index.vue'
 import Features from './Features/index.vue'
+import Indicators from './Indicators/index.vue'
 import AppMenu from './AppMenu/index.vue'
 import DraggableList from './DraggableList.vue'
 import DragInteractions from './DragInteractions/index.vue'
@@ -86,6 +87,7 @@ import tourProvider from './../../helpers/tourProvider'
 import debugProvider from './../../helpers/debugProvider'
 import definitionProvider from './../../helpers/definitionProvider'
 import dropAreasProvider from './../../helpers/dropAreaProvider'
+import indicatorsProvider from './../../helpers/indicatorsProvider'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import '#blokkli-build/styles.css'
 import getAdapter from '#blokkli-build/edit-adapter'
@@ -155,6 +157,7 @@ const animation = animationProvider(ui)
 const keyboard = keyboardProvider(animation)
 const selection = selectionProvider(dom)
 const types = await typesProvider(adapter, selection, context)
+const indicators = indicatorsProvider()
 
 const mutatedEntity = computed(() => state.mutatedEntity.value || props.entity)
 
@@ -244,6 +247,7 @@ provide<BlokkliApp>(INJECT_APP, {
   dropAreas,
   debug,
   definitions,
+  indicators,
 })
 
 const isProxyMode = computed(() => ui.isProxyMode.value)

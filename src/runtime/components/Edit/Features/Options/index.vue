@@ -8,8 +8,8 @@
         uuids
       "
       :key="key + state.refreshKey.value + ui.isAnimating.value"
-      :uuids="uuids"
-      :definition="definition"
+      :uuids
+      :definition
     />
   </Teleport>
 </template>
