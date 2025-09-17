@@ -9,7 +9,6 @@
       <img
         v-if="url"
         :src="url"
-        :alt="alt"
         loading="lazy"
         :width="width"
         :height="height"

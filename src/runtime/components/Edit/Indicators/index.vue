@@ -3,20 +3,23 @@
     <div class="bk bk-indicators" :style>
       <div id="bk-indicators-left" />
       <div id="bk-indicators-right" />
-      <div
-        ref="elHovered"
-        class="bk-indicators-hovered"
-        :style="hoveredStyle"
-      />
+      <div class="bk-indicators-hovered" :style="hoveredStyle" />
+
+      <div class="bk-indicators-highlighted" :style="highlightedStyle" />
     </div>
   </Teleport>
 </template>
 
 <script setup lang="ts">
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import { computed, useBlokkli, watch } from '#imports'
+import type { Rectangle } from '#blokkli/types'
+import { computed, useBlokkli, watch, ref } from '#imports'
 
-const { ui, dom, indicators } = useBlokkli()
+const { ui, dom, indicators, selection } = useBlokkli()
+
+const artboardElement = ui.artboardElement()
+
+const highlighted = ref<Rectangle | null>(null)
 
 const hoveredStyle = computed<Record<string, string | undefined>>(() => {
   if (indicators.hovered.value) {
@@ -30,6 +33,19 @@ const hoveredStyle = computed<Record<string, string | undefined>>(() => {
     }
   }
 
+  return {
+    visibility: 'hidden',
+  }
+})
+
+const highlightedStyle = computed<Record<string, string | undefined>>(() => {
+  if (highlighted.value) {
+    return {
+      width: highlighted.value.width.toString() + 'px',
+      height: highlighted.value.height.toString() + 'px',
+      transform: `translate(${highlighted.value.x}px, ${highlighted.value.y}px)`,
+    }
+  }
   return {
     visibility: 'hidden',
   }
@@ -90,8 +106,31 @@ onBlokkliEvent('state:reloaded', () => {
   prevRects.clear()
 })
 
+onBlokkliEvent('scrollIntoView', (e) => {
+  if ('element' in e) {
+    if (artboardElement.contains(e.element)) {
+      highlighted.value = ui.getAbsoluteElementRect(e.element)
+    } else {
+      highlighted.value = {
+        x: 0,
+        y: 0,
+        width: ui.artboardSize.value.width,
+        height: ui.artboardSize.value.height,
+      }
+    }
+  }
+})
+
+onBlokkliEvent('window:clickAway', function () {
+  highlighted.value = null
+})
+
 watch(indicators.indicators, function () {
   prevRects.clear()
+})
+
+watch(selection.uuids, function () {
+  highlighted.value = null
 })
 
 const style = computed(() => {

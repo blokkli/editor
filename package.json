@@ -82,6 +82,7 @@
     "@types/gettext-parser": "^8.0.0",
     "@types/node": "^24.3.0",
     "@vue/test-utils": "^2.4.6",
+    "axe-core": "^4.10.3",
     "changelogen": "^0.6.2",
     "cypress": "^15.0.0",
     "eslint": "^9.33.0",

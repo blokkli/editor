@@ -124,13 +124,11 @@
   "title": {
     "bkHiddenGlobally": {
       "default": false,
-      "group": "VISIBILITY",
       "label": "Hide globally",
       "type": "checkbox"
     },
     "bkVisibleLanguages": {
       "default": [],
-      "group": "VISIBILITY",
       "label": "Visible languages",
       "options": {},
       "type": "checkboxes"
@@ -142,6 +140,11 @@
     }
   },
   "two_columns": {
+    "anchorId": {
+      "default": "",
+      "label": "Anchor ID",
+      "type": "text"
+    },
     "background": {
       "default": "white",
       "displayAs": "colors",

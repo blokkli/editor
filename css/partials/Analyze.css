@@ -1,0 +1,164 @@
+.bk.bk-analyze {
+  @apply select-text;
+  .bk-analyze-button {
+    @apply p-20;
+    button {
+      @apply w-full;
+    }
+  }
+
+  .bk-analyze-form {
+    @apply p-20 border-t border-t-mono-300;
+  }
+
+  .bk-analyze-summary {
+    @apply p-20 pt-0;
+    > ul {
+      @apply flex gap-2;
+
+      > li {
+        @apply relative h-10;
+
+        > div {
+          @apply opacity-0 absolute;
+        }
+
+        &.bk-is-pass {
+          @apply bg-lime-normal;
+        }
+
+        &.bk-is-incomplete {
+          @apply bg-yellow-normal;
+        }
+
+        &.bk-is-violation {
+          @apply bg-red-normal;
+        }
+      }
+    }
+  }
+
+  .bk-analyze-results-item-tags {
+    @apply flex flex-wrap gap-5 mb-10;
+    .bk-pill {
+      @apply text-xs ml-0 whitespace-nowrap;
+    }
+  }
+
+  .bk-analyze-status {
+    &.bk-is-pass {
+      @apply bg-lime-light text-lime-dark;
+    }
+
+    &.bk-is-incomplete {
+      @apply bg-yellow-normal text-yellow-dark;
+    }
+
+    &.bk-is-violation {
+      @apply bg-red-normal text-white;
+    }
+  }
+
+  .bk-analyze-results {
+    @apply border-b border-b-mono-300 first:border-t first:border-t-mono-300;
+    > summary {
+      @apply font-bold flex w-full cursor-pointer justify-between items-center hover:bg-mono-100;
+      @apply py-18 px-20;
+
+      > div {
+        @apply flex gap-3;
+      }
+
+      svg {
+        @apply size-15;
+      }
+    }
+
+    &:open {
+      > summary {
+        @apply !bg-transparent;
+        svg {
+          @apply rotate-180;
+        }
+      }
+    }
+
+    > ul {
+      @apply px-20;
+    }
+  }
+
+  .bk-analyze-results-item {
+    @apply py-15 border-b border-b-mono-300 first:pt-0 last:border-b-0;
+    > h3 {
+      @apply font-semibold;
+    }
+
+    > p {
+      @apply text-sm text-mono-600 mt-5;
+    }
+  }
+
+  .bk-analyze-results-item-nodes {
+    @apply bg-mono-100 rounded mt-10 overflow-hidden;
+
+    &:open {
+      > summary {
+        @apply !bg-transparent text-mono-950;
+        svg {
+          @apply rotate-180;
+        }
+      }
+    }
+
+    > summary {
+      @apply text-sm font-semibold p-10 cursor-pointer appearance-none list-none flex justify-between items-center;
+      @apply text-mono-600;
+      @apply hover:bg-mono-200 hover:text-mono-950;
+
+      &::marker,
+      &::-webkit-details-marker {
+        @apply hidden;
+      }
+
+      svg {
+        @apply size-15 fill-current;
+      }
+    }
+
+    > div > ul {
+      @apply px-10;
+
+      > li {
+        > p {
+          @apply text-xs text-mono-700;
+        }
+        > ul {
+          @apply mt-10;
+          > li {
+            @apply border-b border-b-mono-300 text-xs first:border-t first:border-t-mono-300;
+            @apply last:border-b-0;
+          }
+        }
+      }
+    }
+  }
+
+  .bk-analyze-results-item-nodes-target {
+    span {
+      @apply overflow-ellipsis overflow-hidden whitespace-nowrap w-full inline-block font-mono;
+    }
+
+    button {
+      @apply w-full min-w-0 text-mono-600 flex items-center gap-5 py-[7px];
+      @apply hover:text-accent-700;
+
+      &:hover svg {
+        @apply fill-accent-700;
+      }
+      svg {
+        @apply size-15 fill-mono-500;
+      }
+    }
+  }
+}

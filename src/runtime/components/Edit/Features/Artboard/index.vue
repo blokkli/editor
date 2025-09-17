@@ -114,6 +114,8 @@ const { settings } = defineBlokkliFeature({
 
 const { context, storage, ui, animation, $t, dom, selection } = useBlokkli()
 
+const artboardElement = ui.artboardElement()
+
 const zoomLevel = computed(() => Math.round(ui.artboardScale.value * 100) + '%')
 
 const PADDING = 50
@@ -190,7 +192,7 @@ function getArtboard(): Artboard {
       touch(),
       pluginWheel,
       domPlugin({
-        element: ui.artboardElement(),
+        element: artboardElement,
         precision: 1,
         restoreStyles: true,
       }),
@@ -361,21 +363,35 @@ defineShortcut(
 )
 
 onBlokkliEvent('scrollIntoView', (e) => {
-  const rect = dom.getBlockRect(e.uuid)
-  if (!rect) {
-    return
-  }
+  if ('uuid' in e) {
+    const rect = dom.getBlockRect(e.uuid)
+    if (!rect) {
+      return
+    }
 
-  if (dom.isBlockVisible(e.uuid)) {
-    return
-  }
+    if (dom.isBlockVisible(e.uuid)) {
+      return
+    }
 
-  // @TODO: Prevent scrolling into view when already in view.
-  artboard.scrollIntoView(rect, {
-    scale: 'none',
-    axis: 'y',
-    behavior: e.immediate ? 'instant' : 'auto',
-  })
+    // @TODO: Prevent scrolling into view when already in view.
+    artboard.scrollIntoView(rect, {
+      scale: 'none',
+      axis: 'y',
+      behavior: e.immediate ? 'instant' : 'auto',
+    })
+  } else {
+    if (artboardElement.contains(e.element)) {
+      artboard.scrollElementIntoView(e.element, {
+        scale: 'none',
+        axis: 'y',
+        behavior: e.immediate ? 'instant' : 'auto',
+      })
+    } else {
+      artboard.scrollToTop({
+        duration: 0,
+      })
+    }
+  }
 })
 </script>
 

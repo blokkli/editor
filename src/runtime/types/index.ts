@@ -1060,11 +1060,18 @@ export type ConvertBlockEvent = {
   targetBundle: string
 }
 
-export type ScrollIntoViewEvent = {
-  uuid: string
-  center?: boolean
-  immediate?: boolean
-}
+export type ScrollIntoViewEvent =
+  | {
+      uuid: string
+      center?: boolean
+      immediate?: boolean
+    }
+  | {
+      element: HTMLElement
+      center?: boolean
+      immediate?: boolean
+      highlight?: boolean
+    }
 
 export type PluginMountEvent = {
   type: 'ItemDropdown'
