@@ -1,14 +1,24 @@
 <template>
-  <details class="bk-analyze-results-item-nodes" @toggle="shouldRender = true">
-    <summary>
-      <span>Elements</span>
+  <details
+    class="bk-analyze-results-item-nodes"
+    @toggle="shouldRender = true"
+    :open="isSingle"
+  >
+    <summary v-show="!isSingle">
+      <span>{{ $t('multipleItemsLabel', 'Items') }}</span>
       <Icon name="caret" />
     </summary>
 
-    <div v-if="shouldRender">
+    <div v-if="shouldRender" class="bk-analyze-results-item-nodes-list">
       <ul v-for="group in grouped">
         <li>
-          <p v-if="group.description" v-html="group.description" />
+          <p
+            v-if="group.description && group.description !== 'NONE'"
+            v-html="group.description"
+            :class="{
+              'bk-is-single': isSingle,
+            }"
+          />
           <ul>
             <li v-for="node in group.nodes">
               <ResultsItemNodesTarget
@@ -23,7 +33,7 @@
   </details>
 </template>
 <script setup lang="ts">
-import { computed, ref } from '#imports'
+import { computed, ref, useBlokkli } from '#imports'
 import type { AnalyzeNode } from '../types'
 import ResultsItemNodesTarget from './ResultsItemNodesTarget.vue'
 import { Icon } from '#blokkli/components'
@@ -33,6 +43,12 @@ const props = defineProps<{
 }>()
 
 const shouldRender = ref(false)
+
+const { $t } = useBlokkli()
+
+const isSingle = computed(
+  () => props.nodes.length === 1 && props.nodes[0]?.targets.length === 1,
+)
 
 const grouped = computed(() => {
   const map = props.nodes.reduce<Record<string, AnalyzeNode[]>>((acc, node) => {

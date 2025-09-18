@@ -5,7 +5,7 @@
       :open="group.open"
       class="bk-analyze-results"
     >
-      <summary>
+      <summary v-show="!group.open">
         <div>
           <span>{{ group.label }}</span>
           <div>
@@ -14,7 +14,11 @@
         </div>
         <Icon name="caret" />
       </summary>
-      <ul>
+      <ul
+        :class="{
+          'bk-is-always-open': group.open,
+        }"
+      >
         <li>
           <ResultsItem v-for="result in group.results" v-bind="result" />
         </li>
@@ -24,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from '#imports'
+import { computed, useBlokkli } from '#imports'
 import type { AnalyzeResultMapped, AnalyzeStatus } from '../types'
 import ResultsItem from './ResultsItem.vue'
 import { Icon } from '#blokkli/components'
@@ -32,6 +36,8 @@ import { Icon } from '#blokkli/components'
 const props = defineProps<{
   results: AnalyzeResultMapped[]
 }>()
+
+const { $t } = useBlokkli()
 
 type ResultGroup = 'problems' | 'success' | 'inapplicable'
 
@@ -62,10 +68,10 @@ function getGroupLabel(group: ResultGroup): string {
   if (group === 'problems') {
     return 'Problems'
   } else if (group === 'success') {
-    return 'Success'
+    return $t('analyzeStatusPass', 'Pass')
   }
 
-  return 'Inapplicable'
+  return $t('analyzeStatusInapplicable', 'Inapplicable')
 }
 
 const grouped = computed(() => {

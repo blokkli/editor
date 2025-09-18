@@ -70,7 +70,7 @@ const { options } = defineBlokkli({
     anchorId: {
       type: 'text',
       label: 'Anchor ID',
-      default: ''
+      default: '',
     },
   },
   propsFieldMapping: {

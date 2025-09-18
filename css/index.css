@@ -461,7 +461,11 @@ html.bk-hide-non-editable {
   }
 
   .bk-pill {
-    @apply bg-accent-100 inline-block text-accent-800 ml-5 rounded-full px-5 py-[1px] uppercase text-xs font-semibold;
+    @apply bg-accent-100 inline-block text-accent-800 ml-5 rounded-full px-[7px] pt-[2px] uppercase text-xs font-semibold;
+
+    &.bk-is-mono {
+      @apply bg-mono-100 text-mono-500;
+    }
   }
 }
 .bk.bk-is-publish-dialog {

@@ -96,8 +96,8 @@ export class Entity {
     return this.fields[id] as T
   }
 
-  getTextFields(): Array<FieldText|FieldTextarea> {
-    return Object.values(this.fields).filter(field => {
+  getTextFields(): Array<FieldText | FieldTextarea> {
+    return Object.values(this.fields).filter((field) => {
       return field instanceof FieldText || field instanceof FieldTextarea
     })
   }

@@ -1,7 +1,7 @@
 <template>
   <div
     class="bk-pill bk-analyze-status"
-    :class="'bk-is-' + (status ?? 'inapplicable')"
+    :class="status === 'inapplicable' ? 'bk-is-mono' : 'bk-is-' + status"
   >
     {{ label }}
   </div>
@@ -9,21 +9,19 @@
 
 <script setup lang="ts">
 import { computed } from '#imports'
+import { useAnalyzeHelper } from '../helper'
 import type { AnalyzeStatus } from '../types'
 
-const props = defineProps<{
-  status?: AnalyzeStatus
-}>()
+const props = withDefaults(
+  defineProps<{
+    status?: AnalyzeStatus
+  }>(),
+  {
+    status: 'inapplicable',
+  },
+)
 
-const label = computed(() => {
-  if (props.status === 'pass') {
-    return 'Pass'
-  } else if (props.status === 'incomplete') {
-    return 'Incomplete'
-  } else if (props.status === 'violation') {
-    return 'Violation'
-  }
+const { getStatusLabel } = useAnalyzeHelper()
 
-  return 'Inapplicable'
-})
+const label = computed(() => getStatusLabel(props.status ?? 'inapplicable'))
 </script>

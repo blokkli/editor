@@ -31,10 +31,13 @@ export class MutationTransform extends Mutation {
   override execute(context: MutationContext, args: MutationTransformArgs) {
     const proxies = context.getProxies(args.uuids)
 
-    const config = (args.config ?? []).reduce<Record<string, string>>((acc, item) => {
-      acc[item.name] = item.value
-      return acc
-    }, {})
+    const config = (args.config ?? []).reduce<Record<string, string>>(
+      (acc, item) => {
+        acc[item.name] = item.value
+        return acc
+      },
+      {},
+    )
 
     if (args.pluginId === 'merge_texts') {
       const uuid = args.uuids[0]
@@ -57,10 +60,10 @@ export class MutationTransform extends Mutation {
       return
     }
 
-    proxies.forEach(proxy => {
+    proxies.forEach((proxy) => {
       const fields = proxy.block.getTextFields()
 
-      fields.forEach(field => {
+      fields.forEach((field) => {
         const text = field.getText()
         field.setText(text.replaceAll(search, replace))
       })

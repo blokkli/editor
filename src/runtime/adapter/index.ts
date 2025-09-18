@@ -37,6 +37,8 @@ import type {
 import type getVideoId from 'get-video-id'
 
 import type { GetMediaLibraryFunction } from './../components/Edit/Features/MediaLibrary/types'
+import type { Analyzer } from '#blokkli/components/Features/Analyze/types'
+import { defineAnalyzer } from '#blokkli/components/Features/Analyze/analyzers'
 
 export type { GetMediaLibraryFunction }
 
@@ -631,6 +633,12 @@ export interface BlokkliAdapter<T> {
    * Build the link that is copied to the clipboard when clicking on an "anchor link" indicator.
    */
   buildAnchorLink?: (id: string, uuid: string) => string
+
+  getAnalyzers?: () =>
+    | Analyzer
+    | Analyzer[]
+    | Promise<Analyzer>
+    | Promise<Analyzer[]>
 }
 
 export type BlokkliAdapterFactory<T> = (
@@ -644,3 +652,5 @@ export function defineBlokkliEditAdapter<T>(
 ): BlokkliAdapterFactory<T> {
   return cb
 }
+
+export { defineAnalyzer }

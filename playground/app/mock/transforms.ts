@@ -37,19 +37,18 @@ export const transforms: TransformPlugin[] = [
     description: 'Search and replace strings in text fields',
     configInputs: [
       {
-      type: 'text',
-      name: 'search',
-      label: 'Search',
-      required: true
-        },
-{
-      type: 'text',
-      name: 'replace',
-      label: 'Replace',
-      required: true
-        },
-
-    ]
+        type: 'text',
+        name: 'search',
+        label: 'Search',
+        required: true,
+      },
+      {
+        type: 'text',
+        name: 'replace',
+        label: 'Replace',
+        required: true,
+      },
+    ],
   },
 ]
 

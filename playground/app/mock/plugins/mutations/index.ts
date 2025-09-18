@@ -26,7 +26,10 @@ import {
   MutationEditTranslation,
   type MutationEditTranslationArgs,
 } from './Mutation/EditTranslation'
-import { MutationHostTransform, type MutationHostTransformArgs } from './Mutation/HostTransform'
+import {
+  MutationHostTransform,
+  type MutationHostTransformArgs,
+} from './Mutation/HostTransform'
 import {
   MutationMakeReusable,
   type MutationMakeReusableArgs,
@@ -52,7 +55,10 @@ import {
   MutationUpdateFieldValue,
   type MutationUpdateFieldValueArgs,
 } from './Mutation/UpdateFieldValue'
-import { MutationUpdateHostOptions, type MutationUpdateHostOptionsArgs } from './Mutation/UpdateHostOptions'
+import {
+  MutationUpdateHostOptions,
+  type MutationUpdateHostOptionsArgs,
+} from './Mutation/UpdateHostOptions'
 import {
   MutationUpdateOptions,
   type MutationUpdateOptionsArgs,

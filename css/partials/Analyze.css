@@ -1,39 +1,53 @@
 .bk.bk-analyze {
   @apply select-text;
   .bk-analyze-button {
-    @apply p-20;
+    @apply p-20 grid gap-10;
     button {
       @apply w-full;
     }
+
+    .bk-message-info {
+      @apply text-sm font-medium;
+    }
+  }
+  .bk-analyze-last-run {
+    @apply uppercase text-xs font-semibold text-mono-600 bg-mono-100 p-10 rounded border border-mono-300 tabular-nums;
   }
 
   .bk-analyze-form {
     @apply p-20 border-t border-t-mono-300;
   }
 
+  .bk-analyze-wrapper {
+    @apply relative;
+    &.bk-is-loading {
+      @apply opacity-30;
+    }
+  }
+
   .bk-analyze-summary {
     @apply p-20 pt-0;
+  }
+  .bk-analyze-summary-chart {
+    @apply flex items-center gap-20;
+
     > ul {
-      @apply flex gap-2;
-
+      @apply flex-1 flex flex-col gap-[7px];
       > li {
-        @apply relative h-10;
-
-        > div {
-          @apply opacity-0 absolute;
+        @apply flex items-center gap-[0.5em] leading-none;
+        > div:first-child {
+          @apply size-[0.75em] shrink-0 rounded-full;
         }
 
-        &.bk-is-pass {
-          @apply bg-lime-normal;
+        > div:last-child {
+          @apply font-semibold flex justify-between flex-1;
         }
+      }
+    }
 
-        &.bk-is-incomplete {
-          @apply bg-yellow-normal;
-        }
-
-        &.bk-is-violation {
-          @apply bg-red-normal;
-        }
+    svg {
+      text {
+        @apply font-bold text-lime-normal;
       }
     }
   }
@@ -47,7 +61,7 @@
 
   .bk-analyze-status {
     &.bk-is-pass {
-      @apply bg-lime-light text-lime-dark;
+      @apply bg-lime-normal text-white;
     }
 
     &.bk-is-incomplete {
@@ -85,6 +99,10 @@
 
     > ul {
       @apply px-20;
+
+      &.bk-is-always-open {
+        @apply pt-20;
+      }
     }
   }
 
@@ -131,17 +149,22 @@
 
       > li {
         > p {
-          @apply text-xs text-mono-700;
+          @apply text-xs text-mono-700 pb-10 border-b border-b-mono-300;
+          &.bk-is-single {
+            @apply pt-10;
+          }
         }
         > ul {
-          @apply mt-10;
           > li {
-            @apply border-b border-b-mono-300 text-xs first:border-t first:border-t-mono-300;
+            @apply border-b border-b-mono-300 text-xs;
             @apply last:border-b-0;
           }
         }
       }
     }
+  }
+
+  .bk-analyze-results-item-nodes-list {
   }
 
   .bk-analyze-results-item-nodes-target {

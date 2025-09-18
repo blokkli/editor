@@ -82,7 +82,7 @@ export class ContentPage extends Content {
       title: this.title().getText(),
       lead: this.lead().getText(),
       heroImage: this.heroImage()?.getData(),
-      hostOptions: this.options().getOptions()
+      hostOptions: this.options().getOptions(),
     }
   }
 }

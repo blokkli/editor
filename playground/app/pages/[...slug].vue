@@ -92,8 +92,6 @@ if (!(page instanceof ContentPage)) {
   throw new TypeError('Failed to load page with UUID: 1')
 }
 
-
-
 page.getTranslation(language.value)
 
 const fieldButtons = computed(() => mapMockField(page.buttons()))
@@ -111,9 +109,9 @@ const { options } = defineBlokkliProvider(pageValues.value, {
       default: 'default',
       options: {
         default: 'Default',
-        fancy: 'Fancy'
-      }
-    }
-  }
+        fancy: 'Fancy',
+      },
+    },
+  },
 })
 </script>

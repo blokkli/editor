@@ -52,6 +52,78 @@ msgctxt "all"
 msgid "All"
 msgstr "Alle"
 
+msgctxt "analyzeButtonLabel"
+msgid "Analyze Page"
+msgstr "Seite analysieren"
+
+msgctxt "analyzeCategory"
+msgid "Category"
+msgstr "Kategorie"
+
+msgctxt "analyzeCategoryAccessibility"
+msgid "Accessibility"
+msgstr "Barrierefreiheit"
+
+msgctxt "analyzeCategoryContent"
+msgid "Content"
+msgstr "Inhalt"
+
+msgctxt "analyzeCategorySeo"
+msgid "SEO"
+msgstr "SEO"
+
+msgctxt "analyzeCategoryText"
+msgid "Text"
+msgstr "Texte"
+
+msgctxt "analyzeLastRun"
+msgid "Last run: @time"
+msgstr "Zuletzt ausgeführt: @time"
+
+msgctxt "analyzeSidebarTitle"
+msgid "Analyze"
+msgstr "Analysieren"
+
+msgctxt "analyzeStaleMessage"
+msgid ""
+"The contents of the page have changed since last analyzing the page. Please "
+"run the analyzers again to get updated results."
+msgstr ""
+"Die Seiteninhalte wurden seit der letzten Analyse geändert. Bitte führen "
+"Sie die Analyse erneut aus um aktuelle Resultate zu sehen."
+
+msgctxt "analyzeStatusInapplicable"
+msgid "Inapplicable"
+msgstr "Nicht anwendbar"
+
+msgctxt "analyzeStatusIncomplete"
+msgid "Incomplete"
+msgstr "Unvollständig"
+
+msgctxt "analyzeStatusPass"
+msgid "Pass"
+msgstr "Bestanden"
+
+msgctxt "analyzeStatusViolation"
+msgid "Violation"
+msgstr "Fehler"
+
+msgctxt "analyzeTourText"
+msgid "Analyze the content of your page"
+msgstr "Inhalte auf dieser Seite analysieren."
+
+msgctxt "anchorHide"
+msgid "Hide anchor links"
+msgstr "Anker-Links verstecken"
+
+msgctxt "anchorShow"
+msgid "Show anchor links"
+msgstr "Anker-Links anzeigen"
+
+msgctxt "anchorToggle"
+msgid "Toggle anchor links"
+msgstr "Anzeige von Anker-Links umschalten"
+
 msgctxt "artboard"
 msgid "Artboard"
 msgstr "Vorschau"
@@ -287,6 +359,10 @@ msgctxt "convertTo"
 msgid "Convert to..."
 msgstr "Konvertieren"
 
+msgctxt "copiedToClipboardMessage"
+msgid "\"@text\" has been copied to your clipboard"
+msgstr ""
+
 msgctxt "deleteButton"
 msgid "Delete"
 msgstr "Löschen"
@@ -452,6 +528,22 @@ msgstr "Sidebar"
 msgctxt "feature_add-list_setting_orientation_option_vertical"
 msgid "Vertical"
 msgstr "Vertikal"
+
+msgctxt "feature_analyze_description"
+msgid "Analyze blocks and page for SEO, accessibility, etc."
+msgstr ""
+
+msgctxt "feature_analyze_label"
+msgid "Analyze"
+msgstr ""
+
+msgctxt "feature_anchors_description"
+msgid "Displays indicators for blocks with anchor IDs"
+msgstr ""
+
+msgctxt "feature_anchors_label"
+msgid "Anchors"
+msgstr ""
 
 msgctxt "feature_artboard_description"
 msgid ""
@@ -1338,6 +1430,10 @@ msgctxt "publishDescriptionUnpublished"
 msgid "Save all changes while keeping page unpublished"
 msgstr "Alle Änderungen speichern ohne die Seite zu publizieren"
 
+msgctxt "publishDialogTitle"
+msgid "Publish changes"
+msgstr ""
+
 msgctxt "publishError"
 msgid "Changes could not be published."
 msgstr "Änderungen konnten nicht publiziert werden."
@@ -1597,6 +1693,10 @@ msgctxt "tourStartButton"
 msgid "Start the tour"
 msgstr "Tour starten"
 
+msgctxt "transformDialogSubmitLabel"
+msgid "Apply transform"
+msgstr ""
+
 msgctxt "transformTo"
 msgid "Other actions"
 msgstr "Weitere Aktionen"
@@ -1640,6 +1740,10 @@ msgstr ""
 msgctxt "translationsTourTitle"
 msgid "Translations"
 msgstr "Übersetzungen"
+
+msgctxt "unexpectedMutationError"
+msgid "An unexpected error happened."
+msgstr "Ein unerwarteter Fehler ist aufgetreten"
 
 msgctxt "validationsNoneFound"
 msgid "No validation errors found."

@@ -358,7 +358,9 @@ export class EditState {
 
     return {
       mutatedOptions,
-      mutatedHostOptions: JSON.parse(JSON.stringify(context.mutatedHostOptions)),
+      mutatedHostOptions: JSON.parse(
+        JSON.stringify(context.mutatedHostOptions),
+      ),
       fields: Object.values(mutatedFields),
       context,
       violations,

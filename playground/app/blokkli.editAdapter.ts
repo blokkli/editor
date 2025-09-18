@@ -1,5 +1,5 @@
 import { useRouter, useRoute } from '#imports'
-import { defineBlokkliEditAdapter } from '#blokkli/adapter'
+import { defineBlokkliEditAdapter, defineAnalyzer } from '#blokkli/adapter'
 import type {
   BlokkliAdapter,
   GetMediaLibraryFunction,
@@ -32,10 +32,69 @@ import { FieldTextarea } from './mock/state/Field/Textarea'
 import type { Block } from './mock/state/Block/Block'
 import { FieldReference } from './mock/state/Field/Reference'
 import type { MutationAddArgs } from './mock/plugins/mutations/Mutation/Add'
+import { findStringsWithClosestElement } from './blokkli/analyzers'
 
 function getRandomNumberInRange(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
+
+const blockAnalyzer = defineAnalyzer(() => {
+  return {
+    id: 'block-analyzer',
+    category: 'content',
+    run: function (context) {
+      return context.mutatedFields
+        .map((mutatedField) => {
+          if (mutatedField.entityType !== 'block') {
+            return
+          }
+          const item = context.getFieldListItem(mutatedField.entityUuid)
+          if (item?.bundle !== 'grid') {
+            return
+          }
+          const field = context.mutatedFields.find(
+            (v) => v.entityUuid === item.uuid && v.name === 'blocks',
+          )
+          return {
+            id: 'no-empty-grid',
+            title: 'No empty grid blocks',
+            description: 'Do not use empty grid blocks.',
+            status: field?.list.length ? 'pass' : 'violation',
+            nodes: [
+              {
+                targets: [
+                  {
+                    uuid: item.uuid,
+                  },
+                ],
+              },
+            ],
+          }
+        })
+        .filter(falsy)
+    },
+  }
+})
+
+const textAnalyzer = defineAnalyzer(() => {
+  return {
+    id: 'text-analyzer',
+    category: 'text',
+    run: function (context) {
+      return findStringsWithClosestElement(context.providerRootElement, ['blokkli']).map(result => {
+        return {
+          id: 'blokkli-typo',
+          title: 'blökkli is not spelled correctly',
+          description: 'Please make sure that blökkli is spelled correctly!',
+          status: 'violation',
+          nodes: [{
+            targets: [result.element]
+          }]
+        }
+      })
+    },
+  }
+})
 
 export default defineBlokkliEditAdapter((ctx) => {
   // =============================================================================
@@ -180,7 +239,6 @@ export default defineBlokkliEditAdapter((ctx) => {
         id: 'rewrite_contents',
         label: 'Texte umschreiben',
         configInputs: [
-
           {
             type: 'options',
             name: 'type',
@@ -191,18 +249,17 @@ export default defineBlokkliEditAdapter((ctx) => {
             description: 'Wählen Sie den gewünschten Schreibstil',
             options: [
               {
-              value: 'normal',
-              label: 'Normal'
-            },
-{
-              value: 'simple_german',
-              label: 'Einfache Sprache (Deutsch)'
-            },
-
-            ]
+                value: 'normal',
+                label: 'Normal',
+              },
+              {
+                value: 'simple_german',
+                label: 'Einfache Sprache (Deutsch)',
+              },
+            ],
           },
 
-        {
+          {
             type: 'options',
             name: 'type_alt',
             label: 'Schreibstil',
@@ -212,25 +269,25 @@ export default defineBlokkliEditAdapter((ctx) => {
             description: 'Wählen Sie den gewünschten Schreibstil',
             options: [
               {
-              value: 'normal',
-              label: 'Normal'
-            },
-{
-              value: 'simple_german',
-              label: 'Einfache Sprache (Deutsch)'
-            },
-
-            ]
+                value: 'normal',
+                label: 'Normal',
+              },
+              {
+                value: 'simple_german',
+                label: 'Einfache Sprache (Deutsch)',
+              },
+            ],
           },
-        {
+          {
             type: 'text',
             name: 'prompt',
             label: 'Anweisungen an KI',
-            description: 'Zusätzliche Anweisungen, z.B. "Verwende keine Fremdwörter".',
+            description:
+              'Zusätzliche Anweisungen, z.B. "Verwende keine Fremdwörter".',
             required: true,
-            multiline: true
+            multiline: true,
           },
-        ]
+        ],
       }
       return Promise.resolve([hostPlugin])
     },
@@ -911,9 +968,14 @@ export default defineBlokkliEditAdapter((ctx) => {
       })
     },
 
-    updateHostOptions: (options) => addMutation('update_host_options', {
-      options,
-    }),
+    updateHostOptions: (options) =>
+      addMutation('update_host_options', {
+        options,
+      }),
+
+    getAnalyzers: () => {
+      return [blockAnalyzer, textAnalyzer]
+    },
 
     // @TODO: Implement in playground.
     // getLibraryItemEditUrl(uuid) {

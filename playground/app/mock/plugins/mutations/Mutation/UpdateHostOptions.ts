@@ -11,7 +11,10 @@ export class MutationUpdateHostOptions extends Mutation {
     super('update_host_options', configuration)
   }
 
-  override execute(context: MutationContext, args: MutationUpdateHostOptionsArgs) {
+  override execute(
+    context: MutationContext,
+    args: MutationUpdateHostOptionsArgs,
+  ) {
     args.options.forEach((option) => {
       context.updateHostOption(option.key, option.value)
     })

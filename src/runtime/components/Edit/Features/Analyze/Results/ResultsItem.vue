@@ -2,7 +2,7 @@
   <div class="bk-analyze-results-item">
     <div class="bk-analyze-results-item-tags">
       <Status :status />
-      <div class="bk-pill">{{ categoryLabel }}</div>
+      <div class="bk-pill bk-is-mono">{{ categoryLabel }}</div>
     </div>
     <h3>{{ title }}</h3>
     <p v-if="description">{{ description }}</p>

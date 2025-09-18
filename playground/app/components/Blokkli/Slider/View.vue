@@ -5,7 +5,7 @@
   <div
     class="flex items-center justify-center mb-25 min-h-120"
     :class="{
-      'pointer-events-none': isEditing
+      'pointer-events-none': isEditing,
     }"
     @click.stop.capture
     @mousedown.stop.capture

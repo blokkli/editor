@@ -23,7 +23,6 @@ function mapAxeNode(node: NodeResult): AnalyzeNode {
 
 function mapAxeResult(result: Result, status: AnalyzeStatus): AnalyzeResult {
   return {
-    plugin: 'axe',
     id: result.id,
     title: result.description,
     description: result.help,
@@ -69,11 +68,13 @@ export default defineAnalyzer(() => {
   return {
     id: 'axe',
     category: 'accessibility',
-    run: function (context) {
-      const locale = getLocale(context.langcode) ?? {}
+    init: function (context) {
+      const locale = getLocale(context.interfaceLangcode) ?? {}
       axe.configure({
         locale,
       })
+    },
+    run: function () {
       return axe
         .run({
           exclude: [
