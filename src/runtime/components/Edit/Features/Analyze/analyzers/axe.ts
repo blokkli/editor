@@ -25,6 +25,7 @@ function mapAxeResult(result: Result, status: AnalyzeStatus): AnalyzeResult {
   return {
     id: result.id,
     title: result.description,
+    category: 'accessibility',
     description: result.help,
     link: result.helpUrl,
     status,
@@ -42,23 +43,11 @@ function mapAxeResults(
 
 function getLocale(langcode: string): Locale | null {
   if (langcode === 'de') {
-    return {
-      lang: 'de',
-      rules: de.rules,
-      checks: de.checks as any,
-    }
+    return de as unknown as Locale
   } else if (langcode === 'fr') {
-    return {
-      lang: 'fr',
-      rules: fr.rules,
-      checks: fr.checks as any,
-    }
+    return fr as unknown as Locale
   } else if (langcode === 'it') {
-    return {
-      lang: 'it',
-      rules: it.rules,
-      checks: it.checks as any,
-    }
+    return it as unknown as Locale
   }
 
   return null
@@ -67,7 +56,6 @@ function getLocale(langcode: string): Locale | null {
 export default defineAnalyzer(() => {
   return {
     id: 'axe',
-    category: 'accessibility',
     init: function (context) {
       const locale = getLocale(context.interfaceLangcode) ?? {}
       axe.configure({
@@ -90,7 +78,7 @@ export default defineAnalyzer(() => {
             ...mapAxeResults(result.inapplicable, 'inapplicable'),
             ...mapAxeResults(result.passes, 'pass'),
             ...mapAxeResults(result.violations, 'violation'),
-          ]
+          ] satisfies AnalyzeResult[]
         })
     },
   }

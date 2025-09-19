@@ -1,6 +1,4 @@
-import type { FieldListItemTyped } from '#blokkli-build/generated-types'
-import type { FieldListItem, MutatedField } from '#blokkli/types'
-
+import type { AnalyzerContext } from './analyzers/helpers/Context'
 export type AnalyzeStatus = 'pass' | 'incomplete' | 'inapplicable' | 'violation'
 export type AnalyzeImpact = 'minor' | 'moderate' | 'serious' | 'critical'
 export type AnalyzeCategory = 'accessibility' | 'seo' | 'text' | 'content'
@@ -8,12 +6,19 @@ export type AnalyzeCategory = 'accessibility' | 'seo' | 'text' | 'content'
 export type AnalyzeNode = {
   description?: string
   impact?: AnalyzeImpact
+  /**
+   * An array of either:
+   * - string: a valid selector
+   * - HTMLElement: the DOM node
+   *  - object: An object containing the UUID of a block
+   */
   targets: Array<string | HTMLElement | { uuid: string }>
 }
 
 export type AnalyzeResult = {
   id: string
   title: string
+  category: AnalyzeCategory
   description: string
   link?: string
   status: AnalyzeStatus
@@ -23,41 +28,17 @@ export type AnalyzeResult = {
 
 export type AnalyzeResultMapped = AnalyzeResult & {
   plugin: string
-  category: AnalyzeCategory
 }
 
-export type AnalyzerContext = {
-  langcode: string
-  interfaceLangcode: string
-  providerRootElement: HTMLElement
-  mutatedFields: Readonly<MutatedField[]>
-  getFieldListItem: (uuid: string) => FieldListItemTyped | undefined
+export type Analyzer = {
+  id: string
+  init?: (context: AnalyzerContext) => void | Promise<void>
+  run: (
+    context: AnalyzerContext,
+  ) =>
+    | undefined
+    | null
+    | AnalyzeResult
+    | AnalyzeResult[]
+    | Promise<undefined | null | AnalyzeResult | AnalyzeResult[]>
 }
-
-type AnalyzerRunResultWithCategory = AnalyzeResult & {
-  category: AnalyzeCategory
-}
-type AnalyzerRunResultMaybeCategory =
-  | AnalyzeResult
-  | AnalyzerRunResultWithCategory
-
-export type Analyzer =
-  | {
-      id: string
-      init?: (context: AnalyzerContext) => void | Promise<void>
-      run: (
-        context: AnalyzerContext,
-      ) =>
-        | AnalyzerRunResultWithCategory[]
-        | Promise<AnalyzerRunResultWithCategory[]>
-    }
-  | {
-      id: string
-      category: AnalyzeCategory
-      init?: (context: AnalyzerContext) => void | Promise<void>
-      run: (
-        context: AnalyzerContext,
-      ) =>
-        | AnalyzerRunResultMaybeCategory[]
-        | Promise<AnalyzerRunResultMaybeCategory[]>
-    }

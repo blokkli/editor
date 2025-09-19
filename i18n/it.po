@@ -75,6 +75,10 @@ msgctxt "analyzeLastRun"
 msgid "Last run: @time"
 msgstr ""
 
+msgctxt "analyzeMoreLink"
+msgid "More"
+msgstr ""
+
 msgctxt "analyzeSidebarTitle"
 msgid "Analyze"
 msgstr ""

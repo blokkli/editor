@@ -12,6 +12,16 @@
         {{ $t('analyzeButtonLabel', 'Analyze Page') }}
       </button>
 
+      <div v-if="isLoading" class="bk-analyze-progress">
+        <label for="file">{{ currentPlugin }}</label>
+
+        <div class="bk-analyze-progress-bar">
+          <progress id="file" max="100" :value="progress">
+            {{ progress }}%
+          </progress>
+        </div>
+      </div>
+
       <p v-if="lastRun" class="bk-analyze-last-run">
         <RelativeTime :timestamp="lastRun" v-slot="{ formatted }">
           {{
@@ -51,20 +61,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, useBlokkli, useState } from '#imports'
+import { computed, useBlokkli, useState, ref } from '#imports'
 import axe from './analyzers/axe'
-import type {
-  AnalyzeCategory,
-  AnalyzeResultMapped,
-  Analyzer,
-  AnalyzerContext,
-} from './types'
+import readability from './analyzers/readability'
+import type { AnalyzeCategory, AnalyzeResultMapped, Analyzer } from './types'
 import Results from './Results/Results.vue'
 import AnalyzeSummary from './Summary/index.vue'
 import { useAnalyzeHelper } from './helper'
 import { FormSelect, RelativeTime } from '#blokkli/components'
-import { defaultLanguage, forceDefaultLanguage } from '#blokkli-build/config'
-import type { FieldListItemTyped } from '#blokkli-build/generated-types'
+import { AnalyzerContext } from './analyzers/helpers/Context'
+import { normalizeToArray } from './analyzers/helpers/normalizeArray'
+import { falsy } from '#blokkli/helpers'
 
 const props = defineProps<{
   langcode: string
@@ -94,7 +101,11 @@ function getAdapterAnalyzers(): Promise<Analyzer[]> {
 }
 
 const adapterAnalyzers = await getAdapterAnalyzers()
-const analyzers = [axe, ...adapterAnalyzers]
+const analyzers = [axe, readability, ...adapterAnalyzers]
+
+const progress = ref(0)
+
+const currentPlugin = ref('readability')
 
 const hasRunOnce = useState(() => false)
 const results = useState<AnalyzeResultMapped[]>('blokkli:analyze', () => [])
@@ -116,15 +127,12 @@ const resultsFiltered = computed(() => {
 const isStale = computed(() => lastRunKey.value !== state.refreshKey.value)
 
 function getContext(): AnalyzerContext {
-  return {
-    langcode: props.langcode,
-    interfaceLangcode: forceDefaultLanguage ? defaultLanguage : props.langcode,
+  return new AnalyzerContext(
+    props.langcode,
+    ui.interfaceLanguage.value,
     providerRootElement,
-    mutatedFields: state.mutatedFields.value,
-    getFieldListItem: (uuid: string) => {
-      return state.getFieldListItem(uuid) as FieldListItemTyped | undefined
-    },
-  }
+    state,
+  )
 }
 
 async function onClick() {
@@ -135,6 +143,7 @@ async function onClick() {
   const context = getContext()
 
   isLoading.value = true
+  progress.value = 0
 
   if (!hasInitialized.value) {
     await Promise.all(
@@ -146,27 +155,25 @@ async function onClick() {
     )
   }
   hasInitialized.value = true
-  results.value = await Promise.all(
-    analyzers.map(async (analyzer) => {
-      const categoryFromAnalyzer =
-        'category' in analyzer ? analyzer.category : undefined
-      const result = await analyzer.run(context)
-      return result.map((v) => {
-        const categoryFromItem = 'category' in v ? v.category : undefined
-        const category = categoryFromItem ?? categoryFromAnalyzer
-        if (!category) {
-          throw new Error(
-            `Missing category in result item "${v.id}" in analyzer "${analyzer.id}"`,
-          )
-        }
-        return {
-          ...v,
-          plugin: analyzer.id,
-          category,
-        }
-      })
-    }),
-  ).then((v) => v.flat())
+
+  const newResults: AnalyzeResultMapped[] = []
+
+  for (let i = 0; i < analyzers.length; i++) {
+    const analyzer = analyzers[i]!
+    currentPlugin.value = analyzer.id
+    const result = await normalizeToArray(analyzer.run(context))
+    const mapped = result.filter(falsy).map((v) => {
+      return {
+        ...v,
+        plugin: analyzer.id,
+      } satisfies AnalyzeResultMapped
+    })
+
+    newResults.push(...mapped)
+    progress.value = Math.round(((i + 1) / analyzers.length) * 100)
+  }
+
+  results.value = newResults
 
   isLoading.value = false
   hasRunOnce.value = true

@@ -18,6 +18,25 @@
     @apply p-20 border-t border-t-mono-300;
   }
 
+  .bk-analyze-progress {
+    label {
+      @apply block font-semibold mb-10;
+    }
+    .bk-analyze-progress-bar {
+      @apply overflow-hidden rounded;
+    }
+    progress {
+      @apply appearance-none w-full block;
+
+      &::-webkit-progress-bar {
+        @apply bg-mono-100;
+      }
+      &::-webkit-progress-value {
+        @apply bg-accent-600;
+      }
+    }
+  }
+
   .bk-analyze-wrapper {
     @apply relative;
     &.bk-is-loading {
@@ -105,15 +124,39 @@
       }
     }
   }
+  .bk-analyze-results-item-help {
+    @apply ml-auto;
+    > a {
+      @apply flex text-sm gap-3 font-semibold leading-none items-center  underline-offset-4;
+      @apply text-mono-400 hover:text-accent-600;
+      @apply hover:underline;
+
+      span {
+        @apply opacity-0;
+      }
+
+      svg {
+        @apply size-18 fill-current;
+      }
+    }
+  }
 
   .bk-analyze-results-item {
-    @apply py-15 border-b border-b-mono-300 first:pt-0 last:border-b-0;
+    @apply py-20 border-b border-b-mono-300 first:pt-0 last:border-b-0;
     > h3 {
-      @apply font-semibold;
+      @apply font-semibold text-base;
     }
 
     > p {
       @apply text-sm text-mono-600 mt-5;
+    }
+
+    &:hover {
+      .bk-analyze-results-item-help {
+        span {
+          @apply opacity-100;
+        }
+      }
     }
   }
 
@@ -149,15 +192,14 @@
 
       > li {
         > p {
-          @apply text-xs text-mono-700 pb-10 border-b border-b-mono-300;
+          @apply text-xs text-mono-700;
           &.bk-is-single {
             @apply pt-10;
           }
         }
         > ul {
           > li {
-            @apply border-b border-b-mono-300 text-xs;
-            @apply last:border-b-0;
+            @apply text-xs;
           }
         }
       }
@@ -165,6 +207,9 @@
   }
 
   .bk-analyze-results-item-nodes-list {
+    > ul + ul {
+      @apply border-t border-t-mono-300 pt-10;
+    }
   }
 
   .bk-analyze-results-item-nodes-target {
@@ -173,7 +218,7 @@
     }
 
     button {
-      @apply w-full min-w-0 text-mono-600 flex items-center gap-5 py-[7px];
+      @apply w-full min-w-0 text-mono-600 flex items-center gap-5 hover:underline underline-offset-[3px] py-[7px];
       @apply hover:text-accent-700;
 
       &:hover svg {

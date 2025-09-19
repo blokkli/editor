@@ -364,6 +364,9 @@ html.bk-hide-non-editable {
   left: var(--bk-root-offset-left);
   bottom: var(--bk-root-offset-bottom);
   right: var(--bk-root-offset-right);
+  html.bk-has-sidebar-right & {
+    right: calc(var(--bk-root-offset-right) + var(--bk-sidebar-width-right));
+  }
 }
 
 .bk-state-unavailable {

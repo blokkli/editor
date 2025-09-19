@@ -67,6 +67,10 @@
     "source": "Last run: @time",
     "translation": "Zuletzt ausgeführt: @time"
   },
+  "analyzeMoreLink": {
+    "source": "More",
+    "translation": "Mehr"
+  },
   "analyzeSidebarTitle": {
     "source": "Analyze",
     "translation": "Analysieren"
@@ -317,7 +321,7 @@
   },
   "copiedToClipboardMessage": {
     "source": "\"@text\" has been copied to your clipboard",
-    "translation": ""
+    "translation": "«@text» wurde in die Zwischenablage kopiert"
   },
   "deleteButton": {
     "source": "Delete",
@@ -1301,7 +1305,7 @@
   },
   "publishDialogTitle": {
     "source": "Publish changes",
-    "translation": ""
+    "translation": "Änderungen veröffentlichen"
   },
   "publishError": {
     "source": "Changes could not be published.",
@@ -1517,7 +1521,7 @@
   },
   "transformDialogSubmitLabel": {
     "source": "Apply transform",
-    "translation": ""
+    "translation": "Aktion ausführen"
   },
   "transformTo": {
     "source": "Other actions",

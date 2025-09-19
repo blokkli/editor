@@ -67,6 +67,10 @@
     "source": "Last run: @time",
     "translation": ""
   },
+  "analyzeMoreLink": {
+    "source": "More",
+    "translation": ""
+  },
   "analyzeSidebarTitle": {
     "source": "Analyze",
     "translation": ""

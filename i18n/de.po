@@ -80,6 +80,10 @@ msgctxt "analyzeLastRun"
 msgid "Last run: @time"
 msgstr "Zuletzt ausgeführt: @time"
 
+msgctxt "analyzeMoreLink"
+msgid "More"
+msgstr "Mehr"
+
 msgctxt "analyzeSidebarTitle"
 msgid "Analyze"
 msgstr "Analysieren"
@@ -361,7 +365,7 @@ msgstr "Konvertieren"
 
 msgctxt "copiedToClipboardMessage"
 msgid "\"@text\" has been copied to your clipboard"
-msgstr ""
+msgstr "«@text» wurde in die Zwischenablage kopiert"
 
 msgctxt "deleteButton"
 msgid "Delete"
@@ -1432,7 +1436,7 @@ msgstr "Alle Änderungen speichern ohne die Seite zu publizieren"
 
 msgctxt "publishDialogTitle"
 msgid "Publish changes"
-msgstr ""
+msgstr "Änderungen veröffentlichen"
 
 msgctxt "publishError"
 msgid "Changes could not be published."
@@ -1695,7 +1699,7 @@ msgstr "Tour starten"
 
 msgctxt "transformDialogSubmitLabel"
 msgid "Apply transform"
-msgstr ""
+msgstr "Aktion ausführen"
 
 msgctxt "transformTo"
 msgid "Other actions"

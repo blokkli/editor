@@ -13,6 +13,8 @@ import type { AddListOrientation, Coord, Rectangle, Size } from '#blokkli/types'
 import type { Viewport } from '#blokkli/constants'
 import { falsy } from '.'
 import type { StateProvider } from './stateProvider'
+import type { AdapterContext } from '#blokkli/adapter'
+import { defaultLanguage, forceDefaultLanguage } from '#blokkli-build/config'
 
 const ARTBOARD_CLASS = 'bk-is-artboard'
 const CLASS_PROXY_MODE = 'bk-is-proxy-mode'
@@ -57,6 +59,8 @@ export type UiProvider = {
 
   selectionTopLeft: Ref<Coord>
 
+  interfaceLanguage: ComputedRef<string>
+
   getAbsoluteElementRect: (
     v: HTMLElement | Rectangle,
     scale?: number,
@@ -73,10 +77,15 @@ export type UiProvider = {
 export default function (
   storage: StorageProvider,
   state: StateProvider,
+  context: ComputedRef<AdapterContext>,
 ): UiProvider {
   let cachedRootElement: HTMLElement | null = null
   let cachedArtboardElement: HTMLElement | null = null
   let cachedProviderElement: HTMLElement | null = null
+
+  const interfaceLanguage = computed<string>(() => {
+    return forceDefaultLanguage ? defaultLanguage : context.value.language
+  })
 
   const isProxyMode = ref(false)
   const menuIsOpen = ref(false)
@@ -406,5 +415,6 @@ export default function (
     lowPerformanceMode,
     getAbsoluteElementRect,
     getViewportRelativeRect,
+    interfaceLanguage,
   }
 }
