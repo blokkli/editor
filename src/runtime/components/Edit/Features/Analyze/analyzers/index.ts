@@ -1,5 +1,5 @@
-import type { Analyzer } from '../types'
+import { defineAnalyzer } from './defineAnalyzer'
+import accessibilityAnalyzer from './axe'
+import readabilityAnalyzer from './readability'
 
-export function defineAnalyzer(factory: () => Analyzer): Analyzer {
-  return factory()
-}
+export { defineAnalyzer, accessibilityAnalyzer, readabilityAnalyzer }

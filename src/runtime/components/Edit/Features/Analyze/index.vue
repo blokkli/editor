@@ -5,7 +5,7 @@
     :tour-text="$t('analyzeTourText', 'Analyze the content of your page')"
     icon="chart"
   >
-    <Renderer :langcode="context.language" />
+    <Renderer :langcode="context.language" :analyzers />
   </PluginSidebar>
 </template>
 
@@ -13,15 +13,32 @@
 import { useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
 import Renderer from './Renderer.vue'
+import type { Analyzer } from './types'
 
-defineBlokkliFeature({
+const { adapter } = defineBlokkliFeature({
   id: 'analyze',
   label: 'Analyze',
   icon: 'chart',
-  requiredAdapterMethods: [],
+  requiredAdapterMethods: ['getAnalyzers'],
   description: 'Analyze blocks and page for SEO, accessibility, etc.',
   viewports: [],
 })
+
+function getAdapterAnalyzers(): Promise<Analyzer[]> {
+  const result = adapter.getAnalyzers()
+  if (Array.isArray(result)) {
+    return Promise.resolve(result)
+  }
+  return Promise.resolve(result).then((result) => {
+    if (Array.isArray(result)) {
+      return result
+    }
+
+    return [result]
+  })
+}
+
+const analyzers = await getAdapterAnalyzers()
 
 const { $t, context } = useBlokkli()
 </script>

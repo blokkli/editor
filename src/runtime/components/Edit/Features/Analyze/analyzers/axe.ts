@@ -1,5 +1,11 @@
-import { defineAnalyzer } from '.'
-import axe, { type Result, type NodeResult, type Locale } from 'axe-core'
+import { defineAnalyzer } from './defineAnalyzer'
+import axe, {
+  type Result,
+  type NodeResult,
+  type Locale,
+  type ContextObject,
+  type RunOptions,
+} from 'axe-core'
 import type { AnalyzeNode, AnalyzeResult, AnalyzeStatus } from './../types'
 import { falsy } from '#blokkli/helpers'
 import de from 'axe-core/locales/de.json'
@@ -53,7 +59,28 @@ function getLocale(langcode: string): Locale | null {
   return null
 }
 
-export default defineAnalyzer(() => {
+export default defineAnalyzer<{
+  /**
+   * Selectors to exclude.
+   */
+  exclude?: string[]
+
+  /**
+   * Run options passed to axe-core.
+   */
+  runOptions?: RunOptions
+}>((options) => {
+  const userExclude = options?.exclude ?? []
+  const elementContext: ContextObject = {
+    exclude: [
+      '#nuxt-devtools-container',
+      '.bk',
+      '.bk-sidebar',
+      '#bk-animation-canvas-webgl',
+      ...userExclude,
+    ],
+  }
+
   return {
     id: 'axe',
     init: function (context) {
@@ -64,14 +91,7 @@ export default defineAnalyzer(() => {
     },
     run: function () {
       return axe
-        .run({
-          exclude: [
-            '#nuxt-devtools-container',
-            '.bk',
-            '.bk-sidebar',
-            '#bk-animation-canvas-webgl',
-          ],
-        })
+        .run(elementContext, options?.runOptions ?? {})
         .then((result) => {
           return [
             ...mapAxeResults(result.incomplete, 'incomplete'),

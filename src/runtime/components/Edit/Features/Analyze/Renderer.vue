@@ -62,8 +62,6 @@
 
 <script setup lang="ts">
 import { computed, useBlokkli, useState, ref } from '#imports'
-import axe from './analyzers/axe'
-import readability from './analyzers/readability'
 import type { AnalyzeCategory, AnalyzeResultMapped, Analyzer } from './types'
 import Results from './Results/Results.vue'
 import AnalyzeSummary from './Summary/index.vue'
@@ -75,33 +73,13 @@ import { falsy } from '#blokkli/helpers'
 
 const props = defineProps<{
   langcode: string
+  analyzers: Analyzer[]
 }>()
 
 const ALL = 'ALL'
 
-const { $t, ui, state, adapter } = useBlokkli()
+const { $t, ui, state } = useBlokkli()
 const { getCategoryLabel } = useAnalyzeHelper()
-
-function getAdapterAnalyzers(): Promise<Analyzer[]> {
-  if (adapter.getAnalyzers) {
-    const result = adapter.getAnalyzers()
-    if (Array.isArray(result)) {
-      return Promise.resolve(result)
-    }
-    return Promise.resolve(result).then((result) => {
-      if (Array.isArray(result)) {
-        return result
-      }
-
-      return [result]
-    })
-  }
-
-  return Promise.resolve([])
-}
-
-const adapterAnalyzers = await getAdapterAnalyzers()
-const analyzers = [axe, readability, ...adapterAnalyzers]
 
 const progress = ref(0)
 
@@ -147,7 +125,7 @@ async function onClick() {
 
   if (!hasInitialized.value) {
     await Promise.all(
-      analyzers.map(async (analyzer) => {
+      props.analyzers.map(async (analyzer) => {
         if (analyzer.init) {
           await analyzer.init(context)
         }
@@ -158,8 +136,8 @@ async function onClick() {
 
   const newResults: AnalyzeResultMapped[] = []
 
-  for (let i = 0; i < analyzers.length; i++) {
-    const analyzer = analyzers[i]!
+  for (let i = 0; i < props.analyzers.length; i++) {
+    const analyzer = props.analyzers[i]!
     currentPlugin.value = analyzer.id
     const result = await normalizeToArray(analyzer.run(context))
     const mapped = result.filter(falsy).map((v) => {
@@ -170,7 +148,7 @@ async function onClick() {
     })
 
     newResults.push(...mapped)
-    progress.value = Math.round(((i + 1) / analyzers.length) * 100)
+    progress.value = Math.round(((i + 1) / props.analyzers.length) * 100)
   }
 
   results.value = newResults

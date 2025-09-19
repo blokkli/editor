@@ -133,6 +133,12 @@ export default defineNuxtModule<ModuleOptions>({
     helper.addComposable('useBlokkli')
     helper.addComposable('useBlokkliHelper')
 
+    helper.addAlias(
+      '#blokkli/analyzer',
+      resolver.resolve(
+        'runtime/components/Edit/Features/Analyze/analyzers/index',
+      ),
+    )
     helper.addAlias('#blokkli-build', helper.paths.blokkliBuildDir)
     helper.addAlias('#blokkli/types', resolver.resolve('runtime/types'))
     helper.addAlias('#blokkli/constants', resolver.resolve('runtime/constants'))
