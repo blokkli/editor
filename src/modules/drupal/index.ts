@@ -14,6 +14,11 @@ function clearAndUpper(text: string) {
   return text.replace(/_/, '').toUpperCase()
 }
 
+function getDrupalAdapterPath(): string {
+  const resolver = createResolver(fileURLToPath(new URL('./', import.meta.url)))
+  return resolver.resolve('./runtime/adapter/index.js')
+}
+
 export default defineBlokkliModule({
   alterOptions(options) {
     // Set default options for blökkli starterkit setups.
@@ -40,11 +45,7 @@ export default defineBlokkliModule({
     // - no custom editAdapterPath is set
     // - and no custom editAdapter file exists.
     if (!options.editAdapterPath) {
-      const resolver = createResolver(
-        fileURLToPath(new URL('./', import.meta.url)),
-      )
-      const filePath = resolver.resolve('./runtime/adapter/index.js')
-      options.editAdapterPath = filePath
+      options.editAdapterPath = getDrupalAdapterPath()
     }
 
     // Add a default implementation for generating prop types for paragraph
@@ -61,7 +62,9 @@ export default defineBlokkliModule({
       }
     }
   },
-  setup({ context }) {
+  setup({ context, helper }) {
+    helper.addAlias('#blokkli/drupal-adapter', getDrupalAdapterPath())
+
     // First try to get nuxt-graphql-middleware module context without
     // throwing an error, so that we can log additional information on what
     // needs to be done.
