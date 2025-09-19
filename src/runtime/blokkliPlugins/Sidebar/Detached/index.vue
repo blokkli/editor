@@ -70,6 +70,7 @@ import {
 import { Icon, ViewportBlockingRect, ScrollBoundary } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { addElementClasses } from '#blokkli/helpers/addElementClasses'
 
 const props = withDefaults(
   defineProps<{
@@ -192,13 +193,11 @@ watch(rootCursor, (cursor) => {
   document.documentElement.style.cursor = cursor
 })
 
-watch(mouseMode, (mode) => {
-  if (mode) {
-    document.documentElement.classList.add('bk-is-sidebar-interacting')
-  } else {
-    document.documentElement.classList.remove('bk-is-sidebar-interacting')
-  }
-})
+addElementClasses(
+  document.documentElement,
+  'bk-is-sidebar-interacting',
+  mouseMode,
+)
 
 const updateStored = () => {
   storedData.value = {

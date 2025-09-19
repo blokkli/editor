@@ -27,6 +27,7 @@ import { falsy, getFieldKey } from '#blokkli/helpers'
 import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
 import { nextTick } from '#imports'
 import type { TextProvider } from './textProvider'
+import { addElementClasses } from './addElementClasses'
 
 const HOST_OPTION_KEY = 'HOST'
 
@@ -253,14 +254,14 @@ export default async function (
   }
 
   function lockBody() {
-    document.body.classList.add('bk-body-loading')
     isLoading.value = true
   }
 
   function unlockBody() {
-    document.body.classList.remove('bk-body-loading')
     isLoading.value = false
   }
+
+  addElementClasses(document.body, 'bk-body-loading', isLoading)
 
   const mutateWithLoadingState: MutateWithLoadingStateFunction = async (
     callback,

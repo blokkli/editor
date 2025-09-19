@@ -50,13 +50,12 @@ import {
   ref,
   computed,
   useBlokkli,
-  onMounted,
-  onBeforeUnmount,
   nextTick,
   defineBlokkliFeature,
 } from '#imports'
 import { Sortli } from '#blokkli/components'
 import { PluginSidebar, PluginTourItem } from '#blokkli/plugins'
+import { addElementClasses } from '#blokkli/helpers/addElementClasses'
 
 const { settings } = defineBlokkliFeature({
   id: 'add-list',
@@ -101,13 +100,9 @@ const isSidebar = computed(() => ui.addListOrientation.value === 'sidebar')
 const shouldRender = computed(() => state.editMode.value === 'editing')
 
 watch(ui.addListOrientation, () => {
-  setRootClasses()
   nextTick(() => {
     eventBus.emit('add-list:change')
   })
-})
-watch(shouldRender, () => {
-  setRootClasses()
 })
 
 const CLASS_LEFT = 'bk-has-add-list-left'
@@ -167,21 +162,6 @@ const onWheel = (e: WheelEvent) => {
   }
 }
 
-function setRootClasses() {
-  document.documentElement.classList.remove(CLASS_BOTTOM)
-  document.documentElement.classList.remove(CLASS_LEFT)
-
-  if (!shouldRender.value) {
-    return
-  }
-
-  if (ui.addListOrientation.value === 'horizontal') {
-    document.documentElement.classList.add(CLASS_BOTTOM)
-  } else if (ui.addListOrientation.value === 'vertical') {
-    document.documentElement.classList.add(CLASS_LEFT)
-  }
-}
-
 const sidebarTitle = computed(() => $t('addListSidebarTitle', 'Add blocks'))
 
 const tourText = computed(() =>
@@ -191,14 +171,16 @@ const tourText = computed(() =>
   ),
 )
 
-onMounted(() => {
-  setRootClasses()
-})
-
-onBeforeUnmount(() => {
-  document.documentElement.classList.remove(CLASS_BOTTOM)
-  document.documentElement.classList.remove(CLASS_LEFT)
-})
+addElementClasses(
+  document.documentElement,
+  CLASS_BOTTOM,
+  computed(() => ui.addListOrientation.value === 'horizontal'),
+)
+addElementClasses(
+  document.documentElement,
+  CLASS_LEFT,
+  computed(() => ui.addListOrientation.value === 'vertical'),
+)
 </script>
 
 <script lang="ts">

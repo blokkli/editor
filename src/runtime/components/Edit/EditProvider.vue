@@ -102,6 +102,7 @@ import {
 } from '#blokkli/helpers/symbols'
 import type { AdapterContext } from '#blokkli/adapter'
 import { useBlockRegistration } from '#blokkli/helpers/composables/useBlockRegistration'
+import { addElementClasses } from '#blokkli/helpers/addElementClasses'
 
 const props = withDefaults(
   defineProps<{
@@ -176,27 +177,25 @@ function onTouchStart(e: TouchEvent) {
   }
 }
 
-const setRootClasses = (unmount?: boolean) => {
-  document.documentElement.classList.remove('bk-use-animations')
+const shouldIsolate = computed(() => props.isolate)
 
-  if (ui.useAnimations.value && !unmount) {
-    document.documentElement.classList.add('bk-use-animations')
-  }
-}
-
-watch(ui.useAnimations, setRootClasses)
+addElementClasses(
+  document.documentElement,
+  'bk-use-animations',
+  ui.useAnimations,
+)
+addElementClasses(
+  document.documentElement,
+  'bk-isolate-provider',
+  shouldIsolate,
+)
 
 const baseLogger = debug.createLogger('EditProvider')
 
 onMounted(() => {
   window.addEventListener('contextmenu', onContextMenu)
-  if (props.isolate) {
-    document.documentElement.classList.add('bk-isolate-provider')
-  }
-
   document.documentElement.addEventListener('touchmove', onTouchMove)
   document.documentElement.addEventListener('touchstart', onTouchStart)
-  setRootClasses()
   baseLogger.log('EditProvider mounted')
   dom.init()
   isInitializing.value = false
@@ -207,10 +206,8 @@ onBeforeUnmount(() => {
   window.removeEventListener('contextmenu', onContextMenu)
   isInitializing.value = true
   toolbarLoaded.value = false
-  document.documentElement.classList.remove('bk-isolate-provider')
   document.documentElement.removeEventListener('touchmove', onTouchMove)
   document.documentElement.removeEventListener('touchstart', onTouchStart)
-  setRootClasses(true)
 })
 provide(INJECT_EDIT_LOGGER, baseLogger)
 
