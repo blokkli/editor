@@ -4,23 +4,10 @@
       <button
         @click="onClick"
         class="bk-button bk-is-primary"
-        :class="{
-          'bk-is-loading': isLoading,
-        }"
         :disabled="!isStale"
       >
         {{ $t('analyzeButtonLabel', 'Analyze Page') }}
       </button>
-
-      <div v-if="isLoading" class="bk-analyze-progress">
-        <label for="file">{{ currentPlugin }}</label>
-
-        <div class="bk-analyze-progress-bar">
-          <progress id="file" max="100" :value="progress">
-            {{ progress }}%
-          </progress>
-        </div>
-      </div>
 
       <p v-if="lastRun" class="bk-analyze-last-run">
         <RelativeTime :timestamp="lastRun" v-slot="{ formatted }">
@@ -39,13 +26,7 @@
       </p>
     </div>
 
-    <div
-      v-if="resultsFiltered.length"
-      class="bk-analyze-wrapper"
-      :class="{
-        'bk-is-loading': isLoading,
-      }"
-    >
+    <div v-if="resultsFiltered.length" class="bk-analyze-wrapper">
       <div class="bk-analyze-form">
         <FormSelect
           id="category"
@@ -61,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, useBlokkli, useState, ref } from '#imports'
+import { computed, useBlokkli, useState, ref, nextTick } from '#imports'
 import type { AnalyzeCategory, AnalyzeResultMapped, Analyzer } from './types'
 import Results from './Results/Results.vue'
 import AnalyzeSummary from './Summary/index.vue'
@@ -70,6 +51,7 @@ import { FormSelect, RelativeTime } from '#blokkli/components'
 import { AnalyzerContext } from './analyzers/helpers/Context'
 import { normalizeToArray } from './analyzers/helpers/normalizeArray'
 import { falsy } from '#blokkli/helpers'
+import { renderCycle } from '#blokkli/helpers/renderCycle'
 
 const props = defineProps<{
   langcode: string
@@ -80,8 +62,6 @@ const ALL = 'ALL'
 
 const { $t, ui, state } = useBlokkli()
 const { getCategoryLabel } = useAnalyzeHelper()
-
-const progress = ref(0)
 
 const currentPlugin = ref('readability')
 
@@ -118,10 +98,11 @@ async function onClick() {
     return
   }
 
-  const context = getContext()
-
+  ui.isAnalyzing.value = true
   isLoading.value = true
-  progress.value = 0
+  await renderCycle()
+
+  const context = getContext()
 
   if (!hasInitialized.value) {
     await Promise.all(
@@ -148,7 +129,6 @@ async function onClick() {
     })
 
     newResults.push(...mapped)
-    progress.value = Math.round(((i + 1) / props.analyzers.length) * 100)
   }
 
   results.value = newResults
@@ -157,6 +137,7 @@ async function onClick() {
   hasRunOnce.value = true
   lastRun.value = Date.now() / 1000
   lastRunKey.value = state.refreshKey.value
+  ui.isAnalyzing.value = false
 }
 
 const categoryOptions = computed<{ value: string; label: string }[]>(() => {

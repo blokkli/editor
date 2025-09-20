@@ -12,6 +12,7 @@
 <script setup lang="ts">
 import { Icon } from '#blokkli/components'
 import { useBlokkli } from '#imports'
+import { renderCycle } from '#blokkli/helpers/renderCycle'
 
 const props = defineProps<{
   target: string | HTMLElement | { uuid: string }
@@ -48,11 +49,32 @@ function getLabel() {
   }
 }
 
-function onClick() {
+function findClosestUuid(element: HTMLElement): string | undefined {
+  const closestBlock = element.closest('[data-uuid]')
+
+  if (closestBlock instanceof HTMLElement) {
+    const uuid = closestBlock.dataset.uuid
+    if (uuid) {
+      return uuid
+    }
+  }
+}
+
+async function onClick() {
   const element = getElement()
   if (!element) {
     return
   }
+
+  const closestUuid = findClosestUuid(element)
+
+  if (closestUuid) {
+    eventBus.emit('select', closestUuid)
+  } else {
+    eventBus.emit('select:unselect')
+  }
+
+  await renderCycle()
 
   eventBus.emit('scrollIntoView', {
     element,

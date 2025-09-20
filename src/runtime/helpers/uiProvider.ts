@@ -5,7 +5,6 @@ import {
   onBeforeUnmount,
   ref,
   computed,
-  watch,
 } from 'vue'
 import { eventBus } from './eventBus'
 import type { StorageProvider } from './storageProvider'
@@ -17,7 +16,6 @@ import type { StateProvider } from './stateProvider'
 import type { AdapterContext } from '#blokkli/adapter'
 import { defaultLanguage, forceDefaultLanguage } from '#blokkli-build/config'
 
-const ARTBOARD_CLASS = 'bk-is-artboard'
 const CLASS_PROXY_MODE = 'bk-is-proxy-mode'
 
 export type UiProvider = {
@@ -31,8 +29,8 @@ export type UiProvider = {
   }
   isMobile: ComputedRef<boolean>
   isDesktop: ComputedRef<boolean>
-  isArtboard: () => boolean
   isAnimating: Ref<boolean>
+  isAnalyzing: Ref<boolean>
   isProxyMode: Ref<boolean>
 
   isTransforming: ComputedRef<boolean>
@@ -91,6 +89,7 @@ export default function (
   const isProxyMode = ref(false)
   const menuIsOpen = ref(false)
   const isAnimating = ref(false)
+  const isAnalyzing = ref(false)
   const transformLabel = ref('')
   const openContextMenu = ref('')
   const selectionTopLeft = ref({ x: 0, y: 0 })
@@ -195,10 +194,6 @@ export default function (
       viewportHeight.value = window.innerHeight
       eventBus.emit('ui:resized')
     }, 400)
-  }
-
-  const isArtboard = () => {
-    return document.documentElement.classList.contains(ARTBOARD_CLASS)
   }
 
   const toolbarHeight = computed(() => {
@@ -352,9 +347,10 @@ export default function (
     activeSidebarRight,
   )
 
-  addElementClasses(document.documentElement, ['bk-html-root', ARTBOARD_CLASS])
+  addElementClasses(document.documentElement, ['bk-html-root'])
   addElementClasses(document.body, 'bk-body')
   addElementClasses(document.documentElement, CLASS_PROXY_MODE, isProxyMode)
+  addElementClasses(document.documentElement, 'bk-is-analyzing', isAnalyzing)
 
   onMounted(() => {
     viewportWidth.value = window.innerWidth
@@ -384,8 +380,8 @@ export default function (
     providerElement,
     isMobile,
     isDesktop,
-    isArtboard,
     isAnimating,
+    isAnalyzing,
     isTransforming,
     setTransform,
     transformLabel: computed(() => transformLabel.value),

@@ -4,8 +4,8 @@
       v-model="markup"
       :editor="ClassicEditor"
       :config="{
-        licenseKey: 'GPL'
-       }"
+        licenseKey: 'GPL',
+      }"
       @input="$emit('update:modelValue', $event)"
       @ready="onReady"
     />
