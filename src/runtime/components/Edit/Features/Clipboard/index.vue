@@ -14,10 +14,10 @@
     icon="clipboard"
     weight="-30"
   >
-    <div class="bk-clipboard bk-control">
+    <div class="bk bk-clipboard bk-control">
       <div
         v-if="!pastedItems.length"
-        class="bk bk-clipboard-info bk-sidebar-padding"
+        class="bk-clipboard-info bk-sidebar-padding"
       >
         <h4>{{ $t('clipboardEmpty', 'No items in the clipboard') }}</h4>
         <div
