@@ -53,7 +53,7 @@ import {
   onBeforeUnmount,
 } from '#imports'
 import type { Coord } from '#blokkli/types'
-import { asValidNumber } from '#blokkli/helpers'
+import { asValidNumber, isInsideRect } from '#blokkli/helpers'
 import { PluginToolbarButton, PluginViewOption } from '#blokkli/plugins'
 import Overview from './Overview/index.vue'
 import Scrollbar from './Scrollbar/index.vue'
@@ -194,10 +194,27 @@ function edgeStep(distance: number): number {
   return Math.pow(ratio, 3) * AUTOSCROLL_SPEED
 }
 
-onBlokkliEvent('animationFrame:before', ({ time, mouseY }) => {
+let hasLeftAddList = false
+
+onBlokkliEvent('dragging:end', () => {
+  hasLeftAddList = false
+})
+
+onBlokkliEvent('animationFrame:before', ({ time, mouseY, mouseX }) => {
   // When dragging, automatically scroll the artboard when the mouse is in the
   // top or bottom edge of the viewport.
   if (selection.isDragging.value) {
+    // Prevent autoscroll when the user is hovering over the horizontal add list.
+    if (ui.addListOrientation.value === 'horizontal') {
+      if (!hasLeftAddList) {
+        if (isInsideRect(mouseX, mouseY, ui.visibleViewportPadded.value)) {
+          hasLeftAddList = true
+        } else {
+          return
+        }
+      }
+    }
+
     const viewportHeight = ui.viewport.value.height
     const currentOffset = artboard.getOffset()
     const y = Math.min(Math.max(mouseY, 0), viewportHeight)
