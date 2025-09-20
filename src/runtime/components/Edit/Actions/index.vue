@@ -33,6 +33,9 @@
               }"
               @click.prevent="showDropdown = !showDropdown"
             >
+              <div v-if="shouldRenderButton" class="bk-tooltip">
+                {{ $t('actionsDropdownToolip', 'Further actions') }}
+              </div>
               <div
                 v-show="!hasSelectedHost"
                 class="bk-blokkli-item-actions-title-icon"

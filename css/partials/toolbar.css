@@ -27,12 +27,12 @@
   }
 
   .bk-tooltip {
-    @apply bg-mono-800/80 p-5 text-mono-50 font-semibold text-sm rounded select-none pointer-events-none hidden items-center justify-between px-10 leading-none whitespace-nowrap h-[38px];
+    @apply bg-mono-800/90 py-[10px] text-white font-bold text-sm rounded select-none pointer-events-none hidden items-center justify-between px-10 leading-none whitespace-nowrap min-h-[40px] font-sans;
     @screen lg {
       @apply flex;
     }
     .bk-shortcut {
-      @apply ml-5;
+      @apply ml-5 my-[-2px];
     }
   }
 

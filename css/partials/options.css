@@ -26,7 +26,11 @@
       @apply pointer-events-none opacity-20;
     }
     .bk-tooltip {
-      @apply absolute bottom-full left-0 min-w-full mb-3;
+      @apply absolute bottom-full left-0 min-w-full mb-3 grid;
+
+      span:nth-child(2) {
+        @apply text-mono-200 mt-5 text-sm leading-none font-medium min-w-fit max-w-fit;
+      }
     }
     &:not(:hover) {
       .bk-tooltip {

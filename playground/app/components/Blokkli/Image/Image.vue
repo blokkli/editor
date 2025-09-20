@@ -25,6 +25,7 @@ const { options, parentType } = defineBlokkli({
     elevated: {
       type: 'checkbox',
       label: 'Elevated',
+      description: 'Renders the image with a box shadow.',
       default: true,
     },
   },

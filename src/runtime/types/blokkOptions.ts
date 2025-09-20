@@ -4,6 +4,7 @@ type DefinitionOptionText = {
   type: 'text'
   default: string
   label: string
+  description?: string
   inputType?: 'text' | 'number' | 'date'
   group?: string
 }
@@ -12,6 +13,7 @@ type DefinitionOptionNumber = {
   type: 'number'
   default: number
   label: string
+  description?: string
   min: number
   max: number
   group?: string
@@ -21,6 +23,7 @@ type DefinitionOptionRange = {
   type: 'range'
   default: number
   label: string
+  description?: string
   min: number
   max: number
   step: number
@@ -30,6 +33,7 @@ type DefinitionOptionRange = {
 type DefinitionOptionDateTimeLocal = {
   type: 'datetime-local'
   label: string
+  description?: string
   default?: string
   min?: string
   max?: string
@@ -40,6 +44,7 @@ type DefinitionOptionCheckbox = {
   type: 'checkbox'
   default: boolean
   label: string
+  description?: string
   group?: string
 }
 
@@ -47,12 +52,14 @@ type DefinitionOptionColor = {
   type: 'color'
   default: `#${string}`
   label: string
+  description?: string
   group?: string
 }
 
 type DefinitionOptionCheckboxes = {
   type: 'checkboxes'
   label: string
+  description?: string
   /**
    * The default values.
    */
@@ -100,6 +107,7 @@ type DefinitionOptionRadiosIcons = {
 type DefinitionOptionRadios = {
   type: 'radios'
   label: string
+  description?: string
   default: string
   group?: string
 } & (

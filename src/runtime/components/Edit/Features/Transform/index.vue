@@ -1,7 +1,7 @@
 <template>
   <PluginItemDropdown
     id="transform"
-    :title="$t('transformTo', 'Other actions')"
+    :title="$t('transformTo', 'Actions')"
     :enabled="!!(itemBundleIds.length && possibleTransforms.length)"
     :items="possibleTransforms"
     icon="script"
@@ -11,7 +11,7 @@
   <PluginItemDropdown
     v-if="hostPlugins.length"
     id="transform-host"
-    :title="$t('transformTo', 'Other actions')"
+    :title="$t('transformTo', 'Actions')"
     :enabled="selection.hasHostSelected.value"
     :items="hostPlugins"
     icon="script"

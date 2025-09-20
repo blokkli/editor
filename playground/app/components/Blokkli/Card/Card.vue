@@ -52,11 +52,13 @@ const { parentType, options } = defineBlokkli({
     box: {
       type: 'checkbox',
       label: 'Box',
+      description: 'If checked, the card is displayed as a box with shadow.',
       default: true,
     },
     color: {
       type: 'radios',
       label: 'Color',
+      description: 'The color for the icon.',
       default: 'lightBlue',
       displayAs: 'colors',
       options: {

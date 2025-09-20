@@ -2,6 +2,11 @@
   #bk-blokkli-item-actions-title {
     height: var(--bk-actions-height);
     @apply w-[160px] lg:w-200 lg:w-[240px];
+    &:hover {
+      .bk-tooltip {
+        @apply visible;
+      }
+    }
   }
   .bk-blokkli-item-actions-title-count {
     @apply bg-mono-50 text-mono-900 inline-flex items-center justify-center px-3 min-w-[1.5em] h-[1.5em] rounded-full ml-10 text-xs lg:text-sm font-bold leading-none;
@@ -87,7 +92,7 @@
   }
 
   .bk-blokkli-item-actions-type-button {
-    @apply flex items-center justify-between cursor-default lg:min-w-[180px] text-mono-300 font-bold h-full pl-[9px] lg:pr-15  rounded-l leading-none;
+    @apply flex items-center justify-between cursor-default lg:min-w-[180px] text-mono-300 font-bold h-full pl-[9px] lg:pr-15  rounded-l leading-none relative;
     @apply text-xs lg:text-base;
     @apply w-full;
     .bk-blokkli-item-actions-title-label {
@@ -100,6 +105,11 @@
         @apply w-[0.7em] h-[0.7em] fill-current absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
       }
     }
+
+    .bk-tooltip {
+      @apply absolute left-0 w-full bottom-full invisible mb-3;
+    }
+
     &.is-interactive {
       @apply cursor-pointer;
       @media not all and (hover: none) {

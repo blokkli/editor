@@ -5,6 +5,7 @@
       :class="isGrouped ? 'bk-blokkli-item-options-item-label' : 'bk-tooltip'"
     >
       <span>{{ tooltipLabel }}</span>
+      <span v-if="description">{{ description }}</span>
     </div>
     <div
       class="bk-blokkli-item-options-item-content"
@@ -119,6 +120,8 @@ const showLabel = computed(() => {
 const label = computed(() =>
   $blokkliText(`blockOption_${props.property}_label`, props.option.label),
 )
+
+const description = computed(() => props.option.description)
 
 const checkboxOptions = computed<{ value: string; label: string }[]>(() => {
   if (props.option.type !== 'checkboxes') {
