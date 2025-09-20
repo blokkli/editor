@@ -109,6 +109,26 @@ msgctxt "analyzeTourText"
 msgid "Analyze the content of your page"
 msgstr ""
 
+msgctxt "analyzerReadabiliyAverageSentenceLength"
+msgid "Average sentence length @length → split sentences."
+msgstr ""
+
+msgctxt "analyzerReadabiliyDescription"
+msgid "Avoid texts that are hard to read."
+msgstr ""
+
+msgctxt "analyzerReadabiliyHardToRead"
+msgid "Hard to read (@lang)."
+msgstr ""
+
+msgctxt "analyzerReadabiliyShorterSentences"
+msgid "Consider shorter sentences and simpler wording."
+msgstr ""
+
+msgctxt "analyzerReadabiliyTitle"
+msgid "Text readability issues"
+msgstr ""
+
 msgctxt "anchorHide"
 msgid "Hide anchor links"
 msgstr ""

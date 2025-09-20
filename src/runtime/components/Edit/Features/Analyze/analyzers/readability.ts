@@ -2,6 +2,7 @@ import { defineAnalyzer } from './defineAnalyzer'
 import type { AnalyzeImpact, AnalyzeNode, AnalyzeResult } from '../types'
 import type { TextElement } from './helpers/collectTextElements'
 import { TextReadability, type Language } from '@lunarisapp/readability'
+import type { TextProvider } from '#blokkli/helpers/textProvider'
 
 type LangCode = 'en' | 'de' | 'fr' | 'it'
 
@@ -100,6 +101,7 @@ function format(n?: number, d = 1) {
 function analyzeReadability(
   blocks: Readonly<TextElement[]>,
   langcode: LangCode,
+  $t: TextProvider,
 ): AnalyzeResult {
   const lang = langcode ?? 'en'
   const tr = new TextReadability({
@@ -131,15 +133,30 @@ function analyzeReadability(
     if (band !== 'hard') continue
 
     const parts: string[] = []
-    parts.push(`Hard to read (${lang.toUpperCase()}).`)
+    parts.push(
+      $t('analyzerReadabiliyHardToRead', `Hard to read (@lang).`).replace(
+        '@lang',
+        lang.toUpperCase(),
+      ),
+    )
     if (lix != null) parts.push(`LIX ${format(lix)}`)
     if (lang === 'it' && gulpease != null)
       parts.push(`Gulpease ${format(gulpease)}`)
     if (cli != null) parts.push(`CLI ${format(cli)}`)
     if (avgSentLen > 25) {
-      parts.push(`Avg sentence length ${format(avgSentLen)} → split sentences.`)
+      parts.push(
+        $t(
+          'analyzerReadabiliyAverageSentenceLength',
+          `Average sentence length @length → split sentences.`,
+        ).replace('@length', format(avgSentLen)),
+      )
     } else {
-      parts.push(`Consider shorter sentences and simpler wording.`)
+      parts.push(
+        $t(
+          'analyzerReadabiliyShorterSentences',
+          `Consider shorter sentences and simpler wording.`,
+        ),
+      )
     }
 
     nodes.push({
@@ -151,10 +168,12 @@ function analyzeReadability(
 
   return {
     id: 'low-readability',
-    title: 'Text readability issues',
+    title: $t('analyzerReadabiliyTitle', 'Text readability issues'),
     category: 'text',
-    description:
-      'Flags blocks that are likely hard to read based on language-appropriate readability indices.',
+    description: $t(
+      'analyzerReadabiliyDescription',
+      'Avoid texts that are hard to read.',
+    ),
     link: 'https://en.wikipedia.org/wiki/Readability',
     status: nodes.length ? 'violation' : 'pass',
     nodes,
@@ -186,7 +205,11 @@ export default defineAnalyzer(() => {
         return
       }
 
-      return analyzeReadability(context.getTextElements(), context.langcode)
+      return analyzeReadability(
+        context.getTextElements(),
+        context.langcode,
+        context.$t,
+      )
     },
   }
 })

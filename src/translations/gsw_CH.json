@@ -99,6 +99,26 @@
     "source": "Analyze the content of your page",
     "translation": ""
   },
+  "analyzerReadabiliyAverageSentenceLength": {
+    "source": "Average sentence length @length → split sentences.",
+    "translation": ""
+  },
+  "analyzerReadabiliyDescription": {
+    "source": "Avoid texts that are hard to read.",
+    "translation": ""
+  },
+  "analyzerReadabiliyHardToRead": {
+    "source": "Hard to read (@lang).",
+    "translation": ""
+  },
+  "analyzerReadabiliyShorterSentences": {
+    "source": "Consider shorter sentences and simpler wording.",
+    "translation": ""
+  },
+  "analyzerReadabiliyTitle": {
+    "source": "Text readability issues",
+    "translation": ""
+  },
   "anchorHide": {
     "source": "Hide anchor links",
     "translation": ""

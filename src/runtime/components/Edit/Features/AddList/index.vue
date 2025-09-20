@@ -174,12 +174,16 @@ const tourText = computed(() =>
 addElementClasses(
   document.documentElement,
   CLASS_BOTTOM,
-  computed(() => ui.addListOrientation.value === 'horizontal'),
+  computed(
+    () => ui.addListOrientation.value === 'horizontal' && shouldRender.value,
+  ),
 )
 addElementClasses(
   document.documentElement,
   CLASS_LEFT,
-  computed(() => ui.addListOrientation.value === 'vertical'),
+  computed(
+    () => ui.addListOrientation.value === 'vertical' && shouldRender.value,
+  ),
 )
 </script>
 

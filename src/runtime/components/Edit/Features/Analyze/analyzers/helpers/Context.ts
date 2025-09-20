@@ -1,5 +1,6 @@
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 import type { StateProvider } from '#blokkli/helpers/stateProvider'
+import type { TextProvider } from '#blokkli/helpers/textProvider'
 import type { MutatedField } from '#blokkli/types'
 import type {
   AnalyzeCategory,
@@ -22,6 +23,7 @@ export class AnalyzerContext {
     public readonly interfaceLangcode: string,
     public readonly providerRootElement: HTMLElement,
     private state: StateProvider,
+    public readonly $t: TextProvider,
   ) {
     this.mutatedFields = JSON.parse(JSON.stringify(state.mutatedFields.value))
   }

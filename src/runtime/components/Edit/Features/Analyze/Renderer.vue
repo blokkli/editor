@@ -90,6 +90,7 @@ function getContext(): AnalyzerContext {
     ui.interfaceLanguage.value,
     providerRootElement,
     state,
+    $t,
   )
 }
 

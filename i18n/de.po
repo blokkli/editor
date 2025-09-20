@@ -116,6 +116,26 @@ msgctxt "analyzeTourText"
 msgid "Analyze the content of your page"
 msgstr "Inhalte auf dieser Seite analysieren."
 
+msgctxt "analyzerReadabiliyAverageSentenceLength"
+msgid "Average sentence length @length → split sentences."
+msgstr "Durchschnittliche Satzlänge: @length. In einzelne Sätze aufteilen."
+
+msgctxt "analyzerReadabiliyDescription"
+msgid "Avoid texts that are hard to read."
+msgstr "Vermeiden Sie Texts die schwer lesbar sind."
+
+msgctxt "analyzerReadabiliyHardToRead"
+msgid "Hard to read (@lang)."
+msgstr "Schwierig zu lesen (@lang)."
+
+msgctxt "analyzerReadabiliyShorterSentences"
+msgid "Consider shorter sentences and simpler wording."
+msgstr "Verwenden Sie kürzere Sätze und einfachere Formulierungen."
+
+msgctxt "analyzerReadabiliyTitle"
+msgid "Text readability issues"
+msgstr "Probleme bei Lesbarkeit"
+
 msgctxt "anchorHide"
 msgid "Hide anchor links"
 msgstr "Anker-Links verstecken"
