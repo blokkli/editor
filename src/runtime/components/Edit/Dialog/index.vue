@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, onMounted, computed, ref } from '#imports'
+import { useBlokkli, onMounted, computed, ref, onBeforeUnmount } from '#imports'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon } from '#blokkli/components'
 import { modulo } from '#blokkli/helpers'
@@ -157,6 +157,8 @@ const onKeyDown = (e: KeyboardEvent) => {
 }
 
 onMounted(() => {
+  ui.hasDialogOpen.value = true
+
   // Focus the first best match in the dialog. That is, an element that is not a button.
   const focusableElements = getFocusableElements()
   const bestMatch =
@@ -166,6 +168,10 @@ onMounted(() => {
   if (bestMatch) {
     bestMatch.focus()
   }
+})
+
+onBeforeUnmount(() => {
+  ui.hasDialogOpen.value = false
 })
 </script>
 

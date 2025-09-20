@@ -271,7 +271,7 @@ onBlokkliEvent('keyPressed', (e) => {
     eventBus.emit('select:end', [])
     eventBus.emit('select:host:unselect')
   } else if (e.code === 'Tab') {
-    if (tour.isTouring.value) {
+    if (tour.isTouring.value || ui.hasDialogOpen.value) {
       return
     }
     e.originalEvent.preventDefault()

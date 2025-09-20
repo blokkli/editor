@@ -88,7 +88,7 @@
 
   .bk-blokkli-item-actions-type-button {
     @apply flex items-center justify-between cursor-default lg:min-w-[180px] text-mono-300 font-bold h-full pl-[9px] lg:pr-15  rounded-l leading-none;
-    @apply text-xs lg:text-sm lg:text-base;
+    @apply text-xs lg:text-base;
     @apply w-full;
     .bk-blokkli-item-actions-title-label {
       @apply mr-auto truncate;
@@ -125,7 +125,7 @@
     .bk-caret {
       @apply ml-10;
       svg {
-        @apply pointer-events-none w-15 h-15 fill-current;
+        @apply pointer-events-none size-15 fill-current md:size-20;
       }
     }
 
