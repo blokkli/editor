@@ -61,7 +61,6 @@
           </div>
         </div>
       </div>
-      <PDFView />
     </div>
   </PluginSidebar>
 </template>
@@ -76,7 +75,6 @@ import {
 } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
 import ClipboardList from './List/index.vue'
-import PDFView from './PDF/index.vue'
 import type { ClipboardItem } from '#blokkli/types'
 import { falsy, generateUUID, getFieldKey } from '#blokkli/helpers'
 import { Icon } from '#blokkli/components'
