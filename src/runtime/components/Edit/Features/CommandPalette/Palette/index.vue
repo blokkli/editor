@@ -19,10 +19,7 @@
     </div>
     <div class="bk-command-palette-results bk-scrollbar-dark">
       <Group
-        v-for="group in groups"
-        :key="group.id"
-        :label="group.label"
-        :commands="group.commands"
+        :commands="items"
         :visible-ids="visibleIds"
         :focused-id="focusedId"
         @close="$emit('close')"
@@ -44,12 +41,12 @@ import {
   onBeforeUnmount,
 } from '#imports'
 import { Icon, ScrollBoundary } from '#blokkli/components'
-import type { Command, CommandGroup } from '#blokkli/types'
+import type { Command } from '#blokkli/types'
 import Group from './Group/index.vue'
 import { falsy } from '#blokkli/helpers'
 import { Fzf } from 'fzf'
 
-const { commands, $t, selection } = useBlokkli()
+const { commands, $t, selection, storage } = useBlokkli()
 
 const emit = defineEmits(['close'])
 
@@ -64,36 +61,6 @@ function onFocus(id: string) {
   }
   focusedId.value = id
 }
-
-type GroupedCommands = {
-  id: CommandGroup
-  label: string
-  commands: Array<Command & { _id: number }>
-}
-
-const getGroupLabel = (id: CommandGroup): string => {
-  if (id === 'ui') {
-    return $t('commandGroup.ui', 'Interface')
-  } else if (id === 'add') {
-    return $t('commandGroup.add', 'Add new')
-  } else if (id === 'action') {
-    return $t('commandGroup.action', 'Actions')
-  } else if (id === 'selection') {
-    return $t('commandGroup.selection', 'Selection')
-  } else if (id === 'misc') {
-    return $t('commandGroup.misc', 'Miscellaneous')
-  }
-
-  return id
-}
-
-const groupOrder = computed<CommandGroup[]>(() => {
-  // When blocks are selected, the block actions should be first.
-  if (selection.uuids.value.length) {
-    return ['selection', 'add']
-  }
-  return ['add']
-})
 
 const items = computed<Array<Command & { _id: number }>>(() =>
   commands
@@ -120,45 +87,17 @@ const visibleIds = computed<{ id: number; positions: number[] }[] | undefined>(
     }
 
     const results = fzf.find(text.value)
-    return results.map((v) => {
-      return {
-        id: v.item._id,
-        positions: [...v.positions],
-      }
-    })
+    return results
+      .map((v) => {
+        return {
+          id: v.item._id,
+          positions: [...v.positions],
+          score: v.score,
+        }
+      })
+      .sort((a, b) => b.score - a.score)
   },
 )
-
-const groups = computed<GroupedCommands[]>(() => {
-  return Object.values(
-    items.value.reduce<Record<string, GroupedCommands>>((acc, command) => {
-      const group = command.group || 'misc'
-      if (!acc[group]) {
-        acc[group] = {
-          id: group,
-          label: getGroupLabel(group),
-          commands: [],
-        }
-      }
-
-      acc[group].commands.push(command)
-      return acc
-    }, {}),
-  ).sort((a, b) => {
-    const indexA = groupOrder.value.indexOf(a.id)
-    const indexB = groupOrder.value.indexOf(b.id)
-
-    if (indexA === -1 && indexB === -1) {
-      return 0
-    } else if (indexA === -1) {
-      return 1
-    } else if (indexB === -1) {
-      return -1
-    }
-
-    return indexA - indexB
-  })
-})
 
 watch(text, () => {
   nextTick(() => {

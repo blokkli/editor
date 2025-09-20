@@ -36,7 +36,7 @@
   }
 
   .bk-command {
-    @apply flex text-mono-300 px-5 w-full text-left gap-10 items-center rounded border border-transparent;
+    @apply flex text-mono-300 pl-[12px] pr-10 w-full text-left gap-10 items-center border border-transparent;
     height: var(--bk-command-palette-item-height);
 
     .bk-highlight em {
@@ -65,15 +65,12 @@
     }
   }
 
-  .bk-command-palette-results-group {
-    @apply px-10 relative;
-    &:not(:first-child):before {
-      content: '';
-      @apply absolute top-0 left-0 w-full border-t border-t-mono-700;
-    }
-    > h2 {
-      @apply text-mono-400 uppercase text-sm font-semibold pl-5 flex items-center;
-      height: var(--bk-command-palette-item-height);
-    }
+  .bk-command-group {
+    @apply ml-auto uppercase text-xs font-semibold;
+    @apply text-mono-500;
+  }
+
+  .bk-command-palette-results-list {
+    @apply relative;
   }
 }

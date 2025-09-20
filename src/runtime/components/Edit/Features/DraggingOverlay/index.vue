@@ -317,8 +317,12 @@ onBlokkliEvent('state:reloaded', async function () {
     return
   }
   eventBus.emit('select', newUuid)
+  // @todo: DOM is not ready yet, so the block is never found.
+  // figure out a reliable way to open the editable field after a block
+  // was added.
   await renderCycle()
   const newBlock = dom.findBlock(newUuid)
+
   if (!newBlock) {
     return
   }
@@ -430,6 +434,7 @@ onBlokkliEvent('keyPressed', (e) => {
 })
 
 onBlokkliEvent('block:append', (e) => {
+  allUuidsBefore = state.getAllUuids()
   onDropNew(e.bundle, e.host, e.afterUuid)
 })
 

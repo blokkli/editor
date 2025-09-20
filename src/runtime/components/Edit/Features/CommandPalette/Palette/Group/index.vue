@@ -1,6 +1,5 @@
 <template>
-  <div v-if="shouldRender" class="bk-command-palette-results-group">
-    <h2>{{ label }}</h2>
+  <div v-if="shouldRender" class="bk-command-palette-results-list">
     <div>
       <button
         v-for="item in mapped"
@@ -18,18 +17,18 @@
           <ItemIcon v-else :bundle="item.bundle" />
         </div>
         <Highlight :text="item.label" tag="span" :positions="item.positions" />
+        <div class="bk-command-group">{{ getGroupLabel(item.group) }}</div>
       </button>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed } from '#imports'
+import { computed, useBlokkli } from '#imports'
 import { Icon, ItemIcon, Highlight } from '#blokkli/components'
-import type { Command } from '#blokkli/types'
+import type { Command, CommandGroup } from '#blokkli/types'
 
 const props = defineProps<{
-  label: string
   commands: Array<Command & { _id: number }>
   visibleIds: { id: number; positions: number[] }[] | undefined
   focusedId: string
@@ -39,6 +38,8 @@ defineEmits<{
   (e: 'close'): void
   (e: 'focus' | 'select', id: string): void
 }>()
+
+const { $t } = useBlokkli()
 
 const mapped = computed(() => {
   return props.commands
@@ -56,6 +57,20 @@ const mapped = computed(() => {
       return indexA - indexB
     })
 })
+
+const getGroupLabel = (id?: CommandGroup): string => {
+  if (id === 'ui') {
+    return $t('commandGroup.ui', 'Interface')
+  } else if (id === 'add') {
+    return $t('commandGroup.add', 'Add new')
+  } else if (id === 'action') {
+    return $t('commandGroup.action', 'Actions')
+  } else if (id === 'selection') {
+    return $t('commandGroup.selection', 'Selection')
+  }
+
+  return $t('commandGroup.misc', 'Miscellaneous')
+}
 
 const shouldRender = computed(() => mapped.value.some((v) => v.visible))
 </script>
