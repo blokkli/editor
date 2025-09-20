@@ -6,7 +6,8 @@
           !selection.isDragging.value &&
           !selection.editableActive.value &&
           !ui.isAnimating.value &&
-          hasAnythingSelected
+          hasAnythingSelected &&
+          shouldRender
         "
         ref="el"
         class="bk-blokkli-item-actions-inner"
@@ -101,8 +102,10 @@ const controlsEl = ref<HTMLElement | null>(null)
 const mountedPlugins = ref<PluginMountEvent[]>([])
 const showDropdown = ref(false)
 
+const shouldRender = ref(false)
+
 const hasAnythingSelected = computed(
-  () => selection.hasHostSelected.value || !!selection.uuids.value.length,
+  () => selection.hasHostSelected.value || !!selection.blocks.value.length,
 )
 
 watch(selection.blocks, () => {
@@ -219,19 +222,24 @@ onBeforeUnmount(() => {
 })
 
 function getCoords(): Coord | undefined {
-  if (ui.isMobile.value || selection.isChangingOptions.value) {
+  if (ui.isMobile.value) {
     return
   }
   const offset = ui.artboardOffset.value
   const scale = ui.artboardScale.value
-  const rects = selection.uuids.value
-    .map((uuid) => dom.getBlockRect(uuid))
+  const rects = selection.blocks.value
+    .map((block) => dom.getBlockRect(block.uuid))
     .filter(falsy)
+    .filter((rect) => rect.height || rect.width)
 
   let minX = 0
   let minY = 0
 
   const hasRects = !!rects.length
+
+  if (!hasRects) {
+    return
+  }
 
   if (hasRects) {
     for (let i = 0; i < rects.length; i++) {
@@ -274,12 +282,18 @@ onBlokkliEvent('canvas:draw', () => {
     el.value.style.transform = ''
   }
 
+  if (selection.isChangingOptions.value) {
+    return
+  }
+
   const coords = getCoords()
   if (!coords) {
+    shouldRender.value = false
     return
   }
 
   el.value.style.transform = `translate3d(${coords.x}px, ${coords.y}px, 0)`
+  shouldRender.value = true
 })
 
 const shouldRenderButton = computed(() =>

@@ -64,6 +64,7 @@ export type StateProvider = {
   getFieldListItem: (uuid: string) => FieldListItem | undefined
   getFieldListForBlock: (uuid: string) => MutatedField | undefined
   getMutatedField: (uuid: string, fieldName: string) => MutatedField | undefined
+  getAllUuids: () => string[]
 }
 
 export default async function (
@@ -93,10 +94,10 @@ export default async function (
   })
   let fieldBlockCount: Record<string, number> = {}
   const blockBundleCount: Ref<Record<string, number>> = ref({})
-  const fieldListItemMap: Record<string, string> = {}
+  const fieldListItemMap: Map<string, string> = new Map()
 
   function getFieldListItem(uuid: string): FieldListItem | undefined {
-    const fieldKey = fieldListItemMap[uuid]
+    const fieldKey = fieldListItemMap.get(uuid)
     if (!fieldKey) {
       return
     }
@@ -111,7 +112,7 @@ export default async function (
   }
 
   function getFieldListForBlock(uuid: string): MutatedField | undefined {
-    const fieldKey = fieldListItemMap[uuid]
+    const fieldKey = fieldListItemMap.get(uuid)
     if (!fieldKey) {
       return
     }
@@ -186,6 +187,8 @@ export default async function (
     const visitedFieldKeys: string[] = []
     const newBlockBundleCount: Record<string, number> = {}
 
+    fieldListItemMap.clear()
+
     // Reset the count cache.
     fieldBlockCount = {}
     for (let i = 0; i < newMutatedFields.length; i++) {
@@ -209,7 +212,7 @@ export default async function (
           newBlockBundleCount[item.bundle] = 0
         }
         newBlockBundleCount[item.bundle]!++
-        fieldListItemMap[item.uuid] = key
+        fieldListItemMap.set(item.uuid, key)
       }
     }
 
@@ -259,6 +262,10 @@ export default async function (
 
   function unlockBody() {
     isLoading.value = false
+  }
+
+  function getAllUuids(): string[] {
+    return [...fieldListItemMap.keys()]
   }
 
   addElementClasses(document.body, 'bk-body-loading', isLoading)
@@ -386,5 +393,6 @@ export default async function (
     getFieldListItem,
     getMutatedField,
     getFieldListForBlock,
+    getAllUuids,
   }
 }
