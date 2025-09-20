@@ -4,7 +4,10 @@
       v-if="showLabel"
       :class="isGrouped ? 'bk-blokkli-item-options-item-label' : 'bk-tooltip'"
     >
-      <span>{{ tooltipLabel }}</span>
+      <div class="bk-is-label">
+        <span>{{ label }}</span>
+        <span v-if="hoveredOption">:&nbsp;{{ hoveredOption }}</span>
+      </div>
       <span v-if="description">{{ description }}</span>
     </div>
     <div
@@ -197,13 +200,5 @@ const value = computed<string | undefined>({
   set(value: string | undefined) {
     emit('update', value === undefined ? '' : value)
   },
-})
-
-const tooltipLabel = computed(() => {
-  if (hoveredOption.value) {
-    return `${label.value}: ${hoveredOption.value}`
-  }
-
-  return label.value
 })
 </script>

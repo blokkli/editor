@@ -58,7 +58,6 @@ import { PluginToolbarButton, PluginViewOption } from '#blokkli/plugins'
 import Overview from './Overview/index.vue'
 import Scrollbar from './Scrollbar/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
 import {
   createArtboard,
   type ArtboardOptions,
@@ -310,42 +309,6 @@ onBlokkliEvent('keyPressed', (e) => {
     animation.requestDraw()
   }
 })
-
-defineShortcut(
-  [
-    {
-      code: 'Home',
-      label: $t('artboardScrollToTop', 'Scroll to top'),
-    },
-    {
-      code: 'End',
-      label: $t('artboardScrollToEnd', 'Scroll to end'),
-    },
-    {
-      code: 'PageUp',
-      label: $t('artboardScrollOnePageUp', 'Scroll one page up'),
-    },
-    {
-      code: 'PageDown',
-      label: $t('artboardScrollOnePageDown', 'Scroll one page down'),
-    },
-    {
-      code: 'ArrowUp',
-      label: $t('artboardScrollUp', 'Scroll up'),
-    },
-    {
-      code: 'ArrowDown',
-      label: $t('artboardScrollDown', 'Scroll down'),
-    },
-    {
-      code: '1',
-      label: $t('artboardScaleToFit', 'Scale to fit'),
-      meta: true,
-    },
-  ].map((v) => {
-    return { ...v, group: $t('artboard', 'Artboard') }
-  }),
-)
 
 onBlokkliEvent('scrollIntoView', (e) => {
   if ('uuid' in e) {

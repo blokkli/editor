@@ -240,10 +240,6 @@ function getCoords(): Coord | undefined {
 
   const hasRects = !!rects.length
 
-  if (!hasRects) {
-    return
-  }
-
   if (hasRects) {
     for (let i = 0; i < rects.length; i++) {
       const { x, y } = rects[i]!
@@ -257,6 +253,9 @@ function getCoords(): Coord | undefined {
       }
     }
   } else {
+    if (!selection.hasHostSelected.value) {
+      return
+    }
     minX = ui.artboardOffset.value.x
     minY = ui.artboardOffset.value.y
   }

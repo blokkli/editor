@@ -2,7 +2,12 @@
   <kbd :title="label" class="bk-shortcut">
     <template v-if="meta"> <kbd>CTRL</kbd> + </template>
     <template v-if="shift"> <kbd>SHIFT</kbd> + </template>
-    <kbd>{{ keyLabel }}</kbd>
+    <kbd
+      :class="{
+        'bk-is-single': keyLabel.length === 1,
+      }"
+      >{{ keyLabel }}</kbd
+    >
   </kbd>
 </template>
 

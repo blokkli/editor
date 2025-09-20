@@ -151,17 +151,22 @@
 }
 
 .bk-shortcut {
-  @apply text-xs flex gap-5 font-bold items-center h-[1.5em] bg-transparent;
+  @apply flex gap-5 font-semibold items-center h-[22px] bg-transparent;
   color: inherit;
   > kbd {
-    @apply px-5 rounded flex items-center min-w-[2em] justify-center h-full leading-none pt-[0.15em] font-sans text-xs;
+    @apply px-5 rounded flex items-center min-w-[22px] justify-center h-full leading-none pt-1 font-sans;
     @apply text-mono-950;
     @apply border border-mono-50;
-    box-shadow: 0 2px 0 0 theme('colors.mono.400');
+    font-size: 11px;
     background: linear-gradient(
       theme('colors.mono.300'),
       theme('colors.mono.100')
     );
+
+    &.bk-is-single {
+      font-size: 16px;
+      @apply w-[24px] !p-0 font-bold;
+    }
   }
 }
 

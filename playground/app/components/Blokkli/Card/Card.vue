@@ -65,7 +65,7 @@ const { parentType, options } = defineBlokkli({
         lightBlue: { class: 'bg-accent-100', label: 'Blue' },
         lightYellow: { class: 'bg-yellow-normal', label: 'Yellow' },
         lightGreen: { class: 'bg-lime-normal', label: 'Green' },
-        lightRed: { class: 'bg-red-normal', label: 'Red' },
+        lightRed: { class: 'bg-red-normal', label: 'Red with a large label' },
       },
     },
   },

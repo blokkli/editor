@@ -1,7 +1,7 @@
 .bk {
   #bk-blokkli-item-actions-title {
     height: var(--bk-actions-height);
-    @apply w-[160px] lg:w-200 lg:w-[240px];
+    @apply w-[160px] lg:w-[240px];
     &:hover {
       .bk-tooltip {
         @apply visible;
