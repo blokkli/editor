@@ -1,6 +1,47 @@
 <template>
   <Scrollbar :artboard="artboard" orientation="y" />
-  <slot :artboard />
+  <PluginToolbarButton
+    id="artboard_reset_zoom"
+    :title="$t('artboardResetZoom', 'Reset zoom')"
+    :shortcut-group="$t('artboard', 'Artboard')"
+    :tour-text="
+      $t(
+        'artboardToolbarButtonTourText',
+        'Shows the current zoom factor. Click on it to reset the zoom back to 100%.',
+      )
+    "
+    icon="magnifier"
+    meta
+    key-code="0"
+    region="view-options"
+    weight="100"
+    @click="resetZoom"
+  >
+    <div class="bk-feature-canvas-button">
+      <span>{{ zoomLevel }}</span>
+    </div>
+  </PluginToolbarButton>
+
+  <PluginViewOption
+    id="artboardOverview"
+    v-slot="{ isActive }"
+    :label="$t('artboardOverviewToggle', 'Toggle overview')"
+    :title-on="$t('artboardOverviewShow', 'Show overview')"
+    :title-off="$t('artboardOverviewHide', 'Hide overview')"
+    :tour-text="
+      $t(
+        'artboardOverviewTourText',
+        `Displays a top level overview of your content.`,
+      )
+    "
+    icon="eye"
+    key-code="O"
+    weight="90"
+  >
+    <Teleport v-if="isActive" to="body">
+      <Overview :artboard="artboard" />
+    </Teleport>
+  </PluginViewOption>
 </template>
 
 <script setup lang="ts">
@@ -13,6 +54,8 @@ import {
 } from '#imports'
 import type { Coord } from '#blokkli/types'
 import { asValidNumber } from '#blokkli/helpers'
+import { PluginToolbarButton, PluginViewOption } from '#blokkli/plugins'
+import Overview from './Overview/index.vue'
 import Scrollbar from './Scrollbar/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
