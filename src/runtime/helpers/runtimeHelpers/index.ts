@@ -151,17 +151,19 @@ export function getRuntimeOptions<K extends keyof RuntimeBlockOptions>(
   context?: { parentType: string } | { fieldListType: string },
   fromLibraryOptions?: Record<string, any>,
 ): RuntimeBlockOptions[K] {
-  if (item.bundle === 'from_library' && 'libraryItem' in item.props) {
-    const actualBlock = item.props.libraryItem?.block
-    if (!actualBlock) {
-      throw new Error('Missing block')
+  if (item.bundle === 'from_library') {
+    if ('props' in item && item.props && 'libraryItem' in item.props) {
+      const actualBlock = item.props.libraryItem?.block
+      if (actualBlock) {
+        return getRuntimeOptions(
+          actualBlock as FieldListItemTyped,
+          context,
+          item.options,
+        ) as RuntimeBlockOptions[K]
+      }
     }
 
-    return getRuntimeOptions(
-      actualBlock as FieldListItemTyped,
-      context,
-      item.options,
-    ) as RuntimeBlockOptions[K]
+    throw new Error('Missing block')
   }
 
   const availableOptions = OPTIONS['block:' + item.bundle] || {}
