@@ -1,5 +1,10 @@
 import { useRouter, useRoute } from '#imports'
-import { defineBlokkliEditAdapter, defineAnalyzer } from '#blokkli/adapter'
+import { defineBlokkliEditAdapter } from '#blokkli/adapter'
+import {
+  defineAnalyzer,
+  accessibilityAnalyzer,
+  readabilityAnalyzer,
+} from '#blokkli/analyzer'
 import type {
   BlokkliAdapter,
   GetMediaLibraryFunction,
@@ -32,7 +37,6 @@ import { FieldTextarea } from './mock/state/Field/Textarea'
 import type { Block } from './mock/state/Block/Block'
 import { FieldReference } from './mock/state/Field/Reference'
 import type { MutationAddArgs } from './mock/plugins/mutations/Mutation/Add'
-import { findStringsWithClosestElement } from './blokkli/analyzers'
 
 function getRandomNumberInRange(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min
@@ -43,7 +47,7 @@ const blockAnalyzer = defineAnalyzer(() => {
     id: 'block-analyzer',
     category: 'content',
     run: function (context) {
-      return context.mutatedFields
+      const matchingUuids = context.mutatedFields
         .map((mutatedField) => {
           if (mutatedField.entityType !== 'block') {
             return
@@ -55,23 +59,26 @@ const blockAnalyzer = defineAnalyzer(() => {
           const field = context.mutatedFields.find(
             (v) => v.entityUuid === item.uuid && v.name === 'blocks',
           )
-          return {
-            id: 'no-empty-grid',
-            title: 'No empty grid blocks',
-            description: 'Do not use empty grid blocks.',
-            status: field?.list.length ? 'pass' : 'violation',
-            nodes: [
-              {
-                targets: [
-                  {
-                    uuid: item.uuid,
-                  },
-                ],
-              },
-            ],
+          if (field?.list.length) {
+            return
           }
+
+          return item.uuid
         })
         .filter(falsy)
+
+      return context.defineResult(
+        'no-empty-grid',
+        'No empty grid blocks',
+        'content',
+        'Do not use empty grid blocks.',
+        matchingUuids.length ? 'violation' : 'pass',
+        matchingUuids.map((uuid) => {
+          return {
+            targets: [{ uuid }],
+          }
+        }),
+      )
     },
   }
 })
@@ -79,19 +86,28 @@ const blockAnalyzer = defineAnalyzer(() => {
 const textAnalyzer = defineAnalyzer(() => {
   return {
     id: 'text-analyzer',
-    category: 'text',
     run: function (context) {
-      return findStringsWithClosestElement(context.providerRootElement, ['blokkli']).map(result => {
-        return {
-          id: 'blokkli-typo',
-          title: 'blökkli is not spelled correctly',
-          description: 'Please make sure that blökkli is spelled correctly!',
-          status: 'violation',
-          nodes: [{
-            targets: [result.element]
-          }]
-        }
-      })
+      const nodes = context
+        .getTextElements()
+        .filter(
+          (v) =>
+            v.text.includes('blokkli') &&
+            !v.text.includes('paragraphs_blokkli'),
+        )
+        .map((v) => {
+          return {
+            description: v.text,
+            targets: [v.element],
+          }
+        })
+      return {
+        id: 'blokkli-typo',
+        category: 'text',
+        title: 'blökkli is not spelled correctly',
+        description: 'Please make sure that blökkli is spelled correctly!',
+        status: 'violation',
+        nodes,
+      }
     },
   }
 })
@@ -377,7 +393,7 @@ export default defineBlokkliEditAdapter((ctx) => {
     loadComments() {
       return loadComments()
     },
-    resolveComment(uuid) {
+    resolveComment() {
       console.log('Resolve comment')
       return loadComments()
     },
@@ -452,7 +468,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         fieldValue: e.fieldValue,
       }),
 
-    getImportItems(text) {
+    getImportItems() {
       return Promise.resolve({ items: [], total: 0 })
     },
 
@@ -974,7 +990,23 @@ export default defineBlokkliEditAdapter((ctx) => {
       }),
 
     getAnalyzers: () => {
-      return [blockAnalyzer, textAnalyzer]
+      return [
+        blockAnalyzer(),
+        textAnalyzer(),
+        readabilityAnalyzer(),
+        accessibilityAnalyzer({
+          runOptions: {
+            rules: {
+              region: {
+                enabled: false,
+              },
+              'frame-tested': {
+                enabled: false,
+              },
+            },
+          },
+        }),
+      ]
     },
 
     // @TODO: Implement in playground.
