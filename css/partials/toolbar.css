@@ -186,7 +186,7 @@
       @apply pointer-events-none text-mono-700;
     }
     svg {
-      @apply w-18 h-18 lg:w-20 lg:h-20 fill-current;
+      @apply size-18 lg:size-20 fill-current;
     }
     &.is-active {
       .bk-tooltip {

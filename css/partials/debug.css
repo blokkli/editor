@@ -37,6 +37,11 @@
   }
 }
 
+.bk-debug-intersection-rects {
+  @apply fixed bg-yellow-normal/25 z-[999999999999] pointer-events-none;
+  @apply outline outline-yellow-normal -outline-offset-1;
+}
+
 .bk-debug-visible-viewport-padded {
   @apply fixed border-red-normal border-3 z-[9999999] pointer-events-none;
   > div {

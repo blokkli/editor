@@ -8,6 +8,7 @@ import type {
   EntityContext,
   Coord,
   LibraryItemProps,
+  Size,
 } from '#blokkli/types'
 import { useRuntimeConfig } from '#imports'
 import type { RGB } from '#blokkli/types/theme'
@@ -363,6 +364,95 @@ export function distanceToClosestRectangleEdge(
   const dx = Math.max(minX - x, 0, x - maxX)
   const dy = Math.max(minY - y, 0, y - maxY)
   return Math.sqrt(dx * dx + dy * dy)
+}
+
+/**
+ * Subtracts a rectangle from a viewport and returns the remaining area as rectangles.
+ * The viewport is assumed to have x=0 and y=0.
+ *
+ * @param viewport - The size of the viewport to subtract from
+ * @param rect - The rectangle to subtract
+ * @returns An array of 0 to 4 rectangles representing the area outside of rect
+ */
+export function subtractRectFromViewport(
+  viewport: Size,
+  rect: Rectangle,
+): Rectangle[] {
+  const viewportLeft = 0
+  const viewportTop = 0
+  const viewportRight = viewport.width
+  const viewportBottom = viewport.height
+
+  const intersectLeft = Math.max(viewportLeft, rect.x)
+  const intersectTop = Math.max(viewportTop, rect.y)
+  const intersectRight = Math.min(viewportRight, rect.x + rect.width)
+  const intersectBottom = Math.min(viewportBottom, rect.y + rect.height)
+
+  // If there's no intersection, return the viewport as a rectangle.
+  if (intersectLeft >= intersectRight || intersectTop >= intersectBottom) {
+    return [
+      {
+        x: 0,
+        y: 0,
+        width: viewport.width,
+        height: viewport.height,
+      },
+    ]
+  }
+
+  // Intersection covers the entire viewport.
+  if (
+    intersectLeft <= viewportLeft &&
+    intersectTop <= viewportTop &&
+    intersectRight >= viewportRight &&
+    intersectBottom >= viewportBottom
+  ) {
+    return []
+  }
+
+  const result: Rectangle[] = []
+
+  // Top rectangle (area above the intersection)
+  if (intersectTop > viewportTop) {
+    result.push({
+      x: viewportLeft,
+      y: viewportTop,
+      width: viewport.width,
+      height: intersectTop - viewportTop,
+    })
+  }
+
+  // Bottom rectangle (area below the intersection)
+  if (intersectBottom < viewportBottom) {
+    result.push({
+      x: viewportLeft,
+      y: intersectBottom,
+      width: viewport.width,
+      height: viewportBottom - intersectBottom,
+    })
+  }
+
+  // Left rectangle (area to the left of intersection, between top and bottom)
+  if (intersectLeft > viewportLeft) {
+    result.push({
+      x: viewportLeft,
+      y: intersectTop,
+      width: intersectLeft - viewportLeft,
+      height: intersectBottom - intersectTop,
+    })
+  }
+
+  // Right rectangle (area to the right of intersection, between top and bottom)
+  if (intersectRight < viewportRight) {
+    result.push({
+      x: intersectRight,
+      y: intersectTop,
+      width: viewportRight - intersectRight,
+      height: intersectBottom - intersectTop,
+    })
+  }
+
+  return result
 }
 
 export function getDistance(a: Coord, b: Coord) {

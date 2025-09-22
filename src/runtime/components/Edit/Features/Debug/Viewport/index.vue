@@ -16,6 +16,13 @@
   />
 
   <div
+    v-for="(rect, i) in intersectionRects"
+    :key="'intersection_' + i"
+    class="bk-debug-intersection-rects"
+    :style="rect"
+  />
+
+  <div
     v-for="(line, i) in linesRects"
     :key="i"
     class="bk-debug-viewport-lines"
@@ -26,6 +33,7 @@
 <script setup lang="ts">
 import { useBlokkli, computed } from '#imports'
 import type { Rectangle } from '#blokkli/types'
+import { subtractRectFromViewport } from '#blokkli/helpers'
 
 const { ui } = useBlokkli()
 
@@ -90,4 +98,11 @@ const visibleViewportOverlayStyle = computed(() =>
 const visibleViewportOverlayPaddedStyle = computed(() =>
   rectToStyle(ui.visibleViewportPadded.value),
 )
+
+const intersectionRects = computed(() => {
+  return subtractRectFromViewport(
+    ui.viewport.value,
+    ui.visibleViewport.value,
+  ).map(rectToStyle)
+})
 </script>

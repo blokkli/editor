@@ -1,5 +1,6 @@
 <template>
-  <div
+  <ViewportBlockingRect
+    id="artboard-overview"
     ref="overviewEl"
     class="bk bk-artboard-overview"
     @touchstart.stop
@@ -13,12 +14,20 @@
     <div class="bk-artboard-overview-visible">
       <button ref="overviewVisibleEl" />
     </div>
-  </div>
+  </ViewportBlockingRect>
 </template>
 
 <script setup lang="ts">
 import { type Artboard, type PluginOverview, overview } from 'artboard-deluxe'
-import { onBeforeUnmount, onMounted, ref, useBlokkli, computed } from '#imports'
+import {
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  useBlokkli,
+  computed,
+  useTemplateRef,
+} from '#imports'
+import { ViewportBlockingRect } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const props = defineProps<{
@@ -35,7 +44,7 @@ const selectedColor = computed(() => {
   return theme.getColorString('accent', '700', 1)
 })
 
-const overviewEl = ref<HTMLDivElement>()
+const overviewEl = useTemplateRef('overviewEl')
 const overviewArtboardEl = ref<HTMLDivElement>()
 const overviewVisibleEl = ref<HTMLDivElement>()
 const canvas = ref<HTMLCanvasElement>()
@@ -89,15 +98,18 @@ onBlokkliEvent('animationFrame', updateCanvas)
 
 onMounted(() => {
   if (overviewEl.value && overviewArtboardEl.value && overviewVisibleEl.value) {
-    pluginOverview = props.artboard.addPlugin(
-      overview({
-        element: overviewEl.value,
-        artboardElement: overviewArtboardEl.value,
-        visibleAreaElement: overviewVisibleEl.value,
-        padding: 20,
-        autoHeight: true,
-      }),
-    )
+    const el = overviewEl.value.$el
+    if (el) {
+      pluginOverview = props.artboard.addPlugin(
+        overview({
+          element: el,
+          artboardElement: overviewArtboardEl.value,
+          visibleAreaElement: overviewVisibleEl.value,
+          padding: 20,
+          autoHeight: true,
+        }),
+      )
+    }
   }
 })
 

@@ -3,7 +3,7 @@
     id="analyze"
     :title="$t('analyzeSidebarTitle', 'Analyze')"
     :tour-text="$t('analyzeTourText', 'Analyze the content of your page')"
-    icon="chart"
+    icon="speedometer"
   >
     <Renderer :langcode="context.language" :analyzers />
   </PluginSidebar>
@@ -18,7 +18,7 @@ import type { Analyzer } from './types'
 const { adapter } = defineBlokkliFeature({
   id: 'analyze',
   label: 'Analyze',
-  icon: 'chart',
+  icon: 'speedometer',
   requiredAdapterMethods: ['getAnalyzers'],
   description: 'Analyze blocks and page for SEO, accessibility, etc.',
   viewports: [],

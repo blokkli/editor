@@ -53,7 +53,11 @@ import {
   onBeforeUnmount,
 } from '#imports'
 import type { Coord } from '#blokkli/types'
-import { asValidNumber, isInsideRect } from '#blokkli/helpers'
+import {
+  asValidNumber,
+  isInsideRect,
+  subtractRectFromViewport,
+} from '#blokkli/helpers'
 import { PluginToolbarButton, PluginViewOption } from '#blokkli/plugins'
 import Overview from './Overview/index.vue'
 import Scrollbar from './Scrollbar/index.vue'
@@ -101,6 +105,14 @@ const options = computed<ArtboardOptions>(() => {
         ui.visibleViewport.value.x +
         PADDING,
       bottom: PADDING,
+    },
+    getBlockingRects: () => {
+      const toolbarRects = subtractRectFromViewport(
+        ui.viewport.value,
+        ui.visibleViewport.value,
+      )
+
+      return [...toolbarRects, ...ui.viewportBlockingRects.value]
     },
   }
 })

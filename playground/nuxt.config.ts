@@ -52,6 +52,9 @@ export default defineNuxtConfig({
     build: {
       minify: false,
     },
+    optimizeDeps: {
+      exclude: ['artboard-deluxe'],
+    },
     server: {
       watch: {
         usePolling: true,
