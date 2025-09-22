@@ -15,7 +15,7 @@
       {{ descriptionMapped }}
     </p>
 
-    <ResultsItemNodes v-if="nodes.length" :nodes />
+    <ResultsItemNodes :nodes />
   </div>
 </template>
 

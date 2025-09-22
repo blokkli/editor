@@ -3,6 +3,8 @@ export type AnalyzeStatus = 'pass' | 'incomplete' | 'inapplicable' | 'violation'
 export type AnalyzeImpact = 'minor' | 'moderate' | 'serious' | 'critical'
 export type AnalyzeCategory = 'accessibility' | 'seo' | 'text' | 'content'
 
+export type AnalyzeNodeTarget = string | HTMLElement | { uuid: string }
+
 export type AnalyzeNode = {
   description?: string
   impact?: AnalyzeImpact
@@ -12,7 +14,7 @@ export type AnalyzeNode = {
    * - HTMLElement: the DOM node
    *  - object: An object containing the UUID of a block
    */
-  targets: Array<string | HTMLElement | { uuid: string }>
+  targets: AnalyzeNodeTarget | AnalyzeNodeTarget[]
 }
 
 export type AnalyzeResult = {
@@ -22,7 +24,7 @@ export type AnalyzeResult = {
   description: string
   link?: string
   status: AnalyzeStatus
-  nodes: AnalyzeNode[]
+  nodes: AnalyzeNode | AnalyzeNode[]
   impact?: AnalyzeImpact
 }
 

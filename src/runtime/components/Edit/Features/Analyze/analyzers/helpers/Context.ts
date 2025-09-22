@@ -56,7 +56,7 @@ export class AnalyzerContext {
     category: AnalyzeCategory,
     description: string,
     status: AnalyzeStatus,
-    nodes: AnalyzeNode[] = [],
+    nodes: AnalyzeNode | AnalyzeNode[] = [],
   ): AnalyzeResult {
     return {
       id,

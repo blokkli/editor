@@ -1,5 +1,6 @@
 <template>
   <details
+    v-if="mappedNodes.length"
     class="bk-analyze-results-item-nodes"
     :open="isSingle"
     @toggle="shouldRender = true"
@@ -36,33 +37,52 @@
 
 <script setup lang="ts">
 import { computed, ref, useBlokkli } from '#imports'
-import type { AnalyzeNode } from '../types'
+import type { AnalyzeNode, AnalyzeNodeTarget } from '../types'
 import ResultsItemNodesTarget from './ResultsItemNodesTarget.vue'
 import { Icon } from '#blokkli/components'
 
 const props = defineProps<{
-  nodes: AnalyzeNode[]
+  nodes: AnalyzeNode | AnalyzeNode[]
 }>()
 
 const shouldRender = ref(false)
 
 const { $t } = useBlokkli()
 
+type MappedAnalyzeNode = Omit<AnalyzeNode, 'targets'> & {
+  targets: AnalyzeNodeTarget[]
+}
+
+const mappedNodes = computed<MappedAnalyzeNode[]>(() => {
+  const nodes = Array.isArray(props.nodes) ? props.nodes : [props.nodes]
+  return nodes.map((node) => {
+    return {
+      ...node,
+      targets: Array.isArray(node.targets) ? node.targets : [node.targets],
+    }
+  })
+})
+
 const isSingle = computed(
-  () => props.nodes.length === 1 && props.nodes[0]?.targets.length === 1,
+  () =>
+    mappedNodes.value.length === 1 &&
+    mappedNodes.value[0]?.targets.length === 1,
 )
 
 const grouped = computed(() => {
-  const map = props.nodes.reduce<Record<string, AnalyzeNode[]>>((acc, node) => {
-    const description = node.description ?? 'NONE'
-    if (!acc[description]) {
-      acc[description] = []
-    }
+  const map = mappedNodes.value.reduce<Record<string, MappedAnalyzeNode[]>>(
+    (acc, node) => {
+      const description = node.description ?? 'NONE'
+      if (!acc[description]) {
+        acc[description] = []
+      }
 
-    acc[description]!.push(node)
+      acc[description]!.push(node)
 
-    return acc
-  }, {})
+      return acc
+    },
+    {},
+  )
 
   return Object.entries(map).map(([description, nodes]) => {
     return {
