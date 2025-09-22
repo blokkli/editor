@@ -56,9 +56,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@lunarisapp/readability": "^1.0.1",
     "@types/micromatch": "^4.0.9",
-    "artboard-deluxe": "^0.1.1",
+    "artboard-deluxe": "^0.1.2",
     "estree-walker-ts": "^1.1.0",
     "flesch": "^2.0.1",
     "fzf": "^0.5.2",
@@ -73,6 +72,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-build-classic": "^44.3.0",
     "@ckeditor/ckeditor5-vue": "^7.3.0",
+    "@lunarisapp/readability": "^1.0.1",
     "@nuxt/devtools": "latest",
     "@nuxt/eslint-config": "^1.9.0",
     "@nuxt/kit": "^4.0.3",
@@ -115,5 +115,13 @@
     "vitepress": "^1.6.4",
     "vitest": "^3.2.4",
     "vue-tsc": "^2.2.12"
+  },
+  "peerDependencies": {
+    "@lunarisapp/readability": "^1.0.1"
+  },
+  "peerDependenciesMeta": {
+    "@lunarisapp/readability": {
+      "optional": true
+    }
   }
 }
