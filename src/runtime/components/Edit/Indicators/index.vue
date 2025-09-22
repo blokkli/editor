@@ -4,7 +4,6 @@
       <div id="bk-indicators-left" />
       <div id="bk-indicators-right" />
       <div class="bk-indicators-hovered" :style="hoveredStyle" />
-
       <div class="bk-indicators-highlighted" :style="highlightedStyle" />
     </div>
   </Teleport>
@@ -14,6 +13,7 @@
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { Rectangle } from '#blokkli/types'
 import { computed, useBlokkli, watch, ref } from '#imports'
+import type { StyleValue } from 'vue'
 
 const { ui, dom, indicators, selection } = useBlokkli()
 
@@ -21,8 +21,26 @@ const artboardElement = ui.artboardElement()
 
 const highlighted = ref<Rectangle | null>(null)
 
-const hoveredStyle = computed<Record<string, string | undefined>>(() => {
-  if (indicators.hovered.value) {
+const hasIndicators = computed<boolean>(
+  () => !!indicators.indicators.value.length,
+)
+
+const style = computed<StyleValue>(() => {
+  if (!hasIndicators.value) {
+    return {
+      visibility: 'hidden',
+    }
+  }
+  const offset = ui.artboardOffset.value
+  return {
+    width: ui.artboardSize.value.width + 'px',
+    height: ui.artboardSize.value.height + 'px',
+    transform: `translate(${offset.x}px, ${offset.y}px) scale(${ui.artboardScale.value})`,
+  }
+})
+
+const hoveredStyle = computed<StyleValue>(() => {
+  if (indicators.hovered.value && hasIndicators.value) {
     const rect = dom.getBlockRect(indicators.hovered.value, true)
     if (rect) {
       return {
@@ -38,7 +56,7 @@ const hoveredStyle = computed<Record<string, string | undefined>>(() => {
   }
 })
 
-const highlightedStyle = computed<Record<string, string | undefined>>(() => {
+const highlightedStyle = computed<StyleValue>(() => {
   if (highlighted.value) {
     return {
       width: highlighted.value.width.toString() + 'px',
@@ -61,6 +79,10 @@ const prevRects: Map<string, number> = new Map()
 let lastFullUpdate = 0
 
 onBlokkliEvent('animationFrame', function (ctx) {
+  if (!hasIndicators.value) {
+    return
+  }
+
   const items = indicators.indicators.value
 
   const taken = new Set<number>()
@@ -131,14 +153,5 @@ watch(indicators.indicators, function () {
 
 watch(selection.uuids, function () {
   highlighted.value = null
-})
-
-const style = computed(() => {
-  const offset = ui.artboardOffset.value
-  return {
-    width: ui.artboardSize.value.width + 'px',
-    height: ui.artboardSize.value.height + 'px',
-    transform: `translate(${offset.x}px, ${offset.y}px) scale(${ui.artboardScale.value})`,
-  }
 })
 </script>
