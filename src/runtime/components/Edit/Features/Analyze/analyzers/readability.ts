@@ -95,19 +95,16 @@ function summarizeImpact(nodes: AnalyzeNode[]): AnalyzeImpact | undefined {
 }
 
 function format(n?: number, d = 1) {
-  return typeof n === 'number' && isFinite(n) ? n.toFixed(d) : '—'
+  return typeof n === 'number' && Number.isFinite(n) ? n.toFixed(d) : '—'
 }
 
 function analyzeReadability(
+  tr: TextReadability,
   blocks: Readonly<TextElement[]>,
   langcode: LangCode,
   $t: TextProvider,
 ): AnalyzeResult {
   const lang = langcode ?? 'en'
-  const tr = new TextReadability({
-    lang: mapLang(lang),
-    cache: true,
-  })
 
   const nodes: AnalyzeNode[] = []
 
@@ -206,6 +203,7 @@ export default defineAnalyzer(() => {
       }
 
       return analyzeReadability(
+        textReadability!,
         context.getTextElements(),
         context.langcode,
         context.$t,

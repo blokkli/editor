@@ -1,5 +1,5 @@
 <template>
-  <FormToggle :label :description v-model="value" />
+  <FormToggle v-model="value" :label :description />
 </template>
 
 <script setup lang="ts">

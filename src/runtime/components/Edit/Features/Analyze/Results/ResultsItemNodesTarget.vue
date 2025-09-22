@@ -42,7 +42,7 @@ function getLabel() {
     if (typeof props.target === 'string') {
       return props.target
     } else if (props.target instanceof HTMLElement) {
-      return props.target.innerText.slice(0, 50)
+      return (props.target.textContent ?? '').slice(0, 50)
     } else if (typeof props.target === 'object' && 'uuid' in props.target) {
       return props.target.uuid
     }

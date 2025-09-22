@@ -53,7 +53,6 @@
         }}
       </div>
       <div
-        class="bk-radio-list"
         :style="{
           opacity: searchTerm !== resultsSearchTerm ? 0.5 : 1,
           height: '420px',

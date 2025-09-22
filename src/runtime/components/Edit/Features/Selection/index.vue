@@ -12,7 +12,7 @@
       :style="{
         visibility: selection.hasHostSelected.value ? 'visible' : 'hidden',
       }"
-    ></div>
+    />
   </Teleport>
 </template>
 

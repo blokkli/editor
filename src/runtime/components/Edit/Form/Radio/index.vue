@@ -3,7 +3,7 @@
     <div class="bk-form-label">
       {{ label }}
     </div>
-    <div class="bk-radio-list">
+    <div>
       <label v-for="option in options" :key="option.value" class="bk-radio">
         <input
           v-model="value"

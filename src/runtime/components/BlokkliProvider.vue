@@ -128,6 +128,7 @@ const props = withDefaults(
     editLabel: '',
     entity: undefined,
     editPath: undefined,
+    hostOptions: undefined,
   },
 )
 

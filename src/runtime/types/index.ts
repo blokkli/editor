@@ -540,7 +540,7 @@ export type PluginConfigInputCheckbox = {
   description?: string
   required: boolean
   checkboxLabel?: string
-  defaultValue: Boolean
+  defaultValue: boolean
 }
 
 export type PluginConfigInputOptions = {
@@ -1516,7 +1516,7 @@ export type DropArea = {
   label: string
   icon?: BlokkliIcon
   element: HTMLElement
-  onDrop: () => Promise<any> | void
+  onDrop: () => Promise<any> | any
 }
 
 export type ContextMenuRule = {

@@ -1,8 +1,8 @@
 <template>
   <details
     class="bk-analyze-results-item-nodes"
-    @toggle="shouldRender = true"
     :open="isSingle"
+    @toggle="shouldRender = true"
   >
     <summary v-show="!isSingle">
       <span>{{ $t('multipleItemsLabel', 'Items') }}</span>
@@ -10,19 +10,20 @@
     </summary>
 
     <div v-if="shouldRender" class="bk-analyze-results-item-nodes-list">
-      <ul v-for="group in grouped">
+      <ul v-for="(group, i) in grouped" :key="i">
         <li>
           <p
             v-if="group.description && group.description !== 'NONE'"
-            v-html="group.description"
             :class="{
               'bk-is-single': isSingle,
             }"
+            v-html="group.description"
           />
           <ul>
-            <li v-for="node in group.nodes">
+            <li v-for="(node, j) in group.nodes" :key="i + '_' + j">
               <ResultsItemNodesTarget
-                v-for="target in node.targets"
+                v-for="(target, k) in node.targets"
+                :key="i + '_' + j + '_' + k"
                 :target="target"
               />
             </li>
@@ -32,6 +33,7 @@
     </div>
   </details>
 </template>
+
 <script setup lang="ts">
 import { computed, ref, useBlokkli } from '#imports'
 import type { AnalyzeNode } from '../types'

@@ -1,25 +1,25 @@
 <template>
   <FormTextarea
     v-if="multiline"
+    :id="name"
+    v-model="value"
     :label
     :required
     :placeholder
     :description
-    v-model="value"
-    :id="name"
     :minlength="minLength"
     :maxlength="maxLength"
   />
   <FormText
     v-else
     :id="name"
+    v-model="value"
     :label
     :required
     :description
     :placeholder
     :minlength="minLength"
     :maxlength="maxLength"
-    v-model="value"
   />
 </template>
 

@@ -2,10 +2,10 @@
   <PluginBlockIndicator
     v-for="item in items"
     id="anchor"
+    :key="item.uuid"
     :uuid="item.uuid"
     :label="'#' + item.id"
     icon="anchor"
-    :key="item.uuid"
     @click="onClick(item)"
   />
 </template>

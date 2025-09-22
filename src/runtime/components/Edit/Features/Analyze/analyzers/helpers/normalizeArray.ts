@@ -1,7 +1,6 @@
 type NormalizeToArray<T> =
   | undefined
   | null
-  | void
   | T
   | T[]
   | Promise<T | T[] | undefined | null>

@@ -5,12 +5,12 @@
     :width="500"
     :lead
     icon="script"
+    :submit-label="$t('transformDialogSubmitLabel', 'Apply transform')"
     @cancel="$emit('cancel')"
     @submit="onSubmit"
-    :submit-label="$t('transformDialogSubmitLabel', 'Apply transform')"
   >
     <div class="bk">
-      <ConfigForm :config v-model="value" />
+      <ConfigForm v-model="value" :config />
     </div>
   </DialogModal>
 </template>

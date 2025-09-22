@@ -4,9 +4,9 @@
       {{ label }}
     </label>
     <textarea
+      :id
       v-model.lazy="value"
       class="bk-form-input"
-      :id
       :placeholder
       :required
       :disabled

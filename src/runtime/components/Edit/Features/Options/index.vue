@@ -41,12 +41,14 @@ const uuids = computed(() => {
   } else if (selection.hasHostSelected.value) {
     return 'provider'
   }
+
+  return null
 })
 
 const key = computed(() => {
   if (typeof uuids.value === 'string') {
     return uuids.value
-  } else if (typeof uuids.value === 'object') {
+  } else if (uuids.value && typeof uuids.value === 'object') {
     return uuids.value.join('-')
   }
 

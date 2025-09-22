@@ -1,4 +1,4 @@
-import { reactive, ref, computed, type ComputedRef, readonly } from '#imports'
+import { reactive, ref, computed, type ComputedRef } from '#imports'
 import type {
   DraggableExistingBlock,
   BlokkliFieldElement,

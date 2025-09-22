@@ -1,6 +1,6 @@
 <template>
-  <ol class="bk-plugin-config-form">
-    <li v-for="item in config" class="bk-form-item">
+  <ol>
+    <li v-for="item in config" :key="item.name" class="bk-form-item">
       <FormCheckbox
         v-if="item.type === 'checkbox'"
         v-bind="item"

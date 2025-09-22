@@ -37,8 +37,8 @@
         </label>
         <FormToggle
           v-else-if="filter.filter.type === 'checkbox'"
-          :label="filter.filter.label"
           v-model="filterValues[filter.key]"
+          :label="filter.filter.label"
         />
       </div>
     </div>

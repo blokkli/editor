@@ -1,12 +1,12 @@
 <template>
   <div
     class="bk-blokkli-item-options-radios"
-    @mouseleave="onMouseLeave"
     :class="{
       'bk-is-color': displayAs === 'colors',
       'bk-is-grid': displayAs === 'grid',
       'bk-is-icons': displayAs === 'icons',
     }"
+    @mouseleave="onMouseLeave"
   >
     <label
       v-for="option in mappedOptions"

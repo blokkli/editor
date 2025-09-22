@@ -46,7 +46,7 @@ import Group from './Group/index.vue'
 import { falsy } from '#blokkli/helpers'
 import { Fzf } from 'fzf'
 
-const { commands, $t, selection, storage } = useBlokkli()
+const { commands, $t, selection } = useBlokkli()
 
 const emit = defineEmits(['close'])
 

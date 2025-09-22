@@ -19,11 +19,11 @@
       <OptionRadios
         v-if="option.type === 'radios'"
         v-model="value"
+        v-model:hovered="hoveredOption"
         :label="label"
         :options="option.options"
         :property="property"
         :display-as="option.displayAs"
-        v-model:hovered="hoveredOption"
       />
       <OptionCheckbox
         v-else-if="option.type === 'checkbox'"

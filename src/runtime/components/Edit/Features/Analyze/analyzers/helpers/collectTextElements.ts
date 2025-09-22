@@ -49,7 +49,7 @@ const isBlockElement = (element: Element): boolean => {
 
 // Helper function to check if a block element contains other block elements
 const containsBlockElements = (element: HTMLElement): boolean => {
-  for (let child of element.children) {
+  for (const child of element.children) {
     if (isBlockElement(child)) {
       return true
     }
@@ -85,7 +85,7 @@ const traverse = (element: HTMLElement, results: TextElement[]) => {
       }
     } else {
       // If it contains other blocks, traverse its children
-      for (let child of element.children) {
+      for (const child of element.children) {
         if (child instanceof HTMLElement) {
           traverse(child, results)
         }
@@ -93,7 +93,7 @@ const traverse = (element: HTMLElement, results: TextElement[]) => {
     }
   } else {
     // For inline elements, continue traversing
-    for (let child of element.children) {
+    for (const child of element.children) {
       if (child instanceof HTMLElement) {
         traverse(child, results)
       }

@@ -64,7 +64,7 @@ const { adapter } = defineBlokkliFeature({
 
 type TransformType = 'block' | 'host'
 
-const { types, selection, state, $t, dom, ui } = useBlokkli()
+const { types, selection, state, $t, ui } = useBlokkli()
 
 const openPlugin = ref<{
   type: TransformType
@@ -284,6 +284,7 @@ defineCommands(() =>
   })),
 )
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getPossibleDropTransforms = (
   plugins: TransformPlugin[],
   allBlocks: DraggableExistingBlock[],

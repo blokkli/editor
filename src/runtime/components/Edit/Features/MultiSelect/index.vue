@@ -44,7 +44,7 @@ const onSelect = (uuids: string[]) => {
   eventBus.emit('select:end', uuids)
 }
 
-let startTimeout: any = null
+const startTimeout: any = null
 
 onBlokkliEvent('multi-select:start', (e) => {
   if (!enabled.value) {

@@ -2,15 +2,15 @@
   <div class="bk bk-analyze">
     <div class="bk-analyze-button">
       <button
-        @click="onClick"
         class="bk-button bk-is-primary"
         :disabled="!isStale"
+        @click="onClick"
       >
         {{ $t('analyzeButtonLabel', 'Analyze Page') }}
       </button>
 
       <p v-if="lastRun" class="bk-analyze-last-run">
-        <RelativeTime :timestamp="lastRun" v-slot="{ formatted }">
+        <RelativeTime v-slot="{ formatted }" :timestamp="lastRun">
           {{
             $t('analyzeLastRun', 'Last run: @time').replace('@time', formatted)
           }}
@@ -30,9 +30,9 @@
       <div class="bk-analyze-form">
         <FormSelect
           id="category"
+          v-model="selectedCategory"
           :label="$t('analyzeCategory', 'Category')"
           :options="categoryOptions"
-          v-model="selectedCategory"
         />
       </div>
       <AnalyzeSummary :results="resultsFiltered" />
@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, useBlokkli, useState, ref, nextTick } from '#imports'
+import { computed, useBlokkli, useState, ref } from '#imports'
 import type { AnalyzeCategory, AnalyzeResultMapped, Analyzer } from './types'
 import Results from './Results/Results.vue'
 import AnalyzeSummary from './Summary/index.vue'

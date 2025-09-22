@@ -1,8 +1,8 @@
 <template>
   <FormSelect
     v-if="variant === 'select'"
-    v-model="value"
     :id
+    v-model="value"
     :label
     :description
     :required
@@ -10,8 +10,8 @@
   />
   <FormRadio
     v-else
-    v-model="value"
     :id
+    v-model="value"
     :label
     :description
     :required

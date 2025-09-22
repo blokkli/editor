@@ -3,7 +3,7 @@
     <div class="bk-analyze-summary-chart">
       <Chart :data="summary" :percentage />
       <ul>
-        <li v-for="item in summary">
+        <li v-for="item in summary" :key="item.status">
           <div :style="{ backgroundColor: item.color }" />
           <div>
             <span>{{ item.label }}</span>

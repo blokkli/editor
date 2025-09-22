@@ -2,6 +2,7 @@
   <div>
     <details
       v-for="group in grouped"
+      :key="group.group"
       :open="group.open"
       class="bk-analyze-results"
     >
@@ -20,7 +21,11 @@
         }"
       >
         <li>
-          <ResultsItem v-for="result in group.results" v-bind="result" />
+          <ResultsItem
+            v-for="result in group.results"
+            v-bind="result"
+            :key="group.group + result.id"
+          />
         </li>
       </ul>
     </details>
