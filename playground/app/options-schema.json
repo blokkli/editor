@@ -32,11 +32,13 @@
   "card": {
     "box": {
       "default": true,
+      "description": "If checked, the card is displayed as a box with shadow.",
       "label": "Box",
       "type": "checkbox"
     },
     "color": {
       "default": "lightBlue",
+      "description": "The color for the icon.",
       "displayAs": "colors",
       "label": "Color",
       "options": {
@@ -50,7 +52,7 @@
         },
         "lightRed": {
           "class": "bg-red-normal",
-          "label": "Red"
+          "label": "Red with a large label"
         },
         "lightYellow": {
           "class": "bg-yellow-normal",
@@ -112,6 +114,7 @@
   "image": {
     "elevated": {
       "default": true,
+      "description": "Renders the image with a box shadow.",
       "label": "Elevated",
       "type": "checkbox"
     }
@@ -140,6 +143,11 @@
     }
   },
   "two_columns": {
+    "anchorId": {
+      "default": "",
+      "label": "Anchor ID",
+      "type": "text"
+    },
     "background": {
       "default": "white",
       "displayAs": "colors",

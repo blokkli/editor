@@ -35,14 +35,11 @@
             </option>
           </select>
         </label>
-        <label
+        <FormToggle
           v-else-if="filter.filter.type === 'checkbox'"
-          class="bk-checkbox-toggle"
-        >
-          <input v-model="filterValues[filter.key]" type="checkbox" />
-          <div />
-          <span>{{ filter.filter.label }}</span>
-        </label>
+          v-model="filterValues[filter.key]"
+          :label="filter.filter.label"
+        />
       </div>
     </div>
     <div
@@ -83,7 +80,7 @@ import {
   watch,
   nextTick,
 } from '#imports'
-import { Sortli, Icon, Pagination } from '#blokkli/components'
+import { Sortli, Icon, Pagination, FormToggle } from '#blokkli/components'
 import type { MediaLibraryFilter, MediaLibraryGetResults } from './../types'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import Item from './Item.vue'

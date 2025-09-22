@@ -9,6 +9,7 @@ import { parseTsObject } from '../helpers'
 import {
   getIdentifier,
   isBlock,
+  isFragment,
   type ExtractedDefinition,
 } from '../Collector/Blocks'
 
@@ -55,11 +56,20 @@ export function isVue(
 }
 
 function generateRuntimeArg(definition: ExtractedDefinition) {
-  const name = isBlock(definition) ? definition.bundle : definition.name
-  return `${name}::${getIdentifier(definition)}`
+  if (isBlock(definition)) {
+    return `${definition.bundle}::${getIdentifier(definition)}`
+  } else if (isFragment(definition)) {
+    return `${definition.name}::${getIdentifier(definition)}`
+  }
+
+  return `${definition.entityType}__${definition.bundle}::${getIdentifier(definition)}`
 }
 
-export const RuntimeDefinitionPlugin = (nuxt: Nuxt, composableName: string) => {
+export const RuntimeDefinitionPlugin = (
+  nuxt: Nuxt,
+  composableName: string,
+  argIndex = 0,
+) => {
   const cache = new Map<string, ExtractedDefinition>()
 
   function extract(source: string): ExtractedDefinition | null {
@@ -111,11 +121,11 @@ export const RuntimeDefinitionPlugin = (nuxt: Nuxt, composableName: string) => {
 
             const name = 'name' in callNode.callee && callNode.callee.name
             if (name === composableName) {
-              const arg = callNode.arguments[0]
+              const arg = callNode.arguments[argIndex]
               if (!arg) {
                 return
               }
-              const meta = callNode.arguments[0] as Expression & {
+              const meta = callNode.arguments[argIndex] as Expression & {
                 start: number
                 end: number
               }

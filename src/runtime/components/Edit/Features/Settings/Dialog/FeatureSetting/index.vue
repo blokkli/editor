@@ -1,20 +1,12 @@
 <template>
   <div class="bk-form-item" :class="'bk-is-' + setting.type">
-    <label v-if="setting.type === 'checkbox'" class="bk-checkbox-toggle">
-      <input
-        :checked="settingsStorage[settingsKey] as boolean"
-        type="checkbox"
-        class="peer"
-        @change="toggleCheckbox"
-      />
-      <div class="bk-checkbox-toggle-toggle" />
-      <div class="bk-checkbox-toggle-label">
-        <div>{{ settingLabel }}</div>
-        <div v-if="settingDescription">
-          {{ settingDescription }}
-        </div>
-      </div>
-    </label>
+    <FormToggle
+      v-if="setting.type === 'checkbox'"
+      :label="settingLabel"
+      :description="settingDescription"
+      :model-value="settingsStorage[settingsKey] as boolean"
+      @update:model-value="toggleCheckbox"
+    />
     <div v-else-if="setting.type === 'radios'">
       <h3 class="bk-form-label">
         {{ settingLabel }}
@@ -65,7 +57,7 @@
 
 <script lang="ts" setup>
 import type { FeatureDefinitionSetting } from '#blokkli/types'
-import { Icon } from '#blokkli/components'
+import { Icon, FormToggle } from '#blokkli/components'
 import type { ValidFeatureKey } from '#blokkli-build/features'
 import { useBlokkli, computed } from '#imports'
 

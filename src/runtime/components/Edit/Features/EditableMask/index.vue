@@ -17,17 +17,9 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  useBlokkli,
-  defineBlokkliFeature,
-  ref,
-  watch,
-  onMounted,
-  onBeforeUnmount,
-} from '#imports'
+import { useBlokkli, defineBlokkliFeature, ref } from '#imports'
 import { PluginViewOption } from '#blokkli/plugins'
-
-const HIDE_CLASS = 'bk-hide-non-editable'
+import { addElementClasses } from '#blokkli/helpers/addElementClasses'
 
 defineBlokkliFeature({
   id: 'editable-mask',
@@ -41,20 +33,7 @@ const { $t } = useBlokkli()
 
 const isActive = ref(false)
 
-const setRootClass = () => {
-  document.documentElement.classList.remove(HIDE_CLASS)
-  if (isActive.value) {
-    document.documentElement.classList.add(HIDE_CLASS)
-  }
-}
-
-watch(isActive, setRootClass)
-
-onMounted(setRootClass)
-
-onBeforeUnmount(() => {
-  document.documentElement.classList.remove(HIDE_CLASS)
-})
+addElementClasses(document.documentElement, 'bk-hide-non-editable', isActive)
 </script>
 
 <script lang="ts">

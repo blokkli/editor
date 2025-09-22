@@ -1,22 +1,21 @@
 /* eslint-disable */
 module.exports = {
-  plugins: {
-    'postcss-import': {},
-    'postcss-mixins': {},
-    'postcss-nested-import': {},
-    'tailwindcss/nesting': {},
-    'postcss-url': {},
-    tailwindcss: {},
-    cssnano: {
-      preset: 'default',
-    },
-    'postcss-replace': {
+  plugins: [
+    require('postcss-import'),
+    require('postcss-mixins'),
+    require('postcss-nested-import'),
+    require('tailwindcss/nesting'),
+    require('postcss-url'),
+    require('tailwindcss'),
+    require('postcss-replace')({
       pattern: /(--tw|\*, ::before, ::after)/g,
       data: {
         '--tw': '--bk-tw',
-        '*, ::before, ::after': ':root',
+        '*, ::before, ::after':
+          '.bk, .bk *, .bk-sidebar, .bk ::before, .bk ::after',
+        '::backdrop': '.bk::backdrop, .bk ::backdrop',
       },
-    },
-    '@thedutchcoder/postcss-rem-to-px': { baseValue: 16 },
-  },
+    }),
+    require('@thedutchcoder/postcss-rem-to-px')({ baseValue: 16 }),
+  ],
 }

@@ -214,7 +214,7 @@ const emitDrop = async () => {
   }
 
   eventBus.emit('dragging:end')
-  eventBus.emit('item:dropped')
+  // eventBus.emit('item:dropped')
 }
 
 function getChildrenOrientation(element: HTMLElement): Orientation {

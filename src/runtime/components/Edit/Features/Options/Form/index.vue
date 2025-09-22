@@ -12,7 +12,6 @@
       :option="plugin.option"
       :property="plugin.property"
       :mutated-value="currentValues[plugin.property]"
-      :uuids="uuids"
       class="bk-blokkli-item-options-item"
       :class="{
         'bk-is-disabled': isDisabled(plugin),
@@ -34,7 +33,6 @@
         :option="plugin.option"
         :property="plugin.property"
         :mutated-value="currentValues[plugin.property]"
-        :uuids="uuids"
         class="bk-blokkli-item-options-item"
         :class="{
           'bk-is-disabled': isDisabled(plugin),
@@ -56,6 +54,7 @@ import type {
   BlockDefinitionInput,
   BlockDefinitionOptionsInput,
   FragmentDefinitionInput,
+  ProviderDefinitionInput,
 } from '#blokkli/types'
 import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
 import { getRuntimeOptionValue } from '#blokkli/runtime-helpers'
@@ -131,8 +130,11 @@ const {
 } = useBlokkli()
 
 const props = defineProps<{
-  uuids: string[]
-  definition: BlockDefinitionInput | FragmentDefinitionInput
+  uuids: string[] | 'provider'
+  definition:
+    | BlockDefinitionInput
+    | FragmentDefinitionInput
+    | ProviderDefinitionInput
 }>()
 
 let pointerTimeout: null | number = null
@@ -170,17 +172,19 @@ function stopChangingOptions() {
     return
   }
 
-  // Refresh the rects of the blocks because they might have changed.
-  props.uuids.forEach((uuid) => {
-    dom.refreshBlockRect(uuid)
-    const block = dom.findBlock(uuid)
-    if (block) {
-      const el = dom.getDragElement(block)
-      if (el) {
-        theme.invalidateCachedStyle(el)
+  if (Array.isArray(props.uuids)) {
+    // Refresh the rects of the blocks because they might have changed.
+    props.uuids.forEach((uuid) => {
+      dom.refreshBlockRect(uuid)
+      const block = dom.findBlock(uuid)
+      if (block) {
+        const el = dom.getDragElement(block)
+        if (el) {
+          theme.invalidateCachedStyle(el)
+        }
       }
-    }
-  })
+    })
+  }
   selection.isChangingOptions.value = false
 }
 
@@ -271,24 +275,32 @@ const currentValues = computed(() => {
   return availableOptions.value.reduce<
     Record<string, string | string[] | boolean | number>
   >((acc, v) => {
-    // Get all current values.
-    const values = props.uuids
-      .map((uuid) => {
-        return JSON.stringify(
-          getRuntimeOptionValue(
-            v.option,
-            getOptionValue(uuid, v.property, v.option.default),
-          ),
+    if (Array.isArray(props.uuids)) {
+      // Get all current values.
+      const values = props.uuids
+        .map((uuid) => {
+          return JSON.stringify(
+            getRuntimeOptionValue(
+              v.option,
+              getOptionValue(uuid, v.property, v.option.default),
+            ),
+          )
+        })
+        .filter(onlyUnique)
+
+      if (values.length === 1) {
+        acc[v.property] = getRuntimeOptionValue(
+          v.option,
+          getOptionValue(props.uuids[0]!, v.property, v.option.default),
         )
-      })
-      .filter(onlyUnique)
-    if (values.length === 1) {
+      } else {
+        acc[v.property] = ''
+      }
+    } else {
       acc[v.property] = getRuntimeOptionValue(
         v.option,
-        getOptionValue(props.uuids[0]!, v.property, v.option.default),
+        getOptionValue('HOST', v.property, v.option.default),
       )
-    } else {
-      acc[v.property] = ''
     }
 
     return acc
@@ -308,7 +320,10 @@ function isInternalOption(property: string) {
 }
 
 const visibleOptions = computed<OptionItem[]>(() => {
-  if (!props.definition.editor?.determineVisibleOptions) {
+  if (
+    !('editor' in props.definition) ||
+    !props.definition.editor?.determineVisibleOptions
+  ) {
     return availableOptions.value.filter(filterInternal)
   }
 
@@ -381,32 +396,55 @@ const optionGroups = computed<OptionGroup[]>(() => {
 })
 
 function setOptionValue(key: string, value: string) {
-  props.uuids.forEach((uuid) => {
-    updated.set(uuid, key, value)
+  if (Array.isArray(props.uuids)) {
+    props.uuids.forEach((uuid) => {
+      updated.set(uuid, key, value)
 
-    if (!state.mutatedOptions[uuid]) {
-      state.mutatedOptions[uuid] = {}
+      if (!state.mutatedOptions[uuid]) {
+        state.mutatedOptions[uuid] = {}
+      }
+      state.mutatedOptions[uuid][key] = value
+      eventBus.emit('option:update', { uuid, key, value })
+    })
+  } else {
+    updated.set('HOST', key, value)
+    if (!state.mutatedOptions.HOST) {
+      state.mutatedOptions.HOST = {}
     }
-    state.mutatedOptions[uuid][key] = value
-    eventBus.emit('option:update', { uuid, key, value })
-  })
+    state.mutatedOptions.HOST[key] = value
+  }
 }
 
 onMounted(() => {
-  props.uuids.forEach((uuid) => {
+  if (Array.isArray(props.uuids)) {
+    props.uuids.forEach((uuid) => {
+      availableOptions.value.forEach((option) => {
+        const currentValue = getOptionValue(
+          uuid,
+          option.property,
+          option.option.default,
+        )
+        original.set(
+          uuid,
+          option.property,
+          optionValueToStorable(option.option, currentValue),
+        )
+      })
+    })
+  } else {
     availableOptions.value.forEach((option) => {
       const currentValue = getOptionValue(
-        uuid,
+        'HOST',
         option.property,
         option.option.default,
       )
       original.set(
-        uuid,
+        'HOST',
         option.property,
         optionValueToStorable(option.option, currentValue),
       )
     })
-  })
+  }
 })
 
 onBeforeUnmount(() => {
@@ -428,7 +466,20 @@ onBeforeUnmount(() => {
     return
   }
 
-  state.mutateWithLoadingState(() => adapter.updateOptions!(values))
+  if (Array.isArray(props.uuids)) {
+    state.mutateWithLoadingState(() => adapter.updateOptions!(values))
+  } else {
+    state.mutateWithLoadingState(() =>
+      adapter.updateHostOptions!(
+        values.map((v) => {
+          return {
+            ...v,
+            uuid: undefined,
+          }
+        }),
+      ),
+    )
+  }
 })
 </script>
 

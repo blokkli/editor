@@ -25,4 +25,12 @@ export class BlockCard extends Block {
       new FieldText('text', 'Text'),
     ]
   }
+
+  text(): FieldText {
+    return this.get('text')
+  }
+
+  title(): FieldText {
+    return this.get('title')
+  }
 }

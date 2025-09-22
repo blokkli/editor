@@ -88,7 +88,7 @@ function walkBlocks(
     // blocks.
     const nestedFieldMapping = FIELD_MAPPING[mappedItem.bundle]
     if (!nestedFieldMapping) continue
-    if (!mappedItem.props) continue
+    if (!('props' in mappedItem) || !mappedItem.props) continue
 
     // Iterate over props that contain children.
     const propNames = Object.keys(nestedFieldMapping)

@@ -140,21 +140,32 @@ function onPointerMove(e: PointerEvent) {
   if (e.pointerType === 'touch') {
     return onTouchMove(e)
   }
-  if (e.buttons !== 1) {
+  if (e.buttons !== MOUSE_BUTTONS.PRIMARY) {
     return
   }
   if (
-    !pointerDownElement ||
     !mouseStartCoordinates ||
+    selection.isMultiSelecting.value ||
     selection.isDragging.value ||
-    keyboard.isPressingSpace.value ||
-    selection.isMultiSelecting.value
+    keyboard.isPressingSpace.value
   ) {
     return
   }
 
   const diffX = Math.abs(mouseStartCoordinates.x - e.clientX)
   const diffY = Math.abs(mouseStartCoordinates.y - e.clientY)
+
+  if (!pointerDownElement) {
+    if (diffX > 6 || diffY > 6) {
+      rootEl.removeEventListener('pointermove', onPointerMove)
+      eventBus.emit('multi-select:start', {
+        x: e.clientX,
+        y: e.clientY,
+      })
+    }
+    return
+  }
+
   // Only start dragging if at least 6px in any direction were moved.
   if (diffX < 6 && diffY < 6) {
     return
@@ -179,6 +190,7 @@ function onPointerMove(e: PointerEvent) {
         })
       }
     }
+    rootEl.removeEventListener('pointermove', onPointerMove)
   }
 }
 
@@ -233,6 +245,18 @@ function onPointerDown(e: PointerEvent) {
   // Either pressing shift or right mouse button.
   // Features may handle this via event (e.g. start multi select).
   eventBus.emit('mouse:down', { ...coords, type: 'mouse', distance: 0 })
+}
+
+function isClickInArtboard(coords: Coord): boolean {
+  const size = ui.artboardSize.value
+  const scale = ui.artboardScale.value
+  const rect: Rectangle = {
+    x: ui.artboardOffset.value.x,
+    y: ui.artboardOffset.value.y,
+    width: size.width * scale,
+    height: size.height * scale,
+  }
+  return isInsideRect(coords.x, coords.y, rect)
 }
 
 function onPointerUp(e: PointerEvent) {
@@ -325,7 +349,14 @@ function onPointerUp(e: PointerEvent) {
     }
     return
   }
+
   eventBus.emit('window:clickAway')
+
+  if (isClickInArtboard(coords)) {
+    eventBus.emit('select:host')
+  } else {
+    eventBus.emit('select:host:unselect')
+  }
 }
 
 let longPressTimeout: any = null

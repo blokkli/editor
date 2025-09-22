@@ -5,16 +5,17 @@ import {
   onBeforeUnmount,
   ref,
   computed,
-  watch,
 } from 'vue'
 import { eventBus } from './eventBus'
 import type { StorageProvider } from './storageProvider'
 import type { AddListOrientation, Coord, Rectangle, Size } from '#blokkli/types'
 import type { Viewport } from '#blokkli/constants'
 import { falsy } from '.'
+import { addElementClasses } from './addElementClasses'
 import type { StateProvider } from './stateProvider'
+import type { AdapterContext } from '#blokkli/adapter'
+import { defaultLanguage, forceDefaultLanguage } from '#blokkli-build/config'
 
-const ARTBOARD_CLASS = 'bk-is-artboard'
 const CLASS_PROXY_MODE = 'bk-is-proxy-mode'
 
 export type UiProvider = {
@@ -28,9 +29,10 @@ export type UiProvider = {
   }
   isMobile: ComputedRef<boolean>
   isDesktop: ComputedRef<boolean>
-  isArtboard: () => boolean
   isAnimating: Ref<boolean>
+  isAnalyzing: Ref<boolean>
   isProxyMode: Ref<boolean>
+  hasDialogOpen: Ref<boolean>
 
   isTransforming: ComputedRef<boolean>
   setTransform: (label?: string | null | undefined) => void
@@ -57,6 +59,8 @@ export type UiProvider = {
 
   selectionTopLeft: Ref<Coord>
 
+  interfaceLanguage: ComputedRef<string>
+
   getAbsoluteElementRect: (
     v: HTMLElement | Rectangle,
     scale?: number,
@@ -73,14 +77,21 @@ export type UiProvider = {
 export default function (
   storage: StorageProvider,
   state: StateProvider,
+  context: ComputedRef<AdapterContext>,
 ): UiProvider {
   let cachedRootElement: HTMLElement | null = null
   let cachedArtboardElement: HTMLElement | null = null
   let cachedProviderElement: HTMLElement | null = null
 
+  const interfaceLanguage = computed<string>(() => {
+    return forceDefaultLanguage ? defaultLanguage : context.value.language
+  })
+
   const isProxyMode = ref(false)
   const menuIsOpen = ref(false)
+  const hasDialogOpen = ref(false)
   const isAnimating = ref(false)
+  const isAnalyzing = ref(false)
   const transformLabel = ref('')
   const openContextMenu = ref('')
   const selectionTopLeft = ref({ x: 0, y: 0 })
@@ -187,18 +198,6 @@ export default function (
     }, 400)
   }
 
-  const isArtboard = () => {
-    return document.documentElement.classList.contains(ARTBOARD_CLASS)
-  }
-
-  watch(isAnimating, (is) => {
-    if (is) {
-      document.documentElement.classList.add('bk-is-animating')
-    } else {
-      document.documentElement.classList.remove('bk-is-animating')
-    }
-  })
-
   const toolbarHeight = computed(() => {
     if (isMobile.value) {
       return 80
@@ -298,40 +297,6 @@ export default function (
     }
   })
 
-  function setProxyModeClass() {
-    document.documentElement.classList.remove(CLASS_PROXY_MODE)
-
-    if (isProxyMode.value) {
-      document.documentElement.classList.add(CLASS_PROXY_MODE)
-    }
-  }
-
-  watch(isProxyMode, setProxyModeClass)
-
-  onMounted(() => {
-    document.documentElement.classList.add('bk-html-root')
-    document.body.classList.add('bk-body')
-    document.documentElement.classList.add(ARTBOARD_CLASS)
-    setProxyModeClass()
-    viewportWidth.value = window.innerWidth
-    viewportHeight.value = window.innerHeight
-    window.addEventListener('resize', onResize)
-
-    const artboard = artboardElement()
-    resizeObserver.observe(artboard)
-  })
-  onBeforeUnmount(() => {
-    window.removeEventListener('resize', onResize)
-    document.documentElement.classList.remove('bk-html-root')
-    document.body.classList.remove('bk-body')
-    document.documentElement.classList.remove(ARTBOARD_CLASS)
-    document.documentElement.classList.remove(CLASS_PROXY_MODE)
-    clearTimeout(resizeTimeout)
-    const artboard = artboardElement()
-    resizeObserver.unobserve(artboard)
-    resizeObserver.disconnect()
-  })
-
   const viewport = computed(() => {
     return {
       width: viewportWidth.value,
@@ -371,6 +336,41 @@ export default function (
     transformLabel.value = label || ''
   }
 
+  addElementClasses(document.documentElement, 'bk-is-animating', isAnimating)
+
+  addElementClasses(
+    document.documentElement,
+    'bk-has-sidebar-left',
+    activeSidebarLeft,
+  )
+  addElementClasses(
+    document.documentElement,
+    'bk-has-sidebar-right',
+    activeSidebarRight,
+  )
+
+  addElementClasses(document.documentElement, ['bk-html-root'])
+  addElementClasses(document.body, 'bk-body')
+  addElementClasses(document.documentElement, CLASS_PROXY_MODE, isProxyMode)
+  addElementClasses(document.documentElement, 'bk-is-analyzing', isAnalyzing)
+
+  onMounted(() => {
+    viewportWidth.value = window.innerWidth
+    viewportHeight.value = window.innerHeight
+    window.addEventListener('resize', onResize)
+
+    const artboard = artboardElement()
+    resizeObserver.observe(artboard)
+  })
+
+  onBeforeUnmount(() => {
+    window.removeEventListener('resize', onResize)
+    clearTimeout(resizeTimeout)
+    const artboard = artboardElement()
+    resizeObserver.unobserve(artboard)
+    resizeObserver.disconnect()
+  })
+
   return {
     menu: {
       isOpen: menuIsOpen,
@@ -382,8 +382,8 @@ export default function (
     providerElement,
     isMobile,
     isDesktop,
-    isArtboard,
     isAnimating,
+    isAnalyzing,
     isTransforming,
     setTransform,
     transformLabel: computed(() => transformLabel.value),
@@ -405,5 +405,7 @@ export default function (
     lowPerformanceMode,
     getAbsoluteElementRect,
     getViewportRelativeRect,
+    interfaceLanguage,
+    hasDialogOpen,
   }
 }

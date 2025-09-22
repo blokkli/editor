@@ -3,12 +3,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onBeforeUnmount } from '#imports'
+import { ref, computed, onMounted, onBeforeUnmount, useBlokkli } from '#imports'
 import { getRelativeTimeString } from '#blokkli/helpers'
 
 const props = defineProps<{
   timestamp: number
 }>()
+
+const { ui } = useBlokkli()
 
 const incrementToggle = ref(0)
 let interval: any = null
@@ -16,7 +18,7 @@ let interval: any = null
 const formatted = computed(() => {
   // Adding the toggle value forces an update every 5 seconds, so the relative time stays correct.
   const date = new Date(props.timestamp * 1000 + incrementToggle.value)
-  return getRelativeTimeString(date)
+  return getRelativeTimeString(date, ui.interfaceLanguage.value)
 })
 
 onMounted(() => {

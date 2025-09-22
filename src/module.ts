@@ -129,9 +129,16 @@ export default defineNuxtModule<ModuleOptions>({
     helper.addComposable('defineBlokkli')
     helper.addComposable('defineBlokkliFragment')
     helper.addComposable('defineBlokkliFeature')
+    helper.addComposable('defineBlokkliProvider')
     helper.addComposable('useBlokkli')
     helper.addComposable('useBlokkliHelper')
 
+    helper.addAlias(
+      '#blokkli/analyzer',
+      resolver.resolve(
+        'runtime/components/Edit/Features/Analyze/analyzers/index',
+      ),
+    )
     helper.addAlias('#blokkli-build', helper.paths.blokkliBuildDir)
     helper.addAlias('#blokkli/types', resolver.resolve('runtime/types'))
     helper.addAlias('#blokkli/constants', resolver.resolve('runtime/constants'))
@@ -165,6 +172,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     addBuildPlugin(RuntimeDefinitionPlugin(nuxt, 'defineBlokkli'))
     addBuildPlugin(RuntimeDefinitionPlugin(nuxt, 'defineBlokkliFragment'))
+    addBuildPlugin(RuntimeDefinitionPlugin(nuxt, 'defineBlokkliProvider', 1))
 
     // Watch for file changes in dev mode.
     if (nuxt.options.dev) {

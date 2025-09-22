@@ -1,5 +1,10 @@
 import { useRouter, useRoute } from '#imports'
 import { defineBlokkliEditAdapter } from '#blokkli/adapter'
+import {
+  defineAnalyzer,
+  accessibilityAnalyzer,
+  readabilityAnalyzer,
+} from '#blokkli/analyzer'
 import type {
   BlokkliAdapter,
   GetMediaLibraryFunction,
@@ -12,6 +17,7 @@ import type {
   DroppableFieldConfig,
   EditableFieldConfig,
   FieldConfig,
+  HostTransformPlugin,
   LibraryItem,
 } from '#blokkli/types'
 import { allTypes } from './mock/allTypes'
@@ -35,6 +41,76 @@ import type { MutationAddArgs } from './mock/plugins/mutations/Mutation/Add'
 function getRandomNumberInRange(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
+
+const blockAnalyzer = defineAnalyzer(() => {
+  return {
+    id: 'block-analyzer',
+    category: 'content',
+    run: function (context) {
+      const matchingUuids = context.mutatedFields
+        .map((mutatedField) => {
+          if (mutatedField.entityType !== 'block') {
+            return
+          }
+          const item = context.getFieldListItem(mutatedField.entityUuid)
+          if (item?.bundle !== 'grid') {
+            return
+          }
+          const field = context.mutatedFields.find(
+            (v) => v.entityUuid === item.uuid && v.name === 'blocks',
+          )
+          if (field?.list.length) {
+            return
+          }
+
+          return item.uuid
+        })
+        .filter(falsy)
+
+      return context.defineResult(
+        'no-empty-grid',
+        'No empty grid blocks',
+        'content',
+        'Do not use empty grid blocks.',
+        matchingUuids.length ? 'violation' : 'pass',
+        matchingUuids.map((uuid) => {
+          return {
+            targets: [{ uuid }],
+          }
+        }),
+      )
+    },
+  }
+})
+
+const textAnalyzer = defineAnalyzer(() => {
+  return {
+    id: 'text-analyzer',
+    run: function (context) {
+      const nodes = context
+        .getTextElements()
+        .filter(
+          (v) =>
+            v.text.includes('blokkli') &&
+            !v.text.includes('paragraphs_blokkli'),
+        )
+        .map((v) => {
+          return {
+            description: v.text,
+            targets: [v.element],
+          }
+        })
+      return {
+        id: 'blokkli-typo',
+        category: 'text',
+        title: 'blökkli is not spelled correctly',
+        description: 'Please make sure that blökkli is spelled correctly!',
+        status: 'violation',
+        nodes,
+      }
+    },
+  }
+})
 
 export default defineBlokkliEditAdapter((ctx) => {
   // =============================================================================
@@ -174,7 +250,65 @@ export default defineBlokkliEditAdapter((ctx) => {
     getTransformPlugins() {
       return Promise.resolve(transforms)
     },
+    getHostTransformPlugins() {
+      const hostPlugin: HostTransformPlugin = {
+        id: 'rewrite_contents',
+        label: 'Texte umschreiben',
+        configInputs: [
+          {
+            type: 'options',
+            name: 'type',
+            label: 'Schreibstil',
+            required: true,
+            variant: 'select',
+            defaultValue: 'normal',
+            description: 'Wählen Sie den gewünschten Schreibstil',
+            options: [
+              {
+                value: 'normal',
+                label: 'Normal',
+              },
+              {
+                value: 'simple_german',
+                label: 'Einfache Sprache (Deutsch)',
+              },
+            ],
+          },
+
+          {
+            type: 'options',
+            name: 'type_alt',
+            label: 'Schreibstil',
+            required: true,
+            variant: 'radio',
+            defaultValue: 'normal',
+            description: 'Wählen Sie den gewünschten Schreibstil',
+            options: [
+              {
+                value: 'normal',
+                label: 'Normal',
+              },
+              {
+                value: 'simple_german',
+                label: 'Einfache Sprache (Deutsch)',
+              },
+            ],
+          },
+          {
+            type: 'text',
+            name: 'prompt',
+            label: 'Anweisungen an KI',
+            description:
+              'Zusätzliche Anweisungen, z.B. "Verwende keine Fremdwörter".',
+            required: true,
+            multiline: true,
+          },
+        ],
+      }
+      return Promise.resolve([hostPlugin])
+    },
     applyTransformPlugin: (e) => addMutation('transform', e),
+    applyHostTransformPlugin: (e) => addMutation('transform_host', e),
     takeOwnership: () => {
       isOwner = true
       const entity = getEntity()
@@ -190,6 +324,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         mutatedEntity: inputState.context.entity.getData(),
         mutatedState: {
           mutatedOptions: inputState.mutatedOptions,
+          mutatedHostOptions: inputState.mutatedHostOptions,
           fields: inputState.fields,
           violations: inputState.violations,
         },
@@ -258,7 +393,7 @@ export default defineBlokkliEditAdapter((ctx) => {
     loadComments() {
       return loadComments()
     },
-    resolveComment(uuid) {
+    resolveComment() {
       console.log('Resolve comment')
       return loadComments()
     },
@@ -333,7 +468,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         fieldValue: e.fieldValue,
       }),
 
-    getImportItems(text) {
+    getImportItems() {
       return Promise.resolve({ items: [], total: 0 })
     },
 
@@ -847,6 +982,31 @@ export default defineBlokkliEditAdapter((ctx) => {
         total: 3,
         perPage: 16,
       })
+    },
+
+    updateHostOptions: (options) =>
+      addMutation('update_host_options', {
+        options,
+      }),
+
+    getAnalyzers: () => {
+      return [
+        blockAnalyzer(),
+        textAnalyzer(),
+        readabilityAnalyzer(),
+        accessibilityAnalyzer({
+          runOptions: {
+            rules: {
+              region: {
+                enabled: false,
+              },
+              'frame-tested': {
+                enabled: false,
+              },
+            },
+          },
+        }),
+      ]
     },
 
     // @TODO: Implement in playground.

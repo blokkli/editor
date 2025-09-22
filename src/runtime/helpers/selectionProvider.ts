@@ -7,13 +7,7 @@ import type {
   DraggableItem,
   InteractionMode,
 } from '#blokkli/types'
-import {
-  findElement,
-  buildDraggableItem,
-  falsy,
-  modulo,
-  onlyUnique,
-} from '#blokkli/helpers'
+import { falsy, modulo, onlyUnique } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
 
 export type SelectionProvider = {
@@ -21,6 +15,16 @@ export type SelectionProvider = {
    * The currently selected UUIDs.
    */
   uuids: Readonly<Ref<string[]>>
+
+  /**
+   * Whether the host is currently selected.
+   */
+  hasHostSelected: ComputedRef<boolean>
+
+  /**
+   * Whether anything is selected.
+   */
+  hasAnythingSelected: ComputedRef<boolean>
 
   /**
    * The currently selected UUIDs as a Set.
@@ -92,6 +96,7 @@ export type SelectionProvider = {
 
 export default function (dom: DomProvider): SelectionProvider {
   const selectedUuids = ref<string[]>([])
+  const hasHostSelected = ref(false)
   const activeFieldKey = ref('')
   const draggingMode = ref<InteractionMode | null>(null)
   const editableActive = ref(false)
@@ -111,25 +116,16 @@ export default function (dom: DomProvider): SelectionProvider {
   const blocks = computed<DraggableExistingBlock[]>(() =>
     selectedUuids.value
       .map((uuid) => {
-        return dom.findBlock(uuid)
+        if (dom.registeredBlockUuids.value.includes(uuid)) {
+          return dom.findBlock(uuid)
+        }
+        return null
       })
       .filter(falsy),
   )
 
-  function selectItems(uuids: string[]) {
-    unselectItems()
-    const items = uuids
-      .map((uuid) => {
-        const element = findElement(uuid)
-        if (element) {
-          const item = buildDraggableItem(element)
-          if (item && item.itemType === 'existing') {
-            return item
-          }
-        }
-      })
-      .filter(falsy)
-    selectedUuids.value = items.map((v) => v.uuid)
+  function updateSelectedUuids(uuids: string[]) {
+    selectedUuids.value = uuids
   }
 
   function unselectItems() {
@@ -137,14 +133,14 @@ export default function (dom: DomProvider): SelectionProvider {
     if (selectedUuids.value.length === 0) {
       return
     }
-    selectedUuids.value = []
+    updateSelectedUuids([])
   }
 
   function onSelect(v: string | string[]) {
     if (typeof v === 'string') {
-      selectItems([v])
+      updateSelectedUuids([v])
     } else {
-      selectItems(v.filter(onlyUnique))
+      updateSelectedUuids(v.filter(onlyUnique))
     }
   }
 
@@ -175,14 +171,14 @@ export default function (dom: DomProvider): SelectionProvider {
 
   onBlokkliEvent('select', onSelect)
   onBlokkliEvent('select:start', (e) => {
-    selectedUuids.value = (e.uuids || []).filter(onlyUnique)
+    updateSelectedUuids((e.uuids || []).filter(onlyUnique))
     isMultiSelecting.value = true
     interactionMode.value = e.mode
     activeFieldKey.value = ''
   })
   onBlokkliEvent('select:toggle', (uuid) => {
     if (selectedUuids.value.includes(uuid)) {
-      selectedUuids.value = selectedUuids.value.filter((v) => v !== uuid)
+      updateSelectedUuids(selectedUuids.value.filter((v) => v !== uuid))
     } else {
       selectedUuids.value.push(uuid)
     }
@@ -193,18 +189,12 @@ export default function (dom: DomProvider): SelectionProvider {
     if (!uuids || (uuids.length === 0 && selectedUuids.value.length === 0)) {
       return
     }
-    selectItems(uuids)
+    updateSelectedUuids(uuids)
   })
 
   onBlokkliEvent('select:previous', () => selectInList(true))
   onBlokkliEvent('select:next', selectInList)
   onBlokkliEvent('setActiveFieldKey', setActiveFieldKey)
-  onBlokkliEvent('state:reloaded', () => {
-    selectedUuids.value = selectedUuids.value.filter((uuid) => {
-      // Check if the currently selected item is still in the DOM.
-      return !!dom.findBlock(uuid)
-    })
-  })
   onBlokkliEvent('dragging:start', (e) => {
     draggingMode.value = e.mode
     isMultiSelecting.value = false
@@ -214,7 +204,7 @@ export default function (dom: DomProvider): SelectionProvider {
     ) as DraggableExistingBlock[]
 
     if (blocks.length) {
-      selectItems(blocks.map((v) => v.uuid))
+      updateSelectedUuids(blocks.map((v) => v.uuid))
     }
   })
   onBlokkliEvent('dragging:end', () => {
@@ -222,7 +212,15 @@ export default function (dom: DomProvider): SelectionProvider {
   })
 
   onBlokkliEvent('select:unselect', () => {
-    selectedUuids.value = []
+    updateSelectedUuids([])
+  })
+
+  onBlokkliEvent('select:host', () => {
+    hasHostSelected.value = true
+  })
+
+  onBlokkliEvent('select:host:unselect', () => {
+    hasHostSelected.value = false
   })
 
   onBlokkliEvent('window:clickAway', () => {
@@ -241,6 +239,10 @@ export default function (dom: DomProvider): SelectionProvider {
         (v) => v.itemType === 'existing' || v.itemType === 'existing_structure',
       )
     )
+  })
+
+  const hasAnythingSelected = computed<boolean>(() => {
+    return hasHostSelected.value || !!selectedUuids.value.length
   })
 
   function isBlockSelected(uuid: string) {
@@ -263,5 +265,9 @@ export default function (dom: DomProvider): SelectionProvider {
     uuidsSet,
     dragItemsBundles,
     isBlockSelected,
+    hasHostSelected: computed(() => {
+      return hasHostSelected.value && !selectedUuids.value.length
+    }),
+    hasAnythingSelected,
   }
 }

@@ -104,16 +104,27 @@ provide('hero_step', step)
 .hero {
   &:after {
     content: '';
-    @apply absolute bottom-0 left-0 w-full h-100 bg-gradient-to-b from-white/0 to-white;
+    @apply absolute bottom-0 left-0 w-full h-100 bg-gradient-to-b from-white/0 to-white pointer-events-none z-0;
+
+    html.bk-is-analyzing & {
+      @apply hidden;
+    }
   }
+
   &:before {
     content: '';
     @apply absolute top-0 left-0 w-full h-full z-0;
-    @apply bg-gradient-to-b from-accent-50 to-white;
+    @apply bg-gradient-to-b from-accent-50 to-white pointer-events-none z-0;
+
+    html.bk-is-analyzing & {
+      @apply hidden;
+    }
   }
 }
+
 .hero-title {
   @apply text-mono-950 font-extrabold;
+
   em {
     @apply not-italic bg-accent-50 inline-block px-[0.125em] py-[0.125em] text-accent-700 border-2 border-accent-200 border-dashed rounded;
   }
@@ -127,6 +138,7 @@ provide('hero_step', step)
   perspective: 1200px;
   transform-style: preserve-3d;
   @apply inline-grid grid-cols-3 gap-50 w-full mt-[120px] -mb-[50px] md:mt-0 md:mb-0;
+
   @screen lg {
     perspective: 700px;
   }
@@ -135,6 +147,7 @@ provide('hero_step', step)
     @apply w-full h-full leading-none;
   }
 }
+
 .hero-animation-icon {
   @apply flex relative w-full items-center justify-center aspect-square;
 }

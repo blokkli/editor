@@ -32,6 +32,7 @@ import { getFieldKey, intersects } from '#blokkli/helpers'
 import type { AdapterContext } from '../../adapter'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import definitionProvider from '../../helpers/definitionProvider'
+import { addElementClasses } from '#blokkli/helpers/addElementClasses'
 
 const props = defineProps<{
   entity?: T
@@ -203,6 +204,9 @@ const onUpdateOption = (option: UpdateBlockOptionEvent) => {
   mutatedOptions[uuid][key] = value
 }
 
+addElementClasses(document.body, 'bk-body-preview')
+addElementClasses(document.documentElement, 'bk-html-preview')
+
 onMounted(() => {
   if (isInIframe()) {
     frameEventBus.on('mutatedFields', updateMutatedFields)
@@ -211,8 +215,6 @@ onMounted(() => {
     // We are a preview inside the iframe of the main editing app.
     // In this case updated state is passed in via postMessage from the main
     // editing app.
-    document.body.classList.add('bk-body-preview')
-    document.documentElement.classList.add('bk-html-preview')
     window.addEventListener('message', onMessage)
     window.addEventListener('wheel', onWheel, { passive: false })
     document.documentElement.addEventListener('mousedown', onMouseDown)
@@ -228,8 +230,6 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   clearTimeout(timeout)
-  document.body.classList.remove('bk-body-preview')
-  document.documentElement.classList.remove('bk-html-preview')
   window.removeEventListener('wheel', onWheel)
   window.removeEventListener('message', onMessage)
   document.documentElement.removeEventListener('mousedown', onMouseDown)

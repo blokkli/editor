@@ -275,7 +275,7 @@ class Extractor {
 
 async function getSourceTexts(): Promise<Record<string, string>> {
   const extractor = new Extractor()
-  const pattern = path.resolve(__dirname, './../../src') + '/**/*.vue'
+  const pattern = path.resolve(__dirname, './../../src') + '/**/*.{vue,ts}'
   const files = glob.sync(pattern)
   await extractor.addFiles(files)
 

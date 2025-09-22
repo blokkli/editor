@@ -7,7 +7,7 @@
       proxy-mode
       drop-alignment="horizontal"
     >
-      <BlokkliSliderView :items="items" />
+      <BlokkliSliderView :items="items" :is-editing />
     </BlokkliField>
   </div>
 </template>
@@ -16,7 +16,7 @@
 import type { FieldListItemTypedArray } from '#blokkli-build/generated-types'
 import { defineBlokkli } from '#imports'
 
-defineBlokkli({
+const { isEditing } = defineBlokkli({
   bundle: 'slider',
   propsFieldMapping: {
     slides: 'slides',

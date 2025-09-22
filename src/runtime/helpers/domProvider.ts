@@ -127,6 +127,8 @@ export type DomProvider = {
 
   registeredFieldTypes: ComputedRef<RegisteredFieldType[]>
 
+  registeredBlockUuids: ComputedRef<string[]>
+
   /**
    * Get all droppable entity fields.
    */
@@ -141,7 +143,10 @@ export type DomProvider = {
   getActiveProviderElement: () => HTMLElement
 
   getBlockRects: () => Record<string, MeasuredBlockRect>
-  getBlockRect: (uuid: string) => MeasuredBlockRect | undefined
+  getBlockRect: (
+    uuid: string,
+    refresh?: boolean,
+  ) => MeasuredBlockRect | undefined
   refreshBlockRect: (uuid: string) => void
 
   getFieldRect: (key: string) => Rectangle | undefined
@@ -173,12 +178,28 @@ export default function (
   const logger = debug.createLogger('DomProvider')
   const mutationsReady = ref(true)
   const intersectionReady = ref(false)
+  const registeredBlocks = reactive<Record<string, HTMLElement | undefined>>({})
+  const registeredFields = reactive<
+    Record<string, RegisteredField | undefined>
+  >({})
   const visibleBlocks: Set<string> = new Set()
   const visibleFields: Set<string> = new Set()
   const blockRects: Record<string, MeasuredBlockRect> = {}
   const fieldRects: Record<string, Rectangle> = {}
   const blockUuidCurrentKey: Record<string, string> = {}
   let draggableBlockCache: Record<string, DraggableExistingBlock> = {}
+
+  const registeredBlockUuids = computed(() => {
+    return Object.entries(registeredBlocks)
+      .map(([uuid, element]) => {
+        if (element) {
+          return uuid
+        }
+
+        return null
+      })
+      .filter(falsy)
+  })
 
   const resizeObserver = new ResizeObserver(function (
     entries: ResizeObserverEntry[],
@@ -276,11 +297,6 @@ export default function (
 
   const intersectionObserver =
     useDelayedIntersectionObserver(intersectionCallback)
-
-  const registeredBlocks = reactive<Record<string, HTMLElement | undefined>>({})
-  const registeredFields = reactive<
-    Record<string, RegisteredField | undefined>
-  >({})
 
   const registeredFieldTypes = computed<RegisteredFieldType[]>(() => {
     const fields = Object.values(registeredFields)
@@ -461,7 +477,13 @@ export default function (
     return blockRects
   }
 
-  function getBlockRect(uuid: string): MeasuredBlockRect | undefined {
+  function getBlockRect(
+    uuid: string,
+    refresh?: boolean,
+  ): MeasuredBlockRect | undefined {
+    if (refresh) {
+      refreshBlockRect(uuid)
+    }
     return blockRects[uuid]
   }
 
@@ -701,5 +723,6 @@ export default function (
     registeredFieldTypes,
     registerBlock,
     unregisterBlock,
+    registeredBlockUuids,
   }
 }

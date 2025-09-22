@@ -30,10 +30,14 @@ import type {
   DroppableFieldConfig,
   PublishOptions,
   GetEditStatesItem,
+  UpdateHostOptionEvent,
+  HostTransformPlugin,
+  PluginConfigInputItem,
 } from './../types'
 import type getVideoId from 'get-video-id'
 
 import type { GetMediaLibraryFunction } from './../components/Edit/Features/MediaLibrary/types'
+import type { Analyzer } from '#blokkli/components/Features/Analyze/types'
 
 export type { GetMediaLibraryFunction }
 
@@ -46,6 +50,12 @@ export interface MutationResponseLike<T> {
 type AdapterApplyTransformPlugin = {
   pluginId: string
   uuids: string[]
+  config?: PluginConfigInputItem[]
+}
+
+type AdapterApplyHostTransformPlugin = {
+  pluginId: string
+  config?: PluginConfigInputItem[]
 }
 
 export type UpdateEntityFieldValueEvent = {
@@ -304,10 +314,22 @@ export interface BlokkliAdapter<T> {
   getTransformPlugins?: () => Promise<TransformPlugin[]>
 
   /**
+   * Get all possible host transform plugins.
+   */
+  getHostTransformPlugins?: () => Promise<HostTransformPlugin[]>
+
+  /**
    * Apply a transform plugin.
    */
   applyTransformPlugin?: (
     e: AdapterApplyTransformPlugin,
+  ) => Promise<MutationResponseLike<T>>
+
+  /**
+   * Apply a host transform plugin.
+   */
+  applyHostTransformPlugin?: (
+    e: AdapterApplyHostTransformPlugin,
   ) => Promise<MutationResponseLike<T>>
 
   /**
@@ -320,6 +342,13 @@ export interface BlokkliAdapter<T> {
    */
   updateOptions?: (
     options: UpdateBlockOptionEvent[],
+  ) => Promise<MutationResponseLike<T>>
+
+  /**
+   * Update multiple host options.
+   */
+  updateHostOptions?: (
+    options: UpdateHostOptionEvent[],
   ) => Promise<MutationResponseLike<T>>
 
   /**
@@ -598,6 +627,17 @@ export interface BlokkliAdapter<T> {
   fragmentsAddBlock?: (
     e: AdapterFragmentsAddBlock,
   ) => Promise<MutationResponseLike<T>> | undefined
+
+  /**
+   * Build the link that is copied to the clipboard when clicking on an "anchor link" indicator.
+   */
+  buildAnchorLink?: (id: string, uuid: string) => string
+
+  getAnalyzers?: () =>
+    | Analyzer
+    | Analyzer[]
+    | Promise<Analyzer>
+    | Promise<Analyzer[]>
 }
 
 export type BlokkliAdapterFactory<T> = (

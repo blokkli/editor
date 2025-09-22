@@ -2,7 +2,13 @@ import { defineBlokkliEditAdapter } from '#blokkli/adapter'
 import { falsy } from '#blokkli/helpers'
 import { availableFeaturesAtBuild } from '#blokkli-build/features'
 import { operationSources } from '#nuxt-graphql-middleware/sources'
-import type { BlockBundleDefinition, TranslationState } from '#blokkli/types'
+import type {
+  BlockBundleDefinition,
+  HostTransformPlugin,
+  PluginConfigInput,
+  TransformPlugin,
+  TranslationState,
+} from '#blokkli/types'
 import type { BlokkliAdapter } from '#blokkli/adapter'
 import {
   useGraphqlQuery,
@@ -13,6 +19,7 @@ import {
 } from '#imports'
 import type {
   ParagraphsBlokkliCommentFragment,
+  ParagraphsBlokkliConfigInputFragment,
   ParagraphsBlokkliEditStateFragment,
 } from '#graphql-operations'
 import { ParagraphsBlokkliRemoteVideoProvider } from '#graphql-operations'
@@ -20,8 +27,60 @@ import type { Mutation, Query } from '#nuxt-graphql-middleware/operation-types'
 
 type DrupalAdapter = BlokkliAdapter<ParagraphsBlokkliEditStateFragment>
 
+function mapPluginConfigInputs(
+  inputs: ParagraphsBlokkliConfigInputFragment[],
+): PluginConfigInput[] {
+  return inputs
+    .map<PluginConfigInput | null>((input) => {
+      if (input.__typename === 'ParagraphsBlokkliConfigInputText') {
+        return {
+          type: 'text',
+          name: input.name,
+          label: input.label,
+          description: input.description,
+          required: input.required,
+          defaultValue: input.defaultValueText,
+          minLength: input.minLength,
+          maxLength: input.maxLength,
+          placeholder: input.placeholder,
+          pattern: input.pattern,
+          multiline: input.multiline,
+          rows: input.rows,
+        }
+      } else if (input.__typename === 'ParagraphsBlokkliConfigInputCheckbox') {
+        return {
+          type: 'checkbox',
+          name: input.name,
+          label: input.label,
+          description: input.description,
+          required: input.required,
+          defaultValue: input.defaultValueCheckbox ?? false,
+          checkboxLabel: input.checkboxLabel,
+        }
+      } else if (input.__typename === 'ParagraphsBlokkliConfigInputOptions') {
+        return {
+          type: 'options',
+          name: input.name,
+          label: input.label,
+          description: input.description,
+          required: input.required,
+          defaultValue: input.defaultValueOptions ?? '',
+          variant: input.variant,
+          options: input.options,
+        }
+      }
+
+      return null
+    })
+    .filter(falsy)
+}
+
 export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
   async (providedContext) => {
+    if (import.meta.dev) {
+      console.log('initialise Drupal blökkli adapter')
+    }
+
     const availableFeatureIds = new Set(availableFeaturesAtBuild)
     const availableGraphqlOperations = new Set(Object.keys(operationSources))
 
@@ -64,6 +123,15 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           },
           {},
         ),
+      }
+    })
+
+    const entityConfig = await useGraphqlQuery('pbEntityConfig', {
+      entityType: providedContext.value.entityType,
+      entityUuid: providedContext.value.entityUuid,
+    }).then((v) => {
+      return {
+        linkPath: v.data.config?.linkPath ?? '',
       }
     })
 
@@ -138,6 +206,8 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           .filter(falsy),
       }
 
+      const mutatedHostOptions = state.mutatedState?.hostOptions || {}
+
       return {
         currentIndex,
         mutations,
@@ -147,6 +217,10 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           fields,
           violations,
           mutatedOptions,
+          // PHP and its arrays...
+          mutatedHostOptions: Array.isArray(mutatedHostOptions)
+            ? {}
+            : mutatedHostOptions,
         },
         entity,
         mutatedEntity: state.mutatedEntity,
@@ -299,6 +373,13 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         `/paragraphs_blokkli/${ctx.value.entityType}/${ctx.value.entityUuid}/last_changed`,
       ).then((v) => v.changed)
 
+    const buildAnchorLink: DrupalAdapter['buildAnchorLink'] = (
+      id: string,
+      _uuid: string,
+    ) => {
+      return `${entityConfig.linkPath}#${id}`
+    }
+
     const adapter: BlokkliAdapter<any> = {
       addNewBlock,
       buildEditableFrameUrl,
@@ -315,6 +396,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       mapState,
       moveBlock,
       moveMultipleBlocks,
+      buildAnchorLink,
     }
 
     if (hasQuery('pbPublishOptions')) {
@@ -364,6 +446,14 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         useGraphqlMutation('pbTakeOwnership', ctx.value).then(mapMutation)
     }
 
+    if (hasMutation('pbUpdateHostOptions')) {
+      adapter.updateHostOptions = (items) =>
+        useGraphqlMutation('pbUpdateHostOptions', {
+          ...ctx.value,
+          items,
+        }).then(mapMutation)
+    }
+
     if (hasMutation('pbSetHistoryIndex')) {
       adapter.setHistoryIndex = (index) =>
         useGraphqlMutation('pbSetHistoryIndex', {
@@ -387,7 +477,6 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           entityType: options.hostEntityType.toUpperCase() as any,
           entityUuid: options.hostEntityUuid,
           createNewState: !options.closeAfterPublish,
-          // @ts-expect-error Might not exist.
           publishIfUnpublished: options.publishIfUnpublished,
           revisionLogMessage: options.revisionLogMessage,
         }).then(mapMutation)
@@ -607,14 +696,32 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         useGraphqlQuery('pbGetTransformPlugins', ctx.value)
           .then((v) => v.data.paragraphsBlokkliGetTransformPlugins || [])
           .then((plugins) =>
-            plugins.map((plugin) => {
+            plugins.map<TransformPlugin>((plugin) => {
               return {
                 id: plugin.id,
                 label: plugin.label,
+                description: plugin.description,
                 bundles: plugin.bundles,
                 targetBundles: plugin.targetBundles,
                 min: plugin.min,
                 max: plugin.max,
+                configInputs: mapPluginConfigInputs(plugin.configInputs),
+              }
+            }),
+          )
+    }
+
+    if (hasQuery('pbGetHostTransformPlugins')) {
+      adapter.getHostTransformPlugins = () =>
+        useGraphqlQuery('pbGetHostTransformPlugins', ctx.value)
+          .then((v) => v.data.paragraphsBlokkliGetHostTransformPlugins || [])
+          .then((plugins) =>
+            plugins.map<HostTransformPlugin>((plugin) => {
+              return {
+                id: plugin.id,
+                label: plugin.label,
+                description: plugin.description,
+                configInputs: mapPluginConfigInputs(plugin.configInputs),
               }
             }),
           )
@@ -623,6 +730,14 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     if (hasMutation('pbApplyTransformPlugin')) {
       adapter.applyTransformPlugin = (e) =>
         useGraphqlMutation('pbApplyTransformPlugin', {
+          ...ctx.value,
+          ...e,
+        }).then(mapMutation)
+    }
+
+    if (hasMutation('pbApplyHostTransformPlugin')) {
+      adapter.applyHostTransformPlugin = (e) =>
+        useGraphqlMutation('pbApplyHostTransformPlugin', {
           ...ctx.value,
           ...e,
         }).then(mapMutation)

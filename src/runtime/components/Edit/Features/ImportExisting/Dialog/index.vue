@@ -53,8 +53,12 @@
         }}
       </div>
       <div
-        class="bk-radio-list"
-        :style="{ opacity: searchTerm !== resultsSearchTerm ? 0.5 : 1 }"
+        :style="{
+          opacity: searchTerm !== resultsSearchTerm ? 0.5 : 1,
+          height: '420px',
+          overflow: 'auto',
+          marginTop: '10px',
+        }"
       >
         <label v-for="entity in entities" :key="entity.uuid" class="bk-radio">
           <input

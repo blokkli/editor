@@ -39,6 +39,98 @@
     "source": "All",
     "translation": ""
   },
+  "analyzeButtonLabel": {
+    "source": "Analyze Page",
+    "translation": ""
+  },
+  "analyzeCategory": {
+    "source": "Category",
+    "translation": ""
+  },
+  "analyzeCategoryAccessibility": {
+    "source": "Accessibility",
+    "translation": ""
+  },
+  "analyzeCategoryContent": {
+    "source": "Content",
+    "translation": ""
+  },
+  "analyzeCategorySeo": {
+    "source": "SEO",
+    "translation": ""
+  },
+  "analyzeCategoryText": {
+    "source": "Text",
+    "translation": ""
+  },
+  "analyzeLastRun": {
+    "source": "Last run: @time",
+    "translation": ""
+  },
+  "analyzeMoreLink": {
+    "source": "More",
+    "translation": ""
+  },
+  "analyzeSidebarTitle": {
+    "source": "Analyze",
+    "translation": ""
+  },
+  "analyzeStaleMessage": {
+    "source": "The contents of the page have changed since last analyzing the page. Please run the analyzers again to get updated results.",
+    "translation": ""
+  },
+  "analyzeStatusInapplicable": {
+    "source": "Inapplicable",
+    "translation": ""
+  },
+  "analyzeStatusIncomplete": {
+    "source": "Incomplete",
+    "translation": ""
+  },
+  "analyzeStatusPass": {
+    "source": "Pass",
+    "translation": ""
+  },
+  "analyzeStatusViolation": {
+    "source": "Violation",
+    "translation": ""
+  },
+  "analyzeTourText": {
+    "source": "Analyze the content of your page",
+    "translation": ""
+  },
+  "analyzerReadabiliyAverageSentenceLength": {
+    "source": "Average sentence length @length → split sentences.",
+    "translation": ""
+  },
+  "analyzerReadabiliyDescription": {
+    "source": "Avoid texts that are hard to read.",
+    "translation": ""
+  },
+  "analyzerReadabiliyHardToRead": {
+    "source": "Hard to read (@lang).",
+    "translation": ""
+  },
+  "analyzerReadabiliyShorterSentences": {
+    "source": "Consider shorter sentences and simpler wording.",
+    "translation": ""
+  },
+  "analyzerReadabiliyTitle": {
+    "source": "Text readability issues",
+    "translation": ""
+  },
+  "anchorHide": {
+    "source": "Hide anchor links",
+    "translation": ""
+  },
+  "anchorShow": {
+    "source": "Show anchor links",
+    "translation": ""
+  },
+  "anchorToggle": {
+    "source": "Toggle anchor links",
+    "translation": ""
+  },
   "artboard": {
     "source": "Artboard",
     "translation": "Zeichenflächi"
@@ -247,6 +339,10 @@
     "source": "Convert to...",
     "translation": "Konvertiere"
   },
+  "copiedToClipboardMessage": {
+    "source": "\"@text\" has been copied to your clipboard",
+    "translation": ""
+  },
   "deleteButton": {
     "source": "Delete",
     "translation": "Lösche"
@@ -402,6 +498,22 @@
   "feature_add-list_setting_orientation_option_vertical": {
     "source": "Vertical",
     "translation": "Vertikal"
+  },
+  "feature_analyze_description": {
+    "source": "Analyze blocks and page for SEO, accessibility, etc.",
+    "translation": ""
+  },
+  "feature_analyze_label": {
+    "source": "Analyze",
+    "translation": ""
+  },
+  "feature_anchors_description": {
+    "source": "Displays indicators for blocks with anchor IDs",
+    "translation": ""
+  },
+  "feature_anchors_label": {
+    "source": "Anchors",
+    "translation": ""
   },
   "feature_artboard_description": {
     "source": "Wraps the entire page in an artboard that can be zoomed and moved using the mouse.",
@@ -1211,6 +1323,10 @@
     "source": "Save all changes while keeping page unpublished",
     "translation": ""
   },
+  "publishDialogTitle": {
+    "source": "Publish changes",
+    "translation": ""
+  },
   "publishError": {
     "source": "Changes could not be published.",
     "translation": "D'Änderige hän nid chönne publiziert wärde."
@@ -1423,6 +1539,10 @@
     "source": "Start the tour",
     "translation": ""
   },
+  "transformDialogSubmitLabel": {
+    "source": "Apply transform",
+    "translation": ""
+  },
   "transformTo": {
     "source": "Other actions",
     "translation": "Anderi Aktione"
@@ -1453,6 +1573,10 @@
   },
   "translationsTourTitle": {
     "source": "Translations",
+    "translation": ""
+  },
+  "unexpectedMutationError": {
+    "source": "An unexpected error happened.",
     "translation": ""
   },
   "validationsNoneFound": {

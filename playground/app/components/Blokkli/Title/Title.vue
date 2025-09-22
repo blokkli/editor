@@ -1,6 +1,6 @@
 <template>
   <div
-    :id="'title-' + uuid"
+    :id
     :class="{ 'container mx-auto mt-20 lg:mt-50 text-center': !parentType }"
   >
     <div :class="{ 'md:max-w-3xl md:mx-auto md:text-center': isCentered }">
@@ -35,6 +35,7 @@
 
 <script lang="ts" setup>
 import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
+import { slugify } from '~/helpers'
 const { parentType, fieldListType, uuid } = defineBlokkli({
   bundle: 'title',
   globalOptions: ['bkHiddenGlobally', 'bkVisibleLanguages'],
@@ -63,6 +64,8 @@ export type Props = {
 }
 
 const props = defineProps<Props>()
+
+const id = computed(() => slugify(props.title))
 
 const isCentered = computed(
   () =>

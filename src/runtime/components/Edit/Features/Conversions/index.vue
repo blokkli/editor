@@ -3,18 +3,9 @@
     id="conversions"
     :title="$t('convertTo', 'Convert to...')"
     :enabled="!!possibleConversions.length"
-  >
-    <button
-      v-for="conversion in possibleConversions"
-      :key="conversion.id"
-      @click.prevent="onConvert(conversion.id)"
-    >
-      <ItemIcon :bundle="conversion.id" />
-      <div>
-        <div>{{ conversion.label }}</div>
-      </div>
-    </button>
-  </PluginItemDropdown>
+    :items="possibleConversions"
+    @select="onConvert($event.id)"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -25,7 +16,6 @@ import {
   useLazyAsyncData,
   watch,
 } from '#imports'
-import { ItemIcon } from '#blokkli/components'
 import { PluginItemDropdown } from '#blokkli/plugins'
 import { falsy, onlyUnique } from '#blokkli/helpers'
 import type { BlockBundleDefinition } from '#blokkli/types'

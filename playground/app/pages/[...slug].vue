@@ -39,7 +39,10 @@
           v-slot="{ items }"
         >
           <DevOnly>
-            <TableOfContents :items />
+            <div>
+              <div>{{ options }}</div>
+              <TableOfContents :items />
+            </div>
           </DevOnly>
         </BlokkliField>
       </div>
@@ -95,4 +98,20 @@ const fieldButtons = computed(() => mapMockField(page.buttons()))
 const fieldContent = computed(() => mapMockField(page.content()))
 const fieldIcons = computed(() => mapMockField(page.icons()))
 const pageValues = computed(() => page.getData())
+
+const { options } = defineBlokkliProvider(pageValues.value, {
+  entityType: 'content',
+  bundle: 'page',
+  options: {
+    heroStyle: {
+      type: 'radios',
+      label: 'Hero Style',
+      default: 'default',
+      options: {
+        default: 'Default',
+        fancy: 'Fancy',
+      },
+    },
+  },
+})
 </script>

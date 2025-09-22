@@ -8,9 +8,15 @@
 
 .bk.bk-settings {
   .bk-settings-group-title {
+    @apply text-xl font-bold leading-tight;
     .bk-beta-indicator {
-      @apply ml-5;
+      @apply inline-block ml-5 translate-y-[-3px];
     }
+  }
+
+  .bk-form-section {
+    @apply grid grid-cols-[240px_1fr] mt-0;
+    @apply py-25 border-b border-b-mono-300 first:pt-0 last:pb-0 last:border-b-0;
   }
 }
 

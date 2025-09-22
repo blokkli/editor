@@ -4,7 +4,11 @@
       v-if="showLabel"
       :class="isGrouped ? 'bk-blokkli-item-options-item-label' : 'bk-tooltip'"
     >
-      <span>{{ label }}</span>
+      <div class="bk-is-label">
+        <span>{{ label }}</span>
+        <span v-if="hoveredOption">:&nbsp;{{ hoveredOption }}</span>
+      </div>
+      <span v-if="description">{{ description }}</span>
     </div>
     <div
       class="bk-blokkli-item-options-item-content"
@@ -15,6 +19,7 @@
       <OptionRadios
         v-if="option.type === 'radios'"
         v-model="value"
+        v-model:hovered="hoveredOption"
         :label="label"
         :options="option.options"
         :property="property"
@@ -74,7 +79,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli } from '#imports'
+import { ref, computed, useBlokkli } from '#imports'
 import OptionRadios from './Radios/index.vue'
 import OptionCheckbox from './Checkbox/index.vue'
 import OptionCheckboxes from './Checkboxes/index.vue'
@@ -100,9 +105,10 @@ const props = defineProps<{
   option: BlockOptionDefinition
   property: string
   mutatedValue: any
-  uuids: string[]
   isGrouped?: boolean
 }>()
+
+const hoveredOption = ref('')
 
 const showLabel = computed(() => {
   if (props.isGrouped) {
@@ -117,6 +123,8 @@ const showLabel = computed(() => {
 const label = computed(() =>
   $blokkliText(`blockOption_${props.property}_label`, props.option.label),
 )
+
+const description = computed(() => props.option.description)
 
 const checkboxOptions = computed<{ value: string; label: string }[]>(() => {
   if (props.option.type !== 'checkboxes') {

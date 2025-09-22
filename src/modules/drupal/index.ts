@@ -14,6 +14,11 @@ function clearAndUpper(text: string) {
   return text.replace(/_/, '').toUpperCase()
 }
 
+function getDrupalAdapterPath(): string {
+  const resolver = createResolver(fileURLToPath(new URL('./', import.meta.url)))
+  return resolver.resolve('./runtime/adapter/index.js')
+}
+
 export default defineBlokkliModule({
   alterOptions(options) {
     // Set default options for blökkli starterkit setups.
@@ -24,7 +29,13 @@ export default defineBlokkliModule({
     // Default pattern to look for blökkli components.
     // ~ resolves to the app dir (./ in Nuxt 3, ./app in Nuxt 4).
     if (!options.pattern) {
-      options.pattern = ['~/components/Paragraph/**/*.vue']
+      options.pattern = [
+        '~/components/Paragraph/**/*.vue',
+        '~/components/Node/**/*.vue',
+        '~/components/TaxonomyTerm/**/*.vue',
+        '~/components/CommerceProduct/**/*.vue',
+        '~/components/Storage/**/*.vue',
+      ]
     }
 
     // Provide the default Drupal edit adapter if no custom adapter is defined.
@@ -34,11 +45,7 @@ export default defineBlokkliModule({
     // - no custom editAdapterPath is set
     // - and no custom editAdapter file exists.
     if (!options.editAdapterPath) {
-      const resolver = createResolver(
-        fileURLToPath(new URL('./', import.meta.url)),
-      )
-      const filePath = resolver.resolve('./runtime/adapter/index.js')
-      options.editAdapterPath = filePath
+      options.editAdapterPath = getDrupalAdapterPath()
     }
 
     // Add a default implementation for generating prop types for paragraph
@@ -55,7 +62,9 @@ export default defineBlokkliModule({
       }
     }
   },
-  setup({ context }) {
+  setup({ context, helper }) {
+    helper.addAlias('#blokkli/drupal-adapter', getDrupalAdapterPath())
+
     // First try to get nuxt-graphql-middleware module context without
     // throwing an error, so that we can log additional information on what
     // needs to be done.
@@ -128,9 +137,11 @@ export default defineBlokkliModule({
       'fragment.paragraphsBlokkliMutationItem.graphql',
       'fragment.paragraphsBlokkliMutationResult.graphql',
       'fragment.paragraphsBlokkliViolation.graphql',
+      'fragment.ParagraphsBlokkliConfigInput.graphql',
       'fragment.blokkliProps.graphql',
       'fragment.paragraphsFieldItem.graphql',
       'query.pbConfig.graphql',
+      'query.pbEntityConfig.graphql',
       'query.pbEditState.graphql',
     ]
 
@@ -163,6 +174,7 @@ export default defineBlokkliModule({
     addMutation('update_behavior_setting')
     addMutation('update_field_value')
     addMutation('update_host_entity_field_value')
+    addMutation('update_host_options')
 
     // Feature: Comments.
     if (graphql.schemaHasType('CommentBlokkliNode')) {
@@ -183,6 +195,11 @@ export default defineBlokkliModule({
       addGraphqlDocument('features/transform.graphql')
     } else {
       context.features.disableFeature('transform')
+    }
+
+    // Feature: Host Transform.
+    if (graphql.schemaHasType('ParagraphsBlokkliHostTransformPlugin')) {
+      addGraphqlDocument('features/transform_host.graphql')
     }
 
     // Feature: Library.

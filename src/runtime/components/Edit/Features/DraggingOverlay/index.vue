@@ -49,6 +49,7 @@ import type {
   DraggableExistingStructureBlock,
 } from '#blokkli/types'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { renderCycle } from '#blokkli/helpers/renderCycle'
 
 const { adapter } = defineBlokkliFeature({
   icon: 'drag',
@@ -269,7 +270,10 @@ const onDropAction = (
   })
 }
 
+let allUuidsBefore: string[] = []
+
 const onDrop = (e: DropTargetEvent) => {
+  allUuidsBefore = state.getAllUuids()
   mouseX.value = 0
   mouseY.value = 0
 
@@ -298,56 +302,66 @@ const onDrop = (e: DropTargetEvent) => {
 
     eventBus.emit('dragging:end')
     eventBus.emit('item:dropped')
-
-    // @TODO: Reimplement feature.
-    // Try to find the new block that has been added.
-    const newUuid =
-      state.mutations.value[state.mutations.value.length - 1]?.plugin
-        ?.affectedItemUuid
-    if (!newUuid) {
-      return
-    }
-    const newBlock = dom.findBlock(newUuid)
-    if (!newBlock) {
-      return
-    }
-
-    const allSelected = [...selection.uuids.value, newBlock.uuid]
-
-    eventBus.emit('select', allSelected)
-
-    if (typed.itemType !== 'new') {
-      return
-    }
-
-    const definition = definitions.getBlockDefinition(
-      newBlock.itemBundle,
-      newBlock.hostFieldListType,
-    )
-
-    if (!definition?.editor?.addBehaviour?.startsWith('editable:')) {
-      return
-    }
-
-    const editableField = definition.editor.addBehaviour.split(':')[1]
-
-    if (!editableField) {
-      return
-    }
-
-    const editableFieldElement = newBlock
-      .element()
-      .querySelector(`[data-blokkli-editable-field="${editableField}"]`)
-    if (!(editableFieldElement instanceof HTMLElement)) {
-      return
-    }
-
-    eventBus.emit('editable:focus', {
-      fieldName: editableField,
-      uuid: newUuid,
-    })
   })
 }
+
+onBlokkliEvent('state:reloaded', async function () {
+  if (!allUuidsBefore.length) {
+    return
+  }
+  const allUuidsAfter = state.getAllUuids()
+  const newUuid = allUuidsAfter.find((uuid) => !allUuidsBefore.includes(uuid))
+  allUuidsBefore = []
+
+  if (!newUuid) {
+    return
+  }
+  eventBus.emit('select', newUuid)
+  // @todo: DOM is not ready yet, so the block is never found.
+  // figure out a reliable way to open the editable field after a block
+  // was added.
+  await renderCycle()
+  const newBlock = dom.findBlock(newUuid)
+
+  if (!newBlock) {
+    return
+  }
+
+  const allSelected = [...selection.uuids.value, newBlock.uuid]
+
+  eventBus.emit('select', allSelected)
+
+  // if (typed.itemType !== 'new') {
+  //   return
+  // }
+
+  const definition = definitions.getBlockDefinition(
+    newBlock.itemBundle,
+    newBlock.hostFieldListType,
+  )
+
+  if (!definition?.editor?.addBehaviour?.startsWith('editable:')) {
+    return
+  }
+
+  const editableField = definition.editor.addBehaviour.split(':')[1]
+
+  if (!editableField) {
+    return
+  }
+
+  const editableFieldElement = newBlock
+    .element()
+    .querySelector(`[data-blokkli-editable-field="${editableField}"]`)
+  if (!(editableFieldElement instanceof HTMLElement)) {
+    return
+  }
+
+  eventBus.emit('editable:focus', {
+    fieldName: editableField,
+    uuid: newUuid,
+  })
+})
 
 onBlokkliEvent('dragging:drop', onDrop)
 
@@ -420,6 +434,7 @@ onBlokkliEvent('keyPressed', (e) => {
 })
 
 onBlokkliEvent('block:append', (e) => {
+  allUuidsBefore = state.getAllUuids()
   onDropNew(e.bundle, e.host, e.afterUuid)
 })
 

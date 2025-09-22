@@ -51,6 +51,7 @@ export class BlockProxy {
 export class MutationContext {
   proxies: BlockProxy[] = []
   entity: Entity
+  mutatedHostOptions: Record<string, string> = {}
 
   constructor(hostEntity: Entity) {
     this.entity = hostEntity
@@ -64,6 +65,10 @@ export class MutationContext {
     }
 
     createProxies(hostEntity)
+  }
+
+  updateHostOption(key: string, value: string) {
+    this.mutatedHostOptions[key] = value
   }
 
   getProxy(uuid: string): BlockProxy | undefined {
@@ -167,6 +172,7 @@ type MockMutationItem = {
 
 export type MutatedState = {
   mutatedOptions: any
+  mutatedHostOptions: Record<string, string>
   fields: MutatedField[]
   context: MutationContext
   violations: Validation[]
@@ -352,6 +358,9 @@ export class EditState {
 
     return {
       mutatedOptions,
+      mutatedHostOptions: JSON.parse(
+        JSON.stringify(context.mutatedHostOptions),
+      ),
       fields: Object.values(mutatedFields),
       context,
       violations,

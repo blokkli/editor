@@ -13,6 +13,7 @@
       <FormGroup title="Einstellungen" horizontal>
         <FormItem v-if="publishOptions?.hasRevisionLogMessage">
           <FormTextarea
+            id="revision-message"
             v-model="revisionMessage"
             label="Protokollnachricht der Revision"
             description="Beschreiben Sie kurz die vorgenommenen Änderungen"

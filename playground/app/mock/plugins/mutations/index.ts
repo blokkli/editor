@@ -27,6 +27,10 @@ import {
   type MutationEditTranslationArgs,
 } from './Mutation/EditTranslation'
 import {
+  MutationHostTransform,
+  type MutationHostTransformArgs,
+} from './Mutation/HostTransform'
+import {
   MutationMakeReusable,
   type MutationMakeReusableArgs,
 } from './Mutation/MakeReusable'
@@ -52,6 +56,10 @@ import {
   type MutationUpdateFieldValueArgs,
 } from './Mutation/UpdateFieldValue'
 import {
+  MutationUpdateHostOptions,
+  type MutationUpdateHostOptionsArgs,
+} from './Mutation/UpdateHostOptions'
+import {
   MutationUpdateOptions,
   type MutationUpdateOptionsArgs,
 } from './Mutation/UpdateOptions'
@@ -64,11 +72,13 @@ export type MutationArgsMap = {
   edit: MutationEditArgs
   edit_translation: MutationEditTranslationArgs
   update_options: MutationUpdateOptionsArgs
+  update_host_options: MutationUpdateHostOptionsArgs
   make_reusable: MutationMakeReusableArgs
   add_reusable_item: MutationAddReusableItemArgs
   update_field_value: MutationUpdateFieldValueArgs
   update_entity_field_value: MutationUpdateEntityFieldValueArgs
   transform: MutationTransformArgs
+  transform_host: MutationHostTransformArgs
   detach_reusable: MutationDetachReusableArgs
   edit_entity: MutationEditEntityArgs
   replace_media: MutationReplaceMediaArgs
@@ -95,6 +105,8 @@ export const createMutation = <T extends keyof MutationArgsMap>(
       return new MutationEditTranslation(configuration)
     case 'update_options':
       return new MutationUpdateOptions(configuration)
+    case 'update_host_options':
+      return new MutationUpdateHostOptions(configuration)
     case 'make_reusable':
       return new MutationMakeReusable(configuration)
     case 'add_reusable_item':
@@ -105,6 +117,8 @@ export const createMutation = <T extends keyof MutationArgsMap>(
       return new MutationUpdateEntityFieldValue(configuration)
     case 'transform':
       return new MutationTransform(configuration)
+    case 'transform_host':
+      return new MutationHostTransform(configuration)
     case 'detach_reusable':
       return new MutationDetachReusable(configuration)
     case 'edit_entity':

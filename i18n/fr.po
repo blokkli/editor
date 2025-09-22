@@ -47,6 +47,100 @@ msgctxt "all"
 msgid "All"
 msgstr ""
 
+msgctxt "analyzeButtonLabel"
+msgid "Analyze Page"
+msgstr ""
+
+msgctxt "analyzeCategory"
+msgid "Category"
+msgstr ""
+
+msgctxt "analyzeCategoryAccessibility"
+msgid "Accessibility"
+msgstr ""
+
+msgctxt "analyzeCategoryContent"
+msgid "Content"
+msgstr ""
+
+msgctxt "analyzeCategorySeo"
+msgid "SEO"
+msgstr ""
+
+msgctxt "analyzeCategoryText"
+msgid "Text"
+msgstr ""
+
+msgctxt "analyzeLastRun"
+msgid "Last run: @time"
+msgstr ""
+
+msgctxt "analyzeMoreLink"
+msgid "More"
+msgstr ""
+
+msgctxt "analyzeSidebarTitle"
+msgid "Analyze"
+msgstr ""
+
+msgctxt "analyzeStaleMessage"
+msgid ""
+"The contents of the page have changed since last analyzing the page. Please "
+"run the analyzers again to get updated results."
+msgstr ""
+
+msgctxt "analyzeStatusInapplicable"
+msgid "Inapplicable"
+msgstr ""
+
+msgctxt "analyzeStatusIncomplete"
+msgid "Incomplete"
+msgstr ""
+
+msgctxt "analyzeStatusPass"
+msgid "Pass"
+msgstr ""
+
+msgctxt "analyzeStatusViolation"
+msgid "Violation"
+msgstr ""
+
+msgctxt "analyzeTourText"
+msgid "Analyze the content of your page"
+msgstr ""
+
+msgctxt "analyzerReadabiliyAverageSentenceLength"
+msgid "Average sentence length @length → split sentences."
+msgstr ""
+
+msgctxt "analyzerReadabiliyDescription"
+msgid "Avoid texts that are hard to read."
+msgstr ""
+
+msgctxt "analyzerReadabiliyHardToRead"
+msgid "Hard to read (@lang)."
+msgstr ""
+
+msgctxt "analyzerReadabiliyShorterSentences"
+msgid "Consider shorter sentences and simpler wording."
+msgstr ""
+
+msgctxt "analyzerReadabiliyTitle"
+msgid "Text readability issues"
+msgstr ""
+
+msgctxt "anchorHide"
+msgid "Hide anchor links"
+msgstr ""
+
+msgctxt "anchorShow"
+msgid "Show anchor links"
+msgstr ""
+
+msgctxt "anchorToggle"
+msgid "Toggle anchor links"
+msgstr ""
+
 msgctxt "artboard"
 msgid "Artboard"
 msgstr ""
@@ -278,6 +372,10 @@ msgctxt "convertTo"
 msgid "Convert to..."
 msgstr "Convertir en..."
 
+msgctxt "copiedToClipboardMessage"
+msgid "\"@text\" has been copied to your clipboard"
+msgstr ""
+
 msgctxt "deleteButton"
 msgid "Delete"
 msgstr "Supprimer"
@@ -437,6 +535,22 @@ msgstr "Encadré"
 
 msgctxt "feature_add-list_setting_orientation_option_vertical"
 msgid "Vertical"
+msgstr ""
+
+msgctxt "feature_analyze_description"
+msgid "Analyze blocks and page for SEO, accessibility, etc."
+msgstr ""
+
+msgctxt "feature_analyze_label"
+msgid "Analyze"
+msgstr ""
+
+msgctxt "feature_anchors_description"
+msgid "Displays indicators for blocks with anchor IDs"
+msgstr ""
+
+msgctxt "feature_anchors_label"
+msgid "Anchors"
 msgstr ""
 
 msgctxt "feature_artboard_description"
@@ -1295,6 +1409,10 @@ msgctxt "publishDescriptionUnpublished"
 msgid "Save all changes while keeping page unpublished"
 msgstr ""
 
+msgctxt "publishDialogTitle"
+msgid "Publish changes"
+msgstr ""
+
 msgctxt "publishError"
 msgid "Changes could not be published."
 msgstr "Les modifications n’ont pas pu être publiées."
@@ -1532,6 +1650,10 @@ msgctxt "tourStartButton"
 msgid "Start the tour"
 msgstr ""
 
+msgctxt "transformDialogSubmitLabel"
+msgid "Apply transform"
+msgstr ""
+
 msgctxt "transformTo"
 msgid "Other actions"
 msgstr "Other actions"
@@ -1567,6 +1689,10 @@ msgstr ""
 
 msgctxt "translationsTourTitle"
 msgid "Translations"
+msgstr ""
+
+msgctxt "unexpectedMutationError"
+msgid "An unexpected error happened."
 msgstr ""
 
 msgctxt "validationsNoneFound"

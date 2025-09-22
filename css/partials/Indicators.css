@@ -1,0 +1,43 @@
+.bk {
+  &.bk-indicators {
+    @apply absolute top-0 left-0 pointer-events-none origin-top-left z-interaction-overlay;
+
+    #bk-indicators-left {
+      @apply absolute right-full top-0 whitespace-nowrap h-full;
+      .bk-indicator-item {
+        @apply right-0 pr-10;
+      }
+    }
+
+    .bk-indicator-item {
+      @apply absolute top-0 pointer-events-auto cursor-pointer text-mono-500 h-30 flex items-center;
+
+      .bk-icon {
+        @apply size-20 bg-red-normal text-white p-2 rounded-full;
+        svg {
+          @apply fill-white;
+        }
+      }
+
+      &:hover {
+        @apply text-mono-950;
+        .bk-icon {
+          @apply bg-red-dark;
+        }
+      }
+    }
+
+    .bk-indicator-item-inner {
+      @apply flex gap-5 items-center text-xs font-medium;
+    }
+
+    .bk-indicators-hovered {
+      @apply absolute top-0 left-0 bg-red-normal/30 rounded border-3 border-red-normal;
+    }
+
+    .bk-indicators-highlighted {
+      @apply absolute top-0 left-0 bg-accent-500/30 rounded border-3 border-accent-500;
+      @apply ring-4 ring-accent-300 outline outline-white;
+    }
+  }
+}

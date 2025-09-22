@@ -13,7 +13,6 @@
 @import './partials/comments.css';
 @import './partials/structure.css';
 @import './partials/resizable.css';
-@import './partials/fieldAreas.css';
 @import './partials/messages.css';
 @import './partials/settings.css';
 @import './partials/search.css';
@@ -46,6 +45,8 @@
 @import './partials/infobox.css';
 @import './partials/Diff.css';
 @import './partials/table.css';
+@import './partials/Indicators.css';
+@import './partials/Analyze.css';
 
 @import './indicator.css';
 
@@ -101,17 +102,26 @@ html {
   }
 }
 
-.bk-body {
-  .bk-main-canvas {
-    @apply fixed top-0 left-1/2 xl:w-[80vw] w-screen lg:w-full lg:min-w-[1280px] max-w-[1920px] pointer-events-none z-10;
-    background: white;
-    user-select: none;
-    image-rendering: crisp-edges;
-    backface-visibility: hidden;
-    transform-origin: 0 0;
-    /* Set initial position to be centered. The artboard feature will update it on mount. */
-    transform: translateX(-50%) translateY(100px);
-    contain: layout paint inline-size style;
+.bk-html-root.bk-is-artboard {
+  .bk-body {
+    .bk-main-canvas {
+      @apply fixed top-0 left-1/2 xl:w-[80vw] w-screen lg:w-full lg:min-w-[1280px] max-w-[1920px] pointer-events-none z-10;
+      background: white;
+      user-select: none;
+      image-rendering: crisp-edges;
+      backface-visibility: hidden;
+      transform-origin: 0 0;
+      /* Set initial position to be centered. The artboard feature will update it on mount. */
+      transform: translateX(-50%) translateY(100px);
+      contain: layout paint inline-size style;
+    }
+  }
+}
+
+.bk-is-analyzing {
+  .bk,
+  .bk-sidebar {
+    @apply !hidden;
   }
 }
 
@@ -362,6 +372,9 @@ html.bk-hide-non-editable {
   left: var(--bk-root-offset-left);
   bottom: var(--bk-root-offset-bottom);
   right: var(--bk-root-offset-right);
+  html.bk-has-sidebar-right & {
+    right: calc(var(--bk-root-offset-right) + var(--bk-sidebar-width-right));
+  }
 }
 
 .bk-state-unavailable {
@@ -459,7 +472,11 @@ html.bk-hide-non-editable {
   }
 
   .bk-pill {
-    @apply bg-accent-100 inline-block text-accent-800 ml-5 rounded-full px-5 py-[1px] uppercase text-xs font-semibold;
+    @apply bg-accent-100 inline-block text-accent-800 ml-5 rounded-full px-[7px] pt-[2px] uppercase text-xs font-semibold;
+
+    &.bk-is-mono {
+      @apply bg-mono-100 text-mono-500;
+    }
   }
 }
 .bk.bk-is-publish-dialog {

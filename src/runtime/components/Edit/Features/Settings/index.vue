@@ -17,20 +17,12 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  ref,
-  useBlokkli,
-  defineBlokkliFeature,
-  watch,
-  onMounted,
-  onBeforeUnmount,
-} from '#imports'
+import { ref, useBlokkli, defineBlokkliFeature, computed } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
 import SettingsDialog from './Dialog/index.vue'
+import { addElementClasses } from '#blokkli/helpers/addElementClasses'
 
 const { $t } = useBlokkli()
-
-const LOW_PERFORMANCE_CLASS = 'bk-low-performance-mode'
 
 const { settings } = defineBlokkliFeature({
   id: 'settings',
@@ -70,23 +62,13 @@ const showSettings = ref(false)
 
 const onClick = () => (showSettings.value = true)
 
-function setRootClass() {
-  if (settings.value.lowPerformanceMode) {
-    document.documentElement.classList.add(LOW_PERFORMANCE_CLASS)
-  } else {
-    document.documentElement.classList.remove(LOW_PERFORMANCE_CLASS)
-  }
-}
+const lowPerformanceMode = computed(() => settings.value.lowPerformanceMode)
 
-watch(settings, setRootClass)
-
-onMounted(() => {
-  setRootClass()
-})
-
-onBeforeUnmount(() => {
-  document.documentElement.classList.remove(LOW_PERFORMANCE_CLASS)
-})
+addElementClasses(
+  document.documentElement,
+  'bk-low-performance-mode',
+  lowPerformanceMode,
+)
 </script>
 
 <script lang="ts">

@@ -193,14 +193,6 @@ const showSidebar = () => {
   activeSidebar.value = props.id
 }
 
-watch(activeSidebar, (active) => {
-  if (active) {
-    document.documentElement.classList.add('bk-has-sidebar-' + props.region)
-  } else {
-    document.documentElement.classList.remove('bk-has-sidebar-' + props.region)
-  }
-})
-
 const sidebarContent = ref<HTMLDivElement | null>(null)
 const scrolledToEnd = ref(false)
 const isOverflowing = ref(false)

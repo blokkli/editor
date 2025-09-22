@@ -21,3 +21,8 @@
     @apply bg-accent-600/20 absolute border-3 border-accent-700 rounded;
   }
 }
+
+.bk.bk-host-selection-overlay {
+  @apply absolute top-0 left-0 size-full z-selection pointer-events-none;
+  @apply border-4 border-mono-700/90;
+}

@@ -57,3 +57,5 @@ Temporary Items
 src/runtime/css
 
 docs/.vitepress/cache
+
+playground/app/blokkli/apiReadabilityAnalyzer.ts

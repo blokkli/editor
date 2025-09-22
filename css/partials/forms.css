@@ -1,6 +1,5 @@
 .bk-form-label {
   @apply !block !mb-10 !text-base !font-semibold !text-mono-900 !font-sans;
-  @apply mt-20;
 }
 
 .bk-form-input {
@@ -41,7 +40,7 @@
 
   .bk-radio {
     span:before {
-      @apply rounded-full;
+      @apply !rounded-full;
     }
     input:checked ~ span:before {
       box-shadow: inset 0 0 0 3px white;
@@ -54,10 +53,6 @@
       background-repeat: no-repeat;
       background-position: center center;
     }
-  }
-
-  .bk-radio-list {
-    @apply h-[410px] overflow-auto  mt-10;
   }
 
   .bk-form-section {
@@ -74,7 +69,11 @@
     @apply py-15 border-y border-y-mono-200;
 
     &:last-child {
-      @apply border-b border-b-mono-200;
+      @apply border-b-0 pb-0;
+    }
+
+    &:first-child {
+      @apply border-t-0 pt-0;
     }
   }
 

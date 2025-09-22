@@ -6,14 +6,7 @@
         'overflow-hidden shadow-xl rounded-lg bg-white': options.elevated,
       }"
     >
-      <img
-        v-if="url"
-        :src="url"
-        :alt="alt"
-        loading="lazy"
-        :width="width"
-        :height="height"
-      />
+      <img v-if="url" :src="url" :alt loading="lazy" :width :height />
     </div>
   </div>
 </template>
@@ -32,6 +25,7 @@ const { options, parentType } = defineBlokkli({
     elevated: {
       type: 'checkbox',
       label: 'Elevated',
+      description: 'Renders the image with a box shadow.',
       default: true,
     },
   },

@@ -15,15 +15,18 @@ import {
   toValidVariableName,
 } from '../helpers'
 import { hash } from 'ohash'
+import type { ProviderDefinitionInput } from '#blokkli/types'
 
 export type ExtractedDefinition =
   | ExtractedBlockDefinitionInput
   | ExtractedFragmentDefinitionInput
+  | ProviderDefinitionInput
 
 const DEFINE_BLOKKLI = 'defineBlokkli'
 const DEFINE_BLOKKLI_FRAGMENT = 'defineBlokkliFragment'
+const DEFINE_BLOKKLI_PROVIDER = 'defineBlokkliProvider'
 
-type CollectedBlockType = 'main' | 'context' | 'fragment'
+type CollectedBlockType = 'main' | 'context' | 'fragment' | 'provider'
 
 function isEditComponent(filePath: string): boolean {
   return filePath.endsWith('/diff.vue') || filePath.endsWith('/proxy.vue')
@@ -32,7 +35,13 @@ function isEditComponent(filePath: string): boolean {
 export function isBlock(
   definition: ExtractedDefinition,
 ): definition is ExtractedBlockDefinitionInput {
-  return 'bundle' in definition
+  return 'bundle' in definition && !('entityType' in definition)
+}
+
+export function isFragment(
+  definition: ExtractedDefinition,
+): definition is ExtractedFragmentDefinitionInput {
+  return 'name' in definition
 }
 
 function getVariations(definition?: ExtractedDefinition | null): string[] {
@@ -59,16 +68,31 @@ function getVariations(definition?: ExtractedDefinition | null): string[] {
         }
       })
       .sort()
+  } else if (isFragment(definition)) {
+    return [`fragment:${definition.name}`]
   }
 
-  return [`fragment:${definition.name}`]
+  return [`provider:${definition.entityType}:${definition.bundle}`]
 }
 
 export function getIdentifier(definition: ExtractedDefinition) {
-  const type = isBlock(definition) ? 'b' : 'f'
-  const name = isBlock(definition) ? definition.bundle : definition.name
+  if (isBlock(definition)) {
+    return toValidVariableName(
+      'b_' + hash(definition.bundle + getVariations(definition).join('__')),
+    )
+  } else if (isFragment(definition)) {
+    return toValidVariableName(
+      'f_' + hash(definition.name + getVariations(definition).join('__')),
+    )
+  }
   return toValidVariableName(
-    type + '_' + hash(name + getVariations(definition).join('__')),
+    'p_' +
+      hash(
+        definition.entityType +
+          '__' +
+          definition.bundle +
+          getVariations(definition).join('__'),
+      ),
   )
 }
 
@@ -110,6 +134,7 @@ export class CollectedBlockFile extends CollectedFile {
     const objectLiteralString = extractObjectLiteral(this.fileContents, [
       DEFINE_BLOKKLI,
       DEFINE_BLOKKLI_FRAGMENT,
+      DEFINE_BLOKKLI_PROVIDER,
     ])
 
     // Nothing changed.
@@ -158,8 +183,10 @@ export class CollectedBlockFile extends CollectedFile {
       } else {
         this.type = 'main'
       }
-    } else {
+    } else if (isFragment(this.definition)) {
       this.type = 'fragment'
+    } else {
+      this.type = 'provider'
     }
 
     // Only collect the icon for the main block entry.
@@ -305,7 +332,8 @@ export class BlockCollector extends Collector<CollectedBlockFile> {
 
     return (
       content.includes(DEFINE_BLOKKLI) ||
-      content.includes(DEFINE_BLOKKLI_FRAGMENT)
+      content.includes(DEFINE_BLOKKLI_FRAGMENT) ||
+      content.includes(DEFINE_BLOKKLI_PROVIDER)
     )
   }
 

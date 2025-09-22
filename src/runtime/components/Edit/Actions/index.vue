@@ -3,10 +3,11 @@
     <div class="bk bk-blokkli-item-actions bk-control" @click.stop>
       <div
         v-show="
-          selection.blocks.value.length &&
           !selection.isDragging.value &&
           !selection.editableActive.value &&
-          !ui.isAnimating.value
+          !ui.isAnimating.value &&
+          hasAnythingSelected &&
+          shouldRender
         "
         ref="el"
         class="bk-blokkli-item-actions-inner"
@@ -32,7 +33,13 @@
               }"
               @click.prevent="showDropdown = !showDropdown"
             >
-              <div class="bk-blokkli-item-actions-title-icon">
+              <div v-if="shouldRenderButton" class="bk-tooltip">
+                {{ $t('actionsDropdownToolip', 'Further actions') }}
+              </div>
+              <div
+                v-show="!hasSelectedHost"
+                class="bk-blokkli-item-actions-title-icon"
+              >
                 <Icon v-if="ui.isTransforming.value" name="loader" />
                 <ItemIcon v-else-if="bundleIcon" :bundle="bundleIcon" />
                 <Icon v-else name="selection" />
@@ -57,6 +64,7 @@
           <div id="bk-blokkli-item-actions-after" />
 
           <div
+            v-show="selection.blocks.value.length"
             id="bk-blokkli-item-actions"
             class="bk-blokkli-item-actions-buttons"
           />
@@ -76,7 +84,7 @@ import {
   onBeforeUnmount,
 } from '#imports'
 import { onlyUnique, findIdealRectPosition, falsy } from '#blokkli/helpers'
-import type { Rectangle, PluginMountEvent } from '#blokkli/types'
+import type { Rectangle, PluginMountEvent, Coord } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
@@ -97,7 +105,17 @@ const controlsEl = ref<HTMLElement | null>(null)
 const mountedPlugins = ref<PluginMountEvent[]>([])
 const showDropdown = ref(false)
 
+const shouldRender = ref(false)
+
+const hasAnythingSelected = computed(
+  () => selection.hasHostSelected.value || !!selection.blocks.value.length,
+)
+
 watch(selection.blocks, () => {
+  showDropdown.value = false
+})
+
+watch(selection.hasHostSelected, () => {
   showDropdown.value = false
 })
 
@@ -112,14 +130,16 @@ const bundleIcon = computed(() => {
   return itemBundle.value?.id
 })
 
+const hasSelectedHost = computed(() => {
+  return selection.blocks.value.length === 0
+})
+
 const title = computed(() => {
   if (ui.transformLabel.value) {
     return ui.transformLabel.value
-  }
-  if (debug.isEnabled.value && selection.uuids.value.length === 1) {
+  } else if (debug.isEnabled.value && selection.uuids.value.length === 1) {
     return selection.uuids.value[0]
-  }
-  if (itemBundle.value) {
+  } else if (itemBundle.value) {
     if (itemBundle.value.id === 'blokkli_fragment') {
       const fragments = selection.uuids.value
         .map((uuid) => {
@@ -146,6 +166,8 @@ const title = computed(() => {
       }
     }
     return itemBundle.value.label
+  } else if (!selection.blocks.value.length) {
+    return state.entity.value.label
   }
 
   return $t('multipleItemsLabel', 'Items')
@@ -202,44 +224,47 @@ onBeforeUnmount(() => {
   }
 })
 
-onBlokkliEvent('canvas:draw', () => {
-  if (
-    !selection.blocks.value.length ||
-    ui.isMobile.value ||
-    selection.isChangingOptions.value
-  ) {
+function getCoords(): Coord | undefined {
+  if (ui.isMobile.value) {
     return
   }
+  const offset = ui.artboardOffset.value
+  const scale = ui.artboardScale.value
+  const rects = selection.blocks.value
+    .map((block) => dom.getBlockRect(block.uuid))
+    .filter(falsy)
+    .filter((rect) => rect.height || rect.width)
 
   let minX = 0
   let minY = 0
-  const rects = selection.uuids.value
-    .map((uuid) => dom.getBlockRect(uuid))
-    .filter(falsy)
 
-  if (!rects.length) {
-    return
-  }
+  const hasRects = !!rects.length
 
-  const offset = ui.artboardOffset.value
-  const scale = ui.artboardScale.value
-
-  for (let i = 0; i < rects.length; i++) {
-    const { x, y } = rects[i]!
-    const rectX = (x + offset.x / scale) * scale
-    const rectY = (y + offset.y / scale) * scale
-    if (i === 0 || rectX < minX) {
-      minX = rectX
+  if (hasRects) {
+    for (let i = 0; i < rects.length; i++) {
+      const { x, y } = rects[i]!
+      const rectX = (x + offset.x / scale) * scale
+      const rectY = (y + offset.y / scale) * scale
+      if (i === 0 || rectX < minX) {
+        minX = rectX
+      }
+      if (i === 0 || rectY < minY) {
+        minY = rectY
+      }
     }
-    if (i === 0 || rectY < minY) {
-      minY = rectY
+  } else {
+    if (!selection.hasHostSelected.value) {
+      return
     }
+    minX = ui.artboardOffset.value.x
+    minY = ui.artboardOffset.value.y
   }
 
   const padding = ui.visibleViewportPadded.value
+  const xSubtract = hasRects ? 5 * Math.min(scale, 1) : 0
   const rect = limitPlacedRect(
     {
-      x: minX - 5 * Math.min(scale, 1),
+      x: minX - xSubtract,
       y: minY - ACTIONS_HEIGHT - 15 * Math.min(scale, 1),
       width: scrollWidth,
       height: ACTIONS_HEIGHT,
@@ -247,17 +272,30 @@ onBlokkliEvent('canvas:draw', () => {
     padding,
   )
 
-  const ideal = findIdealRectPosition(
-    ui.viewportBlockingRects.value,
-    rect,
-    padding,
-  )
+  return findIdealRectPosition(ui.viewportBlockingRects.value, rect, padding)
+}
 
-  if (el.value) {
-    el.value.style.transform = ui.isMobile.value
-      ? ''
-      : `translate3d(${ideal.x}px, ${ideal.y}px, 0)`
+onBlokkliEvent('canvas:draw', () => {
+  if (!el.value) {
+    return
   }
+
+  if (ui.isMobile.value) {
+    el.value.style.transform = ''
+  }
+
+  if (selection.isChangingOptions.value) {
+    return
+  }
+
+  const coords = getCoords()
+  if (!coords) {
+    shouldRender.value = false
+    return
+  }
+
+  el.value.style.transform = `translate3d(${coords.x}px, ${coords.y}px, 0)`
+  shouldRender.value = true
 })
 
 const shouldRenderButton = computed(() =>

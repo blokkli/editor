@@ -7,7 +7,7 @@ import {
   readonly,
   provide,
 } from 'vue'
-import { refreshNuxtData } from 'nuxt/app'
+import { refreshNuxtData, useState } from 'nuxt/app'
 import type { BlokkliAdapter, AdapterContext } from '../adapter'
 import { INJECT_MUTATED_FIELDS_MAP } from './symbols'
 import onBlokkliEvent from './composables/onBlokkliEvent'
@@ -27,6 +27,9 @@ import { falsy, getFieldKey } from '#blokkli/helpers'
 import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
 import { nextTick } from '#imports'
 import type { TextProvider } from './textProvider'
+import { addElementClasses } from './addElementClasses'
+
+const HOST_OPTION_KEY = 'HOST'
 
 export type BlokkliOwner = {
   name: string | undefined
@@ -61,13 +64,16 @@ export type StateProvider = {
   getFieldListItem: (uuid: string) => FieldListItem | undefined
   getFieldListForBlock: (uuid: string) => MutatedField | undefined
   getMutatedField: (uuid: string, fieldName: string) => MutatedField | undefined
+  getAllUuids: () => string[]
 }
 
 export default async function (
   adapter: BlokkliAdapter<any>,
   context: ComputedRef<AdapterContext>,
   $t: TextProvider,
+  providerKey: string,
 ): Promise<StateProvider> {
+  const overrideHostOptions = useState('options:' + providerKey)
   const stateLoaded = ref(false)
   const stateLoadError = ref(false)
   const owner = ref<BlokkliOwner | null>(null)
@@ -88,10 +94,10 @@ export default async function (
   })
   let fieldBlockCount: Record<string, number> = {}
   const blockBundleCount: Ref<Record<string, number>> = ref({})
-  const fieldListItemMap: Record<string, string> = {}
+  const fieldListItemMap: Map<string, string> = new Map()
 
   function getFieldListItem(uuid: string): FieldListItem | undefined {
-    const fieldKey = fieldListItemMap[uuid]
+    const fieldKey = fieldListItemMap.get(uuid)
     if (!fieldKey) {
       return
     }
@@ -106,7 +112,7 @@ export default async function (
   }
 
   function getFieldListForBlock(uuid: string): MutatedField | undefined {
-    const fieldKey = fieldListItemMap[uuid]
+    const fieldKey = fieldListItemMap.get(uuid)
     if (!fieldKey) {
       return
     }
@@ -137,6 +143,15 @@ export default async function (
         mutatedOptions[key] = newOptions
       }
     }
+
+    const hostOptions = context?.mutatedState?.mutatedHostOptions ?? {}
+    const existing = mutatedOptions[HOST_OPTION_KEY]
+
+    if (!existing || JSON.stringify(existing) !== JSON.stringify(hostOptions)) {
+      mutatedOptions[HOST_OPTION_KEY] = hostOptions ?? ''
+      overrideHostOptions.value = hostOptions
+    }
+
     mutations.value = context?.mutations || []
     violations.value = context?.mutatedState?.violations || []
     const currentIndex = context?.currentIndex
@@ -172,6 +187,8 @@ export default async function (
     const visitedFieldKeys: string[] = []
     const newBlockBundleCount: Record<string, number> = {}
 
+    fieldListItemMap.clear()
+
     // Reset the count cache.
     fieldBlockCount = {}
     for (let i = 0; i < newMutatedFields.length; i++) {
@@ -195,7 +212,7 @@ export default async function (
           newBlockBundleCount[item.bundle] = 0
         }
         newBlockBundleCount[item.bundle]!++
-        fieldListItemMap[item.uuid] = key
+        fieldListItemMap.set(item.uuid, key)
       }
     }
 
@@ -240,14 +257,18 @@ export default async function (
   }
 
   function lockBody() {
-    document.body.classList.add('bk-body-loading')
     isLoading.value = true
   }
 
   function unlockBody() {
-    document.body.classList.remove('bk-body-loading')
     isLoading.value = false
   }
+
+  function getAllUuids(): string[] {
+    return [...fieldListItemMap.keys()]
+  }
+
+  addElementClasses(document.body, 'bk-body-loading', isLoading)
 
   const mutateWithLoadingState: MutateWithLoadingStateFunction = async (
     callback,
@@ -372,5 +393,6 @@ export default async function (
     getFieldListItem,
     getMutatedField,
     getFieldListForBlock,
+    getAllUuids,
   }
 }

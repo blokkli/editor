@@ -29,6 +29,7 @@
   <Actions v-if="!isInitializing" />
   <Toolbar @loaded="toolbarLoaded = true" />
   <AppMenu v-if="toolbarLoaded" />
+  <Indicators />
   <Features
     v-if="!isInitializing && toolbarLoaded"
     :key="route.fullPath"
@@ -46,7 +47,6 @@
 
 <script lang="ts" setup generic="T">
 import {
-  watch,
   ref,
   computed,
   provide,
@@ -55,6 +55,7 @@ import {
   useRoute,
   useRuntimeConfig,
   nextTick,
+  inject,
 } from '#imports'
 import type { BlokkliApp, ItemEditContext } from '#blokkli/types'
 import Toolbar from './Toolbar/index.vue'
@@ -62,6 +63,7 @@ import Actions from './Actions/index.vue'
 import Loading from './Loading/index.vue'
 import Messages from './Messages/index.vue'
 import Features from './Features/index.vue'
+import Indicators from './Indicators/index.vue'
 import AppMenu from './AppMenu/index.vue'
 import DraggableList from './DraggableList.vue'
 import DragInteractions from './DragInteractions/index.vue'
@@ -84,6 +86,7 @@ import tourProvider from './../../helpers/tourProvider'
 import debugProvider from './../../helpers/debugProvider'
 import definitionProvider from './../../helpers/definitionProvider'
 import dropAreasProvider from './../../helpers/dropAreaProvider'
+import indicatorsProvider from './../../helpers/indicatorsProvider'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import '#blokkli-build/styles.css'
 import getAdapter from '#blokkli-build/edit-adapter'
@@ -94,9 +97,11 @@ import {
   INJECT_EDIT_LOGGER,
   INJECT_GLOBAL_PROXY_MODE,
   INJECT_IS_EDITING,
+  INJECT_PROVIDER_KEY,
 } from '#blokkli/helpers/symbols'
 import type { AdapterContext } from '#blokkli/adapter'
 import { useBlockRegistration } from '#blokkli/helpers/composables/useBlockRegistration'
+import { addElementClasses } from '#blokkli/helpers/addElementClasses'
 
 const props = withDefaults(
   defineProps<{
@@ -126,6 +131,7 @@ const context = computed<AdapterContext>(() => {
   }
 })
 const adapter = await getAdapter(context)
+const providerKey = inject(INJECT_PROVIDER_KEY, '')
 
 const route = useRoute()
 const runtimeConfig = useRuntimeConfig().public.blokkli
@@ -136,7 +142,7 @@ const isInitializing = ref(true)
 
 const definitions = definitionProvider()
 const $t = textProvider(context)
-const state = await editStateProvider(adapter, context, $t)
+const state = await editStateProvider(adapter, context, $t, providerKey)
 const storage = storageProvider()
 const debug = debugProvider(storage)
 const features = featuresProvider(storage)
@@ -145,12 +151,13 @@ const commands = commandsProvider()
 const tour = tourProvider()
 const dropAreas = dropAreasProvider()
 const broadcast = broadcastProvider()
-const ui = uiProvider(storage, state)
+const ui = uiProvider(storage, state, context)
 const dom = domProvider(ui, debug, definitions)
 const animation = animationProvider(ui)
 const keyboard = keyboardProvider(animation)
 const selection = selectionProvider(dom)
 const types = await typesProvider(adapter, selection, context)
+const indicators = indicatorsProvider()
 
 const mutatedEntity = computed(() => state.mutatedEntity.value || props.entity)
 
@@ -169,27 +176,25 @@ function onTouchStart(e: TouchEvent) {
   }
 }
 
-const setRootClasses = (unmount?: boolean) => {
-  document.documentElement.classList.remove('bk-use-animations')
+const shouldIsolate = computed(() => props.isolate)
 
-  if (ui.useAnimations.value && !unmount) {
-    document.documentElement.classList.add('bk-use-animations')
-  }
-}
-
-watch(ui.useAnimations, setRootClasses)
+addElementClasses(
+  document.documentElement,
+  'bk-use-animations',
+  ui.useAnimations,
+)
+addElementClasses(
+  document.documentElement,
+  'bk-isolate-provider',
+  shouldIsolate,
+)
 
 const baseLogger = debug.createLogger('EditProvider')
 
 onMounted(() => {
   window.addEventListener('contextmenu', onContextMenu)
-  if (props.isolate) {
-    document.documentElement.classList.add('bk-isolate-provider')
-  }
-
   document.documentElement.addEventListener('touchmove', onTouchMove)
   document.documentElement.addEventListener('touchstart', onTouchStart)
-  setRootClasses()
   baseLogger.log('EditProvider mounted')
   dom.init()
   isInitializing.value = false
@@ -200,10 +205,8 @@ onBeforeUnmount(() => {
   window.removeEventListener('contextmenu', onContextMenu)
   isInitializing.value = true
   toolbarLoaded.value = false
-  document.documentElement.classList.remove('bk-isolate-provider')
   document.documentElement.removeEventListener('touchmove', onTouchMove)
   document.documentElement.removeEventListener('touchstart', onTouchStart)
-  setRootClasses(true)
 })
 provide(INJECT_EDIT_LOGGER, baseLogger)
 
@@ -240,6 +243,7 @@ provide<BlokkliApp>(INJECT_APP, {
   dropAreas,
   debug,
   definitions,
+  indicators,
 })
 
 const isProxyMode = computed(() => ui.isProxyMode.value)

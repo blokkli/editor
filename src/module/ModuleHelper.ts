@@ -107,6 +107,14 @@ export class ModuleHelper {
       ),
     )
 
+    if (this.isModuleBuild) {
+      pattern.push(
+        this.resolvers.module.resolve(
+          './../playground/app/components/Blokkli/**/*.vue',
+        ),
+      )
+    }
+
     const fieldListTypes: string[] = providedOptions.fieldListTypes || []
     if (!fieldListTypes.includes('default')) {
       fieldListTypes.push('default')

@@ -1,6 +1,8 @@
 import packageJson from './../package.json'
 import { fileURLToPath } from 'node:url'
 
+const playgroundFolder = fileURLToPath(new URL('./', import.meta.url))
+
 export default defineNuxtConfig({
   ssr: false,
   devtools: {
@@ -24,7 +26,7 @@ export default defineNuxtConfig({
   debug: false,
 
   imports: {
-    autoImport: false,
+    autoImport: true,
   },
 
   runtimeConfig: {
@@ -68,7 +70,10 @@ export default defineNuxtConfig({
   },
 
   blokkli: {
-    pattern: ['~/components/Blokkli/**/*.vue'],
+    pattern: [
+      playgroundFolder + 'app/components/Blokkli/**/*.vue',
+      playgroundFolder + 'app/pages/**/*.vue',
+    ],
     itemEntityType: 'block',
     fieldListTypes: ['header', 'inline'],
     globalOptions: {

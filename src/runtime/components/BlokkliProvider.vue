@@ -113,6 +113,9 @@ const props = withDefaults(
     language?: string
     editLabel?: string
     editPath?: string
+    hostOptions?: any
+
+    // @todo: edit icon for indicator
 
     /**
      * When set to true, during editing, everything except the provider element will be hidden.
@@ -125,6 +128,7 @@ const props = withDefaults(
     editLabel: '',
     entity: undefined,
     editPath: undefined,
+    hostOptions: undefined,
   },
 )
 

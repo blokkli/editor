@@ -1,0 +1,34 @@
+query pbGetHostTransformPlugins(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String!
+) {
+  paragraphsBlokkliGetHostTransformPlugins(
+    entityType: $entityType
+    entityUuid: $entityUuid
+    langcode: $langcode
+  ) {
+    id
+    label
+    description
+    configInputs {
+      ...paragraphsBlokkliConfigInput
+    }
+  }
+}
+
+mutation pbApplyHostTransformPlugin(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $pluginId: String!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: host_transform(pluginId: $pluginId) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

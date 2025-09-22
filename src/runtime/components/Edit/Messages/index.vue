@@ -24,7 +24,11 @@ function removeMessage(index: number) {
 }
 
 onBlokkliEvent('message', (message) => {
-  messages.value.push(message)
+  if (message.replace) {
+    messages.value = [message]
+  } else {
+    messages.value.push(message)
+  }
 })
 </script>
 

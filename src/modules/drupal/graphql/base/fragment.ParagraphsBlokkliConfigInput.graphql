@@ -1,0 +1,31 @@
+fragment paragraphsBlokkliConfigInput on ParagraphsBlokkliConfigInput {
+  __typename
+  name
+  label
+  description
+  required
+
+  ... on ParagraphsBlokkliConfigInputText {
+    defaultValueText: defaultValue
+    minLength
+    maxLength
+    placeholder
+    pattern
+    multiline
+    rows
+  }
+
+  ... on ParagraphsBlokkliConfigInputCheckbox {
+    checkboxLabel
+    defaultValueCheckbox: defaultValue
+  }
+
+  ... on ParagraphsBlokkliConfigInputOptions {
+    defaultValueOptions: defaultValue
+    variant
+    options {
+      value
+      label
+    }
+  }
+}

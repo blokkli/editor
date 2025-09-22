@@ -105,6 +105,10 @@ onBlokkliEvent('canvas:draw', (e) => {
   setUniforms(programInfo, {
     u_color_default: toShaderColor(theme.accent.value[600]),
     u_color_inverted: [255, 255, 255],
+    u_artboard_size: [
+      ui.artboardSize.value.width,
+      ui.artboardSize.value.height,
+    ],
     u_is_transforming: ui.isTransforming.value ? 1 : 0,
     u_time: e.time,
   })

@@ -38,6 +38,7 @@ import type { RGB } from './theme'
 import type { DebugProvider } from '#blokkli/helpers/debugProvider'
 import type getVideoId from 'get-video-id'
 import type { DefinitionProvider } from '../helpers/definitionProvider'
+import type { IndicatorsProvider } from '#blokkli/helpers/indicatorsProvider'
 
 export type MutateWithLoadingStateFunction = (
   promise: () => Promise<MutationResponseLike<any>> | undefined,
@@ -125,6 +126,22 @@ export type DefineBlokkliContext<
    * The provider context.
    */
   provider: ComputedRef<BlokkliProviderEntityContext | null>
+}
+
+export type DefineProviderContext<
+  T extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
+  G extends ValidGlobalConfigKeys | undefined = undefined,
+> = {
+  /**
+   * The reactive runtime options.
+   *
+   * This includes both the locally defined options and the inherited global
+   * options.
+   */
+  options: ComputedRef<
+    (T extends BlockDefinitionOptionsInput ? WithOptions<T> : object) &
+      (G extends ValidGlobalConfigKeys ? GlobalOptionsKeyTypes<G> : object)
+  >
 }
 
 type DetermineVisibleOptionsContext<
@@ -501,6 +518,47 @@ export interface ConversionItem {
   targetBundle: string
 }
 
+export type PluginConfigInputText = {
+  type: 'text'
+  name: string
+  label: string
+  description?: string
+  required: boolean
+  defaultValue?: string
+  minLength?: number
+  maxLength?: number
+  placeholder?: string
+  pattern?: string
+  multiline?: boolean
+  rows?: number
+}
+
+export type PluginConfigInputCheckbox = {
+  type: 'checkbox'
+  name: string
+  label: string
+  description?: string
+  required: boolean
+  checkboxLabel?: string
+  defaultValue: boolean
+}
+
+export type PluginConfigInputOptions = {
+  type: 'options'
+  name: string
+  label: string
+  description?: string
+  required: boolean
+  defaultValue?: string
+  variant: 'select' | 'radio'
+  options: { value: string; label: string }[]
+}
+
+export type PluginConfigInput =
+  | PluginConfigInputText
+  | PluginConfigInputCheckbox
+  | PluginConfigInputOptions
+
 export interface TransformPlugin {
   /**
    * The ID of the plugin.
@@ -520,7 +578,7 @@ export interface TransformPlugin {
   /**
    * The array of bundles that the transform might create.
    */
-  targetBundles: string[]
+  targetBundles?: string[]
 
   /**
    * The minimum number of items required.
@@ -531,6 +589,31 @@ export interface TransformPlugin {
    * The maximum number of items.
    */
   max: number
+
+  configInputs?: PluginConfigInput[]
+
+  description?: string
+}
+
+export type PluginConfigInputItem = {
+  name: string
+  value: string
+}
+
+export interface HostTransformPlugin {
+  /**
+   * The ID of the plugin.
+   */
+  id: string
+
+  /**
+   * The label of the transform plugin which is shown in the editor.
+   */
+  label: string
+
+  configInputs?: PluginConfigInput[]
+
+  description?: string
 }
 
 export interface LibraryItem {
@@ -576,6 +659,7 @@ export interface MappedState {
   ownerName: string
   mutatedState?: {
     mutatedOptions?: any
+    mutatedHostOptions?: Record<string, string>
     fields?: MutatedField[]
     violations?: Validation[]
   }
@@ -888,6 +972,11 @@ export type UpdateBlockOptionEvent = {
   value: string
 }
 
+export type UpdateHostOptionEvent = {
+  key: string
+  value: string
+}
+
 export type EditBlockEvent = {
   uuid: string
   bundle: string
@@ -917,6 +1006,7 @@ export type Message = {
   type: 'success' | 'error'
   message: string
   additional?: string | Error | unknown
+  replace?: boolean
 }
 
 export type Size = {
@@ -970,11 +1060,18 @@ export type ConvertBlockEvent = {
   targetBundle: string
 }
 
-export type ScrollIntoViewEvent = {
-  uuid: string
-  center?: boolean
-  immediate?: boolean
-}
+export type ScrollIntoViewEvent =
+  | {
+      uuid: string
+      center?: boolean
+      immediate?: boolean
+    }
+  | {
+      element: HTMLElement
+      center?: boolean
+      immediate?: boolean
+      highlight?: boolean
+    }
 
 export type PluginMountEvent = {
   type: 'ItemDropdown'
@@ -1115,9 +1212,17 @@ export type AnimationFrameBeforeEvent = {
   mouseY: number
 }
 
+type MultiSelectStartEvent = {
+  x: number
+  y: number
+}
+
 export type EventbusEvents = {
   select: string | string[]
   'select:unselect': undefined
+  'select:host': undefined
+  'select:host:unselect': undefined
+  'multi-select:start': MultiSelectStartEvent
   'item:edit': EditBlockEvent
   batchTranslate: undefined
   'dragging:start': DraggableStartEvent
@@ -1193,6 +1298,11 @@ export type EventbusEvents = {
    * Edit a library item.
    */
   'library:edit-item': LibraryEditItemEvent
+
+  /**
+   * Emitted when a view option is being toggled.
+   */
+  'view-option:toggle': { id: string }
 }
 
 export type Eventbus = Emitter<EventbusEvents>
@@ -1236,6 +1346,7 @@ export interface BlokkliApp {
   tour: TourProvider
   dropAreas: DropAreaProvider
   debug: DebugProvider
+  indicators: IndicatorsProvider
 }
 
 export type PasteExistingBlocksEvent = {
@@ -1405,7 +1516,7 @@ export type DropArea = {
   label: string
   icon?: BlokkliIcon
   element: HTMLElement
-  onDrop: () => Promise<any>
+  onDrop: () => Promise<any> | any
 }
 
 export type ContextMenuRule = {
@@ -1468,6 +1579,33 @@ export type FragmentDefinitionInput<
   editor?: BlokkliDefinitionInputEditor<Options, GlobalOptions>
 }
 
+export type ProviderDefinitionInput<
+  Options extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
+  GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
+> = {
+  /**
+   * The entity type.
+   */
+  entityType: string
+
+  /**
+   * The bundle.
+   */
+  bundle: string
+
+  /**
+   * Define options available for this block.
+   */
+  options?: Options
+
+  /**
+   * Global options to use.
+   *
+   * These options will be merged with the component-specific options.
+   */
+  globalOptions?: GlobalOptions
+}
+
 export type TourItem = {
   id: string
   title: string
@@ -1513,6 +1651,13 @@ export type GetEditStatesItem = {
   hostEntityUuid: string
   entity: EditEntity
   currentUserIsOwner: boolean
+}
+
+export type BlockIndicator = {
+  id: string
+  uuid: string
+  element: HTMLElement
+  position: 'left' | 'right'
 }
 
 export default {}
