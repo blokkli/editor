@@ -72,7 +72,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-build-classic": "^44.3.0",
     "@ckeditor/ckeditor5-vue": "^7.3.0",
-    "@lunarisapp/readability": "^1.0.1",
+    "@lunarisapp/readability": "^1.0.2",
     "@nuxt/devtools": "latest",
     "@nuxt/eslint-config": "^1.9.0",
     "@nuxt/kit": "^4.0.3",
@@ -117,7 +117,7 @@
     "vue-tsc": "^2.2.12"
   },
   "peerDependencies": {
-    "@lunarisapp/readability": "^1.0.1"
+    "@lunarisapp/readability": "^1.0.2"
   },
   "peerDependenciesMeta": {
     "@lunarisapp/readability": {
