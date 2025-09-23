@@ -38,7 +38,7 @@
     key-code="O"
     weight="90"
   >
-    <Teleport v-if="isActive" to="body">
+    <Teleport v-if="isActive && dom.isReady.value" to="body">
       <Overview :artboard="artboard" />
     </Teleport>
   </PluginViewOption>

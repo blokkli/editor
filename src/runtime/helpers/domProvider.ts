@@ -188,6 +188,8 @@ export default function (
   const fieldRects: Record<string, Rectangle> = {}
   const blockUuidCurrentKey: Record<string, string> = {}
   let draggableBlockCache: Record<string, DraggableExistingBlock> = {}
+  let initTimeout: null | number = null
+  const isInitalizing = ref(true)
 
   const registeredBlockUuids = computed(() => {
     return Object.entries(registeredBlocks)
@@ -538,6 +540,7 @@ export default function (
   }
 
   function updateVisibleRects() {
+    logger.log('Update visible rects')
     const toUpdate = getUuidsToUpdateRectsFor()
     const offset = ui.artboardOffset.value
     const scale = ui.artboardScale.value
@@ -633,9 +636,34 @@ export default function (
     return visibleBlocks.has(uuid)
   }
 
+  function refreshAllBlockRects() {
+    const uuids = Object.keys(blockRects)
+    if (uuids.length < 200) {
+      for (let i = 0; i < uuids.length; i++) {
+        const uuid = uuids[i]
+        if (!uuid) {
+          continue
+        }
+
+        refreshBlockRect(uuid)
+      }
+    }
+  }
+
   function registerBlock(key: string, uuid: string, el: HTMLElement | null) {
     logger.log('registerBlock: ' + uuid)
     blockUuidCurrentKey[uuid] = key
+
+    if (initTimeout) {
+      window.clearTimeout(initTimeout)
+    }
+
+    if (isInitalizing.value) {
+      initTimeout = window.setTimeout(() => {
+        isInitalizing.value = false
+        refreshAllBlockRects()
+      }, 500)
+    }
 
     // No root node found on the block, unregister it.
     if (!el) {
@@ -716,7 +744,10 @@ export default function (
     getFieldRect,
     refreshBlockRect,
     isBlockVisible,
-    isReady: computed(() => mutationsReady.value && intersectionReady.value),
+    isReady: computed(
+      () =>
+        mutationsReady.value && intersectionReady.value && !isInitalizing.value,
+    ),
     init,
     getDragElement,
     updateVisibleRects,
