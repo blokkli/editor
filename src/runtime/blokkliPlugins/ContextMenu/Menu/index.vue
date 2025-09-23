@@ -62,6 +62,10 @@ onBlokkliEvent('keyPressed', (e) => {
   }
 })
 
+onBlokkliEvent('window:clickAway', () => {
+  emit('close')
+})
+
 watch(selection.uuids, () => emit('close'))
 
 const onClick = (index: number) => {
