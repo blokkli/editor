@@ -52,6 +52,7 @@ import {
 } from '#imports'
 import { PluginSidebar, PluginToolbarButton } from '#blokkli/plugins'
 import HistoryList from './List/index.vue'
+import { MOUSE_BUTTON } from '#blokkli/helpers/dom'
 
 const { adapter, settings } = defineBlokkliFeature({
   id: 'history',
@@ -73,37 +74,55 @@ const { adapter, settings } = defineBlokkliFeature({
   },
 })
 
-const { state, $t, ui } = useBlokkli()
+const { state, $t, ui, selection, eventBus } = useBlokkli()
 
 const { mutations, currentMutationIndex, mutateWithLoadingState } = state
 
+const mutationsCount = computed(() => mutations.value.length)
 const useMouseForHistory = computed(() => settings.value.useMouseButtons)
 const canUndo = computed(() => currentMutationIndex.value >= 0)
 const canRedo = computed(
-  () => currentMutationIndex.value < mutations.value.length - 1,
+  () => currentMutationIndex.value < mutationsCount.value - 1,
 )
 
-function undo() {
-  mutateWithLoadingState(() =>
-    adapter.setHistoryIndex(currentMutationIndex.value - 1),
-  )
+const selectionAtHistoryIndex = new Map<number, string[]>()
+
+function updateCurrentHistorySelection() {
+  selectionAtHistoryIndex.set(currentMutationIndex.value, [
+    ...selection.uuids.value,
+  ])
 }
 
-function redo() {
-  mutateWithLoadingState(() =>
-    adapter.setHistoryIndex(currentMutationIndex.value + 1),
-  )
+function setSelectionFromHistoryIndex(index: number) {
+  const selection = selectionAtHistoryIndex.get(index)
+  if (selection) {
+    eventBus.emit('select', selection)
+  }
+}
+
+async function setHistoryIndex(newIndex: number) {
+  updateCurrentHistorySelection()
+  await mutateWithLoadingState(() => adapter.setHistoryIndex(newIndex))
+  setSelectionFromHistoryIndex(newIndex)
+}
+
+async function undo() {
+  await setHistoryIndex(currentMutationIndex.value - 1)
+}
+
+async function redo() {
+  await setHistoryIndex(currentMutationIndex.value + 1)
 }
 
 const onMouseUp = (e: MouseEvent) => {
-  if (e.button === 3) {
+  if (e.button === MOUSE_BUTTON.FOURTH) {
     // History back button on the mouse.
     e.preventDefault()
     e.stopPropagation()
     if (canUndo.value) {
       undo()
     }
-  } else if (e.button === 4) {
+  } else if (e.button === MOUSE_BUTTON.FIFTH) {
     // History forward button on the mouse.
     e.preventDefault()
     e.stopPropagation()
@@ -121,6 +140,14 @@ const setupMouseListeners = () => {
 }
 
 watch(useMouseForHistory, setupMouseListeners)
+watch(selection.uuids, updateCurrentHistorySelection)
+watch(mutationsCount, (count) => {
+  for (const [index] of selectionAtHistoryIndex) {
+    if (index >= count) {
+      selectionAtHistoryIndex.delete(index)
+    }
+  }
+})
 
 onMounted(() => {
   setupMouseListeners()
