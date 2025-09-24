@@ -14,6 +14,15 @@
       }"
     />
   </Teleport>
+
+  <PluginItemDropdown
+    id="transform"
+    :title="$t('selectionActionGroupTitle', 'Selection')"
+    :enabled="itemDropdownEnabled"
+    :items="itemDropdownItems"
+    icon="selection"
+    @select="onSelectDropdownItem"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -26,6 +35,7 @@ import {
   originatesFromTextInput,
 } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { PluginItemDropdown } from '#blokkli/plugins'
 import type { DraggableExistingBlock, Rectangle } from '#blokkli/types'
 import {
   computed,
@@ -42,7 +52,60 @@ defineBlokkliFeature({
   description: 'Renders an overlay that highlights the selected blocks.',
 })
 
-const { selection, ui, eventBus, animation, dom, tour } = useBlokkli()
+type DropdownItem = {
+  id: 'select-all-of-bundle'
+  label: string
+}
+
+const { selection, ui, eventBus, animation, dom, tour, $t, types, state } =
+  useBlokkli()
+
+const selectedBundle = computed<string | null>(() => {
+  let bundle = ''
+
+  for (let i = 0; i < selection.blocks.value.length; i++) {
+    const block = selection.blocks.value[i]
+    if (!block) {
+      return null
+    }
+
+    if (bundle && bundle !== block.itemBundle) {
+      return null
+    }
+
+    bundle = block.itemBundle
+  }
+
+  return bundle || null
+})
+
+const itemDropdownEnabled = computed(() => true)
+
+const itemDropdownItems = computed<DropdownItem[]>(() => {
+  if (selectedBundle.value) {
+    const label =
+      types.getBlockBundleDefinition(selectedBundle.value)?.label ??
+      selectedBundle.value
+    return [
+      {
+        id: 'select-all-of-bundle',
+        label: $t('selectAllOfBundle', 'Select all "@bundle" blocks').replace(
+          '@bundle',
+          label,
+        ),
+      },
+    ]
+  }
+  return []
+})
+
+function onSelectDropdownItem(item: DropdownItem) {
+  if (item.id === 'select-all-of-bundle' && selectedBundle.value) {
+    const uuids = state.getAllUuids(selectedBundle.value)
+    console.log({ uuids }, selectedBundle.value)
+    eventBus.emit('select', uuids)
+  }
+}
 
 const artboardElement = ui.artboardElement()
 

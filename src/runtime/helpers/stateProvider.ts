@@ -64,7 +64,7 @@ export type StateProvider = {
   getFieldListItem: (uuid: string) => FieldListItem | undefined
   getFieldListForBlock: (uuid: string) => MutatedField | undefined
   getMutatedField: (uuid: string, fieldName: string) => MutatedField | undefined
-  getAllUuids: () => string[]
+  getAllUuids: (bundle?: string) => string[]
   getMappedState: () => MappedState
 }
 
@@ -97,6 +97,7 @@ export default async function (
   let fieldBlockCount: Record<string, number> = {}
   const blockBundleCount: Ref<Record<string, number>> = ref({})
   const fieldListItemMap: Map<string, string> = new Map()
+  let bundleToUuids: Record<string, string[]> = {}
 
   function getFieldListItem(uuid: string): FieldListItem | undefined {
     const fieldKey = fieldListItemMap.get(uuid)
@@ -194,6 +195,7 @@ export default async function (
 
     // Reset the count cache.
     fieldBlockCount = {}
+    bundleToUuids = {}
     for (let i = 0; i < newMutatedFields.length; i++) {
       const field = newMutatedFields[i]!
       const key = getFieldKey(field.entityUuid, field.name)
@@ -216,6 +218,10 @@ export default async function (
         }
         newBlockBundleCount[item.bundle]!++
         fieldListItemMap.set(item.uuid, key)
+        if (!bundleToUuids[item.bundle]) {
+          bundleToUuids[item.bundle] = []
+        }
+        bundleToUuids[item.bundle]!.push(item.uuid)
       }
     }
 
@@ -267,8 +273,12 @@ export default async function (
     isLoading.value = false
   }
 
-  function getAllUuids(): string[] {
-    return [...fieldListItemMap.keys()]
+  function getAllUuids(bundle?: string): string[] {
+    if (!bundle) {
+      return [...fieldListItemMap.keys()]
+    }
+
+    return bundleToUuids[bundle] ?? []
   }
 
   addElementClasses(document.body, 'bk-body-loading', isLoading)

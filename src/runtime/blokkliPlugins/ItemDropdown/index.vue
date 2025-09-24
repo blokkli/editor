@@ -1,6 +1,11 @@
 <template>
   <Teleport v-if="enabled" to="#bk-blokkli-item-actions-dropdown">
-    <div>
+    <div
+      v-show="items.length"
+      :style="{
+        order: weight,
+      }"
+    >
       <h3>{{ title }}</h3>
       <ol>
         <li v-for="item in items" :key="item.id">
@@ -29,6 +34,7 @@ const props = defineProps<{
   enabled: boolean
   items: T[]
   icon?: BlokkliIcon
+  weight?: string | number
 }>()
 
 const emit = defineEmits<{

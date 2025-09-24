@@ -161,7 +161,10 @@
   }
 
   .bk-blokkli-item-actions-type-dropdown {
-    @apply absolute bottom-full left-0 min-w-[300px] bg-mono-900 text-mono-200 overflow-hidden shadow-xl-inverted rounded-tr w-screen lg:w-auto;
+    @apply absolute bottom-full left-0 min-w-[300px] bg-mono-900 text-mono-200 overflow-hidden shadow-xl-inverted rounded-tr w-screen lg:w-auto flex flex-col;
+    > div {
+      @apply border-b border-b-mono-500;
+    }
     @screen lg {
       @apply top-full bottom-auto shadow-xl rounded-t-none rounded-b;
     }
@@ -172,7 +175,7 @@
       @apply p-10 pt-15 font-semibold uppercase text-xs tracking-wide text-mono-400;
     }
     button {
-      @apply flex py-15 pl-10 pr-20 gap-10 w-full font-semibold lg:text-lg text-mono-300;
+      @apply flex py-15 pl-10 pr-20 gap-10 w-full font-semibold lg:text-lg text-mono-300 items-center;
       text-align: left;
       line-height: 1;
       @screen lg {
@@ -195,7 +198,7 @@
     .bk-blokkli-item-icon,
     .bk-icon {
       @apply text-2xl lg:text-[34px] bg-mono-700 rounded flex items-center justify-center border border-mono-500 p-[0.2em] shrink-0;
-      @apply size-[1em] mt-1;
+      @apply size-[1em];
       svg {
         @apply fill-current;
       }
