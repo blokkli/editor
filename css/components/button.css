@@ -5,10 +5,20 @@
     @apply !bg-mono-200 hover:!bg-mono-600;
     @apply !border-none;
 
+    &[disabled] {
+      @apply !bg-mono-100 !text-mono-300 cursor-not-allowed;
+    }
+
     &.bk-is-primary {
       @apply !bg-accent-700 !text-white hover:!bg-accent-800 focus-visible:ring-accent-600 focus-visible:ring-offset-accent-100;
       &[disabled] {
-        @apply opacity-30;
+        @apply !bg-accent-100 !text-white;
+      }
+    }
+    &.bk-is-teal {
+      @apply !bg-teal-normal !text-teal-dark hover:!bg-teal-dark hover:!text-white focus-visible:ring-accent-600 focus-visible:ring-offset-accent-100;
+      &[disabled] {
+        @apply !bg-teal-light !text-teal-normal;
       }
     }
     &.bk-is-danger {

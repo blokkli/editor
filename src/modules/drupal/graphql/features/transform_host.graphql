@@ -11,6 +11,7 @@ query pbGetHostTransformPlugins(
     id
     label
     description
+    allowPreview
     configInputs {
       ...paragraphsBlokkliConfigInput
     }
@@ -22,12 +23,15 @@ mutation pbApplyHostTransformPlugin(
   $entityUuid: String!
   $langcode: String
   $pluginId: String!
+  $config: [ParagraphsBlokkliUserConfigInput]
+  $preview: Boolean
 ) {
   state: paragraphsEditMutationState(
     entityType: $entityType
     entityUuid: $entityUuid
+    preview: $preview
   ) {
-    action: host_transform(pluginId: $pluginId) {
+    action: host_transform(pluginId: $pluginId, userConfig: $config) {
       ...paragraphsBlokkliMutationResult
     }
   }

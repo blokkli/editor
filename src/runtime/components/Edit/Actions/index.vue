@@ -6,6 +6,7 @@
           !selection.isDragging.value &&
           !selection.editableActive.value &&
           !ui.isAnimating.value &&
+          !ui.hasTransformOverlayOpen.value &&
           hasAnythingSelected &&
           shouldRender
         "
@@ -82,14 +83,15 @@ import {
   useBlokkli,
   onMounted,
   onBeforeUnmount,
+  useTemplateRef,
 } from '#imports'
-import { onlyUnique, findIdealRectPosition, falsy } from '#blokkli/helpers'
-import type { Rectangle, PluginMountEvent, Coord } from '#blokkli/types'
+import { onlyUnique, falsy } from '#blokkli/helpers'
+import type { PluginMountEvent } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import useStickyToolbar from '#blokkli/helpers/composables/useStickyToolbar'
 
-const { selection, $t, types, state, ui, dom, definitions, debug } =
-  useBlokkli()
+const { selection, $t, types, state, ui, definitions, debug } = useBlokkli()
 
 const editingEnabled = computed(
   () =>
@@ -98,14 +100,20 @@ const editingEnabled = computed(
 )
 
 const ACTIONS_HEIGHT = 52
+let scrollWidth = 0
 
-const el = ref<HTMLDivElement | null>(null)
+const el = useTemplateRef('el')
+
+const { shouldRender } = useStickyToolbar(el, {
+  getPlacementY: () => 'top',
+  shouldUpdate: () => !selection.isChangingOptions.value,
+  getHeight: () => ACTIONS_HEIGHT,
+  getWidth: () => scrollWidth,
+})
 
 const controlsEl = ref<HTMLElement | null>(null)
 const mountedPlugins = ref<PluginMountEvent[]>([])
 const showDropdown = ref(false)
-
-const shouldRender = ref(false)
 
 const hasAnythingSelected = computed(
   () => selection.hasHostSelected.value || !!selection.blocks.value.length,
@@ -185,23 +193,6 @@ const itemBundle = computed(() => {
   return types.getBlockBundleDefinition(bundle)
 })
 
-const limitPlacedRect = (rect: Rectangle, padding: Rectangle): Rectangle => {
-  return {
-    width: rect.width,
-    height: rect.height,
-    x: Math.min(
-      Math.max(rect.x, padding.x),
-      padding.x + padding.width - rect.width,
-    ),
-    y: Math.min(
-      Math.max(padding.y, rect.y),
-      padding.height + padding.y - rect.height,
-    ),
-  }
-}
-
-let scrollWidth = 0
-
 const observer = new ResizeObserver((entries) => {
   const size = entries[0]?.contentBoxSize?.[0]
   if (!size) {
@@ -224,80 +215,6 @@ onBeforeUnmount(() => {
   }
 })
 
-function getCoords(): Coord | undefined {
-  if (ui.isMobile.value) {
-    return
-  }
-  const offset = ui.artboardOffset.value
-  const scale = ui.artboardScale.value
-  const rects = selection.blocks.value
-    .map((block) => dom.getBlockRect(block.uuid))
-    .filter(falsy)
-    .filter((rect) => rect.height || rect.width)
-
-  let minX = 0
-  let minY = 0
-
-  const hasRects = !!rects.length
-
-  if (hasRects) {
-    for (let i = 0; i < rects.length; i++) {
-      const { x, y } = rects[i]!
-      const rectX = (x + offset.x / scale) * scale
-      const rectY = (y + offset.y / scale) * scale
-      if (i === 0 || rectX < minX) {
-        minX = rectX
-      }
-      if (i === 0 || rectY < minY) {
-        minY = rectY
-      }
-    }
-  } else {
-    if (!selection.hasHostSelected.value) {
-      return
-    }
-    minX = ui.artboardOffset.value.x
-    minY = ui.artboardOffset.value.y
-  }
-
-  const padding = ui.visibleViewportPadded.value
-  const xSubtract = hasRects ? 5 * Math.min(scale, 1) : 0
-  const rect = limitPlacedRect(
-    {
-      x: minX - xSubtract,
-      y: minY - ACTIONS_HEIGHT - 15 * Math.min(scale, 1),
-      width: scrollWidth,
-      height: ACTIONS_HEIGHT,
-    },
-    padding,
-  )
-
-  return findIdealRectPosition(ui.viewportBlockingRects.value, rect, padding)
-}
-
-onBlokkliEvent('canvas:draw', () => {
-  if (!el.value) {
-    return
-  }
-
-  if (ui.isMobile.value) {
-    el.value.style.transform = ''
-  }
-
-  if (selection.isChangingOptions.value) {
-    return
-  }
-
-  const coords = getCoords()
-  if (!coords) {
-    shouldRender.value = false
-    return
-  }
-
-  el.value.style.transform = `translate3d(${coords.x}px, ${coords.y}px, 0)`
-  shouldRender.value = true
-})
-
 const shouldRenderButton = computed(() =>
   mountedPlugins.value.some((v) => v.isRendering),
 )
@@ -314,6 +231,10 @@ onBlokkliEvent('plugin:unmount', (e) => {
     return
   }
   mountedPlugins.value = mountedPlugins.value.filter((v) => v.type !== e.id)
+})
+
+onBlokkliEvent('action:selected', () => {
+  showDropdown.value = false
 })
 
 watch(ui.isTransforming, function (isTransforming) {

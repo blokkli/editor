@@ -1,4 +1,8 @@
 {
+  "actionsDropdownToolip": {
+    "source": "Further actions",
+    "translation": ""
+  },
   "addBlockCommand.appendInField": {
     "source": "Append \"@block\" in \"@field\"",
     "translation": ""
@@ -695,14 +699,6 @@
     "source": "Exit",
     "translation": ""
   },
-  "feature_field-areas_description": {
-    "source": "Provides a view option to render the field areas with labels.",
-    "translation": ""
-  },
-  "feature_field-areas_label": {
-    "source": "Field Areas",
-    "translation": ""
-  },
   "feature_fragments_description": {
     "source": "Provides way to add content fragments defined by the frontend.",
     "translation": ""
@@ -953,22 +949,6 @@
   },
   "feature_validations_label": {
     "source": "Validations",
-    "translation": ""
-  },
-  "fieldAreasHide": {
-    "source": "Hide block fields",
-    "translation": "Nascondi aree di contenuto"
-  },
-  "fieldAreasShow": {
-    "source": "Show block fields",
-    "translation": "Mostra aree di contenuto"
-  },
-  "fieldAreasToggle": {
-    "source": "Toggle block fields",
-    "translation": ""
-  },
-  "fieldAreasTourText": {
-    "source": "Toggle between showing or hiding the areas where blocks can be placed.",
     "translation": ""
   },
   "fieldIsRequired": {
@@ -1539,12 +1519,16 @@
     "source": "Start the tour",
     "translation": ""
   },
-  "transformDialogSubmitLabel": {
-    "source": "Apply transform",
+  "transformDialogButtonApply": {
+    "source": "Apply",
+    "translation": ""
+  },
+  "transformDialogButtonPreview": {
+    "source": "Preview",
     "translation": ""
   },
   "transformTo": {
-    "source": "Other actions",
+    "source": "Actions",
     "translation": "Other actions"
   },
   "translationsBannerButton": {

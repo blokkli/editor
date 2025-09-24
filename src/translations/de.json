@@ -1,4 +1,8 @@
 {
+  "actionsDropdownToolip": {
+    "source": "Further actions",
+    "translation": ""
+  },
   "addBlockCommand.appendInField": {
     "source": "Append \"@block\" in \"@field\"",
     "translation": "«@block» in «@field» anfügen"
@@ -695,14 +699,6 @@
     "source": "Exit",
     "translation": ""
   },
-  "feature_field-areas_description": {
-    "source": "Provides a view option to render the field areas with labels.",
-    "translation": ""
-  },
-  "feature_field-areas_label": {
-    "source": "Field Areas",
-    "translation": ""
-  },
   "feature_fragments_description": {
     "source": "Provides way to add content fragments defined by the frontend.",
     "translation": ""
@@ -954,22 +950,6 @@
   "feature_validations_label": {
     "source": "Validations",
     "translation": ""
-  },
-  "fieldAreasHide": {
-    "source": "Hide block fields",
-    "translation": "Blockfelder verstecken"
-  },
-  "fieldAreasShow": {
-    "source": "Show block fields",
-    "translation": "Blockfelder anzeigen"
-  },
-  "fieldAreasToggle": {
-    "source": "Toggle block fields",
-    "translation": "Blockfelder anzeigen"
-  },
-  "fieldAreasTourText": {
-    "source": "Toggle between showing or hiding the areas where blocks can be placed.",
-    "translation": "Aktivieren Sie, dass Bereiche ein- oder ausgeblendet werden, in denen Blöcke platziert werden können. "
   },
   "fieldIsRequired": {
     "source": "This field is required",
@@ -1539,12 +1519,16 @@
     "source": "Start the tour",
     "translation": "Tour starten"
   },
-  "transformDialogSubmitLabel": {
-    "source": "Apply transform",
-    "translation": "Aktion ausführen"
+  "transformDialogButtonApply": {
+    "source": "Apply",
+    "translation": "Anwenden"
+  },
+  "transformDialogButtonPreview": {
+    "source": "Preview",
+    "translation": "Vorschau"
   },
   "transformTo": {
-    "source": "Other actions",
+    "source": "Actions",
     "translation": "Weitere Aktionen"
   },
   "translationsBannerButton": {

@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { DraggableExistingBlock, Rectangle } from '#blokkli/types'
-import { useBlokkli, onBeforeUnmount } from '#imports'
+import { useBlokkli, onBeforeUnmount, computed } from '#imports'
 import {
   setBuffersAndAttributes,
   drawBufferInfo,
@@ -16,6 +16,7 @@ import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/helpers/webgl'
 import { toShaderColor } from '#blokkli/helpers'
+import type { RGB } from '#blokkli/types/theme'
 
 const props = defineProps<{
   blocks: DraggableExistingBlock[]
@@ -99,11 +100,19 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
 
 const collector = new SelectionRectangleBufferCollector(props.gl)
 
+const color = computed<RGB>(() => {
+  if (ui.hasTransformOverlayOpen.value) {
+    return toShaderColor(theme.teal.value.normal)
+  }
+
+  return toShaderColor(theme.accent.value[600])
+})
+
 onBlokkliEvent('canvas:draw', (e) => {
   props.gl.useProgram(programInfo.program)
 
   setUniforms(programInfo, {
-    u_color_default: toShaderColor(theme.accent.value[600]),
+    u_color_default: color.value,
     u_color_inverted: [255, 255, 255],
     u_artboard_size: [
       ui.artboardSize.value.width,

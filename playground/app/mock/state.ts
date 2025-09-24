@@ -48,10 +48,10 @@ export const getEditState = (
   return editState
 }
 
-const exportState = () => {
+const exportState = async () => {
   const page = entityStorageManager.getContent('1')
   // @ts-ignore
-  const result = editState.getMutatedState(page, true)
+  const result = await editState.getMutatedState(page, true)
 
   const fields = result.fields.map((v) => {
     return {

@@ -53,7 +53,7 @@ fields.forEach((field) => {
   }
 })
 
-const onSubmit = (values: Record<string, string>) => {
+const onSubmit = async (values: Record<string, string>) => {
   editState.addMutation('add', {
     bundle: bundle.value,
     values,
@@ -62,7 +62,7 @@ const onSubmit = (values: Record<string, string>) => {
     hostField: hostField.value,
     preceedingUuid: preceedingUuid.value,
   })
-  editState.getMutatedState(page)
+  await editState.getMutatedState(page)
   router.push({ name: 'blokkli-form-redirect' })
 }
 </script>

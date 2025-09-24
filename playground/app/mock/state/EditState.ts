@@ -180,6 +180,7 @@ export type MutatedState = {
 
 export class EditState {
   uuid: string
+  _tempMutations: MockMutationItem[]|null = null
 
   constructor(uuid: string) {
     this.uuid = uuid
@@ -210,6 +211,9 @@ export class EditState {
   }
 
   getMutations(): MockMutationItem[] {
+    if (this._tempMutations) {
+      return this._tempMutations
+    }
     try {
       const data = window.localStorage.getItem(this.getStorageKey('mutations'))
       if (data) {
@@ -233,14 +237,21 @@ export class EditState {
   addMutation<T extends keyof MutationArgsMap>(
     id: T,
     args: MutationArgsMap[T],
+    preview?: boolean
   ) {
     let mutations = this.getMutations()
     if (this.currentIndex !== mutations.length - 1) {
       mutations = mutations.slice(0, this.currentIndex + 1)
     }
     mutations.push({ id, args, timestamp: Date.now() })
-    this.currentIndex = this.currentIndex + 1
-    this.persistMutations(mutations)
+    if (preview) {
+      this.currentIndex = this.currentIndex + 1
+      this._tempMutations = mutations
+    }
+    else {
+      this.currentIndex = this.currentIndex + 1
+      this.persistMutations(mutations)
+    }
   }
 
   persistMutations(mutations: MockMutationItem[]) {
@@ -262,10 +273,10 @@ export class EditState {
     })
   }
 
-  getMutatedState(
+  async getMutatedState(
     entity: Entity,
     options?: { save?: boolean; index?: number },
-  ): MutatedState {
+  ): Promise<MutatedState> {
     const langcode = entity.langcode
     const context = new MutationContext(entity)
 
@@ -275,11 +286,11 @@ export class EditState {
       const item = mutations[i]
       if (item) {
         const plugin = createMutation(item.id as any, item.configuration)
-        plugin.execute(context, item.args)
+        await plugin.execute(context, item.args)
         item.configuration = plugin.configuration
       }
     }
-    if (!options?.index) {
+    if (!options?.index && options?.save !== false) {
       this.persistMutations(mutations)
     }
 

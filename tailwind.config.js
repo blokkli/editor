@@ -12,7 +12,6 @@ const zIndex = [
   'interaction-overlay',
   'comments-overlay',
   'comments-overlay-active',
-  'transform-overlay',
   'artboard-scrollbar',
   'artboard-overview',
   'messages',
@@ -44,6 +43,7 @@ const zIndex = [
   'menu-overlay',
   'menu',
   'library-edit-dialog',
+  'transform-overlay',
 ].reduce((acc, key, index) => {
   acc[key] = z(index * 10000)
   return acc

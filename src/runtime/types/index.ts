@@ -533,6 +533,14 @@ export type PluginConfigInputText = {
   rows?: number
 }
 
+export type PluginConfigInputSeed = {
+  type: 'seed'
+  name: string
+  label: string
+  description?: string
+  required: boolean
+}
+
 export type PluginConfigInputCheckbox = {
   type: 'checkbox'
   name: string
@@ -556,6 +564,7 @@ export type PluginConfigInputOptions = {
 
 export type PluginConfigInput =
   | PluginConfigInputText
+  | PluginConfigInputSeed
   | PluginConfigInputCheckbox
   | PluginConfigInputOptions
 
@@ -593,6 +602,14 @@ export interface TransformPlugin {
   configInputs?: PluginConfigInput[]
 
   description?: string
+
+  /**
+   * Whether the transform plugin supports previewing the changes first.
+   *
+   * If true, the plugin is expected to to defer producing any side effects
+   * to when it's executed in non-preview mode.
+   */
+  preview?: boolean
 }
 
 export type PluginConfigInputItem = {
@@ -614,6 +631,14 @@ export interface HostTransformPlugin {
   configInputs?: PluginConfigInput[]
 
   description?: string
+
+  /**
+   * Whether the transform plugin supports previewing the changes first.
+   *
+   * If true, the plugin is expected to to defer producing any side effects
+   * to when it's executed in non-preview mode.
+   */
+  preview?: boolean
 }
 
 export interface LibraryItem {
@@ -1278,6 +1303,7 @@ export type EventbusEvents = {
   'sidebar:open': string
 
   'action:placed': ActionPlacedEvent
+  'action:selected': undefined
 
   'animator:add': AnimatorAddEvent
 

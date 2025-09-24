@@ -13,10 +13,10 @@
 
 <script lang="ts" setup>
 import { defineBlokkli, computed } from '#imports'
-import { MediaImage } from '#mock/state/Media/Media'
+import type { MediaImage } from '#mock/state/Media/Media'
 
 export type Props = {
-  imageReference: MediaImage
+  imageReference: ReturnType<MediaImage['getData']>
 }
 
 const { options, parentType } = defineBlokkli({
@@ -34,9 +34,9 @@ const { options, parentType } = defineBlokkli({
     editTitle: (el) => el.querySelector('img')?.alt,
     getDraggableElement: (el) => el.querySelector('div'),
     mapDiffProps: (diffProps) => {
-      const url = diffProps.imageReference.url()
+      const url = diffProps.imageReference.url
       return {
-        'imageReference.title': diffProps.imageReference.title(),
+        'imageReference.title': diffProps.imageReference.title,
         'imageReference.image': `<img src="${url}">`,
       }
     },
@@ -46,30 +46,18 @@ const { options, parentType } = defineBlokkli({
 const props = defineProps<Props>()
 
 const url = computed(() => {
-  if (props.imageReference instanceof MediaImage) {
-    return props.imageReference.url()
-  }
-  return ''
+  return props.imageReference.url
 })
 
 const alt = computed(() => {
-  if (props.imageReference instanceof MediaImage) {
-    return props.imageReference.alt()
-  }
-  return ''
+    return props.imageReference.alt
 })
 
 const width = computed(() => {
-  if (props.imageReference instanceof MediaImage) {
-    return props.imageReference.width()
-  }
-  return ''
+  return props.imageReference.width
 })
 
 const height = computed(() => {
-  if (props.imageReference instanceof MediaImage) {
-    return props.imageReference.height()
-  }
-  return ''
+  return props.imageReference.height
 })
 </script>

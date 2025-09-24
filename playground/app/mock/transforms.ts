@@ -48,7 +48,14 @@ export const transforms: TransformPlugin[] = [
         label: 'Replace',
         required: true,
       },
+      {
+        type: 'seed',
+        name: 'seed',
+        label: 'Seed',
+        required: true,
+      },
     ],
+    preview: true,
   },
 ]
 

@@ -36,7 +36,25 @@ const value = defineModel<Record<string, any>>({
   },
 })
 
+function updateSeed() {
+  props.config.forEach((config) => {
+    if (config.type === 'seed') {
+      value.value[config.name] = Math.round(
+        Date.now() * Math.random(),
+      ).toString()
+    }
+  })
+}
+
 props.config.forEach((config) => {
-  value.value[config.name] = config.defaultValue
+  if ('defaultValue' in config) {
+    value.value[config.name] = config.defaultValue
+  }
+})
+
+updateSeed()
+
+defineExpose({
+  updateSeed,
 })
 </script>

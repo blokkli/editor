@@ -34,7 +34,7 @@ if (!page) {
 }
 
 const editState = getEditState(entityType.value, entityUuid.value)
-const mutatedState = editState.getMutatedState(page)
+const mutatedState = await editState.getMutatedState(page)
 
 const block = mutatedState.context.getProxy(uuid.value)?.block
 

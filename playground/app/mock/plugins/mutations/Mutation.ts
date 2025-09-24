@@ -1,4 +1,4 @@
-import { type MutationContext } from '../../state/EditState'
+import type { MutationContext } from '../../state/EditState'
 import { generateUUID } from '../../uuid'
 import { Plugin } from '../Plugin'
 
@@ -24,7 +24,7 @@ export class Mutation extends Plugin {
     return uuid
   }
 
-  execute(context: MutationContext, args: any) {}
+  execute(context: MutationContext, args: any): Promise<undefined>|void {}
   getAffectedUuid(args: any): string | undefined {
     return this.configuration['new_uuid_default']
   }

@@ -27,7 +27,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['pressed'])
 
-const { state } = useBlokkli()
+const { state, ui } = useBlokkli()
 
 const key = computed(() =>
   [props.meta, props.shift, props.keyCode.toLowerCase()].join('-'),
@@ -69,7 +69,7 @@ onBlokkliEvent('keyPressed', (e) => {
 
   e.originalEvent.preventDefault()
 
-  if (state.isLoading.value) {
+  if (state.isLoading.value || ui.hasTransformOverlayOpen.value) {
     return
   }
   emit('pressed')

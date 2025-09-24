@@ -59,24 +59,24 @@ const { options, parentType } = defineBlokkli({
     editTitle: (el) => el.querySelector('h3')?.textContent,
     mapDiffProps: (props) => {
       return {
-        video: props.video?.url(),
+        video: props.video.url,
       }
     },
   },
 })
 
 export type Props = {
-  video: MediaVideo
+  video: ReturnType<MediaVideo['getData']>
 }
 
 const props = defineProps<Props>()
 
 const isPlaying = ref(false)
 
-const url = computed(() => props.video.url())
-const thumbnail = computed(() => props.video.thumbnail())
-const youtubeId = computed(() => props.video.getYouTubeID())
-const title = computed(() => props.video.title())
+const url = computed(() => props.video.url)
+const thumbnail = computed(() => props.video.thumbnail)
+const youtubeId = computed(() => props.video.youtubeId)
+const title = computed(() => props.video.title)
 
 const src = computed(() => {
   if (youtubeId.value) {

@@ -68,6 +68,14 @@ function mapPluginConfigInputs(
           variant: input.variant,
           options: input.options,
         }
+      } else if (input.__typename === 'ParagraphsBlokkliConfigInputSeed') {
+        return {
+          type: 'seed',
+          name: input.name,
+          label: input.label,
+          description: input.description,
+          required: input.required,
+        }
       }
 
       return null
@@ -706,6 +714,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
                 min: plugin.min,
                 max: plugin.max,
                 configInputs: mapPluginConfigInputs(plugin.configInputs),
+                preview: plugin.allowPreview,
               }
             }),
           )
@@ -722,6 +731,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
                 label: plugin.label,
                 description: plugin.description,
                 configInputs: mapPluginConfigInputs(plugin.configInputs),
+                preview: plugin.allowPreview,
               }
             }),
           )
@@ -733,6 +743,13 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           ...ctx.value,
           ...e,
         }).then(mapMutation)
+
+      adapter.previewTransformPlugin = (e) =>
+        useGraphqlMutation('pbApplyTransformPlugin', {
+          ...ctx.value,
+          ...e,
+          preview: true,
+        }).then(mapMutation)
     }
 
     if (hasMutation('pbApplyHostTransformPlugin')) {
@@ -740,6 +757,13 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         useGraphqlMutation('pbApplyHostTransformPlugin', {
           ...ctx.value,
           ...e,
+        }).then(mapMutation)
+
+      adapter.previewHostTransformPlugin = (e) =>
+        useGraphqlMutation('pbApplyHostTransformPlugin', {
+          ...ctx.value,
+          ...e,
+          preview: true,
         }).then(mapMutation)
     }
 

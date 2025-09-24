@@ -19,12 +19,11 @@
   />
 
   <Teleport to="body">
-    <Transition appear name="bk-slide-up">
+    <Transition appear name="bk-transform-overlay" :duration="300">
       <TransformDialog
         v-if="openPluginDefinition"
-        :title="openPluginDefinition.label"
-        :config="openPluginDefinition.configInputs ?? []"
-        :lead="openPluginDefinition.description"
+        :plugin="openPluginDefinition"
+        :uuids="selection.uuids.value"
         @cancel="cancelTransform"
         @submit="onSubmitDialog"
       />
@@ -159,15 +158,6 @@ watch(selection.hasHostSelected, () => {
   }
 })
 
-function mapValues(values: Record<string, any>): PluginConfigInputItem[] {
-  return Object.entries(values).map(([name, value]) => {
-    return {
-      name,
-      value,
-    }
-  })
-}
-
 function onSelectBlockTransformPlugin(
   plugin: TransformPlugin,
   uuids: string[],
@@ -181,7 +171,7 @@ function onSelectBlockTransformPlugin(
     return
   }
 
-  onTransformBlock(plugin, uuids, {})
+  onTransformBlock(plugin, uuids, [])
 }
 
 function onSelectHostTransformPlugin(plugin: HostTransformPlugin) {
@@ -194,13 +184,13 @@ function onSelectHostTransformPlugin(plugin: HostTransformPlugin) {
     return
   }
 
-  onTransformHost(plugin, {})
+  onTransformHost(plugin, [])
 }
 
 async function onTransformBlock(
   plugin: TransformPlugin,
   uuids: string[],
-  values: Record<string, any>,
+  values: PluginConfigInputItem[],
 ) {
   ui.setTransform(plugin.label)
   openPlugin.value = null
@@ -210,7 +200,7 @@ async function onTransformBlock(
       adapter.applyTransformPlugin({
         uuids,
         pluginId: plugin.id,
-        config: mapValues(values),
+        config: values,
       }),
     $t(
       'failedToTransform',
@@ -221,7 +211,7 @@ async function onTransformBlock(
   ui.setTransform()
 }
 
-function onSubmitDialog(values: Record<string, any>) {
+function onSubmitDialog(values: PluginConfigInputItem[]) {
   if (!openPluginDefinition.value) {
     return
   }
@@ -235,7 +225,7 @@ function onSubmitDialog(values: Record<string, any>) {
 
 async function onTransformHost(
   plugin: HostTransformPlugin,
-  values: Record<string, any>,
+  values: PluginConfigInputItem[],
 ) {
   if (!adapter.applyHostTransformPlugin) {
     return
@@ -248,7 +238,7 @@ async function onTransformHost(
     () =>
       adapter.applyHostTransformPlugin({
         pluginId: plugin.id,
-        config: mapValues(values),
+        config: values,
       }),
     $t(
       'failedToTransform',

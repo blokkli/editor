@@ -38,6 +38,10 @@
     }
   }
 
+  .bk-required-indicator {
+    @apply text-red-normal font-bold;
+  }
+
   .bk-radio {
     span:before {
       @apply !rounded-full;

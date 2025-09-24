@@ -60,7 +60,7 @@ export class MediaImage extends Media {
 
   override getData() {
     return {
-      url: this.url(),
+      url: this.url() as string,
       alt: this.alt(),
       filename: this.filename(),
       width: this.width(),
@@ -95,6 +95,15 @@ export class MediaVideo extends Media {
       /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/
     const match = url.match(regExp)
     return match && match[7].length === 11 ? match[7] : null
+  }
+
+  override getData() {
+    return {
+      url: this.url() as string,
+      title: this.title(),
+      thumbnail: this.thumbnail(),
+      youtubeId: this.getYouTubeID(),
+    }
   }
 
   override thumbnail() {

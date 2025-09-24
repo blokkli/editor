@@ -1,0 +1,80 @@
+.bk.bk-transform-overlay {
+  @apply fixed top-0 left-0 size-full z-transform-overlay;
+
+  .bk-transform-overlay-dialog {
+    max-width: 1000px;
+
+    header {
+      @apply flex justify-between items-center;
+      @apply bg-teal-normal text-teal-dark;
+
+      p {
+        @apply px-20 font-bold;
+      }
+
+      button {
+        @apply size-60 flex items-center justify-center hover:bg-teal-dark/20 text-current;
+        svg {
+          @apply size-25 fill-current;
+        }
+      }
+    }
+
+    main {
+      @apply p-20;
+      @apply overflow-auto;
+
+      .bk-lead {
+        @apply mb-15;
+      }
+    }
+
+    footer {
+      @apply border-t border-t-mono-300 flex justify-between p-20;
+    }
+  }
+  .bk-transform-overlay-dialog-inner {
+    &:before {
+      content: '';
+      width: 0px;
+      height: 0px;
+      border-style: solid;
+      border-width: 0 10px 13px 10px;
+      border-color: transparent transparent theme('colors.mono.900') transparent;
+      transform: rotate(0deg);
+
+      @apply absolute left-1/2 -translate-x-1/2 bottom-full -mb-1;
+    }
+  }
+  .bk-transform-overlay-dialog-inner-content {
+    @apply w-full bg-white rounded shadow-2xl overflow-hidden;
+  }
+
+  .bk-transform-overlay-dialog-grid {
+    @apply grid grid-cols-2 gap-25;
+  }
+
+  .bk-diff-view {
+    max-height: 400px;
+    @apply overflow-auto;
+  }
+}
+
+.bk-transform-overlay-enter-active,
+.bk-transform-overlay-leave-active {
+  @apply transition ease-swing duration-300;
+  .bk-transform-overlay-dialog-inner,
+  .bk-transform-overlay-dialog-inner:before {
+    @apply transition ease-swing duration-300;
+  }
+}
+
+.bk-transform-overlay-enter-from,
+.bk-transform-overlay-leave-to {
+  .bk-transform-overlay-dialog-inner {
+    @apply opacity-0 translate-y-50;
+    &:before {
+      @apply translate-y-30;
+    }
+  }
+}

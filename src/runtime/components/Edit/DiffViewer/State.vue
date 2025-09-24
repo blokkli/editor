@@ -1,16 +1,96 @@
 <template>
-  <div class="bk bk-diff-sidebar-pane">
-    <DiffViewerState />
+  <div class="bk bk-diff-view">
+    <table class="bk-diff-table">
+      <thead>
+        <tr>
+          <th>{{ $t('diffTableChange', 'Change') }}</th>
+          <th>{{ $t('diffTableBundle', 'Type') }}</th>
+          <th>{{ $t('diffTableProperty', 'Property') }}</th>
+          <th>{{ $t('diffTableDiff', 'Diff') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template v-for="item in diffItems" :key="item.uuid">
+          <tr>
+            <td
+              :rowspan="Math.max(1, item.props.length)"
+              class="bk-diff-status"
+            >
+              <div
+                v-if="item.status === 'added'"
+                class="bk-diff-status-label bk-is-added"
+              >
+                {{ $t('diffStatusAdded', 'Added') }}
+              </div>
+              <div
+                v-else-if="item.status === 'removed'"
+                class="bk-diff-status-label bk-is-removed"
+              >
+                {{ $t('diffStatusDeleted', 'Deleted') }}
+              </div>
+              <div v-else class="bk-diff-status-label">
+                {{ $t('diffStatusEdited', 'Edited') }}
+              </div>
+            </td>
+            <td
+              :rowspan="Math.max(1, item.props.length)"
+              class="bk-diff-bundle"
+            >
+              <button
+                class="bk-blokkli-item-label"
+                :disabled="item.status === 'removed'"
+                @click="scrollToBlock(item.uuid)"
+              >
+                <div class="bk-blokkli-item-label-icon">
+                  <ItemIcon :bundle="item.bundle" />
+                </div>
+                <span>{{ getLabel(item.bundle) }}</span>
+              </button>
+            </td>
+
+            <template v-if="item.props.length > 0">
+              <td>
+                <strong>{{ item.props[0]!.key }}</strong>
+              </td>
+              <td class="bk-diff-monospace">
+                <div class="bk-diff-prop-diff" v-html="item.props[0]!.diff" />
+              </td>
+            </template>
+            <template v-else>
+              <td />
+              <td />
+            </template>
+          </tr>
+          <tr
+            v-for="prop in item.props.slice(1)"
+            :key="prop.key"
+            class="bk-diff-prop-row"
+          >
+            <td>
+              <strong>{{ prop.key }}</strong>
+            </td>
+            <td class="bk-diff-monospace">
+              <div class="bk-diff-prop-diff" v-html="prop.diff" />
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, useBlokkli } from '#imports'
-import type { FieldListItem, MutatedField } from '#blokkli/types'
-import { DiffViewerState } from '#blokkli/components'
+import type { FieldListItem, MappedState, MutatedField } from '#blokkli/types'
+import { ItemIcon } from '#blokkli/components'
 import diff from 'html-diff-ts'
 
-const { types, $t, adapter, state, eventBus, dom, definitions } = useBlokkli()
+const props = defineProps<{
+  stateBefore: MappedState
+  stateAfter: MappedState
+}>()
+
+const { types, $t, eventBus, dom, definitions } = useBlokkli()
 
 function getProps(bundle: string, props: any): Record<string, string> {
   const definition = definitions.getDefaultDefinition(bundle)
@@ -54,19 +134,17 @@ interface DiffItem {
   props: DiffItemProp[]
 }
 
-const stateBefore = await adapter.loadStateAtIndex!(-1).then((v: any) =>
-  adapter.mapState(v),
-)
-
 function buildDiffItems(fields?: MutatedField[]): FieldListItem[] {
   const items = (fields || []).flatMap((v) => v.list)
   return items
 }
 
 const itemsBefore = computed(() =>
-  buildDiffItems(stateBefore.mutatedState?.fields),
+  buildDiffItems(props.stateBefore.mutatedState?.fields),
 )
-const itemsAfter = computed(() => buildDiffItems(state.mutatedFields.value))
+const itemsAfter = computed(() =>
+  buildDiffItems(props.stateAfter.mutatedState?.fields),
+)
 
 const diffItems = computed<DiffItem[]>(() => {
   const diffMap = new Map<string, DiffItem>()

@@ -34,6 +34,7 @@ export type UiProvider = {
   isProxyMode: Ref<boolean>
   hasDialogOpen: Ref<boolean>
 
+  hasTransformOverlayOpen: Ref<boolean>
   isTransforming: ComputedRef<boolean>
   setTransform: (label?: string | null | undefined) => void
   transformLabel: ComputedRef<string>
@@ -90,6 +91,7 @@ export default function (
   const isProxyMode = ref(false)
   const menuIsOpen = ref(false)
   const hasDialogOpen = ref(false)
+  const hasTransformOverlayOpen = ref(false)
   const isAnimating = ref(false)
   const isAnalyzing = ref(false)
   const transformLabel = ref('')
@@ -407,5 +409,6 @@ export default function (
     getViewportRelativeRect,
     interfaceLanguage,
     hasDialogOpen,
+    hasTransformOverlayOpen,
   }
 }

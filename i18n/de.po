@@ -3,6 +3,10 @@ msgstr ""
 "Language: de\n"
 "Content-Type: text/plain\n"
 
+msgctxt "actionsDropdownToolip"
+msgid "Further actions"
+msgstr ""
+
 msgctxt "addBlockCommand.appendInField"
 msgid "Append \"@block\" in \"@field\""
 msgstr "«@block» in «@field» anfügen"
@@ -763,14 +767,6 @@ msgctxt "feature_exit_label"
 msgid "Exit"
 msgstr ""
 
-msgctxt "feature_field-areas_description"
-msgid "Provides a view option to render the field areas with labels."
-msgstr ""
-
-msgctxt "feature_field-areas_label"
-msgid "Field Areas"
-msgstr ""
-
 msgctxt "feature_fragments_description"
 msgid "Provides way to add content fragments defined by the frontend."
 msgstr ""
@@ -1046,24 +1042,6 @@ msgstr ""
 msgctxt "feature_validations_label"
 msgid "Validations"
 msgstr ""
-
-msgctxt "fieldAreasHide"
-msgid "Hide block fields"
-msgstr "Blockfelder verstecken"
-
-msgctxt "fieldAreasShow"
-msgid "Show block fields"
-msgstr "Blockfelder anzeigen"
-
-msgctxt "fieldAreasToggle"
-msgid "Toggle block fields"
-msgstr "Blockfelder anzeigen"
-
-msgctxt "fieldAreasTourText"
-msgid "Toggle between showing or hiding the areas where blocks can be placed."
-msgstr ""
-"Aktivieren Sie, dass Bereiche ein- oder ausgeblendet werden, in denen "
-"Blöcke platziert werden können. "
 
 msgctxt "fieldIsRequired"
 msgid "This field is required"
@@ -1717,12 +1695,16 @@ msgctxt "tourStartButton"
 msgid "Start the tour"
 msgstr "Tour starten"
 
-msgctxt "transformDialogSubmitLabel"
-msgid "Apply transform"
-msgstr "Aktion ausführen"
+msgctxt "transformDialogButtonApply"
+msgid "Apply"
+msgstr "Anwenden"
+
+msgctxt "transformDialogButtonPreview"
+msgid "Preview"
+msgstr "Vorschau"
 
 msgctxt "transformTo"
-msgid "Other actions"
+msgid "Actions"
 msgstr "Weitere Aktionen"
 
 msgctxt "translationsBannerButton"

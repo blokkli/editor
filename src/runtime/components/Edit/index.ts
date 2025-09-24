@@ -1,14 +1,15 @@
 import AddListItem from './AddListItem/index.vue'
 import ConfigForm from './PluginConfigForm/index.vue'
 import DialogModal from './Dialog/index.vue'
+import DiffViewerState from './DiffViewer/State.vue'
 import FormGroup from './Form/Group/index.vue'
 import FormItem from './Form/Item/index.vue'
 import FormOverlay from './FormOverlay/index.vue'
+import FormRadio from './Form/Radio/index.vue'
 import FormSelect from './Form/Select/index.vue'
 import FormText from './Form/Text/index.vue'
 import FormTextarea from './Form/Textarea/index.vue'
 import FormToggle from './Form/Toggle/index.vue'
-import FormRadio from './Form/Radio/index.vue'
 import Highlight from './Highlight/index.vue'
 import Icon from './Icon/index.vue'
 import InfoBox from './InfoBox/index.vue'
@@ -27,9 +28,11 @@ export {
   AddListItem,
   ConfigForm,
   DialogModal,
+  DiffViewerState,
   FormGroup,
   FormItem,
   FormOverlay,
+  FormRadio,
   FormSelect,
   FormText,
   FormTextarea,
@@ -47,5 +50,4 @@ export {
   ShortcutIndicator,
   Sortli,
   ViewportBlockingRect,
-  FormRadio,
 }

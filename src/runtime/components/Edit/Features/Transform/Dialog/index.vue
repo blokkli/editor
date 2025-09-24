@@ -1,49 +1,226 @@
 <template>
-  <DialogModal
-    :title
-    :can-submit
-    :width="500"
-    :lead
-    icon="script"
-    :submit-label="$t('transformDialogSubmitLabel', 'Apply transform')"
-    @cancel="$emit('cancel')"
-    @submit="onSubmit"
-  >
-    <div class="bk">
-      <ConfigForm v-model="value" :config />
+  <div class="bk bk-transform-overlay" @keydown.stop @keyup.stop>
+    <div ref="el" class="bk-transform-overlay-dialog">
+      <div class="bk-transform-overlay-dialog-inner">
+        <div class="bk-transform-overlay-dialog-inner-content">
+          <header>
+            <p>{{ title }}</p>
+            <button @click.prevent="$emit('cancel')">
+              <Icon name="close" />
+            </button>
+          </header>
+          <main>
+            <div class="bk-transform-overlay-dialog-grid">
+              <div>
+                <p v-if="lead" class="bk-lead">{{ lead }}</p>
+                <ConfigForm ref="configForm" v-model="value" :config />
+              </div>
+              <DiffViewerState
+                v-if="stateAfter"
+                :state-before
+                :state-after
+                @wheel="onWheel"
+              />
+            </div>
+          </main>
+          <footer>
+            <button
+              v-if="supportsPreview"
+              class="bk-button"
+              :disabled="disabled || (!hasChanged && !hasSeedInput)"
+              :class="{
+                'bk-is-loading': isPreviewing,
+              }"
+              @click.prevent="onClickPreview"
+            >
+              {{ $t('transformDialogButtonPreview', 'Preview') }}
+            </button>
+            <button
+              class="bk-button bk-is-teal"
+              :disabled
+              @click.prevent="onClickSubmit"
+            >
+              {{ $t('transformDialogButtonApply', 'Apply') }}
+            </button>
+          </footer>
+        </div>
+      </div>
     </div>
-  </DialogModal>
+  </div>
 </template>
 
 <script setup lang="ts">
-import type { PluginConfigInput } from '#blokkli/types'
-import { useBlokkli, ref, computed } from '#imports'
-import { DialogModal, ConfigForm } from '#blokkli/components'
+import type {
+  HostTransformPlugin,
+  MappedState,
+  PluginConfigInputItem,
+  TransformPlugin,
+} from '#blokkli/types'
+import {
+  useBlokkli,
+  ref,
+  watch,
+  computed,
+  useTemplateRef,
+  onMounted,
+  onBeforeUnmount,
+} from '#imports'
+import { ConfigForm, DiffViewerState, Icon } from '#blokkli/components'
+import useStickyToolbar from '#blokkli/helpers/composables/useStickyToolbar'
 
 const props = defineProps<{
-  title: string
-  lead?: string
-  config: PluginConfigInput[]
+  plugin: HostTransformPlugin | TransformPlugin
+  uuids?: string[]
 }>()
+
+const { adapter, state, ui, selection, $t } = useBlokkli()
+
+const el = useTemplateRef('el')
+const configForm = useTemplateRef('configForm')
+
+useStickyToolbar(el, {
+  getPlacementY: () => 'bottom',
+  getPlacementX: () => 'center',
+  getMargin: () => 25,
+})
+
+function clone<T extends object>(v: T): T {
+  return JSON.parse(JSON.stringify(v))
+}
+
+function mapValues(values: Record<string, any>): PluginConfigInputItem[] {
+  return Object.entries(values).map(([name, value]) => {
+    return {
+      name,
+      value,
+    }
+  })
+}
+
+const hasSeedInput = computed<boolean>(
+  () => !!props.plugin.configInputs?.find((v) => v.type === 'seed'),
+)
+
+const isLocked = ref(false)
+const hasChanged = ref(false)
+const isPreviewing = ref(false)
+const title = computed(() => props.plugin.label)
+const lead = computed(() => props.plugin.description)
+const config = computed(() => props.plugin.configInputs ?? [])
+const isHostPlugin = computed(() => !('bundles' in props.plugin))
+const supportsPreview = computed<boolean>(() => {
+  if (!props.plugin.preview) {
+    return false
+  }
+
+  if (isHostPlugin.value) {
+    return !!adapter.previewHostTransformPlugin
+  }
+
+  return !!adapter.previewTransformPlugin
+})
+
+const stateBefore = clone(state.getMappedState())
+const stateAfter = ref<MappedState | null>(null)
 
 const emit = defineEmits<{
   (e: 'cancel'): void
-  (e: 'submit', values: Record<string, any>): void
+  (e: 'submit', values: PluginConfigInputItem[]): void
 }>()
 
-const { $t } = useBlokkli()
-
-const value = ref<Record<string, any>>({})
+const value = ref<Record<string, any>>(
+  (props.plugin.configInputs ?? []).reduce<Record<string, string>>(
+    (acc, plugin) => {
+      acc[plugin.name] = ''
+      return acc
+    },
+    {},
+  ),
+)
 
 const requiredItems = computed<string[]>(() =>
-  props.config.filter((v) => v.required).map((v) => v.name),
+  config.value.filter((v) => v.required).map((v) => v.name),
 )
 
 const canSubmit = computed<boolean>(() => {
   return requiredItems.value.every((name) => !!value.value[name])
 })
 
-function onSubmit() {
-  emit('submit', value.value)
+const disabled = computed(() => isLocked.value || !canSubmit.value)
+
+watch(
+  value,
+  () => {
+    hasChanged.value = true
+  },
+  {
+    deep: true,
+  },
+)
+
+function onWheel(e: WheelEvent) {
+  if (e.metaKey || e.ctrlKey) {
+    return
+  }
+
+  e.stopPropagation()
 }
+
+async function onClickPreview() {
+  if (isLocked.value) {
+    return
+  }
+
+  if (configForm.value) {
+    configForm.value.updateSeed()
+  }
+
+  isLocked.value = true
+  isPreviewing.value = true
+  ui.setTransform(title.value)
+
+  if (
+    supportsPreview.value &&
+    adapter.previewTransformPlugin &&
+    'bundles' in props.plugin &&
+    props.uuids
+  ) {
+    const config = mapValues(value.value)
+    try {
+      const result = await adapter.previewTransformPlugin({
+        pluginId: props.plugin.id,
+        uuids: props.uuids,
+        config,
+      })
+
+      stateAfter.value = clone(adapter.mapState(result.state))
+    } catch (e) {
+      // @TODO Error message
+    }
+  }
+
+  isLocked.value = false
+  isPreviewing.value = false
+  ui.setTransform()
+  hasChanged.value = false
+}
+
+function onClickSubmit() {
+  if (isLocked.value) {
+    return
+  }
+
+  isLocked.value = true
+  emit('submit', mapValues(value.value))
+}
+
+onMounted(() => {
+  ui.hasTransformOverlayOpen.value = true
+  selection.lockSelection('transform-dialog')
+})
+
+onBeforeUnmount(() => {
+  ui.hasTransformOverlayOpen.value = false
+  selection.unlockSelection('transform-dialog')
+})
 </script>

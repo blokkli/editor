@@ -92,6 +92,16 @@ export type SelectionProvider = {
   dragItemsBundles: ComputedRef<string[]>
 
   isBlockSelected(uuid: string): boolean
+
+  /**
+   * Lock selection.
+   */
+  lockSelection: (key: string) => void
+
+  /**
+   * Unlock selection.
+   */
+  unlockSelection: (key: string) => void
 }
 
 export default function (dom: DomProvider): SelectionProvider {
@@ -103,6 +113,9 @@ export default function (dom: DomProvider): SelectionProvider {
   const isChangingOptions = ref(false)
   const isMultiSelecting = ref(false)
   const interactionMode = ref<InteractionMode>('mouse')
+  const selectionLocks = ref<string[]>([])
+
+  const selectionIsLocked = computed(() => !!selectionLocks.value.length)
 
   const dragItems = ref<DraggableItem[]>([])
   const dragItemsBundles = computed(() =>
@@ -125,6 +138,9 @@ export default function (dom: DomProvider): SelectionProvider {
   )
 
   function updateSelectedUuids(uuids: string[]) {
+    if (selectionIsLocked.value) {
+      return
+    }
     selectedUuids.value = uuids
   }
 
@@ -249,6 +265,14 @@ export default function (dom: DomProvider): SelectionProvider {
     return uuidsSet.value.has(uuid)
   }
 
+  function lockSelection(key: string) {
+    selectionLocks.value.push(key)
+  }
+
+  function unlockSelection(key: string) {
+    selectionLocks.value = selectionLocks.value.filter((v) => v !== key)
+  }
+
   return {
     uuids: selectedUuids,
     blocks,
@@ -269,5 +293,7 @@ export default function (dom: DomProvider): SelectionProvider {
       return hasHostSelected.value && !selectedUuids.value.length
     }),
     hasAnythingSelected,
+    lockSelection,
+    unlockSelection,
   }
 }

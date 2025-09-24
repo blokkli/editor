@@ -31,7 +31,7 @@ if (!page) {
 }
 
 const editState = getEditState(entityType.value, entityUuid.value)
-const mutatedState = editState.getMutatedState(page)
+const mutatedState = await editState.getMutatedState(page)
 
 const block = mutatedState.context.getProxy(uuid.value)?.block
 
@@ -43,13 +43,13 @@ const translation = block.getTranslation(langcode.value)
 
 const fields = Object.values(translation.fields)
 
-const onSubmit = (values: Record<string, string>) => {
+const onSubmit = async (values: Record<string, string>) => {
   editState.addMutation('edit_translation', {
     uuid: uuid.value,
     values,
     langcode: langcode.value,
   })
-  editState.getMutatedState(page)
+  await editState.getMutatedState(page)
   router.push({ name: 'blokkli-form-redirect' })
 }
 </script>

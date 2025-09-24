@@ -4,7 +4,7 @@
       <h3>{{ title }}</h3>
       <ol>
         <li v-for="item in items" :key="item.id">
-          <button @click="$emit('select', item)">
+          <button @click.prevent="onClick(item)">
             <Icon v-if="icon" :name="icon" />
             <div>
               <div>{{ item.label }}</div>
@@ -31,13 +31,18 @@ const props = defineProps<{
   icon?: BlokkliIcon
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'select', item: T): void
 }>()
 
 const { eventBus } = useBlokkli()
 
 const isRendering = computed(() => props.enabled)
+
+function onClick(item: T) {
+  emit('select', item)
+  eventBus.emit('action:selected')
+}
 
 onMounted(() => {
   eventBus.emit('plugin:mount', {

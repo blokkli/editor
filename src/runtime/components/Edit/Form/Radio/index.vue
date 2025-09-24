@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="bk-form-label">
-      {{ label }}
+      {{ label }}<span v-if="required" class="bk-required-indicator">*</span>
     </div>
     <div>
       <label v-for="option in options" :key="option.value" class="bk-radio">

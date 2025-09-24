@@ -65,6 +65,7 @@ export type StateProvider = {
   getFieldListForBlock: (uuid: string) => MutatedField | undefined
   getMutatedField: (uuid: string, fieldName: string) => MutatedField | undefined
   getAllUuids: () => string[]
+  getMappedState: () => MappedState
 }
 
 export default async function (
@@ -73,6 +74,7 @@ export default async function (
   $t: TextProvider,
   providerKey: string,
 ): Promise<StateProvider> {
+  let _mappedState: MappedState | null = null
   const overrideHostOptions = useState('options:' + providerKey)
   const stateLoaded = ref(false)
   const stateLoadError = ref(false)
@@ -129,6 +131,7 @@ export default async function (
   })
 
   function setContext(context?: MappedState) {
+    _mappedState = context ?? null
     const options = context?.mutatedState?.mutatedOptions || {}
     const optionKeys = Object.keys(options)
 
@@ -372,8 +375,16 @@ export default async function (
     () => stateLoaded.value && !stateLoadError.value,
   )
 
+  function getMappedState() {
+    if (!_mappedState) {
+      throw new Error('Called getMappedState() before a state is available.')
+    }
+    return _mappedState
+  }
+
   return {
     stateAvailable,
+    getMappedState,
     refreshKey,
     owner: readonly(owner),
     mutatedFields,

@@ -1,6 +1,6 @@
 <template>
   <label class="bk-blokkli-item-options-checkbox">
-    <input v-model="checked" type="checkbox" class="peer" />
+    <input v-model="checked" type="checkbox" class="peer" :required />
     <div />
     <span>{{ label }}</span>
   </label>
@@ -16,6 +16,7 @@ const props = defineProps<{
   label: string
   property: string
   modelValue?: string
+  required?: boolean
 }>()
 
 const emit = defineEmits(['update:modelValue'])

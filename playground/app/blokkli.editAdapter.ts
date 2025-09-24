@@ -42,6 +42,14 @@ function getRandomNumberInRange(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
+function sleep(duration: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve()
+    }, duration)
+  })
+}
+
 const blockAnalyzer = defineAnalyzer(() => {
   return {
     id: 'block-analyzer',
@@ -133,13 +141,13 @@ export default defineBlokkliEditAdapter((ctx) => {
   const getEntity = () =>
     entityStorageManager.getContent(ctx.value.entityUuid) as ContentPage
 
-  const addMutation = <T extends keyof MutationArgsMap>(
+  const addMutation = async <T extends keyof MutationArgsMap>(
     id: T,
     args: MutationArgsMap[T],
   ): Promise<MutationResponseLike<MutatedState>> => {
     editState.addMutation(id, args)
     const entity = getEntity()
-    const mutatedState = editState.getMutatedState(entity)
+    const mutatedState = await editState.getMutatedState(entity)
     return mockResponse(mutatedState)
   }
 
@@ -235,8 +243,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           'Failed to load page with UUID: ' + ctx.value.entityUuid,
         )
       }
-      const mutatedState = editState.getMutatedState(page, { index })
-      return Promise.resolve(mutatedState)
+      return editState.getMutatedState(page, { index })
     },
     getDisabledFeatures() {
       return Promise.resolve([])
@@ -254,6 +261,7 @@ export default defineBlokkliEditAdapter((ctx) => {
       const hostPlugin: HostTransformPlugin = {
         id: 'rewrite_contents',
         label: 'Texte umschreiben',
+        preview: true,
         configInputs: [
           {
             type: 'options',
@@ -303,16 +311,33 @@ export default defineBlokkliEditAdapter((ctx) => {
             required: true,
             multiline: true,
           },
+          {
+            type: 'seed',
+            name: 'seed',
+            label: 'Seed',
+            required: true,
+          },
         ],
       }
       return Promise.resolve([hostPlugin])
     },
     applyTransformPlugin: (e) => addMutation('transform', e),
+    previewTransformPlugin: async (e) => {
+      await sleep(2000)
+      editState.addMutation('transform', e, true)
+      const entity = getEntity()
+      const mutatedState = await editState.getMutatedState(entity, {
+        save: false,
+      })
+      editState._tempMutations = null
+      editState.currentIndex--
+      return mockResponse(mutatedState)
+    },
     applyHostTransformPlugin: (e) => addMutation('transform_host', e),
-    takeOwnership: () => {
+    takeOwnership: async () => {
       isOwner = true
       const entity = getEntity()
-      const mutatedState = editState.getMutatedState(entity)
+      const mutatedState =await  editState.getMutatedState(entity)
       return mockResponse(mutatedState)
     },
     mapState(inputState) {
@@ -386,9 +411,9 @@ export default defineBlokkliEditAdapter((ctx) => {
         query: route.query,
       })
     },
-    revertAllChanges() {
+    async revertAllChanges() {
       editState.revert()
-      return mockResponse(editState.getMutatedState(getEntity()))
+      return mockResponse(await editState.getMutatedState(getEntity()))
     },
     loadComments() {
       return loadComments()
@@ -517,12 +542,12 @@ export default defineBlokkliEditAdapter((ctx) => {
       }),
     detachReusableBlock: (e) => addMutation('detach_reusable', e),
 
-    setHistoryIndex(index: number) {
+    async setHistoryIndex(index: number) {
       editState.currentIndex = Math.min(
         Math.max(index, -1),
         editState.getMutations().length,
       )
-      return mockResponse(editState.getMutatedState(getEntity()))
+      return mockResponse(await editState.getMutatedState(getEntity()))
     },
 
     formFrameBuilder(e) {

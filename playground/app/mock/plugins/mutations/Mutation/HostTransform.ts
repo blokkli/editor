@@ -16,6 +16,7 @@ export class MutationHostTransform extends Mutation {
   }
 
   override execute(context: MutationContext, args: MutationHostTransformArgs) {
+    console.log(args)
     // @TODO
   }
 }

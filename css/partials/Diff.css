@@ -1,7 +1,10 @@
 .bk {
-  &.bk-diff-view {
-    @apply select-text overflow-auto overscroll-contain;
+  &.bk-diff-sidebar-pane {
     @apply absolute top-0 left-0 w-full h-full;
+    @apply overflow-auto overscroll-contain;
+  }
+  &.bk-diff-view {
+    @apply select-text;
     container-type: inline-size;
     .bk-blokkli-item-label {
       &[disabled] {
@@ -54,6 +57,10 @@
     td {
       @apply align-top;
     }
+  }
+
+  .bk-diff-bundle {
+    @apply border-t border-t-mono-300 mt-10;
   }
 
   .bk-diff-table th,

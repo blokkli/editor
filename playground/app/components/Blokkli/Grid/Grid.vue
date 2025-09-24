@@ -86,5 +86,3 @@ const colorClass = computed(() => {
 const isInverted = computed(() => options.value.background === 'dark')
 provide('isInverted', isInverted)
 </script>
-
-<style></style>

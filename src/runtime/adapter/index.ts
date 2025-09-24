@@ -326,9 +326,35 @@ export interface BlokkliAdapter<T> {
   ) => Promise<MutationResponseLike<T>>
 
   /**
+   * Preview the output of a transform plugin.
+   *
+   * The transform plugin is expected to apply its transform without actually
+   * persisting it and not creating any side effects.
+   *
+   * It must produce the same result when called for the "final"
+   * transformation that is added to the edit state.
+   */
+  previewTransformPlugin?: (
+    e: AdapterApplyTransformPlugin,
+  ) => Promise<MutationResponseLike<T>>
+
+  /**
    * Apply a host transform plugin.
    */
   applyHostTransformPlugin?: (
+    e: AdapterApplyHostTransformPlugin,
+  ) => Promise<MutationResponseLike<T>>
+
+  /**
+   * Preview the output of a host transform plugin.
+   *
+   * The transform plugin is expected to apply its transform without actually
+   * persisting it and not creating any side effects.
+   *
+   * It must produce the same result when called for the "final"
+   * transformation that is added to the edit state.
+   */
+  previewHostTransformPlugin?: (
     e: AdapterApplyHostTransformPlugin,
   ) => Promise<MutationResponseLike<T>>
 
