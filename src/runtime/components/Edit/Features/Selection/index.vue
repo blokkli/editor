@@ -16,11 +16,13 @@
   </Teleport>
 
   <PluginItemDropdown
-    id="transform"
+    v-if="itemDropdownItems.length"
+    id="selection"
     :title="$t('selectionActionGroupTitle', 'Selection')"
     :enabled="itemDropdownEnabled"
     :items="itemDropdownItems"
     icon="selection"
+    weight="200"
     @select="onSelectDropdownItem"
   />
 </template>

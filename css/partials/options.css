@@ -47,13 +47,21 @@
     &:not(:last-child) {
       @apply lg:border-r lg:border-r-mono-600;
     }
+  }
 
+  .bk-blokkli-item-options-item {
     &:last-child {
-      .bk-blokkli-item-options-text input,
-      .bk-blokkli-item-options-checkbox {
-        @apply rounded-e-md;
+      > div {
+        > .bk-blokkli-item-options-text input,
+        > .bk-blokkli-item-options-checkbox,
+        > .bk-blokkli-item-options-checkboxes {
+          @apply rounded-e-md;
+        }
       }
     }
+  }
+  .bk-blokkli-item-options-group:last-child > button {
+    @apply rounded-e-md;
   }
 
   .bk-blokkli-item-options-checkbox {
@@ -272,7 +280,7 @@
     }
 
     &.bk-is-active {
-      @apply bg-mono-800;
+      @apply bg-mono-800 !rounded-b-none;
       button {
         svg {
           @apply rotate-180;
@@ -344,8 +352,13 @@
     }
 
     &.bk-is-active {
-      @apply bg-mono-800;
+      &:last-child {
+        > button {
+          @apply rounded-b-none;
+        }
+      }
       > button {
+        @apply bg-mono-800;
         svg {
           @apply rotate-180;
         }

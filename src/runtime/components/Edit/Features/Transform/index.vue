@@ -5,6 +5,7 @@
     :enabled="!!(itemBundleIds.length && possibleTransforms.length)"
     :items="possibleTransforms"
     icon="script"
+    weight="100"
     @select="onSelectBlockTransformPlugin($event, selection.uuids.value)"
   />
 
@@ -15,6 +16,7 @@
     :enabled="selection.hasHostSelected.value"
     :items="hostPlugins"
     icon="script"
+    weight="100"
     @select="onSelectHostTransformPlugin($event)"
   />
 

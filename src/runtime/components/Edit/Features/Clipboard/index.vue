@@ -63,6 +63,14 @@
       </div>
     </div>
   </PluginSidebar>
+  <PluginItemDropdown
+    id="clipboard"
+    :title="$t('clipboard', 'Clipboard')"
+    :enabled="!!selection.blocks.value.length"
+    :items="itemDropdownItems"
+    icon="clipboard"
+    @select="onSelectDropdownItem"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -72,8 +80,9 @@ import {
   useBlokkli,
   onMounted,
   onUnmounted,
+  computed,
 } from '#imports'
-import { PluginSidebar } from '#blokkli/plugins'
+import { PluginSidebar, PluginItemDropdown } from '#blokkli/plugins'
 import ClipboardList from './List/index.vue'
 import type { ClipboardItem } from '#blokkli/types'
 import { falsy, generateUUID, getFieldKey } from '#blokkli/helpers'
@@ -81,6 +90,7 @@ import { Icon } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
 import getVideoId from 'get-video-id'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 
 const { settings, logger } = defineBlokkliFeature({
   id: 'clipboard',
@@ -105,6 +115,44 @@ const { settings, logger } = defineBlokkliFeature({
 const { selection, $t, adapter, dom, state, ui, types } = useBlokkli()
 
 const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
+const selectionClipboard = ref<string[]>([])
+
+type DropdownItem = {
+  id: 'copy' | 'paste'
+  label: string
+  icon: BlokkliIcon
+  description: string
+  enabled?: boolean
+}
+
+const itemDropdownItems = computed<DropdownItem[]>(() => {
+  return [
+    {
+      id: 'copy',
+      label: $t('copy', 'Copy'),
+      icon: 'copy',
+      description: $t('clipboardCopyShortcutHelp', 'Copy selected blocks'),
+    },
+    {
+      id: 'paste',
+      label: $t('paste', 'Paste'),
+      enabled: !!selectionClipboard.value.length,
+      icon: 'clipboard',
+      description: $t(
+        'clipboardPasteDescription',
+        'Paste blocks from clipboard',
+      ),
+    },
+  ]
+})
+
+function onSelectDropdownItem(item: DropdownItem) {
+  if (item.id === 'copy') {
+    copyCurrentSelectionToClipboard()
+  } else if (item.id === 'paste' && selectionClipboard.value.length) {
+    handleSelectionPaste(selectionClipboard.value)
+  }
+}
 
 const ALLOWED_HTML_ATTRIBUTES = ['href']
 
@@ -445,16 +493,23 @@ function setClipboard(text: string) {
   }
 }
 
-onBlokkliEvent('keyPressed', (e) => {
+function copyCurrentSelectionToClipboard() {
   if (!selection.blocks.value.length) {
+    selectionClipboard.value = []
     return
   }
-  if (e.code !== 'c' || !e.meta) {
-    return
-  }
+
   setClipboard(
     JSON.stringify({ type: 'selection', uuids: selection.uuids.value }),
   )
+  selectionClipboard.value = selection.uuids.value
+}
+
+onBlokkliEvent('keyPressed', (e) => {
+  if (e.code !== 'c' || !e.meta) {
+    return
+  }
+  copyCurrentSelectionToClipboard()
 })
 
 defineShortcut([

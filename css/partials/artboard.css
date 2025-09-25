@@ -15,7 +15,6 @@
   --bk-actions-height: 50px;
   @screen lg {
     --bk-root-offset-top: 50px;
-    --bk-actions-height: 50px;
     --bk-root-offset-right: 50px;
   }
   &.bk-has-add-list-left {
