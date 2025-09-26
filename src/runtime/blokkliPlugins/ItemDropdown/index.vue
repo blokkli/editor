@@ -15,6 +15,7 @@
           >
             <div class="bk-blokkli-item-actions-type-dropdown-icon">
               <Icon v-if="item.icon" :name="item.icon" />
+              <ItemIcon v-else-if="item.bundle" :bundle="item.bundle" />
             </div>
             <div>
               <div>{{ item.label }}</div>
@@ -31,7 +32,7 @@
 
 <script lang="ts">
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import { Icon } from '#blokkli/components'
+import { Icon, ItemIcon } from '#blokkli/components'
 import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
 type Item = {
@@ -40,6 +41,7 @@ type Item = {
   description?: string
   enabled?: boolean
   icon?: BlokkliIcon
+  bundle?: string
 }
 </script>
 

@@ -5,6 +5,7 @@
     :enabled="!!possibleConversions.length"
     :items="possibleConversions"
     @select="onConvert($event.id)"
+    weight="900"
   />
 </template>
 
@@ -18,7 +19,6 @@ import {
 } from '#imports'
 import { PluginItemDropdown } from '#blokkli/plugins'
 import { falsy, onlyUnique } from '#blokkli/helpers'
-import type { BlockBundleDefinition } from '#blokkli/types'
 
 const { adapter } = defineBlokkliFeature({
   id: 'conversions',
@@ -28,6 +28,13 @@ const { adapter } = defineBlokkliFeature({
   description:
     'Provides block actions to convert one or more blocks to a different bundle.',
 })
+
+type ItemDropdownItem = {
+  id: string
+  label: string
+  bundle: string
+  description?: string
+}
 
 const { types, selection, state, $t } = useBlokkli()
 
@@ -65,11 +72,12 @@ const itemBundleIds = computed(() =>
   selection.blocks.value.map((v) => v.itemBundle).filter(onlyUnique),
 )
 
-const possibleConversions = computed<BlockBundleDefinition[]>(() => {
+const possibleConversions = computed<ItemDropdownItem[]>(() => {
   if (itemBundleIds.value.length !== 1) {
     return []
   }
   const sourceType = itemBundleIds.value[0]
+  const titleBase = $t('conversionsConvertTo', 'Convert to: @bundle')
   return conversions.value
     .filter(
       (v) =>
@@ -78,6 +86,17 @@ const possibleConversions = computed<BlockBundleDefinition[]>(() => {
     )
     .map((v) => types.getBlockBundleDefinition(v.targetBundle))
     .filter(falsy)
+    .map((v) => {
+      return {
+        id: v.id,
+        label: titleBase.replace('@bundle', v.label),
+        bundle: v.id,
+      }
+    })
+})
+
+watch(possibleConversions, (v) => {
+  console.log(v)
 })
 </script>
 
