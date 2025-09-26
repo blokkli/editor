@@ -66,7 +66,9 @@
   <PluginItemDropdown
     id="clipboard"
     :title="$t('clipboard', 'Clipboard')"
-    :enabled="!!selection.blocks.value.length"
+    :enabled="
+      !!selection.blocks.value.length && state.editMode.value === 'editing'
+    "
     :items="itemDropdownItems"
     icon="clipboard"
     @select="onSelectDropdownItem"

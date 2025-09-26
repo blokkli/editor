@@ -137,8 +137,8 @@ export default function (dom: DomProvider): SelectionProvider {
       .filter(falsy),
   )
 
-  function updateSelectedUuids(uuids: string[]) {
-    if (selectionIsLocked.value) {
+  function updateSelectedUuids(uuids: string[], force?: boolean) {
+    if (selectionIsLocked.value && !force) {
       return
     }
     selectedUuids.value = uuids
@@ -152,11 +152,11 @@ export default function (dom: DomProvider): SelectionProvider {
     updateSelectedUuids([])
   }
 
-  function onSelect(v: string | string[]) {
+  function onSelect(v: string | string[], force?: boolean) {
     if (typeof v === 'string') {
-      updateSelectedUuids([v])
+      updateSelectedUuids([v], force)
     } else {
-      updateSelectedUuids(v.filter(onlyUnique))
+      updateSelectedUuids(v.filter(onlyUnique), force)
     }
   }
 
@@ -186,6 +186,9 @@ export default function (dom: DomProvider): SelectionProvider {
   const setActiveFieldKey = (key: string) => (activeFieldKey.value = key)
 
   onBlokkliEvent('select', onSelect)
+  onBlokkliEvent('select:force', (arg) => {
+    onSelect(arg, true)
+  })
   onBlokkliEvent('select:start', (e) => {
     updateSelectedUuids((e.uuids || []).filter(onlyUnique))
     isMultiSelecting.value = true

@@ -104,7 +104,6 @@ const itemDropdownItems = computed<DropdownItem[]>(() => {
 function onSelectDropdownItem(item: DropdownItem) {
   if (item.id === 'select-all-of-bundle' && selectedBundle.value) {
     const uuids = state.getAllUuids(selectedBundle.value)
-    console.log({ uuids }, selectedBundle.value)
     eventBus.emit('select', uuids)
   }
 }

@@ -286,6 +286,10 @@ msgstr ""
 "aazeigt.</p><p>Bruch Ctrl+F zum bestehendi Inhält z'sueche und ind "
 "Zwüscheablag iizfüege. </p>"
 
+msgctxt "clipboardPasteDescription"
+msgid "Paste blocks from clipboard"
+msgstr ""
+
 msgctxt "clipboardPastePlaceholder"
 msgid "Paste text or media here"
 msgstr "Teggscht oder Medie iifüege"
@@ -375,6 +379,10 @@ msgctxt "copiedToClipboardMessage"
 msgid "\"@text\" has been copied to your clipboard"
 msgstr ""
 
+msgctxt "copy"
+msgid "Copy"
+msgstr ""
+
 msgctxt "deleteButton"
 msgid "Delete"
 msgstr "Lösche"
@@ -401,22 +409,6 @@ msgstr ""
 
 msgctxt "diffStatusEdited"
 msgid "Edited"
-msgstr ""
-
-msgctxt "diffTableBundle"
-msgid "Type"
-msgstr ""
-
-msgctxt "diffTableChange"
-msgid "Change"
-msgstr ""
-
-msgctxt "diffTableDiff"
-msgid "Diff"
-msgstr ""
-
-msgctxt "diffTableProperty"
-msgid "Property"
 msgstr ""
 
 msgctxt "droppableEditFormSave"
@@ -1325,6 +1317,10 @@ msgctxt "pageIsPublishedWithPendingChanges"
 msgid "Page is published (changes pending)"
 msgstr "Die Sitte isch publiziert (es sin aber no Änderige usstehend)"
 
+msgctxt "paste"
+msgid "Paste"
+msgstr ""
+
 msgctxt "previewDialogLead"
 msgid "Scan the QR code with your smartphone to open the preview."
 msgstr "Scan dr QR-Code zum ufem Smartphone d'Vorschau aaluege. "
@@ -1478,6 +1474,14 @@ msgctxt "searchTourText"
 msgid ""
 "Quickly find blocks on the current page or existing content to drag and "
 "drop as blocks into the page."
+msgstr ""
+
+msgctxt "selectAllOfBundle"
+msgid "Select all \"@bundle\" blocks"
+msgstr ""
+
+msgctxt "selectionActionGroupTitle"
+msgid "Selection"
 msgstr ""
 
 msgctxt "settingsAdvanced"

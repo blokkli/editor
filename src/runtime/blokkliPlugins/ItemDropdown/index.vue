@@ -29,10 +29,21 @@
   </Teleport>
 </template>
 
-<script lang="ts" setup generic="T extends Item">
+<script lang="ts">
+import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon } from '#blokkli/components'
 import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
+type Item = {
+  id: string
+  label: string
+  description?: string
+  enabled?: boolean
+  icon?: BlokkliIcon
+}
+</script>
+
+<script setup lang="ts" generic="T extends Item">
 const props = defineProps<{
   id: string
   title: string
@@ -79,20 +90,4 @@ onBeforeUnmount(() => {
     id: props.id,
   })
 })
-</script>
-
-<script lang="ts">
-import type { BlokkliIcon } from '#blokkli-build/icons'
-
-export default {
-  name: 'PluginItemDropdown',
-}
-
-type Item = {
-  id: string
-  label: string
-  description?: string
-  enabled?: boolean
-  icon?: BlokkliIcon
-}
 </script>

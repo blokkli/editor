@@ -24,7 +24,7 @@ export class Mutation extends Plugin {
     return uuid
   }
 
-  execute(context: MutationContext, args: any): Promise<undefined>|void {}
+  execute(context: MutationContext, args: any): Promise<undefined> | void {}
   getAffectedUuid(args: any): string | undefined {
     return this.configuration['new_uuid_default']
   }

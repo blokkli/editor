@@ -1,81 +1,60 @@
 <template>
   <div class="bk bk-diff-view">
-    <table class="bk-diff-table">
-      <thead>
-        <tr>
-          <th>{{ $t('diffTableChange', 'Change') }}</th>
-          <th>{{ $t('diffTableBundle', 'Type') }}</th>
-          <th>{{ $t('diffTableProperty', 'Property') }}</th>
-          <th>{{ $t('diffTableDiff', 'Diff') }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <template v-for="item in diffItems" :key="item.uuid">
-          <tr>
-            <td
-              :rowspan="Math.max(1, item.props.length)"
-              class="bk-diff-status"
+    <div class="bk-diff-table">
+      <button
+        v-for="item in diffItems"
+        :key="item.uuid"
+        class="bk-diff-item"
+        :class="{
+          'bk-is-muted': showSelect && !selected?.includes(item.uuid),
+        }"
+        @click.prevent="onClick(item.uuid)"
+      >
+        <div
+          class="bk-diff-item-header"
+          :disabled="item.status === 'removed' && !showSelect"
+          :class="{
+            'bk-is-selected': showSelect && selected?.includes(item.uuid),
+          }"
+        >
+          <div class="bk-blokkli-item-label">
+            <div class="bk-blokkli-item-label-icon">
+              <ItemIcon :bundle="item.bundle" />
+            </div>
+            <span>{{ getLabel(item.bundle) }}</span>
+          </div>
+          <div class="bk-diff-status">
+            <div
+              v-if="item.status === 'added'"
+              class="bk-diff-status-label bk-is-added"
             >
-              <div
-                v-if="item.status === 'added'"
-                class="bk-diff-status-label bk-is-added"
-              >
-                {{ $t('diffStatusAdded', 'Added') }}
-              </div>
-              <div
-                v-else-if="item.status === 'removed'"
-                class="bk-diff-status-label bk-is-removed"
-              >
-                {{ $t('diffStatusDeleted', 'Deleted') }}
-              </div>
-              <div v-else class="bk-diff-status-label">
-                {{ $t('diffStatusEdited', 'Edited') }}
-              </div>
-            </td>
-            <td
-              :rowspan="Math.max(1, item.props.length)"
-              class="bk-diff-bundle"
+              {{ $t('diffStatusAdded', 'Added') }}
+            </div>
+            <div
+              v-else-if="item.status === 'removed'"
+              class="bk-diff-status-label bk-is-removed"
             >
-              <button
-                class="bk-blokkli-item-label"
-                :disabled="item.status === 'removed'"
-                @click="scrollToBlock(item.uuid)"
-              >
-                <div class="bk-blokkli-item-label-icon">
-                  <ItemIcon :bundle="item.bundle" />
-                </div>
-                <span>{{ getLabel(item.bundle) }}</span>
-              </button>
-            </td>
-
-            <template v-if="item.props.length > 0">
-              <td>
-                <strong>{{ item.props[0]!.key }}</strong>
-              </td>
-              <td class="bk-diff-monospace">
-                <div class="bk-diff-prop-diff" v-html="item.props[0]!.diff" />
-              </td>
-            </template>
-            <template v-else>
-              <td />
-              <td />
-            </template>
-          </tr>
-          <tr
-            v-for="prop in item.props.slice(1)"
+              {{ $t('diffStatusDeleted', 'Deleted') }}
+            </div>
+            <div v-else class="bk-diff-status-label">
+              {{ $t('diffStatusEdited', 'Edited') }}
+            </div>
+          </div>
+        </div>
+        <div class="bk-diff-item-diffs">
+          <div
+            v-for="prop in item.props"
             :key="prop.key"
             class="bk-diff-prop-row"
           >
-            <td>
-              <strong>{{ prop.key }}</strong>
-            </td>
-            <td class="bk-diff-monospace">
+            <h3>{{ prop.key }}</h3>
+            <div class="bk-diff-monospace">
               <div class="bk-diff-prop-diff" v-html="prop.diff" />
-            </td>
-          </tr>
-        </template>
-      </tbody>
-    </table>
+            </div>
+          </div>
+        </div>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -88,9 +67,15 @@ import diff from 'html-diff-ts'
 const props = defineProps<{
   stateBefore: MappedState
   stateAfter: MappedState
+  showSelect?: boolean
+  selected?: string[]
 }>()
 
 const { types, $t, eventBus, dom, definitions } = useBlokkli()
+
+const emit = defineEmits<{
+  (e: 'toggle', uuid: string): void
+}>()
 
 function getProps(bundle: string, props: any): Record<string, string> {
   const definition = definitions.getDefaultDefinition(bundle)
@@ -226,6 +211,14 @@ const diffItems = computed<DiffItem[]>(() => {
     return aY - bY
   })
 })
+
+function onClick(uuid: string) {
+  if (props.showSelect) {
+    emit('toggle', uuid)
+  } else {
+    scrollToBlock(uuid)
+  }
+}
 
 function getLabel(bundle: string): string {
   return types.getBlockBundleDefinition(bundle)?.label || bundle

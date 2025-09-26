@@ -46,6 +46,8 @@ type InteractedElement = {
 let lastInteractedElement: InteractedElement | null = null
 let pointerDownElement: InteractedElement | null = null
 let mouseStartCoordinates: Coord | null = null
+let pointerDownTimestamp = 0
+let pointerUpTimestamp = 0
 
 function getInteractedElement(
   e: MouseEvent | TouchEvent,
@@ -156,7 +158,13 @@ function onPointerMove(e: PointerEvent) {
   const diffY = Math.abs(mouseStartCoordinates.y - e.clientY)
 
   if (!pointerDownElement) {
-    if (diffX > 6 || diffY > 6) {
+    const timeDelta = Date.now() - pointerDownTimestamp
+    const maxMovement = Math.max(diffX, diffY)
+
+    // Start multiselecting if:
+    // - mouse moves more than 6 pixels in any direction in more than 150ms
+    // - mouse moves more than 20 pixels with no min. duration
+    if ((maxMovement > 6 && timeDelta > 150) || maxMovement > 20) {
       rootEl.removeEventListener('pointermove', onPointerMove)
       eventBus.emit('multi-select:start', {
         x: e.clientX,
@@ -166,7 +174,7 @@ function onPointerMove(e: PointerEvent) {
     return
   }
 
-  // Only start dragging if at least 6px in any direction were moved.
+  // Only start dragging if at least 6px in both direction were moved.
   if (diffX < 6 && diffY < 6) {
     return
   }
@@ -193,9 +201,6 @@ function onPointerMove(e: PointerEvent) {
     rootEl.removeEventListener('pointermove', onPointerMove)
   }
 }
-
-let pointerDownTimestamp = 0
-let pointerUpTimestamp = 0
 
 function onPointerDown(e: PointerEvent) {
   if (e.buttons === MOUSE_BUTTONS.AUXILIARY) {
@@ -226,15 +231,15 @@ function onPointerDown(e: PointerEvent) {
   if (selection.isDragging.value) {
     return
   }
+  pointerDownTimestamp = Date.now()
 
   const coords = { x: e.clientX, y: e.clientY }
+  mouseStartCoordinates = coords
+
   // Only handle click interactions when:
   // - not pressing the shift key
   // - using the left mouse button
   if (!e.shiftKey && e.buttons === MOUSE_BUTTONS.PRIMARY) {
-    pointerDownTimestamp = Date.now()
-    mouseStartCoordinates = coords
-
     const interacted = getInteractedElement(e)
     pointerDownElement = interacted
     if (interacted) {

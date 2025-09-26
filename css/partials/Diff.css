@@ -3,87 +3,62 @@
     @apply absolute top-0 left-0 w-full h-full;
     @apply overflow-auto overscroll-contain;
   }
+
   &.bk-diff-view {
     @apply select-text;
     container-type: inline-size;
     .bk-blokkli-item-label {
+      @apply font-semibold flex-1;
+      span {
+        @apply leading-none;
+      }
       &[disabled] {
         @apply pointer-events-none;
       }
     }
-
-    @container (max-width: 600px) {
-      background: red;
-    }
   }
 
   .bk-diff-table {
-    @apply w-full border-collapse;
+    @apply w-full;
+  }
 
-    @container (max-width: 600px) {
-      td,
-      tr,
-      tbody {
-        @apply block;
-      }
-
-      thead {
-        @apply hidden;
-      }
-
-      td:empty {
-        @apply hidden;
-      }
-
-      td,
-      th {
-        @apply !text-sm;
-      }
-
+  .bk-diff-item {
+    @apply border-t border-t-mono-300 text-mono-900;
+    @apply hover:bg-mono-100;
+    &.bk-is-muted {
+      .bk-diff-item-diffs,
       .bk-diff-status {
-        @apply float-right;
-        @apply mt-10;
+        @apply opacity-50;
       }
-
-      td.bk-diff-bundle {
-        @apply !py-15;
-      }
-
-      td {
-        @apply !py-5 !px-10;
+      .bk-blokkli-item-label span {
+        @apply text-mono-400;
       }
     }
+  }
 
-    td {
-      @apply align-top;
+  .bk-diff-item-diffs {
+  }
+
+  .bk-diff-item-header {
+    @apply flex w-full p-20 items-center;
+    &.bk-is-selected {
+      .bk-blokkli-item-label-icon {
+        @apply bg-teal-normal border-teal-dark text-teal-dark;
+      }
     }
-  }
-
-  .bk-diff-bundle {
-    @apply border-t border-t-mono-300 mt-10;
-  }
-
-  .bk-diff-table th,
-  .bk-diff-table td {
-    @apply p-[12px] text-left !leading-relaxed;
-  }
-
-  .bk-diff-table tbody td {
-    @apply text-base;
   }
 
   .bk-diff-prop-row {
-    td {
-      @apply pt-0;
+    @apply px-20;
+    @apply mb-20;
+
+    h3 {
+      @apply font-semibold text-sm mb-5;
     }
   }
 
-  td.bk-diff-status {
-    /* @apply pl-0; */
-  }
-
-  td.bk-diff-monospace {
-    @apply font-mono;
+  .bk-diff-monospace {
+    @apply font-mono text-sm;
   }
 
   .bk-diff-prop-diff {

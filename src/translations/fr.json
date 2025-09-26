@@ -263,6 +263,10 @@
     "source": "<p>\n    Use Ctrl-V on the page to paste content. These\n    will then be displayed here.\n  </p>\n  <p>\n    Use Ctrl-F to search for existing content and paste it into\n    the clipboard.\n  </p>",
     "translation": "<p>\n    Utilisez Ctrl-V sur la page pour coller du contenu. Ils\n    seront alors affichés ici.\n  </p>\n  <p>\n    Utilisez Ctrl-F pour rechercher du contenu existant et le copier\n    dans le presse-papiers.\n  </p>"
   },
+  "clipboardPasteDescription": {
+    "source": "Paste blocks from clipboard",
+    "translation": ""
+  },
   "clipboardPastePlaceholder": {
     "source": "Paste text or media here",
     "translation": "Paste text or media here"
@@ -347,6 +351,10 @@
     "source": "\"@text\" has been copied to your clipboard",
     "translation": ""
   },
+  "copy": {
+    "source": "Copy",
+    "translation": ""
+  },
   "deleteButton": {
     "source": "Delete",
     "translation": "Supprimer"
@@ -373,22 +381,6 @@
   },
   "diffStatusEdited": {
     "source": "Edited",
-    "translation": ""
-  },
-  "diffTableBundle": {
-    "source": "Type",
-    "translation": ""
-  },
-  "diffTableChange": {
-    "source": "Change",
-    "translation": ""
-  },
-  "diffTableDiff": {
-    "source": "Diff",
-    "translation": ""
-  },
-  "diffTableProperty": {
-    "source": "Property",
     "translation": ""
   },
   "droppableEditFormSave": {
@@ -1243,6 +1235,10 @@
     "source": "Page is published (changes pending)",
     "translation": "La page est publiée (modifications en attente)"
   },
+  "paste": {
+    "source": "Paste",
+    "translation": ""
+  },
   "previewDialogLead": {
     "source": "Scan the QR code with your smartphone to open the preview.",
     "translation": "Scannez le code QR avec votre smartphone pour ouvrir l’aperçu."
@@ -1385,6 +1381,14 @@
   },
   "searchTourText": {
     "source": "Quickly find blocks on the current page or existing content to drag and drop as blocks into the page.",
+    "translation": ""
+  },
+  "selectAllOfBundle": {
+    "source": "Select all \"@bundle\" blocks",
+    "translation": ""
+  },
+  "selectionActionGroupTitle": {
+    "source": "Selection",
     "translation": ""
   },
   "settingsAdvanced": {

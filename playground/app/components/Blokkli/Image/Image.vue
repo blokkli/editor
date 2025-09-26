@@ -50,7 +50,7 @@ const url = computed(() => {
 })
 
 const alt = computed(() => {
-    return props.imageReference.alt
+  return props.imageReference.alt
 })
 
 const width = computed(() => {

@@ -180,7 +180,7 @@ export type MutatedState = {
 
 export class EditState {
   uuid: string
-  _tempMutations: MockMutationItem[]|null = null
+  _tempMutations: MockMutationItem[] | null = null
 
   constructor(uuid: string) {
     this.uuid = uuid
@@ -237,7 +237,7 @@ export class EditState {
   addMutation<T extends keyof MutationArgsMap>(
     id: T,
     args: MutationArgsMap[T],
-    preview?: boolean
+    preview?: boolean,
   ) {
     let mutations = this.getMutations()
     if (this.currentIndex !== mutations.length - 1) {
@@ -247,8 +247,7 @@ export class EditState {
     if (preview) {
       this.currentIndex = this.currentIndex + 1
       this._tempMutations = mutations
-    }
-    else {
+    } else {
       this.currentIndex = this.currentIndex + 1
       this.persistMutations(mutations)
     }

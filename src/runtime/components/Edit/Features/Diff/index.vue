@@ -9,7 +9,7 @@
     weight="-400"
     beta
   >
-    <DiffView />
+    <DiffView :key="state.currentMutationIndex.value" />
   </PluginSidebar>
 </template>
 
@@ -27,7 +27,7 @@ defineBlokkliFeature({
   beta: true,
 })
 
-const { $t } = useBlokkli()
+const { $t, state } = useBlokkli()
 </script>
 
 <script lang="ts">

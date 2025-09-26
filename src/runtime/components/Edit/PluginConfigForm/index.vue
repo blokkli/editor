@@ -1,6 +1,6 @@
 <template>
   <ol>
-    <li v-for="item in config" :key="item.name" class="bk-form-item">
+    <li v-for="item in renderedConfig" :key="item.name" class="bk-form-item">
       <FormCheckbox
         v-if="item.type === 'checkbox'"
         v-bind="item"
@@ -25,10 +25,15 @@ import type { PluginConfigInput } from '#blokkli/types'
 import FormCheckbox from './Checkbox/index.vue'
 import FormText from './Text/index.vue'
 import FormOptions from './Options/index.vue'
+import { computed } from '#imports'
 
 const props = defineProps<{
   config: PluginConfigInput[]
 }>()
+
+const renderedConfig = computed(() =>
+  props.config.filter((v) => v.type !== 'seed'),
+)
 
 const value = defineModel<Record<string, any>>({
   default: () => {

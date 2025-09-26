@@ -1,6 +1,6 @@
 <template>
   <div class="bk bk-transform-overlay" @keydown.stop @keyup.stop>
-    <div ref="el" class="bk-transform-overlay-dialog">
+    <div ref="el" class="bk-transform-overlay-dialog" @wheel="onWheel">
       <div class="bk-transform-overlay-dialog-inner">
         <div class="bk-transform-overlay-dialog-inner-content">
           <header>
@@ -11,7 +11,7 @@
           </header>
           <main>
             <div class="bk-transform-overlay-dialog-grid">
-              <div>
+              <div class="bk-transform-overlay-dialog-top">
                 <p v-if="lead" class="bk-lead">{{ lead }}</p>
                 <ConfigForm ref="configForm" v-model="value" :config />
               </div>
@@ -19,7 +19,9 @@
                 v-if="stateAfter"
                 :state-before
                 :state-after
-                @wheel="onWheel"
+                show-select
+                :selected="selection.uuids.value"
+                @toggle="onToggleSelected"
               />
             </div>
           </main>
@@ -66,23 +68,26 @@ import {
   onBeforeUnmount,
 } from '#imports'
 import { ConfigForm, DiffViewerState, Icon } from '#blokkli/components'
-import useStickyToolbar from '#blokkli/helpers/composables/useStickyToolbar'
 
 const props = defineProps<{
   plugin: HostTransformPlugin | TransformPlugin
   uuids?: string[]
 }>()
 
-const { adapter, state, ui, selection, $t } = useBlokkli()
+const { adapter, state, ui, selection, $t, eventBus } = useBlokkli()
 
-const el = useTemplateRef('el')
+function onToggleSelected(uuid: string) {
+  let newSelection = [...selection.uuids.value]
+  if (newSelection.includes(uuid)) {
+    newSelection = newSelection.filter((v) => v !== uuid)
+  } else {
+    newSelection.push(uuid)
+  }
+
+  eventBus.emit('select:force', newSelection)
+}
+
 const configForm = useTemplateRef('configForm')
-
-useStickyToolbar(el, {
-  getPlacementY: () => 'bottom',
-  getPlacementX: () => 'center',
-  getMargin: () => 25,
-})
 
 function clone<T extends object>(v: T): T {
   return JSON.parse(JSON.stringify(v))
@@ -194,7 +199,7 @@ async function onClickPreview() {
       })
 
       stateAfter.value = clone(adapter.mapState(result.state))
-    } catch (e) {
+    } catch {
       // @TODO Error message
     }
   }

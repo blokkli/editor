@@ -1245,6 +1245,7 @@ type MultiSelectStartEvent = {
 export type EventbusEvents = {
   select: string | string[]
   'select:unselect': undefined
+  'select:force': string | string[]
   'select:host': undefined
   'select:host:unselect': undefined
   'multi-select:start': MultiSelectStartEvent

@@ -1,160 +1,18 @@
 <template>
   <div class="bk bk-diff-sidebar-pane">
-    <DiffViewerState />
+    <DiffViewerState v-if="stateBefore" :state-before :state-after />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, useBlokkli } from '#imports'
-import type { FieldListItem, MutatedField } from '#blokkli/types'
+import { useBlokkli, useAsyncData } from '#imports'
 import { DiffViewerState } from '#blokkli/components'
-import diff from 'html-diff-ts'
 
-const { types, $t, adapter, state, eventBus, dom, definitions } = useBlokkli()
+const { adapter, state } = useBlokkli()
 
-function getProps(bundle: string, props: any): Record<string, string> {
-  const definition = definitions.getDefaultDefinition(bundle)
-  // Use custom method that builds the diff props.
-  if (definition?.editor?.mapDiffProps) {
-    return definition.editor.mapDiffProps(props)
-  }
-
-  if (typeof props === 'object') {
-    return Object.entries(props).reduce<Record<string, string>>(
-      (acc, [key, value]) => {
-        if (typeof value === 'string' || typeof value === 'number') {
-          acc[key] = value.toString()
-        } else if (typeof value === 'object') {
-          try {
-            // Fallback to a JSON representation of the data.
-            const json = JSON.stringify(value, null, 2)
-            acc[key] = `<pre>${json}</pre>`
-          } catch {
-            // Noop.
-          }
-        }
-        return acc
-      },
-      {},
-    )
-  }
-
-  return {}
-}
-
-interface DiffItemProp {
-  key: string
-  diff?: string
-}
-
-interface DiffItem {
-  uuid: string
-  bundle: string
-  status: 'changed' | 'added' | 'removed'
-  props: DiffItemProp[]
-}
-
-const stateBefore = await adapter.loadStateAtIndex!(-1).then((v: any) =>
-  adapter.mapState(v),
-)
-
-function buildDiffItems(fields?: MutatedField[]): FieldListItem[] {
-  const items = (fields || []).flatMap((v) => v.list)
-  return items
-}
-
-const itemsBefore = computed(() =>
-  buildDiffItems(stateBefore.mutatedState?.fields),
-)
-const itemsAfter = computed(() => buildDiffItems(state.mutatedFields.value))
-
-const diffItems = computed<DiffItem[]>(() => {
-  const diffMap = new Map<string, DiffItem>()
-
-  itemsBefore.value.forEach((beforeItem) => {
-    const afterItem = itemsAfter.value.find(
-      (item) => item.uuid === beforeItem.uuid,
-    )
-    const beforeProps = getProps(beforeItem.bundle, beforeItem.props)
-
-    // Item has been removed.
-    if (!afterItem) {
-      diffMap.set(beforeItem.uuid, {
-        uuid: beforeItem.uuid,
-        bundle: beforeItem.bundle,
-        status: 'removed',
-        props: Object.entries(beforeProps).map(([key, value]) => ({
-          key,
-          value,
-          diff: diff(value, ''),
-        })),
-      })
-    } else {
-      // Item exists in both arrays.
-      const afterProps = getProps(afterItem.bundle, afterItem.props)
-      const changedProps: DiffItemProp[] = []
-
-      Object.entries(beforeProps).forEach(([key, beforeValue]) => {
-        const afterValue = afterProps[key]!
-        if (beforeValue !== afterValue) {
-          changedProps.push({
-            key,
-            diff: diff(beforeValue, afterValue),
-          })
-        }
-      })
-
-      // Check for new properties inside afterProps.
-      Object.keys(afterProps).forEach((key) => {
-        if (!(key in beforeProps)) {
-          changedProps.push({
-            key,
-            diff: diff('', afterProps[key]!),
-          })
-        }
-      })
-
-      // Only add the item if it has changes.
-      if (changedProps.length > 0) {
-        diffMap.set(beforeItem.uuid, {
-          uuid: beforeItem.uuid,
-          bundle: beforeItem.bundle,
-          status: 'changed',
-          props: changedProps,
-        })
-      }
-    }
-  })
-
-  // Process added items.
-  itemsAfter.value.forEach((afterItem) => {
-    if (!itemsBefore.value.some((item) => item.uuid === afterItem.uuid)) {
-      const afterProps = getProps(afterItem.bundle, afterItem.props)
-      diffMap.set(afterItem.uuid, {
-        uuid: afterItem.uuid,
-        bundle: afterItem.bundle,
-        status: 'added',
-        props: Object.entries(afterProps).map(([key, value]) => ({
-          key,
-          diff: diff('', value),
-        })),
-      })
-    }
-  })
-
-  return Array.from(diffMap.values()).sort((a, b) => {
-    const aY = dom.getBlockRect(a.uuid)?.y || 0
-    const bY = dom.getBlockRect(b.uuid)?.y || 0
-    return aY - bY
-  })
+const { data: stateBefore } = await useAsyncData('stateBefore', () => {
+  return adapter.loadStateAtIndex!(-1).then((v: any) => adapter.mapState(v))
 })
 
-function getLabel(bundle: string): string {
-  return types.getBlockBundleDefinition(bundle)?.label || bundle
-}
-
-function scrollToBlock(uuid: string) {
-  eventBus.emit('scrollIntoView', { uuid, center: true })
-  eventBus.emit('select', uuid)
-}
+const stateAfter = state.getMappedState()
 </script>

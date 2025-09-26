@@ -41,12 +41,14 @@ export const transforms: TransformPlugin[] = [
         name: 'search',
         label: 'Search',
         required: true,
+        defaultValue: 'or',
       },
       {
         type: 'text',
         name: 'replace',
         label: 'Replace',
         required: true,
+        defaultValue: 'oder',
       },
       {
         type: 'seed',

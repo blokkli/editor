@@ -1,7 +1,7 @@
 {
   "actionsDropdownToolip": {
     "source": "Further actions",
-    "translation": ""
+    "translation": "Weitere Aktionen"
   },
   "addBlockCommand.appendInField": {
     "source": "Append \"@block\" in \"@field\"",
@@ -263,6 +263,10 @@
     "source": "<p>\n    Use Ctrl-V on the page to paste content. These\n    will then be displayed here.\n  </p>\n  <p>\n    Use Ctrl-F to search for existing content and paste it into\n    the clipboard.\n  </p>",
     "translation": "<p>Verwenden Sie Ctrl-V auf der Seite um Inhalte einzufügen. Diese werden dann hier angezeigt.</p><p>Verwenden Sie Ctrl-F um bestehende Inhalte zu suchen und in die Zwischenablage einzufügen.</p>"
   },
+  "clipboardPasteDescription": {
+    "source": "Paste blocks from clipboard",
+    "translation": "Blöcke aus Zwischenablage einfügen"
+  },
   "clipboardPastePlaceholder": {
     "source": "Paste text or media here",
     "translation": "Text oder Medien einfügen"
@@ -347,6 +351,10 @@
     "source": "\"@text\" has been copied to your clipboard",
     "translation": "«@text» wurde in die Zwischenablage kopiert"
   },
+  "copy": {
+    "source": "Copy",
+    "translation": "Kopieren"
+  },
   "deleteButton": {
     "source": "Delete",
     "translation": "Löschen"
@@ -374,22 +382,6 @@
   "diffStatusEdited": {
     "source": "Edited",
     "translation": "Bearbeitet"
-  },
-  "diffTableBundle": {
-    "source": "Type",
-    "translation": "Typ"
-  },
-  "diffTableChange": {
-    "source": "Change",
-    "translation": "Änderung"
-  },
-  "diffTableDiff": {
-    "source": "Diff",
-    "translation": "Unterschied"
-  },
-  "diffTableProperty": {
-    "source": "Property",
-    "translation": "Eigenschaft"
   },
   "droppableEditFormSave": {
     "source": "Save",
@@ -1243,6 +1235,10 @@
     "source": "Page is published (changes pending)",
     "translation": "Seite ist publiziert (Änderungen ausstehend)"
   },
+  "paste": {
+    "source": "Paste",
+    "translation": ""
+  },
   "previewDialogLead": {
     "source": "Scan the QR code with your smartphone to open the preview.",
     "translation": "Scannen Sie den QR-Code mit Ihrem Smartphone um die Vorschau zu öffnen."
@@ -1386,6 +1382,14 @@
   "searchTourText": {
     "source": "Quickly find blocks on the current page or existing content to drag and drop as blocks into the page.",
     "translation": "Finden Sie Blöcke auf der aktuellen Seite oder andere bestehende Inhalte wie Bilder oder Dokumente, um sie als Blöcke auf der Seite hinzuzufügen."
+  },
+  "selectAllOfBundle": {
+    "source": "Select all \"@bundle\" blocks",
+    "translation": ""
+  },
+  "selectionActionGroupTitle": {
+    "source": "Selection",
+    "translation": ""
   },
   "settingsAdvanced": {
     "source": "Advanced",

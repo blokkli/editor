@@ -337,7 +337,7 @@ export default defineBlokkliEditAdapter((ctx) => {
     takeOwnership: async () => {
       isOwner = true
       const entity = getEntity()
-      const mutatedState =await  editState.getMutatedState(entity)
+      const mutatedState = await editState.getMutatedState(entity)
       return mockResponse(mutatedState)
     },
     mapState(inputState) {
@@ -919,7 +919,6 @@ export default defineBlokkliEditAdapter((ctx) => {
 
     publish(options) {
       const delay = getRandomNumberInRange(400, 1600)
-      console.log(delay)
       return new Promise((resolve) => {
         setTimeout(() => {
           if (options.hostEntityUuid === 'error') {

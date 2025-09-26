@@ -291,6 +291,10 @@ msgstr ""
 "appunti.\n"
 "  </p>"
 
+msgctxt "clipboardPasteDescription"
+msgid "Paste blocks from clipboard"
+msgstr ""
+
 msgctxt "clipboardPastePlaceholder"
 msgid "Paste text or media here"
 msgstr "Paste text or media here"
@@ -380,6 +384,10 @@ msgctxt "copiedToClipboardMessage"
 msgid "\"@text\" has been copied to your clipboard"
 msgstr ""
 
+msgctxt "copy"
+msgid "Copy"
+msgstr ""
+
 msgctxt "deleteButton"
 msgid "Delete"
 msgstr "Elimina"
@@ -406,22 +414,6 @@ msgstr ""
 
 msgctxt "diffStatusEdited"
 msgid "Edited"
-msgstr ""
-
-msgctxt "diffTableBundle"
-msgid "Type"
-msgstr ""
-
-msgctxt "diffTableChange"
-msgid "Change"
-msgstr ""
-
-msgctxt "diffTableDiff"
-msgid "Diff"
-msgstr ""
-
-msgctxt "diffTableProperty"
-msgid "Property"
 msgstr ""
 
 msgctxt "droppableEditFormSave"
@@ -1327,6 +1319,10 @@ msgctxt "pageIsPublishedWithPendingChanges"
 msgid "Page is published (changes pending)"
 msgstr "Pagina pubblicata (modifiche in attesa)"
 
+msgctxt "paste"
+msgid "Paste"
+msgstr ""
+
 msgctxt "previewDialogLead"
 msgid "Scan the QR code with your smartphone to open the preview."
 msgstr "Scansiona il codice QR con il tuo smartphone per aprire l'anteprima."
@@ -1480,6 +1476,14 @@ msgctxt "searchTourText"
 msgid ""
 "Quickly find blocks on the current page or existing content to drag and "
 "drop as blocks into the page."
+msgstr ""
+
+msgctxt "selectAllOfBundle"
+msgid "Select all \"@bundle\" blocks"
+msgstr ""
+
+msgctxt "selectionActionGroupTitle"
+msgid "Selection"
 msgstr ""
 
 msgctxt "settingsAdvanced"
