@@ -267,6 +267,26 @@
     "source": "Paste blocks from clipboard",
     "translation": ""
   },
+  "clipboardPasteError": {
+    "source": "Failed to paste:",
+    "translation": ""
+  },
+  "clipboardPasteErrorAllowedBundlesMultiple": {
+    "source": "Block types (@types) are not allowed here.",
+    "translation": ""
+  },
+  "clipboardPasteErrorAllowedBundlesSingle": {
+    "source": "Block type \"@types\" is not allowed here.",
+    "translation": ""
+  },
+  "clipboardPasteErrorCardinality": {
+    "source": "This field only allows up to @count blocks.",
+    "translation": ""
+  },
+  "clipboardPasteErrorOneField": {
+    "source": "Pasting is only possible into one field at a time.",
+    "translation": ""
+  },
   "clipboardPastePlaceholder": {
     "source": "Paste text or media here",
     "translation": "Teggscht oder Medie iifüege"

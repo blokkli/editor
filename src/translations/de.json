@@ -267,6 +267,26 @@
     "source": "Paste blocks from clipboard",
     "translation": "Blöcke aus Zwischenablage einfügen"
   },
+  "clipboardPasteError": {
+    "source": "Failed to paste:",
+    "translation": "Einfügen fehlgeschlagen:"
+  },
+  "clipboardPasteErrorAllowedBundlesMultiple": {
+    "source": "Block types (@types) are not allowed here.",
+    "translation": "Die Block-Typen (@types) sind hier nicht erlaubt."
+  },
+  "clipboardPasteErrorAllowedBundlesSingle": {
+    "source": "Block type \"@types\" is not allowed here.",
+    "translation": "Der Block-Typ «@types» ist hier nicht erlaubt."
+  },
+  "clipboardPasteErrorCardinality": {
+    "source": "This field only allows up to @count blocks.",
+    "translation": "Dieses Feld erlaubt nur bis zu @count Blöcke."
+  },
+  "clipboardPasteErrorOneField": {
+    "source": "Pasting is only possible into one field at a time.",
+    "translation": "Blöcke können nur in einem Feld gleichzeitig eingefügt werden."
+  },
   "clipboardPastePlaceholder": {
     "source": "Paste text or media here",
     "translation": "Text oder Medien einfügen"

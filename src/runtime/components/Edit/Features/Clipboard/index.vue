@@ -86,13 +86,14 @@ import {
 } from '#imports'
 import { PluginSidebar, PluginItemDropdown } from '#blokkli/plugins'
 import ClipboardList from './List/index.vue'
-import type { ClipboardItem } from '#blokkli/types'
+import type { ClipboardItem, DraggableExistingBlock } from '#blokkli/types'
 import { falsy, generateUUID, getFieldKey } from '#blokkli/helpers'
 import { Icon } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
 import getVideoId from 'get-video-id'
 import type { BlokkliIcon } from '#blokkli-build/icons'
+import { emitMessage } from '#blokkli/helpers/eventBus'
 
 const { settings, logger } = defineBlokkliFeature({
   id: 'clipboard',
@@ -114,7 +115,7 @@ const { settings, logger } = defineBlokkliFeature({
   screenshot: 'feature-clipboard.jpg',
 })
 
-const { selection, $t, adapter, dom, state, ui, types } = useBlokkli()
+const { selection, $t, adapter, dom, state, ui, types, eventBus } = useBlokkli()
 
 const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
 const selectionClipboard = ref<string[]>([])
@@ -309,12 +310,24 @@ const showClipboardSidebar = () => {
   }
 }
 
+function emitPasteError(message: string) {
+  const prefix = $t('clipboardPasteError', 'Failed to paste:')
+  emitMessage(`${prefix} ${message}`, 'error')
+}
+
 const handleSelectionPaste = (pastedUuids: string[]) => {
   if (!adapter.pasteExistingBlocks) {
     return
   }
+
   // Pasting is only possible into a single field.
   if (selection.uuids.value.length !== 1) {
+    emitPasteError(
+      $t(
+        'clipboardPasteErrorOneField',
+        'Pasting is only possible into one field at a time.',
+      ),
+    )
     return
   }
 
@@ -343,12 +356,42 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
 
   const fieldKey = getFieldKey(field.entityUuid, field.name)
 
-  const pastedBlocks = pastedUuids
-    .map((uuid) => dom.findBlock(uuid))
-    .filter(falsy)
-    .filter((block) => fieldConfig.allowedBundles.includes(block.itemBundle))
+  const pastedBlocks: DraggableExistingBlock[] = []
+  const notAllowedBundles: string[] = []
+
+  for (let i = 0; i < pastedUuids.length; i++) {
+    const uuid = pastedUuids[i]
+    if (!uuid) {
+      continue
+    }
+    const block = dom.findBlock(uuid)
+    if (!block) {
+      continue
+    }
+    const isAllowed = fieldConfig.allowedBundles.includes(block.itemBundle)
+    if (!isAllowed) {
+      notAllowedBundles.push(block.itemBundle)
+      continue
+    }
+
+    pastedBlocks.push(block)
+  }
 
   if (!pastedBlocks.length) {
+    const blockTypes = notAllowedBundles.map((bundle) => {
+      return types.getBlockBundleDefinition(bundle)?.label ?? bundle
+    })
+    const message =
+      blockTypes.length === 1
+        ? $t(
+            'clipboardPasteErrorAllowedBundlesSingle',
+            'Block type "@types" is not allowed here.',
+          )
+        : $t(
+            'clipboardPasteErrorAllowedBundlesMultiple',
+            'Block types (@types) are not allowed here.',
+          )
+    emitPasteError(message.replace('@types', blockTypes.join(', ')))
     return
   }
 
@@ -357,6 +400,12 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
     fieldConfig.cardinality !== -1 &&
     count + pastedBlocks.length > fieldConfig.cardinality
   ) {
+    emitPasteError(
+      $t(
+        'clipboardPasteErrorCardinality',
+        'This field only allows up to @count blocks.',
+      ).replace('@count', fieldConfig.cardinality.toString()),
+    )
     return
   }
 

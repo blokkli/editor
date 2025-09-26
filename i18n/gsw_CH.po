@@ -290,6 +290,26 @@ msgctxt "clipboardPasteDescription"
 msgid "Paste blocks from clipboard"
 msgstr ""
 
+msgctxt "clipboardPasteError"
+msgid "Failed to paste:"
+msgstr ""
+
+msgctxt "clipboardPasteErrorAllowedBundlesMultiple"
+msgid "Block types (@types) are not allowed here."
+msgstr ""
+
+msgctxt "clipboardPasteErrorAllowedBundlesSingle"
+msgid "Block type \"@types\" is not allowed here."
+msgstr ""
+
+msgctxt "clipboardPasteErrorCardinality"
+msgid "This field only allows up to @count blocks."
+msgstr ""
+
+msgctxt "clipboardPasteErrorOneField"
+msgid "Pasting is only possible into one field at a time."
+msgstr ""
+
 msgctxt "clipboardPastePlaceholder"
 msgid "Paste text or media here"
 msgstr "Teggscht oder Medie iifüege"
