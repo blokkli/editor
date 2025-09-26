@@ -131,6 +131,15 @@ const itemsAfter = computed(() =>
   buildDiffItems(props.stateAfter.mutatedState?.fields),
 )
 
+function toString(v?: unknown): string {
+  if (typeof v === 'string') {
+    return v
+  } else if (typeof v === 'number') {
+    return v.toString()
+  }
+  return ''
+}
+
 const diffItems = computed<DiffItem[]>(() => {
   const diffMap = new Map<string, DiffItem>()
 
@@ -149,7 +158,7 @@ const diffItems = computed<DiffItem[]>(() => {
         props: Object.entries(beforeProps).map(([key, value]) => ({
           key,
           value,
-          diff: diff(value, ''),
+          diff: diff(toString(value), ''),
         })),
       })
     } else {
@@ -162,7 +171,7 @@ const diffItems = computed<DiffItem[]>(() => {
         if (beforeValue !== afterValue) {
           changedProps.push({
             key,
-            diff: diff(beforeValue, afterValue),
+            diff: diff(toString(beforeValue), toString(afterValue)),
           })
         }
       })
@@ -172,7 +181,7 @@ const diffItems = computed<DiffItem[]>(() => {
         if (!(key in beforeProps)) {
           changedProps.push({
             key,
-            diff: diff('', afterProps[key]!),
+            diff: diff('', toString(afterProps[key]!)),
           })
         }
       })
@@ -199,7 +208,7 @@ const diffItems = computed<DiffItem[]>(() => {
         status: 'added',
         props: Object.entries(afterProps).map(([key, value]) => ({
           key,
-          diff: diff('', value),
+          diff: diff('', toString(value)),
         })),
       })
     }

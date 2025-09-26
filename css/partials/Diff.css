@@ -23,7 +23,7 @@
   }
 
   .bk-diff-item {
-    @apply border-t border-t-mono-300 text-mono-900;
+    @apply border-t border-t-mono-300 text-mono-900 w-full;
     @apply hover:bg-mono-100;
     &.bk-is-muted {
       .bk-diff-item-diffs,
