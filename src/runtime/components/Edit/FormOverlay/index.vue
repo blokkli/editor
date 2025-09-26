@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bk-form-overlay"
+    class="bk-form-overlay bk-vars"
     @click.stop
     @mousedown.stop
     @keyup.stop

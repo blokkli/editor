@@ -97,11 +97,12 @@ export default function (
   const transformLabel = ref('')
   const openContextMenu = ref('')
   const selectionTopLeft = ref({ x: 0, y: 0 })
-  const useAnimationsSetting = storage.use('useAnimations', true)
-  const useAnimations = computed(() => useAnimationsSetting.value)
   const baseSettings = storage.use('feature:settings:settings', {} as any)
   const lowPerformanceMode = computed(
     () => baseSettings.value.lowPerformanceMode,
+  )
+  const useAnimations = computed<boolean>(
+    () => !!baseSettings.value.useAnimations,
   )
   const viewportBlockingRectsMap = ref<Record<string, Rectangle | undefined>>(
     {},

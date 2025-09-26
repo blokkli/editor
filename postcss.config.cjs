@@ -12,7 +12,7 @@ module.exports = {
       data: {
         '--tw': '--bk-tw',
         '*, ::before, ::after':
-          '.bk, .bk *, .bk-sidebar, .bk ::before, .bk ::after',
+          '.bk, .bk *, .bk-sidebar, .bk ::before, .bk ::after, .bk-vars, .bk-vars ::before, .bk-vars ::after',
         '::backdrop': '.bk::backdrop, .bk ::backdrop',
       },
     }),

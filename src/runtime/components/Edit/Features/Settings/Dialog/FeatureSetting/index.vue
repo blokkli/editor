@@ -4,7 +4,9 @@
       v-if="setting.type === 'checkbox'"
       :label="settingLabel"
       :description="settingDescription"
-      :model-value="settingsStorage[settingsKey] as boolean"
+      :model-value="
+        (settingsStorage[settingsKey] ?? setting.default) as boolean
+      "
       @update:model-value="toggleCheckbox"
     />
     <div v-else-if="setting.type === 'radios'">
