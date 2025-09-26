@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <Transition name="bk-loading">
+    <Transition :name="ui.useAnimations.value ? 'bk-loading' : undefined">
       <Loading
         v-if="isInitializing || !toolbarLoaded || !featuresLoaded"
         screen

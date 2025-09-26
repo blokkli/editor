@@ -16,7 +16,7 @@
   />
 
   <Teleport to="body">
-    <Transition appear name="bk-slide-up">
+    <BlokkliTransition name="slide-up">
       <DialogModal
         v-if="qrCodeVisible"
         :title="$t('previewDialogTitle', 'Preview with smartphone')"
@@ -35,7 +35,7 @@
       >
         <QrCode v-if="previewGrantUrl" :url="previewGrantUrl" />
       </DialogModal>
-    </Transition>
+    </BlokkliTransition>
   </Teleport>
 </template>
 
@@ -43,7 +43,7 @@
 import { ref, watch, useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginToolbarButton } from '#blokkli/plugins'
 import QrCode from './QrCode/index.vue'
-import { DialogModal } from '#blokkli/components'
+import { DialogModal, BlokkliTransition } from '#blokkli/components'
 
 const { adapter } = defineBlokkliFeature({
   id: 'preview-grant',

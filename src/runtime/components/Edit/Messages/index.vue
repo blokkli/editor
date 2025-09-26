@@ -1,6 +1,6 @@
 <template>
   <div class="bk bk-messages">
-    <TransitionGroup name="bk-message">
+    <TransitionGroup :name="ui.useAnimations.value ? 'bk-message' : undefined">
       <Item
         v-for="(message, index) in messages"
         v-bind="message"
@@ -12,10 +12,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from '#imports'
+import { ref, useBlokkli } from '#imports'
 import type { Message } from '#blokkli/types'
 import Item from './Item/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+
+const { ui } = useBlokkli()
 
 const messages = ref<Message[]>([])
 

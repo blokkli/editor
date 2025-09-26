@@ -6,16 +6,16 @@
     @touchmove.stop.capture.prevent
   >
     <iframe ref="iframe" allowtransparency :src="url" @load="onIFrameLoad" />
-    <Transition name="bk-loading">
+    <BlokkliTransition name="loading">
       <Loading v-if="!isLoaded" />
-    </Transition>
+    </BlokkliTransition>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, useBlokkli, onUnmounted, onMounted } from '#imports'
 import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
-import { Loading } from '#blokkli/components'
+import { Loading, BlokkliTransition } from '#blokkli/components'
 
 const { eventBus } = useBlokkli()
 

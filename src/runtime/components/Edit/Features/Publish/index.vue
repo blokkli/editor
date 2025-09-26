@@ -10,7 +10,7 @@
     @click="onMenuClick"
   />
   <Teleport to="body">
-    <transition appear name="bk-slide-up">
+    <BlokkliTransition name="slide-up">
       <PublishDialog
         v-if="showDialog"
         v-model:states="additionalEditStates"
@@ -19,7 +19,7 @@
         @close="showDialog = false"
         @submit="onSubmit"
       />
-    </transition>
+    </BlokkliTransition>
   </Teleport>
 </template>
 
@@ -33,6 +33,7 @@ import {
 } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
 import type { BlokkliIcon } from '#blokkli-build/icons'
+import { BlokkliTransition } from '#blokkli/components'
 import PublishDialog from './Dialog/index.vue'
 
 const { adapter, settings } = defineBlokkliFeature({

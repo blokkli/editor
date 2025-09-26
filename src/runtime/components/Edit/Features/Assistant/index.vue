@@ -1,8 +1,8 @@
 <template>
   <Teleport to="body">
-    <transition name="bk-slide-in" :duration="200">
+    <BlokkliTransition name="slide-in">
       <Overlay v-if="placedAction" @close="onClose" @submit="onSubmit" />
-    </transition>
+    </BlokkliTransition>
   </Teleport>
 
   <PluginAddAction
@@ -21,6 +21,7 @@
 import type { ActionPlacedEvent, AssistantResult } from '#blokkli/types'
 import { useBlokkli, defineBlokkliFeature, ref } from '#imports'
 import { PluginAddAction } from '#blokkli/plugins'
+import { BlokkliTransition } from '#blokkli/components'
 import Overlay from './Overlay/index.vue'
 
 const { adapter } = defineBlokkliFeature({

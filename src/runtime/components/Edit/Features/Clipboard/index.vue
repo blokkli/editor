@@ -87,7 +87,7 @@ import {
 import { PluginSidebar, PluginItemDropdown } from '#blokkli/plugins'
 import ClipboardList from './List/index.vue'
 import type { ClipboardItem, DraggableExistingBlock } from '#blokkli/types'
-import { falsy, generateUUID, getFieldKey } from '#blokkli/helpers'
+import { generateUUID, getFieldKey } from '#blokkli/helpers'
 import { Icon } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
@@ -115,7 +115,7 @@ const { settings, logger } = defineBlokkliFeature({
   screenshot: 'feature-clipboard.jpg',
 })
 
-const { selection, $t, adapter, dom, state, ui, types, eventBus } = useBlokkli()
+const { selection, $t, adapter, dom, state, ui, types } = useBlokkli()
 
 const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
 const selectionClipboard = ref<string[]>([])

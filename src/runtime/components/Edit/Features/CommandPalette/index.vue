@@ -1,9 +1,9 @@
 <template>
   <Teleport to="body">
     <div class="bk">
-      <Transition name="bk-command-palette">
+      <BlokkliTransition name="command-palette">
         <Palette v-if="isVisible" @close="isVisible = false" />
-      </Transition>
+      </BlokkliTransition>
     </div>
   </Teleport>
   <PluginToolbarButton
@@ -26,6 +26,7 @@
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature, ref, computed } from '#imports'
 import { PluginToolbarButton } from '#blokkli/plugins'
+import { BlokkliTransition } from '#blokkli/components'
 import Palette from './Palette/index.vue'
 
 defineBlokkliFeature({

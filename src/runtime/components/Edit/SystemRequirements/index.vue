@@ -1,6 +1,6 @@
 <template>
   <Teleport v-if="showDialog" to="body">
-    <transition appear name="bk-slide-up">
+    <BlokkliTransition name="slide-up">
       <DialogModal
         :title="$t('systemRequirementsDialogTitle', 'System Requirements')"
         :width="700"
@@ -46,13 +46,13 @@
           }}
         </p>
       </DialogModal>
-    </transition>
+    </BlokkliTransition>
   </Teleport>
 </template>
 
 <script setup lang="ts">
 import { useBlokkli, computed } from '#imports'
-import { DialogModal, Icon } from '#blokkli/components'
+import { DialogModal, Icon, BlokkliTransition } from '#blokkli/components'
 
 const { $t, storage, animation } = useBlokkli()
 

@@ -2,7 +2,7 @@
   <Component :is="tag" @contextmenu.stop.prevent="onContextMenu">
     <slot />
     <Teleport to="body">
-      <Transition name="bk-context-menu">
+      <BlokkliTransition name="context-menu">
         <ContextMenuMenu
           v-if="isVisible"
           :menu="menu"
@@ -10,7 +10,7 @@
           :y="y"
           @close="ui.openContextMenu.value = ''"
         />
-      </Transition>
+      </BlokkliTransition>
     </Teleport>
   </Component>
 </template>
@@ -19,6 +19,7 @@
 import type { ContextMenu } from '#blokkli/types'
 import { ref, computed, useBlokkli } from '#imports'
 import ContextMenuMenu from './Menu/index.vue'
+import { BlokkliTransition } from '#blokkli/components'
 
 const props = withDefaults(
   defineProps<{

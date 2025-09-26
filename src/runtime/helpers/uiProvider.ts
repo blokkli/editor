@@ -102,7 +102,7 @@ export default function (
     () => baseSettings.value.lowPerformanceMode,
   )
   const useAnimations = computed<boolean>(
-    () => !!baseSettings.value.useAnimations,
+    () => baseSettings.value.useAnimations !== false,
   )
   const viewportBlockingRectsMap = ref<Record<string, Rectangle | undefined>>(
     {},

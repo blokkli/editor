@@ -53,7 +53,7 @@
 
   .bk-search-enter-active,
   .bk-search-leave-active {
-    @apply transition ease-swing;
+    @apply transition ease-swing duration-200;
   }
   .bk-search-enter-from,
   .bk-search-leave-to {
@@ -137,7 +137,7 @@
   /* Toolbar. */
   .bk-toolbar-enter-active,
   .bk-toolbar-leave-active {
-    @apply transition ease-swing;
+    @apply transition ease-swing duration-200;
   }
   .bk-toolbar-enter-from,
   .bk-toolbar-leave-to {

@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <transition name="bk-slide-in" :duration="200">
+    <BlokkliTransition name="slide-in">
       <FormOverlay
         v-if="form"
         id="edit-form"
@@ -15,13 +15,13 @@
           @close="onClose"
         />
       </FormOverlay>
-    </transition>
+    </BlokkliTransition>
   </Teleport>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, defineBlokkliFeature } from '#imports'
-import { FormOverlay } from '#blokkli/components'
+import { FormOverlay, BlokkliTransition } from '#blokkli/components'
 import FormFrame from './Frame/index.vue'
 import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'

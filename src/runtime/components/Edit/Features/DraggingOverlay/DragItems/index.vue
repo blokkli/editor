@@ -4,7 +4,7 @@
     :style="style"
     :class="[{ 'bk-is-touch': isTouch }, { 'bk-is-active': !!activeLabel }]"
   >
-    <Transition name="bk-drag-item">
+    <BlokkliTransition name="drag-item">
       <div
         v-show="activeLabel"
         class="bk-dragging-overlay-label"
@@ -13,7 +13,7 @@
         <Icon name="cursor-move" />
         <p v-html="currentActiveLabel" />
       </div>
-    </Transition>
+    </BlokkliTransition>
     <div
       v-for="(rect, i) in rects"
       :key="i"
@@ -67,7 +67,7 @@ import {
   lerp,
   falsy,
 } from '#blokkli/helpers'
-import { Icon, ItemIcon } from '#blokkli/components'
+import { Icon, ItemIcon, BlokkliTransition } from '#blokkli/components'
 import { easeOutElastic } from '#blokkli/helpers/easing'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 

@@ -38,7 +38,7 @@
   />
 
   <Teleport to="body">
-    <transition appear name="bk-slide-up" :duration="300">
+    <BlokkliTransition name="slide-up">
       <ReusableDialog
         v-if="showReusableDialog && selectedItem"
         :uuid="selectedItem.uuid"
@@ -46,18 +46,18 @@
         @confirm="onMakeReusable"
         @cancel="showReusableDialog = false"
       />
-    </transition>
+    </BlokkliTransition>
   </Teleport>
 
   <Teleport to="body">
-    <transition appear name="bk-slide-in" :duration="200">
+    <BlokkliTransition name="slide-in">
       <LibraryDialog
         v-if="placedAction && adapter.getLibraryItems"
         :field="placedAction.field"
         @close="placedAction = null"
         @submit="onAddLibraryItem"
       />
-    </transition>
+    </BlokkliTransition>
   </Teleport>
   <EditReusable
     v-if="editingLibraryItem"
@@ -73,6 +73,7 @@ import { PluginItemAction, PluginAddAction } from '#blokkli/plugins'
 import ReusableDialog from './ReusableDialog/index.vue'
 import LibraryDialog from './LibraryDialog/index.vue'
 import EditReusable from './EditReusable/index.vue'
+import { BlokkliTransition } from '#blokkli/components'
 import type { ActionPlacedEvent, LibraryEditItemEvent } from '#blokkli/types'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 

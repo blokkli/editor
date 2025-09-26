@@ -13,7 +13,7 @@
   />
 
   <Teleport to="body">
-    <transition appear name="bk-slide-up">
+    <BlokkliTransition name="slide-up">
       <DialogModal
         v-if="showConfirm"
         :title="$t('revertDialogTitle', 'Irrevocably discard changes')"
@@ -28,14 +28,14 @@
         @submit="onSubmit"
         @cancel="showConfirm = false"
       />
-    </transition>
+    </BlokkliTransition>
   </Teleport>
 </template>
 
 <script lang="ts" setup>
 import { useBlokkli, ref, defineBlokkliFeature } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
-import { DialogModal } from '#blokkli/components'
+import { DialogModal, BlokkliTransition } from '#blokkli/components'
 
 const { adapter } = defineBlokkliFeature({
   id: 'revert',

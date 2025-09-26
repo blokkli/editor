@@ -13,13 +13,13 @@
   />
 
   <Teleport to="body">
-    <transition appear name="bk-slide-up">
+    <BlokkliTransition name="slide-up">
       <ExistingDialog
         v-if="showModal"
         @confirm="onSubmit($event.sourceUuid, $event.fields)"
         @cancel="showModal = false"
       />
-    </transition>
+    </BlokkliTransition>
   </Teleport>
 </template>
 
@@ -32,6 +32,7 @@ import {
   defineBlokkliFeature,
 } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
+import { BlokkliTransition } from '#blokkli/components'
 import ExistingDialog from './Dialog/index.vue'
 
 const { adapter, settings } = defineBlokkliFeature({

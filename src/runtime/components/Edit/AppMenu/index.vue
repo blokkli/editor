@@ -7,14 +7,14 @@
     </div>
   </Teleport>
   <Teleport to="body">
-    <transition name="bk-fade" :duration="200">
+    <BlokkliTransition name="fade">
       <div
         v-if="menuOpen"
         class="bk bk-menu-overlay bk-overlay"
         @click="ui.menu.close()"
       />
-    </transition>
-    <transition name="bk-menu" :duration="200">
+    </BlokkliTransition>
+    <BlokkliTransition name="menu">
       <div v-show="menuOpen" class="bk bk-menu-list">
         <button :class="{ 'bk-is-active': menuOpen }" @click="ui.menu.close">
           <Icon name="close" />
@@ -34,13 +34,13 @@
           </aside>
         </div>
       </div>
-    </transition>
+    </BlokkliTransition>
   </Teleport>
 </template>
 
 <script setup lang="ts">
 import { computed, useBlokkli } from '#imports'
-import { Icon } from '#blokkli/components'
+import { Icon, BlokkliTransition } from '#blokkli/components'
 import { blokkliVersion } from '#blokkli-build/config'
 
 const { ui, eventBus } = useBlokkli()

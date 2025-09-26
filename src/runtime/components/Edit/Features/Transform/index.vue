@@ -21,7 +21,7 @@
   />
 
   <Teleport to="body">
-    <Transition appear name="bk-transform-overlay" :duration="300">
+    <BlokkliTransition name="transform-overlay">
       <TransformDialog
         v-if="openPluginDefinition"
         :plugin="openPluginDefinition"
@@ -29,7 +29,7 @@
         @cancel="cancelTransform"
         @submit="onSubmitDialog"
       />
-    </Transition>
+    </BlokkliTransition>
   </Teleport>
 </template>
 
@@ -50,6 +50,7 @@ import type {
   PluginConfigInputItem,
   TransformPlugin,
 } from '#blokkli/types'
+import { BlokkliTransition } from '#blokkli/components'
 import { filterTransforms } from '#blokkli/helpers/transform'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import TransformDialog from './Dialog/index.vue'

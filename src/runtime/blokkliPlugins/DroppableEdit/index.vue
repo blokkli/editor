@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <transition name="bk-slide-in" :duration="200">
+    <BlokkliTransition name="slide-in">
       <FormOverlay
         v-if="isVisible"
         :id="id"
@@ -15,12 +15,12 @@
           </button>
         </template>
       </FormOverlay>
-    </transition>
+    </BlokkliTransition>
   </Teleport>
 </template>
 
 <script setup lang="ts">
-import { FormOverlay } from '#blokkli/components'
+import { FormOverlay, BlokkliTransition } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { DroppableEntityField, DroppableFieldConfig } from '#blokkli/types'

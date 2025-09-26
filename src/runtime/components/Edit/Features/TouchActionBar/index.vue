@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <Transition name="bk-touch-bar">
+    <BlokkliTransition name="touch-bar">
       <Bar
         v-if="
           selection.isMultiSelecting.value &&
@@ -17,12 +17,13 @@
         danger
         @click="eventBus.emit('dragging:end')"
       />
-    </Transition>
+    </BlokkliTransition>
   </Teleport>
 </template>
 
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature } from '#imports'
+import { BlokkliTransition } from '#blokkli/components'
 import Bar from './Bar/index.vue'
 
 const { eventBus, selection, $t } = useBlokkli()

@@ -13,7 +13,7 @@
       :class="{ 'bk-is-hidden': !sidebarVisible }"
     />
 
-    <Transition name="bk-toolbar">
+    <BlokkliTransition name="toolbar">
       <div v-show="showToolbar" class="bk bk-top">
         <div
           class="bk-toolbar bk-control"
@@ -48,13 +48,14 @@
           />
         </div>
       </div>
-    </Transition>
+    </BlokkliTransition>
   </Teleport>
 </template>
 
 <script lang="ts" setup>
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { onMounted, useBlokkli, onBeforeUnmount, computed } from '#imports'
+import { BlokkliTransition } from '#blokkli/components'
 
 const { ui, selection, storage } = useBlokkli()
 

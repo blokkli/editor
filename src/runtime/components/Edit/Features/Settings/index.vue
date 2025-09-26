@@ -10,9 +10,9 @@
     @click="onClick"
   />
   <Teleport to="body">
-    <transition appear name="bk-slide-up">
+    <BlokkliTransition name="slide-up">
       <SettingsDialog v-if="showSettings" @cancel="showSettings = false" />
-    </transition>
+    </BlokkliTransition>
   </Teleport>
 </template>
 
@@ -21,6 +21,7 @@ import { ref, useBlokkli, defineBlokkliFeature, computed } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
 import SettingsDialog from './Dialog/index.vue'
 import { addElementClasses } from '#blokkli/helpers/addElementClasses'
+import { BlokkliTransition } from '#blokkli/components'
 
 const { $t } = useBlokkli()
 

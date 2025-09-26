@@ -19,14 +19,14 @@
   />
 
   <Teleport to="body">
-    <transition name="bk-slide-in" :duration="200">
+    <BlokkliTransition name="slide-in">
       <FragmentsDialog
         v-if="placedAction && adapter.getLibraryItems"
         :field="placedAction.field"
         @close="placedAction = null"
         @submit="onAddFragment"
       />
-    </transition>
+    </BlokkliTransition>
   </Teleport>
 </template>
 
@@ -34,6 +34,7 @@
 import { ref, useBlokkli, defineBlokkliFeature, computed } from '#imports'
 import { PluginAddAction } from '#blokkli/plugins'
 import FragmentsDialog from './Dialog/index.vue'
+import { BlokkliTransition } from '#blokkli/components'
 import type { ActionPlacedEvent } from '#blokkli/types'
 
 const { adapter } = defineBlokkliFeature({

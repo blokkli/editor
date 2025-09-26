@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <Transition name="bk-search">
+    <BlokkliTransition name="search">
       <div
         v-if="isRendered"
         v-show="isVisible"
@@ -15,7 +15,7 @@
           @close="isVisible = false"
         />
       </div>
-    </Transition>
+    </BlokkliTransition>
   </Teleport>
   <PluginToolbarButton
     id="search"
@@ -37,6 +37,7 @@
 <script lang="ts" setup>
 import { nextTick, ref, useBlokkli, defineBlokkliFeature } from '#imports'
 import Overlay from './Overlay/index.vue'
+import { BlokkliTransition } from '#blokkli/components'
 import { PluginToolbarButton } from '#blokkli/plugins'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 

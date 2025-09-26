@@ -21,6 +21,7 @@ import Resizable from './Resizable/index.vue'
 import ScaleToFit from './ScaleToFit/index.vue'
 import ScrollBoundary from './ScrollBoundary/index.vue'
 import ShortcutIndicator from './ShortcutIndicator/index.vue'
+import BlokkliTransition from './Transition/index.vue'
 import Sortli from './Sortli/index.vue'
 import ViewportBlockingRect from './ViewportBlockingRect/index.vue'
 
@@ -50,4 +51,5 @@ export {
   ShortcutIndicator,
   Sortli,
   ViewportBlockingRect,
+  BlokkliTransition,
 }
