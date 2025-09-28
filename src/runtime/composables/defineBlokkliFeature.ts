@@ -25,33 +25,22 @@ type SettingsTypes<S> = {
   [P in keyof S]: SettingType<S[P]>
 }
 
-// This utility type picks only the methods listed in Methods array and makes them non-optional
-type PickRequiredMethods<T, Methods extends AdapterMethods[]> = {
-  [K in Methods[number]]: NonNullable<BlokkliAdapter<T>[K]>
-}
+type RequireAdapterMethods<
+  T extends BlokkliAdapter<any>,
+  Methods extends readonly AdapterMethods[],
+> = Omit<T, Methods[number]> & Required<Pick<T, Methods[number] & keyof T>>
 
-// This type combines required methods with the rest of the adapter, ensuring required ones are non-optional
-type CombinedAdapter<T, Methods extends AdapterMethods[]> = PickRequiredMethods<
-  T,
-  Methods
-> &
-  BlokkliAdapter<T>
-
-type DefineBlokkliFeature<
-  T,
-  Methods extends AdapterMethods[],
-  F extends FeatureDefinition<Methods, ValidFeatureKey>,
-> = {
-  adapter: CombinedAdapter<T, Methods>
+type DefineBlokkliFeature<F extends FeatureDefinition<any, any>> = {
+  adapter: F['requiredAdapterMethods'] extends readonly (keyof BlokkliAdapter<any>)[]
+    ? RequireAdapterMethods<BlokkliAdapter<any>, F['requiredAdapterMethods']>
+    : BlokkliAdapter<any>
   settings: ComputedRef<SettingsTypes<F['settings']>>
   logger: DebugLogger
 }
 
 export function defineBlokkliFeature<
-  T,
-  Methods extends AdapterMethods[],
-  F extends FeatureDefinition<Methods, ValidFeatureKey>,
->(feature: F): DefineBlokkliFeature<T, Methods, F> {
+  const F extends FeatureDefinition<AdapterMethods[], ValidFeatureKey>,
+>(feature: F): DefineBlokkliFeature<F> {
   const { adapter, storage, features, debug } = useBlokkli()
 
   const logger = debug.createLogger(feature.label || feature.id)
@@ -116,7 +105,7 @@ export function defineBlokkliFeature<
   provide(INJECT_EDIT_LOGGER, logger)
 
   return {
-    adapter: adapter as CombinedAdapter<T, Methods>,
+    adapter: adapter as any,
     settings: settings as any,
     logger,
   }

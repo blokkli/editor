@@ -195,13 +195,15 @@ const onDropReusable = async (
   host: DraggableHostData,
   afterUuid?: string,
 ) => {
-  await state.mutateWithLoadingState(() =>
-    adapter.addLibraryItem({
-      libraryItemUuid: item.libraryItemUuid,
-      host,
-      afterUuid,
-    }),
-  )
+  if (adapter.addLibraryItem) {
+    await state.mutateWithLoadingState(() =>
+      adapter.addLibraryItem!({
+        libraryItemUuid: item.libraryItemUuid,
+        host,
+        afterUuid,
+      }),
+    )
+  }
 }
 
 const onDropClipboardItem = async (
@@ -224,7 +226,7 @@ const onDropMediaLibraryItem = async (
 ) => {
   if (adapter.mediaLibraryAddBlock && items.length === 1) {
     await state.mutateWithLoadingState(() =>
-      adapter.mediaLibraryAddBlock({
+      adapter.mediaLibraryAddBlock!({
         preceedingUuid: afterUuid,
         host,
         item: items[0]!,
@@ -232,7 +234,7 @@ const onDropMediaLibraryItem = async (
     )
   } else if (adapter.mediaLibraryAddBlocks && items.length > 1) {
     await state.mutateWithLoadingState(() =>
-      adapter.mediaLibraryAddBlocks({
+      adapter.mediaLibraryAddBlocks!({
         preceedingUuid: afterUuid,
         host,
         items,
@@ -246,14 +248,16 @@ const onDropSearchContentItem = async (
   host: DraggableHostData,
   afterUuid?: string,
 ) => {
-  await state.mutateWithLoadingState(() =>
-    adapter.addContentSearchItem({
-      item: item.searchItem,
-      host,
-      bundle: item.itemBundle,
-      afterUuid,
-    }),
-  )
+  if (adapter.addContentSearchItem) {
+    await state.mutateWithLoadingState(() =>
+      adapter.addContentSearchItem!({
+        item: item.searchItem,
+        host,
+        bundle: item.itemBundle,
+        afterUuid,
+      }),
+    )
+  }
 }
 
 const onDropAction = (

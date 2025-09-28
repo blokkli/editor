@@ -118,7 +118,7 @@ const onAddLibraryItem = async (uuid: string) => {
   }
 
   await state.mutateWithLoadingState(() =>
-    adapter.addLibraryItem({
+    adapter.addLibraryItem!({
       libraryItemUuid: uuid,
       host: placedAction.value!.host,
       afterUuid: placedAction.value!.preceedingUuid,

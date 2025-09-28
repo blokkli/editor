@@ -239,7 +239,7 @@ async function onTransformHost(
 
   await state.mutateWithLoadingState(
     () =>
-      adapter.applyHostTransformPlugin({
+      adapter.applyHostTransformPlugin!({
         pluginId: plugin.id,
         config: values,
       }),
