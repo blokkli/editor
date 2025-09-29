@@ -1,6 +1,6 @@
 #version 300 es
 
-precision mediump float;
+precision highp float;
 
 in float v_intersecting;
 in float v_is_select_rect;

@@ -1,4 +1,4 @@
-precision mediump float;
+precision highp float;
 
 // [x, y] position.
 attribute vec2 a_position;

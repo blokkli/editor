@@ -1,4 +1,5 @@
-precision mediump float;
+precision highp float;
+
 varying vec4 v_quad;
 varying vec3 v_color;
 varying vec4 v_rect_radius;

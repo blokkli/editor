@@ -1,6 +1,6 @@
 #version 300 es
 
-precision mediump float;
+precision highp float;
 
 in vec3 a_position;
 in vec4 a_quad;

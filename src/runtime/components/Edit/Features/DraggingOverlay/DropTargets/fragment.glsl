@@ -1,4 +1,4 @@
-precision mediump float;
+precision highp float;
 
 varying float v_intersecting;
 varying float v_is_hover_area;
