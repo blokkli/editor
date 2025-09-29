@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { DraggableExistingBlock, Rectangle } from '#blokkli/types'
-import { useBlokkli, onBeforeUnmount, computed } from '#imports'
+import { useBlokkli, onBeforeUnmount } from '#imports'
 import {
   setBuffersAndAttributes,
   drawBufferInfo,
@@ -15,8 +15,8 @@ import {
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/helpers/webgl'
+import { useTransitionedValue } from '#blokkli/helpers/useTransitionedValue'
 import { toShaderColor } from '#blokkli/helpers'
-import type { RGB } from '#blokkli/types/theme'
 
 const props = defineProps<{
   blocks: DraggableExistingBlock[]
@@ -100,7 +100,7 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
 
 const collector = new SelectionRectangleBufferCollector(props.gl)
 
-const color = computed<RGB>(() => {
+const getColorDefault = useTransitionedValue(() => {
   if (ui.hasTransformOverlayOpen.value) {
     return toShaderColor(theme.teal.value.normal)
   }
@@ -108,12 +108,27 @@ const color = computed<RGB>(() => {
   return toShaderColor(theme.accent.value[600])
 })
 
+const getColorInverted = useTransitionedValue(() => {
+  if (ui.hasTransformOverlayOpen.value) {
+    return toShaderColor(theme.teal.value.normal)
+  }
+
+  return toShaderColor([255, 255, 255])
+})
+
 onBlokkliEvent('canvas:draw', (e) => {
   props.gl.useProgram(programInfo.program)
 
+  const { info, hasChanged } = collector.getBufferInfo()
+
+  // Nothing to draw.
+  if (!info) {
+    return
+  }
+
   setUniforms(programInfo, {
-    u_color_default: color.value,
-    u_color_inverted: [255, 255, 255],
+    u_color_default: getColorDefault(),
+    u_color_inverted: getColorInverted(),
     u_artboard_size: [
       ui.artboardSize.value.width,
       ui.artboardSize.value.height,
@@ -122,12 +137,6 @@ onBlokkliEvent('canvas:draw', (e) => {
     u_time: e.time,
   })
   animation.setSharedUniforms(props.gl, programInfo)
-  const { info, hasChanged } = collector.getBufferInfo()
-
-  // Nothing to draw.
-  if (!info) {
-    return
-  }
 
   // Only update buffer and attributes when they have changed.
   if (hasChanged) {
