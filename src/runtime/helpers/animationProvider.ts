@@ -6,10 +6,12 @@ import {
   onMounted,
   onBeforeUnmount,
   type ComputedRef,
+  type WritableComputedRef,
 } from '#imports'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import type { UiProvider } from './uiProvider'
 import { createProgramInfo, type ProgramInfo } from 'twgl.js'
+import type { StorageProvider } from './storageProvider'
 
 export type AnimationProvider = {
   /**
@@ -30,6 +32,7 @@ export type AnimationProvider = {
   dpi: ComputedRef<number>
 
   webglSupported: ComputedRef<boolean | null>
+  webglEnabled: WritableComputedRef<boolean>
 
   getCanvasElement: () => HTMLCanvasElement
 
@@ -47,7 +50,12 @@ export type AnimationProvider = {
   setMouseCoords: (x: number, y: number) => void
 }
 
-export default function (ui: UiProvider): AnimationProvider {
+export default function (
+  ui: UiProvider,
+  storage: StorageProvider,
+): AnimationProvider {
+  const webglEnabled = storage.use('webglEnabled', true)
+
   let mouseX = 0
   let mouseY = 0
 
@@ -173,13 +181,19 @@ export default function (ui: UiProvider): AnimationProvider {
   return {
     requestDraw,
     gl: function () {
+      if (!webglEnabled.value) {
+        return
+      }
+
       if (webglSupported.value === false) {
         return
       }
+
       const canvas = getCanvasElement()
       const gl = canvas.getContext('webgl2', {
         premultipliedAlpha: true,
       })
+
       if (!gl) {
         webglSupported.value = false
         return
@@ -193,7 +207,8 @@ export default function (ui: UiProvider): AnimationProvider {
     dpi,
     registerProgram,
     setMouseCoords,
-    webglSupported: computed(() => webglSupported.value),
+    webglSupported: computed(() => webglSupported.value && webglEnabled.value),
+    webglEnabled,
     getCanvasElement,
   }
 }

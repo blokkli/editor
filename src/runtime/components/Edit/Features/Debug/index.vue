@@ -60,6 +60,14 @@
               @update:model-value="toggleTransforming"
             />
           </div>
+
+          <div>
+            <FormToggle
+              label="Enable WebGL"
+              :model-value="animation.webglEnabled.value"
+              @update:model-value="toggleWebgl"
+            />
+          </div>
         </div>
       </section>
 
@@ -125,7 +133,8 @@ const { logger } = defineBlokkliFeature({
   description: 'Provides debugging functionality.',
 })
 
-const { keyboard, selection, eventBus, features, debug, ui } = useBlokkli()
+const { keyboard, selection, eventBus, features, debug, ui, animation } =
+  useBlokkli()
 
 const iconItems = computed(() => Object.keys(icons) as BlokkliIcon[])
 
@@ -168,6 +177,14 @@ function toggleTransforming() {
     ui.setTransform()
   } else {
     ui.setTransform('Transform plugin label')
+  }
+}
+
+function toggleWebgl() {
+  if (animation.webglEnabled.value) {
+    animation.webglEnabled.value = false
+  } else {
+    animation.webglEnabled.value = true
   }
 }
 

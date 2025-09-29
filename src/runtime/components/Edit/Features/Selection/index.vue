@@ -1,6 +1,6 @@
 <template>
   <Overlay
-    v-if="isVisible && gl"
+    v-if="isVisible && gl && animation.webglEnabled.value"
     :blocks="selection.blocks.value"
     :uuids="selection.uuids.value"
     :gl="gl"
