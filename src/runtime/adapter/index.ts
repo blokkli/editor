@@ -669,7 +669,7 @@ export interface BlokkliAdapter<T> {
     /**
      * Load user settings.
      */
-    load: () => Promise<string>
+    load: () => Promise<string | Record<string, any>>
 
     /**
      * Persist user settings.

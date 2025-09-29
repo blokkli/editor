@@ -45,7 +45,6 @@ export default async function (
 ): Promise<StorageProvider> {
   const values = ref<Record<string, any>>({})
   const defaults = ref<Record<string, any>>({})
-  const isPersisting = ref(false)
   let timeout: number | null = null
 
   const persistableKeys = ref<string[]>([])
@@ -57,7 +56,12 @@ export default async function (
   })
 
   const persistedValues = adapter.userSettings
-    ? await adapter.userSettings.load()
+    ? await adapter.userSettings.load().then((v) => {
+        if (typeof v === 'object' && v !== null) {
+          return JSON.stringify(v)
+        }
+        return v
+      })
     : null
 
   if (persistedValues) {

@@ -1035,7 +1035,7 @@ export default defineBlokkliEditAdapter((ctx) => {
 
     userSettings: {
       load() {
-        return $fetch('/api/user-settings').then(v => v?.toString() ?? '')
+        return $fetch('/api/user-settings')
       },
       persist(data) {
         return $fetch('/api/user-settings', {
