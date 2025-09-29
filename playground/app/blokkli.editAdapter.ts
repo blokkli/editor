@@ -1033,6 +1033,20 @@ export default defineBlokkliEditAdapter((ctx) => {
       ]
     },
 
+    userSettings: {
+      load() {
+        return $fetch('/api/user-settings').then(v => v?.toString() ?? '')
+      },
+      persist(data) {
+        return $fetch('/api/user-settings', {
+          method: 'post',
+          body: {
+            data
+          }
+        })
+      }
+    },
+
     // @TODO: Implement in playground.
     // getLibraryItemEditUrl(uuid) {
     //   return 'http://localhost:3000/de?blokkliEditing=1'

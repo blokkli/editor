@@ -58,7 +58,7 @@ const emit = defineEmits<{
 const storageKey = 'view_option_' + props.id
 const button = ref<HTMLElement | null>(null)
 
-const isActiveStorage = storage.use(storageKey, false)
+const isActiveStorage = storage.use(storageKey, false, true)
 
 const isActive = computed({
   get() {

@@ -664,6 +664,18 @@ export interface BlokkliAdapter<T> {
     | Analyzer[]
     | Promise<Analyzer>
     | Promise<Analyzer[]>
+
+  userSettings?: {
+    /**
+     * Load user settings.
+     */
+    load: () => Promise<string>
+
+    /**
+     * Persist user settings.
+     */
+    persist: (settings: string) => Promise<undefined>
+  }
 }
 
 export type BlokkliAdapterFactory<T> = (

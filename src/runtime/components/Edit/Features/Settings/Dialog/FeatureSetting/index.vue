@@ -112,6 +112,7 @@ const getOptionLabel = (key: string, defaultLabel: string) => {
 const settingsStorage = storage.use(
   `feature:${props.featureId}:settings`,
   {} as Record<string, boolean | string | number>,
+  true,
 )
 
 const toggleCheckbox = () => {

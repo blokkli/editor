@@ -1,5 +1,13 @@
-import { type ComputedRef, type WritableComputedRef, computed, ref } from 'vue'
+import {
+  type ComputedRef,
+  type WritableComputedRef,
+  computed,
+  onBeforeUnmount,
+  ref,
+  watch,
+} from '#imports'
 import { storageDefaults } from '#blokkli-build/config'
+import type { BlokkliAdapter } from '#blokkli/adapter'
 
 const PREFIX = 'blokkli:'
 
@@ -7,6 +15,7 @@ export type StorageProvider = {
   use: <T>(
     key: string | ComputedRef<string>,
     defaultValue: T,
+    persist?: boolean,
   ) => WritableComputedRef<T>
   clearAll: () => void
   clear: (key: string) => void
@@ -31,13 +40,69 @@ const getExisting = (key: string): any => {
  * This composable can be used to keep state across page navigations and
  * even after a refresh.
  */
-export default function (): StorageProvider {
+export default async function (
+  adapter: BlokkliAdapter<any>,
+): Promise<StorageProvider> {
   const values = ref<Record<string, any>>({})
   const defaults = ref<Record<string, any>>({})
+  const isPersisting = ref(false)
+  let timeout: number | null = null
+
+  const persistableKeys = ref<string[]>([])
+
+  onBeforeUnmount(() => {
+    if (timeout) {
+      window.clearTimeout(timeout)
+    }
+  })
+
+  const persistedValues = adapter.userSettings
+    ? await adapter.userSettings.load()
+    : null
+
+  if (persistedValues) {
+    values.value = JSON.parse(persistedValues)
+  }
+
+  const persistableData = computed(() => {
+    const mapped = [...persistableKeys.value]
+      .sort()
+      .reduce<Record<string, any>>((acc, key) => {
+        const value = values.value[key]
+        if (value !== undefined) {
+          acc[key] = value
+        }
+
+        return acc
+      }, {})
+    return JSON.stringify(mapped)
+  })
+
+  function persistUserSettings() {
+    if (timeout) {
+      window.clearTimeout(timeout)
+    }
+
+    timeout = window.setTimeout(async () => {
+      if (!adapter.userSettings) {
+        return
+      }
+
+      if (persistableData.value === persistedValues) {
+        return
+      }
+      await adapter.userSettings.persist(persistableData.value)
+    }, 1000)
+  }
+
+  if (adapter.userSettings) {
+    watch(persistableData, persistUserSettings)
+  }
 
   const use = <T>(
     key: string | ComputedRef<string>,
     providedDefaultValue: T,
+    persist?: boolean,
   ) => {
     const storageKey = computed(
       () => PREFIX + (typeof key === 'string' ? key : key.value),
@@ -69,6 +134,12 @@ export default function (): StorageProvider {
         values.value[storageKey.value] = existing
       } else {
         values.value[storageKey.value] = defaultValue
+      }
+    }
+
+    if (persist) {
+      if (!persistableKeys.value.includes(storageKey.value)) {
+        persistableKeys.value.push(storageKey.value)
       }
     }
 

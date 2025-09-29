@@ -150,11 +150,11 @@ const tourElement = ref<HTMLElement | null>(null)
 
 const detachedKey = computed(() => 'sidebar:detached:' + props.id)
 const storageKey = computed(() => 'sidebar:active:' + props.region)
-const isDetached = storage.use(detachedKey, false)
+const isDetached = storage.use(detachedKey, false, true)
 const isDisabled = computed(
   () => props.editOnly && state.editMode.value !== 'editing' && !props.disabled,
 )
-const activeSidebar = storage.use(storageKey, '')
+const activeSidebar = storage.use(storageKey, '', true)
 
 const isRenderedDetached = computed(
   () => isDetached.value && !ui.isMobile.value,
