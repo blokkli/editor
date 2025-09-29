@@ -599,10 +599,12 @@ const buildDropAreaRect = (area: DropArea): Rectangle => {
   return dropAreaRect
 }
 
+const alphaBase = gl ? 0.7 : 0.3
+
 const colorTeal = rgbaToString(theme.teal.value.normal)
-const colorTealAlpha = rgbaToString(theme.teal.value.normal, 0.7)
+const colorTealAlpha = rgbaToString(theme.teal.value.normal, alphaBase)
 const colorAccent = rgbaToString(theme.accent.value[800])
-const colorAccentAlpha = rgbaToString(theme.accent.value[800], 0.7)
+const colorAccentAlpha = rgbaToString(theme.accent.value[800], alphaBase)
 
 function getRectType(field: BlokkliFieldElement): RectRenderType {
   if (field.nestingLevel >= 3) {
@@ -737,21 +739,23 @@ const collector = new DropTargetRectangleBufferCollector(gl)
 
 // Add a rectangle that we will use to display the hovered field area.
 // The vertex shader will dynamically transform the quad to match the currently hovered field area.
-collector.addRectangle(
-  {
-    id: 'active-hover-rect',
-    type: 'active-area',
-    label: 'Field Area',
-    color: 'red',
-    colorAlpha: 'red',
-    x: 0,
-    y: 0,
-    width: ui.artboardSize.value.width,
-    height: ui.artboardSize.value.height,
-  },
-  RectRenderType.ACTIVE_AREA,
-  false,
-)
+if (gl) {
+  collector.addRectangle(
+    {
+      id: 'active-hover-rect',
+      type: 'active-area',
+      label: 'Field Area',
+      color: 'red',
+      colorAlpha: 'red',
+      x: 0,
+      y: 0,
+      width: ui.artboardSize.value.width,
+      height: ui.artboardSize.value.height,
+    },
+    RectRenderType.ACTIVE_AREA,
+    false,
+  )
+}
 
 const fieldColors = computed(() => {
   return {
