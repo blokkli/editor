@@ -628,17 +628,14 @@ export default function (
   const dragElementCache: Map<string, HTMLElement> = new Map()
 
   function getDragElement(block: DraggableExistingBlock) {
-    const cached = dragElementCache.get(block.uuid)
-    if (cached && document.body.contains(cached)) {
-      return cached
-    }
     const el = block.element()
-    if (!el) {
-      return
-    }
-    dragElementUuidMap.set(el, block.uuid)
-    dragElementCache.set(block.uuid, el)
-    return el
+    return getElementToObserve(
+      block.uuid,
+      el,
+      block.itemBundle,
+      block.hostFieldListType,
+      block.hostBundle as BlockBundleWithNested,
+    )
   }
 
   function isBlockVisible(uuid: string): boolean {
