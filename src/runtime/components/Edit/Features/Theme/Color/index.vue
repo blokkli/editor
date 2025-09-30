@@ -68,7 +68,11 @@ const initValue = computed(() =>
 
 const inputValue = computed({
   get() {
-    return rgbToHex((theme as any)[props.group].value[props.shade])
+    const v = (theme as any)[props.group]?.value[props.shade]
+    if (v) {
+      return rgbToHex(v)
+    }
+    return '#ffffff'
   },
 
   set(hex: string) {

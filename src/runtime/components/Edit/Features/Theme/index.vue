@@ -111,6 +111,7 @@ const contextGroups: ThemeContextColorGroup[] = [
   'yellow',
   'red',
   'lime',
+  'orange',
 ]
 const contextShades: ThemeContextColorShade[] = ['light', 'normal', 'dark']
 </script>

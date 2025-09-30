@@ -7,14 +7,14 @@
 
     header {
       @apply flex justify-between items-center;
-      @apply bg-teal-normal text-teal-dark;
+      @apply bg-orange-normal text-orange-dark;
 
       p {
         @apply px-20 font-bold;
       }
 
       button {
-        @apply flex items-center justify-center hover:bg-teal-dark/20 text-current;
+        @apply flex items-center justify-center hover:bg-orange-dark/20 text-current;
         @apply size-50;
         svg {
           @apply size-25 fill-current;

@@ -81,9 +81,10 @@ vec4 drawBox(float thickness, vec4 bg, vec4 fill, vec4 border, float offset) {
     (sin(u_time / 270.0 - v_rect_id + offset) + 1.0) / 2.0
   );
 
-  if (u_is_transforming >= 0.5) {
-    borderThickness = (t * 0.7 + 0.5) * borderThickness;
-  }
+  // Smoothly transition borderThickness animation
+  float animatedThickness = (t * 0.7 + 0.5) * borderThickness;
+  borderThickness = mix(borderThickness, animatedThickness, u_is_transforming);
+
   vec2 size = v_rect_size + borderThickness * 2.0 * v_transition;
   float u_edgeSoftness = 1.0 + v_transition;
   vec4 radius = v_rect_radius * u_scale + vec4(borderThickness);
@@ -101,12 +102,15 @@ vec4 drawBox(float thickness, vec4 bg, vec4 fill, vec4 border, float offset) {
   float borderAlpha =
     1.0 - smoothstep(-u_borderSoftness, 0.0, abs(mainDist) - borderThickness);
 
+  // Smoothly transition stripe pattern
   vec4 stripedFill = vec4(1.0, 1.0, 1.0, 0.0);
-  if (u_is_transforming >= 0.5) {
-    stripedFill = fill;
-    stripedFill.a = getStripePattern(posRelativeToQuad, u_time);
-    borderAlpha *= t + 0.6;
-  }
+  vec4 animatedStripedFill = fill;
+  animatedStripedFill.a = getStripePattern(posRelativeToQuad, u_time);
+  stripedFill = mix(stripedFill, animatedStripedFill, u_is_transforming);
+
+  // Smoothly transition borderAlpha modification
+  float animatedBorderAlpha = borderAlpha * (t + 0.6);
+  borderAlpha = mix(borderAlpha, animatedBorderAlpha, u_is_transforming);
 
   vec4 res_with_fill = mix(bg, stripedFill, fillAlpha * stripedFill.a);
   return mix(res_with_fill, border, borderAlpha * border.a);

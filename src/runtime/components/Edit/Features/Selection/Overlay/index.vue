@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { DraggableExistingBlock, Rectangle } from '#blokkli/types'
-import { useBlokkli, onBeforeUnmount } from '#imports'
+import { useBlokkli, onBeforeUnmount, computed } from '#imports'
 import {
   setBuffersAndAttributes,
   drawBufferInfo,
@@ -100,20 +100,28 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
 
 const collector = new SelectionRectangleBufferCollector(props.gl)
 
+const hasTransformingStyle = computed(
+  () => ui.hasTransformOverlayOpen.value || ui.isTransforming.value,
+)
+
 const getColorDefault = useTransitionedValue(() => {
-  if (ui.hasTransformOverlayOpen.value) {
-    return toShaderColor(theme.teal.value.normal)
+  if (hasTransformingStyle.value) {
+    return toShaderColor(theme.orange.value.normal)
   }
 
   return toShaderColor(theme.accent.value[600])
 })
 
 const getColorInverted = useTransitionedValue(() => {
-  if (ui.hasTransformOverlayOpen.value) {
-    return toShaderColor(theme.teal.value.normal)
+  if (hasTransformingStyle.value) {
+    return toShaderColor(theme.orange.value.normal)
   }
 
   return toShaderColor([255, 255, 255])
+})
+
+const getTransforming = useTransitionedValue(() => {
+  return ui.isTransforming.value ? 1 : 0
 })
 
 onBlokkliEvent('canvas:draw', (e) => {
@@ -133,7 +141,7 @@ onBlokkliEvent('canvas:draw', (e) => {
       ui.artboardSize.value.width,
       ui.artboardSize.value.height,
     ],
-    u_is_transforming: ui.isTransforming.value ? 1 : 0,
+    u_is_transforming: getTransforming(),
     u_time: e.time,
   })
   animation.setSharedUniforms(props.gl, programInfo)

@@ -21,6 +21,13 @@
         @apply !bg-teal-light !text-teal-normal;
       }
     }
+    &.bk-is-orange {
+      @apply !bg-orange-normal !text-orange-dark hover:!bg-orange-dark hover:!text-white focus-visible:ring-accent-600 focus-visible:ring-offset-accent-100;
+      &[disabled] {
+        @apply !bg-orange-light !text-orange-normal;
+      }
+    }
+
     &.bk-is-danger {
       @apply !bg-red-normal !text-white hover:!bg-red-dark focus-visible:ring-red-dark;
       &[disabled] {

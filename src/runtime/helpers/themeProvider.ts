@@ -23,6 +23,7 @@ type ThemeMap = {
   yellow: Ref<ThemeContextColors>
   red: Ref<ThemeContextColors>
   lime: Ref<ThemeContextColors>
+  orange: Ref<ThemeContextColors>
 }
 
 export type ThemeProvider = {
@@ -32,6 +33,7 @@ export type ThemeProvider = {
   yellow: Ref<ThemeContextColors>
   red: Ref<ThemeContextColors>
   lime: Ref<ThemeContextColors>
+  orange: Ref<ThemeContextColors>
   getDraggableStyle: (el: HTMLElement | SVGElement) => DraggableStyle
   setColor: <Group extends ThemeColorGroup | ThemeContextColorGroup>(
     group: Group,
@@ -64,6 +66,7 @@ export default function (): ThemeProvider {
   const yellow = ref<ThemeContextColors>(theme.yellow)
   const red = ref<ThemeContextColors>(theme.red)
   const lime = ref<ThemeContextColors>(theme.lime)
+  const orange = ref<ThemeContextColors>(theme.orange)
 
   const themeMap: ThemeMap = {
     accent,
@@ -72,6 +75,7 @@ export default function (): ThemeProvider {
     yellow,
     red,
     lime,
+    orange,
   }
 
   function getColor<K extends keyof ThemeMap, T extends ThemeMap[K]['value']>(
@@ -190,6 +194,7 @@ export default function (): ThemeProvider {
     yellow,
     red,
     lime,
+    orange,
     getDraggableStyle: function (el: HTMLElement | SVGElement) {
       return dragStyle.getStyle(el, theme.accent[700])
     },

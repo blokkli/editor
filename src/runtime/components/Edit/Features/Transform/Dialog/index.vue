@@ -38,7 +38,7 @@
               {{ $t('transformDialogButtonPreview', 'Preview') }}
             </button>
             <button
-              class="bk-button bk-is-teal"
+              class="bk-button bk-is-orange"
               :disabled
               @click.prevent="onClickSubmit"
             >

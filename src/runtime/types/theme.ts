@@ -34,6 +34,7 @@ export type ThemeContextColorGroup =
    * The lime color used for reusable blocks / library and status indicators.
    */
   | 'lime'
+  | 'orange'
 
 export type ThemeColorShade =
   | '50'
