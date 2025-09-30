@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bk-dragging-overlay"
+    class="bk-vars bk-dragging-overlay"
     :style="style"
     :class="[{ 'bk-is-touch': isTouch }, { 'bk-is-active': !!activeLabel }]"
   >
