@@ -1033,7 +1033,15 @@ export default defineBlokkliEditAdapter((ctx) => {
       ]
     },
 
-    userSettings: {
+    // @TODO: Implement in playground.
+    // getLibraryItemEditUrl(uuid) {
+    //   return 'http://localhost:3000/de?blokkliEditing=1'
+    // },
+  }
+
+  // Only available in dev mode.
+  if (import.meta.dev) {
+    adapter.userSettings = {
       load() {
         return $fetch('/api/user-settings')
       },
@@ -1045,12 +1053,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           }
         })
       }
-    },
-
-    // @TODO: Implement in playground.
-    // getLibraryItemEditUrl(uuid) {
-    //   return 'http://localhost:3000/de?blokkliEditing=1'
-    // },
+    }
   }
 
   return adapter
