@@ -43,7 +43,7 @@
     @apply flex w-full p-20 items-center;
     &.bk-is-selected {
       .bk-blokkli-item-label-icon {
-        @apply bg-teal-normal border-teal-dark text-teal-dark;
+        @apply bg-orange-normal border-orange-dark/30 text-orange-dark;
       }
     }
   }
