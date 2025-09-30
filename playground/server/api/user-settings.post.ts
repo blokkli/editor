@@ -1,5 +1,6 @@
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const storage = useUserSettingsStorage()
-  return storage.setItemRaw('user-settings', body.data)
+  await storage.setItemRaw('user-settings', body.data)
+  return 'OK'
 })

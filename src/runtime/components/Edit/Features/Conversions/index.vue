@@ -4,8 +4,8 @@
     :title="$t('convertTo', 'Convert to...')"
     :enabled="!!possibleConversions.length"
     :items="possibleConversions"
-    @select="onConvert($event.id)"
     weight="900"
+    @select="onConvert($event.id)"
   />
 </template>
 

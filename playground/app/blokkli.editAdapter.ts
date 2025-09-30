@@ -1043,16 +1043,16 @@ export default defineBlokkliEditAdapter((ctx) => {
   if (import.meta.dev) {
     adapter.userSettings = {
       load() {
-        return $fetch('/api/user-settings')
+        return $fetch<string>('/api/user-settings')
       },
-      persist(data) {
-        return $fetch('/api/user-settings', {
+      async persist(data) {
+        await $fetch<string>('/api/user-settings', {
           method: 'post',
           body: {
-            data
-          }
+            data,
+          },
         })
-      }
+      },
     }
   }
 
