@@ -6,6 +6,7 @@ import type {
   DroppableEntityField,
   EntityContext,
   Rectangle,
+  Coord,
 } from '#blokkli/types'
 import {
   findClosestBlock,
@@ -190,6 +191,7 @@ export default function (
   let draggableBlockCache: Record<string, DraggableExistingBlock> = {}
   let initTimeout: null | number = null
   const isInitalizing = ref(true)
+  const observedElementCache = new Map<string, HTMLElement>()
 
   const registeredBlockUuids = computed(() => {
     return Object.entries(registeredBlocks)
@@ -358,6 +360,7 @@ export default function (
   }
 
   function getElementToObserve(
+    uuid: string,
     el: HTMLElement,
     bundle: string,
     fieldListType: ValidFieldListTypes,
@@ -366,6 +369,11 @@ export default function (
     // Always observe the root element for proxy blocks.
     if (el.classList.contains('bk-block-proxy')) {
       return el
+    }
+    const key = `${uuid}${bundle}${fieldListType}${parentBlockBundle ?? 'none'}`
+    const cached = observedElementCache.get(key)
+    if (cached) {
+      return cached
     }
     const definition = definitions.getBlockDefinition(
       bundle,
@@ -380,9 +388,11 @@ export default function (
         ? definition.editor.getDraggableElement(el)
         : el) || el
     if (observableElement instanceof HTMLElement) {
+      observedElementCache.set(key, observableElement)
       return observableElement
     }
 
+    observedElementCache.set(key, el)
     return el
   }
 
@@ -493,18 +503,42 @@ export default function (
     return fieldRects[key]
   }
 
-  function refreshBlockRect(uuid: string) {
-    const block = findBlock(uuid)
-    if (!block) {
-      return
-    }
-    const el = getDragElement(block)
+  function refreshBlockRect(
+    uuid: string,
+    providedOffset?: Coord,
+    providedScale?: number,
+  ) {
+    const offset = providedOffset ?? ui.artboardOffset.value
+    const scale = providedScale ?? ui.artboardScale.value
+    const el = registeredBlocks[uuid]
     if (!el) {
       return
     }
+    const bundle = el.dataset.itemBundle
+    const hostBundle = el.dataset.hostBundle as
+      | BlockBundleWithNested
+      | undefined
+    const hostFieldListType = el.dataset.hostFieldListType as
+      | ValidFieldListTypes
+      | undefined
+
+    if (!bundle || !hostFieldListType) {
+      return
+    }
+    const observableElement = getElementToObserve(
+      uuid,
+      el,
+      bundle,
+      hostFieldListType,
+      hostBundle,
+    )
 
     blockRects[uuid] = rectWithTime(
-      ui.getAbsoluteElementRect(el.getBoundingClientRect()),
+      ui.getAbsoluteElementRect(
+        observableElement.getBoundingClientRect(),
+        scale,
+        offset,
+      ),
     )
   }
 
@@ -545,36 +579,10 @@ export default function (
     const offset = ui.artboardOffset.value
     const scale = ui.artboardScale.value
     for (let i = 0; i < toUpdate.length; i++) {
-      const uuid = toUpdate[i]!
-      const el = registeredBlocks[uuid]
-      if (!el) {
-        continue
+      const uuid = toUpdate[i]
+      if (uuid) {
+        refreshBlockRect(uuid, offset, scale)
       }
-      const bundle = el.dataset.itemBundle
-      const hostBundle = el.dataset.hostBundle as
-        | BlockBundleWithNested
-        | undefined
-      const hostFieldListType = el.dataset.hostFieldListType as
-        | ValidFieldListTypes
-        | undefined
-
-      if (!bundle || !hostFieldListType) {
-        continue
-      }
-      const observableElement = getElementToObserve(
-        el,
-        bundle,
-        hostFieldListType,
-        hostBundle,
-      )
-
-      blockRects[uuid] = rectWithTime(
-        ui.getAbsoluteElementRect(
-          observableElement.getBoundingClientRect(),
-          scale,
-          offset,
-        ),
-      )
     }
 
     const visibleFieldKeys = getVisibleFields()
@@ -594,6 +602,7 @@ export default function (
 
   // After the state has been updated, update the rects of all currently visible blocks.
   onBlokkliEvent('state:reloaded', () => {
+    observedElementCache.clear()
     draggableBlockCache = {}
 
     if (stateReloadTimeout) {
@@ -684,6 +693,7 @@ export default function (
     const item = buildDraggableItem(el)
     if (item && item.itemType === 'existing') {
       const observableElement = getElementToObserve(
+        item.uuid,
         el,
         item.itemBundle,
         item.hostFieldListType,
@@ -715,7 +725,6 @@ export default function (
     if (el) {
       intersectionObserver.unobserve(el)
       resizeObserver.unobserve(el)
-      dragElementUuidMap.delete(el)
       dragElementUuidMap.delete(el)
     }
     dragElementCache.delete(uuid)
