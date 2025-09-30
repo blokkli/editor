@@ -14,6 +14,10 @@ export default withHelper((helper) => {
             continue
           }
 
+          if (file.type === 'provider') {
+            continue
+          }
+
           if (!fs.existsSync(file.filePath)) {
             continue
           }
