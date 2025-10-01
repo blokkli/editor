@@ -174,6 +174,9 @@ export type BlokkliDefinitionInputEditor<
   Options extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
   GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
   Bundle extends BundleKey | string = string,
+  PropsType = Bundle extends BundleKey
+    ? BundleProps[Bundle]
+    : Record<string, any>,
 > = {
   /**
    * Determine which options should be visible in the editor based on the
@@ -322,7 +325,7 @@ export type BlokkliDefinitionInputEditor<
    * You can also return HTML as the value. The feature uses an HTML differ to
    * render the diff.
    */
-  mapDiffProps?: (props?: any) => Record<string, string>
+  mapDiffProps?: (props?: PropsType) => Record<string, string>
 }
 
 export type BlockDefinitionRenderForParent = {
