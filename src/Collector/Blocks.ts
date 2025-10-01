@@ -159,6 +159,7 @@ export class CollectedBlockFile extends CollectedFile {
         this.definitionSource = result.source
       }
     } catch (e) {
+      console.log(e)
       console.error(
         `Failed to parse component "${this.filePath}": The composabe does not contain a valid object literal. No variables and methods are allowed inside the composable.`,
         e,

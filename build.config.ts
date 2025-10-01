@@ -41,6 +41,7 @@ export default defineBuildConfig({
     'ohash',
     'typescript',
     'estree-walker',
+    'oxc-walker',
     'micromatch',
     'acorn',
     'pathe',
