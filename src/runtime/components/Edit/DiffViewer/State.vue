@@ -68,6 +68,7 @@ const props = defineProps<{
   stateBefore: MappedState
   stateAfter: MappedState
   showSelect?: boolean
+  includeUuids?: string[]
   selected?: string[]
 }>()
 
@@ -144,6 +145,10 @@ const diffItems = computed<DiffItem[]>(() => {
   const diffMap = new Map<string, DiffItem>()
 
   itemsBefore.value.forEach((beforeItem) => {
+    if (props.includeUuids && !props.includeUuids.includes(beforeItem.uuid)) {
+      return
+    }
+
     const afterItem = itemsAfter.value.find(
       (item) => item.uuid === beforeItem.uuid,
     )

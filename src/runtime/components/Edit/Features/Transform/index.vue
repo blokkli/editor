@@ -25,7 +25,7 @@
       <TransformDialog
         v-if="openPluginDefinition"
         :plugin="openPluginDefinition"
-        :uuids="selection.uuids.value"
+        :uuids="selectedUuids"
         @cancel="cancelTransform"
         @submit="onSubmitDialog"
       />
@@ -72,6 +72,7 @@ const openPlugin = ref<{
   type: TransformType
   id: string
 } | null>(null)
+const selectedUuids = ref<string[]>([])
 
 const {
   data: plugins,
@@ -147,6 +148,7 @@ function getPluginLabel(plugin: TransformPlugin | HostTransformPlugin): string {
 
 function cancelTransform() {
   openPlugin.value = null
+  selectedUuids.value = []
   state.clearOverrideState()
 }
 
@@ -171,6 +173,7 @@ function onSelectBlockTransformPlugin(
       type: 'block',
       id: plugin.id,
     }
+    selectedUuids.value = [...selection.uuids.value]
 
     return
   }

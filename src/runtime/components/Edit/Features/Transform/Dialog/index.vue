@@ -21,6 +21,7 @@
                 :state-after
                 show-select
                 :selected="selection.uuids.value"
+                :include-uuids="uuids"
                 @toggle="onToggleSelected"
               />
             </div>
