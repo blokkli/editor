@@ -94,10 +94,6 @@ const possibleConversions = computed<ItemDropdownItem[]>(() => {
       }
     })
 })
-
-watch(possibleConversions, (v) => {
-  console.log(v)
-})
 </script>
 
 <script lang="ts">

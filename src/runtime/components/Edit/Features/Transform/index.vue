@@ -147,6 +147,7 @@ function getPluginLabel(plugin: TransformPlugin | HostTransformPlugin): string {
 
 function cancelTransform() {
   openPlugin.value = null
+  state.clearOverrideState()
 }
 
 watch(selection.uuids, async () => {

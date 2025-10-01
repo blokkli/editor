@@ -199,6 +199,7 @@ async function onClickPreview() {
       })
 
       stateAfter.value = clone(adapter.mapState(result.state))
+      state.setOverrideState(stateAfter.value)
     } catch {
       // @TODO Error message
     }

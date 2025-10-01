@@ -66,6 +66,8 @@ export type StateProvider = {
   getMutatedField: (uuid: string, fieldName: string) => MutatedField | undefined
   getAllUuids: (bundle?: string) => string[]
   getMappedState: () => MappedState
+  setOverrideState: (state: MappedState) => void
+  clearOverrideState: () => void
 }
 
 export default async function (
@@ -131,8 +133,10 @@ export default async function (
     translations: [],
   })
 
-  function setContext(context?: MappedState) {
-    _mappedState = context ?? null
+  function setContext(context?: MappedState, override?: boolean) {
+    if (!override) {
+      _mappedState = context ?? null
+    }
     const options = context?.mutatedState?.mutatedOptions || {}
     const optionKeys = Object.keys(options)
 
@@ -392,6 +396,18 @@ export default async function (
     return _mappedState
   }
 
+  function setOverrideState(state: MappedState) {
+    setContext(state, true)
+  }
+
+  function clearOverrideState() {
+    if (!_mappedState) {
+      throw new Error('Missing previous state.')
+    }
+
+    setContext(_mappedState)
+  }
+
   return {
     stateAvailable,
     getMappedState,
@@ -415,5 +431,7 @@ export default async function (
     getMutatedField,
     getFieldListForBlock,
     getAllUuids,
+    setOverrideState,
+    clearOverrideState,
   }
 }
