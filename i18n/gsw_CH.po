@@ -391,6 +391,10 @@ msgctxt "commentsTourText"
 msgid "Shows all comments for the current page."
 msgstr ""
 
+msgctxt "conversionsConvertTo"
+msgid "Convert to: @bundle"
+msgstr ""
+
 msgctxt "convertTo"
 msgid "Convert to..."
 msgstr "Konvertiere"

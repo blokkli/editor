@@ -363,6 +363,10 @@
     "source": "Shows all comments for the current page.",
     "translation": "Zeigt alle Kommentare auf der aktuellen Seite an."
   },
+  "conversionsConvertTo": {
+    "source": "Convert to: @bundle",
+    "translation": "Konvertieren zu: @bundle"
+  },
   "convertTo": {
     "source": "Convert to...",
     "translation": "Konvertieren"
@@ -1257,7 +1261,7 @@
   },
   "paste": {
     "source": "Paste",
-    "translation": ""
+    "translation": "Einfügen"
   },
   "previewDialogLead": {
     "source": "Scan the QR code with your smartphone to open the preview.",
@@ -1405,11 +1409,11 @@
   },
   "selectAllOfBundle": {
     "source": "Select all \"@bundle\" blocks",
-    "translation": ""
+    "translation": "Alle «@bundle» Blöcke auswählen"
   },
   "selectionActionGroupTitle": {
     "source": "Selection",
-    "translation": ""
+    "translation": "Auswahl"
   },
   "settingsAdvanced": {
     "source": "Advanced",

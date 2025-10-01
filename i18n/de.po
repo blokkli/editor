@@ -407,6 +407,10 @@ msgctxt "commentsTourText"
 msgid "Shows all comments for the current page."
 msgstr "Zeigt alle Kommentare auf der aktuellen Seite an."
 
+msgctxt "conversionsConvertTo"
+msgid "Convert to: @bundle"
+msgstr "Konvertieren zu: @bundle"
+
 msgctxt "convertTo"
 msgid "Convert to..."
 msgstr "Konvertieren"
@@ -1382,7 +1386,7 @@ msgstr "Seite ist publiziert (Änderungen ausstehend)"
 
 msgctxt "paste"
 msgid "Paste"
-msgstr ""
+msgstr "Einfügen"
 
 msgctxt "previewDialogLead"
 msgid "Scan the QR code with your smartphone to open the preview."
@@ -1548,11 +1552,11 @@ msgstr ""
 
 msgctxt "selectAllOfBundle"
 msgid "Select all \"@bundle\" blocks"
-msgstr ""
+msgstr "Alle «@bundle» Blöcke auswählen"
 
 msgctxt "selectionActionGroupTitle"
 msgid "Selection"
-msgstr ""
+msgstr "Auswahl"
 
 msgctxt "settingsAdvanced"
 msgid "Advanced"

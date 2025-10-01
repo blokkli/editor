@@ -363,6 +363,10 @@
     "source": "Shows all comments for the current page.",
     "translation": ""
   },
+  "conversionsConvertTo": {
+    "source": "Convert to: @bundle",
+    "translation": ""
+  },
   "convertTo": {
     "source": "Convert to...",
     "translation": "Converti in..."
