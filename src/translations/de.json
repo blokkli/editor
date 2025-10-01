@@ -407,6 +407,10 @@
     "source": "Edited",
     "translation": "Bearbeitet"
   },
+  "diffStatusUnchanged": {
+    "source": "Unchanged",
+    "translation": "Keine Änderung"
+  },
   "droppableEditFormSave": {
     "source": "Save",
     "translation": "Speichern"

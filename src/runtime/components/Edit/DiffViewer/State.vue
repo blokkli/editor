@@ -36,6 +36,12 @@
             >
               {{ $t('diffStatusDeleted', 'Deleted') }}
             </div>
+            <div
+              v-else-if="item.status === 'unchanged'"
+              class="bk-diff-status-label"
+            >
+              {{ $t('diffStatusUnchanged', 'Unchanged') }}
+            </div>
             <div v-else class="bk-diff-status-label">
               {{ $t('diffStatusEdited', 'Edited') }}
             </div>
@@ -116,7 +122,7 @@ interface DiffItemProp {
 interface DiffItem {
   uuid: string
   bundle: string
-  status: 'changed' | 'added' | 'removed'
+  status: 'changed' | 'added' | 'removed' | 'unchanged'
   props: DiffItemProp[]
 }
 
@@ -198,6 +204,14 @@ const diffItems = computed<DiffItem[]>(() => {
           bundle: beforeItem.bundle,
           status: 'changed',
           props: changedProps,
+        })
+      } else if (props.includeUuids) {
+        // Add unchanged items when includeUuids is provided.
+        diffMap.set(beforeItem.uuid, {
+          uuid: beforeItem.uuid,
+          bundle: beforeItem.bundle,
+          status: 'unchanged',
+          props: [],
         })
       }
     }

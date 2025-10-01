@@ -435,6 +435,10 @@ msgctxt "diffStatusEdited"
 msgid "Edited"
 msgstr ""
 
+msgctxt "diffStatusUnchanged"
+msgid "Unchanged"
+msgstr ""
+
 msgctxt "droppableEditFormSave"
 msgid "Save"
 msgstr ""
