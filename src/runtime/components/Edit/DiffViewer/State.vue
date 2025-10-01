@@ -1,6 +1,14 @@
 <template>
   <div class="bk bk-diff-view">
-    <div class="bk-diff-table">
+    <div class="bk-diff-mode-selector">
+      <FormRadioTabs
+        id="diff-viewer-state-display"
+        :options="diffModeOptions"
+        v-model="diffMode"
+        :label="$t('diffModeLabel', 'Display')"
+      />
+    </div>
+    <div class="bk-diff-table" :data-diff-mode="diffMode">
       <button
         v-for="item in diffItems"
         :key="item.uuid"
@@ -55,7 +63,34 @@
           >
             <h3>{{ prop.key }}</h3>
             <div class="bk-diff-monospace">
-              <div class="bk-diff-prop-diff" v-html="prop.diff" />
+              <div
+                v-if="diffMode === 'inline'"
+                class="bk-diff-prop-diff"
+                v-html="prop.diff"
+              />
+              <div
+                v-else-if="diffMode === 'side_by_side'"
+                class="bk-diff-prop-side-by-side"
+              >
+                <div class="bk-diff-prop-before">
+                  <div class="bk-diff-prop-label">
+                    {{ $t('diffBefore', 'Before') }}
+                  </div>
+                  <div class="bk-diff-prop-content" v-html="prop.before" />
+                </div>
+                <div class="bk-diff-prop-after">
+                  <div class="bk-diff-prop-label">
+                    {{ $t('diffAfter', 'After') }}
+                  </div>
+                  <div class="bk-diff-prop-content" v-html="prop.after" />
+                </div>
+              </div>
+              <div
+                v-else-if="diffMode === 'after'"
+                class="bk-diff-prop-after-only"
+              >
+                <div class="bk-diff-prop-content" v-html="prop.after" />
+              </div>
             </div>
           </div>
         </div>
@@ -65,9 +100,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, useBlokkli } from '#imports'
+import { computed, ref, useBlokkli } from '#imports'
 import type { FieldListItem, MappedState, MutatedField } from '#blokkli/types'
-import { ItemIcon } from '#blokkli/components'
+import { ItemIcon, FormRadioTabs } from '#blokkli/components'
 import diff from 'html-diff-ts'
 
 const props = defineProps<{
@@ -79,6 +114,23 @@ const props = defineProps<{
 }>()
 
 const { types, $t, eventBus, dom, definitions } = useBlokkli()
+
+const diffMode = ref<'inline' | 'side_by_side' | 'after'>('inline')
+
+const diffModeOptions = computed(() => [
+  {
+    value: 'inline',
+    label: $t('diffModeInline', 'Inline'),
+  },
+  {
+    value: 'side_by_side',
+    label: $t('diffModeSideBySide', 'Both'),
+  },
+  {
+    value: 'after',
+    label: $t('diffModeAfter', 'After'),
+  },
+])
 
 const emit = defineEmits<{
   (e: 'toggle', uuid: string): void
@@ -117,6 +169,8 @@ function getProps(bundle: string, props: any): Record<string, string> {
 interface DiffItemProp {
   key: string
   diff?: string
+  before?: string
+  after?: string
 }
 
 interface DiffItem {
@@ -168,8 +222,9 @@ const diffItems = computed<DiffItem[]>(() => {
         status: 'removed',
         props: Object.entries(beforeProps).map(([key, value]) => ({
           key,
-          value,
           diff: diff(toString(value), ''),
+          before: toString(value),
+          after: '',
         })),
       })
     } else {
@@ -183,6 +238,8 @@ const diffItems = computed<DiffItem[]>(() => {
           changedProps.push({
             key,
             diff: diff(toString(beforeValue), toString(afterValue)),
+            before: toString(beforeValue),
+            after: toString(afterValue),
           })
         }
       })
@@ -193,6 +250,8 @@ const diffItems = computed<DiffItem[]>(() => {
           changedProps.push({
             key,
             diff: diff('', toString(afterProps[key]!)),
+            before: '',
+            after: toString(afterProps[key]!),
           })
         }
       })
@@ -228,6 +287,8 @@ const diffItems = computed<DiffItem[]>(() => {
         props: Object.entries(afterProps).map(([key, value]) => ({
           key,
           diff: diff('', toString(value)),
+          before: '',
+          after: toString(value),
         })),
       })
     }

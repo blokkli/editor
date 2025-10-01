@@ -387,6 +387,30 @@
     "source": "The block could not be deleted.",
     "translation": "L'élément n'a pas pu être supprimé."
   },
+  "diffAfter": {
+    "source": "After",
+    "translation": ""
+  },
+  "diffBefore": {
+    "source": "Before",
+    "translation": ""
+  },
+  "diffModeAfter": {
+    "source": "After",
+    "translation": ""
+  },
+  "diffModeInline": {
+    "source": "Inline",
+    "translation": ""
+  },
+  "diffModeLabel": {
+    "source": "Display",
+    "translation": ""
+  },
+  "diffModeSideBySide": {
+    "source": "Both",
+    "translation": ""
+  },
   "diffSidebarTitle": {
     "source": "Changes",
     "translation": ""

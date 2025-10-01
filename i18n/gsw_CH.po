@@ -415,6 +415,30 @@ msgctxt "deleteError"
 msgid "The block could not be deleted."
 msgstr "S'Elemänt het nid chönne entfärnt wärde. "
 
+msgctxt "diffAfter"
+msgid "After"
+msgstr ""
+
+msgctxt "diffBefore"
+msgid "Before"
+msgstr ""
+
+msgctxt "diffModeAfter"
+msgid "After"
+msgstr ""
+
+msgctxt "diffModeInline"
+msgid "Inline"
+msgstr ""
+
+msgctxt "diffModeLabel"
+msgid "Display"
+msgstr ""
+
+msgctxt "diffModeSideBySide"
+msgid "Both"
+msgstr ""
+
 msgctxt "diffSidebarTitle"
 msgid "Changes"
 msgstr ""

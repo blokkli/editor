@@ -6,6 +6,7 @@ import FormGroup from './Form/Group/index.vue'
 import FormItem from './Form/Item/index.vue'
 import FormOverlay from './FormOverlay/index.vue'
 import FormRadio from './Form/Radio/index.vue'
+import FormRadioTabs from './Form/RadioTabs/index.vue'
 import FormSelect from './Form/Select/index.vue'
 import FormText from './Form/Text/index.vue'
 import FormTextarea from './Form/Textarea/index.vue'
@@ -38,6 +39,7 @@ export {
   FormText,
   FormTextarea,
   FormToggle,
+  FormRadioTabs,
   Highlight,
   Icon,
   InfoBox,
