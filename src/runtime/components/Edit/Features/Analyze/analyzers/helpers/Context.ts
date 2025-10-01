@@ -7,7 +7,7 @@ import type {
   AnalyzeNode,
   AnalyzeResult,
   AnalyzeStatus,
-} from '../../types'
+} from '../types'
 import { collectTextElements, type TextElement } from './collectTextElements'
 
 export class AnalyzerContext {

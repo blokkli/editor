@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 import { computed, useBlokkli } from '#imports'
-import type { AnalyzeResultMapped, AnalyzeStatus } from '../types'
+import type { AnalyzeResultMapped, AnalyzeStatus } from '../analyzers/types'
 import ResultsItem from './ResultsItem.vue'
 import { Icon } from '#blokkli/components'
 

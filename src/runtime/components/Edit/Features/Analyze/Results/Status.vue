@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { computed } from '#imports'
 import { useAnalyzeHelper } from '../helper'
-import type { AnalyzeStatus } from '../types'
+import type { AnalyzeStatus } from '../analyzers/types'
 
 const props = withDefaults(
   defineProps<{

@@ -1,4 +1,4 @@
-import type { Analyzer } from '../types'
+import type { Analyzer } from './types'
 
 type AnalyzerInit<O extends object> = (options?: O) => Analyzer
 

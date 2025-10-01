@@ -1,4 +1,5 @@
-import type { AnalyzerContext } from './analyzers/helpers/Context'
+import type { AnalyzerContext } from './helpers/Context'
+
 export type AnalyzeStatus = 'pass' | 'incomplete' | 'inapplicable' | 'violation'
 export type AnalyzeImpact = 'minor' | 'moderate' | 'serious' | 'critical'
 export type AnalyzeCategory = 'accessibility' | 'seo' | 'text' | 'content'
@@ -26,6 +27,11 @@ export type AnalyzeResult = {
   status: AnalyzeStatus
   nodes: AnalyzeNode | AnalyzeNode[]
   impact?: AnalyzeImpact
+
+  /**
+   * If true, the total summary score will be calculated for each target element.
+   */
+  scoreTargets?: boolean
 }
 
 export type AnalyzeResultMapped = AnalyzeResult & {
@@ -34,6 +40,7 @@ export type AnalyzeResultMapped = AnalyzeResult & {
 
 export type Analyzer = {
   id: string
+
   init?: (context: AnalyzerContext) => void | Promise<void>
   run: (
     context: AnalyzerContext,

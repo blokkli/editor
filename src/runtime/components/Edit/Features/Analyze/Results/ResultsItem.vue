@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/components'
-import type { AnalyzeResultMapped } from '../types'
+import type { AnalyzeResultMapped } from '../analyzers/types'
 import Status from './Status.vue'
 import ResultsItemNodes from './ResultsItemNodes.vue'
 import { useAnalyzeHelper } from '../helper'

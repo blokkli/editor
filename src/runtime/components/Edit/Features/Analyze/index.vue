@@ -13,7 +13,7 @@
 import { useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
 import Renderer from './Renderer.vue'
-import type { Analyzer } from './types'
+import type { Analyzer } from './analyzers/types'
 
 const { adapter } = defineBlokkliFeature({
   id: 'analyze',

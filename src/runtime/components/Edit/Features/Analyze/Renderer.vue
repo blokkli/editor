@@ -43,7 +43,11 @@
 
 <script setup lang="ts">
 import { computed, useBlokkli, useState, ref } from '#imports'
-import type { AnalyzeCategory, AnalyzeResultMapped, Analyzer } from './types'
+import type {
+  AnalyzeCategory,
+  AnalyzeResultMapped,
+  Analyzer,
+} from './analyzers/types'
 import Results from './Results/Results.vue'
 import AnalyzeSummary from './Summary/index.vue'
 import { useAnalyzeHelper } from './helper'

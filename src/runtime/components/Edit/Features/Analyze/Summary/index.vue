@@ -19,7 +19,7 @@
 import { rgbaToString } from '#blokkli/helpers'
 import { computed, useBlokkli } from '#imports'
 import { useAnalyzeHelper } from '../helper'
-import type { AnalyzeResultMapped, AnalyzeStatus } from '../types'
+import type { AnalyzeResultMapped, AnalyzeStatus } from '../analyzers/types'
 import Chart from './Chart.vue'
 
 const props = defineProps<{
@@ -53,7 +53,14 @@ const summary = computed(() => {
   const byStatus = props.results.reduce<Record<string, number>>(
     (acc, result) => {
       acc[result.status] ||= 0
-      acc[result.status]!++
+      const nodes = Array.isArray(result.nodes) ? result.nodes : [result.nodes]
+      const total = nodes.reduce((acc, node) => {
+        const targets = Array.isArray(node.targets)
+          ? node.targets
+          : [node.targets]
+        return acc + targets.length
+      }, 0)
+      acc[result.status]! += total
       return acc
     },
     {},

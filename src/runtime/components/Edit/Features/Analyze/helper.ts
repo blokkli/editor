@@ -1,5 +1,5 @@
 import { useBlokkli } from '#imports'
-import type { AnalyzeCategory, AnalyzeStatus } from './types'
+import type { AnalyzeCategory, AnalyzeStatus } from './analyzers/types'
 
 export function useAnalyzeHelper() {
   const { $t } = useBlokkli()

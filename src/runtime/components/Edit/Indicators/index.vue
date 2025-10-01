@@ -22,7 +22,7 @@ const artboardElement = ui.artboardElement()
 const highlighted = ref<Rectangle | null>(null)
 
 const hasIndicators = computed<boolean>(
-  () => !!indicators.indicators.value.length,
+  () => !!indicators.indicators.value.length || !!highlighted.value,
 )
 
 const style = computed<StyleValue>(() => {

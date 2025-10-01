@@ -6,7 +6,7 @@ import axe, {
   type ContextObject,
   type RunOptions,
 } from 'axe-core'
-import type { AnalyzeNode, AnalyzeResult, AnalyzeStatus } from './../types'
+import type { AnalyzeNode, AnalyzeResult, AnalyzeStatus } from './types'
 import { falsy } from '#blokkli/helpers'
 import de from 'axe-core/locales/de.json'
 import fr from 'axe-core/locales/fr.json'

@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 import { computed, ref, useBlokkli } from '#imports'
-import type { AnalyzeNode, AnalyzeNodeTarget } from '../types'
+import type { AnalyzeNode, AnalyzeNodeTarget } from '../analyzers/types'
 import ResultsItemNodesTarget from './ResultsItemNodesTarget.vue'
 import { Icon } from '#blokkli/components'
 

@@ -1,5 +1,5 @@
 import { defineAnalyzer } from './defineAnalyzer'
-import type { AnalyzeImpact, AnalyzeNode, AnalyzeResult } from '../types'
+import type { AnalyzeImpact, AnalyzeNode, AnalyzeResult } from './types'
 import type { TextElement } from './helpers/collectTextElements'
 import { TextReadability, type Language } from '@lunarisapp/readability'
 import type { TextProvider } from '#blokkli/helpers/textProvider'
