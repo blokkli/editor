@@ -111,6 +111,13 @@ module.exports = {
         normal: 'rgb(var(--bk-theme-orange-normal) / <alpha-value>)',
         dark: 'rgb(var(--bk-theme-orange-dark) / <alpha-value>)',
       },
+      scheme: {
+        light:
+          'rgb(var(--bk-scheme-light, var(--bk-theme-accent-100)) / <alpha-value>)',
+        normal:
+          'rgb(var(--bk-scheme-normal, var(--bk-theme-accent-600)) / <alpha-value>)',
+        dark: 'rgb(var(--bk-scheme-dark, var(--bk-theme-accent-800)) / <alpha-value>)',
+      },
       white: 'white',
       black: 'black',
       transparent: 'transparent',

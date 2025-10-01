@@ -98,13 +98,13 @@
   }
 
   .bk-radio-tabs {
-    @apply flex border border-accent-500 rounded-md overflow-hidden;
+    @apply flex border border-scheme-normal rounded overflow-hidden;
 
     label {
       @apply flex-1 text-center cursor-pointer relative;
 
       &:not(:last-child) {
-        @apply border-r border-r-accent-700;
+        @apply border-r border-r-scheme-normal;
       }
 
       input {
@@ -112,12 +112,19 @@
       }
 
       span {
-        @apply block py-5 px-5 text-sm font-semibold text-accent-500 transition-colors whitespace-nowrap;
+        @apply block pt-10 pb-[9px] px-5 text-sm font-semibold text-scheme-normal transition-colors whitespace-nowrap leading-none;
       }
 
       &:has(input:checked) {
         span {
-          @apply bg-accent-700 text-white;
+          @apply bg-scheme-normal text-white;
+        }
+      }
+      &:not(:has(input:checked)) {
+        &:hover {
+          span {
+            @apply bg-scheme-light;
+          }
         }
       }
 

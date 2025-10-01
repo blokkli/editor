@@ -23,6 +23,7 @@
                 :selected="selection.uuids.value"
                 :include-uuids="uuids"
                 @toggle="onToggleSelected"
+                scheme="orange"
               />
             </div>
           </main>

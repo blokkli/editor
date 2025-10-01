@@ -36,6 +36,8 @@ export type ThemeContextColorGroup =
   | 'lime'
   | 'orange'
 
+export type ThemeColorName = ThemeColorGroup | ThemeContextColorGroup
+
 export type ThemeColorShade =
   | '50'
   | '100'

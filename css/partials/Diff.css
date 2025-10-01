@@ -141,7 +141,10 @@
   }
 
   .bk-diff-prop-side-by-side {
-    @apply grid grid-cols-2 gap-20;
+    @apply grid gap-20;
+    @container (min-width: 700px) {
+      @apply grid-cols-2;
+    }
 
     .bk-diff-prop-before,
     .bk-diff-prop-after {
@@ -150,10 +153,16 @@
 
     .bk-diff-prop-before {
       @apply bg-red-light/20;
+      .bk-diff-prop-label {
+        @apply text-red-normal;
+      }
     }
 
     .bk-diff-prop-after {
       @apply bg-lime-light/20;
+      .bk-diff-prop-label {
+        @apply text-lime-normal;
+      }
     }
 
     .bk-diff-prop-label {

@@ -75,6 +75,49 @@ html {
   @apply font-sans text-base text-mono-950 tracking-normal;
   border-color: theme('colors.mono.200');
 
+  /* Scheme color classes */
+  .bk-scheme-teal {
+    --bk-scheme-light: var(--bk-theme-teal-light);
+    --bk-scheme-normal: var(--bk-theme-teal-normal);
+    --bk-scheme-dark: var(--bk-theme-teal-dark);
+  }
+
+  .bk-scheme-yellow {
+    --bk-scheme-light: var(--bk-theme-yellow-light);
+    --bk-scheme-normal: var(--bk-theme-yellow-normal);
+    --bk-scheme-dark: var(--bk-theme-yellow-dark);
+  }
+
+  .bk-scheme-red {
+    --bk-scheme-light: var(--bk-theme-red-light);
+    --bk-scheme-normal: var(--bk-theme-red-normal);
+    --bk-scheme-dark: var(--bk-theme-red-dark);
+  }
+
+  .bk-scheme-lime {
+    --bk-scheme-light: var(--bk-theme-lime-light);
+    --bk-scheme-normal: var(--bk-theme-lime-normal);
+    --bk-scheme-dark: var(--bk-theme-lime-dark);
+  }
+
+  .bk-scheme-orange {
+    --bk-scheme-light: var(--bk-theme-orange-light);
+    --bk-scheme-normal: var(--bk-theme-orange-normal);
+    --bk-scheme-dark: var(--bk-theme-orange-dark);
+  }
+
+  .bk-scheme-mono {
+    --bk-scheme-light: var(--bk-theme-mono-100);
+    --bk-scheme-normal: var(--bk-theme-mono-600);
+    --bk-scheme-dark: var(--bk-theme-mono-800);
+  }
+
+  .bk-scheme-accent {
+    --bk-scheme-light: var(--bk-theme-accent-100);
+    --bk-scheme-normal: var(--bk-theme-accent-600);
+    --bk-scheme-dark: var(--bk-theme-accent-800);
+  }
+
   &.bk-loading-overlay {
     @apply bg-mono-100/90 absolute top-0 left-0 w-full h-full z-init-overlay  flex items-center justify-center;
     &.bk-is-screen {

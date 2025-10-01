@@ -3,7 +3,10 @@
     <div class="bk-form-label">
       {{ label }}<span v-if="required" class="bk-required-indicator">*</span>
     </div>
-    <div class="bk-radio-tabs">
+    <div
+      class="bk-radio-tabs"
+      :class="scheme ? 'bk-scheme-' + scheme : undefined"
+    >
       <label v-for="option in options" :key="option.value">
         <input
           v-model="value"
@@ -21,6 +24,8 @@
 </template>
 
 <script setup lang="ts">
+import type { ThemeColorName } from '#blokkli/types/theme'
+
 defineProps<{
   id: string
   label: string
@@ -28,6 +33,7 @@ defineProps<{
   required?: boolean
   disabled?: boolean
   description?: string
+  scheme?: ThemeColorName
 }>()
 
 const value = defineModel<string>()

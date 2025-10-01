@@ -6,6 +6,7 @@
         :options="diffModeOptions"
         v-model="diffMode"
         :label="$t('diffModeLabel', 'Display')"
+        :scheme
       />
     </div>
     <div class="bk-diff-table" :data-diff-mode="diffMode">
@@ -100,10 +101,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, useBlokkli } from '#imports'
+import { computed, useBlokkli } from '#imports'
 import type { FieldListItem, MappedState, MutatedField } from '#blokkli/types'
 import { ItemIcon, FormRadioTabs } from '#blokkli/components'
 import diff from 'html-diff-ts'
+import type { ThemeColorName } from '#blokkli/types/theme'
 
 const props = defineProps<{
   stateBefore: MappedState
@@ -111,11 +113,15 @@ const props = defineProps<{
   showSelect?: boolean
   includeUuids?: string[]
   selected?: string[]
+  scheme?: ThemeColorName
 }>()
 
-const { types, $t, eventBus, dom, definitions } = useBlokkli()
+const { types, $t, eventBus, dom, definitions, storage } = useBlokkli()
 
-const diffMode = ref<'inline' | 'side_by_side' | 'after'>('inline')
+const diffMode = storage.use<'inline' | 'side_by_side' | 'after'>(
+  'diffMode',
+  'inline',
+)
 
 const diffModeOptions = computed(() => [
   {

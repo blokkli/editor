@@ -1,6 +1,11 @@
 <template>
   <div class="bk bk-diff-sidebar-pane">
-    <DiffViewerState v-if="stateBefore" :state-before :state-after />
+    <DiffViewerState
+      v-if="stateBefore"
+      :state-before
+      :state-after
+      scheme="orange"
+    />
   </div>
 </template>
 

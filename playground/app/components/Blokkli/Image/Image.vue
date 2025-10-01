@@ -34,9 +34,9 @@ const { options, parentType } = defineBlokkli({
     editTitle: (el) => el.querySelector('img')?.alt,
     getDraggableElement: (el) => el.querySelector('div'),
     mapDiffProps: (diffProps) => {
-      const url = diffProps.imageReference.url
+      const url = diffProps?.imageReference.url
       return {
-        'imageReference.title': diffProps.imageReference.title,
+        'imageReference.title': diffProps?.imageReference.alt || '',
         'imageReference.image': `<img src="${url}">`,
       }
     },
