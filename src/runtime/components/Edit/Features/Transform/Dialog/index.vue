@@ -22,10 +22,11 @@
                 show-select
                 :selected="selection.uuids.value"
                 :include-uuids="uuids"
-                @toggle="onToggleSelected"
                 scheme="orange"
+                @toggle="onToggleSelected"
               />
             </div>
+            <Loading white v-if="isLocked" />
           </main>
           <footer>
             <button
@@ -69,7 +70,7 @@ import {
   onMounted,
   onBeforeUnmount,
 } from '#imports'
-import { ConfigForm, DiffViewerState, Icon } from '#blokkli/components'
+import { ConfigForm, DiffViewerState, Icon, Loading } from '#blokkli/components'
 
 const props = defineProps<{
   plugin: HostTransformPlugin | TransformPlugin
@@ -222,9 +223,21 @@ function onClickSubmit() {
   emit('submit', mapValues(value.value))
 }
 
-onMounted(() => {
+onMounted(async () => {
   ui.hasTransformOverlayOpen.value = true
   selection.lockSelection('transform-dialog')
+
+  // Trigger the preview if the transform plugin supports previewing
+  // and if it doesn't have any user input except for those of type
+  // "seed".
+  if (hasSeedInput.value && supportsPreview.value) {
+    const hasOnlySeedInputs = props.plugin.configInputs?.every(
+      (v) => v.type === 'seed',
+    )
+    if (hasOnlySeedInputs === true) {
+      await onClickPreview()
+    }
+  }
 })
 
 onBeforeUnmount(() => {

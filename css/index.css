@@ -123,6 +123,10 @@ html {
     &.bk-is-screen {
       @apply fixed w-screen h-screen backdrop-blur-xl;
     }
+
+    &.bk-is-white {
+      @apply bg-white/90;
+    }
     svg {
       @apply w-100 h-100 text-mono-200 animate-spin fill-mono-400;
     }
