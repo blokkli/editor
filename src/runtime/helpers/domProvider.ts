@@ -629,6 +629,9 @@ export default function (
 
   function getDragElement(block: DraggableExistingBlock) {
     const el = block.element()
+    if (!el) {
+      return undefined
+    }
     return getElementToObserve(
       block.uuid,
       el,

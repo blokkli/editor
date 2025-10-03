@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { Icon } from '#blokkli/components'
-import { ref, useBlokkli, useTemplateRef } from '#imports'
+import { ref, useBlokkli, useTemplateRef, watch } from '#imports'
 import { renderCycle } from '#blokkli/helpers/renderCycle'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
@@ -25,11 +25,12 @@ const props = defineProps<{
   target: string | HTMLElement | { uuid: string }
 }>()
 
-const { eventBus, dom } = useBlokkli()
+const { eventBus, dom, selection } = useBlokkli()
 
 const elButton = useTemplateRef('elButton')
 
 const isFocused = ref(false)
+let focusTimeout: null | number = null
 
 function getElement(): HTMLElement | null {
   if (props.target) {
@@ -94,6 +95,9 @@ async function onClick() {
 
 onBlokkliEvent('analyze:click-node', (e) => {
   isFocused.value = false
+  if (focusTimeout) {
+    window.clearTimeout(focusTimeout)
+  }
   if (e.id === props.resultId) {
     const el = getElement()
     if (el === e.target && elButton.value) {
@@ -102,6 +106,10 @@ onBlokkliEvent('analyze:click-node', (e) => {
         block: 'center',
       })
       isFocused.value = true
+      focusTimeout = window.setTimeout(() => {
+        isFocused.value = false
+      }, 1000)
+      return
     }
   }
 })
