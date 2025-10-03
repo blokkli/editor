@@ -19,6 +19,35 @@
     }
   }
 
+  .bk-caret-tooltip-enter-active,
+  .bk-caret-tooltip-leave-active {
+    .bk-caret-tooltip-inner,
+    &:before,
+    &:after {
+      @apply transition-opacity ease-swing duration-150;
+    }
+    .bk-caret-tooltip-inner {
+      @apply transition ease-swing duration-150;
+      @apply origin-top;
+    }
+
+    &.bk-is-top {
+      .bk-caret-tooltip-inner {
+        @apply origin-bottom;
+      }
+    }
+  }
+  .bk-caret-tooltip-enter-from,
+  .bk-caret-tooltip-leave-to {
+    &:before,
+    &:after {
+      @apply opacity-0;
+    }
+    .bk-caret-tooltip-inner {
+      @apply scale-[0.85] opacity-0;
+    }
+  }
+
   /* Sortli. */
 
   .bk-sortli-leave-active {

@@ -4,7 +4,7 @@ import { computed, ref, useBlokkli } from '#imports'
 import type { Coord, Rectangle } from '#blokkli/types'
 import { falsy, findIdealRectPosition } from '..'
 
-type PlacementVertical = 'top' | 'bottom'
+type PlacementVertical = 'top' | 'bottom' | 'auto'
 type PlacementHorizontal = 'left' | 'center'
 
 type UseStickyToolbarOptions = {
@@ -15,10 +15,13 @@ type UseStickyToolbarOptions = {
   getHeight?: () => number
   getMargin?: () => number
   getAnchorElement?: () => HTMLElement | null
+  getCaretWidth?: () => number
 }
 
 type UseStickyToolbar = {
   shouldRender: ComputedRef<boolean>
+  placementY: ComputedRef<'top' | 'bottom'>
+  caretX: ComputedRef<number>
 }
 
 const limitPlacedRect = (rect: Rectangle, padding: Rectangle): Rectangle => {
@@ -42,6 +45,8 @@ export default function (
 ): UseStickyToolbar {
   const { ui, selection, dom } = useBlokkli()
   const shouldRender = ref(false)
+  const actualPlacement = ref<'top' | 'bottom'>('bottom')
+  const caretXPosition = ref<number>(0)
 
   function getMargin(): number {
     if (options && options.getMargin) {
@@ -49,6 +54,14 @@ export default function (
     }
 
     return 15
+  }
+
+  function getCaretWidth(): number {
+    if (options && options.getCaretWidth) {
+      return options.getCaretWidth()
+    }
+
+    return 0
   }
 
   let anchorRect: Rectangle | null = null
@@ -60,7 +73,7 @@ export default function (
     placementX: PlacementHorizontal,
     offset: Coord,
     scale: number,
-  ): Coord | undefined {
+  ): (Coord & { actualPlacementY: 'top' | 'bottom'; caretX: number }) | undefined {
     let minX = 0
     let maxX = 0
     let minY = 0
@@ -132,14 +145,35 @@ export default function (
     const xSubtract = hasRects ? 5 * Math.min(scale, 1) : 0
     const margin = getMargin() * Math.min(scale, 1)
 
+    // Determine actual placement if 'auto' is specified
+    let actualPlacementY: 'top' | 'bottom' = placementY === 'auto' ? 'bottom' : placementY
+    if (placementY === 'auto') {
+      const spaceAbove = minY - padding.y
+      const spaceBelow = padding.y + padding.height - maxY
+      const requiredSpace = height + margin
+
+      if (spaceBelow >= requiredSpace) {
+        // Prefer bottom if there's enough space
+        actualPlacementY = 'bottom'
+      } else if (spaceAbove >= requiredSpace) {
+        actualPlacementY = 'top'
+      } else {
+        // Neither has enough space, use the side with more available space
+        actualPlacementY = spaceAbove > spaceBelow ? 'top' : 'bottom'
+      }
+    }
+
     // Calculate Y position based on vertical placement
-    const y = placementY === 'top' ? minY - height - margin : maxY + margin
+    const y =
+      actualPlacementY === 'top' ? minY - height - margin : maxY + margin
+
+    // Calculate the center of the anchor element or selection
+    const centerX = (minX + maxX) / 2
 
     // Calculate X position based on horizontal placement
     let x: number
     if (placementX === 'center') {
       // Center the toolbar horizontally relative to the selection
-      const centerX = (minX + maxX) / 2
       x = centerX - width / 2
     } else {
       // Default 'left' placement
@@ -156,7 +190,22 @@ export default function (
       padding,
     )
 
-    return findIdealRectPosition(ui.viewportBlockingRects.value, rect, padding)
+    const idealPosition = findIdealRectPosition(ui.viewportBlockingRects.value, rect, padding)
+
+    if (!idealPosition) {
+      return undefined
+    }
+
+    // Calculate caret X position relative to the sticky element
+    // The caret should point at the center of the anchor/selection
+    // Clamp it to stay within the element's width, accounting for caret width
+    const caretWidth = getCaretWidth()
+    const caretHalfWidth = caretWidth / 2
+    const minCaretX = caretHalfWidth
+    const maxCaretX = width - caretHalfWidth
+    const caretX = Math.max(minCaretX, Math.min(centerX - idealPosition.x, maxCaretX))
+
+    return { ...idealPosition, actualPlacementY, caretX }
   }
 
   function getWidth(): number | null {
@@ -237,10 +286,14 @@ export default function (
     }
 
     el.value.style.transform = `translate3d(${coords.x}px, ${coords.y}px, 0)`
+    actualPlacement.value = coords.actualPlacementY
+    caretXPosition.value = coords.caretX
     shouldRender.value = true
   })
 
   return {
     shouldRender: computed(() => shouldRender.value),
+    placementY: computed(() => actualPlacement.value),
+    caretX: computed(() => caretXPosition.value),
   }
 }

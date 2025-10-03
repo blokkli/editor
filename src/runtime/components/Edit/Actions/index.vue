@@ -8,7 +8,8 @@
           !ui.isAnimating.value &&
           !ui.hasTransformOverlayOpen.value &&
           hasAnythingSelected &&
-          shouldRender
+          shouldRender &&
+          !ui.hasAddTooltipOpen.value
         "
         ref="el"
         class="bk-blokkli-item-actions-inner"

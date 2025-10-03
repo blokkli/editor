@@ -13,7 +13,9 @@
         :style="beforeAfterStyle"
         @click="onClickBefore"
       >
-        <Icon name="plus" />
+        <div>
+          <Icon name="plus" />
+        </div>
       </button>
 
       <button
@@ -22,7 +24,9 @@
         :style="beforeAfterStyle"
         @click="onClickAfter"
       >
-        <Icon name="plus" />
+        <div>
+          <Icon name="plus" />
+        </div>
       </button>
     </div>
     <AddButtonsField
@@ -35,20 +39,25 @@
     />
   </Teleport>
 
-  <Overlay
-    v-if="addData"
-    :key="addData.key"
-    :bundles="addData.allowedBundles"
-    :anchor-el="addData.anchorEl"
-    :label="addData.label"
-    @select="onSelectBundle"
-  />
+  <Teleport to="body">
+    <BlokkliTransition name="caret-tooltip">
+      <Overlay
+        v-if="addData"
+        :key="addData.key"
+        :bundles="addData.allowedBundles"
+        :anchor-el="addData.anchorEl"
+        :label="addData.label"
+        @select="onSelectBundle"
+        @close="closeOverlay"
+      />
+    </BlokkliTransition>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { computed, useBlokkli, ref, watch, useTemplateRef } from '#imports'
-import { Icon } from '#blokkli/components'
+import { Icon, BlokkliTransition } from '#blokkli/components'
 import {
   getChildrenOrientation,
   getGapSize,
@@ -168,6 +177,10 @@ type AddData = {
 
 const addData = ref<AddData | null>(null)
 
+function closeOverlay() {
+  addData.value = null
+}
+
 function onSelectBundle(bundle: string) {
   if (!addData.value) {
     return
@@ -179,7 +192,7 @@ function onSelectBundle(bundle: string) {
     afterUuid: addData.value.preceedingUuid,
   })
 
-  addData.value = null
+  closeOverlay()
 }
 
 type CachedState = {
@@ -254,7 +267,7 @@ function updateCache(uuid: string) {
 watch(
   uuid,
   async (newUuid) => {
-    addData.value = null
+    closeOverlay()
     if (!shouldRender.value) {
       canShowBeforeAfter.value = false
       containerStyle.value = { visibility: 'hidden' }
@@ -384,8 +397,7 @@ function getPreceedingUuidBefore(
 
 function onClickBefore() {
   if (addData.value?.key === 'before') {
-    addData.value = null
-    return
+    return closeOverlay()
   }
   if (!uuid.value) {
     return
@@ -416,8 +428,7 @@ function onClickBefore() {
 
 function onClickAfter() {
   if (addData.value?.key === 'after') {
-    addData.value = null
-    return
+    return closeOverlay()
   }
 
   if (!uuid.value) {
@@ -453,8 +464,7 @@ function onClickAfter() {
 function onClickEmptyField(index: number, element: HTMLElement) {
   const key = 'field:' + index
   if (addData.value?.key === key) {
-    addData.value = null
-    return
+    return closeOverlay()
   }
 
   if (!uuid.value) {
@@ -473,4 +483,6 @@ function onClickEmptyField(index: number, element: HTMLElement) {
 
   setAddData(key, field, element)
 }
+
+onBlokkliEvent('mouse:up', closeOverlay)
 </script>

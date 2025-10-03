@@ -33,6 +33,7 @@ export type UiProvider = {
   isAnalyzing: Ref<boolean>
   isProxyMode: Ref<boolean>
   hasDialogOpen: Ref<boolean>
+  hasAddTooltipOpen: Ref<boolean>
 
   hasTransformOverlayOpen: Ref<boolean>
   isTransforming: ComputedRef<boolean>
@@ -91,6 +92,7 @@ export default function (
   const isProxyMode = ref(false)
   const menuIsOpen = ref(false)
   const hasDialogOpen = ref(false)
+  const hasAddTooltipOpen = ref(false)
   const hasTransformOverlayOpen = ref(false)
   const isAnimating = ref(false)
   const isAnalyzing = ref(false)
@@ -411,5 +413,6 @@ export default function (
     interfaceLanguage,
     hasDialogOpen,
     hasTransformOverlayOpen,
+    hasAddTooltipOpen,
   }
 }

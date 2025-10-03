@@ -21,6 +21,7 @@ type TransitionName =
   | 'search'
   | 'context-menu'
   | 'command-palette'
+  | 'caret-tooltip'
 
 const props = withDefaults(
   defineProps<{
@@ -47,6 +48,7 @@ const DURATION: Partial<Record<TransitionName, number>> = {
   editable: 250,
   'touch-bar': 200,
   'command-palette': 100,
+  'caret-tooltip': 150,
 }
 
 const name = computed(() => {

@@ -8,7 +8,9 @@
     }"
     @click="onClick"
   >
-    <Icon name="plus" />
+    <div>
+      <Icon name="plus" />
+    </div>
   </button>
 </template>
 
@@ -34,7 +36,7 @@ const left = ref(0)
 const top = ref(0)
 const isVisible = ref(false)
 
-const BUTTON_SIZE = 25
+const BUTTON_SIZE = 30
 
 function onClick() {
   if (button.value) {
