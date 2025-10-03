@@ -115,7 +115,7 @@ const { settings, logger } = defineBlokkliFeature({
   screenshot: 'feature-clipboard.jpg',
 })
 
-const { selection, $t, adapter, dom, state, ui, types } = useBlokkli()
+const { selection, $t, adapter, dom, state, ui, types, keyboard } = useBlokkli()
 
 const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
 const selectionClipboard = ref<string[]>([])
@@ -340,23 +340,81 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
     return
   }
 
-  // @TODO: Check if the selected block has nested fields. If yes, check if their nested fields allows any of the pasted blocks. If yes, paste into this field, else use the existing logic here.
+  let targetField = null
+  let targetFieldConfig = null
+  let targetFieldKey = null
+  let preceedingUuid: string | undefined = undefined
 
-  const field = state.getMutatedField(block.hostUuid, block.hostFieldName)
-  if (!field) {
-    return
+  // Only try to paste into nested fields if Shift is not pressed
+  if (!keyboard.isPressingShift.value) {
+    // Get bundles of pasted blocks first
+    const pastedBundles = pastedUuids
+      .map((uuid) => dom.findBlock(uuid)?.itemBundle)
+      .filter((bundle): bundle is string => !!bundle)
+
+    if (pastedBundles.length) {
+      // Check if the selected block has nested fields that can accept any of the pasted blocks
+      const nestedFields = types.fieldConfig.forEntityTypeAndBundle(
+        block.entityType,
+        block.itemBundle,
+      )
+
+      // Try to find a nested field that accepts the pasted blocks
+      for (const fieldConfig of nestedFields) {
+        const allowedPastedBundles = pastedBundles.filter((bundle) =>
+          fieldConfig.allowedBundles.includes(bundle),
+        )
+
+        if (allowedPastedBundles.length > 0) {
+          const nestedFieldKey = getFieldKey(block.uuid, fieldConfig.name)
+          const currentCount = state.getFieldBlockCount(nestedFieldKey)
+
+          // Check cardinality
+          if (
+            fieldConfig.cardinality === -1 ||
+            currentCount + allowedPastedBundles.length <=
+              fieldConfig.cardinality
+          ) {
+            targetField = {
+              entityType: block.entityType,
+              entityUuid: block.uuid,
+              name: fieldConfig.name,
+            }
+            targetFieldConfig = fieldConfig
+            targetFieldKey = nestedFieldKey
+            preceedingUuid = undefined // Paste at the beginning of the nested field
+            break
+          }
+        }
+      }
+    }
   }
-  const fieldConfig = types.getFieldConfig(
-    field.entityType,
-    block.hostBundle,
-    field.name,
-  )
 
-  if (!fieldConfig) {
-    return
+  // If no suitable nested field found, use the parent field (existing logic)
+  if (!targetField || !targetFieldConfig || !targetFieldKey) {
+    const field = state.getMutatedField(block.hostUuid, block.hostFieldName)
+    if (!field) {
+      return
+    }
+    const fieldConfig = types.getFieldConfig(
+      field.entityType,
+      block.hostBundle,
+      field.name,
+    )
+
+    if (!fieldConfig) {
+      return
+    }
+
+    targetField = {
+      entityType: field.entityType,
+      entityUuid: field.entityUuid,
+      name: field.name,
+    }
+    targetFieldConfig = fieldConfig
+    targetFieldKey = getFieldKey(field.entityUuid, field.name)
+    preceedingUuid = selection.uuids.value[0]
   }
-
-  const fieldKey = getFieldKey(field.entityUuid, field.name)
 
   const pastedBlocks: DraggableExistingBlock[] = []
   const notAllowedBundles: string[] = []
@@ -370,7 +428,9 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
     if (!block) {
       continue
     }
-    const isAllowed = fieldConfig.allowedBundles.includes(block.itemBundle)
+    const isAllowed = targetFieldConfig.allowedBundles.includes(
+      block.itemBundle,
+    )
     if (!isAllowed) {
       notAllowedBundles.push(block.itemBundle)
       continue
@@ -397,16 +457,16 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
     return
   }
 
-  const count = state.getFieldBlockCount(fieldKey)
+  const count = state.getFieldBlockCount(targetFieldKey)
   if (
-    fieldConfig.cardinality !== -1 &&
-    count + pastedBlocks.length > fieldConfig.cardinality
+    targetFieldConfig.cardinality !== -1 &&
+    count + pastedBlocks.length > targetFieldConfig.cardinality
   ) {
     emitPasteError(
       $t(
         'clipboardPasteErrorCardinality',
         'This field only allows up to @count blocks.',
-      ).replace('@count', fieldConfig.cardinality.toString()),
+      ).replace('@count', targetFieldConfig.cardinality.toString()),
     )
     return
   }
@@ -415,11 +475,11 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
     adapter.pasteExistingBlocks!({
       uuids: pastedBlocks.map((v) => v.uuid),
       host: {
-        type: field.entityType,
-        uuid: field.entityUuid,
-        fieldName: field.name,
+        type: targetField.entityType,
+        uuid: targetField.entityUuid,
+        fieldName: targetField.name,
       },
-      preceedingUuid: selection.uuids.value[0],
+      preceedingUuid,
     }),
   )
 }
@@ -437,7 +497,7 @@ function onPaste(e: ClipboardEvent, fromInput?: boolean) {
     return
   }
 
-  // Stop data actually being pasted into div
+  // Stop data actually being pasted into div.
   e.stopPropagation()
   e.preventDefault()
 
@@ -445,7 +505,6 @@ function onPaste(e: ClipboardEvent, fromInput?: boolean) {
     return
   }
 
-  // Get pasted data via clipboard API
   const clipboardData = e.clipboardData
   if (!clipboardData) {
     return
