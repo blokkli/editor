@@ -109,6 +109,7 @@ const { shouldRender } = useStickyToolbar(el, {
   shouldUpdate: () => !selection.isChangingOptions.value,
   getHeight: () => ACTIONS_HEIGHT,
   getWidth: () => scrollWidth,
+  getMargin: () => 20,
 })
 
 const controlsEl = ref<HTMLElement | null>(null)

@@ -1,0 +1,117 @@
+.bk .bk-selection-add {
+  @apply absolute top-0 left-0 pointer-events-none;
+
+  &.bk-is-vertical {
+    .bk-selection-add-button.bk-before {
+      left: 50%;
+      top: -16px;
+      transform: translate(-50%, 0);
+    }
+
+    .bk-selection-add-button.bk-after {
+      left: 50%;
+      bottom: -14px;
+      transform: translate(-50%, 0);
+    }
+  }
+  &.bk-is-horizontal {
+    .bk-selection-add-button.bk-before {
+      left: -15px;
+      top: 50%;
+      transform: translate(0, -50%);
+    }
+
+    .bk-selection-add-button.bk-after {
+      right: -15px;
+      top: 50%;
+      transform: translate(0, -50%);
+    }
+  }
+}
+
+.bk .bk-selection-add-button {
+  @apply size-25 rounded-full p-3 absolute pointer-events-auto bg-accent-600 hover:bg-accent-800;
+  @apply border-2;
+
+  svg {
+    @apply fill-white;
+  }
+
+  &.bk-is-field {
+    @apply top-0 left-0;
+  }
+}
+
+.bk.bk-selection-add-overlay {
+  --bk-gap: 15px;
+  --bk-item-width: 100px;
+  --bk-columns: 4;
+
+  @apply absolute top-0 left-0  z-selection-add will-change-transform;
+
+  .bk-selection-add-overlay-inner {
+    @apply bg-mono-900 text-white;
+    @apply rounded-md overflow-hidden;
+    @apply shadow-2xl border border-mono-400;
+  }
+
+  &:before {
+    content: '';
+    width: 0px;
+    height: 0px;
+    border-style: solid;
+    border-width: 0 10px 10px 10px;
+    border-color: transparent transparent theme('colors.mono.400') transparent;
+    transform: rotate(0deg);
+    @apply absolute bottom-full left-1/2 -translate-x-1/2;
+  }
+
+  &:after {
+    content: '';
+    width: 0px;
+    height: 0px;
+    border-style: solid;
+    border-width: 0 10px 10px 10px;
+    border-color: transparent transparent theme('colors.mono.800') transparent;
+    transform: rotate(0deg);
+    @apply absolute bottom-full left-1/2 -translate-x-1/2 -mb-1;
+  }
+
+  .bk-selection-add-overlay-label {
+    padding: var(--bk-gap);
+    @apply bg-mono-800 text-center;
+  }
+
+  .bk-selection-add-overlay-list {
+    @apply flex flex-wrap;
+    padding: var(--bk-gap);
+    max-width: calc(
+      var(--bk-gap) * 2 + var(--bk-item-width) * var(--bk-columns) +
+        var(--bk-gap) * (var(--bk-columns) - 1)
+    );
+    gap: var(--bk-gap);
+    button {
+      @apply flex flex-col items-center text-sm gap-5 min-w-0;
+      width: var(--bk-item-width);
+      .bk-blokkli-item-icon {
+        @apply size-50 bg-mono-800 flex items-center justify-center rounded border border-mono-600;
+
+        svg {
+          @apply size-30;
+        }
+      }
+      span {
+        @apply font-medium text-mono-400;
+      }
+
+      &:hover {
+        .bk-blokkli-item-icon {
+          @apply bg-mono-700 border-mono-400;
+        }
+        span {
+          @apply text-mono-50;
+        }
+      }
+    }
+  }
+}

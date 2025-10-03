@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <div class="bk bk-indicators" :style>
+    <div class="bk bk-indicators" :style id="bk-indicators">
       <div id="bk-indicators-left" />
       <div id="bk-indicators-right" />
       <div class="bk-indicators-hovered" :style="hoveredStyle" />
@@ -26,11 +26,6 @@ const hasIndicators = computed<boolean>(
 )
 
 const style = computed<StyleValue>(() => {
-  if (!hasIndicators.value) {
-    return {
-      visibility: 'hidden',
-    }
-  }
   const offset = ui.artboardOffset.value
   return {
     width: ui.artboardSize.value.width + 'px',

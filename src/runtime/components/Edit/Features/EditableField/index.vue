@@ -79,6 +79,10 @@ const buildEditable = (
     'type' in host ? host.type : runtimeConfig.itemEntityType
   const hostEntityBundle = 'bundle' in host ? host.bundle : host.itemBundle
 
+  if (hostEntityBundle === 'from_library') {
+    return
+  }
+
   const config = types.editableFieldConfig.forName(
     hostEntityType,
     hostEntityBundle,

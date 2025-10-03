@@ -14,6 +14,7 @@ type UseStickyToolbarOptions = {
   getWidth?: () => number
   getHeight?: () => number
   getMargin?: () => number
+  getAnchorElement?: () => HTMLElement | null
 }
 
 type UseStickyToolbar = {
@@ -50,55 +51,81 @@ export default function (
     return 15
   }
 
+  let anchorRect: Rectangle | null = null
+
   function getCoords(
     width: number,
     height: number,
     placementY: PlacementVertical,
     placementX: PlacementHorizontal,
+    offset: Coord,
+    scale: number,
   ): Coord | undefined {
-    const offset = ui.artboardOffset.value
-    const scale = ui.artboardScale.value
-    const rects = selection.blocks.value
-      .map((block) => dom.getBlockRect(block.uuid))
-      .filter(falsy)
-      .filter((rect) => rect.height || rect.width)
-
     let minX = 0
     let maxX = 0
     let minY = 0
     let maxY = 0
+    let hasRects = false
 
-    const hasRects = !!rects.length
+    // Use anchor element if provided
+    if (options && options.getAnchorElement) {
+      const anchorElement = options.getAnchorElement()
+      if (anchorElement) {
+        anchorRect ||= ui.getAbsoluteElementRect(
+          anchorElement.getBoundingClientRect(),
+          scale,
+          offset,
+        )
+        const rectX = (anchorRect.x + offset.x / scale) * scale
+        const rectY = (anchorRect.y + offset.y / scale) * scale
+        const rectRight = rectX + anchorRect.width * scale
+        const rectBottom = rectY + anchorRect.height * scale
 
-    if (hasRects) {
-      for (let i = 0; i < rects.length; i++) {
-        const { x, y, height, width: rectWidth } = rects[i]!
-        const rectX = (x + offset.x / scale) * scale
-        const rectY = (y + offset.y / scale) * scale
-        const rectRight = rectX + rectWidth * scale
-        const rectBottom = rectY + height * scale
-
-        if (i === 0 || rectX < minX) {
-          minX = rectX
-        }
-        if (i === 0 || rectRight > maxX) {
-          maxX = rectRight
-        }
-        if (i === 0 || rectY < minY) {
-          minY = rectY
-        }
-        if (i === 0 || rectBottom > maxY) {
-          maxY = rectBottom
-        }
+        minX = rectX
+        maxX = rectRight
+        minY = rectY
+        maxY = rectBottom
+        hasRects = true
       }
     } else {
-      if (!selection.hasHostSelected.value) {
-        return
+      // Use selection blocks
+      const rects = selection.blocks.value
+        .map((block) => dom.getBlockRect(block.uuid))
+        .filter(falsy)
+        .filter((rect) => rect.height || rect.width)
+
+      hasRects = !!rects.length
+
+      if (hasRects) {
+        for (let i = 0; i < rects.length; i++) {
+          const { x, y, height, width: rectWidth } = rects[i]!
+          const rectX = (x + offset.x / scale) * scale
+          const rectY = (y + offset.y / scale) * scale
+          const rectRight = rectX + rectWidth * scale
+          const rectBottom = rectY + height * scale
+
+          if (i === 0 || rectX < minX) {
+            minX = rectX
+          }
+          if (i === 0 || rectRight > maxX) {
+            maxX = rectRight
+          }
+          if (i === 0 || rectY < minY) {
+            minY = rectY
+          }
+          if (i === 0 || rectBottom > maxY) {
+            maxY = rectBottom
+          }
+        }
+      } else {
+        if (!selection.hasHostSelected.value) {
+          return
+        }
+        minX = offset.x
+        maxX = minX + ui.artboardSize.value.width
+        minY = offset.y
+        maxY = minY + ui.artboardSize.value.height
       }
-      minX = ui.artboardOffset.value.x
-      maxX = minX + ui.artboardSize.value.width
-      minY = ui.artboardOffset.value.y
-      maxY = minY + ui.artboardSize.value.height
     }
 
     const padding = ui.visibleViewportPadded.value
@@ -172,7 +199,7 @@ export default function (
     return 'left'
   }
 
-  onBlokkliEvent('canvas:draw', () => {
+  onBlokkliEvent('canvas:draw', (ctx) => {
     if (!el.value) {
       return
     }
@@ -195,7 +222,14 @@ export default function (
     const placementY = getPlacementVertical()
     const placementX = getPlacementHorizontal()
 
-    const coords = getCoords(width, height, placementY, placementX)
+    const coords = getCoords(
+      width,
+      height,
+      placementY,
+      placementX,
+      ctx.artboardOffset,
+      ctx.artboardScale,
+    )
 
     if (!coords) {
       shouldRender.value = false

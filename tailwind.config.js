@@ -23,6 +23,7 @@ const zIndex = [
   'sidebar-tabs',
   'toolbar',
   'actions',
+  'selection-add',
   'add-list',
   'tour-popup',
   'preview',

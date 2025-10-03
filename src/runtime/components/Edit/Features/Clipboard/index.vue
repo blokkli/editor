@@ -335,11 +335,13 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
     return
   }
 
-  // @TODO: Paste into nested field if possible.
   const block = selection.blocks.value[0]
   if (!block) {
     return
   }
+
+  // @TODO: Check if the selected block has nested fields. If yes, check if their nested fields allows any of the pasted blocks. If yes, paste into this field, else use the existing logic here.
+
   const field = state.getMutatedField(block.hostUuid, block.hostFieldName)
   if (!field) {
     return

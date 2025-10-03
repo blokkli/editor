@@ -25,11 +25,14 @@
     weight="200"
     @select="onSelectDropdownItem"
   />
+
+  <SelectionAddButtons :blocks="selection.blocks.value" />
 </template>
 
 <script lang="ts" setup>
 import Overlay from './Overlay/index.vue'
 import OverlayFallback from './OverlayFallback/index.vue'
+import SelectionAddButtons from './AddButtons/index.vue'
 import {
   calculateIntersection,
   getBounds,

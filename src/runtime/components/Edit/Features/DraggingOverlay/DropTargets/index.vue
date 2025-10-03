@@ -32,6 +32,13 @@ import {
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/helpers/webgl'
+import {
+  determineCanAddChildren,
+  getChildrenOrientation,
+  getGapSize,
+  MIN_GAP,
+  type Orientation,
+} from '#blokkli/helpers/dropTargets'
 
 const props = defineProps<{
   items: DraggableItem[]
@@ -41,8 +48,6 @@ const props = defineProps<{
   isTouch: boolean
 }>()
 
-const MIN_GAP = 20
-
 enum RectRenderType {
   DROP_AREA,
   FIELD_1,
@@ -51,8 +56,6 @@ enum RectRenderType {
   FIELD_4,
   ACTIVE_AREA,
 }
-
-type Orientation = 'horizontal' | 'vertical'
 
 type FieldRectChild = Rectangle & {
   id: string
@@ -217,38 +220,6 @@ const emitDrop = async () => {
   // eventBus.emit('item:dropped')
 }
 
-function getChildrenOrientation(element: HTMLElement): Orientation {
-  const computedStyle = window.getComputedStyle(element)
-
-  // Check for Flex layout
-  if (computedStyle.display.includes('flex')) {
-    // Flex direction row or row-reverse indicates horizontal layout
-    if (
-      computedStyle.flexDirection === 'row' ||
-      computedStyle.flexDirection === 'row-reverse'
-    ) {
-      return 'horizontal'
-    } else {
-      // Otherwise, it's vertical
-      return 'vertical'
-    }
-  }
-
-  // Check for Grid layout
-  if (computedStyle.display.includes('grid')) {
-    // We'll need to check the grid-template-columns and grid-template-rows
-    // This is a simple check, assuming a basic grid layout
-    if (computedStyle.gridTemplateColumns.split(' ').length > 1) {
-      return 'horizontal'
-    } else {
-      return 'vertical'
-    }
-  }
-
-  // Default to vertical for block elements and other displays
-  return 'vertical'
-}
-
 /**
  * The bundles being dragged.
  *
@@ -278,32 +249,6 @@ const selectionUuids = computed<string[]>(() =>
     })
     .filter(falsy),
 )
-
-function getGapSize(orientation: Orientation, element: HTMLElement): number {
-  const computedStyle = window.getComputedStyle(element)
-
-  // Check for Grid or Flex layout
-  if (
-    computedStyle.display.includes('grid') ||
-    computedStyle.display.includes('flex')
-  ) {
-    const gap =
-      orientation === 'vertical'
-        ? computedStyle.columnGap || computedStyle.gridColumnGap
-        : computedStyle.rowGap || computedStyle.gridRowGap
-
-    if (gap) {
-      // Extract the first value.
-      const gapParts = gap.split(' ')
-      const gapValue = gapParts[0]
-      if (gapValue?.endsWith('px')) {
-        return Number.parseFloat(gapValue)
-      }
-    }
-  }
-
-  return MIN_GAP
-}
 
 const fieldChildCache: Record<string, FieldRectChild[]> = {}
 
@@ -460,37 +405,6 @@ function getInsertText(field: BlokkliFieldElement): string {
   return `${bundleLabel} » <strong>${field.label}</strong>`
 }
 
-const determineCanAddChildren = (
-  field: BlokkliFieldElement,
-  children: HTMLElement[],
-) => {
-  // Check cardinality of field.
-  if (field.cardinality !== -1) {
-    // Current block count.
-    const count = state.getFieldBlockCount(field.key)
-
-    // Count of children that are also part of the selection.
-    const childrenThatAreSelection = children.filter((child) => {
-      const uuid = child.dataset.uuid
-      if (!uuid) {
-        return false
-      }
-      return selectionUuids.value.includes(uuid)
-    }).length
-    const countAfter = count - childrenThatAreSelection + props.items.length
-    if (countAfter > field.cardinality) {
-      return false
-    }
-  }
-
-  return (
-    !draggingBundles.value.length ||
-    draggingBundles.value.every((bundle) =>
-      field.allowedBundles.includes(bundle),
-    )
-  )
-}
-
 const buildEmptyChild = (
   field: BlokkliFieldElement,
   children: HTMLElement[],
@@ -537,7 +451,15 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
   }
   const childElements = [...field.element.children] as HTMLElement[]
 
-  const canAddChildren = determineCanAddChildren(field, childElements)
+  const currentCount = state.getFieldBlockCount(field.key)
+  const canAddChildren = determineCanAddChildren(
+    field,
+    childElements,
+    selectionUuids.value,
+    currentCount,
+    props.items.length,
+    draggingBundles.value,
+  )
   const orientation =
     field.dropAlignment || getChildrenOrientation(field.element)
 
