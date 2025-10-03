@@ -113,7 +113,11 @@ async function onClick() {
     return
   }
 
-  ui.isAnalyzing.value = true
+  const requiresRawPage = props.analyzers.some((analyzer) => analyzer.requireRawPage)
+
+  if (requiresRawPage) {
+    ui.isAnalyzing.value = true
+  }
   isLoading.value = true
   await renderCycle()
 
@@ -152,7 +156,9 @@ async function onClick() {
   hasRunOnce.value = true
   lastRun.value = Date.now() / 1000
   lastRunKey.value = state.refreshKey.value
-  ui.isAnalyzing.value = false
+  if (requiresRawPage) {
+    ui.isAnalyzing.value = false
+  }
 }
 
 const categoryOptions = computed<{ value: string; label: string }[]>(() => {

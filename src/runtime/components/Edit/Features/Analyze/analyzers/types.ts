@@ -41,6 +41,11 @@ export type AnalyzeResultMapped = AnalyzeResult & {
 export type Analyzer = {
   id: string
 
+  /**
+   * If true, the raw page (without editor UI) is required for this analyzer.
+   */
+  requireRawPage?: boolean
+
   init?: (context: AnalyzerContext) => void | Promise<void>
   run: (
     context: AnalyzerContext,
