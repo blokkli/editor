@@ -44,7 +44,8 @@ void main() {
   // Pass quad and type to fragment shader
   vec4 transformed_quad = vec4(
     (a_quad.x * u_scale + u_offset_x) * u_dpi,
-    (u_resolution.y - a_quad.y * u_scale - a_quad.w * u_scale - u_offset_y) * u_dpi,
+    (u_resolution.y - a_quad.y * u_scale - a_quad.w * u_scale - u_offset_y) *
+      u_dpi,
     a_quad.z * u_scale * u_dpi,
     a_quad.w * u_scale * u_dpi
   );

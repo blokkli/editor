@@ -3,8 +3,8 @@
     <div class="bk-diff-mode-selector">
       <FormRadioTabs
         id="diff-viewer-state-display"
-        :options="diffModeOptions"
         v-model="diffMode"
+        :options="diffModeOptions"
         :label="$t('diffModeLabel', 'Display')"
         :scheme
       />

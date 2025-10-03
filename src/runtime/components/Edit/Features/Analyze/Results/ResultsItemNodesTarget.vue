@@ -6,7 +6,7 @@
     }"
   >
     <div>
-      <button @click.prevent="onClick" ref="elButton">
+      <button ref="elButton" @click.prevent="onClick">
         <Icon name="eye" />
         <span>{{ getLabel() }}</span>
       </button>
@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { Icon } from '#blokkli/components'
-import { ref, useBlokkli, useTemplateRef, watch } from '#imports'
+import { ref, useBlokkli, useTemplateRef } from '#imports'
 import { renderCycle } from '#blokkli/helpers/renderCycle'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
@@ -25,7 +25,7 @@ const props = defineProps<{
   target: string | HTMLElement | { uuid: string }
 }>()
 
-const { eventBus, dom, selection } = useBlokkli()
+const { eventBus, dom } = useBlokkli()
 
 const elButton = useTemplateRef('elButton')
 

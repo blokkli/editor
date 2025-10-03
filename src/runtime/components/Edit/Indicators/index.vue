@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <div class="bk bk-indicators" :style id="bk-indicators">
+    <div id="bk-indicators" class="bk bk-indicators" :style>
       <div id="bk-indicators-left" />
       <div id="bk-indicators-right" />
       <div class="bk-indicators-hovered" :style="hoveredStyle" />

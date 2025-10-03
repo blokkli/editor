@@ -36,7 +36,8 @@ void main() {
   float fillAlpha = 1.0 - smoothstep(-1.0, 0.0, mainDist);
 
   // Calculate border alpha (edge of the rectangle)
-  float borderAlpha = 1.0 - smoothstep(-1.0, 0.0, abs(mainDist) - borderThickness);
+  float borderAlpha =
+    1.0 - smoothstep(-1.0, 0.0, abs(mainDist) - borderThickness);
 
   // Background (transparent)
   vec4 bg = vec4(0.0, 0.0, 0.0, 0.0);

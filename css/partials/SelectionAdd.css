@@ -38,7 +38,7 @@
   }
 
   &.bk-is-field {
-    @apply top-0 left-0;
+    @apply top-0 left-0 bg-accent-400 hover:bg-accent-500;
   }
 }
 

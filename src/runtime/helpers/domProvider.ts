@@ -609,6 +609,13 @@ export default function (
       window.clearTimeout(stateReloadTimeout)
     }
 
+    const allUuids = Object.keys(registeredBlocks)
+    if (allUuids.length < 150) {
+      // Immediately update all rects if we have less than 150 blocks.
+      // In this case it's fine to do this, performance-wise.
+      updateVisibleRects()
+    }
+
     stateReloadTimeout = window.setTimeout(updateVisibleRects, 300)
   })
 

@@ -124,7 +124,7 @@ export function extractObjectLiteral(
         parseOptions: {
           range: true,
         },
-        enter(node, parent) {
+        enter(node) {
           if (result) return
 
           if (

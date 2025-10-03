@@ -37,10 +37,10 @@
 
   <Overlay
     v-if="addData"
+    :key="addData.key"
     :bundles="addData.allowedBundles"
     :anchor-el="addData.anchorEl"
     :label="addData.label"
-    :key="addData.key"
     @select="onSelectBundle"
   />
 </template>
@@ -181,8 +181,6 @@ function onSelectBundle(bundle: string) {
 
   addData.value = null
 }
-
-const BUTTON_SIZE = 32
 
 type CachedState = {
   orientation: Orientation

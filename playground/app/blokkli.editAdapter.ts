@@ -1,8 +1,6 @@
 import { useRouter, useRoute } from '#imports'
 import { defineBlokkliEditAdapter } from '#blokkli/adapter'
-import {
-  defineAnalyzer,
-} from '#blokkli/analyzer'
+import { defineAnalyzer } from '#blokkli/analyzer'
 import accessibilityAnalyzer from '#blokkli/analyzer/axe'
 import readabilityAnalyzer from '#blokkli/analyzer/readability'
 import type {

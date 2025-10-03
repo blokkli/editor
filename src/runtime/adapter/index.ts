@@ -37,7 +37,7 @@ import type {
 import type getVideoId from 'get-video-id'
 
 import type { GetMediaLibraryFunction } from './../components/Edit/Features/MediaLibrary/types'
-import type { Analyzer } from '#blokkli/components/Features/Analyze/types'
+import type { Analyzer } from '#blokkli/analyzer/types'
 
 export type { GetMediaLibraryFunction }
 

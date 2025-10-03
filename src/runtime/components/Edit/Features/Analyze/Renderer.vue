@@ -113,7 +113,9 @@ async function onClick() {
     return
   }
 
-  const requiresRawPage = props.analyzers.some((analyzer) => analyzer.requireRawPage)
+  const requiresRawPage = props.analyzers.some(
+    (analyzer) => analyzer.requireRawPage,
+  )
 
   if (requiresRawPage) {
     ui.isAnalyzing.value = true

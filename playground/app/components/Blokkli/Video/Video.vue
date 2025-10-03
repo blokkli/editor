@@ -59,7 +59,7 @@ const { options, parentType } = defineBlokkli({
     editTitle: (el) => el.querySelector('h3')?.textContent,
     mapDiffProps: (props) => {
       return {
-        video: props.video.url,
+        video: props?.video.url ?? '',
       }
     },
   },
