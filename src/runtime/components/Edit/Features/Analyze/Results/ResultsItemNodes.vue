@@ -2,7 +2,7 @@
   <details
     v-if="mappedNodes.length"
     class="bk-analyze-results-item-nodes"
-    :open="isSingle"
+    :open="isSingle || isOpen"
     @toggle="shouldRender = true"
   >
     <summary v-show="!isSingle">
@@ -26,6 +26,7 @@
                 v-for="(target, k) in node.targets"
                 :key="i + '_' + j + '_' + k"
                 :target="target"
+                :result-id
               />
             </li>
           </ul>
@@ -40,12 +41,16 @@ import { computed, ref, useBlokkli } from '#imports'
 import type { AnalyzeNode, AnalyzeNodeTarget } from '../analyzers/types'
 import ResultsItemNodesTarget from './ResultsItemNodesTarget.vue'
 import { Icon } from '#blokkli/components'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const props = defineProps<{
+  resultId: string
   nodes: AnalyzeNode | AnalyzeNode[]
 }>()
 
 const shouldRender = ref(false)
+
+const isOpen = ref(false)
 
 const { $t } = useBlokkli()
 
@@ -90,5 +95,11 @@ const grouped = computed(() => {
       nodes,
     }
   })
+})
+
+onBlokkliEvent('analyze:click-node', (e) => {
+  if (e.id === props.resultId) {
+    isOpen.value = true
+  }
 })
 </script>

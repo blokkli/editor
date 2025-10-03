@@ -188,11 +188,9 @@
     }
 
     > div > ul {
-      @apply px-10;
-
       > li {
         > p {
-          @apply text-xs text-mono-700;
+          @apply text-xs text-mono-700 px-10;
           &.bk-is-single {
             @apply pt-10;
           }
@@ -213,13 +211,15 @@
   }
 
   .bk-analyze-results-item-nodes-target {
+    @apply relative;
     span {
       @apply overflow-ellipsis overflow-hidden whitespace-nowrap w-full inline-block font-mono;
     }
 
     button {
-      @apply w-full min-w-0 text-mono-600 flex items-center gap-5 hover:underline underline-offset-[3px] py-[7px];
+      @apply w-full min-w-0 text-mono-600 flex items-center gap-5 hover:underline underline-offset-[3px] py-[7px] px-10;
       @apply hover:text-accent-700;
+      @apply scroll-mt-50;
 
       &:hover svg {
         @apply fill-accent-700;
@@ -228,5 +228,19 @@
         @apply size-15 fill-mono-500;
       }
     }
+
+    &.bk-is-focused {
+      button {
+        @apply bg-accent-300 outline outline-accent-500 -outline-offset-2;
+      }
+    }
+  }
+}
+
+.bk.bk-analyze-overlay {
+  @apply absolute top-0 left-0 size-full;
+
+  > div {
+    @apply absolute bg-red-normal;
   }
 }

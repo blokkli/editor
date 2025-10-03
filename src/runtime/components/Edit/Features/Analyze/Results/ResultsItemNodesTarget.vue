@@ -1,7 +1,12 @@
 <template>
-  <div class="bk-analyze-results-item-nodes-target">
+  <div
+    class="bk-analyze-results-item-nodes-target"
+    :class="{
+      'bk-is-focused': isFocused,
+    }"
+  >
     <div>
-      <button @click.prevent="onClick">
+      <button @click.prevent="onClick" ref="elButton">
         <Icon name="eye" />
         <span>{{ getLabel() }}</span>
       </button>
@@ -11,14 +16,20 @@
 
 <script setup lang="ts">
 import { Icon } from '#blokkli/components'
-import { useBlokkli } from '#imports'
+import { ref, useBlokkli, useTemplateRef } from '#imports'
 import { renderCycle } from '#blokkli/helpers/renderCycle'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const props = defineProps<{
+  resultId: string
   target: string | HTMLElement | { uuid: string }
 }>()
 
 const { eventBus, dom } = useBlokkli()
+
+const elButton = useTemplateRef('elButton')
+
+const isFocused = ref(false)
 
 function getElement(): HTMLElement | null {
   if (props.target) {
@@ -78,7 +89,20 @@ async function onClick() {
 
   eventBus.emit('scrollIntoView', {
     element,
-    highlight: true,
   })
 }
+
+onBlokkliEvent('analyze:click-node', (e) => {
+  isFocused.value = false
+  if (e.id === props.resultId) {
+    const el = getElement()
+    if (el === e.target && elButton.value) {
+      elButton.value.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      })
+      isFocused.value = true
+    }
+  }
+})
 </script>

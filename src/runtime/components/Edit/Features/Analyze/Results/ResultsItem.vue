@@ -15,7 +15,7 @@
       {{ descriptionMapped }}
     </p>
 
-    <ResultsItemNodes :nodes />
+    <ResultsItemNodes :nodes :result-id="id" />
   </div>
 </template>
 

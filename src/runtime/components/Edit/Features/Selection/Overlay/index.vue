@@ -146,10 +146,7 @@ onBlokkliEvent('canvas:draw', (e) => {
   })
   animation.setSharedUniforms(props.gl, programInfo)
 
-  // Only update buffer and attributes when they have changed.
-  if (hasChanged) {
-    setBuffersAndAttributes(props.gl, programInfo, info)
-  }
+  setBuffersAndAttributes(props.gl, programInfo, info)
 
   drawBufferInfo(props.gl, info, props.gl.TRIANGLES)
 })

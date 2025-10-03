@@ -39,6 +39,13 @@
       <Results :results="resultsFiltered" />
     </div>
   </div>
+  <Overlay
+    v-if="
+      resultsFiltered.length && gl && animation.webglEnabled.value && !isStale
+    "
+    :results="resultsFiltered"
+    :gl="gl"
+  />
 </template>
 
 <script setup lang="ts">
@@ -50,6 +57,7 @@ import type {
 } from './analyzers/types'
 import Results from './Results/Results.vue'
 import AnalyzeSummary from './Summary/index.vue'
+import Overlay from './Overlay/index.vue'
 import { useAnalyzeHelper } from './helper'
 import { FormSelect, RelativeTime } from '#blokkli/components'
 import { AnalyzerContext } from './analyzers/helpers/Context'
@@ -64,8 +72,10 @@ const props = defineProps<{
 
 const ALL = 'ALL'
 
-const { $t, ui, state } = useBlokkli()
+const { $t, ui, state, animation } = useBlokkli()
 const { getCategoryLabel } = useAnalyzeHelper()
+
+const gl = animation.gl()
 
 const currentPlugin = ref('readability')
 

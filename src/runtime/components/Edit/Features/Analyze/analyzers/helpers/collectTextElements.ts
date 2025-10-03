@@ -44,7 +44,18 @@ const blockElements = new Set([
 
 // Helper function to check if an element is a block element
 const isBlockElement = (element: Element): boolean => {
-  return blockElements.has(element.tagName.toUpperCase())
+  if (blockElements.has(element.tagName.toUpperCase())) {
+    return true
+  }
+
+  // Check if <a> elements are styled as block elements
+  if (element.tagName.toUpperCase() === 'A' && element instanceof HTMLElement) {
+    const display = window.getComputedStyle(element).display
+    // Consider block, flex, or grid as block elements (but not inline-block, inline-flex, inline-grid)
+    return display === 'block' || display === 'flex' || display === 'grid'
+  }
+
+  return false
 }
 
 // Helper function to check if a block element contains other block elements

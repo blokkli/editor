@@ -1333,6 +1333,11 @@ export type EventbusEvents = {
    * Emitted when a view option is being toggled.
    */
   'view-option:toggle': { id: string }
+
+  /**
+   * An analyze node target was clicked.
+   */
+  'analyze:click-node': { id: string; target: HTMLElement }
 }
 
 export type Eventbus = Emitter<EventbusEvents>
