@@ -55,13 +55,13 @@
         > .bk-blokkli-item-options-text input,
         > .bk-blokkli-item-options-checkbox,
         > .bk-blokkli-item-options-checkboxes {
-          @apply rounded-e-md;
+          @apply lg:rounded-e-md;
         }
       }
     }
   }
   .bk-blokkli-item-options-group:last-child > button {
-    @apply rounded-e-md;
+    @apply lg:rounded-e-md;
   }
 
   .bk-blokkli-item-options-checkbox {

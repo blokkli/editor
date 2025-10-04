@@ -67,6 +67,7 @@ import type {
 } from '#blokkli/types'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { isInternalBundle } from '#blokkli/helpers/bundles'
 import { PluginTourItem } from '#blokkli/plugins'
 import { getFieldKey, onlyUnique } from '#blokkli/helpers'
 
@@ -88,8 +89,6 @@ const { settings } = defineBlokkliFeature({
     },
   },
 })
-
-const reservedBundles = ['from_library', 'blokkli_fragment']
 
 const {
   selection,
@@ -227,7 +226,7 @@ function determineVisibility(bundle: string, label: string): boolean {
 
 const sortedList = computed(() => {
   return [...generallyAvailableBundles.value]
-    .filter((v) => !reservedBundles.includes(v.id))
+    .filter((v) => !isInternalBundle(v.id))
     .map((v) => {
       const isVisible = determineVisibility(v.id, v.label)
       const isDisabled = !v.id || !selectableBundles.value.includes(v.id)
@@ -270,7 +269,7 @@ const getBundlesForAppendCommands = () => {
         return []
       }
     }
-    return field.allowedBundles.filter((v) => !reservedBundles.includes(v))
+    return field.allowedBundles.filter((v) => !isInternalBundle(v))
   }
 
   return []
@@ -296,7 +295,7 @@ const getAppendEndCommands = (): Command[] => {
         }
       }
       return field.allowedBundles
-        .filter((v) => !reservedBundles.includes(v))
+        .filter((v) => !isInternalBundle(v))
         .map((bundle: string) => {
           const definition = types.getBlockBundleDefinition(bundle)
           return {

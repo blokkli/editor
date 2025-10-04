@@ -9,6 +9,7 @@ import type { UiProvider } from '../helpers/uiProvider'
 import type { AnimationProvider } from '../helpers/animationProvider'
 import type { StateProvider } from '../helpers/stateProvider'
 import type { TextProvider } from '../helpers/textProvider'
+import type { PluginProvider } from '../helpers/pluginProvider'
 import type { eventBus } from './../helpers/eventBus'
 import type { BlockOptionDefinition } from './blokkOptions'
 import type {
@@ -1160,7 +1161,7 @@ export type BlokkliFieldElement = {
 }
 
 export type ActionPlacedEvent = {
-  action: DraggableActionItem
+  id: string
   preceedingUuid?: string
   host: DraggableHostData
   field: BlokkliFieldElement
@@ -1382,6 +1383,7 @@ export interface BlokkliApp {
   dropAreas: DropAreaProvider
   debug: DebugProvider
   indicators: IndicatorsProvider
+  plugins: PluginProvider
 }
 
 export type PasteExistingBlocksEvent = {
@@ -1693,6 +1695,18 @@ export type BlockIndicator = {
   uuid: string
   element: HTMLElement
   position: 'left' | 'right'
+}
+
+export type AddActionColor = 'rose' | 'lime' | 'accent'
+
+export type AddAction = {
+  id: string
+  icon: BlokkliIcon
+  color: AddActionColor
+  itemBundle?: string
+  title: string
+  description?: string
+  enabled?: boolean
 }
 
 export default {}

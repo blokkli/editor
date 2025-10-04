@@ -73,7 +73,9 @@ export default function (
     placementX: PlacementHorizontal,
     offset: Coord,
     scale: number,
-  ): (Coord & { actualPlacementY: 'top' | 'bottom'; caretX: number }) | undefined {
+  ):
+    | (Coord & { actualPlacementY: 'top' | 'bottom'; caretX: number })
+    | undefined {
     let minX = 0
     let maxX = 0
     let minY = 0
@@ -146,7 +148,8 @@ export default function (
     const margin = getMargin() * Math.min(scale, 1)
 
     // Determine actual placement if 'auto' is specified
-    let actualPlacementY: 'top' | 'bottom' = placementY === 'auto' ? 'bottom' : placementY
+    let actualPlacementY: 'top' | 'bottom' =
+      placementY === 'auto' ? 'bottom' : placementY
     if (placementY === 'auto') {
       const spaceAbove = minY - padding.y
       const spaceBelow = padding.y + padding.height - maxY
@@ -190,7 +193,11 @@ export default function (
       padding,
     )
 
-    const idealPosition = findIdealRectPosition(ui.viewportBlockingRects.value, rect, padding)
+    const idealPosition = findIdealRectPosition(
+      ui.viewportBlockingRects.value,
+      rect,
+      padding,
+    )
 
     if (!idealPosition) {
       return undefined
@@ -203,7 +210,10 @@ export default function (
     const caretHalfWidth = caretWidth / 2
     const minCaretX = caretHalfWidth
     const maxCaretX = width - caretHalfWidth
-    const caretX = Math.max(minCaretX, Math.min(centerX - idealPosition.x, maxCaretX))
+    const caretX = Math.max(
+      minCaretX,
+      Math.min(centerX - idealPosition.x, maxCaretX),
+    )
 
     return { ...idealPosition, actualPlacementY, caretX }
   }
@@ -255,6 +265,8 @@ export default function (
 
     if (ui.isMobile.value) {
       el.value.style.transform = ''
+      shouldRender.value = true
+      return
     }
 
     if (options && options.shouldUpdate && !options.shouldUpdate()) {

@@ -11,6 +11,7 @@
         ref="before"
         class="bk-selection-add-button bk-before"
         :style="beforeAfterStyle"
+        tabindex="-1"
         @click="onClickBefore"
       >
         <div>
@@ -22,6 +23,7 @@
         ref="after"
         class="bk-selection-add-button bk-after"
         :style="beforeAfterStyle"
+        tabindex="-1"
         @click="onClickAfter"
       >
         <div>
@@ -49,6 +51,7 @@
         :label="addData.label"
         @select="onSelectBundle"
         @close="closeOverlay"
+        @action="onSelectAction"
       />
     </BlokkliTransition>
   </Teleport>
@@ -170,6 +173,7 @@ type AddData = {
   allowedBundles: string[]
   preceedingUuid?: string
   host: DraggableHostData
+  field: BlokkliFieldElement
   anchorEl: HTMLElement
   key: string
   label: string
@@ -192,6 +196,20 @@ function onSelectBundle(bundle: string) {
     afterUuid: addData.value.preceedingUuid,
   })
 
+  closeOverlay()
+}
+
+function onSelectAction(id: string) {
+  if (!addData.value) {
+    return
+  }
+
+  eventBus.emit('action:placed', {
+    id,
+    field: addData.value.field,
+    preceedingUuid: addData.value.preceedingUuid,
+    host: { ...addData.value.host },
+  })
   closeOverlay()
 }
 
@@ -299,6 +317,12 @@ onBlokkliEvent('canvas:draw', () => {
     return
   }
 
+  if (blockRect.width === 0) {
+    containerStyle.value = { visibility: 'hidden' }
+    containerRect.value = null
+    return
+  }
+
   // Position container to match block rect
   containerStyle.value = {
     transform: `translate(${blockRect.x}px, ${blockRect.y}px)`,
@@ -370,6 +394,7 @@ function setAddData(
     host,
     anchorEl,
     label: getInsertText(field),
+    field,
   }
 }
 

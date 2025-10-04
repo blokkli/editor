@@ -18,10 +18,23 @@
         <button
           v-for="item in items"
           :key="item.bundle"
+          tabindex="-1"
           @click.prevent="$emit('select', item.bundle)"
         >
-          <ItemIcon :bundle="item.bundle" />
+          <AddListItemIcon
+            :bundle="item.bundle"
+            :color="item.isFavorite ? 'yellow' : 'default'"
+          />
           <span>{{ item.label }}</span>
+        </button>
+        <button
+          v-for="action in actions"
+          :key="'action:' + action.id"
+          tabindex="-1"
+          @click.prevent="$emit('action', action.id)"
+        >
+          <AddListItemIcon :icon="action.icon" :color="action.color" />
+          <span>{{ action.title }}</span>
         </button>
       </div>
     </div>
@@ -37,7 +50,15 @@ import {
   onMounted,
   onBeforeUnmount,
 } from '#imports'
-import { ItemIcon, Icon } from '#blokkli/components'
+import { Icon, AddListItemIcon } from '#blokkli/components'
+import { isInternalBundle } from '#blokkli/helpers/bundles'
+import type { AddAction } from '#blokkli/types'
+
+type Item = {
+  bundle: string
+  label: string
+  isFavorite: boolean
+}
 
 const props = defineProps<{
   bundles: string[]
@@ -46,13 +67,14 @@ const props = defineProps<{
 }>()
 
 defineEmits<{
-  (e: 'select', bundle: string): void
+  (e: 'select' | 'action', id: string): void
   (e: 'close'): void
 }>()
 
 const el = useTemplateRef('el')
 
-const { types, ui } = useBlokkli()
+const { types, ui, plugins, storage } = useBlokkli()
+const favorites = storage.use<string[]>('blockFavorites', [])
 
 const { placementY, caretX } = useStickyToolbar(el, {
   getAnchorElement() {
@@ -69,17 +91,31 @@ const { placementY, caretX } = useStickyToolbar(el, {
   },
 })
 
-const items = computed(() => {
+const items = computed<Item[]>(() => {
   return props.bundles
+    .filter((bundle) => !isInternalBundle(bundle))
     .map((bundle) => {
       return {
         bundle,
         label: types.getBlockBundleDefinition(bundle)?.label ?? bundle,
+        isFavorite: favorites.value.includes(bundle),
       }
     })
     .sort((a, b) => {
+      if (a.isFavorite && !b.isFavorite) return -1
+      if (!a.isFavorite && b.isFavorite) return 1
       return a.label.localeCompare(b.label)
     })
+})
+
+const actions = computed<AddAction[]>(() => {
+  return plugins.getAddActions().filter((action) => {
+    if (!action.itemBundle) {
+      return true
+    }
+
+    return props.bundles.includes(action.itemBundle)
+  })
 })
 
 onMounted(() => {

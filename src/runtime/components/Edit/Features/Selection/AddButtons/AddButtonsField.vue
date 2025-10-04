@@ -2,6 +2,7 @@
   <button
     ref="button"
     class="bk-selection-add-button bk-is-field"
+    tabindex="-1"
     :style="{
       transform: `translate(${left}px, ${top}px)`,
       visibility: isVisible ? 'visible' : 'hidden',

@@ -59,19 +59,19 @@
 
 .bk.bk-selection-add-overlay {
   --bk-gap: 15px;
-  --bk-item-width: 200px;
+  --bk-item-width: 250px;
   --bk-columns: 2;
   --bk-caret-size: 10px;
   --bk-bg: theme('colors.mono.900');
   --bk-header-bg: theme('colors.mono.800');
   --bk-border: theme('colors.mono.500');
 
-  @apply absolute top-0 left-0 z-selection-add will-change-transform;
+  @apply fixed lg:absolute left-0 z-selection-add will-change-transform bottom-50 lg:bottom-auto lg:top-0;
 
   .bk-selection-add-overlay-inner {
     @apply text-white;
-    @apply rounded-md overflow-hidden;
-    @apply shadow-2xl;
+    @apply lg:rounded-md overflow-hidden;
+    @apply lg:shadow-2xl;
     border: 1px solid var(--bk-border);
     background: var(--bk-bg);
   }
@@ -140,7 +140,7 @@
   }
 
   .bk-selection-add-overlay-list {
-    @apply flex flex-wrap;
+    @apply flex flex-wrap max-h-[60vh] overflow-auto lg:max-h-none;
     padding: var(--bk-gap);
     max-width: calc(
       var(--bk-gap) * 2 + var(--bk-item-width) * var(--bk-columns) +
@@ -150,11 +150,30 @@
     button {
       @apply flex items-center text-base gap-10 min-w-0;
       width: var(--bk-item-width);
-      .bk-blokkli-item-icon {
+      .bk-list-item-icon {
         @apply size-50 bg-mono-800 flex items-center justify-center rounded border border-mono-500 shrink-0;
+        .bk-blokkli-item-icon {
+          @apply w-auto h-auto;
+        }
+
+        &.bk-is-rose {
+          @apply bg-red-dark border-red-normal text-red-light;
+        }
+
+        &.bk-is-lime {
+          @apply bg-lime-dark border-lime-normal text-lime-light;
+        }
+
+        &.bk-is-accent {
+          @apply bg-accent-900 border-accent-500 text-accent-50;
+        }
+
+        &.bk-is-yellow {
+          @apply bg-yellow-normal/20 border-yellow-normal/70 text-yellow-light;
+        }
 
         svg {
-          @apply size-30;
+          @apply size-30 fill-current;
         }
       }
       span {
@@ -162,8 +181,22 @@
       }
 
       &:hover {
-        .bk-blokkli-item-icon {
+        .bk-list-item-icon {
           @apply bg-mono-700 border-mono-400;
+
+          &.bk-is-rose {
+            @apply bg-red-normal border-red-light/70 text-white;
+          }
+          &.bk-is-lime {
+            @apply bg-lime-normal border-lime-light text-white;
+          }
+          &.bk-is-accent {
+            @apply bg-accent-700  border-accent-400 text-white;
+          }
+
+          &.bk-is-yellow {
+            @apply bg-yellow-normal/30 border-yellow-normal/60 text-yellow-light;
+          }
         }
         span {
           @apply text-mono-50;

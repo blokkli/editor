@@ -28,7 +28,7 @@
     @apply bg-mono-950/90 backdrop-blur lg:bg-mono-900;
     @apply relative z-50;
 
-    @apply rounded-md;
+    @apply lg:rounded-md;
 
     color-scheme: dark;
 
@@ -105,7 +105,7 @@
     @apply flex items-center justify-between cursor-default lg:min-w-[180px] text-mono-300 font-bold h-full leading-none relative;
     @apply text-xs lg:text-base;
     @apply w-full;
-    @apply rounded-l-md;
+    @apply lg:rounded-l-md;
     .bk-blokkli-item-actions-title-label {
       @apply mr-auto truncate;
     }
@@ -175,7 +175,7 @@
   }
 
   .bk-blokkli-item-actions-type-dropdown {
-    @apply absolute bottom-full left-0 min-w-[300px] bg-mono-900 text-mono-200 shadow-xl-inverted rounded-tr w-screen lg:w-auto flex flex-col;
+    @apply absolute bottom-full left-0 min-w-[300px] bg-mono-900 text-mono-200 shadow-xl-inverted lg:rounded-tr w-screen lg:w-auto flex flex-col;
     > div {
       @apply border-b border-b-mono-700;
     }

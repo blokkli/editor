@@ -87,6 +87,7 @@ import debugProvider from './../../helpers/debugProvider'
 import definitionProvider from './../../helpers/definitionProvider'
 import dropAreasProvider from './../../helpers/dropAreaProvider'
 import indicatorsProvider from './../../helpers/indicatorsProvider'
+import pluginProvider from './../../helpers/pluginProvider'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import '#blokkli-build/styles.css'
 import getAdapter from '#blokkli-build/edit-adapter'
@@ -158,6 +159,7 @@ const keyboard = keyboardProvider(animation)
 const selection = selectionProvider(dom)
 const types = await typesProvider(adapter, selection, context)
 const indicators = indicatorsProvider()
+const plugins = pluginProvider()
 
 const mutatedEntity = computed(() => state.mutatedEntity.value || props.entity)
 
@@ -222,28 +224,29 @@ provide<ItemEditContext>(INJECT_EDIT_CONTEXT, {
   useBlockRegistration,
 })
 provide<BlokkliApp>(INJECT_APP, {
-  adapter,
-  eventBus,
-  runtimeConfig,
-  state,
-  dom,
-  storage,
-  types,
-  selection,
-  keyboard,
-  ui,
-  animation,
-  context,
   $t,
+  adapter,
+  animation,
   broadcast,
-  features,
-  theme,
   commands,
-  tour,
-  dropAreas,
+  context,
   debug,
   definitions,
+  dom,
+  dropAreas,
+  eventBus,
+  features,
   indicators,
+  keyboard,
+  plugins,
+  runtimeConfig,
+  selection,
+  state,
+  storage,
+  theme,
+  tour,
+  types,
+  ui,
 })
 
 const isProxyMode = computed(() => ui.isProxyMode.value)

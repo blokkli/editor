@@ -16,10 +16,7 @@
     ]"
   >
     <div class="bk-list-item-inner">
-      <div class="bk-list-item-icon">
-        <Icon v-if="icon" :name="icon" />
-        <ItemIcon v-else-if="bundle" :bundle="bundle" />
-      </div>
+      <AddListItemIcon :orientation :color :bundle :icon />
       <div
         class="bk-list-item-label"
         :class="{
@@ -47,7 +44,7 @@
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { AddListOrientation, ContextMenu } from '#blokkli/types'
 import { useBlokkli, computed, ref } from '#imports'
-import { ItemIcon, Icon } from '#blokkli/components'
+import { ItemIcon, Icon, AddListItemIcon } from '#blokkli/components'
 import { PluginContextMenu } from '#blokkli/plugins'
 
 const { ui, storage, $t } = useBlokkli()

@@ -267,8 +267,8 @@ const onDropAction = (
   afterUuid?: string,
 ) => {
   eventBus.emit('action:placed', {
+    id: action.actionType,
     preceedingUuid: afterUuid,
-    action,
     host,
     field,
   })

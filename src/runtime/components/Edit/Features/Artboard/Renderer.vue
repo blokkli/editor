@@ -125,7 +125,12 @@ type SavedState = {
   offset: Coord
   scale: number
 }
-const storageKey = computed(() => 'artboard:' + context.value.entityUuid)
+const storageKey = computed(
+  () =>
+    'artboard:' +
+    context.value.entityUuid +
+    (ui.isMobile.value ? 'mobile' : 'desktop'),
+)
 const savedState = storage.use<SavedState | null>(storageKey, null)
 
 const saveState = () => {

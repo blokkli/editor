@@ -25,9 +25,11 @@ import ShortcutIndicator from './ShortcutIndicator/index.vue'
 import BlokkliTransition from './Transition/index.vue'
 import Sortli from './Sortli/index.vue'
 import ViewportBlockingRect from './ViewportBlockingRect/index.vue'
+import AddListItemIcon from './AddListItemIcon/index.vue'
 
 export {
   AddListItem,
+  AddListItemIcon,
   ConfigForm,
   DialogModal,
   DiffViewerState,

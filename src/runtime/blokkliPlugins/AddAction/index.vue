@@ -17,9 +17,16 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli, nextTick, ref } from '#imports'
+import {
+  computed,
+  useBlokkli,
+  nextTick,
+  ref,
+  onMounted,
+  onBeforeUnmount,
+} from '#imports'
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import type { ActionPlacedEvent } from '#blokkli/types'
+import type { ActionPlacedEvent, AddAction } from '#blokkli/types'
 import { AddListItem } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
@@ -41,7 +48,7 @@ const emit = defineEmits<{
   (e: 'placed', data: ActionPlacedEvent): void
 }>()
 
-const { ui, state, features } = useBlokkli()
+const { ui, state, features, plugins } = useBlokkli()
 
 const addListAvailable = computed(
   () => !!features.mountedFeatures.value.find((v) => v.id === 'add-list'),
@@ -60,7 +67,7 @@ onBlokkliEvent('add-list:change', () => {
 })
 
 onBlokkliEvent('action:placed', (e) => {
-  if (e.action.actionType !== props.type) {
+  if (e.id !== props.type) {
     return
   }
 
@@ -77,6 +84,26 @@ defineTourItem(() => {
     text: props.description,
     element: () => item.value?.getElement(),
   }
+})
+
+function addActionFunction(): AddAction {
+  return {
+    id: props.type,
+    icon: props.icon,
+    color: props.color,
+    itemBundle: props.itemBundle,
+    title: props.title,
+    description: props.description,
+    enabled: !props.disabled,
+  }
+}
+
+onMounted(() => {
+  plugins.addAddAction(addActionFunction)
+})
+
+onBeforeUnmount(() => {
+  plugins.removeAddAction(addActionFunction)
 })
 </script>
 
