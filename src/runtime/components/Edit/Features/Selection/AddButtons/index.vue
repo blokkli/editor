@@ -11,6 +11,8 @@
         ref="before"
         class="bk-selection-add-button bk-before"
         :style="beforeAfterStyle"
+        :key="'before' + orientationClass"
+        :data-title="beforeTooltip"
         tabindex="-1"
         @click="onClickBefore"
       >
@@ -23,6 +25,8 @@
         ref="after"
         class="bk-selection-add-button bk-after"
         :style="beforeAfterStyle"
+        :data-title="afterTooltip"
+        :key="'after' + orientationClass"
         tabindex="-1"
         @click="onClickAfter"
       >
@@ -37,6 +41,7 @@
       :key="index"
       :field-key="slot.fieldKey"
       :container-rect="containerRect"
+      :title="fieldTooltips[index] || ''"
       @click="(el) => onClickEmptyField(index, el)"
     />
   </Teleport>
@@ -77,12 +82,13 @@ import Overlay from './Overlay/index.vue'
 import AddButtonsField from './AddButtonsField.vue'
 import { renderCycle } from '#blokkli/helpers/renderCycle'
 import { getFieldKey } from '#blokkli/helpers'
+import { isInternalBundle } from '#blokkli/helpers/bundles'
 
 const props = defineProps<{
   blocks: DraggableExistingBlock[]
 }>()
 
-const { dom, state, eventBus, types, runtimeConfig, ui, selection } =
+const { dom, state, eventBus, types, runtimeConfig, ui, selection, $t } =
   useBlokkli()
 
 const showOverlay = computed(
@@ -142,6 +148,109 @@ const orientationClass = ref<string>('')
 const containerRect = ref<{ x: number; y: number } | null>(null)
 
 const fieldButtonSlots = ref<Array<{ fieldKey: string | undefined }>>([])
+
+const bundleLabel = computed(() => {
+  if (!block.value) {
+    return ''
+  }
+  return (
+    types.getBlockBundleDefinition(block.value.itemBundle)?.label ||
+    block.value.itemBundle
+  )
+})
+
+const allowedBundlesForField = computed(() => {
+  if (!block.value) {
+    return []
+  }
+
+  const blockData = dom.findBlock(block.value.uuid)
+  if (!blockData) {
+    return []
+  }
+
+  const field = dom.findField(blockData.hostUuid, blockData.hostFieldName)
+  if (!field) {
+    return []
+  }
+
+  return field.allowedBundles.filter((bundle) => !isInternalBundle(bundle))
+})
+
+const singleAllowedBundleLabel = computed(() => {
+  if (allowedBundlesForField.value.length === 1) {
+    const bundle = allowedBundlesForField.value[0]
+    if (bundle) {
+      return types.getBlockBundleDefinition(bundle)?.label || bundle
+    }
+  }
+  return null
+})
+
+const beforeTooltip = computed(() => {
+  if (singleAllowedBundleLabel.value) {
+    return $t('addButtonBundleBefore', 'Add "@bundle" before').replace(
+      '@bundle',
+      singleAllowedBundleLabel.value,
+    )
+  }
+  return $t('addButtonBeforeBundle', 'Add before...')
+})
+
+const afterTooltip = computed(() => {
+  if (singleAllowedBundleLabel.value) {
+    return $t('addButtonBundleAfter', 'Add "@bundle" after').replace(
+      '@bundle',
+      singleAllowedBundleLabel.value,
+    )
+  }
+
+  return $t('addButtonAfterBundle', 'Add after...')
+})
+
+const fieldTooltips = computed(() => {
+  if (!block.value || !bundleLabel.value) {
+    return []
+  }
+
+  return emptyBlockFields.value.map((field) => {
+    const fieldConfig = types.fieldConfig
+      .forEntityTypeAndBundle(block.value!.entityType, block.value!.itemBundle)
+      .find((f) => f.name === field.name)
+
+    const fieldLabel = fieldConfig?.label || field.name
+
+    // Get field element to check allowed bundles
+    const fieldElement = dom.findField(block.value!.uuid, field.name)
+    if (fieldElement) {
+      const allowedBundles = fieldElement.allowedBundles.filter(
+        (bundle) => !isInternalBundle(bundle),
+      )
+
+      if (allowedBundles.length === 1) {
+        const bundle = allowedBundles[0]
+        if (bundle) {
+          const singleBundleLabel =
+            types.getBlockBundleDefinition(bundle)?.label || bundle
+          return $t(
+            'addButtonBundleInsideField',
+            'Add "@bundle" inside @parentBundle » @fieldLabel',
+          )
+            .replace('@bundle', singleBundleLabel)
+            .replace('@parentBundle', bundleLabel.value)
+            .replace('@fieldLabel', fieldLabel)
+        }
+      }
+    }
+
+    return $t(
+      'addButtonInsideField',
+      'Add inside @parentBundle » @fieldLabel...',
+    )
+      .replace('@parentBundle', bundleLabel.value)
+      .replace('@fieldLabel', fieldLabel)
+  })
+})
 
 // Update field button slots when empty fields change
 watch(emptyBlockFields, (fields) => {
@@ -343,26 +452,11 @@ onBlokkliEvent('state:reloaded', () => {
   }
 })
 
-function getBundleLabel(field: BlokkliFieldElement): string {
-  if (field.hostEntityType === runtimeConfig.itemEntityType) {
-    return (
-      types.getBlockBundleDefinition(field.hostEntityBundle)?.label ||
-      field.hostEntityBundle
-    )
-  }
-
-  return state.entity.value.bundleLabel || field.hostEntityBundle
-}
-
-function getInsertText(field: BlokkliFieldElement): string {
-  const bundleLabel = getBundleLabel(field)
-  return `${bundleLabel} » <strong>${field.label}</strong>`
-}
-
 function setAddData(
   key: string,
   field: BlokkliFieldElement,
   anchorEl: HTMLElement,
+  label: string,
   preceedingUuid?: string,
 ) {
   const allowedBundles = field.allowedBundles
@@ -393,7 +487,7 @@ function setAddData(
     preceedingUuid,
     host,
     anchorEl,
-    label: getInsertText(field),
+    label,
     field,
   }
 }
@@ -448,7 +542,9 @@ function onClickBefore() {
   if (!beforeEL.value) {
     return
   }
-  setAddData('before', field, beforeEL.value, preceedingUuid)
+
+  const label = beforeTooltip.value.replace('...', '')
+  setAddData('before', field, beforeEL.value, label, preceedingUuid)
 }
 
 function onClickAfter() {
@@ -483,7 +579,8 @@ function onClickAfter() {
     return
   }
 
-  setAddData('after', field, afterEl.value, uuid.value)
+  const label = afterTooltip.value.replace('...', '')
+  setAddData('after', field, afterEl.value, label, uuid.value)
 }
 
 function onClickEmptyField(index: number, element: HTMLElement) {
@@ -506,7 +603,8 @@ function onClickEmptyField(index: number, element: HTMLElement) {
     return
   }
 
-  setAddData(key, field, element)
+  const label = (fieldTooltips.value[index] || '').replace('...', '')
+  setAddData(key, field, element, label)
 }
 
 onBlokkliEvent('mouse:up', closeOverlay)

@@ -3,6 +3,7 @@
     ref="button"
     class="bk-selection-add-button bk-is-field"
     tabindex="-1"
+    :data-title="title"
     :style="{
       transform: `translate(${left}px, ${top}px)`,
       visibility: isVisible ? 'visible' : 'hidden',
@@ -23,6 +24,7 @@ import { Icon } from '#blokkli/components'
 const props = defineProps<{
   fieldKey: string | undefined
   containerRect: { x: number; y: number } | null
+  title: string
 }>()
 
 const emit = defineEmits<{

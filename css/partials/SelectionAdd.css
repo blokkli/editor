@@ -4,27 +4,52 @@
   &.bk-is-vertical {
     .bk-selection-add-button.bk-before {
       left: 50%;
-      top: -20px;
+      top: -23px;
       transform: translate(-50%, 0);
+      &:before {
+        @apply top-full;
+        @apply left-1/2 -translate-x-1/2 -translate-y-10;
+      }
+      &:hover:before {
+        @apply translate-y-0;
+      }
     }
 
     .bk-selection-add-button.bk-after {
       left: 50%;
-      bottom: -20px;
+      bottom: -23px;
       transform: translate(-50%, 0);
+      &:before {
+        @apply bottom-full left-1/2 -translate-x-1/2 translate-y-10;
+      }
+      &:hover:before {
+        @apply translate-y-0;
+      }
     }
   }
   &.bk-is-horizontal {
     .bk-selection-add-button.bk-before {
-      left: -20px;
+      left: -23px;
       top: 50%;
       transform: translate(0, -50%);
+      &:before {
+        @apply top-1/2 -translate-y-1/2 left-full -translate-x-10;
+      }
+      &:hover:before {
+        @apply translate-x-0;
+      }
     }
 
     .bk-selection-add-button.bk-after {
-      right: -20px;
+      right: -23px;
       top: 50%;
       transform: translate(0, -50%);
+      &:before {
+        @apply top-1/2 -translate-y-1/2 right-full translate-x-10;
+      }
+      &:hover:before {
+        @apply -translate-x-0;
+      }
     }
   }
 }
@@ -32,16 +57,30 @@
 .bk .bk-selection-add-button {
   @apply absolute pointer-events-auto p-5;
 
+  &:before {
+    content: attr(data-title);
+    @apply absolute whitespace-nowrap pointer-events-none;
+    @apply bg-accent-600 font-semibold text-white rounded-full px-10 text-sm leading-none;
+    @apply transition duration-100 ease-swing;
+    @apply will-change-transform opacity-0;
+    @apply h-30;
+    @apply border-2 border-white flex items-center;
+  }
+
   &:hover {
     > div {
-      @apply scale-[1.3];
+      @apply scale-100;
+    }
+
+    &:before {
+      @apply opacity-100;
     }
   }
 
   > div {
-    @apply border-2 rounded-full;
+    @apply border-2 rounded-full border-white;
     @apply flex items-center justify-center;
-    @apply bg-accent-600 size-25 scale-90 transition duration-100 will-change-transform ease-swing;
+    @apply bg-accent-600 size-30 scale-75 transition duration-100 will-change-transform ease-swing;
   }
 
   svg {
@@ -50,6 +89,14 @@
 
   &.bk-is-field {
     @apply top-0 left-0;
+
+    &:before {
+      @apply bg-accent-400;
+      @apply left-1/2 -translate-x-1/2 bottom-full translate-y-10;
+    }
+    &:hover:before {
+      @apply translate-y-0;
+    }
 
     > div {
       @apply bg-accent-400;
@@ -125,7 +172,7 @@
   }
 
   .bk-selection-add-overlay-label {
-    @apply bg-mono-800 flex leading-none h-50 items-center;
+    @apply bg-mono-800 flex leading-none h-50 items-center font-semibold;
     > div {
       padding: var(--bk-gap);
     }

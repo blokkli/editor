@@ -1030,15 +1030,14 @@ export default defineBlokkliEditAdapter((ctx) => {
         }),
       ]
     },
-
-    // @TODO: Implement in playground.
-    // getLibraryItemEditUrl(uuid) {
-    //   return 'http://localhost:3000/de?blokkliEditing=1'
-    // },
   }
 
   // Only available in dev mode.
   if (import.meta.dev) {
+    adapter.getLibraryItemEditUrl = function() {
+      return 'http://localhost:3000/de?blokkliEditing=1'
+    }
+
     adapter.userSettings = {
       load() {
         return $fetch<string>('/api/user-settings')

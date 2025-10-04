@@ -15,6 +15,30 @@
     "source": "Insert \"@block\" into \"@field\"",
     "translation": ""
   },
+  "addButtonAfterBundle": {
+    "source": "Add after...",
+    "translation": ""
+  },
+  "addButtonBeforeBundle": {
+    "source": "Add before...",
+    "translation": ""
+  },
+  "addButtonBundleAfter": {
+    "source": "Add \"@bundle\" after",
+    "translation": ""
+  },
+  "addButtonBundleBefore": {
+    "source": "Add \"@bundle\" before",
+    "translation": ""
+  },
+  "addButtonBundleInsideField": {
+    "source": "Add \"@bundle\" inside @parentBundle » @fieldLabel",
+    "translation": ""
+  },
+  "addButtonInsideField": {
+    "source": "Add inside @parentBundle » @fieldLabel...",
+    "translation": ""
+  },
   "addCommentToItem": {
     "source": "Comment",
     "translation": "Commenter"

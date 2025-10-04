@@ -19,6 +19,30 @@ msgctxt "addBlockCommand.insertInField"
 msgid "Insert \"@block\" into \"@field\""
 msgstr ""
 
+msgctxt "addButtonAfterBundle"
+msgid "Add after..."
+msgstr ""
+
+msgctxt "addButtonBeforeBundle"
+msgid "Add before..."
+msgstr ""
+
+msgctxt "addButtonBundleAfter"
+msgid "Add \"@bundle\" after"
+msgstr ""
+
+msgctxt "addButtonBundleBefore"
+msgid "Add \"@bundle\" before"
+msgstr ""
+
+msgctxt "addButtonBundleInsideField"
+msgid "Add \"@bundle\" inside @parentBundle » @fieldLabel"
+msgstr ""
+
+msgctxt "addButtonInsideField"
+msgid "Add inside @parentBundle » @fieldLabel..."
+msgstr ""
+
 msgctxt "addCommentToItem"
 msgid "Comment"
 msgstr "Commenta"
