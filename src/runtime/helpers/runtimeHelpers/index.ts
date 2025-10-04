@@ -14,6 +14,7 @@ import {
 } from '#blokkli-build/default-global-options'
 import type { FieldListItem } from '#blokkli/types'
 import { BK_HIDDEN_GLOBALLY, BK_VISIBLE_LANGUAGES } from '../symbols'
+import { BUNDLE_FROM_LIBRARY } from '#blokkli/constants'
 
 /**
  * Map all kinds of truthy values for a checkbox.
@@ -151,7 +152,7 @@ export function getRuntimeOptions<K extends keyof RuntimeBlockOptions>(
   context?: { parentType: string } | { fieldListType: string },
   fromLibraryOptions?: Record<string, any>,
 ): RuntimeBlockOptions[K] {
-  if (item.bundle === 'from_library') {
+  if (item.bundle === BUNDLE_FROM_LIBRARY) {
     if ('props' in item && item.props && 'libraryItem' in item.props) {
       const actualBlock = item.props.libraryItem?.block
       if (actualBlock) {
@@ -211,7 +212,7 @@ export function getRuntimeOptions<K extends keyof RuntimeBlockOptions>(
 export function getActualBlock(
   item: FieldListItemTyped,
 ): FieldListItemTyped | null {
-  if (item.bundle === 'from_library') {
+  if (item.bundle === BUNDLE_FROM_LIBRARY) {
     const block = item.props.libraryItem?.block
     if (!block) {
       return null
@@ -233,7 +234,7 @@ export function getItemsforBundles<K extends FieldListItemTyped['bundle']>(
   const filtered: FieldListItemTyped[] = []
   for (let i = 0; i < items.length; i++) {
     const item = items[i]!
-    if (item.bundle === 'from_library') {
+    if (item.bundle === BUNDLE_FROM_LIBRARY) {
       const actual = getActualBlock(item)
       if (actual && bundles.includes(actual.bundle as K)) {
         filtered.push(actual)

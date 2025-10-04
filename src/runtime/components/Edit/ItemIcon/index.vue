@@ -1,6 +1,6 @@
 <template>
   <div v-if="markup" class="bk-blokkli-item-icon" v-html="markup" />
-  <div v-else-if="bundle === 'from_library'" class="bk-blokkli-item-icon">
+  <div v-else-if="bundle === BUNDLE_FROM_LIBRARY" class="bk-blokkli-item-icon">
     <Icon name="reusable" />
   </div>
   <div v-else class="bk-blokkli-item-icon">
@@ -11,6 +11,7 @@
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/components'
+import { BUNDLE_FROM_LIBRARY } from '#blokkli/constants'
 
 const props = defineProps<{
   bundle?: string

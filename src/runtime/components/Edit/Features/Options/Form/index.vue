@@ -62,6 +62,7 @@ import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
 } from '#blokkli/helpers/symbols'
+import { BUNDLE_FROM_LIBRARY } from '#blokkli/constants'
 
 if (import.meta.hot) {
   import.meta.hot.accept('#blokkli/runtime-helpers', () => {})
@@ -340,7 +341,7 @@ const visibleOptions = computed<OptionItem[]>(() => {
       : undefined
 
   const ctxProps =
-    item?.bundle === 'from_library'
+    item?.bundle === BUNDLE_FROM_LIBRARY
       ? (item?.props as any)?.libraryItem?.block?.props
       : item?.props
 

@@ -26,7 +26,10 @@
     @select="onSelectDropdownItem"
   />
 
-  <SelectionAddButtons :blocks="selection.blocks.value" />
+  <SelectionAddButtons
+    v-if="state.editMode.value === 'editing'"
+    :blocks="selection.blocks.value"
+  />
 </template>
 
 <script lang="ts" setup>

@@ -28,6 +28,10 @@ import {
   OPTIONS,
   type RuntimeBlockOptionArray,
 } from '#blokkli-build/runtime-options'
+import {
+  BUNDLE_BLOKKLI_FRAGMENT,
+  BUNDLE_FROM_LIBRARY,
+} from '#blokkli/constants'
 
 /**
  * Define a blokkli component.
@@ -106,7 +110,7 @@ export function defineBlokkli<
     // These options will never be directly returned in defineBlokkli().
     // For example the from_library block renders the "actual" block again, at
     // which point this computed property is built again.
-    if (bundle === 'from_library') {
+    if (bundle === BUNDLE_FROM_LIBRARY) {
       return {
         ...(item?.value.options || {}),
         ...(editContext?.mutatedOptions[uuid] || {}),
@@ -117,7 +121,7 @@ export function defineBlokkli<
     // For fragments, the fragment name is injected by the blokkli_fragment
     // component.
     const optionKey =
-      bundle === 'blokkli_fragment'
+      bundle === BUNDLE_BLOKKLI_FRAGMENT
         ? 'fragment:' + item?.value.fragmentName + '__default'
         : identifier
 
@@ -183,8 +187,8 @@ export function defineBlokkli<
   if (
     editContext?.useBlockRegistration &&
     editContext.dom &&
-    bundle !== 'from_library' &&
-    bundle !== 'blokkli_fragment'
+    bundle !== BUNDLE_FROM_LIBRARY &&
+    bundle !== BUNDLE_BLOKKLI_FRAGMENT
   ) {
     const isProxyMode = inject(INJECT_FIELD_USES_PROXY, false)
     if (!isProxyMode) {
