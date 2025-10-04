@@ -1,43 +1,43 @@
 {
   "actionsDropdownToolip": {
     "source": "Further actions",
-    "translation": ""
+    "translation": "Autres actions"
   },
   "addBlockCommand.appendInField": {
     "source": "Append \"@block\" in \"@field\"",
-    "translation": ""
+    "translation": "Ajouter «@block» dans «@field»"
   },
   "addBlockCommand.appendRoot": {
     "source": "Append \"@block\"",
-    "translation": ""
+    "translation": "Ajouter «@block»"
   },
   "addBlockCommand.insertInField": {
     "source": "Insert \"@block\" into \"@field\"",
-    "translation": ""
+    "translation": "Insérer «@block» dans «@field»"
   },
   "addButtonAfterBundle": {
     "source": "Add after...",
-    "translation": ""
+    "translation": "Ajouter après..."
   },
   "addButtonBeforeBundle": {
     "source": "Add before...",
-    "translation": ""
+    "translation": "Ajouter avant..."
   },
   "addButtonBundleAfter": {
     "source": "Add \"@bundle\" after",
-    "translation": ""
+    "translation": "Ajouter «@bundle» après"
   },
   "addButtonBundleBefore": {
     "source": "Add \"@bundle\" before",
-    "translation": ""
+    "translation": "Ajouter «@bundle» avant"
   },
   "addButtonBundleInsideField": {
     "source": "Add \"@bundle\" inside @parentBundle » @fieldLabel",
-    "translation": ""
+    "translation": "Ajouter «@bundle» dans @parentBundle » @fieldLabel"
   },
   "addButtonInsideField": {
     "source": "Add inside @parentBundle » @fieldLabel...",
-    "translation": ""
+    "translation": "Ajouter dans @parentBundle » @fieldLabel..."
   },
   "addCommentToItem": {
     "source": "Comment",
@@ -45,19 +45,19 @@
   },
   "addListInputPlaceholder": {
     "source": "Search available blocks",
-    "translation": ""
+    "translation": "Rechercher des blocs"
   },
   "addListItemFavoriteAdd": {
     "source": "Add to favorites",
-    "translation": ""
+    "translation": "Ajouter aux favoris"
   },
   "addListItemFavoriteRemove": {
     "source": "Remove from favorites",
-    "translation": ""
+    "translation": "Retirer des favoris"
   },
   "addListSidebarTitle": {
     "source": "Add blocks",
-    "translation": ""
+    "translation": "Ajouter des blocs"
   },
   "addListTourText": {
     "source": "<p>This shows the list of available blocks that can be placed. Add a block by dragging the icon into the page.</p><p>When an existing block is selected, some blocks may be greyed out. This indicates which blocks can be placed inside or after the selected block.</p>",
@@ -549,19 +549,19 @@
   },
   "feature_add-list_description": {
     "source": "Provides the container to render a list of blocks to add or add actions.",
-    "translation": ""
+    "translation": "Fournit le conteneur pour afficher une liste de blocs à ajouter ou d'actions."
   },
   "feature_add-list_label": {
     "source": "Add List",
-    "translation": ""
+    "translation": "Liste d'ajout"
   },
   "feature_add-list_setting_orientation_label": {
     "source": "Add List",
-    "translation": ""
+    "translation": "Liste d'ajout"
   },
   "feature_add-list_setting_orientation_option_horizontal": {
     "source": "Horizontal",
-    "translation": ""
+    "translation": "Horizontal"
   },
   "feature_add-list_setting_orientation_option_sidebar": {
     "source": "Sidebar",
@@ -569,455 +569,455 @@
   },
   "feature_add-list_setting_orientation_option_vertical": {
     "source": "Vertical",
-    "translation": ""
+    "translation": "Vertical"
   },
   "feature_analyze_description": {
     "source": "Analyze blocks and page for SEO, accessibility, etc.",
-    "translation": ""
+    "translation": "Analyse les blocs et la page pour le SEO, l'accessibilité, etc."
   },
   "feature_analyze_label": {
     "source": "Analyze",
-    "translation": ""
+    "translation": "Analyser"
   },
   "feature_anchors_description": {
     "source": "Displays indicators for blocks with anchor IDs",
-    "translation": ""
+    "translation": "Affiche des indicateurs pour les blocs avec des ID d'ancre"
   },
   "feature_anchors_label": {
     "source": "Anchors",
-    "translation": ""
+    "translation": "Ancres"
   },
   "feature_artboard_description": {
     "source": "Wraps the entire page in an artboard that can be zoomed and moved using the mouse.",
-    "translation": ""
+    "translation": "Enveloppe toute la page dans une zone de travail qui peut être zoomée et déplacée avec la souris."
   },
   "feature_artboard_label": {
     "source": "Artboard",
-    "translation": ""
+    "translation": "Zone de travail"
   },
   "feature_artboard_setting_momentum_description": {
     "source": "Applies smooth animations when scrolling or zooming the artboard.",
-    "translation": ""
+    "translation": "Applique des animations fluides lors du défilement ou du zoom de la zone de travail."
   },
   "feature_artboard_setting_momentum_label": {
     "source": "Use smooth scrolling",
-    "translation": ""
+    "translation": "Utiliser le défilement fluide"
   },
   "feature_artboard_setting_persist_description": {
     "source": "Stores and restores the last position and zoom factor of the artboard.",
-    "translation": ""
+    "translation": "Stocke et restaure la dernière position et le facteur de zoom de la zone de travail."
   },
   "feature_artboard_setting_persist_label": {
     "source": "Persist position and zoom",
-    "translation": ""
+    "translation": "Conserver la position et le zoom"
   },
   "feature_artboard_setting_scrollSpeed_label": {
     "source": "Artboard scroll speed",
-    "translation": ""
+    "translation": "Vitesse de défilement de la zone de travail"
   },
   "feature_assistant_description": {
     "source": "Provides a dynamic add block action to add one or more blocks generated by an AI assistant.",
-    "translation": ""
+    "translation": "Fournit une action dynamique pour ajouter un ou plusieurs blocs générés par un assistant IA."
   },
   "feature_assistant_label": {
     "source": "Assistant",
-    "translation": ""
+    "translation": "Assistant"
   },
   "feature_block-add-list_description": {
     "source": "Renders a list of block bundles that can be added to the current page.",
-    "translation": ""
+    "translation": "Affiche une liste de types de blocs qui peuvent être ajoutés à la page actuelle."
   },
   "feature_block-add-list_label": {
     "source": "Block Add List",
-    "translation": ""
+    "translation": "Liste d'ajout de blocs"
   },
   "feature_block-add-list_setting_hideDisabledBlocks_description": {
     "source": "Hides blocks from the \"Add List\" if they can't be added to anywhere.",
-    "translation": ""
+    "translation": "Masque les blocs de la «Liste d'ajout» s'ils ne peuvent être ajoutés nulle part."
   },
   "feature_block-add-list_setting_hideDisabledBlocks_label": {
     "source": "Hide blocks that can't be added",
-    "translation": ""
+    "translation": "Masquer les blocs qui ne peuvent pas être ajoutés"
   },
   "feature_clipboard_description": {
     "source": "Provides clipboard integration to copy/paste existing blocks or paste supported clipboard content like text or images.",
-    "translation": ""
+    "translation": "Fournit l'intégration du presse-papiers pour copier/coller des blocs existants ou coller du contenu pris en charge comme du texte ou des images."
   },
   "feature_clipboard_label": {
     "source": "Clipboard",
-    "translation": ""
+    "translation": "Presse-papiers"
   },
   "feature_clipboard_setting_openSidebarOnPaste_description": {
     "source": "Automatically opens the sidebar when pasting content from the clipboard.",
-    "translation": ""
+    "translation": "Ouvre automatiquement l'encadré lors du collage de contenu depuis le presse-papiers."
   },
   "feature_clipboard_setting_openSidebarOnPaste_label": {
     "source": "Open sidebar when pasting",
-    "translation": ""
+    "translation": "Ouvrir l'encadré lors du collage"
   },
   "feature_command-palette_description": {
     "source": "Provides a command palette with search to access most UI features with a keyboard.",
-    "translation": ""
+    "translation": "Fournit une palette de commandes avec recherche pour accéder à la plupart des fonctionnalités de l'interface avec le clavier."
   },
   "feature_command-palette_label": {
     "source": "Command Palette",
-    "translation": ""
+    "translation": "Palette de commandes"
   },
   "feature_comments_description": {
     "source": "Provides comment functionality for blocks.",
-    "translation": ""
+    "translation": "Fournit la fonctionnalité de commentaire pour les blocs."
   },
   "feature_comments_label": {
     "source": "Comments",
-    "translation": ""
+    "translation": "Commentaires"
   },
   "feature_conversions_description": {
     "source": "Provides block actions to convert one or more blocks to a different bundle.",
-    "translation": ""
+    "translation": "Fournit des actions de bloc pour convertir un ou plusieurs blocs vers un type différent."
   },
   "feature_conversions_label": {
     "source": "Conversions",
-    "translation": ""
+    "translation": "Conversions"
   },
   "feature_debug_description": {
     "source": "Provides debugging functionality.",
-    "translation": ""
+    "translation": "Fournit la fonctionnalité de débogage."
   },
   "feature_debug_label": {
     "source": "Debug",
-    "translation": ""
+    "translation": "Débogage"
   },
   "feature_delete_description": {
     "source": "Provides an action to delete one or more blocks.",
-    "translation": ""
+    "translation": "Fournit une action pour supprimer un ou plusieurs blocs."
   },
   "feature_delete_label": {
     "source": "Delete",
-    "translation": ""
+    "translation": "Supprimer"
   },
   "feature_diff_description": {
     "source": "Displays a diff of all changes in the edit state.",
-    "translation": ""
+    "translation": "Affiche un différentiel de toutes les modifications dans l'état d'édition."
   },
   "feature_diff_label": {
     "source": "Diff",
-    "translation": ""
+    "translation": "Différences"
   },
   "feature_dragging-overlay_description": {
     "source": "Renders an overlay when dragging or placing a block.",
-    "translation": ""
+    "translation": "Affiche une superposition lors du glissement ou du placement d'un bloc."
   },
   "feature_dragging-overlay_label": {
     "source": "Dragging Overlay",
-    "translation": ""
+    "translation": "Superposition de glissement"
   },
   "feature_duplicate_description": {
     "source": "Provides an action to duplicate one or more blocks in place.",
-    "translation": ""
+    "translation": "Fournit une action pour dupliquer un ou plusieurs blocs sur place."
   },
   "feature_duplicate_label": {
     "source": "Duplicate",
-    "translation": ""
+    "translation": "Dupliquer"
   },
   "feature_edit-form_description": {
     "source": "Listens to edit events and renders an iframe containing the edit form.",
-    "translation": ""
+    "translation": "Écoute les événements d'édition et affiche une iframe contenant le formulaire d'édition."
   },
   "feature_edit-form_label": {
     "source": "Edit Form",
-    "translation": ""
+    "translation": "Formulaire d'édition"
   },
   "feature_edit_description": {
     "source": "Provides an action to edit a block.",
-    "translation": ""
+    "translation": "Fournit une action pour modifier un bloc."
   },
   "feature_edit_label": {
     "source": "Edit",
-    "translation": ""
+    "translation": "Modifier"
   },
   "feature_editable-field_description": {
     "source": "Implements a form overlay to edit a single field of a block.",
-    "translation": ""
+    "translation": "Implémente une superposition de formulaire pour modifier un seul champ d'un bloc."
   },
   "feature_editable-field_label": {
     "source": "Editable Field",
-    "translation": ""
+    "translation": "Champ modifiable"
   },
   "feature_editable-mask_description": {
     "source": "Provides a view option to hide non-editable parts of the page.",
-    "translation": ""
+    "translation": "Fournit une option d'affichage pour masquer les parties non modifiables de la page."
   },
   "feature_editable-mask_label": {
     "source": "Editable Mask",
-    "translation": ""
+    "translation": "Masque modifiable"
   },
   "feature_entity-title_description": {
     "source": "Renders the title and status of the page entity.",
-    "translation": ""
+    "translation": "Affiche le titre et le statut de l'entité de page."
   },
   "feature_entity-title_label": {
     "source": "Entity Title",
-    "translation": ""
+    "translation": "Titre de l'entité"
   },
   "feature_exit_description": {
     "source": "Provides a menu button to exit the editor without saving.",
-    "translation": ""
+    "translation": "Fournit un bouton de menu pour quitter l'éditeur sans sauvegarder."
   },
   "feature_exit_label": {
     "source": "Exit",
-    "translation": ""
+    "translation": "Quitter"
   },
   "feature_fragments_description": {
     "source": "Provides way to add content fragments defined by the frontend.",
-    "translation": ""
+    "translation": "Permet d'ajouter des fragments de contenu définis par le frontend."
   },
   "feature_fragments_label": {
     "source": "Fragments",
-    "translation": ""
+    "translation": "Fragments"
   },
   "feature_grid_description": {
     "source": "Provides a view option to render a grid.",
-    "translation": ""
+    "translation": "Fournit une option d'affichage pour afficher une grille."
   },
   "feature_grid_label": {
     "source": "Grid",
-    "translation": ""
+    "translation": "Grille"
   },
   "feature_help_description": {
     "source": "Provides a sidebar pane with helpful information on how to use blokkli.",
-    "translation": ""
+    "translation": "Fournit un panneau d'encadré avec des informations utiles sur l'utilisation de blökkli."
   },
   "feature_help_label": {
     "source": "Help",
-    "translation": ""
+    "translation": "Aide"
   },
   "feature_history_description": {
     "source": "Implements support for history features (undo, redo, list of mutations).",
-    "translation": ""
+    "translation": "Implémente le support des fonctionnalités d'historique (annuler, rétablir, liste des mutations)."
   },
   "feature_history_label": {
     "source": "History",
-    "translation": ""
+    "translation": "Historique"
   },
   "feature_history_setting_useMouseButtons_description": {
     "source": "When enabled you can use the backwards/forwards buttons on your mouse to undo and redo.",
-    "translation": ""
+    "translation": "Lorsque activé, vous pouvez utiliser les boutons arrière/avant de votre souris pour annuler et rétablir."
   },
   "feature_history_setting_useMouseButtons_label": {
     "source": "Use mouse buttons for undo/redo",
-    "translation": ""
+    "translation": "Utiliser les boutons de la souris pour annuler/rétablir"
   },
   "feature_import-existing_description": {
     "source": "Implements a menu action that renders a dialog to import blocks from another entity.",
-    "translation": ""
+    "translation": "Implémente une action de menu qui affiche une boîte de dialogue pour importer des blocs depuis une autre entité."
   },
   "feature_import-existing_label": {
     "source": "Import existing content",
-    "translation": ""
+    "translation": "Importer du contenu existant"
   },
   "feature_import-existing_setting_showDialogWhenEmpty_description": {
     "source": "Displays the import dialog when starting blökkli if the page is empty.",
-    "translation": ""
+    "translation": "Affiche la boîte de dialogue d'importation au démarrage de blökkli si la page est vide."
   },
   "feature_import-existing_setting_showDialogWhenEmpty_label": {
     "source": "Show import dialog at start",
-    "translation": ""
+    "translation": "Afficher la boîte de dialogue d'importation au démarrage"
   },
   "feature_library_description": {
     "source": "Implements support for a block library to manage reusable blocks.",
-    "translation": ""
+    "translation": "Implémente le support d'une bibliothèque de blocs pour gérer les blocs réutilisables."
   },
   "feature_library_label": {
     "source": "Library",
-    "translation": ""
+    "translation": "Bibliothèque"
   },
   "feature_media-library_description": {
     "source": "Implements a media library to easily drag and drop media like images or videos.",
-    "translation": ""
+    "translation": "Implémente une bibliothèque de médias pour glisser-déposer facilement des médias comme des images ou des vidéos."
   },
   "feature_media-library_label": {
     "source": "Media Library",
-    "translation": ""
+    "translation": "Bibliothèque de médias"
   },
   "feature_multi-select_description": {
     "source": "Implements support for selecting multiple blocks using a select rectangle.",
-    "translation": ""
+    "translation": "Implémente le support de la sélection de plusieurs blocs à l'aide d'un rectangle de sélection."
   },
   "feature_multi-select_label": {
     "source": "Multiselect",
-    "translation": ""
+    "translation": "Sélection multiple"
   },
   "feature_options_description": {
     "source": "Renders the options form for one or more blocks.",
-    "translation": ""
+    "translation": "Affiche le formulaire d'options pour un ou plusieurs blocs."
   },
   "feature_options_label": {
     "source": "Options",
-    "translation": ""
+    "translation": "Options"
   },
   "feature_ownership_description": {
     "source": "Renders a large button to take ownership of the current edit state.",
-    "translation": ""
+    "translation": "Affiche un grand bouton pour prendre la propriété de l'état d'édition actuel."
   },
   "feature_ownership_label": {
     "source": "Ownership",
-    "translation": ""
+    "translation": "Propriété"
   },
   "feature_preview-grant_description": {
     "source": "Provides a button to open a dialog with a QR code to preview the page on a smartphone.",
-    "translation": ""
+    "translation": "Fournit un bouton pour ouvrir une boîte de dialogue avec un code QR pour prévisualiser la page sur un smartphone."
   },
   "feature_preview-grant_label": {
     "source": "Preview Grant",
-    "translation": ""
+    "translation": "Accès à l'aperçu"
   },
   "feature_preview_description": {
     "source": "Provides a button to open a preview in a new window.",
-    "translation": ""
+    "translation": "Fournit un bouton pour ouvrir un aperçu dans une nouvelle fenêtre."
   },
   "feature_preview_label": {
     "source": "Preview",
-    "translation": ""
+    "translation": "Aperçu"
   },
   "feature_proxy_view_description": {
     "source": "Displays the blocks as a structure in the preview.",
-    "translation": ""
+    "translation": "Affiche les blocs sous forme de structure dans l'aperçu."
   },
   "feature_proxy_view_label": {
     "source": "Proxy View",
-    "translation": ""
+    "translation": "Vue structurée"
   },
   "feature_publish_description": {
     "source": "Provides a menu button to publish the changes of the current entity.",
-    "translation": ""
+    "translation": "Fournit un bouton de menu pour publier les modifications de l'entité actuelle."
   },
   "feature_publish_label": {
     "source": "Publish",
-    "translation": ""
+    "translation": "Publier"
   },
   "feature_publish_setting_closeAfterPublish_description": {
     "source": "Immediately closes the editor after successfully publishing or saving.",
-    "translation": ""
+    "translation": "Ferme immédiatement l'éditeur après une publication ou une sauvegarde réussie."
   },
   "feature_publish_setting_closeAfterPublish_label": {
     "source": "Close editor after publishing",
-    "translation": ""
+    "translation": "Fermer l'éditeur après publication"
   },
   "feature_responsive-preview_description": {
     "source": "Provides a responsive preview of the current edit state in an iframe.",
-    "translation": ""
+    "translation": "Fournit un aperçu responsive de l'état d'édition actuel dans une iframe."
   },
   "feature_responsive-preview_label": {
     "source": "Responsive Preview",
-    "translation": ""
+    "translation": "Aperçu responsive"
   },
   "feature_revert_description": {
     "source": "Provides a menu button to revert all changes done on the current entity.",
-    "translation": ""
+    "translation": "Fournit un bouton de menu pour annuler toutes les modifications effectuées sur l'entité actuelle."
   },
   "feature_revert_label": {
     "source": "Revert",
-    "translation": ""
+    "translation": "Annuler"
   },
   "feature_search_description": {
     "source": "Provides an overlay with shortcut to search for blocks on the current page or existing content to add as blocks.",
-    "translation": ""
+    "translation": "Fournit une superposition avec raccourci pour rechercher des blocs sur la page actuelle ou du contenu existant à ajouter en tant que blocs."
   },
   "feature_search_label": {
     "source": "Search",
-    "translation": ""
+    "translation": "Rechercher"
   },
   "feature_selection_description": {
     "source": "Renders an overlay that highlights the selected blocks.",
-    "translation": ""
+    "translation": "Affiche une superposition qui met en évidence les blocs sélectionnés."
   },
   "feature_selection_label": {
     "source": "Selection",
-    "translation": ""
+    "translation": "Sélection"
   },
   "feature_settings_description": {
     "source": "Provides a menu button to display a settings dialog.",
-    "translation": ""
+    "translation": "Fournit un bouton de menu pour afficher une boîte de dialogue de paramètres."
   },
   "feature_settings_label": {
     "source": "Settings",
-    "translation": ""
+    "translation": "Paramètres"
   },
   "feature_settings_setting_lowPerformanceMode_description": {
     "source": "Reduces the animations and interactivity to a minimum for devices with low performance.",
-    "translation": ""
+    "translation": "Réduit les animations et l'interactivité au minimum pour les appareils avec de faibles performances."
   },
   "feature_settings_setting_lowPerformanceMode_label": {
     "source": "Enable low performance mode",
-    "translation": ""
+    "translation": "Activer le mode basse performance"
   },
   "feature_settings_setting_resetAllSettings_label": {
     "source": "Reset all settings",
-    "translation": ""
+    "translation": "Réinitialiser tous les paramètres"
   },
   "feature_settings_setting_useAnimations_description": {
     "source": "Animates UI elements like dialogs or drawers or interactions like drag and drop or scroll changes.",
-    "translation": ""
+    "translation": "Anime les éléments de l'interface comme les boîtes de dialogue ou les tiroirs, ou les interactions comme le glisser-déposer ou les changements de défilement."
   },
   "feature_settings_setting_useAnimations_label": {
     "source": "Use animations",
-    "translation": ""
+    "translation": "Utiliser les animations"
   },
   "feature_structure_description": {
     "source": "Provides a sidebar button to render a structured list of all blocks on the current page.",
-    "translation": ""
+    "translation": "Fournit un bouton d'encadré pour afficher une liste structurée de tous les blocs sur la page actuelle."
   },
   "feature_structure_label": {
     "source": "Structure",
-    "translation": ""
+    "translation": "Structure"
   },
   "feature_theme_description": {
     "source": "Implements a theme editor.",
-    "translation": ""
+    "translation": "Implémente un éditeur de thème."
   },
   "feature_theme_label": {
     "source": "Theme",
-    "translation": ""
+    "translation": "Thème"
   },
   "feature_touch-action-bar_description": {
     "source": "Renders a button on touch devices to cancel touch actions.",
-    "translation": ""
+    "translation": "Affiche un bouton sur les appareils tactiles pour annuler les actions tactiles."
   },
   "feature_touch-action-bar_label": {
     "source": "Touch Action Bar",
-    "translation": ""
+    "translation": "Barre d'actions tactiles"
   },
   "feature_tour_description": {
     "source": "Provides a tour overlay to get to know the editor.",
-    "translation": ""
+    "translation": "Fournit une superposition de visite guidée pour découvrir l'éditeur."
   },
   "feature_tour_label": {
     "source": "Tour",
-    "translation": ""
+    "translation": "Visite guidée"
   },
   "feature_transform_description": {
     "source": "Provides integration for block transform plugins.",
-    "translation": ""
+    "translation": "Fournit l'intégration pour les plugins de transformation de blocs."
   },
   "feature_transform_label": {
     "source": "Transform",
-    "translation": ""
+    "translation": "Transformer"
   },
   "feature_translations_description": {
     "source": "Adds support for block translations.",
-    "translation": ""
+    "translation": "Ajoute le support des traductions de blocs."
   },
   "feature_translations_label": {
     "source": "Translations",
-    "translation": ""
+    "translation": "Traductions"
   },
   "feature_validations_description": {
     "source": "Provides a sidebar pane to render validations.",
-    "translation": ""
+    "translation": "Fournit un panneau d'encadré pour afficher les validations."
   },
   "feature_validations_label": {
     "source": "Validations",
-    "translation": ""
+    "translation": "Validations"
   },
   "fieldIsRequired": {
     "source": "This field is required",
