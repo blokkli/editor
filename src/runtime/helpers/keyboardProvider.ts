@@ -25,6 +25,8 @@ export type KeyboardProvider = {
   shortcuts: ComputedRef<RegisteredShortcut[]>
   registerShortcut: (shortcut: KeyboardShortcut) => void
   unregisterShortcut: (shortcut: KeyboardShortcut) => void
+  lockKeyboardEvents: (id: string) => void
+  unlockKeyboardEvents: (id: string) => void
 }
 
 function getControlState(
@@ -44,6 +46,8 @@ export default function (
   const isPressingSpace = ref(false)
   const isPressingShift = ref(false)
   const registeredShortcuts = ref<RegisteredShortcut[]>([])
+  const keyboardLocks = ref<string[]>([])
+  const keyboardLocked = computed<boolean>(() => !!keyboardLocks.value.length)
 
   const onKeyUp = (e: KeyboardEvent) => {
     isPressingControl.value =
@@ -60,6 +64,10 @@ export default function (
   }
 
   const onKeyDown = (e: KeyboardEvent) => {
+    if (keyboardLocked.value) {
+      return
+    }
+
     isPressingControl.value = getControlState(e)
 
     isPressingShift.value = e.getModifierState('Shift')
@@ -131,6 +139,18 @@ export default function (
     isPressingShift.value = !!e.shiftKey
   }
 
+  function lockKeyboardEvents(id: string) {
+    if (keyboardLocks.value.includes(id)) {
+      return
+    }
+
+    keyboardLocks.value.push(id)
+  }
+
+  function unlockKeyboardEvents(id: string) {
+    keyboardLocks.value = keyboardLocks.value.filter((v) => v !== id)
+  }
+
   return {
     isPressingSpace: readonly(isPressingSpace),
     isPressingControl: readonly(isPressingControl),
@@ -139,5 +159,7 @@ export default function (
     registerShortcut,
     unregisterShortcut,
     setShortcutStateFromEvent,
+    lockKeyboardEvents,
+    unlockKeyboardEvents,
   }
 }

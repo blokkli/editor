@@ -37,6 +37,7 @@
   />
   <DragInteractions v-if="!isInitializing" />
   <AnimationCanvas v-if="!isInitializing" />
+  <Konami />
   <SystemRequirements />
   <slot
     v-if="!isInitializing"
@@ -69,6 +70,7 @@ import DraggableList from './DraggableList.vue'
 import DragInteractions from './DragInteractions/index.vue'
 import AnimationCanvas from './AnimationCanvas/index.vue'
 import SystemRequirements from './SystemRequirements/index.vue'
+import Konami from './Konami/index.vue'
 import animationProvider from './../../helpers/animationProvider'
 import keyboardProvider from './../../helpers/keyboardProvider'
 import selectionProvider from './../../helpers/selectionProvider'
