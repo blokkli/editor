@@ -1,6 +1,12 @@
 <template>
-  <div class="bk bk-konami">
-    <div class="bk-konami-game">
+  <div
+    class="bk bk-konami"
+    :style="{
+      '--bk-bg': background,
+    }"
+  >
+    <div class="bk-dialog-background" />
+    <div class="bk-konami-game bk-slide-up-inner">
       <div class="bk-konami-game-canvas">
         <canvas
           ref="canvasDisplay"
@@ -32,7 +38,6 @@
 </template>
 
 <script setup lang="ts">
-import { rgbaToString } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import {
   computed,
@@ -47,7 +52,12 @@ import { useTextRendering } from './textRendering'
 import { useIconRendering } from './useIconRendering'
 import logoUrl from './blokkli.png'
 
+const emit = defineEmits<{
+  (e: 'close'): void
+}>()
+
 const DEBUG_ICONS = false
+const DEBUG_GAME = false
 
 const largeIconSize = 32
 const blackColor = 'black'
@@ -61,7 +71,7 @@ const gameWorldBorder = 1
 const gameWorldPadding = 1
 let isLoaded = false
 
-const { theme, keyboard, ui } = useBlokkli()
+const { keyboard, ui } = useBlokkli()
 
 const { drawTextPixels, getTextWidth, drawText } = useTextRendering()
 const { initIcons, getIconCount, drawIcon } = useIconRendering(
@@ -179,6 +189,73 @@ function generateFood() {
     Math.abs(head.x - newFood.x) + Math.abs(head.y - newFood.y)
 }
 
+// AI pathfinding: calculate the best direction to reach food
+function getAIDirection(): Direction {
+  const head = snake.value[0]!
+  const target = food.value
+
+  // Helper to check if a position is safe
+  const isSafe = (pos: Position): boolean => {
+    // Check walls
+    if (pos.x < 0 || pos.x >= worldWidth || pos.y < 0 || pos.y >= worldHeight) {
+      return false
+    }
+    // Check self collision (excluding tail which will move)
+    for (let i = 0; i < snake.value.length - 1; i++) {
+      const segment = snake.value[i]!
+      if (segment.x === pos.x && segment.y === pos.y) {
+        return false
+      }
+    }
+    return true
+  }
+
+  // Possible moves
+  const moves: { dir: Direction; pos: Position; priority: number }[] = []
+
+  // Calculate Manhattan distance for each possible direction
+  const directions: Direction[] = ['up', 'down', 'left', 'right']
+  for (const dir of directions) {
+    // Don't reverse direction
+    if (
+      (dir === 'up' && direction.value === 'down') ||
+      (dir === 'down' && direction.value === 'up') ||
+      (dir === 'left' && direction.value === 'right') ||
+      (dir === 'right' && direction.value === 'left')
+    ) {
+      continue
+    }
+
+    const newPos: Position = { ...head }
+    switch (dir) {
+      case 'up':
+        newPos.y -= 1
+        break
+      case 'down':
+        newPos.y += 1
+        break
+      case 'left':
+        newPos.x -= 1
+        break
+      case 'right':
+        newPos.x += 1
+        break
+    }
+
+    if (isSafe(newPos)) {
+      const distance =
+        Math.abs(newPos.x - target.x) + Math.abs(newPos.y - target.y)
+      moves.push({ dir, pos: newPos, priority: -distance })
+    }
+  }
+
+  // Sort by priority (lower distance = higher priority)
+  moves.sort((a, b) => b.priority - a.priority)
+
+  // Return the best move, or current direction if no safe moves
+  return moves.length > 0 ? moves[0]!.dir : direction.value
+}
+
 // Reset game
 function resetGame() {
   const startPos = {
@@ -197,6 +274,18 @@ function resetGame() {
   gameOverTime = 0
   movesSinceFoodSpawn = 0
   optimalPathLength = 0
+
+  // Debug mode: initialize with 10 blocks already eaten
+  if (DEBUG_GAME) {
+    for (let i = 0; i < 10; i++) {
+      const head = snake.value[0]!
+      snake.value.push({ x: head.x - i - 1, y: head.y })
+    }
+    blocksEaten.value = 10
+    score.value = 10 * 100 // Perfect score for each block
+    gameStarted.value = true
+  }
+
   generateFood()
 }
 
@@ -214,6 +303,11 @@ function update(currentTime: number) {
 
   // Only perform cell-based update when enough time has passed
   if (timeSinceLastUpdate >= cellMoveDuration) {
+    // Use AI direction in debug mode
+    if (DEBUG_GAME) {
+      nextDirection.value = getAIDirection()
+    }
+
     direction.value = nextDirection.value
 
     const head = snake.value[0]!
@@ -290,7 +384,7 @@ function update(currentTime: number) {
 }
 
 const background = computed<string>(() => {
-  return rgbaToString(theme.lime.value.dark)
+  return 'rgba(133, 144, 24, 1)'
 })
 
 // Initialize offscreen canvases
@@ -385,6 +479,7 @@ function drawScoreArea() {
 
 // Draw start screen
 function drawStartScreen(ctx: CanvasRenderingContext2D, currentTime: number) {
+  ctx.imageSmoothingEnabled = false
   const offset = gameWorldBorder + gameWorldPadding
   const totalWidth = worldWidth * cellSize
 
@@ -440,9 +535,7 @@ function drawStartScreen(ctx: CanvasRenderingContext2D, currentTime: number) {
 
   // Draw logo at 0,0 (after icons so it appears on top)
   if (logoCanvas) {
-    ctx.imageSmoothingEnabled = false
     ctx.drawImage(logoCanvas, 0, 0)
-    ctx.imageSmoothingEnabled = true
   }
 
   // Draw instructions centered
@@ -461,6 +554,32 @@ function drawStartScreen(ctx: CanvasRenderingContext2D, currentTime: number) {
 
   drawText(ctx, line1, line1X, 90, blackColor)
   drawText(ctx, line2, line2X, 100, blackColor)
+
+  const blinkOn = currentTime % 1000 < 500
+  if (blinkOn) {
+    const spaceText = 'Press SPACE to start'
+    const spaceTextWidth = Math.round(getTextWidth(spaceText))
+    const spaceTextX = Math.round((canvasWidth.value - spaceTextWidth) / 2)
+
+    // Draw box around text
+    ctx.fillStyle = background.value
+    ctx.strokeStyle = blackColor
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    ctx.rect(spaceTextX - 3, 117, spaceTextWidth + 6, 13)
+    ctx.fill()
+    ctx.stroke()
+
+    // Draw text
+    drawTextPixels(
+      ctx,
+      spaceText,
+      canvasWidth.value / 2,
+      120,
+      blackColor,
+      'center',
+    )
+  }
 }
 
 // Draw game
@@ -564,11 +683,15 @@ function draw(currentTime: number) {
     renderPositions.push({ x: renderX, y: renderY })
   }
 
+  const SNAKE_DEBUG = false
+
   // Draw snake to offscreen canvas with 1-bit conversion
   if (snakeCanvas) {
-    const snakeCtx = snakeCanvas.getContext('2d', {
-      willReadFrequently: true,
-    })
+    const snakeCtx = SNAKE_DEBUG
+      ? ctx
+      : snakeCanvas.getContext('2d', {
+          willReadFrequently: true,
+        })
     if (snakeCtx) {
       // Clear offscreen canvas
       snakeCtx.clearRect(0, 0, snakeCanvas.width, snakeCanvas.height)
@@ -602,27 +725,35 @@ function draw(currentTime: number) {
 
         // Connecting line.
 
-        // Body.
+        // Body border.
+        snakeCtx.lineCap = 'round'
+        snakeCtx.lineJoin = 'round'
+        snakeCtx.lineDashOffset = 0
         snakeCtx.lineWidth = 12
-        snakeCtx.setLineDash([400000, 8])
+        snakeCtx.setLineDash([400000])
         snakeCtx.stroke()
 
-        // Body pattern.
+        // Body inner.
         snakeCtx.strokeStyle = 'white'
+        snakeCtx.lineDashOffset = 0
         snakeCtx.lineWidth = 10
-        // snakeCtx.setLineDash([2, 10])
         snakeCtx.stroke()
 
-        snakeCtx.strokeStyle = 'black'
-        snakeCtx.setLineDash([4, 8])
+        // Inner.
         snakeCtx.lineWidth = 6
+        snakeCtx.strokeStyle = 'black'
+        snakeCtx.lineDashOffset = -0
+        snakeCtx.setLineDash([4, 8])
         snakeCtx.stroke()
 
+        // Inner.
         snakeCtx.lineWidth = 2
+        snakeCtx.strokeStyle = 'black'
+        snakeCtx.lineDashOffset = -0
         snakeCtx.setLineDash([])
         snakeCtx.stroke()
 
-        // Draw circle for head
+        // Draw snake head with animated mouth
         const headPos = renderPositions[renderPositions.length - 1]!
         const headX = Math.round(headPos.x * cellSize + cellSize / 2 + offset)
         const headY = Math.round(
@@ -630,57 +761,129 @@ function draw(currentTime: number) {
         )
         const headRadius = cellSize / 2
 
-        snakeCtx.beginPath()
-        snakeCtx.arc(headX, headY, headRadius, 0, Math.PI * 2)
+        snakeCtx.setLineDash([])
         snakeCtx.fillStyle = blackColor
+
+        // Animate mouth opening/closing (0 to 1)
+        const mouthCycle = (currentTime % 600) / 600
+        const mouthOpen = Math.sin(mouthCycle * Math.PI * 2) * 0.5 + 0.5
+        const maxMouthAngle = Math.PI / 3 // 60 degrees max
+        const mouthAngle = mouthOpen * maxMouthAngle
+
+        snakeCtx.fillStyle = 'white'
+        snakeCtx.beginPath()
+        snakeCtx.arc(headX, headY, cellSize / 2 - 2, 0, Math.PI * 2)
         snakeCtx.fill()
-      }
 
-      // Apply 1-bit conversion to remove antialiasing
-      const imageData = snakeCtx.getImageData(
-        0,
-        0,
-        snakeCanvas.width,
-        snakeCanvas.height,
-      )
-      const data = imageData.data
-
-      for (let i = 0; i < data.length; i += 4) {
-        const r = data[i]!
-        const g = data[i + 1]!
-        const b = data[i + 2]!
-        const a = data[i + 3]!
-        const brightness = (r + g + b) / 3
-
-        if (a > 128 && brightness < 128) {
-          data[i] = 0
-          data[i + 1] = 0
-          data[i + 2] = 0
-          data[i + 3] = 255
-        } else {
-          data[i] = 0
-          data[i + 1] = 0
-          data[i + 2] = 0
-          data[i + 3] = 0
+        // Calculate rotation based on direction
+        let rotation = 0
+        switch (direction.value) {
+          case 'right':
+            rotation = 0
+            break
+          case 'down':
+            rotation = Math.PI / 2
+            break
+          case 'left':
+            rotation = Math.PI
+            break
+          case 'up':
+            rotation = -Math.PI / 2
+            break
         }
+
+        // Draw animated mouth opening
+        const jawLength = headRadius + 2
+        const mouthOffset = -1 // Positive = forward (outside), negative = backward (inside)
+
+        // Calculate mouth center position
+        const mouthCenterX = headX + Math.cos(rotation) * mouthOffset
+        const mouthCenterY = headY + Math.sin(rotation) * mouthOffset
+
+        // Calculate jaw endpoints
+        const upperJawX =
+          mouthCenterX + Math.cos(rotation - mouthAngle / 2) * jawLength
+        const upperJawY =
+          mouthCenterY + Math.sin(rotation - mouthAngle / 2) * jawLength
+        const lowerJawX =
+          mouthCenterX + Math.cos(rotation + mouthAngle / 2) * jawLength
+        const lowerJawY =
+          mouthCenterY + Math.sin(rotation + mouthAngle / 2) * jawLength
+
+        // Fill inside of mouth with white
+        snakeCtx.fillStyle = 'white'
+        snakeCtx.beginPath()
+        snakeCtx.moveTo(mouthCenterX, mouthCenterY)
+        snakeCtx.lineTo(upperJawX, upperJawY)
+        snakeCtx.lineTo(lowerJawX, lowerJawY)
+        snakeCtx.closePath()
+        snakeCtx.fill()
+
+        // Draw jaw lines in black
+        snakeCtx.strokeStyle = blackColor
+        snakeCtx.lineWidth = 1
+        snakeCtx.lineCap = 'round'
+
+        // Upper jaw
+        snakeCtx.beginPath()
+        snakeCtx.moveTo(mouthCenterX, mouthCenterY)
+        snakeCtx.lineTo(upperJawX, upperJawY)
+        snakeCtx.stroke()
+
+        // Lower jaw
+        snakeCtx.beginPath()
+        snakeCtx.moveTo(mouthCenterX, mouthCenterY)
+        snakeCtx.lineTo(lowerJawX, lowerJawY)
+        snakeCtx.stroke()
       }
 
-      snakeCtx.putImageData(imageData, 0, 0)
+      if (!SNAKE_DEBUG) {
+        // Apply 1-bit conversion to remove antialiasing
+        const imageData = snakeCtx.getImageData(
+          0,
+          0,
+          snakeCanvas.width,
+          snakeCanvas.height,
+        )
+        const data = imageData.data
 
-      // Draw to main canvas
-      ctx.imageSmoothingEnabled = false
-      ctx.drawImage(
-        snakeCanvas,
-        0,
-        0, // source x, y
-        snakeCanvas.width,
-        snakeCanvas.height, // source width, height
-        0,
-        0, // destination x, y
-        snakeCanvas.width,
-        snakeCanvas.height, // destination width, height
-      )
-      ctx.imageSmoothingEnabled = true
+        const THRESHOLD = 100
+
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i]!
+          const g = data[i + 1]!
+          const b = data[i + 2]!
+          const a = data[i + 3]!
+          const brightness = (r + g + b) / 3
+
+          if (a > THRESHOLD && brightness < THRESHOLD) {
+            data[i] = 0
+            data[i + 1] = 0
+            data[i + 2] = 0
+            data[i + 3] = 255
+          } else {
+            data[i] = 0
+            data[i + 1] = 0
+            data[i + 2] = 0
+            data[i + 3] = 0
+          }
+        }
+
+        snakeCtx.putImageData(imageData, 0, 0)
+
+        // Draw to main canvas
+        ctx.drawImage(
+          snakeCanvas,
+          0,
+          0, // source x, y
+          snakeCanvas.width,
+          snakeCanvas.height, // source width, height
+          0,
+          0, // destination x, y
+          snakeCanvas.width,
+          snakeCanvas.height, // destination width, height
+        )
+      }
     }
   }
 
@@ -741,6 +944,7 @@ function handleKeyPress(e: KeyboardEvent) {
 
   if (key === 'Escape') {
     e.preventDefault()
+    emit('close')
     return
   }
 
@@ -751,10 +955,11 @@ function handleKeyPress(e: KeyboardEvent) {
     return
   }
 
-  // Start game on arrow key press
+  // Start game on space or arrow key press
   if (
     !gameStarted.value &&
-    (key === 'ArrowUp' ||
+    (key === ' ' ||
+      key === 'ArrowUp' ||
       key === 'ArrowDown' ||
       key === 'ArrowLeft' ||
       key === 'ArrowRight')
@@ -796,7 +1001,7 @@ onMounted(async () => {
   // Initialize offscreen canvases
   initOffscreenCanvases()
 
-  generateFood()
+  resetGame()
 
   // Draw initial score area
   drawScoreArea()

@@ -65,8 +65,7 @@ function drawPixelGrid() {
   // Clear canvas
   ctx.clearRect(0, 0, width, height)
 
-  ctx.fillStyle = '#36540f'
-  ctx.fillStyle = '#497116'
+  ctx.fillStyle = '#717b14'
 
   // Draw vertical lines (every pixel)
   for (let x = scale; x < width; x += scale) {

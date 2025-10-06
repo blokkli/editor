@@ -9,9 +9,9 @@
     >
       <button
         ref="before"
+        :key="'before' + orientationClass"
         class="bk-selection-add-button bk-before"
         :style="beforeAfterStyle"
-        :key="'before' + orientationClass"
         :data-title="beforeTooltip"
         tabindex="-1"
         @click="onClickBefore"
@@ -23,10 +23,10 @@
 
       <button
         ref="after"
+        :key="'after' + orientationClass"
         class="bk-selection-add-button bk-after"
         :style="beforeAfterStyle"
         :data-title="afterTooltip"
-        :key="'after' + orientationClass"
         tabindex="-1"
         @click="onClickAfter"
       >
@@ -88,8 +88,7 @@ const props = defineProps<{
   blocks: DraggableExistingBlock[]
 }>()
 
-const { dom, state, eventBus, types, runtimeConfig, ui, selection, $t } =
-  useBlokkli()
+const { dom, state, eventBus, types, ui, selection, $t } = useBlokkli()
 
 const showOverlay = computed(
   () =>

@@ -2,7 +2,8 @@
   .bk-slide-up-enter-active,
   .bk-slide-up-leave-active {
     @apply transition ease-swing duration-300;
-    .bk-dialog-inner {
+    .bk-dialog-inner,
+    .bk-slide-up-inner {
       @apply transition ease-swing duration-300;
     }
     .bk-dialog-background {
@@ -14,7 +15,8 @@
     .bk-dialog-background {
       @apply opacity-0;
     }
-    .bk-dialog-inner {
+    .bk-dialog-inner,
+    .bk-slide-up-inner {
       @apply translate-y-full lg:translate-y-[400px] lg:opacity-0;
     }
   }

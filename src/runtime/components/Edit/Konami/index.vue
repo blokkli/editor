@@ -1,6 +1,8 @@
 <template>
   <Teleport to="body">
-    <Game v-if="isEnabled" />
+    <BlokkliTransition name="slide-up">
+      <Game v-if="isEnabled" @close="isEnabled = false" />
+    </BlokkliTransition>
   </Teleport>
 </template>
 
@@ -8,8 +10,9 @@
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import Game from './Game/index.vue'
 import { ref } from '#imports'
+import { BlokkliTransition } from '#blokkli/components'
 
-const isEnabled = ref(true)
+const isEnabled = ref(false)
 
 const KONAMI_CODE = [
   'ArrowUp',
@@ -20,8 +23,8 @@ const KONAMI_CODE = [
   'ArrowRight',
   'ArrowLeft',
   'ArrowRight',
-  'KeyB',
-  'KeyA',
+  'b',
+  'a',
 ]
 
 const sequence = ref<string[]>([])

@@ -187,11 +187,11 @@
   }
 
   .bk-selection-add-overlay-list {
-    @apply flex flex-wrap max-h-[60vh] overflow-auto lg:max-h-none;
+    @apply flex flex-wrap max-h-[60vh] overflow-auto lg:max-h-[500px];
     padding: var(--bk-gap);
     max-width: calc(
       var(--bk-gap) * 2 + var(--bk-item-width) * var(--bk-columns) +
-        var(--bk-gap) * (var(--bk-columns) - 1)
+        var(--bk-gap) * (var(--bk-columns) - 1) + 40px
     );
     gap: var(--bk-gap);
     button {

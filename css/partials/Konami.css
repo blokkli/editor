@@ -1,14 +1,16 @@
 .bk.bk-konami {
+  --bg: #859018;
   @apply fixed top-0 left-0 z-[9999999999999] size-full;
   @apply flex flex-col items-center justify-center gap-5;
-  @apply bg-mono-800/80 backdrop-blur-2xl;
 
   .bk-konami-game {
-    @apply relative bg-lime-dark p-20;
+    @apply relative p-60 shadow-2xl outline outline-mono-900 outline-[5px];
+    @apply rounded-[2vw] overflow-hidden;
+    background: var(--bg);
     &:before {
       content: '';
       @apply absolute inset-0 z-[999];
-      box-shadow: inset 0 0 20px 0 rgba(0, 0, 0, 0.3);
+      box-shadow: inset 0 0 50px 0 rgba(0, 0, 0, 0.4);
     }
 
     canvas {
@@ -25,7 +27,8 @@
   }
 
   .bk-konami-game-canvas {
-    @apply relative outline outline-lime-light/10;
+    @apply relative;
+    outline: 1px solid rgba(0, 0, 0, 0.3);
   }
 
   .bk-konami-game-block-icon {

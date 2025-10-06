@@ -14,7 +14,11 @@
           <Icon name="close" />
         </button>
       </div>
-      <div class="bk-selection-add-overlay-list">
+      <div
+        ref="listEl"
+        class="bk-selection-add-overlay-list bk-scrollbar-dark"
+        @wheel="onWheel"
+      >
         <button
           v-for="item in items"
           :key="item.bundle"
@@ -72,6 +76,8 @@ defineEmits<{
 }>()
 
 const el = useTemplateRef('el')
+const listEl = useTemplateRef('listEl')
+let hasScrollbar: null | boolean = null
 
 const { types, ui, plugins, storage } = useBlokkli()
 const favorites = storage.use<string[]>('blockFavorites', [])
@@ -117,6 +123,16 @@ const actions = computed<AddAction[]>(() => {
     return props.bundles.includes(action.itemBundle)
   })
 })
+
+const onWheel = (e: WheelEvent) => {
+  if (hasScrollbar === null) {
+    const element = listEl.value
+    hasScrollbar = element && element.scrollHeight > element.clientHeight
+  }
+  if (hasScrollbar) {
+    e.stopPropagation()
+  }
+}
 
 onMounted(() => {
   ui.hasAddTooltipOpen.value = true

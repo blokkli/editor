@@ -1034,7 +1034,7 @@ export default defineBlokkliEditAdapter((ctx) => {
 
   // Only available in dev mode.
   if (import.meta.dev) {
-    adapter.getLibraryItemEditUrl = function() {
+    adapter.getLibraryItemEditUrl = function () {
       return 'http://localhost:3000/de?blokkliEditing=1'
     }
 

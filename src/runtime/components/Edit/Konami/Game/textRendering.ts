@@ -1,4 +1,4 @@
-import charData from './charmap.txt?raw'
+import charData from './charmap'
 
 type TextAlign = 'left' | 'center' | 'right'
 
