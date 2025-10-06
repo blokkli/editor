@@ -600,9 +600,24 @@ function draw(currentTime: number) {
           snakeCtx.lineTo(x, y)
         }
 
-        snakeCtx.lineWidth = cellSize - 6
-        snakeCtx.setLineDash([6, 8])
+        // Connecting line.
+
+        // Body.
+        snakeCtx.lineWidth = 12
+        snakeCtx.setLineDash([400000, 8])
         snakeCtx.stroke()
+
+        // Body pattern.
+        snakeCtx.strokeStyle = 'white'
+        snakeCtx.lineWidth = 10
+        // snakeCtx.setLineDash([2, 10])
+        snakeCtx.stroke()
+
+        snakeCtx.strokeStyle = 'black'
+        snakeCtx.setLineDash([4, 8])
+        snakeCtx.lineWidth = 6
+        snakeCtx.stroke()
+
         snakeCtx.lineWidth = 2
         snakeCtx.setLineDash([])
         snakeCtx.stroke()
