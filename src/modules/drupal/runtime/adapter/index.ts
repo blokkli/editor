@@ -1069,6 +1069,24 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       }
     }
 
+    if (hasMutation('pbUnschedule')) {
+      adapter.unscheduleEditState = (options) =>
+        useGraphqlMutation('pbUnschedule', {
+          entityType: options.hostEntityType.toUpperCase() as any,
+          entityUuid: options.hostEntityUuid,
+        }).then(mapMutation)
+    }
+
+    if (hasMutation('pbSchedule')) {
+      adapter.scheduleEditState = (options) =>
+        useGraphqlMutation('pbSchedule', {
+          entityType: options.hostEntityType.toUpperCase() as any,
+          entityUuid: options.hostEntityUuid,
+          date: options.date,
+          revisionLogMessage: options.revisionLogMessage,
+        }).then(mapMutation)
+    }
+
     return adapter
   },
 )

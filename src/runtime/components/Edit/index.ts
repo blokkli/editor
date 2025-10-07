@@ -2,6 +2,7 @@ import AddListItem from './AddListItem/index.vue'
 import ConfigForm from './PluginConfigForm/index.vue'
 import DialogModal from './Dialog/index.vue'
 import DiffViewerState from './DiffViewer/State.vue'
+import FormDatepicker from './Form/Datepicker/index.vue'
 import FormGroup from './Form/Group/index.vue'
 import FormItem from './Form/Item/index.vue'
 import FormOverlay from './FormOverlay/index.vue'
@@ -33,6 +34,7 @@ export {
   ConfigForm,
   DialogModal,
   DiffViewerState,
+  FormDatepicker,
   FormGroup,
   FormItem,
   FormOverlay,

@@ -969,7 +969,7 @@ msgstr "Optionen"
 msgctxt "feature_ownership_description"
 msgid "Renders a large button to take ownership of the current edit state."
 msgstr ""
-"Zeigt einen großen Button an, um die Besitzrechte des aktuellen "
+"Zeigt einen grossen Button an, um die Besitzrechte des aktuellen "
 "Bearbeitungsstatus zu übernehmen."
 
 msgctxt "feature_ownership_label"
@@ -1540,6 +1540,10 @@ msgctxt "proxyViewTourText"
 msgid "Displays the content blocks as a structured view."
 msgstr "Stellt die Inhaltsblöcke in strukturierter Form dar."
 
+msgctxt "publishAlreadyScheduledDescription"
+msgid "This page is already scheduled for publishing"
+msgstr "Diese Seite ist bereits zur Veröffentlichung geplant"
+
 msgctxt "publishAndCloseLabel"
 msgid "Publish & Close"
 msgstr "Veröffentlichen & Schliessen"
@@ -1547,6 +1551,18 @@ msgstr "Veröffentlichen & Schliessen"
 msgctxt "publishAndCloseLabelUnpublished"
 msgid "Save & Close"
 msgstr "Speichern & Schliessen"
+
+msgctxt "publishCurrentPage"
+msgid "Current page"
+msgstr "Aktuelle Seite"
+
+msgctxt "publishCurrentlyPublished"
+msgid "Page is published"
+msgstr "Seite ist publiziert"
+
+msgctxt "publishCurrentlyUnpublished"
+msgid "Page is unpublished"
+msgstr "Seite ist nicht publiziert"
 
 msgctxt "publishDescription"
 msgid "Publish all changes."
@@ -1572,9 +1588,155 @@ msgctxt "publishLabelUnpublished"
 msgid "Save"
 msgstr "Speichern"
 
+msgctxt "publishMode"
+msgid "Publish mode"
+msgstr "Veröffentlichungsmodus"
+
+msgctxt "publishModeImmediateDescription"
+msgid "Publish changes immediately"
+msgstr "Änderungen sofort veröffentlichen"
+
+msgctxt "publishModeImmediateTitle"
+msgid "Publish"
+msgstr "Veröffentlichen"
+
+msgctxt "publishModeSaveDescription"
+msgid "Save changes without publishing"
+msgstr "Änderungen speichern ohne veröffentlichen"
+
+msgctxt "publishModeSaveTitle"
+msgid "Save"
+msgstr "Speichern"
+
+msgctxt "publishModeScheduledDescription"
+msgid "Schedule changes for publishing"
+msgstr "Änderungen geplant veröffentlichen"
+
+msgctxt "publishModeScheduledTitle"
+msgid "Schedule"
+msgstr "Planen"
+
+msgctxt "publishName"
+msgid "Name"
+msgstr "Name"
+
+msgctxt "publishPublicationScheduled"
+msgid "Publication scheduled"
+msgstr "Veröffentlichung geplant"
+
+msgctxt "publishPublishContent"
+msgid "Publish content"
+msgstr "Inhalt veröffentlichen"
+
+msgctxt "publishPublishContents"
+msgid "Publish @count contents"
+msgstr "@count Inhalte veröffentlichen"
+
+msgctxt "publishRemainsPublished"
+msgid "Remains published"
+msgstr "Bleibt publiziert"
+
+msgctxt "publishRemainsUnpublished"
+msgid "Remains unpublished"
+msgstr "Bleibt nicht publiziert"
+
+msgctxt "publishRemoveSchedule"
+msgid "Remove schedule"
+msgstr "Planung entfernen"
+
+msgctxt "publishResultPublished"
+msgid "Page is published"
+msgstr "Seite ist publiziert"
+
+msgctxt "publishResultScheduledOn"
+msgid "Page is published on @date"
+msgstr "Seite wird am @date publiziert"
+
+msgctxt "publishResultUnpublished"
+msgid "Page is unpublished"
+msgstr "Seite ist nicht publiziert"
+
+msgctxt "publishRevisionLogMessage"
+msgid "Revision log message"
+msgstr "Protokollnachricht der Revision"
+
+msgctxt "publishRevisionLogMessageDescription"
+msgid "Briefly describe the changes made"
+msgstr "Beschreiben Sie kurz die vorgenommenen Änderungen"
+
+msgctxt "publishSaveContent"
+msgid "Save content"
+msgstr "Inhalt speichern"
+
+msgctxt "publishSaveContents"
+msgid "Save @count contents"
+msgstr "@count Inhalte speichern"
+
+msgctxt "publishScheduleDate"
+msgid "Publication date"
+msgstr "Veröffentlichungsdatum"
+
+msgctxt "publishScheduleDateDescription"
+msgid "Select date and time for scheduled publication"
+msgstr "Wählen Sie Datum und Uhrzeit für die geplante Veröffentlichung"
+
+msgctxt "publishScheduleInSevenDays"
+msgid "In 7 days"
+msgstr "In 7 Tagen"
+
+msgctxt "publishScheduleNextMonday"
+msgid "Next Monday"
+msgstr "Nächster Montag"
+
+msgctxt "publishSchedulePublication"
+msgid "Schedule publication"
+msgstr "Veröffentlichung planen"
+
+msgctxt "publishSchedulePublications"
+msgid "Schedule @count publications"
+msgstr "@count Veröffentlichungen planen"
+
+msgctxt "publishScheduleSuccess"
+msgid "Publication scheduled for @date"
+msgstr "Veröffentlichung für @date geplant"
+
+msgctxt "publishScheduleTime"
+msgid "Time"
+msgstr "Uhrzeit"
+
+msgctxt "publishScheduleTomorrow"
+msgid "Tomorrow"
+msgstr "Morgen"
+
+msgctxt "publishScheduledInfo"
+msgid "You can still make changes until the scheduled publication date."
+msgstr ""
+"Sie können bis zum geplanten Veröffentlichungsdatum noch Änderungen "
+"vornehmen."
+
+msgctxt "publishStatus"
+msgid "Status"
+msgstr "Status"
+
 msgctxt "publishSuccess"
 msgid "Changes published successfully."
 msgstr "Änderungen erfolgreich publiziert."
+
+msgctxt "publishSuccessfullyPublished"
+msgid "Successfully published"
+msgstr "Erfolgreich veröffentlicht"
+
+msgctxt "publishSuccessfullySaved"
+msgid "Successfully saved"
+msgstr "Erfolgreich gespeichert"
+
+msgctxt "publishWillBePublished"
+msgid "Will be published"
+msgstr "Wird publiziert"
+
+msgctxt "publishWillBeScheduled"
+msgid "Will be scheduled"
+msgstr "Wird geplant"
 
 msgctxt "responsivePreviewCustomViewport"
 msgid "Custom"

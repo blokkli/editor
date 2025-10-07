@@ -248,6 +248,40 @@ export type BlokkliAdapterPublishOptions = {
   revisionLogMessage?: string
 }
 
+export type BlokkliAdapterScheduleOptions = {
+  /**
+   * The host entity type.
+   */
+  hostEntityType: string
+
+  /**
+   * The host entity UUID.
+   */
+  hostEntityUuid: string
+
+  /**
+   * The revision log message.
+   */
+  revisionLogMessage?: string
+
+  /**
+   * The date and time when the edit state should be published.
+   */
+  date: string
+}
+
+export type BlokkliAdapterUnscheduleOptions = {
+  /**
+   * The host entity type.
+   */
+  hostEntityType: string
+
+  /**
+   * The host entity UUID.
+   */
+  hostEntityUuid: string
+}
+
 export interface BlokkliAdapter<T> {
   /**
    * Load the state.
@@ -452,6 +486,20 @@ export interface BlokkliAdapter<T> {
    */
   publish?: (
     options: BlokkliAdapterPublishOptions,
+  ) => Promise<MutationResponseLike<T | undefined | null>>
+
+  /**
+   * Schedule an edit state.
+   */
+  scheduleEditState?: (
+    options: BlokkliAdapterScheduleOptions,
+  ) => Promise<MutationResponseLike<T | undefined | null>>
+
+  /**
+   * Unschedule an already scheduled edit state.
+   */
+  unscheduleEditState?: (
+    options: BlokkliAdapterUnscheduleOptions,
   ) => Promise<MutationResponseLike<T | undefined | null>>
 
   /**

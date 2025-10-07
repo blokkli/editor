@@ -36,6 +36,8 @@ import type { Block } from './mock/state/Block/Block'
 import { FieldReference } from './mock/state/Field/Reference'
 import type { MutationAddArgs } from './mock/plugins/mutations/Mutation/Add'
 
+const ENALBE_EDIT_STATES = false
+
 function getRandomNumberInRange(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
@@ -938,15 +940,66 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     getPublishOptions() {
+      const scheduleKey = `blokkli_schedule_${ctx.value.entityType}_${ctx.value.entityUuid}`
+      const scheduleData = localStorage.getItem(scheduleKey)
+
+      let publishOn: string | undefined
+      let revisionLogMessage: string | undefined
+
+      if (scheduleData) {
+        try {
+          const parsed = JSON.parse(scheduleData)
+          publishOn = parsed.date
+          revisionLogMessage = parsed.revisionLogMessage
+        } catch {
+          // Fallback for old format (plain string)
+          publishOn = scheduleData
+        }
+      }
+
       return Promise.resolve({
         canPublish: true,
         isRevisionable: true,
         hasRevisionLogMessage: true,
         lastChanged: '1725890401',
+        canSchedule: true,
+        publishOn,
+        revisionLogMessage,
+      })
+    },
+
+    scheduleEditState(options) {
+      const scheduleKey = `blokkli_schedule_${options.hostEntityType}_${options.hostEntityUuid}`
+      const scheduleData = {
+        date: options.date,
+        revisionLogMessage: options.revisionLogMessage,
+      }
+      localStorage.setItem(scheduleKey, JSON.stringify(scheduleData))
+
+      return Promise.resolve({
+        success: true,
+        state: null,
+      })
+    },
+
+    unscheduleEditState(options) {
+      const scheduleKey = `blokkli_schedule_${options.hostEntityType}_${options.hostEntityUuid}`
+      localStorage.removeItem(scheduleKey)
+
+      return Promise.resolve({
+        success: true,
+        state: null,
       })
     },
 
     getEditStates() {
+      if (!ENALBE_EDIT_STATES) {
+        return Promise.resolve({
+          items: [],
+          total: 0,
+          perPage: 16,
+        })
+      }
       return Promise.resolve({
         items: [
           {

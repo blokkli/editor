@@ -857,7 +857,7 @@
   },
   "feature_ownership_description": {
     "source": "Renders a large button to take ownership of the current edit state.",
-    "translation": "Zeigt einen großen Button an, um die Besitzrechte des aktuellen Bearbeitungsstatus zu übernehmen."
+    "translation": "Zeigt einen grossen Button an, um die Besitzrechte des aktuellen Bearbeitungsstatus zu übernehmen."
   },
   "feature_ownership_label": {
     "source": "Ownership",
@@ -1359,6 +1359,10 @@
     "source": "Displays the content blocks as a structured view.",
     "translation": "Stellt die Inhaltsblöcke in strukturierter Form dar."
   },
+  "publishAlreadyScheduledDescription": {
+    "source": "This page is already scheduled for publishing",
+    "translation": "Diese Seite ist bereits zur Veröffentlichung geplant"
+  },
   "publishAndCloseLabel": {
     "source": "Publish & Close",
     "translation": "Veröffentlichen & Schliessen"
@@ -1366,6 +1370,18 @@
   "publishAndCloseLabelUnpublished": {
     "source": "Save & Close",
     "translation": "Speichern & Schliessen"
+  },
+  "publishCurrentPage": {
+    "source": "Current page",
+    "translation": "Aktuelle Seite"
+  },
+  "publishCurrentlyPublished": {
+    "source": "Page is published",
+    "translation": "Seite ist publiziert"
+  },
+  "publishCurrentlyUnpublished": {
+    "source": "Page is unpublished",
+    "translation": "Seite ist nicht publiziert"
   },
   "publishDescription": {
     "source": "Publish all changes.",
@@ -1391,9 +1407,153 @@
     "source": "Save",
     "translation": "Speichern"
   },
+  "publishMode": {
+    "source": "Publish mode",
+    "translation": "Veröffentlichungsmodus"
+  },
+  "publishModeImmediateDescription": {
+    "source": "Publish changes immediately",
+    "translation": "Änderungen sofort veröffentlichen"
+  },
+  "publishModeImmediateTitle": {
+    "source": "Publish",
+    "translation": "Veröffentlichen"
+  },
+  "publishModeSaveDescription": {
+    "source": "Save changes without publishing",
+    "translation": "Änderungen speichern ohne veröffentlichen"
+  },
+  "publishModeSaveTitle": {
+    "source": "Save",
+    "translation": "Speichern"
+  },
+  "publishModeScheduledDescription": {
+    "source": "Schedule changes for publishing",
+    "translation": "Änderungen geplant veröffentlichen"
+  },
+  "publishModeScheduledTitle": {
+    "source": "Schedule",
+    "translation": "Planen"
+  },
+  "publishName": {
+    "source": "Name",
+    "translation": "Name"
+  },
+  "publishPublicationScheduled": {
+    "source": "Publication scheduled",
+    "translation": "Veröffentlichung geplant"
+  },
+  "publishPublishContent": {
+    "source": "Publish content",
+    "translation": "Inhalt veröffentlichen"
+  },
+  "publishPublishContents": {
+    "source": "Publish @count contents",
+    "translation": "@count Inhalte veröffentlichen"
+  },
+  "publishRemainsPublished": {
+    "source": "Remains published",
+    "translation": "Bleibt publiziert"
+  },
+  "publishRemainsUnpublished": {
+    "source": "Remains unpublished",
+    "translation": "Bleibt nicht publiziert"
+  },
+  "publishRemoveSchedule": {
+    "source": "Remove schedule",
+    "translation": "Planung entfernen"
+  },
+  "publishResultPublished": {
+    "source": "Page is published",
+    "translation": "Seite ist publiziert"
+  },
+  "publishResultScheduledOn": {
+    "source": "Page is published on @date",
+    "translation": "Seite wird am @date publiziert"
+  },
+  "publishResultUnpublished": {
+    "source": "Page is unpublished",
+    "translation": "Seite ist nicht publiziert"
+  },
+  "publishRevisionLogMessage": {
+    "source": "Revision log message",
+    "translation": "Protokollnachricht der Revision"
+  },
+  "publishRevisionLogMessageDescription": {
+    "source": "Briefly describe the changes made",
+    "translation": "Beschreiben Sie kurz die vorgenommenen Änderungen"
+  },
+  "publishSaveContent": {
+    "source": "Save content",
+    "translation": "Inhalt speichern"
+  },
+  "publishSaveContents": {
+    "source": "Save @count contents",
+    "translation": "@count Inhalte speichern"
+  },
+  "publishScheduleDate": {
+    "source": "Publication date",
+    "translation": "Veröffentlichungsdatum"
+  },
+  "publishScheduleDateDescription": {
+    "source": "Select date and time for scheduled publication",
+    "translation": "Wählen Sie Datum und Uhrzeit für die geplante Veröffentlichung"
+  },
+  "publishScheduleInSevenDays": {
+    "source": "In 7 days",
+    "translation": "In 7 Tagen"
+  },
+  "publishScheduleNextMonday": {
+    "source": "Next Monday",
+    "translation": "Nächster Montag"
+  },
+  "publishSchedulePublication": {
+    "source": "Schedule publication",
+    "translation": "Veröffentlichung planen"
+  },
+  "publishSchedulePublications": {
+    "source": "Schedule @count publications",
+    "translation": "@count Veröffentlichungen planen"
+  },
+  "publishScheduleSuccess": {
+    "source": "Publication scheduled for @date",
+    "translation": "Veröffentlichung für @date geplant"
+  },
+  "publishScheduleTime": {
+    "source": "Time",
+    "translation": "Uhrzeit"
+  },
+  "publishScheduleTomorrow": {
+    "source": "Tomorrow",
+    "translation": "Morgen"
+  },
+  "publishScheduledInfo": {
+    "source": "You can still make changes until the scheduled publication date.",
+    "translation": "Sie können bis zum geplanten Veröffentlichungsdatum noch Änderungen vornehmen."
+  },
+  "publishStatus": {
+    "source": "Status",
+    "translation": "Status"
+  },
   "publishSuccess": {
     "source": "Changes published successfully.",
     "translation": "Änderungen erfolgreich publiziert."
+  },
+  "publishSuccessfullyPublished": {
+    "source": "Successfully published",
+    "translation": "Erfolgreich veröffentlicht"
+  },
+  "publishSuccessfullySaved": {
+    "source": "Successfully saved",
+    "translation": "Erfolgreich gespeichert"
+  },
+  "publishWillBePublished": {
+    "source": "Will be published",
+    "translation": "Wird publiziert"
+  },
+  "publishWillBeScheduled": {
+    "source": "Will be scheduled",
+    "translation": "Wird geplant"
   },
   "responsivePreviewCustomViewport": {
     "source": "Custom",

@@ -1510,12 +1510,28 @@ msgctxt "proxyViewTourText"
 msgid "Displays the content blocks as a structured view."
 msgstr ""
 
+msgctxt "publishAlreadyScheduledDescription"
+msgid "This page is already scheduled for publishing"
+msgstr ""
+
 msgctxt "publishAndCloseLabel"
 msgid "Publish & Close"
 msgstr ""
 
 msgctxt "publishAndCloseLabelUnpublished"
 msgid "Save & Close"
+msgstr ""
+
+msgctxt "publishCurrentPage"
+msgid "Current page"
+msgstr ""
+
+msgctxt "publishCurrentlyPublished"
+msgid "Page is published"
+msgstr ""
+
+msgctxt "publishCurrentlyUnpublished"
+msgid "Page is unpublished"
 msgstr ""
 
 msgctxt "publishDescription"
@@ -1542,9 +1558,153 @@ msgctxt "publishLabelUnpublished"
 msgid "Save"
 msgstr ""
 
+msgctxt "publishMode"
+msgid "Publish mode"
+msgstr ""
+
+msgctxt "publishModeImmediateDescription"
+msgid "Publish changes immediately"
+msgstr ""
+
+msgctxt "publishModeImmediateTitle"
+msgid "Publish"
+msgstr ""
+
+msgctxt "publishModeSaveDescription"
+msgid "Save changes without publishing"
+msgstr ""
+
+msgctxt "publishModeSaveTitle"
+msgid "Save"
+msgstr ""
+
+msgctxt "publishModeScheduledDescription"
+msgid "Schedule changes for publishing"
+msgstr ""
+
+msgctxt "publishModeScheduledTitle"
+msgid "Schedule"
+msgstr ""
+
+msgctxt "publishName"
+msgid "Name"
+msgstr ""
+
+msgctxt "publishPublicationScheduled"
+msgid "Publication scheduled"
+msgstr ""
+
+msgctxt "publishPublishContent"
+msgid "Publish content"
+msgstr ""
+
+msgctxt "publishPublishContents"
+msgid "Publish @count contents"
+msgstr ""
+
+msgctxt "publishRemainsPublished"
+msgid "Remains published"
+msgstr ""
+
+msgctxt "publishRemainsUnpublished"
+msgid "Remains unpublished"
+msgstr ""
+
+msgctxt "publishRemoveSchedule"
+msgid "Remove schedule"
+msgstr ""
+
+msgctxt "publishResultPublished"
+msgid "Page is published"
+msgstr ""
+
+msgctxt "publishResultScheduledOn"
+msgid "Page is published on @date"
+msgstr ""
+
+msgctxt "publishResultUnpublished"
+msgid "Page is unpublished"
+msgstr ""
+
+msgctxt "publishRevisionLogMessage"
+msgid "Revision log message"
+msgstr ""
+
+msgctxt "publishRevisionLogMessageDescription"
+msgid "Briefly describe the changes made"
+msgstr ""
+
+msgctxt "publishSaveContent"
+msgid "Save content"
+msgstr ""
+
+msgctxt "publishSaveContents"
+msgid "Save @count contents"
+msgstr ""
+
+msgctxt "publishScheduleDate"
+msgid "Publication date"
+msgstr ""
+
+msgctxt "publishScheduleDateDescription"
+msgid "Select date and time for scheduled publication"
+msgstr ""
+
+msgctxt "publishScheduleInSevenDays"
+msgid "In 7 days"
+msgstr ""
+
+msgctxt "publishScheduleNextMonday"
+msgid "Next Monday"
+msgstr ""
+
+msgctxt "publishSchedulePublication"
+msgid "Schedule publication"
+msgstr ""
+
+msgctxt "publishSchedulePublications"
+msgid "Schedule @count publications"
+msgstr ""
+
+msgctxt "publishScheduleSuccess"
+msgid "Publication scheduled for @date"
+msgstr ""
+
+msgctxt "publishScheduleTime"
+msgid "Time"
+msgstr ""
+
+msgctxt "publishScheduleTomorrow"
+msgid "Tomorrow"
+msgstr ""
+
+msgctxt "publishScheduledInfo"
+msgid "You can still make changes until the scheduled publication date."
+msgstr ""
+
+msgctxt "publishStatus"
+msgid "Status"
+msgstr ""
+
 msgctxt "publishSuccess"
 msgid "Changes published successfully."
 msgstr "Modifications publiées avec succès."
+
+msgctxt "publishSuccessfullyPublished"
+msgid "Successfully published"
+msgstr ""
+
+msgctxt "publishSuccessfullySaved"
+msgid "Successfully saved"
+msgstr ""
+
+msgctxt "publishWillBePublished"
+msgid "Will be published"
+msgstr ""
+
+msgctxt "publishWillBeScheduled"
+msgid "Will be scheduled"
+msgstr ""
 
 msgctxt "responsivePreviewCustomViewport"
 msgid "Custom"

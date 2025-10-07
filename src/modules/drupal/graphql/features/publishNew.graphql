@@ -31,10 +31,7 @@ query pbPublishOptions(
     langcode: $langcode
   ) {
     publishOptions {
-      canPublish
-      isRevisionable
-      hasRevisionLogMessage
-      lastChanged
+      ...paragraphsBlokkliPublishOptions
     }
   }
 }

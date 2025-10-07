@@ -250,6 +250,26 @@ export default defineBlokkliModule({
       queryFields.has('pbSearchEditStates')
     ) {
       addGraphqlDocument('features/publishNew.graphql')
+      const publishOptionsFragmentFields = [
+        'canPublish',
+        'isRevisionable',
+        'hasRevisionLogMessage',
+        'lastChanged',
+      ]
+
+      // paragraphs_blokkli_scheduler is enabled.
+      // Add the scheduler related GraphQL mutations.
+      if (editMutationStateFields.has('unschedule')) {
+        addGraphqlDocument('features/scheduler.graphql')
+        publishOptionsFragmentFields.push('canSchedule', 'publishOn')
+      }
+
+      const publishOptionsFragment = `
+fragment paragraphsBlokkliPublishOptions on ParagraphsBlokkliPublishOptions {
+  ${publishOptionsFragmentFields.join('\n  ')}
+}
+`
+      graphql.addDocument('blokkli:publishOptions', publishOptionsFragment)
     } else {
       addGraphqlDocument('features/publish.graphql')
     }

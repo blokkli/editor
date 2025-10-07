@@ -58,6 +58,7 @@ const emit = defineEmits<{
 
 const DEBUG_ICONS = false
 const DEBUG_GAME = false
+const INIT_EATEN = 150
 
 const largeIconSize = 32
 const blackColor = 'black'
@@ -161,7 +162,7 @@ let logoCanvas: OffscreenCanvas | null = null
 let lastScore = -1
 let lastBlocksEaten = -1
 
-const cellMoveDuration = 200 // milliseconds per cell movement
+const cellMoveDuration = 250 // milliseconds per cell movement
 
 // Generate random food position
 function generateFood() {
@@ -284,6 +285,13 @@ function resetGame() {
     blocksEaten.value = 10
     score.value = 10 * 100 // Perfect score for each block
     gameStarted.value = true
+  }
+
+  if (INIT_EATEN) {
+    for (let i = 0; i < INIT_EATEN; i++) {
+      const head = snake.value[0]!
+      snake.value.push({ x: head.x - i - 1, y: head.y })
+    }
   }
 
   generateFood()

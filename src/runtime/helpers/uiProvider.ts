@@ -18,6 +18,13 @@ import { defaultLanguage, forceDefaultLanguage } from '#blokkli-build/config'
 
 const CLASS_PROXY_MODE = 'bk-is-proxy-mode'
 
+const localeMap: Record<string, string> = {
+  de: 'de-CH',
+  fr: 'fr-CH',
+  it: 'it-CH',
+  en: 'en-GB',
+}
+
 export type UiProvider = {
   rootElement: () => HTMLElement
   artboardElement: () => HTMLElement
@@ -62,6 +69,12 @@ export type UiProvider = {
   selectionTopLeft: Ref<Coord>
 
   interfaceLanguage: ComputedRef<string>
+  locale: ComputedRef<string>
+
+  formatDate: (
+    date: string | Date,
+    options?: Intl.DateTimeFormatOptions,
+  ) => string
 
   getAbsoluteElementRect: (
     v: HTMLElement | Rectangle,
@@ -87,6 +100,11 @@ export default function (
 
   const interfaceLanguage = computed<string>(() => {
     return forceDefaultLanguage ? defaultLanguage : context.value.language
+  })
+
+  const locale = computed<string>(() => {
+    const lang = interfaceLanguage.value
+    return localeMap[lang] || lang
   })
 
   const isProxyMode = ref(false)
@@ -341,6 +359,23 @@ export default function (
     transformLabel.value = label || ''
   }
 
+  function formatDate(
+    date: string | Date,
+    options?: Intl.DateTimeFormatOptions,
+  ): string {
+    const dateObj = typeof date === 'string' ? new Date(date) : date
+
+    const defaultOptions: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    }
+
+    return dateObj.toLocaleString(locale.value, options || defaultOptions)
+  }
+
   addElementClasses(document.documentElement, 'bk-is-animating', isAnimating)
 
   addElementClasses(
@@ -411,6 +446,8 @@ export default function (
     getAbsoluteElementRect,
     getViewportRelativeRect,
     interfaceLanguage,
+    locale,
+    formatDate,
     hasDialogOpen,
     hasTransformOverlayOpen,
     hasAddTooltipOpen,

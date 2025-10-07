@@ -4,7 +4,8 @@ export default defineNuxtConfig({
   modules: ['nuxt-graphql-middleware'],
   graphqlMiddleware: {
     graphqlEndpoint: 'https://example.com',
-    schemaPath: './../blokkli_starterkit/frontend/schema.graphql',
+    // schemaPath: './../blokkli_starterkit/frontend/schema.graphql',
+    schemaPath: './../bs.ch/frontend/schema.graphql',
     downloadSchema: false,
     autoImportPatterns: [
       './src/modules/drupal/graphql/base/*.graphql',
@@ -18,10 +19,23 @@ export default defineNuxtConfig({
       './src/modules/drupal/graphql/features/preview-grant.graphql',
       // './src/modules/drupal/graphql/features/publish.graphql',
       './src/modules/drupal/graphql/features/publishNew.graphql',
+      './src/modules/drupal/graphql/features/scheduler.graphql',
       './src/modules/drupal/graphql/features/search.graphql',
       './src/modules/drupal/graphql/features/transform.graphql',
       './src/modules/drupal/graphql/features/transform_host.graphql',
       './drupal/mocks.graphql',
+    ],
+    documents: [
+      `
+fragment paragraphsBlokkliPublishOptions on ParagraphsBlokkliPublishOptions {
+  canPublish
+  isRevisionable
+  hasRevisionLogMessage
+  lastChanged
+  canSchedule
+  publishOn
+}
+`,
     ],
   },
   typescript: {

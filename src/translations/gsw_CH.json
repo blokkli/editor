@@ -1359,6 +1359,10 @@
     "source": "Displays the content blocks as a structured view.",
     "translation": "Zeigt d'Inhaltblöck als strukturierti Aasicht aa."
   },
+  "publishAlreadyScheduledDescription": {
+    "source": "This page is already scheduled for publishing",
+    "translation": ""
+  },
   "publishAndCloseLabel": {
     "source": "Publish & Close",
     "translation": "Publiziere & Zuemache"
@@ -1366,6 +1370,18 @@
   "publishAndCloseLabelUnpublished": {
     "source": "Save & Close",
     "translation": "Speichere & Zuemache"
+  },
+  "publishCurrentPage": {
+    "source": "Current page",
+    "translation": ""
+  },
+  "publishCurrentlyPublished": {
+    "source": "Page is published",
+    "translation": ""
+  },
+  "publishCurrentlyUnpublished": {
+    "source": "Page is unpublished",
+    "translation": ""
   },
   "publishDescription": {
     "source": "Publish all changes.",
@@ -1391,9 +1407,153 @@
     "source": "Save",
     "translation": "Speichere"
   },
+  "publishMode": {
+    "source": "Publish mode",
+    "translation": ""
+  },
+  "publishModeImmediateDescription": {
+    "source": "Publish changes immediately",
+    "translation": ""
+  },
+  "publishModeImmediateTitle": {
+    "source": "Publish",
+    "translation": ""
+  },
+  "publishModeSaveDescription": {
+    "source": "Save changes without publishing",
+    "translation": ""
+  },
+  "publishModeSaveTitle": {
+    "source": "Save",
+    "translation": ""
+  },
+  "publishModeScheduledDescription": {
+    "source": "Schedule changes for publishing",
+    "translation": ""
+  },
+  "publishModeScheduledTitle": {
+    "source": "Schedule",
+    "translation": ""
+  },
+  "publishName": {
+    "source": "Name",
+    "translation": ""
+  },
+  "publishPublicationScheduled": {
+    "source": "Publication scheduled",
+    "translation": ""
+  },
+  "publishPublishContent": {
+    "source": "Publish content",
+    "translation": ""
+  },
+  "publishPublishContents": {
+    "source": "Publish @count contents",
+    "translation": ""
+  },
+  "publishRemainsPublished": {
+    "source": "Remains published",
+    "translation": ""
+  },
+  "publishRemainsUnpublished": {
+    "source": "Remains unpublished",
+    "translation": ""
+  },
+  "publishRemoveSchedule": {
+    "source": "Remove schedule",
+    "translation": ""
+  },
+  "publishResultPublished": {
+    "source": "Page is published",
+    "translation": ""
+  },
+  "publishResultScheduledOn": {
+    "source": "Page is published on @date",
+    "translation": ""
+  },
+  "publishResultUnpublished": {
+    "source": "Page is unpublished",
+    "translation": ""
+  },
+  "publishRevisionLogMessage": {
+    "source": "Revision log message",
+    "translation": ""
+  },
+  "publishRevisionLogMessageDescription": {
+    "source": "Briefly describe the changes made",
+    "translation": ""
+  },
+  "publishSaveContent": {
+    "source": "Save content",
+    "translation": ""
+  },
+  "publishSaveContents": {
+    "source": "Save @count contents",
+    "translation": ""
+  },
+  "publishScheduleDate": {
+    "source": "Publication date",
+    "translation": ""
+  },
+  "publishScheduleDateDescription": {
+    "source": "Select date and time for scheduled publication",
+    "translation": ""
+  },
+  "publishScheduleInSevenDays": {
+    "source": "In 7 days",
+    "translation": ""
+  },
+  "publishScheduleNextMonday": {
+    "source": "Next Monday",
+    "translation": ""
+  },
+  "publishSchedulePublication": {
+    "source": "Schedule publication",
+    "translation": ""
+  },
+  "publishSchedulePublications": {
+    "source": "Schedule @count publications",
+    "translation": ""
+  },
+  "publishScheduleSuccess": {
+    "source": "Publication scheduled for @date",
+    "translation": ""
+  },
+  "publishScheduleTime": {
+    "source": "Time",
+    "translation": ""
+  },
+  "publishScheduleTomorrow": {
+    "source": "Tomorrow",
+    "translation": ""
+  },
+  "publishScheduledInfo": {
+    "source": "You can still make changes until the scheduled publication date.",
+    "translation": ""
+  },
+  "publishStatus": {
+    "source": "Status",
+    "translation": ""
+  },
   "publishSuccess": {
     "source": "Changes published successfully.",
     "translation": "Änderige erfolgriich publiziert."
+  },
+  "publishSuccessfullyPublished": {
+    "source": "Successfully published",
+    "translation": ""
+  },
+  "publishSuccessfullySaved": {
+    "source": "Successfully saved",
+    "translation": ""
+  },
+  "publishWillBePublished": {
+    "source": "Will be published",
+    "translation": ""
+  },
+  "publishWillBeScheduled": {
+    "source": "Will be scheduled",
+    "translation": ""
   },
   "responsivePreviewCustomViewport": {
     "source": "Custom",

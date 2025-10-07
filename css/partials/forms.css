@@ -140,7 +140,7 @@
     @container (min-width: 700px) {
       .bk-form-group.bk-is-horizontal {
         .bk-form-group-title {
-          @apply flex items-center !mt-10;
+          @apply flex items-center !mt-0;
         }
         .bk-form-item:last-child {
           @apply pb-0;

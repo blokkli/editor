@@ -1,0 +1,86 @@
+.bk {
+  .bk-datepicker {
+    @apply select-none border border-mono-300 rounded-md;
+  }
+
+  .bk-datepicker-header {
+    @apply flex items-center justify-between mb-15 p-10 border-b border-b-mono-300;
+  }
+
+  .bk-datepicker-nav {
+    @apply size-30 flex items-center justify-center rounded-md;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+    &:not([disabled]) {
+      @apply hover:bg-mono-100;
+    }
+
+    .bk-icon {
+      @apply size-20;
+      svg {
+        @apply size-full fill-mono-700;
+      }
+    }
+  }
+
+  .bk-datepicker-title {
+    @apply font-bold text-lg text-mono-900;
+  }
+
+  .bk-datepicker-weekdays,
+  .bk-datepicker-days {
+    @apply px-10;
+  }
+
+  .bk-datepicker-weekdays {
+    @apply grid grid-cols-7;
+  }
+
+  .bk-datepicker-weekday {
+    @apply text-center text-sm font-semibold text-mono-600;
+    @apply h-30 flex items-center justify-center;
+  }
+
+  .bk-datepicker-days {
+    @apply grid grid-cols-7 pb-10;
+  }
+
+  .bk-datepicker-day {
+    @apply flex items-center justify-center;
+    @apply disabled:cursor-not-allowed py-3;
+  }
+
+  .bk-datepicker-day-inner {
+    @apply size-30 flex items-center justify-center rounded-full !leading-none;
+    @apply text-sm font-medium text-mono-900 text-center;
+    @apply border border-transparent;
+    @apply transition-colors;
+
+    &.bk-is-other-month {
+      @apply text-mono-400;
+    }
+
+    &.bk-is-today {
+      @apply text-accent-900 border-mono-300;
+    }
+
+    &.bk-is-selected {
+      @apply bg-accent-600 text-white font-bold;
+    }
+
+    &.bk-is-disabled {
+      @apply text-mono-300;
+    }
+  }
+
+  .bk-datepicker-day:hover .bk-datepicker-day-inner {
+    @apply bg-mono-200;
+  }
+
+  .bk-datepicker-day:hover .bk-datepicker-day-inner.bk-is-selected {
+    @apply bg-accent-700;
+  }
+
+  .bk-datepicker-day:hover .bk-datepicker-day-inner.bk-is-disabled {
+    @apply bg-transparent;
+  }
+}

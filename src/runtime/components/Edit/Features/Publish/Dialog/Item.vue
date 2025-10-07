@@ -3,6 +3,7 @@
     :class="{
       'bk-is-success': isSuccess,
       'bk-is-error': isError,
+      'bk-is-warning': isScheduled && isSelected && !isSuccess,
     }"
   >
     <td>
@@ -24,7 +25,9 @@
             {{ bundleLabel }}
           </div>
         </div>
-        <div v-if="isCurrent" class="bk-pill">Aktuelle Seite</div>
+        <div v-if="isCurrent" class="bk-pill">
+          {{ $t('publishCurrentPage', 'Current page') }}
+        </div>
       </label>
     </td>
     <td>
@@ -36,7 +39,8 @@
         <span
           class="bk-status-indicator"
           :class="{
-            'bk-is-success': newStatus.status,
+            'bk-is-success': newStatus.status === true,
+            'bk-is-warning': newStatus.status === 'scheduled',
           }"
         />
       </div>
@@ -55,7 +59,8 @@
           <span
             class="bk-status-indicator"
             :class="{
-              'bk-is-success': newStatus.status,
+              'bk-is-success': newStatus.status === true,
+              'bk-is-warning': newStatus.status === 'scheduled',
             }"
           />
         </template>
@@ -65,10 +70,12 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from '#imports'
+import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/components'
 import type { GetEditStatesItem } from '#blokkli/types'
 import type { MutationStatus } from './types'
+
+const { $t } = useBlokkli()
 
 const props = defineProps<
   GetEditStatesItem & {
@@ -77,6 +84,8 @@ const props = defineProps<
     shouldPublish: boolean
     isMutating: boolean
     mutationStatus?: MutationStatus
+    isScheduled: boolean
+    scheduleDate: string
   }
 >()
 
@@ -103,10 +112,12 @@ const isError = computed(
 
 const mutationStatusLabel = computed(() => {
   if (isSuccess.value) {
-    if (props.entity.status && props.shouldPublish) {
-      return 'Erfolgreich publiziert'
+    if (props.isScheduled) {
+      return $t('publishPublicationScheduled', 'Publication scheduled')
+    } else if (props.entity.status && props.shouldPublish) {
+      return $t('publishSuccessfullyPublished', 'Successfully published')
     } else {
-      return 'Erfolgreich gespeichert'
+      return $t('publishSuccessfullySaved', 'Successfully saved')
     }
   }
 
@@ -119,18 +130,39 @@ const title = computed(() => props.entity.label)
 const bundleLabel = computed(() => props.entity.bundleLabel)
 
 const newStatus = computed(() => {
-  if (isSelected.value && isCurrentlyPublished.value && !props.shouldPublish) {
-    return { label: 'bleibt publiziert', status: true }
+  if (isSelected.value && props.isScheduled) {
+    return {
+      label: $t('publishWillBeScheduled', 'Will be scheduled'),
+      status: 'scheduled' as const,
+    }
+  } else if (
+    isSelected.value &&
+    isCurrentlyPublished.value &&
+    !props.shouldPublish
+  ) {
+    return {
+      label: $t('publishRemainsPublished', 'Remains published'),
+      status: true,
+    }
   } else if (
     isSelected.value &&
     !isCurrentlyPublished.value &&
     props.shouldPublish
   ) {
-    return { label: 'wird publiziert', status: true }
+    return {
+      label: $t('publishWillBePublished', 'Will be published'),
+      status: true,
+    }
   } else if (isSelected.value && isCurrentlyPublished.value) {
-    return { label: 'bleibt publiziert', status: true }
+    return {
+      label: $t('publishRemainsPublished', 'Remains published'),
+      status: true,
+    }
   } else if (isSelected.value && !isCurrentlyPublished.value) {
-    return { label: 'bleibt unpubliziert', status: false }
+    return {
+      label: $t('publishRemainsUnpublished', 'Remains unpublished'),
+      status: false,
+    }
   }
   return { label: '', status: false }
 })

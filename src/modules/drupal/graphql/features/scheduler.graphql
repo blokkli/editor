@@ -1,0 +1,31 @@
+mutation pbUnschedule(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: unschedule {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}
+
+mutation pbSchedule(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $date: String!
+  $revisionLogMessage: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: schedule(date: $date, revisionLogMessage: $revisionLogMessage) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

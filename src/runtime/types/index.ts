@@ -1681,6 +1681,9 @@ export type PublishOptions = {
   isRevisionable: boolean
   hasRevisionLogMessage: boolean
   lastChanged?: string | null
+  canSchedule?: boolean
+  publishOn?: string
+  revisionLogMessage?: string
 }
 
 export type GetEditStatesItem = {
