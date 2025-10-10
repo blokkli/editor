@@ -122,7 +122,7 @@ export function defineBlokkli<
     // component.
     const optionKey =
       bundle === BUNDLE_BLOKKLI_FRAGMENT
-        ? 'fragment:' + item?.value.fragmentName + '__default'
+        ? 'fragment:' + item?.value.fragmentName
         : identifier
 
     const runtimeOptionDefinitions =
