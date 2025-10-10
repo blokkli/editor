@@ -17,6 +17,10 @@ fragment paragraphsBlokkliEditState on ParagraphsBlokkliEditState {
     }
   }
 
+  publishOptions {
+    ...paragraphsBlokkliPublishOptions
+  }
+
   entity {
     status
     label

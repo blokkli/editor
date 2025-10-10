@@ -1,5 +1,10 @@
 <template>
-  <div class="bk-datepicker">
+  <div
+    class="bk-datepicker"
+    :class="{
+      'bk-is-invalid': error,
+    }"
+  >
     <div class="bk-datepicker-header">
       <button
         type="button"
@@ -7,7 +12,7 @@
         :disabled="!canGoPrevious"
         @click="previousMonth"
       >
-        <Icon name="chevron-left" />
+        <Icon name="arrow-left" />
       </button>
       <div class="bk-datepicker-title">{{ monthName }} {{ currentYear }}</div>
       <button
@@ -16,7 +21,7 @@
         :disabled="!canGoNext"
         @click="nextMonth"
       >
-        <Icon name="chevron-right" />
+        <Icon name="arrow-right" />
       </button>
     </div>
     <div class="bk-datepicker-weekdays">
@@ -57,6 +62,7 @@ const props = defineProps<{
   min?: string
   max?: string
   disabled?: boolean
+  error?: boolean
 }>()
 
 const { ui } = useBlokkli()

@@ -6,6 +6,7 @@ import type {
   BlockBundleDefinition,
   HostTransformPlugin,
   PluginConfigInput,
+  PublishOptions,
   TransformPlugin,
   TranslationState,
 } from '#blokkli/types'
@@ -21,11 +22,26 @@ import type {
   ParagraphsBlokkliCommentFragment,
   ParagraphsBlokkliConfigInputFragment,
   ParagraphsBlokkliEditStateFragment,
+  ParagraphsBlokkliPublishOptionsFragment,
 } from '#graphql-operations'
 import { ParagraphsBlokkliRemoteVideoProvider } from '#graphql-operations'
 import type { Mutation, Query } from '#nuxt-graphql-middleware/operation-types'
 
 type DrupalAdapter = BlokkliAdapter<ParagraphsBlokkliEditStateFragment>
+
+function mapPublishOptions(
+  publishOptions: ParagraphsBlokkliPublishOptionsFragment,
+): PublishOptions {
+  return {
+    canPublish: !!publishOptions.canPublish,
+    isRevisionable: !!publishOptions.isRevisionable,
+    hasRevisionLogMessage: !!publishOptions.hasRevisionLogMessage,
+    lastChanged: publishOptions.lastChanged ?? null,
+    canSchedule: !!publishOptions.canSchedule,
+    publishOn: publishOptions.publishOn ?? null,
+    revisionLogMessage: publishOptions.revisionLogMessage ?? null,
+  }
+}
 
 function mapPluginConfigInputs(
   inputs: ParagraphsBlokkliConfigInputFragment[],
@@ -175,6 +191,11 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       const violations = state.mutatedState?.violations || []
       const entity = state.entity
 
+      if (!state.publishOptions) {
+        throw new Error('Missing publish options.')
+      }
+      const publishOptions = mapPublishOptions(state.publishOptions)
+
       // The options are in the form of:
       // uuid: {
       //   paragraphs_blokkli_data: {
@@ -230,6 +251,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             ? {}
             : mutatedHostOptions,
         },
+        publishOptions,
         entity,
         mutatedEntity: state.mutatedEntity,
         translationState,
@@ -415,7 +437,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             throw new Error('Failed to load publish options.')
           }
 
-          return options
+          return mapPublishOptions(options)
         })
     }
 

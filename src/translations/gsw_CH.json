@@ -1387,6 +1387,10 @@
     "source": "Publish all changes.",
     "translation": "Alli änderige öffentlich mache."
   },
+  "publishDescriptionScheduled": {
+    "source": "View or change the scheduled publication",
+    "translation": ""
+  },
   "publishDescriptionUnpublished": {
     "source": "Save all changes while keeping page unpublished",
     "translation": "Alli Änderige speichere ohni d'Sitte z'publiziere"
@@ -1406,6 +1410,10 @@
   "publishLabelUnpublished": {
     "source": "Save",
     "translation": "Speichere"
+  },
+  "publishManageSchedule": {
+    "source": "Manage scheduling",
+    "translation": ""
   },
   "publishMode": {
     "source": "Publish mode",
@@ -1463,20 +1471,28 @@
     "source": "Remove schedule",
     "translation": ""
   },
-  "publishResultPublished": {
-    "source": "Page is published",
+  "publishResultPublishChangesNowPublished": {
+    "source": "Changes are published, page is now published",
     "translation": ""
   },
-  "publishResultScheduledOn": {
-    "source": "Page is published on @date",
+  "publishResultPublishChangesRemainPublished": {
+    "source": "Changes are published, page remains published",
     "translation": ""
   },
-  "publishResultUnpublished": {
-    "source": "Page is unpublished",
+  "publishResultSaveChanges": {
+    "source": "Changes are saved, page remains unpublished",
+    "translation": ""
+  },
+  "publishResultScheduledChanges": {
+    "source": "Changes will be published on @date",
+    "translation": ""
+  },
+  "publishResultScheduledPage": {
+    "source": "Page will be published on @date",
     "translation": ""
   },
   "publishRevisionLogMessage": {
-    "source": "Revision log message",
+    "source": "Change description",
     "translation": ""
   },
   "publishRevisionLogMessageDescription": {
@@ -1495,8 +1511,8 @@
     "source": "Publication date",
     "translation": ""
   },
-  "publishScheduleDateDescription": {
-    "source": "Select date and time for scheduled publication",
+  "publishScheduleDateTooSoon": {
+    "source": "The scheduled date must be at least 2 minutes in the future",
     "translation": ""
   },
   "publishScheduleInSevenDays": {
@@ -1517,10 +1533,6 @@
   },
   "publishScheduleSuccess": {
     "source": "Publication scheduled for @date",
-    "translation": ""
-  },
-  "publishScheduleTime": {
-    "source": "Time",
     "translation": ""
   },
   "publishScheduleTomorrow": {
@@ -1545,6 +1557,10 @@
   },
   "publishSuccessfullySaved": {
     "source": "Successfully saved",
+    "translation": ""
+  },
+  "publishSummary": {
+    "source": "Summary",
     "translation": ""
   },
   "publishWillBePublished": {
@@ -1598,6 +1614,10 @@
   "save": {
     "source": "Save",
     "translation": "Speichere"
+  },
+  "scheduledFor": {
+    "source": "The changes will be published on this date.",
+    "translation": ""
   },
   "searchBoxNoResultsFound": {
     "source": "No results found",

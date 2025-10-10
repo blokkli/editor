@@ -1,6 +1,9 @@
 .bk {
   .bk-datepicker {
     @apply select-none border border-mono-300 rounded-md;
+    &.bk-is-invalid {
+      @apply ring-[3px] ring-red-normal/40 !border-red-normal;
+    }
   }
 
   .bk-datepicker-header {
@@ -51,20 +54,20 @@
 
   .bk-datepicker-day-inner {
     @apply size-30 flex items-center justify-center rounded-full !leading-none;
-    @apply text-sm font-medium text-mono-900 text-center;
-    @apply border border-transparent;
-    @apply transition-colors;
+    @apply text-sm text-mono-800 text-center;
+    @apply border border-transparent ease-swing transition-all duration-150;
 
     &.bk-is-other-month {
       @apply text-mono-400;
     }
 
     &.bk-is-today {
-      @apply text-accent-900 border-mono-300;
+      @apply border-mono-300;
     }
 
     &.bk-is-selected {
-      @apply bg-accent-600 text-white font-bold;
+      @apply bg-scheme-normal text-white font-bold;
+      @apply scale-125;
     }
 
     &.bk-is-disabled {
@@ -77,7 +80,7 @@
   }
 
   .bk-datepicker-day:hover .bk-datepicker-day-inner.bk-is-selected {
-    @apply bg-accent-700;
+    @apply bg-scheme-normal;
   }
 
   .bk-datepicker-day:hover .bk-datepicker-day-inner.bk-is-disabled {

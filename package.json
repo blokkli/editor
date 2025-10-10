@@ -1,6 +1,6 @@
 {
   "name": "@blokkli/editor",
-  "version": "2.0.0-alpha.14",
+  "version": "2.0.0-alpha.15",
   "description": "Interactive page building experience for Nuxt",
   "repository": "blokkli/editor",
   "type": "module",

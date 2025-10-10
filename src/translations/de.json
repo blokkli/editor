@@ -1387,6 +1387,10 @@
     "source": "Publish all changes.",
     "translation": "Alle Änderungen veröffentlichen"
   },
+  "publishDescriptionScheduled": {
+    "source": "View or change the scheduled publication",
+    "translation": "Geplante Veröffentlichung ansehen oder ändern"
+  },
   "publishDescriptionUnpublished": {
     "source": "Save all changes while keeping page unpublished",
     "translation": "Alle Änderungen speichern ohne die Seite zu publizieren"
@@ -1406,6 +1410,10 @@
   "publishLabelUnpublished": {
     "source": "Save",
     "translation": "Speichern"
+  },
+  "publishManageSchedule": {
+    "source": "Manage scheduling",
+    "translation": "Planung verwalten"
   },
   "publishMode": {
     "source": "Publish mode",
@@ -1463,21 +1471,29 @@
     "source": "Remove schedule",
     "translation": "Planung entfernen"
   },
-  "publishResultPublished": {
-    "source": "Page is published",
-    "translation": "Seite ist publiziert"
+  "publishResultPublishChangesNowPublished": {
+    "source": "Changes are published, page is now published",
+    "translation": "Änderungen und Seite sind publiziert"
   },
-  "publishResultScheduledOn": {
-    "source": "Page is published on @date",
+  "publishResultPublishChangesRemainPublished": {
+    "source": "Changes are published, page remains published",
+    "translation": "Änderungen sind publiziert, Seite bleibt publiziert"
+  },
+  "publishResultSaveChanges": {
+    "source": "Changes are saved, page remains unpublished",
+    "translation": "Änderungen sind gespeichert, Seite bleibt unpubliziert"
+  },
+  "publishResultScheduledChanges": {
+    "source": "Changes will be published on @date",
+    "translation": "Änderungen werden am @date publiziert"
+  },
+  "publishResultScheduledPage": {
+    "source": "Page will be published on @date",
     "translation": "Seite wird am @date publiziert"
   },
-  "publishResultUnpublished": {
-    "source": "Page is unpublished",
-    "translation": "Seite ist nicht publiziert"
-  },
   "publishRevisionLogMessage": {
-    "source": "Revision log message",
-    "translation": "Protokollnachricht der Revision"
+    "source": "Change description",
+    "translation": "Beschreibung der Änderungen"
   },
   "publishRevisionLogMessageDescription": {
     "source": "Briefly describe the changes made",
@@ -1495,9 +1511,9 @@
     "source": "Publication date",
     "translation": "Veröffentlichungsdatum"
   },
-  "publishScheduleDateDescription": {
-    "source": "Select date and time for scheduled publication",
-    "translation": "Wählen Sie Datum und Uhrzeit für die geplante Veröffentlichung"
+  "publishScheduleDateTooSoon": {
+    "source": "The scheduled date must be at least 2 minutes in the future",
+    "translation": "Das geplante Datum muss mindestens 2 Minuten in der Zukunft liegen"
   },
   "publishScheduleInSevenDays": {
     "source": "In 7 days",
@@ -1518,10 +1534,6 @@
   "publishScheduleSuccess": {
     "source": "Publication scheduled for @date",
     "translation": "Veröffentlichung für @date geplant"
-  },
-  "publishScheduleTime": {
-    "source": "Time",
-    "translation": "Uhrzeit"
   },
   "publishScheduleTomorrow": {
     "source": "Tomorrow",
@@ -1546,6 +1558,10 @@
   "publishSuccessfullySaved": {
     "source": "Successfully saved",
     "translation": "Erfolgreich gespeichert"
+  },
+  "publishSummary": {
+    "source": "Summary",
+    "translation": "Zusammenfassung"
   },
   "publishWillBePublished": {
     "source": "Will be published",
@@ -1598,6 +1614,10 @@
   "save": {
     "source": "Save",
     "translation": "Speichern"
+  },
+  "scheduledFor": {
+    "source": "The changes will be published on this date.",
+    "translation": "Die Änderungen werden an diesem Datum publiziert."
   },
   "searchBoxNoResultsFound": {
     "source": "No results found",

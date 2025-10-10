@@ -17,64 +17,19 @@
         </div>
         <div class="bk-publish-options">
           <PublishOption
-            id="save"
+            v-for="option in publishModeOptions"
+            :id="option.id"
+            :key="option.id"
             v-model="publishMode"
-            icon="save"
-            color="red"
-            :label="$t('publishModeSaveTitle', 'Save')"
-            :description="
-              $t(
-                'publishModeSaveDescription',
-                'Save changes without publishing',
-              )
-            "
-            :disabled="isCurrentlyPublished || isAlreadyScheduled"
-          />
-          <PublishOption
-            id="immediate"
-            v-model="publishMode"
-            icon="publish"
-            color="lime"
-            :label="$t('publishModeImmediateTitle', 'Publish')"
-            :description="
-              $t(
-                'publishModeImmediateDescription',
-                'Publish changes immediately',
-              )
-            "
-            :disabled="isAlreadyScheduled"
-          />
-          <PublishOption
-            v-if="canSchedule"
-            id="scheduled"
-            v-model="publishMode"
-            icon="calendar-clock"
-            color="yellow"
-            :label="$t('publishModeScheduledTitle', 'Schedule')"
-            :description="
-              $t(
-                'publishModeScheduledDescription',
-                'Schedule changes for publishing',
-              )
-            "
+            :icon="option.icon"
+            :color="option.color"
+            :label="option.label"
+            :description="option.description"
+            :disabled="option.disabled"
           />
         </div>
       </FormItem>
-      <FormItem v-if="publishOptions?.hasRevisionLogMessage">
-        <FormTextarea
-          id="revision-message"
-          v-model="revisionMessage"
-          :label="$t('publishRevisionLogMessage', 'Revision log message')"
-          :description="
-            $t(
-              'publishRevisionLogMessageDescription',
-              'Briefly describe the changes made',
-            )
-          "
-          :disabled="isLoading || isAlreadyScheduled"
-          rows="2"
-        />
-      </FormItem>
+
       <FormItem v-if="publishMode === 'scheduled'">
         <div>
           <label class="bk-form-label">
@@ -93,7 +48,12 @@
                 })
               }}
             </div>
-            <ScheduleDate v-else v-model="scheduleDate" :disabled="isLoading" />
+            <ScheduleDate
+              v-else
+              v-model="scheduleDate"
+              :disabled="isLoading"
+              :error="scheduleDateError"
+            />
             <button
               v-if="isAlreadyScheduled"
               type="button"
@@ -103,25 +63,31 @@
               {{ $t('publishRemoveSchedule', 'Remove schedule') }}
             </button>
           </div>
-          <div class="bk-form-description">
-            <template v-if="isAlreadyScheduled">
-              {{
-                $t(
-                  'publishAlreadyScheduledDescription',
-                  'This page is already scheduled for publishing',
-                )
-              }}
-            </template>
-            <template v-else>
-              {{
-                $t(
-                  'publishScheduleDateDescription',
-                  'Select date and time for scheduled publication',
-                )
-              }}
-            </template>
+          <div v-if="isAlreadyScheduled" class="bk-form-description">
+            {{
+              $t(
+                'publishAlreadyScheduledDescription',
+                'This page is already scheduled for publishing',
+              )
+            }}
           </div>
         </div>
+      </FormItem>
+
+      <FormItem v-if="publishOptions?.hasRevisionLogMessage">
+        <FormTextarea
+          id="revision-message"
+          v-model="revisionMessage"
+          :label="$t('publishRevisionLogMessage', 'Change description')"
+          :description="
+            $t(
+              'publishRevisionLogMessageDescription',
+              'Briefly describe the changes made',
+            )
+          "
+          :disabled="isLoading || isAlreadyScheduled"
+          rows="2"
+        />
       </FormItem>
 
       <FormItem v-if="successItems.length && showTable">
@@ -177,24 +143,39 @@
           </tbody>
         </table>
       </FormItem>
-      <Summary
-        :is-published="isCurrentlyPublished"
-        :mode="publishMode"
-        :current-state-label="currentStateLabel"
-        :action-label="actionLabel"
-        :result-state-label="resultStateLabel"
-      />
     </div>
+    <template #pre-footer>
+      <div class="bk-publish-dialog-summary">
+        <h3 class="bk-form-label">
+          {{ $t('publishSummary', 'Summary') }}
+        </h3>
+        <Summary
+          :is-published="isCurrentlyPublished"
+          :mode="publishMode"
+          :current-state-label="currentStateLabel"
+          :action-label="actionLabel"
+          :result-state-label="resultStateLabel"
+        />
+      </div>
+    </template>
   </DialogModal>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, useBlokkli, useAsyncData } from '#imports'
+import {
+  ref,
+  computed,
+  watch,
+  useBlokkli,
+  useAsyncData,
+  onMounted,
+  onUnmounted,
+} from '#imports'
 import { DialogModal, FormTextarea, FormItem } from '#blokkli/components'
-import type { GetEditStatesItem, Validation } from '#blokkli/types'
+import type { GetEditStatesItem } from '#blokkli/types'
 import { emitMessage } from '#blokkli/helpers/eventBus'
 import Item from './Item.vue'
-import PublishOption from './PublishOption.vue'
+import PublishOption, { type PublishOptionProps } from './PublishOption.vue'
 import Summary from './Summary.vue'
 import ScheduleDate from './ScheduleDate.vue'
 import type { MutationStatus } from './types'
@@ -204,17 +185,25 @@ const showTable = false
 const { adapter, $t, state, context, ui } = useBlokkli()
 
 const isMutating = ref(false)
-
 const mutationStatusItems = ref<Record<string, MutationStatus>>({})
-
 const publishedIds = ref<string[]>([])
+const states = ref<string[]>([])
+const revisionMessage = ref('')
 
-const states = defineModel<string[]>('states', {
-  default: () => [],
+// Reactive timestamp that updates every 30 seconds to revalidate scheduled date
+const currentTimestamp = ref(Date.now())
+let timestampInterval: ReturnType<typeof setInterval> | null = null
+
+onMounted(() => {
+  timestampInterval = setInterval(() => {
+    currentTimestamp.value = Date.now()
+  }, 30000) // Update every 30 seconds
 })
 
-const revisionMessage = defineModel<string>('revisionMessage', {
-  default: () => false,
+onUnmounted(() => {
+  if (timestampInterval) {
+    clearInterval(timestampInterval)
+  }
 })
 
 /**
@@ -242,8 +231,8 @@ const canSchedule = computed<boolean>(() => !!publishOptions.value?.canSchedule)
 /**
  * The current schedule date/time as an ISO string.
  */
-const publishOn = computed<string | undefined>(
-  () => publishOptions.value?.publishOn,
+const publishOn = computed<string | null>(
+  () => publishOptions.value?.publishOn ?? null,
 )
 
 /**
@@ -252,16 +241,74 @@ const publishOn = computed<string | undefined>(
 const isAlreadyScheduled = computed(() => !!publishOn.value)
 
 /**
+ * Whether the current entity is published.
+ */
+const isCurrentlyPublished = computed(() => !!state.entity.value?.status)
+
+/**
+ * Available publish mode options.
+ */
+const publishModeOptions = computed<PublishOptionProps[]>(() => {
+  const options: PublishOptionProps[] = [
+    {
+      id: 'save',
+      icon: 'save',
+      color: 'red',
+      label: $t('publishModeSaveTitle', 'Save'),
+      description: $t(
+        'publishModeSaveDescription',
+        'Save changes without publishing',
+      ),
+      disabled: isCurrentlyPublished.value || isAlreadyScheduled.value,
+    },
+    {
+      id: 'immediate',
+      icon: 'publish',
+      color: 'lime',
+      label: $t('publishModeImmediateTitle', 'Publish'),
+      description: $t(
+        'publishModeImmediateDescription',
+        'Publish changes immediately',
+      ),
+      disabled: isAlreadyScheduled.value,
+    },
+  ]
+
+  if (canSchedule.value) {
+    options.push({
+      id: 'scheduled',
+      icon: 'calendar-clock',
+      color: 'yellow',
+      label: $t('publishModeScheduledTitle', 'Schedule'),
+      description: $t(
+        'publishModeScheduledDescription',
+        'Schedule changes for publishing',
+      ),
+      disabled: false,
+    })
+  }
+
+  return options
+})
+
+/**
  * The selected schedule date/time.
  */
 const scheduleDate = ref<string>(publishOn.value || '')
 
-// Initialize publishMode and revisionMessage based on whether there's an existing schedule
+// Initialize revisionMessage from publish options
+if (publishOptions.value?.revisionLogMessage) {
+  revisionMessage.value = publishOptions.value.revisionLogMessage
+}
+
+// Initialize publishMode based on current state
+if (!isCurrentlyPublished.value) {
+  publishMode.value = 'save'
+}
+
+// Override with scheduled mode if there's an existing schedule
 if (publishOn.value) {
   publishMode.value = 'scheduled'
-  if (publishOptions.value?.revisionLogMessage) {
-    revisionMessage.value = publishOptions.value.revisionLogMessage
-  }
 }
 
 // Watch for when user selects scheduled mode and set default date if needed
@@ -311,8 +358,6 @@ const currentId = computed(
   () => `${context.value.entityType}:${context.value.entityUuid}`,
 )
 
-const isCurrentlyPublished = computed(() => !!state.entity.value?.status)
-
 const stateItems = computed<Array<GetEditStatesItem & { id: string }>>(() => {
   const hostEntityType = context.value.entityType
   const hostEntityUuid = context.value.entityUuid
@@ -352,6 +397,25 @@ const selectedToPublishItems = computed(() =>
 
 const isLoading = computed(() => status.value === 'pending' || isMutating.value)
 
+const scheduleDateError = computed(() => {
+  if (publishMode.value !== 'scheduled' || !scheduleDate.value) {
+    return ''
+  }
+
+  const selectedDateTime = new Date(scheduleDate.value)
+  // Use currentTimestamp to make this reactive to time passing
+  const minDateTime = new Date(currentTimestamp.value + 2 * 60 * 1000) // 2 minutes from now
+
+  if (selectedDateTime < minDateTime) {
+    return $t(
+      'publishScheduleDateTooSoon',
+      'The scheduled date must be at least 2 minutes in the future',
+    )
+  }
+
+  return ''
+})
+
 const canSubmit = computed(() => {
   if (!selectedToPublishItems.value.length) {
     return false
@@ -360,6 +424,9 @@ const canSubmit = computed(() => {
     return false
   }
   if (publishMode.value === 'scheduled' && isAlreadyScheduled.value) {
+    return false
+  }
+  if (scheduleDateError.value) {
     return false
   }
   return true
@@ -422,16 +489,34 @@ const actionLabel = computed(() => {
 
 const resultStateLabel = computed(() => {
   if (publishMode.value === 'save') {
-    return $t('publishResultUnpublished', 'Page is unpublished')
+    return $t(
+      'publishResultSaveChanges',
+      'Changes are saved, page remains unpublished',
+    )
   }
   if (publishMode.value === 'scheduled' && scheduleDate.value) {
     const formattedDate = ui.formatDate(scheduleDate.value)
-    return $t('publishResultScheduledOn', 'Page is published on @date').replace(
-      '@date',
-      formattedDate,
+    if (isCurrentlyPublished.value) {
+      return $t(
+        'publishResultScheduledChanges',
+        'Changes will be published on @date',
+      ).replace('@date', formattedDate)
+    }
+    return $t(
+      'publishResultScheduledPage',
+      'Page will be published on @date',
+    ).replace('@date', formattedDate)
+  }
+  if (isCurrentlyPublished.value) {
+    return $t(
+      'publishResultPublishChangesRemainPublished',
+      'Changes are published, page remains published',
     )
   }
-  return $t('publishResultPublished', 'Page is published')
+  return $t(
+    'publishResultPublishChangesNowPublished',
+    'Changes are published, page is now published',
+  )
 })
 
 async function removeScheduledDate() {
@@ -444,31 +529,36 @@ async function removeScheduledDate() {
   // Store the current schedule date to restore it after removal
   const previousScheduleDate = scheduleDate.value
 
-  try {
-    const result = await adapter.unscheduleEditState({
+  const success = await state.mutateWithLoadingState(() =>
+    adapter.unscheduleEditState!({
       hostEntityType: context.value.entityType,
       hostEntityUuid: context.value.entityUuid,
-    })
+    }),
+  )
 
-    if (result.success) {
-      await refresh()
-      // Restore the previous schedule date so user can see/reuse it
-      scheduleDate.value = previousScheduleDate
-    }
-  } catch (error) {
-    console.error('Failed to unschedule:', error)
-  } finally {
-    isMutating.value = false
+  if (success) {
+    await refresh()
+    scheduleDate.value = previousScheduleDate
   }
+  isMutating.value = false
 }
 
 async function onSubmit() {
+  // Update timestamp to ensure validation is correct
+  currentTimestamp.value = Date.now()
+
+  // Validate scheduled date before submitting
+  if (scheduleDateError.value) {
+    return
+  }
+
   isMutating.value = true
 
   const items = stateItems.value
 
-  let hasAnyError = false
+  const hasAnyError = false
 
+  let mutationResult = false
   for (const item of items) {
     const isSelected =
       states.value.includes(item.id) ||
@@ -486,47 +576,31 @@ async function onSubmit() {
 
     // Method exists because the feature is only loaded if the method exists.
     try {
-      let result
-
       if (publishMode.value === 'scheduled') {
         // Schedule the edit state for later publishing
         if (!adapter.scheduleEditState) {
           throw new Error('scheduleEditState method not available')
         }
-        result = await adapter.scheduleEditState({
-          hostEntityType: item.hostEntityType,
-          hostEntityUuid: item.hostEntityUuid,
-          revisionLogMessage: revisionMessage.value,
-          date: scheduleDate.value,
-        })
+        mutationResult = await state.mutateWithLoadingState(() =>
+          adapter.scheduleEditState!({
+            hostEntityType: item.hostEntityType,
+            hostEntityUuid: item.hostEntityUuid,
+            revisionLogMessage: revisionMessage.value,
+            date: scheduleDate.value,
+          }),
+        )
       } else {
         // Publish immediately or save without publishing
-        result = await adapter.publish!({
-          hostEntityType: item.hostEntityType,
-          hostEntityUuid: item.hostEntityUuid,
-          closeAfterPublish: true,
-          revisionLogMessage: revisionMessage.value,
-          publishIfUnpublished: shouldPublish.value,
-        })
+        mutationResult = await state.mutateWithLoadingState(() =>
+          adapter.publish!({
+            hostEntityType: item.hostEntityType,
+            hostEntityUuid: item.hostEntityUuid,
+            closeAfterPublish: true,
+            revisionLogMessage: revisionMessage.value,
+            publishIfUnpublished: shouldPublish.value,
+          }),
+        )
       }
-
-      let violations: Validation[] = []
-      if (!result.success && result.state) {
-        const mapped = adapter.mapState(result.state)
-        if (mapped.mutatedState?.violations) {
-          violations = mapped.mutatedState.violations
-        }
-      }
-      mutationStatusItems.value[item.id] = {
-        id: item.id,
-        success: result.success,
-        errors: result.errors,
-        violations,
-      }
-      if (result.success) {
-        publishedIds.value.push(item.id)
-      }
-      hasAnyError ||= !result.success
     } catch {
       mutationStatusItems.value[item.id] = {
         id: item.id,
@@ -540,7 +614,7 @@ async function onSubmit() {
 
   isMutating.value = false
 
-  if (hasAnyError) {
+  if (hasAnyError || !mutationResult) {
     return
   }
 

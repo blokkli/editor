@@ -31,8 +31,8 @@
     </div>
 
     <!-- Result State -->
-    <div class="bk-publish-summary-state">
-      <div class="bk-publish-summary-state-icon" :class="resultStateClass">
+    <div class="bk-publish-summary-state" :class="resultStateClass">
+      <div>
         <Icon :name="resultStateIcon" />
       </div>
       <div class="bk-publish-summary-state-label">

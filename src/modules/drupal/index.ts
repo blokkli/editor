@@ -255,6 +255,7 @@ export default defineBlokkliModule({
         'isRevisionable',
         'hasRevisionLogMessage',
         'lastChanged',
+        'revisionLogMessage',
       ]
 
       // paragraphs_blokkli_scheduler is enabled.

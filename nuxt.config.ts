@@ -34,6 +34,7 @@ fragment paragraphsBlokkliPublishOptions on ParagraphsBlokkliPublishOptions {
   lastChanged
   canSchedule
   publishOn
+  revisionLogMessage
 }
 `,
     ],

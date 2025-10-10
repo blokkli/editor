@@ -1,6 +1,23 @@
 <template>
   <Teleport to="#bk-toolbar-title">
     <button
+      v-if="scheduledDate"
+      class="bk-toolbar-title-scheduled"
+      @click.prevent="eventBus.emit('publish:show-dialog')"
+    >
+      <Icon name="calendar-clock" />
+      <div class="bk-toolbar-title-scheduled-text">
+        <div>{{ formattedScheduledDate }}</div>
+      </div>
+      <div class="bk-tooltip">
+        <div>
+          {{
+            $t('scheduledFor', 'The changes will be published on this date.')
+          }}
+        </div>
+      </div>
+    </button>
+    <button
       ref="buttonEl"
       class="bk-toolbar-button"
       :disabled="!state.canEdit.value"
@@ -36,6 +53,7 @@
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import { useBlokkli, defineBlokkliFeature, ref, computed } from '#imports'
 import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
+import { Icon } from '#blokkli/components'
 
 defineBlokkliFeature({
   id: 'entity-title',
@@ -44,9 +62,25 @@ defineBlokkliFeature({
   description: 'Renders the title and status of the page entity.',
 })
 
-const { state, eventBus, $t } = useBlokkli()
+const { state, eventBus, $t, ui } = useBlokkli()
 const { entity, mutations } = state
 const buttonEl = ref<HTMLButtonElement | null>(null)
+
+const scheduledDate = computed(() => state.publishOptions.value?.publishOn)
+
+const formattedScheduledDate = computed(() => {
+  if (!scheduledDate.value) {
+    return ''
+  }
+  return ui.formatDate(scheduledDate.value, {
+    weekday: 'short',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+})
 
 const statusPublished = computed(() =>
   $t('pageIsPublished', 'Page is published'),

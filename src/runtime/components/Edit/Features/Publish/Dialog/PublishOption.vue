@@ -37,14 +37,16 @@
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon } from '#blokkli/components'
 
-defineProps<{
+export type PublishOptionProps = {
   id: string
   label: string
   description: string
   icon: BlokkliIcon
   color: 'lime' | 'yellow' | 'red'
   disabled?: boolean
-}>()
+}
+
+defineProps<PublishOptionProps>()
 
 const value = defineModel<string>()
 </script>

@@ -32,6 +32,9 @@
           <slot />
         </div>
       </div>
+      <div v-if="$slots['pre-footer']" class="bk-dialog-pre-footer">
+        <slot name="pre-footer" />
+      </div>
       <div v-if="!hideButtons" class="bk bk-dialog-footer">
         <button
           class="bk-button"

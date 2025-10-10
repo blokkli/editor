@@ -9,6 +9,9 @@
   &[disabled] {
     @apply !bg-mono-50 cursor-not-allowed;
   }
+  &.bk-is-invalid {
+    @apply ring-[3px] ring-red-normal/40 !border-red-normal;
+  }
 }
 .bk {
   .bk-checkbox,

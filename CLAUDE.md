@@ -284,3 +284,30 @@ The Drupal integration (`src/modules/drupal/`) is a blökkli sub-module that:
 - Main styles in `css/` directory
 - Compiled to `src/runtime/css/output.css`
 - Editor has themed appearance (see `src/themes/`)
+
+### Translations
+
+blökkli uses gettext-style `.po` files for internationalization. Translation
+files are in `i18n/` and generated JSON files are in `src/translations/`.
+
+**IMPORTANT**: Always edit `.po` files, never the JSON files directly. The JSON
+files are generated from PO files.
+
+#### Adding New Translation Keys
+
+When you add a new translation key using `$t()`:
+
+1. Run `npm run texts` - This parses all components and TypeScript files in
+   `src/` and searches for `$t()` calls
+2. The script compiles the found keys and adds them to the PO files in `i18n/`
+3. Edit the PO files to add translations for your new keys
+4. Run `npm run texts` again to generate the JSON files in `src/translations/`
+
+#### Updating Existing Translation Keys
+
+When updating translations that already exist in PO files:
+
+1. Directly edit the `.po` files in `i18n/` (e.g., `de.po`, `fr.po`, `it.po`)
+2. Run `npm run texts` to regenerate the JSON files
+
+The workflow ensures PO files are the source of truth for all translations.

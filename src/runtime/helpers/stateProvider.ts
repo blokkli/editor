@@ -22,6 +22,7 @@ import type {
   MutateWithLoadingStateFunction,
   EditMode,
   FieldListItem,
+  PublishOptions,
 } from '#blokkli/types'
 import { falsy, getFieldKey } from '#blokkli/helpers'
 import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
@@ -43,6 +44,18 @@ export type RenderedBlock = {
   parentEntityUuid: string
 }
 
+function mapPublishOptions(context?: MappedState): PublishOptions {
+  return {
+    canPublish: !!context?.publishOptions?.canPublish,
+    isRevisionable: !!context?.publishOptions?.isRevisionable,
+    hasRevisionLogMessage: !!context?.publishOptions?.hasRevisionLogMessage,
+    canSchedule: !!context?.publishOptions?.canSchedule,
+    lastChanged: context?.publishOptions?.lastChanged ?? null,
+    publishOn: context?.publishOptions?.publishOn ?? null,
+    revisionLogMessage: context?.publishOptions?.revisionLogMessage ?? null,
+  }
+}
+
 export type StateProvider = {
   owner: Readonly<Ref<BlokkliOwner | null>>
   refreshKey: Readonly<Ref<string>>
@@ -50,6 +63,7 @@ export type StateProvider = {
   entity: Readonly<Ref<EditEntity>>
   mutatedOptions: MutatedOptions
   translation: Readonly<Ref<TranslationState>>
+  publishOptions: Readonly<Ref<PublishOptions>>
   mutations: Readonly<Ref<MutationItem[]>>
   currentMutationIndex: Readonly<Ref<number>>
   violations: Readonly<Ref<Validation[]>>
@@ -89,6 +103,15 @@ export default async function (
   const mutations = ref<MutationItem[]>([])
   const violations = ref<Validation[]>([])
   const mutatedEntity = ref<any>(null)
+  const publishOptions = ref<PublishOptions>({
+    canPublish: false,
+    isRevisionable: false,
+    hasRevisionLogMessage: false,
+    lastChanged: null,
+    canSchedule: false,
+    publishOn: null,
+    revisionLogMessage: null,
+  })
   const currentMutationIndex = ref(-1)
   const isLoading = ref(false)
   const entity = ref<EditEntity>({
@@ -133,6 +156,18 @@ export default async function (
     translations: [],
   })
 
+  function updatePublishOptions(newPublishOptions: PublishOptions) {
+    publishOptions.value.canPublish = newPublishOptions.canPublish
+    publishOptions.value.isRevisionable = newPublishOptions.isRevisionable
+    publishOptions.value.hasRevisionLogMessage =
+      newPublishOptions.hasRevisionLogMessage
+    publishOptions.value.lastChanged = newPublishOptions.lastChanged
+    publishOptions.value.canSchedule = newPublishOptions.canSchedule
+    publishOptions.value.publishOn = newPublishOptions.publishOn
+    publishOptions.value.revisionLogMessage =
+      newPublishOptions.revisionLogMessage
+  }
+
   function setContext(context?: MappedState, override?: boolean) {
     if (!override) {
       _mappedState = context ?? null
@@ -171,6 +206,8 @@ export default async function (
     entity.value.label = context?.entity?.label
     entity.value.status = context?.entity?.status
     entity.value.bundleLabel = context?.entity?.bundleLabel || ''
+
+    updatePublishOptions(mapPublishOptions(context))
 
     translation.value.isTranslatable =
       !!context?.translationState?.isTranslatable
@@ -413,6 +450,7 @@ export default async function (
     getMappedState,
     refreshKey,
     owner: readonly(owner),
+    publishOptions: readonly(publishOptions),
     mutatedFields,
     entity,
     mutatedOptions,

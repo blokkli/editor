@@ -31,7 +31,7 @@ const props = defineProps<{
   description: string
   disabled?: boolean
   icon?: BlokkliIcon
-  type?: 'success' | 'danger'
+  type?: 'success' | 'danger' | 'yellow'
   weight?: number
   secondary?: boolean
 }>()

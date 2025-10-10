@@ -1563,6 +1563,10 @@ msgctxt "publishDescription"
 msgid "Publish all changes."
 msgstr "Alli änderige öffentlich mache."
 
+msgctxt "publishDescriptionScheduled"
+msgid "View or change the scheduled publication"
+msgstr ""
+
 msgctxt "publishDescriptionUnpublished"
 msgid "Save all changes while keeping page unpublished"
 msgstr "Alli Änderige speichere ohni d'Sitte z'publiziere"
@@ -1582,6 +1586,10 @@ msgstr "Publiziere"
 msgctxt "publishLabelUnpublished"
 msgid "Save"
 msgstr "Speichere"
+
+msgctxt "publishManageSchedule"
+msgid "Manage scheduling"
+msgstr ""
 
 msgctxt "publishMode"
 msgid "Publish mode"
@@ -1639,20 +1647,28 @@ msgctxt "publishRemoveSchedule"
 msgid "Remove schedule"
 msgstr ""
 
-msgctxt "publishResultPublished"
-msgid "Page is published"
+msgctxt "publishResultPublishChangesNowPublished"
+msgid "Changes are published, page is now published"
 msgstr ""
 
-msgctxt "publishResultScheduledOn"
-msgid "Page is published on @date"
+msgctxt "publishResultPublishChangesRemainPublished"
+msgid "Changes are published, page remains published"
 msgstr ""
 
-msgctxt "publishResultUnpublished"
-msgid "Page is unpublished"
+msgctxt "publishResultSaveChanges"
+msgid "Changes are saved, page remains unpublished"
+msgstr ""
+
+msgctxt "publishResultScheduledChanges"
+msgid "Changes will be published on @date"
+msgstr ""
+
+msgctxt "publishResultScheduledPage"
+msgid "Page will be published on @date"
 msgstr ""
 
 msgctxt "publishRevisionLogMessage"
-msgid "Revision log message"
+msgid "Change description"
 msgstr ""
 
 msgctxt "publishRevisionLogMessageDescription"
@@ -1671,8 +1687,8 @@ msgctxt "publishScheduleDate"
 msgid "Publication date"
 msgstr ""
 
-msgctxt "publishScheduleDateDescription"
-msgid "Select date and time for scheduled publication"
+msgctxt "publishScheduleDateTooSoon"
+msgid "The scheduled date must be at least 2 minutes in the future"
 msgstr ""
 
 msgctxt "publishScheduleInSevenDays"
@@ -1693,10 +1709,6 @@ msgstr ""
 
 msgctxt "publishScheduleSuccess"
 msgid "Publication scheduled for @date"
-msgstr ""
-
-msgctxt "publishScheduleTime"
-msgid "Time"
 msgstr ""
 
 msgctxt "publishScheduleTomorrow"
@@ -1721,6 +1733,10 @@ msgstr ""
 
 msgctxt "publishSuccessfullySaved"
 msgid "Successfully saved"
+msgstr ""
+
+msgctxt "publishSummary"
+msgid "Summary"
 msgstr ""
 
 msgctxt "publishWillBePublished"
@@ -1784,6 +1800,10 @@ msgstr "Alli Änderige sin glöcht worde."
 msgctxt "save"
 msgid "Save"
 msgstr "Speichere"
+
+msgctxt "scheduledFor"
+msgid "The changes will be published on this date."
+msgstr ""
 
 msgctxt "searchBoxNoResultsFound"
 msgid "No results found"

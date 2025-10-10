@@ -4,21 +4,14 @@
     :title="publishLabel"
     :description="publishDescription"
     :disabled="!mutations.length || !canEdit"
-    type="success"
+    :type="isScheduled ? 'yellow' : 'success'"
     :weight="0"
     :icon="icon"
     @click="onMenuClick"
   />
   <Teleport to="body">
     <BlokkliTransition name="slide-up">
-      <PublishDialog
-        v-if="showDialog"
-        v-model:states="additionalEditStates"
-        v-model:revision-message="revisionMessage"
-        v-model:should-publish="shouldPublish"
-        @close="showDialog = false"
-        @submit="onSubmit"
-      />
+      <PublishDialog v-if="showDialog" @close="onClose" @submit="onSubmit" />
     </BlokkliTransition>
   </Teleport>
 </template>
@@ -30,11 +23,13 @@ import {
   computed,
   useRoute,
   ref,
+  nextTick,
 } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { BlokkliTransition } from '#blokkli/components'
 import PublishDialog from './Dialog/index.vue'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { adapter, settings } = defineBlokkliFeature({
   id: 'publish',
@@ -63,14 +58,20 @@ const hasPublishOptions = !!adapter.getPublishOptions
 
 const isPublished = computed<boolean>(() => !!state.entity.value.status)
 
-const showDialog = ref(false)
+const isScheduled = computed<boolean>(
+  () => !!state.publishOptions.value.publishOn,
+)
 
-const additionalEditStates = ref<string[]>([])
-const shouldPublish = ref(!!state.entity.value.status)
-const revisionMessage = ref('')
+const showDialog = ref(false)
 
 const publishLabel = computed(() => {
   const suffix = hasPublishOptions ? '...' : ''
+
+  // Check if there's a scheduled publication
+  if (isScheduled.value) {
+    return $t('publishManageSchedule', 'Manage scheduling') + suffix
+  }
+
   // Entity is published. Clicking the button will make the changes go "live".
   if (isPublished.value) {
     return (
@@ -87,18 +88,27 @@ const publishLabel = computed(() => {
   )
 })
 
-const publishDescription = computed(() =>
-  isPublished.value
+const publishDescription = computed(() => {
+  if (isScheduled.value) {
+    return $t(
+      'publishDescriptionScheduled',
+      'View or change the scheduled publication',
+    )
+  }
+  return isPublished.value
     ? $t('publishDescription', 'Publish all changes.')
     : $t(
         'publishDescriptionUnpublished',
         'Save all changes while keeping page unpublished',
-      ),
-)
+      )
+})
 
-const icon = computed<BlokkliIcon>(() =>
-  isPublished.value ? 'publish' : 'save',
-)
+const icon = computed<BlokkliIcon>(() => {
+  if (state.publishOptions.value?.publishOn) {
+    return 'calendar-clock'
+  }
+  return isPublished.value ? 'publish' : 'save'
+})
 
 const onMenuClick = async () => {
   if (hasPublishOptions) {
@@ -141,6 +151,15 @@ function onSubmit() {
     window.location.href = route.path
   }
 }
+
+async function onClose() {
+  await nextTick()
+  showDialog.value = false
+}
+
+onBlokkliEvent('publish:show-dialog', () => {
+  showDialog.value = true
+})
 </script>
 
 <script lang="ts">

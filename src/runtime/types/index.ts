@@ -692,6 +692,7 @@ export interface MappedState {
     fields?: MutatedField[]
     violations?: Validation[]
   }
+  publishOptions: PublishOptions
   entity: EditEntity
   mutatedEntity?: any
   translationState: TranslationState
@@ -1326,6 +1327,11 @@ export type EventbusEvents = {
   'publish:failed': undefined
 
   /**
+   * Show the publish dialog.
+   */
+  'publish:show-dialog': undefined
+
+  /**
    * Edit a library item.
    */
   'library:edit-item': LibraryEditItemEvent
@@ -1680,10 +1686,10 @@ export type PublishOptions = {
   canPublish: boolean
   isRevisionable: boolean
   hasRevisionLogMessage: boolean
-  lastChanged?: string | null
-  canSchedule?: boolean
-  publishOn?: string
-  revisionLogMessage?: string
+  lastChanged: string | null
+  canSchedule: boolean
+  publishOn: string | null
+  revisionLogMessage: string | null
 }
 
 export type GetEditStatesItem = {

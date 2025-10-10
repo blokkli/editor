@@ -17,6 +17,7 @@ import type {
   FieldConfig,
   HostTransformPlugin,
   LibraryItem,
+  PublishOptions,
 } from '#blokkli/types'
 import { allTypes } from './mock/allTypes'
 import { conversions } from './mock/conversions'
@@ -37,6 +38,38 @@ import { FieldReference } from './mock/state/Field/Reference'
 import type { MutationAddArgs } from './mock/plugins/mutations/Mutation/Add'
 
 const ENALBE_EDIT_STATES = false
+
+function getPublishOptions(ctx: {
+  entityType: string
+  entityUuid: string
+}): PublishOptions {
+  const scheduleKey = `blokkli_schedule_${ctx.entityType}_${ctx.entityUuid}`
+  const scheduleData = localStorage.getItem(scheduleKey)
+
+  let publishOn: string | null = null
+  let revisionLogMessage: string | null = null
+
+  if (scheduleData) {
+    try {
+      const parsed = JSON.parse(scheduleData)
+      publishOn = parsed.date
+      revisionLogMessage = parsed.revisionLogMessage
+    } catch {
+      // Fallback for old format (plain string)
+      publishOn = scheduleData
+    }
+  }
+
+  return {
+    canPublish: true,
+    isRevisionable: true,
+    hasRevisionLogMessage: true,
+    lastChanged: '1725890401',
+    canSchedule: true,
+    publishOn,
+    revisionLogMessage,
+  }
+}
 
 function getRandomNumberInRange(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min
@@ -353,6 +386,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           fields: inputState.fields,
           violations: inputState.violations,
         },
+        publishOptions: getPublishOptions(ctx.value),
         entity: {
           id: ctx.value.entityUuid,
           label: 'Demo Page',
@@ -940,56 +974,23 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     getPublishOptions() {
-      const scheduleKey = `blokkli_schedule_${ctx.value.entityType}_${ctx.value.entityUuid}`
-      const scheduleData = localStorage.getItem(scheduleKey)
-
-      let publishOn: string | undefined
-      let revisionLogMessage: string | undefined
-
-      if (scheduleData) {
-        try {
-          const parsed = JSON.parse(scheduleData)
-          publishOn = parsed.date
-          revisionLogMessage = parsed.revisionLogMessage
-        } catch {
-          // Fallback for old format (plain string)
-          publishOn = scheduleData
-        }
-      }
-
-      return Promise.resolve({
-        canPublish: true,
-        isRevisionable: true,
-        hasRevisionLogMessage: true,
-        lastChanged: '1725890401',
-        canSchedule: true,
-        publishOn,
-        revisionLogMessage,
-      })
+      return Promise.resolve(getPublishOptions(ctx.value))
     },
 
-    scheduleEditState(options) {
+    async scheduleEditState(options) {
       const scheduleKey = `blokkli_schedule_${options.hostEntityType}_${options.hostEntityUuid}`
       const scheduleData = {
         date: options.date,
         revisionLogMessage: options.revisionLogMessage,
       }
       localStorage.setItem(scheduleKey, JSON.stringify(scheduleData))
-
-      return Promise.resolve({
-        success: true,
-        state: null,
-      })
+      return mockResponse(await editState.getMutatedState(getEntity()))
     },
 
-    unscheduleEditState(options) {
+    async unscheduleEditState(options) {
       const scheduleKey = `blokkli_schedule_${options.hostEntityType}_${options.hostEntityUuid}`
       localStorage.removeItem(scheduleKey)
-
-      return Promise.resolve({
-        success: true,
-        state: null,
-      })
+      return mockResponse(await editState.getMutatedState(getEntity()))
     },
 
     getEditStates() {

@@ -69,6 +69,9 @@
   }
 
   .bk-dialog-publish-form {
+    @apply flex flex-col;
+
+    min-height: calc(100vh - 500px);
     .bk-heading-2 {
       @apply font-bold text-xl mb-10;
     }
@@ -145,7 +148,7 @@
       }
       &:has(input:checked) {
         .bk-publish-option-icon {
-          @apply bg-yellow-normal text-white;
+          @apply bg-yellow-normal text-yellow-dark;
           @apply ring-4 ring-yellow-normal/30;
           @apply outline outline-[1px] outline-yellow-dark/70;
         }
@@ -234,12 +237,38 @@
     }
 
     input[type='time'] {
-      @apply w-full;
+      @apply w-full tabular-nums;
     }
   }
 
+  .bk-schedule-date-time-input {
+    @apply flex gap-10 items-stretch;
+
+    input[type='time'] {
+      @apply flex-1;
+    }
+
+    .bk-schedule-date-time-button {
+      @apply shrink-0 px-10;
+
+      .bk-icon {
+        @apply size-15;
+        svg {
+          @apply size-full fill-current;
+        }
+      }
+    }
+  }
+
+  .bk-schedule-date-formatted {
+    @apply mb-20 px-10 font-bold text-lg rounded-md;
+    /* @apply border border-mono-300; */
+    @apply bg-mono-100;
+    @apply h-[52px] flex items-center;
+  }
+
   .bk-schedule-date-presets {
-    @apply flex gap-10 mb-15;
+    @apply flex gap-10 mt-20;
 
     .bk-button {
       @apply flex-1;
@@ -247,24 +276,68 @@
   }
 
   .bk-schedule-date-info {
-    @apply mt-15;
+    @apply mt-20 p-10 bg-yellow-light text-yellow-dark border border-yellow-normal/60 rounded-md font-medium;
+    @apply text-sm text-pretty;
   }
 
   .bk-publish-summary {
-    @apply flex items-start justify-around pt-25;
+    @apply flex items-center justify-between;
   }
 
   .bk-publish-summary-state,
   .bk-publish-summary-action {
-    @apply flex flex-col items-center flex-1;
+    @apply flex items-center gap-5 relative justify-center;
+
+    &:nth-child(1),
+    &:nth-child(2) {
+      &:after {
+        content: '';
+      }
+    }
+  }
+  .bk-publish-summary-state {
+    &:last-child {
+      @apply border rounded-full pr-10;
+      .bk-publish-summary-state-label {
+        @apply pr-5 font-semibold leading-none;
+      }
+
+      svg {
+        @apply size-15;
+      }
+      .bk-icon {
+        @apply size-25 rounded-full flex items-center justify-center bg-white;
+      }
+
+      &.bk-is-published {
+        @apply bg-lime-normal border-lime-normal;
+        .bk-icon {
+          svg {
+            @apply fill-lime-normal;
+          }
+        }
+        .bk-publish-summary-state-label {
+          @apply text-white;
+        }
+      }
+      &.bk-is-unpublished {
+        @apply bg-red-normal border-red-normal;
+        .bk-icon svg {
+          @apply fill-red-normal;
+        }
+        .bk-publish-summary-state-label {
+          @apply text-white;
+        }
+      }
+    }
   }
 
   .bk-publish-summary-state-icon,
   .bk-publish-summary-action-icon {
-    @apply size-60 rounded-full flex items-center justify-center border;
+    @apply size-25 rounded-full flex items-center justify-center border;
 
     .bk-icon {
-      @apply size-30;
+      @apply size-15;
       svg {
         @apply size-full fill-current;
       }
@@ -273,25 +346,25 @@
 
   .bk-publish-summary-state-icon {
     &.bk-is-published {
-      @apply bg-lime-light border-lime-normal text-lime-dark;
+      @apply border-lime-normal text-lime-normal;
     }
 
     &.bk-is-unpublished {
-      @apply bg-red-light border-red-normal text-red-dark;
+      @apply border-red-normal text-red-normal;
     }
   }
 
   .bk-publish-summary-state-label,
   .bk-publish-summary-action-label {
-    @apply text-base font-bold text-mono-700 text-center mt-5;
+    @apply text-sm font-medium text-mono-700 text-center;
   }
 
   .bk-publish-summary-arrow {
-    @apply flex items-center h-60;
+    @apply flex items-center;
     .bk-icon {
-      @apply size-40;
+      @apply size-20;
       svg {
-        @apply size-full fill-mono-400;
+        @apply size-full fill-mono-700;
       }
     }
   }
@@ -302,17 +375,27 @@
     }
 
     &.bk-is-scheduled {
-      @apply bg-yellow-normal border-yellow-dark text-white;
+      @apply bg-yellow-normal border-yellow-dark text-yellow-dark;
     }
 
     &.bk-is-publish {
       @apply bg-lime-normal border-lime-dark text-white;
     }
   }
+
+  .bk-schedule-date-error {
+    @apply mt-20 p-10 bg-red-light text-red-dark border border-red-normal/60 rounded-md font-medium;
+    @apply text-sm text-pretty;
+  }
 }
 .bk.bk-is-publish-dialog {
   .bk-dialog-content {
-    min-height: calc(100vh - 300px);
+    .bk-dialog-content-inner {
+      @apply pb-0;
+    }
+  }
+  .bk-dialog-footer {
+    @apply mt-0;
   }
   .bk-form-item {
     @apply py-20 first:pt-0;

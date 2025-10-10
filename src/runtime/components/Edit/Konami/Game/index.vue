@@ -58,7 +58,7 @@ const emit = defineEmits<{
 
 const DEBUG_ICONS = false
 const DEBUG_GAME = false
-const INIT_EATEN = 150
+const INIT_EATEN = 0
 
 const largeIconSize = 32
 const blackColor = 'black'
