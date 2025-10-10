@@ -1829,6 +1829,10 @@ msgstr ""
 "Find schnäll Blöck uf dr aktuälle Sitte oder bestehendi Inhält zum si als "
 "Blöck in d'Sitte z'zieh."
 
+msgctxt "selectAllBlocks"
+msgid "Select all blocks"
+msgstr ""
+
 msgctxt "selectAllOfBundle"
 msgid "Select all \"@bundle\" blocks"
 msgstr "Alli «@bundle»-Blöck uswähle"

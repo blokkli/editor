@@ -61,7 +61,7 @@ defineBlokkliFeature({
 })
 
 type DropdownItem = {
-  id: 'select-all-of-bundle'
+  id: 'select-all-of-bundle' | 'select-all-blocks'
   label: string
 }
 
@@ -103,14 +103,25 @@ const itemDropdownItems = computed<DropdownItem[]>(() => {
         ),
       },
     ]
+  } else if (selection.hasHostSelected.value) {
+    return [
+      {
+        id: 'select-all-blocks',
+        label: $t('selectAllBlocks', 'Select all blocks'),
+      },
+    ]
   }
   return []
 })
 
 function onSelectDropdownItem(item: DropdownItem) {
-  if (item.id === 'select-all-of-bundle' && selectedBundle.value) {
-    const uuids = state.getAllUuids(selectedBundle.value)
-    eventBus.emit('select', uuids)
+  if (item.id === 'select-all-of-bundle') {
+    if (selectedBundle.value) {
+      const uuids = state.getAllUuids(selectedBundle.value)
+      eventBus.emit('select', uuids)
+    }
+  } else if (item.id === 'select-all-blocks') {
+    selectAllBlocks()
   }
 }
 
@@ -326,6 +337,13 @@ const visuallySelectBlocks = (toggleUuid: string): string[] | undefined => {
   return filter(encompassingRect)
 }
 
+function selectAllBlocks() {
+  eventBus.emit(
+    'select:end',
+    getSelectAllUuids(dom.getAllBlocks(), selection.blocks.value),
+  )
+}
+
 onBlokkliEvent('select:shiftToggle', (uuid) => {
   const uuids = visuallySelectBlocks(uuid)
   if (uuids) {
@@ -369,10 +387,7 @@ onBlokkliEvent('keyPressed', (e) => {
       return
     }
     e.originalEvent.preventDefault()
-    eventBus.emit(
-      'select:end',
-      getSelectAllUuids(dom.getAllBlocks(), selection.blocks.value),
-    )
+    selectAllBlocks()
   }
 })
 </script>

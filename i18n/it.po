@@ -1802,6 +1802,10 @@ msgid ""
 "drop as blocks into the page."
 msgstr ""
 
+msgctxt "selectAllBlocks"
+msgid "Select all blocks"
+msgstr ""
+
 msgctxt "selectAllOfBundle"
 msgid "Select all \"@bundle\" blocks"
 msgstr ""

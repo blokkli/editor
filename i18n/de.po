@@ -1836,6 +1836,10 @@ msgstr ""
 "Finden Sie Blöcke auf der aktuellen Seite oder andere bestehende Inhalte "
 "wie Bilder oder Dokumente, um sie als Blöcke auf der Seite hinzuzufügen."
 
+msgctxt "selectAllBlocks"
+msgid "Select all blocks"
+msgstr "Alle Blöcke auswählen"
+
 msgctxt "selectAllOfBundle"
 msgid "Select all \"@bundle\" blocks"
 msgstr "Alle «@bundle» Blöcke auswählen"

@@ -1639,6 +1639,10 @@
     "source": "Quickly find blocks on the current page or existing content to drag and drop as blocks into the page.",
     "translation": "Finden Sie Blöcke auf der aktuellen Seite oder andere bestehende Inhalte wie Bilder oder Dokumente, um sie als Blöcke auf der Seite hinzuzufügen."
   },
+  "selectAllBlocks": {
+    "source": "Select all blocks",
+    "translation": "Alle Blöcke auswählen"
+  },
   "selectAllOfBundle": {
     "source": "Select all \"@bundle\" blocks",
     "translation": "Alle «@bundle» Blöcke auswählen"
