@@ -299,8 +299,12 @@ export default function (
     }
   }
 
-  const intersectionObserver =
-    useDelayedIntersectionObserver(intersectionCallback)
+  const intersectionObserver = useDelayedIntersectionObserver(
+    intersectionCallback,
+    {
+      rootMargin: '400px 0px 400px 0px',
+    },
+  )
 
   const registeredFieldTypes = computed<RegisteredFieldType[]>(() => {
     const fields = Object.values(registeredFields)

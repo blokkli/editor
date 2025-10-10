@@ -1,5 +1,6 @@
 export default function (
   callback: (entries: IntersectionObserverEntry[]) => void,
+  options: IntersectionObserverInit = {},
 ) {
   let observer: IntersectionObserver | null = null
   let collected: HTMLElement[] = []
@@ -7,6 +8,7 @@ export default function (
   function init() {
     observer = new IntersectionObserver(callback, {
       threshold: 0,
+      ...options,
     })
     for (const el of collected) {
       observer.observe(el)

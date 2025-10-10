@@ -8,6 +8,7 @@ varying vec3 v_color;
 uniform float u_scale;
 uniform float u_dpi;
 uniform vec2 u_resolution;
+uniform float u_active_hover_nesting_level;
 
 float roundedBoxSDF(vec2 CenterPosition, vec2 Size, float Radius) {
   return length(max(abs(CenterPosition) - Size + Radius, 0.0)) - Radius;
@@ -74,7 +75,12 @@ void main() {
       : alphaInner * 0.2;
 
   if (v_is_hover_area >= 1.0) {
-    adjustedAlphaFill *= 0.5;
+    // If nesting level is 0, don't render the fill (border only)
+    if (u_active_hover_nesting_level < 0.5) {
+      adjustedAlphaFill = 0.0;
+    } else {
+      adjustedAlphaFill *= 0.5;
+    }
   }
 
   if (alphaBorder > 0.0) {

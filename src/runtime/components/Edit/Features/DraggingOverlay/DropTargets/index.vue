@@ -39,6 +39,7 @@ import {
   MIN_GAP,
   type Orientation,
 } from '#blokkli/helpers/dropTargets'
+import type { RGB } from '#blokkli/types/theme'
 
 const props = defineProps<{
   items: DraggableItem[]
@@ -217,7 +218,6 @@ const emitDrop = async () => {
   }
 
   eventBus.emit('dragging:end')
-  // eventBus.emit('item:dropped')
 }
 
 /**
@@ -608,9 +608,12 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
       )
     }
 
+    // This will attempt to resolve overlapping rects.
+    this.processPendingRects()
+
     const hasChanged = lengthBefore !== this.positions.length
 
-    // Only update the buffer info if it has changed.
+    // Only update the buffer info if it has changed..
     if (hasChanged) {
       this.bufferInfo = this.createBufferInfo()
     }
@@ -657,7 +660,9 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
   }
 }
 
-const collector = new DropTargetRectangleBufferCollector(gl)
+const collector = new DropTargetRectangleBufferCollector(gl, {
+  deferredMode: true,
+})
 
 // Add a rectangle that we will use to display the hovered field area.
 // The vertex shader will dynamically transform the quad to match the currently hovered field area.
@@ -688,7 +693,7 @@ const fieldColors = computed(() => {
   }
 })
 
-function getColorForField(field?: FieldRect | null) {
+function getColorForField(field?: FieldRect | null): RGB {
   const nestingLevel = field?.field.nestingLevel || 0
   if (nestingLevel >= 3) {
     return fieldColors.value[3]
@@ -700,7 +705,7 @@ function getColorForField(field?: FieldRect | null) {
   return fieldColors.value[0]
 }
 
-const activeColorRgb = computed(() => {
+const activeColorRgb = computed<RGB | undefined>(() => {
   if (active.value?.type === 'drop-area') {
     return theme.teal.value.normal
   }
@@ -710,7 +715,7 @@ const activeColorRgb = computed(() => {
   return getColorForField(active.value?.field)
 })
 
-const activeColorHex = computed(() => {
+const activeColorHex = computed<string>(() => {
   if (activeColorRgb.value) {
     return rgbaToString(activeColorRgb.value)
   }
@@ -719,12 +724,27 @@ const activeColorHex = computed(() => {
 
 const activeHoverField = ref<FieldRect | null>(null)
 
-const activeHoverRect = computed(() => {
+const activeHoverRect = computed<[number, number, number, number]>(() => {
   if (!activeHoverField.value) {
     return [0, 0, 0, 0]
   }
 
   const outset = activeHoverField.value.field.nestingLevel === 0 ? 0 : 20
+
+  // If this field has an empty child rect, use its adjusted position from collector.
+  if (activeHoverField.value.emptyChild) {
+    const emptyChildId = activeHoverField.value.emptyChild.id
+    const adjustedRect = collector.rects[emptyChildId]
+
+    if (adjustedRect) {
+      return [
+        adjustedRect.x - outset,
+        adjustedRect.y - outset,
+        adjustedRect.width + 2 * outset,
+        adjustedRect.height + 2 * outset,
+      ]
+    }
+  }
 
   return [
     activeHoverField.value.x - outset,
@@ -734,11 +754,25 @@ const activeHoverRect = computed(() => {
   ]
 })
 
-const activeHoverColor = computed(() => {
+const activeHoverColor = computed<RGB>(() => {
   return getColorForField(activeHoverField.value)
 })
 
-const uniforms = computed(() => {
+const activeHoverFieldNestingLevel = computed<number>(() => {
+  return activeHoverField.value?.field.nestingLevel ?? 0
+})
+
+const uniforms = computed<
+  Record<
+    string,
+    | RGB
+    | string
+    | boolean
+    | undefined
+    | number
+    | [number, number, number, number]
+  >
+>(() => {
   const index = active.value?.index
   return {
     u_color_field_0: toShaderColor(fieldColors.value[0]),
@@ -749,6 +783,7 @@ const uniforms = computed(() => {
     u_color_area: toShaderColor(theme.teal.value.normal),
     u_active_rect_id: index === undefined ? -1 : index,
     u_active_hover_rect: activeHoverRect.value,
+    u_active_hover_nesting_level: activeHoverFieldNestingLevel.value,
   }
 })
 
@@ -825,6 +860,8 @@ onBlokkliEvent('canvas:draw', () => {
     animation.setSharedUniforms(gl, programInfo)
   }
 
+  const { info, hasChanged } = collector.getBufferInfo()
+
   if (!props.isTouch) {
     if (cursorIsInsideClipped()) {
       const closest = collector.getClosestIntersectingRect(
@@ -837,8 +874,6 @@ onBlokkliEvent('canvas:draw', () => {
       active.value = null
     }
   }
-
-  const { info, hasChanged } = collector.getBufferInfo()
 
   // WebGL rendering.
   if (programInfo && gl) {

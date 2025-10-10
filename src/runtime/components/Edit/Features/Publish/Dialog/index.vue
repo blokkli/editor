@@ -145,7 +145,7 @@
       </FormItem>
     </div>
     <template #pre-footer>
-      <div class="bk-publish-dialog-summary">
+      <div>
         <h3 class="bk-form-label">
           {{ $t('publishSummary', 'Summary') }}
         </h3>

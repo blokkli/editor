@@ -17,6 +17,7 @@ uniform vec3 u_color_field_3;
 uniform vec3 u_color_area;
 uniform vec3 u_color_hover_area;
 uniform vec4 u_active_hover_rect;
+uniform float u_active_hover_nesting_level;
 uniform float u_dpi;
 
 varying vec4 v_quad;
