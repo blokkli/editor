@@ -62,12 +62,10 @@ const INIT_EATEN = 0
 
 const largeIconSize = 32
 const blackColor = 'black'
-// Grid configuration (Nokia 5110 screen: 84 × 48 pixels)
-const worldWidth = 7 * 3 // 84 pixels / 12 = 7 cells
-const worldHeight = 4 * 3 - 1 // 48 pixels / 12 = 4 cells, minus 1 for score area
-const scoreAreaHeight = 1 // 1 cell for score/stats
-const cellSize = 12 // Pixels per game cell
-// Border and padding around game world
+const worldWidth = 7 * 3
+const worldHeight = 4 * 3 - 1
+const scoreAreaHeight = 1
+const cellSize = 12
 const gameWorldBorder = 1
 const gameWorldPadding = 1
 let isLoaded = false
@@ -162,7 +160,8 @@ let logoCanvas: OffscreenCanvas | null = null
 let lastScore = -1
 let lastBlocksEaten = -1
 
-const cellMoveDuration = 250 // milliseconds per cell movement
+// milliseconds per cell movement
+const MOVE_DURATION = 200
 
 // Generate random food position
 function generateFood() {
@@ -310,7 +309,7 @@ function update(currentTime: number) {
   const timeSinceLastUpdate = currentTime - lastCellUpdate
 
   // Only perform cell-based update when enough time has passed
-  if (timeSinceLastUpdate >= cellMoveDuration) {
+  if (timeSinceLastUpdate >= MOVE_DURATION) {
     // Use AI direction in debug mode
     if (DEBUG_GAME) {
       nextDirection.value = getAIDirection()
@@ -345,7 +344,7 @@ function update(currentTime: number) {
       newHead.y >= worldHeight
     ) {
       gameOver.value = true
-      gameOverTime = lastCellUpdate + cellMoveDuration
+      gameOverTime = lastCellUpdate + MOVE_DURATION
       return
     }
 
@@ -356,7 +355,7 @@ function update(currentTime: number) {
       )
     ) {
       gameOver.value = true
-      gameOverTime = lastCellUpdate + cellMoveDuration
+      gameOverTime = lastCellUpdate + MOVE_DURATION
       return
     }
 
@@ -611,7 +610,7 @@ function draw(currentTime: number) {
     const timeToUse =
       gameOver.value && gameOverTime > 0 ? gameOverTime : currentTime
     const timeSinceLastUpdate = timeToUse - lastCellUpdate
-    movementProgress = Math.min(timeSinceLastUpdate / cellMoveDuration, 1)
+    movementProgress = Math.min(timeSinceLastUpdate / MOVE_DURATION, 1)
   }
 
   // Update score area if changed

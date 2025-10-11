@@ -38,7 +38,7 @@
     :key="renderKey"
     to="#blokkli-add-list-sidebar-before"
   >
-    <div class="bk-list-sidebar-form">
+    <div class="bk bk-list-sidebar-form">
       <input
         id="add_block_search"
         v-model="searchText"

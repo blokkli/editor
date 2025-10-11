@@ -445,8 +445,8 @@
       @apply opacity-0;
     }
   }
+}
 
-  .bk-list-sidebar-form {
-    @apply p-15;
-  }
+.bk.bk-list-sidebar-form {
+  @apply p-15;
 }
