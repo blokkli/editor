@@ -23,9 +23,7 @@
       </div>
     </button>
   </Teleport>
-  <Teleport to="#bk-blokkli-item-actions-after">
-    <slot :items="selection.blocks.value" :uuids="uuids" />
-  </Teleport>
+  <slot :items="selection.blocks.value" :uuids="uuids" />
 </template>
 
 <script lang="ts" setup>

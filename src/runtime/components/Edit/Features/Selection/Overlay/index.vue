@@ -17,6 +17,7 @@ import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/helpers/webgl'
 import { useTransitionedValue } from '#blokkli/helpers/useTransitionedValue'
 import { toShaderColor } from '#blokkli/helpers'
+import type { RGB } from '#blokkli/types/theme'
 
 const props = defineProps<{
   blocks: DraggableExistingBlock[]
@@ -104,7 +105,23 @@ const hasTransformingStyle = computed(
   () => ui.hasTransformOverlayOpen.value || ui.isTransforming.value,
 )
 
+const selectionColorOverride = computed<RGB | null>(() => {
+  const color = ui.selectionColor.value
+  if (!color) {
+    return null
+  }
+
+  if (color === 'accent' || color === 'mono') {
+    return toShaderColor(theme.getColor(color, '700'))
+  }
+
+  return toShaderColor(theme.getColor(color, 'normal'))
+})
+
 const getColorDefault = useTransitionedValue(() => {
+  if (selectionColorOverride.value) {
+    return selectionColorOverride.value
+  }
   if (hasTransformingStyle.value) {
     return toShaderColor(theme.orange.value.normal)
   }
@@ -113,6 +130,9 @@ const getColorDefault = useTransitionedValue(() => {
 })
 
 const getColorInverted = useTransitionedValue(() => {
+  if (selectionColorOverride.value) {
+    return selectionColorOverride.value
+  }
   if (hasTransformingStyle.value) {
     return toShaderColor(theme.orange.value.normal)
   }
@@ -127,7 +147,7 @@ const getTransforming = useTransitionedValue(() => {
 onBlokkliEvent('canvas:draw', (e) => {
   props.gl.useProgram(programInfo.program)
 
-  const { info, hasChanged } = collector.getBufferInfo()
+  const { info } = collector.getBufferInfo()
 
   // Nothing to draw.
   if (!info) {

@@ -39,6 +39,10 @@
     "source": "Add inside @parentBundle » @fieldLabel...",
     "translation": "In @parentBundle » @fieldLabel hinzufügen..."
   },
+  "addCommentHeader": {
+    "source": "Add Comment",
+    "translation": "Kommentar hinzufügen"
+  },
   "addCommentToItem": {
     "source": "Add Comment...",
     "translation": "Kommentar hinzufügen..."
@@ -362,10 +366,6 @@
   "commentAdd": {
     "source": "Add comment",
     "translation": "Kommentar hinzufügen"
-  },
-  "commentBody": {
-    "source": "Comment",
-    "translation": "Kommentar"
   },
   "commentBodyPlaceholder": {
     "source": "Add reply",

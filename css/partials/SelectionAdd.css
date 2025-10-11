@@ -105,85 +105,16 @@
 }
 
 .bk.bk-selection-add-overlay {
-  --bk-gap: 15px;
   --bk-item-width: 250px;
   --bk-columns: 2;
-  --bk-caret-size: 10px;
   --bk-bg: theme('colors.mono.900');
   --bk-header-bg: theme('colors.mono.800');
+  --bk-header-hover: theme('colors.mono.700');
+  --bk-header-text: theme('colors.mono.100');
   --bk-border: theme('colors.mono.500');
 
-  @apply fixed lg:absolute left-0 z-selection-add will-change-transform bottom-50 lg:bottom-auto lg:top-0;
-
-  .bk-selection-add-overlay-inner {
+  .bk-artboard-tooltip-inner {
     @apply text-white;
-    @apply lg:rounded-md overflow-hidden;
-    @apply lg:shadow-2xl;
-    border: 1px solid var(--bk-border);
-    background: var(--bk-bg);
-  }
-
-  &:before,
-  &:after {
-    content: '';
-    width: 0px;
-    height: 0px;
-    border-style: solid;
-    @apply absolute;
-    transform: translateX(
-      calc(((var(--bk-caret-x)) * 1px) - var(--bk-caret-size))
-    );
-  }
-
-  &:before {
-    --bk-header-bg: var(--bk-border);
-  }
-
-  &.bk-is-top {
-    &:before,
-    &:after {
-      border-width: var(--bk-caret-size) var(--bk-caret-size) 0
-        var(--bk-caret-size);
-      border-color: var(--bk-header-bg) transparent transparent transparent;
-      @apply top-full left-0;
-    }
-
-    &:after {
-      --bk-header-bg: var(--bk-bg);
-    }
-
-    &:after {
-      @apply -mt-1;
-    }
-  }
-
-  &.bk-is-bottom {
-    &:before,
-    &:after {
-      border-width: 0 var(--bk-caret-size) var(--bk-caret-size)
-        var(--bk-caret-size);
-      border-color: transparent transparent var(--bk-header-bg) transparent;
-      @apply bottom-full;
-    }
-
-    &:after {
-      @apply -mb-1;
-    }
-  }
-
-  .bk-selection-add-overlay-label {
-    @apply bg-mono-800 flex leading-none h-50 items-center font-semibold;
-    > div {
-      padding: var(--bk-gap);
-    }
-
-    > button {
-      @apply ml-auto size-50 flex items-center justify-center hover:bg-mono-700;
-
-      svg {
-        @apply size-20 fill-current;
-      }
-    }
   }
 
   .bk-selection-add-overlay-list {

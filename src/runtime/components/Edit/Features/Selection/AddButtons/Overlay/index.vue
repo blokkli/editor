@@ -1,60 +1,44 @@
 <template>
-  <div
-    ref="el"
-    class="bk bk-selection-add-overlay"
-    :class="'bk-is-' + placementY"
-    :style="{
-      '--bk-caret-x': caretX,
-    }"
+  <ArtboardTooltip
+    id="add-buttons"
+    :title="label"
+    :anchor-el
+    class="bk-selection-add-overlay"
+    @close="$emit('close')"
   >
-    <div class="bk bk-selection-add-overlay-inner bk-caret-tooltip-inner">
-      <div v-if="label" class="bk-selection-add-overlay-label">
-        <div v-html="label" />
-        <button @click="$emit('close')">
-          <Icon name="close" />
-        </button>
-      </div>
-      <div
-        ref="listEl"
-        class="bk-selection-add-overlay-list bk-scrollbar-dark"
-        @wheel="onWheel"
+    <div
+      ref="listEl"
+      class="bk-selection-add-overlay-list bk-scrollbar-dark"
+      @wheel="onWheel"
+    >
+      <button
+        v-for="item in items"
+        :key="item.bundle"
+        tabindex="-1"
+        @click.prevent="$emit('select', item.bundle)"
       >
-        <button
-          v-for="item in items"
-          :key="item.bundle"
-          tabindex="-1"
-          @click.prevent="$emit('select', item.bundle)"
-        >
-          <AddListItemIcon
-            :bundle="item.bundle"
-            :color="item.isFavorite ? 'yellow' : 'default'"
-          />
-          <span>{{ item.label }}</span>
-        </button>
-        <button
-          v-for="action in actions"
-          :key="'action:' + action.id"
-          tabindex="-1"
-          @click.prevent="$emit('action', action.id)"
-        >
-          <AddListItemIcon :icon="action.icon" :color="action.color" />
-          <span>{{ action.title }}</span>
-        </button>
-      </div>
+        <AddListItemIcon
+          :bundle="item.bundle"
+          :color="item.isFavorite ? 'yellow' : 'default'"
+        />
+        <span>{{ item.label }}</span>
+      </button>
+      <button
+        v-for="action in actions"
+        :key="'action:' + action.id"
+        tabindex="-1"
+        @click.prevent="$emit('action', action.id)"
+      >
+        <AddListItemIcon :icon="action.icon" :color="action.color" />
+        <span>{{ action.title }}</span>
+      </button>
     </div>
-  </div>
+  </ArtboardTooltip>
 </template>
 
 <script setup lang="ts">
-import useStickyToolbar from '#blokkli/helpers/composables/useStickyToolbar'
-import {
-  useTemplateRef,
-  useBlokkli,
-  computed,
-  onMounted,
-  onBeforeUnmount,
-} from '#imports'
-import { Icon, AddListItemIcon } from '#blokkli/components'
+import { useTemplateRef, useBlokkli, computed } from '#imports'
+import { AddListItemIcon, ArtboardTooltip } from '#blokkli/components'
 import { isInternalBundle } from '#blokkli/helpers/bundles'
 import type { AddAction } from '#blokkli/types'
 
@@ -67,7 +51,7 @@ type Item = {
 const props = defineProps<{
   bundles: string[]
   anchorEl: HTMLElement
-  label?: string
+  label: string
 }>()
 
 defineEmits<{
@@ -75,27 +59,11 @@ defineEmits<{
   (e: 'close'): void
 }>()
 
-const el = useTemplateRef('el')
 const listEl = useTemplateRef('listEl')
 let hasScrollbar: null | boolean = null
 
-const { types, ui, plugins, storage } = useBlokkli()
+const { types, plugins, storage } = useBlokkli()
 const favorites = storage.use<string[]>('blockFavorites', [])
-
-const { placementY, caretX } = useStickyToolbar(el, {
-  getAnchorElement() {
-    return props.anchorEl
-  },
-  getPlacementY() {
-    return 'auto'
-  },
-  getPlacementX() {
-    return 'center'
-  },
-  getCaretWidth() {
-    return 30
-  },
-})
 
 const items = computed<Item[]>(() => {
   return props.bundles
@@ -133,12 +101,4 @@ const onWheel = (e: WheelEvent) => {
     e.stopPropagation()
   }
 }
-
-onMounted(() => {
-  ui.hasAddTooltipOpen.value = true
-})
-
-onBeforeUnmount(() => {
-  ui.hasAddTooltipOpen.value = false
-})
 </script>

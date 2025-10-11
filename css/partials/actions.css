@@ -234,14 +234,4 @@
   .bk-blokkli-item-actions-comment {
     /* @apply relative; */
   }
-  .bk-blokkli-item-actions-comment-dropdown {
-    @apply absolute left-0 w-full bg-white p-15 shadow-xl-inverted z-10;
-    bottom: var(--bk-actions-height);
-    @screen lg {
-      @apply top-full bottom-auto shadow-xl rounded-b;
-    }
-    button {
-      @apply mt-15;
-    }
-  }
 }

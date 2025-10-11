@@ -15,6 +15,7 @@ import { addElementClasses } from './addElementClasses'
 import type { StateProvider } from './stateProvider'
 import type { AdapterContext } from '#blokkli/adapter'
 import { defaultLanguage, forceDefaultLanguage } from '#blokkli-build/config'
+import type { ThemeColorName } from '#blokkli/types/theme'
 
 const CLASS_PROXY_MODE = 'bk-is-proxy-mode'
 
@@ -40,7 +41,11 @@ export type UiProvider = {
   isAnalyzing: Ref<boolean>
   isProxyMode: Ref<boolean>
   hasDialogOpen: Ref<boolean>
-  hasAddTooltipOpen: Ref<boolean>
+  hasTooltipOpen: ComputedRef<boolean>
+  openTooltip: Ref<string>
+  selectionColor: ComputedRef<ThemeColorName | null>
+  setSelectionColor: (id: string, color: ThemeColorName) => void
+  removeSelectionColor: (id: string) => void
 
   hasTransformOverlayOpen: Ref<boolean>
   isTransforming: ComputedRef<boolean>
@@ -110,12 +115,13 @@ export default function (
   const isProxyMode = ref(false)
   const menuIsOpen = ref(false)
   const hasDialogOpen = ref(false)
-  const hasAddTooltipOpen = ref(false)
+  const openTooltip = ref('')
   const hasTransformOverlayOpen = ref(false)
   const isAnimating = ref(false)
   const isAnalyzing = ref(false)
   const transformLabel = ref('')
   const openContextMenu = ref('')
+
   const selectionTopLeft = ref({ x: 0, y: 0 })
   const baseSettings = storage.use('feature:settings:settings', {} as any)
   const lowPerformanceMode = computed(
@@ -411,6 +417,30 @@ export default function (
     resizeObserver.disconnect()
   })
 
+  const hasTooltipOpen = computed<boolean>(() => !!openTooltip.value)
+
+  /**
+   * Selection colors.
+   */
+  const selectionColors = ref<{ id: string; color: ThemeColorName }[]>([])
+
+  function setSelectionColor(id: string, color: ThemeColorName) {
+    selectionColors.value = [
+      ...selectionColors.value.filter((v) => v.id !== id),
+      { id, color },
+    ]
+  }
+
+  function removeSelectionColor(id: string) {
+    selectionColors.value = selectionColors.value.filter((v) => v.id !== id)
+  }
+
+  const selectionColor = computed<ThemeColorName | null>(() => {
+    return (
+      selectionColors.value[selectionColors.value.length - 1]?.color ?? null
+    )
+  })
+
   return {
     menu: {
       isOpen: menuIsOpen,
@@ -450,6 +480,10 @@ export default function (
     formatDate,
     hasDialogOpen,
     hasTransformOverlayOpen,
-    hasAddTooltipOpen,
+    hasTooltipOpen,
+    openTooltip,
+    selectionColor,
+    setSelectionColor,
+    removeSelectionColor,
   }
 }

@@ -19,6 +19,7 @@
         </li>
       </ul>
     </div>
+
     <template v-if="unresolvedCount" #badge>
       <div class="bk-sidebar-badge bk-is-yellow">{{ unresolvedCount }}</div>
     </template>
@@ -32,11 +33,18 @@
     icon="comment"
     multiple
     @click="showAddComment = !showAddComment"
-  >
-    <template v-if="showAddComment" #default="{ uuids }">
-      <CommentAddForm ref="commentForm" @add="onAddComment($event, uuids)" />
-    </template>
-  </PluginItemAction>
+  />
+
+  <Teleport to="body">
+    <BlokkliTransition name="caret-tooltip">
+      <CommentAddForm
+        v-if="showAddComment"
+        ref="commentForm"
+        @add="onAddComment($event)"
+        @close="showAddComment = false"
+      />
+    </BlokkliTransition>
+  </Teleport>
 
   <CommentsOverlay
     v-if="comments.length"
@@ -55,6 +63,7 @@ import {
   computed,
 } from '#imports'
 import { PluginSidebar, PluginItemAction } from '#blokkli/plugins'
+import { BlokkliTransition } from '#blokkli/components'
 import Comment from './Comment/index.vue'
 import CommentAddForm from './AddForm/index.vue'
 import CommentsOverlay from './Overlay/index.vue'
@@ -87,8 +96,11 @@ const unresolvedCount = computed(
   () => comments.value.filter((v) => !v.resolved).length,
 )
 
-const onAddComment = async (body: string, uuids: string[]) => {
-  comments.value = await adapter.addComment(uuids, body)
+const onAddComment = async (body: string, providedUuids?: string[]) => {
+  const uuids = providedUuids ?? [...selection.uuids.value]
+  if (uuids.length) {
+    comments.value = await adapter.addComment(uuids, body)
+  }
   showAddComment.value = false
 }
 

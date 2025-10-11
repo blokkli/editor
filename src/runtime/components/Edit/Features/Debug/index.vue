@@ -84,7 +84,7 @@
         <div class="bk-debug-list">
           <div>
             <div>
-              <FormToggle label="Log Events" v-model="logEvents" />
+              <FormToggle v-model="logEvents" label="Log Events" />
             </div>
             <div>
               <button

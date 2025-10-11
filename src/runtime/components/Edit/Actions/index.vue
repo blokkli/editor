@@ -9,7 +9,7 @@
           !ui.hasTransformOverlayOpen.value &&
           hasAnythingSelected &&
           shouldRender &&
-          !ui.hasAddTooltipOpen.value
+          !ui.hasTooltipOpen.value
         "
         ref="el"
         class="bk-blokkli-item-actions-inner"
@@ -62,8 +62,6 @@
               class="bk-blokkli-item-actions-type-dropdown"
             />
           </div>
-
-          <div id="bk-blokkli-item-actions-after" />
 
           <div
             v-show="selection.blocks.value.length"

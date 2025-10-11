@@ -1,0 +1,83 @@
+.bk.bk-artboard-tooltip {
+  --bk-gap: 15px;
+  --bk-caret-size: 10px;
+
+  @apply fixed lg:absolute left-0 z-selection-add will-change-transform bottom-50 lg:bottom-auto lg:top-0;
+
+  &:before,
+  &:after {
+    content: '';
+    width: 0px;
+    height: 0px;
+    border-style: solid;
+    @apply absolute;
+    transform: translateX(
+      calc(((var(--bk-caret-x)) * 1px) - var(--bk-caret-size))
+    );
+  }
+
+  &:before {
+    --bk-header-bg: var(--bk-border);
+  }
+
+  &.bk-is-top {
+    &:before,
+    &:after {
+      border-width: var(--bk-caret-size) var(--bk-caret-size) 0
+        var(--bk-caret-size);
+      border-color: var(--bk-header-bg) transparent transparent transparent;
+      @apply top-full left-0;
+    }
+
+    &:after {
+      --bk-header-bg: var(--bk-bg);
+    }
+
+    &:after {
+      @apply -mt-1;
+    }
+  }
+
+  &.bk-is-bottom {
+    &:before,
+    &:after {
+      border-width: 0 var(--bk-caret-size) var(--bk-caret-size)
+        var(--bk-caret-size);
+      border-color: transparent transparent var(--bk-header-bg) transparent;
+      @apply bottom-full;
+    }
+
+    &:after {
+      @apply -mb-1;
+    }
+  }
+
+  .bk-artboard-tooltip-inner {
+    @apply lg:rounded-md overflow-hidden;
+    @apply lg:shadow-2xl;
+    border: 1px solid var(--bk-border);
+    background: var(--bk-bg);
+  }
+
+  .bk-artboard-tooltip-header {
+    @apply flex leading-none h-40 items-center font-bold uppercase tracking-wide text-xs;
+    background: var(--bk-header-bg);
+    color: var(--bk-header-text);
+    > div {
+      padding: var(--bk-gap);
+    }
+
+    > button {
+      @apply ml-auto size-40 flex items-center justify-center;
+      color: var(--bk-header-text);
+
+      &:hover {
+        background: var(--bk-header-hover);
+      }
+
+      svg {
+        @apply size-18 fill-current;
+      }
+    }
+  }
+}

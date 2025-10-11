@@ -82,30 +82,30 @@ export default function (
     let maxY = 0
     let hasRects = false
 
-    // Use anchor element if provided
-    if (options && options.getAnchorElement) {
-      const anchorElement = options.getAnchorElement()
-      if (anchorElement) {
-        anchorRect ||= ui.getAbsoluteElementRect(
-          anchorElement.getBoundingClientRect(),
-          scale,
-          offset,
-        )
-        const rectX = (anchorRect.x + offset.x / scale) * scale
-        const rectY = (anchorRect.y + offset.y / scale) * scale
-        const rectRight = rectX + anchorRect.width * scale
-        const rectBottom = rectY + anchorRect.height * scale
+    const anchorElement =
+      options && options.getAnchorElement ? options.getAnchorElement() : null
 
-        minX = rectX
-        maxX = rectRight
-        minY = rectY
-        maxY = rectBottom
-        hasRects = true
-      }
+    // Use anchor element if provided
+    if (anchorElement) {
+      anchorRect ||= ui.getAbsoluteElementRect(
+        anchorElement.getBoundingClientRect(),
+        scale,
+        offset,
+      )
+      const rectX = (anchorRect.x + offset.x / scale) * scale
+      const rectY = (anchorRect.y + offset.y / scale) * scale
+      const rectRight = rectX + anchorRect.width * scale
+      const rectBottom = rectY + anchorRect.height * scale
+
+      minX = rectX
+      maxX = rectRight
+      minY = rectY
+      maxY = rectBottom
+      hasRects = true
     } else {
       // Use selection blocks
-      const rects = selection.blocks.value
-        .map((block) => dom.getBlockRect(block.uuid))
+      const rects = selection.uuids.value
+        .map((uuid) => dom.getBlockRect(uuid))
         .filter(falsy)
         .filter((rect) => rect.height || rect.width)
 

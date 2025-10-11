@@ -43,6 +43,10 @@ msgctxt "addButtonInsideField"
 msgid "Add inside @parentBundle » @fieldLabel..."
 msgstr "In @parentBundle » @fieldLabel drzuefüege..."
 
+msgctxt "addCommentHeader"
+msgid "Add Comment"
+msgstr ""
+
 msgctxt "addCommentToItem"
 msgid "Add Comment..."
 msgstr "Kommentiere"
@@ -404,10 +408,6 @@ msgstr ""
 msgctxt "commentAdd"
 msgid "Add comment"
 msgstr "Kommentar drzuefüege"
-
-msgctxt "commentBody"
-msgid "Comment"
-msgstr "Kommentar"
 
 msgctxt "commentBodyPlaceholder"
 msgid "Add reply"
