@@ -50,11 +50,8 @@
     </PluginTourItem>
   </Teleport>
 
-  <Teleport to="#bk-banner-container">
-    <Banner
-      v-if="state.editMode.value === 'translating'"
-      :active-language="activeLanguage"
-    />
+  <Teleport to="#bk-banner-list">
+    <Banner v-if="isTranslating" :active-language />
   </Teleport>
 
   <PluginMenuButton
@@ -63,14 +60,14 @@
     :description="
       $t('translationsBatchTranslateMenuDescription', 'Translate all blocks')
     "
-    :disabled="editMode !== 'translating'"
+    :disabled="!isTranslating"
     :weight="60"
     icon="translate"
     @click="eventBus.emit('batchTranslate')"
   />
 
   <PluginItemAction
-    v-if="editMode === 'translating'"
+    v-if="isTranslating"
     id="translate"
     :disabled="!canTranslateBlock"
     :title="$t('translationsItemAction', 'Translate')"
@@ -112,7 +109,8 @@ const { adapter } = defineBlokkliFeature({
 
 const { eventBus, state, context, $t, ui, selection, types, definitions } =
   useBlokkli()
-const { translation, editMode } = state
+
+const isTranslating = computed(() => state.editMode.value === 'translating')
 
 const isOpen = ref(false)
 
@@ -133,7 +131,7 @@ const isDropdown = computed(() => {
 const activeLangcode = computed(() => context.value.language)
 const activeLanguage = computed<Language>(() => {
   return (
-    translation.value.availableLanguages?.find(
+    state.translation.value.availableLanguages?.find(
       (v) => v.id === activeLangcode.value,
     ) || {
       id: activeLangcode.value,
@@ -151,7 +149,7 @@ type TranslationStateItem = {
 }
 
 const items = computed<TranslationStateItem[]>(() => {
-  return (translation.value.availableLanguages || [])
+  return (state.translation.value.availableLanguages || [])
     .map((language) => {
       if (language && language.id) {
         return {
@@ -159,7 +157,7 @@ const items = computed<TranslationStateItem[]>(() => {
           code: language.id.toUpperCase(),
           label: language.name,
           checked: context.value.language === language.id,
-          translation: (translation.value.translations || []).find(
+          translation: (state.translation.value.translations || []).find(
             (v) => v.id === language.id,
           ),
         }
@@ -223,13 +221,13 @@ function onTranslate(items: DraggableExistingBlock[]) {
 }
 
 onBlokkliEvent('item:doubleClick', function (block) {
-  if (editMode.value === 'translating' && canTranslateBlock.value) {
+  if (isTranslating.value && canTranslateBlock.value) {
     onTranslate([block])
   }
 })
 
 onBlokkliEvent('entity:translated', (langcode) => {
-  const targetTranslation = translation.value.translations?.find(
+  const targetTranslation = state.translation.value.translations?.find(
     (v) => v.id === langcode,
   )
   if (targetTranslation) {
@@ -239,12 +237,12 @@ onBlokkliEvent('entity:translated', (langcode) => {
 
 onMounted(() => {
   // Make sure the user is not trying to edit a translation that does not exist.
-  const translationExists = !!translation.value.translations?.find(
+  const translationExists = !!state.translation.value.translations?.find(
     (v) => v.id === context.value.language,
   )
   if (!translationExists) {
-    const sourceTranslation = translation.value.translations?.find(
-      (v) => v.id === translation.value.sourceLanguage,
+    const sourceTranslation = state.translation.value.translations?.find(
+      (v) => v.id === state.translation.value.sourceLanguage,
     )
     if (sourceTranslation) {
       return adapter.changeLanguage(sourceTranslation)

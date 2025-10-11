@@ -92,6 +92,9 @@ export type UiProvider = {
     scale?: number,
     offset?: Coord,
   ) => Rectangle
+
+  setBannerHeight: (id: string, height: number) => void
+  removeBanner: (id: string) => void
 }
 
 export default function (
@@ -121,6 +124,14 @@ export default function (
   const isAnalyzing = ref(false)
   const transformLabel = ref('')
   const openContextMenu = ref('')
+  const banners = ref<Record<string, number>>({})
+
+  function setBannerHeight(id: string, height: number) {
+    banners.value[id] = height
+  }
+  function removeBanner(id: string) {
+    banners.value[id] = 0
+  }
 
   const selectionTopLeft = ref({ x: 0, y: 0 })
   const baseSettings = storage.use('feature:settings:settings', {} as any)
@@ -285,6 +296,14 @@ export default function (
         height -= 70
       }
     }
+
+    const bannerHeights = Object.values(banners.value).filter(Boolean)
+
+    bannerHeights.forEach((bannerHeight) => {
+      height -= bannerHeight
+    })
+
+    height -= bannerHeights.length * 10
 
     return height
   })
@@ -485,5 +504,7 @@ export default function (
     selectionColor,
     setSelectionColor,
     removeSelectionColor,
+    setBannerHeight,
+    removeBanner,
   }
 }

@@ -1,24 +1,24 @@
 <template>
-  <div class="bk bk-translations-banner">
-    <Icon name="translate" />
-    <p v-html="text" />
-    <button class="bk-translations-banner-close" @click="onClick">
-      {{ $t('translationsBannerButton', 'Edit source language instead') }}
-      <Icon name="close" />
-    </button>
-  </div>
+  <Banner
+    id="translate"
+    icon="translate"
+    :text
+    :button="$t('translationsBannerButton', 'Edit source language instead')"
+    @click="onClick"
+    scheme="yellow"
+  />
 </template>
 
 <script setup lang="ts">
-import { computed, useBlokkli } from '#imports'
-import { Icon } from '#blokkli/components'
+import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+import { Banner } from '#blokkli/components'
 import type { Language } from '#blokkli/types'
 
 const props = defineProps<{
   activeLanguage: Language
 }>()
 
-const { $t, adapter, state } = useBlokkli()
+const { $t, adapter, state, ui } = useBlokkli()
 
 const onClick = () => {
   const sourceLanguage = state.translation.value.sourceLanguage
@@ -46,5 +46,13 @@ const text = computed(() => {
     'translationsBannerText',
     'You are currently editing the <strong>@language</strong> translation. Some features like adding, moving or deleting blocks are not available.',
   ).replace('@language', props.activeLanguage.name)
+})
+
+onMounted(() => {
+  ui.setSelectionColor('translating', 'mono')
+})
+
+onBeforeUnmount(() => {
+  ui.removeSelectionColor('translating')
 })
 </script>

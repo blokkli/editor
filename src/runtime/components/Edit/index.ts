@@ -27,6 +27,7 @@ import ScaleToFit from './ScaleToFit/index.vue'
 import ScrollBoundary from './ScrollBoundary/index.vue'
 import ShortcutIndicator from './ShortcutIndicator/index.vue'
 import Sortli from './Sortli/index.vue'
+import Banner from './Banner/index.vue'
 import ViewportBlockingRect from './ViewportBlockingRect/index.vue'
 
 export {
@@ -60,4 +61,5 @@ export {
   ShortcutIndicator,
   Sortli,
   ViewportBlockingRect,
+  Banner,
 }

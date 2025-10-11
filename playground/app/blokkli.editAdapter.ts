@@ -158,7 +158,7 @@ export default defineBlokkliEditAdapter((ctx) => {
   // Debugging
   // =============================================================================
   // Set to false to debug the "take ownership" flow.
-  let isOwner = true
+  let isOwner = false
 
   const router = useRouter()
   const route = useRoute()

@@ -111,7 +111,9 @@ const selectionColorOverride = computed<RGB | null>(() => {
     return null
   }
 
-  if (color === 'accent' || color === 'mono') {
+  if (color === 'mono') {
+    return toShaderColor(theme.getColor(color, '500'))
+  } else if (color === 'accent') {
     return toShaderColor(theme.getColor(color, '700'))
   }
 

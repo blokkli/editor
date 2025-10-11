@@ -37,7 +37,7 @@
 @import './partials/ContextMenu.css';
 @import './partials/Tour.css';
 @import './partials/Error.css';
-@import './partials/Translations.css';
+@import './partials/Banner.css';
 @import './partials/AnimationCanvas.css';
 @import './partials/Scrollbar.css';
 @import './partials/SystemRequirements.css';
@@ -97,6 +97,7 @@ html {
     --bk-scheme-light: var(--bk-theme-red-light);
     --bk-scheme-normal: var(--bk-theme-red-normal);
     --bk-scheme-dark: var(--bk-theme-red-dark);
+    --bk-scheme-text: 255 255 255;
   }
 
   .bk-scheme-lime {
@@ -115,12 +116,14 @@ html {
     --bk-scheme-light: var(--bk-theme-mono-100);
     --bk-scheme-normal: var(--bk-theme-mono-600);
     --bk-scheme-dark: var(--bk-theme-mono-800);
+    --bk-scheme-text: var(--bk-theme-mono-50);
   }
 
   .bk-scheme-accent {
     --bk-scheme-light: var(--bk-theme-accent-100);
     --bk-scheme-normal: var(--bk-theme-accent-600);
     --bk-scheme-dark: var(--bk-theme-accent-800);
+    --bk-scheme-text: var(--bk-theme-accent-50);
   }
 
   &.bk-loading-overlay {
@@ -203,10 +206,16 @@ html {
   }
 }
 
-.bk-owner-indicator {
-  @apply fixed bottom-0 right-0 bg-red-light z-messages p-20 text-red-normal font-medium text-lg flex justify-between items-center;
+.bk.bk-owner-indicator {
+  @apply fixed bottom-0 right-0 bg-red-light z-messages px-20 text-red-normal font-medium text-lg flex items-center;
   left: var(--bk-root-offset-left);
   right: var(--bk-root-offset-right);
+  min-height: 90px;
+  @apply border-t border-t-red-normal/40;
+
+  .bk-button {
+    @apply ml-auto;
+  }
 }
 
 .bk-qr-code {
@@ -417,28 +426,6 @@ html.bk-hide-non-editable {
 
   [data-bk-is-muted='true'] {
     @apply opacity-30;
-  }
-}
-
-#bk-banner-container {
-  @apply fixed z-translations-banner-mobile lg:z-translations-banner-desktop grid;
-  left: var(--bk-root-offset-left);
-  bottom: var(--bk-root-offset-bottom);
-  right: var(--bk-root-offset-right);
-  html.bk-has-sidebar-right & {
-    right: calc(var(--bk-root-offset-right) + var(--bk-sidebar-width-right));
-  }
-}
-
-.bk-state-unavailable {
-  @apply bg-red-normal p-20 text-white;
-
-  h2 {
-    @apply text-2xl font-bold;
-  }
-
-  p {
-    @apply text-lg;
   }
 }
 
