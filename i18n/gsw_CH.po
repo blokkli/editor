@@ -44,7 +44,7 @@ msgid "Add inside @parentBundle » @fieldLabel..."
 msgstr "In @parentBundle » @fieldLabel drzuefüege..."
 
 msgctxt "addCommentToItem"
-msgid "Comment"
+msgid "Add Comment..."
 msgstr "Kommentiere"
 
 msgctxt "addListInputPlaceholder"
@@ -514,7 +514,7 @@ msgid "The items could not be duplicated."
 msgstr "D'Elemänt hän nid chönne dupliziert wärde. "
 
 msgctxt "edit"
-msgid "Edit"
+msgid "Edit..."
 msgstr "Bearbeite"
 
 msgctxt "editFormBlockAdd"
@@ -1304,7 +1304,7 @@ msgid "Import..."
 msgstr "Importiere..."
 
 msgctxt "libraryAdd"
-msgid "Add to library"
+msgid "Add to library..."
 msgstr "Zur Bibliothek drzuefüege"
 
 msgctxt "libraryAddDescription"

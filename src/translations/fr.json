@@ -40,7 +40,7 @@
     "translation": "Ajouter dans @parentBundle » @fieldLabel..."
   },
   "addCommentToItem": {
-    "source": "Comment",
+    "source": "Add Comment...",
     "translation": "Commenter"
   },
   "addListInputPlaceholder": {
@@ -472,7 +472,7 @@
     "translation": "Les éléments n'ont pas pu être dupliqués."
   },
   "edit": {
-    "source": "Edit",
+    "source": "Edit...",
     "translation": "Modifier"
   },
   "editFormBlockAdd": {
@@ -1152,7 +1152,7 @@
     "translation": "Importer..."
   },
   "libraryAdd": {
-    "source": "Add to library",
+    "source": "Add to library...",
     "translation": "Ajouter à la bibliothèque"
   },
   "libraryAddDescription": {

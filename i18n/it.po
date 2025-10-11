@@ -44,7 +44,7 @@ msgid "Add inside @parentBundle » @fieldLabel..."
 msgstr "Aggiungi in @parentBundle » @fieldLabel..."
 
 msgctxt "addCommentToItem"
-msgid "Comment"
+msgid "Add Comment..."
 msgstr "Commenta"
 
 msgctxt "addListInputPlaceholder"
@@ -505,7 +505,7 @@ msgid "The items could not be duplicated."
 msgstr "Gli elementi non possono essere duplicati."
 
 msgctxt "edit"
-msgid "Edit"
+msgid "Edit..."
 msgstr "Modifica"
 
 msgctxt "editFormBlockAdd"
@@ -1290,7 +1290,7 @@ msgid "Import..."
 msgstr "Importa..."
 
 msgctxt "libraryAdd"
-msgid "Add to library"
+msgid "Add to library..."
 msgstr "Aggiungi alla biblioteca"
 
 msgctxt "libraryAddDescription"

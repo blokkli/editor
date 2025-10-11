@@ -40,8 +40,8 @@
     "translation": "In @parentBundle » @fieldLabel hinzufügen..."
   },
   "addCommentToItem": {
-    "source": "Comment",
-    "translation": "Kommentieren"
+    "source": "Add Comment...",
+    "translation": "Kommentar hinzufügen..."
   },
   "addListInputPlaceholder": {
     "source": "Search available blocks",
@@ -393,7 +393,7 @@
   },
   "convertTo": {
     "source": "Convert to...",
-    "translation": "Konvertieren"
+    "translation": "Konvertieren..."
   },
   "copiedToClipboardMessage": {
     "source": "\"@text\" has been copied to your clipboard",
@@ -472,8 +472,8 @@
     "translation": "Die Elemente konnten nicht dupliziert werden."
   },
   "edit": {
-    "source": "Edit",
-    "translation": "Bearbeiten"
+    "source": "Edit...",
+    "translation": "Bearbeiten..."
   },
   "editFormBlockAdd": {
     "source": "Add @label",
@@ -1152,8 +1152,8 @@
     "translation": "Importieren..."
   },
   "libraryAdd": {
-    "source": "Add to library",
-    "translation": "Zur Bibliothek hinzufügen"
+    "source": "Add to library...",
+    "translation": "Zur Bibliothek hinzufügen..."
   },
   "libraryAddDescription": {
     "source": "Add a reusable block from the block library.",

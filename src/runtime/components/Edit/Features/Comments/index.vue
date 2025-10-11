@@ -26,7 +26,7 @@
 
   <PluginItemAction
     id="add_comment"
-    :title="$t('addCommentToItem', 'Comment')"
+    :title="$t('addCommentToItem', 'Add Comment...')"
     :active="showAddComment"
     weight="last"
     icon="comment"

@@ -2,7 +2,7 @@
   <PluginItemAction
     v-if="isEditing"
     id="edit"
-    :title="$t('edit', 'Edit')"
+    :title="$t('edit', 'Edit...')"
     :disabled="!canEdit"
     meta
     key-code="E"

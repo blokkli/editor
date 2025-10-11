@@ -40,7 +40,7 @@
     "translation": "In @parentBundle » @fieldLabel drzuefüege..."
   },
   "addCommentToItem": {
-    "source": "Comment",
+    "source": "Add Comment...",
     "translation": "Kommentiere"
   },
   "addListInputPlaceholder": {
@@ -472,7 +472,7 @@
     "translation": "D'Elemänt hän nid chönne dupliziert wärde. "
   },
   "edit": {
-    "source": "Edit",
+    "source": "Edit...",
     "translation": "Bearbeite"
   },
   "editFormBlockAdd": {
@@ -1152,7 +1152,7 @@
     "translation": "Importiere..."
   },
   "libraryAdd": {
-    "source": "Add to library",
+    "source": "Add to library...",
     "translation": "Zur Bibliothek drzuefüege"
   },
   "libraryAddDescription": {

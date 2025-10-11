@@ -44,8 +44,8 @@ msgid "Add inside @parentBundle » @fieldLabel..."
 msgstr "In @parentBundle » @fieldLabel hinzufügen..."
 
 msgctxt "addCommentToItem"
-msgid "Comment"
-msgstr "Kommentieren"
+msgid "Add Comment..."
+msgstr "Kommentar hinzufügen..."
 
 msgctxt "addListInputPlaceholder"
 msgid "Search available blocks"
@@ -437,7 +437,7 @@ msgstr "Konvertieren zu: @bundle"
 
 msgctxt "convertTo"
 msgid "Convert to..."
-msgstr "Konvertieren"
+msgstr "Konvertieren..."
 
 msgctxt "copiedToClipboardMessage"
 msgid "\"@text\" has been copied to your clipboard"
@@ -516,8 +516,8 @@ msgid "The items could not be duplicated."
 msgstr "Die Elemente konnten nicht dupliziert werden."
 
 msgctxt "edit"
-msgid "Edit"
-msgstr "Bearbeiten"
+msgid "Edit..."
+msgstr "Bearbeiten..."
 
 msgctxt "editFormBlockAdd"
 msgid "Add @label"
@@ -1309,8 +1309,8 @@ msgid "Import..."
 msgstr "Importieren..."
 
 msgctxt "libraryAdd"
-msgid "Add to library"
-msgstr "Zur Bibliothek hinzufügen"
+msgid "Add to library..."
+msgstr "Zur Bibliothek hinzufügen..."
 
 msgctxt "libraryAddDescription"
 msgid "Add a reusable block from the block library."
