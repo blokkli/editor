@@ -162,6 +162,53 @@ export type DomProvider = {
    * Get the drag element for a block.
    */
   getDragElement: (block: DraggableExistingBlock) => HTMLElement | undefined
+
+  /**
+   * Get debug data for troubleshooting.
+   */
+  getDebugData: () => {
+    registeredBlocks: Array<{
+      uuid: string
+      hasElement: boolean
+      hasObservedElement: boolean
+      hasRect: boolean
+      hasCurrentKey: boolean
+      isVisible: boolean
+      inCache: boolean
+      elementInfo?: {
+        tagName: string
+        bundle?: string
+        hostBundle?: string
+        fieldListType?: string
+      }
+    }>
+    fields: Array<{
+      key: string
+      isVisible: boolean
+      hasRect: boolean
+      entityType: string
+      entityBundle: string
+      fieldName: string
+    }>
+    summary: {
+      totalRegisteredBlocks: number
+      totalBlocksWithElements: number
+      totalObservedElements: number
+      totalBlockRects: number
+      totalVisibleBlocks: number
+      totalRegisteredFields: number
+      totalVisibleFields: number
+      totalFieldRects: number
+      cacheSize: number
+      isInitializing: boolean
+      isReady: boolean
+    }
+    orphanedData: {
+      rectsWithoutRegistration: string[]
+      observedElementsWithoutRegistration: string[]
+      keysWithoutRegistration: string[]
+    }
+  }
 }
 
 function rectWithTime(rect: Rectangle, time?: number): MeasuredBlockRect {
@@ -188,6 +235,7 @@ export default function (
   const blockRects: Record<string, MeasuredBlockRect> = {}
   const fieldRects: Record<string, Rectangle> = {}
   const blockUuidCurrentKey: Record<string, string> = {}
+  const observedElements: Record<string, HTMLElement> = {}
   let draggableBlockCache: Record<string, DraggableExistingBlock> = {}
   let initTimeout: null | number = null
   const isInitalizing = ref(true)
@@ -219,6 +267,11 @@ export default function (
           ?.dataset.uuid
       if (!uuid) {
         return
+      }
+
+      // Skip if block is no longer registered (prevents race condition with unregisterBlock)
+      if (!registeredBlocks[uuid]) {
+        continue
       }
 
       const currentRect = blockRects[uuid]
@@ -272,6 +325,11 @@ export default function (
           }
           fieldRects[fieldKey] = ui.getAbsoluteElementRect(rect, scale, offset)
         } else if (uuid) {
+          // Skip if block is no longer registered (prevents race condition with unregisterBlock)
+          if (!registeredBlocks[uuid]) {
+            continue
+          }
+
           const newRect = ui.getAbsoluteElementRect(rect, scale, offset)
           const currentRect = blockRects[uuid]!
 
@@ -710,9 +768,10 @@ export default function (
         item.hostFieldListType,
         item.hostBundle as BlockBundleWithNested,
       )
+      registeredBlocks[item.uuid] = el
+      observedElements[item.uuid] = observableElement
       intersectionObserver.observe(observableElement)
       resizeObserver.observe(observableElement)
-      registeredBlocks[item.uuid] = el
     }
   }
 
@@ -733,16 +792,120 @@ export default function (
     logger.log('unregisterBlock: ' + uuid)
 
     const el = registeredBlocks[uuid]
+    const observedElement = observedElements[uuid]
+
+    // Unobserve the correct element (the one that was actually observed)
+    if (observedElement) {
+      intersectionObserver.unobserve(observedElement)
+      resizeObserver.unobserve(observedElement)
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete observedElements[uuid]
+    }
+
     if (el) {
-      intersectionObserver.unobserve(el)
-      resizeObserver.unobserve(el)
       dragElementUuidMap.delete(el)
     }
     dragElementCache.delete(uuid)
     registeredBlocks[uuid] = undefined
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete blockRects[uuid]
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    delete blockUuidCurrentKey[uuid]
     visibleBlocks.delete(uuid)
+  }
+
+  function getDebugData() {
+    // Collect all unique UUIDs from all sources
+    const allUuids = new Set<string>([
+      ...Object.keys(registeredBlocks),
+      ...Object.keys(blockRects),
+      ...Object.keys(observedElements),
+      ...Object.keys(blockUuidCurrentKey),
+      ...Object.keys(draggableBlockCache),
+    ])
+
+    // Build detailed block info
+    const blocksInfo = Array.from(allUuids).map((uuid) => {
+      const el = registeredBlocks[uuid]
+      return {
+        uuid,
+        hasElement: !!el,
+        hasObservedElement: !!observedElements[uuid],
+        hasRect: !!blockRects[uuid],
+        hasCurrentKey: !!blockUuidCurrentKey[uuid],
+        isVisible: visibleBlocks.has(uuid),
+        inCache: !!draggableBlockCache[uuid],
+        elementInfo: el
+          ? {
+              tagName: el.tagName,
+              bundle: el.dataset.itemBundle,
+              hostBundle: el.dataset.hostBundle,
+              fieldListType: el.dataset.hostFieldListType,
+            }
+          : undefined,
+      }
+    })
+
+    // Build field info
+    const fieldsInfo = Object.entries(registeredFields)
+      .filter(([, field]) => !!field)
+      .map(([key, field]) => ({
+        key,
+        isVisible: visibleFields.has(key),
+        hasRect: !!fieldRects[key],
+        entityType: field!.entity.type,
+        entityBundle: field!.entity.bundle,
+        fieldName: field!.fieldName,
+      }))
+
+    // Find orphaned data (data without corresponding registration)
+    const registeredUuids = new Set(
+      Object.entries(registeredBlocks)
+        .filter(([, el]) => !!el)
+        .map(([uuid]) => uuid),
+    )
+
+    const rectsWithoutRegistration = Object.keys(blockRects).filter(
+      (uuid) => !registeredUuids.has(uuid),
+    )
+
+    const observedElementsWithoutRegistration = Object.keys(
+      observedElements,
+    ).filter((uuid) => !registeredUuids.has(uuid))
+
+    const keysWithoutRegistration = Object.keys(blockUuidCurrentKey).filter(
+      (uuid) => !registeredUuids.has(uuid),
+    )
+
+    return {
+      registeredBlocks: blocksInfo,
+      fields: fieldsInfo,
+      summary: {
+        totalRegisteredBlocks: Object.keys(registeredBlocks).length,
+        totalBlocksWithElements: Object.values(registeredBlocks).filter(
+          (el) => !!el,
+        ).length,
+        totalObservedElements: Object.keys(observedElements).length,
+        totalBlockRects: Object.keys(blockRects).length,
+        totalVisibleBlocks: visibleBlocks.size,
+        totalRegisteredFields: Object.values(registeredFields).filter(
+          (f) => !!f,
+        ).length,
+        totalVisibleFields: visibleFields.size,
+        totalFieldRects: Object.keys(fieldRects).length,
+        cacheSize: Object.keys(draggableBlockCache).length,
+        isInitializing: isInitalizing.value,
+        isReady:
+          mutationsReady.value &&
+          intersectionReady.value &&
+          !isInitalizing.value,
+      },
+      orphanedData: {
+        rectsWithoutRegistration,
+        observedElementsWithoutRegistration,
+        keysWithoutRegistration,
+      },
+    }
   }
 
   return {
@@ -775,5 +938,6 @@ export default function (
     registerBlock,
     unregisterBlock,
     registeredBlockUuids,
+    getDebugData,
   }
 }

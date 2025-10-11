@@ -7,6 +7,7 @@ import {
   INJECT_PROVIDER_BLOCKS,
   INJECT_PROVIDER_CONTEXT,
   INJECT_FIELD_USES_PROXY,
+  INJECT_REUSABLE_UUID,
 } from '../helpers/symbols'
 import { computed, inject, type ComputedRef } from '#imports'
 import type {
@@ -86,6 +87,8 @@ export function defineBlokkli<
     INJECT_REUSABLE_OPTIONS,
     null,
   )
+
+  const reusableUuid = inject<string | null>(INJECT_REUSABLE_UUID, null)
 
   // When we are in an edit context, the current options are managed in a
   // separate reactive state. This state is mutated when the user is changing
@@ -192,7 +195,9 @@ export function defineBlokkli<
   ) {
     const isProxyMode = inject(INJECT_FIELD_USES_PROXY, false)
     if (!isProxyMode) {
-      editContext.useBlockRegistration(editContext.dom, uuid)
+      // The block registration is always done by the "actual" block in case of reusable blocks.
+      // For this reason we use the injected UUID of the from_library block for the registration.
+      editContext.useBlockRegistration(editContext.dom, reusableUuid ?? uuid)
     }
   }
 

@@ -19,6 +19,7 @@ import { computed, provide, defineBlokkli } from '#imports'
 import {
   INJECT_IS_IN_REUSABLE,
   INJECT_REUSABLE_OPTIONS,
+  INJECT_REUSABLE_UUID,
 } from '#blokkli/helpers/symbols'
 import type { LibraryItemProps } from '#blokkli/types'
 
@@ -28,7 +29,7 @@ export type Props = {
 
 const props = defineProps<Props>()
 
-const { index, options, parentType, isEditing } = defineBlokkli({
+const { index, options, parentType, isEditing, uuid } = defineBlokkli({
   bundle: 'from_library',
 })
 
@@ -36,6 +37,7 @@ const { index, options, parentType, isEditing } = defineBlokkli({
 // They are injected in the defineBlokkli() composable.
 provide(INJECT_REUSABLE_OPTIONS, options)
 provide(INJECT_IS_IN_REUSABLE, true)
+provide(INJECT_REUSABLE_UUID, uuid)
 
 const item = computed(() => {
   const v = props.libraryItem?.block

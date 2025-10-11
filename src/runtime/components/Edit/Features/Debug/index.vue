@@ -68,6 +68,33 @@
               @update:model-value="toggleWebgl"
             />
           </div>
+          <div>
+            <button
+              class="bk-button bk-is-small"
+              @click.prevent="() => dom.updateVisibleRects()"
+            >
+              Refresh Rects
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Logging</h2>
+        <div class="bk-debug-list">
+          <div>
+            <div>
+              <FormToggle label="Log Events" v-model="logEvents" />
+            </div>
+            <div>
+              <button
+                class="bk-button bk-is-small"
+                @click.prevent="() => console.log(dom.getDebugData())"
+              >
+                Log DOM state
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -102,13 +129,32 @@
     </div>
   </PluginSidebar>
 
-  <PluginDebugOverlay id="viewport" title="Show viewport overlay">
+  <PluginDebugOverlay
+    v-if="debug.isEnabled.value"
+    id="viewport"
+    title="Show viewport overlay"
+  >
     <DebugViewport />
   </PluginDebugOverlay>
 
-  <PluginDebugOverlay id="rects" title="Show field and block rects">
+  <PluginDebugOverlay
+    v-if="debug.isEnabled.value"
+    id="rects"
+    title="Show field and block rects"
+  >
     <DebugRects />
   </PluginDebugOverlay>
+
+  <PluginItemDropdown
+    v-if="itemDropdownItems.length"
+    id="selection"
+    :title="$t('selectionActionGroupTitle', 'Selection')"
+    enabled
+    :items="itemDropdownItems"
+    icon="bug"
+    weight="200"
+    @select="onSelectDropdownItem"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -119,7 +165,11 @@ import {
   defineBlokkliFeature,
   computed,
 } from '#imports'
-import { PluginSidebar, PluginDebugOverlay } from '#blokkli/plugins'
+import {
+  PluginSidebar,
+  PluginDebugOverlay,
+  PluginItemDropdown,
+} from '#blokkli/plugins'
 import { Icon, FormToggle } from '#blokkli/components'
 import { icons, type BlokkliIcon } from '#blokkli-build/icons'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
@@ -133,8 +183,20 @@ const { logger } = defineBlokkliFeature({
   description: 'Provides debugging functionality.',
 })
 
-const { keyboard, selection, eventBus, features, debug, ui, animation } =
-  useBlokkli()
+const {
+  keyboard,
+  selection,
+  eventBus,
+  features,
+  debug,
+  ui,
+  animation,
+  dom,
+  storage,
+  $t,
+} = useBlokkli()
+
+const logEvents = storage.use('debug:log-events', true)
 
 const iconItems = computed(() => Object.keys(icons) as BlokkliIcon[])
 
@@ -159,7 +221,7 @@ onBlokkliEvent('keyPressed', (e) => {
 })
 
 const onEvent = (name: string | number | symbol, data: any) => {
-  if (!debug.isEnabled.value) {
+  if (!debug.isEnabled.value || !logEvents.value) {
     return
   }
   if (
@@ -195,6 +257,29 @@ onMounted(() => {
 onBeforeUnmount(() => {
   eventBus.off('*', onEvent)
 })
+
+const itemDropdownItems = computed(() => {
+  if (selection.uuids.value.length === 1) {
+    return [
+      {
+        id: 'copy-uuid',
+        label: 'Copy UUID',
+      },
+    ]
+  }
+  return []
+})
+
+async function onSelectDropdownItem(item: { id: string }) {
+  if (item.id === 'copy-uuid') {
+    const type = 'text/plain'
+    const clipboardItemData = {
+      [type]: selection.uuids.value.at(0) ?? '',
+    }
+    const clipboardItem = new ClipboardItem(clipboardItemData)
+    await navigator.clipboard.write([clipboardItem])
+  }
+}
 </script>
 
 <script lang="ts">
