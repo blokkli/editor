@@ -16,6 +16,7 @@ type UseStickyToolbarOptions = {
   getMargin?: () => number
   getAnchorElement?: () => HTMLElement | null
   getCaretWidth?: () => number
+  allowHorizontalOverflow?: boolean
 }
 
 type UseStickyToolbar = {
@@ -183,24 +184,43 @@ export default function (
       x = minX - xSubtract
     }
 
-    const rect = limitPlacedRect(
-      {
-        x,
-        y,
-        width,
-        height,
-      },
-      padding,
-    )
+    // Check if we should allow horizontal overflow
+    const shouldAllowOverflow =
+      options?.allowHorizontalOverflow && width > padding.width
 
-    const idealPosition = findIdealRectPosition(
-      ui.viewportBlockingRects.value,
-      rect,
-      padding,
-    )
+    let idealPosition: Coord
 
-    if (!idealPosition) {
-      return undefined
+    if (shouldAllowOverflow) {
+      // When allowing overflow, only limit the Y position to keep it visible vertically
+      // but let X extend beyond viewport bounds
+      const limitedY = Math.min(
+        Math.max(padding.y, y),
+        padding.height + padding.y - height,
+      )
+      idealPosition = { x, y: limitedY }
+    } else {
+      // Standard behavior: limit both X and Y to viewport
+      const rect = limitPlacedRect(
+        {
+          x,
+          y,
+          width,
+          height,
+        },
+        padding,
+      )
+
+      const position = findIdealRectPosition(
+        ui.viewportBlockingRects.value,
+        rect,
+        padding,
+      )
+
+      if (!position) {
+        return undefined
+      }
+
+      idealPosition = position
     }
 
     // Calculate caret X position relative to the sticky element
