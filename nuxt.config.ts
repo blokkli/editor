@@ -4,8 +4,7 @@ export default defineNuxtConfig({
   modules: ['nuxt-graphql-middleware'],
   graphqlMiddleware: {
     graphqlEndpoint: 'https://example.com',
-    // schemaPath: './../blokkli_starterkit/frontend/schema.graphql',
-    schemaPath: './../bs.ch/frontend/schema.graphql',
+    schemaPath: './build/drupal-schema.graphql',
     downloadSchema: false,
     autoImportPatterns: [
       './src/modules/drupal/graphql/base/*.graphql',
