@@ -28,6 +28,7 @@ import { useBlokkli, defineBlokkliFeature, ref, computed } from '#imports'
 import { PluginToolbarButton } from '#blokkli/plugins'
 import { BlokkliTransition } from '#blokkli/components'
 import Palette from './Palette/index.vue'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 defineBlokkliFeature({
   id: 'command-palette',
@@ -43,6 +44,8 @@ const { $t } = useBlokkli()
 const isVisible = ref(false)
 
 const label = computed(() => $t('commandPaletteOpen', 'Open Command Palette'))
+
+onBlokkliEvent('window:clickAway', () => (isVisible.value = false))
 </script>
 
 <script lang="ts">
