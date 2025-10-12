@@ -122,7 +122,7 @@ export default function (
     if (ui.isMobile.value) {
       return window.devicePixelRatio
     }
-    return Math.min(window.devicePixelRatio, 2.5)
+    return Math.min(window.devicePixelRatio, 0.5)
   })
 
   function setSharedUniforms(

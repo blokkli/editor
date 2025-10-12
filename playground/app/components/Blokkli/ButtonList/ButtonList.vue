@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="min-h-[55px]">
     <BlokkliField name="blocks" :list="blocks" class="flex gap-10 flex-wrap" />
   </div>
 </template>
@@ -13,6 +13,9 @@ defineBlokkli({
   propsFieldMapping: {
     blocks: 'blocks',
   },
+  editor: {
+    disableEdit: true,
+  }
 })
 
 export type Props = {

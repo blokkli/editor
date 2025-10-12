@@ -66,40 +66,12 @@
 .bk-body:not(.bk-is-pressing-control):not(.bk-is-dragging) {
   /* Only target blocks inside the editing area (e.g. not inside the library pane) */
   [data-blokkli-provider-active='true'] {
-    /* [data-blokkli-editable-active='true'] { */
-    /*   @apply outline outline-[3px] !pointer-events-none outline-teal-normal; */
-    /* } */
-    /* Don't target editable fields inside a block from the library. */
-    /* [data-blokkli-editable-field]:not([data-blokkli-editable-active='true']) { */
-    /*   @apply !cursor-text; */
-    /*   * { */
-    /*     @apply !cursor-text; */
-    /*   } */
-    /* } */
     [data-blokkli-is-reusable='true'],
     [data-bk-in-proxy='true'] {
       * {
         pointer-events: none !important;
       }
     }
-
-    /* [data-blokkli-droppable-field] { */
-    /*   @apply pointer-events-auto; */
-    /*   @screen lg { */
-    /*     &:hover { */
-    /*       @apply outline-[3px] outline-teal-normal outline-offset-4 outline-dashed; */
-    /*     } */
-    /*   } */
-    /* } */
-    /* @media (hover: none) { */
-    /*   [data-is-selected='true'] { */
-    /*     [data-blokkli-editable-field]:not( */
-    /*       [data-blokkli-editable-active='true'] */
-    /*     ) { */
-    /*       @apply outline-[3px] outline-teal-normal outline-dashed -outline-offset-2; */
-    /*     } */
-    /*   } */
-    /* } */
   }
 }
 

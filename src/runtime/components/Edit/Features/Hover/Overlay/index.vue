@@ -16,7 +16,7 @@ const props = defineProps<{
   gl: WebGLRenderingContext
 }>()
 
-const { animation, theme, dom, selection, state, ui } = useBlokkli()
+const { animation, theme, dom, selection, state, ui, editable } = useBlokkli()
 
 const programInfo = animation.registerProgram('hover', props.gl, [vs, fs])
 
@@ -29,25 +29,10 @@ const DEBUG = false
 // so a max. nesting level of 10 (which should be more than enough).
 const MAX_RECTS = 11
 
-// Cache duration for getBoundingClientRect() results (in milliseconds)
-const RECT_CACHE_DURATION = 5000
-
 type HoverRectangle = Rectangle & {
   id: string
   index: number
   radius: [number, number, number, number]
-}
-
-type CachedRect = {
-  rect: Rectangle // World coordinates (artboard space)
-  timestamp: number
-}
-
-type EditableFieldInfo = {
-  fieldName: string
-  blockUuid: string
-  element: HTMLElement
-  cachedRect?: CachedRect
 }
 
 type HoverState = {
@@ -57,44 +42,6 @@ type HoverState = {
   radii: Float32Array // 11 vec4s = 44 floats (topLeft, topRight, bottomRight, bottomLeft)
   types: Float32Array // 11 floats (0=mono, 1=accent, 2=teal fill)
   visible: Float32Array // 11 floats (0=hidden, 1=visible)
-}
-
-const editableFieldCache: Map<string, EditableFieldInfo[]> = new Map()
-
-/**
- * Get the bounding rect in world coordinates for an editable field element.
- * Uses cached value if available and not expired.
- */
-function getCachedRect(
-  field: EditableFieldInfo,
-  scale: number,
-  offset: { x: number; y: number },
-): Rectangle {
-  const now = Date.now()
-
-  // Check if cached rect is valid
-  if (
-    field.cachedRect &&
-    now - field.cachedRect.timestamp < RECT_CACHE_DURATION
-  ) {
-    return field.cachedRect.rect
-  }
-
-  // Get fresh rect and transform to world coordinates
-  const fieldRect = field.element.getBoundingClientRect()
-  const rect = {
-    x: fieldRect.x / scale - offset.x / scale,
-    y: fieldRect.y / scale - offset.y / scale,
-    width: fieldRect.width / scale,
-    height: fieldRect.height / scale,
-  }
-
-  field.cachedRect = {
-    rect,
-    timestamp: now,
-  }
-
-  return rect
 }
 
 /**
@@ -135,7 +82,7 @@ const hoverState = createHoverState()
 // Track previous frame state for change detection
 let previousHoveredUuids: string[] = []
 let previousDeepestUuid: string | null = null
-let previousEditableField: string | null = null
+let previousEditableFieldRect: Rectangle | null = null
 
 // Initialize buffer collector with MAX_RECTS dummy rectangles
 class HoverRectangleBufferCollector extends RectangleBufferCollector<HoverRectangle> {}
@@ -160,27 +107,17 @@ const bufferInfo = collector.createBufferInfo()
 function resetHoverState() {
   previousHoveredUuids = []
   previousDeepestUuid = null
-  previousEditableField = null
+  previousEditableFieldRect = null
   hoverState.visible.fill(0)
 }
 
 watch(selection.isChangingOptions, (isChanging) => {
   if (!isChanging) {
-    editableFieldCache.clear()
     resetHoverState()
   }
 })
 
-watch(selection.uuids, (selectedUuids) => {
-  // Clear cache for selected UUIDs only if they have 0 editable fields.
-  for (let i = 0; i < selectedUuids.length; i++) {
-    const uuid = selectedUuids[i]!
-    const cachedFields = editableFieldCache.get(uuid)
-    if (cachedFields && cachedFields.length === 0) {
-      editableFieldCache.delete(uuid)
-    }
-  }
-
+watch(selection.uuids, () => {
   // Selection changed, force hover state update on next frame.
   resetHoverState()
 })
@@ -211,13 +148,13 @@ function updateHoverState(
     if (
       DEBUG ||
       previousHoveredUuids.length > 0 ||
-      previousEditableField !== null
+      previousEditableFieldRect !== null
     ) {
       hoverState.visible.fill(0)
       if (!DEBUG) {
         previousHoveredUuids = []
         previousDeepestUuid = null
-        previousEditableField = null
+        previousEditableFieldRect = null
       }
       return true
     }
@@ -261,10 +198,6 @@ function updateHoverState(
   )
 
   // Check if anything changed compared to previous frame.
-  // We need to determine editable field first to do a full comparison.
-  let hoveredEditableField: string | null = null
-
-  // Quick check if we can skip the expensive editable field check.
   const hoveredChanged =
     unselectedHoveredUuids.length !== previousHoveredUuids.length ||
     unselectedHoveredUuids.some(
@@ -272,50 +205,31 @@ function updateHoverState(
     ) ||
     deepestUuid !== previousDeepestUuid
 
-  // Also track if deepest changed (for editable field queries).
-  const deepestChanged = deepestUuid !== previousDeepestUuid
-
-  if (!hoveredChanged && !DEBUG) {
-    // Hovered blocks unchanged, but still need to check editable field for mouse movement.
-    if (deepestUuid) {
-      // Look up editable fields, checking ancestors if needed.
-      let editableFields = editableFieldCache.get(deepestUuid)
-
-      // Check if any ancestor is cached.
-      if (!editableFields) {
-        const cachedKeys = Array.from(editableFieldCache.keys())
-        for (let i = 0; i < cachedKeys.length; i++) {
-          const cachedUuid = cachedKeys[i]!
-          if (state.isChildOf(deepestUuid, cachedUuid)) {
-            const ancestorFields = editableFieldCache.get(cachedUuid)
-            // Only use ancestor cache if it contains fields for this specific block.
-            const hasFieldsForBlock = ancestorFields?.some(
-              (f) => f.blockUuid === deepestUuid,
-            )
-            if (hasFieldsForBlock) {
-              editableFields = ancestorFields
-              break
-            }
-          }
-        }
-      }
-
-      if (editableFields) {
-        for (let i = 0; i < editableFields.length; i++) {
-          const field = editableFields[i]!
-          if (field.blockUuid === deepestUuid) {
-            const rect = getCachedRect(field, scale, offset)
-            if (isInsideRect(artboardMouseX, artboardMouseY, rect)) {
-              hoveredEditableField = `${deepestUuid}:${field.fieldName}`
-              break
-            }
-          }
-        }
-      }
+  // Find hovered editable field using the editable provider
+  let hoveredEditableFieldRect: Rectangle | null = null
+  const editableRects = editable.getVisible()
+  for (let i = 0; i < editableRects.length; i++) {
+    const editableRect = editableRects[i]!
+    if (isInsideRect(artboardMouseX, artboardMouseY, editableRect)) {
+      hoveredEditableFieldRect = editableRect
+      break
     }
+  }
 
-    // If editable field also unchanged, we can skip everything.
-    if (hoveredEditableField === previousEditableField) {
+  // Quick check if we can skip rendering updates
+  if (!hoveredChanged && !DEBUG) {
+    // Check if editable field also unchanged
+    const editableFieldChanged =
+      (hoveredEditableFieldRect === null) !==
+        (previousEditableFieldRect === null) ||
+      (hoveredEditableFieldRect &&
+        previousEditableFieldRect &&
+        (hoveredEditableFieldRect.x !== previousEditableFieldRect.x ||
+          hoveredEditableFieldRect.y !== previousEditableFieldRect.y ||
+          hoveredEditableFieldRect.width !== previousEditableFieldRect.width ||
+          hoveredEditableFieldRect.height !== previousEditableFieldRect.height))
+
+    if (!editableFieldChanged) {
       return false
     }
   }
@@ -373,153 +287,30 @@ function updateHoverState(
     hoverState.visible[level] = 1
   }
 
-  // Handle editable field (rect index 10)
-  // Query editable fields if deepest block changed (regardless of selection state).
-  if (deepestUuid && deepestChanged) {
-    let editableFields = editableFieldCache.get(deepestUuid)
+  // Update editable field rectangle if hovered (rect index 10).
+  if (hoveredEditableFieldRect) {
+    hoverState.positions[10 * 4 + 0] = hoveredEditableFieldRect.x
+    hoverState.positions[10 * 4 + 1] = hoveredEditableFieldRect.y
+    hoverState.positions[10 * 4 + 2] = hoveredEditableFieldRect.width
+    hoverState.positions[10 * 4 + 3] = hoveredEditableFieldRect.height
 
-    // Check if any ancestor are cached.
-    if (!editableFields) {
-      const cachedKeys = Array.from(editableFieldCache.keys())
-      for (let i = 0; i < cachedKeys.length; i++) {
-        const cachedUuid = cachedKeys[i]!
-        if (state.isChildOf(deepestUuid, cachedUuid)) {
-          const ancestorFields = editableFieldCache.get(cachedUuid)
-          // Only use ancestor cache if it contains fields for this specific block.
-          const hasFieldsForBlock = ancestorFields?.some(
-            (f) => f.blockUuid === deepestUuid,
-          )
-          if (hasFieldsForBlock) {
-            editableFields = ancestorFields
-            break
-          }
-        }
-      }
-    }
+    // No radius for editable fields.
+    hoverState.radii[10 * 4 + 0] = 0
+    hoverState.radii[10 * 4 + 1] = 0
+    hoverState.radii[10 * 4 + 2] = 0
+    hoverState.radii[10 * 4 + 3] = 0
 
-    // Query and cache if not found.
-    if (!editableFields) {
-      const block = dom.findBlock(deepestUuid)
+    // Type 2 = teal fill.
+    hoverState.types[10] = 2
 
-      if (block) {
-        const el = dom.getDragElement(block)
-
-        if (el) {
-          editableFields = []
-
-          if (el.dataset.blokkliEditableField) {
-            const fieldName = el.dataset.blokkliEditableField
-            editableFields.push({
-              fieldName,
-              blockUuid: deepestUuid,
-              element: el,
-            })
-          } else {
-            const editableElements = el.querySelectorAll(
-              '[data-blokkli-editable-field]',
-            )
-
-            for (let i = 0; i < editableElements.length; i++) {
-              const fieldEl = editableElements[i]
-              if (fieldEl instanceof HTMLElement) {
-                const fieldName = fieldEl.dataset.blokkliEditableField
-                if (fieldName) {
-                  const closestBlock = fieldEl.closest('[data-uuid]')
-                  const blockUuid =
-                    closestBlock instanceof HTMLElement
-                      ? closestBlock.dataset.uuid
-                      : null
-
-                  if (blockUuid) {
-                    editableFields.push({
-                      fieldName,
-                      blockUuid,
-                      element: fieldEl,
-                    })
-                  }
-                }
-              }
-            }
-          }
-          editableFieldCache.set(deepestUuid, editableFields)
-        }
-      }
-    }
-
-    // Check if any editable field is hovered.
-    if (editableFields) {
-      for (let i = 0; i < editableFields.length; i++) {
-        const field = editableFields[i]!
-        if (field.blockUuid === deepestUuid) {
-          const rect = getCachedRect(field, scale, offset)
-
-          if (isInsideRect(artboardMouseX, artboardMouseY, rect)) {
-            hoveredEditableField = `${deepestUuid}:${field.fieldName}`
-            break
-          }
-        }
-      }
-    }
-  }
-
-  // Update editable field rectangle if hovered.
-  if (hoveredEditableField && deepestUuid) {
-    // Look up editable fields, checking ancestors if needed.
-    let editableFields = editableFieldCache.get(deepestUuid)
-
-    // Check if any ancestor is cached.
-    if (!editableFields) {
-      const cachedKeys = Array.from(editableFieldCache.keys())
-      for (let i = 0; i < cachedKeys.length; i++) {
-        const cachedUuid = cachedKeys[i]!
-        if (state.isChildOf(deepestUuid, cachedUuid)) {
-          const ancestorFields = editableFieldCache.get(cachedUuid)
-          // Only use ancestor cache if it contains fields for this specific block.
-          const hasFieldsForBlock = ancestorFields?.some(
-            (f) => f.blockUuid === deepestUuid,
-          )
-          if (hasFieldsForBlock) {
-            editableFields = ancestorFields
-            break
-          }
-        }
-      }
-    }
-
-    if (editableFields) {
-      for (let i = 0; i < editableFields.length; i++) {
-        const field = editableFields[i]!
-        if (`${field.blockUuid}:${field.fieldName}` === hoveredEditableField) {
-          // Get cached rect in world coordinates (or fetch fresh if expired)
-          const rect = getCachedRect(field, scale, offset)
-
-          // Editable field at index 10.
-          hoverState.positions[10 * 4 + 0] = rect.x
-          hoverState.positions[10 * 4 + 1] = rect.y
-          hoverState.positions[10 * 4 + 2] = rect.width
-          hoverState.positions[10 * 4 + 3] = rect.height
-
-          // No radius for editable fields.
-          hoverState.radii[10 * 4 + 0] = 0
-          hoverState.radii[10 * 4 + 1] = 0
-          hoverState.radii[10 * 4 + 2] = 0
-          hoverState.radii[10 * 4 + 3] = 0
-
-          // Type 2 = teal fill.
-          hoverState.types[10] = 2
-
-          // Visible.
-          hoverState.visible[10] = 1
-          break
-        }
-      }
-    }
+    // Visible.
+    hoverState.visible[10] = 1
   }
 
   if (!DEBUG) {
     previousHoveredUuids = unselectedHoveredUuids
     previousDeepestUuid = deepestUuid
-    previousEditableField = hoveredEditableField
+    previousEditableFieldRect = hoveredEditableFieldRect
   }
 
   return true
@@ -535,12 +326,10 @@ const uniforms = computed(() => {
 })
 
 onBlokkliEvent('state:reloaded', () => {
-  editableFieldCache.clear()
   resetHoverState()
 })
 
 onBlokkliEvent('ui:resized', () => {
-  editableFieldCache.clear()
   resetHoverState()
 })
 

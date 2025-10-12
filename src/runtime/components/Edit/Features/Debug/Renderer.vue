@@ -197,6 +197,7 @@ const onEvent = (name: string | number | symbol, data: any) => {
   if (
     name === 'animationFrame' ||
     name === 'animationFrame:before' ||
+    name === 'animationFrame:after' ||
     name === 'canvas:draw'
   ) {
     return

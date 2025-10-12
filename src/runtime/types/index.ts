@@ -8,6 +8,7 @@ import type { KeyboardProvider } from '../helpers/keyboardProvider'
 import type { UiProvider } from '../helpers/uiProvider'
 import type { AnimationProvider } from '../helpers/animationProvider'
 import type { StateProvider } from '../helpers/stateProvider'
+import type { EditableProvider } from '../helpers/editableProvider'
 import type { TextProvider } from '../helpers/textProvider'
 import type { PluginProvider } from '../helpers/pluginProvider'
 import type { eventBus } from './../helpers/eventBus'
@@ -1397,6 +1398,7 @@ export interface BlokkliApp {
   debug: DebugProvider
   indicators: IndicatorsProvider
   plugins: PluginProvider
+  editable: EditableProvider
 }
 
 export type PasteExistingBlocksEvent = {

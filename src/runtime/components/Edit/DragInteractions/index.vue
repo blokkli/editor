@@ -14,7 +14,16 @@ import { MOUSE_BUTTON, MOUSE_BUTTONS } from '#blokkli/helpers/dom'
 import type { Coord, Rectangle } from '#blokkli/types'
 import { watch, ref, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 
-const { dom, eventBus, selection, keyboard, ui, state } = useBlokkli()
+const {
+  dom,
+  eventBus,
+  selection,
+  keyboard,
+  ui,
+  state,
+  editable,
+  runtimeConfig,
+} = useBlokkli()
 
 const rootEl = ui.rootElement()
 
@@ -53,9 +62,23 @@ function getInteractedElement(
   e: MouseEvent | TouchEvent,
 ): InteractedElement | null {
   const { x, y } = getInteractionCoordinates(e)
+  const editableField = editable.getEditableAtPoint(x, y)
+  if (editableField) {
+    const uuid =
+      editableField.type === runtimeConfig.itemEntityType
+        ? editableField.uuid
+        : undefined
+    return {
+      editableFieldName: editableField.fieldName,
+      uuid,
+      timestamp: Date.now(),
+      x,
+      y,
+    }
+  }
+
   const elements: Element[] = document.elementsFromPoint(x, y)
 
-  let editableFieldName = ''
   let uuid = ''
 
   for (let i = 0; i < elements.length; i++) {
@@ -63,13 +86,6 @@ function getInteractedElement(
 
     if (!(el instanceof HTMLElement)) {
       continue
-    }
-
-    if (
-      el.dataset.blokkliEditableField &&
-      !el.closest('[data-bk-in-proxy="true"]')
-    ) {
-      editableFieldName = el.dataset.blokkliEditableField
     }
 
     // elementsFromPoint() does not contain the <tr> element if the deepest element is a <td> or <th>.
@@ -101,8 +117,8 @@ function getInteractedElement(
     break
   }
 
-  if (editableFieldName || uuid) {
-    return { editableFieldName, uuid, timestamp: Date.now(), x, y }
+  if (uuid) {
+    return { uuid, timestamp: Date.now(), x, y }
   }
 
   // Try to find a block to select by matching its rects.
