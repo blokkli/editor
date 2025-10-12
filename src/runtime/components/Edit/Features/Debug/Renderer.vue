@@ -40,6 +40,10 @@
       <section>
         <h2>Rendering</h2>
         <div class="bk-debug-list">
+          <div>
+            <div>DPI</div>
+            <div>{{ animation.dpi.value }}</div>
+          </div>
           <div v-for="overlay in debug.overlays.value" :key="overlay.id">
             <FormToggle
               :label="overlay.label"

@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <canvas id="bk-animation-canvas-webgl" ref="canvasGl" />
+    <canvas id="bk-animation-canvas-webgl" ref="canvasGl" :style />
   </Teleport>
 </template>
 
@@ -17,10 +17,12 @@ const canvasAttributes = computed(() => {
   return {
     width: ui.viewport.value.width * animation.dpi.value,
     height: ui.viewport.value.height * animation.dpi.value,
-    style: {
-      width: ui.viewport.value.width + 'px',
-      height: ui.viewport.value.height + 'px',
-    },
+  }
+})
+
+const style = computed<Record<string, string>>(() => {
+  return {
+    imageRendering: 'pixelated',
   }
 })
 
@@ -98,17 +100,18 @@ onBlokkliEvent('animationFrame', (e) => {
   const offset = ui.artboardOffset.value
   const scale = ui.artboardScale.value
   const size = ui.artboardSize.value
-  // const size = ui.artboardSize.value
+  // if (gl) {
   // const dpi = animation.dpi.value
-  // Restrict drawing to area on and 20px around artboard.
-  // gl.scissor(
-  //   offset.x * dpi - 20,
-  //   canvasHeight - offset.y * dpi - 20 - size.height * dpi * scale,
-  //   size.width * scale * dpi + 40,
-  //   size.height * scale * dpi + 40,
-  // )
-  // gl.clearColor(1.0, 0.0, 0.0, 0.4)
-  // gl.clear(gl.COLOR_BUFFER_BIT)
+  //   // Restrict drawing to area on and 20px around artboard.
+  //   gl.scissor(
+  //     offset.x * dpi - 20,
+  //     canvasHeight - offset.y * dpi - 20 - size.height * dpi * scale,
+  //     size.width * scale * dpi + 40,
+  //     size.height * scale * dpi + 40,
+  //   )
+  //   // gl.clearColor(1.0, 1.0, 1.0, 1.0)
+  //   gl.clear(gl.COLOR_BUFFER_BIT)
+  // }
 
   eventBus.emit('canvas:draw', {
     ...e,

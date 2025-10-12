@@ -206,6 +206,7 @@ export default function (ui: UiProvider): EditableProvider {
 
   onBlokkliEvent('state:reloaded', handleRefresh)
   onBlokkliEvent('ui:resized', handleRefresh)
+  onBlokkliEvent('option:finish-change', handleRefresh)
 
   onBeforeUnmount(() => {
     if (stateReloadTimeout) {

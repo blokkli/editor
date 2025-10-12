@@ -98,8 +98,8 @@ void main() {
     }
   }
 
-  float dashWidth = 8.0;
-  float dashGap = 4.0;
+  float dashWidth = 10.0 * u_dpi;
+  float dashGap = 10.0 * u_dpi;
   float dashCycle = dashWidth + dashGap;
 
   float dashPosition = mod(perimeterDistance, dashCycle);

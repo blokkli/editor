@@ -25,6 +25,7 @@ const isVisible = computed(
     !selection.editableActive.value &&
     !selection.isDragging.value &&
     !ui.hasTransformOverlayOpen.value &&
+    !ui.hasDialogOpen.value &&
     !ui.isAnimating.value,
 )
 </script>

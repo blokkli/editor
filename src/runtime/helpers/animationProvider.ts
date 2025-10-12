@@ -66,6 +66,13 @@ export default function (
 
   const webglSupported = ref<boolean | null>(null)
 
+  // WebGL limits (queried once from gl.MAX_VIEWPORT_DIMS).
+  // These are used to calculate a safe DPI that prevents the canvas from
+  // exceeding device capabilities. Default to 16384 (conservative) until queried.
+  const maxCanvasWidth = ref(16384)
+  const maxCanvasHeight = ref(16384)
+  let webglLimitsQueried = false
+
   useAnimationFrame((time) => {
     // Make sure we don't loop when it's not needed.
     if (iterator < 1) {
@@ -115,14 +122,33 @@ export default function (
   onBlokkliEvent('state:reloaded', requestDraw)
 
   const dpi = computed(() => {
-    // Use a reduced DPI when low performance mode is enabled.
-    if (ui.lowPerformanceMode.value) {
-      return 0.5
-    }
-    if (ui.isMobile.value) {
-      return window.devicePixelRatio
-    }
-    return Math.min(window.devicePixelRatio, 0.5)
+    const viewportWidth = ui.viewport.value.width
+    const viewportHeight = ui.viewport.value.height
+    const deviceRatio = window.devicePixelRatio
+
+    // Calculate maximum DPI that keeps canvas within WebGL limits.
+    // Canvas size = viewport * DPI, so: DPI = max_size / viewport.
+    const maxDpiByWidth = maxCanvasWidth.value / viewportWidth
+    const maxDpiByHeight = maxCanvasHeight.value / viewportHeight
+
+    // Limit by pixel budget to avoid memory exhaustion.
+    // 16 megapixels = ca. 64MB at 4 bytes/pixel (RGBA).
+    const MAX_PIXELS = 16_000_000
+    const maxDpiByPixels = Math.sqrt(
+      MAX_PIXELS / (viewportWidth * viewportHeight),
+    )
+
+    const maxDpi = ui.lowPerformanceMode.value ? 0.5 : 2
+
+    // Return the minimum of all possible DPI values.
+    // This makes sure that we don't render a canvas that is too large.
+    return Math.min(
+      deviceRatio,
+      maxDpiByWidth,
+      maxDpiByHeight,
+      maxDpiByPixels,
+      maxDpi,
+    )
   })
 
   function setSharedUniforms(
@@ -201,6 +227,17 @@ export default function (
       }
 
       webglSupported.value = true
+
+      // Query WebGL limits once
+      if (!webglLimitsQueried) {
+        const maxViewportDims = gl.getParameter(
+          gl.MAX_VIEWPORT_DIMS,
+        ) as Int32Array
+        console.log({ maxViewportDims })
+        maxCanvasWidth.value = maxViewportDims[0] || 16384
+        maxCanvasHeight.value = maxViewportDims[1] || 16384
+        webglLimitsQueried = true
+      }
 
       return gl
     },

@@ -71,7 +71,9 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
         if (!rect || !el) {
           continue
         }
-        const style = theme.getDraggableStyle(el)
+        const style = ui.lowPerformanceMode.value
+          ? null
+          : theme.getDraggableStyle(el)
         this.addRectangle(
           {
             id: block.uuid,
@@ -79,10 +81,10 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
             width: rect.width,
             x: rect.x,
             y: rect.y,
-            radius: style.radius,
-            isInverted: style.isInverted,
+            radius: style?.radius ?? [0, 0, 0, 0],
+            isInverted: !!style?.isInverted,
           },
-          style.isInverted ? 1 : 0,
+          style?.isInverted ? 1 : 0,
         )
         this.lastCount++
       }
