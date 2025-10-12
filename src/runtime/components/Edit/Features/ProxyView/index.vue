@@ -13,6 +13,7 @@
     "
     key-code="P"
     icon="tree"
+    @update:model-value="onToggleProxyMode"
   />
 </template>
 
@@ -28,7 +29,11 @@ defineBlokkliFeature({
   viewports: ['desktop'],
 })
 
-const { $t, ui } = useBlokkli()
+const { $t, ui, eventBus } = useBlokkli()
+
+function onToggleProxyMode() {
+  eventBus.emit('state:reloaded')
+}
 </script>
 
 <script lang="ts">

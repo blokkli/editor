@@ -79,6 +79,8 @@ export type StateProvider = {
   getFieldListForBlock: (uuid: string) => MutatedField | undefined
   getMutatedField: (uuid: string, fieldName: string) => MutatedField | undefined
   getAllUuids: (bundle?: string) => string[]
+  getNestingLevel: (uuid: string) => number
+  isChildOf: (childUuid: string, parentUuid: string) => boolean
   getMappedState: () => MappedState
   setOverrideState: (state: MappedState) => void
   clearOverrideState: () => void
@@ -123,6 +125,7 @@ export default async function (
   const blockBundleCount: Ref<Record<string, number>> = ref({})
   const fieldListItemMap: Map<string, string> = new Map()
   let bundleToUuids: Record<string, string[]> = {}
+  const nestingLevelMap: Map<string, number> = new Map()
 
   function getFieldListItem(uuid: string): FieldListItem | undefined {
     const fieldKey = fieldListItemMap.get(uuid)
@@ -233,6 +236,7 @@ export default async function (
     const newBlockBundleCount: Record<string, number> = {}
 
     fieldListItemMap.clear()
+    nestingLevelMap.clear()
 
     // Reset the count cache.
     fieldBlockCount = {}
@@ -263,6 +267,15 @@ export default async function (
           bundleToUuids[item.bundle] = []
         }
         bundleToUuids[item.bundle]!.push(item.uuid)
+      }
+    }
+
+    // Calculate nesting levels for all blocks
+    for (let i = 0; i < newMutatedFields.length; i++) {
+      const field = newMutatedFields[i]!
+      for (let j = 0; j < field.list.length; j++) {
+        const item = field.list[j]!
+        calculateNestingLevel(item.uuid)
       }
     }
 
@@ -320,6 +333,68 @@ export default async function (
     }
 
     return bundleToUuids[bundle] ?? []
+  }
+
+  function calculateNestingLevel(uuid: string): number {
+    // Check if already calculated
+    const cached = nestingLevelMap.get(uuid)
+    if (cached !== undefined) {
+      return cached
+    }
+
+    // Get the field this block belongs to
+    const fieldKey = fieldListItemMap.get(uuid)
+    if (!fieldKey) {
+      nestingLevelMap.set(uuid, 0)
+      return 0
+    }
+
+    const field = mutatedFieldsMap[fieldKey]
+    if (!field) {
+      nestingLevelMap.set(uuid, 0)
+      return 0
+    }
+
+    // Check if the parent entity is also a block
+    const parentEntityUuid = field.entityUuid
+    const parentFieldKey = fieldListItemMap.get(parentEntityUuid)
+
+    if (!parentFieldKey) {
+      // Parent is not a block, so this is level 0
+      nestingLevelMap.set(uuid, 0)
+      return 0
+    }
+
+    // Parent is a block, calculate its nesting level recursively
+    const parentLevel = calculateNestingLevel(parentEntityUuid)
+    const level = parentLevel + 1
+    nestingLevelMap.set(uuid, level)
+    return level
+  }
+
+  function getNestingLevel(uuid: string): number {
+    return nestingLevelMap.get(uuid) ?? 0
+  }
+
+  function isChildOf(childUuid: string, parentUuid: string): boolean {
+    // Get the field the child belongs to
+    const fieldKey = fieldListItemMap.get(childUuid)
+    if (!fieldKey) {
+      return false
+    }
+
+    const field = mutatedFieldsMap[fieldKey]
+    if (!field) {
+      return false
+    }
+
+    // Check if the parent entity is the parentUuid
+    if (field.entityUuid === parentUuid) {
+      return true
+    }
+
+    // Recursively check if the parent entity is a child of parentUuid
+    return isChildOf(field.entityUuid, parentUuid)
   }
 
   addElementClasses(document.body, 'bk-body-loading', isLoading)
@@ -469,6 +544,8 @@ export default async function (
     getMutatedField,
     getFieldListForBlock,
     getAllUuids,
+    getNestingLevel,
+    isChildOf,
     setOverrideState,
     clearOverrideState,
   }

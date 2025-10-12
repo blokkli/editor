@@ -681,11 +681,14 @@ export default function (
     stateReloadTimeout = window.setTimeout(updateVisibleRects, 300)
   })
 
-  onBlokkliEvent('ui:resized', function () {
+  function forceRefresh() {
     updateVisibleRects()
     getVisibleFields().forEach(refreshFieldRect)
     logger.log('Refreshed all visible rects')
-  })
+  }
+
+  onBlokkliEvent('option:finish-change', forceRefresh)
+  onBlokkliEvent('ui:resized', forceRefresh)
 
   function init() {
     intersectionObserver.init()

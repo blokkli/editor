@@ -1056,6 +1056,7 @@ export type CanvasDrawEvent = {
   mouseY: number
   artboardOffset: Coord
   artboardScale: number
+  artboardSize: Size
   time: number
 }
 
@@ -1287,12 +1288,18 @@ export type EventbusEvents = {
 
   scrollIntoView: ScrollIntoViewEvent
   'animationFrame:before': AnimationFrameBeforeEvent
+  'animationFrame:after': undefined
   'canvas:draw': CanvasDrawEvent
 
   'state:reloaded': undefined
 
   addContentSearchItem: AddContentSearchItemEvent
   'option:update': UpdateBlockOptionEvent
+
+  /**
+   * Emitted after finishing changing options.
+   */
+  'option:finish-change': undefined
 
   'plugin:mount': PluginMountEvent
   'plugin:unmount': PluginUnmountEvent

@@ -85,11 +85,12 @@ export default function (
       fieldAreas: [],
       time,
     })
+    eventBus.emit('animationFrame:after')
   })
 
   function onWindowMouseMove(e: MouseEvent) {
-    mouseX = e.clientX
-    mouseY = e.clientY
+    mouseX = e.pageX
+    mouseY = e.pageY
   }
 
   onMounted(() => {

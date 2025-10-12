@@ -8,7 +8,7 @@
     </Transition>
 
     <div id="bk-banner-container">
-      <div class="bk" id="bk-banner-list">
+      <div id="bk-banner-list" class="bk">
         <Banner
           v-if="!state.stateAvailable.value"
           id="state-unavailable"

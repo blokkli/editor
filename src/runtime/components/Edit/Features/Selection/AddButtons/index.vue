@@ -408,7 +408,7 @@ watch(
   { immediate: true },
 )
 
-onBlokkliEvent('canvas:draw', () => {
+onBlokkliEvent('animationFrame:after', () => {
   if (!shouldRender.value || !uuid.value) {
     containerStyle.value = { visibility: 'hidden' }
     containerRect.value = null

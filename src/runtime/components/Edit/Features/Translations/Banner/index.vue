@@ -4,8 +4,8 @@
     icon="translate"
     :text
     :button="$t('translationsBannerButton', 'Edit source language instead')"
-    @click="onClick"
     scheme="yellow"
+    @click="onClick"
   />
 </template>
 

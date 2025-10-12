@@ -187,6 +187,7 @@ function stopChangingOptions() {
     })
   }
   selection.isChangingOptions.value = false
+  eventBus.emit('option:finish-change')
 }
 
 class OptionCollector {

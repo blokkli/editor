@@ -237,10 +237,6 @@ html {
     -webkit-user-select: none;
     -webkit-touch-callout: none;
   }
-
-  &:hover {
-    @apply outline-mono-500/90 outline-2 outline-dashed;
-  }
 }
 
 .bk .bk-blokkli-item-label {
@@ -340,10 +336,6 @@ html.bk-html-root:not(.bk-use-animations) {
   }
 }
 
-[data-blokkli-editable-field] {
-  @apply pointer-events-auto;
-}
-
 html.bk-isolate-provider {
   [data-provider-uuid]:not([data-blokkli-provider-active='true']) {
     @apply !hidden;
@@ -368,8 +360,7 @@ html.bk-hide-non-editable {
     }
 
     .bk-selection,
-    [data-field-name],
-    [data-blokkli-editable-field] {
+    [data-field-name] {
       @apply visible;
     }
   }

@@ -97,6 +97,7 @@ onBlokkliEvent('animationFrame', (e) => {
   }
   const offset = ui.artboardOffset.value
   const scale = ui.artboardScale.value
+  const size = ui.artboardSize.value
   // const size = ui.artboardSize.value
   // const dpi = animation.dpi.value
   // Restrict drawing to area on and 20px around artboard.
@@ -113,6 +114,7 @@ onBlokkliEvent('animationFrame', (e) => {
     ...e,
     artboardOffset: offset,
     artboardScale: scale,
+    artboardSize: size,
     time: e.time,
   })
 })
