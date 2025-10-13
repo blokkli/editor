@@ -15,6 +15,7 @@ type UseStickyToolbarOptions = {
   getHeight?: () => number
   getMargin?: () => number
   getAnchorElement?: () => HTMLElement | null
+  getAnchorCoordinates?: () => Coord | null
   getCaretWidth?: () => number
   allowHorizontalOverflow?: boolean
 }
@@ -85,9 +86,25 @@ export default function (
 
     const anchorElement =
       options && options.getAnchorElement ? options.getAnchorElement() : null
+    const anchorCoordinates =
+      options && options.getAnchorCoordinates
+        ? options.getAnchorCoordinates()
+        : null
 
-    // Use anchor element if provided
-    if (anchorElement) {
+    // Use anchor coordinates if provided (highest priority)
+    if (anchorCoordinates) {
+      // Coordinates are in artboard space, convert to screen space
+      const rectX = (anchorCoordinates.x + offset.x / scale) * scale
+      const rectY = (anchorCoordinates.y + offset.y / scale) * scale
+
+      // Create a small point rect (1x1)
+      minX = rectX
+      maxX = rectX + 1
+      minY = rectY
+      maxY = rectY + 1
+      hasRects = true
+    } else if (anchorElement) {
+      // Use anchor element if provided
       anchorRect ||= ui.getAbsoluteElementRect(
         anchorElement.getBoundingClientRect(),
         scale,

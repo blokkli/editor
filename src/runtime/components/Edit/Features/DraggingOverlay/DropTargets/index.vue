@@ -14,6 +14,7 @@ import {
   toShaderColor,
 } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import defineRenderer from '#blokkli/helpers/composables/defineRenderer'
 import type {
   DropTargetEvent,
   BlokkliFieldElement,
@@ -22,7 +23,7 @@ import type {
   Rectangle,
   Coord,
 } from '#blokkli/types'
-import { ref, computed, useBlokkli, onBeforeUnmount, onMounted } from '#imports'
+import { ref, computed, useBlokkli, onBeforeUnmount } from '#imports'
 import {
   setBuffersAndAttributes,
   drawBufferInfo,
@@ -842,6 +843,10 @@ function setHoveredFieldArea(box: Rectangle, mouse: Coord) {
   }
 }
 
+// Store buffer info for use in both event handler and renderer
+let bufferInfo: BufferInfo | null = null
+let bufferChanged = false
+
 onBlokkliEvent('canvas:draw', () => {
   const scale = ui.artboardScale.value
   const offset = { ...ui.artboardOffset.value }
@@ -855,12 +860,9 @@ onBlokkliEvent('canvas:draw', () => {
 
   const mouseAbsolute = toCanvasSpaceCoordinates(props.mouseX, props.mouseY)
 
-  if (gl && programInfo) {
-    gl.useProgram(programInfo.program)
-    animation.setSharedUniforms(gl, programInfo)
-  }
-
-  const { info, hasChanged } = collector.getBufferInfo()
+  const result = collector.getBufferInfo()
+  bufferInfo = result.info
+  bufferChanged = result.hasChanged
 
   if (!props.isTouch) {
     if (cursorIsInsideClipped()) {
@@ -875,63 +877,60 @@ onBlokkliEvent('canvas:draw', () => {
     }
   }
 
-  // WebGL rendering.
-  if (programInfo && gl) {
-    setHoveredFieldArea(dragBox.value, mouseAbsolute)
-    setUniforms(programInfo, uniforms.value)
+  setHoveredFieldArea(dragBox.value, mouseAbsolute)
 
-    // Nothing to draw.
-    if (info) {
+  // Fallback canvas 2D rendering (only when WebGL is not available).
+  if (!gl && ctx) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+    const rects = Object.values(collector.rects)
+
+    for (let i = 0; i < rects.length; i++) {
+      const rect = rects[i]!
+      if (active.value?.id === rect.id) {
+        ctx.fillStyle = rect.color
+      } else {
+        ctx.fillStyle = rect.colorAlpha
+      }
+
+      ctx.fillRect(
+        (rect.x * scale + offset.x) * animation.dpi.value,
+        (rect.y * scale + offset.y) * animation.dpi.value,
+        rect.width * animation.dpi.value * scale,
+        rect.height * animation.dpi.value * scale,
+      )
+    }
+  }
+})
+
+// Register WebGL renderer with zIndex 400 (dragging layer - highest priority)
+// Set "only" to true so that when dragging, only drop targets are rendered
+if (gl && programInfo) {
+  defineRenderer('drop-targets', {
+    zIndex: 400,
+    only: true,
+    cursor: () => 'grabbing',
+    render: (ctx) => {
+      gl.useProgram(programInfo.program)
+      animation.setSharedUniforms(gl, programInfo)
+      setUniforms(programInfo, uniforms.value)
+
+      // Nothing to draw.
+      if (!bufferInfo) {
+        return
+      }
+
       // Only update buffer and attributes when they have changed.
-      if (hasChanged && gl && programInfo) {
-        setBuffersAndAttributes(gl, programInfo, info)
+      if (bufferChanged) {
+        setBuffersAndAttributes(gl, programInfo, bufferInfo)
       }
 
-      if (gl) {
-        drawBufferInfo(gl, info, gl.TRIANGLES)
-      }
-    }
-
-    return
-  }
-
-  // Fallback rendering.
-  if (!ctx) {
-    return
-  }
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-  const rects = Object.values(collector.rects)
-
-  for (let i = 0; i < rects.length; i++) {
-    const rect = rects[i]!
-    if (active.value?.id === rect.id) {
-      ctx.fillStyle = rect.color
-    } else {
-      ctx.fillStyle = rect.colorAlpha
-    }
-
-    ctx.fillRect(
-      (rect.x * scale + offset.x) * animation.dpi.value,
-      (rect.y * scale + offset.y) * animation.dpi.value,
-      rect.width * animation.dpi.value * scale,
-      rect.height * animation.dpi.value * scale,
-    )
-  }
-})
-
-onMounted(() => {
-  animation.setCursor('drop-targets', 'grabbing')
-})
+      drawBufferInfo(gl, bufferInfo, gl.TRIANGLES)
+    },
+  })
+}
 
 onBeforeUnmount(() => {
-  animation.removeCursor('drop-targets')
-
-  if (gl) {
-    gl.clear(gl.COLOR_BUFFER_BIT)
-  }
-
   if (ctx) {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
   }

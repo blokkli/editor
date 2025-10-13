@@ -3,6 +3,7 @@
     id="add-buttons"
     :title="label"
     :anchor-el
+    :anchor-coordinates
     class="bk-selection-add-overlay"
     @close="$emit('close')"
   >
@@ -40,7 +41,7 @@
 import { useTemplateRef, useBlokkli, computed } from '#imports'
 import { AddListItemIcon, ArtboardTooltip } from '#blokkli/components'
 import { isInternalBundle } from '#blokkli/helpers/bundles'
-import type { AddAction } from '#blokkli/types'
+import type { AddAction, Coord } from '#blokkli/types'
 
 type Item = {
   bundle: string
@@ -50,7 +51,8 @@ type Item = {
 
 const props = defineProps<{
   bundles: string[]
-  anchorEl: HTMLElement
+  anchorEl?: HTMLElement
+  anchorCoordinates?: Coord
   label: string
 }>()
 

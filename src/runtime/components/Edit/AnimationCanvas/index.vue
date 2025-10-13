@@ -321,6 +321,12 @@ function onPointerUp(e: PointerEvent) {
     lastInteractedElement = null
     return
   }
+
+  // Let renderers handle the click first (e.g. add buttons)
+  if (animation.handleClick(e.clientX, e.clientY)) {
+    return
+  }
+
   const clicked = getInteractedElement(e)
 
   // Handle double clicking.
@@ -471,6 +477,12 @@ function onTouchEnd(e: PointerEvent) {
   if (distance > 7) {
     return
   }
+
+  // Let renderers handle the click first (e.g. add buttons)
+  if (animation.handleClick(coords.x, coords.y)) {
+    return
+  }
+
   const interacted = getInteractedElement(e)
   if (interacted?.uuid) {
     // Prevent unselecting the block after a long press interaction, which has already selected the block.

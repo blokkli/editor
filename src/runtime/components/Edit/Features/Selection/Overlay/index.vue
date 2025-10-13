@@ -4,8 +4,9 @@
 
 <script lang="ts" setup>
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import defineRenderer from '#blokkli/helpers/composables/defineRenderer'
 import type { DraggableExistingBlock, Rectangle } from '#blokkli/types'
-import { useBlokkli, onBeforeUnmount, computed } from '#imports'
+import { useBlokkli, computed } from '#imports'
 import {
   setBuffersAndAttributes,
   drawBufferInfo,
@@ -196,33 +197,37 @@ const getTransforming = useTransitionedValue(() => {
   return ui.isTransforming.value ? 1 : 0
 })
 
-onBlokkliEvent('canvas:draw', (e) => {
-  props.gl.useProgram(programInfo.program)
+// Register WebGL renderer with zIndex 100 (selection layer)
+defineRenderer('selection-overlay', {
+  zIndex: 100,
+  render: (ctx) => {
+    props.gl.useProgram(programInfo.program)
 
-  const { info } = collector.getBufferInfo()
+    const { info } = collector.getBufferInfo()
 
-  // Nothing to draw.
-  if (!info) {
-    return
-  }
+    // Nothing to draw.
+    if (!info) {
+      return
+    }
 
-  setUniforms(programInfo, {
-    u_color_default: getColorDefault(),
-    u_color_inverted: getColorInverted(),
-    u_color_library: getColorLibrary(),
-    u_color_host: getColorHost(),
-    u_artboard_size: [
-      ui.artboardSize.value.width,
-      ui.artboardSize.value.height,
-    ],
-    u_is_transforming: getTransforming(),
-    u_time: e.time,
-  })
-  animation.setSharedUniforms(props.gl, programInfo)
+    setUniforms(programInfo, {
+      u_color_default: getColorDefault(),
+      u_color_inverted: getColorInverted(),
+      u_color_library: getColorLibrary(),
+      u_color_host: getColorHost(),
+      u_artboard_size: [
+        ui.artboardSize.value.width,
+        ui.artboardSize.value.height,
+      ],
+      u_is_transforming: getTransforming(),
+      u_time: ctx.time,
+    })
+    animation.setSharedUniforms(props.gl, programInfo)
 
-  setBuffersAndAttributes(props.gl, programInfo, info)
+    setBuffersAndAttributes(props.gl, programInfo, info)
 
-  drawBufferInfo(props.gl, info, props.gl.TRIANGLES)
+    drawBufferInfo(props.gl, info, props.gl.TRIANGLES)
+  },
 })
 
 onBlokkliEvent('ui:resized', function () {
@@ -231,10 +236,6 @@ onBlokkliEvent('ui:resized', function () {
 
 onBlokkliEvent('state:reloaded', function () {
   collector.reset()
-})
-
-onBeforeUnmount(() => {
-  props.gl.clear(props.gl.COLOR_BUFFER_BIT)
 })
 </script>
 

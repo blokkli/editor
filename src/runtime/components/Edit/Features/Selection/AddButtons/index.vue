@@ -1,51 +1,4 @@
 <template>
-  <Teleport to="#bk-indicators">
-    <div
-      v-if="shouldRender"
-      v-show="showOverlay"
-      class="bk-selection-add"
-      :class="orientationClass"
-      :style="containerStyle"
-    >
-      <button
-        ref="before"
-        :key="'before' + orientationClass"
-        class="bk-selection-add-button bk-before"
-        :style="beforeAfterStyle"
-        :data-title="beforeTooltip"
-        tabindex="-1"
-        @click="onClickBefore"
-      >
-        <div>
-          <Icon name="plus" />
-        </div>
-      </button>
-
-      <button
-        ref="after"
-        :key="'after' + orientationClass"
-        class="bk-selection-add-button bk-after"
-        :style="beforeAfterStyle"
-        :data-title="afterTooltip"
-        tabindex="-1"
-        @click="onClickAfter"
-      >
-        <div>
-          <Icon name="plus" />
-        </div>
-      </button>
-    </div>
-    <AddButtonsField
-      v-for="(slot, index) in fieldButtonSlots"
-      v-show="showOverlay"
-      :key="index"
-      :field-key="slot.fieldKey"
-      :container-rect="containerRect"
-      :title="fieldTooltips[index] || ''"
-      @click="(el) => onClickEmptyField(index, el)"
-    />
-  </Teleport>
-
   <Teleport to="body">
     <BlokkliTransition name="caret-tooltip">
       <Overlay
@@ -53,6 +6,7 @@
         :key="addData.key"
         :bundles="addData.allowedBundles"
         :anchor-el="addData.anchorEl"
+        :anchor-coordinates="addData.anchorCoordinates"
         :label="addData.label"
         @select="onSelectBundle"
         @close="closeOverlay"
@@ -60,6 +14,13 @@
       />
     </BlokkliTransition>
   </Teleport>
+
+  <Renderer
+    :empty-field-keys="emptyFieldKeys"
+    :can-show-before-after="canShowBeforeAfter"
+    @toggle="onRendererToggle"
+    @toggle-field="onRendererToggleField"
+  />
 </template>
 
 <script setup lang="ts">
@@ -83,6 +44,7 @@ import AddButtonsField from './AddButtonsField.vue'
 import { renderCycle } from '#blokkli/helpers/renderCycle'
 import { getFieldKey } from '#blokkli/helpers'
 import { isInternalBundle } from '#blokkli/helpers/bundles'
+import Renderer from './Renderer/index.vue'
 
 const props = defineProps<{
   blocks: DraggableExistingBlock[]
@@ -140,6 +102,10 @@ const emptyBlockFields = computed(() => {
     .filter((v) => {
       return v.count === 0
     })
+})
+
+const emptyFieldKeys = computed(() => {
+  return emptyBlockFields.value.map((v) => v.key)
 })
 
 const containerStyle = ref<Record<string, string>>({ visibility: 'hidden' })
@@ -282,7 +248,8 @@ type AddData = {
   preceedingUuid?: string
   host: DraggableHostData
   field: BlokkliFieldElement
-  anchorEl: HTMLElement
+  anchorEl?: HTMLElement
+  anchorCoordinates?: { x: number; y: number }
   key: string
   label: string
 }
@@ -454,11 +421,14 @@ onBlokkliEvent('state:reloaded', () => {
 function setAddData(
   key: string,
   field: BlokkliFieldElement,
-  anchorEl: HTMLElement,
   label: string,
   preceedingUuid?: string,
+  anchorEl?: HTMLElement,
+  anchorCoordinates?: { x: number; y: number },
 ) {
-  const allowedBundles = field.allowedBundles
+  const allowedBundles = field.allowedBundles.filter(
+    (bundle) => !isInternalBundle(bundle),
+  )
   if (allowedBundles.length === 0) {
     return
   }
@@ -486,6 +456,7 @@ function setAddData(
     preceedingUuid,
     host,
     anchorEl,
+    anchorCoordinates,
     label,
     field,
   }
@@ -543,7 +514,7 @@ function onClickBefore() {
   }
 
   const label = beforeTooltip.value.replace('...', '')
-  setAddData('before', field, beforeEL.value, label, preceedingUuid)
+  setAddData('before', field, label, preceedingUuid, beforeEL.value)
 }
 
 function onClickAfter() {
@@ -579,7 +550,7 @@ function onClickAfter() {
   }
 
   const label = afterTooltip.value.replace('...', '')
-  setAddData('after', field, afterEl.value, label, uuid.value)
+  setAddData('after', field, label, uuid.value, afterEl.value)
 }
 
 function onClickEmptyField(index: number, element: HTMLElement) {
@@ -603,7 +574,80 @@ function onClickEmptyField(index: number, element: HTMLElement) {
   }
 
   const label = (fieldTooltips.value[index] || '').replace('...', '')
-  setAddData(key, field, element, label)
+  setAddData(key, field, label, undefined, element)
+}
+
+function onRendererToggle(data: {
+  position: 'before' | 'after'
+  coordinates: { x: number; y: number }
+}) {
+  const key = data.position
+  if (addData.value?.key === key) {
+    return closeOverlay()
+  }
+
+  if (!uuid.value) {
+    return
+  }
+
+  const cachedState = cache.get(uuid.value)
+  if (!cachedState) {
+    return
+  }
+
+  const block = dom.findBlock(uuid.value)
+  if (!block) {
+    return
+  }
+
+  const field = dom.findField(block.hostUuid, block.hostFieldName)
+  if (!field) {
+    return
+  }
+
+  if (!field.allowedBundles.length) {
+    return
+  }
+
+  let preceedingUuid: string | undefined
+  let label: string
+
+  if (data.position === 'before') {
+    preceedingUuid = getPreceedingUuidBefore(uuid.value, field)
+    label = beforeTooltip.value.replace('...', '')
+  } else {
+    preceedingUuid = uuid.value
+    label = afterTooltip.value.replace('...', '')
+  }
+
+  setAddData(key, field, label, preceedingUuid, undefined, data.coordinates)
+}
+
+function onRendererToggleField(data: {
+  index: number
+  coordinates: { x: number; y: number }
+}) {
+  const key = 'field:' + data.index
+  if (addData.value?.key === key) {
+    return closeOverlay()
+  }
+
+  if (!uuid.value) {
+    return
+  }
+
+  const emptyField = emptyBlockFields.value[data.index]
+  if (!emptyField) {
+    return
+  }
+
+  const field = dom.findField(uuid.value, emptyField.name)
+  if (!field) {
+    return
+  }
+
+  const label = (fieldTooltips.value[data.index] || '').replace('...', '')
+  setAddData(key, field, label, undefined, undefined, data.coordinates)
 }
 
 onBlokkliEvent('mouse:up', closeOverlay)

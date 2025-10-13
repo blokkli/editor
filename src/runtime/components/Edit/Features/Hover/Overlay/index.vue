@@ -4,8 +4,9 @@
 
 <script lang="ts" setup>
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import defineRenderer from '#blokkli/helpers/composables/defineRenderer'
 import type { Rectangle } from '#blokkli/types'
-import { useBlokkli, onBeforeUnmount, watch, computed, ref } from '#imports'
+import { useBlokkli, computed, ref } from '#imports'
 import { setBuffersAndAttributes, drawBufferInfo, setUniforms } from 'twgl.js'
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
@@ -354,30 +355,6 @@ const uniforms = computed(() => {
   }
 })
 
-// Determine the active cursor based on hover state
-const activeCursor = computed<'text' | 'grab' | null>(() => {
-  // Priority 1: Editable field (if not in readonly mode)
-  if (isHoveringEditableField.value && state.editMode.value !== 'readonly') {
-    return 'text'
-  }
-
-  // Priority 2: Selected block (if in editing mode)
-  if (isHoveringSelectedBlock.value && state.editMode.value === 'editing') {
-    return 'grab'
-  }
-
-  return null
-})
-
-// Watch for cursor changes and update with a single ID
-watch(activeCursor, (cursor) => {
-  if (cursor) {
-    animation.setCursor('hover-overlay', cursor)
-  } else {
-    animation.removeCursor('hover-overlay')
-  }
-})
-
 onBlokkliEvent('state:reloaded', () => {
   resetHoverState()
 })
@@ -386,36 +363,49 @@ onBlokkliEvent('ui:resized', () => {
   resetHoverState()
 })
 
-onBlokkliEvent('canvas:draw', (e) => {
-  if (!bufferInfo || selection.isChangingOptions.value) {
-    return
-  }
+// Register WebGL renderer with zIndex 200 (hover layer)
+defineRenderer('hover-overlay', {
+  zIndex: 200,
+  enabled: () => !selection.isChangingOptions.value,
+  cursor: () => {
+    // Priority 1: Editable field (if not in readonly mode)
+    if (isHoveringEditableField.value && state.editMode.value !== 'readonly') {
+      return 'text'
+    }
 
-  updateHoverState(
-    e.mouseX,
-    e.mouseY,
-    e.artboardOffset,
-    e.artboardScale,
-    e.artboardSize,
-  )
+    // Priority 2: Selected block (if in editing mode)
+    if (isHoveringSelectedBlock.value && state.editMode.value === 'editing') {
+      return 'grab'
+    }
 
-  props.gl.useProgram(programInfo.program)
+    return null
+  },
+  render: (ctx) => {
+    if (!bufferInfo) {
+      return
+    }
 
-  setUniforms(programInfo, uniforms.value)
-  setUniforms(programInfo, {
-    u_hover_positions: hoverState.positions,
-    u_hover_radii: hoverState.radii,
-    u_hover_types: hoverState.types,
-    u_hover_visible: hoverState.visible,
-  })
-  animation.setSharedUniforms(props.gl, programInfo)
-  setBuffersAndAttributes(props.gl, programInfo, bufferInfo)
-  drawBufferInfo(props.gl, bufferInfo, props.gl.TRIANGLES)
-})
+    updateHoverState(
+      ctx.mouseX,
+      ctx.mouseY,
+      ctx.artboardOffset,
+      ctx.artboardScale,
+      ctx.artboardSize,
+    )
 
-onBeforeUnmount(() => {
-  props.gl.clear(props.gl.COLOR_BUFFER_BIT)
-  animation.removeCursor('hover-overlay')
+    props.gl.useProgram(programInfo.program)
+
+    setUniforms(programInfo, uniforms.value)
+    setUniforms(programInfo, {
+      u_hover_positions: hoverState.positions,
+      u_hover_radii: hoverState.radii,
+      u_hover_types: hoverState.types,
+      u_hover_visible: hoverState.visible,
+    })
+    animation.setSharedUniforms(props.gl, programInfo)
+    setBuffersAndAttributes(props.gl, programInfo, bufferInfo)
+    drawBufferInfo(props.gl, bufferInfo, props.gl.TRIANGLES)
+  },
 })
 </script>
 

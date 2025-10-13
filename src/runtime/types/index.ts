@@ -1053,8 +1053,10 @@ export type Coord = {
 export type Rectangle = Size & Coord
 
 export type CanvasDrawEvent = {
+  gl: WebGLRenderingContext
   mouseX: number
   mouseY: number
+  mouseArtboard: Coord
   artboardOffset: Coord
   artboardScale: number
   artboardSize: Size

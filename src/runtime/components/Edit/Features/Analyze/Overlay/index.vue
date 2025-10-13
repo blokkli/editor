@@ -9,7 +9,8 @@ import type {
 } from '#blokkli/analyzer/types'
 import type { Rectangle } from '#blokkli/types'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import { useBlokkli, onBeforeUnmount, computed } from '#imports'
+import defineRenderer from '#blokkli/helpers/composables/defineRenderer'
+import { useBlokkli, computed } from '#imports'
 import {
   setBuffersAndAttributes,
   drawBufferInfo,
@@ -186,28 +187,31 @@ class AnalyzeRectangleBufferCollector extends RectangleBufferCollector<AnalyzeRe
 
 const collector = new AnalyzeRectangleBufferCollector(props.gl)
 
-onBlokkliEvent('canvas:draw', () => {
-  if (selection.isMultiSelecting.value || selection.isDragging.value) {
-    return
-  }
-  props.gl.useProgram(programInfo.program)
+// Register WebGL renderer with zIndex 500 (analysis layer - renders on top of everything)
+defineRenderer('analyze-overlay', {
+  zIndex: 500,
+  enabled: () =>
+    !selection.isMultiSelecting.value && !selection.isDragging.value,
+  render: (ctx) => {
+    ctx.gl.useProgram(programInfo.program)
 
-  const { info } = collector.getBufferInfo()
+    const { info } = collector.getBufferInfo()
 
-  // Nothing to draw.
-  if (!info) {
-    return
-  }
+    // Nothing to draw.
+    if (!info) {
+      return
+    }
 
-  setUniforms(programInfo, {
-    u_color_violation: toShaderColor(theme.red.value.normal),
-    u_color_incomplete: toShaderColor(theme.yellow.value.normal),
-    u_color_pass: toShaderColor(theme.lime.value.normal),
-  })
-  animation.setSharedUniforms(props.gl, programInfo)
+    setUniforms(programInfo, {
+      u_color_violation: toShaderColor(theme.red.value.normal),
+      u_color_incomplete: toShaderColor(theme.yellow.value.normal),
+      u_color_pass: toShaderColor(theme.lime.value.normal),
+    })
+    animation.setSharedUniforms(ctx.gl, programInfo)
 
-  setBuffersAndAttributes(props.gl, programInfo, info)
-  drawBufferInfo(props.gl, info, props.gl.TRIANGLES)
+    setBuffersAndAttributes(ctx.gl, programInfo, info)
+    drawBufferInfo(ctx.gl, info, ctx.gl.TRIANGLES)
+  },
 })
 
 onBlokkliEvent('ui:resized', function () {
@@ -244,10 +248,6 @@ onBlokkliEvent('mouse:up', (e) => {
       return
     }
   }
-})
-
-onBeforeUnmount(() => {
-  props.gl.clear(props.gl.COLOR_BUFFER_BIT)
 })
 </script>
 

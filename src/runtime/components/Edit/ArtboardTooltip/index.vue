@@ -32,17 +32,20 @@ import {
 } from '#imports'
 import { Icon } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
+import type { Coord } from '#blokkli/types'
 
 const props = withDefaults(
   defineProps<{
     id: string
     title: string
     anchorEl?: HTMLElement | null
+    anchorCoordinates?: Coord | null
     placementY?: PlacementVertical
     closeIcon?: BlokkliIcon
   }>(),
   {
     anchorEl: null,
+    anchorCoordinates: null,
     closeIcon: 'close',
     placementY: 'auto',
   },
@@ -59,6 +62,9 @@ const { ui } = useBlokkli()
 const { placementY, caretX } = useStickyToolbar(el, {
   getAnchorElement() {
     return props.anchorEl ?? null
+  },
+  getAnchorCoordinates() {
+    return props.anchorCoordinates ?? null
   },
   getPlacementY() {
     return props.placementY

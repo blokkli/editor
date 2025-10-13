@@ -5,8 +5,9 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, onBeforeUnmount, onMounted } from '#imports'
+import { useBlokkli, onBeforeUnmount } from '#imports'
 import { intersects, toShaderColor } from '#blokkli/helpers'
+import defineRenderer from '#blokkli/helpers/composables/defineRenderer'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
@@ -229,43 +230,50 @@ function getSelectRect(
   return { shader, check }
 }
 
-onBlokkliEvent('canvas:draw', (e) => {
-  mouseX = e.mouseX
-  mouseY = e.mouseY
+// Register WebGL renderer with zIndex 450 (multi-select layer)
+// Set "only" to true so that when multi-selecting, only the selection box is rendered
+defineRenderer('multiselect-overlay', {
+  zIndex: 450,
+  only: true,
+  cursor: () => 'crosshair',
+  render: (ctx) => {
+    mouseX = ctx.mouseX
+    mouseY = ctx.mouseY
 
-  const { shader, check } = getSelectRect(e.artboardOffset, e.artboardScale)
+    const { shader, check } = getSelectRect(ctx.artboardOffset, ctx.artboardScale)
 
-  const { nested } = collector.getSelectedUuids(check)
-  const shouldSelectAll = props.isPressingControl || !nested.length
+    const { nested } = collector.getSelectedUuids(check)
+    const shouldSelectAll = props.isPressingControl || !nested.length
 
-  props.gl.useProgram(programInfo.program)
+    ctx.gl.useProgram(programInfo.program)
 
-  const time = (Date.now() - startTimestamp) / 1000
+    const time = (Date.now() - startTimestamp) / 1000
 
-  setUniforms(programInfo, uniforms)
-  setUniforms(programInfo, {
-    u_select_all: shouldSelectAll ? 1 : 0,
-    u_select_rect: [shader.x, shader.y, shader.width, shader.height],
-    u_time: time,
-  })
+    setUniforms(programInfo, uniforms)
+    setUniforms(programInfo, {
+      u_select_all: shouldSelectAll ? 1 : 0,
+      u_select_rect: [shader.x, shader.y, shader.width, shader.height],
+      u_time: time,
+    })
 
-  animation.setSharedUniforms(props.gl, programInfo)
-  const { info, hasChanged } = collector.getBufferInfo(
-    e.artboardOffset,
-    e.artboardScale,
-  )
+    animation.setSharedUniforms(ctx.gl, programInfo)
+    const { info, hasChanged } = collector.getBufferInfo(
+      ctx.artboardOffset,
+      ctx.artboardScale,
+    )
 
-  // Nothing to draw.
-  if (!info) {
-    return
-  }
+    // Nothing to draw.
+    if (!info) {
+      return
+    }
 
-  // Only update buffer and attributes when they have changed.
-  if (hasChanged) {
-    setBuffersAndAttributes(props.gl, programInfo, info)
-  }
+    // Only update buffer and attributes when they have changed.
+    if (hasChanged) {
+      setBuffersAndAttributes(ctx.gl, programInfo, info)
+    }
 
-  drawBufferInfo(props.gl, info, props.gl.TRIANGLES)
+    drawBufferInfo(ctx.gl, info, ctx.gl.TRIANGLES)
+  },
 })
 
 function getUuidsToSelect(): string[] {
@@ -283,14 +291,7 @@ function getUuidsToSelect(): string[] {
   return nested
 }
 
-onMounted(() => {
-  animation.setCursor('multiselect', 'crosshair')
-})
-
 onBeforeUnmount(() => {
-  animation.removeCursor('multiselect')
-  props.gl.clear(props.gl.COLOR_BUFFER_BIT)
-
   const diff = Date.now() - startTimestamp
 
   // Only select if the entire duration of the interaction is above a certain threshold.

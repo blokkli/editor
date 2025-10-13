@@ -13,6 +13,24 @@ import type { UiProvider } from './uiProvider'
 import { createProgramInfo, type ProgramInfo } from 'twgl.js'
 import type { StorageProvider } from './storageProvider'
 import type { CursorKeyword } from './dom'
+import type { CanvasDrawEvent, Coord } from '#blokkli/types'
+
+export type RenderContext = CanvasDrawEvent & {
+  gl: WebGLRenderingContext
+}
+
+export type Renderer = {
+  id: string
+  zIndex: number
+  enabled?: () => boolean
+  only?: boolean | (() => boolean)
+  cursor?: () => CursorKeyword | undefined | null
+  onClick?: (coord: {
+    mouse: Coord
+    mouseArtboard: Coord
+  }) => boolean | undefined
+  render: (ctx: RenderContext) => void
+}
 
 export type AnimationProvider = {
   /**
@@ -51,8 +69,23 @@ export type AnimationProvider = {
   setMouseCoords: (x: number, y: number) => void
 
   cursor: ComputedRef<CursorKeyword>
-  setCursor: (id: string, cursor: CursorKeyword) => void
-  removeCursor: (id: string) => void
+
+  /**
+   * Handle a click event by calling onClick handlers on renderers.
+   * Returns true if any renderer claimed the click, false otherwise.
+   */
+  handleClick: (x: number, y: number) => boolean
+
+  /**
+   * Register a WebGL renderer with a specific zIndex.
+   * Returns an unregister function.
+   */
+  registerRenderer: (id: string, config: Omit<Renderer, 'id'>) => () => void
+
+  /**
+   * Unregister a WebGL renderer.
+   */
+  unregisterRenderer: (id: string) => void
 }
 
 export default function (
@@ -60,24 +93,54 @@ export default function (
   storage: StorageProvider,
 ): AnimationProvider {
   const webglEnabled = storage.use('webglEnabled', true)
-  const cursors = ref<{ id: string; cursor: CursorKeyword }[]>([])
 
-  const cursor = computed<CursorKeyword>(() => {
-    return cursors.value[cursors.value.length - 1]?.cursor ?? 'default'
-  })
+  // Current cursor determined by renderers
+  const currentCursor = ref<CursorKeyword>('default')
+  const cursor = computed<CursorKeyword>(() => currentCursor.value)
 
-  function setCursor(id: string, cursor: CursorKeyword) {
-    cursors.value = [
-      ...cursors.value.filter((v) => v.id !== id),
-      {
-        id,
-        cursor,
-      },
-    ]
+  // Renderer management
+  const renderers = new Map<string, Renderer>()
+
+  function registerRenderer(
+    id: string,
+    config: Omit<Renderer, 'id'>,
+  ): () => void {
+    renderers.set(id, { id, ...config })
+    return () => unregisterRenderer(id)
   }
 
-  function removeCursor(id: string) {
-    cursors.value = cursors.value.filter((v) => v.id !== id)
+  function unregisterRenderer(id: string): void {
+    renderers.delete(id)
+  }
+
+  function handleClick(x: number, y: number): boolean {
+    // Get all enabled renderers sorted by zIndex (descending - top to bottom)
+    const sortedRenderers = Array.from(renderers.values())
+      .filter((renderer) => !renderer.enabled || renderer.enabled())
+      .sort((a, b) => b.zIndex - a.zIndex)
+
+    // Convert to artboard coordinates
+    const artboardOffset = ui.artboardOffset.value
+    const artboardScale = ui.artboardScale.value
+    const mouseArtboard: Coord = {
+      x: (x - artboardOffset.x) / artboardScale,
+      y: (y - artboardOffset.y) / artboardScale,
+    }
+
+    // Iterate from highest to lowest zIndex
+    for (const renderer of sortedRenderers) {
+      if (renderer.onClick) {
+        const claimed = renderer.onClick({
+          mouse: { x, y },
+          mouseArtboard,
+        })
+        if (claimed === true) {
+          return true
+        }
+      }
+    }
+
+    return false
   }
 
   let mouseX = 0
@@ -96,6 +159,49 @@ export default function (
   const maxCanvasWidth = ref(16384)
   const maxCanvasHeight = ref(16384)
   let webglLimitsQueried = false
+
+  function getCanvasElement(): HTMLCanvasElement {
+    const el = document.querySelector('#bk-animation-canvas-webgl')
+    if (!(el instanceof HTMLCanvasElement)) {
+      throw new TypeError('Failed to locate WebGL canvas.')
+    }
+
+    return el
+  }
+
+  function gl(): WebGLRenderingContext | undefined {
+    if (!webglEnabled.value) {
+      return
+    }
+
+    if (webglSupported.value === false) {
+      return
+    }
+
+    const canvas = getCanvasElement()
+    const glContext = canvas.getContext('webgl2', {
+      premultipliedAlpha: true,
+    })
+
+    if (!glContext) {
+      webglSupported.value = false
+      return
+    }
+
+    webglSupported.value = true
+
+    // Query WebGL limits once
+    if (!webglLimitsQueried) {
+      const maxViewportDims = glContext.getParameter(
+        glContext.MAX_VIEWPORT_DIMS,
+      ) as Int32Array
+      maxCanvasWidth.value = maxViewportDims[0] || 16384
+      maxCanvasHeight.value = maxViewportDims[1] || 16384
+      webglLimitsQueried = true
+    }
+
+    return glContext
+  }
 
   useAnimationFrame((time) => {
     // Make sure we don't loop when it's not needed.
@@ -116,6 +222,88 @@ export default function (
       fieldAreas: [],
       time,
     })
+
+    // Clear the canvas before rendering
+    const glContext = gl()
+    if (glContext) {
+      glContext.clear(glContext.COLOR_BUFFER_BIT)
+
+      // Set up alpha blending for proper layering
+      glContext.enable(glContext.BLEND)
+      glContext.blendFunc(glContext.SRC_ALPHA, glContext.ONE_MINUS_SRC_ALPHA)
+    }
+
+    // Execute WebGL renderers in zIndex order
+    const sortedRenderers = Array.from(renderers.values()).sort(
+      (a, b) => a.zIndex - b.zIndex,
+    )
+
+    // Check if any renderer has "only" set to true
+    let onlyRenderer: Renderer | null = null
+    for (const renderer of sortedRenderers) {
+      if (!renderer.enabled || renderer.enabled()) {
+        const onlyValue =
+          typeof renderer.only === 'function' ? renderer.only() : renderer.only
+        if (onlyValue) {
+          onlyRenderer = renderer
+          break
+        }
+      }
+    }
+
+    const artboardOffset = ui.artboardOffset.value
+    const artboardScale = ui.artboardScale.value
+    const artboardSize = ui.artboardSize.value
+    const mouseArtboard: Coord = {
+      x: (mouseX - artboardOffset.x) / artboardScale,
+      y: (mouseY - artboardOffset.y) / artboardScale,
+    }
+
+    const ctx: RenderContext = {
+      gl: glContext!,
+      time,
+      mouseX,
+      mouseY,
+      mouseArtboard,
+      artboardOffset,
+      artboardScale,
+      artboardSize,
+    }
+
+    // If an "only" renderer is found, render only that one
+    if (onlyRenderer) {
+      const glContext = gl()
+      if (glContext) {
+        onlyRenderer.render(ctx)
+      }
+    } else {
+      // Otherwise, render all enabled renderers
+      for (const renderer of sortedRenderers) {
+        if (!renderer.enabled || renderer.enabled()) {
+          const glContext = gl()
+          if (glContext) {
+            renderer.render(ctx)
+          }
+        }
+      }
+    }
+
+    // Determine cursor from renderers (top to bottom by zIndex)
+    let newCursor: CursorKeyword = 'default'
+    // Iterate from highest to lowest zIndex
+    for (let i = sortedRenderers.length - 1; i >= 0; i--) {
+      const renderer = sortedRenderers[i]!
+      if (renderer.cursor && (!renderer.enabled || renderer.enabled())) {
+        const cursorValue = renderer.cursor()
+        if (cursorValue) {
+          newCursor = cursorValue
+          break
+        }
+      }
+    }
+    currentCursor.value = newCursor
+
+    eventBus.emit('canvas:draw', ctx)
     eventBus.emit('animationFrame:after')
   })
 
@@ -220,51 +408,9 @@ export default function (
     iterator = 120
   }
 
-  function getCanvasElement(): HTMLCanvasElement {
-    const el = document.querySelector('#bk-animation-canvas-webgl')
-    if (!(el instanceof HTMLCanvasElement)) {
-      throw new TypeError('Failed to locate WebGL canvas.')
-    }
-
-    return el
-  }
-
   return {
     requestDraw,
-    gl: function () {
-      if (!webglEnabled.value) {
-        return
-      }
-
-      if (webglSupported.value === false) {
-        return
-      }
-
-      const canvas = getCanvasElement()
-      const gl = canvas.getContext('webgl2', {
-        premultipliedAlpha: true,
-      })
-
-      if (!gl) {
-        webglSupported.value = false
-        return
-      }
-
-      webglSupported.value = true
-
-      // Query WebGL limits once
-      if (!webglLimitsQueried) {
-        const maxViewportDims = gl.getParameter(
-          gl.MAX_VIEWPORT_DIMS,
-        ) as Int32Array
-        console.log({ maxViewportDims })
-        maxCanvasWidth.value = maxViewportDims[0] || 16384
-        maxCanvasHeight.value = maxViewportDims[1] || 16384
-        webglLimitsQueried = true
-      }
-
-      return gl
-    },
+    gl,
     setSharedUniforms,
     dpi,
     registerProgram,
@@ -273,7 +419,8 @@ export default function (
     webglEnabled,
     getCanvasElement,
     cursor,
-    setCursor,
-    removeCursor,
+    handleClick,
+    registerRenderer,
+    unregisterRenderer,
   }
 }
