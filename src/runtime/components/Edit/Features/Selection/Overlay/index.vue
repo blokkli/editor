@@ -22,6 +22,7 @@ import type { RGB } from '#blokkli/types/theme'
 const props = defineProps<{
   blocks: DraggableExistingBlock[]
   gl: WebGLRenderingContext
+  hasHostSelected: boolean
 }>()
 
 const { animation, theme, dom, ui, state } = useBlokkli()
@@ -45,22 +46,44 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
     info: BufferInfo | null
     hasChanged: boolean
   } {
-    const key = props.blocks
-      .map((block) => {
-        const uuid = block.uuid
-        const rect = dom.getBlockRect(uuid)
-        if (!rect) {
-          return uuid + 'no_rect'
-        }
+    const key =
+      props.blocks
+        .map((block) => {
+          const uuid = block.uuid
+          const rect = dom.getBlockRect(uuid)
+          if (!rect) {
+            return uuid + 'no_rect'
+          }
 
-        return uuid + rect.time
-      })
-      .join('_')
+          return uuid + rect.time
+        })
+        .join('_') +
+      '_host_' +
+      props.hasHostSelected
 
     const hasChanged = force || this.prevKey !== key
     if (hasChanged) {
       this.reset()
       this.lastCount = 0
+
+      // Add host selection rectangle if the page is selected
+      if (props.hasHostSelected) {
+        this.addRectangle(
+          {
+            id: 'host',
+            height: ui.artboardSize.value.height,
+            width: ui.artboardSize.value.width,
+            x: 0,
+            y: 0,
+            radius: [0, 0, 0, 0],
+            isInverted: false,
+            isFromLibrary: false,
+          },
+          3, // Type 3 = host selection
+        )
+        this.lastCount++
+      }
+
       for (let i = 0; i < props.blocks.length; i++) {
         const block = props.blocks[i]!
         if (this.added.has(block.uuid)) {
@@ -76,7 +99,7 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
           ? null
           : theme.getDraggableStyle(el)
         const isFromLibrary = state.fromLibraryUuids.value.includes(block.uuid)
-        // Type: 0=default, 1=inverted, 2=library
+        // Type: 0=default, 1=inverted, 2=library, 3=host
         let type = 0
         if (isFromLibrary) {
           type = 2
@@ -165,6 +188,10 @@ const getColorLibrary = useTransitionedValue(() => {
   return toShaderColor(theme.lime.value.normal)
 })
 
+const getColorHost = useTransitionedValue(() => {
+  return toShaderColor(theme.mono.value[700])
+})
+
 const getTransforming = useTransitionedValue(() => {
   return ui.isTransforming.value ? 1 : 0
 })
@@ -183,6 +210,7 @@ onBlokkliEvent('canvas:draw', (e) => {
     u_color_default: getColorDefault(),
     u_color_inverted: getColorInverted(),
     u_color_library: getColorLibrary(),
+    u_color_host: getColorHost(),
     u_artboard_size: [
       ui.artboardSize.value.width,
       ui.artboardSize.value.height,

@@ -4,17 +4,9 @@
     :blocks="selection.blocks.value"
     :uuids="selection.uuids.value"
     :gl="gl"
+    :has-host-selected="selection.hasHostSelected.value"
   />
   <OverlayFallback v-if="isVisible && !gl" :uuids="selection.uuids.value" />
-  <Teleport :to="artboardElement">
-    <div
-      class="bk bk-host-selection-overlay"
-      :style="{
-        visibility: selection.hasHostSelected.value ? 'visible' : 'hidden',
-      }"
-    />
-  </Teleport>
-
   <PluginItemDropdown
     v-if="itemDropdownItems.length"
     id="selection"
