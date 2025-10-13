@@ -95,8 +95,24 @@
   .bk-blokkli-item-actions-title-icon,
   .bk-blokkli-item-actions-type-dropdown-icon {
     @apply text-xl lg:text-[34px] mr-[0.25em] size-[1em] relative;
-    svg {
-      @apply w-[0.7em] h-[0.7em] fill-current absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+    > .bk-blokkli-item-icon,
+    > .bk-icon {
+      svg {
+        @apply w-[0.7em] h-[0.7em] fill-current absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+      }
+    }
+    .bk-blokkli-item-actions-title-icon-reusable {
+      @apply absolute z-50;
+      @apply -top-[7px] -right-[7px];
+      @apply bg-lime-dark;
+      @apply size-20;
+      @apply flex items-center justify-center;
+      @apply rounded-full;
+      @apply border border-lime-normal;
+      @apply shadow-lg;
+      svg {
+        @apply size-[12px] fill-lime-light;
+      }
     }
   }
   .bk-blokkli-item-actions-type-button,
@@ -158,7 +174,7 @@
 
     &.bk-is-reusable {
       .bk-blokkli-item-actions-title-icon {
-        @apply bg-lime-dark border-lime-normal text-white;
+        @apply bg-lime-normal/50 border-lime-normal text-white;
       }
     }
 

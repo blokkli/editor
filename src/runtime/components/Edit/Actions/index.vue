@@ -45,6 +45,12 @@
                 <Icon v-if="ui.isTransforming.value" name="loader" />
                 <ItemIcon v-else-if="bundleIcon" :bundle="bundleIcon" />
                 <Icon v-else name="selection" />
+                <div
+                  v-if="itemBundle?.id === 'from_library'"
+                  class="bk-blokkli-item-actions-title-icon-reusable"
+                >
+                  <Icon name="reusable" />
+                </div>
               </div>
               <span class="bk-blokkli-item-actions-title-label">{{
                 title
