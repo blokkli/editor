@@ -24,7 +24,7 @@ const props = defineProps<{
   gl: WebGLRenderingContext
 }>()
 
-const { animation, theme, dom, ui } = useBlokkli()
+const { animation, theme, dom, ui, state } = useBlokkli()
 
 const programInfo = animation.registerProgram('selection', props.gl, [vs, fs])
 
@@ -32,6 +32,7 @@ type SelectionRectangle = Rectangle & {
   id: string
   index: number
   isInverted: boolean
+  isFromLibrary: boolean
   radius: [number, number, number, number]
 }
 
@@ -74,6 +75,14 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
         const style = ui.lowPerformanceMode.value
           ? null
           : theme.getDraggableStyle(el)
+        const isFromLibrary = state.fromLibraryUuids.value.includes(block.uuid)
+        // Type: 0=default, 1=inverted, 2=library
+        let type = 0
+        if (isFromLibrary) {
+          type = 2
+        } else if (style?.isInverted) {
+          type = 1
+        }
         this.addRectangle(
           {
             id: block.uuid,
@@ -83,8 +92,9 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
             y: rect.y,
             radius: style?.radius ?? [0, 0, 0, 0],
             isInverted: !!style?.isInverted,
+            isFromLibrary,
           },
-          style?.isInverted ? 1 : 0,
+          type,
         )
         this.lastCount++
       }
@@ -144,6 +154,17 @@ const getColorInverted = useTransitionedValue(() => {
   return toShaderColor([255, 255, 255])
 })
 
+const getColorLibrary = useTransitionedValue(() => {
+  if (selectionColorOverride.value) {
+    return selectionColorOverride.value
+  }
+  if (hasTransformingStyle.value) {
+    return toShaderColor(theme.orange.value.normal)
+  }
+
+  return toShaderColor(theme.lime.value.normal)
+})
+
 const getTransforming = useTransitionedValue(() => {
   return ui.isTransforming.value ? 1 : 0
 })
@@ -161,6 +182,7 @@ onBlokkliEvent('canvas:draw', (e) => {
   setUniforms(programInfo, {
     u_color_default: getColorDefault(),
     u_color_inverted: getColorInverted(),
+    u_color_library: getColorLibrary(),
     u_artboard_size: [
       ui.artboardSize.value.width,
       ui.artboardSize.value.height,

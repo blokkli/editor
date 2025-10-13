@@ -18,6 +18,7 @@ uniform float u_offset_y;
 uniform vec2 u_resolution;
 uniform vec3 u_color_default;
 uniform vec3 u_color_inverted;
+uniform vec3 u_color_library;
 
 // The transformed quad for the fragment shader.
 varying vec4 v_quad;
@@ -79,8 +80,13 @@ void main() {
 
   v_rect_width = adjusted_quad.x;
 
-  // Set color and other varying variables
-  v_color = a_rect_type > 0.5 ? u_color_inverted : u_color_default;
+  // Set color based on type: 0=default, 1=inverted, 2=library
+  v_color = u_color_default;
+  if (a_rect_type > 1.5) {
+    v_color = u_color_library;
+  } else if (a_rect_type > 0.5) {
+    v_color = u_color_inverted;
+  }
   v_rect_radius = a_rect_radius * u_dpi;
   v_thickness = thickness;
   v_rect_id = a_rect_id;

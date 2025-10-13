@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { Rectangle } from '#blokkli/types'
-import { useBlokkli, onBeforeUnmount, watch, computed } from '#imports'
+import { useBlokkli, onBeforeUnmount, watch, computed, ref } from '#imports'
 import { setBuffersAndAttributes, drawBufferInfo, setUniforms } from 'twgl.js'
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
@@ -84,6 +84,12 @@ let previousHoveredUuids: string[] = []
 let previousDeepestUuid: string | null = null
 let previousEditableFieldRect: Rectangle | null = null
 
+// Track whether we're currently hovering over an editable field
+const isHoveringEditableField = ref(false)
+
+// Track whether we're currently hovering over a selected block
+const isHoveringSelectedBlock = ref(false)
+
 // Initialize buffer collector with MAX_RECTS dummy rectangles
 class HoverRectangleBufferCollector extends RectangleBufferCollector<HoverRectangle> {}
 const collector = new HoverRectangleBufferCollector(props.gl)
@@ -109,6 +115,8 @@ function resetHoverState() {
   previousDeepestUuid = null
   previousEditableFieldRect = null
   hoverState.visible.fill(0)
+  isHoveringEditableField.value = false
+  isHoveringSelectedBlock.value = false
 }
 
 watch(selection.isChangingOptions, (isChanging) => {
@@ -151,6 +159,8 @@ function updateHoverState(
       previousEditableFieldRect !== null
     ) {
       hoverState.visible.fill(0)
+      isHoveringEditableField.value = false
+      isHoveringSelectedBlock.value = false
       if (!DEBUG) {
         previousHoveredUuids = []
         previousDeepestUuid = null
@@ -276,10 +286,16 @@ function updateHoverState(
     hoverState.radii[level * 4 + 2] = style.radius[2]!
     hoverState.radii[level * 4 + 3] = style.radius[3]!
 
-    // Type: 0=mono, 1=accent, 3=white (inverted).
+    // Type: 0=mono, 1=accent, 3=white (inverted), 4=lime (library/reusable).
     let type = 0
     if (isDeepest) {
-      type = style.isInverted ? 3 : 1
+      // Check if this block is from the library (reusable)
+      const isFromLibrary = state.fromLibraryUuids.value.includes(uuid)
+      if (isFromLibrary) {
+        type = 4
+      } else {
+        type = style.isInverted ? 3 : 1
+      }
     }
     hoverState.types[level] = type
 
@@ -289,10 +305,14 @@ function updateHoverState(
 
   // Update editable field rectangle if hovered (rect index 10).
   if (hoveredEditableFieldRect) {
-    hoverState.positions[10 * 4 + 0] = hoveredEditableFieldRect.x
-    hoverState.positions[10 * 4 + 1] = hoveredEditableFieldRect.y
-    hoverState.positions[10 * 4 + 2] = hoveredEditableFieldRect.width
-    hoverState.positions[10 * 4 + 3] = hoveredEditableFieldRect.height
+    // Inset the rect by 2px on all sides
+    const inset = 2
+    hoverState.positions[10 * 4 + 0] = hoveredEditableFieldRect.x + inset
+    hoverState.positions[10 * 4 + 1] = hoveredEditableFieldRect.y + inset
+    hoverState.positions[10 * 4 + 2] =
+      hoveredEditableFieldRect.width - inset * 2
+    hoverState.positions[10 * 4 + 3] =
+      hoveredEditableFieldRect.height - inset * 2
 
     // No radius for editable fields.
     hoverState.radii[10 * 4 + 0] = 0
@@ -313,6 +333,14 @@ function updateHoverState(
     previousEditableFieldRect = hoveredEditableFieldRect
   }
 
+  // Update the hover state for cursor management
+  isHoveringEditableField.value = hoveredEditableFieldRect !== null
+
+  // Check if we're hovering over any selected block
+  isHoveringSelectedBlock.value = hoveredUuids.some((uuid) =>
+    selectedUuids.includes(uuid),
+  )
+
   return true
 }
 
@@ -322,6 +350,32 @@ const uniforms = computed(() => {
     u_color_accent: toShaderColor(theme.accent.value[600]),
     u_color_teal: toShaderColor(theme.teal.value.normal),
     u_color_white: toShaderColor([255, 255, 255]),
+    u_color_lime: toShaderColor(theme.lime.value.normal),
+  }
+})
+
+// Watch for changes in selected block hover state and update cursor
+watch(isHoveringSelectedBlock, (isHovering) => {
+  if (state.editMode.value !== 'editing') {
+    return
+  }
+  if (isHovering) {
+    animation.setCursor('hover-selected', 'grab')
+  } else {
+    animation.removeCursor('hover-selected')
+  }
+})
+
+// Watch for changes in editable field hover state and update cursor
+watch(isHoveringEditableField, (isHovering) => {
+  if (state.editMode.value === 'readonly') {
+    return
+  }
+
+  if (isHovering) {
+    animation.setCursor('hover-editable', 'text')
+  } else {
+    animation.removeCursor('hover-editable')
   }
 })
 
@@ -362,6 +416,8 @@ onBlokkliEvent('canvas:draw', (e) => {
 
 onBeforeUnmount(() => {
   props.gl.clear(props.gl.COLOR_BUFFER_BIT)
+  animation.removeCursor('hover-selected')
+  animation.removeCursor('hover-editable')
 })
 </script>
 

@@ -16,6 +16,7 @@ uniform vec3 u_color_mono;
 uniform vec3 u_color_accent;
 uniform vec3 u_color_teal;
 uniform vec3 u_color_white;
+uniform vec3 u_color_lime;
 
 int pseudoQuadrant(vec2 p) {
   return int(floor(step(0.0, p.x) + 2.0 * step(0.0, -p.y)));
@@ -41,25 +42,43 @@ void main() {
 
   float mainDist = sdRoundBox(posRelativeToQuad, size / 2.0, r);
 
-  // For editable fields (type 2), render a fill instead of border
+  // For editable fields (type 2), render both fill and solid border
   if (v_rect_type > 1.5 && v_rect_type < 2.5) {
     float u_edgeSoftness = 1.0;
+    float borderThickness = 1.5 * u_dpi;
+    float u_borderSoftness = 1.0;
+
+    // Render fill
     float fillAlpha = 1.0 - smoothstep(-u_edgeSoftness, 0.0, mainDist);
     vec4 fillColor = vec4(u_color_teal, 0.2);
-    gl_FragColor = vec4(fillColor.rgb, fillAlpha * fillColor.a);
+
+    // Render solid border (non-dashed)
+    float borderAlpha = 1.0 - smoothstep(-u_borderSoftness, 0.0, abs(mainDist) - borderThickness);
+    vec4 borderColor = vec4(u_color_teal, 1.0);
+
+    // Combine fill and border
+    vec4 combined = mix(
+      vec4(fillColor.rgb, fillAlpha * fillColor.a),
+      borderColor,
+      borderAlpha * borderColor.a
+    );
+
+    gl_FragColor = combined;
     return;
   }
 
   // For blocks (type 0, 1, and 3), render border
-  float borderThickness = 1.0 * u_dpi;
-  float u_borderSoftness = 0.0;
+  float borderThickness = 1.5 * u_dpi;
+  float u_borderSoftness = 1.0;
 
   float borderAlpha =
     1.0 - smoothstep(-u_borderSoftness, 0.0, abs(mainDist) - borderThickness);
 
-  // Select color based on type: 0 = mono, 1 = accent, 3 = white (inverted)
+  // Select color based on type: 0 = mono, 1 = accent, 3 = white (inverted), 4 = lime (library)
   vec3 color = u_color_mono;
-  if (v_rect_type > 2.5) {
+  if (v_rect_type > 3.5) {
+    color = u_color_lime;
+  } else if (v_rect_type > 2.5) {
     color = u_color_white;
   } else if (v_rect_type > 0.5) {
     color = u_color_accent;
@@ -98,8 +117,8 @@ void main() {
     }
   }
 
-  float dashWidth = 10.0 * u_dpi;
-  float dashGap = 10.0 * u_dpi;
+  float dashWidth = 7.0 * u_dpi;
+  float dashGap = 7.0 * u_dpi;
   float dashCycle = dashWidth + dashGap;
 
   float dashPosition = mod(perimeterDistance, dashCycle);

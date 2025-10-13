@@ -29,6 +29,7 @@ import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
 import { nextTick } from '#imports'
 import type { TextProvider } from './textProvider'
 import { addElementClasses } from './addElementClasses'
+import { BUNDLE_FROM_LIBRARY } from '#blokkli/constants'
 
 const HOST_OPTION_KEY = 'HOST'
 
@@ -73,6 +74,7 @@ export type StateProvider = {
   canEdit: ComputedRef<boolean>
   stateAvailable: ComputedRef<boolean>
   isLoading: Readonly<Ref<boolean>>
+  fromLibraryUuids: Readonly<Ref<Readonly<string[]>>>
   getFieldBlockCount: (key: string) => number
   getBlockBundleCount: (bundle: string) => number
   getFieldListItem: (uuid: string) => FieldListItem | undefined
@@ -125,6 +127,7 @@ export default async function (
   const blockBundleCount: Ref<Record<string, number>> = ref({})
   const fieldListItemMap: Map<string, string> = new Map()
   let bundleToUuids: Record<string, string[]> = {}
+  const fromLibraryUuids = ref<string[]>([])
   const nestingLevelMap: Map<string, number> = new Map()
 
   function getFieldListItem(uuid: string): FieldListItem | undefined {
@@ -241,6 +244,7 @@ export default async function (
     // Reset the count cache.
     fieldBlockCount = {}
     bundleToUuids = {}
+    const fromLibrary: string[] = []
     for (let i = 0; i < newMutatedFields.length; i++) {
       const field = newMutatedFields[i]!
       const key = getFieldKey(field.entityUuid, field.name)
@@ -267,6 +271,9 @@ export default async function (
           bundleToUuids[item.bundle] = []
         }
         bundleToUuids[item.bundle]!.push(item.uuid)
+        if (item.bundle === BUNDLE_FROM_LIBRARY) {
+          fromLibrary.push(item.uuid)
+        }
       }
     }
 
@@ -289,6 +296,8 @@ export default async function (
         mutatedFieldsMap[key] = undefined
       }
     }
+
+    fromLibraryUuids.value = fromLibrary
 
     eventBus.emit('updateMutatedFields', { fields: newMutatedFields })
 
@@ -548,5 +557,6 @@ export default async function (
     isChildOf,
     setOverrideState,
     clearOverrideState,
+    fromLibraryUuids: readonly(fromLibraryUuids),
   }
 }

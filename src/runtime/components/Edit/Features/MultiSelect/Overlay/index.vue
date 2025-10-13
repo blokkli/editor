@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, onBeforeUnmount } from '#imports'
+import { useBlokkli, onBeforeUnmount, onMounted } from '#imports'
 import { intersects, toShaderColor } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import vs from './vertex.glsl?raw'
@@ -283,7 +283,12 @@ function getUuidsToSelect(): string[] {
   return nested
 }
 
+onMounted(() => {
+  animation.setCursor('multiselect', 'crosshair')
+})
+
 onBeforeUnmount(() => {
+  animation.removeCursor('multiselect')
   props.gl.clear(props.gl.COLOR_BUFFER_BIT)
 
   const diff = Date.now() - startTimestamp

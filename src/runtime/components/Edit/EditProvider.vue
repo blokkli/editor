@@ -29,7 +29,6 @@
     :key="route.fullPath"
     @loaded="featuresLoaded = true"
   />
-  <DragInteractions v-if="!isInitializing" />
   <AnimationCanvas v-if="!isInitializing" />
   <Konami />
   <SystemRequirements />
@@ -61,7 +60,6 @@ import Features from './Features/index.vue'
 import Indicators from './Indicators/index.vue'
 import AppMenu from './AppMenu/index.vue'
 import DraggableList from './DraggableList.vue'
-import DragInteractions from './DragInteractions/index.vue'
 import AnimationCanvas from './AnimationCanvas/index.vue'
 import SystemRequirements from './SystemRequirements/index.vue'
 import Konami from './Konami/index.vue'

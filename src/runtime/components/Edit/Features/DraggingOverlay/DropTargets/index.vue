@@ -22,7 +22,7 @@ import type {
   Rectangle,
   Coord,
 } from '#blokkli/types'
-import { ref, computed, useBlokkli, onBeforeUnmount } from '#imports'
+import { ref, computed, useBlokkli, onBeforeUnmount, onMounted } from '#imports'
 import {
   setBuffersAndAttributes,
   drawBufferInfo,
@@ -921,7 +921,13 @@ onBlokkliEvent('canvas:draw', () => {
   }
 })
 
+onMounted(() => {
+  animation.setCursor('drop-targets', 'grabbing')
+})
+
 onBeforeUnmount(() => {
+  animation.removeCursor('drop-targets')
+
   if (gl) {
     gl.clear(gl.COLOR_BUFFER_BIT)
   }

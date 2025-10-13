@@ -182,7 +182,6 @@ html {
 }
 
 .bk-draggable-list-container {
-  @apply pointer-events-auto select-none;
   .bk-list-item {
     @apply bg-white p-20 font-bold !rounded-none;
     &:after {
@@ -225,17 +224,6 @@ html {
 
   p {
     @apply my-20;
-  }
-}
-
-[data-element-type='existing'] {
-  @apply select-none cursor-default;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  * {
-    @apply select-none cursor-default;
-    -webkit-user-select: none;
-    -webkit-touch-callout: none;
   }
 }
 

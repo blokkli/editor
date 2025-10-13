@@ -12,6 +12,7 @@ import { eventBus } from '#blokkli/helpers/eventBus'
 import type { UiProvider } from './uiProvider'
 import { createProgramInfo, type ProgramInfo } from 'twgl.js'
 import type { StorageProvider } from './storageProvider'
+import type { CursorKeyword } from './dom'
 
 export type AnimationProvider = {
   /**
@@ -48,6 +49,10 @@ export type AnimationProvider = {
   ) => ProgramInfo
 
   setMouseCoords: (x: number, y: number) => void
+
+  cursor: ComputedRef<CursorKeyword>
+  setCursor: (id: string, cursor: CursorKeyword) => void
+  removeCursor: (id: string) => void
 }
 
 export default function (
@@ -55,6 +60,25 @@ export default function (
   storage: StorageProvider,
 ): AnimationProvider {
   const webglEnabled = storage.use('webglEnabled', true)
+  const cursors = ref<{ id: string; cursor: CursorKeyword }[]>([])
+
+  const cursor = computed<CursorKeyword>(() => {
+    return cursors.value[cursors.value.length - 1]?.cursor ?? 'default'
+  })
+
+  function setCursor(id: string, cursor: CursorKeyword) {
+    cursors.value = [
+      ...cursors.value.filter((v) => v.id !== id),
+      {
+        id,
+        cursor,
+      },
+    ]
+  }
+
+  function removeCursor(id: string) {
+    cursors.value = cursors.value.filter((v) => v.id !== id)
+  }
 
   let mouseX = 0
   let mouseY = 0
@@ -248,5 +272,8 @@ export default function (
     webglSupported: computed(() => webglSupported.value && webglEnabled.value),
     webglEnabled,
     getCanvasElement,
+    cursor,
+    setCursor,
+    removeCursor,
   }
 }
