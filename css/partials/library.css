@@ -77,7 +77,7 @@
   }
 
   .bk-library-dialog-content {
-    @apply px-20 mb-20;
+    @apply px-20 my-20 border-t border-t-mono-300 pt-20;
   }
 }
 

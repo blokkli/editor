@@ -1,5 +1,7 @@
 <template>
-  <div class="rich-text">
+  <div class="rich-text" :class="{
+    'is-field-value': isFieldValue
+  }">
     <Ckeditor
       v-model="markup"
       :editor="ClassicEditor"
@@ -19,6 +21,7 @@ import { Ckeditor } from '@ckeditor/ckeditor5-vue'
 
 const props = defineProps<{
   modelValue: string
+  isFieldValue?: boolean
 }>()
 
 const markup = ref('')
@@ -38,4 +41,16 @@ onMounted(() => {
 })
 </script>
 
-<style lang="postcss"></style>
+<style lang="postcss">
+.rich-text.is-field-value {
+  .ck.ck-editor__main > .ck-editor__editable {
+    @apply !border-0 !border-t !border-t-mono-300;
+    height: calc(100vh - 50px);
+    max-height: none !important;
+
+    &.ck-focused {
+      box-shadow: none !important;
+    }
+  }
+}
+</style>

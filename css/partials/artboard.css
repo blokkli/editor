@@ -43,7 +43,7 @@
     left: 0;
     /* top: var(--bk-root-offset-top); */
     top: 0;
-    bottom: var(--bk-root-offset-bottom);
+    bottom: 0;
     contain: strict;
     &.bk-has-preview-open {
       @apply left-[445px];

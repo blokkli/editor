@@ -15,7 +15,7 @@ defineBlokkli({
   },
   editor: {
     disableEdit: true,
-  }
+  },
 })
 
 export type Props = {

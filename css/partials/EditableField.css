@@ -1,77 +1,51 @@
 .bk-editable-field {
-  @apply fixed z-editable-field pointer-events-auto left-0 w-full;
-  top: var(--bk-root-offset-top);
+  --bk-bg: white;
+  --bk-header-bg: theme('colors.teal.normal');
+  --bk-header-text: theme('colors.teal.dark');
+  --bk-border: theme('colors.teal.normal');
+  --bk-header-hover: rgb(var(--bk-theme-teal-dark) / 0.2);
 
   .bk-editable-field-input {
-    @apply border-teal-normal border-2;
-    @apply bg-white shadow-lg;
-    @apply w-full min-w-[360px];
+    @apply w-full min-w-[360px] max-w-[700px];
     @screen md {
-      @apply absolute bottom-0 left-0 rounded;
+      @apply rounded;
     }
 
-    textarea,
-    .bk-textarea {
+    .bk-editable-field-textarea {
+      @apply relative;
+      @screen lg {
+        @apply min-w-[500px];
+      }
+    }
+
+    textarea {
       @apply appearance-none resize-none block p-10;
       @apply outline-none shadow-none border-none;
       @apply focus:!outline-none focus:!shadow-none focus:!border-none focus:!ring-0 bg-transparent;
-      @apply overflow-hidden min-h-[50px];
+      @apply min-h-[50px] w-full;
       @apply text-base lg:text-lg;
-    }
-    .bk-textarea {
-      @apply whitespace-pre-wrap opacity-0 pointer-events-none;
-      max-height: calc(100vh - 550px);
-    }
-    textarea {
-      @apply absolute top-0 left-0 w-full h-full overflow-auto;
-      @apply overscroll-contain;
+      @apply absolute top-0 left-0 h-full;
     }
   }
   .bk-editable-field-info {
-    @apply px-10 py-[6px] border-t border-t-mono-300 text-sm font-semibold flex justify-between;
+    @apply border-t border-t-mono-300 text-sm font-semibold flex justify-between items-center;
+
+    > button {
+      @apply text-red-normal text-sm;
+      @apply py-[6px] px-10;
+      @apply hover:bg-red-light;
+      @apply border-r border-r-mono-300;
+
+      &[disabled] {
+        @apply pointer-events-none text-mono-300;
+      }
+    }
   }
   .bk-editable-field-info-error {
-    @apply text-red-normal;
+    @apply text-red-normal px-10;
   }
   .bk-editable-field-info-count {
-    @apply ml-auto;
-  }
-  .bk-editable-field-textarea {
-    @apply relative;
-  }
-  .bk-editable-field-buttons {
-    @apply flex justify-between items-center text-xs bg-teal-normal text-teal-dark h-40;
-    h3 {
-      @apply h-full px-10 uppercase font-semibold tracking-wide flex items-center gap-[0.5em] leading-none mr-auto min-w-0;
-      .bk-blokkli-item-icon {
-        @apply text-[1.5em] p-[0.15em] bg-teal-dark rounded-[0.15em] text-teal-normal;
-      }
-      span {
-        @apply min-w-0 overflow-ellipsis whitespace-nowrap inline-block overflow-hidden;
-      }
-    }
-    button {
-      @apply px-10 flex items-center font-semibold font-sans leading-none gap-5 h-full text-teal-dark;
-      @apply hover:bg-teal-dark/10;
-      svg {
-        @apply w-15 h-15 fill-current;
-      }
-      &:disabled {
-        @apply pointer-events-none opacity-25;
-      }
-    }
-  }
-}
-
-.bk-body:not(.bk-is-pressing-control):not(.bk-is-dragging) {
-  /* Only target blocks inside the editing area (e.g. not inside the library pane) */
-  [data-blokkli-provider-active='true'] {
-    [data-blokkli-is-reusable='true'],
-    [data-bk-in-proxy='true'] {
-      * {
-        pointer-events: none !important;
-      }
-    }
+    @apply ml-auto pr-10;
   }
 }
 
@@ -86,4 +60,13 @@
 .bk-editable-field-frame iframe {
   @apply block w-full;
   max-height: calc(100vh - 500px);
+
+  @screen lg {
+    @apply min-w-[500px];
+    min-height: 300px;
+  }
+
+  @screen xl {
+    @apply min-w-[700px];
+  }
 }

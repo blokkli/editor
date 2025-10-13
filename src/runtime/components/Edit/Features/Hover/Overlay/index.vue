@@ -354,28 +354,27 @@ const uniforms = computed(() => {
   }
 })
 
-// Watch for changes in selected block hover state and update cursor
-watch(isHoveringSelectedBlock, (isHovering) => {
-  if (state.editMode.value !== 'editing') {
-    return
+// Determine the active cursor based on hover state
+const activeCursor = computed<'text' | 'grab' | null>(() => {
+  // Priority 1: Editable field (if not in readonly mode)
+  if (isHoveringEditableField.value && state.editMode.value !== 'readonly') {
+    return 'text'
   }
-  if (isHovering) {
-    animation.setCursor('hover-selected', 'grab')
-  } else {
-    animation.removeCursor('hover-selected')
+
+  // Priority 2: Selected block (if in editing mode)
+  if (isHoveringSelectedBlock.value && state.editMode.value === 'editing') {
+    return 'grab'
   }
+
+  return null
 })
 
-// Watch for changes in editable field hover state and update cursor
-watch(isHoveringEditableField, (isHovering) => {
-  if (state.editMode.value === 'readonly') {
-    return
-  }
-
-  if (isHovering) {
-    animation.setCursor('hover-editable', 'text')
+// Watch for cursor changes and update with a single ID
+watch(activeCursor, (cursor) => {
+  if (cursor) {
+    animation.setCursor('hover-overlay', cursor)
   } else {
-    animation.removeCursor('hover-editable')
+    animation.removeCursor('hover-overlay')
   }
 })
 
@@ -416,8 +415,7 @@ onBlokkliEvent('canvas:draw', (e) => {
 
 onBeforeUnmount(() => {
   props.gl.clear(props.gl.COLOR_BUFFER_BIT)
-  animation.removeCursor('hover-selected')
-  animation.removeCursor('hover-editable')
+  animation.removeCursor('hover-overlay')
 })
 </script>
 

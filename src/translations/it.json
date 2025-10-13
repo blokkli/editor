@@ -259,17 +259,21 @@
     "source": "Favorite blocks",
     "translation": ""
   },
+  "blockOption_bkHiddenGlobally_description": {
+    "source": "Always hides the block.",
+    "translation": ""
+  },
   "blockOption_bkHiddenGlobally_label": {
     "source": "Hide globally",
+    "translation": ""
+  },
+  "blockOption_bkVisibleLanguages_description": {
+    "source": "Only show on specific languages.",
     "translation": ""
   },
   "blockOption_bkVisibleLanguages_label": {
     "source": "Visible languages",
     "translation": ""
-  },
-  "cancel": {
-    "source": "Cancel",
-    "translation": "Annulla"
   },
   "cancelSelection": {
     "source": "Cancel selection",
@@ -501,6 +505,10 @@
   },
   "editableCommandEdit": {
     "source": "Edit field \"@name\"",
+    "translation": ""
+  },
+  "editableFieldDiscard": {
+    "source": "Discard",
     "translation": ""
   },
   "entityTitleTourText": {
@@ -806,6 +814,14 @@
   "feature_history_setting_useMouseButtons_label": {
     "source": "Use mouse buttons for undo/redo",
     "translation": "Usa i pulsanti del mouse per annulla/ripeti"
+  },
+  "feature_hover_description": {
+    "source": "Renders a border around blocks that are currently being hovered.",
+    "translation": ""
+  },
+  "feature_hover_label": {
+    "source": "Hover",
+    "translation": ""
   },
   "feature_import-existing_description": {
     "source": "Implements a menu action that renders a dialog to import blocks from another entity.",
@@ -1610,10 +1626,6 @@
   "revertSuccess": {
     "source": "All changes have been discarded.",
     "translation": "Tutte le modifiche sono state scartate."
-  },
-  "save": {
-    "source": "Save",
-    "translation": "Save"
   },
   "scheduledFor": {
     "source": "The changes will be published on this date.",

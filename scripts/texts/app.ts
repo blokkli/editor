@@ -14,7 +14,10 @@ import {
 
 const INTERNAL_TRANSLATIONS = {
   [`blockOption_${BK_VISIBLE_LANGUAGES}_label`]: 'Visible languages',
+  [`blockOption_${BK_VISIBLE_LANGUAGES}_description`]:
+    'Only show on specific languages.',
   [`blockOption_${BK_HIDDEN_GLOBALLY}_label`]: 'Hide globally',
+  [`blockOption_${BK_HIDDEN_GLOBALLY}_description`]: 'Always hides the block.',
 }
 
 const LANGUAGES = ['de', 'fr', 'it', 'gsw_CH']

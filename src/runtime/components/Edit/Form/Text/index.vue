@@ -28,6 +28,7 @@ defineProps<{
   disabled?: boolean
   minlength?: string | number
   maxlength?: string | number
+  type?: string
 }>()
 
 const value = defineModel<string>()

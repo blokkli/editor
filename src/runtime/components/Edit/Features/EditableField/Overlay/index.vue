@@ -1,26 +1,15 @@
 <template>
-  <div
+  <ArtboardTooltip
     v-if="loaded"
-    ref="root"
-    :style="style"
-    class="bk-editable-field bk-control"
+    id="editable"
+    :title
+    :anchor-el="element"
+    placement-y="top"
+    class="bk-editable-field"
+    close-icon="check"
+    @close="save"
   >
     <form ref="form" class="bk-editable-field-input" @submit.prevent="close">
-      <div class="bk bk-editable-field-buttons">
-        <h3>
-          <ItemIcon :bundle="itemBundle" />
-          <span>{{ title }}</span>
-        </h3>
-        <button @click.prevent="cancel">
-          <Icon name="close" />
-          <span>{{ $t('cancel', 'Cancel') }}</span>
-        </button>
-        <button :disabled="!hasChanged" type="submit" @click.prevent="save">
-          <Icon name="save" />
-          <span>{{ $t('save', 'Save') }}</span>
-        </button>
-      </div>
-
       <div ref="input">
         <InputContenteditable
           v-if="config.type === 'markup'"
@@ -50,17 +39,20 @@
         />
       </div>
 
-      <div v-if="!isMarkup" class="bk bk-editable-field-info">
+      <div class="bk bk-editable-field-info">
+        <button :disabled="!hasChanged" @click.prevent="cancel">
+          {{ $t('editableFieldDiscard', 'Discard') }}
+        </button>
         <div v-if="errorText" class="bk-editable-field-info-error">
           {{ errorText }}
         </div>
-        <div class="bk-editable-field-info-count">
+        <div v-if="!isMarkup" class="bk-editable-field-info-count">
           <span>{{ count }}</span>
           <span v-if="maxlength >= 1">&nbsp;/&nbsp;{{ maxlength }}</span>
         </div>
       </div>
     </form>
-  </div>
+  </ArtboardTooltip>
 </template>
 
 <script lang="ts" setup>
@@ -69,7 +61,7 @@ import type {
   EntityContext,
   EditableFieldConfig,
 } from '#blokkli/types'
-import { Icon, ItemIcon } from '#blokkli/components'
+import { ArtboardTooltip } from '#blokkli/components'
 import {
   computed,
   ref,
@@ -79,13 +71,13 @@ import {
   useBlokkli,
   nextTick,
 } from '#imports'
-import { falsy, findIdealRectPosition } from '#blokkli/helpers'
+import { falsy } from '#blokkli/helpers'
 import InputPlaintext from './Plaintext/index.vue'
 import InputContenteditable from './Contenteditable/index.vue'
 import InputFrame from './Frame/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
-const { eventBus, ui, selection, state, adapter, $t, types } = useBlokkli()
+const { eventBus, selection, state, adapter, $t, types } = useBlokkli()
 
 const props = defineProps<{
   fieldName: string
@@ -117,50 +109,13 @@ onBlokkliEvent('window:clickAway', save)
 
 const getElement = (): HTMLElement => props.element
 
-type Alignment = 'left' | 'center' | 'right'
-
-const alignment = computed<Alignment>(() => {
-  if (props.element) {
-    const style = window.getComputedStyle(props.element)
-    if (
-      style.textAlign === 'left' ||
-      style.textAlign === 'center' ||
-      style.textAlign === 'right'
-    ) {
-      return style.textAlign
-    } else if (style.textAlign === 'start') {
-      return 'left'
-    } else if (style.textAlign === 'end') {
-      return 'right'
-    }
-  }
-  return 'center'
-})
-
 const scrollHeight = ref(0)
 const loaded = ref(false)
 const originalText = ref(props.value || '')
 const modelValue = ref('')
-const width = ref(320)
 const inputStyle = ref<Record<string, any>>({})
 const form = ref<HTMLFormElement | null>(null)
-const root = ref<HTMLDivElement | null>(null)
 const input = ref<HTMLDivElement | null>(null)
-
-const x = ref(0)
-const y = ref(0)
-
-const style = computed(() => {
-  if (ui.isMobile.value) {
-    return {}
-  } else {
-    return {
-      width: width.value + 'px',
-      top: y.value + 'px',
-      left: x.value + 'px',
-    }
-  }
-})
 
 const hasChanged = computed(() => modelValue.value !== originalText.value)
 const itemBundle = computed(() => {
@@ -284,38 +239,6 @@ const focusInput = (el?: HTMLElement | Document | null) => {
     focusInput(iframe.contentDocument)
   }
 }
-
-const onAnimationFrame = () => {
-  if (ui.isMobile.value) {
-    return
-  }
-  const elementRect = props.element.getBoundingClientRect()
-
-  const height = form.value?.scrollHeight || 100
-  const newWidth = Math.min(Math.max(elementRect.width, 360), 1000)
-
-  const ideal = findIdealRectPosition(
-    ui.viewportBlockingRects.value,
-    {
-      x:
-        alignment.value === 'left'
-          ? elementRect.x
-          : elementRect.x + (Math.max(elementRect.width, 360) - newWidth) / 2,
-      y: elementRect.y - height - 20,
-      height,
-      width: newWidth,
-    },
-    ui.visibleViewportPadded.value,
-  )
-
-  x.value = ideal.x
-  y.value = ideal.y + height
-  width.value = newWidth
-}
-
-onAnimationFrame()
-
-onBlokkliEvent('animationFrame', onAnimationFrame)
 
 onMounted(() => {
   const el = getElement()

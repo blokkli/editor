@@ -283,17 +283,21 @@ msgctxt "blockAddListTourTitle"
 msgid "Favorite blocks"
 msgstr "Favoriten-Blöcke"
 
+msgctxt "blockOption_bkHiddenGlobally_description"
+msgid "Always hides the block."
+msgstr "Den Block immer verstecken."
+
 msgctxt "blockOption_bkHiddenGlobally_label"
 msgid "Hide globally"
 msgstr "Global verstecken"
 
+msgctxt "blockOption_bkVisibleLanguages_description"
+msgid "Only show on specific languages."
+msgstr "Nur auf bestimmten Sprachen anzeigen."
+
 msgctxt "blockOption_bkVisibleLanguages_label"
 msgid "Visible languages"
 msgstr "Sichtbare Sprachen"
-
-msgctxt "cancel"
-msgid "Cancel"
-msgstr "Abbrechen"
 
 msgctxt "cancelSelection"
 msgid "Cancel selection"
@@ -546,6 +550,10 @@ msgstr "Elemente bearbeiten"
 msgctxt "editableCommandEdit"
 msgid "Edit field \"@name\""
 msgstr "Feld «@name» bearbeiten"
+
+msgctxt "editableFieldDiscard"
+msgid "Discard"
+msgstr "Verwerfen"
 
 msgctxt "entityTitleTourText"
 msgid ""
@@ -905,6 +913,14 @@ msgstr ""
 msgctxt "feature_history_setting_useMouseButtons_label"
 msgid "Use mouse buttons for undo/redo"
 msgstr "Maustasten für Rückgängig/Wiederherstellen verwenden"
+
+msgctxt "feature_hover_description"
+msgid "Renders a border around blocks that are currently being hovered."
+msgstr ""
+
+msgctxt "feature_hover_label"
+msgid "Hover"
+msgstr ""
 
 msgctxt "feature_import-existing_description"
 msgid ""
@@ -1803,10 +1819,6 @@ msgstr "Verwerfen..."
 msgctxt "revertSuccess"
 msgid "All changes have been discarded."
 msgstr "Alle Änderungen wurden verworfen."
-
-msgctxt "save"
-msgid "Save"
-msgstr "Speichern"
 
 msgctxt "scheduledFor"
 msgid "The changes will be published on this date."

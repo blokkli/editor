@@ -127,11 +127,13 @@
   "title": {
     "bkHiddenGlobally": {
       "default": false,
+      "description": "Always hides the block.",
       "label": "Hide globally",
       "type": "checkbox"
     },
     "bkVisibleLanguages": {
       "default": [],
+      "description": "Only show on specific languages.",
       "label": "Visible languages",
       "options": {},
       "type": "checkboxes"

@@ -36,12 +36,14 @@ export default defineNuxtModule<ModuleOptions>({
       [BK_VISIBLE_LANGUAGES]: {
         type: 'checkboxes',
         label: 'Visible languages',
+        description: 'Only show on specific languages.',
         options: {},
         default: [],
       },
       [BK_HIDDEN_GLOBALLY]: {
         type: 'checkbox',
         label: 'Hide globally',
+        description: 'Always hides the block.',
         default: false,
       },
     },

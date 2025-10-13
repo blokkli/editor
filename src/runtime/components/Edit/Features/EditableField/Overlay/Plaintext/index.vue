@@ -1,11 +1,16 @@
 <template>
-  <div class="bk bk-editable-field-textarea">
+  <div
+    class="bk bk-editable-field-textarea"
+    :style="{
+      height: height + 'px',
+    }"
+  >
     <textarea
+      id="bk-editable-field-textarea"
       ref="input"
       :value="modelValue"
       enterkeyhint="done"
       rows="2"
-      :style="inputStyle"
       v-bind="inputAttributes"
       @keydown.stop.capture="onKeyDown"
       @blur="onBlur"
@@ -13,12 +18,12 @@
         $emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)
       "
     />
-    <div :style="inputStyle" class="bk-textarea" v-html="modelValue" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, computed } from '#imports'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { useBlokkli, computed, useTemplateRef, ref } from '#imports'
 
 const { ui, selection } = useBlokkli()
 
@@ -30,6 +35,10 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits(['close', 'save', 'update:modelValue'])
+
+const input = useTemplateRef('input')
+
+const height = ref(20)
 
 const onKeyDown = (e: KeyboardEvent) => {
   if (e.code === 'Escape') {
@@ -72,10 +81,7 @@ const onBlur = (e: FocusEvent) => {
   }, 100)
 }
 
-const inputStyle = computed<Record<string, any>>(() => {
-  const computedStyle = window.getComputedStyle(props.element)
-  return {
-    textAlign: computedStyle.textAlign,
-  }
+onBlokkliEvent('animationFrame', () => {
+  height.value = Math.max(input.value?.scrollHeight ?? 20, 20)
 })
 </script>

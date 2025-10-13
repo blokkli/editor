@@ -1,6 +1,6 @@
 <template>
   <div class="field-value-editor">
-    <RichText v-model="value" @ready="sendMessageToParent" />
+    <RichText v-model="value" @ready="sendMessageToParent" is-field-value />
   </div>
 </template>
 

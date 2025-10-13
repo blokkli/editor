@@ -18,7 +18,7 @@
       </p>
       <h2
         v-blokkli-editable:title
-        class="text-2xl lg:text-4xl font-extrabold"
+        class="text-2xl lg:text-4xl font-extrabold text-balance"
         :class="{ 'text-white': isInverted }"
         v-text="title"
       />

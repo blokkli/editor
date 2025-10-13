@@ -259,17 +259,21 @@
     "source": "Favorite blocks",
     "translation": "Lieblingsblöck"
   },
+  "blockOption_bkHiddenGlobally_description": {
+    "source": "Always hides the block.",
+    "translation": ""
+  },
   "blockOption_bkHiddenGlobally_label": {
     "source": "Hide globally",
     "translation": "Global verstecke"
   },
+  "blockOption_bkVisibleLanguages_description": {
+    "source": "Only show on specific languages.",
+    "translation": ""
+  },
   "blockOption_bkVisibleLanguages_label": {
     "source": "Visible languages",
     "translation": "Sichtbari Sproche"
-  },
-  "cancel": {
-    "source": "Cancel",
-    "translation": "Abbräche"
   },
   "cancelSelection": {
     "source": "Cancel selection",
@@ -502,6 +506,10 @@
   "editableCommandEdit": {
     "source": "Edit field \"@name\"",
     "translation": "Fäld «@name» bearbeite"
+  },
+  "editableFieldDiscard": {
+    "source": "Discard",
+    "translation": ""
   },
   "entityTitleTourText": {
     "source": "<p>Shows the title and status of the current page.</p><p>Click on the title to open the page edit form.</p>",
@@ -806,6 +814,14 @@
   "feature_history_setting_useMouseButtons_label": {
     "source": "Use mouse buttons for undo/redo",
     "translation": "Muustaschte für Rückgängig/Wiederhärstelle bruche"
+  },
+  "feature_hover_description": {
+    "source": "Renders a border around blocks that are currently being hovered.",
+    "translation": ""
+  },
+  "feature_hover_label": {
+    "source": "Hover",
+    "translation": ""
   },
   "feature_import-existing_description": {
     "source": "Implements a menu action that renders a dialog to import blocks from another entity.",
@@ -1610,10 +1626,6 @@
   "revertSuccess": {
     "source": "All changes have been discarded.",
     "translation": "Alli Änderige sin glöcht worde."
-  },
-  "save": {
-    "source": "Save",
-    "translation": "Speichere"
   },
   "scheduledFor": {
     "source": "The changes will be published on this date.",

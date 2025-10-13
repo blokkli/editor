@@ -4,7 +4,7 @@ import { computed, ref, useBlokkli } from '#imports'
 import type { Coord, Rectangle } from '#blokkli/types'
 import { falsy, findIdealRectPosition } from '..'
 
-type PlacementVertical = 'top' | 'bottom' | 'auto'
+export type PlacementVertical = 'top' | 'bottom' | 'auto'
 type PlacementHorizontal = 'left' | 'center'
 
 type UseStickyToolbarOptions = {

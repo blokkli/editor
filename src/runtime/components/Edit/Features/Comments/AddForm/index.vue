@@ -8,6 +8,7 @@
     <div class="bk-add-comment-inner" @keydown.capture.stop>
       <textarea
         id="comment_body"
+        ref="textarea"
         v-model="comment"
         type="text"
         class="bk-form-input"
@@ -24,10 +25,18 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, ref, useBlokkli } from '#imports'
+import {
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  useBlokkli,
+  useTemplateRef,
+} from '#imports'
 import { ArtboardTooltip } from '#blokkli/components'
 
 defineEmits(['add', 'close'])
+
+const textarea = useTemplateRef('textarea')
 
 const { $t, ui } = useBlokkli()
 
@@ -41,6 +50,9 @@ defineExpose({ getComment })
 
 onMounted(() => {
   ui.setSelectionColor('add-comment', 'yellow')
+  if (textarea.value) {
+    textarea.value.focus()
+  }
 })
 
 onBeforeUnmount(() => {

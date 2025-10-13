@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <BlokkliTransition name="editable" :enabled="hasTransition">
+    <BlokkliTransition name="caret-tooltip" :enabled="hasTransition">
       <Overlay v-if="editable" v-bind="editable" :key="key" @close="close" />
     </BlokkliTransition>
   </Teleport>

@@ -53,7 +53,8 @@ void main() {
     vec4 fillColor = vec4(u_color_teal, 0.2);
 
     // Render solid border (non-dashed)
-    float borderAlpha = 1.0 - smoothstep(-u_borderSoftness, 0.0, abs(mainDist) - borderThickness);
+    float borderAlpha =
+      1.0 - smoothstep(-u_borderSoftness, 0.0, abs(mainDist) - borderThickness);
     vec4 borderColor = vec4(u_color_teal, 1.0);
 
     // Combine fill and border

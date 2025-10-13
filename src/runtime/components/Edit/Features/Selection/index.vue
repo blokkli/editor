@@ -117,8 +117,6 @@ function onSelectDropdownItem(item: DropdownItem) {
   }
 }
 
-const artboardElement = ui.artboardElement()
-
 const gl = animation.gl()
 
 const hasSelectedOnce = ref(false)

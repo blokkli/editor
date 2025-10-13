@@ -17,15 +17,11 @@
         </p>
         <div class="bk">
           <div class="bk-form-group">
-            <div>
-              <label class="bk-form-label" for="library_search">
-                {{ $t('libraryPlaceSearchLabel', 'Filter library items') }}
-              </label>
-              <input
+            <FormItem>
+              <FormText
                 id="library_search"
+                :label="$t('libraryPlaceSearchLabel', 'Filter library items')"
                 v-model.lazy="searchText"
-                type="text"
-                class="bk-form-input"
                 :placeholder="
                   $t(
                     'libraryPlaceSearchInputPlaceholder',
@@ -34,25 +30,15 @@
                 "
                 required
               />
-            </div>
-            <div>
-              <label class="bk-form-label" for="library_bundle">
-                {{ $t('libraryPlaceBundleSelectLabel', 'Bundle') }}
-              </label>
-              <select
+            </FormItem>
+            <FormItem>
+              <FormSelect
                 id="library_bundle"
+                :label="$t('libraryPlaceBundleSelectLabel', 'Bundle')"
+                :options="bundleOptions"
                 v-model="selectedBundle"
-                class="bk-form-input"
-              >
-                <option
-                  v-for="v in bundleOptions"
-                  :key="v.bundle"
-                  :value="v.bundle"
-                >
-                  {{ v.label }}
-                </option>
-              </select>
-            </div>
+              />
+            </FormItem>
           </div>
         </div>
         <div class="bk-library-dialog-content">
@@ -89,7 +75,13 @@ import type {
   BlokkliAdapterGetLibraryItemsData,
   BlokkliAdapterGetLibraryItemsResult,
 } from '#blokkli/adapter'
-import { FormOverlay, Pagination } from '#blokkli/components'
+import {
+  FormOverlay,
+  Pagination,
+  FormText,
+  FormItem,
+  FormSelect,
+} from '#blokkli/components'
 import Loading from './../../../Loading/index.vue'
 import type { BlokkliFieldElement, FieldConfig } from '#blokkli/types'
 import { ref, useBlokkli, useAsyncData, computed, watch } from '#imports'
@@ -171,11 +163,11 @@ const bundleOptions = computed(() => {
   const bundles = allowedBundles.value.map((bundle) => {
     const definition = types.getBlockBundleDefinition(bundle)
     return {
-      bundle,
+      value: bundle,
       label: definition?.label || bundle,
     }
   })
 
-  return [{ bundle: 'all', label: $t('all', 'All') }, ...bundles]
+  return [{ value: 'all', label: $t('all', 'All') }, ...bundles]
 })
 </script>

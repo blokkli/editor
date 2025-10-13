@@ -11,7 +11,7 @@
       <div class="bk-artboard-tooltip-header">
         <div v-html="title" />
         <button @click="$emit('close')">
-          <Icon name="close" />
+          <Icon :name="closeIcon" />
         </button>
       </div>
       <slot />
@@ -20,7 +20,9 @@
 </template>
 
 <script setup lang="ts">
-import useStickyToolbar from '#blokkli/helpers/composables/useStickyToolbar'
+import useStickyToolbar, {
+  type PlacementVertical,
+} from '#blokkli/helpers/composables/useStickyToolbar'
 import {
   useTemplateRef,
   useBlokkli,
@@ -29,12 +31,22 @@ import {
   watch,
 } from '#imports'
 import { Icon } from '#blokkli/components'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 
-const props = defineProps<{
-  id: string
-  title: string
-  anchorEl?: HTMLElement | null
-}>()
+const props = withDefaults(
+  defineProps<{
+    id: string
+    title: string
+    anchorEl?: HTMLElement | null
+    placementY?: PlacementVertical
+    closeIcon?: BlokkliIcon
+  }>(),
+  {
+    anchorEl: null,
+    closeIcon: 'close',
+    placementY: 'auto',
+  },
+)
 
 const emit = defineEmits<{
   (e: 'close'): void
@@ -49,7 +61,7 @@ const { placementY, caretX } = useStickyToolbar(el, {
     return props.anchorEl ?? null
   },
   getPlacementY() {
-    return 'auto'
+    return props.placementY
   },
   getPlacementX() {
     return 'center'

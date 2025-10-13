@@ -23,36 +23,40 @@
           )
         "
       />
-      <label for="reusable_label" class="bk-form-label">{{
-        $t('libraryDialogDescriptionLabel', 'Description')
-      }}</label>
-      <input
-        id="reusable_label"
-        v-model="label"
-        type="text"
-        class="bk-form-input"
-        :placeholder="
-          $t('libraryDialogTitleInputPlaceholder', 'e.g. Teaser Campaign 2024')
-        "
-        required
-      />
-    </div>
-    <div class="bk-form-label">
-      {{ $t('libraryPreviewLabel', 'Preview') }}
-    </div>
-    <div
-      class="bk-dialog-content-element"
-      :class="[backgroundClass, { 'bk-default-bg': !backgroundClass }]"
-      :style="backgroundClass ? {} : { backgroundColor }"
-    >
-      <div ref="previewEl" />
+      <FormItem>
+        <FormText
+          id="reusable_label"
+          :label="$t('libraryDialogDescriptionLabel', 'Description')"
+          v-model="label"
+          type="text"
+          :placeholder="
+            $t(
+              'libraryDialogTitleInputPlaceholder',
+              'e.g. Teaser Campaign 2024',
+            )
+          "
+          required
+        />
+      </FormItem>
+      <FormItem>
+        <div class="bk-form-label">
+          {{ $t('libraryPreviewLabel', 'Preview') }}
+        </div>
+        <div
+          class="bk-dialog-content-element"
+          :class="[backgroundClass, { 'bk-default-bg': !backgroundClass }]"
+          :style="backgroundClass ? {} : { backgroundColor }"
+        >
+          <div ref="previewEl" />
+        </div>
+      </FormItem>
     </div>
   </DialogModal>
 </template>
 
 <script lang="ts" setup>
 import { ref, useBlokkli, onMounted } from '#imports'
-import { DialogModal, InfoBox } from '#blokkli/components'
+import { DialogModal, InfoBox, FormText, FormItem } from '#blokkli/components'
 import { realBackgroundColor } from '#blokkli/helpers'
 
 defineEmits<{
