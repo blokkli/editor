@@ -24,6 +24,7 @@
 @import './partials/DraggingOverlay.css';
 @import './partials/Selection.css';
 @import './partials/SelectionAdd.css';
+@import './partials/AddButtonsRenderer.css';
 @import './partials/EditableField.css';
 @import './partials/Assistant.css';
 @import './partials/AppMenu.css';
@@ -412,4 +413,8 @@ html.bk-hide-non-editable {
   .bk-beta-indicator {
     @apply bg-accent-700 text-white text-xs uppercase rounded-full font-semibold px-[7px] py-[1px];
   }
+}
+
+.bk.bk-canvas-overlay {
+  @apply fixed top-0 left-0 size-full z-canvas-overlay;
 }

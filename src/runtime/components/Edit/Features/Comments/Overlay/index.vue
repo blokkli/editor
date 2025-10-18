@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="body">
+  <Teleport to="#bk-canvas-overlay">
     <div class="bk bk-comments-overlay bk-control">
       <Item
         v-for="item in indicators"

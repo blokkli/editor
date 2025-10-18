@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="body">
+  <Teleport to="#bk-canvas-overlay">
     <div id="bk-indicators" class="bk bk-indicators" :style>
       <div id="bk-indicators-left" />
       <div id="bk-indicators-right" />

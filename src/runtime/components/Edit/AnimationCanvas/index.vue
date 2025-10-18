@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="#nuxt-root">
+  <Teleport to="#bk-canvas-overlay">
     <canvas
       id="bk-animation-canvas-webgl"
       ref="canvasEl"

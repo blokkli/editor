@@ -7,7 +7,7 @@
     <BlokkliTransition name="drag-item">
       <div
         v-show="activeLabel"
-        class="bk-dragging-overlay-label"
+        class="bk bk-dragging-overlay-label"
         :style="{ backgroundColor: currentActiveColor }"
       >
         <Icon name="cursor-move" />

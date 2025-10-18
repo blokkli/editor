@@ -1061,6 +1061,7 @@ export type CanvasDrawEvent = {
   artboardScale: number
   artboardSize: Size
   time: number
+  selectedUuids: string[]
 }
 
 export type MakeReusableEvent = {

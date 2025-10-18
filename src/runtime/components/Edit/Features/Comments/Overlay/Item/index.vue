@@ -13,7 +13,10 @@
       :class="{
         'bk-has-unresolved-comments': unresolvedCount > 0,
       }"
-      @click="$emit('toggle')"
+      @click.prevent="$emit('toggle')"
+      @pointerdown.prevent.stop
+      @pointerup.prevent.stop
+      @pointermove.prevent.stop
     >
       <Icon v-if="showComments" name="close" />
       <span v-else>{{ unresolvedCount }}</span>

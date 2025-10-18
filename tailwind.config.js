@@ -7,12 +7,12 @@ const z = (index) => {
 }
 
 const zIndex = [
+  'canvas-overlay',
   'animation-canvas',
   'selection',
   'interaction-overlay',
   'comments-overlay',
   'comments-overlay-active',
-  'actions',
   'artboard-scrollbar',
   'artboard-overview',
   'messages',
@@ -23,7 +23,9 @@ const zIndex = [
   'sidebar-detached',
   'sidebar-tabs',
   'toolbar',
+  'actions',
   'selection-add',
+  'add-buttons-label',
   'add-list',
   'tour-popup',
   'preview',

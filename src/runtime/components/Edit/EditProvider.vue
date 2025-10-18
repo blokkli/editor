@@ -20,6 +20,9 @@
       <Messages />
     </div>
   </Teleport>
+  <Teleport to="#nuxt-root">
+    <div class="bk bk-canvas-overlay" id="bk-canvas-overlay" />
+  </Teleport>
   <Actions v-if="!isInitializing" />
   <Toolbar @loaded="toolbarLoaded = true" />
   <AppMenu v-if="toolbarLoaded" />
@@ -150,9 +153,9 @@ const dropAreas = dropAreasProvider()
 const broadcast = broadcastProvider()
 const ui = uiProvider(storage, state, context)
 const dom = domProvider(ui, debug, definitions)
-const animation = animationProvider(ui, storage)
-const keyboard = keyboardProvider(animation)
 const selection = selectionProvider(dom)
+const animation = animationProvider(ui, storage, selection)
+const keyboard = keyboardProvider(animation)
 const types = await typesProvider(adapter, selection, context)
 const indicators = indicatorsProvider()
 const plugins = pluginProvider()

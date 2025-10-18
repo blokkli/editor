@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="body">
+  <Teleport to="#bk-canvas-overlay">
     <BlokkliTransition name="caret-tooltip">
       <Overlay
         v-if="addData"
@@ -15,18 +15,13 @@
     </BlokkliTransition>
   </Teleport>
 
-  <Renderer
-    :empty-field-keys="emptyFieldKeys"
-    :can-show-before-after="canShowBeforeAfter"
-    @toggle="onRendererToggle"
-    @toggle-field="onRendererToggleField"
-  />
+  <Renderer @toggle="onRendererToggle" @toggle-field="onRendererToggleField" />
 </template>
 
 <script setup lang="ts">
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import { computed, useBlokkli, ref, watch, useTemplateRef } from '#imports'
-import { Icon, BlokkliTransition } from '#blokkli/components'
+import { computed, useBlokkli, ref, watch } from '#imports'
+import { BlokkliTransition } from '#blokkli/components'
 import {
   getChildrenOrientation,
   getGapSize,
@@ -40,7 +35,6 @@ import type {
   DraggableHostData,
 } from '#blokkli/types'
 import Overlay from './Overlay/index.vue'
-import AddButtonsField from './AddButtonsField.vue'
 import { renderCycle } from '#blokkli/helpers/renderCycle'
 import { getFieldKey } from '#blokkli/helpers'
 import { isInternalBundle } from '#blokkli/helpers/bundles'
@@ -50,20 +44,7 @@ const props = defineProps<{
   blocks: DraggableExistingBlock[]
 }>()
 
-const { dom, state, eventBus, types, ui, selection, $t } = useBlokkli()
-
-const showOverlay = computed(
-  () =>
-    !ui.isTransforming.value &&
-    !ui.isAnalyzing.value &&
-    !selection.isMultiSelecting.value &&
-    !selection.isDragging.value &&
-    !ui.hasTransformOverlayOpen.value &&
-    !selection.isChangingOptions.value,
-)
-
-const afterEl = useTemplateRef('after')
-const beforeEL = useTemplateRef('before')
+const { dom, state, eventBus, types, $t } = useBlokkli()
 
 const shouldRender = computed(() => {
   // Add buttons are only visible when one block is selected.
@@ -102,10 +83,6 @@ const emptyBlockFields = computed(() => {
     .filter((v) => {
       return v.count === 0
     })
-})
-
-const emptyFieldKeys = computed(() => {
-  return emptyBlockFields.value.map((v) => v.key)
 })
 
 const containerStyle = ref<Record<string, string>>({ visibility: 'hidden' })
@@ -297,14 +274,8 @@ type CachedState = {
 // Cache state per UUID
 const cache = new Map<string, CachedState>()
 
-const canShowBeforeAfter = ref(false)
-const beforeAfterStyle = computed<Record<string, string>>(() => ({
-  visibility: canShowBeforeAfter.value ? 'visible' : 'hidden',
-}))
-
 function clearAllCache() {
   cache.clear()
-  canShowBeforeAfter.value = false
   containerStyle.value = { visibility: 'hidden' }
   orientationClass.value = ''
 }
@@ -350,7 +321,6 @@ function updateCache(uuid: string) {
   }
 
   // Apply cached state
-  canShowBeforeAfter.value = cachedState.canShowBeforeAfter
   orientationClass.value =
     cachedState.orientation === 'vertical'
       ? 'bk-is-vertical'
@@ -362,7 +332,6 @@ watch(
   async (newUuid) => {
     closeOverlay()
     if (!shouldRender.value) {
-      canShowBeforeAfter.value = false
       containerStyle.value = { visibility: 'hidden' }
       return
     }
@@ -484,99 +453,6 @@ function getPreceedingUuidBefore(
   return undefined
 }
 
-function onClickBefore() {
-  if (addData.value?.key === 'before') {
-    return closeOverlay()
-  }
-  if (!uuid.value) {
-    return
-  }
-
-  const cachedState = cache.get(uuid.value)
-  if (!cachedState) {
-    return
-  }
-
-  const block = dom.findBlock(uuid.value)
-  if (!block) {
-    return
-  }
-
-  const field = dom.findField(block.hostUuid, block.hostFieldName)
-  if (!field) {
-    return
-  }
-
-  const preceedingUuid = getPreceedingUuidBefore(uuid.value, field)
-
-  if (!beforeEL.value) {
-    return
-  }
-
-  const label = beforeTooltip.value.replace('...', '')
-  setAddData('before', field, label, preceedingUuid, beforeEL.value)
-}
-
-function onClickAfter() {
-  if (addData.value?.key === 'after') {
-    return closeOverlay()
-  }
-
-  if (!uuid.value) {
-    return
-  }
-
-  const cachedState = cache.get(uuid.value)
-  if (!cachedState) {
-    return
-  }
-
-  const block = dom.findBlock(uuid.value)
-  if (!block) {
-    return
-  }
-
-  const field = dom.findField(block.hostUuid, block.hostFieldName)
-  if (!field) {
-    return
-  }
-
-  if (!afterEl.value) {
-    return
-  }
-
-  if (!field.allowedBundles.length) {
-    return
-  }
-
-  const label = afterTooltip.value.replace('...', '')
-  setAddData('after', field, label, uuid.value, afterEl.value)
-}
-
-function onClickEmptyField(index: number, element: HTMLElement) {
-  const key = 'field:' + index
-  if (addData.value?.key === key) {
-    return closeOverlay()
-  }
-
-  if (!uuid.value) {
-    return
-  }
-
-  const emptyField = emptyBlockFields.value[index]
-  if (!emptyField) {
-    return
-  }
-
-  const field = dom.findField(uuid.value, emptyField.name)
-  if (!field) {
-    return
-  }
-
-  const label = (fieldTooltips.value[index] || '').replace('...', '')
-  setAddData(key, field, label, undefined, element)
-}
-
 function onRendererToggle(data: {
   position: 'before' | 'after'
   coordinates: { x: number; y: number }
@@ -651,4 +527,5 @@ function onRendererToggleField(data: {
 }
 
 onBlokkliEvent('mouse:up', closeOverlay)
+onBlokkliEvent('dragging:start', closeOverlay)
 </script>

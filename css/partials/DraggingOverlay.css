@@ -88,7 +88,7 @@
   }
 }
 
-.bk-dragging-overlay-label {
+.bk.bk-dragging-overlay-label {
   @apply absolute bottom-full left-1/2 -translate-x-1/2 mb-40 rounded-full text-white;
   @apply px-15 py-10 whitespace-nowrap;
   @apply shadow;

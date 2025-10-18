@@ -14,6 +14,7 @@ import { createProgramInfo, type ProgramInfo } from 'twgl.js'
 import type { StorageProvider } from './storageProvider'
 import type { CursorKeyword } from './dom'
 import type { CanvasDrawEvent, Coord } from '#blokkli/types'
+import type { SelectionProvider } from './selectionProvider'
 
 export type RenderContext = CanvasDrawEvent & {
   gl: WebGLRenderingContext
@@ -91,6 +92,7 @@ export type AnimationProvider = {
 export default function (
   ui: UiProvider,
   storage: StorageProvider,
+  selection: SelectionProvider,
 ): AnimationProvider {
   const webglEnabled = storage.use('webglEnabled', true)
 
@@ -204,6 +206,8 @@ export default function (
   }
 
   useAnimationFrame((time) => {
+    const selectedUuids: string[] = [...selection.uuids.value]
+
     // Make sure we don't loop when it's not needed.
     if (iterator < 1) {
       return
@@ -226,11 +230,10 @@ export default function (
     // Clear the canvas before rendering
     const glContext = gl()
     if (glContext) {
-      glContext.clear(glContext.COLOR_BUFFER_BIT)
-
-      // Set up alpha blending for proper layering
+      // glContext.clear(glContext.COLOR_BUFFER_BIT)
       glContext.enable(glContext.BLEND)
-      glContext.blendFunc(glContext.SRC_ALPHA, glContext.ONE_MINUS_SRC_ALPHA)
+      glContext.blendFunc(glContext.SRC_ALPHA_SATURATE, glContext.ONE)
+      glContext.blendEquation(glContext.FUNC_ADD)
     }
 
     // Execute WebGL renderers in zIndex order
@@ -268,17 +271,18 @@ export default function (
       artboardOffset,
       artboardScale,
       artboardSize,
+      selectedUuids,
     }
 
-    // If an "only" renderer is found, render only that one
+    // If an "only" renderer is found, render only that one.
     if (onlyRenderer) {
       const glContext = gl()
       if (glContext) {
         onlyRenderer.render(ctx)
       }
     } else {
-      // Otherwise, render all enabled renderers
-      for (const renderer of sortedRenderers) {
+      for (let i = sortedRenderers.length - 1; i >= 0; i--) {
+        const renderer = sortedRenderers[i]!
         if (!renderer.enabled || renderer.enabled()) {
           const glContext = gl()
           if (glContext) {

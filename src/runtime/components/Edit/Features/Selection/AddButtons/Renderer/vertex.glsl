@@ -21,12 +21,16 @@ uniform vec2 u_circle_positions[10];
 uniform float u_circle_visible[10];
 // Hovered circle index (-1 for none)
 uniform float u_hovered_circle;
+// Button radius in pixels
+uniform float u_radius;
 
 // The transformed quad for the fragment shader.
 varying vec4 v_quad;
 varying vec2 v_circle_center;
 varying float v_visible;
 varying float v_is_hovered;
+varying float v_scale_fade;
+varying float v_rect_id;
 
 void main() {
   int rectId = int(a_rect_id);
@@ -35,9 +39,23 @@ void main() {
   vec2 circlePos = u_circle_positions[rectId];
   v_visible = u_circle_visible[rectId];
   v_is_hovered = (float(rectId) == u_hovered_circle) ? 1.0 : 0.0;
+  v_rect_id = a_rect_id;
 
-  // Circle radius in artboard space
-  float radius = 20.0;
+  // Calculate fade factor based on scale (fade from 1.0 at 0.5 to 0.0 at 0.4)
+  v_scale_fade = 1.0;
+  if (u_scale < 0.5) {
+    // Interpolate from 1.0 (at scale 0.5) to 0.0 (at scale 0.4)
+    v_scale_fade = (u_scale - 0.4) / (0.5 - 0.4);
+    v_scale_fade = clamp(v_scale_fade, 0.0, 1.0);
+  }
+
+  // Border width in pixels (must match fragment shader)
+  float borderWidth = 4.0;
+
+  // Circle radius in artboard space - apply inverse scaling to keep constant size
+  // Then multiply by fade factor
+  // Add border width to the radius so the border renders outside
+  float radius = ((u_radius + borderWidth) / u_scale) * v_scale_fade;
 
   // Calculate quad bounds centered on circle position
   float left = circlePos.x - radius;
