@@ -20,7 +20,9 @@ const { adapter } = defineBlokkliFeature({
 const { state, $t } = useBlokkli()
 
 const shouldRender = computed<boolean>(
-  () => !state.owner.value?.currentUserIsOwner,
+  () =>
+    !state.owner.value?.currentUserIsOwner &&
+    state.permissions.value.includes('edit'),
 )
 
 const takeOwnership = () =>

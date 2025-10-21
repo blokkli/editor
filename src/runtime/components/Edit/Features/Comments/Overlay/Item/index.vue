@@ -22,9 +22,12 @@
       <span v-else>{{ unresolvedCount }}</span>
     </button>
     <div
-      v-show="showComments"
+      v-if="showComments"
       class="bk-comments-overlay-comments"
       :class="{ 'bk-is-left': isLeft, 'bk-is-right': !isLeft }"
+      @pointerdown.capture.stop
+      @pointerup.capture.stop
+      @pointermove.capture.stop
     >
       <div class="bk-comments-overlay-comments-header">
         <Icon name="comment" />
@@ -42,7 +45,7 @@
       </div>
       <div class="bk-comments-overlay-form" @keydown.capture.stop>
         <textarea
-          v-model="commentText"
+          v-model.lazy="commentText"
           type="text"
           class="bk-form-input"
           :placeholder="$t('commentBodyPlaceholder', 'Add reply')"
@@ -62,14 +65,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli } from '#imports'
+import { ref, computed, useBlokkli, useState } from '#imports'
 import type { CommentItem } from '#blokkli/types'
 import { Icon } from '#blokkli/components'
 import Comment from './../../Comment/index.vue'
 
-const { $t } = useBlokkli()
+const { $t, storage } = useBlokkli()
 
-const commentText = ref('')
+const commentText = storage.useWithContextPrefix('commentReply', '')
 const showFullForm = ref(false)
 const emit = defineEmits<{
   (e: 'toggle'): void

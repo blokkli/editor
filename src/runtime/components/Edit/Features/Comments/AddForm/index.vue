@@ -16,7 +16,11 @@
         required
       />
       <footer>
-        <button class="bk-button bk-is-warning" @click="$emit('add', comment)">
+        <button
+          :disabled="!comment"
+          class="bk-button bk-is-warning"
+          @click.prevent="onAdd"
+        >
           {{ $t('commentSave', 'Submit comment') }}
         </button>
       </footer>
@@ -28,22 +32,31 @@
 import {
   onBeforeUnmount,
   onMounted,
-  ref,
   useBlokkli,
   useTemplateRef,
 } from '#imports'
 import { ArtboardTooltip } from '#blokkli/components'
 
-defineEmits(['add', 'close'])
+const emit = defineEmits<{
+  (e: 'add', comment: string): void
+  (e: 'close'): void
+}>()
 
 const textarea = useTemplateRef('textarea')
 
-const { $t, ui } = useBlokkli()
+const { $t, ui, storage } = useBlokkli()
 
-const comment = ref('')
+// Persist the comment of the user accidentally closes the tooltip, so it's
+// not lost.
+const comment = storage.useWithContextPrefix('commentAddText', '')
 
 const getComment = (): string => {
   return comment.value
+}
+
+function onAdd() {
+  emit('add', comment.value)
+  comment.value = ''
 }
 
 defineExpose({ getComment })
