@@ -4,6 +4,7 @@
     id="library_detach"
     :title="$t('libraryDetach', 'Detach from library')"
     icon="detach"
+    :disabled="state.editMode.value !== 'editing'"
     multiple
     :weight="-70"
     @click="onDetach"

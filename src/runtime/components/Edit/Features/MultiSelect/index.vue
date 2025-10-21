@@ -23,17 +23,11 @@ defineBlokkliFeature({
   viewports: ['desktop'],
 })
 
-const { keyboard, eventBus, selection, state, animation } = useBlokkli()
+const { keyboard, eventBus, selection, animation } = useBlokkli()
 
 const gl = animation.gl()
 
-const enabled = computed(
-  () =>
-    !selection.editableActive.value &&
-    (state.editMode.value === 'editing' ||
-      state.editMode.value === 'translating') &&
-    gl,
-)
+const enabled = computed(() => !selection.editableActive.value && gl)
 
 const shouldRender = ref(false)
 const downX = ref(0)

@@ -9,16 +9,16 @@
       <PreviewProvider
         v-if="isPreviewing"
         v-slot="{ mutatedEntity }"
-        :entity="entity"
-        :entity-type="entityType"
-        :entity-uuid="entityUuid"
-        :entity-bundle="entityBundle"
-        :language="language"
+        :entity
+        :entity-type
+        :entity-uuid
+        :entity-bundle
+        :language
       >
         <slot
           :entity="mutatedEntity"
-          :is-editing="isEditing"
-          :can-edit="canEdit"
+          :is-editing
+          :can-edit
           :is-preview="isPreviewing"
         />
       </PreviewProvider>
@@ -31,10 +31,11 @@
         :entity-bundle="entityBundle"
         :language="language"
         :isolate="isolate"
+        :permissions
       >
         <slot
-          :is-editing="isEditing"
-          :can-edit="canEdit"
+          :is-editing
+          :can-edit
           :is-preview="isPreviewing"
           :entity="mutatedEntity"
         />
@@ -43,8 +44,8 @@
 
     <slot
       v-else
-      :is-editing="isEditing"
-      :can-edit="canEdit"
+      :is-editing
+      :can-edit
       :is-preview="isPreviewing"
       :entity="entity as any"
     />
@@ -52,7 +53,8 @@
     <EditIndicator
       v-if="showIndicator"
       :uuid="entityUuid"
-      :edit-label="editLabel"
+      :edit-label
+      :permissions
       @edit="edit"
     />
   </div>
@@ -72,7 +74,10 @@ import {
   INJECT_ENTITY_CONTEXT,
   INJECT_PROVIDER_CONTEXT,
 } from '../helpers/symbols'
-import type { BlokkliProviderEntityContext } from '#blokkli/types'
+import type {
+  BlokkliProviderEntityContext,
+  EditPermission,
+} from '#blokkli/types'
 
 defineSlots<{
   default(props: {
@@ -108,12 +113,12 @@ const props = withDefaults(
     entityType: string
     entityBundle: string
     entityUuid: string
-    canEdit: boolean
     tag?: string
     language?: string
     editLabel?: string
     editPath?: string
     hostOptions?: any
+    permissions?: EditPermission[]
 
     // @todo: edit icon for indicator
 
@@ -129,6 +134,9 @@ const props = withDefaults(
     entity: undefined,
     editPath: undefined,
     hostOptions: undefined,
+    permissions: () => {
+      return []
+    },
   },
 )
 
@@ -142,9 +150,13 @@ const isInEditor = computed(
     (isPreviewing.value || isEditing.value),
 )
 
+const canEdit = computed(() => props.permissions.includes('edit'))
+
+const canUseBlokkli = computed<boolean>(() => !!props.permissions.length)
+
 const isEditing = computed(
   () =>
-    props.canEdit &&
+    canUseBlokkli.value &&
     !!props.entityUuid &&
     route.query.blokkliEditing === props.entityUuid,
 )
@@ -155,7 +167,9 @@ const isPreviewing = computed(
 
 const showIndicator = computed(
   () =>
-    props.canEdit && !route.query.blokkliEditing && !route.query.blokkliPreview,
+    !!props.permissions.length &&
+    !route.query.blokkliEditing &&
+    !route.query.blokkliPreview,
 )
 
 function edit() {

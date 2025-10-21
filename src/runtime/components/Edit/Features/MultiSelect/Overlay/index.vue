@@ -240,7 +240,10 @@ defineRenderer('multiselect-overlay', {
     mouseX = ctx.mouseX
     mouseY = ctx.mouseY
 
-    const { shader, check } = getSelectRect(ctx.artboardOffset, ctx.artboardScale)
+    const { shader, check } = getSelectRect(
+      ctx.artboardOffset,
+      ctx.artboardScale,
+    )
 
     const { nested } = collector.getSelectedUuids(check)
     const shouldSelectAll = props.isPressingControl || !nested.length

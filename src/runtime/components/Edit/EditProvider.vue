@@ -16,6 +16,13 @@
           scheme="red"
           :text="stateNotAvailableText"
         />
+        <Banner
+          v-if="viewOnlyBanner"
+          id="view-only"
+          :icon="viewOnlyBanner.icon"
+          scheme="yellow"
+          :text="viewOnlyBanner.text"
+        />
       </div>
       <Messages />
     </div>
@@ -54,7 +61,11 @@ import {
   nextTick,
   inject,
 } from '#imports'
-import type { BlokkliApp, ItemEditContext } from '#blokkli/types'
+import type {
+  BlokkliApp,
+  EditPermission,
+  ItemEditContext,
+} from '#blokkli/types'
 import Toolbar from './Toolbar/index.vue'
 import Actions from './Actions/index.vue'
 import Loading from './Loading/index.vue'
@@ -102,6 +113,7 @@ import {
 import type { AdapterContext } from '#blokkli/adapter'
 import { useBlockRegistration } from '#blokkli/helpers/composables/useBlockRegistration'
 import { addElementClasses } from '#blokkli/helpers/addElementClasses'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 
 const props = withDefaults(
   defineProps<{
@@ -111,6 +123,7 @@ const props = withDefaults(
     entityBundle: string
     language?: string
     isolate?: boolean
+    permissions: EditPermission[]
   }>(),
   {
     language: 'en',
@@ -142,7 +155,13 @@ const isInitializing = ref(true)
 
 const definitions = definitionProvider()
 const $t = textProvider(context)
-const state = await editStateProvider(adapter, context, $t, providerKey)
+const state = await editStateProvider(
+  adapter,
+  context,
+  $t,
+  providerKey,
+  props.permissions,
+)
 const storage = await storageProvider(adapter)
 const debug = debugProvider(storage)
 const features = featuresProvider(storage)
@@ -251,19 +270,55 @@ provide<BlokkliApp>(INJECT_APP, {
   ui,
 })
 
+function textWithHighlight(title: string, text: string): string {
+  return `<strong>${title}</strong> ${text}`
+}
+
 const stateNotAvailableText = computed(() => {
-  const title = $t(
-    'stateUnavailableTitle',
-    'The edit state could not be loaded.',
-  )
-  return (
-    `<strong>${title}</strong>` +
+  return textWithHighlight(
+    $t('stateUnavailableTitle', 'The edit state could not be loaded.'),
     $t(
       'stateUnavailableText',
       'This could be due to missing permissions or a temporary problem. Please try again later.',
-    )
+    ),
   )
 })
+
+const viewOnlyBanner = computed<{ text: string; icon: BlokkliIcon } | null>(
+  () => {
+    if (props.permissions.includes('edit')) {
+      return null
+    }
+
+    if (props.permissions.includes('review')) {
+      // User can only review the changes (e.g. add/view comments).
+      return {
+        text: textWithHighlight(
+          $t('viewBannerReviewTitle', 'You are in review mode.'),
+          $t(
+            'viewBannerReviewText',
+            'You can view and add comments but cannot edit content.',
+          ),
+        ),
+        icon: 'comment',
+      }
+    } else if (props.permissions.includes('view')) {
+      // User can only view the changes (e.g. only view comments, not add).
+      return {
+        text: textWithHighlight(
+          $t('viewBannerViewTitle', 'You are in view-only mode.'),
+          $t(
+            'viewBannerViewText',
+            'You can view comments but cannot edit content.',
+          ),
+        ),
+        icon: 'eye',
+      }
+    }
+
+    return null
+  },
+)
 
 const isProxyMode = computed(() => ui.isProxyMode.value)
 provide(INJECT_GLOBAL_PROXY_MODE, isProxyMode)

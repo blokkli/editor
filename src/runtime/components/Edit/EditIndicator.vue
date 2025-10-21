@@ -27,17 +27,29 @@ import textProvider from '#blokkli/helpers/textProvider'
 import { ref, computed } from '#imports'
 import '#blokkli-build/styles.css'
 import useAnimationFrame from '#blokkli/helpers/composables/useAnimationFrame'
+import type { EditPermission } from '#blokkli/types'
 
 const props = defineProps<{
   uuid: string
   editLabel?: string
+  permissions: EditPermission[]
 }>()
 
 const $t = textProvider()
 
-const label = computed(
-  () => props.editLabel || $t('editIndicatorLabel', 'Edit blocks'),
-)
+const label = computed(() => {
+  if (props.editLabel) {
+    return props.editLabel
+  } else if (props.permissions.includes('edit')) {
+    return $t('editIndicatorLabel', 'Edit blocks')
+  } else if (props.permissions.includes('review')) {
+    return $t('editIndicatorLabelReview', 'Review changes')
+  } else if (props.permissions.includes('view')) {
+    return $t('editIndicatorLabelView', 'View changes')
+  }
+
+  return null
+})
 
 defineEmits(['edit'])
 

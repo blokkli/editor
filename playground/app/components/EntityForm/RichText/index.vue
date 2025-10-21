@@ -1,7 +1,10 @@
 <template>
-  <div class="rich-text" :class="{
-    'is-field-value': isFieldValue
-  }">
+  <div
+    class="rich-text"
+    :class="{
+      'is-field-value': isFieldValue,
+    }"
+  >
     <Ckeditor
       v-model="markup"
       :editor="ClassicEditor"

@@ -476,7 +476,7 @@
     "translation": "Die Elemente konnten nicht dupliziert werden."
   },
   "edit": {
-    "source": "Edit...",
+    "source": "Edit",
     "translation": "Bearbeiten..."
   },
   "editFormBlockAdd": {
@@ -502,6 +502,14 @@
   "editIndicatorLabel": {
     "source": "Edit blocks",
     "translation": "Elemente bearbeiten"
+  },
+  "editIndicatorLabelReview": {
+    "source": "Review changes",
+    "translation": "Änderungen überprüfen"
+  },
+  "editIndicatorLabelView": {
+    "source": "View changes",
+    "translation": "Änderungen ansehen"
   },
   "editableCommandEdit": {
     "source": "Edit field \"@name\"",
@@ -1850,5 +1858,21 @@
   "validationsTourText": {
     "source": "See validation errors for content or structure on the current page.",
     "translation": "Zeigt Validierungsfehler für Inhalte auf der aktuellen Seite an."
+  },
+  "viewBannerReviewText": {
+    "source": "You can view and add comments but cannot edit content.",
+    "translation": "Sie können Kommentare ansehen und hinzufügen, aber keine Inhalte bearbeiten."
+  },
+  "viewBannerReviewTitle": {
+    "source": "You are in review mode.",
+    "translation": "Sie befinden sich im Review-Modus."
+  },
+  "viewBannerViewText": {
+    "source": "You can view comments but cannot edit content.",
+    "translation": "Sie können Kommentare ansehen, aber keine Inhalte bearbeiten."
+  },
+  "viewBannerViewTitle": {
+    "source": "You are in view-only mode.",
+    "translation": "Sie befinden sich im Ansichtsmodus."
   }
 }

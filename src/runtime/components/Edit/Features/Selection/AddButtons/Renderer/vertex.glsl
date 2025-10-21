@@ -38,7 +38,7 @@ void main() {
   // Get circle position and visibility for this rect
   vec2 circlePos = u_circle_positions[rectId];
   v_visible = u_circle_visible[rectId];
-  v_is_hovered = (float(rectId) == u_hovered_circle) ? 1.0 : 0.0;
+  v_is_hovered = float(rectId) == u_hovered_circle ? 1.0 : 0.0;
   v_rect_id = a_rect_id;
 
   // Calculate fade factor based on scale (fade from 1.0 at 0.5 to 0.0 at 0.4)
@@ -55,7 +55,7 @@ void main() {
   // Circle radius in artboard space - apply inverse scaling to keep constant size
   // Then multiply by fade factor
   // Add border width to the radius so the border renders outside
-  float radius = ((u_radius + borderWidth) / u_scale) * v_scale_fade;
+  float radius = (u_radius + borderWidth) / u_scale * v_scale_fade;
 
   // Calculate quad bounds centered on circle position
   float left = circlePos.x - radius;

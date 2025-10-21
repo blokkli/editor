@@ -518,7 +518,7 @@ msgid "The items could not be duplicated."
 msgstr "D'Elemänt hän nid chönne dupliziert wärde. "
 
 msgctxt "edit"
-msgid "Edit..."
+msgid "Edit"
 msgstr "Bearbeite"
 
 msgctxt "editFormBlockAdd"
@@ -544,6 +544,14 @@ msgstr "\"@label\" übersetze (@language)"
 msgctxt "editIndicatorLabel"
 msgid "Edit blocks"
 msgstr "Elemänt bearbeite"
+
+msgctxt "editIndicatorLabelReview"
+msgid "Review changes"
+msgstr ""
+
+msgctxt "editIndicatorLabelView"
+msgid "View changes"
+msgstr ""
 
 msgctxt "editableCommandEdit"
 msgid "Edit field \"@name\""
@@ -2083,3 +2091,19 @@ msgstr "Validierige"
 msgctxt "validationsTourText"
 msgid "See validation errors for content or structure on the current page."
 msgstr "Lueg Validierigsfähler für Inhalt oder Struktur uf dr aktuälle Sitte aa."
+
+msgctxt "viewBannerReviewText"
+msgid "You can view and add comments but cannot edit content."
+msgstr ""
+
+msgctxt "viewBannerReviewTitle"
+msgid "You are in review mode."
+msgstr ""
+
+msgctxt "viewBannerViewText"
+msgid "You can view comments but cannot edit content."
+msgstr ""
+
+msgctxt "viewBannerViewTitle"
+msgid "You are in view-only mode."
+msgstr ""

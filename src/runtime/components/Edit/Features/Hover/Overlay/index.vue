@@ -6,7 +6,7 @@
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineRenderer from '#blokkli/helpers/composables/defineRenderer'
 import type { Rectangle } from '#blokkli/types'
-import { useBlokkli, computed, ref } from '#imports'
+import { useBlokkli, computed, ref, watch } from '#imports'
 import { setBuffersAndAttributes, drawBufferInfo, setUniforms } from 'twgl.js'
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'

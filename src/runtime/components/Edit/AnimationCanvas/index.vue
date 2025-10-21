@@ -140,11 +140,7 @@ function getInteractedElement(
 }
 
 function onPointerMove(e: PointerEvent) {
-  if (
-    keyboard.isPressingSpace.value ||
-    state.editMode.value !== 'editing' ||
-    e.buttons === MOUSE_BUTTONS.AUXILIARY
-  ) {
+  if (keyboard.isPressingSpace.value || e.buttons === MOUSE_BUTTONS.AUXILIARY) {
     return
   }
   e.preventDefault()
@@ -182,6 +178,11 @@ function onPointerMove(e: PointerEvent) {
         y: e.clientY,
       })
     }
+    return
+  }
+
+  // Drag interactions only possible in edit mode.
+  if (state.editMode.value !== 'editing') {
     return
   }
 
@@ -573,7 +574,7 @@ watch(scissor, setScissor)
 let lastCanvasWidth = 0
 let lastCanvasHeight = 0
 
-onBlokkliEvent('animationFrame', (e) => {
+onBlokkliEvent('animationFrame', () => {
   if (!canvasEl.value) {
     return
   }
@@ -590,29 +591,6 @@ onBlokkliEvent('animationFrame', (e) => {
     lastCanvasWidth = canvasWidth
     lastCanvasHeight = canvasHeight
   }
-  const offset = ui.artboardOffset.value
-  const scale = ui.artboardScale.value
-  const size = ui.artboardSize.value
-  // if (gl) {
-  // const dpi = animation.dpi.value
-  //   // Restrict drawing to area on and 20px around artboard.
-  //   gl.scissor(
-  //     offset.x * dpi - 20,
-  //     canvasHeight - offset.y * dpi - 20 - size.height * dpi * scale,
-  //     size.width * scale * dpi + 40,
-  //     size.height * scale * dpi + 40,
-  //   )
-  //   // gl.clearColor(1.0, 1.0, 1.0, 1.0)
-  //   gl.clear(gl.COLOR_BUFFER_BIT)
-  // }
-
-  eventBus.emit('canvas:draw', {
-    ...e,
-    artboardOffset: offset,
-    artboardScale: scale,
-    artboardSize: size,
-    time: e.time,
-  })
 })
 
 onMounted(() => {

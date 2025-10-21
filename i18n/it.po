@@ -509,7 +509,7 @@ msgid "The items could not be duplicated."
 msgstr "Gli elementi non possono essere duplicati."
 
 msgctxt "edit"
-msgid "Edit..."
+msgid "Edit"
 msgstr "Modifica"
 
 msgctxt "editFormBlockAdd"
@@ -535,6 +535,14 @@ msgstr ""
 msgctxt "editIndicatorLabel"
 msgid "Edit blocks"
 msgstr "Modifica elementi"
+
+msgctxt "editIndicatorLabelReview"
+msgid "Review changes"
+msgstr ""
+
+msgctxt "editIndicatorLabelView"
+msgid "View changes"
+msgstr ""
 
 msgctxt "editableCommandEdit"
 msgid "Edit field \"@name\""
@@ -2033,4 +2041,20 @@ msgstr "Validazioni"
 
 msgctxt "validationsTourText"
 msgid "See validation errors for content or structure on the current page."
+msgstr ""
+
+msgctxt "viewBannerReviewText"
+msgid "You can view and add comments but cannot edit content."
+msgstr ""
+
+msgctxt "viewBannerReviewTitle"
+msgid "You are in review mode."
+msgstr ""
+
+msgctxt "viewBannerViewText"
+msgid "You can view comments but cannot edit content."
+msgstr ""
+
+msgctxt "viewBannerViewTitle"
+msgid "You are in view-only mode."
 msgstr ""

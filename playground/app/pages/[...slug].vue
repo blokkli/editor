@@ -9,6 +9,7 @@
       :can-edit
       :language="language"
       :entity="pageValues"
+      :permissions="['review']"
     >
       <Hero
         :is-editing="isEditing"

@@ -492,6 +492,8 @@ export type BlokkliProviderEntityContext = {
   language?: string
 }
 
+export type EditPermission = 'view' | 'edit' | 'review'
+
 export type EditEntity = {
   label?: string
   status?: boolean
@@ -708,7 +710,7 @@ export interface BlockBundleDefinition {
   isTranslatable?: boolean
 }
 
-export type EditMode = 'readonly' | 'editing' | 'translating'
+export type EditMode = 'readonly' | 'editing' | 'translating' | 'review'
 
 export type MutatedOptions = {
   [uuid: string]: {

@@ -476,7 +476,7 @@
     "translation": "Les éléments n'ont pas pu être dupliqués."
   },
   "edit": {
-    "source": "Edit...",
+    "source": "Edit",
     "translation": "Modifier"
   },
   "editFormBlockAdd": {
@@ -502,6 +502,14 @@
   "editIndicatorLabel": {
     "source": "Edit blocks",
     "translation": "Modifier les éléments"
+  },
+  "editIndicatorLabelReview": {
+    "source": "Review changes",
+    "translation": ""
+  },
+  "editIndicatorLabelView": {
+    "source": "View changes",
+    "translation": ""
   },
   "editableCommandEdit": {
     "source": "Edit field \"@name\"",
@@ -1849,6 +1857,22 @@
   },
   "validationsTourText": {
     "source": "See validation errors for content or structure on the current page.",
+    "translation": ""
+  },
+  "viewBannerReviewText": {
+    "source": "You can view and add comments but cannot edit content.",
+    "translation": ""
+  },
+  "viewBannerReviewTitle": {
+    "source": "You are in review mode.",
+    "translation": ""
+  },
+  "viewBannerViewText": {
+    "source": "You can view comments but cannot edit content.",
+    "translation": ""
+  },
+  "viewBannerViewTitle": {
+    "source": "You are in view-only mode.",
     "translation": ""
   }
 }

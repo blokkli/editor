@@ -3,6 +3,7 @@
     id="history"
     v-slot="{ scrolledToEnd }"
     :title="$t('history', 'History')"
+    edit-only
     :tour-text="
       $t(
         'historyTourText',
@@ -80,9 +81,13 @@ const { mutations, currentMutationIndex, mutateWithLoadingState } = state
 
 const mutationsCount = computed(() => mutations.value.length)
 const useMouseForHistory = computed(() => settings.value.useMouseButtons)
-const canUndo = computed(() => currentMutationIndex.value >= 0)
+const canUndo = computed(
+  () => currentMutationIndex.value >= 0 && state.canEdit.value,
+)
 const canRedo = computed(
-  () => currentMutationIndex.value < mutationsCount.value - 1,
+  () =>
+    currentMutationIndex.value < mutationsCount.value - 1 &&
+    state.canEdit.value,
 )
 
 const selectionAtHistoryIndex = new Map<number, string[]>()

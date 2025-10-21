@@ -23,6 +23,7 @@ import type {
   EditMode,
   FieldListItem,
   PublishOptions,
+  EditPermission,
 } from '#blokkli/types'
 import { falsy, getFieldKey } from '#blokkli/helpers'
 import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
@@ -72,6 +73,7 @@ export type StateProvider = {
   editMode: Readonly<Ref<EditMode>>
   mutatedEntity: Readonly<Ref<any>>
   canEdit: ComputedRef<boolean>
+  permissions: ComputedRef<EditPermission[]>
   stateAvailable: ComputedRef<boolean>
   isLoading: Readonly<Ref<boolean>>
   fromLibraryUuids: Readonly<Ref<Readonly<string[]>>>
@@ -93,6 +95,7 @@ export default async function (
   context: ComputedRef<AdapterContext>,
   $t: TextProvider,
   providerKey: string,
+  permissions: EditPermission[],
 ): Promise<StateProvider> {
   let _mappedState: MappedState | null = null
   const overrideHostOptions = useState('options:' + providerKey)
@@ -471,7 +474,8 @@ export default async function (
     () =>
       stateLoaded.value &&
       !!owner.value?.currentUserIsOwner &&
-      !stateLoadError.value,
+      !stateLoadError.value &&
+      permissions.includes('edit'),
   )
   const isTranslation = computed(
     () =>
@@ -558,5 +562,6 @@ export default async function (
     setOverrideState,
     clearOverrideState,
     fromLibraryUuids: readonly(fromLibraryUuids),
+    permissions: computed(() => permissions),
   }
 }
