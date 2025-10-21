@@ -162,7 +162,7 @@ const state = await editStateProvider(
   providerKey,
   props.permissions,
 )
-const storage = await storageProvider(adapter)
+const storage = await storageProvider(adapter, context)
 const debug = debugProvider(storage)
 const features = featuresProvider(storage)
 const theme = themeProvider()

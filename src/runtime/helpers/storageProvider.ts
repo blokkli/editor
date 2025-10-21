@@ -7,13 +7,18 @@ import {
   watch,
 } from '#imports'
 import { storageDefaults } from '#blokkli-build/config'
-import type { BlokkliAdapter } from '#blokkli/adapter'
+import type { AdapterContext, BlokkliAdapter } from '#blokkli/adapter'
 
 const PREFIX = 'blokkli:'
 
 export type StorageProvider = {
   use: <T>(
     key: string | ComputedRef<string>,
+    defaultValue: T,
+    persist?: boolean,
+  ) => WritableComputedRef<T>
+  useWithContextPrefix: <T>(
+    key: string,
     defaultValue: T,
     persist?: boolean,
   ) => WritableComputedRef<T>
@@ -42,6 +47,7 @@ const getExisting = (key: string): any => {
  */
 export default async function (
   adapter: BlokkliAdapter<any>,
+  context: ComputedRef<AdapterContext>,
 ): Promise<StorageProvider> {
   const values = ref<Record<string, any>>({})
   const defaults = ref<Record<string, any>>({})
@@ -162,6 +168,16 @@ export default async function (
     })
   }
 
+  const useWithContextPrefix = <T>(
+    key: string,
+    providedDefaultValue: T,
+    persist?: boolean,
+  ) => {
+    const fullKey =
+      key + ':' + context.value.entityType + ':' + context.value.entityUuid
+    return use(fullKey, providedDefaultValue, persist)
+  }
+
   const clearAll = () => {
     values.value = {}
     Object.keys(window.localStorage).forEach((key) => {
@@ -177,5 +193,5 @@ export default async function (
     window.localStorage.removeItem(storageKey)
   }
 
-  return { use, clearAll, clear }
+  return { use, useWithContextPrefix, clearAll, clear }
 }
