@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url'
 export default defineNuxtConfig({
   modules: ['nuxt-graphql-middleware'],
   graphqlMiddleware: {
-    graphqlEndpoint: 'https://example.com',
+    graphqlEndpoint: 'https://starterkit.ddev.site/de/graphql',
     schemaPath: './build/drupal-schema.graphql',
     downloadSchema: false,
     autoImportPatterns: [

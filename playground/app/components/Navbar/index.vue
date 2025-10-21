@@ -3,8 +3,9 @@
     entity-type="content"
     entity-bundle="foobar"
     entity-uuid="navbar"
+    edit-label="Edit Menu"
     language="en"
-    :permissions="['edit']"
+    :permissions="isDev ? ['edit'] : []"
     tag="header"
     class="bg-accent-50 border-b border-b-mono-500/20 sticky top-0 z-[999]"
   >
@@ -50,4 +51,6 @@
 import { useRuntimeConfig } from '#imports'
 
 const version = useRuntimeConfig().public.version
+
+const isDev = import.meta.dev
 </script>

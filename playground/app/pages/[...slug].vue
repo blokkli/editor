@@ -5,11 +5,12 @@
       :key="language"
       entity-type="content"
       entity-bundle="page"
+      edit-label="Edit Content Page"
       :entity-uuid="page.uuid"
       :can-edit
       :language="language"
       :entity="pageValues"
-      :permissions="['review']"
+      :permissions="['review', 'edit', 'view']"
     >
       <Hero
         :is-editing="isEditing"

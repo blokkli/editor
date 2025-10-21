@@ -668,7 +668,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           ...ctx.value,
           blockUuids,
           body,
-        }).then((v) => mapComments(v.data.state?.action || []))
+        }).then((v) => mapComments(v.data.action || []))
     }
 
     if (hasMutation('pbResolveComment')) {
@@ -676,7 +676,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         useGraphqlMutation('pbResolveComment', {
           ...ctx.value,
           uuid,
-        }).then((v) => mapComments(v.data.state?.action || []))
+        }).then((v) => mapComments(v.data.action || []))
     }
 
     if (hasQuery('pbLibraryItems')) {

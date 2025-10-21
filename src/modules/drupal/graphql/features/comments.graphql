@@ -32,30 +32,33 @@ query pbComments(
 mutation pbAddComment(
   $entityType: EntityType!
   $entityUuid: String!
+  $langcode: String!
   $blockUuids: [String]!
   $body: String!
 ) {
-  state: paragraphsEditMutationState(
+  action: paragraphsBlokkliAddComment(
     entityType: $entityType
     entityUuid: $entityUuid
+    langcode: $langcode
+    body: $body
+    paragraphUuids: $blockUuids
   ) {
-    action: addComment(body: $body, paragraphUuids: $blockUuids) {
-      ...paragraphsBlokkliComment
-    }
+    ...paragraphsBlokkliComment
   }
 }
 
 mutation pbResolveComment(
   $entityType: EntityType!
   $entityUuid: String!
+  $langcode: String!
   $uuid: String!
 ) {
-  state: paragraphsEditMutationState(
+  action: paragraphsBlokkliResolveComment(
     entityType: $entityType
     entityUuid: $entityUuid
+    langcode: $langcode
+    uuid: $uuid
   ) {
-    action: resolveComment(uuid: $uuid) {
-      ...paragraphsBlokkliComment
-    }
+    ...paragraphsBlokkliComment
   }
 }

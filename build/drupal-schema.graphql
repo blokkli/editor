@@ -2551,6 +2551,8 @@ type MetatagAttribute {
 type Mutation {
   masqueradeSwitchBack: Boolean!
   messengerMessages: MessengerMessage
+  paragraphsBlokkliAddComment(body: String!, entityType: EntityType!, entityUuid: String!, langcode: String!, paragraphUuids: [String]!): [Comment]
+  paragraphsBlokkliResolveComment(entityType: EntityType!, entityUuid: String!, langcode: String!, uuid: String!): [Comment]
 
   """Get the edit state for an entity."""
   paragraphsEditMutationState(
@@ -5923,14 +5925,25 @@ type ParagraphsBlokkliMutationResult {
 """An object of options managed by the paragraph component itself."""
 scalar ParagraphsBlokkliOptions
 
+enum ParagraphsBlokkliPermission {
+  """Edit the edit state"""
+  edit
+
+  """Review the edit state."""
+  review
+
+  """View the edit state"""
+  view
+}
+
 type ParagraphsBlokkliProps {
-  canEdit: Boolean!
   editLabel: String
   entityBundle: String!
   entityType: String!
   entityUuid: String!
   hostOptions: ParagraphsBlokkliOptions
   language: String!
+  permissions: [ParagraphsBlokkliPermission]!
 }
 
 type ParagraphsBlokkliPublishOptions {
@@ -6056,7 +6069,6 @@ type ParagraphsEditMutationState {
     """The paragraph type."""
     type: String!
   ): ParagraphsBlokkliMutationResult
-  addComment(body: String!, paragraphUuids: [String]!): [Comment]
 
   """Adds a new text paragraph."""
   add_clipboard_text(
@@ -6458,7 +6470,6 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph."""
     uuid: String!
   ): ParagraphsBlokkliMutationResult
-  resolveComment(uuid: String!): [Comment]
   revertAllChanges: ParagraphsBlokkliMutationResult
 
   """Schedule an edit state."""
