@@ -20,8 +20,8 @@
             <FormItem>
               <FormText
                 id="library_search"
-                :label="$t('libraryPlaceSearchLabel', 'Filter library items')"
                 v-model.lazy="searchText"
+                :label="$t('libraryPlaceSearchLabel', 'Filter library items')"
                 :placeholder="
                   $t(
                     'libraryPlaceSearchInputPlaceholder',
@@ -34,9 +34,9 @@
             <FormItem>
               <FormSelect
                 id="library_bundle"
+                v-model="selectedBundle"
                 :label="$t('libraryPlaceBundleSelectLabel', 'Bundle')"
                 :options="bundleOptions"
-                v-model="selectedBundle"
               />
             </FormItem>
           </div>

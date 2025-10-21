@@ -8,7 +8,6 @@
 import { useBlokkli, onBeforeUnmount } from '#imports'
 import { intersects, toShaderColor } from '#blokkli/helpers'
 import defineRenderer from '#blokkli/helpers/composables/defineRenderer'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import {

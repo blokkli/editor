@@ -50,13 +50,16 @@
       :entity="entity as any"
     />
 
-    <EditIndicator
-      v-if="showIndicator"
-      :uuid="entityUuid"
-      :edit-label
-      :permissions
-      @edit="edit"
-    />
+    <ClientOnly>
+      <EditIndicator
+        v-if="showIndicator"
+        :uuid="entityUuid"
+        :entity-type
+        :edit-label
+        :permissions
+        @edit="edit"
+      />
+    </ClientOnly>
   </div>
 </template>
 

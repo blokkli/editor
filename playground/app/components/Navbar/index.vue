@@ -1,5 +1,13 @@
 <template>
-  <header class="bg-accent-50 border-b border-b-mono-500/20">
+  <BlokkliProvider
+    entity-type="content"
+    entity-bundle="foobar"
+    entity-uuid="navbar"
+    language="en"
+    :permissions="['edit']"
+    tag="header"
+    class="bg-accent-50 border-b border-b-mono-500/20 sticky top-0 z-[999]"
+  >
     <div class="container flex justify-between items-center py-10 md:py-20">
       <div class="flex items-center gap-5 md:gap-10">
         <div
@@ -35,7 +43,7 @@
         </ul>
       </nav>
     </div>
-  </header>
+  </BlokkliProvider>
 </template>
 
 <script lang="ts" setup>

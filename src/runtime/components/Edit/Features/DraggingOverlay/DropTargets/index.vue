@@ -910,7 +910,7 @@ if (gl && programInfo) {
     zIndex: 400,
     only: true,
     cursor: () => 'grabbing',
-    render: (ctx) => {
+    render: () => {
       gl.useProgram(programInfo.program)
       animation.setSharedUniforms(gl, programInfo)
       setUniforms(programInfo, uniforms.value)

@@ -28,7 +28,7 @@
     </div>
   </Teleport>
   <Teleport to="#nuxt-root">
-    <div class="bk bk-canvas-overlay" id="bk-canvas-overlay" />
+    <div id="bk-canvas-overlay" class="bk bk-canvas-overlay" />
   </Teleport>
   <Actions v-if="!isInitializing" />
   <Toolbar @loaded="toolbarLoaded = true" />

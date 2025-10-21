@@ -26,8 +26,8 @@
       <FormItem>
         <FormText
           id="reusable_label"
-          :label="$t('libraryDialogDescriptionLabel', 'Description')"
           v-model="label"
+          :label="$t('libraryDialogDescriptionLabel', 'Description')"
           type="text"
           :placeholder="
             $t(
