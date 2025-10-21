@@ -33,6 +33,7 @@ import {
 import { Icon } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { Coord } from '#blokkli/types'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const props = withDefaults(
   defineProps<{
@@ -79,6 +80,12 @@ const { placementY, caretX } = useStickyToolbar(el, {
 
 watch(ui.openTooltip, (id) => {
   if (id !== props.id) {
+    emit('close')
+  }
+})
+
+onBlokkliEvent('keyPressed', (e) => {
+  if (e.code === 'Escape') {
     emit('close')
   }
 })

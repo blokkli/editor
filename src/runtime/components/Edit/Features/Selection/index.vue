@@ -346,8 +346,10 @@ onBlokkliEvent('keyPressed', (e) => {
     return
   }
   if (e.code === 'Escape') {
-    eventBus.emit('select:end', [])
-    eventBus.emit('select:host:unselect')
+    if (!ui.openTooltip.value) {
+      eventBus.emit('select:end', [])
+      eventBus.emit('select:host:unselect')
+    }
   } else if (e.code === 'Tab') {
     if (tour.isTouring.value || ui.hasDialogOpen.value) {
       return

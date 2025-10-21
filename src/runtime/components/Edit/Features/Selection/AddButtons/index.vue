@@ -526,6 +526,5 @@ function onRendererToggleField(data: {
   setAddData(key, field, label, undefined, undefined, data.coordinates)
 }
 
-onBlokkliEvent('mouse:up', closeOverlay)
 onBlokkliEvent('dragging:start', closeOverlay)
 </script>

@@ -385,13 +385,15 @@ defineRenderer('hover-overlay', {
       return
     }
 
-    updateHoverState(
-      ctx.mouseX,
-      ctx.mouseY,
-      ctx.artboardOffset,
-      ctx.artboardScale,
-      ctx.artboardSize,
-    )
+    if (!ui.openTooltip.value) {
+      updateHoverState(
+        ctx.mouseX,
+        ctx.mouseY,
+        ctx.artboardOffset,
+        ctx.artboardScale,
+        ctx.artboardSize,
+      )
+    }
 
     props.gl.useProgram(programInfo.program)
 

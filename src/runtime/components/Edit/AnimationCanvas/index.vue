@@ -228,6 +228,12 @@ function onPointerDown(e: PointerEvent) {
   keyboard.setShortcutStateFromEvent(e)
 
   canvasEl.value?.removeEventListener('pointermove', onPointerMove)
+
+  // Prevent starting any interactions if a tooltip is open.
+  if (ui.openTooltip.value) {
+    return
+  }
+
   if (state.isLoading.value) {
     return
   }
@@ -285,6 +291,12 @@ function onPointerUp(e: PointerEvent) {
   e.preventDefault()
   e.stopPropagation()
   e.stopImmediatePropagation()
+
+  // If a tooltip is open, close it and prevent all other interactions.
+  if (ui.openTooltip.value) {
+    ui.openTooltip.value = ''
+    return
+  }
   // This is required because emitting the mouse:up event would set this value to false.
   const wasDragging = selection.isDragging.value
   const wasMultiSelecting = selection.isMultiSelecting.value
@@ -398,6 +410,12 @@ function onTouchStart(e: PointerEvent) {
   const coords = getInteractionCoordinates(e)
   touchStartCoords = coords
   eventBus.emit('mouse:down', { ...coords, type: 'touch', distance: 0 })
+
+  // Prevent starting any interactions if a tooltip is open.
+  if (ui.openTooltip.value) {
+    return
+  }
+
   if (selection.isDragging.value) {
     return
   }
@@ -467,6 +485,13 @@ function onTouchEnd(e: PointerEvent) {
   }
   clearTimeout(longPressTimeout)
   longPressTimeout = null
+
+  // If a tooltip is open, close it and prevent all other interactions.
+  if (ui.openTooltip.value) {
+    ui.openTooltip.value = ''
+    return
+  }
+
   if (wasDragging) {
     return
   }
