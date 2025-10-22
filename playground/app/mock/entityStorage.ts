@@ -10,6 +10,8 @@ import data from './../../snapshots/data.json'
 import videosData from './../../snapshots/videos.json'
 import type { FieldBlocks } from './state/Field/Blocks'
 import { generateUUID } from './uuid'
+import * as commentStorage from './commentStorage'
+import type { StoredComment } from './commentStorage'
 
 export class EntityStorage<T extends Entity> {
   private entities: Record<string, T>
@@ -147,25 +149,8 @@ export class EntityStorageManager {
     this.addUser('1', 'John Miller', 'john@example.com')
     this.addUser('2', 'Martin Faux', 'martin@example.com')
 
-    this.addComment({
-      body: 'This is very nice!',
-      isResolved: true,
-      parentEntityType: 'content',
-      created: new Date(2023, 11, 4, 13, 2).getTime(),
-      parentEntityUuid: '1',
-      referencedBlocks: ['18a7ed49-7355-4d0d-9004-6623c98a999f'],
-      user: '1',
-    })
-
-    this.addComment({
-      body: 'We should probably link to the code in the repo for the adapter.',
-      isResolved: false,
-      parentEntityType: 'content',
-      created: new Date(2023, 11, 4, 11, 2).getTime(),
-      parentEntityUuid: '1',
-      referencedBlocks: ['c414a773-406c-4200-aef6-ada9349b3f11'],
-      user: '1',
-    })
+    // Load comments from localStorage (will initialize with defaults if empty)
+    this.loadCommentsFromStorage()
 
     const page = new ContentPage('1')
     page.title().setText('Interactive $page building$ experience for Nuxt.')
@@ -294,7 +279,35 @@ export class EntityStorageManager {
     return this.storages[key]
   }
 
+  /**
+   * Load comments from localStorage into the in-memory storage.
+   */
+  loadCommentsFromStorage() {
+    const storedComments = commentStorage.loadComments()
+
+    // Clear existing comments
+    this.storages.comment = new EntityStorage()
+
+    // Load each stored comment into the storage
+    storedComments.forEach((stored) => {
+      const comment = new Comment(stored.uuid)
+      comment.setValues({
+        body: stored.body,
+        isResolved: stored.isResolved,
+        parentEntityType: stored.parentEntityType,
+        parentEntityUuid: stored.parentEntityUuid,
+        created: stored.created,
+        user: stored.user,
+        referencedBlocks: stored.referencedBlocks,
+      })
+      this.storages.comment.add(comment)
+    })
+  }
+
   getCommentsForPage(uuid: string): Comment[] {
+    // Reload from localStorage to ensure we have the latest data
+    this.loadCommentsFromStorage()
+
     return this.storages.comment.query({
       parentEntityType: 'content',
       parentEntityUuid: uuid,
@@ -302,10 +315,33 @@ export class EntityStorageManager {
   }
 
   addComment(values: Record<string, any> = {}, uuid?: string): Comment {
-    const comment = new Comment(uuid || generateUUID())
+    const commentUuid = uuid || generateUUID()
+    const comment = new Comment(commentUuid)
     comment.setValues(values)
     this.storages.comment.add(comment)
+
+    // Persist to localStorage
+    const storedComment: StoredComment = {
+      uuid: commentUuid,
+      body: values.body || '',
+      isResolved: values.isResolved || false,
+      parentEntityType: values.parentEntityType || '',
+      parentEntityUuid: values.parentEntityUuid || '',
+      created: values.created || Date.now(),
+      user: values.user || '1',
+      referencedBlocks: values.referencedBlocks || [],
+    }
+    commentStorage.addComment(storedComment)
+
     return comment
+  }
+
+  resolveComment(uuid: string) {
+    // Update in localStorage
+    commentStorage.resolveComment(uuid)
+
+    // Reload from localStorage to update in-memory state
+    this.loadCommentsFromStorage()
   }
 
   addBlock(block: Block) {
