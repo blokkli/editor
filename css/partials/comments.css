@@ -21,7 +21,6 @@
   }
   .bk-comments-overlay-comments {
     @apply bg-white shadow-xl  origin-top-left absolute top-40  z-10;
-    @apply w-300;
     &.bk-is-right {
       @apply right-0;
     }
@@ -39,9 +38,9 @@
     }
   }
   .bk-comments-overlay-form {
-    @apply p-10;
+    @apply p-10 lg:p-20;
     button {
-      @apply w-full mt-10;
+      @apply w-full mt-10 lg:mt-20;
     }
   }
 }
@@ -82,14 +81,19 @@
     padding: var(--bk-gap);
     @apply w-full min-w-[360px];
     textarea {
-      @apply focus:!ring-yellow-normal;
-      @apply focus:!border-yellow-dark;
-      @apply !text-yellow-dark;
-      @apply !font-semibold;
     }
     .bk-button {
       @apply w-full;
       margin-top: var(--bk-gap);
     }
+  }
+}
+
+.bk .bk-comment-textarea {
+  textarea {
+    @apply focus:!ring-yellow-normal;
+    @apply focus:!border-yellow-dark;
+    @apply !text-yellow-dark;
+    @apply !font-semibold;
   }
 }

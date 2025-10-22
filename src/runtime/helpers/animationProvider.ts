@@ -230,10 +230,11 @@ export default function (
     // Clear the canvas before rendering
     const glContext = gl()
     if (glContext) {
-      // glContext.clear(glContext.COLOR_BUFFER_BIT)
       glContext.enable(glContext.BLEND)
       glContext.blendFunc(glContext.SRC_ALPHA_SATURATE, glContext.ONE)
       glContext.blendEquation(glContext.FUNC_ADD)
+      glContext.clearColor(0.0, 0.0, 0.0, 0.0)
+      glContext.clear(glContext.COLOR_BUFFER_BIT)
     }
 
     // Execute WebGL renderers in zIndex order

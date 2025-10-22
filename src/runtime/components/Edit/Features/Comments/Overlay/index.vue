@@ -1,13 +1,14 @@
 <template>
   <Teleport to="#bk-canvas-overlay">
-    <div class="bk bk-comments-overlay bk-control">
+    <div ref="overlay" class="bk bk-comments-overlay bk-control">
       <Item
         v-for="item in indicators"
         :key="item.id"
         v-bind="item"
-        :is-reduced="isReduced"
-        :is-left="isLeft"
+        :is-reduced
+        :is-left
         :show-comments="active === item.id"
+        :width
         @toggle="toggle(item)"
         @add-comment="$emit('addComment', { body: $event, uuids: item.uuids })"
         @resolve-comment="$emit('resolveComment', $event)"
@@ -17,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli } from '#imports'
+import { computed, ref, useBlokkli } from '#imports'
 import type { CommentItem } from '#blokkli/types'
 import { falsy, getBounds } from '#blokkli/helpers'
 import Item from './Item/index.vue'
@@ -33,6 +34,16 @@ type Indicator = {
 }
 
 const { eventBus, ui, dom } = useBlokkli()
+
+const width = computed(() => {
+  if (ui.viewport.value.width > 1600) {
+    return 400
+  } else if (ui.viewport.value.width > 1300) {
+    return 350
+  }
+
+  return 300
+})
 
 const props = defineProps<{
   comments: CommentItem[]
@@ -71,7 +82,7 @@ onBlokkliEvent('canvas:draw', (e) => {
   )
   isReduced.value = scale < 0.8
   isLeft.value =
-    x + 300 <
+    x + width.value <
     ui.visibleViewportPadded.value.x + ui.visibleViewportPadded.value.width
 
   const newIndicators: Record<string, Indicator> = {}

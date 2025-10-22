@@ -473,6 +473,10 @@ if (gl && programInfo && bufferInfo) {
       return false
     },
     render: (ctx) => {
+      if (selection.isChangingOptions.value) {
+        return
+      }
+
       // Reset all circles to invisible
       circleVisible.fill(0)
 

@@ -6,15 +6,7 @@
     @close="$emit('close')"
   >
     <div class="bk-add-comment-inner" @keydown.capture.stop>
-      <textarea
-        id="comment_body"
-        ref="textarea"
-        v-model="comment"
-        type="text"
-        class="bk-form-input"
-        rows="5"
-        required
-      />
+      <CommentInput id="comment_body" v-model="comment" />
       <footer>
         <button
           :disabled="!comment"
@@ -29,20 +21,14 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  onBeforeUnmount,
-  onMounted,
-  useBlokkli,
-  useTemplateRef,
-} from '#imports'
+import { onBeforeUnmount, onMounted, useBlokkli } from '#imports'
 import { ArtboardTooltip } from '#blokkli/components'
+import CommentInput from './../CommentInput/index.vue'
 
 const emit = defineEmits<{
   (e: 'add', comment: string): void
   (e: 'close'): void
 }>()
-
-const textarea = useTemplateRef('textarea')
 
 const { $t, ui, storage } = useBlokkli()
 
@@ -63,9 +49,6 @@ defineExpose({ getComment })
 
 onMounted(() => {
   ui.setSelectionColor('add-comment', 'yellow')
-  if (textarea.value) {
-    textarea.value.focus()
-  }
 })
 
 onBeforeUnmount(() => {

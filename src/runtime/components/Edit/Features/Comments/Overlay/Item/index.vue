@@ -25,6 +25,9 @@
       v-if="showComments"
       class="bk-comments-overlay-comments"
       :class="{ 'bk-is-left': isLeft, 'bk-is-right': !isLeft }"
+      :style="{
+        width: width + 'px',
+      }"
       @pointerdown.capture.stop
       @pointerup.capture.stop
       @pointermove.capture.stop
@@ -44,17 +47,14 @@
         <Comment v-bind="comment" @resolve="resolveComment(comment.uuid)" />
       </div>
       <div class="bk-comments-overlay-form" @keydown.capture.stop>
-        <textarea
+        <CommentInput
+          id="comment_reply"
           v-model.lazy="commentText"
-          type="text"
-          class="bk-form-input"
           :placeholder="$t('commentBodyPlaceholder', 'Add reply')"
-          required
-          @focus="showFullForm = true"
         />
         <button
-          v-if="showFullForm && commentText"
-          class="bk-button bk-is-primary bk-is-small"
+          v-if="commentText"
+          class="bk-button bk-is-warning"
           @click="addComment"
         >
           {{ $t('commentAdd', 'Add comment') }}
@@ -65,15 +65,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli, useState } from '#imports'
+import { computed, useBlokkli } from '#imports'
 import type { CommentItem } from '#blokkli/types'
 import { Icon } from '#blokkli/components'
 import Comment from './../../Comment/index.vue'
+import CommentInput from './../../CommentInput/index.vue'
 
 const { $t, storage } = useBlokkli()
 
 const commentText = storage.useWithContextPrefix('commentReply', '')
-const showFullForm = ref(false)
 const emit = defineEmits<{
   (e: 'toggle'): void
   (e: 'addComment' | 'resolveComment', text: string): void
@@ -86,6 +86,7 @@ const props = defineProps<{
   comments: CommentItem[]
   style: any
   showComments: boolean
+  width: number
 }>()
 
 const unresolvedCount = computed(
@@ -94,7 +95,6 @@ const unresolvedCount = computed(
 
 function addComment() {
   emit('addComment', commentText.value)
-  showFullForm.value = false
   commentText.value = ''
 }
 
