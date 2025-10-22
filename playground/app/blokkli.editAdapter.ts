@@ -452,8 +452,8 @@ export default defineBlokkliEditAdapter((ctx) => {
     loadComments() {
       return loadComments()
     },
-    resolveComment() {
-      console.log('Resolve comment')
+    resolveComment(uuid) {
+      entityStorageManager.resolveComment(uuid)
       return loadComments()
     },
     addComment(blockUuids, body) {
