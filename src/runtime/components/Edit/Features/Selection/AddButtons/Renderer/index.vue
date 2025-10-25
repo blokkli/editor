@@ -438,7 +438,15 @@ function getCircleAtPoint(x: number, y: number): number {
 if (gl && programInfo && bufferInfo) {
   defineRenderer('add-buttons', {
     zIndex: 1000,
-    enabled: () => selection.uuids.value.length === 1,
+    enabled: () => {
+      if (selection.uuids.value.length !== 1) {
+        return false
+      }
+      if (ui.openTooltip.value && ui.openTooltip.value !== 'add-buttons') {
+        return false
+      }
+      return true
+    },
     cursor: () => (hoveredCircle.value >= 0 ? 'pointer' : null),
     onClick: ({ mouseArtboard }) => {
       // Only handle clicks if exactly one block is selected
