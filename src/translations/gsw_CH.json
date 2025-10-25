@@ -1719,6 +1719,10 @@
     "source": "Select all \"@bundle\" blocks",
     "translation": "Alli «@bundle»-Blöck uswähle"
   },
+  "selectedIsNew": {
+    "source": "New",
+    "translation": ""
+  },
   "selectionActionGroupTitle": {
     "source": "Selection",
     "translation": "Uswahl"

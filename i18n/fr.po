@@ -1881,6 +1881,10 @@ msgctxt "selectAllOfBundle"
 msgid "Select all \"@bundle\" blocks"
 msgstr ""
 
+msgctxt "selectedIsNew"
+msgid "New"
+msgstr ""
+
 msgctxt "selectionActionGroupTitle"
 msgid "Selection"
 msgstr ""

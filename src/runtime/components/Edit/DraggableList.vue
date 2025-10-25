@@ -20,7 +20,6 @@
         :key="item.uuid + fieldListType + definitions.renderKey.value"
         :uuid="item.uuid"
         :bundle="item.bundle"
-        :is-new="item.isNew"
         :options="item.options"
         :props="item.props"
         is-editing
@@ -37,7 +36,6 @@
         :data-host-field-name="name"
         :data-host-field-list-type="fieldListType"
         :data-is-nested="isNested"
-        :data-is-new="item.isNew"
         :data-entity-type="runtimeConfig.itemEntityType"
         :data-bk-is-muted="isMuted(item)"
       />
@@ -55,7 +53,6 @@
       :key="item.uuid + fieldListType"
       :uuid="item.uuid"
       :bundle="item.bundle"
-      :is-new="item.isNew"
       :options="item.options"
       :props="item.props"
       is-editing
@@ -72,7 +69,6 @@
       :data-host-field-name="name"
       :data-host-field-list-type="fieldListType"
       :data-is-nested="isNested"
-      :data-is-new="item.isNew"
       :data-entity-type="runtimeConfig.itemEntityType"
       :data-bk-is-muted="isMuted(item)"
     />

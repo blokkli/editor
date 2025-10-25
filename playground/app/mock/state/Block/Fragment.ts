@@ -9,7 +9,9 @@ export class BlockFragment extends Block {
   static override isTranslatable = true
 
   static override getDefaultValues(): Record<string, any> {
-    return {}
+    return {
+      ...super.getDefaultValues(),
+    }
   }
 
   static override getFieldDefintions(): Field<any>[] {

@@ -1911,6 +1911,10 @@ msgctxt "selectAllOfBundle"
 msgid "Select all \"@bundle\" blocks"
 msgstr "Alli «@bundle»-Blöck uswähle"
 
+msgctxt "selectedIsNew"
+msgid "New"
+msgstr ""
+
 msgctxt "selectionActionGroupTitle"
 msgid "Selection"
 msgstr "Uswahl"

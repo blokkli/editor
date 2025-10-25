@@ -1920,6 +1920,10 @@ msgctxt "selectAllOfBundle"
 msgid "Select all \"@bundle\" blocks"
 msgstr "Alle «@bundle» Blöcke auswählen"
 
+msgctxt "selectedIsNew"
+msgid "New"
+msgstr "Neu"
+
 msgctxt "selectionActionGroupTitle"
 msgid "Selection"
 msgstr "Auswahl"

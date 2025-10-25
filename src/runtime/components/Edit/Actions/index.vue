@@ -26,7 +26,6 @@
             <button
               class="bk-blokkli-item-actions-type-button"
               :disabled="!shouldRenderButton"
-              :title="title"
               :class="{
                 'is-open': showDropdown,
                 'is-interactive': shouldRenderButton,
@@ -59,6 +58,11 @@
                 v-if="selection.blocks.value.length > 1"
                 class="bk-blokkli-item-actions-title-count"
                 >{{ selection.blocks.value.length }}</span
+              >
+              <span
+                v-show="selectedIsNew"
+                class="bk-blokkli-item-actions-title-pill"
+                >{{ $t('selectedIsNew', 'New') }}</span
               >
               <Icon v-if="shouldRenderButton" name="caret" class="bk-caret" />
             </button>
@@ -186,6 +190,19 @@ const title = computed(() => {
   }
 
   return $t('multipleItemsLabel', 'Items')
+})
+
+const selectedIsNew = computed<boolean>(() => {
+  if (selection.uuids.value.length !== 1) {
+    return false
+  }
+
+  const uuid = selection.uuids.value[0]
+  if (!uuid) {
+    return false
+  }
+
+  return !!state.getFieldListItem(uuid)?.editContext?.isNew
 })
 
 const itemBundleIds = computed(() =>

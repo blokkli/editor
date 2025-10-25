@@ -11,6 +11,7 @@ export class BlockTitle extends Block {
 
   static override getDefaultValues(): Record<string, any> {
     return {
+      ...super.getDefaultValues(),
       tagline: 'Tagline',
       title: LOREM_TITLE,
       lead: LOREM_LEAD,

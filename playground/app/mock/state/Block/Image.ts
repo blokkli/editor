@@ -17,6 +17,7 @@ export class BlockImage extends Block {
 
   static override getDefaultValues(): Record<string, any> {
     return {
+      ...super.getDefaultValues(),
       imageReference: ['7'],
     }
   }

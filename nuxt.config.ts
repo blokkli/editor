@@ -38,6 +38,7 @@ fragment paragraphsBlokkliPublishOptions on ParagraphsBlokkliPublishOptions {
 
 fragment paragraphsBlokkliParagraphEditContext on ParagraphsBlokkliParagraphEditContext {
   isPublished
+  isNew
   publishOn
   unpublishOn
 }

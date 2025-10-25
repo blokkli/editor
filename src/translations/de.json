@@ -1719,6 +1719,10 @@
     "source": "Select all \"@bundle\" blocks",
     "translation": "Alle «@bundle» Blöcke auswählen"
   },
+  "selectedIsNew": {
+    "source": "New",
+    "translation": "Neu"
+  },
   "selectionActionGroupTitle": {
     "source": "Selection",
     "translation": "Auswahl"

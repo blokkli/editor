@@ -5894,8 +5894,11 @@ type ParagraphsBlokkliMutationResult {
 scalar ParagraphsBlokkliOptions
 
 type ParagraphsBlokkliParagraphEditContext {
+  """Whether the paragraph is new."""
+  isNew: Boolean!
+
   """The status of the paragraph."""
-  isPublished: Boolean
+  isPublished: Boolean!
   publishOn: String
   unpublishOn: String
 }

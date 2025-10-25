@@ -445,7 +445,6 @@ export type InjectedBlokkliItem = {
 export type FieldListItem = {
   uuid: string
   bundle: string
-  isNew?: boolean
   options?: Record<string, any>
   editContext?: BlockEditContext
   props?: Record<string, any>
@@ -870,7 +869,6 @@ export interface DraggableExistingBlock {
   hostFieldName: string
   hostFieldListType: ValidFieldListTypes
   itemBundle: string
-  isNew: boolean
   uuid: string
   isNested: boolean
 
@@ -1736,7 +1734,8 @@ export type AddAction = {
 }
 
 export type BlockEditContext = {
-  isPublished?: boolean
+  isPublished: boolean
+  isNew: boolean
   publishOn?: string | null
   unpublishOn?: string | null
 }

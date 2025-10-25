@@ -47,7 +47,6 @@ const componentProps = withDefaults(
   defineProps<{
     uuid: string
     bundle: string
-    isNew?: boolean
     options?: any
     props?: any
     index?: number

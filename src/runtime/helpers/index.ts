@@ -48,7 +48,6 @@ export function buildDraggableItem(
       | ValidFieldListTypes
       | undefined
     const libraryItemUuid = dataset.bkLibraryItemUuid
-    const isNew = dataset.isNew === 'true'
     const parentBlockBundle =
       hostType === itemEntityType ? (hostBundle as any) : undefined
     if (
@@ -80,7 +79,6 @@ export function buildDraggableItem(
         reusableBundle,
         libraryItemUuid,
         editTitle: editTitle || undefined,
-        isNew,
         parentBlockBundle,
       }
     }

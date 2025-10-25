@@ -87,6 +87,7 @@
     @apply relative flex flex-1 lg:flex-initial;
   }
   .bk-item-action-icon {
+    @apply pointer-events-none;
     svg {
       @apply w-20 h-20 lg:w-25 lg:h-25 fill-current;
     }
@@ -124,12 +125,12 @@
   }
 
   .bk-blokkli-item-actions-type-button {
-    @apply flex items-center justify-between cursor-default lg:min-w-[180px] text-mono-300 font-bold h-full leading-none relative;
+    @apply flex items-center cursor-default lg:min-w-[180px] text-mono-300 font-bold h-full leading-none relative;
     @apply text-xs lg:text-base;
     @apply w-full;
     @apply lg:rounded-l-md;
     .bk-blokkli-item-actions-title-label {
-      @apply mr-auto truncate;
+      @apply truncate mr-auto;
     }
     .bk-blokkli-item-actions-title-icon {
       @apply bg-mono-800 rounded border border-mono-600 text-white;
@@ -169,7 +170,7 @@
       }
     }
     .bk-caret {
-      @apply ml-10;
+      @apply ml-5;
       svg {
         @apply pointer-events-none size-15 fill-current md:size-20;
       }
@@ -255,5 +256,12 @@
 
   .bk-blokkli-item-actions-comment {
     /* @apply relative; */
+  }
+
+  .bk-blokkli-item-actions-title-pill {
+    @apply text-xs uppercase leading-none ml-auto;
+    @apply rounded-full px-5 py-3;
+    @apply bg-mono-700 text-mono-200;
+    @apply border border-mono-500;
   }
 }

@@ -1,5 +1,6 @@
 import type { BlockEditContext } from '#blokkli/types'
 import type { Field } from '../Field'
+import { FieldBoolean } from '../Field/Boolean'
 import { FieldOptions } from '../Field/Options'
 import { FieldText } from '../Field/Text'
 import type { EntityValidation } from '../Validation'
@@ -13,6 +14,7 @@ export abstract class Block extends Entity {
   static override getFieldDefintions(): Field<any>[] {
     return [
       ...super.getFieldDefintions(),
+      new FieldBoolean('isNew', 'is new'),
       new FieldOptions('options', 'Options'),
       new FieldText('publishOn', 'Publish On'),
       new FieldText('unpublishOn', 'Unpublish On'),
@@ -20,7 +22,9 @@ export abstract class Block extends Entity {
   }
 
   static getDefaultValues(): Record<string, any> {
-    return {}
+    return {
+      isNew: true,
+    }
   }
 
   options(): FieldOptions {
@@ -43,6 +47,7 @@ export abstract class Block extends Entity {
   getEditContext(): BlockEditContext {
     const publishOn = this.get('publishOn').getPropValue()
     const unpublishOn = this.get('unpublishOn').getPropValue()
+    const isNew = !!this.get('isNew').getPropValue()
 
     // Calculate isPublished based on publishOn date
     let isPublished = true
@@ -56,6 +61,7 @@ export abstract class Block extends Entity {
     }
     return {
       isPublished,
+      isNew,
       publishOn,
       unpublishOn,
     }

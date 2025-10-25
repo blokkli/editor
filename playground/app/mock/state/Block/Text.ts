@@ -12,6 +12,7 @@ export class BlockText extends Block {
 
   static override getDefaultValues(): Record<string, any> {
     return {
+      ...super.getDefaultValues(),
       text: `<p>${LOREM_TEXT}</p>`,
     }
   }

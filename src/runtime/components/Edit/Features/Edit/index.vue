@@ -42,6 +42,12 @@ const canEdit = computed(() => {
     return false
   }
 
+  const item = state.getFieldListItem(block.value.uuid)
+
+  if (!item?.editContext) {
+    return false
+  }
+
   const definition = definitions.getBlockDefinition(
     block.value.itemBundle,
     block.value.hostFieldListType,
@@ -60,7 +66,7 @@ const canEdit = computed(() => {
       !!adapter.getLibraryItemEditUrl &&
       (state.editMode.value === 'editing' ||
         state.editMode.value === 'translating') &&
-      !block.value.isNew
+      !item.editContext.isNew
     )
   }
 

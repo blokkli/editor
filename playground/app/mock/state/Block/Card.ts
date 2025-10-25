@@ -12,6 +12,7 @@ export class BlockCard extends Block {
 
   static override getDefaultValues(): Record<string, any> {
     return {
+      ...super.getDefaultValues(),
       text: LOREM_LEAD,
       title: LOREM_TITLE,
     }

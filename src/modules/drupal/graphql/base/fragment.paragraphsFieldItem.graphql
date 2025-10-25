@@ -1,7 +1,6 @@
 fragment paragraphsFieldItem on Paragraph {
   uuid
   bundle: entityBundle
-  isNew
   options: paragraphsBlokkliOptions
   editContext: paragraphsBlokkliEditContext {
     ...paragraphsBlokkliParagraphEditContext

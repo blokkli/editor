@@ -393,7 +393,7 @@ export class EntityStorageManager {
     const cloned = new (entity.constructor as typeof Entity)(newUuid) as Block
 
     const values = entity.getValues()
-    cloned.setValues(values)
+    cloned.setValues({ ...values, isNew: [true] })
     this.addBlock(cloned)
 
     return cloned

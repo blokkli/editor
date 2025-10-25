@@ -19,6 +19,7 @@ export class BlockButton extends Block {
 
   static override getDefaultValues(): Record<string, any> {
     return {
+      ...super.getDefaultValues(),
       title: LOREM_SHORT,
       url: 'https://www.example.com',
     }

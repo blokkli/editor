@@ -150,7 +150,7 @@ function incrementHour() {
 function decrementHour() {
   const [hours = 0, minutes = 0] = selectedTime.value.split(':').map(Number)
   // If minutes are not 00, round down to current hour, otherwise decrement hour
-  const newHours = minutes > 0 ? hours : (hours === 0 ? 23 : hours - 1)
+  const newHours = minutes > 0 ? hours : hours === 0 ? 23 : hours - 1
   selectedTime.value = `${String(newHours).padStart(2, '0')}:00`
 }
 </script>
