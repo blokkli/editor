@@ -262,6 +262,6 @@
     @apply text-xs uppercase leading-none ml-auto;
     @apply rounded-full px-5 py-3;
     @apply bg-mono-700 text-mono-200;
-    @apply border border-mono-500;
+    @apply border border-mono-500 font-bold;
   }
 }

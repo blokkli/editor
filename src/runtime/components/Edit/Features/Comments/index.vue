@@ -30,7 +30,7 @@
     :title="$t('addCommentToItem', 'Add Comment...')"
     :active="showAddComment"
     weight="last"
-    icon="comment"
+    icon="comment_add"
     multiple
     @click="showAddComment = !showAddComment"
   />
