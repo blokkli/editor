@@ -299,6 +299,54 @@ msgctxt "blockOption_bkVisibleLanguages_label"
 msgid "Visible languages"
 msgstr "Sichtbare Sprachen"
 
+msgctxt "blockSchedulerChangesPreview"
+msgid "Changes to be applied"
+msgstr "Anzuwendende Änderungen"
+
+msgctxt "blockSchedulerDialogLead"
+msgid ""
+"Schedule automatic publishing and unpublishing dates for the selected "
+"blocks."
+msgstr ""
+"Planen Sie automatische Veröffentlichungs- und Depublikationsdaten für die "
+"ausgewählten Blöcke."
+
+msgctxt "blockSchedulerDialogPublishOn"
+msgid "Publish on"
+msgstr "Veröffentlichen am"
+
+msgctxt "blockSchedulerDialogSubmit"
+msgid "Save schedule"
+msgstr "Planung speichern"
+
+msgctxt "blockSchedulerDialogTitle"
+msgid "Manage scheduling"
+msgstr "Planung verwalten"
+
+msgctxt "blockSchedulerDialogUnpublishOn"
+msgid "Unpublish on"
+msgstr "Depublizieren am"
+
+msgctxt "blockSchedulerMixedDates"
+msgid "Selected blocks have different dates: @dates"
+msgstr "Ausgewählte Blöcke haben unterschiedliche Daten: @dates"
+
+msgctxt "blockSchedulerNoChanges"
+msgid "No changes to be applied."
+msgstr "Keine Änderungen vorhanden."
+
+msgctxt "blockSchedulerOverride"
+msgid "Set date for all"
+msgstr "Datum für alle setzen"
+
+msgctxt "blockSchedulerSuccessMessage"
+msgid "Successfully updated schedule dates."
+msgstr "Planungsdaten erfolgreich aktualisiert."
+
+msgctxt "bundle"
+msgid "Bundle"
+msgstr "Typ"
+
 msgctxt "cancelSelection"
 msgid "Cancel selection"
 msgstr "Auswahl abbrechen"
@@ -520,7 +568,7 @@ msgid "The items could not be duplicated."
 msgstr "Die Elemente konnten nicht dupliziert werden."
 
 msgctxt "edit"
-msgid "Edit"
+msgid "Edit..."
 msgstr "Bearbeiten..."
 
 msgctxt "editFormBlockAdd"
@@ -724,6 +772,14 @@ msgstr ""
 msgctxt "feature_block-add-list_setting_hideDisabledBlocks_label"
 msgid "Hide blocks that can't be added"
 msgstr "Blöcke ausblenden, die nicht hinzugefügt werden können"
+
+msgctxt "feature_block-scheduler_description"
+msgid "Adds support for scheduling blocks."
+msgstr ""
+
+msgctxt "feature_block-scheduler_label"
+msgid "Block Scheduler"
+msgstr ""
 
 msgctxt "feature_clipboard_description"
 msgid ""
@@ -1426,6 +1482,10 @@ msgctxt "libraryPreviewLabel"
 msgid "Preview"
 msgstr "Vorschau"
 
+msgctxt "manageSchedule"
+msgid "Manage schedule..."
+msgstr "Planung verwalten..."
+
 msgctxt "maskHide"
 msgid "Hide non-editable areas"
 msgstr "Nicht-editierbare Bereiche verstecken"
@@ -1463,6 +1523,14 @@ msgstr "Suchen Sie nach Medien wie Bildern und ziehen Sie diese in die Seite."
 msgctxt "multipleItemsLabel"
 msgid "Items"
 msgstr "Elemente"
+
+msgctxt "notSet"
+msgid "Not set"
+msgstr "Nicht gesetzt"
+
+msgctxt "notSupported"
+msgid "Not supported"
+msgstr "Nicht unterstützt"
 
 msgctxt "optionBkVisibleLanguagesAll"
 msgid "All languages"
@@ -1720,14 +1788,6 @@ msgctxt "publishScheduleDateTooSoon"
 msgid "The scheduled date must be at least 2 minutes in the future"
 msgstr "Das geplante Datum muss mindestens 2 Minuten in der Zukunft liegen"
 
-msgctxt "publishScheduleInSevenDays"
-msgid "In 7 days"
-msgstr "In 7 Tagen"
-
-msgctxt "publishScheduleNextMonday"
-msgid "Next Monday"
-msgstr "Nächster Montag"
-
 msgctxt "publishSchedulePublication"
 msgid "Schedule publication"
 msgstr "Veröffentlichung planen"
@@ -1739,10 +1799,6 @@ msgstr "@count Veröffentlichungen planen"
 msgctxt "publishScheduleSuccess"
 msgid "Publication scheduled for @date"
 msgstr "Veröffentlichung für @date geplant"
-
-msgctxt "publishScheduleTomorrow"
-msgid "Tomorrow"
-msgstr "Morgen"
 
 msgctxt "publishScheduledInfo"
 msgid "You can still make changes until the scheduled publication date."

@@ -7,7 +7,7 @@ query pbConfig($entityType: String!, $entityBundle: String!) {
   }
   allTypes: entityQuery(entityType: PARAGRAPHS_TYPE, limit: 999) {
     items {
-      ...paragraphsType
+      ...blokkliParagraphsType
     }
   }
 
@@ -84,13 +84,4 @@ fragment paragraphsBlokkliSupportedClipboard on ParagraphsBlokkliSupportedClipbo
     possibleParagraphBundles
     videoProviders
   }
-}
-
-fragment paragraphsType on ParagraphsType {
-  id
-  label
-  icon: iconDefault
-  description
-  allowReusable
-  isTranslatable
 }

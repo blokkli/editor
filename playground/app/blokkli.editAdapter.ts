@@ -993,6 +993,10 @@ export default defineBlokkliEditAdapter((ctx) => {
       return mockResponse(await editState.getMutatedState(getEntity()))
     },
 
+    async setBlockScheduleDate(blocks) {
+      return addMutation('set_block_schedule', { blocks })
+    },
+
     getEditStates() {
       if (!ENALBE_EDIT_STATES) {
         return Promise.resolve({

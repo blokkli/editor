@@ -44,7 +44,7 @@ import type { IndicatorsProvider } from '#blokkli/helpers/indicatorsProvider'
 
 export type MutateWithLoadingStateFunction = (
   promise: () => Promise<MutationResponseLike<any>> | undefined,
-  errorMessage?: string,
+  errorMessage?: string | false,
   successMessage?: string,
 ) => Promise<boolean>
 
@@ -447,6 +447,7 @@ export type FieldListItem = {
   bundle: string
   isNew?: boolean
   options?: Record<string, any>
+  editContext?: BlockEditContext
   props?: Record<string, any>
 }
 
@@ -708,6 +709,8 @@ export interface BlockBundleDefinition {
   description?: string
   allowReusable?: boolean
   isTranslatable?: boolean
+  hasPublishOn?: boolean
+  hasUnpublishOn?: boolean
 }
 
 export type EditMode = 'readonly' | 'editing' | 'translating' | 'review'
@@ -1730,6 +1733,12 @@ export type AddAction = {
   title: string
   description?: string
   enabled?: boolean
+}
+
+export type BlockEditContext = {
+  isPublished?: boolean
+  publishOn?: string | null
+  unpublishOn?: string | null
 }
 
 export default {}

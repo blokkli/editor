@@ -1,8 +1,8 @@
 <template>
   <PluginItemAction
     id="delete"
+    edit-only
     :title="$t('deleteButton', 'Delete')"
-    :disabled="state.editMode.value !== 'editing'"
     multiple
     key-code="Delete"
     icon="delete"

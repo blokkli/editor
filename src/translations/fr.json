@@ -275,6 +275,50 @@
     "source": "Visible languages",
     "translation": ""
   },
+  "blockSchedulerChangesPreview": {
+    "source": "Changes to be applied",
+    "translation": ""
+  },
+  "blockSchedulerDialogLead": {
+    "source": "Schedule automatic publishing and unpublishing dates for the selected blocks.",
+    "translation": ""
+  },
+  "blockSchedulerDialogPublishOn": {
+    "source": "Publish on",
+    "translation": ""
+  },
+  "blockSchedulerDialogSubmit": {
+    "source": "Save schedule",
+    "translation": ""
+  },
+  "blockSchedulerDialogTitle": {
+    "source": "Manage scheduling",
+    "translation": ""
+  },
+  "blockSchedulerDialogUnpublishOn": {
+    "source": "Unpublish on",
+    "translation": ""
+  },
+  "blockSchedulerMixedDates": {
+    "source": "Selected blocks have different dates: @dates",
+    "translation": ""
+  },
+  "blockSchedulerNoChanges": {
+    "source": "No changes to be applied.",
+    "translation": ""
+  },
+  "blockSchedulerOverride": {
+    "source": "Set date for all",
+    "translation": ""
+  },
+  "blockSchedulerSuccessMessage": {
+    "source": "Successfully updated schedule dates.",
+    "translation": ""
+  },
+  "bundle": {
+    "source": "Bundle",
+    "translation": ""
+  },
   "cancelSelection": {
     "source": "Cancel selection",
     "translation": ""
@@ -476,7 +520,7 @@
     "translation": "Les éléments n'ont pas pu être dupliqués."
   },
   "edit": {
-    "source": "Edit",
+    "source": "Edit...",
     "translation": "Modifier"
   },
   "editFormBlockAdd": {
@@ -654,6 +698,14 @@
   "feature_block-add-list_setting_hideDisabledBlocks_label": {
     "source": "Hide blocks that can't be added",
     "translation": "Masquer les blocs qui ne peuvent pas être ajoutés"
+  },
+  "feature_block-scheduler_description": {
+    "source": "Adds support for scheduling blocks.",
+    "translation": ""
+  },
+  "feature_block-scheduler_label": {
+    "source": "Block Scheduler",
+    "translation": ""
   },
   "feature_clipboard_description": {
     "source": "Provides clipboard integration to copy/paste existing blocks or paste supported clipboard content like text or images.",
@@ -1255,6 +1307,10 @@
     "source": "Preview",
     "translation": "Aperçu"
   },
+  "manageSchedule": {
+    "source": "Manage schedule...",
+    "translation": ""
+  },
   "maskHide": {
     "source": "Hide non-editable areas",
     "translation": "Masquer les champs de contenu"
@@ -1290,6 +1346,14 @@
   "multipleItemsLabel": {
     "source": "Items",
     "translation": "Éléments"
+  },
+  "notSet": {
+    "source": "Not set",
+    "translation": ""
+  },
+  "notSupported": {
+    "source": "Not supported",
+    "translation": ""
   },
   "optionBkVisibleLanguagesAll": {
     "source": "All languages",
@@ -1539,14 +1603,6 @@
     "source": "The scheduled date must be at least 2 minutes in the future",
     "translation": ""
   },
-  "publishScheduleInSevenDays": {
-    "source": "In 7 days",
-    "translation": ""
-  },
-  "publishScheduleNextMonday": {
-    "source": "Next Monday",
-    "translation": ""
-  },
   "publishSchedulePublication": {
     "source": "Schedule publication",
     "translation": ""
@@ -1557,10 +1613,6 @@
   },
   "publishScheduleSuccess": {
     "source": "Publication scheduled for @date",
-    "translation": ""
-  },
-  "publishScheduleTomorrow": {
-    "source": "Tomorrow",
     "translation": ""
   },
   "publishScheduledInfo": {

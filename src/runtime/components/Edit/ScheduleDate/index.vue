@@ -41,41 +41,7 @@
         </button>
       </div>
 
-      <div class="bk-schedule-date-presets">
-        <button
-          type="button"
-          class="bk-button bk-is-small"
-          :disabled="disabled"
-          @click="setTomorrow"
-        >
-          {{ $t('publishScheduleTomorrow', 'Tomorrow') }}
-        </button>
-        <button
-          type="button"
-          class="bk-button bk-is-small"
-          :disabled="disabled"
-          @click="setInSevenDays"
-        >
-          {{ $t('publishScheduleInSevenDays', 'In 7 days') }}
-        </button>
-        <button
-          type="button"
-          class="bk-button bk-is-small"
-          :disabled="disabled"
-          @click="setNextMonday"
-        >
-          {{ $t('publishScheduleNextMonday', 'Next Monday') }}
-        </button>
-      </div>
-      <div
-        class="bk-schedule-date-info"
-        v-text="
-          $t(
-            'publishScheduledInfo',
-            'You can still make changes until the scheduled publication date.',
-          )
-        "
-      />
+      <slot />
       <div v-if="error" class="bk-schedule-date-error">
         {{ error }}
       </div>
@@ -87,7 +53,7 @@
 import { ref, computed, watch, useBlokkli } from '#imports'
 import { FormDatepicker, Icon } from '#blokkli/components'
 
-const { $t, ui } = useBlokkli()
+const { ui } = useBlokkli()
 
 defineProps<{
   disabled?: boolean
@@ -173,41 +139,18 @@ watch(modelValue, (newValue) => {
   }
 })
 
-// Preset date functions
-function setTomorrow() {
-  const tomorrow = new Date()
-  tomorrow.setDate(tomorrow.getDate() + 1)
-  selectedDate.value = formatDate(tomorrow)
-}
-
-function setInSevenDays() {
-  const date = new Date()
-  date.setDate(date.getDate() + 7)
-  selectedDate.value = formatDate(date)
-}
-
-function setNextMonday() {
-  const today = new Date()
-  const dayOfWeek = today.getDay()
-  // If today is Sunday (0), next Monday is 1 day away
-  // If today is Monday (1), next Monday is 7 days away
-  // If today is Tuesday (2), next Monday is 6 days away, etc.
-  const daysUntilMonday = dayOfWeek === 0 ? 1 : 8 - dayOfWeek
-  const nextMonday = new Date()
-  nextMonday.setDate(today.getDate() + daysUntilMonday)
-  selectedDate.value = formatDate(nextMonday)
-}
-
 // Time adjustment functions
 function incrementHour() {
   const [hours = 0, minutes = 0] = selectedTime.value.split(':').map(Number)
-  const newHours = (hours + 1) % 24
-  selectedTime.value = `${String(newHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+  // If minutes are not 00, round up to next hour, otherwise increment hour
+  const newHours = minutes > 0 ? (hours + 1) % 24 : (hours + 1) % 24
+  selectedTime.value = `${String(newHours).padStart(2, '0')}:00`
 }
 
 function decrementHour() {
   const [hours = 0, minutes = 0] = selectedTime.value.split(':').map(Number)
-  const newHours = hours === 0 ? 23 : hours - 1
-  selectedTime.value = `${String(newHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+  // If minutes are not 00, round down to current hour, otherwise decrement hour
+  const newHours = minutes > 0 ? hours : (hours === 0 ? 23 : hours - 1)
+  selectedTime.value = `${String(newHours).padStart(2, '0')}:00`
 }
 </script>

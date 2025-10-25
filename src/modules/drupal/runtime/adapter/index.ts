@@ -133,7 +133,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         clipboard: v.data.clipboards || [],
         availableFeatures: v.data.features,
         allTypes: (v.data.allTypes.items || []).filter(
-          (v) => v && 'icon' in v,
+          (v) => v && 'id' in v,
         ) as BlockBundleDefinition[],
         fieldConfig: v.data.fieldConfig || [],
         editableFieldConfig: v.data.editableFieldConfig || [],
@@ -1106,6 +1106,16 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           entityUuid: options.hostEntityUuid,
           date: options.date,
           revisionLogMessage: options.revisionLogMessage,
+        }).then(mapMutation)
+    }
+
+    if (hasMutation('pbSetParagraphSchedule')) {
+      adapter.setBlockScheduleDate = (blocks) =>
+        useGraphqlMutation('pbSetParagraphSchedule', {
+          entityType: ctx.value.entityType,
+          entityUuid: ctx.value.entityUuid,
+          langcode: ctx.value.langcode,
+          items: blocks,
         }).then(mapMutation)
     }
 

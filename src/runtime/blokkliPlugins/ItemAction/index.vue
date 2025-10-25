@@ -1,14 +1,19 @@
 <template>
   <Teleport to="#bk-blokkli-item-actions">
     <button
+      v-if="shouldRender"
       ref="el"
       :disabled="isDisabled"
-      :class="{ 'bk-is-active': active, 'bk-is-last': weight === 'last' }"
+      class="bk-item-action"
+      :class="[
+        { 'bk-is-active': active, 'bk-is-last': weight === 'last' },
+        $attrs.class,
+      ]"
       :style="weight !== 'last' ? { order: weight || 0 } : undefined"
       @click.prevent.stop="onClick"
     >
       <slot name="icon">
-        <Icon v-if="icon" :name="icon" />
+        <Icon v-if="icon" :name="icon" class="bk-item-action-icon" />
       </slot>
       <div class="bk-tooltip">
         <span>{{ title }}</span>
@@ -35,7 +40,7 @@ import type { DraggableExistingBlock } from '#blokkli/types'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 
-const { selection } = useBlokkli()
+const { selection, state } = useBlokkli()
 
 const el = ref<HTMLElement | null>(null)
 
@@ -74,6 +79,11 @@ const props = defineProps<{
   multiple?: boolean
 
   /**
+   * Whether the action is only available in edit mode.
+   */
+  editOnly?: boolean
+
+  /**
    * The weight, used for positioning the button.
    */
   weight?: number | string | 'last'
@@ -87,6 +97,14 @@ const isDisabled = computed(
   () =>
     props.disabled || (!props.multiple && selection.blocks.value.length > 1),
 )
+
+const shouldRender = computed(() => {
+  if (props.editOnly) {
+    return state.editMode.value === 'editing'
+  }
+
+  return true
+})
 
 const emit = defineEmits<{
   (e: 'click', items: DraggableExistingBlock[]): void
@@ -121,10 +139,9 @@ defineTourItem(() => {
     element: () => el.value,
   }
 })
-</script>
 
-<script lang="ts">
-export default {
+defineOptions({
   name: 'PluginItemAction',
-}
+  inheritAttrs: false,
+})
 </script>

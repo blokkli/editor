@@ -2,6 +2,7 @@ import AddListItem from './AddListItem/index.vue'
 import AddListItemIcon from './AddListItemIcon/index.vue'
 import ArtboardTooltip from './ArtboardTooltip/index.vue'
 import BlokkliTransition from './Transition/index.vue'
+import TransitionHeight from './Transition/Height.vue'
 import ConfigForm from './PluginConfigForm/index.vue'
 import DialogModal from './Dialog/index.vue'
 import DiffViewerState from './DiffViewer/State.vue'
@@ -28,6 +29,7 @@ import ScrollBoundary from './ScrollBoundary/index.vue'
 import ShortcutIndicator from './ShortcutIndicator/index.vue'
 import Sortli from './Sortli/index.vue'
 import Banner from './Banner/index.vue'
+import ScheduleDate from './ScheduleDate/index.vue'
 import ViewportBlockingRect from './ViewportBlockingRect/index.vue'
 
 export {
@@ -62,4 +64,6 @@ export {
   Sortli,
   ViewportBlockingRect,
   Banner,
+  ScheduleDate,
+  TransitionHeight,
 }

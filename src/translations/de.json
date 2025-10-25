@@ -275,6 +275,50 @@
     "source": "Visible languages",
     "translation": "Sichtbare Sprachen"
   },
+  "blockSchedulerChangesPreview": {
+    "source": "Changes to be applied",
+    "translation": "Anzuwendende Änderungen"
+  },
+  "blockSchedulerDialogLead": {
+    "source": "Schedule automatic publishing and unpublishing dates for the selected blocks.",
+    "translation": "Planen Sie automatische Veröffentlichungs- und Depublikationsdaten für die ausgewählten Blöcke."
+  },
+  "blockSchedulerDialogPublishOn": {
+    "source": "Publish on",
+    "translation": "Veröffentlichen am"
+  },
+  "blockSchedulerDialogSubmit": {
+    "source": "Save schedule",
+    "translation": "Planung speichern"
+  },
+  "blockSchedulerDialogTitle": {
+    "source": "Manage scheduling",
+    "translation": "Planung verwalten"
+  },
+  "blockSchedulerDialogUnpublishOn": {
+    "source": "Unpublish on",
+    "translation": "Depublizieren am"
+  },
+  "blockSchedulerMixedDates": {
+    "source": "Selected blocks have different dates: @dates",
+    "translation": "Ausgewählte Blöcke haben unterschiedliche Daten: @dates"
+  },
+  "blockSchedulerNoChanges": {
+    "source": "No changes to be applied.",
+    "translation": "Keine Änderungen vorhanden."
+  },
+  "blockSchedulerOverride": {
+    "source": "Set date for all",
+    "translation": "Datum für alle setzen"
+  },
+  "blockSchedulerSuccessMessage": {
+    "source": "Successfully updated schedule dates.",
+    "translation": "Planungsdaten erfolgreich aktualisiert."
+  },
+  "bundle": {
+    "source": "Bundle",
+    "translation": "Typ"
+  },
   "cancelSelection": {
     "source": "Cancel selection",
     "translation": "Auswahl abbrechen"
@@ -476,7 +520,7 @@
     "translation": "Die Elemente konnten nicht dupliziert werden."
   },
   "edit": {
-    "source": "Edit",
+    "source": "Edit...",
     "translation": "Bearbeiten..."
   },
   "editFormBlockAdd": {
@@ -654,6 +698,14 @@
   "feature_block-add-list_setting_hideDisabledBlocks_label": {
     "source": "Hide blocks that can't be added",
     "translation": "Blöcke ausblenden, die nicht hinzugefügt werden können"
+  },
+  "feature_block-scheduler_description": {
+    "source": "Adds support for scheduling blocks.",
+    "translation": ""
+  },
+  "feature_block-scheduler_label": {
+    "source": "Block Scheduler",
+    "translation": ""
   },
   "feature_clipboard_description": {
     "source": "Provides clipboard integration to copy/paste existing blocks or paste supported clipboard content like text or images.",
@@ -1255,6 +1307,10 @@
     "source": "Preview",
     "translation": "Vorschau"
   },
+  "manageSchedule": {
+    "source": "Manage schedule...",
+    "translation": "Planung verwalten..."
+  },
   "maskHide": {
     "source": "Hide non-editable areas",
     "translation": "Nicht-editierbare Bereiche verstecken"
@@ -1290,6 +1346,14 @@
   "multipleItemsLabel": {
     "source": "Items",
     "translation": "Elemente"
+  },
+  "notSet": {
+    "source": "Not set",
+    "translation": "Nicht gesetzt"
+  },
+  "notSupported": {
+    "source": "Not supported",
+    "translation": "Nicht unterstützt"
   },
   "optionBkVisibleLanguagesAll": {
     "source": "All languages",
@@ -1539,14 +1603,6 @@
     "source": "The scheduled date must be at least 2 minutes in the future",
     "translation": "Das geplante Datum muss mindestens 2 Minuten in der Zukunft liegen"
   },
-  "publishScheduleInSevenDays": {
-    "source": "In 7 days",
-    "translation": "In 7 Tagen"
-  },
-  "publishScheduleNextMonday": {
-    "source": "Next Monday",
-    "translation": "Nächster Montag"
-  },
   "publishSchedulePublication": {
     "source": "Schedule publication",
     "translation": "Veröffentlichung planen"
@@ -1558,10 +1614,6 @@
   "publishScheduleSuccess": {
     "source": "Publication scheduled for @date",
     "translation": "Veröffentlichung für @date geplant"
-  },
-  "publishScheduleTomorrow": {
-    "source": "Tomorrow",
-    "translation": "Morgen"
   },
   "publishScheduledInfo": {
     "source": "You can still make changes until the scheduled publication date.",

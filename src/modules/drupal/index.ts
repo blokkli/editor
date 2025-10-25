@@ -274,5 +274,44 @@ fragment paragraphsBlokkliPublishOptions on ParagraphsBlokkliPublishOptions {
     } else {
       addGraphqlDocument('features/publish.graphql')
     }
+
+    // Build the fragment for the "ParagraphsBlokkliParagraphEditContext" type.
+    const paragraphsBlokkliEditContextFields = [
+      ...getTypeFields('ParagraphsBlokkliParagraphEditContext').keys(),
+    ]
+
+    graphql.addDocument(
+      'blokkli:paragraphsBlokkliParagraphEditContext',
+      `
+fragment paragraphsBlokkliParagraphEditContext on ParagraphsBlokkliParagraphEditContext {
+  ${paragraphsBlokkliEditContextFields.join('\n  ')}
+}
+`,
+    )
+
+    addMutation('set_paragraph_schedule', 'block-scheduler')
+
+    const paragraphsTypeFields = [
+      ...getTypeFields('ParagraphsType').keys(),
+    ].filter((field) => {
+      return [
+        'id',
+        'label',
+        'description',
+        'allowReusable',
+        'isTranslatable',
+        'hasPublishOn',
+        'hasUnpublishOn',
+      ].includes(field)
+    })
+
+    graphql.addDocument(
+      'blokkli:paragraphsType',
+      `
+fragment blokkliParagraphsType on ParagraphsType {
+  ${paragraphsTypeFields.join('\n  ')}
+}
+`,
+    )
   },
 })

@@ -296,6 +296,52 @@ msgctxt "blockOption_bkVisibleLanguages_label"
 msgid "Visible languages"
 msgstr "Sichtbari Sproche"
 
+msgctxt "blockSchedulerChangesPreview"
+msgid "Changes to be applied"
+msgstr ""
+
+msgctxt "blockSchedulerDialogLead"
+msgid ""
+"Schedule automatic publishing and unpublishing dates for the selected "
+"blocks."
+msgstr ""
+
+msgctxt "blockSchedulerDialogPublishOn"
+msgid "Publish on"
+msgstr ""
+
+msgctxt "blockSchedulerDialogSubmit"
+msgid "Save schedule"
+msgstr ""
+
+msgctxt "blockSchedulerDialogTitle"
+msgid "Manage scheduling"
+msgstr ""
+
+msgctxt "blockSchedulerDialogUnpublishOn"
+msgid "Unpublish on"
+msgstr ""
+
+msgctxt "blockSchedulerMixedDates"
+msgid "Selected blocks have different dates: @dates"
+msgstr ""
+
+msgctxt "blockSchedulerNoChanges"
+msgid "No changes to be applied."
+msgstr ""
+
+msgctxt "blockSchedulerOverride"
+msgid "Set date for all"
+msgstr ""
+
+msgctxt "blockSchedulerSuccessMessage"
+msgid "Successfully updated schedule dates."
+msgstr ""
+
+msgctxt "bundle"
+msgid "Bundle"
+msgstr ""
+
 msgctxt "cancelSelection"
 msgid "Cancel selection"
 msgstr "Uswahl abbräche"
@@ -518,7 +564,7 @@ msgid "The items could not be duplicated."
 msgstr "D'Elemänt hän nid chönne dupliziert wärde. "
 
 msgctxt "edit"
-msgid "Edit"
+msgid "Edit..."
 msgstr "Bearbeite"
 
 msgctxt "editFormBlockAdd"
@@ -722,6 +768,14 @@ msgstr ""
 msgctxt "feature_block-add-list_setting_hideDisabledBlocks_label"
 msgid "Hide blocks that can't be added"
 msgstr "Blöck wo nid chönne drzuegfüegt wärde verstecke"
+
+msgctxt "feature_block-scheduler_description"
+msgid "Adds support for scheduling blocks."
+msgstr ""
+
+msgctxt "feature_block-scheduler_label"
+msgid "Block Scheduler"
+msgstr ""
 
 msgctxt "feature_clipboard_description"
 msgid ""
@@ -1421,6 +1475,10 @@ msgctxt "libraryPreviewLabel"
 msgid "Preview"
 msgstr "Vorschau"
 
+msgctxt "manageSchedule"
+msgid "Manage schedule..."
+msgstr ""
+
 msgctxt "maskHide"
 msgid "Hide non-editable areas"
 msgstr "Inhaltsfälder verstecke"
@@ -1458,6 +1516,14 @@ msgstr "Suech noch Medie wie Bilder und zieh si per Drag-and-Drop in d'Sitte."
 msgctxt "multipleItemsLabel"
 msgid "Items"
 msgstr "Elemänt"
+
+msgctxt "notSet"
+msgid "Not set"
+msgstr ""
+
+msgctxt "notSupported"
+msgid "Not supported"
+msgstr ""
 
 msgctxt "optionBkVisibleLanguagesAll"
 msgid "All languages"
@@ -1715,14 +1781,6 @@ msgctxt "publishScheduleDateTooSoon"
 msgid "The scheduled date must be at least 2 minutes in the future"
 msgstr ""
 
-msgctxt "publishScheduleInSevenDays"
-msgid "In 7 days"
-msgstr ""
-
-msgctxt "publishScheduleNextMonday"
-msgid "Next Monday"
-msgstr ""
-
 msgctxt "publishSchedulePublication"
 msgid "Schedule publication"
 msgstr ""
@@ -1733,10 +1791,6 @@ msgstr ""
 
 msgctxt "publishScheduleSuccess"
 msgid "Publication scheduled for @date"
-msgstr ""
-
-msgctxt "publishScheduleTomorrow"
-msgid "Tomorrow"
 msgstr ""
 
 msgctxt "publishScheduledInfo"

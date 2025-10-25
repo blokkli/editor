@@ -3,4 +3,7 @@ fragment paragraphsFieldItem on Paragraph {
   bundle: entityBundle
   isNew
   options: paragraphsBlokkliOptions
+  editContext: paragraphsBlokkliEditContext {
+    ...paragraphsBlokkliParagraphEditContext
+  }
 }

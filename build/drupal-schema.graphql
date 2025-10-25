@@ -3407,14 +3407,12 @@ interface Paragraph implements Entity & EntityRevisionable {
   """The status of the paragraph."""
   isPublished: Boolean
 
-  """The scheduling status of the paragraph."""
-  isScheduled: Boolean
-
   """The label of this entity."""
   label: String
 
   """The langcode of this entity."""
   langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -3533,14 +3531,12 @@ type ParagraphAccordeon implements Entity & EntityRevisionable & EntityTranslata
   """The status of the paragraph."""
   isPublished: Boolean
 
-  """The scheduling status of the paragraph."""
-  isScheduled: Boolean
-
   """The label of this entity."""
   label: String
 
   """The langcode of this entity."""
   langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -3667,14 +3663,12 @@ type ParagraphBlokkliFragment implements Entity & EntityRevisionable & Paragraph
   """The status of the paragraph."""
   isPublished: Boolean
 
-  """The scheduling status of the paragraph."""
-  isScheduled: Boolean
-
   """The label of this entity."""
   label: String
 
   """The langcode of this entity."""
   langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -3793,14 +3787,12 @@ type ParagraphButton implements Entity & EntityRevisionable & EntityTranslatable
   """The status of the paragraph."""
   isPublished: Boolean
 
-  """The scheduling status of the paragraph."""
-  isScheduled: Boolean
-
   """The label of this entity."""
   label: String
 
   """The langcode of this entity."""
   langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -3931,14 +3923,12 @@ type ParagraphCarousel implements Entity & EntityRevisionable & EntityTranslatab
   """The status of the paragraph."""
   isPublished: Boolean
 
-  """The scheduling status of the paragraph."""
-  isScheduled: Boolean
-
   """The label of this entity."""
   label: String
 
   """The langcode of this entity."""
   langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -4063,14 +4053,12 @@ type ParagraphFromLibrary implements Entity & EntityRevisionable & Paragraph {
   """The status of the paragraph."""
   isPublished: Boolean
 
-  """The scheduling status of the paragraph."""
-  isScheduled: Boolean
-
   """The label of this entity."""
   label: String
 
   """The langcode of this entity."""
   langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -4195,14 +4183,12 @@ type ParagraphIconTextItem implements Entity & EntityRevisionable & EntityTransl
   """The status of the paragraph."""
   isPublished: Boolean
 
-  """The scheduling status of the paragraph."""
-  isScheduled: Boolean
-
   """The label of this entity."""
   label: String
 
   """The langcode of this entity."""
   langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -4339,14 +4325,12 @@ type ParagraphIconTextList implements Entity & EntityRevisionable & EntityTransl
   """The status of the paragraph."""
   isPublished: Boolean
 
-  """The scheduling status of the paragraph."""
-  isScheduled: Boolean
-
   """The label of this entity."""
   label: String
 
   """The langcode of this entity."""
   langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -4471,14 +4455,12 @@ type ParagraphIframe implements Entity & EntityRevisionable & EntityTranslatable
   """The status of the paragraph."""
   isPublished: Boolean
 
-  """The scheduling status of the paragraph."""
-  isScheduled: Boolean
-
   """The label of this entity."""
   label: String
 
   """The langcode of this entity."""
   langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -4603,14 +4585,12 @@ type ParagraphImage implements Entity & EntityRevisionable & Paragraph {
   """The status of the paragraph."""
   isPublished: Boolean
 
-  """The scheduling status of the paragraph."""
-  isScheduled: Boolean
-
   """The label of this entity."""
   label: String
 
   """The langcode of this entity."""
   langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -4741,14 +4721,12 @@ type ParagraphQuote implements Entity & EntityRevisionable & EntityTranslatable 
   """The status of the paragraph."""
   isPublished: Boolean
 
-  """The scheduling status of the paragraph."""
-  isScheduled: Boolean
-
   """The label of this entity."""
   label: String
 
   """The langcode of this entity."""
   langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -4888,14 +4866,12 @@ type ParagraphTeaser implements Entity & EntityRevisionable & EntityTranslatable
   """The status of the paragraph."""
   isPublished: Boolean
 
-  """The scheduling status of the paragraph."""
-  isScheduled: Boolean
-
   """The label of this entity."""
   label: String
 
   """The langcode of this entity."""
   langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -5026,14 +5002,12 @@ type ParagraphTeaserList implements Entity & EntityRevisionable & EntityTranslat
   """The status of the paragraph."""
   isPublished: Boolean
 
-  """The scheduling status of the paragraph."""
-  isScheduled: Boolean
-
   """The label of this entity."""
   label: String
 
   """The langcode of this entity."""
   langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -5158,14 +5132,12 @@ type ParagraphText implements Entity & EntityRevisionable & EntityTranslatable &
   """The status of the paragraph."""
   isPublished: Boolean
 
-  """The scheduling status of the paragraph."""
-  isScheduled: Boolean
-
   """The label of this entity."""
   label: String
 
   """The langcode of this entity."""
   langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -5302,14 +5274,12 @@ type ParagraphTextImage implements Entity & EntityRevisionable & EntityTranslata
   """The status of the paragraph."""
   isPublished: Boolean
 
-  """The scheduling status of the paragraph."""
-  isScheduled: Boolean
-
   """The label of this entity."""
   label: String
 
   """The langcode of this entity."""
   langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -5474,14 +5444,12 @@ type ParagraphVideo implements Entity & EntityRevisionable & EntityTranslatable 
   """The status of the paragraph."""
   isPublished: Boolean
 
-  """The scheduling status of the paragraph."""
-  isScheduled: Boolean
-
   """The label of this entity."""
   label: String
 
   """The langcode of this entity."""
   langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -5925,6 +5893,13 @@ type ParagraphsBlokkliMutationResult {
 """An object of options managed by the paragraph component itself."""
 scalar ParagraphsBlokkliOptions
 
+type ParagraphsBlokkliParagraphEditContext {
+  """The status of the paragraph."""
+  isPublished: Boolean
+  publishOn: String
+  unpublishOn: String
+}
+
 enum ParagraphsBlokkliPermission {
   """Edit the edit state"""
   edit
@@ -5975,6 +5950,12 @@ type ParagraphsBlokkliSearchItem {
 type ParagraphsBlokkliSearchTab {
   id: String!
   label: String!
+}
+
+input ParagraphsBlokkliSetParagraphScheduleInput {
+  date: String
+  type: String!
+  uuid: String!
 }
 
 interface ParagraphsBlokkliSupportedClipboard {
@@ -6476,6 +6457,12 @@ type ParagraphsEditMutationState {
   schedule(date: String!, revisionLogMessage: String): ParagraphsBlokkliMutationResult
   setHistoryIndex(index: Int!): ParagraphsBlokkliMutationResult
   setMutationStatus(index: Int!, status: Boolean!): ParagraphsBlokkliMutationResult
+
+  """Set the scheduler dates for paragraphs."""
+  set_paragraph_schedule(
+    """The UUID of the paragraph being edited."""
+    items: [ParagraphsBlokkliSetParagraphScheduleInput]!
+  ): ParagraphsBlokkliMutationResult
   takeOwnership: ParagraphsBlokkliMutationResult
 
   """Transforms one or more paragraphs."""
@@ -6642,6 +6629,8 @@ type ParagraphsType implements Entity {
 
   """The entity type ID."""
   entityTypeId: String!
+  hasPublishOn: Boolean!
+  hasUnpublishOn: Boolean!
 
   """{field: icon_default} """
   iconDefault: String

@@ -1,0 +1,15 @@
+mutation pbSetParagraphSchedule(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $items: [ParagraphsBlokkliSetParagraphScheduleInput]!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: set_paragraph_schedule(items: $items) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

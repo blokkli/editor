@@ -26,7 +26,7 @@ import {
   defineAsyncComponent,
   type ComputedRef,
 } from '#imports'
-import type { InjectedBlokkliItem } from '#blokkli/types'
+import type { BlockEditContext, InjectedBlokkliItem } from '#blokkli/types'
 import { getComponent } from '#blokkli/helpers/imports'
 import {
   INJECT_BLOCK_ITEM,
@@ -51,6 +51,7 @@ const componentProps = withDefaults(
     options?: any
     props?: any
     index?: number
+    editContext?: BlockEditContext
     parentType?: string
     isEditing?: boolean
   }>(),
@@ -60,6 +61,7 @@ const componentProps = withDefaults(
     parentType: '',
     options: () => ({}),
     props: () => ({}),
+    editContext: undefined,
   },
 )
 

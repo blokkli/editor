@@ -35,6 +35,22 @@ fragment paragraphsBlokkliPublishOptions on ParagraphsBlokkliPublishOptions {
   publishOn
   revisionLogMessage
 }
+
+fragment paragraphsBlokkliParagraphEditContext on ParagraphsBlokkliParagraphEditContext {
+  isPublished
+  publishOn
+  unpublishOn
+}
+
+fragment blokkliParagraphsType on ParagraphsType {
+  id
+  label
+  description
+  allowReusable
+  isTranslatable
+  hasPublishOn
+  hasUnpublishOn
+}
 `,
     ],
   },

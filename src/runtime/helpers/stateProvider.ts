@@ -443,12 +443,14 @@ export default async function (
       }
       return true
     } catch (e) {
-      emitMessage(
-        errorMessage ||
-          $t('unexpectedMutationError', 'An unexpected error happened.'),
-        'error',
-        e,
-      )
+      if (errorMessage !== false) {
+        emitMessage(
+          errorMessage ||
+            $t('unexpectedMutationError', 'An unexpected error happened.'),
+          'error',
+          e,
+        )
+      }
     }
 
     unlockBody()

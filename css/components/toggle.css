@@ -3,7 +3,10 @@
     @apply relative flex cursor-pointer h-full text-mono-800 leading-none;
 
     &:has(input[disabled]) {
-      @apply !cursor-not-allowed;
+      @apply !cursor-not-allowed !text-mono-300;
+      .bk-checkbox-toggle-toggle {
+        @apply !bg-mono-200;
+      }
     }
 
     &:focus-within {
@@ -46,6 +49,7 @@
       @apply relative w-[36px] h-20 bg-mono-400 rounded-full  flex-shrink-0;
       @apply after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-[16px] after:w-[16px];
       @apply mr-5 mt-[2px];
+      @apply last:mr-0 mt-0;
     }
   }
 }

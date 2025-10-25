@@ -270,6 +270,27 @@ export type BlokkliAdapterScheduleOptions = {
   date: string
 }
 
+export type BlokkliAdapterSetBlockScheduleOptions = {
+  /**
+   * The UUID of the block.
+   */
+  uuid: string
+
+  /**
+   * The schedule type.
+   */
+  type: 'publish' | 'unpublish'
+
+  /**
+   * The date. If empty, remove the schedule date.
+   */
+  date?: string
+}
+
+export type BlokkliAdapterUnscheduleBlockOptions = {
+  uuid: string
+}
+
 export type BlokkliAdapterUnscheduleOptions = {
   /**
    * The host entity type.
@@ -500,6 +521,13 @@ export interface BlokkliAdapter<T> {
    */
   unscheduleEditState?: (
     options: BlokkliAdapterUnscheduleOptions,
+  ) => Promise<MutationResponseLike<T | undefined | null>>
+
+  /**
+   * Schedule a block.
+   */
+  setBlockScheduleDate?: (
+    blocks: BlokkliAdapterSetBlockScheduleOptions[],
   ) => Promise<MutationResponseLike<T | undefined | null>>
 
   /**

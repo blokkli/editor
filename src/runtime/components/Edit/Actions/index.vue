@@ -70,7 +70,6 @@
           </div>
 
           <div
-            v-show="selection.blocks.value.length"
             id="bk-blokkli-item-actions"
             class="bk-blokkli-item-actions-buttons"
           />

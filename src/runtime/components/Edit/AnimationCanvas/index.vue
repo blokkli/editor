@@ -18,7 +18,11 @@ import {
   getInteractionCoordinates,
   isInsideRect,
 } from '#blokkli/helpers'
-import { MOUSE_BUTTON, MOUSE_BUTTONS } from '#blokkli/helpers/dom'
+import {
+  MOUSE_BUTTON,
+  MOUSE_BUTTONS,
+  type CursorKeyword,
+} from '#blokkli/helpers/dom'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { Rectangle, Coord } from '#blokkli/types'
 import {
@@ -43,10 +47,14 @@ const {
   runtimeConfig,
 } = useBlokkli()
 
+const cursor = computed<CursorKeyword>(() =>
+  state.isLoading.value ? 'wait' : animation.cursor.value,
+)
+
 const style = computed<Record<string, string>>(() => {
   return {
     imageRendering: 'pixelated',
-    cursor: animation.cursor.value,
+    cursor: cursor.value,
   }
 })
 

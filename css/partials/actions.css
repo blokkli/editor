@@ -55,37 +55,40 @@
     }
   }
 
-  .bk-blokkli-item-actions-buttons {
-    @apply relative flex flex-1 lg:flex-initial;
-    > button {
-      @apply text-mono-300 h-full flex items-center shrink-0  justify-center relative lg:static z-50;
-      @apply lg:hover:bg-mono-700 lg:hover:text-mono-50;
-      max-width: var(--bk-actions-height);
-      flex: 1 0 auto;
-      @screen lg {
-        width: var(--bk-actions-height);
-        flex: initial;
-      }
-      &.bk-is-active {
-        @apply bg-white text-mono-900 z-50;
-      }
-      .bk-tooltip {
-        @apply absolute bottom-full left-0 min-w-full mb-3;
-      }
-      @screen lg {
-        &:not(:hover) {
-          .bk-tooltip {
-            @apply hidden;
-          }
+  .bk-item-action {
+    @apply text-mono-300 h-full flex items-center shrink-0  justify-center relative lg:static z-50;
+    @apply lg:hover:bg-mono-700 lg:hover:text-mono-50;
+    max-width: var(--bk-actions-height);
+    flex: 1 0 auto;
+    @screen lg {
+      width: var(--bk-actions-height);
+      flex: initial;
+    }
+    &.bk-is-active {
+      @apply bg-white text-mono-900 z-50;
+    }
+    .bk-tooltip {
+      @apply absolute bottom-full left-0 min-w-full mb-3;
+    }
+    @screen lg {
+      &:not(:hover) {
+        .bk-tooltip {
+          @apply hidden;
         }
       }
+    }
 
-      &[disabled] {
-        @apply opacity-25 pointer-events-none;
-      }
-      svg {
-        @apply w-20 h-20 lg:w-25 lg:h-25 fill-current;
-      }
+    &[disabled] {
+      @apply opacity-25 pointer-events-none;
+    }
+  }
+
+  .bk-blokkli-item-actions-buttons {
+    @apply relative flex flex-1 lg:flex-initial;
+  }
+  .bk-item-action-icon {
+    svg {
+      @apply w-20 h-20 lg:w-25 lg:h-25 fill-current;
     }
   }
   .bk-blokkli-item-actions-buttons:last-child button.bk-is-last {

@@ -3,6 +3,7 @@
     id="duplicate"
     :title="$t('duplicate', 'Duplicate')"
     :disabled="!canDuplicate"
+    edit-only
     meta
     key-code="D"
     multiple
@@ -36,10 +37,6 @@ function onClick(items: DraggableExistingBlock[]) {
 }
 
 const canDuplicate = computed<boolean>(() => {
-  if (state.editMode.value !== 'editing') {
-    return false
-  }
-
   const blocksByField: Record<string, DraggableExistingBlock[]> = {}
   const fieldsByKey: Record<
     string,

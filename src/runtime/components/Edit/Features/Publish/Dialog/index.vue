@@ -53,7 +53,17 @@
               v-model="scheduleDate"
               :disabled="isLoading"
               :error="scheduleDateError"
-            />
+            >
+              <div
+                class="bk-schedule-date-info"
+                v-text="
+                  $t(
+                    'publishScheduledInfo',
+                    'You can still make changes until the scheduled publication date.',
+                  )
+                "
+              />
+            </ScheduleDate>
             <button
               v-if="isAlreadyScheduled"
               type="button"
@@ -171,13 +181,17 @@ import {
   onMounted,
   onUnmounted,
 } from '#imports'
-import { DialogModal, FormTextarea, FormItem } from '#blokkli/components'
+import {
+  DialogModal,
+  FormTextarea,
+  FormItem,
+  ScheduleDate,
+} from '#blokkli/components'
 import type { GetEditStatesItem } from '#blokkli/types'
 import { emitMessage } from '#blokkli/helpers/eventBus'
 import Item from './Item.vue'
 import PublishOption, { type PublishOptionProps } from './PublishOption.vue'
 import Summary from './Summary.vue'
-import ScheduleDate from './ScheduleDate.vue'
 import type { MutationStatus } from './types'
 
 const showTable = false

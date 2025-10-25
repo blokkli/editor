@@ -267,14 +267,6 @@
     @apply h-[52px] flex items-center;
   }
 
-  .bk-schedule-date-presets {
-    @apply flex gap-10 mt-20;
-
-    .bk-button {
-      @apply flex-1;
-    }
-  }
-
   .bk-schedule-date-info {
     @apply mt-20 p-10 bg-yellow-light text-yellow-dark border border-yellow-normal/60 rounded-md font-medium;
     @apply text-sm text-pretty;

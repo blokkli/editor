@@ -202,6 +202,10 @@ function isMuted(item?: FieldListItem) {
     return true
   }
 
+  if (!item.editContext?.isPublished) {
+    return true
+  }
+
   const isVisible = isVisibleByOptions(item, props.language)
   const isVisibleCustom = props.shouldRenderItem
     ? props.shouldRenderItem(item)

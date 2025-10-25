@@ -8,6 +8,8 @@ export const allTypes: BlockBundleDefinition[] = getBlockBundles().map(
       label: block.label,
       allowReusable: block.allowReusable,
       isTranslatable: block.isTranslatable,
+      hasPublishOn: block.bundle !== 'title',
+      hasUnpublishOn: block.bundle !== 'image',
     }
   },
 )

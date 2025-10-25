@@ -34,6 +34,7 @@ export function mapBlockItem(
       JSON.stringify(overrideOptions || block.options().getOptions()),
     ),
     props,
+    editContext: block.getEditContext(),
   }
 }
 

@@ -4,7 +4,7 @@
     id="library_detach"
     :title="$t('libraryDetach', 'Detach from library')"
     icon="detach"
-    :disabled="state.editMode.value !== 'editing'"
+    edit-only
     multiple
     :weight="-70"
     @click="onDetach"
@@ -13,7 +13,8 @@
     v-else-if="!isReusable"
     id="library_make_reusable"
     :title="$t('libraryAdd', 'Add to library...')"
-    :disabled="!canMakeReusable || state.editMode.value !== 'editing'"
+    :disabled="!canMakeReusable"
+    edit-only
     icon="reusable"
     :weight="-70"
     @click="showReusableDialog = true"

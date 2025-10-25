@@ -63,6 +63,10 @@ import {
   MutationUpdateOptions,
   type MutationUpdateOptionsArgs,
 } from './Mutation/UpdateOptions'
+import {
+  MutationSetBlockSchedule,
+  type MutationSetBlockScheduleArgs,
+} from './Mutation/SetBlockSchedule'
 
 export type MutationArgsMap = {
   add: MutationAddArgs | MutationAddArgs[]
@@ -84,6 +88,7 @@ export type MutationArgsMap = {
   replace_media: MutationReplaceMediaArgs
   replace_entity_media: MutationReplaceEntityMediaArgs
   add_video_from_url: MutationAddVideoFromUrlArgs
+  set_block_schedule: MutationSetBlockScheduleArgs
 }
 
 export const createMutation = <T extends keyof MutationArgsMap>(
@@ -129,6 +134,8 @@ export const createMutation = <T extends keyof MutationArgsMap>(
       return new MutationReplaceEntityMedia(configuration)
     case 'add_video_from_url':
       return new MutationAddVideoFromUrl(configuration)
+    case 'set_block_schedule':
+      return new MutationSetBlockSchedule(configuration)
   }
 
   throw new Error('Missing mutation plugin with ID: ' + id)

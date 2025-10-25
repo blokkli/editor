@@ -104,6 +104,7 @@ export function getCommentsForEntity(
 ): StoredComment[] {
   const comments = loadComments()
   return comments.filter(
-    (c) => c.parentEntityType === entityType && c.parentEntityUuid === entityUuid,
+    (c) =>
+      c.parentEntityType === entityType && c.parentEntityUuid === entityUuid,
   )
 }

@@ -1,9 +1,10 @@
 <template>
   <label class="bk-checkbox-toggle">
+    <slot />
     <input v-model="value" type="checkbox" class="peer" :disabled />
     <div class="bk-checkbox-toggle-toggle" />
-    <div class="bk-checkbox-toggle-label">
-      <div>{{ label }}</div>
+    <div v-if="label || description" class="bk-checkbox-toggle-label">
+      <div v-if="label">{{ label }}</div>
       <div v-if="description">
         {{ description }}
       </div>
@@ -13,7 +14,7 @@
 
 <script setup lang="ts">
 defineProps<{
-  label: string
+  label?: string
   description?: string
   disabled?: boolean
 }>()
