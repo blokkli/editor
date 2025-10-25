@@ -205,6 +205,11 @@ function filterVisible(
     return true
   }
 
+  // When not editing, hide blocks that are not published.
+  if (!item.editContext?.isPublished) {
+    return false
+  }
+
   const isVisible = isVisibleByOptions(item, providerEntity.value.language)
   const isVisibleCustom = props.shouldRenderItem
     ? props.shouldRenderItem(item)
