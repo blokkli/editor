@@ -14,9 +14,13 @@ const { logger } = defineBlokkliFeature({
   description: 'Provides debugging functionality.',
 })
 
-const { debug } = useBlokkli()
+const { debug, ui } = useBlokkli()
 
 onBlokkliEvent('keyPressed', (e) => {
+  if (ui.hasDialogOpen.value) {
+    return
+  }
+
   if (e.code === '=' && e.meta) {
     e.originalEvent.preventDefault()
     debug.toggle()

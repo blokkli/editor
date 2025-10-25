@@ -432,6 +432,10 @@ onBlokkliEvent('dragging:end', () => {
 })
 
 onBlokkliEvent('keyPressed', (e) => {
+  if (ui.hasDialogOpen.value) {
+    return
+  }
+
   if (e.code === 'Escape') {
     eventBus.emit('dragging:end')
   }

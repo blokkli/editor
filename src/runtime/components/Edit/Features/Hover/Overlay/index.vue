@@ -21,9 +21,6 @@ const { animation, theme, dom, selection, state, ui, editable } = useBlokkli()
 
 const programInfo = animation.registerProgram('hover', props.gl, [vs, fs])
 
-// Debug mode: disable caching of previous state to always recalculate.
-const DEBUG = false
-
 // How many hover quads are supported.
 // This means that we support 10 blocks + 1 editable field.
 // Which means that there can only ever be 10 hover blocks visible,
@@ -153,23 +150,21 @@ function updateHoverState(
 
   // Early exit: if mouse is outside artboard, nothing can be hovered.
   if (isOutsideArtboard) {
-    // Check if we need to clear state.
-    if (
-      DEBUG ||
+    // Always clear hover state when outside artboard
+    const needsUpdate =
       previousHoveredUuids.length > 0 ||
-      previousEditableFieldRect !== null
-    ) {
-      hoverState.visible.fill(0)
-      isHoveringEditableField.value = false
-      isHoveringSelectedBlock.value = false
-      if (!DEBUG) {
-        previousHoveredUuids = []
-        previousDeepestUuid = null
-        previousEditableFieldRect = null
-      }
-      return true
-    }
-    return false
+      previousEditableFieldRect !== null ||
+      isHoveringEditableField.value ||
+      isHoveringSelectedBlock.value
+
+    hoverState.visible.fill(0)
+    isHoveringEditableField.value = false
+    isHoveringSelectedBlock.value = false
+    previousHoveredUuids = []
+    previousDeepestUuid = null
+    previousEditableFieldRect = null
+
+    return needsUpdate
   }
 
   // Convert mouse position to artboard space.
@@ -228,7 +223,7 @@ function updateHoverState(
   }
 
   // Quick check if we can skip rendering updates
-  if (!hoveredChanged && !DEBUG) {
+  if (!hoveredChanged) {
     // Check if editable field also unchanged
     const editableFieldChanged =
       (hoveredEditableFieldRect === null) !==
@@ -328,19 +323,17 @@ function updateHoverState(
     hoverState.visible[10] = 1
   }
 
-  if (!DEBUG) {
-    previousHoveredUuids = unselectedHoveredUuids
-    previousDeepestUuid = deepestUuid
-    previousEditableFieldRect = hoveredEditableFieldRect
-  }
+  previousHoveredUuids = unselectedHoveredUuids
+  previousDeepestUuid = deepestUuid
+  previousEditableFieldRect = hoveredEditableFieldRect
 
   // Update the hover state for cursor management
   isHoveringEditableField.value = hoveredEditableFieldRect !== null
 
-  // Check if we're hovering over any selected block
-  isHoveringSelectedBlock.value = hoveredUuids.some((uuid) =>
-    selectedUuids.includes(uuid),
-  )
+  // Check if the deepest hovered block is selected
+  // We only care about the most specific block, not parent blocks
+  isHoveringSelectedBlock.value =
+    deepestUuid !== null && selectedUuids.includes(deepestUuid)
 
   return true
 }

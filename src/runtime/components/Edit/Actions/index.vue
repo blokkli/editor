@@ -70,6 +70,7 @@
           </div>
 
           <div
+            v-show="!selection.hasHostSelected.value"
             id="bk-blokkli-item-actions"
             class="bk-blokkli-item-actions-buttons"
           />

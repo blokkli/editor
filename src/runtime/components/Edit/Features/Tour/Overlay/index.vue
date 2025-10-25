@@ -243,6 +243,10 @@ function calculatePosition(rect: DOMRect): {
 }
 
 onBlokkliEvent('keyPressed', (e) => {
+  if (ui.hasDialogOpen.value) {
+    return
+  }
+
   if (e.code === 'Tab') {
     e.originalEvent.preventDefault()
     if (e.shift) {

@@ -342,7 +342,12 @@ onBlokkliEvent('select:shiftToggle', (uuid) => {
 })
 
 onBlokkliEvent('keyPressed', (e) => {
-  if (selection.isDragging.value || selection.isMultiSelecting.value) {
+  if (
+    selection.isDragging.value ||
+    selection.isMultiSelecting.value ||
+    ui.hasDialogOpen.value ||
+    ui.hasTooltipOpen.value
+  ) {
     return
   }
   if (e.code === 'Escape') {

@@ -618,7 +618,7 @@ function copyCurrentSelectionToClipboard() {
 }
 
 onBlokkliEvent('keyPressed', (e) => {
-  if (e.code !== 'c' || !e.meta) {
+  if (e.code !== 'c' || !e.meta || ui.hasDialogOpen.value) {
     return
   }
   copyCurrentSelectionToClipboard()

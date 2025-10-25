@@ -293,6 +293,10 @@ const resetZoom = () => {
 }
 
 onBlokkliEvent('keyPressed', (e) => {
+  if (ui.hasDialogOpen.value) {
+    return
+  }
+
   if (e.code === 'Home') {
     e.originalEvent.preventDefault()
     artboard.scrollToTop()

@@ -49,7 +49,7 @@ defineBlokkliFeature({
     'Provides an overlay with shortcut to search for blocks on the current page or existing content to add as blocks.',
 })
 
-const { $t, selection } = useBlokkli()
+const { $t, selection, ui } = useBlokkli()
 
 const isRendered = ref(false)
 const isVisible = ref(false)
@@ -67,6 +67,9 @@ function onClick() {
 }
 
 onBlokkliEvent('keyPressed', (e) => {
+  if (ui.hasDialogOpen.value) {
+    return
+  }
   if (e.code === 'Escape') {
     isVisible.value = false
   }

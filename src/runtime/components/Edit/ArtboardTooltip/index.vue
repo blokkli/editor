@@ -85,6 +85,10 @@ watch(ui.openTooltip, (id) => {
 })
 
 onBlokkliEvent('keyPressed', (e) => {
+  if (ui.hasDialogOpen.value) {
+    return
+  }
+
   if (e.code === 'Escape') {
     emit('close')
   }
