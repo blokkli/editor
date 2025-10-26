@@ -1,14 +1,11 @@
-import type { DomProvider } from './domProvider'
 import onBlokkliEvent from './composables/onBlokkliEvent'
 import { type Ref, type ComputedRef, computed, ref } from '#imports'
-
 import type {
   DraggableItem,
   InteractionMode,
   RenderedFieldListItem,
 } from '#blokkli/types'
-import { falsy, modulo, onlyUnique } from '#blokkli/helpers'
-import { eventBus } from '#blokkli/helpers/eventBus'
+import { falsy, onlyUnique } from '#blokkli/helpers'
 import type { BlocksProvider } from './providers/blocks'
 
 export type SelectionProvider = {
@@ -110,10 +107,7 @@ export type SelectionProvider = {
   unlockSelection: (key: string) => void
 }
 
-export default function (
-  dom: DomProvider,
-  blocks: BlocksProvider,
-): SelectionProvider {
+export default function (blocks: BlocksProvider): SelectionProvider {
   const selectedUuids = ref<string[]>([])
   const hasHostSelected = ref(false)
   const activeFieldKey = ref('')
@@ -190,29 +184,6 @@ export default function (
     }
   }
 
-  const selectInList = (prev?: boolean) => {
-    const items = blocks.getAllBlocks()
-    if (!items.length) {
-      return
-    }
-
-    const currentIndex = selectedRenderedItems.value[0]
-      ? items.findIndex((v) => v.uuid === selectedRenderedItems.value[0]!.uuid)
-      : -1
-
-    const targetIndex = modulo(
-      prev ? currentIndex - 1 : currentIndex + 1,
-      items.length,
-    )
-    const targetItem = items[targetIndex]
-    if (!targetItem) {
-      return
-    }
-    onSelect(targetItem.uuid)
-    dom.refreshBlockRect(targetItem.uuid)
-    eventBus.emit('scrollIntoView', { uuid: targetItem.uuid })
-  }
-
   const setActiveFieldKey = (key: string) => (activeFieldKey.value = key)
 
   onBlokkliEvent('select', onSelect)
@@ -241,8 +212,6 @@ export default function (
     updateSelectedUuids(uuids)
   })
 
-  onBlokkliEvent('select:previous', () => selectInList(true))
-  onBlokkliEvent('select:next', selectInList)
   onBlokkliEvent('setActiveFieldKey', setActiveFieldKey)
   onBlokkliEvent('dragging:start', (e) => {
     draggingMode.value = e.mode

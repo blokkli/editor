@@ -32,9 +32,11 @@ import {
   calculateIntersection,
   getBounds,
   intersects,
+  modulo,
   originatesFromTextInput,
 } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import useStateBasedCache from '#blokkli/helpers/composables/useStateBasedCache'
 import { PluginItemDropdown } from '#blokkli/plugins'
 import type { Rectangle, RenderedFieldListItem } from '#blokkli/types'
 import {
@@ -70,6 +72,15 @@ const {
   state,
   blocks,
 } = useBlokkli()
+
+const getSelectionOrder = useStateBasedCache(() => {
+  return dom.queryAll(
+    ui.artboardElement(),
+    '[data-uuid]',
+    'getSelectionOrder',
+    (el) => el.dataset.uuid,
+  )
+})
 
 const selectedBundle = computed<string | null>(() => {
   if (selection.bundles.value.length === 1) {
@@ -341,6 +352,31 @@ onBlokkliEvent('select:shiftToggle', (uuid) => {
   }
 })
 
+function selectBlock(uuid: string) {
+  eventBus.emit('select', uuid)
+  dom.refreshBlockRect(uuid)
+  eventBus.emit('scrollIntoView', { uuid })
+}
+
+/**
+ * Find the next or previous block.
+ */
+function selectInList(prev?: boolean) {
+  const currentUuid = selection.uuids.value[selection.uuids.value.length - 1]
+  if (!currentUuid) {
+    return
+  }
+
+  const selectionOrder = getSelectionOrder()
+  const currentIndex = selectionOrder.indexOf(currentUuid)
+  const delta = prev ? -1 : 1
+  const newIndex = modulo(currentIndex + delta, selectionOrder.length)
+  const newUuid = selectionOrder[newIndex]
+  if (newUuid) {
+    selectBlock(newUuid)
+  }
+}
+
 onBlokkliEvent('keyPressed', (e) => {
   if (
     selection.isDragging.value ||
@@ -362,7 +398,7 @@ onBlokkliEvent('keyPressed', (e) => {
     e.originalEvent.preventDefault()
 
     // No block is selected.
-    if (selection.items.value.length !== 1) {
+    if (!selection.items.value.length) {
       // Select the most visible block for the user.
       const uuid = findMostVisibleBlock()
       if (uuid) {
@@ -373,9 +409,9 @@ onBlokkliEvent('keyPressed', (e) => {
     }
 
     if (e.shift) {
-      eventBus.emit('select:previous')
+      selectInList(true)
     } else {
-      eventBus.emit('select:next')
+      selectInList()
     }
     animation.requestDraw()
   } else if (e.code === 'a' && e.meta) {

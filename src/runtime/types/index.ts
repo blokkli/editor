@@ -1264,8 +1264,6 @@ export type EventbusEvents = {
   'select:toggle': string
   'select:shiftToggle': string
   'select:end': string[] | undefined
-  'select:previous': undefined
-  'select:next': undefined
 
   // Add action dropped.
   'item:dropped': undefined

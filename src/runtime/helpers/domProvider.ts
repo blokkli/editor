@@ -94,6 +94,13 @@ export type DomProvider = {
 
   init: () => void
 
+  queryAll: <T = HTMLElement>(
+    target: HTMLElement,
+    query: string,
+    reason: string,
+    map?: (v: HTMLElement) => T | null | undefined,
+  ) => T[]
+
   /**
    * Get the drag element for a block.
    */
@@ -732,6 +739,32 @@ export default function (
     visibleBlocks.delete(uuid)
   }
 
+  function queryAll<T = HTMLElement>(
+    target: HTMLElement,
+    query: string,
+    reason: string,
+    map?: (v: HTMLElement) => T | null | undefined,
+  ): T[] {
+    const results: T[] = []
+    logger.log(`querySelectorAll - "${query}"`, reason)
+
+    for (const element of target.querySelectorAll(query)) {
+      if (element instanceof HTMLElement) {
+        if (map) {
+          const result = map(element)
+          if (result) {
+            results.push(result)
+          }
+        } else {
+          // @ts-expect-error T could be any type, but we fallback to HTMLElement.
+          results.push(element)
+        }
+      }
+    }
+
+    return results
+  }
+
   function getDebugData() {
     // Collect all unique UUIDs from all sources
     const allUuids = new Set<string>([
@@ -850,5 +883,6 @@ export default function (
     registeredBlockUuids,
     getDebugData,
     getRegisteredField,
+    queryAll,
   }
 }

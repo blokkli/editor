@@ -126,19 +126,16 @@ const buildSearchText = (el?: HTMLElement): string => {
   if (!el) {
     return ''
   }
-  let text = el.textContent || ''
 
-  // Add alt and title attributes.
-  el.querySelectorAll('img').forEach((img) => {
-    if (img.alt) {
-      text += ' ' + img.alt
-    }
-    if (img.title) {
-      text += ' ' + img.title
-    }
-  })
+  const altTexts = dom
+    .queryAll(el, 'img', 'buildSearchText', (el) => {
+      if (el instanceof HTMLImageElement) {
+        return [el.alt, el.title].filter(Boolean).join('')
+      }
+    })
+    .join(' ')
 
-  return text
+  return (el.textContent ?? '') + altTexts
 }
 
 const buildIndex = () => {

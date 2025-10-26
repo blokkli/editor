@@ -72,6 +72,7 @@ import InputPlaintext from './Plaintext/index.vue'
 import InputContenteditable from './Contenteditable/index.vue'
 import InputFrame from './Frame/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { itemEntityType } from '#blokkli-build/config'
 
 const { eventBus, selection, state, adapter, $t, types } = useBlokkli()
 
@@ -159,7 +160,7 @@ const close = async () => {
   const el = getElement()
 
   if (shouldSave.value && modelValue.value !== originalText.value) {
-    if ('itemBundle' in props.host) {
+    if (props.host.type === itemEntityType) {
       await state.mutateWithLoadingState(() =>
         adapter.updateFieldValue!({
           uuid: props.host.uuid,
