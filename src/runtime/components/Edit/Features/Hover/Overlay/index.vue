@@ -17,7 +17,7 @@ const props = defineProps<{
   gl: WebGLRenderingContext
 }>()
 
-const { animation, theme, dom, selection, state, ui, editable, blocks } =
+const { animation, theme, dom, selection, state, ui, directive, blocks } =
   useBlokkli()
 
 const programInfo = animation.registerProgram('hover', props.gl, [vs, fs])
@@ -214,7 +214,7 @@ function updateHoverState(
 
   // Find hovered editable field using the editable provider
   let hoveredEditableFieldRect: Rectangle | null = null
-  const editableRects = editable.getVisible()
+  const editableRects = directive.getVisible('editable')
   for (let i = 0; i < editableRects.length; i++) {
     const editableRect = editableRects[i]!
     if (isInsideRect(artboardMouseX, artboardMouseY, editableRect)) {

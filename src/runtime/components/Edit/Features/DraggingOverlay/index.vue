@@ -68,7 +68,7 @@ const {
   selection,
   definitions,
   blocks,
-  editable,
+  directive,
 } = useBlokkli()
 
 const dragItemsComponent = ref<InstanceType<typeof DragItems> | null>(null)
@@ -363,7 +363,7 @@ onBlokkliEvent('state:reloaded', async function () {
     return
   }
 
-  const editableFieldElement = editable
+  const editableFieldElement = directive
     .getEditablesForBlock(newUuid)
     .find((v) => v.fieldName === editableField)
 

@@ -44,7 +44,7 @@ type Editable = {
   value?: string
 }
 
-const { selection, adapter, types, $t, dom, state, editable, blocks } =
+const { selection, adapter, types, $t, dom, state, directive, blocks } =
   useBlokkli()
 const selectedEditable = ref<Editable | null>(null)
 const hasTransition = ref(false)
@@ -102,7 +102,7 @@ const buildEditable = (
     return
   }
 
-  const element = editable.findEditableElement(fieldName, host)
+  const element = directive.findEditableElement(fieldName, host)
 
   if (!(element instanceof HTMLElement)) {
     return
@@ -137,7 +137,7 @@ defineCommands(() => {
 
   // Find editable fields in the current selection.
   const editables: Editable[] = selection.items.value.flatMap((item) => {
-    return editable
+    return directive
       .getEditablesForBlock(item.uuid)
       .map((v) => {
         return buildEditable(v.fieldName, item.uuid)

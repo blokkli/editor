@@ -31,12 +31,13 @@ import { useBlokkli, defineBlokkliFeature, ref } from '#imports'
 import { PluginSidebar, PluginDroppableEdit } from '#blokkli/plugins'
 import Library from './Library/index.vue'
 import defineDropAreas from '#blokkli/helpers/composables/defineDropAreas'
-import { falsy, mapDroppableField } from '#blokkli/helpers'
+import { falsy } from '#blokkli/helpers'
 import type {
   DraggableHostData,
   DropArea,
   DroppableEntityField,
 } from '#blokkli/types'
+import { itemEntityType } from '#blokkli-build/config'
 
 defineBlokkliFeature({
   id: 'media-library',
@@ -47,7 +48,7 @@ defineBlokkliFeature({
   requiredAdapterMethods: ['mediaLibraryGetResults', 'mediaLibraryAddBlock'],
 })
 
-const { $t, dom, adapter, state, runtimeConfig, types } = useBlokkli()
+const { $t, adapter, state, runtimeConfig, types, directive } = useBlokkli()
 
 const selected = ref('')
 
@@ -110,77 +111,71 @@ defineDropAreas((dragItems) => {
     return
   }
 
-  // @TODO: Refactor droppable handling.
-  return []
+  // @TODO: Restore this behaviour.
+  // Ignore elements that are rendered inside a field that uses proxy mode, since implementations might use <BlokkliItem> to render blocks in a proxy-mode field.
+  // return !el.closest('[data-bk-in-proxy="true"]')
 
   // Generate a drop area for every matching droppable field.
-  // return [...document.querySelectorAll('[data-blokkli-droppable-field]')]
-  //   .filter((el) => {
-  //     // Ignore elements that are rendered inside a field that uses proxy mode, since implementations might use <BlokkliItem> to render blocks in a proxy-mode field.
-  //     return !el.closest('[data-bk-in-proxy="true"]')
-  //   })
-  //   .map(mapDroppableField)
-  //   .map<DropArea | undefined>((field: DroppableEntityField) => {
-  //     const config = types.getDroppableFieldConfig(field.fieldName, field.host)
-  //     // @TODO: This should be provided by the adapter on the item.
-  //     if (config.allowedEntityType !== 'media') {
-  //       return
-  //     }
-  //
-  //     if (!config.allowedBundles.includes(item.mediaBundle)) {
-  //       return
-  //     }
-  //     const isBlock = 'itemBundle' in field.host
-  //     const draggableHost: DraggableHostData = {
-  //       uuid: field.host.uuid,
-  //       type:
-  //         'itemBundle' in field.host
-  //           ? runtimeConfig.itemEntityType
-  //           : field.host.type,
-  //       fieldName: field.fieldName,
-  //     }
-  //     const label = $t('mediaLibraryReplaceMedia', 'Replace @field').replace(
-  //       '@field',
-  //       config.label,
-  //     )
-  //
-  //     if (adapter.mediaLibraryReplaceMedia && isBlock) {
-  //       return {
-  //         id: `replace-media:${field.host.uuid}:${field.fieldName}`,
-  //         label,
-  //         element: field.element,
-  //         icon: 'swap-horizontal',
-  //         onDrop: () => {
-  //           return state.mutateWithLoadingState(
-  //             () =>
-  //               adapter.mediaLibraryReplaceMedia!({
-  //                 host: draggableHost,
-  //                 mediaId: item.mediaId,
-  //               }),
-  //             ERROR_MESSAGE,
-  //           )
-  //         },
-  //       }
-  //     } else if (adapter.mediaLibraryReplaceEntityMedia && !isBlock) {
-  //       return {
-  //         id: `replace-entity-media:${field.host.uuid}:${field.fieldName}`,
-  //         label,
-  //         element: field.element,
-  //         icon: 'swap-horizontal',
-  //         onDrop: () => {
-  //           return state.mutateWithLoadingState(
-  //             () =>
-  //               adapter.mediaLibraryReplaceEntityMedia!({
-  //                 host: draggableHost,
-  //                 mediaId: item.mediaId,
-  //               }),
-  //             ERROR_MESSAGE,
-  //           )
-  //         },
-  //       }
-  //     }
-  //   })
-  //   .filter(falsy)
+  return directive
+    .getDroppableElements()
+    .map<DropArea | undefined>((field) => {
+      const config = types.getDroppableFieldConfig(field.fieldName, field)
+      // @TODO: This should be provided by the adapter on the item.
+      if (config.allowedEntityType !== 'media') {
+        return
+      }
+
+      if (!config.allowedBundles.includes(item.mediaBundle)) {
+        return
+      }
+      const isBlock = field.type === itemEntityType
+      const draggableHost: DraggableHostData = {
+        uuid: field.uuid,
+        type: field.type,
+        fieldName: field.fieldName,
+      }
+      const label = $t('mediaLibraryReplaceMedia', 'Replace @field').replace(
+        '@field',
+        config.label,
+      )
+
+      if (adapter.mediaLibraryReplaceMedia && isBlock) {
+        return {
+          id: `replace-media:${field.uuid}:${field.fieldName}`,
+          label,
+          element: field.element,
+          icon: 'swap-horizontal',
+          onDrop: () => {
+            return state.mutateWithLoadingState(
+              () =>
+                adapter.mediaLibraryReplaceMedia!({
+                  host: draggableHost,
+                  mediaId: item.mediaId,
+                }),
+              ERROR_MESSAGE,
+            )
+          },
+        }
+      } else if (adapter.mediaLibraryReplaceEntityMedia && !isBlock) {
+        return {
+          id: `replace-entity-media:${field.uuid}:${field.fieldName}`,
+          label,
+          element: field.element,
+          icon: 'swap-horizontal',
+          onDrop: () => {
+            return state.mutateWithLoadingState(
+              () =>
+                adapter.mediaLibraryReplaceEntityMedia!({
+                  host: draggableHost,
+                  mediaId: item.mediaId,
+                }),
+              ERROR_MESSAGE,
+            )
+          },
+        }
+      }
+    })
+    .filter(falsy)
 })
 </script>
 

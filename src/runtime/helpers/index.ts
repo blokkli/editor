@@ -3,7 +3,6 @@ import type {
   DraggableItem,
   SearchContentItem,
   Rectangle,
-  DroppableEntityField,
   DraggableExistingBlock,
   EntityContext,
   Coord,
@@ -102,19 +101,6 @@ export function buildDraggableItem(
         searchItem,
       }
     }
-  }
-}
-
-export function findElement(uuid: string): HTMLElement | undefined {
-  // Make sure to only select elements that are not currently in the process
-  // of transitioning out. This solves a bug where when the selected block
-  // is deleted, the reactive selection would return an element that wouldn't
-  // exist a moment later.
-  const el = document.querySelector(
-    `[data-uuid="${uuid}"]:not(.bk-sortli-leave-from)`,
-  )
-  if (el instanceof HTMLElement) {
-    return el
   }
 }
 
@@ -651,57 +637,6 @@ export const findParentContext = (
   }
 
   return findClosestEntityContext(el)
-}
-
-/**
- * Maps a HTMLElement to a DroppableEntityField.
- */
-export const mapDroppableField = (el: Element): DroppableEntityField => {
-  if (!(el instanceof HTMLElement)) {
-    throw new TypeError(
-      `v-blokkli-droppable directive is only allowed on elements of type HTMLElement.`,
-    )
-  }
-
-  const fieldName = el.dataset.blokkliDroppableField
-  if (!fieldName) {
-    throw new Error(`Missing field name in v-blokkli-droppable directive.`)
-  }
-
-  const host = findParentContext(el)
-  if (!host) {
-    throw new Error(
-      `Failed to locate parent context for v-blokkli-droppable field with name "${fieldName}". Make sure the element is always rendered inside a block component or inside a <BlokkliProvider>.`,
-    )
-  }
-
-  return {
-    element: el,
-    host,
-    fieldName,
-  }
-}
-
-export const originatesFromEditable = (
-  e: MouseEvent | TouchEvent,
-): HTMLElement | undefined => {
-  if (e.target instanceof HTMLElement) {
-    const el = e.target.closest('[data-blokkli-editable-field]')
-    if (el instanceof HTMLElement) {
-      return el
-    }
-  }
-}
-
-export const getOriginatingDroppableElement = (
-  e: MouseEvent | TouchEvent,
-): HTMLElement | undefined => {
-  if (e.target instanceof HTMLElement) {
-    const el = e.target.closest('[data-blokkli-droppable-field]')
-    if (el instanceof HTMLElement) {
-      return el
-    }
-  }
 }
 
 export const originatesFromTextInput = (e: Event): boolean =>

@@ -98,7 +98,7 @@ import dropAreasProvider from './../../helpers/dropAreaProvider'
 import blocksProvider from './../../helpers/providers/blocks'
 import indicatorsProvider from './../../helpers/indicatorsProvider'
 import pluginProvider from './../../helpers/pluginProvider'
-import editableProvider from './../../helpers/editableProvider'
+import directiveProvider from './../../helpers/providers/directive'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import '#blokkli-build/styles.css'
 import getAdapter from '#blokkli-build/edit-adapter'
@@ -180,7 +180,7 @@ const keyboard = keyboardProvider(animation)
 const types = await typesProvider(adapter, selection, context)
 const indicators = indicatorsProvider()
 const plugins = pluginProvider()
-const editable = editableProvider(ui)
+const directive = directiveProvider(ui)
 
 const mutatedEntity = computed(() => state.mutatedEntity.value || props.entity)
 
@@ -220,7 +220,7 @@ onMounted(() => {
   document.documentElement.addEventListener('touchstart', onTouchStart)
   baseLogger.log('EditProvider mounted')
   dom.init()
-  editable.init()
+  directive.init()
   isInitializing.value = false
   broadcast.emit('editorLoaded', { uuid: props.entityUuid })
 })
@@ -257,7 +257,7 @@ provide<BlokkliApp>(INJECT_APP, {
   dom,
   dropAreas,
   eventBus,
-  editable,
+  directive,
   features,
   indicators,
   keyboard,

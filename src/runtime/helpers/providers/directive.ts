@@ -1,44 +1,56 @@
-import type { EntityContext, Rectangle } from '#blokkli/types'
+import type {
+  BlokkliDirectiveType,
+  EntityContext,
+  Rectangle,
+} from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
-import useDelayedIntersectionObserver from './composables/useDelayedIntersectionObserver'
-import type { UiProvider } from './uiProvider'
+import useDelayedIntersectionObserver from './../composables/useDelayedIntersectionObserver'
+import type { UiProvider } from './../uiProvider'
 import { onBeforeUnmount } from '#imports'
-import onBlokkliEvent from './composables/onBlokkliEvent'
+import onBlokkliEvent from './../composables/onBlokkliEvent'
 import { itemEntityType } from '#blokkli-build/config'
 
 type EditableFieldData = EntityContext & {
+  key: string
   fieldName: string
+  directiveType: BlokkliDirectiveType
+}
+
+type DroppableFieldElementData = EditableFieldData & {
+  element: HTMLElement
 }
 
 type EditableRectangle = Rectangle & { key: string }
 
-export type EditableProvider = {
+export type DirectiveProvider = {
   init: () => void
-  registerEditableField: (
+  registerDirectiveElement: (
     el: HTMLElement,
     fieldName: string,
     entity: EntityContext,
+    type: BlokkliDirectiveType,
   ) => void
-  unregisterEditableField: (
+  unregisterDirectiveElement: (
     el: HTMLElement,
     fieldName: string,
     entity: EntityContext,
+    type: BlokkliDirectiveType,
   ) => void
-  getVisible: () => Rectangle[]
+  getVisible: (directiveType: BlokkliDirectiveType) => Rectangle[]
   getEditableAtPoint: (x: number, y: number) => EditableFieldData | undefined
   getEditablesForBlock: (uuid: string) => EditableFieldData[]
+  getDroppableElements: () => DroppableFieldElementData[]
   findEditableElement: (
     fieldName: string,
     host: EntityContext,
   ) => HTMLElement | undefined
 }
 
-export default function (ui: UiProvider): EditableProvider {
+export default function (ui: UiProvider): DirectiveProvider {
   let stateReloadTimeout: number | null = null
-  const editableFieldElementMap: WeakMap<HTMLElement, EditableFieldData> =
-    new WeakMap()
-  const editableFieldElements: Map<string, HTMLElement> = new Map()
-  const editableFieldData: Map<string, EditableFieldData> = new Map()
+  const elementMap: WeakMap<HTMLElement, EditableFieldData> = new WeakMap()
+  const elements: Map<string, HTMLElement> = new Map()
+  const fieldData: Map<string, EditableFieldData> = new Map()
   const rects: Record<string, EditableRectangle> = {}
   const visible: Set<string> = new Set()
   const editablesByUuid: Record<
@@ -46,16 +58,22 @@ export default function (ui: UiProvider): EditableProvider {
     Record<string, EditableFieldData | undefined>
   > = {}
 
-  function getVisible() {
+  function getVisible(directiveType: BlokkliDirectiveType) {
     return [...visible.keys()]
       .map((key) => {
-        return rects[key]
+        if (key.startsWith(directiveType)) {
+          return rects[key]
+        }
       })
       .filter(falsy)
   }
 
-  function getEditableKey(fieldName: string, entity: EntityContext): string {
-    return `${entity.type}:${entity.uuid}:${fieldName}`
+  function getEditableKey(
+    fieldName: string,
+    entity: EntityContext,
+    directiveType: BlokkliDirectiveType,
+  ): string {
+    return `${directiveType}:${entity.type}:${entity.uuid}:${fieldName}`
   }
 
   function intersectionCallback(entries: IntersectionObserverEntry[]) {
@@ -64,12 +82,12 @@ export default function (ui: UiProvider): EditableProvider {
 
     for (const entry of entries) {
       if (entry.target instanceof HTMLElement) {
-        const data = editableFieldElementMap.get(entry.target)
+        const data = elementMap.get(entry.target)
         if (!data) {
           continue
         }
 
-        const key = getEditableKey(data.fieldName, data)
+        const key = getEditableKey(data.fieldName, data, data.directiveType)
         const domRect = entry.target.getBoundingClientRect()
         rects[key] ||= {
           width: 0,
@@ -101,41 +119,45 @@ export default function (ui: UiProvider): EditableProvider {
     },
   )
 
-  function registerEditableField(
+  function registerDirectiveElement(
     el: HTMLElement,
     fieldName: string,
     entity: EntityContext,
+    directiveType: BlokkliDirectiveType,
   ) {
-    const key = getEditableKey(fieldName, entity)
+    const key = getEditableKey(fieldName, entity, directiveType)
     const data: EditableFieldData = {
       ...entity,
       fieldName,
+      directiveType,
+      key,
     }
-    editableFieldElementMap.set(el, data)
-    editableFieldData.set(key, data)
+    elementMap.set(el, data)
+    fieldData.set(key, data)
     intersectionObserver.observe(el)
-    editableFieldElements.set(key, el)
-    if (entity.type === itemEntityType) {
+    elements.set(key, el)
+    if (directiveType === 'editable' && entity.type === itemEntityType) {
       editablesByUuid[entity.uuid] ||= {}
       editablesByUuid[entity.uuid]![fieldName] = data
     }
   }
 
-  function unregisterEditableField(
+  function unregisterDirectiveElement(
     el: HTMLElement,
     fieldName: string,
     entity: EntityContext,
+    directiveType: BlokkliDirectiveType,
   ) {
-    const key = getEditableKey(fieldName, entity)
+    const key = getEditableKey(fieldName, entity, directiveType)
     intersectionObserver.unobserve(el)
-    editableFieldElementMap.delete(el)
-    editableFieldData.delete(key)
+    elementMap.delete(el)
+    fieldData.delete(key)
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete rects[key]
     visible.delete(key)
-    editableFieldElements.delete(key)
+    elements.delete(key)
 
-    if (entity.type === itemEntityType) {
+    if (directiveType === 'editable' && entity.type === itemEntityType) {
       if (editablesByUuid[entity.uuid]) {
         editablesByUuid[entity.uuid]![fieldName] = undefined
       }
@@ -159,6 +181,8 @@ export default function (ui: UiProvider): EditableProvider {
 
     // Check visible editable fields
     for (const key of visible) {
+      if (!key.startsWith('editable:')) continue
+
       const rect = rects[key]
       if (!rect) continue
 
@@ -169,7 +193,7 @@ export default function (ui: UiProvider): EditableProvider {
         artboardY >= rect.y &&
         artboardY <= rect.y + rect.height
       ) {
-        return editableFieldData.get(key)
+        return fieldData.get(key)
       }
     }
 
@@ -182,14 +206,12 @@ export default function (ui: UiProvider): EditableProvider {
 
     // Get keys to update: either all fields or just visible ones
     const keysToUpdate =
-      editableFieldElements.size < 150
-        ? Array.from(editableFieldElements.keys())
-        : Array.from(visible)
+      elements.size < 150 ? Array.from(elements.keys()) : Array.from(visible)
 
     // Update rectangles for selected editable fields
     for (let i = 0; i < keysToUpdate.length; i++) {
       const key = keysToUpdate[i]!
-      const el = editableFieldElements.get(key)
+      const el = elements.get(key)
       if (!el) continue
 
       const domRect = el.getBoundingClientRect()
@@ -233,12 +255,34 @@ export default function (ui: UiProvider): EditableProvider {
     return Object.values(editables).filter(falsy)
   }
 
+  function getDroppableElements(): DroppableFieldElementData[] {
+    const droppableElements: DroppableFieldElementData[] = []
+
+    for (const item of fieldData.values()) {
+      if (item.directiveType !== 'droppable') {
+        continue
+      }
+
+      const element = elements.get(item.key)
+      if (!element) {
+        continue
+      }
+
+      droppableElements.push({
+        ...item,
+        element,
+      })
+    }
+
+    return droppableElements
+  }
+
   function findEditableElement(
     fieldName: string,
     host: EntityContext,
   ): HTMLElement | undefined {
-    const key = getEditableKey(fieldName, host)
-    return editableFieldElements.get(key)
+    const key = getEditableKey(fieldName, host, 'editable')
+    return elements.get(key)
   }
 
   onBlokkliEvent('state:reloaded', handleRefresh)
@@ -252,12 +296,13 @@ export default function (ui: UiProvider): EditableProvider {
   })
 
   return {
-    registerEditableField,
-    unregisterEditableField,
+    registerDirectiveElement,
+    unregisterDirectiveElement,
     init,
     getVisible,
     getEditableAtPoint,
     getEditablesForBlock,
     findEditableElement,
+    getDroppableElements,
   }
 }

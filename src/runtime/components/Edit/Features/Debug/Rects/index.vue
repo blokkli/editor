@@ -16,7 +16,7 @@ import { falsy, intersects } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { Coord, Rectangle } from '#blokkli/types'
 
-const { ui, dom, editable } = useBlokkli()
+const { ui, dom, directive } = useBlokkli()
 
 const canvasRects = ref<HTMLCanvasElement | null>(null)
 
@@ -75,7 +75,7 @@ onBlokkliEvent('canvas:draw', (e) => {
   drawRects(ctx, visibleFieldRects, e.artboardScale, e.artboardOffset, viewport)
 
   ctx.strokeStyle = 'green'
-  const editableRects = editable.getVisible()
+  const editableRects = directive.getVisible('editable')
   drawRects(ctx, editableRects, e.artboardScale, e.artboardOffset, viewport)
 })
 </script>

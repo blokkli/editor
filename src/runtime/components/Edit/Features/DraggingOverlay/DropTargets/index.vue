@@ -230,11 +230,16 @@ const draggingBundles = computed<string[]>(() =>
   props.items
     .flatMap((item) => {
       const bundles: string[] = []
-      if (item.itemType === 'existing') {
+      if (
+        item.itemType === 'existing' ||
+        item.itemType === 'existing_structure'
+      ) {
         bundles.push(item.block.bundle)
         if (item.block.library?.reusableBundle) {
           bundles.push(item.block.library.reusableBundle)
         }
+      } else if (item.itemBundle) {
+        bundles.push(item.itemBundle)
       }
 
       return bundles

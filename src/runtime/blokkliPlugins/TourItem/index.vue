@@ -26,6 +26,7 @@ const findElement = (
 }
 
 const instance = getCurrentInstance()
+
 defineTourItem(() => {
   return {
     id: props.id,

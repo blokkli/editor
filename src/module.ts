@@ -167,7 +167,7 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     addPlugin({
-      src: resolver.resolve('runtime/plugins/blokkliEditable'),
+      src: resolver.resolve('runtime/plugins/blokkliDirectives'),
     })
 
     addBuildPlugin(RuntimeDefinitionPlugin(nuxt, 'defineBlokkli'))

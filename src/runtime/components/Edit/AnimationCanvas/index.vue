@@ -48,7 +48,7 @@ const {
   ui,
   animation,
   state,
-  editable,
+  directive,
   runtimeConfig,
   blocks,
 } = useBlokkli()
@@ -99,7 +99,7 @@ function getInteractedElement(
   e: MouseEvent | TouchEvent,
 ): InteractedElement | null {
   const { x, y } = getInteractionCoordinates(e)
-  const editableField = editable.getEditableAtPoint(x, y)
+  const editableField = directive.getEditableAtPoint(x, y)
   if (editableField) {
     const uuid =
       editableField.type === runtimeConfig.itemEntityType

@@ -3,8 +3,13 @@ import {
   INJECT_ENTITY_CONTEXT,
   INJECT_IS_IN_REUSABLE,
 } from '#blokkli/helpers/symbols'
-import type { BlokkliApp, EntityContext } from '#blokkli/types'
+import type {
+  BlokkliApp,
+  BlokkliDirectiveType,
+  EntityContext,
+} from '#blokkli/types'
 import { defineNuxtPlugin, type DirectiveBinding, type VNode } from '#imports'
+import type { ObjectDirective } from 'vue'
 
 function getInjection<T>(vnode: VNode, symbol: symbol): T | undefined {
   // @ts-expect-error Private API.
@@ -39,9 +44,13 @@ function isEditing(): boolean {
   return false
 }
 
-export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.directive('blokkli-editable', {
-    created(el: HTMLElement, binding, vnode) {
+function createDirective(
+  type: BlokkliDirectiveType,
+): ObjectDirective<HTMLElement, 'name'> {
+  const dataset =
+    type === 'editable' ? 'blokkliEditableField' : 'blokkliDroppableField'
+  return {
+    created(el, binding, vnode) {
       if (import.meta.client) {
         if (!isEditing()) {
           return
@@ -56,7 +65,7 @@ export default defineNuxtPlugin((nuxtApp) => {
           return
         }
 
-        el.dataset.blokkliEditableField = fieldName
+        el.dataset[dataset] = fieldName
       }
     },
     mounted(el, binding, vnode) {
@@ -81,7 +90,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         return
       }
 
-      app.editable.registerEditableField(el, fieldName, entity)
+      app.directive.registerDirectiveElement(el, fieldName, entity, type)
     },
     beforeUnmount(el: HTMLElement, binding, vnode) {
       if (!isEditing()) {
@@ -102,22 +111,15 @@ export default defineNuxtPlugin((nuxtApp) => {
         return
       }
 
-      app.editable.unregisterEditableField(el, fieldName, entity)
+      app.directive.unregisterDirectiveElement(el, fieldName, entity, type)
     },
-  })
+  }
+}
 
-  nuxtApp.vueApp.directive('blokkli-droppable', {
-    created(el: HTMLElement, binding) {
-      if (import.meta.client) {
-        if (!window.location.search.includes('blokkliEditing')) {
-          return
-        }
-        const fieldName = binding.value?.name || binding.arg
-        if (!fieldName) {
-          return
-        }
-        el.dataset.blokkliDroppableField = fieldName
-      }
-    },
-  })
+export default defineNuxtPlugin({
+  name: 'blokkli:directives',
+  setup(nuxtApp) {
+    nuxtApp.vueApp.directive('blokkli-editable', createDirective('editable'))
+    nuxtApp.vueApp.directive('blokkli-droppable', createDirective('droppable'))
+  },
 })

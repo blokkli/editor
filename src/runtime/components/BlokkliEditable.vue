@@ -1,5 +1,5 @@
 <template>
-  <component :is="tag" v-bind="attrs" ref="root">
+  <component :is="tag" ref="root">
     <slot :value="renderedValue" />
   </component>
 </template>
@@ -57,18 +57,6 @@ if (!entity) {
 
 const renderedValue = computed(() => valueOverride.value || props.value)
 
-const attrs = computed(() => {
-  if (isEditing && props.name) {
-    return {
-      'data-blokkli-editable-field': props.name,
-      'data-blokkli-editable-component': 'true',
-      'data-blokkli-editable-value': props.value,
-    }
-  }
-
-  return undefined
-})
-
 const onEditableUpdateValue = (e: EditableFieldUpdateEvent) => {
   if (e.name === props.name && e.entityUuid === entity.uuid) {
     valueOverride.value = e.value
@@ -83,7 +71,12 @@ onMounted(() => {
   editContext.eventBus.on('editable:update', onEditableUpdateValue)
 
   if (root.value instanceof HTMLElement && entity) {
-    app.editable.registerEditableField(root.value, props.name, entity)
+    app.directive.registerDirectiveElement(
+      root.value,
+      props.name,
+      entity,
+      'editable',
+    )
   }
 })
 
@@ -92,7 +85,12 @@ onBeforeUnmount(() => {
     editContext.eventBus.off('editable:update', onEditableUpdateValue)
   }
   if (app && root.value instanceof HTMLElement && entity) {
-    app.editable.unregisterEditableField(root.value, props.name, entity)
+    app.directive.unregisterDirectiveElement(
+      root.value,
+      props.name,
+      entity,
+      'editable',
+    )
   }
 })
 </script>
