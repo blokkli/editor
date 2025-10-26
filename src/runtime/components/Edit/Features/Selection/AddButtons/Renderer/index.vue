@@ -34,8 +34,18 @@ import {
 import { isInternalBundle } from '#blokkli/helpers/bundles'
 import { itemEntityType } from '#blokkli-build/config'
 
-const { animation, theme, dom, selection, state, types, ui, $t, blocks } =
-  useBlokkli()
+const {
+  animation,
+  theme,
+  dom,
+  selection,
+  state,
+  types,
+  ui,
+  $t,
+  blocks,
+  fields,
+} = useBlokkli()
 
 // Store field tooltips for empty field buttons
 const emptyFieldTooltips = ref<string[]>([])
@@ -243,7 +253,7 @@ function getOrientationForUuid(uuid: string): Orientation {
   if (!cached) {
     const item = blocks.getBlock(uuid)
     if (item) {
-      const field = dom.findField(item.host.uuid, item.host.fieldName)
+      const field = fields.find(item.host.uuid, item.host.fieldName)
       if (field) {
         cached = getChildrenOrientation(field.element)
         orientationCache.set(uuid, cached)
@@ -271,7 +281,7 @@ function getBlockState(uuid: string): BlockStateCache {
       }
     }
     if (block) {
-      const field = dom.findField(block.host.uuid, block.host.fieldName)
+      const field = fields.find(block.host.uuid, block.host.fieldName)
       if (!field) {
         // Don't cache - field might appear in DOM later
         return {
@@ -332,7 +342,7 @@ function getBlockState(uuid: string): BlockStateCache {
           const fieldLabel = fieldConfig.label || fieldConfig.name
 
           // Get field element to check allowed bundles
-          const fieldElement = dom.findField(uuid, fieldConfig.name)
+          const fieldElement = fields.find(uuid, fieldConfig.name)
           if (fieldElement) {
             const allowedBundles = fieldElement.allowedBundles.filter(
               (bundle) => !isInternalBundle(bundle),

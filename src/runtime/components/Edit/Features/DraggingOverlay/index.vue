@@ -69,6 +69,7 @@ const {
   definitions,
   blocks,
   directive,
+  fields,
 } = useBlokkli()
 
 const dragItemsComponent = ref<InstanceType<typeof DragItems> | null>(null)
@@ -137,7 +138,7 @@ const onDropNew = async (
   host: DraggableHostData,
   afterUuid?: string,
 ) => {
-  const field = dom.findField(host.uuid, host.fieldName)
+  const field = fields.find(host.uuid, host.fieldName)
   if (!field) {
     throw new Error(
       `Failed to locate field with name "${host.fieldName}" on UUID "${host.uuid}"`,

@@ -88,7 +88,7 @@ const targetStyle = computed(() => {
   }
 })
 
-const { types, state, selection, dom, eventBus } = useBlokkli()
+const { types, state, selection, eventBus, fields } = useBlokkli()
 
 const mutatedField = computed(() =>
   state.getMutatedField(props.entityUuid, props.name),
@@ -98,7 +98,7 @@ const list = computed(() => mutatedField.value?.list || [])
 const key = computed(() => props.entityUuid + ':' + props.name)
 
 function onMouseUp(preceedingUuid?: string) {
-  const field = dom.findField(props.entityUuid, props.name)
+  const field = fields.find(props.entityUuid, props.name)
 
   if (!field) {
     return

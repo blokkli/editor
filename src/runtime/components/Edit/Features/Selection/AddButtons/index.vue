@@ -45,7 +45,7 @@ const props = defineProps<{
   items: RenderedFieldListItem[]
 }>()
 
-const { dom, state, eventBus, types, $t, blocks } = useBlokkli()
+const { dom, state, eventBus, types, $t, blocks, fields } = useBlokkli()
 
 const shouldRender = computed(() => {
   // Add buttons are only visible when one block is selected.
@@ -112,7 +112,7 @@ const allowedBundlesForField = computed(() => {
     return []
   }
 
-  const field = dom.findField(blockData.host.uuid, blockData.host.fieldName)
+  const field = fields.find(blockData.host.uuid, blockData.host.fieldName)
   if (!field) {
     return []
   }
@@ -164,7 +164,7 @@ const fieldTooltips = computed(() => {
     const fieldLabel = fieldConfig?.label || field.name
 
     // Get field element to check allowed bundles
-    const fieldElement = dom.findField(block.value!.uuid, field.name)
+    const fieldElement = fields.find(block.value!.uuid, field.name)
     if (fieldElement) {
       const allowedBundles = fieldElement.allowedBundles.filter(
         (bundle) => !isInternalBundle(bundle),
@@ -292,7 +292,7 @@ function updateCache(uuid: string) {
       return
     }
 
-    const field = dom.findField(block.host.uuid, block.host.fieldName)
+    const field = fields.find(block.host.uuid, block.host.fieldName)
     if (!field) {
       return
     }
@@ -477,7 +477,7 @@ function onRendererToggle(data: {
     return
   }
 
-  const field = dom.findField(block.host.uuid, block.host.fieldName)
+  const field = fields.find(block.host.uuid, block.host.fieldName)
   if (!field) {
     return
   }
@@ -518,7 +518,7 @@ function onRendererToggleField(data: {
     return
   }
 
-  const field = dom.findField(uuid.value, emptyField.name)
+  const field = fields.find(uuid.value, emptyField.name)
   if (!field) {
     return
   }

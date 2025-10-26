@@ -32,7 +32,10 @@ import type {
   BundleProps,
 } from '#blokkli-build/generated-types'
 import type { ThemeProvider } from '#blokkli/helpers/themeProvider'
-import type { GlobalOptionsType } from '#blokkli-build/definitions'
+import type {
+  BlokkliFragmentName,
+  GlobalOptionsType,
+} from '#blokkli-build/definitions'
 import type { CommandsProvider } from '#blokkli/helpers/commandsProvider'
 import type { TourProvider } from '#blokkli/helpers/tourProvider'
 import type { DropAreaProvider } from '#blokkli/helpers/dropAreaProvider'
@@ -42,6 +45,7 @@ import type getVideoId from 'get-video-id'
 import type { DefinitionProvider } from '../helpers/definitionProvider'
 import type { IndicatorsProvider } from '#blokkli/helpers/indicatorsProvider'
 import type { BlocksProvider } from '#blokkli/helpers/providers/blocks'
+import type { FieldsProvider } from '#blokkli/helpers/providers/fields'
 
 export type MutateWithLoadingStateFunction = (
   promise: () => Promise<MutationResponseLike<any>> | undefined,
@@ -1140,8 +1144,10 @@ export type BlokkliFieldElement = {
   allowedFragments: string[]
   cardinality: number
   element: HTMLElement
-  dropAlignment?: 'vertical' | 'horizontal'
+  dropAlignment: FieldDropAlignment | null
 }
+
+export type FieldDropAlignment = 'vertical' | 'horizontal'
 
 export type ActionPlacedEvent = {
   id: string
@@ -1380,6 +1386,7 @@ export interface BlokkliApp {
   indicators: IndicatorsProvider
   plugins: PluginProvider
   directive: DirectiveProvider
+  fields: FieldsProvider
 }
 
 export type PasteExistingBlocksEvent = {
@@ -1734,5 +1741,25 @@ export type RenderedFieldListItem = {
 }
 
 export type BlokkliDirectiveType = 'editable' | 'droppable'
+
+export type RegisteredField = {
+  element: HTMLElement
+  entity: EntityContext
+  fieldName: string
+  fieldListType: ValidFieldListTypes
+  allowedFragments: BlokkliFragmentName[]
+  isNested: boolean
+  nestingLevel: number
+  dropAlignment: FieldDropAlignment | null
+}
+
+export type RegisterFieldData = Pick<
+  RegisteredField,
+  | 'fieldListType'
+  | 'allowedFragments'
+  | 'isNested'
+  | 'nestingLevel'
+  | 'dropAlignment'
+>
 
 export default {}

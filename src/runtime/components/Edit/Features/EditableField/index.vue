@@ -44,7 +44,7 @@ type Editable = {
   value?: string
 }
 
-const { selection, adapter, types, $t, dom, state, directive, blocks } =
+const { selection, adapter, types, $t, state, directive, blocks, context } =
   useBlokkli()
 const selectedEditable = ref<Editable | null>(null)
 const hasTransition = ref(false)
@@ -68,7 +68,11 @@ const getHost = (uuid?: string): EntityContext | undefined => {
     }
   }
 
-  return dom.findClosestEntityContext(dom.getActiveProviderElement())
+  return {
+    type: context.value.entityType,
+    bundle: context.value.entityBundle,
+    uuid: context.value.entityUuid,
+  }
 }
 
 const buildEditable = (

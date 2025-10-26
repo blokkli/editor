@@ -1,17 +1,16 @@
 import { reactive, ref, computed, type ComputedRef } from '#imports'
 import type {
   DraggableExistingBlock,
-  BlokkliFieldElement,
   DraggableItem,
-  DroppableEntityField,
   EntityContext,
   Rectangle,
   Coord,
   RenderedFieldListItem,
+  RegisteredField,
+  RegisterFieldData,
 } from '#blokkli/types'
 import {
   findClosestBlock,
-  buildDraggableItem,
   falsy,
   findClosestEntityContext,
 } from '#blokkli/helpers'
@@ -25,17 +24,8 @@ import type {
 } from '#blokkli-build/generated-types'
 import type { DebugProvider } from './debugProvider'
 import type { DefinitionProvider } from './definitionProvider'
-import type { BlokkliFragmentName } from '#blokkli-build/definitions'
 import type { StateProvider } from './stateProvider'
 import { itemEntityType } from '#blokkli-build/config'
-
-type RegisteredField = {
-  element: HTMLElement
-  entity: EntityContext
-  fieldName: string
-  fieldListType: ValidFieldListTypes
-  allowedFragments: BlokkliFragmentName[]
-}
 
 type RegisteredFieldType = {
   entityType: string
@@ -43,64 +33,9 @@ type RegisteredFieldType = {
   fieldName: string
 }
 
-const buildFieldElement = (
-  element: HTMLElement,
-): BlokkliFieldElement | undefined => {
-  const key = element.dataset.fieldKey
-  const name = element.dataset.fieldName
-  const label = element.dataset.fieldLabel
-  const isNested = element.dataset.fieldIsNested === 'true'
-  const nestingLevel = Number.parseInt(element.dataset.bkNestingLevel || '0')
-  const fieldListType = element.dataset.fieldListType as
-    | ValidFieldListTypes
-    | undefined
-  const hostEntityType = element.dataset.hostEntityType
-  const hostEntityBundle = element.dataset.hostEntityBundle
-  const hostEntityUuid = element.dataset.hostEntityUuid
-  const dropAlignment = element.dataset.fieldDropAlignment
-  const cardinality = Number.parseInt(element.dataset.fieldCardinality || '-1')
-  const allowedBundles = (element.dataset.fieldAllowedBundles || '')
-    .split(',')
-    .filter(Boolean)
-  const allowedFragments = (element.dataset.allowedFragments || '')
-    .split(',')
-    .filter(Boolean)
-
-  if (
-    key &&
-    name &&
-    label &&
-    hostEntityType &&
-    hostEntityUuid &&
-    hostEntityBundle &&
-    fieldListType
-  ) {
-    return {
-      key,
-      name,
-      label,
-      isNested,
-      nestingLevel,
-      hostEntityType,
-      hostEntityUuid,
-      hostEntityBundle,
-      cardinality: Number.isNaN(cardinality) ? -1 : cardinality,
-      allowedBundles,
-      allowedFragments,
-      fieldListType,
-      element,
-      dropAlignment:
-        dropAlignment === 'vertical' || dropAlignment === 'horizontal'
-          ? dropAlignment
-          : undefined,
-    }
-  }
-}
-
 type MeasuredBlockRect = Rectangle & { time: number }
 
 export type DomProvider = {
-  getAllBlocks(): DraggableExistingBlock[]
   findClosestBlock(
     el: Element | EventTarget,
   ): DraggableExistingBlock | undefined
@@ -113,11 +48,6 @@ export type DomProvider = {
     checkSize?: boolean,
   ): string
 
-  findField(
-    entityUuid: string,
-    fieldName: string,
-  ): BlokkliFieldElement | undefined
-
   registerBlock: (key: string, uuid: string, el: HTMLElement | null) => void
   unregisterBlock: (key: string, uuid: string) => void
 
@@ -125,15 +55,13 @@ export type DomProvider = {
     entity: EntityContext,
     fieldName: string,
     instance: HTMLElement,
-    fieldListType: ValidFieldListTypes,
-    allowedFragments: BlokkliFragmentName[],
+    data: RegisterFieldData,
   ) => void
   updateFieldElement: (
     entity: EntityContext,
     fieldName: string,
     element: HTMLElement,
-    fieldListType: ValidFieldListTypes,
-    allowedFragments: BlokkliFragmentName[],
+    data: RegisterFieldData,
   ) => void
   unregisterField: (entity: EntityContext, fieldName: string) => void
   getRegisteredField: (
@@ -150,8 +78,6 @@ export type DomProvider = {
   getVisibleBlocks(): string[]
   getVisibleFields(): string[]
   isBlockVisible(uuid: string): boolean
-
-  getActiveProviderElement: () => HTMLElement
 
   getBlockRects: () => Record<string, MeasuredBlockRect>
   getBlockRect: (
@@ -401,16 +327,14 @@ export default function (
     entity: EntityContext,
     fieldName: string,
     element: HTMLElement,
-    fieldListType: ValidFieldListTypes,
-    allowedFragments: BlokkliFragmentName[],
+    data: RegisterFieldData,
   ) => {
     const key = `${entity.uuid}:${fieldName}`
     registeredFields[key] = {
       element,
       entity,
       fieldName,
-      fieldListType,
-      allowedFragments,
+      ...data,
     }
     intersectionObserver.observe(element)
   }
@@ -419,8 +343,7 @@ export default function (
     entity: EntityContext,
     fieldName: string,
     element: HTMLElement,
-    fieldListType: ValidFieldListTypes,
-    allowedFragments: BlokkliFragmentName[],
+    data: RegisterFieldData,
   ) => {
     const key = `${entity.uuid}:${fieldName}`
     const existingElement = registeredFields[key]?.element
@@ -431,8 +354,7 @@ export default function (
       entity,
       fieldName,
       element,
-      fieldListType,
-      allowedFragments,
+      ...data,
     }
     intersectionObserver.observe(element)
   }
@@ -492,21 +414,6 @@ export default function (
     return el
   }
 
-  const getAllBlocks = (): DraggableExistingBlock[] => {
-    return [
-      ...document.querySelectorAll(
-        '[data-blokkli-provider-active="true"] [data-uuid]',
-      ),
-    ]
-      .map((v) => {
-        const item = buildDraggableItem(v)
-        if (item?.itemType === 'existing') {
-          return item
-        }
-      })
-      .filter(falsy)
-  }
-
   const getDropElementMarkup = (
     item: DraggableItem | RenderedFieldListItem,
     checkSize?: boolean,
@@ -536,35 +443,8 @@ export default function (
     )
   }
 
-  const findField = (
-    uuid: string,
-    fieldName: string,
-  ): BlokkliFieldElement | undefined => {
-    const el = document.querySelector(
-      `[data-field-name="${fieldName}"][data-host-entity-uuid="${uuid}"]`,
-    )
-    if (!(el instanceof HTMLElement)) {
-      return
-    }
-    return buildFieldElement(el)
-  }
-
   const getVisibleBlocks = () => Array.from(visibleBlocks)
   const getVisibleFields = () => Array.from(visibleFields)
-
-  const getActiveProviderElement = () => {
-    const el = document.querySelector('[data-blokkli-provider-active="true"]')
-    if (!el) {
-      throw new Error('Failed to find active <BlokkliProvider> element.')
-    }
-
-    if (!(el instanceof HTMLElement)) {
-      throw new TypeError(
-        'The root element of the active <BlokkliProvider> is not an HTMLElement.',
-      )
-    }
-    return el
-  }
 
   function getBlockRects(): Record<string, MeasuredBlockRect> {
     return blockRects
@@ -624,9 +504,7 @@ export default function (
   }
 
   function refreshFieldRect(key: string) {
-    const el = document.querySelector(
-      `.bk-draggable-list-container[data-field-key="${key}"]`,
-    )
+    const el = registeredFields[key]?.element
     if (!(el instanceof HTMLElement)) {
       return
     }
@@ -946,17 +824,14 @@ export default function (
   }
 
   return {
-    getAllBlocks,
     findClosestBlock,
     getDropElementMarkup,
-    findField,
     findClosestEntityContext,
     getVisibleBlocks,
     getVisibleFields,
     registerField,
     unregisterField,
     updateFieldElement,
-    getActiveProviderElement,
     getBlockRects,
     getBlockRect,
     getFieldRect,

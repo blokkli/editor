@@ -99,6 +99,7 @@ import blocksProvider from './../../helpers/providers/blocks'
 import indicatorsProvider from './../../helpers/indicatorsProvider'
 import pluginProvider from './../../helpers/pluginProvider'
 import directiveProvider from './../../helpers/providers/directive'
+import fieldsProvider from './../../helpers/providers/fields'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import '#blokkli-build/styles.css'
 import getAdapter from '#blokkli-build/edit-adapter'
@@ -181,6 +182,7 @@ const types = await typesProvider(adapter, selection, context)
 const indicators = indicatorsProvider()
 const plugins = pluginProvider()
 const directive = directiveProvider(ui)
+const fields = fieldsProvider(state, dom, types)
 
 const mutatedEntity = computed(() => state.mutatedEntity.value || props.entity)
 
@@ -271,6 +273,7 @@ provide<BlokkliApp>(INJECT_APP, {
   tour,
   types,
   ui,
+  fields,
 })
 
 function textWithHighlight(title: string, text: string): string {

@@ -71,6 +71,7 @@ import type {
   EntityContext,
   ItemEditContext,
   BlokkliProviderEntityContext,
+  FieldDropAlignment,
 } from '#blokkli/types'
 import type {
   ValidFieldListTypes,
@@ -157,7 +158,7 @@ const props = withDefaults(
     editClass?: string
     nonEmptyClass?: string
     allowedFragments?: BlokkliFragmentName[]
-    dropAlignment?: 'vertical' | 'horizontal'
+    dropAlignment?: FieldDropAlignment
     /**
      * Renders proxy blocks during editing.
      */

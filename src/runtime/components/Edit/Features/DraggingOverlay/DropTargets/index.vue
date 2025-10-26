@@ -109,6 +109,7 @@ const {
   state,
   runtimeConfig,
   types,
+  fields,
 } = useBlokkli()
 
 const gl = animation.gl()
@@ -192,7 +193,7 @@ const emitDrop = async () => {
         return
       }
 
-      const field = dom.findField(hostUuid, fieldName)
+      const field = fields.find(hostUuid, fieldName)
 
       if (!field) {
         return
@@ -452,7 +453,7 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
   if (!uuid || !name) {
     return
   }
-  const field = dom.findField(uuid, name)
+  const field = fields.find(uuid, name)
   if (!field) {
     return
   }

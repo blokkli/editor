@@ -26,6 +26,8 @@ import FormFrame from './Frame/index.vue'
 import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { EntityTranslation } from '#blokkli/types'
+import { itemEntityType } from '#blokkli-build/config'
+import type { BlockBundleWithNested } from '#blokkli-build/generated-types'
 
 const { adapter } = defineBlokkliFeature({
   id: 'edit-form',
@@ -191,17 +193,18 @@ onBlokkliEvent('add:block:new', (e) => {
   if (!state.canEdit.value) {
     return
   }
-  const field = dom.findField(e.host.uuid, e.host.fieldName)
-  if (field) {
+  const field = dom.getRegisteredField(e.host.uuid, e.host.fieldName)
+  if (field?.entity.type === itemEntityType) {
     const definition = definitions.getBlockDefinition(
       e.bundle,
       field.fieldListType,
-      field.hostEntityBundle as any,
+      field.entity.bundle as BlockBundleWithNested,
     )
     if (definition?.editor?.disableEdit) {
       return
     }
   }
+
   form.value = {
     id: 'block:add',
     data: e,

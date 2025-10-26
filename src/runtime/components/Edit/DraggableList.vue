@@ -86,7 +86,13 @@ import {
   provide,
   watch,
 } from '#imports'
-import type { FieldListItem, EntityContext, FieldConfig } from '#blokkli/types'
+import type {
+  FieldListItem,
+  EntityContext,
+  FieldConfig,
+  FieldDropAlignment,
+  RegisterFieldData,
+} from '#blokkli/types'
 import type { BlokkliFragmentName } from '#blokkli-build/definitions'
 import BlokkliItem from './../BlokkliItem.vue'
 import { isVisibleByOptions } from '#blokkli/helpers/runtimeHelpers'
@@ -114,7 +120,7 @@ const props = withDefaults(
     isNested: boolean
     fieldListType: ValidFieldListTypes
     allowedFragments?: BlokkliFragmentName[]
-    dropAlignment?: 'vertical' | 'horizontal'
+    dropAlignment?: FieldDropAlignment
     proxyMode?: boolean
     globalProxyMode?: boolean
     nestingLevel: number
@@ -213,27 +219,25 @@ function isMuted(item?: FieldListItem) {
   return !(isVisible && isVisibleCustom)
 }
 
+const data = computed<RegisterFieldData>(() => {
+  return {
+    fieldListType: props.fieldListType,
+    allowedFragments: props.allowedFragments ?? [],
+    isNested: props.isNested,
+    nestingLevel: props.nestingLevel,
+    dropAlignment: props.dropAlignment ?? null,
+  }
+})
+
 watch(root, function (newRoot) {
   if (newRoot) {
-    dom.updateFieldElement(
-      props.entity,
-      props.name,
-      newRoot,
-      props.fieldListType,
-      props.allowedFragments ?? [],
-    )
+    dom.updateFieldElement(props.entity, props.name, newRoot, data.value)
   }
 })
 
 onMounted(() => {
   if (root.value) {
-    dom.registerField(
-      props.entity,
-      props.name,
-      root.value,
-      props.fieldListType,
-      props.allowedFragments ?? [],
-    )
+    dom.registerField(props.entity, props.name, root.value, data.value)
   }
 })
 
