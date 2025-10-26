@@ -25,7 +25,7 @@ const props = defineProps<{
   target: string | HTMLElement | { uuid: string }
 }>()
 
-const { eventBus, dom } = useBlokkli()
+const { eventBus, dom, blocks } = useBlokkli()
 
 const elButton = useTemplateRef('elButton')
 
@@ -39,9 +39,9 @@ function getElement(): HTMLElement | null {
     } else if (props.target instanceof HTMLElement) {
       return props.target
     } else if (typeof props.target === 'object' && 'uuid' in props.target) {
-      const block = dom.findBlock(props.target.uuid)
-      if (block) {
-        return block.element()
+      const item = blocks.getBlock(props.target.uuid)
+      if (item) {
+        return dom.getDragElement(item) ?? null
       }
     }
   }

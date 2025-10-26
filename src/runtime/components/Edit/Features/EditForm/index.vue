@@ -36,7 +36,7 @@ const { adapter } = defineBlokkliFeature({
   requiredAdapterMethods: ['formFrameBuilder'],
 })
 
-const { types, state, context, $t, dom, definitions } = useBlokkli()
+const { types, state, context, $t, dom, definitions, blocks } = useBlokkli()
 
 const form = ref<AdapterFormFrameBuilder | null>(null)
 
@@ -129,13 +129,13 @@ onBlokkliEvent('item:edit', (e) => {
   if (!state.canEdit.value) {
     return
   }
-  const block = dom.findBlock(e.uuid)
+  const block = blocks.getBlock(e.uuid)
   if (!block) {
     return
   }
   const definition = definitions.getBlockDefinition(
     e.bundle,
-    block.hostFieldListType,
+    block.fieldListType,
     block.parentBlockBundle,
   )
   if (definition?.editor?.disableEdit) {

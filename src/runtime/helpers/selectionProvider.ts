@@ -3,12 +3,13 @@ import onBlokkliEvent from './composables/onBlokkliEvent'
 import { type Ref, type ComputedRef, computed, ref } from '#imports'
 
 import type {
-  DraggableExistingBlock,
   DraggableItem,
   InteractionMode,
+  RenderedFieldListItem,
 } from '#blokkli/types'
 import { falsy, modulo, onlyUnique } from '#blokkli/helpers'
 import { eventBus } from '#blokkli/helpers/eventBus'
+import type { BlocksProvider } from './providers/blocks'
 
 export type SelectionProvider = {
   /**
@@ -27,14 +28,19 @@ export type SelectionProvider = {
   hasAnythingSelected: ComputedRef<boolean>
 
   /**
+   * The selected bundles.
+   */
+  bundles: ComputedRef<string[]>
+
+  /**
    * The currently selected UUIDs as a Set.
    */
   uuidsSet: ComputedRef<Set<string>>
 
   /**
-   * The currently selected blocks.
+   * The currently selected field list items.
    */
-  blocks: ComputedRef<DraggableExistingBlock[]>
+  items: ComputedRef<RenderedFieldListItem[]>
 
   /**
    * The active field key.
@@ -104,7 +110,10 @@ export type SelectionProvider = {
   unlockSelection: (key: string) => void
 }
 
-export default function (dom: DomProvider): SelectionProvider {
+export default function (
+  dom: DomProvider,
+  blocks: BlocksProvider,
+): SelectionProvider {
   const selectedUuids = ref<string[]>([])
   const hasHostSelected = ref(false)
   const activeFieldKey = ref('')
@@ -115,27 +124,48 @@ export default function (dom: DomProvider): SelectionProvider {
   const interactionMode = ref<InteractionMode>('mouse')
   const selectionLocks = ref<string[]>([])
 
+  const selectedRenderedItems = computed(() => {
+    const items: RenderedFieldListItem[] = []
+    for (let i = 0; i < selectedUuids.value.length; i++) {
+      const uuid = selectedUuids.value[i]
+      if (!uuid) {
+        continue
+      }
+
+      const item = blocks.getBlock(uuid)
+
+      if (!item) {
+        continue
+      }
+
+      items.push(item)
+    }
+
+    return items
+  })
+
+  const bundles = computed<string[]>(() => {
+    return selectedRenderedItems.value.map((v) => v.bundle).filter(onlyUnique)
+  })
+
   const selectionIsLocked = computed(() => !!selectionLocks.value.length)
 
   const dragItems = ref<DraggableItem[]>([])
   const dragItemsBundles = computed(() =>
-    dragItems.value.map((v) => v.itemBundle).filter(falsy),
+    dragItems.value
+      .map((v) => {
+        if (v.itemType === 'existing') {
+          return v.block.bundle
+        } else if ('itemBundle' in v) {
+          return v.itemBundle
+        }
+      })
+      .filter(falsy),
   )
 
   const uuidsSet = computed(() => new Set(selectedUuids.value))
 
   const isDragging = computed(() => !!draggingMode.value)
-
-  const blocks = computed<DraggableExistingBlock[]>(() =>
-    selectedUuids.value
-      .map((uuid) => {
-        if (dom.registeredBlockUuids.value.includes(uuid)) {
-          return dom.findBlock(uuid)
-        }
-        return null
-      })
-      .filter(falsy),
-  )
 
   function updateSelectedUuids(uuids: string[], force?: boolean) {
     if (selectionIsLocked.value && !force) {
@@ -161,13 +191,13 @@ export default function (dom: DomProvider): SelectionProvider {
   }
 
   const selectInList = (prev?: boolean) => {
-    const items = dom.getAllBlocks()
+    const items = blocks.getAllBlocks()
     if (!items.length) {
       return
     }
 
-    const currentIndex = blocks.value[0]
-      ? items.findIndex((v) => v.uuid === blocks.value[0]!.uuid)
+    const currentIndex = selectedRenderedItems.value[0]
+      ? items.findIndex((v) => v.uuid === selectedRenderedItems.value[0]!.uuid)
       : -1
 
     const targetIndex = modulo(
@@ -218,12 +248,10 @@ export default function (dom: DomProvider): SelectionProvider {
     draggingMode.value = e.mode
     isMultiSelecting.value = false
     dragItems.value = e.items
-    const blocks = e.items.filter(
-      (v) => v.itemType === 'existing',
-    ) as DraggableExistingBlock[]
+    const blocks = e.items.filter((v) => v.itemType === 'existing')
 
     if (blocks.length) {
-      updateSelectedUuids(blocks.map((v) => v.uuid))
+      updateSelectedUuids(blocks.map((v) => v.block.uuid))
     }
   })
   onBlokkliEvent('dragging:end', () => {
@@ -278,7 +306,8 @@ export default function (dom: DomProvider): SelectionProvider {
 
   return {
     uuids: selectedUuids,
-    blocks,
+    bundles,
+    items: selectedRenderedItems,
     activeFieldKey,
     isDragging,
     isDraggingExisting,

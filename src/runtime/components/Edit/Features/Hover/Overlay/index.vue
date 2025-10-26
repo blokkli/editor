@@ -17,7 +17,8 @@ const props = defineProps<{
   gl: WebGLRenderingContext
 }>()
 
-const { animation, theme, dom, selection, state, ui, editable } = useBlokkli()
+const { animation, theme, dom, selection, state, ui, editable, blocks } =
+  useBlokkli()
 
 const programInfo = animation.registerProgram('hover', props.gl, [vs, fs])
 
@@ -261,7 +262,7 @@ function updateHoverState(
   // Update rectangles for each nesting level.
   for (const [level, uuid] of nestingMap) {
     const rect = dom.getBlockRect(uuid)
-    const block = dom.findBlock(uuid)
+    const block = blocks.getBlock(uuid)
     if (!rect || !block) continue
 
     const el = dom.getDragElement(block)

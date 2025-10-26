@@ -35,7 +35,7 @@ defineBlokkliFeature({
 const { selection, state, ui, definitions, context } = useBlokkli()
 
 const uuids = computed(() => {
-  const uuids = selection.blocks.value.map((v) => v.uuid)
+  const uuids = selection.items.value.map((v) => v.uuid)
   if (uuids.length) {
     return uuids
   } else if (selection.hasHostSelected.value) {
@@ -68,8 +68,8 @@ const definition = computed<
     )
   }
 
-  const bundles = selection.blocks.value
-    .map((v) => v.reusableBundle || v.itemBundle)
+  const bundles = selection.items.value
+    .map((v) => v.library?.reusableBundle || v.bundle)
     .filter(onlyUnique)
 
   // @TODO: Support shared global options.
@@ -80,8 +80,8 @@ const definition = computed<
   const bundle = bundles[0]!
 
   if (bundle === 'blokkli_fragment') {
-    const fragments = selection.blocks.value.filter(
-      (v) => v.itemBundle === 'blokkli_fragment',
+    const fragments = selection.items.value.filter(
+      (v) => v.bundle === 'blokkli_fragment',
     )
 
     const fragmentNames = fragments
@@ -101,11 +101,11 @@ const definition = computed<
     return definitions.getFragmentDefinition(fragmentNames[0])
   }
 
-  return selection.blocks.value
+  return selection.items.value
     .map((block) => {
       return definitions.getBlockDefinition(
         bundle,
-        block.hostFieldListType,
+        block.fieldListType,
         block.parentBlockBundle,
       )
     })

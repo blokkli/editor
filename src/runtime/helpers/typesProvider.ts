@@ -139,7 +139,7 @@ export default async function (
    * This always uses the parent field of the selected blocks to determine the allowed types.
    */
   const allowedTypesInList = computed(() => {
-    if (!selection.blocks.value.length) {
+    if (!selection.items.value.length) {
       return []
     }
 
@@ -147,20 +147,20 @@ export default async function (
     let hostType = ''
     let hostBundle = ''
     let fieldName = ''
-    for (let i = 0; i < selection.blocks.value.length; i++) {
-      const block = selection.blocks.value[i]!
+    for (let i = 0; i < selection.items.value.length; i++) {
+      const block = selection.items.value[i]!
       if (
         i !== 0 &&
-        (hostType !== block.hostType ||
-          hostBundle !== block.hostBundle ||
-          fieldName !== block.hostFieldName)
+        (hostType !== block.host.type ||
+          hostBundle !== block.host.bundle ||
+          fieldName !== block.host.fieldName)
       ) {
         // Not all blocks are in the same field. Return empty array.
         return []
       }
-      hostType = block.hostType
-      hostBundle = block.hostBundle
-      fieldName = block.hostFieldName
+      hostType = block.host.type
+      hostBundle = block.host.bundle
+      fieldName = block.host.fieldName
     }
 
     return (
@@ -168,18 +168,19 @@ export default async function (
     )
   })
 
-  watch(selection.blocks, () => {
-    if (selection.blocks.value.length !== 1) {
+  // @TODO: This can and should be refactored.
+  watch(selection.items, () => {
+    if (selection.items.value.length !== 1) {
       return
     }
-    const item = selection.blocks.value[0]!
+    const item = selection.items.value[0]!
     // Determine if the selected item has nested items.
-    const hasNested = itemBundlesWithNested.includes(item.itemBundle)
+    const hasNested = itemBundlesWithNested.includes(item.bundle)
     if (hasNested) {
       // Get the nested item fields.
       const nestedFields =
         fieldConfig
-          .forEntityTypeAndBundle(itemEntityType, item.itemBundle)
+          .forEntityTypeAndBundle(itemEntityType, item.bundle)
           .map((v) => v.name) || []
 
       // When we have exactly one nested item field, we can set the active
@@ -190,7 +191,10 @@ export default async function (
         return
       }
     }
-    eventBus.emit('setActiveFieldKey', `${item.hostUuid}:${item.hostFieldName}`)
+    eventBus.emit(
+      'setActiveFieldKey',
+      `${item.host.uuid}:${item.host.fieldName}`,
+    )
   })
 
   /**
@@ -224,8 +228,9 @@ export default async function (
     fieldName: string,
     host: DraggableExistingBlock | EntityContext,
   ): DroppableFieldConfig {
-    const entityType = 'entityType' in host ? host.entityType : host.type
-    const entityBundle = 'itemBundle' in host ? host.itemBundle : host.bundle
+    const entityType = 'itemType' in host ? host.block.host.type : host.type
+    const entityBundle =
+      'itemType' in host ? host.block.host.bundle : host.bundle
     const config = droppableFieldConfig.forName(
       entityType,
       entityBundle,

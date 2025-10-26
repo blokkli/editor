@@ -24,7 +24,12 @@ import {
   type CursorKeyword,
 } from '#blokkli/helpers/dom'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import type { Rectangle, Coord } from '#blokkli/types'
+import type {
+  Rectangle,
+  Coord,
+  DraggableExistingBlock,
+  RenderedFieldListItem,
+} from '#blokkli/types'
 import {
   ref,
   computed,
@@ -45,6 +50,7 @@ const {
   state,
   editable,
   runtimeConfig,
+  blocks,
 } = useBlokkli()
 
 const cursor = computed<CursorKeyword>(() =>
@@ -147,6 +153,18 @@ function getInteractedElement(
   return null
 }
 
+function toDraggableExisting(
+  v: RenderedFieldListItem | RenderedFieldListItem[],
+): DraggableExistingBlock[] {
+  const blocks = Array.isArray(v) ? v : [v]
+  return blocks.map<DraggableExistingBlock>((block) => {
+    return {
+      itemType: 'existing',
+      block,
+    }
+  })
+}
+
 function onPointerMove(e: PointerEvent) {
   if (keyboard.isPressingSpace.value || e.buttons === MOUSE_BUTTONS.AUXILIARY) {
     return
@@ -204,15 +222,15 @@ function onPointerMove(e: PointerEvent) {
     // The interacted block is part of the current selection.
     if (selection.uuids.value.includes(interacted.uuid)) {
       eventBus.emit('dragging:start', {
-        items: [...selection.blocks.value],
+        items: toDraggableExisting(selection.items.value),
         coords: { x: e.clientX, y: e.clientY },
         mode: 'mouse',
       })
     } else {
-      const block = dom.findBlock(interacted.uuid)
+      const block = blocks.getBlock(interacted.uuid)
       if (block) {
         eventBus.emit('dragging:start', {
-          items: [block],
+          items: toDraggableExisting(block),
           coords: { x: e.clientX, y: e.clientY },
           mode: 'mouse',
         })
@@ -370,7 +388,7 @@ function onPointerUp(e: PointerEvent) {
         return
       }
       if (lastInteractedElement.uuid) {
-        const block = dom.findBlock(lastInteractedElement.uuid)
+        const block = blocks.getBlock(lastInteractedElement.uuid)
         if (!block) {
           return
         }
@@ -445,7 +463,7 @@ function onTouchStart(e: PointerEvent) {
         state.editMode.value === 'editing'
       ) {
         eventBus.emit('dragging:start', {
-          items: [...selection.blocks.value],
+          items: toDraggableExisting(selection.items.value),
           coords: {
             x: touchStartInteraction.x,
             y: touchStartInteraction.y,

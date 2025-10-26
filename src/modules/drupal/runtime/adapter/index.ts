@@ -271,7 +271,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     const moveBlock: DrupalAdapter['moveBlock'] = (e) =>
       useGraphqlMutation('pbMoveParagraph', {
         ...ctx.value,
-        uuid: e.item.uuid,
+        uuid: e.item.block.uuid,
         hostType: e.host.type,
         hostUuid: e.host.uuid,
         hostFieldName: e.host.fieldName,

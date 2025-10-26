@@ -28,7 +28,7 @@
       </div>
     </button>
   </Teleport>
-  <slot :items="selection.blocks.value" :uuids="uuids" />
+  <slot :items="selection.items.value" :uuids="uuids" />
 </template>
 
 <script lang="ts" setup>
@@ -36,7 +36,7 @@ import { computed, ref, useBlokkli } from '#imports'
 
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon, ShortcutIndicator } from '#blokkli/components'
-import type { DraggableExistingBlock } from '#blokkli/types'
+import type { RenderedFieldListItem } from '#blokkli/types'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 
@@ -94,8 +94,7 @@ const props = defineProps<{
 }>()
 
 const isDisabled = computed(
-  () =>
-    props.disabled || (!props.multiple && selection.blocks.value.length > 1),
+  () => props.disabled || (!props.multiple && selection.items.value.length > 1),
 )
 
 const shouldRender = computed(() => {
@@ -107,7 +106,7 @@ const shouldRender = computed(() => {
 })
 
 const emit = defineEmits<{
-  (e: 'click', items: DraggableExistingBlock[]): void
+  (e: 'click', items: RenderedFieldListItem[]): void
 }>()
 
 const onClick = () => {
@@ -115,7 +114,7 @@ const onClick = () => {
     return
   }
 
-  emit('click', selection.blocks.value)
+  emit('click', selection.items.value)
 }
 
 defineCommands(() => ({
@@ -123,7 +122,7 @@ defineCommands(() => ({
   group: 'selection',
   label: props.title,
   icon: props.icon,
-  disabled: props.disabled || !selection.blocks.value.length,
+  disabled: props.disabled || !selection.items.value.length,
   callback: onClick,
 }))
 

@@ -56,11 +56,7 @@
 </template>
 
 <script lang="ts" setup>
-import type {
-  DraggableExistingBlock,
-  EntityContext,
-  EditableFieldConfig,
-} from '#blokkli/types'
+import type { EntityContext, EditableFieldConfig } from '#blokkli/types'
 import { ArtboardTooltip } from '#blokkli/components'
 import {
   computed,
@@ -81,7 +77,7 @@ const { eventBus, selection, state, adapter, $t, types } = useBlokkli()
 
 const props = defineProps<{
   fieldName: string
-  host: DraggableExistingBlock | EntityContext
+  host: EntityContext
   element: HTMLElement
   config: EditableFieldConfig
   isComponent?: boolean
@@ -118,12 +114,7 @@ const form = ref<HTMLFormElement | null>(null)
 const input = ref<HTMLDivElement | null>(null)
 
 const hasChanged = computed(() => modelValue.value !== originalText.value)
-const itemBundle = computed(() => {
-  if ('itemBundle' in props.host) {
-    return props.host.itemBundle
-  }
-  return undefined
-})
+const itemBundle = computed(() => props.host.bundle)
 const maxlength = computed(() => props.config.maxLength)
 const required = computed(() => !!props.config.required)
 const title = computed(() => {

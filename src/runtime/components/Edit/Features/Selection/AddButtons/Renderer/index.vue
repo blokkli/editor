@@ -32,8 +32,10 @@ import {
   determineCanAddChildren,
 } from '#blokkli/helpers/dropTargets'
 import { isInternalBundle } from '#blokkli/helpers/bundles'
+import { itemEntityType } from '#blokkli-build/config'
 
-const { animation, theme, dom, selection, state, types, ui, $t } = useBlokkli()
+const { animation, theme, dom, selection, state, types, ui, $t, blocks } =
+  useBlokkli()
 
 // Store field tooltips for empty field buttons
 const emptyFieldTooltips = ref<string[]>([])
@@ -239,9 +241,9 @@ const blockStateCache = new Map<string, BlockStateCache>()
 function getOrientationForUuid(uuid: string): Orientation {
   let cached = orientationCache.get(uuid)
   if (!cached) {
-    const block = dom.findBlock(uuid)
-    if (block) {
-      const field = dom.findField(block.hostUuid, block.hostFieldName)
+    const item = blocks.getBlock(uuid)
+    if (item) {
+      const field = dom.findField(item.host.uuid, item.host.fieldName)
       if (field) {
         cached = getChildrenOrientation(field.element)
         orientationCache.set(uuid, cached)
@@ -257,7 +259,7 @@ function getBlockState(uuid: string): BlockStateCache {
     // Compute canShowBeforeAfter
     let canShowBeforeAfter = false
     let singleAllowedBundleLabel: string | null = null
-    const block = dom.findBlock(uuid)
+    const block = blocks.getBlock(uuid)
     if (!block) {
       // Don't cache - block might appear in DOM later
       return {
@@ -269,7 +271,7 @@ function getBlockState(uuid: string): BlockStateCache {
       }
     }
     if (block) {
-      const field = dom.findField(block.hostUuid, block.hostFieldName)
+      const field = dom.findField(block.host.uuid, block.host.fieldName)
       if (!field) {
         // Don't cache - field might appear in DOM later
         return {
@@ -308,8 +310,7 @@ function getBlockState(uuid: string): BlockStateCache {
 
     // Get bundle label
     const bundleLabel = block
-      ? types.getBlockBundleDefinition(block.itemBundle)?.label ||
-        block.itemBundle
+      ? types.getBlockBundleDefinition(block.bundle)?.label || block.bundle
       : ''
 
     // Compute emptyFieldKeys and tooltips
@@ -317,8 +318,8 @@ function getBlockState(uuid: string): BlockStateCache {
     const emptyFieldTooltips: string[] = []
     if (block) {
       const fieldConfigs = types.fieldConfig.forEntityTypeAndBundle(
-        block.entityType,
-        block.itemBundle,
+        itemEntityType,
+        block.bundle,
       )
 
       for (const fieldConfig of fieldConfigs) {
@@ -443,6 +444,9 @@ if (gl && programInfo && bufferInfo) {
         return false
       }
       if (ui.openTooltip.value && ui.openTooltip.value !== 'add-buttons') {
+        return false
+      }
+      if (ui.hasTransformOverlayOpen.value) {
         return false
       }
       return true

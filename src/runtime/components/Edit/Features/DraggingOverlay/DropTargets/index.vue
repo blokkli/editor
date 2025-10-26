@@ -230,12 +230,13 @@ const draggingBundles = computed<string[]>(() =>
   props.items
     .flatMap((item) => {
       const bundles: string[] = []
-      if ('itemBundle' in item && item.itemBundle) {
-        bundles.push(item.itemBundle)
+      if (item.itemType === 'existing') {
+        bundles.push(item.block.bundle)
+        if (item.block.library?.reusableBundle) {
+          bundles.push(item.block.library.reusableBundle)
+        }
       }
-      if ('reusableBundle' in item && item.reusableBundle) {
-        bundles.push(item.reusableBundle)
-      }
+
       return bundles
     })
     .filter(falsy),
@@ -245,7 +246,7 @@ const selectionUuids = computed<string[]>(() =>
   props.items
     .map((item) => {
       if (item.itemType === 'existing') {
-        return item.uuid
+        return item.block.uuid
       }
     })
     .filter(falsy),

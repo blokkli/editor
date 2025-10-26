@@ -76,7 +76,11 @@ import ReusableDialog from './ReusableDialog/index.vue'
 import LibraryDialog from './LibraryDialog/index.vue'
 import EditReusable from './EditReusable/index.vue'
 import { BlokkliTransition } from '#blokkli/components'
-import type { ActionPlacedEvent, LibraryEditItemEvent } from '#blokkli/types'
+import type {
+  ActionPlacedEvent,
+  LibraryEditItemEvent,
+  RenderedFieldListItem,
+} from '#blokkli/types'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { BUNDLE_FROM_LIBRARY } from '#blokkli/constants'
 
@@ -93,12 +97,12 @@ const { adapter } = defineBlokkliFeature({
 const { selection, state, types, $t, eventBus, definitions } = useBlokkli()
 const showReusableDialog = ref(false)
 
-const selectedItem = computed(() => {
-  if (selection.blocks.value.length !== 1) {
-    return
+const selectedItem = computed<RenderedFieldListItem | null>(() => {
+  if (selection.items.value.length !== 1) {
+    return null
   }
 
-  return selection.blocks.value[0]
+  return selection.items.value[0] ?? null
 })
 
 const onDetach = async () => {
@@ -133,8 +137,8 @@ const onAddLibraryItem = async (uuid: string) => {
 const definition = computed(() =>
   selectedItem?.value
     ? definitions.getBlockDefinition(
-        selectedItem.value.itemBundle,
-        selectedItem.value.hostFieldListType,
+        selectedItem.value.bundle,
+        selectedItem.value.fieldListType,
         selectedItem.value.parentBlockBundle,
       )
     : null,
@@ -142,14 +146,12 @@ const definition = computed(() =>
 
 const itemBundle = computed(() =>
   selectedItem?.value
-    ? types.getBlockBundleDefinition(selectedItem.value.itemBundle)
+    ? types.getBlockBundleDefinition(selectedItem.value.bundle)
     : null,
 )
 
-const isReusable = computed(
-  () =>
-    selection.blocks.value.length &&
-    selection.blocks.value.every((v) => v.itemBundle === BUNDLE_FROM_LIBRARY),
+const isReusable = computed(() =>
+  selection.bundles.value.every((bundle) => bundle === BUNDLE_FROM_LIBRARY),
 )
 
 async function onMakeReusable(label: string) {

@@ -121,7 +121,7 @@ export default function (
       maxY = rectBottom
       hasRects = true
     } else {
-      // Use selection blocks
+      // Use selected blocks.
       const rects = selection.uuids.value
         .map((uuid) => dom.getBlockRect(uuid))
         .filter(falsy)

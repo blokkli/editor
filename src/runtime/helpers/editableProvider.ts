@@ -4,6 +4,7 @@ import useDelayedIntersectionObserver from './composables/useDelayedIntersection
 import type { UiProvider } from './uiProvider'
 import { onBeforeUnmount } from '#imports'
 import onBlokkliEvent from './composables/onBlokkliEvent'
+import { itemEntityType } from '#blokkli-build/config'
 
 type EditableFieldData = EntityContext & {
   fieldName: string
@@ -25,6 +26,11 @@ export type EditableProvider = {
   ) => void
   getVisible: () => Rectangle[]
   getEditableAtPoint: (x: number, y: number) => EditableFieldData | undefined
+  getEditablesForBlock: (uuid: string) => EditableFieldData[]
+  findEditableElement: (
+    fieldName: string,
+    host: EntityContext,
+  ) => HTMLElement | undefined
 }
 
 export default function (ui: UiProvider): EditableProvider {
@@ -35,6 +41,10 @@ export default function (ui: UiProvider): EditableProvider {
   const editableFieldData: Map<string, EditableFieldData> = new Map()
   const rects: Record<string, EditableRectangle> = {}
   const visible: Set<string> = new Set()
+  const editablesByUuid: Record<
+    string,
+    Record<string, EditableFieldData | undefined>
+  > = {}
 
   function getVisible() {
     return [...visible.keys()]
@@ -105,6 +115,10 @@ export default function (ui: UiProvider): EditableProvider {
     editableFieldData.set(key, data)
     intersectionObserver.observe(el)
     editableFieldElements.set(key, el)
+    if (entity.type === itemEntityType) {
+      editablesByUuid[entity.uuid] ||= {}
+      editablesByUuid[entity.uuid]![fieldName] = data
+    }
   }
 
   function unregisterEditableField(
@@ -120,6 +134,12 @@ export default function (ui: UiProvider): EditableProvider {
     delete rects[key]
     visible.delete(key)
     editableFieldElements.delete(key)
+
+    if (entity.type === itemEntityType) {
+      if (editablesByUuid[entity.uuid]) {
+        editablesByUuid[entity.uuid]![fieldName] = undefined
+      }
+    }
   }
 
   function init() {
@@ -204,6 +224,23 @@ export default function (ui: UiProvider): EditableProvider {
     stateReloadTimeout = window.setTimeout(updateRects, 300)
   }
 
+  function getEditablesForBlock(uuid: string): EditableFieldData[] {
+    const editables = editablesByUuid[uuid]
+    if (!editables) {
+      return []
+    }
+
+    return Object.values(editables).filter(falsy)
+  }
+
+  function findEditableElement(
+    fieldName: string,
+    host: EntityContext,
+  ): HTMLElement | undefined {
+    const key = getEditableKey(fieldName, host)
+    return editableFieldElements.get(key)
+  }
+
   onBlokkliEvent('state:reloaded', handleRefresh)
   onBlokkliEvent('ui:resized', handleRefresh)
   onBlokkliEvent('option:finish-change', handleRefresh)
@@ -220,5 +257,7 @@ export default function (ui: UiProvider): EditableProvider {
     init,
     getVisible,
     getEditableAtPoint,
+    getEditablesForBlock,
+    findEditableElement,
   }
 }

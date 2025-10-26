@@ -10,9 +10,7 @@ import type {
   LibraryItemProps,
   Size,
 } from '#blokkli/types'
-import { useRuntimeConfig } from '#imports'
 import type { RGB } from '#blokkli/types/theme'
-import type { ValidFieldListTypes } from '#blokkli-build/generated-types'
 
 /**
  * Type check for falsy values.
@@ -33,56 +31,8 @@ export function buildDraggableItem(
   if (!(element instanceof HTMLElement)) {
     return
   }
-  const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
   const dataset = element.dataset
-  if (dataset.elementType === 'existing') {
-    const uuid = dataset.uuid
-    const itemBundle = dataset.itemBundle
-    const entityType = dataset.entityType
-    const hostType = dataset.hostType
-    const hostUuid = dataset.hostUuid
-    const hostBundle = dataset.hostBundle
-    const hostFieldName = dataset.hostFieldName
-    const reusableBundle = dataset.reusableBundle
-    const hostFieldListType = dataset.hostFieldListType as
-      | ValidFieldListTypes
-      | undefined
-    const libraryItemUuid = dataset.bkLibraryItemUuid
-    const parentBlockBundle =
-      hostType === itemEntityType ? (hostBundle as any) : undefined
-    if (
-      uuid &&
-      hostType &&
-      hostUuid &&
-      hostFieldName &&
-      itemBundle &&
-      hostBundle &&
-      entityType &&
-      hostFieldListType
-    ) {
-      const libraryLabel = dataset.bkLibraryLabel
-      // @TODO: Figure out how to best determine the edit title here.
-      const editTitle = libraryLabel || ''
-      return {
-        itemType: 'existing',
-        element: () =>
-          document.querySelector(`[data-uuid="${uuid}"]`) as HTMLElement,
-        itemBundle,
-        entityType,
-        isNested: hostType === itemEntityType,
-        uuid,
-        hostType,
-        hostBundle,
-        hostUuid,
-        hostFieldName,
-        hostFieldListType,
-        reusableBundle,
-        libraryItemUuid,
-        editTitle: editTitle || undefined,
-        parentBlockBundle,
-      }
-    }
-  } else if (dataset.elementType === 'new') {
+  if (dataset.elementType === 'new') {
     const itemBundle = dataset.itemBundle
     if (itemBundle) {
       return {

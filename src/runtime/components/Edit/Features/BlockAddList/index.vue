@@ -62,8 +62,8 @@ import {
 import { AddListItem } from '#blokkli/components'
 import type {
   Command,
-  DraggableExistingBlock,
   FieldConfig,
+  RenderedFieldListItem,
 } from '#blokkli/types'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
@@ -102,6 +102,7 @@ const {
   state,
   dom,
   definitions,
+  blocks,
 } = useBlokkli()
 
 const shouldRender = computed(() => state.editMode.value === 'editing')
@@ -132,18 +133,18 @@ const activeField = computed(() => {
   return undefined
 })
 
-const getAllowedTypesForSelected = (p: DraggableExistingBlock): string[] => {
+const getAllowedTypesForSelected = (p: RenderedFieldListItem): string[] => {
   // If the selected bundle allows nested items, return the allowed bundles for it instead.
-  if (types.itemBundlesWithNested.includes(p.itemBundle)) {
+  if (types.itemBundlesWithNested.includes(p.bundle)) {
     return types.fieldConfig
-      .forEntityTypeAndBundle(itemEntityType, p.itemBundle)
+      .forEntityTypeAndBundle(itemEntityType, p.bundle)
       .flatMap((v) => v.allowedBundles)
       .filter(Boolean) as string[]
   }
   // If the selected bundle is inside a nested item, return the allowed bundles of the parent bundle.
-  if (p.hostType === itemEntityType) {
+  if (p.host.type === itemEntityType) {
     return types.fieldConfig
-      .forEntityTypeAndBundle(itemEntityType, p.hostBundle)
+      .forEntityTypeAndBundle(itemEntityType, p.host.bundle)
       .flatMap((v) => v.allowedBundles)
       .filter(Boolean) as string[]
   } else {
@@ -151,7 +152,7 @@ const getAllowedTypesForSelected = (p: DraggableExistingBlock): string[] => {
       types.getFieldConfig(
         context.value.entityType,
         context.value.entityBundle,
-        p.hostFieldName,
+        p.host.fieldName,
       )?.allowedBundles || []
     )
   }
@@ -183,8 +184,8 @@ const generallyAvailableBundles = computed(() =>
 )
 
 const selectableBundles = computed(() => {
-  if (selection.blocks.value.length) {
-    return selection.blocks.value.flatMap((v) => getAllowedTypesForSelected(v))
+  if (selection.items.value.length) {
+    return selection.items.value.flatMap((v) => getAllowedTypesForSelected(v))
   }
   if (
     activeField.value &&
@@ -249,20 +250,20 @@ const sortedList = computed(() => {
 const renderKey = ref('')
 
 const getBundlesForAppendCommands = () => {
-  if (selection.blocks.value.length !== 1) {
+  if (selection.items.value.length !== 1) {
     return []
   }
 
-  const block = selection.blocks.value[0]!
+  const block = selection.items.value[0]!
   const field: FieldConfig | undefined = types.getFieldConfig(
-    block.hostType,
-    block.hostBundle,
-    block.hostFieldName,
+    block.host.type,
+    block.host.bundle,
+    block.host.fieldName,
   )
 
   if (field) {
     if (field.cardinality !== -1) {
-      const key = getFieldKey(block.hostUuid, block.hostFieldName)
+      const key = getFieldKey(block.host.uuid, block.host.fieldName)
       const count = state.getFieldBlockCount(key)
       // No more blocks allowed.
       if (count >= field.cardinality) {
@@ -276,7 +277,7 @@ const getBundlesForAppendCommands = () => {
 }
 
 const getAppendEndCommands = (): Command[] => {
-  if (selection.blocks.value.length !== 0) {
+  if (selection.items.value.length !== 0) {
     return []
   }
 
@@ -363,7 +364,7 @@ const commandCallbackInsert = (
 }
 
 const getInsertCommands = (
-  block: DraggableExistingBlock | undefined,
+  block: RenderedFieldListItem | undefined,
 ): Command[] => {
   if (!block) {
     return []
@@ -371,7 +372,7 @@ const getInsertCommands = (
 
   // Find nested fields of the block.
   const nestedFields = types.fieldConfig
-    .forEntityTypeAndBundle(itemEntityType, block.itemBundle)
+    .forEntityTypeAndBundle(itemEntityType, block.bundle)
     .map((field) => {
       return {
         ...field,
@@ -405,8 +406,8 @@ const getInsertCommands = (
     },
   )
 
-  if (block.hostType === runtimeConfig.itemEntityType) {
-    const parentBlock = dom.findBlock(block.hostUuid)
+  if (block.host.type === runtimeConfig.itemEntityType) {
+    const parentBlock = blocks.getBlock(block.host.uuid)
     if (parentBlock) {
       getInsertCommands(parentBlock).forEach((parentCommand) => {
         commands.push(parentCommand)
@@ -418,7 +419,7 @@ const getInsertCommands = (
 }
 
 const commandCallbackAppend = (bundle: string) => {
-  const block = selection.blocks.value[0]
+  const block = selection.items.value[0]
   if (!block) {
     return
   }
@@ -426,9 +427,9 @@ const commandCallbackAppend = (bundle: string) => {
     bundle,
     afterUuid: selection.uuids.value[0],
     host: {
-      type: block.hostType,
-      uuid: block.hostUuid,
-      fieldName: block.hostFieldName,
+      type: block.host.type,
+      uuid: block.host.uuid,
+      fieldName: block.host.fieldName,
     },
   })
 }
@@ -455,7 +456,7 @@ defineCommands(() => {
   }
   return [
     ...getAppendCommands(),
-    ...getInsertCommands(selection.blocks.value[0]),
+    ...getInsertCommands(selection.items.value[0]),
     ...getAppendEndCommands(),
   ]
 })

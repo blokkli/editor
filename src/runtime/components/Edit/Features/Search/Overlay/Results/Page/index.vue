@@ -10,7 +10,7 @@
       @mouseenter="index = i"
     >
       <div class="bk-search-item-icon">
-        <ItemIcon :bundle="item.item.itemBundle" />
+        <ItemIcon :bundle="item.item.bundle" />
       </div>
       <div class="bk-search-item-content">
         <Highlight
@@ -41,7 +41,7 @@
 import { ref, computed, useBlokkli, onMounted, watch } from '#imports'
 import { ItemIcon, Highlight } from '#blokkli/components'
 import { falsy, modulo } from '#blokkli/helpers'
-import type { DraggableExistingBlock } from '#blokkli/types'
+import type { RenderedFieldListItem } from '#blokkli/types'
 
 const listItems = ref<HTMLLIElement[]>([])
 const emit = defineEmits(['close'])
@@ -54,13 +54,13 @@ const props = defineProps<{
 }>()
 
 type SearchItem = {
-  item: DraggableExistingBlock
+  item: RenderedFieldListItem
   title: string
   text: string
   context?: string
 }
 
-const { eventBus, state, types, dom } = useBlokkli()
+const { eventBus, state, types, dom, blocks } = useBlokkli()
 
 const buildForKey = ref('')
 
@@ -122,7 +122,10 @@ const scrollItemIntoView = () => {
   }
 }
 
-const buildSearchText = (el: HTMLElement): string => {
+const buildSearchText = (el?: HTMLElement): string => {
+  if (!el) {
+    return ''
+  }
   let text = el.textContent || ''
 
   // Add alt and title attributes.
@@ -142,17 +145,17 @@ const buildIndex = () => {
   if (buildForKey.value === state.refreshKey.value) {
     return
   }
-  const newItems = dom
+  const newItems = blocks
     .getAllBlocks()
     .map((item) => {
       const title =
-        types.getBlockBundleDefinition(item.itemBundle)?.label ||
-        item.itemBundle
+        types.getBlockBundleDefinition(item.bundle)?.label || item.bundle
+      const element = dom.getDragElement(item)
       return {
         item,
-        title: item.editTitle || title,
+        title,
         context: title,
-        text: buildSearchText(item.element()),
+        text: buildSearchText(element),
       }
     })
     .filter(falsy)

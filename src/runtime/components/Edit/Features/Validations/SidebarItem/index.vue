@@ -1,7 +1,7 @@
 <template>
   <button class="bk-validation-item" @click.prevent="onClick">
     <div v-if="block" class="bk-validation-item-header">
-      <ItemIcon :bundle="block.itemBundle" />
+      <ItemIcon :bundle="block.bundle" />
       <div>{{ itemBundle?.label }}</div>
     </div>
     <div v-html="message" />
@@ -20,7 +20,7 @@ const props = defineProps<{
   entityUuid?: string
 }>()
 
-const { runtimeConfig, eventBus, dom, types } = useBlokkli()
+const { runtimeConfig, eventBus, types, blocks } = useBlokkli()
 
 const isBlock = computed(
   () => props.entityType === runtimeConfig.itemEntityType,
@@ -28,15 +28,15 @@ const isBlock = computed(
 
 const block = computed(() => {
   if (isBlock.value && props.entityUuid) {
-    return dom.findBlock(props.entityUuid)
+    return blocks.getBlock(props.entityUuid)
   }
 
   return null
 })
 
 const itemBundle = computed(() => {
-  if (block.value?.itemBundle) {
-    return types.getBlockBundleDefinition(block.value.itemBundle)
+  if (block.value?.bundle) {
+    return types.getBlockBundleDefinition(block.value.bundle)
   }
 
   return null

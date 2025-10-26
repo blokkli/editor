@@ -14,7 +14,7 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
-import type { DraggableExistingBlock } from '#blokkli/types'
+import type { RenderedFieldListItem } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
@@ -29,11 +29,11 @@ defineBlokkliFeature({
 const { eventBus, selection, state, $t, adapter, definitions } = useBlokkli()
 
 const block = computed(() => {
-  if (selection.blocks.value.length !== 1) {
+  if (selection.items.value.length !== 1) {
     return null
   }
 
-  return selection.blocks.value[0]
+  return selection.items.value[0]
 })
 
 const canEdit = computed(() => {
@@ -42,15 +42,9 @@ const canEdit = computed(() => {
     return false
   }
 
-  const item = state.getFieldListItem(block.value.uuid)
-
-  if (!item?.editContext) {
-    return false
-  }
-
   const definition = definitions.getBlockDefinition(
-    block.value.itemBundle,
-    block.value.hostFieldListType,
+    block.value.bundle,
+    block.value.fieldListType,
     block.value.parentBlockBundle,
   )
 
@@ -61,19 +55,19 @@ const canEdit = computed(() => {
 
   // For reusable blocks, editing is only possible if the adapter implements
   // the getLibraryItemEditUrl method.
-  if (block.value.libraryItemUuid) {
+  if (block.value.library?.libraryItemUuid) {
     return (
       !!adapter.getLibraryItemEditUrl &&
       (state.editMode.value === 'editing' ||
         state.editMode.value === 'translating') &&
-      !item.editContext.isNew
+      !block.value.isNew
     )
   }
 
   return state.editMode.value === 'editing'
 })
 
-function onClick(items: DraggableExistingBlock[]) {
+function onClick(items: RenderedFieldListItem[]) {
   if (items.length !== 1) {
     return
   }
@@ -87,19 +81,19 @@ function onClick(items: DraggableExistingBlock[]) {
   // Because editing library items inside the current context is not (yet)
   // supported, editing has to happen in a separate window where the host
   // context is the library item entity.
-  if (item.libraryItemUuid && adapter.getLibraryItemEditUrl) {
-    const url = adapter.getLibraryItemEditUrl(item.libraryItemUuid)
+  if (item.library?.libraryItemUuid && adapter.getLibraryItemEditUrl) {
+    const url = adapter.getLibraryItemEditUrl(item.library.libraryItemUuid)
     eventBus.emit('library:edit-item', {
       url,
-      label: item.editTitle,
-      uuid: item.libraryItemUuid,
+      label: item.library.label,
+      uuid: item.library.libraryItemUuid,
     })
     return
   }
 
   eventBus.emit('item:edit', {
     uuid: item.uuid,
-    bundle: item.itemBundle,
+    bundle: item.bundle,
   })
 }
 

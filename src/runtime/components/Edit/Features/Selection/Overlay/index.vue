@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineRenderer from '#blokkli/helpers/composables/defineRenderer'
-import type { DraggableExistingBlock, Rectangle } from '#blokkli/types'
+import type { Rectangle, RenderedFieldListItem } from '#blokkli/types'
 import { useBlokkli, computed } from '#imports'
 import {
   setBuffersAndAttributes,
@@ -21,7 +21,7 @@ import { toShaderColor } from '#blokkli/helpers'
 import type { RGB } from '#blokkli/types/theme'
 
 const props = defineProps<{
-  blocks: DraggableExistingBlock[]
+  blocks: RenderedFieldListItem[]
   gl: WebGLRenderingContext
   hasHostSelected: boolean
 }>()

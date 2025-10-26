@@ -67,7 +67,7 @@
     id="clipboard"
     :title="$t('clipboard', 'Clipboard')"
     :enabled="
-      !!selection.blocks.value.length && state.editMode.value === 'editing'
+      !!selection.items.value.length && state.editMode.value === 'editing'
     "
     :items="itemDropdownItems"
     icon="clipboard"
@@ -86,7 +86,7 @@ import {
 } from '#imports'
 import { PluginSidebar, PluginItemDropdown } from '#blokkli/plugins'
 import ClipboardList from './List/index.vue'
-import type { ClipboardItem, DraggableExistingBlock } from '#blokkli/types'
+import type { ClipboardItem, RenderedFieldListItem } from '#blokkli/types'
 import { generateUUID, getFieldKey } from '#blokkli/helpers'
 import { Icon } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
@@ -94,6 +94,7 @@ import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
 import getVideoId from 'get-video-id'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { emitMessage } from '#blokkli/helpers/eventBus'
+import { itemEntityType } from '#blokkli-build/config'
 
 const { settings, logger } = defineBlokkliFeature({
   id: 'clipboard',
@@ -115,7 +116,8 @@ const { settings, logger } = defineBlokkliFeature({
   screenshot: 'feature-clipboard.jpg',
 })
 
-const { selection, $t, adapter, dom, state, ui, types, keyboard } = useBlokkli()
+const { selection, $t, adapter, state, ui, types, keyboard, blocks } =
+  useBlokkli()
 
 const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
 const selectionClipboard = ref<string[]>([])
@@ -335,7 +337,7 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
     return
   }
 
-  const block = selection.blocks.value[0]
+  const block = selection.items.value[0]
   if (!block) {
     return
   }
@@ -349,14 +351,14 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
   if (!keyboard.isPressingShift.value) {
     // Get bundles of pasted blocks first
     const pastedBundles = pastedUuids
-      .map((uuid) => dom.findBlock(uuid)?.itemBundle)
+      .map((uuid) => blocks.getBlock(uuid)?.bundle)
       .filter((bundle): bundle is string => !!bundle)
 
     if (pastedBundles.length) {
       // Check if the selected block has nested fields that can accept any of the pasted blocks
       const nestedFields = types.fieldConfig.forEntityTypeAndBundle(
-        block.entityType,
-        block.itemBundle,
+        itemEntityType,
+        block.bundle,
       )
 
       // Try to find a nested field that accepts the pasted blocks
@@ -376,7 +378,7 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
               fieldConfig.cardinality
           ) {
             targetField = {
-              entityType: block.entityType,
+              entityType: itemEntityType,
               entityUuid: block.uuid,
               name: fieldConfig.name,
             }
@@ -392,13 +394,13 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
 
   // If no suitable nested field found, use the parent field (existing logic)
   if (!targetField || !targetFieldConfig || !targetFieldKey) {
-    const field = state.getMutatedField(block.hostUuid, block.hostFieldName)
+    const field = state.getMutatedField(block.host.uuid, block.host.fieldName)
     if (!field) {
       return
     }
     const fieldConfig = types.getFieldConfig(
       field.entityType,
-      block.hostBundle,
+      block.host.bundle,
       field.name,
     )
 
@@ -416,7 +418,7 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
     preceedingUuid = selection.uuids.value[0]
   }
 
-  const pastedBlocks: DraggableExistingBlock[] = []
+  const pastedBlocks: RenderedFieldListItem[] = []
   const notAllowedBundles: string[] = []
 
   for (let i = 0; i < pastedUuids.length; i++) {
@@ -424,15 +426,13 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
     if (!uuid) {
       continue
     }
-    const block = dom.findBlock(uuid)
+    const block = blocks.getBlock(uuid)
     if (!block) {
       continue
     }
-    const isAllowed = targetFieldConfig.allowedBundles.includes(
-      block.itemBundle,
-    )
+    const isAllowed = targetFieldConfig.allowedBundles.includes(block.bundle)
     if (!isAllowed) {
-      notAllowedBundles.push(block.itemBundle)
+      notAllowedBundles.push(block.bundle)
       continue
     }
 
@@ -606,7 +606,7 @@ function setClipboard(text: string) {
 }
 
 function copyCurrentSelectionToClipboard() {
-  if (!selection.blocks.value.length) {
+  if (!selection.items.value.length) {
     selectionClipboard.value = []
     return
   }

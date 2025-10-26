@@ -83,7 +83,7 @@ function onMouseUp(e: MouseEvent) {
 }
 
 function buildDraggableItems(): DraggableExistingStructureBlock[] {
-  return selection.blocks.value
+  return selection.items.value
     .map<DraggableExistingStructureBlock | null>((block) => {
       const el = document.querySelector(`[bk-structure-uuid="${block.uuid}"]`)
       if (!(el instanceof HTMLElement)) {
@@ -91,8 +91,7 @@ function buildDraggableItems(): DraggableExistingStructureBlock[] {
       }
       return {
         itemType: 'existing_structure',
-        uuid: block.uuid,
-        itemBundle: block.itemBundle,
+        block,
         element: function () {
           return el
         },

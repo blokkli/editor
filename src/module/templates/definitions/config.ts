@@ -27,6 +27,10 @@ export const defaultLanguage = ${JSON.stringify(
 export const forceDefaultLanguage = ${JSON.stringify(
       !!ctx.helper.options.forceDefaultLanguage,
     )}
+
+export const itemEntityType = ${JSON.stringify(
+      ctx.helper.options.itemEntityType || 'block',
+    )}
 `
   },
   (ctx) => {
@@ -73,6 +77,11 @@ export declare const defaultLanguage: string
  * Whether to always force the default language, even on translation pages.
  */
 export declare const forceDefaultLanguage: boolean
+
+/**
+ * The block item entity type.
+ */
+export declare const itemEntityType: string
 `
   },
 )

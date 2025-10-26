@@ -59,8 +59,17 @@ const { adapter } = defineBlokkliFeature({
   screenshot: 'feature-dragging-overlay.jpg',
 })
 
-const { eventBus, state, ui, animation, dom, selection, definitions } =
-  useBlokkli()
+const {
+  eventBus,
+  state,
+  ui,
+  animation,
+  dom,
+  selection,
+  definitions,
+  blocks,
+  editable,
+} = useBlokkli()
 
 const dragItemsComponent = ref<InstanceType<typeof DragItems> | null>(null)
 const isVisible = ref(false)
@@ -168,7 +177,7 @@ const onDropExisting = async (
   host: DraggableHostData,
   afterUuid?: string,
 ) => {
-  const uuids = items.map((v) => v.uuid)
+  const uuids = items.map((v) => v.block.uuid)
   await state.mutateWithLoadingState(() =>
     adapter.moveMultipleBlocks({
       uuids,
@@ -325,7 +334,7 @@ onBlokkliEvent('state:reloaded', async function () {
   // figure out a reliable way to open the editable field after a block
   // was added.
   await renderCycle()
-  const newBlock = dom.findBlock(newUuid)
+  const newBlock = blocks.getBlock(newUuid)
 
   if (!newBlock) {
     return
@@ -340,8 +349,8 @@ onBlokkliEvent('state:reloaded', async function () {
   // }
 
   const definition = definitions.getBlockDefinition(
-    newBlock.itemBundle,
-    newBlock.hostFieldListType,
+    newBlock.bundle,
+    newBlock.fieldListType,
   )
 
   if (!definition?.editor?.addBehaviour?.startsWith('editable:')) {
@@ -354,10 +363,11 @@ onBlokkliEvent('state:reloaded', async function () {
     return
   }
 
-  const editableFieldElement = newBlock
-    .element()
-    .querySelector(`[data-blokkli-editable-field="${editableField}"]`)
-  if (!(editableFieldElement instanceof HTMLElement)) {
+  const editableFieldElement = editable
+    .getEditablesForBlock(newUuid)
+    .find((v) => v.fieldName === editableField)
+
+  if (!editableFieldElement) {
     return
   }
 
@@ -410,17 +420,15 @@ onBlokkliEvent('dragging:start', (e) => {
   // ensure the user sees the correct drop targets right away.
   dom.updateVisibleRects()
   dragItems.value = e.items
-  if ('element' in item) {
-    if (!isTouching.value) {
-      document.removeEventListener('pointerup', onMouseUp)
-      document.addEventListener('pointerup', onMouseUp)
-      document.removeEventListener('pointermove', onMouseMove, {
-        capture: true,
-      })
-      document.addEventListener('pointermove', onMouseMove, { capture: true })
-    }
-    eventBus.on('animationFrame', loop)
+  if (!isTouching.value) {
+    document.removeEventListener('pointerup', onMouseUp)
+    document.addEventListener('pointerup', onMouseUp)
+    document.removeEventListener('pointermove', onMouseMove, {
+      capture: true,
+    })
+    document.addEventListener('pointermove', onMouseMove, { capture: true })
   }
+  eventBus.on('animationFrame', loop)
 })
 
 onBlokkliEvent('dragging:end', () => {

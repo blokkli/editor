@@ -31,29 +31,30 @@ import {
 } from '#blokkli/helpers/dropTargets'
 import type {
   BlokkliFieldElement,
-  DraggableExistingBlock,
   DraggableHostData,
+  RenderedFieldListItem,
 } from '#blokkli/types'
 import Overlay from './Overlay/index.vue'
 import { renderCycle } from '#blokkli/helpers/renderCycle'
 import { getFieldKey } from '#blokkli/helpers'
 import { isInternalBundle } from '#blokkli/helpers/bundles'
 import Renderer from './Renderer/index.vue'
+import { itemEntityType } from '#blokkli-build/config'
 
 const props = defineProps<{
-  blocks: DraggableExistingBlock[]
+  items: RenderedFieldListItem[]
 }>()
 
-const { dom, state, eventBus, types, $t } = useBlokkli()
+const { dom, state, eventBus, types, $t, blocks } = useBlokkli()
 
 const shouldRender = computed(() => {
   // Add buttons are only visible when one block is selected.
-  return props.blocks.length === 1
+  return props.items.length === 1
 })
 
-const block = computed<DraggableExistingBlock | null>(() => {
-  if (props.blocks.length === 1) {
-    return props.blocks[0] ?? null
+const block = computed<RenderedFieldListItem | null>(() => {
+  if (props.items.length === 1) {
+    return props.items[0] ?? null
   }
   return null
 })
@@ -70,7 +71,7 @@ const emptyBlockFields = computed(() => {
   const uuid = block.value.uuid
 
   return types.fieldConfig
-    .forEntityTypeAndBundle(block.value.entityType, block.value.itemBundle)
+    .forEntityTypeAndBundle(itemEntityType, block.value.bundle)
     .map((field) => {
       const key = getFieldKey(uuid, field.name)
       const count = state.getFieldBlockCount(key)
@@ -96,8 +97,8 @@ const bundleLabel = computed(() => {
     return ''
   }
   return (
-    types.getBlockBundleDefinition(block.value.itemBundle)?.label ||
-    block.value.itemBundle
+    types.getBlockBundleDefinition(block.value.bundle)?.label ||
+    block.value.bundle
   )
 })
 
@@ -106,12 +107,12 @@ const allowedBundlesForField = computed(() => {
     return []
   }
 
-  const blockData = dom.findBlock(block.value.uuid)
+  const blockData = blocks.getBlock(block.value.uuid)
   if (!blockData) {
     return []
   }
 
-  const field = dom.findField(blockData.hostUuid, blockData.hostFieldName)
+  const field = dom.findField(blockData.host.uuid, blockData.host.fieldName)
   if (!field) {
     return []
   }
@@ -157,7 +158,7 @@ const fieldTooltips = computed(() => {
 
   return emptyBlockFields.value.map((field) => {
     const fieldConfig = types.fieldConfig
-      .forEntityTypeAndBundle(block.value!.entityType, block.value!.itemBundle)
+      .forEntityTypeAndBundle(itemEntityType, block.value!.bundle)
       .find((f) => f.name === field.name)
 
     const fieldLabel = fieldConfig?.label || field.name
@@ -286,12 +287,12 @@ function updateCache(uuid: string) {
 
   if (!cachedState) {
     // Compute and cache state for this UUID
-    const block = dom.findBlock(uuid)
+    const block = blocks.getBlock(uuid)
     if (!block) {
       return
     }
 
-    const field = dom.findField(block.hostUuid, block.hostFieldName)
+    const field = dom.findField(block.host.uuid, block.host.fieldName)
     if (!field) {
       return
     }
@@ -471,12 +472,12 @@ function onRendererToggle(data: {
     return
   }
 
-  const block = dom.findBlock(uuid.value)
+  const block = blocks.getBlock(uuid.value)
   if (!block) {
     return
   }
 
-  const field = dom.findField(block.hostUuid, block.hostFieldName)
+  const field = dom.findField(block.host.uuid, block.host.fieldName)
   if (!field) {
     return
   }

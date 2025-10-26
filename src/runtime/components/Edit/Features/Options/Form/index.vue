@@ -63,6 +63,7 @@ import {
   BK_VISIBLE_LANGUAGES,
 } from '#blokkli/helpers/symbols'
 import { BUNDLE_FROM_LIBRARY } from '#blokkli/constants'
+import { itemEntityType } from '#blokkli-build/config'
 
 if (import.meta.hot) {
   import.meta.hot.accept('#blokkli/runtime-helpers', () => {})
@@ -123,11 +124,11 @@ const {
   eventBus,
   state,
   selection,
-  runtimeConfig,
   dom,
   theme,
   context,
   definitions,
+  blocks,
 } = useBlokkli()
 
 const props = defineProps<{
@@ -177,7 +178,7 @@ function stopChangingOptions() {
     // Refresh the rects of the blocks because they might have changed.
     props.uuids.forEach((uuid) => {
       dom.refreshBlockRect(uuid)
-      const block = dom.findBlock(uuid)
+      const block = blocks.getBlock(uuid)
       if (block) {
         const el = dom.getDragElement(block)
         if (el) {
@@ -331,15 +332,13 @@ const visibleOptions = computed<OptionItem[]>(() => {
 
   const uuid = props.uuids[0]!
   const item = state.getFieldListItem(uuid)
-  const block = selection.blocks.value.find((v) => v.uuid === uuid)
+  const block = selection.items.value.find((v) => v.uuid === uuid)
   if (!item) {
     return []
   }
 
   const parentType =
-    block?.hostType === runtimeConfig.itemEntityType
-      ? block.parentBlockBundle
-      : undefined
+    block?.host.type === itemEntityType ? block.parentBlockBundle : undefined
 
   const ctxProps =
     item?.bundle === BUNDLE_FROM_LIBRARY
@@ -353,7 +352,7 @@ const visibleOptions = computed<OptionItem[]>(() => {
       parentType: parentType as any,
       props: ctxProps as any,
       entity: context.value,
-      fieldListType: block?.hostFieldListType || 'default',
+      fieldListType: block?.fieldListType ?? 'default',
     })
 
   return availableOptions.value

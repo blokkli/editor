@@ -18,7 +18,7 @@ import {
   watch,
 } from '#imports'
 import { PluginItemDropdown } from '#blokkli/plugins'
-import { falsy, onlyUnique } from '#blokkli/helpers'
+import { falsy } from '#blokkli/helpers'
 
 const { adapter } = defineBlokkliFeature({
   id: 'conversions',
@@ -61,22 +61,18 @@ async function onConvert(targetBundle?: string) {
   await state.mutateWithLoadingState(
     () =>
       adapter.convertBlocks(
-        selection.blocks.value.map((v) => v.uuid),
+        selection.items.value.map((v) => v.uuid),
         targetBundle,
       ),
     $t('failedToConvert', 'The block could not be converted.'),
   )
 }
 
-const itemBundleIds = computed(() =>
-  selection.blocks.value.map((v) => v.itemBundle).filter(onlyUnique),
-)
-
 const possibleConversions = computed<ItemDropdownItem[]>(() => {
-  if (itemBundleIds.value.length !== 1) {
+  if (selection.bundles.value.length !== 1) {
     return []
   }
-  const sourceType = itemBundleIds.value[0]
+  const sourceType = selection.bundles.value[0]
   const titleBase = $t('conversionsConvertTo', 'Convert to: @bundle')
   return conversions.value
     .filter(

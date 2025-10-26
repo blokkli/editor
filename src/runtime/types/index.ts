@@ -41,6 +41,7 @@ import type { DebugProvider } from '#blokkli/helpers/debugProvider'
 import type getVideoId from 'get-video-id'
 import type { DefinitionProvider } from '../helpers/definitionProvider'
 import type { IndicatorsProvider } from '#blokkli/helpers/indicatorsProvider'
+import type { BlocksProvider } from '#blokkli/helpers/providers/blocks'
 
 export type MutateWithLoadingStateFunction = (
   promise: () => Promise<MutationResponseLike<any>> | undefined,
@@ -854,40 +855,13 @@ export type DraggableStyle = {
 
 export interface DraggableExistingStructureBlock {
   itemType: 'existing_structure'
-  uuid: string
-  itemBundle: string
+  block: RenderedFieldListItem
   element: () => HTMLElement
 }
 
 export interface DraggableExistingBlock {
   itemType: 'existing'
-  element: () => HTMLElement
-  entityType: string
-  hostType: string
-  hostBundle: string
-  hostUuid: string
-  hostFieldName: string
-  hostFieldListType: ValidFieldListTypes
-  itemBundle: string
-  uuid: string
-  isNested: boolean
-
-  /**
-   * The bundle if this item is reusable.
-   */
-  reusableBundle?: string
-
-  /**
-   * The UUID of the library item this block belongs to.
-   */
-  libraryItemUuid?: string
-
-  /**
-   * The title to use when displaying the block in lists during editing.
-   */
-  editTitle?: string
-
-  parentBlockBundle: BlockBundleWithNested | undefined
+  block: RenderedFieldListItem
 }
 
 export interface DraggableNewItem {
@@ -1291,7 +1265,7 @@ export type EventbusEvents = {
   'item:dropped': undefined
   'block:append': BlockAppendEvent
 
-  'item:doubleClick': DraggableExistingBlock
+  'item:doubleClick': RenderedFieldListItem
 
   scrollIntoView: ScrollIntoViewEvent
   'animationFrame:before': AnimationFrameBeforeEvent
@@ -1388,6 +1362,7 @@ export interface BlokkliApp {
   storage: StorageProvider
   types: BlockDefinitionProvider
   selection: SelectionProvider
+  blocks: BlocksProvider
   keyboard: KeyboardProvider
   ui: UiProvider
   animation: AnimationProvider
@@ -1736,6 +1711,24 @@ export type AddAction = {
 export type BlockEditContext = {
   isPublished: boolean
   isNew: boolean
+  publishOn?: string | null
+  unpublishOn?: string | null
+}
+
+export type RenderedFieldListItem = {
+  uuid: string
+  bundle: string
+  isNew: boolean
+  isPublished: boolean
+  host: DraggableHostData & { bundle: string }
+  fieldListType: ValidFieldListTypes
+  parentBlockBundle: BlockBundleWithNested | null
+  library: {
+    label: string
+    libraryItemUuid: string
+    reusableBundle: string
+  } | null
+  isNested: boolean
   publishOn?: string | null
   unpublishOn?: string | null
 }

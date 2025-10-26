@@ -94,7 +94,10 @@ import {
   INJECT_FIELD_PROXY_MODE,
   INJECT_IS_EDITING,
 } from '#blokkli/helpers/symbols'
-import type { FieldListItemTyped } from '#blokkli-build/generated-types'
+import type {
+  FieldListItemTyped,
+  ValidFieldListTypes,
+} from '#blokkli-build/generated-types'
 
 const { dom, types, runtimeConfig, selection, definitions } = useBlokkli()
 
@@ -109,7 +112,7 @@ const props = withDefaults(
     language?: string
     tag?: string
     isNested: boolean
-    fieldListType: string
+    fieldListType: ValidFieldListTypes
     allowedFragments?: BlokkliFragmentName[]
     dropAlignment?: 'vertical' | 'horizontal'
     proxyMode?: boolean
@@ -212,13 +215,25 @@ function isMuted(item?: FieldListItem) {
 
 watch(root, function (newRoot) {
   if (newRoot) {
-    dom.updateFieldElement(props.entity, props.name, newRoot)
+    dom.updateFieldElement(
+      props.entity,
+      props.name,
+      newRoot,
+      props.fieldListType,
+      props.allowedFragments ?? [],
+    )
   }
 })
 
 onMounted(() => {
   if (root.value) {
-    dom.registerField(props.entity, props.name, root.value)
+    dom.registerField(
+      props.entity,
+      props.name,
+      root.value,
+      props.fieldListType,
+      props.allowedFragments ?? [],
+    )
   }
 })
 

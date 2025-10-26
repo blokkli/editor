@@ -64,7 +64,7 @@ defineEmits<{
   (e: 'cancel'): void
 }>()
 
-const { dom, $t } = useBlokkli()
+const { dom, $t, blocks } = useBlokkli()
 
 const props = defineProps<{
   uuid: string
@@ -78,16 +78,19 @@ const backgroundColor = ref('')
 
 onMounted(() => {
   if (previewEl.value) {
-    const item = dom.findBlock(props.uuid)
+    const item = blocks.getBlock(props.uuid)
     if (!item) {
       return
     }
 
-    if (item.editTitle) {
-      label.value = item.editTitle.substring(0, 40)
-    }
+    // if (item.editTitle) {
+    //   label.value = item.editTitle.substring(0, 40)
+    // }
 
-    const element = item.element()
+    const element = dom.getDragElement(item)
+    if (!element) {
+      return
+    }
     const markup = dom.getDropElementMarkup(item)
     width.value = element.getBoundingClientRect().width + 40
     const clone = document.createElement('div')

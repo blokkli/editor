@@ -15,7 +15,7 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
-import type { DraggableExistingBlock } from '#blokkli/types'
+import type { RenderedFieldListItem } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
 import { getFieldKey } from '#blokkli/helpers'
 
@@ -29,7 +29,7 @@ const { adapter } = defineBlokkliFeature({
   description: 'Provides an action to duplicate one or more blocks in place.',
 })
 
-function onClick(items: DraggableExistingBlock[]) {
+function onClick(items: RenderedFieldListItem[]) {
   state.mutateWithLoadingState(
     () => adapter.duplicateBlocks(items.map((v) => v.uuid)),
     $t('duplicateError', 'The items could not be duplicated.'),
@@ -37,16 +37,16 @@ function onClick(items: DraggableExistingBlock[]) {
 }
 
 const canDuplicate = computed<boolean>(() => {
-  const blocksByField: Record<string, DraggableExistingBlock[]> = {}
+  const blocksByField: Record<string, RenderedFieldListItem[]> = {}
   const fieldsByKey: Record<
     string,
     { cardinality: number; allowedBundles: string[]; count: number }
   > = {}
 
-  const selectedCount = selection.blocks.value.length
+  const selectedCount = selection.items.value.length
   for (let i = 0; i < selectedCount; i++) {
-    const block = selection.blocks.value[i]!
-    const field = state.getMutatedField(block.hostUuid, block.hostFieldName)
+    const block = selection.items.value[i]!
+    const field = state.getMutatedField(block.host.uuid, block.host.fieldName)
     if (!field) {
       continue
     }
@@ -55,7 +55,7 @@ const canDuplicate = computed<boolean>(() => {
 
     const fieldConfig = types.getFieldConfig(
       field.entityType,
-      block.hostBundle,
+      block.host.bundle,
       field.name,
     )
     if (!fieldConfig) {
@@ -97,7 +97,7 @@ const canDuplicate = computed<boolean>(() => {
     // Check if all bundles are allowed in the field. The restrictions may
     // have changed and the block to be duplicated isn't allowed anymore in
     // the field.
-    const bundles = blocks.map((v) => v.itemBundle)
+    const bundles = blocks.map((v) => v.bundle)
     if (
       !field.allowedBundles.length ||
       bundles.some((bundle) => !field.allowedBundles.includes(bundle))

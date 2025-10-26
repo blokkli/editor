@@ -55,9 +55,9 @@
                 title
               }}</span>
               <span
-                v-if="selection.blocks.value.length > 1"
+                v-if="selection.items.value.length > 1"
                 class="bk-blokkli-item-actions-title-count"
-                >{{ selection.blocks.value.length }}</span
+                >{{ selection.items.value.length }}</span
               >
               <span
                 v-show="selectedIsNew"
@@ -94,7 +94,7 @@ import {
   onBeforeUnmount,
   useTemplateRef,
 } from '#imports'
-import { onlyUnique, falsy } from '#blokkli/helpers'
+import { falsy } from '#blokkli/helpers'
 import type { PluginMountEvent } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
@@ -127,10 +127,10 @@ const mountedPlugins = ref<PluginMountEvent[]>([])
 const showDropdown = ref(false)
 
 const hasAnythingSelected = computed(
-  () => selection.hasHostSelected.value || !!selection.blocks.value.length,
+  () => selection.hasHostSelected.value || !!selection.items.value.length,
 )
 
-watch(selection.blocks, () => {
+watch(selection.items, () => {
   showDropdown.value = false
 })
 
@@ -140,7 +140,7 @@ watch(selection.hasHostSelected, () => {
 
 const bundleIcon = computed(() => {
   if (itemBundle.value?.id === 'from_library') {
-    const reusableBundle = selection.blocks.value[0]?.reusableBundle
+    const reusableBundle = selection.items.value[0]?.library?.reusableBundle
     if (reusableBundle) {
       return reusableBundle
     }
@@ -150,7 +150,7 @@ const bundleIcon = computed(() => {
 })
 
 const hasSelectedHost = computed(() => {
-  return selection.blocks.value.length === 0
+  return selection.items.value.length === 0
 })
 
 const title = computed(() => {
@@ -179,13 +179,13 @@ const title = computed(() => {
         return fragments.join(', ')
       }
     } else if (itemBundle.value.id === 'from_library') {
-      const title = selection.blocks.value[0]?.editTitle
+      const title = selection.items.value[0]?.library?.label
       if (title) {
         return title
       }
     }
     return itemBundle.value.label
-  } else if (!selection.blocks.value.length) {
+  } else if (!selection.items.value.length) {
     return state.entity.value.label
   }
 
@@ -205,15 +205,11 @@ const selectedIsNew = computed<boolean>(() => {
   return !!state.getFieldListItem(uuid)?.editContext?.isNew
 })
 
-const itemBundleIds = computed(() =>
-  selection.blocks.value.map((v) => v.itemBundle).filter(onlyUnique),
-)
-
 const itemBundle = computed(() => {
-  if (itemBundleIds.value.length !== 1) {
+  if (selection.bundles.value.length !== 1) {
     return
   }
-  const bundle = itemBundleIds.value[0]!
+  const bundle = selection.bundles.value[0]!
   return types.getBlockBundleDefinition(bundle)
 })
 

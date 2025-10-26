@@ -20,7 +20,7 @@ import type { Coord, Rectangle } from '#blokkli/types'
 import { RectangleBufferCollector } from '#blokkli/helpers/webgl'
 import useDebugLogger from '#blokkli/helpers/composables/useDebugLogger'
 
-const { eventBus, dom, theme, animation, ui } = useBlokkli()
+const { eventBus, dom, theme, animation, ui, blocks } = useBlokkli()
 const logger = useDebugLogger()
 
 const props = defineProps<{
@@ -61,7 +61,7 @@ class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<Multi
       if (this.added.has(uuid)) {
         continue
       }
-      const block = dom.findBlock(uuid)
+      const block = blocks.getBlock(uuid)
       if (!block) {
         continue
       }

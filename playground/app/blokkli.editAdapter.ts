@@ -479,7 +479,7 @@ export default defineBlokkliEditAdapter((ctx) => {
 
     moveBlock: (e) =>
       addMutation('move', {
-        uuids: [e.item.uuid],
+        uuids: [e.item.block.uuid],
         hostEntityType: e.host.type,
         hostEntityUuid: e.host.uuid,
         hostField: e.host.fieldName,

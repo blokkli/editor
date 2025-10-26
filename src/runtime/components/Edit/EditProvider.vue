@@ -95,6 +95,7 @@ import tourProvider from './../../helpers/tourProvider'
 import debugProvider from './../../helpers/debugProvider'
 import definitionProvider from './../../helpers/definitionProvider'
 import dropAreasProvider from './../../helpers/dropAreaProvider'
+import blocksProvider from './../../helpers/providers/blocks'
 import indicatorsProvider from './../../helpers/indicatorsProvider'
 import pluginProvider from './../../helpers/pluginProvider'
 import editableProvider from './../../helpers/editableProvider'
@@ -171,8 +172,9 @@ const tour = tourProvider()
 const dropAreas = dropAreasProvider()
 const broadcast = broadcastProvider()
 const ui = uiProvider(storage, state, context)
-const dom = domProvider(ui, debug, definitions)
-const selection = selectionProvider(dom)
+const dom = domProvider(ui, debug, definitions, state)
+const blocks = blocksProvider(state, dom, context)
+const selection = selectionProvider(dom, blocks)
 const animation = animationProvider(ui, storage, selection)
 const keyboard = keyboardProvider(animation)
 const types = await typesProvider(adapter, selection, context)
@@ -262,6 +264,7 @@ provide<BlokkliApp>(INJECT_APP, {
   plugins,
   runtimeConfig,
   selection,
+  blocks,
   state,
   storage,
   theme,

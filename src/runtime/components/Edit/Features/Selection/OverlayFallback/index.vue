@@ -24,14 +24,14 @@ const props = defineProps<{
   uuids: string[]
 }>()
 
-const { ui, dom } = useBlokkli()
+const { ui, dom, blocks } = useBlokkli()
 
 const artboard = ui.artboardElement()
 
 const items = computed(() => {
   return props.uuids
     .map((uuid) => {
-      const block = dom.findBlock(uuid)
+      const block = blocks.getBlock(uuid)
       if (!block) {
         return null
       }

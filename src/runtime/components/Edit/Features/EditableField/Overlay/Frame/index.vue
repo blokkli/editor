@@ -18,11 +18,8 @@ import {
   onBeforeUnmount,
   useTemplateRef,
 } from '#imports'
-import type {
-  DraggableExistingBlock,
-  EditableFieldType,
-  EntityContext,
-} from '#blokkli/types'
+import type { EditableFieldType, EntityContext } from '#blokkli/types'
+import { itemEntityType } from '#blokkli-build/config'
 
 const { adapter, ui } = useBlokkli()
 
@@ -34,7 +31,7 @@ const props = defineProps<{
   modelValue: string
   type: EditableFieldType
   fieldName: string
-  host: DraggableExistingBlock | EntityContext
+  host: EntityContext
   initialHeight: number
 }>()
 
@@ -112,7 +109,7 @@ function onIframeLoad() {
 const height = ref(props.initialHeight)
 
 const url = computed(() => {
-  if ('itemBundle' in props.host) {
+  if (props.host.type === itemEntityType) {
     return adapter.buildEditableFrameUrl!({
       uuid: props.host.uuid,
       fieldName: props.fieldName,

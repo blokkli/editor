@@ -1,7 +1,7 @@
 <template>
   <Overlay
     v-if="isVisible && gl && animation.webglEnabled.value"
-    :blocks="selection.blocks.value"
+    :blocks="selection.items.value"
     :uuids="selection.uuids.value"
     :gl="gl"
     :has-host-selected="selection.hasHostSelected.value"
@@ -20,7 +20,7 @@
 
   <SelectionAddButtons
     v-if="state.editMode.value === 'editing'"
-    :blocks="selection.blocks.value"
+    :items="selection.items.value"
   />
 </template>
 
@@ -36,7 +36,7 @@ import {
 } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { PluginItemDropdown } from '#blokkli/plugins'
-import type { DraggableExistingBlock, Rectangle } from '#blokkli/types'
+import type { Rectangle, RenderedFieldListItem } from '#blokkli/types'
 import {
   computed,
   useBlokkli,
@@ -44,6 +44,7 @@ import {
   ref,
   watch,
 } from '#imports'
+import { itemEntityType } from '#blokkli-build/config'
 
 defineBlokkliFeature({
   id: 'selection',
@@ -57,26 +58,25 @@ type DropdownItem = {
   label: string
 }
 
-const { selection, ui, eventBus, animation, dom, tour, $t, types, state } =
-  useBlokkli()
+const {
+  selection,
+  ui,
+  eventBus,
+  animation,
+  dom,
+  tour,
+  $t,
+  types,
+  state,
+  blocks,
+} = useBlokkli()
 
 const selectedBundle = computed<string | null>(() => {
-  let bundle = ''
-
-  for (let i = 0; i < selection.blocks.value.length; i++) {
-    const block = selection.blocks.value[i]
-    if (!block) {
-      return null
-    }
-
-    if (bundle && bundle !== block.itemBundle) {
-      return null
-    }
-
-    bundle = block.itemBundle
+  if (selection.bundles.value.length === 1) {
+    return selection.bundles.value[0] ?? null
   }
 
-  return bundle || null
+  return null
 })
 
 const itemDropdownEnabled = computed(() => true)
@@ -183,15 +183,15 @@ const findMostVisibleBlock = (): string | null => {
 }
 
 const getSelectAllUuids = (
-  allBlocks: DraggableExistingBlock[],
-  currentlySelected: DraggableExistingBlock[],
+  allBlocks: RenderedFieldListItem[],
+  currentlySelected: RenderedFieldListItem[],
 ): string[] => {
   // One or more blocks are selected.
   if (currentlySelected.length >= 1) {
-    const selectedHostUuids = currentlySelected.map((block) => block.hostUuid)
-    const selectedHostTypes = currentlySelected.map((block) => block.hostType)
+    const selectedHostUuids = currentlySelected.map((block) => block.host.uuid)
+    const selectedHostTypes = currentlySelected.map((block) => block.host.type)
     const selectedHostFieldNames = currentlySelected.map(
-      (block) => block.hostFieldName,
+      (block) => block.host.fieldName,
     )
     const selectedUuids = currentlySelected.map((v) => v.uuid)
 
@@ -209,9 +209,9 @@ const getSelectAllUuids = (
     const newUuids = allBlocks
       .filter(
         (block) =>
-          commonHostUuids.includes(block.hostUuid) &&
-          commonHostTypes.includes(block.hostType) &&
-          commonHostFieldNames.includes(block.hostFieldName),
+          commonHostUuids.includes(block.host.uuid) &&
+          commonHostTypes.includes(block.host.type) &&
+          commonHostFieldNames.includes(block.host.fieldName),
       )
       .map((block) => block.uuid)
 
@@ -223,7 +223,7 @@ const getSelectAllUuids = (
   }
 
   return allBlocks
-    .filter((block) => block.hostType !== 'block')
+    .filter((block) => block.host.type !== itemEntityType)
     .map((block) => block.uuid)
 }
 
@@ -240,13 +240,13 @@ const visuallySelectBlocks = (toggleUuid: string): string[] | undefined => {
   }
 
   const singleSelectedBlock =
-    selected.length === 1 ? dom.findBlock(selected[0]!) : null
+    selected.length === 1 ? blocks.getBlock(selected[0]!) : null
 
   const toggleRect = rects[toggleUuid]
   if (!toggleRect) {
     return
   }
-  const toggleBlock = dom.findBlock(toggleUuid)
+  const toggleBlock = blocks.getBlock(toggleUuid)
   if (!toggleBlock) {
     return
   }
@@ -263,7 +263,7 @@ const visuallySelectBlocks = (toggleUuid: string): string[] | undefined => {
         continue
       }
 
-      const block = dom.findBlock(uuid)
+      const block = blocks.getBlock(uuid)
 
       if (!block) {
         continue
@@ -330,7 +330,7 @@ const visuallySelectBlocks = (toggleUuid: string): string[] | undefined => {
 function selectAllBlocks() {
   eventBus.emit(
     'select:end',
-    getSelectAllUuids(dom.getAllBlocks(), selection.blocks.value),
+    getSelectAllUuids(blocks.getAllBlocks(), selection.items.value),
   )
 }
 
@@ -362,7 +362,7 @@ onBlokkliEvent('keyPressed', (e) => {
     e.originalEvent.preventDefault()
 
     // No block is selected.
-    if (selection.blocks.value.length !== 1) {
+    if (selection.items.value.length !== 1) {
       // Select the most visible block for the user.
       const uuid = findMostVisibleBlock()
       if (uuid) {

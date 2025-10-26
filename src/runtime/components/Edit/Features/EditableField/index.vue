@@ -1,7 +1,12 @@
 <template>
   <Teleport to="body">
     <BlokkliTransition name="caret-tooltip" :enabled="hasTransition">
-      <Overlay v-if="editable" v-bind="editable" :key="key" @close="close" />
+      <Overlay
+        v-if="selectedEditable"
+        v-bind="selectedEditable"
+        :key="key"
+        @close="close"
+      />
     </BlokkliTransition>
   </Teleport>
 </template>
@@ -15,15 +20,12 @@ import {
   defineBlokkliFeature,
 } from '#imports'
 import Overlay from './Overlay/index.vue'
-import type {
-  DraggableExistingBlock,
-  EditableFieldConfig,
-  EntityContext,
-} from '#blokkli/types'
+import type { EditableFieldConfig, EntityContext } from '#blokkli/types'
 import { BlokkliTransition } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import { falsy } from '#blokkli/helpers'
+import { itemEntityType } from '#blokkli-build/config'
 
 defineBlokkliFeature({
   id: 'editable-field',
@@ -35,32 +37,34 @@ defineBlokkliFeature({
 
 type Editable = {
   fieldName: string
-  host: DraggableExistingBlock | EntityContext
+  host: EntityContext
   element: HTMLElement
   config: EditableFieldConfig
   isComponent?: boolean
   value?: string
 }
 
-const { selection, adapter, types, $t, dom, runtimeConfig, state } =
+const { selection, adapter, types, $t, dom, state, editable, blocks } =
   useBlokkli()
-const editable = ref<Editable | null>(null)
+const selectedEditable = ref<Editable | null>(null)
 const hasTransition = ref(false)
 
 const key = computed(() => {
-  if (!editable.value) {
+  if (!selectedEditable.value) {
     return ''
   }
-  return editable.value.host.uuid + editable.value.fieldName
+  return selectedEditable.value.host.uuid + selectedEditable.value.fieldName
 })
 
-const getHost = (
-  uuid?: string,
-): DraggableExistingBlock | EntityContext | undefined => {
+const getHost = (uuid?: string): EntityContext | undefined => {
   if (uuid) {
-    const block = dom.findBlock(uuid)
+    const block = blocks.getBlock(uuid)
     if (block) {
-      return block
+      return {
+        type: itemEntityType,
+        bundle: block.bundle,
+        uuid: block.uuid,
+      }
     }
   }
 
@@ -75,22 +79,18 @@ const buildEditable = (
   if (!host) {
     return
   }
-  const hostEntityType =
-    'type' in host ? host.type : runtimeConfig.itemEntityType
-  const hostEntityBundle = 'bundle' in host ? host.bundle : host.itemBundle
-
-  if (hostEntityBundle === 'from_library') {
+  if (host.bundle === 'from_library') {
     return
   }
 
   const config = types.editableFieldConfig.forName(
-    hostEntityType,
-    hostEntityBundle,
+    host.type,
+    host.bundle,
     fieldName,
   )
 
   if (!config) {
-    let message = `Failed to load editable field config for field "${fieldName}" on entity type "${hostEntityType}" of bundle "${hostEntityBundle}"`
+    let message = `Failed to load editable field config for field "${fieldName}" on entity type "${host.type}" of bundle "${host.bundle}"`
     if (uuid) {
       message += ` with uuid "${uuid}"`
     }
@@ -102,11 +102,7 @@ const buildEditable = (
     return
   }
 
-  const hostElement =
-    'itemBundle' in host ? host.element() : dom.getActiveProviderElement()
-  const element = hostElement.querySelector(
-    `[data-blokkli-editable-field="${fieldName}"]`,
-  )
+  const element = editable.findEditableElement(fieldName, host)
 
   if (!(element instanceof HTMLElement)) {
     return
@@ -126,42 +122,25 @@ onBlokkliEvent('editable:focus', (e) => {
   if (!state.canEdit.value) {
     return
   }
-  hasTransition.value = !editable.value
-  editable.value = buildEditable(e.fieldName, e.uuid) || null
-  if (editable.value) {
+  hasTransition.value = !selectedEditable.value
+  selectedEditable.value = buildEditable(e.fieldName, e.uuid) || null
+  if (selectedEditable.value) {
     selection.editableActive.value = true
   }
 })
 
 defineCommands(() => {
+  // Disable editable commands when more than 5 blocks are selected.
+  if (selection.items.value.length > 5) {
+    return []
+  }
+
   // Find editable fields in the current selection.
-  const editables: Editable[] = selection.blocks.value.flatMap((v) => {
-    return [...v.element().querySelectorAll('[data-blokkli-editable-field]')]
-      .map((el) => {
-        if (!(el instanceof HTMLElement)) {
-          return
-        }
-
-        // Find closest block.
-        const block = el.closest('[data-uuid]')
-        if (!(block instanceof HTMLElement)) {
-          return
-        }
-
-        // Skip editable fields of nested blocks because this would lead to a
-        // ton of commands with the same name, e.g. when the selected block
-        // has 20 nested blocks with editable fields. This would be pretty
-        // useless.
-        if (block.dataset.uuid !== v.uuid) {
-          return
-        }
-
-        const name = el.dataset.blokkliEditableField
-        if (!name) {
-          return
-        }
-
-        return buildEditable(name, block.dataset.uuid)
+  const editables: Editable[] = selection.items.value.flatMap((item) => {
+    return editable
+      .getEditablesForBlock(item.uuid)
+      .map((v) => {
+        return buildEditable(v.fieldName, item.uuid)
       })
       .filter(falsy)
   })
@@ -177,7 +156,7 @@ defineCommands(() => {
       icon: 'textbox',
       disabled: false,
       callback: () => {
-        editable.value = v
+        selectedEditable.value = v
       },
     }
   })
@@ -186,18 +165,18 @@ defineCommands(() => {
 watch(selection.editableActive, (isActive) => {
   if (!isActive) {
     hasTransition.value = true
-    editable.value = null
+    selectedEditable.value = null
   }
 })
 
-watch(editable, (v) => {
+watch(selectedEditable, (v) => {
   if (!v && selection.editableActive.value) {
     selection.editableActive.value = false
   }
 })
 
 const close = () => {
-  editable.value = null
+  selectedEditable.value = null
   selection.editableActive.value = false
 }
 </script>

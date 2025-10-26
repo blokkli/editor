@@ -21,7 +21,7 @@ export type DefinitionProvider = {
   getBlockDefinition: (
     bundle: string,
     fieldListType: ValidFieldListTypes,
-    parentBundle?: BlockBundleWithNested,
+    parentBundle?: BlockBundleWithNested | null,
   ) => BlockDefinition | undefined
   getDefaultDefinition: (bundle: string) => BlockDefinition | undefined
 
@@ -121,7 +121,7 @@ export default function (): DefinitionProvider {
   function getBlockDefinition(
     bundle: string,
     fieldListType: ValidFieldListTypes,
-    parentBundle?: BlockBundleWithNested,
+    parentBundle?: BlockBundleWithNested | null,
   ): BlockDefinition | undefined {
     const forFieldListType = bundle + '__field:' + fieldListType
     if (blocksByKey.value[forFieldListType]) {

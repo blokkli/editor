@@ -392,10 +392,6 @@ onMounted(() => {
       let label = ''
 
       if (!markup) {
-        if (item.item.itemType === 'existing' && item.item.editTitle) {
-          label = item.item.editTitle
-        }
-
         if ('itemBundle' in item.item) {
           bundle = item.item.itemBundle
           if (bundle) {

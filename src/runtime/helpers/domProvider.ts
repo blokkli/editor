@@ -7,12 +7,12 @@ import type {
   EntityContext,
   Rectangle,
   Coord,
+  RenderedFieldListItem,
 } from '#blokkli/types'
 import {
   findClosestBlock,
   buildDraggableItem,
   falsy,
-  mapDroppableField,
   findClosestEntityContext,
 } from '#blokkli/helpers'
 import type { UiProvider } from './uiProvider'
@@ -25,11 +25,16 @@ import type {
 } from '#blokkli-build/generated-types'
 import type { DebugProvider } from './debugProvider'
 import type { DefinitionProvider } from './definitionProvider'
+import type { BlokkliFragmentName } from '#blokkli-build/definitions'
+import type { StateProvider } from './stateProvider'
+import { itemEntityType } from '#blokkli-build/config'
 
 type RegisteredField = {
   element: HTMLElement
   entity: EntityContext
   fieldName: string
+  fieldListType: ValidFieldListTypes
+  allowedFragments: BlokkliFragmentName[]
 }
 
 type RegisteredFieldType = {
@@ -95,7 +100,6 @@ const buildFieldElement = (
 type MeasuredBlockRect = Rectangle & { time: number }
 
 export type DomProvider = {
-  findBlock(uuid: string): DraggableExistingBlock | undefined
   getAllBlocks(): DraggableExistingBlock[]
   findClosestBlock(
     el: Element | EventTarget,
@@ -104,7 +108,10 @@ export type DomProvider = {
   /**
    * Return the droppable markup for a draggable item.
    */
-  getDropElementMarkup(item: DraggableItem, checkSize?: boolean): string
+  getDropElementMarkup(
+    item: DraggableItem | RenderedFieldListItem,
+    checkSize?: boolean,
+  ): string
 
   findField(
     entityUuid: string,
@@ -118,22 +125,25 @@ export type DomProvider = {
     entity: EntityContext,
     fieldName: string,
     instance: HTMLElement,
+    fieldListType: ValidFieldListTypes,
+    allowedFragments: BlokkliFragmentName[],
   ) => void
   updateFieldElement: (
     entity: EntityContext,
     fieldName: string,
     element: HTMLElement,
+    fieldListType: ValidFieldListTypes,
+    allowedFragments: BlokkliFragmentName[],
   ) => void
   unregisterField: (entity: EntityContext, fieldName: string) => void
+  getRegisteredField: (
+    uuid: string,
+    fieldName: string,
+  ) => RegisteredField | undefined
 
   registeredFieldTypes: ComputedRef<RegisteredFieldType[]>
 
   registeredBlockUuids: ComputedRef<string[]>
-
-  /**
-   * Get all droppable entity fields.
-   */
-  getAllDroppableFields(): DroppableEntityField[]
 
   findClosestEntityContext(el: HTMLElement): EntityContext | undefined
 
@@ -161,7 +171,9 @@ export type DomProvider = {
   /**
    * Get the drag element for a block.
    */
-  getDragElement: (block: DraggableExistingBlock) => HTMLElement | undefined
+  getDragElement: (
+    block: DraggableExistingBlock | RenderedFieldListItem,
+  ) => HTMLElement | undefined
 
   /**
    * Get debug data for troubleshooting.
@@ -174,7 +186,6 @@ export type DomProvider = {
       hasRect: boolean
       hasCurrentKey: boolean
       isVisible: boolean
-      inCache: boolean
       elementInfo?: {
         tagName: string
         bundle?: string
@@ -199,7 +210,6 @@ export type DomProvider = {
       totalRegisteredFields: number
       totalVisibleFields: number
       totalFieldRects: number
-      cacheSize: number
       isInitializing: boolean
       isReady: boolean
     }
@@ -222,6 +232,7 @@ export default function (
   ui: UiProvider,
   debug: DebugProvider,
   definitions: DefinitionProvider,
+  state: StateProvider,
 ): DomProvider {
   const logger = debug.createLogger('DomProvider')
   const mutationsReady = ref(true)
@@ -236,7 +247,6 @@ export default function (
   const fieldRects: Record<string, Rectangle> = {}
   const blockUuidCurrentKey: Record<string, string> = {}
   const observedElements: Record<string, HTMLElement> = {}
-  let draggableBlockCache: Record<string, DraggableExistingBlock> = {}
   let initTimeout: null | number = null
   const isInitalizing = ref(true)
   const observedElementCache = new Map<string, HTMLElement>()
@@ -391,9 +401,17 @@ export default function (
     entity: EntityContext,
     fieldName: string,
     element: HTMLElement,
+    fieldListType: ValidFieldListTypes,
+    allowedFragments: BlokkliFragmentName[],
   ) => {
     const key = `${entity.uuid}:${fieldName}`
-    registeredFields[key] = { element, entity, fieldName }
+    registeredFields[key] = {
+      element,
+      entity,
+      fieldName,
+      fieldListType,
+      allowedFragments,
+    }
     intersectionObserver.observe(element)
   }
 
@@ -401,13 +419,21 @@ export default function (
     entity: EntityContext,
     fieldName: string,
     element: HTMLElement,
+    fieldListType: ValidFieldListTypes,
+    allowedFragments: BlokkliFragmentName[],
   ) => {
     const key = `${entity.uuid}:${fieldName}`
     const existingElement = registeredFields[key]?.element
     if (existingElement) {
       intersectionObserver.unobserve(existingElement)
     }
-    registeredFields[key] = { entity, fieldName, element }
+    registeredFields[key] = {
+      entity,
+      fieldName,
+      element,
+      fieldListType,
+      allowedFragments,
+    }
     intersectionObserver.observe(element)
   }
 
@@ -421,12 +447,20 @@ export default function (
     registeredFields[key] = undefined
   }
 
+  const getRegisteredField = (
+    uuid: string,
+    fieldName: string,
+  ): RegisteredField | undefined => {
+    const key = `${uuid}:${fieldName}`
+    return registeredFields[key]
+  }
+
   function getElementToObserve(
     uuid: string,
     el: HTMLElement,
     bundle: string,
     fieldListType: ValidFieldListTypes,
-    parentBlockBundle?: BlockBundleWithNested,
+    parentBlockBundle?: BlockBundleWithNested | null,
   ): HTMLElement {
     // Always observe the root element for proxy blocks.
     if (el.classList.contains('bk-block-proxy')) {
@@ -458,22 +492,6 @@ export default function (
     return el
   }
 
-  const findBlock = (uuid: string): DraggableExistingBlock | undefined => {
-    const cached = draggableBlockCache[uuid]
-    if (cached) {
-      return cached
-    }
-    const el = registeredBlocks[uuid]
-    if (!el) {
-      return
-    }
-    const item = buildDraggableItem(el)
-    if (item?.itemType === 'existing') {
-      draggableBlockCache[uuid] = item
-      return item
-    }
-  }
-
   const getAllBlocks = (): DraggableExistingBlock[] => {
     return [
       ...document.querySelectorAll(
@@ -490,11 +508,20 @@ export default function (
   }
 
   const getDropElementMarkup = (
-    item: DraggableItem,
+    item: DraggableItem | RenderedFieldListItem,
     checkSize?: boolean,
   ): string => {
-    const el =
-      item.itemType === 'existing' ? getDragElement(item) : item.element()
+    const getElement = () => {
+      if ('itemType' in item) {
+        if (item.itemType === 'existing') {
+          return getDragElement(item)
+        }
+        return item.element()
+      }
+
+      return getDragElement(item)
+    }
+    const el = getElement()
     if (!el) {
       return ''
     }
@@ -521,14 +548,6 @@ export default function (
     }
     return buildFieldElement(el)
   }
-
-  const getAllDroppableFields = () =>
-    [...document.querySelectorAll('[data-blokkli-droppable-field]')]
-      .filter((el) => {
-        // Ignore elements that are rendered inside a field that uses proxy mode, since implementations might use <BlokkliItem> to render blocks in a proxy-mode field.
-        return !el.closest('[data-bk-in-proxy="true"]')
-      })
-      .map(mapDroppableField)
 
   const getVisibleBlocks = () => Array.from(visibleBlocks)
   const getVisibleFields = () => Array.from(visibleFields)
@@ -665,7 +684,6 @@ export default function (
   // After the state has been updated, update the rects of all currently visible blocks.
   onBlokkliEvent('state:reloaded', () => {
     observedElementCache.clear()
-    draggableBlockCache = {}
 
     if (stateReloadTimeout) {
       window.clearTimeout(stateReloadTimeout)
@@ -699,17 +717,24 @@ export default function (
   const dragElementUuidMap = new WeakMap<Node, string>()
   const dragElementCache: Map<string, HTMLElement> = new Map()
 
-  function getDragElement(block: DraggableExistingBlock) {
-    const el = block.element()
-    if (!el) {
-      return undefined
+  function getDragElement(
+    block: DraggableExistingBlock | RenderedFieldListItem,
+  ) {
+    const item = 'itemType' in block ? block.block : block
+    if (!item) {
+      return
     }
+    const el = registeredBlocks[item.uuid]
+    if (!el) {
+      return
+    }
+
     return getElementToObserve(
-      block.uuid,
+      item.uuid,
       el,
-      block.itemBundle,
-      block.hostFieldListType,
-      block.hostBundle as BlockBundleWithNested,
+      item.bundle,
+      item.fieldListType,
+      item.parentBlockBundle,
     )
   }
 
@@ -762,19 +787,31 @@ export default function (
       unregisterBlock(key, uuid)
     }
 
-    const item = buildDraggableItem(el)
-    if (item && item.itemType === 'existing') {
-      const observableElement = getElementToObserve(
-        item.uuid,
-        el,
-        item.itemBundle,
-        item.hostFieldListType,
-        item.hostBundle as BlockBundleWithNested,
-      )
-      registeredBlocks[item.uuid] = el
-      observedElements[item.uuid] = observableElement
-      intersectionObserver.observe(observableElement)
-      resizeObserver.observe(observableElement)
+    const item = state.getFieldListItem(uuid)
+    if (item) {
+      const fieldList = state.getFieldListForBlock(item.uuid)
+      if (fieldList) {
+        const fieldListType =
+          getRegisteredField(fieldList.entityUuid, fieldList.name)
+            ?.fieldListType ?? 'default'
+
+        const parentBundle =
+          fieldList.entityType === itemEntityType
+            ? (state.getFieldListItem(fieldList.entityUuid)?.bundle ?? null)
+            : null
+
+        const observableElement = getElementToObserve(
+          item.uuid,
+          el,
+          item.bundle,
+          fieldListType,
+          parentBundle as BlockBundleWithNested,
+        )
+        registeredBlocks[uuid] = el
+        observedElements[uuid] = observableElement
+        intersectionObserver.observe(observableElement)
+        resizeObserver.observe(observableElement)
+      }
     }
   }
 
@@ -824,7 +861,6 @@ export default function (
       ...Object.keys(blockRects),
       ...Object.keys(observedElements),
       ...Object.keys(blockUuidCurrentKey),
-      ...Object.keys(draggableBlockCache),
     ])
 
     // Build detailed block info
@@ -837,7 +873,6 @@ export default function (
         hasRect: !!blockRects[uuid],
         hasCurrentKey: !!blockUuidCurrentKey[uuid],
         isVisible: visibleBlocks.has(uuid),
-        inCache: !!draggableBlockCache[uuid],
         elementInfo: el
           ? {
               tagName: el.tagName,
@@ -896,7 +931,6 @@ export default function (
         ).length,
         totalVisibleFields: visibleFields.size,
         totalFieldRects: Object.keys(fieldRects).length,
-        cacheSize: Object.keys(draggableBlockCache).length,
         isInitializing: isInitalizing.value,
         isReady:
           mutationsReady.value &&
@@ -912,12 +946,10 @@ export default function (
   }
 
   return {
-    findBlock,
     getAllBlocks,
     findClosestBlock,
     getDropElementMarkup,
     findField,
-    getAllDroppableFields,
     findClosestEntityContext,
     getVisibleBlocks,
     getVisibleFields,
@@ -942,5 +974,6 @@ export default function (
     unregisterBlock,
     registeredBlockUuids,
     getDebugData,
+    getRegisteredField,
   }
 }

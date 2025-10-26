@@ -92,9 +92,9 @@ import {
   PluginTourItem,
 } from '#blokkli/plugins'
 import type {
-  DraggableExistingBlock,
   EntityTranslation,
   Language,
+  RenderedFieldListItem,
 } from '#blokkli/types'
 import Banner from './Banner/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
@@ -168,25 +168,25 @@ const items = computed<TranslationStateItem[]>(() => {
 })
 
 const canTranslateBlock = computed(() => {
-  if (selection.blocks.value.length !== 1) {
+  if (selection.items.value.length !== 1) {
     return false
   }
-  const block = selection.blocks.value[0]!
+  const block = selection.items.value[0]!
 
-  if (block.libraryItemUuid) {
+  if (block.library?.libraryItemUuid) {
     return false
   }
 
   const definition = definitions.getBlockDefinition(
-    block.itemBundle,
-    block.hostFieldListType,
+    block.bundle,
+    block.fieldListType,
     block.parentBlockBundle,
   )
 
   if (definition?.editor?.disableEdit) {
     return false
   }
-  const type = types.getBlockBundleDefinition(block.itemBundle)
+  const type = types.getBlockBundleDefinition(block.bundle)
 
   if (!type) {
     return false
@@ -210,12 +210,12 @@ function onClick(item: TranslationStateItem, event: Event) {
   }
 }
 
-function onTranslate(items: DraggableExistingBlock[]) {
+function onTranslate(items: RenderedFieldListItem[]) {
   const item = items[0]
   if (item) {
     eventBus.emit('item:edit', {
       uuid: item.uuid,
-      bundle: item.itemBundle,
+      bundle: item.bundle,
     })
   }
 }

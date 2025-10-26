@@ -13,8 +13,7 @@
 
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature } from '#imports'
-
-import type { DraggableExistingBlock } from '#blokkli/types'
+import type { RenderedFieldListItem } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
 
 const { state, $t, eventBus, dom, runtimeConfig } = useBlokkli()
@@ -31,7 +30,7 @@ const { adapter } = defineBlokkliFeature({
  * Try to find a block to select after deleting a single block.
  */
 function getSelectionAfterDelete(
-  items: DraggableExistingBlock[],
+  items: RenderedFieldListItem[],
 ): string | undefined {
   if (items.length !== 1) {
     return
@@ -63,7 +62,7 @@ function getSelectionAfterDelete(
   return field.entityUuid
 }
 
-async function onClick(items: DraggableExistingBlock[]) {
+async function onClick(items: RenderedFieldListItem[]) {
   const selectedUuidsAfter = getSelectionAfterDelete(items)
 
   await state.mutateWithLoadingState(

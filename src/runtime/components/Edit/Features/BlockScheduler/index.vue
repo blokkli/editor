@@ -41,7 +41,6 @@ import { useBlokkli, defineBlokkliFeature, computed, ref } from '#imports'
 import { PluginItemAction } from '#blokkli/plugins'
 import { BlokkliTransition, Icon } from '#blokkli/components'
 import SchedulerDialog from './Dialog/index.vue'
-import { onlyUnique } from '#blokkli/helpers'
 
 defineBlokkliFeature({
   id: 'block-scheduler',
@@ -52,10 +51,6 @@ defineBlokkliFeature({
 })
 
 const { $t, state, selection, types } = useBlokkli()
-
-const selectedBundles = computed(() =>
-  selection.blocks.value.map((v) => v.itemBundle).filter(onlyUnique),
-)
 
 const bundlesWithPublish = computed(() =>
   types.generallyAvailableBundles
@@ -96,7 +91,7 @@ const selectionHasDates = computed<boolean>(() => {
 
 const disabled = computed(() => {
   // Disable if none of the selected bundles support either publish or unpublish
-  const hasSupport = selectedBundles.value.some(
+  const hasSupport = selection.bundles.value.some(
     (bundle) =>
       bundlesWithPublish.value.includes(bundle) ||
       bundlesWithUnpublish.value.includes(bundle),
