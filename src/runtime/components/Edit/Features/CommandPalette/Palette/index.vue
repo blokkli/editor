@@ -18,14 +18,19 @@
       />
     </div>
     <div class="bk-command-palette-results bk-scrollbar-dark">
-      <Group
-        :commands="items"
-        :visible-ids="visibleIds"
-        :focused-id="focusedId"
-        @close="$emit('close')"
-        @focus="onFocus"
-        @select="onSelect($event)"
-      />
+      <div class="bk-command-palette-results-list">
+        <div>
+          <Item
+            v-for="(item, index) in visibleCommands"
+            :key="item.id"
+            :item="item"
+            :index="index"
+            :is-focused="focusedIndex === index"
+            @focus="onFocus"
+            @select="onSelect"
+          />
+        </div>
+      </div>
     </div>
   </ScrollBoundary>
 </template>
@@ -39,27 +44,28 @@ import {
   watch,
   nextTick,
   onBeforeUnmount,
+  useTemplateRef,
 } from '#imports'
 import { Icon, ScrollBoundary } from '#blokkli/components'
 import type { Command } from '#blokkli/types'
-import Group from './Group/index.vue'
-import { falsy } from '#blokkli/helpers'
 import { Fzf } from 'fzf'
+import { modulo } from '#blokkli/helpers'
+import Item from './Item/index.vue'
 
 const { commands, $t, selection } = useBlokkli()
 
 const emit = defineEmits(['close'])
 
-const inputEl = ref<HTMLInputElement | null>(null)
+const inputEl = useTemplateRef('inputEl')
 const text = ref('')
-const focusedId = ref('')
+const focusedIndex = ref(0)
 const hasUsedMouse = ref(false)
 
-function onFocus(id: string) {
+function onFocus(index: number) {
   if (!hasUsedMouse.value) {
     return
   }
-  focusedId.value = id
+  focusedIndex.value = index
 }
 
 const items = computed<Array<Command & { _id: number }>>(() =>
@@ -75,8 +81,6 @@ const items = computed<Array<Command & { _id: number }>>(() =>
 )
 
 const fzf = new Fzf(items.value, {
-  // With selector you tell FZF where it can find
-  // the string that you want to query on
   selector: (item) => item.label,
 })
 
@@ -99,6 +103,19 @@ const visibleIds = computed<{ id: number; positions: number[] }[] | undefined>(
   },
 )
 
+const visibleCommands = computed(() => {
+  return items.value
+    .map((v) => {
+      const found = visibleIds.value?.find((w) => w.id === v._id)
+      return {
+        ...v,
+        visible: visibleIds.value === undefined || !!found,
+        positions: found?.positions,
+      }
+    })
+    .filter((v) => v.visible)
+})
+
 watch(text, () => {
   nextTick(() => {
     focusFirst()
@@ -108,73 +125,27 @@ watch(text, () => {
 watch(selection.uuids, () => emit('close'))
 
 const focusFirst = () => {
-  const element = document.querySelector(
-    '.bk-command-palette .bk-command[data-command-visible="true"]',
-  )
-  if (element instanceof HTMLElement) {
-    focusedId.value = element.dataset.commandId || ''
-  }
-}
-
-const getCommandElements = () => {
-  return [
-    ...document.querySelectorAll(
-      '.bk-command-palette .bk-command[data-command-visible="true"]',
-    ),
-  ]
-    .map((el) => {
-      if (el instanceof HTMLElement) {
-        const id = el.dataset.commandId
-        if (id) {
-          return {
-            id,
-            el,
-            focused: focusedId.value === id,
-          }
-        }
-      }
-    })
-    .filter(falsy)
+  focusedIndex.value = 0
 }
 
 const focusPrev = () => {
-  const elements = getCommandElements()
-  if (elements.length === 0) {
+  if (visibleCommands.value.length === 0) {
     return
   }
-  const focusedIndex = elements.findIndex((v) => v.focused)
-  // None or first is focused.
-  if (focusedIndex <= 0) {
-    // Focus last element.
-    focusedId.value = elements[elements.length - 1]!.id
-  } else {
-    focusedId.value = elements[focusedIndex - 1]!.id
-  }
-  scrollFocusedIntoView()
+  focusedIndex.value = modulo(
+    focusedIndex.value - 1,
+    visibleCommands.value.length,
+  )
 }
 
 const focusNext = () => {
-  const elements = getCommandElements()
-  if (elements.length === 0) {
+  if (visibleCommands.value.length === 0) {
     return
   }
-  const focusedIndex = elements.findIndex((v) => v.focused)
-  // None or last is focused.
-  if (focusedIndex === -1 || focusedIndex === elements.length - 1) {
-    // Focus last element.
-    focusedId.value = elements[0]!.id
-  } else {
-    focusedId.value = elements[focusedIndex + 1]!.id
-  }
-
-  scrollFocusedIntoView()
-}
-
-const scrollFocusedIntoView = () => {
-  const element = getCommandElements().find((v) => v.focused)?.el
-  if (element) {
-    element.scrollIntoView({ block: 'nearest', inline: 'nearest' })
-  }
+  focusedIndex.value = modulo(
+    focusedIndex.value + 1,
+    visibleCommands.value.length,
+  )
 }
 
 const onSelect = (id: string) => {
@@ -210,7 +181,10 @@ const onKeyDown = (e: KeyboardEvent) => {
     focusPrev()
   } else if (e.code === 'Enter') {
     e.preventDefault()
-    onSelect(focusedId.value)
+    const command = visibleCommands.value[focusedIndex.value]
+    if (command) {
+      onSelect(command.id)
+    }
   } else if (e.code === 'Escape') {
     e.preventDefault()
     emit('close')
