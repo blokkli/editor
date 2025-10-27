@@ -1,10 +1,7 @@
 <template>
   <Teleport to="body">
     <Transition :name="ui.useAnimations.value ? 'bk-loading' : undefined">
-      <Loading
-        v-if="isInitializing || !toolbarLoaded || !featuresLoaded"
-        screen
-      />
+      <Loading v-if="showLoading" screen />
     </Transition>
 
     <div id="bk-banner-container">
@@ -35,7 +32,7 @@
   <AppMenu v-if="toolbarLoaded" />
   <Indicators />
   <Features
-    v-if="!isInitializing && toolbarLoaded"
+    v-if="isReady"
     :key="route.fullPath"
     @loaded="featuresLoaded = true"
   />
@@ -188,6 +185,18 @@ const directive = directiveProvider(ui)
 const fields = fieldsProvider(state, dom, types)
 
 const mutatedEntity = computed(() => state.mutatedEntity.value || props.entity)
+
+const isReady = computed(
+  () =>
+    !isInitializing.value &&
+    dom.isReady.value &&
+    directive.isReady.value &&
+    toolbarLoaded.value,
+)
+
+const showLoading = computed(() => {
+  return !isReady.value || !featuresLoaded.value
+})
 
 const onContextMenu = (e: Event) => {
   e.preventDefault()

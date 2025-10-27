@@ -131,7 +131,7 @@ html {
   &.bk-loading-overlay {
     @apply bg-mono-100/90 absolute top-0 left-0 w-full h-full z-init-overlay  flex items-center justify-center;
     &.bk-is-screen {
-      @apply fixed w-screen h-screen backdrop-blur-xl;
+      @apply fixed w-screen h-screen bg-mono-100;
     }
 
     &.bk-is-white {

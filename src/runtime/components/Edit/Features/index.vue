@@ -11,7 +11,7 @@ import {
   type ValidFeatureKey,
   featureComponents,
 } from '#blokkli-build/features'
-import { useBlokkli, onMounted, nextTick, computed } from '#imports'
+import { useBlokkli, computed, watch } from '#imports'
 
 const emit = defineEmits(['loaded'])
 
@@ -66,12 +66,23 @@ const availableFeatures = computed(() => {
     })
 })
 
-onMounted(() => {
-  nextTick(() => {
-    emit('loaded')
-    logger.log('Features loaded', renderedFeatures.value)
-  })
-})
+const hasLoadedFeatures = computed(
+  () => renderedFeatures.value.length === availableFeatures.value.length,
+)
+
+const unwatchInit = watch(
+  hasLoadedFeatures,
+  (hasLoaded) => {
+    if (hasLoaded) {
+      emit('loaded')
+      logger.log('Features loaded', renderedFeatures.value)
+      unwatchInit()
+    }
+  },
+  {
+    immediate: true,
+  },
+)
 </script>
 
 <script lang="ts">

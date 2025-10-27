@@ -346,7 +346,7 @@ export default async function (
 
   function getAllUuids(bundle?: string): string[] {
     if (!bundle) {
-      return [...Object.keys(fieldListItemMap)]
+      return [...Object.keys(fieldListItemMap.value)]
     }
 
     return bundleToUuids[bundle] ?? []

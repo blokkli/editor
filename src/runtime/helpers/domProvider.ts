@@ -341,6 +341,7 @@ export default function (
       ...data,
     }
     intersectionObserver.observe(element)
+    doInitTimeout()
   }
 
   const updateFieldElement = (
@@ -644,10 +645,7 @@ export default function (
     }
   }
 
-  function registerBlock(key: string, uuid: string, el: HTMLElement | null) {
-    logger.log('registerBlock: ' + uuid)
-    blockUuidCurrentKey[uuid] = key
-
+  function doInitTimeout() {
     if (initTimeout) {
       window.clearTimeout(initTimeout)
     }
@@ -658,6 +656,13 @@ export default function (
         refreshAllBlockRects()
       }, 500)
     }
+  }
+
+  function registerBlock(key: string, uuid: string, el: HTMLElement | null) {
+    logger.log('registerBlock: ' + uuid)
+    blockUuidCurrentKey[uuid] = key
+
+    doInitTimeout()
 
     // No root node found on the block, unregister it.
     if (!el) {

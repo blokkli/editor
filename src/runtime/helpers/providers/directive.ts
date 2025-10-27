@@ -6,7 +6,7 @@ import type {
 import { falsy } from '#blokkli/helpers'
 import useDelayedIntersectionObserver from './../composables/useDelayedIntersectionObserver'
 import type { UiProvider } from './../uiProvider'
-import { onBeforeUnmount } from '#imports'
+import { computed, onBeforeUnmount, ref, type ComputedRef } from '#imports'
 import onBlokkliEvent from './../composables/onBlokkliEvent'
 import { itemEntityType } from '#blokkli-build/config'
 
@@ -44,9 +44,12 @@ export type DirectiveProvider = {
     fieldName: string,
     host: EntityContext,
   ) => HTMLElement | undefined
+  isReady: ComputedRef<boolean>
 }
 
 export default function (ui: UiProvider): DirectiveProvider {
+  let initTimeout: null | number = null
+  const isInitalizing = ref(true)
   let stateReloadTimeout: number | null = null
   const elementMap: WeakMap<HTMLElement, EditableFieldData> = new WeakMap()
   const elements: Map<string, HTMLElement> = new Map()
@@ -57,6 +60,18 @@ export default function (ui: UiProvider): DirectiveProvider {
     string,
     Record<string, EditableFieldData | undefined>
   > = {}
+
+  function doInitTimeout() {
+    if (initTimeout) {
+      window.clearTimeout(initTimeout)
+    }
+
+    if (isInitalizing.value) {
+      initTimeout = window.setTimeout(() => {
+        isInitalizing.value = false
+      }, 500)
+    }
+  }
 
   function getVisible(directiveType: BlokkliDirectiveType) {
     return [...visible.keys()]
@@ -140,6 +155,8 @@ export default function (ui: UiProvider): DirectiveProvider {
       editablesByUuid[entity.uuid] ||= {}
       editablesByUuid[entity.uuid]![fieldName] = data
     }
+
+    doInitTimeout()
   }
 
   function unregisterDirectiveElement(
@@ -304,5 +321,6 @@ export default function (ui: UiProvider): DirectiveProvider {
     getEditablesForBlock,
     findEditableElement,
     getDroppableElements,
+    isReady: computed(() => !isInitalizing.value),
   }
 }

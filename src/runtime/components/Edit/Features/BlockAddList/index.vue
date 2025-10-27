@@ -142,8 +142,8 @@ const getAllowedTypesForSelected = (p: RenderedFieldListItem): string[] => {
 // Some blocks may have nested blocks, however they may not render them via
 // a <BlokkliField>. This would make it so that these nested block bundles
 // show up in the add list, but there is no place where these could be added.
-const bundlesForRenderedFields = computed(() =>
-  dom.registeredFieldTypes.value
+const bundlesForRenderedFields = computed(() => {
+  return dom.registeredFieldTypes.value
     .flatMap((field) => {
       return (
         types.getFieldConfig(
@@ -153,8 +153,8 @@ const bundlesForRenderedFields = computed(() =>
         )?.allowedBundles || []
       )
     })
-    .filter(onlyUnique),
-)
+    .filter(onlyUnique)
+})
 
 const generallyAvailableBundles = computed(() =>
   types.generallyAvailableBundles.filter((v) =>
