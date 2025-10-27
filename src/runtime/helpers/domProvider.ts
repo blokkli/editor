@@ -88,6 +88,8 @@ export type DomProvider = {
 
   getFieldRect: (key: string) => Rectangle | undefined
 
+  registeredBlocks: ComputedRef<Record<string, HTMLElement | undefined>>
+
   updateVisibleRects: () => void
 
   isReady: ComputedRef<boolean>
@@ -100,6 +102,13 @@ export type DomProvider = {
     reason: string,
     map?: (v: HTMLElement) => T | null | undefined,
   ) => T[]
+
+  query: <T = HTMLElement>(
+    target: HTMLElement,
+    query: string,
+    reason: string,
+    map?: (v: HTMLElement) => T | null | undefined,
+  ) => T | null
 
   /**
    * Get the drag element for a block.
@@ -746,7 +755,7 @@ export default function (
     map?: (v: HTMLElement) => T | null | undefined,
   ): T[] {
     const results: T[] = []
-    logger.log(`querySelectorAll - "${query}"`, reason)
+    logger.log(`querySelectorAll - "${query}" - ${reason}`)
 
     for (const element of target.querySelectorAll(query)) {
       if (element instanceof HTMLElement) {
@@ -763,6 +772,28 @@ export default function (
     }
 
     return results
+  }
+
+  function query<T = HTMLElement>(
+    target: HTMLElement,
+    query: string,
+    reason: string,
+    map?: (v: HTMLElement) => T | undefined,
+  ): T | null {
+    logger.log(`querySelector - "${query}" - ${reason}`)
+
+    const match = target.querySelector(query)
+
+    if (!(match instanceof HTMLElement)) {
+      return null
+    }
+
+    if (map) {
+      return map(match) ?? null
+    }
+
+    // @ts-expect-error T could be any type, but we fallback to HTMLElement.
+    return match
   }
 
   function getDebugData() {
@@ -884,5 +915,7 @@ export default function (
     getDebugData,
     getRegisteredField,
     queryAll,
+    query,
+    registeredBlocks: computed(() => registeredBlocks),
   }
 }

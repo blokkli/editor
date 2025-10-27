@@ -126,6 +126,7 @@ const props = withDefaults(
     language?: string
     isolate?: boolean
     permissions: EditPermission[]
+    providerEl: HTMLElement
   }>(),
   {
     language: 'en',
@@ -167,13 +168,13 @@ const state = await editStateProvider(
 const storage = await storageProvider(adapter, context)
 const debug = debugProvider(storage)
 const features = featuresProvider(storage)
-const theme = themeProvider()
 const commands = commandsProvider()
 const tour = tourProvider()
 const dropAreas = dropAreasProvider()
 const broadcast = broadcastProvider()
-const ui = uiProvider(storage, state, context)
+const ui = uiProvider(props.providerEl, storage, state, context)
 const dom = domProvider(ui, debug, definitions, state)
+const theme = themeProvider(dom)
 const blocks = blocksProvider(state, dom, context)
 const selection = selectionProvider(blocks)
 const animation = animationProvider(ui, storage, selection)

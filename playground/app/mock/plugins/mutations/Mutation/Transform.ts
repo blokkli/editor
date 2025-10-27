@@ -168,7 +168,7 @@ export class MutationTransform extends Mutation {
       if (el.tagName === 'H2') {
         const block = entityStorageManager.createBlock('title', getUuid())
         block.setValues({
-          title: el.innerText,
+          title: el.textContent,
         })
         return block
       } else if (el.tagName === 'UL') {
@@ -180,7 +180,7 @@ export class MutationTransform extends Mutation {
           return [...el.querySelectorAll('a')].map((a) => {
             const block = entityStorageManager.createBlock('button', getUuid())
             block.setValues({
-              title: a.innerText,
+              title: a.textContent,
               url: a.href,
             })
             return block
@@ -189,7 +189,7 @@ export class MutationTransform extends Mutation {
       } else if (el instanceof HTMLAnchorElement) {
         const block = entityStorageManager.createBlock('button', getUuid())
         block.setValues({
-          title: el.innerText,
+          title: el.textContent,
           url: el.href,
         })
         return block

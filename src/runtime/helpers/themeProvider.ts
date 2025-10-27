@@ -15,6 +15,7 @@ import { type Ref, ref, onMounted, onBeforeUnmount } from '#imports'
 import { rgbaToString } from '.'
 import { DragStyle } from './DragStyle'
 import onBlokkliEvent from './composables/onBlokkliEvent'
+import type { DomProvider } from './domProvider'
 
 type ThemeMap = {
   accent: Ref<ThemeColors>
@@ -56,7 +57,7 @@ export type ThemeProvider = {
   ): string
 }
 
-export default function (): ThemeProvider {
+export default function (dom: DomProvider): ThemeProvider {
   const originalBrowserThemeColor = ref('')
   const THEME_COLOR = 'black'
 
@@ -151,7 +152,11 @@ export default function (): ThemeProvider {
   }
 
   onMounted(() => {
-    const el = document.head.querySelectorAll('[name="theme-color"]')
+    const el = dom.query(
+      document.head,
+      '[name="theme-color"]',
+      'Theme: theme-color',
+    )
     if (el instanceof HTMLMetaElement) {
       originalBrowserThemeColor.value = el.content
       el.content = THEME_COLOR
@@ -159,15 +164,16 @@ export default function (): ThemeProvider {
       const meta = document.createElement('meta')
       meta.name = 'theme-color'
       meta.content = THEME_COLOR
-      const head = document.getElementsByTagName('head')[0]
-      if (head) {
-        head.appendChild(meta)
-      }
+      document.head.appendChild(meta)
     }
   })
 
   onBeforeUnmount(() => {
-    const el = document.head.querySelectorAll('[name="theme-color"]')
+    const el = dom.query(
+      document.head,
+      '[name="theme-color"]',
+      'Theme: theme-color',
+    )
     if (el instanceof HTMLMetaElement) {
       if (originalBrowserThemeColor.value) {
         el.content = originalBrowserThemeColor.value

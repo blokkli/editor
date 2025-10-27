@@ -29,7 +29,7 @@ const localeMap: Record<string, string> = {
 export type UiProvider = {
   rootElement: () => HTMLElement
   artboardElement: () => HTMLElement
-  providerElement: () => HTMLElement
+  providerElement: HTMLElement
   menu: {
     isOpen: Readonly<Ref<boolean>>
     close: () => void
@@ -98,13 +98,13 @@ export type UiProvider = {
 }
 
 export default function (
+  providerElement: HTMLElement,
   storage: StorageProvider,
   state: StateProvider,
   context: ComputedRef<AdapterContext>,
 ): UiProvider {
   let cachedRootElement: HTMLElement | null = null
   let cachedArtboardElement: HTMLElement | null = null
-  let cachedProviderElement: HTMLElement | null = null
 
   const interfaceLanguage = computed<string>(() => {
     return forceDefaultLanguage ? defaultLanguage : context.value.language
@@ -200,18 +200,6 @@ export default function (
       throw new Error('Failed to locate root Nuxt element.')
     }
     cachedRootElement = el
-    return el
-  }
-
-  const providerElement = () => {
-    if (cachedProviderElement) {
-      return cachedProviderElement
-    }
-    const el = document.querySelector('[data-blokkli-provider-active="true"]')
-    if (!el || !(el instanceof HTMLElement)) {
-      throw new Error('Failed to locate provider element.')
-    }
-    cachedProviderElement = el
     return el
   }
 

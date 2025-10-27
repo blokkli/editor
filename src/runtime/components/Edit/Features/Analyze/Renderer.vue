@@ -86,7 +86,7 @@ const lastRun = useState(() => 0)
 const lastRunKey = useState(() => '')
 const selectedCategory = useState(() => ALL)
 const hasInitialized = useState(() => false)
-const providerRootElement = ui.providerElement()
+const providerRootElement = ui.providerElement
 
 const resultsFiltered = computed(() => {
   if (selectedCategory.value === ALL) {

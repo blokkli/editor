@@ -51,8 +51,6 @@ const statusPriority: Record<AnalyzeStatus, number> = {
   inapplicable: 0,
 }
 
-const providerElement = ui.providerElement()
-
 const nodes = computed<AnalyzeNode[]>(() => {
   const allNodes = props.results
     .filter((v) => v.status === 'incomplete' || v.status === 'violation')
@@ -67,13 +65,13 @@ const nodes = computed<AnalyzeNode[]>(() => {
           return targets
             .map((v) => {
               if (typeof v === 'string') {
-                return providerElement.querySelector(v)
+                return ui.providerElement.querySelector(v)
               }
 
               return v
             })
             .filter((v) => v instanceof HTMLElement)
-            .filter((v) => providerElement.contains(v))
+            .filter((v) => ui.providerElement.contains(v))
         })
         .map((element) => {
           return {

@@ -90,7 +90,7 @@ const { settings } = defineBlokkliFeature({
   screenshot: 'feature-add-list.jpg',
 })
 
-const { state, $t, eventBus, ui } = useBlokkli()
+const { state, $t, eventBus, ui, dom } = useBlokkli()
 
 const hasContextMenuOpen = computed(() =>
   ui.openContextMenu.value.startsWith('add_list_item_'),
@@ -118,19 +118,15 @@ const style = computed(() => {
     (isActive.value || hasContextMenuOpen.value) &&
     wrapper.value
   ) {
-    const labels = [
-      ...wrapper.value.querySelectorAll('.bk-list-item-label span'),
-    ] as HTMLSpanElement[]
-
-    // Determine which label has the largest width.
-    const width = labels.reduce((acc, el) => {
-      if (el.offsetWidth > acc) {
-        return el.offsetWidth
-      }
-      return acc
-    }, 0)
+    const widths = dom.queryAll(
+      wrapper.value,
+      '.bk-list-item-label span',
+      'AddList vertical sidebar style',
+      (el) => el.offsetWidth,
+    )
+    const largestWidth = Math.max(...widths)
     return {
-      '--bk-add-list-width': width + 90,
+      '--bk-add-list-width': largestWidth + 90,
     }
   }
 

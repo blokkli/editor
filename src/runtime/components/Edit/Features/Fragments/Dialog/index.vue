@@ -37,14 +37,16 @@
         <ul class="bk-library-dialog-list">
           <li
             v-for="(item, index) in fragments"
+            v-show="visible === null || visible.includes(item.name)"
+            ref="itemElements"
             :key="item.name"
             :class="{
               'bk-is-selected': selectedItem === item.name,
             }"
+            :data-bk-fragment-name="item.name"
             @click="selectedItem = item.name"
           >
             <FragmentItem
-              v-show="visible === null || visible.includes(item.name)"
               :name="item.name"
               :label="item.label"
               :description="item.description"
@@ -66,7 +68,7 @@
 import { FormOverlay } from '#blokkli/components'
 import { falsy } from '#blokkli/helpers'
 import type { BlokkliFieldElement } from '#blokkli/types'
-import { ref, useBlokkli, computed, watch } from '#imports'
+import { ref, useBlokkli, computed, watch, useTemplateRef } from '#imports'
 import FragmentItem from './Item/index.vue'
 
 const props = defineProps<{
@@ -80,7 +82,7 @@ const emit = defineEmits<{
 }>()
 
 const searchText = ref('')
-const listEl = ref<HTMLDivElement | null>(null)
+const itemElements = useTemplateRef('itemElements')
 const selectedItem = ref('')
 
 const allowedInField = computed(() => props.field.allowedFragments || [])
@@ -101,23 +103,23 @@ const onClose = () => {
 }
 
 type SearchElement = {
-  uuid: string
+  name: string
   text: string
 }
 
 const elements = ref<SearchElement[]>([])
 
 const buildElements = () => {
-  if (!listEl.value) {
+  if (!itemElements.value) {
     return
   }
-  elements.value = [...listEl.value.querySelectorAll('.bk-library-list-item')]
+  elements.value = itemElements.value
     .map((el) => {
       if (el instanceof HTMLElement) {
-        const uuid = el.dataset.libraryItemUuid
-        if (uuid) {
+        const name = el.dataset.bkFragmentName
+        if (name) {
           return {
-            uuid,
+            name,
             text: el.textContent?.toLowerCase() || '',
           }
         }
@@ -139,6 +141,6 @@ const visible = computed<string[] | null>(() => {
 
   return elements.value
     .filter((v) => v.text.includes(searchText.value.toLowerCase()))
-    .map((v) => v.uuid)
+    .map((v) => v.name)
 })
 </script>

@@ -58,7 +58,7 @@ import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon } from '#blokkli/components'
 import { modulo } from '#blokkli/helpers'
 
-const { ui } = useBlokkli()
+const { ui, dom } = useBlokkli()
 
 const emit = defineEmits(['submit', 'cancel'])
 
@@ -119,9 +119,11 @@ const getFocusableElements = (): FocusableElement[] => {
   if (!rootEl.value) {
     return []
   }
-  return [
-    ...rootEl.value.querySelectorAll('input,select,button,textarea'),
-  ] as FocusableElement[]
+  return dom.queryAll(
+    rootEl.value,
+    'input,select,button,textarea',
+    `Dialog "${props.title}" getFocusableElements`,
+  )
 }
 
 const onKeyDown = (e: KeyboardEvent) => {

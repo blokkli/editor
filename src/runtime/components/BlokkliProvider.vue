@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="providerEl"
     :data-provider-uuid="entityUuid"
     :data-provider-entity-type="entityType"
     :data-provider-entity-bundle="entityBundle"
@@ -23,14 +24,15 @@
         />
       </PreviewProvider>
       <EditProvider
-        v-else-if="isEditing && shouldRender"
+        v-else-if="isEditing && shouldRender && providerEl"
         v-slot="{ mutatedEntity }"
-        :entity="entity"
-        :entity-type="entityType"
-        :entity-uuid="entityUuid"
-        :entity-bundle="entityBundle"
-        :language="language"
-        :isolate="isolate"
+        :provider-el
+        :entity
+        :entity-type
+        :entity-uuid
+        :entity-bundle
+        :language
+        :isolate
         :permissions
       >
         <slot
@@ -72,6 +74,7 @@ import {
   provide,
   ref,
   onMounted,
+  useTemplateRef,
 } from '#imports'
 import {
   INJECT_ENTITY_CONTEXT,
@@ -90,6 +93,8 @@ defineSlots<{
     entity?: T | undefined
   }): any
 }>()
+
+const providerEl = useTemplateRef('providerEl')
 
 const PreviewProvider = defineAsyncComponent(
   () => import('./Edit/PreviewProvider.vue'),
