@@ -218,20 +218,20 @@ const sortedList = computed(() => {
 const renderKey = ref('')
 
 const getBundlesForAppendCommands = () => {
-  if (selection.items.value.length !== 1) {
+  const item = selection.item.value
+  if (!item) {
     return []
   }
 
-  const block = selection.items.value[0]!
   const field: FieldConfig | undefined = types.getFieldConfig(
-    block.host.type,
-    block.host.bundle,
-    block.host.fieldName,
+    item.host.type,
+    item.host.bundle,
+    item.host.fieldName,
   )
 
   if (field) {
     if (field.cardinality !== -1) {
-      const key = getFieldKey(block.host.uuid, block.host.fieldName)
+      const key = getFieldKey(item.host.uuid, item.host.fieldName)
       const count = state.getFieldBlockCount(key)
       // No more blocks allowed.
       if (count >= field.cardinality) {

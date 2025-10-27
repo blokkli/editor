@@ -168,10 +168,10 @@ const items = computed<TranslationStateItem[]>(() => {
 })
 
 const canTranslateBlock = computed(() => {
-  if (selection.items.value.length !== 1) {
+  const block = selection.item.value
+  if (!block) {
     return false
   }
-  const block = selection.items.value[0]!
 
   if (block.library?.libraryItemUuid) {
     return false

@@ -42,8 +42,8 @@
   <Teleport to="body">
     <BlokkliTransition name="slide-up">
       <ReusableDialog
-        v-if="showReusableDialog && selectedItem"
-        :uuid="selectedItem.uuid"
+        v-if="showReusableDialog && selection.item.value"
+        :uuid="selection.item.value.uuid"
         :background-class="definition?.editor?.previewBackgroundClass"
         @confirm="onMakeReusable"
         @cancel="showReusableDialog = false"
@@ -76,11 +76,7 @@ import ReusableDialog from './ReusableDialog/index.vue'
 import LibraryDialog from './LibraryDialog/index.vue'
 import EditReusable from './EditReusable/index.vue'
 import { BlokkliTransition } from '#blokkli/components'
-import type {
-  ActionPlacedEvent,
-  LibraryEditItemEvent,
-  RenderedFieldListItem,
-} from '#blokkli/types'
+import type { ActionPlacedEvent, LibraryEditItemEvent } from '#blokkli/types'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { BUNDLE_FROM_LIBRARY } from '#blokkli/constants'
 
@@ -96,14 +92,6 @@ const { adapter } = defineBlokkliFeature({
 
 const { selection, state, types, $t, eventBus, definitions } = useBlokkli()
 const showReusableDialog = ref(false)
-
-const selectedItem = computed<RenderedFieldListItem | null>(() => {
-  if (selection.items.value.length !== 1) {
-    return null
-  }
-
-  return selection.items.value[0] ?? null
-})
 
 const onDetach = async () => {
   if (!adapter.detachReusableBlock || !selection.uuids.value.length) {
@@ -134,21 +122,25 @@ const onAddLibraryItem = async (uuid: string) => {
   placedAction.value = null
 }
 
-const definition = computed(() =>
-  selectedItem?.value
-    ? definitions.getBlockDefinition(
-        selectedItem.value.bundle,
-        selectedItem.value.fieldListType,
-        selectedItem.value.parentBlockBundle,
-      )
-    : null,
-)
+const definition = computed(() => {
+  const item = selection.item.value
+  if (!item) {
+    return null
+  }
+  return definitions.getBlockDefinition(
+    item.bundle,
+    item.fieldListType,
+    item.parentBlockBundle,
+  )
+})
 
-const itemBundle = computed(() =>
-  selectedItem?.value
-    ? types.getBlockBundleDefinition(selectedItem.value.bundle)
-    : null,
-)
+const itemBundle = computed(() => {
+  const item = selection.item.value
+  if (!item) {
+    return null
+  }
+  return types.getBlockBundleDefinition(item.bundle)
+})
 
 const isReusable = computed(() =>
   selection.bundles.value.every((bundle) => bundle === BUNDLE_FROM_LIBRARY),
@@ -156,14 +148,15 @@ const isReusable = computed(() =>
 
 async function onMakeReusable(label: string) {
   showReusableDialog.value = false
-  if (!selectedItem?.value?.uuid) {
+  const item = selection.item.value
+  if (!item) {
     return
   }
   await state.mutateWithLoadingState(
     () =>
       adapter.makeBlockReusable({
         label,
-        uuid: selectedItem.value!.uuid,
+        uuid: item.uuid,
       }),
     $t('libraryError', 'Failed to add block to library.'),
   )

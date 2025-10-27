@@ -28,24 +28,17 @@ defineBlokkliFeature({
 
 const { eventBus, selection, state, $t, adapter, definitions } = useBlokkli()
 
-const block = computed(() => {
-  if (selection.items.value.length !== 1) {
-    return null
-  }
-
-  return selection.items.value[0]
-})
-
 const canEdit = computed(() => {
+  const item = selection.item.value
   // Editing is only possible when a single block is selected.
-  if (!block.value) {
+  if (!item) {
     return false
   }
 
   const definition = definitions.getBlockDefinition(
-    block.value.bundle,
-    block.value.fieldListType,
-    block.value.parentBlockBundle,
+    item.bundle,
+    item.fieldListType,
+    item.parentBlockBundle,
   )
 
   // Editing is explicitly disabled via the definition.
@@ -55,12 +48,12 @@ const canEdit = computed(() => {
 
   // For reusable blocks, editing is only possible if the adapter implements
   // the getLibraryItemEditUrl method.
-  if (block.value.library?.libraryItemUuid) {
+  if (item.library?.libraryItemUuid) {
     return (
       !!adapter.getLibraryItemEditUrl &&
       (state.editMode.value === 'editing' ||
         state.editMode.value === 'translating') &&
-      !block.value.isNew
+      !item.isNew
     )
   }
 

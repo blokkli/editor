@@ -40,6 +40,11 @@ export type SelectionProvider = {
   items: ComputedRef<RenderedFieldListItem[]>
 
   /**
+   * The currently selected field list item, if only a single item is selected.
+   */
+  item: ComputedRef<RenderedFieldListItem | null>
+
+  /**
    * Whether the user is currently dragging a block.
    */
   isDragging: ComputedRef<boolean>
@@ -125,6 +130,14 @@ export default function (blocks: BlocksProvider): SelectionProvider {
     }
 
     return items
+  })
+
+  const item = computed<RenderedFieldListItem | null>(() => {
+    if (selectedRenderedItems.value.length === 1) {
+      return selectedRenderedItems.value[0] ?? null
+    }
+
+    return null
   })
 
   const bundles = computed<string[]>(() => {
@@ -260,6 +273,7 @@ export default function (blocks: BlocksProvider): SelectionProvider {
     uuids: selectedUuids,
     bundles,
     items: selectedRenderedItems,
+    item,
     isDragging,
     isDraggingExisting,
     editableActive,

@@ -49,9 +49,9 @@ const { adapter } = defineBlokkliFeature({
 const { state, $t, types, selection, dom } = useBlokkli()
 
 const isEnabled = computed<boolean>(() => {
-  if (selection.items.value.length === 1) {
-    const block = selection.items.value[0]!
-    const field = dom.getRegisteredField(block.host.uuid, block.host.fieldName)
+  const item = selection.item.value
+  if (item) {
+    const field = dom.getRegisteredField(item.host.uuid, item.host.fieldName)
     return !!field?.allowedFragments.length
   }
 
