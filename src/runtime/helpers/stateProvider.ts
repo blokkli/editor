@@ -88,6 +88,7 @@ export type StateProvider = {
   getMappedState: () => MappedState
   setOverrideState: (state: MappedState) => void
   clearOverrideState: () => void
+  getFieldKeyForUuid: (uuid: string) => string | null
 }
 
 export default async function (
@@ -128,13 +129,13 @@ export default async function (
   })
   let fieldBlockCount: Record<string, number> = {}
   const blockBundleCount: Ref<Record<string, number>> = ref({})
-  const fieldListItemMap: Map<string, string> = new Map()
+  const fieldListItemMap = ref<Record<string, string>>({})
   let bundleToUuids: Record<string, string[]> = {}
   const fromLibraryUuids = ref<string[]>([])
   const nestingLevelMap: Map<string, number> = new Map()
 
   function getFieldListItem(uuid: string): FieldListItem | undefined {
-    const fieldKey = fieldListItemMap.get(uuid)
+    const fieldKey = fieldListItemMap.value[uuid]
     if (!fieldKey) {
       return
     }
@@ -148,8 +149,12 @@ export default async function (
     return field.list.find((v) => v.uuid === uuid)
   }
 
+  function getFieldKeyForUuid(uuid: string): string | null {
+    return fieldListItemMap.value[uuid] ?? null
+  }
+
   function getFieldListForBlock(uuid: string): MutatedField | undefined {
-    const fieldKey = fieldListItemMap.get(uuid)
+    const fieldKey = fieldListItemMap.value[uuid]
     if (!fieldKey) {
       return
     }
@@ -241,7 +246,7 @@ export default async function (
     const visitedFieldKeys: string[] = []
     const newBlockBundleCount: Record<string, number> = {}
 
-    fieldListItemMap.clear()
+    fieldListItemMap.value = {}
     nestingLevelMap.clear()
 
     // Reset the count cache.
@@ -269,7 +274,7 @@ export default async function (
           newBlockBundleCount[item.bundle] = 0
         }
         newBlockBundleCount[item.bundle]!++
-        fieldListItemMap.set(item.uuid, key)
+        fieldListItemMap.value[item.uuid] = key
         if (!bundleToUuids[item.bundle]) {
           bundleToUuids[item.bundle] = []
         }
@@ -341,7 +346,7 @@ export default async function (
 
   function getAllUuids(bundle?: string): string[] {
     if (!bundle) {
-      return [...fieldListItemMap.keys()]
+      return [...Object.keys(fieldListItemMap)]
     }
 
     return bundleToUuids[bundle] ?? []
@@ -355,7 +360,7 @@ export default async function (
     }
 
     // Get the field this block belongs to
-    const fieldKey = fieldListItemMap.get(uuid)
+    const fieldKey = fieldListItemMap.value[uuid]
     if (!fieldKey) {
       nestingLevelMap.set(uuid, 0)
       return 0
@@ -369,7 +374,7 @@ export default async function (
 
     // Check if the parent entity is also a block
     const parentEntityUuid = field.entityUuid
-    const parentFieldKey = fieldListItemMap.get(parentEntityUuid)
+    const parentFieldKey = fieldListItemMap.value[parentEntityUuid]
 
     if (!parentFieldKey) {
       // Parent is not a block, so this is level 0
@@ -390,7 +395,7 @@ export default async function (
 
   function isChildOf(childUuid: string, parentUuid: string): boolean {
     // Get the field the child belongs to
-    const fieldKey = fieldListItemMap.get(childUuid)
+    const fieldKey = fieldListItemMap.value[childUuid]
     if (!fieldKey) {
       return false
     }
@@ -565,5 +570,6 @@ export default async function (
     clearOverrideState,
     fromLibraryUuids: readonly(fromLibraryUuids),
     permissions: computed(() => permissions),
+    getFieldKeyForUuid,
   }
 }

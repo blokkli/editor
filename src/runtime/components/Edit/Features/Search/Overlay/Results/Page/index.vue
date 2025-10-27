@@ -60,7 +60,7 @@ type SearchItem = {
   context?: string
 }
 
-const { eventBus, state, types, dom, blocks } = useBlokkli()
+const { eventBus, state, types, dom, blocks, element } = useBlokkli()
 
 const buildForKey = ref('')
 
@@ -127,7 +127,7 @@ const buildSearchText = (el?: HTMLElement): string => {
     return ''
   }
 
-  const altTexts = dom
+  const altTexts = element
     .queryAll(el, 'img', 'buildSearchText', (el) => {
       if (el instanceof HTMLImageElement) {
         return [el.alt, el.title].filter(Boolean).join('')

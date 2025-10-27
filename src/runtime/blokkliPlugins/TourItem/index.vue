@@ -4,7 +4,7 @@
 
 <script lang="ts" setup>
 import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
-import { getCurrentInstance } from '#imports'
+import { getCurrentInstance, useBlokkli } from '#imports'
 
 import type { RendererNode } from 'vue'
 
@@ -14,6 +14,8 @@ const props = defineProps<{
   text: string
   selector?: string
 }>()
+
+const { element } = useBlokkli()
 
 const findElement = (
   el: RendererNode | null | undefined,
@@ -34,11 +36,15 @@ defineTourItem(() => {
     text: props.text,
     element: () => {
       const provided = props.selector
-        ? document.querySelector(props.selector)
+        ? element.query(
+            document.documentElement,
+            props.selector,
+            `TourItem Plugin: ${props.id}`,
+          )
         : undefined
-      const element = provided || findElement(instance?.vnode.el)
-      if (element instanceof HTMLElement) {
-        return element
+      const el = provided || findElement(instance?.vnode.el)
+      if (el instanceof HTMLElement) {
+        return el
       }
     },
   }

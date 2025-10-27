@@ -21,7 +21,7 @@ import {
 import type { EditableFieldType, EntityContext } from '#blokkli/types'
 import { itemEntityType } from '#blokkli-build/config'
 
-const { adapter, ui } = useBlokkli()
+const { adapter, ui, element } = useBlokkli()
 
 const PROPAGATE_WHEEL = false
 
@@ -52,9 +52,11 @@ function onIframeLoad() {
 
   iframe.value.contentDocument.addEventListener('wheel', (e) => {
     if (!ckEditor) {
-      const el = iframeDoc.querySelector('.ck-editor__editable') as
-        | HTMLElement
-        | undefined
+      const el = element.query(
+        iframeDoc.documentElement,
+        '.ck-editor__editable',
+        'Find CKEditor in editable iframe.',
+      )
       if (el) {
         ckEditor = el
       }

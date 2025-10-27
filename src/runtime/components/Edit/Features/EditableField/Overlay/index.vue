@@ -74,7 +74,15 @@ import InputFrame from './Frame/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { itemEntityType } from '#blokkli-build/config'
 
-const { eventBus, selection, state, adapter, $t, types } = useBlokkli()
+const {
+  eventBus,
+  selection,
+  state,
+  adapter,
+  $t,
+  types,
+  element: elementProvider,
+} = useBlokkli()
 
 const props = defineProps<{
   fieldName: string
@@ -213,19 +221,33 @@ const focusInput = (el?: HTMLElement | Document | null) => {
     return
   }
 
-  const textarea = el.querySelector('textarea')
+  const queryEl = el instanceof Document ? el.documentElement : el
+
+  const textarea = elementProvider.query<HTMLTextAreaElement>(
+    queryEl,
+    'textarea',
+    'Focus editable field textarea',
+  )
   if (textarea) {
     textarea.focus()
     return
   }
 
-  const editable = el.querySelector('[contenteditable]')
-  if (editable instanceof HTMLElement) {
+  const editable = elementProvider.query<HTMLElement>(
+    queryEl,
+    '[contenteditable]',
+    'Focus editable field contenteditable',
+  )
+  if (editable) {
     editable.focus()
     return
   }
 
-  const iframe = el.querySelector('iframe')
+  const iframe = elementProvider.query<HTMLIFrameElement>(
+    queryEl,
+    'iframe',
+    'Find iframe in editable field',
+  )
 
   if (iframe?.contentDocument) {
     focusInput(iframe.contentDocument)

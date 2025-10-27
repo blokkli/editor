@@ -40,11 +40,6 @@ export type SelectionProvider = {
   items: ComputedRef<RenderedFieldListItem[]>
 
   /**
-   * The active field key.
-   */
-  activeFieldKey: Readonly<Ref<string>>
-
-  /**
    * Whether the user is currently dragging a block.
    */
   isDragging: ComputedRef<boolean>
@@ -68,11 +63,6 @@ export type SelectionProvider = {
    * Whether the user is currently in multi select mode.
    */
   isMultiSelecting: Ref<boolean>
-
-  /**
-   * Update the active field key.
-   */
-  setActiveFieldKey: (key: string) => void
 
   /**
    * Whether an editable field is currently being edited.
@@ -110,7 +100,6 @@ export type SelectionProvider = {
 export default function (blocks: BlocksProvider): SelectionProvider {
   const selectedUuids = ref<string[]>([])
   const hasHostSelected = ref(false)
-  const activeFieldKey = ref('')
   const draggingMode = ref<InteractionMode | null>(null)
   const editableActive = ref(false)
   const isChangingOptions = ref(false)
@@ -169,7 +158,6 @@ export default function (blocks: BlocksProvider): SelectionProvider {
   }
 
   function unselectItems() {
-    activeFieldKey.value = ''
     if (selectedUuids.value.length === 0) {
       return
     }
@@ -184,8 +172,6 @@ export default function (blocks: BlocksProvider): SelectionProvider {
     }
   }
 
-  const setActiveFieldKey = (key: string) => (activeFieldKey.value = key)
-
   onBlokkliEvent('select', onSelect)
   onBlokkliEvent('select:force', (arg) => {
     onSelect(arg, true)
@@ -194,7 +180,6 @@ export default function (blocks: BlocksProvider): SelectionProvider {
     updateSelectedUuids((e.uuids || []).filter(onlyUnique))
     isMultiSelecting.value = true
     interactionMode.value = e.mode
-    activeFieldKey.value = ''
   })
   onBlokkliEvent('select:toggle', (uuid) => {
     if (selectedUuids.value.includes(uuid)) {
@@ -212,7 +197,6 @@ export default function (blocks: BlocksProvider): SelectionProvider {
     updateSelectedUuids(uuids)
   })
 
-  onBlokkliEvent('setActiveFieldKey', setActiveFieldKey)
   onBlokkliEvent('dragging:start', (e) => {
     draggingMode.value = e.mode
     isMultiSelecting.value = false
@@ -241,7 +225,6 @@ export default function (blocks: BlocksProvider): SelectionProvider {
 
   onBlokkliEvent('window:clickAway', () => {
     unselectItems()
-    activeFieldKey.value = ''
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur()
     }
@@ -277,10 +260,8 @@ export default function (blocks: BlocksProvider): SelectionProvider {
     uuids: selectedUuids,
     bundles,
     items: selectedRenderedItems,
-    activeFieldKey,
     isDragging,
     isDraggingExisting,
-    setActiveFieldKey,
     editableActive,
     isChangingOptions,
     isMultiSelecting,

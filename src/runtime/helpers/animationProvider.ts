@@ -15,6 +15,7 @@ import type { StorageProvider } from './storageProvider'
 import type { CursorKeyword } from './dom'
 import type { CanvasDrawEvent, Coord } from '#blokkli/types'
 import type { SelectionProvider } from './selectionProvider'
+import type { ElementProvider } from './providers/element'
 
 export type RenderContext = CanvasDrawEvent & {
   gl: WebGLRenderingContext
@@ -93,6 +94,7 @@ export default function (
   ui: UiProvider,
   storage: StorageProvider,
   selection: SelectionProvider,
+  element: ElementProvider,
 ): AnimationProvider {
   const webglEnabled = storage.use('webglEnabled', true)
 
@@ -163,7 +165,11 @@ export default function (
   let webglLimitsQueried = false
 
   function getCanvasElement(): HTMLCanvasElement {
-    const el = document.querySelector('#bk-animation-canvas-webgl')
+    const el = element.query(
+      document.documentElement,
+      '#bk-animation-canvas-webgl',
+      'Find animation canvas element.',
+    )
     if (!(el instanceof HTMLCanvasElement)) {
       throw new TypeError('Failed to locate WebGL canvas.')
     }

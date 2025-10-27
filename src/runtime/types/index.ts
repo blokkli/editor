@@ -46,6 +46,7 @@ import type { DefinitionProvider } from '../helpers/definitionProvider'
 import type { IndicatorsProvider } from '#blokkli/helpers/indicatorsProvider'
 import type { BlocksProvider } from '#blokkli/helpers/providers/blocks'
 import type { FieldsProvider } from '#blokkli/helpers/providers/fields'
+import type { ElementProvider } from '#blokkli/helpers/providers/element'
 
 export type MutateWithLoadingStateFunction = (
   promise: () => Promise<MutationResponseLike<any>> | undefined,
@@ -1247,7 +1248,6 @@ export type EventbusEvents = {
   'dragging:start': DraggableStartEvent
   'dragging:drop': DropTargetEvent
   'dragging:end': undefined
-  setActiveFieldKey: string
   'add:block:new': AddNewBlockEvent
   updateMutatedFields: UpdateMutatedFieldsEvent
   animationFrame: AnimationFrameEvent
@@ -1368,6 +1368,7 @@ export interface BlokkliApp {
   selection: SelectionProvider
   blocks: BlocksProvider
   keyboard: KeyboardProvider
+  element: ElementProvider
   ui: UiProvider
   animation: AnimationProvider
   definitions: DefinitionProvider

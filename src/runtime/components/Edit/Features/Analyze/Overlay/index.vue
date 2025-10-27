@@ -27,7 +27,7 @@ const props = defineProps<{
   gl: WebGLRenderingContext
 }>()
 
-const { animation, ui, theme, selection, eventBus } = useBlokkli()
+const { animation, ui, theme, selection, eventBus, element } = useBlokkli()
 
 const programInfo = animation.registerProgram('analyze', props.gl, [vs, fs])
 
@@ -65,7 +65,11 @@ const nodes = computed<AnalyzeNode[]>(() => {
           return targets
             .map((v) => {
               if (typeof v === 'string') {
-                return ui.providerElement.querySelector(v)
+                return element.query(
+                  ui.providerElement,
+                  v,
+                  'Find analyze node target element.',
+                )
               }
 
               return v

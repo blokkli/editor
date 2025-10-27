@@ -11,8 +11,7 @@ import type {
 } from '../types'
 import type { AdapterContext, BlokkliAdapter } from '../adapter'
 import type { SelectionProvider } from './selectionProvider'
-import { eventBus } from '#blokkli/helpers/eventBus'
-import { useRuntimeConfig, computed, watch } from '#imports'
+import { useRuntimeConfig, computed } from '#imports'
 import { onlyUnique } from '.'
 
 export type BlokkliBlockType = BlockBundleDefinition & {
@@ -165,35 +164,6 @@ export default async function (
 
     return (
       fieldConfig.forName(hostType, hostBundle, fieldName)?.allowedBundles || []
-    )
-  })
-
-  // @TODO: This can and should be refactored.
-  watch(selection.items, () => {
-    if (selection.items.value.length !== 1) {
-      return
-    }
-    const item = selection.items.value[0]!
-    // Determine if the selected item has nested items.
-    const hasNested = itemBundlesWithNested.includes(item.bundle)
-    if (hasNested) {
-      // Get the nested item fields.
-      const nestedFields =
-        fieldConfig
-          .forEntityTypeAndBundle(itemEntityType, item.bundle)
-          .map((v) => v.name) || []
-
-      // When we have exactly one nested item field, we can set the active
-      // field key to this field. That way the UI will show this field is active
-      // and display available items for this field.
-      if (nestedFields.length === 1) {
-        eventBus.emit('setActiveFieldKey', `${item.uuid}:${nestedFields[0]}`)
-        return
-      }
-    }
-    eventBus.emit(
-      'setActiveFieldKey',
-      `${item.host.uuid}:${item.host.fieldName}`,
     )
   })
 

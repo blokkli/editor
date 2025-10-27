@@ -25,7 +25,7 @@ const props = defineProps<{
   target: string | HTMLElement | { uuid: string }
 }>()
 
-const { eventBus, dom, blocks } = useBlokkli()
+const { eventBus, dom, blocks, element } = useBlokkli()
 
 const elButton = useTemplateRef('elButton')
 
@@ -35,7 +35,11 @@ let focusTimeout: null | number = null
 function getElement(): HTMLElement | null {
   if (props.target) {
     if (typeof props.target === 'string') {
-      return document.querySelector(props.target)
+      return element.query(
+        document.documentElement,
+        props.target,
+        'Find analyze result item node target.',
+      )
     } else if (props.target instanceof HTMLElement) {
       return props.target
     } else if (typeof props.target === 'object' && 'uuid' in props.target) {

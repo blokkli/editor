@@ -41,8 +41,15 @@ const props = withDefaults(
   },
 )
 
+const { runtimeConfig, types, selection, eventBus, state, element } =
+  useBlokkli()
+
 function getRootEl(): HTMLElement {
-  const rootEl = document.querySelector('#bk-structure')
+  const rootEl = element.query(
+    document.documentElement,
+    '#bk-structure',
+    'Get root structure element.',
+  )
 
   if (!(rootEl instanceof HTMLElement)) {
     throw new TypeError('Failed to locate root structure element.')
@@ -50,8 +57,6 @@ function getRootEl(): HTMLElement {
 
   return rootEl
 }
-
-const { runtimeConfig, types, selection, eventBus, state } = useBlokkli()
 
 const canMove = computed(() => state.editMode.value === 'editing')
 
@@ -85,7 +90,11 @@ function onMouseUp(e: MouseEvent) {
 function buildDraggableItems(): DraggableExistingStructureBlock[] {
   return selection.items.value
     .map<DraggableExistingStructureBlock | null>((block) => {
-      const el = document.querySelector(`[bk-structure-uuid="${block.uuid}"]`)
+      const el = element.query(
+        document.documentElement,
+        `[bk-structure-uuid="${block.uuid}"]`,
+        'Get structure item for draggable item.',
+      )
       if (!(el instanceof HTMLElement)) {
         return null
       }

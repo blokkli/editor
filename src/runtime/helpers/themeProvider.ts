@@ -15,7 +15,7 @@ import { type Ref, ref, onMounted, onBeforeUnmount } from '#imports'
 import { rgbaToString } from '.'
 import { DragStyle } from './DragStyle'
 import onBlokkliEvent from './composables/onBlokkliEvent'
-import type { DomProvider } from './domProvider'
+import type { ElementProvider } from './providers/element'
 
 type ThemeMap = {
   accent: Ref<ThemeColors>
@@ -57,7 +57,15 @@ export type ThemeProvider = {
   ): string
 }
 
-export default function (dom: DomProvider): ThemeProvider {
+export default function (element: ElementProvider): ThemeProvider {
+  const rootElement = element.query(
+    document,
+    ':root',
+    'Get document root element for setting theme color.',
+  )
+  if (!rootElement) {
+    throw new Error('Failed to query :root - is this even possible?')
+  }
   const originalBrowserThemeColor = ref('')
   const THEME_COLOR = 'black'
 
@@ -111,13 +119,10 @@ export default function (dom: DomProvider): ThemeProvider {
       lime.value[shade as ThemeContextColorShade] = value
     }
 
-    const root = document.querySelector(':root')
-    if (root instanceof HTMLElement) {
-      root.style.setProperty(
-        `--bk-theme-${group}-${shade}`,
-        `${value[0]} ${value[1]} ${value[2]}`,
-      )
-    }
+    rootElement.style.setProperty(
+      `--bk-theme-${group}-${shade}`,
+      `${value[0]} ${value[1]} ${value[2]}`,
+    )
   }
 
   const setColorsFromTheme = (v: Theme) => {
@@ -152,7 +157,7 @@ export default function (dom: DomProvider): ThemeProvider {
   }
 
   onMounted(() => {
-    const el = dom.query(
+    const el = element.query(
       document.head,
       '[name="theme-color"]',
       'Theme: theme-color',
@@ -169,7 +174,7 @@ export default function (dom: DomProvider): ThemeProvider {
   })
 
   onBeforeUnmount(() => {
-    const el = dom.query(
+    const el = element.query(
       document.head,
       '[name="theme-color"]',
       'Theme: theme-color',

@@ -93,7 +93,7 @@ defineProps<{
   modelValue?: string
 }>()
 
-const { adapter, storage, $t } = useBlokkli()
+const { adapter, storage, $t, element } = useBlokkli()
 
 const selected = ref<string[]>([])
 const listEl = ref<HTMLDivElement | null>(null)
@@ -104,14 +104,17 @@ function getDragItems(activeItem?: DraggableItem): DraggableItem[] | null {
   if (!selected.value.length || !listEl.value) {
     return null
   }
+  const listElement = listEl.value
 
   const activeId =
     activeItem?.itemType === 'media_library' ? activeItem.mediaId : null
 
   const items: DraggableMediaLibraryItem[] = selected.value
     .map((id) => {
-      const el = listEl.value?.querySelector(
+      const el = element.query(
+        listElement,
         `[data-sortli-id="media_library_${id}"]`,
+        'Find media library drag item.',
       )
       if (!(el instanceof HTMLElement)) {
         return null

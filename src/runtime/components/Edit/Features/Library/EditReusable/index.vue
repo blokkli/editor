@@ -48,18 +48,16 @@ const props = defineProps<{
   label?: string
 }>()
 
+const { $t, element } = useBlokkli()
 const DURATION = 530
 const emit = defineEmits(['submit', 'close'])
 
 function getOriginatingElement(): HTMLElement | null {
-  const el = document.querySelector(
+  return element.query(
+    document.documentElement,
     `[data-bk-library-item-uuid="${props.uuid}"]`,
+    'Get originating library item element',
   )
-  if (el instanceof HTMLElement) {
-    return el
-  }
-
-  return null
 }
 
 // called one frame after the element is inserted.
@@ -152,8 +150,6 @@ function onAfterLeave(el: Element) {
     emit('close')
   }
 }
-
-const { $t } = useBlokkli()
 
 const iframe = ref<HTMLIFrameElement | null>(null)
 const isLoaded = ref(false)

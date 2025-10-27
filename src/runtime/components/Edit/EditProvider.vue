@@ -83,6 +83,7 @@ import keyboardProvider from './../../helpers/keyboardProvider'
 import selectionProvider from './../../helpers/selectionProvider'
 import editStateProvider from './../../helpers/stateProvider'
 import typesProvider from './../../helpers/typesProvider'
+import elementProvider from './../../helpers/providers/element'
 import domProvider from './../../helpers/domProvider'
 import textProvider from './../../helpers/textProvider'
 import storageProvider from './../../helpers/storageProvider'
@@ -167,17 +168,18 @@ const state = await editStateProvider(
 )
 const storage = await storageProvider(adapter, context)
 const debug = debugProvider(storage)
+const element = elementProvider(debug)
 const features = featuresProvider(storage)
 const commands = commandsProvider()
 const tour = tourProvider()
 const dropAreas = dropAreasProvider()
 const broadcast = broadcastProvider()
-const ui = uiProvider(props.providerEl, storage, state, context)
-const dom = domProvider(ui, debug, definitions, state)
-const theme = themeProvider(dom)
+const ui = uiProvider(props.providerEl, storage, state, context, element)
+const dom = domProvider(ui, debug, definitions, state, element)
+const theme = themeProvider(element)
 const blocks = blocksProvider(state, dom, context)
 const selection = selectionProvider(blocks)
-const animation = animationProvider(ui, storage, selection)
+const animation = animationProvider(ui, storage, selection, element)
 const keyboard = keyboardProvider(animation)
 const types = await typesProvider(adapter, selection, context)
 const indicators = indicatorsProvider()
@@ -259,6 +261,7 @@ provide<BlokkliApp>(INJECT_APP, {
   definitions,
   dom,
   dropAreas,
+  element,
   eventBus,
   directive,
   features,

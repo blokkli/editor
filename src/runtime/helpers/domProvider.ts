@@ -26,6 +26,7 @@ import type { DebugProvider } from './debugProvider'
 import type { DefinitionProvider } from './definitionProvider'
 import type { StateProvider } from './stateProvider'
 import { itemEntityType } from '#blokkli-build/config'
+import type { ElementProvider } from './providers/element'
 
 type RegisteredFieldType = {
   entityType: string
@@ -96,20 +97,6 @@ export type DomProvider = {
 
   init: () => void
 
-  queryAll: <T = HTMLElement>(
-    target: HTMLElement,
-    query: string,
-    reason: string,
-    map?: (v: HTMLElement) => T | null | undefined,
-  ) => T[]
-
-  query: <T = HTMLElement>(
-    target: HTMLElement,
-    query: string,
-    reason: string,
-    map?: (v: HTMLElement) => T | null | undefined,
-  ) => T | null
-
   /**
    * Get the drag element for a block.
    */
@@ -175,6 +162,7 @@ export default function (
   debug: DebugProvider,
   definitions: DefinitionProvider,
   state: StateProvider,
+  element: ElementProvider,
 ): DomProvider {
   const logger = debug.createLogger('DomProvider')
   const mutationsReady = ref(true)
@@ -448,8 +436,14 @@ export default function (
     if (!el) {
       return ''
     }
-    const dropElement = el.querySelector('.bk-drop-element') || el
-    const childCount = dropElement.querySelectorAll('*').length
+    const dropElement =
+      element.query(el, '.bk-drop-element', 'Find drop element for markup.') ||
+      el
+    const childCount = element.queryAll(
+      dropElement,
+      '*',
+      'Get child count for drop element markup.',
+    ).length
     if (checkSize && childCount > 80) {
       return ''
     }
@@ -748,54 +742,6 @@ export default function (
     visibleBlocks.delete(uuid)
   }
 
-  function queryAll<T = HTMLElement>(
-    target: HTMLElement,
-    query: string,
-    reason: string,
-    map?: (v: HTMLElement) => T | null | undefined,
-  ): T[] {
-    const results: T[] = []
-    logger.log(`querySelectorAll - "${query}" - ${reason}`)
-
-    for (const element of target.querySelectorAll(query)) {
-      if (element instanceof HTMLElement) {
-        if (map) {
-          const result = map(element)
-          if (result) {
-            results.push(result)
-          }
-        } else {
-          // @ts-expect-error T could be any type, but we fallback to HTMLElement.
-          results.push(element)
-        }
-      }
-    }
-
-    return results
-  }
-
-  function query<T = HTMLElement>(
-    target: HTMLElement,
-    query: string,
-    reason: string,
-    map?: (v: HTMLElement) => T | undefined,
-  ): T | null {
-    logger.log(`querySelector - "${query}" - ${reason}`)
-
-    const match = target.querySelector(query)
-
-    if (!(match instanceof HTMLElement)) {
-      return null
-    }
-
-    if (map) {
-      return map(match) ?? null
-    }
-
-    // @ts-expect-error T could be any type, but we fallback to HTMLElement.
-    return match
-  }
-
   function getDebugData() {
     // Collect all unique UUIDs from all sources
     const allUuids = new Set<string>([
@@ -914,8 +860,6 @@ export default function (
     registeredBlockUuids,
     getDebugData,
     getRegisteredField,
-    queryAll,
-    query,
     registeredBlocks: computed(() => registeredBlocks),
   }
 }

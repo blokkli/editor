@@ -16,6 +16,7 @@ import type { StateProvider } from './stateProvider'
 import type { AdapterContext } from '#blokkli/adapter'
 import { defaultLanguage, forceDefaultLanguage } from '#blokkli-build/config'
 import type { ThemeColorName } from '#blokkli/types/theme'
+import type { ElementProvider } from './providers/element'
 
 const CLASS_PROXY_MODE = 'bk-is-proxy-mode'
 
@@ -102,6 +103,7 @@ export default function (
   storage: StorageProvider,
   state: StateProvider,
   context: ComputedRef<AdapterContext>,
+  element: ElementProvider,
 ): UiProvider {
   let cachedRootElement: HTMLElement | null = null
   let cachedArtboardElement: HTMLElement | null = null
@@ -183,7 +185,11 @@ export default function (
     if (cachedArtboardElement) {
       return cachedArtboardElement
     }
-    const el = document.querySelector('.bk-main-canvas')
+    const el = element.query(
+      document.documentElement,
+      '.bk-main-canvas',
+      'Get main canvas.',
+    )
     if (!el || !(el instanceof HTMLElement)) {
       throw new Error('Failed to locate artboard element.')
     }
@@ -195,7 +201,11 @@ export default function (
     if (cachedRootElement) {
       return cachedRootElement
     }
-    const el = document.querySelector('#nuxt-root')
+    const el = element.query(
+      document.documentElement,
+      '#nuxt-root',
+      'Get Nuxt root element.',
+    )
     if (!el || !(el instanceof HTMLElement)) {
       throw new Error('Failed to locate root Nuxt element.')
     }

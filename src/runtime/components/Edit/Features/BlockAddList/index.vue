@@ -113,26 +113,6 @@ const itemEntityType = runtimeConfig.itemEntityType
 
 const favorites = storage.use<string[]>('blockFavorites', [])
 
-const activeField = computed(() => {
-  if (selection.activeFieldKey.value) {
-    const el = document.querySelector(
-      `[data-field-key="${selection.activeFieldKey.value}"]`,
-    )
-    if (el && el instanceof HTMLElement) {
-      const label = el.dataset.fieldLabel
-      const name = el.dataset.fieldName
-      const isNested = el.dataset.fieldIsNested === 'true'
-      const hostEntityType = el.dataset.hostEntityType
-      const hostEntityUuid = el.dataset.hostEntityUuid
-      if (label && name && hostEntityType && hostEntityUuid) {
-        return { label, name, hostEntityType, hostEntityUuid, isNested }
-      }
-    }
-  }
-
-  return undefined
-})
-
 const getAllowedTypesForSelected = (p: RenderedFieldListItem): string[] => {
   // If the selected bundle allows nested items, return the allowed bundles for it instead.
   if (types.itemBundlesWithNested.includes(p.bundle)) {
@@ -186,18 +166,6 @@ const generallyAvailableBundles = computed(() =>
 const selectableBundles = computed(() => {
   if (selection.items.value.length) {
     return selection.items.value.flatMap((v) => getAllowedTypesForSelected(v))
-  }
-  if (
-    activeField.value &&
-    activeField.value.hostEntityType === context.value.entityType
-  ) {
-    return (
-      types.getFieldConfig(
-        context.value.entityType,
-        context.value.entityBundle,
-        activeField.value.name,
-      )?.allowedBundles || []
-    )
   }
 
   return generallyAvailableBundles.value.map((v) => v.id || '')

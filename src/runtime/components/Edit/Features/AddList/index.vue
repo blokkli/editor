@@ -90,7 +90,7 @@ const { settings } = defineBlokkliFeature({
   screenshot: 'feature-add-list.jpg',
 })
 
-const { state, $t, eventBus, ui, dom } = useBlokkli()
+const { state, $t, eventBus, ui, element } = useBlokkli()
 
 const hasContextMenuOpen = computed(() =>
   ui.openContextMenu.value.startsWith('add_list_item_'),
@@ -118,7 +118,7 @@ const style = computed(() => {
     (isActive.value || hasContextMenuOpen.value) &&
     wrapper.value
   ) {
-    const widths = dom.queryAll(
+    const widths = element.queryAll(
       wrapper.value,
       '.bk-list-item-label span',
       'AddList vertical sidebar style',

@@ -71,7 +71,14 @@ import { Icon, ItemIcon, BlokkliTransition } from '#blokkli/components'
 import { easeOutElastic } from '#blokkli/helpers/easing'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
-const { dom, ui, animation, theme, types } = useBlokkli()
+const {
+  dom,
+  ui,
+  animation,
+  theme,
+  types,
+  element: elementProvider,
+} = useBlokkli()
 
 const props = defineProps<{
   /**
@@ -295,8 +302,12 @@ onMounted(() => {
       if (!itemElement) {
         return
       }
-      const element = (itemElement.querySelector('.bk-drop-element') ||
-        itemElement) as HTMLElement
+      const element =
+        elementProvider.query(
+          itemElement,
+          '.bk-drop-element',
+          'Find drop element for drag item.',
+        ) || itemElement
 
       return {
         rect: element.getBoundingClientRect(),

@@ -71,10 +71,11 @@ const {
   types,
   state,
   blocks,
+  element,
 } = useBlokkli()
 
 const getSelectionOrder = useStateBasedCache(() => {
-  return dom.queryAll(
+  return element.queryAll(
     ui.artboardElement(),
     '[data-uuid]',
     'getSelectionOrder',
