@@ -1615,6 +1615,14 @@
     "source": "Publication scheduled for @date",
     "translation": ""
   },
+  "publishScheduledBlockPlural": {
+    "source": "@count blocks are scheduled to be published on @date",
+    "translation": ""
+  },
+  "publishScheduledBlockSingular": {
+    "source": "1 block is scheduled to be published on @date",
+    "translation": ""
+  },
   "publishScheduledInfo": {
     "source": "You can still make changes until the scheduled publication date.",
     "translation": ""

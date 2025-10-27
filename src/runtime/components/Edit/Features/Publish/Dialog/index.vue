@@ -37,16 +37,7 @@
           </label>
           <div class="bk-publish-schedule-date-wrapper">
             <div v-if="isAlreadyScheduled" class="bk-publish-scheduled-display">
-              {{
-                ui.formatDate(scheduleDate, {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: '2-digit',
-                  day: '2-digit',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })
-              }}
+              {{ formatScheduleDate(scheduleDate) }}
             </div>
             <ScheduleDate
               v-else
@@ -98,6 +89,16 @@
           :disabled="isLoading || isAlreadyScheduled"
           rows="2"
         />
+      </FormItem>
+
+      <FormItem v-if="publishMode !== 'save' && scheduledBlocks.length">
+        <InfoBox>
+          <p
+            v-for="(text, index) in scheduledBlocks"
+            :key="'infobox' + index"
+            v-html="text"
+          />
+        </InfoBox>
       </FormItem>
 
       <FormItem v-if="successItems.length && showTable">
@@ -186,6 +187,7 @@ import {
   FormTextarea,
   FormItem,
   ScheduleDate,
+  InfoBox,
 } from '#blokkli/components'
 import type { GetEditStatesItem } from '#blokkli/types'
 import { emitMessage } from '#blokkli/helpers/eventBus'
@@ -197,6 +199,17 @@ import type { MutationStatus } from './types'
 const showTable = false
 
 const { adapter, $t, state, context, ui } = useBlokkli()
+
+const formatScheduleDate = (date: string) => {
+  return ui.formatDate(date, {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
 
 const isMutating = ref(false)
 const mutationStatusItems = ref<Record<string, MutationStatus>>({})
@@ -235,6 +248,49 @@ const {
   refresh,
 } = await useAsyncData(() => {
   return adapter.getPublishOptions!()
+})
+
+const scheduledBlocks = computed(() => {
+  // Use the selected schedule date if in scheduled mode, otherwise use current time.
+  const referenceTimestamp =
+    publishMode.value === 'scheduled' && scheduleDate.value
+      ? new Date(scheduleDate.value).getTime()
+      : currentTimestamp.value
+
+  const grouped = state
+    .getAllUuids()
+    .reduce<Record<string, number>>((acc, uuid) => {
+      const item = state.getFieldListItem(uuid)
+      if (!item?.editContext?.publishOn) {
+        return acc
+      }
+
+      const publishDate = new Date(item.editContext.publishOn).getTime()
+      if (publishDate <= referenceTimestamp) {
+        return acc
+      }
+
+      const dateKey = item.editContext.publishOn
+      acc[dateKey] = (acc[dateKey] || 0) + 1
+      return acc
+    }, {})
+
+  return Object.entries(grouped).map(([date, count]) => {
+    const formattedDate = formatScheduleDate(date)
+    const message =
+      count === 1
+        ? $t(
+            'publishScheduledBlockSingular',
+            '1 block is scheduled to be published on @date',
+          )
+        : $t(
+            'publishScheduledBlockPlural',
+            '@count blocks are scheduled to be published on @date',
+          )
+    return message
+      .replace('@count', count.toString())
+      .replace('@date', `<strong>${formattedDate}</strong>`)
+  })
 })
 
 /**
@@ -509,7 +565,7 @@ const resultStateLabel = computed(() => {
     )
   }
   if (publishMode.value === 'scheduled' && scheduleDate.value) {
-    const formattedDate = ui.formatDate(scheduleDate.value)
+    const formattedDate = formatScheduleDate(scheduleDate.value)
     if (isCurrentlyPublished.value) {
       return $t(
         'publishResultScheduledChanges',
@@ -633,7 +689,7 @@ async function onSubmit() {
   }
 
   if (publishMode.value === 'scheduled') {
-    const formattedDate = ui.formatDate(scheduleDate.value)
+    const formattedDate = formatScheduleDate(scheduleDate.value)
     const message = $t(
       'publishScheduleSuccess',
       'Publication scheduled for @date',

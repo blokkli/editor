@@ -46,7 +46,7 @@ export class MutationMakeReusable extends Mutation {
     )
     libraryBlock.setValues({
       libraryItem: libraryItemId,
-      isNew: true
+      isNew: true,
     })
     libraryBlock
       .options()

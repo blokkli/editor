@@ -1800,6 +1800,14 @@ msgctxt "publishScheduleSuccess"
 msgid "Publication scheduled for @date"
 msgstr "Veröffentlichung für @date geplant"
 
+msgctxt "publishScheduledBlockPlural"
+msgid "@count blocks are scheduled to be published on @date"
+msgstr "@count Blöcke sind zur Veröffentlichung am @date geplant"
+
+msgctxt "publishScheduledBlockSingular"
+msgid "1 block is scheduled to be published on @date"
+msgstr "1 Block ist zur Veröffentlichung am @date geplant"
+
 msgctxt "publishScheduledInfo"
 msgid "You can still make changes until the scheduled publication date."
 msgstr ""

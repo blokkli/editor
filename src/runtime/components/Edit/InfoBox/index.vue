@@ -1,7 +1,11 @@
 <template>
   <div class="bk-info-box">
     <Icon name="info" />
-    <p v-html="text" />
+    <div>
+      <slot>
+        <p v-html="text" />
+      </slot>
+    </div>
   </div>
 </template>
 
@@ -9,6 +13,6 @@
 import { Icon } from '#blokkli/components'
 
 defineProps<{
-  text: string
+  text?: string
 }>()
 </script>
