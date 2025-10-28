@@ -181,7 +181,7 @@ const keyboard = keyboardProvider(animation)
 const types = await typesProvider(adapter, selection, context)
 const indicators = indicatorsProvider()
 const plugins = pluginProvider()
-const directive = directiveProvider(ui)
+const directive = directiveProvider(debug, ui)
 const fields = fieldsProvider(state, dom, types)
 
 const mutatedEntity = computed(() => state.mutatedEntity.value || props.entity)
@@ -228,13 +228,14 @@ addElementClasses(
 
 const baseLogger = debug.createLogger('EditProvider')
 
-onMounted(() => {
+onMounted(async () => {
   window.addEventListener('contextmenu', onContextMenu)
   document.documentElement.addEventListener('touchmove', onTouchMove)
   document.documentElement.addEventListener('touchstart', onTouchStart)
   baseLogger.log('EditProvider mounted')
   dom.init()
   directive.init()
+  await nextTick()
   isInitializing.value = false
   broadcast.emit('editorLoaded', { uuid: props.entityUuid })
 })

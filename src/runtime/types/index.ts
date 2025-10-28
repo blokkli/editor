@@ -451,6 +451,7 @@ export type InjectedBlokkliItem = {
 export type FieldListItem = {
   uuid: string
   bundle: string
+  isVisible: boolean
   options?: Record<string, any>
   editContext?: BlockEditContext
   props?: Record<string, any>

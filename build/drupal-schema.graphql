@@ -3414,6 +3414,9 @@ interface Paragraph implements Entity & EntityRevisionable {
   langcode: String
   paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
+
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
@@ -3537,6 +3540,9 @@ type ParagraphAccordeon implements Entity & EntityRevisionable & EntityTranslata
   """The langcode of this entity."""
   langcode: String
   paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -3670,6 +3676,9 @@ type ParagraphBlokkliFragment implements Entity & EntityRevisionable & Paragraph
   langcode: String
   paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
+
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
@@ -3793,6 +3802,9 @@ type ParagraphButton implements Entity & EntityRevisionable & EntityTranslatable
   """The langcode of this entity."""
   langcode: String
   paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -3930,6 +3942,9 @@ type ParagraphCarousel implements Entity & EntityRevisionable & EntityTranslatab
   langcode: String
   paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
+
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
@@ -4060,6 +4075,9 @@ type ParagraphFromLibrary implements Entity & EntityRevisionable & Paragraph {
   langcode: String
   paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
+
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
@@ -4189,6 +4207,9 @@ type ParagraphIconTextItem implements Entity & EntityRevisionable & EntityTransl
   """The langcode of this entity."""
   langcode: String
   paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -4332,6 +4353,9 @@ type ParagraphIconTextList implements Entity & EntityRevisionable & EntityTransl
   langcode: String
   paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
+
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
@@ -4462,6 +4486,9 @@ type ParagraphIframe implements Entity & EntityRevisionable & EntityTranslatable
   langcode: String
   paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
+
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
@@ -4591,6 +4618,9 @@ type ParagraphImage implements Entity & EntityRevisionable & Paragraph {
   """The langcode of this entity."""
   langcode: String
   paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -4727,6 +4757,9 @@ type ParagraphQuote implements Entity & EntityRevisionable & EntityTranslatable 
   """The langcode of this entity."""
   langcode: String
   paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -4873,6 +4906,9 @@ type ParagraphTeaser implements Entity & EntityRevisionable & EntityTranslatable
   langcode: String
   paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
+
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
@@ -5009,6 +5045,9 @@ type ParagraphTeaserList implements Entity & EntityRevisionable & EntityTranslat
   langcode: String
   paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
 
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
+
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
@@ -5138,6 +5177,9 @@ type ParagraphText implements Entity & EntityRevisionable & EntityTranslatable &
   """The langcode of this entity."""
   langcode: String
   paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -5280,6 +5322,9 @@ type ParagraphTextImage implements Entity & EntityRevisionable & EntityTranslata
   """The langcode of this entity."""
   langcode: String
   paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
@@ -5450,6 +5495,9 @@ type ParagraphVideo implements Entity & EntityRevisionable & EntityTranslatable 
   """The langcode of this entity."""
   langcode: String
   paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
 
   """The untyped paragraph options."""
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions

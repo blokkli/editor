@@ -206,8 +206,9 @@ function filterVisible(
     return true
   }
 
-  // When not editing, hide blocks that are not published.
-  if (!item.editContext?.isPublished) {
+  // When not editing, hide blocks that are not visible. This might be the case
+  // if the block is unpublished or just generally not visible.
+  if (!item.isVisible) {
     return false
   }
 

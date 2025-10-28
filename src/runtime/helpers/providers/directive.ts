@@ -9,6 +9,7 @@ import type { UiProvider } from './../uiProvider'
 import { computed, onBeforeUnmount, ref, type ComputedRef } from '#imports'
 import onBlokkliEvent from './../composables/onBlokkliEvent'
 import { itemEntityType } from '#blokkli-build/config'
+import type { DebugProvider } from '../debugProvider'
 
 type EditableFieldData = EntityContext & {
   key: string
@@ -47,7 +48,11 @@ export type DirectiveProvider = {
   isReady: ComputedRef<boolean>
 }
 
-export default function (ui: UiProvider): DirectiveProvider {
+export default function (
+  debug: DebugProvider,
+  ui: UiProvider,
+): DirectiveProvider {
+  const logger = debug.createLogger('DirectiveProvider')
   let initTimeout: null | number = null
   const isInitalizing = ref(true)
   let stateReloadTimeout: number | null = null
@@ -156,6 +161,8 @@ export default function (ui: UiProvider): DirectiveProvider {
       editablesByUuid[entity.uuid]![fieldName] = data
     }
 
+    logger.log('Registered directive element', data)
+
     doInitTimeout()
   }
 
@@ -166,6 +173,7 @@ export default function (ui: UiProvider): DirectiveProvider {
     directiveType: BlokkliDirectiveType,
   ) {
     const key = getEditableKey(fieldName, entity, directiveType)
+    logger.log('Unregistered directive element', key)
     intersectionObserver.unobserve(el)
     elementMap.delete(el)
     fieldData.delete(key)

@@ -163,8 +163,13 @@ export default function (
   const maxCanvasWidth = ref(16384)
   const maxCanvasHeight = ref(16384)
   let webglLimitsQueried = false
+  let canvasElement: HTMLCanvasElement | null = null
 
   function getCanvasElement(): HTMLCanvasElement {
+    if (canvasElement) {
+      return canvasElement
+    }
+
     const el = element.query(
       document.documentElement,
       '#bk-animation-canvas-webgl',
@@ -173,6 +178,8 @@ export default function (
     if (!(el instanceof HTMLCanvasElement)) {
       throw new TypeError('Failed to locate WebGL canvas.')
     }
+
+    canvasElement = el
 
     return el
   }

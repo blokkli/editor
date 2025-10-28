@@ -30,6 +30,7 @@ export function mapBlockItem(
   return {
     uuid: block.uuid,
     bundle: block.bundle,
+    isVisible: true, // @todo: Return proper value.
     options: JSON.parse(
       JSON.stringify(overrideOptions || block.options().getOptions()),
     ),

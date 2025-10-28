@@ -14,18 +14,13 @@
               v-html="getTitleMarkup(value)"
             />
           </BlokkliEditable>
-          <p
-            v-if="lead"
-            v-blokkli-editable:lead
-            class="mt-20 text-lg lg:text-xl text-mono-700"
-            v-text="lead"
-          />
-          <slot></slot>
+          <slot name="lead" />
+          <slot />
         </div>
         <div
           class="col-span-4 max-w-[340px] lg:w-full mx-auto mb-30 lg:mb-0 relative"
         >
-          <slot name="animation"></slot>
+          <slot name="animation" />
         </div>
       </div>
     </div>

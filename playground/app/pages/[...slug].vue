@@ -18,6 +18,18 @@
         :lead="entity?.lead"
         :image="entity?.heroImage"
       >
+        <template #lead>
+          <BlokkliEditable
+            v-if="entity?.lead"
+            name="lead"
+            tag="p"
+            class="mt-20 text-lg lg:text-xl text-mono-700"
+            :value="entity.lead"
+            v-slot="{ value }"
+          >
+            {{ value }}
+          </BlokkliEditable>
+        </template>
         <BlokkliField
           name="buttons"
           :list="fieldButtons"
