@@ -13,7 +13,6 @@
     <div
       ref="root"
       class="bk-field-list-proxy-list bk-draggable-list-container"
-      v-bind="fieldAttributes"
     >
       <BlokkliItem
         v-for="(item, i) in list"
@@ -46,7 +45,6 @@
     v-else
     ref="root"
     :class="['bk-draggable-list-container', attrs.class]"
-    v-bind="fieldAttributes"
   >
     <BlokkliItem
       v-for="(item, i) in list"
@@ -89,7 +87,6 @@ import {
 import type {
   FieldListItem,
   EntityContext,
-  FieldConfig,
   FieldDropAlignment,
   RegisterFieldData,
 } from '#blokkli/types'
@@ -105,7 +102,7 @@ import type {
   ValidFieldListTypes,
 } from '#blokkli-build/generated-types'
 
-const { dom, types, runtimeConfig, selection, definitions } = useBlokkli()
+const { dom, runtimeConfig, selection, definitions } = useBlokkli()
 
 const root = ref<HTMLElement | null>(null)
 
@@ -149,53 +146,6 @@ const proxyVisible = computed(
       selection.isDragging.value ||
       selection.isMultiSelecting.value),
 )
-
-const fieldConfig = computed<FieldConfig>(() => {
-  const match = types.getFieldConfig(
-    props.entity.type,
-    props.entity.bundle,
-    props.name,
-  )
-
-  if (!match) {
-    throw new Error(
-      `Missing field configuration for field "${props.name}" on entity type "${props.entity.type}" with bundle "${props.entity.bundle}". Make sure the "name" prop passed to <BlokkliField> is correct.`,
-    )
-  }
-
-  return match
-})
-
-/**
- * The allowed item bundles in this list.
- */
-const allowedBundles = computed<string>(() => {
-  const bundles = fieldConfig.value.allowedBundles
-  if (!bundles.length) {
-    console.error(
-      `Field with name "${props.name}" on entity "${props.entity.type}" with bundle "${props.entity.bundle}" does not define any allowed bundles.`,
-    )
-  }
-
-  return bundles.join(',')
-})
-
-const fieldAttributes = computed(() => {
-  return {
-    'data-field-name': props.name,
-    'data-field-label': fieldConfig.value.label,
-    'data-field-is-nested': props.isNested,
-    'data-bk-nesting-level': props.nestingLevel,
-    'data-host-entity-type': props.entity.type,
-    'data-host-entity-uuid': props.entity.uuid,
-    'data-host-entity-bundle': props.entity.bundle,
-    'data-field-key': props.fieldKey,
-    'data-field-drop-alignment': props.dropAlignment,
-    'data-field-allowed-bundles': allowedBundles.value,
-    'data-field-list-type': props.fieldListType,
-    'data-field-cardinality': fieldConfig.value.cardinality,
-  }
-})
 
 // @TODO: This should be handled differently to prevent constant updates in the
 // component when the options change.

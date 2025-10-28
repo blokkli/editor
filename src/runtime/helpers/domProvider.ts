@@ -9,11 +9,7 @@ import type {
   RegisteredField,
   RegisterFieldData,
 } from '#blokkli/types'
-import {
-  findClosestBlock,
-  falsy,
-  findClosestEntityContext,
-} from '#blokkli/helpers'
+import { falsy } from '#blokkli/helpers'
 import type { UiProvider } from './uiProvider'
 import { cloneElementWithStyles } from './dom'
 import onBlokkliEvent from './composables/onBlokkliEvent'
@@ -37,10 +33,6 @@ type RegisteredFieldType = {
 type MeasuredBlockRect = Rectangle & { time: number }
 
 export type DomProvider = {
-  findClosestBlock(
-    el: Element | EventTarget,
-  ): DraggableExistingBlock | undefined
-
   /**
    * Return the droppable markup for a draggable item.
    */
@@ -73,8 +65,6 @@ export type DomProvider = {
   registeredFieldTypes: ComputedRef<RegisteredFieldType[]>
 
   registeredBlockUuids: ComputedRef<string[]>
-
-  findClosestEntityContext(el: HTMLElement): EntityContext | undefined
 
   getVisibleBlocks(): string[]
   getVisibleFields(): string[]
@@ -173,6 +163,8 @@ export default function (
   >({})
   const visibleBlocks: Set<string> = new Set()
   const visibleFields: Set<string> = new Set()
+  const fieldElementToFieldKey = new WeakMap<HTMLElement, string>()
+  const blockElementToUuid = new WeakMap<HTMLElement, string>()
   const blockRects: Record<string, MeasuredBlockRect> = {}
   const fieldRects: Record<string, Rectangle> = {}
   const blockUuidCurrentKey: Record<string, string> = {}
@@ -201,10 +193,8 @@ export default function (
         return
       }
 
-      const uuid =
-        entry.target.dataset.uuid ||
-        (entry.target.closest('[data-uuid]') as HTMLElement | undefined)
-          ?.dataset.uuid
+      const uuid = blockElementToUuid.get(entry.target)
+
       if (!uuid) {
         return
       }
@@ -245,54 +235,58 @@ export default function (
     const scale = ui.artboardScale.value
     const offset = ui.artboardOffset.value
     for (const entry of entries) {
-      if (entry.target instanceof HTMLElement) {
-        const uuid =
-          entry.target.dataset.uuid ||
-          (entry.target.closest('[data-uuid]') as HTMLElement | undefined)
-            ?.dataset.uuid
-        const fieldKey = entry.target.dataset.fieldKey
-        // Using entry.boundingClientRect here would result in wrong values,
-        // because the IntersectionObserver is queued and could be delayed.
-        // If we were to derive the document-relative position for a block
-        // using these potentially stale values, it would result in completely
-        // wrong position data.
-        const rect = entry.target.getBoundingClientRect()
-        if (fieldKey) {
-          if (entry.isIntersecting) {
-            visibleFields.add(fieldKey)
-          } else {
-            visibleFields.delete(fieldKey)
-          }
-          fieldRects[fieldKey] = ui.getAbsoluteElementRect(rect, scale, offset)
-        } else if (uuid) {
-          // Skip if block is no longer registered (prevents race condition with unregisterBlock)
-          if (!registeredBlocks[uuid]) {
-            continue
-          }
+      if (!(entry.target instanceof HTMLElement)) {
+        continue
+      }
+      const fieldKey = fieldElementToFieldKey.get(entry.target)
 
-          const newRect = ui.getAbsoluteElementRect(rect, scale, offset)
-          const currentRect = blockRects[uuid]!
-
-          // Rect already exists.
-          if (currentRect) {
-            // The time of the rect is larger than the time of the entry.
-            // This indicates that the resize observer has already updated the width and/or height.
-            // We only need to update the X and Y coordinates.
-            if (currentRect.time > entry.time) {
-              blockRects[uuid]!.x = newRect.x
-              blockRects[uuid]!.y = newRect.y
-            } else {
-              blockRects[uuid] = rectWithTime(newRect, entry.time)
-            }
-          } else {
-            blockRects[uuid] = rectWithTime(newRect, entry.time)
-          }
-          if (entry.isIntersecting) {
-            visibleBlocks.add(uuid)
-          } else {
-            visibleBlocks.delete(uuid)
-          }
+      // Using entry.boundingClientRect here would result in wrong values,
+      // because the IntersectionObserver is queued and could be delayed.
+      // If we were to derive the document-relative position for a block
+      // using these potentially stale values, it would result in completely
+      // wrong position data.
+      const rect = entry.target.getBoundingClientRect()
+      if (fieldKey) {
+        if (entry.isIntersecting) {
+          visibleFields.add(fieldKey)
+        } else {
+          visibleFields.delete(fieldKey)
         }
+        fieldRects[fieldKey] = ui.getAbsoluteElementRect(rect, scale, offset)
+        continue
+      }
+
+      const uuid = blockElementToUuid.get(entry.target)
+
+      if (!uuid) {
+        continue
+      }
+      // Skip if block is no longer registered (prevents race condition with unregisterBlock)
+      if (!registeredBlocks[uuid]) {
+        continue
+      }
+
+      const newRect = ui.getAbsoluteElementRect(rect, scale, offset)
+      const currentRect = blockRects[uuid]!
+
+      // Rect already exists.
+      if (currentRect) {
+        // The time of the rect is larger than the time of the entry.
+        // This indicates that the resize observer has already updated the width and/or height.
+        // We only need to update the X and Y coordinates.
+        if (currentRect.time > entry.time) {
+          blockRects[uuid]!.x = newRect.x
+          blockRects[uuid]!.y = newRect.y
+        } else {
+          blockRects[uuid] = rectWithTime(newRect, entry.time)
+        }
+      } else {
+        blockRects[uuid] = rectWithTime(newRect, entry.time)
+      }
+      if (entry.isIntersecting) {
+        visibleBlocks.add(uuid)
+      } else {
+        visibleBlocks.delete(uuid)
       }
     }
   }
@@ -341,6 +335,7 @@ export default function (
       ...data,
     }
     intersectionObserver.observe(element)
+    fieldElementToFieldKey.set(element, key)
     doInitTimeout()
   }
 
@@ -361,6 +356,7 @@ export default function (
       element,
       ...data,
     }
+    fieldElementToFieldKey.set(element, key)
     intersectionObserver.observe(element)
   }
 
@@ -369,6 +365,7 @@ export default function (
     const el = registeredFields[key]?.element
     if (el) {
       intersectionObserver.unobserve(el)
+      fieldElementToFieldKey.delete(el)
     }
     visibleFields.delete(key)
     registeredFields[key] = undefined
@@ -700,6 +697,7 @@ export default function (
           fieldListType,
           parentBundle as BlockBundleWithNested,
         )
+        blockElementToUuid.set(observableElement, uuid)
         registeredBlocks[uuid] = el
         observedElements[uuid] = observableElement
         intersectionObserver.observe(observableElement)
@@ -733,6 +731,7 @@ export default function (
       resizeObserver.unobserve(observedElement)
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete observedElements[uuid]
+      blockElementToUuid.delete(observedElement)
     }
 
     if (el) {
@@ -839,9 +838,7 @@ export default function (
   }
 
   return {
-    findClosestBlock,
     getDropElementMarkup,
-    findClosestEntityContext,
     getVisibleBlocks,
     getVisibleFields,
     registerField,

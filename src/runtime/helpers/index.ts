@@ -589,56 +589,6 @@ export function findIdealRectPosition(
   }
 }
 
-export const findClosestBlock = (
-  el: Element | EventTarget,
-): DraggableExistingBlock | undefined => {
-  if (!(el instanceof Element)) {
-    return
-  }
-  const closest = el.closest('[data-element-type="existing"]')
-  if (!closest) {
-    return
-  }
-  const item = buildDraggableItem(closest)
-  if (item?.itemType !== 'existing') {
-    return
-  }
-  return item
-}
-
-/**
- * Find the closest entity context from a BlokkliProvider.
- */
-export const findClosestEntityContext = (
-  el: HTMLElement,
-): EntityContext | undefined => {
-  const provider = el.closest('[data-blokkli-provider-active="true"]')
-  if (!(provider instanceof HTMLElement)) {
-    return
-  }
-  const uuid = provider.dataset.providerUuid
-  const type = provider.dataset.providerEntityType
-  const bundle = provider.dataset.providerEntityBundle
-  if (uuid && type && bundle) {
-    return {
-      uuid,
-      type,
-      bundle,
-    }
-  }
-}
-
-export const findParentContext = (
-  el: HTMLElement,
-): EntityContext | DraggableExistingBlock | undefined => {
-  const block = findClosestBlock(el)
-  if (block) {
-    return block
-  }
-
-  return findClosestEntityContext(el)
-}
-
 export const originatesFromTextInput = (e: Event): boolean =>
   e.target instanceof HTMLInputElement ||
   e.target instanceof HTMLTextAreaElement
