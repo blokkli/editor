@@ -1762,4 +1762,6 @@ export type RegisterFieldData = Pick<
   | 'dropAlignment'
 >
 
+export type VueClassProp = string | Record<string, boolean> | VueClassProp[]
+
 export default {}

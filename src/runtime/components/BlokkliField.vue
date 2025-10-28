@@ -4,23 +4,23 @@
     :is="DraggableList"
     v-if="DraggableList && isEditing && canEdit && !isInReusable && entity"
     :list="filteredList"
-    :name="name"
-    :entity="entity"
-    :field-key="fieldKey!"
-    :allowed-fragments="allowedFragments"
-    :nesting-level="nestingLevel"
-    :drop-alignment="dropAlignment"
-    :field-list-type="fieldListType"
+    :name
+    :entity
+    :field-key
+    :allowed-fragments
+    :nesting-level
+    :drop-alignment
+    :field-list-type
     :class="[
       attrs.class,
       listClass,
       editClass,
       { [nonEmptyClass]: filteredList.length },
     ]"
-    :is-nested="isNested"
+    :is-nested
     :language="providerEntity?.language"
-    :proxy-mode="proxyMode"
-    :tag="tag"
+    :proxy-mode
+    :tag
     :global-proxy-mode="!!isGlobalProxyMode"
     :should-render-item="shouldRenderItem"
   />
@@ -72,6 +72,7 @@ import type {
   ItemEditContext,
   BlokkliProviderEntityContext,
   FieldDropAlignment,
+  VueClassProp,
 } from '#blokkli/types'
 import type {
   ValidFieldListTypes,
@@ -100,6 +101,95 @@ import type DraggableListComponent from './Edit/DraggableList.vue'
 if (import.meta.hot) {
   import.meta.hot.accept('#blokkli/helpers/runtimeHelpers', () => {})
 }
+
+const props = withDefaults(
+  defineProps<{
+    /**
+     * The name of the field.
+     */
+    name: string
+
+    /**
+     * The field list items. Can be an array or a single item, also allows nullable values in an array.
+     */
+    list?: Array<FieldListItem | null | undefined> | FieldListItem | null
+
+    /**
+     * The tag to use for rendering the root element.
+     */
+    tag?: string
+
+    /**
+     * The field list types. The available types can be defined in the "fieldListTypes" module option.
+     */
+    fieldListType?: ValidFieldListTypes
+
+    /**
+     * If true, the field list items are only rendered in edit mode.
+     * In normal mode, you are responsible yourself to render the items.
+     */
+    editOnly?: boolean
+
+    /**
+     * The classes to render for the list. Same as passing classes via the :class prop.
+     */
+    listClass?: VueClassProp
+
+    /**
+     * Classes only applied during editing.
+     */
+    editClass?: VueClassProp
+
+    /**
+     * Classes to apply if the field is not empty.
+     */
+    nonEmptyClass?: string
+
+    /**
+     * Define which fragments are allowed in this field.
+     *
+     * Note that this is only used during editing. It defines which fragments
+     * can be added here. If you change this prop but there are existing
+     * fragments already in the field list, they will continue to be rendered.
+     *
+     * Note that in addition, also the "blokkli_fragment" block must be allowed
+     * as a bundle in this field.
+     */
+    allowedFragments?: BlokkliFragmentName[] | BlokkliFragmentName
+
+    /**
+     * Force an alignment during drag and drop interactions.
+     */
+    dropAlignment?: FieldDropAlignment
+
+    /**
+     * Renders proxy blocks during editing.
+     *
+     * Doing this will *not* render the actual block components.
+     *
+     * During editing, a separate element is rendered with "position: absolute"
+     * that contains "proxy blocks" for drag and drop interactions. This means
+     * that you need to have a wrapper somewhere with "position: relative".
+     */
+    proxyMode?: boolean
+
+    /**
+     * Determine whether an item should be rendered.
+     */
+    shouldRenderItem?: (item: FieldListItem | FieldListItemTyped) => boolean
+  }>(),
+  {
+    list: () => [],
+    tag: 'div',
+    fieldListType: 'default',
+    listClass: '',
+    editClass: '',
+    nonEmptyClass: '',
+    allowedFragments: () => [],
+    dropAlignment: undefined,
+    shouldRenderItem: undefined,
+  },
+)
 
 const DraggableList = inject<typeof DraggableListComponent | null>(
   INJECT_EDIT_FIELD_LIST_COMPONENT,
@@ -147,49 +237,14 @@ if (!providerEntity) {
   )
 }
 
-const props = withDefaults(
-  defineProps<{
-    name: string
-    list?: Array<FieldListItem | null | undefined> | FieldListItem | null
-    tag?: string
-    fieldListType?: ValidFieldListTypes
-    editOnly?: boolean
-    listClass?: string
-    editClass?: string
-    nonEmptyClass?: string
-    allowedFragments?: BlokkliFragmentName[]
-    dropAlignment?: FieldDropAlignment
-    /**
-     * Renders proxy blocks during editing.
-     */
-    proxyMode?: boolean
-
-    /**
-     * Determine whether an item should be rendered.
-     */
-    shouldRenderItem?: (item: FieldListItem | FieldListItemTyped) => boolean
-  }>(),
-  {
-    list: () => [],
-    tag: 'div',
-    fieldListType: 'default',
-    listClass: '',
-    editClass: '',
-    nonEmptyClass: '',
-    allowedFragments: () => [],
-    dropAlignment: undefined,
-    shouldRenderItem: undefined,
-  },
-)
-
 // @TODO: How to canEdit?
 const canEdit = ref(true)
 
-const fieldKey = computed<string | undefined>(() => {
+const fieldKey = computed<string>(() => {
   if (canEdit.value) {
     return entity.uuid + ':' + props.name
   }
-  return undefined
+  return ''
 })
 
 const fieldListType = computed(() => props.fieldListType)

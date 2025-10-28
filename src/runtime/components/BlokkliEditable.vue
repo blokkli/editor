@@ -56,7 +56,7 @@ if (!entity) {
   throw new Error('Missing entity context.')
 }
 
-const renderedValue = computed(() => valueOverride.value ?? props.value ?? '')
+const renderedValue = computed(() => valueOverride.value || props.value || '')
 
 const onEditableUpdateValue = (e: EditableFieldUpdateEvent) => {
   if (e.name === props.name && e.entityUuid === entity.uuid) {

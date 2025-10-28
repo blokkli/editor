@@ -119,7 +119,7 @@ const props = withDefaults(
     tag?: string
     isNested: boolean
     fieldListType: ValidFieldListTypes
-    allowedFragments?: BlokkliFragmentName[]
+    allowedFragments?: BlokkliFragmentName[] | BlokkliFragmentName
     dropAlignment?: FieldDropAlignment
     proxyMode?: boolean
     globalProxyMode?: boolean
@@ -128,7 +128,9 @@ const props = withDefaults(
   }>(),
   {
     tag: 'div',
-    allowedFragments: undefined,
+    allowedFragments: () => {
+      return []
+    },
     dropAlignment: undefined,
     language: undefined,
     shouldRenderItem: undefined,
@@ -189,9 +191,6 @@ const fieldAttributes = computed(() => {
     'data-host-entity-bundle': props.entity.bundle,
     'data-field-key': props.fieldKey,
     'data-field-drop-alignment': props.dropAlignment,
-    'data-allowed-fragments': props.allowedFragments
-      ? props.allowedFragments.join(',')
-      : undefined,
     'data-field-allowed-bundles': allowedBundles.value,
     'data-field-list-type': props.fieldListType,
     'data-field-cardinality': fieldConfig.value.cardinality,
@@ -220,9 +219,12 @@ function isMuted(item?: FieldListItem) {
 }
 
 const data = computed<RegisterFieldData>(() => {
+  const allowedFragments = Array.isArray(props.allowedFragments)
+    ? props.allowedFragments
+    : [props.allowedFragments]
   return {
     fieldListType: props.fieldListType,
-    allowedFragments: props.allowedFragments ?? [],
+    allowedFragments,
     isNested: props.isNested,
     nestingLevel: props.nestingLevel,
     dropAlignment: props.dropAlignment ?? null,
