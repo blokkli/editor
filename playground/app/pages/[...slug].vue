@@ -14,13 +14,13 @@
     >
       <Hero
         :is-editing="isEditing"
-        :title="entity?.title"
-        :lead="entity?.lead"
-        :image="entity?.heroImage"
+        :title="entity.title"
+        :lead="entity.lead"
+        :image="entity.heroImage"
       >
         <template #lead>
           <BlokkliEditable
-            v-if="entity?.lead"
+            v-if="entity.lead"
             name="lead"
             tag="p"
             class="mt-20 text-lg lg:text-xl text-mono-700"

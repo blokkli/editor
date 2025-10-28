@@ -184,7 +184,12 @@ const plugins = pluginProvider()
 const directive = directiveProvider(debug, ui)
 const fields = fieldsProvider(state, dom, types)
 
-const mutatedEntity = computed(() => state.mutatedEntity.value || props.entity)
+const mutatedEntity = computed(() => {
+  return {
+    ...(props.entity ?? {}),
+    ...(state.mutatedEntity.value ?? {}),
+  }
+})
 
 const isReady = computed(
   () =>

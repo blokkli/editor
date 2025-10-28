@@ -65,7 +65,7 @@
   </div>
 </template>
 
-<script lang="ts" setup generic="T extends object">
+<script lang="ts" setup generic="T">
 import {
   computed,
   defineAsyncComponent,
@@ -85,12 +85,94 @@ import type {
   EditPermission,
 } from '#blokkli/types'
 
+type BlokkliProviderProps = {
+  /**
+   * The entity type.
+   */
+  entityType: string
+
+  /**
+   * The entity bundle.
+   */
+  entityBundle: string
+
+  /**
+   * The entity UUID.
+   */
+  entityUuid: string
+
+  /**
+   * The tag to use for the root element.
+   */
+  tag?: string
+
+  /**
+   * The current language code.
+   */
+  language?: string
+
+  /**
+   * The override label for the edit button.
+   */
+  editLabel?: string
+
+  /**
+   * The path to use to open the editor. Defaults to the current route.path value.
+   */
+  editPath?: string
+
+  /**
+   * The host options as a key value object.
+   */
+  hostOptions?: Record<string, any>
+
+  /**
+   * The edit permissions.
+   */
+  permissions?: EditPermission[]
+
+  /**
+   * Whether to isolate the provider element during editing.
+   */
+  isolate?: boolean
+}
+
+const props = withDefaults(
+  defineProps<
+    BlokkliProviderProps &
+      (
+        | {
+            /**
+             * The entity data. Will be merged with the mutatedEntity data during editing.
+             */
+            // eslint-disable-next-line vue/no-required-prop-with-default
+            entity: T
+          }
+        | {
+            /**
+             * The entity data. Will be merged with the mutatedEntity data during editing.
+             */
+            entity?: never
+          }
+      )
+  >(),
+  {
+    tag: 'div',
+    language: '',
+    editLabel: '',
+    editPath: undefined,
+    hostOptions: undefined,
+    entity: undefined,
+    permissions: () => [],
+  },
+)
+
 defineSlots<{
   default(props: {
     isEditing: boolean
     canEdit: boolean
     isPreview: boolean
-    entity?: T | undefined
+    entity: T
   }): any
 }>()
 
@@ -114,39 +196,6 @@ const EditIndicator = defineAsyncComponent(
 
 const route = useRoute()
 const router = useRouter()
-
-const props = withDefaults(
-  defineProps<{
-    entity?: T
-    entityType: string
-    entityBundle: string
-    entityUuid: string
-    tag?: string
-    language?: string
-    editLabel?: string
-    editPath?: string
-    hostOptions?: any
-    permissions?: EditPermission[]
-
-    // @todo: edit icon for indicator
-
-    /**
-     * When set to true, during editing, everything except the provider element will be hidden.
-     */
-    isolate?: boolean
-  }>(),
-  {
-    tag: 'div',
-    language: '',
-    editLabel: '',
-    entity: undefined,
-    editPath: undefined,
-    hostOptions: undefined,
-    permissions: () => {
-      return []
-    },
-  },
-)
 
 const shouldRender = ref(false)
 
