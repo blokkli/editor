@@ -57,10 +57,12 @@ import {
   useRuntimeConfig,
   nextTick,
   inject,
+  onUnmounted,
 } from '#imports'
 import type {
   BlokkliApp,
   EditPermission,
+  EntityContext,
   ItemEditContext,
 } from '#blokkli/types'
 import Toolbar from './Toolbar/index.vue'
@@ -106,6 +108,7 @@ import {
   INJECT_EDIT_CONTEXT,
   INJECT_EDIT_FIELD_LIST_COMPONENT,
   INJECT_EDIT_LOGGER,
+  INJECT_ENTITY_CONTEXT,
   INJECT_GLOBAL_PROXY_MODE,
   INJECT_IS_EDITING,
   INJECT_PROVIDER_KEY,
@@ -135,6 +138,14 @@ const props = withDefaults(
 defineSlots<{
   default(props: { mutatedEntity: T; key: string }): any
 }>()
+
+const entityContext = computed<EntityContext>(() => {
+  return {
+    uuid: props.entityUuid,
+    type: props.entityType,
+    bundle: props.entityBundle,
+  }
+})
 
 const context = computed<AdapterContext>(() => {
   return {
@@ -233,25 +244,18 @@ addElementClasses(
 
 const baseLogger = debug.createLogger('EditProvider')
 
-onMounted(async () => {
-  window.addEventListener('contextmenu', onContextMenu)
-  document.documentElement.addEventListener('touchmove', onTouchMove)
-  document.documentElement.addEventListener('touchstart', onTouchStart)
-  baseLogger.log('EditProvider mounted')
-  dom.init()
-  directive.init()
-  await nextTick()
-  isInitializing.value = false
-  broadcast.emit('editorLoaded', { uuid: props.entityUuid })
-})
+/**
+ * Set a custom property on the given element.
+ */
+function setElementSymbolProperty(
+  el: HTMLElement,
+  symbol: symbol,
+  value?: any,
+) {
+  // @ts-expect-error Custom property
+  el[symbol] = value
+}
 
-onBeforeUnmount(() => {
-  window.removeEventListener('contextmenu', onContextMenu)
-  isInitializing.value = true
-  toolbarLoaded.value = false
-  document.documentElement.removeEventListener('touchmove', onTouchMove)
-  document.documentElement.removeEventListener('touchstart', onTouchStart)
-})
 provide(INJECT_EDIT_LOGGER, baseLogger)
 
 // Provide the edit <BlokkliField> component to it doesn't have to be loaded
@@ -265,7 +269,7 @@ provide<ItemEditContext>(INJECT_EDIT_CONTEXT, {
   definitions,
   useBlockRegistration,
 })
-provide<BlokkliApp>(INJECT_APP, {
+const app: BlokkliApp = {
   $t,
   adapter,
   animation,
@@ -293,7 +297,9 @@ provide<BlokkliApp>(INJECT_APP, {
   types,
   ui,
   fields,
-})
+}
+
+provide<BlokkliApp>(INJECT_APP, app)
 
 function textWithHighlight(title: string, text: string): string {
   return `<strong>${title}</strong> ${text}`
@@ -370,4 +376,44 @@ if (import.meta.hot) {
   import.meta.hot.accept('#blokkli/helpers/runtimeHelpers', () => {})
   import.meta.hot.on('vite:afterUpdate', onAfterUpdate)
 }
+
+onMounted(async () => {
+  // We need to store the app and entity context in the DOM, so that the
+  // directives used directly as a child of <BlokkliProvider> have access to
+  // them. Since their parent vnode in this scenario is the component that uses
+  // BlokkliProvider, they don't have access to stuff that we inject here.
+  // For this reason, we "provide" these injections via the DOM. Hacky, but it
+  // works.
+  setElementSymbolProperty(props.providerEl, INJECT_APP, app)
+  setElementSymbolProperty(
+    props.providerEl,
+    INJECT_ENTITY_CONTEXT,
+    entityContext.value,
+  )
+  window.addEventListener('contextmenu', onContextMenu)
+  document.documentElement.addEventListener('touchmove', onTouchMove)
+  document.documentElement.addEventListener('touchstart', onTouchStart)
+  baseLogger.log('EditProvider mounted')
+  dom.init()
+  directive.init()
+  await nextTick()
+  isInitializing.value = false
+  broadcast.emit('editorLoaded', { uuid: props.entityUuid })
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('contextmenu', onContextMenu)
+  isInitializing.value = true
+  toolbarLoaded.value = false
+  document.documentElement.removeEventListener('touchmove', onTouchMove)
+  document.documentElement.removeEventListener('touchstart', onTouchStart)
+})
+
+onUnmounted(() => {
+  // Remove the "DOM injections" again.
+  // The directives use a "beforeUnmount" hook, so they will still have the
+  // chance to unregister themselves.
+  setElementSymbolProperty(props.providerEl, INJECT_APP)
+  setElementSymbolProperty(props.providerEl, INJECT_ENTITY_CONTEXT)
+})
 </script>

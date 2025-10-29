@@ -3,8 +3,6 @@ import type {
   DraggableItem,
   SearchContentItem,
   Rectangle,
-  DraggableExistingBlock,
-  EntityContext,
   Coord,
   LibraryItemProps,
   Size,

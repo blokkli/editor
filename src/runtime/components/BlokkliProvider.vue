@@ -4,7 +4,7 @@
     :data-provider-uuid="entityUuid"
     :data-provider-entity-type="entityType"
     :data-provider-entity-bundle="entityBundle"
-    :data-blokkli-provider-active="isInEditor || undefined"
+    :data-blokkli-provider-active="isInEditor ? 'true' : 'false'"
   >
     <BlokkliErrorBoundary v-if="isInEditor">
       <PreviewProvider
@@ -83,6 +83,7 @@ import {
 import type {
   BlokkliProviderEntityContext,
   EditPermission,
+  EntityContext,
 } from '#blokkli/types'
 
 type BlokkliProviderProps = {
@@ -250,12 +251,16 @@ const blokkliProviderEntityContext = computed<BlokkliProviderEntityContext>(
   },
 )
 
-provide(INJECT_PROVIDER_CONTEXT, blokkliProviderEntityContext)
-provide(INJECT_ENTITY_CONTEXT, {
-  uuid: props.entityUuid,
-  type: props.entityType,
-  bundle: props.entityBundle,
+const entityContext = computed<EntityContext>(() => {
+  return {
+    uuid: props.entityUuid,
+    type: props.entityType,
+    bundle: props.entityBundle,
+  }
 })
+
+provide(INJECT_PROVIDER_CONTEXT, blokkliProviderEntityContext)
+provide(INJECT_ENTITY_CONTEXT, entityContext.value)
 
 onMounted(() => {
   shouldRender.value = true
