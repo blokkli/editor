@@ -84,6 +84,11 @@ const traverse = (element: HTMLElement, results: TextElement[]) => {
     return
   }
 
+  // Skip elements with the bk-skip-analyze class
+  if (element.classList.contains('bk-skip-analyze')) {
+    return
+  }
+
   if (isBlockElement(element)) {
     // If this block element doesn't contain other blocks, collect its text
     if (!containsBlockElements(element)) {
