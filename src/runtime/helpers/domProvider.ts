@@ -662,7 +662,7 @@ export default function (
     doInitTimeout()
 
     // No root node found on the block, unregister it.
-    if (!el) {
+    if (!(el instanceof HTMLElement)) {
       logger.log('registerBlock call unregisterBlock because no element', uuid)
       unregisterBlock(key, uuid)
       return
