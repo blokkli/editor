@@ -112,15 +112,6 @@ const {
   fields,
 } = useBlokkli()
 
-const gl = animation.gl()
-const canvas = animation.getCanvasElement()
-const ctx: CanvasRenderingContext2D | null =
-  !gl && canvas ? canvas.getContext('2d') : null
-
-const programInfo = gl
-  ? animation.registerProgram('drop_targets', gl, [vs, fs])
-  : null
-
 const areas = dropAreas
   .getDropAreas(props.items)
   .reduce<Record<string, DropArea>>((acc, v) => {
@@ -529,7 +520,7 @@ const buildDropAreaRect = (area: DropArea): Rectangle => {
   return dropAreaRect
 }
 
-const alphaBase = gl ? 0.7 : 0.3
+const alphaBase = 0.7
 
 const colorTeal = rgbaToString(theme.teal.value.normal)
 const colorTealAlpha = rgbaToString(theme.teal.value.normal, alphaBase)
@@ -548,7 +539,10 @@ function getRectType(field: BlokkliFieldElement): RectRenderType {
 }
 
 class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnRect> {
-  getBufferInfo(): { info: BufferInfo | null; hasChanged: boolean } {
+  getBufferInfo(gl?: WebGLRenderingContext): {
+    info: BufferInfo | null
+    hasChanged: boolean
+  } {
     const visibleFields = dom.getVisibleFields()
     const visibleBlocks = dom.getVisibleBlocks()
 
@@ -623,7 +617,7 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
 
     // Only update the buffer info if it has changed..
     if (hasChanged) {
-      this.bufferInfo = this.createBufferInfo()
+      this.bufferInfo = this.createBufferInfo(gl)
     }
 
     return { info: this.bufferInfo, hasChanged }
@@ -666,30 +660,6 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
 
     return null
   }
-}
-
-const collector = new DropTargetRectangleBufferCollector(gl, {
-  deferredMode: true,
-})
-
-// Add a rectangle that we will use to display the hovered field area.
-// The vertex shader will dynamically transform the quad to match the currently hovered field area.
-if (gl) {
-  collector.addRectangle(
-    {
-      id: 'active-hover-rect',
-      type: 'active-area',
-      label: 'Field Area',
-      color: 'red',
-      colorAlpha: 'red',
-      x: 0,
-      y: 0,
-      width: ui.artboardSize.value.width,
-      height: ui.artboardSize.value.height,
-    },
-    RectRenderType.ACTIVE_AREA,
-    false,
-  )
 }
 
 const fieldColors = computed(() => {
@@ -854,90 +824,142 @@ function setHoveredFieldArea(box: Rectangle, mouse: Coord) {
 let bufferInfo: BufferInfo | null = null
 let bufferChanged = false
 
-onBlokkliEvent('canvas:draw', () => {
-  const scale = ui.artboardScale.value
-  const offset = { ...ui.artboardOffset.value }
+// Register WebGL renderer with zIndex 400 (dragging layer - highest priority)
+// Set "only" to true so that when dragging, only drop targets are rendered
+const { collector } = defineRenderer('drop-targets', {
+  zIndex: 400,
+  only: true,
+  collector: () => {
+    const c = new DropTargetRectangleBufferCollector({ deferredMode: true })
+    // Add a rectangle that we will use to display the hovered field area.
+    // The vertex shader will dynamically transform the quad to match the currently hovered field area.
+    c.addRectangle(
+      {
+        id: 'active-hover-rect',
+        type: 'active-area',
+        label: 'Field Area',
+        color: 'red',
+        colorAlpha: 'red',
+        x: 0,
+        y: 0,
+        width: ui.artboardSize.value.width,
+        height: ui.artboardSize.value.height,
+      },
+      RectRenderType.ACTIVE_AREA,
+      false,
+    )
+    return c
+  },
+  program: () => ({ shaders: [vs, fs] }),
+  cursor: () => 'grabbing',
+  render: (ctx, gl, program) => {
+    const scale = ui.artboardScale.value
+    const offset = { ...ui.artboardOffset.value }
 
-  dragBox.value = {
-    x: (props.box.x - offset.x) / scale,
-    y: (props.box.y - offset.y) / scale,
-    width: props.box.width / scale,
-    height: props.box.height / scale,
-  }
-
-  const mouseAbsolute = toCanvasSpaceCoordinates(props.mouseX, props.mouseY)
-
-  const result = collector.getBufferInfo()
-  bufferInfo = result.info
-  bufferChanged = result.hasChanged
-
-  if (!props.isTouch) {
-    if (cursorIsInsideClipped()) {
-      const closest = collector.getClosestIntersectingRect(
-        dragBox.value,
-        mouseAbsolute,
-      )
-
-      active.value = closest || null
-    } else {
-      active.value = null
+    dragBox.value = {
+      x: (props.box.x - offset.x) / scale,
+      y: (props.box.y - offset.y) / scale,
+      width: props.box.width / scale,
+      height: props.box.height / scale,
     }
-  }
 
-  setHoveredFieldArea(dragBox.value, mouseAbsolute)
+    const mouseAbsolute = toCanvasSpaceCoordinates(props.mouseX, props.mouseY)
 
-  // Fallback canvas 2D rendering (only when WebGL is not available).
-  if (!gl && ctx) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    const result = collector.getBufferInfo(gl)
+    bufferInfo = result.info
+    bufferChanged = result.hasChanged
 
+    if (!props.isTouch) {
+      if (cursorIsInsideClipped()) {
+        const closest = collector.getClosestIntersectingRect(
+          dragBox.value,
+          mouseAbsolute,
+        )
+
+        active.value = closest || null
+      } else {
+        active.value = null
+      }
+    }
+
+    setHoveredFieldArea(dragBox.value, mouseAbsolute)
+
+    gl.useProgram(program.program)
+    animation.setSharedUniforms(gl, program)
+    setUniforms(program, uniforms.value)
+
+    // Nothing to draw.
+    if (!bufferInfo) {
+      return
+    }
+
+    // Only update buffer and attributes when they have changed.
+    if (bufferChanged) {
+      setBuffersAndAttributes(gl, program, bufferInfo)
+    }
+
+    drawBufferInfo(gl, bufferInfo, gl.TRIANGLES)
+  },
+  renderFallback: (ctx, ctx2d) => {
+    const scale = ui.artboardScale.value
+    const offset = { ...ui.artboardOffset.value }
+
+    dragBox.value = {
+      x: (props.box.x - offset.x) / scale,
+      y: (props.box.y - offset.y) / scale,
+      width: props.box.width / scale,
+      height: props.box.height / scale,
+    }
+
+    const mouseAbsolute = toCanvasSpaceCoordinates(props.mouseX, props.mouseY)
+
+    // Get buffer info without WebGL context (collector still builds rectangles)
+    const result = collector.getBufferInfo(undefined)
+    bufferInfo = result.info
+    bufferChanged = result.hasChanged
+
+    if (!props.isTouch) {
+      if (cursorIsInsideClipped()) {
+        const closest = collector.getClosestIntersectingRect(
+          dragBox.value,
+          mouseAbsolute,
+        )
+
+        active.value = closest || null
+      } else {
+        active.value = null
+      }
+    }
+
+    setHoveredFieldArea(dragBox.value, mouseAbsolute)
+
+    // Render using 2D canvas
     const rects = Object.values(collector.rects)
 
     for (let i = 0; i < rects.length; i++) {
       const rect = rects[i]!
+      if (rect.id === 'active-hover-rect') {
+        continue
+      }
       if (active.value?.id === rect.id) {
-        ctx.fillStyle = rect.color
+        ctx2d.fillStyle = rect.color
       } else {
-        ctx.fillStyle = rect.colorAlpha
+        ctx2d.fillStyle = rect.colorAlpha
       }
 
-      ctx.fillRect(
-        (rect.x * scale + offset.x) * animation.dpi.value,
-        (rect.y * scale + offset.y) * animation.dpi.value,
-        rect.width * animation.dpi.value * scale,
-        rect.height * animation.dpi.value * scale,
+      ctx2d.fillRect(
+        (rect.x * scale + offset.x) * ctx.dpi,
+        (rect.y * scale + offset.y) * ctx.dpi,
+        rect.width * ctx.dpi * scale,
+        rect.height * ctx.dpi * scale,
       )
     }
-  }
+  },
 })
 
-// Register WebGL renderer with zIndex 400 (dragging layer - highest priority)
-// Set "only" to true so that when dragging, only drop targets are rendered
-if (gl && programInfo) {
-  defineRenderer('drop-targets', {
-    zIndex: 400,
-    only: true,
-    cursor: () => 'grabbing',
-    render: () => {
-      gl.useProgram(programInfo.program)
-      animation.setSharedUniforms(gl, programInfo)
-      setUniforms(programInfo, uniforms.value)
-
-      // Nothing to draw.
-      if (!bufferInfo) {
-        return
-      }
-
-      // Only update buffer and attributes when they have changed.
-      if (bufferChanged) {
-        setBuffersAndAttributes(gl, programInfo, bufferInfo)
-      }
-
-      drawBufferInfo(gl, bufferInfo, gl.TRIANGLES)
-    },
-  })
-}
-
 onBeforeUnmount(() => {
+  const canvas = animation.getCanvasElement()
+  const ctx = canvas.getContext('2d')
   if (ctx) {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
   }

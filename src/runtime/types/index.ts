@@ -1036,7 +1036,6 @@ export type Coord = {
 export type Rectangle = Size & Coord
 
 export type CanvasDrawEvent = {
-  gl: WebGLRenderingContext
   mouseX: number
   mouseY: number
   mouseArtboard: Coord
@@ -1045,6 +1044,7 @@ export type CanvasDrawEvent = {
   artboardSize: Size
   time: number
   selectedUuids: string[]
+  dpi: number
 }
 
 export type MakeReusableEvent = {

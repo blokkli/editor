@@ -24,12 +24,9 @@ import { toShaderColor } from '#blokkli/helpers'
 
 const props = defineProps<{
   results: AnalyzeResultMapped[]
-  gl: WebGLRenderingContext
 }>()
 
 const { animation, ui, theme, selection, eventBus, element } = useBlokkli()
-
-const programInfo = animation.registerProgram('analyze', props.gl, [vs, fs])
 
 type AnalyzeRectangle = Rectangle & {
   id: string
@@ -111,7 +108,10 @@ class AnalyzeRectangleBufferCollector extends RectangleBufferCollector<AnalyzeRe
     this.rectCache.clear()
   }
 
-  getBufferInfo(force?: boolean): {
+  getBufferInfo(
+    gl?: WebGLRenderingContext,
+    force?: boolean,
+  ): {
     info: BufferInfo | null
     hasChanged: boolean
   } {
@@ -180,39 +180,80 @@ class AnalyzeRectangleBufferCollector extends RectangleBufferCollector<AnalyzeRe
 
     // Only update the buffer info if it has changed.
     if (hasChanged) {
-      this.bufferInfo = this.createBufferInfo()
+      this.bufferInfo = this.createBufferInfo(gl)
     }
 
     return { info: this.bufferInfo, hasChanged }
   }
 }
 
-const collector = new AnalyzeRectangleBufferCollector(props.gl)
-
 // Register WebGL renderer with zIndex 500 (analysis layer - renders on top of everything)
-defineRenderer('analyze-overlay', {
+const { collector } = defineRenderer('analyze-overlay', {
   zIndex: 500,
+  collector: () => new AnalyzeRectangleBufferCollector(),
+  program: () => ({ shaders: [vs, fs] }),
   enabled: () =>
     !selection.isMultiSelecting.value && !selection.isDragging.value,
-  render: (ctx) => {
-    ctx.gl.useProgram(programInfo.program)
+  render: (ctx, gl, program) => {
+    gl.useProgram(program.program)
 
-    const { info } = collector.getBufferInfo()
+    const { info } = collector.getBufferInfo(gl)
 
     // Nothing to draw.
     if (!info) {
       return
     }
 
-    setUniforms(programInfo, {
+    setUniforms(program, {
       u_color_violation: toShaderColor(theme.red.value.normal),
       u_color_incomplete: toShaderColor(theme.yellow.value.normal),
       u_color_pass: toShaderColor(theme.lime.value.normal),
     })
-    animation.setSharedUniforms(ctx.gl, programInfo)
+    animation.setSharedUniforms(gl, program)
 
-    setBuffersAndAttributes(ctx.gl, programInfo, info)
-    drawBufferInfo(ctx.gl, info, ctx.gl.TRIANGLES)
+    setBuffersAndAttributes(gl, program, info)
+    drawBufferInfo(gl, info, gl.TRIANGLES)
+  },
+  renderFallback: (ctx, ctx2d) => {
+    // Call getBufferInfo to populate collector.rects (we don't need the WebGL buffer)
+    collector.getBufferInfo()
+
+    const rects = Object.values(collector.rects)
+
+    // Nothing to draw.
+    if (rects.length === 0) {
+      return
+    }
+
+    // Helper to convert shader color to CSS rgba string
+    const rgbaToCss = (rgb: [number, number, number], alpha: number) => {
+      return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`
+    }
+
+    const colorViolation = rgbaToCss(theme.red.value.normal, 0.3)
+    const colorIncomplete = rgbaToCss(theme.yellow.value.normal, 0.3)
+    const colorPass = rgbaToCss(theme.lime.value.normal, 0.3)
+
+    // Draw all analyze rectangles
+    for (let i = 0; i < rects.length; i++) {
+      const rect = rects[i]!
+
+      // Map status to color (type 0=pass, 1=incomplete, 2=inapplicable, 3=violation)
+      let fillColor = colorPass
+      if (rect.status === 'violation') {
+        fillColor = colorViolation
+      } else if (rect.status === 'incomplete') {
+        fillColor = colorIncomplete
+      }
+
+      ctx2d.fillStyle = fillColor
+      ctx2d.fillRect(
+        (rect.x * ctx.artboardScale + ctx.artboardOffset.x) * ctx.dpi,
+        (rect.y * ctx.artboardScale + ctx.artboardOffset.y) * ctx.dpi,
+        rect.width * ctx.artboardScale * ctx.dpi,
+        rect.height * ctx.artboardScale * ctx.dpi,
+      )
+    }
   },
 })
 

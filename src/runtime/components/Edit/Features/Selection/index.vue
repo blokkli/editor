@@ -1,12 +1,10 @@
 <template>
   <Overlay
-    v-if="isVisible && gl && animation.webglEnabled.value"
+    v-if="isVisible"
     :blocks="selection.items.value"
     :uuids="selection.uuids.value"
-    :gl="gl"
     :has-host-selected="selection.hasHostSelected.value"
   />
-  <OverlayFallback v-if="isVisible && !gl" :uuids="selection.uuids.value" />
   <PluginItemDropdown
     v-if="itemDropdownItems.length"
     id="selection"
@@ -26,7 +24,6 @@
 
 <script lang="ts" setup>
 import Overlay from './Overlay/index.vue'
-import OverlayFallback from './OverlayFallback/index.vue'
 import SelectionAddButtons from './AddButtons/index.vue'
 import {
   calculateIntersection,
@@ -128,8 +125,6 @@ function onSelectDropdownItem(item: DropdownItem) {
     selectAllBlocks()
   }
 }
-
-const gl = animation.gl()
 
 const hasSelectedOnce = ref(false)
 

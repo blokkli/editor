@@ -1,6 +1,6 @@
 <template>
   <ErrorBoundary :label="$t('feature_hover_label', 'Hover')" v-model="isLocked">
-    <Overlay v-if="isVisible && gl && animation.webglEnabled.value" :gl="gl" />
+    <Overlay v-if="isVisible" />
   </ErrorBoundary>
 </template>
 
@@ -17,9 +17,7 @@ defineBlokkliFeature({
     'Renders a border around blocks that are currently being hovered.',
 })
 
-const { selection, ui, animation, dom, $t } = useBlokkli()
-
-const gl = animation.gl()
+const { selection, ui, dom, $t } = useBlokkli()
 
 const isLocked = ref(false)
 

@@ -22,13 +22,10 @@ import type { RGB } from '#blokkli/types/theme'
 
 const props = defineProps<{
   blocks: RenderedFieldListItem[]
-  gl: WebGLRenderingContext
   hasHostSelected: boolean
 }>()
 
 const { animation, theme, dom, ui, state } = useBlokkli()
-
-const programInfo = animation.registerProgram('selection', props.gl, [vs, fs])
 
 type SelectionRectangle = Rectangle & {
   id: string
@@ -43,7 +40,10 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
   lastCount = 0
   prevKey = ''
 
-  getBufferInfo(force?: boolean): {
+  getBufferInfo(
+    gl?: WebGLRenderingContext,
+    force?: boolean,
+  ): {
     info: BufferInfo | null
     hasChanged: boolean
   } {
@@ -128,14 +128,12 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
 
     // Only update the buffer info if it has changed.
     if (hasChanged) {
-      this.bufferInfo = this.createBufferInfo()
+      this.bufferInfo = this.createBufferInfo(gl)
     }
 
     return { info: this.bufferInfo, hasChanged }
   }
 }
-
-const collector = new SelectionRectangleBufferCollector(props.gl)
 
 const hasTransformingStyle = computed(
   () => ui.hasTransformOverlayOpen.value || ui.isTransforming.value,
@@ -148,12 +146,12 @@ const selectionColorOverride = computed<RGB | null>(() => {
   }
 
   if (color === 'mono') {
-    return toShaderColor(theme.getColor(color, '500'))
+    return theme.getColor(color, '500')
   } else if (color === 'accent') {
-    return toShaderColor(theme.getColor(color, '700'))
+    return theme.getColor(color, '700')
   }
 
-  return toShaderColor(theme.getColor(color, 'normal'))
+  return theme.getColor(color, 'normal')
 })
 
 const getColorDefault = useTransitionedValue(() => {
@@ -161,10 +159,10 @@ const getColorDefault = useTransitionedValue(() => {
     return selectionColorOverride.value
   }
   if (hasTransformingStyle.value) {
-    return toShaderColor(theme.orange.value.normal)
+    return theme.orange.value.normal
   }
 
-  return toShaderColor(theme.accent.value[600])
+  return theme.accent.value[600]
 })
 
 const getColorInverted = useTransitionedValue(() => {
@@ -172,10 +170,10 @@ const getColorInverted = useTransitionedValue(() => {
     return selectionColorOverride.value
   }
   if (hasTransformingStyle.value) {
-    return toShaderColor(theme.orange.value.normal)
+    return theme.orange.value.normal
   }
 
-  return toShaderColor([255, 255, 255])
+  return [255, 255, 255] as RGB
 })
 
 const getColorLibrary = useTransitionedValue(() => {
@@ -183,14 +181,14 @@ const getColorLibrary = useTransitionedValue(() => {
     return selectionColorOverride.value
   }
   if (hasTransformingStyle.value) {
-    return toShaderColor(theme.orange.value.normal)
+    return theme.orange.value.normal
   }
 
-  return toShaderColor(theme.lime.value.normal)
+  return theme.lime.value.normal
 })
 
 const getColorHost = useTransitionedValue(() => {
-  return toShaderColor(theme.mono.value[700])
+  return theme.mono.value[700]
 })
 
 const getTransforming = useTransitionedValue(() => {
@@ -198,23 +196,25 @@ const getTransforming = useTransitionedValue(() => {
 })
 
 // Register WebGL renderer with zIndex 100 (selection layer)
-defineRenderer('selection-overlay', {
+const { collector } = defineRenderer('selection-overlay', {
   zIndex: 100,
-  render: (ctx) => {
-    props.gl.useProgram(programInfo.program)
+  collector: () => new SelectionRectangleBufferCollector(),
+  program: () => ({ shaders: [vs, fs] }),
+  render: (ctx, gl, program) => {
+    gl.useProgram(program.program)
 
-    const { info } = collector.getBufferInfo()
+    const { info } = collector.getBufferInfo(gl)
 
     // Nothing to draw.
     if (!info) {
       return
     }
 
-    setUniforms(programInfo, {
-      u_color_default: getColorDefault(),
-      u_color_inverted: getColorInverted(),
-      u_color_library: getColorLibrary(),
-      u_color_host: getColorHost(),
+    setUniforms(program, {
+      u_color_default: toShaderColor(getColorDefault()),
+      u_color_inverted: toShaderColor(getColorInverted()),
+      u_color_library: toShaderColor(getColorLibrary()),
+      u_color_host: toShaderColor(getColorHost()),
       u_artboard_size: [
         ui.artboardSize.value.width,
         ui.artboardSize.value.height,
@@ -222,11 +222,121 @@ defineRenderer('selection-overlay', {
       u_is_transforming: getTransforming(),
       u_time: ctx.time,
     })
-    animation.setSharedUniforms(props.gl, programInfo)
+    animation.setSharedUniforms(gl, program)
 
-    setBuffersAndAttributes(props.gl, programInfo, info)
+    setBuffersAndAttributes(gl, program, info)
 
-    drawBufferInfo(props.gl, info, props.gl.TRIANGLES)
+    drawBufferInfo(gl, info, gl.TRIANGLES)
+  },
+  renderFallback: (ctx, ctx2d) => {
+    // Call getBufferInfo to populate collector.rects (we don't need the WebGL buffer)
+    collector.getBufferInfo()
+
+    const rects = Object.values(collector.rects)
+
+    // Nothing to draw.
+    if (rects.length === 0) {
+      return
+    }
+
+    // Helper to convert shader color to CSS rgba string
+    const rgbaToCss = (rgb: RGB) => {
+      return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`
+    }
+
+    const colorDefault = rgbaToCss(getColorDefault())
+    const colorInverted = rgbaToCss(getColorInverted())
+    const colorLibrary = rgbaToCss(getColorLibrary())
+    const colorHost = rgbaToCss(getColorHost())
+
+    // Calculate thickness based on scale (from vertex shader line 37)
+    // float thickness = (0.5 + smoothstep(0.3, 1.0, u_scale) * 2.5) * u_dpi;
+    const smoothstepValue = Math.max(0, Math.min(1, (ctx.artboardScale - 0.3) / 0.7))
+    const thickness = (0.5 + smoothstepValue * 2.5) * ctx.dpi
+
+    // Draw all selection rectangles as strokes
+    for (let i = 0; i < rects.length; i++) {
+      const rect = rects[i]!
+
+      // Map type to color (0=default, 1=inverted, 2=library, 3=host)
+      let strokeColor = colorDefault
+      if (rect.isFromLibrary) {
+        strokeColor = colorLibrary
+      } else if (rect.isInverted) {
+        strokeColor = colorInverted
+      } else if (rect.id === 'host') {
+        strokeColor = colorHost
+      }
+
+      ctx2d.strokeStyle = strokeColor
+      ctx2d.lineWidth = thickness
+
+      // Transform to viewport coordinates
+      const viewportX =
+        (rect.x * ctx.artboardScale + ctx.artboardOffset.x) * ctx.dpi
+      const viewportY =
+        (rect.y * ctx.artboardScale + ctx.artboardOffset.y) * ctx.dpi
+      const viewportWidth = rect.width * ctx.artboardScale * ctx.dpi
+      const viewportHeight = rect.height * ctx.artboardScale * ctx.dpi
+
+      // Draw rounded rectangle border
+      const maxRadius = Math.min(viewportWidth, viewportHeight) / 2
+      const rtl = Math.min(
+        rect.radius[0]! * ctx.artboardScale * ctx.dpi,
+        maxRadius,
+      )
+      const rtr = Math.min(
+        rect.radius[1]! * ctx.artboardScale * ctx.dpi,
+        maxRadius,
+      )
+      const rbr = Math.min(
+        rect.radius[2]! * ctx.artboardScale * ctx.dpi,
+        maxRadius,
+      )
+      const rbl = Math.min(
+        rect.radius[3]! * ctx.artboardScale * ctx.dpi,
+        maxRadius,
+      )
+
+      ctx2d.beginPath()
+      ctx2d.moveTo(viewportX + rtl, viewportY)
+      ctx2d.lineTo(viewportX + viewportWidth - rtr, viewportY)
+      if (rtr > 0) {
+        ctx2d.arcTo(
+          viewportX + viewportWidth,
+          viewportY,
+          viewportX + viewportWidth,
+          viewportY + rtr,
+          rtr,
+        )
+      }
+      ctx2d.lineTo(viewportX + viewportWidth, viewportY + viewportHeight - rbr)
+      if (rbr > 0) {
+        ctx2d.arcTo(
+          viewportX + viewportWidth,
+          viewportY + viewportHeight,
+          viewportX + viewportWidth - rbr,
+          viewportY + viewportHeight,
+          rbr,
+        )
+      }
+      ctx2d.lineTo(viewportX + rbl, viewportY + viewportHeight)
+      if (rbl > 0) {
+        ctx2d.arcTo(
+          viewportX,
+          viewportY + viewportHeight,
+          viewportX,
+          viewportY + viewportHeight - rbl,
+          rbl,
+        )
+      }
+      ctx2d.lineTo(viewportX, viewportY + rtl)
+      if (rtl > 0) {
+        ctx2d.arcTo(viewportX, viewportY, viewportX + rtl, viewportY, rtl)
+      }
+      ctx2d.closePath()
+      ctx2d.stroke()
+    }
   },
 })
 

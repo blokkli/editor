@@ -17,11 +17,11 @@ import type { CanvasDrawEvent, Coord } from '#blokkli/types'
 import type { SelectionProvider } from './selectionProvider'
 import type { ElementProvider } from './providers/element'
 
-export type RenderContext = CanvasDrawEvent & {
-  gl: WebGLRenderingContext
-}
+import type { RectangleBufferCollector } from './webgl'
 
-export type Renderer = {
+export type RenderContext = CanvasDrawEvent
+
+export type Renderer<T = RectangleBufferCollector<any>> = {
   id: string
   zIndex: number
   enabled?: () => boolean
@@ -31,7 +31,14 @@ export type Renderer = {
     mouse: Coord
     mouseArtboard: Coord
   }) => boolean | undefined
-  render: (ctx: RenderContext) => void
+  collector: () => T
+  program?: () => { shaders: [string, string] }
+  render: (
+    ctx: RenderContext,
+    gl: WebGLRenderingContext,
+    program: ProgramInfo,
+  ) => void
+  renderFallback?: (ctx: RenderContext, ctx2d: CanvasRenderingContext2D) => void
 }
 
 export type AnimationProvider = {
@@ -82,7 +89,10 @@ export type AnimationProvider = {
    * Register a WebGL renderer with a specific zIndex.
    * Returns an unregister function.
    */
-  registerRenderer: (id: string, config: Omit<Renderer, 'id'>) => () => void
+  registerRenderer: <T = RectangleBufferCollector<any>>(
+    id: string,
+    config: Omit<Renderer<T>, 'id'>,
+  ) => () => void
 
   /**
    * Unregister a WebGL renderer.
@@ -104,17 +114,145 @@ export default function (
 
   // Renderer management
   const renderers = new Map<string, Renderer>()
+  const rendererPrograms = new Map<string, ProgramInfo>()
 
-  function registerRenderer(
+  // Failure tracking for renderers
+  const rendererFailures = new Map<string, number>() // Tracks consecutive failures
+  const rendererCooldowns = new Map<string, number>() // Tracks cooldown end timestamp
+  const renderersPermanentlyDisabled = new Set<string>() // Renderers that failed after cooldown
+
+  /**
+   * Check if a renderer should be skipped due to failures.
+   */
+  function shouldSkipRenderer(id: string): boolean {
+    // Check if permanently disabled
+    if (renderersPermanentlyDisabled.has(id)) {
+      return true
+    }
+
+    // Check if in cooldown period
+    const cooldownEnd = rendererCooldowns.get(id)
+    if (cooldownEnd) {
+      const now = Date.now()
+      if (now < cooldownEnd) {
+        // Still in cooldown
+        return true
+      } else {
+        // Cooldown expired, clear it
+        rendererCooldowns.delete(id)
+      }
+    }
+
+    return false
+  }
+
+  /**
+   * Handle a renderer failure.
+   */
+  function handleRendererFailure(id: string): void {
+    const failures = (rendererFailures.get(id) || 0) + 1
+    rendererFailures.set(id, failures)
+
+    // Check if we just came out of cooldown - if so, disable permanently
+    if (failures === 6) {
+      renderersPermanentlyDisabled.add(id)
+      rendererFailures.delete(id)
+      rendererCooldowns.delete(id)
+      console.error(
+        `[blokkli] Renderer "${id}" has been permanently disabled due to repeated failures.`,
+      )
+      return
+    }
+
+    // If 5 consecutive failures, put in cooldown for 5 seconds
+    if (failures === 5) {
+      const cooldownEnd = Date.now() + 5000
+      rendererCooldowns.set(id, cooldownEnd)
+      console.warn(
+        `[blokkli] Renderer "${id}" failed 5 times in a row. Skipping for 5 seconds.`,
+      )
+    }
+  }
+
+  /**
+   * Handle a successful renderer execution.
+   */
+  function handleRendererSuccess(id: string): void {
+    // Reset failure count on success
+    rendererFailures.delete(id)
+  }
+
+  /**
+   * Execute a single renderer with failure tracking.
+   */
+  function executeRenderer(
+    renderer: Renderer,
+    ctx: RenderContext,
+    ctx2dContext: CanvasRenderingContext2D | null,
+  ): void {
+    if (!renderer.enabled || renderer.enabled()) {
+      const glContext = gl()
+
+      // Try WebGL rendering first
+      if (glContext && !shouldSkipRenderer(renderer.id)) {
+        // Get the program for this renderer
+        const program = rendererPrograms.get(renderer.id)
+
+        // Only execute if program exists (renderers with programs require them)
+        if (program) {
+          try {
+            renderer.render(ctx, glContext, program)
+            handleRendererSuccess(renderer.id)
+          } catch (error) {
+            handleRendererFailure(renderer.id)
+            console.error(`[blokkli] Renderer "${renderer.id}" failed:`, error)
+          }
+        }
+      }
+      // Fallback to 2D canvas rendering
+      else if (ctx2dContext && renderer.renderFallback) {
+        try {
+          renderer.renderFallback(ctx, ctx2dContext)
+          handleRendererSuccess(renderer.id)
+        } catch (error) {
+          handleRendererFailure(renderer.id)
+          console.error(
+            `[blokkli] Renderer "${renderer.id}" (2D fallback) failed:`,
+            error,
+          )
+        }
+      }
+    }
+  }
+
+  function registerRenderer<T = RectangleBufferCollector<any>>(
     id: string,
-    config: Omit<Renderer, 'id'>,
+    config: Omit<Renderer<T>, 'id'>,
   ): () => void {
-    renderers.set(id, { id, ...config })
+    const renderer = { id, ...config }
+    renderers.set(id, renderer as Renderer)
+
+    // If the renderer has a program, register it
+    if (renderer.program) {
+      const glContext = gl()
+      if (glContext) {
+        const { shaders } = renderer.program()
+        const programInfo = registerProgram(id, glContext, shaders)
+        rendererPrograms.set(id, programInfo)
+      }
+    }
+
     return () => unregisterRenderer(id)
   }
 
   function unregisterRenderer(id: string): void {
     renderers.delete(id)
+    // Clean up renderer-to-program mapping (but keep the program in registeredPrograms cache)
+    rendererPrograms.delete(id)
+    // Clean up failure tracking
+    rendererFailures.delete(id)
+    rendererCooldowns.delete(id)
+    renderersPermanentlyDisabled.delete(id)
   }
 
   function handleClick(x: number, y: number): boolean {
@@ -242,18 +380,27 @@ export default function (
 
     // Clear the canvas before rendering
     const glContext = gl()
+    const canvas = getCanvasElement()
+    const ctx2dContext = canvas.getContext('2d')
+
     if (glContext) {
       glContext.enable(glContext.BLEND)
       glContext.blendFunc(glContext.SRC_ALPHA_SATURATE, glContext.ONE)
       glContext.blendEquation(glContext.FUNC_ADD)
       glContext.clearColor(0.0, 0.0, 0.0, 0.0)
       glContext.clear(glContext.COLOR_BUFFER_BIT)
+    } else if (ctx2dContext) {
+      // Clear 2D canvas for fallback rendering
+      ctx2dContext.clearRect(0, 0, canvas.width, canvas.height)
     }
 
     // Execute WebGL renderers in zIndex order
-    const sortedRenderers = Array.from(renderers.values()).sort(
-      (a, b) => a.zIndex - b.zIndex,
-    )
+    const sortedRenderers = Array.from(renderers.values()).sort((a, b) => {
+      if (glContext) {
+        return a.zIndex - b.zIndex
+      }
+      return b.zIndex - a.zIndex
+    })
 
     // Check if any renderer has "only" set to true
     let onlyRenderer: Renderer | null = null
@@ -277,7 +424,6 @@ export default function (
     }
 
     const ctx: RenderContext = {
-      gl: glContext!,
       time,
       mouseX,
       mouseY,
@@ -286,27 +432,16 @@ export default function (
       artboardScale,
       artboardSize,
       selectedUuids,
+      dpi: dpi.value,
     }
 
     // If an "only" renderer is found, render only that one.
     if (onlyRenderer) {
-      const glContext = gl()
-      if (glContext) {
-        try {
-          onlyRenderer.render(ctx)
-        } catch {}
-      }
+      executeRenderer(onlyRenderer, ctx, ctx2dContext)
     } else {
       for (let i = sortedRenderers.length - 1; i >= 0; i--) {
         const renderer = sortedRenderers[i]!
-        if (!renderer.enabled || renderer.enabled()) {
-          const glContext = gl()
-          if (glContext) {
-            try {
-              renderer.render(ctx)
-            } catch {}
-          }
-        }
+        executeRenderer(renderer, ctx, ctx2dContext)
       }
     }
 

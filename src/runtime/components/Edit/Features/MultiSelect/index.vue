@@ -5,11 +5,10 @@
     @error="onError"
   >
     <Overlay
-      v-if="shouldRender && gl"
+      v-if="shouldRender"
       :start-x="downX"
       :start-y="downY"
       :is-pressing-control="keyboard.isPressingControl.value"
-      :gl
       @select="onSelect"
     />
   </ErrorBoundary>
@@ -30,13 +29,11 @@ defineBlokkliFeature({
   viewports: ['desktop'],
 })
 
-const { keyboard, eventBus, selection, animation, $t } = useBlokkli()
-
-const gl = animation.gl()
+const { keyboard, eventBus, selection, $t } = useBlokkli()
 
 const isLocked = ref(false)
 const enabled = computed(
-  () => !selection.editableActive.value && gl && !isLocked.value,
+  () => !selection.editableActive.value && !isLocked.value,
 )
 
 const shouldRender = ref(false)

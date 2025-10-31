@@ -27,7 +27,6 @@ const props = defineProps<{
   startX: number
   startY: number
   isPressingControl: boolean
-  gl: WebGLRenderingContext
 }>()
 
 const startTimestamp = Date.now()
@@ -45,9 +44,14 @@ type MultiSelectRectangle = Rectangle & {
 
 class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<MultiSelectRectangle> {
   getBufferInfo(
-    offset: Coord,
-    scale: number,
+    gl?: WebGLRenderingContext,
+    offset?: Coord,
+    scale?: number,
   ): { info: BufferInfo | null; hasChanged: boolean } {
+    if (!offset || !scale) {
+      return { info: this.bufferInfo, hasChanged: false }
+    }
+
     const visibleBlocks = dom.getVisibleBlocks()
 
     const lengthBefore = this.positions.length
@@ -89,7 +93,7 @@ class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<Multi
 
     // Only update the buffer info if it has changed.
     if (hasChanged) {
-      this.bufferInfo = this.createBufferInfo()
+      this.bufferInfo = this.createBufferInfo(gl)
     }
 
     return { info: this.bufferInfo, hasChanged }
@@ -126,70 +130,12 @@ class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<Multi
   }
 }
 
-const collector = new MultiSelectRectangleBufferCollector(props.gl)
-const thick = 300
-collector.addRectangle(
-  {
-    width: 1000,
-    height: thick,
-    x: 100,
-    y: 100,
-    id: 'select-rect-top',
-    isNested: false,
-    radius: [0, 0, 0, 0],
-  },
-  0,
-)
-collector.addRectangle(
-  {
-    width: thick,
-    height: 1000,
-    x: 1000 + thick,
-    y: thick,
-    id: 'select-rect-right',
-    isNested: false,
-    radius: [0, 0, 0, 0],
-  },
-  0,
-)
-collector.addRectangle(
-  {
-    width: 1000,
-    height: thick,
-    x: 100 + thick,
-    y: 1000 + thick,
-    id: 'select-rect-bottom',
-    isNested: false,
-    radius: [0, 0, 0, 0],
-  },
-  0,
-)
-collector.addRectangle(
-  {
-    width: thick,
-    height: 1000,
-    x: 100,
-    y: 100 + thick,
-    id: 'select-rect-left',
-    isNested: false,
-    radius: [0, 0, 0, 0],
-  },
-  0,
-)
-
 const artboardOffsetStart = { ...ui.artboardOffset.value }
 const artboardScaleStart = ui.artboardScale.value
 
-const programInfo = animation.registerProgram(
-  'multi_select_overlay',
-  props.gl,
-  [vs, fs],
-)
 const uniforms = {
-  u_color_field_active: toShaderColor(theme.accent.value[700]),
-  u_color_field_default: toShaderColor(theme.mono.value[400]),
-  u_color_area_active: toShaderColor(theme.teal.value.normal),
-  u_color_area_default: toShaderColor(theme.teal.value.normal),
+  u_color_field_active: theme.accent.value[700],
+  u_color_field_default: theme.mono.value[400],
 }
 
 let mouseX = 0
@@ -231,11 +177,66 @@ function getSelectRect(
 
 // Register WebGL renderer with zIndex 450 (multi-select layer)
 // Set "only" to true so that when multi-selecting, only the selection box is rendered
-defineRenderer('multiselect-overlay', {
+const { collector } = defineRenderer('multiselect-overlay', {
   zIndex: 450,
   only: true,
+  collector: () => {
+    const c = new MultiSelectRectangleBufferCollector()
+    const thick = 300
+    // Add selection box border rectangles
+    c.addRectangle(
+      {
+        width: 1000,
+        height: thick,
+        x: 100,
+        y: 100,
+        id: 'select-rect-top',
+        isNested: false,
+        radius: [0, 0, 0, 0],
+      },
+      0,
+    )
+    c.addRectangle(
+      {
+        width: thick,
+        height: 1000,
+        x: 1000 + thick,
+        y: thick,
+        id: 'select-rect-right',
+        isNested: false,
+        radius: [0, 0, 0, 0],
+      },
+      0,
+    )
+    c.addRectangle(
+      {
+        width: 1000,
+        height: thick,
+        x: 100 + thick,
+        y: 1000 + thick,
+        id: 'select-rect-bottom',
+        isNested: false,
+        radius: [0, 0, 0, 0],
+      },
+      0,
+    )
+    c.addRectangle(
+      {
+        width: thick,
+        height: 1000,
+        x: 100,
+        y: 100 + thick,
+        id: 'select-rect-left',
+        isNested: false,
+        radius: [0, 0, 0, 0],
+      },
+      0,
+    )
+    return c
+  },
+  program: () => ({ shaders: [vs, fs] }),
   cursor: () => 'crosshair',
-  render: (ctx) => {
+  render: (ctx, gl, program) => {
     mouseX = ctx.mouseX
     mouseY = ctx.mouseY
 
@@ -247,19 +248,23 @@ defineRenderer('multiselect-overlay', {
     const { nested } = collector.getSelectedUuids(check)
     const shouldSelectAll = props.isPressingControl || !nested.length
 
-    ctx.gl.useProgram(programInfo.program)
+    gl.useProgram(program.program)
 
     const time = (Date.now() - startTimestamp) / 1000
 
-    setUniforms(programInfo, uniforms)
-    setUniforms(programInfo, {
+    setUniforms(program, {
+      u_color_field_active: toShaderColor(uniforms.u_color_field_active),
+      u_color_field_default: toShaderColor(uniforms.u_color_field_default),
+    })
+    setUniforms(program, {
       u_select_all: shouldSelectAll ? 1 : 0,
       u_select_rect: [shader.x, shader.y, shader.width, shader.height],
       u_time: time,
     })
 
-    animation.setSharedUniforms(ctx.gl, programInfo)
+    animation.setSharedUniforms(gl, program)
     const { info, hasChanged } = collector.getBufferInfo(
+      gl,
       ctx.artboardOffset,
       ctx.artboardScale,
     )
@@ -271,10 +276,91 @@ defineRenderer('multiselect-overlay', {
 
     // Only update buffer and attributes when they have changed.
     if (hasChanged) {
-      setBuffersAndAttributes(ctx.gl, programInfo, info)
+      setBuffersAndAttributes(gl, program, info)
     }
 
-    drawBufferInfo(ctx.gl, info, ctx.gl.TRIANGLES)
+    drawBufferInfo(gl, info, gl.TRIANGLES)
+  },
+  renderFallback: (ctx, ctx2d) => {
+    mouseX = ctx.mouseX
+    mouseY = ctx.mouseY
+
+    const { shader, check } = getSelectRect(
+      ctx.artboardOffset,
+      ctx.artboardScale,
+    )
+
+    const { nested } = collector.getSelectedUuids(check)
+    const shouldSelectAll = props.isPressingControl || !nested.length
+
+    // Get buffer info to populate collector.rects
+    collector.getBufferInfo(undefined, ctx.artboardOffset, ctx.artboardScale)
+
+    const rects = Object.values(collector.rects)
+
+    // 1. Draw intersecting blocks with field_active color (from shader: v_color_active)
+    const colorFieldActive = `rgba(${uniforms.u_color_field_active[0]}, ${uniforms.u_color_field_active[1]}, ${uniforms.u_color_field_active[2]}, 0.3)`
+
+    for (let i = 0; i < rects.length; i++) {
+      const rect = rects[i]!
+
+      // Skip selection box border rectangles (type 0)
+      if (rect.id.startsWith('select-rect-')) {
+        continue
+      }
+
+      // Only draw rectangles that intersect with the selection box
+      if (!intersects(rect, check)) {
+        continue
+      }
+
+      // Match shader logic: only highlight if (is_nested || select_all)
+      if (!rect.isNested && !shouldSelectAll) {
+        continue
+      }
+
+      // All intersecting blocks use the same active color (v_color_active from shader)
+      ctx2d.fillStyle = colorFieldActive
+      ctx2d.fillRect(
+        (rect.x * ctx.artboardScale + ctx.artboardOffset.x) * ctx.dpi,
+        (rect.y * ctx.artboardScale + ctx.artboardOffset.y) * ctx.dpi,
+        rect.width * ctx.artboardScale * ctx.dpi,
+        rect.height * ctx.artboardScale * ctx.dpi,
+      )
+    }
+
+    // 2. Draw marching ants selection border (black/white animated dashes)
+    const time = (Date.now() - startTimestamp) / 1000
+    const speed = 100 * ctx.dpi
+    const dashLength = 8 * ctx.dpi
+    const phase = time * speed * -1
+
+    // Set up dashed line with animation
+    ctx2d.lineWidth = 2 * ctx.dpi
+    ctx2d.setLineDash([dashLength, dashLength])
+
+    // Draw white dashes
+    ctx2d.strokeStyle = 'rgba(255, 255, 255, 0.8)'
+    ctx2d.lineDashOffset = phase % (dashLength * 2)
+    ctx2d.strokeRect(
+      shader.x * ctx.dpi,
+      shader.y * ctx.dpi,
+      shader.width * ctx.dpi,
+      shader.height * ctx.dpi,
+    )
+
+    // Draw black dashes (offset by half the pattern for alternating effect)
+    ctx2d.strokeStyle = 'rgba(0, 0, 0, 0.8)'
+    ctx2d.lineDashOffset = (phase + dashLength) % (dashLength * 2)
+    ctx2d.strokeRect(
+      shader.x * ctx.dpi,
+      shader.y * ctx.dpi,
+      shader.width * ctx.dpi,
+      shader.height * ctx.dpi,
+    )
+
+    // Reset line dash
+    ctx2d.setLineDash([])
   },
 })
 

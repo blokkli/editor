@@ -7,20 +7,15 @@ import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineRenderer from '#blokkli/helpers/composables/defineRenderer'
 import type { Rectangle } from '#blokkli/types'
 import { useBlokkli, computed, ref, watch } from '#imports'
-import { setBuffersAndAttributes, drawBufferInfo, setUniforms } from 'twgl.js'
+import { setBuffersAndAttributes, drawBufferInfo, setUniforms, type BufferInfo } from 'twgl.js'
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/helpers/webgl'
 import { toShaderColor, isInsideRect } from '#blokkli/helpers'
-
-const props = defineProps<{
-  gl: WebGLRenderingContext
-}>()
+import type { RGB } from '#blokkli/types/theme'
 
 const { animation, theme, dom, selection, state, ui, directive, blocks } =
   useBlokkli()
-
-const programInfo = animation.registerProgram('hover', props.gl, [vs, fs])
 
 // How many hover quads are supported.
 // This means that we support 10 blocks + 1 editable field.
@@ -89,25 +84,8 @@ const isHoveringEditableField = ref(false)
 // Track whether we're currently hovering over a selected block
 const isHoveringSelectedBlock = ref(false)
 
-// Initialize buffer collector with MAX_RECTS dummy rectangles
+// Custom collector class
 class HoverRectangleBufferCollector extends RectangleBufferCollector<HoverRectangle> {}
-const collector = new HoverRectangleBufferCollector(props.gl)
-
-// Add MAX_RECTS dummy rectangles once.
-for (let i = 0; i < MAX_RECTS; i++) {
-  collector.addRectangle(
-    {
-      id: `hover-rect-${i}`,
-      x: 0,
-      y: 0,
-      width: 100,
-      height: 100,
-      radius: [0, 0, 0, 0],
-    },
-    0,
-  )
-}
-const bufferInfo = collector.createBufferInfo()
 
 function resetHoverState() {
   previousHoveredUuids = []
@@ -341,11 +319,11 @@ function updateHoverState(
 
 const uniforms = computed(() => {
   return {
-    u_color_mono: toShaderColor(theme.mono.value[300]),
-    u_color_accent: toShaderColor(theme.accent.value[600]),
-    u_color_teal: toShaderColor(theme.teal.value.normal),
-    u_color_white: toShaderColor([255, 255, 255]),
-    u_color_lime: toShaderColor(theme.lime.value.normal),
+    u_color_mono: theme.mono.value[300],
+    u_color_accent: theme.accent.value[600],
+    u_color_teal: theme.teal.value.normal,
+    u_color_white: [255, 255, 255] as RGB,
+    u_color_lime: theme.lime.value.normal,
   }
 })
 
@@ -357,9 +335,31 @@ onBlokkliEvent('ui:resized', () => {
   resetHoverState()
 })
 
+// Cache for bufferInfo (created on first render)
+let bufferInfoCache: BufferInfo | null = null
+
 // Register WebGL renderer with zIndex 200 (hover layer)
-defineRenderer('hover-overlay', {
+const { collector } = defineRenderer('hover-overlay', {
   zIndex: 200,
+  collector: () => {
+    const c = new HoverRectangleBufferCollector()
+    // Add MAX_RECTS dummy rectangles once.
+    for (let i = 0; i < MAX_RECTS; i++) {
+      c.addRectangle(
+        {
+          id: `hover-rect-${i}`,
+          x: 0,
+          y: 0,
+          width: 100,
+          height: 100,
+          radius: [0, 0, 0, 0],
+        },
+        0,
+      )
+    }
+    return c
+  },
+  program: () => ({ shaders: [vs, fs] }),
   enabled: () => !selection.isChangingOptions.value,
   cursor: () => {
     // Priority 1: Editable field (if not in readonly mode)
@@ -374,8 +374,12 @@ defineRenderer('hover-overlay', {
 
     return null
   },
-  render: (ctx) => {
-    if (!bufferInfo) {
+  render: (ctx, gl, program) => {
+    // Create bufferInfo on first render
+    if (!bufferInfoCache) {
+      bufferInfoCache = collector.createBufferInfo(gl)
+    }
+    if (!bufferInfoCache) {
       return
     }
 
@@ -389,18 +393,199 @@ defineRenderer('hover-overlay', {
       )
     }
 
-    props.gl.useProgram(programInfo.program)
+    gl.useProgram(program.program)
 
-    setUniforms(programInfo, uniforms.value)
-    setUniforms(programInfo, {
+    setUniforms(program, {
+      u_color_mono: toShaderColor(uniforms.value.u_color_mono),
+      u_color_accent: toShaderColor(uniforms.value.u_color_accent),
+      u_color_teal: toShaderColor(uniforms.value.u_color_teal),
+      u_color_white: toShaderColor(uniforms.value.u_color_white),
+      u_color_lime: toShaderColor(uniforms.value.u_color_lime),
+    })
+    setUniforms(program, {
       u_hover_positions: hoverState.positions,
       u_hover_radii: hoverState.radii,
       u_hover_types: hoverState.types,
       u_hover_visible: hoverState.visible,
     })
-    animation.setSharedUniforms(props.gl, programInfo)
-    setBuffersAndAttributes(props.gl, programInfo, bufferInfo)
-    drawBufferInfo(props.gl, bufferInfo, props.gl.TRIANGLES)
+    animation.setSharedUniforms(gl, program)
+    setBuffersAndAttributes(gl, program, bufferInfoCache)
+    drawBufferInfo(gl, bufferInfoCache, gl.TRIANGLES)
+  },
+  renderFallback: (ctx, ctx2d) => {
+    if (!ui.openTooltip.value) {
+      updateHoverState(
+        ctx.mouseX,
+        ctx.mouseY,
+        ctx.artboardOffset,
+        ctx.artboardScale,
+        ctx.artboardSize,
+      )
+    }
+
+    // Helper to convert RGB to CSS string
+    const rgbToCss = (rgb: [number, number, number]) => {
+      return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`
+    }
+
+    const rgbaToCss = (rgb: [number, number, number], alpha: number) => {
+      return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`
+    }
+
+    const colors = uniforms.value
+    const borderThickness = 1.5 * ctx.dpi
+    const dashLength = 7 * ctx.dpi
+
+    // Draw all visible hover rectangles
+    for (let i = 0; i < MAX_RECTS; i++) {
+      // Check if this rectangle is visible
+      if (hoverState.visible[i] !== 1) {
+        continue
+      }
+
+      // Get position
+      const x = hoverState.positions[i * 4 + 0]!
+      const y = hoverState.positions[i * 4 + 1]!
+      const width = hoverState.positions[i * 4 + 2]!
+      const height = hoverState.positions[i * 4 + 3]!
+
+      // Get radii
+      const radiusTopLeft = hoverState.radii[i * 4 + 0]!
+      const radiusTopRight = hoverState.radii[i * 4 + 1]!
+      const radiusBottomRight = hoverState.radii[i * 4 + 2]!
+      const radiusBottomLeft = hoverState.radii[i * 4 + 3]!
+
+      // Transform to viewport coordinates
+      const viewportX =
+        (x * ctx.artboardScale + ctx.artboardOffset.x) * ctx.dpi
+      const viewportY =
+        (y * ctx.artboardScale + ctx.artboardOffset.y) * ctx.dpi
+      const viewportWidth = width * ctx.artboardScale * ctx.dpi
+      const viewportHeight = height * ctx.artboardScale * ctx.dpi
+
+      // Get type and determine rendering approach
+      const type = hoverState.types[i]!
+
+      // Type 2 = editable field: fill + solid border
+      if (type === 2) {
+        // Draw fill
+        ctx2d.fillStyle = rgbaToCss(colors.u_color_teal, 0.2)
+
+        const maxRadius = Math.min(viewportWidth, viewportHeight) / 2
+        const rtl = Math.min(radiusTopLeft * ctx.artboardScale * ctx.dpi, maxRadius)
+        const rtr = Math.min(radiusTopRight * ctx.artboardScale * ctx.dpi, maxRadius)
+        const rbr = Math.min(radiusBottomRight * ctx.artboardScale * ctx.dpi, maxRadius)
+        const rbl = Math.min(radiusBottomLeft * ctx.artboardScale * ctx.dpi, maxRadius)
+
+        ctx2d.beginPath()
+        ctx2d.moveTo(viewportX + rtl, viewportY)
+        ctx2d.lineTo(viewportX + viewportWidth - rtr, viewportY)
+        if (rtr > 0) {
+          ctx2d.arcTo(
+            viewportX + viewportWidth,
+            viewportY,
+            viewportX + viewportWidth,
+            viewportY + rtr,
+            rtr,
+          )
+        }
+        ctx2d.lineTo(viewportX + viewportWidth, viewportY + viewportHeight - rbr)
+        if (rbr > 0) {
+          ctx2d.arcTo(
+            viewportX + viewportWidth,
+            viewportY + viewportHeight,
+            viewportX + viewportWidth - rbr,
+            viewportY + viewportHeight,
+            rbr,
+          )
+        }
+        ctx2d.lineTo(viewportX + rbl, viewportY + viewportHeight)
+        if (rbl > 0) {
+          ctx2d.arcTo(
+            viewportX,
+            viewportY + viewportHeight,
+            viewportX,
+            viewportY + viewportHeight - rbl,
+            rbl,
+          )
+        }
+        ctx2d.lineTo(viewportX, viewportY + rtl)
+        if (rtl > 0) {
+          ctx2d.arcTo(viewportX, viewportY, viewportX + rtl, viewportY, rtl)
+        }
+        ctx2d.closePath()
+        ctx2d.fill()
+
+        // Draw solid border
+        ctx2d.strokeStyle = rgbToCss(colors.u_color_teal)
+        ctx2d.lineWidth = borderThickness
+        ctx2d.setLineDash([])
+        ctx2d.stroke()
+      } else {
+        // Type 0, 1, 3, 4 = blocks: dashed border only
+        // Select color: 0=mono, 1=accent, 3=white, 4=lime
+        let strokeColor = colors.u_color_mono
+        if (type === 4) {
+          strokeColor = colors.u_color_lime
+        } else if (type === 3) {
+          strokeColor = colors.u_color_white
+        } else if (type === 1) {
+          strokeColor = colors.u_color_accent
+        }
+
+        ctx2d.strokeStyle = rgbToCss(strokeColor)
+        ctx2d.lineWidth = borderThickness
+        ctx2d.setLineDash([dashLength, dashLength])
+
+        const maxRadius = Math.min(viewportWidth, viewportHeight) / 2
+        const rtl = Math.min(radiusTopLeft * ctx.artboardScale * ctx.dpi, maxRadius)
+        const rtr = Math.min(radiusTopRight * ctx.artboardScale * ctx.dpi, maxRadius)
+        const rbr = Math.min(radiusBottomRight * ctx.artboardScale * ctx.dpi, maxRadius)
+        const rbl = Math.min(radiusBottomLeft * ctx.artboardScale * ctx.dpi, maxRadius)
+
+        ctx2d.beginPath()
+        ctx2d.moveTo(viewportX + rtl, viewportY)
+        ctx2d.lineTo(viewportX + viewportWidth - rtr, viewportY)
+        if (rtr > 0) {
+          ctx2d.arcTo(
+            viewportX + viewportWidth,
+            viewportY,
+            viewportX + viewportWidth,
+            viewportY + rtr,
+            rtr,
+          )
+        }
+        ctx2d.lineTo(viewportX + viewportWidth, viewportY + viewportHeight - rbr)
+        if (rbr > 0) {
+          ctx2d.arcTo(
+            viewportX + viewportWidth,
+            viewportY + viewportHeight,
+            viewportX + viewportWidth - rbr,
+            viewportY + viewportHeight,
+            rbr,
+          )
+        }
+        ctx2d.lineTo(viewportX + rbl, viewportY + viewportHeight)
+        if (rbl > 0) {
+          ctx2d.arcTo(
+            viewportX,
+            viewportY + viewportHeight,
+            viewportX,
+            viewportY + viewportHeight - rbl,
+            rbl,
+          )
+        }
+        ctx2d.lineTo(viewportX, viewportY + rtl)
+        if (rtl > 0) {
+          ctx2d.arcTo(viewportX, viewportY, viewportX + rtl, viewportY, rtl)
+        }
+        ctx2d.closePath()
+        ctx2d.stroke()
+      }
+
+      // Reset line dash
+      ctx2d.setLineDash([])
+    }
   },
 })
 </script>

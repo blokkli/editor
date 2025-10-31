@@ -17,8 +17,6 @@ uniform float u_select_all;
 uniform vec2 u_resolution;
 uniform vec3 u_color_field_default;
 uniform vec3 u_color_field_active;
-uniform vec3 u_color_area_default;
-uniform vec3 u_color_area_active;
 uniform vec4 u_select_rect;
 
 out vec4 v_quad;

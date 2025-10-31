@@ -23,7 +23,6 @@ type PendingRect<T> = {
 }
 
 export class RectangleBufferCollector<T extends RectangleBufferRect> {
-  gl?: WebGLRenderingContext
   added: Set<string> = new Set()
   rects: Record<string, T> = {}
   positions: number[] = []
@@ -39,11 +38,7 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
   deferredMode: boolean = false
   pendingRects: PendingRect<T>[] = []
 
-  constructor(
-    gl?: WebGLRenderingContext,
-    options?: RectangleBufferCollectorOptions,
-  ) {
-    this.gl = gl
+  constructor(options?: RectangleBufferCollectorOptions) {
     this.deferredMode = options?.deferredMode || false
   }
 
@@ -377,40 +372,40 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
     // buffer.
   }
 
-  createBufferInfo(): BufferInfo | null {
-    if (!this.gl) {
+  createBufferInfo(gl?: WebGLRenderingContext): BufferInfo | null {
+    if (!gl) {
       return null
     }
-    return createBufferInfoFromArrays(this.gl, {
+    return createBufferInfoFromArrays(gl, {
       a_position: {
         numComponents: 3,
         data: this.positions,
-        type: this.gl.FLOAT,
+        type: gl.FLOAT,
       },
       a_rect_id: {
         numComponents: 1,
         data: this.rectId,
-        type: this.gl.FLOAT,
+        type: gl.FLOAT,
       },
       a_state: {
         numComponents: 1,
         data: this.state,
-        type: this.gl.FLOAT,
+        type: gl.FLOAT,
       },
       a_rect_type: {
         numComponents: 1,
         data: this.types,
-        type: this.gl.FLOAT,
+        type: gl.FLOAT,
       },
       a_rect_radius: {
         numComponents: 4,
         data: this.radius,
-        type: this.gl.FLOAT,
+        type: gl.FLOAT,
       },
       a_quad: {
         numComponents: 4,
         data: this.quad,
-        type: this.gl.FLOAT,
+        type: gl.FLOAT,
       },
       indices: this.indices,
     })

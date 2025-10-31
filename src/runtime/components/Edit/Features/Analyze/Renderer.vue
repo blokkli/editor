@@ -40,11 +40,8 @@
     </div>
   </div>
   <Overlay
-    v-if="
-      resultsFiltered.length && gl && animation.webglEnabled.value && !isStale
-    "
+    v-if="resultsFiltered.length && animation.webglEnabled.value && !isStale"
     :results="resultsFiltered"
-    :gl="gl"
   />
 </template>
 
@@ -74,8 +71,6 @@ const ALL = 'ALL'
 
 const { $t, ui, state, animation } = useBlokkli()
 const { getCategoryLabel } = useAnalyzeHelper()
-
-const gl = animation.gl()
 
 const currentPlugin = ref('readability')
 
