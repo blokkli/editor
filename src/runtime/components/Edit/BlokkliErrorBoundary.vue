@@ -1,64 +1,48 @@
 <template>
   <slot />
-
-  <Teleport to="body">
-    <Transition name="bk-fade">
-      <div
-        v-if="errors.length"
-        class="bk bk-fatal-error-overlay"
-        @wheel.capture.passive.stop
-        @click.stop
-        @mousedown.stop
-        @touchstart.passive.stop
-        @mousemove.stop
-      >
-        <div class="bk-fatal-error-overlay-info">
-          <Icon name="sad" />
-          <div>
-            <h2>{{ $t('fatalErrorTitle', 'blökkli has stopped working') }}</h2>
-            <p>
-              {{
-                $t(
-                  'fatalErrorText',
-                  'Unfortunately blökkli has encountered a fatal error which prevents it from working normally. You may be able to continue using it, but things may not work as expected.',
-                )
-              }}
-            </p>
-            <button class="bk-button bk-is-danger" @click="errors = []">
-              {{ $t('fatalErrorButton', 'Continue anyway...') }}
-            </button>
-          </div>
-        </div>
-        <div class="bk-fatal-error-overlay-list">
-          <div v-for="(e, i) in unique" :key="i">
-            <h3>{{ e.name }}: {{ e.message }}</h3>
-            <code>
-              <pre>{{ e.stack }}</pre>
-            </code>
-          </div>
-        </div>
-      </div>
-    </Transition>
-  </Teleport>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, onErrorCaptured } from '#imports'
-import { Icon } from '#blokkli/components'
-import textProvider from '#blokkli/helpers/textProvider'
+import { emitMessage } from '#blokkli/helpers/eventBus'
+import { ref, onErrorCaptured, useBlokkli } from '#imports'
+
+const props = defineProps<{
+  label: string
+}>()
+
+const { $t } = useBlokkli()
 
 const errors = ref<Error[]>([])
 
-const $t = textProvider()
+const isLocked = defineModel<boolean>({ default: false })
+
+const emit = defineEmits<{
+  (e: 'error', error: Error): void
+}>()
 
 onErrorCaptured((err) => {
   errors.value.push(err)
-  return false
-})
+  emit('error', err)
+  const willBeLocked = errors.value.length >= 3
+  if (willBeLocked) {
+    const message = $t(
+      'errorCapturedMessageDisabled',
+      '"@label" has errored more than 3 times. The feature will be disabled.',
+    )
+      .replace('@label', props.label)
+      .replace('@errorMessage', err.message)
+    emitMessage(message, 'error', true)
+  } else {
+    const message = $t(
+      'errorCapturedMessage',
+      'Error in "@label": @errorMessage',
+    )
+      .replace('@label', props.label)
+      .replace('@errorMessage', err.message)
+    emitMessage(message, 'warning')
+  }
 
-const unique = computed(() => {
-  return errors.value.filter((value, index, self) => {
-    return self.findIndex((v) => v.name === value.name) === index
-  })
+  isLocked.value = willBeLocked
+  return false
 })
 </script>

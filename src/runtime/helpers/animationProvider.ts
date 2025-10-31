@@ -292,7 +292,9 @@ export default function (
     if (onlyRenderer) {
       const glContext = gl()
       if (glContext) {
-        onlyRenderer.render(ctx)
+        try {
+          onlyRenderer.render(ctx)
+        } catch {}
       }
     } else {
       for (let i = sortedRenderers.length - 1; i >= 0; i--) {
@@ -300,7 +302,9 @@ export default function (
         if (!renderer.enabled || renderer.enabled()) {
           const glContext = gl()
           if (glContext) {
-            renderer.render(ctx)
+            try {
+              renderer.render(ctx)
+            } catch {}
           }
         }
       }

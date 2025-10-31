@@ -22,13 +22,29 @@
 
     &.bk-is-success {
       @apply bg-lime-normal;
+
+      .bk-message-content {
+        @apply text-white;
+      }
     }
     &.bk-is-error {
       @apply bg-red-normal;
+
+      .bk-message-content {
+        @apply text-white;
+      }
+    }
+
+    &.bk-is-warning {
+      @apply bg-yellow-normal;
+
+      .bk-message-content {
+        @apply text-yellow-dark;
+      }
     }
   }
   .bk-message-content {
-    @apply p-20 text-white font-bold text-lg text-center relative flex-1 lg:text-2xl;
+    @apply p-20 font-bold text-lg text-center relative flex-1 lg:text-2xl;
     @apply hover:bg-red-dark/15;
   }
   .bk-message-additional {

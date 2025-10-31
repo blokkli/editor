@@ -15,13 +15,19 @@
     </BlokkliTransition>
   </Teleport>
 
-  <Renderer @toggle="onRendererToggle" @toggle-field="onRendererToggleField" />
+  <ErrorBoundary label="Add Buttons" v-model="isLocked">
+    <Renderer
+      v-if="!isLocked"
+      @toggle="onRendererToggle"
+      @toggle-field="onRendererToggleField"
+    />
+  </ErrorBoundary>
 </template>
 
 <script setup lang="ts">
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { computed, useBlokkli, ref, watch } from '#imports'
-import { BlokkliTransition } from '#blokkli/components'
+import { BlokkliTransition, ErrorBoundary } from '#blokkli/components'
 import {
   getChildrenOrientation,
   getGapSize,
@@ -46,6 +52,8 @@ const props = defineProps<{
 }>()
 
 const { dom, state, eventBus, types, $t, blocks, fields } = useBlokkli()
+
+const isLocked = ref(false)
 
 const shouldRender = computed(() => {
   // Add buttons are only visible when one block is selected.

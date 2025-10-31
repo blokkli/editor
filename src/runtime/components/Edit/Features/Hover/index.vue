@@ -1,10 +1,13 @@
 <template>
-  <Overlay v-if="isVisible && gl && animation.webglEnabled.value" :gl="gl" />
+  <ErrorBoundary :label="$t('feature_hover_label', 'Hover')" v-model="isLocked">
+    <Overlay v-if="isVisible && gl && animation.webglEnabled.value" :gl="gl" />
+  </ErrorBoundary>
 </template>
 
 <script lang="ts" setup>
 import Overlay from './Overlay/index.vue'
-import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
+import { computed, useBlokkli, defineBlokkliFeature, ref } from '#imports'
+import { ErrorBoundary } from '#blokkli/components'
 
 defineBlokkliFeature({
   id: 'hover',
@@ -14,12 +17,15 @@ defineBlokkliFeature({
     'Renders a border around blocks that are currently being hovered.',
 })
 
-const { selection, ui, animation, dom } = useBlokkli()
+const { selection, ui, animation, dom, $t } = useBlokkli()
 
 const gl = animation.gl()
 
+const isLocked = ref(false)
+
 const isVisible = computed(
   () =>
+    !isLocked.value &&
     dom.isReady.value &&
     !selection.isMultiSelecting.value &&
     !selection.editableActive.value &&

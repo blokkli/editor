@@ -549,6 +549,8 @@ if (gl && programInfo && bufferInfo) {
           circlePositions[2] = blockRect.x + blockRect.width / 2 // x
           circlePositions[3] = blockRect.y + blockRect.height + BUTTON_SHIFT // y
           circleVisible[1] = 1
+
+          throw new Error('aaaaaaaa')
         }
       }
 

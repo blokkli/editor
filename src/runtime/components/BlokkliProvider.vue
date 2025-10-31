@@ -6,7 +6,7 @@
     :data-provider-entity-bundle="entityBundle"
     :data-blokkli-provider-active="isInEditor ? 'true' : 'false'"
   >
-    <BlokkliErrorBoundary v-if="isInEditor">
+    <BlokkliRootErrorBoundary v-if="isInEditor">
       <PreviewProvider
         v-if="isPreviewing"
         v-slot="{ mutatedEntity }"
@@ -42,7 +42,7 @@
           :entity="mutatedEntity"
         />
       </EditProvider>
-    </BlokkliErrorBoundary>
+    </BlokkliRootErrorBoundary>
 
     <slot
       v-else
@@ -187,8 +187,8 @@ const EditProvider = defineAsyncComponent(
   () => import('./Edit/EditProvider.vue'),
 )
 
-const BlokkliErrorBoundary = defineAsyncComponent(
-  () => import('./Edit/BlokkliErrorBoundary.vue'),
+const BlokkliRootErrorBoundary = defineAsyncComponent(
+  () => import('./Edit/BlokkliRootErrorBoundary.vue'),
 )
 
 const EditIndicator = defineAsyncComponent(

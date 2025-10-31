@@ -5,7 +5,7 @@ export const eventBus = mitt<EventbusEvents>()
 
 export const emitMessage = (
   message: string,
-  type: 'success' | 'error' = 'success',
+  type: 'success' | 'error' | 'warning' = 'success',
   additional?: string | Error | unknown,
   replace?: boolean,
 ) => {

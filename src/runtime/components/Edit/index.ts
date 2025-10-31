@@ -1,11 +1,12 @@
 import AddListItem from './AddListItem/index.vue'
 import AddListItemIcon from './AddListItemIcon/index.vue'
 import ArtboardTooltip from './ArtboardTooltip/index.vue'
+import Banner from './Banner/index.vue'
 import BlokkliTransition from './Transition/index.vue'
-import TransitionHeight from './Transition/Height.vue'
 import ConfigForm from './PluginConfigForm/index.vue'
 import DialogModal from './Dialog/index.vue'
 import DiffViewerState from './DiffViewer/State.vue'
+import ErrorBoundary from './BlokkliErrorBoundary.vue'
 import FormDatepicker from './Form/Datepicker/index.vue'
 import FormGroup from './Form/Group/index.vue'
 import FormItem from './Form/Item/index.vue'
@@ -25,21 +26,23 @@ import Pagination from './Pagination/index.vue'
 import RelativeTime from './RelativeTime/index.vue'
 import Resizable from './Resizable/index.vue'
 import ScaleToFit from './ScaleToFit/index.vue'
+import ScheduleDate from './ScheduleDate/index.vue'
 import ScrollBoundary from './ScrollBoundary/index.vue'
 import ShortcutIndicator from './ShortcutIndicator/index.vue'
 import Sortli from './Sortli/index.vue'
-import Banner from './Banner/index.vue'
-import ScheduleDate from './ScheduleDate/index.vue'
+import TransitionHeight from './Transition/Height.vue'
 import ViewportBlockingRect from './ViewportBlockingRect/index.vue'
 
 export {
   AddListItem,
   AddListItemIcon,
   ArtboardTooltip,
+  Banner,
   BlokkliTransition,
   ConfigForm,
   DialogModal,
   DiffViewerState,
+  ErrorBoundary,
   FormDatepicker,
   FormGroup,
   FormItem,
@@ -59,11 +62,10 @@ export {
   RelativeTime,
   Resizable,
   ScaleToFit,
+  ScheduleDate,
   ScrollBoundary,
   ShortcutIndicator,
   Sortli,
-  ViewportBlockingRect,
-  Banner,
-  ScheduleDate,
   TransitionHeight,
+  ViewportBlockingRect,
 }

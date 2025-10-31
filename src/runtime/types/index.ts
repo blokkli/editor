@@ -1017,7 +1017,7 @@ export type AnimationFrameEvent = {
 }
 
 export type Message = {
-  type: 'success' | 'error'
+  type: 'success' | 'error' | 'warning'
   message: string
   additional?: string | Error | unknown
   replace?: boolean

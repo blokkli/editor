@@ -52,7 +52,7 @@ import { ref, onMounted, onBeforeUnmount, computed, watch } from '#imports'
 import { Icon, DialogModal } from '#blokkli/components'
 
 const props = defineProps<{
-  type: 'success' | 'error'
+  type: 'success' | 'error' | 'warning'
   message: string
   additional?: string | Error | unknown
 }>()
