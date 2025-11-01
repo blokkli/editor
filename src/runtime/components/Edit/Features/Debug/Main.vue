@@ -34,7 +34,6 @@
   <PluginDebugOverlay id="rects" title="Show field and block rects">
     <DebugRects />
   </PluginDebugOverlay>
-
 </template>
 
 <script lang="ts" setup>

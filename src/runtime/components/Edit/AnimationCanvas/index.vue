@@ -1,8 +1,8 @@
 <template>
   <Teleport to="#bk-canvas-overlay">
     <canvas
-      :key="animation.canvasKey.value"
       id="bk-animation-canvas-webgl"
+      :key="animation.canvasKey.value"
       ref="canvasEl"
       :style
       @click.capture="onClick"

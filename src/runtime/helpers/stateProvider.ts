@@ -183,6 +183,8 @@ export default async function (
   }
 
   function setContext(context?: MappedState, override?: boolean) {
+    eventBus.emit('state:reload:before')
+
     if (!override) {
       _mappedState = context ?? null
     }

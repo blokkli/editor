@@ -6,9 +6,9 @@
     <div>
       <FormCheckboxes
         id="debug-loggers"
+        v-model="debug.enabledLoggers.value"
         label="Enabled Loggers"
         description="If none selected, all will log. Select one or more to filter."
-        v-model="debug.enabledLoggers.value"
         :options="loggerOptions"
       />
     </div>

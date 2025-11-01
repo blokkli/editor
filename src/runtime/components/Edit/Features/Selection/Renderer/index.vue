@@ -251,7 +251,10 @@ const { collector } = defineRenderer('selection-overlay', {
 
     // Calculate thickness based on scale (from vertex shader line 37)
     // float thickness = (0.5 + smoothstep(0.3, 1.0, u_scale) * 2.5) * u_dpi;
-    const smoothstepValue = Math.max(0, Math.min(1, (ctx.artboardScale - 0.3) / 0.7))
+    const smoothstepValue = Math.max(
+      0,
+      Math.min(1, (ctx.artboardScale - 0.3) / 0.7),
+    )
     const thickness = (0.5 + smoothstepValue * 2.5) * ctx.dpi
 
     // Draw all selection rectangles as strokes

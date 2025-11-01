@@ -567,6 +567,10 @@ export default function (
     }
   }
 
+  onBlokkliEvent('state:reload:before', () => {
+    observedElementCache.clear()
+  })
+
   // After the state has been updated, update the rects of all currently visible blocks.
   onBlokkliEvent('state:reloaded', () => {
     observedElementCache.clear()
@@ -678,32 +682,40 @@ export default function (
     }
 
     const item = state.getFieldListItem(uuid)
-    if (item) {
-      const fieldList = state.getFieldListForBlock(item.uuid)
-      if (fieldList) {
-        const fieldListType =
-          getRegisteredField(fieldList.entityUuid, fieldList.name)
-            ?.fieldListType ?? 'default'
-
-        const parentBundle =
-          fieldList.entityType === itemEntityType
-            ? (state.getFieldListItem(fieldList.entityUuid)?.bundle ?? null)
-            : null
-
-        const observableElement = getElementToObserve(
-          item.uuid,
-          el,
-          item.bundle,
-          fieldListType,
-          parentBundle as BlockBundleWithNested,
-        )
-        blockElementToUuid.set(observableElement, uuid)
-        registeredBlocks[uuid] = el
-        observedElements[uuid] = observableElement
-        intersectionObserver.observe(observableElement)
-        resizeObserver.observe(observableElement)
-      }
+    if (!item) {
+      return logger.error(
+        'Failed to register block due to missing field list item.',
+        uuid,
+      )
     }
+    const fieldList = state.getFieldListForBlock(item.uuid)
+    if (!fieldList) {
+      return logger.error(
+        'Failed to register block due to missing field list.',
+        uuid,
+      )
+    }
+    const fieldListType =
+      getRegisteredField(fieldList.entityUuid, fieldList.name)?.fieldListType ??
+      'default'
+
+    const parentBundle =
+      fieldList.entityType === itemEntityType
+        ? (state.getFieldListItem(fieldList.entityUuid)?.bundle ?? null)
+        : null
+
+    const observableElement = getElementToObserve(
+      item.uuid,
+      el,
+      item.bundle,
+      fieldListType,
+      parentBundle as BlockBundleWithNested,
+    )
+    blockElementToUuid.set(observableElement, uuid)
+    registeredBlocks[uuid] = el
+    observedElements[uuid] = observableElement
+    intersectionObserver.observe(observableElement)
+    resizeObserver.observe(observableElement)
   }
 
   function unregisterBlock(key: string, uuid: string) {

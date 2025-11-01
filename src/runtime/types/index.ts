@@ -1276,6 +1276,7 @@ export type EventbusEvents = {
   'animationFrame:after': undefined
   'canvas:draw': CanvasDrawEvent
 
+  'state:reload:before': undefined
   'state:reloaded': undefined
 
   addContentSearchItem: AddContentSearchItemEvent
