@@ -4,7 +4,10 @@
       :id="'bk-sidebar-button-' + id"
       ref="tourElement"
       class="bk-toolbar-button"
-      :class="[{ 'is-active': activeSidebar === id }, 'bk-is-' + region]"
+      :class="[
+        { 'bk-is-active': activeSidebar === id && !isDisabled },
+        'bk-is-' + region,
+      ]"
       :disabled="isDisabled"
       :style="{ order: weight }"
       @click.prevent.stop="toggleSidebar"
@@ -17,9 +20,9 @@
         <span>{{ title }}</span>
         <ShortcutIndicator
           v-if="keyCode"
-          :meta="meta"
-          :shift="shift"
-          :key-code="keyCode"
+          :meta
+          :shift
+          :key-code
           :label="title"
           @pressed="toggleSidebar"
         />
@@ -36,13 +39,13 @@
   >
     <SidebarDetached
       v-if="isRenderedDetached"
-      :id="id"
+      :id
       ref="tourElement"
-      :title="title"
-      :icon="icon"
-      :min-width="minWidth"
-      :min-height="minHeight"
-      :size="size"
+      :title
+      :icon
+      :min-width
+      :min-height
+      :size
       :is-left="region === 'left'"
       class="bk-sidebar-inner"
       @close="onAttach"
@@ -55,12 +58,12 @@
           <div ref="sidebarContent" class="bk-sidebar-content">
             <slot
               :key="isRenderedDetached ? 'detached' : 'attached'"
-              :scrolled-to-end="scrolledToEnd"
+              :scrolled-to-end
               :is-detached="isRenderedDetached"
-              :width="width"
-              :height="height"
-              :toggle-sidebar="toggleSidebar"
-              :is-resizing="isResizing"
+              :width
+              :height
+              :toggle-sidebar
+              :is-resizing
             />
           </div>
         </div>
@@ -101,7 +104,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch, ref, useBlokkli } from '#imports'
+import { computed, watch, ref, useBlokkli, onBeforeUnmount } from '#imports'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon, ShortcutIndicator, ScrollBoundary } from '#blokkli/components'
 import SidebarDetached from './Detached/index.vue'
@@ -109,6 +112,7 @@ import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import useAnimationFrame from '#blokkli/helpers/composables/useAnimationFrame'
 import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
+import type { SidebarRegion } from '#blokkli/types'
 
 const props = withDefaults(
   defineProps<{
@@ -120,7 +124,7 @@ const props = withDefaults(
     weight?: string | number
     renderAlways?: boolean
     disabled?: boolean
-    region?: 'left' | 'right'
+    region?: SidebarRegion
     minWidth?: number
     minHeight?: number
     size?: { width: number; height: number }
@@ -151,10 +155,29 @@ const tourElement = ref<HTMLElement | null>(null)
 const detachedKey = computed(() => 'sidebar:detached:' + props.id)
 const storageKey = computed(() => 'sidebar:active:' + props.region)
 const isDetached = storage.use(detachedKey, false, true)
-const isDisabled = computed(
-  () => props.editOnly && state.editMode.value !== 'editing' && !props.disabled,
+const isDisabled = computed<boolean>(
+  () =>
+    (props.editOnly && state.editMode.value !== 'editing') || props.disabled,
 )
 const activeSidebar = storage.use(storageKey, '', true)
+
+const isRendered = computed(
+  () => activeSidebar.value === props.id && !isDisabled.value,
+)
+
+watch(
+  isRendered,
+  (isRendered) => {
+    if (isRendered) {
+      ui.setActiveSidebar(props.region, props.id)
+    } else {
+      ui.removeActiveSidebar(props.region, props.id)
+    }
+  },
+  {
+    immediate: true,
+  },
+)
 
 const isRenderedDetached = computed(
   () => isDetached.value && !ui.isMobile.value,
@@ -267,6 +290,10 @@ defineTourItem(() => {
     text: props.tourText,
     element: () => tourElement.value,
   }
+})
+
+onBeforeUnmount(() => {
+  ui.removeActiveSidebar(props.region, props.id)
 })
 </script>
 

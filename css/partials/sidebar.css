@@ -194,14 +194,6 @@ html.bk-is-sidebar-interacting {
     }
   }
 
-  &.bk-has-sidebar-open {
-    .bk-sidebar-container-tabs {
-      button:not(.is-active):not(:hover) {
-        @apply text-mono-600;
-      }
-    }
-  }
-
   button {
     @apply w-50 h-40 relative;
     @apply md:h-50;
@@ -242,7 +234,8 @@ html.bk-is-sidebar-interacting {
       }
     }
 
-    &.is-active {
+    &.bk-is-active {
+      @apply bg-mono-700;
       &:before {
         @apply scale-100;
       }

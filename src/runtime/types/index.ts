@@ -1764,4 +1764,6 @@ export type RegisterFieldData = Pick<
 
 export type VueClassProp = string | Record<string, boolean> | VueClassProp[]
 
+export type SidebarRegion = 'left' | 'right'
+
 export default {}

@@ -8,7 +8,13 @@ import {
 } from 'vue'
 import { eventBus } from './eventBus'
 import type { StorageProvider } from './storageProvider'
-import type { AddListOrientation, Coord, Rectangle, Size } from '#blokkli/types'
+import type {
+  AddListOrientation,
+  Coord,
+  Rectangle,
+  SidebarRegion,
+  Size,
+} from '#blokkli/types'
 import type { Viewport } from '#blokkli/constants'
 import { falsy } from '.'
 import { addElementClasses } from './addElementClasses'
@@ -96,6 +102,10 @@ export type UiProvider = {
 
   setBannerHeight: (id: string, height: number) => void
   removeBanner: (id: string) => void
+  setActiveSidebar: (region: SidebarRegion, id: string) => void
+  removeActiveSidebar: (region: SidebarRegion, id: string) => void
+  hasSidebarLeft: ComputedRef<boolean>
+  hasSidebarRight: ComputedRef<boolean>
 }
 
 export default function (
@@ -244,8 +254,42 @@ export default function (
     return 50
   })
 
-  const activeSidebarLeft = storage.use('sidebar:active:left', '')
-  const activeSidebarRight = storage.use('sidebar:active:right', '')
+  const activeSidebarsLeft = ref<string[]>([])
+  const activeSidebarsRight = ref<string[]>([])
+
+  function setActiveSidebar(region: string, id: string) {
+    if (region === 'left') {
+      if (activeSidebarsLeft.value.includes(id)) {
+        return
+      }
+      activeSidebarsLeft.value.push(id)
+    } else {
+      if (activeSidebarsRight.value.includes(id)) {
+        return
+      }
+      activeSidebarsRight.value.push(id)
+    }
+  }
+
+  function removeActiveSidebar(region: string, id: string) {
+    if (region === 'left') {
+      activeSidebarsLeft.value = activeSidebarsLeft.value.filter(
+        (v) => v !== id,
+      )
+    } else {
+      activeSidebarsRight.value = activeSidebarsRight.value.filter(
+        (v) => v !== id,
+      )
+    }
+  }
+
+  const hasSidebarLeft = computed<boolean>(() => {
+    return !!activeSidebarsLeft.value.length
+  })
+
+  const hasSidebarRight = computed<boolean>(() => {
+    return !!activeSidebarsRight.value.length
+  })
 
   const settingsStorage = storage.use('feature:add-list:settings', {
     orientation: 'vertical' as any,
@@ -264,7 +308,7 @@ export default function (
       ) {
         x += 70
       }
-      if (activeSidebarLeft.value) {
+      if (hasSidebarLeft.value) {
         x += 400
       }
     }
@@ -278,7 +322,7 @@ export default function (
       return viewportWidth.value
     }
     let width = viewportWidth.value - visibleViewportX.value - 50
-    if (activeSidebarRight.value) {
+    if (hasSidebarRight.value) {
       // Chosen by fair dice roll.
       width -= 351
     }
@@ -404,12 +448,12 @@ export default function (
   addElementClasses(
     document.documentElement,
     'bk-has-sidebar-left',
-    activeSidebarLeft,
+    hasSidebarLeft,
   )
   addElementClasses(
     document.documentElement,
     'bk-has-sidebar-right',
-    activeSidebarRight,
+    hasSidebarRight,
   )
 
   addElementClasses(document.documentElement, ['bk-html-root'])
@@ -504,5 +548,9 @@ export default function (
     removeSelectionColor,
     setBannerHeight,
     removeBanner,
+    setActiveSidebar,
+    removeActiveSidebar,
+    hasSidebarLeft,
+    hasSidebarRight,
   }
 }

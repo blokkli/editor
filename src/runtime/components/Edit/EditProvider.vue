@@ -176,6 +176,7 @@ const state = await editStateProvider(
   props.permissions,
 )
 const storage = await storageProvider(adapter, context)
+const plugins = pluginProvider()
 const debug = debugProvider(storage)
 const baseLogger = debug.createLogger('EditProvider')
 baseLogger.log('Entity: ', context.value)
@@ -194,7 +195,6 @@ const animation = animationProvider(ui, storage, selection, debug)
 const keyboard = keyboardProvider(animation)
 const types = await typesProvider(adapter, selection, context)
 const indicators = indicatorsProvider()
-const plugins = pluginProvider()
 const directive = directiveProvider(debug, ui)
 const fields = fieldsProvider(state, dom, types)
 
