@@ -40,7 +40,7 @@
     </div>
   </div>
   <Renderer
-    v-if="resultsFiltered.length && animation.webglEnabled.value && !isStale"
+    v-if="resultsFiltered.length && !isStale"
     :results="resultsFiltered"
   />
 </template>
@@ -69,7 +69,7 @@ const props = defineProps<{
 
 const ALL = 'ALL'
 
-const { $t, ui, state, animation } = useBlokkli()
+const { $t, ui, state } = useBlokkli()
 const { getCategoryLabel } = useAnalyzeHelper()
 
 const currentPlugin = ref('readability')

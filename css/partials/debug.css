@@ -1,32 +1,45 @@
 .bk.bk-debug {
-  section {
-    @apply p-20 border-b border-b-mono-300;
-    > h2 {
-      @apply font-semibold uppercase text-sm mb-5;
+  .bk-debug-section {
+    @apply border-b border-b-mono-300;
+  }
+
+  .bk-debug-section-header {
+    @apply cursor-pointer select-none flex items-center gap-5;
+    @apply font-semibold uppercase text-sm p-20;
+    &:hover {
+      @apply opacity-80;
     }
   }
-}
 
-.bk-debug-list {
-  > div {
-    @apply flex justify-between;
-    &:not(:last-child) {
-      @apply mb-5;
+  .bk-debug-section-content {
+    @apply px-20 pb-20;
+  }
+
+  .bk-debug-section-indicator {
+    @apply inline-block w-15 text-xs;
+  }
+
+  .bk-debug-list {
+    > div {
+      @apply flex justify-between;
+      &:not(:last-child) {
+        @apply mb-5;
+      }
     }
   }
-}
 
-.bk-debug-features {
-  h3 {
-    @apply font-bold;
-  }
+  .bk-debug-features {
+    h3 {
+      @apply font-bold;
+    }
 
-  p {
-    @apply text-sm;
-  }
+    p {
+      @apply text-sm;
+    }
 
-  > div {
-    @apply flex gap-5 py-10 border-b border-b-mono-300;
+    > div {
+      @apply flex gap-5 py-10 border-b border-b-mono-300;
+    }
   }
 }
 

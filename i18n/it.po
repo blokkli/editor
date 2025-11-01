@@ -542,6 +542,10 @@ msgctxt "diffStatusUnchanged"
 msgid "Unchanged"
 msgstr ""
 
+msgctxt "downloadLogsButton"
+msgid "Download Logs"
+msgstr ""
+
 msgctxt "droppableEditFormSave"
 msgid "Save"
 msgstr ""
@@ -606,6 +610,14 @@ msgstr ""
 
 msgctxt "entityTitleTourTitle"
 msgid "Page"
+msgstr ""
+
+msgctxt "errorCapturedMessage"
+msgid "Error in \"@label\": @errorMessage"
+msgstr ""
+
+msgctxt "errorCapturedMessageDisabled"
+msgid "\"@label\" has errored more than 3 times. The feature will be disabled."
 msgstr ""
 
 msgctxt "exitDescription"

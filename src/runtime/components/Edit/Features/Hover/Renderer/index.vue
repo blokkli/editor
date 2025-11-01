@@ -7,7 +7,12 @@ import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineRenderer from '#blokkli/helpers/composables/defineRenderer'
 import type { Rectangle } from '#blokkli/types'
 import { useBlokkli, computed, ref, watch } from '#imports'
-import { setBuffersAndAttributes, drawBufferInfo, setUniforms, type BufferInfo } from 'twgl.js'
+import {
+  setBuffersAndAttributes,
+  drawBufferInfo,
+  setUniforms,
+  type BufferInfo,
+} from 'twgl.js'
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/helpers/webgl'
@@ -456,10 +461,8 @@ const { collector } = defineRenderer('hover-overlay', {
       const radiusBottomLeft = hoverState.radii[i * 4 + 3]!
 
       // Transform to viewport coordinates
-      const viewportX =
-        (x * ctx.artboardScale + ctx.artboardOffset.x) * ctx.dpi
-      const viewportY =
-        (y * ctx.artboardScale + ctx.artboardOffset.y) * ctx.dpi
+      const viewportX = (x * ctx.artboardScale + ctx.artboardOffset.x) * ctx.dpi
+      const viewportY = (y * ctx.artboardScale + ctx.artboardOffset.y) * ctx.dpi
       const viewportWidth = width * ctx.artboardScale * ctx.dpi
       const viewportHeight = height * ctx.artboardScale * ctx.dpi
 
@@ -472,10 +475,22 @@ const { collector } = defineRenderer('hover-overlay', {
         ctx2d.fillStyle = rgbaToCss(colors.u_color_teal, 0.2)
 
         const maxRadius = Math.min(viewportWidth, viewportHeight) / 2
-        const rtl = Math.min(radiusTopLeft * ctx.artboardScale * ctx.dpi, maxRadius)
-        const rtr = Math.min(radiusTopRight * ctx.artboardScale * ctx.dpi, maxRadius)
-        const rbr = Math.min(radiusBottomRight * ctx.artboardScale * ctx.dpi, maxRadius)
-        const rbl = Math.min(radiusBottomLeft * ctx.artboardScale * ctx.dpi, maxRadius)
+        const rtl = Math.min(
+          radiusTopLeft * ctx.artboardScale * ctx.dpi,
+          maxRadius,
+        )
+        const rtr = Math.min(
+          radiusTopRight * ctx.artboardScale * ctx.dpi,
+          maxRadius,
+        )
+        const rbr = Math.min(
+          radiusBottomRight * ctx.artboardScale * ctx.dpi,
+          maxRadius,
+        )
+        const rbl = Math.min(
+          radiusBottomLeft * ctx.artboardScale * ctx.dpi,
+          maxRadius,
+        )
 
         ctx2d.beginPath()
         ctx2d.moveTo(viewportX + rtl, viewportY)
@@ -489,7 +504,10 @@ const { collector } = defineRenderer('hover-overlay', {
             rtr,
           )
         }
-        ctx2d.lineTo(viewportX + viewportWidth, viewportY + viewportHeight - rbr)
+        ctx2d.lineTo(
+          viewportX + viewportWidth,
+          viewportY + viewportHeight - rbr,
+        )
         if (rbr > 0) {
           ctx2d.arcTo(
             viewportX + viewportWidth,
@@ -538,10 +556,22 @@ const { collector } = defineRenderer('hover-overlay', {
         ctx2d.setLineDash([dashLength, dashLength])
 
         const maxRadius = Math.min(viewportWidth, viewportHeight) / 2
-        const rtl = Math.min(radiusTopLeft * ctx.artboardScale * ctx.dpi, maxRadius)
-        const rtr = Math.min(radiusTopRight * ctx.artboardScale * ctx.dpi, maxRadius)
-        const rbr = Math.min(radiusBottomRight * ctx.artboardScale * ctx.dpi, maxRadius)
-        const rbl = Math.min(radiusBottomLeft * ctx.artboardScale * ctx.dpi, maxRadius)
+        const rtl = Math.min(
+          radiusTopLeft * ctx.artboardScale * ctx.dpi,
+          maxRadius,
+        )
+        const rtr = Math.min(
+          radiusTopRight * ctx.artboardScale * ctx.dpi,
+          maxRadius,
+        )
+        const rbr = Math.min(
+          radiusBottomRight * ctx.artboardScale * ctx.dpi,
+          maxRadius,
+        )
+        const rbl = Math.min(
+          radiusBottomLeft * ctx.artboardScale * ctx.dpi,
+          maxRadius,
+        )
 
         ctx2d.beginPath()
         ctx2d.moveTo(viewportX + rtl, viewportY)
@@ -555,7 +585,10 @@ const { collector } = defineRenderer('hover-overlay', {
             rtr,
           )
         }
-        ctx2d.lineTo(viewportX + viewportWidth, viewportY + viewportHeight - rbr)
+        ctx2d.lineTo(
+          viewportX + viewportWidth,
+          viewportY + viewportHeight - rbr,
+        )
         if (rbr > 0) {
           ctx2d.arcTo(
             viewportX + viewportWidth,

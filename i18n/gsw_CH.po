@@ -551,6 +551,10 @@ msgctxt "diffStatusUnchanged"
 msgid "Unchanged"
 msgstr "Unveränderet"
 
+msgctxt "downloadLogsButton"
+msgid "Download Logs"
+msgstr ""
+
 msgctxt "droppableEditFormSave"
 msgid "Save"
 msgstr "Speichere"
@@ -618,6 +622,14 @@ msgstr ""
 msgctxt "entityTitleTourTitle"
 msgid "Page"
 msgstr "Sitte"
+
+msgctxt "errorCapturedMessage"
+msgid "Error in \"@label\": @errorMessage"
+msgstr ""
+
+msgctxt "errorCapturedMessageDisabled"
+msgid "\"@label\" has errored more than 3 times. The feature will be disabled."
+msgstr ""
 
 msgctxt "exitDescription"
 msgid "Close editor without publishing"

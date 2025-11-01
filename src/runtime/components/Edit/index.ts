@@ -7,6 +7,7 @@ import ConfigForm from './PluginConfigForm/index.vue'
 import DialogModal from './Dialog/index.vue'
 import DiffViewerState from './DiffViewer/State.vue'
 import ErrorBoundary from './BlokkliErrorBoundary.vue'
+import FormCheckboxes from './Form/Checkboxes/index.vue'
 import FormDatepicker from './Form/Datepicker/index.vue'
 import FormGroup from './Form/Group/index.vue'
 import FormItem from './Form/Item/index.vue'
@@ -43,6 +44,7 @@ export {
   DialogModal,
   DiffViewerState,
   ErrorBoundary,
+  FormCheckboxes,
   FormDatepicker,
   FormGroup,
   FormItem,

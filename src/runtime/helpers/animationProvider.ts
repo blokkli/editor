@@ -22,6 +22,20 @@ import type { DebugProvider } from './debugProvider'
 
 export type RenderContext = CanvasDrawEvent
 
+type PreferredRenderingMode = 'auto' | 'webgl' | '2d'
+
+/**
+ * Configure WebGL context settings.
+ * Called when context is first created and when it's restored after loss.
+ */
+function configureWebGLContext(gl: WebGLRenderingContext) {
+  gl.enable(gl.BLEND)
+  gl.disable(gl.DEPTH_TEST)
+  gl.clearColor(0.0, 0.0, 0.0, 0.0)
+  gl.blendFunc(gl.SRC_ALPHA_SATURATE, gl.ONE)
+  gl.blendEquation(gl.FUNC_ADD)
+}
+
 export type Renderer<T = RectangleBufferCollector<any>> = {
   id: string
   zIndex: number
@@ -50,8 +64,15 @@ export type AnimationProvider = {
 
   /**
    * Get the WebGL rendering context.
+   * Returns undefined if context is lost or not available.
    */
   gl: () => WebGLRenderingContext | undefined
+
+  /**
+   * Get the raw WebGL context even if it's lost.
+   * For debugging purposes only (e.g., context loss testing).
+   */
+  getRawGL: () => WebGLRenderingContext | null
 
   setSharedUniforms: (
     gl: WebGLRenderingContext,
@@ -62,16 +83,35 @@ export type AnimationProvider = {
 
   webglSupported: ComputedRef<boolean | null>
   webglEnabled: WritableComputedRef<boolean>
+  preferredRenderingMode: WritableComputedRef<PreferredRenderingMode>
+
+  /**
+   * Reactive property that indicates if we're currently rendering with WebGL.
+   * True when WebGL context exists and is not lost.
+   */
+  isRenderingWebGL: ComputedRef<boolean>
+
+  /**
+   * Reactive property that indicates if we have a WebGL context.
+   * True even if the context is lost (for debugging purposes).
+   */
+  hasWebGLContext: ComputedRef<boolean>
 
   /**
    * Reactive key that increments when WebGL context is restored.
-   * Use this as a component key to force remounting on context loss/restore.
+   * Use this as a component key to force remounting renderer components on context loss/restore.
    */
   renderKey: ComputedRef<number>
 
   /**
+   * Reactive key that changes when switching between WebGL and 2D rendering modes.
+   * Use this as the canvas element key to force creating a new canvas with the appropriate context.
+   */
+  canvasKey: ComputedRef<string>
+
+  /**
    * Set the canvas element to use for rendering.
-   * This initializes both WebGL and 2D contexts.
+   * This initializes the appropriate context based on webglEnabled.
    */
   setCanvasElement: (canvas: HTMLCanvasElement) => void
 
@@ -123,14 +163,49 @@ export default function (
   debug: DebugProvider,
 ): AnimationProvider {
   const logger = debug.createLogger('Animation')
-  const webglEnabled = storage.use('webglEnabled', true)
+  const preferredRenderingMode = storage.use<PreferredRenderingMode>(
+    'preferredRenderingMode',
+    'auto',
+  )
+
+  // WebGL support detection (null = not yet tested, true/false = tested)
+  const webglSupported = ref<boolean | null>(null)
+
+  // Computed property that determines if WebGL should be enabled based on:
+  // - 'auto': uses WebGL if supported, falls back to 2D
+  // - 'webgl': forces WebGL (may fail if not supported)
+  // - '2d': forces 2D canvas rendering
+  const webglEnabled = computed({
+    get: () => {
+      if (preferredRenderingMode.value === '2d') {
+        return false
+      }
+      if (preferredRenderingMode.value === 'webgl') {
+        return true
+      }
+      // 'auto' mode: use WebGL if supported, otherwise 2D
+      return webglSupported.value !== false
+    },
+    set: (value: boolean) => {
+      // When directly setting webglEnabled, update preferredRenderingMode
+      preferredRenderingMode.value = value ? 'webgl' : '2d'
+    },
+  })
 
   // Current cursor determined by renderers
   const currentCursor = ref<CursorKeyword>('default')
   const cursor = computed<CursorKeyword>(() => currentCursor.value)
 
-  // Render key for forcing component remounts on context loss/restore
+  // Render key for forcing Renderer component remounts on context loss/restore
   const renderKey = ref(0)
+
+  // Canvas key for forcing canvas element recreation when switching between WebGL and 2D
+  const canvasKey = computed(() => (webglEnabled.value ? 'webgl' : '2d'))
+
+  // Reactive computed property that indicates if we're currently rendering with WebGL
+  const isRenderingWebGL = computed(
+    () => hasGLContext.value && !isContextLost.value,
+  )
 
   // Renderer management
   const renderers = new Map<string, Renderer>()
@@ -179,8 +254,8 @@ export default function (
       renderersPermanentlyDisabled.add(id)
       rendererFailures.delete(id)
       rendererCooldowns.delete(id)
-      console.error(
-        `[blokkli] Renderer "${id}" has been permanently disabled due to repeated failures.`,
+      logger.error(
+        `Renderer "${id}" has been permanently disabled due to repeated failures.`,
       )
       return
     }
@@ -189,8 +264,8 @@ export default function (
     if (failures === 5) {
       const cooldownEnd = Date.now() + 5000
       rendererCooldowns.set(id, cooldownEnd)
-      console.warn(
-        `[blokkli] Renderer "${id}" failed 5 times in a row. Skipping for 5 seconds.`,
+      logger.error(
+        `Renderer "${id}" failed 5 times in a row. Skipping for 5 seconds.`,
       )
     }
   }
@@ -226,7 +301,7 @@ export default function (
             handleRendererSuccess(renderer.id)
           } catch (error) {
             handleRendererFailure(renderer.id)
-            console.error(`[blokkli] Renderer "${renderer.id}" failed:`, error)
+            logger.error(`Renderer "${renderer.id}" failed:`, error)
           }
         }
       }
@@ -237,10 +312,7 @@ export default function (
           handleRendererSuccess(renderer.id)
         } catch (error) {
           handleRendererFailure(renderer.id)
-          console.error(
-            `[blokkli] Renderer "${renderer.id}" (2D fallback) failed:`,
-            error,
-          )
+          logger.error(`Renderer "${renderer.id}" (2D fallback) failed:`, error)
         }
       }
     }
@@ -326,8 +398,6 @@ export default function (
   // render a maximum of 2 seconds.
   let iterator = 120
 
-  const webglSupported = ref<boolean | null>(null)
-
   // WebGL limits (queried once from gl.MAX_VIEWPORT_DIMS).
   // These are used to calculate a safe DPI that prevents the canvas from
   // exceeding device capabilities. Default to 16384 (conservative) until queried.
@@ -337,6 +407,8 @@ export default function (
   let canvasElement: HTMLCanvasElement | null = null
   let glContext: WebGLRenderingContext | null = null
   let ctx2dContext: CanvasRenderingContext2D | null = null
+  const isContextLost = ref(false) // Track if the WebGL context is currently lost (reactive)
+  const hasGLContext = ref(false) // Track if we have a WebGL context (reactive)
   let lastCanvasWidth = 0
   let lastCanvasHeight = 0
 
@@ -344,6 +416,8 @@ export default function (
     if (!canvasElement) {
       glContext = null
       ctx2dContext = null
+      isContextLost.value = false
+      hasGLContext.value = false
       return
     }
 
@@ -355,7 +429,7 @@ export default function (
       handleContextRestored,
     )
 
-    // Initialize WebGL context
+    // Initialize WebGL context if enabled
     if (webglEnabled.value && webglSupported.value !== false) {
       const gl = canvasElement.getContext('webgl2', {
         premultipliedAlpha: true,
@@ -363,6 +437,9 @@ export default function (
 
       if (gl) {
         glContext = gl
+        ctx2dContext = null // Clear 2D context - canvas can only have one context type
+        isContextLost.value = false // Fresh context is not lost
+        hasGLContext.value = true // We have a WebGL context
         webglSupported.value = true
 
         // Query WebGL limits once
@@ -375,12 +452,8 @@ export default function (
           webglLimitsQueried = true
         }
 
-        // Configure WebGL context
-        gl.enable(gl.BLEND)
-        gl.disable(gl.DEPTH_TEST)
-        gl.clearColor(0.0, 0.0, 0.0, 0.0)
-        gl.blendFunc(gl.SRC_ALPHA_SATURATE, gl.ONE)
-        gl.blendEquation(gl.FUNC_ADD)
+        // Configure WebGL context settings
+        configureWebGLContext(gl)
 
         // Add context loss handlers (now guaranteed to be added only once)
         canvasElement.addEventListener(
@@ -396,82 +469,88 @@ export default function (
       } else {
         webglSupported.value = false
         glContext = null
+        hasGLContext.value = false
+        // Fall back to 2D context
+        ctx2dContext = canvasElement.getContext('2d')
       }
     } else {
+      // WebGL disabled or not supported - use 2D context.
       glContext = null
+      hasGLContext.value = false
+      ctx2dContext = canvasElement.getContext('2d')
     }
-
-    // Initialize 2D context for fallback
-    ctx2dContext = canvasElement.getContext('2d')
-  }
-
-  /**
-   * Re-register all renderer programs with a WebGL context.
-   * Used when context is restored.
-   */
-  function reregisterAllPrograms(glContext: WebGLRenderingContext): number {
-    let count = 0
-    renderers.forEach((renderer) => {
-      if (renderer.program) {
-        const { shaders } = renderer.program()
-        const programInfo = registerProgram(renderer.id, glContext, shaders)
-        rendererPrograms.set(renderer.id, programInfo)
-        count++
-      }
-    })
-    return count
   }
 
   // Watch for WebGL enabled/disabled changes
   watch(webglEnabled, () => {
-    // Increment renderKey to force remount of:
-    // 1. AnimationCanvas component (creates new canvas element with fresh context)
-    // 2. All renderer components (fresh collectors and programs)
-    renderKey.value++
+    // Clear all WebGL programs as they are context-specific and cannot be reused
+    // when switching between rendering modes (new canvas = new context).
+    const programCount = registeredPrograms.size
+    registeredPrograms.clear()
+    rendererPrograms.clear()
 
-    // Don't call requestDraw() here - the canvas ref watcher will handle it
-    // after the new canvas element is fully set up
+    // Clear the canvas element to stop all rendering during the transition.
+    // The canvasKey change will trigger AnimationCanvas to remount with a new canvas element
+    // which will then call setCanvasElement() to resume rendering.
+    removeCanvasElement()
 
     logger.log(
-      `WebGL ${webglEnabled.value ? 'enabled' : 'disabled'}, renderKey = ${renderKey.value}`,
+      `Cleared ${programCount} WebGL programs and stopped rendering due to mode change to ${webglEnabled.value ? 'WebGL' : '2D'}`,
     )
   })
 
   function handleContextLost(event: Event) {
     event.preventDefault()
-    console.warn('[blokkli] WebGL context lost')
-    glContext = null
+    logger.error('WebGL context lost')
+
+    // Mark context as lost but keep the reference
+    isContextLost.value = true
+
     // Clear all programs as they are invalidated by context loss
     const programCount = registeredPrograms.size
     registeredPrograms.clear()
     rendererPrograms.clear()
-    console.log(`[blokkli] Cleared ${programCount} invalidated WebGL programs`)
+    logger.log(`Cleared ${programCount} invalidated WebGL programs`)
   }
 
   function handleContextRestored() {
-    console.log('[blokkli] WebGL context restored, re-initializing...')
+    logger.log('WebGL context restored')
 
-    // Initialize the new context
-    initializeContexts()
+    // Mark context as valid again
+    isContextLost.value = false
 
-    // Re-register all renderer programs with the new context
-    const newGlContext = gl()
-    if (newGlContext) {
-      const restoredCount = reregisterAllPrograms(newGlContext)
-      console.log(`[blokkli] Restored ${restoredCount} WebGL programs`)
+    // Re-configure the restored WebGL context
+    const restoredGL = glContext
+    if (restoredGL) {
+      configureWebGLContext(restoredGL)
+      logger.log('Re-configured WebGL context settings')
     }
 
-    // Increment renderKey to force remount of all renderer components
+    // Increment renderKey to force all Renderer components to remount
+    // This will cause them to re-register their programs with the restored context
     renderKey.value++
-    console.log(
-      `[blokkli] Incremented renderKey to ${renderKey.value} to force component remount`,
+
+    logger.log(
+      `Incremented renderKey to ${renderKey.value} to force renderer remount`,
     )
+
+    // Request a draw to resume rendering
+    requestDraw()
   }
 
   function setCanvasElement(canvas: HTMLCanvasElement) {
     canvasElement = canvas
     initializeContexts()
     updateCanvasSize()
+
+    // Increment renderKey to force all Renderer components to remount
+    // This happens AFTER the new canvas and context are initialized,
+    // so renderers will have a valid context to register their programs with
+    renderKey.value++
+
+    logger.log(
+      `Canvas element set with ${webglEnabled.value ? 'WebGL' : '2D'} context, renderKey = ${renderKey.value}`,
+    )
   }
 
   function removeCanvasElement() {
@@ -485,6 +564,8 @@ export default function (
     canvasElement = null
     glContext = null
     ctx2dContext = null
+    isContextLost.value = false
+    hasGLContext.value = false
     lastCanvasWidth = 0
     lastCanvasHeight = 0
   }
@@ -512,7 +593,17 @@ export default function (
   }
 
   function gl(): WebGLRenderingContext | undefined {
+    // Return undefined if context is lost, even if we have a reference
+    if (isContextLost.value) {
+      return undefined
+    }
     return glContext || undefined
+  }
+
+  function getRawGL(): WebGLRenderingContext | null {
+    // Return the raw context reference even if it's lost
+    // For debugging purposes only
+    return glContext
   }
 
   useAnimationFrame((time) => {
@@ -653,6 +744,18 @@ export default function (
   const dpi = computed(() => {
     const viewportWidth = ui.viewport.value.width
     const viewportHeight = ui.viewport.value.height
+
+    // 2D canvas rendering has stricter limits
+    if (!webglEnabled.value) {
+      // iOS Safari limits 2D canvas to 4,096 x 4,096
+      const MAX_2D_CANVAS_SIZE = 4096
+      const maxDpiByWidth = MAX_2D_CANVAS_SIZE / viewportWidth
+      const maxDpiByHeight = MAX_2D_CANVAS_SIZE / viewportHeight
+
+      // Never exceed DPI of 1 for 2D rendering (performance)
+      return Math.min(maxDpiByWidth, maxDpiByHeight, 1)
+    }
+
     const deviceRatio = window.devicePixelRatio
 
     // Calculate maximum DPI that keeps canvas within WebGL limits.
@@ -728,13 +831,18 @@ export default function (
   return {
     requestDraw,
     gl,
+    getRawGL,
     setSharedUniforms,
     dpi,
     registerProgram,
     setMouseCoords,
     webglSupported: computed(() => webglSupported.value && webglEnabled.value),
     webglEnabled,
+    preferredRenderingMode,
+    isRenderingWebGL,
+    hasWebGLContext: computed(() => hasGLContext.value),
     renderKey: computed(() => renderKey.value),
+    canvasKey,
     setCanvasElement,
     removeCanvasElement,
     cursor,

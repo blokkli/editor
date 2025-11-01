@@ -36,7 +36,7 @@ import type { BlokkliIcon } from '#blokkli-build/icons'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 
-const { storage, ui, eventBus } = useBlokkli()
+const { storage, ui, eventBus, debug } = useBlokkli()
 
 const props = defineProps<{
   id: string
@@ -55,6 +55,7 @@ const emit = defineEmits<{
   (e: 'update:modelValue', data: boolean): void
 }>()
 
+const logger = debug.createLogger('PluginViewOption')
 const storageKey = 'view_option_' + props.id
 const button = ref<HTMLElement | null>(null)
 
@@ -80,6 +81,7 @@ const title = computed(() => (isActive.value ? props.titleOff : props.titleOn))
 
 const onClick = () => {
   isActive.value = !isActive.value
+  logger.log('Toggle ' + props.id, isActive.value)
 }
 
 defineCommands(() => {

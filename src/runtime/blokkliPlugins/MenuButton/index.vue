@@ -38,7 +38,9 @@ const props = defineProps<{
 
 const emit = defineEmits(['click'])
 
-const { ui } = useBlokkli()
+const { ui, debug } = useBlokkli()
+
+const logger = debug.createLogger('PluginMenuButton')
 
 const to = computed(
   () => `#bk-menu-${props.secondary ? 'secondary' : 'primary'}`,
@@ -46,6 +48,7 @@ const to = computed(
 
 function onClick() {
   ui.menu.close()
+  logger.log('Click ' + props.id)
   emit('click')
 }
 

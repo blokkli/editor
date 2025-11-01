@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import { ShortcutIndicator, Icon } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import { ref } from '#imports'
+import { ref, useBlokkli } from '#imports'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 
@@ -60,6 +60,9 @@ const props = defineProps<{
   weight?: number | string
 }>()
 
+const { debug } = useBlokkli()
+const logger = debug.createLogger('PluginToolbar')
+
 const emit = defineEmits(['click'])
 
 const el = ref<HTMLButtonElement | null>(null)
@@ -68,6 +71,8 @@ function onClick() {
   if (props.disabled) {
     return
   }
+
+  logger.log(`Click ${props.id}`)
 
   emit('click')
 }

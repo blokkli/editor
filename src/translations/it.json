@@ -507,6 +507,10 @@
     "source": "Unchanged",
     "translation": ""
   },
+  "downloadLogsButton": {
+    "source": "Download Logs",
+    "translation": ""
+  },
   "droppableEditFormSave": {
     "source": "Save",
     "translation": ""
@@ -569,6 +573,14 @@
   },
   "entityTitleTourTitle": {
     "source": "Page",
+    "translation": ""
+  },
+  "errorCapturedMessage": {
+    "source": "Error in \"@label\": @errorMessage",
+    "translation": ""
+  },
+  "errorCapturedMessageDisabled": {
+    "source": "\"@label\" has errored more than 3 times. The feature will be disabled.",
     "translation": ""
   },
   "exitDescription": {

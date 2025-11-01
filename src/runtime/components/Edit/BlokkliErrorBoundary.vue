@@ -5,12 +5,14 @@
 <script lang="ts" setup>
 import { emitMessage } from '#blokkli/helpers/eventBus'
 import { ref, onErrorCaptured, useBlokkli } from '#imports'
+import { useGlobalBlokkliObject } from '#blokkli/helpers/composables/useGlobalBlokkliObject'
 
 const props = defineProps<{
   label: string
 }>()
 
 const { $t } = useBlokkli()
+const globalBlokkli = useGlobalBlokkliObject()
 
 const errors = ref<Error[]>([])
 
@@ -23,6 +25,16 @@ const emit = defineEmits<{
 onErrorCaptured((err) => {
   errors.value.push(err)
   emit('error', err)
+
+  // Log error to global messages
+  globalBlokkli.pushMessage({
+    type: 'error',
+    name: 'ErrorBoundary',
+    date: new Date().toISOString(),
+    message: `[${props.label}] ${err.message}`,
+    context: err.stack || '',
+  })
+
   const willBeLocked = errors.value.length >= 3
   if (willBeLocked) {
     const message = $t(

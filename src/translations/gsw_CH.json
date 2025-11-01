@@ -507,6 +507,10 @@
     "source": "Unchanged",
     "translation": "Unveränderet"
   },
+  "downloadLogsButton": {
+    "source": "Download Logs",
+    "translation": ""
+  },
   "droppableEditFormSave": {
     "source": "Save",
     "translation": "Speichere"
@@ -570,6 +574,14 @@
   "entityTitleTourTitle": {
     "source": "Page",
     "translation": "Sitte"
+  },
+  "errorCapturedMessage": {
+    "source": "Error in \"@label\": @errorMessage",
+    "translation": ""
+  },
+  "errorCapturedMessageDisabled": {
+    "source": "\"@label\" has errored more than 3 times. The feature will be disabled.",
+    "translation": ""
   },
   "exitDescription": {
     "source": "Close editor without publishing",

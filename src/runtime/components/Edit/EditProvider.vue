@@ -58,6 +58,7 @@ import {
   nextTick,
   inject,
   onUnmounted,
+  watch,
 } from '#imports'
 import type {
   BlokkliApp,
@@ -176,6 +177,8 @@ const state = await editStateProvider(
 )
 const storage = await storageProvider(adapter, context)
 const debug = debugProvider(storage)
+const baseLogger = debug.createLogger('EditProvider')
+baseLogger.log('Entity: ', context.value)
 const element = elementProvider(debug)
 const features = featuresProvider(storage)
 const commands = commandsProvider()
@@ -210,6 +213,12 @@ const isReady = computed(
     toolbarLoaded.value,
 )
 
+watch(isReady, (v) => {
+  if (v) {
+    baseLogger.log('is ready')
+  }
+})
+
 const showLoading = computed(() => {
   return !isReady.value || !featuresLoaded.value
 })
@@ -241,8 +250,6 @@ addElementClasses(
   'bk-isolate-provider',
   shouldIsolate,
 )
-
-const baseLogger = debug.createLogger('EditProvider')
 
 /**
  * Set a custom property on the given element.
@@ -378,6 +385,7 @@ if (import.meta.hot) {
 }
 
 onMounted(async () => {
+  baseLogger.log('onMounted - START')
   // We need to store the app and entity context in the DOM, so that the
   // directives used directly as a child of <BlokkliProvider> have access to
   // them. Since their parent vnode in this scenario is the component that uses
@@ -393,12 +401,12 @@ onMounted(async () => {
   window.addEventListener('contextmenu', onContextMenu)
   document.documentElement.addEventListener('touchmove', onTouchMove)
   document.documentElement.addEventListener('touchstart', onTouchStart)
-  baseLogger.log('EditProvider mounted')
   dom.init()
   directive.init()
   await nextTick()
   isInitializing.value = false
   broadcast.emit('editorLoaded', { uuid: props.entityUuid })
+  baseLogger.log('onMounted - END')
 })
 
 onBeforeUnmount(() => {

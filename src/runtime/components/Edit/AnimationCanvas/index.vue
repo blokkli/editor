@@ -1,13 +1,14 @@
 <template>
   <Teleport to="#bk-canvas-overlay">
     <canvas
-      :key="animation.renderKey.value"
+      :key="animation.canvasKey.value"
       id="bk-animation-canvas-webgl"
       ref="canvasEl"
       :style
       @click.capture="onClick"
       @pointerdown.capture="onPointerDown"
       @pointerup.capture="onPointerUp"
+      @pointermove="onPointerMove"
     />
   </Teleport>
 </template>
@@ -52,6 +53,8 @@ const {
   runtimeConfig,
   blocks,
 } = useBlokkli()
+
+let handlePointerMove = false
 
 const cursor = computed<CursorKeyword>(() =>
   state.isLoading.value ? 'wait' : animation.cursor.value,
@@ -166,6 +169,9 @@ function toDraggableExisting(
 }
 
 function onPointerMove(e: PointerEvent) {
+  if (!handlePointerMove) {
+    return
+  }
   if (keyboard.isPressingSpace.value || e.buttons === MOUSE_BUTTONS.AUXILIARY) {
     return
   }
@@ -263,7 +269,7 @@ function onPointerDown(e: PointerEvent) {
   if (state.isLoading.value) {
     return
   }
-  canvasEl.value?.addEventListener('pointermove', onPointerMove)
+  handlePointerMove = true
 
   if (e.pointerType === 'touch') {
     return onTouchStart(e)
@@ -309,7 +315,7 @@ function isClickInArtboard(coords: Coord): boolean {
 }
 
 function onPointerUp(e: PointerEvent) {
-  canvasEl.value?.removeEventListener('pointermove', onPointerMove)
+  handlePointerMove = false
   if (e.button === MOUSE_BUTTON.AUXILIARY) {
     e.preventDefault()
     return
@@ -570,7 +576,7 @@ watch(
   (newCanvas, oldCanvas) => {
     // Clean up old canvas
     if (oldCanvas) {
-      oldCanvas.removeEventListener('pointermove', onPointerMove)
+      handlePointerMove = false
       animation.removeCanvasElement()
     }
 
@@ -587,8 +593,6 @@ watch(
 
 onBeforeUnmount(() => {
   animation.removeCanvasElement()
-  if (canvasEl.value) {
-    canvasEl.value.removeEventListener('pointermove', onPointerMove)
-  }
+  handlePointerMove = false
 })
 </script>

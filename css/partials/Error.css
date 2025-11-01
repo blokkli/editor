@@ -3,7 +3,7 @@
   @apply z-[9999999999999]; /* TO THE MOON */
   @apply bg-red-light/95;
   @apply text-mono-900;
-  @apply flex flex-col;
+  @apply flex flex-col items-center;
   @apply px-20 py-40;
 
   .bk-icon {
@@ -12,33 +12,36 @@
       @apply fill-red-normal;
     }
   }
-}
 
-.bk-fatal-error-overlay-list {
-  @apply inline-block mx-auto mt-60 bg-white p-20 shadow-2xl;
-  h3 {
-    @apply font-bold mb-30 max-w-xl text-center mx-auto;
-  }
-  > div {
-    @apply mb-30;
-  }
-}
+  .bk-fatal-error-overlay-list {
+    @apply bg-white mt-20 p-20 md:min-w-[500px] flex flex-col items-center;
+    @apply shadow-xl rounded-md;
 
-.bk-fatal-error-overlay-info {
-  @apply flex flex-col items-center text-center justify-center mt-[10%] max-w-2xl mx-auto;
-
-  h2 {
-    @apply text-5xl font-bold mb-10 text-red-normal;
-  }
-  p {
-    @apply text-2xl text-red-dark/50;
+    h3 {
+      @apply font-bold md:text-lg xl:text-xl mb-15 md:mb-20;
+    }
   }
 
-  em {
-    @apply not-italic font-bold;
+  .bk-fatal-error-overlay-info {
+    @apply flex flex-col items-center text-center justify-center mt-[10%] max-w-2xl mx-auto;
+
+    h2 {
+      @apply text-5xl font-bold mb-10 text-red-normal;
+    }
+    p {
+      @apply text-2xl text-red-dark/50;
+    }
+
+    em {
+      @apply not-italic font-bold;
+    }
+
+    button {
+      @apply mt-30 hover:!bg-red-dark;
+    }
   }
 
-  button {
-    @apply mt-30 hover:!bg-red-dark;
+  .bk-fatal-error-buttons {
+    @apply flex gap-10 items-center justify-center mt-20;
   }
 }
