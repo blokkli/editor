@@ -1094,7 +1094,6 @@ export type ScrollIntoViewEvent =
 export type PluginMountEvent = {
   type: 'ItemDropdown'
   id: string
-  isRendering: ComputedRef<boolean>
 }
 
 export type PluginUnmountEvent = {

@@ -6,16 +6,6 @@
     :uuids="selection.uuids.value"
     :has-host-selected="selection.hasHostSelected.value"
   />
-  <PluginItemDropdown
-    v-if="itemDropdownItems.length"
-    id="selection"
-    :title="$t('selectionActionGroupTitle', 'Selection')"
-    :enabled="itemDropdownEnabled"
-    :items="itemDropdownItems"
-    icon="selection"
-    weight="200"
-    @select="onSelectDropdownItem"
-  />
 
   <SelectionAddButtons
     v-if="state.editMode.value === 'editing'"
@@ -35,7 +25,7 @@ import {
 } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import useStateBasedCache from '#blokkli/helpers/composables/useStateBasedCache'
-import { PluginItemDropdown } from '#blokkli/plugins'
+import defineItemDropdownAction from '#blokkli/helpers/composables/defineItemDropdownAction'
 import type { Rectangle, RenderedFieldListItem } from '#blokkli/types'
 import {
   computed,
@@ -52,11 +42,6 @@ defineBlokkliFeature({
   label: 'Selection',
   description: 'Renders an overlay that highlights the selected blocks.',
 })
-
-type DropdownItem = {
-  id: 'select-all-of-bundle' | 'select-all-blocks'
-  label: string
-}
 
 const {
   selection,
@@ -88,44 +73,6 @@ const selectedBundle = computed<string | null>(() => {
 
   return null
 })
-
-const itemDropdownEnabled = computed(() => true)
-
-const itemDropdownItems = computed<DropdownItem[]>(() => {
-  if (selectedBundle.value) {
-    const label =
-      types.getBlockBundleDefinition(selectedBundle.value)?.label ??
-      selectedBundle.value
-    return [
-      {
-        id: 'select-all-of-bundle',
-        label: $t('selectAllOfBundle', 'Select all "@bundle" blocks').replace(
-          '@bundle',
-          label,
-        ),
-      },
-    ]
-  } else if (selection.hasHostSelected.value) {
-    return [
-      {
-        id: 'select-all-blocks',
-        label: $t('selectAllBlocks', 'Select all blocks'),
-      },
-    ]
-  }
-  return []
-})
-
-function onSelectDropdownItem(item: DropdownItem) {
-  if (item.id === 'select-all-of-bundle') {
-    if (selectedBundle.value) {
-      const uuids = state.getAllUuids(selectedBundle.value)
-      eventBus.emit('select', uuids)
-    }
-  } else if (item.id === 'select-all-blocks') {
-    selectAllBlocks()
-  }
-}
 
 const hasSelectedOnce = ref(false)
 
@@ -418,6 +365,43 @@ onBlokkliEvent('keyPressed', (e) => {
     }
     e.originalEvent.preventDefault()
     selectAllBlocks()
+  }
+})
+
+defineItemDropdownAction(() => {
+  if (selectedBundle.value) {
+    const label =
+      types.getBlockBundleDefinition(selectedBundle.value)?.label ??
+      selectedBundle.value
+    return {
+      id: 'selection-select-all-of-bundle',
+      label: $t('selectAllOfBundle', 'Select all "@bundle" blocks').replace(
+        '@bundle',
+        label,
+      ),
+      icon: 'selection',
+      group: 'selection',
+      weight: 200,
+      callback: () => {
+        if (selectedBundle.value) {
+          const uuids = state.getAllUuids(selectedBundle.value)
+          eventBus.emit('select', uuids)
+        }
+      },
+    }
+  }
+})
+
+defineItemDropdownAction(() => {
+  if (selection.hasHostSelected.value) {
+    return {
+      id: 'selection-select-all-blocks',
+      label: $t('selectAllBlocks', 'Select all blocks'),
+      icon: 'selection',
+      group: 'selection',
+      weight: 200,
+      callback: selectAllBlocks,
+    }
   }
 })
 </script>

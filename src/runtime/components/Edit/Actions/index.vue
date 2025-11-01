@@ -66,10 +66,9 @@
               >
               <Icon v-if="shouldRenderButton" name="caret" class="bk-caret" />
             </button>
-            <div
-              v-show="showDropdown && editingEnabled"
-              id="bk-blokkli-item-actions-dropdown"
-              class="bk-blokkli-item-actions-type-dropdown"
+            <EditActionsItemDropdown
+              v-if="showDropdown && editingEnabled"
+              @close="showDropdown = false"
             />
           </div>
 
@@ -85,20 +84,12 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  watch,
-  ref,
-  computed,
-  useBlokkli,
-  onMounted,
-  onBeforeUnmount,
-  useTemplateRef,
-} from '#imports'
+import { watch, ref, computed, useBlokkli, useTemplateRef } from '#imports'
 import { falsy } from '#blokkli/helpers'
-import type { PluginMountEvent } from '#blokkli/types'
 import { ItemIcon, Icon } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import useStickyToolbar from '#blokkli/helpers/composables/useStickyToolbar'
+import EditActionsItemDropdown from './ItemDropdown.vue'
 
 const { selection, $t, types, state, ui, definitions, debug } = useBlokkli()
 
@@ -109,7 +100,6 @@ const editingEnabled = computed(
 )
 
 const ACTIONS_HEIGHT = 52
-let scrollWidth = 0
 
 const el = useTemplateRef('el')
 
@@ -117,13 +107,11 @@ const { shouldRender } = useStickyToolbar(el, {
   getPlacementY: () => 'top',
   shouldUpdate: () => !selection.isChangingOptions.value,
   getHeight: () => ACTIONS_HEIGHT,
-  getWidth: () => scrollWidth,
   getMargin: () => 20,
   allowHorizontalOverflow: true,
 })
 
 const controlsEl = ref<HTMLElement | null>(null)
-const mountedPlugins = ref<PluginMountEvent[]>([])
 const showDropdown = ref(false)
 
 const hasAnythingSelected = computed(
@@ -213,45 +201,7 @@ const itemBundle = computed(() => {
   return types.getBlockBundleDefinition(bundle)
 })
 
-const observer = new ResizeObserver((entries) => {
-  const size = entries[0]?.contentBoxSize?.[0]
-  if (!size) {
-    return
-  }
-
-  scrollWidth = size.inlineSize
-})
-
-onMounted(() => {
-  if (controlsEl.value) {
-    observer.observe(controlsEl.value)
-  }
-})
-
-onBeforeUnmount(() => {
-  if (controlsEl.value) {
-    observer.unobserve(controlsEl.value)
-    observer.disconnect()
-  }
-})
-
-const shouldRenderButton = computed(() =>
-  mountedPlugins.value.some((v) => v.isRendering),
-)
-
-onBlokkliEvent('plugin:mount', (e) => {
-  if (e.type !== 'ItemDropdown') {
-    return
-  }
-  mountedPlugins.value.push(e as any)
-})
-
-onBlokkliEvent('plugin:unmount', (e) => {
-  if (e.type !== 'ItemDropdown') {
-    return
-  }
-  mountedPlugins.value = mountedPlugins.value.filter((v) => v.type !== e.id)
-})
+const shouldRenderButton = computed<boolean>(() => true)
 
 onBlokkliEvent('action:selected', () => {
   showDropdown.value = false

@@ -22,16 +22,6 @@ export type LogMessage = {
   context?: string
 }
 
-export type BlokkliGlobal = {
-  messages: LogMessage[]
-}
-
-declare global {
-  interface Window {
-    __BLOKKLI__: BlokkliGlobal
-  }
-}
-
 type DebugOverlay = {
   id: string
   label: string

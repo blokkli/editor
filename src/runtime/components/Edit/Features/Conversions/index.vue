@@ -1,14 +1,3 @@
-<template>
-  <PluginItemDropdown
-    id="conversions"
-    :title="$t('convertTo', 'Convert to...')"
-    :enabled="!!possibleConversions.length"
-    :items="possibleConversions"
-    weight="900"
-    @select="onConvert($event.id)"
-  />
-</template>
-
 <script lang="ts" setup>
 import {
   computed,
@@ -17,8 +6,8 @@ import {
   useLazyAsyncData,
   watch,
 } from '#imports'
-import { PluginItemDropdown } from '#blokkli/plugins'
 import { falsy } from '#blokkli/helpers'
+import defineItemDropdownAction from '#blokkli/helpers/composables/defineItemDropdownAction'
 
 const { adapter } = defineBlokkliFeature({
   id: 'conversions',
@@ -89,6 +78,21 @@ const possibleConversions = computed<ItemDropdownItem[]>(() => {
         bundle: v.id,
       }
     })
+})
+
+defineItemDropdownAction(() => {
+  if (possibleConversions.value.length) {
+    return possibleConversions.value.map((conversion) => ({
+      id: 'conversion-' + conversion.id,
+      label: conversion.label,
+      bundle: conversion.bundle,
+      group: 'conversions',
+      weight: 900,
+      callback: () => {
+        onConvert(conversion.id)
+      },
+    }))
+  }
 })
 </script>
 

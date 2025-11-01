@@ -35,25 +35,11 @@
     <DebugRects />
   </PluginDebugOverlay>
 
-  <PluginItemDropdown
-    v-if="itemDropdownItems.length"
-    id="selection"
-    :title="$t('selectionActionGroupTitle', 'Selection')"
-    enabled
-    :items="itemDropdownItems"
-    icon="bug"
-    weight="200"
-    @select="onSelectDropdownItem"
-  />
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, computed } from '#imports'
-import {
-  PluginSidebar,
-  PluginDebugOverlay,
-  PluginItemDropdown,
-} from '#blokkli/plugins'
+import { useBlokkli } from '#imports'
+import { PluginSidebar, PluginDebugOverlay } from '#blokkli/plugins'
 import DebugSection from './DebugSection.vue'
 import SectionKeyboard from './Section/Keyboard.vue'
 import SectionSelection from './Section/Selection.vue'
@@ -64,33 +50,37 @@ import SectionFeatures from './Section/Features.vue'
 import DebugViewport from './Viewport/index.vue'
 import DebugRects from './Rects/index.vue'
 import type { DebugLogger } from '#blokkli/helpers/debugProvider'
+import defineItemDropdownAction from '#blokkli/helpers/composables/defineItemDropdownAction'
 
 defineProps<{
   logger: DebugLogger
 }>()
 
-const { selection, $t } = useBlokkli()
+const { selection } = useBlokkli()
 
-const itemDropdownItems = computed(() => {
-  if (selection.uuids.value.length === 1) {
-    return [
-      {
-        id: 'copy-uuid',
-        label: 'Copy UUID',
-      },
-    ]
+async function copyUuid() {
+  const uuid = selection.uuids.value.at(0)
+  if (!uuid) {
+    return
   }
-  return []
-})
-
-async function onSelectDropdownItem(item: { id: string }) {
-  if (item.id === 'copy-uuid') {
-    const type = 'text/plain'
-    const clipboardItemData = {
-      [type]: selection.uuids.value.at(0) ?? '',
-    }
-    const clipboardItem = new ClipboardItem(clipboardItemData)
-    await navigator.clipboard.write([clipboardItem])
+  const type = 'text/plain'
+  const clipboardItemData = {
+    [type]: uuid,
   }
+  const clipboardItem = new ClipboardItem(clipboardItemData)
+  await navigator.clipboard.write([clipboardItem])
 }
+
+defineItemDropdownAction(() => {
+  if (selection.uuids.value.length === 1) {
+    return {
+      id: 'debug-copy-uuid',
+      label: 'Copy UUID',
+      icon: 'bug',
+      group: 'debug',
+      weight: 200,
+      callback: copyUuid,
+    }
+  }
+})
 </script>

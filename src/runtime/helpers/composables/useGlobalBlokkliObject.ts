@@ -1,5 +1,9 @@
 import type { LogMessage } from '../debugProvider'
 
+type BlokkliGlobalWindowObject = {
+  messages: LogMessage[]
+}
+
 export function useGlobalBlokkliObject() {
   function init() {
     if (typeof window !== 'undefined') {
@@ -39,5 +43,11 @@ export function useGlobalBlokkliObject() {
     pushMessage,
     getMessages,
     cleanup,
+  }
+}
+
+declare global {
+  interface Window {
+    __BLOKKLI__?: BlokkliGlobalWindowObject
   }
 }

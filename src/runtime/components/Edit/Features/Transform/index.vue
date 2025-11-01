@@ -1,25 +1,4 @@
 <template>
-  <PluginItemDropdown
-    id="transform"
-    :title="$t('transformTo', 'Actions')"
-    :enabled="!!possibleTransforms.length"
-    :items="possibleTransforms"
-    icon="script"
-    weight="100"
-    @select="onSelectBlockTransformPlugin($event, selection.uuids.value)"
-  />
-
-  <PluginItemDropdown
-    v-if="hostPlugins.length"
-    id="transform-host"
-    :title="$t('transformTo', 'Actions')"
-    :enabled="selection.hasHostSelected.value"
-    :items="hostPlugins"
-    icon="script"
-    weight="100"
-    @select="onSelectHostTransformPlugin($event)"
-  />
-
   <Teleport to="body">
     <BlokkliTransition name="transform-overlay">
       <TransformDialog
@@ -42,7 +21,6 @@ import {
   defineBlokkliFeature,
   useLazyAsyncData,
 } from '#imports'
-import { PluginItemDropdown } from '#blokkli/plugins'
 import type {
   HostTransformPlugin,
   PluginConfigInputItem,
@@ -51,6 +29,7 @@ import type {
 import { BlokkliTransition } from '#blokkli/components'
 import { filterTransforms } from '#blokkli/helpers/transform'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
+import defineItemDropdownAction from '#blokkli/helpers/composables/defineItemDropdownAction'
 import TransformDialog from './Dialog/index.vue'
 
 const { adapter } = defineBlokkliFeature({
@@ -274,6 +253,40 @@ defineCommands(() =>
     },
   })),
 )
+
+defineItemDropdownAction(() => {
+  if (possibleTransforms.value.length) {
+    return possibleTransforms.value.map((transform) => ({
+      id: 'transform-block-' + transform.id,
+      label: transform.label,
+      icon: 'script',
+      group: 'transform',
+      weight: 100,
+      callback: () => {
+        onSelectBlockTransformPlugin(transform, selection.uuids.value)
+      },
+    }))
+  }
+})
+
+defineItemDropdownAction(() => {
+  if (
+    selection.hasHostSelected.value &&
+    hostPlugins.value &&
+    hostPlugins.value.length
+  ) {
+    return hostPlugins.value.map((plugin) => ({
+      id: 'transform-host-' + plugin.id,
+      label: plugin.label,
+      icon: 'script',
+      group: 'transform',
+      weight: 100,
+      callback: () => {
+        onSelectHostTransformPlugin(plugin)
+      },
+    }))
+  }
+})
 </script>
 
 <script lang="ts">

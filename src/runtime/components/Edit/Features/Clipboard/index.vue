@@ -63,16 +63,6 @@
       </div>
     </div>
   </PluginSidebar>
-  <PluginItemDropdown
-    id="clipboard"
-    :title="$t('clipboard', 'Clipboard')"
-    :enabled="
-      !!selection.items.value.length && state.editMode.value === 'editing'
-    "
-    :items="itemDropdownItems"
-    icon="clipboard"
-    @select="onSelectDropdownItem"
-  />
 </template>
 
 <script lang="ts" setup>
@@ -84,7 +74,8 @@ import {
   onUnmounted,
   computed,
 } from '#imports'
-import { PluginSidebar, PluginItemDropdown } from '#blokkli/plugins'
+import { PluginSidebar } from '#blokkli/plugins'
+import defineItemDropdownAction from '#blokkli/helpers/composables/defineItemDropdownAction'
 import ClipboardList from './List/index.vue'
 import type { ClipboardItem, RenderedFieldListItem } from '#blokkli/types'
 import { generateUUID, getFieldKey } from '#blokkli/helpers'
@@ -639,6 +630,23 @@ defineShortcut([
     meta: true,
   },
 ])
+
+defineItemDropdownAction(() => {
+  if (selection.items.value.length && state.editMode.value === 'editing') {
+    return itemDropdownItems.value.map((item) => ({
+      id: 'clipboard-' + item.id,
+      label: item.label,
+      icon: item.icon,
+      description: item.description,
+      enabled: item.enabled,
+      group: 'clipboard',
+      weight: 100,
+      callback: () => {
+        onSelectDropdownItem(item)
+      },
+    }))
+  }
+})
 
 onBlokkliEvent('drop:clipboardItem', async (data) => {
   const item = pastedItems.value.find((v) => v.id === data.id)
