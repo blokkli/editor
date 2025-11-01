@@ -365,7 +365,6 @@ const { collector } = defineRenderer('hover-overlay', {
     return c
   },
   program: () => ({ shaders: [vs, fs] }),
-  enabled: () => !selection.isChangingOptions.value,
   cursor: () => {
     // Priority 1: Editable field (if not in readonly mode)
     if (isHoveringEditableField.value && state.editMode.value !== 'readonly') {
@@ -406,12 +405,11 @@ const { collector } = defineRenderer('hover-overlay', {
       u_color_teal: toShaderColor(uniforms.value.u_color_teal),
       u_color_white: toShaderColor(uniforms.value.u_color_white),
       u_color_lime: toShaderColor(uniforms.value.u_color_lime),
-    })
-    setUniforms(program, {
       u_hover_positions: hoverState.positions,
       u_hover_radii: hoverState.radii,
       u_hover_types: hoverState.types,
       u_hover_visible: hoverState.visible,
+      u_opacity: ctx.changeOptionsTransition,
     })
     animation.setSharedUniforms(gl, program)
     setBuffersAndAttributes(gl, program, bufferInfoCache)
@@ -440,6 +438,9 @@ const { collector } = defineRenderer('hover-overlay', {
     const colors = uniforms.value
     const borderThickness = 1.5 * ctx.dpi
     const dashLength = 7 * ctx.dpi
+
+    // Apply global opacity
+    ctx2d.globalAlpha = ctx.changeOptionsTransition
 
     // Draw all visible hover rectangles
     for (let i = 0; i < MAX_RECTS; i++) {
@@ -619,6 +620,9 @@ const { collector } = defineRenderer('hover-overlay', {
       // Reset line dash
       ctx2d.setLineDash([])
     }
+
+    // Reset global alpha
+    ctx2d.globalAlpha = 1
   },
 })
 </script>

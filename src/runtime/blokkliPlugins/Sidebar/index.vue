@@ -40,15 +40,14 @@
     <SidebarDetached
       v-if="isRenderedDetached"
       :id
-      ref="tourElement"
+      ref="sidebarDetached"
       :title
       :icon
       :min-width
       :min-height
       :size
-      :is-left="region === 'left'"
-      class="bk-sidebar-inner"
-      @close="onAttach"
+      :region
+      @attach="onAttachDetached"
     >
       <template #icon>
         <slot name="icon" />
@@ -79,7 +78,7 @@
           <span>{{ title }}</span>
           <div v-if="beta" class="bk-beta-indicator">BETA</div>
           <button v-if="!ui.isMobile.value" @click.prevent.stop="onDetach">
-            <Icon name="expand" />
+            <Icon name="dock-window" />
           </button>
           <button @click.prevent.stop="toggleSidebar">
             <Icon name="close" />
@@ -104,7 +103,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch, ref, useBlokkli, onBeforeUnmount } from '#imports'
+import {
+  computed,
+  watch,
+  ref,
+  useBlokkli,
+  onBeforeUnmount,
+  useTemplateRef,
+} from '#imports'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon, ShortcutIndicator, ScrollBoundary } from '#blokkli/components'
 import SidebarDetached from './Detached/index.vue'
@@ -150,7 +156,8 @@ const emit = defineEmits<{
 
 const { storage, state, ui, $t } = useBlokkli()
 
-const tourElement = ref<HTMLElement | null>(null)
+const tourElement = useTemplateRef('tourElement')
+const sidebarDetached = useTemplateRef('sidebarDetached')
 
 const detachedKey = computed(() => 'sidebar:detached:' + props.id)
 const storageKey = computed(() => 'sidebar:active:' + props.region)
@@ -195,8 +202,9 @@ const onDetach = () => {
   emit('updated')
 }
 
-const onAttach = () => {
+const onAttachDetached = () => {
   isDetached.value = false
+  activeSidebar.value = props.id
   emit('updated')
 }
 
@@ -288,7 +296,7 @@ defineTourItem(() => {
     id: 'plugin:sidebar:' + props.id,
     title: props.title,
     text: props.tourText,
-    element: () => tourElement.value,
+    element: () => tourElement.value ?? sidebarDetached.value?.getRootElement(),
   }
 })
 

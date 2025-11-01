@@ -25,6 +25,7 @@ import {
   onMounted,
   onBeforeUnmount,
   watch,
+  useTemplateRef,
 } from '#imports'
 
 const props = defineProps<{
@@ -47,7 +48,15 @@ const rect = computed(() => {
   }
 })
 
-const el = ref<HTMLDivElement | null>(null)
+const el = useTemplateRef('el')
+
+function getRootElement(): HTMLElement | null {
+  return el.value
+}
+
+defineExpose({
+  getRootElement,
+})
 
 useAnimationFrame(() => {
   if (!el.value) {

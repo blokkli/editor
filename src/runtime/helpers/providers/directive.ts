@@ -15,6 +15,8 @@ type EditableFieldData = EntityContext & {
   key: string
   fieldName: string
   directiveType: BlokkliDirectiveType
+  isComponent: boolean
+  getValue?: () => string
 }
 
 type DroppableFieldElementData = EditableFieldData & {
@@ -30,6 +32,8 @@ export type DirectiveProvider = {
     fieldName: string,
     entity: EntityContext,
     type: BlokkliDirectiveType,
+    isComponent: boolean,
+    getValue?: () => string,
   ) => void
   unregisterDirectiveElement: (
     el: HTMLElement,
@@ -45,6 +49,10 @@ export type DirectiveProvider = {
     fieldName: string,
     host: EntityContext,
   ) => HTMLElement | undefined
+  findEditable: (
+    fieldName: string,
+    host: EntityContext,
+  ) => EditableFieldData | undefined
   isReady: ComputedRef<boolean>
 }
 
@@ -144,6 +152,8 @@ export default function (
     fieldName: string,
     entity: EntityContext,
     directiveType: BlokkliDirectiveType,
+    isComponent: boolean,
+    getValue?: () => string,
   ) {
     const key = getEditableKey(fieldName, entity, directiveType)
     const data: EditableFieldData = {
@@ -151,6 +161,8 @@ export default function (
       fieldName,
       directiveType,
       key,
+      isComponent,
+      getValue,
     }
     elementMap.set(el, data)
     fieldData.set(key, data)
@@ -310,6 +322,14 @@ export default function (
     return elements.get(key)
   }
 
+  function findEditable(
+    fieldName: string,
+    host: EntityContext,
+  ): EditableFieldData | undefined {
+    const key = getEditableKey(fieldName, host, 'editable')
+    return fieldData.get(key)
+  }
+
   onBlokkliEvent('state:reloaded', handleRefresh)
   onBlokkliEvent('ui:resized', handleRefresh)
   onBlokkliEvent('option:finish-change', handleRefresh)
@@ -326,6 +346,7 @@ export default function (
     init,
     getVisible,
     getEditableAtPoint,
+    findEditable,
     getEditablesForBlock,
     findEditableElement,
     getDroppableElements,

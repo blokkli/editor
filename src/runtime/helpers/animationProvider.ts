@@ -19,8 +19,11 @@ import type { SelectionProvider } from './selectionProvider'
 
 import type { RectangleBufferCollector } from './webgl'
 import type { DebugProvider } from './debugProvider'
+import { useTransitionedValue } from './useTransitionedValue'
 
-export type RenderContext = CanvasDrawEvent
+export type RenderContext = CanvasDrawEvent & {
+  changeOptionsTransition: number
+}
 
 type PreferredRenderingMode = 'auto' | 'webgl' | '2d'
 
@@ -130,8 +133,6 @@ export type AnimationProvider = {
     gl: WebGLRenderingContext,
     shaders: string[],
   ) => ProgramInfo
-
-  setMouseCoords: (x: number, y: number) => void
 
   cursor: ComputedRef<CursorKeyword>
 
@@ -606,8 +607,18 @@ export default function (
     return glContext
   }
 
+  const getChangeOptionsTransition = useTransitionedValue(
+    () => {
+      return selection.isChangingOptions.value ? 0 : 1
+    },
+    {
+      duration: 200,
+    },
+  )
+
   useAnimationFrame((time) => {
     const selectedUuids: string[] = [...selection.uuids.value]
+    const changeOptionsTransition = getChangeOptionsTransition()
 
     // Make sure we don't loop when it's not needed.
     if (iterator < 1) {
@@ -653,19 +664,6 @@ export default function (
       return b.zIndex - a.zIndex
     })
 
-    // Check if any renderer has "only" set to true
-    let onlyRenderer: Renderer | null = null
-    for (const renderer of sortedRenderers) {
-      if (!renderer.enabled || renderer.enabled()) {
-        const onlyValue =
-          typeof renderer.only === 'function' ? renderer.only() : renderer.only
-        if (onlyValue) {
-          onlyRenderer = renderer
-          break
-        }
-      }
-    }
-
     const artboardOffset = ui.artboardOffset.value
     const artboardScale = ui.artboardScale.value
     const artboardSize = ui.artboardSize.value
@@ -684,6 +682,20 @@ export default function (
       artboardSize,
       selectedUuids,
       dpi: dpi.value,
+      changeOptionsTransition,
+    }
+
+    // Check if any renderer has "only" set to true
+    let onlyRenderer: Renderer | null = null
+    for (const renderer of sortedRenderers) {
+      if (!renderer.enabled || renderer.enabled()) {
+        const onlyValue =
+          typeof renderer.only === 'function' ? renderer.only() : renderer.only
+        if (onlyValue) {
+          onlyRenderer = renderer
+          break
+        }
+      }
     }
 
     // If an "only" renderer is found, render only that one.
@@ -822,12 +834,6 @@ export default function (
     return registeredPrograms.get(id)!
   }
 
-  function setMouseCoords(x: number, y: number) {
-    mouseX = x
-    mouseY = y
-    iterator = 120
-  }
-
   return {
     requestDraw,
     gl,
@@ -835,7 +841,6 @@ export default function (
     setSharedUniforms,
     dpi,
     registerProgram,
-    setMouseCoords,
     webglSupported: computed(() => webglSupported.value && webglEnabled.value),
     webglEnabled,
     preferredRenderingMode,

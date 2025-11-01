@@ -491,10 +491,6 @@ const { collector } = defineRenderer('add-buttons', {
     return false
   },
   render: (ctx, gl, program) => {
-    if (selection.isChangingOptions.value) {
-      return
-    }
-
     // Create bufferInfo on first render
     if (!bufferInfoCache) {
       bufferInfoCache = collector.createBufferInfo(gl)
@@ -606,6 +602,7 @@ const { collector } = defineRenderer('add-buttons', {
       u_color_field_hover: toShaderColor(colorFieldHover.value),
       u_hovered_circle: hoveredCircle.value,
       u_radius: BUTTON_RADIUS,
+      u_scale_transition: ctx.changeOptionsTransition,
     })
     animation.setSharedUniforms(gl, program)
 
@@ -613,10 +610,6 @@ const { collector } = defineRenderer('add-buttons', {
     drawBufferInfo(gl, bufferInfoCache, gl.TRIANGLES)
   },
   renderFallback: (ctx, ctx2d) => {
-    if (selection.isChangingOptions.value) {
-      return
-    }
-
     // Reset all circles to invisible
     circleVisible.fill(0)
 
@@ -708,7 +701,7 @@ const { collector } = defineRenderer('add-buttons', {
     }
 
     const borderWidth = 2 * ctx.dpi
-    const radius = BUTTON_RADIUS * ctx.dpi
+    const radius = BUTTON_RADIUS * ctx.dpi * ctx.changeOptionsTransition
     const innerRadius = radius - borderWidth
 
     // Draw all visible circles

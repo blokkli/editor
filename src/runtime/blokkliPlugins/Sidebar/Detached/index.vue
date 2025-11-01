@@ -1,8 +1,8 @@
 <template>
   <ViewportBlockingRect
     :id="storageKey"
-    ref="el"
-    class="bk-sidebar-detached"
+    ref="root"
+    class="bk-sidebar-detached bk-sidebar-inner"
     :class="{ 'bk-is-focused': focusedSidebar === id }"
     :style="style"
     tabindex="10"
@@ -26,10 +26,10 @@
             <Icon :name="isMinimized ? 'window-maximize' : 'window-minimize'" />
           </button>
           <button
-            @click.prevent.stop.capture="$emit('close')"
+            @click.prevent.stop.capture="$emit('attach')"
             @mousedown.capture.stop
           >
-            <Icon name="close" />
+            <Icon :name="region === 'left' ? 'dock-left' : 'dock-right'" />
           </button>
         </div>
       </div>
@@ -66,11 +66,13 @@ import {
   computed,
   watch,
   useState,
+  useTemplateRef,
 } from '#imports'
 import { Icon, ViewportBlockingRect, ScrollBoundary } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { addElementClasses } from '#blokkli/helpers/addElementClasses'
+import type { SidebarRegion } from '#blokkli/types'
 
 const props = withDefaults(
   defineProps<{
@@ -79,8 +81,8 @@ const props = withDefaults(
     icon: BlokkliIcon
     minWidth?: number
     minHeight?: number
+    region: SidebarRegion
     size?: { width: number; height: number }
-    isLeft?: boolean
   }>(),
   {
     minWidth: 300,
@@ -89,7 +91,17 @@ const props = withDefaults(
   },
 )
 
-defineEmits(['close'])
+defineEmits<{
+  (e: 'attach'): void
+}>()
+
+const root = useTemplateRef('root')
+
+function getRootElement(): HTMLElement | null {
+  return root.value?.getRootElement() ?? null
+}
+
+const isLeft = computed(() => props.region === 'left')
 
 const { storage, ui, keyboard, selection } = useBlokkli()
 
@@ -135,7 +147,7 @@ const offsetX = computed(() => {
 })
 
 const storedData = storage.use(storageKey, {
-  x: props.isLeft ? 0 : window.innerWidth - 360,
+  x: isLeft.value ? 0 : window.innerWidth - 360,
   y: 50,
   width: 360,
   height: 520,
@@ -263,10 +275,7 @@ const setSizes = (newWidth?: number, newHeight?: number) => {
   if (newWidth !== undefined) {
     const maxWidth =
       ui.visibleViewport.value.x + ui.visibleViewport.value.width - x.value
-    userWidth.value = Math.min(
-      Math.max(newWidth, props.minWidth),
-      maxWidth,
-    )
+    userWidth.value = Math.min(Math.max(newWidth, props.minWidth), maxWidth)
   }
   if (newHeight !== undefined) {
     userHeight.value = Math.min(
@@ -303,8 +312,6 @@ const onMouseUp = () => {
   updateStored()
 }
 
-const el = ref<HTMLDivElement | null>(null)
-
 const recalculatePositions = () => {
   const storedViewportWidth =
     storedData.value.viewportWidth || window.innerWidth
@@ -337,5 +344,9 @@ onBlokkliEvent('ui:resized', () => {
 onBeforeUnmount(() => {
   window.removeEventListener('pointermove', onMouseMove, { capture: true })
   window.removeEventListener('pointerup', onMouseUp, { capture: true })
+})
+
+defineExpose({
+  getRootElement,
 })
 </script>

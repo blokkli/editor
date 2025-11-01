@@ -112,12 +112,17 @@ const buildEditable = (
     return
   }
 
+  const editable = directive.findEditable(fieldName, host)
+  if (!editable) {
+    return
+  }
+
   return {
     fieldName,
     host,
     element,
-    isComponent: element.dataset.blokkliEditableComponent === 'true',
-    value: element.dataset.blokkliEditableValue || '',
+    isComponent: editable.isComponent,
+    value: editable.getValue ? editable.getValue() : '',
     config,
   }
 }

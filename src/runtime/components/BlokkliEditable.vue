@@ -56,6 +56,10 @@ if (!entity) {
   throw new Error('Missing entity context.')
 }
 
+function getValueCallback() {
+  return props.value
+}
+
 const renderedValue = computed(() => valueOverride.value || props.value || '')
 
 const onEditableUpdateValue = (e: EditableFieldUpdateEvent) => {
@@ -77,6 +81,8 @@ onMounted(() => {
       props.name,
       entity,
       'editable',
+      true,
+      getValueCallback,
     )
   }
 })

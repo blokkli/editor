@@ -25,7 +25,7 @@ const props = defineProps<{
   hasHostSelected: boolean
 }>()
 
-const { animation, theme, dom, ui, state } = useBlokkli()
+const { animation, theme, dom, ui, state, selection } = useBlokkli()
 
 type SelectionRectangle = Rectangle & {
   id: string
@@ -220,6 +220,7 @@ const { collector } = defineRenderer('selection-overlay', {
         ui.artboardSize.value.height,
       ],
       u_is_transforming: getTransforming(),
+      u_opacity: ctx.changeOptionsTransition,
       u_time: ctx.time,
     })
     animation.setSharedUniforms(gl, program)
@@ -238,6 +239,9 @@ const { collector } = defineRenderer('selection-overlay', {
     if (rects.length === 0) {
       return
     }
+
+    // Apply global opacity
+    ctx2d.globalAlpha = getOpacity()
 
     // Helper to convert shader color to CSS rgba string
     const rgbaToCss = (rgb: RGB) => {
@@ -340,6 +344,9 @@ const { collector } = defineRenderer('selection-overlay', {
       ctx2d.closePath()
       ctx2d.stroke()
     }
+
+    // Reset global alpha
+    ctx2d.globalAlpha = 1
   },
 })
 

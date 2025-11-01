@@ -14,6 +14,8 @@ uniform float u_offset_x;
 // The amount of pixels to offset on the y axis.
 uniform float u_offset_y;
 uniform vec2 u_resolution;
+// Scale transition for change options animation
+uniform float u_scale_transition;
 
 // Circle positions (10 vec2s = 20 floats)
 uniform vec2 u_circle_positions[10];
@@ -31,6 +33,9 @@ varying float v_visible;
 varying float v_is_hovered;
 varying float v_scale_fade;
 varying float v_rect_id;
+varying float v_radius;
+varying float v_inner_radius;
+varying float v_scale_factor;
 
 void main() {
   int rectId = int(a_rect_id);
@@ -49,13 +54,23 @@ void main() {
     v_scale_fade = clamp(v_scale_fade, 0.0, 1.0);
   }
 
+  // Combined scale factor for fragment shader
+  v_scale_factor = v_scale_fade * u_scale_transition;
+
   // Border width in pixels (must match fragment shader)
-  float borderWidth = 4.0;
+  float borderWidth = 2.0;
 
   // Circle radius in artboard space - apply inverse scaling to keep constant size
-  // Then multiply by fade factor
+  // Then multiply by fade factor and scale transition
   // Add border width to the radius so the border renders outside
-  float radius = (u_radius + borderWidth) / u_scale * v_scale_fade;
+  float radius =
+    (u_radius + borderWidth) / u_scale * v_scale_fade * u_scale_transition;
+  float innerRadius =
+    (u_radius - borderWidth) / u_scale * v_scale_fade * u_scale_transition;
+
+  // Pass scaled radii to fragment shader (in viewport pixels)
+  v_radius = radius * u_scale * u_dpi;
+  v_inner_radius = innerRadius * u_scale * u_dpi;
 
   // Calculate quad bounds centered on circle position
   float left = circlePos.x - radius;

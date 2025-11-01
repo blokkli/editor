@@ -14,6 +14,7 @@ uniform float u_scale;
 uniform float u_dpi;
 uniform float u_time;
 uniform float u_is_transforming;
+uniform float u_opacity;
 uniform vec2 u_resolution;
 
 #define PI 3.141592653589793
@@ -134,5 +135,6 @@ void main() {
   );
 
   vec4 finalColor = mix(borderBottom, borderTop, borderTop.a);
+  finalColor.a *= u_opacity;
   gl_FragColor = finalColor;
 }

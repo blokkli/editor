@@ -120,7 +120,7 @@ function createDirective(
         return
       }
 
-      app.directive.registerDirectiveElement(el, fieldName, entity, type)
+      app.directive.registerDirectiveElement(el, fieldName, entity, type, false)
     },
     beforeUnmount(el: HTMLElement, binding, vnode) {
       if (!isEditing()) {

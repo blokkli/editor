@@ -6,6 +6,9 @@ varying float v_visible;
 varying float v_is_hovered;
 varying float v_scale_fade;
 varying float v_rect_id;
+varying float v_radius;
+varying float v_inner_radius;
+varying float v_scale_factor;
 
 uniform float u_dpi;
 uniform vec3 u_color;
@@ -23,14 +26,9 @@ void main() {
   vec2 pixelPos = gl_FragCoord.xy;
   float dist = distance(pixelPos, v_circle_center);
 
-  // Circle radius (includes border)
-  float radius = v_quad.z / 2.0;
-
-  // Border width in pixels (must match vertex shader) - scaled by DPI
-  float borderWidth = 4.0 * u_dpi;
-
-  // Inner circle radius (without border)
-  float innerRadius = radius - borderWidth;
+  // Circle radii passed from vertex shader (in viewport pixels)
+  float radius = v_radius;
+  float innerRadius = v_inner_radius;
 
   // Anti-aliased circle
   float edgeSoftness = 1.0 * u_dpi;
@@ -46,9 +44,9 @@ void main() {
   // Plus dimensions relative to inner circle radius
   // Reduce thickness at low DPI (zoomed out)
   float plusThicknessBase = u_dpi <= 0.5 ? 1.25 : 1.5;
-  float plusThickness = plusThicknessBase * u_dpi;
+  float plusThickness = plusThicknessBase * u_dpi * v_scale_factor;
   float plusLength = innerRadius * 0.5; // 50% of inner radius
-  float plusSoftness = 0.25 * u_dpi;
+  float plusSoftness = 0.25 * u_dpi * v_scale_factor;
 
   // Calculate soft plus factor (0 = not plus, 1 = fully plus)
   float horizontalDist = max(abs(offset.y) - plusThickness, 0.0);

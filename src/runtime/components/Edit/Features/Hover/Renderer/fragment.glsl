@@ -12,6 +12,7 @@ uniform float u_scale;
 uniform float u_offset_x;
 uniform float u_offset_y;
 uniform vec2 u_resolution;
+uniform float u_opacity;
 uniform vec3 u_color_mono;
 uniform vec3 u_color_accent;
 uniform vec3 u_color_teal;
@@ -64,6 +65,7 @@ void main() {
       borderAlpha * borderColor.a
     );
 
+    combined.a *= u_opacity;
     gl_FragColor = combined;
     return;
   }
@@ -135,5 +137,6 @@ void main() {
     borderAlpha * borderColor.a
   );
 
+  finalColor.a *= u_opacity;
   gl_FragColor = finalColor;
 }
