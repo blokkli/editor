@@ -1,6 +1,7 @@
 <template>
   <Teleport to="#bk-canvas-overlay">
     <canvas
+      :key="animation.renderKey.value"
       id="bk-animation-canvas-webgl"
       ref="canvasEl"
       :style
@@ -34,7 +35,6 @@ import {
   ref,
   computed,
   useBlokkli,
-  onMounted,
   watch,
   useTemplateRef,
   onBeforeUnmount,
@@ -564,91 +564,29 @@ function onClick(e: MouseEvent) {
 
 const canvasEl = useTemplateRef('canvasEl')
 
-const canvasAttributes = computed(() => {
-  return {
-    width: ui.viewport.value.width * animation.dpi.value,
-    height: ui.viewport.value.height * animation.dpi.value,
-  }
-})
-
-let gl: WebGLRenderingContext | null | undefined = null
-
-function initGl() {
-  if (!canvasEl.value) {
-    return
-  }
-  gl = animation.gl()
-
-  canvasEl.value.width = canvasAttributes.value.width
-  canvasEl.value.height = canvasAttributes.value.height
-
-  if (!gl) {
-    return
-  }
-
-  gl.enable(gl.BLEND)
-  gl.enable(gl.SCISSOR_TEST)
-  gl.disable(gl.DEPTH_TEST)
-
-  gl.clearColor(0.0, 0.0, 0.0, 0.0)
-  gl.viewport(0, 0, canvasAttributes.value.width, canvasAttributes.value.height)
-  // gl.blendFunc(gl[source.value as any], gl[destination.value as any])
-  // gl.blendEquation(gl[equtation.value as any])
-  gl.blendFunc(gl.SRC_ALPHA_SATURATE, gl.ONE)
-  gl.blendEquation(gl.FUNC_ADD)
-  setScissor(scissor.value)
-}
-
-const scissor = computed(() => {
-  const dpi = animation.dpi.value
-  return {
-    x: ui.visibleViewport.value.x * dpi,
-    y:
-      canvasAttributes.value.height -
-      ui.visibleViewport.value.y * dpi -
-      ui.visibleViewport.value.height * dpi,
-    width: Math.max(ui.visibleViewport.value.width * dpi, 1),
-    height: Math.max(ui.visibleViewport.value.height * dpi, 1),
-  }
-})
-
-function setScissor(v: Rectangle) {
-  if (!gl) {
-    return
-  }
-
-  gl.scissor(v.x, v.y, v.width, v.height)
-}
-
-watch(scissor, setScissor)
-
-let lastCanvasWidth = 0
-let lastCanvasHeight = 0
-
-onBlokkliEvent('animationFrame', () => {
-  if (!canvasEl.value) {
-    return
-  }
-  const canvasWidth = canvasAttributes.value.width
-  const canvasHeight = canvasAttributes.value.height
-
-  // Only update width and height if they have changed.
-  if (canvasWidth !== lastCanvasWidth || canvasHeight !== lastCanvasHeight) {
-    canvasEl.value.width = canvasWidth
-    canvasEl.value.height = canvasHeight
-    if (gl) {
-      gl.viewport(0, 0, canvasWidth, canvasHeight)
+// Watch for canvas element changes (happens when :key changes)
+watch(
+  canvasEl,
+  (newCanvas, oldCanvas) => {
+    // Clean up old canvas
+    if (oldCanvas) {
+      oldCanvas.removeEventListener('pointermove', onPointerMove)
+      animation.removeCanvasElement()
     }
-    lastCanvasWidth = canvasWidth
-    lastCanvasHeight = canvasHeight
-  }
-})
 
-onMounted(() => {
-  initGl()
-})
+    // Set up new canvas
+    if (newCanvas) {
+      animation.setCanvasElement(newCanvas)
+      // Request a draw now that the canvas is fully set up
+      // This ensures we redraw after WebGL enable/disable toggles
+      animation.requestDraw()
+    }
+  },
+  { immediate: true },
+)
 
 onBeforeUnmount(() => {
+  animation.removeCanvasElement()
   if (canvasEl.value) {
     canvasEl.value.removeEventListener('pointermove', onPointerMove)
   }

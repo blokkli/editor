@@ -6,6 +6,7 @@
   >
     <Overlay
       v-if="shouldRender"
+      :key="animation.renderKey.value"
       :start-x="downX"
       :start-y="downY"
       :is-pressing-control="keyboard.isPressingControl.value"
@@ -29,7 +30,7 @@ defineBlokkliFeature({
   viewports: ['desktop'],
 })
 
-const { keyboard, eventBus, selection, $t } = useBlokkli()
+const { keyboard, eventBus, selection, animation, $t } = useBlokkli()
 
 const isLocked = ref(false)
 const enabled = computed(

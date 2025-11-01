@@ -3,6 +3,7 @@ import useAnimationFrame from './composables/useAnimationFrame'
 import {
   ref,
   computed,
+  watch,
   onMounted,
   onBeforeUnmount,
   type ComputedRef,
@@ -15,9 +16,9 @@ import type { StorageProvider } from './storageProvider'
 import type { CursorKeyword } from './dom'
 import type { CanvasDrawEvent, Coord } from '#blokkli/types'
 import type { SelectionProvider } from './selectionProvider'
-import type { ElementProvider } from './providers/element'
 
 import type { RectangleBufferCollector } from './webgl'
+import type { DebugProvider } from './debugProvider'
 
 export type RenderContext = CanvasDrawEvent
 
@@ -62,7 +63,22 @@ export type AnimationProvider = {
   webglSupported: ComputedRef<boolean | null>
   webglEnabled: WritableComputedRef<boolean>
 
-  getCanvasElement: () => HTMLCanvasElement
+  /**
+   * Reactive key that increments when WebGL context is restored.
+   * Use this as a component key to force remounting on context loss/restore.
+   */
+  renderKey: ComputedRef<number>
+
+  /**
+   * Set the canvas element to use for rendering.
+   * This initializes both WebGL and 2D contexts.
+   */
+  setCanvasElement: (canvas: HTMLCanvasElement) => void
+
+  /**
+   * Remove the canvas element and clean up contexts.
+   */
+  removeCanvasElement: () => void
 
   /**
    * Register a WebGL program.
@@ -87,12 +103,12 @@ export type AnimationProvider = {
 
   /**
    * Register a WebGL renderer with a specific zIndex.
-   * Returns an unregister function.
+   * Returns an object with the collector instance and an unregister function.
    */
   registerRenderer: <T = RectangleBufferCollector<any>>(
     id: string,
     config: Omit<Renderer<T>, 'id'>,
-  ) => () => void
+  ) => { collector: T; unregister: () => void }
 
   /**
    * Unregister a WebGL renderer.
@@ -104,17 +120,22 @@ export default function (
   ui: UiProvider,
   storage: StorageProvider,
   selection: SelectionProvider,
-  element: ElementProvider,
+  debug: DebugProvider,
 ): AnimationProvider {
+  const logger = debug.createLogger('Animation')
   const webglEnabled = storage.use('webglEnabled', true)
 
   // Current cursor determined by renderers
   const currentCursor = ref<CursorKeyword>('default')
   const cursor = computed<CursorKeyword>(() => currentCursor.value)
 
+  // Render key for forcing component remounts on context loss/restore
+  const renderKey = ref(0)
+
   // Renderer management
   const renderers = new Map<string, Renderer>()
   const rendererPrograms = new Map<string, ProgramInfo>()
+  const rendererCollectors = new Map<string, RectangleBufferCollector<any>>()
 
   // Failure tracking for renderers
   const rendererFailures = new Map<string, number>() // Tracks consecutive failures
@@ -193,8 +214,8 @@ export default function (
     if (!renderer.enabled || renderer.enabled()) {
       const glContext = gl()
 
-      // Try WebGL rendering first
-      if (glContext && !shouldSkipRenderer(renderer.id)) {
+      // Try WebGL rendering first (only if WebGL is enabled)
+      if (glContext && webglEnabled.value && !shouldSkipRenderer(renderer.id)) {
         // Get the program for this renderer
         const program = rendererPrograms.get(renderer.id)
 
@@ -228,9 +249,16 @@ export default function (
   function registerRenderer<T = RectangleBufferCollector<any>>(
     id: string,
     config: Omit<Renderer<T>, 'id'>,
-  ): () => void {
+  ): { collector: T; unregister: () => void } {
+    logger.log('Registered Renderer: ' + id)
     const renderer = { id, ...config }
     renderers.set(id, renderer as Renderer)
+
+    // Create the collector instance
+    const collector = config.collector()
+
+    // Store collector for state management (enable/disable WebGL, context loss, etc.)
+    rendererCollectors.set(id, collector as RectangleBufferCollector<any>)
 
     // If the renderer has a program, register it
     if (renderer.program) {
@@ -242,13 +270,18 @@ export default function (
       }
     }
 
-    return () => unregisterRenderer(id)
+    return {
+      collector,
+      unregister: () => unregisterRenderer(id),
+    }
   }
 
   function unregisterRenderer(id: string): void {
     renderers.delete(id)
     // Clean up renderer-to-program mapping (but keep the program in registeredPrograms cache)
     rendererPrograms.delete(id)
+    // Clean up collector
+    rendererCollectors.delete(id)
     // Clean up failure tracking
     rendererFailures.delete(id)
     rendererCooldowns.delete(id)
@@ -302,58 +335,184 @@ export default function (
   const maxCanvasHeight = ref(16384)
   let webglLimitsQueried = false
   let canvasElement: HTMLCanvasElement | null = null
+  let glContext: WebGLRenderingContext | null = null
+  let ctx2dContext: CanvasRenderingContext2D | null = null
+  let lastCanvasWidth = 0
+  let lastCanvasHeight = 0
 
-  function getCanvasElement(): HTMLCanvasElement {
-    if (canvasElement) {
-      return canvasElement
+  function initializeContexts() {
+    if (!canvasElement) {
+      glContext = null
+      ctx2dContext = null
+      return
     }
 
-    const el = element.query(
-      document.documentElement,
-      '#bk-animation-canvas-webgl',
-      'Find animation canvas element.',
+    // Remove any existing event listeners before adding new ones
+    // This prevents duplicate listeners if the function is called multiple times
+    canvasElement.removeEventListener('webglcontextlost', handleContextLost)
+    canvasElement.removeEventListener(
+      'webglcontextrestored',
+      handleContextRestored,
     )
-    if (!(el instanceof HTMLCanvasElement)) {
-      throw new TypeError('Failed to locate WebGL canvas.')
+
+    // Initialize WebGL context
+    if (webglEnabled.value && webglSupported.value !== false) {
+      const gl = canvasElement.getContext('webgl2', {
+        premultipliedAlpha: true,
+      })
+
+      if (gl) {
+        glContext = gl
+        webglSupported.value = true
+
+        // Query WebGL limits once
+        if (!webglLimitsQueried) {
+          const maxViewportDims = gl.getParameter(
+            gl.MAX_VIEWPORT_DIMS,
+          ) as Int32Array
+          maxCanvasWidth.value = maxViewportDims[0] || 16384
+          maxCanvasHeight.value = maxViewportDims[1] || 16384
+          webglLimitsQueried = true
+        }
+
+        // Configure WebGL context
+        gl.enable(gl.BLEND)
+        gl.disable(gl.DEPTH_TEST)
+        gl.clearColor(0.0, 0.0, 0.0, 0.0)
+        gl.blendFunc(gl.SRC_ALPHA_SATURATE, gl.ONE)
+        gl.blendEquation(gl.FUNC_ADD)
+
+        // Add context loss handlers (now guaranteed to be added only once)
+        canvasElement.addEventListener(
+          'webglcontextlost',
+          handleContextLost,
+          false,
+        )
+        canvasElement.addEventListener(
+          'webglcontextrestored',
+          handleContextRestored,
+          false,
+        )
+      } else {
+        webglSupported.value = false
+        glContext = null
+      }
+    } else {
+      glContext = null
     }
 
-    canvasElement = el
+    // Initialize 2D context for fallback
+    ctx2dContext = canvasElement.getContext('2d')
+  }
 
-    return el
+  /**
+   * Re-register all renderer programs with a WebGL context.
+   * Used when context is restored.
+   */
+  function reregisterAllPrograms(glContext: WebGLRenderingContext): number {
+    let count = 0
+    renderers.forEach((renderer) => {
+      if (renderer.program) {
+        const { shaders } = renderer.program()
+        const programInfo = registerProgram(renderer.id, glContext, shaders)
+        rendererPrograms.set(renderer.id, programInfo)
+        count++
+      }
+    })
+    return count
+  }
+
+  // Watch for WebGL enabled/disabled changes
+  watch(webglEnabled, () => {
+    // Increment renderKey to force remount of:
+    // 1. AnimationCanvas component (creates new canvas element with fresh context)
+    // 2. All renderer components (fresh collectors and programs)
+    renderKey.value++
+
+    // Don't call requestDraw() here - the canvas ref watcher will handle it
+    // after the new canvas element is fully set up
+
+    logger.log(
+      `WebGL ${webglEnabled.value ? 'enabled' : 'disabled'}, renderKey = ${renderKey.value}`,
+    )
+  })
+
+  function handleContextLost(event: Event) {
+    event.preventDefault()
+    console.warn('[blokkli] WebGL context lost')
+    glContext = null
+    // Clear all programs as they are invalidated by context loss
+    const programCount = registeredPrograms.size
+    registeredPrograms.clear()
+    rendererPrograms.clear()
+    console.log(`[blokkli] Cleared ${programCount} invalidated WebGL programs`)
+  }
+
+  function handleContextRestored() {
+    console.log('[blokkli] WebGL context restored, re-initializing...')
+
+    // Initialize the new context
+    initializeContexts()
+
+    // Re-register all renderer programs with the new context
+    const newGlContext = gl()
+    if (newGlContext) {
+      const restoredCount = reregisterAllPrograms(newGlContext)
+      console.log(`[blokkli] Restored ${restoredCount} WebGL programs`)
+    }
+
+    // Increment renderKey to force remount of all renderer components
+    renderKey.value++
+    console.log(
+      `[blokkli] Incremented renderKey to ${renderKey.value} to force component remount`,
+    )
+  }
+
+  function setCanvasElement(canvas: HTMLCanvasElement) {
+    canvasElement = canvas
+    initializeContexts()
+    updateCanvasSize()
+  }
+
+  function removeCanvasElement() {
+    if (canvasElement) {
+      canvasElement.removeEventListener('webglcontextlost', handleContextLost)
+      canvasElement.removeEventListener(
+        'webglcontextrestored',
+        handleContextRestored,
+      )
+    }
+    canvasElement = null
+    glContext = null
+    ctx2dContext = null
+    lastCanvasWidth = 0
+    lastCanvasHeight = 0
+  }
+
+  function updateCanvasSize() {
+    if (!canvasElement) {
+      return
+    }
+
+    const canvasWidth = ui.viewport.value.width * dpi.value
+    const canvasHeight = ui.viewport.value.height * dpi.value
+
+    // Only update if size changed
+    if (canvasWidth !== lastCanvasWidth || canvasHeight !== lastCanvasHeight) {
+      canvasElement.width = canvasWidth
+      canvasElement.height = canvasHeight
+
+      if (glContext) {
+        glContext.viewport(0, 0, canvasWidth, canvasHeight)
+      }
+
+      lastCanvasWidth = canvasWidth
+      lastCanvasHeight = canvasHeight
+    }
   }
 
   function gl(): WebGLRenderingContext | undefined {
-    if (!webglEnabled.value) {
-      return
-    }
-
-    if (webglSupported.value === false) {
-      return
-    }
-
-    const canvas = getCanvasElement()
-    const glContext = canvas.getContext('webgl2', {
-      premultipliedAlpha: true,
-    })
-
-    if (!glContext) {
-      webglSupported.value = false
-      return
-    }
-
-    webglSupported.value = true
-
-    // Query WebGL limits once
-    if (!webglLimitsQueried) {
-      const maxViewportDims = glContext.getParameter(
-        glContext.MAX_VIEWPORT_DIMS,
-      ) as Int32Array
-      maxCanvasWidth.value = maxViewportDims[0] || 16384
-      maxCanvasHeight.value = maxViewportDims[1] || 16384
-      webglLimitsQueried = true
-    }
-
-    return glContext
+    return glContext || undefined
   }
 
   useAnimationFrame((time) => {
@@ -378,20 +537,21 @@ export default function (
       time,
     })
 
-    // Clear the canvas before rendering
-    const glContext = gl()
-    const canvas = getCanvasElement()
-    const ctx2dContext = canvas.getContext('2d')
+    // Update canvas size if needed
+    updateCanvasSize()
 
+    // Return early if no canvas element
+    if (!canvasElement) {
+      return
+    }
+
+    // Clear the canvas before rendering
     if (glContext) {
-      glContext.enable(glContext.BLEND)
-      glContext.blendFunc(glContext.SRC_ALPHA_SATURATE, glContext.ONE)
-      glContext.blendEquation(glContext.FUNC_ADD)
       glContext.clearColor(0.0, 0.0, 0.0, 0.0)
       glContext.clear(glContext.COLOR_BUFFER_BIT)
     } else if (ctx2dContext) {
       // Clear 2D canvas for fallback rendering
-      ctx2dContext.clearRect(0, 0, canvas.width, canvas.height)
+      ctx2dContext.clearRect(0, 0, canvasElement.width, canvasElement.height)
     }
 
     // Execute WebGL renderers in zIndex order
@@ -546,17 +706,17 @@ export default function (
     gl.uniform1f(gl.getUniformLocation(programInfo.program, 'u_dpi'), dpi.value)
   }
 
-  const registeredPrograms: Record<string, ProgramInfo> = {}
+  const registeredPrograms = new Map<string, ProgramInfo>()
   function registerProgram(
     id: string,
     gl: WebGLRenderingContext,
     shaders: string[],
   ) {
-    if (!registeredPrograms[id]) {
-      registeredPrograms[id] = createProgramInfo(gl, shaders)
+    if (!registeredPrograms.has(id)) {
+      registeredPrograms.set(id, createProgramInfo(gl, shaders))
     }
 
-    return registeredPrograms[id]
+    return registeredPrograms.get(id)!
   }
 
   function setMouseCoords(x: number, y: number) {
@@ -574,7 +734,9 @@ export default function (
     setMouseCoords,
     webglSupported: computed(() => webglSupported.value && webglEnabled.value),
     webglEnabled,
-    getCanvasElement,
+    renderKey: computed(() => renderKey.value),
+    setCanvasElement,
+    removeCanvasElement,
     cursor,
     handleClick,
     registerRenderer,

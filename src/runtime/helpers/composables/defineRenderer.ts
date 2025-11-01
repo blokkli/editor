@@ -14,13 +14,11 @@ export default function defineRenderer<T>(
 ): { collector: T } {
   const { animation } = useBlokkli()
 
-  // Create the collector by calling the collector factory function
-  const collector = config.collector()
-
-  const unregisterRenderer = animation.registerRenderer(id, config)
+  // Register the renderer and get the collector instance
+  const { collector, unregister } = animation.registerRenderer(id, config)
 
   onBeforeUnmount(() => {
-    unregisterRenderer()
+    unregister()
   })
 
   // Return the collector with inferred type

@@ -5,7 +5,11 @@
     :tour-text="$t('analyzeTourText', 'Analyze the content of your page')"
     icon="speedometer"
   >
-    <Renderer :langcode="context.language" :analyzers />
+    <Renderer
+      :key="animation.renderKey.value"
+      :langcode="context.language"
+      :analyzers
+    />
   </PluginSidebar>
 </template>
 
@@ -40,7 +44,7 @@ function getAdapterAnalyzers(): Promise<Analyzer[]> {
 
 const analyzers = await getAdapterAnalyzers()
 
-const { $t, context } = useBlokkli()
+const { $t, context, animation } = useBlokkli()
 </script>
 
 <script lang="ts">

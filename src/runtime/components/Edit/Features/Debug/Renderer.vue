@@ -74,6 +74,24 @@
               Refresh Rects
             </button>
           </div>
+          <div v-if="webglLoseContext">
+            <button
+              class="bk-button bk-is-small"
+              :disabled="!animation.webglEnabled.value"
+              @click.prevent="loseContext"
+            >
+              Lose WebGL Context
+            </button>
+          </div>
+          <div v-if="webglLoseContext">
+            <button
+              class="bk-button bk-is-small"
+              :disabled="!animation.webglEnabled.value"
+              @click.prevent="restoreContext"
+            >
+              Restore WebGL Context
+            </button>
+          </div>
         </div>
       </section>
 
@@ -180,6 +198,31 @@ const {
 const logEvents = storage.use('debug:log-events', true)
 
 const iconItems = computed(() => Object.keys(icons) as BlokkliIcon[])
+
+// WebGL context loss testing
+const webglLoseContext = computed(() => {
+  const gl = animation.gl()
+  if (!gl) {
+    return null
+  }
+  return gl.getExtension('WEBGL_lose_context')
+})
+
+function loseContext() {
+  const ext = webglLoseContext.value
+  if (ext) {
+    logger.log('Forcing WebGL context loss...')
+    ext.loseContext()
+  }
+}
+
+function restoreContext() {
+  const ext = webglLoseContext.value
+  if (ext) {
+    logger.log('Forcing WebGL context restoration...')
+    ext.restoreContext()
+  }
+}
 
 const featuresList = computed(() => {
   return features.features.value.map((v) => {

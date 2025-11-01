@@ -15,9 +15,10 @@
     </BlokkliTransition>
   </Teleport>
 
-  <ErrorBoundary label="Add Buttons" v-model="isLocked">
+  <ErrorBoundary v-model="isLocked" label="Add Buttons">
     <Renderer
       v-if="!isLocked"
+      :key="animation.renderKey.value"
       @toggle="onRendererToggle"
       @toggle-field="onRendererToggleField"
     />
@@ -51,7 +52,8 @@ const props = defineProps<{
   items: RenderedFieldListItem[]
 }>()
 
-const { dom, state, eventBus, types, $t, blocks, fields } = useBlokkli()
+const { dom, state, eventBus, types, $t, blocks, fields, animation } =
+  useBlokkli()
 
 const isLocked = ref(false)
 

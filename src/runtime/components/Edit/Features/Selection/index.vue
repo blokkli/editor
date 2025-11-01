@@ -1,6 +1,7 @@
 <template>
   <Overlay
     v-if="isVisible"
+    :key="animation.renderKey.value"
     :blocks="selection.items.value"
     :uuids="selection.uuids.value"
     :has-host-selected="selection.hasHostSelected.value"

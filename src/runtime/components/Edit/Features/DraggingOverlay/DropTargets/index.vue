@@ -23,7 +23,7 @@ import type {
   Rectangle,
   Coord,
 } from '#blokkli/types'
-import { ref, computed, useBlokkli, onBeforeUnmount } from '#imports'
+import { ref, computed, useBlokkli } from '#imports'
 import {
   setBuffersAndAttributes,
   drawBufferInfo,
@@ -852,7 +852,7 @@ const { collector } = defineRenderer('drop-targets', {
   },
   program: () => ({ shaders: [vs, fs] }),
   cursor: () => 'grabbing',
-  render: (ctx, gl, program) => {
+  render: (_ctx, gl, program) => {
     const scale = ui.artboardScale.value
     const offset = { ...ui.artboardOffset.value }
 
@@ -955,13 +955,5 @@ const { collector } = defineRenderer('drop-targets', {
       )
     }
   },
-})
-
-onBeforeUnmount(() => {
-  const canvas = animation.getCanvasElement()
-  const ctx = canvas.getContext('2d')
-  if (ctx) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-  }
 })
 </script>
