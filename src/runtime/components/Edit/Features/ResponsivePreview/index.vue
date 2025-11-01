@@ -38,7 +38,7 @@
           </div>
           <Icon name="caret" />
         </button>
-        <div v-show="dropdownOpen" class="bk-dropdown-content">
+        <div v-if="dropdownOpen" class="bk-dropdown-content">
           <label v-for="option in viewportOptions" :key="option.id">
             <input
               v-model="selectedViewportId"

@@ -261,9 +261,11 @@ const setCoordinates = (newX: number, newY: number) => {
 
 const setSizes = (newWidth?: number, newHeight?: number) => {
   if (newWidth !== undefined) {
+    const maxWidth =
+      ui.visibleViewport.value.x + ui.visibleViewport.value.width - x.value
     userWidth.value = Math.min(
       Math.max(newWidth, props.minWidth),
-      window.innerWidth - 300,
+      maxWidth,
     )
   }
   if (newHeight !== undefined) {
