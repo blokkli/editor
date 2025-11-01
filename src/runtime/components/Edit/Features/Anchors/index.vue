@@ -7,14 +7,14 @@
     :title-off="$t('anchorHide', 'Hide anchor links')"
     icon="anchor"
   >
-    <AnchorRenderer v-if="isActive" />
+    <AnchorOverlay v-if="isActive" />
   </PluginViewOption>
 </template>
 
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginViewOption } from '#blokkli/plugins'
-import AnchorRenderer from './Renderer.vue'
+import AnchorOverlay from './Overlay/index.vue'
 
 defineBlokkliFeature({
   id: 'anchors',

@@ -1,5 +1,5 @@
 <template>
-  <DropTargets
+  <Renderer
     v-if="dragItems.length && isVisible"
     v-slot="{ color, label }"
     :items="dragItems"
@@ -18,12 +18,12 @@
       :active-color="color"
       :active-label="label"
     />
-  </DropTargets>
+  </Renderer>
 </template>
 
 <script lang="ts" setup>
 import DragItems from './DragItems/index.vue'
-import DropTargets from './DropTargets/index.vue'
+import Renderer from './Renderer/index.vue'
 import {
   ref,
   useBlokkli,

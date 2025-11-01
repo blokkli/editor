@@ -1,5 +1,5 @@
 <template>
-  <Overlay
+  <Renderer
     v-if="isVisible"
     :key="animation.renderKey.value"
     :blocks="selection.items.value"
@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-import Overlay from './Overlay/index.vue'
+import Renderer from './Renderer/index.vue'
 import SelectionAddButtons from './AddButtons/index.vue'
 import {
   calculateIntersection,

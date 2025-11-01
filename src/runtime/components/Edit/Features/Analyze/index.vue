@@ -5,7 +5,7 @@
     :tour-text="$t('analyzeTourText', 'Analyze the content of your page')"
     icon="speedometer"
   >
-    <Renderer
+    <AnalyzerMain
       :key="animation.renderKey.value"
       :langcode="context.language"
       :analyzers
@@ -16,7 +16,7 @@
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
-import Renderer from './Renderer.vue'
+import AnalyzerMain from './Main.vue'
 import type { Analyzer } from './analyzers/types'
 
 const { adapter } = defineBlokkliFeature({

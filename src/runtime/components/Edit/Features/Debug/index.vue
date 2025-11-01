@@ -1,11 +1,11 @@
 <template>
-  <Renderer v-if="debug.isEnabled.value" :logger />
+  <DebugMain v-if="debug.isEnabled.value" :logger />
 </template>
 
 <script lang="ts" setup>
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { defineBlokkliFeature, useBlokkli } from '#imports'
-import Renderer from './Renderer.vue'
+import DebugMain from './Main.vue'
 
 const { logger } = defineBlokkliFeature({
   id: 'debug',

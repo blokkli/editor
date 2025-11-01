@@ -39,7 +39,7 @@
       <Results :results="resultsFiltered" />
     </div>
   </div>
-  <Overlay
+  <Renderer
     v-if="resultsFiltered.length && animation.webglEnabled.value && !isStale"
     :results="resultsFiltered"
   />
@@ -54,7 +54,7 @@ import type {
 } from './analyzers/types'
 import Results from './Results/Results.vue'
 import AnalyzeSummary from './Summary/index.vue'
-import Overlay from './Overlay/index.vue'
+import Renderer from './Renderer/index.vue'
 import { useAnalyzeHelper } from './helper'
 import { FormSelect, RelativeTime } from '#blokkli/components'
 import { AnalyzerContext } from './analyzers/helpers/Context'

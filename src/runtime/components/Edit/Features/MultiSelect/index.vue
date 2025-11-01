@@ -4,7 +4,7 @@
     :label="$t('feature_multi-select_label', 'Multiselect')"
     @error="onError"
   >
-    <Overlay
+    <Renderer
       v-if="shouldRender"
       :key="animation.renderKey.value"
       :start-x="downX"
@@ -19,7 +19,7 @@
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { ref, useBlokkli, defineBlokkliFeature, computed } from '#imports'
 import { ErrorBoundary } from '#blokkli/components'
-import Overlay from './Overlay/index.vue'
+import Renderer from './Renderer/index.vue'
 
 defineBlokkliFeature({
   id: 'multi-select',

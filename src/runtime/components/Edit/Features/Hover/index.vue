@@ -1,11 +1,11 @@
 <template>
   <ErrorBoundary v-model="isLocked" :label="$t('feature_hover_label', 'Hover')">
-    <Overlay v-if="isVisible" :key="animation.renderKey.value" />
+    <Renderer v-if="isVisible" :key="animation.renderKey.value" />
   </ErrorBoundary>
 </template>
 
 <script lang="ts" setup>
-import Overlay from './Overlay/index.vue'
+import Renderer from './Renderer/index.vue'
 import { computed, useBlokkli, defineBlokkliFeature, ref } from '#imports'
 import { ErrorBoundary } from '#blokkli/components'
 

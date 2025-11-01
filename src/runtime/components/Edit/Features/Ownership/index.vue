@@ -1,12 +1,12 @@
 <template>
   <Teleport to="#bk-banner-list">
-    <Renderer v-if="shouldRender" @submit="takeOwnership" />
+    <OwnershipBanner v-if="shouldRender" @submit="takeOwnership" />
   </Teleport>
 </template>
 
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature, computed } from '#imports'
-import Renderer from './Renderer.vue'
+import OwnershipBanner from './Banner/index.vue'
 
 const { adapter } = defineBlokkliFeature({
   id: 'ownership',
