@@ -14,6 +14,7 @@ in float v_border_thickness;
 in vec2 v_half_size;
 in vec3 v_color;
 in float v_dash_cycle;
+in vec2 v_rect_size_artboard;
 
 out vec4 fragColor;
 
@@ -50,7 +51,8 @@ void main() {
 
     // Render solid border (non-dashed)
     float borderAlpha =
-      1.0 - smoothstep(-u_borderSoftness, 0.0, abs(mainDist) - v_border_thickness);
+      1.0 -
+      smoothstep(-u_borderSoftness, 0.0, abs(mainDist) - v_border_thickness);
     vec4 borderColor = vec4(v_color, 1.0);
 
     // Combine fill and border
@@ -69,37 +71,54 @@ void main() {
   float u_borderSoftness = 1.0;
 
   float borderAlpha =
-    1.0 - smoothstep(-u_borderSoftness, 0.0, abs(mainDist) - v_border_thickness);
+    1.0 -
+    smoothstep(-u_borderSoftness, 0.0, abs(mainDist) - v_border_thickness);
 
   // Apply dashed pattern for all blocks
-  // Calculate actual perimeter distance for proper dashing
-  vec2 p = posRelativeToQuad;
-  vec2 absP = abs(p);
+  // Calculate perimeter distance in artboard space for scale-independent dashing
 
-  // Determine which edge/corner we're on and calculate perimeter distance
+  // Convert pixel position from viewport to artboard space
+  vec2 viewportToArtboardRatio = v_rect_size_artboard / v_rect_size;
+  vec2 posRelativeToQuad_artboard = posRelativeToQuad * viewportToArtboardRatio;
+
+  // Get artboard-space half dimensions
+  vec2 halfSize_artboard = v_rect_size_artboard / 2.0;
+
+  // Convert from center-relative to top-left-relative coordinates
+  vec2 posFromTopLeft = posRelativeToQuad_artboard + halfSize_artboard;
+
+  // Clamp to rect bounds to avoid edge issues
+  vec2 p = clamp(posFromTopLeft, vec2(0.0), v_rect_size_artboard);
+
+  // Two continuous dash paths anchored to visual top-left:
+  // Path 1: TOP (left→right) → RIGHT (top→bottom)
+  // Path 2: LEFT (top→bottom) → BOTTOM (left→right)
   float perimeterDistance = 0.0;
+  float width = v_rect_size_artboard.x;
+  float height = v_rect_size_artboard.y;
 
-  // Check which edge we're closest to
-  float dx = absP.x - v_half_size.x;
-  float dy = absP.y - v_half_size.y;
+  // Determine which edge we're on based on distance to edges
+  vec2 absP = abs(posRelativeToQuad_artboard);
+  float dx = absP.x - halfSize_artboard.x;
+  float dy = absP.y - halfSize_artboard.y;
 
   if (dy > dx) {
-    // Top or bottom edge
-    if (p.y > 0.0) {
-      // Bottom edge: start at bottom-left, go right
-      perimeterDistance = v_rect_size.x + v_rect_size.y + (p.x + v_half_size.x);
+    // Closer to top or bottom edge
+    if (posRelativeToQuad_artboard.y > 0.0) {
+      // Visual TOP edge: starts at top-left, goes left to right
+      perimeterDistance = p.x;
     } else {
-      // Top edge: start at top-right, go left
-      perimeterDistance = v_rect_size.x + (v_half_size.x - p.x);
+      // Visual BOTTOM edge: continues from LEFT edge, then goes left to right
+      perimeterDistance = height + p.x;
     }
   } else {
-    // Left or right edge
-    if (p.x > 0.0) {
-      // Right edge: start at top-right, go down
-      perimeterDistance = p.y + v_half_size.y;
+    // Closer to left or right edge
+    if (posRelativeToQuad_artboard.x < 0.0) {
+      // Visual LEFT edge: starts at visual top-left (0 at top, height at bottom)
+      perimeterDistance = height - p.y;
     } else {
-      // Left edge: start at bottom-left, go up
-      perimeterDistance = v_rect_size.x + v_rect_size.y + v_rect_size.x + (v_half_size.y - p.y);
+      // Visual RIGHT edge: continues from TOP edge (width at visual top, width+height at visual bottom)
+      perimeterDistance = width + (height - p.y);
     }
   }
 
@@ -107,7 +126,7 @@ void main() {
   // dashWidth = v_dash_cycle / 2.0 (since dashWidth = dashGap = 7.0, dashCycle = 14.0)
   float dashFactor = step(dashPosition, v_dash_cycle / 2.0);
 
-  // Only show dashes
+  // Only show dashes...
   borderAlpha *= dashFactor;
 
   vec4 borderColor = vec4(v_color, 1.0);

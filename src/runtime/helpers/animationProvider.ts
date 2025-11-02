@@ -66,6 +66,11 @@ export type AnimationProvider = {
   requestDraw: () => void
 
   /**
+   * Reset the animation state and force a remount of all renderer components.
+   */
+  reset: () => void
+
+  /**
    * Get the WebGL rendering context.
    * Returns undefined if context is lost or not available.
    */
@@ -539,6 +544,14 @@ export default function (
     requestDraw()
   }
 
+  function reset() {
+    isContextLost.value = true
+    registeredPrograms.clear()
+    rendererPrograms.clear()
+    renderKey.value++
+    isContextLost.value = false
+  }
+
   function setCanvasElement(canvas: HTMLCanvasElement) {
     canvasElement = canvas
     initializeContexts()
@@ -854,5 +867,6 @@ export default function (
     handleClick,
     registerRenderer,
     unregisterRenderer,
+    reset,
   }
 }

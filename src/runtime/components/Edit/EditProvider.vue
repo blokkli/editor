@@ -362,7 +362,15 @@ const isProxyMode = computed(() => ui.isProxyMode.value)
 provide(INJECT_GLOBAL_PROXY_MODE, isProxyMode)
 
 if (import.meta.hot) {
-  function onAfterUpdate() {
+  import.meta.hot.accept('#blokkli/runtime-helpers', () => {})
+  import.meta.hot.accept('#blokkli/helpers/runtimeHelpers', () => {})
+  import.meta.hot.on('vite:afterUpdate', (payload) => {
+    const hasUpdatedRenderer = payload.updates.find((v) =>
+      v.path.includes('/Renderer/'),
+    )
+    if (hasUpdatedRenderer) {
+      animation.reset()
+    }
     try {
       eventBus.emit('state:reloaded')
       dom.updateVisibleRects()
@@ -378,10 +386,7 @@ if (import.meta.hot) {
     } catch {
       // Noop.
     }
-  }
-  import.meta.hot.accept('#blokkli/runtime-helpers', () => {})
-  import.meta.hot.accept('#blokkli/helpers/runtimeHelpers', () => {})
-  import.meta.hot.on('vite:afterUpdate', onAfterUpdate)
+  })
 }
 
 onMounted(async () => {

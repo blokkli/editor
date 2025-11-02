@@ -45,6 +45,7 @@ out float v_border_thickness;
 out vec2 v_half_size;
 out vec3 v_color;
 out float v_dash_cycle;
+out vec2 v_rect_size_artboard;
 
 void main() {
   int rectIndex = int(a_rect_id);
@@ -134,14 +135,10 @@ void main() {
   // Corner radii clamped to max radius
   v_corner_radii = min(v_rect_radius, min(v_rect_size.x, v_rect_size.y) / 2.0);
 
-  // Border thickness
   v_border_thickness = 1.5 * u_dpi;
-
-  // Half size for perimeter calculations
   v_half_size = v_rect_size / 2.0;
-
-  // Dash cycle (dashWidth + dashGap = 7.0 + 7.0 = 14.0)
-  v_dash_cycle = 14.0 * u_dpi;
+  v_dash_cycle = 14.0 - u_scale * 1.0;
+  v_rect_size_artboard = vec2(hoverPos.z, hoverPos.w);
 
   // Select color based on type: 0 = mono, 1 = accent, 2 = teal, 3 = white (inverted), 4 = lime (library)
   if (hoverType > 3.5) {
