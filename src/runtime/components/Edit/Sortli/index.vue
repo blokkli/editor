@@ -11,16 +11,13 @@
 <script lang="ts" setup>
 import type { Coord, DraggableItem } from '#blokkli/types'
 import { useBlokkli } from '#imports'
-import {
-  buildDraggableItem,
-  getDistance,
-  getInteractionCoordinates,
-} from '#blokkli/helpers'
+import { getDistance, getInteractionCoordinates } from '#blokkli/helpers'
 
 const { eventBus } = useBlokkli()
 
 const props = defineProps<{
   getDragItems?: (activeItem?: DraggableItem) => DraggableItem[] | null
+  buildItem: (el: HTMLElement) => DraggableItem | null | undefined
 }>()
 
 let pointerStartCoords: Coord | null = null
@@ -37,11 +34,11 @@ function onPointerDown(e: PointerEvent) {
   pointerStartCoords = getInteractionCoordinates(e)
 
   const sortliItem = e.target.closest('[data-sortli-id]')
-  if (!sortliItem) {
+  if (!(sortliItem instanceof HTMLElement)) {
     return
   }
 
-  const item = buildDraggableItem(sortliItem)
+  const item = props.buildItem(sortliItem)
 
   if (!item) {
     return

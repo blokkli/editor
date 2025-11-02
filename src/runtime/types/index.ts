@@ -923,25 +923,6 @@ export type DraggableItem =
   | DraggableSearchContentItem
   | DraggableMediaLibraryItem
 
-/**
- * Defines a droppable entity field.
- */
-export type DroppableEntityField = {
-  /**
-   * The droppable field element.
-   */
-  element: HTMLElement
-
-  /**
-   * The host.
-   */
-  host: DraggableExistingBlock | EntityContext
-
-  /**
-   * The name of the field on which entities can be dropped.
-   */
-  fieldName: string
-}
 export type MoveBlockEvent = {
   afterUuid?: string
   item: DraggableExistingBlock
@@ -1293,8 +1274,6 @@ export type EventbusEvents = {
   'editable:focus': EditableFieldFocusEvent
   'editable:update': EditableFieldUpdateEvent
   'editable:save': undefined
-
-  'droppable:focus': DroppableEntityField
 
   'drop:clipboardItem': DropClipboardItemEvent
 

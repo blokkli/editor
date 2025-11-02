@@ -21,11 +21,7 @@
       :class="backgroundClass"
     >
       <ScaleToFit :width="previewWidth" :max-height="400">
-        <BlokkliItem
-          v-bind="item"
-          parent-type="nested"
-          class="bk-drop-element"
-        />
+        <BlokkliItem v-bind="item" parent-type="nested" />
       </ScaleToFit>
     </div>
   </div>

@@ -2,7 +2,11 @@
   <div
     class="bk-vars bk-dragging-overlay"
     :style="style"
-    :class="[{ 'bk-is-touch': isTouch }, { 'bk-is-active': !!activeLabel }]"
+    :class="[
+      { 'bk-is-touch': isTouch },
+      { 'bk-is-active': !!activeLabel },
+      { bk: !isExisting },
+    ]"
   >
     <div
       v-show="activeLabel"
@@ -69,14 +73,7 @@ import { Icon, ItemIcon } from '#blokkli/components'
 import { easeOutElastic } from '#blokkli/helpers/easing'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
-const {
-  dom,
-  ui,
-  animation,
-  theme,
-  types,
-  element: elementProvider,
-} = useBlokkli()
+const { dom, ui, animation, theme, types } = useBlokkli()
 
 const props = defineProps<{
   /**
@@ -104,6 +101,10 @@ const props = defineProps<{
   activeColor?: string
   activeLabel?: string
 }>()
+
+const isExisting = computed<boolean>(
+  () => !!props.items.find((v) => v.itemType === 'existing'),
+)
 
 const currentActiveLabel = ref('')
 const currentActiveColor = ref('')
@@ -295,18 +296,11 @@ function getDraggingBounds(
 onMounted(() => {
   const elRects = props.items
     .map((item, index) => {
-      const itemElement =
+      const element =
         item.itemType === 'existing' ? dom.getDragElement(item) : item.element()
-      if (!itemElement) {
+      if (!element) {
         return
       }
-      const element =
-        elementProvider.query(
-          itemElement,
-          '.bk-drop-element',
-          'Find drop element for drag item.',
-        ) || itemElement
-
       return {
         rect: element.getBoundingClientRect(),
         element,

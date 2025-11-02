@@ -1,12 +1,5 @@
 import { easeOutSine } from './easing'
-import type {
-  DraggableItem,
-  SearchContentItem,
-  Rectangle,
-  Coord,
-  LibraryItemProps,
-  Size,
-} from '#blokkli/types'
+import type { Rectangle, Coord, Size } from '#blokkli/types'
 import type { RGB } from '#blokkli/types/theme'
 
 /**
@@ -17,89 +10,6 @@ import type { RGB } from '#blokkli/types/theme'
  */
 export function falsy<T>(value: T): value is NonNullable<T> {
   return value !== null && value !== undefined
-}
-
-/**
- * Maps a HTML element that is draggable to a draggable item data object.
- */
-export function buildDraggableItem(
-  element: Element | EventTarget,
-): DraggableItem | undefined {
-  if (!(element instanceof HTMLElement)) {
-    return
-  }
-  const dataset = element.dataset
-  if (dataset.elementType === 'new') {
-    const itemBundle = dataset.itemBundle
-    if (itemBundle) {
-      return {
-        itemType: 'new',
-        element: () =>
-          document.querySelector(
-            `[data-sortli-id="${itemBundle}"]`,
-          ) as HTMLElement,
-        itemBundle,
-      }
-    }
-  } else if (dataset.elementType === 'action') {
-    const actionType = dataset.actionType
-    const itemBundle = dataset.itemBundle
-    if (actionType) {
-      return {
-        itemType: 'action',
-        actionType,
-        itemBundle,
-        element: () =>
-          document.querySelector(
-            `[data-element-type="action"][data-sortli-id="${actionType}"]`,
-          ) as HTMLElement,
-      }
-    }
-  } else if (dataset.elementType === 'clipboard') {
-    const additional = dataset.clipboardAdditional
-    const itemBundle = dataset.itemBundle
-    const clipboardId = dataset.clipboardId
-    const id = dataset.sortliId
-    if (itemBundle && clipboardId) {
-      return {
-        itemType: 'clipboard',
-        element: () =>
-          document.querySelector(`[data-sortli-id="${id}"]`) as HTMLElement,
-        itemBundle,
-        additional,
-        clipboardId,
-      }
-    }
-  } else if (dataset.elementType === 'media_library') {
-    const mediaId = dataset.mediaId
-    const itemBundle = dataset.itemBundle
-    const mediaBundle = dataset.mediaBundle
-    if (mediaId && itemBundle && mediaBundle) {
-      return {
-        itemType: 'media_library',
-        mediaId,
-        itemBundle,
-        mediaBundle,
-        element: () =>
-          document.querySelector(
-            `[data-element-type="media_library"][data-media-id="${mediaId}"]`,
-          ) as HTMLElement,
-      }
-    }
-  } else if (dataset.elementType === 'search_content') {
-    const searchItemData = dataset.searchItem
-    const id = dataset.sortliId
-    if (searchItemData && id) {
-      const searchItem = JSON.parse(searchItemData) as SearchContentItem
-      return {
-        itemType: 'search_content',
-        element: () =>
-          document.querySelector(`[data-sortli-id="${id}"]`) as HTMLElement,
-        itemBundle: searchItem.targetBundles[0]!,
-        searchItem,
-      }
-    }
-  }
 }
 
 export function onlyUnique(value: string, index: number, self: Array<string>) {

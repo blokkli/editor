@@ -14,29 +14,15 @@
   >
     <Library is-sortli />
   </PluginSidebar>
-
-  <PluginDroppableEdit
-    id="media-replace"
-    title="Replace media"
-    icon="image"
-    entity-type="media"
-    @save="onDroppableEditSave"
-  >
-    <Library v-model="selected" />
-  </PluginDroppableEdit>
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature, ref } from '#imports'
-import { PluginSidebar, PluginDroppableEdit } from '#blokkli/plugins'
+import { useBlokkli, defineBlokkliFeature } from '#imports'
+import { PluginSidebar } from '#blokkli/plugins'
 import Library from './Library/index.vue'
 import defineDropAreas from '#blokkli/helpers/composables/defineDropAreas'
 import { falsy } from '#blokkli/helpers'
-import type {
-  DraggableHostData,
-  DropArea,
-  DroppableEntityField,
-} from '#blokkli/types'
+import type { DraggableHostData, DropArea } from '#blokkli/types'
 import { itemEntityType } from '#blokkli-build/config'
 
 defineBlokkliFeature({
@@ -48,50 +34,12 @@ defineBlokkliFeature({
   requiredAdapterMethods: ['mediaLibraryGetResults', 'mediaLibraryAddBlock'],
 })
 
-const { $t, adapter, state, runtimeConfig, types, directive } = useBlokkli()
-
-const selected = ref('')
+const { $t, adapter, state, types, directive } = useBlokkli()
 
 const ERROR_MESSAGE = $t(
   'mediaLibraryReplaceFailed',
   'Failed to replace media.',
 )
-
-const onDroppableEditSave = async (e: DroppableEntityField) => {
-  if (!selected.value) {
-    return
-  }
-  if ('itemType' in e.host && adapter.mediaLibraryReplaceMedia) {
-    const host = e.host
-    await state.mutateWithLoadingState(
-      () =>
-        adapter.mediaLibraryReplaceMedia!({
-          host: {
-            uuid: host.block.uuid,
-            type: runtimeConfig.itemEntityType,
-            fieldName: e.fieldName,
-          },
-          mediaId: selected.value,
-        }),
-      ERROR_MESSAGE,
-    )
-  } else if ('type' in e.host && adapter.mediaLibraryReplaceEntityMedia) {
-    const host = e.host
-    const type = host.type
-    await state.mutateWithLoadingState(
-      () =>
-        adapter.mediaLibraryReplaceEntityMedia!({
-          host: {
-            uuid: host.uuid,
-            type,
-            fieldName: e.fieldName,
-          },
-          mediaId: selected.value,
-        }),
-      ERROR_MESSAGE,
-    )
-  }
-}
 
 defineDropAreas((dragItems) => {
   // Not supported by adapter.

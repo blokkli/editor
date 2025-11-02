@@ -434,21 +434,18 @@ export default function (
     if (!el) {
       return ''
     }
-    const dropElement =
-      element.query(el, '.bk-drop-element', 'Find drop element for markup.') ||
-      el
+    if ('itemType' in item && item.itemType !== 'new') {
+      return el.outerHTML
+    }
     const childCount = element.queryAll(
-      dropElement,
+      el,
       '*',
       'Get child count for drop element markup.',
     ).length
     if (checkSize && childCount > 80) {
       return ''
     }
-    return cloneElementWithStyles(dropElement, true).replace(
-      /\sdata-\w+="[^"]*"/g,
-      '',
-    )
+    return cloneElementWithStyles(el, true).replace(/\sdata-\w+="[^"]*"/g, '')
   }
 
   const getVisibleBlocks = () => Array.from(visibleBlocks)

@@ -45,20 +45,17 @@
     <div
       ref="listEl"
       class="bk-media-library-items bk-scrollbar-light"
-      :class="[{ 'bk-is-sortli': isSortli }, 'bk-is-' + listView]"
+      :class="'bk-is-' + listView"
     >
-      <Sortli v-if="isSortli" no-transition :get-drag-items="getDragItems">
+      <Sortli no-transition :get-drag-items="getDragItems" :build-item>
         <Item
           v-for="item in items"
           :key="item.mediaId"
           v-bind="item"
           v-model="selected"
+          :class="'bk-is-' + listView"
         />
       </Sortli>
-
-      <div v-else>
-        <Item v-for="item in items" :key="item.mediaId" v-bind="item" />
-      </div>
     </div>
 
     <div v-if="selected.length" class="bk-media-library-cancel">
@@ -85,11 +82,10 @@ import type { MediaLibraryFilter, MediaLibraryGetResults } from './../types'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import Item from './Item.vue'
 import type { DraggableItem, DraggableMediaLibraryItem } from '#blokkli/types'
-import { buildDraggableItem, falsy } from '#blokkli/helpers'
+import { falsy } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 defineProps<{
-  isSortli?: boolean
   modelValue?: string
 }>()
 
@@ -113,19 +109,19 @@ function getDragItems(activeItem?: DraggableItem): DraggableItem[] | null {
     .map((id) => {
       const el = element.query(
         listElement,
-        `[data-sortli-id="media_library_${id}"]`,
+        `[data-sortli-id="${id}"]`,
         'Find media library drag item.',
       )
       if (!(el instanceof HTMLElement)) {
         return null
       }
 
-      const item = buildDraggableItem(el)
-      if (item?.itemType === 'media_library') {
-        return item
+      const item = buildItem(el)
+      if (!item) {
+        return null
       }
 
-      return null
+      return item
     })
     .filter(falsy)
 
@@ -202,6 +198,24 @@ const perPage = computed(() => data.value?.perPage || 0)
 const totalPages = computed(() => {
   return Math.ceil(total.value / perPage.value)
 })
+
+function buildItem(element: HTMLElement): DraggableMediaLibraryItem | null {
+  const id = element.dataset.sortliId
+  if (!id) {
+    return null
+  }
+  const item = items.value.find((v) => v.mediaId === id)
+  if (!item) {
+    return null
+  }
+  return {
+    itemType: 'media_library',
+    mediaId: item.mediaId,
+    mediaBundle: item.mediaBundle ?? '',
+    itemBundle: item.targetBundles[0] ?? '',
+    element: () => element,
+  }
+}
 
 onBlokkliEvent('item:dropped', function () {
   selected.value = []

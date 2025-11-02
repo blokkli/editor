@@ -3,7 +3,7 @@
     :key="mediaId"
     class="bk-media-library-items-item"
     :class="{ 'bk-is-selected': isSelected }"
-    :data-sortli-id="'media_library_' + mediaId"
+    :data-sortli-id="mediaId"
     data-element-type="media_library"
     :data-item-bundle="targetBundles[0]"
     :data-media-id="mediaId"

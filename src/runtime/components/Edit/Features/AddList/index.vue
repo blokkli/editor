@@ -11,10 +11,10 @@
   >
     <div>
       <div id="blokkli-add-list-sidebar-before" />
-      <Sortli class="bk bk-list-sidebar">
-        <div id="blokkli-add-list-blocks" />
-        <div id="blokkli-add-list-actions" />
-      </Sortli>
+      <div class="bk bk-list-sidebar">
+        <Sortli id="blokkli-add-list-blocks" :build-item="buildItemNew" />
+        <Sortli id="blokkli-add-list-actions" :build-item="buildItemAction" />
+      </div>
     </div>
   </PluginSidebar>
   <Teleport v-else-if="shouldRender" to="body">
@@ -30,10 +30,10 @@
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
     >
-      <Sortli class="bk-list">
-        <div id="blokkli-add-list-blocks" />
-        <div id="blokkli-add-list-actions" />
-      </Sortli>
+      <div class="bk-list">
+        <Sortli id="blokkli-add-list-blocks" :build-item="buildItemNew" />
+        <Sortli id="blokkli-add-list-actions" :build-item="buildItemAction" />
+      </div>
     </div>
     <PluginTourItem
       id="add-blocks"
@@ -56,6 +56,7 @@ import {
 import { Sortli } from '#blokkli/components'
 import { PluginSidebar, PluginTourItem } from '#blokkli/plugins'
 import { addElementClasses } from '#blokkli/helpers/addElementClasses'
+import type { DraggableActionItem, DraggableNewItem } from '#blokkli/types'
 
 const { settings } = defineBlokkliFeature({
   id: 'add-list',
@@ -89,6 +90,35 @@ const { settings } = defineBlokkliFeature({
 
   screenshot: 'feature-add-list.jpg',
 })
+
+function buildItemNew(element: HTMLElement): DraggableNewItem | undefined {
+  const itemBundle = element.dataset.sortliId
+  if (!itemBundle) {
+    return
+  }
+
+  return {
+    itemType: 'new',
+    itemBundle,
+    element: () => element,
+  }
+}
+
+function buildItemAction(
+  element: HTMLElement,
+): DraggableActionItem | undefined {
+  const actionType = element.dataset.sortliId
+  if (!actionType) {
+    return
+  }
+  const itemBundle = element.dataset.itemBundle
+  return {
+    itemType: 'action',
+    actionType,
+    itemBundle,
+    element: () => element,
+  }
+}
 
 const { state, $t, eventBus, ui, element } = useBlokkli()
 

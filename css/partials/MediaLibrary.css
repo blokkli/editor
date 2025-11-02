@@ -46,14 +46,6 @@
     > div {
       @apply w-full min-w-0;
     }
-    &:not(.bk-is-sortli) {
-      img {
-        @apply select-none;
-        user-select: none;
-        -webkit-touch-callout: none;
-        -webkit-user-drag: none;
-      }
-    }
 
     &.bk-is-grid > div {
       @apply grid grid-cols-2 pt-10;
@@ -92,29 +84,45 @@
       @container (min-width: 2000px) {
         @apply grid-cols-11;
       }
-
-      .bk-media-library-items-item {
-        @apply p-10 hover:bg-mono-100;
-        h3 {
-          @apply mt-5;
-        }
-      }
     }
 
     &.bk-is-horizontal > div {
       @apply grid;
-      .bk-media-library-items-item {
-        @apply flex w-full min-w-0 gap-15 p-15 hover:bg-mono-100;
-      }
-      .bk-media-library-items-item-image {
-        @apply w-90;
-      }
-      .bk-media-library-items-item-text {
-        @apply flex-1;
+    }
+  }
+
+  .bk-media-library-filters-listview {
+    @apply aspect-square w-[54px] flex items-center justify-center;
+    flex: 0 0 54px !important;
+    button {
+      @apply w-full h-full flex items-center justify-center text-mono-500 hover:text-mono-900;
+    }
+    .bk-icon {
+      @apply w-25 h-25;
+      svg {
+        @apply fill-current;
       }
     }
   }
 
+  .bk-loading {
+    @apply absolute inset-0 flex items-center justify-center bg-white/80 z-40;
+
+    svg {
+      @apply w-50 h-50 fill-mono-400;
+    }
+  }
+
+  .bk-media-library-cancel {
+    @apply absolute bottom-0 left-0 w-full p-10 bg-white;
+
+    button {
+      @apply w-full;
+    }
+  }
+}
+
+.bk {
   .bk-media-library-items-item {
     @apply text-sm cursor-grab select-none relative;
 
@@ -149,64 +157,51 @@
     p {
       @apply break-words;
     }
-  }
 
-  .bk-media-library-items-item-box {
-    @apply relative;
-    > label {
-      @apply absolute top-0 right-0 z-50 cursor-pointer opacity-0 p-5;
+    .bk-media-library-items-item-box {
+      @apply relative;
+      > label {
+        @apply absolute top-0 right-0 z-50 cursor-pointer opacity-0 p-5;
 
-      &:hover {
+        &:hover {
+          input {
+            @apply bg-accent-700;
+          }
+        }
+
         input {
-          @apply bg-accent-700;
+          @apply cursor-pointer checked:bg-accent-700;
+          @apply bg-white border border-mono-400;
         }
       }
+    }
 
-      input {
-        @apply cursor-pointer checked:bg-accent-700;
-        @apply bg-white border border-mono-400;
+    .bk-media-library-items-item-image {
+      @apply aspect-square w-full overflow-hidden relative border border-mono-300 rounded block;
+      img {
+        @apply object-cover absolute top-0 left-0 w-full h-full;
       }
     }
-  }
 
-  .bk-media-library-items-item-image {
-    @apply aspect-square w-full overflow-hidden relative border border-mono-300 rounded block;
-    img {
-      @apply object-cover absolute top-0 left-0 w-full h-full;
+    .bk-media-library-items-item-text {
+      @apply line-clamp-5;
     }
-  }
 
-  .bk-media-library-items-item-text {
-    @apply line-clamp-5;
-  }
-
-  .bk-media-library-filters-listview {
-    @apply aspect-square w-[54px] flex items-center justify-center;
-    flex: 0 0 54px !important;
-    button {
-      @apply w-full h-full flex items-center justify-center text-mono-500 hover:text-mono-900;
-    }
-    .bk-icon {
-      @apply w-25 h-25;
-      svg {
-        @apply fill-current;
+    &.bk-is-grid {
+      @apply p-10 hover:bg-mono-100;
+      h3 {
+        @apply mt-5;
       }
     }
-  }
 
-  .bk-loading {
-    @apply absolute inset-0 flex items-center justify-center bg-white/80 z-40;
-
-    svg {
-      @apply w-50 h-50 fill-mono-400;
-    }
-  }
-
-  .bk-media-library-cancel {
-    @apply absolute bottom-0 left-0 w-full p-10 bg-white;
-
-    button {
-      @apply w-full;
+    &.bk-is-horizontal {
+      @apply flex w-full min-w-0 gap-15 p-15 hover:bg-mono-100;
+      .bk-media-library-items-item-image {
+        @apply w-90;
+      }
+      .bk-media-library-items-item-text {
+        @apply flex-1;
+      }
     }
   }
 }

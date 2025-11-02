@@ -4,16 +4,14 @@
       <Icon name="spinner" />
     </div>
     <div :class="{ 'bk-search-is-loading': isLoading }">
-      <Sortli no-transition>
+      <Sortli :build-item>
         <button
           v-for="(item, i) in items"
           :key="tab + item.id"
           ref="listItems"
-          data-element-type="search_content"
           class="bk bk-search-item bk-is-content"
           :class="{ 'bk-is-active': i === index }"
-          :data-sortli-id="'search_' + tab + i"
-          :data-search-item="JSON.stringify(item)"
+          :data-sortli-id="i"
           @mouseenter="index = i"
         >
           <div
@@ -56,8 +54,11 @@
 <script lang="ts" setup>
 import { watch, ref, useBlokkli, onMounted } from '#imports'
 import { ItemIcon, Icon, Sortli } from '#blokkli/components'
-import { buildDraggableItem, modulo } from '#blokkli/helpers'
-import type { SearchContentItem } from '#blokkli/types'
+import { modulo } from '#blokkli/helpers'
+import type {
+  DraggableSearchContentItem,
+  SearchContentItem,
+} from '#blokkli/types'
 
 const listItems = ref<HTMLLIElement[]>([])
 
@@ -115,6 +116,30 @@ const isActive = () => props.visible
 
 defineExpose({ prev, next, select, isActive, goToFirst })
 
+function buildItem(
+  element: HTMLElement,
+): DraggableSearchContentItem | undefined | null {
+  if (!element.dataset.sortliId) {
+    return
+  }
+  const index = Number.parseInt(element.dataset.sortliId)
+
+  if (Number.isNaN(index) || !Number.isFinite(index)) {
+    return
+  }
+
+  const item = items.value[index]
+  if (!item) {
+    return
+  }
+  return {
+    itemType: 'search_content',
+    element: () => element,
+    itemBundle: item.targetBundles[0] ?? '',
+    searchItem: item,
+  }
+}
+
 const setIndex = (newIndex: number) => {
   index.value = modulo(newIndex, items.value.length)
   scrollItemIntoView()
@@ -126,7 +151,7 @@ const clickItem = () => {
   if (!element) {
     return
   }
-  const item = buildDraggableItem(element)
+  const item = buildItem(element)
   if (!item) {
     return
   }
