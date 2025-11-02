@@ -4,11 +4,6 @@
     :key="item.uuid"
     v-bind="item"
     :index
-    :data-reusable-bundle="item.bundle"
-    :data-reusable-uuid="item.uuid"
-    :data-bk-library-label="libraryItem?.label"
-    :data-bk-library-item-uuid="libraryItem?.uuid"
-    data-blokkli-is-reusable="true"
     :parent-type
     :is-editing
   />

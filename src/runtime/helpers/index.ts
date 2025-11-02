@@ -640,18 +640,6 @@ export function generateUUID() {
   })
 }
 
-export function buildAttributesForLibraryItem(
-  props: LibraryItemProps,
-): Record<string, string | undefined> {
-  return {
-    'data-reusable-bundle': props.block?.bundle,
-    'data-reusable-uuid': props.block?.uuid,
-    'data-bk-library-label': props.label,
-    'data-bk-library-item-uuid': props.uuid,
-    'data-blokkli-is-reusable': 'true',
-  }
-}
-
 export function asValidNumber(v: unknown, defaultValue: number): number {
   if (typeof v === 'number' && !Number.isNaN(v)) {
     return v

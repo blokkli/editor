@@ -287,7 +287,7 @@ const buildChildren = (
       continue
     }
 
-    const uuid = el.dataset.uuid
+    const uuid = el.dataset.bkUuid
     if (!uuid) {
       continue
     }

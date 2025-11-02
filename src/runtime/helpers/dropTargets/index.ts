@@ -77,7 +77,7 @@ export function determineCanAddChildren(
   if (field.cardinality !== -1) {
     // Count of children that are also part of the selection.
     const childrenThatAreSelection = children.filter((child) => {
-      const uuid = child.dataset.uuid
+      const uuid = child.dataset.bkUuid
       if (!uuid) {
         return false
       }

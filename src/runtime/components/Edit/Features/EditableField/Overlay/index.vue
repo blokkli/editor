@@ -192,9 +192,6 @@ const close = async () => {
       el.textContent = originalText.value
     }
   }
-  if (el) {
-    el.dataset.blokkliEditableActive = undefined
-  }
 }
 
 watch(modelValue, (newText) => {
@@ -270,7 +267,6 @@ onMounted(() => {
   originalText.value = modelValue.value
 
   selection.editableActive.value = true
-  el.dataset.blokkliEditableActive = 'true'
 
   const computedStyle = window.getComputedStyle(el)
   inputStyle.value = {
@@ -289,6 +285,5 @@ onMounted(() => {
 onBeforeUnmount(async () => {
   const el = getElement()
   await close()
-  el.dataset.blokkliEditableActive = undefined
 })
 </script>

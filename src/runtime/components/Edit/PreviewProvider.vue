@@ -175,7 +175,7 @@ const onWheel = (e: WheelEvent) => {
 const isInIframe = () => window.parent !== window
 
 const onFocusItem = (uuid: string) => {
-  const el = document.querySelector(`[data-uuid="${uuid}"]`)
+  const el = document.querySelector(`[data-bk-uuid="${uuid}"]`)
   if (el) {
     const elRect = el.getBoundingClientRect()
     if (

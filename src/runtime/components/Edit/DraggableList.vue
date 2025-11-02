@@ -17,25 +17,15 @@
       <BlokkliItem
         v-for="(item, i) in list"
         :key="item.uuid + fieldListType + definitions.renderKey.value"
+        class="bk-field-list-item"
         :uuid="item.uuid"
         :bundle="item.bundle"
         :options="item.options"
         :props="item.props"
         is-editing
         :index="i"
+        :data-bk-uuid="item.uuid"
         :parent-type="isNested ? entity.bundle : ''"
-        data-editing="true"
-        data-element-type="existing"
-        :data-sortli-id="item.uuid"
-        :data-uuid="item.uuid"
-        :data-host-type="entity.type"
-        :data-host-bundle="entity.bundle"
-        :data-host-uuid="entity.uuid"
-        :data-item-bundle="item.bundle"
-        :data-host-field-name="name"
-        :data-host-field-list-type="fieldListType"
-        :data-is-nested="isNested"
-        :data-entity-type="runtimeConfig.itemEntityType"
         :data-bk-is-muted="isMuted(item)"
       />
     </div>
@@ -48,6 +38,7 @@
   >
     <BlokkliItem
       v-for="(item, i) in list"
+      class="bk-field-list-item"
       :key="item.uuid + fieldListType"
       :uuid="item.uuid"
       :bundle="item.bundle"
@@ -56,18 +47,7 @@
       is-editing
       :index="i"
       :parent-type="isNested ? entity.bundle : ''"
-      data-editing="true"
-      data-element-type="existing"
-      :data-sortli-id="item.uuid"
-      :data-uuid="item.uuid"
-      :data-host-type="entity.type"
-      :data-host-bundle="entity.bundle"
-      :data-host-uuid="entity.uuid"
-      :data-item-bundle="item.bundle"
-      :data-host-field-name="name"
-      :data-host-field-list-type="fieldListType"
-      :data-is-nested="isNested"
-      :data-entity-type="runtimeConfig.itemEntityType"
+      :data-bk-uuid="item.uuid"
       :data-bk-is-muted="isMuted(item)"
     />
   </Component>

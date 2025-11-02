@@ -25,6 +25,7 @@
           <div id="bk-blokkli-item-actions-title">
             <button
               class="bk-blokkli-item-actions-type-button"
+              tabindex="-1"
               :disabled="!shouldRenderButton"
               :class="{
                 'is-open': showDropdown,

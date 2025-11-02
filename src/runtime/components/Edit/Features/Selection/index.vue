@@ -57,14 +57,14 @@ const {
   element,
 } = useBlokkli()
 
-const getSelectionOrder = useStateBasedCache(() => {
-  return element.queryAll(
-    ui.artboardElement(),
-    '[data-uuid]',
+const getSelectionOrder = useStateBasedCache(() =>
+  element.queryAll(
+    ui.providerElement,
+    '.bk-field-list-item',
     'getSelectionOrder',
-    (el) => el.dataset.uuid,
-  )
-})
+    (el) => el.dataset.bkUuid,
+  ),
+)
 
 const selectedBundle = computed<string | null>(() => {
   if (selection.bundles.value.length === 1) {

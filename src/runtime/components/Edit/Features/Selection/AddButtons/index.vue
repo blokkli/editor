@@ -454,7 +454,7 @@ function getPreceedingUuidBefore(
     if (!child) {
       continue
     }
-    const childUuid = child.dataset.uuid
+    const childUuid = child.dataset.bkUuid
     if (childUuid === uuid) {
       return prevUuid
     }

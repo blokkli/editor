@@ -45,7 +45,7 @@
       :key="item.uuid + fieldListType"
       v-bind="item"
       :parent-type="isNested ? entity?.bundle : ''"
-      :data-uuid="isPreview ? item.uuid : undefined"
+      :data-bk-uuid="isPreview ? item.uuid : undefined"
       :index="i"
     />
   </component>

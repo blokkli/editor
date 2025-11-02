@@ -66,10 +66,10 @@ function getLabel() {
 }
 
 function findClosestUuid(element: HTMLElement): string | undefined {
-  const closestBlock = element.closest('[data-uuid]')
+  const closestBlock = element.closest('[data-bk-uuid]')
 
   if (closestBlock instanceof HTMLElement) {
-    const uuid = closestBlock.dataset.uuid
+    const uuid = closestBlock.dataset.bkUuid
     if (uuid) {
       return uuid
     }

@@ -483,23 +483,32 @@ export default function (
     if (!el) {
       return
     }
-    const bundle = el.dataset.itemBundle
-    const hostBundle = el.dataset.hostBundle as
-      | BlockBundleWithNested
-      | undefined
-    const hostFieldListType = el.dataset.hostFieldListType as
-      | ValidFieldListTypes
-      | undefined
 
-    if (!bundle || !hostFieldListType) {
+    const item = state.getFieldListItem(uuid)
+    if (!item) {
       return
     }
+
+    const fieldList = state.getFieldListForBlock(item.uuid)
+    if (!fieldList) {
+      return
+    }
+
+    const fieldListType =
+      getRegisteredField(fieldList.entityUuid, fieldList.name)?.fieldListType ??
+      'default'
+
+    const parentBundle =
+      fieldList.entityType === itemEntityType
+        ? (state.getFieldListItem(fieldList.entityUuid)?.bundle ?? null)
+        : null
+
     const observableElement = getElementToObserve(
       uuid,
       el,
-      bundle,
-      hostFieldListType,
-      hostBundle,
+      item.bundle,
+      fieldListType,
+      parentBundle as BlockBundleWithNested,
     )
 
     blockRects[uuid] = rectWithTime(

@@ -1,5 +1,5 @@
 <template>
-  <div ref="root" class="bk-block-proxy" v-bind="rootProps">
+  <div ref="root" class="bk-block-proxy">
     <div class="bk-block-proxy-header">
       <ItemIcon :bundle="bundle" />
       {{ type?.label }}
@@ -38,7 +38,7 @@ import { computed, useBlokkli, ref } from '#imports'
 import { getBlokkliItemProxyComponent } from '#blokkli/helpers/editComponents'
 import { ItemIcon } from '#blokkli/components'
 import type { FieldConfig, LibraryItemProps } from '#blokkli/types'
-import { buildAttributesForLibraryItem, falsy } from '#blokkli/helpers'
+import { falsy } from '#blokkli/helpers'
 import { useBlockRegistration } from '#blokkli/helpers/composables/useBlockRegistration'
 
 const props = defineProps<{
@@ -66,14 +66,6 @@ const proxyComponentProps = computed(() => {
   }
 
   return props.itemProps
-})
-
-const rootProps = computed(() => {
-  if (libraryItemProps.value) {
-    return buildAttributesForLibraryItem(libraryItemProps.value)
-  }
-
-  return {}
 })
 
 const proxyBundle = computed(
