@@ -93,17 +93,35 @@ const { adapter } = defineBlokkliFeature({
 const { selection, state, types, $t, eventBus, definitions } = useBlokkli()
 const showReusableDialog = ref(false)
 
+async function selectNewlyAdded(cb: () => Promise<boolean>): Promise<void> {
+  // Get all current UUIDs.
+  const uuidsBefore = state.getAllUuids()
+
+  await cb()
+
+  // Find the UUID that was newly added.
+  const uuidsAfter = state.getAllUuids()
+  const newUuid = uuidsAfter.find((uuid) => !uuidsBefore.includes(uuid))
+  if (!newUuid) {
+    return
+  }
+
+  // Select the newly added UUID.
+  eventBus.emit('select', newUuid)
+}
+
 const onDetach = async () => {
   if (!adapter.detachReusableBlock || !selection.uuids.value.length) {
     return
   }
-  await state.mutateWithLoadingState(() =>
-    adapter.detachReusableBlock({
-      uuids: selection.uuids.value,
-    }),
-  )
 
-  eventBus.emit('select:end')
+  await selectNewlyAdded(() =>
+    state.mutateWithLoadingState(() =>
+      adapter.detachReusableBlock({
+        uuids: selection.uuids.value,
+      }),
+    ),
+  )
 }
 
 const placedAction = ref<ActionPlacedEvent | null>(null)
@@ -152,15 +170,16 @@ async function onMakeReusable(label: string) {
   if (!item) {
     return
   }
-  await state.mutateWithLoadingState(
-    () =>
-      adapter.makeBlockReusable({
-        label,
-        uuid: item.uuid,
-      }),
-    $t('libraryError', 'Failed to add block to library.'),
+  await selectNewlyAdded(() =>
+    state.mutateWithLoadingState(
+      () =>
+        adapter.makeBlockReusable({
+          label,
+          uuid: item.uuid,
+        }),
+      $t('libraryError', 'Failed to add block to library.'),
+    ),
   )
-  eventBus.emit('select:end')
 }
 
 const isSupportedOnEntity = computed(() =>
