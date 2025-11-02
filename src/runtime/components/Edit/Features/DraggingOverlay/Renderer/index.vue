@@ -616,7 +616,7 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
     const hasChanged = lengthBefore !== this.positions.length
 
     // Only update the buffer info if it has changed..
-    if (hasChanged) {
+    if (hasChanged && gl) {
       this.bufferInfo = this.createBufferInfo(gl)
     }
 

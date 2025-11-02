@@ -25,7 +25,7 @@ const props = defineProps<{
   hasHostSelected: boolean
 }>()
 
-const { animation, theme, dom, ui, state, selection } = useBlokkli()
+const { animation, theme, dom, ui, state } = useBlokkli()
 
 type SelectionRectangle = Rectangle & {
   id: string
@@ -127,7 +127,7 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
     }
 
     // Only update the buffer info if it has changed.
-    if (hasChanged) {
+    if (hasChanged && gl) {
       this.bufferInfo = this.createBufferInfo(gl)
     }
 
@@ -241,7 +241,7 @@ const { collector } = defineRenderer('selection-overlay', {
     }
 
     // Apply global opacity
-    ctx2d.globalAlpha = getOpacity()
+    ctx2d.globalAlpha = ctx.changeOptionsTransition
 
     // Helper to convert shader color to CSS rgba string
     const rgbaToCss = (rgb: RGB) => {

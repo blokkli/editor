@@ -31,6 +31,9 @@ varying vec2 v_rect_center;
 varying float v_transition;
 varying float v_rect_id;
 varying float v_rect_width;
+// Optimized varyings calculated in vertex shader
+varying float v_stripe_distance;
+varying vec4 v_base_scaled_radius;
 
 void main() {
   // Define the increase size in viewport terms (not affected by u_scale)
@@ -96,4 +99,8 @@ void main() {
   v_rect_size = vec2(v_quad.z, v_quad.w);
   v_rect_center = vec2(v_quad.x + v_quad.z / 2.0, v_quad.y + v_quad.w / 2.0); // The pixel-space rectangle center location
   v_transition = smoothstep(0.5, 0.8, u_scale);
+
+  // Calculate optimized values once per vertex
+  v_stripe_distance = 300.0 * u_scale;
+  v_base_scaled_radius = v_rect_radius * u_scale;
 }

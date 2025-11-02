@@ -10,7 +10,9 @@ varying vec2 v_rect_center;
 varying float v_rect_width;
 
 varying float v_transition;
-uniform float u_scale;
+// Optimized varyings calculated in vertex shader
+varying float v_stripe_distance;
+varying vec4 v_base_scaled_radius;
 uniform float u_dpi;
 uniform float u_time;
 uniform float u_is_transforming;
@@ -61,7 +63,7 @@ float exponentialIn(float t) {
 }
 
 float getStripePattern(vec2 quadRelativePos, float time) {
-  float d = 300.0 * u_scale;
+  float d = v_stripe_distance;
 
   float t = mod(u_time + v_rect_id * 1000.0, 1200.0) / 1200.0;
 
@@ -88,7 +90,7 @@ vec4 drawBox(float thickness, vec4 bg, vec4 fill, vec4 border, float offset) {
 
   vec2 size = v_rect_size + borderThickness * 2.0 * v_transition;
   float u_edgeSoftness = 1.0 + v_transition;
-  vec4 radius = v_rect_radius * u_scale + vec4(borderThickness);
+  vec4 radius = v_base_scaled_radius + vec4(borderThickness);
   vec4 u_cornerRadii = min(radius, min(size.x, size.y) / 2.0) * v_transition;
   float u_borderSoftness = 1.0 + v_transition;
 

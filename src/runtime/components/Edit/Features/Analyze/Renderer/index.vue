@@ -179,7 +179,7 @@ class AnalyzeRectangleBufferCollector extends RectangleBufferCollector<AnalyzeRe
     }
 
     // Only update the buffer info if it has changed.
-    if (hasChanged) {
+    if (hasChanged && gl) {
       this.bufferInfo = this.createBufferInfo(gl)
     }
 
@@ -194,7 +194,7 @@ const { collector } = defineRenderer('analyze-overlay', {
   program: () => ({ shaders: [vs, fs] }),
   enabled: () =>
     !selection.isMultiSelecting.value && !selection.isDragging.value,
-  render: (ctx, gl, program) => {
+  render: (_ctx, gl, program) => {
     gl.useProgram(program.program)
 
     const { info } = collector.getBufferInfo(gl)

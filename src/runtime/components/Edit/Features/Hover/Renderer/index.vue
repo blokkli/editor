@@ -90,7 +90,15 @@ const isHoveringEditableField = ref(false)
 const isHoveringSelectedBlock = ref(false)
 
 // Custom collector class
-class HoverRectangleBufferCollector extends RectangleBufferCollector<HoverRectangle> {}
+class HoverRectangleBufferCollector extends RectangleBufferCollector<HoverRectangle> {
+  getBufferInfo(gl: WebGLRenderingContext): BufferInfo {
+    if (!this.bufferInfo) {
+      this.bufferInfo = this.createBufferInfo(gl)
+    }
+
+    return this.bufferInfo
+  }
+}
 
 function resetHoverState() {
   previousHoveredUuids = []
@@ -340,9 +348,6 @@ onBlokkliEvent('ui:resized', () => {
   resetHoverState()
 })
 
-// Cache for bufferInfo (created on first render)
-let bufferInfoCache: BufferInfo | null = null
-
 // Register WebGL renderer with zIndex 200 (hover layer)
 const { collector } = defineRenderer('hover-overlay', {
   zIndex: 200,
@@ -379,13 +384,7 @@ const { collector } = defineRenderer('hover-overlay', {
     return null
   },
   render: (ctx, gl, program) => {
-    // Create bufferInfo on first render
-    if (!bufferInfoCache) {
-      bufferInfoCache = collector.createBufferInfo(gl)
-    }
-    if (!bufferInfoCache) {
-      return
-    }
+    const bufferInfo = collector.getBufferInfo(gl)
 
     if (!ui.openTooltip.value) {
       updateHoverState(
@@ -412,8 +411,8 @@ const { collector } = defineRenderer('hover-overlay', {
       u_opacity: ctx.changeOptionsTransition,
     })
     animation.setSharedUniforms(gl, program)
-    setBuffersAndAttributes(gl, program, bufferInfoCache)
-    drawBufferInfo(gl, bufferInfoCache, gl.TRIANGLES)
+    setBuffersAndAttributes(gl, program, bufferInfo)
+    drawBufferInfo(gl, bufferInfo, gl.TRIANGLES)
   },
   renderFallback: (ctx, ctx2d) => {
     if (!ui.openTooltip.value) {

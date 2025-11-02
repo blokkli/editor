@@ -92,7 +92,7 @@ class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<Multi
     const hasChanged = lengthBefore !== this.positions.length
 
     // Only update the buffer info if it has changed.
-    if (hasChanged) {
+    if (hasChanged && gl) {
       this.bufferInfo = this.createBufferInfo(gl)
     }
 

@@ -372,10 +372,7 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
     // buffer.
   }
 
-  createBufferInfo(gl?: WebGLRenderingContext): BufferInfo | null {
-    if (!gl) {
-      return null
-    }
+  createBufferInfo(gl: WebGLRenderingContext): BufferInfo {
     return createBufferInfoFromArrays(gl, {
       a_position: {
         numComponents: 3,

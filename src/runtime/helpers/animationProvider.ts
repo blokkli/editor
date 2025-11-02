@@ -612,7 +612,7 @@ export default function (
       return selection.isChangingOptions.value ? 0 : 1
     },
     {
-      duration: 200,
+      duration: 150,
     },
   )
 
