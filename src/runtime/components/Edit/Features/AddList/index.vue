@@ -12,7 +12,7 @@
     <div>
       <div id="blokkli-add-list-sidebar-before" />
       <div class="bk bk-list-sidebar">
-        <Sortli id="blokkli-add-list-blocks" :build-item="buildItemNew" />
+        <AddListBlocks />
         <Sortli id="blokkli-add-list-actions" :build-item="buildItemAction" />
       </div>
     </div>
@@ -31,7 +31,7 @@
       @mouseleave="onMouseLeave"
     >
       <div class="bk-list">
-        <Sortli id="blokkli-add-list-blocks" :build-item="buildItemNew" />
+        <AddListBlocks />
         <Sortli id="blokkli-add-list-actions" :build-item="buildItemAction" />
       </div>
     </div>
@@ -56,7 +56,8 @@ import {
 import { Sortli } from '#blokkli/components'
 import { PluginSidebar, PluginTourItem } from '#blokkli/plugins'
 import { addElementClasses } from '#blokkli/helpers/addElementClasses'
-import type { DraggableActionItem, DraggableNewItem } from '#blokkli/types'
+import type { DraggableActionItem } from '#blokkli/types'
+import AddListBlocks from './Blocks/index.vue'
 
 const { settings } = defineBlokkliFeature({
   id: 'add-list',
@@ -86,23 +87,17 @@ const { settings } = defineBlokkliFeature({
         },
       },
     },
+    hideDisabledBlocks: {
+      type: 'checkbox',
+      label: "Hide blocks that can't be added",
+      description: `Hides blocks from the "Add List" if they can't be added to anywhere.`,
+      group: 'appearance',
+      default: false,
+    },
   },
 
   screenshot: 'feature-add-list.jpg',
 })
-
-function buildItemNew(element: HTMLElement): DraggableNewItem | undefined {
-  const itemBundle = element.dataset.sortliId
-  if (!itemBundle) {
-    return
-  }
-
-  return {
-    itemType: 'new',
-    itemBundle,
-    element: () => element,
-  }
-}
 
 function buildItemAction(
   element: HTMLElement,

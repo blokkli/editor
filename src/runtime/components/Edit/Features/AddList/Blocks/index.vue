@@ -1,9 +1,5 @@
 <template>
-  <Teleport
-    v-if="selectableBundles.length && shouldRender"
-    :key="renderKey"
-    to="#blokkli-add-list-blocks"
-  >
+  <Sortli v-if="shouldRender" :build-item id="blokkli-add-list-blocks">
     <AddListItem
       v-for="(type, i) in sortedList"
       v-show="type.isVisible"
@@ -17,78 +13,38 @@
       data-element-type="new"
       :data-item-bundle="type.id"
     />
-    <PluginTourItem
-      id="block-add-list"
-      :title="$t('blockAddListTourTitle', 'Favorite blocks')"
-      :text="
-        $t(
-          'blockAddListTourText',
-          'Right-click on a block to add or remove them from your favorites. Favorites are highlighted and always displayed at the top of the list.',
-        )
-      "
-      selector="#blokkli-add-list-blocks"
-    />
-  </Teleport>
-  <Teleport
-    v-if="
-      ui.addListOrientation.value === 'sidebar' &&
-      types.generallyAvailableBundles.length > 10 &&
-      shouldRender
+  </Sortli>
+  <PluginTourItem
+    v-if="shouldRender"
+    id="block-add-list"
+    :title="$t('blockAddListTourTitle', 'Favorite blocks')"
+    :text="
+      $t(
+        'blockAddListTourText',
+        'Right-click on a block to add or remove them from your favorites. Favorites are highlighted and always displayed at the top of the list.',
+      )
     "
-    :key="renderKey"
-    to="#blokkli-add-list-sidebar-before"
-  >
-    <div class="bk bk-list-sidebar-form">
-      <input
-        id="add_block_search"
-        v-model="searchText"
-        type="search"
-        class="bk-form-input"
-        :placeholder="$t('addListInputPlaceholder', 'Search available blocks')"
-        required
-      />
-    </div>
-  </Teleport>
+    selector="#blokkli-add-list-blocks"
+  />
 </template>
 
 <script lang="ts" setup>
-import {
-  ref,
-  computed,
-  useBlokkli,
-  defineBlokkliFeature,
-  nextTick,
-} from '#imports'
-import { AddListItem } from '#blokkli/components'
+import { ref, computed, useBlokkli } from '#imports'
+import { AddListItem, Sortli } from '#blokkli/components'
 import type {
   Command,
+  DraggableNewItem,
   FieldConfig,
   RenderedFieldListItem,
 } from '#blokkli/types'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { isInternalBundle } from '#blokkli/helpers/bundles'
 import { PluginTourItem } from '#blokkli/plugins'
 import { getFieldKey, onlyUnique } from '#blokkli/helpers'
 
-const { settings } = defineBlokkliFeature({
-  id: 'block-add-list',
-  label: 'Block Add List',
-  icon: 'plus',
-  description:
-    'Renders a list of block bundles that can be added to the current page.',
-  dependencies: ['add-list'],
-  screnshot: 'feature-block-add-list.jpg',
-  settings: {
-    hideDisabledBlocks: {
-      type: 'checkbox',
-      label: "Hide blocks that can't be added",
-      description: `Hides blocks from the "Add List" if they can't be added to anywhere.`,
-      group: 'appearance',
-      default: false,
-    },
-  },
-})
+const props = defineProps<{
+  hideDisabledBlocks?: boolean
+}>()
 
 const {
   selection,
@@ -104,6 +60,19 @@ const {
   definitions,
   blocks,
 } = useBlokkli()
+
+function buildItem(element: HTMLElement): DraggableNewItem | undefined {
+  const itemBundle = element.dataset.sortliId
+  if (!itemBundle) {
+    return
+  }
+
+  return {
+    itemType: 'new',
+    itemBundle,
+    element: () => element,
+  }
+}
 
 const shouldRender = computed(() => state.editMode.value === 'editing')
 
@@ -202,8 +171,7 @@ const sortedList = computed(() => {
       return {
         ...v,
         isDisabled,
-        isVisible:
-          isVisible && (!settings.value.hideDisabledBlocks || !isDisabled),
+        isVisible: isVisible && (!props.hideDisabledBlocks || !isDisabled),
         isFavorite: favorites.value.includes(v.id),
       }
     })
@@ -428,16 +396,10 @@ defineCommands(() => {
     ...getAppendEndCommands(),
   ]
 })
-
-onBlokkliEvent('add-list:change', () => {
-  nextTick(() => {
-    renderKey.value = Math.round(Math.random() * 1000000000).toString()
-  })
-})
 </script>
 
 <script lang="ts">
 export default {
-  name: 'BlockAddList',
+  name: 'AddListBlocks',
 }
 </script>
