@@ -26,6 +26,13 @@ out vec3 v_color_default;
 out vec3 v_color_active;
 out float v_rect_id;
 
+// Optimized outputs - values computed once per vertex instead of per pixel
+out vec2 v_size;
+out vec2 v_location;
+out float v_thickness;
+out float v_edge_softness;
+out float v_radius;
+
 bool isIntersecting(vec4 a, vec4 b) {
   return a.x < b.x + b.z &&
   a.x + a.z > b.x &&
@@ -177,4 +184,23 @@ void main() {
 
   v_color_default = u_color_field_default;
   v_color_active = u_color_field_active;
+
+  // Compute values that are constant per quad (optimization)
+  float radius_base = 2.0 * u_scale;
+  v_thickness = max(min(1.0 * u_scale, 3.0), 0.5);
+  float inset = max(min(2.0 * u_scale, 1.0), 2.0) * v_thickness;
+
+  float u_rect_x = transformed_quad.x + inset;
+  float u_rect_y = transformed_quad.y + inset;
+  float u_rectWidth = transformed_quad.z - 2.0 * inset;
+  float u_rectHeight = transformed_quad.w - 2.0 * inset;
+
+  v_size = vec2(u_rectWidth, u_rectHeight);
+
+  float x = u_rect_x;
+  float y = u_rect_y;
+  v_location = vec2(x + v_size.x / 2.0, y + v_size.y / 2.0);
+
+  v_edge_softness = 1.0 * u_dpi;
+  v_radius = min(radius_base * u_dpi, min(v_size.x, v_size.y) / 2.0) + v_thickness * 2.0;
 }

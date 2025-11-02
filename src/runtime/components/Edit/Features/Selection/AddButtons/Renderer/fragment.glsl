@@ -1,14 +1,18 @@
+#version 300 es
+
 precision highp float;
 
-varying vec4 v_quad;
-varying vec2 v_circle_center;
-varying float v_visible;
-varying float v_is_hovered;
-varying float v_scale_fade;
-varying float v_rect_id;
-varying float v_radius;
-varying float v_inner_radius;
-varying float v_scale_factor;
+in vec4 v_quad;
+in vec2 v_circle_center;
+in float v_visible;
+in float v_is_hovered;
+in float v_scale_fade;
+in float v_rect_id;
+in float v_radius;
+in float v_inner_radius;
+in float v_scale_factor;
+
+out vec4 fragColor;
 
 uniform float u_dpi;
 uniform vec3 u_color;
@@ -100,5 +104,5 @@ void main() {
   }
 
   // Apply scale fade to alpha
-  gl_FragColor = vec4(finalColor, alpha);
+  fragColor = vec4(finalColor, alpha);
 }

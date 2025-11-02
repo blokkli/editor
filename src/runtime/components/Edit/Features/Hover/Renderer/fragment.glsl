@@ -1,17 +1,21 @@
+#version 300 es
+
 precision highp float;
 
-varying vec4 v_quad;
-varying vec4 v_rect_radius;
-varying vec2 v_rect_size;
-varying vec2 v_rect_center;
-varying float v_rect_type;
-varying vec2 v_quad_artboard_pos;
+in vec4 v_quad;
+in vec4 v_rect_radius;
+in vec2 v_rect_size;
+in vec2 v_rect_center;
+in float v_rect_type;
+in vec2 v_quad_artboard_pos;
 // Optimized varyings calculated in vertex shader
-varying vec4 v_corner_radii;
-varying float v_border_thickness;
-varying vec2 v_half_size;
-varying vec3 v_color;
-varying float v_dash_cycle;
+in vec4 v_corner_radii;
+in float v_border_thickness;
+in vec2 v_half_size;
+in vec3 v_color;
+in float v_dash_cycle;
+
+out vec4 fragColor;
 
 uniform float u_opacity;
 
@@ -57,7 +61,7 @@ void main() {
     );
 
     combined.a *= u_opacity;
-    gl_FragColor = combined;
+    fragColor = combined;
     return;
   }
 
@@ -114,5 +118,5 @@ void main() {
   );
 
   finalColor.a *= u_opacity;
-  gl_FragColor = finalColor;
+  fragColor = finalColor;
 }

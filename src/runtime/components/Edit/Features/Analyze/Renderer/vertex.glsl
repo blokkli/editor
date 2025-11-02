@@ -1,11 +1,13 @@
+#version 300 es
+
 precision highp float;
 
 // [x, y] position.
-attribute vec2 a_position;
+in vec2 a_position;
 // The [x,y,width, height] of the quad the vertex belongs to.
-attribute vec4 a_quad;
-attribute float a_rect_id;
-attribute float a_rect_type;
+in vec4 a_quad;
+in float a_rect_id;
+in float a_rect_type;
 
 // The global scaling applied to all quads.
 uniform float u_scale;
@@ -19,11 +21,11 @@ uniform vec3 u_color_violation;
 uniform vec3 u_color_incomplete;
 uniform vec3 u_color_pass;
 
-varying vec4 v_quad;
-varying float v_rect_type;
-varying vec3 v_color;
-varying vec2 v_rect_size;
-varying vec2 v_rect_center;
+out vec4 v_quad;
+out float v_rect_type;
+out vec3 v_color;
+out vec2 v_rect_size;
+out vec2 v_rect_center;
 
 void main() {
   // Apply global scale and offsets

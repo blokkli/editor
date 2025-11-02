@@ -1,9 +1,11 @@
+#version 300 es
+
 precision highp float;
 
-attribute vec2 a_position;
-attribute vec4 a_quad;
-attribute float a_rect_id;
-attribute float a_rect_type;
+in vec2 a_position;
+in vec4 a_quad;
+in float a_rect_id;
+in float a_rect_type;
 
 uniform float u_scale;
 uniform float u_offset_x;
@@ -20,10 +22,19 @@ uniform vec4 u_active_hover_rect;
 uniform float u_active_hover_nesting_level;
 uniform float u_dpi;
 
-varying vec4 v_quad;
-varying float v_intersecting;
-varying float v_is_hover_area;
-varying vec3 v_color;
+out vec4 v_quad;
+out float v_intersecting;
+out float v_is_hover_area;
+out vec3 v_color;
+
+// Optimized varyings - values computed once per vertex instead of per pixel
+out vec2 v_size;
+out vec2 v_location;
+out vec2 v_size_inner;
+out float v_thickness;
+out float v_edge_softness;
+out float v_radius_outer;
+out float v_radius_inner;
 
 vec4 getQuad() {
   if (a_rect_type >= 5.0) {
@@ -75,4 +86,35 @@ void main() {
   } else {
     v_color = u_color_hover_area;
   }
+
+  // Compute values that are constant per quad (optimization)
+  bool isHoverArea = v_is_hover_area >= 1.0;
+  float stroke = isHoverArea ? 0.75 : 2.0;
+  float radiusBase = stroke * u_scale;
+
+  v_thickness = max(min(1.0 * u_scale, 3.0), 0.5);
+
+  // Calculate inset to draw border inside the quad
+  float inset = max(min(2.0 * u_scale, 1.0), 3.0) * v_thickness + stroke;
+
+  // Rectangle dimensions with inset
+  float u_rect_x = transformed_quad.x + inset;
+  float u_rect_y = transformed_quad.y + inset;
+  float u_rectWidth = transformed_quad.z - 2.0 * inset;
+  float u_rectHeight = transformed_quad.w - 2.0 * inset;
+
+  v_size = vec2(u_rectWidth, u_rectHeight);
+
+  // Center position of the rectangle
+  v_location = vec2(u_rect_x + v_size.x / 2.0, u_rect_y + v_size.y / 2.0);
+
+  v_edge_softness = 0.5 * u_dpi;
+
+  float borderWidth = stroke * u_scale * u_dpi;
+
+  // Different radius for inner and outer
+  v_radius_outer = min(radiusBase * u_dpi, min(v_size.x, v_size.y)) + v_thickness;
+  v_radius_inner = v_radius_outer - borderWidth;
+
+  v_size_inner = v_size - 2.0 * borderWidth;
 }

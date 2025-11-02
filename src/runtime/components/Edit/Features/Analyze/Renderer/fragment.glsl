@@ -1,10 +1,14 @@
+#version 300 es
+
 precision highp float;
 
-varying vec4 v_quad;
-varying float v_rect_type;
-varying vec3 v_color;
-varying vec2 v_rect_size;
-varying vec2 v_rect_center;
+in vec4 v_quad;
+in float v_rect_type;
+in vec3 v_color;
+in vec2 v_rect_size;
+in vec2 v_rect_center;
+
+out vec4 fragColor;
 
 uniform float u_dpi;
 
@@ -54,5 +58,5 @@ void main() {
   // Mix with border
   vec4 finalColor = mix(res_with_fill, border, borderAlpha * border.a);
 
-  gl_FragColor = finalColor;
+  fragColor = finalColor;
 }

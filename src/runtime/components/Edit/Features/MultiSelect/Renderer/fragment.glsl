@@ -9,6 +9,13 @@ in vec3 v_color_default;
 in vec3 v_color_active;
 in float v_rect_id;
 
+// Optimized inputs - values computed once per vertex instead of per pixel
+in vec2 v_size;
+in vec2 v_location;
+in float v_thickness;
+in float v_edge_softness;
+in float v_radius;
+
 out vec4 fragColor;
 
 uniform float u_time;
@@ -45,32 +52,11 @@ void main() {
     return;
   }
 
-  // Selectable blocks.
-  float radius_base = 2.0 * u_scale;
-  float thickness = max(min(1.0 * u_scale, 3.0), 0.5);
-  float inset = max(min(2.0 * u_scale, 1.0), 2.0) * thickness;
-
-  float u_rect_x = v_quad.x + inset;
-  float u_rect_y = v_quad.y + inset;
-  float u_rectWidth = v_quad.z - 2.0 * inset;
-  float u_rectHeight = v_quad.w - 2.0 * inset;
-
-  vec2 size = vec2(u_rectWidth, u_rectHeight);
-
-  float x = u_rect_x;
-  float y = u_rect_y;
-  vec2 offsetPosition = vec2(x + size.x / 2.0, y + size.y / 2.0);
-
-  vec2 location = vec2(offsetPosition);
-
-  float edgeSoftness = 1.0 * u_dpi;
-  float radius =
-    min(radius_base * u_dpi, min(size.x, size.y) / 2.0) + thickness * 2.0;
-
+  // Selectable blocks - using pre-computed values from vertex shader
   float distance = roundedBoxSDF(
-    location - gl_FragCoord.xy,
-    size / 2.0,
-    radius
+    v_location - gl_FragCoord.xy,
+    v_size / 2.0,
+    v_radius
   );
 
   bool is_intersecting = v_intersecting >= 0.5;
@@ -79,7 +65,7 @@ void main() {
   float mixedDistance = is_intersecting ? distance : abs(distance);
 
   float smoothedAlpha =
-    1.0 - smoothstep(-edgeSoftness, edgeSoftness, mixedDistance - thickness);
+    1.0 - smoothstep(-v_edge_softness, v_edge_softness, mixedDistance - v_thickness);
 
   fragColor = vec4(
     color,

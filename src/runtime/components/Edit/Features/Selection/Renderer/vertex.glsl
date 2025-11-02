@@ -1,12 +1,14 @@
+#version 300 es
+
 precision highp float;
 
 // [x, y] position.
-attribute vec2 a_position;
+in vec2 a_position;
 // The [x,y,width, height] of the quad the vertex belongs to.
-attribute vec4 a_quad;
-attribute float a_rect_id;
-attribute float a_rect_type;
-attribute vec4 a_rect_radius;
+in vec4 a_quad;
+in float a_rect_id;
+in float a_rect_type;
+in vec4 a_rect_radius;
 
 // The global scaling applied to all quads.
 uniform float u_scale;
@@ -22,18 +24,18 @@ uniform vec3 u_color_library;
 uniform vec3 u_color_host;
 
 // The transformed quad for the fragment shader.
-varying vec4 v_quad;
-varying vec3 v_color;
-varying vec4 v_rect_radius;
-varying float v_thickness;
-varying vec2 v_rect_size;
-varying vec2 v_rect_center;
-varying float v_transition;
-varying float v_rect_id;
-varying float v_rect_width;
+out vec4 v_quad;
+out vec3 v_color;
+out vec4 v_rect_radius;
+out float v_thickness;
+out vec2 v_rect_size;
+out vec2 v_rect_center;
+out float v_transition;
+out float v_rect_id;
+out float v_rect_width;
 // Optimized varyings calculated in vertex shader
-varying float v_stripe_distance;
-varying vec4 v_base_scaled_radius;
+out float v_stripe_distance;
+out vec4 v_base_scaled_radius;
 
 void main() {
   // Define the increase size in viewport terms (not affected by u_scale)

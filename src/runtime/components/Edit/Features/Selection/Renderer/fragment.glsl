@@ -1,18 +1,23 @@
+#version 300 es
+
 precision highp float;
 
-varying vec4 v_quad;
-varying vec3 v_color;
-varying vec4 v_rect_radius;
-varying float v_thickness;
-varying float v_rect_id;
-varying vec2 v_rect_size;
-varying vec2 v_rect_center;
-varying float v_rect_width;
+in vec4 v_quad;
+in vec3 v_color;
+in vec4 v_rect_radius;
+in float v_thickness;
+in float v_rect_id;
+in vec2 v_rect_size;
+in vec2 v_rect_center;
+in float v_rect_width;
 
-varying float v_transition;
+in float v_transition;
 // Optimized varyings calculated in vertex shader
-varying float v_stripe_distance;
-varying vec4 v_base_scaled_radius;
+in float v_stripe_distance;
+in vec4 v_base_scaled_radius;
+
+out vec4 fragColor;
+
 uniform float u_dpi;
 uniform float u_time;
 uniform float u_is_transforming;
@@ -138,5 +143,5 @@ void main() {
 
   vec4 finalColor = mix(borderBottom, borderTop, borderTop.a);
   finalColor.a *= u_opacity;
-  gl_FragColor = finalColor;
+  fragColor = finalColor;
 }

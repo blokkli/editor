@@ -1,9 +1,22 @@
+#version 300 es
+
 precision highp float;
 
-varying float v_intersecting;
-varying float v_is_hover_area;
-varying vec4 v_quad;
-varying vec3 v_color;
+in float v_intersecting;
+in float v_is_hover_area;
+in vec4 v_quad;
+in vec3 v_color;
+
+// Optimized varyings - values computed once per vertex instead of per pixel
+in vec2 v_size;
+in vec2 v_location;
+in vec2 v_size_inner;
+in float v_thickness;
+in float v_edge_softness;
+in float v_radius_outer;
+in float v_radius_inner;
+
+out vec4 fragColor;
 
 uniform float u_scale;
 uniform float u_dpi;
@@ -16,54 +29,23 @@ float roundedBoxSDF(vec2 CenterPosition, vec2 Size, float Radius) {
 
 void main() {
   bool isHoverArea = v_is_hover_area >= 1.0;
-  float stroke = isHoverArea ? 0.75 : 2.0;
-  float radiusBase = stroke * u_scale;
 
-  float thickness = max(min(1.0 * u_scale, 3.0), 0.5);
-
-  // Calculate the resulting inset so that we draw the rounded box and border *inside* the quad (vs. that it would bleed outside the quad).
-  float inset = max(min(2.0 * u_scale, 1.0), 3.0) * thickness + stroke;
-
-  // Rectangle dimensions with inset.
-  float u_rect_x = v_quad.x + inset;
-  float u_rect_y = v_quad.y + inset;
-  float u_rectWidth = v_quad.z - 2.0 * inset;
-  float u_rectHeight = v_quad.w - 2.0 * inset;
-
-  vec2 size = vec2(u_rectWidth, u_rectHeight);
-
-  // Center position of the rectangle.
-  vec2 offsetPosition = vec2(u_rect_x + size.x / 2.0, u_rect_y + size.y / 2.0);
-  vec2 location = offsetPosition;
-
-  // Make sure the edges of the border are not too harsh.
-  float edgeSoftness = 0.5 * u_dpi;
-
-  float borderWidth = stroke * u_scale * u_dpi;
-
-  // Different radius for inner and outer.
-  float radiusOutside =
-    min(radiusBase * u_dpi, min(size.x, size.y)) + thickness;
-  float radiusInside = radiusOutside - borderWidth;
-
-  vec2 sizeInner = size - 2.0 * borderWidth;
-
-  // Compute different distance for inside and outside.
+  // Compute different distance for inside and outside using pre-computed values
   float distanceOuter = roundedBoxSDF(
-    location - gl_FragCoord.xy,
-    size / 2.0,
-    radiusOutside
+    v_location - gl_FragCoord.xy,
+    v_size / 2.0,
+    v_radius_outer
   );
   float distanceInner = roundedBoxSDF(
-    location - gl_FragCoord.xy,
-    sizeInner / 2.0,
-    radiusInside
+    v_location - gl_FragCoord.xy,
+    v_size_inner / 2.0,
+    v_radius_inner
   );
 
   float alphaOuter =
-    1.0 - smoothstep(-edgeSoftness, edgeSoftness, distanceOuter - thickness);
+    1.0 - smoothstep(-v_edge_softness, v_edge_softness, distanceOuter - v_thickness);
   float alphaInner =
-    1.0 - smoothstep(-edgeSoftness, edgeSoftness, distanceInner - thickness);
+    1.0 - smoothstep(-v_edge_softness, v_edge_softness, distanceInner - v_thickness);
 
   // Alpha value for the border.
   float alphaBorder = clamp(alphaOuter - alphaInner, 0.0, 1.0);
@@ -85,10 +67,10 @@ void main() {
 
   if (alphaBorder > 0.0) {
     float a = isHoverArea ? 0.6 : 1.0;
-    gl_FragColor = vec4(v_color, a);
+    fragColor = vec4(v_color, a);
     return;
   } else if (adjustedAlphaFill > 0.0) {
-    gl_FragColor = vec4(v_color, adjustedAlphaFill);
+    fragColor = vec4(v_color, adjustedAlphaFill);
     return;
   }
 

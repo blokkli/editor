@@ -1,10 +1,12 @@
+#version 300 es
+
 precision highp float;
 
 // [x, y] position.
-attribute vec2 a_position;
+in vec2 a_position;
 // The [x,y,width, height] of the quad the vertex belongs to.
-attribute vec4 a_quad;
-attribute float a_rect_id;
+in vec4 a_quad;
+in float a_rect_id;
 
 // The global scaling applied to all quads.
 uniform float u_scale;
@@ -27,15 +29,15 @@ uniform float u_hovered_circle;
 uniform float u_radius;
 
 // The transformed quad for the fragment shader.
-varying vec4 v_quad;
-varying vec2 v_circle_center;
-varying float v_visible;
-varying float v_is_hovered;
-varying float v_scale_fade;
-varying float v_rect_id;
-varying float v_radius;
-varying float v_inner_radius;
-varying float v_scale_factor;
+out vec4 v_quad;
+out vec2 v_circle_center;
+out float v_visible;
+out float v_is_hovered;
+out float v_scale_fade;
+out float v_rect_id;
+out float v_radius;
+out float v_inner_radius;
+out float v_scale_factor;
 
 void main() {
   int rectId = int(a_rect_id);
