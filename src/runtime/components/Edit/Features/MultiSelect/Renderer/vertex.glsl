@@ -202,5 +202,6 @@ void main() {
   v_location = vec2(x + v_size.x / 2.0, y + v_size.y / 2.0);
 
   v_edge_softness = 1.0 * u_dpi;
-  v_radius = min(radius_base * u_dpi, min(v_size.x, v_size.y) / 2.0) + v_thickness * 2.0;
+  v_radius =
+    min(radius_base * u_dpi, min(v_size.x, v_size.y) / 2.0) + v_thickness * 2.0;
 }

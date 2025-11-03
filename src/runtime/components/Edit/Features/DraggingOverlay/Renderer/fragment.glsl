@@ -43,9 +43,11 @@ void main() {
   );
 
   float alphaOuter =
-    1.0 - smoothstep(-v_edge_softness, v_edge_softness, distanceOuter - v_thickness);
+    1.0 -
+    smoothstep(-v_edge_softness, v_edge_softness, distanceOuter - v_thickness);
   float alphaInner =
-    1.0 - smoothstep(-v_edge_softness, v_edge_softness, distanceInner - v_thickness);
+    1.0 -
+    smoothstep(-v_edge_softness, v_edge_softness, distanceInner - v_thickness);
 
   // Alpha value for the border.
   float alphaBorder = clamp(alphaOuter - alphaInner, 0.0, 1.0);

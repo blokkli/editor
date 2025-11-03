@@ -283,7 +283,6 @@ onMounted(() => {
 })
 
 onBeforeUnmount(async () => {
-  const el = getElement()
   await close()
 })
 </script>

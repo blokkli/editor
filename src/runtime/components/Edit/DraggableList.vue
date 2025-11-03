@@ -38,8 +38,8 @@
   >
     <BlokkliItem
       v-for="(item, i) in list"
-      class="bk-field-list-item"
       :key="item.uuid + fieldListType"
+      class="bk-field-list-item"
       :uuid="item.uuid"
       :bundle="item.bundle"
       :options="item.options"
@@ -82,7 +82,7 @@ import type {
   ValidFieldListTypes,
 } from '#blokkli-build/generated-types'
 
-const { dom, runtimeConfig, selection, definitions } = useBlokkli()
+const { dom, selection, definitions } = useBlokkli()
 
 const root = ref<HTMLElement | null>(null)
 

@@ -113,7 +113,8 @@ void main() {
   float borderWidth = stroke * u_scale * u_dpi;
 
   // Different radius for inner and outer
-  v_radius_outer = min(radiusBase * u_dpi, min(v_size.x, v_size.y)) + v_thickness;
+  v_radius_outer =
+    min(radiusBase * u_dpi, min(v_size.x, v_size.y)) + v_thickness;
   v_radius_inner = v_radius_outer - borderWidth;
 
   v_size_inner = v_size - 2.0 * borderWidth;

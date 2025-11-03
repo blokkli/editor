@@ -37,10 +37,7 @@
             class="bk-sidebar-container-tabs bk-toolbar-container"
           />
         </div>
-        <div
-          class="bk bk-sidebar-tabs"
-          :class="{ 'bk-has-sidebar-open': activeSidebarRight }"
-        >
+        <div class="bk bk-sidebar-tabs">
           <div id="bk-toolbar-before-sidebar-right" />
           <div
             id="bk-sidebar-tabs-right"

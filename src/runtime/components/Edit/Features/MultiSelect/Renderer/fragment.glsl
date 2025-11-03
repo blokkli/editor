@@ -65,7 +65,8 @@ void main() {
   float mixedDistance = is_intersecting ? distance : abs(distance);
 
   float smoothedAlpha =
-    1.0 - smoothstep(-v_edge_softness, v_edge_softness, mixedDistance - v_thickness);
+    1.0 -
+    smoothstep(-v_edge_softness, v_edge_softness, mixedDistance - v_thickness);
 
   fragColor = vec4(
     color,
