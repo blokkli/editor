@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ 'container mx-auto my-20': !parentType }">
+  <div :class="{ 'container mx-auto my-20': !parentType, 'mt-50 mb-10': parentType }">
     <div
       v-blokkli-editable:text
       class="ck-content"
@@ -31,5 +31,3 @@ defineProps<Props>()
 const injectedInverted = inject<ComputedRef<boolean> | null>('isInverted', null)
 const isInverted = computed(() => !!injectedInverted?.value)
 </script>
-
-<style lang="postcss"></style>

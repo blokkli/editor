@@ -150,7 +150,7 @@ msgstr "Durchschnittliche Satzlänge: @length. In einzelne Sätze aufteilen."
 
 msgctxt "analyzerReadabiliyDescription"
 msgid "Avoid texts that are hard to read."
-msgstr "Vermeiden Sie Texts die schwer lesbar sind."
+msgstr "Vermeiden Sie Texte die schwer lesbar sind."
 
 msgctxt "analyzerReadabiliyHardToRead"
 msgid "Hard to read (@lang)."

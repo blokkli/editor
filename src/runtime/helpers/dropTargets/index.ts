@@ -17,8 +17,8 @@ export function getGapSize(
   ) {
     const gap =
       orientation === 'vertical'
-        ? computedStyle.columnGap || computedStyle.gridColumnGap
-        : computedStyle.rowGap || computedStyle.gridRowGap
+        ? computedStyle.rowGap || computedStyle.gridRowGap
+        : computedStyle.columnGap || computedStyle.gridColumnGap
 
     if (gap) {
       // Extract the first value.
