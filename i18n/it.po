@@ -51,10 +51,6 @@ msgctxt "addCommentToItem"
 msgid "Add Comment..."
 msgstr "Commenta"
 
-msgctxt "addListInputPlaceholder"
-msgid "Search available blocks"
-msgstr "Cerca blocchi"
-
 msgctxt "addListItemFavoriteAdd"
 msgid "Add to favorites"
 msgstr "Aggiungi ai preferiti"
@@ -474,10 +470,6 @@ msgctxt "conversionsConvertTo"
 msgid "Convert to: @bundle"
 msgstr ""
 
-msgctxt "convertTo"
-msgid "Convert to..."
-msgstr "Converti in..."
-
 msgctxt "copiedToClipboardMessage"
 msgid "\"@text\" has been copied to your clipboard"
 msgstr ""
@@ -544,10 +536,6 @@ msgstr ""
 
 msgctxt "downloadLogsButton"
 msgid "Download Logs"
-msgstr ""
-
-msgctxt "droppableEditFormSave"
-msgid "Save"
 msgstr ""
 
 msgctxt "duplicate"
@@ -669,6 +657,14 @@ msgctxt "feature_add-list_label"
 msgid "Add List"
 msgstr "Elenco di aggiunta"
 
+msgctxt "feature_add-list_setting_hideDisabledBlocks_description"
+msgid "Hides blocks from the \"Add List\" if they can't be added to anywhere."
+msgstr ""
+
+msgctxt "feature_add-list_setting_hideDisabledBlocks_label"
+msgid "Hide blocks that can't be added"
+msgstr ""
+
 msgctxt "feature_add-list_setting_orientation_label"
 msgid "Add List"
 msgstr "Elenco di aggiunta"
@@ -748,26 +744,6 @@ msgstr ""
 msgctxt "feature_assistant_label"
 msgid "Assistant"
 msgstr "Assistente"
-
-msgctxt "feature_block-add-list_description"
-msgid "Renders a list of block bundles that can be added to the current page."
-msgstr ""
-"Visualizza un elenco di tipi di blocco che possono essere aggiunti alla "
-"pagina corrente."
-
-msgctxt "feature_block-add-list_label"
-msgid "Block Add List"
-msgstr "Elenco di aggiunta blocchi"
-
-msgctxt "feature_block-add-list_setting_hideDisabledBlocks_description"
-msgid "Hides blocks from the \"Add List\" if they can't be added to anywhere."
-msgstr ""
-"Nasconde i blocchi dall'«Elenco di aggiunta» se non possono essere aggiunti "
-"da nessuna parte."
-
-msgctxt "feature_block-add-list_setting_hideDisabledBlocks_label"
-msgid "Hide blocks that can't be added"
-msgstr "Nascondi blocchi che non possono essere aggiunti"
 
 msgctxt "feature_block-scheduler_description"
 msgid "Adds support for scheduling blocks."
@@ -1908,10 +1884,6 @@ msgctxt "selectedIsNew"
 msgid "New"
 msgstr ""
 
-msgctxt "selectionActionGroupTitle"
-msgid "Selection"
-msgstr ""
-
 msgctxt "settingsAdvanced"
 msgid "Advanced"
 msgstr ""
@@ -2061,16 +2033,12 @@ msgid "Start the tour"
 msgstr ""
 
 msgctxt "transformDialogButtonApply"
-msgid "Apply"
+msgid "Apply changes"
 msgstr ""
 
 msgctxt "transformDialogButtonPreview"
-msgid "Preview"
+msgid "New suggestion"
 msgstr ""
-
-msgctxt "transformTo"
-msgid "Actions"
-msgstr "Other actions"
 
 msgctxt "translationsBannerButton"
 msgid "Edit source language instead"

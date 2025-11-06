@@ -47,10 +47,6 @@
     "source": "Add Comment...",
     "translation": "Commenter"
   },
-  "addListInputPlaceholder": {
-    "source": "Search available blocks",
-    "translation": "Rechercher des blocs"
-  },
   "addListItemFavoriteAdd": {
     "source": "Add to favorites",
     "translation": "Ajouter aux favoris"
@@ -439,10 +435,6 @@
     "source": "Convert to: @bundle",
     "translation": ""
   },
-  "convertTo": {
-    "source": "Convert to...",
-    "translation": "Convertir en..."
-  },
   "copiedToClipboardMessage": {
     "source": "\"@text\" has been copied to your clipboard",
     "translation": ""
@@ -509,10 +501,6 @@
   },
   "downloadLogsButton": {
     "source": "Download Logs",
-    "translation": ""
-  },
-  "droppableEditFormSave": {
-    "source": "Save",
     "translation": ""
   },
   "duplicate": {
@@ -627,6 +615,14 @@
     "source": "Add List",
     "translation": "Liste d'ajout"
   },
+  "feature_add-list_setting_hideDisabledBlocks_description": {
+    "source": "Hides blocks from the \"Add List\" if they can't be added to anywhere.",
+    "translation": ""
+  },
+  "feature_add-list_setting_hideDisabledBlocks_label": {
+    "source": "Hide blocks that can't be added",
+    "translation": ""
+  },
   "feature_add-list_setting_orientation_label": {
     "source": "Add List",
     "translation": "Liste d'ajout"
@@ -694,22 +690,6 @@
   "feature_assistant_label": {
     "source": "Assistant",
     "translation": "Assistant"
-  },
-  "feature_block-add-list_description": {
-    "source": "Renders a list of block bundles that can be added to the current page.",
-    "translation": "Affiche une liste de types de blocs qui peuvent être ajoutés à la page actuelle."
-  },
-  "feature_block-add-list_label": {
-    "source": "Block Add List",
-    "translation": "Liste d'ajout de blocs"
-  },
-  "feature_block-add-list_setting_hideDisabledBlocks_description": {
-    "source": "Hides blocks from the \"Add List\" if they can't be added to anywhere.",
-    "translation": "Masque les blocs de la «Liste d'ajout» s'ils ne peuvent être ajoutés nulle part."
-  },
-  "feature_block-add-list_setting_hideDisabledBlocks_label": {
-    "source": "Hide blocks that can't be added",
-    "translation": "Masquer les blocs qui ne peuvent pas être ajoutés"
   },
   "feature_block-scheduler_description": {
     "source": "Adds support for scheduling blocks.",
@@ -1743,10 +1723,6 @@
     "source": "New",
     "translation": ""
   },
-  "selectionActionGroupTitle": {
-    "source": "Selection",
-    "translation": ""
-  },
   "settingsAdvanced": {
     "source": "Advanced",
     "translation": ""
@@ -1880,16 +1856,12 @@
     "translation": ""
   },
   "transformDialogButtonApply": {
-    "source": "Apply",
+    "source": "Apply changes",
     "translation": ""
   },
   "transformDialogButtonPreview": {
-    "source": "Preview",
+    "source": "New suggestion",
     "translation": ""
-  },
-  "transformTo": {
-    "source": "Actions",
-    "translation": "Other actions"
   },
   "translationsBannerButton": {
     "source": "Edit source language instead",

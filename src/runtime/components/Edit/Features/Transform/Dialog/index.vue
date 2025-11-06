@@ -38,14 +38,14 @@
               }"
               @click.prevent="onClickPreview"
             >
-              {{ $t('transformDialogButtonPreview', 'Preview') }}
+              {{ $t('transformDialogButtonPreview', 'New suggestion') }}
             </button>
             <button
               class="bk-button bk-is-orange"
               :disabled
               @click.prevent="onClickSubmit"
             >
-              {{ $t('transformDialogButtonApply', 'Apply') }}
+              {{ $t('transformDialogButtonApply', 'Apply changes') }}
             </button>
           </footer>
         </div>
@@ -228,13 +228,12 @@ onMounted(async () => {
   selection.lockSelection('transform-dialog')
 
   // Trigger the preview if the transform plugin supports previewing
-  // and if it doesn't have any user input except for those of type
-  // "seed".
+  // and if it doesn't have any required user input or only a seed input.
   if (hasSeedInput.value && supportsPreview.value) {
-    const hasOnlySeedInputs = props.plugin.configInputs?.every(
-      (v) => v.type === 'seed',
+    const hasNoRequiredInput = props.plugin.configInputs?.every(
+      (v) => v.type === 'seed' || !v.required,
     )
-    if (hasOnlySeedInputs === true) {
+    if (hasNoRequiredInput === true) {
       await onClickPreview()
     }
   }

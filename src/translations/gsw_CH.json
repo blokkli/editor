@@ -47,10 +47,6 @@
     "source": "Add Comment...",
     "translation": "Kommentiere"
   },
-  "addListInputPlaceholder": {
-    "source": "Search available blocks",
-    "translation": "Blöck durchsueche"
-  },
   "addListItemFavoriteAdd": {
     "source": "Add to favorites",
     "translation": "Zu de Favorite drzuefüege"
@@ -439,10 +435,6 @@
     "source": "Convert to: @bundle",
     "translation": "Konvertiere zu: @bundle"
   },
-  "convertTo": {
-    "source": "Convert to...",
-    "translation": "Konvertiere"
-  },
   "copiedToClipboardMessage": {
     "source": "\"@text\" has been copied to your clipboard",
     "translation": "«@text» isch in dini Zwüscheablag kopiert worde"
@@ -510,10 +502,6 @@
   "downloadLogsButton": {
     "source": "Download Logs",
     "translation": ""
-  },
-  "droppableEditFormSave": {
-    "source": "Save",
-    "translation": "Speichere"
   },
   "duplicate": {
     "source": "Duplicate",
@@ -627,6 +615,14 @@
     "source": "Add List",
     "translation": "Drzuefüeg-Lischt"
   },
+  "feature_add-list_setting_hideDisabledBlocks_description": {
+    "source": "Hides blocks from the \"Add List\" if they can't be added to anywhere.",
+    "translation": ""
+  },
+  "feature_add-list_setting_hideDisabledBlocks_label": {
+    "source": "Hide blocks that can't be added",
+    "translation": ""
+  },
   "feature_add-list_setting_orientation_label": {
     "source": "Add List",
     "translation": "Block-Leischte"
@@ -694,22 +690,6 @@
   "feature_assistant_label": {
     "source": "Assistant",
     "translation": "Assischtänt"
-  },
-  "feature_block-add-list_description": {
-    "source": "Renders a list of block bundles that can be added to the current page.",
-    "translation": "Renderet e Lischt vo Block-Bundles wo zur aktuälle Sitte chönne drzuegfüegt wärde."
-  },
-  "feature_block-add-list_label": {
-    "source": "Block Add List",
-    "translation": "Block-Drzuefüeg-Lischt"
-  },
-  "feature_block-add-list_setting_hideDisabledBlocks_description": {
-    "source": "Hides blocks from the \"Add List\" if they can't be added to anywhere.",
-    "translation": "Versteckt Blöck us dr «Drzuefüeg-Lischt» wo nirgends chönne drzuegfüegt wärde."
-  },
-  "feature_block-add-list_setting_hideDisabledBlocks_label": {
-    "source": "Hide blocks that can't be added",
-    "translation": "Blöck wo nid chönne drzuegfüegt wärde verstecke"
   },
   "feature_block-scheduler_description": {
     "source": "Adds support for scheduling blocks.",
@@ -1743,10 +1723,6 @@
     "source": "New",
     "translation": ""
   },
-  "selectionActionGroupTitle": {
-    "source": "Selection",
-    "translation": "Uswahl"
-  },
   "settingsAdvanced": {
     "source": "Advanced",
     "translation": "Erwitteret"
@@ -1880,16 +1856,12 @@
     "translation": "Tour starte"
   },
   "transformDialogButtonApply": {
-    "source": "Apply",
+    "source": "Apply changes",
     "translation": "Aawände"
   },
   "transformDialogButtonPreview": {
-    "source": "Preview",
+    "source": "New suggestion",
     "translation": "Vorschau"
-  },
-  "transformTo": {
-    "source": "Actions",
-    "translation": "Anderi Aktione"
   },
   "translationsBannerButton": {
     "source": "Edit source language instead",
