@@ -53,12 +53,26 @@ function getElement(): HTMLElement | null {
   return null
 }
 
+function getElementLabel(tagName: string): string {
+  return `<${tagName.toLowerCase()}>`
+}
+
 function getLabel() {
   if (props.target) {
     if (typeof props.target === 'string') {
       return props.target
     } else if (props.target instanceof HTMLElement) {
-      return (props.target.textContent ?? '').slice(0, 50)
+      if (props.target instanceof HTMLImageElement) {
+        if (props.target.alt) {
+          return props.target.alt.slice(0, 50)
+        }
+      }
+      const textContent = (props.target.textContent ?? '').slice(0, 50)
+      if (textContent) {
+        return textContent
+      }
+
+      return getElementLabel(props.target.tagName)
     } else if (typeof props.target === 'object' && 'uuid' in props.target) {
       return props.target.uuid
     }
