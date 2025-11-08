@@ -3,38 +3,18 @@
     :id="'add_list_item_' + id"
     ref="el"
     tag="button"
-    class="bk-list-item"
-    data-element-type="action"
+    class="bk-add-item"
     :menu="menu"
     :data-sortli-id="id"
     :class="[
       {
         'bk-is-disabled': disabled,
       },
-      'bk-is-' + orientation,
       'bk-is-' + color,
     ]"
   >
-    <div class="bk-list-item-inner">
-      <AddListItemIcon :orientation :color :bundle :icon />
-      <div
-        class="bk-list-item-label"
-        :class="{
-          'bk-tooltip': orientation === 'horizontal' && !ui.isMobile.value,
-        }"
-      >
-        <span>{{ label }}</span>
-      </div>
-    </div>
-
-    <div
-      class="bk-add-list-drop bk-drop-element"
-      :class="['bk-is-' + color, { 'bk-is-dark': isDark }]"
-    >
-      <div class="bk-add-list-drop-icon">
-        <ItemIcon v-if="bundle" :bundle="bundle" />
-        <Icon v-else-if="icon" :name="icon" />
-      </div>
+    <AddListItemIcon :color :bundle :icon />
+    <div class="bk-add-item-label">
       <span>{{ label }}</span>
     </div>
   </PluginContextMenu>
@@ -42,18 +22,17 @@
 
 <script lang="ts" setup>
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import type { AddListOrientation, ContextMenu } from '#blokkli/types'
+import type { ContextMenu } from '#blokkli/types'
 import { useBlokkli, computed, ref } from '#imports'
-import { ItemIcon, Icon, AddListItemIcon } from '#blokkli/components'
+import { AddListItemIcon } from '#blokkli/components'
 import { PluginContextMenu } from '#blokkli/plugins'
 
-const { ui, storage, $t } = useBlokkli()
+const { storage, $t } = useBlokkli()
 
 const props = withDefaults(
   defineProps<{
     id: string
     label: string
-    orientation: AddListOrientation
     color?: 'rose' | 'lime' | 'default' | 'yellow' | 'accent'
     bundle?: string
     icon?: BlokkliIcon
@@ -72,10 +51,6 @@ const el = ref<InstanceType<typeof PluginContextMenu> | null>(null)
 const favorites = storage.use<string[]>('blockFavorites', [])
 
 const isFavorite = computed(() => favorites.value.includes(props.id))
-
-const isDark = computed(
-  () => props.orientation !== 'sidebar' && props.color === 'default',
-)
 
 const toggleFavorite = () => {
   if (favorites.value.includes(props.id)) {

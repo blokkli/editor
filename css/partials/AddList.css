@@ -1,454 +1,136 @@
-.bk {
-  .bk-list {
-    @apply relative z-30;
+.bk.bk-add-list {
+  @apply pointer-events-auto relative z-add-list bg-mono-900;
+  @apply w-70 h-full relative;
+
+  grid-area: left;
+
+  .bk-add-list-inner {
+    @apply absolute top-0 left-0 h-full overflow-auto transition-all ease-swing duration-200 w-auto;
+    @apply bg-mono-900;
+    @apply flex flex-col;
+    @apply border-t border-t-mono-700;
+    clip-path: rect(0px 70px 100% 0px);
+
+    &.bk-is-active {
+      clip-path: rect(0px 100% 100% 0px);
+    }
+
     &::-webkit-scrollbar {
       display: none;
     }
-    .bk-list-item-icon {
-      @apply overflow-hidden;
-      svg {
-        @apply fill-current pointer-events-none;
-      }
-      flex: 0 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .bk-list-item-inner {
-      @apply relative flex text-mono-200 rounded items-center justify-center text-sm leading-3 z-10 border border-mono-800 lg:border-mono-600 gap-5;
-      @apply lg:w-[1em];
-      @apply bg-mono-900 lg:bg-mono-800;
-      font-size: 20px;
-      @apply px-10 py-5;
-      @screen lg {
-        font-size: 30px;
-        @apply w-full h-auto aspect-square p-0;
-      }
-    }
-
-    .bk-list-item.bk-is-accent .bk-list-item-inner {
-      @apply bg-accent-900 border-accent-500 text-accent-50;
-    }
-
-    .bk-list-item.bk-is-accent {
-      @media not all and (hover: none) {
-        &:hover {
-          .bk-list-item-inner {
-            @apply bg-accent-700  border-accent-400 text-white;
-          }
-        }
-      }
-    }
-
-    .bk-list-item.bk-is-rose .bk-list-item-inner {
-      @apply bg-red-dark border-red-normal text-red-light;
-    }
-
-    .bk-list-item.bk-is-rose {
-      @media not all and (hover: none) {
-        &:hover {
-          .bk-list-item-inner {
-            @apply bg-red-normal border-red-light/70 text-white;
-          }
-        }
-      }
-    }
-
-    .bk-list-item.bk-is-lime .bk-list-item-inner {
-      @apply bg-lime-dark border-lime-normal text-lime-light;
-    }
-
-    .bk-list-item.bk-is-lime {
-      @media not all and (hover: none) {
-        &:hover {
-          .bk-list-item-inner {
-            @apply bg-lime-normal border-lime-light text-white;
-          }
-        }
-      }
-    }
-
-    .bk-list-item.bk-is-yellow .bk-list-item-inner {
-      @apply bg-yellow-normal/20 border-yellow-normal/70 text-yellow-light;
-    }
-
-    .bk-list-item.bk-is-yellow {
-      @media not all and (hover: none) {
-        &:hover {
-          .bk-list-item-inner {
-            @apply bg-yellow-normal/30 border-yellow-normal/60 text-yellow-light;
-          }
-        }
-      }
-    }
   }
 
-  .bk-list-item.bk-is-horizontal,
-  .bk-list-item.bk-is-vertical {
-    @apply touch-manipulation relative;
-    &.bk-is-disabled {
-      @apply pointer-events-none;
-      .bk-list-item-inner {
-        @apply opacity-25 !bg-transparent;
-      }
-      .bk-list-item-label {
-        @apply text-mono-700;
-      }
-      .bk-list-item-icon {
-        @apply opacity-40;
-      }
-    }
-
-    .bk-icon {
-      @apply w-[1em] h-[1em];
-    }
-    flex: 0 0 auto;
-
-    @screen md {
-      @apply w-60;
-    }
-
-    @media not all and (hover: none) {
-      &:hover {
-        .bk-list-item-inner {
-          @apply bg-mono-700 text-white border-mono-400;
-        }
-        .bk-list-item-label span {
-          @apply text-white;
-        }
-      }
-    }
+  #blokkli-add-list-blocks {
+    @apply grid pb-25;
   }
-  .bk-list-item.bk-is-vertical {
-    .bk-list-item-label {
-      @apply absolute whitespace-nowrap opacity-0 text-mono-100/50  transition text-left;
-      @apply top-0 left-full p-10 h-full ml-[7px];
-      @apply text-lg font-semibold;
-      width: calc(var(--bk-add-list-width) * 1px);
+
+  #blokkli-add-list-actions {
+    @apply grid;
+    @apply sticky bottom-0 bg-mono-800 border-t border-t-mono-700;
+    @apply mt-auto;
+
+    .bk-add-item {
+      @apply bg-mono-800;
     }
-    @apply w-70 px-10 cursor-grab block pt-10;
+
+    &:after {
+      content: '';
+      @apply block w-full h-40 sticky bottom-0 z-50 pointer-events-none;
+      @apply absolute bottom-full left-0 mb-1;
+      background: linear-gradient(
+        theme('colors.mono.900/0') 30%,
+        theme('colors.mono.900')
+      );
+    }
   }
 }
 
-.bk.bk-add-list {
-  @apply relative select-none z-add-list overflow-auto ease-swing transition-all;
-  @apply touch-manipulation pointer-events-auto;
-
-  &.bk-is-vertical {
-    @apply w-[70px] lg:overflow-hidden;
-    grid-area: left;
-
-    &:after {
-      @apply w-70;
-      @apply top-0 left-0 h-full border-t lg:border-t-mono-700 bg-mono-950 lg:bg-mono-900;
-      @apply origin-left;
-      @apply absolute z-0 pointer-events-none;
-      @apply transition bg-mono-900 ease-swing;
-      content: '';
-    }
-
-    .bk-list {
-      @apply h-full absolute top-0 left-0 w-full flex flex-col;
-    }
-    @apply w-70;
-    #blokkli-add-list-actions {
-      @apply border-t border-t-mono-700 pb-5;
-    }
-
-    #blokkli-add-list-blocks {
-      @apply flex-1 overflow-auto overflow-x-hidden;
-
-      /* Overflow indicator so it's clear that the pane can be scrolled. */
-      &:after {
-        content: '';
-        @apply block w-full h-50 sticky bottom-0 z-50 pointer-events-none;
-        background: linear-gradient(
-          theme('colors.mono.900/0') 30%,
-          theme('colors.mono.900')
-        );
-      }
-
-      &::-webkit-scrollbar {
-        display: none;
-      }
-    }
-
-    &.bk-is-active {
-      width: calc(var(--bk-add-list-width) * 1px);
-      &:after {
-        transform: scaleX(calc(var(--bk-add-list-width) / 70));
-      }
-      .bk-list-item-label {
-        @apply opacity-100;
-      }
-    }
+.bk-add-list-inner.bk-is-active,
+.bk-dragging-overlay {
+  .bk-add-item-label {
+    @apply !opacity-100;
   }
-  &.bk-is-horizontal {
-    @apply w-full flex lg:py-5 bg-mono-950 overflow-y-hidden lg:overflow-visible;
-    grid-area: bottom;
+}
 
-    height: var(--bk-root-offset-bottom);
-    #blokkli-add-list-actions {
-      @apply flex border-r border-r-mono-800 lg:border-r-mono-700 px-5;
-      @apply order-first lg:order-last lg:border-r-0 lg:border-l lg:border-l-mono-800;
-      flex: 0 0 auto;
-
-      .bk-list-item-label {
-        @apply hidden lg:block;
-      }
-      .bk-list-item-inner {
-        @apply px-5;
-      }
-    }
-    #blokkli-add-list-blocks {
-      @apply flex px-5;
-    }
-    .bk-list {
-      @apply flex lg:mx-auto;
-    }
-    .bk-list-item-label {
-      @apply text-xs;
-      @screen lg {
-        @apply absolute left-0 bottom-full opacity-0 mb-15 text-base;
-        @apply left-1/2 -translate-x-1/2;
-      }
-    }
-    .bk-list-item {
-      @apply px-5 py-5 cursor-grab !rounded-none min-w-0;
-      &:hover {
-        .bk-list-item-label {
-          @apply opacity-100;
-        }
-      }
-
-      &:first-child {
-        .bk-list-item-label {
-          @apply left-0 translate-x-0;
-        }
-      }
-      &:hover {
-        .bk-list-item-label {
-          @apply opacity-100;
-        }
-      }
-    }
-    .bk-list-item-inner {
-      @apply min-w-0;
-      @screen lg {
-        @apply w-auto h-full;
-      }
-    }
-  }
-  &.bk-is-disabled {
-    @apply pointer-events-none;
-    .bk-list {
-      @apply opacity-20;
-    }
-  }
-  .bk-add-list-drop {
-    @apply opacity-0;
+.bk-add-item:hover,
+.bk-dragging-overlay {
+  .bk-add-item-label {
+    @apply !text-white;
   }
 }
 
 .bk {
-  .bk-add-list-drop {
-    @apply absolute top-0 left-0 w-[300px] pointer-events-none py-10;
-    @apply bg-mono-200 text-mono-900 flex gap-10 text-base font-semibold items-center rounded-md whitespace-nowrap px-15;
-    .bk-blokkli-item-icon {
-      flex: 0 0 auto;
-    }
-
-    &.bk-is-accent {
-      @apply bg-accent-800 text-white;
-    }
-
-    &.bk-is-rose {
-      @apply bg-red-normal text-white;
-    }
-
-    &.bk-is-lime {
-      @apply bg-lime-normal text-white;
-    }
-
-    &.bk-is-dark {
-      @apply bg-mono-900 text-white;
-    }
-
-    &.bk-is-yellow {
-      @apply bg-mono-900 text-white;
-    }
-
-    .bk-add-list-drop-icon {
-      .bk-icon,
-      .bk-blokkli-item-icon {
-        @apply !w-auto !h-auto;
-
-        svg {
-          @apply fill-current;
-          @apply w-40 h-40;
-        }
-      }
-    }
-  }
-
-  .bk-list-item.bk-is-sidebar {
-    @apply relative;
-    @apply block text-lg bg-white px-15 py-10 text-mono-600;
+  .bk-add-item {
+    @apply bg-mono-900 rounded-md relative overflow-hidden;
+    @apply flex whitespace-nowrap items-center w-full min-w-fit;
 
     &.bk-is-disabled {
-      @apply text-mono-300;
-      .bk-list-item-icon {
-        @apply opacity-30;
-      }
-    }
-
-    &:hover {
-      @apply text-mono-950;
-      .bk-list-item-icon {
-        @apply bg-mono-200 border-mono-600 text-mono-700;
-      }
-    }
-    .bk-list-item-label {
-      @apply font-medium text-base;
-    }
-    .bk-list-item-inner {
-      @apply flex items-center gap-15 h-full;
-    }
-    .bk-icon {
-      @apply w-[1em] h-[1em];
-      svg {
-        @apply fill-current;
-      }
-    }
-    .bk-list-item-icon {
-      @apply text-3xl text-mono-500 bg-mono-50 p-[0.2em] rounded border border-mono-300;
-    }
-
-    &.bk-is-accent .bk-list-item-icon {
-      @apply bg-accent-100 border-accent-400 text-accent-500;
-    }
-
-    &.bk-is-accent {
-      @media not all and (hover: none) {
-        &:hover {
-          @apply text-accent-700;
-          .bk-list-item-icon {
-            @apply bg-accent-600 border-accent-900 text-white;
-          }
-        }
-      }
-    }
-
-    &.bk-is-rose .bk-list-item-icon {
-      @apply bg-red-light border-red-normal text-red-normal;
-    }
-
-    &.bk-is-rose {
-      @media not all and (hover: none) {
-        &:hover {
-          @apply text-red-dark;
-          .bk-list-item-icon {
-            @apply bg-red-normal border-red-dark text-red-light;
-          }
-        }
-      }
-    }
-
-    &.bk-is-lime .bk-list-item-icon {
-      @apply bg-lime-light border-lime-normal text-lime-normal;
-    }
-
-    &.bk-is-lime {
-      @media not all and (hover: none) {
-        &:hover {
-          @apply text-lime-dark;
-          .bk-list-item-icon {
-            @apply bg-lime-normal border-lime-dark text-lime-light;
-          }
-        }
-      }
-    }
-
-    &.bk-is-yellow .bk-list-item-icon {
-      @apply bg-yellow-light border-yellow-dark/60 text-yellow-dark;
-    }
-
-    &.bk-is-yellow {
-      @media not all and (hover: none) {
-        &:hover {
-          @apply text-yellow-dark;
-          .bk-list-item-icon {
-            @apply bg-yellow-normal/30 border-yellow-dark/70;
-          }
-        }
-      }
+      @apply pointer-events-none opacity-25;
     }
   }
 
-  &.bk-list-sidebar {
-    container-type: inline-size;
-    #blokkli-add-list-blocks,
-    #blokkli-add-list-actions {
-      @apply grid grid-cols-1 text-mono-950;
-      @container (min-width: 400px) {
-        @apply grid-cols-2;
-        .bk-list-item {
-          @apply py-15;
-        }
-        .bk-list-item-inner {
-          @apply flex-col;
-        }
-        .bk-list-item-label {
-          @apply text-center;
-        }
-      }
-      @container (min-width: 500px) {
-        @apply grid-cols-3;
-        .bk-list-item {
-          @apply py-20;
-        }
-        .bk-list-item-inner {
-          .bk-list-item-icon {
-            @apply text-4xl;
-          }
-        }
-      }
-      @container (min-width: 600px) {
-        @apply grid-cols-4;
-        .bk-list-item-inner {
-          @apply text-lg;
-          .bk-list-item-icon {
-            @apply text-5xl;
-          }
-        }
-      }
-      @container (min-width: 800px) {
-        @apply grid-cols-5;
-      }
-      @container (min-width: 1000px) {
-        @apply grid-cols-6;
-      }
-      @container (min-width: 1200px) {
-        @apply grid-cols-7;
-      }
-      @container (min-width: 1400px) {
-        @apply grid-cols-8;
-      }
-      @container (min-width: 1600px) {
-        @apply grid-cols-9;
-      }
-    }
-    #blokkli-add-list-actions {
-      @apply border-t border-t-mono-200;
+  .bk-add-item + .bk-add-item {
+    @apply -mt-10;
+  }
+
+  .bk-add-item-label {
+    @apply font-semibold text-lg pl-3 pr-25 text-mono-400 opacity-0 transition-opacity duration-200;
+  }
+
+  .bk-add-item-icon {
+    @apply size-70 p-10 shrink-0;
+  }
+
+  .bk-add-item-icon-inner {
+    @apply aspect-square flex items-center justify-center;
+    @apply rounded border;
+
+    .bk-blokkli-item-icon {
+      @apply size-auto;
     }
 
-    .bk-add-list-drop {
-      @apply opacity-0;
+    svg {
+      @apply size-30 fill-current;
     }
   }
 }
 
-.bk.bk-list-sidebar-form {
-  @apply p-15;
+.bk-add-item-icon .bk-add-item-icon-inner.bk-is-default {
+  @apply border-mono-500 bg-mono-800 text-mono-200;
+  .bk-add-item:hover &,
+  .bk-dragging-overlay & {
+    @apply border-mono-400 bg-mono-700 text-mono-50;
+  }
+}
+
+.bk-add-item-icon .bk-add-item-icon-inner.bk-is-yellow {
+  @apply bg-yellow-normal/20 border-yellow-normal/50 text-yellow-light;
+  .bk-add-item:hover &,
+  .bk-dragging-overlay & {
+    @apply bg-yellow-normal/30 border-yellow-normal/90 text-yellow-light;
+  }
+}
+
+.bk-add-item-icon .bk-add-item-icon-inner.bk-is-rose {
+  @apply bg-red-dark border-red-normal text-red-light;
+  .bk-add-item:hover &,
+  .bk-dragging-overlay & {
+    @apply bg-red-normal border-red-light/70 text-white;
+  }
+}
+
+.bk-add-item-icon .bk-add-item-icon-inner.bk-is-lime {
+  @apply bg-lime-dark border-lime-normal text-lime-light;
+  .bk-add-item:hover &,
+  .bk-dragging-overlay & {
+    @apply bg-lime-normal border-lime-light text-white;
+  }
+}
+
+.bk-add-item-icon .bk-add-item-icon-inner.bk-is-accent {
+  @apply bg-accent-900 border-accent-500 text-accent-50;
+  .bk-add-item:hover &,
+  .bk-dragging-overlay & {
+    @apply bg-accent-700  border-accent-400 text-white;
+  }
 }

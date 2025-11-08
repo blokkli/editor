@@ -1,24 +1,21 @@
 <template>
-  <div
-    class="bk-list-item-icon"
-    :class="['bk-is-' + color, 'bk-is-' + orientation]"
-  >
-    <Icon v-if="icon" :name="icon" />
-    <ItemIcon v-else-if="bundle" :bundle="bundle" />
+  <div class="bk-add-item-icon">
+    <div class="bk-add-item-icon-inner" :class="'bk-is-' + color">
+      <Icon v-if="icon" :name="icon" />
+      <ItemIcon v-else-if="bundle" :bundle="bundle" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { ItemIcon, Icon } from '#blokkli/components'
-import type { AddListOrientation } from '#blokkli/types'
 
 withDefaults(
   defineProps<{
     icon?: BlokkliIcon
     bundle?: string
     color?: 'rose' | 'lime' | 'default' | 'yellow' | 'accent'
-    orientation?: AddListOrientation
   }>(),
   {
     color: 'default',

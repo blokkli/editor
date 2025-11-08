@@ -197,7 +197,6 @@ const broadcast = broadcastProvider()
 const ui = uiProvider(
   props.providerEl,
   storage,
-  state,
   context,
   element,
   mainLayoutElement,

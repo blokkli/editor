@@ -1,11 +1,10 @@
 <template>
-  <Teleport v-if="shouldRender" :key="renderKey" to="#blokkli-add-list-actions">
+  <Teleport v-if="shouldRender" to="#blokkli-add-list-actions">
     <AddListItem
       :id="type"
       ref="item"
       :label="title"
       :icon="icon"
-      :orientation="ui.addListOrientation.value"
       :color="color"
       :disabled="disabled"
       data-element-type="action"
@@ -17,14 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  useBlokkli,
-  nextTick,
-  ref,
-  onMounted,
-  onBeforeUnmount,
-} from '#imports'
+import { computed, useBlokkli, ref, onMounted, onBeforeUnmount } from '#imports'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { ActionPlacedEvent, AddAction } from '#blokkli/types'
 import { AddListItem } from '#blokkli/components'
@@ -48,7 +40,7 @@ const emit = defineEmits<{
   (e: 'placed', data: ActionPlacedEvent): void
 }>()
 
-const { ui, state, features, plugins } = useBlokkli()
+const { state, features, plugins } = useBlokkli()
 
 const addListAvailable = computed(
   () => !!features.mountedFeatures.value.find((v) => v.id === 'add-list'),
@@ -57,14 +49,6 @@ const addListAvailable = computed(
 const shouldRender = computed(
   () => addListAvailable.value && state.editMode.value === 'editing',
 )
-
-const renderKey = ref('')
-
-onBlokkliEvent('add-list:change', () => {
-  nextTick(() => {
-    renderKey.value = Math.round(Math.random() * 1000000000).toString()
-  })
-})
 
 onBlokkliEvent('action:placed', (e) => {
   if (e.id !== props.type) {

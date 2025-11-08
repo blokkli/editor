@@ -13,14 +13,13 @@
 
   .bk-selection-add-overlay-list {
     @apply flex flex-wrap max-h-[60vh] overflow-auto lg:max-h-[500px];
-    padding: var(--bk-gap);
+    padding-top: var(--bk-gap);
     max-width: calc(
       var(--bk-gap) * 2 + var(--bk-item-width) * var(--bk-columns) +
         var(--bk-gap) * (var(--bk-columns) - 1) + 40px
     );
-    gap: var(--bk-gap);
     button {
-      @apply flex items-center text-base gap-10 min-w-0;
+      @apply flex items-center text-base min-w-0 -mt-10;
       width: var(--bk-item-width);
       .bk-list-item-icon {
         @apply size-50 bg-mono-800 flex items-center justify-center rounded border border-mono-500 shrink-0;

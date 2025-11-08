@@ -10,13 +10,7 @@ import {
 import type { ShallowRef } from 'vue'
 import { eventBus } from './eventBus'
 import type { StorageProvider } from './storageProvider'
-import type {
-  AddListOrientation,
-  Coord,
-  Rectangle,
-  SidebarRegion,
-  Size,
-} from '#blokkli/types'
+import type { Coord, Rectangle, SidebarRegion, Size } from '#blokkli/types'
 import type { Viewport } from '#blokkli/constants'
 import { falsy } from '.'
 import { addElementClasses } from './addElementClasses'
@@ -68,7 +62,6 @@ export type UiProvider = {
   lowPerformanceMode: ComputedRef<boolean>
   visibleViewport: ComputedRef<Rectangle>
   visibleViewportPadded: ComputedRef<Rectangle>
-  addListOrientation: ComputedRef<AddListOrientation>
 
   setViewportBlockingRectangle: (key: string, rect?: Rectangle) => void
   viewportBlockingRects: ComputedRef<Rectangle[]>
@@ -116,7 +109,6 @@ export type UiProvider = {
 export default function (
   providerElement: HTMLElement,
   storage: StorageProvider,
-  state: StateProvider,
   context: ComputedRef<AdapterContext>,
   element: ElementProvider,
   mainLayoutElement: Readonly<ShallowRef<HTMLDivElement | null>>,
@@ -325,14 +317,6 @@ export default function (
     return !!activeSidebarsRight.value.length
   })
 
-  const settingsStorage = storage.use('feature:add-list:settings', {
-    orientation: 'vertical' as any,
-  })
-
-  const addListOrientation = computed<AddListOrientation>(() =>
-    isMobile.value ? 'horizontal' : settingsStorage.value.orientation,
-  )
-
   const blockingPaddingX = computed(() => 15)
   const blockingPaddingY = computed(() => 50)
   const viewportPadding = computed<number>(() => 10)
@@ -525,7 +509,6 @@ export default function (
     useAnimations,
     visibleViewport,
     visibleViewportPadded,
-    addListOrientation,
     setViewportBlockingRectangle,
     viewportBlockingRects,
     appViewport,

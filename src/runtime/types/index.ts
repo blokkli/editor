@@ -1391,8 +1391,6 @@ export type AssistantResultMarkup = {
 }
 export type AssistantResult = AssistantResultMarkup
 
-export type AddListOrientation = 'horizontal' | 'vertical' | 'sidebar'
-
 export type AdapterMethods = keyof BlokkliAdapter<any>
 
 export type FeatureDefinitionSettingRadiosOption = {

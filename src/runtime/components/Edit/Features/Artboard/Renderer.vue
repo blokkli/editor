@@ -224,13 +224,11 @@ onBlokkliEvent('animationFrame:before', ({ time, mouseY, mouseX }) => {
   // top or bottom edge of the viewport.
   if (selection.isDragging.value) {
     // Prevent autoscroll when the user is hovering over the horizontal add list.
-    if (ui.addListOrientation.value === 'horizontal') {
-      if (!hasLeftAddList) {
-        if (isInsideRect(mouseX, mouseY, ui.visibleViewportPadded.value)) {
-          hasLeftAddList = true
-        } else {
-          return
-        }
+    if (!hasLeftAddList) {
+      if (isInsideRect(mouseX, mouseY, ui.visibleViewportPadded.value)) {
+        hasLeftAddList = true
+      } else {
+        return
       }
     }
 

@@ -7,13 +7,13 @@
       :key="i + (type.id || 'undefined') + renderKey"
       :label="type.label"
       :bundle="type.id"
-      :orientation="ui.addListOrientation.value"
       :disabled="type.isDisabled"
       :color="type.isFavorite ? 'yellow' : 'default'"
       data-element-type="new"
       :data-item-bundle="type.id"
     />
   </Sortli>
+
   <PluginTourItem
     v-if="shouldRender"
     id="block-add-list"
