@@ -33,6 +33,8 @@ type RegisteredFieldType = {
 type MeasuredBlockRect = Rectangle & { time: number }
 
 export type DomProvider = {
+  getBoundingClientRect: (element: HTMLElement) => DOMRect
+
   /**
    * Return the droppable markup for a draggable item.
    */
@@ -172,6 +174,11 @@ export default function (
   let initTimeout: null | number = null
   const isInitalizing = ref(true)
   const observedElementCache = new Map<string, HTMLElement>()
+
+  function getBoundingClientRect(element: HTMLElement): DOMRect {
+    logger.log('getBoundingClientRect', element)
+    return element.getBoundingClientRect()
+  }
 
   const registeredBlockUuids = computed(() => {
     return Object.entries(registeredBlocks)
@@ -881,5 +888,6 @@ export default function (
     getDebugData,
     getRegisteredField,
     registeredBlocks: computed(() => registeredBlocks),
+    getBoundingClientRect,
   }
 }

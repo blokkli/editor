@@ -160,7 +160,7 @@ html.bk-is-sidebar-interacting {
     @apply block;
 
     > div {
-      @apply min-h-[50px] relative block;
+      @apply min-h-[50px] relative;
 
       &:first-child {
         &:before {

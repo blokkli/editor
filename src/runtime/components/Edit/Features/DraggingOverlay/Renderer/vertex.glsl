@@ -35,6 +35,7 @@ out float v_thickness;
 out float v_edge_softness;
 out float v_radius_outer;
 out float v_radius_inner;
+out float v_fill_alpha;
 
 vec4 getQuad() {
   if (a_rect_type >= 5.0) {
@@ -72,6 +73,8 @@ void main() {
 
   v_is_hover_area = a_rect_type >= 5.0 ? 1.0 : 0.0;
 
+  bool is_drop_target = a_rect_type <= 0.5;
+
   // Set correct colors based on type.
   if (a_rect_type < 1.0) {
     v_color = u_color_area;
@@ -89,7 +92,7 @@ void main() {
 
   // Compute values that are constant per quad (optimization)
   bool isHoverArea = v_is_hover_area >= 1.0;
-  float stroke = isHoverArea ? 0.75 : 2.0;
+  float stroke = isHoverArea ? 0.5 : 1.0;
   float radiusBase = stroke * u_scale;
 
   v_thickness = max(min(1.0 * u_scale, 3.0), 0.5);
@@ -118,4 +121,10 @@ void main() {
   v_radius_inner = v_radius_outer - borderWidth;
 
   v_size_inner = v_size - 2.0 * borderWidth;
+
+  if (is_drop_target) {
+    v_fill_alpha = v_intersecting >= 0.5 ? 0.5 : 0.2;
+  } else {
+    v_fill_alpha = v_intersecting >= 0.5 ? 1.0 : 0.2;
+  }
 }

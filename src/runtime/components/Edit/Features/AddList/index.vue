@@ -1,5 +1,5 @@
 <template>
-  <Teleport :to="ui.mainLayoutElement.value">
+  <Teleport :to="ui.mainLayoutElement.value" v-if="shouldRender">
     <div
       ref="wrapper"
       class="bk bk-add-list bk-control"
@@ -70,7 +70,11 @@ function buildItemAction(
   }
 }
 
-const { $t, ui, selection } = useBlokkli()
+const { $t, ui, selection, state } = useBlokkli()
+
+const shouldRender = computed(
+  () => state.canEdit.value && state.editMode.value === 'editing',
+)
 
 const hasContextMenuOpen = computed(() =>
   ui.openContextMenu.value.startsWith('add_list_item_'),

@@ -15,6 +15,7 @@ in float v_thickness;
 in float v_edge_softness;
 in float v_radius_outer;
 in float v_radius_inner;
+in float v_fill_alpha;
 
 out vec4 fragColor;
 
@@ -52,11 +53,7 @@ void main() {
   // Alpha value for the border.
   float alphaBorder = clamp(alphaOuter - alphaInner, 0.0, 1.0);
 
-  // Adjust alphas based on intersection.
-  float adjustedAlphaFill =
-    v_intersecting >= 0.5
-      ? alphaInner * 0.95
-      : alphaInner * 0.2;
+  float adjustedAlphaFill = alphaInner * v_fill_alpha;
 
   if (v_is_hover_area >= 1.0) {
     // If nesting level is 0, don't render the fill (border only)

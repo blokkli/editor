@@ -276,8 +276,8 @@ const buildChildren = (
 
   let prevWasInSelection = false
   let prevUuid: string | undefined = ''
-  let prevRect: { y: number; x: number; height: number; width: number } | null =
-    null
+  let prevElOffsetTop = 0
+  let prevElHeight = 0
 
   for (let i = 0; i < field.childrenElements.length; i++) {
     const childrenForUuid: FieldRectChild[] = []
@@ -295,24 +295,26 @@ const buildChildren = (
     }
 
     if (!visible.includes(uuid)) {
-      prevUuid = uuid
-      // Update prevRect even for non-visible elements for accurate gap calculation
+      // Track position even for invisible blocks so we can calculate gaps correctly
       const elRect =
         dom.getBlockRect(uuid) ||
-        ui.getAbsoluteElementRect(el.getBoundingClientRect())
-      prevRect = elRect
+        ui.getAbsoluteElementRect(dom.getBoundingClientRect(el))
+      prevElOffsetTop = elRect.y - field.y
+      prevElHeight = el.scrollHeight
+      prevUuid = uuid
       continue
     }
 
     const cached = fieldChildCache[uuid]
     if (cached) {
-      children.push(...cached)
-      prevUuid = uuid
-      // Update prevRect for next iteration
+      // Track position even when using cached drop targets
       const elRect =
         dom.getBlockRect(uuid) ||
-        ui.getAbsoluteElementRect(el.getBoundingClientRect())
-      prevRect = elRect
+        ui.getAbsoluteElementRect(dom.getBoundingClientRect(el))
+      prevElOffsetTop = elRect.y - field.y
+      prevElHeight = el.scrollHeight
+      children.push(...cached)
+      prevUuid = uuid
       continue
     }
 
@@ -320,22 +322,18 @@ const buildChildren = (
     if (selectionUuids.value.includes(uuid)) {
       prevWasInSelection = true
       prevUuid = uuid
-      // Update prevRect for next iteration even when skipping
-      const elRect =
-        dom.getBlockRect(uuid) ||
-        ui.getAbsoluteElementRect(el.getBoundingClientRect())
-      prevRect = elRect
       continue
     }
 
     // Get the rect of the block. Use a cached one if possible.
     const elRect =
       dom.getBlockRect(uuid) ||
-      ui.getAbsoluteElementRect(el.getBoundingClientRect())
+      ui.getAbsoluteElementRect(dom.getBoundingClientRect(el))
 
     // Calculate the offset to the parent. We can not use el.offsetTop/el.offsetLeft here because the value could be 0.
     const elOffsetTop = elRect.y - field.y
     const elOffsetLeft = elRect.x - field.x
+    const elHeight = el.scrollHeight
 
     // Last element.
     if (isLast) {
@@ -346,7 +344,7 @@ const buildChildren = (
           width: field.width,
           height: MIN_GAP,
           x: 0,
-          y: elOffsetTop + el.scrollHeight,
+          y: elOffsetTop + elHeight,
           label: field.label,
         })
       } else {
@@ -366,7 +364,8 @@ const buildChildren = (
     if (prevWasInSelection) {
       prevWasInSelection = false
       prevUuid = uuid
-      prevRect = elRect
+      prevElOffsetTop = elOffsetTop
+      prevElHeight = elHeight
       children.push(...childrenForUuid)
       continue
     }
@@ -374,17 +373,17 @@ const buildChildren = (
     const id = buildChildId(field.field, prevUuid, 'between', uuid)
 
     if (field.orientation === 'vertical') {
-      // Calculate the actual gap between the previous and current element
       let dropTargetY: number
-      if (prevRect) {
-        const prevOffsetBottom = prevRect.y + prevRect.height - field.y
-        const actualGap = elOffsetTop - prevOffsetBottom
-        // Place drop target center in the center of the actual gap
-        // Subtract half the drop target height to position its top edge correctly
-        dropTargetY = prevOffsetBottom + actualGap / 2 - MIN_GAP / 2
+
+      if (prevElHeight > 0) {
+        // Center the drop target in the gap between previous and current block
+        const prevBlockBottom = prevElOffsetTop + prevElHeight
+        const gapMiddle = (prevBlockBottom + elOffsetTop) / 2
+        dropTargetY = gapMiddle - MIN_GAP / 2
       } else {
-        // Fallback to old behavior if no previous rect
-        dropTargetY = elOffsetTop - field.gap / 2
+        // First element: center between field top and block top
+        const gapMiddle = elOffsetTop / 2
+        dropTargetY = gapMiddle - MIN_GAP / 2
       }
 
       childrenForUuid.push({
@@ -396,26 +395,13 @@ const buildChildren = (
         label: field.label,
       })
     } else {
-      // Calculate the actual gap for horizontal orientation
-      let dropTargetX: number
-      if (prevRect) {
-        const prevOffsetRight = prevRect.x + prevRect.width - field.x
-        const actualGap = elOffsetLeft - prevOffsetRight
-        // Place drop target center in the center of the actual gap
-        // Subtract half the drop target width to position its left edge correctly
-        dropTargetX = prevOffsetRight + actualGap / 2 - MIN_GAP / 2
-      } else {
-        // Fallback to old behavior if no previous rect
-        dropTargetX =
-          Math.max(elOffsetLeft - field.gap, -field.gap) +
-          (field.gap - MIN_GAP) / 2
-      }
-
       childrenForUuid.push({
         id,
         width: MIN_GAP,
         height: Math.max(el.offsetHeight, MIN_GAP),
-        x: dropTargetX,
+        x:
+          Math.max(elOffsetLeft - field.gap, -field.gap) +
+          (field.gap - MIN_GAP) / 2,
         y: elOffsetTop,
         label: field.label,
       })
@@ -425,8 +411,9 @@ const buildChildren = (
 
     children.push(...childrenForUuid)
 
+    prevElOffsetTop = elOffsetTop
+    prevElHeight = elHeight
     prevUuid = uuid
-    prevRect = elRect
   }
   return children
 }

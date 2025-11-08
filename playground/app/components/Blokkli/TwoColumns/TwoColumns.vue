@@ -20,6 +20,7 @@
         name="left"
         :list="left"
         class="flex flex-col gap-20 col-span-12"
+        field-list-type="inline"
         edit-class="min-h-[50px]"
         :class="{
           'md:col-span-6': options.columns === 'equal',

@@ -14,13 +14,13 @@
   }
 
   > .bk-dragging-overlay-item.bk-is-top {
-    @apply shadow-xl-even z-50 rounded-md overflow-hidden will-change-transform;
+    @apply shadow-xl-even z-50 rounded-md will-change-transform;
 
     &:before {
       content: '';
-      @apply absolute top-0 left-0 w-full h-full z-50;
+      @apply absolute top-0 left-0 w-full h-full z-50 opacity-60;
       outline: 5px solid var(--bk-active-color);
-      outline-offset: -4px;
+      outline-offset: 0px;
       border-radius: inherit;
     }
   }
@@ -28,7 +28,7 @@
     @apply border border-mono-500;
   }
   &.bk-is-active > .bk-dragging-overlay-item.bk-is-top {
-    @apply !opacity-80;
+    /* @apply !opacity-80; */
   }
 }
 
