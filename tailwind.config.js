@@ -2,11 +2,12 @@ const plugin = require('tailwindcss/plugin')
 const colors = require('tailwindcss/colors')
 /** @type {import('tailwindcss').Config} */
 
-const z = (index) => {
-  return `calc(var(--bk-z-index-base) + ${index})`
+const z = (index, key) => {
+  return `calc(var(--bk-z-index-base) + ${index}) /* "${key}" */`
 }
 
 const zIndex = [
+  'main-layout',
   'canvas-overlay',
   'animation-canvas',
   'selection',
@@ -15,7 +16,6 @@ const zIndex = [
   'comments-overlay-active',
   'artboard-scrollbar',
   'artboard-overview',
-  'messages',
   'translations-banner-mobile',
   'editable-field',
   'translations-banner-desktop',
@@ -43,12 +43,13 @@ const zIndex = [
   'edit-form',
   'resizable',
   'edit-form-header',
+  'messages',
   'menu-overlay',
   'menu',
   'library-edit-dialog',
   'transform-overlay',
 ].reduce((acc, key, index) => {
-  acc[key] = z(index * 10000)
+  acc[key] = z(index * 10000, key)
   return acc
 }, {})
 

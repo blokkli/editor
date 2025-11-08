@@ -1,7 +1,5 @@
 <template>
-  <Teleport to="body">
-    <div />
-  </Teleport>
+  <div />
 </template>
 
 <script lang="ts" setup>

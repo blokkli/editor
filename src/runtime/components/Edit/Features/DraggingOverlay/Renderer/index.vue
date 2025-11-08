@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value">
     <slot :color="activeColorHex" :label="active?.label" />
   </Teleport>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value" defer>
     <BlokkliTransition name="search">
       <div
         v-if="isRendered"

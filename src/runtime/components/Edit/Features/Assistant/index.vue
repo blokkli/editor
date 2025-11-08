@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-in">
       <Overlay v-if="placedAction" @close="onClose" @submit="onSubmit" />
     </BlokkliTransition>
@@ -38,7 +38,7 @@ const { adapter } = defineBlokkliFeature({
   dependencies: ['add-list'],
 })
 
-const { state, $t } = useBlokkli()
+const { state, $t, ui } = useBlokkli()
 
 const placedAction = ref<ActionPlacedEvent | null>(null)
 

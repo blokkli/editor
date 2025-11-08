@@ -12,7 +12,7 @@
     @click="showModal = true"
   />
 
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-up">
       <ExistingDialog
         v-if="showModal"
@@ -55,7 +55,7 @@ const { adapter, settings } = defineBlokkliFeature({
   },
 })
 
-const { state, $t } = useBlokkli()
+const { ui, state, $t } = useBlokkli()
 
 const isEmpty = computed(
   () => !state.mutatedFields.value.find((v) => v.list?.length),

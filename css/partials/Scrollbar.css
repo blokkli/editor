@@ -10,8 +10,10 @@
 }
 
 .bk.bk-artboard-scrollbar {
-  @apply fixed bg-mono-300 z-artboard-scrollbar transition overflow-hidden;
+  @apply bg-mono-300 z-artboard-scrollbar transition overflow-hidden pointer-events-auto;
   contain: strict;
+  grid-area: scrollbar-y;
+
   button {
     @apply bg-mono-500/50 block rounded-full;
   }
@@ -20,13 +22,6 @@
 
   &.bk-orientation-y {
     width: var(--bk-artboard-scrollbar-size);
-    top: calc(var(--bk-root-offset-top));
-    bottom: calc(var(--bk-root-offset-bottom));
-    right: calc(var(--bk-root-offset-right));
-
-    html.bk-has-sidebar-right & {
-      right: calc(var(--bk-root-offset-right) + var(--bk-sidebar-width-right));
-    }
 
     > div {
       @apply h-full;

@@ -5,7 +5,9 @@ import {
   onBeforeUnmount,
   ref,
   computed,
-} from 'vue'
+  watch,
+} from '#imports'
+import type { ShallowRef } from 'vue'
 import { eventBus } from './eventBus'
 import type { StorageProvider } from './storageProvider'
 import type {
@@ -18,11 +20,14 @@ import type {
 import type { Viewport } from '#blokkli/constants'
 import { falsy } from '.'
 import { addElementClasses } from './addElementClasses'
+import { defineElementStyle } from './defineElementStyle'
 import type { StateProvider } from './stateProvider'
 import type { AdapterContext } from '#blokkli/adapter'
 import { defaultLanguage, forceDefaultLanguage } from '#blokkli-build/config'
 import type { ThemeColorName } from '#blokkli/types/theme'
 import type { ElementProvider } from './providers/element'
+
+type ResizeElementKey = 'visible-viewport' | 'artboard'
 
 const CLASS_PROXY_MODE = 'bk-is-proxy-mode'
 
@@ -61,7 +66,6 @@ export type UiProvider = {
 
   useAnimations: ComputedRef<boolean>
   lowPerformanceMode: ComputedRef<boolean>
-  toolbarHeight: ComputedRef<number>
   visibleViewport: ComputedRef<Rectangle>
   visibleViewportPadded: ComputedRef<Rectangle>
   addListOrientation: ComputedRef<AddListOrientation>
@@ -106,6 +110,7 @@ export type UiProvider = {
   removeActiveSidebar: (region: SidebarRegion, id: string) => void
   hasSidebarLeft: ComputedRef<boolean>
   hasSidebarRight: ComputedRef<boolean>
+  mainLayoutElement: Readonly<ShallowRef<HTMLDivElement | null>>
 }
 
 export default function (
@@ -114,6 +119,8 @@ export default function (
   state: StateProvider,
   context: ComputedRef<AdapterContext>,
   element: ElementProvider,
+  mainLayoutElement: Readonly<ShallowRef<HTMLDivElement | null>>,
+  visibleViewportElement: Readonly<ShallowRef<HTMLDivElement | null>>,
 ): UiProvider {
   let cachedRootElement: HTMLElement | null = null
   let cachedArtboardElement: HTMLElement | null = null
@@ -126,6 +133,13 @@ export default function (
     const lang = interfaceLanguage.value
     return localeMap[lang] || lang
   })
+
+  const viewportWidth = ref(window.innerWidth)
+  const viewportHeight = ref(window.innerHeight)
+  const visibleViewportWidth = ref(0)
+  const visibleViewportHeight = ref(0)
+  const visibleViewportX = ref(0)
+  const visibleViewportY = ref(0)
 
   const isProxyMode = ref(false)
   const menuIsOpen = ref(false)
@@ -167,19 +181,49 @@ export default function (
   })
   const artboardScale = ref(1)
 
+  const resizeElementMap: WeakMap<Element, ResizeElementKey> = new WeakMap()
+
+  let visibleViewportResizeTimeout: number | null = null
+
+  function updateVisibleViewport() {
+    if (!visibleViewportElement.value) {
+      return
+    }
+
+    const rect = visibleViewportElement.value.getBoundingClientRect()
+    visibleViewportWidth.value = rect.width
+    visibleViewportHeight.value = rect.height
+    visibleViewportX.value = rect.x
+    visibleViewportY.value = rect.y
+  }
+
   const resizeObserver = new ResizeObserver((entries) => {
-    const entry = entries[0]
-    if (!entry) {
-      return
-    }
+    for (const entry of entries) {
+      const size = entry.contentBoxSize[0]
+      if (!size) {
+        return
+      }
 
-    const size = entry.contentBoxSize[0]
-    if (!size) {
-      return
-    }
+      const key = resizeElementMap.get(entry.target)
 
-    artboardSize.value.width = size.inlineSize
-    artboardSize.value.height = size.blockSize
+      if (!key) {
+        return
+      }
+
+      if (key === 'artboard') {
+        artboardSize.value.width = size.inlineSize
+        artboardSize.value.height = size.blockSize
+      } else if (key === 'visible-viewport') {
+        visibleViewportWidth.value = size.inlineSize
+        visibleViewportHeight.value = size.blockSize
+        if (visibleViewportResizeTimeout) {
+          window.clearTimeout(visibleViewportResizeTimeout)
+        }
+        visibleViewportResizeTimeout = window.setTimeout(() => {
+          updateVisibleViewport()
+        }, 50)
+      }
+    }
   })
 
   const setViewportBlockingRectangle = (key: string, rect?: Rectangle) => {
@@ -230,8 +274,6 @@ export default function (
     return 'desktop'
   })
 
-  const viewportWidth = ref(window.innerWidth)
-  const viewportHeight = ref(window.innerHeight)
   const isMobile = computed(() => appViewport.value === 'mobile')
   const isDesktop = computed(() => appViewport.value === 'desktop')
   let resizeTimeout: any = null
@@ -245,14 +287,6 @@ export default function (
       eventBus.emit('ui:resized')
     }, 400)
   }
-
-  const toolbarHeight = computed(() => {
-    if (isMobile.value) {
-      return 80
-    }
-
-    return 50
-  })
 
   const activeSidebarsLeft = ref<string[]>([])
   const activeSidebarsRight = ref<string[]>([])
@@ -299,59 +333,10 @@ export default function (
     isMobile.value ? 'horizontal' : settingsStorage.value.orientation,
   )
 
-  const visibleViewportX = computed<number>(() => {
-    let x = 0
-    if (!isMobile.value) {
-      if (
-        addListOrientation.value === 'vertical' &&
-        state.editMode.value === 'editing'
-      ) {
-        x += 70
-      }
-      if (hasSidebarLeft.value) {
-        x += 400
-      }
-    }
-    return x
-  })
-  const visibleViewportY = computed<number>(() => {
-    return toolbarHeight.value
-  })
-  const visibleViewportWidth = computed<number>(() => {
-    if (isMobile.value) {
-      return viewportWidth.value
-    }
-    let width = viewportWidth.value - visibleViewportX.value - 50
-    if (hasSidebarRight.value) {
-      // Chosen by fair dice roll.
-      width -= 351
-    }
-    return width
-  })
-  const visibleViewportHeight = computed<number>(() => {
-    let height = viewportHeight.value - visibleViewportY.value
-
-    if (addListOrientation.value === 'horizontal') {
-      if (isMobile.value) {
-        height -= 50
-      } else {
-        height -= 70
-      }
-    }
-
-    const bannerHeights = Object.values(banners.value).filter(Boolean)
-
-    bannerHeights.forEach((bannerHeight) => {
-      height -= bannerHeight
-    })
-
-    height -= bannerHeights.length * 10
-
-    return height
-  })
-
   const blockingPaddingX = computed(() => 15)
   const blockingPaddingY = computed(() => 50)
+  const viewportPadding = computed<number>(() => 10)
+  const scrollbarWidth = computed<number>(() => 16)
 
   const viewportBlockingRects = computed<Rectangle[]>(() => {
     return Object.values(viewportBlockingRectsMap.value)
@@ -379,11 +364,12 @@ export default function (
   })
 
   const visibleViewportPadded = computed<Rectangle>(() => {
+    const p = viewportPadding.value
     return {
-      x: visibleViewportX.value + 10,
-      y: visibleViewportY.value + 10,
-      width: visibleViewportWidth.value - 10 - 16 - 10,
-      height: visibleViewportHeight.value - 20,
+      x: visibleViewportX.value + p,
+      y: visibleViewportY.value + p,
+      width: visibleViewportWidth.value - 2 * p,
+      height: visibleViewportHeight.value - 2 * p,
     }
   })
 
@@ -461,20 +447,35 @@ export default function (
   addElementClasses(document.documentElement, CLASS_PROXY_MODE, isProxyMode)
   addElementClasses(document.documentElement, 'bk-is-analyzing', isAnalyzing)
 
+  function observeElement(element: HTMLElement, key: ResizeElementKey) {
+    resizeElementMap.set(element, key)
+    resizeObserver.observe(element)
+  }
+
+  watch(
+    visibleViewportElement,
+    (el) => {
+      if (el) {
+        observeElement(el, 'visible-viewport')
+      }
+    },
+    {
+      immediate: true,
+    },
+  )
+
   onMounted(() => {
     viewportWidth.value = window.innerWidth
     viewportHeight.value = window.innerHeight
     window.addEventListener('resize', onResize)
 
     const artboard = artboardElement()
-    resizeObserver.observe(artboard)
+    observeElement(artboard, 'artboard')
   })
 
   onBeforeUnmount(() => {
     window.removeEventListener('resize', onResize)
     clearTimeout(resizeTimeout)
-    const artboard = artboardElement()
-    resizeObserver.unobserve(artboard)
     resizeObserver.disconnect()
   })
 
@@ -502,6 +503,9 @@ export default function (
     )
   })
 
+  defineElementStyle('--bk-viewport-padding', viewportPadding)
+  defineElementStyle('--bk-scrollbar-width', scrollbarWidth)
+
   return {
     menu: {
       isOpen: menuIsOpen,
@@ -521,7 +525,6 @@ export default function (
     useAnimations,
     visibleViewport,
     visibleViewportPadded,
-    toolbarHeight,
     addListOrientation,
     setViewportBlockingRectangle,
     viewportBlockingRects,
@@ -552,5 +555,6 @@ export default function (
     removeActiveSidebar,
     hasSidebarLeft,
     hasSidebarRight,
+    mainLayoutElement,
   }
 }

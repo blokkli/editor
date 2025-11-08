@@ -12,7 +12,7 @@
     @click="showConfirm = true"
   />
 
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-up">
       <DialogModal
         v-if="showConfirm"
@@ -46,7 +46,7 @@ const { adapter } = defineBlokkliFeature({
     'Provides a menu button to revert all changes done on the current entity.',
 })
 
-const { state, $t } = useBlokkli()
+const { state, $t, ui } = useBlokkli()
 const { mutations, canEdit, mutateWithLoadingState } = state
 
 const showConfirm = ref(false)

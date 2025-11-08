@@ -1,6 +1,6 @@
 .bk.bk-tour {
   @apply fixed z-tour-item top-0 left-0 rounded-md;
-  @apply bg-white shadow-xl transition-all duration-200 ease-swing text-yellow-dark;
+  @apply bg-white shadow-xl transition-all duration-200 ease-swing text-yellow-dark pointer-events-auto;
 
   button {
     @apply focus:outline-0 focus:ring-0 focus:border-0;

@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="transform-overlay">
       <TransformDialog
         v-if="openPluginDefinition"

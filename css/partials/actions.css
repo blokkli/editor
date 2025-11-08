@@ -9,11 +9,8 @@
       @apply opacity-0;
     }
   }
-  &.bk-blokkli-item-actions {
-    @apply text-mono-50  select-none text-sm;
-  }
-  .bk-blokkli-item-actions-inner {
-    @apply fixed left-0 p-0 z-actions w-full;
+  &.bk-blokkli-item-actions-inner {
+    @apply fixed left-0 p-0 z-actions w-full text-mono-50  select-none text-sm pointer-events-auto;
     transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
     /* contain: layout style paint; */

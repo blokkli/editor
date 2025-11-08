@@ -1,7 +1,7 @@
 <template>
   <Component :is="tag" @contextmenu.stop.prevent="onContextMenu">
     <slot />
-    <Teleport to="body">
+    <Teleport :to="ui.mainLayoutElement.value">
       <BlokkliTransition name="context-menu">
         <ContextMenuMenu
           v-if="isVisible"

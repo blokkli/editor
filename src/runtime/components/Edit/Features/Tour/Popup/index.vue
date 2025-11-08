@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value">
     <ViewportBlockingRect id="tour-popup" class="bk bk-tour-popup">
       <div class="bk-tour-popup-title">
         <h2>{{ $t('tourLabel', 'Take a tour') }}</h2>
@@ -30,7 +30,7 @@
 import { Icon, ViewportBlockingRect } from '#blokkli/components'
 import { useBlokkli } from '#imports'
 
-const { $t } = useBlokkli()
+const { $t, ui } = useBlokkli()
 
 defineEmits(['start', 'close'])
 </script>

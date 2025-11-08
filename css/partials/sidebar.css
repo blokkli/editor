@@ -7,34 +7,16 @@
 }
 
 .bk-sidebar {
-  @apply fixed bg-white z-sidebar w-sidebar-right;
+  @apply bg-white z-sidebar w-sidebar-right pointer-events-auto;
+
   &.bk-is-right {
     @apply transition-all;
-    box-shadow:
-      1px -0px 2px rgb(20 45 82 / 2%),
-      3px -0px 4px rgb(20 45 82 / 3%),
-      5px -0px 8px rgb(20 45 82 / 4%);
-    @screen lg {
-      right: var(--bk-root-offset-right);
-      box-shadow:
-        -1px -0px 2px rgb(20 45 82 / 2%),
-        -3px -0px 4px rgb(20 45 82 / 3%),
-        -5px -0px 8px rgb(20 45 82 / 4%);
-    }
+    grid-area: sidebar-right;
   }
+
   &.bk-is-left {
     @apply md:w-[400px];
-    left: var(--bk-root-offset-left-add-list);
-    box-shadow:
-      1px -0px 2px rgb(20 45 82 / 2%),
-      3px -0px 4px rgb(20 45 82 / 3%),
-      5px -0px 8px rgb(20 45 82 / 4%);
-  }
-  top: var(--bk-root-offset-top);
-  bottom: 0;
-
-  @screen md {
-    bottom: var(--bk-root-offset-bottom);
+    grid-area: sidebar-left;
   }
 
   &:empty {
@@ -164,19 +146,18 @@ html.bk-is-sidebar-interacting {
   }
 }
 
-.bk-sidebar-tabs {
+.bk.bk-sidebar-tabs {
   @apply relative bg-mono-900 z-sidebar-tabs left-0 w-full flex justify-between flex-row-reverse overflow-auto lg:overflow-visible h-40 lg:h-auto;
+  @apply pointer-events-auto;
   contain: style size;
+  grid-area: right;
 
   > div {
     @apply flex;
   }
 
   @screen lg {
-    @apply fixed top-0;
-    top: 0;
-    bottom: var(--bk-root-offset-bottom);
-    @apply w-50 left-auto right-0 block;
+    @apply block;
 
     > div {
       @apply min-h-[50px] relative block;
@@ -208,6 +189,7 @@ html.bk-is-sidebar-interacting {
     @apply flex flex-row;
     @apply lg:flex-col;
   }
+
   .bk-toolbar-button {
     &:before {
       @apply content-[''] w-0 h-0 border-solid;

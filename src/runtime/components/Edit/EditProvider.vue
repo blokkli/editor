@@ -1,35 +1,42 @@
 <template>
+  <Teleport to="#nuxt-root">
+    <div id="bk-canvas-overlay" class="bk bk-canvas-overlay" />
+  </Teleport>
+
   <Teleport to="body">
     <Transition :name="ui.useAnimations.value ? 'bk-loading' : undefined">
       <Loading v-if="showLoading" screen />
     </Transition>
 
-    <div id="bk-banner-container">
-      <div id="bk-banner-list" class="bk">
-        <Banner
-          v-if="!state.stateAvailable.value"
-          id="state-unavailable"
-          icon="sad"
-          scheme="red"
-          :text="stateNotAvailableText"
-        />
-        <Banner
-          v-if="viewOnlyBanner"
-          id="view-only"
-          :icon="viewOnlyBanner.icon"
-          scheme="yellow"
-          :text="viewOnlyBanner.text"
-        />
+    <div ref="mainLayoutElement" class="bk-main-layout">
+      <Toolbar @loaded="toolbarLoaded = true" />
+      <div ref="viewportElement" class="bk bk-viewport">
+        <Messages />
       </div>
-      <Messages />
+      <Actions v-if="!isInitializing" />
+      <div id="bk-banner-container" class="bk">
+        <div id="bk-banner-list">
+          <Banner
+            v-if="!state.stateAvailable.value"
+            id="state-unavailable"
+            icon="sad"
+            scheme="red"
+            :text="stateNotAvailableText"
+          />
+          <Banner
+            v-if="viewOnlyBanner"
+            id="view-only"
+            :icon="viewOnlyBanner.icon"
+            scheme="yellow"
+            :text="viewOnlyBanner.text"
+          />
+        </div>
+      </div>
+      <Konami />
+      <SystemRequirements />
     </div>
   </Teleport>
-  <Teleport to="#nuxt-root">
-    <div id="bk-canvas-overlay" class="bk bk-canvas-overlay" />
-  </Teleport>
-  <Actions v-if="!isInitializing" />
-  <Toolbar @loaded="toolbarLoaded = true" />
-  <AppMenu v-if="toolbarLoaded" />
+
   <Indicators />
   <Features
     v-if="isReady"
@@ -37,8 +44,6 @@
     @loaded="featuresLoaded = true"
   />
   <AnimationCanvas v-if="!isInitializing" />
-  <Konami />
-  <SystemRequirements />
   <slot
     v-if="!isInitializing"
     :key="definitions.renderKey.value"
@@ -59,6 +64,7 @@ import {
   inject,
   onUnmounted,
   watch,
+  useTemplateRef,
 } from '#imports'
 import type {
   BlokkliApp,
@@ -72,7 +78,6 @@ import Loading from './Loading/index.vue'
 import Messages from './Messages/index.vue'
 import Features from './Features/index.vue'
 import Indicators from './Indicators/index.vue'
-import AppMenu from './AppMenu/index.vue'
 import DraggableList from './DraggableList.vue'
 import AnimationCanvas from './AnimationCanvas/index.vue'
 import SystemRequirements from './SystemRequirements/index.vue'
@@ -140,6 +145,9 @@ defineSlots<{
   default(props: { mutatedEntity: T; key: string }): any
 }>()
 
+const mainLayoutElement = useTemplateRef('mainLayoutElement')
+const viewportElement = useTemplateRef('viewportElement')
+
 const entityContext = computed<EntityContext>(() => {
   return {
     uuid: props.entityUuid,
@@ -186,7 +194,15 @@ const commands = commandsProvider()
 const tour = tourProvider()
 const dropAreas = dropAreasProvider()
 const broadcast = broadcastProvider()
-const ui = uiProvider(props.providerEl, storage, state, context, element)
+const ui = uiProvider(
+  props.providerEl,
+  storage,
+  state,
+  context,
+  element,
+  mainLayoutElement,
+  viewportElement,
+)
 const dom = domProvider(ui, debug, definitions, state, element)
 const theme = themeProvider(element)
 const blocks = blocksProvider(state, dom, context)
@@ -210,7 +226,8 @@ const isReady = computed(
     !isInitializing.value &&
     dom.isReady.value &&
     directive.isReady.value &&
-    toolbarLoaded.value,
+    toolbarLoaded.value &&
+    mainLayoutElement.value,
 )
 
 watch(isReady, (v) => {

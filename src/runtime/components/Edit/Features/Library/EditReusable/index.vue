@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value">
     <Loading v-if="isLoading" />
     <Transition name="bk-library-edit-header">
       <header v-show="isLoaded" class="bk bk-library-edit-overlay-header">
@@ -48,7 +48,7 @@ const props = defineProps<{
   label?: string
 }>()
 
-const { $t, element } = useBlokkli()
+const { $t, element, ui } = useBlokkli()
 const DURATION = 530
 const emit = defineEmits(['submit', 'close'])
 

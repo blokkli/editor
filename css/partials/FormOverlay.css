@@ -10,7 +10,7 @@
 }
 
 .bk-form-overlay {
-  @apply fixed left-0 top-0 w-full h-full z-edit-form;
+  @apply absolute left-0 top-0 w-full h-full z-edit-form pointer-events-auto;
   .bk-form-overlay-background {
     @apply absolute left-0 top-0 w-full h-full mobile-only:bg-black;
   }

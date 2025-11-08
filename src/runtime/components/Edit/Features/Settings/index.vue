@@ -9,7 +9,7 @@
     icon="cog"
     @click="onClick"
   />
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-up">
       <SettingsDialog v-if="showSettings" @cancel="showSettings = false" />
     </BlokkliTransition>
@@ -23,7 +23,7 @@ import SettingsDialog from './Dialog/index.vue'
 import { addElementClasses } from '#blokkli/helpers/addElementClasses'
 import { BlokkliTransition } from '#blokkli/components'
 
-const { $t } = useBlokkli()
+const { ui, $t } = useBlokkli()
 
 const { settings } = defineBlokkliFeature({
   id: 'settings',

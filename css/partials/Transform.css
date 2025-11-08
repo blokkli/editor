@@ -1,5 +1,5 @@
 .bk.bk-transform-overlay {
-  @apply fixed top-0 left-0 size-full z-transform-overlay;
+  @apply absolute top-0 left-0 size-full z-transform-overlay pointer-events-auto;
 
   .bk-transform-overlay-dialog {
     width: 600px;

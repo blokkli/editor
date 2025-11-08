@@ -132,11 +132,12 @@
 }
 
 .bk.bk-add-list {
-  @apply bottom-0 fixed left-0 select-none z-add-list overflow-auto ease-swing transition-all;
-  @apply touch-manipulation;
+  @apply relative select-none z-add-list overflow-auto ease-swing transition-all;
+  @apply touch-manipulation pointer-events-auto;
 
   &.bk-is-vertical {
     @apply w-[70px] lg:overflow-hidden;
+    grid-area: left;
 
     &:after {
       @apply w-70;
@@ -150,7 +151,7 @@
     .bk-list {
       @apply h-full absolute top-0 left-0 w-full flex flex-col;
     }
-    @apply top-50 w-70;
+    @apply w-70;
     #blokkli-add-list-actions {
       @apply border-t border-t-mono-700 pb-5;
     }
@@ -185,6 +186,7 @@
   }
   &.bk-is-horizontal {
     @apply w-full flex lg:py-5 bg-mono-950 overflow-y-hidden lg:overflow-visible;
+    grid-area: bottom;
 
     height: var(--bk-root-offset-bottom);
     #blokkli-add-list-actions {

@@ -9,7 +9,7 @@
     :icon="icon"
     @click="onMenuClick"
   />
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-up">
       <PublishDialog v-if="showDialog" @close="onClose" @submit="onSubmit" />
     </BlokkliTransition>
@@ -51,7 +51,7 @@ const { adapter, settings } = defineBlokkliFeature({
 })
 
 const route = useRoute()
-const { state, $t, broadcast, context, eventBus } = useBlokkli()
+const { state, $t, broadcast, context, eventBus, ui } = useBlokkli()
 const { mutations, canEdit, mutateWithLoadingState } = state
 
 const hasPublishOptions = !!adapter.getPublishOptions

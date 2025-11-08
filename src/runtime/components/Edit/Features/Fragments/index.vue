@@ -18,7 +18,7 @@
     @placed="placedAction = $event"
   />
 
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-in">
       <FragmentsDialog
         v-if="placedAction && adapter.getLibraryItems"
@@ -46,7 +46,7 @@ const { adapter } = defineBlokkliFeature({
   dependencies: ['add-list'],
 })
 
-const { state, $t, types, selection, dom } = useBlokkli()
+const { state, $t, types, selection, dom, ui } = useBlokkli()
 
 const isEnabled = computed<boolean>(() => {
   const item = selection.item.value

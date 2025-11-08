@@ -35,7 +35,7 @@
     @click="showAddComment = !showAddComment"
   />
 
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="caret-tooltip">
       <CommentAddForm
         v-if="showAddComment"
@@ -78,7 +78,7 @@ const { adapter } = defineBlokkliFeature({
   screenshot: 'feature-comments.jpg',
 })
 
-const { eventBus, $t, selection } = useBlokkli()
+const { eventBus, $t, selection, ui } = useBlokkli()
 
 const commentForm = ref<InstanceType<typeof CommentAddForm> | null>(null)
 const showAddComment = ref(false)

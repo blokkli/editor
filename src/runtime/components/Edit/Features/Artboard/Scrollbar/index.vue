@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value" defer>
     <div
       class="bk bk-artboard-scrollbar"
       :class="'bk-orientation-' + orientation"
@@ -13,12 +13,14 @@
 
 <script setup lang="ts">
 import { type Artboard, type PluginScrollbar, scrollbar } from 'artboard-deluxe'
-import { onBeforeUnmount, onMounted, ref } from '#imports'
+import { onBeforeUnmount, onMounted, ref, useBlokkli } from '#imports'
 
 const props = defineProps<{
   artboard: Artboard
   orientation: 'x' | 'y'
 }>()
+
+const { ui } = useBlokkli()
 
 const el = ref<HTMLDivElement>()
 const thumb = ref<HTMLButtonElement>()

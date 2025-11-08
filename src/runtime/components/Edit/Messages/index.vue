@@ -19,7 +19,12 @@ import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { ui } = useBlokkli()
 
-const messages = ref<Message[]>([])
+const messages = ref<Message[]>([
+  // {
+  //   type: 'success',
+  //   message: 'Foobar this is just a message',
+  // },
+])
 
 function removeMessage(index: number) {
   messages.value = messages.value.filter((_v, i) => i !== index)

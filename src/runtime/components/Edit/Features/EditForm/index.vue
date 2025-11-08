@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-in">
       <FormOverlay
         v-if="form"
@@ -38,7 +38,7 @@ const { adapter } = defineBlokkliFeature({
   requiredAdapterMethods: ['formFrameBuilder'],
 })
 
-const { types, state, context, $t, dom, definitions, blocks } = useBlokkli()
+const { types, state, context, $t, dom, definitions, blocks, ui } = useBlokkli()
 
 const form = ref<AdapterFormFrameBuilder | null>(null)
 

@@ -1,9 +1,9 @@
 .bk.bk-menu-overlay {
-  @apply fixed top-0 left-0 w-screen bottom-0 z-menu-overlay;
+  @apply fixed top-0 left-0 w-screen bottom-0 z-menu-overlay pointer-events-auto;
 }
 
 .bk.bk-menu-list {
-  @apply fixed top-0 left-0 bg-white shadow-lg max-w-[480px] lg:min-w-[400px] bottom-0 flex flex-col;
+  @apply fixed top-0 left-0 bg-white shadow-lg max-w-[480px] lg:min-w-[400px] bottom-0 flex flex-col pointer-events-auto;
   @apply z-menu;
   width: calc(100vw - 40px);
 
@@ -115,5 +115,22 @@
   }
   svg {
     @apply text-white;
+  }
+}
+
+.bk.bk-toolbar-menu {
+  @apply relative z-menu h-full pointer-events-auto;
+  grid-area: menu;
+  .bk-toolbar-menu-button {
+    @apply lg:bg-accent-700 w-50 lg:w-70 flex items-center justify-center text-mono-50 h-full focus:outline-none relative z-50 transition;
+    @apply lg:hover:bg-accent-800;
+
+    &.bk-is-active {
+      @apply bg-white text-accent-700;
+    }
+
+    svg {
+      @apply w-[24px] h-[24px] fill-current pointer-events-none;
+    }
   }
 }

@@ -8,7 +8,7 @@
 }
 
 .bk.bk-messages {
-  @apply overflow-hidden;
+  @apply overflow-hidden absolute left-0 w-full z-messages bottom-0 pointer-events-auto;
   .bk-message {
     @apply relative flex items-center flex-col md:flex-row;
 

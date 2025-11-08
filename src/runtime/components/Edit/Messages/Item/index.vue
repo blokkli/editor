@@ -26,7 +26,7 @@
     </div>
     <Teleport
       v-if="additional && additional instanceof Error && showDetails"
-      to="body"
+      :to="ui.mainLayoutElement.value"
     >
       <DialogModal
         title="Error Details"
@@ -48,7 +48,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount, computed, watch } from '#imports'
+import {
+  ref,
+  onMounted,
+  onBeforeUnmount,
+  computed,
+  watch,
+  useBlokkli,
+} from '#imports'
 import { Icon, DialogModal } from '#blokkli/components'
 
 const props = defineProps<{
@@ -56,6 +63,8 @@ const props = defineProps<{
   message: string
   additional?: string | Error | unknown
 }>()
+
+const { ui } = useBlokkli()
 
 const emit = defineEmits(['close'])
 const hasTimer = ref(true)

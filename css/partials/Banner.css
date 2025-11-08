@@ -1,6 +1,6 @@
 .bk {
   .bk-banner {
-    @apply bg-scheme-normal text-scheme-text text-xs md:text-base mb-10;
+    @apply bg-scheme-normal text-scheme-text text-xs md:text-base mx-10 mb-10;
     @apply rounded-md;
     @apply p-10 order-10 shadow-xl overflow-hidden;
     @apply border border-scheme-dark/40;
@@ -35,15 +35,10 @@
 }
 
 #bk-banner-list {
-  @apply grid px-10;
+  @apply grid gap-10;
 }
 
 #bk-banner-container {
-  @apply fixed z-translations-banner-mobile lg:z-translations-banner-desktop grid;
-  left: var(--bk-root-offset-left);
-  bottom: var(--bk-root-offset-bottom);
-  right: calc(var(--bk-root-offset-right) + var(--bk-artboard-scrollbar-size));
-  html.bk-has-sidebar-right & {
-    right: calc(var(--bk-root-offset-right) + var(--bk-sidebar-width-right));
-  }
+  @apply relative z-translations-banner-mobile lg:z-translations-banner-desktop grid pointer-events-auto;
+  grid-area: banner;
 }

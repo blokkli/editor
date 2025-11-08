@@ -1,87 +1,76 @@
 <template>
-  <Teleport to="body">
-    <div class="bk bk-blokkli-item-actions bk-control" @click.stop>
-      <div
-        v-show="
-          !selection.isDragging.value &&
-          !selection.editableActive.value &&
-          !ui.isAnimating.value &&
-          !ui.hasTransformOverlayOpen.value &&
-          hasAnythingSelected &&
-          shouldRender &&
-          !ui.hasTooltipOpen.value
-        "
-        ref="el"
-        class="bk-blokkli-item-actions-inner"
-      >
-        <div
-          id="bk-blokkli-item-actions-controls"
-          ref="controlsEl"
-          class="bk-blokkli-item-actions-controls"
+  <div
+    ref="el"
+    :style="{
+      visibility: isVisible ? 'visible' : 'hidden',
+    }"
+    class="bk bk-blokkli-item-actions-inner"
+    @click.stop
+  >
+    <div
+      id="bk-blokkli-item-actions-controls"
+      ref="controlsEl"
+      class="bk-blokkli-item-actions-controls"
+      :class="{
+        'bk-is-locked': ui.isTransforming.value,
+      }"
+    >
+      <div id="bk-blokkli-item-actions-title">
+        <button
+          class="bk-blokkli-item-actions-type-button"
+          tabindex="-1"
+          :disabled="!shouldRenderButton"
           :class="{
-            'bk-is-locked': ui.isTransforming.value,
+            'is-open': showDropdown,
+            'is-interactive': shouldRenderButton,
+            'bk-is-reusable': itemBundle?.id === 'from_library',
+            'bk-is-fragment': itemBundle?.id === 'blokkli_fragment',
           }"
+          @click.prevent="showDropdown = !showDropdown"
         >
-          <div id="bk-blokkli-item-actions-title">
-            <button
-              class="bk-blokkli-item-actions-type-button"
-              tabindex="-1"
-              :disabled="!shouldRenderButton"
-              :class="{
-                'is-open': showDropdown,
-                'is-interactive': shouldRenderButton,
-                'bk-is-reusable': itemBundle?.id === 'from_library',
-                'bk-is-fragment': itemBundle?.id === 'blokkli_fragment',
-              }"
-              @click.prevent="showDropdown = !showDropdown"
-            >
-              <div v-if="shouldRenderButton" class="bk-tooltip">
-                {{ $t('actionsDropdownToolip', 'Further actions') }}
-              </div>
-              <div
-                v-show="!hasSelectedHost"
-                class="bk-blokkli-item-actions-title-icon"
-              >
-                <Icon v-if="ui.isTransforming.value" name="loader" />
-                <ItemIcon v-else-if="bundleIcon" :bundle="bundleIcon" />
-                <Icon v-else name="selection" />
-                <div
-                  v-if="itemBundle?.id === 'from_library'"
-                  class="bk-blokkli-item-actions-title-icon-reusable"
-                >
-                  <Icon name="reusable" />
-                </div>
-              </div>
-              <span class="bk-blokkli-item-actions-title-label">{{
-                title
-              }}</span>
-              <span
-                v-if="selection.items.value.length > 1"
-                class="bk-blokkli-item-actions-title-count"
-                >{{ selection.items.value.length }}</span
-              >
-              <span
-                v-show="selectedIsNew"
-                class="bk-blokkli-item-actions-title-pill"
-                >{{ $t('selectedIsNew', 'New') }}</span
-              >
-              <Icon v-if="shouldRenderButton" name="caret" class="bk-caret" />
-            </button>
-            <EditActionsItemDropdown
-              v-if="showDropdown && editingEnabled"
-              @close="showDropdown = false"
-            />
+          <div v-if="shouldRenderButton" class="bk-tooltip">
+            {{ $t('actionsDropdownToolip', 'Further actions') }}
           </div>
-
           <div
-            v-show="!selection.hasHostSelected.value"
-            id="bk-blokkli-item-actions"
-            class="bk-blokkli-item-actions-buttons"
-          />
-        </div>
+            v-show="!hasSelectedHost"
+            class="bk-blokkli-item-actions-title-icon"
+          >
+            <Icon v-if="ui.isTransforming.value" name="loader" />
+            <ItemIcon v-else-if="bundleIcon" :bundle="bundleIcon" />
+            <Icon v-else name="selection" />
+            <div
+              v-if="itemBundle?.id === 'from_library'"
+              class="bk-blokkli-item-actions-title-icon-reusable"
+            >
+              <Icon name="reusable" />
+            </div>
+          </div>
+          <span class="bk-blokkli-item-actions-title-label">{{ title }}</span>
+          <span
+            v-if="selection.items.value.length > 1"
+            class="bk-blokkli-item-actions-title-count"
+            >{{ selection.items.value.length }}</span
+          >
+          <span
+            v-show="selectedIsNew"
+            class="bk-blokkli-item-actions-title-pill"
+            >{{ $t('selectedIsNew', 'New') }}</span
+          >
+          <Icon v-if="shouldRenderButton" name="caret" class="bk-caret" />
+        </button>
+        <EditActionsItemDropdown
+          v-if="showDropdown && editingEnabled"
+          @close="showDropdown = false"
+        />
       </div>
+
+      <div
+        v-show="!selection.hasHostSelected.value"
+        id="bk-blokkli-item-actions"
+        class="bk-blokkli-item-actions-buttons"
+      />
     </div>
-  </Teleport>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -118,6 +107,18 @@ const showDropdown = ref(false)
 const hasAnythingSelected = computed(
   () => selection.hasHostSelected.value || !!selection.items.value.length,
 )
+
+const isVisible = computed<boolean>(() => {
+  return (
+    !selection.isDragging.value &&
+    !selection.editableActive.value &&
+    !ui.isAnimating.value &&
+    !ui.hasTransformOverlayOpen.value &&
+    hasAnythingSelected.value &&
+    shouldRender.value &&
+    !ui.hasTooltipOpen.value
+  )
+})
 
 watch(selection.items, () => {
   showDropdown.value = false

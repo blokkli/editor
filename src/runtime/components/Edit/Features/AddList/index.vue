@@ -17,7 +17,7 @@
       </div>
     </div>
   </PluginSidebar>
-  <Teleport v-else-if="shouldRender" to="body">
+  <Teleport v-else-if="shouldRender" :to="ui.mainLayoutElement.value">
     <div
       ref="wrapper"
       class="bk bk-add-list bk-control"

@@ -6,7 +6,7 @@
   }
 }
 .bk-dialog {
-  @apply fixed top-0 left-0 w-screen bottom-0  z-dialog lg:p-15;
+  @apply fixed top-0 left-0 w-screen bottom-0  z-dialog lg:p-15 pointer-events-auto;
   @apply flex items-center justify-center;
 
   .bk-dialog-inner {

@@ -39,7 +39,7 @@
     @placed="placedAction = $event"
   />
 
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-up">
       <ReusableDialog
         v-if="showReusableDialog && selection.item.value"
@@ -51,7 +51,7 @@
     </BlokkliTransition>
   </Teleport>
 
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-in">
       <LibraryDialog
         v-if="placedAction && adapter.getLibraryItems"
@@ -90,7 +90,7 @@ const { adapter } = defineBlokkliFeature({
   dependencies: ['add-list'],
 })
 
-const { selection, state, types, $t, eventBus, definitions } = useBlokkli()
+const { selection, state, types, $t, eventBus, definitions, ui } = useBlokkli()
 const showReusableDialog = ref(false)
 
 async function selectNewlyAdded(cb: () => Promise<boolean>): Promise<void> {

@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="caret-tooltip" :enabled="hasTransition">
       <Overlay
         v-if="selectedEditable"
@@ -44,7 +44,7 @@ type Editable = {
   value?: string
 }
 
-const { selection, adapter, types, $t, state, directive, blocks, context } =
+const { selection, adapter, types, $t, state, directive, blocks, context, ui } =
   useBlokkli()
 const selectedEditable = ref<Editable | null>(null)
 const hasTransition = ref(false)

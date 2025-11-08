@@ -15,7 +15,7 @@
     @click="qrCodeVisible = true"
   />
 
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-up">
       <DialogModal
         v-if="qrCodeVisible"

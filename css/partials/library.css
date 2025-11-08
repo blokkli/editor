@@ -86,7 +86,7 @@
 }
 
 .bk.bk-library-edit-overlay {
-  @apply fixed top-50 left-0 w-screen bottom-0 flex flex-col z-library-edit-dialog;
+  @apply fixed top-50 left-0 w-screen bottom-0 flex flex-col z-library-edit-dialog pointer-events-auto;
 
   iframe {
     @apply absolute top-0 left-0 w-full h-full;
@@ -96,7 +96,7 @@
 .bk.bk-library-edit-overlay-header {
   @apply h-50 bg-lime-normal;
   @apply flex items-center;
-  @apply fixed top-0 left-0 w-full z-library-edit-dialog;
+  @apply fixed top-0 left-0 w-full z-library-edit-dialog pointer-events-auto;
 
   h2 {
     @apply font-bold text-black/60 text-base leading-none px-25;

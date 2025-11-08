@@ -206,18 +206,6 @@ html {
   }
 }
 
-.bk.bk-owner-indicator {
-  @apply fixed bottom-0 right-0 bg-red-light z-messages px-20 text-red-normal font-medium text-lg flex items-center;
-  left: var(--bk-root-offset-left);
-  right: var(--bk-root-offset-right);
-  min-height: 90px;
-  @apply border-t border-t-red-normal/40;
-
-  .bk-button {
-    @apply ml-auto;
-  }
-}
-
 .bk-qr-code {
   canvas {
     @apply !w-full !h-auto aspect-square;
@@ -404,4 +392,21 @@ html.bk-hide-non-editable {
 
 .bk.bk-canvas-overlay {
   @apply fixed top-0 left-0 size-full z-canvas-overlay;
+}
+
+.bk-main-layout {
+  @apply fixed top-0 left-0 w-screen h-screen z-main-layout grid pointer-events-none;
+
+  grid-template-areas:
+    'toolbar toolbar      toolbar  toolbar     toolbar       right'
+    'left    sidebar-left viewport scrollbar-y sidebar-right right'
+    'left    sidebar-left banner   scrollbar-y sidebar-right right'
+    'bottom  bottom       bottom   bottom      bottom        bottom';
+  grid-template-columns: auto auto 1fr 16px auto 50px;
+  grid-template-rows: 50px 1fr auto auto;
+}
+
+.bk-viewport {
+  @apply relative;
+  grid-area: viewport;
 }

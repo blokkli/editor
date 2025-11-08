@@ -1,5 +1,5 @@
 <template>
-  <Teleport v-if="activeItem" to="body">
+  <Teleport v-if="activeItem" :to="ui.mainLayoutElement.value">
     <div class="bk bk-tour" :style="tooltipStyle">
       <div class="bk-tour-inner">
         <div class="bk-tour-title">

@@ -23,7 +23,7 @@
       </div>
     </template>
   </PluginItemAction>
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-up">
       <SchedulerDialog
         v-if="isVisible"
@@ -50,7 +50,7 @@ defineBlokkliFeature({
   requiredAdapterMethods: ['setBlockScheduleDate'],
 })
 
-const { $t, state, selection, types } = useBlokkli()
+const { $t, state, selection, types, ui } = useBlokkli()
 
 const bundlesWithPublish = computed(() =>
   types.generallyAvailableBundles

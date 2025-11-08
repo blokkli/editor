@@ -2,7 +2,7 @@
   --bk-gap: 15px;
   --bk-caret-size: 10px;
 
-  @apply fixed lg:absolute left-0 z-selection-add will-change-transform bottom-50 lg:bottom-auto lg:top-0;
+  @apply fixed lg:absolute left-0 z-selection-add will-change-transform bottom-50 lg:bottom-auto lg:top-0 pointer-events-auto;
 
   &:before,
   &:after {

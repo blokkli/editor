@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value">
     <div class="bk">
       <BlokkliTransition name="command-palette">
         <Palette v-if="isVisible" @close="isVisible = false" />
@@ -39,7 +39,7 @@ defineBlokkliFeature({
   viewports: ['desktop'],
 })
 
-const { $t } = useBlokkli()
+const { $t, ui } = useBlokkli()
 
 const isVisible = ref(false)
 

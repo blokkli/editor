@@ -1,31 +1,19 @@
+.bk.bk-toolbar {
+  @apply relative z-toolbar;
+  @apply select-none;
+  @apply text-base flex bg-mono-900 pointer-events-auto;
+  contain: style size;
+  grid-area: toolbar;
+
+  .bk-toolbar-button {
+    .bk-tooltip {
+      @apply absolute top-full left-0 mt-10;
+      min-width: calc(100% - 10px);
+    }
+  }
+}
+
 .bk {
-  .bk-toolbar {
-    @apply relative top-0 left-0 right-0 z-toolbar lg:right-50 lg:border-r lg:border-r-mono-700 pt-100 lg:pt-0;
-    @apply lg:bg-mono-900;
-    @apply select-none;
-    @apply h-[140px] text-base flex;
-    @apply lg:fixed;
-    contain: style size;
-    @screen lg {
-      @apply h-50;
-    }
-
-    .bk-toolbar-button {
-      .bk-tooltip {
-        @apply absolute top-full left-0 mt-10;
-        min-width: calc(100% - 10px);
-      }
-    }
-  }
-
-  &.bk-top {
-    @apply fixed -top-100 left-0 w-full lg:static z-toolbar lg:z-auto lg:top-0;
-    @apply bg-mono-950/90 backdrop-blur-lg;
-    @screen lg {
-      backdrop-filter: none;
-    }
-  }
-
   .bk-tooltip {
     @apply bg-mono-800/90 py-[10px] text-white font-bold text-sm rounded select-none pointer-events-none hidden items-center justify-between px-10 leading-none whitespace-nowrap min-h-[40px] font-sans;
     @screen lg {
@@ -34,27 +22,6 @@
     .bk-shortcut {
       @apply ml-5 my-[-2px];
     }
-  }
-
-  .bk-toolbar-menu {
-    @apply relative z-menu h-full;
-  }
-
-  .bk-toolbar-menu-button {
-    @apply lg:bg-accent-700 w-50 lg:w-70 flex items-center justify-center text-mono-50 h-full focus:outline-none relative z-50 transition;
-    @apply lg:hover:bg-accent-800;
-
-    &.bk-is-active {
-      @apply bg-white text-accent-700;
-    }
-
-    svg {
-      @apply w-[24px] h-[24px] fill-current pointer-events-none;
-    }
-  }
-
-  .bk-toolbar-area.bk-is-menu + .bk-toolbar-container .bk-tooltip {
-    @apply left-3;
   }
 
   .bk-toolbar-container {

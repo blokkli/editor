@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="body">
+  <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="touch-bar">
       <Bar
         v-if="
@@ -26,7 +26,7 @@ import { useBlokkli, defineBlokkliFeature } from '#imports'
 import { BlokkliTransition } from '#blokkli/components'
 import Bar from './Bar/index.vue'
 
-const { eventBus, selection, $t } = useBlokkli()
+const { eventBus, selection, $t, ui } = useBlokkli()
 
 defineBlokkliFeature({
   id: 'touch-action-bar',
