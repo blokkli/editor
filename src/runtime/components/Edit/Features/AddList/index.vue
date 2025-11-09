@@ -10,9 +10,7 @@
       <div
         class="bk-add-list-inner"
         :class="{
-          'bk-is-active':
-            (isActive || hasContextMenuOpen || DEBUG) &&
-            !selection.isDragging.value,
+          'bk-is-active': isActive,
         }"
       >
         <AddListBlocks />
@@ -21,7 +19,7 @@
     </div>
     <PluginTourItem
       id="add-blocks"
-      selector=".bk-list"
+      :element="wrapper"
       :title="sidebarTitle"
       :text="tourText"
     />
@@ -70,7 +68,7 @@ function buildItemAction(
   }
 }
 
-const { $t, ui, selection, state } = useBlokkli()
+const { $t, ui, selection, state, tour } = useBlokkli()
 
 const shouldRender = computed(
   () => state.canEdit.value && state.editMode.value === 'editing',
@@ -81,19 +79,29 @@ const hasContextMenuOpen = computed(() =>
 )
 
 const wrapper = ref<HTMLDivElement | null>(null)
-const isActive = ref(false)
+const isHovered = ref(false)
 const DEBUG = false
 let mouseTimeout: any = null
+
+const isActive = computed(() => {
+  return (
+    (isHovered.value ||
+      hasContextMenuOpen.value ||
+      DEBUG ||
+      tour.isTouring.value) &&
+    !selection.isDragging.value
+  )
+})
 
 function onMouseEnter() {
   clearTimeout(mouseTimeout)
   mouseTimeout = setTimeout(() => {
-    isActive.value = true
+    isHovered.value = true
   }, 200)
 }
 function onMouseLeave() {
   clearTimeout(mouseTimeout)
-  isActive.value = false
+  isHovered.value = false
 }
 
 const onWheel = (e: WheelEvent) => {

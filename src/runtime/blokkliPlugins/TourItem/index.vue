@@ -13,15 +13,16 @@ const props = defineProps<{
   title: string
   text: string
   selector?: string
+  element?: HTMLElement | null
 }>()
 
-const { element } = useBlokkli()
+const { element: elementProvider } = useBlokkli()
 
-const findElement = (
+const findInstanceElement = (
   el: RendererNode | null | undefined,
 ): HTMLElement | undefined => {
   if (el instanceof Text) {
-    return findElement(el.nextElementSibling)
+    return findInstanceElement(el.nextElementSibling)
   } else if (el instanceof HTMLElement) {
     return el
   }
@@ -29,23 +30,32 @@ const findElement = (
 
 const instance = getCurrentInstance()
 
+function getElement() {
+  if (props.element) {
+    return props.element
+  }
+  if (props.selector) {
+    const match = elementProvider.query(
+      document.documentElement,
+      props.selector,
+      `TourItem Plugin: ${props.id}`,
+    )
+
+    if (match) {
+      return match
+    }
+  }
+
+  return findInstanceElement(instance?.vnode.el)
+}
+
 defineTourItem(() => {
   return {
     id: props.id,
     title: props.title,
     text: props.text,
     element: () => {
-      const provided = props.selector
-        ? element.query(
-            document.documentElement,
-            props.selector,
-            `TourItem Plugin: ${props.id}`,
-          )
-        : undefined
-      const el = provided || findElement(instance?.vnode.el)
-      if (el instanceof HTMLElement) {
-        return el
-      }
+      return getElement()
     },
   }
 })
