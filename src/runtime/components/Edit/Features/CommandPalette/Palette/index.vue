@@ -71,7 +71,7 @@ function onFocus(index: number) {
 const items = computed<Array<Command & { _id: number }>>(() => {
   return [
     ...commands.getCommands(),
-    ...plugins.getMenuButtons().map<Command>((plugin) => {
+    ...plugins.get('menuButton').map<Command>((plugin) => {
       return {
         id: 'menu-button:' + plugin.id,
         label: plugin.title,

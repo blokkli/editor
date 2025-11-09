@@ -63,7 +63,7 @@ function closeMenu() {
   ui.closeDialog(DIALOG_MENU)
 }
 
-const allButtons = computed(() => plugins.getMenuButtons())
+const allButtons = computed(() => plugins.get('menuButton'))
 
 const primaryButtons = computed(() => {
   return allButtons.value

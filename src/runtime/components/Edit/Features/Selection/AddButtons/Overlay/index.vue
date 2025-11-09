@@ -87,7 +87,7 @@ const items = computed<Item[]>(() => {
 })
 
 const actions = computed<AddAction[]>(() => {
-  return plugins.getAddActions().filter((action) => {
+  return plugins.get('addAction').filter((action) => {
     if (!action.itemBundle) {
       return true
     }

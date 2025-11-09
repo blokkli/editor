@@ -6,6 +6,7 @@
       </BlokkliTransition>
     </div>
   </Teleport>
+
   <PluginToolbarButton
     id="command_palette"
     :title="label"

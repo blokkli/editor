@@ -7,10 +7,10 @@ export default function (
   const { plugins } = useBlokkli()
 
   onMounted(() => {
-    plugins.addItemDropdownAction(cb)
+    plugins.add('itemDropdownAction', cb)
   })
 
   onBeforeUnmount(() => {
-    plugins.removeItemDropdownAction(cb)
+    plugins.remove('itemDropdownAction', cb)
   })
 }

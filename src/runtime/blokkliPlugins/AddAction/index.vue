@@ -83,11 +83,11 @@ function addActionFunction(): AddAction {
 }
 
 onMounted(() => {
-  plugins.addAddAction(addActionFunction)
+  plugins.add('addAction', addActionFunction)
 })
 
 onBeforeUnmount(() => {
-  plugins.removeAddAction(addActionFunction)
+  plugins.remove('addAction', addActionFunction)
 })
 </script>
 

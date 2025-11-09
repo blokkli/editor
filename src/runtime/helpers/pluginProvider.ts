@@ -1,5 +1,6 @@
 import type { AddAction } from '#blokkli/types'
 import type { BlokkliIcon } from '#blokkli-build/icons'
+import { ref } from '#imports'
 
 type PluginAddFunction<T> = () => T | T[] | undefined
 type AddActionFunction = PluginAddFunction<AddAction>
@@ -32,131 +33,108 @@ export type MenuButtonPlugin = {
 
 type MenuButtonFunction = PluginAddFunction<MenuButtonPlugin>
 
+// Type mapping for generic plugin methods
+type PluginFunctionMap = {
+  addAction: AddActionFunction
+  itemDropdownAction: ItemDropdownActionFunction
+  menuButton: MenuButtonFunction
+}
+
+type PluginDataMap = {
+  addAction: AddAction
+  itemDropdownAction: ItemDropdownAction
+  menuButton: MenuButtonPlugin
+}
+
 export type PluginProvider = {
-  addAddAction: (fn: AddActionFunction) => void
-  removeAddAction: (fn: AddActionFunction) => void
-  getAddActions: () => AddAction[]
-  addItemDropdownAction: (fn: ItemDropdownActionFunction) => void
-  removeItemDropdownAction: (fn: ItemDropdownActionFunction) => void
-  getItemDropdownActions: () => ItemDropdownAction[]
-  addMenuButton: (fn: MenuButtonFunction) => void
-  removeMenuButton: (fn: MenuButtonFunction) => void
-  getMenuButtons: () => MenuButtonPlugin[]
+  add<T extends keyof PluginFunctionMap>(
+    type: T,
+    fn: PluginFunctionMap[T],
+  ): void
+  remove<T extends keyof PluginFunctionMap>(
+    type: T,
+    fn: PluginFunctionMap[T],
+  ): void
+  get<T extends keyof PluginDataMap>(type: T): PluginDataMap[T][]
 }
 
 export default function (): PluginProvider {
-  let addActions: AddActionFunction[] = []
-  let itemDropdownActions: ItemDropdownActionFunction[] = []
-  let menuButtons: MenuButtonFunction[] = []
+  const addActionPlugins = ref<AddActionFunction[]>([])
+  const itemDropdownActionPlugins = ref<ItemDropdownActionFunction[]>([])
+  const menuButtonPlugins = ref<MenuButtonFunction[]>([])
 
-  function addAddAction(fn: AddActionFunction) {
-    addActions.push(fn)
+  function add<T extends keyof PluginFunctionMap>(
+    type: T,
+    fn: PluginFunctionMap[T],
+  ): void {
+    if (type === 'addAction') {
+      addActionPlugins.value.push(fn as AddActionFunction)
+    } else if (type === 'itemDropdownAction') {
+      itemDropdownActionPlugins.value.push(fn as ItemDropdownActionFunction)
+    } else if (type === 'menuButton') {
+      menuButtonPlugins.value.push(fn as MenuButtonFunction)
+    }
   }
 
-  function removeAddAction(fn: AddActionFunction) {
-    addActions = addActions.filter((v) => v !== fn)
+  function remove<T extends keyof PluginFunctionMap>(
+    type: T,
+    fn: PluginFunctionMap[T],
+  ): void {
+    if (type === 'addAction') {
+      addActionPlugins.value = addActionPlugins.value.filter(
+        (v) => v !== fn,
+      ) as AddActionFunction[]
+    } else if (type === 'itemDropdownAction') {
+      itemDropdownActionPlugins.value = itemDropdownActionPlugins.value.filter(
+        (v) => v !== fn,
+      ) as ItemDropdownActionFunction[]
+    } else if (type === 'menuButton') {
+      menuButtonPlugins.value = menuButtonPlugins.value.filter(
+        (v) => v !== fn,
+      ) as MenuButtonFunction[]
+    }
   }
 
-  function getAddActions(): AddAction[] {
-    const actions: AddAction[] = []
+  function get<T extends keyof PluginDataMap>(type: T): PluginDataMap[T][] {
+    let storage: PluginAddFunction<any>[]
 
-    for (let i = 0; i < addActions.length; i++) {
-      const callback = addActions[i]
+    if (type === 'addAction') {
+      storage = addActionPlugins.value
+    } else if (type === 'itemDropdownAction') {
+      storage = itemDropdownActionPlugins.value
+    } else if (type === 'menuButton') {
+      storage = menuButtonPlugins.value
+    } else {
+      return []
+    }
+
+    const result: any[] = []
+
+    for (let i = 0; i < storage.length; i++) {
+      const callback = storage[i]
       if (!callback) {
         continue
       }
 
-      const result = callback()
+      const callbackResult = callback()
 
-      if (!result) {
+      if (!callbackResult) {
         continue
       }
 
-      if (Array.isArray(result)) {
-        actions.push(...result)
+      if (Array.isArray(callbackResult)) {
+        result.push(...callbackResult)
       } else {
-        actions.push(result)
+        result.push(callbackResult)
       }
     }
 
-    return actions
-  }
-
-  function addItemDropdownAction(fn: ItemDropdownActionFunction) {
-    itemDropdownActions.push(fn)
-  }
-
-  function removeItemDropdownAction(fn: ItemDropdownActionFunction) {
-    itemDropdownActions = itemDropdownActions.filter((v) => v !== fn)
-  }
-
-  function getItemDropdownActions(): ItemDropdownAction[] {
-    const actions: ItemDropdownAction[] = []
-
-    for (let i = 0; i < itemDropdownActions.length; i++) {
-      const callback = itemDropdownActions[i]
-      if (!callback) {
-        continue
-      }
-
-      const result = callback()
-
-      if (!result) {
-        continue
-      }
-
-      if (Array.isArray(result)) {
-        actions.push(...result)
-      } else {
-        actions.push(result)
-      }
-    }
-
-    return actions
-  }
-
-  function addMenuButton(fn: MenuButtonFunction) {
-    menuButtons.push(fn)
-  }
-
-  function removeMenuButton(fn: MenuButtonFunction) {
-    menuButtons = menuButtons.filter((v) => v !== fn)
-  }
-
-  function getMenuButtons(): MenuButtonPlugin[] {
-    const buttons: MenuButtonPlugin[] = []
-
-    for (let i = 0; i < menuButtons.length; i++) {
-      const callback = menuButtons[i]
-      if (!callback) {
-        continue
-      }
-
-      const result = callback()
-
-      if (!result) {
-        continue
-      }
-
-      if (Array.isArray(result)) {
-        buttons.push(...result)
-      } else {
-        buttons.push(result)
-      }
-    }
-
-    return buttons
+    return result as PluginDataMap[T][]
   }
 
   return {
-    addAddAction,
-    removeAddAction,
-    getAddActions,
-    addItemDropdownAction,
-    removeItemDropdownAction,
-    getItemDropdownActions,
-    addMenuButton,
-    removeMenuButton,
-    getMenuButtons,
+    add,
+    remove,
+    get,
   }
 }

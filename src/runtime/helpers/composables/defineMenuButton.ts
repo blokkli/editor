@@ -7,10 +7,10 @@ export default function (
   const { plugins } = useBlokkli()
 
   onMounted(() => {
-    plugins.addMenuButton(cb)
+    plugins.add('menuButton', cb)
   })
 
   onBeforeUnmount(() => {
-    plugins.removeMenuButton(cb)
+    plugins.remove('menuButton', cb)
   })
 }

@@ -46,7 +46,7 @@ type ActionGroup = {
 }
 
 function getGroupedActions(): ActionGroup[] {
-  const actions = plugins.getItemDropdownActions()
+  const actions = plugins.get('itemDropdownAction')
 
   // Group actions by their group property
   const groups = new Map<string, ActionGroup>()
