@@ -58,6 +58,7 @@ const props = defineProps<{
    * The weight, used for positioning the button.
    */
   weight?: number | string
+  noCommand?: boolean
 }>()
 
 const { debug } = useBlokkli()
@@ -78,6 +79,9 @@ function onClick() {
 }
 
 defineCommands(() => {
+  if (props.noCommand) {
+    return
+  }
   return {
     id: 'plugin:toolbar_button:' + props.id,
     label: props.title,

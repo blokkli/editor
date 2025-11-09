@@ -1,8 +1,6 @@
 <template>
   <button
     ref="buttonEl"
-    :data-command-id="item.id"
-    :data-command-visible="true"
     class="bk-command"
     :class="{ 'bk-is-focused': isFocused }"
     @mouseenter="$emit('focus', index)"
@@ -22,8 +20,14 @@ import { watch, useBlokkli, useTemplateRef } from '#imports'
 import { Icon, ItemIcon, Highlight } from '#blokkli/components'
 import type { Command, CommandGroup } from '#blokkli/types'
 
+export type MappedCommandItem = Command & {
+  positions?: number[]
+  score?: number
+  visible?: boolean
+}
+
 const props = defineProps<{
-  item: Command & { _id: number; positions?: number[] }
+  item: MappedCommandItem
   index: number
   isFocused: boolean
 }>()

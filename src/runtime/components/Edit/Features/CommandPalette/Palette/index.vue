@@ -21,11 +21,12 @@
       <div class="bk-command-palette-results-list">
         <div>
           <Item
-            v-for="(item, index) in visibleCommands"
+            v-for="item in allCommands"
+            v-show="item.visible"
             :key="item.id"
             :item="item"
-            :index="index"
-            :is-focused="focusedIndex === index"
+            :index="getVisibleIndex(item.id)"
+            :is-focused="focusedIndex === getVisibleIndex(item.id)"
             @focus="onFocus"
             @select="onSelect"
           />
@@ -50,11 +51,27 @@ import { Icon, ScrollBoundary } from '#blokkli/components'
 import type { Command } from '#blokkli/types'
 import { Fzf } from 'fzf'
 import { modulo } from '#blokkli/helpers'
-import Item from './Item/index.vue'
-
-const { commands, $t, selection, plugins } = useBlokkli()
+import Item, { type MappedCommandItem } from './Item/index.vue'
 
 const emit = defineEmits(['close'])
+
+const { commands, $t, selection, plugins, storage } = useBlokkli()
+
+/**
+ * Keep track how often a command was used.
+ */
+const frequency = storage.use<Record<string, number>>(
+  'commandPaletteFrequency',
+  {},
+)
+
+function incrementFrequency(id: string) {
+  const currentCount = frequency.value[id] ?? 0
+  frequency.value = {
+    ...frequency.value,
+    [id]: currentCount + 1,
+  }
+}
 
 const inputEl = useTemplateRef('inputEl')
 const text = ref('')
@@ -87,7 +104,13 @@ const items = computed<Array<Command & { _id: number }>>(() => {
       return {
         ...doc,
         _id: index,
+        visible: true,
       }
+    })
+    .sort((a, b) => {
+      const freqA = frequency.value[a.id] ?? 0
+      const freqB = frequency.value[b.id] ?? 0
+      return freqB - freqA
     })
 })
 
@@ -95,26 +118,28 @@ const fzf = new Fzf(items.value, {
   selector: (item) => item.label,
 })
 
-const visibleIds = computed<{ id: number; positions: number[] }[] | undefined>(
-  () => {
-    if (!text.value) {
-      return undefined
+const visibleIds = computed<
+  { id: number; positions: number[]; score: number }[] | undefined
+>(() => {
+  if (!text.value) {
+    return undefined
+  }
+
+  const results = fzf.find(text.value)
+  return results.map((v) => {
+    return {
+      id: v.item._id,
+      positions: [...v.positions],
+      score: v.score,
     }
+  })
+})
 
-    const results = fzf.find(text.value)
-    return results
-      .map((v) => {
-        return {
-          id: v.item._id,
-          positions: [...v.positions],
-          score: v.score,
-        }
-      })
-      .sort((a, b) => b.score - a.score)
-  },
-)
+const allCommands = computed<MappedCommandItem[]>(() => {
+  if (!text.value) {
+    return items.value
+  }
 
-const visibleCommands = computed(() => {
   return items.value
     .map((v) => {
       const found = visibleIds.value?.find((w) => w.id === v._id)
@@ -122,10 +147,29 @@ const visibleCommands = computed(() => {
         ...v,
         visible: visibleIds.value === undefined || !!found,
         positions: found?.positions,
+        score: found?.score ?? 0,
       }
     })
-    .filter((v) => v.visible)
+    .sort((a, b) => {
+      // Primary sort by search score
+      const scoreDiff = b.score - a.score
+      if (scoreDiff !== 0) {
+        return scoreDiff
+      }
+      // Secondary sort by frequency (tiebreaker)
+      const freqA = frequency.value[a.id] ?? 0
+      const freqB = frequency.value[b.id] ?? 0
+      return freqB - freqA
+    })
 })
+
+const visibleCommands = computed<MappedCommandItem[]>(() => {
+  return allCommands.value.filter((v) => v.visible !== false)
+})
+
+const getVisibleIndex = (id: string): number => {
+  return visibleCommands.value.findIndex((v) => v.id === id)
+}
 
 watch(text, () => {
   nextTick(() => {
@@ -162,6 +206,7 @@ const focusNext = () => {
 const onSelect = (id: string) => {
   const command = items.value.find((v) => v.id === id)
   if (command) {
+    incrementFrequency(id)
     command.callback()
     emit('close')
   }

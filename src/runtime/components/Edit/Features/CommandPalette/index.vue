@@ -12,6 +12,7 @@
     :title="label"
     meta
     key-code="K"
+    no-command
     region="before-sidebar"
     :tour-text="
       $t(
