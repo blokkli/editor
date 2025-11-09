@@ -17,14 +17,12 @@
     >
       <div id="bk-blokkli-item-actions-title">
         <button
-          class="bk-blokkli-item-actions-type-button"
+          class="bk-blokkli-item-actions-type-button bk-item-icon-hover-parent"
           tabindex="-1"
           :disabled="!shouldRenderButton"
           :class="{
             'is-open': showDropdown,
             'is-interactive': shouldRenderButton,
-            'bk-is-reusable': itemBundle?.id === 'from_library',
-            'bk-is-fragment': itemBundle?.id === 'blokkli_fragment',
           }"
           @click.prevent="showDropdown = !showDropdown"
         >
@@ -36,7 +34,12 @@
             class="bk-blokkli-item-actions-title-icon"
           >
             <Icon v-if="ui.isTransforming.value" name="loader" />
-            <ItemIcon v-else-if="bundleIcon" :bundle="bundleIcon" />
+            <ItemIconBox
+              v-else-if="bundleIcon"
+              :bundle="bundleIcon"
+              :color="isReusable ? 'lime' : undefined"
+              is-small
+            />
             <Icon v-else name="selection" />
             <div
               v-if="itemBundle?.id === 'from_library'"
@@ -76,10 +79,11 @@
 <script lang="ts" setup>
 import { watch, ref, computed, useBlokkli, useTemplateRef } from '#imports'
 import { falsy } from '#blokkli/helpers'
-import { ItemIcon, Icon } from '#blokkli/components'
+import { Icon, ItemIconBox } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import useStickyToolbar from '#blokkli/helpers/composables/useStickyToolbar'
 import EditActionsItemDropdown from './ItemDropdown.vue'
+import { BUNDLE_FROM_LIBRARY } from '#blokkli/constants'
 
 const { selection, $t, types, state, ui, definitions, debug } = useBlokkli()
 
@@ -137,6 +141,10 @@ const bundleIcon = computed(() => {
   }
 
   return itemBundle.value?.id
+})
+
+const isReusable = computed(() => {
+  return itemBundle.value?.id === BUNDLE_FROM_LIBRARY
 })
 
 const hasSelectedHost = computed(() => {

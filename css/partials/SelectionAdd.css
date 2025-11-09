@@ -1,5 +1,5 @@
 .bk.bk-selection-add-overlay {
-  --bk-item-width: 250px;
+  --bk-item-width: 270px;
   --bk-columns: 2;
   --bk-bg: theme('colors.mono.900');
   --bk-header-bg: theme('colors.mono.800');
@@ -13,65 +13,16 @@
 
   .bk-selection-add-overlay-list {
     @apply flex flex-wrap max-h-[60vh] overflow-auto lg:max-h-[500px];
-    padding-top: var(--bk-gap);
+    padding: var(--bk-gap);
+    gap: var(--bk-gap);
     max-width: calc(
       var(--bk-gap) * 2 + var(--bk-item-width) * var(--bk-columns) +
-        var(--bk-gap) * (var(--bk-columns) - 1) + 40px
+        var(--bk-gap) * (var(--bk-columns) - 1) + 10px
     );
     button {
-      @apply flex items-center text-base min-w-0 -mt-10;
       width: var(--bk-item-width);
-      .bk-list-item-icon {
-        @apply size-50 bg-mono-800 flex items-center justify-center rounded border border-mono-500 shrink-0;
-        .bk-blokkli-item-icon {
-          @apply w-auto h-auto;
-        }
-
-        &.bk-is-rose {
-          @apply bg-red-dark border-red-normal text-red-light;
-        }
-
-        &.bk-is-lime {
-          @apply bg-lime-dark border-lime-normal text-lime-light;
-        }
-
-        &.bk-is-accent {
-          @apply bg-accent-900 border-accent-500 text-accent-50;
-        }
-
-        &.bk-is-yellow {
-          @apply bg-yellow-normal/20 border-yellow-normal/70 text-yellow-light;
-        }
-
-        svg {
-          @apply size-30 fill-current;
-        }
-      }
-      span {
-        @apply font-semibold text-mono-400 overflow-ellipsis whitespace-nowrap min-w-0 overflow-hidden;
-      }
-
-      &:hover {
-        .bk-list-item-icon {
-          @apply bg-mono-700 border-mono-400;
-
-          &.bk-is-rose {
-            @apply bg-red-normal border-red-light/70 text-white;
-          }
-          &.bk-is-lime {
-            @apply bg-lime-normal border-lime-light text-white;
-          }
-          &.bk-is-accent {
-            @apply bg-accent-700  border-accent-400 text-white;
-          }
-
-          &.bk-is-yellow {
-            @apply bg-yellow-normal/30 border-yellow-normal/60 text-yellow-light;
-          }
-        }
-        span {
-          @apply text-mono-50;
-        }
+      .bk-add-item-label {
+        @apply pl-10;
       }
     }
   }

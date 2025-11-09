@@ -12,36 +12,36 @@
       class="bk-selection-add-overlay-list bk-scrollbar-dark"
       @wheel="onWheel"
     >
-      <button
+      <AddListItem
         v-for="item in items"
         :key="item.bundle"
-        class="bk-add-item"
+        :id="item.bundle"
+        context="selection-add-buttons"
+        :label="item.label"
+        :bundle="item.bundle"
+        :color="item.isFavorite ? 'yellow' : undefined"
         tabindex="-1"
         @click.prevent="$emit('select', item.bundle)"
-      >
-        <AddListItemIcon
-          :bundle="item.bundle"
-          :color="item.isFavorite ? 'yellow' : 'default'"
-        />
-        <span>{{ item.label }}</span>
-      </button>
-      <button
+      />
+      <AddListItem
         v-for="action in actions"
         :key="'action:' + action.id"
-        class="bk-add-item"
         tabindex="-1"
+        :id="action.id"
+        context="selection-add-buttons"
+        :icon="action.icon"
+        :label="action.title"
+        :color="action.color"
+        no-context-menu
         @click.prevent="$emit('action', action)"
-      >
-        <AddListItemIcon :icon="action.icon" :color="action.color" />
-        <span>{{ action.title }}</span>
-      </button>
+      />
     </div>
   </ArtboardTooltip>
 </template>
 
 <script setup lang="ts">
 import { useTemplateRef, useBlokkli, computed } from '#imports'
-import { AddListItemIcon, ArtboardTooltip } from '#blokkli/components'
+import { ArtboardTooltip, AddListItem } from '#blokkli/components'
 import { isInternalBundle } from '#blokkli/helpers/bundles'
 import type { AddAction, Coord } from '#blokkli/types'
 
@@ -103,7 +103,9 @@ const onWheel = (e: WheelEvent) => {
     hasScrollbar = element && element.scrollHeight > element.clientHeight
   }
   if (hasScrollbar) {
-    e.stopPropagation()
+    if (!e.ctrlKey && !e.metaKey) {
+      e.stopPropagation()
+    }
   }
 }
 </script>

@@ -130,7 +130,6 @@
       @apply truncate mr-auto;
     }
     .bk-blokkli-item-actions-title-icon {
-      @apply bg-mono-800 rounded border border-mono-600 text-white;
       flex: 0 0 auto;
     }
 
@@ -149,11 +148,6 @@
       @media not all and (hover: none) {
         &:not(.is-open) {
           @apply hover:text-mono-50 hover:bg-mono-700;
-          &:hover {
-            .bk-blokkli-item-actions-title-icon {
-              @apply bg-mono-600 border-mono-400;
-            }
-          }
         }
       }
     }
@@ -162,26 +156,11 @@
       .bk-caret {
         @apply transform rotate-180;
       }
-      .bk-blokkli-item-actions-title-icon {
-        @apply bg-mono-600 border-mono-400;
-      }
     }
     .bk-caret {
       @apply ml-5;
       svg {
         @apply pointer-events-none size-15 fill-current md:size-20;
-      }
-    }
-
-    &.bk-is-reusable {
-      .bk-blokkli-item-actions-title-icon {
-        @apply bg-lime-normal/50 border-lime-normal text-white;
-      }
-    }
-
-    &.bk-is-fragment {
-      .bk-blokkli-item-actions-title-icon {
-        @apply bg-accent-900 border-accent-500 text-accent-50;
       }
     }
   }

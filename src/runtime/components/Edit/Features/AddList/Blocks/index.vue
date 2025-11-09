@@ -3,6 +3,7 @@
     <AddListItem
       v-for="(type, i) in sortedList"
       v-show="type.isVisible"
+      context="add-list-blocks"
       :id="type.id"
       :key="i + (type.id || 'undefined') + renderKey"
       :label="type.label"

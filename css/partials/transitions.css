@@ -206,7 +206,7 @@
   }
   .bk-context-menu-enter-from,
   .bk-context-menu-leave-to {
-    @apply scale-0;
+    @apply scale-75 opacity-0;
   }
 
   .bk-drag-item-enter-active,

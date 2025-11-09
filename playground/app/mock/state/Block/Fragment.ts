@@ -5,8 +5,8 @@ import { Block } from './Block'
 export class BlockFragment extends Block {
   static override bundle = 'blokkli_fragment'
   static override label = 'Fragment'
-  static override allowReusable = true
-  static override isTranslatable = true
+  static override allowReusable = false
+  static override isTranslatable = false
 
   static override getDefaultValues(): Record<string, any> {
     return {

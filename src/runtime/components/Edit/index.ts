@@ -1,5 +1,5 @@
 import AddListItem from './AddListItem/index.vue'
-import AddListItemIcon from './AddListItemIcon/index.vue'
+import ItemIconBox from './ItemIconBox/index.vue'
 import ArtboardTooltip from './ArtboardTooltip/index.vue'
 import Banner from './Banner/index.vue'
 import BlokkliTransition from './Transition/index.vue'
@@ -36,7 +36,7 @@ import ViewportBlockingRect from './ViewportBlockingRect/index.vue'
 
 export {
   AddListItem,
-  AddListItemIcon,
+  ItemIconBox,
   ArtboardTooltip,
   Banner,
   BlokkliTransition,

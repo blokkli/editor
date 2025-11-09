@@ -7,6 +7,7 @@ import { Block } from './Block'
 export class BlockFromLibrary extends Block {
   static override bundle = 'from_library'
   static override label = 'From Library'
+  static override allowReusable = false
 
   static override getFieldDefintions(): Field<any>[] {
     return [

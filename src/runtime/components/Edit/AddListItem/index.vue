@@ -1,6 +1,6 @@
 <template>
   <PluginContextMenu
-    :id="'add_list_item_' + id"
+    :id="'add_list_item_' + context + id"
     ref="el"
     tag="button"
     class="bk-add-item"
@@ -13,7 +13,9 @@
       'bk-is-' + color,
     ]"
   >
-    <AddListItemIcon :color :bundle :icon />
+    <div class="bk-add-item-icon">
+      <ItemIconBox :color :bundle :icon />
+    </div>
     <div class="bk-add-item-label">
       <span>{{ label }}</span>
     </div>
@@ -24,7 +26,7 @@
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { ContextMenu } from '#blokkli/types'
 import { useBlokkli, computed, ref } from '#imports'
-import { AddListItemIcon } from '#blokkli/components'
+import { ItemIconBox } from '#blokkli/components'
 import { PluginContextMenu } from '#blokkli/plugins'
 
 const { storage, $t } = useBlokkli()
@@ -32,6 +34,7 @@ const { storage, $t } = useBlokkli()
 const props = withDefaults(
   defineProps<{
     id: string
+    context: string
     label: string
     color?: 'rose' | 'lime' | 'default' | 'yellow' | 'accent'
     bundle?: string

@@ -122,26 +122,26 @@ const shouldRender = computed(
 )
 
 const hasContextMenuOpen = computed(() =>
-  ui.openContextMenu.value.startsWith('add_list_item_'),
+  ui.openContextMenu.value.startsWith('add_list_item_add-list-blocks'),
 )
 
 const wrapper = ref<HTMLDivElement | null>(null)
 const isHovered = ref(false)
-const DEBUG = false
 let mouseTimeout: any = null
 
 const isActive = computed(() => {
   return (
-    (isHovered.value ||
-      hasContextMenuOpen.value ||
-      DEBUG ||
-      tour.isTouring.value) &&
+    (isHovered.value || hasContextMenuOpen.value || tour.isTouring.value) &&
     !selection.isDragging.value
   )
 })
 
 function onMouseEnter() {
-  clearTimeout(mouseTimeout)
+  if (mouseTimeout) {
+    clearTimeout(mouseTimeout)
+    isHovered.value = true
+    return
+  }
   mouseTimeout = setTimeout(() => {
     isHovered.value = true
   }, 200)
