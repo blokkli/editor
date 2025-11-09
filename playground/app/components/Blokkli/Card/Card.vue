@@ -1,6 +1,5 @@
 <template>
   <div
-    class="card-test"
     :class="{
       'container mx-auto mt-50 h-full': !parentType,
     }"

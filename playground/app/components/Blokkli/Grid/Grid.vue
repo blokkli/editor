@@ -21,6 +21,7 @@
       class="container grid gap-20 lg:gap-40"
       edit-class="min-h-[50px]"
       drop-alignment="horizontal"
+      :allowed-fragments="['demo_card']"
       :class="{
         'grid-cols-2': options.mobile,
         'lg:grid-cols-2': options.columns === 'two',

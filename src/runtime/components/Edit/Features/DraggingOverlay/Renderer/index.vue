@@ -232,9 +232,30 @@ const draggingBundles = computed<string[]>(() =>
         }
       } else if (item.itemBundle) {
         bundles.push(item.itemBundle)
+      } else if (item.itemType === 'action' && item.action.itemBundle) {
+        bundles.push(item.action.itemBundle)
       }
 
       return bundles
+    })
+    .filter(falsy),
+)
+
+/**
+ * The fragment names being dragged (for blokkli_fragment bundles only).
+ */
+const draggingFragments = computed<string[]>(() =>
+  props.items
+    .flatMap((item) => {
+      if (
+        (item.itemType === 'existing' ||
+          item.itemType === 'existing_structure') &&
+        item.block.bundle === 'blokkli_fragment' &&
+        item.block.fragment?.name
+      ) {
+        return [item.block.fragment.name]
+      }
+      return []
     })
     .filter(falsy),
 )
@@ -490,6 +511,7 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
     currentCount,
     props.items.length,
     draggingBundles.value,
+    draggingFragments.value,
   )
   const orientation =
     field.dropAlignment || getChildrenOrientation(field.element)

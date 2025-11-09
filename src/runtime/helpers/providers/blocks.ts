@@ -9,6 +9,8 @@ import type {
 } from '#blokkli-build/generated-types'
 import type { AdapterContext } from '#blokkli/adapter'
 import type { ComputedRef } from 'vue'
+import type { BlokkliFragmentName } from '#blokkli-build/definitions'
+import { BUNDLE_BLOKKLI_FRAGMENT } from '#blokkli/constants'
 
 export type BlocksProvider = {
   getBlock: (uuid: string) => RenderedFieldListItem | undefined
@@ -55,6 +57,18 @@ export default function (
     return null
   }
 
+  function getFragmentData(
+    item: FieldListItemTyped,
+  ): { name: BlokkliFragmentName } | null {
+    if (item.bundle === BUNDLE_BLOKKLI_FRAGMENT && item.props.name) {
+      return {
+        name: item.props.name as BlokkliFragmentName,
+      }
+    }
+
+    return null
+  }
+
   function getBlock(uuid: string): RenderedFieldListItem | undefined {
     const cached = renderedFieldListItemCache.get(uuid)
     if (cached) {
@@ -90,6 +104,7 @@ export default function (
       isNested: fieldList.entityType === itemEntityType,
       fieldListType: field?.fieldListType ?? 'default',
       library: getLibraryData(item as any),
+      fragment: getFragmentData(item as any),
       parentBlockBundle,
       host: {
         type: fieldList.entityType,

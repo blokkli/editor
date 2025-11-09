@@ -15,6 +15,7 @@ export class BlockGrid extends Block {
         'card',
         'text',
         'from_library',
+        'blokkli_fragment',
         'video',
         'image',
       ]),

@@ -72,6 +72,7 @@ export function determineCanAddChildren(
   currentCount: number,
   itemsToAdd: number,
   draggingBundles?: string[],
+  draggingFragments?: string[],
 ): boolean {
   // Check cardinality of field.
   if (field.cardinality !== -1) {
@@ -89,8 +90,28 @@ export function determineCanAddChildren(
     }
   }
 
-  return (
-    !draggingBundles?.length ||
-    draggingBundles.every((bundle) => field.allowedBundles.includes(bundle))
+  if (!draggingBundles?.length) {
+    return true
+  }
+
+  // Check if all dragging bundles are allowed.
+  const bundlesAllowed = draggingBundles.every((bundle) =>
+    field.allowedBundles.includes(bundle),
   )
+
+  if (!bundlesAllowed) {
+    return false
+  }
+
+  // If there are fragment restrictions and we're dragging fragments, check them.
+  if (
+    draggingFragments?.length &&
+    field.allowedFragments.length > 0
+  ) {
+    return draggingFragments.every((fragment) =>
+      field.allowedFragments.includes(fragment),
+    )
+  }
+
+  return true
 }

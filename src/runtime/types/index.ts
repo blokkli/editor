@@ -1712,6 +1712,9 @@ export type RenderedFieldListItem = {
     libraryItemUuid: string
     reusableBundle: string
   } | null
+  fragment: {
+    name: BlokkliFragmentName
+  } | null
   isNested: boolean
   publishOn?: string | null
   unpublishOn?: string | null

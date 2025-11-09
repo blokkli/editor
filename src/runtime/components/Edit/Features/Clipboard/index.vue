@@ -78,7 +78,7 @@ import { PluginSidebar } from '#blokkli/plugins'
 import defineItemDropdownAction from '#blokkli/helpers/composables/defineItemDropdownAction'
 import ClipboardList from './List/index.vue'
 import type { ClipboardItem, RenderedFieldListItem } from '#blokkli/types'
-import { generateUUID, getFieldKey } from '#blokkli/helpers'
+import { falsy, generateUUID, getFieldKey } from '#blokkli/helpers'
 import { Icon } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
@@ -107,7 +107,7 @@ const { settings, logger } = defineBlokkliFeature({
   screenshot: 'feature-clipboard.jpg',
 })
 
-const { selection, $t, adapter, state, ui, types, keyboard, blocks } =
+const { selection, $t, adapter, state, ui, types, keyboard, blocks, fields } =
   useBlokkli()
 
 const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
@@ -334,16 +334,26 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
   }
 
   let targetField = null
-  let targetFieldConfig = null
+  let targetFieldElement = null
   let targetFieldKey = null
   let preceedingUuid: string | undefined = undefined
 
   // Only try to paste into nested fields if Shift is not pressed
   if (!keyboard.isPressingShift.value) {
-    // Get bundles of pasted blocks first
+    // Get bundles and fragments of pasted blocks first
     const pastedBundles = pastedUuids
       .map((uuid) => blocks.getBlock(uuid)?.bundle)
       .filter((bundle): bundle is string => !!bundle)
+
+    const pastedFragments = pastedUuids
+      .map((uuid) => {
+        const block = blocks.getBlock(uuid)
+        if (block?.bundle === 'blokkli_fragment' && block.fragment?.name) {
+          return block.fragment.name
+        }
+        return null
+      })
+      .filter(falsy)
 
     if (pastedBundles.length) {
       // Check if the selected block has nested fields that can accept any of the pasted blocks
@@ -354,26 +364,43 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
 
       // Try to find a nested field that accepts the pasted blocks
       for (const fieldConfig of nestedFields) {
+        // Get the actual field element to check allowed bundles/fragments
+        const fieldElement = fields.find(block.uuid, fieldConfig.name)
+        if (!fieldElement) {
+          continue
+        }
+
         const allowedPastedBundles = pastedBundles.filter((bundle) =>
-          fieldConfig.allowedBundles.includes(bundle),
+          fieldElement.allowedBundles.includes(bundle),
         )
 
-        if (allowedPastedBundles.length > 0) {
+        // If there are fragment restrictions, also check fragments
+        let fragmentsAllowed = true
+        if (
+          pastedFragments.length > 0 &&
+          fieldElement.allowedFragments.length > 0
+        ) {
+          fragmentsAllowed = pastedFragments.every((fragment) =>
+            fieldElement.allowedFragments.includes(fragment),
+          )
+        }
+
+        if (allowedPastedBundles.length > 0 && fragmentsAllowed) {
           const nestedFieldKey = getFieldKey(block.uuid, fieldConfig.name)
           const currentCount = state.getFieldBlockCount(nestedFieldKey)
 
           // Check cardinality
           if (
-            fieldConfig.cardinality === -1 ||
+            fieldElement.cardinality === -1 ||
             currentCount + allowedPastedBundles.length <=
-              fieldConfig.cardinality
+              fieldElement.cardinality
           ) {
             targetField = {
               entityType: itemEntityType,
               entityUuid: block.uuid,
               name: fieldConfig.name,
             }
-            targetFieldConfig = fieldConfig
+            targetFieldElement = fieldElement
             targetFieldKey = nestedFieldKey
             preceedingUuid = undefined // Paste at the beginning of the nested field
             break
@@ -384,18 +411,14 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
   }
 
   // If no suitable nested field found, use the parent field (existing logic)
-  if (!targetField || !targetFieldConfig || !targetFieldKey) {
+  if (!targetField || !targetFieldElement || !targetFieldKey) {
     const field = state.getMutatedField(block.host.uuid, block.host.fieldName)
     if (!field) {
       return
     }
-    const fieldConfig = types.getFieldConfig(
-      field.entityType,
-      block.host.bundle,
-      field.name,
-    )
 
-    if (!fieldConfig) {
+    const fieldElement = fields.find(field.entityUuid, field.name)
+    if (!fieldElement) {
       return
     }
 
@@ -404,13 +427,14 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
       entityUuid: field.entityUuid,
       name: field.name,
     }
-    targetFieldConfig = fieldConfig
+    targetFieldElement = fieldElement
     targetFieldKey = getFieldKey(field.entityUuid, field.name)
     preceedingUuid = selection.uuids.value[0]
   }
 
   const pastedBlocks: RenderedFieldListItem[] = []
   const notAllowedBundles: string[] = []
+  const notAllowedFragments: string[] = []
 
   for (let i = 0; i < pastedUuids.length; i++) {
     const uuid = pastedUuids[i]
@@ -421,16 +445,46 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
     if (!block) {
       continue
     }
-    const isAllowed = targetFieldConfig.allowedBundles.includes(block.bundle)
+    const isAllowed = targetFieldElement.allowedBundles.includes(block.bundle)
     if (!isAllowed) {
       notAllowedBundles.push(block.bundle)
       continue
+    }
+
+    // Check fragment restrictions for blokkli_fragment bundles
+    if (
+      block.bundle === 'blokkli_fragment' &&
+      block.fragment?.name &&
+      targetFieldElement.allowedFragments.length > 0
+    ) {
+      const fragmentAllowed = targetFieldElement.allowedFragments.includes(
+        block.fragment.name,
+      )
+      if (!fragmentAllowed) {
+        notAllowedFragments.push(block.fragment.name)
+        continue
+      }
     }
 
     pastedBlocks.push(block)
   }
 
   if (!pastedBlocks.length) {
+    if (notAllowedFragments.length) {
+      const message =
+        notAllowedFragments.length === 1
+          ? $t(
+              'clipboardPasteErrorAllowedFragmentsSingle',
+              'Fragment "@types" is not allowed here.',
+            )
+          : $t(
+              'clipboardPasteErrorAllowedFragmentsMultiple',
+              'Fragments (@types) are not allowed here.',
+            )
+      emitPasteError(message.replace('@types', notAllowedFragments.join(', ')))
+      return
+    }
+
     const blockTypes = notAllowedBundles.map((bundle) => {
       return types.getBlockBundleDefinition(bundle)?.label ?? bundle
     })
@@ -450,14 +504,14 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
 
   const count = state.getFieldBlockCount(targetFieldKey)
   if (
-    targetFieldConfig.cardinality !== -1 &&
-    count + pastedBlocks.length > targetFieldConfig.cardinality
+    targetFieldElement.cardinality !== -1 &&
+    count + pastedBlocks.length > targetFieldElement.cardinality
   ) {
     emitPasteError(
       $t(
         'clipboardPasteErrorCardinality',
         'This field only allows up to @count blocks.',
-      ).replace('@count', targetFieldConfig.cardinality.toString()),
+      ).replace('@count', targetFieldElement.cardinality.toString()),
     )
     return
   }

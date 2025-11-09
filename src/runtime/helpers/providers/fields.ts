@@ -5,7 +5,17 @@ import type { StateProvider } from '../stateProvider'
 import type { BlockDefinitionProvider } from '../typesProvider'
 
 export type FieldsProvider = {
-  find: (uuid: string, fieldName: string) => BlokkliFieldElement | undefined
+  find: (
+    /**
+     * The host entity UUID.
+     */
+    uuid: string,
+
+    /**
+     * The name of the field.
+     */
+    fieldName: string,
+  ) => BlokkliFieldElement | undefined
 }
 
 export default function (
