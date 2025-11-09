@@ -54,6 +54,9 @@
 
 .bk-add-item:hover,
 .bk-dragging-overlay {
+  .bk-add-item {
+    @apply !opacity-100;
+  }
   .bk-add-item-label {
     @apply !text-white;
   }
@@ -65,7 +68,10 @@
     @apply flex whitespace-nowrap items-center w-full min-w-fit;
 
     &.bk-is-disabled {
-      @apply pointer-events-none opacity-25;
+      @apply opacity-30;
+      &:hover {
+        @apply opacity-100;
+      }
     }
   }
 
