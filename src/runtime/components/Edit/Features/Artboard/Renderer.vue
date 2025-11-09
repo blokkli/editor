@@ -207,6 +207,7 @@ watch(options, function (newOptions) {
 const AUTOSCROLL_EDGE_ZONE = 130
 const AUTOSCROLL_SPEED = 12
 let autoScrollSpeed = 1
+let lastScrollDirection = 0 // -1 = up, 1 = down, 0 = none
 
 function edgeStep(distance: number): number {
   const ratio = distance / AUTOSCROLL_EDGE_ZONE
@@ -214,12 +215,16 @@ function edgeStep(distance: number): number {
 }
 
 let hasLeftAddList = false
+let hasLeftEdgeZone = false
 
 onBlokkliEvent('dragging:end', () => {
   hasLeftAddList = false
+  hasLeftEdgeZone = false
+  autoScrollSpeed = 1
+  lastScrollDirection = 0
 })
 
-onBlokkliEvent('animationFrame:before', ({ time, mouseY, mouseX }) => {
+function handleAutoScroll(mouseX: number, mouseY: number) {
   // When dragging, automatically scroll the artboard when the mouse is in the
   // top or bottom edge of the viewport.
   if (selection.isDragging.value) {
@@ -232,32 +237,55 @@ onBlokkliEvent('animationFrame:before', ({ time, mouseY, mouseX }) => {
       }
     }
 
-    const viewportHeight = ui.viewport.value.height
+    const viewportHeight = ui.visibleViewport.value.height
     const currentOffset = artboard.getOffset()
-    const y = Math.min(Math.max(mouseY, 0), viewportHeight)
+    // Convert mouseY to be relative to the visible viewport
+    const y = Math.min(
+      Math.max(mouseY - ui.visibleViewport.value.y, 0),
+      viewportHeight,
+    )
+
+    const isInEdgeZone =
+      y < AUTOSCROLL_EDGE_ZONE || y > viewportHeight - AUTOSCROLL_EDGE_ZONE
+
+    // Track if the user has left the edge zone
+    if (!isInEdgeZone && !hasLeftEdgeZone) {
+      hasLeftEdgeZone = true
+    }
 
     let dy = 0
+    let currentDirection = 0
 
-    if (y < AUTOSCROLL_EDGE_ZONE) {
-      const dist = AUTOSCROLL_EDGE_ZONE - y
-      // scroll down.
-      dy = edgeStep(dist)
-    } else if (y > viewportHeight - AUTOSCROLL_EDGE_ZONE) {
-      const dist = y - (viewportHeight - AUTOSCROLL_EDGE_ZONE)
-      // scroll up.
-      dy = -edgeStep(dist)
-    } else {
-      // Reset the speed when leaving autoscroll zone area.
+    // Only auto-scroll if the user has left the edge zone at least once
+    if (hasLeftEdgeZone && isInEdgeZone) {
+      if (y < AUTOSCROLL_EDGE_ZONE) {
+        const dist = AUTOSCROLL_EDGE_ZONE - y
+        // scroll down.
+        dy = edgeStep(dist)
+        currentDirection = 1
+      } else if (y > viewportHeight - AUTOSCROLL_EDGE_ZONE) {
+        const dist = y - (viewportHeight - AUTOSCROLL_EDGE_ZONE)
+        // scroll up.
+        dy = -edgeStep(dist)
+        currentDirection = -1
+      }
+    }
+
+    // Reset speed when direction changes
+    if (currentDirection !== 0 && currentDirection !== lastScrollDirection) {
       autoScrollSpeed = 1
+      lastScrollDirection = currentDirection
     }
 
     if (dy !== 0) {
       artboard.setOffset(null, currentOffset.y + dy * autoScrollSpeed)
       autoScrollSpeed = Math.min(autoScrollSpeed * 1.01, 2.25)
     }
-  } else {
-    autoScrollSpeed = 1
   }
+}
+
+onBlokkliEvent('animationFrame:before', ({ time, mouseY, mouseX }) => {
+  handleAutoScroll(mouseX, mouseY)
 
   artboard.loop(time)
   const artboardSize = artboard.getArtboardSize()

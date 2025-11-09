@@ -742,13 +742,8 @@ export default function (
   })
 
   function onWindowMouseMove(e: MouseEvent) {
-    if (
-      isInsideRect(e.pageX, e.pageY, ui.visibleViewport.value) ||
-      selection.isMultiSelecting.value
-    ) {
-      mouseX = e.pageX
-      mouseY = e.pageY
-    }
+    mouseX = e.pageX
+    mouseY = e.pageY
   }
 
   onMounted(() => {
