@@ -142,12 +142,10 @@ export default function (
   const banners = ref<Record<string, number>>({})
 
   function openDialog(id: string) {
-    console.log('OPEN DIALOG: ' + id)
     currentDialog.value = id
   }
 
   function closeDialog(id?: string) {
-    console.log('CLOSE DIALOG: ' + id)
     if (!id || currentDialog.value === id) {
       currentDialog.value = null
     }

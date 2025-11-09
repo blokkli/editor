@@ -24,11 +24,12 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature, ref, computed } from '#imports'
+import { useBlokkli, defineBlokkliFeature, computed } from '#imports'
 import { PluginToolbarButton } from '#blokkli/plugins'
 import { BlokkliTransition } from '#blokkli/components'
 import Palette from './Palette/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { useDialog } from '#blokkli/helpers/composables/useDialog'
 
 defineBlokkliFeature({
   id: 'command-palette',
@@ -41,7 +42,7 @@ defineBlokkliFeature({
 
 const { $t, ui } = useBlokkli()
 
-const isVisible = ref(false)
+const isVisible = useDialog('command-palette')
 
 const label = computed(() => $t('commandPaletteOpen', 'Open Command Palette'))
 

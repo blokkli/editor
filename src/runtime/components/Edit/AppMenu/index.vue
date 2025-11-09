@@ -1,12 +1,36 @@
 <template>
   <BlokkliTransition name="menu">
-    <div v-show="menuOpen" class="bk bk-menu-list">
+    <div v-if="menuOpen" class="bk bk-menu-list">
       <button :class="{ 'bk-is-active': menuOpen }" @click="closeMenu">
         <Icon name="close" />
       </button>
       <div class="bk-menu-list-inner">
-        <div id="bk-menu-primary" />
-        <div id="bk-menu-secondary" />
+        <div id="bk-menu-primary">
+          <MenuButton
+            v-for="button in primaryButtons"
+            :id="button.id"
+            :key="button.id"
+            :title="button.title"
+            :description="button.description"
+            :icon="button.icon"
+            :type="button.type"
+            :disabled="button.disabled"
+            @click="onClick(button)"
+          />
+        </div>
+        <div id="bk-menu-secondary">
+          <MenuButton
+            v-for="button in secondaryButtons"
+            :id="button.id"
+            :key="button.id"
+            :title="button.title"
+            :description="button.description"
+            :icon="button.icon"
+            :type="button.type"
+            :disabled="button.disabled"
+            @click="onClick(button)"
+          />
+        </div>
         <aside class="bk-menu-meta">
           <div class="bk-menu-meta-logo">
             <Icon name="logo" />
@@ -26,15 +50,36 @@
 import { computed, useBlokkli } from '#imports'
 import { Icon, BlokkliTransition } from '#blokkli/components'
 import { blokkliVersion } from '#blokkli-build/config'
+import MenuButton from './MenuButton.vue'
+import type { MenuButtonPlugin } from '#blokkli/helpers/pluginProvider'
 
 const DIALOG_MENU = 'menu'
 
-const { ui } = useBlokkli()
+const { ui, plugins } = useBlokkli()
 
 const menuOpen = computed(() => ui.currentDialog.value === DIALOG_MENU)
 
 function closeMenu() {
   ui.closeDialog(DIALOG_MENU)
+}
+
+const allButtons = computed(() => plugins.getMenuButtons())
+
+const primaryButtons = computed(() => {
+  return allButtons.value
+    .filter((button) => !button.secondary)
+    .sort((a, b) => (a.weight || 0) - (b.weight || 0))
+})
+
+const secondaryButtons = computed(() => {
+  return allButtons.value
+    .filter((button) => button.secondary)
+    .sort((a, b) => (a.weight || 0) - (b.weight || 0))
+})
+
+function onClick(button: MenuButtonPlugin) {
+  button.callback()
+  closeMenu()
 }
 </script>
 

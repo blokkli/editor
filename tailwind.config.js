@@ -32,7 +32,6 @@ const zIndex = [
   'toolbar-dropdown',
   'drop-targets',
   'dragging-overlay',
-  'command-palette',
   'touch-action-bar',
   'init-overlay',
   'tour-overlay',
@@ -48,6 +47,7 @@ const zIndex = [
   'form-overlay-header',
   'dialog',
   'menu',
+  'command-palette',
 ].reduce((acc, key, index) => {
   acc[key] = z(index * 10000, key)
   return acc

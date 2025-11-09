@@ -52,7 +52,7 @@ import { Fzf } from 'fzf'
 import { modulo } from '#blokkli/helpers'
 import Item from './Item/index.vue'
 
-const { commands, $t, selection } = useBlokkli()
+const { commands, $t, selection, plugins } = useBlokkli()
 
 const emit = defineEmits(['close'])
 
@@ -68,17 +68,28 @@ function onFocus(index: number) {
   focusedIndex.value = index
 }
 
-const items = computed<Array<Command & { _id: number }>>(() =>
-  commands
-    .getCommands()
+const items = computed<Array<Command & { _id: number }>>(() => {
+  return [
+    ...commands.getCommands(),
+    ...plugins.getMenuButtons().map<Command>((plugin) => {
+      return {
+        id: 'menu-button:' + plugin.id,
+        label: plugin.title,
+        group: 'action',
+        icon: plugin.icon,
+        disabled: plugin.disabled,
+        callback: plugin.callback,
+      }
+    }),
+  ]
     .filter((v) => !v.disabled)
     .map((doc, index) => {
       return {
         ...doc,
         _id: index,
       }
-    }),
-)
+    })
+})
 
 const fzf = new Fzf(items.value, {
   selector: (item) => item.label,

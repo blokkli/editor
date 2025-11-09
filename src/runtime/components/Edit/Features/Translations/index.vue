@@ -54,18 +54,6 @@
     <Banner v-if="isTranslating" :active-language />
   </Teleport>
 
-  <PluginMenuButton
-    id="translations"
-    :title="$t('translationsBatchTranslateMenuTitle', 'Translate...')"
-    :description="
-      $t('translationsBatchTranslateMenuDescription', 'Translate all blocks')
-    "
-    :disabled="!isTranslating"
-    :weight="60"
-    icon="translate"
-    @click="eventBus.emit('batchTranslate')"
-  />
-
   <PluginItemAction
     v-if="isTranslating"
     id="translate"
@@ -86,11 +74,7 @@ import {
   onMounted,
 } from '#imports'
 import { falsy } from '#blokkli/helpers'
-import {
-  PluginMenuButton,
-  PluginItemAction,
-  PluginTourItem,
-} from '#blokkli/plugins'
+import { PluginItemAction, PluginTourItem } from '#blokkli/plugins'
 import type {
   EntityTranslation,
   Language,
@@ -98,6 +82,7 @@ import type {
 } from '#blokkli/types'
 import Banner from './Banner/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import defineMenuButton from '#blokkli/helpers/composables/defineMenuButton'
 
 const { adapter } = defineBlokkliFeature({
   id: 'translations',
@@ -247,6 +232,23 @@ onMounted(() => {
     if (sourceTranslation) {
       return adapter.changeLanguage(sourceTranslation)
     }
+  }
+})
+
+defineMenuButton(() => {
+  return {
+    id: 'translations',
+    title: $t('translationsBatchTranslateMenuTitle', 'Translate...'),
+    description: $t(
+      'translationsBatchTranslateMenuDescription',
+      'Translate all blocks',
+    ),
+    icon: 'translate',
+    disabled: !isTranslating.value,
+    weight: 60,
+    callback: () => {
+      eventBus.emit('batchTranslate')
+    },
   }
 })
 </script>

@@ -1,17 +1,4 @@
 <template>
-  <PluginMenuButton
-    id="revert"
-    :title="$t('revertMenuTitle', 'Discard...')"
-    :description="
-      $t('revertMenuDescription', 'Restore currently published state')
-    "
-    icon="revert"
-    type="danger"
-    :disabled="!mutations.length || !canEdit"
-    :weight="10"
-    @click="showConfirm = true"
-  />
-
   <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-up">
       <DialogModal
@@ -34,9 +21,10 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, ref, defineBlokkliFeature } from '#imports'
-import { PluginMenuButton } from '#blokkli/plugins'
+import { useBlokkli, defineBlokkliFeature } from '#imports'
 import { DialogModal, BlokkliTransition } from '#blokkli/components'
+import defineMenuButton from '#blokkli/helpers/composables/defineMenuButton'
+import { useDialog } from '#blokkli/helpers/composables/useDialog'
 
 const { adapter } = defineBlokkliFeature({
   id: 'revert',
@@ -50,7 +38,7 @@ const { adapter } = defineBlokkliFeature({
 const { state, $t, ui } = useBlokkli()
 const { mutations, canEdit, mutateWithLoadingState } = state
 
-const showConfirm = ref(false)
+const showConfirm = useDialog('revert')
 
 async function onSubmit() {
   await mutateWithLoadingState(
@@ -60,6 +48,24 @@ async function onSubmit() {
   )
   showConfirm.value = false
 }
+
+defineMenuButton(() => {
+  return {
+    id: 'revert',
+    title: $t('revertMenuTitle', 'Discard...'),
+    description: $t(
+      'revertMenuDescription',
+      'Restore currently published state',
+    ),
+    icon: 'revert',
+    type: 'danger',
+    disabled: !mutations.value.length || !canEdit.value,
+    weight: 10,
+    callback: () => {
+      showConfirm.value = true
+    },
+  }
+})
 </script>
 
 <script lang="ts">

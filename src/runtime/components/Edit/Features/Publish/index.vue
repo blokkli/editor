@@ -1,14 +1,4 @@
 <template>
-  <PluginMenuButton
-    id="publish"
-    :title="publishLabel"
-    :description="publishDescription"
-    :disabled="!mutations.length || !canEdit"
-    :type="isScheduled ? 'yellow' : 'success'"
-    :weight="0"
-    :icon="icon"
-    @click="onMenuClick"
-  />
   <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-up">
       <PublishDialog v-if="showDialog" @close="onClose" @submit="onSubmit" />
@@ -22,14 +12,14 @@ import {
   defineBlokkliFeature,
   computed,
   useRoute,
-  ref,
   nextTick,
 } from '#imports'
-import { PluginMenuButton } from '#blokkli/plugins'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { BlokkliTransition } from '#blokkli/components'
 import PublishDialog from './Dialog/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import defineMenuButton from '#blokkli/helpers/composables/defineMenuButton'
+import { useDialog } from '#blokkli/helpers/composables/useDialog'
 
 const { adapter, settings } = defineBlokkliFeature({
   id: 'publish',
@@ -62,7 +52,7 @@ const isScheduled = computed<boolean>(
   () => !!state.publishOptions.value.publishOn,
 )
 
-const showDialog = ref(false)
+const showDialog = useDialog('publish')
 
 const publishLabel = computed(() => {
   const suffix = hasPublishOptions ? '...' : ''
@@ -159,6 +149,19 @@ async function onClose() {
 
 onBlokkliEvent('publish:show-dialog', () => {
   showDialog.value = true
+})
+
+defineMenuButton(() => {
+  return {
+    id: 'publish',
+    title: publishLabel.value,
+    description: publishDescription.value,
+    icon: icon.value,
+    type: isScheduled.value ? 'yellow' : 'success',
+    disabled: !mutations.value.length || !canEdit.value,
+    weight: 0,
+    callback: onMenuClick,
+  }
 })
 </script>
 

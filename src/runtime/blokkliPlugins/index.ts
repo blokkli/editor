@@ -3,7 +3,6 @@ import PluginBlockIndicator from './BlockIndicator/index.vue'
 import PluginContextMenu from './ContextMenu/index.vue'
 import PluginDebugOverlay from './DebugOverlay/index.vue'
 import PluginItemAction from './ItemAction/index.vue'
-import PluginMenuButton from './MenuButton/index.vue'
 import PluginSidebar from './Sidebar/index.vue'
 import PluginToolbarButton from './ToolbarButton/index.vue'
 import PluginTourItem from './TourItem/index.vue'
@@ -15,7 +14,6 @@ export {
   PluginContextMenu,
   PluginDebugOverlay,
   PluginItemAction,
-  PluginMenuButton,
   PluginSidebar,
   PluginToolbarButton,
   PluginTourItem,

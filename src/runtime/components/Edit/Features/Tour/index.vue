@@ -1,22 +1,13 @@
 <template>
   <Overlay v-if="tour.isTouring.value" @close="close" />
-  <PluginMenuButton
-    id="tour"
-    :title="$t('tourLabel', 'Take a tour')"
-    :description="$t('tourDescription', 'Explore the features of the editor')"
-    icon="tutor"
-    secondary
-    :weight="-10"
-    @click="start"
-  />
   <Popup v-if="showTourPopup" @close="close" @start="start" />
 </template>
 
 <script lang="ts" setup>
 import { defineBlokkliFeature, useBlokkli } from '#imports'
 import Overlay from './Overlay/index.vue'
-import { PluginMenuButton } from '#blokkli/plugins'
 import Popup from './Popup/index.vue'
+import defineMenuButton from '#blokkli/helpers/composables/defineMenuButton'
 
 defineBlokkliFeature({
   id: 'tour',
@@ -37,6 +28,18 @@ const close = () => {
   showTourPopup.value = false
   tour.isTouring.value = false
 }
+
+defineMenuButton(() => {
+  return {
+    id: 'tour',
+    title: $t('tourLabel', 'Take a tour'),
+    description: $t('tourDescription', 'Explore the features of the editor'),
+    icon: 'tutor',
+    secondary: true,
+    weight: -10,
+    callback: start,
+  }
+})
 </script>
 
 <script lang="ts">

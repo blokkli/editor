@@ -181,9 +181,9 @@ const onKeyDown = (e: KeyboardEvent) => {
   }
 }
 
-onMounted(() => {
-  ui.openDialog(props.id)
+ui.openDialog(props.id)
 
+onMounted(() => {
   // Focus the first best match in the dialog. That is, an element that is not a button.
   const focusableElements = getFocusableElements()
   const bestMatch =

@@ -1,14 +1,4 @@
 <template>
-  <PluginMenuButton
-    id="settings"
-    :title="$t('settingsMenuTitle', 'Settings')"
-    :description="
-      $t('settingsMenuDescription', 'Personal settings for the editor')
-    "
-    secondary
-    icon="cog"
-    @click="onClick"
-  />
   <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-up">
       <SettingsDialog v-if="showSettings" @cancel="onClose" />
@@ -18,10 +8,10 @@
 
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature, computed } from '#imports'
-import { PluginMenuButton } from '#blokkli/plugins'
 import SettingsDialog from './Dialog/index.vue'
 import { addElementClasses } from '#blokkli/helpers/addElementClasses'
 import { BlokkliTransition } from '#blokkli/components'
+import defineMenuButton from '#blokkli/helpers/composables/defineMenuButton'
 
 const { ui, $t } = useBlokkli()
 
@@ -76,6 +66,20 @@ addElementClasses(
   'bk-low-performance-mode',
   lowPerformanceMode,
 )
+
+defineMenuButton(() => {
+  return {
+    id: 'settings',
+    title: $t('settingsMenuTitle', 'Settings'),
+    description: $t(
+      'settingsMenuDescription',
+      'Personal settings for the editor',
+    ),
+    icon: 'cog',
+    secondary: true,
+    callback: onClick,
+  }
+})
 </script>
 
 <script lang="ts">

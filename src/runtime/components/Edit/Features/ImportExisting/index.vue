@@ -1,17 +1,4 @@
 <template>
-  <PluginMenuButton
-    v-if="state.mutatedFields.value.length"
-    id="import_existing"
-    :title="$t('importExistingTitle', 'Import...')"
-    :description="
-      $t('importExistingDescription', 'Import from an existing page')
-    "
-    :disabled="state.editMode.value !== 'editing'"
-    :weight="50"
-    icon="import"
-    @click="showModal = true"
-  />
-
   <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-up">
       <ExistingDialog
@@ -24,16 +11,11 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  ref,
-  computed,
-  useBlokkli,
-  onMounted,
-  defineBlokkliFeature,
-} from '#imports'
-import { PluginMenuButton } from '#blokkli/plugins'
+import { computed, useBlokkli, onMounted, defineBlokkliFeature } from '#imports'
 import { BlokkliTransition } from '#blokkli/components'
 import ExistingDialog from './Dialog/index.vue'
+import defineMenuButton from '#blokkli/helpers/composables/defineMenuButton'
+import { useDialog } from '#blokkli/helpers/composables/useDialog'
 
 const { adapter, settings } = defineBlokkliFeature({
   id: 'import-existing',
@@ -61,7 +43,7 @@ const isEmpty = computed(
   () => !state.mutatedFields.value.find((v) => v.list?.length),
 )
 
-const showModal = ref(false)
+const showModal = useDialog('import-existing')
 
 function onSubmit(sourceUuid: string, sourceFields: string[]) {
   showModal.value = false
@@ -85,6 +67,28 @@ onMounted(() => {
     state.canEdit.value
   ) {
     showModal.value = true
+  }
+})
+
+defineMenuButton(() => {
+  // Only show the button if there are mutated fields
+  if (!state.mutatedFields.value.length) {
+    return undefined
+  }
+
+  return {
+    id: 'import_existing',
+    title: $t('importExistingTitle', 'Import...'),
+    description: $t(
+      'importExistingDescription',
+      'Import from an existing page',
+    ),
+    icon: 'import',
+    disabled: state.editMode.value !== 'editing',
+    weight: 50,
+    callback: () => {
+      showModal.value = true
+    },
   }
 })
 </script>

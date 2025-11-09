@@ -18,6 +18,20 @@ export type ItemDropdownAction = {
 
 type ItemDropdownActionFunction = PluginAddFunction<ItemDropdownAction>
 
+export type MenuButtonPlugin = {
+  id: string
+  title: string
+  description: string
+  icon?: BlokkliIcon
+  type?: 'success' | 'danger' | 'yellow'
+  weight?: number
+  secondary?: boolean
+  disabled?: boolean
+  callback: () => void
+}
+
+type MenuButtonFunction = PluginAddFunction<MenuButtonPlugin>
+
 export type PluginProvider = {
   addAddAction: (fn: AddActionFunction) => void
   removeAddAction: (fn: AddActionFunction) => void
@@ -25,11 +39,15 @@ export type PluginProvider = {
   addItemDropdownAction: (fn: ItemDropdownActionFunction) => void
   removeItemDropdownAction: (fn: ItemDropdownActionFunction) => void
   getItemDropdownActions: () => ItemDropdownAction[]
+  addMenuButton: (fn: MenuButtonFunction) => void
+  removeMenuButton: (fn: MenuButtonFunction) => void
+  getMenuButtons: () => MenuButtonPlugin[]
 }
 
 export default function (): PluginProvider {
   let addActions: AddActionFunction[] = []
   let itemDropdownActions: ItemDropdownActionFunction[] = []
+  let menuButtons: MenuButtonFunction[] = []
 
   function addAddAction(fn: AddActionFunction) {
     addActions.push(fn)
@@ -97,6 +115,39 @@ export default function (): PluginProvider {
     return actions
   }
 
+  function addMenuButton(fn: MenuButtonFunction) {
+    menuButtons.push(fn)
+  }
+
+  function removeMenuButton(fn: MenuButtonFunction) {
+    menuButtons = menuButtons.filter((v) => v !== fn)
+  }
+
+  function getMenuButtons(): MenuButtonPlugin[] {
+    const buttons: MenuButtonPlugin[] = []
+
+    for (let i = 0; i < menuButtons.length; i++) {
+      const callback = menuButtons[i]
+      if (!callback) {
+        continue
+      }
+
+      const result = callback()
+
+      if (!result) {
+        continue
+      }
+
+      if (Array.isArray(result)) {
+        buttons.push(...result)
+      } else {
+        buttons.push(result)
+      }
+    }
+
+    return buttons
+  }
+
   return {
     addAddAction,
     removeAddAction,
@@ -104,5 +155,8 @@ export default function (): PluginProvider {
     addItemDropdownAction,
     removeItemDropdownAction,
     getItemDropdownActions,
+    addMenuButton,
+    removeMenuButton,
+    getMenuButtons,
   }
 }

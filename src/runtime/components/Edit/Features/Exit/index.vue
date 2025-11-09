@@ -1,17 +1,10 @@
 <template>
-  <PluginMenuButton
-    id="exit"
-    :title="$t('exitTitle', 'Close')"
-    :description="$t('exitDescription', 'Close editor without publishing')"
-    :weight="100"
-    icon="exit"
-    @click="onClick"
-  />
+  <div />
 </template>
 
 <script lang="ts" setup>
 import { useBlokkli, useRoute, nextTick, defineBlokkliFeature } from '#imports'
-import { PluginMenuButton } from '#blokkli/plugins'
+import defineMenuButton from '#blokkli/helpers/composables/defineMenuButton'
 
 defineBlokkliFeature({
   id: 'exit',
@@ -30,6 +23,17 @@ function onClick() {
     window.location.href = route.path
   })
 }
+
+defineMenuButton(() => {
+  return {
+    id: 'exit',
+    title: $t('exitTitle', 'Close'),
+    description: $t('exitDescription', 'Close editor without publishing'),
+    icon: 'exit',
+    weight: 100,
+    callback: onClick,
+  }
+})
 </script>
 
 <script lang="ts">
