@@ -19,6 +19,7 @@
     <BlokkliTransition name="slide-up">
       <DialogModal
         v-if="qrCodeVisible"
+        id="preview-grant"
         :title="$t('previewDialogTitle', 'Preview with smartphone')"
         :lead="
           $t(

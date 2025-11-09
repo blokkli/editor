@@ -39,15 +39,15 @@ const zIndex = [
   'tour-item',
   'context-menu',
   'search',
-  'dialog',
-  'edit-form',
   'resizable',
-  'edit-form-header',
   'messages',
-  'menu-overlay',
-  'menu',
   'library-edit-dialog',
   'transform-overlay',
+  'overlay',
+  'form-overlay',
+  'form-overlay-header',
+  'dialog',
+  'menu',
 ].reduce((acc, key, index) => {
   acc[key] = z(index * 10000, key)
   return acc

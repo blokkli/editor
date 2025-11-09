@@ -1,5 +1,6 @@
 <template>
   <DialogModal
+    id="library-reusable"
     :title="$t('libraryDialogTitle', 'Add to library')"
     :lead="
       $t(

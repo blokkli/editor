@@ -29,6 +29,7 @@
       :to="ui.mainLayoutElement.value"
     >
       <DialogModal
+        id="messages-error-details"
         title="Error Details"
         hide-buttons
         width="100%"

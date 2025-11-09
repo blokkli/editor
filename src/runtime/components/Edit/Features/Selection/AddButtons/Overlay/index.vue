@@ -14,8 +14,8 @@
     >
       <button
         v-for="item in items"
-        class="bk-add-item"
         :key="item.bundle"
+        class="bk-add-item"
         tabindex="-1"
         @click.prevent="$emit('select', item.bundle)"
       >
@@ -27,8 +27,8 @@
       </button>
       <button
         v-for="action in actions"
-        class="bk-add-item"
         :key="'action:' + action.id"
+        class="bk-add-item"
         tabindex="-1"
         @click.prevent="$emit('action', action.id)"
       >

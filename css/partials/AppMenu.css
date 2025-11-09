@@ -1,7 +1,3 @@
-.bk.bk-menu-overlay {
-  @apply fixed top-0 left-0 w-screen bottom-0 z-menu-overlay pointer-events-auto;
-}
-
 .bk.bk-menu-list {
   @apply fixed top-0 left-0 bg-white shadow-lg max-w-[480px] lg:min-w-[400px] bottom-0 flex flex-col pointer-events-auto;
   @apply z-menu;

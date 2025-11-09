@@ -16,6 +16,7 @@
     <BlokkliTransition name="slide-up">
       <DialogModal
         v-if="showConfirm"
+        id="revert"
         :title="$t('revertDialogTitle', 'Irrevocably discard changes')"
         :lead="
           $t(

@@ -267,13 +267,6 @@ html {
   }
 }
 
-.bk-overlay {
-  @apply bg-mono-800/90 backdrop-blur-md;
-  html.bk-low-performance-mode & {
-    @apply backdrop-filter-none bg-mono-800/95;
-  }
-}
-
 .bk-touch-action-bar {
   @apply fixed bottom-0 left-0 w-full z-touch-action-bar bg-mono-900 h-50 pointer-events-auto;
 
@@ -408,4 +401,9 @@ html.bk-hide-non-editable {
 .bk-viewport {
   @apply relative;
   grid-area: viewport;
+}
+
+.bk.bk-overlay {
+  @apply fixed top-0 left-0 w-screen bottom-0 pointer-events-auto z-overlay;
+  @apply bg-mono-800/95;
 }

@@ -34,6 +34,7 @@
       </div>
       <Konami />
       <SystemRequirements />
+      <Overlay />
     </div>
   </Teleport>
 
@@ -47,7 +48,7 @@
   <slot
     v-if="!isInitializing"
     :key="definitions.renderKey.value"
-    :mutated-entity="mutatedEntity"
+    :mutated-entity
   />
 </template>
 
@@ -81,6 +82,7 @@ import Indicators from './Indicators/index.vue'
 import DraggableList from './DraggableList.vue'
 import AnimationCanvas from './AnimationCanvas/index.vue'
 import SystemRequirements from './SystemRequirements/index.vue'
+import Overlay from './Overlay/index.vue'
 import Konami from './Konami/index.vue'
 import Banner from './Banner/index.vue'
 import animationProvider from './../../helpers/animationProvider'

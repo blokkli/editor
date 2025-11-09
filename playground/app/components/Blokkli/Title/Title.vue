@@ -1,7 +1,10 @@
 <template>
   <div
     :id
-    :class="{ 'container mx-auto mt-20 lg:mt-50 text-center': !parentType, 'mt-50': parentType === 'two_columns' && fieldListType === 'inline' }"
+    :class="{
+      'container mx-auto mt-20 lg:mt-50 text-center': !parentType,
+      'mt-50': parentType === 'two_columns' && fieldListType === 'inline',
+    }"
   >
     <div :class="{ 'md:max-w-3xl md:mx-auto md:text-center': isCentered }">
       <p
@@ -37,7 +40,7 @@
 import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
 import { slugify } from '~/helpers'
 
-const { parentType, fieldListType, } = defineBlokkli({
+const { parentType, fieldListType } = defineBlokkli({
   bundle: 'title',
   globalOptions: ['bkHiddenGlobally', 'bkVisibleLanguages'],
   options: {

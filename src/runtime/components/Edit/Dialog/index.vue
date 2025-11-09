@@ -9,8 +9,7 @@
     @touchmove.stop
     @touchend.stop
   >
-    <div class="bk-dialog-background" @click="$emit('cancel')" />
-    <div class="bk-dialog-inner" :style="style">
+    <div class="bk-dialog-inner" :style>
       <div class="bk bk-overlay-header">
         <Icon v-if="icon" :name="icon" />
         <h3>{{ title }}</h3>
@@ -53,10 +52,18 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, onMounted, computed, ref, onBeforeUnmount } from '#imports'
+import {
+  useBlokkli,
+  onMounted,
+  computed,
+  ref,
+  onBeforeUnmount,
+  watch,
+} from '#imports'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon } from '#blokkli/components'
 import { modulo } from '#blokkli/helpers'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const { ui, element } = useBlokkli()
 
@@ -66,6 +73,7 @@ const rootEl = ref<HTMLDivElement | null>(null)
 
 const props = withDefaults(
   defineProps<{
+    id: string
     title: string
     lead?: string
     width?: number | string
@@ -85,6 +93,12 @@ const props = withDefaults(
     icon: undefined,
   },
 )
+
+watch(ui.currentDialog, (id) => {
+  if (id !== props.id) {
+    emit('cancel')
+  }
+})
 
 const style = computed(() => {
   if (ui.isMobile.value) {
@@ -126,6 +140,12 @@ const getFocusableElements = (): FocusableElement[] => {
   )
 }
 
+onBlokkliEvent('keyPressed', (e) => {
+  if (e.code === 'Escape') {
+    emit('cancel')
+  }
+})
+
 const onKeyDown = (e: KeyboardEvent) => {
   if (e.code === 'Escape') {
     e.preventDefault()
@@ -162,7 +182,7 @@ const onKeyDown = (e: KeyboardEvent) => {
 }
 
 onMounted(() => {
-  ui.hasDialogOpen.value = true
+  ui.openDialog(props.id)
 
   // Focus the first best match in the dialog. That is, an element that is not a button.
   const focusableElements = getFocusableElements()
@@ -176,7 +196,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  ui.hasDialogOpen.value = false
+  ui.closeDialog(props.id)
 })
 </script>
 

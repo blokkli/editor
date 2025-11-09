@@ -1,5 +1,6 @@
 <template>
   <DialogModal
+    id="import-existing"
     :title="$t('importExistingDialogTitle', 'Import from existing page')"
     :lead="
       $t(

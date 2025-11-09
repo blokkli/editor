@@ -1,5 +1,10 @@
 <template>
-  <div :class="{ 'container mx-auto my-20': !parentType, 'mt-50 mb-10': parentType }">
+  <div
+    :class="{
+      'container mx-auto my-20': !parentType,
+      'mt-50 mb-10': parentType,
+    }"
+  >
     <div
       v-blokkli-editable:text
       class="ck-content"

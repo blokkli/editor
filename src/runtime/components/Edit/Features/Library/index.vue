@@ -78,6 +78,7 @@ import EditReusable from './EditReusable/index.vue'
 import { BlokkliTransition } from '#blokkli/components'
 import type { ActionPlacedEvent, LibraryEditItemEvent } from '#blokkli/types'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { useDialog } from '#blokkli/helpers/composables/useDialog'
 import { BUNDLE_FROM_LIBRARY } from '#blokkli/constants'
 
 const { adapter } = defineBlokkliFeature({
@@ -91,7 +92,7 @@ const { adapter } = defineBlokkliFeature({
 })
 
 const { selection, state, types, $t, eventBus, definitions, ui } = useBlokkli()
-const showReusableDialog = ref(false)
+const showReusableDialog = useDialog('library-reusable')
 
 async function selectNewlyAdded(cb: () => Promise<boolean>): Promise<void> {
   // Get all current UUIDs.

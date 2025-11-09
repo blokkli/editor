@@ -47,7 +47,7 @@ const to = computed(
 )
 
 function onClick() {
-  ui.menu.close()
+  ui.closeDialog('menu')
   logger.log('Click ' + props.id)
   emit('click')
 }

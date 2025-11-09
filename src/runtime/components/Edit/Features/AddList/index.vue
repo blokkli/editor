@@ -1,5 +1,5 @@
 <template>
-  <Teleport :to="ui.mainLayoutElement.value" v-if="shouldRender">
+  <Teleport v-if="shouldRender" :to="ui.mainLayoutElement.value">
     <div
       ref="wrapper"
       class="bk bk-add-list bk-control"

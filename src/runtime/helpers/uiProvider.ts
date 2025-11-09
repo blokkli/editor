@@ -6,6 +6,7 @@ import {
   ref,
   computed,
   watch,
+  readonly,
 } from '#imports'
 import type { ShallowRef } from 'vue'
 import { eventBus } from './eventBus'
@@ -15,7 +16,6 @@ import type { Viewport } from '#blokkli/constants'
 import { falsy } from '.'
 import { addElementClasses } from './addElementClasses'
 import { defineElementStyle } from './defineElementStyle'
-import type { StateProvider } from './stateProvider'
 import type { AdapterContext } from '#blokkli/adapter'
 import { defaultLanguage, forceDefaultLanguage } from '#blokkli-build/config'
 import type { ThemeColorName } from '#blokkli/types/theme'
@@ -36,17 +36,15 @@ export type UiProvider = {
   rootElement: () => HTMLElement
   artboardElement: () => HTMLElement
   providerElement: HTMLElement
-  menu: {
-    isOpen: Readonly<Ref<boolean>>
-    close: () => void
-    open: () => void
-  }
   isMobile: ComputedRef<boolean>
   isDesktop: ComputedRef<boolean>
   isAnimating: Ref<boolean>
   isAnalyzing: Ref<boolean>
   isProxyMode: Ref<boolean>
-  hasDialogOpen: Ref<boolean>
+  hasDialogOpen: ComputedRef<boolean>
+  currentDialog: Readonly<Ref<string | null>>
+  openDialog: (id: string) => void
+  closeDialog: (id?: string) => void
   hasTooltipOpen: ComputedRef<boolean>
   openTooltip: Ref<string>
   selectionColor: ComputedRef<ThemeColorName | null>
@@ -134,8 +132,7 @@ export default function (
   const visibleViewportY = ref(0)
 
   const isProxyMode = ref(false)
-  const menuIsOpen = ref(false)
-  const hasDialogOpen = ref(false)
+  const currentDialog = ref<string | null>(null)
   const openTooltip = ref('')
   const hasTransformOverlayOpen = ref(false)
   const isAnimating = ref(false)
@@ -143,6 +140,20 @@ export default function (
   const transformLabel = ref('')
   const openContextMenu = ref('')
   const banners = ref<Record<string, number>>({})
+
+  function openDialog(id: string) {
+    console.log('OPEN DIALOG: ' + id)
+    currentDialog.value = id
+  }
+
+  function closeDialog(id?: string) {
+    console.log('CLOSE DIALOG: ' + id)
+    if (!id || currentDialog.value === id) {
+      currentDialog.value = null
+    }
+  }
+
+  const hasDialogOpen = computed<boolean>(() => currentDialog.value !== null)
 
   function setBannerHeight(id: string, height: number) {
     banners.value[id] = height
@@ -491,11 +502,6 @@ export default function (
   defineElementStyle('--bk-scrollbar-width', scrollbarWidth)
 
   return {
-    menu: {
-      isOpen: menuIsOpen,
-      close: () => (menuIsOpen.value = false),
-      open: () => (menuIsOpen.value = true),
-    },
     artboardElement,
     rootElement,
     providerElement,
@@ -539,5 +545,8 @@ export default function (
     hasSidebarLeft,
     hasSidebarRight,
     mainLayoutElement,
+    openDialog,
+    closeDialog,
+    currentDialog: readonly(currentDialog),
   }
 }

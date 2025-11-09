@@ -104,6 +104,7 @@ function onClick() {
 }
 
 function onClose() {
+  console.log('ON CLOSE')
   selectedUuids.value = []
 }
 </script>

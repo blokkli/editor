@@ -5,7 +5,6 @@
       '--bk-bg': background,
     }"
   >
-    <div class="bk-dialog-background" />
     <div class="bk-konami-game bk-slide-up-inner">
       <div class="bk-konami-game-canvas">
         <canvas

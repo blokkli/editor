@@ -6,7 +6,6 @@
     @keyup.stop
     @keydown.stop
   >
-    <div class="bk bk-form-overlay-background bk-overlay" />
     <Resizable :id="id" class="bk-form-overlay-resizable">
       <FormHeader
         :bundle="bundle"
@@ -28,13 +27,16 @@
 import FormHeader from './Header/index.vue'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Resizable } from '#blokkli/components'
+import { onBeforeUnmount, onMounted, useBlokkli } from '#imports'
 
-defineProps<{
+const props = defineProps<{
   id: string
   bundle?: string
   icon?: BlokkliIcon
   title: string
 }>()
+
+const { ui } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'close'): void
@@ -43,6 +45,14 @@ const emit = defineEmits<{
 const onClose = () => {
   emit('close')
 }
+
+onMounted(() => {
+  ui.openDialog(props.id)
+})
+
+onBeforeUnmount(() => {
+  ui.closeDialog(props.id)
+})
 </script>
 
 <script lang="ts">

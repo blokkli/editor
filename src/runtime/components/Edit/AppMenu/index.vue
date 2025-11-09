@@ -1,15 +1,7 @@
 <template>
-  <BlokkliTransition name="fade">
-    <div
-      v-if="menuOpen"
-      class="bk bk-menu-overlay bk-overlay"
-      @click="ui.menu.close()"
-    />
-  </BlokkliTransition>
-
   <BlokkliTransition name="menu">
     <div v-show="menuOpen" class="bk bk-menu-list">
-      <button :class="{ 'bk-is-active': menuOpen }" @click="ui.menu.close">
+      <button :class="{ 'bk-is-active': menuOpen }" @click="closeMenu">
         <Icon name="close" />
       </button>
       <div class="bk-menu-list-inner">
@@ -35,9 +27,15 @@ import { computed, useBlokkli } from '#imports'
 import { Icon, BlokkliTransition } from '#blokkli/components'
 import { blokkliVersion } from '#blokkli-build/config'
 
+const DIALOG_MENU = 'menu'
+
 const { ui } = useBlokkli()
 
-const menuOpen = computed(() => ui.menu.isOpen.value)
+const menuOpen = computed(() => ui.currentDialog.value === DIALOG_MENU)
+
+function closeMenu() {
+  ui.closeDialog(DIALOG_MENU)
+}
 </script>
 
 <script lang="ts">

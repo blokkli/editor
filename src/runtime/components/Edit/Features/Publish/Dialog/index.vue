@@ -1,5 +1,6 @@
 <template>
   <DialogModal
+    id="publish"
     :title="$t('publishDialogTitle', 'Publish changes')"
     :width="900"
     :submit-label

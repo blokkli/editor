@@ -6,15 +6,9 @@
     .bk-slide-up-inner {
       @apply transition ease-swing duration-300;
     }
-    .bk-dialog-background {
-      @apply transition ease-swing duration-300;
-    }
   }
   .bk-slide-up-enter-from,
   .bk-slide-up-leave-to {
-    .bk-dialog-background {
-      @apply opacity-0;
-    }
     .bk-dialog-inner,
     .bk-slide-up-inner {
       @apply translate-y-full lg:translate-y-[400px] lg:opacity-0;
@@ -114,18 +108,12 @@
   .bk-slide-in-enter-active,
   .bk-slide-in-leave-active {
     @apply transition ease-swing duration-300;
-    .bk-form-overlay-background {
-      @apply transition ease-swing duration-300;
-    }
     .bk-form-overlay-resizable {
       @apply transition ease-swing duration-300;
     }
   }
   .bk-slide-in-enter-from,
   .bk-slide-in-leave-to {
-    .bk-form-overlay-background {
-      @apply opacity-0;
-    }
     .bk-form-overlay-resizable {
       @apply translate-y-full md:translate-x-full md:translate-y-0;
     }

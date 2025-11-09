@@ -2,6 +2,7 @@
   <BlokkliTransition name="slide-up">
     <DialogModal
       v-if="showDialog"
+      id="system-requirements"
       :title="$t('systemRequirementsDialogTitle', 'System Requirements')"
       :width="700"
       :submit-label="$t('systemRequirementsDialogButton', 'Continue anyway')"

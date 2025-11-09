@@ -17,11 +17,11 @@
 
   <div class="bk bk-toolbar" @touchstart.stop.passive @touchmove.stop.passive>
     <div class="bk bk-toolbar-menu">
-      <button class="bk-toolbar-menu-button" @click.prevent.stop="ui.menu.open">
+      <button class="bk-toolbar-menu-button" @click.prevent.stop="openMenu">
         <Icon name="menu" />
       </button>
     </div>
-    <div class="bk-toolbar-container bk-is-sidebar">
+    <div class="bk-toolbar-container">
       <div
         id="bk-sidebar-tabs-left"
         class="bk-sidebar-container-tabs bk-is-left"
@@ -55,11 +55,9 @@ import AppMenu from './../AppMenu/index.vue'
 
 const { ui, selection, storage } = useBlokkli()
 
-const showToolbar = computed(
-  () =>
-    !ui.isMobile.value ||
-    (!selection.isDragging.value && !selection.isMultiSelecting.value),
-)
+function openMenu() {
+  ui.openDialog('menu')
+}
 
 const sidebarVisible = computed(() => {
   if (ui.isMobile.value) {

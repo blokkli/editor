@@ -1,5 +1,6 @@
 <template>
   <DialogModal
+    id="settings"
     :title="$t('settingsDialogTitle', 'Change settings')"
     :width="900"
     hide-buttons

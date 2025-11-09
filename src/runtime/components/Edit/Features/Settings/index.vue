@@ -11,13 +11,13 @@
   />
   <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-up">
-      <SettingsDialog v-if="showSettings" @cancel="showSettings = false" />
+      <SettingsDialog v-if="showSettings" @cancel="onClose" />
     </BlokkliTransition>
   </Teleport>
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, defineBlokkliFeature, computed } from '#imports'
+import { useBlokkli, defineBlokkliFeature, computed } from '#imports'
 import { PluginMenuButton } from '#blokkli/plugins'
 import SettingsDialog from './Dialog/index.vue'
 import { addElementClasses } from '#blokkli/helpers/addElementClasses'
@@ -59,9 +59,15 @@ const { settings } = defineBlokkliFeature({
   },
 })
 
-const showSettings = ref(false)
+const showSettings = computed(() => ui.currentDialog.value === 'settings')
 
-const onClick = () => (showSettings.value = true)
+function onClick() {
+  ui.openDialog('settings')
+}
+
+function onClose() {
+  ui.closeDialog('settings')
+}
 
 const lowPerformanceMode = computed(() => settings.value.lowPerformanceMode)
 

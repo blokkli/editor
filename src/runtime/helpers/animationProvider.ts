@@ -20,6 +20,7 @@ import type { SelectionProvider } from './selectionProvider'
 import type { RectangleBufferCollector } from './webgl'
 import type { DebugProvider } from './debugProvider'
 import { useTransitionedValue } from './useTransitionedValue'
+import { isInsideRect } from '.'
 
 export type RenderContext = CanvasDrawEvent & {
   changeOptionsTransition: number
@@ -741,8 +742,13 @@ export default function (
   })
 
   function onWindowMouseMove(e: MouseEvent) {
-    mouseX = e.pageX
-    mouseY = e.pageY
+    if (
+      isInsideRect(e.pageX, e.pageY, ui.visibleViewport.value) ||
+      selection.isMultiSelecting.value
+    ) {
+      mouseX = e.pageX
+      mouseY = e.pageY
+    }
   }
 
   onMounted(() => {
