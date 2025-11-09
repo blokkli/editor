@@ -4,23 +4,12 @@
       <Overlay v-if="placedAction" @close="onClose" @submit="onSubmit" />
     </BlokkliTransition>
   </Teleport>
-
-  <PluginAddAction
-    type="assistant"
-    :title="$t('assistantAddAction', 'Add with AI Assistant')"
-    :description="
-      $t('assistantAddActionDescription', 'Add content using an AI assistant.')
-    "
-    icon="robot"
-    color="rose"
-    @placed="placedAction = $event"
-  />
 </template>
 
 <script lang="ts" setup>
-import type { ActionPlacedEvent, AssistantResult } from '#blokkli/types'
+import type { ActionPlacedData, AssistantResult } from '#blokkli/types'
 import { useBlokkli, defineBlokkliFeature, ref } from '#imports'
-import { PluginAddAction } from '#blokkli/plugins'
+import defineAddAction from '#blokkli/helpers/composables/defineAddAction'
 import { BlokkliTransition } from '#blokkli/components'
 import Overlay from './Overlay/index.vue'
 
@@ -40,7 +29,7 @@ const { adapter } = defineBlokkliFeature({
 
 const { state, $t, ui } = useBlokkli()
 
-const placedAction = ref<ActionPlacedEvent | null>(null)
+const placedAction = ref<ActionPlacedData | null>(null)
 
 const onClose = () => {
   placedAction.value = null
@@ -61,6 +50,22 @@ const onSubmit = async (result: AssistantResult) => {
 
   onClose()
 }
+
+defineAddAction(() => {
+  return {
+    id: 'assistant',
+    title: $t('assistantAddAction', 'Add with AI Assistant'),
+    description: $t(
+      'assistantAddActionDescription',
+      'Add content using an AI assistant.',
+    ),
+    icon: 'robot',
+    color: 'rose',
+    callback: (data) => {
+      placedAction.value = data
+    },
+  }
+})
 </script>
 
 <script lang="ts">

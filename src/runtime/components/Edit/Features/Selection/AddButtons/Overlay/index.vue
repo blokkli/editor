@@ -30,7 +30,7 @@
         :key="'action:' + action.id"
         class="bk-add-item"
         tabindex="-1"
-        @click.prevent="$emit('action', action.id)"
+        @click.prevent="$emit('action', action)"
       >
         <AddListItemIcon :icon="action.icon" :color="action.color" />
         <span>{{ action.title }}</span>
@@ -59,7 +59,8 @@ const props = defineProps<{
 }>()
 
 defineEmits<{
-  (e: 'select' | 'action', id: string): void
+  (e: 'select', id: string): void
+  (e: 'action', action: AddAction): void
   (e: 'close'): void
 }>()
 

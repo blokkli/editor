@@ -32,6 +32,7 @@
 import { ref, computed, useBlokkli } from '#imports'
 import { AddListItem, Sortli } from '#blokkli/components'
 import type {
+  BlockBundleDefinition,
   Command,
   DraggableNewItem,
   FieldConfig,
@@ -40,10 +41,13 @@ import type {
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import { isInternalBundle } from '#blokkli/helpers/bundles'
 import { PluginTourItem } from '#blokkli/plugins'
-import { getFieldKey, onlyUnique } from '#blokkli/helpers'
+import { getFieldKey } from '#blokkli/helpers'
+import { itemEntityType } from '#blokkli-build/config'
 
 const props = defineProps<{
   hideDisabledBlocks?: boolean
+  selectableBundles: string[]
+  generallyAvailableBundles: BlockBundleDefinition[]
 }>()
 
 const {
@@ -51,12 +55,10 @@ const {
   storage,
   types,
   context,
-  runtimeConfig,
   ui,
   eventBus,
   $t,
   state,
-  dom,
   definitions,
   blocks,
 } = useBlokkli()
@@ -78,70 +80,10 @@ const shouldRender = computed(() => state.editMode.value === 'editing')
 
 const searchText = ref('')
 
-const itemEntityType = runtimeConfig.itemEntityType
-
 const favorites = storage.use<string[]>('blockFavorites', [])
 
-const getAllowedTypesForSelected = (p: RenderedFieldListItem): string[] => {
-  // If the selected bundle allows nested items, return the allowed bundles for it instead.
-  if (types.itemBundlesWithNested.includes(p.bundle)) {
-    return types.fieldConfig
-      .forEntityTypeAndBundle(itemEntityType, p.bundle)
-      .flatMap((v) => v.allowedBundles)
-      .filter(Boolean) as string[]
-  }
-  // If the selected bundle is inside a nested item, return the allowed bundles of the parent bundle.
-  if (p.host.type === itemEntityType) {
-    return types.fieldConfig
-      .forEntityTypeAndBundle(itemEntityType, p.host.bundle)
-      .flatMap((v) => v.allowedBundles)
-      .filter(Boolean) as string[]
-  } else {
-    return (
-      types.getFieldConfig(
-        context.value.entityType,
-        context.value.entityBundle,
-        p.host.fieldName,
-      )?.allowedBundles || []
-    )
-  }
-}
-
-// All allowed bundles for which a field is being rendered currently.
-// Some blocks may have nested blocks, however they may not render them via
-// a <BlokkliField>. This would make it so that these nested block bundles
-// show up in the add list, but there is no place where these could be added.
-const bundlesForRenderedFields = computed(() => {
-  return dom.registeredFieldTypes.value
-    .flatMap((field) => {
-      return (
-        types.getFieldConfig(
-          field.entityType,
-          field.entityBundle,
-          field.fieldName,
-        )?.allowedBundles || []
-      )
-    })
-    .filter(onlyUnique)
-})
-
-const generallyAvailableBundles = computed(() =>
-  types.generallyAvailableBundles.filter((v) =>
-    // Exclude bundles for which no field is currently being rendered.
-    bundlesForRenderedFields.value.includes(v.id),
-  ),
-)
-
-const selectableBundles = computed(() => {
-  if (selection.items.value.length) {
-    return selection.items.value.flatMap((v) => getAllowedTypesForSelected(v))
-  }
-
-  return generallyAvailableBundles.value.map((v) => v.id || '')
-})
-
 function determineVisibility(bundle: string, label: string): boolean {
-  if (ui.isMobile.value && !selectableBundles.value.includes(bundle)) {
+  if (ui.isMobile.value && !props.selectableBundles.includes(bundle)) {
     return false
   }
 
@@ -163,11 +105,11 @@ function determineVisibility(bundle: string, label: string): boolean {
 }
 
 const sortedList = computed(() => {
-  return [...generallyAvailableBundles.value]
+  return [...props.generallyAvailableBundles]
     .filter((v) => !isInternalBundle(v.id))
     .map((v) => {
       const isVisible = determineVisibility(v.id, v.label)
-      const isDisabled = !v.id || !selectableBundles.value.includes(v.id)
+      const isDisabled = !v.id || !props.selectableBundles.includes(v.id)
       return {
         ...v,
         isDisabled,
@@ -342,7 +284,7 @@ const getInsertCommands = (
     },
   )
 
-  if (block.host.type === runtimeConfig.itemEntityType) {
+  if (block.host.type === itemEntityType) {
     const parentBlock = blocks.getBlock(block.host.uuid)
     if (parentBlock) {
       getInsertCommands(parentBlock).forEach((parentCommand) => {

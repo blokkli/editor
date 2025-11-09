@@ -20,25 +20,6 @@
     @click="showReusableDialog = true"
   />
 
-  <PluginAddAction
-    v-if="
-      adapter.addLibraryItem && adapter.getLibraryItems && isSupportedOnEntity
-    "
-    type="library"
-    :title="$t('libraryAddFromLibrary', 'Add from library')"
-    :description="
-      $t(
-        'libraryAddDescription',
-        'Add a reusable block from the block library.',
-      )
-    "
-    icon="reusable"
-    color="lime"
-    :item-bundle="BUNDLE_FROM_LIBRARY"
-    :disabled="!fromLibraryAllowedInList"
-    @placed="placedAction = $event"
-  />
-
   <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-up">
       <ReusableDialog
@@ -71,13 +52,14 @@
 
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, defineBlokkliFeature } from '#imports'
-import { PluginItemAction, PluginAddAction } from '#blokkli/plugins'
+import { PluginItemAction } from '#blokkli/plugins'
 import ReusableDialog from './ReusableDialog/index.vue'
 import LibraryDialog from './LibraryDialog/index.vue'
 import EditReusable from './EditReusable/index.vue'
 import { BlokkliTransition } from '#blokkli/components'
-import type { ActionPlacedEvent, LibraryEditItemEvent } from '#blokkli/types'
+import type { ActionPlacedData, LibraryEditItemEvent } from '#blokkli/types'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import defineAddAction from '#blokkli/helpers/composables/defineAddAction'
 import { useDialog } from '#blokkli/helpers/composables/useDialog'
 import { BUNDLE_FROM_LIBRARY } from '#blokkli/constants'
 
@@ -125,7 +107,7 @@ const onDetach = async () => {
   )
 }
 
-const placedAction = ref<ActionPlacedEvent | null>(null)
+const placedAction = ref<ActionPlacedData | null>(null)
 const onAddLibraryItem = async (uuid: string) => {
   if (!placedAction.value || !adapter.addLibraryItem) {
     return
@@ -217,6 +199,30 @@ function onSubmitLibraryItem() {
   eventBus.emit('reloadState')
   cancelLibraryItemEdit()
 }
+
+defineAddAction(() => {
+  if (
+    !adapter.addLibraryItem ||
+    !adapter.getLibraryItems ||
+    !isSupportedOnEntity.value
+  ) {
+    return
+  }
+  return {
+    id: 'library',
+    title: $t('libraryAddFromLibrary', 'Add from library'),
+    description: $t(
+      'libraryAddDescription',
+      'Add a reusable block from the block library.',
+    ),
+    icon: 'reusable',
+    color: 'lime',
+    itemBundle: BUNDLE_FROM_LIBRARY,
+    callback: (data) => {
+      placedAction.value = data
+    },
+  }
+})
 </script>
 
 <script lang="ts">

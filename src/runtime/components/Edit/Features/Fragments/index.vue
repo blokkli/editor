@@ -1,27 +1,8 @@
 <template>
-  <PluginAddAction
-    v-if="
-      adapter.addLibraryItem && adapter.getLibraryItems && isSupportedOnEntity
-    "
-    type="fragment"
-    :title="$t('fragmentsAddFragmentAction', 'Add fragment')"
-    :description="
-      $t(
-        'fragmentsAddFragmentDescription',
-        '<p>Drag the icon into the page to add a fragment block.</p><p>Fragments are reusable blocks that always render the same content.</p>',
-      )
-    "
-    :disabled="!isEnabled"
-    item-bundle="blokkli_fragment"
-    icon="fragment"
-    color="accent"
-    @placed="placedAction = $event"
-  />
-
   <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-in">
       <FragmentsDialog
-        v-if="placedAction && adapter.getLibraryItems"
+        v-if="placedAction"
         :field="placedAction.field"
         @close="placedAction = null"
         @submit="onAddFragment"
@@ -32,10 +13,10 @@
 
 <script lang="ts" setup>
 import { ref, useBlokkli, defineBlokkliFeature, computed } from '#imports'
-import { PluginAddAction } from '#blokkli/plugins'
 import FragmentsDialog from './Dialog/index.vue'
 import { BlokkliTransition } from '#blokkli/components'
-import type { ActionPlacedEvent } from '#blokkli/types'
+import type { ActionPlacedData } from '#blokkli/types'
+import defineAddAction from '#blokkli/helpers/composables/defineAddAction'
 
 const { adapter } = defineBlokkliFeature({
   id: 'fragments',
@@ -46,19 +27,9 @@ const { adapter } = defineBlokkliFeature({
   dependencies: ['add-list'],
 })
 
-const { state, $t, types, selection, dom, ui } = useBlokkli()
+const { state, $t, types, dom, ui } = useBlokkli()
 
-const isEnabled = computed<boolean>(() => {
-  const item = selection.item.value
-  if (item) {
-    const field = dom.getRegisteredField(item.host.uuid, item.host.fieldName)
-    return !!field?.allowedFragments.length
-  }
-
-  return true
-})
-
-const placedAction = ref<ActionPlacedEvent | null>(null)
+const placedAction = ref<ActionPlacedData | null>(null)
 
 const onAddFragment = async (name: string) => {
   if (!placedAction.value || !adapter.fragmentsAddBlock) {
@@ -79,6 +50,31 @@ const onAddFragment = async (name: string) => {
 const isSupportedOnEntity = computed(() =>
   types.generallyAvailableBundles.find((v) => v.id === 'blokkli_fragment'),
 )
+
+defineAddAction(() => {
+  if (!isSupportedOnEntity.value) {
+    return
+  }
+
+  return {
+    id: 'fragment',
+    icon: 'fragment',
+    color: 'accent',
+    itemBundle: 'blokkli_fragment',
+    title: $t('fragmentsAddFragmentAction', 'Add fragment'),
+    description: $t(
+      'fragmentsAddFragmentDescription',
+      '<p>Drag the icon into the page to add a fragment block.</p><p>Fragments are reusable blocks that always render the same content.</p>',
+    ),
+    callback: (action: ActionPlacedData) => {
+      placedAction.value = action
+    },
+    enabled: (item) => {
+      const field = dom.getRegisteredField(item.host.uuid, item.host.fieldName)
+      return !!field?.allowedFragments.length
+    },
+  }
+})
 </script>
 
 <script lang="ts">

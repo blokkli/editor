@@ -276,8 +276,7 @@ const onDropAction = (
   field: BlokkliFieldElement,
   afterUuid?: string,
 ) => {
-  eventBus.emit('action:placed', {
-    id: action.actionType,
+  action.action.callback({
     preceedingUuid: afterUuid,
     host,
     field,

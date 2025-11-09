@@ -37,6 +37,7 @@ import {
   determineCanAddChildren,
 } from '#blokkli/helpers/dropTargets'
 import type {
+  AddAction,
   BlokkliFieldElement,
   DraggableHostData,
   RenderedFieldListItem,
@@ -262,13 +263,12 @@ function onSelectBundle(bundle: string) {
   closeOverlay()
 }
 
-function onSelectAction(id: string) {
+function onSelectAction(action: AddAction) {
   if (!addData.value) {
     return
   }
 
-  eventBus.emit('action:placed', {
-    id,
+  action.callback({
     field: addData.value.field,
     preceedingUuid: addData.value.preceedingUuid,
     host: { ...addData.value.host },
@@ -406,9 +406,7 @@ function setAddData(
   anchorEl?: HTMLElement,
   anchorCoordinates?: { x: number; y: number },
 ) {
-  const allowedBundles = field.allowedBundles.filter(
-    (bundle) => !isInternalBundle(bundle),
-  )
+  const allowedBundles = field.allowedBundles
   if (allowedBundles.length === 0) {
     return
   }

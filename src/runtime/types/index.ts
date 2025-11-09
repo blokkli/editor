@@ -879,6 +879,7 @@ export interface DraggableNewItem {
 export interface DraggableActionItem {
   itemType: 'action'
   actionType: string
+  action: AddAction
   itemBundle?: string
   element: () => HTMLElement
 }
@@ -1131,8 +1132,7 @@ export type BlokkliFieldElement = {
 
 export type FieldDropAlignment = 'vertical' | 'horizontal'
 
-export type ActionPlacedEvent = {
-  id: string
+export type ActionPlacedData = {
   preceedingUuid?: string
   host: DraggableHostData
   field: BlokkliFieldElement
@@ -1280,7 +1280,6 @@ export type EventbusEvents = {
   'sidebar:close': undefined
   'sidebar:open': string
 
-  'action:placed': ActionPlacedEvent
   'action:selected': undefined
 
   'animator:add': AnimatorAddEvent
@@ -1689,7 +1688,8 @@ export type AddAction = {
   itemBundle?: string
   title: string
   description?: string
-  enabled?: boolean
+  callback: (action: ActionPlacedData) => void
+  enabled?: (item: RenderedFieldListItem) => boolean
 }
 
 export type BlockEditContext = {

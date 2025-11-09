@@ -13,8 +13,8 @@
           'bk-is-active': isActive,
         }"
       >
-        <AddListBlocks />
-        <Sortli id="blokkli-add-list-actions" :build-item="buildItemAction" />
+        <AddListBlocks :selectable-bundles :generally-available-bundles />
+        <AddListActions :selectable-bundles />
       </div>
     </div>
     <PluginTourItem
@@ -28,10 +28,15 @@
 
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, defineBlokkliFeature } from '#imports'
-import { Sortli } from '#blokkli/components'
 import { PluginTourItem } from '#blokkli/plugins'
-import type { DraggableActionItem } from '#blokkli/types'
 import AddListBlocks from './Blocks/index.vue'
+import AddListActions from './Actions/index.vue'
+import type {
+  BlockBundleDefinition,
+  RenderedFieldListItem,
+} from '#blokkli/types'
+import { itemEntityType } from '#blokkli-build/config'
+import { onlyUnique } from '#blokkli/helpers'
 
 defineBlokkliFeature({
   id: 'add-list',
@@ -52,23 +57,65 @@ defineBlokkliFeature({
   screenshot: 'feature-add-list.jpg',
 })
 
-function buildItemAction(
-  element: HTMLElement,
-): DraggableActionItem | undefined {
-  const actionType = element.dataset.sortliId
-  if (!actionType) {
-    return
+const { $t, ui, selection, state, tour, types, context, dom } = useBlokkli()
+
+const getAllowedTypesForSelected = (p: RenderedFieldListItem): string[] => {
+  // If the selected bundle allows nested items, return the allowed bundles for it instead.
+  if (types.itemBundlesWithNested.includes(p.bundle)) {
+    return types.fieldConfig
+      .forEntityTypeAndBundle(itemEntityType, p.bundle)
+      .flatMap((v) => v.allowedBundles)
+      .filter(Boolean) as string[]
   }
-  const itemBundle = element.dataset.itemBundle
-  return {
-    itemType: 'action',
-    actionType,
-    itemBundle,
-    element: () => element,
+  // If the selected bundle is inside a nested item, return the allowed bundles of the parent bundle.
+  if (p.host.type === itemEntityType) {
+    return types.fieldConfig
+      .forEntityTypeAndBundle(itemEntityType, p.host.bundle)
+      .flatMap((v) => v.allowedBundles)
+      .filter(Boolean) as string[]
+  } else {
+    return (
+      types.getFieldConfig(
+        context.value.entityType,
+        context.value.entityBundle,
+        p.host.fieldName,
+      )?.allowedBundles || []
+    )
   }
 }
 
-const { $t, ui, selection, state, tour } = useBlokkli()
+// All allowed bundles for which a field is being rendered currently.
+// Some blocks may have nested blocks, however they may not render them via
+// a <BlokkliField>. This would make it so that these nested block bundles
+// show up in the add list, but there is no place where these could be added.
+const bundlesForRenderedFields = computed(() => {
+  return dom.registeredFieldTypes.value
+    .flatMap((field) => {
+      return (
+        types.getFieldConfig(
+          field.entityType,
+          field.entityBundle,
+          field.fieldName,
+        )?.allowedBundles || []
+      )
+    })
+    .filter(onlyUnique)
+})
+
+const generallyAvailableBundles = computed<BlockBundleDefinition[]>(() =>
+  types.generallyAvailableBundles.filter((v) =>
+    // Exclude bundles for which no field is currently being rendered.
+    bundlesForRenderedFields.value.includes(v.id),
+  ),
+)
+
+const selectableBundles = computed(() => {
+  if (selection.items.value.length) {
+    return selection.items.value.flatMap((v) => getAllowedTypesForSelected(v))
+  }
+
+  return generallyAvailableBundles.value.map((v) => v.id || '')
+})
 
 const shouldRender = computed(
   () => state.canEdit.value && state.editMode.value === 'editing',
