@@ -441,7 +441,7 @@ export default function (
     if (!el) {
       return ''
     }
-    if ('itemType' in item && item.itemType !== 'new') {
+    if ('itemType' in item && item.itemType !== 'existing_structure') {
       return el.outerHTML
     }
     const childCount = element.queryAll(

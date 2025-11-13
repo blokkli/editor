@@ -97,9 +97,9 @@ const ACTIONS_HEIGHT = 52
 
 const el = useTemplateRef('el')
 
-const { shouldRender } = useStickyToolbar(el, {
+useStickyToolbar(el, {
   getPlacementY: () => 'top',
-  shouldUpdate: () => !selection.isChangingOptions.value,
+  shouldUpdate: () => !selection.isChangingOptions.value && isVisible.value,
   getHeight: () => ACTIONS_HEIGHT,
   getMargin: () => 20,
   allowHorizontalOverflow: true,
@@ -119,7 +119,6 @@ const isVisible = computed<boolean>(() => {
     !ui.isAnimating.value &&
     !ui.hasTransformOverlayOpen.value &&
     hasAnythingSelected.value &&
-    shouldRender.value &&
     !ui.hasTooltipOpen.value
   )
 })

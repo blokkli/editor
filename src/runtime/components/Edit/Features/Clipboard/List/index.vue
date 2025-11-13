@@ -3,7 +3,7 @@
     <div
       v-for="(item, index) in items"
       :key="index + item.data + renderKey"
-      class="bk-parent bk-sidebar-padding"
+      class="bk-parent bk-sidebar-padding bk-clipboard-list-item"
       :data-sortli-id="index"
     >
       <div class="bk-clipboard-item">

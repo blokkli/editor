@@ -16,6 +16,10 @@
   }
 }
 
+.bk-dragging-overlay .bk-clipboard-list-item {
+  @apply rounded-lg overflow-hidden bg-mono-50;
+}
+
 .bk-clipboard-item {
   @apply !relative !rounded !font-sans;
   @apply hover:border-mono-500;

@@ -120,7 +120,7 @@
   @apply overflow-auto h-full overscroll-contain absolute top-0 left-0 w-full;
 }
 .bk.bk-search-item {
-  @apply px-20 text-mono-700 py-15 md:py-20 cursor-pointer relative flex gap-10 text-left w-full items-stretch;
+  @apply px-20 text-mono-700 py-15 md:py-20 cursor-pointer relative flex gap-10 text-left w-full items-stretch bg-white;
 
   &.bk-is-content {
     @apply cursor-grab;
@@ -141,6 +141,10 @@
       }
     }
   }
+}
+
+.bk-dragging-overlay .bk-search-item {
+  @apply rounded-lg overflow-hidden;
 }
 
 .bk-toolbar-button.bk-is-search .bk-tooltip {

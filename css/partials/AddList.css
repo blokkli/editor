@@ -4,34 +4,6 @@
 
   grid-area: left;
 
-  .bk-add-list-inner {
-    @apply absolute top-0 left-0 h-full overflow-auto transition-all ease-swing duration-200 w-auto;
-    @apply bg-mono-900;
-    @apply flex flex-col;
-    @apply border-t border-t-mono-700;
-    clip-path: rect(0px 70px 100% 0px);
-
-    .bk-add-item-label {
-      @apply opacity-0 pr-25;
-    }
-
-    .bk-add-item + .bk-add-item {
-      @apply -mt-10;
-    }
-
-    .bk-add-item-icon {
-      @apply p-10 size-70;
-    }
-
-    &.bk-is-active {
-      clip-path: rect(0px 100% 100% 0px);
-    }
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-
   #blokkli-add-list-blocks {
     @apply grid pb-25;
   }
@@ -57,6 +29,37 @@
         theme('colors.mono.900')
       );
     }
+  }
+}
+
+.bk-add-list-inner {
+  @apply absolute top-0 left-0 h-full overflow-auto transition-all ease-swing duration-200 w-auto;
+  @apply bg-mono-900;
+  @apply flex flex-col;
+  @apply border-t border-t-mono-700;
+  clip-path: rect(0px 70px 100% 0px);
+
+  .bk-add-item-label {
+    @apply opacity-0 pr-25;
+  }
+
+  .bk-add-item + .bk-add-item {
+    @apply -mt-10;
+  }
+
+  &.bk-is-active {
+    clip-path: rect(0px 100% 100% 0px);
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.bk-add-list-inner,
+.bk-dragging-overlay {
+  .bk-add-item-icon {
+    @apply p-10 size-70;
   }
 }
 
@@ -114,7 +117,7 @@
 }
 
 .bk-dragging-overlay .bk-add-item {
-  @apply rounded-lg;
+  @apply rounded-lg overflow-hidden;
 }
 
 .bk .bk-item-icon {

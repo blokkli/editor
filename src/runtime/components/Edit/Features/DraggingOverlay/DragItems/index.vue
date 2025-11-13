@@ -325,7 +325,7 @@ onMounted(() => {
     props.startCoords,
     boundRect.rect,
     // Limit width to 250px
-    340,
+    351,
   )
   const boundsX = props.isTouch ? 0 : bounds.x
   const boundsY = props.isTouch ? translateY.value : bounds.y
@@ -417,7 +417,10 @@ onMounted(() => {
 
         transformOrigin: `${originX}px ${originY}px`,
         markup,
-        background: realBackgroundColor(item.element),
+        background:
+          item.item.itemType === 'existing'
+            ? realBackgroundColor(item.element)
+            : '',
         prevVisibility:
           item.item.itemType === 'existing' ||
           item.item.itemType === 'existing_structure'
