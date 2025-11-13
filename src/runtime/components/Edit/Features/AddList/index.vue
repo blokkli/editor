@@ -13,7 +13,11 @@
           'bk-is-active': isActive,
         }"
       >
-        <AddListBlocks :selectable-bundles :generally-available-bundles />
+        <AddListBlocks
+          :selectable-bundles
+          :generally-available-bundles
+          :hide-disabled-blocks="settings.hideDisabledBlocks"
+        />
         <AddListActions :selectable-bundles />
       </div>
     </div>
@@ -38,7 +42,7 @@ import type {
 import { itemEntityType } from '#blokkli-build/config'
 import { onlyUnique } from '#blokkli/helpers'
 
-defineBlokkliFeature({
+const { settings } = defineBlokkliFeature({
   id: 'add-list',
   icon: 'plus',
   label: 'Add List',

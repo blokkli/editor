@@ -43,8 +43,8 @@
     @apply opacity-0 pr-25;
   }
 
-  .bk-add-item + .bk-add-item {
-    @apply -mt-10;
+  .bk-add-item:not(:last-child) {
+    @apply -mb-10;
   }
 
   &.bk-is-active {

@@ -1,10 +1,10 @@
 <template>
   <Sortli v-if="shouldRender" id="blokkli-add-list-blocks" :build-item>
     <AddListItem
-      v-for="(type, i) in sortedList"
+      v-for="type in sortedList"
       v-show="type.isVisible"
       :id="type.id"
-      :key="i + (type.id || 'undefined') + renderKey"
+      :key="type.id"
       context="add-list-blocks"
       :label="type.label"
       :bundle="type.id"
@@ -125,8 +125,6 @@ const sortedList = computed(() => {
       return a.label.localeCompare(b.label)
     })
 })
-
-const renderKey = ref('')
 
 const getBundlesForAppendCommands = () => {
   const item = selection.item.value
