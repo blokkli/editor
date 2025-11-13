@@ -44,7 +44,7 @@ defineBlokkliFeature({
 
 const { $t, ui } = useBlokkli()
 
-const isVisible = useDialog('command-palette')
+const isVisible = useDialog('command-palette', 'center')
 
 const label = computed(() => $t('commandPaletteOpen', 'Open Command Palette'))
 

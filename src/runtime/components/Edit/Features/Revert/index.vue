@@ -38,7 +38,7 @@ const { adapter } = defineBlokkliFeature({
 const { state, $t, ui } = useBlokkli()
 const { mutations, canEdit, mutateWithLoadingState } = state
 
-const showConfirm = useDialog('revert')
+const showConfirm = useDialog('revert', 'center')
 
 async function onSubmit() {
   await mutateWithLoadingState(

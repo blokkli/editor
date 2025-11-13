@@ -28,6 +28,7 @@ import FormHeader from './Header/index.vue'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Resizable } from '#blokkli/components'
 import { onBeforeUnmount, onMounted, useBlokkli } from '#imports'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const props = defineProps<{
   id: string
@@ -42,12 +43,14 @@ const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-const onClose = () => {
+function onClose() {
   emit('close')
 }
 
+onBlokkliEvent('overlay:close', onClose)
+
 onMounted(() => {
-  ui.openDialog(props.id)
+  ui.openDialog({ id: props.id, alignment: 'right' })
 })
 
 onBeforeUnmount(() => {

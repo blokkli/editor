@@ -2,8 +2,8 @@
   <AddListItem
     :id="action.id"
     ref="item"
-    context="add-list-actions"
     :key="action.id"
+    context="add-list-actions"
     :label="action.title"
     :bundle="action.itemBundle"
     :icon="action.icon"

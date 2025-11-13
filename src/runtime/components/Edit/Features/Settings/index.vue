@@ -49,10 +49,10 @@ const { settings } = defineBlokkliFeature({
   },
 })
 
-const showSettings = computed(() => ui.currentDialog.value === 'settings')
+const showSettings = computed(() => ui.currentDialog.value?.id === 'settings')
 
 function onClick() {
-  ui.openDialog('settings')
+  ui.openDialog({ id: 'settings', alignment: 'center' })
 }
 
 function onClose() {

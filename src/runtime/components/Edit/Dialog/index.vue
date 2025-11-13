@@ -94,8 +94,8 @@ const props = withDefaults(
   },
 )
 
-watch(ui.currentDialog, (id) => {
-  if (id !== props.id) {
+watch(ui.currentDialog, (dialog) => {
+  if (dialog?.id !== props.id) {
     emit('cancel')
   }
 })
@@ -146,6 +146,10 @@ onBlokkliEvent('keyPressed', (e) => {
   }
 })
 
+onBlokkliEvent('overlay:close', () => {
+  emit('cancel')
+})
+
 const onKeyDown = (e: KeyboardEvent) => {
   if (e.code === 'Escape') {
     e.preventDefault()
@@ -181,7 +185,7 @@ const onKeyDown = (e: KeyboardEvent) => {
   }
 }
 
-ui.openDialog(props.id)
+ui.openDialog({ id: props.id, alignment: 'center' })
 
 onMounted(() => {
   // Focus the first best match in the dialog. That is, an element that is not a button.

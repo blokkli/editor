@@ -20,7 +20,6 @@ import type { SelectionProvider } from './selectionProvider'
 import type { RectangleBufferCollector } from './webgl'
 import type { DebugProvider } from './debugProvider'
 import { useTransitionedValue } from './useTransitionedValue'
-import { isInsideRect } from '.'
 
 export type RenderContext = CanvasDrawEvent & {
   changeOptionsTransition: number

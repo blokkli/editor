@@ -43,7 +43,7 @@ const isEmpty = computed(
   () => !state.mutatedFields.value.find((v) => v.list?.length),
 )
 
-const showModal = useDialog('import-existing')
+const showModal = useDialog('import-existing', 'center')
 
 function onSubmit(sourceUuid: string, sourceFields: string[]) {
   showModal.value = false

@@ -351,6 +351,14 @@
     "source": "Block type \"@types\" is not allowed here.",
     "translation": ""
   },
+  "clipboardPasteErrorAllowedFragmentsMultiple": {
+    "source": "Fragments (@types) are not allowed here.",
+    "translation": ""
+  },
+  "clipboardPasteErrorAllowedFragmentsSingle": {
+    "source": "Fragment \"@types\" is not allowed here.",
+    "translation": ""
+  },
   "clipboardPasteErrorCardinality": {
     "source": "This field only allows up to @count blocks.",
     "translation": ""
@@ -622,22 +630,6 @@
   "feature_add-list_setting_hideDisabledBlocks_label": {
     "source": "Hide blocks that can't be added",
     "translation": ""
-  },
-  "feature_add-list_setting_orientation_label": {
-    "source": "Add List",
-    "translation": "Liste d'ajout"
-  },
-  "feature_add-list_setting_orientation_option_horizontal": {
-    "source": "Horizontal",
-    "translation": "Horizontal"
-  },
-  "feature_add-list_setting_orientation_option_sidebar": {
-    "source": "Sidebar",
-    "translation": "Encadré"
-  },
-  "feature_add-list_setting_orientation_option_vertical": {
-    "source": "Vertical",
-    "translation": "Vertical"
   },
   "feature_analyze_description": {
     "source": "Analyze blocks and page for SEO, accessibility, etc.",
@@ -1361,6 +1353,10 @@
   },
   "optionsCommand.unselectCheckboxValue": {
     "source": "Unselect \"@value\" in \"@option\"",
+    "translation": ""
+  },
+  "overlayDoubleClickInfo": {
+    "source": "<strong>Double click</strong> to close overlay",
     "translation": ""
   },
   "ownershipError": {

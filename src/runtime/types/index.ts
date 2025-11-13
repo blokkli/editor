@@ -1245,6 +1245,7 @@ export type EventbusEvents = {
   'select:toggle': string
   'select:shiftToggle': string
   'select:end': string[] | undefined
+  'overlay:close': undefined
 
   // Add action dropped.
   'item:dropped': undefined
@@ -1745,5 +1746,10 @@ export type RegisterFieldData = Pick<
 export type VueClassProp = string | Record<string, boolean> | VueClassProp[]
 
 export type SidebarRegion = 'left' | 'right'
+
+export type GlobalUiDialog = {
+  id: string
+  alignment: 'left' | 'right' | 'center'
+}
 
 export default {}

@@ -52,16 +52,19 @@ import { Icon, BlokkliTransition } from '#blokkli/components'
 import { blokkliVersion } from '#blokkli-build/config'
 import MenuButton from './MenuButton.vue'
 import type { MenuButtonPlugin } from '#blokkli/helpers/pluginProvider'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const DIALOG_MENU = 'menu'
 
 const { ui, plugins } = useBlokkli()
 
-const menuOpen = computed(() => ui.currentDialog.value === DIALOG_MENU)
+const menuOpen = computed(() => ui.currentDialog.value?.id === DIALOG_MENU)
 
 function closeMenu() {
   ui.closeDialog(DIALOG_MENU)
 }
+
+onBlokkliEvent('overlay:close', closeMenu)
 
 const allButtons = computed(() => plugins.get('menuButton'))
 

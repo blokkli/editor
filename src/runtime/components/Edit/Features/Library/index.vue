@@ -74,7 +74,7 @@ const { adapter } = defineBlokkliFeature({
 })
 
 const { selection, state, types, $t, eventBus, definitions, ui } = useBlokkli()
-const showReusableDialog = useDialog('library-reusable')
+const showReusableDialog = useDialog('library-reusable', 'center')
 
 async function selectNewlyAdded(cb: () => Promise<boolean>): Promise<void> {
   // Get all current UUIDs.

@@ -381,6 +381,14 @@ msgctxt "clipboardPasteErrorAllowedBundlesSingle"
 msgid "Block type \"@types\" is not allowed here."
 msgstr ""
 
+msgctxt "clipboardPasteErrorAllowedFragmentsMultiple"
+msgid "Fragments (@types) are not allowed here."
+msgstr ""
+
+msgctxt "clipboardPasteErrorAllowedFragmentsSingle"
+msgid "Fragment \"@types\" is not allowed here."
+msgstr ""
+
 msgctxt "clipboardPasteErrorCardinality"
 msgid "This field only allows up to @count blocks."
 msgstr ""
@@ -664,22 +672,6 @@ msgstr ""
 msgctxt "feature_add-list_setting_hideDisabledBlocks_label"
 msgid "Hide blocks that can't be added"
 msgstr ""
-
-msgctxt "feature_add-list_setting_orientation_label"
-msgid "Add List"
-msgstr "Liste d'ajout"
-
-msgctxt "feature_add-list_setting_orientation_option_horizontal"
-msgid "Horizontal"
-msgstr "Horizontal"
-
-msgctxt "feature_add-list_setting_orientation_option_sidebar"
-msgid "Sidebar"
-msgstr "Encadré"
-
-msgctxt "feature_add-list_setting_orientation_option_vertical"
-msgid "Vertical"
-msgstr "Vertical"
 
 msgctxt "feature_analyze_description"
 msgid "Analyze blocks and page for SEO, accessibility, etc."
@@ -1504,6 +1496,10 @@ msgstr ""
 
 msgctxt "optionsCommand.unselectCheckboxValue"
 msgid "Unselect \"@value\" in \"@option\""
+msgstr ""
+
+msgctxt "overlayDoubleClickInfo"
+msgid "<strong>Double click</strong> to close overlay"
 msgstr ""
 
 msgctxt "ownershipError"

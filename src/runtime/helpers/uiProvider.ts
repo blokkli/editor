@@ -11,7 +11,13 @@ import {
 import type { ShallowRef } from 'vue'
 import { eventBus } from './eventBus'
 import type { StorageProvider } from './storageProvider'
-import type { Coord, Rectangle, SidebarRegion, Size } from '#blokkli/types'
+import type {
+  Coord,
+  GlobalUiDialog,
+  Rectangle,
+  SidebarRegion,
+  Size,
+} from '#blokkli/types'
 import type { Viewport } from '#blokkli/constants'
 import { falsy } from '.'
 import { addElementClasses } from './addElementClasses'
@@ -42,8 +48,8 @@ export type UiProvider = {
   isAnalyzing: Ref<boolean>
   isProxyMode: Ref<boolean>
   hasDialogOpen: ComputedRef<boolean>
-  currentDialog: Readonly<Ref<string | null>>
-  openDialog: (id: string) => void
+  currentDialog: Readonly<Ref<GlobalUiDialog | null>>
+  openDialog: (dialog: GlobalUiDialog) => void
   closeDialog: (id?: string) => void
   hasTooltipOpen: ComputedRef<boolean>
   openTooltip: Ref<string>
@@ -132,7 +138,7 @@ export default function (
   const visibleViewportY = ref(0)
 
   const isProxyMode = ref(false)
-  const currentDialog = ref<string | null>(null)
+  const currentDialog = ref<GlobalUiDialog | null>(null)
   const openTooltip = ref('')
   const hasTransformOverlayOpen = ref(false)
   const isAnimating = ref(false)
@@ -141,12 +147,12 @@ export default function (
   const openContextMenu = ref('')
   const banners = ref<Record<string, number>>({})
 
-  function openDialog(id: string) {
-    currentDialog.value = id
+  function openDialog(dialog: GlobalUiDialog) {
+    currentDialog.value = dialog
   }
 
   function closeDialog(id?: string) {
-    if (!id || currentDialog.value === id) {
+    if (!id || currentDialog.value?.id === id) {
       currentDialog.value = null
     }
   }

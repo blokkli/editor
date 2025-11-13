@@ -1,15 +1,19 @@
+import type { GlobalUiDialog } from '#blokkli/types'
 import { computed, useBlokkli, type WritableComputedRef } from '#imports'
 
-export function useDialog(id: string): WritableComputedRef<boolean> {
+export function useDialog(
+  id: string,
+  alignment: GlobalUiDialog['alignment'],
+): WritableComputedRef<boolean> {
   const { ui } = useBlokkli()
 
   return computed<boolean>({
     get() {
-      return ui.currentDialog.value === id
+      return ui.currentDialog.value?.id === id
     },
     set(isOpen) {
       if (isOpen) {
-        ui.openDialog(id)
+        ui.openDialog({ id, alignment })
       } else {
         ui.closeDialog(id)
       }

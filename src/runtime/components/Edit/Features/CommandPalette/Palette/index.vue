@@ -52,6 +52,7 @@ import type { Command } from '#blokkli/types'
 import { Fzf } from 'fzf'
 import { modulo } from '#blokkli/helpers'
 import Item, { type MappedCommandItem } from './Item/index.vue'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const emit = defineEmits(['close'])
 
@@ -250,6 +251,10 @@ const onKeyDown = (e: KeyboardEvent) => {
 const onWindowClick = () => {
   emit('close')
 }
+
+onBlokkliEvent('overlay:close', () => {
+  emit('close')
+})
 
 onMounted(() => {
   if (inputEl.value) {

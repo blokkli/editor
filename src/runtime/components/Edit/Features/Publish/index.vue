@@ -52,7 +52,7 @@ const isScheduled = computed<boolean>(
   () => !!state.publishOptions.value.publishOn,
 )
 
-const showDialog = useDialog('publish')
+const showDialog = useDialog('publish', 'center')
 
 const publishLabel = computed(() => {
   const suffix = hasPublishOptions ? '...' : ''

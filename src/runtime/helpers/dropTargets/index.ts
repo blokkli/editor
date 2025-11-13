@@ -104,10 +104,7 @@ export function determineCanAddChildren(
   }
 
   // If there are fragment restrictions and we're dragging fragments, check them.
-  if (
-    draggingFragments?.length &&
-    field.allowedFragments.length > 0
-  ) {
+  if (draggingFragments?.length && field.allowedFragments.length > 0) {
     return draggingFragments.every((fragment) =>
       field.allowedFragments.includes(fragment),
     )

@@ -14,8 +14,8 @@
     >
       <AddListItem
         v-for="item in items"
-        :key="item.bundle"
         :id="item.bundle"
+        :key="item.bundle"
         context="selection-add-buttons"
         :label="item.label"
         :bundle="item.bundle"
@@ -25,9 +25,9 @@
       />
       <AddListItem
         v-for="action in actions"
+        :id="action.id"
         :key="'action:' + action.id"
         tabindex="-1"
-        :id="action.id"
         context="selection-add-buttons"
         :icon="action.icon"
         :label="action.title"

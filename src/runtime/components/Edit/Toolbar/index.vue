@@ -56,7 +56,7 @@ import AppMenu from './../AppMenu/index.vue'
 const { ui, selection, storage } = useBlokkli()
 
 function openMenu() {
-  ui.openDialog('menu')
+  ui.openDialog({ id: 'menu', alignment: 'left' })
 }
 
 const sidebarVisible = computed(() => {
