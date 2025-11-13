@@ -170,10 +170,14 @@ export default function (
   const blockRects: Record<string, MeasuredBlockRect> = {}
   const fieldRects: Record<string, Rectangle> = {}
   const blockUuidCurrentKey: Record<string, string> = {}
-  const observedElements: Record<string, HTMLElement> = {}
   let initTimeout: null | number = null
   const isInitalizing = ref(true)
-  const observedElementCache = new Map<string, HTMLElement>()
+
+  /**
+   * Obserable elements.
+   */
+  const observedElements: Record<string, HTMLElement> = {}
+  const observedElementCache = new Map<string, Map<string, HTMLElement>>()
 
   function getBoundingClientRect(element: HTMLElement): DOMRect {
     logger.log('getBoundingClientRect', element)
@@ -397,8 +401,8 @@ export default function (
     if (el.classList.contains('bk-block-proxy')) {
       return el
     }
-    const key = `${uuid}${bundle}${fieldListType}${parentBlockBundle ?? 'none'}`
-    const cached = observedElementCache.get(key)
+    const key = `${bundle}${fieldListType}${parentBlockBundle ?? 'none'}`
+    const cached = observedElementCache.get(uuid)?.get(key)
     if (cached) {
       return cached
     }
@@ -414,12 +418,20 @@ export default function (
       (definition.editor?.getDraggableElement
         ? definition.editor.getDraggableElement(el)
         : el) || el
+
+    if (!observedElementCache.has(uuid)) {
+      observedElementCache.set(uuid, new Map())
+    } else {
+      // Clear the existing cache for that UUID.
+      observedElementCache.get(uuid)!.clear()
+    }
+
     if (observableElement instanceof HTMLElement) {
-      observedElementCache.set(key, observableElement)
+      observedElementCache.get(uuid)!.set(key, observableElement)
       return observableElement
     }
 
-    observedElementCache.set(key, el)
+    observedElementCache.get(uuid)!.set(key, el)
     return el
   }
 
@@ -674,6 +686,7 @@ export default function (
 
   function registerBlock(key: string, uuid: string, el: HTMLElement | null) {
     logger.log('registerBlock: ' + uuid)
+
     blockUuidCurrentKey[uuid] = key
 
     doInitTimeout()
@@ -769,6 +782,7 @@ export default function (
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete blockUuidCurrentKey[uuid]
     visibleBlocks.delete(uuid)
+    observedElementCache.get(uuid)?.clear()
   }
 
   function getDebugData() {
