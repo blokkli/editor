@@ -16,40 +16,7 @@
       <Icon name="cursor-move" />
       <p v-html="currentActiveLabel" />
     </div>
-    <div
-      v-for="(rect, i) in rects"
-      :key="i"
-      class="bk-dragging-overlay-item"
-      :class="{ 'bk-is-top': rect.isTop, 'bk-is-fallback': !rect.markup }"
-      :style="{
-        width: rect.width + 'px',
-        height: rect.height + 'px',
-        transform: `translate(${rect.x}px, ${rect.y}px) scale(${rect.scaleX}, ${rect.scaleY})`,
-        opacity: rect.opacity,
-        background: rect.background,
-        transformOrigin: rect.transformOrigin,
-        borderRadius: rect.borderRadius,
-      }"
-    >
-      <div
-        v-if="rect.markup"
-        class="bk-dragging-overlay-markup"
-        v-html="rect.markup"
-      />
-      <div
-        v-else
-        class="bk-dragging-overlay-fallback"
-        :style="{ color: rect.fallbackColor }"
-      >
-        <div :style="{ transform: `scale(${1 / rect.to.scaleX})` }">
-          <template v-if="rect.isTop">
-            <ItemIcon v-if="rect.bundle" :bundle="rect.bundle" />
-            <Icon v-else-if="rect.icon" :name="rect.icon as any" />
-            <div v-if="rect.label">{{ rect.label }}</div>
-          </template>
-        </div>
-      </div>
-    </div>
+    <DragItem v-for="(rect, i) in rects" :key="i" v-bind="rect" />
   </div>
 </template>
 
@@ -63,17 +30,11 @@ import {
   onBeforeUnmount,
 } from '#imports'
 import type { Coord, DraggableItem, Rectangle } from '#blokkli/types'
-import {
-  isInsideRect,
-  realBackgroundColor,
-  lerp,
-  falsy,
-} from '#blokkli/helpers'
-import { Icon, ItemIcon } from '#blokkli/components'
-import { easeOutElastic } from '#blokkli/helpers/easing'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { isInsideRect, realBackgroundColor, falsy } from '#blokkli/helpers'
+import { Icon } from '#blokkli/components'
+import DragItem, { type DragItemData } from './DragItem.vue'
 
-const { dom, ui, animation, theme, types } = useBlokkli()
+const { dom, ui, types } = useBlokkli()
 
 const props = defineProps<{
   /**
@@ -182,81 +143,7 @@ type AnimationRectangleValues = {
   y: number
 }
 
-type AnimationRectangle = Rectangle &
-  AnimationRectangleValues & {
-    isTop: boolean
-    from: AnimationRectangleValues
-    to: AnimationRectangleValues
-    markup: string
-    background: string
-    prevVisibility?: string
-    transformOrigin: string
-    element: HTMLElement
-    borderRadius: string
-    bundle?: string
-    icon?: string
-    label?: string
-    fallbackColor: string
-  }
-
-const rects = ref<AnimationRectangle[]>([])
-
-const animationStart = Date.now()
-const duration = 500
-const isDone = ref(false)
-
-onBlokkliEvent('animationFrame', () => {
-  if (isDone.value) {
-    return
-  }
-  const newRects: AnimationRectangle[] = []
-
-  const elapsed = Date.now() - animationStart
-  const alphaX = easeOutElastic(elapsed / duration, 1.92, 0.91)
-  const alphaY = easeOutElastic(elapsed / duration, 2.2, 0.76)
-  const opacityAlpha = Math.min(Math.max(elapsed - 300, 0) / 200, 1)
-
-  for (let i = 0; i < rects.value.length; i++) {
-    const rect = rects.value[i]!
-    const newX = lerp(rect.from.x, rect.to.x, alphaX)
-    const newY = lerp(rect.from.y, rect.to.y, alphaY)
-    const newOpacity = lerp(rect.from.opacity, rect.to.opacity, opacityAlpha)
-
-    const newScaleX = lerp(rect.from.scaleX, rect.to.scaleX, alphaX)
-    const newScaleY = lerp(rect.from.scaleY, rect.to.scaleY, alphaY)
-
-    animation.requestDraw()
-
-    newRects.push({
-      ...rect,
-      x: newX,
-      y: newY,
-      scaleX: newScaleX,
-      scaleY: newScaleY,
-      opacity: newOpacity,
-    })
-  }
-
-  if (
-    elapsed > duration ||
-    !ui.useAnimations.value ||
-    ui.lowPerformanceMode.value
-  ) {
-    rects.value = newRects.map((v) => {
-      return {
-        ...v,
-        opacity: v.to.opacity,
-        scaleX: v.to.scaleX,
-        scaleY: v.to.scaleY,
-        x: v.to.x,
-        y: v.to.y,
-      }
-    })
-    isDone.value = true
-    return
-  }
-  rects.value = newRects
-})
+const rects = ref<DragItemData[]>([])
 
 function getDraggingBounds(
   mouse: Coord,
@@ -382,7 +269,6 @@ onMounted(() => {
         scaleY: targetScaleY,
       }
 
-      const style = theme.getDraggableStyle(element)
       // Get the markup and let the method check the size of the clone.
       // For elements with a very large DOM the cloning can become quite a
       // performance issue which results in a noticeable lag. In this case
@@ -410,11 +296,8 @@ onMounted(() => {
         isTop,
         from: ui.lowPerformanceMode.value ? to : from,
         to,
-        ...from,
         width: item.element.offsetWidth,
         height: item.element.offsetHeight,
-        opacity: 1,
-
         transformOrigin: `${originX}px ${originY}px`,
         markup,
         background:
@@ -427,10 +310,8 @@ onMounted(() => {
             ? item.element.style.visibility
             : undefined,
         element: item.element,
-        borderRadius: style.radiusString,
         bundle,
         label,
-        fallbackColor: style.textColor,
       }
     })
     .filter(falsy)

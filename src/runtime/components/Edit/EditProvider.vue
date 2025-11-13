@@ -125,6 +125,7 @@ import type { AdapterContext } from '#blokkli/adapter'
 import { useBlockRegistration } from '#blokkli/helpers/composables/useBlockRegistration'
 import { addElementClasses } from '#blokkli/helpers/addElementClasses'
 import type { BlokkliIcon } from '#blokkli-build/icons'
+import { falsy } from '#blokkli/helpers'
 
 const props = withDefaults(
   defineProps<{
@@ -134,7 +135,7 @@ const props = withDefaults(
     entityBundle: string
     language?: string
     isolate?: boolean
-    permissions: EditPermission[]
+    permissions: Array<EditPermission | null>
     providerEl: HTMLElement
   }>(),
   {
@@ -183,7 +184,7 @@ const state = await editStateProvider(
   context,
   $t,
   providerKey,
-  props.permissions,
+  props.permissions.filter(falsy),
 )
 const storage = await storageProvider(adapter, context)
 const plugins = pluginProvider()

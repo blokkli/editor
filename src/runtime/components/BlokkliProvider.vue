@@ -130,7 +130,7 @@ type BlokkliProviderProps = {
   /**
    * The edit permissions.
    */
-  permissions?: EditPermission[]
+  permissions?: Array<EditPermission | null>
 
   /**
    * Whether to isolate the provider element during editing.

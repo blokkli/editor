@@ -10,7 +10,7 @@
 
   #blokkli-add-list-actions {
     @apply grid;
-    @apply sticky bottom-0 bg-mono-800 border-t border-t-mono-700;
+    @apply sticky bottom-0 bg-mono-800 border-t border-t-mono-700 z-50;
     @apply mt-auto;
 
     .bk-add-item {
@@ -104,7 +104,7 @@
 
 .bk-item-icon-hover-parent:hover,
 .bk-add-item:hover,
-.bk-dragging-overlay & {
+.bk-dragging-overlay {
   .bk-item-icon {
     @apply outline outline-white/40;
     outline-width: var(--bk-item-icon-outline);
@@ -125,7 +125,7 @@
   @apply aspect-square flex items-center justify-center;
   @apply rounded-md border bg-gradient-to-b bg-black;
   @apply size-50;
-  box-shadow: 0 2px 1px 1px theme('colors.mono.950');
+  box-shadow: 0 1px 1px 1px theme('colors.mono.950');
 
   &.bk-is-small {
     @apply size-[35px];
@@ -133,7 +133,7 @@
     box-shadow: 0 1px 1px 1px theme('colors.mono.950');
 
     svg {
-      filter: drop-shadow(0px -1px 0px rgba(0, 0, 0, 0.7));
+      filter: drop-shadow(0px -1px 0px var(--bk-item-icon-shadow-color));
     }
   }
 
@@ -142,36 +142,42 @@
     @apply size-[66.6666666%];
   }
 
+  --bk-item-icon-shadow-color: theme('colors.mono.950');
+
   svg {
     @apply size-full fill-current opacity-80;
-    filter: drop-shadow(0px -2px 0px rgba(0, 0, 0, 0.7));
+    filter: drop-shadow(0px -1px 0px var(--bk-item-icon-shadow-color));
   }
 
   &.bk-is-default {
-    @apply border-mono-500 text-mono-100;
+    @apply border-mono-100/40 text-mono-100;
     @apply from-mono-800;
-    @apply to-mono-700;
+    @apply to-mono-600;
   }
 
   &.bk-is-yellow {
+    --bk-item-icon-shadow-color: rgba(0, 0, 0, 0.2);
     @apply border-yellow-normal/50 text-yellow-light;
-    @apply from-yellow-normal/30;
+    @apply from-yellow-normal/25;
     @apply to-yellow-normal/40;
   }
 
   &.bk-is-rose {
+    --bk-item-icon-shadow-color: rgba(0, 0, 0, 0.2);
     @apply border-red-normal text-red-light;
     @apply from-red-normal/50;
     @apply to-red-normal/70;
   }
 
   &.bk-is-lime {
+    --bk-item-icon-shadow-color: rgba(0, 0, 0, 0.2);
     @apply border-lime-normal text-lime-light;
     @apply from-lime-normal/50;
     @apply to-lime-normal/70;
   }
 
   &.bk-is-accent {
+    --bk-item-icon-shadow-color: theme('colors.accent.900');
     @apply border-accent-400 text-accent-50;
     @apply from-accent-800;
     @apply to-accent-600;

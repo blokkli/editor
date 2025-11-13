@@ -62,6 +62,7 @@ watch(isVisible, () => {
     window.clearTimeout(clickTimeout)
     clickTimeout = null
   }
+  showDoubleClickInfo.value = false
 })
 
 function onDoubleClick() {
