@@ -411,11 +411,8 @@ export default function (
       fieldListType,
       parentBlockBundle,
     )
-    if (!definition) {
-      throw new Error('Failed to load definition for bundle: ' + bundle)
-    }
     const observableElement =
-      (definition.editor?.getDraggableElement
+      (definition?.editor?.getDraggableElement
         ? definition.editor.getDraggableElement(el)
         : el) || el
 

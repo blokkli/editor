@@ -177,7 +177,9 @@ export class EntityStorageManager {
     })
 
     data.blocks.forEach((item) => {
-      this.createBlock(item.bundle, item.uuid, item.values)
+      if (item.bundle !== 'not_implemented' || import.meta.dev) {
+        this.createBlock(item.bundle, item.uuid, item.values)
+      }
     })
 
     const added: string[] = []

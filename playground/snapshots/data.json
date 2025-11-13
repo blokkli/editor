@@ -5,6 +5,7 @@
       "entityType": "content",
       "entityUuid": "1",
       "field": [
+        "b2a44272-8432-4516-8a6a-9837b0084884",
         "319c3ffb-6d38-4885-860e-fa346c40e5c1",
         "bf4acf60-e0a2-43bb-b4fc-9f32a41a4816",
         "f7e3f26b-9c8a-4571-9f98-660bcca08938",
@@ -200,6 +201,15 @@
         "isNew": [false],
         "options": [],
         "icon": ["title"]
+      }
+    },
+    {
+      "entityType": "block",
+      "bundle": "not_implemented",
+      "uuid": "b2a44272-8432-4516-8a6a-9837b0084884",
+      "values": {
+        "isNew": [true],
+        "options": []
       }
     },
     {

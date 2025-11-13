@@ -56,6 +56,10 @@ const globalBlokkli = useGlobalBlokkliObject()
 onErrorCaptured((err) => {
   errors.value.push(err)
 
+  if (import.meta.dev) {
+    console.error(err)
+  }
+
   // Log error to global messages
   globalBlokkli.pushMessage({
     type: 'error',

@@ -14,7 +14,12 @@
     v-bind="props"
     :data-bk-in-proxy="fieldUsesProxy || (isEditing ? 'false' : undefined)"
   />
-  <div v-else-if="isEditing">Block not implemented</div>
+  <Component
+    v-else-if="blockNotImplemented"
+    :is="blockNotImplemented"
+    :uuid
+    :bundle
+  />
 </template>
 
 <script lang="ts" setup>
@@ -85,6 +90,10 @@ const component =
         fieldListType?.value || 'default',
         componentProps.parentType,
       )
+
+const blockNotImplemented = componentProps.isEditing
+  ? defineAsyncComponent(() => import('./Blocks/NotImplemented/index.vue'))
+  : null
 
 const index = computed(() => componentProps.index)
 const item = computed<InjectedBlokkliItem>(() => ({

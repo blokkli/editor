@@ -24,6 +24,9 @@ const emit = defineEmits<{
 
 onErrorCaptured((err) => {
   errors.value.push(err)
+  if (import.meta.dev) {
+    console.error(err)
+  }
   emit('error', err)
 
   // Log error to global messages

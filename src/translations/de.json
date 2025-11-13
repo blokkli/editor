@@ -255,6 +255,10 @@
     "source": "Favorite blocks",
     "translation": "Favoriten-Blöcke"
   },
+  "blockNotImplemented": {
+    "source": "Missing component for block bundle <strong>@bundle</strong>.",
+    "translation": "Keine Komponente für Block-Typ «@bundle» gefunden."
+  },
   "blockOption_bkHiddenGlobally_description": {
     "source": "Always hides the block.",
     "translation": "Den Block immer verstecken."

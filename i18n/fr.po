@@ -267,6 +267,10 @@ msgctxt "blockAddListTourTitle"
 msgid "Favorite blocks"
 msgstr ""
 
+msgctxt "blockNotImplemented"
+msgid "Missing component for block bundle <strong>@bundle</strong>."
+msgstr ""
+
 msgctxt "blockOption_bkHiddenGlobally_description"
 msgid "Always hides the block."
 msgstr ""
