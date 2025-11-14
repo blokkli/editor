@@ -38,12 +38,19 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli, onMounted, watch } from '#imports'
+import {
+  ref,
+  computed,
+  useBlokkli,
+  onMounted,
+  watch,
+  useTemplateRef,
+} from '#imports'
 import { ItemIcon, Highlight } from '#blokkli/components'
 import { falsy, modulo } from '#blokkli/helpers'
 import type { RenderedFieldListItem } from '#blokkli/types'
 
-const listItems = ref<HTMLLIElement[]>([])
+const listItems = useTemplateRef('listItems')
 const emit = defineEmits(['close'])
 
 const props = defineProps<{
@@ -116,6 +123,9 @@ const clickItem = () => {
 }
 
 const scrollItemIntoView = () => {
+  if (!listItems.value) {
+    return
+  }
   const item = listItems.value[index.value]
   if (item) {
     item.scrollIntoView({ block: 'nearest', inline: 'nearest' })

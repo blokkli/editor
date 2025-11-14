@@ -57,12 +57,12 @@
 import {
   computed,
   useBlokkli,
-  ref,
   onMounted,
   onBeforeUnmount,
   useAttrs,
   provide,
   watch,
+  useTemplateRef,
 } from '#imports'
 import type {
   FieldListItem,
@@ -84,7 +84,7 @@ import type {
 
 const { dom, selection, definitions } = useBlokkli()
 
-const root = ref<HTMLElement | null>(null)
+const root = useTemplateRef('root')
 
 const props = withDefaults(
   defineProps<{
@@ -161,14 +161,17 @@ const data = computed<RegisterFieldData>(() => {
   }
 })
 
-watch(root, function (newRoot) {
-  if (newRoot) {
-    dom.updateFieldElement(props.entity, props.name, newRoot, data.value)
-  }
-})
+watch(
+  () => root.value,
+  function (newRoot) {
+    if (newRoot instanceof HTMLElement) {
+      dom.updateFieldElement(props.entity, props.name, newRoot, data.value)
+    }
+  },
+)
 
 onMounted(() => {
-  if (root.value) {
+  if (root.value instanceof HTMLElement) {
     dom.registerField(props.entity, props.name, root.value, data.value)
   }
 })

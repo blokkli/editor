@@ -10,16 +10,16 @@
 
 <script lang="ts" setup>
 import useAnimationFrame from '#blokkli/helpers/composables/useAnimationFrame'
-import { ref, computed } from '#imports'
+import { ref, computed, useTemplateRef } from '#imports'
 
 const props = defineProps<{
   width?: number
   maxHeight?: number
 }>()
 
-const rootEl = ref<HTMLDivElement | null>(null)
-const inner = ref<HTMLDivElement | null>(null)
-const wrapper = ref<HTMLDivElement | null>(null)
+const rootEl = useTemplateRef('rootEl')
+const inner = useTemplateRef('inner')
+const wrapper = useTemplateRef('wrapper')
 const rootWidth = ref(260)
 const nativeWidth = ref(0)
 const nativeHeight = ref(0)

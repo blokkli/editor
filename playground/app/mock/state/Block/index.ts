@@ -80,6 +80,6 @@ export const getBlockBundles = (): Array<typeof Block> => {
     BlockIcon,
     BlockButtonList,
     BlockSlider,
-    BlockNotImplemented
+    BlockNotImplemented,
   ]
 }

@@ -66,7 +66,15 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, computed, useBlokkli, onMounted, nextTick } from '#imports'
+import {
+  watch,
+  ref,
+  computed,
+  useBlokkli,
+  onMounted,
+  nextTick,
+  useTemplateRef,
+} from '#imports'
 import { Icon, ScrollBoundary } from '#blokkli/components'
 import { modulo } from '#blokkli/helpers'
 import ResultsPage from './Results/Page/index.vue'
@@ -122,8 +130,8 @@ const tabIndex = ref(0)
 const tab = computed<string>(() => tabs.value[tabIndex.value]!)
 
 const search = ref('')
-const input = ref<HTMLInputElement | null>(null)
-const resultsEl = ref<HTMLDivElement | null>(null)
+const input = useTemplateRef('input')
+const resultsEl = useTemplateRef('resultsEl')
 
 watch(search, () => {
   const component = getResultsComponent()

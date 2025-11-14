@@ -26,6 +26,7 @@ import {
   onBeforeUnmount,
   useRoute,
   watch,
+  useTemplateRef,
 } from '#imports'
 import { Icon } from '#blokkli/components'
 import { frameEventBus } from './../../../../../helpers/frameEventBus'
@@ -45,7 +46,7 @@ watch(selection.uuids, (selectedUuids) => {
 })
 
 const isLoading = ref(true)
-const iframe = ref<HTMLIFrameElement | null>(null)
+const iframe = useTemplateRef('iframe')
 
 const src = computed(() =>
   route.fullPath.replace('blokkliEditing', 'blokkliPreview'),

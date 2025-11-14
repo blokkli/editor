@@ -15,8 +15,8 @@
     :data-bk-in-proxy="fieldUsesProxy || (isEditing ? 'false' : undefined)"
   />
   <Component
-    v-else-if="blockNotImplemented"
     :is="blockNotImplemented"
+    v-else-if="blockNotImplemented"
     :uuid
     :bundle
   />

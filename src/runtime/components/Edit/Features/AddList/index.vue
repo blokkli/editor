@@ -31,7 +31,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli, defineBlokkliFeature } from '#imports'
+import {
+  ref,
+  computed,
+  useBlokkli,
+  defineBlokkliFeature,
+  useTemplateRef,
+} from '#imports'
 import { PluginTourItem } from '#blokkli/plugins'
 import AddListBlocks from './Blocks/index.vue'
 import AddListActions from './Actions/index.vue'
@@ -129,7 +135,7 @@ const hasContextMenuOpen = computed(() =>
   ui.openContextMenu.value.startsWith('add_list_item_add-list-blocks'),
 )
 
-const wrapper = ref<HTMLDivElement | null>(null)
+const wrapper = useTemplateRef('wrapper')
 const isHovered = ref(false)
 let mouseTimeout: any = null
 

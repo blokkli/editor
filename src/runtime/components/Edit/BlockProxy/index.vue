@@ -34,7 +34,7 @@ import type {
   BlockBundleWithNested,
   ValidFieldListTypes,
 } from '#blokkli-build/generated-types'
-import { computed, useBlokkli, ref } from '#imports'
+import { computed, useBlokkli, useTemplateRef } from '#imports'
 import { getBlokkliItemProxyComponent } from '#blokkli/helpers/editComponents'
 import { ItemIcon } from '#blokkli/components'
 import type { FieldConfig, LibraryItemProps } from '#blokkli/types'
@@ -74,7 +74,7 @@ const proxyBundle = computed(
 
 const { types, runtimeConfig, definitions, dom } = useBlokkli()
 
-const root = ref<HTMLElement | null>(null)
+const root = useTemplateRef('root')
 
 const type = computed(() => types.getBlockBundleDefinition(proxyBundle.value))
 

@@ -51,7 +51,12 @@
 
 <script lang="ts" setup>
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
-import { useBlokkli, defineBlokkliFeature, ref, computed } from '#imports'
+import {
+  useBlokkli,
+  defineBlokkliFeature,
+  computed,
+  useTemplateRef,
+} from '#imports'
 import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 import { Icon } from '#blokkli/components'
 
@@ -64,7 +69,7 @@ defineBlokkliFeature({
 
 const { state, eventBus, $t, ui } = useBlokkli()
 const { entity, mutations } = state
-const buttonEl = ref<HTMLButtonElement | null>(null)
+const buttonEl = useTemplateRef('buttonEl')
 
 const scheduledDate = computed(() => state.publishOptions.value?.publishOn)
 

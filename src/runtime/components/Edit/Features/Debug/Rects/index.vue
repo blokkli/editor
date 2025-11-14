@@ -11,14 +11,14 @@
 </template>
 
 <script setup lang="ts">
-import { useBlokkli, ref } from '#imports'
+import { useBlokkli, useTemplateRef } from '#imports'
 import { falsy, intersects } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { Coord, Rectangle } from '#blokkli/types'
 
 const { ui, dom, directive } = useBlokkli()
 
-const canvasRects = ref<HTMLCanvasElement | null>(null)
+const canvasRects = useTemplateRef('canvasRects')
 
 function drawRects(
   ctx: CanvasRenderingContext2D,

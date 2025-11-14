@@ -38,7 +38,7 @@
 
 <script lang="ts" setup>
 import onBroadcastEvent from '#blokkli/helpers/composables/onBroadcastEvent'
-import { ref, useBlokkli } from '#imports'
+import { ref, useBlokkli, useTemplateRef } from '#imports'
 import { Icon } from '#blokkli/components'
 import Loading from './../../../Loading/index.vue'
 
@@ -151,7 +151,7 @@ function onAfterLeave(el: Element) {
   }
 }
 
-const iframe = ref<HTMLIFrameElement | null>(null)
+const iframe = useTemplateRef('iframe')
 const isLoaded = ref(false)
 const isLoading = ref(true)
 const hasPublished = ref(false)

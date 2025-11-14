@@ -205,7 +205,7 @@ const ui = uiProvider(
   mainLayoutElement,
   viewportElement,
 )
-const dom = domProvider(ui, debug, definitions, state, element)
+const dom = domProvider(ui, debug, state, element)
 const theme = themeProvider(element)
 const blocks = blocksProvider(state, dom, context)
 const selection = selectionProvider(blocks)

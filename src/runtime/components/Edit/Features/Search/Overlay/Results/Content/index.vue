@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, useBlokkli, onMounted } from '#imports'
+import { ref, watch, useBlokkli, onMounted, useTemplateRef } from '#imports'
 import { ItemIcon, Icon, Sortli } from '#blokkli/components'
 import { modulo } from '#blokkli/helpers'
 import type {
@@ -60,7 +60,7 @@ import type {
   SearchContentItem,
 } from '#blokkli/types'
 
-const listItems = ref<HTMLLIElement[]>([])
+const listItems = useTemplateRef('listItems')
 
 const props = defineProps<{
   visible: boolean
@@ -147,6 +147,9 @@ const setIndex = (newIndex: number) => {
 
 const clickItem = () => {
   // @TODO: Start dragging.
+  if (!listItems.value) {
+    return
+  }
   const element = listItems.value[index.value]
   if (!element) {
     return
@@ -169,6 +172,9 @@ const clickItem = () => {
 }
 
 const scrollItemIntoView = () => {
+  if (!listItems.value) {
+    return
+  }
   const item = listItems.value[index.value]
   if (item) {
     item.scrollIntoView({ block: 'nearest', inline: 'nearest' })

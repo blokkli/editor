@@ -13,13 +13,19 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, onUnmounted, onMounted } from '#imports'
+import {
+  ref,
+  useBlokkli,
+  onUnmounted,
+  onMounted,
+  useTemplateRef,
+} from '#imports'
 import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
 import { Loading, BlokkliTransition } from '#blokkli/components'
 
 const { eventBus } = useBlokkli()
 
-const iframe = ref<HTMLIFrameElement | null>(null)
+const iframe = useTemplateRef('iframe')
 const isLoaded = ref(false)
 
 const emit = defineEmits<{

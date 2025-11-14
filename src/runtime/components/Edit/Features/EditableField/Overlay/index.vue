@@ -66,6 +66,7 @@ import {
   onBeforeUnmount,
   useBlokkli,
   nextTick,
+  useTemplateRef,
 } from '#imports'
 import { falsy } from '#blokkli/helpers'
 import InputPlaintext from './Plaintext/index.vue'
@@ -119,8 +120,8 @@ const loaded = ref(false)
 const originalText = ref(props.value || '')
 const modelValue = ref('')
 const inputStyle = ref<Record<string, any>>({})
-const form = ref<HTMLFormElement | null>(null)
-const input = ref<HTMLDivElement | null>(null)
+const form = useTemplateRef('form')
+const input = useTemplateRef('input')
 
 const hasChanged = computed(() => modelValue.value !== originalText.value)
 const itemBundle = computed(() => props.host.bundle)

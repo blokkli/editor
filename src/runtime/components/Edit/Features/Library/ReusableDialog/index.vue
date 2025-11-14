@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, onMounted } from '#imports'
+import { ref, useBlokkli, onMounted, useTemplateRef } from '#imports'
 import { DialogModal, InfoBox, FormText, FormItem } from '#blokkli/components'
 import { realBackgroundColor } from '#blokkli/helpers'
 
@@ -74,7 +74,7 @@ const props = defineProps<{
 
 const label = ref('')
 const width = ref(450)
-const previewEl = ref<HTMLDivElement | null>(null)
+const previewEl = useTemplateRef('previewEl')
 const backgroundColor = ref('')
 
 onMounted(() => {

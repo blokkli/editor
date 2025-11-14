@@ -105,7 +105,7 @@ useStickyToolbar(el, {
   allowHorizontalOverflow: true,
 })
 
-const controlsEl = ref<HTMLElement | null>(null)
+const controlsEl = useTemplateRef('controlsEl')
 const showDropdown = ref(false)
 
 const hasAnythingSelected = computed(

@@ -13,7 +13,12 @@
 
 <script setup lang="ts">
 import { type Artboard, type PluginScrollbar, scrollbar } from 'artboard-deluxe'
-import { onBeforeUnmount, onMounted, ref, useBlokkli } from '#imports'
+import {
+  onBeforeUnmount,
+  onMounted,
+  useBlokkli,
+  useTemplateRef,
+} from '#imports'
 
 const props = defineProps<{
   artboard: Artboard
@@ -22,8 +27,8 @@ const props = defineProps<{
 
 const { ui } = useBlokkli()
 
-const el = ref<HTMLDivElement>()
-const thumb = ref<HTMLButtonElement>()
+const el = useTemplateRef('el')
+const thumb = useTemplateRef('thumb')
 let scrollbarPlugin: PluginScrollbar | null = null
 
 onMounted(() => {

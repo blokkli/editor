@@ -56,7 +56,7 @@ import {
   useBlokkli,
   onMounted,
   computed,
-  ref,
+  useTemplateRef,
   onBeforeUnmount,
   watch,
 } from '#imports'
@@ -69,7 +69,7 @@ const { ui, element } = useBlokkli()
 
 const emit = defineEmits(['submit', 'cancel'])
 
-const rootEl = ref<HTMLDivElement | null>(null)
+const rootEl = useTemplateRef('rootEl')
 
 const props = withDefaults(
   defineProps<{

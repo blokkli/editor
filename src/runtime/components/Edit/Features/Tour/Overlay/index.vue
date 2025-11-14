@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, computed, ref } from '#imports'
+import { useBlokkli, computed, ref, useTemplateRef } from '#imports'
 import { falsy, modulo } from '#blokkli/helpers'
 import { Icon, ShortcutIndicator } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
@@ -98,7 +98,7 @@ const tooltipStyle = computed(() => {
 const { tour, ui, $t } = useBlokkli()
 
 const activeIndex = ref(0)
-const contentEl = ref<HTMLDivElement | null>(null)
+const contentEl = useTemplateRef('contentEl')
 
 const tooltipHeight = ref(100)
 const tooltipWidth = computed(() => {

@@ -55,13 +55,13 @@
 
 <script lang="ts" setup>
 import {
-  ref,
   useBlokkli,
   computed,
   inject,
   onMounted,
   onBeforeUnmount,
   nextTick,
+  useTemplateRef,
 } from '#imports'
 import Item from './../Item/index.vue'
 
@@ -130,7 +130,7 @@ function onClickFieldLabel() {
   )
 }
 
-const el = ref<HTMLDivElement | null>(null)
+const el = useTemplateRef('el')
 
 const observer = inject<IntersectionObserver>('bk_structure_observer')
 

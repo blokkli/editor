@@ -84,7 +84,14 @@ import {
 } from '#blokkli/components'
 import Loading from './../../../Loading/index.vue'
 import type { BlokkliFieldElement, FieldConfig } from '#blokkli/types'
-import { ref, useBlokkli, useAsyncData, computed, watch } from '#imports'
+import {
+  ref,
+  useBlokkli,
+  useAsyncData,
+  computed,
+  watch,
+  useTemplateRef,
+} from '#imports'
 import LibraryListItem from './Item/index.vue'
 
 const props = defineProps<{
@@ -100,7 +107,7 @@ const emit = defineEmits<{
 
 const searchText = ref('')
 const selectedBundle = ref('all')
-const listEl = ref<HTMLDivElement | null>(null)
+const listEl = useTemplateRef('listEl')
 const selectedItem = ref('')
 const page = ref(0)
 

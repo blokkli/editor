@@ -76,6 +76,7 @@ import {
   useBlokkli,
   watch,
   nextTick,
+  useTemplateRef,
 } from '#imports'
 import { Sortli, Icon, Pagination, FormToggle } from '#blokkli/components'
 import type { MediaLibraryFilter, MediaLibraryGetResults } from './../types'
@@ -92,7 +93,7 @@ defineProps<{
 const { adapter, storage, $t, element } = useBlokkli()
 
 const selected = ref<string[]>([])
-const listEl = ref<HTMLDivElement | null>(null)
+const listEl = useTemplateRef('listEl')
 const page = ref(0)
 const key = computed(() => Object.values(filterValues.value).join(','))
 

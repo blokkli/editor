@@ -22,7 +22,14 @@
 
 <script lang="ts" setup>
 import textProvider from '#blokkli/helpers/textProvider'
-import { ref, onMounted, onBeforeUnmount, useState, computed } from '#imports'
+import {
+  ref,
+  onMounted,
+  onBeforeUnmount,
+  useState,
+  computed,
+  useTemplateRef,
+} from '#imports'
 import '#blokkli-build/styles.css'
 import useAnimationFrame from '#blokkli/helpers/composables/useAnimationFrame'
 import type { EditPermission } from '#blokkli/types'
@@ -62,8 +69,8 @@ defineEmits(['edit'])
 
 const isHovering = ref(false)
 
-const button = ref<HTMLButtonElement | null>(null)
-const overlay = ref<HTMLElement | null>(null)
+const button = useTemplateRef('button')
+const overlay = useTemplateRef('overlay')
 const targetElement = ref<HTMLElement | null>(null)
 
 // Shared state for all indicators.
