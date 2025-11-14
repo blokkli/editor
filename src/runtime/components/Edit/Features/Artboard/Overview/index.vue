@@ -27,7 +27,6 @@ import {
 import {
   onBeforeUnmount,
   onMounted,
-  ref,
   useBlokkli,
   computed,
   useTemplateRef,
@@ -51,9 +50,9 @@ const selectedColor = computed(() => {
 })
 
 const overviewEl = useTemplateRef('overviewEl')
-const overviewArtboardEl = ref<HTMLDivElement>()
-const overviewVisibleEl = ref<HTMLDivElement>()
-const canvas = ref<HTMLCanvasElement>()
+const overviewArtboardEl = useTemplateRef('overviewArtboardEl')
+const overviewVisibleEl = useTemplateRef('overviewVisibleEl')
+const canvas = useTemplateRef('canvas')
 
 let pluginOverview: PluginOverview | null = null
 
