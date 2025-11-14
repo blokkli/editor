@@ -1,6 +1,6 @@
 <template>
   <div :class="{ 'container mx-auto my-20': !parentType }">
-    <table class="table w-full min-h-30">
+    <table class="table w-full min-h-30" ref="blokkliDraggable">
       <thead>
         <tr>
           <th>Tagline</th>
@@ -26,7 +26,6 @@ const { parentType } = defineBlokkli({
   editor: {
     addBehaviour: 'no-form',
     editTitle: (el) => el.textContent,
-    getDraggableElement: (el) => el.querySelector('.table'),
   },
 })
 

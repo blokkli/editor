@@ -6,7 +6,10 @@
       'mt-50': parentType === 'two_columns' && fieldListType === 'inline',
     }"
   >
-    <div :class="{ 'md:max-w-3xl md:mx-auto md:text-center': isCentered }">
+    <div
+      ref="blokkliDraggable"
+      :class="{ 'md:max-w-3xl md:mx-auto md:text-center': isCentered }"
+    >
       <p
         v-if="tagline"
         v-blokkli-editable:tagline
@@ -54,7 +57,6 @@ const { parentType, fieldListType } = defineBlokkli({
     addBehaviour: 'editable:title',
     previewWidth: 700,
     editTitle: (el) => el.querySelector('h2')?.textContent,
-    getDraggableElement: (el) => el.firstElementChild,
   },
 })
 

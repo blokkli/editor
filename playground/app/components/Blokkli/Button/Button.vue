@@ -10,6 +10,7 @@
     <Component
       :is="isExternal ? 'a' : NuxtLink"
       v-bind="attributes"
+      ref="blokkliDraggable"
       class="button"
       :class="{
         'is-primary': options.color === 'primary',
@@ -52,7 +53,6 @@ const { options } = defineBlokkli({
   editor: {
     addBehaviour: 'no-form',
     editTitle: (el) => el.querySelector('a')?.textContent,
-    getDraggableElement: (el) => el.querySelector('a'),
   },
 })
 

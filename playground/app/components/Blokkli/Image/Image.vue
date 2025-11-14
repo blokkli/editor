@@ -1,6 +1,7 @@
 <template>
   <div :class="{ 'container my-40': !parentType }">
     <div
+      ref="blokkliDraggable"
       v-blokkli-droppable:imageReference
       :class="{
         'overflow-hidden shadow-xl rounded-lg bg-white': options.elevated,
@@ -32,7 +33,6 @@ const { options, parentType } = defineBlokkli({
   editor: {
     addBehaviour: 'no-form',
     editTitle: (el) => el.querySelector('img')?.alt,
-    getDraggableElement: (el) => el.querySelector('div'),
     mapDiffProps: (diffProps) => {
       const url = diffProps?.imageReference.url
       return {

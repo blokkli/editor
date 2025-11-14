@@ -163,7 +163,6 @@ defineBlokkli({
       }
     },
     maxInstances: 3,
-    getDraggableElement: (el) => el.querySelector('a'),
   },
 })
 </script>

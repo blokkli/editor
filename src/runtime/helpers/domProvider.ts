@@ -14,14 +14,8 @@ import type { UiProvider } from './uiProvider'
 import { cloneElementWithStyles } from './dom'
 import onBlokkliEvent from './composables/onBlokkliEvent'
 import useDelayedIntersectionObserver from './composables/useDelayedIntersectionObserver'
-import type {
-  BlockBundleWithNested,
-  ValidFieldListTypes,
-} from '#blokkli-build/generated-types'
 import type { DebugProvider } from './debugProvider'
-import type { DefinitionProvider } from './definitionProvider'
 import type { StateProvider } from './stateProvider'
-import { itemEntityType } from '#blokkli-build/config'
 import type { ElementProvider } from './providers/element'
 
 type RegisteredFieldType = {
@@ -152,7 +146,6 @@ function rectWithTime(rect: Rectangle, time?: number): MeasuredBlockRect {
 export default function (
   ui: UiProvider,
   debug: DebugProvider,
-  definitions: DefinitionProvider,
   state: StateProvider,
   element: ElementProvider,
 ): DomProvider {
@@ -177,7 +170,6 @@ export default function (
    * Obserable elements.
    */
   const observedElements: Record<string, HTMLElement> = {}
-  const observedElementCache = new Map<string, Map<string, HTMLElement>>()
 
   function getBoundingClientRect(element: HTMLElement): DOMRect {
     logger.log('getBoundingClientRect', element)
@@ -390,48 +382,6 @@ export default function (
     return registeredFields[key]
   }
 
-  function getElementToObserve(
-    uuid: string,
-    el: HTMLElement,
-    bundle: string,
-    fieldListType: ValidFieldListTypes,
-    parentBlockBundle?: BlockBundleWithNested | null,
-  ): HTMLElement {
-    // Always observe the root element for proxy blocks.
-    if (el.classList.contains('bk-block-proxy')) {
-      return el
-    }
-    const key = `${bundle}${fieldListType}${parentBlockBundle ?? 'none'}`
-    const cached = observedElementCache.get(uuid)?.get(key)
-    if (cached) {
-      return cached
-    }
-    const definition = definitions.getBlockDefinition(
-      bundle,
-      fieldListType,
-      parentBlockBundle,
-    )
-    const observableElement =
-      (definition?.editor?.getDraggableElement
-        ? definition.editor.getDraggableElement(el)
-        : el) || el
-
-    if (!observedElementCache.has(uuid)) {
-      observedElementCache.set(uuid, new Map())
-    } else {
-      // Clear the existing cache for that UUID.
-      observedElementCache.get(uuid)!.clear()
-    }
-
-    if (observableElement instanceof HTMLElement) {
-      observedElementCache.get(uuid)!.set(key, observableElement)
-      return observableElement
-    }
-
-    observedElementCache.get(uuid)!.set(key, el)
-    return el
-  }
-
   const getDropElementMarkup = (
     item: DraggableItem | RenderedFieldListItem,
     checkSize?: boolean,
@@ -507,29 +457,8 @@ export default function (
       return
     }
 
-    const fieldListType =
-      getRegisteredField(fieldList.entityUuid, fieldList.name)?.fieldListType ??
-      'default'
-
-    const parentBundle =
-      fieldList.entityType === itemEntityType
-        ? (state.getFieldListItem(fieldList.entityUuid)?.bundle ?? null)
-        : null
-
-    const observableElement = getElementToObserve(
-      uuid,
-      el,
-      item.bundle,
-      fieldListType,
-      parentBundle as BlockBundleWithNested,
-    )
-
     blockRects[uuid] = rectWithTime(
-      ui.getAbsoluteElementRect(
-        observableElement.getBoundingClientRect(),
-        scale,
-        offset,
-      ),
+      ui.getAbsoluteElementRect(el.getBoundingClientRect(), scale, offset),
     )
   }
 
@@ -589,14 +518,8 @@ export default function (
     }
   }
 
-  onBlokkliEvent('state:reload:before', () => {
-    observedElementCache.clear()
-  })
-
   // After the state has been updated, update the rects of all currently visible blocks.
   onBlokkliEvent('state:reloaded', () => {
-    observedElementCache.clear()
-
     if (stateReloadTimeout) {
       window.clearTimeout(stateReloadTimeout)
     }
@@ -636,18 +559,7 @@ export default function (
     if (!item) {
       return
     }
-    const el = registeredBlocks[item.uuid]
-    if (!el) {
-      return
-    }
-
-    return getElementToObserve(
-      item.uuid,
-      el,
-      item.bundle,
-      item.fieldListType,
-      item.parentBlockBundle,
-    )
+    return registeredBlocks[item.uuid]
   }
 
   function isBlockVisible(uuid: string): boolean {
@@ -718,27 +630,12 @@ export default function (
         uuid,
       )
     }
-    const fieldListType =
-      getRegisteredField(fieldList.entityUuid, fieldList.name)?.fieldListType ??
-      'default'
 
-    const parentBundle =
-      fieldList.entityType === itemEntityType
-        ? (state.getFieldListItem(fieldList.entityUuid)?.bundle ?? null)
-        : null
-
-    const observableElement = getElementToObserve(
-      item.uuid,
-      el,
-      item.bundle,
-      fieldListType,
-      parentBundle as BlockBundleWithNested,
-    )
-    blockElementToUuid.set(observableElement, uuid)
+    blockElementToUuid.set(el, uuid)
     registeredBlocks[uuid] = el
-    observedElements[uuid] = observableElement
-    intersectionObserver.observe(observableElement)
-    resizeObserver.observe(observableElement)
+    observedElements[uuid] = el
+    intersectionObserver.observe(el)
+    resizeObserver.observe(el)
   }
 
   function unregisterBlock(key: string, uuid: string) {
@@ -779,7 +676,6 @@ export default function (
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete blockUuidCurrentKey[uuid]
     visibleBlocks.delete(uuid)
-    observedElementCache.get(uuid)?.clear()
   }
 
   function getDebugData() {

@@ -5,6 +5,7 @@
     }"
   >
     <div
+      ref="blokkliDraggable"
       :class="{
         'p-10 lg:p-20 rounded shadow-lg border h-full': options.box,
         'bg-mono-700 border-mono-600': options.box && isInverted,
@@ -78,7 +79,6 @@ const { parentType, options } = defineBlokkli({
       }
       return ['box']
     },
-    getDraggableElement: (el) => el.querySelector('div'),
   },
 })
 

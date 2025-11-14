@@ -6,6 +6,7 @@
     }"
   >
     <div
+      ref="blokkliDraggable"
       v-blokkli-editable:text
       class="ck-content"
       :class="{ 'is-inverted': isInverted }"
@@ -23,7 +24,6 @@ const { parentType } = defineBlokkli({
     previewWidth: 700,
     editTitle: (el) => el.textContent,
     addBehaviour: 'editable:text',
-    getDraggableElement: (el) => el.querySelector('.ck-content'),
   },
 })
 

@@ -20,8 +20,23 @@ export function useBlockRegistration(dom: DomProvider, uuid: string) {
 
   let rootElement: HTMLElement | null = null
 
+  function getDraggableElement(): HTMLElement | null {
+    const blokkliDraggable = instance?.refs.blokkliDraggable
+    if (blokkliDraggable instanceof HTMLElement) {
+      return blokkliDraggable
+    }
+
+    const rootElement = instance?.proxy?.$el
+
+    if (rootElement instanceof HTMLElement) {
+      return rootElement
+    }
+
+    return null
+  }
+
   function setRootElement() {
-    const newElement = instance?.proxy?.$el
+    const newElement = getDraggableElement()
     if (newElement && rootElement !== newElement) {
       rootElement = newElement
       dom.registerBlock(key, uuid, newElement)

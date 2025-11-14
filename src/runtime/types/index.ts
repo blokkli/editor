@@ -286,12 +286,7 @@ export type BlokkliDefinitionInputEditor<
   /**
    * Get the drag element for the editor.
    *
-   * By default, the root element of the component is used for drag actions.
-   * Sometimes this might not be desirable however. For example, a button
-   * block might render a container as the root element and have the button
-   * as the child. In this case the whole container would be clickable and
-   * selectable. By providing the button as the drag element, only the button
-   * appears to be selectable/draggable.
+   * @deprecated Use a ref in the template to designate the draggable element (e.g. <div ref="blokkliDraggable">).
    */
   getDraggableElement?: (el: HTMLElement) => Element | undefined | null
 
