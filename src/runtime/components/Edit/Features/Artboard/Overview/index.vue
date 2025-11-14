@@ -18,7 +18,12 @@
 </template>
 
 <script setup lang="ts">
-import { type Artboard, type PluginOverview, overview } from 'artboard-deluxe'
+import {
+  type Artboard,
+  type PluginOverview,
+  type PluginOverviewOptions,
+  overview,
+} from 'artboard-deluxe'
 import {
   onBeforeUnmount,
   onMounted,
@@ -26,6 +31,7 @@ import {
   useBlokkli,
   computed,
   useTemplateRef,
+  watch,
 } from '#imports'
 import { ViewportBlockingRect } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
@@ -96,6 +102,14 @@ function updateCanvas() {
 
 onBlokkliEvent('animationFrame', updateCanvas)
 
+const overviewOptions = computed<Partial<PluginOverviewOptions>>(() => {
+  return {
+    padding: 15,
+    autoHeight: true,
+    maxHeight: ui.visibleViewportPadded.value.height,
+  }
+})
+
 onMounted(() => {
   if (overviewEl.value && overviewArtboardEl.value && overviewVisibleEl.value) {
     const el = overviewEl.value.$el
@@ -105,12 +119,19 @@ onMounted(() => {
           element: el,
           artboardElement: overviewArtboardEl.value,
           visibleAreaElement: overviewVisibleEl.value,
-          padding: 20,
-          autoHeight: true,
+          ...overviewOptions.value,
         }),
       )
     }
   }
+})
+
+watch(overviewOptions, (newOptions) => {
+  if (!pluginOverview) {
+    return
+  }
+
+  pluginOverview.options.setMultiple(newOptions)
 })
 
 onBeforeUnmount(() => {
