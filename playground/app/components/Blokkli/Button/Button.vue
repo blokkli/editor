@@ -1,8 +1,24 @@
 <template>
   <div
+    v-if="options.align === 'left'"
+    class="container mt-25 text-left"
+  >
+    <Component
+      :is="isExternal ? 'a' : NuxtLink"
+      v-bind="attributes"
+      class="button"
+      :class="{
+        'is-primary': options.color === 'primary',
+        'is-inverted': options.color === 'normal' && isInverted,
+      }"
+    >
+      <span v-blokkli-editable:title>{{ title }}</span>
+    </Component>
+  </div>
+  <div
+    v-else
     class="container mt-25"
     :class="{
-      'text-left': options.align === 'left',
       'text-center': options.align === 'center',
       'text-right': options.align === 'right',
     }"

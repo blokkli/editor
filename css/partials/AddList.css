@@ -122,14 +122,27 @@
 
 .bk .bk-item-icon {
   --bk-item-icon-outline: 2px;
+  --bk-item-icon-size: 50px;
+  --bk-item-icon-radius-base: 8px;
+  --bk-item-icon-radius-multiplier: 1;
   @apply aspect-square flex items-center justify-center;
-  @apply rounded-md border bg-gradient-to-b bg-black;
-  @apply size-50;
+  @apply border bg-gradient-to-b bg-black;
+  width: var(--bk-item-icon-size);
+  height: var(--bk-item-icon-size);
   box-shadow: 0 1px 1px 1px theme('colors.mono.950');
+  border-radius: calc(
+    var(--bk-item-icon-radius-base) * var(--bk-item-icon-radius-multiplier)
+  );
+
+  @supports (corner-shape: squircle) {
+    corner-shape: squircle;
+    --bk-item-icon-radius-multiplier: 2.25;
+  }
 
   &.bk-is-small {
-    @apply size-[35px];
     --bk-item-icon-outline: 1px;
+    --bk-item-icon-size: 35px;
+    --bk-item-icon-radius-base: 6px;
     box-shadow: 0 1px 1px 1px theme('colors.mono.950');
 
     svg {
