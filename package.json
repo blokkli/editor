@@ -57,7 +57,7 @@
   "license": "MIT",
   "dependencies": {
     "@types/micromatch": "^4.0.9",
-    "artboard-deluxe": "^0.1.2",
+    "artboard-deluxe": "0.1.3",
     "estree-walker-ts": "^1.1.0",
     "flesch": "^2.0.1",
     "fzf": "^0.5.2",
