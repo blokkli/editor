@@ -99,6 +99,10 @@ msgctxt "analyzeCategoryText"
 msgid "Text"
 msgstr ""
 
+msgctxt "analyzeClickButton"
+msgid "Click the button above to run the analysis."
+msgstr ""
+
 msgctxt "analyzeLastRun"
 msgid "Last run: @time"
 msgstr ""
@@ -107,14 +111,12 @@ msgctxt "analyzeMoreLink"
 msgid "More"
 msgstr ""
 
-msgctxt "analyzeSidebarTitle"
-msgid "Analyze"
+msgctxt "analyzeResultsOutdated"
+msgid "Results are outdated. Click the button to update."
 msgstr ""
 
-msgctxt "analyzeStaleMessage"
-msgid ""
-"The contents of the page have changed since last analyzing the page. Please "
-"run the analyzers again to get updated results."
+msgctxt "analyzeSidebarTitle"
+msgid "Analyze"
 msgstr ""
 
 msgctxt "analyzeStatusInapplicable"
@@ -127,6 +129,14 @@ msgstr ""
 
 msgctxt "analyzeStatusPass"
 msgid "Pass"
+msgstr ""
+
+msgctxt "analyzeStatusStale"
+msgid "Stale"
+msgstr ""
+
+msgctxt "analyzeStatusUpToDate"
+msgid "Up-to-date"
 msgstr ""
 
 msgctxt "analyzeStatusViolation"
@@ -559,7 +569,7 @@ msgid "The items could not be duplicated."
 msgstr "Les éléments n'ont pas pu être dupliqués."
 
 msgctxt "edit"
-msgid "Edit..."
+msgid "Edit"
 msgstr "Modifier"
 
 msgctxt "editFormBlockAdd"
@@ -2033,8 +2043,12 @@ msgctxt "transformDialogButtonApply"
 msgid "Apply changes"
 msgstr ""
 
-msgctxt "transformDialogButtonPreview"
+msgctxt "transformDialogButtonNewSuggestion"
 msgid "New suggestion"
+msgstr ""
+
+msgctxt "transformDialogButtonPreview"
+msgid "Preview"
 msgstr ""
 
 msgctxt "translationsBannerButton"

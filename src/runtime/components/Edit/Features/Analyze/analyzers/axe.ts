@@ -83,6 +83,7 @@ export default defineAnalyzer<{
 
   return {
     id: 'axe',
+    label: 'Axe (Accessibility Check)',
     requireRawPage: true,
     init: function (context) {
       const locale = getLocale(context.interfaceLangcode) ?? {}

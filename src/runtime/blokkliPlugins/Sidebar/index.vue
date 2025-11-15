@@ -53,6 +53,7 @@
         <slot name="icon" />
       </template>
       <template #default="{ width, height, isResizing }">
+        <Loading v-if="isLoading" white />
         <div class="bk-sidebar-content-wrapper">
           <div ref="sidebarContent" class="bk-sidebar-content">
             <slot
@@ -86,6 +87,7 @@
         </div>
       </div>
       <div class="bk-sidebar-content-wrapper">
+        <Loading v-if="isLoading" white />
         <div ref="sidebarContent" class="bk-sidebar-content">
           <slot
             :key="isRenderedDetached ? 'detached' : 'attached'"
@@ -112,7 +114,12 @@ import {
   useTemplateRef,
 } from '#imports'
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import { Icon, ShortcutIndicator, ScrollBoundary } from '#blokkli/components'
+import {
+  Icon,
+  ShortcutIndicator,
+  ScrollBoundary,
+  Loading,
+} from '#blokkli/components'
 import SidebarDetached from './Detached/index.vue'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
@@ -138,6 +145,7 @@ const props = withDefaults(
     shift?: boolean
     keyCode?: string
     beta?: boolean
+    isLoading?: boolean
   }>(),
   {
     region: 'right',

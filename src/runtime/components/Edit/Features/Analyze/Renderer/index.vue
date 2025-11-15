@@ -10,7 +10,7 @@ import type {
 import type { Rectangle } from '#blokkli/types'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineRenderer from '#blokkli/helpers/composables/defineRenderer'
-import { useBlokkli, computed } from '#imports'
+import { useBlokkli, computed, watch } from '#imports'
 import {
   setBuffersAndAttributes,
   drawBufferInfo,
@@ -24,6 +24,9 @@ import { toShaderColor } from '#blokkli/helpers'
 
 const props = defineProps<{
   results: AnalyzeResultMapped[]
+  isStale: boolean
+  isRunning: boolean
+  manualAnalyzerIds: Set<string>
 }>()
 
 const { animation, ui, theme, selection, eventBus, element } = useBlokkli()
@@ -32,6 +35,7 @@ type AnalyzeRectangle = Rectangle & {
   id: string
   index: number
   status: AnalyzeStatus
+  plugin: string
 }
 
 type AnalyzeNode = {
@@ -39,6 +43,7 @@ type AnalyzeNode = {
   element: HTMLElement
   title: string
   status: AnalyzeStatus
+  plugin: string
 }
 
 const statusPriority: Record<AnalyzeStatus, number> = {
@@ -59,7 +64,7 @@ const nodes = computed<AnalyzeNode[]>(() => {
             ? node.targets
             : [node.targets]
           // Only include HTML elements that are inside the provider element.
-          return targets
+          const elements = targets
             .map((v) => {
               if (typeof v === 'string') {
                 return element.query(
@@ -71,8 +76,16 @@ const nodes = computed<AnalyzeNode[]>(() => {
 
               return v
             })
-            .filter((v) => v instanceof HTMLElement)
-            .filter((v) => ui.providerElement.contains(v))
+            .filter((v) => {
+              const isHTML = v instanceof HTMLElement
+              return isHTML
+            })
+            .filter((v) => {
+              const contained = ui.providerElement.contains(v)
+              return contained
+            })
+
+          return elements
         })
         .map((element) => {
           return {
@@ -80,6 +93,7 @@ const nodes = computed<AnalyzeNode[]>(() => {
             element,
             title: result.title,
             status: result.status,
+            plugin: result.plugin,
           }
         })
     })
@@ -97,7 +111,8 @@ const nodes = computed<AnalyzeNode[]>(() => {
     }
   }
 
-  return Array.from(nodeMap.values())
+  const finalNodes = Array.from(nodeMap.values())
+  return finalNodes
 })
 
 class AnalyzeRectangleBufferCollector extends RectangleBufferCollector<AnalyzeRectangle> {
@@ -106,6 +121,7 @@ class AnalyzeRectangleBufferCollector extends RectangleBufferCollector<AnalyzeRe
 
   clearCache() {
     this.rectCache.clear()
+    this.prevKey = ''
   }
 
   getBufferInfo(
@@ -118,10 +134,8 @@ class AnalyzeRectangleBufferCollector extends RectangleBufferCollector<AnalyzeRe
     const key = nodes.value
       .map((node, index) => {
         if (!this.rectCache.has(node.element)) {
-          this.rectCache.set(
-            node.element,
-            ui.getAbsoluteElementRect(node.element),
-          )
+          const rect = ui.getAbsoluteElementRect(node.element)
+          this.rectCache.set(node.element, rect)
         }
 
         const rect = this.rectCache.get(node.element)
@@ -134,6 +148,7 @@ class AnalyzeRectangleBufferCollector extends RectangleBufferCollector<AnalyzeRe
       .join('_')
 
     const hasChanged = force || this.prevKey !== key
+
     if (hasChanged) {
       this.reset()
 
@@ -152,15 +167,12 @@ class AnalyzeRectangleBufferCollector extends RectangleBufferCollector<AnalyzeRe
 
         this.added.add(id)
 
-        // Map status to type (0 = pass, 1 = incomplete, 2 = inapplicable, 3 = violation)
+        // Map status and analyzer type to statusType:
+        // 0 = violation (manual), 1 = violation (continuous)
+        // 2 = incomplete (manual), 3 = incomplete (continuous)
+        const isManual = props.manualAnalyzerIds.has(node.plugin)
         const statusType =
-          node.status === 'violation'
-            ? 3
-            : node.status === 'incomplete'
-              ? 1
-              : node.status === 'inapplicable'
-                ? 2
-                : 0
+          node.status === 'violation' ? (isManual ? 0 : 1) : isManual ? 2 : 3
 
         this.addRectangle(
           {
@@ -170,6 +182,7 @@ class AnalyzeRectangleBufferCollector extends RectangleBufferCollector<AnalyzeRe
             width: rect.width,
             height: rect.height,
             status: node.status,
+            plugin: node.plugin,
           },
           statusType,
         )
@@ -187,13 +200,19 @@ class AnalyzeRectangleBufferCollector extends RectangleBufferCollector<AnalyzeRe
   }
 }
 
+function getOpacity() {
+  return props.isRunning ? 0.3 : 1
+}
+
 // Register WebGL renderer with zIndex 500 (analysis layer - renders on top of everything)
 const { collector } = defineRenderer('analyze-overlay', {
   zIndex: 500,
   collector: () => new AnalyzeRectangleBufferCollector(),
   program: () => ({ shaders: [vs, fs] }),
   enabled: () =>
-    !selection.isMultiSelecting.value && !selection.isDragging.value,
+    !selection.isMultiSelecting.value &&
+    !selection.isDragging.value &&
+    !selection.isChangingOptions.value,
   render: (_ctx, gl, program) => {
     gl.useProgram(program.program)
 
@@ -207,7 +226,8 @@ const { collector } = defineRenderer('analyze-overlay', {
     setUniforms(program, {
       u_color_violation: toShaderColor(theme.red.value.normal),
       u_color_incomplete: toShaderColor(theme.yellow.value.normal),
-      u_color_pass: toShaderColor(theme.lime.value.normal),
+      u_opacity: getOpacity(),
+      u_manual_stale: props.isStale ? 1.0 : 0.0,
     })
     animation.setSharedUniforms(gl, program)
 
@@ -230,29 +250,35 @@ const { collector } = defineRenderer('analyze-overlay', {
       return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`
     }
 
-    const colorViolation = rgbaToCss(theme.red.value.normal, 0.3)
-    const colorIncomplete = rgbaToCss(theme.yellow.value.normal, 0.3)
-    const colorPass = rgbaToCss(theme.lime.value.normal, 0.3)
+    const globalOpacity = getOpacity()
+    const borderRadius = 8 * ctx.dpi // 8px border radius
 
     // Draw all analyze rectangles
     for (let i = 0; i < rects.length; i++) {
       const rect = rects[i]!
 
-      // Map status to color (type 0=pass, 1=incomplete, 2=inapplicable, 3=violation)
-      let fillColor = colorPass
-      if (rect.status === 'violation') {
-        fillColor = colorViolation
-      } else if (rect.status === 'incomplete') {
-        fillColor = colorIncomplete
-      }
+      // Determine final opacity
+      const isManual = props.manualAnalyzerIds.has(rect.plugin)
+      const finalOpacity = isManual && props.isStale ? 0.3 : globalOpacity
+      const fillAlpha = 0.3 * finalOpacity
+
+      // Determine color based on status
+      const baseColor =
+        rect.status === 'violation'
+          ? theme.red.value.normal
+          : theme.yellow.value.normal
+
+      const fillColor = rgbaToCss(baseColor, fillAlpha)
+
+      const x = (rect.x * ctx.artboardScale + ctx.artboardOffset.x) * ctx.dpi
+      const y = (rect.y * ctx.artboardScale + ctx.artboardOffset.y) * ctx.dpi
+      const width = rect.width * ctx.artboardScale * ctx.dpi
+      const height = rect.height * ctx.artboardScale * ctx.dpi
 
       ctx2d.fillStyle = fillColor
-      ctx2d.fillRect(
-        (rect.x * ctx.artboardScale + ctx.artboardOffset.x) * ctx.dpi,
-        (rect.y * ctx.artboardScale + ctx.artboardOffset.y) * ctx.dpi,
-        rect.width * ctx.artboardScale * ctx.dpi,
-        rect.height * ctx.artboardScale * ctx.dpi,
-      )
+      ctx2d.beginPath()
+      ctx2d.roundRect(x, y, width, height, borderRadius)
+      ctx2d.fill()
     }
   },
 })
@@ -262,10 +288,18 @@ onBlokkliEvent('ui:resized', function () {
   collector.reset()
 })
 
-onBlokkliEvent('state:reloaded', function () {
+onBlokkliEvent('option:finish-change', () => {
   collector.clearCache()
   collector.reset()
 })
+
+watch(
+  () => props.results,
+  () => {
+    collector.clearCache()
+    collector.reset()
+  },
+)
 
 onBlokkliEvent('mouse:up', (e) => {
   const artboardX = (e.x - ui.artboardOffset.value.x) / ui.artboardScale.value

@@ -3,8 +3,8 @@
     <div class="bk-analyze-button">
       <button
         class="bk-button bk-is-primary"
-        :disabled="!isStale"
-        @click="onClick"
+        :disabled="buttonDisabled"
+        @click.prevent="onClick"
       >
         {{ $t('analyzeButtonLabel', 'Analyze Page') }}
       </button>
@@ -16,17 +16,29 @@
           }}
         </RelativeTime>
       </p>
-      <p v-if="isStale && hasRunOnce" class="bk-message-info">
-        {{
-          $t(
-            'analyzeStaleMessage',
-            'The contents of the page have changed since last analyzing the page. Please run the analyzers again to get updated results.',
-          )
-        }}
+
+      <div v-if="analyzerStatuses.length > 1" class="bk-analyze-statuses">
+        <div
+          v-for="analyzer in analyzerStatuses"
+          :key="analyzer.id"
+          class="bk-analyze-status-item"
+        >
+          <span class="bk-analyze-status-title">{{ analyzer.title }}</span>
+          <span
+            class="bk-analyze-status-label"
+            :class="{ 'bk-is-stale': analyzer.isStale }"
+          >
+            {{ analyzer.status }}
+          </span>
+        </div>
+      </div>
+
+      <p v-if="staleMessage" class="bk-message-info">
+        {{ staleMessage }}
       </p>
     </div>
 
-    <div v-if="resultsFiltered.length" class="bk-analyze-wrapper">
+    <div v-if="results.length" class="bk-analyze-wrapper">
       <div class="bk-analyze-form">
         <FormSelect
           id="category"
@@ -35,18 +47,28 @@
           :options="categoryOptions"
         />
       </div>
-      <AnalyzeSummary :results="resultsFiltered" />
-      <Results :results="resultsFiltered" />
+      <AnalyzeSummary :results="results" />
+      <Results :results="results" />
     </div>
   </div>
   <Renderer
-    v-if="resultsFiltered.length && !isStale"
-    :results="resultsFiltered"
+    v-if="results.length"
+    :results
+    :is-stale
+    :manual-analyzer-ids
+    :is-running
   />
 </template>
 
 <script setup lang="ts">
-import { computed, useBlokkli, useState, ref } from '#imports'
+import {
+  computed,
+  useBlokkli,
+  useState,
+  onMounted,
+  onUnmounted,
+  watch,
+} from '#imports'
 import type {
   AnalyzeCategory,
   AnalyzeResultMapped,
@@ -69,92 +91,328 @@ const props = defineProps<{
 
 const ALL = 'ALL'
 
-const { $t, ui, state } = useBlokkli()
+const { $t, ui, state, directive, dom } = useBlokkli()
 const { getCategoryLabel } = useAnalyzeHelper()
 
-const currentPlugin = ref('readability')
+const refreshKey = computed(() => {
+  return `dom:${dom.settleKey.value}_directive:${directive.settleKey.value}_state:${state.refreshKey.value}`
+})
+
+const isRunning = defineModel<boolean>({ default: false })
+
+let currentAbortController: AbortController | null = null
 
 const hasRunOnce = useState(() => false)
-const results = useState<AnalyzeResultMapped[]>('blokkli:analyze', () => [])
-const isLoading = useState(() => false)
+const continuousResults = useState<AnalyzeResultMapped[]>(
+  'blokkli:analyze:continuous',
+  () => [],
+)
+const manualResults = useState<AnalyzeResultMapped[]>(
+  'blokkli:analyze:manual',
+  () => [],
+)
 const lastRun = useState(() => 0)
 const lastRunKey = useState(() => '')
 const selectedCategory = useState(() => ALL)
 const hasInitialized = useState(() => false)
 const providerRootElement = ui.providerElement
 
-const resultsFiltered = computed(() => {
+// Split analyzers into continuous and manual
+const continuousAnalyzers = computed(() =>
+  props.analyzers.filter((a) => a.continuous),
+)
+const manualAnalyzers = computed(() =>
+  props.analyzers.filter((a) => !a.continuous),
+)
+
+const hasContinuousAnalyzers = computed(
+  () => continuousAnalyzers.value.length > 0,
+)
+const hasManualAnalyzers = computed(() => manualAnalyzers.value.length > 0)
+
+const results = computed(() => {
+  // Merge continuous and manual results
+  const allResults = [...continuousResults.value, ...manualResults.value]
+
+  // Apply category filter
   if (selectedCategory.value === ALL) {
-    return results.value
+    return allResults
   }
 
-  return results.value.filter((v) => v.category === selectedCategory.value)
+  return allResults.filter((v) => v.category === selectedCategory.value)
 })
 
 const isStale = computed(() => lastRunKey.value !== state.refreshKey.value)
 
-function getContext(): AnalyzerContext {
+const buttonDisabled = computed(() => {
+  if (isRunning.value) {
+    return true
+  }
+
+  if (!isStale.value) {
+    return false
+  }
+
+  return false
+})
+
+const staleMessage = computed(() => {
+  // If we have manual analyzers but they haven't run yet
+  if (hasManualAnalyzers.value && manualResults.value.length === 0) {
+    return $t(
+      'analyzeClickButton',
+      'Click the button above to run the analysis.',
+    )
+  }
+
+  // If manual analyzers have run but results are now stale
+  if (hasManualAnalyzers.value && isStale.value) {
+    return $t(
+      'analyzeResultsOutdated',
+      'Results are outdated. Click the button to update.',
+    )
+  }
+
+  return ''
+})
+
+const analyzerStatuses = computed(() => {
+  if (!hasRunOnce.value) {
+    return []
+  }
+
+  return props.analyzers.map((analyzer) => {
+    const status = analyzer.continuous
+      ? $t('analyzeStatusUpToDate', 'Up-to-date')
+      : isStale.value
+        ? $t('analyzeStatusStale', 'Stale')
+        : $t('analyzeStatusUpToDate', 'Up-to-date')
+
+    const title =
+      typeof analyzer.label === 'function'
+        ? analyzer.label(ui.interfaceLanguage.value)
+        : analyzer.label
+
+    return {
+      id: analyzer.id,
+      title: title ?? analyzer.id,
+      status,
+      isStale: !analyzer.continuous && isStale.value,
+    }
+  })
+})
+
+const manualAnalyzerIds = computed(
+  () => new Set(manualAnalyzers.value.map((a) => a.id)),
+)
+
+let refreshTimeout: number | null = null
+
+watch(refreshKey, () => {
+  if (!hasContinuousAnalyzers.value) {
+    return
+  }
+
+  // Abort any currently running analysis
+  if (currentAbortController) {
+    currentAbortController.abort('refreshKey updated')
+  }
+
+  if (refreshTimeout) {
+    window.clearTimeout(refreshTimeout)
+  }
+
+  // Show updating and running state immediately
+  isRunning.value = true
+
+  refreshTimeout = window.setTimeout(() => {
+    runContinuous()
+  }, 100)
+})
+
+onUnmounted(() => {
+  if (currentAbortController) {
+    currentAbortController.abort('refreshKey updated')
+    currentAbortController = null
+  }
+})
+
+function getContext(signal?: AbortSignal): AnalyzerContext {
   return new AnalyzerContext(
     props.langcode,
     ui.interfaceLanguage.value,
     providerRootElement,
     state,
     $t,
+    signal,
   )
 }
 
-async function onClick() {
-  if (isLoading.value) {
+async function runContinuous() {
+  if (!continuousAnalyzers.value.length) {
     return
   }
 
-  const requiresRawPage = props.analyzers.some(
+  // Abort previous run if still active
+  if (currentAbortController) {
+    currentAbortController.abort('refreshKey updated')
+  }
+
+  // Create new abort controller for this run
+  const abortController = new AbortController()
+  currentAbortController = abortController
+
+  isRunning.value = true
+
+  let wasAborted = false
+
+  try {
+    const context = getContext(abortController.signal)
+
+    // Initialize all analyzers if not done yet
+    if (!hasInitialized.value) {
+      await Promise.all(
+        props.analyzers.map(async (analyzer) => {
+          if (analyzer.init) {
+            await analyzer.init(context)
+          }
+        }),
+      )
+      hasInitialized.value = true
+    }
+
+    // Check if aborted before running analyzers
+    if (abortController.signal.aborted) {
+      wasAborted = true
+      return
+    }
+
+    const newResults: AnalyzeResultMapped[] = []
+
+    // Run only continuous analyzers
+    for (let i = 0; i < continuousAnalyzers.value.length; i++) {
+      // Check if aborted between analyzers
+      if (abortController.signal.aborted) {
+        wasAborted = true
+        return
+      }
+
+      const analyzer = continuousAnalyzers.value[i]!
+      const result = await normalizeToArray(analyzer.run(context))
+      const mapped = result.filter(falsy).map((v) => {
+        return {
+          ...v,
+          plugin: analyzer.id,
+        } satisfies AnalyzeResultMapped
+      })
+
+      newResults.push(...mapped)
+    }
+
+    // Check if aborted before updating results
+    if (abortController.signal.aborted) {
+      wasAborted = true
+      return
+    }
+
+    // Update continuous results
+    continuousResults.value = newResults
+
+    hasRunOnce.value = true
+    lastRun.value = Date.now() / 1000
+  } catch (error) {
+    // If the error is an abort error, silently ignore it
+    if (error instanceof Error && error.name === 'AbortError') {
+      wasAborted = true
+      return
+    }
+    // Re-throw other errors
+    throw error
+  } finally {
+    // Clean up only if this is still the current controller
+    if (currentAbortController === abortController) {
+      currentAbortController = null
+      // Only set isRunning to false if we weren't aborted
+      // (if aborted, a new run is about to start)
+      if (!wasAborted) {
+        isRunning.value = false
+      }
+    }
+  }
+}
+
+async function onClick() {
+  if (isRunning.value) {
+    return
+  }
+
+  const requiresRawPage = manualAnalyzers.value.some(
     (analyzer) => analyzer.requireRawPage,
   )
 
   if (requiresRawPage) {
     ui.isAnalyzing.value = true
   }
-  isLoading.value = true
+  isRunning.value = true
   await renderCycle()
 
-  const context = getContext()
+  // Capture the refresh key after renderCycle to ensure we're analyzing
+  // the current state and can mark it as up-to-date
+  const currentRefreshKey = state.refreshKey.value
 
-  if (!hasInitialized.value) {
-    await Promise.all(
-      props.analyzers.map(async (analyzer) => {
-        if (analyzer.init) {
-          await analyzer.init(context)
-        }
-      }),
-    )
-  }
-  hasInitialized.value = true
+  try {
+    const context = getContext()
 
-  const newResults: AnalyzeResultMapped[] = []
+    if (!hasInitialized.value) {
+      await Promise.all(
+        props.analyzers.map(async (analyzer) => {
+          if (analyzer.init) {
+            await analyzer.init(context)
+          }
+        }),
+      )
+    }
+    hasInitialized.value = true
 
-  for (let i = 0; i < props.analyzers.length; i++) {
-    const analyzer = props.analyzers[i]!
-    currentPlugin.value = analyzer.id
-    const result = await normalizeToArray(analyzer.run(context))
-    const mapped = result.filter(falsy).map((v) => {
-      return {
-        ...v,
-        plugin: analyzer.id,
-      } satisfies AnalyzeResultMapped
-    })
+    const newManualResults: AnalyzeResultMapped[] = []
 
-    newResults.push(...mapped)
-  }
+    // Run only manual analyzers (continuous ones have already run automatically)
+    for (let i = 0; i < manualAnalyzers.value.length; i++) {
+      const analyzer = manualAnalyzers.value[i]!
+      const result = await normalizeToArray(analyzer.run(context))
+      const mapped = result.filter(falsy).map((v) => {
+        return {
+          ...v,
+          plugin: analyzer.id,
+        } satisfies AnalyzeResultMapped
+      })
 
-  results.value = newResults
+      newManualResults.push(...mapped)
+    }
 
-  isLoading.value = false
-  hasRunOnce.value = true
-  lastRun.value = Date.now() / 1000
-  lastRunKey.value = state.refreshKey.value
-  if (requiresRawPage) {
-    ui.isAnalyzing.value = false
+    // Update only manual results (keep existing continuous results)
+    manualResults.value = newManualResults
+
+    hasRunOnce.value = true
+    lastRun.value = Date.now() / 1000
+
+    // Only update lastRunKey if the refresh key hasn't changed during analysis
+    if (state.refreshKey.value === currentRefreshKey) {
+      lastRunKey.value = currentRefreshKey
+    }
+  } catch (error) {
+    // If the error is an abort error, silently ignore it
+    if (error instanceof Error && error.name === 'AbortError') {
+      return
+    }
+    // Re-throw other errors
+    throw error
+  } finally {
+    isRunning.value = false
+
+    if (requiresRawPage) {
+      ui.isAnalyzing.value = false
+    }
   }
 }
 
@@ -177,5 +435,12 @@ const categoryOptions = computed<{ value: string; label: string }[]>(() => {
     },
     ...categories,
   ]
+})
+
+// Auto-run continuous analyzers on mount
+onMounted(async () => {
+  if (hasContinuousAnalyzers.value) {
+    await runContinuous()
+  }
 })
 </script>

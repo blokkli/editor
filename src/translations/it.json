@@ -91,6 +91,10 @@
     "source": "Text",
     "translation": ""
   },
+  "analyzeClickButton": {
+    "source": "Click the button above to run the analysis.",
+    "translation": ""
+  },
   "analyzeLastRun": {
     "source": "Last run: @time",
     "translation": ""
@@ -99,12 +103,12 @@
     "source": "More",
     "translation": ""
   },
-  "analyzeSidebarTitle": {
-    "source": "Analyze",
+  "analyzeResultsOutdated": {
+    "source": "Results are outdated. Click the button to update.",
     "translation": ""
   },
-  "analyzeStaleMessage": {
-    "source": "The contents of the page have changed since last analyzing the page. Please run the analyzers again to get updated results.",
+  "analyzeSidebarTitle": {
+    "source": "Analyze",
     "translation": ""
   },
   "analyzeStatusInapplicable": {
@@ -117,6 +121,14 @@
   },
   "analyzeStatusPass": {
     "source": "Pass",
+    "translation": ""
+  },
+  "analyzeStatusStale": {
+    "source": "Stale",
+    "translation": ""
+  },
+  "analyzeStatusUpToDate": {
+    "source": "Up-to-date",
     "translation": ""
   },
   "analyzeStatusViolation": {
@@ -524,7 +536,7 @@
     "translation": "Gli elementi non possono essere duplicati."
   },
   "edit": {
-    "source": "Edit...",
+    "source": "Edit",
     "translation": "Modifica"
   },
   "editFormBlockAdd": {
@@ -1859,8 +1871,12 @@
     "source": "Apply changes",
     "translation": ""
   },
-  "transformDialogButtonPreview": {
+  "transformDialogButtonNewSuggestion": {
     "source": "New suggestion",
+    "translation": ""
+  },
+  "transformDialogButtonPreview": {
+    "source": "Preview",
     "translation": ""
   },
   "translationsBannerButton": {

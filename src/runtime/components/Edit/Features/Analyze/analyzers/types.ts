@@ -41,10 +41,18 @@ export type AnalyzeResultMapped = AnalyzeResult & {
 export type Analyzer = {
   id: string
 
+  label?: string | ((langcode: string) => string)
+
   /**
    * If true, the raw page (without editor UI) is required for this analyzer.
    */
   requireRawPage?: boolean
+
+  /**
+   * If true, the analyzer is called automatically. This assumes it runs without
+   * blocking the main thread.
+   */
+  continuous?: boolean
 
   init?: (context: AnalyzerContext) => void | Promise<void>
   run: (

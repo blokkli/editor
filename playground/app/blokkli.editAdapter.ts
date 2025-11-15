@@ -87,6 +87,7 @@ const blockAnalyzer = defineAnalyzer(() => {
   return {
     id: 'block-analyzer',
     category: 'content',
+    continuous: true,
     run: function (context) {
       const matchingUuids = context.mutatedFields
         .map((mutatedField) => {
@@ -127,20 +128,43 @@ const blockAnalyzer = defineAnalyzer(() => {
 const textAnalyzer = defineAnalyzer(() => {
   return {
     id: 'text-analyzer',
-    run: function (context) {
-      const nodes = context
-        .getTextElements()
-        .filter(
-          (v) =>
-            v.text.includes('blokkli') &&
-            !v.text.includes('paragraphs_blokkli'),
-        )
-        .map((v) => {
-          return {
-            description: v.text,
-            targets: [v.element],
-          }
-        })
+    continuous: true,
+    run: async function (context) {
+      const allTextElements = context.getTextElements()
+
+      // Prepare data for API call
+      const texts = allTextElements.map((v, index) => ({
+        text: v.text,
+        index,
+      }))
+
+      // Make API call with abort signal
+      const response = await fetch('/api/analyze/text', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ texts }),
+        signal: context.signal,
+      }).catch(() => {
+        // Noop.
+      })
+
+      if (!response?.ok) {
+        return null
+      }
+
+      const result: { matches: number[] } = await response.json()
+
+      // Map matching indices back to nodes
+      const nodes = result.matches.map((index) => {
+        const element = allTextElements[index]!
+        return {
+          description: element.text,
+          targets: [element.element],
+        }
+      })
+
       return {
         id: 'blokkli-typo',
         category: 'text',
@@ -1071,9 +1095,9 @@ export default defineBlokkliEditAdapter((ctx) => {
 
     getAnalyzers: () => {
       return [
-        blockAnalyzer(),
+        // blockAnalyzer(),
         textAnalyzer(),
-        readabilityAnalyzer(),
+        // readabilityAnalyzer(),
         accessibilityAnalyzer({
           runOptions: {
             rules: {

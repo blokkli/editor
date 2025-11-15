@@ -18,6 +18,26 @@
     @apply p-20 border-t border-t-mono-300;
   }
 
+  .bk-analyze-statuses {
+    @apply grid gap-5;
+  }
+
+  .bk-analyze-status-item {
+    @apply flex justify-between items-center text-sm;
+
+    .bk-analyze-status-title {
+      @apply font-medium text-mono-950;
+    }
+
+    .bk-analyze-status-label {
+      @apply text-xs font-semibold uppercase text-lime-dark bg-lime-light px-5 py-3 rounded;
+
+      &.bk-is-stale {
+        @apply text-orange-dark bg-orange-light;
+      }
+    }
+  }
+
   .bk-analyze-progress {
     label {
       @apply block font-semibold mb-10;

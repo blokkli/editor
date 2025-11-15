@@ -4,9 +4,14 @@
     :title="$t('analyzeSidebarTitle', 'Analyze')"
     :tour-text="$t('analyzeTourText', 'Analyze the content of your page')"
     icon="speedometer"
+    :is-loading="isRunning"
   >
+    <template #icon>
+      <AnalyzeIcon :is-running />
+    </template>
     <AnalyzerMain
       :key="animation.renderKey.value"
+      v-model="isRunning"
       :langcode="context.language"
       :analyzers
     />
@@ -14,10 +19,11 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature } from '#imports'
+import { useBlokkli, defineBlokkliFeature, ref } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
 import AnalyzerMain from './Main.vue'
 import type { Analyzer } from './analyzers/types'
+import AnalyzeIcon from './Icon.vue'
 
 const { adapter } = defineBlokkliFeature({
   id: 'analyze',
@@ -27,6 +33,8 @@ const { adapter } = defineBlokkliFeature({
   description: 'Analyze blocks and page for SEO, accessibility, etc.',
   viewports: [],
 })
+
+const isRunning = ref(false)
 
 function getAdapterAnalyzers(): Promise<Analyzer[]> {
   const result = adapter.getAnalyzers()

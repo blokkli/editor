@@ -16,7 +16,7 @@
     >
       <BlokkliItem
         v-for="(item, i) in list"
-        :key="item.uuid + fieldListType + definitions.renderKey.value"
+        :key="item.uuid + fieldListType + definitions.renderKey.value + i"
         class="bk-field-list-item"
         :uuid="item.uuid"
         :bundle="item.bundle"

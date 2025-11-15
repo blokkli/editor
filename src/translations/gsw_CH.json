@@ -91,6 +91,10 @@
     "source": "Text",
     "translation": "Teggscht"
   },
+  "analyzeClickButton": {
+    "source": "Click the button above to run the analysis.",
+    "translation": ""
+  },
   "analyzeLastRun": {
     "source": "Last run: @time",
     "translation": "Zletscht usgfüehrt: @time"
@@ -99,13 +103,13 @@
     "source": "More",
     "translation": "Meh"
   },
+  "analyzeResultsOutdated": {
+    "source": "Results are outdated. Click the button to update.",
+    "translation": ""
+  },
   "analyzeSidebarTitle": {
     "source": "Analyze",
     "translation": "Analysiere"
-  },
-  "analyzeStaleMessage": {
-    "source": "The contents of the page have changed since last analyzing the page. Please run the analyzers again to get updated results.",
-    "translation": "Dr Inhalt vo dr Sitte het sich gänderet sit dr letschte Analyse. Bitte füehr d'Analyse nomol uus zum aktualisierti Resultät z'übercho."
   },
   "analyzeStatusInapplicable": {
     "source": "Inapplicable",
@@ -118,6 +122,14 @@
   "analyzeStatusPass": {
     "source": "Pass",
     "translation": "I Ornig"
+  },
+  "analyzeStatusStale": {
+    "source": "Stale",
+    "translation": ""
+  },
+  "analyzeStatusUpToDate": {
+    "source": "Up-to-date",
+    "translation": ""
   },
   "analyzeStatusViolation": {
     "source": "Violation",
@@ -524,7 +536,7 @@
     "translation": "D'Elemänt hän nid chönne dupliziert wärde. "
   },
   "edit": {
-    "source": "Edit...",
+    "source": "Edit",
     "translation": "Bearbeite"
   },
   "editFormBlockAdd": {
@@ -1859,8 +1871,12 @@
     "source": "Apply changes",
     "translation": "Aawände"
   },
-  "transformDialogButtonPreview": {
+  "transformDialogButtonNewSuggestion": {
     "source": "New suggestion",
+    "translation": ""
+  },
+  "transformDialogButtonPreview": {
+    "source": "Preview",
     "translation": "Vorschau"
   },
   "translationsBannerButton": {

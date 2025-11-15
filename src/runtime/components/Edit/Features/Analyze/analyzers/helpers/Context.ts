@@ -24,6 +24,7 @@ export class AnalyzerContext {
     public readonly providerRootElement: HTMLElement,
     private state: StateProvider,
     public readonly $t: TextProvider,
+    public readonly signal?: AbortSignal,
   ) {
     this.mutatedFields = JSON.parse(JSON.stringify(state.mutatedFields.value))
   }

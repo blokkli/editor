@@ -1,11 +1,11 @@
 <template>
   <svg :width="size" :height="size" :viewBox="`0 0 ${size} ${size}`">
     <circle
-      v-if="data.length === 1"
+      v-if="dataWithValues.length === 1"
       :cx="radius"
       :cy="radius"
       :r="radius"
-      :fill="data[0]?.color"
+      :fill="dataWithValues[0]?.color"
     />
     <g v-else :transform="`translate(${radius}, ${radius})`">
       <path
@@ -56,37 +56,43 @@ const props = withDefaults(
 
 const size = computed(() => props.radius * 2)
 
+const dataWithValues = computed(() =>
+  props.data.filter((item) => item.value > 0),
+)
+
 const segments = computed(() => {
   const total = props.data.reduce((sum, item) => sum + item.value, 0)
   if (total === 0) return []
 
   let currentAngle = -90
 
-  return props.data.map((item) => {
-    const percentage = item.value / total
-    const angle = percentage * 360
-    const startAngle = currentAngle
-    const endAngle = currentAngle + angle
+  return props.data
+    .filter((item) => item.value > 0)
+    .map((item) => {
+      const percentage = item.value / total
+      const angle = percentage * 360
+      const startAngle = currentAngle
+      const endAngle = currentAngle + angle
 
-    // Calculate path for the segment
-    const path = createPieSegment(
-      0,
-      0, // center x, y
-      props.radius,
-      startAngle,
-      endAngle,
-    )
+      // Calculate path for the segment
+      const path = createPieSegment(
+        0,
+        0, // center x, y
+        props.radius,
+        startAngle,
+        endAngle,
+      )
 
-    currentAngle = endAngle
+      currentAngle = endAngle
 
-    return {
-      path,
-      color: item.color,
-      label: item.label,
-      value: item.value,
-      percentage,
-    }
-  })
+      return {
+        path,
+        color: item.color,
+        label: item.label,
+        value: item.value,
+        percentage,
+      }
+    })
 })
 
 function createPieSegment(
@@ -112,7 +118,8 @@ function createPieSegment(
   // Special case for full circle
   if (endAngle - startAngle >= 360) {
     return `
-      M ${cx + radius} ${cy}
+      M ${cx} ${cy}
+      L ${cx + radius} ${cy}
       A ${radius} ${radius} 0 1 1 ${cx + radius} ${cy + 0.001}
       Z
     `

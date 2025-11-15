@@ -38,7 +38,7 @@
               }"
               @click.prevent="onClickPreview"
             >
-              {{ $t('transformDialogButtonPreview', 'New suggestion') }}
+              {{ previewButtonLabel }}
             </button>
             <button
               class="bk-button bk-is-orange"
@@ -108,6 +108,13 @@ function mapValues(values: Record<string, any>): PluginConfigInputItem[] {
 const hasSeedInput = computed<boolean>(
   () => !!props.plugin.configInputs?.find((v) => v.type === 'seed'),
 )
+
+const previewButtonLabel = computed(() => {
+  if (hasSeedInput.value) {
+    return $t('transformDialogButtonNewSuggestion', 'New suggestion')
+  }
+  return $t('transformDialogButtonPreview', 'Preview')
+})
 
 const isLocked = ref(false)
 const hasChanged = ref(false)

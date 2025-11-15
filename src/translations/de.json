@@ -91,6 +91,10 @@
     "source": "Text",
     "translation": "Texte"
   },
+  "analyzeClickButton": {
+    "source": "Click the button above to run the analysis.",
+    "translation": "Klicken Sie auf den Button oben um die Analyse auszuführen."
+  },
   "analyzeLastRun": {
     "source": "Last run: @time",
     "translation": "Zuletzt ausgeführt: @time"
@@ -99,13 +103,13 @@
     "source": "More",
     "translation": "Mehr"
   },
+  "analyzeResultsOutdated": {
+    "source": "Results are outdated. Click the button to update.",
+    "translation": "Resultate sind veraltet. Klicken Sie auf den Button um zu aktualisieren."
+  },
   "analyzeSidebarTitle": {
     "source": "Analyze",
     "translation": "Analysieren"
-  },
-  "analyzeStaleMessage": {
-    "source": "The contents of the page have changed since last analyzing the page. Please run the analyzers again to get updated results.",
-    "translation": "Die Seiteninhalte wurden seit der letzten Analyse geändert. Bitte führen Sie die Analyse erneut aus um aktuelle Resultate zu sehen."
   },
   "analyzeStatusInapplicable": {
     "source": "Inapplicable",
@@ -118,6 +122,14 @@
   "analyzeStatusPass": {
     "source": "Pass",
     "translation": "Bestanden"
+  },
+  "analyzeStatusStale": {
+    "source": "Stale",
+    "translation": "Veraltet"
+  },
+  "analyzeStatusUpToDate": {
+    "source": "Up-to-date",
+    "translation": "Aktuell"
   },
   "analyzeStatusViolation": {
     "source": "Violation",
@@ -257,7 +269,7 @@
   },
   "blockNotImplemented": {
     "source": "Missing component for block bundle <strong>@bundle</strong>.",
-    "translation": "Keine Komponente für Block-Typ «@bundle» gefunden."
+    "translation": "Keine Komponente für Block-Typ <strong>@bundle</strong> gefunden."
   },
   "blockOption_bkHiddenGlobally_description": {
     "source": "Always hides the block.",
@@ -524,7 +536,7 @@
     "translation": "Die Elemente konnten nicht dupliziert werden."
   },
   "edit": {
-    "source": "Edit...",
+    "source": "Edit",
     "translation": "Bearbeiten..."
   },
   "editFormBlockAdd": {
@@ -1859,9 +1871,13 @@
     "source": "Apply changes",
     "translation": "Änderungen annehmen"
   },
-  "transformDialogButtonPreview": {
+  "transformDialogButtonNewSuggestion": {
     "source": "New suggestion",
     "translation": "Neuer Vorschlag"
+  },
+  "transformDialogButtonPreview": {
+    "source": "Preview",
+    "translation": "Vorschau"
   },
   "translationsBannerButton": {
     "source": "Edit source language instead",

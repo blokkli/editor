@@ -80,6 +80,7 @@ export type DomProvider = {
   updateVisibleRects: () => void
 
   isReady: ComputedRef<boolean>
+  settleKey: ComputedRef<number>
 
   init: () => void
 
@@ -165,6 +166,9 @@ export default function (
   const blockUuidCurrentKey: Record<string, string> = {}
   let initTimeout: null | number = null
   const isInitalizing = ref(true)
+
+  let settleTimeout: null | number = null
+  const settleKey = ref(0)
 
   /**
    * Obserable elements.
@@ -340,6 +344,7 @@ export default function (
     intersectionObserver.observe(element)
     fieldElementToFieldKey.set(element, key)
     doInitTimeout()
+    doSettleTimeout()
   }
 
   const updateFieldElement = (
@@ -372,6 +377,7 @@ export default function (
     }
     visibleFields.delete(key)
     registeredFields[key] = undefined
+    doSettleTimeout()
   }
 
   const getRegisteredField = (
@@ -532,6 +538,7 @@ export default function (
     }
 
     stateReloadTimeout = window.setTimeout(updateVisibleRects, 300)
+    doSettleTimeout()
   })
 
   function forceRefresh() {
@@ -593,12 +600,23 @@ export default function (
     }
   }
 
+  function doSettleTimeout() {
+    if (settleTimeout) {
+      window.clearTimeout(settleTimeout)
+    }
+
+    settleTimeout = window.setTimeout(() => {
+      settleKey.value++
+    }, 50)
+  }
+
   function registerBlock(key: string, uuid: string, el: HTMLElement | null) {
     logger.log('registerBlock: ' + uuid)
 
     blockUuidCurrentKey[uuid] = key
 
     doInitTimeout()
+    doSettleTimeout()
 
     // No root node found on the block, unregister it.
     if (!(el instanceof HTMLElement)) {
@@ -651,6 +669,8 @@ export default function (
     if (currentKey && currentKey !== key) {
       return
     }
+
+    doSettleTimeout()
 
     logger.log('unregisterBlock: ' + uuid)
 
@@ -785,6 +805,7 @@ export default function (
       () =>
         mutationsReady.value && intersectionReady.value && !isInitalizing.value,
     ),
+    settleKey: computed(() => settleKey.value),
     init,
     getDragElement,
     updateVisibleRects,

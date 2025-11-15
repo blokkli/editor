@@ -18,7 +18,7 @@ const LIX_BANDS = { easyMax: 40, okMax: 59 }
 const CLI_HARD_MIN = 12
 const ARI_HARD_MIN = 12
 const GULPEASE_BANDS = { easyMin: 80, okMin: 60 }
-const MIN_WORDS_FOR_CONFIDENCE = 30
+const MIN_WORDS_FOR_CONFIDENCE = 5
 
 function mapLang(langcode: string): Language {
   const lc = (langcode || '').toLowerCase()
@@ -98,11 +98,24 @@ function format(n?: number, d = 1) {
   return typeof n === 'number' && Number.isFinite(n) ? n.toFixed(d) : '—'
 }
 
+type CachedScores = {
+  lix?: number
+  cli?: number
+  ari?: number
+  gulpease?: number
+  words: number
+  sentences: number
+  avgSentLen: number
+}
+
+type ResultCache = Map<string, CachedScores>
+
 function analyzeReadability(
   tr: TextReadability,
   blocks: Readonly<TextElement[]>,
   langcode: LangCode,
   $t: TextProvider,
+  cache: ResultCache,
 ): AnalyzeResult {
   const lang = langcode ?? 'en'
 
@@ -114,20 +127,52 @@ function analyzeReadability(
 
     // Light guard against noisy flags on tiny snippets
     const words = segmentWords(text)
-    if (words.length < MIN_WORDS_FOR_CONFIDENCE) continue
+    if (words.length < MIN_WORDS_FOR_CONFIDENCE) {
+      continue
+    }
 
-    const sentences = Math.max(1, countSentences(text))
-    const avgSentLen = words.length / sentences
+    const cacheKey = `${langcode}:${text}`
+    let scores: CachedScores
 
-    // Scores via the library (class API takes raw text)
-    const lix = safe(() => tr.lix(text))
-    const cli = safe(() => tr.colemanLiauIndex(text))
-    const ari = safe(() => tr.automatedReadabilityIndex(text))
-    const gulpease =
-      lang === 'it' ? safe(() => tr.gulpeaseIndex(text)) : undefined
+    // Check cache first
+    const cached = cache.get(cacheKey)
+    if (cached) {
+      scores = cached
+    } else {
+      // Calculate scores
+      const sentences = Math.max(1, countSentences(text))
+      const avgSentLen = words.length / sentences
 
-    const band = toBand(lang, { lix, cli, ari, gulpease })
-    if (band !== 'hard') continue
+      // Scores via the library (class API takes raw text)
+      const lix = safe(() => tr.lix(text))
+      const cli = safe(() => tr.colemanLiauIndex(text))
+      const ari = safe(() => tr.automatedReadabilityIndex(text))
+      const gulpease =
+        lang === 'it' ? safe(() => tr.gulpeaseIndex(text)) : undefined
+
+      scores = {
+        lix,
+        cli,
+        ari,
+        gulpease,
+        words: words.length,
+        sentences,
+        avgSentLen,
+      }
+
+      // Store in cache
+      cache.set(cacheKey, scores)
+    }
+
+    const band = toBand(lang, {
+      lix: scores.lix,
+      cli: scores.cli,
+      ari: scores.ari,
+      gulpease: scores.gulpease,
+    })
+    if (band !== 'hard') {
+      continue
+    }
 
     const parts: string[] = []
     parts.push(
@@ -136,16 +181,21 @@ function analyzeReadability(
         lang.toUpperCase(),
       ),
     )
-    if (lix != null) parts.push(`LIX ${format(lix)}`)
-    if (lang === 'it' && gulpease != null)
-      parts.push(`Gulpease ${format(gulpease)}`)
-    if (cli != null) parts.push(`CLI ${format(cli)}`)
-    if (avgSentLen > 25) {
+    if (scores.lix != null) {
+      parts.push(`LIX ${format(scores.lix)}`)
+    }
+    if (lang === 'it' && scores.gulpease != null) {
+      parts.push(`Gulpease ${format(scores.gulpease)}`)
+    }
+    if (scores.cli != null) {
+      parts.push(`CLI ${format(scores.cli)}`)
+    }
+    if (scores.avgSentLen > 25) {
       parts.push(
         $t(
           'analyzerReadabiliyAverageSentenceLength',
           `Average sentence length @length → split sentences.`,
-        ).replace('@length', format(avgSentLen)),
+        ).replace('@length', format(scores.avgSentLen)),
       )
     } else {
       parts.push(
@@ -158,7 +208,7 @@ function analyzeReadability(
 
     nodes.push({
       description: parts.join(' · '),
-      impact: impactFor(lix),
+      impact: impactFor(scores.lix),
       targets: [b.element],
     })
   }
@@ -189,8 +239,18 @@ function safe(fn: () => number): number | undefined {
 
 export default defineAnalyzer(() => {
   let textReadability: TextReadability | null = null
+  const cache: ResultCache = new Map()
+
   return {
     id: 'readability',
+    label: (langcode) => {
+      if (langcode === 'de') {
+        return 'Lesbarkeit'
+      }
+
+      return 'Readability'
+    },
+    continuous: true,
     init: function (context) {
       textReadability = new TextReadability({
         lang: mapLang(context.langcode),
@@ -202,11 +262,14 @@ export default defineAnalyzer(() => {
         return
       }
 
+      const elements = context.getTextElements()
+
       return analyzeReadability(
         textReadability!,
-        context.getTextElements(),
+        elements,
         context.langcode,
         context.$t,
+        cache,
       )
     },
   }

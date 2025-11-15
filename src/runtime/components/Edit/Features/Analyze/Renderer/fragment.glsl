@@ -7,6 +7,7 @@ in float v_rect_type;
 in vec3 v_color;
 in vec2 v_rect_size;
 in vec2 v_rect_center;
+in float v_opacity;
 
 out vec4 fragColor;
 
@@ -30,33 +31,41 @@ float sdRoundBox(vec2 p, vec2 b, vec4 radii) {
 void main() {
   float borderThickness = 2.0 * u_dpi;
   vec2 size = v_rect_size;
-  vec4 radius = vec4(0.0); // No rounded corners for now
+  vec4 radius = vec4(4.0 * u_dpi); // 8px border radius
 
   vec2 posRelativeToQuad = gl_FragCoord.xy - v_rect_center;
 
-  float mainDist = sdRoundBox(posRelativeToQuad, size / 2.0, radius);
+  // Outer rounded rectangle (includes border)
+  float outerDist = sdRoundBox(posRelativeToQuad, size / 2.0, radius);
 
-  // Calculate fill alpha (inside the rectangle)
-  float fillAlpha = 1.0 - smoothstep(-1.0, 0.0, mainDist);
+  // Inner rounded rectangle (fill area, excluding border)
+  float innerDist = sdRoundBox(
+    posRelativeToQuad,
+    size / 2.0 - borderThickness,
+    radius - borderThickness
+  );
 
-  // Calculate border alpha (edge of the rectangle)
-  float borderAlpha =
-    1.0 - smoothstep(-1.0, 0.0, abs(mainDist) - borderThickness);
+  // Calculate fill alpha (inside the inner rectangle)
+  float fillAlpha = 1.0 - smoothstep(-1.0, 0.0, innerDist);
+
+  // Calculate border alpha (between outer and inner)
+  float outerAlpha = 1.0 - smoothstep(-1.0, 0.0, outerDist);
+  float borderAlpha = outerAlpha * (1.0 - fillAlpha);
 
   // Background (transparent)
   vec4 bg = vec4(0.0, 0.0, 0.0, 0.0);
 
-  // Fill (semi-transparent)
-  vec4 fill = vec4(v_color, 0.3);
+  // Fill (semi-transparent) - use opacity calculated in vertex shader
+  vec4 fill = vec4(v_color, 0.3 * v_opacity);
 
-  // Border (fully opaque)
-  vec4 border = vec4(v_color, 1.0);
+  // Border - use opacity calculated in vertex shader
+  vec4 border = vec4(v_color, v_opacity);
 
   // Mix background with fill
   vec4 res_with_fill = mix(bg, fill, fillAlpha);
 
   // Mix with border
-  vec4 finalColor = mix(res_with_fill, border, borderAlpha * border.a);
+  vec4 finalColor = mix(res_with_fill, border, borderAlpha);
 
   fragColor = finalColor;
 }

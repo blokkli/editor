@@ -54,6 +54,7 @@ export type DirectiveProvider = {
     host: EntityContext,
   ) => EditableFieldData | undefined
   isReady: ComputedRef<boolean>
+  settleKey: ComputedRef<number>
 }
 
 export default function (
@@ -74,6 +75,9 @@ export default function (
     Record<string, EditableFieldData | undefined>
   > = {}
 
+  let settleTimeout: number | null = null
+  const settleKey = ref(0)
+
   function doInitTimeout() {
     if (initTimeout) {
       window.clearTimeout(initTimeout)
@@ -84,6 +88,16 @@ export default function (
         isInitalizing.value = false
       }, 500)
     }
+  }
+
+  function doSettleTimeout() {
+    if (settleTimeout) {
+      window.clearTimeout(settleTimeout)
+    }
+
+    settleTimeout = window.setTimeout(() => {
+      settleKey.value++
+    }, 50)
   }
 
   function getVisible(directiveType: BlokkliDirectiveType) {
@@ -176,6 +190,7 @@ export default function (
     logger.log('Registered directive element', data)
 
     doInitTimeout()
+    doSettleTimeout()
   }
 
   function unregisterDirectiveElement(
@@ -199,6 +214,8 @@ export default function (
         editablesByUuid[entity.uuid]![fieldName] = undefined
       }
     }
+
+    doSettleTimeout()
   }
 
   function init() {
@@ -330,7 +347,10 @@ export default function (
     return fieldData.get(key)
   }
 
-  onBlokkliEvent('state:reloaded', handleRefresh)
+  onBlokkliEvent('state:reloaded', () => {
+    handleRefresh()
+    doSettleTimeout()
+  })
   onBlokkliEvent('ui:resized', handleRefresh)
   onBlokkliEvent('option:finish-change', handleRefresh)
 
@@ -351,5 +371,6 @@ export default function (
     findEditableElement,
     getDroppableElements,
     isReady: computed(() => !isInitalizing.value),
+    settleKey: computed(() => settleKey.value),
   }
 }

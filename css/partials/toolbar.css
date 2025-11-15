@@ -182,7 +182,10 @@
       @apply pointer-events-none text-mono-700;
     }
     svg {
-      @apply size-18 lg:size-20 fill-current;
+      @apply size-18 lg:size-20;
+    }
+    .bk-icon svg {
+      @apply fill-current;
     }
     &.is-active {
       .bk-tooltip {

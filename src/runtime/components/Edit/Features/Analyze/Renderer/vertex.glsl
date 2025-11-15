@@ -19,13 +19,15 @@ uniform float u_offset_y;
 uniform vec2 u_resolution;
 uniform vec3 u_color_violation;
 uniform vec3 u_color_incomplete;
-uniform vec3 u_color_pass;
+uniform float u_opacity;
+uniform float u_manual_stale;
 
 out vec4 v_quad;
 out float v_rect_type;
 out vec3 v_color;
 out vec2 v_rect_size;
 out vec2 v_rect_center;
+out float v_opacity;
 
 void main() {
   // Apply global scale and offsets
@@ -57,18 +59,24 @@ void main() {
   v_rect_center = vec2(v_quad.x + v_quad.z / 2.0, v_quad.y + v_quad.w / 2.0);
 
   // Set color based on status type
-  // 0 = pass, 1 = incomplete, 2 = inapplicable, 3 = violation
-  if (a_rect_type > 2.5) {
-    // violation
+  // 0 = violation (manual), 1 = violation (continuous)
+  // 2 = incomplete (manual), 3 = incomplete (continuous)
+  if (a_rect_type < 1.5) {
+    // Types 0 and 1: violation
     v_color = u_color_violation;
-  } else if (a_rect_type > 0.5 && a_rect_type < 1.5) {
-    // incomplete
-    v_color = u_color_incomplete;
-  } else if (a_rect_type < 0.5) {
-    // pass
-    v_color = u_color_pass;
   } else {
-    // inapplicable - use a neutral gray
-    v_color = vec3(0.5, 0.5, 0.5);
+    // Types 2 and 3: incomplete
+    v_color = u_color_incomplete;
+  }
+
+  // Calculate final opacity
+  // Check if this is a manual analyzer (type 0 or 2)
+  bool isManual = a_rect_type == 0.0 || a_rect_type == 2.0;
+
+  // If manual AND stale, use 0.3, otherwise use global opacity
+  if (isManual && u_manual_stale > 0.5) {
+    v_opacity = 0.3;
+  } else {
+    v_opacity = u_opacity;
   }
 }

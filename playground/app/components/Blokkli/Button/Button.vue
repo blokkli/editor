@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-if="options.align === 'left'"
-    class="container mt-25 text-left"
-  >
+  <div v-if="options.align === 'left'" class="container mt-25 text-left">
     <Component
       :is="isExternal ? 'a' : NuxtLink"
       v-bind="attributes"
