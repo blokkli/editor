@@ -1,6 +1,6 @@
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
-import type { StateProvider } from '#blokkli/helpers/stateProvider'
-import type { TextProvider } from '#blokkli/helpers/textProvider'
+import type { StateProvider } from '#blokkli/helpers/providers/state'
+import type { TextProvider } from '#blokkli/helpers/providers/texts'
 import type { MutatedField } from '#blokkli/types'
 import type {
   AnalyzeCategory,

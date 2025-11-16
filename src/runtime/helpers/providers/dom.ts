@@ -10,13 +10,13 @@ import type {
   RegisterFieldData,
 } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
-import type { UiProvider } from './uiProvider'
-import { cloneElementWithStyles } from './dom'
-import onBlokkliEvent from './composables/onBlokkliEvent'
-import useDelayedIntersectionObserver from './composables/useDelayedIntersectionObserver'
-import type { DebugProvider } from './debugProvider'
-import type { StateProvider } from './stateProvider'
-import type { ElementProvider } from './providers/element'
+import type { UiProvider } from './ui'
+import { cloneElementWithStyles } from '../dom'
+import onBlokkliEvent from '../composables/onBlokkliEvent'
+import useDelayedIntersectionObserver from '../composables/useDelayedIntersectionObserver'
+import type { DebugProvider } from './debug'
+import type { StateProvider } from './state'
+import type { ElementProvider } from './element'
 
 type RegisteredFieldType = {
   entityType: string

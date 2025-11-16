@@ -32,7 +32,7 @@
 <script setup lang="ts">
 import { useBlokkli, computed, onMounted, onBeforeUnmount } from '#imports'
 import { FormToggle, FormCheckboxes } from '#blokkli/components'
-import type { DebugLogger } from '#blokkli/helpers/debugProvider'
+import type { DebugLogger } from '#blokkli/helpers/providers/debug'
 
 const props = defineProps<{
   logger: DebugLogger

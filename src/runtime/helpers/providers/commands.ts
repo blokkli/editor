@@ -1,4 +1,4 @@
-import { falsy } from '.'
+import { falsy } from '..'
 import type { Command } from '#blokkli/types'
 
 type CommandsProviderFunction = () => Command[] | Command | undefined

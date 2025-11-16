@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import textProvider from '#blokkli/helpers/textProvider'
+import textProvider from '#blokkli/helpers/providers/texts'
 import {
   ref,
   onMounted,

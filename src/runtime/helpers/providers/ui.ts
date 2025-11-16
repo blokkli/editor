@@ -9,8 +9,8 @@ import {
   readonly,
 } from '#imports'
 import type { ShallowRef } from 'vue'
-import { eventBus } from './eventBus'
-import type { StorageProvider } from './storageProvider'
+import { eventBus } from '../eventBus'
+import type { StorageProvider } from './storage'
 import type {
   Coord,
   GlobalUiDialog,
@@ -19,13 +19,13 @@ import type {
   Size,
 } from '#blokkli/types'
 import type { Viewport } from '#blokkli/constants'
-import { falsy } from '.'
-import { addElementClasses } from './addElementClasses'
-import { defineElementStyle } from './defineElementStyle'
+import { falsy } from '..'
+import { addElementClasses } from '../addElementClasses'
+import { defineElementStyle } from '../defineElementStyle'
 import type { AdapterContext } from '#blokkli/adapter'
 import { defaultLanguage, forceDefaultLanguage } from '#blokkli-build/config'
 import type { ThemeColorName } from '#blokkli/types/theme'
-import type { ElementProvider } from './providers/element'
+import type { ElementProvider } from './element'
 
 type ResizeElementKey = 'visible-viewport' | 'artboard'
 

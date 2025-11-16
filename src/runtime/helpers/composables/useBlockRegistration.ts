@@ -4,7 +4,7 @@ import {
   onMounted,
   onUpdated,
 } from '#imports'
-import type { DomProvider } from '../domProvider'
+import type { DomProvider } from '../providers/dom'
 
 /**
  * Helper composable to handle registering the block in the DOM provider.

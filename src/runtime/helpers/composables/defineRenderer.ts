@@ -1,5 +1,5 @@
 import { onBeforeUnmount, useBlokkli } from '#imports'
-import type { Renderer } from '../animationProvider'
+import type { Renderer } from '../providers/animation'
 
 /**
  * Register a WebGL renderer with automatic cleanup on unmount.

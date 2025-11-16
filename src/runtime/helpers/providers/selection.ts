@@ -1,4 +1,4 @@
-import onBlokkliEvent from './composables/onBlokkliEvent'
+import onBlokkliEvent from '../composables/onBlokkliEvent'
 import { type Ref, type ComputedRef, computed, ref } from '#imports'
 import type {
   DraggableItem,
@@ -6,7 +6,7 @@ import type {
   RenderedFieldListItem,
 } from '#blokkli/types'
 import { falsy, onlyUnique } from '#blokkli/helpers'
-import type { BlocksProvider } from './providers/blocks'
+import type { BlocksProvider } from './blocks'
 
 export type SelectionProvider = {
   /**

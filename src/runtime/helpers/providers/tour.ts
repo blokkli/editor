@@ -1,4 +1,4 @@
-import { falsy } from '.'
+import { falsy } from '..'
 import type { TourItem } from '#blokkli/types'
 import { ref, type Ref } from '#imports'
 

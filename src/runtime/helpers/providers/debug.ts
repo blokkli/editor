@@ -1,4 +1,4 @@
-import type { StorageProvider } from './storageProvider'
+import type { StorageProvider } from './storage'
 import {
   type ComputedRef,
   computed,
@@ -6,8 +6,8 @@ import {
   onMounted,
   ref,
 } from '#imports'
-import { eventBus } from './eventBus'
-import { useGlobalBlokkliObject } from './composables/useGlobalBlokkliObject'
+import { eventBus } from './../eventBus'
+import { useGlobalBlokkliObject } from './../composables/useGlobalBlokkliObject'
 
 export type DebugLogger = {
   log: (message: string, ...v: any) => void

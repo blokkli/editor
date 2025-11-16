@@ -5,11 +5,11 @@ import type {
 } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
 import useDelayedIntersectionObserver from './../composables/useDelayedIntersectionObserver'
-import type { UiProvider } from './../uiProvider'
+import type { UiProvider } from './ui'
 import { computed, onBeforeUnmount, ref, type ComputedRef } from '#imports'
 import onBlokkliEvent from './../composables/onBlokkliEvent'
 import { itemEntityType } from '#blokkli-build/config'
-import type { DebugProvider } from '../debugProvider'
+import type { DebugProvider } from './debug'
 
 type EditableFieldData = EntityContext & {
   key: string

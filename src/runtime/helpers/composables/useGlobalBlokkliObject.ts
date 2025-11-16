@@ -1,4 +1,4 @@
-import type { LogMessage } from '../debugProvider'
+import type { LogMessage } from '../providers/debug'
 
 type BlokkliGlobalWindowObject = {
   messages: LogMessage[]

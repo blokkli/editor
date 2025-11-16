@@ -1,5 +1,5 @@
 import { type Ref, ref } from 'vue'
-import type { BlockIndicator } from '../types'
+import type { BlockIndicator } from '../../types'
 
 export type IndicatorsProvider = {
   indicators: Ref<BlockIndicator[]>

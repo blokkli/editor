@@ -45,7 +45,7 @@
 <script lang="ts" setup>
 import { computed, ref, onErrorCaptured } from '#imports'
 import { Icon } from '#blokkli/components'
-import textProvider from '#blokkli/helpers/textProvider'
+import textProvider from '#blokkli/helpers/providers/texts'
 import { useGlobalBlokkliObject } from '#blokkli/helpers/composables/useGlobalBlokkliObject'
 
 const errors = ref<Error[]>([])

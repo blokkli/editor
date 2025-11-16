@@ -12,10 +12,10 @@ import type {
   ThemeName,
 } from '#blokkli/types/theme'
 import { type Ref, ref, onMounted, onBeforeUnmount } from '#imports'
-import { rgbaToString } from '.'
-import { DragStyle } from './DragStyle'
-import onBlokkliEvent from './composables/onBlokkliEvent'
-import type { ElementProvider } from './providers/element'
+import { rgbaToString } from '..'
+import { DragStyle } from '../DragStyle'
+import onBlokkliEvent from '../composables/onBlokkliEvent'
+import type { ElementProvider } from './element'
 
 type ThemeMap = {
   accent: Ref<ThemeColors>

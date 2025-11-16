@@ -11,7 +11,7 @@ import type {
   BlockBundleWithNested,
 } from '#blokkli-build/generated-types'
 import type { DeepReadonly } from 'vue'
-import type { BlockDefinitionOptionsInput } from '../types'
+import type { BlockDefinitionOptionsInput } from '../../types'
 import {
   OPTIONS,
   type RuntimeBlockOptionArray,

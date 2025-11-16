@@ -1,5 +1,5 @@
-import onBlokkliEvent from './composables/onBlokkliEvent'
-import useAnimationFrame from './composables/useAnimationFrame'
+import onBlokkliEvent from '../composables/onBlokkliEvent'
+import useAnimationFrame from '../composables/useAnimationFrame'
 import {
   ref,
   computed,
@@ -10,17 +10,17 @@ import {
   type WritableComputedRef,
 } from '#imports'
 import { eventBus } from '#blokkli/helpers/eventBus'
-import type { UiProvider } from './uiProvider'
+import type { UiProvider } from './ui'
 import { createProgramInfo, type ProgramInfo } from 'twgl.js'
-import type { StorageProvider } from './storageProvider'
-import type { CursorKeyword } from './dom'
+import type { StorageProvider } from './storage'
+import type { CursorKeyword } from '../dom'
 import type { CanvasDrawEvent, Coord } from '#blokkli/types'
-import type { SelectionProvider } from './selectionProvider'
+import type { SelectionProvider } from './selection'
 
-import type { RectangleBufferCollector } from './webgl'
-import type { DebugProvider } from './debugProvider'
-import { useTransitionedValue } from './useTransitionedValue'
-import type { KeyboardProvider } from './keyboardProvider'
+import type { RectangleBufferCollector } from '../webgl'
+import type { DebugProvider } from './debug'
+import { useTransitionedValue } from '../useTransitionedValue'
+import type { KeyboardProvider } from './keyboard'
 
 export type RenderContext = CanvasDrawEvent & {
   changeOptionsTransition: number

@@ -1,6 +1,6 @@
 import type { MutatedField, RenderedFieldListItem } from '#blokkli/types'
-import type { DomProvider } from '../domProvider'
-import type { StateProvider } from '../stateProvider'
+import type { DomProvider } from './dom'
+import type { StateProvider } from './state'
 import { itemEntityType } from '#blokkli-build/config'
 import onBlokkliEvent from '../composables/onBlokkliEvent'
 import type {

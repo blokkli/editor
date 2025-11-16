@@ -8,11 +8,11 @@ import type {
   DroppableFieldConfig,
   DraggableExistingBlock,
   EntityContext,
-} from '../types'
-import type { AdapterContext, BlokkliAdapter } from '../adapter'
-import type { SelectionProvider } from './selectionProvider'
+} from '../../types'
+import type { AdapterContext, BlokkliAdapter } from '../../adapter'
+import type { SelectionProvider } from './selection'
 import { useRuntimeConfig, computed } from '#imports'
-import { onlyUnique } from '.'
+import { onlyUnique } from '..'
 
 export type BlokkliBlockType = BlockBundleDefinition & {
   definition:

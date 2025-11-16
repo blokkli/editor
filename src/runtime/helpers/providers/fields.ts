@@ -1,8 +1,8 @@
 import type { BlokkliFieldElement } from '#blokkli/types'
 import onBlokkliEvent from '../composables/onBlokkliEvent'
-import type { DomProvider } from '../domProvider'
-import type { StateProvider } from '../stateProvider'
-import type { BlockDefinitionProvider } from '../typesProvider'
+import type { DomProvider } from './dom'
+import type { StateProvider } from './state'
+import type { BlockDefinitionProvider } from './types'
 
 export type FieldsProvider = {
   find: (

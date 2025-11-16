@@ -1,4 +1,4 @@
-import type { DebugProvider } from '../debugProvider'
+import type { DebugProvider } from './debug'
 
 export type ElementProvider = {
   queryAll: <T = HTMLElement>(

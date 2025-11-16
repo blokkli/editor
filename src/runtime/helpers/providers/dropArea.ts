@@ -1,4 +1,4 @@
-import { falsy } from '.'
+import { falsy } from '..'
 import type { DraggableItem, DropArea } from '#blokkli/types'
 
 type DropAreaProviderFunction = (

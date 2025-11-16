@@ -4,8 +4,8 @@ import {
   featureDefinitions,
 } from '#blokkli-build/features'
 import { computed, ref, type ComputedRef } from '#imports'
-import type { StorageProvider } from './storageProvider'
-import { falsy } from '.'
+import type { StorageProvider } from './storage'
+import { falsy } from '..'
 
 export type FeaturesProvider = {
   features: ComputedRef<FeatureDefinition[]>

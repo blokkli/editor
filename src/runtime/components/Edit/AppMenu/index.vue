@@ -51,7 +51,7 @@ import { computed, useBlokkli } from '#imports'
 import { Icon, BlokkliTransition } from '#blokkli/components'
 import { blokkliVersion } from '#blokkli-build/config'
 import MenuButton from './MenuButton.vue'
-import type { MenuButtonPlugin } from '#blokkli/helpers/pluginProvider'
+import type { MenuButtonPlugin } from '#blokkli/helpers/providers/plugin'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const DIALOG_MENU = 'menu'
