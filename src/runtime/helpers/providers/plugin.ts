@@ -47,14 +47,52 @@ type PluginDataMap = {
 }
 
 export type PluginProvider = {
+  /**
+   * Register a plugin provider function.
+   *
+   * The function will be called when plugins of this type are requested.
+   * It can return a single plugin, an array of plugins, or undefined.
+   *
+   * @param type - The plugin type ('addAction', 'itemDropdownAction', 'menuButton')
+   * @param fn - Function that returns plugin(s)
+   *
+   * @example
+   * ```ts
+   * plugin.add('addAction', () => ({
+   *   id: 'custom-add',
+   *   label: 'Add Custom',
+   *   bundles: ['text'],
+   *   callback: () => console.log('add'),
+   * }))
+   * ```
+   */
   add<T extends keyof PluginFunctionMap>(
     type: T,
     fn: PluginFunctionMap[T],
   ): void
+
+  /**
+   * Unregister a plugin provider function.
+   *
+   * Removes a previously registered function so it no longer provides plugins.
+   *
+   * @param type - The plugin type
+   * @param fn - The function to remove (must be the same reference used in add)
+   */
   remove<T extends keyof PluginFunctionMap>(
     type: T,
     fn: PluginFunctionMap[T],
   ): void
+
+  /**
+   * Get all plugins from all registered providers.
+   *
+   * Calls all registered provider functions for this type, flattens the results,
+   * and filters out undefined values.
+   *
+   * @param type - The plugin type to retrieve
+   * @returns Array of all available plugins of this type
+   */
   get<T extends keyof PluginDataMap>(type: T): PluginDataMap[T][]
 }
 

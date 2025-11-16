@@ -4,8 +4,42 @@ import type { Command } from '#blokkli/types'
 type CommandsProviderFunction = () => Command[] | Command | undefined
 
 export type CommandsProvider = {
+  /**
+   * Register a command provider function.
+   *
+   * The function will be called when commands are requested.
+   * It can return a single command, an array of commands, or undefined.
+   *
+   * @param fn - Function that returns commands
+   *
+   * @example
+   * ```ts
+   * commands.add(() => ({
+   *   id: 'my-command',
+   *   label: 'My Command',
+   *   callback: () => console.log('executed'),
+   * }))
+   * ```
+   */
   add: (fn: CommandsProviderFunction) => void
+
+  /**
+   * Unregister a command provider function.
+   *
+   * Removes a previously registered function so it no longer provides commands.
+   *
+   * @param fn - The function to remove (must be the same reference used in add)
+   */
   remove: (fn: CommandsProviderFunction) => void
+
+  /**
+   * Get all commands from all registered providers.
+   *
+   * Calls all registered provider functions, flattens the results,
+   * and filters out undefined values.
+   *
+   * @returns Array of all available commands
+   */
   getCommands: () => Command[]
 }
 

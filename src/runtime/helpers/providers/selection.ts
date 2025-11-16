@@ -89,6 +89,9 @@ export type SelectionProvider = {
    */
   dragItemsBundles: ComputedRef<string[]>
 
+  /**
+   * Determine if the given block UUID is currently selected.
+   */
   isBlockSelected(uuid: string): boolean
 
   /**

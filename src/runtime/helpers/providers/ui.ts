@@ -39,75 +39,390 @@ const localeMap: Record<string, string> = {
 }
 
 export type UiProvider = {
+  /**
+   * Get the Nuxt root element (#nuxt-root).
+   *
+   * Cached after first access for performance.
+   *
+   * @returns The root HTML element
+   * @throws Error if element cannot be found
+   */
   rootElement: () => HTMLElement
+
+  /**
+   * Get the artboard element (.bk-main-canvas).
+   *
+   * The artboard is the scrollable container for the edited content.
+   * Cached after first access for performance.
+   *
+   * @returns The artboard HTML element
+   * @throws Error if element cannot be found
+   */
   artboardElement: () => HTMLElement
+
+  /**
+   * The blökkli provider root element.
+   *
+   * This is the element that contains the entire editor UI.
+   */
   providerElement: HTMLElement
+
+  /**
+   * Whether the viewport is mobile (< 1024px width).
+   */
   isMobile: ComputedRef<boolean>
+
+  /**
+   * Whether the viewport is desktop (>= 1024px width).
+   */
   isDesktop: ComputedRef<boolean>
+
+  /**
+   * Whether animations are currently running.
+   *
+   * When true, adds 'bk-is-animating' class to document root.
+   * Used to disable certain interactions during animations.
+   */
   isAnimating: Ref<boolean>
+
+  /**
+   * Whether the analyzer is currently active.
+   *
+   * When true, adds 'bk-is-analyzing' class to document root.
+   */
   isAnalyzing: Ref<boolean>
+
+  /**
+   * Whether proxy mode is active.
+   *
+   * Proxy mode shows a structured view of blocks instead of their components.
+   */
   isProxyMode: Ref<boolean>
+
+  /**
+   * Whether any dialog is currently open.
+   */
   hasDialogOpen: ComputedRef<boolean>
+
+  /**
+   * The currently open dialog, or null if none is open.
+   */
   currentDialog: Readonly<Ref<GlobalUiDialog | null>>
+
+  /**
+   * Require confirmation before closing the current dialog.
+   *
+   * Sets the confirmClose flag on the current dialog, which will
+   * require double clicking the dialog background overlay to close it.
+   */
   requireDialogCloseConfirm: () => void
+
+  /**
+   * Open a global dialog.
+   *
+   * Closes any previously open dialog and opens the new one.
+   *
+   * @param dialog - The dialog configuration to open
+   */
   openDialog: (dialog: GlobalUiDialog) => void
+
+  /**
+   * Close a dialog.
+   *
+   * @param id - Optional dialog ID. If provided, only closes if it matches the current dialog.
+   */
   closeDialog: (id?: string) => void
+
+  /**
+   * Whether any tooltip is currently open.
+   */
   hasTooltipOpen: ComputedRef<boolean>
+
+  /**
+   * ID of the currently open tooltip, or empty string if none is open.
+   */
   openTooltip: Ref<string>
+
+  /**
+   * The current selection color.
+   *
+   * Returns the most recently set color, or null if none is set.
+   * Used to colorize the selection UI (selection rect, drop target indicators, etc.).
+   */
   selectionColor: ComputedRef<ThemeColorName | null>
+
+  /**
+   * Set a selection color.
+   *
+   * Multiple features can set colors with different IDs.
+   * The most recently set color is used.
+   *
+   * @param id - Unique identifier for this color source
+   * @param color - The theme color to use
+   */
   setSelectionColor: (id: string, color: ThemeColorName) => void
+
+  /**
+   * Remove a selection color by ID.
+   *
+   * If this was the active color, the previous color will become active.
+   *
+   * @param id - The color source ID to remove
+   */
   removeSelectionColor: (id: string) => void
 
+  /**
+   * Whether the transform overlay is open.
+   *
+   * The transform overlay is shown during drag operations, resizing, etc.
+   */
   hasTransformOverlayOpen: Ref<boolean>
+
+  /**
+   * Whether a transform operation is active.
+   *
+   * True when transformLabel is not empty.
+   */
   isTransforming: ComputedRef<boolean>
+
+  /**
+   * Set the active transform operation.
+   *
+   * @param label - Label describing the transform (e.g., "Moving 3 blocks"), or null/undefined to clear
+   */
   setTransform: (label?: string | null | undefined) => void
+
+  /**
+   * The current transform operation label.
+   */
   transformLabel: ComputedRef<string>
 
+  /**
+   * Whether animations are enabled.
+   *
+   * Can be disabled in settings for performance or accessibility.
+   * Defaults to true.
+   */
   useAnimations: ComputedRef<boolean>
+
+  /**
+   * Whether low performance mode is enabled.
+   *
+   * When enabled, reduces visual effects and animations for better performance
+   * on slower devices.
+   */
   lowPerformanceMode: ComputedRef<boolean>
+
+  /**
+   * The visible viewport rectangle.
+   *
+   * Represents the portion of the window where the editor is visible,
+   * excluding any overlays or sidebars.
+   */
   visibleViewport: ComputedRef<Rectangle>
+
+  /**
+   * The visible viewport rectangle with padding applied.
+   *
+   * Used for positioning elements that should be inset from the viewport edges.
+   */
   visibleViewportPadded: ComputedRef<Rectangle>
 
+  /**
+   * Register a rectangle that blocks part of the viewport.
+   *
+   * Blocking rectangles are used for persistent UI elements (toolbars, sidebars)
+   * that should affect element positioning and visibility calculations.
+   *
+   * @param key - Unique identifier for this blocking rectangle
+   * @param rect - The rectangle, or undefined to remove the blocking rectangle
+   */
   setViewportBlockingRectangle: (key: string, rect?: Rectangle) => void
+
+  /**
+   * All viewport blocking rectangles with padding applied.
+   *
+   * Each rectangle is expanded by blockingPaddingX and blockingPaddingY
+   * to create a buffer zone around blocking UI elements.
+   */
   viewportBlockingRects: ComputedRef<Rectangle[]>
 
+  /**
+   * The current viewport type.
+   *
+   * 'mobile' for viewports < 1024px width, 'desktop' otherwise.
+   * Used to adjust UI layout and behavior.
+   */
   appViewport: ComputedRef<Viewport>
 
+  /**
+   * ID of the currently open context menu, or empty string if none is open.
+   */
   openContextMenu: Ref<string>
 
+  /**
+   * The browser window viewport size.
+   *
+   * Updated on window resize with 400ms debounce.
+   */
   viewport: ComputedRef<Size>
+
+  /**
+   * The artboard element size.
+   *
+   * Tracked via ResizeObserver for accurate, efficient updates.
+   */
   artboardSize: ComputedRef<Size>
+
+  /**
+   * The artboard zoom/scale factor.
+   *
+   * 1.0 = 100%, 0.5 = 50%, 2.0 = 200%, etc.
+   * Used by artboard zoom feature.
+   */
   artboardScale: Ref<number>
+
+  /**
+   * The artboard scroll/pan offset in pixels.
+   *
+   * Represents how far the artboard has been scrolled or panned.
+   */
   artboardOffset: Ref<Coord>
 
+  /**
+   * Top-left coordinate of the selection rectangle.
+   *
+   * Updated during drag operations and multi-select.
+   */
   selectionTopLeft: Ref<Coord>
 
+  /**
+   * The interface language code.
+   *
+   * Respects forceDefaultLanguage config setting.
+   * Falls back to context language otherwise.
+   */
   interfaceLanguage: ComputedRef<string>
+
+  /**
+   * The full locale string for date/number formatting.
+   *
+   * Maps language codes to locale strings (e.g., 'de' -> 'de-CH').
+   */
   locale: ComputedRef<string>
 
+  /**
+   * Format a date using the current locale.
+   *
+   * @param date - Date object or ISO string
+   * @param options - Intl.DateTimeFormat options. Defaults to numeric date + time.
+   * @returns Localized date string
+   *
+   * @example
+   * ```ts
+   * formatDate(new Date()) // "16.11.2025, 14:30"
+   * formatDate(isoString, { dateStyle: 'long' }) // "16. November 2025"
+   * ```
+   */
   formatDate: (
     date: string | Date,
     options?: Intl.DateTimeFormatOptions,
   ) => string
 
+  /**
+   * Get absolute rectangle for an element or rectangle.
+   *
+   * Converts viewport-relative coordinates to artboard-absolute coordinates
+   * by accounting for artboard scale and offset. Ensures minimum size of 24x24.
+   *
+   * @param v - HTML element or rectangle
+   * @param scale - Override artboard scale (uses current scale if not provided)
+   * @param offset - Override artboard offset (uses current offset if not provided)
+   * @returns Absolute rectangle in artboard coordinates
+   */
   getAbsoluteElementRect: (
     v: HTMLElement | Rectangle,
     scale?: number,
     offset?: Coord,
   ) => Rectangle
 
+  /**
+   * Convert artboard-absolute rectangle to viewport-relative coordinates.
+   *
+   * Applies artboard scale and offset to convert from artboard space
+   * to viewport/screen space.
+   *
+   * @param rect - Rectangle in artboard coordinates
+   * @param scale - Override artboard scale (uses current scale if not provided)
+   * @param offset - Override artboard offset (uses current offset if not provided)
+   * @returns Rectangle in viewport coordinates
+   */
   getViewportRelativeRect: (
     rect: Rectangle,
     scale?: number,
     offset?: Coord,
   ) => Rectangle
 
+  /**
+   * Set the height of a banner by ID.
+   *
+   * Banners are persistent notification bars at the top of the interface.
+   * Height is used to adjust viewport calculations.
+   *
+   * @param id - Unique banner identifier
+   * @param height - Banner height in pixels
+   */
   setBannerHeight: (id: string, height: number) => void
+
+  /**
+   * Remove a banner by ID.
+   *
+   * Sets the banner height to 0.
+   *
+   * @param id - The banner identifier to remove
+   */
   removeBanner: (id: string) => void
+
+  /**
+   * Register an active sidebar.
+   *
+   * Adds the sidebar ID to the active list for the specified region.
+   * When sidebars are active, the interface adjusts layout accordingly.
+   *
+   * @param region - Which sidebar region ('left' or 'right')
+   * @param id - Unique sidebar identifier
+   */
   setActiveSidebar: (region: SidebarRegion, id: string) => void
+
+  /**
+   * Unregister an active sidebar.
+   *
+   * Removes the sidebar ID from the active list for the specified region.
+   *
+   * @param region - Which sidebar region ('left' or 'right')
+   * @param id - The sidebar identifier to remove
+   */
   removeActiveSidebar: (region: SidebarRegion, id: string) => void
+
+  /**
+   * Whether any sidebar is active on the left.
+   *
+   * When true, adds 'bk-has-sidebar-left' class to document root.
+   */
   hasSidebarLeft: ComputedRef<boolean>
+
+  /**
+   * Whether any sidebar is active on the right.
+   *
+   * When true, adds 'bk-has-sidebar-right' class to document root.
+   */
   hasSidebarRight: ComputedRef<boolean>
+
+  /**
+   * Reference to the main layout element.
+   *
+   * The container element for the primary editor interface.
+   */
   mainLayoutElement: Readonly<ShallowRef<HTMLDivElement | null>>
 }
 

@@ -59,35 +59,244 @@ function mapPublishOptions(context?: MappedState): PublishOptions {
 }
 
 export type StateProvider = {
+  /**
+   * Information about the editing session owner.
+   *
+   * Includes owner name and whether the current user is the owner.
+   */
   owner: Readonly<Ref<BlokkliOwner | null>>
+
+  /**
+   * Refresh key that changes when state is reloaded.
+   *
+   * Use as a component key to force remounting when state updates.
+   */
   refreshKey: Readonly<Ref<string>>
+
+  /**
+   * All mutated fields in the current editing session.
+   *
+   * Each field contains its entity context, field name, and list of blocks.
+   */
   mutatedFields: Readonly<Ref<MutatedField[]>>
+
+  /**
+   * The host entity being edited.
+   *
+   * Contains label, status, and bundle information.
+   */
   entity: Readonly<Ref<EditEntity>>
+
+  /**
+   * Mutated options for all blocks and the host entity.
+   *
+   * Maps block UUIDs (or 'HOST' for host options) to their option values.
+   */
   mutatedOptions: MutatedOptions
+
+  /**
+   * Translation state for the edited entity.
+   *
+   * Includes source language, available languages, and existing translations.
+   */
   translation: Readonly<Ref<TranslationState>>
+
+  /**
+   * Publishing options and capabilities.
+   *
+   * Indicates whether publishing, scheduling, and revisions are available.
+   */
   publishOptions: Readonly<Ref<PublishOptions>>
+
+  /**
+   * History of all mutations in the editing session.
+   *
+   * Used for undo/redo functionality and tracking changes.
+   */
   mutations: Readonly<Ref<MutationItem[]>>
+
+  /**
+   * Current position in the mutation history.
+   *
+   * -1 indicates no mutations, 0+ indicates active mutation index.
+   */
   currentMutationIndex: Readonly<Ref<number>>
+
+  /**
+   * Validation violations for the current state.
+   *
+   * Contains errors and warnings about invalid field values or configurations.
+   */
   violations: Readonly<Ref<Validation[]>>
+
+  /**
+   * Execute a mutation with loading state and error handling.
+   *
+   * Shows loading indicator, handles errors, updates state, and shows messages.
+   *
+   * @param callback - Function that performs the mutation
+   * @param errorMessage - Error message to show on failure (false to suppress)
+   * @param successMessage - Optional success message to show
+   * @returns True if successful, false if failed
+   */
   mutateWithLoadingState: MutateWithLoadingStateFunction
+
+  /**
+   * Current edit mode.
+   *
+   * - 'readonly': User cannot edit (no permission or not owner)
+   * - 'editing': User can edit
+   * - 'translating': User is editing a translation
+   */
   editMode: Readonly<Ref<EditMode>>
+
+  /**
+   * The raw mutated entity data from the adapter.
+   *
+   * Contains adapter-specific entity data (e.g., Drupal entity fields).
+   */
   mutatedEntity: Readonly<Ref<any>>
+
+  /**
+   * Whether the current user can edit.
+   *
+   * True when state is loaded, user is owner, no load errors, and has edit permission.
+   */
   canEdit: ComputedRef<boolean>
+
+  /**
+   * List of permissions for the current user.
+   *
+   * Includes 'edit', 'view', and other adapter-specific permissions.
+   */
   permissions: ComputedRef<EditPermission[]>
+
+  /**
+   * Whether state has been successfully loaded.
+   *
+   * True when state loaded without errors.
+   */
   stateAvailable: ComputedRef<boolean>
+
+  /**
+   * Whether a loading operation is in progress.
+   *
+   * Automatically adds 'bk-body-loading' class to document.body when true.
+   */
   isLoading: Readonly<Ref<boolean>>
+
+  /**
+   * UUIDs of all blocks loaded from the library.
+   *
+   * Blocks with bundle 'from_library'.
+   */
   fromLibraryUuids: Readonly<Ref<Readonly<string[]>>>
+
+  /**
+   * Get the number of blocks in a field.
+   *
+   * Results are cached for performance.
+   *
+   * @param key - The field key (entityUuid:fieldName)
+   * @returns Number of blocks in the field
+   */
   getFieldBlockCount: (key: string) => number
+
+  /**
+   * Get the total count of blocks with a specific bundle.
+   *
+   * @param bundle - The block bundle
+   * @returns Total number of blocks with this bundle
+   */
   getBlockBundleCount: (bundle: string) => number
+
+  /**
+   * Get a field list item by UUID.
+   *
+   * @param uuid - The block UUID
+   * @returns The field list item, or undefined if not found
+   */
   getFieldListItem: (uuid: string) => FieldListItem | undefined
+
+  /**
+   * Get the mutated field that contains a block.
+   *
+   * @param uuid - The block UUID
+   * @returns The field containing this block, or undefined if not found
+   */
   getFieldListForBlock: (uuid: string) => MutatedField | undefined
+
+  /**
+   * Get a mutated field by entity UUID and field name.
+   *
+   * @param uuid - The entity UUID
+   * @param fieldName - The field name
+   * @returns The mutated field, or undefined if not found
+   */
   getMutatedField: (uuid: string, fieldName: string) => MutatedField | undefined
+
+  /**
+   * Get all block UUIDs, optionally filtered by bundle.
+   *
+   * @param bundle - Optional bundle to filter by
+   * @returns Array of block UUIDs
+   */
   getAllUuids: (bundle?: string) => string[]
+
+  /**
+   * Get the nesting level of a block.
+   *
+   * Level 0 = block in host entity field
+   * Level 1 = block in another block's field
+   * Level 2+ = deeper nesting
+   *
+   * @param uuid - The block UUID
+   * @returns The nesting level (0+)
+   */
   getNestingLevel: (uuid: string) => number
+
+  /**
+   * Check if a block is a child (direct or nested) of another block.
+   *
+   * Recursively checks parent relationships.
+   *
+   * @param childUuid - The potential child block UUID
+   * @param parentUuid - The potential parent block UUID
+   * @returns True if childUuid is a descendant of parentUuid
+   */
   isChildOf: (childUuid: string, parentUuid: string) => boolean
+
+  /**
+   * Get the current mapped state.
+   *
+   * Throws error if called before state is available.
+   *
+   * @returns The current mapped state
+   */
   getMappedState: () => MappedState
+
+  /**
+   * Temporarily override the state.
+   *
+   * Used for previewing changes without committing them.
+   *
+   * @param state - The temporary state to use
+   */
   setOverrideState: (state: MappedState) => void
+
+  /**
+   * Clear the temporary override and restore previous state.
+   *
+   * Throws error if no override is active.
+   */
   clearOverrideState: () => void
+
+  /**
+   * Get the field key for a block UUID.
+   *
+   * @param uuid - The block UUID
+   * @returns The field key (entityUuid:fieldName), or null if not found
+   */
   getFieldKeyForUuid: (uuid: string) => string | null
 }
 

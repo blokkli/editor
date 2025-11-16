@@ -18,27 +18,101 @@ import {
 } from '#blokkli-build/runtime-options'
 
 export type DefinitionProvider = {
+  /**
+   * Get the block definition for a specific context.
+   *
+   * Checks for context-specific definitions in this order:
+   * 1. Field list type specific (e.g., bundle__field:canvas)
+   * 2. Parent bundle specific (e.g., bundle__parent:accordion)
+   * 3. Default bundle definition
+   *
+   * @param bundle - The block bundle name
+   * @param fieldListType - The field list type context
+   * @param parentBundle - Optional parent block bundle for nested blocks
+   * @returns The block definition, or undefined if not found
+   */
   getBlockDefinition: (
     bundle: string,
     fieldListType: ValidFieldListTypes,
     parentBundle?: BlockBundleWithNested | null,
   ) => BlockDefinition | undefined
+
+  /**
+   * Get the default block definition for a bundle.
+   *
+   * Returns the base definition without considering context (field list type or parent).
+   *
+   * @param bundle - The block bundle name
+   * @returns The default block definition, or undefined if not found
+   */
   getDefaultDefinition: (bundle: string) => BlockDefinition | undefined
 
+  /**
+   * Get a fragment definition by name.
+   *
+   * @param name - The fragment name
+   * @returns The fragment definition, or undefined if not found
+   */
   getFragmentDefinition: (name: string) => FragmentDefinition | undefined
+
+  /**
+   * Get a provider definition for an entity type and bundle.
+   *
+   * @param entityType - The entity type (e.g., 'node', 'block_content')
+   * @param entityBundle - The entity bundle (e.g., 'article', 'page')
+   * @returns The provider definition, or undefined if not found
+   */
   getProviderDefinition: (
     entityType: string,
     entityBundle: string,
   ) => ProviderDefinition | undefined
 
+  /**
+   * Get the icon name for a block bundle.
+   *
+   * @param bundle - The block bundle name
+   * @returns The icon name, or undefined if no icon is defined
+   */
   getBlockIcon: (bundle: string) => string | undefined
 
+  /**
+   * List of all registered fragment definitions.
+   *
+   * Updates automatically via HMR during development.
+   */
   fragmentDefinitions: ComputedRef<FragmentDefinition[]>
+
+  /**
+   * List of all registered block definitions.
+   *
+   * Updates automatically via HMR during development.
+   */
   blockDefinitions: ComputedRef<BlockDefinition[]>
+
+  /**
+   * Global options that apply to all blocks.
+   */
   globalOptions: DeepReadonly<Ref<BlockDefinitionOptionsInput>>
+
+  /**
+   * Runtime option values for all blocks.
+   *
+   * Maps block UUIDs to their option values. Structure:
+   * - First level: block UUID
+   * - Second level: option key → option value array
+   *
+   * Updates automatically via HMR during development.
+   */
   runtimeOptions: DeepReadonly<
     Ref<Record<string, Record<string, RuntimeBlockOptionArray>>>
   >
+
+  /**
+   * Render key that changes when definitions are updated.
+   *
+   * Use as a component key to force remounting when definitions change.
+   * Automatically increments via HMR during development.
+   */
   renderKey: DeepReadonly<Ref<string>>
 }
 

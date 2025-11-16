@@ -16,14 +16,79 @@ type RegisteredShortcut = {
 }
 
 export type KeyboardProvider = {
+  /**
+   * Whether the Space key is currently pressed.
+   *
+   * Commonly used to enable panning mode in the artboard.
+   */
   isPressingSpace: Readonly<Ref<boolean>>
+
+  /**
+   * Whether Control/Meta key is currently pressed.
+   *
+   * Meta is Cmd on macOS, Ctrl on Windows/Linux.
+   * Also true when CapsLock is active.
+   */
   isPressingControl: Readonly<Ref<boolean>>
+
+  /**
+   * Whether the Shift key is currently pressed.
+   */
   isPressingShift: Readonly<Ref<boolean>>
+
+  /**
+   * Update keyboard modifier state from a mouse/pointer event.
+   *
+   * Useful for updating modifier state during drag operations where
+   * keyboard events might not fire.
+   *
+   * @param e - The mouse or pointer event
+   */
   setShortcutStateFromEvent: (e: MouseEvent | PointerEvent) => void
+
+  /**
+   * List of all registered keyboard shortcuts.
+   *
+   * Shortcuts are registered by features, buttons, and actions to enable
+   * keyboard navigation and commands.
+   */
   shortcuts: ComputedRef<RegisteredShortcut[]>
+
+  /**
+   * Register a keyboard shortcut.
+   *
+   * Adds the shortcut to the global shortcuts list for display in help UI.
+   *
+   * @param shortcut - The keyboard shortcut configuration
+   */
   registerShortcut: (shortcut: KeyboardShortcut) => void
+
+  /**
+   * Unregister a keyboard shortcut.
+   *
+   * Removes the shortcut from the global shortcuts list.
+   *
+   * @param shortcut - The keyboard shortcut to remove
+   */
   unregisterShortcut: (shortcut: KeyboardShortcut) => void
+
+  /**
+   * Lock keyboard events.
+   *
+   * Prevents keyboard shortcuts from firing. Used when text input is focused
+   * or dialogs are open to avoid unintended actions.
+   *
+   * @param id - Unique identifier for this lock
+   */
   lockKeyboardEvents: (id: string) => void
+
+  /**
+   * Unlock keyboard events.
+   *
+   * Removes a keyboard lock, re-enabling shortcuts when all locks are removed.
+   *
+   * @param id - The lock identifier to remove
+   */
   unlockKeyboardEvents: (id: string) => void
 }
 

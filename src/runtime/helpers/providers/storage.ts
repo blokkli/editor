@@ -12,17 +12,67 @@ import type { AdapterContext, BlokkliAdapter } from '#blokkli/adapter'
 const PREFIX = 'blokkli:'
 
 export type StorageProvider = {
+  /**
+   * Create a reactive storage value synced to localStorage.
+   *
+   * The value is automatically persisted to localStorage on change.
+   * Can optionally be synced to user settings on the server.
+   *
+   * @param key - Storage key (will be prefixed with 'blokkli:')
+   * @param defaultValue - Default value if no stored value exists
+   * @param persist - Whether to sync to server user settings (default: false)
+   * @returns Reactive writable computed ref synced to storage
+   *
+   * @example
+   * ```ts
+   * const showGrid = storage.use('showGrid', false)
+   * showGrid.value = true // Automatically saved to localStorage
+   * ```
+   */
   use: <T>(
     key: string | ComputedRef<string>,
     defaultValue: T,
     persist?: boolean,
   ) => WritableComputedRef<T>
+
+  /**
+   * Create a reactive storage value with entity context prefix.
+   *
+   * Same as `use()` but automatically prefixes the key with entity type and UUID.
+   * Useful for entity-specific settings (e.g., sidebar state per page).
+   *
+   * @param key - Storage key (will be prefixed with context)
+   * @param defaultValue - Default value if no stored value exists
+   * @param persist - Whether to sync to server user settings (default: false)
+   * @returns Reactive writable computed ref synced to storage
+   *
+   * @example
+   * ```ts
+   * // If context is node:abc123, key becomes 'sidebarOpen:node:abc123'
+   * const sidebarOpen = storage.useWithContextPrefix('sidebarOpen', false)
+   * ```
+   */
   useWithContextPrefix: <T>(
     key: string,
     defaultValue: T,
     persist?: boolean,
   ) => WritableComputedRef<T>
+
+  /**
+   * Clear all blokkli storage values.
+   *
+   * Removes all localStorage entries starting with 'blokkli:' prefix.
+   * Does not affect server user settings.
+   */
   clearAll: () => void
+
+  /**
+   * Clear a specific storage value.
+   *
+   * Removes the value from localStorage (without prefix).
+   *
+   * @param key - The storage key to clear (without 'blokkli:' prefix)
+   */
   clear: (key: string) => void
 }
 

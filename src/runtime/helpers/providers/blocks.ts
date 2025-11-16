@@ -13,7 +13,30 @@ import type { BlokkliFragmentName } from '#blokkli-build/definitions'
 import { BUNDLE_BLOKKLI_FRAGMENT } from '#blokkli/constants'
 
 export type BlocksProvider = {
+  /**
+   * Get a rendered block by its UUID.
+   *
+   * Returns a RenderedFieldListItem with complete block metadata including:
+   * - Host entity and field information
+   * - Publishing status and schedule
+   * - Library/fragment data (if applicable)
+   * - Parent block bundle (for nested blocks)
+   *
+   * Results are cached and invalidated on state reload.
+   *
+   * @param uuid - The block's UUID
+   * @returns The rendered block item, or undefined if not found
+   */
   getBlock: (uuid: string) => RenderedFieldListItem | undefined
+
+  /**
+   * Get all rendered blocks in the current state.
+   *
+   * Returns an array of all blocks with complete metadata.
+   * Iterates through all UUIDs in state and builds RenderedFieldListItem for each.
+   *
+   * @returns Array of all rendered block items
+   */
   getAllBlocks: () => RenderedFieldListItem[]
 }
 

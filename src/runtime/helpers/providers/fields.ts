@@ -1,25 +1,29 @@
 import type { BlokkliFieldElement } from '#blokkli/types'
 import onBlokkliEvent from '../composables/onBlokkliEvent'
 import type { DomProvider } from './dom'
-import type { StateProvider } from './state'
 import type { BlockDefinitionProvider } from './types'
 
 export type FieldsProvider = {
-  find: (
-    /**
-     * The host entity UUID.
-     */
-    uuid: string,
-
-    /**
-     * The name of the field.
-     */
-    fieldName: string,
-  ) => BlokkliFieldElement | undefined
+  /**
+   * Find a field element by host entity UUID and field name.
+   *
+   * Returns a BlokkliFieldElement with complete field metadata including:
+   * - Field configuration (label, cardinality, allowed bundles)
+   * - Host entity information
+   * - Nesting level and field list type
+   * - HTML element reference
+   * - Drop alignment settings
+   *
+   * Results are cached and invalidated on state reload.
+   *
+   * @param uuid - The host entity UUID
+   * @param fieldName - The name of the field
+   * @returns The field element with metadata, or undefined if not found
+   */
+  find: (uuid: string, fieldName: string) => BlokkliFieldElement | undefined
 }
 
 export default function (
-  state: StateProvider,
   dom: DomProvider,
   types: BlockDefinitionProvider,
 ): FieldsProvider {

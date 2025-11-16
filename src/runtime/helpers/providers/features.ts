@@ -8,15 +8,59 @@ import type { StorageProvider } from './storage'
 import { falsy } from '..'
 
 export type FeaturesProvider = {
+  /**
+   * List of all registered feature definitions.
+   *
+   * Updates automatically via HMR during development.
+   */
   features: ComputedRef<FeatureDefinition[]>
+
+  /**
+   * List of currently mounted features.
+   *
+   * Features are mounted when their components are rendered in the editor.
+   * This list is used to track which features are active in the current session.
+   */
   mountedFeatures: ComputedRef<
     FeatureDefinition<AdapterMethods[], ValidFeatureKey>[]
   >
+
+  /**
+   * List of available beta features.
+   *
+   * Only includes features marked with `beta: true` in their definition.
+   * These features can be individually enabled/disabled by users.
+   */
   betaFeatures: ComputedRef<
     { id: ValidFeatureKey; label: string; description?: string }[]
   >
+
+  /**
+   * List of beta features that are currently enabled.
+   *
+   * Derived from user settings stored in local storage.
+   * Users can toggle beta features on/off in the settings UI.
+   */
   enabledBetaFeatures: ComputedRef<ValidFeatureKey[]>
+
+  /**
+   * Mount a feature.
+   *
+   * Called when a feature component is mounted/rendered.
+   * Adds the feature to the mountedFeatures list.
+   *
+   * @param feature - The feature definition to mount
+   */
   mount: (feature: FeatureDefinition<AdapterMethods[], ValidFeatureKey>) => void
+
+  /**
+   * Unmount a feature.
+   *
+   * Called when a feature component is unmounted/destroyed.
+   * Removes the feature from the mountedFeatures list.
+   *
+   * @param id - The feature ID to unmount
+   */
   unmount: (id: string) => void
 }
 

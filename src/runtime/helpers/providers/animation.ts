@@ -40,22 +40,87 @@ function configureWebGLContext(gl: WebGLRenderingContext) {
 }
 
 export type Renderer<T = RectangleBufferCollector<any>> = {
+  /**
+   * Unique identifier for this renderer.
+   */
   id: string
+
+  /**
+   * Z-index for rendering order.
+   *
+   * Lower values render first (bottom), higher values render last (top).
+   */
   zIndex: number
+
+  /**
+   * Whether this renderer is currently enabled.
+   *
+   * If not provided or returns true, the renderer will execute.
+   */
   enabled?: () => boolean
+
+  /**
+   * Whether this renderer should be the only one rendered.
+   *
+   * When true or returns true, all other renderers are skipped.
+   * Useful for debugging or exclusive rendering modes.
+   */
   only?: boolean | (() => boolean)
+
+  /**
+   * Get the cursor style when hovering over this renderer's content.
+   *
+   * Higher zIndex renderers take precedence.
+   * @returns The cursor keyword, or null/undefined to defer to lower renderers
+   */
   cursor?: () => CursorKeyword | undefined | null
+
+  /**
+   * Handle click events on this renderer's content.
+   *
+   * Renderers are checked from highest to lowest zIndex.
+   * @param coord - Mouse coordinates in screen and artboard space
+   * @returns True to claim the click and stop propagation, false/undefined to continue
+   */
   onClick?: (coord: {
     mouse: Coord
     mouseArtboard: Coord
   }) => boolean | undefined
+
+  /**
+   * Create the buffer collector instance for this renderer.
+   *
+   * The collector manages data buffers and rendering state.
+   */
   collector: () => T
+
+  /**
+   * Define the WebGL shader program for this renderer.
+   *
+   * @returns Object with vertex and fragment shader source code
+   */
   program?: () => { shaders: [string, string] }
+
+  /**
+   * Render using WebGL.
+   *
+   * @param ctx - Rendering context with viewport, mouse, artboard data
+   * @param gl - WebGL rendering context
+   * @param program - Compiled shader program
+   */
   render: (
     ctx: RenderContext,
     gl: WebGLRenderingContext,
     program: ProgramInfo,
   ) => void
+
+  /**
+   * Fallback rendering using 2D canvas context.
+   *
+   * Used when WebGL is disabled or unavailable.
+   * @param ctx - Rendering context
+   * @param ctx2d - 2D canvas rendering context
+   */
   renderFallback?: (ctx: RenderContext, ctx2d: CanvasRenderingContext2D) => void
 }
 
@@ -82,15 +147,47 @@ export type AnimationProvider = {
    */
   getRawGL: () => WebGLRenderingContext | null
 
+  /**
+   * Set shared uniforms that are common across all renderers.
+   *
+   * Sets resolution, artboard offset, scale, and DPI uniforms.
+   * @param gl - WebGL rendering context
+   * @param programInfo - Shader program to set uniforms on
+   */
   setSharedUniforms: (
     gl: WebGLRenderingContext,
     programInfo: ProgramInfo,
   ) => void
 
+  /**
+   * Device pixel ratio adjusted for canvas size limits.
+   *
+   * Automatically scales down to prevent exceeding WebGL/2D canvas size limits
+   * and memory constraints. Lower in low-performance mode.
+   */
   dpi: ComputedRef<number>
 
+  /**
+   * Whether WebGL is supported and enabled.
+   *
+   * Null initially, then true/false after detection.
+   */
   webglSupported: ComputedRef<boolean | null>
+
+  /**
+   * Whether WebGL rendering is currently enabled.
+   *
+   * Can be set to force WebGL on/off. Automatically disables if unsupported.
+   */
   webglEnabled: WritableComputedRef<boolean>
+
+  /**
+   * User's preferred rendering mode.
+   *
+   * - 'auto': Uses WebGL if supported, falls back to 2D
+   * - 'webgl': Forces WebGL rendering
+   * - '2d': Forces 2D canvas rendering
+   */
   preferredRenderingMode: WritableComputedRef<PreferredRenderingMode>
 
   /**
@@ -139,6 +236,12 @@ export type AnimationProvider = {
     shaders: string[],
   ) => ProgramInfo
 
+  /**
+   * Current cursor style determined by active renderers.
+   *
+   * Automatically updated each frame based on mouse position and renderer priorities.
+   * Defaults to 'move' when pressing Space, otherwise determined by highest zIndex renderer.
+   */
   cursor: ComputedRef<CursorKeyword>
 
   /**

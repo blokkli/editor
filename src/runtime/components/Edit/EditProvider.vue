@@ -214,7 +214,7 @@ const animation = animationProvider(ui, storage, selection, debug, keyboard)
 const types = await typesProvider(adapter, selection, context)
 const indicators = indicatorsProvider()
 const directive = directiveProvider(debug, ui)
-const fields = fieldsProvider(state, dom, types)
+const fields = fieldsProvider(dom, types)
 
 const mutatedEntity = computed(() => {
   return {

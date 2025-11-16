@@ -27,6 +27,11 @@ type RegisteredFieldType = {
 type MeasuredBlockRect = Rectangle & { time: number }
 
 export type DomProvider = {
+  /**
+   * Get the bounding client rect for an element.
+   *
+   * Wrapper around `getBoundingClientRect()` with debug logging.
+   */
   getBoundingClientRect: (element: HTMLElement) => DOMRect
 
   /**
@@ -37,51 +42,189 @@ export type DomProvider = {
     checkSize?: boolean,
   ): string
 
+  /**
+   * Register a block element for observation and tracking.
+   *
+   * Starts observing the element with IntersectionObserver and ResizeObserver
+   * to track visibility and dimensions.
+   *
+   * @param key - Unique key identifying the block's location (field + index)
+   * @param uuid - The block's UUID
+   * @param el - The block's root HTML element
+   */
   registerBlock: (key: string, uuid: string, el: HTMLElement | null) => void
+
+  /**
+   * Unregister a block element from observation.
+   *
+   * Stops observing the element and removes it from tracking.
+   *
+   * @param key - Unique key identifying the block's location
+   * @param uuid - The block's UUID
+   */
   unregisterBlock: (key: string, uuid: string) => void
 
+  /**
+   * Register a field element for observation.
+   *
+   * Starts observing the field element with IntersectionObserver to track
+   * visibility and position.
+   *
+   * @param entity - The entity context (UUID, type, bundle)
+   * @param fieldName - The field's machine name
+   * @param instance - The field's HTML element
+   * @param data - Additional field registration data
+   */
   registerField: (
     entity: EntityContext,
     fieldName: string,
     instance: HTMLElement,
     data: RegisterFieldData,
   ) => void
+
+  /**
+   * Update the element reference for an already registered field.
+   *
+   * Stops observing the old element and starts observing the new one.
+   *
+   * @param entity - The entity context
+   * @param fieldName - The field's machine name
+   * @param element - The new field HTML element
+   * @param data - Additional field registration data
+   */
   updateFieldElement: (
     entity: EntityContext,
     fieldName: string,
     element: HTMLElement,
     data: RegisterFieldData,
   ) => void
+
+  /**
+   * Unregister a field element from observation.
+   *
+   * @param entity - The entity context
+   * @param fieldName - The field's machine name
+   */
   unregisterField: (entity: EntityContext, fieldName: string) => void
+
+  /**
+   * Get a registered field by entity UUID and field name.
+   *
+   * @param uuid - The entity UUID
+   * @param fieldName - The field's machine name
+   * @returns The registered field data, or undefined if not found
+   */
   getRegisteredField: (
     uuid: string,
     fieldName: string,
   ) => RegisteredField | undefined
 
+  /**
+   * List of unique field types currently registered.
+   *
+   * Returns unique combinations of entity type, bundle, and field name.
+   */
   registeredFieldTypes: ComputedRef<RegisteredFieldType[]>
 
+  /**
+   * List of UUIDs for all blocks with registered elements.
+   *
+   * Only includes blocks that have a valid HTML element reference.
+   */
   registeredBlockUuids: ComputedRef<string[]>
 
+  /**
+   * Get UUIDs of all currently visible blocks.
+   *
+   * @returns Array of block UUIDs that are currently in the viewport
+   */
   getVisibleBlocks(): string[]
+
+  /**
+   * Get keys of all currently visible fields.
+   *
+   * @returns Array of field keys (uuid:fieldName) that are currently in the viewport
+   */
   getVisibleFields(): string[]
+
+  /**
+   * Check if a block is currently visible in the viewport.
+   *
+   * @param uuid - The block's UUID
+   * @returns True if the block is visible
+   */
   isBlockVisible(uuid: string): boolean
 
+  /**
+   * Get rectangles for all registered blocks.
+   *
+   * @returns Record mapping UUIDs to their measured rectangles with timestamps
+   */
   getBlockRects: () => Record<string, MeasuredBlockRect>
+
+  /**
+   * Get the rectangle for a specific block.
+   *
+   * @param uuid - The block's UUID
+   * @param refresh - Whether to refresh the rect before returning
+   * @returns The block's rectangle, or undefined if not found
+   */
   getBlockRect: (
     uuid: string,
     refresh?: boolean,
   ) => MeasuredBlockRect | undefined
+
+  /**
+   * Refresh the cached rectangle for a specific block.
+   *
+   * Recalculates the block's position and dimensions immediately.
+   *
+   * @param uuid - The block's UUID
+   */
   refreshBlockRect: (uuid: string) => void
 
+  /**
+   * Get the rectangle for a specific field.
+   *
+   * @param key - The field key (uuid:fieldName)
+   * @returns The field's rectangle, or undefined if not found
+   */
   getFieldRect: (key: string) => Rectangle | undefined
 
+  /**
+   * Record of all registered block elements.
+   *
+   * Maps UUIDs to their corresponding HTML elements.
+   */
   registeredBlocks: ComputedRef<Record<string, HTMLElement | undefined>>
 
+  /**
+   * Update rectangles for all visible blocks and fields.
+   *
+   * Recalculates positions and dimensions for currently visible items.
+   * For performance, only updates visible items when there are many blocks.
+   */
   updateVisibleRects: () => void
 
+  /**
+   * Whether the DOM provider is ready.
+   *
+   * Ready when IntersectionObserver is initialized and initial measurements are complete.
+   */
   isReady: ComputedRef<boolean>
+
+  /**
+   * Settlement key that increments after DOM changes settle.
+   *
+   * Useful for triggering reactivity after blocks/fields are registered/unregistered.
+   */
   settleKey: ComputedRef<number>
 
+  /**
+   * Initialize the DOM provider.
+   *
+   * Starts the IntersectionObserver and marks the provider as ready.
+   */
   init: () => void
 
   /**

@@ -20,12 +20,38 @@ export type BlokkliBlockType = BlockBundleDefinition & {
     | undefined
 }
 
+/**
+ * Base interface for configuration objects that can be mapped by entity context.
+ *
+ * Used by ConfigMap to organize configuration data by entity type, bundle, and name
+ * for efficient lookup.
+ */
 interface MappableConfig {
+  /**
+   * The entity type (e.g., 'paragraph', 'node', 'block_content').
+   */
   entityType: string
+
+  /**
+   * The entity bundle (e.g., 'text', 'image', 'article').
+   */
   entityBundle: string
+
+  /**
+   * The configuration name (typically a field name like 'field_paragraphs').
+   */
   name: string
 }
 
+/**
+ * Efficient lookup map for configuration objects organized by entity context.
+ *
+ * Provides O(1) lookups by entity type, entity type + bundle, and
+ * entity type + bundle + name combinations. Used for field configurations,
+ * editable field configurations, and droppable field configurations.
+ *
+ * @template T - Configuration type extending MappableConfig
+ */
 class ConfigMap<T extends MappableConfig> {
   private configs: T[] = []
   private mapEntityType: Record<string, T[]> = {}
@@ -71,14 +97,53 @@ class ConfigMap<T extends MappableConfig> {
     }
   }
 
+  /**
+   * Get all configurations for a specific entity type.
+   *
+   * @param entityType - The entity type to filter by
+   * @returns Array of matching configurations
+   *
+   * @example
+   * ```ts
+   * // Get all field configs for paragraph entities
+   * const paragraphFields = fieldConfig.forEntityType('paragraph')
+   * ```
+   */
   forEntityType(entityType: string): T[] {
     return this.mapEntityType[entityType] || []
   }
 
+  /**
+   * Get all configurations for a specific entity type and bundle combination.
+   *
+   * @param entityType - The entity type
+   * @param entityBundle - The entity bundle
+   * @returns Array of matching configurations
+   *
+   * @example
+   * ```ts
+   * // Get all field configs for text paragraph bundle
+   * const textFields = fieldConfig.forEntityTypeAndBundle('paragraph', 'text')
+   * ```
+   */
   forEntityTypeAndBundle(entityType: string, entityBundle: string): T[] {
     return this.mapEntityTypeBundle[entityType]?.[entityBundle] || []
   }
 
+  /**
+   * Get a specific configuration by entity type, bundle, and name.
+   *
+   * @param entityType - The entity type
+   * @param entityBundle - The entity bundle
+   * @param name - The configuration name (typically field name)
+   * @returns The matching configuration, or undefined if not found
+   *
+   * @example
+   * ```ts
+   * // Get field config for specific field on text paragraph
+   * const config = fieldConfig.forName('paragraph', 'text', 'field_items')
+   * ```
+   */
   forName(
     entityType: string,
     entityBundle: string,
@@ -87,26 +152,105 @@ class ConfigMap<T extends MappableConfig> {
     return this.mapEntityTypeBundleName[entityType]?.[entityBundle]?.[name]
   }
 
+  /**
+   * Get all configurations.
+   *
+   * @returns Array of all configurations in the map
+   */
   all(): T[] {
     return this.configs
   }
 }
 
 export type BlockDefinitionProvider = {
+  /**
+   * List of block bundles that contain nested blocks.
+   *
+   * A bundle is included if it has any field configurations
+   * where it can contain other blocks.
+   */
   itemBundlesWithNested: string[]
+
+  /**
+   * Allowed block types in the currently selected list.
+   *
+   * Computed based on the parent field of selected blocks.
+   * Returns empty array if:
+   * - No blocks are selected
+   * - Selected blocks are in different fields
+   */
   allowedTypesInList: ComputedRef<string[]>
+
+  /**
+   * Block bundles that can be used somewhere in the current context.
+   *
+   * Includes bundles allowed:
+   * - Directly on the current entity
+   * - In nested blocks allowed on the current entity
+   *
+   * Used for add dialogs, library, and other "available blocks" UIs.
+   */
   generallyAvailableBundles: BlockBundleDefinition[]
+
+  /**
+   * Get the bundle definition for a specific block type.
+   *
+   * @param bundle - The block bundle ID (e.g., 'text', 'image')
+   * @returns The bundle definition, or undefined if not found
+   */
   getBlockBundleDefinition: (
     bundle: string,
   ) => BlockBundleDefinition | undefined
+
+  /**
+   * Get the field configuration for a specific field on an entity.
+   *
+   * Field configurations define allowed bundles, cardinality, and other
+   * field-level settings.
+   *
+   * @param entityType - The entity type
+   * @param entityBundle - The entity bundle
+   * @param fieldName - The field name
+   * @returns The field configuration, or undefined if not found
+   */
   getFieldConfig: (
     entityType: string,
     entityBundle: string,
     fieldName: string,
   ) => FieldConfig | undefined
+
+  /**
+   * Map of all field configurations.
+   *
+   * Provides efficient lookups by entity type, bundle, and field name.
+   */
   fieldConfig: ConfigMap<FieldConfig>
+
+  /**
+   * Map of editable field configurations.
+   *
+   * Defines which fields support inline editing and their configuration.
+   */
   editableFieldConfig: ConfigMap<EditableFieldConfig>
+
+  /**
+   * Map of droppable field configurations.
+   *
+   * Defines which fields can accept dropped blocks and their behavior.
+   */
   droppableFieldConfig: ConfigMap<DroppableFieldConfig>
+
+  /**
+   * Get droppable field configuration for a field on a host.
+   *
+   * Throws an error if configuration is not found, as droppable fields
+   * should always have configuration when accessed.
+   *
+   * @param fieldName - The field name
+   * @param host - The host block or entity context
+   * @returns The droppable field configuration
+   * @throws Error if configuration not found
+   */
   getDroppableFieldConfig: (
     fieldName: string,
     host: DraggableExistingBlock | EntityContext,

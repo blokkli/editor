@@ -10,7 +10,26 @@ import { eventBus } from './../eventBus'
 import { useGlobalBlokkliObject } from './../composables/useGlobalBlokkliObject'
 
 export type DebugLogger = {
+  /**
+   * Log a debug message.
+   *
+   * The message is always stored in the message history.
+   * It's only output to console if debug mode is enabled and this logger is active.
+   *
+   * @param message - The log message
+   * @param v - Additional context values to log
+   */
   log: (message: string, ...v: any) => void
+
+  /**
+   * Log an error message.
+   *
+   * The message is always stored in the message history.
+   * It's only output to console if debug mode is enabled and this logger is active.
+   *
+   * @param message - The error message
+   * @param v - Additional context values to log
+   */
   error: (message: string, ...v: any) => void
 }
 
@@ -34,16 +53,100 @@ type RegisteredDebugOverlay = {
 }
 
 export type DebugProvider = {
+  /**
+   * Whether debug mode is currently enabled.
+   *
+   * Persisted in storage and controls console output for all loggers.
+   */
   isEnabled: ComputedRef<boolean>
+
+  /**
+   * Toggle debug mode on/off.
+   *
+   * When disabled, debug messages are still collected but not output to console.
+   */
   toggle: () => void
+
+  /**
+   * Create a named debug logger.
+   *
+   * Each logger has a unique name that appears in console output and can be
+   * individually enabled/disabled. The logger is automatically registered.
+   *
+   * @param name - Unique name for this logger (e.g., 'DomProvider', 'Animation')
+   * @returns Logger instance with log and error methods
+   */
   createLogger: (name: string) => DebugLogger
+
+  /**
+   * Register a debug overlay.
+   *
+   * Debug overlays are visual debugging tools that can be toggled on/off.
+   * Examples include viewport visualization, rect debugging, etc.
+   *
+   * @param id - Unique identifier for the overlay
+   * @param label - Human-readable label for the overlay
+   */
   registerOverlay: (id: string, label: string) => void
+
+  /**
+   * Unregister a debug overlay.
+   *
+   * Removes an overlay from the available overlays list.
+   *
+   * @param id - Identifier of the overlay to remove
+   */
   unregisterOverlay: (id: string) => void
+
+  /**
+   * List of all registered debug overlays with their active state.
+   *
+   * Each overlay includes whether it's currently visible.
+   */
   overlays: ComputedRef<RegisteredDebugOverlay[]>
+
+  /**
+   * Toggle a debug overlay on/off.
+   *
+   * Active state is persisted in storage.
+   *
+   * @param id - Identifier of the overlay to toggle
+   */
   toggleOverlay: (id: string) => void
+
+  /**
+   * List of all registered logger names.
+   *
+   * Includes all loggers created via createLogger().
+   */
   registeredLoggers: ComputedRef<string[]>
+
+  /**
+   * List of currently enabled logger names.
+   *
+   * When empty, all loggers are active.
+   * When non-empty, only listed loggers output to console.
+   */
   enabledLoggers: ComputedRef<string[]>
+
+  /**
+   * Toggle a logger's enabled state.
+   *
+   * Adds or removes the logger from the enabled list.
+   * State is persisted in storage.
+   *
+   * @param name - Name of the logger to toggle
+   */
   toggleLogger: (name: string) => void
+
+  /**
+   * Get all collected debug messages.
+   *
+   * Returns messages from all loggers and events, regardless of enabled state.
+   * Useful for debugging issues after they occur.
+   *
+   * @returns Array of all log messages with timestamps
+   */
   getMessages: () => LogMessage[]
 }
 

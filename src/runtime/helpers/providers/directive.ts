@@ -26,7 +26,26 @@ type DroppableFieldElementData = EditableFieldData & {
 type EditableRectangle = Rectangle & { key: string }
 
 export type DirectiveProvider = {
+  /**
+   * Initialize the directive provider.
+   *
+   * Starts the IntersectionObserver to track directive element visibility and positions.
+   */
   init: () => void
+
+  /**
+   * Register a directive element for tracking.
+   *
+   * Starts observing the element with IntersectionObserver to track visibility and position.
+   * For 'editable' directives on blocks, also indexes by UUID for quick lookup.
+   *
+   * @param el - The HTML element with the directive
+   * @param fieldName - The field name
+   * @param entity - The entity context (type, bundle, UUID)
+   * @param type - The directive type ('editable' or 'droppable')
+   * @param isComponent - Whether this is a component-based field
+   * @param getValue - Optional function to get the current field value
+   */
   registerDirectiveElement: (
     el: HTMLElement,
     fieldName: string,
@@ -35,25 +54,101 @@ export type DirectiveProvider = {
     isComponent: boolean,
     getValue?: () => string,
   ) => void
+
+  /**
+   * Unregister a directive element from tracking.
+   *
+   * Stops observing the element and removes it from all tracking maps.
+   *
+   * @param el - The HTML element to unregister
+   * @param fieldName - The field name
+   * @param entity - The entity context
+   * @param type - The directive type
+   */
   unregisterDirectiveElement: (
     el: HTMLElement,
     fieldName: string,
     entity: EntityContext,
     type: BlokkliDirectiveType,
   ) => void
+
+  /**
+   * Get rectangles for all visible directives of a specific type.
+   *
+   * Only includes directives currently in the viewport.
+   *
+   * @param directiveType - The directive type to filter by
+   * @returns Array of rectangles for visible directives
+   */
   getVisible: (directiveType: BlokkliDirectiveType) => Rectangle[]
+
+  /**
+   * Find the editable field at a specific screen coordinate.
+   *
+   * Converts screen coordinates to artboard space and checks if any visible
+   * editable field contains the point.
+   *
+   * @param x - Screen X coordinate
+   * @param y - Screen Y coordinate
+   * @returns The editable field data at that point, or undefined
+   */
   getEditableAtPoint: (x: number, y: number) => EditableFieldData | undefined
+
+  /**
+   * Get all editable fields for a specific block.
+   *
+   * Only returns 'editable' type directives on block entities.
+   *
+   * @param uuid - The block UUID
+   * @returns Array of editable fields for the block
+   */
   getEditablesForBlock: (uuid: string) => EditableFieldData[]
+
+  /**
+   * Get all droppable field elements.
+   *
+   * Returns fields with the 'droppable' directive type along with their HTML elements.
+   *
+   * @returns Array of droppable field data with elements
+   */
   getDroppableElements: () => DroppableFieldElementData[]
+
+  /**
+   * Find the HTML element for an editable field.
+   *
+   * @param fieldName - The field name
+   * @param host - The host entity context
+   * @returns The field's HTML element, or undefined if not found
+   */
   findEditableElement: (
     fieldName: string,
     host: EntityContext,
   ) => HTMLElement | undefined
+
+  /**
+   * Find the editable field data.
+   *
+   * @param fieldName - The field name
+   * @param host - The host entity context
+   * @returns The editable field data, or undefined if not found
+   */
   findEditable: (
     fieldName: string,
     host: EntityContext,
   ) => EditableFieldData | undefined
+
+  /**
+   * Whether the directive provider is ready.
+   *
+   * Ready when IntersectionObserver is initialized and initial measurements are complete.
+   */
   isReady: ComputedRef<boolean>
+
+  /**
+   * Settlement key that increments after directive changes settle.
+   *
+   * Useful for triggering reactivity after directives are registered/unregistered.
+   */
   settleKey: ComputedRef<number>
 }
 
