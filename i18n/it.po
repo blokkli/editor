@@ -111,6 +111,10 @@ msgctxt "analyzeMoreLink"
 msgid "More"
 msgstr ""
 
+msgctxt "analyzeNotAvailableInStructureView"
+msgid "Analyze is not available in structure view."
+msgstr ""
+
 msgctxt "analyzeResultsOutdated"
 msgid "Results are outdated. Click the button to update."
 msgstr ""
@@ -569,7 +573,7 @@ msgid "The items could not be duplicated."
 msgstr "Gli elementi non possono essere duplicati."
 
 msgctxt "edit"
-msgid "Edit"
+msgid "Edit..."
 msgstr "Modifica"
 
 msgctxt "editFormBlockAdd"

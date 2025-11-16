@@ -103,6 +103,10 @@
     "source": "More",
     "translation": "Mehr"
   },
+  "analyzeNotAvailableInStructureView": {
+    "source": "Analyze is not available in structure view.",
+    "translation": "«Analysieren» ist in der strukturierten Vorschau nicht verfügbar."
+  },
   "analyzeResultsOutdated": {
     "source": "Results are outdated. Click the button to update.",
     "translation": "Resultate sind veraltet. Klicken Sie auf den Button um zu aktualisieren."
@@ -536,7 +540,7 @@
     "translation": "Die Elemente konnten nicht dupliziert werden."
   },
   "edit": {
-    "source": "Edit",
+    "source": "Edit...",
     "translation": "Bearbeiten..."
   },
   "editFormBlockAdd": {

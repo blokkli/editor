@@ -1,6 +1,6 @@
 <template>
   <div class="bk-info-box">
-    <Icon name="info" />
+    <Icon :name="icon" />
     <div>
       <slot>
         <p v-html="text" />
@@ -10,9 +10,17 @@
 </template>
 
 <script setup lang="ts">
+import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon } from '#blokkli/components'
 
-defineProps<{
-  text?: string
-}>()
+withDefaults(
+  defineProps<{
+    text?: string
+    icon?: BlokkliIcon
+  }>(),
+  {
+    text: undefined,
+    icon: 'info',
+  },
+)
 </script>

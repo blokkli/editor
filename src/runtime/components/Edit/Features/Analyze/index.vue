@@ -9,7 +9,19 @@
     <template #icon>
       <AnalyzeIcon :is-running />
     </template>
+    <div v-if="ui.isProxyMode.value" class="bk-sidebar-padding bk">
+      <InfoBox
+        :text="
+          $t(
+            'analyzeNotAvailableInStructureView',
+            'Analyze is not available in structure view.',
+          )
+        "
+        icon="tree"
+      />
+    </div>
     <AnalyzerMain
+      v-else
       :key="animation.renderKey.value"
       v-model="isRunning"
       :langcode="context.language"
@@ -21,6 +33,7 @@
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature, ref } from '#imports'
 import { PluginSidebar } from '#blokkli/plugins'
+import { InfoBox } from '#blokkli/components'
 import AnalyzerMain from './Main.vue'
 import type { Analyzer } from './analyzers/types'
 import AnalyzeIcon from './Icon.vue'
@@ -33,6 +46,8 @@ const { adapter } = defineBlokkliFeature({
   description: 'Analyze blocks and page for SEO, accessibility, etc.',
   viewports: [],
 })
+
+const { $t, context, animation, ui } = useBlokkli()
 
 const isRunning = ref(false)
 
@@ -51,8 +66,6 @@ function getAdapterAnalyzers(): Promise<Analyzer[]> {
 }
 
 const analyzers = await getAdapterAnalyzers()
-
-const { $t, context, animation } = useBlokkli()
 </script>
 
 <script lang="ts">

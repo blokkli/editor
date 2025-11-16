@@ -9,6 +9,10 @@
 .bk-sidebar {
   @apply bg-white z-sidebar w-sidebar-right pointer-events-auto;
 
+  .bk-sidebar-padding {
+    @apply p-20;
+  }
+
   &.bk-is-right {
     @apply transition-all;
     grid-area: sidebar-right;

@@ -103,6 +103,10 @@
     "source": "More",
     "translation": "Meh"
   },
+  "analyzeNotAvailableInStructureView": {
+    "source": "Analyze is not available in structure view.",
+    "translation": ""
+  },
   "analyzeResultsOutdated": {
     "source": "Results are outdated. Click the button to update.",
     "translation": ""
@@ -536,7 +540,7 @@
     "translation": "D'Elemänt hän nid chönne dupliziert wärde. "
   },
   "edit": {
-    "source": "Edit",
+    "source": "Edit...",
     "translation": "Bearbeite"
   },
   "editFormBlockAdd": {
