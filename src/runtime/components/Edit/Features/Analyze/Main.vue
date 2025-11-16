@@ -132,16 +132,17 @@ const hasContinuousAnalyzers = computed(
 )
 const hasManualAnalyzers = computed(() => manualAnalyzers.value.length > 0)
 
-const results = computed(() => {
-  // Merge continuous and manual results
-  const allResults = [...continuousResults.value, ...manualResults.value]
+const allResults = computed(() => {
+  return [...continuousResults.value, ...manualResults.value]
+})
 
+const results = computed(() => {
   // Apply category filter
   if (selectedCategory.value === ALL) {
-    return allResults
+    return allResults.value
   }
 
-  return allResults.filter((v) => v.category === selectedCategory.value)
+  return allResults.value.filter((v) => v.category === selectedCategory.value)
 })
 
 const isStale = computed(() => lastRunKey.value !== state.refreshKey.value)
@@ -419,7 +420,7 @@ async function onClick() {
 }
 
 const categoryOptions = computed<{ value: string; label: string }[]>(() => {
-  const set = results.value.reduce<Set<AnalyzeCategory>>((acc, v) => {
+  const set = allResults.value.reduce<Set<AnalyzeCategory>>((acc, v) => {
     acc.add(v.category)
     return acc
   }, new Set())
