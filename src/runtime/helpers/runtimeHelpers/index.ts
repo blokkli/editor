@@ -7,7 +7,7 @@ import {
   type RuntimeBlockOptions,
 } from '#blokkli-build/runtime-options'
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
-import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
+import type { BlockOptionDefinition } from '#blokkli/types/blockOptions'
 import {
   bundlesWithVisibleLanguage,
   bundlesWithHiddenGlobally,

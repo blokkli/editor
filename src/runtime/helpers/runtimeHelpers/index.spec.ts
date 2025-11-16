@@ -1,6 +1,6 @@
 import { test, describe, expect } from 'vitest'
 import { getRuntimeOptionValue } from '.'
-import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
+import type { BlockOptionDefinition } from '#blokkli/types/blockOptions'
 
 describe('getRuntimeOptionValue', () => {
   test('Returns the correct value for type checkbox', () => {

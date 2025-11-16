@@ -91,7 +91,7 @@ export class ModuleHelper {
       ),
       TYPES_BLOKK_OPTIONS: relative(
         this.paths.blokkliBuildDir,
-        this.resolvers.module.resolve('./runtime/types/blokkOptions.ts'),
+        this.resolvers.module.resolve('./runtime/types/blockOptions.ts'),
       ),
     }
 

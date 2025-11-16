@@ -6,7 +6,7 @@ import path from 'path'
 const TYPE_FILES = [
   './../../src/runtime/types/index.ts',
   './../../src/runtime/types/theme.ts',
-  './../../src/runtime/types/blokkOptions.ts',
+  './../../src/runtime/types/blockOptions.ts',
   './../../src/runtime/adapter/index.ts',
 ]
 

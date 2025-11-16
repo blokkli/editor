@@ -12,7 +12,7 @@ import type { DirectiveProvider } from '../helpers/providers/directive'
 import type { TextProvider } from '../helpers/providers/texts'
 import type { PluginProvider } from '../helpers/providers/plugin'
 import type { eventBus } from './../helpers/eventBus'
-import type { BlockOptionDefinition } from './blokkOptions'
+import type { BlockOptionDefinition } from './blockOptions'
 import type {
   BlokkliAdapter,
   AdapterContext,

@@ -88,7 +88,7 @@ import OptionColor from './Color/index.vue'
 import OptionRange from './Range/index.vue'
 import OptionNumber from './Number/index.vue'
 import OptionDateTimeLocal from './DateTimeLocal/index.vue'
-import type { BlockOptionDefinition } from '#blokkli/types/blokkOptions'
+import type { BlockOptionDefinition } from '#blokkli/types/blockOptions'
 import {
   isValidDatetimeLocalValue,
   mapCheckboxTrue,

@@ -16,7 +16,6 @@ import type { StorageProvider } from './storage'
 import type { CursorKeyword } from '../dom'
 import type { CanvasDrawEvent, Coord } from '#blokkli/types'
 import type { SelectionProvider } from './selection'
-
 import type { RectangleBufferCollector } from '../webgl'
 import type { DebugProvider } from './debug'
 import { useTransitionedValue } from '../composables/useTransitionedValue'
