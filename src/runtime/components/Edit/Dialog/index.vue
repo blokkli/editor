@@ -3,7 +3,7 @@
     ref="rootEl"
     class="bk bk-dialog bk-control"
     @wheel.passive.stop
-    @keydown.stop="onKeyDown"
+    @keydown.stop="handleKeyDown"
     @keyup.stop
     @touchstart.passive.stop
     @touchmove.stop
@@ -54,7 +54,6 @@
 <script lang="ts" setup>
 import {
   useBlokkli,
-  onMounted,
   computed,
   useTemplateRef,
   onBeforeUnmount,
@@ -62,10 +61,10 @@ import {
 } from '#imports'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon } from '#blokkli/components'
-import { modulo } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import useFocusTrap from '#blokkli/helpers/composables/useFocusTrap'
 
-const { ui, element } = useBlokkli()
+const { ui } = useBlokkli()
 
 const emit = defineEmits(['submit', 'cancel'])
 
@@ -123,21 +122,18 @@ const style = computed(() => {
   }
 })
 
-type FocusableElement =
-  | HTMLInputElement
-  | HTMLSelectElement
-  | HTMLButtonElement
-  | HTMLTextAreaElement
+const { onKeyDown } = useFocusTrap({
+  container: rootEl,
+  debugLabel: `Dialog "${props.title}"`,
+})
 
-const getFocusableElements = (): FocusableElement[] => {
-  if (!rootEl.value) {
-    return []
+const handleKeyDown = (e: KeyboardEvent) => {
+  if (e.code === 'Escape') {
+    e.preventDefault()
+    emit('cancel')
+    return
   }
-  return element.queryAll(
-    rootEl.value,
-    'input,select,button,textarea',
-    `Dialog "${props.title}" getFocusableElements`,
-  )
+  onKeyDown(e)
 }
 
 onBlokkliEvent('keyPressed', (e) => {
@@ -150,54 +146,7 @@ onBlokkliEvent('overlay:close', () => {
   emit('cancel')
 })
 
-const onKeyDown = (e: KeyboardEvent) => {
-  if (e.code === 'Escape') {
-    e.preventDefault()
-    emit('cancel')
-    return
-  }
-  if (!rootEl.value || e.code !== 'Tab') {
-    return
-  }
-  const prev = e.shiftKey
-  const focusableElements = getFocusableElements().filter((el) => {
-    const style = window.getComputedStyle(el)
-    if (style.pointerEvents === 'none') {
-      return false
-    }
-
-    return !el.disabled
-  }) as HTMLElement[]
-
-  const activeIndex = Math.max(
-    focusableElements.findIndex((el) => document.activeElement === el),
-    0,
-  )
-
-  const delta = prev ? -1 : 1
-
-  const indexToFocus = modulo(activeIndex + delta, focusableElements.length)
-  const elementToFocus = focusableElements[indexToFocus]
-
-  if (elementToFocus) {
-    elementToFocus.focus()
-    e.preventDefault()
-  }
-}
-
 ui.openDialog({ id: props.id, alignment: 'center' })
-
-onMounted(() => {
-  // Focus the first best match in the dialog. That is, an element that is not a button.
-  const focusableElements = getFocusableElements()
-  const bestMatch =
-    focusableElements.find((el) => !(el instanceof HTMLButtonElement)) ||
-    focusableElements[0]
-
-  if (bestMatch) {
-    bestMatch.focus()
-  }
-})
 
 onBeforeUnmount(() => {
   ui.closeDialog(props.id)

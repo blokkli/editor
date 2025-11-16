@@ -3,6 +3,7 @@
     :id="'add_list_item_' + context + id"
     ref="el"
     tag="button"
+    type="button"
     class="bk-add-item"
     :menu="menu"
     :data-sortli-id="id"
@@ -31,23 +32,22 @@ import { PluginContextMenu } from '#blokkli/plugins'
 
 const { storage, $t } = useBlokkli()
 
-const props = withDefaults(
-  defineProps<{
-    id: string
-    context: string
-    label: string
-    color?: 'rose' | 'lime' | 'default' | 'yellow' | 'accent'
-    bundle?: string
-    icon?: BlokkliIcon
-    disabled?: boolean
-    noContextMenu?: boolean
-  }>(),
-  {
-    color: 'default',
-    bundle: '',
-    icon: undefined,
-  },
-)
+export type AddListItemProps = {
+  id: string
+  context: string
+  label: string
+  color?: 'rose' | 'lime' | 'default' | 'yellow' | 'accent'
+  bundle?: string
+  icon?: BlokkliIcon
+  disabled?: boolean
+  noContextMenu?: boolean
+}
+
+const props = withDefaults(defineProps<AddListItemProps>(), {
+  color: 'default',
+  bundle: '',
+  icon: undefined,
+})
 
 const el = ref<InstanceType<typeof PluginContextMenu> | null>(null)
 
@@ -82,10 +82,4 @@ const menu = computed<ContextMenu[]>(() => {
 const getElement = (): HTMLElement | null => el.value?.$el
 
 defineExpose({ getElement })
-</script>
-
-<script lang="ts">
-export default {
-  name: 'AddListItem',
-}
 </script>

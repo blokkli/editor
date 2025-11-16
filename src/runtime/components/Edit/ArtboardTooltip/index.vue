@@ -6,6 +6,7 @@
     :style="{
       '--bk-caret-x': caretX,
     }"
+    @keydown="onKeyDown"
   >
     <div class="bk bk-artboard-tooltip-inner bk-caret-tooltip-inner">
       <div class="bk-artboard-tooltip-header">
@@ -34,6 +35,7 @@ import { Icon } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { Coord } from '#blokkli/types'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import useFocusTrap from '#blokkli/helpers/composables/useFocusTrap'
 
 const props = withDefaults(
   defineProps<{
@@ -57,6 +59,11 @@ const emit = defineEmits<{
 }>()
 
 const el = useTemplateRef('el')
+
+const { onKeyDown } = useFocusTrap({
+  container: el,
+  debugLabel: 'ArtboardTooltip: ' + props.id,
+})
 
 const { ui } = useBlokkli()
 

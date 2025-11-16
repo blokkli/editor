@@ -111,6 +111,7 @@
 
 .bk-item-icon-hover-parent:hover,
 .bk-add-item:hover,
+.bk-add-item:focus-visible,
 .bk-dragging-overlay {
   .bk-item-icon {
     @apply outline outline-white/40;

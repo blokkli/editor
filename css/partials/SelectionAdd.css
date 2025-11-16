@@ -11,16 +11,54 @@
     @apply text-white;
   }
 
+  .bk-selection-add-overlay-wrapper {
+    @apply max-h-[60vh] overflow-auto lg:max-h-[500px];
+  }
+
+  .bk-selection-add-overlay-form {
+    padding: var(--bk-gap);
+    padding-bottom: 0;
+  }
+
+  .bk-selection-add-overlay-form-input {
+    @apply relative;
+    .bk-icon {
+      @apply absolute top-0 left-0 aspect-square h-full p-10;
+      svg {
+        @apply size-full fill-white;
+      }
+    }
+
+    input {
+      @apply w-full appearance-none bg-mono-950;
+      @apply text-white text-lg h-40;
+      @apply rounded-md;
+      @apply border border-mono-700 pl-40;
+      @apply focus:outline-mono-800 focus:shadow-none;
+      @apply focus:border-mono-500;
+      @apply selection:bg-mono-700;
+      @apply placeholder:text-mono-600;
+    }
+
+    button {
+      @apply absolute right-0 top-0 h-full aspect-square;
+    }
+  }
+
   .bk-selection-add-overlay-list {
-    @apply flex flex-wrap max-h-[60vh] overflow-auto lg:max-h-[500px];
+    @apply flex flex-wrap items-start;
     padding: var(--bk-gap);
     gap: var(--bk-gap);
+
     max-width: calc(
       var(--bk-gap) * 2 + var(--bk-item-width) * var(--bk-columns) +
         var(--bk-gap) * (var(--bk-columns) - 1) + 10px
     );
     button {
       width: var(--bk-item-width);
+      @apply rounded-md;
+      @apply focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-mono-600 focus:!shadow-none;
+      @apply self-start;
       .bk-add-item-label {
         @apply pl-10;
       }

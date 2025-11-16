@@ -12,7 +12,7 @@
       enterkeyhint="done"
       rows="2"
       v-bind="inputAttributes"
-      @keydown.stop.capture="onKeyDown"
+      @keydown.capture="onKeyDown"
       @blur="onBlur"
       @input="
         $emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)
