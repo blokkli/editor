@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent.stop="onSubmit" class="entity-form">
-    <div v-for="field in fields" :key="field.name" class="field">
+    <div v-for="field in formFields" :key="field.name" class="field">
       <label class="field-label" :for="field.name">{{ field.label }}</label>
       <input
         v-if="field.type === 'text'"
@@ -54,6 +54,7 @@ const props = defineProps<{
   fields: Field<any>[]
 }>()
 
+
 const emit = defineEmits<{
   (e: 'submit', values: Record<string, string>): void
 }>()
@@ -67,6 +68,9 @@ type FormField = {
 }
 
 const mapField = (field: Field<unknown>): FormField | undefined => {
+  if (field.id === 'publishOn' || field.id === 'unpublishOn') {
+    return
+  }
   if (field instanceof FieldText) {
     return {
       type: 'text',
@@ -110,12 +114,13 @@ const mapField = (field: Field<unknown>): FormField | undefined => {
   }
 }
 
-const fields = computed<FormField[]>(() =>
+
+const formFields = computed<FormField[]>(() =>
   Object.values(props.fields).map(mapField).filter(falsy),
 )
 
 const values = ref<Record<string, string>>(
-  fields.value.reduce<Record<string, string>>((acc, field) => {
+  formFields.value.reduce<Record<string, string>>((acc, field) => {
     acc[field.name] = field.value
     return acc
   }, {}),
