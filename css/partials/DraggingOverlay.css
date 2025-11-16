@@ -34,7 +34,7 @@
 }
 
 .bk-dragging-overlay-markup {
-  @apply absolute top-0 left-0 origin-top-left rounded w-full h-full pointer-events-none;
+  @apply absolute top-0 left-0 origin-top-left w-full h-full pointer-events-none;
   @apply rounded;
 
   * {

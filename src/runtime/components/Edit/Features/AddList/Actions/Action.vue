@@ -3,6 +3,7 @@
     :id="action.id"
     ref="item"
     :key="action.id"
+    class="bk-is-action"
     context="add-list-actions"
     :label="action.title"
     :bundle="action.itemBundle"
