@@ -35,7 +35,9 @@ export abstract class Block extends Entity {
     const translation = this.getTranslation(this.langcode)
     const props: Record<string, any> = {}
     Object.values(translation.fields).forEach((field) => {
-      props[field.id] = field.getPropValue()
+      if (field.id !== 'publishOn' && field.id !== 'unpublishOn') {
+        props[field.id] = field.getPropValue()
+      }
     })
     return props
   }
