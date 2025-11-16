@@ -76,7 +76,7 @@ import {
   mouse,
   dom as domPlugin,
 } from 'artboard-deluxe'
-import { addElementClasses } from '#blokkli/helpers/addElementClasses'
+import { addElementClasses } from '#blokkli/helpers/composables/addElementClasses'
 
 const props = defineProps<{
   persist: boolean

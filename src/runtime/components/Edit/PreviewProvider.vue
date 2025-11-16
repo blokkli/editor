@@ -32,7 +32,7 @@ import { getFieldKey, intersects } from '#blokkli/helpers'
 import type { AdapterContext } from '../../adapter'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import definitionProvider from '../../helpers/providers/definition'
-import { addElementClasses } from '#blokkli/helpers/addElementClasses'
+import { addElementClasses } from '#blokkli/helpers/composables/addElementClasses'
 
 const props = defineProps<{
   entity?: T

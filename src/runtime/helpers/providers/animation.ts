@@ -19,7 +19,7 @@ import type { SelectionProvider } from './selection'
 
 import type { RectangleBufferCollector } from '../webgl'
 import type { DebugProvider } from './debug'
-import { useTransitionedValue } from '../useTransitionedValue'
+import { useTransitionedValue } from '../composables/useTransitionedValue'
 import type { KeyboardProvider } from './keyboard'
 
 export type RenderContext = CanvasDrawEvent & {

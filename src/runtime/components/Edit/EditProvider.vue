@@ -123,7 +123,7 @@ import {
 } from '#blokkli/helpers/symbols'
 import type { AdapterContext } from '#blokkli/adapter'
 import { useBlockRegistration } from '#blokkli/helpers/composables/useBlockRegistration'
-import { addElementClasses } from '#blokkli/helpers/addElementClasses'
+import { addElementClasses } from '#blokkli/helpers/composables/addElementClasses'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { falsy } from '#blokkli/helpers'
 

@@ -29,7 +29,7 @@ import { falsy, getFieldKey } from '#blokkli/helpers'
 import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
 import { nextTick } from '#imports'
 import type { TextProvider } from './texts'
-import { addElementClasses } from '../addElementClasses'
+import { addElementClasses } from '../composables/addElementClasses'
 import { BUNDLE_FROM_LIBRARY } from '#blokkli/constants'
 
 const HOST_OPTION_KEY = 'HOST'

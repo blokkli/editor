@@ -19,7 +19,7 @@
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature, ref } from '#imports'
 import { PluginViewOption } from '#blokkli/plugins'
-import { addElementClasses } from '#blokkli/helpers/addElementClasses'
+import { addElementClasses } from '#blokkli/helpers/composables/addElementClasses'
 
 defineBlokkliFeature({
   id: 'editable-mask',
