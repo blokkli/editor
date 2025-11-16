@@ -1,6 +1,8 @@
 <template>
   <div :class="{ 'container mx-auto my-20': !parentType }">
-    <table class="table w-full min-h-30" ref="blokkliDraggable">
+    <table class="table w-full" ref="blokkliDraggable" :class="{
+      'min-h-100': isEditing
+    }">
       <thead>
         <tr>
           <th>Tagline</th>
@@ -17,7 +19,7 @@
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 import { defineBlokkli } from '#imports'
 
-const { parentType } = defineBlokkli({
+const { parentType, isEditing } = defineBlokkli({
   bundle: 'table',
   chunkName: 'rare',
   propsFieldMapping: {
