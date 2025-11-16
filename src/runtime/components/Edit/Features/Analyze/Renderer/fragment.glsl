@@ -8,7 +8,9 @@ in vec3 v_color;
 in vec2 v_rect_size;
 in vec2 v_rect_center;
 in float v_opacity;
+in float v_border_opacity;
 in float v_border_factor;
+in float v_fill_opacity;
 
 out vec4 fragColor;
 
@@ -56,11 +58,11 @@ void main() {
   // Background (transparent)
   vec4 bg = vec4(0.0, 0.0, 0.0, 0.0);
 
-  // Fill (semi-transparent) - use opacity calculated in vertex shader
-  vec4 fill = vec4(v_color, 0.3 * v_opacity);
+  // Fill (semi-transparent) - use fill opacity from vertex shader
+  vec4 fill = vec4(v_color, v_fill_opacity * v_opacity);
 
   // Border - use opacity calculated in vertex shader
-  vec4 border = vec4(v_color, v_opacity);
+  vec4 border = vec4(v_color, v_border_opacity);
 
   // Mix background with fill
   vec4 res_with_fill = mix(bg, fill, fillAlpha);

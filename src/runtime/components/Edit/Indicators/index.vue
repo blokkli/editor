@@ -124,7 +124,7 @@ onBlokkliEvent('state:reloaded', () => {
 })
 
 onBlokkliEvent('scrollIntoView', (e) => {
-  if ('element' in e) {
+  if ('element' in e && e.highlight) {
     if (artboardElement.contains(e.element)) {
       highlighted.value = ui.getAbsoluteElementRect(e.element)
     } else {

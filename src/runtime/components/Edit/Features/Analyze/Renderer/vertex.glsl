@@ -21,6 +21,7 @@ uniform vec3 u_color_violation;
 uniform vec3 u_color_incomplete;
 uniform float u_opacity;
 uniform float u_manual_stale;
+uniform float u_active_id;
 
 out vec4 v_quad;
 out float v_rect_type;
@@ -28,7 +29,9 @@ out vec3 v_color;
 out vec2 v_rect_size;
 out vec2 v_rect_center;
 out float v_opacity;
+out float v_border_opacity;
 out float v_border_factor;
+out float v_fill_opacity;
 
 void main() {
   // Apply global scale and offsets
@@ -83,4 +86,9 @@ void main() {
 
   // Calculate border factor based on scale.
   v_border_factor = smoothstep(0.5, 0.8, u_scale);
+
+  // Calculate fill opacity based on whether this rect is active
+  // If active (rect_id matches u_active_id), use 0.5, otherwise 0.1
+  v_fill_opacity = a_rect_id == u_active_id ? 0.3 : 0.1;
+  v_border_opacity = a_rect_id == u_active_id ? 1.0 : 0.3;
 }

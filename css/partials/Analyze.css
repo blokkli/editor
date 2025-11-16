@@ -210,7 +210,7 @@
     > div > ul {
       > li {
         > p {
-          @apply text-xs text-mono-700 px-10;
+          @apply text-xs text-mono-700 px-10 mb-3;
           &.bk-is-single {
             @apply pt-10;
           }
@@ -244,14 +244,27 @@
       &:hover svg {
         @apply fill-accent-700;
       }
+      &:hover .bk-icon {
+        @apply bg-mono-200;
+      }
       svg {
-        @apply size-15 fill-mono-500;
+        @apply size-[13px] fill-mono-500;
+      }
+
+      .bk-icon {
+        @apply size-20 flex items-center justify-center rounded-full shrink-0;
       }
     }
 
     &.bk-is-focused {
       button {
-        @apply bg-accent-300 outline outline-accent-500 -outline-offset-2;
+        @apply bg-accent-600 text-accent-50;
+        .bk-icon {
+          @apply bg-white;
+          svg {
+            @apply fill-accent-700;
+          }
+        }
       }
     }
   }

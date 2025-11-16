@@ -25,8 +25,10 @@
               <ResultsItemNodesTarget
                 v-for="(target, k) in node.targets"
                 :key="i + '_' + j + '_' + k"
+                :index="i"
                 :target="target"
                 :result-id
+                v-model="activeId"
               />
             </li>
           </ul>
@@ -37,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, useBlokkli } from '#imports'
+import { computed, ref, useBlokkli, watch } from '#imports'
 import type { AnalyzeNode, AnalyzeNodeTarget } from '../analyzers/types'
 import ResultsItemNodesTarget from './ResultsItemNodesTarget.vue'
 import { Icon } from '#blokkli/components'
@@ -48,6 +50,7 @@ const props = defineProps<{
   nodes: AnalyzeNode | AnalyzeNode[]
 }>()
 
+const activeId = defineModel<string>({ default: '' })
 const shouldRender = ref(false)
 
 const isOpen = ref(false)
@@ -97,8 +100,9 @@ const grouped = computed(() => {
   })
 })
 
-onBlokkliEvent('analyze:click-node', (e) => {
-  if (e.id === props.resultId) {
+watch(activeId, (id) => {
+  const resultId = id.split('_____')[0]
+  if (resultId === props.resultId) {
     isOpen.value = true
   }
 })

@@ -16,21 +16,24 @@
 
 <script setup lang="ts">
 import { Icon } from '#blokkli/components'
-import { ref, useBlokkli, useTemplateRef } from '#imports'
+import { computed, useBlokkli, useTemplateRef, watch } from '#imports'
 import { renderCycle } from '#blokkli/helpers/renderCycle'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const props = defineProps<{
   resultId: string
+  index: number
   target: string | HTMLElement | { uuid: string }
 }>()
 
 const { eventBus, dom, blocks, element } = useBlokkli()
 
+const activeId = defineModel<string>({ default: '' })
+
 const elButton = useTemplateRef('elButton')
 
-const isFocused = ref(false)
-let focusTimeout: null | number = null
+const id = computed(() => props.resultId + '_____' + props.index)
+
+const isFocused = computed(() => activeId.value === id.value)
 
 function getElement(): HTMLElement | null {
   if (props.target) {
@@ -91,6 +94,11 @@ function findClosestUuid(element: HTMLElement): string | undefined {
 }
 
 async function onClick() {
+  if (activeId.value === id.value) {
+    activeId.value = ''
+    return
+  }
+
   const element = getElement()
   if (!element) {
     return
@@ -109,26 +117,18 @@ async function onClick() {
   eventBus.emit('scrollIntoView', {
     element,
   })
+  activeId.value = id.value
 }
 
-onBlokkliEvent('analyze:click-node', (e) => {
-  isFocused.value = false
-  if (focusTimeout) {
-    window.clearTimeout(focusTimeout)
+watch(isFocused, (isFocused) => {
+  if (!isFocused) {
+    return
   }
-  if (e.id === props.resultId) {
-    const el = getElement()
-    if (el === e.target && elButton.value) {
-      elButton.value.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-      })
-      isFocused.value = true
-      focusTimeout = window.setTimeout(() => {
-        isFocused.value = false
-      }, 1000)
-      return
-    }
+  if (elButton.value) {
+    elButton.value.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+    })
   }
 })
 </script>

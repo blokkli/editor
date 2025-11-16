@@ -48,11 +48,12 @@
         />
       </div>
       <AnalyzeSummary :results="results" />
-      <Results :results="results" />
+      <Results :results="results" v-model="activeId" />
     </div>
   </div>
   <Renderer
     v-if="results.length"
+    v-model="activeId"
     :results
     :is-stale
     :manual-analyzer-ids
@@ -111,6 +112,7 @@ const manualResults = useState<AnalyzeResultMapped[]>(
   'blokkli:analyze:manual',
   () => [],
 )
+const activeId = useState(() => '')
 const lastRun = useState(() => 0)
 const lastRunKey = useState(() => '')
 const selectedCategory = useState(() => ALL)

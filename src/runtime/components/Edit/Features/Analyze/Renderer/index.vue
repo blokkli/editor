@@ -29,11 +29,16 @@ const props = defineProps<{
   manualAnalyzerIds: Set<string>
 }>()
 
-const { animation, ui, theme, selection, eventBus, element } = useBlokkli()
+const { animation, ui, theme, selection, element } = useBlokkli()
+
+const activeId = defineModel<string>({
+  default: '',
+})
 
 type AnalyzeRectangle = Rectangle & {
   id: string
   index: number
+  nodeIndex: number
   status: AnalyzeStatus
   plugin: string
 }
@@ -42,6 +47,7 @@ type AnalyzeNode = {
   id: string
   element: HTMLElement
   title: string
+  index: number
   status: AnalyzeStatus
   plugin: string
 }
@@ -87,10 +93,11 @@ const nodes = computed<AnalyzeNode[]>(() => {
 
           return elements
         })
-        .map((element) => {
+        .map((element, index) => {
           return {
             id: result.id,
             element,
+            index,
             title: result.title,
             status: result.status,
             plugin: result.plugin,
@@ -113,6 +120,22 @@ const nodes = computed<AnalyzeNode[]>(() => {
 
   const finalNodes = Array.from(nodeMap.values())
   return finalNodes
+})
+
+const activeRectId = computed(() => {
+  if (!activeId.value) {
+    return -1.0
+  }
+
+  for (let i = 0; i < nodes.value.length; i++) {
+    const node = nodes.value[i]!
+    const nodeActiveId = node.id + '_____' + node.index
+    if (nodeActiveId === activeId.value) {
+      return i
+    }
+  }
+
+  return -1.0
 })
 
 class AnalyzeRectangleBufferCollector extends RectangleBufferCollector<AnalyzeRectangle> {
@@ -183,6 +206,7 @@ class AnalyzeRectangleBufferCollector extends RectangleBufferCollector<AnalyzeRe
             height: rect.height,
             status: node.status,
             plugin: node.plugin,
+            nodeIndex: node.index,
           },
           statusType,
         )
@@ -228,6 +252,7 @@ const { collector } = defineRenderer('analyze-overlay', {
       u_color_incomplete: toShaderColor(theme.yellow.value.normal),
       u_opacity: getOpacity(),
       u_manual_stale: props.isStale ? 1.0 : 0.0,
+      u_active_id: activeRectId.value,
     })
     animation.setSharedUniforms(gl, program)
 
@@ -318,10 +343,7 @@ onBlokkliEvent('mouse:up', (e) => {
       artboardY >= rect.y &&
       artboardY <= rect.y + rect.height
     ) {
-      eventBus.emit('analyze:click-node', {
-        id: node.id,
-        target: node.element,
-      })
+      activeId.value = node.id + '_____' + node.index
       return
     }
   }

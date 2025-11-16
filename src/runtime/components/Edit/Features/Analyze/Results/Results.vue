@@ -25,6 +25,7 @@
             v-for="result in group.results"
             v-bind="result"
             :key="group.group + result.id"
+            v-model="activeId"
           />
         </li>
       </ul>
@@ -45,6 +46,8 @@ const props = defineProps<{
 const { $t } = useBlokkli()
 
 type ResultGroup = 'problems' | 'success' | 'inapplicable'
+
+const activeId = defineModel<string>({ default: '' })
 
 const groupOrder: Record<ResultGroup, number> = {
   problems: 1,
