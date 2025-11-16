@@ -13,6 +13,7 @@
           fill="black"
           stroke="black"
           stroke-width="3"
+          transform="rotate(-100 12 13)"
         >
           <animateTransform
             attributeName="transform"
@@ -38,6 +39,7 @@
     <path
       d="M12 1C12 1 15 11 15 13C15 14.6569 13.6569 16 12 16C10.3432 16 9 14.6568 9 13C9 11.0005 11.9984 1.00521 12 1Z"
       fill="currentColor"
+      transform="rotate(-100 12 13)"
     >
       <animateTransform
         attributeName="transform"
@@ -54,13 +56,23 @@
 </template>
 
 <script setup lang="ts">
-import { useTemplateRef, watch } from '#imports'
+import { useTemplateRef, watch, onMounted } from '#imports'
 
 const props = defineProps<{
   isRunning: boolean
 }>()
 
 const svgElement = useTemplateRef('svgElement')
+
+onMounted(() => {
+  if (!svgElement.value) {
+    return
+  }
+
+  if (!props.isRunning) {
+    svgElement.value.pauseAnimations()
+  }
+})
 
 watch(
   () => props.isRunning,
