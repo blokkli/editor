@@ -15,7 +15,7 @@
       {{ descriptionMapped }}
     </p>
 
-    <ResultsItemNodes :nodes :result-id="id" v-model="activeId" />
+    <ResultsItemNodes v-model="activeId" :nodes :result-id="id" />
   </div>
 </template>
 

@@ -54,7 +54,6 @@ const props = defineProps<{
   fields: Field<any>[]
 }>()
 
-
 const emit = defineEmits<{
   (e: 'submit', values: Record<string, string>): void
 }>()
@@ -113,7 +112,6 @@ const mapField = (field: Field<unknown>): FormField | undefined => {
     }
   }
 }
-
 
 const formFields = computed<FormField[]>(() =>
   Object.values(props.fields).map(mapField).filter(falsy),

@@ -1,13 +1,7 @@
 <template>
   <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-in">
-      <FormOverlay
-        v-if="form"
-        id="edit-form"
-        :bundle="bundle"
-        :title="title"
-        @close="onClose"
-      >
+      <FormOverlay v-if="form" id="edit-form" :bundle :title @close="onClose">
         <FormFrame
           v-if="formUrl"
           :url="formUrl"

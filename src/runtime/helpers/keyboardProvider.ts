@@ -5,10 +5,8 @@ import {
   readonly,
   onMounted,
   onBeforeUnmount,
-  watch,
   computed,
 } from 'vue'
-import type { AnimationProvider } from './animationProvider'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import type { KeyboardShortcut } from '#blokkli/types'
 

@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, onMounted, useTemplateRef } from '#imports'
+import { ref, useBlokkli, onMounted, useTemplateRef, watch } from '#imports'
 import { DialogModal, InfoBox, FormText, FormItem } from '#blokkli/components'
 import { realBackgroundColor } from '#blokkli/helpers'
 
@@ -65,7 +65,7 @@ defineEmits<{
   (e: 'cancel'): void
 }>()
 
-const { dom, $t, blocks } = useBlokkli()
+const { dom, $t, blocks, ui } = useBlokkli()
 
 const props = defineProps<{
   uuid: string
@@ -76,6 +76,16 @@ const label = ref('')
 const width = ref(450)
 const previewEl = useTemplateRef('previewEl')
 const backgroundColor = ref('')
+
+watch(
+  label,
+  () => {
+    ui.requireDialogCloseConfirm()
+  },
+  {
+    once: true,
+  },
+)
 
 onMounted(() => {
   if (previewEl.value) {

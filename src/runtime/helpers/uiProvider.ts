@@ -49,6 +49,7 @@ export type UiProvider = {
   isProxyMode: Ref<boolean>
   hasDialogOpen: ComputedRef<boolean>
   currentDialog: Readonly<Ref<GlobalUiDialog | null>>
+  requireDialogCloseConfirm: () => void
   openDialog: (dialog: GlobalUiDialog) => void
   closeDialog: (id?: string) => void
   hasTooltipOpen: ComputedRef<boolean>
@@ -149,6 +150,12 @@ export default function (
 
   function openDialog(dialog: GlobalUiDialog) {
     currentDialog.value = dialog
+  }
+
+  function requireDialogCloseConfirm() {
+    if (currentDialog.value) {
+      currentDialog.value.confirmClose = true
+    }
   }
 
   function closeDialog(id?: string) {
@@ -552,5 +559,6 @@ export default function (
     openDialog,
     closeDialog,
     currentDialog: readonly(currentDialog),
+    requireDialogCloseConfirm,
   }
 }

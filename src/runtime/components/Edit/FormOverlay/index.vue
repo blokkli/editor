@@ -50,7 +50,7 @@ function onClose() {
 onBlokkliEvent('overlay:close', onClose)
 
 onMounted(() => {
-  ui.openDialog({ id: props.id, alignment: 'right' })
+  ui.openDialog({ id: props.id, alignment: 'right', confirmClose: true })
 })
 
 onBeforeUnmount(() => {

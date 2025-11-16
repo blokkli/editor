@@ -48,7 +48,7 @@
         />
       </div>
       <AnalyzeSummary :results="results" />
-      <Results :results="results" v-model="activeId" />
+      <Results v-model="activeId" :results="results" />
     </div>
   </div>
   <Renderer

@@ -5,7 +5,7 @@
     </label>
     <textarea
       :id
-      v-model.lazy="value"
+      v-model="value"
       class="bk-form-input"
       :placeholder
       :required

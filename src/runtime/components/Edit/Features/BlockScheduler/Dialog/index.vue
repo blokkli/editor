@@ -69,7 +69,7 @@
 <script setup lang="ts">
 import type { BlokkliAdapterSetBlockScheduleOptions } from '#blokkli/adapter'
 import { falsy } from '#blokkli/helpers'
-import { computed, useBlokkli, ref } from '#imports'
+import { computed, useBlokkli, ref, watch } from '#imports'
 import ScheduleSection from './ScheduleSection.vue'
 import type { ScheduleItemData } from './ScheduleSection.vue'
 import { DialogModal } from '#blokkli/components'
@@ -176,6 +176,16 @@ const publishOn = ref<string | null | undefined>(
 )
 const unpublishOn = ref<string | null | undefined>(
   getCommonDate(unpublishOnItems.value, props.bundlesWithUnpublish),
+)
+
+watch(
+  () => [publishOn.value, unpublishOn.value],
+  () => {
+    ui.requireDialogCloseConfirm()
+  },
+  {
+    once: true,
+  },
 )
 
 const tableRows = computed(() => {

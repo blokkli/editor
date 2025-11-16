@@ -701,4 +701,14 @@ async function onSubmit() {
     emit('submit')
   }
 }
+
+watch(
+  () => [revisionMessage.value, publishMode.value, isMutating.value],
+  () => {
+    ui.requireDialogCloseConfirm()
+  },
+  {
+    once: true,
+  },
+)
 </script>

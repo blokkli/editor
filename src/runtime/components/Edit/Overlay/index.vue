@@ -50,6 +50,11 @@ function onClick() {
     return
   }
 
+  if (!ui.currentDialog.value?.confirmClose) {
+    onDoubleClick()
+    return
+  }
+
   clickTimeout = window.setTimeout(() => {
     showDoubleClickInfo.value = true
   }, 500)

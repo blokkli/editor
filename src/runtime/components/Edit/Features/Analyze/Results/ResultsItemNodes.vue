@@ -25,10 +25,10 @@
               <ResultsItemNodesTarget
                 v-for="(target, k) in node.targets"
                 :key="i + '_' + j + '_' + k"
+                v-model="activeId"
                 :index="i"
                 :target="target"
                 :result-id
-                v-model="activeId"
               />
             </li>
           </ul>
@@ -43,7 +43,6 @@ import { computed, ref, useBlokkli, watch } from '#imports'
 import type { AnalyzeNode, AnalyzeNodeTarget } from '../analyzers/types'
 import ResultsItemNodesTarget from './ResultsItemNodesTarget.vue'
 import { Icon } from '#blokkli/components'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const props = defineProps<{
   resultId: string

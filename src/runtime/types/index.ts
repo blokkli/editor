@@ -1745,6 +1745,7 @@ export type SidebarRegion = 'left' | 'right'
 export type GlobalUiDialog = {
   id: string
   alignment: 'left' | 'right' | 'center'
+  confirmClose?: boolean
 }
 
 export default {}
