@@ -94,7 +94,7 @@
     @apply cursor-move;
     @apply flex bg-mono-300 select-none pl-10 font-semibold text-sm h-40 items-center text-mono-500;
 
-    > .bk-icon {
+    > .bk-sidebar-title-icon {
       @apply w-20 h-20 mr-5;
       svg {
         @apply fill-current;

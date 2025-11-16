@@ -15,9 +15,11 @@
           class="bk-sidebar-title"
           @mousedown.stop="onMouseDown($event, 'move')"
         >
-          <slot name="icon">
-            <Icon v-if="icon" :name="icon" />
-          </slot>
+          <div class="bk-sidebar-title-icon">
+            <slot name="icon">
+              <Icon v-if="icon" :name="icon" />
+            </slot>
+          </div>
           <span>{{ title }}</span>
           <button
             @click.prevent.stop.capture="isMinimized = !isMinimized"
