@@ -150,11 +150,13 @@ function onMouseEnter() {
   if (mouseTimeout) {
     clearTimeout(mouseTimeout)
     isHovered.value = true
+    mouseTimeout = null
     return
   }
   mouseTimeout = setTimeout(() => {
     isHovered.value = true
-  }, 200)
+    mouseTimeout = null
+  }, 300)
 }
 function onMouseLeave() {
   clearTimeout(mouseTimeout)
