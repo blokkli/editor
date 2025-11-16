@@ -177,6 +177,14 @@ export default defineConfig({
         ],
       },
       {
+        text: 'Components',
+        items: [
+          { text: 'BlokkliProvider', link: '/components/BlokkliProvider' },
+          { text: 'BlokkliField', link: '/components/BlokkliField' },
+          { text: 'BlokkliEditable', link: '/components/BlokkliEditable' },
+        ],
+      },
+      {
         text: 'Editor',
         items: [
           { text: 'Overview', link: '/editor/overview' },

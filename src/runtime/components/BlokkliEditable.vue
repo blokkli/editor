@@ -29,8 +29,21 @@ import {
 
 const props = withDefaults(
   defineProps<{
+    /**
+     * The (machine) name of the field that is editable.
+     */
     name: string
+
+    /**
+     * The text value.
+     */
     value?: string
+
+    /**
+     * The tag to use for rendering the wrapper.
+     *
+     * @default "div"
+     */
     tag?: string
   }>(),
   {
