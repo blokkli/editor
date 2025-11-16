@@ -39,9 +39,7 @@ function getControlState(
   return e.getModifierState('Control') || e.getModifierState('Meta')
 }
 
-export default function (
-  animationProvider: AnimationProvider,
-): KeyboardProvider {
+export default function (): KeyboardProvider {
   const isPressingControl = ref(false)
   const isPressingSpace = ref(false)
   const isPressingShift = ref(false)
@@ -108,14 +106,6 @@ export default function (
     document.removeEventListener('keydown', onKeyDown)
     document.removeEventListener('keyup', onKeyUp)
     document.removeEventListener('visibilitychange', onVisibilityChange)
-  })
-
-  watch(isPressingSpace, () => {
-    animationProvider.requestDraw()
-  })
-
-  watch(isPressingControl, () => {
-    animationProvider.requestDraw()
   })
 
   const getShortcutKey = (shortcut: KeyboardShortcut) =>

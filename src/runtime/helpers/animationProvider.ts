@@ -20,6 +20,7 @@ import type { SelectionProvider } from './selectionProvider'
 import type { RectangleBufferCollector } from './webgl'
 import type { DebugProvider } from './debugProvider'
 import { useTransitionedValue } from './useTransitionedValue'
+import type { KeyboardProvider } from './keyboardProvider'
 
 export type RenderContext = CanvasDrawEvent & {
   changeOptionsTransition: number
@@ -167,6 +168,7 @@ export default function (
   storage: StorageProvider,
   selection: SelectionProvider,
   debug: DebugProvider,
+  keyboard: KeyboardProvider,
 ): AnimationProvider {
   const logger = debug.createLogger('Animation')
   const preferredRenderingMode = storage.use<PreferredRenderingMode>(
@@ -723,14 +725,18 @@ export default function (
 
     // Determine cursor from renderers (top to bottom by zIndex)
     let newCursor: CursorKeyword = 'default'
-    // Iterate from highest to lowest zIndex
-    for (let i = sortedRenderers.length - 1; i >= 0; i--) {
-      const renderer = sortedRenderers[i]!
-      if (renderer.cursor && (!renderer.enabled || renderer.enabled())) {
-        const cursorValue = renderer.cursor()
-        if (cursorValue) {
-          newCursor = cursorValue
-          break
+    if (keyboard.isPressingSpace.value) {
+      newCursor = 'move'
+    } else {
+      // Iterate from highest to lowest zIndex
+      for (let i = sortedRenderers.length - 1; i >= 0; i--) {
+        const renderer = sortedRenderers[i]!
+        if (renderer.cursor && (!renderer.enabled || renderer.enabled())) {
+          const cursorValue = renderer.cursor()
+          if (cursorValue) {
+            newCursor = cursorValue
+            break
+          }
         }
       }
     }
@@ -846,6 +852,14 @@ export default function (
 
     return registeredPrograms.get(id)!
   }
+
+  watch(keyboard.isPressingSpace, () => {
+    requestDraw()
+  })
+
+  watch(keyboard.isPressingControl, () => {
+    requestDraw()
+  })
 
   return {
     requestDraw,
