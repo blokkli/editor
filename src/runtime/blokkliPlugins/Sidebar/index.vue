@@ -129,22 +129,105 @@ import type { SidebarRegion } from '#blokkli/types'
 
 const props = withDefaults(
   defineProps<{
+    /**
+     * Unique identifier for this sidebar.
+     */
     id: string
+
+    /**
+     * The title displayed in the sidebar header.
+     */
     title: string
+
+    /**
+     * Optional text for the interactive tour.
+     *
+     * If provided, this sidebar will be included in the editor tour.
+     */
     tourText?: string
+
+    /**
+     * Whether the sidebar is only available in edit mode.
+     *
+     * If true, the sidebar is hidden in preview mode.
+     */
     editOnly?: boolean
+
+    /**
+     * The icon displayed in the sidebar toggle button.
+     */
     icon: BlokkliIcon
+
+    /**
+     * The weight, used for positioning the sidebar button.
+     *
+     * Lower weights appear first.
+     */
     weight?: string | number
+
+    /**
+     * Whether to always render the sidebar content.
+     *
+     * By default, content is only rendered when the sidebar is open.
+     */
     renderAlways?: boolean
+
+    /**
+     * Whether the sidebar is disabled.
+     */
     disabled?: boolean
+
+    /**
+     * Which region to display the sidebar in.
+     *
+     * @default 'right'
+     */
     region?: SidebarRegion
+
+    /**
+     * Minimum width when detached (in pixels).
+     */
     minWidth?: number
+
+    /**
+     * Minimum height when detached (in pixels).
+     */
     minHeight?: number
+
+    /**
+     * Default size when detached.
+     */
     size?: { width: number; height: number }
+
+    /**
+     * Whether the keyboard shortcut needs the meta modifier key.
+     *
+     * On Mac this is Cmd, on Windows/Linux this is Ctrl.
+     */
     meta?: boolean
+
+    /**
+     * Whether the keyboard shortcut needs the shift modifier key.
+     */
     shift?: boolean
+
+    /**
+     * The key code to use for the keyboard shortcut.
+     *
+     * @example 'l' for the "l" key
+     */
     keyCode?: string
+
+    /**
+     * Whether to display a BETA indicator badge.
+     */
     beta?: boolean
+
+    /**
+     * Whether the sidebar content is currently loading.
+     *
+     * Displays a loading spinner when true.
+     */
     isLoading?: boolean
   }>(),
   {

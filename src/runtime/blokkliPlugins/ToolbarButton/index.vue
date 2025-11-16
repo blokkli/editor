@@ -35,8 +35,21 @@ import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 
 const props = defineProps<{
+  /**
+   * Unique identifier for this toolbar button.
+   */
   id: string
+
+  /**
+   * The title displayed in the tooltip.
+   */
   title: string
+
+  /**
+   * Which toolbar region to render the button in.
+   *
+   * Different regions appear in different locations of the toolbar.
+   */
   region:
     | 'after-title'
     | 'before-title'
@@ -44,20 +57,76 @@ const props = defineProps<{
     | 'after-menu'
     | 'before-sidebar-right'
     | 'view-options'
+
+  /**
+   * Whether the button is only available in edit mode.
+   *
+   * If true, the button is hidden in preview mode.
+   */
   editOnly?: boolean
+
+  /**
+   * Whether the button is disabled.
+   */
   disabled?: boolean
+
+  /**
+   * Whether the button should be displayed in an active state.
+   *
+   * Useful when the button opens a dropdown or toggles a feature.
+   */
   active?: boolean
+
+  /**
+   * Whether the keyboard shortcut needs the meta modifier key.
+   *
+   * On Mac this is Cmd, on Windows/Linux this is Ctrl.
+   */
   meta?: boolean
+
+  /**
+   * Whether the keyboard shortcut needs the shift modifier key.
+   */
   shift?: boolean
+
+  /**
+   * The key code to use for the keyboard shortcut.
+   *
+   * @example 'h' for the "h" key
+   */
   keyCode?: string
+
+  /**
+   * Optional icon to display in the button.
+   */
   icon?: BlokkliIcon
+
+  /**
+   * The keyboard shortcut group.
+   *
+   * Used for organizing shortcuts in the shortcuts panel.
+   */
   shortcutGroup?: string
+
+  /**
+   * Optional text for the interactive tour.
+   *
+   * If provided, this button will be included in the editor tour.
+   */
   tourText?: string
 
   /**
    * The weight, used for positioning the button.
+   *
+   * Lower weights appear first.
    */
   weight?: number | string
+
+  /**
+   * Whether to skip registering this button as a command.
+   *
+   * Useful when you want the button UI without command palette integration.
+   */
   noCommand?: boolean
 }>()
 

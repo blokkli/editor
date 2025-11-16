@@ -8,7 +8,14 @@
 import { computed, onBeforeUnmount, onMounted, useBlokkli } from '#imports'
 
 const props = defineProps<{
+  /**
+   * Unique identifier for this debug overlay.
+   */
   id: string
+
+  /**
+   * The title displayed in the debug overlay selector.
+   */
   title: string
 }>()
 

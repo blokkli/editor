@@ -9,10 +9,35 @@ import { getCurrentInstance, useBlokkli } from '#imports'
 import type { RendererNode } from 'vue'
 
 const props = defineProps<{
+  /**
+   * Unique identifier for this tour item.
+   */
   id: string
+
+  /**
+   * The title of the tour step.
+   */
   title: string
+
+  /**
+   * The description text explaining this feature.
+   *
+   * Supports markdown.
+   */
   text: string
+
+  /**
+   * Optional CSS selector to find the target element.
+   *
+   * If provided, the tour will highlight this element.
+   */
   selector?: string
+
+  /**
+   * Optional direct reference to the target element.
+   *
+   * Takes precedence over selector.
+   */
   element?: HTMLElement | null
 }>()
 

@@ -23,8 +23,25 @@ import { BlokkliTransition } from '#blokkli/components'
 
 const props = withDefaults(
   defineProps<{
+    /**
+     * Unique identifier for this context menu.
+     *
+     * Used to track which menu is currently open.
+     */
     id: string
+
+    /**
+     * Array of menu items to display.
+     *
+     * Each item can have nested sub-menus.
+     */
     menu: ContextMenu[]
+
+    /**
+     * The HTML tag to use for the wrapper element.
+     *
+     * @default 'div'
+     */
     tag?: string
   }>(),
   {

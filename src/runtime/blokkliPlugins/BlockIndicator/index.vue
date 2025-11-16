@@ -30,10 +30,33 @@ import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon } from '#blokkli/components'
 
 const props = defineProps<{
+  /**
+   * Unique identifier for this indicator.
+   *
+   * Should be unique per block instance.
+   */
   id: string
+
+  /**
+   * The UUID of the block this indicator is attached to.
+   */
   uuid: string
+
+  /**
+   * Optional text label to display in the indicator.
+   */
   label?: string
+
+  /**
+   * Which side of the block to display the indicator.
+   *
+   * @default 'left'
+   */
   position?: 'left' | 'right'
+
+  /**
+   * Optional icon to display in the indicator.
+   */
   icon?: BlokkliIcon
 }>()
 

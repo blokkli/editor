@@ -10,6 +10,15 @@ const TYPE_FILES = [
   './../../src/runtime/adapter/index.ts',
 ]
 
+const featureMenuItems = features
+  .filter((v) => v.id !== 'demo-feature')
+  .map((v) => {
+    return {
+      text: v.definition.definition.label,
+      link: '/features/' + v.definition.definition.id,
+    }
+  })
+
 const getTypeFiles = () => {
   const allFiles = TYPE_FILES.flatMap((relativePath) => {
     const rootPath = path.resolve(__dirname, '../..')
@@ -63,6 +72,29 @@ const getAdapterDocs = () => {
 }
 
 const adapterDocs = getAdapterDocs()
+
+const getPluginDocs = () => {
+  const pluginDocsPath = path.resolve(__dirname, '../plugins')
+  const files = fs.readdirSync(pluginDocsPath)
+
+  return files
+    .filter((file) => file.endsWith('.md'))
+    .map((file) => {
+      const name = file.replace('.md', '')
+      // Convert kebab-case to Title Case for display
+      const displayName = name
+        .split('-')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+      return {
+        text: displayName,
+        link: `/plugins/${name}`,
+      }
+    })
+    .sort((a, b) => a.text.localeCompare(b.text))
+}
+
+const pluginDocs = getPluginDocs()
 
 function linkPlugin(md) {
   const regex = /\[adapter\.([^\]]+)\]/g
@@ -198,28 +230,24 @@ export default defineConfig({
       {
         text: 'Features',
         collapsed: true,
-        items: features
-          .filter((v) => v.id !== 'demo-feature')
-          .map((v) => {
-            return {
-              text: v.definition.label,
-              link: '/features/' + v.id,
-            }
-          }),
+        items: featureMenuItems,
       },
       {
         text: 'Adapter',
         collapsed: true,
         items: [
           { text: 'Overview', link: '/adapter/overview' },
-          { text: 'Minimal Example', link: '/adapter/minimal-example' },
+          {
+            text: 'Minimal Example',
+            link: '/adapter/minimal-example',
+          },
           ...adapterDocs,
         ],
       },
       {
         text: 'Plugins',
         collapsed: true,
-        items: [{ text: 'Add Action', link: '/plugins/add-action' }],
+        items: pluginDocs,
       },
     ],
 

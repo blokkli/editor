@@ -47,9 +47,15 @@ const el = ref<HTMLElement | null>(null)
 const uuids = computed(() => selection.uuids.value)
 
 const props = defineProps<{
+  /**
+   * Unique identifier for this item action.
+   */
   id: string
+
   /**
    * The title of the action.
+   *
+   * Displayed in the tooltip and keyboard shortcut hints.
    */
   title: string
 
@@ -59,37 +65,57 @@ const props = defineProps<{
   disabled?: boolean
 
   /**
-   * Whether the button should be displayed in an active state (e.g. when it's a dropdown).
+   * Whether the button should be displayed in an active state.
+   *
+   * Useful when the action opens a dropdown or dialog.
    */
   active?: boolean
 
   /**
-   * The key code to use for the shortcut.
+   * The key code to use for the keyboard shortcut.
+   *
+   * @example 'c' for the "c" key
    */
   keyCode?: string
 
   /**
-   * Wheter the shortcut needs the meta modifier key.
+   * Whether the shortcut needs the meta modifier key.
+   *
+   * On Mac this is Cmd, on Windows/Linux this is Ctrl.
    */
   meta?: boolean
 
   /**
    * Whether the action supports multiple items.
+   *
+   * If false, the action is disabled when more than one item is selected.
    */
   multiple?: boolean
 
   /**
    * Whether the action is only available in edit mode.
+   *
+   * If true, the action is hidden in preview mode.
    */
   editOnly?: boolean
 
   /**
    * The weight, used for positioning the button.
+   *
+   * Lower weights appear first. Use 'last' to always position at the end.
    */
   weight?: number | string | 'last'
 
+  /**
+   * Optional icon to display in the button.
+   */
   icon?: BlokkliIcon
 
+  /**
+   * Optional text for the interactive tour.
+   *
+   * If provided, this action will be included in the editor tour.
+   */
   tourText?: string
 }>()
 

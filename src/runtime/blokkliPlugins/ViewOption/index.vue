@@ -39,15 +39,73 @@ import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 const { storage, ui, eventBus, debug } = useBlokkli()
 
 const props = defineProps<{
+  /**
+   * Unique identifier for this view option.
+   *
+   * Used for storage key and event tracking.
+   */
   id: string
+
+  /**
+   * The label used in commands and tour.
+   */
   label: string
+
+  /**
+   * The tooltip text when the option is OFF.
+   *
+   * Should describe what happens when turned on.
+   * @example 'Show grid'
+   */
   titleOn: string
+
+  /**
+   * The tooltip text when the option is ON.
+   *
+   * Should describe what happens when turned off.
+   * @example 'Hide grid'
+   */
   titleOff: string
+
+  /**
+   * Whether the view option is only available in edit mode.
+   *
+   * If true, the option is hidden in preview mode.
+   */
   editOnly?: boolean
+
+  /**
+   * The key code to use for the keyboard shortcut.
+   *
+   * Automatically includes Meta modifier.
+   * @example 'g' for Cmd+G / Ctrl+G
+   */
   keyCode?: string
+
+  /**
+   * The icon displayed in the button.
+   */
   icon?: BlokkliIcon
+
+  /**
+   * Optional text for the interactive tour.
+   *
+   * If provided, this option will be included in the editor tour.
+   */
   tourText?: string
+
+  /**
+   * Two-way binding for the active state.
+   *
+   * Can be used with v-model to track the option state.
+   */
   modelValue?: boolean
+
+  /**
+   * The weight, used for positioning the button.
+   *
+   * Lower weights appear first.
+   */
   weight?: number | string
 }>()
 
