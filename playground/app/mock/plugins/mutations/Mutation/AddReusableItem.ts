@@ -22,6 +22,16 @@ export class MutationAddReusableItem extends Mutation {
     const uuid = this.getUuidForNewEntity()
 
     const block = entityStorageManager.createBlock('from_library', uuid)
+    const libraryItem = entityStorageManager.storages.library_item.load(
+      args.libraryItemUuid,
+    )
+    if (!libraryItem) {
+      return
+    }
+    const reusableBlock = libraryItem.getBlocks().getBlocks()[0]
+    if (!reusableBlock) {
+      return
+    }
     block.setValues({
       libraryItem: args.libraryItemUuid,
     })
@@ -32,6 +42,9 @@ export class MutationAddReusableItem extends Mutation {
       args.hostEntityUuid,
       args.hostField,
     )
+    block
+      .options()
+      .setList(JSON.parse(JSON.stringify(reusableBlock.options().list)))
 
     context.addProxy(proxy, args.preceedingUuid)
   }
