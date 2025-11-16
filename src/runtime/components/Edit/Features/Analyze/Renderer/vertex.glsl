@@ -28,6 +28,7 @@ out vec3 v_color;
 out vec2 v_rect_size;
 out vec2 v_rect_center;
 out float v_opacity;
+out float v_border_factor;
 
 void main() {
   // Apply global scale and offsets
@@ -79,4 +80,7 @@ void main() {
   } else {
     v_opacity = u_opacity;
   }
+
+  // Calculate border factor based on scale.
+  v_border_factor = smoothstep(0.5, 0.8, u_scale);
 }

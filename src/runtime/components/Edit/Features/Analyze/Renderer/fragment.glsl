@@ -8,6 +8,7 @@ in vec3 v_color;
 in vec2 v_rect_size;
 in vec2 v_rect_center;
 in float v_opacity;
+in float v_border_factor;
 
 out vec4 fragColor;
 
@@ -29,9 +30,9 @@ float sdRoundBox(vec2 p, vec2 b, vec4 radii) {
 }
 
 void main() {
-  float borderThickness = 2.0 * u_dpi;
+  float borderThickness = 2.0 * u_dpi * v_border_factor;
   vec2 size = v_rect_size;
-  vec4 radius = vec4(4.0 * u_dpi); // 8px border radius
+  vec4 radius = vec4(4.0 * u_dpi * v_border_factor);
 
   vec2 posRelativeToQuad = gl_FragCoord.xy - v_rect_center;
 
