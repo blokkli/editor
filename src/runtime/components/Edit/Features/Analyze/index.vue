@@ -4,6 +4,7 @@
     :title="$t('analyzeSidebarTitle', 'Analyze')"
     :tour-text="$t('analyzeTourText', 'Analyze the content of your page')"
     icon="speedometer"
+    weight="10"
     :is-loading="isRunning"
   >
     <template #icon>

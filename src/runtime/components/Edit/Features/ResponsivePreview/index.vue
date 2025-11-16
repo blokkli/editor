@@ -3,11 +3,12 @@
     id="mobile-preview"
     v-slot="{ width, height, isDetached, isResizing }"
     :title="$t('responsivePreviewTitle', 'Responsive Preview')"
-    :tour-text="tourText"
+    :tour-text
+    weight="10"
     :disabled="!state.canEdit.value"
     :min-width="375"
     :min-height="375"
-    :size="size"
+    :size
     icon="preview"
     region="left"
   >

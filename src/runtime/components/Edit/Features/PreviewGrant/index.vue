@@ -4,6 +4,7 @@
     id="preview_with_smartphone"
     :title="$t('previewWithSmartphone', 'Preview (with smartphone)')"
     :disabled="!state.canEdit.value"
+    weight="20"
     :tour-text="
       $t(
         'previewWithSmartphoneTourText',

@@ -4,6 +4,10 @@
 
   grid-area: left;
 
+  .bk-add-item {
+    @apply cursor-grab;
+  }
+
   #blokkli-add-list-blocks {
     @apply grid pb-25;
   }
@@ -13,8 +17,6 @@
     @apply sticky bottom-0 bg-mono-800 border-t border-t-mono-700 z-50;
     @apply mt-auto;
 
-    .bk-add-item {
-    }
     .bk-add-item-label {
       @apply text-mono-400;
     }

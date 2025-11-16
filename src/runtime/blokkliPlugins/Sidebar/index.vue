@@ -163,7 +163,7 @@ const props = withDefaults(
      *
      * Lower weights appear first.
      */
-    weight?: string | number
+    weight: string | number
 
     /**
      * Whether to always render the sidebar content.
@@ -233,7 +233,6 @@ const props = withDefaults(
   {
     region: 'right',
     tourText: undefined,
-    weight: 0,
     minWidth: undefined,
     minHeight: undefined,
     size: undefined,
