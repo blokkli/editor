@@ -90,5 +90,5 @@ void main() {
   // Calculate fill opacity based on whether this rect is active
   // If active (rect_id matches u_active_id), use 0.5, otherwise 0.1
   v_fill_opacity = a_rect_id == u_active_id ? 0.3 : 0.1;
-  v_border_opacity = a_rect_id == u_active_id ? 1.0 : 0.3;
+  v_border_opacity = a_rect_id == u_active_id ? 1.0 : 0.5;
 }

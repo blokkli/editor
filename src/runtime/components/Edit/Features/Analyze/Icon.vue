@@ -1,5 +1,10 @@
 <template>
-  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    ref="svgElement"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <defs>
       <mask id="needleMask">
         <rect width="24" height="24" fill="white" />
@@ -10,7 +15,6 @@
           stroke-width="3"
         >
           <animateTransform
-            v-if="isRunning"
             attributeName="transform"
             type="rotate"
             keyTimes="0; 0.5; 1"
@@ -36,7 +40,6 @@
       fill="currentColor"
     >
       <animateTransform
-        v-if="isRunning"
         attributeName="transform"
         type="rotate"
         keyTimes="0; 0.5; 1"
@@ -51,7 +54,26 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+import { useTemplateRef, watch } from '#imports'
+
+const props = defineProps<{
   isRunning: boolean
 }>()
+
+const svgElement = useTemplateRef('svgElement')
+
+watch(
+  () => props.isRunning,
+  (isRunning) => {
+    if (!svgElement.value) {
+      return
+    }
+
+    if (isRunning) {
+      svgElement.value.unpauseAnimations()
+    } else {
+      svgElement.value.pauseAnimations()
+    }
+  },
+)
 </script>

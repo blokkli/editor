@@ -53,8 +53,8 @@
         <slot name="icon" />
       </template>
       <template #default="{ width, height, isResizing }">
-        <Loading v-if="isLoading" white />
         <div class="bk-sidebar-content-wrapper">
+          <Loading v-if="isLoading" white />
           <div ref="sidebarContent" class="bk-sidebar-content">
             <slot
               :key="isRenderedDetached ? 'detached' : 'attached'"

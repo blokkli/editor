@@ -343,10 +343,19 @@ onBlokkliEvent('mouse:up', (e) => {
       artboardY >= rect.y &&
       artboardY <= rect.y + rect.height
     ) {
-      activeId.value = node.id + '_____' + node.index
+      const id = node.id + '_____' + node.index
+      if (activeId.value === id) {
+        activeId.value = ''
+      } else {
+        activeId.value = id
+      }
       return
     }
   }
+})
+
+onBlokkliEvent('window:clickAway', () => {
+  activeId.value = ''
 })
 </script>
 
