@@ -354,3 +354,67 @@ defineBlokkli({
 })
 </script>
 ```
+
+## fieldLayout
+
+Define how the nested fields should be structured when the block is rendered
+without its component, for example when using `:proxy-mode="true"` on
+`<BlokkliField>`.
+
+Each array should define an array of field names.
+
+```vue
+<script lang="ts" setup>
+defineBlokkli({
+  bundle: 'three_columns',
+
+  editor: {
+    fieldLayout: [
+      ['header'],
+      ['left', 'center', 'right'],
+    ],
+  },
+})
+</script>
+```
+
+## mapDiffProps
+
+Define how this component's props should be rendered in the diff view.
+
+By default, the diff feature assumes all props to be text and will render
+plaintext props as HTML and convert complex props (such as arrays or objects) to
+string using JSON.stringify().
+
+You can instead return a string representation of each prop that is used to
+display the prop instead.
+
+For example, if the prop is an image, you may return the filename of the image
+instead. If the prop is a number, you can return the formatted number.
+
+You can also return HTML as the value. The feature uses an HTML differ to render
+the diff.
+
+```vue
+<script lang="ts" setup>
+import type { ImageBlockFragment } from '#graphql-operations'
+
+defineProps<{
+  image: ImageBlockFragment['image']
+  count: number
+}>()
+
+defineBlokkli({
+  bundle: 'image',
+
+  editor: {
+    mapDiffProps: (props) => {
+      return {
+        image: props?.image?.filename || 'No image',
+        count: props?.count?.toString() || '0',
+      }
+    },
+  },
+})
+</script>
+```

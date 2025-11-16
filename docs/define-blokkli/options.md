@@ -34,6 +34,37 @@ const { options } = defineBlokkli({
 
 :::
 
+## Common Properties
+
+All option types support the following optional properties:
+
+### `description`
+
+An optional description that provides additional context about the option. This
+is displayed below the option label in the editor.
+
+```vue
+<script lang="ts" setup>
+const { options } = defineBlokkli({
+  bundle: 'card',
+
+  options: {
+    showBorder: {
+      type: 'checkbox',
+      label: 'Show border',
+      description: 'Adds a decorative border around the card',
+      default: false,
+    },
+  },
+})
+</script>
+```
+
+### `group`
+
+Options can be grouped together in a dropdown. See the [Grouping](#grouping)
+section for more details.
+
 ## Checkbox
 
 ![Screenshot of the checkbox option type](/assets/option-checkbox.png)
@@ -104,6 +135,9 @@ This option renders a single text input.
 In this example we implement a text option where editing users can provide an
 ID/slug that our component can use as it's root ID attribute.
 
+The `inputType` property can be set to `'text'` (default), `'number'`, or
+`'date'` to change the input field type.
+
 ```vue
 <script lang="ts" setup>
 const { options } = defineBlokkli({
@@ -114,7 +148,7 @@ const { options } = defineBlokkli({
       type: 'text',
       label: 'Anchor ID',
       default: '',
-      inputType: 'text',
+      inputType: 'text', // Can also be 'number' or 'date'
     },
   },
 })
@@ -338,6 +372,34 @@ const { options } = defineBlokkli({
 
 // A valid (not NaN) number.
 console.log(options.value.rows)
+</script>
+```
+
+## Datetime Local
+
+Renders a HTML datetime-local input to select a date and time.
+
+The value is stored as an ISO 8601 datetime string (e.g.,
+`2024-03-15T14:30:00`).
+
+```vue
+<script lang="ts" setup>
+const { options } = defineBlokkli({
+  bundle: 'event',
+
+  options: {
+    eventDate: {
+      type: 'datetime-local',
+      label: 'Event Date',
+      default: '2024-01-01T12:00:00',
+      min: '2024-01-01T00:00:00',
+      max: '2024-12-31T23:59:59',
+    },
+  },
+})
+
+// An ISO 8601 datetime string.
+console.log(options.value.eventDate)
 </script>
 ```
 

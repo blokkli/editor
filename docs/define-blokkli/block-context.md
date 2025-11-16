@@ -84,3 +84,20 @@ A reactive array of all the root block items (ones directly rendered inside
 
 If there are no nested blocks or the current block is already in the root field,
 the value will be the same as `siblings`.
+
+## provider: `ComputedRef<BlokkliProviderEntityContext | null>`
+
+The provider context containing information about the current page entity.
+
+This includes properties like `uuid`, `type`, `bundle`, and optionally
+`language` of the entity being edited.
+
+```vue
+<script lang="ts" setup>
+const { provider } = defineBlokkli({
+  bundle: 'text',
+})
+
+const currentLanguage = computed(() => provider.value?.language)
+</script>
+```

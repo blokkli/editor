@@ -1,12 +1,11 @@
 import { defineConfig } from 'vitepress'
-import features from './../../playground/.nuxt/blokkli/features.json'
+import features from './../../playground/.nuxt/blokkli/features-data.json'
 import fs from 'fs'
 import path from 'path'
 
 const TYPE_FILES = [
   './../../src/runtime/types/index.ts',
   './../../src/runtime/types/theme.ts',
-  './../../src/runtime/types/generatedModuleTypes.ts',
   './../../src/runtime/types/blokkOptions.ts',
   './../../src/runtime/adapter/index.ts',
 ]
@@ -44,66 +43,26 @@ const getTypeFiles = () => {
 
 const typesMap = getTypeFiles()
 
-const adapterDocs = [
-  { text: 'loadState()', link: '/adapter/loadState' },
-  { text: 'mapState()', link: '/adapter/mapState' },
-  { text: 'getDisabledFeatures()', link: '/adapter/getDisabledFeatures' },
-  { text: 'getAllBundles()', link: '/adapter/getAllBundles' },
-  { text: 'getFieldConfig()', link: '/adapter/getFieldConfig' },
-  { text: 'getEditableFieldConfig()', link: '/adapter/getEditableFieldConfig' },
-  {
-    text: 'getDroppableFieldConfig()',
-    link: '/adapter/getDroppableFieldConfig',
-  },
-  { text: 'getConversions()', link: '/adapter/getConversions' },
-  { text: 'convertBlocks()', link: '/adapter/convertBlocks' },
-  { text: 'getTransformPlugins()', link: '/adapter/getTransformPlugins' },
-  { text: 'applyTransformPlugin()', link: '/adapter/applyTransformPlugin' },
-  { text: 'addNewBlock()', link: '/adapter/addNewBlock' },
-  { text: 'updateOptions()', link: '/adapter/updateOptions' },
-  {
-    text: 'addBlockFromClipboardItem()',
-    link: '/adapter/addBlockFromClipboardItem',
-  },
-  { text: 'moveBlock()', link: '/adapter/moveBlock' },
-  { text: 'moveMultipleBlocks()', link: '/adapter/moveMultipleBlocks' },
-  { text: 'addLibraryItem()', link: '/adapter/addLibraryItem' },
-  { text: 'deleteBlocks()', link: '/adapter/deleteBlocks' },
-  { text: 'duplicateBlocks()', link: '/adapter/duplicateBlocks' },
-  { text: 'pasteExistingBlocks()', link: '/adapter/pasteExistingBlocks' },
-  { text: 'getImportItems()', link: '/adapter/getImportItems' },
-  { text: 'importFromExisting()', link: '/adapter/importFromExisting' },
-  { text: 'revertAllChanges()', link: '/adapter/revertAllChanges' },
-  { text: 'publish()', link: '/adapter/publish' },
-  { text: 'setHistoryIndex()', link: '/adapter/setHistoryIndex' },
-  { text: 'takeOwnership()', link: '/adapter/takeOwnership' },
-  { text: 'loadComments()', link: '/adapter/loadComments' },
-  { text: 'addComment()', link: '/adapter/addComment' },
-  { text: 'resolveComment()', link: '/adapter/resolveComment' },
-  { text: 'makeBlockReusable()', link: '/adapter/makeBlockReusable' },
-  { text: 'detachReusableBlock()', link: '/adapter/detachReusableBlock' },
-  { text: 'getLibraryItems()', link: '/adapter/getLibraryItems' },
-  { text: 'getLastChanged()', link: '/adapter/getLastChanged' },
-  { text: 'getPreviewGrantUrl()', link: '/adapter/getPreviewGrantUrl' },
-  { text: 'getContentSearchTabs()', link: '/adapter/getContentSearchTabs' },
-  {
-    text: 'getContentSearchResults()',
-    link: '/adapter/getContentSearchResults',
-  },
-  { text: 'addContentSearchItem()', link: '/adapter/addContentSearchItem' },
-  { text: 'changeLanguage()', link: '/adapter/changeLanguage' },
-  { text: 'formFrameBuilder()', link: '/adapter/formFrameBuilder' },
-  { text: 'updateFieldValue()', link: '/adapter/updateFieldValue' },
-  { text: 'buildEditableFrameUrl()', link: '/adapter/buildEditableFrameUrl' },
-  { text: 'assistantGetResults()', link: '/adapter/assistantGetResults' },
-  {
-    text: 'assistantAddBlockFromResult()',
-    link: '/adapter/assistantAddBlockFromResult',
-  },
-  { text: 'getGridMarkup()', link: '/adapter/getGridMarkup' },
-  { text: 'mediaLibraryAddBlock()', link: '/adapter/mediaLibraryAddBlock' },
-  { text: 'mediaLibraryGetResults()', link: '/adapter/mediaLibraryGetResults' },
-].sort((a, b) => a.text.localeCompare(b.text))
+const getAdapterDocs = () => {
+  const adapterDocsPath = path.resolve(__dirname, '../adapter')
+  const files = fs.readdirSync(adapterDocsPath)
+
+  // Exclude overview and minimal-example as they're listed separately
+  const excludeFiles = ['overview.md', 'minimal-example.md']
+
+  return files
+    .filter((file) => file.endsWith('.md') && !excludeFiles.includes(file))
+    .map((file) => {
+      const name = file.replace('.md', '')
+      return {
+        text: name,
+        link: `/adapter/${name}`,
+      }
+    })
+    .sort((a, b) => a.text.localeCompare(b.text))
+}
+
+const adapterDocs = getAdapterDocs()
 
 function linkPlugin(md) {
   const regex = /\[adapter\.([^\]]+)\]/g
