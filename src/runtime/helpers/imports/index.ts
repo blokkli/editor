@@ -40,19 +40,30 @@ export function getComponent(
   bundle: string,
   fieldListType?: string,
   parentBundle?: string,
+  allComponents?: Record<string, Component> | null,
 ): any {
   if (fieldListType) {
     const key = `${type}:${bundle}__f:${fieldListType}`
+    if (allComponents && allComponents[key]) {
+      return allComponents[key]
+    }
     if (chunkMapping[key]) {
       return objectOrImport(key)
     }
   }
   if (parentBundle) {
     const key = `${type}:${bundle}__p:${parentBundle}`
+    if (allComponents && allComponents[key]) {
+      return allComponents[key]
+    }
     if (chunkMapping[key]) {
       return objectOrImport(key)
     }
   }
+
   const key = `${type}:${bundle}`
+  if (allComponents && allComponents[key]) {
+    return allComponents[key]
+  }
   return objectOrImport(key)
 }

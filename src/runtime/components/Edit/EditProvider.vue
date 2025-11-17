@@ -112,6 +112,7 @@ import { eventBus } from '#blokkli/helpers/eventBus'
 import '#blokkli-build/styles.css'
 import getAdapter from '#blokkli-build/edit-adapter'
 import {
+  INJECT_ALL_COMPONENTS_CHUNK,
   INJECT_APP,
   INJECT_EDIT_CONTEXT,
   INJECT_EDIT_FIELD_LIST_COMPONENT,
@@ -125,6 +126,7 @@ import type { AdapterContext } from '#blokkli/adapter'
 import { useBlockRegistration } from '#blokkli/helpers/composables/useBlockRegistration'
 import { addElementClasses } from '#blokkli/helpers/composables/addElementClasses'
 import type { BlokkliIcon } from '#blokkli-build/icons'
+import { allComponents } from '#blokkli-build/chunk-editing'
 import { falsy } from '#blokkli/helpers'
 
 const props = withDefaults(
@@ -283,6 +285,14 @@ function setElementSymbolProperty(
 }
 
 provide(INJECT_EDIT_LOGGER, baseLogger)
+
+// Provide an object that contains all block component imports inlined,
+// without any async imports. This is needed during editing because there
+// is a weird behaviour in field components where the order of blocks sometimes
+// is broken during updates. The BlokkliItem component injects this and passes
+// it to the getComponent method that will return it from the provided object
+// instead of loading the component from the chunks.
+provide(INJECT_ALL_COMPONENTS_CHUNK, allComponents)
 
 // Provide the edit <BlokkliField> component to it doesn't have to be loaded
 // async every time.

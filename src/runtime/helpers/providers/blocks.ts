@@ -8,7 +8,7 @@ import type {
   FieldListItemTyped,
 } from '#blokkli-build/generated-types'
 import type { AdapterContext } from '#blokkli/adapter'
-import type { ComputedRef } from 'vue'
+import { type ComputedRef, ref } from '#imports'
 import type { BlokkliFragmentName } from '#blokkli-build/definitions'
 import { BUNDLE_BLOKKLI_FRAGMENT } from '#blokkli/constants'
 
@@ -46,6 +46,7 @@ export default function (
   context: ComputedRef<AdapterContext>,
 ): BlocksProvider {
   const renderedFieldListItemCache = new Map<string, RenderedFieldListItem>()
+  const refreshKey = ref(1)
 
   function getParentBlockBundle(
     field: MutatedField,
@@ -93,6 +94,12 @@ export default function (
   }
 
   function getBlock(uuid: string): RenderedFieldListItem | undefined {
+    // The key is never 0, but we have it here so that all calls to this method
+    // are reactive when the refresh key updates.
+    if (refreshKey.value === 0) {
+      return
+    }
+
     const cached = renderedFieldListItemCache.get(uuid)
     if (cached) {
       return cached
@@ -142,6 +149,12 @@ export default function (
   }
 
   function getAllBlocks(): RenderedFieldListItem[] {
+    // The key is never 0, but we have it here so that all calls to this method
+    // are reactive when the refresh key updates.
+    if (refreshKey.value === 0) {
+      return []
+    }
+
     const blocks: RenderedFieldListItem[] = []
     const uuids = state.getAllUuids()
 
@@ -164,6 +177,7 @@ export default function (
 
   onBlokkliEvent('state:reloaded', () => {
     renderedFieldListItemCache.clear()
+    refreshKey.value++
   })
 
   return {

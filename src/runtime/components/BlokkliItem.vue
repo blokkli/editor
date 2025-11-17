@@ -30,10 +30,12 @@ import {
   inject,
   defineAsyncComponent,
   type ComputedRef,
+  type Component,
 } from '#imports'
 import type { BlockEditContext, InjectedBlokkliItem } from '#blokkli/types'
 import { getComponent } from '#blokkli/helpers/imports'
 import {
+  INJECT_ALL_COMPONENTS_CHUNK,
   INJECT_BLOCK_ITEM,
   INJECT_ENTITY_CONTEXT,
   INJECT_FIELD_LIST_TYPE,
@@ -58,6 +60,7 @@ const componentProps = withDefaults(
     editContext?: BlockEditContext
     parentType?: string
     isEditing?: boolean
+    isNew?: boolean
   }>(),
   {
     index: 0,
@@ -70,6 +73,10 @@ const componentProps = withDefaults(
 )
 
 const isProxyMode = inject(INJECT_FIELD_PROXY_MODE, false)
+const allComponentsChunk = inject<Record<string, Component> | null>(
+  INJECT_ALL_COMPONENTS_CHUNK,
+  null,
+)
 const fieldUsesProxy = inject(INJECT_FIELD_USES_PROXY, false)
 const isGlobalProxyMode = inject<ComputedRef<boolean> | null>(
   INJECT_GLOBAL_PROXY_MODE,
@@ -89,6 +96,7 @@ const component =
         componentProps.bundle,
         fieldListType?.value || 'default',
         componentProps.parentType,
+        allComponentsChunk,
       )
 
 const blockNotImplemented = componentProps.isEditing

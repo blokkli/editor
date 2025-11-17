@@ -143,14 +143,25 @@ export class MutationTransform extends Mutation {
       return
     }
 
-    textProxy.markAsDeleted()
-
     const text = textBlock.text().getText()
 
     const div = document.createElement('div')
     div.innerHTML = text
 
     const children = [...div.children]
+
+    if (children.length === 0) {
+      return
+    }
+
+    // Keep the first child in the existing text block
+    const firstChild = children[0]
+    if (firstChild instanceof HTMLElement) {
+      textBlock.text().setText(firstChild.outerHTML)
+    }
+
+    // Process remaining children to create new blocks
+    const remainingChildren = children.slice(1)
 
     let i = 0
 
@@ -202,7 +213,7 @@ export class MutationTransform extends Mutation {
       return block
     }
 
-    const newProxies: BlockProxy[] = children
+    const newProxies: BlockProxy[] = remainingChildren
       .flatMap((child) => {
         const block = createBlock(child)
         if (!block) {
