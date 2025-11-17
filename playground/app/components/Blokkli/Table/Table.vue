@@ -1,8 +1,12 @@
 <template>
   <div :class="{ 'container mx-auto my-20': !parentType }">
-    <table class="table w-full" ref="blokkliDraggable" :class="{
-      'min-h-100': isEditing
-    }">
+    <table
+      class="table w-full"
+      ref="blokkliDraggable"
+      :class="{
+        'min-h-100': isEditing,
+      }"
+    >
       <thead>
         <tr>
           <th>Tagline</th>

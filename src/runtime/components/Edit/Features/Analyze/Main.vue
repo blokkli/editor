@@ -72,6 +72,9 @@ import {
 } from '#imports'
 import type {
   AnalyzeCategory,
+  AnalyzeNodeMapped,
+  AnalyzeNodeTargetMapped,
+  AnalyzeResult,
   AnalyzeResultMapped,
   Analyzer,
 } from './analyzers/types'
@@ -82,7 +85,6 @@ import { useAnalyzeHelper } from './helper'
 import { FormSelect, RelativeTime } from '#blokkli/components'
 import { AnalyzerContext } from './analyzers/helpers/Context'
 import { normalizeToArray } from './analyzers/helpers/normalizeArray'
-import { falsy } from '#blokkli/helpers'
 import { renderCycle } from '#blokkli/helpers/renderCycle'
 
 const props = defineProps<{
@@ -103,12 +105,14 @@ const isRunning = defineModel<boolean>({ default: false })
 
 let currentAbortController: AbortController | null = null
 
+type AnalyzeResultWithPluginId = AnalyzeResult & { pluginId: string }
+
 const hasRunOnce = useState(() => false)
-const continuousResults = useState<AnalyzeResultMapped[]>(
+const continuousResults = useState<AnalyzeResultWithPluginId[]>(
   'blokkli:analyze:continuous',
   () => [],
 )
-const manualResults = useState<AnalyzeResultMapped[]>(
+const manualResults = useState<AnalyzeResultWithPluginId[]>(
   'blokkli:analyze:manual',
   () => [],
 )
@@ -132,8 +136,56 @@ const hasContinuousAnalyzers = computed(
 )
 const hasManualAnalyzers = computed(() => manualAnalyzers.value.length > 0)
 
-const allResults = computed(() => {
-  return [...continuousResults.value, ...manualResults.value]
+const allResults = computed<AnalyzeResultMapped[]>(() => {
+  const merged = [...continuousResults.value, ...manualResults.value]
+
+  const mappedResults: AnalyzeResultMapped[] = []
+  let currentIndex = 0
+
+  for (let i = 0; i < merged.length; i++) {
+    const result = merged[i]
+    if (!result) {
+      continue
+    }
+
+    const nodes = Array.isArray(result.nodes) ? result.nodes : [result.nodes]
+    const mappedNodes: AnalyzeNodeMapped[] = []
+
+    for (let j = 0; j < nodes.length; j++) {
+      const node = nodes[j]
+      if (!node) {
+        continue
+      }
+
+      const targets = Array.isArray(node.targets)
+        ? node.targets
+        : [node.targets]
+      const mappedTargets: AnalyzeNodeTargetMapped[] = []
+
+      for (let k = 0; k < targets.length; k++) {
+        const target = targets[k]
+        if (!target) {
+          continue
+        }
+
+        mappedTargets.push({ target, globalIndex: currentIndex })
+        currentIndex++
+      }
+
+      mappedNodes.push({
+        ...node,
+        targets: mappedTargets,
+      })
+    }
+
+    mappedResults.push({
+      ...result,
+      plugin: result.pluginId,
+      nodes: mappedNodes,
+    })
+  }
+
+  return mappedResults
 })
 
 const results = computed(() => {
@@ -290,7 +342,7 @@ async function runContinuous() {
       return
     }
 
-    const newResults: AnalyzeResultMapped[] = []
+    const newResults: AnalyzeResultWithPluginId[] = []
 
     // Run only continuous analyzers
     for (let i = 0; i < continuousAnalyzers.value.length; i++) {
@@ -301,15 +353,15 @@ async function runContinuous() {
       }
 
       const analyzer = continuousAnalyzers.value[i]!
-      const result = await normalizeToArray(analyzer.run(context))
-      const mapped = result.filter(falsy).map((v) => {
-        return {
-          ...v,
-          plugin: analyzer.id,
-        } satisfies AnalyzeResultMapped
-      })
-
-      newResults.push(...mapped)
+      const result = (await normalizeToArray(analyzer.run(context))).map(
+        (v) => {
+          return {
+            ...v,
+            pluginId: analyzer.id,
+          }
+        },
+      )
+      newResults.push(...result)
     }
 
     // Check if aborted before updating results
@@ -377,20 +429,20 @@ async function onClick() {
     }
     hasInitialized.value = true
 
-    const newManualResults: AnalyzeResultMapped[] = []
+    const newManualResults: AnalyzeResultWithPluginId[] = []
 
     // Run only manual analyzers (continuous ones have already run automatically)
     for (let i = 0; i < manualAnalyzers.value.length; i++) {
       const analyzer = manualAnalyzers.value[i]!
-      const result = await normalizeToArray(analyzer.run(context))
-      const mapped = result.filter(falsy).map((v) => {
-        return {
-          ...v,
-          plugin: analyzer.id,
-        } satisfies AnalyzeResultMapped
-      })
-
-      newManualResults.push(...mapped)
+      const result = (await normalizeToArray(analyzer.run(context))).map(
+        (v) => {
+          return {
+            ...v,
+            pluginId: analyzer.id,
+          }
+        },
+      )
+      newManualResults.push(...result)
     }
 
     // Update only manual results (keep existing continuous results)

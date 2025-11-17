@@ -5,6 +5,10 @@ export type AnalyzeImpact = 'minor' | 'moderate' | 'serious' | 'critical'
 export type AnalyzeCategory = 'accessibility' | 'seo' | 'text' | 'content'
 
 export type AnalyzeNodeTarget = string | HTMLElement | { uuid: string }
+export type AnalyzeNodeTargetMapped = {
+  target: AnalyzeNodeTarget
+  globalIndex: number
+}
 
 export type AnalyzeNode = {
   description?: string
@@ -16,6 +20,10 @@ export type AnalyzeNode = {
    *  - object: An object containing the UUID of a block
    */
   targets: AnalyzeNodeTarget | AnalyzeNodeTarget[]
+}
+
+export type AnalyzeNodeMapped = Omit<AnalyzeNode, 'targets'> & {
+  targets: AnalyzeNodeTargetMapped[]
 }
 
 export type AnalyzeResult = {
@@ -34,8 +42,9 @@ export type AnalyzeResult = {
   scoreTargets?: boolean
 }
 
-export type AnalyzeResultMapped = AnalyzeResult & {
+export type AnalyzeResultMapped = Omit<AnalyzeResult, 'nodes'> & {
   plugin: string
+  nodes: AnalyzeNodeMapped[]
 }
 
 export type Analyzer = {

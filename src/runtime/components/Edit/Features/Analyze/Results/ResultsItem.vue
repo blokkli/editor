@@ -22,12 +22,27 @@
 <script setup lang="ts">
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/components'
-import type { AnalyzeResultMapped } from '../analyzers/types'
+import type {
+  AnalyzeCategory,
+  AnalyzeImpact,
+  AnalyzeNodeMapped,
+  AnalyzeStatus,
+} from '../analyzers/types'
 import Status from './Status.vue'
 import ResultsItemNodes from './ResultsItemNodes.vue'
 import { useAnalyzeHelper } from '../helper'
 
-const props = defineProps<AnalyzeResultMapped>()
+const props = defineProps<{
+  id: string
+  title: string
+  category: AnalyzeCategory
+  description: string
+  link?: string
+  status: AnalyzeStatus
+  impact?: AnalyzeImpact
+  plugin: string
+  nodes: AnalyzeNodeMapped[]
+}>()
 
 const activeId = defineModel<string>({ default: '' })
 

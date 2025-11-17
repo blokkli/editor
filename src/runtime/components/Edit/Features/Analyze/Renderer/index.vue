@@ -29,7 +29,7 @@ const props = defineProps<{
   manualAnalyzerIds: Set<string>
 }>()
 
-const { animation, ui, theme, selection, element } = useBlokkli()
+const { animation, ui, theme, selection, element, dom, blocks } = useBlokkli()
 
 const activeId = defineModel<string>({
   default: '',
@@ -43,7 +43,7 @@ type AnalyzeRectangle = Rectangle & {
   plugin: string
 }
 
-type AnalyzeNode = {
+type AnalyzeRendererNode = {
   id: string
   element: HTMLElement
   title: string
@@ -59,56 +59,66 @@ const statusPriority: Record<AnalyzeStatus, number> = {
   inapplicable: 0,
 }
 
-const nodes = computed<AnalyzeNode[]>(() => {
-  const allNodes = props.results
-    .filter((v) => v.status === 'incomplete' || v.status === 'violation')
-    .flatMap((result) => {
-      const nodes = Array.isArray(result.nodes) ? result.nodes : [result.nodes]
-      return nodes
-        .flatMap((node) => {
-          const targets = Array.isArray(node.targets)
-            ? node.targets
-            : [node.targets]
-          // Only include HTML elements that are inside the provider element.
-          const elements = targets
-            .map((v) => {
-              if (typeof v === 'string') {
-                return element.query(
-                  ui.providerElement,
-                  v,
-                  'Find analyze node target element.',
-                )
-              }
+const nodes = computed<AnalyzeRendererNode[]>(() => {
+  const mappedNodes: AnalyzeRendererNode[] = []
 
-              return v
-            })
-            .filter((v) => {
-              const isHTML = v instanceof HTMLElement
-              return isHTML
-            })
-            .filter((v) => {
-              const contained = ui.providerElement.contains(v)
-              return contained
-            })
+  for (let i = 0; i < props.results.length; i++) {
+    const result = props.results[i]
+    if (!result) {
+      continue
+    }
 
-          return elements
-        })
-        .map((element, index) => {
-          return {
+    if (result.status !== 'incomplete' && result.status !== 'violation') {
+      continue
+    }
+
+    for (let j = 0; j < result.nodes.length; j++) {
+      const node = result.nodes[j]
+      if (!node) {
+        continue
+      }
+
+      for (let k = 0; k < node.targets.length; k++) {
+        const target = node.targets[k]
+        if (!target) {
+          continue
+        }
+
+        let targetElement: HTMLElement | null = null
+
+        if (typeof target.target === 'string') {
+          targetElement = element.query(
+            ui.providerElement,
+            target.target,
+            'Find analyze node target element.',
+          )
+        } else if (target.target instanceof HTMLElement) {
+          targetElement = target.target
+        } else {
+          const item = blocks.getBlock(target.target.uuid)
+          if (item) {
+            targetElement = dom.getDragElement(item) ?? null
+          }
+        }
+
+        if (targetElement) {
+          mappedNodes.push({
             id: result.id,
-            element,
-            index,
+            element: targetElement,
+            index: target.globalIndex,
             title: result.title,
             status: result.status,
             plugin: result.plugin,
-          }
-        })
-    })
+          })
+        }
+      }
+    }
+  }
 
   // Deduplicate nodes by element, keeping the highest priority status. That
   // way we prevent rendering multiple rects for the same element.
-  const nodeMap = new Map<HTMLElement, AnalyzeNode>()
-  for (const node of allNodes) {
+  const nodeMap = new Map<HTMLElement, AnalyzeRendererNode>()
+  for (const node of mappedNodes) {
     const existing = nodeMap.get(node.element)
     if (
       !existing ||
@@ -119,6 +129,7 @@ const nodes = computed<AnalyzeNode[]>(() => {
   }
 
   const finalNodes = Array.from(nodeMap.values())
+
   return finalNodes
 })
 
@@ -129,8 +140,8 @@ const activeRectId = computed(() => {
 
   for (let i = 0; i < nodes.value.length; i++) {
     const node = nodes.value[i]!
-    const nodeActiveId = node.id + '_____' + node.index
-    if (nodeActiveId === activeId.value) {
+    const id = node.id + '_____' + node.index
+    if (activeId.value === id) {
       return i
     }
   }

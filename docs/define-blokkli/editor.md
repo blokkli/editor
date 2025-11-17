@@ -369,10 +369,7 @@ defineBlokkli({
   bundle: 'three_columns',
 
   editor: {
-    fieldLayout: [
-      ['header'],
-      ['left', 'center', 'right'],
-    ],
+    fieldLayout: [['header'], ['left', 'center', 'right']],
   },
 })
 </script>

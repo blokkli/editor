@@ -116,8 +116,7 @@ const publishButton = useTemplateRef('publishButton')
   <PluginTourItem
     id="keyboard-shortcuts"
     title="Keyboard Shortcuts"
-    :text="
-      `
+    :text="`
 ## Essential Shortcuts
 
 - **Cmd+Z** / **Ctrl+Z**: Undo
@@ -126,8 +125,7 @@ const publishButton = useTemplateRef('publishButton')
 - **Cmd+C** / **Ctrl+C**: Copy blocks
 
 Open the **Help** sidebar for a complete list.
-    `
-    "
+    `"
   />
 </template>
 ```

@@ -18,8 +18,8 @@
         @keyup.capture.stop
       >
         <form
-          @submit.prevent.stop="onSubmitForm"
           class="bk-selection-add-overlay-form-input"
+          @submit.prevent.stop="onSubmitForm"
         >
           <Icon name="search" />
           <input
@@ -31,8 +31,8 @@
           <button
             v-if="searchText"
             type="button"
-            @click.prevent="onClearSearchText"
             tabindex="-1"
+            @click.prevent="onClearSearchText"
           >
             <Icon name="close" />
           </button>

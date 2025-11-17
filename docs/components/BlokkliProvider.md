@@ -229,8 +229,7 @@ permissions).
 
 ## Notes
 
-- The provider must wrap all `BlokkliField` components that belong to the
-  entity
+- The provider must wrap all `BlokkliField` components that belong to the entity
 - Only one provider should be active on a page at a time (though multiple can
   exist for different content regions)
 - The provider automatically provides context to all child components via Vue's

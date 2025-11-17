@@ -43,7 +43,8 @@ The title displayed in the tooltip.
 
 ### region
 
-- **Type:** `'after-title' | 'before-title' | 'before-sidebar' | 'after-menu' | 'before-sidebar-right' | 'view-options'`
+- **Type:**
+  `'after-title' | 'before-title' | 'before-sidebar' | 'after-menu' | 'before-sidebar-right' | 'view-options'`
 - **Required:** Yes
 
 Which toolbar region to render the button in. Different regions appear in

@@ -116,8 +116,8 @@ overlay.
 This is useful for complex layouts where blocks need to maintain their visual
 position but editing should happen in a separate layer.
 
-**Important:** When using proxy mode, you need a wrapper with `position:
-relative` somewhere in your layout.
+**Important:** When using proxy mode, you need a wrapper with
+`position: relative` somewhere in your layout.
 
 ### shouldRenderItem
 

@@ -78,7 +78,11 @@ In normal mode, it simply renders the content without any editing functionality.
 
 ```vue
 <template>
-  <BlokkliEditable v-slot="{ value }" name="description" :value="page.description">
+  <BlokkliEditable
+    v-slot="{ value }"
+    name="description"
+    :value="page.description"
+  >
     <p class="lead-text">{{ value }}</p>
   </BlokkliEditable>
 </template>
