@@ -1,4 +1,4 @@
-import { reactive, ref, computed, type ComputedRef } from '#imports'
+import { reactive, ref, computed, type ComputedRef, onMounted } from '#imports'
 import type {
   DraggableExistingBlock,
   DraggableItem,
@@ -931,6 +931,10 @@ export default function (
       },
     }
   }
+
+  onMounted(() => {
+    doInitTimeout()
+  })
 
   return {
     getDropElementMarkup,

@@ -6,7 +6,13 @@ import type {
 import { falsy } from '#blokkli/helpers'
 import useDelayedIntersectionObserver from './../composables/useDelayedIntersectionObserver'
 import type { UiProvider } from './ui'
-import { computed, onBeforeUnmount, ref, type ComputedRef } from '#imports'
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  type ComputedRef,
+} from '#imports'
 import onBlokkliEvent from './../composables/onBlokkliEvent'
 import { itemEntityType } from '#blokkli-build/config'
 import type { DebugProvider } from './debug'
@@ -448,6 +454,10 @@ export default function (
   })
   onBlokkliEvent('ui:resized', handleRefresh)
   onBlokkliEvent('option:finish-change', handleRefresh)
+
+  onMounted(() => {
+    doInitTimeout()
+  })
 
   onBeforeUnmount(() => {
     if (stateReloadTimeout) {

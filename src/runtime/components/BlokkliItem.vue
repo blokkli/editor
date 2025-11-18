@@ -52,15 +52,18 @@ const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
 
 const componentProps = withDefaults(
   defineProps<{
+    // From FieldListItem.
     uuid: string
     bundle: string
+    isVisible?: boolean
     options?: any
-    props?: any
-    index?: number
     editContext?: BlockEditContext
+    props?: any
+
+    // From BlokkliField.
+    index?: number
     parentType?: string
     isEditing?: boolean
-    isNew?: boolean
   }>(),
   {
     index: 0,
