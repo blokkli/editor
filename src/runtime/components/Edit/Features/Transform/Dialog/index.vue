@@ -194,24 +194,38 @@ async function onClickPreview() {
   isPreviewing.value = true
   ui.setTransform(title.value)
 
-  if (
-    supportsPreview.value &&
-    adapter.previewTransformPlugin &&
-    'bundles' in props.plugin &&
-    props.uuids
-  ) {
-    const config = mapValues(value.value)
-    try {
-      const result = await adapter.previewTransformPlugin({
-        pluginId: props.plugin.id,
-        uuids: props.uuids,
-        config,
-      })
+  if (supportsPreview.value) {
+    if ('bundles' in props.plugin) {
+      if (adapter.previewTransformPlugin && props.uuids) {
+        const config = mapValues(value.value)
+        try {
+          const result = await adapter.previewTransformPlugin({
+            pluginId: props.plugin.id,
+            uuids: props.uuids,
+            config,
+          })
 
-      stateAfter.value = clone(adapter.mapState(result.state))
-      state.setOverrideState(stateAfter.value)
-    } catch {
-      // @TODO Error message
+          stateAfter.value = clone(adapter.mapState(result.state))
+          state.setOverrideState(stateAfter.value)
+        } catch {
+          // @TODO Error message
+        }
+      }
+    } else {
+      if (adapter.previewHostTransformPlugin) {
+        const config = mapValues(value.value)
+        try {
+          const result = await adapter.previewHostTransformPlugin({
+            pluginId: props.plugin.id,
+            config,
+          })
+
+          stateAfter.value = clone(adapter.mapState(result.state))
+          state.setOverrideState(stateAfter.value)
+        } catch {
+          // @TODO Error message
+        }
+      }
     }
   }
 
