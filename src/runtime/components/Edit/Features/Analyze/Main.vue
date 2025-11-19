@@ -2,6 +2,7 @@
   <div class="bk bk-analyze">
     <div class="bk-analyze-button">
       <button
+        v-if="hasManualAnalyzers"
         class="bk-button bk-is-primary"
         :disabled="buttonDisabled"
         @click.prevent="onClick"
@@ -39,7 +40,7 @@
     </div>
 
     <div v-if="results.length" class="bk-analyze-wrapper">
-      <div class="bk-analyze-form">
+      <div v-if="categoryOptions.length > 2" class="bk-analyze-form">
         <FormSelect
           id="category"
           v-model="selectedCategory"
