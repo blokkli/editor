@@ -15,7 +15,7 @@ import type { BlokkliApp } from '#blokkli/types'
 export function useBlokkli(optional: true): BlokkliApp | undefined
 export function useBlokkli(optional?: false): BlokkliApp
 export function useBlokkli(optional?: boolean): BlokkliApp | undefined {
-  const app = inject<BlokkliApp>(INJECT_APP)
+  const app = inject<BlokkliApp | undefined>(INJECT_APP, undefined)
   if (!app) {
     if (optional) {
       return undefined
