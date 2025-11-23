@@ -24,6 +24,15 @@ export function useBlockRegistration(dom: DomProvider, uuid: string) {
     const blokkliDraggable = instance?.refs.blokkliDraggable
     if (blokkliDraggable instanceof HTMLElement) {
       return blokkliDraggable
+    } else if (
+      // The ref is another component. Try to get the root element.
+      blokkliDraggable !== null &&
+      typeof blokkliDraggable === 'object' &&
+      '$el' in blokkliDraggable
+    ) {
+      if (blokkliDraggable.$el instanceof HTMLElement) {
+        return blokkliDraggable.$el
+      }
     }
 
     const rootElement = instance?.proxy?.$el
