@@ -92,7 +92,7 @@
 
 .bk.bk-tour-popup {
   @apply fixed top-80 left-0 w-full bg-white shadow-xl  hyphens-auto;
-  @apply z-tour-popup;
+  @apply z-tour-popup pointer-events-auto;
   @apply border border-mono-200;
 
   @screen lg {
