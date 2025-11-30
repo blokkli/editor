@@ -347,6 +347,16 @@ export type UiProvider = {
   ) => Rectangle
 
   /**
+   * Convert viewport-relative coordinates to artboard-relative coordinates.
+   *
+   * @param coords - The coordinates to convert.
+   * @param scale - Override artboard scale (uses current scale if not provided)
+   * @param offset - Override artboard offset (uses current offset if not provided)
+   * @returns Coordinates in artboard coordinate space
+   */
+  toArtboardCoords: (coords: Coord, scale?: number, offset?: Coord) => Coord
+
+  /**
    * Convert artboard-absolute rectangle to viewport-relative coordinates.
    *
    * Applies artboard scale and offset to convert from artboard space
@@ -718,6 +728,19 @@ export default function (
     }
   }
 
+  function toArtboardCoords(
+    coords: Coord,
+    providedScale?: number,
+    providedOffset?: Coord,
+  ): Coord {
+    const scale = providedScale || artboardScale.value
+    const offset = providedOffset || artboardOffset.value
+    return {
+      x: coords.x / scale - offset.x / scale,
+      y: coords.y / scale - offset.y / scale,
+    }
+  }
+
   function getViewportRelativeRect(rect: Rectangle): Rectangle {
     const scale = artboardScale.value
     const offset = artboardOffset.value
@@ -875,5 +898,6 @@ export default function (
     closeDialog,
     currentDialog: readonly(currentDialog),
     requireDialogCloseConfirm,
+    toArtboardCoords,
   }
 }

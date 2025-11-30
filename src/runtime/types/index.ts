@@ -905,14 +905,14 @@ export interface DraggableClipboardItem {
 export interface DraggableSearchContentItem {
   itemType: 'search_content'
   element: () => HTMLElement
-  itemBundle: string
+  itemBundles: string[]
   searchItem: SearchContentItem
 }
 
 export interface DraggableMediaLibraryItem {
   itemType: 'media_library'
   element: () => HTMLElement
-  itemBundle: string
+  itemBundles: string[]
   mediaId: string
   mediaBundle: string
 }
@@ -928,13 +928,13 @@ export type DraggableItem =
   | DraggableMediaLibraryItem
 
 export type MoveBlockEvent = {
-  afterUuid?: string
+  afterUuid: string | null
   item: DraggableExistingBlock
   host: DraggableHostData
 }
 
 export type MoveMultipleBlocksEvent = {
-  afterUuid?: string
+  afterUuid: string | null
   uuids: string[]
   host: DraggableHostData
 }
@@ -942,27 +942,27 @@ export type MoveMultipleBlocksEvent = {
 export type AddNewBlockEvent = {
   bundle: string
   host: DraggableHostData
-  afterUuid?: string
+  afterUuid: string | null
 }
 
 export type AddClipboardItemEvent = {
   item: ClipboardItem
   blockBundle: string
   host: DraggableHostData
-  afterUuid?: string
+  afterUuid: string | null
 }
 
 export type AddContentSearchItemEvent = {
   item: SearchContentItem
   host: DraggableHostData
   bundle: string
-  afterUuid?: string
+  afterUuid: string | null
 }
 
 export type AddReusableItemEvent = {
   libraryItemUuid: string
   host: DraggableHostData
-  afterUuid?: string
+  afterUuid: string | null
 }
 
 export type UpdateBlockOptionEvent = {
@@ -1100,7 +1100,7 @@ export type EditableFieldUpdateEvent = {
 export type BlockAppendEvent = {
   bundle: string
   host: DraggableHostData
-  afterUuid?: string
+  afterUuid: string | null
 }
 
 export type UiResizedEvent = {
@@ -1136,7 +1136,7 @@ export type BlokkliFieldElement = {
 export type FieldDropAlignment = 'vertical' | 'horizontal'
 
 export type ActionPlacedData = {
-  preceedingUuid?: string
+  preceedingUuid: string | null
   host: DraggableHostData
   field: BlokkliFieldElement
 }
@@ -1193,14 +1193,14 @@ export type DropTargetEvent = {
   items: DraggableItem[]
   field: BlokkliFieldElement
   host: DraggableHostData
-  preceedingUuid?: string
+  preceedingUuid: string | null
 }
 
 export type DropClipboardItemEvent = {
   id: string
   blockBundle: string
   host: DraggableHostData
-  afterUuid?: string
+  afterUuid: string | null
 }
 
 export type LibraryEditItemEvent = {
@@ -1374,7 +1374,7 @@ export interface BlokkliApp {
 export type PasteExistingBlocksEvent = {
   uuids: string[]
   host: DraggableHostData
-  preceedingUuid?: string
+  preceedingUuid: string | null
 }
 
 export type NativeBlokkliEditableBlurEvent = CustomEvent<{

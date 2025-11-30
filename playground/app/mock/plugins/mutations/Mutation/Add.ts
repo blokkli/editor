@@ -9,7 +9,7 @@ export type MutationAddArgs = {
   hostEntityType: string
   hostEntityUuid: string
   hostField: string
-  preceedingUuid?: string
+  preceedingUuid: string | null
 }
 
 export class MutationAdd extends Mutation {
@@ -27,13 +27,13 @@ export class MutationAdd extends Mutation {
       const uuid = this.getUuidForNewEntity(i.toString())
 
       const block = entityStorageManager.createBlock(item.bundle, uuid)
+      const blockBundle = getBlockBundles().find(
+        (v) => v.bundle === item.bundle,
+      )!
+      const defaultValues = blockBundle.getDefaultValues()
       if (item.values) {
-        block.setValues(item.values)
+        block.setValues({ ...defaultValues, ...item.values })
       } else {
-        const blockBundle = getBlockBundles().find(
-          (v) => v.bundle === item.bundle,
-        )!
-        const defaultValues = blockBundle.getDefaultValues()
         block.setValues(defaultValues)
       }
 

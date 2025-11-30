@@ -10,6 +10,7 @@ import {
   findClosestRectangle,
   intersects,
   isInsideRect,
+  onlyUnique,
   rgbaToString,
   toShaderColor,
 } from '#blokkli/helpers'
@@ -192,7 +193,7 @@ const emitDrop = async () => {
 
       eventBus.emit('dragging:drop', {
         field,
-        preceedingUuid,
+        preceedingUuid: preceedingUuid ?? null,
         items: [...props.items],
         host: {
           type: field.hostEntityType,
@@ -230,15 +231,20 @@ const draggingBundles = computed<string[]>(() =>
         if (item.block.library?.reusableBundle) {
           bundles.push(item.block.library.reusableBundle)
         }
-      } else if (item.itemBundle) {
-        bundles.push(item.itemBundle)
+      } else if ('itemBundle' in item) {
+        if (item.itemBundle) {
+          bundles.push(item.itemBundle)
+        }
       } else if (item.itemType === 'action' && item.action.itemBundle) {
         bundles.push(item.action.itemBundle)
+      } else if ('itemBundles' in item) {
+        bundles.push(...item.itemBundles)
       }
 
       return bundles
     })
-    .filter(falsy),
+    .filter(falsy)
+    .filter(onlyUnique),
 )
 
 /**

@@ -94,7 +94,19 @@ export function determineCanAddChildren(
     return true
   }
 
-  // Check if all dragging bundles are allowed.
+  // No existing blocks are dragged. We only need to check if _any_ of the
+  // dragging bundles are allowed. For example, when dragging a media library
+  // or search item that can produce several bundles, it can be added whenever
+  // any bundle is allows. The dragging overlay will display a selector to pick
+  // which bundle should be created in this case.
+  if (!uuids.length) {
+    return draggingBundles.some((bundle) =>
+      field.allowedBundles.includes(bundle),
+    )
+  }
+
+  // Handle dragging existing blocks. In this case, all the dragging bundles
+  // must be allowed in the field, because we perform a "move" operation.
   const bundlesAllowed = draggingBundles.every((bundle) =>
     field.allowedBundles.includes(bundle),
   )

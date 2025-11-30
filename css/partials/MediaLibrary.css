@@ -126,6 +126,10 @@
   .bk-media-library-items-item {
     @apply text-sm cursor-grab select-none relative;
 
+    &.bk-is-disabled {
+      @apply pointer-events-none opacity-25;
+    }
+
     &:hover {
       label {
         @apply !opacity-100;

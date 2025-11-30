@@ -531,6 +531,10 @@
     "source": "Download Logs",
     "translation": "Fehlerprotokoll herunterladen"
   },
+  "draggingOverlaySelectBundle": {
+    "source": "Select block type to create",
+    "translation": "Block-Typ zum Erstellen auswählen"
+  },
   "duplicate": {
     "source": "Duplicate",
     "translation": "Duplizieren"

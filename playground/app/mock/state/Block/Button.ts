@@ -1,5 +1,6 @@
 import { LOREM_SHORT } from '../../defaultText'
 import type { Field } from '../Field'
+import { FieldIcon } from '../Field/Icon'
 import { FieldText } from '../Field/Text'
 import { FieldUrl } from '../Field/Url'
 import { Block } from './Block'
@@ -14,6 +15,7 @@ export class BlockButton extends Block {
       ...super.getFieldDefintions(),
       new FieldText('title', 'Title'),
       new FieldUrl('url', 'URL'),
+      new FieldIcon('icon', 'Icon'),
     ]
   }
 

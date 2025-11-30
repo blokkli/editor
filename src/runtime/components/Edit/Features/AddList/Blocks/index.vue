@@ -207,7 +207,7 @@ const commandCallbackAppendEnd = (bundle: string, fieldName: string) => {
   const afterUuid = field.list[field.list.length - 1]?.uuid || undefined
   eventBus.emit('block:append', {
     bundle,
-    afterUuid,
+    afterUuid: afterUuid ?? null,
     host: {
       type: context.value.entityType,
       uuid: context.value.entityUuid,
@@ -231,7 +231,7 @@ const commandCallbackInsert = (
   const afterUuid = field ? field.list[field.list.length - 1]?.uuid : undefined
   eventBus.emit('block:append', {
     bundle,
-    afterUuid,
+    afterUuid: afterUuid ?? null,
     host: {
       type: hostType,
       uuid: hostUuid,
@@ -302,7 +302,7 @@ const commandCallbackAppend = (bundle: string) => {
   }
   eventBus.emit('block:append', {
     bundle,
-    afterUuid: selection.uuids.value[0],
+    afterUuid: selection.uuids.value[0]!,
     host: {
       type: block.host.type,
       uuid: block.host.uuid,

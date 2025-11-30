@@ -575,6 +575,10 @@ msgctxt "downloadLogsButton"
 msgid "Download Logs"
 msgstr "Fehlerprotokoll herunterladen"
 
+msgctxt "draggingOverlaySelectBundle"
+msgid "Select block type to create"
+msgstr "Block-Typ zum Erstellen auswählen"
+
 msgctxt "duplicate"
 msgid "Duplicate"
 msgstr "Duplizieren"

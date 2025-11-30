@@ -69,6 +69,46 @@ export class MediaImage extends Media {
   }
 }
 
+export class MediaIcon extends Media {
+  static override bundle = 'icon'
+  static override label = 'Icon'
+
+  static override getFieldDefintions(): Field<any>[] {
+    return [
+      ...super.getFieldDefintions(),
+      new FieldText('name', 'Name'),
+      new FieldText('markup', 'Markup'),
+    ]
+  }
+
+  getSrcUrl() {
+    const base64 = btoa(this.markup())
+    return `data:image/svg+xml;base64,${base64}`
+  }
+
+  override thumbnail(): string | undefined {
+    return this.getSrcUrl()
+  }
+
+  name() {
+    return this.fields.name?.list[0] || ''
+  }
+
+  markup() {
+    return this.fields.markup?.list[0] || ''
+  }
+
+  override title(): string {
+    return this.name()
+  }
+
+  override getData() {
+    return {
+      name: this.name(),
+    }
+  }
+}
+
 export class MediaVideo extends Media {
   static override bundle = 'video'
   static override label = 'Video'

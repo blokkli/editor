@@ -4,11 +4,17 @@ import { Comment } from './state/Comment'
 import type { Entity } from './state/Entity'
 import { ContentPage, type Content } from './state/Entity/Content'
 import { LibraryItem } from './state/LibraryItem'
-import { MediaImage, type Media, MediaVideo } from './state/Media/Media'
+import {
+  MediaImage,
+  type Media,
+  MediaVideo,
+  MediaIcon,
+} from './state/Media/Media'
 import { User } from './state/User'
 import data from './../../snapshots/data.json'
 import videosData from './../../snapshots/videos.json'
 import type { FieldBlocks } from './state/Field/Blocks'
+import { icons } from '#blokkli-build/icons'
 import { generateUUID } from './uuid'
 import * as commentStorage from './commentStorage'
 import type { StoredComment } from './commentStorage'
@@ -75,6 +81,16 @@ export class EntityStorageManager {
       media: new EntityStorage(),
       library_item: new EntityStorage(),
     }
+
+    Object.entries(icons).forEach(([name, markup]) => {
+      const uuid = name
+      const icon = new MediaIcon(uuid)
+      icon.setValues({
+        name,
+        markup,
+      })
+      this.storages.media.add(icon)
+    })
 
     this.createImage(
       '1',

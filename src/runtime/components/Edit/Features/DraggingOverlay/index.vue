@@ -19,6 +19,21 @@
       :active-label="label"
     />
   </Renderer>
+  <Teleport to="#bk-canvas-overlay">
+    <BlokkliTransition name="caret-tooltip">
+      <BundleSelector
+        v-if="bundleSelectorData"
+        :bundles="bundleSelectorData.bundles"
+        :label="
+          $t('draggingOverlaySelectBundle', 'Select block type to create')
+        "
+        :anchor-coordinates="bundleSelectorData.anchorCoordinates"
+        hide-actions
+        @close="onCloseBundleSelector"
+        @select="onSelectBundle"
+      />
+    </BlokkliTransition>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
@@ -31,7 +46,6 @@ import {
   defineBlokkliFeature,
   nextTick,
 } from '#imports'
-
 import type {
   DropTargetEvent,
   BlokkliDefinitionAddBehaviour,
@@ -50,6 +64,7 @@ import type {
 } from '#blokkli/types'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { renderCycle } from '#blokkli/helpers/renderCycle'
+import { BundleSelector, BlokkliTransition } from '#blokkli/components'
 
 const { adapter } = defineBlokkliFeature({
   icon: 'drag',
@@ -70,7 +85,53 @@ const {
   blocks,
   directive,
   fields,
+  $t,
 } = useBlokkli()
+
+type BundleSelectorData = {
+  bundles: string[]
+  anchorCoordinates: Coord
+  item: DraggableSearchContentItem | DraggableMediaLibraryItem[]
+  host: DraggableHostData
+  field: BlokkliFieldElement
+  afterUuid: string | null
+}
+
+const bundleSelectorData = ref<BundleSelectorData | null>(null)
+
+function onCloseBundleSelector() {
+  bundleSelectorData.value = null
+}
+
+async function onSelectBundle(bundle: string) {
+  const data = bundleSelectorData.value
+  if (!data) {
+    return
+  }
+
+  const item = data.item
+
+  if (Array.isArray(item)) {
+    await onDropMediaLibraryItem(
+      data.field,
+      item,
+      data.host,
+      data.afterUuid,
+      bundle,
+    )
+  } else {
+    await state.mutateWithLoadingState(() =>
+      adapter.addContentSearchItem!({
+        item: item.searchItem,
+        host: data.host,
+        bundle,
+        afterUuid: data.afterUuid,
+      }),
+    )
+  }
+
+  onCloseBundleSelector()
+}
 
 const dragItemsComponent = ref<InstanceType<typeof DragItems> | null>(null)
 const isVisible = ref(false)
@@ -136,7 +197,7 @@ function filterItemType<T extends DraggableItem>(
 const onDropNew = async (
   bundle: string,
   host: DraggableHostData,
-  afterUuid?: string,
+  afterUuid: string | null,
 ) => {
   const field = fields.find(host.uuid, host.fieldName)
   if (!field) {
@@ -176,7 +237,7 @@ const onDropNew = async (
 const onDropExisting = async (
   items: Array<DraggableExistingBlock | DraggableExistingStructureBlock>,
   host: DraggableHostData,
-  afterUuid?: string,
+  afterUuid: string | null,
 ) => {
   const uuids = items.map((v) => v.block.uuid)
   await state.mutateWithLoadingState(() =>
@@ -203,7 +264,7 @@ const onDropExisting = async (
 const onDropReusable = async (
   item: DraggableReusableItem,
   host: DraggableHostData,
-  afterUuid?: string,
+  afterUuid: string | null,
 ) => {
   if (adapter.addLibraryItem) {
     await state.mutateWithLoadingState(() =>
@@ -219,7 +280,7 @@ const onDropReusable = async (
 const onDropClipboardItem = async (
   item: DraggableClipboardItem,
   host: DraggableHostData,
-  afterUuid?: string,
+  afterUuid: string | null,
 ) => {
   eventBus.emit('drop:clipboardItem', {
     id: item.clipboardId,
@@ -230,16 +291,53 @@ const onDropClipboardItem = async (
 }
 
 const onDropMediaLibraryItem = async (
+  field: BlokkliFieldElement,
   items: DraggableMediaLibraryItem[],
   host: DraggableHostData,
-  afterUuid?: string,
+  afterUuid: string | null,
+  bundle: string | null,
 ) => {
+  // We can assume that all media library items are of the same bundle, since it's not possible to multi select media library items of different bundles.
+  const allSameBundles =
+    [...new Set(items.map((v) => v.mediaBundle)).values()].length === 1
+  if (!allSameBundles) {
+    throw new Error(
+      'Multi select of media library items of different bundles is not supported.',
+    )
+  }
+
+  let targetBundle = bundle
+
+  if (targetBundle === null) {
+    const item = items[0]!
+    const allowedBundles = field.allowedBundles
+    const possibleBundles = allowedBundles.filter((bundle) =>
+      item.itemBundles.includes(bundle),
+    )
+    if (possibleBundles.length === 0) {
+      throw new Error('This search item can not be placed here.')
+    } else if (possibleBundles.length === 1) {
+      targetBundle = possibleBundles[0]!
+    } else {
+      bundleSelectorData.value = {
+        bundles: possibleBundles,
+        anchorCoordinates: getAnchorCoordinates(),
+        item: items,
+        host,
+        afterUuid,
+        field,
+      }
+      return
+    }
+  }
+
   if (adapter.mediaLibraryAddBlock && items.length === 1) {
     await state.mutateWithLoadingState(() =>
       adapter.mediaLibraryAddBlock!({
         preceedingUuid: afterUuid,
         host,
         item: items[0]!,
+        targetBundle,
       }),
     )
   } else if (adapter.mediaLibraryAddBlocks && items.length > 1) {
@@ -248,25 +346,54 @@ const onDropMediaLibraryItem = async (
         preceedingUuid: afterUuid,
         host,
         items,
+        targetBundle,
       }),
     )
   }
 }
 
+function getAnchorCoordinates() {
+  return ui.toArtboardCoords({
+    x: mouseX.value,
+    y: mouseY.value,
+  })
+}
+
 const onDropSearchContentItem = async (
+  field: BlokkliFieldElement,
   item: DraggableSearchContentItem,
   host: DraggableHostData,
-  afterUuid?: string,
+  afterUuid: string | null,
 ) => {
-  if (adapter.addContentSearchItem) {
+  if (!adapter.addContentSearchItem) {
+    throw new Error('Adapter does not implement "addContentSearchItem".')
+  }
+
+  const allowedBundles = field.allowedBundles
+  const possibleBundles = allowedBundles.filter((bundle) =>
+    item.itemBundles.includes(bundle),
+  )
+
+  if (possibleBundles.length === 0) {
+    throw new Error('This search item can not be placed here.')
+  } else if (possibleBundles.length === 1) {
     await state.mutateWithLoadingState(() =>
       adapter.addContentSearchItem!({
         item: item.searchItem,
         host,
-        bundle: item.itemBundle,
+        bundle: possibleBundles[0]!,
         afterUuid,
       }),
     )
+  } else {
+    bundleSelectorData.value = {
+      bundles: possibleBundles,
+      anchorCoordinates: getAnchorCoordinates(),
+      field,
+      item,
+      host,
+      afterUuid,
+    }
   }
 }
 
@@ -274,7 +401,7 @@ const onDropAction = (
   action: DraggableActionItem,
   host: DraggableHostData,
   field: BlokkliFieldElement,
-  afterUuid?: string,
+  afterUuid: string | null,
 ) => {
   action.action.callback({
     preceedingUuid: afterUuid,
@@ -285,13 +412,11 @@ const onDropAction = (
 
 let allUuidsBefore: string[] = []
 
-const onDrop = (e: DropTargetEvent) => {
+const onDrop = async (e: DropTargetEvent) => {
   allUuidsBefore = state.getAllUuids()
-  mouseX.value = 0
-  mouseY.value = 0
 
-  nextTick(async () => {
-    const afterUuid = e.preceedingUuid
+  await nextTick(async () => {
+    const afterUuid = e.preceedingUuid ?? null
     const host = e.host
     const typed = filterItemType(e.items)
     if (
@@ -306,16 +431,19 @@ const onDrop = (e: DropTargetEvent) => {
     } else if (typed.itemType === 'clipboard') {
       await onDropClipboardItem(typed.item, host, afterUuid)
     } else if (typed.itemType === 'search_content') {
-      await onDropSearchContentItem(typed.item, host, afterUuid)
+      await onDropSearchContentItem(e.field, typed.item, host, afterUuid)
     } else if (typed.itemType === 'action') {
       onDropAction(typed.item, host, e.field, afterUuid)
     } else if (typed.itemType === 'media_library') {
-      await onDropMediaLibraryItem(typed.items, host, afterUuid)
+      await onDropMediaLibraryItem(e.field, typed.items, host, afterUuid, null)
     }
 
     eventBus.emit('dragging:end')
     eventBus.emit('item:dropped')
   })
+
+  mouseX.value = 0
+  mouseY.value = 0
 }
 
 onBlokkliEvent('state:reloaded', async function () {

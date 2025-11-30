@@ -909,7 +909,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           targetId: e.item.mediaId,
           targetBundle: e.item.mediaBundle,
           targetType: 'media',
-          paragraphBundle: e.item.itemBundle,
+          paragraphBundle: e.targetBundle,
           hostType: e.host.type,
           hostUuid: e.host.uuid,
           hostFieldName: e.host.fieldName,
@@ -927,7 +927,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
               targetId: item.mediaId,
               targetType: 'media',
               targetBundle: item.mediaBundle,
-              paragraphBundle: item.itemBundle,
+              paragraphBundle: e.targetBundle,
             }
           }),
           hostType: e.host.type,

@@ -92,7 +92,7 @@ export class MutationContext {
     return index
   }
 
-  addProxy(proxy: BlockProxy, preceedingUuid?: string) {
+  addProxy(proxy: BlockProxy, preceedingUuid?: string | null) {
     const index = preceedingUuid ? this.getIndex(preceedingUuid) : undefined
 
     if (index === undefined) {
@@ -114,7 +114,7 @@ export class MutationContext {
     return proxy
   }
 
-  moveProxyAfter(uuid: string, preceedingUuid?: string) {
+  moveProxyAfter(uuid: string, preceedingUuid?: string | null) {
     const index = this.getIndex(uuid)
     const preceedingIndex = preceedingUuid
       ? this.getIndex(preceedingUuid)

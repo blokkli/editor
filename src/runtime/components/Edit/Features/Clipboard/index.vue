@@ -336,7 +336,7 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
   let targetField = null
   let targetFieldElement = null
   let targetFieldKey = null
-  let preceedingUuid: string | undefined = undefined
+  let preceedingUuid: string | null = null
 
   // Only try to paste into nested fields if Shift is not pressed
   if (!keyboard.isPressingShift.value) {
@@ -402,7 +402,7 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
             }
             targetFieldElement = fieldElement
             targetFieldKey = nestedFieldKey
-            preceedingUuid = undefined // Paste at the beginning of the nested field
+            preceedingUuid = null // Paste at the beginning of the nested field
             break
           }
         }
@@ -429,7 +429,7 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
     }
     targetFieldElement = fieldElement
     targetFieldKey = getFieldKey(field.entityUuid, field.name)
-    preceedingUuid = selection.uuids.value[0]
+    preceedingUuid = selection.uuids.value[0] ?? null
   }
 
   const pastedBlocks: RenderedFieldListItem[] = []

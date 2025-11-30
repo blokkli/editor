@@ -12,6 +12,7 @@
       class="bk-selection-add-overlay-wrapper bk-scrollbar-dark"
     >
       <div
+        v-if="items.length > 4"
         class="bk-selection-add-overlay-form"
         @pointerdown.stop
         @keydown.capture.stop
@@ -71,6 +72,7 @@ const props = defineProps<{
   anchorEl?: HTMLElement
   anchorCoordinates?: Coord
   label: string
+  hideActions?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -159,6 +161,9 @@ const blocks = computed<Item[]>(() => {
 })
 
 const actions = computed<Item[]>(() => {
+  if (props.hideActions) {
+    return []
+  }
   return plugins
     .get('addAction')
     .filter((action) => {

@@ -135,7 +135,7 @@ function buildItem(
   return {
     itemType: 'search_content',
     element: () => element,
-    itemBundle: item.targetBundles[0] ?? '',
+    itemBundles: item.targetBundles,
     searchItem: item,
   }
 }

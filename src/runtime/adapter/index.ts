@@ -66,18 +66,20 @@ export type UpdateEntityFieldValueEvent = {
 export type AdapterFragmentsAddBlock = {
   name: string
   host: DraggableHostData
-  preceedingUuid?: string
+  preceedingUuid: string | null
 }
 
 export type MediaLibraryAddBlockEvent = {
   host: DraggableHostData
-  preceedingUuid?: string
+  preceedingUuid: string | null
   item: DraggableMediaLibraryItem
+  targetBundle: string
 }
 
 export type MediaLibraryAddBlocksEvent = {
   host: DraggableHostData
-  preceedingUuid?: string
+  preceedingUuid: string | null
+  targetBundle: string
   items: DraggableMediaLibraryItem[]
 }
 
@@ -96,7 +98,7 @@ export type MediaLibraryReplaceMediaEvent = {
 type AdapterAssistantAddBlockFromResult = {
   result: AssistantResult
   host: DraggableHostData
-  preceedingUuid?: string
+  preceedingUuid: string | null
 }
 
 type AdapterAssistantGetResultsCreate = {

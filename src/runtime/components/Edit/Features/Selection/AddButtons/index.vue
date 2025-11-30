@@ -1,7 +1,7 @@
 <template>
   <Teleport to="#bk-canvas-overlay">
     <BlokkliTransition name="caret-tooltip">
-      <Overlay
+      <BundleSelector
         v-if="addData"
         :key="addData.key"
         :bundles="addData.allowedBundles"
@@ -28,7 +28,11 @@
 <script setup lang="ts">
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { computed, useBlokkli, ref, watch } from '#imports'
-import { BlokkliTransition, ErrorBoundary } from '#blokkli/components'
+import {
+  BlokkliTransition,
+  ErrorBoundary,
+  BundleSelector,
+} from '#blokkli/components'
 import {
   getChildrenOrientation,
   getGapSize,
@@ -42,7 +46,6 @@ import type {
   DraggableHostData,
   RenderedFieldListItem,
 } from '#blokkli/types'
-import Overlay from './Overlay/index.vue'
 import { renderCycle } from '#blokkli/helpers/renderCycle'
 import { getFieldKey } from '#blokkli/helpers'
 import { isInternalBundle } from '#blokkli/helpers/bundles'
@@ -234,7 +237,7 @@ watch(emptyBlockFields, (fields) => {
 
 type AddData = {
   allowedBundles: string[]
-  preceedingUuid?: string
+  preceedingUuid: string | null
   host: DraggableHostData
   field: BlokkliFieldElement
   anchorEl?: HTMLElement
@@ -402,7 +405,7 @@ function setAddData(
   key: string,
   field: BlokkliFieldElement,
   label: string,
-  preceedingUuid?: string,
+  preceedingUuid: string | null,
   anchorEl?: HTMLElement,
   anchorCoordinates?: { x: number; y: number },
 ) {
@@ -443,7 +446,7 @@ function setAddData(
 function getPreceedingUuidBefore(
   uuid: string,
   field: BlokkliFieldElement,
-): string | undefined {
+): string | null {
   const children = [...field.element.children] as HTMLElement[]
   let prevUuid: string | undefined = undefined
 
@@ -454,12 +457,12 @@ function getPreceedingUuidBefore(
     }
     const childUuid = child.dataset.bkUuid
     if (childUuid === uuid) {
-      return prevUuid
+      return prevUuid ?? null
     }
     prevUuid = childUuid
   }
 
-  return undefined
+  return null
 }
 
 function onRendererToggle(data: {
@@ -494,7 +497,7 @@ function onRendererToggle(data: {
     return
   }
 
-  let preceedingUuid: string | undefined
+  let preceedingUuid: string | null
   let label: string
 
   if (data.position === 'before') {
@@ -532,7 +535,7 @@ function onRendererToggleField(data: {
   }
 
   const label = (fieldTooltips.value[data.index] || '').replace('...', '')
-  setAddData(key, field, label, undefined, undefined, data.coordinates)
+  setAddData(key, field, label, null, undefined, data.coordinates)
 }
 
 onBlokkliEvent('dragging:start', closeOverlay)

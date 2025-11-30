@@ -7,7 +7,7 @@ export type MutationAddReusableItemArgs = {
   hostEntityType: string
   hostEntityUuid: string
   hostField: string
-  preceedingUuid?: string
+  preceedingUuid?: string | null
 }
 
 export class MutationAddReusableItem extends Mutation {

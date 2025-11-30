@@ -19,7 +19,7 @@
           "
           :style="targetStyle"
           class="bk-structure-field-target bk-is-before"
-          @pointerup.stop.capture="onMouseUp()"
+          @pointerup.stop.capture="onMouseUp(null)"
         />
         <Item
           :uuid="item.uuid"
@@ -47,7 +47,7 @@
         v-if="!list.length && showTargets"
         class="bk-structure-field-target bk-is-after"
         :style="targetStyle"
-        @pointerup.stop.capture="onMouseUp()"
+        @pointerup.stop.capture="onMouseUp(null)"
       />
     </div>
   </div>
@@ -97,7 +97,7 @@ const mutatedField = computed(() =>
 const list = computed(() => mutatedField.value?.list || [])
 const key = computed(() => props.entityUuid + ':' + props.name)
 
-function onMouseUp(preceedingUuid?: string) {
+function onMouseUp(preceedingUuid: string | null) {
   const field = fields.find(props.entityUuid, props.name)
 
   if (!field) {

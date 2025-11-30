@@ -27,7 +27,11 @@ import { getBlockBundles } from './mock/state/Block'
 import type { MutatedState } from './mock/state/EditState'
 import { ContentPage, type Content } from './mock/state/Entity/Content'
 import { FieldBlocks } from './mock/state/Field/Blocks'
-import { MediaImage, type MediaVideo } from './mock/state/Media/Media'
+import {
+  type MediaIcon,
+  MediaImage,
+  type MediaVideo,
+} from './mock/state/Media/Media'
 import { transforms } from './mock/transforms'
 import type { MediaLibraryItem } from '#blokkli/components/Features/MediaLibrary/types'
 import type { MutationArgsMap } from './mock/plugins/mutations'
@@ -226,11 +230,23 @@ export default defineBlokkliEditAdapter((ctx) => {
     return Promise.resolve(comments)
   }
 
+  function getMediaTargetBundles(bundle: string): string[] {
+    if (bundle === 'image') {
+      return ['image']
+    } else if (bundle === 'video') {
+      return ['video']
+    } else if (bundle === 'icon') {
+      return ['icon', 'card', 'button']
+    }
+
+    return []
+  }
+
   const mediaLibraryGetResults: GetMediaLibraryFunction<{
     bundle: 'select'
     text: 'text'
   }> = (e) => {
-    const perPage = 4
+    const perPage = 16
     const bundle = e.filters.bundle
     const allItems: MediaLibraryItem[] = entityStorageManager
       .getStorage('media')
@@ -243,7 +259,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           label: media.title(),
           context,
           thumbnail: media.thumbnail(),
-          targetBundles: [media.bundle === 'image' ? 'image' : 'video'],
+          targetBundles: getMediaTargetBundles(media.bundle),
           mediaBundle: media.bundle,
         }
       })
@@ -648,6 +664,7 @@ export default defineBlokkliEditAdapter((ctx) => {
       return {
         images: 'Images',
         videos: 'Videos',
+        icons: 'Icons',
       }
     },
 
@@ -697,6 +714,23 @@ export default defineBlokkliEditAdapter((ctx) => {
             })
             .filter((v) => v.title.toLowerCase().includes(text.toLowerCase())),
         )
+      } else if (tab === 'icons') {
+        return Promise.resolve(
+          entityStorageManager.storages.media
+            .query<MediaIcon>({ bundle: 'icon' })
+            .map((icon) => {
+              return {
+                id: icon.uuid,
+                title: icon.name(),
+                text: icon.name(),
+                targetBundles: ['icon', 'card', 'button'],
+                entityType: icon.entityType,
+                imageUrl: icon.getSrcUrl(),
+                entityBundle: icon.bundle,
+              }
+            })
+            .filter((v) => v.title.toLowerCase().includes(text.toLowerCase())),
+        )
       }
       return Promise.resolve([])
     },
@@ -718,6 +752,39 @@ export default defineBlokkliEditAdapter((ctx) => {
           bundle: 'video',
           values: {
             video: [e.item.id],
+          },
+          hostEntityType: e.host.type,
+          hostEntityUuid: e.host.uuid,
+          hostField: e.host.fieldName,
+          preceedingUuid: e.afterUuid,
+        })
+      } else if (e.bundle === 'icon') {
+        return addMutation('add', {
+          bundle: 'icon',
+          values: {
+            icon: [e.item.id],
+          },
+          hostEntityType: e.host.type,
+          hostEntityUuid: e.host.uuid,
+          hostField: e.host.fieldName,
+          preceedingUuid: e.afterUuid,
+        })
+      } else if (e.bundle === 'button') {
+        return addMutation('add', {
+          bundle: 'button',
+          values: {
+            icon: [e.item.id],
+          },
+          hostEntityType: e.host.type,
+          hostEntityUuid: e.host.uuid,
+          hostField: e.host.fieldName,
+          preceedingUuid: e.afterUuid,
+        })
+      } else if (e.bundle === 'card') {
+        return addMutation('add', {
+          bundle: 'card',
+          values: {
+            icon: [e.item.id],
           },
           hostEntityType: e.host.type,
           hostEntityUuid: e.host.uuid,
@@ -831,7 +898,7 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     mediaLibraryAddBlock(e) {
-      if (e.item.itemBundle === 'image') {
+      if (e.item.mediaBundle === 'image') {
         return addMutation('add', {
           bundle: 'image',
           values: {
@@ -842,11 +909,22 @@ export default defineBlokkliEditAdapter((ctx) => {
           hostField: e.host.fieldName,
           preceedingUuid: e.preceedingUuid,
         })
-      } else if (e.item.itemBundle === 'video') {
+      } else if (e.item.mediaBundle === 'video') {
         return addMutation('add', {
           bundle: 'video',
           values: {
             video: [e.item.mediaId],
+          },
+          hostEntityType: e.host.type,
+          hostEntityUuid: e.host.uuid,
+          hostField: e.host.fieldName,
+          preceedingUuid: e.preceedingUuid,
+        })
+      } else if (e.item.mediaBundle === 'icon') {
+        return addMutation('add', {
+          bundle: e.targetBundle,
+          values: {
+            icon: [e.item.mediaId],
           },
           hostEntityType: e.host.type,
           hostEntityUuid: e.host.uuid,
@@ -859,9 +937,9 @@ export default defineBlokkliEditAdapter((ctx) => {
     mediaLibraryAddBlocks(e) {
       const args: MutationAddArgs[] = e.items
         .map((item) => {
-          if (item.itemBundle === 'image') {
+          if (item.mediaBundle === 'image') {
             return {
-              bundle: 'image',
+              bundle: e.targetBundle,
               values: {
                 imageReference: [item.mediaId],
               },
@@ -870,11 +948,22 @@ export default defineBlokkliEditAdapter((ctx) => {
               hostField: e.host.fieldName,
               preceedingUuid: e.preceedingUuid,
             }
-          } else if (item.itemBundle === 'video') {
+          } else if (item.mediaBundle === 'video') {
             return {
-              bundle: 'video',
+              bundle: e.targetBundle,
               values: {
                 video: [item.mediaId],
+              },
+              hostEntityType: e.host.type,
+              hostEntityUuid: e.host.uuid,
+              hostField: e.host.fieldName,
+              preceedingUuid: e.preceedingUuid,
+            }
+          } else if (item.mediaBundle === 'icon') {
+            return {
+              bundle: e.targetBundle,
+              values: {
+                icon: [item.mediaId],
               },
               hostEntityType: e.host.type,
               hostEntityUuid: e.host.uuid,
@@ -912,7 +1001,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         hostEntityType: e.host.type,
         hostEntityUuid: e.host.uuid,
         hostField: e.host.fieldName,
-        preceedingUuid: e.preceedingUuid,
+        preceedingUuid: e.preceedingUuid ?? null,
       })
     },
 

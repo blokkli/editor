@@ -2,7 +2,7 @@
   <div
     :key="mediaId"
     class="bk-media-library-items-item"
-    :class="{ 'bk-is-selected': isSelected }"
+    :class="{ 'bk-is-selected': isSelected, 'bk-is-disabled': isDisabled }"
     :data-sortli-id="mediaId"
     data-element-type="media_library"
     :data-item-bundle="targetBundles[0]"
@@ -36,6 +36,7 @@ const props = defineProps<{
   thumbnail?: string
   icon?: BlokkliIcon
   mediaBundle?: string
+  isDisabled?: boolean
 }>()
 
 const selected = defineModel<string[]>()

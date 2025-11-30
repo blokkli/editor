@@ -54,6 +54,9 @@
           v-bind="item"
           v-model="selected"
           :class="'bk-is-' + listView"
+          :is-disabled="
+            !!firstSelectedBundle && item.mediaBundle !== firstSelectedBundle
+          "
         />
       </Sortli>
     </div>
@@ -193,6 +196,24 @@ const filters = computed<RenderedFilter[]>(() => {
   })
 })
 
+/**
+ * Determine the bundle of the first selected media library item during multi select.
+ *
+ * Currently it's only possible to multi select items of the same bundle.
+ */
+const firstSelectedBundle = computed(() => {
+  if (selected.value.length) {
+    const item = items.value.find((v) => v.mediaId === selected.value[0])
+    if (!item) {
+      return null
+    }
+
+    return item.mediaBundle ?? null
+  }
+
+  return null
+})
+
 const total = computed(() => data.value?.total || 0)
 const perPage = computed(() => data.value?.perPage || 0)
 
@@ -213,7 +234,7 @@ function buildItem(element: HTMLElement): DraggableMediaLibraryItem | null {
     itemType: 'media_library',
     mediaId: item.mediaId,
     mediaBundle: item.mediaBundle ?? '',
-    itemBundle: item.targetBundles[0] ?? '',
+    itemBundles: item.targetBundles,
     element: () => element,
   }
 }

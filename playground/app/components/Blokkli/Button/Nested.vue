@@ -2,12 +2,13 @@
   <Component
     :is="isExternal ? 'a' : NuxtLink"
     v-bind="attributes"
-    class="button shrink-0 grow-0 max-w-fit"
+    class="button shrink-0 grow-0 max-w-fit playground-button"
     :class="{
       'is-primary': options.color === 'primary',
       'is-inverted': options.color === 'normal' && isInverted,
     }"
   >
+    <Icon v-if="icon" :name="icon" />
     <span v-blokkli-editable:title>{{ title }}</span>
   </Component>
 </template>
@@ -15,6 +16,8 @@
 <script lang="ts" setup>
 import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
 import { NuxtLink } from '#components'
+import type { BlokkliIcon } from '#blokkli-build/icons'
+import { Icon } from '#blokkli/components'
 
 const { options } = defineBlokkli({
   bundle: 'button',
@@ -53,6 +56,7 @@ const { options } = defineBlokkli({
 const props = defineProps<{
   url: string
   title: string
+  icon?: BlokkliIcon
 }>()
 
 const injectedInverted = inject<ComputedRef<boolean> | null>('isInverted', null)

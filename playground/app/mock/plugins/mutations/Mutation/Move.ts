@@ -7,7 +7,7 @@ export type MutationMoveArgs = {
   hostEntityType: string
   hostEntityUuid: string
   hostField: string
-  preceedingUuid?: string
+  preceedingUuid?: string | null
 }
 
 export class MutationMove extends Mutation {

@@ -9,7 +9,7 @@ export type MutationDuplicateArgs = {
   hostEntityType?: string
   hostEntityUuid?: string
   hostField?: string
-  preceedingUuid?: string
+  preceedingUuid?: string | null
 }
 
 export class MutationDuplicate extends Mutation {

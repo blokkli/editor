@@ -33,6 +33,7 @@ import ShortcutIndicator from './ShortcutIndicator/index.vue'
 import Sortli from './Sortli/index.vue'
 import TransitionHeight from './Transition/Height.vue'
 import ViewportBlockingRect from './ViewportBlockingRect/index.vue'
+import BundleSelector from './BundleSelector/index.vue'
 
 export {
   AddListItem,
@@ -70,4 +71,5 @@ export {
   Sortli,
   TransitionHeight,
   ViewportBlockingRect,
+  BundleSelector,
 }

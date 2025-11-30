@@ -3,12 +3,13 @@
     <Component
       :is="isExternal ? 'a' : NuxtLink"
       v-bind="attributes"
-      class="button"
+      class="button playground-button"
       :class="{
         'is-primary': options.color === 'primary',
         'is-inverted': options.color === 'normal' && isInverted,
       }"
     >
+      <Icon v-if="icon" :name="icon" />
       <span v-blokkli-editable:title>{{ title }}</span>
     </Component>
   </div>
@@ -24,12 +25,13 @@
       :is="isExternal ? 'a' : NuxtLink"
       v-bind="attributes"
       ref="blokkliDraggable"
-      class="button"
+      class="button playground-button"
       :class="{
         'is-primary': options.color === 'primary',
         'is-inverted': options.color === 'normal' && isInverted,
       }"
     >
+      <Icon v-if="icon" :name="icon" />
       <span v-blokkli-editable:title>{{ title }}</span>
     </Component>
   </div>
@@ -38,6 +40,8 @@
 <script lang="ts" setup>
 import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
 import { NuxtLink } from '#components'
+import { Icon } from '#blokkli/components'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 
 const { options } = defineBlokkli({
   bundle: 'button',
@@ -72,6 +76,7 @@ const { options } = defineBlokkli({
 export type Props = {
   url: string
   title: string
+  icon?: BlokkliIcon
 }
 
 const props = defineProps<Props>()
@@ -95,3 +100,26 @@ const attributes = computed(() => {
   }
 })
 </script>
+
+<style lang="postcss">
+.playground-button {
+  @apply inline-flex gap-10 items-center;
+
+  &:has(.bk-icon) {
+    @apply pl-10;
+    .bk-icon {
+      @apply size-40 bg-accent-100 rounded-full text-accent-700 p-10 -my-10;
+
+      svg {
+        @apply fill-current;
+      }
+    }
+
+    &.is-primary {
+      .bk-icon {
+        @apply bg-accent-500 text-white;
+      }
+    }
+  }
+}
+</style>

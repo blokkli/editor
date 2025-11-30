@@ -564,6 +564,10 @@ msgctxt "downloadLogsButton"
 msgid "Download Logs"
 msgstr ""
 
+msgctxt "draggingOverlaySelectBundle"
+msgid "Select block type to create"
+msgstr ""
+
 msgctxt "duplicate"
 msgid "Duplicate"
 msgstr "Duplica"
