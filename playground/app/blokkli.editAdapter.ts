@@ -242,10 +242,7 @@ export default defineBlokkliEditAdapter((ctx) => {
     return []
   }
 
-  const mediaLibraryGetResults: GetMediaLibraryFunction<{
-    bundle: 'select'
-    text: 'text'
-  }> = (e) => {
+  const mediaLibraryGetResults: GetMediaLibraryFunction = (e) => {
     const perPage = 16
     const bundle = e.filters.bundle
     const allItems: MediaLibraryItem[] = entityStorageManager
@@ -273,23 +270,41 @@ export default defineBlokkliEditAdapter((ctx) => {
 
     const items = allItems.slice(e.page * perPage, e.page * perPage + perPage)
     return Promise.resolve({
-      filters: {
-        text: {
+      filters: [
+        {
           type: 'text',
+          name: 'text',
           label: 'Text',
           placeholder: 'Enter a search term',
+          required: false,
         },
-        bundle: {
-          type: 'select',
+        {
+          type: 'options',
+          variant: 'select',
+          name: 'bundle',
           label: 'Bundle',
-          default: 'image',
-          options: {
-            all: 'All',
-            image: 'Image',
-            video: 'Video',
-          },
+          defaultValue: 'all',
+          required: false,
+          options: [
+            {
+              value: 'all',
+              label: 'All',
+            },
+            {
+              value: 'image',
+              label: 'Image',
+            },
+            {
+              value: 'video',
+              label: 'Video',
+            },
+            {
+              value: 'icon',
+              label: 'Icon',
+            },
+          ],
         },
-      },
+      ],
       items,
       total: allItems.length,
       perPage,
@@ -580,6 +595,7 @@ export default defineBlokkliEditAdapter((ctx) => {
 
       const perPage = 2
       const offset = data.page * perPage
+      const text = (data.filters.text ?? '').toLocaleLowerCase()
 
       const items: LibraryItem[] = libraryItems
         .map((item) => {
@@ -590,9 +606,13 @@ export default defineBlokkliEditAdapter((ctx) => {
           if (!data.bundles.includes(block.bundle)) {
             return
           }
+          const label = item.title()
+          if (text && !label.toLocaleLowerCase().includes(text)) {
+            return
+          }
           return {
             uuid: item.uuid,
-            label: item.title(),
+            label,
             bundle: block.bundle,
             item: mapBlockItem(block),
           }
@@ -603,6 +623,15 @@ export default defineBlokkliEditAdapter((ctx) => {
         items: items.slice(offset, offset + perPage),
         total: items.length,
         perPage,
+        filters: [
+          {
+            type: 'text',
+            name: 'text',
+            label: 'Text',
+            placeholder: 'Enter a search term',
+            required: false,
+          },
+        ],
       })
     },
 
@@ -1116,8 +1145,10 @@ export default defineBlokkliEditAdapter((ctx) => {
           items: [],
           total: 0,
           perPage: 16,
+          filters: []
         })
       }
+
       return Promise.resolve({
         items: [
           {
@@ -1174,6 +1205,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         ],
         total: 3,
         perPage: 16,
+        filters: [],
       })
     },
 

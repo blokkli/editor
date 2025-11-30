@@ -52,5 +52,8 @@ query pbSearchEditStates($page: Int) {
         bundleLabel
       }
     }
+    filters {
+      ...paragraphsBlokkliConfigInput
+    }
   }
 }

@@ -1,5 +1,8 @@
-query pbMediaLibraryGetResults($text: String, $bundle: String, $page: Int) {
-  pbMediaLibraryGetResults(text: $text, bundle: $bundle, page: $page) {
+query pbMediaLibraryGetResults(
+  $page: Int
+  $filters: [ParagraphsBlokkliUserConfigInput]
+) {
+  pbMediaLibraryGetResults(page: $page, filters: $filters) {
     items {
       label
       mediaId
@@ -11,18 +14,7 @@ query pbMediaLibraryGetResults($text: String, $bundle: String, $page: Int) {
     total
     perPage
     filters {
-      __typename
-      id
-      label
-      type
-      ... on ParagraphsBlokkliMediaLibraryFilterText {
-        placeholder
-      }
-
-      ... on ParagraphsBlokkliMediaLibraryFilterSelect {
-        default
-        options
-      }
+      ...paragraphsBlokkliConfigInput
     }
   }
 }

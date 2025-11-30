@@ -9,36 +9,33 @@
           <Icon :name="listViewIcon" />
         </button>
       </div>
-      <div v-for="filter in filters" :key="filter.key">
-        <label v-if="filter.filter.type === 'text'" class="bk-form-text">
+      <div v-for="filter in filters" :key="filter.name">
+        <label v-if="filter.type === 'text'" class="bk-form-text">
           <Icon name="search" />
           <input
-            v-model.lazy="filterValues[filter.key]"
+            v-model.lazy="filterValues[filter.name]"
             type="text"
-            :placeholder="filter.filter.placeholder"
+            :placeholder="filter.placeholder"
           />
         </label>
-        <label
-          v-else-if="filter.filter.type === 'select'"
-          class="bk-form-select"
-        >
-          <div v-if="!filterValues[filter.key]">
-            {{ Object.values(filter.filter.options)[0] }}
+        <label v-else-if="filter.type === 'options'" class="bk-form-select">
+          <div v-if="!filterValues[filter.name]">
+            {{ filter.label }}
           </div>
-          <select v-model="filterValues[filter.key]">
+          <select v-model="filterValues[filter.name]">
             <option
-              v-for="option in Object.entries(filter.filter.options)"
-              :key="option[0]"
-              :value="option[0]"
+              v-for="option in filter.options"
+              :key="option.value"
+              :value="option.value"
             >
-              {{ option[1] }}
+              {{ option.label }}
             </option>
           </select>
         </label>
         <FormToggle
-          v-else-if="filter.filter.type === 'checkbox'"
-          v-model="filterValues[filter.key]"
-          :label="filter.filter.label"
+          v-else-if="filter.type === 'checkbox'"
+          v-model="filterValues[filter.name]"
+          :label="filter.label"
         />
       </div>
     </div>
@@ -82,10 +79,13 @@ import {
   useTemplateRef,
 } from '#imports'
 import { Sortli, Icon, Pagination, FormToggle } from '#blokkli/components'
-import type { MediaLibraryFilter, MediaLibraryGetResults } from './../types'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import Item from './Item.vue'
-import type { DraggableItem, DraggableMediaLibraryItem } from '#blokkli/types'
+import type {
+  DraggableItem,
+  DraggableMediaLibraryItem,
+  PluginConfigInput,
+} from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
@@ -142,11 +142,6 @@ function getDragItems(activeItem?: DraggableItem): DraggableItem[] | null {
   return null
 }
 
-type RenderedFilter = {
-  key: string
-  filter: MediaLibraryFilter
-}
-
 const listView = storage.use<'horizontal' | 'grid'>(
   'mediaLibraryListView',
   'grid',
@@ -170,16 +165,15 @@ watch(key, () => {
   page.value = 0
 })
 
-const { data, status } =
-  await useLazyAsyncData<MediaLibraryGetResults<any> | null>(
-    () => {
-      return adapter.mediaLibraryGetResults!({
-        filters: filterValues.value,
-        page: page.value,
-      })
-    },
-    { watch: [key, page] },
-  )
+const { data, status } = await useLazyAsyncData(
+  () => {
+    return adapter.mediaLibraryGetResults!({
+      filters: filterValues.value,
+      page: page.value,
+    })
+  },
+  { watch: [key, page] },
+)
 
 watch(data, () => {
   nextTick(() => {
@@ -190,10 +184,8 @@ watch(data, () => {
 })
 
 const items = computed(() => data.value?.items || [])
-const filters = computed<RenderedFilter[]>(() => {
-  return Object.entries(data.value?.filters || {}).map(([key, filter]) => {
-    return { key, filter }
-  })
+const filters = computed<PluginConfigInput[]>(() => {
+  return data.value?.filters ?? []
 })
 
 /**

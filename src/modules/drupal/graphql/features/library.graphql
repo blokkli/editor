@@ -40,14 +40,21 @@ mutation pbDetachReusableParagraph(
   }
 }
 
-query pbLibraryItems($bundles: [String]!, $page: Int, $text: String) {
+query pbLibraryItems(
+  $bundles: [String]!
+  $page: Int
+  $filters: [ParagraphsBlokkliUserConfigInput]
+) {
   result: paragraphsBlokkliSearchLibraryItems(
     bundles: $bundles
-    text: $text
     page: $page
+    filters: $filters
   ) {
     perPage
     total
+    filters {
+      ...paragraphsBlokkliConfigInput
+    }
     items {
       ...paragraphsBlokkliLibraryItem
     }

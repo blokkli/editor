@@ -5800,6 +5800,7 @@ type ParagraphsBlokkliEditState implements Entity & EntityLinkable {
 }
 
 type ParagraphsBlokkliEditStatesResults {
+  filters: [ParagraphsBlokkliConfigInput!]!
   items: [ParagraphsBlokkliEditState!]
   perPage: Int!
   total: Int!
@@ -5859,6 +5860,7 @@ type ParagraphsBlokkliImportSourceEntity {
 }
 
 type ParagraphsBlokkliLibraryItemsSearchResults {
+  filters: [ParagraphsBlokkliConfigInput!]!
   items: [ParagraphsLibraryItem]
   perPage: Int!
   total: Int!
@@ -5874,29 +5876,8 @@ type ParagraphsBlokkliMediaItem {
   thumbnail: String
 }
 
-interface ParagraphsBlokkliMediaLibraryFilter {
-  id: String!
-  label: String!
-  type: String!
-}
-
-type ParagraphsBlokkliMediaLibraryFilterSelect implements ParagraphsBlokkliMediaLibraryFilter {
-  default: String!
-  id: String!
-  label: String!
-  options: MapData
-  type: String!
-}
-
-type ParagraphsBlokkliMediaLibraryFilterText implements ParagraphsBlokkliMediaLibraryFilter {
-  id: String!
-  label: String!
-  placeholder: String!
-  type: String!
-}
-
 type ParagraphsBlokkliMediaLibraryResults {
-  filters: [ParagraphsBlokkliMediaLibraryFilter!]
+  filters: [ParagraphsBlokkliConfigInput!]!
   items: [ParagraphsBlokkliMediaItem]
   perPage: Int!
   total: Int!
@@ -6243,6 +6224,9 @@ type ParagraphsEditMutationState {
 
     """The ID of the media image."""
     id: String!
+
+    """The paragraph bundle to use (optional)."""
+    paragraphBundle: String
   ): ParagraphsBlokkliMutationResult
 
   """Adds a new paragraph of type video for an ID"""
@@ -6261,6 +6245,9 @@ type ParagraphsEditMutationState {
 
     """The ID of the media video."""
     id: String!
+
+    """The paragraph bundle to use (optional)."""
+    paragraphBundle: String
   ): ParagraphsBlokkliMutationResult
 
   """Add a reusable paragraph."""
@@ -6339,6 +6326,9 @@ type ParagraphsEditMutationState {
 
     """The UUID of the target host."""
     hostUuid: String!
+
+    """The paragraph bundle to use (optional)."""
+    paragraphBundle: String
 
     """The video URL."""
     url: String!
@@ -6772,7 +6762,7 @@ type Query {
   paragraphsBlokkliGetHostTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliHostTransformPlugin!]
   paragraphsBlokkliGetTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliTransformPlugin!]
   paragraphsBlokkliSearch(id: String, text: String!): [ParagraphsBlokkliSearchItem]
-  paragraphsBlokkliSearchLibraryItems(bundles: [String]!, page: Int, text: String): ParagraphsBlokkliLibraryItemsSearchResults
+  paragraphsBlokkliSearchLibraryItems(bundles: [String]!, filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliLibraryItemsSearchResults
   paragraphsBlokkliSearchTabs: [ParagraphsBlokkliSearchTab]
   pbGetDroppableFieldConfig(entityBundle: String!, entityType: String!): [ParagraphsBlokkliDroppableFieldConfig!]
   pbGetEditableFieldConfig(entityBundle: String!, entityType: String!): [ParagraphsBlokkliEditableFieldConfig!]
@@ -6785,8 +6775,8 @@ type Query {
   pbGetImportSourceEntities(entityType: String!, entityUuid: String!, searchText: String): ParagraphsBlokkliImportSourceEntities
   pbGetSupportedClipboards: [ParagraphsBlokkliSupportedClipboard!]
   pbGetUrlPrefixes: [ParagraphsBuilderUrlPrefix!]!
-  pbMediaLibraryGetResults(bundle: String, page: Int, text: String): ParagraphsBlokkliMediaLibraryResults
-  pbSearchEditStates(page: Int): ParagraphsBlokkliEditStatesResults
+  pbMediaLibraryGetResults(filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliMediaLibraryResults
+  pbSearchEditStates(filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliEditStatesResults
   ping: String
   requestHeaders: [RequestHeader!]
   route(path: String!): Url

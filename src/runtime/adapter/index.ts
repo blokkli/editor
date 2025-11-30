@@ -33,9 +33,9 @@ import type {
   UpdateHostOptionEvent,
   HostTransformPlugin,
   PluginConfigInputItem,
+  PluginConfigInput,
 } from './../types'
 import type getVideoId from 'get-video-id'
-
 import type { GetMediaLibraryFunction } from './../components/Edit/Features/MediaLibrary/types'
 import type { Analyzer } from '#blokkli/analyzer/types'
 
@@ -204,13 +204,14 @@ export type ClipboardMapBundleEvent =
 export type BlokkliAdapterGetLibraryItemsData = {
   bundles: string[]
   page: number
-  text: string
+  filters: Record<string, any>
 }
 
 export type BlokkliAdapterSearchResults<T> = {
   items: T[]
   total: number
   perPage: number
+  filters: PluginConfigInput[]
 }
 
 export type BlokkliAdapterGetLibraryItemsResult =
@@ -689,7 +690,7 @@ export interface BlokkliAdapter<T> {
   /**
    * Return the media library results and filters using the given selected filter.
    */
-  mediaLibraryGetResults?: GetMediaLibraryFunction<any>
+  mediaLibraryGetResults?: GetMediaLibraryFunction
 
   /**
    * Create a new block from the given media library item.

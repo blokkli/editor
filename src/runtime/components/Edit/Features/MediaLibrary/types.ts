@@ -1,34 +1,5 @@
 import type { BlokkliIcon } from '#blokkli-build/icons'
-
-export type MediaLibraryFilterCheckbox = {
-  label: string
-  type: 'checkbox'
-}
-
-export type MediaLibraryFilterCheckboxes = {
-  label: string
-  type: 'checkboxes'
-  options: Record<string, string>
-}
-
-export type MediaLibraryFilterText = {
-  label: string
-  type: 'text'
-  placeholder: string
-}
-
-export type MediaLibraryFilterSelect = {
-  label: string
-  type: 'select'
-  default: string
-  options: Record<string, string>
-}
-
-export type MediaLibraryFilter =
-  | MediaLibraryFilterCheckbox
-  | MediaLibraryFilterCheckboxes
-  | MediaLibraryFilterText
-  | MediaLibraryFilterSelect
+import type { PluginConfigInput } from '#blokkli/types'
 
 export type MediaLibraryItem = {
   mediaId: string
@@ -43,41 +14,18 @@ export type MediaLibraryItem = {
 export type FilterTypes = 'checkbox' | 'checkboxes' | 'text' | 'select'
 
 // Extend MediaLibraryGetResults to be generic
-export type MediaLibraryGetResults<F extends Record<string, FilterTypes>> = {
-  filters: {
-    [K in keyof F]: F[K] extends 'checkbox'
-      ? MediaLibraryFilterCheckbox
-      : F[K] extends 'checkboxes'
-        ? MediaLibraryFilterCheckboxes
-        : F[K] extends 'text'
-          ? MediaLibraryFilterText
-          : MediaLibraryFilterSelect
-  }
+export type MediaLibraryGetResults = {
+  filters: PluginConfigInput[]
   items: MediaLibraryItem[]
   total: number
   perPage: number
 }
 
-// Define a mapping from filter types to data types
-type FilterValueTypes = {
-  checkbox: boolean
-  checkboxes: string[]
-  text: string
-  select: string
+export type MediaLibraryGetResultsData = {
+  page: number
+  filters: Record<string, any>
 }
 
-export type MediaLibraryGetResultsData<F extends Record<string, FilterTypes>> =
-  {
-    page: number
-    filters: {
-      [K in keyof F]: FilterValueTypes[F[K]]
-    }
-  }
-
-export type FilterTypeMapping = {
-  [key in FilterTypes]: MediaLibraryFilter
-}
-
-export type GetMediaLibraryFunction<
-  F extends Record<string, FilterTypes> = Record<string, FilterTypes>,
-> = (e: MediaLibraryGetResultsData<F>) => Promise<MediaLibraryGetResults<F>>
+export type GetMediaLibraryFunction = (
+  e: MediaLibraryGetResultsData,
+) => Promise<MediaLibraryGetResults>

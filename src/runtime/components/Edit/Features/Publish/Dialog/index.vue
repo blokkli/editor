@@ -412,6 +412,7 @@ const { data: editStates } = await useAsyncData(
       items: [],
       perPage: 16,
       total: 0,
+      filters: [],
     })
   },
   {
@@ -420,6 +421,7 @@ const { data: editStates } = await useAsyncData(
         items: [],
         perPage: 16,
         total: 0,
+        filters: [],
       }
     },
   },

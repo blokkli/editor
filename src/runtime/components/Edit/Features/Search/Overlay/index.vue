@@ -95,7 +95,7 @@ type SearchComponent =
 
 const searchComponents = ref<SearchComponent[]>([])
 
-const focusInput = () => {
+function focusInput() {
   if (input.value) {
     input.value.focus()
     input.value.select()

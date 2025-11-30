@@ -23,6 +23,7 @@ import type {
   ParagraphsBlokkliConfigInputFragment,
   ParagraphsBlokkliEditStateFragment,
   ParagraphsBlokkliPublishOptionsFragment,
+  ParagraphsBlokkliUserConfigInput,
 } from '#graphql-operations'
 import { ParagraphsBlokkliRemoteVideoProvider } from '#graphql-operations'
 import type { Mutation, Query } from '#nuxt-graphql-middleware/operation-types'
@@ -41,6 +42,21 @@ function mapPublishOptions(
     publishOn: publishOptions.publishOn ?? null,
     revisionLogMessage: publishOptions.revisionLogMessage ?? null,
   }
+}
+
+function configObjectToUserConfigInput(
+  values?: Record<string, any>,
+): ParagraphsBlokkliUserConfigInput[] {
+  if (!values) {
+    return []
+  }
+
+  return Object.entries(values).map(([name, value]) => {
+    return {
+      name,
+      value,
+    }
+  })
 }
 
 function mapPluginConfigInputs(
@@ -683,7 +699,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       adapter.getLibraryItems = (data) => {
         return useGraphqlQuery('pbLibraryItems', {
           bundles: data.bundles,
-          text: data.text,
+          filters: configObjectToUserConfigInput(data.filters),
           page: data.page,
         }).then((response) => {
           const items =
@@ -709,6 +725,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             items,
             perPage: response.data.result?.perPage || 16,
             total: response.data.result?.total || 0,
+            filters: mapPluginConfigInputs(response.data.result?.filters ?? []),
           }
         })
       }
@@ -863,35 +880,13 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     if (hasQuery('pbMediaLibraryGetResults')) {
       adapter.mediaLibraryGetResults = (e) => {
         return useGraphqlQuery('pbMediaLibraryGetResults', {
-          text: e.filters.text,
-          bundle: e.filters.bundle,
+          filters: configObjectToUserConfigInput(e.filters),
           page: e.page,
         }).then((data) => {
           return {
-            filters: (data.data.pbMediaLibraryGetResults?.filters || []).reduce<
-              Record<any, any>
-            >((acc, filter) => {
-              if (
-                filter?.__typename === 'ParagraphsBlokkliMediaLibraryFilterText'
-              ) {
-                acc[filter.id] = {
-                  type: 'text',
-                  placeholder: filter.placeholder,
-                  label: filter.label,
-                }
-              } else if (
-                filter?.__typename ===
-                'ParagraphsBlokkliMediaLibraryFilterSelect'
-              ) {
-                acc[filter.id] = {
-                  type: 'select',
-                  label: filter.label,
-                  default: filter.default,
-                  options: filter.options,
-                }
-              }
-              return acc
-            }, {} as any),
+            filters: mapPluginConfigInputs(
+              data.data.pbMediaLibraryGetResults?.filters ?? [],
+            ),
             items: (data.data.pbMediaLibraryGetResults?.items || []).filter(
               falsy,
             ),
@@ -1086,6 +1081,9 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
               .filter(falsy),
             total: data.data.pbSearchEditStates?.total || 0,
             perPage: data.data.pbSearchEditStates?.perPage || 0,
+            filters: mapPluginConfigInputs(
+              data.data.pbSearchEditStates?.filters ?? [],
+            ),
           }
         })
       }

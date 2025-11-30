@@ -17,20 +17,7 @@
         </p>
         <div class="bk">
           <div class="bk-form-group">
-            <FormItem>
-              <FormText
-                id="library_search"
-                v-model.lazy="searchText"
-                :label="$t('libraryPlaceSearchLabel', 'Filter library items')"
-                :placeholder="
-                  $t(
-                    'libraryPlaceSearchInputPlaceholder',
-                    'Search library items',
-                  )
-                "
-                required
-              />
-            </FormItem>
+            <ConfigForm v-model="filters" :config />
             <FormItem>
               <FormSelect
                 id="library_bundle"
@@ -78,9 +65,9 @@ import type {
 import {
   FormOverlay,
   Pagination,
-  FormText,
   FormItem,
   FormSelect,
+  ConfigForm,
 } from '#blokkli/components'
 import Loading from './../../../Loading/index.vue'
 import type { BlokkliFieldElement, FieldConfig } from '#blokkli/types'
@@ -90,7 +77,7 @@ import {
   useAsyncData,
   computed,
   watch,
-  useTemplateRef,
+  reactive,
 } from '#imports'
 import LibraryListItem from './Item/index.vue'
 
@@ -105,9 +92,8 @@ const emit = defineEmits<{
   (e: 'submit', uuid: string): void
 }>()
 
-const searchText = ref('')
+const filters = reactive<Record<string, any>>({})
 const selectedBundle = ref('all')
-const listEl = useTemplateRef('listEl')
 const selectedItem = ref('')
 const page = ref(0)
 
@@ -138,11 +124,11 @@ const searchParams = computed<BlokkliAdapterGetLibraryItemsData>(() => {
         ? [selectedBundle.value]
         : allowedBundles.value,
     page: page.value,
-    text: searchText.value,
+    filters: { ...filters },
   }
 })
 
-watch(searchText, function () {
+watch(filters, function () {
   page.value = 0
 })
 
@@ -154,6 +140,7 @@ const { data, status } =
       default: () => {
         return {
           items: [],
+          filters: [],
           total: 0,
           perPage: 50,
         }
@@ -163,6 +150,8 @@ const { data, status } =
 
 const perPage = computed(() => data.value.perPage)
 const totalPages = computed(() => Math.ceil(data.value.total / perPage.value))
+
+const config = computed(() => data.value.filters)
 
 const items = computed(() => data.value.items)
 
