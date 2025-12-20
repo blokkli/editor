@@ -79,7 +79,7 @@ import {
 import {
   INJECT_ENTITY_CONTEXT,
   INJECT_PROVIDER_CONTEXT,
-} from '../helpers/symbols'
+} from '../helpers/injections'
 import type {
   BlokkliProviderEntityContext,
   EditPermission,

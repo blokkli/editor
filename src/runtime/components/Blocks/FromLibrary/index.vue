@@ -15,7 +15,7 @@ import {
   INJECT_IS_IN_REUSABLE,
   INJECT_REUSABLE_OPTIONS,
   INJECT_REUSABLE_UUID,
-} from '#blokkli/helpers/symbols'
+} from '#blokkli/helpers/injections'
 import type { LibraryItemProps } from '#blokkli/types'
 
 export type Props = {

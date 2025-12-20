@@ -2,12 +2,12 @@ import {
   INJECT_EDIT_CONTEXT,
   INJECT_MUTATED_FIELDS_MAP,
   INJECT_PROVIDER_BLOCKS,
-} from '#blokkli/helpers/symbols'
+} from '#blokkli/helpers/injections'
 import { inject, type ComputedRef, computed, watch, ref } from '#imports'
 import { FIELD_MAPPING } from '#blokkli-build/runtime-options'
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 import { getActualBlock } from '#blokkli/helpers/runtimeHelpers'
-import type { ItemEditContext, MutatedField } from '#blokkli/types'
+import type { MutatedField } from '#blokkli/types'
 
 type BundleWithoutLibrary = Exclude<
   FieldListItemTyped['bundle'],
@@ -48,7 +48,7 @@ function walkBlocks(
   matches: FieldListItemTyped[],
   callback: (item: FieldListItemTyped) => CallbackResult,
   mutatedOptions: Record<string, any>,
-  mutatedFieldsMap?: Record<string, MutatedField> | null,
+  mutatedFieldsMap?: Record<string, MutatedField | undefined> | null,
   list?: Array<FieldListItemTyped | null | undefined | object>,
 ) {
   if (!list) return
@@ -115,18 +115,12 @@ function walkBlocks(
 }
 
 export function useBlokkliHelper(): UseBlokkliHelper {
-  const rootBlocks = inject<ComputedRef<FieldListItemTyped[]> | null>(
-    INJECT_PROVIDER_BLOCKS,
-    null,
-  )
+  const rootBlocks = inject(INJECT_PROVIDER_BLOCKS, null)
 
-  const editContext = inject<ItemEditContext | null>(INJECT_EDIT_CONTEXT, null)
+  const editContext = inject(INJECT_EDIT_CONTEXT, null)
   const mutatedOptions = ref<Record<string, any>>({})
 
-  const mutatedFields = inject<Record<string, MutatedField> | null>(
-    INJECT_MUTATED_FIELDS_MAP,
-    null,
-  )
+  const mutatedFields = inject(INJECT_MUTATED_FIELDS_MAP, null)
 
   // @todo: This is a dirty workaround during editing. The mutatedOptions
   // from editContext are not reactive when used in a computed property.

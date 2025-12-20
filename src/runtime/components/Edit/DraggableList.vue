@@ -76,7 +76,7 @@ import { isVisibleByOptions } from '#blokkli/helpers/runtimeHelpers'
 import {
   INJECT_FIELD_PROXY_MODE,
   INJECT_IS_EDITING,
-} from '#blokkli/helpers/symbols'
+} from '#blokkli/helpers/injections'
 import type {
   FieldListItemTyped,
   ValidFieldListTypes,

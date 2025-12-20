@@ -204,7 +204,7 @@ const close = async () => {
   }
 }
 
-const blockDefinition = computed<BlockBundleDefinition | null>(() => {
+const _blockDefinition = computed<BlockBundleDefinition | null>(() => {
   if (props.host.type === itemEntityType) {
     return types.getBlockBundleDefinition(props.host.bundle) ?? null
   }

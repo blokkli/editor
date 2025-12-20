@@ -67,12 +67,7 @@ import {
   watch,
   useTemplateRef,
 } from '#imports'
-import type {
-  BlokkliApp,
-  EditPermission,
-  EntityContext,
-  ItemEditContext,
-} from '#blokkli/types'
+import type { BlokkliApp, EditPermission, EntityContext } from '#blokkli/types'
 import Toolbar from './Toolbar/index.vue'
 import Actions from './Actions/index.vue'
 import Loading from './Loading/index.vue'
@@ -122,7 +117,7 @@ import {
   INJECT_IS_EDITING,
   INJECT_ITEM_PROPS_OVERRIDE,
   INJECT_PROVIDER_KEY,
-} from '#blokkli/helpers/symbols'
+} from '#blokkli/helpers/injections'
 import type { AdapterContext } from '#blokkli/adapter'
 import { useBlockRegistration } from '#blokkli/helpers/composables/useBlockRegistration'
 import { addElementClasses } from '#blokkli/helpers/composables/addElementClasses'
@@ -302,7 +297,7 @@ provide(INJECT_ALL_COMPONENTS_CHUNK, allComponents)
 // async every time.
 provide(INJECT_EDIT_FIELD_LIST_COMPONENT, DraggableList)
 provide(INJECT_IS_EDITING, true)
-provide<ItemEditContext>(INJECT_EDIT_CONTEXT, {
+provide(INJECT_EDIT_CONTEXT, {
   eventBus,
   mutatedOptions: state.mutatedOptions,
   dom,
@@ -339,7 +334,7 @@ const app: BlokkliApp = {
   fields,
 }
 
-provide<BlokkliApp>(INJECT_APP, app)
+provide(INJECT_APP, app)
 
 function textWithHighlight(title: string, text: string): string {
   return `<strong>${title}</strong> ${text}`

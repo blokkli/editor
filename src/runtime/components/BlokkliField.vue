@@ -53,24 +53,13 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  useAttrs,
-  inject,
-  provide,
-  ref,
-  type ComputedRef,
-} from '#imports'
+import { computed, useAttrs, inject, provide, ref } from '#imports'
 import type { BlokkliFragmentName } from '#blokkli-build/definitions'
 import { isVisibleByOptions } from '#blokkli/helpers/runtimeHelpers'
 import BlokkliItem from './BlokkliItem.vue'
 
 import type {
   FieldListItem,
-  MutatedField,
-  EntityContext,
-  ItemEditContext,
-  BlokkliProviderEntityContext,
   FieldDropAlignment,
   VueClassProp,
 } from '#blokkli/types'
@@ -95,8 +84,7 @@ import {
   INJECT_FIELD_PROXY_MODE,
   INJECT_GLOBAL_PROXY_MODE,
   INJECT_FIELD_USES_PROXY,
-} from '../helpers/symbols'
-import type DraggableListComponent from './Edit/DraggableList.vue'
+} from '../helpers/injections'
 
 if (import.meta.hot) {
   import.meta.hot.accept('#blokkli/helpers/runtimeHelpers', () => {})
@@ -191,10 +179,7 @@ const props = withDefaults(
   },
 )
 
-const DraggableList = inject<typeof DraggableListComponent | null>(
-  INJECT_EDIT_FIELD_LIST_COMPONENT,
-  null,
-)
+const DraggableList = inject(INJECT_EDIT_FIELD_LIST_COMPONENT, null)
 
 const attrs = useAttrs()
 
@@ -208,28 +193,20 @@ defineSlots<{
 }>()
 
 const isEditing = inject(INJECT_IS_EDITING, false)
-const isGlobalProxyMode = inject<ComputedRef<boolean> | null>(
-  INJECT_GLOBAL_PROXY_MODE,
-  null,
-)
+const isGlobalProxyMode = inject(INJECT_GLOBAL_PROXY_MODE, null)
 const isInReusable = inject(INJECT_IS_IN_REUSABLE, false)
-const isPreview = inject<ComputedRef<boolean> | null>(INJECT_IS_PREVIEW, null)
+const isPreview = inject(INJECT_IS_PREVIEW, null)
 const isNested = inject(INJECT_IS_NESTED, false)
-const nestingLevel = inject<number>(INJECT_NESTING_LEVEL, 0)
-const mutatedFields = inject<Record<string, MutatedField> | null>(
-  INJECT_MUTATED_FIELDS_MAP,
-  null,
-)
-const editContext = inject<ItemEditContext | null>(INJECT_EDIT_CONTEXT, null)
-const entity = inject<EntityContext>(INJECT_ENTITY_CONTEXT)
+const nestingLevel = inject(INJECT_NESTING_LEVEL, 0)
+const mutatedFields = inject(INJECT_MUTATED_FIELDS_MAP, null)
+const editContext = inject(INJECT_EDIT_CONTEXT, null)
+const entity = inject(INJECT_ENTITY_CONTEXT)
 
 if (!entity) {
   throw new Error('Missing entity context.')
 }
 
-const providerEntity = inject<ComputedRef<BlokkliProviderEntityContext>>(
-  INJECT_PROVIDER_CONTEXT,
-)!
+const providerEntity = inject(INJECT_PROVIDER_CONTEXT)!
 
 if (!providerEntity) {
   throw new Error(

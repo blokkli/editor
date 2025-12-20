@@ -1,13 +1,12 @@
 import {
   INJECT_EDIT_CONTEXT,
   INJECT_FRAGMENT_CONTEXT,
-} from '../helpers/symbols'
+} from '../helpers/injections'
 import { inject, computed } from '#imports'
 import type {
   BlockDefinitionOptionsInput,
   DefineBlokkliContext,
   FragmentDefinitionInput,
-  ItemEditContext,
 } from '#blokkli/types'
 import type { GlobalOptionsKey } from '#blokkli-build/generated-types'
 
@@ -17,10 +16,7 @@ export function defineBlokkliFragment<
 >(_config: FragmentDefinitionInput<T, G>): DefineBlokkliContext<T, G> {
   // Provided by the <BlokkliFragment> component.
   // All context logic is handled by its defineBlokkli.
-  const ctx = inject<DefineBlokkliContext<T, G> | null>(
-    INJECT_FRAGMENT_CONTEXT,
-    null,
-  )
+  const ctx = inject(INJECT_FRAGMENT_CONTEXT, null)
 
   // Can be the case if the fragment component is rendered standalone.
   if (!ctx) {
@@ -37,7 +33,7 @@ export function defineBlokkliFragment<
     }
   }
 
-  const editContext = inject<ItemEditContext | null>(INJECT_EDIT_CONTEXT, null)
+  const editContext = inject(INJECT_EDIT_CONTEXT, null)
 
   if (editContext?.dom && editContext.useBlockRegistration) {
     editContext.useBlockRegistration(editContext.dom, ctx.uuid)

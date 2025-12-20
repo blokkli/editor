@@ -155,6 +155,7 @@ export class CollectedBlockFile extends CollectedFile {
         const result = parseTsObject<ExtractedDefinition>(
           this.objectLiteralString,
         )
+        // @ts-expect-error Need to refactor types, as the extracted provider definition is not compatible.
         this.definition = result.object
         this.definitionSource = result.source
       }

@@ -5,7 +5,7 @@ import type {
   ProviderDefinitionInput,
 } from '#blokkli/types'
 import type { GlobalOptionsKey } from '#blokkli-build/generated-types'
-import { INJECT_PROVIDER_KEY } from '#blokkli/helpers/symbols'
+import { INJECT_PROVIDER_KEY } from '#blokkli/helpers/injections'
 import {
   OPTIONS,
   type RuntimeBlockOptionArray,

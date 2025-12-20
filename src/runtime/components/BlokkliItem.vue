@@ -29,14 +29,8 @@ import {
   useRuntimeConfig,
   inject,
   defineAsyncComponent,
-  type ComputedRef,
-  type Component,
 } from '#imports'
-import type {
-  BlockEditContext,
-  InjectedBlokkliItem,
-  MutatedItemProps,
-} from '#blokkli/types'
+import type { BlockEditContext, InjectedBlokkliItem } from '#blokkli/types'
 import { getComponent } from '#blokkli/helpers/imports'
 import {
   INJECT_ALL_COMPONENTS_CHUNK,
@@ -47,11 +41,8 @@ import {
   INJECT_FIELD_USES_PROXY,
   INJECT_GLOBAL_PROXY_MODE,
   INJECT_ITEM_PROPS_OVERRIDE,
-} from '../helpers/symbols'
-import type {
-  BlockBundleWithNested,
-  ValidFieldListTypes,
-} from '#blokkli-build/generated-types'
+} from '../helpers/injections'
+import type { BlockBundleWithNested } from '#blokkli-build/generated-types'
 
 const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
 
@@ -81,24 +72,11 @@ const componentProps = withDefaults(
 )
 
 const isProxyMode = inject(INJECT_FIELD_PROXY_MODE, false)
-const mutatedItemProps = inject<MutatedItemProps | null>(
-  INJECT_ITEM_PROPS_OVERRIDE,
-  null,
-)
-const allComponentsChunk = inject<Record<string, Component> | null>(
-  INJECT_ALL_COMPONENTS_CHUNK,
-  null,
-)
+const mutatedItemProps = inject(INJECT_ITEM_PROPS_OVERRIDE, null)
+const allComponentsChunk = inject(INJECT_ALL_COMPONENTS_CHUNK, null)
 const fieldUsesProxy = inject(INJECT_FIELD_USES_PROXY, false)
-const isGlobalProxyMode = inject<ComputedRef<boolean> | null>(
-  INJECT_GLOBAL_PROXY_MODE,
-  null,
-)
-
-const fieldListType = inject<ComputedRef<ValidFieldListTypes> | undefined>(
-  INJECT_FIELD_LIST_TYPE,
-  undefined,
-)
+const isGlobalProxyMode = inject(INJECT_GLOBAL_PROXY_MODE, null)
+const fieldListType = inject(INJECT_FIELD_LIST_TYPE, undefined)
 
 const itemProps = computed(() => {
   if (mutatedItemProps) {
@@ -142,7 +120,7 @@ const item = computed<InjectedBlokkliItem>(() => ({
       : undefined,
 }))
 
-provide<ComputedRef<InjectedBlokkliItem>>(INJECT_BLOCK_ITEM, item)
+provide(INJECT_BLOCK_ITEM, item)
 provide(INJECT_ENTITY_CONTEXT, {
   uuid: componentProps.uuid,
   type: itemEntityType,

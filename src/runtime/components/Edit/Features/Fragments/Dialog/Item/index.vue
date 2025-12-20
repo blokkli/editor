@@ -24,7 +24,7 @@ import {
   INJECT_IS_EDITING,
   INJECT_IS_IN_REUSABLE,
   INJECT_PROVIDER_BLOCKS,
-} from '#blokkli/helpers/symbols'
+} from '#blokkli/helpers/injections'
 
 const props = defineProps<{
   name: string

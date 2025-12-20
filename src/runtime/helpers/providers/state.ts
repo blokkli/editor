@@ -9,7 +9,7 @@ import {
 } from 'vue'
 import { refreshNuxtData, useState } from 'nuxt/app'
 import type { BlokkliAdapter, AdapterContext } from '../../adapter'
-import { INJECT_MUTATED_FIELDS_MAP } from '../symbols'
+import { INJECT_MUTATED_FIELDS_MAP } from '../injections'
 import onBlokkliEvent from '../composables/onBlokkliEvent'
 import type {
   MutatedField,

@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { getComponent } from '#blokkli/helpers/imports'
 import { provide, defineBlokkli } from '#imports'
-import { INJECT_FRAGMENT_CONTEXT } from '#blokkli/helpers/symbols'
+import { INJECT_FRAGMENT_CONTEXT } from '#blokkli/helpers/injections'
 import type { BlokkliFragmentName } from '#blokkli-build/definitions'
 
 export type Props = {

@@ -11,7 +11,13 @@ type GlobalOptionInput = { type: string; options?: Record<string, unknown> }
  */
 function transformGlobalOptionsForType(
   globalOptions: Record<string, GlobalOptionInput>,
-): Record<string, { type: string; options?: Record<string, unknown> | 'Record<string, unknown>' }> {
+): Record<
+  string,
+  {
+    type: string
+    options?: Record<string, unknown> | 'Record<string, unknown>'
+  }
+> {
   const result: Record<string, any> = {}
 
   for (const [key, option] of Object.entries(globalOptions)) {

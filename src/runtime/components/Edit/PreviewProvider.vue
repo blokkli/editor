@@ -17,7 +17,6 @@ import type {
   MutatedOptions,
   MutatedField,
   UpdateBlockOptionEvent,
-  ItemEditContext,
 } from '#blokkli/types'
 import '#blokkli-build/styles.css'
 import getAdapter from '#blokkli-build/edit-adapter'
@@ -25,7 +24,7 @@ import {
   INJECT_EDIT_CONTEXT,
   INJECT_IS_PREVIEW,
   INJECT_MUTATED_FIELDS_MAP,
-} from '#blokkli/helpers/symbols'
+} from '#blokkli/helpers/injections'
 import { frameEventBus } from '#blokkli/helpers/frameEventBus'
 import broadcastProvider from '#blokkli/helpers/providers/broadcast'
 import { getFieldKey, intersects } from '#blokkli/helpers'
@@ -110,7 +109,7 @@ const isPreview = computed(() => !error.value)
 
 provide(INJECT_MUTATED_FIELDS_MAP, mutatedFieldsMap)
 provide(INJECT_IS_PREVIEW, isPreview)
-provide<ItemEditContext>(INJECT_EDIT_CONTEXT, {
+provide(INJECT_EDIT_CONTEXT, {
   mutatedOptions,
   eventBus,
   definitions,

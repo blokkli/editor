@@ -58,7 +58,7 @@ const key = computed(() => {
 const definition = computed<
   | BlockDefinitionInput<any, any>
   | FragmentDefinitionInput<any, any>
-  | ProviderDefinitionInput
+  | ProviderDefinitionInput<any, any>
   | undefined
 >(() => {
   if (uuids.value === 'provider') {

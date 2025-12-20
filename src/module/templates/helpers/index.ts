@@ -80,4 +80,3 @@ export function toTypeLiteral(value: unknown): string {
   }
   return 'unknown'
 }
-

@@ -11,7 +11,7 @@ import type { FeatureDefinition } from '#blokkli/types'
 import type { ValidFeatureKey } from '#blokkli-build/features'
 import { settingsOverride } from '#blokkli-build/config'
 import type { DebugLogger } from '#blokkli/helpers/providers/debug'
-import { INJECT_EDIT_LOGGER } from '#blokkli/helpers/symbols'
+import { INJECT_EDIT_LOGGER } from '#blokkli/helpers/injections'
 
 type SettingType<S> = S extends { type: 'checkbox' }
   ? boolean

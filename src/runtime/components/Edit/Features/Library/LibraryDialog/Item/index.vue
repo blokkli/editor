@@ -30,6 +30,10 @@
 <script setup lang="ts">
 import { computed, provide, useBlokkli } from '#imports'
 import type { FieldListItem } from '#blokkli/types'
+import type {
+  FieldListItemTyped,
+  ValidFieldListTypes,
+} from '#blokkli-build/generated-types'
 import { ItemIcon, ScaleToFit } from '#blokkli/components'
 import {
   INJECT_FIELD_LIST_BLOCKS,
@@ -37,7 +41,7 @@ import {
   INJECT_IS_EDITING,
   INJECT_IS_IN_REUSABLE,
   INJECT_PROVIDER_BLOCKS,
-} from '#blokkli/helpers/symbols'
+} from '#blokkli/helpers/injections'
 
 const props = defineProps<{
   uuid: string
@@ -65,8 +69,8 @@ const backgroundClass = computed(
   () => definition.value?.editor?.previewBackgroundClass || '',
 )
 
-const blocks = computed(() => [])
-const fieldListType = computed(() => 'default')
+const blocks = computed(() => [] as FieldListItemTyped[])
+const fieldListType = computed(() => 'default' as ValidFieldListTypes)
 
 provide(INJECT_IS_IN_REUSABLE, true)
 provide(INJECT_IS_EDITING, false)

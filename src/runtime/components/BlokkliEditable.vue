@@ -13,19 +13,14 @@ import {
   onBeforeUnmount,
   useTemplateRef,
 } from '#imports'
-import type {
-  ItemEditContext,
-  EditableFieldUpdateEvent,
-  EntityContext,
-  BlokkliApp,
-} from '#blokkli/types'
+import type { EditableFieldUpdateEvent } from '#blokkli/types'
 import {
   INJECT_APP,
   INJECT_EDIT_CONTEXT,
   INJECT_ENTITY_CONTEXT,
   INJECT_IS_EDITING,
   INJECT_IS_IN_REUSABLE,
-} from '#blokkli/helpers/symbols'
+} from '#blokkli/helpers/injections'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const props = withDefaults(
@@ -60,11 +55,11 @@ defineSlots<{
 const root = useTemplateRef('root')
 
 const valueOverride = ref('')
-const isEditing = inject<boolean>(INJECT_IS_EDITING, false)
-const entity = inject<EntityContext>(INJECT_ENTITY_CONTEXT)
-const editContext = inject<ItemEditContext | null>(INJECT_EDIT_CONTEXT, null)
-const app = inject<BlokkliApp | null>(INJECT_APP, null)
-const isInReusable = inject<boolean>(INJECT_IS_IN_REUSABLE, false)
+const isEditing = inject(INJECT_IS_EDITING, false)
+const entity = inject(INJECT_ENTITY_CONTEXT, null)
+const editContext = inject(INJECT_EDIT_CONTEXT, null)
+const app = inject(INJECT_APP, null)
+const isInReusable = inject(INJECT_IS_IN_REUSABLE, false)
 
 if (!entity) {
   throw new Error('Missing entity context.')

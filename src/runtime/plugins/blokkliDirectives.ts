@@ -2,7 +2,7 @@ import {
   INJECT_APP,
   INJECT_ENTITY_CONTEXT,
   INJECT_IS_IN_REUSABLE,
-} from '#blokkli/helpers/symbols'
+} from '#blokkli/helpers/injections'
 import type {
   BlokkliApp,
   BlokkliDirectiveType,

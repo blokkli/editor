@@ -8,16 +8,14 @@ import {
   INJECT_PROVIDER_CONTEXT,
   INJECT_FIELD_USES_PROXY,
   INJECT_REUSABLE_UUID,
-} from '../helpers/symbols'
-import { computed, inject, type ComputedRef } from '#imports'
+} from '../helpers/injections'
+import { computed, inject } from '#imports'
 import type {
   BlockDefinitionInput,
   BlockDefinitionOptionsInput,
   BlokkliProviderEntityContext,
   BundleKey,
   DefineBlokkliContext,
-  InjectedBlokkliItem,
-  ItemEditContext,
 } from '#blokkli/types'
 import type {
   FieldListItemTyped,
@@ -50,32 +48,34 @@ export function defineBlokkli<
     string,
   ]
 
-  const fieldListType = inject<ComputedRef<ValidFieldListTypes>>(
+  const fieldListType = inject(
     INJECT_FIELD_LIST_TYPE,
-    computed(() => 'default'),
+    () => computed(() => 'default' as ValidFieldListTypes),
+    true,
   )!
 
   // All blocks in the same field as this block.
-  const siblings = inject<ComputedRef<FieldListItemTyped[]>>(
+  const siblings = inject(
     INJECT_FIELD_LIST_BLOCKS,
-    computed(function () {
-      return []
-    }),
+    () =>
+      computed(function () {
+        return [] as FieldListItemTyped[]
+      }),
+    true,
   )!
 
   // All blocks in the root field.
-  const rootBlocks = inject<ComputedRef<FieldListItemTyped[]>>(
+  const rootBlocks = inject(
     INJECT_PROVIDER_BLOCKS,
-    computed(function () {
-      return []
-    }),
+    () =>
+      computed(function () {
+        return [] as FieldListItemTyped[]
+      }),
+    true,
   )!
 
   // Inject the data from the BlokkliItem component.
-  const item = inject<ComputedRef<InjectedBlokkliItem> | null>(
-    INJECT_BLOCK_ITEM,
-    null,
-  )
+  const item = inject(INJECT_BLOCK_ITEM, null)
   const uuid = item?.value.uuid || ''
   const index =
     item?.value.index !== undefined ? item.value.index : computed(() => 0)
@@ -83,23 +83,21 @@ export function defineBlokkli<
   // This is injected by the "from_library" blokkli component.
   // If its present it means this blokkli is reusable. In this case it
   // inherits the options defined on its wrapper blokkli.
-  const fromLibraryOptions = inject<ComputedRef<Record<string, string>> | null>(
-    INJECT_REUSABLE_OPTIONS,
-    null,
-  )
+  const fromLibraryOptions = inject(INJECT_REUSABLE_OPTIONS, null)
 
-  const reusableUuid = inject<string | null>(INJECT_REUSABLE_UUID, null)
+  const reusableUuid = inject(INJECT_REUSABLE_UUID, null)
 
   // When we are in an edit context, the current options are managed in a
   // separate reactive state. This state is mutated when the user is changing
   // the options. These options are only persisted once the user closes the
   // options popup. In order to have live preview of how these options affect
   // the component, we use this state to override the options.
-  const editContext = inject<ItemEditContext | null>(INJECT_EDIT_CONTEXT, null)
+  const editContext = inject(INJECT_EDIT_CONTEXT, null)
 
-  const provider = inject<ComputedRef<BlokkliProviderEntityContext | null>>(
+  const provider = inject(
     INJECT_PROVIDER_CONTEXT,
-    computed(() => null),
+    () => computed(() => null as BlokkliProviderEntityContext | null),
+    true,
   )
 
   // The parent block type if this block is nested.
@@ -204,7 +202,7 @@ export function defineBlokkli<
   return {
     uuid,
     index,
-    // Must be cast because type of options is inferred automatically.
+    // @ts-expect-error Must be cast because type of options is inferred automatically.
     options: options as any,
     isEditing,
     parentType,
