@@ -11,7 +11,7 @@
       :class="{ 'md:max-w-3xl md:mx-auto md:text-center': isCentered }"
     >
       <p
-        v-if="tagline"
+        v-if="renderedTagline"
         v-blokkli-editable:tagline
         class="uppercase font-semibold border px-10 py-1 rounded-full inline-block text-xs mb-20"
         :class="
@@ -20,7 +20,7 @@
             : 'text-teal-dark/80 bg-teal-light/40 border-teal-normal'
         "
       >
-        {{ tagline }}
+        {{ renderedTagline }}
       </p>
       <h2
         v-blokkli-editable:title
@@ -58,6 +58,11 @@ const { parentType, fieldListType } = defineBlokkli({
     previewWidth: 700,
     editTitle: (el) => el.querySelector('h2')?.textContent,
   },
+  propsFieldMapping: {
+    title: 'title',
+    tagline: 'tagline',
+    lead: 'lead',
+  },
 })
 
 const injectedInverted = inject<ComputedRef<boolean> | null>('isInverted', null)
@@ -70,6 +75,10 @@ export type Props = {
 }
 
 const props = defineProps<Props>()
+
+const renderedTagline = computed(() => {
+  return props.tagline || 'Fallback'
+})
 
 const id = computed(() => slugify(props.title))
 

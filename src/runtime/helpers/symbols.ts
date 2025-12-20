@@ -22,6 +22,9 @@ export const INJECT_PROVIDER_KEY = Symbol('blokkli_provider_key')
 export const INJECT_EDIT_FIELD_LIST_COMPONENT = Symbol(
   'blokkli_edit_field_list_component',
 )
+export const INJECT_ITEM_PROPS_OVERRIDE = Symbol(
+  'blokkli_edit_item_props_override',
+)
 export const INJECT_EDIT_LOGGER = Symbol('blokkli_edit_logger')
 export const INJECT_ALL_COMPONENTS_CHUNK = Symbol(
   'blokkli_all_components_chunk',

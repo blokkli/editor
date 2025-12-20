@@ -239,6 +239,13 @@
       },
       "type": "radios"
     },
+    "bkVisibleLanguages": {
+      "default": [],
+      "description": "Only show on specific languages.",
+      "label": "Visible languages",
+      "options": {},
+      "type": "checkboxes"
+    },
     "buttonType": {
       "default": "primary",
       "group": "Radios",

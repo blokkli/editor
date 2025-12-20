@@ -84,7 +84,7 @@ import { defineBlokkli } from '#imports'
 
 const { options } = defineBlokkli({
   bundle: 'widget',
-  globalOptions: ['background'],
+  globalOptions: ['background', 'bkVisibleLanguages'],
   chunkName: 'rare',
   options: {
     showAllOptions: {

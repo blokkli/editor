@@ -124,5 +124,8 @@ const { options } = defineBlokkliProvider(pageValues.value, {
       },
     },
   },
+  propsFieldMapping: {
+    lead: 'lead',
+  },
 })
 </script>

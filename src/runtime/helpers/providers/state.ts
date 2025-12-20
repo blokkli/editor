@@ -24,6 +24,7 @@ import type {
   FieldListItem,
   PublishOptions,
   EditPermission,
+  MutatedItemProps,
 } from '#blokkli/types'
 import { falsy, getFieldKey } from '#blokkli/helpers'
 import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
@@ -93,6 +94,13 @@ export type StateProvider = {
    * Maps block UUIDs (or 'HOST' for host options) to their option values.
    */
   mutatedOptions: MutatedOptions
+
+  /**
+   * Mutated item props for all blocks.
+   *
+   * Maps block UUIDs (or 'HOST' for host options) to prop value.
+   */
+  mutatedItemProps: MutatedItemProps
 
   /**
    * Translation state for the edited entity.
@@ -372,6 +380,7 @@ export default async function (
   }
 
   const mutatedOptions = reactive<MutatedOptions>({})
+  const mutatedItemProps = reactive<MutatedItemProps>({})
   const translation = ref<TranslationState>({
     isTranslatable: false,
     sourceLanguage: '',
@@ -517,6 +526,12 @@ export default async function (
     }
 
     fromLibraryUuids.value = fromLibrary
+
+    // Clear item props overrides.
+    const mutatedItemPropsUuids = Object.keys(mutatedItemProps)
+    mutatedItemPropsUuids.forEach((uuid) => {
+      mutatedItemProps[uuid] = undefined
+    })
 
     eventBus.emit('updateMutatedFields', { fields: newMutatedFields })
 
@@ -760,6 +775,7 @@ export default async function (
     mutatedFields,
     entity,
     mutatedOptions,
+    mutatedItemProps,
     translation,
     mutations,
     violations,

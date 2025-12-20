@@ -6,12 +6,12 @@
     :uuid="uuid"
     :field-list-type="fieldListType"
     :parent-type="parentType"
-    :item-props="props"
+    :item-props
   />
   <Component
     :is="component"
     v-else-if="component"
-    v-bind="props"
+    v-bind="itemProps"
     :data-bk-in-proxy="fieldUsesProxy || (isEditing ? 'false' : undefined)"
   />
   <Component
@@ -32,7 +32,11 @@ import {
   type ComputedRef,
   type Component,
 } from '#imports'
-import type { BlockEditContext, InjectedBlokkliItem } from '#blokkli/types'
+import type {
+  BlockEditContext,
+  InjectedBlokkliItem,
+  MutatedItemProps,
+} from '#blokkli/types'
 import { getComponent } from '#blokkli/helpers/imports'
 import {
   INJECT_ALL_COMPONENTS_CHUNK,
@@ -42,6 +46,7 @@ import {
   INJECT_FIELD_PROXY_MODE,
   INJECT_FIELD_USES_PROXY,
   INJECT_GLOBAL_PROXY_MODE,
+  INJECT_ITEM_PROPS_OVERRIDE,
 } from '../helpers/symbols'
 import type {
   BlockBundleWithNested,
@@ -76,6 +81,10 @@ const componentProps = withDefaults(
 )
 
 const isProxyMode = inject(INJECT_FIELD_PROXY_MODE, false)
+const mutatedItemProps = inject<MutatedItemProps | null>(
+  INJECT_ITEM_PROPS_OVERRIDE,
+  null,
+)
 const allComponentsChunk = inject<Record<string, Component> | null>(
   INJECT_ALL_COMPONENTS_CHUNK,
   null,
@@ -90,6 +99,20 @@ const fieldListType = inject<ComputedRef<ValidFieldListTypes> | undefined>(
   INJECT_FIELD_LIST_TYPE,
   undefined,
 )
+
+const itemProps = computed(() => {
+  if (mutatedItemProps) {
+    const mutatedProps = mutatedItemProps[componentProps.uuid]
+    if (mutatedProps) {
+      return {
+        ...componentProps.props,
+        ...mutatedProps,
+      }
+    }
+  }
+
+  return componentProps.props
+})
 
 const component =
   isProxyMode || isGlobalProxyMode?.value

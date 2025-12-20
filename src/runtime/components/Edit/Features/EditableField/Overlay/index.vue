@@ -56,7 +56,11 @@
 </template>
 
 <script lang="ts" setup>
-import type { EntityContext, EditableFieldConfig } from '#blokkli/types'
+import type {
+  EntityContext,
+  EditableFieldConfig,
+  BlockBundleDefinition,
+} from '#blokkli/types'
 import { ArtboardTooltip } from '#blokkli/components'
 import {
   computed,
@@ -73,6 +77,7 @@ import InputPlaintext from './Plaintext/index.vue'
 import InputContenteditable from './Contenteditable/index.vue'
 import InputFrame from './Frame/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { FIELD_MAPPING } from '#blokkli-build/runtime-options'
 import { itemEntityType } from '#blokkli-build/config'
 
 const {
@@ -83,6 +88,7 @@ const {
   $t,
   types,
   element: elementProvider,
+  definitions,
 } = useBlokkli()
 
 const props = defineProps<{
@@ -123,7 +129,9 @@ const inputStyle = ref<Record<string, any>>({})
 const form = useTemplateRef('form')
 const input = useTemplateRef('input')
 
-const hasChanged = computed(() => modelValue.value !== originalText.value)
+const hasChanged = computed(
+  () => modelValue.value.trim() !== originalText.value.trim(),
+)
 const itemBundle = computed(() => props.host.bundle)
 const maxlength = computed(() => props.config.maxLength)
 const required = computed(() => !!props.config.required)
@@ -168,7 +176,7 @@ const close = async () => {
 
   const el = getElement()
 
-  if (shouldSave.value && modelValue.value !== originalText.value) {
+  if (shouldSave.value && hasChanged.value) {
     if (props.host.type === itemEntityType) {
       await state.mutateWithLoadingState(() =>
         adapter.updateFieldValue!({
@@ -186,7 +194,8 @@ const close = async () => {
       )
     }
   }
-  if (!shouldSave.value && el && !props.isComponent) {
+
+  if (!shouldSave.value && el && !props.isComponent && !matchingProp.value) {
     if (isMarkup.value) {
       el.innerHTML = originalText.value
     } else {
@@ -195,8 +204,60 @@ const close = async () => {
   }
 }
 
+const blockDefinition = computed<BlockBundleDefinition | null>(() => {
+  if (props.host.type === itemEntityType) {
+    return types.getBlockBundleDefinition(props.host.bundle) ?? null
+  }
+
+  return null
+})
+
+function findMatchingProp(mapping: Record<string, string>): string | null {
+  return (
+    Object.entries(mapping).find(
+      ([_prop, fieldName]) => fieldName === props.fieldName,
+    )?.[0] ?? null
+  )
+}
+
+const providerDefinition = computed(() => {
+  return definitions.getProviderDefinition(props.host.type, props.host.bundle)
+})
+
+const matchingProp = computed<string | null>(() => {
+  if (props.host.type === itemEntityType) {
+    const mapping = FIELD_MAPPING[props.host.bundle]
+    if (mapping) {
+      return findMatchingProp(mapping)
+    }
+  } else {
+    if (providerDefinition.value) {
+      const mapping = providerDefinition.value.propsFieldMapping
+      if (mapping) {
+        return findMatchingProp(mapping)
+      }
+    }
+  }
+
+  return null
+})
+
+const mutatedItemPropsKey = computed(() =>
+  providerDefinition.value ? 'HOST' : props.host.uuid,
+)
+
 watch(modelValue, (newText) => {
-  if (props.element && selection.editableActive.value && !props.isComponent) {
+  if (matchingProp.value) {
+    if (!state.mutatedItemProps[mutatedItemPropsKey.value]) {
+      state.mutatedItemProps[mutatedItemPropsKey.value] = {}
+    }
+    state.mutatedItemProps[mutatedItemPropsKey.value]![matchingProp.value] =
+      newText
+  } else if (
+    props.element &&
+    selection.editableActive.value &&
+    !props.isComponent
+  ) {
     const el = getElement()
     if (props.config.type === 'plain') {
       el.textContent = newText
@@ -258,7 +319,16 @@ onMounted(() => {
   if (props.isComponent) {
     modelValue.value = props.value || ''
   } else {
-    if (isMarkup.value) {
+    if (matchingProp.value) {
+      if (providerDefinition.value) {
+        modelValue.value = state.mutatedEntity.value[matchingProp.value] || ''
+      } else {
+        modelValue.value =
+          state.getFieldListItem(props.host.uuid)?.props?.[
+            matchingProp.value
+          ] ?? ''
+      }
+    } else if (isMarkup.value) {
       modelValue.value = el.innerHTML
     } else {
       modelValue.value = el.textContent || ''

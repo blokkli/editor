@@ -120,6 +120,7 @@ import {
   INJECT_ENTITY_CONTEXT,
   INJECT_GLOBAL_PROXY_MODE,
   INJECT_IS_EDITING,
+  INJECT_ITEM_PROPS_OVERRIDE,
   INJECT_PROVIDER_KEY,
 } from '#blokkli/helpers/symbols'
 import type { AdapterContext } from '#blokkli/adapter'
@@ -218,10 +219,13 @@ const indicators = indicatorsProvider()
 const directive = directiveProvider(debug, ui)
 const fields = fieldsProvider(dom, types)
 
+const mutatedEntityProps = computed(() => state.mutatedItemProps.HOST)
+
 const mutatedEntity = computed(() => {
   return {
     ...(props.entity ?? {}),
     ...(state.mutatedEntity.value ?? {}),
+    ...(mutatedEntityProps.value ?? {}),
   }
 })
 
@@ -389,6 +393,7 @@ const viewOnlyBanner = computed<{ text: string; icon: BlokkliIcon } | null>(
 
 const isProxyMode = computed(() => ui.isProxyMode.value)
 provide(INJECT_GLOBAL_PROXY_MODE, isProxyMode)
+provide(INJECT_ITEM_PROPS_OVERRIDE, state.mutatedItemProps)
 
 if (import.meta.hot) {
   import.meta.hot.accept('#blokkli/runtime-helpers', () => {})

@@ -26,6 +26,7 @@ import {
   INJECT_IS_EDITING,
   INJECT_IS_IN_REUSABLE,
 } from '#blokkli/helpers/symbols'
+import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const props = withDefaults(
   defineProps<{
@@ -80,6 +81,10 @@ const onEditableUpdateValue = (e: EditableFieldUpdateEvent) => {
     valueOverride.value = e.value
   }
 }
+
+onBlokkliEvent('state:reloaded', () => {
+  valueOverride.value = ''
+})
 
 onMounted(() => {
   if (!isEditing || !editContext || !app || isInReusable) {

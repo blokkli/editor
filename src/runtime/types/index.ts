@@ -722,6 +722,14 @@ export type MutatedOptions = {
   }
 }
 
+export type MutatedItemProps = {
+  [uuid: string]:
+    | {
+        [key: string]: string
+      }
+    | undefined
+}
+
 /**
  * Defines a content search item.
  */
@@ -1616,6 +1624,8 @@ export type ProviderDefinitionInput<
    * These options will be merged with the component-specific options.
    */
   globalOptions?: GlobalOptions
+
+  propsFieldMapping?: Record<string, string>
 }
 
 export type TourItem = {

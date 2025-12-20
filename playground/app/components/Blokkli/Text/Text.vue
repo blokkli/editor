@@ -25,6 +25,9 @@ const { parentType } = defineBlokkli({
     editTitle: (el) => el.textContent,
     addBehaviour: 'editable:text',
   },
+  propsFieldMapping: {
+    text: 'text',
+  },
 })
 
 export type Props = {
