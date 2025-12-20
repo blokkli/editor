@@ -1,7 +1,53 @@
 import { defineCodeTemplate } from '../defineTemplate'
 import { isBlock, isFragment } from '../../../Collector/Blocks'
-import { toObject } from '../helpers'
+import { toObject, toTypeLiteral } from '../helpers'
 import { hash } from 'ohash'
+
+type GlobalOptionInput = { type: string; options?: Record<string, unknown> }
+
+/**
+ * Transforms globalOptions to a minimal structure for type generation.
+ * Only keeps `type` and `options` (needed by GetType helper).
+ */
+function transformGlobalOptionsForType(
+  globalOptions: Record<string, GlobalOptionInput>,
+): Record<string, { type: string; options?: Record<string, unknown> | 'Record<string, unknown>' }> {
+  const result: Record<string, any> = {}
+
+  for (const [key, option] of Object.entries(globalOptions)) {
+    const entry: any = { type: option.type }
+
+    // For radios/checkboxes, include options for proper keyof inference
+    if (option.type === 'radios' || option.type === 'checkboxes') {
+      if (option.options && Object.keys(option.options).length > 0) {
+        // Keep only keys, values don't matter for type inference
+        entry.options = Object.fromEntries(
+          Object.keys(option.options).map((k) => [k, null]),
+        )
+      } else {
+        // Mark for special handling - will be replaced with Record<string, unknown>
+        entry.options = '__RECORD_STRING_UNKNOWN__'
+      }
+    }
+
+    result[key] = entry
+  }
+
+  return result
+}
+
+/**
+ * Generates GlobalOptionsType, replacing placeholder with Record<string, unknown>.
+ */
+function generateGlobalOptionsType(
+  globalOptions: Record<string, GlobalOptionInput>,
+): string {
+  const transformed = transformGlobalOptionsForType(globalOptions)
+  return toTypeLiteral(transformed).replaceAll(
+    '"__RECORD_STRING_UNKNOWN__"',
+    'Record<string, unknown>',
+  )
+}
 
 export default defineCodeTemplate(
   'definitions',
@@ -95,9 +141,7 @@ export type ProviderDefinition = ProviderDefinitionInput<Record<string, any>, Gl
 
 export type BlokkliFragmentName = ${fragmentNames.join(' | ') || 'never'}
 
-const globalOptions = ${JSON.stringify(ctx.helper.options.globalOptions || {})} as const
-
-export type GlobalOptionsType = typeof globalOptions
+export type GlobalOptionsType = ${generateGlobalOptionsType(ctx.helper.options.globalOptions || {})}
 
 export type Definitions = {
   blocks: BlockDefinition[]
@@ -108,7 +152,7 @@ export type Definitions = {
   renderKey: string
 }
 
-const definitions: Definitions
+declare const definitions: Definitions
 
 export default definitions
 `

@@ -99,7 +99,10 @@ export default defineCodeTemplate(
         blockBundlesWithNested.push(file.definition.bundle)
       }
 
-      if (file.definition.bundle !== 'from_library') {
+      if (
+        file.definition.bundle !== 'from_library' &&
+        !validBlockBundles.includes(file.definition.bundle)
+      ) {
         validBlockBundles.push(file.definition.bundle)
       }
 

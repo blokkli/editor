@@ -50,6 +50,7 @@ export const featureDefinitions = [
     return `
 import type { BlokkliAdapter } from '${ctx.helper.relativePaths.ADAPTER}'
 import type { Viewport } from '${ctx.helper.relativePaths.CONSTANTS}'
+import type { FeatureDefinition } from '${ctx.helper.relativePaths.TYPES}'
 import type { Component } from 'vue'
 
 type AdapterMethods = keyof BlokkliAdapter<any>
