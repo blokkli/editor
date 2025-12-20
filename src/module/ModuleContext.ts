@@ -1,4 +1,4 @@
-import { addTemplate, addTypeTemplate } from '@nuxt/kit'
+import { addTemplate } from '@nuxt/kit'
 import type { IconCollector } from '../Collector/Icons'
 import type { ModuleHelper } from './ModuleHelper'
 import type {
@@ -88,31 +88,27 @@ export class ModuleContext {
         getContents: () => this.getTemplateContents('code', template.name),
       })
 
-      addTypeTemplate({
-        filename: `blokkli/${template.name}.d.ts`,
-        write: true, // Type files are always written.
-        getContents: () => {
-          const lines = this.getTemplateContents('types', template.name)
-            .trim()
-            .split('\n')
+      this.addTypeTemplate(`blokkli/${template.name}.d.ts`, () => {
+        const lines = this.getTemplateContents('types', template.name)
+          .trim()
+          .split('\n')
 
-          const imports: string[] = []
-          const declarations: string[] = []
+        const imports: string[] = []
+        const declarations: string[] = []
 
-          for (const line of lines) {
-            if (line.startsWith('import ') && line.includes(' from ')) {
-              imports.push(line)
-            } else {
-              declarations.push(line)
-            }
+        for (const line of lines) {
+          if (line.startsWith('import ') && line.includes(' from ')) {
+            imports.push(line)
+          } else {
+            declarations.push(line)
           }
+        }
 
-          return `${imports.join('\n')}
+        return `${imports.join('\n')}
 
 declare module '#blokkli-build/${template.name}' {
   ${declarations.join('\n  ')}
 }`
-        },
       })
     } else {
       const filename = template.fileName.startsWith('/')
@@ -120,12 +116,9 @@ declare module '#blokkli-build/${template.name}' {
         : `blokkli/${template.fileName}`
 
       if (filename.endsWith('.d.ts')) {
-        addTypeTemplate({
-          filename: filename as any,
-          write: true,
-          getContents: () =>
-            this.getTemplateContents('file', template.fileName),
-        })
+        this.addTypeTemplate(filename as any, () =>
+          this.getTemplateContents('file', template.fileName),
+        )
       } else {
         addTemplate({
           filename,
@@ -135,5 +128,30 @@ declare module '#blokkli-build/${template.name}' {
         })
       }
     }
+  }
+
+  /**
+   * Register a type template without adding to globalTypeFiles.
+   *
+   * Uses addTemplate instead of addTypeTemplate to avoid Vue compiler-sfc
+   * issue where exported types from globalTypeFiles cannot be resolved.
+   * @see https://github.com/nuxt/nuxt/issues/33694
+   */
+  private addTypeTemplate(
+    filename: `${string}.d.ts`,
+    getContents: () => string,
+  ) {
+    const resolvedTemplate = addTemplate({
+      filename,
+      write: true,
+      getContents,
+    })
+
+    // Manually register type references (what addTypeTemplate does),
+    // but without adding to globalTypeFiles which breaks Vue's compiler-sfc.
+    this.helper.nuxt.hook('prepare:types', (payload) => {
+      payload.references ||= []
+      payload.references.push({ path: resolvedTemplate.dst })
+    })
   }
 }

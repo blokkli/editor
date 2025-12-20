@@ -35,7 +35,7 @@ ${toObject('icons', icons)}
     return `
 export type BlokkliIcon =
   | ${allIconNames}
-export const icons: Record<BlokkliIcon, string>
+export declare const icons: Record<BlokkliIcon, string>
 `
   },
   {
