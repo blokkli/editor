@@ -84,7 +84,7 @@ const id = computed(() => slugify(props.title))
 
 const isCentered = computed(
   () =>
-    (props.lead || props.tagline) &&
+    (props.lead || renderedTagline.value) &&
     (fieldListType.value === 'header' || !parentType.value),
 )
 </script>

@@ -8,15 +8,12 @@
     <textarea
       id="bk-editable-field-textarea"
       ref="input"
-      :value="modelValue"
+      v-model="modelValue"
       enterkeyhint="done"
       rows="2"
       v-bind="inputAttributes"
       @keydown.capture="onKeyDown"
       @blur="onBlur"
-      @input="
-        $emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)
-      "
     />
   </div>
 </template>
@@ -31,22 +28,34 @@ const props = defineProps<{
   element: HTMLElement
   required: boolean
   maxlength?: number
-  modelValue: string
 }>()
 
-const emit = defineEmits(['close', 'save', 'update:modelValue'])
+const modelValue = defineModel<string>({ required: true })
+
+const emit = defineEmits(['discard', 'save'])
 
 const input = useTemplateRef('input')
 
 const height = ref(20)
 
+function discard() {
+  emit('discard')
+}
+
+function save() {
+  if (props.required && !modelValue.value) {
+    return
+  }
+  emit('save')
+}
+
 const onKeyDown = (e: KeyboardEvent) => {
   if (e.code === 'Escape') {
     e.preventDefault()
-    emit('close')
+    discard()
   } else if (e.code === 'Enter') {
     e.preventDefault()
-    emit('save')
+    save()
   }
 }
 
@@ -77,7 +86,7 @@ const onBlur = (e: FocusEvent) => {
     if (!selection.editableActive.value) {
       return
     }
-    emit('save')
+    save()
   }, 100)
 }
 

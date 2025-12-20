@@ -28,12 +28,13 @@ const PROPAGATE_WHEEL = false
 const rootElement = ui.rootElement()
 
 const props = defineProps<{
-  modelValue: string
   type: EditableFieldType
   fieldName: string
   host: EntityContext
   initialHeight: number
 }>()
+
+const modelValue = defineModel<string>({ required: true })
 
 const iframe = useTemplateRef('iframe')
 
@@ -125,12 +126,10 @@ const url = computed(() => {
 
 const original = ref('')
 
-const emit = defineEmits(['update:modelValue', 'close'])
-
 const onMessage = (e: MessageEvent) => {
   if (typeof e.data === 'object') {
     if (e.data.name === 'blokkli__editable_field_update') {
-      emit('update:modelValue', e.data.data.text)
+      modelValue.value = e.data.data.text
     } else if (e.data.name === 'blokkli__editable_field_update_height') {
       height.value = e.data.data.height
     }
@@ -138,7 +137,7 @@ const onMessage = (e: MessageEvent) => {
 }
 
 onMounted(() => {
-  original.value = props.modelValue
+  original.value = modelValue.value
   height.value = props.initialHeight
 
   window.addEventListener('message', onMessage)

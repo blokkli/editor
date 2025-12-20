@@ -77,7 +77,7 @@
     @apply min-w-0 overflow-hidden w-full text-sm mt-auto items-baseline truncate;
   }
   .bk-search-item-text {
-    @apply min-w-0 truncate inline;
+    @apply min-w-0 truncate inline ml-5 first:ml-0;
   }
 
   .bk-search-no-results {

@@ -9,7 +9,7 @@
     close-icon="check"
     @close="save"
   >
-    <form ref="form" class="bk-editable-field-input" @submit.prevent="close">
+    <form ref="form" class="bk-editable-field-input" @submit.prevent="save">
       <div ref="input">
         <InputContenteditable
           v-if="config.type === 'markup'"
@@ -25,7 +25,6 @@
           :field-name="fieldName"
           :host="host"
           :initial-height="scrollHeight"
-          @close="save"
         />
 
         <InputPlaintext
@@ -34,13 +33,13 @@
           :element="element"
           :required="required"
           :maxlength="maxlength"
-          @close="cancel"
+          @discard="discard"
           @save="save"
         />
       </div>
 
       <div class="bk bk-editable-field-info">
-        <button :disabled="!hasChanged" @click.prevent="cancel">
+        <button :disabled="!hasChanged" @click.prevent="discard">
           {{ $t('editableFieldDiscard', 'Discard') }}
         </button>
         <div v-if="errorText" class="bk-editable-field-info-error">
@@ -56,11 +55,7 @@
 </template>
 
 <script lang="ts" setup>
-import type {
-  EntityContext,
-  EditableFieldConfig,
-  BlockBundleDefinition,
-} from '#blokkli/types'
+import type { EntityContext, EditableFieldConfig } from '#blokkli/types'
 import { ArtboardTooltip } from '#blokkli/components'
 import {
   computed,
@@ -82,7 +77,6 @@ import { itemEntityType } from '#blokkli-build/config'
 
 const {
   eventBus,
-  selection,
   state,
   adapter,
   $t,
@@ -102,33 +96,16 @@ const props = defineProps<{
 
 const emit = defineEmits(['close'])
 
-const shouldSave = ref(true)
-
-const cancel = () => {
-  shouldSave.value = false
-  close()
-  emit('close')
-}
-
-const save = () => {
-  shouldSave.value = true
-  close()
-  emit('close')
-}
-
-// Save the editable when clicking away from the text area.
-onBlokkliEvent('window:clickAway', save)
-
-const getElement = (): HTMLElement => props.element
-
+// Refs
 const scrollHeight = ref(0)
 const loaded = ref(false)
-const originalText = ref(props.value || '')
+const originalText = ref('')
+const originalMutatedProp = ref<string | undefined>(undefined)
 const modelValue = ref('')
-const inputStyle = ref<Record<string, any>>({})
 const form = useTemplateRef('form')
-const input = useTemplateRef('input')
+const isClosing = ref(false)
 
+// Computed properties
 const hasChanged = computed(
   () => modelValue.value.trim() !== originalText.value.trim(),
 )
@@ -162,54 +139,6 @@ const errorText = computed(() => {
   }
 
   return undefined
-})
-
-const close = async () => {
-  // Weird iOS bug: Close method is called twice, so we have to check if we
-  // are actually still editing.
-  if (!selection.editableActive.value) {
-    return
-  }
-  if (shouldSave.value && errorText.value) {
-    return
-  }
-
-  const el = getElement()
-
-  if (shouldSave.value && hasChanged.value) {
-    if (props.host.type === itemEntityType) {
-      await state.mutateWithLoadingState(() =>
-        adapter.updateFieldValue!({
-          uuid: props.host.uuid,
-          fieldName: props.fieldName,
-          fieldValue: modelValue.value,
-        }),
-      )
-    } else if (adapter.updateEntityFieldValue) {
-      await state.mutateWithLoadingState(() =>
-        adapter.updateEntityFieldValue!({
-          fieldName: props.fieldName,
-          fieldValue: modelValue.value,
-        }),
-      )
-    }
-  }
-
-  if (!shouldSave.value && el && !props.isComponent && !matchingProp.value) {
-    if (isMarkup.value) {
-      el.innerHTML = originalText.value
-    } else {
-      el.textContent = originalText.value
-    }
-  }
-}
-
-const _blockDefinition = computed<BlockBundleDefinition | null>(() => {
-  if (props.host.type === itemEntityType) {
-    return types.getBlockBundleDefinition(props.host.bundle) ?? null
-  }
-
-  return null
 })
 
 function findMatchingProp(mapping: Record<string, string>): string | null {
@@ -246,19 +175,131 @@ const mutatedItemPropsKey = computed(() =>
   providerDefinition.value ? 'HOST' : props.host.uuid,
 )
 
+/**
+ * Whether this editable modifies a prop via mutatedItemProps.
+ */
+const usesMutatedProps = computed(() => !!matchingProp.value)
+
+/**
+ * Whether this editable modifies the DOM directly.
+ */
+const usesDirectDom = computed(() => !props.isComponent && !matchingProp.value)
+
+/**
+ * Restore the original state when discarding changes.
+ */
+function restoreOriginalState() {
+  // Restore mutatedItemProps if we modified it.
+  if (usesMutatedProps.value && matchingProp.value) {
+    const key = mutatedItemPropsKey.value
+    if (originalMutatedProp.value === undefined) {
+      // Remove the prop override entirely if there wasn't one before.
+      if (state.mutatedItemProps[key]) {
+        state.mutatedItemProps[key] = undefined
+      }
+    } else {
+      // Restore the original value.
+      if (state.mutatedItemProps[key]) {
+        state.mutatedItemProps[key]![matchingProp.value] =
+          originalMutatedProp.value
+      }
+    }
+  }
+
+  // Restore DOM content if we modified it directly.
+  if (usesDirectDom.value) {
+    const el = props.element
+    if (isMarkup.value) {
+      el.innerHTML = originalText.value
+    } else {
+      el.textContent = originalText.value
+    }
+  }
+
+  // Notify the component if it's a component-based editable.
+  if (props.isComponent) {
+    eventBus.emit('editable:update', {
+      name: props.fieldName,
+      entityUuid: props.host.uuid,
+      value: originalText.value,
+    })
+  }
+}
+
+/**
+ * Persist the changed value via the adapter.
+ */
+async function persistValue() {
+  if (props.host.type === itemEntityType) {
+    await state.mutateWithLoadingState(() =>
+      adapter.updateFieldValue!({
+        uuid: props.host.uuid,
+        fieldName: props.fieldName,
+        fieldValue: modelValue.value,
+      }),
+    )
+  } else if (adapter.updateEntityFieldValue) {
+    await state.mutateWithLoadingState(() =>
+      adapter.updateEntityFieldValue!({
+        fieldName: props.fieldName,
+        fieldValue: modelValue.value,
+      }),
+    )
+  }
+}
+
+/**
+ * Discard changes and restore original state.
+ */
+function discard() {
+  if (isClosing.value) {
+    return
+  }
+  isClosing.value = true
+
+  if (hasChanged.value) {
+    restoreOriginalState()
+  }
+  emit('close')
+}
+
+/**
+ * Save changes if valid, otherwise restore original state.
+ */
+async function save() {
+  if (isClosing.value) {
+    return
+  }
+  isClosing.value = true
+
+  if (hasChanged.value) {
+    if (errorText.value) {
+      // Validation error: restore original state instead of saving.
+      restoreOriginalState()
+    } else {
+      await persistValue()
+    }
+  }
+  emit('close')
+}
+
+// Save the editable when clicking away from the text area.
+onBlokkliEvent('window:clickAway', save)
+
+// Update the live preview as the user types.
 watch(modelValue, (newText) => {
-  if (matchingProp.value) {
+  // Update mutatedItemProps for prop-based fields.
+  if (usesMutatedProps.value && matchingProp.value) {
     if (!state.mutatedItemProps[mutatedItemPropsKey.value]) {
       state.mutatedItemProps[mutatedItemPropsKey.value] = {}
     }
     state.mutatedItemProps[mutatedItemPropsKey.value]![matchingProp.value] =
       newText
-  } else if (
-    props.element &&
-    selection.editableActive.value &&
-    !props.isComponent
-  ) {
-    const el = getElement()
+  }
+
+  // Update DOM directly for non-component, non-prop fields.
+  if (usesDirectDom.value) {
+    const el = props.element
     if (props.config.type === 'plain') {
       el.textContent = newText
     } else {
@@ -266,6 +307,7 @@ watch(modelValue, (newText) => {
     }
   }
 
+  // Notify the component if it's a component-based editable.
   if (props.isComponent) {
     eventBus.emit('editable:update', {
       name: props.fieldName,
@@ -314,34 +356,32 @@ const focusInput = (el?: HTMLElement | Document | null) => {
 }
 
 onMounted(() => {
-  const el = getElement()
+  const el = props.element
 
+  // Determine the initial value based on the field type.
   if (props.isComponent) {
     modelValue.value = props.value || ''
-  } else {
-    if (matchingProp.value) {
-      if (providerDefinition.value) {
-        modelValue.value = state.mutatedEntity.value[matchingProp.value] || ''
-      } else {
-        modelValue.value =
-          state.getFieldListItem(props.host.uuid)?.props?.[
-            matchingProp.value
-          ] ?? ''
-      }
-    } else if (isMarkup.value) {
-      modelValue.value = el.innerHTML
+  } else if (matchingProp.value) {
+    if (providerDefinition.value) {
+      modelValue.value = state.mutatedEntity.value[matchingProp.value] || ''
     } else {
-      modelValue.value = el.textContent || ''
+      modelValue.value =
+        state.getFieldListItem(props.host.uuid)?.props?.[matchingProp.value] ??
+        ''
     }
+  } else if (isMarkup.value) {
+    modelValue.value = el.innerHTML
+  } else {
+    modelValue.value = el.textContent || ''
   }
 
+  // Store original values for potential discard.
   originalText.value = modelValue.value
 
-  selection.editableActive.value = true
-
-  const computedStyle = window.getComputedStyle(el)
-  inputStyle.value = {
-    textAlign: computedStyle.textAlign,
+  // Store original mutatedItemProps value if applicable.
+  if (usesMutatedProps.value && matchingProp.value) {
+    originalMutatedProp.value =
+      state.mutatedItemProps[mutatedItemPropsKey.value]?.[matchingProp.value]
   }
 
   nextTick(() => {
@@ -354,6 +394,15 @@ onMounted(() => {
 })
 
 onBeforeUnmount(async () => {
-  await close()
+  // If save() or discard() already ran, skip - they handled everything.
+  if (isClosing.value) {
+    return
+  }
+
+  // We're being unmounted due to key change (user opened another editable).
+  // Default to save behavior.
+  if (hasChanged.value && !errorText.value) {
+    await persistValue()
+  }
 })
 </script>

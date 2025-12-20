@@ -202,8 +202,7 @@ export function defineBlokkli<
   return {
     uuid,
     index,
-    // @ts-expect-error Must be cast because type of options is inferred automatically.
-    options: options as any,
+    options: options as DefineBlokkliContext<T, G>['options'],
     isEditing,
     parentType,
     fieldListType,
