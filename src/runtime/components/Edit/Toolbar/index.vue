@@ -53,9 +53,10 @@ import { Icon } from '#blokkli/components'
 import { onMounted, useBlokkli, onBeforeUnmount, computed } from '#imports'
 import AppMenu from './../AppMenu/index.vue'
 
-const { ui, selection, storage } = useBlokkli()
+const { ui, selection, storage, eventBus } = useBlokkli()
 
 function openMenu() {
+  eventBus.emit('window:clickAway')
   ui.openDialog({ id: 'menu', alignment: 'left' })
 }
 
