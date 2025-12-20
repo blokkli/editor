@@ -1,6 +1,12 @@
 <template>
   <BlokkliTransition name="menu">
-    <div v-if="menuOpen" class="bk bk-menu-list">
+    <div
+      v-if="menuOpen"
+      class="bk bk-menu-list"
+      @wheel.stop
+      @touchstart.stop
+      @touchmove.stop
+    >
       <button :class="{ 'bk-is-active': menuOpen }" @click="closeMenu">
         <Icon name="close" />
       </button>
