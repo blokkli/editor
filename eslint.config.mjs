@@ -1,5 +1,6 @@
 import { createConfigForNuxt } from '@nuxt/eslint-config/flat'
 import tailwind from 'eslint-plugin-tailwindcss'
+import importX from 'eslint-plugin-import-x'
 // import sonarjs from 'eslint-plugin-sonarjs'
 
 // Run `npx @eslint/config-inspector` to inspect the resolved config interactively
@@ -81,4 +82,38 @@ export default createConfigForNuxt(
           'block:translate,block:edit,entity:edit,entity:translate,dragging:end,block:append,dragging:start',
       },
     ],
+  })
+  .append({
+    files: ['src/**/*.ts', 'src/**/*.vue'],
+    ignores: ['**/*.spec.ts'],
+    plugins: {
+      'import-x': importX,
+    },
+    rules: {
+      'import-x/no-extraneous-dependencies': [
+        'error',
+        {
+          devDependencies: false,
+          optionalDependencies: true,
+          peerDependencies: true,
+          // Packages guaranteed by Nuxt/unjs ecosystem
+          whitelist: [
+            // Nuxt core
+            '@nuxt/kit',
+            '@nuxt/schema',
+            'nuxt',
+            'vue',
+            // unjs (maintained by Nuxt team)
+            'pathe',
+            'defu',
+            'ohash',
+            'ufo',
+            'unplugin',
+            // Drupal module optional dependencies
+            'graphql',
+            'nuxt-graphql-middleware',
+          ],
+        },
+      ],
+    },
   })

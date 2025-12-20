@@ -56,16 +56,12 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@types/micromatch": "^4.0.9",
     "artboard-deluxe": "0.1.3",
     "estree-walker-ts": "^1.1.0",
-    "flesch": "^2.0.1",
     "fzf": "^0.5.2",
     "get-video-id": "^4.1.7",
     "html-diff-ts": "^1.4.2",
-    "hyphen": "^1.10.6",
     "mitt": "^3.0.1",
-    "parse-latin": "^7.0.0",
     "qrcode.vue": "^3.6.0",
     "twgl.js": "^7.0.0"
   },
@@ -84,7 +80,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "@thedutchcoder/postcss-rem-to-px": "^0.0.2",
     "@types/gettext-parser": "^8.0.0",
-    "@types/hyphen": "^1.6.7",
+    "@types/micromatch": "^4.0.9",
     "@types/node": "^24.3.0",
     "@vue/test-utils": "^2.4.6",
     "axe-core": "^4.10.3",
@@ -99,7 +95,6 @@
     "nuxt-graphql-middleware": "^5.2.1",
     "nuxt-svg-icon-sprite": "^2.0.2",
     "openai": "^5.13.1",
-    "oxc-walker": "^0.5.2",
     "playwright-core": "^1.55.0",
     "postcss": "^8.5.6",
     "postcss-cli": "^11.0.1",
@@ -118,10 +113,18 @@
     "vue-tsc": "^2.2.12"
   },
   "peerDependencies": {
-    "@lunarisapp/readability": "^1.0.2"
+    "@lunarisapp/readability": "^1.0.2",
+    "axe-core": "^4.10.0",
+    "magic-string": "^0.30.0",
+    "micromatch": "^4.0.0",
+    "oxc-walker": "^0.5.0",
+    "typescript": "^5.0.0"
   },
   "peerDependenciesMeta": {
     "@lunarisapp/readability": {
+      "optional": true
+    },
+    "axe-core": {
       "optional": true
     }
   }
