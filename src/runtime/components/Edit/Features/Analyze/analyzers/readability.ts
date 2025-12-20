@@ -1,7 +1,7 @@
 import { defineAnalyzer } from './defineAnalyzer'
 import type { AnalyzeImpact, AnalyzeNode, AnalyzeResult } from './types'
 import type { TextElement } from './helpers/collectTextElements'
-import { TextReadability, type Language } from '@lunarisapp/readability'
+import type { Language, TextReadability } from '@lunarisapp/readability'
 import type { TextProvider } from '#blokkli/helpers/providers/texts'
 
 type LangCode = 'en' | 'de' | 'fr' | 'it'
@@ -251,7 +251,8 @@ export default defineAnalyzer(() => {
       return 'Readability'
     },
     continuous: true,
-    init: function (context) {
+    init: async function (context) {
+      const { TextReadability } = await import('@lunarisapp/readability')
       textReadability = new TextReadability({
         lang: mapLang(context.langcode),
         cache: true,

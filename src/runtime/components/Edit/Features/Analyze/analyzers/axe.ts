@@ -1,16 +1,13 @@
 import { defineAnalyzer } from './defineAnalyzer'
-import axe, {
-  type Result,
-  type NodeResult,
-  type Locale,
-  type ContextObject,
-  type RunOptions,
+import type {
+  Result,
+  NodeResult,
+  Locale,
+  ContextObject,
+  RunOptions,
 } from 'axe-core'
 import type { AnalyzeNode, AnalyzeResult, AnalyzeStatus } from './types'
 import { falsy } from '#blokkli/helpers'
-import de from 'axe-core/locales/de.json'
-import fr from 'axe-core/locales/fr.json'
-import it from 'axe-core/locales/it.json'
 
 function mapAxeNode(node: NodeResult): AnalyzeNode {
   return {
@@ -47,13 +44,16 @@ function mapAxeResults(
   return results.map((v) => mapAxeResult(v, status))
 }
 
-function getLocale(langcode: string): Locale | null {
+async function getLocale(langcode: string): Promise<Locale | null> {
   if (langcode === 'de') {
-    return de as unknown as Locale
+    const de = await import('axe-core/locales/de.json')
+    return de.default as unknown as Locale
   } else if (langcode === 'fr') {
-    return fr as unknown as Locale
+    const fr = await import('axe-core/locales/fr.json')
+    return fr.default as unknown as Locale
   } else if (langcode === 'it') {
-    return it as unknown as Locale
+    const it = await import('axe-core/locales/it.json')
+    return it.default as unknown as Locale
   }
 
   return null
@@ -81,12 +81,17 @@ export default defineAnalyzer<{
     ],
   }
 
+  let axe: typeof import('axe-core')
+
   return {
     id: 'axe',
     label: 'Axe (Accessibility Check)',
     requireRawPage: true,
-    init: function (context) {
-      const locale = getLocale(context.interfaceLangcode) ?? {}
+    init: async function (context) {
+      const axeModule = await import('axe-core')
+      axe = axeModule.default as typeof import('axe-core')
+
+      const locale = (await getLocale(context.interfaceLangcode)) ?? {}
       axe.configure({
         locale,
       })
