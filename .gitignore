@@ -60,3 +60,6 @@ src/runtime/css
 docs/.vitepress/cache
 
 playground/app/blokkli/apiReadabilityAnalyzer.ts
+
+.yalc
+yalc.lock

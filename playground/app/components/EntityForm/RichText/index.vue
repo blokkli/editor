@@ -5,22 +5,116 @@
       'is-field-value': isFieldValue,
     }"
   >
-    <Ckeditor
-      v-model="markup"
-      :editor="ClassicEditor"
-      :config="{
-        licenseKey: 'GPL',
-      }"
-      @input="$emit('update:modelValue', $event)"
-      @ready="onReady"
-    />
+    <ClientOnly>
+      <ckeditor
+        v-model="markup"
+        :editor="ClassicEditor"
+        :config="{
+          licenseKey: 'GPL',
+          plugins: [
+            Autoformat,
+            AutoImage,
+            Autosave,
+            BlockQuote,
+            Bold,
+            CloudServices,
+            Code,
+            Essentials,
+            Heading,
+            ImageBlock,
+            ImageCaption,
+            ImageInline,
+            ImageInsertViaUrl,
+            ImageStyle,
+            ImageTextAlternative,
+            ImageToolbar,
+            ImageUpload,
+            Indent,
+            IndentBlock,
+            Italic,
+            Link,
+            LinkImage,
+            List,
+            Paragraph,
+            Subscript,
+            Superscript,
+            Table,
+            TableCaption,
+            TableToolbar,
+            TextTransformation,
+            TodoList,
+            Underline,
+          ],
+          toolbar: [
+            'undo',
+            'redo',
+            '|',
+            'heading',
+            '|',
+            'bold',
+            'italic',
+            'underline',
+            'subscript',
+            'superscript',
+            'code',
+            '|',
+            'link',
+            'insertTable',
+            'blockQuote',
+            '|',
+            'bulletedList',
+            'numberedList',
+            'todoList',
+            'outdent',
+            'indent',
+          ],
+        }"
+        @input="$emit('update:modelValue', $event)"
+        @ready="onReady"
+      />
+    </ClientOnly>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, onMounted } from '#imports'
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import { Ckeditor } from '@ckeditor/ckeditor5-vue'
+import {
+  ClassicEditor,
+  Autosave,
+  Essentials,
+  Paragraph,
+  Autoformat,
+  TextTransformation,
+  LinkImage,
+  Link,
+  ImageBlock,
+  ImageToolbar,
+  BlockQuote,
+  Bold,
+  CloudServices,
+  ImageUpload,
+  ImageInsertViaUrl,
+  AutoImage,
+  Table,
+  TableToolbar,
+  Heading,
+  ImageTextAlternative,
+  ImageCaption,
+  ImageStyle,
+  Indent,
+  IndentBlock,
+  ImageInline,
+  Italic,
+  List,
+  TableCaption,
+  TodoList,
+  Underline,
+  Code,
+  Subscript,
+  Superscript,
+} from 'ckeditor5'
+import 'ckeditor5/ckeditor5.css'
 
 const props = defineProps<{
   modelValue: string

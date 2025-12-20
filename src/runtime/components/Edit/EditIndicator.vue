@@ -44,7 +44,7 @@ const props = defineProps<{
   uuid: string
   entityType: string
   editLabel?: string
-  permissions: EditPermission[]
+  permissions: Array<EditPermission | null>
 }>()
 
 const key = computed(() => props.entityType + ':' + props.uuid)
