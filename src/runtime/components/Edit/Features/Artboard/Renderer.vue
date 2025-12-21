@@ -58,6 +58,7 @@ import {
 import type { Coord } from '#blokkli/types'
 import {
   asValidNumber,
+  calculateIntersection,
   isInsideRect,
   subtractRectFromViewport,
 } from '#blokkli/helpers'
@@ -362,16 +363,22 @@ onBlokkliEvent('keyPressed', (e) => {
 
 onBlokkliEvent('scrollIntoView', (e) => {
   if ('uuid' in e) {
+    dom.refreshBlockRect(e.uuid)
     const rect = dom.getBlockRect(e.uuid)
     if (!rect) {
       return
     }
 
-    if (dom.isBlockVisible(e.uuid)) {
+    const viewportRelativeRect = ui.getViewportRelativeRect(rect)
+
+    // Skip scrolling if at least half of the block is already visible.
+    if (
+      calculateIntersection(viewportRelativeRect, ui.visibleViewport.value) >=
+      0.75
+    ) {
       return
     }
 
-    // @TODO: Prevent scrolling into view when already in view.
     artboard.scrollIntoView(rect, {
       scale: 'none',
       axis: 'y',

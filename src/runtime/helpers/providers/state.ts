@@ -620,7 +620,7 @@ export default async function (
   }
 
   function isChildOf(childUuid: string, parentUuid: string): boolean {
-    // Get the field the child belongs to
+    // Get the field the child belongs to.
     const fieldKey = fieldListItemMap.value[childUuid]
     if (!fieldKey) {
       return false
@@ -631,12 +631,12 @@ export default async function (
       return false
     }
 
-    // Check if the parent entity is the parentUuid
+    // Check if the parent entity is the parentUuid.
     if (field.entityUuid === parentUuid) {
       return true
     }
 
-    // Recursively check if the parent entity is a child of parentUuid
+    // Recursively check if the parent entity is a child of parentUuid.
     return isChildOf(field.entityUuid, parentUuid)
   }
 

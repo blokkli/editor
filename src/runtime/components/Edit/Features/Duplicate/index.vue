@@ -18,8 +18,9 @@ import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import type { RenderedFieldListItem } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
 import { getFieldKey } from '#blokkli/helpers'
+import { getArrayDiff } from '#blokkli/helpers/array'
 
-const { state, $t, selection, types } = useBlokkli()
+const { state, $t, selection, types, eventBus } = useBlokkli()
 
 const { adapter } = defineBlokkliFeature({
   id: 'duplicate',
@@ -29,11 +30,29 @@ const { adapter } = defineBlokkliFeature({
   description: 'Provides an action to duplicate one or more blocks in place.',
 })
 
-function onClick(items: RenderedFieldListItem[]) {
-  state.mutateWithLoadingState(
+async function onClick(items: RenderedFieldListItem[]) {
+  const uuidsBefore = state.getAllUuids()
+  const success = await state.mutateWithLoadingState(
     () => adapter.duplicateBlocks(items.map((v) => v.uuid)),
     $t('duplicateError', 'The items could not be duplicated.'),
   )
+  if (!success) {
+    return
+  }
+
+  // Filter out nested blocks - only select root duplicated blocks.
+  const diff = getArrayDiff(uuidsBefore, state.getAllUuids()).filter(
+    (uuid, _, arr) => !arr.some((other) => state.isChildOf(uuid, other)),
+  )
+
+  if (!diff.length) {
+    return
+  }
+
+  eventBus.emit('select', diff)
+
+  const firstUuid = diff[0]!
+  eventBus.emit('scrollIntoView', { uuid: firstUuid })
 }
 
 const canDuplicate = computed<boolean>(() => {

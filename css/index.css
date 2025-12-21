@@ -323,8 +323,7 @@ html.bk-hide-non-editable {
       @apply invisible;
     }
 
-    [data-blokkli-editable-field],
-    [data-bk-uuid] {
+    [data-blokkli-provider-active='true'] {
       @apply visible;
     }
   }

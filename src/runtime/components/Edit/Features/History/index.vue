@@ -100,8 +100,10 @@ function updateCurrentHistorySelection() {
 
 function setSelectionFromHistoryIndex(index: number) {
   const selection = selectionAtHistoryIndex.get(index)
-  if (selection) {
+  if (selection?.length) {
     eventBus.emit('select', selection)
+    const firstUuid = selection[0]!
+    eventBus.emit('scrollIntoView', { uuid: firstUuid })
   }
 }
 
