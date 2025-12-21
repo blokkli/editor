@@ -115,7 +115,7 @@
     "gettext-parser": "^8.0.0",
     "happy-dom": "^20.0.11",
     "nuxt": "^4.2.2",
-    "nuxt-graphql-middleware": "^5.2.3",
+    "nuxt-graphql-middleware": "^5.3.0",
     "nuxt-svg-icon-sprite": "^2.0.2",
     "openai": "^5.13.1",
     "playwright-core": "^1.57.0",
