@@ -11,8 +11,9 @@ import type {
 } from '../../types'
 import type { AdapterContext, BlokkliAdapter } from '../../adapter'
 import type { SelectionProvider } from './selection'
-import { useRuntimeConfig, computed } from '#imports'
+import { computed } from '#imports'
 import { onlyUnique } from '..'
+import { itemEntityType } from '#blokkli-build/config'
 
 export type BlokkliBlockType = BlockBundleDefinition & {
   definition:
@@ -263,7 +264,6 @@ export default async function (
   context: ComputedRef<AdapterContext>,
 ): Promise<BlockDefinitionProvider> {
   const bundleDefinitions = await adapter.getAllBundles()
-  const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
 
   const fieldConfig = new ConfigMap(await adapter.getFieldConfig())
   const editableFieldConfigData = adapter.getEditableFieldConfig

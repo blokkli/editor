@@ -23,7 +23,10 @@ import { falsy } from '..'
 import { addElementClasses } from '../composables/addElementClasses'
 import { defineElementStyle } from '../composables/defineElementStyle'
 import type { AdapterContext } from '#blokkli/adapter'
-import { defaultLanguage, forceDefaultLanguage } from '#blokkli-build/config'
+import {
+  defaultLanguage,
+  forceDefaultLanguage,
+} from '#blokkli-build/editor-config'
 import type { ThemeColorName } from '#blokkli/types/theme'
 import type { ElementProvider } from './element'
 

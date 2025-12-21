@@ -7,22 +7,21 @@
 </template>
 
 <script setup lang="ts">
+import { itemEntityType } from '#blokkli-build/config'
 import { falsy } from '#blokkli/helpers'
 import type { Validation } from '#blokkli/types'
-import { useBlokkli, computed } from '#imports'
+import { computed } from '#imports'
 import OverlayItem from './Item.vue'
 
 const props = defineProps<{
   validations: Validation[]
 }>()
 
-const { runtimeConfig } = useBlokkli()
-
 const items = computed(() =>
   Object.entries(
     props.validations
       .map((v) => {
-        if (v.entityType === runtimeConfig.itemEntityType && v.entityUuid) {
+        if (v.entityType === itemEntityType && v.entityUuid) {
           return {
             uuid: v.entityUuid,
             message: v.message,

@@ -1,4 +1,4 @@
-import { theme, themes } from '#blokkli-build/config'
+import { theme, themes } from '#blokkli-build/editor-config'
 import type { DraggableStyle } from '#blokkli/types'
 import type {
   RGB,

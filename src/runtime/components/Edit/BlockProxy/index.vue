@@ -40,6 +40,7 @@ import { ItemIcon } from '#blokkli/components'
 import type { FieldConfig, LibraryItemProps } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
 import { useBlockRegistration } from '#blokkli/helpers/composables/useBlockRegistration'
+import { itemEntityType } from '#blokkli-build/config'
 
 const props = defineProps<{
   uuid: string
@@ -72,9 +73,7 @@ const proxyBundle = computed(
   () => libraryItemProps.value?.block?.bundle || props.bundle,
 )
 
-const { types, runtimeConfig, definitions, dom } = useBlokkli()
-
-const root = useTemplateRef('root')
+const { types, definitions, dom } = useBlokkli()
 
 const type = computed(() => types.getBlockBundleDefinition(proxyBundle.value))
 
@@ -101,7 +100,7 @@ const fieldLayout = computed<FieldConfig[][]>(() => {
       return row
         .map((fieldName) => {
           return types.fieldConfig.forName(
-            runtimeConfig.itemEntityType,
+            itemEntityType,
             proxyBundle.value,
             fieldName,
           )
@@ -111,7 +110,7 @@ const fieldLayout = computed<FieldConfig[][]>(() => {
   }
 
   return types.fieldConfig
-    .forEntityTypeAndBundle(runtimeConfig.itemEntityType, proxyBundle.value)
+    .forEntityTypeAndBundle(itemEntityType, proxyBundle.value)
     .map((config) => [config])
 })
 

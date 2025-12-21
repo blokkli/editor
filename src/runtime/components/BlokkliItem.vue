@@ -23,13 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  provide,
-  useRuntimeConfig,
-  inject,
-  defineAsyncComponent,
-} from '#imports'
+import { computed, provide, inject, defineAsyncComponent } from '#imports'
 import type { BlockEditContext, InjectedBlokkliItem } from '#blokkli/types'
 import { getComponent } from '#blokkli/helpers/imports'
 import {
@@ -43,8 +37,7 @@ import {
   INJECT_ITEM_PROPS_OVERRIDE,
 } from '../helpers/injections'
 import type { BlockBundleWithNested } from '#blokkli-build/generated-types'
-
-const itemEntityType = useRuntimeConfig().public.blokkli.itemEntityType
+import { itemEntityType } from '#blokkli-build/config'
 
 const componentProps = withDefaults(
   defineProps<{

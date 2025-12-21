@@ -115,11 +115,6 @@ export default defineNuxtModule<ModuleOptions>({
     // The path of this module.
     const resolver = createResolver(moduleDir)
 
-    nuxt.options.runtimeConfig.public.blokkli = {
-      itemEntityType: moduleOptions.itemEntityType || '',
-      defaultLanguage: moduleOptions.defaultLanguage || 'en',
-    }
-
     // Add plugin and transpile runtime directory.
     nuxt.options.build.transpile.push(resolver.resolve('runtime'))
 

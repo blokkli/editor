@@ -60,7 +60,6 @@ import {
   onMounted,
   onBeforeUnmount,
   useRoute,
-  useRuntimeConfig,
   nextTick,
   inject,
   onUnmounted,
@@ -169,7 +168,6 @@ const adapter = await getAdapter(context)
 const providerKey = inject(INJECT_PROVIDER_KEY, '')
 
 const route = useRoute()
-const runtimeConfig = useRuntimeConfig().public.blokkli
 
 const toolbarLoaded = ref(false)
 const featuresLoaded = ref(false)
@@ -322,7 +320,6 @@ const app: BlokkliApp = {
   indicators,
   keyboard,
   plugins,
-  runtimeConfig,
   selection,
   blocks,
   state,

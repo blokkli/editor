@@ -5,6 +5,7 @@ import translations from './definitions/translations'
 import editAdapter from './definitions/editAdapter'
 import styles from './definitions/styles'
 import config from './definitions/config'
+import editorConfig from './definitions/editorConfig'
 import definitions from './definitions/definitions'
 import moduleTypes from './definitions/moduleTypes'
 import runtimeOptions from './definitions/runtimeOptions'
@@ -30,6 +31,7 @@ export const TEMPLATES: Template[] = [
   editAdapter,
   styles,
   config,
+  editorConfig,
   definitions,
   moduleTypes,
   runtimeOptions,

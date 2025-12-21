@@ -11,6 +11,7 @@
 <script setup lang="ts">
 import { useBlokkli, computed } from '#imports'
 import { ItemIcon } from '#blokkli/components'
+import { itemEntityType } from '#blokkli-build/config'
 
 const props = defineProps<{
   message: string
@@ -20,11 +21,9 @@ const props = defineProps<{
   entityUuid?: string
 }>()
 
-const { runtimeConfig, eventBus, types, blocks } = useBlokkli()
+const { eventBus, types, blocks } = useBlokkli()
 
-const isBlock = computed(
-  () => props.entityType === runtimeConfig.itemEntityType,
-)
+const isBlock = computed(() => props.entityType === itemEntityType)
 
 const block = computed(() => {
   if (isBlock.value && props.entityUuid) {

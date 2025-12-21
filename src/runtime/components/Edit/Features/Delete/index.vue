@@ -15,8 +15,9 @@
 import { useBlokkli, defineBlokkliFeature } from '#imports'
 import type { RenderedFieldListItem } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/plugins'
+import { itemEntityType } from '#blokkli-build/config'
 
-const { state, $t, eventBus, dom, runtimeConfig } = useBlokkli()
+const { state, $t, eventBus, dom } = useBlokkli()
 
 const { adapter } = defineBlokkliFeature({
   id: 'delete',
@@ -54,7 +55,7 @@ function getSelectionAfterDelete(
   }
 
   // Field does not belong to a block.
-  if (field.entityType !== runtimeConfig.itemEntityType) {
+  if (field.entityType !== itemEntityType) {
     return
   }
 

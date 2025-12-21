@@ -1341,11 +1341,6 @@ export interface BlokkliApp {
 
   eventBus: typeof eventBus
 
-  runtimeConfig: {
-    itemEntityType: string
-    defaultLanguage: string
-  }
-
   dom: DomProvider
   storage: StorageProvider
   types: BlockDefinitionProvider

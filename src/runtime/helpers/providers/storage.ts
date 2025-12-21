@@ -6,7 +6,7 @@ import {
   ref,
   watch,
 } from '#imports'
-import { storageDefaults } from '#blokkli-build/config'
+import { storageDefaults } from '#blokkli-build/editor-config'
 import type { AdapterContext, BlokkliAdapter } from '#blokkli/adapter'
 
 const PREFIX = 'blokkli:'

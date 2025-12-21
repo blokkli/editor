@@ -35,7 +35,7 @@ import type { ValidFeatureKey } from '#blokkli-build/features'
 import type { FeatureDefinitionSetting } from '#blokkli/types'
 import { SETTINGS_GROUP, type SettingsGroup } from '#blokkli/constants'
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import { settingsOverride } from '#blokkli-build/config'
+import { settingsOverride } from '#blokkli-build/editor-config'
 
 const { $t, features, ui } = useBlokkli()
 

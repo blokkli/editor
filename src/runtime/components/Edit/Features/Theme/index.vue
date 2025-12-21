@@ -66,7 +66,7 @@ import type {
   ThemeContextColorShade,
 } from '#blokkli/types/theme'
 
-import { themes } from '#blokkli-build/config'
+import { themes } from '#blokkli-build/editor-config'
 
 defineBlokkliFeature({
   id: 'theme',

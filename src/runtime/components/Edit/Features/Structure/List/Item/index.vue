@@ -11,7 +11,7 @@
     </button>
     <List
       :entity-uuid="uuid"
-      :entity-type="runtimeConfig.itemEntityType"
+      :entity-type="itemEntityType"
       :entity-bundle="bundle"
       :level="level + 1"
       :visible-field-keys="visibleFieldKeys"
@@ -26,6 +26,7 @@ import List from './../../List/index.vue'
 import { ItemIcon } from '#blokkli/components'
 import type { DraggableExistingStructureBlock } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
+import { itemEntityType } from '#blokkli-build/config'
 
 const props = withDefaults(
   defineProps<{
@@ -41,8 +42,7 @@ const props = withDefaults(
   },
 )
 
-const { runtimeConfig, types, selection, eventBus, state, element } =
-  useBlokkli()
+const { types, selection, eventBus, state, element } = useBlokkli()
 
 function getRootEl(): HTMLElement {
   const rootEl = element.query(

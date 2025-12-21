@@ -42,6 +42,7 @@ import {
   type Orientation,
 } from '#blokkli/helpers/dropTargets'
 import type { RGB } from '#blokkli/types/theme'
+import { itemEntityType } from '#blokkli-build/config'
 
 const props = defineProps<{
   items: DraggableItem[]
@@ -100,18 +101,8 @@ defineEmits<{
   (e: 'drop', data: DropTargetEvent): void
 }>()
 
-const {
-  dom,
-  ui,
-  theme,
-  dropAreas,
-  eventBus,
-  animation,
-  state,
-  runtimeConfig,
-  types,
-  fields,
-} = useBlokkli()
+const { dom, ui, theme, dropAreas, eventBus, animation, state, types, fields } =
+  useBlokkli()
 
 const areas = dropAreas
   .getDropAreas(props.items)
@@ -448,7 +439,7 @@ const buildChildren = (
 const fieldCache: Record<string, FieldRect> = {}
 
 function getBundleLabel(field: BlokkliFieldElement): string {
-  if (field.hostEntityType === runtimeConfig.itemEntityType) {
+  if (field.hostEntityType === itemEntityType) {
     return (
       types.getBlockBundleDefinition(field.hostEntityBundle)?.label ||
       field.hostEntityBundle

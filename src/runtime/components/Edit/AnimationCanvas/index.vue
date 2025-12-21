@@ -40,6 +40,7 @@ import {
   useTemplateRef,
   onBeforeUnmount,
 } from '#imports'
+import { itemEntityType } from '#blokkli-build/config'
 
 const {
   dom,
@@ -50,7 +51,6 @@ const {
   animation,
   state,
   directive,
-  runtimeConfig,
   blocks,
 } = useBlokkli()
 
@@ -105,9 +105,7 @@ function getInteractedElement(
   const editableField = directive.getEditableAtPoint(x, y)
   if (editableField) {
     const uuid =
-      editableField.type === runtimeConfig.itemEntityType
-        ? editableField.uuid
-        : undefined
+      editableField.type === itemEntityType ? editableField.uuid : undefined
     return {
       editableFieldName: editableField.fieldName,
       uuid,
