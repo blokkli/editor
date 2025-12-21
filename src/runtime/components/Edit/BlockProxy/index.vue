@@ -34,7 +34,7 @@ import type {
   BlockBundleWithNested,
   ValidFieldListTypes,
 } from '#blokkli-build/generated-types'
-import { computed, useBlokkli, useTemplateRef } from '#imports'
+import { computed, useBlokkli } from '#imports'
 import { getBlokkliItemProxyComponent } from '#blokkli/helpers/editComponents'
 import { ItemIcon } from '#blokkli/components'
 import type { FieldConfig, LibraryItemProps } from '#blokkli/types'

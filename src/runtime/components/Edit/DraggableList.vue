@@ -85,7 +85,7 @@ import type {
   ValidFieldListTypes,
 } from '#blokkli-build/generated-types'
 
-const { dom, selection, definitions } = useBlokkli()
+const { dom, selection } = useBlokkli()
 
 const root = useTemplateRef('root')
 

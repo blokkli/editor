@@ -17,11 +17,12 @@
     @cancel="$emit('cancel')"
   >
     <div class="bk">
-      <ConfigForm :config v-model="filters">
+      <ConfigForm v-model="filters" :config>
         <template #before>
           <li class="bk-form-item">
             <FormCheckboxes
               id="import-existing-fields"
+              v-model="selectedFields"
               :label="
                 $t(
                   'importExistingFieldsLabel',
@@ -29,7 +30,6 @@
                 )
               "
               :options="fieldOptions"
-              v-model="selectedFields"
               inline
             />
           </li>
