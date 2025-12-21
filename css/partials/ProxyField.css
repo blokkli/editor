@@ -22,6 +22,18 @@
   &.bk-is-horizontal {
     > .bk-field-list-proxy-list {
       @apply flex gap-15 flex-wrap;
+      &.bk-is-compact {
+        @apply !gap-5;
+        .bk-blokkli-item-icon {
+          @apply hidden;
+        }
+        .bk-block-proxy {
+          @apply p-5;
+          .bk-block-proxy-component {
+            @apply mt-2;
+          }
+        }
+      }
     }
   }
 

@@ -13,10 +13,13 @@
     <div
       ref="root"
       class="bk-field-list-proxy-list bk-draggable-list-container"
+      :class="{
+        'bk-is-compact': list.length > 8,
+      }"
     >
       <BlokkliItem
         v-for="(item, i) in list"
-        :key="item.uuid + fieldListType + definitions.renderKey.value + i"
+        :key="item.uuid + fieldListType"
         class="bk-field-list-item"
         :uuid="item.uuid"
         :bundle="item.bundle"
@@ -124,7 +127,8 @@ const proxyVisible = computed(
     props.proxyMode &&
     (selection.uuids.value.length ||
       selection.isDragging.value ||
-      selection.isMultiSelecting.value),
+      selection.isMultiSelecting.value ||
+      selection.hasHostSelected.value),
 )
 
 // @TODO: This should be handled differently to prevent constant updates in the
