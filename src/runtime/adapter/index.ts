@@ -214,8 +214,17 @@ export type BlokkliAdapterSearchResults<T> = {
   filters: PluginConfigInput[]
 }
 
+export type AdapterSearchArguments = {
+  page: number
+  filters: Record<string, any>
+}
+
 export type BlokkliAdapterGetLibraryItemsResult =
   BlokkliAdapterSearchResults<LibraryItem>
+
+export type BlokkliAdapterGetImportItemsResult =
+  BlokkliAdapterSearchResults<ImportItem>
+
 export type BlokkliAdapterGetEditStatesResult =
   BlokkliAdapterSearchResults<GetEditStatesItem>
 
@@ -490,8 +499,8 @@ export interface BlokkliAdapter<T> {
    * Get all existing entities for importing.
    */
   getImportItems?: (
-    searchText?: string,
-  ) => Promise<{ items: ImportItem[]; total: number }>
+    e: AdapterSearchArguments,
+  ) => Promise<BlokkliAdapterGetImportItemsResult>
 
   /**
    * Import items from an existing entity.

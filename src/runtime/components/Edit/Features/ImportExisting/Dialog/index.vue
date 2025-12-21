@@ -1,6 +1,7 @@
 <template>
   <DialogModal
     id="import-existing"
+    class="bk-import-existing-dialog"
     :title="$t('importExistingDialogTitle', 'Import from existing page')"
     :lead="
       $t(
@@ -8,7 +9,7 @@
         'Import content from an existing page. The items will be added to the end of the list. This action can be undone.',
       )
     "
-    :width="600"
+    :width="800"
     :submit-label="$t('importExistingDialogSubmit', 'Import content')"
     :can-submit="!!(sourceEntityUuid && selectedFields.length)"
     :is-loading="isLoading"
@@ -16,77 +17,58 @@
     @cancel="$emit('cancel')"
   >
     <div class="bk">
-      <div class="bk-form-section">
-        <h3 class="bk-form-label">
-          {{
-            $t(
-              'importExistingFieldsLabel',
-              'Which content would you like to import?',
-            )
-          }}
-        </h3>
-        <label v-for="field in fields" :key="field.name" class="bk-checkbox">
-          <input v-model="selectedFields" type="checkbox" :value="field.name" />
-          <span>{{ field.label }}</span>
-        </label>
-      </div>
-      <div class="bk-form-section">
-        <label for="pb_search_term" class="bk-form-label">{{
-          $t(
-            'importExistingPagesLabel',
-            'From which page would you like to import?',
-          )
-        }}</label>
-        <input
-          id="pb_search_term"
-          v-model="searchTerm"
-          type="text"
-          class="bk-form-input"
-          :placeholder="$t('importExistingSearchPlaceholder', 'Search pages')"
-          required
-        />
-      </div>
-      <div>
-        {{
-          $t('importExistingResultsTitle', '@count of @total pages')
-            .replace('@count', entities.length.toString())
-            .replace('@total', total.toString())
-        }}
-      </div>
-      <div
-        :style="{
-          opacity: searchTerm !== resultsSearchTerm ? 0.5 : 1,
-          height: '420px',
-          overflow: 'auto',
-          marginTop: '10px',
-        }"
-      >
-        <label v-for="entity in entities" :key="entity.uuid" class="bk-radio">
+      <ConfigForm :config v-model="filters">
+        <template #before>
+          <li class="bk-form-item">
+            <FormCheckboxes
+              id="import-existing-fields"
+              :label="
+                $t(
+                  'importExistingFieldsLabel',
+                  'Which content would you like to import?',
+                )
+              "
+              :options="fieldOptions"
+              v-model="selectedFields"
+              inline
+            />
+          </li>
+        </template>
+      </ConfigForm>
+      <div class="bk-import-existing-dialog-results">
+        <div class="bk-form-label">
+          {{ $t('importExistingPagesTitle', 'Select page') }}
+        </div>
+        <label v-for="item in items" :key="item.uuid" class="bk-radio">
           <input
             v-model="sourceEntityUuid"
             type="radio"
-            :value="entity.uuid"
+            :value="item.uuid"
             name="entity"
           />
-          <span>{{ entity.label }}</span>
+          <span>{{ item.label }}</span>
+          <div v-if="item.description" class="bk-radio-description">
+            {{ item.description }}
+          </div>
         </label>
       </div>
     </div>
+    <template #pre-footer>
+      <Pagination v-model="page" :total-pages />
+    </template>
   </DialogModal>
 </template>
 
 <script lang="ts" setup>
+import { computed, ref, useBlokkli, useAsyncData, watch } from '#imports'
 import {
-  computed,
-  watch,
-  ref,
-  useBlokkli,
-  onMounted,
-  onBeforeUnmount,
-} from '#imports'
-
-import { DialogModal } from '#blokkli/components'
-import type { ImportItem } from '#blokkli/types'
+  DialogModal,
+  ConfigForm,
+  Pagination,
+  FormCheckboxes,
+} from '#blokkli/components'
+import type { ImportItem, PluginConfigInput } from '#blokkli/types'
+import type { AdapterSearchArguments } from '#blokkli/adapter'
 
 const { adapter, $t, types, context } = useBlokkli()
 
@@ -95,30 +77,43 @@ const emit = defineEmits<{
   (e: 'cancel'): void
 }>()
 
-const searchTerm = ref('')
-const resultsSearchTerm = ref('')
 const sourceEntityUuid = ref('')
 const selectedFields = ref<string[]>([])
 const isLoading = ref(false)
-const entities = ref<ImportItem[]>([])
-const total = ref(0)
+const page = ref(0)
+const filters = ref<Record<string, any>>({})
 
-let timeout: any = null
+watch(
+  () => ({ ...filters.value }),
+  () => {
+    page.value = 0
+  },
+)
 
-watch(searchTerm, (newTerm) => {
-  clearTimeout(timeout)
-
-  timeout = setTimeout(() => {
-    loadResults(newTerm)
-  }, 300)
+const args = computed<AdapterSearchArguments>(() => {
+  return {
+    page: page.value,
+    filters: { ...filters.value },
+  }
 })
 
-async function loadResults(userInput = '') {
-  const result = await adapter.getImportItems!(userInput)
-  entities.value = result.items
-  total.value = result.total
-  resultsSearchTerm.value = userInput
-}
+const { data } = useAsyncData(
+  () => {
+    return adapter.getImportItems!(args.value)
+  },
+  {
+    watch: [args],
+  },
+)
+
+const items = computed<ImportItem[]>(() => data.value?.items ?? [])
+const config = computed<PluginConfigInput[]>(() => data.value?.filters ?? [])
+const total = computed(() => data.value?.total ?? 0)
+const perPage = computed(() => data.value?.perPage ?? 16)
+
+const totalPages = computed(() => {
+  return Math.ceil(total.value / perPage.value)
+})
 
 function onSubmit() {
   emit('confirm', {
@@ -128,18 +123,17 @@ function onSubmit() {
   isLoading.value = true
 }
 
-const fields = computed(() =>
-  types.fieldConfig.forEntityTypeAndBundle(
-    context.value.entityType,
-    context.value.entityBundle,
-  ),
+const fieldOptions = computed(() =>
+  types.fieldConfig
+    .forEntityTypeAndBundle(
+      context.value.entityType,
+      context.value.entityBundle,
+    )
+    .map((field) => {
+      return {
+        value: field.name,
+        label: field.label,
+      }
+    }),
 )
-
-onMounted(() => {
-  loadResults()
-})
-
-onBeforeUnmount(() => {
-  clearTimeout(timeout)
-})
 </script>

@@ -660,6 +660,7 @@ export interface LibraryItem {
 export interface ImportItem {
   uuid: string
   label: string
+  description?: string
 }
 
 export type CommentItem = {

@@ -5850,11 +5850,14 @@ type ParagraphsBlokkliHostTransformPlugin {
 }
 
 type ParagraphsBlokkliImportSourceEntities {
+  filters: [ParagraphsBlokkliConfigInput!]!
   items: [ParagraphsBlokkliImportSourceEntity]
+  perPage: Int
   total: Int
 }
 
 type ParagraphsBlokkliImportSourceEntity {
+  description: String
   label: String!
   uuid: String!
 }
@@ -6772,7 +6775,7 @@ type Query {
   pbGetFieldConfig: [ParagraphsBlokkliFieldConfig!]
 
   """Get import source entities."""
-  pbGetImportSourceEntities(entityType: String!, entityUuid: String!, searchText: String): ParagraphsBlokkliImportSourceEntities
+  pbGetImportSourceEntities(entityType: String!, entityUuid: String!, filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliImportSourceEntities
   pbGetSupportedClipboards: [ParagraphsBlokkliSupportedClipboard!]
   pbGetUrlPrefixes: [ParagraphsBuilderUrlPrefix!]!
   pbMediaLibraryGetResults(filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliMediaLibraryResults

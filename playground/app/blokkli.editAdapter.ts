@@ -16,6 +16,7 @@ import type {
   EditableFieldConfig,
   FieldConfig,
   HostTransformPlugin,
+  ImportItem,
   LibraryItem,
   PublishOptions,
 } from '#blokkli/types'
@@ -582,8 +583,62 @@ export default defineBlokkliEditAdapter((ctx) => {
         fieldValue: e.fieldValue,
       }),
 
-    getImportItems() {
-      return Promise.resolve({ items: [], total: 0 })
+    getImportItems(args) {
+      const items: ImportItem[] = [
+        { uuid: '1', label: 'Homepage', description: 'Main landing page with hero section and featured content' },
+        { uuid: '2', label: 'Contact Page', description: 'Contact form and company address information' },
+        { uuid: '3', label: 'Service Page', description: 'Overview of all services offered' },
+        { uuid: '4', label: 'Features', description: 'Detailed feature descriptions and benefits' },
+        { uuid: '5', label: 'About Us', description: 'Company history and mission statement' },
+        { uuid: '6', label: 'Blog Overview', description: 'Latest articles and news posts' },
+        { uuid: '7', label: 'Product Catalog', description: 'Complete list of available products' },
+        { uuid: '8', label: 'Pricing Plans', description: 'Subscription tiers and pricing options' },
+        { uuid: '9', label: 'FAQ', description: 'Frequently asked questions and answers' },
+        { uuid: '10', label: 'Team Members', description: 'Staff profiles and contact details' },
+        { uuid: '11', label: 'Testimonials', description: 'Customer reviews and success stories' },
+        { uuid: '12', label: 'Case Studies', description: 'In-depth project analyses and results' },
+        { uuid: '13', label: 'Portfolio', description: 'Showcase of completed work and projects' },
+        { uuid: '14', label: 'News & Updates', description: 'Company announcements and press releases' },
+        { uuid: '15', label: 'Career Opportunities', description: 'Open positions and job applications' },
+        { uuid: '16', label: 'Privacy Policy', description: 'Data protection and privacy guidelines' },
+        { uuid: '17', label: 'Terms of Service', description: 'Legal terms and conditions of use' },
+        { uuid: '18', label: 'Support Center', description: 'Help resources and ticket submission' },
+        { uuid: '19', label: 'Documentation', description: 'Technical guides and API reference' },
+        { uuid: '20', label: 'Partner Program', description: 'Partnership opportunities and benefits' },
+      ]
+      const text = (args.filters.text ?? '').toLocaleLowerCase()
+      const itemsFiltered = items.filter(item => {
+        if (text && !item.label.toLocaleLowerCase().includes(text)) {
+          return false
+        }
+
+        if (args.filters.from_user) {
+          // Return items with even UUIDs as "created by current user"
+          return Number.parseInt(item.uuid) % 2 === 0
+        }
+
+        return true
+      })
+      const perPage = 16
+      const offset = args.page * perPage
+      const paginatedItems = itemsFiltered.slice(offset, offset + perPage)
+      return Promise.resolve({ items: paginatedItems, total: itemsFiltered.length, filters: [
+        {
+          type: 'text',
+          name: 'text',
+          label: 'Text',
+          placeholder: 'Enter a search term',
+          required: false,
+        },
+        {
+          type: 'checkbox',
+          name: 'from_user',
+          label: 'Pages created by me',
+          required: false,
+          defaultValue: false
+        }
+
+      ], perPage })
     },
 
     importFromExisting() {

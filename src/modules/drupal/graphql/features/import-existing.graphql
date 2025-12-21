@@ -1,17 +1,24 @@
 query pbGetImportSourceEntities(
   $entityType: String!
   $entityUuid: String!
-  $searchText: String
+  $filters: [ParagraphsBlokkliUserConfigInput]
+  $page: Int
 ) {
   pbGetImportSourceEntities(
     entityType: $entityType
     entityUuid: $entityUuid
-    searchText: $searchText
+    filters: $filters
+    page: $page
   ) {
     total
+    perPage
+    filters {
+      ...paragraphsBlokkliConfigInput
+    }
     items {
       uuid
       label
+      description
     }
   }
 }

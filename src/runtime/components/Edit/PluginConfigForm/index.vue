@@ -1,5 +1,6 @@
 <template>
   <ol>
+    <slot name="before" />
     <li v-for="item in renderedConfig" :key="item.name" class="bk-form-item">
       <FormCheckbox
         v-if="item.type === 'checkbox'"
@@ -16,6 +17,7 @@
         v-bind="item"
         v-model="value[item.name]"
       />
+      <slot name="after" />
     </li>
   </ol>
 </template>

@@ -458,20 +458,26 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     }
 
     if (hasQuery('pbGetImportSourceEntities')) {
-      adapter.getImportItems = (searchText?: string) =>
+      adapter.getImportItems = (args) =>
         useGraphqlQuery('pbGetImportSourceEntities', {
           entityType: (ctx.value.entityType as string).toLowerCase(),
           entityUuid: ctx.value.entityUuid,
-          searchText,
+          page: args.page,
+          filters: configObjectToUserConfigInput(args.filters),
         }).then((data) => {
           return {
+            perPage: data.data.pbGetImportSourceEntities?.perPage ?? 16,
             total: data?.data.pbGetImportSourceEntities?.total || 0,
+            filters: mapPluginConfigInputs(
+              data.data.pbGetImportSourceEntities?.filters ?? [],
+            ),
             items: (data?.data.pbGetImportSourceEntities?.items || [])
               .map((item) => {
                 if (item?.uuid) {
                   return {
                     uuid: item.uuid,
-                    label: item.label || item.uuid,
+                    label: item.label,
+                    description: item.description,
                   }
                 }
               })

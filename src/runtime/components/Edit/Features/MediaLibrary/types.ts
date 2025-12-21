@@ -1,4 +1,5 @@
 import type { BlokkliIcon } from '#blokkli-build/icons'
+import type { AdapterSearchArguments } from '#blokkli/adapter'
 import type { PluginConfigInput } from '#blokkli/types'
 
 export type MediaLibraryItem = {
@@ -21,11 +22,6 @@ export type MediaLibraryGetResults = {
   perPage: number
 }
 
-export type MediaLibraryGetResultsData = {
-  page: number
-  filters: Record<string, any>
-}
-
 export type GetMediaLibraryFunction = (
-  e: MediaLibraryGetResultsData,
+  e: AdapterSearchArguments,
 ) => Promise<MediaLibraryGetResults>

@@ -14,6 +14,11 @@
   }
 }
 .bk {
+  .bk-checkboxes {
+    &.bk-is-inline {
+      @apply flex flex-wrap gap-25;
+    }
+  }
   .bk-checkbox,
   .bk-radio {
     @apply flex items-start cursor-pointer py-5 hover:text-accent-600 relative text-balance;
@@ -33,10 +38,11 @@
       @apply bg-accent-700;
     }
     input + span {
-      @apply font-medium flex mt-[2px];
+      @apply font-semibold flex mt-[2px];
       &:before {
         content: '';
         @apply shrink-0 w-[18px] h-[18px] text-accent-600 bg-mono-100 border border-mono-400 focus:ring-accent-100 focus:ring-2 outline-none rounded block mr-[6px];
+        @apply mt-[2px];
       }
     }
   }
@@ -46,6 +52,10 @@
   }
 
   .bk-radio {
+    @apply flex-wrap;
+    .bk-radio-description {
+      @apply w-full pl-[24px];
+    }
     span:before {
       @apply !rounded-full;
     }
