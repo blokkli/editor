@@ -46,7 +46,7 @@
           height,
         }"
       >
-        <div class="bk-selection-add-overlay-list" @wheel="onWheel">
+        <div class="bk-selection-add-overlay-list" @wheel.passive="onWheel">
           <AddListItem
             v-for="item in items"
             v-show="isVisible(item)"

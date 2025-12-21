@@ -3,9 +3,9 @@
     <div
       v-if="menuOpen"
       class="bk bk-menu-list"
-      @wheel.stop
-      @touchstart.stop
-      @touchmove.stop
+      @wheel.passive.stop
+      @touchstart.stop.passive
+      @touchmove.stop.passive
     >
       <button :class="{ 'bk-is-active': menuOpen }" @click="closeMenu">
         <Icon name="close" />

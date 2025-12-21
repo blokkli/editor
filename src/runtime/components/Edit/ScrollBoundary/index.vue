@@ -1,5 +1,5 @@
 <template>
-  <div @wheel="onWheel">
+  <div @wheel.passive="onWheel">
     <slot />
   </div>
 </template>

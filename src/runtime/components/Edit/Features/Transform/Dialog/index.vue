@@ -1,6 +1,6 @@
 <template>
   <div class="bk bk-transform-overlay" @keydown.stop @keyup.stop>
-    <div ref="el" class="bk-transform-overlay-dialog" @wheel="onWheel">
+    <div ref="el" class="bk-transform-overlay-dialog" @wheel.passive="onWheel">
       <div class="bk-transform-overlay-dialog-inner">
         <div class="bk-transform-overlay-dialog-inner-content">
           <header>
