@@ -49,15 +49,17 @@ function walkBlocks(
   callback: (item: FieldListItemTyped) => CallbackResult,
   mutatedOptions: Record<string, any>,
   mutatedFieldsMap?: Record<string, MutatedField | undefined> | null,
-  list?: Array<FieldListItemTyped | null | undefined | object>,
+  list?: Array<
+    FieldListItemTyped | null | undefined | object | string | number | boolean
+  >,
 ) {
   if (!list) return
 
   for (let i = 0; i < list.length; i++) {
     const item = list[i]
 
-    // Items can be nullalbe.
-    if (!item) continue
+    // Items can be nullalbe or any other type.
+    if (!item || typeof item !== 'object') continue
 
     // Make sure we're actually dealing with the correct object type, in case field mapping is wrong.
     if (!('bundle' in item) || !('uuid' in item)) continue
@@ -67,7 +69,7 @@ function walkBlocks(
     const mutatedOptionsForBlock = mutatedOptions[item.uuid] ?? {}
     const mappedItem = getActualBlock({
       ...item,
-      options: { ...item.options, ...mutatedOptionsForBlock },
+      options: { ...(item.options || {}), ...mutatedOptionsForBlock },
     })
     if (!mappedItem) continue
 
@@ -103,6 +105,7 @@ function walkBlocks(
 
       // A prop may be an array or a single field list item.
       const valueAsArray = Array.isArray(value) ? value : [value]
+
       walkBlocks(
         matches,
         callback,
