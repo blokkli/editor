@@ -74,6 +74,7 @@ async function onClick(items: RenderedFieldListItem[]) {
   if (selectedUuidsAfter) {
     eventBus.emit('select', selectedUuidsAfter)
     dom.refreshBlockRect(selectedUuidsAfter)
+    eventBus.emit('scrollIntoView', { uuid: selectedUuidsAfter })
   } else {
     eventBus.emit('select:unselect')
   }
