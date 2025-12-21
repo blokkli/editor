@@ -1,5 +1,9 @@
 <template>
-  <component :is="tag" ref="root">
+  <component
+    :is="tag"
+    ref="root"
+    :data-blokkli-editable-field="isEditing ? name : undefined"
+  >
     <slot :value="renderedValue" />
   </component>
 </template>
