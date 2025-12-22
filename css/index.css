@@ -433,3 +433,12 @@ html.bk-hide-non-editable {
     }
   }
 }
+
+html.bk-hide-interaction-layers {
+  #bk-canvas-overlay {
+    @apply !invisible;
+  }
+  .bk-main-canvas {
+    @apply !pointer-events-auto;
+  }
+}

@@ -58,7 +58,6 @@
     "dev:prepare": "PLAYGROUND_MODULE_BUILD=true nuxt-module-build build --stub && PLAYGROUND_MODULE_BUILD=true nuxt-module-build prepare && nuxi prepare playground",
     "release": "npm run lint && npm run prepack && changelogen --release",
     "texts": "node ./scripts/texts/index.cjs",
-    "drupal-types": "node ./scripts/drupal/index.cjs",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",
     "test": "vitest run",

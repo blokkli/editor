@@ -92,6 +92,14 @@ export class FeatureCollector extends Collector<CollectedFeatureFile> {
       .map((v) => v.getDefinition())
       .filter(falsy)
       .filter((v) => !this.disabledFeatures.has(v.id))
+      .filter((v) => {
+        // This feature is only enabled in dev mode.
+        if (!this.helper.isDev && v.id === 'dev-mode') {
+          return false
+        }
+
+        return true
+      })
   }
 
   override async init() {
