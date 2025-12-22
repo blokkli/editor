@@ -190,16 +190,8 @@ const title = computed(() => {
 })
 
 const selectedIsNew = computed<boolean>(() => {
-  if (selection.uuids.value.length !== 1) {
-    return false
-  }
-
-  const uuid = selection.uuids.value[0]
-  if (!uuid) {
-    return false
-  }
-
-  return !!state.getFieldListItem(uuid)?.editContext?.isNew
+  const items = selection.items.value
+  return !!items.length && items.every((v) => v.isNew)
 })
 
 const itemBundle = computed(() => {
