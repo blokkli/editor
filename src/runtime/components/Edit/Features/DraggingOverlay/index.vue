@@ -579,6 +579,7 @@ onBlokkliEvent('keyPressed', (e) => {
 
 onBlokkliEvent('block:append', (e) => {
   allUuidsBefore = state.getAllUuids()
+  // @todo: scroll into view
   onDropNew(e.bundle, e.host, e.afterUuid)
 })
 

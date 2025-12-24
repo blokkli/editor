@@ -32,6 +32,7 @@
           />
         </div>
       </div>
+
       <Konami />
       <SystemRequirements />
       <Overlay />

@@ -306,6 +306,18 @@ export type StateProvider = {
    * @returns The field key (entityUuid:fieldName), or null if not found
    */
   getFieldKeyForUuid: (uuid: string) => string | null
+
+  /**
+   * Get the parent entity UUID for a block.
+   *
+   * Returns the UUID of the entity that contains this block in one of its fields.
+   * For nested blocks, this returns the parent block's UUID.
+   * For root-level blocks, this returns the host entity's UUID.
+   *
+   * @param uuid - The block UUID
+   * @returns The parent entity UUID, or null if block not found
+   */
+  getParentEntityUuid: (uuid: string) => string | null
 }
 
 export default async function (
@@ -368,6 +380,11 @@ export default async function (
 
   function getFieldKeyForUuid(uuid: string): string | null {
     return fieldListItemMap.value[uuid] ?? null
+  }
+
+  function getParentEntityUuid(uuid: string): string | null {
+    const field = getFieldListForBlock(uuid)
+    return field?.entityUuid ?? null
   }
 
   function getFieldListForBlock(uuid: string): MutatedField | undefined {
@@ -798,5 +815,6 @@ export default async function (
     fromLibraryUuids: readonly(fromLibraryUuids),
     permissions: computed(() => permissions),
     getFieldKeyForUuid,
+    getParentEntityUuid,
   }
 }

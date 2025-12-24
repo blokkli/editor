@@ -5,6 +5,7 @@
       'bk-is-' + mappedColor,
       {
         'bk-is-small': isSmall,
+        'bk-is-tiny': isTiny,
       },
     ]"
   >
@@ -30,12 +31,14 @@ const props = withDefaults(
     bundle?: string
     color?: ItemColor
     isSmall?: boolean
+    isTiny?: boolean
   }>(),
   {
     icon: undefined,
     bundle: undefined,
     color: undefined,
     isSmall: false,
+    isTiny: false,
   },
 )
 
