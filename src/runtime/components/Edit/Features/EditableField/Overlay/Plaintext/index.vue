@@ -50,6 +50,7 @@ function save() {
 }
 
 const onKeyDown = (e: KeyboardEvent) => {
+  e.stopPropagation()
   if (e.code === 'Escape') {
     e.preventDefault()
     discard()
