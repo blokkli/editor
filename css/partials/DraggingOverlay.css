@@ -89,10 +89,11 @@
 }
 
 .bk.bk-dragging-overlay-label {
-  @apply absolute bottom-full left-1/2 -translate-x-1/2 mb-40 rounded-lg text-white;
+  @apply fixed top-0 left-0 rounded-lg text-white;
   @apply p-8 whitespace-nowrap;
   @apply shadow;
   @apply flex items-center gap-5 font-sans text-base;
+  @apply z-dragging-overlay;
   will-change: transform, contents, opacity;
 
   > p {

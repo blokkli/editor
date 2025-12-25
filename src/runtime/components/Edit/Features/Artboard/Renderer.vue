@@ -205,7 +205,7 @@ watch(options, function (newOptions) {
   artboard.setOptions(newOptions)
 })
 
-const AUTOSCROLL_EDGE_ZONE = 130
+const AUTOSCROLL_EDGE_ZONE = 80
 const AUTOSCROLL_SPEED = 12
 let autoScrollSpeed = 1
 let lastScrollDirection = 0 // -1 = up, 1 = down, 0 = none

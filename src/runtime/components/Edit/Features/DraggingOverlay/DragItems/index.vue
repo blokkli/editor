@@ -1,25 +1,23 @@
 <template>
   <div
     class="bk-vars bk-dragging-overlay"
-    :style="style"
+    :style
     :class="[
       { 'bk-is-touch': isTouch },
       { 'bk-is-active': !!activeLabel },
       { bk: !isExisting },
     ]"
   >
-    <div
-      v-show="activeLabel"
-      class="bk bk-dragging-overlay-label"
-      :style="{
-        backgroundColor: currentActiveColor,
-        '--bk-active-color': currentActiveColor,
-      }"
-    >
-      <Icon name="cursor-move" />
-      <p v-html="currentActiveLabel" />
-    </div>
     <DragItem v-for="(rect, i) in rects" :key="i" v-bind="rect" />
+  </div>
+  <div
+    v-show="activeLabel"
+    class="bk bk-dragging-overlay-label"
+    :style="styleLabel"
+    ref="labelEl"
+  >
+    <Icon name="cursor-move" />
+    <p v-html="currentActiveLabel" />
   </div>
 </template>
 
@@ -31,6 +29,7 @@ import {
   useBlokkli,
   onMounted,
   onBeforeUnmount,
+  useTemplateRef,
 } from '#imports'
 import type { Coord, DraggableItem, Rectangle } from '#blokkli/types'
 import { isInsideRect, realBackgroundColor, falsy } from '#blokkli/helpers'
@@ -65,6 +64,11 @@ const props = defineProps<{
   activeColor?: string
   activeLabel?: string
 }>()
+
+const labelEl = useTemplateRef('labelEl')
+
+const labelWidth = ref(0)
+const labelHeight = ref(0)
 
 const isExisting = computed<boolean>(
   () => !!props.items.find((v) => v.itemType === 'existing'),
@@ -127,6 +131,22 @@ const style = computed(() => {
   }
 })
 
+const styleLabel = computed(() => {
+  const x = Math.min(
+    Math.max(10, translateX.value - labelWidth.value / 2 + width.value / 2),
+    ui.viewport.value.width - labelWidth.value,
+  )
+  const y = Math.max(10, translateY.value - labelHeight.value - 20)
+  return {
+    transform: `translate(${x}px, ${y}px)`,
+    '--bk-active-color':
+      props.activeColor && props.activeLabel
+        ? props.activeColor
+        : 'rgba(255,255,255,0)',
+    backgroundColor: currentActiveColor.value,
+  }
+})
+
 function getRect(): Rectangle {
   return {
     x: translateX.value,
@@ -183,7 +203,23 @@ function getDraggingBounds(
   }
 }
 
+let resizeObserver: ResizeObserver | null = null
+
+function onResize(entries: ResizeObserverEntry[]) {
+  const entry = entries[0]
+  if (!entry) {
+    return
+  }
+
+  labelWidth.value = entry.borderBoxSize[0]?.inlineSize ?? 0
+  labelHeight.value = entry.borderBoxSize[0]?.blockSize ?? 0
+}
+
 onMounted(() => {
+  if (labelEl.value) {
+    resizeObserver = new ResizeObserver(onResize)
+    resizeObserver.observe(labelEl.value)
+  }
   const elRects = props.items
     .map((item, index) => {
       const element =
@@ -332,6 +368,9 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  if (resizeObserver) {
+    resizeObserver.disconnect()
+  }
   // Restore the original visibility on the blocks.
   rects.value.forEach((item) => {
     if (item.prevVisibility !== undefined) {
