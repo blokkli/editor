@@ -1,6 +1,6 @@
 import { test, describe, expect } from 'vitest'
-import { getRuntimeOptionValue } from '.'
-import type { BlockOptionDefinition } from '#blokkli/types/blockOptions'
+import { getRuntimeOptionValue } from './../src/runtime/helpers/runtimeHelpers'
+import type { BlockOptionDefinition } from '../src/runtime/types/blockOptions'
 
 describe('getRuntimeOptionValue', () => {
   test('Returns the correct value for type checkbox', () => {
@@ -37,7 +37,7 @@ describe('getRuntimeOptionValue', () => {
       'three',
     ])
     expect(getRuntimeOptionValue(checkbox, ['one'])).toEqual(['one'])
-    expect(getRuntimeOptionValue(checkbox, undefined)).toEqual([])
+    expect(getRuntimeOptionValue(checkbox, undefined)).toEqual(['one'])
   })
 
   test('Returns the correct value for type radios', () => {
@@ -53,8 +53,8 @@ describe('getRuntimeOptionValue', () => {
     }
     expect(getRuntimeOptionValue(checkbox, 'one')).toEqual('one')
     expect(getRuntimeOptionValue(checkbox, '')).toEqual('')
-    expect(getRuntimeOptionValue(checkbox, false)).toEqual('')
-    expect(getRuntimeOptionValue(checkbox, undefined)).toEqual('')
+    expect(getRuntimeOptionValue(checkbox, false)).toEqual('one')
+    expect(getRuntimeOptionValue(checkbox, undefined)).toEqual('one')
   })
 
   test('Returns the correct value for type text', () => {

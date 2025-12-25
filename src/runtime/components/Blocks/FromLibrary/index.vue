@@ -26,6 +26,9 @@ const props = defineProps<Props>()
 
 const { index, options, parentType, isEditing, uuid } = defineBlokkli({
   bundle: 'from_library',
+  editor: {
+    icon: 'reusable',
+  },
 })
 
 // Reusable items inherit the options from this wrapper paragraph.

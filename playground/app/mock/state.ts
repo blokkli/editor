@@ -58,7 +58,10 @@ export const exportState = async () => {
   const result = await editState.getMutatedState(page)
 
   // Build a map of proxy blocks by UUID (these have the mutated values)
-  const proxyMap = new Map<string, { block: Block; overrideOptions: Record<string, string> }>()
+  const proxyMap = new Map<
+    string,
+    { block: Block; overrideOptions: Record<string, string> }
+  >()
   result.context.proxies.forEach((proxy) => {
     if (!proxy.isDeleted) {
       proxyMap.set(proxy.block.uuid, {
@@ -99,16 +102,25 @@ export const exportState = async () => {
       // Use proxy block if available (has mutated values), otherwise use storage
       const proxyData = proxyMap.get(storageBlock.uuid)
       const block = proxyData?.block || storageBlock
-      const values: Record<string, any> = { ...block.getValues(), isNew: [false] }
+      const values: Record<string, any> = {
+        ...block.getValues(),
+        isNew: [false],
+      }
 
       // Merge override options if present
-      if (proxyData?.overrideOptions && Object.keys(proxyData.overrideOptions).length > 0) {
-        const existingOptions: Array<{ key: string; value: string }> = values.options || []
+      if (
+        proxyData?.overrideOptions &&
+        Object.keys(proxyData.overrideOptions).length > 0
+      ) {
+        const existingOptions: Array<{ key: string; value: string }> =
+          values.options || []
         const optionsMap = new Map(existingOptions.map((o) => [o.key, o.value]))
         Object.entries(proxyData.overrideOptions).forEach(([key, value]) => {
           optionsMap.set(key, value)
         })
-        values.options = Array.from(optionsMap.entries()).map(([key, value]) => ({ key, value }))
+        values.options = Array.from(optionsMap.entries()).map(
+          ([key, value]) => ({ key, value }),
+        )
       }
 
       return {

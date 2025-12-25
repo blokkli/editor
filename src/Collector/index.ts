@@ -1,9 +1,17 @@
 import type { WatchEvent } from 'nuxt/schema'
 import type { ModuleHelper } from '../module/ModuleHelper'
 import type { TemplateDependency } from '../module/templates/defineTemplate'
+import { logger } from '../module/logger'
 
 export type HandleWatchEventResult = {
   hasChanged: boolean
+}
+
+export type ValidationSeverity = 'error' | 'warning'
+
+export type ValidationError = {
+  message: string
+  severity?: ValidationSeverity
 }
 
 export class CollectedFile {
@@ -14,6 +22,14 @@ export class CollectedFile {
 
   async handleChange(_helper: ModuleHelper): Promise<boolean> {
     return Promise.resolve(true)
+  }
+
+  /**
+   * Validate the collected file and return any errors.
+   * Override this method in subclasses to add validation logic.
+   */
+  validate(): ValidationError[] {
+    return []
   }
 }
 
@@ -125,5 +141,61 @@ export abstract class Collector<T extends CollectedFile = CollectedFile> {
     }
 
     return { hasChanged }
+  }
+
+  /**
+   * Validate all collected files and log any errors/warnings to the console.
+   * @returns true if there are validation errors (not warnings), false otherwise.
+   */
+  validate(): boolean {
+    const allIssues: Array<{ filePath: string; issues: ValidationError[] }> = []
+
+    for (const file of this.files.values()) {
+      const issues = file.validate()
+      if (issues.length > 0) {
+        allIssues.push({ filePath: file.filePath, issues })
+      }
+    }
+
+    if (allIssues.length === 0) {
+      return false
+    }
+
+    // Separate errors and warnings
+    const errors: Array<{ filePath: string; issues: ValidationError[] }> = []
+    const warnings: Array<{ filePath: string; issues: ValidationError[] }> = []
+
+    for (const { filePath, issues } of allIssues) {
+      const fileErrors = issues.filter((i) => i.severity !== 'warning')
+      const fileWarnings = issues.filter((i) => i.severity === 'warning')
+
+      if (fileErrors.length > 0) {
+        errors.push({ filePath, issues: fileErrors })
+      }
+      if (fileWarnings.length > 0) {
+        warnings.push({ filePath, issues: fileWarnings })
+      }
+    }
+
+    // Log warnings
+    if (warnings.length > 0) {
+      const lines = warnings.flatMap(({ filePath, issues }) => [
+        `  ${filePath}:`,
+        ...issues.map((e) => `    - ${e.message}`),
+      ])
+      logger.warn(`blökkli validation warnings:\n${lines.join('\n')}`)
+    }
+
+    // Log errors
+    if (errors.length > 0) {
+      const lines = errors.flatMap(({ filePath, issues }) => [
+        `  ${filePath}:`,
+        ...issues.map((e) => `    - ${e.message}`),
+      ])
+      logger.error(`blökkli validation errors:\n${lines.join('\n')}`)
+      return true
+    }
+
+    return false
   }
 }
