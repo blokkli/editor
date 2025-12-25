@@ -52,6 +52,22 @@ const { parentType, fieldListType } = defineBlokkli({
       label: 'Show in menu',
       default: true,
     },
+    align: {
+      type: 'radios',
+      label: 'Alignment',
+      default: 'center',
+      displayAs: 'icons',
+      options: {
+        left: {
+          label: 'Left',
+          icon: 'bk_mdi_format_align_left',
+        },
+        center: {
+          label: 'Center',
+          icon: 'bk_mdi_format_align_center',
+        },
+      },
+    },
   },
   editor: {
     icon: 'bk_mdi_format_h2',

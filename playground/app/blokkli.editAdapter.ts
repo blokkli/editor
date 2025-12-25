@@ -23,7 +23,7 @@ import type {
 import { allTypes } from './mock/allTypes'
 import { conversions } from './mock/conversions'
 import { entityStorageManager } from './mock/entityStorage'
-import { state, editState, mapBlockItem } from './mock/state'
+import { state, editState, mapBlockItem, exportState } from './mock/state'
 import { getBlockBundles } from './mock/state/Block'
 import type { MutatedState } from './mock/state/EditState'
 import { ContentPage, type Content } from './mock/state/Entity/Content'
@@ -1233,26 +1233,43 @@ export default defineBlokkliEditAdapter((ctx) => {
       ])
     },
 
-    publish(options) {
+    async publish(options) {
       const delay = getRandomNumberInRange(400, 1600)
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          if (options.hostEntityUuid === 'error') {
-            return resolve({
-              success: false,
-              state: null,
-              errors: [
-                'There was an internal server error, please try again later.',
-              ],
-            })
-          }
-          return resolve({
-            success: true,
-            state: null,
-            errors: [],
+      await sleep(delay)
+
+      if (options.hostEntityUuid === 'error') {
+        return {
+          success: false,
+          state: null,
+          errors: [
+            'There was an internal server error, please try again later.',
+          ],
+        }
+      }
+
+      // Only persist in dev mode
+      if (import.meta.dev) {
+        try {
+          const data = await exportState()
+
+          await $fetch('/api/snapshots', {
+            method: 'POST',
+            body: data,
           })
-        }, delay)
-      })
+
+          // Clear mutations from localStorage after successful save
+          editState.revert()
+        } catch (e) {
+          console.error('Failed to persist snapshots:', e)
+          // Don't fail publish if snapshot save fails
+        }
+      }
+
+      return {
+        success: true,
+        state: null,
+        errors: [],
+      }
     },
 
     getPublishOptions() {

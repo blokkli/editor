@@ -50,10 +50,23 @@ export const getEditState = (
   return editState
 }
 
-const exportState = async () => {
+export const exportState = async () => {
   const page = entityStorageManager.getContent('1')
-  // @ts-ignore
-  const result = await editState.getMutatedState(page, true)
+  if (!page) {
+    throw new Error('Page not found')
+  }
+  const result = await editState.getMutatedState(page)
+
+  // Build a map of proxy blocks by UUID (these have the mutated values)
+  const proxyMap = new Map<string, { block: Block; overrideOptions: Record<string, string> }>()
+  result.context.proxies.forEach((proxy) => {
+    if (!proxy.isDeleted) {
+      proxyMap.set(proxy.block.uuid, {
+        block: proxy.block,
+        overrideOptions: proxy.overrideOptions,
+      })
+    }
+  })
 
   const fields = result.fields.map((v) => {
     return {
@@ -79,17 +92,32 @@ const exportState = async () => {
     ...libraryItems.map((v) => v.block),
   ]
 
-  const allBlocks = entityStorageManager.storages.block
+  const blocks = entityStorageManager.storages.block
     .loadAll()
     .filter((v) => usedBlocks.includes(v.uuid))
+    .map((storageBlock) => {
+      // Use proxy block if available (has mutated values), otherwise use storage
+      const proxyData = proxyMap.get(storageBlock.uuid)
+      const block = proxyData?.block || storageBlock
+      const values: Record<string, any> = { ...block.getValues(), isNew: [false] }
 
-  const data = {
-    fields,
-    blocks: allBlocks,
-    libraryItems,
-  }
-  console.log(JSON.stringify(data))
+      // Merge override options if present
+      if (proxyData?.overrideOptions && Object.keys(proxyData.overrideOptions).length > 0) {
+        const existingOptions: Array<{ key: string; value: string }> = values.options || []
+        const optionsMap = new Map(existingOptions.map((o) => [o.key, o.value]))
+        Object.entries(proxyData.overrideOptions).forEach(([key, value]) => {
+          optionsMap.set(key, value)
+        })
+        values.options = Array.from(optionsMap.entries()).map(([key, value]) => ({ key, value }))
+      }
+
+      return {
+        entityType: 'block' as const,
+        bundle: block.bundle,
+        uuid: block.uuid,
+        values,
+      }
+    })
+
+  return { fields, blocks, libraryItems }
 }
-
-// exportState()
-// throw new Error('Exported')

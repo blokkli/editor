@@ -4,26 +4,6 @@ import { falsy, onlyUnique, toValidVariableName } from './../../../helpers'
 import { toImports, toObject } from '../helpers'
 import { USED_MATERIAL_ICONS } from './../../used-icons'
 
-const KEEP_ICONS = [
-  'window-minimize',
-  'window-maximize',
-  'dock-window',
-  'loader',
-  'star',
-  'unstar',
-  'logo',
-  'artboard',
-  'robot',
-  'youtube',
-  'vimeo',
-  'tiktok',
-  'duplicate',
-  'arrow-right-thin',
-  'spinner',
-  'reusable',
-  'reusable-detach',
-]
-
 export default defineCodeTemplate(
   'icons',
   (ctx) => {
@@ -32,9 +12,19 @@ export default defineCodeTemplate(
 
     const files = ctx.icons.files.values()
 
-    const blockIcons = [...ctx.blocks.files.values()].map(
-      (v) => v.definition?.editor?.icon,
-    )
+    const blockIcons = [...ctx.blocks.files.values()].flatMap((v) => {
+      const icon = v.definition?.editor?.icon
+      const optionIcons = Object.values(v.definition?.options ?? {}).flatMap(
+        (option) => {
+          if (option.type === 'radios' && option.displayAs === 'icons') {
+            return Object.values(option.options).map((optionOption) => {
+              return optionOption.icon
+            })
+          }
+        },
+      )
+      return [icon, ...optionIcons]
+    })
     const featureIcons = [...ctx.features.files.values()].map(
       (v) => v.getDefinition()?.definition.icon,
     )
@@ -49,7 +39,8 @@ export default defineCodeTemplate(
     for (const file of files) {
       const name = basename(file.filePath, '.svg').toLowerCase()
       const importName = 'icon_' + toValidVariableName(name)
-      imports.set(importName, `${file.filePath}?raw`)
+      const realtivePath = ctx.helper.toModuleBuildRelative(file.filePath)
+      imports.set(importName, `${realtivePath}?raw`)
       icons.set(name, importName)
     }
     const materialIcons = definitionIcons.filter((v) => v.startsWith('bk_mdi_'))
@@ -76,7 +67,6 @@ ${toObject('icons', icons)}
           return basename(file.filePath, '.svg').toLowerCase()
         })
         .sort()
-        .filter((v) => v.includes('icon-blokkli') || KEEP_ICONS.includes(v))
         .map((name) => `"${name}"`)
         .join('\n  | ') || "'never'"
 

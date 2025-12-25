@@ -48,12 +48,20 @@
       ]
     },
     {
+      "name": "header",
+      "entityType": "block",
+      "entityUuid": "bf4acf60-e0a2-43bb-b4fc-9f32a41a4816",
+      "field": [
+        "3284016a-aa33-4994-8e4d-c0a6f9bd91c7"
+      ]
+    },
+    {
       "name": "blocks",
       "entityType": "block",
       "entityUuid": "bf4acf60-e0a2-43bb-b4fc-9f32a41a4816",
       "field": [
-        "a4aac285-9615-4764-81de-96d3af41e622",
         "1645ba79-8770-4a0c-a58b-163a847eea22",
+        "a4aac285-9615-4764-81de-96d3af41e622",
         "27e417eb-a5fa-4d17-94b5-e218fc653906"
       ]
     },
@@ -61,7 +69,9 @@
       "name": "header",
       "entityType": "block",
       "entityUuid": "f7e3f26b-9c8a-4571-9f98-660bcca08938",
-      "field": ["d6020cd0-45f0-4200-8690-e297a38a1cca"]
+      "field": [
+        "d6020cd0-45f0-4200-8690-e297a38a1cca"
+      ]
     },
     {
       "name": "blocks",
@@ -86,13 +96,17 @@
       "name": "right",
       "entityType": "block",
       "entityUuid": "dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf",
-      "field": ["e011fd53-b083-4db0-a4aa-26c3602916f8"]
+      "field": [
+        "e011fd53-b083-4db0-a4aa-26c3602916f8"
+      ]
     },
     {
       "name": "header",
       "entityType": "block",
       "entityUuid": "6d0bde10-a05b-4c7d-a8cf-fafc8e0001f1",
-      "field": ["47f0bf41-bd49-47c2-a2c4-145f80abe161"]
+      "field": [
+        "47f0bf41-bd49-47c2-a2c4-145f80abe161"
+      ]
     },
     {
       "name": "blocks",
@@ -108,7 +122,9 @@
       "name": "header",
       "entityType": "block",
       "entityUuid": "334a4e80-a174-49ba-b986-af5697f093b7",
-      "field": ["4e7ac454-2b6b-4c45-a01c-34abdd52b792"]
+      "field": [
+        "4e7ac454-2b6b-4c45-a01c-34abdd52b792"
+      ]
     },
     {
       "name": "blocks",
@@ -133,7 +149,9 @@
       "name": "right",
       "entityType": "block",
       "entityUuid": "908fac9f-e47e-4478-bfd8-ab8ac947835b",
-      "field": ["f91e046b-3bcc-48dd-bbd5-8a21115436b7"]
+      "field": [
+        "f91e046b-3bcc-48dd-bbd5-8a21115436b7"
+      ]
     },
     {
       "name": "left",
@@ -148,13 +166,17 @@
       "name": "right",
       "entityType": "block",
       "entityUuid": "ce8afc60-2f42-4b99-8a44-c5a46eb15f7a",
-      "field": ["9ab46061-c9f3-40fb-bfb1-27ba3bb628f5"]
+      "field": [
+        "9ab46061-c9f3-40fb-bfb1-27ba3bb628f5"
+      ]
     },
     {
       "name": "header",
       "entityType": "block",
       "entityUuid": "c414a773-406c-4200-aef6-ada9349b3f11",
-      "field": ["b819947c-1bce-429e-a210-91579dae421c"]
+      "field": [
+        "b819947c-1bce-429e-a210-91579dae421c"
+      ]
     },
     {
       "name": "blocks",
@@ -180,15 +202,8 @@
       "name": "right",
       "entityType": "block",
       "entityUuid": "90d01577-babc-45b5-a03b-2ba266822425",
-      "field": ["1be4ab78-8265-48a6-a1aa-ff852d2507b5"]
-    },
-    {
-      "name": "buttons",
-      "entityType": "block",
-      "entityUuid": "18a7ed49-7355-4d0d-9004-6623c98a999f",
       "field": [
-        "0962e858-fbf6-4f98-bf6f-f7813bd5f9be",
-        "49e2da9e-4e87-4570-9909-458494c9cf3d"
+        "1be4ab78-8265-48a6-a1aa-ff852d2507b5"
       ]
     }
   ],
@@ -198,9 +213,15 @@
       "bundle": "icon",
       "uuid": "c1d4278d-c0e1-439d-8849-558d17b9cc5f",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "icon": ["bk_mdi_format_h2"]
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_format_h2"
+        ]
       }
     },
     {
@@ -208,8 +229,12 @@
       "bundle": "not_implemented",
       "uuid": "b2a44272-8432-4516-8a6a-9837b0084884",
       "values": {
-        "isNew": [true],
-        "options": []
+        "isNew": [
+          false
+        ],
+        "options": [],
+        "publishOn": [],
+        "unpublishOn": []
       }
     },
     {
@@ -217,9 +242,15 @@
       "bundle": "icon",
       "uuid": "762c4159-aaa8-49dc-9111-2910be58d5c2",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "icon": ["bk_mdi_content_paste"]
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_content_paste"
+        ]
       }
     },
     {
@@ -227,9 +258,15 @@
       "bundle": "icon",
       "uuid": "5d49b533-b3bc-4c06-895b-7ee489875a54",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "icon": ["bk_mdi_buttons_alt"]
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_buttons_alt"
+        ]
       }
     },
     {
@@ -237,9 +274,15 @@
       "bundle": "icon",
       "uuid": "c377fd74-dcb3-447f-a6ff-2ad279c3274a",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "icon": ["bk_mdi_image"]
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_image"
+        ]
       }
     },
     {
@@ -247,9 +290,15 @@
       "bundle": "icon",
       "uuid": "7fac3370-9563-4b61-a099-be58a3e71858",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "icon": ["bk_mdi_format_h2"]
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "adapter"
+        ]
       }
     },
     {
@@ -257,9 +306,15 @@
       "bundle": "icon",
       "uuid": "5d2a1a79-e56d-47cf-baa7-fb7bb797f66a",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "icon": ["bk_mdi_zoom_in"]
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_zoom_in"
+        ]
       }
     },
     {
@@ -267,9 +322,15 @@
       "bundle": "icon",
       "uuid": "35753850-9cda-400a-8416-ec9ba7e8d9a7",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "icon": ["bk_mdi_keyboard_command_key"]
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_keyboard_command_key"
+        ]
       }
     },
     {
@@ -277,9 +338,15 @@
       "bundle": "icon",
       "uuid": "80f53678-cbfb-452a-8f00-e00c4d393db5",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "icon": ["bk_mdi_edit"]
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_edit"
+        ]
       }
     },
     {
@@ -287,9 +354,15 @@
       "bundle": "icon",
       "uuid": "aaad7afb-ea3c-450f-b683-a47cf79e281b",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "icon": ["bk_mdi_extension"]
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_extension"
+        ]
       }
     },
     {
@@ -297,10 +370,18 @@
       "bundle": "title",
       "uuid": "4526d2d0-f122-4093-902f-e2f00a433981",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "tagline": ["Developer Experience"],
-        "title": ["Integrates in any Nuxt setup"],
+        "publishOn": [],
+        "unpublishOn": [],
+        "tagline": [
+          "Developer Experience"
+        ],
+        "title": [
+          "Integrates in any Nuxt setup"
+        ],
         "lead": [
           "Blocks are rendered with minimal overhead. Full SSR support, no leaking CSS."
         ]
@@ -311,15 +392,23 @@
       "bundle": "title",
       "uuid": "3284016a-aa33-4994-8e4d-c0a6f9bd91c7",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [
           {
             "key": "showInMenu",
             "value": 1
           }
         ],
-        "tagline": ["Simplicity"],
-        "title": ["Essential Tools for Seamless Editing"],
+        "publishOn": [],
+        "unpublishOn": [],
+        "tagline": [
+          "Simplicity"
+        ],
+        "title": [
+          "Essential Tools for Seamless Editing"
+        ],
         "lead": [
           "Navigate the basics of page building with unparalleled ease. blökkli's core functionalities are designed to enhance your productivity, from simple edits to complex page structures."
         ]
@@ -330,18 +419,44 @@
       "bundle": "grid",
       "uuid": "bf4acf60-e0a2-43bb-b4fc-9f32a41a4816",
       "values": {
-        "isNew": [false],
-        "options": [
-          { "key": "columns", "value": "three" },
-          { "key": "mobile", "value": "" },
-          { "key": "background", "value": "light" },
-          { "key": "showHeader", "value": "1" }
+        "isNew": [
+          false
         ],
-        "header": [{ "uuid": "3284016a-aa33-4994-8e4d-c0a6f9bd91c7" }],
+        "options": [
+          {
+            "key": "columns",
+            "value": "three"
+          },
+          {
+            "key": "mobile",
+            "value": ""
+          },
+          {
+            "key": "background",
+            "value": "light"
+          },
+          {
+            "key": "showHeader",
+            "value": "1"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "header": [
+          {
+            "uuid": "3284016a-aa33-4994-8e4d-c0a6f9bd91c7"
+          }
+        ],
         "blocks": [
-          { "uuid": "a4aac285-9615-4764-81de-96d3af41e622" },
-          { "uuid": "1645ba79-8770-4a0c-a58b-163a847eea22" },
-          { "uuid": "27e417eb-a5fa-4d17-94b5-e218fc653906" }
+          {
+            "uuid": "1645ba79-8770-4a0c-a58b-163a847eea22"
+          },
+          {
+            "uuid": "a4aac285-9615-4764-81de-96d3af41e622"
+          },
+          {
+            "uuid": "27e417eb-a5fa-4d17-94b5-e218fc653906"
+          }
         ]
       }
     },
@@ -350,10 +465,23 @@
       "bundle": "card",
       "uuid": "a4aac285-9615-4764-81de-96d3af41e622",
       "values": {
-        "isNew": [false],
-        "options": [{ "key": "box", "value": "1" }],
-        "icon": ["bk_mdi_edit"],
-        "title": ["Copy, Duplicate, Edit, Delete"],
+        "isNew": [
+          false
+        ],
+        "options": [
+          {
+            "key": "box",
+            "value": "1"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_edit"
+        ],
+        "title": [
+          "Copy, Duplicate, Edit, Delete"
+        ],
         "text": [
           "Quickly perform basic edits and manage your content efficiently."
         ]
@@ -364,10 +492,23 @@
       "bundle": "card",
       "uuid": "1645ba79-8770-4a0c-a58b-163a847eea22",
       "values": {
-        "isNew": [false],
-        "options": [{ "key": "box", "value": "1" }],
-        "icon": ["bk_mdi_select"],
-        "title": ["Select"],
+        "isNew": [
+          false
+        ],
+        "options": [
+          {
+            "key": "box",
+            "value": "1"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_select"
+        ],
+        "title": [
+          "Select"
+        ],
         "text": [
           "Select multiple blocks using ctrl + click or drag-and-drop, visualized with a clear selection rectangle."
         ]
@@ -378,10 +519,23 @@
       "bundle": "card",
       "uuid": "27e417eb-a5fa-4d17-94b5-e218fc653906",
       "values": {
-        "isNew": [false],
-        "options": [{ "key": "box", "value": "1" }],
-        "icon": ["bk_mdi_history"],
-        "title": ["History"],
+        "isNew": [
+          false
+        ],
+        "options": [
+          {
+            "key": "box",
+            "value": "1"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_history"
+        ],
+        "title": [
+          "History"
+        ],
         "text": [
           "Effortlessly undo or redo actions and explore the complete history of your edits for full control."
         ]
@@ -392,10 +546,18 @@
       "bundle": "title",
       "uuid": "d6020cd0-45f0-4200-8690-e297a38a1cca",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "tagline": ["Customize your design"],
-        "title": ["Dynamic Options and Interactive Features"],
+        "publishOn": [],
+        "unpublishOn": [],
+        "tagline": [
+          "Customize your design"
+        ],
+        "title": [
+          "Dynamic Options and Interactive Features"
+        ],
         "lead": [
           "Add customizable options and interactive capabilities to your blocks. Unlock the potential with unique aesthetics and functionality. "
         ]
@@ -406,18 +568,44 @@
       "bundle": "grid",
       "uuid": "f7e3f26b-9c8a-4571-9f98-660bcca08938",
       "values": {
-        "isNew": [false],
-        "options": [
-          { "key": "columns", "value": "three" },
-          { "key": "mobile", "value": "" },
-          { "key": "showHeader", "value": "1" },
-          { "key": "background", "value": "white" }
+        "isNew": [
+          false
         ],
-        "header": [{ "uuid": "d6020cd0-45f0-4200-8690-e297a38a1cca" }],
+        "options": [
+          {
+            "key": "columns",
+            "value": "three"
+          },
+          {
+            "key": "mobile",
+            "value": ""
+          },
+          {
+            "key": "showHeader",
+            "value": "1"
+          },
+          {
+            "key": "background",
+            "value": "white"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "header": [
+          {
+            "uuid": "d6020cd0-45f0-4200-8690-e297a38a1cca"
+          }
+        ],
         "blocks": [
-          { "uuid": "72633ab5-2353-45ce-8a1b-3726c7da8679" },
-          { "uuid": "96f7fbda-04d9-4662-9a6c-6aa3bcf964f2" },
-          { "uuid": "59b6db95-f4ca-4dd7-86a4-3ad53e66571b" }
+          {
+            "uuid": "72633ab5-2353-45ce-8a1b-3726c7da8679"
+          },
+          {
+            "uuid": "96f7fbda-04d9-4662-9a6c-6aa3bcf964f2"
+          },
+          {
+            "uuid": "59b6db95-f4ca-4dd7-86a4-3ad53e66571b"
+          }
         ]
       }
     },
@@ -426,13 +614,27 @@
       "bundle": "card",
       "uuid": "25cdf719-d6ef-4a27-a828-ba6ed8b78ee6",
       "values": {
-        "isNew": [false],
-        "options": [
-          { "key": "box", "value": "" },
-          { "key": "color", "value": "lightGreen" }
+        "isNew": [
+          false
         ],
-        "icon": ["bk_mdi_zoom_in"],
-        "title": ["Artboard"],
+        "options": [
+          {
+            "key": "box",
+            "value": ""
+          },
+          {
+            "key": "color",
+            "value": "lightGreen"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_zoom_in"
+        ],
+        "title": [
+          "Artboard"
+        ],
         "text": [
           " Pan and zoom like in Photoshop or Figma for precise layout control."
         ]
@@ -443,10 +645,18 @@
       "bundle": "title",
       "uuid": "4e7ac454-2b6b-4c45-a01c-34abdd52b792",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "tagline": ["Teamwork Made Easy"],
-        "title": ["Facilitate Collaboration and Extend Functionality"],
+        "publishOn": [],
+        "unpublishOn": [],
+        "tagline": [
+          "Teamwork Made Easy"
+        ],
+        "title": [
+          "Facilitate Collaboration and Extend Functionality"
+        ],
         "lead": [
           "blökkli encourages teamwork and flexibility, allowing you to comment, share, and integrate seamlessly."
         ]
@@ -457,17 +667,40 @@
       "bundle": "grid",
       "uuid": "334a4e80-a174-49ba-b986-af5697f093b7",
       "values": {
-        "isNew": [false],
-        "options": [
-          { "key": "columns", "value": "three" },
-          { "key": "showHeader", "value": "1" },
-          { "key": "background", "value": "light" }
+        "isNew": [
+          false
         ],
-        "header": [{ "uuid": "4e7ac454-2b6b-4c45-a01c-34abdd52b792" }],
+        "options": [
+          {
+            "key": "columns",
+            "value": "three"
+          },
+          {
+            "key": "showHeader",
+            "value": "1"
+          },
+          {
+            "key": "background",
+            "value": "light"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "header": [
+          {
+            "uuid": "4e7ac454-2b6b-4c45-a01c-34abdd52b792"
+          }
+        ],
         "blocks": [
-          { "uuid": "af913394-1d5b-4d05-bbc0-46f280d1787b" },
-          { "uuid": "82b54483-03ee-4483-8b14-121d611ecf27" },
-          { "uuid": "3ce777ca-70a5-48fb-b220-7ac2ab052516" }
+          {
+            "uuid": "af913394-1d5b-4d05-bbc0-46f280d1787b"
+          },
+          {
+            "uuid": "82b54483-03ee-4483-8b14-121d611ecf27"
+          },
+          {
+            "uuid": "3ce777ca-70a5-48fb-b220-7ac2ab052516"
+          }
         ]
       }
     },
@@ -476,10 +709,18 @@
       "bundle": "card",
       "uuid": "af913394-1d5b-4d05-bbc0-46f280d1787b",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "icon": ["bk_mdi_comment"],
-        "title": ["Comments"],
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_comment"
+        ],
+        "title": [
+          "Comments"
+        ],
         "text": [
           "Add comments to pages or blocks for effective team communication."
         ]
@@ -490,10 +731,18 @@
       "bundle": "card",
       "uuid": "82b54483-03ee-4483-8b14-121d611ecf27",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "icon": ["reusable"],
-        "title": ["Shared Library"],
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "reusable"
+        ],
+        "title": [
+          "Shared Library"
+        ],
         "text": [
           "Reuse blocks across multiple pages with a shared library enabling truly consistent content."
         ]
@@ -504,10 +753,18 @@
       "bundle": "card",
       "uuid": "3ce777ca-70a5-48fb-b220-7ac2ab052516",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "icon": ["bk_mdi_function"],
-        "title": ["Actions"],
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_function"
+        ],
+        "title": [
+          "Actions"
+        ],
         "text": [
           " Implement custom actions like extracting links or rewriting text with ChatGPT integration."
         ]
@@ -518,10 +775,18 @@
       "bundle": "title",
       "uuid": "b819947c-1bce-429e-a210-91579dae421c",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "tagline": ["Integration"],
-        "title": ["It's just the editor"],
+        "publishOn": [],
+        "unpublishOn": [],
+        "tagline": [
+          "Integration"
+        ],
+        "title": [
+          "It's just the editor"
+        ],
         "lead": [
           "blökkli only requires a simple data structure and integrates with any CMS using a single adapter interface."
         ]
@@ -532,10 +797,23 @@
       "bundle": "card",
       "uuid": "c3f229a1-7bb7-4d0a-8820-51a48acd73b0",
       "values": {
-        "isNew": [false],
-        "options": [{ "key": "box", "value": "" }],
-        "icon": ["bk_mdi_power"],
-        "title": ["Custom"],
+        "isNew": [
+          false
+        ],
+        "options": [
+          {
+            "key": "box",
+            "value": ""
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_power"
+        ],
+        "title": [
+          "Custom"
+        ],
         "text": [
           "Write your own adapter for integrating blökkli with your CMS or any backend."
         ]
@@ -546,10 +824,23 @@
       "bundle": "card",
       "uuid": "a3bcf0de-589c-44d2-9ca7-b8184cfe5028",
       "values": {
-        "isNew": [false],
-        "options": [{ "key": "box", "value": "" }],
-        "icon": ["bk_mdi_extension"],
-        "title": ["Modular"],
+        "isNew": [
+          false
+        ],
+        "options": [
+          {
+            "key": "box",
+            "value": ""
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_extension"
+        ],
+        "title": [
+          "Modular"
+        ],
         "text": [
           "Extend adapters to your own requirements. For example, add an external comment service or write your own."
         ]
@@ -560,18 +851,39 @@
       "bundle": "two_columns",
       "uuid": "ce8afc60-2f42-4b99-8a44-c5a46eb15f7a",
       "values": {
-        "isNew": [false],
-        "options": [
-          { "key": "reverse", "value": "" },
-          { "key": "background", "value": "light" },
-          { "key": "columns", "value": "twoOne" }
+        "isNew": [
+          false
         ],
+        "options": [
+          {
+            "key": "reverse",
+            "value": ""
+          },
+          {
+            "key": "background",
+            "value": "light"
+          },
+          {
+            "key": "columns",
+            "value": "twoOne"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
         "header": [],
         "left": [
-          { "uuid": "4526d2d0-f122-4093-902f-e2f00a433981" },
-          { "uuid": "3a2617ed-6844-4d39-859c-82869f4ea5aa" }
+          {
+            "uuid": "4526d2d0-f122-4093-902f-e2f00a433981"
+          },
+          {
+            "uuid": "3a2617ed-6844-4d39-859c-82869f4ea5aa"
+          }
         ],
-        "right": [{ "uuid": "9ab46061-c9f3-40fb-bfb1-27ba3bb628f5" }]
+        "right": [
+          {
+            "uuid": "9ab46061-c9f3-40fb-bfb1-27ba3bb628f5"
+          }
+        ]
       }
     },
     {
@@ -579,9 +891,20 @@
       "bundle": "image",
       "uuid": "9ab46061-c9f3-40fb-bfb1-27ba3bb628f5",
       "values": {
-        "isNew": [false],
-        "options": [{ "key": "elevated", "value": "1" }],
-        "imageReference": ["2"]
+        "isNew": [
+          false
+        ],
+        "options": [
+          {
+            "key": "elevated",
+            "value": "1"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "imageReference": [
+          "2"
+        ]
       }
     },
     {
@@ -589,10 +912,18 @@
       "bundle": "title",
       "uuid": "d8d3ad51-7c37-4a27-ad64-e04ee8a4f842",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "tagline": ["Features"],
-        "title": ["All features available in blökkli"],
+        "publishOn": [],
+        "unpublishOn": [],
+        "tagline": [
+          "Features"
+        ],
+        "title": [
+          "All features available in blökkli"
+        ],
         "lead": [
           "By the way, this list is built dynamically and is possible thanks to the 'Fragments' feature!"
         ]
@@ -603,10 +934,23 @@
       "bundle": "card",
       "uuid": "87098bb1-d849-4afc-8845-05ef2d08d160",
       "values": {
-        "isNew": [false],
-        "options": [{ "key": "box", "value": "" }],
-        "icon": ["bk_mdi_lightbulb"],
-        "title": ["Simple"],
+        "isNew": [
+          false
+        ],
+        "options": [
+          {
+            "key": "box",
+            "value": ""
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_lightbulb"
+        ],
+        "title": [
+          "Simple"
+        ],
         "text": [
           "blökkli provides an adapter to integrate the editor with any existing Paragraphs based Drupal setup."
         ]
@@ -617,19 +961,43 @@
       "bundle": "two_columns",
       "uuid": "dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf",
       "values": {
-        "isNew": [false],
-        "options": [
-          { "key": "reverse", "value": "" },
-          { "key": "background", "value": "light" },
-          { "key": "columns", "value": "oneTwo" },
-          { "key": "showHeader", "value": "" }
+        "isNew": [
+          false
         ],
+        "options": [
+          {
+            "key": "reverse",
+            "value": ""
+          },
+          {
+            "key": "background",
+            "value": "light"
+          },
+          {
+            "key": "columns",
+            "value": "oneTwo"
+          },
+          {
+            "key": "showHeader",
+            "value": ""
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
         "header": [],
         "left": [
-          { "uuid": "611aae9b-49be-4236-b4a0-1602aa306f56" },
-          { "uuid": "4ce7b4f0-da66-4ae6-9378-c47eb7b7158e" }
+          {
+            "uuid": "611aae9b-49be-4236-b4a0-1602aa306f56"
+          },
+          {
+            "uuid": "4ce7b4f0-da66-4ae6-9378-c47eb7b7158e"
+          }
         ],
-        "right": [{ "uuid": "e011fd53-b083-4db0-a4aa-26c3602916f8" }]
+        "right": [
+          {
+            "uuid": "e011fd53-b083-4db0-a4aa-26c3602916f8"
+          }
+        ]
       }
     },
     {
@@ -637,9 +1005,20 @@
       "bundle": "image",
       "uuid": "e011fd53-b083-4db0-a4aa-26c3602916f8",
       "values": {
-        "isNew": [false],
-        "options": [{ "key": "elevated", "value": "1" }],
-        "imageReference": ["1"]
+        "isNew": [
+          false
+        ],
+        "options": [
+          {
+            "key": "elevated",
+            "value": "1"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "imageReference": [
+          "1"
+        ]
       }
     },
     {
@@ -647,11 +1026,21 @@
       "bundle": "title",
       "uuid": "611aae9b-49be-4236-b4a0-1602aa306f56",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "tagline": ["Content search"],
-        "title": ["Easily find existing content"],
-        "lead": ["Find blocks, content or media elements\n"]
+        "publishOn": [],
+        "unpublishOn": [],
+        "tagline": [
+          "Content search"
+        ],
+        "title": [
+          "Easily find existing content"
+        ],
+        "lead": [
+          "Find blocks, content or media elements\n"
+        ]
       }
     },
     {
@@ -659,9 +1048,20 @@
       "bundle": "image",
       "uuid": "319c3ffb-6d38-4885-860e-fa346c40e5c1",
       "values": {
-        "isNew": [false],
-        "options": [{ "key": "elevated", "value": "1" }],
-        "imageReference": ["3"]
+        "isNew": [
+          false
+        ],
+        "options": [
+          {
+            "key": "elevated",
+            "value": "1"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "imageReference": [
+          "3"
+        ]
       }
     },
     {
@@ -669,9 +1069,20 @@
       "bundle": "image",
       "uuid": "6694e5d3-da35-417b-87ce-5022b6377e92",
       "values": {
-        "isNew": [false],
-        "options": [{ "key": "elevated", "value": "1" }],
-        "imageReference": ["4"]
+        "isNew": [
+          false
+        ],
+        "options": [
+          {
+            "key": "elevated",
+            "value": "1"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "imageReference": [
+          "4"
+        ]
       }
     },
     {
@@ -679,8 +1090,17 @@
       "bundle": "text",
       "uuid": "4ce7b4f0-da66-4ae6-9378-c47eb7b7158e",
       "values": {
-        "isNew": [false],
-        "options": [{ "key": "list", "value": "1" }],
+        "isNew": [
+          false
+        ],
+        "options": [
+          {
+            "key": "list",
+            "value": "1"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
         "text": [
           "<p>Search for blocks, existing content or media in your CMS or DAM and place them right away as blocks on your page.&nbsp;<br>&nbsp;</p>"
         ]
@@ -691,8 +1111,17 @@
       "bundle": "text",
       "uuid": "3a2617ed-6844-4d39-859c-82869f4ea5aa",
       "values": {
-        "isNew": [false],
-        "options": [{ "key": "list", "value": "1" }],
+        "isNew": [
+          false
+        ],
+        "options": [
+          {
+            "key": "list",
+            "value": "1"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
         "text": [
           "<ul><li>Auto import block components</li><li>Directly define options inside the component</li><li>Support for import chunks</li></ul>"
         ]
@@ -703,17 +1132,40 @@
       "bundle": "grid",
       "uuid": "c414a773-406c-4200-aef6-ada9349b3f11",
       "values": {
-        "isNew": [false],
-        "options": [
-          { "key": "columns", "value": "three" },
-          { "key": "background", "value": "white" },
-          { "key": "showHeader", "value": "1" }
+        "isNew": [
+          false
         ],
-        "header": [{ "uuid": "b819947c-1bce-429e-a210-91579dae421c" }],
+        "options": [
+          {
+            "key": "columns",
+            "value": "three"
+          },
+          {
+            "key": "background",
+            "value": "white"
+          },
+          {
+            "key": "showHeader",
+            "value": "1"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "header": [
+          {
+            "uuid": "b819947c-1bce-429e-a210-91579dae421c"
+          }
+        ],
         "blocks": [
-          { "uuid": "87098bb1-d849-4afc-8845-05ef2d08d160" },
-          { "uuid": "a3bcf0de-589c-44d2-9ca7-b8184cfe5028" },
-          { "uuid": "b7288437-c229-463c-840e-b454b9f41416" }
+          {
+            "uuid": "87098bb1-d849-4afc-8845-05ef2d08d160"
+          },
+          {
+            "uuid": "a3bcf0de-589c-44d2-9ca7-b8184cfe5028"
+          },
+          {
+            "uuid": "b7288437-c229-463c-840e-b454b9f41416"
+          }
         ]
       }
     },
@@ -722,18 +1174,44 @@
       "bundle": "grid",
       "uuid": "6d0bde10-a05b-4c7d-a8cf-fafc8e0001f1",
       "values": {
-        "isNew": [false],
-        "options": [
-          { "key": "columns", "value": "three" },
-          { "key": "showHeader", "value": "1" },
-          { "key": "background", "value": "white" },
-          { "key": "mobile", "value": "" }
+        "isNew": [
+          false
         ],
-        "header": [{ "uuid": "47f0bf41-bd49-47c2-a2c4-145f80abe161" }],
+        "options": [
+          {
+            "key": "columns",
+            "value": "three"
+          },
+          {
+            "key": "showHeader",
+            "value": "1"
+          },
+          {
+            "key": "background",
+            "value": "white"
+          },
+          {
+            "key": "mobile",
+            "value": ""
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "header": [
+          {
+            "uuid": "47f0bf41-bd49-47c2-a2c4-145f80abe161"
+          }
+        ],
         "blocks": [
-          { "uuid": "5780e657-2c02-45b2-bb92-1424a7a29fb8" },
-          { "uuid": "57bbeffb-dd8d-44f6-a29a-3a1145b4e373" },
-          { "uuid": "4636604d-f473-4d10-b083-79a00228a2d8" }
+          {
+            "uuid": "5780e657-2c02-45b2-bb92-1424a7a29fb8"
+          },
+          {
+            "uuid": "57bbeffb-dd8d-44f6-a29a-3a1145b4e373"
+          },
+          {
+            "uuid": "4636604d-f473-4d10-b083-79a00228a2d8"
+          }
         ]
       }
     },
@@ -742,10 +1220,18 @@
       "bundle": "title",
       "uuid": "47f0bf41-bd49-47c2-a2c4-145f80abe161",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "tagline": ["Multi Everything"],
-        "title": ["Multilingual Support and Advanced Previewing"],
+        "publishOn": [],
+        "unpublishOn": [],
+        "tagline": [
+          "Multi Everything"
+        ],
+        "title": [
+          "Multilingual Support and Advanced Previewing"
+        ],
         "lead": [
           "blökkli transcends language barriers and offers advanced previewing options, ensuring your content resonates globally."
         ]
@@ -756,10 +1242,18 @@
       "bundle": "card",
       "uuid": "5780e657-2c02-45b2-bb92-1424a7a29fb8",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "icon": ["bk_mdi_translate"],
-        "title": ["Multilanguage"],
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_translate"
+        ],
+        "title": [
+          "Multilanguage"
+        ],
         "text": [
           "blökkli supports a multilingual workflow. When translating content, the structure can not be altered."
         ]
@@ -770,10 +1264,23 @@
       "bundle": "card",
       "uuid": "4636604d-f473-4d10-b083-79a00228a2d8",
       "values": {
-        "isNew": [false],
-        "options": [{ "key": "box", "value": "1" }],
-        "icon": ["bk_mdi_mobile"],
-        "title": ["Mobile First"],
+        "isNew": [
+          false
+        ],
+        "options": [
+          {
+            "key": "box",
+            "value": "1"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_mobile"
+        ],
+        "title": [
+          "Mobile First"
+        ],
         "text": [
           "Direct mobile preview from within the editor. Instantly see how changes affect mobile rendering."
         ]
@@ -784,10 +1291,18 @@
       "bundle": "card",
       "uuid": "57bbeffb-dd8d-44f6-a29a-3a1145b4e373",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "icon": ["bk_mdi_qr_code"],
-        "title": ["Hands-on Live-Preview"],
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_qr_code"
+        ],
+        "title": [
+          "Hands-on Live-Preview"
+        ],
         "text": [
           "If supported by the backend, blökkli can generate a QR code that can be scanned on a smartphone to see and feel a preview of the page, with live reloading."
         ]
@@ -798,10 +1313,24 @@
       "bundle": "button",
       "uuid": "0962e858-fbf6-4f98-bf6f-f7813bd5f9be",
       "values": {
-        "isNew": [false],
-        "options": [{ "key": "color", "value": "primary" }],
-        "title": ["Try out the live demo"],
-        "url": ["/page/1?blokkliEditing=1"]
+        "isNew": [
+          false
+        ],
+        "options": [
+          {
+            "key": "color",
+            "value": "primary"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "title": [
+          "Try out the live demo"
+        ],
+        "url": [
+          "/page/1?blokkliEditing=1"
+        ],
+        "icon": []
       }
     },
     {
@@ -809,10 +1338,24 @@
       "bundle": "button",
       "uuid": "332bbf33-2368-4b56-8ae6-4855657bc5d4",
       "values": {
-        "isNew": [false],
-        "options": [{ "key": "color", "value": "primary" }],
-        "title": ["Check out the module"],
-        "url": ["https://www.drupal.org/project/paragraphs_blokkli"]
+        "isNew": [
+          false
+        ],
+        "options": [
+          {
+            "key": "color",
+            "value": "primary"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "title": [
+          "Check out the module"
+        ],
+        "url": [
+          "https://www.drupal.org/project/paragraphs_blokkli"
+        ],
+        "icon": []
       }
     },
     {
@@ -820,20 +1363,46 @@
       "bundle": "two_columns",
       "uuid": "90d01577-babc-45b5-a03b-2ba266822425",
       "values": {
-        "isNew": [false],
-        "options": [
-          { "key": "reverse", "value": "" },
-          { "key": "background", "value": "dark" },
-          { "key": "columns", "value": "twoOne" },
-          { "key": "showHeader", "value": "" }
+        "isNew": [
+          false
         ],
+        "options": [
+          {
+            "key": "reverse",
+            "value": ""
+          },
+          {
+            "key": "background",
+            "value": "dark"
+          },
+          {
+            "key": "columns",
+            "value": "twoOne"
+          },
+          {
+            "key": "showHeader",
+            "value": ""
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
         "header": [],
         "left": [
-          { "uuid": "8a51a714-1990-4d6a-9bf7-81344cc1a288" },
-          { "uuid": "67a9e26f-8028-4283-8b7d-8f836355b949" },
-          { "uuid": "332bbf33-2368-4b56-8ae6-4855657bc5d4" }
+          {
+            "uuid": "8a51a714-1990-4d6a-9bf7-81344cc1a288"
+          },
+          {
+            "uuid": "67a9e26f-8028-4283-8b7d-8f836355b949"
+          },
+          {
+            "uuid": "332bbf33-2368-4b56-8ae6-4855657bc5d4"
+          }
         ],
-        "right": [{ "uuid": "1be4ab78-8265-48a6-a1aa-ff852d2507b5" }]
+        "right": [
+          {
+            "uuid": "1be4ab78-8265-48a6-a1aa-ff852d2507b5"
+          }
+        ]
       }
     },
     {
@@ -841,10 +1410,18 @@
       "bundle": "title",
       "uuid": "8a51a714-1990-4d6a-9bf7-81344cc1a288",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "tagline": ["Drupal"],
-        "title": ["Integration with Drupal Paragraphs"],
+        "publishOn": [],
+        "unpublishOn": [],
+        "tagline": [
+          "Drupal"
+        ],
+        "title": [
+          "Integration with Drupal Paragraphs"
+        ],
         "lead": [
           "blökkli comes with an adapter to integrate the editor in existing or new Paragraphs based setups. The \"paragraphs_blokkli\" Drupal module implements all features required to use blökkli as your editing experience."
         ]
@@ -855,8 +1432,17 @@
       "bundle": "text",
       "uuid": "67a9e26f-8028-4283-8b7d-8f836355b949",
       "values": {
-        "isNew": [false],
-        "options": [{ "key": "list", "value": "1" }],
+        "isNew": [
+          false
+        ],
+        "options": [
+          {
+            "key": "list",
+            "value": "1"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
         "text": [
           "<ul><li>Edit state entity to keep track of mutations</li><li>Plugin system for custom mutations and actions</li><li>GraphQL schema extension</li></ul>"
         ]
@@ -867,9 +1453,20 @@
       "bundle": "image",
       "uuid": "1be4ab78-8265-48a6-a1aa-ff852d2507b5",
       "values": {
-        "isNew": [false],
-        "options": [{ "key": "elevated", "value": "" }],
-        "imageReference": ["5"]
+        "isNew": [
+          false
+        ],
+        "options": [
+          {
+            "key": "elevated",
+            "value": ""
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "imageReference": [
+          "5"
+        ]
       }
     },
     {
@@ -877,10 +1474,24 @@
       "bundle": "button",
       "uuid": "49e2da9e-4e87-4570-9909-458494c9cf3d",
       "values": {
-        "isNew": [false],
-        "options": [{ "key": "color", "value": "normal" }],
-        "title": ["Explore Drupal Starterkit"],
-        "url": ["https://blokkli-starterkit.netlify.app/"]
+        "isNew": [
+          false
+        ],
+        "options": [
+          {
+            "key": "color",
+            "value": "primary"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "title": [
+          "Explore Drupal Starterkit"
+        ],
+        "url": [
+          "https://blokkli-starterkit.netlify.app/"
+        ],
+        "icon": []
       }
     },
     {
@@ -888,13 +1499,27 @@
       "bundle": "card",
       "uuid": "72633ab5-2353-45ce-8a1b-3726c7da8679",
       "values": {
-        "isNew": [false],
-        "options": [
-          { "key": "box", "value": "" },
-          { "key": "color", "value": "lightBlue" }
+        "isNew": [
+          false
         ],
-        "icon": ["bk_mdi_palette"],
-        "title": ["Custom Design"],
+        "options": [
+          {
+            "key": "box",
+            "value": ""
+          },
+          {
+            "key": "color",
+            "value": "lightBlue"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_palette"
+        ],
+        "title": [
+          "Custom Design"
+        ],
         "text": [
           "Change the behavior and appearance of each block with options like background color, alignment, and size."
         ]
@@ -905,13 +1530,27 @@
       "bundle": "card",
       "uuid": "59b6db95-f4ca-4dd7-86a4-3ad53e66571b",
       "values": {
-        "isNew": [false],
-        "options": [
-          { "key": "box", "value": "" },
-          { "key": "color", "value": "lightRed" }
+        "isNew": [
+          false
         ],
-        "icon": ["bk_mdi_content_paste"],
-        "title": ["Clipboard"],
+        "options": [
+          {
+            "key": "box",
+            "value": ""
+          },
+          {
+            "key": "color",
+            "value": "lightRed"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": [
+          "bk_mdi_content_paste"
+        ],
+        "title": [
+          "Clipboard"
+        ],
         "text": [
           "Easily copy-paste text, images, and even YouTube links for enriched content."
         ]
@@ -922,17 +1561,35 @@
       "bundle": "two_columns",
       "uuid": "908fac9f-e47e-4478-bfd8-ab8ac947835b",
       "values": {
-        "isNew": [false],
-        "options": [
-          { "key": "columns", "value": "twoOne" },
-          { "key": "background", "value": "dark" }
+        "isNew": [
+          false
         ],
+        "options": [
+          {
+            "key": "columns",
+            "value": "twoOne"
+          },
+          {
+            "key": "background",
+            "value": "dark"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
         "header": [],
         "left": [
-          { "uuid": "6eb4ba7f-5102-41eb-aa35-5c6a33daab82" },
-          { "uuid": "9485812c-0ecd-4699-85b2-3a031d47a0a1" }
+          {
+            "uuid": "6eb4ba7f-5102-41eb-aa35-5c6a33daab82"
+          },
+          {
+            "uuid": "9485812c-0ecd-4699-85b2-3a031d47a0a1"
+          }
         ],
-        "right": [{ "uuid": "f91e046b-3bcc-48dd-bbd5-8a21115436b7" }]
+        "right": [
+          {
+            "uuid": "f91e046b-3bcc-48dd-bbd5-8a21115436b7"
+          }
+        ]
       }
     },
     {
@@ -940,10 +1597,18 @@
       "bundle": "title",
       "uuid": "6eb4ba7f-5102-41eb-aa35-5c6a33daab82",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "tagline": ["Mobile Editing"],
-        "title": ["Edit your content on the go"],
+        "publishOn": [],
+        "unpublishOn": [],
+        "tagline": [
+          "Mobile Editing"
+        ],
+        "title": [
+          "Edit your content on the go"
+        ],
         "lead": [
           "Access all blökkli features in a user-friendly mobile interface. \nAll features of blökkli are working in your mobile browser and with touch devices. You can add, edit and optimize your content while rushing to the next meeting. "
         ]
@@ -954,11 +1619,21 @@
       "bundle": "title",
       "uuid": "ba696dbe-8f34-4d83-857d-c1c805cf3aec",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "tagline": ["Let's go!"],
-        "title": ["Start creating impressive content now"],
-        "lead": ["Give blökkli a try - setup just takes 5 minutes*"]
+        "publishOn": [],
+        "unpublishOn": [],
+        "tagline": [
+          "Let's go!"
+        ],
+        "title": [
+          "Start creating impressive content now"
+        ],
+        "lead": [
+          "Give blökkli a try - setup just takes 5 minutes*"
+        ]
       }
     },
     {
@@ -966,9 +1641,15 @@
       "bundle": "image",
       "uuid": "f91e046b-3bcc-48dd-bbd5-8a21115436b7",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "imageReference": ["8"]
+        "publishOn": [],
+        "unpublishOn": [],
+        "imageReference": [
+          "8"
+        ]
       }
     },
     {
@@ -976,8 +1657,12 @@
       "bundle": "text",
       "uuid": "9485812c-0ecd-4699-85b2-3a031d47a0a1",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
+        "publishOn": [],
+        "unpublishOn": [],
         "text": [
           "<ul><li>Fully responsive</li><li>Touch gestures and interactions</li><li>All editing features available</li></ul>"
         ]
@@ -988,9 +1673,20 @@
       "bundle": "from_library",
       "uuid": "b7288437-c229-463c-840e-b454b9f41416",
       "values": {
-        "isNew": [false],
-        "options": [{ "key": "box", "value": "" }],
-        "libraryItem": ["3de367c5-d96e-498e-99a7-e07f099e8077"]
+        "isNew": [
+          false
+        ],
+        "options": [
+          {
+            "key": "box",
+            "value": ""
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "libraryItem": [
+          "3de367c5-d96e-498e-99a7-e07f099e8077"
+        ]
       }
     },
     {
@@ -998,12 +1694,24 @@
       "bundle": "from_library",
       "uuid": "96f7fbda-04d9-4662-9a6c-6aa3bcf964f2",
       "values": {
-        "isNew": [false],
-        "options": [
-          { "key": "box", "value": "" },
-          { "key": "color", "value": "lightGreen" }
+        "isNew": [
+          false
         ],
-        "libraryItem": ["7ba5e09a-6f8c-479a-a4d5-ec46c1224a0c"]
+        "options": [
+          {
+            "key": "box",
+            "value": ""
+          },
+          {
+            "key": "color",
+            "value": "lightGreen"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "libraryItem": [
+          "7ba5e09a-6f8c-479a-a4d5-ec46c1224a0c"
+        ]
       }
     },
     {
@@ -1011,9 +1719,15 @@
       "bundle": "blokkli_fragment",
       "uuid": "0039cbfb-6ee7-48db-9e9f-7117c488299b",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "name": ["cta"]
+        "publishOn": [],
+        "unpublishOn": [],
+        "name": [
+          "cta"
+        ]
       }
     },
     {
@@ -1021,9 +1735,15 @@
       "bundle": "blokkli_fragment",
       "uuid": "ab4f48ef-a397-4390-b52e-b867ce25fbf3",
       "values": {
-        "isNew": [false],
+        "isNew": [
+          false
+        ],
         "options": [],
-        "name": ["features_list"]
+        "publishOn": [],
+        "unpublishOn": [],
+        "name": [
+          "features_list"
+        ]
       }
     }
   ],

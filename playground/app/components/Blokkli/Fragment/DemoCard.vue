@@ -6,7 +6,7 @@
       <div
         class="rounded w-50 h-50 lg:w-[64px] lg:h-[64px] p-10 mb-10 border bg-yellow-light text-yellow-dark border-yellow-normal"
       >
-        <SpriteSymbol name="fragment" class="fill-current w-full h-full" />
+        <SpriteSymbol name="drag_pan" class="fill-current w-full h-full" />
       </div>
       <h3
         v-blokkli-editable:title

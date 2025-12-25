@@ -125,6 +125,22 @@
   "teaser": {},
   "text": {},
   "title": {
+    "align": {
+      "default": "center",
+      "displayAs": "icons",
+      "label": "Alignment",
+      "options": {
+        "center": {
+          "icon": "bk_mdi_format_align_center",
+          "label": "Center"
+        },
+        "left": {
+          "icon": "bk_mdi_format_align_left",
+          "label": "Left"
+        }
+      },
+      "type": "radios"
+    },
     "bkHiddenGlobally": {
       "default": false,
       "description": "Always hides the block.",
