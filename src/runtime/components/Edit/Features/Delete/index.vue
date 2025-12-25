@@ -5,7 +5,7 @@
     :title="$t('deleteButton', 'Delete')"
     multiple
     key-code="Delete"
-    icon="delete"
+    icon="bk_mdi_delete"
     :weight="-80"
     @click="onClick"
   />

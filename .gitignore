@@ -63,3 +63,5 @@ playground/app/blokkli/apiReadabilityAnalyzer.ts
 
 .yalc
 yalc.lock
+src/module/used-icons.ts
+src/runtime/material-icons/index.ts

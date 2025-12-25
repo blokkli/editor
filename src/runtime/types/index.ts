@@ -187,6 +187,11 @@ export type BlokkliDefinitionInputEditor<
     : Record<string, any>,
 > = {
   /**
+   * The icon rendered in the editor.
+   */
+  icon?: BlokkliIcon
+
+  /**
    * Determine which options should be visible in the editor based on the
    * given context.
    *

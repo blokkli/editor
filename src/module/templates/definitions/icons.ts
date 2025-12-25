@@ -1,6 +1,6 @@
 import { defineCodeTemplate } from '../defineTemplate'
 import { basename } from 'node:path'
-import { toValidVariableName } from './../../../helpers'
+import { falsy, onlyUnique, toValidVariableName } from './../../../helpers'
 import { toImports, toObject } from '../helpers'
 
 export default defineCodeTemplate(
@@ -11,11 +11,32 @@ export default defineCodeTemplate(
 
     const files = ctx.icons.files.values()
 
+    const blockIcons = [...ctx.blocks.files.values()].map(
+      (v) => v.definition?.editor?.icon,
+    )
+    const featureIcons = [...ctx.features.files.values()].map(
+      (v) => v.getDefinition()?.definition.icon,
+    )
+    const definitionIcons = [...blockIcons, ...featureIcons]
+      .filter(falsy)
+      .filter(onlyUnique)
+
     for (const file of files) {
       const name = basename(file.filePath, '.svg').toLowerCase()
       const importName = 'icon_' + toValidVariableName(name)
       imports.set(importName, `${file.filePath}?raw`)
       icons.set(name, importName)
+    }
+    const materialIcons = definitionIcons.filter((v) => v.startsWith('bk_mdi_'))
+
+    for (const icon of materialIcons) {
+      const importName = 'icon_' + toValidVariableName(icon)
+      const mdiImportName = icon.replace('bk_mdi_', '')
+      imports.set(
+        importName,
+        `@material-symbols/svg-600/rounded/${mdiImportName}.svg?raw`,
+      )
+      icons.set(icon, importName)
     }
 
     return `${toImports(imports)}
@@ -33,8 +54,12 @@ ${toObject('icons', icons)}
       .join('\n  | ')
 
     return `
-export type BlokkliIcon =
+import type { MaterialIconName } from '${ctx.helper.relativePaths.RUNTIME_ICONS}'
+
+type ProvidedIconName =
   | ${allIconNames}
+
+export type BlokkliIcon = MaterialIconName | ProvidedIconName
 export declare const icons: Record<BlokkliIcon, string>
 `
   },

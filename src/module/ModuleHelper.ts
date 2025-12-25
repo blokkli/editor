@@ -8,10 +8,7 @@ import {
   createResolver,
 } from '@nuxt/kit'
 import { FileCache } from './FileCache'
-
-function onlyUnique(value: string, index: number, self: Array<string>) {
-  return self.indexOf(value) === index
-}
+import { onlyUnique } from '../helpers'
 
 type ModuleHelperResolvers = {
   /**
@@ -76,6 +73,10 @@ export class ModuleHelper {
       TYPES: relative(
         this.paths.blokkliBuildDir,
         this.resolvers.module.resolve('./runtime/types/index.ts'),
+      ),
+      RUNTIME_ICONS: relative(
+        this.paths.blokkliBuildDir,
+        this.resolvers.module.resolve('./runtime/material-icons/index.ts'),
       ),
       CONSTANTS: relative(
         this.paths.blokkliBuildDir,
