@@ -36,6 +36,7 @@
             <Icon v-if="ui.isTransforming.value" name="loader" />
             <ItemIconBox
               v-else-if="bundleIcon"
+              :icon="iconOverride"
               :bundle="bundleIcon"
               :color="isReusable ? 'lime' : undefined"
               is-small
@@ -87,7 +88,12 @@ import { Icon, ItemIconBox } from '#blokkli/components'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import useStickyToolbar from '#blokkli/helpers/composables/useStickyToolbar'
 import EditActionsItemDropdown from './ItemDropdown.vue'
-import { BUNDLE_FROM_LIBRARY } from '#blokkli/constants'
+import {
+  BUNDLE_BLOKKLI_FRAGMENT,
+  BUNDLE_FROM_LIBRARY,
+} from '#blokkli/constants'
+import type { FragmentDefinition } from '#blokkli-build/definitions'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 
 const { selection, $t, types, state, ui, definitions, debug } = useBlokkli()
 
@@ -135,7 +141,7 @@ watch(selection.hasHostSelected, () => {
 })
 
 const bundleIcon = computed(() => {
-  if (itemBundle.value?.id === 'from_library') {
+  if (itemBundle.value?.id === BUNDLE_FROM_LIBRARY) {
     const reusableBundle = selection.items.value[0]?.library?.reusableBundle
     if (reusableBundle) {
       return reusableBundle
@@ -145,12 +151,39 @@ const bundleIcon = computed(() => {
   return itemBundle.value?.id
 })
 
+const iconOverride = computed<BlokkliIcon | null>(() => {
+  if (fragment.value) {
+    return fragment.value.editor?.icon ?? null
+  }
+
+  return null
+})
+
 const isReusable = computed(() => {
   return itemBundle.value?.id === BUNDLE_FROM_LIBRARY
 })
 
 const hasSelectedHost = computed(() => {
   return selection.items.value.length === 0
+})
+
+const fragment = computed<FragmentDefinition | null>(() => {
+  if (itemBundle.value?.id !== BUNDLE_BLOKKLI_FRAGMENT) {
+    return null
+  }
+  const uuid = selection.uuids.value[0]
+  if (!uuid) {
+    return null
+  }
+  const item = state.getFieldListItem(uuid)
+  if (!item) {
+    return null
+  }
+  const name = item.props?.name
+  if (!name) {
+    return null
+  }
+  return definitions.getFragmentDefinition(name) ?? null
 })
 
 const title = computed(() => {

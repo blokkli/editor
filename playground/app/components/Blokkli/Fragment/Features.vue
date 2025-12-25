@@ -31,6 +31,7 @@ defineBlokkliFragment({
   chunkName: 'rare',
   description: 'Renders a list of blökkli features',
   editor: {
+    icon: 'bk_mdi_star_shine',
     previewWidth: 1000,
   },
 })

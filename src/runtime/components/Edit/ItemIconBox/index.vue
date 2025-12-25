@@ -27,7 +27,7 @@ type ItemColor = 'rose' | 'lime' | 'default' | 'yellow' | 'accent'
 
 const props = withDefaults(
   defineProps<{
-    icon?: BlokkliIcon
+    icon?: BlokkliIcon | null
     bundle?: string
     color?: ItemColor
     isSmall?: boolean
