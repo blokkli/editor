@@ -6,7 +6,7 @@
     :disabled="!canEdit"
     meta
     key-code="E"
-    icon="edit"
+    icon="bk_mdi_edit"
     :weight="-100"
     @click="onClick"
   />
@@ -20,7 +20,7 @@ import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 defineBlokkliFeature({
   id: 'edit',
-  icon: 'edit',
+  icon: 'bk_mdi_edit',
   label: 'Edit',
   description: 'Provides an action to edit a block.',
   requiredAdapterMethods: ['formFrameBuilder'],

@@ -3,7 +3,7 @@
     id="preview_new_window"
     :title="$t('previewNewWindow', 'Preview (new window)')"
     region="after-menu"
-    icon="open_in_new"
+    icon="bk_mdi_open_in_new"
     :disabled="!state.canEdit.value"
     :tour-text="
       $t(
@@ -22,7 +22,7 @@ import { PluginToolbarButton } from '#blokkli/plugins'
 defineBlokkliFeature({
   id: 'preview',
   label: 'Preview',
-  icon: 'preview',
+  icon: 'bk_mdi_mobile',
   description: 'Provides a button to open a preview in a new window.',
 })
 

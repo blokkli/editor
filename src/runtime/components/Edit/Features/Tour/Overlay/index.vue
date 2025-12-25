@@ -5,7 +5,7 @@
         <div class="bk-tour-title">
           <span>{{ activeItem.title }}</span>
           <button @click.prevent="$emit('close')">
-            <Icon name="close" />
+            <Icon name="bk_mdi_close" />
           </button>
         </div>
         <div class="bk-tour-content">
@@ -24,7 +24,7 @@
       </div>
       <div class="bk-tour-buttons">
         <button @click.stop.prevent="prev">
-          <Icon name="chevron-left" />
+          <Icon name="bk_mdi_chevron_backward" />
           <span>{{ $t('tourPrev', 'Previous') }}</span>
           <div class="bk-tooltip">
             <span>Arrow Right</span>
@@ -38,7 +38,7 @@
         </div>
         <button @click.stop.prevent="next">
           <span>{{ $t('tourNext', 'Next') }}</span>
-          <Icon name="chevron-right" />
+          <Icon name="bk_mdi_chevron_forward" />
           <div class="bk-tooltip">
             <span>Arrow Left</span>
             <ShortcutIndicator label="Next Tour Item" key-code="ArrowRight" />

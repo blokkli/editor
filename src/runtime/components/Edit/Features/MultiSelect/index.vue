@@ -24,7 +24,7 @@ import Renderer from './Renderer/index.vue'
 defineBlokkliFeature({
   id: 'multi-select',
   label: 'Multiselect',
-  icon: 'multi-select',
+  icon: 'bk_mdi_ink_selection',
   description:
     'Implements support for selecting multiple blocks using a select rectangle.',
   viewports: ['desktop'],

@@ -4,7 +4,7 @@
     :title="$t('settingsDialogTitle', 'Change settings')"
     :width="900"
     hide-buttons
-    icon="cog"
+    icon="bk_mdi_settings"
     @cancel="$emit('cancel')"
   >
     <div class="bk bk-settings">
@@ -72,13 +72,13 @@ const getGroupLabel = (key: SettingsGroup): string => {
 
 const getGroupIcon = (key: SettingsGroup): BlokkliIcon => {
   if (key === 'behavior') {
-    return 'tools'
+    return 'bk_mdi_construction'
   } else if (key === 'appearance') {
-    return 'palette'
+    return 'bk_mdi_palette'
   } else if (key === 'advanced') {
-    return 'bug'
+    return 'bk_mdi_bug_report'
   }
-  return 'question'
+  return 'bk_mdi_question_mark'
 }
 
 const shouldRenderSetting = (
@@ -131,7 +131,7 @@ const groups = computed<GroupedSettings[]>(() => {
         id: 'beta',
         key: 'betaFeatures',
         label: getGroupLabel('beta'),
-        icon: 'bug',
+        icon: 'bk_mdi_bug_report',
         settings: [],
       }
     }

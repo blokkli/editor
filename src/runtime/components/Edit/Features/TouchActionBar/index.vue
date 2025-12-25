@@ -32,7 +32,7 @@ defineBlokkliFeature({
   id: 'touch-action-bar',
   label: 'Touch Action Bar',
   description: 'Renders a button on touch devices to cancel touch actions.',
-  icon: 'button-pointer',
+  icon: 'bk_mdi_trackpad_input',
 })
 </script>
 

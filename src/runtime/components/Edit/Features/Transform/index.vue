@@ -34,7 +34,7 @@ import TransformDialog from './Dialog/index.vue'
 
 const { adapter } = defineBlokkliFeature({
   id: 'transform',
-  icon: 'script',
+  icon: 'bk_mdi_function',
   label: 'Transform',
   requiredAdapterMethods: ['getTransformPlugins', 'applyTransformPlugin'],
   description: 'Provides integration for block transform plugins.',
@@ -247,7 +247,7 @@ defineCommands(() =>
     id: 'transform:' + transform.id,
     label: getPluginLabel(transform),
     group: 'selection',
-    icon: 'script',
+    icon: 'bk_mdi_function',
     callback: () => {
       onSelectBlockTransformPlugin(transform, selection.uuids.value)
     },
@@ -259,7 +259,7 @@ defineItemDropdownAction(() => {
     return possibleTransforms.value.map((transform) => ({
       id: 'transform-block-' + transform.id,
       label: transform.label,
-      icon: 'script',
+      icon: 'bk_mdi_function',
       group: 'transform',
       weight: 100,
       callback: () => {
@@ -278,7 +278,7 @@ defineItemDropdownAction(() => {
     return hostPlugins.value.map((plugin) => ({
       id: 'transform-host-' + plugin.id,
       label: plugin.label,
-      icon: 'script',
+      icon: 'bk_mdi_function',
       group: 'transform',
       weight: 100,
       callback: () => {

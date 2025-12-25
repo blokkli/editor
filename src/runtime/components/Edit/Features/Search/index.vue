@@ -29,7 +29,7 @@
         'Quickly find blocks on the current page or existing content to drag and drop as blocks into the page.',
       )
     "
-    icon="search"
+    icon="bk_mdi_search"
     @click="onClick"
   />
 </template>
@@ -43,7 +43,7 @@ import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 defineBlokkliFeature({
   id: 'search',
-  icon: 'search',
+  icon: 'bk_mdi_search',
   label: 'Search',
   description:
     'Provides an overlay with shortcut to search for blocks on the current page or existing content to add as blocks.',

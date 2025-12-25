@@ -20,7 +20,7 @@
         class="bk-button bk-is-danger"
         @click.prevent="showDetails = true"
       >
-        <Icon name="bug" />
+        <Icon name="bk_mdi_bug_report" />
         Details
       </button>
     </div>

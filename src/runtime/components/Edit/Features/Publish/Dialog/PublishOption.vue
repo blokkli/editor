@@ -19,7 +19,7 @@
     <div class="bk-publish-option-icon">
       <Icon :name="icon" />
       <div class="bk-publish-option-icon-check">
-        <Icon name="check" />
+        <Icon name="bk_mdi_check" />
       </div>
     </div>
     <div>

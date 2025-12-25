@@ -20,7 +20,7 @@ import { useDialog } from '#blokkli/helpers/composables/useDialog'
 const { adapter, settings } = defineBlokkliFeature({
   id: 'import-existing',
   label: 'Import existing content',
-  icon: 'import',
+  icon: 'bk_mdi_arrow_downward',
   requiredAdapterMethods: ['getImportItems', 'importFromExisting'],
   description:
     'Implements a menu action that renders a dialog to import blocks from another entity.',
@@ -83,7 +83,7 @@ defineMenuButton(() => {
       'importExistingDescription',
       'Import from an existing page',
     ),
-    icon: 'import',
+    icon: 'bk_mdi_arrow_downward',
     disabled: state.editMode.value !== 'editing',
     weight: 50,
     callback: () => {

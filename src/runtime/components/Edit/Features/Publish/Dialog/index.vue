@@ -323,7 +323,7 @@ const publishModeOptions = computed<PublishOptionProps[]>(() => {
   const options: PublishOptionProps[] = [
     {
       id: 'save',
-      icon: 'save',
+      icon: 'bk_mdi_save',
       color: 'red',
       label: $t('publishModeSaveTitle', 'Save'),
       description: $t(
@@ -334,7 +334,7 @@ const publishModeOptions = computed<PublishOptionProps[]>(() => {
     },
     {
       id: 'immediate',
-      icon: 'publish',
+      icon: 'bk_mdi_publish',
       color: 'lime',
       label: $t('publishModeImmediateTitle', 'Publish'),
       description: $t(
@@ -348,7 +348,7 @@ const publishModeOptions = computed<PublishOptionProps[]>(() => {
   if (canSchedule.value) {
     options.push({
       id: 'scheduled',
-      icon: 'calendar-clock',
+      icon: 'bk_mdi_calendar_clock',
       color: 'yellow',
       label: $t('publishModeScheduledTitle', 'Schedule'),
       description: $t(

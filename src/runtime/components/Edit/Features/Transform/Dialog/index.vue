@@ -6,7 +6,7 @@
           <header>
             <p>{{ title }}</p>
             <button @click.prevent="$emit('cancel')">
-              <Icon name="close" />
+              <Icon name="bk_mdi_close" />
             </button>
           </header>
           <main>

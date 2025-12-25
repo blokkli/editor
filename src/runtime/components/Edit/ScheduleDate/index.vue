@@ -29,7 +29,7 @@
           :disabled="disabled"
           @click="decrementHour"
         >
-          <Icon name="minus" />
+          <Icon name="bk_mdi_remove" />
         </button>
         <button
           type="button"
@@ -37,7 +37,7 @@
           :disabled="disabled"
           @click="incrementHour"
         >
-          <Icon name="plus" />
+          <Icon name="bk_mdi_add" />
         </button>
       </div>
 

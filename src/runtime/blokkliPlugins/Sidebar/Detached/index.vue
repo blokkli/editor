@@ -31,7 +31,13 @@
             @click.prevent.stop.capture="$emit('attach')"
             @mousedown.capture.stop
           >
-            <Icon :name="region === 'left' ? 'dock-left' : 'dock-right'" />
+            <Icon
+              :name="
+                region === 'left'
+                  ? 'bk_mdi_dock_to_left'
+                  : 'bk_mdi_dock_to_right'
+              "
+            />
           </button>
         </div>
       </div>

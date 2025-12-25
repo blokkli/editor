@@ -5,7 +5,7 @@
     :tour-text="
       $t('diffSidebarTourText', 'Displays all the changes made during editing.')
     "
-    icon="diff"
+    icon="bk_mdi_text_compare"
     weight="-400"
     beta
   >
@@ -21,7 +21,7 @@ import DiffView from './DiffView/index.vue'
 defineBlokkliFeature({
   id: 'diff',
   label: 'Diff',
-  icon: 'diff',
+  icon: 'bk_mdi_text_compare',
   description: 'Displays a diff of all changes in the edit state.',
   requiredAdapterMethods: ['loadStateAtIndex'],
   beta: true,

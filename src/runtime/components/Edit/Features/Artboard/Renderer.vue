@@ -10,7 +10,7 @@
         'Shows the current zoom factor. Click on it to reset the zoom back to 100%.',
       )
     "
-    icon="magnifier"
+    icon="bk_mdi_zoom_in"
     meta
     key-code="0"
     region="view-options"
@@ -34,7 +34,7 @@
         `Displays a top level overview of your content.`,
       )
     "
-    icon="eye"
+    icon="bk_mdi_visibility"
     key-code="O"
     weight="90"
   >

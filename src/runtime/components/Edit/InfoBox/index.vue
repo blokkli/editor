@@ -20,7 +20,7 @@ withDefaults(
   }>(),
   {
     text: undefined,
-    icon: 'info',
+    icon: 'bk_mdi_info-fill',
   },
 )
 </script>

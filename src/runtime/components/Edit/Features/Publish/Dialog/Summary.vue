@@ -12,7 +12,7 @@
 
     <!-- Arrow -->
     <div class="bk-publish-summary-arrow">
-      <Icon name="arrow-right" />
+      <Icon name="bk_mdi_arrow_right" />
     </div>
 
     <!-- Action -->
@@ -27,7 +27,7 @@
 
     <!-- Arrow -->
     <div class="bk-publish-summary-arrow">
-      <Icon name="arrow-right" />
+      <Icon name="bk_mdi_arrow_left" />
     </div>
 
     <!-- Result State -->
@@ -56,7 +56,7 @@ const props = defineProps<{
 }>()
 
 const currentStateIcon = computed<BlokkliIcon>(() =>
-  props.isPublished ? 'eye' : 'eye-off',
+  props.isPublished ? 'bk_mdi_visibility' : 'bk_mdi_visibility_off',
 )
 
 const currentStateClass = computed(() =>
@@ -65,9 +65,9 @@ const currentStateClass = computed(() =>
 
 const resultStateIcon = computed<BlokkliIcon>(() => {
   if (props.mode === 'save') {
-    return 'eye-off'
+    return 'bk_mdi_visibility_off'
   }
-  return 'eye'
+  return 'bk_mdi_visibility'
 })
 
 const resultStateClass = computed(() => {
@@ -78,9 +78,9 @@ const resultStateClass = computed(() => {
 })
 
 const actionIcon = computed<BlokkliIcon>(() => {
-  if (props.mode === 'save') return 'save'
-  if (props.mode === 'scheduled') return 'calendar-clock'
-  return 'publish'
+  if (props.mode === 'save') return 'bk_mdi_save'
+  if (props.mode === 'scheduled') return 'bk_mdi_calendar_clock'
+  return 'bk_mdi_publish'
 })
 
 const actionClass = computed(() => {

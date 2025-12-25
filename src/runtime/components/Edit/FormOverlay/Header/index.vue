@@ -6,7 +6,7 @@
     </div>
     <h3>{{ title }}</h3>
     <button @mousedown.capture.stop="$emit('close')">
-      <Icon name="close" />
+      <Icon name="bk_mdi_close" />
     </button>
   </div>
 </template>
@@ -22,7 +22,7 @@ withDefaults(
     title: string
   }>(),
   {
-    icon: 'form',
+    icon: 'bk_mdi_text_select_end',
     bundle: '',
   },
 )

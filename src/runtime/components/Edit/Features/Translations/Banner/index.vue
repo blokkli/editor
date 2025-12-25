@@ -1,7 +1,7 @@
 <template>
   <Banner
     id="translate"
-    icon="translate"
+    icon="bk_mdi_translate"
     :text
     :button="$t('translationsBannerButton', 'Edit source language instead')"
     scheme="yellow"

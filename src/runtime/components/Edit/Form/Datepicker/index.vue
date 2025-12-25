@@ -12,7 +12,7 @@
         :disabled="!canGoPrevious"
         @click="previousMonth"
       >
-        <Icon name="arrow-left" />
+        <Icon name="bk_mdi_arrow_left_alt" />
       </button>
       <div class="bk-datepicker-title">{{ monthName }} {{ currentYear }}</div>
       <button
@@ -21,7 +21,7 @@
         :disabled="!canGoNext"
         @click="nextMonth"
       >
-        <Icon name="arrow-right" />
+        <Icon name="bk_mdi_arrow_right_alt" />
       </button>
     </div>
     <div class="bk-datepicker-weekdays">

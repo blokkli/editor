@@ -18,7 +18,7 @@
       @pointerup.prevent.stop
       @pointermove.prevent.stop
     >
-      <Icon v-if="showComments" name="close" />
+      <Icon v-if="showComments" name="bk_mdi_close" />
       <span v-else>{{ unresolvedCount }}</span>
     </button>
     <div
@@ -33,7 +33,7 @@
       @pointermove.capture.stop
     >
       <div class="bk-comments-overlay-comments-header">
-        <Icon name="comment" />
+        <Icon name="bk_mdi_comment" />
         <span
           >{{ comments.length }}
           {{

@@ -6,7 +6,7 @@
     :anchor-el="element"
     placement-y="top"
     class="bk-editable-field"
-    close-icon="check"
+    close-icon="bk_mdi_check"
     @close="save"
   >
     <form ref="form" class="bk-editable-field-input" @submit.prevent="save">

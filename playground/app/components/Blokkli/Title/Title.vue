@@ -54,6 +54,7 @@ const { parentType, fieldListType } = defineBlokkli({
     },
   },
   editor: {
+    icon: 'bk_mdi_format_h2',
     addBehaviour: 'editable:title',
     previewWidth: 700,
     editTitle: (el) => el.querySelector('h2')?.textContent,

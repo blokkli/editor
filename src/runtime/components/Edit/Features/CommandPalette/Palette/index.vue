@@ -7,7 +7,7 @@
     @mousemove.once="hasUsedMouse = true"
   >
     <div class="bk-command-palette-input">
-      <Icon name="command" />
+      <Icon name="bk_mdi_keyboard_command_key" />
       <input
         ref="inputEl"
         v-model="text"

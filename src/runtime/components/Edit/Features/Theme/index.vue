@@ -8,7 +8,7 @@
         'Change the colors of the theme and generate a theme file.',
       )
     "
-    icon="palette"
+    icon="bk_mdi_palette"
     weight="-100"
   >
     <div class="bk bk-theme-editor bk-control" @wheel.capture.stop.passive>
@@ -70,7 +70,7 @@ import { themes } from '#blokkli-build/editor-config'
 
 defineBlokkliFeature({
   id: 'theme',
-  icon: 'palette',
+  icon: 'bk_mdi_palette',
   label: 'Theme',
   description: 'Implements a theme editor.',
 })

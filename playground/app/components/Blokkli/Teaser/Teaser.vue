@@ -14,6 +14,9 @@ import type { FieldTextarea } from '#mock/state/Field/Textarea'
 
 defineBlokkli({
   bundle: 'teaser',
+  editor: {
+    icon: 'bk_mdi_contextual_token',
+  },
 })
 
 export type Props = {

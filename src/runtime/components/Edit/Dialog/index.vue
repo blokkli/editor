@@ -14,7 +14,7 @@
         <Icon v-if="icon" :name="icon" />
         <h3>{{ title }}</h3>
         <button @click="$emit('cancel')">
-          <Icon name="close" />
+          <Icon name="bk_mdi_close" />
         </button>
       </div>
 

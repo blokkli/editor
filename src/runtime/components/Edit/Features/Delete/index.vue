@@ -21,7 +21,7 @@ const { state, $t, eventBus, dom } = useBlokkli()
 
 const { adapter } = defineBlokkliFeature({
   id: 'delete',
-  icon: 'delete',
+  icon: 'bk_mdi_delete',
   label: 'Delete',
   requiredAdapterMethods: ['deleteBlocks'],
   description: 'Provides an action to delete one or more blocks.',

@@ -63,6 +63,7 @@ const { options, parentType } = defineBlokkli({
     },
   },
   editor: {
+    icon: 'bk_mdi_play_circle',
     editTitle: (el) => el.querySelector('h3')?.textContent,
     mapDiffProps: (props) => {
       return {

@@ -12,7 +12,7 @@
       )
     "
     key-code="P"
-    icon="tree"
+    icon="bk_mdi_account_tree"
     @update:model-value="onToggleProxyMode"
   />
 </template>
@@ -24,7 +24,7 @@ import { PluginViewOption } from '#blokkli/plugins'
 defineBlokkliFeature({
   id: 'proxy_view',
   label: 'Proxy View',
-  icon: 'tree',
+  icon: 'bk_mdi_account_tree',
   description: 'Displays the blocks as a structure in the preview.',
   viewports: ['desktop'],
 })

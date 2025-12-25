@@ -9,7 +9,7 @@
         v-if="inputValue !== initValue"
         @click.stop="inputValue = initValue"
       >
-        <Icon name="revert" />
+        <Icon name="bk_mdi_replay" />
       </button>
     </td>
     <td class="bk-theme-editor-color-color">

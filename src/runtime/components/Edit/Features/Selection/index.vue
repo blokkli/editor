@@ -38,7 +38,7 @@ import { itemEntityType } from '#blokkli-build/config'
 
 defineBlokkliFeature({
   id: 'selection',
-  icon: 'selection',
+  icon: 'bk_mdi_select',
   label: 'Selection',
   description: 'Renders an overlay that highlights the selected blocks.',
 })
@@ -378,7 +378,7 @@ defineItemDropdownAction(() => {
         '@bundle',
         label,
       ),
-      icon: 'selection',
+      icon: 'bk_mdi_select_all',
       group: 'selection',
       weight: 200,
       callback: () => {
@@ -396,7 +396,7 @@ defineItemDropdownAction(() => {
     return {
       id: 'selection-select-all-blocks',
       label: $t('selectAllBlocks', 'Select all blocks'),
-      icon: 'selection',
+      icon: 'bk_mdi_select_all',
       group: 'selection',
       weight: 200,
       callback: selectAllBlocks,

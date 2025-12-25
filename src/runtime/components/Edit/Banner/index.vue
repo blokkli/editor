@@ -8,7 +8,7 @@
     <p v-html="text" />
     <button v-if="button" class="bk-banner-close" @click="$emit('click')">
       {{ button }}
-      <Icon name="close" />
+      <Icon name="bk_mdi_close" />
     </button>
   </div>
 </template>

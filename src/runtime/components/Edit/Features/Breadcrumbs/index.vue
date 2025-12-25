@@ -62,7 +62,7 @@ import { Icon } from '#blokkli/components'
 defineBlokkliFeature({
   id: 'breadcrumbs',
   label: 'Breadcrumbs',
-  icon: 'baguette',
+  icon: 'bk_mdi_bakery_dining',
   description: 'Provides a breadcrumb of the selection.',
   viewports: ['desktop'],
 })

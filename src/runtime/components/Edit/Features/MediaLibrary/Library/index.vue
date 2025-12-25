@@ -11,7 +11,7 @@
       </div>
       <div v-for="filter in filters" :key="filter.name">
         <label v-if="filter.type === 'text'" class="bk-form-text">
-          <Icon name="search" />
+          <Icon name="bk_mdi_search" />
           <input
             v-model.lazy="filterValues[filter.name]"
             type="text"
@@ -149,10 +149,10 @@ const listView = storage.use<'horizontal' | 'grid'>(
 
 const listViewIcon = computed<BlokkliIcon>(() => {
   if (listView.value === 'grid') {
-    return 'list-view-grid'
+    return 'bk_mdi_grid_view-fill'
   }
 
-  return 'list-view-horizontal'
+  return 'bk_mdi_lists'
 })
 
 const toggleListView = () => {

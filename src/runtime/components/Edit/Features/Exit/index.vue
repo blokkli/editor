@@ -9,7 +9,7 @@ import defineMenuButton from '#blokkli/helpers/composables/defineMenuButton'
 defineBlokkliFeature({
   id: 'exit',
   label: 'Exit',
-  icon: 'exit',
+  icon: 'bk_mdi_exit_to_app',
   description: 'Provides a menu button to exit the editor without saving.',
 })
 
@@ -29,7 +29,7 @@ defineMenuButton(() => {
     id: 'exit',
     title: $t('exitTitle', 'Close'),
     description: $t('exitDescription', 'Close editor without publishing'),
-    icon: 'exit',
+    icon: 'bk_mdi_exit_to_app',
     weight: 100,
     callback: onClick,
   }

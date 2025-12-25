@@ -62,7 +62,7 @@ const { options } = defineBlokkli({
     blocks: 'blocks',
   },
   editor: {
-    icon: 'mdi-grid_view',
+    icon: 'bk_mdi_grid_view',
     disableEdit: true,
     editTitle: (el) => el.querySelector('h2')?.textContent,
   },

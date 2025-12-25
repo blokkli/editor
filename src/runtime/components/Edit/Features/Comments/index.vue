@@ -5,7 +5,7 @@
     :tour-text="
       $t('commentsTourText', 'Shows all comments for the current page.')
     "
-    icon="comment"
+    icon="bk_mdi_comment"
     weight="-20"
   >
     <div v-if="comments.length" class="bk bk-control">
@@ -30,7 +30,7 @@
     :title="$t('addCommentToItem', 'Add Comment...')"
     :active="showAddComment"
     weight="last"
-    icon="comment_add"
+    icon="bk_mdi_add_comment"
     multiple
     @click="showAddComment = !showAddComment"
   />
@@ -71,7 +71,7 @@ import type { CommentItem } from '#blokkli/types'
 
 const { adapter } = defineBlokkliFeature({
   id: 'comments',
-  icon: 'comment',
+  icon: 'bk_mdi_comment',
   label: 'Comments',
   requiredAdapterMethods: ['loadComments', 'addComment'],
   description: 'Provides comment functionality for blocks.',

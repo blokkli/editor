@@ -10,7 +10,7 @@ import DebugMain from './Main.vue'
 const { logger } = defineBlokkliFeature({
   id: 'debug',
   label: 'Debug',
-  icon: 'bug',
+  icon: 'bk_mdi_bug_report',
   description: 'Provides debugging functionality.',
 })
 

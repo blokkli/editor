@@ -1,11 +1,11 @@
 <template>
   <div class="bk bk-pagination">
     <button :disabled="page === 0" @click="page--">
-      <Icon name="arrow-left" />
+      <Icon name="bk_mdi_arrow_left_alt" />
     </button>
     <div>{{ page + 1 }} / {{ totalPages }}</div>
     <button :disabled="page >= totalPages - 1" @click="page++">
-      <Icon name="arrow-right" />
+      <Icon name="bk_mdi_arrow_right_alt" />
     </button>
   </div>
 </template>

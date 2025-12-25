@@ -9,7 +9,7 @@
       )
     "
     edit-only
-    icon="image"
+    icon="bk_mdi_image"
     weight="-100"
   >
     <Library is-sortli />
@@ -27,7 +27,7 @@ import { itemEntityType } from '#blokkli-build/config'
 
 defineBlokkliFeature({
   id: 'media-library',
-  icon: 'image',
+  icon: 'bk_mdi_image',
   label: 'Media Library',
   description:
     'Implements a media library to easily drag and drop media like images or videos.',
@@ -92,7 +92,7 @@ defineDropAreas((dragItems) => {
           id: `replace-media:${field.uuid}:${field.fieldName}`,
           label,
           element: field.element,
-          icon: 'swap-horizontal',
+          icon: 'bk_mdi_swap_horiz',
           onDrop: () => {
             return state.mutateWithLoadingState(
               () =>
@@ -109,7 +109,7 @@ defineDropAreas((dragItems) => {
           id: `replace-entity-media:${field.uuid}:${field.fieldName}`,
           label,
           element: field.element,
-          icon: 'swap-horizontal',
+          icon: 'bk_mdi_swap_horiz',
           onDrop: () => {
             return state.mutateWithLoadingState(
               () =>

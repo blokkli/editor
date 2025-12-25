@@ -13,7 +13,7 @@
         @mousemove.stop
       >
         <div class="bk-fatal-error-overlay-info">
-          <Icon name="sad" />
+          <Icon name="bk_mdi_sentiment_worried" />
           <div>
             <h2>{{ $t('fatalErrorTitle', 'blökkli has stopped working') }}</h2>
             <p>

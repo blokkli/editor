@@ -1,7 +1,7 @@
 <template>
   <div class="bk-blokkli-item-options-number">
     <button :disabled="numeric <= min" @click.stop.prevent="decrement">
-      <Icon name="minus" />
+      <Icon name="bk_mdi_remove" />
     </button>
     <input
       v-model="text"
@@ -14,7 +14,7 @@
     />
 
     <button :disabled="numeric >= max" @click.stop.prevent="increment">
-      <Icon name="plus" />
+      <Icon name="bk_mdi_add" />
     </button>
   </div>
 </template>

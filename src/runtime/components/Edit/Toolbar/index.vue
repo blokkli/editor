@@ -18,7 +18,7 @@
   <div class="bk bk-toolbar" @touchstart.stop.passive @touchmove.stop.passive>
     <div class="bk bk-toolbar-menu">
       <button class="bk-toolbar-menu-button" @click.prevent.stop="openMenu">
-        <Icon name="menu" />
+        <Icon name="bk_mdi_menu" />
       </button>
     </div>
     <div class="bk-toolbar-container">

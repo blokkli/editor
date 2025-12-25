@@ -11,7 +11,7 @@
         'Toggle between showing or hiding non-editable parts of the page.',
       )
     "
-    icon="texturebox"
+    icon="bk_mdi_texture"
     key-code="M"
   />
 </template>
@@ -23,7 +23,7 @@ import { addElementClasses } from '#blokkli/helpers/composables/addElementClasse
 
 defineBlokkliFeature({
   id: 'editable-mask',
-  icon: 'texturebox',
+  icon: 'bk_mdi_texture',
   label: 'Editable Mask',
   description: 'Provides a view option to hide non-editable parts of the page.',
   viewports: ['desktop'],

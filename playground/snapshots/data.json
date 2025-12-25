@@ -200,7 +200,7 @@
       "values": {
         "isNew": [false],
         "options": [],
-        "icon": ["title"]
+        "icon": ["bk_mdi_format_h2"]
       }
     },
     {
@@ -219,7 +219,7 @@
       "values": {
         "isNew": [false],
         "options": [],
-        "icon": ["clipboard"]
+        "icon": ["bk_mdi_content_paste"]
       }
     },
     {
@@ -229,7 +229,7 @@
       "values": {
         "isNew": [false],
         "options": [],
-        "icon": ["button"]
+        "icon": ["bk_mdi_buttons_alt"]
       }
     },
     {
@@ -239,7 +239,7 @@
       "values": {
         "isNew": [false],
         "options": [],
-        "icon": ["image"]
+        "icon": ["bk_mdi_image"]
       }
     },
     {
@@ -249,7 +249,7 @@
       "values": {
         "isNew": [false],
         "options": [],
-        "icon": ["heading"]
+        "icon": ["bk_mdi_format_h2"]
       }
     },
     {
@@ -259,7 +259,7 @@
       "values": {
         "isNew": [false],
         "options": [],
-        "icon": ["zoom"]
+        "icon": ["bk_mdi_zoom_in"]
       }
     },
     {
@@ -269,7 +269,7 @@
       "values": {
         "isNew": [false],
         "options": [],
-        "icon": ["palette"]
+        "icon": ["bk_mdi_keyboard_command_key"]
       }
     },
     {
@@ -279,7 +279,7 @@
       "values": {
         "isNew": [false],
         "options": [],
-        "icon": ["edit"]
+        "icon": ["bk_mdi_edit"]
       }
     },
     {
@@ -289,7 +289,7 @@
       "values": {
         "isNew": [false],
         "options": [],
-        "icon": ["adapter"]
+        "icon": ["bk_mdi_extension"]
       }
     },
     {
@@ -352,7 +352,7 @@
       "values": {
         "isNew": [false],
         "options": [{ "key": "box", "value": "1" }],
-        "icon": ["edit"],
+        "icon": ["bk_mdi_edit"],
         "title": ["Copy, Duplicate, Edit, Delete"],
         "text": [
           "Quickly perform basic edits and manage your content efficiently."
@@ -366,7 +366,7 @@
       "values": {
         "isNew": [false],
         "options": [{ "key": "box", "value": "1" }],
-        "icon": ["select"],
+        "icon": ["bk_mdi_select"],
         "title": ["Select"],
         "text": [
           "Select multiple blocks using ctrl + click or drag-and-drop, visualized with a clear selection rectangle."
@@ -380,7 +380,7 @@
       "values": {
         "isNew": [false],
         "options": [{ "key": "box", "value": "1" }],
-        "icon": ["history"],
+        "icon": ["bk_mdi_history"],
         "title": ["History"],
         "text": [
           "Effortlessly undo or redo actions and explore the complete history of your edits for full control."
@@ -431,7 +431,7 @@
           { "key": "box", "value": "" },
           { "key": "color", "value": "lightGreen" }
         ],
-        "icon": ["zoom"],
+        "icon": ["bk_mdi_zoom_in"],
         "title": ["Artboard"],
         "text": [
           " Pan and zoom like in Photoshop or Figma for precise layout control."
@@ -478,7 +478,7 @@
       "values": {
         "isNew": [false],
         "options": [],
-        "icon": ["comment"],
+        "icon": ["bk_mdi_comment"],
         "title": ["Comments"],
         "text": [
           "Add comments to pages or blocks for effective team communication."
@@ -492,7 +492,7 @@
       "values": {
         "isNew": [false],
         "options": [],
-        "icon": ["recycle"],
+        "icon": ["reusable"],
         "title": ["Shared Library"],
         "text": [
           "Reuse blocks across multiple pages with a shared library enabling truly consistent content."
@@ -506,7 +506,7 @@
       "values": {
         "isNew": [false],
         "options": [],
-        "icon": ["actions"],
+        "icon": ["bk_mdi_function"],
         "title": ["Actions"],
         "text": [
           " Implement custom actions like extracting links or rewriting text with ChatGPT integration."
@@ -534,7 +534,7 @@
       "values": {
         "isNew": [false],
         "options": [{ "key": "box", "value": "" }],
-        "icon": ["adapter"],
+        "icon": ["bk_mdi_power"],
         "title": ["Custom"],
         "text": [
           "Write your own adapter for integrating blökkli with your CMS or any backend."
@@ -548,7 +548,7 @@
       "values": {
         "isNew": [false],
         "options": [{ "key": "box", "value": "" }],
-        "icon": ["puzzle"],
+        "icon": ["bk_mdi_extension"],
         "title": ["Modular"],
         "text": [
           "Extend adapters to your own requirements. For example, add an external comment service or write your own."
@@ -605,7 +605,7 @@
       "values": {
         "isNew": [false],
         "options": [{ "key": "box", "value": "" }],
-        "icon": ["lightbulb"],
+        "icon": ["bk_mdi_lightbulb"],
         "title": ["Simple"],
         "text": [
           "blökkli provides an adapter to integrate the editor with any existing Paragraphs based Drupal setup."
@@ -758,7 +758,7 @@
       "values": {
         "isNew": [false],
         "options": [],
-        "icon": ["translate"],
+        "icon": ["bk_mdi_translate"],
         "title": ["Multilanguage"],
         "text": [
           "blökkli supports a multilingual workflow. When translating content, the structure can not be altered."
@@ -772,7 +772,7 @@
       "values": {
         "isNew": [false],
         "options": [{ "key": "box", "value": "1" }],
-        "icon": ["phone"],
+        "icon": ["bk_mdi_mobile"],
         "title": ["Mobile First"],
         "text": [
           "Direct mobile preview from within the editor. Instantly see how changes affect mobile rendering."
@@ -786,7 +786,7 @@
       "values": {
         "isNew": [false],
         "options": [],
-        "icon": ["qr"],
+        "icon": ["bk_mdi_qr_code"],
         "title": ["Hands-on Live-Preview"],
         "text": [
           "If supported by the backend, blökkli can generate a QR code that can be scanned on a smartphone to see and feel a preview of the page, with live reloading."
@@ -893,7 +893,7 @@
           { "key": "box", "value": "" },
           { "key": "color", "value": "lightBlue" }
         ],
-        "icon": ["palette"],
+        "icon": ["bk_mdi_palette"],
         "title": ["Custom Design"],
         "text": [
           "Change the behavior and appearance of each block with options like background color, alignment, and size."
@@ -910,7 +910,7 @@
           { "key": "box", "value": "" },
           { "key": "color", "value": "lightRed" }
         ],
-        "icon": ["clipboard"],
+        "icon": ["bk_mdi_content_paste"],
         "title": ["Clipboard"],
         "text": [
           "Easily copy-paste text, images, and even YouTube links for enriched content."

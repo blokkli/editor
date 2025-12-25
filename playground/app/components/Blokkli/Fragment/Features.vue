@@ -22,9 +22,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineBlokkliFragment } from '#imports'
+import { computed, defineBlokkliFragment, useBlokkli } from '#imports'
 import { featureDefinitions } from '#blokkli-build/features'
-import { icons } from '#blokkli-build/icons'
 
 defineBlokkliFragment({
   name: 'features_list',
@@ -35,6 +34,15 @@ defineBlokkliFragment({
     previewWidth: 1000,
   },
 })
+
+const reactiveIcons = useBlokkli(true)?.icons
+const iconsImport = !reactiveIcons
+  ? await import('#blokkli-build/icons').then((v) => v.icons)
+  : null
+
+const icons = computed<Record<string, string>>(
+  () => (reactiveIcons ? reactiveIcons.icons.value : iconsImport) || {},
+)
 
 const features = computed(() =>
   featureDefinitions.filter((v) => v.id !== 'demo-feature'),

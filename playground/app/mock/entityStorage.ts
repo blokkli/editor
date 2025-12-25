@@ -14,7 +14,7 @@ import { User } from './state/User'
 import data from './../../snapshots/data.json'
 import videosData from './../../snapshots/videos.json'
 import type { FieldBlocks } from './state/Field/Blocks'
-import { icons } from '#blokkli-build/icons'
+// import { icons } from '#blokkli-build/icons'
 import { generateUUID } from './uuid'
 import * as commentStorage from './commentStorage'
 import type { StoredComment } from './commentStorage'
@@ -82,15 +82,15 @@ export class EntityStorageManager {
       library_item: new EntityStorage(),
     }
 
-    Object.entries(icons).forEach(([name, markup]) => {
-      const uuid = name
-      const icon = new MediaIcon(uuid)
-      icon.setValues({
-        name,
-        markup,
-      })
-      this.storages.media.add(icon)
-    })
+    // Object.entries(icons).forEach(([name, markup]) => {
+    //   const uuid = name
+    //   const icon = new MediaIcon(uuid)
+    //   icon.setValues({
+    //     name,
+    //     markup,
+    //   })
+    //   this.storages.media.add(icon)
+    // })
 
     this.createImage(
       '1',

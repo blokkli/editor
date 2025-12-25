@@ -7,7 +7,7 @@
   >
     <div>
       <button ref="elButton" @click.prevent="onClick">
-        <Icon name="eye" />
+        <Icon name="bk_mdi_visibility-fill" />
         <span>{{ getLabel() }}</span>
       </button>
     </div>

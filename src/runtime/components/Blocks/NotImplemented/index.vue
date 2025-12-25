@@ -1,6 +1,6 @@
 <template>
   <div class="bk bk-block-not-implemented">
-    <Icon name="alert" />
+    <Icon name="bk_mdi_warning" />
     <div v-html="text" />
   </div>
 </template>

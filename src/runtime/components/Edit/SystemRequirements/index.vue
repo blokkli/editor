@@ -12,7 +12,7 @@
           'blökkli has detected that your browser does not meet one or more system requirements. For the best experience, please use a browser that supports all the listed requirements.',
         )
       "
-      icon="sad"
+      icon="bk_mdi_sentiment_dissatisfied"
       @submit="dismiss"
       @cancel="dismiss"
     >
@@ -30,7 +30,11 @@
             <h3>
               <span>{{ requirement.title }}</span>
               <div class="bk-system-requirements-icon">
-                <Icon :name="requirement.supported ? 'check' : 'close'" />
+                <Icon
+                  :name="
+                    requirement.supported ? 'bk_mdi_check' : 'bk_mdi_close'
+                  "
+                />
               </div>
             </h3>
             <p>{{ requirement.description }}</p>

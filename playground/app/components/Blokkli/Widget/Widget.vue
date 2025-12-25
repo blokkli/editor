@@ -226,6 +226,7 @@ const { options } = defineBlokkli({
   },
   editor: {
     editTitle: (el) => el.dataset.widget,
+    icon: 'bk_mdi_widgets',
     addBehaviour: 'no-form',
     determineVisibleOptions: (ctx) => {
       if (ctx.options.showAllOptions) {

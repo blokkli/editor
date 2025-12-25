@@ -8,9 +8,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from '#imports'
+import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/components'
-import { icons, type BlokkliIcon } from '#blokkli-build/icons'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 
-const iconItems = computed(() => Object.keys(icons) as BlokkliIcon[])
+const { icons } = useBlokkli()
+
+const iconItems = computed(
+  () => Object.keys(icons.icons.value) as BlokkliIcon[],
+)
 </script>

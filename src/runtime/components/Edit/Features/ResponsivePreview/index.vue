@@ -9,7 +9,7 @@
     :min-width="375"
     :min-height="375"
     :size
-    icon="preview"
+    icon="bk_mdi_mobile"
     region="left"
   >
     <PreviewFrame :detached="isDetached" :is-resizing="isResizing">
@@ -18,7 +18,7 @@
         class="bk-is-rotate"
         @click="isRotated = !isRotated"
       >
-        <Icon name="rotate-phone" />
+        <Icon name="bk_mdi_mobile_rotate" />
       </button>
       <div class="bk-dropdown">
         <button
@@ -37,7 +37,7 @@
               </div>
             </div>
           </div>
-          <Icon name="caret" />
+          <Icon name="bk_mdi_arrow_drop_down" />
         </button>
         <div v-if="dropdownOpen" class="bk-dropdown-content">
           <label v-for="option in viewportOptions" :key="option.id">
@@ -78,7 +78,7 @@ import type { BlokkliIcon } from '#blokkli-build/icons'
 
 defineBlokkliFeature({
   id: 'responsive-preview',
-  icon: 'cellphone',
+  icon: 'bk_mdi_mobile',
   label: 'Responsive Preview',
   viewports: ['desktop'],
   description:

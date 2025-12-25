@@ -27,7 +27,7 @@ import type {
 defineBlokkliFeature({
   id: 'options',
   label: 'Options',
-  icon: 'palette',
+  icon: 'bk_mdi_palette',
   description: 'Renders the options form for one or more blocks.',
   requiredAdapterMethods: ['updateOptions'],
 })

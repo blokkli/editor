@@ -20,7 +20,7 @@ import defineAddAction from '#blokkli/helpers/composables/defineAddAction'
 
 const { adapter } = defineBlokkliFeature({
   id: 'fragments',
-  icon: 'fragment',
+  icon: 'bk_mdi_newspaper',
   label: 'Fragments',
   description: 'Provides way to add content fragments defined by the frontend.',
   requiredAdapterMethods: ['fragmentsAddBlock'],
@@ -58,7 +58,7 @@ defineAddAction(() => {
 
   return {
     id: 'fragment',
-    icon: 'fragment',
+    icon: 'bk_mdi_newspaper',
     color: 'accent',
     itemBundle: 'blokkli_fragment',
     title: $t('fragmentsAddFragmentAction', 'Add fragment'),

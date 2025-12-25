@@ -22,6 +22,7 @@ const { isEditing } = defineBlokkli({
     slides: 'slides',
   },
   editor: {
+    icon: 'bk_mdi_view_carousel',
     disableEdit: true,
   },
 })

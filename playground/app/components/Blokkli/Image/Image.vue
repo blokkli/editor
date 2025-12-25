@@ -31,6 +31,7 @@ const { options, parentType } = defineBlokkli({
     },
   },
   editor: {
+    icon: 'bk_mdi_image',
     addBehaviour: 'no-form',
     editTitle: (el) => el.querySelector('img')?.alt,
     mapDiffProps: (diffProps) => {

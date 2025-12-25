@@ -29,7 +29,7 @@ import { itemEntityType } from '#blokkli-build/config'
 
 defineBlokkliFeature({
   id: 'editable-field',
-  icon: 'textbox',
+  icon: 'bk_mdi_text_select_end',
   label: 'Editable Field',
   requiredAdapterMethods: ['updateFieldValue', 'getEditableFieldConfig'],
   description: 'Implements a form overlay to edit a single field of a block.',
@@ -162,7 +162,7 @@ defineCommands(() => {
         '@name',
         v.config.label,
       ),
-      icon: 'textbox',
+      icon: 'bk_mdi_text_select_end',
       disabled: false,
       callback: () => {
         selectedEditable.value = v

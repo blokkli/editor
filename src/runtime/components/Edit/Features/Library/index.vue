@@ -3,7 +3,7 @@
     v-if="isReusable"
     id="library_detach"
     :title="$t('libraryDetach', 'Detach from library')"
-    icon="detach"
+    icon="reusable-detach"
     edit-only
     multiple
     :weight="-70"

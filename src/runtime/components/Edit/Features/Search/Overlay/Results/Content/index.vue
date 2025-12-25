@@ -45,7 +45,7 @@
       v-if="!isLoading && !items.length && search"
       class="bk-search-no-results"
     >
-      <Icon name="sad" />
+      <Icon name="bk_mdi_sentiment_dissatisfied" />
       <span>{{ $t('searchBoxNoResultsFound', 'No results found') }}</span>
     </div>
   </div>

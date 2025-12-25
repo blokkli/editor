@@ -1,7 +1,7 @@
 <template>
   <Banner
     id="ownership"
-    icon="user"
+    icon="bk_mdi_person-fill"
     :text
     :button="$t('ownershipTakeOwnership', 'Assign to me')"
     @click="$emit('submit')"

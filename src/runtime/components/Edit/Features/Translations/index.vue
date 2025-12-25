@@ -59,7 +59,7 @@
     id="translate"
     :disabled="!canTranslateBlock"
     :title="$t('translationsItemAction', 'Translate')"
-    icon="translate"
+    icon="bk_mdi_translate"
     :weight="-100"
     @click="onTranslate"
   />
@@ -87,7 +87,7 @@ import defineMenuButton from '#blokkli/helpers/composables/defineMenuButton'
 const { adapter } = defineBlokkliFeature({
   id: 'translations',
   label: 'Translations',
-  icon: 'translate',
+  icon: 'bk_mdi_translate',
   requiredAdapterMethods: ['changeLanguage'],
   description: 'Adds support for block translations.',
 })
@@ -243,7 +243,7 @@ defineMenuButton(() => {
       'translationsBatchTranslateMenuDescription',
       'Translate all blocks',
     ),
-    icon: 'translate',
+    icon: 'bk_mdi_translate',
     disabled: !isTranslating.value,
     weight: 60,
     callback: () => {

@@ -3,7 +3,7 @@
     id="analyze"
     :title="$t('analyzeSidebarTitle', 'Analyze')"
     :tour-text="$t('analyzeTourText', 'Analyze the content of your page')"
-    icon="speedometer"
+    icon="bk_mdi_speed"
     weight="10"
     :is-loading="isRunning"
   >
@@ -18,7 +18,7 @@
             'Analyze is not available in structure view.',
           )
         "
-        icon="tree"
+        icon="bk_mdi_account_tree"
       />
     </div>
     <AnalyzerMain
@@ -42,7 +42,7 @@ import AnalyzeIcon from './Icon.vue'
 const { adapter } = defineBlokkliFeature({
   id: 'analyze',
   label: 'Analyze',
-  icon: 'speedometer',
+  icon: 'bk_mdi_speed',
   requiredAdapterMethods: ['getAnalyzers'],
   description: 'Analyze blocks and page for SEO, accessibility, etc.',
   viewports: [],

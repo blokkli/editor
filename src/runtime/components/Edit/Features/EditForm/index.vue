@@ -25,7 +25,7 @@ import type { BlockBundleWithNested } from '#blokkli-build/generated-types'
 
 const { adapter } = defineBlokkliFeature({
   id: 'edit-form',
-  icon: 'form',
+  icon: 'bk_mdi_select_check_box',
   label: 'Edit Form',
   description:
     'Listens to edit events and renders an iframe containing the edit form.',

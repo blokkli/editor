@@ -8,7 +8,7 @@
         'Shows a structured list of all blocks on the current page. Click on any block to quickly jump to it.',
       )
     "
-    icon="tree"
+    icon="bk_mdi_account_tree"
     weight="-90"
   >
     <ScrollBoundary
@@ -43,7 +43,7 @@ import List from './List/index.vue'
 
 defineBlokkliFeature({
   id: 'structure',
-  icon: 'tree',
+  icon: 'bk_mdi_account_tree',
   label: 'Structure',
   description:
     'Provides a sidebar button to render a structured list of all blocks on the current page.',

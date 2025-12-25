@@ -17,7 +17,10 @@
         class="rounded w-50 h-50 lg:w-[64px] lg:h-[64px] p-10 mb-10 border border-accent-100"
         :class="iconClass"
       >
-        <SpriteSymbol :name="icon" class="fill-current w-full h-full" />
+        <SpriteSymbol
+          :name="icon.replace('bk_mdi_', '') as NuxtSvgSpriteSymbol"
+          class="fill-current w-full h-full"
+        />
       </div>
       <h3
         v-blokkli-editable:title
@@ -72,6 +75,7 @@ const { parentType, options } = defineBlokkli({
   editor: {
     previewWidth: 380,
     addBehaviour: 'no-form',
+    icon: 'bk_mdi_cards_stack',
     editTitle: (el) => el.querySelector('h3')?.textContent,
     determineVisibleOptions: (ctx) => {
       if (ctx.props.icon) {

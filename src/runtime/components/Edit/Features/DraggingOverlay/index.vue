@@ -67,7 +67,7 @@ import { renderCycle } from '#blokkli/helpers/renderCycle'
 import { BundleSelector, BlokkliTransition } from '#blokkli/components'
 
 const { adapter } = defineBlokkliFeature({
-  icon: 'drag',
+  icon: 'bk_mdi_drag_pan',
   id: 'dragging-overlay',
   label: 'Dragging Overlay',
   description: 'Renders an overlay when dragging or placing a block.',

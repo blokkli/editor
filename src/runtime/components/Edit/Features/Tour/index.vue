@@ -12,7 +12,7 @@ import defineMenuButton from '#blokkli/helpers/composables/defineMenuButton'
 defineBlokkliFeature({
   id: 'tour',
   label: 'Tour',
-  icon: 'tutor',
+  icon: 'bk_mdi_school-fill',
   description: 'Provides a tour overlay to get to know the editor.',
 })
 
@@ -34,7 +34,7 @@ defineMenuButton(() => {
     id: 'tour',
     title: $t('tourLabel', 'Take a tour'),
     description: $t('tourDescription', 'Explore the features of the editor'),
-    icon: 'tutor',
+    icon: 'bk_mdi_school-fill',
     secondary: true,
     weight: -10,
     callback: start,

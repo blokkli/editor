@@ -10,7 +10,7 @@
         'See a list of all changes made so far and switch back and forth between changes.',
       )
     "
-    icon="history"
+    icon="bk_mdi_history"
     weight="-800"
   >
     <HistoryList :scrolled-to-end="scrolledToEnd" />
@@ -24,7 +24,7 @@
     region="before-title"
     :disabled="!canUndo"
     :tour-text="$t('historyUndoTourText', 'Undo the last change.')"
-    icon="undo"
+    icon="bk_mdi_undo"
     @click="undo"
   />
 
@@ -37,7 +37,7 @@
     region="before-title"
     :disabled="!canRedo"
     :tour-text="$t('historyRedoTourText', 'Redo the previous change.')"
-    icon="redo"
+    icon="bk_mdi_redo"
     @click="redo"
   />
 </template>
@@ -57,7 +57,7 @@ import { MOUSE_BUTTON } from '#blokkli/helpers/dom'
 
 const { adapter, settings } = defineBlokkliFeature({
   id: 'history',
-  icon: 'history',
+  icon: 'bk_mdi_history',
   label: 'History',
   requiredAdapterMethods: ['setHistoryIndex'],
   description:

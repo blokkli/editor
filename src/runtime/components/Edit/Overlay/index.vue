@@ -19,7 +19,7 @@
           'bk-is-right': alignment === 'left',
         }"
       >
-        <Icon name="click" />
+        <Icon name="bk_mdi_web_traffic" />
         <div v-html="infoText" />
       </div>
     </div>

@@ -40,7 +40,7 @@
               :color="isReusable ? 'lime' : undefined"
               is-small
             />
-            <Icon v-else name="selection" />
+            <Icon v-else name="bk_mdi_select_all" />
             <div
               v-if="itemBundle?.id === 'from_library'"
               class="bk-blokkli-item-actions-title-icon-reusable"
@@ -59,7 +59,11 @@
             class="bk-blokkli-item-actions-title-pill"
             >{{ $t('selectedIsNew', 'New') }}</span
           >
-          <Icon v-if="shouldRenderButton" name="caret" class="bk-caret" />
+          <Icon
+            v-if="shouldRenderButton"
+            name="bk_mdi_arrow_drop_down"
+            class="bk-caret"
+          />
         </button>
         <EditActionsItemDropdown
           v-if="showDropdown && editingEnabled"
@@ -105,7 +109,6 @@ useStickyToolbar(el, {
   allowHorizontalOverflow: true,
 })
 
-const controlsEl = useTemplateRef('controlsEl')
 const showDropdown = ref(false)
 
 const hasAnythingSelected = computed(

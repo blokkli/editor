@@ -1,4 +1,5 @@
-import { icons, type BlokkliIcon } from '#blokkli-build/icons'
+import type { BlokkliIcon } from '#blokkli-build/icons'
+import { useBlokkli } from '#imports'
 
 type IconAtlas = {
   x: number
@@ -7,25 +8,25 @@ type IconAtlas = {
 
 // Array of icon names to use
 const ICON_NAMES = [
-  'upload',
-  'tutor',
-  'bug',
-  'chart',
-  'eye',
-  'user',
-  'plus',
-  'robot',
-  'cursor-move',
-  'check',
-  'tools',
-  'revert',
-  'puzzle',
-  'group',
-  'file',
-  'comment',
-  'command',
-  'close',
-  'button-pointer',
+  'bk_mdi_upload',
+  'bk_mdi_school-fill',
+  'bk_mdi_bug_report',
+  'bk_mdi_bar_chart',
+  'bk_mdi_visibility',
+  'bk_mdi_person',
+  'bk_mdi_add',
+  'bk_mdi_robot',
+  'bk_mdi_drag_pan',
+  'bk_mdi_check',
+  'bk_mdi_construction',
+  'bk_mdi_undo',
+  'bk_mdi_extension',
+  'bk_mdi_stack_group',
+  'bk_mdi_attach_file',
+  'bk_mdi_comment',
+  'bk_mdi_keyboard_command_key',
+  'bk_mdi_close',
+  'bk_mdi_trackpad_input',
 ] as const satisfies readonly BlokkliIcon[]
 
 // Derive type from array
@@ -47,10 +48,12 @@ export function useIconRendering(
   cellSize: number,
   largeSize: number,
 ): UseIconRendering {
+  const { icons } = useBlokkli()
+
   // Build icon list from the names array
   const iconList = ICON_NAMES.map((name) => ({
     name,
-    svg: icons[name],
+    svg: icons.icons.value[name],
   }))
 
   const iconAtlas = new Map<string, IconAtlas>()

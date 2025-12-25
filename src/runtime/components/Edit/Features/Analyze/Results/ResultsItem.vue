@@ -6,7 +6,7 @@
       <div class="bk-analyze-results-item-help">
         <a v-if="link" :href="link" target="_blank" :title="link">
           <span>{{ $t('analyzeMoreLink', 'More') }}</span>
-          <Icon name="help" />
+          <Icon name="bk_mdi_help-fill" />
         </a>
       </div>
     </div>

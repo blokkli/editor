@@ -4,7 +4,7 @@
       <div class="bk-tour-popup-title">
         <h2>{{ $t('tourLabel', 'Take a tour') }}</h2>
         <button class="bk-tour-popup-close" @click="$emit('close')">
-          <Icon name="close" />
+          <Icon name="bk_mdi_close" />
         </button>
       </div>
 

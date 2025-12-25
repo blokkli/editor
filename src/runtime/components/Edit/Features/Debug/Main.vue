@@ -1,5 +1,5 @@
 <template>
-  <PluginSidebar id="debug" title="Debug" icon="bug" weight="200">
+  <PluginSidebar id="debug" title="Debug" icon="bk_mdi_bug_report" weight="200">
     <div class="bk bk-debug">
       <DebugSection title="Keyboard">
         <SectionKeyboard />
@@ -75,7 +75,7 @@ defineItemDropdownAction(() => {
     return {
       id: 'debug-copy-uuid',
       label: 'Copy UUID',
-      icon: 'bug',
+      icon: 'bk_mdi_bug_report',
       group: 'debug',
       weight: 200,
       callback: copyUuid,

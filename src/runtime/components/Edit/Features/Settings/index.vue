@@ -18,7 +18,7 @@ const { ui, $t } = useBlokkli()
 const { settings } = defineBlokkliFeature({
   id: 'settings',
   label: 'Settings',
-  icon: 'cog',
+  icon: 'bk_mdi_settings',
   description: 'Provides a menu button to display a settings dialog.',
 
   settings: {
@@ -75,7 +75,7 @@ defineMenuButton(() => {
       'settingsMenuDescription',
       'Personal settings for the editor',
     ),
-    icon: 'cog',
+    icon: 'bk_mdi_settings',
     secondary: true,
     callback: onClick,
   }

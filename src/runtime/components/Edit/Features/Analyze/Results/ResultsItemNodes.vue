@@ -7,7 +7,7 @@
   >
     <summary v-show="!isSingle">
       <span>{{ $t('multipleItemsLabel', 'Items') }}</span>
-      <Icon name="caret" />
+      <Icon name="bk_mdi_arrow_drop_down" />
     </summary>
 
     <div v-if="shouldRender" class="bk-analyze-results-item-nodes-list">

@@ -21,6 +21,7 @@ import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
 const { parentType } = defineBlokkli({
   bundle: 'text',
   editor: {
+    icon: 'bk_mdi_text_fields',
     previewWidth: 700,
     editTitle: (el) => el.textContent,
     addBehaviour: 'editable:text',

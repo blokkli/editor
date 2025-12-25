@@ -136,7 +136,7 @@ defineCommands(() => {
           .replace('@option', props.label)
           .replace('@value', option.key),
         group: 'selection',
-        icon: 'form',
+        icon: 'bk_mdi_radio_button_checked',
         callback: () => {
           value.value = option.key
         },

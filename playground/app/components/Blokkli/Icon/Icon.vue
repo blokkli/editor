@@ -4,7 +4,7 @@
     class="hero-animation-icon bg-white rounded-full overflow-hidden p-15 shadow-lg"
     :style="style"
   >
-    <SpriteSymbol :name="icon" class="h-full w-full fill-mono-700" />
+    <SpriteSymbol :name class="h-full w-full fill-mono-700" />
   </div>
 </template>
 
@@ -16,11 +16,20 @@ export type Props = {
   icon: NuxtSvgSpriteSymbol
 }
 
+const props = defineProps<Props>()
+
 const step = inject<Ref<number>>('hero_step')!
 
 const { index, isEditing } = defineBlokkli({
   bundle: 'icon',
+  editor: {
+    icon: 'bk_mdi_emoji_symbols',
+  },
 })
+
+const name = computed(
+  () => props.icon.replace('bk_mdi_', '') as NuxtSvgSpriteSymbol,
+)
 
 const style = computed(() => {
   if (isEditing) {
@@ -43,6 +52,4 @@ const style = computed(() => {
     opacity: 1,
   }
 })
-
-defineProps<Props>()
 </script>

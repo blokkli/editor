@@ -19,7 +19,7 @@
           <Banner
             v-if="!state.stateAvailable.value"
             id="state-unavailable"
-            icon="sad"
+            icon="bk_mdi_sentiment_dissatisfied"
             scheme="red"
             :text="stateNotAvailableText"
           />
@@ -103,6 +103,7 @@ import indicatorsProvider from '../../helpers/providers/indicators'
 import pluginProvider from '../../helpers/providers/plugin'
 import directiveProvider from './../../helpers/providers/directive'
 import fieldsProvider from './../../helpers/providers/fields'
+import iconsProvider from './../../helpers/providers/icons'
 import { eventBus } from '#blokkli/helpers/eventBus'
 import '#blokkli-build/styles.css'
 import getAdapter from '#blokkli-build/edit-adapter'
@@ -194,6 +195,7 @@ const commands = commandsProvider()
 const tour = tourProvider()
 const dropAreas = dropAreasProvider()
 const broadcast = broadcastProvider()
+const icons = iconsProvider()
 const ui = uiProvider(
   props.providerEl,
   storage,
@@ -330,6 +332,7 @@ const app: BlokkliApp = {
   types,
   ui,
   fields,
+  icons,
 }
 
 provide(INJECT_APP, app)
@@ -364,7 +367,7 @@ const viewOnlyBanner = computed<{ text: string; icon: BlokkliIcon } | null>(
             'You can view and add comments but cannot edit content.',
           ),
         ),
-        icon: 'comment',
+        icon: 'bk_mdi_comment',
       }
     } else if (props.permissions.includes('view')) {
       // User can only view the changes (e.g. only view comments, not add).
@@ -376,7 +379,7 @@ const viewOnlyBanner = computed<{ text: string; icon: BlokkliIcon } | null>(
             'You can view comments but cannot edit content.',
           ),
         ),
-        icon: 'eye',
+        icon: 'bk_mdi_visibility',
       }
     }
 

@@ -20,7 +20,7 @@
         'Easily perform actions using your keyboard by launching the command palette. Most of the features available using clicks is also available in the command palette.',
       )
     "
-    icon="command"
+    icon="bk_mdi_keyboard_command_key"
     @click="isVisible = !isVisible"
   />
 </template>
@@ -35,7 +35,7 @@ import { useDialog } from '#blokkli/helpers/composables/useDialog'
 
 defineBlokkliFeature({
   id: 'command-palette',
-  icon: 'command',
+  icon: 'bk_mdi_keyboard_command_key',
   label: 'Command Palette',
   description:
     'Provides a command palette with search to access most UI features with a keyboard.',

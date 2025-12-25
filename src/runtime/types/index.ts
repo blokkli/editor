@@ -8,6 +8,7 @@ import type { KeyboardProvider } from '../helpers/providers/keyboard'
 import type { UiProvider } from '../helpers/providers/ui'
 import type { AnimationProvider } from '../helpers/providers/animation'
 import type { StateProvider } from '../helpers/providers/state'
+import type { IconsProvider } from '../helpers/providers/icons'
 import type { DirectiveProvider } from '../helpers/providers/directive'
 import type { TextProvider } from '../helpers/providers/texts'
 import type { PluginProvider } from '../helpers/providers/plugin'
@@ -1370,6 +1371,7 @@ export interface BlokkliApp {
   plugins: PluginProvider
   directive: DirectiveProvider
   fields: FieldsProvider
+  icons: IconsProvider
 }
 
 export type PasteExistingBlocksEvent = {

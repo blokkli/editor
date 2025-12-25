@@ -16,7 +16,7 @@
     class="bk bk-dragging-overlay-label"
     :style="styleLabel"
   >
-    <Icon name="cursor-move" />
+    <Icon name="bk_mdi_drag_pan" />
     <p v-html="currentActiveLabel" />
   </div>
 </template>

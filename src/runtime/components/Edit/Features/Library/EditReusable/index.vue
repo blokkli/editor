@@ -10,7 +10,7 @@
           <span v-if="label">&nbsp;{{ label }}</span>
         </h2>
         <button @click.prevent="closeOverlay">
-          <Icon name="arrow-left" />
+          <Icon name="bk_mdi_arrow_left_alt" />
           <span>{{ $t('libraryItemEditOverlayBack', 'Back to page') }}</span>
         </button>
       </header>

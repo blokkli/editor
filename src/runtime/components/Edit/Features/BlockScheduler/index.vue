@@ -14,10 +14,10 @@
   >
     <template #icon>
       <div class="bk-schedule-action-icon">
-        <Icon name="calendar" class="bk-item-action-icon" />
+        <Icon name="bk_mdi_calendar_month" class="bk-item-action-icon" />
         <Icon
           v-if="selectionHasDates"
-          name="check"
+          name="bk_mdi_check"
           class="bk-schedule-action-icon-check"
         />
       </div>
@@ -44,7 +44,7 @@ import SchedulerDialog from './Dialog/index.vue'
 
 defineBlokkliFeature({
   id: 'block-scheduler',
-  icon: 'calendar',
+  icon: 'bk_mdi_calendar_month',
   label: 'Block Scheduler',
   description: 'Adds support for scheduling blocks.',
   requiredAdapterMethods: ['setBlockScheduleDate'],

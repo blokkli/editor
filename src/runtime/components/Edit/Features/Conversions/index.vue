@@ -16,7 +16,7 @@ import defineItemDropdownAction from '#blokkli/helpers/composables/defineItemDro
 const { adapter } = defineBlokkliFeature({
   id: 'conversions',
   label: 'Conversions',
-  icon: 'convert',
+  icon: 'bk_mdi_swap_horizontal_circle',
   requiredAdapterMethods: ['getConversions', 'convertBlocks'],
   description:
     'Provides block actions to convert one or more blocks to a different bundle.',

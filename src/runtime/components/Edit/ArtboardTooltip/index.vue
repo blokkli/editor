@@ -49,7 +49,7 @@ const props = withDefaults(
   {
     anchorEl: null,
     anchorCoordinates: null,
-    closeIcon: 'close',
+    closeIcon: 'bk_mdi_close',
     placementY: 'auto',
   },
 )

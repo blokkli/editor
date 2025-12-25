@@ -5,7 +5,7 @@
     :label="$t('toggleInteractionLayers', 'Toggle interaction layers')"
     :title-on="$t('interactionLayersOn', 'Hide interaction layers')"
     :title-off="$t('interactionLayerOff', 'Show interaction layers')"
-    icon="xml"
+    icon="bk_mdi_logo_dev"
     key-code="I"
     weight="-99999"
   />
@@ -19,7 +19,7 @@ import { addElementClasses } from '#blokkli/helpers/composables/addElementClasse
 defineBlokkliFeature({
   id: 'dev-mode',
   label: 'Dev Mode',
-  icon: 'xml',
+  icon: 'bk_mdi_logo_dev',
   description: 'Feature enabled in development mode.',
   viewports: ['desktop'],
 })

@@ -23,7 +23,7 @@ import { useDialog } from '#blokkli/helpers/composables/useDialog'
 
 const { adapter, settings } = defineBlokkliFeature({
   id: 'publish',
-  icon: 'publish',
+  icon: 'bk_mdi_publish',
   label: 'Publish',
   requiredAdapterMethods: ['publish'],
   description:
@@ -95,9 +95,9 @@ const publishDescription = computed(() => {
 
 const icon = computed<BlokkliIcon>(() => {
   if (state.publishOptions.value?.publishOn) {
-    return 'calendar-clock'
+    return 'bk_mdi_calendar_clock'
   }
-  return isPublished.value ? 'publish' : 'save'
+  return isPublished.value ? 'bk_mdi_publish' : 'bk_mdi_save'
 })
 
 const onMenuClick = async () => {

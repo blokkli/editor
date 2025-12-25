@@ -8,7 +8,7 @@
       @touchmove.stop.passive
     >
       <button :class="{ 'bk-is-active': menuOpen }" @click="closeMenu">
-        <Icon name="close" />
+        <Icon name="bk_mdi_close" />
       </button>
       <div class="bk-menu-list-inner">
         <div id="bk-menu-primary">

@@ -2,7 +2,7 @@
   <FormOverlay
     id="fragments"
     :title="$t('fragmentsPlaceDialogTitle', 'Add fragment block')"
-    icon="reusable"
+    icon="bk_mdi_newspaper"
     @close="onClose"
   >
     <div class="bk-library-dialog">

@@ -40,7 +40,7 @@ defineCommands(() => {
       .replace('@option', props.label)
       .replace('@value', checked.value ? 'false' : 'true'),
     group: 'selection',
-    icon: 'form',
+    icon: 'bk_mdi_check_box',
     callback: () => (checked.value = !checked.value),
   }
 })

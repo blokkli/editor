@@ -5,7 +5,7 @@
     :key="item.uuid"
     :uuid="item.uuid"
     :label="'#' + item.id"
-    icon="anchor"
+    icon="bk_mdi_anchor"
     @click="onClick(item)"
   />
 </template>

@@ -20,6 +20,7 @@ import { getRuntimeOptions, getItemsforBundles } from '#blokkli/runtime-helpers'
 const { rootBlocks } = defineBlokkli({
   bundle: 'on_this_page',
   editor: {
+    icon: 'bk_mdi_anchor',
     disableEdit: true,
   },
 })

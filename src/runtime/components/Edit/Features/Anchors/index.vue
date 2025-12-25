@@ -5,7 +5,7 @@
     :label="$t('anchorToggle', 'Toggle anchor links')"
     :title-on="$t('anchorShow', 'Show anchor links')"
     :title-off="$t('anchorHide', 'Hide anchor links')"
-    icon="anchor"
+    icon="bk_mdi_anchor"
   >
     <AnchorOverlay v-if="isActive" />
   </PluginViewOption>
@@ -19,7 +19,7 @@ import AnchorOverlay from './Overlay/index.vue'
 defineBlokkliFeature({
   id: 'anchors',
   label: 'Anchors',
-  icon: 'anchor',
+  icon: 'bk_mdi_anchor',
   description: 'Displays indicators for blocks with anchor IDs',
   viewports: ['desktop'],
 })

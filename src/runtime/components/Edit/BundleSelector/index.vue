@@ -22,7 +22,7 @@
           class="bk-selection-add-overlay-form-input"
           @submit.prevent.stop="onSubmitForm"
         >
-          <Icon name="search" />
+          <Icon name="bk_mdi_search" />
           <input
             ref="inputEl"
             v-model="searchText"
@@ -35,7 +35,7 @@
             tabindex="-1"
             @click.prevent="onClearSearchText"
           >
-            <Icon name="close" />
+            <Icon name="bk_mdi_close" />
           </button>
         </form>
       </div>

@@ -13,7 +13,7 @@
             <span class="bk-pill">{{ group.results.length }}</span>
           </div>
         </div>
-        <Icon name="caret" />
+        <Icon name="bk_mdi_arrow_drop_down" />
       </summary>
       <ul
         :class="{

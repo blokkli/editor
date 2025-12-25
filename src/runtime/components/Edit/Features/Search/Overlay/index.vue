@@ -6,7 +6,7 @@
     @click.stop
   >
     <div class="bk-search-input">
-      <Icon name="search" />
+      <Icon name="bk_mdi_search" />
       <input
         id="pb_search_input"
         ref="input"
@@ -18,7 +18,7 @@
         required
       />
       <button @click="$emit('close')">
-        <Icon name="close" />
+        <Icon name="bk_mdi_close" />
       </button>
     </div>
 

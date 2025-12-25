@@ -10,7 +10,7 @@ import OwnershipBanner from './Banner/index.vue'
 
 const { adapter } = defineBlokkliFeature({
   id: 'ownership',
-  icon: 'user',
+  icon: 'bk_mdi_person-fill',
   label: 'Ownership',
   requiredAdapterMethods: ['takeOwnership'],
   description:

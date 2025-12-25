@@ -1,10 +1,7 @@
 <template>
   <div v-if="markup" class="bk-blokkli-item-icon" v-html="markup" />
-  <div v-else-if="bundle === BUNDLE_FROM_LIBRARY" class="bk-blokkli-item-icon">
-    <Icon name="reusable" />
-  </div>
   <div v-else class="bk-blokkli-item-icon">
-    <Icon name="question" />
+    <Icon :name="iconName" />
   </div>
 </template>
 
@@ -12,6 +9,7 @@
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/components'
 import { BUNDLE_FROM_LIBRARY } from '#blokkli/constants'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 
 const props = defineProps<{
   bundle?: string
@@ -22,6 +20,20 @@ const { definitions } = useBlokkli()
 const markup = computed(() =>
   props.bundle ? definitions.getBlockIcon(props.bundle) : undefined,
 )
+
+const iconName = computed<BlokkliIcon>(() => {
+  if (props.bundle === BUNDLE_FROM_LIBRARY) {
+    return 'reusable'
+  } else if (props.bundle) {
+    const name = definitions.getBlockDefinition(props.bundle, 'default')?.editor
+      ?.icon
+    if (name) {
+      return name
+    }
+  }
+
+  return 'bk_mdi_question_mark'
+})
 </script>
 
 <script lang="ts">

@@ -30,6 +30,7 @@ const { parentType, isEditing } = defineBlokkli({
     rows: 'rows',
   },
   editor: {
+    icon: 'bk_mdi_table',
     addBehaviour: 'no-form',
     editTitle: (el) => el.textContent,
   },

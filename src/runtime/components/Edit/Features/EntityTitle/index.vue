@@ -5,7 +5,7 @@
       class="bk-toolbar-title-scheduled"
       @click.prevent="eventBus.emit('publish:show-dialog')"
     >
-      <Icon name="calendar-clock" />
+      <Icon name="bk_mdi_calendar_clock" />
       <div class="bk-toolbar-title-scheduled-text">
         <div>{{ formattedScheduledDate }}</div>
       </div>
@@ -62,7 +62,7 @@ import { Icon } from '#blokkli/components'
 
 defineBlokkliFeature({
   id: 'entity-title',
-  icon: 'title',
+  icon: 'bk_mdi_title',
   label: 'Entity Title',
   description: 'Renders the title and status of the page entity.',
 })
@@ -111,7 +111,7 @@ defineCommands(() => {
       entity.value.label || 'Page',
     ),
     callback: () => eventBus.emit('editEntity'),
-    icon: 'edit',
+    icon: 'bk_mdi_edit',
   }
 })
 

@@ -50,7 +50,7 @@ import { onlyUnique } from '#blokkli/helpers'
 
 const { settings } = defineBlokkliFeature({
   id: 'add-list',
-  icon: 'plus',
+  icon: 'bk_mdi_add',
   label: 'Add List',
   description:
     'Provides the container to render a list of blocks to add or add actions.',

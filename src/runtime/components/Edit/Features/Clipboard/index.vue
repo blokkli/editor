@@ -11,7 +11,7 @@
       )
     "
     edit-only
-    icon="clipboard"
+    icon="bk_mdi_content_paste"
     weight="-30"
   >
     <div class="bk bk-clipboard bk-control">
@@ -57,7 +57,7 @@
         <div class="bk-clipboard-upload">
           <input type="file" @change="onFileInput" />
           <div class="bk-button bk-is-primary">
-            <Icon name="upload" />
+            <Icon name="bk_mdi_upload" />
           </div>
         </div>
       </div>
@@ -90,7 +90,7 @@ import { itemEntityType } from '#blokkli-build/config'
 const { settings, logger } = defineBlokkliFeature({
   id: 'clipboard',
   label: 'Clipboard',
-  icon: 'clipboard',
+  icon: 'bk_mdi_content_paste',
   description:
     'Provides clipboard integration to copy/paste existing blocks or paste supported clipboard content like text or images.',
   settings: {
@@ -126,14 +126,14 @@ const itemDropdownItems = computed<DropdownItem[]>(() => {
     {
       id: 'copy',
       label: $t('copy', 'Copy'),
-      icon: 'copy',
+      icon: 'bk_mdi_content_copy',
       description: $t('clipboardCopyShortcutHelp', 'Copy selected blocks'),
     },
     {
       id: 'paste',
       label: $t('paste', 'Paste'),
       enabled: !!selectionClipboard.value.length,
-      icon: 'clipboard',
+      icon: 'bk_mdi_content_paste',
       description: $t(
         'clipboardPasteDescription',
         'Paste blocks from clipboard',

@@ -81,6 +81,7 @@ const { options } = defineBlokkli({
   },
   editor: {
     disableEdit: true,
+    icon: 'bk_mdi_looks_two',
     editTitle: (el) => el.querySelector('h2')?.textContent,
     fieldLayout: [['header'], ['left', 'right']],
   },

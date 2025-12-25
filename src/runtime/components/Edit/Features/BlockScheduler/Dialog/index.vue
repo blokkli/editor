@@ -18,7 +18,7 @@
     <div class="bk-block-scheduler-dialog">
       <ScheduleSection
         v-model="publishOn"
-        icon="eye"
+        icon="bk_mdi_visibility"
         :label="$t('blockSchedulerDialogPublishOn', 'Publish on')"
         :items="publishOnItems"
         :supported-bundles="bundlesWithPublish"
@@ -27,7 +27,7 @@
 
       <ScheduleSection
         v-model="unpublishOn"
-        icon="eye-off"
+        icon="bk_mdi_visibility_off"
         :label="$t('blockSchedulerDialogUnpublishOn', 'Unpublish on')"
         :items="unpublishOnItems"
         :supported-bundles="bundlesWithUnpublish"

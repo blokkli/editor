@@ -9,7 +9,7 @@
         'See validation errors for content or structure on the current page.',
       )
     "
-    icon="check"
+    icon="bk_mdi_check"
     weight="-10"
   >
     <div class="bk bk-errors bk-control">
@@ -20,7 +20,7 @@
       </ul>
       <div v-else class="bk-errors-success">
         <figure>
-          <Icon name="check" />
+          <Icon name="bk_mdi_check" />
         </figure>
         <h3>{{ $t('validationsNoneFound', 'No validation errors found.') }}</h3>
       </div>
@@ -44,7 +44,7 @@ import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 defineBlokkliFeature({
   id: 'validations',
-  icon: 'check',
+  icon: 'bk_mdi_check',
   label: 'Validations',
   description: 'Provides a sidebar pane to render validations.',
 })

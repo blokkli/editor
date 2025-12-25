@@ -13,7 +13,7 @@
         </template>
         <span v-else class="bk-pill">{{ checked.length }}</span>
       </div>
-      <Icon name="caret" />
+      <Icon name="bk_mdi_arrow_drop_down" />
     </button>
     <div v-if="isOpen || isGrouped">
       <label
@@ -104,7 +104,7 @@ defineCommands(() => {
           .replace('@option', props.label)
           .replace('@value', option.label),
         group: 'selection',
-        icon: 'form',
+        icon: 'bk_mdi_check_box_outline_blank',
         callback: () => toggle(option.value),
       }
     }
@@ -118,7 +118,7 @@ defineCommands(() => {
         .replace('@option', props.label)
         .replace('@value', option.label),
       group: 'selection',
-      icon: 'form',
+      icon: 'bk_mdi_check_box',
       callback: () => toggle(option.value),
     }
   })

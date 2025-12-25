@@ -5,7 +5,7 @@
   >
     <button @click.stop.prevent="$emit('toggle')">
       <div>{{ label }}</div>
-      <Icon name="caret" />
+      <Icon name="bk_mdi_arrow_drop_down" />
     </button>
     <div v-if="isActive" class="bk-blokkli-item-options-group-content">
       <slot />

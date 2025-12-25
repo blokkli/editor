@@ -9,7 +9,7 @@
       $t('gridTourText', 'Display a layout grid overlay on top of the page.')
     "
     key-code="G"
-    icon="grid"
+    icon="bk_mdi_grid_view"
   >
     <div v-if="isActive" class="bk-grid-overlay" v-html="gridMarkup" />
   </PluginViewOption>
@@ -22,7 +22,7 @@ import { PluginViewOption } from '#blokkli/plugins'
 const { adapter } = defineBlokkliFeature({
   id: 'grid',
   label: 'Grid',
-  icon: 'grid',
+  icon: 'bk_mdi_grid_view',
   requiredAdapterMethods: ['getGridMarkup'],
   description: 'Provides a view option to render a grid.',
   viewports: ['desktop'],

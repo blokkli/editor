@@ -11,7 +11,7 @@ import { ErrorBoundary } from '#blokkli/components'
 
 defineBlokkliFeature({
   id: 'hover',
-  icon: 'selection',
+  icon: 'bk_mdi_arrow_selector_tool',
   label: 'Hover',
   description:
     'Renders a border around blocks that are currently being hovered.',

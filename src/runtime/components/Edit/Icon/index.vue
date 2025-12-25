@@ -3,15 +3,20 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from '#imports'
-import { icons } from '#blokkli-build/icons'
+import { computed, useBlokkli } from '#imports'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 
 const props = defineProps<{
   name: BlokkliIcon
 }>()
 
-const markup = computed(() => icons[props.name])
+const { icons } = useBlokkli()
+
+const markup = computed<string>(() =>
+  (icons.icons.value[props.name] ?? '')
+    .replace('width="48"', '')
+    .replace('height="48"', ''),
+)
 </script>
 
 <script lang="ts">

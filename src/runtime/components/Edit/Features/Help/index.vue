@@ -3,7 +3,7 @@
     id="help"
     :title="$t('featureHelpTitle', 'Help')"
     :tour-text="$t('helpTourText', 'Shows a list of available shortcuts.')"
-    icon="help"
+    icon="bk_mdi_help"
     weight="100"
     key-code="F1"
   >
@@ -32,7 +32,7 @@ import Shortcuts from './Shortcuts/index.vue'
 
 defineBlokkliFeature({
   id: 'help',
-  icon: 'help',
+  icon: 'bk_mdi_help',
   label: 'Help',
   description:
     'Provides a sidebar pane with helpful information on how to use blokkli.',

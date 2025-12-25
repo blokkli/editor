@@ -1,7 +1,16 @@
+import { USED_MATERIAL_ICONS } from '../src/module/used-icons'
 import packageJson from './../package.json'
 import { fileURLToPath } from 'node:url'
+import { removeSizes } from 'nuxt-svg-icon-sprite/processors'
 
 const playgroundFolder = fileURLToPath(new URL('./', import.meta.url))
+
+const additionalIcons = [
+  'bk_mdi_lightbulb',
+  'bk_mdi_power',
+  'bk_mdi_format_h2',
+  'bk_mdi_buttons_alt',
+]
 
 export default defineNuxtConfig({
   ssr: false,
@@ -138,6 +147,17 @@ export default defineNuxtConfig({
           './app/assets/icons/**/*.svg',
           './../src/runtime/icons/**/*.svg',
         ],
+        symbolFiles: [...USED_MATERIAL_ICONS, ...additionalIcons].reduce<
+          Record<string, string>
+        >((acc, name) => {
+          const path =
+            './../node_modules/@material-symbols/svg-600/rounded/' +
+            name.replace('bk_mdi_', '') +
+            '.svg'
+          acc[name] = path
+          return acc
+        }, {}),
+        processSpriteSymbol: [removeSizes()],
       },
     },
   },

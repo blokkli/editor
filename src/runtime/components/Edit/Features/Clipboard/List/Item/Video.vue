@@ -15,6 +15,7 @@
 import { computed } from '#imports'
 import type { ClipboardItemVideo } from '#blokkli/types'
 import { Icon } from '#blokkli/components'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 
 const props = defineProps<ClipboardItemVideo>()
 
@@ -26,7 +27,7 @@ const imgUrl = computed(() => {
   return null
 })
 
-const icon = computed<'tiktok' | 'youtube' | 'vimeo' | 'video-outline'>(() => {
+const icon = computed<BlokkliIcon>(() => {
   switch (props.videoService) {
     case 'youtube':
       return 'youtube'
@@ -38,7 +39,7 @@ const icon = computed<'tiktok' | 'youtube' | 'vimeo' | 'video-outline'>(() => {
       return 'tiktok'
   }
 
-  return 'video-outline'
+  return 'bk_mdi_video_camera_back'
 })
 
 const providerLabel = computed(() => {

@@ -13,7 +13,7 @@
       v-if="!resolved && resolveImplemeted"
       @click.capture.stop="$emit('resolve')"
     >
-      <Icon name="check" />
+      <Icon name="bk_mdi_check" />
       <span>{{ $t('commentsMarkAsResolved', 'Resolve') }}</span>
     </button>
   </div>

@@ -2,6 +2,27 @@ import { defineCodeTemplate } from '../defineTemplate'
 import { basename } from 'node:path'
 import { falsy, onlyUnique, toValidVariableName } from './../../../helpers'
 import { toImports, toObject } from '../helpers'
+import { USED_MATERIAL_ICONS } from './../../used-icons'
+
+const KEEP_ICONS = [
+  'window-minimize',
+  'window-maximize',
+  'dock-window',
+  'loader',
+  'star',
+  'unstar',
+  'logo',
+  'artboard',
+  'robot',
+  'youtube',
+  'vimeo',
+  'tiktok',
+  'duplicate',
+  'arrow-right-thin',
+  'spinner',
+  'reusable',
+  'reusable-detach',
+]
 
 export default defineCodeTemplate(
   'icons',
@@ -17,7 +38,11 @@ export default defineCodeTemplate(
     const featureIcons = [...ctx.features.files.values()].map(
       (v) => v.getDefinition()?.definition.icon,
     )
-    const definitionIcons = [...blockIcons, ...featureIcons]
+    const definitionIcons = [
+      ...blockIcons,
+      ...featureIcons,
+      ...USED_MATERIAL_ICONS,
+    ]
       .filter(falsy)
       .filter(onlyUnique)
 
@@ -45,13 +70,15 @@ ${toObject('icons', icons)}
 `
   },
   (ctx) => {
-    const allIconNames = [...ctx.icons.files.values()]
-      .map((file) => {
-        return basename(file.filePath, '.svg').toLowerCase()
-      })
-      .sort()
-      .map((name) => `"${name}"`)
-      .join('\n  | ')
+    const allIconNames =
+      [...ctx.icons.files.values()]
+        .map((file) => {
+          return basename(file.filePath, '.svg').toLowerCase()
+        })
+        .sort()
+        .filter((v) => v.includes('icon-blokkli') || KEEP_ICONS.includes(v))
+        .map((name) => `"${name}"`)
+        .join('\n  | ') || "'never'"
 
     return `
 import type { MaterialIconName } from '${ctx.helper.relativePaths.RUNTIME_ICONS}'
@@ -64,6 +91,6 @@ export declare const icons: Record<BlokkliIcon, string>
 `
   },
   {
-    dependencies: ['icons'],
+    dependencies: ['icons', 'block-content'],
   },
 )

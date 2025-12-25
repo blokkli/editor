@@ -82,7 +82,7 @@
             <Icon name="dock-window" />
           </button>
           <button @click.prevent.stop="toggleSidebar">
-            <Icon name="close" />
+            <Icon name="bk_mdi_close" />
           </button>
         </div>
       </div>

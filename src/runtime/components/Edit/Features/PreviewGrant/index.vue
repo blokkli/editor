@@ -12,7 +12,7 @@
       )
     "
     region="after-menu"
-    icon="qrcode"
+    icon="bk_mdi_qr_code"
     @click="qrCodeVisible = true"
   />
 
@@ -50,7 +50,7 @@ import { DialogModal, BlokkliTransition } from '#blokkli/components'
 const { adapter } = defineBlokkliFeature({
   id: 'preview-grant',
   label: 'Preview Grant',
-  icon: 'qrcode',
+  icon: 'bk_mdi_qr_code',
   description:
     'Provides a button to open a dialog with a QR code to preview the page on a smartphone.',
   requiredAdapterMethods: ['getPreviewGrantUrl'],

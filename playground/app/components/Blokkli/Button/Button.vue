@@ -69,6 +69,7 @@ const { options } = defineBlokkli({
   },
   editor: {
     addBehaviour: 'no-form',
+    icon: 'bk_mdi_buttons_alt',
     editTitle: (el) => el.querySelector('a')?.textContent,
   },
 })

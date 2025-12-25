@@ -28,7 +28,7 @@ import { useDialog } from '#blokkli/helpers/composables/useDialog'
 
 const { adapter } = defineBlokkliFeature({
   id: 'revert',
-  icon: 'revert',
+  icon: 'bk_mdi_replay',
   label: 'Revert',
   requiredAdapterMethods: ['revertAllChanges'],
   description:
@@ -57,7 +57,7 @@ defineMenuButton(() => {
       'revertMenuDescription',
       'Restore currently published state',
     ),
-    icon: 'revert',
+    icon: 'bk_mdi_replay',
     type: 'danger',
     disabled: !mutations.value.length || !canEdit.value,
     weight: 10,

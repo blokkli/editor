@@ -33,7 +33,7 @@
           <button
             @click.prevent="setMutationItemStatus(item.index, !item.enabled)"
           >
-            <Icon name="close" />
+            <Icon name="bk_mdi_close" />
           </button>
         </div>
       </li>

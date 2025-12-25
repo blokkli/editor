@@ -15,7 +15,7 @@
             <span>{{ getLabel(item.itemBundle) }}</span>
           </div>
           <button @click.prevent.stop.capture="$emit('remove', index)">
-            <Icon name="delete" />
+            <Icon name="bk_mdi_delete" />
           </button>
         </div>
         <div>
