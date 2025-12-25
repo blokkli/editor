@@ -221,8 +221,16 @@ function buildCrumbs(
   // Multiple blocks in the same field: show full parent chain + field + "n Items".
   if (multipleCount > 1 && commonFieldKey && selectedUuid && selectedBundle) {
     const blockCrumbs = getBlockCrumbs(selectedUuid, selectedBundle)
-    // Remove the last crumb (the block itself) and add "n Items".
+    // Remove the last crumb (the block itself).
     const parentChain = blockCrumbs.slice(0, -1)
+
+    // Check if all blocks in the field are selected.
+    const fieldBlockCount = state.getFieldBlockCount(commonFieldKey)
+    if (fieldBlockCount === multipleCount) {
+      // All blocks selected: just show the field as the last item.
+      return parentChain
+    }
+
     return [...parentChain, { type: 'multiple', count: multipleCount }]
   }
 
