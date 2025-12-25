@@ -52,13 +52,14 @@
         &.bk-is-field {
           @apply uppercase text-xs tracking-wide min-w-0;
           span {
-            @apply bg-mono-700 rounded-full px-[8px] pt-[4px] pb-2;
+            @apply bg-mono-800 rounded-md px-[8px] pt-[4px] pb-2;
             @apply text-mono-300;
+            @apply border border-mono-600;
           }
 
           &:hover {
             span {
-              @apply bg-mono-600 text-white;
+              @apply bg-mono-700 text-white border-mono-500;
             }
           }
         }

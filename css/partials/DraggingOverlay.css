@@ -89,18 +89,41 @@
 }
 
 .bk.bk-dragging-overlay-label {
-  @apply absolute bottom-full left-1/2 -translate-x-1/2 mb-40 rounded-full text-white;
-  @apply px-15 py-10 whitespace-nowrap;
+  @apply absolute bottom-full left-1/2 -translate-x-1/2 mb-40 rounded-lg text-white;
+  @apply p-8 whitespace-nowrap;
   @apply shadow;
-  @apply flex items-center gap-5 leading-none font-sans text-lg;
+  @apply flex items-center gap-5 font-sans text-base;
   will-change: transform, contents, opacity;
 
-  .bk-icon {
-    @apply w-15 h-15;
+  > p {
+    @apply inline-flex items-center gap-8;
   }
 
-  strong {
+  span.bk-is-block,
+  span.bk-is-host {
+    @apply font-medium;
+    @apply truncate min-w-0 max-w-70;
+
+    &:nth-last-child(2) {
+      @apply font-bold max-w-none;
+    }
+  }
+
+  span.bk-is-field {
+    @apply uppercase text-xs tracking-wide min-w-0;
+    @apply bg-white/10 rounded-md px-[8px] pt-[4px] pb-2;
+    @apply text-white;
+    @apply border border-white/40;
     @apply font-bold;
+
+    &:last-child {
+      @apply bg-white;
+      color: var(--bk-active-color);
+    }
+  }
+
+  .bk-icon {
+    @apply size-15;
   }
 
   svg {

@@ -101,8 +101,19 @@ defineEmits<{
   (e: 'drop', data: DropTargetEvent): void
 }>()
 
-const { dom, ui, theme, dropAreas, eventBus, animation, state, types, fields } =
-  useBlokkli()
+const {
+  dom,
+  ui,
+  theme,
+  dropAreas,
+  eventBus,
+  animation,
+  state,
+  types,
+  fields,
+  definitions,
+  context,
+} = useBlokkli()
 
 const areas = dropAreas
   .getDropAreas(props.items)
@@ -438,20 +449,121 @@ const buildChildren = (
 
 const fieldCache: Record<string, FieldRect> = {}
 
-function getBundleLabel(field: BlokkliFieldElement): string {
-  if (field.hostEntityType === itemEntityType) {
-    return (
-      types.getBlockBundleDefinition(field.hostEntityBundle)?.label ||
-      field.hostEntityBundle
-    )
+// Cache for field trail HTML strings.
+const fieldTrailCache: Record<string, string> = {}
+
+// Cache for parent block chains (array of HTML span strings).
+const parentChainCache: Record<string, string[]> = {}
+
+function getBlockLabel(bundle: string, props?: Record<string, any>): string {
+  // Fragment: Use fragment definition label.
+  if (bundle === 'blokkli_fragment' && props?.name) {
+    const fragmentDef = definitions.getFragmentDefinition(props.name)
+    if (fragmentDef?.label) {
+      return fragmentDef.label
+    }
   }
 
-  return state.entity.value.bundleLabel || field.hostEntityBundle
+  // Reusable block: Use library item label.
+  if (bundle === 'from_library' && props?.libraryItem?.label) {
+    return props.libraryItem.label
+  }
+
+  // Default: Use bundle definition label.
+  return types.getBlockBundleDefinition(bundle)?.label || bundle
+}
+
+function getFieldLabel(
+  entityType: string,
+  entityBundle: string,
+  fieldName: string,
+): string {
+  return (
+    types.getFieldConfig(entityType, entityBundle, fieldName)?.label ||
+    fieldName
+  )
+}
+
+function buildParentChain(uuid: string, bundle: string): string[] {
+  const cached = parentChainCache[uuid]
+  if (cached) {
+    return cached
+  }
+
+  const parts: string[] = []
+
+  // Get the field this block is in.
+  const fieldInfo = state.getFieldListForBlock(uuid)
+  if (!fieldInfo) {
+    return []
+  }
+
+  // Get parent's chain recursively.
+  const parentUuid = state.getParentEntityUuid(uuid)
+  const parentItem = parentUuid ? state.getFieldListItem(parentUuid) : null
+
+  if (parentItem) {
+    // Parent exists: get its full chain.
+    const parentChain = buildParentChain(parentItem.uuid, parentItem.bundle)
+    parts.push(...parentChain)
+  }
+
+  // Add the field this block is in.
+  const entityBundle = parentItem
+    ? parentItem.bundle
+    : context.value.entityBundle
+  const fieldLabel = getFieldLabel(
+    fieldInfo.entityType,
+    entityBundle,
+    fieldInfo.name,
+  )
+  parts.push(`<span class="bk-is-field">${fieldLabel}</span>`)
+
+  // Add this block.
+  const item = state.getFieldListItem(uuid)
+  const blockLabel = getBlockLabel(bundle, item?.props)
+  parts.push(`<span class="bk-is-block">${blockLabel}</span>`)
+
+  parentChainCache[uuid] = parts
+  return parts
 }
 
 function getInsertText(field: BlokkliFieldElement): string {
-  const bundleLabel = getBundleLabel(field)
-  return `${bundleLabel} » <strong>${field.label}</strong>`
+  const cached = fieldTrailCache[field.key]
+  if (cached) {
+    return cached
+  }
+
+  const parts: string[] = []
+
+  // Start with the host entity.
+  const hostLabel =
+    state.entity.value.bundleLabel || state.entity.value.label || 'Host'
+  parts.push(`<span class="bk-is-host">${hostLabel}</span>`)
+
+  // If this field is on a block (not the root entity), build the parent chain.
+  if (field.hostEntityType === itemEntityType) {
+    const parentUuid = field.hostEntityUuid
+    const parentItem = state.getFieldListItem(parentUuid)
+
+    if (parentItem) {
+      // Build the chain from root to parent block.
+      const parentChain = buildParentChain(parentUuid, parentItem.bundle)
+      parts.push(...parentChain)
+    }
+  }
+
+  // Add the current field.
+  const fieldLabel = getFieldLabel(
+    field.hostEntityType,
+    field.hostEntityBundle,
+    field.name,
+  )
+  parts.push(`<span class="bk-is-field">${fieldLabel}</span>`)
+
+  const result = parts.join(' » ')
+  fieldTrailCache[field.key] = result
+  return result
 }
 
 const buildEmptyChild = (
@@ -715,8 +827,8 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
 
 const fieldColors = computed(() => {
   return {
-    '0': theme.accent.value[900],
-    '1': theme.accent.value[400],
+    '0': theme.accent.value[950],
+    '1': theme.accent.value[500],
     '2': theme.accent.value[600],
     '3': theme.accent.value[500],
   }

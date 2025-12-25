@@ -11,7 +11,10 @@
     <div
       v-show="activeLabel"
       class="bk bk-dragging-overlay-label"
-      :style="{ backgroundColor: currentActiveColor }"
+      :style="{
+        backgroundColor: currentActiveColor,
+        '--bk-active-color': currentActiveColor,
+      }"
     >
       <Icon name="cursor-move" />
       <p v-html="currentActiveLabel" />
