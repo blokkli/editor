@@ -26,7 +26,7 @@ const isVisible = computed(
     !isLocked.value &&
     dom.isReady.value &&
     !selection.isMultiSelecting.value &&
-    !selection.editableActive.value &&
+    !selection.activeEditableLabel.value &&
     !selection.isDragging.value &&
     !ui.hasTransformOverlayOpen.value &&
     !ui.hasDialogOpen.value &&

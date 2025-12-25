@@ -134,7 +134,7 @@ onBlokkliEvent('editable:focus', (e) => {
   hasTransition.value = !selectedEditable.value
   selectedEditable.value = buildEditable(e.fieldName, e.uuid) || null
   if (selectedEditable.value) {
-    selection.editableActive.value = true
+    selection.activeEditableLabel.value = selectedEditable.value.config.label
   }
 })
 
@@ -171,7 +171,7 @@ defineCommands(() => {
   })
 })
 
-watch(selection.editableActive, (isActive) => {
+watch(selection.activeEditableLabel, (isActive) => {
   if (!isActive) {
     hasTransition.value = true
     selectedEditable.value = null
@@ -179,13 +179,13 @@ watch(selection.editableActive, (isActive) => {
 })
 
 watch(selectedEditable, (v) => {
-  if (!v && selection.editableActive.value) {
-    selection.editableActive.value = false
+  if (!v && selection.activeEditableLabel.value) {
+    selection.activeEditableLabel.value = null
   }
 })
 
 const close = () => {
   selectedEditable.value = null
-  selection.editableActive.value = false
+  selection.activeEditableLabel.value = null
 }
 </script>

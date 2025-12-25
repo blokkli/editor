@@ -359,7 +359,7 @@ function onPointerUp(e: PointerEvent) {
   if (keyboard.isPressingSpace.value) {
     return
   }
-  if (selection.editableActive.value) {
+  if (selection.activeEditableLabel.value) {
     eventBus.emit('window:clickAway')
     lastInteractedElement = null
     return

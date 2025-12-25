@@ -115,7 +115,7 @@ const hasAnythingSelected = computed(
 const isVisible = computed<boolean>(() => {
   return (
     !selection.isDragging.value &&
-    !selection.editableActive.value &&
+    !selection.activeEditableLabel.value &&
     !ui.isAnimating.value &&
     !ui.hasTransformOverlayOpen.value &&
     hasAnythingSelected.value &&

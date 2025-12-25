@@ -12,9 +12,9 @@
   </div>
   <div
     v-show="activeLabel"
+    ref="labelEl"
     class="bk bk-dragging-overlay-label"
     :style="styleLabel"
-    ref="labelEl"
   >
     <Icon name="cursor-move" />
     <p v-html="currentActiveLabel" />

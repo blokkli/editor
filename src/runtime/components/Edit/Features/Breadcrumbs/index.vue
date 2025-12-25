@@ -44,6 +44,11 @@
             <span>{{ crumb.label }}</span>
           </button>
         </li>
+        <li v-if="selection.activeEditableLabel.value">
+          <div class="bk-breadcrumb-inner bk-is-editable">
+            <span>{{ selection.activeEditableLabel.value }}</span>
+          </div>
+        </li>
       </ul>
     </div>
   </Teleport>
@@ -59,6 +64,7 @@ defineBlokkliFeature({
   label: 'Breadcrumbs',
   icon: 'baguette',
   description: 'Provides a breadcrumb of the selection.',
+  viewports: ['desktop'],
 })
 
 const { $t, ui, selection, state, types, definitions, eventBus, context } =

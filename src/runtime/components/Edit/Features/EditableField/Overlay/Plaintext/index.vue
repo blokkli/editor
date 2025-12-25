@@ -84,7 +84,7 @@ const onBlur = (e: FocusEvent) => {
   e.preventDefault()
 
   blurTimeout = setTimeout(() => {
-    if (!selection.editableActive.value) {
+    if (!selection.activeEditableLabel.value) {
       return
     }
     save()

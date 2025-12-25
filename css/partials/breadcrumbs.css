@@ -28,6 +28,12 @@
 
         .bk-breadcrumb-inner {
           @apply font-bold text-white;
+
+          &.bk-is-field {
+            span {
+              @apply bg-mono-600 text-white border-mono-200;
+            }
+          }
         }
       }
 
@@ -49,18 +55,33 @@
           @apply whitespace-nowrap overflow-hidden text-ellipsis;
         }
 
-        &.bk-is-field {
+        &.bk-is-field,
+        &.bk-is-editable {
           @apply uppercase text-xs tracking-wide min-w-0;
           span {
-            @apply bg-mono-800 rounded-md px-[8px] pt-[4px] pb-2;
-            @apply text-mono-300;
-            @apply border border-mono-600;
+            @apply rounded-md px-[8px] pt-[4px] pb-2;
+            @apply border;
           }
+        }
 
+        &.bk-is-field {
+          span {
+            @apply bg-mono-800;
+            @apply text-mono-300;
+            @apply border-mono-600;
+          }
           &:hover {
             span {
               @apply bg-mono-700 text-white border-mono-500;
             }
+          }
+        }
+
+        &.bk-is-editable {
+          span {
+            @apply bg-teal-normal;
+            @apply text-teal-dark;
+            @apply border-teal-normal;
           }
         }
 

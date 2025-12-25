@@ -70,9 +70,9 @@ export type SelectionProvider = {
   isMultiSelecting: Ref<boolean>
 
   /**
-   * Whether an editable field is currently being edited.
+   * The label of the active editable field.
    */
-  editableActive: Ref<boolean>
+  activeEditableLabel: Ref<string | null>
 
   /**
    * Whether the user is currently changing block options.
@@ -109,7 +109,7 @@ export default function (blocks: BlocksProvider): SelectionProvider {
   const selectedUuids = ref<string[]>([])
   const hasHostSelected = ref(false)
   const draggingMode = ref<InteractionMode | null>(null)
-  const editableActive = ref(false)
+  const activeEditableLabel = ref<string | null>(null)
   const isChangingOptions = ref(false)
   const isMultiSelecting = ref(false)
   const interactionMode = ref<InteractionMode>('mouse')
@@ -279,7 +279,7 @@ export default function (blocks: BlocksProvider): SelectionProvider {
     item,
     isDragging,
     isDraggingExisting,
-    editableActive,
+    activeEditableLabel,
     isChangingOptions,
     isMultiSelecting,
     draggingMode,
