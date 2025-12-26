@@ -9,7 +9,7 @@ import type {
   DraggableExistingBlock,
   EntityContext,
 } from '../../types'
-import type { AdapterContext, BlokkliAdapter } from '../../adapter'
+import type { AdapterContext, BlokkliAdapter } from '../adapter'
 import type { SelectionProvider } from './selection'
 import { computed } from '#imports'
 import { onlyUnique } from '../../helpers'

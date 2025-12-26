@@ -14,7 +14,7 @@ method should return the URL.
 import {
   defineBlokkliEditAdapter,
   type AdapterFormFrameBuilder,
-} from '#blokkli/adapter'
+} from '#blokkli/editor/adapter'
 
 export default defineBlokkliEditAdapter((ctx) => {
   return {

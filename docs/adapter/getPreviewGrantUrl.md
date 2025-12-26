@@ -15,7 +15,7 @@ The returned URL should be a fully valid URL starting with https://.
 ::: code-group
 
 ```typescript [~/app/blokkli.editAdapter.ts]
-import { defineBlokkliEditAdapter } from '#blokkli/adapter'
+import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
 
 export default defineBlokkliEditAdapter((ctx) => {
   return {

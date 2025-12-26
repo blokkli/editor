@@ -73,7 +73,7 @@ are all custom aliases mapped to their repository-relative paths:
 
 - `#blokkli-build` → `.nuxt/blokkli` - Generated build artifacts (types, runtime
   definitions)
-- `#blokkli/adapter` → `src/runtime/adapter` - Adapter interface and types
+- `#blokkli/editor/adapter` → `src/runtime/adapter` - Adapter interface and types
 - `#blokkli/analyzer` →
   `src/runtime/components/Edit/Features/Analyze/analyzers` - Content analyzer
   definitions

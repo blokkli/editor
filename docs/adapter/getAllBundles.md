@@ -9,7 +9,7 @@ It's expected to return an array of `BlockBundleDefinition` objects.
 ::: code-group
 
 ```typescript [~/app/blokkli.editAdapter.ts]
-import { defineBlokkliEditAdapter } from '#blokkli/adapter'
+import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
 import types { BlockBundleDefinition } from '#blokkli/types'
 
 const bundles: BlockBundleDefinition[] = [

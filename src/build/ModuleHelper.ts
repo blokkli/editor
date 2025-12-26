@@ -86,7 +86,7 @@ export class ModuleHelper {
       ),
       ADAPTER: relative(
         this.paths.blokkliBuildDir,
-        this.resolvers.module.resolve('./runtime/adapter/index.ts'),
+        this.resolvers.module.resolve('./runtime/editor/adapter/index.ts'),
       ),
       TYPES_THEME: relative(
         this.paths.blokkliBuildDir,

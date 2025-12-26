@@ -11,7 +11,7 @@ It's expected to return an array of `LibraryItem` objects.
 ::: code-group
 
 ```typescript [~/app/blokkli.editAdapter.ts]
-import { defineBlokkliEditAdapter } from '#blokkli/adapter'
+import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
 import type { LibraryItem } from '#blokkli/types'
 
 export default defineBlokkliEditAdapter((ctx) => {

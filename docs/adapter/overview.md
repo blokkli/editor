@@ -13,7 +13,7 @@ To define an adapter, create a new file in your app root:
 ::: code-group
 
 ```typescript [~/app/blokkli.editAdapter.ts]
-import { defineBlokkliEditAdapter } from '#blokkli/adapter'
+import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
 
 export default defineBlokkliEditAdapter((ctx) => {
   return {}
@@ -27,8 +27,8 @@ To extend an existing adapter you can do the following:
 ::: code-group
 
 ```typescript [~/app/blokkli.editAdapter.ts]
-import { defineBlokkliEditAdapter } from '#blokkli/adapter'
-import drupalGraphlMiddlewareAdapter from '#blokkli/adapter/drupal/graphqlMiddleware'
+import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
+import drupalGraphlMiddlewareAdapter from '#blokkli/editor/adapter/drupal/graphqlMiddleware'
 
 export default defineBlokkliEditAdapter((ctx) => {
   // Create instance of the base adapter.

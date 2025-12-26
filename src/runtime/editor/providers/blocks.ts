@@ -7,7 +7,7 @@ import type {
   BlockBundleWithNested,
   FieldListItemTyped,
 } from '#blokkli-build/generated-types'
-import type { AdapterContext } from '#blokkli/adapter'
+import type { AdapterContext } from '#blokkli/editor/adapter'
 import { type ComputedRef, ref } from '#imports'
 import type { BlokkliFragmentName } from '#blokkli-build/definitions'
 import { BUNDLE_BLOKKLI_FRAGMENT } from '../../../shared/constants'

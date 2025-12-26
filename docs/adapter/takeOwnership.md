@@ -17,7 +17,7 @@ The method should return the updated state where `currentUserIsOwner` is set to
 ::: code-group
 
 ```typescript [~/app/blokkli.editAdapter.ts]
-import { defineBlokkliEditAdapter } from '#blokkli/adapter'
+import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
 
 export default defineBlokkliEditAdapter((ctx) => {
   return {

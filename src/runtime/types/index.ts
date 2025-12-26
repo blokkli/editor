@@ -18,7 +18,7 @@ import type {
   BlokkliAdapter,
   AdapterContext,
   MutationResponseLike,
-} from './../adapter'
+} from '../editor/adapter'
 import type { BroadcastProvider } from '../editor/providers/broadcast'
 import type { FeaturesProvider } from '../editor/providers/features'
 import type { BlokkliIcon } from '#blokkli-build/icons'

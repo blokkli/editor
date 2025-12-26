@@ -34,9 +34,9 @@ import type {
   HostTransformPlugin,
   PluginConfigInputItem,
   PluginConfigInput,
-} from './../types'
+} from '../../types'
 import type getVideoId from 'get-video-id'
-import type { GetMediaLibraryFunction } from './../components/Edit/Features/MediaLibrary/types'
+import type { GetMediaLibraryFunction } from '../../components/Edit/Features/MediaLibrary/types'
 import type { Analyzer } from '#blokkli/analyzer/types'
 
 export type { GetMediaLibraryFunction }

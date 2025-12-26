@@ -34,7 +34,7 @@ The method is called when the user finished editing the field.
 ::: code-group
 
 ```typescript [~/app/blokkli.editAdapter.ts]
-import { defineBlokkliEditAdapter } from '#blokkli/adapter'
+import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
 import type { UpdateFieldValueEvent } from '#blokkli/types'
 
 export default defineBlokkliEditAdapter((ctx) => {

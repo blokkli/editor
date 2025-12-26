@@ -13,7 +13,7 @@ on "Generate".
 import {
   defineBlokkliEditAdapter,
   type AdapterAssistantGetResults,
-} from '#blokkli/adapter'
+} from '#blokkli/editor/adapter'
 
 export default defineBlokkliEditAdapter((ctx) => {
   return {

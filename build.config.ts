@@ -17,7 +17,7 @@ export default defineBuildConfig({
   ],
   externals: [
     '#imports',
-    '#blokkli/adapter',
+    '#blokkli/editor/adapter',
     '#blokkli/types',
     '#blokkli/icons',
     '#blokkli/constants',

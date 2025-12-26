@@ -22,7 +22,7 @@ the same bundle and field values to the host entity.
 ::: code-group
 
 ```typescript [~/app/blokkli.editAdapter.ts]
-import { defineBlokkliEditAdapter } from '#blokkli/adapter'
+import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
 import type { DetachReusableBlockEvent } from '#blokkli/types'
 
 export default defineBlokkliEditAdapter<YourStateType>((ctx) => {

@@ -130,7 +130,7 @@ and contain one of the defined option keys.
 import {
   defineBlokkliEditAdapter,
   type GetMediaLibraryFunction,
-} from '#blokkli/adapter'
+} from '#blokkli/editor/adapter'
 
 // This type takes a generic argument to define the available filters.
 const mediaLibraryGetResults: GetMediaLibraryFunction<{

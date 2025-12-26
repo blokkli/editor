@@ -12,7 +12,7 @@ The return value should be an array of `CommentItem` objects.
 ::: code-group
 
 ```typescript [~/app/blokkli.editAdapter.ts]
-import { defineBlokkliEditAdapter } from '#blokkli/adapter'
+import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
 import type { CommentItem } from '#blokkli/types'
 
 export default defineBlokkliEditAdapter<YourStateType>((ctx) => {

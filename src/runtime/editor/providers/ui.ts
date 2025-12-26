@@ -24,7 +24,7 @@ import {
   addElementClasses,
   defineElementStyle,
 } from '#blokkli/editor/composables'
-import type { AdapterContext } from '#blokkli/adapter'
+import type { AdapterContext } from '#blokkli/editor/adapter'
 import {
   defaultLanguage,
   forceDefaultLanguage,

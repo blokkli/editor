@@ -15,7 +15,7 @@ on "Generate".
 import {
   defineBlokkliEditAdapter,
   type AdapterAssistantAddBlockFromResult,
-} from '#blokkli/adapter'
+} from '#blokkli/editor/adapter'
 
 export default defineBlokkliEditAdapter((ctx) => {
   return {

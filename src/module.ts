@@ -184,7 +184,6 @@ export default defineNuxtModule<ModuleOptions>({
     )
 
     helper.addAlias('#blokkli/helpers', resolver.resolve('runtime/helpers'))
-    helper.addAlias('#blokkli/adapter', resolver.resolve('runtime/adapter'))
     helper.addAlias(
       '#blokkli/runtime-helpers',
       resolver.resolve('runtime/helpers/runtimeHelpers'),

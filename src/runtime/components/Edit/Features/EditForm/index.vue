@@ -17,7 +17,7 @@
 import { ref, computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import { FormOverlay, BlokkliTransition } from '#blokkli/components'
 import FormFrame from './Frame/index.vue'
-import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
+import type { AdapterFormFrameBuilder } from '#blokkli/editor/adapter'
 import type { EntityTranslation } from '#blokkli/types'
 import { itemEntityType } from '#blokkli-build/config'
 import type { BlockBundleWithNested } from '#blokkli-build/generated-types'

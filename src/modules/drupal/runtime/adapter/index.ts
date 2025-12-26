@@ -1,4 +1,7 @@
-import { defineBlokkliEditAdapter } from '#blokkli/adapter'
+import {
+  defineBlokkliEditAdapter,
+  type BlokkliAdapter,
+} from '#blokkli/editor/adapter'
 import { falsy } from '#blokkli/helpers'
 import { availableFeaturesAtBuild } from '#blokkli-build/features'
 import { operationSources } from '#nuxt-graphql-middleware/sources'
@@ -10,7 +13,6 @@ import type {
   TransformPlugin,
   TranslationState,
 } from '#blokkli/types'
-import type { BlokkliAdapter } from '#blokkli/adapter'
 import {
   useGraphqlQuery,
   useGraphqlMutation,

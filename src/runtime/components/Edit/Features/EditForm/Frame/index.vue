@@ -20,7 +20,7 @@ import {
   onMounted,
   useTemplateRef,
 } from '#imports'
-import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
+import type { AdapterFormFrameBuilder } from '#blokkli/editor/adapter'
 import { Loading, BlokkliTransition } from '#blokkli/components'
 
 const { eventBus } = useBlokkli()

@@ -61,7 +61,7 @@
 import type {
   BlokkliAdapterGetLibraryItemsData,
   BlokkliAdapterGetLibraryItemsResult,
-} from '#blokkli/adapter'
+} from '#blokkli/editor/adapter'
 import {
   FormOverlay,
   Pagination,

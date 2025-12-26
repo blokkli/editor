@@ -1,5 +1,5 @@
 import { type ComputedRef, computed } from 'vue'
-import type { AdapterContext } from '../../adapter'
+import type { AdapterContext } from '../adapter'
 import { translations } from '#blokkli-build/translations'
 import {
   defaultLanguage,

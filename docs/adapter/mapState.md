@@ -13,7 +13,7 @@ blökkli: [type.MappedState]
 ::: code-group
 
 ```typescript [~/app/blokkli.editAdapter.ts]
-import { defineBlokkliEditAdapter } from '#blokkli/adapter'
+import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
 import type { MappedState } from '#blokkli/types'
 
 type YourStateType = {

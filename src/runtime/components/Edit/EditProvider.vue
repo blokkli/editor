@@ -119,7 +119,7 @@ import {
   INJECT_ITEM_PROPS_OVERRIDE,
   INJECT_PROVIDER_KEY,
 } from '#blokkli/helpers/injections'
-import type { AdapterContext } from '#blokkli/adapter'
+import type { AdapterContext } from '#blokkli/editor/adapter'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { allComponents } from '#blokkli-build/chunk-editing'
 import { falsy } from '#blokkli/helpers'

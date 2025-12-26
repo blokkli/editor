@@ -10,7 +10,7 @@ different language via the language selector in the editor.
 ::: code-group
 
 ```typescript [~/app/blokkli.editAdapter.ts]
-import { defineBlokkliEditAdapter } from '#blokkli/adapter'
+import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
 import type { EntityTranslation } from '#blokkli/types'
 
 export default defineBlokkliEditAdapter((ctx) => {
@@ -30,7 +30,7 @@ export default defineBlokkliEditAdapter((ctx) => {
 ::: code-group
 
 ```typescript [~/app/blokkli.editAdapter.ts]
-import { defineBlokkliEditAdapter } from '#blokkli/adapter'
+import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
 import type { EntityTranslation } from '#blokkli/types'
 
 export default defineBlokkliEditAdapter((ctx) => {

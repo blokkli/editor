@@ -1,13 +1,13 @@
 import { useRouter, useRoute } from '#imports'
-import { defineBlokkliEditAdapter } from '#blokkli/adapter'
+import {
+  defineBlokkliEditAdapter,
+  type BlokkliAdapter,
+  type GetMediaLibraryFunction,
+  type MutationResponseLike,
+} from '#blokkli/editor/adapter'
 import { defineAnalyzer } from '#blokkli/analyzer'
 import accessibilityAnalyzer from '#blokkli/analyzer/axe'
 import readabilityAnalyzer from '#blokkli/analyzer/readability'
-import type {
-  BlokkliAdapter,
-  GetMediaLibraryFunction,
-  MutationResponseLike,
-} from '#blokkli/adapter'
 import { falsy } from '~~/helpers'
 import type {
   AssistantResultMarkup,

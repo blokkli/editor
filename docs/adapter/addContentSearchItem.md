@@ -11,7 +11,7 @@ returned by [getContentSearchResults](/adapter/getContentSearchResults).
 ::: code-group
 
 ```typescript [~/app/blokkli.editAdapter.ts]
-import { defineBlokkliEditAdapter } from '#blokkli/adapter'
+import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
 import type {
   AddContentSearchItemEvent,
   SearchContentItem,

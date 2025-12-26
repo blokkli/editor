@@ -68,7 +68,7 @@ import {
   FormCheckboxes,
 } from '#blokkli/components'
 import type { ImportItem, PluginConfigInput } from '#blokkli/types'
-import type { AdapterSearchArguments } from '#blokkli/adapter'
+import type { AdapterSearchArguments } from '#blokkli/editor/adapter'
 
 const { adapter, $t, types, context } = useBlokkli()
 

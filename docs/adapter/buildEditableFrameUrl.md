@@ -39,7 +39,7 @@ iframe. The page that is rendered should only display the rich text editor.
 import {
   defineBlokkliEditAdapter,
   type AdapterBuildEditableFrameUrl,
-} from '#blokkli/adapter'
+} from '#blokkli/editor/adapter'
 
 export default defineBlokkliEditAdapter((ctx) => {
   return {

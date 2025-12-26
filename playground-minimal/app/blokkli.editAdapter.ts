@@ -1,4 +1,4 @@
-import { defineBlokkliEditAdapter } from '#blokkli/adapter'
+import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
 import type { FieldListItem } from '#blokkli/types'
 import { getBlocks } from './../helpers/minimalState'
 

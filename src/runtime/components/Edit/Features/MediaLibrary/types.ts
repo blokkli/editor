@@ -1,5 +1,5 @@
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import type { AdapterSearchArguments } from '#blokkli/adapter'
+import type { AdapterSearchArguments } from '#blokkli/editor/adapter'
 import type { PluginConfigInput } from '#blokkli/types'
 
 export type MediaLibraryItem = {

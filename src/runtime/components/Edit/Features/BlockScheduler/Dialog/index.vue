@@ -67,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import type { BlokkliAdapterSetBlockScheduleOptions } from '#blokkli/adapter'
+import type { BlokkliAdapterSetBlockScheduleOptions } from '#blokkli/editor/adapter'
 import { falsy } from '#blokkli/helpers'
 import { computed, useBlokkli, ref, watch } from '#imports'
 import ScheduleSection from './ScheduleSection.vue'
