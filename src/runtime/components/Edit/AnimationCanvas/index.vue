@@ -23,8 +23,10 @@ import {
 import {
   MOUSE_BUTTON,
   MOUSE_BUTTONS,
-  type CursorKeyword,
-} from '#blokkli/helpers/dom'
+} from '#blokkli/editor/helpers/dom'
+import type {
+  CursorKeyword,
+} from '#blokkli/editor/types'
 import type {
   Rectangle,
   Coord,

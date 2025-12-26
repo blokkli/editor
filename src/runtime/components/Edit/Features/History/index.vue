@@ -53,7 +53,7 @@ import {
 } from '#imports'
 import { PluginSidebar, PluginToolbarButton } from '#blokkli/editor/plugins'
 import HistoryList from './List/index.vue'
-import { MOUSE_BUTTON } from '#blokkli/helpers/dom'
+import { MOUSE_BUTTON } from '#blokkli/editor/helpers/dom'
 
 const { adapter, settings } = defineBlokkliFeature({
   id: 'history',
