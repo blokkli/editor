@@ -1,6 +1,6 @@
 import { defineCodeTemplate } from '../defineTemplate'
 import { basename } from 'node:path'
-import { falsy, onlyUnique, toValidVariableName } from './../../../helpers'
+import { falsy, onlyUnique, toValidVariableName } from '../../helpers'
 import { toImports, toObject } from '../helpers'
 import { USED_MATERIAL_ICONS } from './../../used-icons'
 

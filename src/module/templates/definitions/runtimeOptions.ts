@@ -1,6 +1,6 @@
 import { defineCodeTemplate } from '../defineTemplate'
 import { isBlock } from '../../Collector/Blocks'
-import { falsy } from '../../../helpers'
+import { falsy } from '../../helpers'
 import type { ExtractedBlockDefinitionInput } from '../../types'
 import { toObject } from '../helpers'
 

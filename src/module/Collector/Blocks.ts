@@ -13,7 +13,7 @@ import {
   extractObjectLiteral,
   parseTsObject,
   toValidVariableName,
-} from '../../helpers'
+} from '../helpers'
 import { hash } from 'ohash'
 import type { ProviderDefinitionInput } from '#blokkli/types'
 import { logger } from '../logger'

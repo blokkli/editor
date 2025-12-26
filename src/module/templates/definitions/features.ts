@@ -1,4 +1,4 @@
-import { toValidVariableName } from './../../../helpers'
+import { toValidVariableName } from '../../helpers'
 import { defineCodeTemplate } from '../defineTemplate'
 import { toImports, toObject } from '../helpers'
 

@@ -8,7 +8,7 @@ import {
   createResolver,
 } from '@nuxt/kit'
 import { FileCache } from './FileCache'
-import { onlyUnique } from '../helpers'
+import { onlyUnique } from './helpers'
 
 type ModuleHelperResolvers = {
   /**

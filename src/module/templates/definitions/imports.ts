@@ -1,5 +1,5 @@
 import { defineCodeTemplate } from '../defineTemplate'
-import { falsy } from '../../../helpers'
+import { falsy } from '../../helpers'
 
 export default defineCodeTemplate(
   'imports',
