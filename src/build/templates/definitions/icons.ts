@@ -71,7 +71,7 @@ ${toObject('icons', icons)}
         .join('\n  | ') || "'never'"
 
     return `
-import type { MaterialIconName } from '${ctx.helper.relativePaths.RUNTIME_ICONS}'
+import type { MaterialIconName } from '${ctx.helper.relativePaths.RUNTIME_MATERIAL_ICONS}'
 
 type ProvidedIconName =
   | ${allIconNames}

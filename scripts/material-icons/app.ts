@@ -13,18 +13,12 @@ const RUNTIME_PATH = path.resolve(__dirname, '../../src/runtime')
 
 const TYPES_OUTPUT_PATH = path.resolve(
   __dirname,
-  '../../src/runtime/material-icons/index.ts',
+  '../../src/runtime/editor/icons/material-icons.ts',
 )
 
 const USED_ICONS_OUTPUT_PATH = path.resolve(
   __dirname,
   '../../src/build/used-icons.ts',
-)
-
-// File to exclude from scanning (the generated types file itself).
-const EXCLUDE_FILE = path.resolve(
-  __dirname,
-  '../../src/runtime/material-icons/index.ts',
 )
 
 function getIconNames(): string[] {
@@ -45,7 +39,7 @@ async function findUsedIcons(): Promise<string[]> {
 
   for (const file of files) {
     // Skip the generated types file.
-    if (path.resolve(file) === EXCLUDE_FILE) {
+    if (path.resolve(file) === TYPES_OUTPUT_PATH) {
       continue
     }
 

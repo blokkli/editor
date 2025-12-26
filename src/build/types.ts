@@ -18,7 +18,7 @@ export type GetBundlePropsType = (
 
 export type BuildRelativeImports = {
   TYPES: string
-  RUNTIME_ICONS: string
+  RUNTIME_MATERIAL_ICONS: string
   CONSTANTS: string
   ADAPTER: string
   TYPES_THEME: string
