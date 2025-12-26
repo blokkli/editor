@@ -10,7 +10,9 @@ export class IconCollector extends Collector {
 
   constructor(helper: ModuleHelper) {
     super(helper)
-    this.srcFromModule = helper.resolvers.module.resolve('./runtime/editor/icons/svg')
+    this.srcFromModule = helper.resolvers.module.resolve(
+      './runtime/editor/icons/svg',
+    )
   }
 
   override async init() {

@@ -34,7 +34,7 @@ import {
   type MediaVideo,
 } from './mock/state/Media/Media'
 import { transforms } from './mock/transforms'
-import type { MediaLibraryItem } from '#blokkli/editor/features/MediaLibrary/types'
+import type { MediaLibraryItem } from '#blokkli/editor/features/media-library/types'
 import type { MutationArgsMap } from './mock/plugins/mutations'
 import { FieldText } from './mock/state/Field/Text'
 import { FieldTextarea } from './mock/state/Field/Textarea'

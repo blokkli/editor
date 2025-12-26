@@ -78,7 +78,9 @@ export class ModuleHelper {
       ),
       RUNTIME_MATERIAL_ICONS: relative(
         this.paths.blokkliBuildDir,
-        this.resolvers.module.resolve('./runtime/editor/icons/material-icons.ts'),
+        this.resolvers.module.resolve(
+          './runtime/editor/icons/material-icons.ts',
+        ),
       ),
       CONSTANTS: relative(
         this.paths.blokkliBuildDir,

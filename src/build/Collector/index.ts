@@ -182,7 +182,9 @@ export abstract class Collector<T extends CollectedFile = CollectedFile> {
         `  ${filePath}:`,
         ...issues.map((e) => `    - ${e.message}`),
       ])
-      this.helper.logger.warn(`blökkli validation warnings:\n${lines.join('\n')}`)
+      this.helper.logger.warn(
+        `blökkli validation warnings:\n${lines.join('\n')}`,
+      )
     }
 
     // Log errors
@@ -191,7 +193,9 @@ export abstract class Collector<T extends CollectedFile = CollectedFile> {
         `  ${filePath}:`,
         ...issues.map((e) => `    - ${e.message}`),
       ])
-      this.helper.logger.error(`blökkli validation errors:\n${lines.join('\n')}`)
+      this.helper.logger.error(
+        `blökkli validation errors:\n${lines.join('\n')}`,
+      )
       return true
     }
 

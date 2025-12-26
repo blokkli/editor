@@ -835,7 +835,9 @@ export class BlockCollector extends Collector<CollectedBlockFile> {
         `  Bundle "${conflict.bundle}", variation "${conflict.variation}":`,
         ...conflict.filePaths.map((fp) => `    - ${fp}`),
       ])
-      this.helper.logger.error(`blökkli duplicate renderFor entries:\n${lines.join('\n')}`)
+      this.helper.logger.error(
+        `blökkli duplicate renderFor entries:\n${lines.join('\n')}`,
+      )
       hasCollectorErrors = true
     }
 

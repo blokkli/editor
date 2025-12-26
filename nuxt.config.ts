@@ -64,6 +64,11 @@ fragment blokkliParagraphsType on ParagraphsType {
       exclude: ['../playground', '../playground-minimal', '../dist'],
       include: [
         '../src/runtime/components/**/*',
+        '../src/runtime/composables/**/*',
+        '../src/runtime/editor/**/*',
+        '../src/runtime/helpers/**/*',
+        '../src/runtime/plugins/**/*',
+        '../src/runtime/types/**/*',
         '../src/modules/drupal/runtime/**/*',
       ],
     },

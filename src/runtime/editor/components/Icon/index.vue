@@ -10,10 +10,10 @@ const props = defineProps<{
   name: BlokkliIcon
 }>()
 
-const { icons } = useBlokkli()
+const app = useBlokkli(true)
 
 const markup = computed<string>(() =>
-  (icons.icons.value[props.name] ?? '')
+  (app?.icons.icons.value[props.name] ?? '')
     .replace('width="48"', '')
     .replace('height="48"', ''),
 )

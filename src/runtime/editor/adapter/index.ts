@@ -36,7 +36,7 @@ import type {
   PluginConfigInput,
 } from '../../types'
 import type getVideoId from 'get-video-id'
-import type { GetMediaLibraryFunction } from './../features/MediaLibrary/types'
+import type { GetMediaLibraryFunction } from './../features/media-library/types'
 import type { Analyzer } from '#blokkli/analyzer/types'
 
 export type { GetMediaLibraryFunction }

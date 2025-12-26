@@ -172,7 +172,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     helper.addAlias(
       '#blokkli/analyzer',
-      resolver.resolve('runtime/editor/features/Analyze/analyzers'),
+      resolver.resolve('runtime/editor/features/analyze/analyzers'),
     )
     helper.addAlias('#blokkli-build', helper.paths.blokkliBuildDir)
     helper.addAlias('#blokkli/types', resolver.resolve('runtime/types'))
