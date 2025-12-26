@@ -47,7 +47,7 @@ import type {
 } from '#blokkli/types'
 import { renderCycle } from '#blokkli/editor/helpers/vue'
 import { getFieldKey } from '#blokkli/helpers'
-import { isInternalBundle } from '#blokkli/helpers/bundles'
+import { isInternalBundle } from '#blokkli/editor/helpers/bundles'
 import Renderer from './Renderer/index.vue'
 import { itemEntityType } from '#blokkli-build/config'
 import { onBlokkliEvent } from '#blokkli/editor/composables'

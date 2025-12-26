@@ -39,7 +39,7 @@ import type {
   FieldConfig,
   RenderedFieldListItem,
 } from '#blokkli/types'
-import { isInternalBundle } from '#blokkli/helpers/bundles'
+import { isInternalBundle } from '#blokkli/editor/helpers/bundles'
 import { PluginTourItem } from '#blokkli/editor/plugins'
 import { getFieldKey } from '#blokkli/helpers'
 import { itemEntityType } from '#blokkli-build/config'

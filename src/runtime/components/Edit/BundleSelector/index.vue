@@ -63,7 +63,7 @@
 <script setup lang="ts">
 import { useTemplateRef, useBlokkli, computed, ref, watch } from '#imports'
 import { ArtboardTooltip, AddListItem, Icon } from '#blokkli/components'
-import { isInternalBundle } from '#blokkli/helpers/bundles'
+import { isInternalBundle } from '#blokkli/editor/helpers/bundles'
 import type { AddAction, Coord } from '#blokkli/types'
 import type { AddListItemProps } from '#blokkli/components/AddListItem/index.vue'
 
