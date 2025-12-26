@@ -61,7 +61,7 @@ import type { ActionPlacedData, LibraryEditItemEvent } from '#blokkli/types'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import defineAddAction from '#blokkli/helpers/composables/defineAddAction'
 import { useDialog } from '#blokkli/helpers/composables/useDialog'
-import { BUNDLE_FROM_LIBRARY } from '#blokkli/constants'
+import { BUNDLE_FROM_LIBRARY } from '../../../../../shared/constants'
 
 const { adapter } = defineBlokkliFeature({
   id: 'library',

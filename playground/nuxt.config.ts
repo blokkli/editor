@@ -1,4 +1,4 @@
-import { USED_MATERIAL_ICONS } from '../src/module/used-icons'
+import { USED_MATERIAL_ICONS } from '../src/build/used-icons'
 import packageJson from './../package.json'
 import { fileURLToPath } from 'node:url'
 import { removeSizes } from 'nuxt-svg-icon-sprite/processors'

@@ -18,7 +18,7 @@ const TYPES_OUTPUT_PATH = path.resolve(
 
 const USED_ICONS_OUTPUT_PATH = path.resolve(
   __dirname,
-  '../../src/module/used-icons.ts',
+  '../../src/build/used-icons.ts',
 )
 
 // File to exclude from scanning (the generated types file itself).

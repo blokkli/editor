@@ -10,7 +10,7 @@ import type {
 import type { AdapterContext } from '#blokkli/adapter'
 import { type ComputedRef, ref } from '#imports'
 import type { BlokkliFragmentName } from '#blokkli-build/definitions'
-import { BUNDLE_BLOKKLI_FRAGMENT } from '#blokkli/constants'
+import { BUNDLE_BLOKKLI_FRAGMENT } from '../../../shared/constants'
 
 export type BlocksProvider = {
   /**

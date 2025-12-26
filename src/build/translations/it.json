@@ -1,375 +1,375 @@
 {
   "actionsDropdownToolip": {
     "source": "Further actions",
-    "translation": "Weitere Aktionen"
+    "translation": "Altre azioni"
   },
   "addBlockCommand.appendInField": {
     "source": "Append \"@block\" in \"@field\"",
-    "translation": "«@block» in «@field» anfügen"
+    "translation": "Aggiungi «@block» in «@field»"
   },
   "addBlockCommand.appendRoot": {
     "source": "Append \"@block\"",
-    "translation": "«@block» anfügen"
+    "translation": "Aggiungi «@block»"
   },
   "addBlockCommand.insertInField": {
     "source": "Insert \"@block\" into \"@field\"",
-    "translation": "«@block» in «@field» einfügen"
+    "translation": "Inserisci «@block» in «@field»"
   },
   "addButtonAfterBundle": {
     "source": "Add after...",
-    "translation": "Danach hinzufügen..."
+    "translation": "Aggiungi dopo..."
   },
   "addButtonBeforeBundle": {
     "source": "Add before...",
-    "translation": "Vorher hinzufügen..."
+    "translation": "Aggiungi prima..."
   },
   "addButtonBundleAfter": {
     "source": "Add \"@bundle\" after",
-    "translation": "«@bundle» danach hinzufügen"
+    "translation": "Aggiungi «@bundle» dopo"
   },
   "addButtonBundleBefore": {
     "source": "Add \"@bundle\" before",
-    "translation": "«@bundle» Vorher hinzufügen"
+    "translation": "Aggiungi «@bundle» prima"
   },
   "addButtonBundleInsideField": {
     "source": "Add \"@bundle\" inside @parentBundle » @fieldLabel",
-    "translation": "«@bundle» in @parentBundle » @fieldLabel hinzufügen"
+    "translation": "Aggiungi «@bundle» in @parentBundle » @fieldLabel"
   },
   "addButtonInsideField": {
     "source": "Add inside @parentBundle » @fieldLabel...",
-    "translation": "In @parentBundle » @fieldLabel hinzufügen..."
+    "translation": "Aggiungi in @parentBundle » @fieldLabel..."
   },
   "addCommentHeader": {
     "source": "Add Comment",
-    "translation": "Kommentar hinzufügen"
+    "translation": ""
   },
   "addCommentToItem": {
     "source": "Add Comment...",
-    "translation": "Kommentar hinzufügen..."
+    "translation": "Commenta"
   },
   "addListItemFavoriteAdd": {
     "source": "Add to favorites",
-    "translation": "Zu Favoriten hinzufügen"
+    "translation": "Aggiungi ai preferiti"
   },
   "addListItemFavoriteRemove": {
     "source": "Remove from favorites",
-    "translation": "Aus Favoriten entfernen"
+    "translation": "Rimuovi dai preferiti"
   },
   "addListSidebarTitle": {
     "source": "Add blocks",
-    "translation": "Block hinzufügen"
+    "translation": "Aggiungi blocchi"
   },
   "addListTourText": {
     "source": "<p>This shows the list of available blocks that can be placed. Add a block by dragging the icon into the page.</p><p>When an existing block is selected, some blocks may be greyed out. This indicates which blocks can be placed inside or after the selected block.</p>",
-    "translation": "<p>Hier sehen Sie die Liste der verfügbaren Blöcke. Ziehen Sie einen Block auf die Seite um ihn hinzuzufügen.</p><p>Wenn ein bestehender Block ausgewählt ist sind möglicherweise einige Blöcke ausgegraut. Das bedeutet, dass nur die hervorgehobenen Blöcke im oder nach dem ausgewählten Block hinzugefügt werden können.</p>"
+    "translation": ""
   },
   "all": {
     "source": "All",
-    "translation": "Alle"
+    "translation": ""
   },
   "analyzeButtonLabel": {
     "source": "Analyze Page",
-    "translation": "Seite analysieren"
+    "translation": ""
   },
   "analyzeCategory": {
     "source": "Category",
-    "translation": "Kategorie"
+    "translation": ""
   },
   "analyzeCategoryAccessibility": {
     "source": "Accessibility",
-    "translation": "Barrierefreiheit"
+    "translation": ""
   },
   "analyzeCategoryContent": {
     "source": "Content",
-    "translation": "Inhalt"
+    "translation": ""
   },
   "analyzeCategorySeo": {
     "source": "SEO",
-    "translation": "SEO"
+    "translation": ""
   },
   "analyzeCategoryText": {
     "source": "Text",
-    "translation": "Texte"
+    "translation": ""
   },
   "analyzeClickButton": {
     "source": "Click the button above to run the analysis.",
-    "translation": "Klicken Sie auf den Button oben um die Analyse auszuführen."
+    "translation": ""
   },
   "analyzeLastRun": {
     "source": "Last run: @time",
-    "translation": "Zuletzt ausgeführt: @time"
+    "translation": ""
   },
   "analyzeMoreLink": {
     "source": "More",
-    "translation": "Mehr"
+    "translation": ""
   },
   "analyzeNotAvailableInStructureView": {
     "source": "Analyze is not available in structure view.",
-    "translation": "«Analysieren» ist in der strukturierten Vorschau nicht verfügbar."
+    "translation": ""
   },
   "analyzeResultsOutdated": {
     "source": "Results are outdated. Click the button to update.",
-    "translation": "Resultate sind veraltet. Klicken Sie auf den Button um zu aktualisieren."
+    "translation": ""
   },
   "analyzeSidebarTitle": {
     "source": "Analyze",
-    "translation": "Analysieren"
+    "translation": ""
   },
   "analyzeStatusInapplicable": {
     "source": "Inapplicable",
-    "translation": "Nicht anwendbar"
+    "translation": ""
   },
   "analyzeStatusIncomplete": {
     "source": "Incomplete",
-    "translation": "Unvollständig"
+    "translation": ""
   },
   "analyzeStatusPass": {
     "source": "Pass",
-    "translation": "Bestanden"
+    "translation": ""
   },
   "analyzeStatusStale": {
     "source": "Stale",
-    "translation": "Veraltet"
+    "translation": ""
   },
   "analyzeStatusUpToDate": {
     "source": "Up-to-date",
-    "translation": "Aktuell"
+    "translation": ""
   },
   "analyzeStatusViolation": {
     "source": "Violation",
-    "translation": "Fehler"
+    "translation": ""
   },
   "analyzeTourText": {
     "source": "Analyze the content of your page",
-    "translation": "Inhalte auf dieser Seite analysieren."
+    "translation": ""
   },
   "analyzerReadabiliyAverageSentenceLength": {
     "source": "Average sentence length @length → split sentences.",
-    "translation": "Durchschnittliche Satzlänge: @length. In einzelne Sätze aufteilen."
+    "translation": ""
   },
   "analyzerReadabiliyDescription": {
     "source": "Avoid texts that are hard to read.",
-    "translation": "Vermeiden Sie Texte die schwer lesbar sind."
+    "translation": ""
   },
   "analyzerReadabiliyHardToRead": {
     "source": "Hard to read (@lang).",
-    "translation": "Schwierig zu lesen (@lang)."
+    "translation": ""
   },
   "analyzerReadabiliyShorterSentences": {
     "source": "Consider shorter sentences and simpler wording.",
-    "translation": "Verwenden Sie kürzere Sätze und einfachere Formulierungen."
+    "translation": ""
   },
   "analyzerReadabiliyTitle": {
     "source": "Text readability issues",
-    "translation": "Probleme bei Lesbarkeit"
+    "translation": ""
   },
   "anchorHide": {
     "source": "Hide anchor links",
-    "translation": "Anker-Links verstecken"
+    "translation": ""
   },
   "anchorShow": {
     "source": "Show anchor links",
-    "translation": "Anker-Links anzeigen"
+    "translation": ""
   },
   "anchorToggle": {
     "source": "Toggle anchor links",
-    "translation": "Anzeige von Anker-Links umschalten"
+    "translation": ""
   },
   "artboard": {
     "source": "Artboard",
-    "translation": "Vorschau"
+    "translation": ""
   },
   "artboardOverviewHide": {
     "source": "Hide overview",
-    "translation": "Übersicht verstecken"
+    "translation": ""
   },
   "artboardOverviewShow": {
     "source": "Show overview",
-    "translation": "Übersicht anzeigen"
+    "translation": ""
   },
   "artboardOverviewToggle": {
     "source": "Toggle overview",
-    "translation": "Übersicht umschalten"
+    "translation": ""
   },
   "artboardOverviewTourText": {
     "source": "Displays a top level overview of your content.",
-    "translation": "Zeigt eine schematische Übersicht aller Inhalte an."
+    "translation": ""
   },
   "artboardResetZoom": {
     "source": "Reset zoom",
-    "translation": "Zoom zurücksetzen"
+    "translation": ""
   },
   "artboardScaleToFit": {
     "source": "Scale to fit",
-    "translation": "An Höhe anpassen"
+    "translation": ""
   },
   "artboardScrollDown": {
     "source": "Scroll down",
-    "translation": "runterscrollen"
+    "translation": ""
   },
   "artboardScrollOnePageDown": {
     "source": "Scroll one page down",
-    "translation": "Eine Seite hochscrollen"
+    "translation": ""
   },
   "artboardScrollOnePageUp": {
     "source": "Scroll one page up",
-    "translation": "Eine Seite runterscrollen"
+    "translation": ""
   },
   "artboardScrollToEnd": {
     "source": "Scroll to end",
-    "translation": "Zum Ende scrollen"
+    "translation": ""
   },
   "artboardScrollToTop": {
     "source": "Scroll to top",
-    "translation": "Zum Anfang scrollen"
+    "translation": ""
   },
   "artboardScrollUp": {
     "source": "Scroll up",
-    "translation": "hochscrollen"
+    "translation": ""
   },
   "artboardToolbarButtonTourText": {
     "source": "Shows the current zoom factor. Click on it to reset the zoom back to 100%.",
-    "translation": "Zeigt den aktuellen Zoom-Wert. Klicken Sie auf den Button um den Zoom auf 100% zurückzusetzen."
+    "translation": ""
   },
   "assistantAddAction": {
     "source": "Add with AI Assistant",
-    "translation": "Mit KI-Assistent hinzufügen"
+    "translation": ""
   },
   "assistantAddActionDescription": {
     "source": "Add content using an AI assistant.",
-    "translation": "Fügen Sie Inhalte mit dem KI-Assistenten hinzu."
+    "translation": ""
   },
   "assistantAddResultError": {
     "source": "Failed to add block from assistant.",
-    "translation": "Fehler beim hinzufügen mit KI."
+    "translation": ""
   },
   "assistantDialogLead": {
     "source": "Please enter what you'd like the assistant to generate.",
-    "translation": "Geben Sie ein was der KI-Assistent generieren soll."
+    "translation": ""
   },
   "assistantDialogSubmit": {
     "source": "Create blocks",
-    "translation": "Blöcke erstellen"
+    "translation": ""
   },
   "assistantDialogTitle": {
     "source": "Generate content with AI assistant",
-    "translation": "Inhalt mit KI generieren"
+    "translation": ""
   },
   "assistantPromptLabel": {
     "source": "Prompt",
-    "translation": "Anweisung"
+    "translation": ""
   },
   "assistantPromptPlaceholder": {
     "source": "Generate content for a page about how taxes work in Switzerland",
-    "translation": "Schreibe Text zum Thema Steuern in der Schweiz"
+    "translation": ""
   },
   "blockAddListTourText": {
     "source": "Right-click on a block to add or remove them from your favorites. Favorites are highlighted and always displayed at the top of the list.",
-    "translation": "Klicken Sie mit der rechten Maustaste auf den Block um ihn zu den Favoriten hinzuzufügen oder zu entfernen. Favoriten werden hervorgehoben und an erster Stelle dargestellt."
+    "translation": ""
   },
   "blockAddListTourTitle": {
     "source": "Favorite blocks",
-    "translation": "Favoriten-Blöcke"
+    "translation": ""
   },
   "blockNotImplemented": {
     "source": "Missing component for block bundle <strong>@bundle</strong>.",
-    "translation": "Keine Komponente für Block-Typ <strong>@bundle</strong> gefunden."
+    "translation": ""
   },
   "blockOption_bkHiddenGlobally_description": {
     "source": "Always hides the block.",
-    "translation": "Den Block immer verstecken."
+    "translation": ""
   },
   "blockOption_bkHiddenGlobally_label": {
     "source": "Hide globally",
-    "translation": "Global verstecken"
+    "translation": ""
   },
   "blockOption_bkVisibleLanguages_description": {
     "source": "Only show on specific languages.",
-    "translation": "Nur auf bestimmten Sprachen anzeigen."
+    "translation": ""
   },
   "blockOption_bkVisibleLanguages_label": {
     "source": "Visible languages",
-    "translation": "Sichtbare Sprachen"
+    "translation": ""
   },
   "blockSchedulerChangesPreview": {
     "source": "Changes to be applied",
-    "translation": "Anzuwendende Änderungen"
+    "translation": ""
   },
   "blockSchedulerDialogLead": {
     "source": "Schedule automatic publishing and unpublishing dates for the selected blocks.",
-    "translation": "Planen Sie automatische Veröffentlichungs- und Depublikationsdaten für die ausgewählten Blöcke."
+    "translation": ""
   },
   "blockSchedulerDialogPublishOn": {
     "source": "Publish on",
-    "translation": "Veröffentlichen am"
+    "translation": ""
   },
   "blockSchedulerDialogSubmit": {
     "source": "Save schedule",
-    "translation": "Planung speichern"
+    "translation": ""
   },
   "blockSchedulerDialogTitle": {
     "source": "Manage scheduling",
-    "translation": "Planung verwalten"
+    "translation": ""
   },
   "blockSchedulerDialogUnpublishOn": {
     "source": "Unpublish on",
-    "translation": "Depublizieren am"
+    "translation": ""
   },
   "blockSchedulerMixedDates": {
     "source": "Selected blocks have different dates: @dates",
-    "translation": "Ausgewählte Blöcke haben unterschiedliche Daten: @dates"
+    "translation": ""
   },
   "blockSchedulerNoChanges": {
     "source": "No changes to be applied.",
-    "translation": "Keine Änderungen vorhanden."
+    "translation": ""
   },
   "blockSchedulerOverride": {
     "source": "Set date for all",
-    "translation": "Datum für alle setzen"
+    "translation": ""
   },
   "blockSchedulerSuccessMessage": {
     "source": "Successfully updated schedule dates.",
-    "translation": "Planungsdaten erfolgreich aktualisiert."
+    "translation": ""
   },
   "bundle": {
     "source": "Bundle",
-    "translation": "Typ"
+    "translation": ""
   },
   "cancelSelection": {
     "source": "Cancel selection",
-    "translation": "Auswahl abbrechen"
+    "translation": ""
   },
   "clipboard": {
     "source": "Clipboard",
-    "translation": "Zwischenablage"
+    "translation": "Appunti"
   },
   "clipboardCopyShortcutHelp": {
     "source": "Copy selected blocks",
-    "translation": "Ausgewählte Blöcke kopieren"
+    "translation": ""
   },
   "clipboardEmpty": {
     "source": "No items in the clipboard",
-    "translation": "Keine Elemente in der Zwischenablage"
+    "translation": "Nessun elemento negli appunti"
   },
   "clipboardExplanation": {
     "source": "<p>\n    Use Ctrl-V on the page to paste content. These\n    will then be displayed here.\n  </p>\n  <p>\n    Use Ctrl-F to search for existing content and paste it into\n    the clipboard.\n  </p>",
-    "translation": "<p>Verwenden Sie Ctrl-V auf der Seite um Inhalte einzufügen. Diese werden dann hier angezeigt.</p><p>Verwenden Sie Ctrl-F um bestehende Inhalte zu suchen und in die Zwischenablage einzufügen.</p>"
+    "translation": "<p>\n    Utilizzare Ctrl-V sulla pagina per incollare i contenuti. Questi\n    saranno poi visualizzati qui.\n  </p>\n  <p>\n    Utilizzare Ctrl-F per cercare contenuti esistenti e incollarli negli appunti.\n  </p>"
   },
   "clipboardPasteDescription": {
     "source": "Paste blocks from clipboard",
-    "translation": "Blöcke aus Zwischenablage einfügen"
+    "translation": ""
   },
   "clipboardPasteError": {
     "source": "Failed to paste:",
-    "translation": "Einfügen fehlgeschlagen:"
+    "translation": ""
   },
   "clipboardPasteErrorAllowedBundlesMultiple": {
     "source": "Block types (@types) are not allowed here.",
-    "translation": "Die Block-Typen (@types) sind hier nicht erlaubt."
+    "translation": ""
   },
   "clipboardPasteErrorAllowedBundlesSingle": {
     "source": "Block type \"@types\" is not allowed here.",
-    "translation": "Der Block-Typ «@types» ist hier nicht erlaubt."
+    "translation": ""
   },
   "clipboardPasteErrorAllowedFragmentsMultiple": {
     "source": "Fragments (@types) are not allowed here.",
@@ -381,219 +381,219 @@
   },
   "clipboardPasteErrorCardinality": {
     "source": "This field only allows up to @count blocks.",
-    "translation": "Dieses Feld erlaubt nur bis zu @count Blöcke."
+    "translation": ""
   },
   "clipboardPasteErrorOneField": {
     "source": "Pasting is only possible into one field at a time.",
-    "translation": "Blöcke können nur in einem Feld gleichzeitig eingefügt werden."
+    "translation": ""
   },
   "clipboardPastePlaceholder": {
     "source": "Paste text or media here",
-    "translation": "Text oder Medien einfügen"
+    "translation": "Paste text or media here"
   },
   "clipboardPasteShortcutHelp": {
     "source": "Paste text, image or copied blocks",
-    "translation": "Text, Bild oder kopierte Blöcke einfügen"
+    "translation": ""
   },
   "clipboardTourText": {
     "source": "Drag and drop content pasted from your clipboard into the page to create a matching block.",
-    "translation": "Ziehen Sie Inhalte, die aus Ihrer Zwischenablage eingefügt wurden, in die Seite hinein, um einen passenden Block zu erstellen."
+    "translation": ""
   },
   "close": {
     "source": "Close",
-    "translation": "Schliessen"
+    "translation": "Chiudi"
   },
   "commandGroup.action": {
     "source": "Actions",
-    "translation": "Aktionen"
+    "translation": ""
   },
   "commandGroup.add": {
     "source": "Add new",
-    "translation": "Hinzufügen"
+    "translation": ""
   },
   "commandGroup.misc": {
     "source": "Miscellaneous",
-    "translation": "Diverse"
+    "translation": ""
   },
   "commandGroup.selection": {
     "source": "Selection",
-    "translation": "Auswahl"
+    "translation": ""
   },
   "commandGroup.ui": {
     "source": "Interface",
-    "translation": "Oberfläche"
+    "translation": ""
   },
   "commandPalette.inputPlaceholder": {
     "source": "Search commands...",
-    "translation": "Befehle durchsuchen..."
+    "translation": ""
   },
   "commandPaletteOpen": {
     "source": "Open Command Palette",
-    "translation": "Befehle öffnen"
+    "translation": ""
   },
   "commandPaletteTourText": {
     "source": "Easily perform actions using your keyboard by launching the command palette. Most of the features available using clicks is also available in the command palette.",
-    "translation": "Führen Sie Aktionen ganz einfach mit Ihrer Tastatur aus, indem Sie «Befehle» öffnen. Fast alle Funktionen sind auch über «Befehle» ausführbar."
+    "translation": ""
   },
   "commentAdd": {
     "source": "Add comment",
-    "translation": "Kommentar hinzufügen"
+    "translation": ""
   },
   "commentBodyPlaceholder": {
     "source": "Add reply",
-    "translation": "Antwort hinzufügen"
+    "translation": ""
   },
   "commentSave": {
     "source": "Submit comment",
-    "translation": "Kommentar speichern"
+    "translation": "Salva commento"
   },
   "comments": {
     "source": "Comments",
-    "translation": "Kommentare"
+    "translation": "Commenti"
   },
   "commentsMarkAsResolved": {
     "source": "Resolve",
-    "translation": "Erledigen"
+    "translation": ""
   },
   "commentsTourText": {
     "source": "Shows all comments for the current page.",
-    "translation": "Zeigt alle Kommentare auf der aktuellen Seite an."
+    "translation": ""
   },
   "conversionsConvertTo": {
     "source": "Convert to: @bundle",
-    "translation": "Konvertieren zu: @bundle"
+    "translation": ""
   },
   "copiedToClipboardMessage": {
     "source": "\"@text\" has been copied to your clipboard",
-    "translation": "«@text» wurde in die Zwischenablage kopiert"
+    "translation": ""
   },
   "copy": {
     "source": "Copy",
-    "translation": "Kopieren"
+    "translation": ""
   },
   "deleteButton": {
     "source": "Delete",
-    "translation": "Löschen"
+    "translation": "Elimina"
   },
   "deleteError": {
     "source": "The block could not be deleted.",
-    "translation": "Das Element konnte nicht entfernt werden."
+    "translation": "L'elemento non può essere rimosso."
   },
   "diffAfter": {
     "source": "After",
-    "translation": "Nachher"
+    "translation": ""
   },
   "diffBefore": {
     "source": "Before",
-    "translation": "Vorher"
+    "translation": ""
   },
   "diffModeAfter": {
     "source": "After",
-    "translation": "Nachher"
+    "translation": ""
   },
   "diffModeInline": {
     "source": "Inline",
-    "translation": "Hervorgehoben"
+    "translation": ""
   },
   "diffModeLabel": {
     "source": "Display",
-    "translation": "Darstellung"
+    "translation": ""
   },
   "diffModeSideBySide": {
     "source": "Both",
-    "translation": "Beide"
+    "translation": ""
   },
   "diffSidebarTitle": {
     "source": "Changes",
-    "translation": "Änderungen"
+    "translation": ""
   },
   "diffSidebarTourText": {
     "source": "Displays all the changes made during editing.",
-    "translation": "Zeigt die Änderungen an die während dem Bearbeiten durchgeführt wurden."
+    "translation": ""
   },
   "diffStatusAdded": {
     "source": "Added",
-    "translation": "Hinzugefügt"
+    "translation": ""
   },
   "diffStatusDeleted": {
     "source": "Deleted",
-    "translation": "Gelöscht"
+    "translation": ""
   },
   "diffStatusEdited": {
     "source": "Edited",
-    "translation": "Bearbeitet"
+    "translation": ""
   },
   "diffStatusUnchanged": {
     "source": "Unchanged",
-    "translation": "Keine Änderung"
+    "translation": ""
   },
   "downloadLogsButton": {
     "source": "Download Logs",
-    "translation": "Fehlerprotokoll herunterladen"
+    "translation": ""
   },
   "draggingOverlaySelectBundle": {
     "source": "Select block type to create",
-    "translation": "Block-Typ zum Erstellen auswählen"
+    "translation": ""
   },
   "duplicate": {
     "source": "Duplicate",
-    "translation": "Duplizieren"
+    "translation": "Duplica"
   },
   "duplicateError": {
     "source": "The items could not be duplicated.",
-    "translation": "Die Elemente konnten nicht dupliziert werden."
+    "translation": "Gli elementi non possono essere duplicati."
   },
   "edit": {
     "source": "Edit...",
-    "translation": "Bearbeiten..."
+    "translation": "Modifica"
   },
   "editFormBlockAdd": {
     "source": "Add @label",
-    "translation": "@label hinzufügen"
+    "translation": ""
   },
   "editFormBlockEdit": {
     "source": "Edit @label",
-    "translation": "@label bearbeiten"
+    "translation": ""
   },
   "editFormBlockTranslate": {
     "source": "Translate @label (@language)",
-    "translation": "@label übersetzen (@language)"
+    "translation": ""
   },
   "editFormEntityEdit": {
     "source": "Edit @label",
-    "translation": "\"@label\" bearbeiten"
+    "translation": ""
   },
   "editFormEntityTranslate": {
     "source": "Translate \"@label\" (@language)",
-    "translation": "\"@label\" übersetzen (@language)"
+    "translation": ""
   },
   "editIndicatorLabel": {
     "source": "Edit blocks",
-    "translation": "Elemente bearbeiten"
+    "translation": "Modifica elementi"
   },
   "editIndicatorLabelReview": {
     "source": "Review changes",
-    "translation": "Änderungen überprüfen"
+    "translation": ""
   },
   "editIndicatorLabelView": {
     "source": "View changes",
-    "translation": "Änderungen ansehen"
+    "translation": ""
   },
   "editableCommandEdit": {
     "source": "Edit field \"@name\"",
-    "translation": "Feld «@name» bearbeiten"
+    "translation": ""
   },
   "editableFieldDiscard": {
     "source": "Discard",
-    "translation": "Verwerfen"
+    "translation": ""
   },
   "entityTitleTourText": {
     "source": "<p>Shows the title and status of the current page.</p><p>Click on the title to open the page edit form.</p>",
-    "translation": "<p>Zeigt den Titel und Status der aktuellen Seite an.</p><p>Klicken Sie auf den Titel um das Bearbeitungsformular anzuzeigen.</p>"
+    "translation": ""
   },
   "entityTitleTourTitle": {
     "source": "Page",
-    "translation": "Seite"
+    "translation": ""
   },
   "errorCapturedMessage": {
     "source": "Error in \"@label\": @errorMessage",
@@ -605,47 +605,47 @@
   },
   "exitDescription": {
     "source": "Close editor without publishing",
-    "translation": "Editor schliessen ohne veröffentlichen"
+    "translation": "Chiudi l'editor senza pubblicare"
   },
   "exitTitle": {
     "source": "Close",
-    "translation": "Schliessen"
+    "translation": "Chiudi"
   },
   "failedToConvert": {
     "source": "The block could not be converted.",
-    "translation": "Das Element konnte nicht konvertiert werden."
+    "translation": "L'elemento non può essere convertito."
   },
   "failedToTransform": {
     "source": "The action \"@name\" could not be executed.",
-    "translation": "Die Aktion «@name» konnte nicht ausgeführt werden."
+    "translation": "The action \"@name\" could not be executed."
   },
   "fatalErrorButton": {
     "source": "Continue anyway...",
-    "translation": "Trotzdem fortfahren..."
+    "translation": ""
   },
   "fatalErrorText": {
     "source": "Unfortunately blökkli has encountered a fatal error which prevents it from working normally. You may be able to continue using it, but things may not work as expected.",
-    "translation": "Leider hat blökkli einen schwerwiegenden Fehler festgestellt. Möglicherweise können Sie den Editor weiterhin verwenden, aber es kann sein, dass nicht alles wie erwartet funktioniert."
+    "translation": ""
   },
   "fatalErrorTitle": {
     "source": "blökkli has stopped working",
-    "translation": "blökkli funktioniert nicht mehr"
+    "translation": ""
   },
   "featureHelpShortcuts": {
     "source": "Shortcuts",
-    "translation": "Tastenkombinationen"
+    "translation": ""
   },
   "featureHelpTitle": {
     "source": "Help",
-    "translation": "Hilfe"
+    "translation": ""
   },
   "feature_add-list_description": {
     "source": "Provides the container to render a list of blocks to add or add actions.",
-    "translation": "Stellt den Container bereit, um eine Liste von Blöcken zum Hinzufügen oder Aktionen anzuzeigen."
+    "translation": "Fornisce il contenitore per visualizzare un elenco di blocchi da aggiungere o azioni."
   },
   "feature_add-list_label": {
     "source": "Add List",
-    "translation": "Hinzufügen-Liste"
+    "translation": "Elenco di aggiunta"
   },
   "feature_add-list_setting_hideDisabledBlocks_description": {
     "source": "Hides blocks from the \"Add List\" if they can't be added to anywhere.",
@@ -657,55 +657,55 @@
   },
   "feature_analyze_description": {
     "source": "Analyze blocks and page for SEO, accessibility, etc.",
-    "translation": "Analysiert Blöcke und Seite für SEO, Barrierefreiheit, etc."
+    "translation": "Analizza i blocchi e la pagina per SEO, accessibilità, ecc."
   },
   "feature_analyze_label": {
     "source": "Analyze",
-    "translation": "Analysieren"
+    "translation": "Analizza"
   },
   "feature_anchors_description": {
     "source": "Displays indicators for blocks with anchor IDs",
-    "translation": "Zeigt Indikatoren für Blöcke mit Anker-IDs an"
+    "translation": "Visualizza indicatori per blocchi con ID di ancoraggio"
   },
   "feature_anchors_label": {
     "source": "Anchors",
-    "translation": "Anker"
+    "translation": "Ancoraggi"
   },
   "feature_artboard_description": {
     "source": "Wraps the entire page in an artboard that can be zoomed and moved using the mouse.",
-    "translation": "Umhüllt die gesamte Seite in einer Arbeitsfläche, die mit der Maus gezoomt und bewegt werden kann."
+    "translation": "Avvolge l'intera pagina in un'area di lavoro che può essere ingrandita e spostata con il mouse."
   },
   "feature_artboard_label": {
     "source": "Artboard",
-    "translation": "Arbeitsfläche"
+    "translation": "Area di lavoro"
   },
   "feature_artboard_setting_momentum_description": {
     "source": "Applies smooth animations when scrolling or zooming the artboard.",
-    "translation": "Verwendet sanftes Scrollen und Vergrössern der Vorschau."
+    "translation": "Applica animazioni fluide durante lo scorrimento o lo zoom dell'area di lavoro."
   },
   "feature_artboard_setting_momentum_label": {
     "source": "Use smooth scrolling",
-    "translation": "Sanftes Scrollen verwenden"
+    "translation": "Usa scorrimento fluido"
   },
   "feature_artboard_setting_persist_description": {
     "source": "Stores and restores the last position and zoom factor of the artboard.",
-    "translation": "Speichern und Wiederherstellen der letzten Position und Skalierung der Vorschau."
+    "translation": "Memorizza e ripristina l'ultima posizione e il fattore di zoom dell'area di lavoro."
   },
   "feature_artboard_setting_persist_label": {
     "source": "Persist position and zoom",
-    "translation": "Position und Zoom speichern"
+    "translation": "Mantieni posizione e zoom"
   },
   "feature_artboard_setting_scrollSpeed_label": {
     "source": "Artboard scroll speed",
-    "translation": "Scrollgeschwindigkeit der Vorschau"
+    "translation": "Velocità di scorrimento dell'area di lavoro"
   },
   "feature_assistant_description": {
     "source": "Provides a dynamic add block action to add one or more blocks generated by an AI assistant.",
-    "translation": "Stellt eine dynamische Aktion bereit, um einen oder mehrere Blöcke hinzuzufügen, die von einem KI-Assistenten generiert wurden."
+    "translation": "Fornisce un'azione dinamica per aggiungere uno o più blocchi generati da un assistente IA."
   },
   "feature_assistant_label": {
     "source": "Assistant",
-    "translation": "Assistent"
+    "translation": "Assistente"
   },
   "feature_block-scheduler_description": {
     "source": "Adds support for scheduling blocks.",
@@ -725,47 +725,47 @@
   },
   "feature_clipboard_description": {
     "source": "Provides clipboard integration to copy/paste existing blocks or paste supported clipboard content like text or images.",
-    "translation": "Stellt Zwischenablage-Integration bereit zum Kopieren/Einfügen von bestehenden Blöcken oder zum Einfügen von unterstützten Inhalten wie Text oder Bildern."
+    "translation": "Fornisce l'integrazione degli appunti per copiare/incollare blocchi esistenti o incollare contenuti supportati come testo o immagini."
   },
   "feature_clipboard_label": {
     "source": "Clipboard",
-    "translation": "Zwischenablage"
+    "translation": "Appunti"
   },
   "feature_clipboard_setting_openSidebarOnPaste_description": {
     "source": "Automatically opens the sidebar when pasting content from the clipboard.",
-    "translation": "Öffnet automatisch die Seitenleiste wenn Inhalte aus der Zwischenablage eingefügt werden."
+    "translation": "Apre automaticamente la barra laterale quando si incolla contenuto dagli appunti."
   },
   "feature_clipboard_setting_openSidebarOnPaste_label": {
     "source": "Open sidebar when pasting",
-    "translation": "Seitenleiste beim Einfügen aus der Zwischenablage öffnen"
+    "translation": "Apri barra laterale quando si incolla"
   },
   "feature_command-palette_description": {
     "source": "Provides a command palette with search to access most UI features with a keyboard.",
-    "translation": "Stellt eine Befehlspalette mit Suche bereit, um die meisten UI-Funktionen mit der Tastatur zu verwenden."
+    "translation": "Fornisce una tavolozza di comandi con ricerca per accedere alla maggior parte delle funzionalità dell'interfaccia con la tastiera."
   },
   "feature_command-palette_label": {
     "source": "Command Palette",
-    "translation": "Befehlspalette"
+    "translation": "Tavolozza di comandi"
   },
   "feature_comments_description": {
     "source": "Provides comment functionality for blocks.",
-    "translation": "Stellt Kommentarfunktionalität für Blöcke bereit."
+    "translation": "Fornisce la funzionalità di commento per i blocchi."
   },
   "feature_comments_label": {
     "source": "Comments",
-    "translation": "Kommentare"
+    "translation": "Commenti"
   },
   "feature_conversions_description": {
     "source": "Provides block actions to convert one or more blocks to a different bundle.",
-    "translation": "Stellt Block-Aktionen bereit, um einen oder mehrere Blöcke in einen anderen Typ zu konvertieren."
+    "translation": "Fornisce azioni di blocco per convertire uno o più blocchi in un tipo diverso."
   },
   "feature_conversions_label": {
     "source": "Conversions",
-    "translation": "Konvertierungen"
+    "translation": "Conversioni"
   },
   "feature_debug_description": {
     "source": "Provides debugging functionality.",
-    "translation": "Stellt Debugging-Funktionalität bereit."
+    "translation": "Fornisce la funzionalità di debug."
   },
   "feature_debug_label": {
     "source": "Debug",
@@ -773,11 +773,11 @@
   },
   "feature_delete_description": {
     "source": "Provides an action to delete one or more blocks.",
-    "translation": "Stellt eine Aktion bereit, um einen oder mehrere Blöcke zu löschen."
+    "translation": "Fornisce un'azione per eliminare uno o più blocchi."
   },
   "feature_delete_label": {
     "source": "Delete",
-    "translation": "Löschen"
+    "translation": "Elimina"
   },
   "feature_dev-mode_description": {
     "source": "Feature enabled in development mode.",
@@ -789,115 +789,115 @@
   },
   "feature_diff_description": {
     "source": "Displays a diff of all changes in the edit state.",
-    "translation": "Zeigt die Änderungen an die während dem Bearbeiten durchgeführt wurden."
+    "translation": "Visualizza un differenziale di tutte le modifiche nello stato di modifica."
   },
   "feature_diff_label": {
     "source": "Diff",
-    "translation": "Änderungen"
+    "translation": "Differenze"
   },
   "feature_dragging-overlay_description": {
     "source": "Renders an overlay when dragging or placing a block.",
-    "translation": "Zeigt ein Overlay beim Ziehen oder Platzieren eines Blocks an."
+    "translation": "Visualizza una sovrapposizione durante il trascinamento o il posizionamento di un blocco."
   },
   "feature_dragging-overlay_label": {
     "source": "Dragging Overlay",
-    "translation": "Drag-Overlay"
+    "translation": "Sovrapposizione di trascinamento"
   },
   "feature_duplicate_description": {
     "source": "Provides an action to duplicate one or more blocks in place.",
-    "translation": "Stellt eine Aktion bereit, um einen oder mehrere Blöcke zu duplizieren."
+    "translation": "Fornisce un'azione per duplicare uno o più blocchi sul posto."
   },
   "feature_duplicate_label": {
     "source": "Duplicate",
-    "translation": "Duplizieren"
+    "translation": "Duplica"
   },
   "feature_edit-form_description": {
     "source": "Listens to edit events and renders an iframe containing the edit form.",
-    "translation": "Reagiert auf Bearbeitungs-Events und zeigt ein iFrame mit dem Bearbeitungsformular an."
+    "translation": "Ascolta gli eventi di modifica e visualizza un iframe contenente il modulo di modifica."
   },
   "feature_edit-form_label": {
     "source": "Edit Form",
-    "translation": "Bearbeitungsformular"
+    "translation": "Modulo di modifica"
   },
   "feature_edit_description": {
     "source": "Provides an action to edit a block.",
-    "translation": "Stellt eine Aktion bereit, um einen Block zu bearbeiten."
+    "translation": "Fornisce un'azione per modificare un blocco."
   },
   "feature_edit_label": {
     "source": "Edit",
-    "translation": "Bearbeiten"
+    "translation": "Modifica"
   },
   "feature_editable-field_description": {
     "source": "Implements a form overlay to edit a single field of a block.",
-    "translation": "Implementiert ein Formular-Overlay zum Bearbeiten eines einzelnen Felds eines Blocks."
+    "translation": "Implementa una sovrapposizione di modulo per modificare un singolo campo di un blocco."
   },
   "feature_editable-field_label": {
     "source": "Editable Field",
-    "translation": "Bearbeitbares Feld"
+    "translation": "Campo modificabile"
   },
   "feature_editable-mask_description": {
     "source": "Provides a view option to hide non-editable parts of the page.",
-    "translation": "Stellt eine Ansichtsoption bereit, um nicht bearbeitbare Teile der Seite zu verstecken."
+    "translation": "Fornisce un'opzione di visualizzazione per nascondere le parti non modificabili della pagina."
   },
   "feature_editable-mask_label": {
     "source": "Editable Mask",
-    "translation": "Bearbeitbare Maske"
+    "translation": "Maschera modificabile"
   },
   "feature_entity-title_description": {
     "source": "Renders the title and status of the page entity.",
-    "translation": "Zeigt den Titel und Status der Seitenentität an."
+    "translation": "Visualizza il titolo e lo stato dell'entità della pagina."
   },
   "feature_entity-title_label": {
     "source": "Entity Title",
-    "translation": "Entitäts-Titel"
+    "translation": "Titolo dell'entità"
   },
   "feature_exit_description": {
     "source": "Provides a menu button to exit the editor without saving.",
-    "translation": "Stellt einen Menü-Button bereit, um den Editor ohne Speichern zu verlassen."
+    "translation": "Fornisce un pulsante di menu per uscire dall'editor senza salvare."
   },
   "feature_exit_label": {
     "source": "Exit",
-    "translation": "Verlassen"
+    "translation": "Esci"
   },
   "feature_fragments_description": {
     "source": "Provides way to add content fragments defined by the frontend.",
-    "translation": "Ermöglicht das Hinzufügen von Inhaltsfragmenten, die vom Frontend definiert wurden."
+    "translation": "Consente di aggiungere frammenti di contenuto definiti dal frontend."
   },
   "feature_fragments_label": {
     "source": "Fragments",
-    "translation": "Fragmente"
+    "translation": "Frammenti"
   },
   "feature_grid_description": {
     "source": "Provides a view option to render a grid.",
-    "translation": "Stellt eine Ansichtsoption bereit, um ein Raster anzuzeigen."
+    "translation": "Fornisce un'opzione di visualizzazione per visualizzare una griglia."
   },
   "feature_grid_label": {
     "source": "Grid",
-    "translation": "Raster"
+    "translation": "Griglia"
   },
   "feature_help_description": {
     "source": "Provides a sidebar pane with helpful information on how to use blokkli.",
-    "translation": "Stellt ein Seitenleisten-Panel mit hilfreichen Informationen zur Verwendung von blökkli bereit."
+    "translation": "Fornisce un pannello della barra laterale con informazioni utili su come utilizzare blökkli."
   },
   "feature_help_label": {
     "source": "Help",
-    "translation": "Hilfe"
+    "translation": "Aiuto"
   },
   "feature_history_description": {
     "source": "Implements support for history features (undo, redo, list of mutations).",
-    "translation": "Implementiert Unterstützung für Verlaufsfunktionen (Rückgängig, Wiederherstellen, Liste der Änderungen)."
+    "translation": "Implementa il supporto per le funzionalità di cronologia (annulla, ripeti, elenco delle mutazioni)."
   },
   "feature_history_label": {
     "source": "History",
-    "translation": "Verlauf"
+    "translation": "Cronologia"
   },
   "feature_history_setting_useMouseButtons_description": {
     "source": "When enabled you can use the backwards/forwards buttons on your mouse to undo and redo.",
-    "translation": "Verwendet die Zurück- und Vorärts-Taste der Maus um die letzte Änderung rückgängig zu machen, respektive wiederherzustellen."
+    "translation": "Quando abilitato, è possibile utilizzare i pulsanti indietro/avanti del mouse per annullare e ripetere."
   },
   "feature_history_setting_useMouseButtons_label": {
     "source": "Use mouse buttons for undo/redo",
-    "translation": "Maustasten für Rückgängig/Wiederherstellen verwenden"
+    "translation": "Usa i pulsanti del mouse per annulla/ripeti"
   },
   "feature_hover_description": {
     "source": "Renders a border around blocks that are currently being hovered.",
@@ -909,187 +909,187 @@
   },
   "feature_import-existing_description": {
     "source": "Implements a menu action that renders a dialog to import blocks from another entity.",
-    "translation": "Implementiert eine Menü-Aktion, die einen Dialog zum Importieren von Blöcken aus einer anderen Entität anzeigt."
+    "translation": "Implementa un'azione di menu che visualizza una finestra di dialogo per importare blocchi da un'altra entità."
   },
   "feature_import-existing_label": {
     "source": "Import existing content",
-    "translation": "Bestehende Inhalte importieren"
+    "translation": "Importa contenuto esistente"
   },
   "feature_import-existing_setting_showDialogWhenEmpty_description": {
     "source": "Displays the import dialog when starting blökkli if the page is empty.",
-    "translation": "Zeigt den Importdialog beim öffnen von blökkli wenn die Seite leer ist."
+    "translation": "Visualizza la finestra di dialogo di importazione all'avvio di blökkli se la pagina è vuota."
   },
   "feature_import-existing_setting_showDialogWhenEmpty_label": {
     "source": "Show import dialog at start",
-    "translation": "Importdialog beim Start anzeigen"
+    "translation": "Mostra finestra di dialogo di importazione all'avvio"
   },
   "feature_library_description": {
     "source": "Implements support for a block library to manage reusable blocks.",
-    "translation": "Implementiert Unterstützung für eine Block-Bibliothek zur Verwaltung wiederverwendbarer Blöcke."
+    "translation": "Implementa il supporto per una biblioteca di blocchi per gestire blocchi riutilizzabili."
   },
   "feature_library_label": {
     "source": "Library",
-    "translation": "Bibliothek"
+    "translation": "Biblioteca"
   },
   "feature_media-library_description": {
     "source": "Implements a media library to easily drag and drop media like images or videos.",
-    "translation": "Implementiert eine Medienbibliothek zum einfachen Ziehen und Ablegen von Medien wie Bildern oder Videos."
+    "translation": "Implementa una biblioteca multimediale per trascinare e rilasciare facilmente media come immagini o video."
   },
   "feature_media-library_label": {
     "source": "Media Library",
-    "translation": "Medienbibliothek"
+    "translation": "Biblioteca multimediale"
   },
   "feature_multi-select_description": {
     "source": "Implements support for selecting multiple blocks using a select rectangle.",
-    "translation": "Implementiert Unterstützung für die Auswahl mehrerer Blöcke mithilfe eines Auswahlrechtecks."
+    "translation": "Implementa il supporto per la selezione di più blocchi utilizzando un rettangolo di selezione."
   },
   "feature_multi-select_label": {
     "source": "Multiselect",
-    "translation": "Mehrfachauswahl"
+    "translation": "Selezione multipla"
   },
   "feature_options_description": {
     "source": "Renders the options form for one or more blocks.",
-    "translation": "Zeigt das Optionsformular für einen oder mehrere Blöcke an."
+    "translation": "Visualizza il modulo delle opzioni per uno o più blocchi."
   },
   "feature_options_label": {
     "source": "Options",
-    "translation": "Optionen"
+    "translation": "Opzioni"
   },
   "feature_ownership_description": {
     "source": "Renders a large button to take ownership of the current edit state.",
-    "translation": "Zeigt einen grossen Button an, um die Besitzrechte des aktuellen Bearbeitungsstatus zu übernehmen."
+    "translation": "Visualizza un grande pulsante per prendere la proprietà dello stato di modifica corrente."
   },
   "feature_ownership_label": {
     "source": "Ownership",
-    "translation": "Besitzrechte"
+    "translation": "Proprietà"
   },
   "feature_preview-grant_description": {
     "source": "Provides a button to open a dialog with a QR code to preview the page on a smartphone.",
-    "translation": "Stellt einen Button bereit, um einen Dialog mit einem QR-Code zu öffnen, um die Seite auf einem Smartphone in der Vorschau anzuzeigen."
+    "translation": "Fornisce un pulsante per aprire una finestra di dialogo con un codice QR per visualizzare l'anteprima della pagina su uno smartphone."
   },
   "feature_preview-grant_label": {
     "source": "Preview Grant",
-    "translation": "Vorschau-Zugriff"
+    "translation": "Accesso all'anteprima"
   },
   "feature_preview_description": {
     "source": "Provides a button to open a preview in a new window.",
-    "translation": "Stellt einen Button bereit, um eine Vorschau in einem neuen Fenster zu öffnen."
+    "translation": "Fornisce un pulsante per aprire un'anteprima in una nuova finestra."
   },
   "feature_preview_label": {
     "source": "Preview",
-    "translation": "Vorschau"
+    "translation": "Anteprima"
   },
   "feature_proxy_view_description": {
     "source": "Displays the blocks as a structure in the preview.",
-    "translation": "Zeigt die Blöcke als Struktur in der Vorschau an."
+    "translation": "Visualizza i blocchi come struttura nell'anteprima."
   },
   "feature_proxy_view_label": {
     "source": "Proxy View",
-    "translation": "Strukturansicht"
+    "translation": "Vista strutturata"
   },
   "feature_publish_description": {
     "source": "Provides a menu button to publish the changes of the current entity.",
-    "translation": "Stellt einen Menü-Button bereit, um die Änderungen der aktuellen Entität zu veröffentlichen."
+    "translation": "Fornisce un pulsante di menu per pubblicare le modifiche dell'entità corrente."
   },
   "feature_publish_label": {
     "source": "Publish",
-    "translation": "Veröffentlichen"
+    "translation": "Pubblica"
   },
   "feature_publish_setting_closeAfterPublish_description": {
     "source": "Immediately closes the editor after successfully publishing or saving.",
-    "translation": "Den Editor umgehend schliessen nach dem Veröffentlichen/Speichern der Änderungen."
+    "translation": "Chiude immediatamente l'editor dopo una pubblicazione o un salvataggio riusciti."
   },
   "feature_publish_setting_closeAfterPublish_label": {
     "source": "Close editor after publishing",
-    "translation": "Nach «Veröffentlichen» den Editor schliessen"
+    "translation": "Chiudi editor dopo la pubblicazione"
   },
   "feature_responsive-preview_description": {
     "source": "Provides a responsive preview of the current edit state in an iframe.",
-    "translation": "Stellt eine responsive Vorschau des aktuellen Bearbeitungszustands in einem iFrame bereit."
+    "translation": "Fornisce un'anteprima responsive dello stato di modifica corrente in un iframe."
   },
   "feature_responsive-preview_label": {
     "source": "Responsive Preview",
-    "translation": "Responsive Vorschau"
+    "translation": "Anteprima responsive"
   },
   "feature_revert_description": {
     "source": "Provides a menu button to revert all changes done on the current entity.",
-    "translation": "Stellt einen Menü-Button bereit, um alle Änderungen an der aktuellen Entität rückgängig zu machen."
+    "translation": "Fornisce un pulsante di menu per annullare tutte le modifiche effettuate sull'entità corrente."
   },
   "feature_revert_label": {
     "source": "Revert",
-    "translation": "Verwerfen"
+    "translation": "Annulla"
   },
   "feature_search_description": {
     "source": "Provides an overlay with shortcut to search for blocks on the current page or existing content to add as blocks.",
-    "translation": "Stellt ein Overlay mit Tastenkombination bereit, um nach Blöcken auf der aktuellen Seite oder bestehenden Inhalten zu suchen, die als Blöcke hinzugefügt werden können."
+    "translation": "Fornisce una sovrapposizione con scorciatoia per cercare blocchi nella pagina corrente o contenuto esistente da aggiungere come blocchi."
   },
   "feature_search_label": {
     "source": "Search",
-    "translation": "Suchen"
+    "translation": "Cerca"
   },
   "feature_selection_description": {
     "source": "Renders an overlay that highlights the selected blocks.",
-    "translation": "Zeigt ein Overlay an, das die ausgewählten Blöcke hervorhebt."
+    "translation": "Visualizza una sovrapposizione che evidenzia i blocchi selezionati."
   },
   "feature_selection_label": {
     "source": "Selection",
-    "translation": "Auswahl"
+    "translation": "Selezione"
   },
   "feature_settings_description": {
     "source": "Provides a menu button to display a settings dialog.",
-    "translation": "Stellt einen Menü-Button bereit, um einen Einstellungsdialog anzuzeigen."
+    "translation": "Fornisce un pulsante di menu per visualizzare una finestra di dialogo delle impostazioni."
   },
   "feature_settings_label": {
     "source": "Settings",
-    "translation": "Einstellungen"
+    "translation": "Impostazioni"
   },
   "feature_settings_setting_lowPerformanceMode_description": {
     "source": "Reduces the animations and interactivity to a minimum for devices with low performance.",
-    "translation": "Reduziert Animationen und interaktive Elemente auf ein Minimum, für Geräte mit niedriger Leistung."
+    "translation": "Riduce le animazioni e l'interattività al minimo per dispositivi con prestazioni basse."
   },
   "feature_settings_setting_lowPerformanceMode_label": {
     "source": "Enable low performance mode",
-    "translation": "Modus für niedrige Leistung aktivieren"
+    "translation": "Abilita modalità basse prestazioni"
   },
   "feature_settings_setting_resetAllSettings_label": {
     "source": "Reset all settings",
-    "translation": "Alle Einstellungen zurücksetzen"
+    "translation": "Ripristina tutte le impostazioni"
   },
   "feature_settings_setting_useAnimations_description": {
     "source": "Animates UI elements like dialogs or drawers or interactions like drag and drop or scroll changes.",
-    "translation": "Animiert Elemente wie Dialoge oder Seitenleisten, oder Interaktionen wie «Drag and Drop» oder Änderungen in Position oder Grösse."
+    "translation": "Anima elementi dell'interfaccia come finestre di dialogo o cassetti, o interazioni come trascina e rilascia o modifiche di scorrimento."
   },
   "feature_settings_setting_useAnimations_label": {
     "source": "Use animations",
-    "translation": "Animationen verwenden"
+    "translation": "Usa animazioni"
   },
   "feature_structure_description": {
     "source": "Provides a sidebar button to render a structured list of all blocks on the current page.",
-    "translation": "Stellt einen Seitenleisten-Button bereit, um eine strukturierte Liste aller Blöcke auf der aktuellen Seite anzuzeigen."
+    "translation": "Fornisce un pulsante della barra laterale per visualizzare un elenco strutturato di tutti i blocchi nella pagina corrente."
   },
   "feature_structure_label": {
     "source": "Structure",
-    "translation": "Struktur"
+    "translation": "Struttura"
   },
   "feature_theme_description": {
     "source": "Implements a theme editor.",
-    "translation": "Implementiert einen Theme-Editor."
+    "translation": "Implementa un editor di temi."
   },
   "feature_theme_label": {
     "source": "Theme",
-    "translation": "Theme"
+    "translation": "Tema"
   },
   "feature_touch-action-bar_description": {
     "source": "Renders a button on touch devices to cancel touch actions.",
-    "translation": "Zeigt einen Button auf Touch-Geräten an, um Touch-Aktionen abzubrechen."
+    "translation": "Visualizza un pulsante sui dispositivi touch per annullare le azioni touch."
   },
   "feature_touch-action-bar_label": {
     "source": "Touch Action Bar",
-    "translation": "Touch-Aktionsleiste"
+    "translation": "Barra delle azioni touch"
   },
   "feature_tour_description": {
     "source": "Provides a tour overlay to get to know the editor.",
-    "translation": "Stellt ein Tour-Overlay bereit, um den Editor kennenzulernen."
+    "translation": "Fornisce una sovrapposizione di tour per conoscere l'editor."
   },
   "feature_tour_label": {
     "source": "Tour",
@@ -1097,139 +1097,139 @@
   },
   "feature_transform_description": {
     "source": "Provides integration for block transform plugins.",
-    "translation": "Stellt Integration für Block-Transform-Plugins bereit."
+    "translation": "Fornisce l'integrazione per i plugin di trasformazione dei blocchi."
   },
   "feature_transform_label": {
     "source": "Transform",
-    "translation": "Transform"
+    "translation": "Trasforma"
   },
   "feature_translations_description": {
     "source": "Adds support for block translations.",
-    "translation": "Fügt Unterstützung für Block-Übersetzungen hinzu."
+    "translation": "Aggiunge il supporto per le traduzioni dei blocchi."
   },
   "feature_translations_label": {
     "source": "Translations",
-    "translation": "Übersetzungen"
+    "translation": "Traduzioni"
   },
   "feature_validations_description": {
     "source": "Provides a sidebar pane to render validations.",
-    "translation": "Stellt ein Seitenleisten-Panel bereit, um Validierungen anzuzeigen."
+    "translation": "Fornisce un pannello della barra laterale per visualizzare le validazioni."
   },
   "feature_validations_label": {
     "source": "Validations",
-    "translation": "Validierungen"
+    "translation": "Validazioni"
   },
   "fieldIsRequired": {
     "source": "This field is required",
-    "translation": "Feld darf nicht leer sein"
+    "translation": "Questo campo è obbligatorio"
   },
   "fragmentsAddFragmentAction": {
     "source": "Add fragment",
-    "translation": "Fragment hinzufügen"
+    "translation": ""
   },
   "fragmentsAddFragmentDescription": {
     "source": "<p>Drag the icon into the page to add a fragment block.</p><p>Fragments are reusable blocks that always render the same content.</p>",
-    "translation": "<p>Ziehen Sie das Symbol auf die Seite, um einen Fragmentblock hinzuzufügen.</p><p>Fragmente sind wiederverwendbare Blöcke, die immer denselben Inhalt darstellen.</p>"
+    "translation": ""
   },
   "fragmentsPlaceDialogLead": {
     "source": "Select a block fragment to add to the page.",
-    "translation": "Wählen Sie ein Block-Fragment aus."
+    "translation": ""
   },
   "fragmentsPlaceDialogSearchLabel": {
     "source": "Filter fragments",
-    "translation": "Fragmente filtern"
+    "translation": ""
   },
   "fragmentsPlaceDialogSearchPlaceholder": {
     "source": "Search fragments",
-    "translation": "Fragmente durchsuchen"
+    "translation": ""
   },
   "fragmentsPlaceDialogSubmitButton": {
     "source": "Add selected fragment",
-    "translation": "Ausgewähltes Fragment hinzufügen"
+    "translation": ""
   },
   "fragmentsPlaceDialogTitle": {
     "source": "Add fragment block",
-    "translation": "Fragment hinzufügen"
+    "translation": ""
   },
   "gridHide": {
     "source": "Hide grid",
-    "translation": "Spalten verstecken"
+    "translation": "Nascondi griglia"
   },
   "gridShow": {
     "source": "Show grid",
-    "translation": "Spalten anzeigen"
+    "translation": "Mostra griglia"
   },
   "gridToggle": {
     "source": "Toggle grid",
-    "translation": "Spalten anzeigen"
+    "translation": ""
   },
   "gridTourText": {
     "source": "Display a layout grid overlay on top of the page.",
-    "translation": "Zeigt die Layout-Spalten als Overlay über die Seite an."
+    "translation": ""
   },
   "helpTourText": {
     "source": "Shows a list of available shortcuts.",
-    "translation": "Zeigt eine Liste von verfügbaren Tastenkombinationen an."
+    "translation": ""
   },
   "history": {
     "source": "History",
-    "translation": "Änderungsverlauf"
+    "translation": "Cronologia"
   },
   "historyCurrentRevision": {
     "source": "Current revision",
-    "translation": "Aktuelle Revision"
+    "translation": "Revisione attuale"
   },
   "historyEmpty": {
     "source": "There are now changes yet.",
-    "translation": "Es gibt noch keine Änderungen."
+    "translation": ""
   },
   "historyRedo": {
     "source": "Redo",
-    "translation": "Wiederholen"
+    "translation": ""
   },
   "historyRedoTourText": {
     "source": "Redo the previous change.",
-    "translation": "Machen Sie die vorherige Änderung rückgängig."
+    "translation": ""
   },
   "historyShowMore": {
     "source": "Show @count more",
-    "translation": "@count weitere anzeigen"
+    "translation": "Mostra altre @count"
   },
   "historyTourText": {
     "source": "See a list of all changes made so far and switch back and forth between changes.",
-    "translation": "Zeigt den Verlauf aller Änderungen die gemacht wurden. Springen Sie beliebig zwischen Änderungen vor und zurück."
+    "translation": ""
   },
   "historyUndo": {
     "source": "Undo",
-    "translation": "Rückgängig"
+    "translation": ""
   },
   "historyUndoTourText": {
     "source": "Undo the last change.",
-    "translation": "Letzte Änderung rückgängig machen."
+    "translation": ""
   },
   "importExistingDescription": {
     "source": "Import from an existing page",
-    "translation": "Von einer bestehenden Seite importieren"
+    "translation": "Importa da una pagina esistente"
   },
   "importExistingDialogLead": {
     "source": "Import content from an existing page. The items will be added to the end of the list. This action can be undone.",
-    "translation": "Importieren Sie Inhalte von einer bestehenden Seite. Die Elemente werden an das Ende der Liste hinzugefügt. Diese Aktion kann rückgängig gemacht werden."
+    "translation": "Importa contenuti da una pagina esistente. Gli elementi verranno aggiunti alla fine della lista. Questa azione può essere annullata."
   },
   "importExistingDialogSubmit": {
     "source": "Import content",
-    "translation": "Inhalte importieren"
+    "translation": "Importa contenuti"
   },
   "importExistingDialogTitle": {
     "source": "Import from existing page",
-    "translation": "Von bestehender Seite importieren"
+    "translation": "Importa da una pagina esistente"
   },
   "importExistingError": {
     "source": "Content could not be imported.",
-    "translation": "Inhalte konnten nicht übernommen werden."
+    "translation": "I contenuti non possono essere importati."
   },
   "importExistingFieldsLabel": {
     "source": "Which content would you like to import?",
-    "translation": "Welche Inhalte möchten Sie importieren?"
+    "translation": "Quali contenuti vuoi importare?"
   },
   "importExistingPagesTitle": {
     "source": "Select page",
@@ -1237,11 +1237,11 @@
   },
   "importExistingSuccess": {
     "source": "Content imported successfully.",
-    "translation": "Inhalte erfolgreich übernommen."
+    "translation": "Contenuti importati con successo."
   },
   "importExistingTitle": {
     "source": "Import...",
-    "translation": "Importieren..."
+    "translation": "Importa..."
   },
   "interactionLayerOff": {
     "source": "Show interaction layers",
@@ -1253,603 +1253,603 @@
   },
   "libraryAdd": {
     "source": "Add to library...",
-    "translation": "Zur Bibliothek hinzufügen..."
+    "translation": "Aggiungi alla biblioteca"
   },
   "libraryAddDescription": {
     "source": "Add a reusable block from the block library.",
-    "translation": "Fügen Sie einen wiederverwendbaren Block aus der Bibliothek hinzu."
+    "translation": ""
   },
   "libraryAddFromLibrary": {
     "source": "Add from library",
-    "translation": "Aus der Bibliothek hinzufügen"
+    "translation": ""
   },
   "libraryDetach": {
     "source": "Detach from library",
-    "translation": "Von der Bibliothek loslösen"
+    "translation": ""
   },
   "libraryDialogDescriptionLabel": {
     "source": "Description",
-    "translation": "Beschreibung"
+    "translation": "Descrizione"
   },
   "libraryDialogLead": {
     "source": "When you add an item to the library, you can use it on multiple pages at the same time. Changes to this item are then immediately published on all pages.",
-    "translation": "Wenn Sie ein Element zur Bibliothek hinzufügen können Sie diesen auf mehreren Seiten gleichzeitig verwenden. Änderungen an diesem Element sind dann sofort auf allen Seiten publiziert."
+    "translation": "Aggiungendo un elemento alla biblioteca, puoi utilizzarlo su più pagine contemporaneamente. Le modifiche a questo elemento saranno pubblicate immediatamente su tutte le pagine."
   },
   "libraryDialogReusableInfo": {
     "source": "The library item will be available for placement on other pages once this page has been published.",
-    "translation": "Das Bibliothekselement kann auf anderen Seiten platziert werden sobald diese Seite publiziert/gespeichert wurde."
+    "translation": ""
   },
   "libraryDialogSubmit": {
     "source": "Add to library",
-    "translation": "Zur Bibliothek hinzufügen"
+    "translation": "Aggiungi alla biblioteca"
   },
   "libraryDialogTitle": {
     "source": "Add to library",
-    "translation": "Zur Bibliothek hinzufügen"
+    "translation": "Aggiungi alla biblioteca"
   },
   "libraryDialogTitleInputPlaceholder": {
     "source": "e.g. Teaser Campaign 2024",
-    "translation": "z.B. Teaser Kampagne 2023"
+    "translation": "es. Anteprima Campagna 2023"
   },
   "libraryError": {
     "source": "Failed to add block to library.",
-    "translation": "Das Element konnte nicht wiederverwendbar gemacht werden."
+    "translation": "L'elemento non può essere reso riutilizzabile."
   },
   "libraryItemEditOverlayBack": {
     "source": "Back to page",
-    "translation": "Zurück zur Seite"
+    "translation": ""
   },
   "libraryItemEditOverlayTitle": {
     "source": "Edit reusable block",
-    "translation": "Wiederverwendbaren Block bearbeiten"
+    "translation": ""
   },
   "libraryPlaceBundleSelectLabel": {
     "source": "Bundle",
-    "translation": "Typ"
+    "translation": ""
   },
   "libraryPlaceDialogLead": {
     "source": "Select a reusable block from the library to add it to your layout. You can detach the block later.",
-    "translation": "Wählen Sie einen wiederverwendbaren Block aus der Bibliothek, um ihn zu Ihrem Layout hinzuzufügen. Sie können den Block später wieder entfernen."
+    "translation": ""
   },
   "libraryPlaceDialogSubmit": {
     "source": "Add reusable block",
-    "translation": "Wiederverwendbaren Block hinzufügen"
+    "translation": ""
   },
   "libraryPlaceDialogTitle": {
     "source": "Add block from library",
-    "translation": "Block aus Bibliothek hinzufügen"
+    "translation": ""
   },
   "libraryPreviewLabel": {
     "source": "Preview",
-    "translation": "Vorschau"
+    "translation": "Anteprima"
   },
   "manageSchedule": {
     "source": "Manage schedule...",
-    "translation": "Planung verwalten..."
+    "translation": ""
   },
   "maskHide": {
     "source": "Hide non-editable areas",
-    "translation": "Nicht-editierbare Bereiche verstecken"
+    "translation": "Nascondi campi di contenuto"
   },
   "maskShow": {
     "source": "Show non-editable areas",
-    "translation": "Nicht-editierbare Bereiche anzeigen"
+    "translation": "Mostra campi di contenuto"
   },
   "maskToggle": {
     "source": "Toggle non-editable areas",
-    "translation": "Nicht-editierbare Bereiche anzeigen"
+    "translation": ""
   },
   "maskTourText": {
     "source": "Toggle between showing or hiding non-editable parts of the page.",
-    "translation": "Wechseln Sie zwischen Anzeigen und Verbergen nicht bearbeitbarer Teile der Seite."
+    "translation": ""
   },
   "mediaLibrary": {
     "source": "Media Library",
-    "translation": "Medienbibliothek"
+    "translation": ""
   },
   "mediaLibraryReplaceFailed": {
     "source": "Failed to replace media.",
-    "translation": "Das Medienelement konnte nicht ersetzt werden."
+    "translation": ""
   },
   "mediaLibraryReplaceMedia": {
     "source": "Replace @field",
-    "translation": "Medienelement ersetzen"
+    "translation": ""
   },
   "mediaLibraryTourText": {
     "source": "Search for media like images and drag and drop them into the page.",
-    "translation": "Suchen Sie nach Medien wie Bildern und ziehen Sie diese in die Seite."
+    "translation": ""
   },
   "multipleItemsLabel": {
     "source": "Items",
-    "translation": "Elemente"
+    "translation": "Elementi"
   },
   "notSet": {
     "source": "Not set",
-    "translation": "Nicht gesetzt"
+    "translation": ""
   },
   "notSupported": {
     "source": "Not supported",
-    "translation": "Nicht unterstützt"
+    "translation": ""
   },
   "optionBkVisibleLanguagesAll": {
     "source": "All languages",
-    "translation": "Alle Sprachen"
+    "translation": ""
   },
   "optionsCommand.selectCheckboxValue": {
     "source": "Select \"@value\" in \"@option\"",
-    "translation": "«@value» in «@option» auswählen"
+    "translation": ""
   },
   "optionsCommand.setOption": {
     "source": "Set option \"@option\" to \"@value\"",
-    "translation": "Option «@option» «@value» setzen"
+    "translation": ""
   },
   "optionsCommand.unselectCheckboxValue": {
     "source": "Unselect \"@value\" in \"@option\"",
-    "translation": "«@value» in «@option» abwählen"
+    "translation": ""
   },
   "overlayDoubleClickInfo": {
     "source": "<strong>Double click</strong> to close overlay",
-    "translation": "<strong>Doppelklicken</strong> um Dialog zu schliessen"
+    "translation": ""
   },
   "ownershipError": {
     "source": "Error in assigning",
-    "translation": "Fehler beim Zuweisen"
+    "translation": "Errore nell'assegnazione"
   },
   "ownershipNote": {
     "source": "This page is currently being edited by @name. Changes can only be made by one person at a time.",
-    "translation": "Diese Seite wird aktuell von @name bearbeitet. Änderungen können nur von einer Person gleichzeitig durchgeführt werden."
+    "translation": "Questa pagina è attualmente in lavorazione da @name. Le modifiche possono essere effettuate solo da una persona alla volta."
   },
   "ownershipSuccess": {
     "source": "You are now the owner.",
-    "translation": "Sie sind nun der Besitzer."
+    "translation": "Ora sei il proprietario."
   },
   "ownershipTakeOwnership": {
     "source": "Assign to me",
-    "translation": "Mir zuweisen"
+    "translation": "Assegna a me"
   },
   "pageIsNotPublished": {
     "source": "Page is not published",
-    "translation": "Seite ist nicht publiziert"
+    "translation": "Pagina non pubblicata"
   },
   "pageIsPublished": {
     "source": "Page is published",
-    "translation": "Seite ist publiziert"
+    "translation": "Pagina pubblicata"
   },
   "pageIsPublishedWithPendingChanges": {
     "source": "Page is published (changes pending)",
-    "translation": "Seite ist publiziert (Änderungen ausstehend)"
+    "translation": "Pagina pubblicata (modifiche in attesa)"
   },
   "paste": {
     "source": "Paste",
-    "translation": "Einfügen"
+    "translation": ""
   },
   "previewDialogLead": {
     "source": "Scan the QR code with your smartphone to open the preview.",
-    "translation": "Scannen Sie den QR-Code mit Ihrem Smartphone um die Vorschau zu öffnen."
+    "translation": "Scansiona il codice QR con il tuo smartphone per aprire l'anteprima."
   },
   "previewDialogTitle": {
     "source": "Preview with smartphone",
-    "translation": "Vorschau mit Smartphone"
+    "translation": "Anteprima con smartphone"
   },
   "previewNewWindow": {
     "source": "Preview (new window)",
-    "translation": "Vorschau (neues Fenster)"
+    "translation": "Anteprima (nuova finestra)"
   },
   "previewNewWindowTourText": {
     "source": "Opens a preview of the current changes in a new window.",
-    "translation": "Öffnet eine Vorschau der aktuellen Änderungen in einem neuen Fenster."
+    "translation": ""
   },
   "previewQrCodeText": {
     "source": "You can also copy the link and share it.",
-    "translation": "Sie können den Link auch kopieren und teilen."
+    "translation": ""
   },
   "previewWithSmartphone": {
     "source": "Preview (with smartphone)",
-    "translation": "Vorschau (mit Smartphone)"
+    "translation": "Anteprima (con smartphone)"
   },
   "previewWithSmartphoneTourText": {
     "source": "Shows a QR code to quickly open a preview of the changes with your smartphone.",
-    "translation": "Zeigt einen QR-Code an, um eine Vorschau der Änderungen mit Ihrem Smartphone zu öffnen."
+    "translation": ""
   },
   "proxyViewHide": {
     "source": "Show content preview",
-    "translation": "Inhaltsvorschau anzeigen"
+    "translation": ""
   },
   "proxyViewShow": {
     "source": "Show structure view",
-    "translation": "Strukturierte Vorschau anzeigen"
+    "translation": ""
   },
   "proxyViewToggle": {
     "source": "Toggle structure view",
-    "translation": "Vorschau wechseln"
+    "translation": ""
   },
   "proxyViewTourText": {
     "source": "Displays the content blocks as a structured view.",
-    "translation": "Stellt die Inhaltsblöcke in strukturierter Form dar."
+    "translation": ""
   },
   "publishAlreadyScheduledDescription": {
     "source": "This page is already scheduled for publishing",
-    "translation": "Diese Seite ist bereits zur Veröffentlichung geplant"
+    "translation": ""
   },
   "publishAndCloseLabel": {
     "source": "Publish & Close",
-    "translation": "Veröffentlichen & Schliessen"
+    "translation": ""
   },
   "publishAndCloseLabelUnpublished": {
     "source": "Save & Close",
-    "translation": "Speichern & Schliessen"
+    "translation": ""
   },
   "publishCurrentPage": {
     "source": "Current page",
-    "translation": "Aktuelle Seite"
+    "translation": ""
   },
   "publishCurrentlyPublished": {
     "source": "Page is published",
-    "translation": "Seite ist publiziert"
+    "translation": ""
   },
   "publishCurrentlyUnpublished": {
     "source": "Page is unpublished",
-    "translation": "Seite ist nicht publiziert"
+    "translation": ""
   },
   "publishDescription": {
     "source": "Publish all changes.",
-    "translation": "Alle Änderungen veröffentlichen"
+    "translation": "Rendi pubbliche tutte le modifiche"
   },
   "publishDescriptionScheduled": {
     "source": "View or change the scheduled publication",
-    "translation": "Geplante Veröffentlichung ansehen oder ändern"
+    "translation": ""
   },
   "publishDescriptionUnpublished": {
     "source": "Save all changes while keeping page unpublished",
-    "translation": "Alle Änderungen speichern ohne die Seite zu publizieren"
+    "translation": ""
   },
   "publishDialogTitle": {
     "source": "Publish changes",
-    "translation": "Änderungen veröffentlichen"
+    "translation": ""
   },
   "publishError": {
     "source": "Changes could not be published.",
-    "translation": "Änderungen konnten nicht publiziert werden."
+    "translation": "Le modifiche non possono essere pubblicate."
   },
   "publishLabel": {
     "source": "Publish",
-    "translation": "Veröffentlichen"
+    "translation": "Pubblica"
   },
   "publishLabelUnpublished": {
     "source": "Save",
-    "translation": "Speichern"
+    "translation": ""
   },
   "publishManageSchedule": {
     "source": "Manage scheduling",
-    "translation": "Planung verwalten"
+    "translation": ""
   },
   "publishMode": {
     "source": "Publish mode",
-    "translation": "Veröffentlichungsmodus"
+    "translation": ""
   },
   "publishModeImmediateDescription": {
     "source": "Publish changes immediately",
-    "translation": "Änderungen sofort veröffentlichen"
+    "translation": ""
   },
   "publishModeImmediateTitle": {
     "source": "Publish",
-    "translation": "Veröffentlichen"
+    "translation": ""
   },
   "publishModeSaveDescription": {
     "source": "Save changes without publishing",
-    "translation": "Änderungen speichern ohne veröffentlichen"
+    "translation": ""
   },
   "publishModeSaveTitle": {
     "source": "Save",
-    "translation": "Speichern"
+    "translation": ""
   },
   "publishModeScheduledDescription": {
     "source": "Schedule changes for publishing",
-    "translation": "Änderungen geplant veröffentlichen"
+    "translation": ""
   },
   "publishModeScheduledTitle": {
     "source": "Schedule",
-    "translation": "Planen"
+    "translation": ""
   },
   "publishName": {
     "source": "Name",
-    "translation": "Name"
+    "translation": ""
   },
   "publishPublicationScheduled": {
     "source": "Publication scheduled",
-    "translation": "Veröffentlichung geplant"
+    "translation": ""
   },
   "publishPublishContent": {
     "source": "Publish content",
-    "translation": "Inhalt veröffentlichen"
+    "translation": ""
   },
   "publishPublishContents": {
     "source": "Publish @count contents",
-    "translation": "@count Inhalte veröffentlichen"
+    "translation": ""
   },
   "publishRemainsPublished": {
     "source": "Remains published",
-    "translation": "Bleibt publiziert"
+    "translation": ""
   },
   "publishRemainsUnpublished": {
     "source": "Remains unpublished",
-    "translation": "Bleibt nicht publiziert"
+    "translation": ""
   },
   "publishRemoveSchedule": {
     "source": "Remove schedule",
-    "translation": "Planung entfernen"
+    "translation": ""
   },
   "publishResultPublishChangesNowPublished": {
     "source": "Changes are published, page is now published",
-    "translation": "Änderungen und Seite sind publiziert"
+    "translation": ""
   },
   "publishResultPublishChangesRemainPublished": {
     "source": "Changes are published, page remains published",
-    "translation": "Änderungen sind publiziert, Seite bleibt publiziert"
+    "translation": ""
   },
   "publishResultSaveChanges": {
     "source": "Changes are saved, page remains unpublished",
-    "translation": "Änderungen sind gespeichert, Seite bleibt unpubliziert"
+    "translation": ""
   },
   "publishResultScheduledChanges": {
     "source": "Changes will be published on @date",
-    "translation": "Änderungen werden am @date publiziert"
+    "translation": ""
   },
   "publishResultScheduledPage": {
     "source": "Page will be published on @date",
-    "translation": "Seite wird am @date publiziert"
+    "translation": ""
   },
   "publishRevisionLogMessage": {
     "source": "Change description",
-    "translation": "Beschreibung der Änderungen"
+    "translation": "Descrizione delle modifiche"
   },
   "publishRevisionLogMessageDescription": {
     "source": "Briefly describe the changes made",
-    "translation": "Beschreiben Sie kurz die vorgenommenen Änderungen"
+    "translation": ""
   },
   "publishSaveContent": {
     "source": "Save content",
-    "translation": "Inhalt speichern"
+    "translation": ""
   },
   "publishSaveContents": {
     "source": "Save @count contents",
-    "translation": "@count Inhalte speichern"
+    "translation": ""
   },
   "publishScheduleDate": {
     "source": "Publication date",
-    "translation": "Veröffentlichungsdatum"
+    "translation": ""
   },
   "publishScheduleDateTooSoon": {
     "source": "The scheduled date must be at least 2 minutes in the future",
-    "translation": "Das geplante Datum muss mindestens 2 Minuten in der Zukunft liegen"
+    "translation": ""
   },
   "publishSchedulePublication": {
     "source": "Schedule publication",
-    "translation": "Veröffentlichung planen"
+    "translation": ""
   },
   "publishSchedulePublications": {
     "source": "Schedule @count publications",
-    "translation": "@count Veröffentlichungen planen"
+    "translation": ""
   },
   "publishScheduleSuccess": {
     "source": "Publication scheduled for @date",
-    "translation": "Veröffentlichung für @date geplant"
+    "translation": ""
   },
   "publishScheduledBlockPlural": {
     "source": "@count blocks are scheduled to be published on @date",
-    "translation": "@count Blöcke sind zur Veröffentlichung am @date geplant"
+    "translation": ""
   },
   "publishScheduledBlockSingular": {
     "source": "1 block is scheduled to be published on @date",
-    "translation": "1 Block ist zur Veröffentlichung am @date geplant"
+    "translation": ""
   },
   "publishScheduledInfo": {
     "source": "You can still make changes until the scheduled publication date.",
-    "translation": "Sie können bis zum geplanten Veröffentlichungsdatum noch Änderungen vornehmen."
+    "translation": ""
   },
   "publishStatus": {
     "source": "Status",
-    "translation": "Status"
+    "translation": ""
   },
   "publishSuccess": {
     "source": "Changes published successfully.",
-    "translation": "Änderungen erfolgreich publiziert."
+    "translation": "Modifiche pubblicate con successo."
   },
   "publishSuccessfullyPublished": {
     "source": "Successfully published",
-    "translation": "Erfolgreich veröffentlicht"
+    "translation": ""
   },
   "publishSuccessfullySaved": {
     "source": "Successfully saved",
-    "translation": "Erfolgreich gespeichert"
+    "translation": ""
   },
   "publishSummary": {
     "source": "Summary",
-    "translation": "Zusammenfassung"
+    "translation": ""
   },
   "publishWillBePublished": {
     "source": "Will be published",
-    "translation": "Wird publiziert"
+    "translation": ""
   },
   "publishWillBeScheduled": {
     "source": "Will be scheduled",
-    "translation": "Wird geplant"
+    "translation": ""
   },
   "responsivePreviewCustomViewport": {
     "source": "Custom",
-    "translation": "Benutzerdefiniert"
+    "translation": ""
   },
   "responsivePreviewTitle": {
     "source": "Responsive Preview",
-    "translation": "Responsive Vorschau"
+    "translation": ""
   },
   "responsivePreviewTourText": {
     "source": "See how your changes look like on smaller screens, such as smartphones. Click on the \"detach\" button to be able to select additional viewport sizes.",
-    "translation": "Sehen Sie, wie Ihre Änderungen auf kleineren Bildschirmen, wie Smartphones, aussehen. Klicken Sie auf den \"Loslösen\"-Button, um zusätzliche Ansichtsgrössen auswählen zu können."
+    "translation": ""
   },
   "revertDialogLead": {
     "source": "This will delete all changes and restore the currently published state. This action cannot be undone.",
-    "translation": "Damit werden alle Änderungen gelöscht und der aktuell publizierte Stand wiederhergestellt. Diese Aktion kann nicht rückgängig gemacht werden."
+    "translation": "Questo eliminerà tutte le modifiche e ripristinerà lo stato attualmente pubblicato. Questa azione non può essere annullata."
   },
   "revertDialogSubmit": {
     "source": "Discard changes",
-    "translation": "Änderungen verwerfen"
+    "translation": "Scarta modifiche"
   },
   "revertDialogTitle": {
     "source": "Irrevocably discard changes",
-    "translation": "Änderungen unwiderruflich verwerfen"
+    "translation": "Scarta irrevocabilmente le modifiche"
   },
   "revertError": {
     "source": "Changes could not be discarded.",
-    "translation": "Änderungen konnten nicht verworfen werden."
+    "translation": "Le modifiche non possono essere scartate."
   },
   "revertMenuDescription": {
     "source": "Restore currently published state",
-    "translation": "Aktuell veröffentlichten Zustand wiederherstellen"
+    "translation": "Ripristina lo stato attualmente pubblicato"
   },
   "revertMenuTitle": {
     "source": "Discard...",
-    "translation": "Verwerfen..."
+    "translation": "Annulla..."
   },
   "revertSuccess": {
     "source": "All changes have been discarded.",
-    "translation": "Alle Änderungen wurden verworfen."
+    "translation": "Tutte le modifiche sono state scartate."
   },
   "scheduledFor": {
     "source": "The changes will be published on this date.",
-    "translation": "Die Änderungen werden an diesem Datum publiziert."
+    "translation": ""
   },
   "searchBoxNoResultsFound": {
     "source": "No results found",
-    "translation": "Keine Resultate gefunden"
+    "translation": "Nessun risultato trovato"
   },
   "searchBoxOnThisPage": {
     "source": "On this page",
-    "translation": "Auf dieser Seite"
+    "translation": "Su questa pagina"
   },
   "searchBoxPlaceholder": {
     "source": "Enter search term",
-    "translation": "Suchbegriff eingeben"
+    "translation": "Inserisci un termine di ricerca"
   },
   "searchToolbarLabel": {
     "source": "Search content",
-    "translation": "Inhalte suchen"
+    "translation": "Cerca contenuti"
   },
   "searchTourText": {
     "source": "Quickly find blocks on the current page or existing content to drag and drop as blocks into the page.",
-    "translation": "Finden Sie Blöcke auf der aktuellen Seite oder andere bestehende Inhalte wie Bilder oder Dokumente, um sie als Blöcke auf der Seite hinzuzufügen."
+    "translation": ""
   },
   "selectAllBlocks": {
     "source": "Select all blocks",
-    "translation": "Alle Blöcke auswählen"
+    "translation": ""
   },
   "selectAllOfBundle": {
     "source": "Select all \"@bundle\" blocks",
-    "translation": "Alle «@bundle» Blöcke auswählen"
+    "translation": ""
   },
   "selectedIsNew": {
     "source": "New",
-    "translation": "Neu"
+    "translation": ""
   },
   "settingsAdvanced": {
     "source": "Advanced",
-    "translation": "Erweitert"
+    "translation": ""
   },
   "settingsAppearance": {
     "source": "Appearance",
-    "translation": "Darstellung"
+    "translation": ""
   },
   "settingsArtboard": {
     "source": "Artboard",
-    "translation": "Vorschau"
+    "translation": ""
   },
   "settingsBehaviour": {
     "source": "Behaviour",
-    "translation": "Verhalten"
+    "translation": "Comportamento"
   },
   "settingsBeta": {
     "source": "New Features",
-    "translation": "Neue Funktionen"
+    "translation": ""
   },
   "settingsDialogTitle": {
     "source": "Change settings",
-    "translation": "Einstellungen"
+    "translation": "Impostazioni"
   },
   "settingsMenuDescription": {
     "source": "Personal settings for the editor",
-    "translation": "Persönliche Einstellungen für den Editor"
+    "translation": "Impostazioni personali per l'editor"
   },
   "settingsMenuTitle": {
     "source": "Settings",
-    "translation": "Einstellungen"
+    "translation": "Impostazioni"
   },
   "shortcutGroupBlocks": {
     "source": "Blocks",
-    "translation": "Blöcke"
+    "translation": ""
   },
   "shortcutGroupGeneral": {
     "source": "General",
-    "translation": "Allgemein"
+    "translation": ""
   },
   "shortcutGroupUi": {
     "source": "UI",
-    "translation": "Oberfläche"
+    "translation": ""
   },
   "sidebar.hide": {
     "source": "Hide @title",
-    "translation": "@title ausblenden"
+    "translation": ""
   },
   "sidebar.show": {
     "source": "Show @title",
-    "translation": "@title anzeigen"
+    "translation": ""
   },
   "singleComment": {
     "source": "comment",
-    "translation": "Kommentar"
+    "translation": ""
   },
   "stateUnavailableText": {
     "source": "This could be due to missing permissions or a temporary problem. Please try again later.",
-    "translation": "Dies könnte auf fehlende Berechtigungen oder ein vorübergehendes Problem zurückzuführen sein. Bitte versuchen Sie es später nochmal."
+    "translation": ""
   },
   "stateUnavailableTitle": {
     "source": "The edit state could not be loaded.",
-    "translation": "Der Bearbeitungszustand konnte nicht geladen werden."
+    "translation": ""
   },
   "structureToolbarLabel": {
     "source": "Structure",
-    "translation": "Struktur"
+    "translation": "Struttura"
   },
   "structureTourText": {
     "source": "Shows a structured list of all blocks on the current page. Click on any block to quickly jump to it.",
-    "translation": "Zeigt eine strukturierte Liste aller Blöcke auf der aktuellen Seite. Klicken Sie auf einen Block, um ihn auf der Seite anzuzeigen."
+    "translation": ""
   },
   "systemRequirementsDialogButton": {
     "source": "Continue anyway",
-    "translation": "Trotzdem fortfahren"
+    "translation": ""
   },
   "systemRequirementsDialogLead": {
     "source": "blökkli has detected that your browser does not meet one or more system requirements. For the best experience, please use a browser that supports all the listed requirements.",
-    "translation": "blökkli hat festgestellt, dass Ihr Browser eine oder mehrere Systemanforderungen nicht erfüllt. Für die beste Erfahrung verwenden Sie bitte einen Browser, der alle aufgeführten Anforderungen unterstützt."
+    "translation": ""
   },
   "systemRequirementsDialogText": {
     "source": "blökkli has been tested and optimized for the latest versions of Chrome, Firefox, Edge, and Safari. Features like WebGL are well supported, but they may sometimes be disabled for performance or security reasons.",
-    "translation": "blökkli wurde für die neuesten Versionen von Chrome, Firefox, Edge und Safari getestet und optimiert. Funktionen wie WebGL werden in der Regel unterstützt, können jedoch manchmal aus Leistungs- oder Sicherheitsgründen deaktiviert sein."
+    "translation": ""
   },
   "systemRequirementsDialogTitle": {
     "source": "System Requirements",
-    "translation": "Systemanforderungen"
+    "translation": ""
   },
   "systemRequirementsWebglText": {
     "source": "blökkli uses WebGL for fast rendering of UI elements such as selected blocks and drag-and-drop indicators. If WebGL is not supported, Blökkli will resort to fallback rendering, which is slower and lacks full feature support.",
-    "translation": "blökkli verwendet WebGL für die schnelle Darstellung von GUI-Elementen wie ausgewählten Blöcken und Drag-and-Drop-Indikatoren. Wenn WebGL nicht unterstützt wird, verwendet blökkli einen Fallback, der langsamer ist und nicht alle Funktionen unterstützt."
+    "translation": ""
   },
   "theme": {
     "source": "Theme",
-    "translation": "Farben"
+    "translation": ""
   },
   "themeTourText": {
     "source": "Change the colors of the theme and generate a theme file.",
-    "translation": "Ändern Sie das Theme und generieren Sie eine Theme-Datei."
+    "translation": ""
   },
   "toggleInteractionLayers": {
     "source": "Toggle interaction layers",
@@ -1857,106 +1857,106 @@
   },
   "touchBarCancelDragging": {
     "source": "Cancel dragging",
-    "translation": "Platzieren abbrechen"
+    "translation": ""
   },
   "touchBarFinishSelecting": {
     "source": "Finish selecting",
-    "translation": "Mehrfachauswahl beenden"
+    "translation": ""
   },
   "tourDescription": {
     "source": "Explore the features of the editor",
-    "translation": "Entdecken Sie die Funktionen vom Editor."
+    "translation": ""
   },
   "tourIntro": {
     "source": "Explore the most important features of the editor and learn how to get started using blökkli.",
-    "translation": "Lernen Sie die wichtigsten Funktionen des Editors kennen und erfahren Sie, wie Sie mit blökkli loslegen können."
+    "translation": ""
   },
   "tourLabel": {
     "source": "Take a tour",
-    "translation": "Tour machen"
+    "translation": ""
   },
   "tourNext": {
     "source": "Next",
-    "translation": "Weiter"
+    "translation": ""
   },
   "tourPrev": {
     "source": "Previous",
-    "translation": "Zurück"
+    "translation": ""
   },
   "tourStartButton": {
     "source": "Start the tour",
-    "translation": "Tour starten"
+    "translation": ""
   },
   "transformDialogButtonApply": {
     "source": "Apply changes",
-    "translation": "Änderungen annehmen"
+    "translation": ""
   },
   "transformDialogButtonNewSuggestion": {
     "source": "New suggestion",
-    "translation": "Neuer Vorschlag"
+    "translation": ""
   },
   "transformDialogButtonPreview": {
     "source": "Preview",
-    "translation": "Vorschau"
+    "translation": ""
   },
   "translationsBannerButton": {
     "source": "Edit source language instead",
-    "translation": "Originalsprache bearbeiten"
+    "translation": ""
   },
   "translationsBannerText": {
     "source": "You are currently editing the <strong>@language</strong> translation. Some features like adding, moving or deleting blocks are not available.",
-    "translation": "Sie bearbeiten die Übersetzung <strong>«@language»</strong>. Einige Funktionen wie das Hinzufügen, Verschieben oder Löschen von Blöcken sind nicht verfügbar."
+    "translation": ""
   },
   "translationsBatchTranslateMenuDescription": {
     "source": "Translate all blocks",
-    "translation": "Alle Elemente übersetzen"
+    "translation": "Traduci tutti gli elementi"
   },
   "translationsBatchTranslateMenuTitle": {
     "source": "Translate...",
-    "translation": "Übersetzen..."
+    "translation": "Traduci..."
   },
   "translationsItemAction": {
     "source": "Translate",
-    "translation": "Übersetzen"
+    "translation": "Traduci..."
   },
   "translationsTourText": {
     "source": "Quickly switch between available translations. A greyed out language indicates the content is not yet translated. Clicking on it opens the form to create a new translation for this language.",
-    "translation": "Wechseln Sie schnell zwischen verfügbaren Übersetzungen. Eine graue Sprache zeigt an, dass der Inhalt noch nicht übersetzt wurde. Ein Klick darauf öffnet das Formular, um eine neue Übersetzung für diese Sprache zu erstellen."
+    "translation": ""
   },
   "translationsTourTitle": {
     "source": "Translations",
-    "translation": "Übersetzungen"
+    "translation": ""
   },
   "unexpectedMutationError": {
     "source": "An unexpected error happened.",
-    "translation": "Ein unerwarteter Fehler ist aufgetreten"
+    "translation": ""
   },
   "validationsNoneFound": {
     "source": "No validation errors found.",
-    "translation": "Keine Validierungsfehler gefunden."
+    "translation": "Nessun errore di validazione trovato."
   },
   "validationsToolbarLabel": {
     "source": "Validations",
-    "translation": "Validierungen"
+    "translation": "Validazioni"
   },
   "validationsTourText": {
     "source": "See validation errors for content or structure on the current page.",
-    "translation": "Zeigt Validierungsfehler für Inhalte auf der aktuellen Seite an."
+    "translation": ""
   },
   "viewBannerReviewText": {
     "source": "You can view and add comments but cannot edit content.",
-    "translation": "Sie können Kommentare ansehen und hinzufügen, aber keine Inhalte bearbeiten."
+    "translation": ""
   },
   "viewBannerReviewTitle": {
     "source": "You are in review mode.",
-    "translation": "Sie befinden sich im Review-Modus."
+    "translation": ""
   },
   "viewBannerViewText": {
     "source": "You can view comments but cannot edit content.",
-    "translation": "Sie können Kommentare ansehen, aber keine Inhalte bearbeiten."
+    "translation": ""
   },
   "viewBannerViewTitle": {
     "source": "You are in view-only mode.",
-    "translation": "Sie befinden sich im Ansichtsmodus."
+    "translation": ""
   }
 }

@@ -3,10 +3,10 @@ import {
   validateBlockDefinition,
   CollectedBlockFile,
 } from '../src/module/Collector/Blocks'
-import type { ExtractedBlockDefinitionInput } from '../src/module/types'
+import type { BlockDefinitionInputBase } from '../src/shared/types/definitions'
 
 function createMockBlockFile(
-  definition: ExtractedBlockDefinitionInput,
+  definition: BlockDefinitionInputBase,
   options: { type?: 'main' | 'context'; iconPath?: string | null } = {},
 ): CollectedBlockFile {
   const file = new CollectedBlockFile('/path/to/Block.vue', '')
@@ -19,7 +19,7 @@ function createMockBlockFile(
 describe('validateBlockDefinition', () => {
   describe('radios option', () => {
     test('returns no errors when default matches an option', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         options: {
           alignment: {
@@ -38,7 +38,7 @@ describe('validateBlockDefinition', () => {
     })
 
     test('returns error when default does not match any option', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         options: {
           alignment: {
@@ -63,7 +63,7 @@ describe('validateBlockDefinition', () => {
 
   describe('checkboxes option', () => {
     test('returns no errors when all defaults match options', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         options: {
           features: {
@@ -82,7 +82,7 @@ describe('validateBlockDefinition', () => {
     })
 
     test('returns error when a default value does not match any option', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         options: {
           features: {
@@ -103,7 +103,7 @@ describe('validateBlockDefinition', () => {
     })
 
     test('returns multiple errors for multiple invalid defaults', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         options: {
           features: {
@@ -123,7 +123,7 @@ describe('validateBlockDefinition', () => {
 
   describe('number option', () => {
     test('returns no errors when default is within range', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         options: {
           count: {
@@ -139,7 +139,7 @@ describe('validateBlockDefinition', () => {
     })
 
     test('returns error when default is less than min', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         options: {
           count: {
@@ -158,7 +158,7 @@ describe('validateBlockDefinition', () => {
     })
 
     test('returns error when default is greater than max', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         options: {
           count: {
@@ -179,7 +179,7 @@ describe('validateBlockDefinition', () => {
 
   describe('range option', () => {
     test('returns no errors when default is within range', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         options: {
           opacity: {
@@ -196,7 +196,7 @@ describe('validateBlockDefinition', () => {
     })
 
     test('returns error when default is out of range', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         options: {
           opacity: {
@@ -217,7 +217,7 @@ describe('validateBlockDefinition', () => {
 
   describe('color option', () => {
     test('returns no errors for valid hex color', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         options: {
           bgColor: {
@@ -231,7 +231,7 @@ describe('validateBlockDefinition', () => {
     })
 
     test('returns no errors for uppercase hex color', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         options: {
           bgColor: {
@@ -245,7 +245,7 @@ describe('validateBlockDefinition', () => {
     })
 
     test('returns error for invalid hex color format', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         options: {
           bgColor: {
@@ -262,7 +262,7 @@ describe('validateBlockDefinition', () => {
     })
 
     test('returns error for hex color without hash', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         options: {
           bgColor: {
@@ -280,7 +280,7 @@ describe('validateBlockDefinition', () => {
 
   describe('datetime-local option', () => {
     test('returns no errors for valid datetime', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         options: {
           publishDate: {
@@ -294,7 +294,7 @@ describe('validateBlockDefinition', () => {
     })
 
     test('returns no errors when datetime is within min/max range', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         options: {
           publishDate: {
@@ -310,7 +310,7 @@ describe('validateBlockDefinition', () => {
     })
 
     test('returns error for invalid datetime format', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         options: {
           publishDate: {
@@ -327,7 +327,7 @@ describe('validateBlockDefinition', () => {
     })
 
     test('returns error when datetime is before min', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         options: {
           publishDate: {
@@ -345,7 +345,7 @@ describe('validateBlockDefinition', () => {
     })
 
     test('returns error when datetime is after max', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         options: {
           publishDate: {
@@ -365,7 +365,7 @@ describe('validateBlockDefinition', () => {
 
   describe('multiple options', () => {
     test('validates all options and returns all errors', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         options: {
           alignment: {
@@ -392,7 +392,7 @@ describe('validateBlockDefinition', () => {
 
   describe('no options', () => {
     test('returns no errors for definition without options', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
       }
       expect(validateBlockDefinition(definition)).toEqual([])
@@ -401,7 +401,7 @@ describe('validateBlockDefinition', () => {
 
   describe('deprecated fieldList in renderFor', () => {
     test('returns warning when using fieldList in renderFor', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         renderFor: [{ fieldList: 'inline' }],
       }
@@ -413,7 +413,7 @@ describe('validateBlockDefinition', () => {
     })
 
     test('returns no warning when using fieldListType in renderFor', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         renderFor: [{ fieldListType: 'inline' }],
       }
@@ -421,7 +421,7 @@ describe('validateBlockDefinition', () => {
     })
 
     test('returns no warning when using parentBundle in renderFor', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         renderFor: [{ parentBundle: 'grid' }],
       }
@@ -429,7 +429,7 @@ describe('validateBlockDefinition', () => {
     })
 
     test('returns warning for each fieldList entry', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         renderFor: [
           { fieldList: 'inline' },
@@ -443,7 +443,7 @@ describe('validateBlockDefinition', () => {
     })
 
     test('returns both error and warning when combined with option error', () => {
-      const definition: ExtractedBlockDefinitionInput = {
+      const definition: BlockDefinitionInputBase = {
         bundle: 'test',
         renderFor: [{ fieldList: 'inline' }],
         options: {

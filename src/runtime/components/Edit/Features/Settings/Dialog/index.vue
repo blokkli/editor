@@ -33,7 +33,7 @@ import { DialogModal } from '#blokkli/components'
 import FeatureSettingComponent from './FeatureSetting/index.vue'
 import type { ValidFeatureKey } from '#blokkli-build/features'
 import type { FeatureDefinitionSetting } from '#blokkli/types'
-import { SETTINGS_GROUP, type SettingsGroup } from '#blokkli/constants'
+import { SETTINGS_GROUP, type SettingsGroup } from '../../../../../../shared/constants'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { settingsOverride } from '#blokkli-build/editor-config'
 

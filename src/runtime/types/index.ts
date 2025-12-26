@@ -22,7 +22,7 @@ import type {
 import type { BroadcastProvider } from '../helpers/providers/broadcast'
 import type { FeaturesProvider } from '../helpers/providers/features'
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import type { SettingsGroup, Viewport } from '#blokkli/constants'
+import type { SettingsGroup, Viewport } from '../../shared/constants'
 import type {
   BlockBundleWithNested,
   FieldListItemTyped,
@@ -58,8 +58,6 @@ import type {
   FeatureDefinitionSettingSlider,
 } from './../../shared/types/features'
 
-export type { BlokkliDefinitionAddBehaviour }
-export type { FeatureDefinitionSettingCheckbox, FeatureDefinitionSettingSlider }
 import type { DebugProvider } from '../helpers/providers/debug'
 import type getVideoId from 'get-video-id'
 import type { DefinitionProvider } from '../helpers/providers/definition'
@@ -67,6 +65,9 @@ import type { IndicatorsProvider } from '../helpers/providers/indicators'
 import type { BlocksProvider } from '#blokkli/helpers/providers/blocks'
 import type { FieldsProvider } from '#blokkli/helpers/providers/fields'
 import type { ElementProvider } from '#blokkli/helpers/providers/element'
+
+export type { BlokkliDefinitionAddBehaviour }
+export type { FeatureDefinitionSettingCheckbox, FeatureDefinitionSettingSlider }
 
 export type MutateWithLoadingStateFunction = (
   promise: () => Promise<MutationResponseLike<any>> | undefined,
@@ -201,7 +202,7 @@ export type BlokkliDefinitionInputEditor<
     ? BundleProps[Bundle]
     : Record<string, any>,
 > = Omit<
-  BlokkliDefinitionInputEditorBase<Options, GlobalOptions, BlokkliIcon, PropsType>,
+  BlokkliDefinitionInputEditorBase<Options, BlokkliIcon, PropsType>,
   'determineVisibleOptions'
 > & {
   /**
@@ -224,8 +225,10 @@ export type BlockDefinitionRenderForFieldList =
 export type BlockDefinitionRenderForFieldListType =
   BlockDefinitionRenderForFieldListTypeBase<ValidFieldListTypes>
 
-export type BlockDefinitionRenderFor =
-  BlockDefinitionRenderForBase<BlockBundleWithNested, ValidFieldListTypes>
+export type BlockDefinitionRenderFor = BlockDefinitionRenderForBase<
+  BlockBundleWithNested,
+  ValidFieldListTypes
+>
 
 export type BlockDefinitionInput<
   Options extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
@@ -1245,7 +1248,10 @@ export type FeatureDefinitionSetting =
 export type FeatureDefinition<
   Methods extends AdapterMethods[] = [],
   T extends string = '',
-> = Omit<FeatureDefinitionBase<AdapterMethods, BlokkliIcon, T>, 'requiredAdapterMethods' | 'settings'> & {
+> = Omit<
+  FeatureDefinitionBase<AdapterMethods, BlokkliIcon, T>,
+  'requiredAdapterMethods' | 'settings'
+> & {
   requiredAdapterMethods?: [...Methods]
   settings?: Record<string, FeatureDefinitionSetting>
 }
@@ -1301,7 +1307,12 @@ export type FragmentDefinitionInput<
   Options extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
   GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
 > = Omit<
-  FragmentDefinitionInputBase<Options, GlobalOptions, ValidChunkNames, BlokkliIcon>,
+  FragmentDefinitionInputBase<
+    Options,
+    GlobalOptions,
+    ValidChunkNames,
+    BlokkliIcon
+  >,
   'editor'
 > & {
   /**

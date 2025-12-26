@@ -3,11 +3,11 @@ import {
   validateMissingMainComponent,
   CollectedBlockFile,
 } from '../src/module/Collector/Blocks'
-import type { ExtractedBlockDefinitionInput } from '../src/module/types'
+import type { BlockDefinitionInputBase } from '../src/shared/types/definitions'
 
 function createMockBlockFile(
   filePath: string,
-  definition: ExtractedBlockDefinitionInput,
+  definition: BlockDefinitionInputBase,
   type: 'main' | 'context',
 ): CollectedBlockFile {
   const file = new CollectedBlockFile(filePath, '')

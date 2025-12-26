@@ -91,7 +91,7 @@ import EditActionsItemDropdown from './ItemDropdown.vue'
 import {
   BUNDLE_BLOKKLI_FRAGMENT,
   BUNDLE_FROM_LIBRARY,
-} from '#blokkli/constants'
+} from '../../../../shared/constants'
 import type { FragmentDefinition } from '#blokkli-build/definitions'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 

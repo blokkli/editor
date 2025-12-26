@@ -13,8 +13,11 @@ import {
   bundlesWithHiddenGlobally,
 } from '#blokkli-build/default-global-options'
 import type { FieldListItem } from '#blokkli/types'
-import { BK_HIDDEN_GLOBALLY, BK_VISIBLE_LANGUAGES } from '../symbols'
-import { BUNDLE_FROM_LIBRARY } from '#blokkli/constants'
+import {
+  BK_HIDDEN_GLOBALLY,
+  BK_VISIBLE_LANGUAGES,
+  BUNDLE_FROM_LIBRARY,
+} from '../../../shared/constants'
 
 /**
  * Map all kinds of truthy values for a checkbox.

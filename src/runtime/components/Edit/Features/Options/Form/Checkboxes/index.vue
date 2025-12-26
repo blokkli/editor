@@ -38,7 +38,7 @@
 import { computed, ref, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/components'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
-import { BK_VISIBLE_LANGUAGES } from '#blokkli/helpers/symbols'
+import { BK_VISIBLE_LANGUAGES } from './../../../../../../../shared/constants'
 
 const { $t, state } = useBlokkli()
 

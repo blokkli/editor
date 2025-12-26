@@ -39,8 +39,8 @@ export type BlockDefinitionRenderForBase<
   | BlockDefinitionRenderForFieldListTypeBase<FieldListTypes>
 
 export type BlokkliDefinitionInputEditorBase<
-  Options extends BlockDefinitionOptionsInputBase = BlockDefinitionOptionsInputBase,
-  GlobalOptions extends string[] | undefined = string[],
+  Options extends BlockDefinitionOptionsInputBase =
+    BlockDefinitionOptionsInputBase,
   Icon extends string = string,
   PropsType = Record<string, any>,
 > = {
@@ -193,7 +193,8 @@ export type BlokkliDefinitionInputEditorBase<
 }
 
 export type BlockDefinitionInputBase<
-  Options extends BlockDefinitionOptionsInputBase = BlockDefinitionOptionsInputBase,
+  Options extends BlockDefinitionOptionsInputBase =
+    BlockDefinitionOptionsInputBase,
   GlobalOptions extends string[] | undefined = string[],
   Bundle extends string = string,
   ChunkNames extends string = string,
@@ -246,7 +247,6 @@ export type BlockDefinitionInputBase<
    */
   editor?: BlokkliDefinitionInputEditorBase<
     Options,
-    GlobalOptions,
     Icon,
     Bundle extends keyof BundlePropsMap
       ? BundlePropsMap[Bundle]
@@ -289,7 +289,8 @@ export type BlockDefinitionInputBase<
 }
 
 export type FragmentDefinitionInputBase<
-  Options extends BlockDefinitionOptionsInputBase = BlockDefinitionOptionsInputBase,
+  Options extends BlockDefinitionOptionsInputBase =
+    BlockDefinitionOptionsInputBase,
   GlobalOptions extends string[] | undefined = string[],
   ChunkNames extends string = string,
   Icon extends string = string,
@@ -334,11 +335,12 @@ export type FragmentDefinitionInputBase<
   /**
    * Settings for the behaviour in the editor.
    */
-  editor?: BlokkliDefinitionInputEditorBase<Options, GlobalOptions, Icon>
+  editor?: BlokkliDefinitionInputEditorBase<Options, Icon>
 }
 
 export type ProviderDefinitionInputBase<
-  Options extends BlockDefinitionOptionsInputBase = BlockDefinitionOptionsInputBase,
+  Options extends BlockDefinitionOptionsInputBase =
+    BlockDefinitionOptionsInputBase,
   GlobalOptions extends string[] | undefined = string[],
 > = {
   /**

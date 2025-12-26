@@ -61,8 +61,8 @@ import { getRuntimeOptionValue } from '#blokkli/runtime-helpers'
 import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
-} from '#blokkli/helpers/symbols'
-import { BUNDLE_FROM_LIBRARY } from '#blokkli/constants'
+} from './../../../../../../shared/constants'
+import { BUNDLE_FROM_LIBRARY } from '../../../../../../shared/constants'
 import { itemEntityType } from '#blokkli-build/config'
 
 if (import.meta.hot) {

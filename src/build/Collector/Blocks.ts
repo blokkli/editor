@@ -4,11 +4,6 @@ import { dirname } from 'pathe'
 import { CollectedFile, Collector, type ValidationError } from './index'
 import micromatch from 'micromatch'
 import type { ModuleHelper } from '../ModuleHelper'
-import type {
-  ExtractedBlockDefinitionInput,
-  ExtractedFragmentDefinitionInput,
-  ExtractedProviderDefinitionInput,
-} from '../types'
 import type { TemplateDependency } from '../templates/defineTemplate'
 import {
   extractObjectLiteral,
@@ -17,11 +12,16 @@ import {
 } from '../helpers'
 import { hash } from 'ohash'
 import { logger } from '../logger'
+import type {
+  BlockDefinitionInputBase,
+  FragmentDefinitionInputBase,
+  ProviderDefinitionInputBase,
+} from './../../shared/types/definitions'
 
 export type ExtractedDefinition =
-  | ExtractedBlockDefinitionInput
-  | ExtractedFragmentDefinitionInput
-  | ExtractedProviderDefinitionInput
+  | BlockDefinitionInputBase
+  | FragmentDefinitionInputBase
+  | ProviderDefinitionInputBase
 
 const DEFINE_BLOKKLI = 'defineBlokkli'
 const DEFINE_BLOKKLI_FRAGMENT = 'defineBlokkliFragment'
@@ -35,13 +35,13 @@ function isEditComponent(filePath: string): boolean {
 
 export function isBlock(
   definition: ExtractedDefinition,
-): definition is ExtractedBlockDefinitionInput {
+): definition is BlockDefinitionInputBase {
   return 'bundle' in definition && !('entityType' in definition)
 }
 
 export function isFragment(
   definition: ExtractedDefinition,
-): definition is ExtractedFragmentDefinitionInput {
+): definition is FragmentDefinitionInputBase {
   return 'name' in definition
 }
 
@@ -240,7 +240,7 @@ function validateOption(
  * Validate a block definition and return any errors or warnings.
  */
 export function validateBlockDefinition(
-  definition: ExtractedBlockDefinitionInput | ExtractedFragmentDefinitionInput,
+  definition: BlockDefinitionInputBase | FragmentDefinitionInputBase,
 ): BlockValidationError[] {
   const errors: BlockValidationError[] = []
 
@@ -284,10 +284,8 @@ export class CollectedBlockFile extends CollectedFile {
   diffComponentPath: string | null = null
   proxyComponentPath: string | null = null
   type: CollectedBlockType | null = null
-  definition:
-    | ExtractedFragmentDefinitionInput
-    | ExtractedBlockDefinitionInput
-    | null = null
+  definition: FragmentDefinitionInputBase | BlockDefinitionInputBase | null =
+    null
   definitionSource: string | null = null
   hasBlokkliField = false
 

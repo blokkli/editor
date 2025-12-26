@@ -31,7 +31,7 @@ import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
 import { nextTick } from '#imports'
 import type { TextProvider } from './texts'
 import { addElementClasses } from '../composables/addElementClasses'
-import { BUNDLE_FROM_LIBRARY } from '#blokkli/constants'
+import { BUNDLE_FROM_LIBRARY } from '../../../shared/constants'
 
 const HOST_OPTION_KEY = 'HOST'
 

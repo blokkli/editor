@@ -30,7 +30,7 @@ import {
 import {
   BUNDLE_BLOKKLI_FRAGMENT,
   BUNDLE_FROM_LIBRARY,
-} from '#blokkli/constants'
+} from '../../shared/constants'
 
 /**
  * Define a blokkli component.

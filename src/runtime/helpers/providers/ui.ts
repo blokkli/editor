@@ -18,7 +18,7 @@ import type {
   SidebarRegion,
   Size,
 } from '#blokkli/types'
-import type { Viewport } from '#blokkli/constants'
+import type { Viewport } from '../../../shared/constants'
 import { falsy } from '..'
 import { addElementClasses } from '../composables/addElementClasses'
 import { defineElementStyle } from '../composables/defineElementStyle'

@@ -1,11 +1,11 @@
 import { defineCodeTemplate } from '../defineTemplate'
 import { type CollectedBlockFile, isBlock } from '../../Collector/Blocks'
 import { relative } from 'pathe'
+import type { GetBundlePropsTypeResult } from '../../types'
 import type {
-  ExtractedBlockDefinitionInput,
-  GetBundlePropsTypeResult,
-} from '../../types'
-import type { BlockDefinitionOptionsInputBase } from './../../../shared/types/definitions'
+  BlockDefinitionInputBase,
+  BlockDefinitionOptionsInputBase,
+} from './../../../shared/types/definitions'
 
 function toStringUnion(strings: string[]): string {
   return (
@@ -17,7 +17,7 @@ function toStringUnion(strings: string[]): string {
 }
 
 function getOptionTypes(
-  definition: ExtractedBlockDefinitionInput,
+  definition: BlockDefinitionInputBase,
   globalOptions: BlockDefinitionOptionsInputBase,
 ) {
   const definedOptions = { ...(definition.options || {}) }

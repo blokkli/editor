@@ -1,4 +1,4 @@
-import type { SettingsGroup, Viewport } from './constants'
+import type { SettingsGroup, Viewport } from '../constants'
 
 export type FeatureDefinitionSettingRadiosOptionBase<
   Icon extends string = string,

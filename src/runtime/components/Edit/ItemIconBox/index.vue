@@ -20,7 +20,7 @@ import { ItemIcon, Icon } from '#blokkli/components'
 import {
   BUNDLE_BLOKKLI_FRAGMENT,
   BUNDLE_FROM_LIBRARY,
-} from '#blokkli/constants'
+} from '../../../../shared/constants'
 import { computed } from '#imports'
 
 type ItemColor = 'rose' | 'lime' | 'default' | 'yellow' | 'accent'

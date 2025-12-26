@@ -4,7 +4,7 @@ import { join } from 'pathe'
 import { isInterfaceType, isObjectType, type GraphQLField } from 'graphql'
 import { defineBlokkliModule } from '../defineBlokkliModule'
 import { useGraphqlModuleContext } from 'nuxt-graphql-middleware/utils'
-import { logger } from './../../module/logger'
+import { logger } from './../../build/logger'
 
 function toPascalCase(text: string) {
   return text.replace(/(^\w|_\w)/g, clearAndUpper)

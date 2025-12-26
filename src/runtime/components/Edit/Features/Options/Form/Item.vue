@@ -93,7 +93,7 @@ import {
   isValidDatetimeLocalValue,
   mapCheckboxTrue,
 } from '#blokkli/helpers/runtimeHelpers'
-import { BK_VISIBLE_LANGUAGES } from '#blokkli/helpers/symbols'
+import { BK_VISIBLE_LANGUAGES } from './../../../../../../shared/constants'
 
 const { state, $t: $blokkliText } = useBlokkli()
 

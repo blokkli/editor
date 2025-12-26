@@ -1,8 +1,8 @@
 import { defineCodeTemplate } from '../defineTemplate'
 import { isBlock } from '../../Collector/Blocks'
 import { falsy } from '../../helpers'
-import type { ExtractedBlockDefinitionInput } from '../../types'
 import { toObject } from '../helpers'
+import type { BlockDefinitionInputBase } from './../../../shared/types/definitions'
 
 export default defineCodeTemplate(
   'runtime-options',
@@ -88,7 +88,7 @@ ${toObject('FIELD_MAPPING', FIELD_MAPPING)}
       })
       .filter(falsy)
 
-    function getOptionTypes(definition: ExtractedBlockDefinitionInput) {
+    function getOptionTypes(definition: BlockDefinitionInputBase) {
       const definedOptions = definition.options || {}
 
       // Add global options used.

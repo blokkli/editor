@@ -1,33 +1,10 @@
-import type {
-  BlockDefinitionInputBase,
-  BlockDefinitionOptionsInputBase,
-  FragmentDefinitionInputBase,
-  ProviderDefinitionInputBase,
-} from '../shared/types/definitions'
-import type {
-  FeatureDefinitionBase,
-} from '../shared/types/features'
+import type { BlockDefinitionOptionsInputBase } from '../shared/types/definitions'
 import type { AdapterMethodsBase } from '../shared/types/adapter'
 import type { Theme, ThemeName } from '../shared/types/theme'
 import type { CollectedBlockFile } from './Collector/Blocks'
-import type { CollectedFeatureFile } from './Collector/Features'
-import type { CollectedFile } from './Collector'
 import type { BlokkliModule } from '../modules/defineBlokkliModule'
 
-export type ExtractedBlockDefinitionInput = BlockDefinitionInputBase
-export type ExtractedFragmentDefinitionInput = FragmentDefinitionInputBase
-export type ExtractedProviderDefinitionInput = ProviderDefinitionInputBase
-export type ExtractedFeatureDefinition = FeatureDefinitionBase<AdapterMethodsBase>
 export type { AdapterMethodsBase as AdapterMethods }
-
-export type ExtractedFragmentDefinition = {
-  filePath: string
-  chunkName: string
-  componentName: string
-  definition: ExtractedFragmentDefinitionInput
-  source: string
-  fileSource: string
-}
 
 export type GetBundlePropsTypeResult = {
   typeName: string
@@ -65,10 +42,6 @@ type ModuleOptionsStorageDefaults = {
    * The default favorite block bundles.
    */
   blockFavorites?: string[]
-}
-
-export type AlterHookContext<K extends string, T extends CollectedFile> = {
-  [P in K]: T[]
 }
 
 /**
@@ -242,27 +215,4 @@ export type ModuleOptions = {
    * ```
    */
   getBundlePropsType?: GetBundlePropsType
-}
-
-export interface ModuleHooks {
-  /**
-   * Alter features.
-   */
-  'blokkli:alter-features': (
-    ctx: AlterHookContext<'features', CollectedFeatureFile>,
-  ) => void | Promise<void>
-
-  /**
-   * Alter icons.
-   */
-  'blokkli:alter-icons': (
-    ctx: AlterHookContext<'icons', CollectedFile>,
-  ) => void | Promise<void>
-
-  /**
-   * Alter blocks.
-   */
-  'blokkli:alter-blocks': (
-    ctx: AlterHookContext<'blocks', CollectedBlockFile>,
-  ) => void | Promise<void>
 }

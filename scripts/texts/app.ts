@@ -4,13 +4,12 @@ import type { BaseCallExpression, Expression, SpreadElement } from 'estree'
 import { parse } from 'acorn'
 import chalk from 'chalk'
 import { glob } from 'glob'
-import { format } from './../helpers'
-import { sortObjectKeys } from './../../src/helpers'
+import { sortObjectKeys } from './../../src/build/helpers'
 import { po as PO, type GetTextTranslation } from 'gettext-parser'
 import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
-} from '../../src/runtime/helpers/symbols'
+} from '../../src/shared/constants'
 
 const INTERNAL_TRANSLATIONS = {
   [`blockOption_${BK_VISIBLE_LANGUAGES}_label`]: 'Visible languages',

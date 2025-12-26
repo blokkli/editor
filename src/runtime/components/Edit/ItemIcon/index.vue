@@ -8,7 +8,7 @@
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/components'
-import { BUNDLE_FROM_LIBRARY } from '#blokkli/constants'
+import { BUNDLE_FROM_LIBRARY } from '../../../../shared/constants'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 
 const props = defineProps<{

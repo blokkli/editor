@@ -1,6 +1,6 @@
-import type { ModuleContext } from '../module/ModuleContext'
-import type { ModuleHelper } from '../module/ModuleHelper'
-import type { ModuleOptions } from '../module/types'
+import type { ModuleContext } from '../build/ModuleContext'
+import type { ModuleHelper } from '../build/ModuleHelper'
+import type { ModuleOptions } from '../build/types'
 
 export type Blokkli = {
   helper: ModuleHelper
