@@ -47,7 +47,8 @@ import {
   useTemplateRef,
 } from '#imports'
 import { ItemIcon, Highlight } from '#blokkli/components'
-import { falsy, modulo } from '#blokkli/helpers'
+import { falsy, } from '#blokkli/helpers'
+import { modulo } from '#blokkli/editor/helpers/math'
 import type { RenderedFieldListItem } from '#blokkli/types'
 
 const listItems = useTemplateRef('listItems')

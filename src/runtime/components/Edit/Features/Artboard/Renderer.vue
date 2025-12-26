@@ -57,15 +57,15 @@ import {
 } from '#imports'
 import type { Coord } from '#blokkli/types'
 import {
-  asValidNumber,
   calculateIntersection,
   isInsideRect,
   subtractRectFromViewport,
-} from '#blokkli/helpers'
+} from '#blokkli/editor/helpers/geometry'
 import { PluginToolbarButton, PluginViewOption } from '#blokkli/editor/plugins'
 import Overview from './Overview/index.vue'
 import Scrollbar from './Scrollbar/index.vue'
 import { addElementClasses, onBlokkliEvent } from '#blokkli/editor/composables'
+import { asValidNumber } from '#blokkli/editor/helpers/math'
 import {
   createArtboard,
   type ArtboardOptions,

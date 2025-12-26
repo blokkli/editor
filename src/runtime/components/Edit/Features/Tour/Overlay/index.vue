@@ -52,7 +52,8 @@
 
 <script lang="ts" setup>
 import { useBlokkli, computed, ref, useTemplateRef } from '#imports'
-import { falsy, modulo } from '#blokkli/helpers'
+import { falsy } from '#blokkli/helpers'
+import { modulo } from '#blokkli/editor/helpers/math'
 import { Icon, ShortcutIndicator } from '#blokkli/components'
 import { onBlokkliEvent, useAnimationFrame } from '#blokkli/editor/composables'
 

@@ -12,7 +12,8 @@
 
 <script setup lang="ts">
 import { useBlokkli, useTemplateRef } from '#imports'
-import { falsy, intersects } from '#blokkli/helpers'
+import { falsy, } from '#blokkli/helpers'
+import { intersects } from '#blokkli/editor/helpers/geometry'
 import type { Coord, Rectangle } from '#blokkli/types'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 

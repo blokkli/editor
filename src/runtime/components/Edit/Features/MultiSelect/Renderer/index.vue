@@ -4,7 +4,8 @@
 
 <script lang="ts" setup>
 import { useBlokkli, onBeforeUnmount } from '#imports'
-import { intersects, toShaderColor } from '#blokkli/helpers'
+import { intersects } from '#blokkli/editor/helpers/geometry'
+import { toShaderColor } from '#blokkli/editor/helpers/color'
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import {

@@ -54,7 +54,7 @@
 <script lang="ts" setup>
 import { ref, watch, useBlokkli, onMounted, useTemplateRef } from '#imports'
 import { ItemIcon, Icon, Sortli } from '#blokkli/components'
-import { modulo } from '#blokkli/helpers'
+import { modulo } from '#blokkli/editor/helpers/math'
 import type {
   DraggableSearchContentItem,
   SearchContentItem,

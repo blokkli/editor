@@ -18,7 +18,7 @@ import {
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
-import { toShaderColor } from '#blokkli/helpers'
+import { toShaderColor } from '#blokkli/editor/helpers/color'
 import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'
 
 const props = defineProps<{

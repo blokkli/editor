@@ -26,7 +26,8 @@ import {
   INJECT_MUTATED_FIELDS_MAP,
 } from '#blokkli/helpers/injections'
 import broadcastProvider from '#blokkli/editor/providers/broadcast'
-import { getFieldKey, intersects } from '#blokkli/helpers'
+import { getFieldKey } from '#blokkli/helpers'
+import { intersects } from '#blokkli/editor/helpers/geometry'
 import type { AdapterContext } from '../../editor/adapter'
 import { eventBus, frameEventBus } from '#blokkli/editor/events'
 import definitionProvider from '#blokkli/editor/providers/definition'

@@ -7,13 +7,14 @@
 <script lang="ts" setup>
 import {
   falsy,
+  onlyUnique,
+} from '#blokkli/helpers'
+import {
   findClosestRectangle,
   intersects,
   isInsideRect,
-  onlyUnique,
-  rgbaToString,
-  toShaderColor,
-} from '#blokkli/helpers'
+} from '#blokkli/editor/helpers/geometry'
+import{ toShaderColor, rgbaToString } from '#blokkli/editor/helpers/color'
 import type {
   DropTargetEvent,
   BlokkliFieldElement,

@@ -76,7 +76,7 @@ import {
   useTemplateRef,
 } from '#imports'
 import { Icon, ScrollBoundary } from '#blokkli/components'
-import { modulo } from '#blokkli/helpers'
+import { modulo } from '#blokkli/editor/helpers/math'
 import ResultsPage from './Results/Page/index.vue'
 import ResultsContent from './Results/Content/index.vue'
 

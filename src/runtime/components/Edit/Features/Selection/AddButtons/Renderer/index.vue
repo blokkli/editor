@@ -28,7 +28,8 @@ import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
 import type { Rectangle } from '#blokkli/types'
-import { toShaderColor, getFieldKey } from '#blokkli/helpers'
+import { getFieldKey } from '#blokkli/helpers'
+import { toShaderColor } from '#blokkli/editor/helpers/color'
 import {
   getChildrenOrientation,
   type Orientation,

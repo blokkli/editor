@@ -50,7 +50,7 @@ import {
 import { Icon, ScrollBoundary } from '#blokkli/components'
 import type { Command } from '#blokkli/types'
 import { Fzf } from 'fzf'
-import { modulo } from '#blokkli/helpers'
+import { modulo } from '#blokkli/editor/helpers/math'
 import Item, { type MappedCommandItem } from './Item/index.vue'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 

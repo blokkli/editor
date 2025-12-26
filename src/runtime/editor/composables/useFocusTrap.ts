@@ -1,5 +1,5 @@
 import { useBlokkli, onMounted, type Ref } from '#imports'
-import { modulo } from '#blokkli/helpers'
+import { modulo } from '#blokkli/editor/helpers/math'
 
 type FocusableElement =
   | HTMLInputElement

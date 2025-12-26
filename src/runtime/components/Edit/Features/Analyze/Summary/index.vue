@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { rgbaToString } from '#blokkli/helpers'
+import { rgbaToString } from '#blokkli/editor/helpers/color'
 import { computed, useBlokkli } from '#imports'
 import { useAnalyzeHelper } from '../helper'
 import type { AnalyzeResultMapped, AnalyzeStatus } from '../analyzers/types'

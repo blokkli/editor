@@ -17,12 +17,14 @@
 import Renderer from './Renderer/index.vue'
 import SelectionAddButtons from './AddButtons/index.vue'
 import {
+  originatesFromTextInput,
+} from '#blokkli/helpers'
+import {
   calculateIntersection,
   getBounds,
   intersects,
-  modulo,
-  originatesFromTextInput,
-} from '#blokkli/helpers'
+} from '#blokkli/editor/helpers/geometry'
+import { modulo } from '#blokkli/editor/helpers/math'
 import type { Rectangle, RenderedFieldListItem } from '#blokkli/types'
 import {
   computed,

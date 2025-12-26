@@ -16,10 +16,12 @@
 <script lang="ts" setup>
 import {
   falsy,
-  getDistance,
-  getInteractionCoordinates,
-  isInsideRect,
+  getInteractionCoordinates
 } from '#blokkli/helpers'
+import {
+  getDistance,
+  isInsideRect
+} from '#blokkli/editor/helpers/geometry'
 import {
   MOUSE_BUTTON,
   MOUSE_BUTTONS,
