@@ -1,5 +1,9 @@
 import mitt, { type Emitter } from 'mitt'
-import type { EventbusEvents } from '#blokkli/types'
+import type {
+  EventbusEvents,
+  MutatedField,
+  UpdateBlockOptionEvent,
+} from '#blokkli/types'
 
 export const eventBus = mitt<EventbusEvents>()
 
@@ -13,3 +17,12 @@ export const emitMessage = (
 ) => {
   eventBus.emit('message', { type, message, additional, replace })
 }
+
+type FrameEventBusEvents = {
+  selectItems: string[]
+  mutatedFields: MutatedField[]
+  focus: string
+  updateOption: UpdateBlockOptionEvent
+}
+
+export const frameEventBus = mitt<FrameEventBusEvents>()

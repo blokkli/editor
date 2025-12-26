@@ -29,7 +29,7 @@ import {
   useTemplateRef,
 } from '#imports'
 import { Icon } from '#blokkli/components'
-import { frameEventBus } from './../../../../../helpers/frameEventBus'
+import { frameEventBus } from '#blokkli/editor/events'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 defineProps<{
