@@ -40,7 +40,7 @@
 <script lang="ts" setup>
 import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
 import { NuxtLink } from '#components'
-import { Icon } from '#blokkli/components'
+import { Icon } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 
 const { options } = defineBlokkli({

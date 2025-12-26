@@ -81,7 +81,7 @@ export class FeatureCollector extends Collector<CollectedFeatureFile> {
   constructor(helper: ModuleHelper) {
     super(helper)
     this.srcFromModule = helper.resolvers.module.resolve(
-      './runtime/components/Edit/Features',
+      './runtime/editor/components/Features',
     )
   }
 

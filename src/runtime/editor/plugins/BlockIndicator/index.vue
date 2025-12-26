@@ -27,7 +27,7 @@ import {
   onBeforeUnmount,
 } from '#imports'
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import { Icon } from '#blokkli/components'
+import { Icon } from '#blokkli/editor/components'
 
 const props = defineProps<{
   /**

@@ -1,0 +1,222 @@
+<template>
+  <div v-show="visible">
+    <button
+      v-for="(item, i) in visibleItems"
+      :key="item.item.uuid"
+      ref="listItems"
+      class="bk bk-search-item"
+      :class="{ 'bk-is-active': i === index }"
+      @click.stop="clickItem"
+      @mouseenter="index = i"
+    >
+      <div class="bk-search-item-icon">
+        <ItemIcon :bundle="item.item.bundle" />
+      </div>
+      <div class="bk-search-item-content">
+        <Highlight
+          class="bk-search-item-title"
+          tag="div"
+          :text="item.title"
+          :regex="regex"
+        />
+        <div class="bk-search-item-subtitle">
+          <Highlight
+            v-if="item.context"
+            class="bk-search-item-context"
+            :text="item.context"
+            :regex="regex"
+          />
+          <Highlight
+            class="bk-search-item-text"
+            :text="item.text"
+            :regex="regex"
+          />
+        </div>
+      </div>
+    </button>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import {
+  ref,
+  computed,
+  useBlokkli,
+  onMounted,
+  watch,
+  useTemplateRef,
+} from '#imports'
+import { ItemIcon, Highlight } from '#blokkli/editor/components'
+import { falsy, } from '#blokkli/helpers'
+import { modulo } from '#blokkli/editor/helpers/math'
+import type { RenderedFieldListItem } from '#blokkli/types'
+
+const listItems = useTemplateRef('listItems')
+const emit = defineEmits(['close'])
+
+const props = defineProps<{
+  visible: boolean
+  searchBoxVisible: boolean
+  search: string
+  tab: string
+}>()
+
+type SearchItem = {
+  item: RenderedFieldListItem
+  title: string
+  text: string
+  context?: string
+}
+
+const { eventBus, state, types, dom, blocks, element } = useBlokkli()
+
+const buildForKey = ref('')
+
+const items = ref<SearchItem[]>([])
+const index = ref(0)
+
+const prev = () => setIndex(index.value - 1)
+const next = () => setIndex(index.value + 1)
+const goToFirst = () => setIndex(0)
+const select = () => clickItem()
+const isActive = () => props.visible
+
+defineExpose({ prev, next, select, isActive, goToFirst })
+
+const words = computed(() =>
+  props.search
+    .toLowerCase()
+    .trim()
+    .split(' ')
+    .map((v) => v.trim())
+    .filter(Boolean),
+)
+
+const regex = computed(() => {
+  if (!words.value.length) {
+    return
+  }
+  // Join all words into a regex.
+  const pattern = words.value
+    .map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('|')
+
+  return new RegExp(pattern, 'gi')
+})
+
+const setIndex = (newIndex: number) => {
+  index.value = modulo(newIndex, visibleItems.value.length)
+  scrollItemIntoView()
+}
+
+const clickItem = () => {
+  const item = visibleItems.value[index.value]
+  if (!item) {
+    return
+  }
+
+  eventBus.emit('select', item.item.uuid)
+  eventBus.emit('scrollIntoView', {
+    uuid: item.item.uuid,
+    center: true,
+  })
+  emit('close')
+}
+
+const scrollItemIntoView = () => {
+  if (!listItems.value) {
+    return
+  }
+  const item = listItems.value[index.value]
+  if (item) {
+    item.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+  }
+}
+
+const buildSearchText = (el?: HTMLElement): string => {
+  if (!el) {
+    return ''
+  }
+
+  const altTexts = element
+    .queryAll(el, 'img', 'buildSearchText', (el) => {
+      if (el instanceof HTMLImageElement) {
+        return [el.alt, el.title].filter(Boolean).join('')
+      }
+    })
+    .join(' ')
+
+  return (el.textContent ?? '') + altTexts
+}
+
+const buildIndex = () => {
+  if (buildForKey.value === state.refreshKey.value) {
+    return
+  }
+  const newItems = blocks
+    .getAllBlocks()
+    .map((item) => {
+      const title =
+        types.getBlockBundleDefinition(item.bundle)?.label || item.bundle
+      const element = dom.getDragElement(item)
+      return {
+        item,
+        title,
+        context: title,
+        text: buildSearchText(element),
+      }
+    })
+    .filter(falsy)
+
+  items.value = newItems
+  buildForKey.value = state.refreshKey.value
+}
+
+onMounted(() => {
+  buildIndex()
+})
+
+const visibleItems = computed(() => {
+  if (!words.value.length || !regex.value) {
+    return items.value.slice(0, 50)
+  }
+  const scored = items.value
+    .map((item) => {
+      let score = 0
+      score += (item.text.toLowerCase().match(regex.value!) || []).length
+      score += (item.title.toLowerCase().match(regex.value!) || []).length
+      if (item.context) {
+        score += (item.context.toLowerCase().match(regex.value!) || []).length
+      }
+      return { item, score }
+    })
+    .filter((v) => !!v.score)
+
+  scored.sort((a, b) => b.score - a.score)
+
+  return scored.map((v) => v.item).slice(0, 50)
+})
+
+watch(visibleItems, () => {
+  index.value = 0
+  scrollItemIntoView()
+})
+
+watch(
+  () => props.visible,
+  (isVisible) => {
+    if (isVisible) {
+      buildIndex()
+    }
+  },
+)
+
+watch(
+  () => props.searchBoxVisible,
+  (isVisible) => {
+    if (isVisible) {
+      buildIndex()
+    }
+  },
+)
+</script>

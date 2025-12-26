@@ -19,7 +19,7 @@
 import type { ContextMenu } from '#blokkli/types'
 import { ref, computed, useBlokkli } from '#imports'
 import ContextMenuMenu from './Menu/index.vue'
-import { BlokkliTransition } from '#blokkli/components'
+import { BlokkliTransition } from '#blokkli/editor/components'
 
 const props = withDefaults(
   defineProps<{

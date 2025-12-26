@@ -119,7 +119,7 @@ import {
   ShortcutIndicator,
   ScrollBoundary,
   Loading,
-} from '#blokkli/components'
+} from '#blokkli/editor/components'
 import SidebarDetached from './Detached/index.vue'
 import type { SidebarRegion } from '#blokkli/types'
 import { defineCommands, defineTourItem, onBlokkliEvent, useAnimationFrame } from '#blokkli/editor/composables'

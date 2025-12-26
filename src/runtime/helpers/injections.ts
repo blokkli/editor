@@ -14,7 +14,7 @@ import type {
   FieldListItemTyped,
   ValidFieldListTypes,
 } from '#blokkli-build/generated-types'
-import type DraggableListComponent from '../components/Edit/DraggableList.vue'
+import type DraggableListComponent from '../editor/components/DraggableList.vue'
 
 export const INJECT_APP = Symbol('blokkli_app') as InjectionKey<BlokkliApp>
 

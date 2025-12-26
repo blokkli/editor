@@ -180,19 +180,19 @@ defineSlots<{
 const providerEl = useTemplateRef('providerEl')
 
 const PreviewProvider = defineAsyncComponent(
-  () => import('./Edit/PreviewProvider.vue'),
+  () => import('./../editor/components/PreviewProvider.vue'),
 )
 
 const EditProvider = defineAsyncComponent(
-  () => import('./Edit/EditProvider.vue'),
+  () => import('./../editor/components/EditProvider.vue'),
 )
 
 const BlokkliRootErrorBoundary = defineAsyncComponent(
-  () => import('./Edit/BlokkliRootErrorBoundary.vue'),
+  () => import('./../editor/components/BlokkliRootErrorBoundary.vue'),
 )
 
 const EditIndicator = defineAsyncComponent(
-  () => import('./Edit/EditIndicator.vue'),
+  () => import('./../editor/components/EditIndicator.vue'),
 )
 
 const route = useRoute()

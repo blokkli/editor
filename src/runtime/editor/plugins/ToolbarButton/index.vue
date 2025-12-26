@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { ShortcutIndicator, Icon } from '#blokkli/components'
+import { ShortcutIndicator, Icon } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { ref, useBlokkli } from '#imports'
 import { defineCommands, defineTourItem } from '#blokkli/editor/composables'

@@ -87,7 +87,7 @@ const itemProps = computed(() => {
 
 const component =
   isProxyMode || isGlobalProxyMode?.value
-    ? defineAsyncComponent(() => import('./Edit/BlockProxy/index.vue'))
+    ? defineAsyncComponent(() => import('./../editor/components/BlockProxy/index.vue'))
     : getComponent(
         'block',
         componentProps.bundle,

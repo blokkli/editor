@@ -7,7 +7,7 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
-import { Icon } from '#blokkli/components'
+import { Icon } from '#blokkli/editor/components'
 import { useBlockRegistration } from '#blokkli/editor/composables'
 
 const props = defineProps<{
