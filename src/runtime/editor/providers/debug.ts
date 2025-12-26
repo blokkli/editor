@@ -6,7 +6,7 @@ import {
   onMounted,
   ref,
 } from '#imports'
-import { eventBus } from './../eventBus'
+import { eventBus } from './../../helpers/eventBus'
 import { useGlobalBlokkliObject } from '#blokkli/editor/composables'
 
 export type DebugLogger = {

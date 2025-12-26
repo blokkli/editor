@@ -9,7 +9,7 @@ import {
   readonly,
 } from '#imports'
 import type { ShallowRef } from 'vue'
-import { eventBus } from '../eventBus'
+import { eventBus } from '../../helpers/eventBus'
 import type { StorageProvider } from './storage'
 import type {
   Coord,
@@ -19,7 +19,7 @@ import type {
   Size,
 } from '#blokkli/types'
 import type { Viewport } from '../../../shared/constants'
-import { falsy } from '..'
+import { falsy } from '../../helpers'
 import {
   addElementClasses,
   defineElementStyle,

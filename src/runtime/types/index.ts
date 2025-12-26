@@ -1,17 +1,17 @@
 import type { ComputedRef } from 'vue'
 import type { Emitter } from 'mitt'
-import type { DomProvider } from '../helpers/providers/dom'
-import type { StorageProvider } from '../helpers/providers/storage'
-import type { BlockDefinitionProvider } from '../helpers/providers/types'
-import type { SelectionProvider } from '../helpers/providers/selection'
-import type { KeyboardProvider } from '../helpers/providers/keyboard'
-import type { UiProvider } from '../helpers/providers/ui'
-import type { AnimationProvider } from '../helpers/providers/animation'
-import type { StateProvider } from '../helpers/providers/state'
-import type { IconsProvider } from '../helpers/providers/icons'
-import type { DirectiveProvider } from '../helpers/providers/directive'
-import type { TextProvider } from '../helpers/providers/texts'
-import type { PluginProvider } from '../helpers/providers/plugin'
+import type { DomProvider } from '../editor/providers/dom'
+import type { StorageProvider } from '../editor/providers/storage'
+import type { BlockDefinitionProvider } from '../editor/providers/types'
+import type { SelectionProvider } from '../editor/providers/selection'
+import type { KeyboardProvider } from '../editor/providers/keyboard'
+import type { UiProvider } from '../editor/providers/ui'
+import type { AnimationProvider } from '../editor/providers/animation'
+import type { StateProvider } from '../editor/providers/state'
+import type { IconsProvider } from '../editor/providers/icons'
+import type { DirectiveProvider } from '../editor/providers/directive'
+import type { TextProvider } from '../editor/providers/texts'
+import type { PluginProvider } from '../editor/providers/plugin'
 import type { eventBus } from './../helpers/eventBus'
 import type { BlockOptionDefinition } from './blockOptions'
 import type {
@@ -19,8 +19,8 @@ import type {
   AdapterContext,
   MutationResponseLike,
 } from './../adapter'
-import type { BroadcastProvider } from '../helpers/providers/broadcast'
-import type { FeaturesProvider } from '../helpers/providers/features'
+import type { BroadcastProvider } from '../editor/providers/broadcast'
+import type { FeaturesProvider } from '../editor/providers/features'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { SettingsGroup, Viewport } from '../../shared/constants'
 import type {
@@ -32,14 +32,14 @@ import type {
   ValidGlobalConfigKeys,
   BundleProps,
 } from '#blokkli-build/generated-types'
-import type { ThemeProvider } from '../helpers/providers/theme'
+import type { ThemeProvider } from '../editor/providers/theme'
 import type {
   BlokkliFragmentName,
   GlobalOptionsType,
 } from '#blokkli-build/definitions'
-import type { CommandsProvider } from '../helpers/providers/commands'
-import type { TourProvider } from '../helpers/providers/tour'
-import type { DropAreaProvider } from '../helpers/providers/dropArea'
+import type { CommandsProvider } from '../editor/providers/commands'
+import type { TourProvider } from '../editor/providers/tour'
+import type { DropAreaProvider } from '../editor/providers/dropArea'
 import type { RGB } from './../../shared/types/theme'
 import type {
   BlockDefinitionInputBase,
@@ -58,13 +58,13 @@ import type {
   FeatureDefinitionSettingSlider,
 } from './../../shared/types/features'
 
-import type { DebugProvider } from '../helpers/providers/debug'
+import type { DebugProvider } from '../editor/providers/debug'
 import type getVideoId from 'get-video-id'
-import type { DefinitionProvider } from '../helpers/providers/definition'
-import type { IndicatorsProvider } from '../helpers/providers/indicators'
-import type { BlocksProvider } from '#blokkli/helpers/providers/blocks'
-import type { FieldsProvider } from '#blokkli/helpers/providers/fields'
-import type { ElementProvider } from '#blokkli/helpers/providers/element'
+import type { DefinitionProvider } from '../editor/providers/definition'
+import type { IndicatorsProvider } from '../editor/providers/indicators'
+import type { BlocksProvider } from '#blokkli/editor/providers/blocks'
+import type { FieldsProvider } from '#blokkli/editor/providers/fields'
+import type { ElementProvider } from '#blokkli/editor/providers/element'
 
 export type { BlokkliDefinitionAddBehaviour }
 export type { FeatureDefinitionSettingCheckbox, FeatureDefinitionSettingSlider }

@@ -26,11 +26,11 @@ import {
   INJECT_MUTATED_FIELDS_MAP,
 } from '#blokkli/helpers/injections'
 import { frameEventBus } from '#blokkli/helpers/frameEventBus'
-import broadcastProvider from '#blokkli/helpers/providers/broadcast'
+import broadcastProvider from '#blokkli/editor/providers/broadcast'
 import { getFieldKey, intersects } from '#blokkli/helpers'
 import type { AdapterContext } from '../../adapter'
 import { eventBus } from '#blokkli/helpers/eventBus'
-import definitionProvider from '../../helpers/providers/definition'
+import definitionProvider from '#blokkli/editor/providers/definition'
 import { addElementClasses } from '#blokkli/editor/composables'
 
 const props = defineProps<{

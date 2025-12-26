@@ -12,7 +12,7 @@ import type {
 import type { AdapterContext, BlokkliAdapter } from '../../adapter'
 import type { SelectionProvider } from './selection'
 import { computed } from '#imports'
-import { onlyUnique } from '..'
+import { onlyUnique } from '../../helpers'
 import { itemEntityType } from '#blokkli-build/config'
 
 export type BlokkliBlockType = BlockBundleDefinition & {

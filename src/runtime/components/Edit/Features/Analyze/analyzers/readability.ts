@@ -2,7 +2,7 @@ import { defineAnalyzer } from './defineAnalyzer'
 import type { AnalyzeImpact, AnalyzeNode, AnalyzeResult } from './types'
 import type { TextElement } from './helpers/collectTextElements'
 import type { Language, TextReadability } from '@lunarisapp/readability'
-import type { TextProvider } from '#blokkli/helpers/providers/texts'
+import type { TextProvider } from '#blokkli/editor/providers/texts'
 
 type LangCode = 'en' | 'de' | 'fr' | 'it'
 

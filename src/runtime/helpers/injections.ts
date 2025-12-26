@@ -9,7 +9,7 @@ import type {
   MutatedField,
   MutatedItemProps,
 } from './../types'
-import type { DebugLogger } from './providers/debug'
+import type { DebugLogger } from '#blokkli/editor/providers/debug'
 import type {
   FieldListItemTyped,
   ValidFieldListTypes,

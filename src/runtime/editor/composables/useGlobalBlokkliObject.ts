@@ -1,4 +1,4 @@
-import type { LogMessage } from '../../helpers/providers/debug'
+import type { LogMessage } from '#blokkli/editor/providers/debug'
 
 type BlokkliGlobalWindowObject = {
   messages: LogMessage[]

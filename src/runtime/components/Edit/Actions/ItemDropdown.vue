@@ -31,7 +31,7 @@
 <script lang="ts" setup>
 import { useBlokkli } from '#imports'
 import { ItemIcon, Icon } from '#blokkli/components'
-import type { ItemDropdownAction } from '#blokkli/helpers/providers/plugin'
+import type { ItemDropdownAction } from '#blokkli/editor/providers/plugin'
 
 const emit = defineEmits<{
   close: []

@@ -12,8 +12,8 @@ import type {
   ThemeName,
 } from './../../../shared/types/theme'
 import { type Ref, ref, onMounted, onBeforeUnmount } from '#imports'
-import { rgbaToString } from '..'
-import { DragStyle } from '../DragStyle'
+import { rgbaToString } from '../../helpers'
+import { DragStyle } from '../../helpers/DragStyle'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type { ElementProvider } from './element'
 

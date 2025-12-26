@@ -10,7 +10,7 @@ import type { BlokkliAdapter, AdapterMethods } from '#blokkli/adapter'
 import type { FeatureDefinition } from '#blokkli/types'
 import type { ValidFeatureKey } from '#blokkli-build/features'
 import { settingsOverride } from '#blokkli-build/editor-config'
-import type { DebugLogger } from '#blokkli/helpers/providers/debug'
+import type { DebugLogger } from '#blokkli/editor/providers/debug'
 import { INJECT_EDIT_LOGGER } from '#blokkli/helpers/injections'
 
 type SettingType<S> = S extends { type: 'checkbox' }

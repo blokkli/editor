@@ -1,5 +1,5 @@
 import { onBeforeUnmount, onMounted, useBlokkli } from '#imports'
-import type { BroadcastEvents } from '../../helpers/providers/broadcast'
+import type { BroadcastEvents } from '../providers/broadcast'
 
 export function onBroadcastEvent<T extends keyof BroadcastEvents>(
   name: T,

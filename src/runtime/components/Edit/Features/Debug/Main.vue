@@ -48,7 +48,7 @@ import SectionIcons from './Section/Icons.vue'
 import SectionFeatures from './Section/Features.vue'
 import DebugViewport from './Viewport/index.vue'
 import DebugRects from './Rects/index.vue'
-import type { DebugLogger } from '#blokkli/helpers/providers/debug'
+import type { DebugLogger } from '#blokkli/editor/providers/debug'
 import { defineItemDropdownAction } from '#blokkli/editor/composables'
 
 defineProps<{

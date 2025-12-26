@@ -11,7 +11,7 @@ import type {
 } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
 import type { UiProvider } from './ui'
-import { cloneElementWithStyles } from '../dom'
+import { cloneElementWithStyles } from '../../helpers/dom'
 import {
   onBlokkliEvent,
   useDelayedIntersectionObserver,
