@@ -12,7 +12,6 @@ import {
   type ComputedRef,
   type WritableComputedRef,
 } from '#imports'
-import { eventBus } from '#blokkli/helpers/eventBus'
 import type { UiProvider } from './ui'
 import { createProgramInfo, type ProgramInfo } from 'twgl.js'
 import type { StorageProvider } from './storage'
@@ -22,6 +21,7 @@ import type { SelectionProvider } from './selection'
 import type { RectangleBufferCollector } from '../helpers/webgl'
 import type { DebugProvider } from './debug'
 import type { KeyboardProvider } from './keyboard'
+import type { BlokkliEventBus } from '../events'
 
 export type RenderContext = CanvasDrawEvent & {
   changeOptionsTransition: number
@@ -268,6 +268,7 @@ export type AnimationProvider = {
 }
 
 export default function (
+  eventBus: BlokkliEventBus,
   ui: UiProvider,
   storage: StorageProvider,
   selection: SelectionProvider,

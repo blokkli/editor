@@ -12,7 +12,7 @@ import type { IconsProvider } from '../editor/providers/icons'
 import type { DirectiveProvider } from '../editor/providers/directive'
 import type { TextProvider } from '../editor/providers/texts'
 import type { PluginProvider } from '../editor/providers/plugin'
-import type { eventBus } from './../helpers/eventBus'
+import type { eventBus } from '../editor/events'
 import type { BlockOptionDefinition } from './blockOptions'
 import type {
   BlokkliAdapter,

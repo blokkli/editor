@@ -29,7 +29,7 @@ import { frameEventBus } from '#blokkli/helpers/frameEventBus'
 import broadcastProvider from '#blokkli/editor/providers/broadcast'
 import { getFieldKey, intersects } from '#blokkli/helpers'
 import type { AdapterContext } from '../../editor/adapter'
-import { eventBus } from '#blokkli/helpers/eventBus'
+import { eventBus } from '#blokkli/editor/events'
 import definitionProvider from '#blokkli/editor/providers/definition'
 import { addElementClasses } from '#blokkli/editor/composables'
 

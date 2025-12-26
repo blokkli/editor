@@ -7,8 +7,8 @@ import {
   onBeforeUnmount,
   computed,
 } from 'vue'
-import { eventBus } from '#blokkli/helpers/eventBus'
 import type { KeyboardShortcut } from '#blokkli/types'
+import type { BlokkliEventBus } from '../events'
 
 type RegisteredShortcut = {
   key: string
@@ -102,7 +102,7 @@ function getControlState(
   return e.getModifierState('Control') || e.getModifierState('Meta')
 }
 
-export default function (): KeyboardProvider {
+export default function (eventBus: BlokkliEventBus): KeyboardProvider {
   const isPressingControl = ref(false)
   const isPressingSpace = ref(false)
   const isPressingShift = ref(false)

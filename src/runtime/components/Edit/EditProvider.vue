@@ -104,7 +104,7 @@ import pluginProvider from '#blokkli/editor/providers/plugin'
 import directiveProvider from '#blokkli/editor/providers/directive'
 import fieldsProvider from '#blokkli/editor/providers/fields'
 import iconsProvider from '#blokkli/editor/providers/icons'
-import { eventBus } from '#blokkli/helpers/eventBus'
+import { eventBus } from '#blokkli/editor/events'
 import '#blokkli-build/styles.css'
 import getAdapter from '#blokkli-build/edit-adapter'
 import {
@@ -177,6 +177,7 @@ const isInitializing = ref(true)
 const definitions = definitionProvider()
 const $t = textProvider(context)
 const state = await editStateProvider(
+  eventBus,
   adapter,
   context,
   $t,
@@ -185,7 +186,7 @@ const state = await editStateProvider(
 )
 const storage = await storageProvider(adapter, context)
 const plugins = pluginProvider()
-const debug = debugProvider(storage)
+const debug = debugProvider(eventBus, storage)
 const baseLogger = debug.createLogger('EditProvider')
 baseLogger.log('Entity: ', context.value)
 const element = elementProvider(debug)
@@ -196,6 +197,7 @@ const dropAreas = dropAreasProvider()
 const broadcast = broadcastProvider()
 const icons = iconsProvider()
 const ui = uiProvider(
+  eventBus,
   props.providerEl,
   storage,
   context,
@@ -207,8 +209,8 @@ const dom = domProvider(ui, debug, state, element)
 const theme = themeProvider(element)
 const blocks = blocksProvider(state, dom, context)
 const selection = selectionProvider(blocks)
-const keyboard = keyboardProvider()
-const animation = animationProvider(ui, storage, selection, debug, keyboard)
+const keyboard = keyboardProvider(eventBus)
+const animation = animationProvider(eventBus, ui, storage, selection, debug, keyboard)
 const types = await typesProvider(adapter, selection, context)
 const indicators = indicatorsProvider()
 const directive = directiveProvider(debug, ui)

@@ -1,4 +1,4 @@
-import { eventBus } from '../../helpers/eventBus'
+import { eventBus } from '../events'
 import type { EventbusEvents } from '#blokkli/types'
 import { onBeforeUnmount, onMounted } from '#imports'
 

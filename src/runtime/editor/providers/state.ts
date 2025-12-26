@@ -27,7 +27,7 @@ import type {
   MutatedItemProps,
 } from '#blokkli/types'
 import { falsy, getFieldKey } from '#blokkli/helpers'
-import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
+import { emitMessage, type BlokkliEventBus } from '#blokkli/editor/events'
 import { nextTick } from '#imports'
 import type { TextProvider } from './texts'
 import { BUNDLE_FROM_LIBRARY } from '../../../shared/constants'
@@ -320,6 +320,7 @@ export type StateProvider = {
 }
 
 export default async function (
+  eventBus: BlokkliEventBus,
   adapter: BlokkliAdapter<any>,
   context: ComputedRef<AdapterContext>,
   $t: TextProvider,

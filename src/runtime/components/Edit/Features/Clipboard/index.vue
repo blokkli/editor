@@ -82,7 +82,7 @@ import { falsy, generateUUID, getFieldKey } from '#blokkli/helpers'
 import { Icon } from '#blokkli/components'
 import getVideoId from 'get-video-id'
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import { emitMessage } from '#blokkli/helpers/eventBus'
+import { emitMessage } from '#blokkli/editor/events'
 import { itemEntityType } from '#blokkli-build/config'
 import { defineItemDropdownAction, defineShortcut, onBlokkliEvent } from '#blokkli/editor/composables'
 

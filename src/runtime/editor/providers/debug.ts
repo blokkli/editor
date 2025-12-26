@@ -6,8 +6,8 @@ import {
   onMounted,
   ref,
 } from '#imports'
-import { eventBus } from './../../helpers/eventBus'
 import { useGlobalBlokkliObject } from '#blokkli/editor/composables'
+import type { BlokkliEventBus } from '../events'
 
 export type DebugLogger = {
   /**
@@ -150,7 +150,10 @@ export type DebugProvider = {
   getMessages: () => LogMessage[]
 }
 
-export default function (storage: StorageProvider): DebugProvider {
+export default function (
+  eventBus: BlokkliEventBus,
+  storage: StorageProvider,
+): DebugProvider {
   const showDebug = storage.use('showDebug', false)
   const visible = storage.use<string[]>('visibleDebugOverlays', [])
   const enabledLoggers = storage.use<string[]>('enabledDebugLoggers', [])

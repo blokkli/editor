@@ -15,9 +15,6 @@
         <div class="bk-form-label">
           {{ $t('publishMode', 'Publish mode')
 
-
-
-
           }}<span class="bk-required-indicator">*</span>
         </div>
         <div class="bk-publish-options">
@@ -195,7 +192,7 @@ import {
   InfoBox,
 } from '#blokkli/components'
 import type { GetEditStatesItem } from '#blokkli/types'
-import { emitMessage } from '#blokkli/helpers/eventBus'
+import { emitMessage } from '#blokkli/editor/events'
 import Item from './Item.vue'
 import PublishOption, { type PublishOptionProps } from './PublishOption.vue'
 import Summary from './Summary.vue'

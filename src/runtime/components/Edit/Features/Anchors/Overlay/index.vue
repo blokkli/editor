@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import { useBlokkli, useRoute, computed } from '#imports'
 import { PluginBlockIndicator } from '#blokkli/editor/plugins'
-import { emitMessage } from '#blokkli/helpers/eventBus'
+import { emitMessage } from '#blokkli/editor/events'
 
 type Item = {
   id: string

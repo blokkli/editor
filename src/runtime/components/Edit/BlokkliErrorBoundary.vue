@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { emitMessage } from '#blokkli/helpers/eventBus'
+import { emitMessage } from '#blokkli/editor/events'
 import { ref, onErrorCaptured, useBlokkli } from '#imports'
 import { useGlobalBlokkliObject } from '#blokkli/editor/composables'
 

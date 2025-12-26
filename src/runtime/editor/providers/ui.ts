@@ -9,7 +9,6 @@ import {
   readonly,
 } from '#imports'
 import type { ShallowRef } from 'vue'
-import { eventBus } from '../../helpers/eventBus'
 import type { StorageProvider } from './storage'
 import type {
   Coord,
@@ -31,6 +30,7 @@ import {
 } from '#blokkli-build/editor-config'
 import type { ThemeColorName } from './../../../shared/types/theme'
 import type { ElementProvider } from './element'
+import type { BlokkliEventBus } from '../events'
 
 type ResizeElementKey = 'visible-viewport' | 'artboard'
 
@@ -442,6 +442,7 @@ export type UiProvider = {
 }
 
 export default function (
+  eventBus: BlokkliEventBus,
   providerElement: HTMLElement,
   storage: StorageProvider,
   context: ComputedRef<AdapterContext>,
