@@ -1,4 +1,4 @@
-import { easeOutSine } from './easing'
+import { easeOutSine } from '../editor/helpers/easing'
 import type { Rectangle, Coord, Size } from '#blokkli/types'
 import type { RGB } from './../../shared/types/theme'
 

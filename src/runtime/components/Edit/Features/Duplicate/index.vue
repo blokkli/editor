@@ -18,7 +18,7 @@ import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import type { RenderedFieldListItem } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/editor/plugins'
 import { getFieldKey } from '#blokkli/helpers'
-import { getArrayDiff } from '#blokkli/helpers/array'
+import { getArrayDiff } from '#blokkli/editor/helpers/array'
 
 const { state, $t, selection, types, eventBus } = useBlokkli()
 
