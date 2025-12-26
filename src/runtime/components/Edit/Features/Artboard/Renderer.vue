@@ -65,7 +65,7 @@ import {
 import { PluginToolbarButton, PluginViewOption } from '#blokkli/editor/plugins'
 import Overview from './Overview/index.vue'
 import Scrollbar from './Scrollbar/index.vue'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { addElementClasses, onBlokkliEvent } from '#blokkli/editor/composables'
 import {
   createArtboard,
   type ArtboardOptions,
@@ -77,7 +77,6 @@ import {
   mouse,
   dom as domPlugin,
 } from 'artboard-deluxe'
-import { addElementClasses } from '#blokkli/helpers/composables/addElementClasses'
 
 const props = defineProps<{
   persist: boolean

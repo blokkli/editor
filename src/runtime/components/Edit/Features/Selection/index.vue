@@ -23,9 +23,6 @@ import {
   modulo,
   originatesFromTextInput,
 } from '#blokkli/helpers'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import useStateBasedCache from '#blokkli/helpers/composables/useStateBasedCache'
-import defineItemDropdownAction from '#blokkli/helpers/composables/defineItemDropdownAction'
 import type { Rectangle, RenderedFieldListItem } from '#blokkli/types'
 import {
   computed,
@@ -35,6 +32,7 @@ import {
   watch,
 } from '#imports'
 import { itemEntityType } from '#blokkli-build/config'
+import { defineItemDropdownAction, onBlokkliEvent, useStateBasedCache } from '#blokkli/editor/composables'
 
 defineBlokkliFeature({
   id: 'selection',

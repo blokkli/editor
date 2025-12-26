@@ -30,7 +30,7 @@ import {
 } from '#imports'
 import { Icon } from '#blokkli/components'
 import { frameEventBus } from './../../../../../helpers/frameEventBus'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 defineProps<{
   detached?: boolean

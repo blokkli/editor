@@ -87,7 +87,7 @@ import type {
   PluginConfigInput,
 } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 defineProps<{
   modelValue?: string

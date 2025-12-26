@@ -15,6 +15,7 @@
 <script lang="ts" setup>
 import type { ContextMenu } from '#blokkli/types'
 import { Icon } from '#blokkli/components'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 import {
   watch,
   ref,
@@ -23,7 +24,6 @@ import {
   useBlokkli,
   onBeforeUnmount,
 } from '#imports'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const props = defineProps<{
   menu: ContextMenu[]

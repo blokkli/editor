@@ -2,7 +2,7 @@ import type { MutatedField, RenderedFieldListItem } from '#blokkli/types'
 import type { DomProvider } from './dom'
 import type { StateProvider } from './state'
 import { itemEntityType } from '#blokkli-build/config'
-import onBlokkliEvent from '../composables/onBlokkliEvent'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type {
   BlockBundleWithNested,
   FieldListItemTyped,

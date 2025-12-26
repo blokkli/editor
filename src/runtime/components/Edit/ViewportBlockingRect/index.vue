@@ -5,6 +5,7 @@
 </template>
 
 <script setup lang="ts">
+import { useAnimationFrame } from '#blokkli/editor/composables'
 /**
  * A component to wrap viewport blocking elements.
  *
@@ -17,7 +18,6 @@
  * This is primarly used for the "actions" bar on selected blocks, which tries
  * to not collide the bar with any of the blocking rectangles.
  */
-import useAnimationFrame from '#blokkli/helpers/composables/useAnimationFrame'
 import {
   useBlokkli,
   ref,

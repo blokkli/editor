@@ -22,10 +22,9 @@ import {
 import Overlay from './Overlay/index.vue'
 import type { EditableFieldConfig, EntityContext } from '#blokkli/types'
 import { BlokkliTransition } from '#blokkli/components'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import { falsy } from '#blokkli/helpers'
 import { itemEntityType } from '#blokkli-build/config'
+import { defineCommands, onBlokkliEvent } from '#blokkli/editor/composables'
 
 defineBlokkliFeature({
   id: 'editable-field',

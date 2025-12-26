@@ -8,8 +8,8 @@
 </template>
 
 <script setup lang="ts">
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { computed, useTemplateRef, watch } from '#imports'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const props = defineProps<{
   canvasScale: number

@@ -18,6 +18,7 @@ import {
   useTemplateRef,
 } from '#imports'
 import type { EditableFieldUpdateEvent } from '#blokkli/types'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 import {
   INJECT_APP,
   INJECT_EDIT_CONTEXT,
@@ -25,7 +26,6 @@ import {
   INJECT_IS_EDITING,
   INJECT_IS_IN_REUSABLE,
 } from '#blokkli/helpers/injections'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 const props = withDefaults(
   defineProps<{

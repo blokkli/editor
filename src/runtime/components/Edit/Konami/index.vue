@@ -5,10 +5,10 @@
 </template>
 
 <script lang="ts" setup>
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import Game from './Game/index.vue'
 import { ref } from '#imports'
 import { BlokkliTransition } from '#blokkli/components'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const isEnabled = ref(false)
 

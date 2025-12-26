@@ -35,8 +35,8 @@ import { ref, onMounted, useBlokkli, useTemplateRef } from '#imports'
 import { Icon, ItemIcon } from '#blokkli/components'
 import { lerp } from '#blokkli/helpers'
 import { easeOutElastic } from '#blokkli/helpers/easing'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { BlokkliIcon } from '#blokkli-build/icons'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 type AnimationRectangleValues = {
   opacity: number

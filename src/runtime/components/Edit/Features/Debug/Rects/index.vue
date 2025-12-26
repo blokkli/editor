@@ -13,8 +13,8 @@
 <script setup lang="ts">
 import { useBlokkli, useTemplateRef } from '#imports'
 import { falsy, intersects } from '#blokkli/helpers'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { Coord, Rectangle } from '#blokkli/types'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const { ui, dom, directive } = useBlokkli()
 

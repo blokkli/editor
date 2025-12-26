@@ -16,10 +16,10 @@
 </template>
 
 <script lang="ts" setup>
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { ref, useBlokkli, defineBlokkliFeature, computed } from '#imports'
 import { ErrorBoundary } from '#blokkli/components'
 import Renderer from './Renderer/index.vue'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 defineBlokkliFeature({
   id: 'multi-select',

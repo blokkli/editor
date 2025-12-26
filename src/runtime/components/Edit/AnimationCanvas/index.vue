@@ -25,7 +25,6 @@ import {
   MOUSE_BUTTONS,
   type CursorKeyword,
 } from '#blokkli/helpers/dom'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type {
   Rectangle,
   Coord,
@@ -41,6 +40,7 @@ import {
   onBeforeUnmount,
 } from '#imports'
 import { itemEntityType } from '#blokkli-build/config'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const {
   dom,

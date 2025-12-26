@@ -76,17 +76,15 @@ import {
   useTemplateRef,
 } from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
-import defineItemDropdownAction from '#blokkli/helpers/composables/defineItemDropdownAction'
 import ClipboardList from './List/index.vue'
 import type { ClipboardItem, RenderedFieldListItem } from '#blokkli/types'
 import { falsy, generateUUID, getFieldKey } from '#blokkli/helpers'
 import { Icon } from '#blokkli/components'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
 import getVideoId from 'get-video-id'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { emitMessage } from '#blokkli/helpers/eventBus'
 import { itemEntityType } from '#blokkli-build/config'
+import { defineItemDropdownAction, defineShortcut, onBlokkliEvent } from '#blokkli/editor/composables'
 
 const { settings, logger } = defineBlokkliFeature({
   id: 'clipboard',

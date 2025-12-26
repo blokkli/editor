@@ -3,9 +3,9 @@
 </template>
 
 <script lang="ts" setup>
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { defineBlokkliFeature, useBlokkli } from '#imports'
 import DebugMain from './Main.vue'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const { logger } = defineBlokkliFeature({
   id: 'debug',

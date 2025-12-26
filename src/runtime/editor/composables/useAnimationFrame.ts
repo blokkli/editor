@@ -1,6 +1,6 @@
 import { onBeforeUnmount, onMounted } from '#imports'
 
-export default function (cb: (time: number) => void) {
+export function useAnimationFrame(cb: (time: number) => void) {
   let raf: any = null
 
   const loop = (time: number) => {

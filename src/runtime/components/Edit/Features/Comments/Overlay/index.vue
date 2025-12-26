@@ -22,7 +22,7 @@ import { computed, ref, useBlokkli } from '#imports'
 import type { CommentItem } from '#blokkli/types'
 import { falsy, getBounds } from '#blokkli/helpers'
 import Item from './Item/index.vue'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 type Indicator = {
   id: string

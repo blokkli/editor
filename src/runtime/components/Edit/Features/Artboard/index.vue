@@ -10,8 +10,8 @@
 <script lang="ts" setup>
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 
-import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
 import Renderer from './Renderer.vue'
+import { defineShortcut } from '#blokkli/editor/composables'
 
 const { settings } = defineBlokkliFeature({
   id: 'artboard',

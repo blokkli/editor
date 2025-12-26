@@ -39,11 +39,11 @@ import type {
   FieldConfig,
   RenderedFieldListItem,
 } from '#blokkli/types'
-import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import { isInternalBundle } from '#blokkli/helpers/bundles'
 import { PluginTourItem } from '#blokkli/editor/plugins'
 import { getFieldKey } from '#blokkli/helpers'
 import { itemEntityType } from '#blokkli-build/config'
+import { defineCommands } from '#blokkli/editor/composables'
 
 const props = defineProps<{
   hideDisabledBlocks?: boolean

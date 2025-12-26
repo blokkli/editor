@@ -1,8 +1,9 @@
-import { useBlokkli } from '../../composables/useBlokkli'
 import type { KeyboardShortcut } from '#blokkli/types'
-import { onBeforeUnmount, onMounted } from '#imports'
+import { onBeforeUnmount, onMounted, useBlokkli } from '#imports'
 
-export default function (shortcut: KeyboardShortcut[] | KeyboardShortcut) {
+export function defineShortcut(
+  shortcut: KeyboardShortcut[] | KeyboardShortcut,
+) {
   const { keyboard } = useBlokkli()
   onMounted(() => {
     if (Array.isArray(shortcut)) {

@@ -85,8 +85,6 @@
 import { watch, ref, computed, useBlokkli, useTemplateRef } from '#imports'
 import { falsy } from '#blokkli/helpers'
 import { Icon, ItemIconBox } from '#blokkli/components'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import useStickyToolbar from '#blokkli/helpers/composables/useStickyToolbar'
 import EditActionsItemDropdown from './ItemDropdown.vue'
 import {
   BUNDLE_BLOKKLI_FRAGMENT,
@@ -94,6 +92,7 @@ import {
 } from '../../../../shared/constants'
 import type { FragmentDefinition } from '#blokkli-build/definitions'
 import type { BlokkliIcon } from '#blokkli-build/icons'
+import { onBlokkliEvent, useStickyToolbar } from '#blokkli/editor/composables'
 
 const { selection, $t, types, state, ui, definitions, debug } = useBlokkli()
 

@@ -49,7 +49,7 @@ import SectionFeatures from './Section/Features.vue'
 import DebugViewport from './Viewport/index.vue'
 import DebugRects from './Rects/index.vue'
 import type { DebugLogger } from '#blokkli/helpers/providers/debug'
-import defineItemDropdownAction from '#blokkli/helpers/composables/defineItemDropdownAction'
+import { defineItemDropdownAction } from '#blokkli/editor/composables'
 
 defineProps<{
   logger: DebugLogger

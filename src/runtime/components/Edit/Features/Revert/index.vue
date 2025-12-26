@@ -23,8 +23,8 @@
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature } from '#imports'
 import { DialogModal, BlokkliTransition } from '#blokkli/components'
-import defineMenuButton from '#blokkli/helpers/composables/defineMenuButton'
-import { useDialog } from '#blokkli/helpers/composables/useDialog'
+import { defineMenuButton } from '#blokkli/editor/composables'
+import { useDialog } from '#blokkli/editor/composables'
 
 const { adapter } = defineBlokkliFeature({
   id: 'revert',

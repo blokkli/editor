@@ -10,7 +10,7 @@ import {
 import { refreshNuxtData, useState } from 'nuxt/app'
 import type { BlokkliAdapter, AdapterContext } from '../../adapter'
 import { INJECT_MUTATED_FIELDS_MAP } from '../injections'
-import onBlokkliEvent from '../composables/onBlokkliEvent'
+import { onBlokkliEvent, addElementClasses } from '#blokkli/editor/composables'
 import type {
   MutatedField,
   EditEntity,
@@ -30,7 +30,6 @@ import { falsy, getFieldKey } from '#blokkli/helpers'
 import { eventBus, emitMessage } from '#blokkli/helpers/eventBus'
 import { nextTick } from '#imports'
 import type { TextProvider } from './texts'
-import { addElementClasses } from '../composables/addElementClasses'
 import { BUNDLE_FROM_LIBRARY } from '../../../shared/constants'
 
 const HOST_OPTION_KEY = 'HOST'

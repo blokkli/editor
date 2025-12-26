@@ -37,8 +37,7 @@ import { computed, ref, useBlokkli } from '#imports'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon, ShortcutIndicator } from '#blokkli/components'
 import type { RenderedFieldListItem } from '#blokkli/types'
-import defineCommands from '#blokkli/helpers/composables/defineCommands'
-import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
+import { defineCommands, defineTourItem } from '#blokkli/editor/composables'
 
 const { selection, state } = useBlokkli()
 

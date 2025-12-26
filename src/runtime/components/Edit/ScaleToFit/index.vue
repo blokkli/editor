@@ -9,8 +9,8 @@
 </template>
 
 <script lang="ts" setup>
-import useAnimationFrame from '#blokkli/helpers/composables/useAnimationFrame'
 import { ref, computed, useTemplateRef } from '#imports'
+import { useAnimationFrame } from '#blokkli/editor/composables'
 
 const props = defineProps<{
   width?: number

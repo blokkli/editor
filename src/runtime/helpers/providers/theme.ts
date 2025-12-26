@@ -14,7 +14,7 @@ import type {
 import { type Ref, ref, onMounted, onBeforeUnmount } from '#imports'
 import { rgbaToString } from '..'
 import { DragStyle } from '../DragStyle'
-import onBlokkliEvent from '../composables/onBlokkliEvent'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type { ElementProvider } from './element'
 
 type ThemeMap = {

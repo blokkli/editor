@@ -30,8 +30,7 @@ import { useBlokkli, defineBlokkliFeature, computed } from '#imports'
 import { PluginToolbarButton } from '#blokkli/editor/plugins'
 import { BlokkliTransition } from '#blokkli/components'
 import Palette from './Palette/index.vue'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import { useDialog } from '#blokkli/helpers/composables/useDialog'
+import { onBlokkliEvent, useDialog } from '#blokkli/editor/composables'
 
 defineBlokkliFeature({
   id: 'command-palette',

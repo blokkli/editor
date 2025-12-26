@@ -15,7 +15,7 @@
 import { ref, useBlokkli } from '#imports'
 import type { Message } from '#blokkli/types'
 import Item from './Item/index.vue'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const { ui } = useBlokkli()
 

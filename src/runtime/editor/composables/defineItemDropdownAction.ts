@@ -1,7 +1,7 @@
 import { onBeforeUnmount, onMounted, useBlokkli } from '#imports'
-import type { ItemDropdownAction } from '../providers/plugin'
+import type { ItemDropdownAction } from '../../helpers/providers/plugin'
 
-export default function (
+export function defineItemDropdownAction(
   cb: () => ItemDropdownAction | ItemDropdownAction[] | undefined,
 ) {
   const { plugins } = useBlokkli()

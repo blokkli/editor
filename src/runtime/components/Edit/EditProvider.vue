@@ -120,11 +120,10 @@ import {
   INJECT_PROVIDER_KEY,
 } from '#blokkli/helpers/injections'
 import type { AdapterContext } from '#blokkli/adapter'
-import { useBlockRegistration } from '#blokkli/helpers/composables/useBlockRegistration'
-import { addElementClasses } from '#blokkli/helpers/composables/addElementClasses'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { allComponents } from '#blokkli-build/chunk-editing'
 import { falsy } from '#blokkli/helpers'
+import { addElementClasses, useBlockRegistration } from '#blokkli/editor/composables'
 
 const props = withDefaults(
   defineProps<{

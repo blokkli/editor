@@ -16,7 +16,7 @@
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import type { RenderedFieldListItem } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/editor/plugins'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 defineBlokkliFeature({
   id: 'edit',

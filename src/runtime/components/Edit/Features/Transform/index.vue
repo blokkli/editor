@@ -28,9 +28,8 @@ import type {
 } from '#blokkli/types'
 import { BlokkliTransition } from '#blokkli/components'
 import { filterTransforms } from '#blokkli/helpers/transform'
-import defineCommands from '#blokkli/helpers/composables/defineCommands'
-import defineItemDropdownAction from '#blokkli/helpers/composables/defineItemDropdownAction'
 import TransformDialog from './Dialog/index.vue'
+import { defineCommands, defineItemDropdownAction } from '#blokkli/editor/composables'
 
 const { adapter } = defineBlokkliFeature({
   id: 'transform',

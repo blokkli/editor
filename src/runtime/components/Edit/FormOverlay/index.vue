@@ -28,7 +28,7 @@ import FormHeader from './Header/index.vue'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Resizable } from '#blokkli/components'
 import { onBeforeUnmount, onMounted, useBlokkli } from '#imports'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const props = defineProps<{
   id: string

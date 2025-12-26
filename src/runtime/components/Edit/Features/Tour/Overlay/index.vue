@@ -54,8 +54,7 @@
 import { useBlokkli, computed, ref, useTemplateRef } from '#imports'
 import { falsy, modulo } from '#blokkli/helpers'
 import { Icon, ShortcutIndicator } from '#blokkli/components'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import useAnimationFrame from '#blokkli/helpers/composables/useAnimationFrame'
+import { onBlokkliEvent, useAnimationFrame } from '#blokkli/editor/composables'
 
 const emit = defineEmits(['close'])
 

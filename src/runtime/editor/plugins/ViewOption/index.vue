@@ -33,8 +33,7 @@
 import { useBlokkli, computed, ref, watch } from '#imports'
 import { ShortcutIndicator, Icon } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import defineCommands from '#blokkli/helpers/composables/defineCommands'
-import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
+import { defineCommands, defineTourItem } from '#blokkli/editor/composables'
 
 const { storage, ui, eventBus, debug } = useBlokkli()
 

@@ -17,8 +17,6 @@
 </template>
 
 <script lang="ts" setup>
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import defineRenderer from '#blokkli/helpers/composables/defineRenderer'
 import { useBlokkli, computed, ref } from '#imports'
 import {
   setBuffersAndAttributes,
@@ -38,6 +36,7 @@ import {
 } from '#blokkli/helpers/dropTargets'
 import { isInternalBundle } from '#blokkli/helpers/bundles'
 import { itemEntityType } from '#blokkli-build/config'
+import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'
 
 const {
   animation,

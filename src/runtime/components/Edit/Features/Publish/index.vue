@@ -17,9 +17,7 @@ import {
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { BlokkliTransition } from '#blokkli/components'
 import PublishDialog from './Dialog/index.vue'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import defineMenuButton from '#blokkli/helpers/composables/defineMenuButton'
-import { useDialog } from '#blokkli/helpers/composables/useDialog'
+import { defineMenuButton, onBlokkliEvent, useDialog } from '#blokkli/editor/composables'
 
 const { adapter, settings } = defineBlokkliFeature({
   id: 'publish',

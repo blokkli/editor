@@ -14,8 +14,6 @@ import {
   rgbaToString,
   toShaderColor,
 } from '#blokkli/helpers'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import defineRenderer from '#blokkli/helpers/composables/defineRenderer'
 import type {
   DropTargetEvent,
   BlokkliFieldElement,
@@ -43,6 +41,7 @@ import {
 } from '#blokkli/helpers/dropTargets'
 import type { RGB } from './../../../../../../shared/types/theme'
 import { itemEntityType } from '#blokkli-build/config'
+import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'
 
 const props = defineProps<{
   items: DraggableItem[]

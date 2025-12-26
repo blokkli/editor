@@ -56,7 +56,7 @@ export type UseFocusTrapOptions = {
  * </template>
  * ```
  */
-export default function useFocusTrap(options: UseFocusTrapOptions) {
+export function useFocusTrap(options: UseFocusTrapOptions) {
   const { element } = useBlokkli()
 
   const {

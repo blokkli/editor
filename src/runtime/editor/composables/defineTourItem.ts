@@ -1,7 +1,7 @@
 import type { TourItem } from '#blokkli/types'
 import { onBeforeUnmount, onMounted, useBlokkli } from '#imports'
 
-export default function (cb: () => TourItem | TourItem[] | undefined) {
+export function defineTourItem(cb: () => TourItem | TourItem[] | undefined) {
   const { tour } = useBlokkli()
 
   onMounted(() => {

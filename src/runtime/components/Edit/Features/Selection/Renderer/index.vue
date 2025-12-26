@@ -3,8 +3,6 @@
 </template>
 
 <script lang="ts" setup>
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import defineRenderer from '#blokkli/helpers/composables/defineRenderer'
 import type { Rectangle, RenderedFieldListItem } from '#blokkli/types'
 import { useBlokkli, computed } from '#imports'
 import {
@@ -16,9 +14,9 @@ import {
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/helpers/webgl'
-import { useTransitionedValue } from '#blokkli/helpers/composables/useTransitionedValue'
 import { toShaderColor } from '#blokkli/helpers'
 import type { RGB } from './../../../../../../shared/types/theme'
+import { defineRenderer, onBlokkliEvent, useTransitionedValue } from '#blokkli/editor/composables'
 
 const props = defineProps<{
   blocks: RenderedFieldListItem[]

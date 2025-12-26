@@ -9,9 +9,9 @@
 <script lang="ts" setup>
 import type { ActionPlacedData, AssistantResult } from '#blokkli/types'
 import { useBlokkli, defineBlokkliFeature, ref } from '#imports'
-import defineAddAction from '#blokkli/helpers/composables/defineAddAction'
 import { BlokkliTransition } from '#blokkli/components'
 import Overlay from './Overlay/index.vue'
+import { defineAddAction } from '#blokkli/editor/composables'
 
 const { adapter } = defineBlokkliFeature({
   id: 'assistant',

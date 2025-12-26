@@ -7,7 +7,7 @@ import {
   ref,
 } from '#imports'
 import { eventBus } from './../eventBus'
-import { useGlobalBlokkliObject } from './../composables/useGlobalBlokkliObject'
+import { useGlobalBlokkliObject } from '#blokkli/editor/composables'
 
 export type DebugLogger = {
   /**

@@ -20,8 +20,10 @@ import type {
 } from '#blokkli/types'
 import type { Viewport } from '../../../shared/constants'
 import { falsy } from '..'
-import { addElementClasses } from '../composables/addElementClasses'
-import { defineElementStyle } from '../composables/defineElementStyle'
+import {
+  addElementClasses,
+  defineElementStyle,
+} from '#blokkli/editor/composables'
 import type { AdapterContext } from '#blokkli/adapter'
 import {
   defaultLanguage,

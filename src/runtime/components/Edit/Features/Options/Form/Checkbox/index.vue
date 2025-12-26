@@ -7,8 +7,8 @@
 </template>
 
 <script lang="ts" setup>
-import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import { computed, useBlokkli } from '#imports'
+import { defineCommands } from '#blokkli/editor/composables'
 
 const { $t, state } = useBlokkli()
 

@@ -63,9 +63,9 @@ import type {
   Rectangle,
   DraggableExistingStructureBlock,
 } from '#blokkli/types'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { renderCycle } from '#blokkli/helpers/renderCycle'
 import { BundleSelector, BlokkliTransition } from '#blokkli/components'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const { adapter } = defineBlokkliFeature({
   icon: 'bk_mdi_drag_pan',

@@ -39,8 +39,8 @@ import { getBlokkliItemProxyComponent } from '#blokkli/helpers/editComponents'
 import { ItemIcon } from '#blokkli/components'
 import type { FieldConfig, LibraryItemProps } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
-import { useBlockRegistration } from '#blokkli/helpers/composables/useBlockRegistration'
 import { itemEntityType } from '#blokkli-build/config'
+import { useBlockRegistration } from '#blokkli/editor/composables'
 
 const props = defineProps<{
   uuid: string

@@ -71,9 +71,9 @@ import { falsy } from '#blokkli/helpers'
 import InputPlaintext from './Plaintext/index.vue'
 import InputContenteditable from './Contenteditable/index.vue'
 import InputFrame from './Frame/index.vue'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { FIELD_MAPPING } from '#blokkli-build/runtime-options'
 import { itemEntityType } from '#blokkli-build/config'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const {
   eventBus,

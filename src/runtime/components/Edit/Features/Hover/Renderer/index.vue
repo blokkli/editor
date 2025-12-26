@@ -3,8 +3,6 @@
 </template>
 
 <script lang="ts" setup>
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import defineRenderer from '#blokkli/helpers/composables/defineRenderer'
 import type { Rectangle } from '#blokkli/types'
 import { useBlokkli, computed, ref, watch } from '#imports'
 import {
@@ -18,6 +16,7 @@ import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/helpers/webgl'
 import { toShaderColor, isInsideRect } from '#blokkli/helpers'
 import type { RGB } from './../../../../../../shared/types/theme'
+import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'
 
 const { animation, theme, dom, selection, state, ui, directive, blocks } =
   useBlokkli()

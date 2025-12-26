@@ -39,7 +39,7 @@ import { nextTick, ref, useBlokkli, defineBlokkliFeature, useTemplateRef } from 
 import Overlay from './Overlay/index.vue'
 import { BlokkliTransition } from '#blokkli/components'
 import { PluginToolbarButton } from '#blokkli/editor/plugins'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 defineBlokkliFeature({
   id: 'search',

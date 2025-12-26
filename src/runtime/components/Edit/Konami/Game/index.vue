@@ -37,7 +37,6 @@
 </template>
 
 <script setup lang="ts">
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import {
   computed,
   useTemplateRef,
@@ -50,6 +49,7 @@ import Pixelgrid from './PixelGrid.vue'
 import { useTextRendering } from './textRendering'
 import { useIconRendering } from './useIconRendering'
 import logoUrl from './blokkli.png'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const emit = defineEmits<{
   (e: 'close'): void

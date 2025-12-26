@@ -19,8 +19,8 @@
 </template>
 
 <script lang="ts" setup>
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { useBlokkli, computed, useTemplateRef, ref } from '#imports'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const { ui, selection } = useBlokkli()
 

@@ -81,8 +81,7 @@ import type {
   RenderedFieldListItem,
 } from '#blokkli/types'
 import Banner from './Banner/index.vue'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import defineMenuButton from '#blokkli/helpers/composables/defineMenuButton'
+import { defineMenuButton, onBlokkliEvent } from '#blokkli/editor/composables'
 
 const { adapter } = defineBlokkliFeature({
   id: 'translations',

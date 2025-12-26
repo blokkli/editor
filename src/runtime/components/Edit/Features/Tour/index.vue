@@ -7,7 +7,7 @@
 import { defineBlokkliFeature, useBlokkli } from '#imports'
 import Overlay from './Overlay/index.vue'
 import Popup from './Popup/index.vue'
-import defineMenuButton from '#blokkli/helpers/composables/defineMenuButton'
+import { defineMenuButton } from '#blokkli/editor/composables'
 
 defineBlokkliFeature({
   id: 'tour',

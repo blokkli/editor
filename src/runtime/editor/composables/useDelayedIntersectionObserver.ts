@@ -1,4 +1,4 @@
-export default function (
+export function useDelayedIntersectionObserver(
   callback: (entries: IntersectionObserverEntry[]) => void,
   options: IntersectionObserverInit = {},
 ) {

@@ -26,7 +26,6 @@
 </template>
 
 <script setup lang="ts">
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { computed, useBlokkli, ref, watch } from '#imports'
 import {
   BlokkliTransition,
@@ -51,6 +50,7 @@ import { getFieldKey } from '#blokkli/helpers'
 import { isInternalBundle } from '#blokkli/helpers/bundles'
 import Renderer from './Renderer/index.vue'
 import { itemEntityType } from '#blokkli-build/config'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const props = defineProps<{
   items: RenderedFieldListItem[]

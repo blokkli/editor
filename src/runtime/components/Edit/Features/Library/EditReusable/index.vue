@@ -37,10 +37,10 @@
 </template>
 
 <script lang="ts" setup>
-import onBroadcastEvent from '#blokkli/helpers/composables/onBroadcastEvent'
 import { ref, useBlokkli, useTemplateRef } from '#imports'
 import { Icon } from '#blokkli/components'
 import Loading from './../../../Loading/index.vue'
+import { onBroadcastEvent } from '#blokkli/editor/composables'
 
 const props = defineProps<{
   url: string

@@ -52,7 +52,7 @@ import type { Command } from '#blokkli/types'
 import { Fzf } from 'fzf'
 import { modulo } from '#blokkli/helpers'
 import Item, { type MappedCommandItem } from './Item/index.vue'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const emit = defineEmits(['close'])
 

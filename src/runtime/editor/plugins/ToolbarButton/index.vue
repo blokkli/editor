@@ -31,8 +31,7 @@
 import { ShortcutIndicator, Icon } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { ref, useBlokkli } from '#imports'
-import defineCommands from '#blokkli/helpers/composables/defineCommands'
-import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
+import { defineCommands, defineTourItem } from '#blokkli/editor/composables'
 
 const props = defineProps<{
   /**

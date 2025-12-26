@@ -4,7 +4,7 @@
 
 <script lang="ts" setup>
 import { useBlokkli, useRoute, nextTick, defineBlokkliFeature } from '#imports'
-import defineMenuButton from '#blokkli/helpers/composables/defineMenuButton'
+import { defineMenuButton } from '#blokkli/editor/composables'
 
 defineBlokkliFeature({
   id: 'exit',

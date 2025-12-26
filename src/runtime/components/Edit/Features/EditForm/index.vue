@@ -18,10 +18,10 @@ import { ref, computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import { FormOverlay, BlokkliTransition } from '#blokkli/components'
 import FormFrame from './Frame/index.vue'
 import type { AdapterFormFrameBuilder } from '#blokkli/adapter'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { EntityTranslation } from '#blokkli/types'
 import { itemEntityType } from '#blokkli-build/config'
 import type { BlockBundleWithNested } from '#blokkli-build/generated-types'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const { adapter } = defineBlokkliFeature({
   id: 'edit-form',

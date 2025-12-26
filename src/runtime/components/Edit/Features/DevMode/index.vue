@@ -14,7 +14,7 @@
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature, ref } from '#imports'
 import { PluginViewOption } from '#blokkli/editor/plugins'
-import { addElementClasses } from '#blokkli/helpers/composables/addElementClasses'
+import { addElementClasses } from '#blokkli/editor/composables'
 
 defineBlokkliFeature({
   id: 'dev-mode',

@@ -5,7 +5,6 @@
 <script lang="ts" setup>
 import { useBlokkli, onBeforeUnmount } from '#imports'
 import { intersects, toShaderColor } from '#blokkli/helpers'
-import defineRenderer from '#blokkli/helpers/composables/defineRenderer'
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import {
@@ -16,7 +15,7 @@ import {
 } from 'twgl.js'
 import type { Coord, Rectangle } from '#blokkli/types'
 import { RectangleBufferCollector } from '#blokkli/helpers/webgl'
-import useDebugLogger from '#blokkli/helpers/composables/useDebugLogger'
+import { defineRenderer, useDebugLogger } from '#blokkli/editor/composables'
 
 const { eventBus, dom, theme, animation, ui, blocks } = useBlokkli()
 const logger = useDebugLogger()

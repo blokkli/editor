@@ -56,8 +56,8 @@
 
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature, computed } from '#imports'
-import useStateBasedCache from '#blokkli/helpers/composables/useStateBasedCache'
 import { Icon } from '#blokkli/components'
+import { useStateBasedCache } from '#blokkli/editor/composables'
 
 defineBlokkliFeature({
   id: 'breadcrumbs',

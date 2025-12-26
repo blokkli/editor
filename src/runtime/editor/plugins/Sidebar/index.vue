@@ -121,11 +121,8 @@ import {
   Loading,
 } from '#blokkli/components'
 import SidebarDetached from './Detached/index.vue'
-import defineCommands from '#blokkli/helpers/composables/defineCommands'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import useAnimationFrame from '#blokkli/helpers/composables/useAnimationFrame'
-import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 import type { SidebarRegion } from '#blokkli/types'
+import { defineCommands, defineTourItem, onBlokkliEvent, useAnimationFrame } from '#blokkli/editor/composables'
 
 const props = withDefaults(
   defineProps<{

@@ -13,8 +13,7 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import defineShortcut from '#blokkli/helpers/composables/defineShortcut'
+import { defineShortcut, onBlokkliEvent } from '#blokkli/editor/composables'
 
 const props = defineProps<{
   group?: string

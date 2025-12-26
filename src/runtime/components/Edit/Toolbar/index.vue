@@ -48,10 +48,10 @@
 </template>
 
 <script lang="ts" setup>
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import { Icon } from '#blokkli/components'
 import { onMounted, useBlokkli, onBeforeUnmount, computed } from '#imports'
 import AppMenu from './../AppMenu/index.vue'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const { ui, selection, storage, eventBus } = useBlokkli()
 

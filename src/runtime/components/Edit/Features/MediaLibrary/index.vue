@@ -20,10 +20,10 @@
 import { useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
 import Library from './Library/index.vue'
-import defineDropAreas from '#blokkli/helpers/composables/defineDropAreas'
 import { falsy } from '#blokkli/helpers'
 import type { DraggableHostData, DropArea } from '#blokkli/types'
 import { itemEntityType } from '#blokkli-build/config'
+import { defineDropAreas } from '#blokkli/editor/composables'
 
 defineBlokkliFeature({
   id: 'media-library',

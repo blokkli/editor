@@ -1,5 +1,5 @@
 import { onBeforeUnmount, useBlokkli } from '#imports'
-import type { Renderer } from '../providers/animation'
+import type { Renderer } from '../../helpers/providers/animation'
 
 /**
  * Register a WebGL renderer with automatic cleanup on unmount.
@@ -8,7 +8,7 @@ import type { Renderer } from '../providers/animation'
  * @param config - Renderer configuration (zIndex, enabled, render, collector)
  * @returns Object containing the collector instance with inferred type
  */
-export default function defineRenderer<T>(
+export function defineRenderer<T>(
   id: string,
   config: Omit<Renderer<T>, 'id'>,
 ): { collector: T } {

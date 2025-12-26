@@ -6,8 +6,8 @@
 
 <script setup lang="ts">
 import { useBlokkli, ref, computed } from '#imports'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 import type { Rectangle } from '#blokkli/types'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const { dom } = useBlokkli()
 

@@ -4,7 +4,6 @@ import type {
   Rectangle,
 } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
-import useDelayedIntersectionObserver from './../composables/useDelayedIntersectionObserver'
 import type { UiProvider } from './ui'
 import {
   computed,
@@ -13,7 +12,10 @@ import {
   ref,
   type ComputedRef,
 } from '#imports'
-import onBlokkliEvent from './../composables/onBlokkliEvent'
+import {
+  onBlokkliEvent,
+  useDelayedIntersectionObserver,
+} from '#blokkli/editor/composables'
 import { itemEntityType } from '#blokkli-build/config'
 import type { DebugProvider } from './debug'
 

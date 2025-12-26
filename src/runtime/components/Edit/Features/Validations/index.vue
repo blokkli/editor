@@ -40,7 +40,7 @@ import { PluginSidebar } from '#blokkli/editor/plugins'
 import { Icon } from '#blokkli/components'
 import ValidationOverlay from './Overlay/index.vue'
 import SidebarItem from './SidebarItem/index.vue'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 defineBlokkliFeature({
   id: 'validations',

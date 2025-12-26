@@ -1,4 +1,4 @@
-import onBlokkliEvent from '../composables/onBlokkliEvent'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 import { type Ref, type ComputedRef, computed, ref } from '#imports'
 import type {
   DraggableItem,

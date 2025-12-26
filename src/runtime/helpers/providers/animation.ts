@@ -1,5 +1,8 @@
-import onBlokkliEvent from '../composables/onBlokkliEvent'
-import useAnimationFrame from '../composables/useAnimationFrame'
+import {
+  onBlokkliEvent,
+  useAnimationFrame,
+  useTransitionedValue,
+} from '#blokkli/editor/composables'
 import {
   ref,
   computed,
@@ -18,7 +21,6 @@ import type { CanvasDrawEvent, Coord } from '#blokkli/types'
 import type { SelectionProvider } from './selection'
 import type { RectangleBufferCollector } from '../webgl'
 import type { DebugProvider } from './debug'
-import { useTransitionedValue } from '../composables/useTransitionedValue'
 import type { KeyboardProvider } from './keyboard'
 
 export type RenderContext = CanvasDrawEvent & {

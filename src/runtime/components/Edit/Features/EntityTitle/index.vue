@@ -50,15 +50,14 @@
 </template>
 
 <script lang="ts" setup>
-import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import {
   useBlokkli,
   defineBlokkliFeature,
   computed,
   useTemplateRef,
 } from '#imports'
-import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 import { Icon } from '#blokkli/components'
+import { defineCommands, defineTourItem } from '#blokkli/editor/composables'
 
 defineBlokkliFeature({
   id: 'entity-title',

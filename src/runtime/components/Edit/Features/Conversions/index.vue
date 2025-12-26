@@ -11,7 +11,7 @@ import {
   watch,
 } from '#imports'
 import { falsy } from '#blokkli/helpers'
-import defineItemDropdownAction from '#blokkli/helpers/composables/defineItemDropdownAction'
+import { defineItemDropdownAction } from '#blokkli/editor/composables'
 
 const { adapter } = defineBlokkliFeature({
   id: 'conversions',

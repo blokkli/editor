@@ -21,9 +21,10 @@
 </template>
 
 <script setup lang="ts">
-import useStickyToolbar, {
+import  {
+useStickyToolbar,
   type PlacementVertical,
-} from '#blokkli/helpers/composables/useStickyToolbar'
+} from '#blokkli/editor/composables/useStickyToolbar'
 import {
   useTemplateRef,
   useBlokkli,
@@ -34,8 +35,7 @@ import {
 import { Icon } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { Coord } from '#blokkli/types'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import useFocusTrap from '#blokkli/helpers/composables/useFocusTrap'
+import {onBlokkliEvent, useFocusTrap }from '#blokkli/editor/composables'
 
 const props = withDefaults(
   defineProps<{

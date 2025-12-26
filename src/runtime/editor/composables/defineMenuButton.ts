@@ -1,7 +1,7 @@
 import { onBeforeUnmount, onMounted, useBlokkli } from '#imports'
-import type { MenuButtonPlugin } from '../providers/plugin'
+import type { MenuButtonPlugin } from '../../helpers/providers/plugin'
 
-export default function (
+export function defineMenuButton(
   cb: () => MenuButtonPlugin | MenuButtonPlugin[] | undefined,
 ) {
   const { plugins } = useBlokkli()

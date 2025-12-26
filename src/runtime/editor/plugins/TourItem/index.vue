@@ -3,10 +3,10 @@
 </template>
 
 <script lang="ts" setup>
-import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 import { getCurrentInstance, useBlokkli } from '#imports'
 
 import type { RendererNode } from 'vue'
+import { defineTourItem } from '#blokkli/editor/composables'
 
 const props = defineProps<{
   /**

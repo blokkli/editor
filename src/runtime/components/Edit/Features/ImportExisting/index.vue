@@ -14,8 +14,7 @@
 import { computed, useBlokkli, onMounted, defineBlokkliFeature } from '#imports'
 import { BlokkliTransition } from '#blokkli/components'
 import ExistingDialog from './Dialog/index.vue'
-import defineMenuButton from '#blokkli/helpers/composables/defineMenuButton'
-import { useDialog } from '#blokkli/helpers/composables/useDialog'
+import { defineMenuButton, useDialog } from '#blokkli/editor/composables'
 
 const { adapter, settings } = defineBlokkliFeature({
   id: 'import-existing',

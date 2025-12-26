@@ -1,8 +1,8 @@
 import type { ComputedRef, ShallowRef } from 'vue'
-import onBlokkliEvent from './onBlokkliEvent'
+import { onBlokkliEvent } from './onBlokkliEvent'
 import { computed, ref, useBlokkli } from '#imports'
 import type { Coord, Rectangle } from '#blokkli/types'
-import { falsy, findIdealRectPosition } from '..'
+import { falsy, findIdealRectPosition } from '../../helpers'
 
 export type PlacementVertical = 'top' | 'bottom' | 'auto'
 type PlacementHorizontal = 'left' | 'center'
@@ -41,7 +41,7 @@ const limitPlacedRect = (rect: Rectangle, padding: Rectangle): Rectangle => {
   }
 }
 
-export default function (
+export function useStickyToolbar(
   el: Readonly<ShallowRef<HTMLElement | null>>,
   options?: UseStickyToolbarOptions,
 ): UseStickyToolbar {

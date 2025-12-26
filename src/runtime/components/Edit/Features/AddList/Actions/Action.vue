@@ -17,8 +17,8 @@
 <script setup lang="ts">
 import { AddListItem } from '#blokkli/components'
 import type { AddAction } from '#blokkli/types'
-import defineTourItem from '#blokkli/helpers/composables/defineTourItem'
 import { computed, useTemplateRef, useBlokkli } from '#imports'
+import { defineTourItem } from '#blokkli/editor/composables'
 
 const props = defineProps<{
   action: AddAction

@@ -33,7 +33,7 @@ import {
   watch,
 } from '#imports'
 import { ViewportBlockingRect } from '#blokkli/components'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const props = defineProps<{
   artboard: Artboard

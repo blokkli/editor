@@ -61,8 +61,7 @@ import {
 } from '#imports'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon } from '#blokkli/components'
-import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
-import useFocusTrap from '#blokkli/helpers/composables/useFocusTrap'
+import { onBlokkliEvent, useFocusTrap } from '#blokkli/editor/composables'
 
 const { ui } = useBlokkli()
 

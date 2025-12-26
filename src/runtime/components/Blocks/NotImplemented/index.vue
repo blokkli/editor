@@ -6,9 +6,9 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlockRegistration } from '#blokkli/helpers/composables/useBlockRegistration'
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/components'
+import { useBlockRegistration } from '#blokkli/editor/composables'
 
 const props = defineProps<{
   uuid: string
