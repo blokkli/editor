@@ -145,7 +145,7 @@ export default defineNuxtConfig({
       default: {
         importPatterns: [
           './app/assets/icons/**/*.svg',
-          './../src/runtime/icons/**/*.svg',
+          './../src/runtime/editor/icons/svg/**/*.svg',
         ],
         symbolFiles: [...USED_MATERIAL_ICONS, ...additionalIcons].reduce<
           Record<string, string>

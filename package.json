@@ -55,8 +55,9 @@
   "scripts": {
     "prepack": "rm -rf dist && nuxt-module-build build && find dist/ -type f -name '*.*' | grep '.spec.' | xargs rm -f",
     "dev": "nuxi dev playground --host",
-    "typecheck": "npm run typecheck:module && npm run typecheck:playground",
-    "typecheck:module": "vue-tsc --noEmit",
+    "typecheck": "npm run typecheck:build && npm run typecheck:runtime && npm run typecheck:playground",
+    "typecheck:build": "vue-tsc --noEmit -p .nuxt/tsconfig.node.json",
+    "typecheck:runtime": "vue-tsc --noEmit -p .nuxt/tsconfig.app.json",
     "typecheck:playground": "cd playground && vue-tsc --noEmit",
     "dev:minimal": "nuxi dev playground-minimal --host",
     "styles:build": "postcss ./css/index.css -o ./src/runtime/editor/css/output.css",

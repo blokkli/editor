@@ -59,9 +59,10 @@ fragment blokkliParagraphsType on ParagraphsType {
     strict: true,
     tsConfig: {
       compilerOptions: {
+        composite: true,
         noUncheckedIndexedAccess: true,
       },
-      exclude: ['../playground', '../playground-minimal', '../dist'],
+      exclude: ['../playground', '../playground-minimal', '../dist', '../app'],
       include: [
         '../src/runtime/components/**/*',
         '../src/runtime/composables/**/*',
@@ -69,7 +70,24 @@ fragment blokkliParagraphsType on ParagraphsType {
         '../src/runtime/helpers/**/*',
         '../src/runtime/plugins/**/*',
         '../src/runtime/types/**/*',
+        '../src/shared/**/*',
         '../src/modules/drupal/runtime/**/*',
+      ],
+    },
+    nodeTsConfig: {
+      compilerOptions: {
+        composite: true,
+        noUncheckedIndexedAccess: true,
+      },
+      include: [
+        '../src/module.ts',
+        '../src/build/**/*',
+        '../src/modules/**/*.ts',
+        '../src/shared/**/*',
+      ],
+      exclude: [
+        '../src/runtime/**/*',
+        '../src/modules/*/runtime/**/*',
       ],
     },
   },

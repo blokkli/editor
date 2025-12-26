@@ -39,7 +39,7 @@
               height="20"
               title="GitHub"
               class="block"
-            ></iframe>
+            />
           </li>
         </ul>
       </nav>

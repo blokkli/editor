@@ -1,4 +1,7 @@
 {
-  "extends": "./.nuxt/tsconfig.json",
-  "exclude": ["dist", "test", "node_modules", "playground"]
+  "files": [],
+  "references": [
+    { "path": "./.nuxt/tsconfig.app.json" },
+    { "path": "./.nuxt/tsconfig.node.json" }
+  ]
 }

@@ -46,6 +46,7 @@ export default defineBuildConfig({
     'acorn',
     'pathe',
     'graphql',
+    'consola',
     'webpack-sources',
     'webpack-virtual-modules',
     '@jridgewell/sourcemap-codec',
