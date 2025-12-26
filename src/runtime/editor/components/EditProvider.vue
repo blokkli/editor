@@ -40,7 +40,7 @@
   </Teleport>
 
   <Indicators />
-  <Features
+  <FeaturesRenderer
     v-if="isReady"
     :key="route.fullPath"
     @loaded="featuresLoaded = true"
@@ -72,7 +72,7 @@ import Toolbar from './Toolbar/index.vue'
 import Actions from './Actions/index.vue'
 import Loading from './Loading/index.vue'
 import Messages from './Messages/index.vue'
-import Features from './Features/index.vue'
+import FeaturesRenderer from './FeaturesRenderer/index.vue'
 import Indicators from './Indicators/index.vue'
 import DraggableList from './DraggableList.vue'
 import AnimationCanvas from './AnimationCanvas/index.vue'
