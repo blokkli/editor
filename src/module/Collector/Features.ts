@@ -1,10 +1,10 @@
 import { resolveFiles } from '@nuxt/kit'
 import { CollectedFile, Collector } from './index'
-import type { TemplateDependency } from '../module/templates/defineTemplate'
+import type { TemplateDependency } from '../templates/defineTemplate'
 import micromatch from 'micromatch'
-import type { ModuleHelper } from '../module/ModuleHelper'
-import type { AdapterMethods, FeatureDefinition } from '../runtime/types'
-import { extractObjectLiteral, parseTsObject, falsy } from '../helpers'
+import type { ModuleHelper } from '../ModuleHelper'
+import type { AdapterMethods, FeatureDefinition } from '../../runtime/types'
+import { extractObjectLiteral, parseTsObject, falsy } from '../../helpers'
 
 export type ExtractedFeatureDefinition = {
   id: string

@@ -1,7 +1,7 @@
 import type { WatchEvent } from 'nuxt/schema'
-import type { ModuleHelper } from '../module/ModuleHelper'
-import type { TemplateDependency } from '../module/templates/defineTemplate'
-import { logger } from '../module/logger'
+import type { ModuleHelper } from '../ModuleHelper'
+import type { TemplateDependency } from '../templates/defineTemplate'
+import { logger } from '../logger'
 
 export type HandleWatchEventResult = {
   hasChanged: boolean

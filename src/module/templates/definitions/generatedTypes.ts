@@ -1,5 +1,5 @@
 import { defineCodeTemplate } from '../defineTemplate'
-import { type CollectedBlockFile, isBlock } from '../../../Collector/Blocks'
+import { type CollectedBlockFile, isBlock } from '../../Collector/Blocks'
 import { relative } from 'pathe'
 import type {
   ExtractedBlockDefinitionInput,

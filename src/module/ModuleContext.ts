@@ -1,13 +1,13 @@
 import { addTemplate } from '@nuxt/kit'
-import type { IconCollector } from '../Collector/Icons'
+import type { IconCollector } from './Collector/Icons'
 import type { ModuleHelper } from './ModuleHelper'
 import type {
   ModuleTemplate,
   TemplateDependency,
 } from './templates/defineTemplate'
-import type { FeatureCollector } from '../Collector/Features'
+import type { FeatureCollector } from './Collector/Features'
 import type { ThemeData } from './ThemeData'
-import type { BlockCollector } from '../Collector/Blocks'
+import type { BlockCollector } from './Collector/Blocks'
 
 const WRITE = false
 

@@ -1,5 +1,5 @@
 import { defineCodeTemplate } from '../defineTemplate'
-import { isBlock, isFragment } from '../../../Collector/Blocks'
+import { isBlock, isFragment } from '../../Collector/Blocks'
 import { toObject, toTypeLiteral } from '../helpers'
 import { hash } from 'ohash'
 

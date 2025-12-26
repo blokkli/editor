@@ -5,9 +5,9 @@ import type {
 } from '../runtime/types'
 import type { ModuleOptionsSettings } from '#blokkli-build/module-types'
 import type { Theme, ThemeName } from '../shared/types/theme'
-import type { CollectedBlockFile } from '../Collector/Blocks'
-import type { CollectedFeatureFile } from '../Collector/Features'
-import type { CollectedFile } from '../Collector'
+import type { CollectedBlockFile } from './Collector/Blocks'
+import type { CollectedFeatureFile } from './Collector/Features'
+import type { CollectedFile } from './Collector'
 import type { BlokkliModule } from '../modules/defineBlokkliModule'
 
 export type ExtractedBlockDefinitionInput = BlockDefinitionInput

@@ -1,5 +1,5 @@
 import { defineFileTemplate, withHelper } from '../defineTemplate'
-import { isBlock } from '../../../Collector/Blocks'
+import { isBlock } from '../../Collector/Blocks'
 import { defu } from 'defu'
 import { sortObjectKeys } from './../../../helpers'
 import { resolveAlias } from '@nuxt/kit'

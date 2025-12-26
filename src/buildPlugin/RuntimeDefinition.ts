@@ -11,7 +11,7 @@ import {
   isBlock,
   isFragment,
   type ExtractedDefinition,
-} from '../Collector/Blocks'
+} from '../module/Collector/Blocks'
 
 export function isVue(
   id: string,

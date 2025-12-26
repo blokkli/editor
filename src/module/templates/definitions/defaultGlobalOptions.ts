@@ -1,5 +1,5 @@
 import { defineCodeTemplate } from '../defineTemplate'
-import { isBlock } from '../../../Collector/Blocks'
+import { isBlock } from '../../Collector/Blocks'
 import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,

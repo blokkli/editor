@@ -11,15 +11,15 @@ import {
   BK_VISIBLE_LANGUAGES,
 } from './runtime/helpers/symbols'
 import type { ModuleHooks, ModuleOptions } from './module/types'
-import { IconCollector } from './Collector/Icons'
-import type { Collector } from './Collector'
+import { IconCollector } from './module/Collector/Icons'
+import type { Collector } from './module/Collector'
 import { ModuleHelper } from './module/ModuleHelper'
 import { ModuleContext } from './module/ModuleContext'
 import { TEMPLATES } from './module/templates'
 import type { TemplateDependency } from './module/templates/defineTemplate'
-import { FeatureCollector } from './Collector/Features'
+import { FeatureCollector } from './module/Collector/Features'
 import { ThemeData } from './module/ThemeData'
-import { BlockCollector } from './Collector/Blocks'
+import { BlockCollector } from './module/Collector/Blocks'
 import type { Blokkli } from './modules/defineBlokkliModule'
 
 export default defineNuxtModule<ModuleOptions>({

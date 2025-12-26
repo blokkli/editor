@@ -3,20 +3,20 @@ import path from 'node:path'
 import { dirname } from 'pathe'
 import { CollectedFile, Collector, type ValidationError } from './index'
 import micromatch from 'micromatch'
-import type { ModuleHelper } from '../module/ModuleHelper'
+import type { ModuleHelper } from '../ModuleHelper'
 import type {
   ExtractedBlockDefinitionInput,
   ExtractedFragmentDefinitionInput,
-} from '../module/types'
-import type { TemplateDependency } from '../module/templates/defineTemplate'
+} from '../types'
+import type { TemplateDependency } from '../templates/defineTemplate'
 import {
   extractObjectLiteral,
   parseTsObject,
   toValidVariableName,
-} from '../helpers'
+} from '../../helpers'
 import { hash } from 'ohash'
 import type { ProviderDefinitionInput } from '#blokkli/types'
-import { logger } from '../module/logger'
+import { logger } from '../logger'
 
 export type ExtractedDefinition =
   | ExtractedBlockDefinitionInput

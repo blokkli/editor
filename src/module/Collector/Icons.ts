@@ -1,8 +1,8 @@
 import { resolveFiles } from '@nuxt/kit'
 import { CollectedFile, Collector } from './index'
-import type { TemplateDependency } from '../module/templates/defineTemplate'
+import type { TemplateDependency } from '../templates/defineTemplate'
 import micromatch from 'micromatch'
-import type { ModuleHelper } from '../module/ModuleHelper'
+import type { ModuleHelper } from '../ModuleHelper'
 
 export class IconCollector extends Collector {
   protected override needsFileContents = false
