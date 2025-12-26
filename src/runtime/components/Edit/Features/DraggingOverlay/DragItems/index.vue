@@ -32,7 +32,8 @@ import {
   useTemplateRef,
 } from '#imports'
 import type { Coord, DraggableItem, Rectangle } from '#blokkli/types'
-import { realBackgroundColor, falsy } from '#blokkli/helpers'
+import { falsy } from '#blokkli/helpers'
+import { realBackgroundColor } from '#blokkli/editor/helpers/dom'
 import { isInsideRect} from '#blokkli/editor/helpers/geometry'
 import { Icon } from '#blokkli/components'
 import DragItem, { type DragItemData } from './DragItem.vue'

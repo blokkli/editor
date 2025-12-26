@@ -16,7 +16,6 @@
 <script lang="ts" setup>
 import {
   falsy,
-  getInteractionCoordinates
 } from '#blokkli/helpers'
 import {
   getDistance,
@@ -25,6 +24,7 @@ import {
 import {
   MOUSE_BUTTON,
   MOUSE_BUTTONS,
+  getInteractionCoordinates
 } from '#blokkli/editor/helpers/dom'
 import type {
   CursorKeyword,

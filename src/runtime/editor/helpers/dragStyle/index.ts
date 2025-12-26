@@ -1,12 +1,21 @@
 import type { DraggableStyle } from '#blokkli/types'
 import type { RGB } from '../../../../shared/types/theme'
-import { getNumericStyleValue, realBackgroundColor } from '../../../helpers'
 import {
   findHighestContrastColor,
   getContrastRatio,
   parseColorString,
   rgbaToString,
 } from '../../helpers/color'
+import { realBackgroundColor } from '../dom'
+
+const getNumericStyleValue = (str: string, fallback = 0): number => {
+  const v = str.replace('px', '')
+  const num = Number.parseFloat(v)
+  if (Number.isNaN(num) || num === 0) {
+    return fallback
+  }
+  return num
+}
 
 export class DragStyle {
   styleCache: WeakMap<HTMLElement | SVGElement, DraggableStyle>

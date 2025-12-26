@@ -11,7 +11,7 @@
 <script lang="ts" setup>
 import type { Coord, DraggableItem } from '#blokkli/types'
 import { useBlokkli } from '#imports'
-import { getInteractionCoordinates } from '#blokkli/helpers'
+import { getInteractionCoordinates } from '#blokkli/editor/helpers/dom'
 import { getDistance } from '#blokkli/editor/helpers/geometry'
 
 const { eventBus } = useBlokkli()

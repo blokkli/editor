@@ -58,7 +58,7 @@
 <script lang="ts" setup>
 import { ref, useBlokkli, onMounted, useTemplateRef, watch } from '#imports'
 import { DialogModal, InfoBox, FormText, FormItem } from '#blokkli/components'
-import { realBackgroundColor } from '#blokkli/helpers'
+import { realBackgroundColor } from '#blokkli/editor/helpers/dom'
 
 defineEmits<{
   (e: 'confirm', label: string): void

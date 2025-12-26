@@ -33,7 +33,7 @@
 <script setup lang="ts">
 import { ref, onMounted, useBlokkli, useTemplateRef } from '#imports'
 import { Icon, ItemIcon } from '#blokkli/components'
-import { lerp } from '#blokkli/helpers'
+import { lerp } from '#blokkli/editor/helpers/math'
 import { easeOutElastic } from '#blokkli/editor/helpers/easing'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { onBlokkliEvent } from '#blokkli/editor/composables'

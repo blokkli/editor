@@ -17,9 +17,6 @@
 import Renderer from './Renderer/index.vue'
 import SelectionAddButtons from './AddButtons/index.vue'
 import {
-  originatesFromTextInput,
-} from '#blokkli/helpers'
-import {
   calculateIntersection,
   getBounds,
   intersects,
@@ -56,6 +53,10 @@ const {
   blocks,
   element,
 } = useBlokkli()
+
+const originatesFromTextInput = (e: Event): boolean =>
+  e.target instanceof HTMLInputElement ||
+  e.target instanceof HTMLTextAreaElement
 
 const getSelectionOrder = useStateBasedCache(() =>
   element.queryAll(
