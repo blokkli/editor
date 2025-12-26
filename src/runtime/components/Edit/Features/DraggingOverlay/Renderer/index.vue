@@ -38,7 +38,7 @@ import {
   getGapSize,
   MIN_GAP,
   type Orientation,
-} from '#blokkli/helpers/dropTargets'
+} from '#blokkli/editor/helpers/dropTargets'
 import type { RGB } from './../../../../../../shared/types/theme'
 import { itemEntityType } from '#blokkli-build/config'
 import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'

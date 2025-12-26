@@ -33,7 +33,7 @@ import {
   getChildrenOrientation,
   type Orientation,
   determineCanAddChildren,
-} from '#blokkli/helpers/dropTargets'
+} from '#blokkli/editor/helpers/dropTargets'
 import { isInternalBundle } from '#blokkli/editor/helpers/bundles'
 import { itemEntityType } from '#blokkli-build/config'
 import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'

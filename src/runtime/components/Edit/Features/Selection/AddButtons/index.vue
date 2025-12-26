@@ -38,7 +38,7 @@ import {
   MIN_GAP,
   type Orientation,
   determineCanAddChildren,
-} from '#blokkli/helpers/dropTargets'
+} from '#blokkli/editor/helpers/dropTargets'
 import type {
   AddAction,
   BlokkliFieldElement,
