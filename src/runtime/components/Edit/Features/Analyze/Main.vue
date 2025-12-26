@@ -86,7 +86,7 @@ import { useAnalyzeHelper } from './helper'
 import { FormSelect, RelativeTime } from '#blokkli/components'
 import { AnalyzerContext } from './analyzers/helpers/Context'
 import { normalizeToArray } from './analyzers/helpers/normalizeArray'
-import { renderCycle } from '#blokkli/helpers/renderCycle'
+import { renderCycle } from '#blokkli/editor/helpers/vue'
 
 const props = defineProps<{
   langcode: string

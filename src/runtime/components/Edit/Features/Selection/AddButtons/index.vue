@@ -45,7 +45,7 @@ import type {
   DraggableHostData,
   RenderedFieldListItem,
 } from '#blokkli/types'
-import { renderCycle } from '#blokkli/helpers/renderCycle'
+import { renderCycle } from '#blokkli/editor/helpers/vue'
 import { getFieldKey } from '#blokkli/helpers'
 import { isInternalBundle } from '#blokkli/helpers/bundles'
 import Renderer from './Renderer/index.vue'

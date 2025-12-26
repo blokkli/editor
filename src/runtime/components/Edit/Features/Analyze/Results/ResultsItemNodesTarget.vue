@@ -17,7 +17,7 @@
 <script setup lang="ts">
 import { Icon } from '#blokkli/components'
 import { computed, useBlokkli, useTemplateRef, watch } from '#imports'
-import { renderCycle } from '#blokkli/helpers/renderCycle'
+import { renderCycle } from '#blokkli/editor/helpers/vue'
 import type { AnalyzeNodeTargetMapped } from '#blokkli/analyzer/types'
 
 const props = defineProps<{

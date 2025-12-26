@@ -63,7 +63,7 @@ import type {
   Rectangle,
   DraggableExistingStructureBlock,
 } from '#blokkli/types'
-import { renderCycle } from '#blokkli/helpers/renderCycle'
+import { renderCycle } from '#blokkli/editor/helpers/vue'
 import { BundleSelector, BlokkliTransition } from '#blokkli/components'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 
