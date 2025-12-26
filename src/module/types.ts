@@ -1,17 +1,24 @@
 import type {
-  BlockDefinitionInput,
-  BlockDefinitionOptionsInput,
-  FragmentDefinitionInput,
-} from '../runtime/types'
-import type { ModuleOptionsSettings } from '#blokkli-build/module-types'
+  BlockDefinitionInputBase,
+  BlockDefinitionOptionsInputBase,
+  FragmentDefinitionInputBase,
+  ProviderDefinitionInputBase,
+} from '../shared/types/definitions'
+import type {
+  FeatureDefinitionBase,
+} from '../shared/types/features'
+import type { AdapterMethodsBase } from '../shared/types/adapter'
 import type { Theme, ThemeName } from '../shared/types/theme'
 import type { CollectedBlockFile } from './Collector/Blocks'
 import type { CollectedFeatureFile } from './Collector/Features'
 import type { CollectedFile } from './Collector'
 import type { BlokkliModule } from '../modules/defineBlokkliModule'
 
-export type ExtractedBlockDefinitionInput = BlockDefinitionInput
-export type ExtractedFragmentDefinitionInput = FragmentDefinitionInput
+export type ExtractedBlockDefinitionInput = BlockDefinitionInputBase
+export type ExtractedFragmentDefinitionInput = FragmentDefinitionInputBase
+export type ExtractedProviderDefinitionInput = ProviderDefinitionInputBase
+export type ExtractedFeatureDefinition = FeatureDefinitionBase<AdapterMethodsBase>
+export type { AdapterMethodsBase as AdapterMethods }
 
 export type ExtractedFragmentDefinition = {
   filePath: string
@@ -82,7 +89,7 @@ export type ModuleOptions = {
    * Define reusable options that can be used in blokkli item components by
    * referencing the option name.
    */
-  globalOptions?: BlockDefinitionOptionsInput
+  globalOptions?: BlockDefinitionOptionsInputBase
 
   /**
    * Custom path where the blökkli edit adapter can be found.
@@ -173,7 +180,7 @@ export type ModuleOptions = {
   /**
    * Override the feature settings.
    */
-  settingsOverride?: ModuleOptionsSettings
+  settingsOverride?: Record<string, { disable?: boolean; default?: any }>
 
   /**
    * The default storage values for non-settings values.

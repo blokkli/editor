@@ -2,7 +2,7 @@ import { test, describe, expect } from 'vitest'
 import {
   validateMissingMainComponent,
   CollectedBlockFile,
-} from '../src/Collector/Blocks'
+} from '../src/module/Collector/Blocks'
 import type { ExtractedBlockDefinitionInput } from '../src/module/types'
 
 function createMockBlockFile(

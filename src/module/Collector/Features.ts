@@ -3,14 +3,14 @@ import { CollectedFile, Collector } from './index'
 import type { TemplateDependency } from '../templates/defineTemplate'
 import micromatch from 'micromatch'
 import type { ModuleHelper } from '../ModuleHelper'
-import type { AdapterMethods, FeatureDefinition } from '../../runtime/types'
+import type { ExtractedFeatureDefinition as FeatureDefinitionType } from '../types'
 import { extractObjectLiteral, parseTsObject, falsy } from '../helpers'
 
 export type ExtractedFeatureDefinition = {
   id: string
   componentName: string
   componentPath: string
-  definition: FeatureDefinition<AdapterMethods[]>
+  definition: FeatureDefinitionType
   definitionSource: string
 }
 
@@ -39,9 +39,8 @@ export class CollectedFeatureFile extends CollectedFile {
     }
 
     try {
-      const { object: definition, source } = parseTsObject<FeatureDefinition>(
-        this.objectLiteral,
-      )
+      const { object: definition, source } =
+        parseTsObject<FeatureDefinitionType>(this.objectLiteral)
       const regex = /\/Features\/([^/]+)\//
       const componentName = this.filePath.match(regex)?.[1] || ''
       this.definition = {

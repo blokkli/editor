@@ -1,14 +1,9 @@
-export const SETTINGS_GROUP = [
-  'appearance',
-  'artboard',
-  'behavior',
-  'beta',
-  'advanced',
-] as const
-export const VIEWPORT = ['mobile', 'desktop'] as const
-
-export type SettingsGroup = (typeof SETTINGS_GROUP)[number]
-export type Viewport = (typeof VIEWPORT)[number]
+export {
+  SETTINGS_GROUP,
+  VIEWPORT,
+  type SettingsGroup,
+  type Viewport,
+} from '../../shared/types/constants'
 
 export const BUNDLE_FROM_LIBRARY = 'from_library'
 export const BUNDLE_BLOKKLI_FRAGMENT = 'blokkli_fragment'

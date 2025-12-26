@@ -7,6 +7,7 @@ import type { ModuleHelper } from '../ModuleHelper'
 import type {
   ExtractedBlockDefinitionInput,
   ExtractedFragmentDefinitionInput,
+  ExtractedProviderDefinitionInput,
 } from '../types'
 import type { TemplateDependency } from '../templates/defineTemplate'
 import {
@@ -15,13 +16,12 @@ import {
   toValidVariableName,
 } from '../helpers'
 import { hash } from 'ohash'
-import type { ProviderDefinitionInput } from '#blokkli/types'
 import { logger } from '../logger'
 
 export type ExtractedDefinition =
   | ExtractedBlockDefinitionInput
   | ExtractedFragmentDefinitionInput
-  | ProviderDefinitionInput
+  | ExtractedProviderDefinitionInput
 
 const DEFINE_BLOKKLI = 'defineBlokkli'
 const DEFINE_BLOKKLI_FRAGMENT = 'defineBlokkliFragment'
@@ -340,7 +340,6 @@ export class CollectedBlockFile extends CollectedFile {
         const result = parseTsObject<ExtractedDefinition>(
           this.objectLiteralString,
         )
-        // @ts-expect-error Need to refactor types, as the extracted provider definition is not compatible.
         this.definition = result.object
         this.definitionSource = result.source
       }
