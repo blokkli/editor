@@ -35,8 +35,8 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature, computed, ref } from '#imports'
-import type { PluginSidebar } from '#blokkli/plugins'
+import { useBlokkli, defineBlokkliFeature, computed, useTemplateRef } from '#imports'
+import { PluginSidebar } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 import ValidationOverlay from './Overlay/index.vue'
 import SidebarItem from './SidebarItem/index.vue'
@@ -49,7 +49,7 @@ defineBlokkliFeature({
   description: 'Provides a sidebar pane to render validations.',
 })
 
-const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
+const plugin = useTemplateRef('plugin')
 
 const { state, $t } = useBlokkli()
 

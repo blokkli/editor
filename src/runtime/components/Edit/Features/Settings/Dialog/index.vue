@@ -14,7 +14,7 @@
           <span v-if="group.id === 'beta'" class="bk-beta-indicator">BETA</span>
         </h3>
         <div>
-          <FeatureSetting
+          <FeatureSettingComponent
             v-for="setting in group.settings"
             :key="group.key + setting.settingsKey"
             :feature-id="setting.featureId"
@@ -30,7 +30,7 @@
 <script lang="ts" setup>
 import { useBlokkli, computed } from '#imports'
 import { DialogModal } from '#blokkli/components'
-import type FeatureSetting from './FeatureSetting/index.vue'
+import FeatureSettingComponent from './FeatureSetting/index.vue'
 import type { ValidFeatureKey } from '#blokkli-build/features'
 import type { FeatureDefinitionSetting } from '#blokkli/types'
 import { SETTINGS_GROUP, type SettingsGroup } from '#blokkli/constants'

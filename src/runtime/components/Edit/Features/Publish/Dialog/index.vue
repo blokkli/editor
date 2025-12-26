@@ -15,6 +15,7 @@
         <div class="bk-form-label">
           {{ $t('publishMode', 'Publish mode')
 
+
           }}<span class="bk-required-indicator">*</span>
         </div>
         <div class="bk-publish-options">

@@ -35,8 +35,8 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, ref, useBlokkli, defineBlokkliFeature } from '#imports'
-import type Overlay from './Overlay/index.vue'
+import { nextTick, ref, useBlokkli, defineBlokkliFeature, useTemplateRef } from '#imports'
+import Overlay from './Overlay/index.vue'
 import { BlokkliTransition } from '#blokkli/components'
 import { PluginToolbarButton } from '#blokkli/plugins'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
@@ -54,7 +54,7 @@ const { $t, selection, ui } = useBlokkli()
 const isRendered = ref(false)
 const isVisible = ref(false)
 
-const overlay = ref<InstanceType<typeof Overlay> | null>(null)
+const overlay = useTemplateRef('overlay')
 
 function onClick() {
   isRendered.value = true
@@ -78,6 +78,6 @@ onBlokkliEvent('keyPressed', (e) => {
 
 <script lang="ts">
 export default {
-  name: 'ContentSearch',
+  name: 'FeatureSearch',
 }
 </script>

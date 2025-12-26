@@ -1,7 +1,7 @@
 <template>
   <PluginContextMenu
     :id="'add_list_item_' + context + id"
-    ref="el"
+    ref="pluginContextMenu"
     tag="button"
     type="button"
     class="bk-add-item"
@@ -26,9 +26,9 @@
 <script lang="ts" setup>
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { ContextMenu } from '#blokkli/types'
-import { useBlokkli, computed, ref } from '#imports'
+import { useBlokkli, computed, useTemplateRef } from '#imports'
 import { ItemIconBox } from '#blokkli/components'
-import type { PluginContextMenu } from '#blokkli/plugins'
+import { PluginContextMenu } from '#blokkli/plugins'
 
 const { storage, $t } = useBlokkli()
 
@@ -49,7 +49,7 @@ const props = withDefaults(defineProps<AddListItemProps>(), {
   icon: undefined,
 })
 
-const el = ref<InstanceType<typeof PluginContextMenu> | null>(null)
+const el = useTemplateRef('pluginContextMenu')
 
 const favorites = storage.use<string[]>('blockFavorites', [])
 

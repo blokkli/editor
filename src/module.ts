@@ -206,5 +206,6 @@ export default defineNuxtModule<ModuleOptions>({
 export type { ModuleOptions }
 
 declare module '@nuxt/schema' {
+  // oxlint-disable-next-line
   interface NuxtHooks extends ModuleHooks {}
 }

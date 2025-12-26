@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts" setup>
-import type DragItems from './DragItems/index.vue'
+import DragItems from './DragItems/index.vue'
 import Renderer from './Renderer/index.vue'
 import {
   ref,
@@ -45,6 +45,7 @@ import {
   onUnmounted,
   defineBlokkliFeature,
   nextTick,
+  useTemplateRef,
 } from '#imports'
 import type {
   DropTargetEvent,
@@ -133,7 +134,7 @@ async function onSelectBundle(bundle: string) {
   onCloseBundleSelector()
 }
 
-const dragItemsComponent = ref<InstanceType<typeof DragItems> | null>(null)
+const dragItemsComponent = useTemplateRef('dragItemsComponent')
 const isVisible = ref(false)
 const isTouching = ref(false)
 const mouseX = ref(0)

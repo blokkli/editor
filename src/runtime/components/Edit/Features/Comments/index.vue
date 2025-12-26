@@ -61,11 +61,12 @@ import {
   useBlokkli,
   defineBlokkliFeature,
   computed,
+  useTemplateRef,
 } from '#imports'
 import { PluginSidebar, PluginItemAction } from '#blokkli/plugins'
 import { BlokkliTransition } from '#blokkli/components'
 import Comment from './Comment/index.vue'
-import type CommentAddForm from './AddForm/index.vue'
+import CommentAddForm from './AddForm/index.vue'
 import CommentsOverlay from './Overlay/index.vue'
 import type { CommentItem } from '#blokkli/types'
 
@@ -80,7 +81,7 @@ const { adapter } = defineBlokkliFeature({
 
 const { eventBus, $t, selection, ui } = useBlokkli()
 
-const commentForm = ref<InstanceType<typeof CommentAddForm> | null>(null)
+const commentForm = useTemplateRef('commentForm')
 const showAddComment = ref(false)
 
 watch(selection.uuids, () => {

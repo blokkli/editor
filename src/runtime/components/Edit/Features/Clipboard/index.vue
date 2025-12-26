@@ -73,8 +73,9 @@ import {
   onMounted,
   onUnmounted,
   computed,
+  useTemplateRef,
 } from '#imports'
-import type { PluginSidebar } from '#blokkli/plugins'
+import { PluginSidebar } from '#blokkli/plugins'
 import defineItemDropdownAction from '#blokkli/helpers/composables/defineItemDropdownAction'
 import ClipboardList from './List/index.vue'
 import type { ClipboardItem, RenderedFieldListItem } from '#blokkli/types'
@@ -110,7 +111,7 @@ const { settings, logger } = defineBlokkliFeature({
 const { selection, $t, adapter, state, ui, types, keyboard, blocks, fields } =
   useBlokkli()
 
-const plugin = ref<InstanceType<typeof PluginSidebar> | null>(null)
+const plugin = useTemplateRef('plugin')
 const selectionClipboard = ref<string[]>([])
 
 type DropdownItem = {

@@ -77,8 +77,8 @@ import {
 } from '#imports'
 import { Icon, ScrollBoundary } from '#blokkli/components'
 import { modulo } from '#blokkli/helpers'
-import type ResultsPage from './Results/Page/index.vue'
-import type ResultsContent from './Results/Content/index.vue'
+import ResultsPage from './Results/Page/index.vue'
+import ResultsContent from './Results/Content/index.vue'
 
 const props = defineProps<{
   visible: boolean
@@ -89,11 +89,7 @@ const { adapter, $t, state } = useBlokkli()
 
 const emit = defineEmits(['close'])
 
-type SearchComponent =
-  | InstanceType<typeof ResultsContent>
-  | InstanceType<typeof ResultsPage>
-
-const searchComponents = ref<SearchComponent[]>([])
+const searchComponents = useTemplateRef('searchComponents')
 
 function focusInput() {
   if (input.value) {
@@ -155,8 +151,12 @@ const searchCleaned = computed(() =>
     .join(' '),
 )
 
-const getResultsComponent = (): SearchComponent | undefined => {
-  return searchComponents.value.find((v) => v.isActive())
+type SearchResultsComponent = NonNullable<
+  NonNullable<typeof searchComponents.value>[number]
+>
+
+const getResultsComponent = (): SearchResultsComponent | undefined |null => {
+  return searchComponents.value?.find((v) => v?.isActive())
 }
 
 onMounted(() => {
