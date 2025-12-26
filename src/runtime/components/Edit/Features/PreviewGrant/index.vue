@@ -43,7 +43,7 @@
 
 <script lang="ts" setup>
 import { ref, watch, useBlokkli, defineBlokkliFeature } from '#imports'
-import { PluginToolbarButton } from '#blokkli/plugins'
+import { PluginToolbarButton } from '#blokkli/editor/plugins'
 import QrCode from './QrCode/index.vue'
 import { DialogModal, BlokkliTransition } from '#blokkli/components'
 

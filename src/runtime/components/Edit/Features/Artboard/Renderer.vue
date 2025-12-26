@@ -62,7 +62,7 @@ import {
   isInsideRect,
   subtractRectFromViewport,
 } from '#blokkli/helpers'
-import { PluginToolbarButton, PluginViewOption } from '#blokkli/plugins'
+import { PluginToolbarButton, PluginViewOption } from '#blokkli/editor/plugins'
 import Overview from './Overview/index.vue'
 import Scrollbar from './Scrollbar/index.vue'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'

@@ -51,7 +51,7 @@ import {
   onMounted,
   onBeforeUnmount,
 } from '#imports'
-import { PluginSidebar, PluginToolbarButton } from '#blokkli/plugins'
+import { PluginSidebar, PluginToolbarButton } from '#blokkli/editor/plugins'
 import HistoryList from './List/index.vue'
 import { MOUSE_BUTTON } from '#blokkli/helpers/dom'
 

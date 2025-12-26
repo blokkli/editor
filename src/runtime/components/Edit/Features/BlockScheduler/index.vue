@@ -38,7 +38,7 @@
 
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature, computed, ref } from '#imports'
-import { PluginItemAction } from '#blokkli/plugins'
+import { PluginItemAction } from '#blokkli/editor/plugins'
 import { BlokkliTransition, Icon } from '#blokkli/components'
 import SchedulerDialog from './Dialog/index.vue'
 

@@ -38,7 +38,7 @@
 
 <script lang="ts" setup>
 import { useBlokkli } from '#imports'
-import { PluginSidebar, PluginDebugOverlay } from '#blokkli/plugins'
+import { PluginSidebar, PluginDebugOverlay } from '#blokkli/editor/plugins'
 import DebugSection from './DebugSection.vue'
 import SectionKeyboard from './Section/Keyboard.vue'
 import SectionSelection from './Section/Selection.vue'

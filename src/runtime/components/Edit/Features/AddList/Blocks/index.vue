@@ -41,7 +41,7 @@ import type {
 } from '#blokkli/types'
 import defineCommands from '#blokkli/helpers/composables/defineCommands'
 import { isInternalBundle } from '#blokkli/helpers/bundles'
-import { PluginTourItem } from '#blokkli/plugins'
+import { PluginTourItem } from '#blokkli/editor/plugins'
 import { getFieldKey } from '#blokkli/helpers'
 import { itemEntityType } from '#blokkli-build/config'
 

@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 import { defineBlokkliFeature } from '#imports'
-import { PluginSidebar } from '#blokkli/plugins'
+import { PluginSidebar } from '#blokkli/editor/plugins'
 
 defineBlokkliFeature({
   id: 'demo-feature',

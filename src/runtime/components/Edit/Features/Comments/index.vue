@@ -63,7 +63,7 @@ import {
   computed,
   useTemplateRef,
 } from '#imports'
-import { PluginSidebar, PluginItemAction } from '#blokkli/plugins'
+import { PluginSidebar, PluginItemAction } from '#blokkli/editor/plugins'
 import { BlokkliTransition } from '#blokkli/components'
 import Comment from './Comment/index.vue'
 import CommentAddForm from './AddForm/index.vue'

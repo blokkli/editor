@@ -15,7 +15,7 @@
 
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature } from '#imports'
-import { PluginSidebar } from '#blokkli/plugins'
+import { PluginSidebar } from '#blokkli/editor/plugins'
 import DiffView from './DiffView/index.vue'
 
 defineBlokkliFeature({

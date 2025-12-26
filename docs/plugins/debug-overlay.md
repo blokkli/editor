@@ -18,7 +18,7 @@ activated. Used for development and debugging visualizations.
 </template>
 
 <script setup lang="ts">
-import { PluginDebugOverlay } from '#blokkli/plugins'
+import { PluginDebugOverlay } from '#blokkli/editor/plugins'
 import { useBlokkli } from '#imports'
 
 const { ui } = useBlokkli()
@@ -86,7 +86,7 @@ Display viewport dimensions and breakpoint information:
 </template>
 
 <script setup lang="ts">
-import { PluginDebugOverlay } from '#blokkli/plugins'
+import { PluginDebugOverlay } from '#blokkli/editor/plugins'
 import { useBlokkli } from '#imports'
 
 const { ui } = useBlokkli()
@@ -139,7 +139,7 @@ Visualize all block and field rectangles:
 </template>
 
 <script setup lang="ts">
-import { PluginDebugOverlay } from '#blokkli/plugins'
+import { PluginDebugOverlay } from '#blokkli/editor/plugins'
 import { useBlokkli } from '#imports'
 
 const { dom } = useBlokkli()
@@ -168,7 +168,7 @@ Display information about currently selected blocks:
 </template>
 
 <script setup lang="ts">
-import { PluginDebugOverlay } from '#blokkli/plugins'
+import { PluginDebugOverlay } from '#blokkli/editor/plugins'
 import { useBlokkli } from '#imports'
 
 const { selection } = useBlokkli()

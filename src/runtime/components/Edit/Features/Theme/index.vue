@@ -56,7 +56,7 @@
 
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature, ref, computed } from '#imports'
-import { PluginSidebar } from '#blokkli/plugins'
+import { PluginSidebar } from '#blokkli/editor/plugins'
 import Color from './Color/index.vue'
 import GeneratedCode from './GeneratedCode/index.vue'
 import type {

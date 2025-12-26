@@ -21,7 +21,7 @@ the visual display or behavior of the editor without modifying content.
 </template>
 
 <script setup lang="ts">
-import { PluginViewOption } from '#blokkli/plugins'
+import { PluginViewOption } from '#blokkli/editor/plugins'
 </script>
 ```
 
@@ -150,7 +150,7 @@ Emitted when the active state changes.
 </template>
 
 <script setup lang="ts">
-import { PluginViewOption } from '#blokkli/plugins'
+import { PluginViewOption } from '#blokkli/editor/plugins'
 
 const gridMarkup = await adapter.getGridMarkup()
 </script>
@@ -174,7 +174,7 @@ const gridMarkup = await adapter.getGridMarkup()
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { PluginViewOption } from '#blokkli/plugins'
+import { PluginViewOption } from '#blokkli/editor/plugins'
 
 const isDarkMode = ref(false)
 

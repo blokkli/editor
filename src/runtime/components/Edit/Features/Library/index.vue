@@ -52,7 +52,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, defineBlokkliFeature } from '#imports'
-import { PluginItemAction } from '#blokkli/plugins'
+import { PluginItemAction } from '#blokkli/editor/plugins'
 import ReusableDialog from './ReusableDialog/index.vue'
 import LibraryDialog from './LibraryDialog/index.vue'
 import EditReusable from './EditReusable/index.vue'

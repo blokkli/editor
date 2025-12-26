@@ -18,7 +18,7 @@
 
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature } from '#imports'
-import { PluginSidebar } from '#blokkli/plugins'
+import { PluginSidebar } from '#blokkli/editor/plugins'
 import Library from './Library/index.vue'
 import defineDropAreas from '#blokkli/helpers/composables/defineDropAreas'
 import { falsy } from '#blokkli/helpers'

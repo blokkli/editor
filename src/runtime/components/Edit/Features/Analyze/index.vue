@@ -33,7 +33,7 @@
 
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature, ref } from '#imports'
-import { PluginSidebar } from '#blokkli/plugins'
+import { PluginSidebar } from '#blokkli/editor/plugins'
 import { InfoBox } from '#blokkli/components'
 import AnalyzerMain from './Main.vue'
 import type { Analyzer } from './analyzers/types'

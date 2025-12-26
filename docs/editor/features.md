@@ -34,7 +34,7 @@ Let's look at one of the builtin feature components:
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature } from '#imports'
 import type { DraggableExistingBlock } from '#blokkli/types'
-import { PluginItemAction } from '#blokkli/plugins'
+import { PluginItemAction } from '#blokkli/editor/plugins'
 
 const { state, eventBus, $t } = useBlokkli()
 

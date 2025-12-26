@@ -71,7 +71,7 @@ import {
   defineBlokkliFeature,
   watch,
 } from '#imports'
-import { PluginSidebar } from '#blokkli/plugins'
+import { PluginSidebar } from '#blokkli/editor/plugins'
 import PreviewFrame from './Frame/index.vue'
 import { Icon } from '#blokkli/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'

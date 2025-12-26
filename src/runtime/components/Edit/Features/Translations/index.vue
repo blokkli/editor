@@ -74,7 +74,7 @@ import {
   onMounted,
 } from '#imports'
 import { falsy } from '#blokkli/helpers'
-import { PluginItemAction, PluginTourItem } from '#blokkli/plugins'
+import { PluginItemAction, PluginTourItem } from '#blokkli/editor/plugins'
 import type {
   EntityTranslation,
   Language,

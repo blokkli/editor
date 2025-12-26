@@ -18,7 +18,7 @@ blocks.
 </template>
 
 <script setup lang="ts">
-import { PluginBlockIndicator } from '#blokkli/plugins'
+import { PluginBlockIndicator } from '#blokkli/editor/plugins'
 
 function onClick() {
   // Handle click...
@@ -104,7 +104,7 @@ Display anchor IDs for blocks that have them:
 </template>
 
 <script setup lang="ts">
-import { PluginBlockIndicator } from '#blokkli/plugins'
+import { PluginBlockIndicator } from '#blokkli/editor/plugins'
 
 type Anchor = {
   id: string

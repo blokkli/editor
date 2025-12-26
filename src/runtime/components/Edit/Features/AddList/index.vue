@@ -38,7 +38,7 @@ import {
   defineBlokkliFeature,
   useTemplateRef,
 } from '#imports'
-import { PluginTourItem } from '#blokkli/plugins'
+import { PluginTourItem } from '#blokkli/editor/plugins'
 import AddListBlocks from './Blocks/index.vue'
 import AddListActions from './Actions/index.vue'
 import type {

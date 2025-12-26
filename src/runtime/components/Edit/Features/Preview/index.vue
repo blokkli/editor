@@ -17,7 +17,7 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli, useRoute, defineBlokkliFeature } from '#imports'
-import { PluginToolbarButton } from '#blokkli/plugins'
+import { PluginToolbarButton } from '#blokkli/editor/plugins'
 
 defineBlokkliFeature({
   id: 'preview',

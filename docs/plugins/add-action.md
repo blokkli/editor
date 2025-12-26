@@ -19,7 +19,7 @@ the page.
 <script lang="ts" setup>
 import type { ActionPlacedEvent } from '#blokkli/types'
 import { useBlokkli, defineBlokkliFeature } from '#imports'
-import { PluginAddAction } from '#blokkli/plugins'
+import { PluginAddAction } from '#blokkli/editor/plugins'
 
 const { adapter } = defineBlokkliFeature({
   id: 'custom-feature',

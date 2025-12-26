@@ -13,7 +13,7 @@
 
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature } from '#imports'
-import { PluginViewOption } from '#blokkli/plugins'
+import { PluginViewOption } from '#blokkli/editor/plugins'
 import AnchorOverlay from './Overlay/index.vue'
 
 defineBlokkliFeature({

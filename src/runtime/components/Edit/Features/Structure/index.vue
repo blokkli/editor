@@ -37,7 +37,7 @@ import {
   onMounted,
   reactive,
 } from '#imports'
-import { PluginSidebar } from '#blokkli/plugins'
+import { PluginSidebar } from '#blokkli/editor/plugins'
 import { ScrollBoundary } from '#blokkli/components'
 import List from './List/index.vue'
 

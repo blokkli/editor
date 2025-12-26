@@ -18,7 +18,7 @@ and understand editor features.
 </template>
 
 <script setup lang="ts">
-import { PluginTourItem } from '#blokkli/plugins'
+import { PluginTourItem } from '#blokkli/editor/plugins'
 </script>
 ```
 
@@ -103,7 +103,7 @@ The tour item:
 
 <script setup lang="ts">
 import { useTemplateRef } from 'vue'
-import { PluginTourItem } from '#blokkli/plugins'
+import { PluginTourItem } from '#blokkli/editor/plugins'
 
 const publishButton = useTemplateRef('publishButton')
 </script>

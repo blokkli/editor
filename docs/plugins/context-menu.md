@@ -13,7 +13,7 @@ items.
 </template>
 
 <script setup lang="ts">
-import { PluginContextMenu } from '#blokkli/plugins'
+import { PluginContextMenu } from '#blokkli/editor/plugins'
 import type { ContextMenu } from '#blokkli/types'
 
 const menuItems: ContextMenu[] = [
@@ -143,7 +143,7 @@ The content that should trigger the context menu on right-click.
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { PluginContextMenu } from '#blokkli/plugins'
+import { PluginContextMenu } from '#blokkli/editor/plugins'
 import type { ContextMenu } from '#blokkli/types'
 
 const props = defineProps<{

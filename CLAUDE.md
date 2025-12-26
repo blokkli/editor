@@ -81,7 +81,7 @@ are all custom aliases mapped to their repository-relative paths:
   (features, UI)
 - `#blokkli/constants` → `src/runtime/constants` - Runtime constants
 - `#blokkli/helpers` → `src/runtime/helpers` - Runtime utilities and providers
-- `#blokkli/plugins` → `src/runtime/blokkliPlugins` - Plugin definitions
+- `#blokkli/editor/plugins` → `src/runtime/blokkliPlugins` - Plugin definitions
 - `#blokkli/runtime-helpers` → `src/runtime/helpers/runtimeHelpers` - Specific
   runtime helper utilities
 - `#blokkli/types` → `src/runtime/types` - Runtime type definitions

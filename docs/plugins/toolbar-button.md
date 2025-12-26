@@ -17,7 +17,7 @@ accessible from the main toolbar.
 </template>
 
 <script setup lang="ts">
-import { PluginToolbarButton } from '#blokkli/plugins'
+import { PluginToolbarButton } from '#blokkli/editor/plugins'
 
 function openPreview() {
   window.open('/preview')
@@ -181,7 +181,7 @@ Custom content for the button (overrides the `icon` prop).
 
 <script setup lang="ts">
 import { computed, useBlokkli, useRoute } from '#imports'
-import { PluginToolbarButton } from '#blokkli/plugins'
+import { PluginToolbarButton } from '#blokkli/editor/plugins'
 
 const { $t, state } = useBlokkli()
 const route = useRoute()
@@ -267,7 +267,7 @@ function redo() {
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { PluginToolbarButton } from '#blokkli/plugins'
+import { PluginToolbarButton } from '#blokkli/editor/plugins'
 
 const isDropdownOpen = ref(false)
 const hasChanges = computed(() => state.hasChanges.value)
@@ -302,7 +302,7 @@ async function onPublish() {
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { PluginToolbarButton } from '#blokkli/plugins'
+import { PluginToolbarButton } from '#blokkli/editor/plugins'
 
 const languages = [
   { code: 'en', label: 'English' },

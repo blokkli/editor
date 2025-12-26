@@ -20,7 +20,7 @@ tools, information, or controls that don't fit in the main toolbar.
 </template>
 
 <script setup lang="ts">
-import { PluginSidebar } from '#blokkli/plugins'
+import { PluginSidebar } from '#blokkli/editor/plugins'
 </script>
 ```
 
@@ -217,7 +217,7 @@ Display a tree view of all blocks:
 </template>
 
 <script setup lang="ts">
-import { PluginSidebar } from '#blokkli/plugins'
+import { PluginSidebar } from '#blokkli/editor/plugins'
 import { useBlokkli } from '#imports'
 
 const { state, $t } = useBlokkli()
@@ -258,7 +258,7 @@ Browse and insert reusable blocks:
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { PluginSidebar } from '#blokkli/plugins'
+import { PluginSidebar } from '#blokkli/editor/plugins'
 
 const searchText = ref('')
 const isLoading = ref(true)
@@ -310,7 +310,7 @@ Display and manage block comments:
 </template>
 
 <script setup lang="ts">
-import { PluginSidebar } from '#blokkli/plugins'
+import { PluginSidebar } from '#blokkli/editor/plugins'
 
 const comments = await adapter.loadComments()
 
@@ -348,7 +348,7 @@ async function addComment(body: string) {
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { PluginSidebar } from '#blokkli/plugins'
+import { PluginSidebar } from '#blokkli/editor/plugins'
 
 const autoSave = ref(true)
 const showGrid = ref(false)

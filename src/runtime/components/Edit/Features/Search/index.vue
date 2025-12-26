@@ -38,7 +38,7 @@
 import { nextTick, ref, useBlokkli, defineBlokkliFeature, useTemplateRef } from '#imports'
 import Overlay from './Overlay/index.vue'
 import { BlokkliTransition } from '#blokkli/components'
-import { PluginToolbarButton } from '#blokkli/plugins'
+import { PluginToolbarButton } from '#blokkli/editor/plugins'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 defineBlokkliFeature({

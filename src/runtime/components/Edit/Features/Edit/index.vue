@@ -15,7 +15,7 @@
 <script lang="ts" setup>
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import type { RenderedFieldListItem } from '#blokkli/types'
-import { PluginItemAction } from '#blokkli/plugins'
+import { PluginItemAction } from '#blokkli/editor/plugins'
 import onBlokkliEvent from '#blokkli/helpers/composables/onBlokkliEvent'
 
 defineBlokkliFeature({
