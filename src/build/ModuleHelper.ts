@@ -1,4 +1,5 @@
 import type { Nuxt } from 'nuxt/schema'
+import type { ConsolaInstance } from 'consola'
 import type { BuildRelativeImports, ModuleOptions } from './types'
 import { relative } from 'pathe'
 import {
@@ -50,6 +51,7 @@ export class ModuleHelper {
 
   constructor(
     public nuxt: Nuxt,
+    public logger: ConsolaInstance,
     moduleUrl: string,
     providedOptions: ModuleOptions,
   ) {

@@ -1,7 +1,6 @@
 import type { WatchEvent } from 'nuxt/schema'
 import type { ModuleHelper } from '../ModuleHelper'
 import type { TemplateDependency } from '../templates/defineTemplate'
-import { logger } from '../logger'
 
 export type HandleWatchEventResult = {
   hasChanged: boolean
@@ -183,7 +182,7 @@ export abstract class Collector<T extends CollectedFile = CollectedFile> {
         `  ${filePath}:`,
         ...issues.map((e) => `    - ${e.message}`),
       ])
-      logger.warn(`blökkli validation warnings:\n${lines.join('\n')}`)
+      this.helper.logger.warn(`blökkli validation warnings:\n${lines.join('\n')}`)
     }
 
     // Log errors
@@ -192,7 +191,7 @@ export abstract class Collector<T extends CollectedFile = CollectedFile> {
         `  ${filePath}:`,
         ...issues.map((e) => `    - ${e.message}`),
       ])
-      logger.error(`blökkli validation errors:\n${lines.join('\n')}`)
+      this.helper.logger.error(`blökkli validation errors:\n${lines.join('\n')}`)
       return true
     }
 

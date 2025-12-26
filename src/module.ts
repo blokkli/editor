@@ -4,6 +4,7 @@ import {
   addPlugin,
   createResolver,
   defineNuxtModule,
+  useLogger,
 } from '@nuxt/kit'
 import { RuntimeDefinitionPlugin } from './build/unplugin/RuntimeDefinition'
 import { BK_HIDDEN_GLOBALLY, BK_VISIBLE_LANGUAGES } from './shared/constants'
@@ -14,15 +15,14 @@ import { ModuleHelper } from './build/ModuleHelper'
 import { ModuleContext } from './build/ModuleContext'
 import { TEMPLATES } from './build/templates'
 import type { TemplateDependency } from './build/templates/defineTemplate'
-import type {
-  CollectedFeatureFile} from './build/Collector/Features';
-import {
-  FeatureCollector,
-} from './build/Collector/Features'
+import type { CollectedFeatureFile } from './build/Collector/Features'
+import { FeatureCollector } from './build/Collector/Features'
 import { ThemeData } from './build/ThemeData'
-import type { CollectedBlockFile } from './build/Collector/Blocks';
+import type { CollectedBlockFile } from './build/Collector/Blocks'
 import { BlockCollector } from './build/Collector/Blocks'
 import type { Blokkli } from './modules/defineBlokkliModule'
+
+const logger = useLogger('@blokkli/editor')
 
 type AlterHookContext<K extends string, T extends CollectedFile> = {
   [P in K]: T[]
@@ -88,7 +88,12 @@ export default defineNuxtModule<ModuleOptions>({
       }
     }
 
-    const helper = new ModuleHelper(nuxt, import.meta.url, moduleOptions)
+    const helper = new ModuleHelper(
+      nuxt,
+      logger,
+      import.meta.url,
+      moduleOptions,
+    )
 
     const theme = new ThemeData(helper)
 

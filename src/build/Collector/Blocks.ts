@@ -11,7 +11,6 @@ import {
   toValidVariableName,
 } from '../helpers'
 import { hash } from 'ohash'
-import { logger } from '../logger'
 import type {
   BlockDefinitionInputBase,
   FragmentDefinitionInputBase,
@@ -822,7 +821,7 @@ export class BlockCollector extends Collector<CollectedBlockFile> {
           }),
         ]
       })
-      logger.error(
+      this.helper.logger.error(
         `blökkli option conflicts across bundle components:\n${lines.join('\n')}`,
       )
       hasCollectorErrors = true
@@ -836,7 +835,7 @@ export class BlockCollector extends Collector<CollectedBlockFile> {
         `  Bundle "${conflict.bundle}", variation "${conflict.variation}":`,
         ...conflict.filePaths.map((fp) => `    - ${fp}`),
       ])
-      logger.error(`blökkli duplicate renderFor entries:\n${lines.join('\n')}`)
+      this.helper.logger.error(`blökkli duplicate renderFor entries:\n${lines.join('\n')}`)
       hasCollectorErrors = true
     }
 
@@ -848,7 +847,7 @@ export class BlockCollector extends Collector<CollectedBlockFile> {
         `  Bundle "${error.bundle}":`,
         ...error.filePaths.map((fp) => `    - ${fp}`),
       ])
-      logger.error(
+      this.helper.logger.error(
         `blökkli bundles with renderFor components but no main component:\n${lines.join('\n')}`,
       )
       hasCollectorErrors = true

@@ -4,7 +4,6 @@ import { join } from 'pathe'
 import { isInterfaceType, isObjectType, type GraphQLField } from 'graphql'
 import { defineBlokkliModule } from '../defineBlokkliModule'
 import { useGraphqlModuleContext } from 'nuxt-graphql-middleware/utils'
-import { logger } from './../../build/logger'
 
 function toPascalCase(text: string) {
   return text.replace(/(^\w|_\w)/g, clearAndUpper)
@@ -69,7 +68,7 @@ export default defineBlokkliModule({
     // throwing an error, so that we can log additional information on what
     // needs to be done.
     if (!useGraphqlModuleContext({ nullOnMissing: true })) {
-      logger.box(
+      helper.logger.box(
         'Failed to load nuxt-graphql-middleware module context. Make sure that "nuxt-graphql-middleware" is placed before "@blokkli/editor" in your "modules" config in nuxt.config.ts.',
       )
 
