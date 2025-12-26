@@ -1,6 +1,6 @@
 import type { Rectangle } from '#blokkli/types'
 import { createBufferInfoFromArrays, type BufferInfo } from 'twgl.js'
-import { intersects } from '..'
+import { intersects } from '../../../helpers'
 
 type RectangleBufferRect = Rectangle & {
   id: string

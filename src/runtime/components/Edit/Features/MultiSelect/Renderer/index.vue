@@ -14,7 +14,7 @@ import {
   setUniforms,
 } from 'twgl.js'
 import type { Coord, Rectangle } from '#blokkli/types'
-import { RectangleBufferCollector } from '#blokkli/helpers/webgl'
+import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
 import { defineRenderer, useDebugLogger } from '#blokkli/editor/composables'
 
 const { eventBus, dom, theme, animation, ui, blocks } = useBlokkli()

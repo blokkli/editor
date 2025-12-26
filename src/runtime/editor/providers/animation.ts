@@ -19,7 +19,7 @@ import type { StorageProvider } from './storage'
 import type { CursorKeyword } from '../../helpers/dom'
 import type { CanvasDrawEvent, Coord } from '#blokkli/types'
 import type { SelectionProvider } from './selection'
-import type { RectangleBufferCollector } from '../../helpers/webgl'
+import type { RectangleBufferCollector } from '../helpers/webgl'
 import type { DebugProvider } from './debug'
 import type { KeyboardProvider } from './keyboard'
 
