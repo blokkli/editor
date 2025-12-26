@@ -5,7 +5,7 @@ import {
   createResolver,
   defineNuxtModule,
 } from '@nuxt/kit'
-import { RuntimeDefinitionPlugin } from './buildPlugin/RuntimeDefinition'
+import { RuntimeDefinitionPlugin } from './module/unplugin/RuntimeDefinition'
 import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,

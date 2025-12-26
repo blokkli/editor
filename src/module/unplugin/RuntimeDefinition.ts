@@ -5,13 +5,13 @@ import type { Nuxt } from '@nuxt/schema'
 import type { CallExpression, Expression } from 'estree'
 import { pathToFileURL } from 'node:url'
 import { parseQuery, parseURL } from 'ufo'
-import { parseTsObject } from '../helpers'
+import { parseTsObject } from '../../helpers'
 import {
   getIdentifier,
   isBlock,
   isFragment,
   type ExtractedDefinition,
-} from '../module/Collector/Blocks'
+} from '../Collector/Blocks'
 
 export function isVue(
   id: string,
