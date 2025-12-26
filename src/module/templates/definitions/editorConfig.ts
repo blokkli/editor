@@ -1,5 +1,5 @@
 import { defineCodeTemplate } from '../defineTemplate'
-import { themes } from './../../../themes'
+import { themes } from './../../themes'
 import { version } from './../../../../package.json'
 
 export default defineCodeTemplate(

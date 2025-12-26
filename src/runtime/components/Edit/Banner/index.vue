@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon } from '#blokkli/components'
-import type { ThemeColorName } from '#blokkli/types/theme'
+import type { ThemeColorName } from './../../../../shared/types/theme'
 import {
   onBeforeUnmount,
   onMounted,

@@ -28,7 +28,7 @@ import type {
   ThemeColorShade,
   ThemeContextColorGroup,
   ThemeContextColorShade,
-} from '#blokkli/types/theme'
+} from './../../../../../../shared/types/theme'
 
 const props = defineProps<{
   group: ThemeColorGroup | ThemeContextColorGroup

@@ -64,7 +64,7 @@ import type {
   ThemeColorShade,
   ThemeContextColorGroup,
   ThemeContextColorShade,
-} from '#blokkli/types/theme'
+} from './../../../../../shared/types/theme'
 
 import { themes } from '#blokkli-build/editor-config'
 

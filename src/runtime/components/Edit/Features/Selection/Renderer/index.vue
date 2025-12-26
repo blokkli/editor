@@ -18,7 +18,7 @@ import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/helpers/webgl'
 import { useTransitionedValue } from '#blokkli/helpers/composables/useTransitionedValue'
 import { toShaderColor } from '#blokkli/helpers'
-import type { RGB } from '#blokkli/types/theme'
+import type { RGB } from './../../../../../../shared/types/theme'
 
 const props = defineProps<{
   blocks: RenderedFieldListItem[]

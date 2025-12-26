@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ThemeColorName } from '#blokkli/types/theme'
+import type { ThemeColorName } from './../../../../../shared/types/theme'
 
 defineProps<{
   id: string

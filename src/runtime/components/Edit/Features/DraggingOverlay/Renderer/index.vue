@@ -41,7 +41,7 @@ import {
   MIN_GAP,
   type Orientation,
 } from '#blokkli/helpers/dropTargets'
-import type { RGB } from '#blokkli/types/theme'
+import type { RGB } from './../../../../../../shared/types/theme'
 import { itemEntityType } from '#blokkli-build/config'
 
 const props = defineProps<{

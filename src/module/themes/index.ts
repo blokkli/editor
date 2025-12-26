@@ -2,7 +2,7 @@ import arctic from './arctic.json'
 import gruvbox from './gruvbox.json'
 import fire from './fire.json'
 import nuxt from './nuxt.json'
-import type { Theme, ThemeName } from './../runtime/types/theme'
+import type { Theme, ThemeName } from './../../shared/types/theme'
 
 export const themes: Record<ThemeName, Theme> = {
   fire: fire as Theme,

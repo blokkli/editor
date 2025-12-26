@@ -10,7 +10,7 @@ import type {
   ThemeContextColorShade,
   ThemeContextColors,
   ThemeName,
-} from '#blokkli/types/theme'
+} from './../../../shared/types/theme'
 import { type Ref, ref, onMounted, onBeforeUnmount } from '#imports'
 import { rgbaToString } from '..'
 import { DragStyle } from '../DragStyle'

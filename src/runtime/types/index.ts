@@ -40,7 +40,7 @@ import type {
 import type { CommandsProvider } from '../helpers/providers/commands'
 import type { TourProvider } from '../helpers/providers/tour'
 import type { DropAreaProvider } from '../helpers/providers/dropArea'
-import type { RGB } from './theme'
+import type { RGB } from './../../shared/types/theme'
 import type { DebugProvider } from '../helpers/providers/debug'
 import type getVideoId from 'get-video-id'
 import type { DefinitionProvider } from '../helpers/providers/definition'

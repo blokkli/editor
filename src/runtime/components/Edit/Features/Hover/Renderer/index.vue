@@ -17,7 +17,7 @@ import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/helpers/webgl'
 import { toShaderColor, isInsideRect } from '#blokkli/helpers'
-import type { RGB } from '#blokkli/types/theme'
+import type { RGB } from './../../../../../../shared/types/theme'
 
 const { animation, theme, dom, selection, state, ui, directive, blocks } =
   useBlokkli()

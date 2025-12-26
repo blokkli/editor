@@ -27,7 +27,7 @@ import {
   defaultLanguage,
   forceDefaultLanguage,
 } from '#blokkli-build/editor-config'
-import type { ThemeColorName } from '#blokkli/types/theme'
+import type { ThemeColorName } from './../../../shared/types/theme'
 import type { ElementProvider } from './element'
 
 type ResizeElementKey = 'visible-viewport' | 'artboard'

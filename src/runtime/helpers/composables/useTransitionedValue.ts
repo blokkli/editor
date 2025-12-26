@@ -1,5 +1,5 @@
 import { computed, watch } from 'vue'
-import type { RGB } from '#blokkli/types/theme'
+import type { RGB } from './../../../shared/types/theme'
 import { easeOutQuad } from './../easing'
 
 interface TransitionOptions {
