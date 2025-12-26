@@ -715,6 +715,14 @@
     "source": "Block Scheduler",
     "translation": ""
   },
+  "feature_breadcrumbs_description": {
+    "source": "Provides a breadcrumb of the selection.",
+    "translation": ""
+  },
+  "feature_breadcrumbs_label": {
+    "source": "Breadcrumbs",
+    "translation": ""
+  },
   "feature_clipboard_description": {
     "source": "Provides clipboard integration to copy/paste existing blocks or paste supported clipboard content like text or images.",
     "translation": "Stellt Zwischenablage-Integration bereit zum Kopieren/Einfügen von bestehenden Blöcken oder zum Einfügen von unterstützten Inhalten wie Text oder Bildern."
@@ -770,6 +778,14 @@
   "feature_delete_label": {
     "source": "Delete",
     "translation": "Löschen"
+  },
+  "feature_dev-mode_description": {
+    "source": "Feature enabled in development mode.",
+    "translation": ""
+  },
+  "feature_dev-mode_label": {
+    "source": "Dev Mode",
+    "translation": ""
   },
   "feature_diff_description": {
     "source": "Displays a diff of all changes in the edit state.",
@@ -1215,17 +1231,9 @@
     "source": "Which content would you like to import?",
     "translation": "Welche Inhalte möchten Sie importieren?"
   },
-  "importExistingPagesLabel": {
-    "source": "From which page would you like to import?",
-    "translation": "Von welcher Seite möchten Sie importieren?"
-  },
-  "importExistingResultsTitle": {
-    "source": "@count of @total pages",
-    "translation": "@count von @total Seiten"
-  },
-  "importExistingSearchPlaceholder": {
-    "source": "Search pages",
-    "translation": "Seiten durchsuchen"
+  "importExistingPagesTitle": {
+    "source": "Select page",
+    "translation": ""
   },
   "importExistingSuccess": {
     "source": "Content imported successfully.",
@@ -1234,6 +1242,14 @@
   "importExistingTitle": {
     "source": "Import...",
     "translation": "Importieren..."
+  },
+  "interactionLayerOff": {
+    "source": "Show interaction layers",
+    "translation": ""
+  },
+  "interactionLayersOn": {
+    "source": "Hide interaction layers",
+    "translation": ""
   },
   "libraryAdd": {
     "source": "Add to library...",
@@ -1302,14 +1318,6 @@
   "libraryPlaceDialogTitle": {
     "source": "Add block from library",
     "translation": "Block aus Bibliothek hinzufügen"
-  },
-  "libraryPlaceSearchInputPlaceholder": {
-    "source": "Search library items",
-    "translation": "Suchbegriff eingeben"
-  },
-  "libraryPlaceSearchLabel": {
-    "source": "Filter library items",
-    "translation": "Bibliothek durchsuchen"
   },
   "libraryPreviewLabel": {
     "source": "Preview",
@@ -1842,6 +1850,10 @@
   "themeTourText": {
     "source": "Change the colors of the theme and generate a theme file.",
     "translation": "Ändern Sie das Theme und generieren Sie eine Theme-Datei."
+  },
+  "toggleInteractionLayers": {
+    "source": "Toggle interaction layers",
+    "translation": ""
   },
   "touchBarCancelDragging": {
     "source": "Cancel dragging",

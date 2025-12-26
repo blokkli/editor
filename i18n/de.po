@@ -781,6 +781,14 @@ msgctxt "feature_block-scheduler_label"
 msgid "Block Scheduler"
 msgstr ""
 
+msgctxt "feature_breadcrumbs_description"
+msgid "Provides a breadcrumb of the selection."
+msgstr ""
+
+msgctxt "feature_breadcrumbs_label"
+msgid "Breadcrumbs"
+msgstr ""
+
 msgctxt "feature_clipboard_description"
 msgid ""
 "Provides clipboard integration to copy/paste existing blocks or paste "
@@ -849,6 +857,14 @@ msgstr "Stellt eine Aktion bereit, um einen oder mehrere Blöcke zu löschen."
 msgctxt "feature_delete_label"
 msgid "Delete"
 msgstr "Löschen"
+
+msgctxt "feature_dev-mode_description"
+msgid "Feature enabled in development mode."
+msgstr ""
+
+msgctxt "feature_dev-mode_label"
+msgid "Dev Mode"
+msgstr ""
 
 msgctxt "feature_diff_description"
 msgid "Displays a diff of all changes in the edit state."
@@ -1368,17 +1384,9 @@ msgctxt "importExistingFieldsLabel"
 msgid "Which content would you like to import?"
 msgstr "Welche Inhalte möchten Sie importieren?"
 
-msgctxt "importExistingPagesLabel"
-msgid "From which page would you like to import?"
-msgstr "Von welcher Seite möchten Sie importieren?"
-
-msgctxt "importExistingResultsTitle"
-msgid "@count of @total pages"
-msgstr "@count von @total Seiten"
-
-msgctxt "importExistingSearchPlaceholder"
-msgid "Search pages"
-msgstr "Seiten durchsuchen"
+msgctxt "importExistingPagesTitle"
+msgid "Select page"
+msgstr ""
 
 msgctxt "importExistingSuccess"
 msgid "Content imported successfully."
@@ -1387,6 +1395,14 @@ msgstr "Inhalte erfolgreich übernommen."
 msgctxt "importExistingTitle"
 msgid "Import..."
 msgstr "Importieren..."
+
+msgctxt "interactionLayerOff"
+msgid "Show interaction layers"
+msgstr ""
+
+msgctxt "interactionLayersOn"
+msgid "Hide interaction layers"
+msgstr ""
 
 msgctxt "libraryAdd"
 msgid "Add to library..."
@@ -1469,14 +1485,6 @@ msgstr "Wiederverwendbaren Block hinzufügen"
 msgctxt "libraryPlaceDialogTitle"
 msgid "Add block from library"
 msgstr "Block aus Bibliothek hinzufügen"
-
-msgctxt "libraryPlaceSearchInputPlaceholder"
-msgid "Search library items"
-msgstr "Suchbegriff eingeben"
-
-msgctxt "libraryPlaceSearchLabel"
-msgid "Filter library items"
-msgstr "Bibliothek durchsuchen"
 
 msgctxt "libraryPreviewLabel"
 msgid "Preview"
@@ -2064,6 +2072,10 @@ msgstr "Farben"
 msgctxt "themeTourText"
 msgid "Change the colors of the theme and generate a theme file."
 msgstr "Ändern Sie das Theme und generieren Sie eine Theme-Datei."
+
+msgctxt "toggleInteractionLayers"
+msgid "Toggle interaction layers"
+msgstr ""
 
 msgctxt "touchBarCancelDragging"
 msgid "Cancel dragging"

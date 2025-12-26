@@ -348,9 +348,9 @@ async function updateTranslationFile(
 
   const filePath = path.resolve(
     __dirname,
-    `./../../src/translations/${language}.json`,
+    `./../../src/module/translations/${language}.json`,
   )
-  const formatted = await format(JSON.stringify(sorted, null, 2), 'json')
+  const formatted = JSON.stringify(sorted, null, 2)
   await fs.promises.writeFile(filePath, formatted)
 }
 

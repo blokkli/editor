@@ -1,6 +1,6 @@
 import { defineCodeTemplate } from '../defineTemplate'
 import { defu } from 'defu'
-import defaultTranslations from './../../../translations'
+import defaultTranslations from './../../translations'
 
 export default defineCodeTemplate(
   'translations',
