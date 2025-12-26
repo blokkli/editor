@@ -13,7 +13,7 @@ import type {
 } from './../../../shared/types/theme'
 import { type Ref, ref, onMounted, onBeforeUnmount } from '#imports'
 import { rgbaToString } from '../../helpers'
-import { DragStyle } from '../../helpers/DragStyle'
+import { DragStyle } from '../helpers/dragStyle'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type { ElementProvider } from './element'
 

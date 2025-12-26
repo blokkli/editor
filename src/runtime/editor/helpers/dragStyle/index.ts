@@ -1,5 +1,5 @@
 import type { DraggableStyle } from '#blokkli/types'
-import type { RGB } from './../../../shared/types/theme'
+import type { RGB } from '../../../../shared/types/theme'
 import {
   findHighestContrastColor,
   getContrastRatio,
@@ -7,7 +7,7 @@ import {
   parseColorString,
   realBackgroundColor,
   rgbaToString,
-} from '..'
+} from '../../../helpers'
 
 export class DragStyle {
   styleCache: WeakMap<HTMLElement | SVGElement, DraggableStyle>
