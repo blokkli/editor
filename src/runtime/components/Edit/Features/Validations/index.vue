@@ -36,7 +36,7 @@
 
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature, computed, ref } from '#imports'
-import { PluginSidebar } from '#blokkli/plugins'
+import type { PluginSidebar } from '#blokkli/plugins'
 import { Icon } from '#blokkli/components'
 import ValidationOverlay from './Overlay/index.vue'
 import SidebarItem from './SidebarItem/index.vue'

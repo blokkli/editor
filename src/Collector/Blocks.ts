@@ -414,7 +414,9 @@ export class CollectedBlockFile extends CollectedFile {
     if (this.type === 'main' && isBlock(this.definition)) {
       const hasIconFile = !!this.iconPath
       const hasEditorIcon = !!(
-        this.definition.editor && 'icon' in this.definition.editor && this.definition.editor.icon
+        this.definition.editor &&
+        'icon' in this.definition.editor &&
+        this.definition.editor.icon
       )
 
       if (!hasIconFile && !hasEditorIcon) {
@@ -631,10 +633,7 @@ export function validateMissingMainComponent(
   const errors: MissingMainComponentError[] = []
 
   // Group blocks by bundle (only actual blocks, not fragments or providers)
-  const bundleGroups = new Map<
-    string,
-    { main: string[]; context: string[] }
-  >()
+  const bundleGroups = new Map<string, { main: string[]; context: string[] }>()
 
   for (const file of files) {
     if (!file.definition || !isBlock(file.definition)) {

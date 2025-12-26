@@ -87,6 +87,7 @@ export const MATERIAL_ICON_COUNT = ${iconNames.length} as const
 `
 
   const formattedTypes = await format(typeContent, 'typescript')
+  await fs.promises.mkdir(path.dirname(TYPES_OUTPUT_PATH), { recursive: true })
   await fs.promises.writeFile(TYPES_OUTPUT_PATH, formattedTypes)
 
   console.log(chalk.green(`Generated ${TYPES_OUTPUT_PATH}`))
@@ -112,6 +113,9 @@ ${usedIcons.map((name) => `  '${name}',`).join('\n')}
 `
 
   const formattedUsedIcons = await format(usedIconsContent, 'typescript')
+  await fs.promises.mkdir(path.dirname(USED_ICONS_OUTPUT_PATH), {
+    recursive: true,
+  })
   await fs.promises.writeFile(USED_ICONS_OUTPUT_PATH, formattedUsedIcons)
 
   console.log(chalk.green(`Generated ${USED_ICONS_OUTPUT_PATH}`))

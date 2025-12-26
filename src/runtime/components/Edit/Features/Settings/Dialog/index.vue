@@ -30,7 +30,7 @@
 <script lang="ts" setup>
 import { useBlokkli, computed } from '#imports'
 import { DialogModal } from '#blokkli/components'
-import FeatureSetting from './FeatureSetting/index.vue'
+import type FeatureSetting from './FeatureSetting/index.vue'
 import type { ValidFeatureKey } from '#blokkli-build/features'
 import type { FeatureDefinitionSetting } from '#blokkli/types'
 import { SETTINGS_GROUP, type SettingsGroup } from '#blokkli/constants'

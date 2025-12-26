@@ -1373,9 +1373,9 @@ export default defineBlokkliEditAdapter((ctx) => {
 
     getAnalyzers: () => {
       return [
-        // blockAnalyzer(),
+        blockAnalyzer(),
         textAnalyzer(),
-        // readabilityAnalyzer(),
+        readabilityAnalyzer(),
         accessibilityAnalyzer({
           runOptions: {
             rules: {

@@ -77,8 +77,8 @@ import {
 } from '#imports'
 import { Icon, ScrollBoundary } from '#blokkli/components'
 import { modulo } from '#blokkli/helpers'
-import ResultsPage from './Results/Page/index.vue'
-import ResultsContent from './Results/Content/index.vue'
+import type ResultsPage from './Results/Page/index.vue'
+import type ResultsContent from './Results/Content/index.vue'
 
 const props = defineProps<{
   visible: boolean

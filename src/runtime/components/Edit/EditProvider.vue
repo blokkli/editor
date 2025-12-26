@@ -219,9 +219,9 @@ const mutatedEntityProps = computed(() => state.mutatedItemProps.HOST)
 
 const mutatedEntity = computed(() => {
   return {
-    ...(props.entity ?? {}),
-    ...(state.mutatedEntity.value ?? {}),
-    ...(mutatedEntityProps.value ?? {}),
+    ...props.entity,
+    ...state.mutatedEntity.value,
+    ...mutatedEntityProps.value,
   }
 })
 

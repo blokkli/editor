@@ -206,6 +206,7 @@ class Extractor {
 
         // eslint-disable-next-line prefer-const
         let result: ExtractedFeature | null = null
+        // oxlint-disable-next-line
         eval('result = ' + obj)
         const feature: ExtractedFeature | null = result as any
 

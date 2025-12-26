@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts" setup>
-import DragItems from './DragItems/index.vue'
+import type DragItems from './DragItems/index.vue'
 import Renderer from './Renderer/index.vue'
 import {
   ref,

@@ -74,7 +74,7 @@ import {
   onUnmounted,
   computed,
 } from '#imports'
-import { PluginSidebar } from '#blokkli/plugins'
+import type { PluginSidebar } from '#blokkli/plugins'
 import defineItemDropdownAction from '#blokkli/helpers/composables/defineItemDropdownAction'
 import ClipboardList from './List/index.vue'
 import type { ClipboardItem, RenderedFieldListItem } from '#blokkli/types'

@@ -1,7 +1,7 @@
 import { createConfigForNuxt } from '@nuxt/eslint-config/flat'
 import tailwind from 'eslint-plugin-tailwindcss'
 import importX from 'eslint-plugin-import-x'
-// import sonarjs from 'eslint-plugin-sonarjs'
+import oxlint from 'eslint-plugin-oxlint'
 
 // Run `npx @eslint/config-inspector` to inspect the resolved config interactively
 export default createConfigForNuxt(
@@ -117,3 +117,4 @@ export default createConfigForNuxt(
       ],
     },
   })
+  .append(...oxlint.buildFromOxlintConfigFile('./.oxlintrc.json'))

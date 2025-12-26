@@ -61,4 +61,4 @@ export const transforms: TransformPlugin[] = [
   },
 ]
 
-export function applyTransformPlugin(pluginId: string, uuids: string[]) {}
+export function applyTransformPlugin(_pluginId: string, _uuids: string[]) {}

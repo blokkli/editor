@@ -19,11 +19,7 @@ function createMockBlockFile(
 describe('validateMissingMainComponent', () => {
   test('returns no errors when bundle has main component', () => {
     const files = [
-      createMockBlockFile(
-        '/path/to/Button.vue',
-        { bundle: 'button' },
-        'main',
-      ),
+      createMockBlockFile('/path/to/Button.vue', { bundle: 'button' }, 'main'),
     ]
 
     expect(validateMissingMainComponent(files)).toEqual([])
@@ -31,11 +27,7 @@ describe('validateMissingMainComponent', () => {
 
   test('returns no errors when bundle has both main and context components', () => {
     const files = [
-      createMockBlockFile(
-        '/path/to/Button.vue',
-        { bundle: 'button' },
-        'main',
-      ),
+      createMockBlockFile('/path/to/Button.vue', { bundle: 'button' }, 'main'),
       createMockBlockFile(
         '/path/to/ButtonNested.vue',
         {
@@ -123,11 +115,7 @@ describe('validateMissingMainComponent', () => {
 
   test('ignores bundles that have main component even with multiple context', () => {
     const files = [
-      createMockBlockFile(
-        '/path/to/Button.vue',
-        { bundle: 'button' },
-        'main',
-      ),
+      createMockBlockFile('/path/to/Button.vue', { bundle: 'button' }, 'main'),
       createMockBlockFile(
         '/path/to/ButtonGrid.vue',
         {
@@ -152,11 +140,7 @@ describe('validateMissingMainComponent', () => {
   test('only reports bundles without main, not those with main', () => {
     const files = [
       // Button has main
-      createMockBlockFile(
-        '/path/to/Button.vue',
-        { bundle: 'button' },
-        'main',
-      ),
+      createMockBlockFile('/path/to/Button.vue', { bundle: 'button' }, 'main'),
       createMockBlockFile(
         '/path/to/ButtonNested.vue',
         {

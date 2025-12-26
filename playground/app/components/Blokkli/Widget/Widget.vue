@@ -255,5 +255,5 @@ const { options } = defineBlokkli({
   },
 })
 
-export type Props = {}
+export type Props = object
 </script>

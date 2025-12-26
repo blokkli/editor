@@ -1,7 +1,7 @@
 export function generateUUID() {
   try {
     return crypto.randomUUID()
-  } catch (_e) {
+  } catch {
     // Noop.
   }
 

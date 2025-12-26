@@ -5,7 +5,7 @@ import { defineEventHandler, readBody, createError } from 'h3'
 
 const config = useRuntimeConfig()
 
-const INSTRUCTIONS = `
+const _INSTRUCTIONS = `
 You are generating content for a page builder.
 The page builder works using blocks.
 Every block has a type and n fields.

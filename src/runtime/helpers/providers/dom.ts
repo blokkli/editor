@@ -160,7 +160,7 @@ export type DomProvider = {
    *
    * @returns Record mapping UUIDs to their measured rectangles with timestamps
    */
-  getBlockRects: () => Record<string, MeasuredBlockRect>
+  getBlockRects: () => Record<string, MeasuredBlockRect | undefined>
 
   /**
    * Get the rectangle for a specific block.
@@ -304,9 +304,9 @@ export default function (
   const visibleFields: Set<string> = new Set()
   const fieldElementToFieldKey = new WeakMap<HTMLElement, string>()
   const blockElementToUuid = new WeakMap<HTMLElement, string>()
-  const blockRects: Record<string, MeasuredBlockRect> = {}
+  const blockRects: Record<string, MeasuredBlockRect | undefined> = {}
   const fieldRects: Record<string, Rectangle> = {}
-  const blockUuidCurrentKey: Record<string, string> = {}
+  const blockUuidCurrentKey: Record<string, string | undefined> = {}
   let initTimeout: null | number = null
   const isInitalizing = ref(true)
 
@@ -316,7 +316,7 @@ export default function (
   /**
    * Obserable elements.
    */
-  const observedElements: Record<string, HTMLElement> = {}
+  const observedElements: Record<string, HTMLElement | undefined> = {}
 
   function getBoundingClientRect(element: HTMLElement): DOMRect {
     logger.log('getBoundingClientRect', element)
@@ -566,7 +566,7 @@ export default function (
   const getVisibleBlocks = () => Array.from(visibleBlocks)
   const getVisibleFields = () => Array.from(visibleFields)
 
-  function getBlockRects(): Record<string, MeasuredBlockRect> {
+  function getBlockRects(): Record<string, MeasuredBlockRect | undefined> {
     return blockRects
   }
 
@@ -824,8 +824,8 @@ export default function (
     if (observedElement) {
       intersectionObserver.unobserve(observedElement)
       resizeObserver.unobserve(observedElement)
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-      delete observedElements[uuid]
+
+      observedElements[uuid] = undefined
       blockElementToUuid.delete(observedElement)
     }
 
@@ -834,10 +834,8 @@ export default function (
     }
     dragElementCache.delete(uuid)
     registeredBlocks[uuid] = undefined
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    delete blockRects[uuid]
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    delete blockUuidCurrentKey[uuid]
+    blockRects[uuid] = undefined
+    blockUuidCurrentKey[uuid] = undefined
     visibleBlocks.delete(uuid)
   }
 

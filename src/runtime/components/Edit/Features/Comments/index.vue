@@ -65,7 +65,7 @@ import {
 import { PluginSidebar, PluginItemAction } from '#blokkli/plugins'
 import { BlokkliTransition } from '#blokkli/components'
 import Comment from './Comment/index.vue'
-import CommentAddForm from './AddForm/index.vue'
+import type CommentAddForm from './AddForm/index.vue'
 import CommentsOverlay from './Overlay/index.vue'
 import type { CommentItem } from '#blokkli/types'
 

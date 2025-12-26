@@ -169,7 +169,7 @@ export default function (
   const elementMap: WeakMap<HTMLElement, EditableFieldData> = new WeakMap()
   const elements: Map<string, HTMLElement> = new Map()
   const fieldData: Map<string, EditableFieldData> = new Map()
-  const rects: Record<string, EditableRectangle> = {}
+  const rects: Record<string, EditableRectangle | undefined> = {}
   const visible: Set<string> = new Set()
   const editablesByUuid: Record<
     string,
@@ -305,8 +305,8 @@ export default function (
     intersectionObserver.unobserve(el)
     elementMap.delete(el)
     fieldData.delete(key)
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    delete rects[key]
+
+    rects[key] = undefined
     visible.delete(key)
     elements.delete(key)
 

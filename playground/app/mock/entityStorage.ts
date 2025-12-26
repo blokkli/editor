@@ -8,7 +8,6 @@ import {
   MediaImage,
   type Media,
   MediaVideo,
-  MediaIcon,
 } from './state/Media/Media'
 import { User } from './state/User'
 import data from './../../snapshots/data.json'
@@ -53,6 +52,7 @@ export class EntityStorage<T extends Entity> {
   delete(uuid: string) {
     const entity = this.entities[uuid]
     if (entity) {
+      // oxlint-disable-next-line
       delete this.entities[uuid]
     }
   }

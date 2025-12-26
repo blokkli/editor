@@ -28,7 +28,7 @@ import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { ContextMenu } from '#blokkli/types'
 import { useBlokkli, computed, ref } from '#imports'
 import { ItemIconBox } from '#blokkli/components'
-import { PluginContextMenu } from '#blokkli/plugins'
+import type { PluginContextMenu } from '#blokkli/plugins'
 
 const { storage, $t } = useBlokkli()
 

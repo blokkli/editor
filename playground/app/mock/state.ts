@@ -44,8 +44,8 @@ export function mapMockField(field: FieldBlocks): FieldListItem[] {
 }
 
 export const getEditState = (
-  entityType: string,
-  entityUuid: string,
+  _entityType: string,
+  _entityUuid: string,
 ): EditState => {
   return editState
 }

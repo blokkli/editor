@@ -206,6 +206,6 @@ export default defineNuxtModule<ModuleOptions>({
 export type { ModuleOptions }
 
 declare module '@nuxt/schema' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+   
   interface NuxtHooks extends ModuleHooks {}
 }
