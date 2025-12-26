@@ -82,6 +82,9 @@ function updateCanvas() {
 
   for (let i = 0; i < rects.length; i++) {
     const [uuid, blockRect] = rects[i]!
+    if (!blockRect) {
+      continue
+    }
     ctx.fillRect(
       Math.round(blockRect.x * scale),
       Math.round(blockRect.y * scale),

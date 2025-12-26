@@ -24,12 +24,12 @@ import type { ClipboardItemFile } from '#blokkli/types'
 const props = defineProps<ClipboardItemFile>()
 
 function prng(seed: number) {
-   
+
   seed = (seed ^ 0x6d2b79f5) + (seed << 1)
   seed = seed ^ (seed >> 15)
   seed = seed + (seed << 4)
   seed = seed ^ (seed >> 13)
-   
+
   seed = seed * 0x85ebca6b
   seed = seed ^ (seed >> 16)
   seed = seed >>> 0

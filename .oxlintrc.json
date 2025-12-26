@@ -1,8 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": [
-    "import"
-  ],
+  "plugins": ["import"],
   "categories": {
     "correctness": "off"
   },
@@ -140,13 +138,7 @@
   },
   "overrides": [
     {
-      "files": [
-        "**/*.ts",
-        "**/*.tsx",
-        "**/*.mts",
-        "**/*.cts",
-        "**/*.vue"
-      ],
+      "files": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts", "**/*.vue"],
       "rules": {
         "constructor-super": "off",
         "no-class-assign": "off",
@@ -210,14 +202,10 @@
         ],
         "@typescript-eslint/no-import-type-side-effects": "error"
       },
-      "plugins": [
-        "typescript"
-      ]
+      "plugins": ["typescript"]
     },
     {
-      "files": [
-        "**/*.vue"
-      ],
+      "files": ["**/*.vue"],
       "rules": {
         "vue/no-deprecated-destroyed-lifecycle": "error",
         "vue/no-export-in-script-setup": "error",
@@ -227,15 +215,10 @@
         "vue/no-multiple-slot-args": "warn",
         "vue/no-required-prop-with-default": "warn"
       },
-      "plugins": [
-        "vue"
-      ]
+      "plugins": ["vue"]
     },
     {
-      "files": [
-        "**/*.?([cm])[jt]s?(x)",
-        "**/*.vue"
-      ],
+      "files": ["**/*.?([cm])[jt]s?(x)", "**/*.vue"],
       "rules": {
         "jsdoc/check-access": "warn",
         "jsdoc/check-property-names": "warn",
@@ -264,18 +247,11 @@
         "no-useless-backreference": "off",
         "no-empty-character-class": "off"
       },
-      "plugins": [
-        "jsdoc"
-      ]
+      "plugins": ["jsdoc"]
     },
     {
-      "files": [
-        "**/*.?([cm])[jt]s?(x)",
-        "**/*.vue"
-      ],
-      "plugins": [
-        "unicorn"
-      ]
+      "files": ["**/*.?([cm])[jt]s?(x)", "**/*.vue"],
+      "plugins": ["unicorn"]
     }
   ]
 }

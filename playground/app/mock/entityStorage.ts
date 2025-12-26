@@ -4,11 +4,7 @@ import { Comment } from './state/Comment'
 import type { Entity } from './state/Entity'
 import { ContentPage, type Content } from './state/Entity/Content'
 import { LibraryItem } from './state/LibraryItem'
-import {
-  MediaImage,
-  type Media,
-  MediaVideo,
-} from './state/Media/Media'
+import { MediaImage, type Media, MediaVideo } from './state/Media/Media'
 import { User } from './state/User'
 import data from './../../snapshots/data.json'
 import videosData from './../../snapshots/videos.json'

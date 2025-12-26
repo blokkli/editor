@@ -146,7 +146,7 @@ const props = withDefaults(
             /**
              * The entity data. Will be merged with the mutatedEntity data during editing.
              */
-             
+
             entity: T
           }
         | {

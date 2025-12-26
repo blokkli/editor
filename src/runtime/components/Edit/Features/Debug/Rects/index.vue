@@ -61,7 +61,7 @@ onBlokkliEvent('canvas:draw', (e) => {
   const blockRects = dom.getBlockRects()
   const viewport = ui.visibleViewport.value
 
-  const rects = Object.values(blockRects)
+  const rects = Object.values(blockRects).filter(v => v !== undefined)
   drawRects(ctx, rects, e.artboardScale, e.artboardOffset, viewport)
 
   ctx.strokeStyle = 'red'

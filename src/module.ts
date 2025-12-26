@@ -206,6 +206,5 @@ export default defineNuxtModule<ModuleOptions>({
 export type { ModuleOptions }
 
 declare module '@nuxt/schema' {
-   
   interface NuxtHooks extends ModuleHooks {}
 }

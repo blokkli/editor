@@ -2,36 +2,35 @@
   "name": "@blokkli/editor",
   "version": "2.0.0-alpha.28",
   "description": "Interactive page building experience for Nuxt",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/blokkli/editor.git"
-  },
+  "keywords": [
+    "cms",
+    "drag-and-drop",
+    "editor",
+    "nuxt",
+    "nuxt-module",
+    "page-builder",
+    "vue",
+    "wysiwyg"
+  ],
   "homepage": "https://blokk.li",
   "bugs": {
     "url": "https://github.com/blokkli/editor/issues"
   },
-  "keywords": [
-    "nuxt",
-    "nuxt-module",
-    "page-builder",
-    "editor",
-    "wysiwyg",
-    "drag-and-drop",
-    "cms",
-    "vue"
+  "license": "MIT",
+  "author": {
+    "name": "Jan Hug",
+    "email": "me@dulnan.net",
+    "url": "https://dulnan.net"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blokkli/editor.git"
+  },
+  "files": [
+    "dist"
   ],
   "type": "module",
   "sideEffects": false,
-  "exports": {
-    ".": {
-      "types": "./dist/types.d.mts",
-      "import": "./dist/module.mjs"
-    },
-    "./drupal": {
-      "types": "./dist/modules/drupal/index.d.mts",
-      "import": "./dist/modules/drupal/index.mjs"
-    }
-  },
   "main": "./dist/module.mjs",
   "typesVersions": {
     "*": {
@@ -43,9 +42,16 @@
       ]
     }
   },
-  "files": [
-    "dist"
-  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
+    },
+    "./drupal": {
+      "types": "./dist/modules/drupal/index.d.mts",
+      "import": "./dist/modules/drupal/index.mjs"
+    }
+  },
   "scripts": {
     "prepack": "rm -rf dist && nuxt-module-build build && find dist/ -type f -name '*.*' | grep '.spec.' | xargs rm -f",
     "dev": "nuxi dev playground --host",
@@ -63,21 +69,12 @@
     "lint:fix": "npx oxlint --fix && eslint ./src --fix",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "prettier": "prettier --check .",
-    "prettier:fix": "prettier --write .",
+    "format": "oxfmt --check",
+    "format:fix": "oxfmt",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "cypress:open": "cypress open"
-  },
-  "author": {
-    "name": "Jan Hug",
-    "url": "https://dulnan.net",
-    "email": "me@dulnan.net"
-  },
-  "license": "MIT",
-  "engines": {
-    "node": ">=18.0.0"
   },
   "dependencies": {
     "@material-symbols/svg-600": "^0.40.2",
@@ -120,6 +117,7 @@
     "nuxt-graphql-middleware": "^5.3.0",
     "nuxt-svg-icon-sprite": "^2.0.2",
     "openai": "^5.13.1",
+    "oxfmt": "^0.20.0",
     "oxlint": "^1.35.0",
     "playwright-core": "^1.57.0",
     "postcss": "^8.5.6",
@@ -153,5 +151,8 @@
     "axe-core": {
       "optional": true
     }
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
