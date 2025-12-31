@@ -77,7 +77,6 @@ import {
 } from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
 import ClipboardList from './List/index.vue'
-import type { RenderedFieldListItem } from '#blokkli/types'
 import { falsy, getFieldKey } from '#blokkli/helpers'
 import { generateUUID } from '#blokkli/editor/helpers/uuid'
 import { Icon } from '#blokkli/editor/components'
@@ -87,6 +86,7 @@ import { emitMessage } from '#blokkli/editor/events'
 import { itemEntityType } from '#blokkli-build/config'
 import { defineItemDropdownAction, defineShortcut, onBlokkliEvent } from '#blokkli/editor/composables'
 import type { BlokkliClipboardItem } from './types'
+import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 
 const { settings, logger } = defineBlokkliFeature({
   id: 'clipboard',

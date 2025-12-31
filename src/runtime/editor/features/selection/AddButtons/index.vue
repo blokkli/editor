@@ -40,9 +40,7 @@ import {
   determineCanAddChildren,
 } from '#blokkli/editor/helpers/dropTargets'
 import type {
-  BlokkliFieldElement,
   DraggableHostData,
-  RenderedFieldListItem,
 } from '#blokkli/types'
 import { renderCycle } from '#blokkli/editor/helpers/vue'
 import { getFieldKey } from '#blokkli/helpers'
@@ -51,6 +49,7 @@ import Renderer from './Renderer/index.vue'
 import { itemEntityType } from '#blokkli-build/config'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type { AddAction } from '#blokkli/editor/types/actions'
+import type { BlokkliFieldElement, RenderedFieldListItem } from '#blokkli/editor/types/field'
 
 const props = defineProps<{
   items: RenderedFieldListItem[]

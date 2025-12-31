@@ -66,7 +66,7 @@ import {
   ConfigForm,
   Loading
 } from '#blokkli/editor/components'
-import type { BlokkliFieldElement, } from '#blokkli/types'
+import type { BlokkliFieldElement } from '#blokkli/editor/types/field';
 import {
   ref,
   useBlokkli,

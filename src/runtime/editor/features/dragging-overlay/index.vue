@@ -49,7 +49,6 @@ import {
 } from '#imports'
 import type {
   BlokkliDefinitionAddBehaviour,
-  BlokkliFieldElement,
   DraggableHostData,
 } from '#blokkli/types'
 import { renderCycle } from '#blokkli/editor/helpers/vue'
@@ -64,6 +63,7 @@ import type { DraggableClipboardItem } from '../clipboard/types'
 import type { DraggableActionItem } from '../add-list/types'
 import type { DraggableReusableItem } from '../library/types'
 import type { DraggableExistingStructureBlock } from '../structure/types'
+import type { BlokkliFieldElement } from '#blokkli/editor/types/field'
 
 const { adapter } = defineBlokkliFeature({
   icon: 'bk_mdi_drag_pan',

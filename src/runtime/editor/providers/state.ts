@@ -11,7 +11,7 @@ import { refreshNuxtData, useState } from 'nuxt/app'
 import type { BlokkliAdapter, AdapterContext } from '../adapter'
 import { INJECT_MUTATED_FIELDS_MAP } from '../../helpers/injections'
 import { onBlokkliEvent, addElementClasses } from '#blokkli/editor/composables'
-import type { EditMode, FieldListItem, EditPermission } from '#blokkli/types'
+import type { FieldListItem, EditPermission } from '#blokkli/types'
 import { falsy, getFieldKey } from '#blokkli/helpers'
 import { emitMessage, type BlokkliEventBus } from '#blokkli/editor/events'
 import { nextTick } from '#imports'
@@ -20,6 +20,7 @@ import { BUNDLE_FROM_LIBRARY } from '../../../shared/constants'
 import type { PublishOptions } from '../features/publish/types'
 import type {
   EditEntity,
+  EditMode,
   MappedState,
   MutatedField,
   MutatedItemProps,

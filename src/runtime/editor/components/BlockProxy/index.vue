@@ -37,11 +37,11 @@ import type {
 import { computed, useBlokkli } from '#imports'
 import { getBlokkliItemProxyComponent } from '#blokkli/editor/helpers/edit-components'
 import { ItemIcon } from '#blokkli/editor/components'
-import type { LibraryItemProps } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
 import { itemEntityType } from '#blokkli-build/config'
 import { useBlockRegistration } from '#blokkli/editor/composables'
 import type { FieldConfig } from '#blokkli/editor/types/definitions'
+import type { LibraryItemProps } from '#blokkli/editor/features/library/types'
 
 const props = defineProps<{
   uuid: string

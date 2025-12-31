@@ -15,10 +15,6 @@ import {
   isInsideRect,
 } from '#blokkli/editor/helpers/geometry'
 import{ toShaderColor, rgbaToString } from '#blokkli/editor/helpers/color'
-import type {
-  BlokkliFieldElement,
-  DropArea,
-} from '#blokkli/types'
 import { ref, computed, useBlokkli } from '#imports'
 import {
   setBuffersAndAttributes,
@@ -42,6 +38,8 @@ import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'
 import type { DropTargetEvent } from '#blokkli/editor/events'
 import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
 import type { DraggableItem } from '#blokkli/editor/types/draggable'
+import type { DropArea } from '#blokkli/editor/types/ui'
+import type { BlokkliFieldElement } from '#blokkli/editor/types/field'
 
 const props = defineProps<{
   items: DraggableItem[]

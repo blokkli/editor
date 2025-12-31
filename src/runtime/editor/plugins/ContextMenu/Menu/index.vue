@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { ContextMenu } from '#blokkli/types'
+import type { ContextMenu } from '#blokkli/editor/types/ui'
 import { Icon } from '#blokkli/editor/components'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import {

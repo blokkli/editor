@@ -41,12 +41,10 @@ import {
 import { PluginTourItem } from '#blokkli/editor/plugins'
 import AddListBlocks from './Blocks/index.vue'
 import AddListActions from './Actions/index.vue'
-import type {
-  RenderedFieldListItem,
-} from '#blokkli/types'
 import { itemEntityType } from '#blokkli-build/config'
 import { onlyUnique } from '#blokkli/helpers'
 import type { BlockBundleDefinition } from '#blokkli/editor/types/definitions'
+import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 
 const { settings } = defineBlokkliFeature({
   id: 'add-list',

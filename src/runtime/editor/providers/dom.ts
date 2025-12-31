@@ -1,10 +1,5 @@
 import { reactive, ref, computed, type ComputedRef, onMounted } from '#imports'
-import type {
-  EntityContext,
-  RenderedFieldListItem,
-  RegisteredField,
-  RegisterFieldData,
-} from '#blokkli/types'
+import type { EntityContext } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
 import type { UiProvider } from './ui'
 import { cloneElementWithStyles } from '../helpers/dom'
@@ -17,6 +12,11 @@ import type { StateProvider } from './state'
 import type { ElementProvider } from './element'
 import type { Coord, Rectangle } from '../types/geometry'
 import type { DraggableExistingBlock, DraggableItem } from '../types/draggable'
+import type {
+  RegisteredField,
+  RegisterFieldData,
+  RenderedFieldListItem,
+} from '../types/field'
 
 type RegisteredFieldType = {
   entityType: string

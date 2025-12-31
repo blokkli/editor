@@ -7,7 +7,7 @@ import {
   onBeforeUnmount,
   computed,
 } from 'vue'
-import type { KeyboardShortcut } from '#blokkli/types'
+import type { KeyboardShortcut } from '#blokkli/editor/types/ui'
 import type { BlokkliEventBus } from '../events'
 
 type RegisteredShortcut = {

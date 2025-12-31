@@ -1,5 +1,12 @@
 import type { BlokkliAdapterSearchResults } from '#blokkli/editor/adapter'
-import type { DraggableHostData, FieldListItem } from '#blokkli/types'
+import type { DraggableHostData } from '#blokkli/types'
+import type { FieldListItem } from '#blokkli/types/field'
+
+export interface LibraryItemProps {
+  block?: FieldListItem
+  label?: string
+  uuid?: string
+}
 
 export type MakeReusableEvent = {
   label: string

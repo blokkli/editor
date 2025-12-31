@@ -13,9 +13,9 @@
 
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature } from '#imports'
-import type { RenderedFieldListItem } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/editor/plugins'
 import { itemEntityType } from '#blokkli-build/config'
+import type { RenderedFieldListItem } from '#blokkli/editor/types/field';
 
 const { state, $t, eventBus, dom } = useBlokkli()
 

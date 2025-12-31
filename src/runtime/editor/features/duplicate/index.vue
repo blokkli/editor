@@ -15,10 +15,10 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
-import type { RenderedFieldListItem } from '#blokkli/types'
 import { PluginItemAction } from '#blokkli/editor/plugins'
 import { getFieldKey } from '#blokkli/helpers'
 import { getArrayDiff } from '#blokkli/editor/helpers/array'
+import type { RenderedFieldListItem } from '#blokkli/editor/types/field';
 
 const { state, $t, selection, types, eventBus } = useBlokkli()
 

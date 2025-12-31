@@ -78,7 +78,7 @@ import {
 } from '#imports'
 import { Icon, ViewportBlockingRect, ScrollBoundary } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import type { SidebarRegion } from '#blokkli/types'
+import type { SidebarRegion } from '#blokkli/editor/types/ui'
 import { addElementClasses, onBlokkliEvent } from '#blokkli/editor/composables'
 
 const props = withDefaults(

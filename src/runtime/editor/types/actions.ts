@@ -1,9 +1,6 @@
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import type {
-  BlokkliFieldElement,
-  DraggableHostData,
-  RenderedFieldListItem,
-} from '#blokkli/types'
+import type { DraggableHostData } from '#blokkli/types'
+import type { BlokkliFieldElement, RenderedFieldListItem } from './field'
 
 export type AddActionColor = 'rose' | 'lime' | 'accent'
 

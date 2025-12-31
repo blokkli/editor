@@ -1,5 +1,5 @@
-import type { KeyboardShortcut } from '#blokkli/types'
 import { onBeforeUnmount, onMounted, useBlokkli } from '#imports'
+import type { KeyboardShortcut } from '../types/ui'
 
 export function defineShortcut(
   shortcut: KeyboardShortcut[] | KeyboardShortcut,

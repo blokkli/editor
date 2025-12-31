@@ -10,7 +10,7 @@ import {
 } from '#imports'
 import type { ShallowRef } from 'vue'
 import type { StorageProvider } from './storage'
-import type { GlobalUiDialog, SidebarRegion } from '#blokkli/types'
+import type { GlobalUiDialog, SidebarRegion } from '#blokkli/editor/types/ui'
 import type { Viewport } from '../../../shared/constants'
 import { falsy } from '../../helpers'
 import {

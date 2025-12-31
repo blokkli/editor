@@ -87,3 +87,5 @@ export type MutatedItemProps = {
       }
     | undefined
 }
+
+export type EditMode = 'readonly' | 'editing' | 'translating' | 'review'

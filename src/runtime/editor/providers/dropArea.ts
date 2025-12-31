@@ -1,5 +1,5 @@
 import { falsy } from '../../helpers'
-import type { DropArea } from '#blokkli/types'
+import type { DropArea } from '#blokkli/editor/types/ui'
 import type { DraggableItem } from '../types/draggable'
 
 type DropAreaProviderFunction = (

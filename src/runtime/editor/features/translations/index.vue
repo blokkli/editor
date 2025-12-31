@@ -75,12 +75,10 @@ import {
 } from '#imports'
 import { falsy } from '#blokkli/helpers'
 import { PluginItemAction, PluginTourItem } from '#blokkli/editor/plugins'
-import type {
-  RenderedFieldListItem,
-} from '#blokkli/types'
 import Banner from './Banner/index.vue'
 import { defineMenuButton, onBlokkliEvent } from '#blokkli/editor/composables'
 import type { EntityTranslation, Language } from '#blokkli/editor/types/state'
+import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 
 const { adapter } = defineBlokkliFeature({
   id: 'translations',

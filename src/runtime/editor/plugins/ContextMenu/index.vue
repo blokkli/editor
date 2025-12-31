@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { ContextMenu } from '#blokkli/types'
+import type { ContextMenu } from '#blokkli/editor/types/ui'
 import { ref, computed, useBlokkli } from '#imports'
 import ContextMenuMenu from './Menu/index.vue'
 import { BlokkliTransition } from '#blokkli/editor/components'

@@ -1,4 +1,4 @@
-import type { BlokkliFieldElement } from '#blokkli/types'
+import type { BlokkliFieldElement } from '#blokkli/editor/types/field'
 
 export type Orientation = 'horizontal' | 'vertical'
 

@@ -1,5 +1,4 @@
 import { theme, themes } from '#blokkli-build/editor-config'
-import type { DraggableStyle } from '#blokkli/types'
 import type {
   RGB,
   Theme,
@@ -16,6 +15,7 @@ import { rgbaToString } from '#blokkli/editor/helpers/color'
 import { DragStyle } from '../helpers/dragStyle'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type { ElementProvider } from './element'
+import type { DraggableStyle } from '../types/style'
 
 type ThemeMap = {
   accent: Ref<ThemeColors>

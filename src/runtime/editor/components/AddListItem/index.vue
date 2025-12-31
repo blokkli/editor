@@ -25,10 +25,10 @@
 
 <script lang="ts" setup>
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import type { ContextMenu } from '#blokkli/types'
 import { useBlokkli, computed, useTemplateRef } from '#imports'
 import { ItemIconBox } from '#blokkli/editor/components'
 import { PluginContextMenu } from '#blokkli/editor/plugins'
+import type { ContextMenu } from '#blokkli/editor/types/ui'
 
 const { storage, $t } = useBlokkli()
 

@@ -3,7 +3,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { RenderedFieldListItem } from '#blokkli/types'
 import { useBlokkli, computed } from '#imports'
 import {
   setBuffersAndAttributes,
@@ -18,6 +17,7 @@ import { toShaderColor } from '#blokkli/editor/helpers/color'
 import type { RGB } from './../../../../../shared/types/theme'
 import { defineRenderer, onBlokkliEvent, useTransitionedValue } from '#blokkli/editor/composables'
 import type { Rectangle } from '#blokkli/editor/types/geometry'
+import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 
 const props = defineProps<{
   blocks: RenderedFieldListItem[]

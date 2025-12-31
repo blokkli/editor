@@ -1,5 +1,5 @@
-import type { GlobalUiDialog } from '#blokkli/types'
 import { computed, useBlokkli, type WritableComputedRef } from '#imports'
+import type { GlobalUiDialog } from '../types/ui'
 
 export function useDialog(
   id: string,

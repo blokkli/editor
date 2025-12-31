@@ -1,5 +1,5 @@
-import type { BlokkliFieldElement } from '#blokkli/types'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
+import type { BlokkliFieldElement } from '../types/field'
 import type { DomProvider } from './dom'
 import type { BlockDefinitionProvider } from './types'
 

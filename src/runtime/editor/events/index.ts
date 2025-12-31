@@ -1,17 +1,13 @@
 import mitt, { type Emitter } from 'mitt'
-import type {
-  BlokkliFieldElement,
-  DraggableHostData,
-  InteractionMode,
-  Message,
-  RenderedFieldListItem,
-} from '#blokkli/types'
+import type { DraggableHostData, InteractionMode } from '#blokkli/types'
 import type { UpdateBlockOptionEvent } from '../features/options/types'
 import type { LibraryEditItemEvent } from '../features/library/types'
 import type { Coord, Size } from '../types/geometry'
 import type { BlokkliClipboardItem } from '../features/clipboard/types'
 import type { EntityTranslation, Language, MutatedField } from '../types/state'
 import type { DraggableExistingBlock, DraggableItem } from '../types/draggable'
+import type { Message } from '../types/ui'
+import type { BlokkliFieldElement, RenderedFieldListItem } from '../types/field'
 
 export type SelectStartEvent = {
   uuids: string[]

@@ -121,7 +121,7 @@ import {
   Loading,
 } from '#blokkli/editor/components'
 import SidebarDetached from './Detached/index.vue'
-import type { SidebarRegion } from '#blokkli/types'
+import type { SidebarRegion } from '#blokkli/editor/types/ui'
 import { defineCommands, defineTourItem, onBlokkliEvent, useAnimationFrame } from '#blokkli/editor/composables'
 
 const props = withDefaults(

@@ -1,4 +1,4 @@
-import type { RenderedFieldListItem } from '#blokkli/types'
+import type { RenderedFieldListItem } from './field'
 
 export interface DraggableExistingBlock {
   itemType: 'existing'

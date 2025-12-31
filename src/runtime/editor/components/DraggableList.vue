@@ -70,8 +70,6 @@ import {
 import type {
   FieldListItem,
   EntityContext,
-  FieldDropAlignment,
-  RegisterFieldData,
 } from '#blokkli/types'
 import type { BlokkliFragmentName } from '#blokkli-build/definitions'
 import BlokkliItem from './../../components/BlokkliItem.vue'
@@ -84,6 +82,8 @@ import type {
   FieldListItemTyped,
   ValidFieldListTypes,
 } from '#blokkli-build/generated-types'
+import type { FieldDropAlignment } from '#blokkli/types/field'
+import type { RegisterFieldData } from '../types/field'
 
 const { dom, selection } = useBlokkli()
 

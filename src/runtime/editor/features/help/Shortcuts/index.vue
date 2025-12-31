@@ -28,7 +28,7 @@
 <script lang="ts" setup>
 import { useBlokkli, computed } from '#imports'
 import { ShortcutIndicator } from '#blokkli/editor/components'
-import type { KeyboardShortcut } from '#blokkli/types'
+import type { KeyboardShortcut } from '#blokkli/editor/types/ui'
 
 type ShortcutGroup = {
   group: string
