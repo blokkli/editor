@@ -13,9 +13,9 @@
 
 <script setup lang="ts">
 import { computed } from '#imports'
-import type { ClipboardItemVideo } from '#blokkli/types'
 import { Icon } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
+import type { ClipboardItemVideo } from '../../types';
 
 const props = defineProps<ClipboardItemVideo>()
 

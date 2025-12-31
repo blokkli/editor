@@ -2,6 +2,52 @@ import type { AddClipboardItemEvent } from '#blokkli/editor/events'
 import type { DraggableHostData } from '#blokkli/types'
 import type getVideoId from 'get-video-id'
 
+interface ClipboardItemText {
+  type: 'text'
+  id: string
+  itemBundle: string
+  data: string
+  additional?: string
+}
+
+export interface ClipboardItemVideo {
+  type: 'video'
+  id: string
+  itemBundle: string
+  data: string
+  additional?: string
+  videoService: ReturnType<typeof getVideoId>['service']
+  videoId: string
+}
+
+interface ClipboardItemImage {
+  type: 'image'
+  id: string
+  itemBundle: string
+  data: string
+  additional: string
+  fileName: string
+  fileSize: number
+  fileType: string
+}
+
+export interface ClipboardItemFile {
+  type: 'file'
+  id: string
+  itemBundle: string
+  data: string
+  additional: string
+  fileName: string
+  fileSize: number
+  fileType: string
+}
+
+export type BlokkliClipboardItem =
+  | ClipboardItemText
+  | ClipboardItemVideo
+  | ClipboardItemImage
+  | ClipboardItemFile
+
 export type PasteExistingBlocksEvent = {
   uuids: string[]
   host: DraggableHostData

@@ -77,7 +77,7 @@ import {
 } from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
 import ClipboardList from './List/index.vue'
-import type { ClipboardItem, RenderedFieldListItem } from '#blokkli/types'
+import type { RenderedFieldListItem } from '#blokkli/types'
 import { falsy, getFieldKey } from '#blokkli/helpers'
 import { generateUUID } from '#blokkli/editor/helpers/uuid'
 import { Icon } from '#blokkli/editor/components'
@@ -86,6 +86,7 @@ import type { BlokkliIcon } from '#blokkli-build/icons'
 import { emitMessage } from '#blokkli/editor/events'
 import { itemEntityType } from '#blokkli-build/config'
 import { defineItemDropdownAction, defineShortcut, onBlokkliEvent } from '#blokkli/editor/composables'
+import type { BlokkliClipboardItem } from './types'
 
 const { settings, logger } = defineBlokkliFeature({
   id: 'clipboard',
@@ -152,7 +153,7 @@ function onSelectDropdownItem(item: DropdownItem) {
 
 const ALLOWED_HTML_ATTRIBUTES = ['href']
 
-const _MOCK: ClipboardItem[] = [
+const _MOCK: BlokkliClipboardItem[] = [
   {
     type: 'text',
     id: generateUUID(),
@@ -197,7 +198,7 @@ const _MOCK: ClipboardItem[] = [
   },
 ]
 
-const pastedItems = ref<ClipboardItem[]>([])
+const pastedItems = ref<BlokkliClipboardItem[]>([])
 
 const onFileInput = (e: Event) => {
   e.preventDefault()

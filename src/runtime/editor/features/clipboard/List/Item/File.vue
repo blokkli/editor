@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import { computed } from '#imports'
-import type { ClipboardItemFile } from '#blokkli/types'
+import type { ClipboardItemFile } from '../../types';
 
 const props = defineProps<ClipboardItemFile>()
 

@@ -1,7 +1,6 @@
 import mitt, { type Emitter } from 'mitt'
 import type {
   BlokkliFieldElement,
-  ClipboardItem,
   DraggableExistingBlock,
   DraggableHostData,
   DraggableItem,
@@ -15,6 +14,7 @@ import type {
 import type { UpdateBlockOptionEvent } from '../features/options/types'
 import type { LibraryEditItemEvent } from '../features/library/types'
 import type { Coord, Size } from '../types/geometry'
+import type { BlokkliClipboardItem } from '../features/clipboard/types'
 
 export type SelectStartEvent = {
   uuids: string[]
@@ -151,7 +151,7 @@ export type AddNewBlockEvent = {
 }
 
 export type AddClipboardItemEvent = {
-  item: ClipboardItem
+  item: BlokkliClipboardItem
   blockBundle: string
   host: DraggableHostData
   afterUuid: string | null

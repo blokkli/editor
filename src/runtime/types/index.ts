@@ -41,7 +41,6 @@ import type {
   FeatureDefinitionSettingSlider,
 } from './../../shared/types/features'
 
-import type getVideoId from 'get-video-id'
 import type { DefinitionProvider } from '../editor/providers/definition'
 
 import type { DraggableSearchContentItem } from '#blokkli/editor/features/search/types'
@@ -432,52 +431,6 @@ export type MutatedItemProps = {
     | undefined
 }
 
-interface ClipboardItemText {
-  type: 'text'
-  id: string
-  itemBundle: string
-  data: string
-  additional?: string
-}
-
-export interface ClipboardItemVideo {
-  type: 'video'
-  id: string
-  itemBundle: string
-  data: string
-  additional?: string
-  videoService: ReturnType<typeof getVideoId>['service']
-  videoId: string
-}
-
-interface ClipboardItemImage {
-  type: 'image'
-  id: string
-  itemBundle: string
-  data: string
-  additional: string
-  fileName: string
-  fileSize: number
-  fileType: string
-}
-
-export interface ClipboardItemFile {
-  type: 'file'
-  id: string
-  itemBundle: string
-  data: string
-  additional: string
-  fileName: string
-  fileSize: number
-  fileType: string
-}
-
-export type ClipboardItem =
-  | ClipboardItemText
-  | ClipboardItemVideo
-  | ClipboardItemImage
-  | ClipboardItemFile
-
 export interface DraggableHostData {
   type: string
   uuid: string
@@ -731,17 +684,6 @@ export type ProviderDefinitionInput<
   Options extends BlockDefinitionOptionsInput = BlockDefinitionOptionsInput,
   GlobalOptions extends GlobalOptionsKey[] | undefined = undefined,
 > = ProviderDefinitionInputBase<Options, GlobalOptions>
-
-export type TourItem = {
-  id: string
-  title: string
-  text: string
-  element:
-    | HTMLElement
-    | (() => HTMLElement | undefined | null)
-    | undefined
-    | null
-}
 
 export type SelectedRect = Rectangle & {
   uuid: string
