@@ -1,7 +1,6 @@
 import type { ComputedRef } from 'vue'
 import type {
   FieldConfig,
-  BlockBundleDefinition,
   BlockDefinitionInput,
   BlockDefinitionOptionsInput,
   DraggableExistingBlock,
@@ -16,6 +15,7 @@ import type {
   DroppableFieldConfig,
   EditableFieldConfig,
 } from '../features/editable-field/types'
+import type { BlockBundleDefinition } from '../types/definitions'
 
 export type BlokkliBlockType = BlockBundleDefinition & {
   definition:

@@ -1,5 +1,5 @@
 import type { ComputedRef } from 'vue'
-import type { BlockBundleDefinition, FieldConfig } from '../../types'
+import type { FieldConfig } from '../../types'
 import type {
   AddNewBlockEvent,
   EditBlockEvent,
@@ -8,6 +8,7 @@ import type {
 } from '../events'
 import type { PluginConfigInput } from '../types/pluginConfig'
 import type { EntityTranslation, MappedState } from '../types/state'
+import type { BlockBundleDefinition } from '../types/definitions'
 
 export interface MutationResponseLike<T> {
   success: boolean

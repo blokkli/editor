@@ -5,7 +5,6 @@ import {
 import { falsy } from '#blokkli/helpers'
 import { availableFeaturesAtBuild } from '#blokkli-build/features'
 import { operationSources } from '#nuxt-graphql-middleware/sources'
-import type { BlockBundleDefinition } from '#blokkli/types'
 import {
   useGraphqlQuery,
   useGraphqlMutation,
@@ -29,6 +28,7 @@ import type {
 import type { PublishOptions } from '#blokkli/editor/features/publish/types'
 import type { PluginConfigInput } from '#blokkli/editor/types/pluginConfig'
 import type { TranslationState } from '#blokkli/editor/types/state'
+import type { BlockBundleDefinition } from '#blokkli/editor/types/definitions'
 
 type DrupalAdapter = BlokkliAdapter<ParagraphsBlokkliEditStateFragment>
 

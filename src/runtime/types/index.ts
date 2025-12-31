@@ -283,16 +283,6 @@ export type BlokkliProviderEntityContext = {
 
 export type EditPermission = 'view' | 'edit' | 'review'
 
-export interface BlockBundleDefinition {
-  id: string
-  label: string
-  description?: string
-  allowReusable?: boolean
-  isTranslatable?: boolean
-  hasPublishOn?: boolean
-  hasUnpublishOn?: boolean
-}
-
 export type EditMode = 'readonly' | 'editing' | 'translating' | 'review'
 
 export type MutatedOptions = {
