@@ -23,7 +23,7 @@ import type {
 
 import type { GlobalOptionsType } from '#blokkli-build/definitions'
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import type { BlokkliProviderEntityContext } from '.'
+import type { BlokkliProviderEntityContext } from './provider'
 
 type GetType<T> = T extends { options: infer O }
   ? T extends { type: 'checkboxes' }

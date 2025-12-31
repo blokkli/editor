@@ -81,10 +81,9 @@ import {
   INJECT_PROVIDER_CONTEXT,
 } from '../helpers/injections'
 import type {
-  BlokkliProviderEntityContext,
-  EditPermission,
   EntityContext,
 } from '#blokkli/types'
+import type { BlokkliProviderEntityContext, EditPermission } from '#blokkli/types/provider';
 
 type BlokkliProviderProps = {
   /**

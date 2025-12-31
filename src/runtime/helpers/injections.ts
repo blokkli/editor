@@ -1,9 +1,5 @@
 import type { InjectionKey, ComputedRef, Component } from 'vue'
-import type {
-  BlokkliProviderEntityContext,
-  EntityContext,
-  ItemEditContext,
-} from './../types'
+import type { EntityContext } from './../types'
 import type { DebugLogger } from '#blokkli/editor/providers/debug'
 import type {
   FieldListItemTyped,
@@ -14,9 +10,22 @@ import type { BlokkliApp } from '#blokkli/editor/types/app'
 import type {
   MutatedField,
   MutatedItemProps,
+  MutatedOptions,
 } from '#blokkli/editor/types/state'
 import type { DefineBlokkliContext } from '#blokkli/types/definitions'
 import type { InjectedBlokkliItem } from '#blokkli/types/field'
+import type { Eventbus } from '#blokkli/editor/events'
+import type { DomProvider } from '#blokkli/editor/providers/dom'
+import type { DefinitionProvider } from '#blokkli/editor/providers/definition'
+import type { BlokkliProviderEntityContext } from '#blokkli/types/provider'
+
+type ItemEditContext = {
+  eventBus: Eventbus
+  mutatedOptions: MutatedOptions
+  dom?: DomProvider
+  definitions: DefinitionProvider
+  useBlockRegistration?: (dom: DomProvider, uuid: string) => void
+}
 
 export const INJECT_APP = Symbol('blokkli_app') as InjectionKey<BlokkliApp>
 

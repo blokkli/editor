@@ -10,7 +10,6 @@ import {
   INJECT_REUSABLE_UUID,
 } from '../helpers/injections'
 import { computed, inject } from '#imports'
-import type { BlokkliProviderEntityContext } from '#blokkli/types'
 import type {
   FieldListItemTyped,
   GlobalOptionsKey,
@@ -31,6 +30,7 @@ import type {
   BundleKey,
   DefineBlokkliContext,
 } from '#blokkli/types/definitions'
+import type { BlokkliProviderEntityContext } from '#blokkli/types/provider'
 
 /**
  * Define a blokkli component.

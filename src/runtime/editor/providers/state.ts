@@ -11,7 +11,7 @@ import { refreshNuxtData, useState } from 'nuxt/app'
 import type { BlokkliAdapter, AdapterContext } from '../adapter'
 import { INJECT_MUTATED_FIELDS_MAP } from '../../helpers/injections'
 import { onBlokkliEvent, addElementClasses } from '#blokkli/editor/composables'
-import type { FieldListItem, EditPermission } from '#blokkli/types'
+import type { FieldListItem } from '#blokkli/types'
 import { falsy, getFieldKey } from '#blokkli/helpers'
 import { emitMessage, type BlokkliEventBus } from '#blokkli/editor/events'
 import { nextTick } from '#imports'
@@ -30,6 +30,7 @@ import type {
   TranslationState,
   Validation,
 } from '../types/state'
+import type { EditPermission } from '#blokkli/types/provider'
 
 const HOST_OPTION_KEY = 'HOST'
 

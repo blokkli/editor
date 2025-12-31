@@ -31,8 +31,8 @@ import {
   useTemplateRef,
 } from '#imports'
 import '#blokkli-build/styles.css'
-import type { EditPermission } from '#blokkli/types'
 import { useAnimationFrame } from '#blokkli/editor/composables'
+import type { EditPermission } from '#blokkli/types/provider'
 
 type IndicatorData = {
   key: string
