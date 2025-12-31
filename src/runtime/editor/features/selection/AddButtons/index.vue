@@ -40,7 +40,6 @@ import {
   determineCanAddChildren,
 } from '#blokkli/editor/helpers/dropTargets'
 import type {
-  AddAction,
   BlokkliFieldElement,
   DraggableHostData,
   RenderedFieldListItem,
@@ -51,6 +50,7 @@ import { isInternalBundle } from '#blokkli/editor/helpers/bundles'
 import Renderer from './Renderer/index.vue'
 import { itemEntityType } from '#blokkli-build/config'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
+import type { AddAction } from '#blokkli/editor/types/actions'
 
 const props = defineProps<{
   items: RenderedFieldListItem[]

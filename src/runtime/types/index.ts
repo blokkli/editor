@@ -118,12 +118,6 @@ export type BlokkliFieldElement = {
 
 export type FieldDropAlignment = 'vertical' | 'horizontal'
 
-export type ActionPlacedData = {
-  preceedingUuid: string | null
-  host: DraggableHostData
-  field: BlokkliFieldElement
-}
-
 export type InteractionMode = 'mouse' | 'touch'
 
 export type StructureDragStart = {
@@ -189,19 +183,6 @@ export type BlockIndicator = {
   uuid: string
   element: HTMLElement
   position: 'left' | 'right'
-}
-
-export type AddActionColor = 'rose' | 'lime' | 'accent'
-
-export type AddAction = {
-  id: string
-  icon: BlokkliIcon
-  color: AddActionColor
-  itemBundle?: string
-  title: string
-  description?: string
-  callback: (action: ActionPlacedData) => void
-  enabled?: (item: RenderedFieldListItem) => boolean
 }
 
 export type BlockEditContext = {

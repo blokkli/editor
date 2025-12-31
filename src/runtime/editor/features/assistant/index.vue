@@ -7,12 +7,12 @@
 </template>
 
 <script lang="ts" setup>
-import type { ActionPlacedData } from '#blokkli/types'
 import { useBlokkli, defineBlokkliFeature, ref } from '#imports'
 import { BlokkliTransition } from '#blokkli/editor/components'
 import Overlay from './Overlay/index.vue'
 import { defineAddAction } from '#blokkli/editor/composables'
 import type { AssistantResult } from './types'
+import type { ActionPlacedData } from '#blokkli/editor/types/actions'
 
 const { adapter } = defineBlokkliFeature({
   id: 'assistant',

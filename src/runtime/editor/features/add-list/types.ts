@@ -1,4 +1,4 @@
-import type { AddAction } from '#blokkli/types'
+import type { AddAction } from '#blokkli/editor/types/actions'
 
 export interface DraggableActionItem {
   itemType: 'action'

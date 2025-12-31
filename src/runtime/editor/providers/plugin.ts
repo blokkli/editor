@@ -1,6 +1,6 @@
-import type { AddAction } from '#blokkli/types'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { ref } from '#imports'
+import type { AddAction } from '../types/actions'
 
 type PluginAddFunction<T> = () => T | T[] | undefined
 type AddActionFunction = PluginAddFunction<AddAction>
