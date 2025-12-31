@@ -19,11 +19,11 @@
 
 <script lang="ts" setup>
 import { computed, ref, useBlokkli } from '#imports'
-import type { CommentItem } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
 import { getBounds } from '#blokkli/editor/helpers/geometry'
 import Item from './Item/index.vue'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
+import type { CommentItem } from '../types'
 
 type Indicator = {
   id: string

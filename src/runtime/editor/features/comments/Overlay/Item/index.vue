@@ -66,10 +66,10 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
-import type { CommentItem } from '#blokkli/types'
 import { Icon } from '#blokkli/editor/components'
 import Comment from './../../Comment/index.vue'
 import CommentInput from './../../CommentInput/index.vue'
+import type { CommentItem } from '../../types'
 
 const { $t, storage } = useBlokkli()
 

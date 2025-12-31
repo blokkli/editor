@@ -2,10 +2,8 @@ import type { ComputedRef } from 'vue'
 import type {
   FieldConfig,
   BlockBundleDefinition,
-  EditableFieldConfig,
   BlockDefinitionInput,
   BlockDefinitionOptionsInput,
-  DroppableFieldConfig,
   DraggableExistingBlock,
   EntityContext,
 } from '../../types'
@@ -14,6 +12,10 @@ import type { SelectionProvider } from './selection'
 import { computed } from '#imports'
 import { onlyUnique } from '../../helpers'
 import { itemEntityType } from '#blokkli-build/config'
+import type {
+  DroppableFieldConfig,
+  EditableFieldConfig,
+} from '../features/editable-field/types'
 
 export type BlokkliBlockType = BlockBundleDefinition & {
   definition:

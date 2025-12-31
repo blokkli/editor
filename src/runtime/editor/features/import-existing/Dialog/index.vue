@@ -67,8 +67,9 @@ import {
   Pagination,
   FormCheckboxes,
 } from '#blokkli/editor/components'
-import type { ImportItem, PluginConfigInput } from '#blokkli/types'
+import type { PluginConfigInput } from '#blokkli/types'
 import type { AdapterSearchArguments } from '#blokkli/editor/adapter'
+import type { ImportItem } from '../types'
 
 const { adapter, $t, types, context } = useBlokkli()
 

@@ -1,45 +1,17 @@
 import type { ComputedRef } from 'vue'
 import type {
-  CommentItem,
-  ConversionItem,
   MappedState,
-  ImportItem,
-  LibraryItem,
   BlockBundleDefinition,
   EntityTranslation,
-  SearchContentItem,
-  AddClipboardItemEvent,
-  AddNewBlockEvent,
-  AddReusableItemEvent,
-  ImportFromExistingEvent,
-  MakeReusableEvent,
-  MoveMultipleBlocksEvent,
-  MoveBlockEvent,
-  UpdateBlockOptionEvent,
-  AddContentSearchItemEvent,
-  TransformPlugin,
-  EditBlockEvent,
-  PasteExistingBlocksEvent,
-  UpdateFieldValueEvent,
-  AssistantResult,
-  DraggableHostData,
-  DetachReusableBlockEvent,
   FieldConfig,
-  EditableFieldConfig,
-  DraggableMediaLibraryItem,
-  DroppableFieldConfig,
-  PublishOptions,
-  GetEditStatesItem,
-  UpdateHostOptionEvent,
-  HostTransformPlugin,
-  PluginConfigInputItem,
   PluginConfigInput,
 } from '../../types'
-import type getVideoId from 'get-video-id'
-import type { GetMediaLibraryFunction } from './../features/media-library/types'
-import type { Analyzer } from '#blokkli/analyzer/types'
-
-export type { GetMediaLibraryFunction }
+import type {
+  AddNewBlockEvent,
+  EditBlockEvent,
+  MoveBlockEvent,
+  MoveMultipleBlocksEvent,
+} from '../events'
 
 export interface MutationResponseLike<T> {
   success: boolean
@@ -47,81 +19,9 @@ export interface MutationResponseLike<T> {
   errors?: string[]
 }
 
-type AdapterApplyTransformPlugin = {
-  pluginId: string
-  uuids: string[]
-  config?: PluginConfigInputItem[]
-}
-
-type AdapterApplyHostTransformPlugin = {
-  pluginId: string
-  config?: PluginConfigInputItem[]
-}
-
 export type UpdateEntityFieldValueEvent = {
   fieldName: string
   fieldValue: string
-}
-
-export type AdapterFragmentsAddBlock = {
-  name: string
-  host: DraggableHostData
-  preceedingUuid: string | null
-}
-
-export type MediaLibraryAddBlockEvent = {
-  host: DraggableHostData
-  preceedingUuid: string | null
-  item: DraggableMediaLibraryItem
-  targetBundle: string
-}
-
-export type MediaLibraryAddBlocksEvent = {
-  host: DraggableHostData
-  preceedingUuid: string | null
-  targetBundle: string
-  items: DraggableMediaLibraryItem[]
-}
-
-export type MediaLibraryReplaceMediaEvent = {
-  /**
-   * The UUID of the block on which the media was dropped.
-   */
-  host: DraggableHostData
-
-  /**
-   * The ID of the media that was dropped.
-   */
-  mediaId: string
-}
-
-type AdapterAssistantAddBlockFromResult = {
-  result: AssistantResult
-  host: DraggableHostData
-  preceedingUuid: string | null
-}
-
-type AdapterAssistantGetResultsCreate = {
-  type: 'create'
-  prompt: string
-}
-
-type AdapterAssistantGetResultsEdit = {
-  type: 'edit'
-  /**
-   * The text that should be edited.
-   */
-  text: string
-  prompt: string
-}
-
-type AdapterAssistantGetResults =
-  | AdapterAssistantGetResultsCreate
-  | AdapterAssistantGetResultsEdit
-
-type AdapterBuildEditableFrameUrl = {
-  fieldName: string
-  uuid?: string
 }
 
 type AdapterFormFrameBuilderResult = {
@@ -172,41 +72,6 @@ export interface AdapterContext {
   language: string
 }
 
-export type ClipboardMapBundleEventPlaintext = {
-  type: 'plaintext'
-  text: string
-}
-
-export type ClipboardMapBundleEventImage = {
-  type: 'image'
-  fileType: string
-  fileSize: number
-}
-
-export type ClipboardMapBundleEventFile = {
-  type: 'file'
-  fileType: string
-  fileSize: number
-}
-
-export type ClipboardMapBundleEventVideo = {
-  type: 'video'
-  videoService: ReturnType<typeof getVideoId>['service']
-  videoId: string
-}
-
-export type ClipboardMapBundleEvent =
-  | ClipboardMapBundleEventVideo
-  | ClipboardMapBundleEventImage
-  | ClipboardMapBundleEventFile
-  | ClipboardMapBundleEventPlaintext
-
-export type BlokkliAdapterGetLibraryItemsData = {
-  bundles: string[]
-  page: number
-  filters: Record<string, any>
-}
-
 export type BlokkliAdapterSearchResults<T> = {
   items: T[]
   total: number
@@ -217,102 +82,6 @@ export type BlokkliAdapterSearchResults<T> = {
 export type AdapterSearchArguments = {
   page: number
   filters: Record<string, any>
-}
-
-export type BlokkliAdapterGetLibraryItemsResult =
-  BlokkliAdapterSearchResults<LibraryItem>
-
-export type BlokkliAdapterGetImportItemsResult =
-  BlokkliAdapterSearchResults<ImportItem>
-
-export type BlokkliAdapterGetEditStatesResult =
-  BlokkliAdapterSearchResults<GetEditStatesItem>
-
-export type BlokkliAdapterPublishOptions = {
-  /**
-   * The host entity type.
-   */
-  hostEntityType: string
-
-  /**
-   * The host entity UUID.
-   */
-  hostEntityUuid: string
-
-  /**
-   * Whether the editor will be closed after publishing.
-   *
-   * If false, the adapter should return an empty state again, so that the
-   * editor UI shows the correct state (no pending changes).
-   * If true, the adapter may return no state at all, since the editor will
-   * be closed anyway after publishing.
-   */
-  closeAfterPublish?: boolean
-
-  /**
-   * If the host entity is currently unpublished, publish it.
-   */
-  publishIfUnpublished?: boolean
-
-  /**
-   * The revision log message.
-   */
-  revisionLogMessage?: string
-}
-
-export type BlokkliAdapterScheduleOptions = {
-  /**
-   * The host entity type.
-   */
-  hostEntityType: string
-
-  /**
-   * The host entity UUID.
-   */
-  hostEntityUuid: string
-
-  /**
-   * The revision log message.
-   */
-  revisionLogMessage?: string
-
-  /**
-   * The date and time when the edit state should be published.
-   */
-  date: string
-}
-
-export type BlokkliAdapterSetBlockScheduleOptions = {
-  /**
-   * The UUID of the block.
-   */
-  uuid: string
-
-  /**
-   * The schedule type.
-   */
-  type: 'publish' | 'unpublish'
-
-  /**
-   * The date. If empty, remove the schedule date.
-   */
-  date?: string
-}
-
-export type BlokkliAdapterUnscheduleBlockOptions = {
-  uuid: string
-}
-
-export type BlokkliAdapterUnscheduleOptions = {
-  /**
-   * The host entity type.
-   */
-  hostEntityType: string
-
-  /**
-   * The host entity UUID.
-   */
-  hostEntityUuid: string
 }
 
 export interface BlokkliAdapter<T> {
@@ -353,108 +122,9 @@ export interface BlokkliAdapter<T> {
   getFieldConfig(): Promise<FieldConfig[]>
 
   /**
-   * Get the editable field configurations.
-   */
-  getEditableFieldConfig?: () => Promise<EditableFieldConfig[]>
-
-  /**
-   * Get the droppable field configurations.
-   */
-  getDroppableFieldConfig?: () => Promise<DroppableFieldConfig[]>
-
-  /**
-   * Get all possible conversions.
-   */
-  getConversions?: () => Promise<ConversionItem[]>
-
-  /**
-   * Convert multiple items.
-   */
-  convertBlocks?: (
-    uuids: string[],
-    targetBundle: string,
-  ) => Promise<MutationResponseLike<T>>
-
-  /**
-   * Get all possible transform plugins.
-   */
-  getTransformPlugins?: () => Promise<TransformPlugin[]>
-
-  /**
-   * Get all possible host transform plugins.
-   */
-  getHostTransformPlugins?: () => Promise<HostTransformPlugin[]>
-
-  /**
-   * Apply a transform plugin.
-   */
-  applyTransformPlugin?: (
-    e: AdapterApplyTransformPlugin,
-  ) => Promise<MutationResponseLike<T>>
-
-  /**
-   * Preview the output of a transform plugin.
-   *
-   * The transform plugin is expected to apply its transform without actually
-   * persisting it and not creating any side effects.
-   *
-   * It must produce the same result when called for the "final"
-   * transformation that is added to the edit state.
-   */
-  previewTransformPlugin?: (
-    e: AdapterApplyTransformPlugin,
-  ) => Promise<MutationResponseLike<T>>
-
-  /**
-   * Apply a host transform plugin.
-   */
-  applyHostTransformPlugin?: (
-    e: AdapterApplyHostTransformPlugin,
-  ) => Promise<MutationResponseLike<T>>
-
-  /**
-   * Preview the output of a host transform plugin.
-   *
-   * The transform plugin is expected to apply its transform without actually
-   * persisting it and not creating any side effects.
-   *
-   * It must produce the same result when called for the "final"
-   * transformation that is added to the edit state.
-   */
-  previewHostTransformPlugin?: (
-    e: AdapterApplyHostTransformPlugin,
-  ) => Promise<MutationResponseLike<T>>
-
-  /**
    * Add a new block.
    */
   addNewBlock(e: AddNewBlockEvent): Promise<MutationResponseLike<T>>
-
-  /**
-   * Update multiple options.
-   */
-  updateOptions?: (
-    options: UpdateBlockOptionEvent[],
-  ) => Promise<MutationResponseLike<T>>
-
-  /**
-   * Update multiple host options.
-   */
-  updateHostOptions?: (
-    options: UpdateHostOptionEvent[],
-  ) => Promise<MutationResponseLike<T>>
-
-  /**
-   * Determine the block bundle for the given clipboard item.
-   */
-  clipboardMapBundle?: (e: ClipboardMapBundleEvent) => string | undefined | null
-
-  /**
-   * Add a clipboard item.
-   */
-  addBlockFromClipboardItem?: (
-    e: AddClipboardItemEvent,
-  ) => Promise<MutationResponseLike<T>> | undefined
 
   /**
    * Move an item.
@@ -469,185 +139,9 @@ export interface BlokkliAdapter<T> {
   ): Promise<MutationResponseLike<T>>
 
   /**
-   * Add a reusable item.
-   */
-  addLibraryItem?: (e: AddReusableItemEvent) => Promise<MutationResponseLike<T>>
-
-  /**
-   * Build the URL to edit a library item.
-   */
-  getLibraryItemEditUrl?: (uuid: string) => string
-
-  /**
-   * Delete multiple items.
-   */
-  deleteBlocks?: (uuids: string[]) => Promise<MutationResponseLike<T>>
-
-  /**
-   * Duplicate blocks.
-   */
-  duplicateBlocks?: (uuids: string[]) => Promise<MutationResponseLike<T>>
-
-  /**
-   * Paste existing blocks.
-   */
-  pasteExistingBlocks?: (
-    e: PasteExistingBlocksEvent,
-  ) => Promise<MutationResponseLike<T>>
-
-  /**
-   * Get all existing entities for importing.
-   */
-  getImportItems?: (
-    e: AdapterSearchArguments,
-  ) => Promise<BlokkliAdapterGetImportItemsResult>
-
-  /**
-   * Import items from an existing entity.
-   */
-  importFromExisting?: (
-    e: ImportFromExistingEvent,
-  ) => Promise<MutationResponseLike<T>>
-
-  /**
-   * Revert all changes to the last published state.
-   */
-  revertAllChanges?: () => Promise<MutationResponseLike<T>>
-
-  /**
-   * Publish all changes.
-   */
-  publish?: (
-    options: BlokkliAdapterPublishOptions,
-  ) => Promise<MutationResponseLike<T | undefined | null>>
-
-  /**
-   * Schedule an edit state.
-   */
-  scheduleEditState?: (
-    options: BlokkliAdapterScheduleOptions,
-  ) => Promise<MutationResponseLike<T | undefined | null>>
-
-  /**
-   * Unschedule an already scheduled edit state.
-   */
-  unscheduleEditState?: (
-    options: BlokkliAdapterUnscheduleOptions,
-  ) => Promise<MutationResponseLike<T | undefined | null>>
-
-  /**
-   * Schedule a block.
-   */
-  setBlockScheduleDate?: (
-    blocks: BlokkliAdapterSetBlockScheduleOptions[],
-  ) => Promise<MutationResponseLike<T | undefined | null>>
-
-  /**
-   * Set a specific history index.
-   */
-  setHistoryIndex?: (index: number) => Promise<MutationResponseLike<T>>
-
-  /**
-   * Set the status of a mutation item.
-   */
-  setMutationItemStatus?: (
-    index: number,
-    status: boolean,
-  ) => Promise<MutationResponseLike<T>>
-
-  /**
-   * Take ownership of the edit state.
-   */
-  takeOwnership?: () => Promise<MutationResponseLike<T>>
-
-  /**
-   * Load all comments.
-   */
-  loadComments?: () => Promise<CommentItem[]>
-
-  /**
-   * Add a comment to one or more items.
-   */
-  addComment?: (blockUuids: string[], body: string) => Promise<CommentItem[]>
-
-  /**
-   * Resolve a comment.
-   */
-  resolveComment?: (uuid: string) => Promise<CommentItem[]>
-
-  /**
-   * Get the publish options.
-   */
-  getPublishOptions?: () => Promise<PublishOptions>
-
-  /**
-   * Search for edit states.
-   */
-  getEditStates?: (page?: number) => Promise<BlokkliAdapterGetEditStatesResult>
-
-  /**
-   * Make an item reusable.
-   */
-  makeBlockReusable?: (e: MakeReusableEvent) => Promise<MutationResponseLike<T>>
-
-  /**
-   * Detach a reusable block and add a copy of it in place.
-   */
-  detachReusableBlock?: (
-    e: DetachReusableBlockEvent,
-  ) => Promise<MutationResponseLike<T>>
-
-  /**
-   * Get all library items.
-   */
-  getLibraryItems?: (
-    data: BlokkliAdapterGetLibraryItemsData,
-  ) => Promise<BlokkliAdapterGetLibraryItemsResult>
-
-  /**
    * Get the last changed timestamp for the edit state.
    */
   getLastChanged?: () => Promise<number>
-
-  /**
-   * Get the shareable preview URL.
-   *
-   * This should return a URL that can be used to bypass logins, using a token or similar, that can be shared with non-editing people.
-   */
-  getPreviewGrantUrl?: () =>
-    | Promise<string | undefined | null>
-    | string
-    | undefined
-    | null
-
-  /**
-   * Return the possible content search tabs.
-   */
-  getContentSearchTabs?: () =>
-    | Record<string, string>
-    | Promise<Record<string, string>>
-
-  /**
-   * Return items for the "content" search.
-   *
-   * Should only return a limited amount of results, sorted by relevance.
-   */
-  getContentSearchResults?: (
-    tab: string,
-    text: string,
-  ) => Promise<SearchContentItem[]>
-
-  /**
-   * Add the dropped item from a search content item.
-   */
-  addContentSearchItem?: (
-    e: AddContentSearchItemEvent,
-  ) => Promise<MutationResponseLike<T>> | undefined
-
-  /**
-   * Change the language.
-   */
-  changeLanguage?: (translation: EntityTranslation) => Promise<any>
 
   /**
    * Build the URL for forms.
@@ -655,103 +149,6 @@ export interface BlokkliAdapter<T> {
   formFrameBuilder?: (
     e: AdapterFormFrameBuilder,
   ) => AdapterFormFrameBuilderResult | undefined
-
-  /**
-   * Update the value of a single block field.
-   */
-  updateFieldValue?: (
-    e: UpdateFieldValueEvent,
-  ) => Promise<MutationResponseLike<T>> | undefined
-
-  /**
-   * Update the value of a single entity field.
-   */
-  updateEntityFieldValue?: (
-    e: UpdateEntityFieldValueEvent,
-  ) => Promise<MutationResponseLike<T>> | undefined
-
-  /**
-   * Build the iframe URL for an editable of type "frame".
-   */
-  buildEditableFrameUrl?: (
-    e: AdapterBuildEditableFrameUrl,
-  ) => string | undefined
-
-  /**
-   * Get the result for an assistant query.
-   */
-  assistantGetResults?: (
-    e: AdapterAssistantGetResults,
-  ) => Promise<AssistantResult | undefined>
-
-  /**
-   * Add one or more blocks from the given assistant result.
-   */
-  assistantAddBlockFromResult?: (
-    e: AdapterAssistantAddBlockFromResult,
-  ) => Promise<MutationResponseLike<T>> | undefined
-
-  /**
-   * Return the HTML markup for displaying the grid.
-   */
-  getGridMarkup?: () => Promise<string> | string
-
-  /**
-   * Return the media library results and filters using the given selected filter.
-   */
-  mediaLibraryGetResults?: GetMediaLibraryFunction
-
-  /**
-   * Create a new block from the given media library item.
-   */
-  mediaLibraryAddBlock?: (
-    e: MediaLibraryAddBlockEvent,
-  ) => Promise<MutationResponseLike<T>> | undefined
-
-  /**
-   * Create new blocks from the given media library items.
-   */
-  mediaLibraryAddBlocks?: (
-    e: MediaLibraryAddBlocksEvent,
-  ) => Promise<MutationResponseLike<T>> | undefined
-
-  /**
-   * Replace an existing media from a block with a new one.
-   *
-   * This method is called when the user drag and drops an item from the media
-   * library onto an v-blokkli-droppable element.
-   */
-  mediaLibraryReplaceMedia?: (
-    e: MediaLibraryReplaceMediaEvent,
-  ) => Promise<MutationResponseLike<T>> | undefined
-
-  /**
-   * Replace an existing media on a field of the page entity.
-   *
-   * This method is called when the user drag and drops an item from the media
-   * library onto an v-blokkli-droppable element where the host is the page entity..
-   */
-  mediaLibraryReplaceEntityMedia?: (
-    e: MediaLibraryReplaceMediaEvent,
-  ) => Promise<MutationResponseLike<T>> | undefined
-
-  /**
-   * Add a fragment block.
-   */
-  fragmentsAddBlock?: (
-    e: AdapterFragmentsAddBlock,
-  ) => Promise<MutationResponseLike<T>> | undefined
-
-  /**
-   * Build the link that is copied to the clipboard when clicking on an "anchor link" indicator.
-   */
-  buildAnchorLink?: (id: string, uuid: string) => string
-
-  getAnalyzers?: () =>
-    | Analyzer
-    | Analyzer[]
-    | Promise<Analyzer>
-    | Promise<Analyzer[]>
 
   userSettings?: {
     /**

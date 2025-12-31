@@ -21,8 +21,8 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
-import type { CommentItem } from '#blokkli/types'
 import { Icon, RelativeTime } from '#blokkli/editor/components'
+import type { CommentItem } from '../types';
 
 const { adapter, $t } = useBlokkli()
 

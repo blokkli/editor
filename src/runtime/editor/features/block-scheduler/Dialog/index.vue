@@ -67,12 +67,12 @@
 </template>
 
 <script setup lang="ts">
-import type { BlokkliAdapterSetBlockScheduleOptions } from '#blokkli/editor/adapter'
 import { falsy } from '#blokkli/helpers'
 import { computed, useBlokkli, ref, watch } from '#imports'
 import ScheduleSection from './ScheduleSection.vue'
 import type { ScheduleItemData } from './ScheduleSection.vue'
 import { DialogModal } from '#blokkli/editor/components'
+import type { BlokkliAdapterSetBlockScheduleOptions } from '../types'
 
 const props = defineProps<{
   uuids: string[]

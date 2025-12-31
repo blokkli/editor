@@ -1,5 +1,4 @@
 import type { ComputedRef } from 'vue'
-import type { Emitter } from 'mitt'
 import type { DomProvider } from '../editor/providers/dom'
 import type { StorageProvider } from '../editor/providers/storage'
 import type { BlockDefinitionProvider } from '../editor/providers/types'
@@ -12,7 +11,7 @@ import type { IconsProvider } from '../editor/providers/icons'
 import type { DirectiveProvider } from '../editor/providers/directive'
 import type { TextProvider } from '../editor/providers/texts'
 import type { PluginProvider } from '../editor/providers/plugin'
-import type { eventBus } from '../editor/events'
+import type { Eventbus, eventBus } from '../editor/events'
 import type { BlockOptionDefinition } from './blockOptions'
 import type {
   BlokkliAdapter,
@@ -65,6 +64,9 @@ import type { IndicatorsProvider } from '../editor/providers/indicators'
 import type { BlocksProvider } from '#blokkli/editor/providers/blocks'
 import type { FieldsProvider } from '#blokkli/editor/providers/fields'
 import type { ElementProvider } from '#blokkli/editor/providers/element'
+import type { DraggableSearchContentItem } from '#blokkli/editor/features/search/types'
+import type { DraggableMediaLibraryItem } from '#blokkli/editor/features/media-library/types'
+import type { PublishOptions } from '#blokkli/editor/features/publish/types'
 
 export type { BlokkliDefinitionAddBehaviour }
 export type { FeatureDefinitionSettingCheckbox, FeatureDefinitionSettingSlider }
@@ -293,18 +295,6 @@ export type FieldConfig = {
   allowedBundles: string[]
 }
 
-export type EditableFieldType = 'plain' | 'markup' | 'table' | 'frame'
-
-export type EditableFieldConfig = {
-  name: string
-  entityType: string
-  entityBundle: string
-  label: string
-  type: EditableFieldType
-  required: boolean
-  maxLength: number
-}
-
 export type EntityContext = {
   uuid: string
   type: string
@@ -344,11 +334,6 @@ export interface TranslationState {
   sourceLanguage?: string | null
   availableLanguages?: Language[]
   translations?: EntityTranslation[]
-}
-
-export interface ConversionItem {
-  sourceBundle: string
-  targetBundle: string
 }
 
 export type PluginConfigInputText = {
@@ -401,99 +386,9 @@ export type PluginConfigInput =
   | PluginConfigInputCheckbox
   | PluginConfigInputOptions
 
-export interface TransformPlugin {
-  /**
-   * The ID of the plugin.
-   */
-  id: string
-
-  /**
-   * The label of the transform plugin which is shown in the editor.
-   */
-  label: string
-
-  /**
-   * The array of bundles for which this transform plugin is available.
-   */
-  bundles: string[]
-
-  /**
-   * The array of bundles that the transform might create.
-   */
-  targetBundles?: string[]
-
-  /**
-   * The minimum number of items required.
-   */
-  min: number
-
-  /**
-   * The maximum number of items.
-   */
-  max: number
-
-  configInputs?: PluginConfigInput[]
-
-  description?: string
-
-  /**
-   * Whether the transform plugin supports previewing the changes first.
-   *
-   * If true, the plugin is expected to to defer producing any side effects
-   * to when it's executed in non-preview mode.
-   */
-  preview?: boolean
-}
-
 export type PluginConfigInputItem = {
   name: string
   value: string
-}
-
-export interface HostTransformPlugin {
-  /**
-   * The ID of the plugin.
-   */
-  id: string
-
-  /**
-   * The label of the transform plugin which is shown in the editor.
-   */
-  label: string
-
-  configInputs?: PluginConfigInput[]
-
-  description?: string
-
-  /**
-   * Whether the transform plugin supports previewing the changes first.
-   *
-   * If true, the plugin is expected to to defer producing any side effects
-   * to when it's executed in non-preview mode.
-   */
-  preview?: boolean
-}
-
-export interface LibraryItem {
-  uuid: string
-  label?: string
-  bundle: string
-  item: FieldListItem
-}
-
-export interface ImportItem {
-  uuid: string
-  label: string
-  description?: string
-}
-
-export type CommentItem = {
-  uuid: string
-  blockUuids: string[]
-  resolved: boolean
-  body: string
-  created: string | number
-  user: { label: string }
 }
 
 export interface MutationItem {
@@ -553,51 +448,6 @@ export type MutatedItemProps = {
         [key: string]: string
       }
     | undefined
-}
-
-/**
- * Defines a content search item.
- */
-export type SearchContentItem = {
-  /**
-   * The ID of the item.
-   */
-  id: string
-
-  /**
-   * The entity type of the item.
-   */
-  entityType: string
-
-  /**
-   * The entity bundle of the item.
-   */
-  entityBundle: string
-
-  /**
-   * The title displayed to the user.
-   */
-  title: string
-
-  /**
-   * The possible bundles for which a block may be added using this content item.
-   */
-  targetBundles: string[]
-
-  /**
-   * Additional context displayed alongside the title.
-   */
-  context?: string
-
-  /**
-   * The text displayed to the user.
-   */
-  text?: string
-
-  /**
-   * An optional image URL that is used instead of an icon.
-   */
-  imageUrl?: string
 }
 
 interface ClipboardItemText {
@@ -727,21 +577,6 @@ export interface DraggableClipboardItem {
   clipboardId: string
 }
 
-export interface DraggableSearchContentItem {
-  itemType: 'search_content'
-  element: () => HTMLElement
-  itemBundles: string[]
-  searchItem: SearchContentItem
-}
-
-export interface DraggableMediaLibraryItem {
-  itemType: 'media_library'
-  element: () => HTMLElement
-  itemBundles: string[]
-  mediaId: string
-  mediaBundle: string
-}
-
 export type DraggableItem =
   | DraggableClipboardItem
   | DraggableNewItem
@@ -751,80 +586,6 @@ export type DraggableItem =
   | DraggableReusableItem
   | DraggableSearchContentItem
   | DraggableMediaLibraryItem
-
-export type MoveBlockEvent = {
-  afterUuid: string | null
-  item: DraggableExistingBlock
-  host: DraggableHostData
-}
-
-export type MoveMultipleBlocksEvent = {
-  afterUuid: string | null
-  uuids: string[]
-  host: DraggableHostData
-}
-
-export type AddNewBlockEvent = {
-  bundle: string
-  host: DraggableHostData
-  afterUuid: string | null
-}
-
-export type AddClipboardItemEvent = {
-  item: ClipboardItem
-  blockBundle: string
-  host: DraggableHostData
-  afterUuid: string | null
-}
-
-export type AddContentSearchItemEvent = {
-  item: SearchContentItem
-  host: DraggableHostData
-  bundle: string
-  afterUuid: string | null
-}
-
-export type AddReusableItemEvent = {
-  libraryItemUuid: string
-  host: DraggableHostData
-  afterUuid: string | null
-}
-
-export type UpdateBlockOptionEvent = {
-  uuid: string
-  key: string
-  value: string
-}
-
-export type UpdateHostOptionEvent = {
-  key: string
-  value: string
-}
-
-export type EditBlockEvent = {
-  uuid: string
-  bundle: string
-}
-
-export type UpdateMutatedFieldsEvent = {
-  fields: MutatedField[]
-}
-
-type AnimationFrameFieldArea = {
-  key: string
-  name: string
-  label: string
-  isNested: boolean
-  rect: DOMRect
-  isVisible: boolean
-}
-
-export type AnimationFrameEvent = {
-  fieldAreas: AnimationFrameFieldArea[]
-  mouseX: number
-  mouseY: number
-  time: number
-}
 
 export type Message = {
   type: 'success' | 'error' | 'warning'
@@ -844,102 +605,6 @@ export type Coord = {
 }
 
 export type Rectangle = Size & Coord
-
-export type CanvasDrawEvent = {
-  mouseX: number
-  mouseY: number
-  mouseArtboard: Coord
-  artboardOffset: Coord
-  artboardScale: number
-  artboardSize: Size
-  time: number
-  selectedUuids: string[]
-  dpi: number
-}
-
-export type MakeReusableEvent = {
-  label: string
-  uuid: string
-}
-
-export type DetachReusableBlockEvent = {
-  uuids: string[]
-}
-
-export type KeyPressedEvent = {
-  code: string
-  meta: boolean
-  shift: boolean
-  originalEvent: KeyboardEvent
-}
-
-export type TranslateBlockEvent = {
-  uuid: string
-  language: Language
-}
-
-export type ImportFromExistingEvent = {
-  sourceUuid: string
-  sourceFields: string[]
-}
-
-export type ConvertBlockEvent = {
-  uuid: string
-  targetBundle: string
-}
-
-export type ScrollIntoViewEvent =
-  | {
-      uuid: string
-      center?: boolean
-      immediate?: boolean
-    }
-  | {
-      element: HTMLElement
-      center?: boolean
-      immediate?: boolean
-      highlight?: boolean
-    }
-
-export type PluginMountEvent = {
-  type: 'ItemDropdown'
-  id: string
-}
-
-export type PluginUnmountEvent = {
-  type: 'ItemDropdown'
-  id: string
-}
-
-export type EditableFieldFocusEvent = {
-  fieldName: string
-  uuid?: string
-}
-
-export type EditableFieldUpdateEvent = {
-  name: string
-  entityUuid: string
-  value: string
-}
-
-export type BlockAppendEvent = {
-  bundle: string
-  host: DraggableHostData
-  afterUuid: string | null
-}
-
-export type UiResizedEvent = {
-  width: number
-  height: number
-}
-
-export type AnimateElementMode = 'leave' | 'enter'
-
-export type AnimatorAddEvent = {
-  id: string
-  mode: AnimateElementMode
-  height?: number
-}
 
 export type BlokkliFieldElement = {
   key: string
@@ -968,186 +633,10 @@ export type ActionPlacedData = {
 
 export type InteractionMode = 'mouse' | 'touch'
 
-export type DraggableStartEvent = {
-  items: DraggableItem[]
-  coords: Coord
-  mode: InteractionMode
-}
-
-export type GlobalPointerEvent = {
-  /**
-   * The interaction mode.
-   */
-  type: InteractionMode
-
-  /**
-   * The viewport relative x coordinate.
-   */
-  x: number
-
-  /**
-   * The viewport relative y coordinate.
-   */
-  y: number
-
-  /**
-   * The total distance travelled.
-   */
-  distance: number
-}
-
-export type GlobalPointerUpEvent = GlobalPointerEvent & {
-  /**
-   * The total duration in miliseconds from the first click or touch to
-   * the last click or touch.
-   */
-  duration: number
-}
-
-export type SelectStartEvent = {
-  uuids: string[]
-  mode: InteractionMode
-}
-
 export type StructureDragStart = {
   uuid: string
   bundle: string
 }
-
-export type DropTargetEvent = {
-  items: DraggableItem[]
-  field: BlokkliFieldElement
-  host: DraggableHostData
-  preceedingUuid: string | null
-}
-
-export type DropClipboardItemEvent = {
-  id: string
-  blockBundle: string
-  host: DraggableHostData
-  afterUuid: string | null
-}
-
-export type LibraryEditItemEvent = {
-  url: string
-  uuid: string
-  label?: string
-}
-
-export type AnimationFrameBeforeEvent = {
-  time: number
-  mouseX: number
-  mouseY: number
-}
-
-type MultiSelectStartEvent = {
-  x: number
-  y: number
-}
-
-export type EventbusEvents = {
-  select: string | string[]
-  'select:unselect': undefined
-  'select:force': string | string[]
-  'select:host': undefined
-  'select:host:unselect': undefined
-  'multi-select:start': MultiSelectStartEvent
-  'item:edit': EditBlockEvent
-  batchTranslate: undefined
-  'dragging:start': DraggableStartEvent
-  'dragging:drop': DropTargetEvent
-  'dragging:end': undefined
-  'add:block:new': AddNewBlockEvent
-  updateMutatedFields: UpdateMutatedFieldsEvent
-  animationFrame: AnimationFrameEvent
-  message: Message
-  keyPressed: KeyPressedEvent
-  editEntity: undefined
-  translateEntity: EntityTranslation
-  reloadState: undefined
-  reloadEntity: (() => void) | undefined
-  'entity:translated': string
-
-  // Selection.
-  'select:start': SelectStartEvent
-  'select:toggle': string
-  'select:shiftToggle': string
-  'select:end': string[] | undefined
-  'overlay:close': undefined
-
-  // Add action dropped.
-  'item:dropped': undefined
-  'block:append': BlockAppendEvent
-
-  'item:doubleClick': RenderedFieldListItem
-
-  scrollIntoView: ScrollIntoViewEvent
-  'animationFrame:before': AnimationFrameBeforeEvent
-  'animationFrame:after': undefined
-  'canvas:draw': CanvasDrawEvent
-
-  'state:reload:before': undefined
-  'state:reloaded': undefined
-
-  addContentSearchItem: AddContentSearchItemEvent
-  'option:update': UpdateBlockOptionEvent
-
-  /**
-   * Emitted after finishing changing options.
-   */
-  'option:finish-change': undefined
-
-  'plugin:mount': PluginMountEvent
-  'plugin:unmount': PluginUnmountEvent
-
-  'editable:focus': EditableFieldFocusEvent
-  'editable:update': EditableFieldUpdateEvent
-  'editable:save': undefined
-
-  'drop:clipboardItem': DropClipboardItemEvent
-
-  'sidebar:close': undefined
-  'sidebar:open': string
-
-  'action:selected': undefined
-
-  'animator:add': AnimatorAddEvent
-
-  'ui:resized': undefined
-  'add-list:change': undefined
-  'window:clickAway': undefined
-
-  'mouse:down': GlobalPointerEvent
-  'mouse:move': GlobalPointerEvent
-  'mouse:up': GlobalPointerUpEvent
-
-  /**
-   * Emitted when publishing failed.
-   */
-  'publish:failed': undefined
-
-  /**
-   * Show the publish dialog.
-   */
-  'publish:show-dialog': undefined
-
-  /**
-   * Edit a library item.
-   */
-  'library:edit-item': LibraryEditItemEvent
-
-  /**
-   * Emitted when a view option is being toggled.
-   */
-  'view-option:toggle': { id: string }
-
-  /**
-   * An analyze node target was clicked.
-   */
-  'analyze:click-node': { id: string; target: HTMLElement }
-}
-
-export type Eventbus = Emitter<EventbusEvents>
 
 export type ItemEditContext = {
   eventBus: Eventbus
@@ -1192,28 +681,10 @@ export interface BlokkliApp {
   icons: IconsProvider
 }
 
-export type PasteExistingBlocksEvent = {
-  uuids: string[]
-  host: DraggableHostData
-  preceedingUuid: string | null
-}
-
 export type NativeBlokkliEditableBlurEvent = CustomEvent<{
   field: string
   text: string
 }>
-
-export type UpdateFieldValueEvent = {
-  uuid: string
-  fieldName: string
-  fieldValue: string
-}
-
-export type AssistantResultMarkup = {
-  type: 'markup'
-  content: string
-}
-export type AssistantResult = AssistantResultMarkup
 
 export type AdapterMethods = keyof BlokkliAdapter<any>
 
@@ -1337,17 +808,6 @@ export type TourItem = {
     | null
 }
 
-export type DroppableFieldConfig = {
-  name: string
-  label: string
-  entityType: string
-  entityBundle: string
-  allowedEntityType: string
-  allowedBundles: string[]
-  cardinality: number
-  required: boolean
-}
-
 export type SelectedRect = Rectangle & {
   uuid: string
   style: DraggableStyle
@@ -1357,23 +817,6 @@ export interface LibraryItemProps {
   block?: FieldListItem
   label?: string
   uuid?: string
-}
-
-export type PublishOptions = {
-  canPublish: boolean
-  isRevisionable: boolean
-  hasRevisionLogMessage: boolean
-  lastChanged: string | null
-  canSchedule: boolean
-  publishOn: string | null
-  revisionLogMessage: string | null
-}
-
-export type GetEditStatesItem = {
-  hostEntityType: string
-  hostEntityUuid: string
-  entity: EditEntity
-  currentUserIsOwner: boolean
 }
 
 export type BlockIndicator = {

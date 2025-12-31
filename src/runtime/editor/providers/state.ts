@@ -22,7 +22,6 @@ import type {
   MutateWithLoadingStateFunction,
   EditMode,
   FieldListItem,
-  PublishOptions,
   EditPermission,
   MutatedItemProps,
 } from '#blokkli/types'
@@ -31,6 +30,7 @@ import { emitMessage, type BlokkliEventBus } from '#blokkli/editor/events'
 import { nextTick } from '#imports'
 import type { TextProvider } from './texts'
 import { BUNDLE_FROM_LIBRARY } from '../../../shared/constants'
+import type { PublishOptions } from '../features/publish/types'
 
 const HOST_OPTION_KEY = 'HOST'
 

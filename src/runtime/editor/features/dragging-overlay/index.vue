@@ -48,7 +48,6 @@ import {
   useTemplateRef,
 } from '#imports'
 import type {
-  DropTargetEvent,
   BlokkliDefinitionAddBehaviour,
   BlokkliFieldElement,
   Coord,
@@ -57,15 +56,16 @@ import type {
   DraggableExistingBlock,
   DraggableHostData,
   DraggableItem,
-  DraggableMediaLibraryItem,
   DraggableReusableItem,
-  DraggableSearchContentItem,
   Rectangle,
   DraggableExistingStructureBlock,
 } from '#blokkli/types'
 import { renderCycle } from '#blokkli/editor/helpers/vue'
 import { BundleSelector, BlokkliTransition } from '#blokkli/editor/components'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
+import type { DraggableMediaLibraryItem } from '../media-library/types'
+import type { DraggableSearchContentItem } from '../search/types'
+import type { DropTargetEvent } from '#blokkli/editor/events'
 
 const { adapter } = defineBlokkliFeature({
   icon: 'bk_mdi_drag_pan',

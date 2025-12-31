@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { EntityContext, EditableFieldConfig } from '#blokkli/types'
+import type { EntityContext } from '#blokkli/types'
 import { ArtboardTooltip } from '#blokkli/editor/components'
 import {
   computed,
@@ -74,6 +74,7 @@ import InputFrame from './Frame/index.vue'
 import { FIELD_MAPPING } from '#blokkli-build/runtime-options'
 import { itemEntityType } from '#blokkli-build/config'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
+import type { EditableFieldConfig } from '../types'
 
 const {
   eventBus,

@@ -17,6 +17,7 @@
 
 
 
+
           }}<span class="bk-required-indicator">*</span>
         </div>
         <div class="bk-publish-options">
@@ -193,12 +194,12 @@ import {
   ScheduleDate,
   InfoBox,
 } from '#blokkli/editor/components'
-import type { GetEditStatesItem } from '#blokkli/types'
 import { emitMessage } from '#blokkli/editor/events'
 import Item from './Item.vue'
 import PublishOption, { type PublishOptionProps } from './PublishOption.vue'
 import Summary from './Summary.vue'
 import type { MutationStatus } from './types'
+import type { GetEditStatesItem } from '../types'
 
 const showTable = false
 

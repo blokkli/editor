@@ -72,8 +72,8 @@
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/editor/components'
-import type { GetEditStatesItem } from '#blokkli/types'
 import type { MutationStatus } from './types'
+import type { GetEditStatesItem } from '../types';
 
 const { $t } = useBlokkli()
 

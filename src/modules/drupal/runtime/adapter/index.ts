@@ -7,10 +7,7 @@ import { availableFeaturesAtBuild } from '#blokkli-build/features'
 import { operationSources } from '#nuxt-graphql-middleware/sources'
 import type {
   BlockBundleDefinition,
-  HostTransformPlugin,
   PluginConfigInput,
-  PublishOptions,
-  TransformPlugin,
   TranslationState,
 } from '#blokkli/types'
 import {
@@ -29,6 +26,11 @@ import type {
 } from '#graphql-operations'
 import { ParagraphsBlokkliRemoteVideoProvider } from '#graphql-operations'
 import type { Mutation, Query } from '#nuxt-graphql-middleware/operation-types'
+import type {
+  HostTransformPlugin,
+  TransformPlugin,
+} from '#blokkli/editor/features/transform/types'
+import type { PublishOptions } from '#blokkli/editor/features/publish/types'
 
 type DrupalAdapter = BlokkliAdapter<ParagraphsBlokkliEditStateFragment>
 

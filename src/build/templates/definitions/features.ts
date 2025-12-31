@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs'
 import { toValidVariableName } from '../../helpers'
 import { defineCodeTemplate } from '../defineTemplate'
 import { toImports, toObject } from '../helpers'
@@ -13,6 +14,7 @@ export default defineCodeTemplate(
     const definitions: string[] = []
     const declarations: string[] = []
     const imports = new Map<string, string>()
+    const typeImports: string[] = []
 
     for (const feature of features) {
       const componentVarName = toValidVariableName(`component_${feature.id}`)
@@ -23,11 +25,21 @@ export default defineCodeTemplate(
       definitions.push(declarationVarName)
       imports.set(componentVarName, feature.componentPath)
       featuresComponents.set(feature.id, componentVarName)
+
+      // Check if feature has a types.ts file and add side-effect import
+      const typesPath = feature.componentPath.replace('/index.vue', '/types.ts')
+      if (existsSync(typesPath)) {
+        typeImports.push(
+          `import '${feature.componentPath.replace('/index.vue', '/types')}'`,
+        )
+      }
     }
 
     const availableFeaturesAtBuild = features.map((v) => v.id)
 
-    return `${toImports(imports)}
+    const typeImportsCode = typeImports.length > 0 ? typeImports.join('\n') + '\n' : ''
+
+    return `${typeImportsCode}${toImports(imports)}
 
 export const availableFeaturesAtBuild = ${JSON.stringify(
       availableFeaturesAtBuild.sort(),

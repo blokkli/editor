@@ -16,7 +16,6 @@ import {
 import type {
   MutatedOptions,
   MutatedField,
-  UpdateBlockOptionEvent,
 } from '#blokkli/types'
 import '#blokkli-build/styles.css'
 import getAdapter from '#blokkli-build/edit-adapter'
@@ -32,6 +31,7 @@ import type { AdapterContext } from '../../editor/adapter'
 import { eventBus, frameEventBus } from '#blokkli/editor/events'
 import definitionProvider from '#blokkli/editor/providers/definition'
 import { addElementClasses } from '#blokkli/editor/composables'
+import type { UpdateBlockOptionEvent } from '../features/options/types'
 
 const props = defineProps<{
   entity?: T

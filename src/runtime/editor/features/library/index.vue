@@ -57,9 +57,10 @@ import ReusableDialog from './ReusableDialog/index.vue'
 import LibraryDialog from './LibraryDialog/index.vue'
 import EditReusable from './EditReusable/index.vue'
 import { BlokkliTransition } from '#blokkli/editor/components'
-import type { ActionPlacedData, LibraryEditItemEvent } from '#blokkli/types'
+import type { ActionPlacedData } from '#blokkli/types'
 import { BUNDLE_FROM_LIBRARY } from '../../../../shared/constants'
 import { defineAddAction, onBlokkliEvent, useDialog } from '#blokkli/editor/composables'
+import type { LibraryEditItemEvent } from './types'
 
 const { adapter } = defineBlokkliFeature({
   id: 'library',

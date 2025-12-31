@@ -22,13 +22,12 @@ import {
   useLazyAsyncData,
 } from '#imports'
 import type {
-  HostTransformPlugin,
   PluginConfigInputItem,
-  TransformPlugin,
 } from '#blokkli/types'
 import { BlokkliTransition } from '#blokkli/editor/components'
 import TransformDialog from './Dialog/index.vue'
 import { defineCommands, defineItemDropdownAction } from '#blokkli/editor/composables'
+import type { HostTransformPlugin, TransformPlugin } from './types'
 
 function filterTransforms(
   plugins: TransformPlugin[],

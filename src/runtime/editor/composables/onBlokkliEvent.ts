@@ -1,5 +1,4 @@
-import { eventBus } from '../events'
-import type { EventbusEvents } from '#blokkli/types'
+import { eventBus, type EventbusEvents } from '../events'
 import { onBeforeUnmount, onMounted } from '#imports'
 
 export function onBlokkliEvent<T extends keyof EventbusEvents>(

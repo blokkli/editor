@@ -17,6 +17,7 @@ const componentProps = defineProps<Props>()
 const ctx = defineBlokkli({
   bundle: 'blokkli_fragment',
   editor: {
+    icon: 'bk_mdi_newspaper',
     disableEdit: true,
   },
 })

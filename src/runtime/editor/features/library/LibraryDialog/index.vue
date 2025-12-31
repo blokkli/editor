@@ -58,10 +58,6 @@
 </template>
 
 <script setup lang="ts">
-import type {
-  BlokkliAdapterGetLibraryItemsData,
-  BlokkliAdapterGetLibraryItemsResult,
-} from '#blokkli/editor/adapter'
 import {
   FormOverlay,
   Pagination,
@@ -79,6 +75,7 @@ import {
   watch,
   reactive,
 } from '#imports'
+import type { BlokkliAdapterGetLibraryItemsData, BlokkliAdapterGetLibraryItemsResult } from '../types';
 import LibraryListItem from './Item/index.vue'
 
 const props = defineProps<{

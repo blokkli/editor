@@ -56,10 +56,8 @@
 
 <script setup lang="ts">
 import type {
-  HostTransformPlugin,
   MappedState,
   PluginConfigInputItem,
-  TransformPlugin,
 } from '#blokkli/types'
 import {
   useBlokkli,
@@ -71,6 +69,7 @@ import {
   onBeforeUnmount,
 } from '#imports'
 import { ConfigForm, DiffViewerState, Icon, Loading } from '#blokkli/editor/components'
+import type { HostTransformPlugin, TransformPlugin } from '../types';
 
 const props = defineProps<{
   plugin: HostTransformPlugin | TransformPlugin

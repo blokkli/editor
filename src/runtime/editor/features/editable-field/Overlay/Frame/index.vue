@@ -18,8 +18,9 @@ import {
   onBeforeUnmount,
   useTemplateRef,
 } from '#imports'
-import type { EditableFieldType, EntityContext } from '#blokkli/types'
+import type { EntityContext } from '#blokkli/types'
 import { itemEntityType } from '#blokkli-build/config'
+import type { EditableFieldType } from '../../types'
 
 const { adapter, ui, element } = useBlokkli()
 
