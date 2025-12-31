@@ -2,24 +2,12 @@ import { useRouter, useRoute } from '#imports'
 import {
   defineBlokkliEditAdapter,
   type BlokkliAdapter,
-  type GetMediaLibraryFunction,
   type MutationResponseLike,
 } from '#blokkli/editor/adapter'
 import { defineAnalyzer } from '#blokkli/analyzer'
 import accessibilityAnalyzer from '#blokkli/analyzer/axe'
 import readabilityAnalyzer from '#blokkli/analyzer/readability'
 import { falsy } from '~~/helpers'
-import type {
-  AssistantResultMarkup,
-  CommentItem,
-  DroppableFieldConfig,
-  EditableFieldConfig,
-  FieldConfig,
-  HostTransformPlugin,
-  ImportItem,
-  LibraryItem,
-  PublishOptions,
-} from '#blokkli/types'
 import { allTypes } from './mock/allTypes'
 import { conversions } from './mock/conversions'
 import { entityStorageManager } from './mock/entityStorage'
@@ -34,13 +22,27 @@ import {
   type MediaVideo,
 } from './mock/state/Media/Media'
 import { transforms } from './mock/transforms'
-import type { MediaLibraryItem } from '#blokkli/editor/features/media-library/types'
+import type {
+  GetMediaLibraryFunction,
+  MediaLibraryItem,
+} from '#blokkli/editor/features/media-library/types'
 import type { MutationArgsMap } from './mock/plugins/mutations'
 import { FieldText } from './mock/state/Field/Text'
 import { FieldTextarea } from './mock/state/Field/Textarea'
 import type { Block } from './mock/state/Block/Block'
 import { FieldReference } from './mock/state/Field/Reference'
 import type { MutationAddArgs } from './mock/plugins/mutations/Mutation/Add'
+import type {
+  DroppableFieldConfig,
+  EditableFieldConfig,
+} from '#blokkli/editor/features/editable-field/types'
+import type { FieldConfig } from '#blokkli/editor/types/definitions'
+import type { AssistantResultMarkup } from '#blokkli/editor/features/assistant/types'
+import type { LibraryItem } from '#blokkli/editor/features/library/types'
+import type { ImportItem } from '#blokkli/editor/features/import-existing/types'
+import type { HostTransformPlugin } from '#blokkli/editor/features/transform/types'
+import type { CommentItem } from '#blokkli/editor/features/comments/types'
+import type { PublishOptions } from '#blokkli/editor/features/publish/types'
 
 const ENALBE_EDIT_STATES = false
 

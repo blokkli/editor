@@ -1,4 +1,4 @@
-import type { BlockBundleDefinition } from '#blokkli/types'
+import type { BlockBundleDefinition } from '#blokkli/editor/types/definitions'
 import { getBlockBundles } from './state/Block'
 
 export const allTypes: BlockBundleDefinition[] = getBlockBundles().map(

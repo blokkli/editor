@@ -1,5 +1,9 @@
 import { falsy } from '~~/helpers'
-import type { MutatedField, MutationItem, Validation } from '#blokkli/types'
+import type {
+  MutatedField,
+  MutationItem,
+  Validation,
+} from '#blokkli/editor/types/state'
 import { entityStorageManager } from '../entityStorage'
 import { createMutation, type MutationArgsMap } from '../plugins/mutations'
 import { mapBlockItem } from '../state'

@@ -1,4 +1,4 @@
-import type { UpdateHostOptionEvent } from '#blokkli/types'
+import type { UpdateHostOptionEvent } from '#blokkli/editor/features/options/types'
 import type { MutationContext } from '../../../state/EditState'
 import { Mutation } from './../Mutation'
 

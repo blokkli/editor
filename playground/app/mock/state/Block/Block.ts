@@ -1,4 +1,4 @@
-import type { BlockEditContext } from '#blokkli/types'
+import type { BlockEditContext } from '#blokkli/types/field'
 import type { Field } from '../Field'
 import { FieldBoolean } from '../Field/Boolean'
 import { FieldOptions } from '../Field/Options'

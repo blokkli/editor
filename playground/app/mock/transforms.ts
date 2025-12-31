@@ -1,4 +1,4 @@
-import type { TransformPlugin } from '#blokkli/types'
+import type { TransformPlugin } from '#blokkli/editor/features/transform/types'
 
 export const transforms: TransformPlugin[] = [
   {

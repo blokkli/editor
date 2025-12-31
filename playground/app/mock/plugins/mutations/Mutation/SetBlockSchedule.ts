@@ -1,6 +1,6 @@
 import { Mutation } from '../Mutation'
 import type { MutationContext } from '#mock/state/EditState'
-import type { BlokkliAdapterSetBlockScheduleOptions } from '#blokkli/editor/adapter'
+import type { BlokkliAdapterSetBlockScheduleOptions } from '#blokkli/editor/features/block-scheduler/types'
 
 export type MutationSetBlockScheduleArgs = {
   blocks: BlokkliAdapterSetBlockScheduleOptions[]

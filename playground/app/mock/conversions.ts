@@ -1,4 +1,4 @@
-import type { ConversionItem } from '#blokkli/types'
+import type { ConversionItem } from '#blokkli/editor/features/conversions/types'
 
 export const conversions: ConversionItem[] = [
   {

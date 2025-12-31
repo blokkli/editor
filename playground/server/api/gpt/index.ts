@@ -1,5 +1,5 @@
-import type { AssistantResultMarkup } from '#blokkli/types'
 import OpenAI from 'openai'
+import type { AssistantResultMarkup } from './../../../../src/runtime/editor/features/assistant/types'
 import { useRuntimeConfig } from '#imports'
 import { defineEventHandler, readBody, createError } from 'h3'
 

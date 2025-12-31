@@ -5,7 +5,7 @@ import { Mutation } from './../Mutation'
 import { BlockButton } from '#mock/state/Block/Button'
 import { entityStorageManager } from '#mock/entityStorage'
 import type { Block } from '#mock/state/Block/Block'
-import type { PluginConfigInputItem } from '#blokkli/types'
+import type { PluginConfigInputItem } from '#blokkli/editor/types/pluginConfig'
 
 export type MutationTransformArgs = {
   pluginId: string
