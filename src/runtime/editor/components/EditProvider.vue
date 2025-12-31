@@ -67,7 +67,7 @@ import {
   watch,
   useTemplateRef,
 } from '#imports'
-import type { BlokkliApp, EditPermission, EntityContext } from '#blokkli/types'
+import type { EditPermission, EntityContext } from '#blokkli/types'
 import Toolbar from './Toolbar/index.vue'
 import Actions from './Actions/index.vue'
 import Loading from './Loading/index.vue'
@@ -124,6 +124,7 @@ import type { BlokkliIcon } from '#blokkli-build/icons'
 import { allComponents } from '#blokkli-build/chunk-editing'
 import { falsy } from '#blokkli/helpers'
 import { addElementClasses, useBlockRegistration } from '#blokkli/editor/composables'
+import type { BlokkliApp } from '../types/app'
 
 const props = withDefaults(
   defineProps<{

@@ -1,6 +1,5 @@
 import type { InjectionKey, ComputedRef, Component } from 'vue'
 import type {
-  BlokkliApp,
   BlokkliProviderEntityContext,
   DefineBlokkliContext,
   EntityContext,
@@ -15,6 +14,7 @@ import type {
   ValidFieldListTypes,
 } from '#blokkli-build/generated-types'
 import type DraggableListComponent from '../editor/components/DraggableList.vue'
+import type { BlokkliApp } from '#blokkli/editor/types/app'
 
 export const INJECT_APP = Symbol('blokkli_app') as InjectionKey<BlokkliApp>
 

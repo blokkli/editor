@@ -1,0 +1,62 @@
+import type { ComputedRef } from 'vue'
+import type { DomProvider } from '../providers/dom'
+import type { AdapterContext, BlokkliAdapter } from '#blokkli/editor/adapter'
+import type { Eventbus } from '../events'
+import type { StorageProvider } from '../providers/storage'
+import type { BlockDefinitionProvider } from '../providers/types'
+import type { SelectionProvider } from '../providers/selection'
+import type { KeyboardProvider } from '../providers/keyboard'
+import type { UiProvider } from '../providers/ui'
+import type { AnimationProvider } from '../providers/animation'
+import type { StateProvider } from '../providers/state'
+import type { IconsProvider } from '../providers/icons'
+import type { DirectiveProvider } from '../providers/directive'
+import type { TextProvider } from '../providers/texts'
+import type { PluginProvider } from '../providers/plugin'
+import type { BroadcastProvider } from '../providers/broadcast'
+import type { FeaturesProvider } from '../providers/features'
+import type { DebugProvider } from '../providers/debug'
+import type { IndicatorsProvider } from '../providers/indicators'
+import type { BlocksProvider } from '../providers/blocks'
+import type { FieldsProvider } from '../providers/fields'
+import type { ElementProvider } from '../providers/element'
+import type { CommandsProvider } from '../providers/commands'
+import type { TourProvider } from '../providers/tour'
+import type { DropAreaProvider } from '../providers/dropArea'
+import type { ThemeProvider } from '../providers/theme'
+import type { DefinitionProvider } from '../providers/definition'
+
+export interface BlokkliApp {
+  /**
+   * The adapter.
+   */
+  adapter: BlokkliAdapter<any>
+
+  eventBus: Eventbus
+
+  dom: DomProvider
+  storage: StorageProvider
+  types: BlockDefinitionProvider
+  selection: SelectionProvider
+  blocks: BlocksProvider
+  keyboard: KeyboardProvider
+  element: ElementProvider
+  ui: UiProvider
+  animation: AnimationProvider
+  definitions: DefinitionProvider
+  state: StateProvider
+  context: ComputedRef<AdapterContext>
+  $t: TextProvider
+  broadcast: BroadcastProvider
+  features: FeaturesProvider
+  theme: ThemeProvider
+  commands: CommandsProvider
+  tour: TourProvider
+  dropAreas: DropAreaProvider
+  debug: DebugProvider
+  indicators: IndicatorsProvider
+  plugins: PluginProvider
+  directive: DirectiveProvider
+  fields: FieldsProvider
+  icons: IconsProvider
+}

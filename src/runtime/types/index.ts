@@ -1,25 +1,13 @@
 import type { ComputedRef } from 'vue'
-import type { DomProvider } from '../editor/providers/dom'
-import type { StorageProvider } from '../editor/providers/storage'
-import type { BlockDefinitionProvider } from '../editor/providers/types'
-import type { SelectionProvider } from '../editor/providers/selection'
-import type { KeyboardProvider } from '../editor/providers/keyboard'
-import type { UiProvider } from '../editor/providers/ui'
-import type { AnimationProvider } from '../editor/providers/animation'
-import type { StateProvider } from '../editor/providers/state'
-import type { IconsProvider } from '../editor/providers/icons'
-import type { DirectiveProvider } from '../editor/providers/directive'
-import type { TextProvider } from '../editor/providers/texts'
-import type { PluginProvider } from '../editor/providers/plugin'
-import type { Eventbus, eventBus } from '../editor/events'
+
+import type { Eventbus } from '../editor/events'
 import type { BlockOptionDefinition } from './blockOptions'
 import type {
   BlokkliAdapter,
   AdapterContext,
   MutationResponseLike,
 } from '../editor/adapter'
-import type { BroadcastProvider } from '../editor/providers/broadcast'
-import type { FeaturesProvider } from '../editor/providers/features'
+
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { SettingsGroup, Viewport } from '../../shared/constants'
 import type {
@@ -31,14 +19,11 @@ import type {
   ValidGlobalConfigKeys,
   BundleProps,
 } from '#blokkli-build/generated-types'
-import type { ThemeProvider } from '../editor/providers/theme'
 import type {
   BlokkliFragmentName,
   GlobalOptionsType,
 } from '#blokkli-build/definitions'
-import type { CommandsProvider } from '../editor/providers/commands'
-import type { TourProvider } from '../editor/providers/tour'
-import type { DropAreaProvider } from '../editor/providers/dropArea'
+
 import type { RGB } from './../../shared/types/theme'
 import type {
   BlockDefinitionInputBase,
@@ -57,16 +42,14 @@ import type {
   FeatureDefinitionSettingSlider,
 } from './../../shared/types/features'
 
-import type { DebugProvider } from '../editor/providers/debug'
 import type getVideoId from 'get-video-id'
 import type { DefinitionProvider } from '../editor/providers/definition'
-import type { IndicatorsProvider } from '../editor/providers/indicators'
-import type { BlocksProvider } from '#blokkli/editor/providers/blocks'
-import type { FieldsProvider } from '#blokkli/editor/providers/fields'
-import type { ElementProvider } from '#blokkli/editor/providers/element'
+
 import type { DraggableSearchContentItem } from '#blokkli/editor/features/search/types'
 import type { DraggableMediaLibraryItem } from '#blokkli/editor/features/media-library/types'
 import type { PublishOptions } from '#blokkli/editor/features/publish/types'
+import type { DomProvider } from '#blokkli/editor/providers/dom'
+import type { BlokkliApp } from '#blokkli/editor/types/app'
 
 export type { BlokkliDefinitionAddBehaviour }
 export type { FeatureDefinitionSettingCheckbox, FeatureDefinitionSettingSlider }
@@ -644,41 +627,6 @@ export type ItemEditContext = {
   dom?: DomProvider
   definitions: DefinitionProvider
   useBlockRegistration?: (dom: DomProvider, uuid: string) => void
-}
-
-export interface BlokkliApp {
-  /**
-   * The adapter.
-   */
-  adapter: BlokkliAdapter<any>
-
-  eventBus: typeof eventBus
-
-  dom: DomProvider
-  storage: StorageProvider
-  types: BlockDefinitionProvider
-  selection: SelectionProvider
-  blocks: BlocksProvider
-  keyboard: KeyboardProvider
-  element: ElementProvider
-  ui: UiProvider
-  animation: AnimationProvider
-  definitions: DefinitionProvider
-  state: StateProvider
-  context: ComputedRef<AdapterContext>
-  $t: TextProvider
-  broadcast: BroadcastProvider
-  features: FeaturesProvider
-  theme: ThemeProvider
-  commands: CommandsProvider
-  tour: TourProvider
-  dropAreas: DropAreaProvider
-  debug: DebugProvider
-  indicators: IndicatorsProvider
-  plugins: PluginProvider
-  directive: DirectiveProvider
-  fields: FieldsProvider
-  icons: IconsProvider
 }
 
 export type NativeBlokkliEditableBlurEvent = CustomEvent<{

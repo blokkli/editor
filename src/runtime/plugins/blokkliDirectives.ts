@@ -1,13 +1,10 @@
+import type { BlokkliApp } from '#blokkli/editor/types/app'
 import {
   INJECT_APP,
   INJECT_ENTITY_CONTEXT,
   INJECT_IS_IN_REUSABLE,
 } from '#blokkli/helpers/injections'
-import type {
-  BlokkliApp,
-  BlokkliDirectiveType,
-  EntityContext,
-} from '#blokkli/types'
+import type { BlokkliDirectiveType, EntityContext } from '#blokkli/types'
 import { defineNuxtPlugin, type DirectiveBinding, type VNode } from '#imports'
 import type { ObjectDirective } from 'vue'
 
