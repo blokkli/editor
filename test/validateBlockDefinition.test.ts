@@ -2,7 +2,7 @@ import { test, describe, expect } from 'vitest'
 import {
   validateBlockDefinition,
   CollectedBlockFile,
-} from '../src/module/Collector/Blocks'
+} from '../src/build/Collector/Blocks'
 import type { BlockDefinitionInputBase } from '../src/shared/types/definitions'
 
 function createMockBlockFile(
@@ -465,6 +465,18 @@ describe('validateBlockDefinition', () => {
   })
 })
 
+function createMockBlockFileWithContents(
+  definition: BlockDefinitionInputBase,
+  fileContents: string,
+  options: { type?: 'main' | 'context'; iconPath?: string | null } = {},
+): CollectedBlockFile {
+  const file = new CollectedBlockFile('/path/to/Block.vue', fileContents)
+  ;(file as any).definition = definition
+  ;(file as any).type = options.type ?? 'main'
+  ;(file as any).iconPath = options.iconPath ?? null
+  return file
+}
+
 describe('CollectedBlockFile.validate', () => {
   describe('missing icon warning', () => {
     test('returns warning when main block has no icon file and no editor.icon', () => {
@@ -519,6 +531,117 @@ describe('CollectedBlockFile.validate', () => {
       const firstResult = file.validate()
       const secondResult = file.validate()
       expect(firstResult).toBe(secondResult)
+    })
+  })
+
+  describe('deprecated isEditing warning', () => {
+    test('returns warning when isEditing is destructured from defineBlokkli', () => {
+      const fileContents = `
+const { isEditing } = defineBlokkli({
+  bundle: 'test',
+})
+`
+      const file = createMockBlockFileWithContents(
+        { bundle: 'test', editor: { icon: 'test' } },
+        fileContents,
+      )
+      const errors = file.validate()
+      const warnings = errors.filter(
+        (e) => e.severity === 'warning' && e.message.includes('isEditing'),
+      )
+      expect(warnings).toHaveLength(1)
+      expect(warnings[0].message).toContain('deprecated')
+      expect(warnings[0].message).toContain('import.meta.blokkliEditing')
+    })
+
+    test('returns warning when isEditing is destructured with other properties', () => {
+      const fileContents = `
+const { options, isEditing, index } = defineBlokkli({
+  bundle: 'test',
+})
+`
+      const file = createMockBlockFileWithContents(
+        { bundle: 'test', editor: { icon: 'test' } },
+        fileContents,
+      )
+      const errors = file.validate()
+      const warnings = errors.filter(
+        (e) => e.severity === 'warning' && e.message.includes('isEditing'),
+      )
+      expect(warnings).toHaveLength(1)
+    })
+
+    test('returns warning when isEditing is destructured from defineBlokkliFragment', () => {
+      const fileContents = `
+const { isEditing } = defineBlokkliFragment({
+  name: 'test',
+})
+`
+      const file = createMockBlockFileWithContents(
+        { bundle: 'test', editor: { icon: 'test' } },
+        fileContents,
+      )
+      const errors = file.validate()
+      const warnings = errors.filter(
+        (e) => e.severity === 'warning' && e.message.includes('isEditing'),
+      )
+      expect(warnings).toHaveLength(1)
+    })
+
+    test('returns no warning when isEditing is not used', () => {
+      const fileContents = `
+const { options } = defineBlokkli({
+  bundle: 'test',
+})
+`
+      const file = createMockBlockFileWithContents(
+        { bundle: 'test', editor: { icon: 'test' } },
+        fileContents,
+      )
+      const errors = file.validate()
+      const warnings = errors.filter(
+        (e) => e.severity === 'warning' && e.message.includes('isEditing'),
+      )
+      expect(warnings).toHaveLength(0)
+    })
+
+    test('returns no warning when isEditing is used in unrelated context', () => {
+      const fileContents = `
+const isEditing = ref(false)
+const { options } = defineBlokkli({
+  bundle: 'test',
+})
+`
+      const file = createMockBlockFileWithContents(
+        { bundle: 'test', editor: { icon: 'test' } },
+        fileContents,
+      )
+      const errors = file.validate()
+      const warnings = errors.filter(
+        (e) => e.severity === 'warning' && e.message.includes('isEditing'),
+      )
+      expect(warnings).toHaveLength(0)
+    })
+
+    test('returns warning with multiline destructuring', () => {
+      const fileContents = `
+const {
+  options,
+  isEditing,
+  index,
+} = defineBlokkli({
+  bundle: 'test',
+})
+`
+      const file = createMockBlockFileWithContents(
+        { bundle: 'test', editor: { icon: 'test' } },
+        fileContents,
+      )
+      const errors = file.validate()
+      const warnings = errors.filter(
+        (e) => e.severity === 'warning' && e.message.includes('isEditing'),
+      )
+      expect(warnings).toHaveLength(1)
     })
   })
 })

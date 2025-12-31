@@ -423,6 +423,19 @@ export class CollectedBlockFile extends CollectedFile {
       }
     }
 
+    // Check for deprecated isEditing usage
+    if (this.fileContents.includes('isEditing')) {
+      // Check if isEditing is being destructured from defineBlokkli or defineBlokkliFragment
+      const isEditingPattern =
+        /\bisEditing\b[^\n\r=\u2028\u2029]*=.*define(?:Blokkli|BlokkliFragment)\s*\(|define(?:Blokkli|BlokkliFragment)\s*\([^)]*\).*\bisEditing\b|\{[^}]*\bisEditing\b[^}]*\}\s*=\s*define(?:Blokkli|BlokkliFragment)/
+      if (isEditingPattern.test(this.fileContents)) {
+        errors.push({
+          message: `Using deprecated "isEditing" property. Use "import.meta.blokkliEditing" instead.`,
+          severity: 'warning',
+        })
+      }
+    }
+
     this.validationCache = errors
     return this.validationCache
   }

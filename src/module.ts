@@ -7,6 +7,7 @@ import {
   useLogger,
 } from '@nuxt/kit'
 import { RuntimeDefinitionPlugin } from './build/unplugin/RuntimeDefinition'
+import { BlokkliEditingPlugin } from './build/unplugin/BlokkliEditing'
 import { BK_HIDDEN_GLOBALLY, BK_VISIBLE_LANGUAGES } from './shared/constants'
 import type { ModuleOptions } from './build/types'
 import { IconCollector } from './build/Collector/Icons'
@@ -199,6 +200,7 @@ export default defineNuxtModule<ModuleOptions>({
     addBuildPlugin(RuntimeDefinitionPlugin(nuxt, 'defineBlokkli'))
     addBuildPlugin(RuntimeDefinitionPlugin(nuxt, 'defineBlokkliFragment'))
     addBuildPlugin(RuntimeDefinitionPlugin(nuxt, 'defineBlokkliProvider', 1))
+    addBuildPlugin(BlokkliEditingPlugin(nuxt))
 
     // Watch for file changes in dev mode.
     if (nuxt.options.dev) {

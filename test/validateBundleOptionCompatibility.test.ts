@@ -2,7 +2,7 @@ import { test, describe, expect } from 'vitest'
 import {
   validateBundleOptionCompatibility,
   CollectedBlockFile,
-} from '../src/module/Collector/Blocks'
+} from '../src/build/Collector/Blocks'
 import type { BlockDefinitionInputBase } from '../src/shared/types/definitions'
 
 function createMockBlockFile(

@@ -16,6 +16,7 @@ import imports from './definitions/imports'
 import optionsSchema from './definitions/optionsSchema'
 import chunkGroup from './definitions/chunkGroup'
 import chunkEditing from './definitions/chunkEditing'
+import importMeta from './definitions/importMeta'
 import type { ModuleTemplate } from './defineTemplate'
 import type { ModuleHelper } from '../ModuleHelper'
 
@@ -42,4 +43,5 @@ export const TEMPLATES: Template[] = [
   optionsSchema,
   chunkGroup,
   chunkEditing,
+  importMeta,
 ]

@@ -24,7 +24,9 @@ export default defineCodeTemplate(
         continue
       }
 
-      imports.push(`import ${file.identifier} from '${file.filePath}'`)
+      imports.push(
+        `import ${file.identifier} from '${file.filePath}?blokkliEditing=true'`,
+      )
       file.variations.forEach((variation) => {
         map.set(variation, file.identifier)
       })
