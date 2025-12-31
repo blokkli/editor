@@ -9,7 +9,6 @@ import type {
 } from '../editor/adapter'
 
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import type { SettingsGroup, Viewport } from '../../shared/constants'
 import type {
   BlockBundleWithNested,
   FieldListItemTyped,
@@ -35,21 +34,14 @@ import type {
   FragmentDefinitionInputBase,
   ProviderDefinitionInputBase,
 } from './../../shared/types/definitions'
-import type {
-  FeatureDefinitionBase,
-  FeatureDefinitionSettingCheckbox,
-  FeatureDefinitionSettingSlider,
-} from './../../shared/types/features'
 
 import type { DefinitionProvider } from '../editor/providers/definition'
 
 import type { DraggableSearchContentItem } from '#blokkli/editor/features/search/types'
 import type { DraggableMediaLibraryItem } from '#blokkli/editor/features/media-library/types'
 import type { DomProvider } from '#blokkli/editor/providers/dom'
-import type { BlokkliApp } from '#blokkli/editor/types/app'
 
 export type { BlokkliDefinitionAddBehaviour }
-export type { FeatureDefinitionSettingCheckbox, FeatureDefinitionSettingSlider }
 
 export type MutateWithLoadingStateFunction = (
   promise: () => Promise<MutationResponseLike<any>> | undefined,
@@ -441,47 +433,6 @@ export type NativeBlokkliEditableBlurEvent = CustomEvent<{
   field: string
   text: string
 }>
-
-export type AdapterMethods = keyof BlokkliAdapter<any>
-
-export type FeatureDefinitionSettingRadiosOption = {
-  label: string
-  icon?: BlokkliIcon
-}
-
-export type FeatureDefinitionSettingRadios = {
-  type: 'radios'
-  label: string
-  default: string
-  options: Record<string, FeatureDefinitionSettingRadiosOption>
-  group?: SettingsGroup
-  viewports?: Viewport[]
-}
-
-export type FeatureDefinitionSettingMethod = {
-  type: 'method'
-  label: string
-  method: (app: BlokkliApp) => void
-  group?: SettingsGroup
-  viewports?: Viewport[]
-}
-
-export type FeatureDefinitionSetting =
-  | FeatureDefinitionSettingCheckbox
-  | FeatureDefinitionSettingRadios
-  | FeatureDefinitionSettingMethod
-  | FeatureDefinitionSettingSlider
-
-export type FeatureDefinition<
-  Methods extends AdapterMethods[] = [],
-  T extends string = '',
-> = Omit<
-  FeatureDefinitionBase<AdapterMethods, BlokkliIcon, T>,
-  'requiredAdapterMethods' | 'settings'
-> & {
-  requiredAdapterMethods?: [...Methods]
-  settings?: Record<string, FeatureDefinitionSetting>
-}
 
 export type KeyboardShortcut = {
   group?: string

@@ -1,17 +1,16 @@
 import type { SettingsGroup, Viewport } from '../constants'
 
-export type FeatureDefinitionSettingRadiosOptionBase<
-  Icon extends string = string,
-> = {
-  label: string
-  icon?: Icon
-}
+export type FeatureDefinitionSettingRadiosOption<Icon extends string = string> =
+  {
+    label: string
+    icon?: Icon
+  }
 
-export type FeatureDefinitionSettingRadiosBase<Icon extends string = string> = {
+export type FeatureDefinitionSettingRadios<Icon extends string = string> = {
   type: 'radios'
   label: string
   default: string
-  options: Record<string, FeatureDefinitionSettingRadiosOptionBase<Icon>>
+  options: Record<string, FeatureDefinitionSettingRadiosOption<Icon>>
   group?: SettingsGroup
   viewports?: Viewport[]
 }
@@ -36,18 +35,18 @@ export type FeatureDefinitionSettingSlider = {
   step: number
 }
 
-export type FeatureDefinitionSettingMethodBase = {
+export type FeatureDefinitionSettingMethod<T> = {
   type: 'method'
   label: string
-  method: (app: any) => void
+  method: (app: T) => void
   group?: SettingsGroup
   viewports?: Viewport[]
 }
 
 export type FeatureDefinitionSettingBase<Icon extends string = string> =
   | FeatureDefinitionSettingCheckbox
-  | FeatureDefinitionSettingRadiosBase<Icon>
-  | FeatureDefinitionSettingMethodBase
+  | FeatureDefinitionSettingRadios<Icon>
+  | FeatureDefinitionSettingMethod<any>
   | FeatureDefinitionSettingSlider
 
 export type FeatureDefinitionBase<

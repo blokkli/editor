@@ -1,4 +1,3 @@
-import type { FeatureDefinition, AdapterMethods } from '#blokkli/types'
 import {
   type ValidFeatureKey,
   featureDefinitions,
@@ -6,6 +5,8 @@ import {
 import { computed, ref, type ComputedRef } from '#imports'
 import type { StorageProvider } from './storage'
 import { falsy } from '../../helpers'
+import type { AdapterMethods } from '#blokkli/editor/adapter'
+import type { FeatureDefinition } from '../types/features'
 
 export type FeaturesProvider = {
   /**
