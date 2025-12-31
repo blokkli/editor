@@ -1,4 +1,4 @@
-import type { EntityTranslation } from '#blokkli/types'
+import type { EntityTranslation } from '#blokkli/editor/types/state'
 
 declare module '#blokkli/editor/adapter' {
   interface BlokkliAdapter<T> {

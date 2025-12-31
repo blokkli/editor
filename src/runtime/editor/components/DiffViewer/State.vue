@@ -102,10 +102,11 @@
 
 <script setup lang="ts">
 import { computed, useBlokkli } from '#imports'
-import type { FieldListItem, MappedState, MutatedField } from '#blokkli/types'
+import type { FieldListItem, } from '#blokkli/types'
 import { ItemIcon, FormRadioTabs } from '#blokkli/editor/components'
 import diff from 'html-diff-ts'
 import type { ThemeColorName } from './../../../../shared/types/theme'
+import type { MappedState, MutatedField } from '#blokkli/editor/types/state'
 
 const props = defineProps<{
   stateBefore: MappedState

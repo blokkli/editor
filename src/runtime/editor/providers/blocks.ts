@@ -1,4 +1,4 @@
-import type { MutatedField, RenderedFieldListItem } from '#blokkli/types'
+import type { RenderedFieldListItem } from '#blokkli/types'
 import type { DomProvider } from './dom'
 import type { StateProvider } from './state'
 import { itemEntityType } from '#blokkli-build/config'
@@ -11,6 +11,7 @@ import type { AdapterContext } from '#blokkli/editor/adapter'
 import { type ComputedRef, ref } from '#imports'
 import type { BlokkliFragmentName } from '#blokkli-build/definitions'
 import { BUNDLE_BLOKKLI_FRAGMENT } from '../../../shared/constants'
+import type { MutatedField } from '../types/state'
 
 export type BlocksProvider = {
   /**

@@ -7,7 +7,7 @@ import { inject, type ComputedRef, computed, watch, ref } from '#imports'
 import { FIELD_MAPPING } from '#blokkli-build/runtime-options'
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 import { getActualBlock } from '#blokkli/helpers/runtimeHelpers'
-import type { MutatedField } from '#blokkli/types'
+import type { MutatedField } from '#blokkli/editor/types/state'
 
 type BundleWithoutLibrary = Exclude<
   FieldListItemTyped['bundle'],

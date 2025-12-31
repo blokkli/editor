@@ -5,7 +5,6 @@ import type {
   EntityContext,
   InjectedBlokkliItem,
   ItemEditContext,
-  MutatedField,
   MutatedItemProps,
 } from './../types'
 import type { DebugLogger } from '#blokkli/editor/providers/debug'
@@ -15,6 +14,7 @@ import type {
 } from '#blokkli-build/generated-types'
 import type DraggableListComponent from '../editor/components/DraggableList.vue'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
+import type { MutatedField } from '#blokkli/editor/types/state'
 
 export const INJECT_APP = Symbol('blokkli_app') as InjectionKey<BlokkliApp>
 

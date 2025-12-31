@@ -1,4 +1,4 @@
-import type { Validation } from '#blokkli/types'
+import type { Validation } from '#blokkli/editor/types/state'
 
 export type MutationStatus = {
   id: string

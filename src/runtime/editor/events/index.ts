@@ -4,17 +4,15 @@ import type {
   DraggableExistingBlock,
   DraggableHostData,
   DraggableItem,
-  EntityTranslation,
   InteractionMode,
-  Language,
   Message,
-  MutatedField,
   RenderedFieldListItem,
 } from '#blokkli/types'
 import type { UpdateBlockOptionEvent } from '../features/options/types'
 import type { LibraryEditItemEvent } from '../features/library/types'
 import type { Coord, Size } from '../types/geometry'
 import type { BlokkliClipboardItem } from '../features/clipboard/types'
+import type { EntityTranslation, Language, MutatedField } from '../types/state'
 
 export type SelectStartEvent = {
   uuids: string[]

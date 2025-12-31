@@ -12,13 +12,7 @@ import type { BlokkliAdapter, AdapterContext } from '../adapter'
 import { INJECT_MUTATED_FIELDS_MAP } from '../../helpers/injections'
 import { onBlokkliEvent, addElementClasses } from '#blokkli/editor/composables'
 import type {
-  MutatedField,
-  EditEntity,
   MutatedOptions,
-  TranslationState,
-  MappedState,
-  MutationItem,
-  Validation,
   MutateWithLoadingStateFunction,
   EditMode,
   FieldListItem,
@@ -31,6 +25,14 @@ import { nextTick } from '#imports'
 import type { TextProvider } from './texts'
 import { BUNDLE_FROM_LIBRARY } from '../../../shared/constants'
 import type { PublishOptions } from '../features/publish/types'
+import type {
+  EditEntity,
+  MappedState,
+  MutatedField,
+  MutationItem,
+  TranslationState,
+  Validation,
+} from '../types/state'
 
 const HOST_OPTION_KEY = 'HOST'
 
