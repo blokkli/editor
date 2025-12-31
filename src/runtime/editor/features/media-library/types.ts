@@ -1,6 +1,7 @@
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { AdapterSearchArguments } from '#blokkli/editor/adapter'
-import type { DraggableHostData, PluginConfigInput } from '#blokkli/types'
+import type { PluginConfigInput } from '#blokkli/editor/types/pluginConfig'
+import type { DraggableHostData } from '#blokkli/types'
 
 export type MediaLibraryItem = {
   mediaId: string

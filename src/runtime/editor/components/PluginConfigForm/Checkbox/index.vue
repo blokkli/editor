@@ -3,8 +3,8 @@
 </template>
 
 <script setup lang="ts">
-import type { PluginConfigInputCheckbox } from '#blokkli/types'
 import { FormToggle } from '#blokkli/editor/components'
+import type { PluginConfigInputCheckbox } from '#blokkli/editor/types/pluginConfig';
 
 defineProps<PluginConfigInputCheckbox>()
 

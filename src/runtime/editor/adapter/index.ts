@@ -4,7 +4,6 @@ import type {
   BlockBundleDefinition,
   EntityTranslation,
   FieldConfig,
-  PluginConfigInput,
 } from '../../types'
 import type {
   AddNewBlockEvent,
@@ -12,6 +11,7 @@ import type {
   MoveBlockEvent,
   MoveMultipleBlocksEvent,
 } from '../events'
+import type { PluginConfigInput } from '../types/pluginConfig'
 
 export interface MutationResponseLike<T> {
   success: boolean

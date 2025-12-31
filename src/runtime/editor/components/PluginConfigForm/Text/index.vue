@@ -24,8 +24,8 @@
 </template>
 
 <script setup lang="ts">
-import type { PluginConfigInputText } from '#blokkli/types'
 import { FormText, FormTextarea } from '#blokkli/editor/components'
+import type { PluginConfigInputText } from '#blokkli/editor/types/pluginConfig';
 
 defineProps<PluginConfigInputText>()
 

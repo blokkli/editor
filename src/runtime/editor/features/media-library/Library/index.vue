@@ -83,11 +83,11 @@ import type { BlokkliIcon } from '#blokkli-build/icons'
 import Item from './Item.vue'
 import type {
   DraggableItem,
-  PluginConfigInput,
 } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type { DraggableMediaLibraryItem } from '../types'
+import type { PluginConfigInput } from '#blokkli/editor/types/pluginConfig'
 
 defineProps<{
   modelValue?: string

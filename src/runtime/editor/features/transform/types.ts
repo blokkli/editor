@@ -1,4 +1,7 @@
-import type { PluginConfigInput, PluginConfigInputItem } from '#blokkli/types'
+import type {
+  PluginConfigInput,
+  PluginConfigInputItem,
+} from '#blokkli/editor/types/pluginConfig'
 
 type AdapterApplyTransformPlugin = {
   pluginId: string

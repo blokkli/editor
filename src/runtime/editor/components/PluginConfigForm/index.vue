@@ -23,11 +23,11 @@
 </template>
 
 <script setup lang="ts">
-import type { PluginConfigInput } from '#blokkli/types'
 import FormCheckbox from './Checkbox/index.vue'
 import FormText from './Text/index.vue'
 import FormOptions from './Options/index.vue'
 import { computed } from '#imports'
+import type { PluginConfigInput } from '#blokkli/editor/types/pluginConfig';
 
 const props = defineProps<{
   config: PluginConfigInput[]
