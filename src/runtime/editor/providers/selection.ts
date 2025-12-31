@@ -1,10 +1,10 @@
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import { type Ref, type ComputedRef, computed, ref } from '#imports'
-import type { InteractionMode } from '#blokkli/types'
 import { falsy, onlyUnique } from '#blokkli/helpers'
 import type { BlocksProvider } from './blocks'
 import type { DraggableItem } from '../types/draggable'
 import type { RenderedFieldListItem } from '../types/field'
+import type { InteractionMode } from '../types/ui'
 
 export type SelectionProvider = {
   /**

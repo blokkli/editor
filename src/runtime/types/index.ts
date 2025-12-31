@@ -44,13 +44,6 @@ export interface DraggableHostData {
   fieldName: string
 }
 
-export type InteractionMode = 'mouse' | 'touch'
-
-export type StructureDragStart = {
-  uuid: string
-  bundle: string
-}
-
 export type ItemEditContext = {
   eventBus: Eventbus
   mutatedOptions: MutatedOptions
@@ -58,20 +51,6 @@ export type ItemEditContext = {
   definitions: DefinitionProvider
   useBlockRegistration?: (dom: DomProvider, uuid: string) => void
 }
-
-export type NativeBlokkliEditableBlurEvent = CustomEvent<{
-  field: string
-  text: string
-}>
-
-export type BlockIndicator = {
-  id: string
-  uuid: string
-  element: HTMLElement
-  position: 'left' | 'right'
-}
-
-export type BlokkliDirectiveType = 'editable' | 'droppable'
 
 export type VueClassProp = string | Record<string, boolean> | VueClassProp[]
 

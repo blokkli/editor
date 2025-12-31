@@ -37,7 +37,8 @@ export default defineCodeTemplate(
 
     const availableFeaturesAtBuild = features.map((v) => v.id)
 
-    const typeImportsCode = typeImports.length > 0 ? typeImports.join('\n') + '\n' : ''
+    const typeImportsCode =
+      typeImports.length > 0 ? typeImports.join('\n') + '\n' : ''
 
     return `${typeImportsCode}${toImports(imports)}
 

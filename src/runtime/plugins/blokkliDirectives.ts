@@ -4,7 +4,8 @@ import {
   INJECT_ENTITY_CONTEXT,
   INJECT_IS_IN_REUSABLE,
 } from '#blokkli/helpers/injections'
-import type { BlokkliDirectiveType, EntityContext } from '#blokkli/types'
+import type { EntityContext } from '#blokkli/types'
+import type { BlokkliDirectiveType } from '#blokkli/types/directives'
 import { defineNuxtPlugin, type DirectiveBinding, type VNode } from '#imports'
 import type { ObjectDirective } from 'vue'
 

@@ -43,3 +43,12 @@ export type DropArea = {
   element: HTMLElement
   onDrop: () => Promise<any> | any
 }
+
+export type InteractionMode = 'mouse' | 'touch'
+
+export type BlockIndicator = {
+  id: string
+  uuid: string
+  element: HTMLElement
+  position: 'left' | 'right'
+}

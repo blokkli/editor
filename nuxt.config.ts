@@ -85,10 +85,7 @@ fragment blokkliParagraphsType on ParagraphsType {
         '../src/modules/**/*.ts',
         '../src/shared/**/*',
       ],
-      exclude: [
-        '../src/runtime/**/*',
-        '../src/modules/*/runtime/**/*',
-      ],
+      exclude: ['../src/runtime/**/*', '../src/modules/*/runtime/**/*'],
     },
   },
 
