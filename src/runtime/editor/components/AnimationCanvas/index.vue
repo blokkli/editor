@@ -30,8 +30,6 @@ import type {
   CursorKeyword,
 } from '#blokkli/editor/types'
 import type {
-  Rectangle,
-  Coord,
   DraggableExistingBlock,
   RenderedFieldListItem,
 } from '#blokkli/types'
@@ -45,6 +43,7 @@ import {
 } from '#imports'
 import { itemEntityType } from '#blokkli-build/config'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
+import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
 
 const {
   dom,

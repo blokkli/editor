@@ -55,7 +55,6 @@ import {
   onMounted,
   onBeforeUnmount,
 } from '#imports'
-import type { Coord } from '#blokkli/types'
 import {
   calculateIntersection,
   isInsideRect,
@@ -77,6 +76,7 @@ import {
   mouse,
   dom as domPlugin,
 } from 'artboard-deluxe'
+import type { Coord } from '#blokkli/editor/types/geometry'
 
 const props = defineProps<{
   persist: boolean

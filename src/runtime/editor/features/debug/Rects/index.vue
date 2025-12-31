@@ -14,8 +14,8 @@
 import { useBlokkli, useTemplateRef } from '#imports'
 import { falsy, } from '#blokkli/helpers'
 import { intersects } from '#blokkli/editor/helpers/geometry'
-import type { Coord, Rectangle } from '#blokkli/types'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
+import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
 
 const { ui, dom, directive } = useBlokkli()
 

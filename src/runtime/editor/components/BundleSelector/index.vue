@@ -64,8 +64,9 @@
 import { useTemplateRef, useBlokkli, computed, ref, watch } from '#imports'
 import { ArtboardTooltip, AddListItem, Icon } from '#blokkli/editor/components'
 import { isInternalBundle } from '#blokkli/editor/helpers/bundles'
-import type { AddAction, Coord } from '#blokkli/types'
+import type { AddAction, } from '#blokkli/types'
 import type { AddListItemProps } from '#blokkli/editor/components/AddListItem/index.vue'
+import type { Coord } from '#blokkli/editor/types/geometry'
 
 const props = defineProps<{
   bundles: string[]

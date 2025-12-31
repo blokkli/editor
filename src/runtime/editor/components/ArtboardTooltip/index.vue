@@ -34,8 +34,8 @@ import {
 } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import type { Coord } from '#blokkli/types'
 import {onBlokkliEvent, useFocusTrap }from '#blokkli/editor/composables'
+import type { Coord } from '#blokkli/editor/types/geometry'
 
 const props = withDefaults(
   defineProps<{

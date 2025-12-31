@@ -1,6 +1,6 @@
 import type { ComputedRef } from 'vue'
-
 import type { Eventbus } from '../editor/events'
+import type { Rectangle } from '../editor/types/geometry'
 import type { BlockOptionDefinition } from './blockOptions'
 import type {
   BlokkliAdapter,
@@ -23,7 +23,6 @@ import type {
   BlokkliFragmentName,
   GlobalOptionsType,
 } from '#blokkli-build/definitions'
-
 import type { RGB } from './../../shared/types/theme'
 import type {
   BlockDefinitionInputBase,
@@ -576,18 +575,6 @@ export type Message = {
   additional?: string | Error | unknown
   replace?: boolean
 }
-
-export type Size = {
-  width: number
-  height: number
-}
-
-export type Coord = {
-  x: number
-  y: number
-}
-
-export type Rectangle = Size & Coord
 
 export type BlokkliFieldElement = {
   key: string

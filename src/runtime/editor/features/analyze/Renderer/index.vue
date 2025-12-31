@@ -7,7 +7,6 @@ import type {
   AnalyzeResultMapped,
   AnalyzeStatus,
 } from '#blokkli/analyzer/types'
-import type { Rectangle } from '#blokkli/types'
 import { useBlokkli, computed, watch } from '#imports'
 import {
   setBuffersAndAttributes,
@@ -20,6 +19,7 @@ import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
 import { toShaderColor } from '#blokkli/editor/helpers/color'
 import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'
+import type { Rectangle } from '#blokkli/editor/types/geometry'
 
 const props = defineProps<{
   results: AnalyzeResultMapped[]

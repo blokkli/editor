@@ -10,13 +10,7 @@ import {
 } from '#imports'
 import type { ShallowRef } from 'vue'
 import type { StorageProvider } from './storage'
-import type {
-  Coord,
-  GlobalUiDialog,
-  Rectangle,
-  SidebarRegion,
-  Size,
-} from '#blokkli/types'
+import type { GlobalUiDialog, SidebarRegion } from '#blokkli/types'
 import type { Viewport } from '../../../shared/constants'
 import { falsy } from '../../helpers'
 import {
@@ -31,6 +25,7 @@ import {
 import type { ThemeColorName } from './../../../shared/types/theme'
 import type { ElementProvider } from './element'
 import type { BlokkliEventBus } from '../events'
+import type { Coord, Rectangle, Size } from '../types/geometry'
 
 type ResizeElementKey = 'visible-viewport' | 'artboard'
 

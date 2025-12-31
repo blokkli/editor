@@ -1,4 +1,4 @@
-import type { Coord } from '#blokkli/types'
+import type { Coord } from '#blokkli/editor/types/geometry'
 
 /**
  * Recursively clone an element and inline its styles.

@@ -2,7 +2,6 @@ import mitt, { type Emitter } from 'mitt'
 import type {
   BlokkliFieldElement,
   ClipboardItem,
-  Coord,
   DraggableExistingBlock,
   DraggableHostData,
   DraggableItem,
@@ -12,10 +11,10 @@ import type {
   Message,
   MutatedField,
   RenderedFieldListItem,
-  Size,
 } from '#blokkli/types'
 import type { UpdateBlockOptionEvent } from '../features/options/types'
 import type { LibraryEditItemEvent } from '../features/library/types'
+import type { Coord, Size } from '../types/geometry'
 
 export type SelectStartEvent = {
   uuids: string[]

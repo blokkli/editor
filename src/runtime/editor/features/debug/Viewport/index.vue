@@ -32,8 +32,8 @@
 
 <script setup lang="ts">
 import { useBlokkli, computed } from '#imports'
-import type { Rectangle } from '#blokkli/types'
 import { subtractRectFromViewport } from '#blokkli/editor/helpers/geometry'
+import type { Rectangle } from '#blokkli/editor/types/geometry'
 
 const { ui } = useBlokkli()
 

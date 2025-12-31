@@ -16,12 +16,12 @@ import type { UiProvider } from './ui'
 import { createProgramInfo, type ProgramInfo } from 'twgl.js'
 import type { StorageProvider } from './storage'
 import type { CursorKeyword } from '#blokkli/editor/types'
-import type { Coord } from '#blokkli/types'
 import type { SelectionProvider } from './selection'
 import type { RectangleBufferCollector } from '../helpers/webgl'
 import type { DebugProvider } from './debug'
 import type { KeyboardProvider } from './keyboard'
 import type { BlokkliEventBus, CanvasDrawEvent } from '../events'
+import type { Coord } from '../types/geometry'
 
 export type RenderContext = CanvasDrawEvent & {
   changeOptionsTransition: number

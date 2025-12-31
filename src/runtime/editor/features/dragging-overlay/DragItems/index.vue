@@ -31,12 +31,13 @@ import {
   onBeforeUnmount,
   useTemplateRef,
 } from '#imports'
-import type { Coord, DraggableItem, Rectangle } from '#blokkli/types'
+import type { DraggableItem, } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
 import { realBackgroundColor } from '#blokkli/editor/helpers/dom'
 import { isInsideRect} from '#blokkli/editor/helpers/geometry'
 import { Icon } from '#blokkli/editor/components'
 import DragItem, { type DragItemData } from './DragItem.vue'
+import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
 
 const { dom, ui, types } = useBlokkli()
 

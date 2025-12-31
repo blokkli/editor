@@ -27,7 +27,6 @@ import {
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
-import type { Rectangle } from '#blokkli/types'
 import { getFieldKey } from '#blokkli/helpers'
 import { toShaderColor } from '#blokkli/editor/helpers/color'
 import {
@@ -38,6 +37,7 @@ import {
 import { isInternalBundle } from '#blokkli/editor/helpers/bundles'
 import { itemEntityType } from '#blokkli-build/config'
 import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'
+import type { Rectangle } from '#blokkli/editor/types/geometry'
 
 const {
   animation,

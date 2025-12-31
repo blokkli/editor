@@ -22,7 +22,7 @@ import {
   intersects,
 } from '#blokkli/editor/helpers/geometry'
 import { modulo } from '#blokkli/editor/helpers/math'
-import type { Rectangle, RenderedFieldListItem } from '#blokkli/types'
+import type { RenderedFieldListItem } from '#blokkli/types'
 import {
   computed,
   useBlokkli,
@@ -32,6 +32,7 @@ import {
 } from '#imports'
 import { itemEntityType } from '#blokkli-build/config'
 import { defineItemDropdownAction, onBlokkliEvent, useStateBasedCache } from '#blokkli/editor/composables'
+import type { Rectangle } from '#blokkli/editor/types/geometry'
 
 defineBlokkliFeature({
   id: 'selection',

@@ -1,4 +1,4 @@
-import type { Rectangle, Coord, Size } from '#blokkli/types'
+import type { Rectangle, Coord, Size } from '#blokkli/editor/types/geometry'
 import { easeOutSine } from '../easing'
 
 export function getBounds(rects: Rectangle[]): Rectangle | undefined {

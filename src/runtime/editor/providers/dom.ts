@@ -3,8 +3,6 @@ import type {
   DraggableExistingBlock,
   DraggableItem,
   EntityContext,
-  Rectangle,
-  Coord,
   RenderedFieldListItem,
   RegisteredField,
   RegisterFieldData,
@@ -19,6 +17,7 @@ import {
 import type { DebugProvider } from './debug'
 import type { StateProvider } from './state'
 import type { ElementProvider } from './element'
+import type { Coord, Rectangle } from '../types/geometry'
 
 type RegisteredFieldType = {
   entityType: string

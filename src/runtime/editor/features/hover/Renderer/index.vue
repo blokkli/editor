@@ -3,7 +3,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { Rectangle } from '#blokkli/types'
 import { useBlokkli, computed, ref, watch } from '#imports'
 import {
   setBuffersAndAttributes,
@@ -18,6 +17,7 @@ import { isInsideRect } from '#blokkli/editor/helpers/geometry'
 import { toShaderColor } from '#blokkli/editor/helpers/color'
 import type { RGB } from './../../../../../shared/types/theme'
 import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'
+import type { Rectangle } from '#blokkli/editor/types/geometry'
 
 const { animation, theme, dom, selection, state, ui, directive, blocks } =
   useBlokkli()

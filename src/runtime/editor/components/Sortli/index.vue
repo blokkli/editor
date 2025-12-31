@@ -9,10 +9,11 @@
 </template>
 
 <script lang="ts" setup>
-import type { Coord, DraggableItem } from '#blokkli/types'
+import type { DraggableItem } from '#blokkli/types'
 import { useBlokkli } from '#imports'
 import { getInteractionCoordinates } from '#blokkli/editor/helpers/dom'
 import { getDistance } from '#blokkli/editor/helpers/geometry'
+import type { Coord } from '#blokkli/editor/types/geometry';
 
 const { eventBus } = useBlokkli()
 

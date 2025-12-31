@@ -1,8 +1,4 @@
-import type {
-  BlokkliDirectiveType,
-  EntityContext,
-  Rectangle,
-} from '#blokkli/types'
+import type { BlokkliDirectiveType, EntityContext } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
 import type { UiProvider } from './ui'
 import {
@@ -18,6 +14,7 @@ import {
 } from '#blokkli/editor/composables'
 import { itemEntityType } from '#blokkli-build/config'
 import type { DebugProvider } from './debug'
+import type { Rectangle } from '../types/geometry'
 
 type EditableFieldData = EntityContext & {
   key: string

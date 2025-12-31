@@ -10,10 +10,10 @@
 </template>
 
 <script setup lang="ts">
-import type { Rectangle } from '#blokkli/types'
 import { computed, useBlokkli, watch, ref } from '#imports'
 import type { StyleValue } from 'vue'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
+import type { Rectangle } from '#blokkli/editor/types/geometry'
 
 const { ui, dom, indicators, selection } = useBlokkli()
 
