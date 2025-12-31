@@ -34,7 +34,6 @@ import { ref, computed, useBlokkli } from '#imports'
 import { AddListItem, Sortli } from '#blokkli/editor/components'
 import type {
   BlockBundleDefinition,
-  Command,
   DraggableNewItem,
   FieldConfig,
   RenderedFieldListItem,
@@ -44,6 +43,7 @@ import { PluginTourItem } from '#blokkli/editor/plugins'
 import { getFieldKey } from '#blokkli/helpers'
 import { itemEntityType } from '#blokkli-build/config'
 import { defineCommands } from '#blokkli/editor/composables'
+import type { Command } from '../../command-palette/types'
 
 const props = defineProps<{
   hideDisabledBlocks?: boolean

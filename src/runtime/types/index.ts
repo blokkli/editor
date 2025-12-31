@@ -501,24 +501,6 @@ export type KeyboardShortcut = {
   label: string
 }
 
-export type CommandGroup =
-  | 'ui'
-  | 'selection'
-  | 'add'
-  | 'action'
-  | 'misc'
-  | 'options'
-
-export type Command = {
-  id: string
-  label: string
-  group?: CommandGroup
-  icon?: BlokkliIcon
-  bundle?: string
-  disabled?: boolean
-  callback: () => any
-}
-
 export type DropArea = {
   id: string
   label: string

@@ -1,5 +1,5 @@
 import { falsy } from '../../helpers'
-import type { Command } from '#blokkli/types'
+import type { Command } from '../features/command-palette/types'
 
 type CommandsProviderFunction = () => Command[] | Command | undefined
 

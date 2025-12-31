@@ -1,5 +1,5 @@
 import { onBeforeUnmount, onMounted, useBlokkli } from '#imports'
-import type { Command } from '#blokkli/types'
+import type { Command } from '../features/command-palette/types'
 
 export function defineCommands(cb: () => Command | Command[] | undefined) {
   const { commands } = useBlokkli()

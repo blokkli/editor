@@ -18,7 +18,7 @@
 <script lang="ts" setup>
 import { watch, useBlokkli, useTemplateRef } from '#imports'
 import { Icon, ItemIcon, Highlight } from '#blokkli/editor/components'
-import type { Command, CommandGroup } from '#blokkli/types'
+import type { Command, CommandGroup } from '../../types'
 
 export type MappedCommandItem = Command & {
   positions?: number[]

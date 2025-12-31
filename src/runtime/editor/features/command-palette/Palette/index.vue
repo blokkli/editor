@@ -48,11 +48,11 @@ import {
   useTemplateRef,
 } from '#imports'
 import { Icon, ScrollBoundary } from '#blokkli/editor/components'
-import type { Command } from '#blokkli/types'
 import { Fzf } from 'fzf'
 import { modulo } from '#blokkli/editor/helpers/math'
 import Item, { type MappedCommandItem } from './Item/index.vue'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
+import type { Command } from '../types'
 
 const emit = defineEmits(['close'])
 
