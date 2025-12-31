@@ -177,6 +177,10 @@ const BUTTON_RADIUS = 12
 // Tooltip margin in pixels (distance from button center to tooltip edge)
 const TOOLTIP_MARGIN = 20
 
+// Minimum distance between buttons before repositioning (in screen pixels)
+// This is approximately 3x the button radius to ensure comfortable spacing
+const MIN_BUTTON_DISTANCE = BUTTON_RADIUS * 3
+
 // Outward shift for before/after buttons in pixels
 
 type CircleRectangle = Rectangle & {
@@ -394,6 +398,49 @@ onBlokkliEvent('state:reloaded', () => {
 })
 
 /**
+ * Check if an empty field button would overlap with before/after buttons.
+ * If so, returns the adjusted position (block center). Otherwise returns the original position.
+ */
+function adjustEmptyFieldButtonPosition(
+  fieldX: number,
+  fieldY: number,
+  blockRect: Rectangle,
+  artboardScale: number,
+): { x: number; y: number } {
+  // Only check if before/after buttons are visible (indices 0 and 1)
+  if (circleVisible[0]! <= 0 || circleVisible[1]! <= 0) {
+    return { x: fieldX, y: fieldY }
+  }
+
+  // Get before/after button positions
+  const beforeX = circlePositions[0]!
+  const beforeY = circlePositions[1]!
+  const afterX = circlePositions[2]!
+  const afterY = circlePositions[3]!
+
+  // Calculate minimum distance threshold in artboard coordinates
+  const minDistanceArtboard = MIN_BUTTON_DISTANCE / artboardScale
+
+  // Calculate distance between field button and before/after buttons
+  const distToBefore = Math.sqrt(
+    (fieldX - beforeX) ** 2 + (fieldY - beforeY) ** 2,
+  )
+  const distToAfter = Math.sqrt(
+    (fieldX - afterX) ** 2 + (fieldY - afterY) ** 2,
+  )
+
+  // If too close to either button, reposition to block center
+  if (distToBefore < minDistanceArtboard || distToAfter < minDistanceArtboard) {
+    return {
+      x: blockRect.x + blockRect.width / 2,
+      y: blockRect.y + blockRect.height / 2,
+    }
+  }
+
+  return { x: fieldX, y: fieldY }
+}
+
+/**
  * Check if a point (in artboard coordinates) is inside any visible circle.
  * Returns the circle index if found, -1 otherwise.
  */
@@ -516,16 +563,18 @@ const { collector } = defineRenderer('add-buttons', {
     // Get cached block state (logs only on first computation)
     const blockState = getBlockState(uuid)
 
+    // Get block rect - needed for both before/after and empty field buttons
+    const blockRect = dom.getBlockRect(uuid)
+    if (!blockRect || blockRect.width === 0) {
+      return
+    }
+
+    // Get cached orientation
+    const orientation = getOrientationForUuid(uuid)
+    currentOrientation.value = orientation
+
     // Check if we should show before/after buttons
     if (blockState.canShowBeforeAfter) {
-      const blockRect = dom.getBlockRect(uuid)
-      if (!blockRect || blockRect.width === 0) {
-        return
-      }
-
-      // Get cached orientation
-      const orientation = getOrientationForUuid(uuid)
-      currentOrientation.value = orientation
       const BUTTON_SHIFT = 2 / ctx.artboardScale
 
       if (orientation === 'horizontal') {
@@ -574,11 +623,21 @@ const { collector } = defineRenderer('add-buttons', {
           continue
         }
 
-        // Position at center of field
+        // Calculate initial position at center of field
+        const initialX = fieldRect.x + fieldRect.width / 2
+        const initialY = fieldRect.y + fieldRect.height / 2
+
+        // Adjust position if too close to before/after buttons
+        const adjusted = adjustEmptyFieldButtonPosition(
+          initialX,
+          initialY,
+          blockRect,
+          ctx.artboardScale,
+        )
+
         const circleIndex = i + 2 // Start from circle 2
-        circlePositions[circleIndex * 2] = fieldRect.x + fieldRect.width / 2 // x
-        circlePositions[circleIndex * 2 + 1] =
-          fieldRect.y + fieldRect.height / 2 // y
+        circlePositions[circleIndex * 2] = adjusted.x
+        circlePositions[circleIndex * 2 + 1] = adjusted.y
         circleVisible[circleIndex] = 1
       }
     } else {
@@ -626,16 +685,18 @@ const { collector } = defineRenderer('add-buttons', {
     // Get cached block state
     const blockState = getBlockState(uuid)
 
+    // Get block rect - needed for both before/after and empty field buttons
+    const blockRect = dom.getBlockRect(uuid)
+    if (!blockRect || blockRect.width === 0) {
+      return
+    }
+
+    // Get cached orientation
+    const orientation = getOrientationForUuid(uuid)
+    currentOrientation.value = orientation
+
     // Check if we should show before/after buttons
     if (blockState.canShowBeforeAfter) {
-      const blockRect = dom.getBlockRect(uuid)
-      if (!blockRect || blockRect.width === 0) {
-        return
-      }
-
-      // Get cached orientation
-      const orientation = getOrientationForUuid(uuid)
-      currentOrientation.value = orientation
       const BUTTON_SHIFT = 2 / ctx.artboardScale
 
       if (orientation === 'horizontal') {
@@ -679,10 +740,21 @@ const { collector } = defineRenderer('add-buttons', {
           continue
         }
 
+        // Calculate initial position at center of field
+        const initialX = fieldRect.x + fieldRect.width / 2
+        const initialY = fieldRect.y + fieldRect.height / 2
+
+        // Adjust position if too close to before/after buttons
+        const adjusted = adjustEmptyFieldButtonPosition(
+          initialX,
+          initialY,
+          blockRect,
+          ctx.artboardScale,
+        )
+
         const circleIndex = i + 2
-        circlePositions[circleIndex * 2] = fieldRect.x + fieldRect.width / 2
-        circlePositions[circleIndex * 2 + 1] =
-          fieldRect.y + fieldRect.height / 2
+        circlePositions[circleIndex * 2] = adjusted.x
+        circlePositions[circleIndex * 2 + 1] = adjusted.y
         circleVisible[circleIndex] = 1
       }
     } else {
