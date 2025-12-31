@@ -3,7 +3,7 @@ import type {
   BlockDefinitionOptionsInput,
   DefineProviderContext,
   ProviderDefinitionInput,
-} from '#blokkli/types'
+} from '#blokkli/types/definitions'
 import type { GlobalOptionsKey } from '#blokkli-build/generated-types'
 import { INJECT_PROVIDER_KEY } from '#blokkli/helpers/injections'
 import {

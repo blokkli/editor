@@ -22,7 +22,7 @@ import type {
   BlockDefinitionInput,
   FragmentDefinitionInput,
   ProviderDefinitionInput,
-} from '#blokkli/types'
+} from '#blokkli/types/definitions'
 
 defineBlokkliFeature({
   id: 'options',

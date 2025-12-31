@@ -10,13 +10,7 @@ import {
   INJECT_REUSABLE_UUID,
 } from '../helpers/injections'
 import { computed, inject } from '#imports'
-import type {
-  BlockDefinitionInput,
-  BlockDefinitionOptionsInput,
-  BlokkliProviderEntityContext,
-  BundleKey,
-  DefineBlokkliContext,
-} from '#blokkli/types'
+import type { BlokkliProviderEntityContext } from '#blokkli/types'
 import type {
   FieldListItemTyped,
   GlobalOptionsKey,
@@ -31,6 +25,12 @@ import {
   BUNDLE_BLOKKLI_FRAGMENT,
   BUNDLE_FROM_LIBRARY,
 } from '../../shared/constants'
+import type {
+  BlockDefinitionInput,
+  BlockDefinitionOptionsInput,
+  BundleKey,
+  DefineBlokkliContext,
+} from '#blokkli/types/definitions'
 
 /**
  * Define a blokkli component.

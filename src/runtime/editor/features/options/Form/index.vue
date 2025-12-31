@@ -55,7 +55,7 @@ import type {
   BlockDefinitionOptionsInput,
   FragmentDefinitionInput,
   ProviderDefinitionInput,
-} from '#blokkli/types'
+} from '#blokkli/types/definitions'
 import type { BlockOptionDefinition } from '#blokkli/types/blockOptions'
 import { getRuntimeOptionValue } from '#blokkli/runtime-helpers'
 import {

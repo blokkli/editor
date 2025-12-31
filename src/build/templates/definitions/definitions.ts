@@ -139,7 +139,7 @@ export default definitions
 
     return `
 import type { GlobalOptionsKey } from '#blokkli-build/generated-types'
-import type { BlockDefinitionInput, BlockDefinitionOptionsInput, FragmentDefinitionInput, ProviderDefinitionInput } from '${ctx.helper.relativePaths.TYPES}'
+import type { BlockDefinitionInput, BlockDefinitionOptionsInput, FragmentDefinitionInput, ProviderDefinitionInput } from '${ctx.helper.relativePaths.TYPES_DEFINITIONS}'
 
 export type BlockDefinition = BlockDefinitionInput<BlockDefinitionOptionsInput, GlobalOptionsKey[]>
 export type FragmentDefinition = FragmentDefinitionInput<Record<string, any>, GlobalOptionsKey[]>

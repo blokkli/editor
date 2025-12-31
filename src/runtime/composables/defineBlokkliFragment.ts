@@ -7,7 +7,7 @@ import type {
   BlockDefinitionOptionsInput,
   DefineBlokkliContext,
   FragmentDefinitionInput,
-} from '#blokkli/types'
+} from '#blokkli/types/definitions'
 import type { GlobalOptionsKey } from '#blokkli-build/generated-types'
 
 export function defineBlokkliFragment<

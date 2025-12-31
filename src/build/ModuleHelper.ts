@@ -76,6 +76,10 @@ export class ModuleHelper {
         this.paths.blokkliBuildDir,
         this.resolvers.module.resolve('./runtime/types/index.ts'),
       ),
+      TYPES_DEFINITIONS: relative(
+        this.paths.blokkliBuildDir,
+        this.resolvers.module.resolve('./runtime/types/definitions.ts'),
+      ),
       RUNTIME_MATERIAL_ICONS: relative(
         this.paths.blokkliBuildDir,
         this.resolvers.module.resolve(
