@@ -1,27 +1,18 @@
 import mitt, { type Emitter } from 'mitt'
-import type { DraggableHostData } from '#blokkli/types'
 import type { UpdateBlockOptionEvent } from '../features/options/types'
-import type { LibraryEditItemEvent } from '../features/library/types'
 import type { Coord, Size } from '../types/geometry'
-import type { BlokkliClipboardItem } from '../features/clipboard/types'
-import type { EntityTranslation, Language, MutatedField } from '../types/state'
+import type { MutatedField } from '../types/state'
 import type { DraggableExistingBlock, DraggableItem } from '../types/draggable'
 import type { InteractionMode, Message } from '../types/ui'
-import type { BlokkliFieldElement, RenderedFieldListItem } from '../types/field'
+import type {
+  BlokkliFieldElement,
+  BlokkliItemHost,
+  RenderedFieldListItem,
+} from '../types/field'
 
 export type SelectStartEvent = {
   uuids: string[]
   mode: InteractionMode
-}
-
-export type TranslateBlockEvent = {
-  uuid: string
-  language: Language
-}
-
-export type ConvertBlockEvent = {
-  uuid: string
-  targetBundle: string
 }
 
 export type ScrollIntoViewEvent =
@@ -74,7 +65,7 @@ export type AnimateElementMode = 'leave' | 'enter'
 
 export type BlockAppendEvent = {
   bundle: string
-  host: DraggableHostData
+  host: BlokkliItemHost
   afterUuid: string | null
 }
 
@@ -93,7 +84,7 @@ export type CanvasDrawEvent = {
 export type DropClipboardItemEvent = {
   id: string
   blockBundle: string
-  host: DraggableHostData
+  host: BlokkliItemHost
   afterUuid: string | null
 }
 
@@ -106,7 +97,7 @@ export type AnimatorAddEvent = {
 export type MoveBlockEvent = {
   afterUuid: string | null
   item: DraggableExistingBlock
-  host: DraggableHostData
+  host: BlokkliItemHost
 }
 
 type AnimationFrameFieldArea = {
@@ -134,19 +125,12 @@ export type AnimationFrameBeforeEvent = {
 export type MoveMultipleBlocksEvent = {
   afterUuid: string | null
   uuids: string[]
-  host: DraggableHostData
+  host: BlokkliItemHost
 }
 
 export type AddNewBlockEvent = {
   bundle: string
-  host: DraggableHostData
-  afterUuid: string | null
-}
-
-export type AddClipboardItemEvent = {
-  item: BlokkliClipboardItem
-  blockBundle: string
-  host: DraggableHostData
+  host: BlokkliItemHost
   afterUuid: string | null
 }
 
@@ -159,11 +143,6 @@ type MultiSelectStartEvent = {
   y: number
 }
 
-export type EditBlockEvent = {
-  uuid: string
-  bundle: string
-}
-
 export type DraggableStartEvent = {
   items: DraggableItem[]
   coords: Coord
@@ -173,7 +152,7 @@ export type DraggableStartEvent = {
 export type DropTargetEvent = {
   items: DraggableItem[]
   field: BlokkliFieldElement
-  host: DraggableHostData
+  host: BlokkliItemHost
   preceedingUuid: string | null
 }
 
@@ -207,15 +186,13 @@ export type GlobalPointerUpEvent = GlobalPointerEvent & {
   duration: number
 }
 
-export type EventbusEvents = {
+export interface EventbusEvents {
   select: string | string[]
   'select:unselect': undefined
   'select:force': string | string[]
   'select:host': undefined
   'select:host:unselect': undefined
   'multi-select:start': MultiSelectStartEvent
-  'item:edit': EditBlockEvent
-  batchTranslate: undefined
   'dragging:start': DraggableStartEvent
   'dragging:drop': DropTargetEvent
   'dragging:end': undefined
@@ -225,10 +202,8 @@ export type EventbusEvents = {
   message: Message
   keyPressed: KeyPressedEvent
   editEntity: undefined
-  translateEntity: EntityTranslation
   reloadState: undefined
   reloadEntity: (() => void) | undefined
-  'entity:translated': string
 
   // Selection.
   'select:start': SelectStartEvent
@@ -283,36 +258,20 @@ export type EventbusEvents = {
   'mouse:up': GlobalPointerUpEvent
 
   /**
-   * Emitted when publishing failed.
-   */
-  'publish:failed': undefined
-
-  /**
-   * Show the publish dialog.
-   */
-  'publish:show-dialog': undefined
-
-  /**
-   * Edit a library item.
-   */
-  'library:edit-item': LibraryEditItemEvent
-
-  /**
    * Emitted when a view option is being toggled.
    */
   'view-option:toggle': { id: string }
-
-  /**
-   * An analyze node target was clicked.
-   */
-  'analyze:click-node': { id: string; target: HTMLElement }
 }
 
-export const eventBus = mitt<EventbusEvents>()
+type EventbusEventsType = {
+  [K in keyof EventbusEvents]: EventbusEvents[K]
+}
 
-export type Eventbus = Emitter<EventbusEvents>
+export const eventBus = mitt<EventbusEventsType>()
 
-export type BlokkliEventBus = Emitter<EventbusEvents>
+export type Eventbus = Emitter<EventbusEventsType>
+
+export type BlokkliEventBus = Emitter<EventbusEventsType>
 
 export const emitMessage = (
   message: string,

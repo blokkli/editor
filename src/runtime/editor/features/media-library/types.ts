@@ -1,7 +1,7 @@
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { AdapterSearchArguments } from '#blokkli/editor/adapter'
+import type { BlokkliItemHost } from '#blokkli/editor/types/field'
 import type { PluginConfigInput } from '#blokkli/editor/types/pluginConfig'
-import type { DraggableHostData } from '#blokkli/types'
 
 export type MediaLibraryItem = {
   mediaId: string
@@ -22,14 +22,14 @@ export interface DraggableMediaLibraryItem {
 }
 
 export type MediaLibraryAddBlockEvent = {
-  host: DraggableHostData
+  host: BlokkliItemHost
   preceedingUuid: string | null
   item: DraggableMediaLibraryItem
   targetBundle: string
 }
 
 export type MediaLibraryAddBlocksEvent = {
-  host: DraggableHostData
+  host: BlokkliItemHost
   preceedingUuid: string | null
   targetBundle: string
   items: DraggableMediaLibraryItem[]
@@ -39,7 +39,7 @@ export type MediaLibraryReplaceMediaEvent = {
   /**
    * The UUID of the block on which the media was dropped.
    */
-  host: DraggableHostData
+  host: BlokkliItemHost
 
   /**
    * The ID of the media that was dropped.

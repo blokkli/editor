@@ -9,3 +9,11 @@ declare module '#blokkli/editor/adapter' {
     changeLanguage?: (translation: EntityTranslation) => Promise<any>
   }
 }
+
+declare module '#blokkli/editor/events' {
+  interface EventbusEvents {
+    translateEntity: EntityTranslation
+    'entity:translated': string
+    batchTranslate: undefined
+  }
+}

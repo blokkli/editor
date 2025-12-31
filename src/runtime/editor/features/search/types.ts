@@ -1,8 +1,8 @@
-import type { DraggableHostData } from '#blokkli/types'
+import type { BlokkliItemHost } from '#blokkli/editor/types/field'
 
 export type AddContentSearchItemEvent = {
   item: SearchContentItem
-  host: DraggableHostData
+  host: BlokkliItemHost
   bundle: string
   afterUuid: string | null
 }

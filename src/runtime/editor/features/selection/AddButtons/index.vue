@@ -39,9 +39,6 @@ import {
   type Orientation,
   determineCanAddChildren,
 } from '#blokkli/editor/helpers/dropTargets'
-import type {
-  DraggableHostData,
-} from '#blokkli/types'
 import { renderCycle } from '#blokkli/editor/helpers/vue'
 import { getFieldKey } from '#blokkli/helpers'
 import { isInternalBundle } from '#blokkli/editor/helpers/bundles'
@@ -49,7 +46,7 @@ import Renderer from './Renderer/index.vue'
 import { itemEntityType } from '#blokkli-build/config'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type { AddAction } from '#blokkli/editor/types/actions'
-import type { BlokkliFieldElement, RenderedFieldListItem } from '#blokkli/editor/types/field'
+import type { BlokkliFieldElement, BlokkliItemHost, RenderedFieldListItem } from '#blokkli/editor/types/field'
 
 const props = defineProps<{
   items: RenderedFieldListItem[]
@@ -237,7 +234,7 @@ watch(emptyBlockFields, (fields) => {
 type AddData = {
   allowedBundles: string[]
   preceedingUuid: string | null
-  host: DraggableHostData
+  host: BlokkliItemHost
   field: BlokkliFieldElement
   anchorEl?: HTMLElement
   anchorCoordinates?: { x: number; y: number }
@@ -413,7 +410,7 @@ function setAddData(
     return
   }
 
-  const host: DraggableHostData = {
+  const host: BlokkliItemHost = {
     type: field.hostEntityType,
     uuid: field.hostEntityUuid,
     fieldName: field.name,

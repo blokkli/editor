@@ -1,12 +1,15 @@
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import type { DraggableHostData } from '#blokkli/types'
-import type { BlokkliFieldElement, RenderedFieldListItem } from './field'
+import type {
+  BlokkliFieldElement,
+  BlokkliItemHost,
+  RenderedFieldListItem,
+} from './field'
 
 export type AddActionColor = 'rose' | 'lime' | 'accent'
 
 export type ActionPlacedData = {
   preceedingUuid: string | null
-  host: DraggableHostData
+  host: BlokkliItemHost
   field: BlokkliFieldElement
 }
 

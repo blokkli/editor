@@ -47,10 +47,6 @@ import {
   nextTick,
   useTemplateRef,
 } from '#imports'
-import type {
-  BlokkliDefinitionAddBehaviour,
-  DraggableHostData,
-} from '#blokkli/types'
 import { renderCycle } from '#blokkli/editor/helpers/vue'
 import { BundleSelector, BlokkliTransition } from '#blokkli/editor/components'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
@@ -63,7 +59,8 @@ import type { DraggableClipboardItem } from '../clipboard/types'
 import type { DraggableActionItem } from '../add-list/types'
 import type { DraggableReusableItem } from '../library/types'
 import type { DraggableExistingStructureBlock } from '../structure/types'
-import type { BlokkliFieldElement } from '#blokkli/editor/types/field'
+import type { BlokkliFieldElement, BlokkliItemHost } from '#blokkli/editor/types/field'
+import type { BlokkliDefinitionAddBehaviour } from './../../../../shared/types/definitions'
 
 const { adapter } = defineBlokkliFeature({
   icon: 'bk_mdi_drag_pan',
@@ -91,7 +88,7 @@ type BundleSelectorData = {
   bundles: string[]
   anchorCoordinates: Coord
   item: DraggableSearchContentItem | DraggableMediaLibraryItem[]
-  host: DraggableHostData
+  host: BlokkliItemHost
   field: BlokkliFieldElement
   afterUuid: string | null
 }
@@ -195,7 +192,7 @@ function filterItemType<T extends DraggableItem>(
 
 const onDropNew = async (
   bundle: string,
-  host: DraggableHostData,
+  host: BlokkliItemHost,
   afterUuid: string | null,
 ) => {
   const field = fields.find(host.uuid, host.fieldName)
@@ -235,7 +232,7 @@ const onDropNew = async (
 
 const onDropExisting = async (
   items: Array<DraggableExistingBlock | DraggableExistingStructureBlock>,
-  host: DraggableHostData,
+  host: BlokkliItemHost,
   afterUuid: string | null,
 ) => {
   const uuids = items.map((v) => v.block.uuid)
@@ -262,7 +259,7 @@ const onDropExisting = async (
 
 const onDropReusable = async (
   item: DraggableReusableItem,
-  host: DraggableHostData,
+  host: BlokkliItemHost,
   afterUuid: string | null,
 ) => {
   if (adapter.addLibraryItem) {
@@ -278,7 +275,7 @@ const onDropReusable = async (
 
 const onDropClipboardItem = async (
   item: DraggableClipboardItem,
-  host: DraggableHostData,
+  host: BlokkliItemHost,
   afterUuid: string | null,
 ) => {
   eventBus.emit('drop:clipboardItem', {
@@ -292,7 +289,7 @@ const onDropClipboardItem = async (
 const onDropMediaLibraryItem = async (
   field: BlokkliFieldElement,
   items: DraggableMediaLibraryItem[],
-  host: DraggableHostData,
+  host: BlokkliItemHost,
   afterUuid: string | null,
   bundle: string | null,
 ) => {
@@ -361,7 +358,7 @@ function getAnchorCoordinates() {
 const onDropSearchContentItem = async (
   field: BlokkliFieldElement,
   item: DraggableSearchContentItem,
-  host: DraggableHostData,
+  host: BlokkliItemHost,
   afterUuid: string | null,
 ) => {
   if (!adapter.addContentSearchItem) {
@@ -398,7 +395,7 @@ const onDropSearchContentItem = async (
 
 const onDropAction = (
   action: DraggableActionItem,
-  host: DraggableHostData,
+  host: BlokkliItemHost,
   field: BlokkliFieldElement,
   afterUuid: string | null,
 ) => {

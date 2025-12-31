@@ -21,10 +21,10 @@ import { useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
 import Library from './Library/index.vue'
 import { falsy } from '#blokkli/helpers'
-import type { DraggableHostData } from '#blokkli/types'
 import { itemEntityType } from '#blokkli-build/config'
 import { defineDropAreas } from '#blokkli/editor/composables'
 import type { DropArea } from '#blokkli/editor/types/ui'
+import type { BlokkliItemHost } from '#blokkli/editor/types/field'
 
 defineBlokkliFeature({
   id: 'media-library',
@@ -78,7 +78,7 @@ defineDropAreas((dragItems) => {
         return
       }
       const isBlock = field.type === itemEntityType
-      const draggableHost: DraggableHostData = {
+      const draggableHost: BlokkliItemHost = {
         uuid: field.uuid,
         type: field.type,
         fieldName: field.fieldName,

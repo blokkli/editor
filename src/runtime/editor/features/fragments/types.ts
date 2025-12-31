@@ -1,8 +1,8 @@
-import type { DraggableHostData } from '#blokkli/types'
+import type { BlokkliItemHost } from '#blokkli/editor/types/field'
 
 export type AdapterFragmentsAddBlock = {
   name: string
-  host: DraggableHostData
+  host: BlokkliItemHost
   preceedingUuid: string | null
 }
 

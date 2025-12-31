@@ -1,5 +1,5 @@
 import type { BlokkliAdapterSearchResults } from '#blokkli/editor/adapter'
-import type { DraggableHostData } from '#blokkli/types'
+import type { BlokkliItemHost } from '#blokkli/editor/types/field'
 import type { FieldListItem } from '#blokkli/types/field'
 
 export interface LibraryItemProps {
@@ -41,7 +41,7 @@ export type LibraryEditItemEvent = {
 
 export type AddReusableItemEvent = {
   libraryItemUuid: string
-  host: DraggableHostData
+  host: BlokkliItemHost
   afterUuid: string | null
 }
 
@@ -92,5 +92,14 @@ declare module '#blokkli/editor/adapter' {
 declare module '#blokkli/editor/types/draggable' {
   interface DraggableItemTypes {
     reusable: DraggableReusableItem
+  }
+}
+
+declare module '#blokkli/editor/events' {
+  interface EventbusEvents {
+    /**
+     * Edit a library item.
+     */
+    'library:edit-item': LibraryEditItemEvent
   }
 }

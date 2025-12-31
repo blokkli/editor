@@ -3,8 +3,14 @@ import type {
   BlockBundleWithNested,
   ValidFieldListTypes,
 } from '#blokkli-build/generated-types'
-import type { DraggableHostData, EntityContext } from '#blokkli/types'
+import type { EntityContext } from '#blokkli/types'
 import type { FieldDropAlignment } from '#blokkli/types/field'
+
+export interface BlokkliItemHost {
+  type: string
+  uuid: string
+  fieldName: string
+}
 
 export type BlokkliFieldElement = {
   key: string
@@ -48,7 +54,7 @@ export type RenderedFieldListItem = {
   bundle: string
   isNew: boolean
   isPublished: boolean
-  host: DraggableHostData & { bundle: string }
+  host: BlokkliItemHost & { bundle: string }
   fieldListType: ValidFieldListTypes
   parentBlockBundle: BlockBundleWithNested | null
   library: {

@@ -60,7 +60,6 @@ import BlokkliItem from './BlokkliItem.vue'
 
 import type {
   FieldListItem,
-  VueClassProp,
 } from '#blokkli/types'
 import type {
   ValidFieldListTypes,
@@ -85,6 +84,7 @@ import {
   INJECT_FIELD_USES_PROXY,
 } from '../helpers/injections'
 import type { FieldDropAlignment } from '#blokkli/types/field'
+import type { VueClassProp } from '#blokkli/types/vue'
 
 if (import.meta.hot) {
   import.meta.hot.accept('#blokkli/helpers/runtimeHelpers', () => {})

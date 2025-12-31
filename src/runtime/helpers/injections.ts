@@ -2,7 +2,6 @@ import type { InjectionKey, ComputedRef, Component } from 'vue'
 import type {
   BlokkliProviderEntityContext,
   EntityContext,
-  InjectedBlokkliItem,
   ItemEditContext,
 } from './../types'
 import type { DebugLogger } from '#blokkli/editor/providers/debug'
@@ -17,6 +16,7 @@ import type {
   MutatedItemProps,
 } from '#blokkli/editor/types/state'
 import type { DefineBlokkliContext } from '#blokkli/types/definitions'
+import type { InjectedBlokkliItem } from '#blokkli/types/field'
 
 export const INJECT_APP = Symbol('blokkli_app') as InjectionKey<BlokkliApp>
 

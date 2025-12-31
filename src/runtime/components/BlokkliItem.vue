@@ -24,7 +24,6 @@
 
 <script lang="ts" setup>
 import { computed, provide, inject, defineAsyncComponent } from '#imports'
-import type { InjectedBlokkliItem } from '#blokkli/types'
 import { getComponent } from '#blokkli/helpers/imports'
 import {
   INJECT_ALL_COMPONENTS_CHUNK,
@@ -38,7 +37,7 @@ import {
 } from '../helpers/injections'
 import type { BlockBundleWithNested } from '#blokkli-build/generated-types'
 import { itemEntityType } from '#blokkli-build/config'
-import type { BlockEditContext } from '#blokkli/types/field'
+import type { BlockEditContext, InjectedBlokkliItem } from '#blokkli/types/field'
 
 const componentProps = withDefaults(
   defineProps<{

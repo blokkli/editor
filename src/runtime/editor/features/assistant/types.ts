@@ -1,4 +1,4 @@
-import type { DraggableHostData } from '#blokkli/types'
+import type { BlokkliItemHost } from '#blokkli/editor/types/field'
 
 export type AssistantResultMarkup = {
   type: 'markup'
@@ -8,7 +8,7 @@ export type AssistantResultMarkup = {
 export type AssistantResult = AssistantResultMarkup
 type AdapterAssistantAddBlockFromResult = {
   result: AssistantResult
-  host: DraggableHostData
+  host: BlokkliItemHost
   preceedingUuid: string | null
 }
 
