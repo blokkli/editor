@@ -1,7 +1,6 @@
 import type { ComputedRef } from 'vue'
 import type { Eventbus } from '../editor/events'
 import type { Rectangle } from '../editor/types/geometry'
-import type { MutationResponseLike } from '../editor/adapter'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type {
   BlockBundleWithNested,
@@ -11,17 +10,10 @@ import type { BlokkliFragmentName } from '#blokkli-build/definitions'
 import type { RGB } from './../../shared/types/theme'
 import type { BlokkliDefinitionAddBehaviour } from './../../shared/types/definitions'
 import type { DefinitionProvider } from '../editor/providers/definition'
-import type { DraggableSearchContentItem } from '#blokkli/editor/features/search/types'
-import type { DraggableMediaLibraryItem } from '#blokkli/editor/features/media-library/types'
 import type { DomProvider } from '#blokkli/editor/providers/dom'
+import type { MutatedOptions } from '#blokkli/editor/types/state'
 
 export type { BlokkliDefinitionAddBehaviour }
-
-export type MutateWithLoadingStateFunction = (
-  promise: () => Promise<MutationResponseLike<any>> | undefined,
-  errorMessage?: string | false,
-  successMessage?: string,
-) => Promise<boolean>
 
 export type InjectedBlokkliItem = {
   index: ComputedRef<number>
@@ -42,16 +34,6 @@ export type FieldListItem = {
   props?: Record<string, any>
 }
 
-export type FieldConfig = {
-  name: string
-  entityType: string
-  entityBundle: string
-  label: string
-  cardinality: number
-  canEdit: boolean
-  allowedBundles: string[]
-}
-
 export type EntityContext = {
   uuid: string
   type: string
@@ -68,20 +50,6 @@ export type BlokkliProviderEntityContext = {
 export type EditPermission = 'view' | 'edit' | 'review'
 
 export type EditMode = 'readonly' | 'editing' | 'translating' | 'review'
-
-export type MutatedOptions = {
-  [uuid: string]: {
-    [key: string]: string
-  }
-}
-
-export type MutatedItemProps = {
-  [uuid: string]:
-    | {
-        [key: string]: string
-      }
-    | undefined
-}
 
 export interface DraggableHostData {
   type: string
@@ -123,56 +91,6 @@ export type DraggableStyle = {
   contrastColorRGB: RGB
   isInverted: boolean
 }
-
-export interface DraggableExistingStructureBlock {
-  itemType: 'existing_structure'
-  block: RenderedFieldListItem
-  element: () => HTMLElement
-}
-
-export interface DraggableExistingBlock {
-  itemType: 'existing'
-  block: RenderedFieldListItem
-}
-
-export interface DraggableNewItem {
-  itemType: 'new'
-  element: () => HTMLElement
-  itemBundle: string
-}
-
-export interface DraggableActionItem {
-  itemType: 'action'
-  actionType: string
-  action: AddAction
-  itemBundle?: string
-  element: () => HTMLElement
-}
-
-export interface DraggableReusableItem {
-  itemType: 'reusable'
-  element: () => HTMLElement
-  itemBundle: string
-  libraryItemUuid: string
-}
-
-export interface DraggableClipboardItem {
-  itemType: 'clipboard'
-  element: () => HTMLElement
-  itemBundle: string
-  additional?: string
-  clipboardId: string
-}
-
-export type DraggableItem =
-  | DraggableClipboardItem
-  | DraggableNewItem
-  | DraggableActionItem
-  | DraggableExistingBlock
-  | DraggableExistingStructureBlock
-  | DraggableReusableItem
-  | DraggableSearchContentItem
-  | DraggableMediaLibraryItem
 
 export type Message = {
   type: 'success' | 'error' | 'warning'

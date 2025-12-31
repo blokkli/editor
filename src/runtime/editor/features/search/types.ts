@@ -86,3 +86,9 @@ declare module '#blokkli/editor/adapter' {
     ) => Promise<MutationResponseLike<T>> | undefined
   }
 }
+
+declare module '#blokkli/editor/types/draggable' {
+  interface DraggableItemTypes {
+    search_content: DraggableSearchContentItem
+  }
+}

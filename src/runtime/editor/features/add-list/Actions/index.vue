@@ -11,9 +11,9 @@
 
 <script setup lang="ts">
 import { computed, useBlokkli } from '#imports'
-import type { DraggableActionItem } from '#blokkli/types'
 import { Sortli } from '#blokkli/editor/components'
 import ActionButton from './Action.vue'
+import type { DraggableActionItem } from '../types';
 
 defineProps<{
   selectableBundles: string[]

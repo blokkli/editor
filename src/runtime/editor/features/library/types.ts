@@ -38,6 +38,13 @@ export type AddReusableItemEvent = {
   afterUuid: string | null
 }
 
+export interface DraggableReusableItem {
+  itemType: 'reusable'
+  element: () => HTMLElement
+  itemBundle: string
+  libraryItemUuid: string
+}
+
 declare module '#blokkli/editor/adapter' {
   interface BlokkliAdapter<T> {
     /**
@@ -72,5 +79,11 @@ declare module '#blokkli/editor/adapter' {
      * Build the URL to edit a library item.
      */
     getLibraryItemEditUrl?: (uuid: string) => string
+  }
+}
+
+declare module '#blokkli/editor/types/draggable' {
+  interface DraggableItemTypes {
+    reusable: DraggableReusableItem
   }
 }

@@ -41,10 +41,9 @@
 <script lang="ts" setup>
 import { ref, useBlokkli } from '#imports'
 import { ItemIcon, Icon, Sortli } from '#blokkli/editor/components'
-import type { DraggableClipboardItem } from '#blokkli/types'
 import ClipboardItemVideo from './Item/Video.vue'
 import ClipboardItemFile from './Item/File.vue'
-import type { BlokkliClipboardItem } from '../types'
+import type { BlokkliClipboardItem, DraggableClipboardItem } from '../types'
 
 const renderKey = ref(0)
 

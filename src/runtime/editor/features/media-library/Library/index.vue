@@ -81,13 +81,11 @@ import {
 import { Sortli, Icon, Pagination, FormToggle } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import Item from './Item.vue'
-import type {
-  DraggableItem,
-} from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type { DraggableMediaLibraryItem } from '../types'
 import type { PluginConfigInput } from '#blokkli/editor/types/pluginConfig'
+import type { DraggableItem } from '#blokkli/editor/types/draggable'
 
 defineProps<{
   modelValue?: string

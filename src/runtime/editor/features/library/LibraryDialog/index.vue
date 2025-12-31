@@ -66,7 +66,7 @@ import {
   ConfigForm,
   Loading
 } from '#blokkli/editor/components'
-import type { BlokkliFieldElement, FieldConfig } from '#blokkli/types'
+import type { BlokkliFieldElement, } from '#blokkli/types'
 import {
   ref,
   useBlokkli,
@@ -95,7 +95,7 @@ const selectedItem = ref('')
 const page = ref(0)
 
 const allowedBundles = computed<string[]>(() => {
-  const fieldConfig: FieldConfig | undefined = types.getFieldConfig(
+  const fieldConfig = types.getFieldConfig(
     props.field.hostEntityType,
     props.field.hostEntityBundle,
     props.field.name,

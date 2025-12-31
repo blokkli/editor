@@ -1,5 +1,6 @@
 import { onBeforeUnmount, onMounted, useBlokkli } from '#imports'
-import type { DraggableItem, DropArea } from '#blokkli/types'
+import type { DropArea } from '#blokkli/types'
+import type { DraggableItem } from '../types/draggable'
 
 export function defineDropAreas(
   cb: (items: DraggableItem[]) => DropArea | DropArea[] | undefined,

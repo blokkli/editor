@@ -103,3 +103,9 @@ declare module '#blokkli/editor/adapter' {
     ) => Promise<MutationResponseLike<T>> | undefined
   }
 }
+
+declare module '#blokkli/editor/types/draggable' {
+  interface DraggableItemTypes {
+    media_library: DraggableMediaLibraryItem
+  }
+}

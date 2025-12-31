@@ -7,3 +7,13 @@ export interface BlockBundleDefinition {
   hasPublishOn?: boolean
   hasUnpublishOn?: boolean
 }
+
+export type FieldConfig = {
+  name: string
+  entityType: string
+  entityBundle: string
+  label: string
+  cardinality: number
+  canEdit: boolean
+  allowedBundles: string[]
+}

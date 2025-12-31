@@ -1,3 +1,4 @@
+import type { MutationResponseLike } from '#blokkli/editor/adapter'
 import type { FieldListItem } from '#blokkli/types'
 import type { PublishOptions } from '../features/publish/types'
 
@@ -65,4 +66,24 @@ export interface MappedState {
   mutatedEntity?: any
   translationState: TranslationState
   previewUrl?: string
+}
+
+export type MutateWithLoadingStateFunction = (
+  promise: () => Promise<MutationResponseLike<any>> | undefined,
+  errorMessage?: string | false,
+  successMessage?: string,
+) => Promise<boolean>
+
+export type MutatedOptions = {
+  [uuid: string]: {
+    [key: string]: string
+  }
+}
+
+export type MutatedItemProps = {
+  [uuid: string]:
+    | {
+        [key: string]: string
+      }
+    | undefined
 }

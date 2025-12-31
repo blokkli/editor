@@ -30,7 +30,6 @@ import type {
   CursorKeyword,
 } from '#blokkli/editor/types'
 import type {
-  DraggableExistingBlock,
   RenderedFieldListItem,
 } from '#blokkli/types'
 import {
@@ -44,6 +43,7 @@ import {
 import { itemEntityType } from '#blokkli-build/config'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
+import type { DraggableExistingBlock } from '#blokkli/editor/types/draggable'
 
 const {
   dom,

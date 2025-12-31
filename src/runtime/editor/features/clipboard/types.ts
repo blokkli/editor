@@ -84,6 +84,14 @@ export type ClipboardMapBundleEvent =
   | ClipboardMapBundleEventFile
   | ClipboardMapBundleEventPlaintext
 
+export interface DraggableClipboardItem {
+  itemType: 'clipboard'
+  element: () => HTMLElement
+  itemBundle: string
+  additional?: string
+  clipboardId: string
+}
+
 declare module '#blokkli/editor/adapter' {
   interface BlokkliAdapter<T> {
     /**
@@ -104,5 +112,11 @@ declare module '#blokkli/editor/adapter' {
     pasteExistingBlocks?(
       e: PasteExistingBlocksEvent,
     ): Promise<MutationResponseLike<T>>
+  }
+}
+
+declare module '#blokkli/editor/types/draggable' {
+  interface DraggableItemTypes {
+    clipboard: DraggableClipboardItem
   }
 }

@@ -1,7 +1,5 @@
 import { reactive, ref, computed, type ComputedRef, onMounted } from '#imports'
 import type {
-  DraggableExistingBlock,
-  DraggableItem,
   EntityContext,
   RenderedFieldListItem,
   RegisteredField,
@@ -18,6 +16,7 @@ import type { DebugProvider } from './debug'
 import type { StateProvider } from './state'
 import type { ElementProvider } from './element'
 import type { Coord, Rectangle } from '../types/geometry'
+import type { DraggableExistingBlock, DraggableItem } from '../types/draggable'
 
 type RegisteredFieldType = {
   entityType: string

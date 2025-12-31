@@ -24,9 +24,9 @@
 import { useBlokkli, computed, onBeforeUnmount } from '#imports'
 import List from './../../List/index.vue'
 import { ItemIcon } from '#blokkli/editor/components'
-import type { DraggableExistingStructureBlock } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
 import { itemEntityType } from '#blokkli-build/config'
+import type { DraggableExistingStructureBlock } from '../../types'
 
 const props = withDefaults(
   defineProps<{
