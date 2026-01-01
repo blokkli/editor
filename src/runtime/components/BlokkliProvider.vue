@@ -83,7 +83,7 @@ import {
 import type {
   EntityContext,
 } from '#blokkli/types'
-import type { BlokkliProviderEntityContext, EditPermission } from '#blokkli/types/provider';
+import type { BlokkliProviderEntityContext, EditPermission } from '#blokkli/types/provider'
 
 type BlokkliProviderProps = {
   /**
@@ -199,37 +199,37 @@ const router = useRouter()
 
 const shouldRender = ref(false)
 
-const isInEditor = computed(
+const isInEditor = computed<boolean>(
   () =>
-    props.entityUuid &&
-    props.entityType &&
-    props.entityBundle &&
+    !!props.entityUuid &&
+    !!props.entityType &&
+    !!props.entityBundle &&
     (isPreviewing.value || isEditing.value),
 )
 
-const canEdit = computed(() => props.permissions.includes('edit'))
+const canEdit = computed<boolean>(() => props.permissions.includes('edit'))
 
 const canUseBlokkli = computed<boolean>(() => !!props.permissions.length)
 
-const isEditing = computed(
+const isEditing = computed<boolean>(
   () =>
     canUseBlokkli.value &&
     !!props.entityUuid &&
     route.query.blokkliEditing === props.entityUuid,
 )
 
-const isPreviewing = computed(
+const isPreviewing = computed<boolean>(
   () => !!props.entityUuid && route.query.blokkliPreview === props.entityUuid,
 )
 
-const showIndicator = computed(
+const showIndicator = computed<boolean>(
   () =>
     !!props.permissions.length &&
     !route.query.blokkliEditing &&
     !route.query.blokkliPreview,
 )
 
-function edit() {
+function edit(): void {
   router.push({
     path: props.editPath || route.path,
     query: {

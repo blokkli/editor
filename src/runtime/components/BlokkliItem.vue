@@ -71,7 +71,7 @@ const fieldUsesProxy = inject(INJECT_FIELD_USES_PROXY, false)
 const isGlobalProxyMode = inject(INJECT_GLOBAL_PROXY_MODE, null)
 const fieldListType = inject(INJECT_FIELD_LIST_TYPE, undefined)
 
-const itemProps = computed(() => {
+const itemProps = computed<Record<string, string>>(() => {
   if (mutatedItemProps) {
     const mutatedProps = mutatedItemProps[componentProps.uuid]
     if (mutatedProps) {
@@ -100,7 +100,7 @@ const blockNotImplemented = componentProps.isEditing
   ? defineAsyncComponent(() => import('./Blocks/NotImplemented/index.vue'))
   : null
 
-const index = computed(() => componentProps.index)
+const index = computed<number>(() => componentProps.index)
 const item = computed<InjectedBlokkliItem>(() => ({
   index,
   uuid: componentProps.uuid || '',

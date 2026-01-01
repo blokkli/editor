@@ -17,7 +17,6 @@ import {
   onBeforeUnmount,
   useTemplateRef,
 } from '#imports'
-import { onBlokkliEvent } from '#blokkli/editor/composables'
 import {
   INJECT_APP,
   INJECT_EDIT_CONTEXT,
@@ -81,9 +80,9 @@ const onEditableUpdateValue = (e: EditableFieldUpdateEvent) => {
   }
 }
 
-onBlokkliEvent('state:reloaded', () => {
+function onStateReloaded() {
   valueOverride.value = ''
-})
+}
 
 onMounted(() => {
   if (!isEditing || !editContext || !app || isInReusable) {
@@ -91,6 +90,7 @@ onMounted(() => {
   }
 
   editContext.eventBus.on('editable:update', onEditableUpdateValue)
+  editContext.eventBus.on('state:reloaded', onStateReloaded)
 
   if (root.value instanceof HTMLElement && entity) {
     app.directive.registerDirectiveElement(
@@ -107,6 +107,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   if (editContext) {
     editContext.eventBus.off('editable:update', onEditableUpdateValue)
+    editContext.eventBus.off('state:reloaded', onStateReloaded)
   }
   if (app && root.value instanceof HTMLElement && entity) {
     app.directive.unregisterDirectiveElement(
