@@ -16,7 +16,6 @@ import { falsy, getFieldKey } from '#blokkli/helpers'
 import { emitMessage, type BlokkliEventBus } from '#blokkli/editor/events'
 import { nextTick } from '#imports'
 import type { TextProvider } from './texts'
-import { BUNDLE_FROM_LIBRARY } from '../../../shared/constants'
 import type { PublishOptions } from '../features/publish/types'
 import type {
   EditEntity,
@@ -31,6 +30,7 @@ import type {
   Validation,
 } from '../types/state'
 import type { EditPermission } from '#blokkli/types/provider'
+import { fromLibraryBlockBundle } from '#blokkli-build/config'
 
 const HOST_OPTION_KEY = 'HOST'
 
@@ -516,7 +516,7 @@ export default async function (
           bundleToUuids[item.bundle] = []
         }
         bundleToUuids[item.bundle]!.push(item.uuid)
-        if (item.bundle === BUNDLE_FROM_LIBRARY) {
+        if (item.bundle === fromLibraryBlockBundle) {
           fromLibrary.push(item.uuid)
         }
       }

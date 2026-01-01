@@ -105,6 +105,16 @@ export type ModuleOptions = {
   itemEntityType?: string
 
   /**
+   * The name of the 'from library' block bundle.
+   */
+  fromLibraryBlockBundle?: string
+
+  /**
+   * The name of the 'blökkli' block bundle.
+   */
+  fragmentBlockBundle?: string
+
+  /**
    * Provide overrides for the translations.
    */
   translations?: Record<string, Record<string, string>>

@@ -15,12 +15,9 @@
 </template>
 
 <script setup lang="ts">
+import { fragmentBlockBundle, fromLibraryBlockBundle } from '#blokkli-build/config';
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { ItemIcon, Icon } from '#blokkli/editor/components'
-import {
-  BUNDLE_BLOKKLI_FRAGMENT,
-  BUNDLE_FROM_LIBRARY,
-} from '../../../../shared/constants'
 import { computed } from '#imports'
 
 type ItemColor = 'rose' | 'lime' | 'default' | 'yellow' | 'accent'
@@ -46,9 +43,9 @@ const mappedColor = computed<ItemColor>(() => {
   if (props.color) {
     return props.color
   } else if (props.bundle) {
-    if (props.bundle === BUNDLE_BLOKKLI_FRAGMENT) {
+    if (props.bundle === fragmentBlockBundle) {
       return 'accent'
-    } else if (props.bundle === BUNDLE_FROM_LIBRARY) {
+    } else if (props.bundle === fromLibraryBlockBundle) {
       return 'lime'
     }
   }

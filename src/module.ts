@@ -78,6 +78,8 @@ export default defineNuxtModule<ModuleOptions>({
       },
     },
     chunkNames: ['global'],
+    fromLibraryBlockBundle: 'from_library',
+    fragmentBlockBundle: 'blokkli_fragment',
   },
   async setup(moduleOptions, nuxt) {
     const blokkliModules = moduleOptions.modules || []
@@ -197,9 +199,13 @@ export default defineNuxtModule<ModuleOptions>({
       src: resolver.resolve('runtime/plugins/blokkliDirectives'),
     })
 
-    addBuildPlugin(RuntimeDefinitionPlugin(nuxt, 'defineBlokkli'))
-    addBuildPlugin(RuntimeDefinitionPlugin(nuxt, 'defineBlokkliFragment'))
-    addBuildPlugin(RuntimeDefinitionPlugin(nuxt, 'defineBlokkliProvider', 1))
+    addBuildPlugin(RuntimeDefinitionPlugin(nuxt, helper, 'defineBlokkli'))
+    addBuildPlugin(
+      RuntimeDefinitionPlugin(nuxt, helper, 'defineBlokkliFragment'),
+    )
+    addBuildPlugin(
+      RuntimeDefinitionPlugin(nuxt, helper, 'defineBlokkliProvider', 1),
+    )
     addBuildPlugin(BlokkliEditingPlugin(nuxt))
 
     // Watch for file changes in dev mode.

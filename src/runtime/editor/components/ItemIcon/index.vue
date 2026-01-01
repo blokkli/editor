@@ -8,8 +8,8 @@
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/editor/components'
-import { BUNDLE_FROM_LIBRARY } from '../../../../shared/constants'
 import type { BlokkliIcon } from '#blokkli-build/icons'
+import { fromLibraryBlockBundle } from '#blokkli-build/config';
 
 const props = defineProps<{
   bundle?: string
@@ -22,7 +22,7 @@ const markup = computed(() =>
 )
 
 const iconName = computed<BlokkliIcon>(() => {
-  if (props.bundle === BUNDLE_FROM_LIBRARY) {
+  if (props.bundle === fromLibraryBlockBundle) {
     return 'reusable'
   } else if (props.bundle) {
     const name = definitions.getBlockDefinition(props.bundle, 'default')?.editor

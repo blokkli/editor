@@ -8,10 +8,11 @@ import { FIELD_MAPPING } from '#blokkli-build/runtime-options'
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 import { getActualBlock } from '#blokkli/helpers/runtimeHelpers'
 import type { MutatedField } from '#blokkli/editor/types/state'
+import type { fromLibraryBlockBundle } from '#blokkli-build/config'
 
 type BundleWithoutLibrary = Exclude<
   FieldListItemTyped['bundle'],
-  'from_library'
+  typeof fromLibraryBlockBundle
 >
 
 type CallbackResult =

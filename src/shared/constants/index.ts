@@ -1,10 +1,6 @@
 export const BK_HIDDEN_GLOBALLY = 'bkHiddenGlobally'
 export const BK_VISIBLE_LANGUAGES = 'bkVisibleLanguages'
 
-export const BUNDLE_FROM_LIBRARY = 'from_library'
-export const BUNDLE_BLOKKLI_FRAGMENT = 'blokkli_fragment'
-export const INTERNAL_BUNDLES = [BUNDLE_FROM_LIBRARY, BUNDLE_BLOKKLI_FRAGMENT]
-
 export const SETTINGS_GROUP = [
   'appearance',
   'artboard',

@@ -20,10 +20,6 @@ import {
   OPTIONS,
   type RuntimeBlockOptionArray,
 } from '#blokkli-build/runtime-options'
-import {
-  BUNDLE_BLOKKLI_FRAGMENT,
-  BUNDLE_FROM_LIBRARY,
-} from '../../shared/constants'
 import type {
   BlockDefinitionInput,
   BlockDefinitionOptionsInput,
@@ -31,6 +27,10 @@ import type {
   DefineBlokkliContext,
 } from '#blokkli/types/definitions'
 import type { BlokkliProviderEntityContext } from '#blokkli/types/provider'
+import {
+  fragmentBlockBundle,
+  fromLibraryBlockBundle,
+} from '#blokkli-build/config'
 
 /**
  * Define a blokkli component.
@@ -111,7 +111,7 @@ export function defineBlokkli<
     // These options will never be directly returned in defineBlokkli().
     // For example the from_library block renders the "actual" block again, at
     // which point this computed property is built again.
-    if (bundle === BUNDLE_FROM_LIBRARY) {
+    if (bundle === fromLibraryBlockBundle) {
       return {
         ...(item?.value.options || {}),
         ...(editContext?.mutatedOptions[uuid] || {}),
@@ -122,7 +122,7 @@ export function defineBlokkli<
     // For fragments, the fragment name is injected by the blokkli_fragment
     // component.
     const optionKey =
-      bundle === BUNDLE_BLOKKLI_FRAGMENT
+      bundle === fragmentBlockBundle
         ? 'fragment:' + item?.value.fragmentName
         : identifier
 
@@ -188,8 +188,8 @@ export function defineBlokkli<
   if (
     editContext?.useBlockRegistration &&
     editContext.dom &&
-    bundle !== BUNDLE_FROM_LIBRARY &&
-    bundle !== BUNDLE_BLOKKLI_FRAGMENT
+    bundle !== fromLibraryBlockBundle &&
+    bundle !== fragmentBlockBundle
   ) {
     const isProxyMode = inject(INJECT_FIELD_USES_PROXY, false)
     if (!isProxyMode) {

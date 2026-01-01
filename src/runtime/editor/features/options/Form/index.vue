@@ -61,9 +61,8 @@ import { getRuntimeOptionValue } from '#blokkli/runtime-helpers'
 import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
-BUNDLE_FROM_LIBRARY
 } from './../../../../../shared/constants'
-import { itemEntityType } from '#blokkli-build/config'
+import { fromLibraryBlockBundle, itemEntityType } from '#blokkli-build/config'
 
 if (import.meta.hot) {
   import.meta.hot.accept('#blokkli/runtime-helpers', () => {})
@@ -341,7 +340,7 @@ const visibleOptions = computed<OptionItem[]>(() => {
     block?.host.type === itemEntityType ? block.parentBlockBundle : undefined
 
   const ctxProps =
-    item?.bundle === BUNDLE_FROM_LIBRARY
+    item?.bundle === fromLibraryBlockBundle
       ? (item?.props as any)?.libraryItem?.block?.props
       : item?.props
 

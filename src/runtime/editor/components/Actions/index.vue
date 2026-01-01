@@ -43,7 +43,7 @@
             />
             <Icon v-else name="bk_mdi_select_all" />
             <div
-              v-if="itemBundle?.id === 'from_library'"
+              v-if="itemBundle?.id === fromLibraryBlockBundle"
               class="bk-blokkli-item-actions-title-icon-reusable"
             >
               <Icon name="reusable" />
@@ -86,13 +86,10 @@ import { watch, ref, computed, useBlokkli, useTemplateRef } from '#imports'
 import { falsy } from '#blokkli/helpers'
 import { Icon, ItemIconBox } from '#blokkli/editor/components'
 import EditActionsItemDropdown from './ItemDropdown.vue'
-import {
-  BUNDLE_BLOKKLI_FRAGMENT,
-  BUNDLE_FROM_LIBRARY,
-} from '../../../../shared/constants'
 import type { FragmentDefinition } from '#blokkli-build/definitions'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { onBlokkliEvent, useStickyToolbar } from '#blokkli/editor/composables'
+import { fragmentBlockBundle, fromLibraryBlockBundle } from '#blokkli-build/config'
 
 const { selection, $t, types, state, ui, definitions, debug } = useBlokkli()
 
@@ -140,7 +137,7 @@ watch(selection.hasHostSelected, () => {
 })
 
 const bundleIcon = computed(() => {
-  if (itemBundle.value?.id === BUNDLE_FROM_LIBRARY) {
+  if (itemBundle.value?.id === fromLibraryBlockBundle) {
     const reusableBundle = selection.items.value[0]?.library?.reusableBundle
     if (reusableBundle) {
       return reusableBundle
@@ -159,7 +156,7 @@ const iconOverride = computed<BlokkliIcon | null>(() => {
 })
 
 const isReusable = computed(() => {
-  return itemBundle.value?.id === BUNDLE_FROM_LIBRARY
+  return itemBundle.value?.id === fromLibraryBlockBundle
 })
 
 const hasSelectedHost = computed(() => {
@@ -167,7 +164,7 @@ const hasSelectedHost = computed(() => {
 })
 
 const fragment = computed<FragmentDefinition | null>(() => {
-  if (itemBundle.value?.id !== BUNDLE_BLOKKLI_FRAGMENT) {
+  if (itemBundle.value?.id !== fragmentBlockBundle) {
     return null
   }
   const uuid = selection.uuids.value[0]
@@ -191,7 +188,7 @@ const title = computed(() => {
   } else if (debug.isEnabled.value && selection.uuids.value.length === 1) {
     return selection.uuids.value[0]
   } else if (itemBundle.value) {
-    if (itemBundle.value.id === 'blokkli_fragment') {
+    if (itemBundle.value.id === fragmentBlockBundle) {
       const fragments = selection.uuids.value
         .map((uuid) => {
           const item = state.getFieldListItem(uuid)
@@ -210,7 +207,7 @@ const title = computed(() => {
       if (fragments.length && fragments.length < 3) {
         return fragments.join(', ')
       }
-    } else if (itemBundle.value.id === 'from_library') {
+    } else if (itemBundle.value.id === fromLibraryBlockBundle) {
       const title = selection.items.value[0]?.library?.label
       if (title) {
         return title

@@ -17,6 +17,7 @@ import FragmentsDialog from './Dialog/index.vue'
 import { BlokkliTransition } from '#blokkli/editor/components'
 import { defineAddAction } from '#blokkli/editor/composables'
 import type { ActionPlacedData } from '#blokkli/editor/types/actions';
+import { fragmentBlockBundle } from '#blokkli-build/config';
 
 const { adapter } = defineBlokkliFeature({
   id: 'fragments',
@@ -48,7 +49,7 @@ const onAddFragment = async (name: string) => {
 }
 
 const isSupportedOnEntity = computed(() =>
-  types.generallyAvailableBundles.find((v) => v.id === 'blokkli_fragment'),
+  types.generallyAvailableBundles.find((v) => v.id === fragmentBlockBundle),
 )
 
 defineAddAction(() => {
@@ -60,7 +61,7 @@ defineAddAction(() => {
     id: 'fragment',
     icon: 'bk_mdi_newspaper',
     color: 'accent',
-    itemBundle: 'blokkli_fragment',
+    itemBundle: fragmentBlockBundle,
     title: $t('fragmentsAddFragmentAction', 'Add fragment'),
     description: $t(
       'fragmentsAddFragmentDescription',

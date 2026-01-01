@@ -1,6 +1,10 @@
 import type { DomProvider } from './dom'
 import type { StateProvider } from './state'
-import { itemEntityType } from '#blokkli-build/config'
+import {
+  fragmentBlockBundle,
+  fromLibraryBlockBundle,
+  itemEntityType,
+} from '#blokkli-build/config'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type {
   BlockBundleWithNested,
@@ -9,7 +13,6 @@ import type {
 import type { AdapterContext } from '#blokkli/editor/adapter'
 import { type ComputedRef, ref } from '#imports'
 import type { BlokkliFragmentName } from '#blokkli-build/definitions'
-import { BUNDLE_BLOKKLI_FRAGMENT } from '../../../shared/constants'
 import type { MutatedField } from '../types/state'
 import type { RenderedFieldListItem } from '../types/field'
 
@@ -67,7 +70,7 @@ export default function (
   function getLibraryData(
     item: FieldListItemTyped,
   ): { label: string; libraryItemUuid: string; reusableBundle: string } | null {
-    if (item.bundle === 'from_library' && item.props.libraryItem) {
+    if (item.bundle === fromLibraryBlockBundle && item.props.libraryItem) {
       const uuid = item.props.libraryItem.uuid
       const bundle = item.props.libraryItem.block?.bundle
       if (uuid && bundle) {
@@ -85,7 +88,7 @@ export default function (
   function getFragmentData(
     item: FieldListItemTyped,
   ): { name: BlokkliFragmentName } | null {
-    if (item.bundle === BUNDLE_BLOKKLI_FRAGMENT && item.props.name) {
+    if (item.bundle === fragmentBlockBundle && item.props.name) {
       return {
         name: item.props.name as BlokkliFragmentName,
       }

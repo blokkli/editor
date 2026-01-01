@@ -23,6 +23,7 @@ import type {
   FragmentDefinitionInput,
   ProviderDefinitionInput,
 } from '#blokkli/types/definitions'
+import { fragmentBlockBundle } from '#blokkli-build/config';
 
 defineBlokkliFeature({
   id: 'options',
@@ -79,9 +80,9 @@ const definition = computed<
 
   const bundle = bundles[0]!
 
-  if (bundle === 'blokkli_fragment') {
+  if (bundle === fragmentBlockBundle) {
     const fragments = selection.items.value.filter(
-      (v) => v.bundle === 'blokkli_fragment',
+      (v) => v.bundle === fragmentBlockBundle,
     )
 
     const fragmentNames = fragments

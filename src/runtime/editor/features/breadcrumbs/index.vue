@@ -58,6 +58,7 @@
 import { useBlokkli, defineBlokkliFeature, computed } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import { useStateBasedCache } from '#blokkli/editor/composables'
+import { fragmentBlockBundle, fromLibraryBlockBundle } from '#blokkli-build/config';
 
 defineBlokkliFeature({
   id: 'breadcrumbs',
@@ -97,7 +98,7 @@ const getChainCache = useStateBasedCache(
 
 function getBlockLabel(bundle: string, props?: Record<string, any>): string {
   // Fragment: Use fragment definition label.
-  if (bundle === 'blokkli_fragment' && props?.name) {
+  if (bundle === fragmentBlockBundle && props?.name) {
     const fragmentDef = definitions.getFragmentDefinition(props.name)
     if (fragmentDef?.label) {
       return fragmentDef.label
@@ -105,7 +106,7 @@ function getBlockLabel(bundle: string, props?: Record<string, any>): string {
   }
 
   // Reusable block: Use library item label.
-  if (bundle === 'from_library' && props?.libraryItem?.label) {
+  if (bundle === fromLibraryBlockBundle && props?.libraryItem?.label) {
     return props.libraryItem.label
   }
 

@@ -12,6 +12,7 @@ import {
   isFragment,
   type ExtractedDefinition,
 } from '../Collector/Blocks'
+import type { ModuleHelper } from '../ModuleHelper'
 
 export function isVue(
   id: string,
@@ -67,6 +68,7 @@ function generateRuntimeArg(definition: ExtractedDefinition) {
 
 export const RuntimeDefinitionPlugin = (
   nuxt: Nuxt,
+  helper: ModuleHelper,
   composableName: string,
   argIndex = 0,
 ) => {
@@ -79,6 +81,11 @@ export const RuntimeDefinitionPlugin = (
     }
     const definition = parseTsObject<ExtractedDefinition>(source)
     if (definition.object) {
+      if (isBlock(definition.object)) {
+        definition.object.bundle = helper.getMappedBlockBundle(
+          definition.object.bundle,
+        )
+      }
       cache.set(source, definition.object)
       return definition.object
     }

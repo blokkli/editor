@@ -23,7 +23,7 @@ import Overlay from './Overlay/index.vue'
 import type { EntityContext } from '#blokkli/types'
 import { BlokkliTransition } from '#blokkli/editor/components'
 import { falsy } from '#blokkli/helpers'
-import { itemEntityType } from '#blokkli-build/config'
+import { fromLibraryBlockBundle, itemEntityType } from '#blokkli-build/config'
 import { defineCommands, onBlokkliEvent } from '#blokkli/editor/composables'
 import type { EditableFieldConfig } from './types'
 
@@ -83,7 +83,7 @@ const buildEditable = (
   if (!host) {
     return
   }
-  if (host.bundle === 'from_library') {
+  if (host.bundle === fromLibraryBlockBundle) {
     return
   }
 

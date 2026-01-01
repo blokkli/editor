@@ -83,7 +83,7 @@ import { Icon } from '#blokkli/editor/components'
 import getVideoId from 'get-video-id'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { emitMessage } from '#blokkli/editor/events'
-import { itemEntityType } from '#blokkli-build/config'
+import { fragmentBlockBundle, itemEntityType } from '#blokkli-build/config'
 import { defineItemDropdownAction, defineShortcut, onBlokkliEvent } from '#blokkli/editor/composables'
 import type { BlokkliClipboardItem } from './types'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
@@ -349,7 +349,7 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
     const pastedFragments = pastedUuids
       .map((uuid) => {
         const block = blocks.getBlock(uuid)
-        if (block?.bundle === 'blokkli_fragment' && block.fragment?.name) {
+        if (block?.bundle === fragmentBlockBundle && block.fragment?.name) {
           return block.fragment.name
         }
         return null
@@ -454,7 +454,7 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
 
     // Check fragment restrictions for blokkli_fragment bundles
     if (
-      block.bundle === 'blokkli_fragment' &&
+      block.bundle === fragmentBlockBundle &&
       block.fragment?.name &&
       targetFieldElement.allowedFragments.length > 0
     ) {

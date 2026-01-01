@@ -15,7 +15,7 @@ export type Props = {
 const componentProps = defineProps<Props>()
 
 const ctx = defineBlokkli({
-  bundle: 'blokkli_fragment',
+  bundle: 'BK_BUNDLE_FRAGMENT',
   editor: {
     icon: 'bk_mdi_newspaper',
     disableEdit: true,

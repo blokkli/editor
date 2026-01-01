@@ -36,7 +36,7 @@ import {
   INJECT_ITEM_PROPS_OVERRIDE,
 } from '../helpers/injections'
 import type { BlockBundleWithNested } from '#blokkli-build/generated-types'
-import { itemEntityType } from '#blokkli-build/config'
+import { fragmentBlockBundle, itemEntityType } from '#blokkli-build/config'
 import type { BlockEditContext, InjectedBlokkliItem } from '#blokkli/types/field'
 
 const componentProps = withDefaults(
@@ -108,7 +108,7 @@ const item = computed<InjectedBlokkliItem>(() => ({
   isEditing: componentProps.isEditing,
   parentType: componentProps.parentType as BlockBundleWithNested,
   fragmentName:
-    componentProps.bundle === 'blokkli_fragment'
+    componentProps.bundle === fragmentBlockBundle
       ? componentProps.props?.name
       : undefined,
 }))

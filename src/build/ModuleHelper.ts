@@ -214,4 +214,14 @@ export class ModuleHelper {
       path + '/*',
     ]
   }
+
+  public getMappedBlockBundle(bundle: string): string {
+    if (bundle === 'BK_BUNDLE_FROM_LIBRARY') {
+      return this.options.fromLibraryBlockBundle ?? 'from_library'
+    } else if (bundle === 'BK_BUNDLE_FRAGMENT') {
+      return this.options.fragmentBlockBundle ?? 'blokkli_fragment'
+    }
+
+    return bundle
+  }
 }

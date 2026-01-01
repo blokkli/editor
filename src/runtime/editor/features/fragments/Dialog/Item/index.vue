@@ -25,6 +25,7 @@ import {
   INJECT_IS_IN_REUSABLE,
   INJECT_PROVIDER_BLOCKS,
 } from '#blokkli/helpers/injections'
+import { fragmentBlockBundle } from '#blokkli-build/config';
 
 const props = defineProps<{
   name: string
@@ -37,7 +38,7 @@ const { definitions } = useBlokkli()
 
 const item = computed(() => {
   return {
-    bundle: 'blokkli_fragment',
+    bundle: fragmentBlockBundle,
     uuid: props.index.toString(),
     props: {
       name: props.name,

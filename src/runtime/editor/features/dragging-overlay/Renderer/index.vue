@@ -33,7 +33,7 @@ import {
   type Orientation,
 } from '#blokkli/editor/helpers/dropTargets'
 import type { RGB } from './../../../../../shared/types/theme'
-import { itemEntityType } from '#blokkli-build/config'
+import { fragmentBlockBundle, fromLibraryBlockBundle, itemEntityType } from '#blokkli-build/config'
 import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'
 import type { DropTargetEvent } from '#blokkli/editor/events'
 import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
@@ -255,7 +255,7 @@ const draggingFragments = computed<string[]>(() =>
       if (
         (item.itemType === 'existing' ||
           item.itemType === 'existing_structure') &&
-        item.block.bundle === 'blokkli_fragment' &&
+        item.block.bundle === fragmentBlockBundle &&
         item.block.fragment?.name
       ) {
         return [item.block.fragment.name]
@@ -454,7 +454,7 @@ const parentChainCache: Record<string, string[]> = {}
 
 function getBlockLabel(bundle: string, props?: Record<string, any>): string {
   // Fragment: Use fragment definition label.
-  if (bundle === 'blokkli_fragment' && props?.name) {
+  if (bundle === fragmentBlockBundle && props?.name) {
     const fragmentDef = definitions.getFragmentDefinition(props.name)
     if (fragmentDef?.label) {
       return fragmentDef.label
@@ -462,7 +462,7 @@ function getBlockLabel(bundle: string, props?: Record<string, any>): string {
   }
 
   // Reusable block: Use library item label.
-  if (bundle === 'from_library' && props?.libraryItem?.label) {
+  if (bundle === fromLibraryBlockBundle && props?.libraryItem?.label) {
     return props.libraryItem.label
   }
 

@@ -339,6 +339,11 @@ export class CollectedBlockFile extends CollectedFile {
         )
         this.definition = result.object
         this.definitionSource = result.source
+        if (isBlock(this.definition)) {
+          this.definition.bundle = helper.getMappedBlockBundle(
+            this.definition.bundle,
+          )
+        }
       }
     } catch (e) {
       console.log(e)

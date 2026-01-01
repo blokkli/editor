@@ -38,7 +38,7 @@ import { computed, useBlokkli } from '#imports'
 import { getBlokkliItemProxyComponent } from '#blokkli/editor/helpers/edit-components'
 import { ItemIcon } from '#blokkli/editor/components'
 import { falsy } from '#blokkli/helpers'
-import { itemEntityType } from '#blokkli-build/config'
+import { fromLibraryBlockBundle, itemEntityType } from '#blokkli-build/config'
 import { useBlockRegistration } from '#blokkli/editor/composables'
 import type { FieldConfig } from '#blokkli/editor/types/definitions'
 import type { LibraryItemProps } from '#blokkli/editor/features/library/types'
@@ -53,7 +53,7 @@ const props = defineProps<{
 
 // Props of the library item, if this is a 'from_library' block.
 const libraryItemProps = computed<LibraryItemProps | null>(() => {
-  if (props.bundle === 'from_library') {
+  if (props.bundle === fromLibraryBlockBundle) {
     const v = props.itemProps?.libraryItem
     return v as LibraryItemProps
   }
@@ -62,7 +62,7 @@ const libraryItemProps = computed<LibraryItemProps | null>(() => {
 })
 
 const proxyComponentProps = computed(() => {
-  if (props.bundle === 'from_library') {
+  if (props.bundle === fromLibraryBlockBundle) {
     // Pass the props of the reusable block to the proxy component.
     return libraryItemProps.value?.block?.props
   }

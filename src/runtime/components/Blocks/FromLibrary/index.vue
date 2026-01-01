@@ -25,7 +25,7 @@ export type Props = {
 const props = defineProps<Props>()
 
 const { index, options, parentType, isEditing, uuid } = defineBlokkli({
-  bundle: 'from_library',
+  bundle: 'BK_BUNDLE_FROM_LIBRARY',
   editor: {
     icon: 'reusable',
   },

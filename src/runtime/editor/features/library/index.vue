@@ -57,10 +57,10 @@ import ReusableDialog from './ReusableDialog/index.vue'
 import LibraryDialog from './LibraryDialog/index.vue'
 import EditReusable from './EditReusable/index.vue'
 import { BlokkliTransition } from '#blokkli/editor/components'
-import { BUNDLE_FROM_LIBRARY } from '../../../../shared/constants'
 import { defineAddAction, onBlokkliEvent, useDialog } from '#blokkli/editor/composables'
 import type { LibraryEditItemEvent } from './types'
 import type { ActionPlacedData } from '#blokkli/editor/types/actions'
+import { fromLibraryBlockBundle } from '#blokkli-build/config'
 
 const { adapter } = defineBlokkliFeature({
   id: 'library',
@@ -143,7 +143,7 @@ const itemBundle = computed(() => {
 })
 
 const isReusable = computed(() =>
-  selection.bundles.value.every((bundle) => bundle === BUNDLE_FROM_LIBRARY),
+  selection.bundles.value.every((bundle) => bundle === fromLibraryBlockBundle),
 )
 
 async function onMakeReusable(label: string) {
@@ -165,16 +165,16 @@ async function onMakeReusable(label: string) {
 }
 
 const isSupportedOnEntity = computed(() =>
-  types.generallyAvailableBundles.find((v) => v.id === BUNDLE_FROM_LIBRARY),
+  types.generallyAvailableBundles.find((v) => v.id === fromLibraryBlockBundle),
 )
 
 const fromLibraryAllowedInList = computed(() => {
   if (!selection.uuids.value.length) {
     return !!types.generallyAvailableBundles.find(
-      (v) => v.id === BUNDLE_FROM_LIBRARY,
+      (v) => v.id === fromLibraryBlockBundle,
     )
   }
-  return types.allowedTypesInList.value.includes(BUNDLE_FROM_LIBRARY)
+  return types.allowedTypesInList.value.includes(fromLibraryBlockBundle)
 })
 
 const canMakeReusable = computed(
@@ -216,7 +216,7 @@ defineAddAction(() => {
     ),
     icon: 'reusable',
     color: 'lime',
-    itemBundle: BUNDLE_FROM_LIBRARY,
+    itemBundle: fromLibraryBlockBundle,
     callback: (data) => {
       placedAction.value = data
     },

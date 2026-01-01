@@ -59,11 +59,13 @@ export default defineCodeTemplate(
     return `export {}`
   },
   (ctx) => {
+    const fromLibraryBlockBundle = ctx.helper.options.fromLibraryBlockBundle
+    const fragmentBlockBundle = ctx.helper.options.fragmentBlockBundle
     const mappedGetBundlePropsType = (
       bundle: string,
       file: CollectedBlockFile,
     ): GetBundlePropsTypeResult | null => {
-      if (bundle === 'from_library' || bundle === 'blokkli_fragment') {
+      if (bundle === fromLibraryBlockBundle || bundle === fragmentBlockBundle) {
         return {
           typeName: 'Props',
           from: file.filePath,
@@ -100,7 +102,7 @@ export default defineCodeTemplate(
       }
 
       if (
-        file.definition.bundle !== 'from_library' &&
+        file.definition.bundle !== ctx.helper.options.fromLibraryBlockBundle &&
         !validBlockBundles.includes(file.definition.bundle)
       ) {
         validBlockBundles.push(file.definition.bundle)
