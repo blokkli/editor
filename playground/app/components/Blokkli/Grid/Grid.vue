@@ -7,7 +7,6 @@
       { 'border-t border-t-mono-200': options.background === 'white' },
     ]"
   >
-    <div v-if="import.meta.blokkliEditing">YES IS EDITING</div>
     <BlokkliField
       name="header"
       :list="header"

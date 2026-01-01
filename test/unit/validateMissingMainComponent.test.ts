@@ -2,8 +2,8 @@ import { test, describe, expect } from 'vitest'
 import {
   validateMissingMainComponent,
   CollectedBlockFile,
-} from '../src/build/Collector/Blocks'
-import type { BlockDefinitionInputBase } from '../src/shared/types/definitions'
+} from '../../src/build/Collector/Blocks'
+import type { BlockDefinitionInputBase } from '../../src/shared/types/definitions'
 
 function createMockBlockFile(
   filePath: string,

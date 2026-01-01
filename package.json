@@ -106,6 +106,7 @@
     "@types/gettext-parser": "^8.0.0",
     "@types/micromatch": "^4.0.10",
     "@types/node": "^25.0.3",
+    "@vue/test-utils": "^2.4.6",
     "axe-core": "^4.11.0",
     "changelogen": "^0.6.2",
     "ckeditor5": "^47.3.0",

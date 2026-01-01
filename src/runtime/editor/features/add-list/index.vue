@@ -3,6 +3,7 @@
     <div
       ref="wrapper"
       class="bk bk-add-list bk-control"
+      id="bk-add-list"
       @wheel.capture.passive="onWheel"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"

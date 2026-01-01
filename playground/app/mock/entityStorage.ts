@@ -189,7 +189,11 @@ export class EntityStorageManager {
     })
 
     data.blocks.forEach((item) => {
-      if (item.bundle !== 'not_implemented' || import.meta.dev) {
+      if (
+        item.bundle !== 'not_implemented' ||
+        import.meta.dev ||
+        import.meta.test
+      ) {
         this.createBlock(item.bundle, item.uuid, item.values)
       }
     })
