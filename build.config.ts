@@ -1,6 +1,26 @@
 import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
+  hooks: {
+    'rollup:options': (_ctx, options) => {
+      // Fix incorrect path resolution for global constants.
+      // Without this, unbuild generates incorrect import paths like
+      // '../dist/global/constants/index.js' instead of './global/constants'.
+      const originalExternal = options.external
+      options.external = (id, importer, isResolved) => {
+        if (id.includes('/global/constants')) {
+          return true
+        }
+        if (typeof originalExternal === 'function') {
+          return originalExternal(id, importer, isResolved)
+        }
+        if (Array.isArray(originalExternal)) {
+          return originalExternal.includes(id)
+        }
+        return originalExternal === id
+      }
+    },
+  },
   entries: [
     {
       input: './src/global/',
@@ -22,6 +42,8 @@ export default defineBuildConfig({
     },
   ],
   externals: [
+    './global/constants',
+    'global/constants',
     '#imports',
     '#blokkli/editor/adapter',
     '#blokkli/types',

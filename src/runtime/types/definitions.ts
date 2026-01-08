@@ -68,9 +68,11 @@ export type DefineBlokkliContext<
   /**
    * Whether the item is being displayed in an editing context.
    *
-   * @deprecated Use `import.meta.blokkliEditing` instead, which will only
+   * Use `import.meta.blokkliEditing` instead, which will only
    * include "editing related code" in the editor bundle and remove it from
    * the main ("public") bundle.
+   *
+   * @deprecated
    */
   isEditing: boolean
 

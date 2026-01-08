@@ -24,12 +24,14 @@ export type Props = {
 
 const props = defineProps<Props>()
 
-const { index, options, parentType, isEditing, uuid } = defineBlokkli({
+const { index, options, parentType, uuid } = defineBlokkli({
   bundle: 'BK_BUNDLE_FROM_LIBRARY',
   editor: {
     icon: 'reusable',
   },
 })
+
+const isEditing = import.meta.blokkliEditing
 
 // Reusable items inherit the options from this wrapper paragraph.
 // They are injected in the defineBlokkli() composable.
