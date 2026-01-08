@@ -3,7 +3,7 @@ import {
   validateBlockDefinition,
   CollectedBlockFile,
 } from '../../src/build/Collector/Blocks'
-import type { BlockDefinitionInputBase } from '../../src/shared/types/definitions'
+import type { BlockDefinitionInputBase } from '../../src/global/types/definitions'
 
 function createMockBlockFile(
   definition: BlockDefinitionInputBase,

@@ -1,5 +1,5 @@
 import { computed, watch } from 'vue'
-import type { RGB } from './../../../shared/types/theme'
+import type { RGB } from './../../../global/types/theme'
 import { easeOutQuad } from '../helpers/easing'
 
 interface TransitionOptions {

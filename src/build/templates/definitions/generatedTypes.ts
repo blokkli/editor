@@ -5,7 +5,7 @@ import type { GetBundlePropsTypeResult } from '../../types'
 import type {
   BlockDefinitionInputBase,
   BlockDefinitionOptionsInputBase,
-} from './../../../shared/types/definitions'
+} from './../../../global/types/definitions'
 
 function toStringUnion(strings: string[]): string {
   return (

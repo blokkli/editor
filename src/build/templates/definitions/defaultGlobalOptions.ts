@@ -3,7 +3,7 @@ import { isBlock } from '../../Collector/Blocks'
 import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
-} from '../../../shared/constants'
+} from '../../../global/constants'
 
 export default defineCodeTemplate(
   'default-global-options',

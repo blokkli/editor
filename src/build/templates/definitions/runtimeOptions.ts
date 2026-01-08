@@ -2,7 +2,7 @@ import { defineCodeTemplate } from '../defineTemplate'
 import { isBlock } from '../../Collector/Blocks'
 import { falsy } from '../../helpers'
 import { toObject } from '../helpers'
-import type { BlockDefinitionInputBase } from './../../../shared/types/definitions'
+import type { BlockDefinitionInputBase } from './../../../global/types/definitions'
 
 export default defineCodeTemplate(
   'runtime-options',

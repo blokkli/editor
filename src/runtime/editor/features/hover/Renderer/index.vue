@@ -15,7 +15,7 @@ import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
 import { isInsideRect } from '#blokkli/editor/helpers/geometry'
 import { toShaderColor } from '#blokkli/editor/helpers/color'
-import type { RGB } from './../../../../../shared/types/theme'
+import type { RGB } from './../../../../../global/types/theme'
 import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'
 import type { Rectangle } from '#blokkli/editor/types/geometry'
 

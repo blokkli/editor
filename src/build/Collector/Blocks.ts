@@ -15,7 +15,7 @@ import type {
   BlockDefinitionInputBase,
   FragmentDefinitionInputBase,
   ProviderDefinitionInputBase,
-} from './../../shared/types/definitions'
+} from './../../global/types/definitions'
 
 export type ExtractedDefinition =
   | BlockDefinitionInputBase

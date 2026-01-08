@@ -37,7 +37,7 @@
 <script lang="ts" setup>
 import { computed, ref, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/editor/components'
-import { BK_VISIBLE_LANGUAGES } from './../../../../../../shared/constants'
+import { BK_VISIBLE_LANGUAGES } from './../../../../../../global/constants'
 import { defineCommands } from '#blokkli/editor/composables'
 
 const { $t, state } = useBlokkli()

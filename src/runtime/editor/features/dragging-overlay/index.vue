@@ -60,7 +60,7 @@ import type { DraggableActionItem } from '../add-list/types'
 import type { DraggableReusableItem } from '../library/types'
 import type { DraggableExistingStructureBlock } from '../structure/types'
 import type { BlokkliFieldElement, BlokkliItemHost } from '#blokkli/editor/types/field'
-import type { BlokkliDefinitionAddBehaviour } from './../../../../shared/types/definitions'
+import type { BlokkliDefinitionAddBehaviour } from './../../../../global/types/definitions'
 
 const { adapter } = defineBlokkliFeature({
   icon: 'bk_mdi_drag_pan',

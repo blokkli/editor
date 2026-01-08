@@ -9,7 +9,7 @@ import { po as PO, type GetTextTranslation } from 'gettext-parser'
 import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
-} from '../../src/shared/constants'
+} from '../../src/global/constants'
 
 const INTERNAL_TRANSLATIONS = {
   [`blockOption_${BK_VISIBLE_LANGUAGES}_label`]: 'Visible languages',

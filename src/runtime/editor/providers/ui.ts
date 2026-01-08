@@ -11,7 +11,7 @@ import {
 import type { ShallowRef } from 'vue'
 import type { StorageProvider } from './storage'
 import type { GlobalUiDialog, SidebarRegion } from '#blokkli/editor/types/ui'
-import type { Viewport } from '../../../shared/constants'
+import type { Viewport } from '../../../global/constants'
 import { falsy } from '../../helpers'
 import {
   addElementClasses,
@@ -22,7 +22,7 @@ import {
   defaultLanguage,
   forceDefaultLanguage,
 } from '#blokkli-build/editor-config'
-import type { ThemeColorName } from './../../../shared/types/theme'
+import type { ThemeColorName } from './../../../global/types/theme'
 import type { ElementProvider } from './element'
 import type { BlokkliEventBus } from '../events'
 import type { Coord, Rectangle, Size } from '../types/geometry'

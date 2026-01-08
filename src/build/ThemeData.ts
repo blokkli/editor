@@ -1,4 +1,4 @@
-import type { RGB, Theme, ThemeName } from './../shared/types/theme'
+import type { RGB, Theme, ThemeName } from './../global/types/theme'
 import { getTheme, themes } from './themes'
 import { createDefu } from 'defu'
 import type { ModuleHelper } from './ModuleHelper'

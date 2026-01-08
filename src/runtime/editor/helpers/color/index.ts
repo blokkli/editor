@@ -1,4 +1,4 @@
-import type { RGB } from './../../../../shared/types/theme'
+import type { RGB } from './../../../../global/types/theme'
 
 export function toShaderColor(rgba: RGB): RGB {
   return rgba.map((v) => v / 255) as RGB

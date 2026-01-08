@@ -32,7 +32,7 @@ import {
   MIN_GAP,
   type Orientation,
 } from '#blokkli/editor/helpers/dropTargets'
-import type { RGB } from './../../../../../shared/types/theme'
+import type { RGB } from './../../../../../global/types/theme'
 import { fragmentBlockBundle, fromLibraryBlockBundle, itemEntityType } from '#blokkli-build/config'
 import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'
 import type { DropTargetEvent } from '#blokkli/editor/events'

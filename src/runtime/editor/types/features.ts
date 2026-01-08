@@ -5,7 +5,7 @@ import type {
   FeatureDefinitionSettingMethod,
   FeatureDefinitionSettingRadios,
   FeatureDefinitionSettingSlider,
-} from './../../../shared/types/features'
+} from './../../../global/types/features'
 import type { AdapterMethods } from '#blokkli/editor/adapter'
 import type { BlokkliApp } from './app'
 

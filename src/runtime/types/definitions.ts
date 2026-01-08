@@ -19,7 +19,7 @@ import type {
   BlokkliDefinitionInputEditorBase,
   FragmentDefinitionInputBase,
   ProviderDefinitionInputBase,
-} from './../../shared/types/definitions'
+} from './../../global/types/definitions'
 
 import type { GlobalOptionsType } from '#blokkli-build/definitions'
 import type { BlokkliIcon } from '#blokkli-build/icons'

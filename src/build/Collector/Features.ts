@@ -4,7 +4,7 @@ import type { TemplateDependency } from '../templates/defineTemplate'
 import micromatch from 'micromatch'
 import type { ModuleHelper } from '../ModuleHelper'
 import { extractObjectLiteral, parseTsObject, falsy } from '../helpers'
-import type { FeatureDefinitionBase } from './../../shared/types/features'
+import type { FeatureDefinitionBase } from './../../global/types/features'
 
 export type ExtractedFeatureDefinition = {
   id: string

@@ -16,7 +16,7 @@ import type { FieldListItem } from '#blokkli/types'
 import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
-} from '../../../shared/constants'
+} from '../../../global/constants'
 import { fromLibraryBlockBundle } from '#blokkli-build/config'
 
 /**

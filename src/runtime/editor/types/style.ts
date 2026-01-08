@@ -1,4 +1,4 @@
-import type { RGB } from './../../../shared/types/theme'
+import type { RGB } from './../../../global/types/theme'
 
 export type DraggableStyle = {
   /**

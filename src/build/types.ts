@@ -1,6 +1,6 @@
-import type { BlockDefinitionOptionsInputBase } from '../shared/types/definitions'
-import type { AdapterMethodsBase } from '../shared/types/adapter'
-import type { Theme, ThemeName } from '../shared/types/theme'
+import type { BlockDefinitionOptionsInputBase } from '../global/types/definitions'
+import type { AdapterMethodsBase } from '../global/types/adapter'
+import type { Theme, ThemeName } from '../global/types/theme'
 import type { CollectedBlockFile } from './Collector/Blocks'
 import type { BlokkliModule } from '../modules/defineBlokkliModule'
 

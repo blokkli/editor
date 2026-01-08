@@ -1,5 +1,5 @@
 import type { DraggableStyle } from '#blokkli/editor/types/style'
-import type { RGB } from '../../../../shared/types/theme'
+import type { RGB } from '../../../../global/types/theme'
 import {
   findHighestContrastColor,
   getContrastRatio,

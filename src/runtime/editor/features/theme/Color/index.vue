@@ -28,7 +28,7 @@ import type {
   ThemeColorShade,
   ThemeContextColorGroup,
   ThemeContextColorShade,
-} from './../../../../../shared/types/theme'
+} from './../../../../../global/types/theme'
 
 const props = defineProps<{
   group: ThemeColorGroup | ThemeContextColorGroup

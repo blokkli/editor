@@ -2,6 +2,12 @@ import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
   entries: [
+    {
+      input: './src/global/',
+      outDir: `./dist/global`,
+      addRelativeDeclarationExtensions: false,
+      ext: 'js',
+    },
     './src/modules/drupal/index.ts',
     {
       builder: 'copy',

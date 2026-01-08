@@ -61,7 +61,7 @@ import { getRuntimeOptionValue } from '#blokkli/runtime-helpers'
 import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
-} from './../../../../../shared/constants'
+} from './../../../../../global/constants'
 import { fromLibraryBlockBundle, itemEntityType } from '#blokkli-build/config'
 
 if (import.meta.hot) {
