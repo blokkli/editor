@@ -154,6 +154,11 @@ const tooltipData = computed<{
   return { x: screenX, y: screenY, transform, position, text, isField }
 })
 
+const props = defineProps<{
+  hostEmptyFieldKeys: string[]
+  hostEmptyFieldTooltips: string[]
+}>()
+
 const emit = defineEmits<{
   (
     e: 'toggle',
@@ -493,7 +498,8 @@ const { collector } = defineRenderer('add-buttons', {
   },
   program: () => ({ shaders: [vs, fs] }),
   enabled: () => {
-    if (selection.uuids.value.length !== 1) {
+    // Show when exactly one block is selected OR when host is selected
+    if (selection.uuids.value.length !== 1 && !selection.hasHostSelected.value) {
       return false
     }
     if (ui.openTooltip.value && ui.openTooltip.value !== 'add-buttons') {
@@ -506,8 +512,8 @@ const { collector } = defineRenderer('add-buttons', {
   },
   cursor: () => (hoveredCircle.value >= 0 ? 'pointer' : null),
   onClick: ({ mouseArtboard }) => {
-    // Only handle clicks if exactly one block is selected
-    if (selection.uuids.value.length !== 1) {
+    // Handle clicks when exactly one block is selected OR when host is selected
+    if (selection.uuids.value.length !== 1 && !selection.hasHostSelected.value) {
       return false
     }
 
@@ -518,12 +524,14 @@ const { collector } = defineRenderer('add-buttons', {
       const cy = circlePositions[clickedCircle * 2 + 1]!
 
       if (clickedCircle === 0 || clickedCircle === 1) {
-        // Circle 0 is "before", circle 1 is "after"
-        const position = clickedCircle === 0 ? 'before' : 'after'
-        emit('toggle', {
-          position,
-          coordinates: { x: cx, y: cy },
-        })
+        // Circle 0 is "before", circle 1 is "after" - only for block selection
+        if (!selection.hasHostSelected.value) {
+          const position = clickedCircle === 0 ? 'before' : 'after'
+          emit('toggle', {
+            position,
+            coordinates: { x: cx, y: cy },
+          })
+        }
       } else {
         // Circles 2-9 are empty field buttons
         const fieldIndex = clickedCircle - 2
@@ -550,70 +558,90 @@ const { collector } = defineRenderer('add-buttons', {
     // Reset all circles to invisible
     circleVisible.fill(0)
 
-    // Only render if exactly one block is selected
-    if (ctx.selectedUuids.length !== 1) {
+    // Check if host is selected
+    const isHostSelected = selection.hasHostSelected.value
+
+    // Render when exactly one block is selected OR when host is selected
+    if (ctx.selectedUuids.length !== 1 && !isHostSelected) {
       return
     }
 
-    const uuid = ctx.selectedUuids[0]
-    if (!uuid) {
-      return
-    }
+    let blockState: BlockStateCache | null = null
+    let blockRect: Rectangle | undefined
 
-    // Get cached block state (logs only on first computation)
-    const blockState = getBlockState(uuid)
-
-    // Get block rect - needed for both before/after and empty field buttons
-    const blockRect = dom.getBlockRect(uuid)
-    if (!blockRect || blockRect.width === 0) {
-      return
-    }
-
-    // Get cached orientation
-    const orientation = getOrientationForUuid(uuid)
-    currentOrientation.value = orientation
-
-    // Check if we should show before/after buttons
-    if (blockState.canShowBeforeAfter) {
-      const BUTTON_SHIFT = 2 / ctx.artboardScale
-
-      if (orientation === 'horizontal') {
-        // Horizontal layout: buttons at left and right edges
-        // Circle 0: Left edge center (shifted left)
-        circlePositions[0] = blockRect.x - BUTTON_SHIFT // x
-        circlePositions[1] = blockRect.y + blockRect.height / 2 // y
-        circleVisible[0] = 1
-
-        // Circle 1: Right edge center (shifted right)
-        circlePositions[2] = blockRect.x + blockRect.width + BUTTON_SHIFT // x
-        circlePositions[3] = blockRect.y + blockRect.height / 2 // y
-        circleVisible[1] = 1
-      } else {
-        // Vertical layout: buttons at top and bottom edges
-        // Circle 0: Top edge center (shifted up)
-        circlePositions[0] = blockRect.x + blockRect.width / 2 // x
-        circlePositions[1] = blockRect.y - BUTTON_SHIFT // y
-        circleVisible[0] = 1
-
-        // Circle 1: Bottom edge center (shifted down)
-        circlePositions[2] = blockRect.x + blockRect.width / 2 // x
-        circlePositions[3] = blockRect.y + blockRect.height + BUTTON_SHIFT // y
-        circleVisible[1] = 1
+    if (isHostSelected) {
+      // Host is selected - use props for empty field data, skip before/after buttons
+      // blockState remains null, we'll use props directly for empty fields
+    } else {
+      // Block is selected
+      const uuid = ctx.selectedUuids[0]
+      if (!uuid) {
+        return
       }
+
+      // Get cached block state (logs only on first computation)
+      blockState = getBlockState(uuid)
+
+      // Get block rect - needed for both before/after and empty field buttons
+      blockRect = dom.getBlockRect(uuid)
+      if (!blockRect || blockRect.width === 0) {
+        return
+      }
+
+      // Get cached orientation
+      const orientation = getOrientationForUuid(uuid)
+      currentOrientation.value = orientation
+
+      // Check if we should show before/after buttons
+      if (blockState.canShowBeforeAfter) {
+        const BUTTON_SHIFT = 2 / ctx.artboardScale
+
+        if (orientation === 'horizontal') {
+          // Horizontal layout: buttons at left and right edges
+          // Circle 0: Left edge center (shifted left)
+          circlePositions[0] = blockRect.x - BUTTON_SHIFT // x
+          circlePositions[1] = blockRect.y + blockRect.height / 2 // y
+          circleVisible[0] = 1
+
+          // Circle 1: Right edge center (shifted right)
+          circlePositions[2] = blockRect.x + blockRect.width + BUTTON_SHIFT // x
+          circlePositions[3] = blockRect.y + blockRect.height / 2 // y
+          circleVisible[1] = 1
+        } else {
+          // Vertical layout: buttons at top and bottom edges
+          // Circle 0: Top edge center (shifted up)
+          circlePositions[0] = blockRect.x + blockRect.width / 2 // x
+          circlePositions[1] = blockRect.y - BUTTON_SHIFT // y
+          circleVisible[0] = 1
+
+          // Circle 1: Bottom edge center (shifted down)
+          circlePositions[2] = blockRect.x + blockRect.width / 2 // x
+          circlePositions[3] = blockRect.y + blockRect.height + BUTTON_SHIFT // y
+          circleVisible[1] = 1
+        }
+      }
+
+      // Update tooltip data
+      currentUuid.value = uuid
+      currentBundleLabel.value = blockState.bundleLabel
+      currentSingleAllowedBundleLabel.value = blockState.singleAllowedBundleLabel
     }
 
-    // Update tooltip data
-    currentUuid.value = uuid
-    currentBundleLabel.value = blockState.bundleLabel
-    currentSingleAllowedBundleLabel.value = blockState.singleAllowedBundleLabel
+    // Determine which empty field keys and tooltips to use
+    const emptyFieldKeys = isHostSelected
+      ? props.hostEmptyFieldKeys
+      : blockState?.emptyFieldKeys || []
+    const emptyFieldTooltipsData = isHostSelected
+      ? props.hostEmptyFieldTooltips
+      : blockState?.emptyFieldTooltips || []
 
     // Render empty field buttons (circles 2-9)
-    if (blockState.emptyFieldKeys.length > 0) {
+    if (emptyFieldKeys.length > 0) {
       // Update the field tooltips
-      emptyFieldTooltips.value = blockState.emptyFieldTooltips
+      emptyFieldTooltips.value = emptyFieldTooltipsData
 
-      for (let i = 0; i < blockState.emptyFieldKeys.length && i < 8; i++) {
-        const fieldKey = blockState.emptyFieldKeys[i]
+      for (let i = 0; i < emptyFieldKeys.length && i < 8; i++) {
+        const fieldKey = emptyFieldKeys[i]
         if (!fieldKey) {
           continue
         }
@@ -627,17 +655,25 @@ const { collector } = defineRenderer('add-buttons', {
         const initialX = fieldRect.x + fieldRect.width / 2
         const initialY = fieldRect.y + fieldRect.height / 2
 
-        // Adjust position if too close to before/after buttons
-        const adjusted = adjustEmptyFieldButtonPosition(
-          initialX,
-          initialY,
-          blockRect,
-          ctx.artboardScale,
-        )
+        // For host selection, no need to adjust for before/after buttons
+        // For block selection, adjust position if too close to before/after buttons
+        let finalX = initialX
+        let finalY = initialY
+
+        if (blockRect) {
+          const adjusted = adjustEmptyFieldButtonPosition(
+            initialX,
+            initialY,
+            blockRect,
+            ctx.artboardScale,
+          )
+          finalX = adjusted.x
+          finalY = adjusted.y
+        }
 
         const circleIndex = i + 2 // Start from circle 2
-        circlePositions[circleIndex * 2] = adjusted.x
-        circlePositions[circleIndex * 2 + 1] = adjusted.y
+        circlePositions[circleIndex * 2] = finalX
+        circlePositions[circleIndex * 2 + 1] = finalY
         circleVisible[circleIndex] = 1
       }
     } else {
@@ -672,65 +708,85 @@ const { collector } = defineRenderer('add-buttons', {
     // Reset all circles to invisible
     circleVisible.fill(0)
 
-    // Only render if exactly one block is selected
-    if (ctx.selectedUuids.length !== 1) {
+    // Check if host is selected
+    const isHostSelected = selection.hasHostSelected.value
+
+    // Render when exactly one block is selected OR when host is selected
+    if (ctx.selectedUuids.length !== 1 && !isHostSelected) {
       return
     }
 
-    const uuid = ctx.selectedUuids[0]
-    if (!uuid) {
-      return
-    }
+    let blockState: BlockStateCache | null = null
+    let blockRect: Rectangle | undefined
 
-    // Get cached block state
-    const blockState = getBlockState(uuid)
-
-    // Get block rect - needed for both before/after and empty field buttons
-    const blockRect = dom.getBlockRect(uuid)
-    if (!blockRect || blockRect.width === 0) {
-      return
-    }
-
-    // Get cached orientation
-    const orientation = getOrientationForUuid(uuid)
-    currentOrientation.value = orientation
-
-    // Check if we should show before/after buttons
-    if (blockState.canShowBeforeAfter) {
-      const BUTTON_SHIFT = 2 / ctx.artboardScale
-
-      if (orientation === 'horizontal') {
-        // Horizontal layout: buttons at left and right edges
-        circlePositions[0] = blockRect.x - BUTTON_SHIFT
-        circlePositions[1] = blockRect.y + blockRect.height / 2
-        circleVisible[0] = 1
-
-        circlePositions[2] = blockRect.x + blockRect.width + BUTTON_SHIFT
-        circlePositions[3] = blockRect.y + blockRect.height / 2
-        circleVisible[1] = 1
-      } else {
-        // Vertical layout: buttons at top and bottom edges
-        circlePositions[0] = blockRect.x + blockRect.width / 2
-        circlePositions[1] = blockRect.y - BUTTON_SHIFT
-        circleVisible[0] = 1
-
-        circlePositions[2] = blockRect.x + blockRect.width / 2
-        circlePositions[3] = blockRect.y + blockRect.height + BUTTON_SHIFT
-        circleVisible[1] = 1
+    if (isHostSelected) {
+      // Host is selected - use props for empty field data, skip before/after buttons
+      // blockState remains null, we'll use props directly for empty fields
+    } else {
+      // Block is selected
+      const uuid = ctx.selectedUuids[0]
+      if (!uuid) {
+        return
       }
+
+      // Get cached block state
+      blockState = getBlockState(uuid)
+
+      // Get block rect - needed for both before/after and empty field buttons
+      blockRect = dom.getBlockRect(uuid)
+      if (!blockRect || blockRect.width === 0) {
+        return
+      }
+
+      // Get cached orientation
+      const orientation = getOrientationForUuid(uuid)
+      currentOrientation.value = orientation
+
+      // Check if we should show before/after buttons
+      if (blockState.canShowBeforeAfter) {
+        const BUTTON_SHIFT = 2 / ctx.artboardScale
+
+        if (orientation === 'horizontal') {
+          // Horizontal layout: buttons at left and right edges
+          circlePositions[0] = blockRect.x - BUTTON_SHIFT
+          circlePositions[1] = blockRect.y + blockRect.height / 2
+          circleVisible[0] = 1
+
+          circlePositions[2] = blockRect.x + blockRect.width + BUTTON_SHIFT
+          circlePositions[3] = blockRect.y + blockRect.height / 2
+          circleVisible[1] = 1
+        } else {
+          // Vertical layout: buttons at top and bottom edges
+          circlePositions[0] = blockRect.x + blockRect.width / 2
+          circlePositions[1] = blockRect.y - BUTTON_SHIFT
+          circleVisible[0] = 1
+
+          circlePositions[2] = blockRect.x + blockRect.width / 2
+          circlePositions[3] = blockRect.y + blockRect.height + BUTTON_SHIFT
+          circleVisible[1] = 1
+        }
+      }
+
+      // Update tooltip data
+      currentUuid.value = uuid
+      currentBundleLabel.value = blockState.bundleLabel
+      currentSingleAllowedBundleLabel.value = blockState.singleAllowedBundleLabel
     }
 
-    // Update tooltip data
-    currentUuid.value = uuid
-    currentBundleLabel.value = blockState.bundleLabel
-    currentSingleAllowedBundleLabel.value = blockState.singleAllowedBundleLabel
+    // Determine which empty field keys and tooltips to use
+    const emptyFieldKeys = isHostSelected
+      ? props.hostEmptyFieldKeys
+      : blockState?.emptyFieldKeys || []
+    const emptyFieldTooltipsData = isHostSelected
+      ? props.hostEmptyFieldTooltips
+      : blockState?.emptyFieldTooltips || []
 
     // Render empty field buttons (circles 2-9)
-    if (blockState.emptyFieldKeys.length > 0) {
-      emptyFieldTooltips.value = blockState.emptyFieldTooltips
+    if (emptyFieldKeys.length > 0) {
+      emptyFieldTooltips.value = emptyFieldTooltipsData
 
-      for (let i = 0; i < blockState.emptyFieldKeys.length && i < 8; i++) {
-        const fieldKey = blockState.emptyFieldKeys[i]
+      for (let i = 0; i < emptyFieldKeys.length && i < 8; i++) {
+        const fieldKey = emptyFieldKeys[i]
         if (!fieldKey) {
           continue
         }
@@ -744,17 +800,25 @@ const { collector } = defineRenderer('add-buttons', {
         const initialX = fieldRect.x + fieldRect.width / 2
         const initialY = fieldRect.y + fieldRect.height / 2
 
-        // Adjust position if too close to before/after buttons
-        const adjusted = adjustEmptyFieldButtonPosition(
-          initialX,
-          initialY,
-          blockRect,
-          ctx.artboardScale,
-        )
+        // For host selection, no need to adjust for before/after buttons
+        // For block selection, adjust position if too close to before/after buttons
+        let finalX = initialX
+        let finalY = initialY
+
+        if (blockRect) {
+          const adjusted = adjustEmptyFieldButtonPosition(
+            initialX,
+            initialY,
+            blockRect,
+            ctx.artboardScale,
+          )
+          finalX = adjusted.x
+          finalY = adjusted.y
+        }
 
         const circleIndex = i + 2
-        circlePositions[circleIndex * 2] = adjusted.x
-        circlePositions[circleIndex * 2 + 1] = adjusted.y
+        circlePositions[circleIndex * 2] = finalX
+        circlePositions[circleIndex * 2 + 1] = finalY
         circleVisible[circleIndex] = 1
       }
     } else {

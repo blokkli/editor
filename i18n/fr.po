@@ -39,9 +39,17 @@ msgctxt "addButtonBundleInsideField"
 msgid "Add \"@bundle\" inside @parentBundle » @fieldLabel"
 msgstr "Ajouter «@bundle» dans @parentBundle » @fieldLabel"
 
+msgctxt "addButtonBundleToField"
+msgid "Add \"@bundle\" to @fieldLabel"
+msgstr ""
+
 msgctxt "addButtonInsideField"
 msgid "Add inside @parentBundle » @fieldLabel..."
 msgstr "Ajouter dans @parentBundle » @fieldLabel..."
+
+msgctxt "addButtonToField"
+msgid "Add to @fieldLabel..."
+msgstr ""
 
 msgctxt "addCommentHeader"
 msgid "Add Comment"

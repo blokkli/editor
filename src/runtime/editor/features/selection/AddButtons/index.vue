@@ -19,6 +19,8 @@
     <Renderer
       v-if="!isLocked"
       :key="animation.renderKey.value"
+      :host-empty-field-keys="hostEmptyFieldKeys"
+      :host-empty-field-tooltips="hostFieldTooltips"
       @toggle="onRendererToggle"
       @toggle-field="onRendererToggleField"
     />
@@ -52,7 +54,7 @@ const props = defineProps<{
   items: RenderedFieldListItem[]
 }>()
 
-const { dom, state, eventBus, types, $t, blocks, fields, animation } =
+const { dom, state, eventBus, types, $t, blocks, fields, animation, context, selection } =
   useBlokkli()
 
 const isLocked = ref(false)
@@ -94,6 +96,25 @@ const emptyBlockFields = computed(() => {
     .filter((v) => {
       return v.count === 0
     })
+})
+
+const emptyHostFields = computed(() => {
+  return types.fieldConfig
+    .forEntityTypeAndBundle(context.value.entityType, context.value.entityBundle)
+    .map((field) => {
+      const key = getFieldKey(context.value.entityUuid, field.name)
+      const count = state.getFieldBlockCount(key)
+      return {
+        key,
+        count,
+        name: field.name,
+      }
+    })
+    .filter((v) => v.count === 0)
+})
+
+const hostEmptyFieldKeys = computed(() => {
+  return emptyHostFields.value.map((v) => v.key)
 })
 
 const containerStyle = ref<Record<string, string>>({ visibility: 'hidden' })
@@ -201,6 +222,38 @@ const fieldTooltips = computed(() => {
       'Add inside @parentBundle » @fieldLabel...',
     )
       .replace('@parentBundle', bundleLabel.value)
+      .replace('@fieldLabel', fieldLabel)
+  })
+})
+
+const hostFieldTooltips = computed(() => {
+  return emptyHostFields.value.map((field) => {
+    const fieldConfig = types.fieldConfig
+      .forEntityTypeAndBundle(context.value.entityType, context.value.entityBundle)
+      .find((f) => f.name === field.name)
+
+    const fieldLabel = fieldConfig?.label || field.name
+
+    // Get field element to check allowed bundles
+    const fieldElement = fields.find(context.value.entityUuid, field.name)
+    if (fieldElement) {
+      const allowedBundles = fieldElement.allowedBundles.filter(
+        (bundle) => !isInternalBundle(bundle),
+      )
+
+      if (allowedBundles.length === 1) {
+        const bundle = allowedBundles[0]
+        if (bundle) {
+          const singleBundleLabel =
+            types.getBlockBundleDefinition(bundle)?.label || bundle
+          return $t('addButtonBundleToField', 'Add "@bundle" to @fieldLabel')
+            .replace('@bundle', singleBundleLabel)
+            .replace('@fieldLabel', fieldLabel)
+        }
+      }
+    }
+
+    return $t('addButtonToField', 'Add to @fieldLabel...')
       .replace('@fieldLabel', fieldLabel)
   })
 })
@@ -516,21 +569,35 @@ function onRendererToggleField(data: {
     return closeOverlay()
   }
 
-  if (!uuid.value) {
+  // Determine which entity UUID to use based on selection state
+  const entityUuid = selection.hasHostSelected.value
+    ? context.value.entityUuid
+    : uuid.value
+
+  if (!entityUuid) {
     return
   }
 
-  const emptyField = emptyBlockFields.value[data.index]
+  // Get appropriate empty fields list and tooltips
+  const emptyFields = selection.hasHostSelected.value
+    ? emptyHostFields.value
+    : emptyBlockFields.value
+
+  const tooltips = selection.hasHostSelected.value
+    ? hostFieldTooltips.value
+    : fieldTooltips.value
+
+  const emptyField = emptyFields[data.index]
   if (!emptyField) {
     return
   }
 
-  const field = fields.find(uuid.value, emptyField.name)
+  const field = fields.find(entityUuid, emptyField.name)
   if (!field) {
     return
   }
 
-  const label = (fieldTooltips.value[data.index] || '').replace('...', '')
+  const label = (tooltips[data.index] || '').replace('...', '')
   setAddData(key, field, label, null, undefined, data.coordinates)
 }
 

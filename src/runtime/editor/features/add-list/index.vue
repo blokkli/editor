@@ -1,9 +1,9 @@
 <template>
   <Teleport v-if="shouldRender" :to="ui.mainLayoutElement.value">
     <div
+      id="bk-add-list"
       ref="wrapper"
       class="bk bk-add-list bk-control"
-      id="bk-add-list"
       @wheel.capture.passive="onWheel"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
