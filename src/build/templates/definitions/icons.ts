@@ -3,6 +3,19 @@ import { basename } from 'node:path'
 import { falsy, onlyUnique, toValidVariableName } from '../../helpers'
 import { toImports, toObject } from '../helpers'
 import { USED_MATERIAL_ICONS } from './../../used-icons'
+import type { BlockDefinitionOptionsInputBase } from '../../../global/types/definitions'
+
+function getIconsFromOptions(
+  options?: BlockDefinitionOptionsInputBase,
+): string[] {
+  return Object.values(options ?? {})
+    .flatMap((option) => {
+      if (option.type === 'radios' && option.displayAs === 'icons') {
+        return Object.values(option.options ?? {}).map((v) => v.icon)
+      }
+    })
+    .filter(falsy)
+}
 
 export default defineCodeTemplate(
   'icons',
@@ -14,29 +27,16 @@ export default defineCodeTemplate(
 
     const blockIcons = [...ctx.blocks.files.values()].flatMap((v) => {
       const icon = v.definition?.editor?.icon
-      const optionIcons = Object.values(v.definition?.options ?? {}).flatMap(
-        (option) => {
-          if (option.type === 'radios' && option.displayAs === 'icons') {
-            return Object.values(option.options).map((optionOption) => {
-              return optionOption.icon
-            })
-          }
-        },
-      )
-      return [icon, ...optionIcons]
+      return [icon, ...getIconsFromOptions(v.definition?.options)]
     })
 
     const featureIcons = [...ctx.features.files.values()].map(
       (v) => v.getDefinition()?.definition.icon,
     )
 
-    const globalOptionsIcons = Object.values(
-      ctx.helper.options.globalOptions ?? {},
-    ).flatMap((option) => {
-      if (option.type === 'radios' && option.displayAs === 'icons') {
-        return Object.values(option.options ?? {}).map((v) => v.icon)
-      }
-    })
+    const globalOptionsIcons = getIconsFromOptions(
+      ctx.helper.options.globalOptions,
+    )
 
     const definitionIcons = [
       ...blockIcons,
