@@ -20,12 +20,14 @@ const props = defineProps<Props>()
 
 const step = inject<Ref<number>>('hero_step')!
 
-const { index, isEditing } = defineBlokkli({
+const { index } = defineBlokkli({
   bundle: 'icon',
   editor: {
     icon: 'bk_mdi_emoji_symbols',
   },
 })
+
+const isEditing = import.meta.blokkliEditing
 
 const name = computed(
   () => props.icon.replace('bk_mdi_', '') as NuxtSvgSpriteSymbol,

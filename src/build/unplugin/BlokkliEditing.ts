@@ -2,7 +2,8 @@ import { createUnplugin } from 'unplugin'
 import MagicString from 'magic-string'
 import type { Nuxt } from '@nuxt/schema'
 import { parseQuery, parseURL } from 'ufo'
-import { readFileSync } from 'node:fs'
+import { readFileSync, existsSync } from 'node:fs'
+import { resolve, dirname } from 'pathe'
 
 const REPLACE_TARGET = 'import.meta.blokkliEditing'
 const EDITING_MARKER = '__blokkli_editing__'
@@ -13,22 +14,46 @@ export const BlokkliEditingPlugin = (nuxt: Nuxt) => {
       name: 'blokkli:editing',
       enforce: 'pre',
 
-      resolveId(id) {
+      resolveId(id, importer) {
         const { pathname, search } = parseURL(decodeURIComponent(id))
 
-        // Only handle ?blokkliEditing=true imports on .vue files.
-        if (!search || !pathname.endsWith('.vue')) {
+        // Check if this is a direct ?blokkliEditing=true import.
+        if (search && pathname.endsWith('.vue')) {
+          const query = parseQuery(search)
+          if (query.blokkliEditing === 'true') {
+            // Return a modified path that Vue's plugin will still recognize as
+            // a .vue file, but is distinct from the original.
+            return pathname.replace(/\.vue$/, `${EDITING_MARKER}.vue`)
+          }
+        }
+
+        // Check if the importer is in editing mode and propagate to .vue imports.
+        // The importer might be a virtual module like:
+        // /path/to/Slider__blokkli_editing__.vue?vue&type=script&setup=true&lang.ts
+        if (!importer || !importer.includes(EDITING_MARKER) || !id.endsWith('.vue')) {
           return
         }
 
-        const query = parseQuery(search)
-        if (query.blokkliEditing !== 'true') {
+        // Extract the base path from the importer (remove query string and marker).
+        const importerWithoutQuery = importer.split('?')[0]
+        if (!importerWithoutQuery) {
           return
         }
+        const importerBase = importerWithoutQuery.replace(EDITING_MARKER, '')
+        const importerDir = dirname(importerBase)
 
-        // Return a modified path that Vue's plugin will still recognize as
-        // a .vue file, but is distinct from the original.
-        return pathname.replace(/\.vue$/, `${EDITING_MARKER}.vue`)
+        // Handle both relative and absolute paths.
+        let resolvedPath: string | null = null
+        if (id.startsWith('.')) {
+          resolvedPath = resolve(importerDir, id)
+        } else if (id.startsWith('/')) {
+          resolvedPath = id
+        }
+
+        // Only propagate if the resolved file exists (it's a local component).
+        if (resolvedPath && existsSync(resolvedPath)) {
+          return resolvedPath.replace(/\.vue$/, `${EDITING_MARKER}.vue`)
+        }
       },
 
       load(id) {

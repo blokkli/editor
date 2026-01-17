@@ -23,7 +23,7 @@
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 import { defineBlokkli } from '#imports'
 
-const { parentType, isEditing } = defineBlokkli({
+const { parentType } = defineBlokkli({
   bundle: 'table',
   chunkName: 'rare',
   propsFieldMapping: {
@@ -35,6 +35,8 @@ const { parentType, isEditing } = defineBlokkli({
     editTitle: (el) => el.textContent,
   },
 })
+
+const isEditing = import.meta.blokkliEditing
 
 export type Props = {
   rows: FieldListItemTyped[]

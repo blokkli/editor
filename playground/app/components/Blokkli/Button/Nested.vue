@@ -32,7 +32,7 @@ const { options } = defineBlokkli({
       parentBundle: 'button_list',
     },
     {
-      fieldList: 'inline',
+      fieldListType: 'inline',
     },
   ],
   options: {

@@ -16,7 +16,7 @@
 import type { FieldListItemTypedArray } from '#blokkli-build/generated-types'
 import { defineBlokkli } from '#imports'
 
-const { isEditing } = defineBlokkli({
+defineBlokkli({
   bundle: 'slider',
   propsFieldMapping: {
     slides: 'slides',
@@ -26,6 +26,15 @@ const { isEditing } = defineBlokkli({
     disableEdit: true,
   },
 })
+
+const isEditing = import.meta.blokkliEditing
+
+if (import.meta.blokkliEditing) {
+  console.log('DEBUG - SLIDER: EDITING')
+}
+else {
+  console.log('DEBUG - SLIDER: NOT EDITING')
+}
 
 export type Props = {
   slides: FieldListItemTypedArray

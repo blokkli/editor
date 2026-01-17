@@ -7,8 +7,11 @@ export default defineFileTemplate('import-meta.d.ts', () => {
      * Whether this block or fragment component is rendered in the editor
      * bundle.
      *
-     * This may ONLY used in components that contain "defineBlokkli" or "defineBlokkliFragment".
-     * It will always resolve to "false" if used in any other component.
+     * This only works in components that either contain defineBlokkli or
+     * defineBlokkliFragment or in components that are imported by any of these
+     * components.
+     *
+     * It will always resolve to "false" if used in any other place.
      */
     readonly blokkliEditing: boolean
   }

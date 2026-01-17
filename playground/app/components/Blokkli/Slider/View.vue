@@ -5,7 +5,7 @@
   <div
     class="flex items-center justify-center mb-25 min-h-120"
     :class="{
-      'pointer-events-none': isEditing,
+      'pointer-events-none': import.meta.blokkliEditing,
     }"
     @click.stop.capture
     @mousedown.stop.capture
@@ -30,11 +30,8 @@ import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 import { ref, computed } from '#imports'
 
 const props = defineProps<{
-  isEditing: boolean
   items: FieldListItemTyped[]
 }>()
-
-const item = props.items[0]
 
 const activeIndex = ref(0)
 
