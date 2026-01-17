@@ -12,7 +12,7 @@ export default defineFileTemplate('features-data.json', async (ctx) => {
       }
 
       return {
-        ...v,
+        definition: v.getDefinition()?.definition,
         repoRelativePath: v.filePath.replace(/.*\/src/, '/src'),
         docs,
       }

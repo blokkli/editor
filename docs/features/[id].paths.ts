@@ -8,26 +8,26 @@ export default {
         return {
           params: {
             id: feature.definition.id,
-            title: feature.definition.definition.label,
-            description: feature.definition.definition.description,
+            title: feature.definition.label,
+            description: feature.definition.description,
             requiredAdapterMethods:
-              feature.definition.definition.requiredAdapterMethods || [],
+              feature.definition.requiredAdapterMethods || [],
             sourceUrl:
               'https://www.github.com/blokkli/editor/tree/main' +
               feature.repoRelativePath,
 
-            settings: Object.entries(
-              feature.definition.definition.settings || {},
-            ).map(([key, setting]) => {
-              return {
-                key,
-                label: setting.label,
-                type: setting.type,
-                default: setting.default,
-              }
-            }),
+            settings: Object.entries(feature.definition.settings || {}).map(
+              ([key, setting]) => {
+                return {
+                  key,
+                  label: setting.label,
+                  type: setting.type,
+                  default: setting.default,
+                }
+              },
+            ),
 
-            screenshot: feature.definition.definition.screenshot,
+            screenshot: feature.definition.screenshot,
           },
           content: feature.docs,
         }

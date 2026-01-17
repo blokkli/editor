@@ -4,18 +4,18 @@
   >
     <div
       v-for="feature in features"
-      :key="feature.id"
+      :key="feature.definition.id"
       class="flex flex-col items-center text-center md:gap-5"
     >
       <div
-        v-html="(icons as any)[feature.icon]"
+        v-html="(icons as any)[feature.definition.icon]"
         class="fragment-feature-icon fill-current w-70 h-70 flex-none bg-accent-50 rounded-full p-15 text-accent-950"
       />
       <div>
         <h3 class="font-bold lg:mb-2 md:text-lg mt-5">
-          {{ feature.label }}
+          {{ feature.definition.label }}
         </h3>
-        <p class="text-sm">{{ feature.description }}</p>
+        <p class="text-sm">{{ feature.definition.description }}</p>
       </div>
     </div>
   </div>
@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import { computed, defineBlokkliFragment, useBlokkli } from '#imports'
-import { featureDefinitions } from '#blokkli-build/features'
+import  featureDefinitions from '#blokkli-build/features-data.json'
 
 defineBlokkliFragment({
   name: 'features_list',
@@ -46,7 +46,7 @@ const icons = computed<Record<string, string>>(
 )
 
 const features = computed(() =>
-  featureDefinitions.filter((v) => v.id !== 'demo-feature'),
+  featureDefinitions.filter((v) => v.definition.id !== 'demo-feature'),
 )
 </script>
 
