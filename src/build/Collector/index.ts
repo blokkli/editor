@@ -1,6 +1,8 @@
 import type { WatchEvent } from 'nuxt/schema'
 import type { ModuleHelper } from '../ModuleHelper'
 import type { TemplateDependency } from '../templates/defineTemplate'
+import type { IconCollector } from './Icons'
+import type { ValidationInterface } from '../ValidationInterface'
 
 export type HandleWatchEventResult = {
   hasChanged: boolean
@@ -27,12 +29,14 @@ export class CollectedFile {
    * Validate the collected file and return any errors.
    * Override this method in subclasses to add validation logic.
    */
-  validate(): ValidationError[] {
+  validate(_icons: IconCollector): ValidationError[] {
     return []
   }
 }
 
-export abstract class Collector<T extends CollectedFile = CollectedFile> {
+export abstract class Collector<
+  T extends CollectedFile = CollectedFile,
+> implements ValidationInterface {
   files: Map<string, T>
   protected needsFileContents: boolean = true
 
@@ -146,11 +150,11 @@ export abstract class Collector<T extends CollectedFile = CollectedFile> {
    * Validate all collected files and log any errors/warnings to the console.
    * @returns true if there are validation errors (not warnings), false otherwise.
    */
-  validate(): boolean {
+  validate(icons: IconCollector): boolean {
     const allIssues: Array<{ filePath: string; issues: ValidationError[] }> = []
 
     for (const file of this.files.values()) {
-      const issues = file.validate()
+      const issues = file.validate(icons)
       if (issues.length > 0) {
         allIssues.push({ filePath: file.filePath, issues })
       }

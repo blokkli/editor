@@ -45,28 +45,12 @@ import { slugify } from '~/helpers'
 
 const { parentType, fieldListType } = defineBlokkli({
   bundle: 'title',
-  globalOptions: ['bkHiddenGlobally', 'bkVisibleLanguages'],
+  globalOptions: ['bkHiddenGlobally', 'bkVisibleLanguages', 'alignment'],
   options: {
     showInMenu: {
       type: 'checkbox',
       label: 'Show in menu',
       default: true,
-    },
-    align: {
-      type: 'radios',
-      label: 'Alignment',
-      default: 'center',
-      displayAs: 'icons',
-      options: {
-        left: {
-          label: 'Left',
-          icon: 'bk_mdi_format_align_left',
-        },
-        center: {
-          label: 'Center',
-          icon: 'bk_mdi_format_align_center',
-        },
-      },
     },
   },
   editor: {

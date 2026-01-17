@@ -25,13 +25,24 @@ export default defineCodeTemplate(
       )
       return [icon, ...optionIcons]
     })
+
     const featureIcons = [...ctx.features.files.values()].map(
       (v) => v.getDefinition()?.definition.icon,
     )
+
+    const globalOptionsIcons = Object.values(
+      ctx.helper.options.globalOptions ?? {},
+    ).flatMap((option) => {
+      if (option.type === 'radios' && option.displayAs === 'icons') {
+        return Object.values(option.options ?? {}).map((v) => v.icon)
+      }
+    })
+
     const definitionIcons = [
       ...blockIcons,
       ...featureIcons,
       ...USED_MATERIAL_ICONS,
+      ...globalOptionsIcons,
     ]
       .filter(falsy)
       .filter(onlyUnique)
@@ -43,7 +54,11 @@ export default defineCodeTemplate(
       imports.set(importName, `${realtivePath}?raw`)
       icons.set(name, importName)
     }
-    const materialIcons = definitionIcons.filter((v) => v.startsWith('bk_mdi_'))
+
+    // Get the valid material icon names.
+    const materialIcons = definitionIcons.filter(
+      (v) => v.startsWith('bk_mdi_') && ctx.icons.isValidIconName(v),
+    )
 
     for (const icon of materialIcons) {
       const importName = 'icon_' + toValidVariableName(icon)
@@ -71,7 +86,7 @@ ${toObject('icons', icons)}
         .join('\n  | ') || "'never'"
 
     return `
-import type { MaterialIconName } from '${ctx.helper.relativePaths.RUNTIME_MATERIAL_ICONS}'
+import type { MaterialIconName } from './material-icons.d'
 
 type ProvidedIconName =
   | ${allIconNames}

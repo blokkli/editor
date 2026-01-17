@@ -4,11 +4,6 @@ import chalk from 'chalk'
 import { glob } from 'glob'
 import { format } from './../helpers'
 
-const ICONS_PATH = path.resolve(
-  __dirname,
-  '../../node_modules/@material-symbols/svg-600/rounded',
-)
-
 const RUNTIME_PATH = path.resolve(__dirname, '../../src/runtime')
 
 const TYPES_OUTPUT_PATH = path.resolve(
@@ -20,15 +15,6 @@ const USED_ICONS_OUTPUT_PATH = path.resolve(
   __dirname,
   '../../src/build/used-icons.ts',
 )
-
-function getIconNames(): string[] {
-  const files = fs.readdirSync(ICONS_PATH)
-
-  return files
-    .filter((file) => file.endsWith('.svg'))
-    .map((file) => file.replace('.svg', ''))
-    .sort()
-}
 
 async function findUsedIcons(): Promise<string[]> {
   const pattern = path.join(RUNTIME_PATH, '**/*.{vue,ts}')
@@ -57,36 +43,6 @@ async function findUsedIcons(): Promise<string[]> {
 }
 
 async function main() {
-  console.log(chalk.blue('Generating Material Symbols icon types...\n'))
-
-  // Generate types file.
-  const iconNames = getIconNames()
-  console.log(chalk.gray(`  Found ${iconNames.length} available icons\n`))
-
-  const typeContent = `/**
- * Auto-generated file. Do not edit manually.
- * Run "npm run material-icons" to regenerate.
- */
-
-/**
- * All available Material Symbols icon names (rounded style).
- */
-export type MaterialIconName =
-${iconNames.map((name) => `  | 'bk_mdi_${name}'`).join('\n')}
-
-/**
- * Total number of available icons: ${iconNames.length}
- */
-export const MATERIAL_ICON_COUNT = ${iconNames.length} as const
-`
-
-  const formattedTypes = await format(typeContent, 'typescript')
-  await fs.promises.mkdir(path.dirname(TYPES_OUTPUT_PATH), { recursive: true })
-  await fs.promises.writeFile(TYPES_OUTPUT_PATH, formattedTypes)
-
-  console.log(chalk.green(`Generated ${TYPES_OUTPUT_PATH}`))
-  console.log(chalk.gray(`  Total icons: ${iconNames.length}\n`))
-
   // Find and generate used icons file.
   console.log(chalk.blue('Scanning for used icons...\n'))
 

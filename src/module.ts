@@ -102,7 +102,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     const iconCollector = new IconCollector(helper)
     const featureCollector = new FeatureCollector(helper)
-    const blockCollector = new BlockCollector(helper)
+    const blockCollector = new BlockCollector(helper, iconCollector)
 
     const collectors: Collector[] = [
       iconCollector,
@@ -113,9 +113,11 @@ export default defineNuxtModule<ModuleOptions>({
     await Promise.all(collectors.map((v) => v.init()))
     await Promise.all(collectors.map((v) => v.runHooks()))
 
-    const hasErrors = collectors.flatMap((v) => v.validate()).some((v) => v)
+    const hasErrors = [...collectors, helper]
+      .flatMap((v) => v.validate(iconCollector))
+      .some((v) => v)
 
-    if (!helper.isDev && hasErrors) {
+    if (!helper.isDev && !helper.isPrepare && hasErrors) {
       throw new Error('Failed to build blökkli due to validation errors.')
     }
 
@@ -223,7 +225,7 @@ export default defineNuxtModule<ModuleOptions>({
         for (const collector of collectors) {
           const result = await collector.handleWatchEvent(event, filePath)
           if (result.hasChanged) {
-            collector.validate()
+            collector.validate(iconCollector)
             dependenciesToUpdate.push(...collector.getDependencyTypes())
           }
         }

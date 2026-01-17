@@ -100,6 +100,22 @@ export default defineNuxtConfig({
           dark: { class: 'bg-mono-800', label: 'Dark' },
         },
       },
+      alignment: {
+        type: 'radios',
+        label: 'Alignment',
+        default: 'center',
+        displayAs: 'icons',
+        options: {
+          left: {
+            label: 'Left',
+            icon: 'bk_mdi_format_align_left',
+          },
+          center: {
+            label: 'Center',
+            icon: 'bk_mdi_format_align_center',
+          },
+        },
+      },
     },
 
     chunkNames: ['rare', 'global'],

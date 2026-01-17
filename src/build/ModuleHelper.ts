@@ -10,6 +10,9 @@ import {
 } from '@nuxt/kit'
 import { FileCache } from './FileCache'
 import { onlyUnique } from './helpers'
+import type { ValidationInterface } from './ValidationInterface'
+import type { IconCollector } from './Collector/Icons'
+import { validateOptions } from './validation/validateOptions'
 
 type ModuleHelperResolvers = {
   /**
@@ -39,7 +42,7 @@ type ModuleHelperPaths = {
   editAdapter: string
 }
 
-export class ModuleHelper {
+export class ModuleHelper implements ValidationInterface {
   relativePaths: BuildRelativeImports
   paths: ModuleHelperPaths
   resolvers: ModuleHelperResolvers
@@ -48,6 +51,7 @@ export class ModuleHelper {
 
   public readonly isDev: boolean
   public readonly isModuleBuild: boolean
+  public readonly isPrepare: boolean
 
   constructor(
     public nuxt: Nuxt,
@@ -56,6 +60,7 @@ export class ModuleHelper {
     providedOptions: ModuleOptions,
   ) {
     this.isDev = nuxt.options.dev
+    this.isPrepare = !!nuxt.options._prepare
     this.isModuleBuild = process.env.PLAYGROUND_MODULE_BUILD === 'true'
 
     this.fileCache = new FileCache()
@@ -79,12 +84,6 @@ export class ModuleHelper {
       TYPES_DEFINITIONS: relative(
         this.paths.blokkliBuildDir,
         this.resolvers.module.resolve('./runtime/types/definitions.ts'),
-      ),
-      RUNTIME_MATERIAL_ICONS: relative(
-        this.paths.blokkliBuildDir,
-        this.resolvers.module.resolve(
-          './runtime/editor/icons/material-icons.ts',
-        ),
       ),
       CONSTANTS: relative(
         this.paths.blokkliBuildDir,
@@ -223,5 +222,24 @@ export class ModuleHelper {
     }
 
     return bundle
+  }
+
+  public validate(icons: IconCollector): boolean {
+    const errors = validateOptions(this.options.globalOptions, icons)
+
+    if (errors.length > 0) {
+      const lines = errors.map((error) => {
+        const prefix = error.optionKey
+          ? `  Option "${error.optionKey}": `
+          : '  '
+        return prefix + error.message
+      })
+      this.logger.error(
+        `blökkli global options validation errors:\n${lines.join('\n')}`,
+      )
+      return true
+    }
+
+    return false
   }
 }

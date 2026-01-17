@@ -80,7 +80,7 @@
     "cypress:open": "cypress open"
   },
   "dependencies": {
-    "@material-symbols/svg-600": "^0.40.2",
+    "@material-symbols/svg-600": "0.40.2",
     "@nuxt/kit": "^4.2.2",
     "artboard-deluxe": "0.1.3",
     "estree-walker-ts": "^1.1.0",

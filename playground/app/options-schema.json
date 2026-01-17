@@ -125,7 +125,7 @@
   "teaser": {},
   "text": {},
   "title": {
-    "align": {
+    "alignment": {
       "default": "center",
       "displayAs": "icons",
       "label": "Alignment",

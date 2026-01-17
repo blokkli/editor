@@ -16,6 +16,11 @@ import type {
   FragmentDefinitionInputBase,
   ProviderDefinitionInputBase,
 } from './../../global/types/definitions'
+import type { IconCollector } from './Icons'
+import {
+  validateOptions,
+  type OptionValidationError,
+} from '../validation/validateOptions'
 
 export type ExtractedDefinition =
   | BlockDefinitionInputBase
@@ -96,165 +101,24 @@ export function getIdentifier(definition: ExtractedDefinition) {
   )
 }
 
-export type BlockValidationError = ValidationError & {
-  optionKey?: string
-}
-
-/**
- * Validate a single option and return any errors.
- */
-function validateOption(
-  optionKey: string,
-  option: Record<string, any>,
-): BlockValidationError[] {
-  const errors: BlockValidationError[] = []
-
-  switch (option.type) {
-    case 'radios': {
-      // Validate that the default value matches one of the defined options
-      const defaultValue = option.default
-      const availableOptions = option.options
-
-      if (
-        availableOptions &&
-        typeof availableOptions === 'object' &&
-        defaultValue !== undefined
-      ) {
-        const optionKeys = Object.keys(availableOptions)
-        if (!optionKeys.includes(defaultValue)) {
-          errors.push({
-            message: `Option "${optionKey}" has default value "${defaultValue}" which is not one of the available options: ${optionKeys.map((k) => `"${k}"`).join(', ')}`,
-            optionKey,
-          })
-        }
-      }
-      break
-    }
-
-    case 'checkboxes': {
-      // Validate that each default value matches one of the defined options
-      const defaultValues = option.default
-      const availableOptions = option.options
-
-      if (
-        Array.isArray(defaultValues) &&
-        availableOptions &&
-        typeof availableOptions === 'object'
-      ) {
-        const optionKeys = Object.keys(availableOptions)
-        for (const value of defaultValues) {
-          if (!optionKeys.includes(value)) {
-            errors.push({
-              message: `Option "${optionKey}" has default value "${value}" which is not one of the available options: ${optionKeys.map((k) => `"${k}"`).join(', ')}`,
-              optionKey,
-            })
-          }
-        }
-      }
-      break
-    }
-
-    case 'number':
-    case 'range': {
-      // Validate that the default value is within the min/max range
-      const defaultValue = option.default
-      const min = option.min
-      const max = option.max
-
-      if (typeof defaultValue === 'number') {
-        if (typeof min === 'number' && defaultValue < min) {
-          errors.push({
-            message: `Option "${optionKey}" has default value ${defaultValue} which is less than the minimum value ${min}`,
-            optionKey,
-          })
-        }
-        if (typeof max === 'number' && defaultValue > max) {
-          errors.push({
-            message: `Option "${optionKey}" has default value ${defaultValue} which is greater than the maximum value ${max}`,
-            optionKey,
-          })
-        }
-      }
-      break
-    }
-
-    case 'color': {
-      // Validate that the default value is a valid hex color
-      const defaultValue = option.default
-
-      if (typeof defaultValue === 'string') {
-        const hexColorRegex = /^#[0-9A-F]{6}$/i
-        if (!hexColorRegex.test(defaultValue)) {
-          errors.push({
-            message: `Option "${optionKey}" has default value "${defaultValue}" which is not a valid hex color (expected format: #RRGGBB)`,
-            optionKey,
-          })
-        }
-      }
-      break
-    }
-
-    case 'datetime-local': {
-      // Validate that the default value is between min and max if specified
-      const defaultValue = option.default
-      const min = option.min
-      const max = option.max
-
-      if (typeof defaultValue === 'string') {
-        const defaultDate = new Date(defaultValue)
-        if (Number.isNaN(defaultDate.getTime())) {
-          errors.push({
-            message: `Option "${optionKey}" has default value "${defaultValue}" which is not a valid datetime`,
-            optionKey,
-          })
-        } else {
-          if (typeof min === 'string') {
-            const minDate = new Date(min)
-            if (!Number.isNaN(minDate.getTime()) && defaultDate < minDate) {
-              errors.push({
-                message: `Option "${optionKey}" has default value "${defaultValue}" which is before the minimum "${min}"`,
-                optionKey,
-              })
-            }
-          }
-          if (typeof max === 'string') {
-            const maxDate = new Date(max)
-            if (!Number.isNaN(maxDate.getTime()) && defaultDate > maxDate) {
-              errors.push({
-                message: `Option "${optionKey}" has default value "${defaultValue}" which is after the maximum "${max}"`,
-                optionKey,
-              })
-            }
-          }
-        }
-      }
-      break
-    }
-  }
-
-  return errors
-}
+export type BlockValidationError = ValidationError & OptionValidationError
 
 /**
  * Validate a block definition and return any errors or warnings.
  */
 export function validateBlockDefinition(
   definition: BlockDefinitionInputBase | FragmentDefinitionInputBase,
+  icons: IconCollector,
 ): BlockValidationError[] {
   const errors: BlockValidationError[] = []
 
   // Validate options if present
   if ('options' in definition && definition.options) {
-    const options = definition.options as Record<string, any>
-
-    for (const [optionKey, option] of Object.entries(options)) {
-      if (!option || typeof option !== 'object') {
-        continue
-      }
-
-      const optionErrors = validateOption(optionKey, option)
-      errors.push(...optionErrors)
-    }
+    const optionErrors = validateOptions(
+      definition.options as Record<string, any>,
+      icons,
+    )
+    errors.push(...optionErrors)
   }
 
   // Check for deprecated fieldList in renderFor (blocks only)
@@ -398,7 +262,7 @@ export class CollectedBlockFile extends CollectedFile {
    * Validate the block definition and return any errors.
    * Results are cached and invalidated when the file changes.
    */
-  override validate(): BlockValidationError[] {
+  override validate(icons: IconCollector): BlockValidationError[] {
     // Return cached results if available
     if (this.validationCache !== null) {
       return this.validationCache
@@ -409,7 +273,7 @@ export class CollectedBlockFile extends CollectedFile {
       return this.validationCache
     }
 
-    const errors = validateBlockDefinition(this.definition)
+    const errors = validateBlockDefinition(this.definition, icons)
 
     // Check for missing icon on main blocks
     if (this.type === 'main' && isBlock(this.definition)) {
@@ -432,7 +296,7 @@ export class CollectedBlockFile extends CollectedFile {
     if (this.fileContents.includes('isEditing')) {
       // Check if isEditing is being destructured from defineBlokkli or defineBlokkliFragment
       const isEditingPattern =
-        /\bisEditing\b[^\n\r=\u2028\u2029]*=.*define(?:Blokkli|BlokkliFragment)\s*\(|define(?:Blokkli|BlokkliFragment)\s*\([^)]*\).*\bisEditing\b|\{[^}]*\bisEditing\b[^}]*\}\s*=\s*define(?:Blokkli|BlokkliFragment)/
+        /\bisEditing\b[^\n\r=\u2028\u2029]*=.*defineBlokkli\s*\(|defineBlokkli\s*\([^)]*\).*\bisEditing\b|\{[^}]*\bisEditing\b[^}]*\}\s*=\s*defineBlokkli/
       if (isEditingPattern.test(this.fileContents)) {
         errors.push({
           message: `Using deprecated "isEditing" property. Use "import.meta.blokkliEditing" instead.`,
@@ -682,7 +546,10 @@ export function validateMissingMainComponent(
 export class BlockCollector extends Collector<CollectedBlockFile> {
   private patterns: string[]
 
-  constructor(helper: ModuleHelper) {
+  constructor(
+    helper: ModuleHelper,
+    protected icons: IconCollector,
+  ) {
     super(helper)
 
     this.patterns = (helper.options.pattern || []).map((pattern) => {
@@ -813,9 +680,9 @@ export class BlockCollector extends Collector<CollectedBlockFile> {
     return ['block-content', 'block-path']
   }
 
-  override validate(): boolean {
+  override validate(icons: IconCollector): boolean {
     // Run base validation for individual files
-    const hasFileErrors = super.validate()
+    const hasFileErrors = super.validate(icons)
 
     const files = [...this.files.values()]
     let hasCollectorErrors = false
