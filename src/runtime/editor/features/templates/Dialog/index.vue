@@ -6,14 +6,20 @@
     @close="onClose"
   >
     <div class="bk-library-dialog">
-      <p class="bk-lead">
-        {{
+      <div class="bk">
+        <InfoBox
+          color="accent"
+          :text="
           $t(
-            'templatesPlaceDialogLead',
-            'Select a template to add multiple blocks to your layout.',
+            'templatesPlaceDialogDescription',
+            'Templates create copies of blocks that can be edited freely on this page without affecting other pages.',
           )
-        }}
-      </p>
+        "
+        />
+        <div v-if="config.length" class="bk-form-group">
+          <ConfigForm v-model="filters" :config />
+        </div>
+      </div>
       <div class="bk-library-dialog-content">
         <Loading v-if="status === 'pending'" />
         <ul v-else-if="items.length" class="bk-library-dialog-list">
@@ -49,9 +55,9 @@
 </template>
 
 <script setup lang="ts">
-import { FormOverlay, Pagination, Loading } from '#blokkli/editor/components'
+import { FormOverlay, Pagination, Loading, InfoBox, ConfigForm } from '#blokkli/editor/components'
 import type { BlokkliFieldElement } from '#blokkli/editor/types/field'
-import { ref, useBlokkli, computed, useAsyncData } from '#imports'
+import { ref, useBlokkli, computed, useAsyncData, reactive, watch } from '#imports'
 import TemplateItem from './Item/index.vue'
 import type {
   AdapterTemplatesGetResult,
@@ -70,6 +76,7 @@ const emit = defineEmits<{
 
 const selectedItem = ref('')
 const page = ref(0)
+const filters = reactive<Record<string, any>>({})
 
 const host = computed(() => ({
   type: props.field.hostEntityType,
@@ -80,8 +87,12 @@ const host = computed(() => ({
 const searchParams = computed<TemplatesSearchArguments>(() => ({
   host: host.value,
   page: page.value,
-  filters: {},
+  filters: { ...filters },
 }))
+
+watch(filters, function () {
+  page.value = 0
+})
 
 const { data, status } = await useAsyncData<AdapterTemplatesGetResult>(
   () => adapter.templatesSearch!(searchParams.value),
@@ -99,6 +110,7 @@ const { data, status } = await useAsyncData<AdapterTemplatesGetResult>(
 const perPage = computed(() => data.value.perPage)
 const totalPages = computed(() => Math.ceil(data.value.total / perPage.value))
 const items = computed(() => data.value.items)
+const config = computed(() => data.value.filters)
 
 const onSubmit = () => {
   if (selectedItem.value) {

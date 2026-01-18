@@ -1,5 +1,5 @@
 <template>
-  <div class="bk-info-box">
+  <div class="bk-info-box" :class="'bk-is-' + color">
     <Icon :name="icon" />
     <div>
       <slot>
@@ -17,10 +17,12 @@ withDefaults(
   defineProps<{
     text?: string
     icon?: BlokkliIcon
+    color?: 'yellow' | 'accent'
   }>(),
   {
     text: undefined,
     icon: 'bk_mdi_info-fill',
+    color: 'yellow'
   },
 )
 </script>

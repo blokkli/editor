@@ -117,7 +117,7 @@ defineAddAction(() => {
   return {
     id: 'template',
     icon: 'bk_mdi_dashboard',
-    color: 'orange',
+    color: 'rose',
     title: $t('templatesAddTemplate', 'Add template'),
     weight: 10,
     description: $t(

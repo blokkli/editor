@@ -1410,8 +1410,17 @@ export default defineBlokkliEditAdapter((ctx) => {
       }
     }
 
+    // Collect all unique bundles from templates for the filter options
+    const allBundles = new Set<string>()
+    templateItems.forEach((template) => {
+      template
+        .getBlocks()
+        .getBlocks()
+        .forEach((b) => allBundles.add(b.bundle))
+    })
+
     // Filter: ALL bundles in template must be allowed
-    const filtered = templateItems.filter((template) => {
+    let filtered = templateItems.filter((template) => {
       const templateBundles = template
         .getBlocks()
         .getBlocks()
@@ -1421,6 +1430,29 @@ export default defineBlokkliEditAdapter((ctx) => {
         templateBundles.every((b) => allowedBundles.includes(b))
       )
     })
+
+    // Apply text filter
+    const textFilter = e.filters?.text as string | undefined
+    if (textFilter) {
+      const searchText = textFilter.toLowerCase()
+      filtered = filtered.filter((template) => {
+        const label = template.title().toLowerCase()
+        const description = template.description()?.toLowerCase() || ''
+        return label.includes(searchText) || description.includes(searchText)
+      })
+    }
+
+    // Apply bundle filter
+    const bundleFilter = e.filters?.bundle as string | undefined
+    if (bundleFilter && bundleFilter !== 'all') {
+      filtered = filtered.filter((template) => {
+        const templateBundles = template
+          .getBlocks()
+          .getBlocks()
+          .map((b) => b.bundle)
+        return templateBundles.includes(bundleFilter)
+      })
+    }
 
     const items: TemplateItem[] = filtered
       .slice(offset, offset + perPage)
@@ -1435,11 +1467,47 @@ export default defineBlokkliEditAdapter((ctx) => {
         isDefault: template.isDefault(),
       }))
 
+    // Build bundle options from allowed bundles that exist in templates
+    const blockClasses = getBlockBundles()
+    const bundleOptions = Array.from(allBundles)
+      .filter((bundle) => allowedBundles.length === 0 || allowedBundles.includes(bundle))
+      .map((bundle) => {
+        const BlockClass = blockClasses.find((c) => c.bundle === bundle)
+        return {
+          value: bundle,
+          label: BlockClass?.label || bundle,
+        }
+      })
+      .sort((a, b) => a.label.localeCompare(b.label))
+
     return Promise.resolve({
       items,
       total: filtered.length,
       perPage,
-      filters: [],
+      filters: [
+        {
+          type: 'text',
+          name: 'text',
+          label: 'Search',
+          placeholder: 'Search templates...',
+          required: false,
+        },
+        {
+          type: 'options',
+          variant: 'select',
+          name: 'bundle',
+          label: 'Bundle',
+          defaultValue: 'all',
+          required: false,
+          options: [
+            {
+              value: 'all',
+              label: 'All',
+            },
+            ...bundleOptions,
+          ],
+        },
+      ],
     })
   }
 

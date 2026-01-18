@@ -6,6 +6,7 @@ export default defineNuxtConfig({
     graphqlEndpoint: 'https://starterkit.ddev.site/de/graphql',
     schemaPath: './build/drupal-schema.graphql',
     downloadSchema: false,
+    // graphqlConfigFilePath: '',
     autoImportPatterns: [
       './src/modules/drupal/graphql/base/*.graphql',
       './src/modules/drupal/graphql/mutations/*.graphql',
@@ -22,6 +23,7 @@ export default defineNuxtConfig({
       './src/modules/drupal/graphql/features/search.graphql',
       './src/modules/drupal/graphql/features/transform.graphql',
       './src/modules/drupal/graphql/features/transform_host.graphql',
+      './src/modules/drupal/graphql/features/templates.graphql',
       './drupal/mocks.graphql',
     ],
     documents: [

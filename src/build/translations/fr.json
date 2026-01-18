@@ -1919,8 +1919,8 @@
     "source": "No templates available for this field.",
     "translation": ""
   },
-  "templatesPlaceDialogLead": {
-    "source": "Select a template to add multiple blocks to your layout.",
+  "templatesPlaceDialogDescription": {
+    "source": "Templates create copies of blocks that can be edited freely on this page without affecting other pages.",
     "translation": ""
   },
   "templatesPlaceDialogSubmitButton": {

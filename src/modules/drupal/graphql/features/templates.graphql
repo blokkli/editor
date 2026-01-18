@@ -1,0 +1,74 @@
+query pbSearchTemplates(
+  $page: Int
+  $filters: [ParagraphsBlokkliUserConfigInput]
+) {
+  paragraphsBlokkliGetTemplates(page: $page, filters: $filters) {
+    items {
+      uuid
+      label
+      description
+      isDefault
+      items: paragraphs {
+        ...paragraphsFieldItem
+        props {
+          ...paragraph
+        }
+      }
+    }
+    total
+    perPage
+    filters {
+      ...paragraphsBlokkliConfigInput
+    }
+  }
+}
+
+mutation pbAddTemplate(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $templateUuid: String!
+  $hostType: String!
+  $hostUuid: String!
+  $hostFieldName: String!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: add_from_template(
+      templateUuid: $templateUuid
+      afterUuid: $afterUuid
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}
+
+mutation pbCreateTemplate(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $label: String!
+  $description: String
+  $isDefault: Boolean
+  $uuids: [String!]!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: createTemplate(
+      label: $label
+      description: $description
+      isDefault: $isDefault
+      uuids: $uuids
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

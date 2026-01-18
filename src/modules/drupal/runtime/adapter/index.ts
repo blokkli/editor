@@ -1097,6 +1097,51 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       }
     }
 
+    if (hasQuery('pbSearchTemplates')) {
+      adapter.templatesSearch = (e) => {
+        return useGraphqlQuery('pbSearchTemplates', {
+          filters: configObjectToUserConfigInput(e.filters),
+          page: e.page,
+        }).then((data) => {
+          return {
+            filters: mapPluginConfigInputs(
+              data.data.paragraphsBlokkliGetTemplates?.filters ?? [],
+            ),
+            items: (
+              data.data.paragraphsBlokkliGetTemplates?.items || []
+            ).filter(falsy),
+            total: data.data.paragraphsBlokkliGetTemplates?.total || 0,
+            perPage: data.data.paragraphsBlokkliGetTemplates?.perPage || 50,
+          }
+        })
+      }
+    }
+
+    if (hasMutation('pbAddTemplate')) {
+      adapter.templatesAdd = (e) => {
+        return useGraphqlMutation('pbAddTemplate', {
+          ...ctx.value,
+          templateUuid: e.templateUuid,
+          hostType: e.host.type,
+          hostUuid: e.host.uuid,
+          hostFieldName: e.host.fieldName,
+          afterUuid: e.afterUuid,
+        }).then(mapMutation)
+      }
+    }
+
+    if (hasMutation('pbCreateTemplate')) {
+      adapter.templatesCreate = (e) => {
+        return useGraphqlMutation('pbCreateTemplate', {
+          ...ctx.value,
+          label: e.label,
+          description: e.description,
+          isDefault: e.isDefault,
+          uuids: e.uuids,
+        }).then(mapMutation)
+      }
+    }
+
     if (hasMutation('pbUnschedule')) {
       adapter.unscheduleEditState = (options) =>
         useGraphqlMutation('pbUnschedule', {

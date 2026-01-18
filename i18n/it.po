@@ -2096,8 +2096,10 @@ msgctxt "templatesNoResults"
 msgid "No templates available for this field."
 msgstr ""
 
-msgctxt "templatesPlaceDialogLead"
-msgid "Select a template to add multiple blocks to your layout."
+msgctxt "templatesPlaceDialogDescription"
+msgid ""
+"Templates create copies of blocks that can be edited freely on this page "
+"without affecting other pages."
 msgstr ""
 
 msgctxt "templatesPlaceDialogSubmitButton"

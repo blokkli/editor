@@ -5624,6 +5624,13 @@ type ParagraphsBlokkliConfigInputCheckbox implements ParagraphsBlokkliConfigInpu
   required: Boolean!
 }
 
+type ParagraphsBlokkliConfigInputHost implements ParagraphsBlokkliConfigInput {
+  description: String
+  label: String!
+  name: String!
+  required: Boolean!
+}
+
 type ParagraphsBlokkliConfigInputOptions implements ParagraphsBlokkliConfigInput {
   defaultValue: String
   description: String
@@ -6018,6 +6025,21 @@ type ParagraphsBlokkliSupportedClipboardRichText implements ParagraphsBlokkliSup
   possibleParagraphBundles: [String!]!
 }
 
+type ParagraphsBlokkliTemplate {
+  description: String
+  isDefault: Boolean!
+  label: String!
+  paragraphs: [Paragraph!]!
+  uuid: String!
+}
+
+type ParagraphsBlokkliTemplatesSearchResults {
+  filters: [ParagraphsBlokkliConfigInput!]!
+  items: [ParagraphsBlokkliTemplate!]!
+  perPage: Int!
+  total: Int!
+}
+
 type ParagraphsBlokkliTransformPlugin {
   allowPreview: Boolean!
   bundles: [String!]!
@@ -6188,6 +6210,24 @@ type ParagraphsEditMutationState {
 
     """The fragment name."""
     name: String!
+  ): ParagraphsBlokkliMutationResult
+
+  """Adds all paragraphs from a template."""
+  add_from_template(
+    """The UUID of the paragraph after which to add."""
+    afterUuid: String
+
+    """The field name of the target host."""
+    hostFieldName: String!
+
+    """The entity type of the target host."""
+    hostType: String!
+
+    """The UUID of the target host."""
+    hostUuid: String!
+
+    """The UUID of the template."""
+    templateUuid: String!
   ): ParagraphsBlokkliMutationResult
 
   """Adds a new paragraph of type image."""
@@ -6368,6 +6408,23 @@ type ParagraphsEditMutationState {
 
     """The UUID of the entity from which to copy the paragraphs."""
     sourceUuid: String!
+  ): ParagraphsBlokkliMutationResult
+
+  """
+  Creates a template from the selected paragraphs in the current edit state.
+  """
+  createTemplate(
+    """Optional description for the template."""
+    description: String
+
+    """Whether this should be a default template for its paragraph type."""
+    isDefault: Boolean
+
+    """The label for the new template."""
+    label: String!
+
+    """The UUIDs of the paragraphs to include in the template."""
+    uuids: [String!]!
   ): ParagraphsBlokkliMutationResult
 
   """Detaches reusable paragraphs."""
@@ -6763,6 +6820,7 @@ type Query {
   """Get the array of allowed paragraph types by entity field."""
   paragraphsBlokkliConversions: [ParagraphsBlokkliConversion!]
   paragraphsBlokkliGetHostTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliHostTransformPlugin!]
+  paragraphsBlokkliGetTemplates(filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliTemplatesSearchResults
   paragraphsBlokkliGetTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliTransformPlugin!]
   paragraphsBlokkliSearch(id: String, text: String!): [ParagraphsBlokkliSearchItem]
   paragraphsBlokkliSearchLibraryItems(bundles: [String]!, filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliLibraryItemsSearchResults

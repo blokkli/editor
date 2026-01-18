@@ -238,7 +238,12 @@ export default function (): DefinitionProvider {
 
   const bundlesWithAutoAdd = computed<string[]>(() => {
     return blocks.value
-      .filter((v) => v.editor?.addBehaviour === 'no-form')
+      .filter((v) => {
+        const addBehaviour = v.editor?.addBehaviour ?? 'form'
+        return (
+          addBehaviour === 'no-form' || addBehaviour.startsWith('editable:')
+        )
+      })
       .map((v) => v.bundle)
   })
 

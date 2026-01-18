@@ -1919,9 +1919,9 @@
     "source": "No templates available for this field.",
     "translation": "Keine Vorlagen für dieses Feld verfügbar."
   },
-  "templatesPlaceDialogLead": {
-    "source": "Select a template to add multiple blocks to your layout.",
-    "translation": "Wählen Sie eine Vorlage aus, um mehrere Blöcke zu Ihrem Layout hinzuzufügen."
+  "templatesPlaceDialogDescription": {
+    "source": "Templates create copies of blocks that can be edited freely on this page without affecting other pages.",
+    "translation": "Vorlagen erstellen Kopien von Blöcken, die auf dieser Seite frei bearbeitet werden können, ohne andere Seiten zu beeinflussen."
   },
   "templatesPlaceDialogSubmitButton": {
     "source": "Add template blocks",

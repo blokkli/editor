@@ -243,6 +243,13 @@ export default defineBlokkliModule({
       context.features.disableFeature('preview-grant')
     }
 
+    // Feature: Templates.
+    if (graphql.schemaHasType('ParagraphsBlokkliTemplate')) {
+      addGraphqlDocument('features/templates.graphql')
+    } else {
+      context.features.disableFeature('templates')
+    }
+
     // Enable the new publish options.
     if (
       editStateFields.has('publishOptions') &&

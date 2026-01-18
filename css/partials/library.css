@@ -50,6 +50,10 @@
     @apply px-20 mt-20;
   }
 
+  .bk-info-box {
+    @apply mx-20 my-15;
+  }
+
   .bk-library-dialog-content {
     @apply px-20 my-20 border-t border-t-mono-300 pt-20;
   }
