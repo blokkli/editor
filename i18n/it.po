@@ -1205,6 +1205,14 @@ msgctxt "feature_structure_label"
 msgid "Structure"
 msgstr "Struttura"
 
+msgctxt "feature_templates_description"
+msgid "Add blocks from templates."
+msgstr ""
+
+msgctxt "feature_templates_label"
+msgid "Templates"
+msgstr ""
+
 msgctxt "feature_theme_description"
 msgid "Implements a theme editor."
 msgstr "Implementa un editor di temi."
@@ -2022,6 +2030,30 @@ msgid ""
 "blocks and drag-and-drop indicators. If WebGL is not supported, Blökkli "
 "will resort to fallback rendering, which is slower and lacks full feature "
 "support."
+msgstr ""
+
+msgctxt "templatesAddTemplate"
+msgid "Add template"
+msgstr ""
+
+msgctxt "templatesAddTemplateDescription"
+msgid "<p>Drag the icon into the page to add blocks from a template.</p>"
+msgstr ""
+
+msgctxt "templatesNoResults"
+msgid "No templates available for this field."
+msgstr ""
+
+msgctxt "templatesPlaceDialogLead"
+msgid "Select a template to add multiple blocks to your layout."
+msgstr ""
+
+msgctxt "templatesPlaceDialogSubmitButton"
+msgid "Add template blocks"
+msgstr ""
+
+msgctxt "templatesPlaceDialogTitle"
+msgid "Add blocks from template"
 msgstr ""
 
 msgctxt "theme"

@@ -20,7 +20,7 @@ import type { BlokkliIcon } from '#blokkli-build/icons'
 import { ItemIcon, Icon } from '#blokkli/editor/components'
 import { computed } from '#imports'
 
-type ItemColor = 'rose' | 'lime' | 'default' | 'yellow' | 'accent'
+type ItemColor = 'rose' | 'lime' | 'default' | 'yellow' | 'accent' | 'orange'
 
 const props = withDefaults(
   defineProps<{

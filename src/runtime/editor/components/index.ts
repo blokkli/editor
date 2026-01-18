@@ -1,4 +1,5 @@
 import AddListItem from './AddListItem/index.vue'
+import BlockPreviewItem from './BlockPreviewItem/index.vue'
 import ItemIconBox from './ItemIconBox/index.vue'
 import ArtboardTooltip from './ArtboardTooltip/index.vue'
 import Banner from './Banner/index.vue'
@@ -37,6 +38,7 @@ import BundleSelector from './BundleSelector/index.vue'
 
 export {
   AddListItem,
+  BlockPreviewItem,
   ItemIconBox,
   ArtboardTooltip,
   Banner,

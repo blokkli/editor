@@ -13,7 +13,7 @@
     @media not all and (hover: none) {
       &:not(.bk-is-selected):hover {
         @apply border-mono-400;
-        .bk-library-list-item-header {
+        .bk-block-preview-item-header {
           @apply bg-mono-200;
         }
       }
@@ -21,7 +21,7 @@
 
     &.bk-is-selected {
       @apply border-accent-700;
-      .bk-library-list-item-header {
+      .bk-block-preview-item-header {
         @apply bg-accent-700 text-white;
       }
       .bk-blokkli-item-label-icon {
@@ -31,32 +31,6 @@
         @apply text-white;
       }
     }
-  }
-}
-
-.bk-library-list-item {
-  @apply h-full flex flex-col;
-}
-
-.bk-library-list-item-header {
-  @apply p-15 bg-mono-100;
-
-  h3 {
-    @apply font-semibold;
-  }
-}
-
-.bk-library-list-item-inner {
-  @apply p-20 overflow-hidden relative flex items-center justify-center h-full;
-
-  > .bk-scale-to-fit {
-    @apply w-full;
-  }
-
-  &:after {
-    content: '';
-    @apply absolute bottom-0 left-0 w-full h-20;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0), white 40%);
   }
 }
 

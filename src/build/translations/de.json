@@ -35,9 +35,17 @@
     "source": "Add \"@bundle\" inside @parentBundle » @fieldLabel",
     "translation": "«@bundle» in @parentBundle » @fieldLabel hinzufügen"
   },
+  "addButtonBundleToField": {
+    "source": "Add \"@bundle\" to @fieldLabel",
+    "translation": "«@bundle» in @fieldLabel hinzufügen"
+  },
   "addButtonInsideField": {
     "source": "Add inside @parentBundle » @fieldLabel...",
     "translation": "In @parentBundle » @fieldLabel hinzufügen..."
+  },
+  "addButtonToField": {
+    "source": "Add to @fieldLabel...",
+    "translation": "In @fieldLabel hinzufügen..."
   },
   "addCommentHeader": {
     "source": "Add Comment",
@@ -1071,6 +1079,14 @@
     "source": "Structure",
     "translation": "Struktur"
   },
+  "feature_templates_description": {
+    "source": "Add blocks from templates.",
+    "translation": "Blöcke aus Vorlagen hinzufügen."
+  },
+  "feature_templates_label": {
+    "source": "Templates",
+    "translation": "Vorlagen"
+  },
   "feature_theme_description": {
     "source": "Implements a theme editor.",
     "translation": "Implementiert einen Theme-Editor."
@@ -1842,6 +1858,30 @@
   "systemRequirementsWebglText": {
     "source": "blökkli uses WebGL for fast rendering of UI elements such as selected blocks and drag-and-drop indicators. If WebGL is not supported, Blökkli will resort to fallback rendering, which is slower and lacks full feature support.",
     "translation": "blökkli verwendet WebGL für die schnelle Darstellung von GUI-Elementen wie ausgewählten Blöcken und Drag-and-Drop-Indikatoren. Wenn WebGL nicht unterstützt wird, verwendet blökkli einen Fallback, der langsamer ist und nicht alle Funktionen unterstützt."
+  },
+  "templatesAddTemplate": {
+    "source": "Add template",
+    "translation": "Vorlage hinzufügen"
+  },
+  "templatesAddTemplateDescription": {
+    "source": "<p>Drag the icon into the page to add blocks from a template.</p>",
+    "translation": "<p>Ziehen Sie das Symbol auf die Seite, um Blöcke aus einer Vorlage hinzuzufügen.</p>"
+  },
+  "templatesNoResults": {
+    "source": "No templates available for this field.",
+    "translation": "Keine Vorlagen für dieses Feld verfügbar."
+  },
+  "templatesPlaceDialogLead": {
+    "source": "Select a template to add multiple blocks to your layout.",
+    "translation": "Wählen Sie eine Vorlage aus, um mehrere Blöcke zu Ihrem Layout hinzuzufügen."
+  },
+  "templatesPlaceDialogSubmitButton": {
+    "source": "Add template blocks",
+    "translation": "Vorlagen-Blöcke hinzufügen"
+  },
+  "templatesPlaceDialogTitle": {
+    "source": "Add blocks from template",
+    "translation": "Blöcke aus Vorlage hinzufügen"
   },
   "theme": {
     "source": "Theme",

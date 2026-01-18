@@ -64,6 +64,7 @@ const { options } = defineBlokkli({
   editor: {
     icon: 'bk_mdi_grid_view',
     disableEdit: true,
+    previewWidth: 1200,
     editTitle: (el) => el.querySelector('h2')?.textContent,
   },
 })

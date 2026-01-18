@@ -5,7 +5,7 @@ import type {
   RenderedFieldListItem,
 } from './field'
 
-export type AddActionColor = 'rose' | 'lime' | 'accent'
+export type AddActionColor = 'rose' | 'lime' | 'accent' | 'orange'
 
 export type ActionPlacedData = {
   preceedingUuid: string | null
@@ -20,6 +20,7 @@ export type AddAction = {
   itemBundle?: string
   title: string
   description?: string
+  weight: number
   callback: (action: ActionPlacedData) => void
   enabled?: (item: RenderedFieldListItem) => boolean
 }

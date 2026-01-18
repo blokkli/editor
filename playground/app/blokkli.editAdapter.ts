@@ -43,8 +43,10 @@ import type { ImportItem } from '#blokkli/editor/features/import-existing/types'
 import type { HostTransformPlugin } from '#blokkli/editor/features/transform/types'
 import type { CommentItem } from '#blokkli/editor/features/comments/types'
 import type { PublishOptions } from '#blokkli/editor/features/publish/types'
+import type { TemplateItem } from '#blokkli/editor/features/templates/types'
 
 const ENALBE_EDIT_STATES = false
+const ENABLED_ASSISTANT = false
 
 function getPublishOptions(ctx: {
   entityType: string
@@ -998,30 +1000,6 @@ export default defineBlokkliEditAdapter((ctx) => {
       return `${prefix}?${params.toString()}`
     },
 
-    assistantGetResults(e) {
-      return $fetch<AssistantResultMarkup | undefined>('/api/gpt', {
-        method: 'post',
-        body: {
-          prompt: e.prompt,
-        },
-      })
-    },
-
-    assistantAddBlockFromResult(e) {
-      if (e.result.type === 'markup') {
-        return addMutation('add', {
-          bundle: 'text',
-          values: {
-            text: e.result.content,
-          },
-          hostEntityType: e.host.type,
-          hostEntityUuid: e.host.uuid,
-          hostField: e.host.fieldName,
-          preceedingUuid: e.preceedingUuid,
-        })
-      }
-    },
-
     getFieldConfig() {
       const entity = getEntity()
       const fields: FieldConfig[] = []
@@ -1412,6 +1390,92 @@ export default defineBlokkliEditAdapter((ctx) => {
           },
         })
       },
+    }
+  }
+
+  adapter.templatesSearch = function (e) {
+    const templateItems = entityStorageManager.storages.template_item.loadAll()
+    const perPage = 10
+    const offset = e.page * perPage
+
+    // Get allowed bundles for the target field
+    let allowedBundles: string[] = []
+    if (e.host) {
+      const entity = entityStorageManager.load(e.host.type as any, e.host.uuid)
+      if (entity) {
+        const field = entity.get<FieldBlocks>(e.host.fieldName)
+        if (field && field.allowedBundles) {
+          allowedBundles = field.allowedBundles
+        }
+      }
+    }
+
+    // Filter: ALL bundles in template must be allowed
+    const filtered = templateItems.filter((template) => {
+      const templateBundles = template
+        .getBlocks()
+        .getBlocks()
+        .map((b) => b.bundle)
+      return (
+        allowedBundles.length === 0 ||
+        templateBundles.every((b) => allowedBundles.includes(b))
+      )
+    })
+
+    const items: TemplateItem[] = filtered
+      .slice(offset, offset + perPage)
+      .map((template) => ({
+        uuid: template.uuid,
+        label: template.title(),
+        description: template.description(),
+        items: template
+          .getBlocks()
+          .getBlocks()
+          .map((block) => mapBlockItem(block)),
+        isDefault: template.isDefault(),
+      }))
+
+    return Promise.resolve({
+      items,
+      total: filtered.length,
+      perPage,
+      filters: [],
+    })
+  }
+
+  adapter.templatesAdd = function (e) {
+    return addMutation('add_template', {
+      templateUuid: e.templateUuid,
+      hostEntityType: e.host.type,
+      hostEntityUuid: e.host.uuid,
+      hostField: e.host.fieldName,
+      preceedingUuid: e.afterUuid,
+    })
+  }
+
+  if (import.meta.dev && ENABLED_ASSISTANT) {
+    adapter.assistantGetResults = (e) => {
+      return $fetch<AssistantResultMarkup | undefined>('/api/gpt', {
+        method: 'post',
+        body: {
+          prompt: e.prompt,
+        },
+      })
+    }
+
+    adapter.assistantAddBlockFromResult = (e) => {
+      if (e.result.type === 'markup') {
+        return addMutation('add', {
+          bundle: 'text',
+          values: {
+            text: e.result.content,
+          },
+          hostEntityType: e.host.type,
+          hostEntityUuid: e.host.uuid,
+          hostField: e.host.fieldName,
+          preceedingUuid: e.preceedingUuid,
+        })
+      }
     }
   }
 

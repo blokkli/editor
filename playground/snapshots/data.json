@@ -187,6 +187,22 @@
       "entityType": "block",
       "entityUuid": "90d01577-babc-45b5-a03b-2ba266822425",
       "field": ["1be4ab78-8265-48a6-a1aa-ff852d2507b5"]
+    },
+    {
+      "name": "header",
+      "entityType": "block",
+      "entityUuid": "4d5e6f7a-8b9c-4d0e-1f2a-3b4c5d6e7f8a",
+      "field": ["5e6f7a8b-9c0d-4e1f-2a3b-4c5d6e7f8a9b"]
+    },
+    {
+      "name": "blocks",
+      "entityType": "block",
+      "entityUuid": "4d5e6f7a-8b9c-4d0e-1f2a-3b4c5d6e7f8a",
+      "field": [
+        "6f7a8b9c-0d1e-4f2a-3b4c-5d6e7f8a9b0c",
+        "7a8b9c0d-1e2f-4a3b-4c5d-6e7f8a9b0c1d",
+        "8b9c0d1e-2f3a-4b4c-5d6e-7f8a9b0c1d2e"
+      ]
     }
   ],
   "blocks": [
@@ -1445,6 +1461,212 @@
         "unpublishOn": [],
         "name": ["features_list"]
       }
+    },
+    {
+      "entityType": "block",
+      "bundle": "title",
+      "uuid": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+      "values": {
+        "isNew": [false],
+        "options": [],
+        "publishOn": [],
+        "unpublishOn": [],
+        "tagline": ["Welcome"],
+        "title": ["Your Hero Title Here"],
+        "lead": ["A compelling lead text that captures attention and drives engagement."]
+      }
+    },
+    {
+      "entityType": "block",
+      "bundle": "image",
+      "uuid": "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+      "values": {
+        "isNew": [false],
+        "options": [
+          {
+            "key": "elevated",
+            "value": "1"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "imageReference": ["7"]
+      }
+    },
+    {
+      "entityType": "block",
+      "bundle": "title",
+      "uuid": "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f",
+      "values": {
+        "isNew": [false],
+        "options": [],
+        "publishOn": [],
+        "unpublishOn": [],
+        "tagline": ["Get Started"],
+        "title": ["Ready to Begin?"],
+        "lead": ["Take the next step and discover what we can offer you."]
+      }
+    },
+    {
+      "entityType": "block",
+      "bundle": "text",
+      "uuid": "d4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f8a",
+      "values": {
+        "isNew": [false],
+        "options": [],
+        "publishOn": [],
+        "unpublishOn": [],
+        "text": ["<p>Start your journey today. Our team is ready to help you achieve your goals.</p>"]
+      }
+    },
+    {
+      "entityType": "block",
+      "bundle": "button",
+      "uuid": "e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b",
+      "values": {
+        "isNew": [false],
+        "options": [
+          {
+            "key": "color",
+            "value": "primary"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "title": ["Get Started"],
+        "url": ["/get-started"],
+        "icon": []
+      }
+    },
+    {
+      "entityType": "block",
+      "bundle": "button",
+      "uuid": "f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c",
+      "values": {
+        "isNew": [false],
+        "options": [
+          {
+            "key": "color",
+            "value": "secondary"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "title": ["Learn More"],
+        "url": ["/learn-more"],
+        "icon": []
+      }
+    },
+    {
+      "entityType": "block",
+      "bundle": "grid",
+      "uuid": "4d5e6f7a-8b9c-4d0e-1f2a-3b4c5d6e7f8a",
+      "values": {
+        "isNew": [false],
+        "options": [
+          {
+            "key": "columns",
+            "value": "three"
+          },
+          {
+            "key": "background",
+            "value": "light"
+          },
+          {
+            "key": "showHeader",
+            "value": "1"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "header": [
+          {
+            "uuid": "5e6f7a8b-9c0d-4e1f-2a3b-4c5d6e7f8a9b"
+          }
+        ],
+        "blocks": [
+          {
+            "uuid": "6f7a8b9c-0d1e-4f2a-3b4c-5d6e7f8a9b0c"
+          },
+          {
+            "uuid": "7a8b9c0d-1e2f-4a3b-4c5d-6e7f8a9b0c1d"
+          },
+          {
+            "uuid": "8b9c0d1e-2f3a-4b4c-5d6e-7f8a9b0c1d2e"
+          }
+        ]
+      }
+    },
+    {
+      "entityType": "block",
+      "bundle": "title",
+      "uuid": "5e6f7a8b-9c0d-4e1f-2a3b-4c5d6e7f8a9b",
+      "values": {
+        "isNew": [false],
+        "options": [],
+        "publishOn": [],
+        "unpublishOn": [],
+        "tagline": ["Features"],
+        "title": ["Our Amazing Features"],
+        "lead": ["Discover what makes us stand out from the competition."]
+      }
+    },
+    {
+      "entityType": "block",
+      "bundle": "card",
+      "uuid": "6f7a8b9c-0d1e-4f2a-3b4c-5d6e7f8a9b0c",
+      "values": {
+        "isNew": [false],
+        "options": [
+          {
+            "key": "box",
+            "value": "1"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": ["bk_mdi_rocket"],
+        "title": ["Fast Performance"],
+        "text": ["Lightning fast loading times and smooth interactions."]
+      }
+    },
+    {
+      "entityType": "block",
+      "bundle": "card",
+      "uuid": "7a8b9c0d-1e2f-4a3b-4c5d-6e7f8a9b0c1d",
+      "values": {
+        "isNew": [false],
+        "options": [
+          {
+            "key": "box",
+            "value": "1"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": ["bk_mdi_shield"],
+        "title": ["Secure by Design"],
+        "text": ["Built with security best practices from the ground up."]
+      }
+    },
+    {
+      "entityType": "block",
+      "bundle": "card",
+      "uuid": "8b9c0d1e-2f3a-4b4c-5d6e-7f8a9b0c1d2e",
+      "values": {
+        "isNew": [false],
+        "options": [
+          {
+            "key": "box",
+            "value": "1"
+          }
+        ],
+        "publishOn": [],
+        "unpublishOn": [],
+        "icon": ["bk_mdi_extension"],
+        "title": ["Highly Extensible"],
+        "text": ["Customize and extend to fit your unique needs."]
+      }
     }
   ],
   "libraryItems": [
@@ -1462,6 +1684,36 @@
       "uuid": "7ba5e09a-6f8c-479a-a4d5-ec46c1224a0c",
       "title": "This is my very long library item label",
       "block": "25cdf719-d6ef-4a27-a828-ba6ed8b78ee6"
+    }
+  ],
+  "templateItems": [
+    {
+      "uuid": "1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d",
+      "title": "Hero Section",
+      "description": "A title block followed by an image for a hero section",
+      "isDefault": true,
+      "blocks": ["a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d", "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e"]
+    },
+    {
+      "uuid": "2b3c4d5e-6f7a-4b8c-9d0e-1f2a3b4c5d6e",
+      "title": "Call to Action",
+      "description": "Text with buttons for a call to action section",
+      "isDefault": false,
+      "blocks": ["c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f", "d4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f8a"]
+    },
+    {
+      "uuid": "3c4d5e6f-7a8b-4c9d-0e1f-2a3b4c5d6e7f",
+      "title": "Two Buttons",
+      "description": "A pair of buttons for navigation",
+      "isDefault": false,
+      "blocks": ["e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b", "f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c"]
+    },
+    {
+      "uuid": "9c0d1e2f-3a4b-4c5d-6e7f-8a9b0c1d2e3f",
+      "title": "Feature Grid",
+      "description": "A grid with a title header and three feature cards",
+      "isDefault": false,
+      "blocks": ["4d5e6f7a-8b9c-4d0e-1f2a-3b4c5d6e7f8a"]
     }
   ]
 }

@@ -22,7 +22,7 @@ defineProps<{
 const { plugins } = useBlokkli()
 
 const actions = computed(() => {
-  return plugins.get('addAction')
+  return plugins.get('addAction').sort((a, b) => a.weight - b.weight)
 })
 
 function buildItemAction(

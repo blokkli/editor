@@ -1219,6 +1219,14 @@ msgctxt "feature_structure_label"
 msgid "Structure"
 msgstr "Struktur"
 
+msgctxt "feature_templates_description"
+msgid "Add blocks from templates."
+msgstr "Blöcke aus Vorlagen hinzufügen."
+
+msgctxt "feature_templates_label"
+msgid "Templates"
+msgstr "Vorlagen"
+
 msgctxt "feature_theme_description"
 msgid "Implements a theme editor."
 msgstr "Implementiert einen Theme-Editor."
@@ -2072,6 +2080,32 @@ msgstr ""
 "ausgewählten Blöcken und Drag-and-Drop-Indikatoren. Wenn WebGL nicht "
 "unterstützt wird, verwendet blökkli einen Fallback, der langsamer ist und "
 "nicht alle Funktionen unterstützt."
+
+msgctxt "templatesAddTemplate"
+msgid "Add template"
+msgstr "Vorlage hinzufügen"
+
+msgctxt "templatesAddTemplateDescription"
+msgid "<p>Drag the icon into the page to add blocks from a template.</p>"
+msgstr ""
+"<p>Ziehen Sie das Symbol auf die Seite, um Blöcke aus einer Vorlage "
+"hinzuzufügen.</p>"
+
+msgctxt "templatesNoResults"
+msgid "No templates available for this field."
+msgstr "Keine Vorlagen für dieses Feld verfügbar."
+
+msgctxt "templatesPlaceDialogLead"
+msgid "Select a template to add multiple blocks to your layout."
+msgstr "Wählen Sie eine Vorlage aus, um mehrere Blöcke zu Ihrem Layout hinzuzufügen."
+
+msgctxt "templatesPlaceDialogSubmitButton"
+msgid "Add template blocks"
+msgstr "Vorlagen-Blöcke hinzufügen"
+
+msgctxt "templatesPlaceDialogTitle"
+msgid "Add blocks from template"
+msgstr "Blöcke aus Vorlage hinzufügen"
 
 msgctxt "theme"
 msgid "Theme"

@@ -1,31 +1,17 @@
 <template>
-  <div :class="backgroundClass">
-    <div class="bk bk-library-list-item-header">
-      <h3>{{ label || name }}</h3>
-      <p v-if="description">{{ description }}</p>
-    </div>
-    <div
-      v-if="renderPreview"
-      class="bk-library-list-item-inner"
-      :class="backgroundClass"
-    >
-      <ScaleToFit :width="previewWidth" :max-height="500">
-        <BlokkliItem v-bind="item" parent-type="nested" />
-      </ScaleToFit>
-    </div>
-  </div>
+  <BlockPreviewItem
+    :items="item"
+    :title="label || name"
+    :description="description"
+    :max-height="500"
+    :no-preview="!renderPreview"
+  />
 </template>
 
 <script setup lang="ts">
-import { computed, provide, useBlokkli } from '#imports'
-import { ScaleToFit } from '#blokkli/editor/components'
-import {
-  INJECT_FIELD_LIST_BLOCKS,
-  INJECT_IS_EDITING,
-  INJECT_IS_IN_REUSABLE,
-  INJECT_PROVIDER_BLOCKS,
-} from '#blokkli/helpers/injections'
-import { fragmentBlockBundle } from '#blokkli-build/config';
+import { computed, useBlokkli } from '#imports'
+import { BlockPreviewItem } from '#blokkli/editor/components'
+import { fragmentBlockBundle } from '#blokkli-build/config'
 
 const props = defineProps<{
   name: string
@@ -36,31 +22,18 @@ const props = defineProps<{
 
 const { definitions } = useBlokkli()
 
-const item = computed(() => {
-  return {
-    bundle: fragmentBlockBundle,
-    uuid: props.index.toString(),
-    props: {
-      name: props.name,
-    },
-  }
-})
+const item = computed(() => ({
+  bundle: fragmentBlockBundle,
+  uuid: props.index.toString(),
+  isVisible: true,
+  props: {
+    name: props.name,
+  },
+}))
 
 const definition = computed(() => definitions.getFragmentDefinition(props.name))
 
-const previewWidth = computed(() => definition.value?.editor?.previewWidth)
 const renderPreview = computed(
   () => definition.value?.editor?.noPreview !== true,
 )
-
-const backgroundClass = computed(
-  () => definition.value?.editor?.previewBackgroundClass || '',
-)
-
-const blocks = computed(() => [])
-
-provide(INJECT_IS_IN_REUSABLE, true)
-provide(INJECT_IS_EDITING, false)
-provide(INJECT_FIELD_LIST_BLOCKS, blocks)
-provide(INJECT_PROVIDER_BLOCKS, blocks)
 </script>

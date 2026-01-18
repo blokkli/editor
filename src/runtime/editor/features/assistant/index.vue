@@ -62,6 +62,7 @@ defineAddAction(() => {
     ),
     icon: 'robot',
     color: 'rose',
+    weight: 0,
     callback: (data) => {
       placedAction.value = data
     },

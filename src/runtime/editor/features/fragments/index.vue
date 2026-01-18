@@ -63,6 +63,7 @@ defineAddAction(() => {
     color: 'accent',
     itemBundle: fragmentBlockBundle,
     title: $t('fragmentsAddFragmentAction', 'Add fragment'),
+    weight: 20,
     description: $t(
       'fragmentsAddFragmentDescription',
       '<p>Drag the icon into the page to add a fragment block.</p><p>Fragments are reusable blocks that always render the same content.</p>',

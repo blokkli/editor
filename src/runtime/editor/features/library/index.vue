@@ -216,6 +216,7 @@ defineAddAction(() => {
     ),
     icon: 'reusable',
     color: 'lime',
+    weight: 30,
     itemBundle: fromLibraryBlockBundle,
     callback: (data) => {
       placedAction.value = data

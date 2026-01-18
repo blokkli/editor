@@ -22,16 +22,16 @@
     }
 
     .bk-item-icon {
-      --bk-item-icon-shadow-color: theme('colors.mono.900');
+      --bk-item-icon-shadow-color: theme("colors.mono.900");
     }
 
     &:after {
-      content: '';
+      content: "";
       @apply block w-full h-40 sticky bottom-0 z-50 pointer-events-none;
       @apply absolute bottom-full left-0 mb-1;
       background: linear-gradient(
-        theme('colors.mono.900/0') 30%,
-        theme('colors.mono.900')
+        theme("colors.mono.900/0") 30%,
+        theme("colors.mono.900")
       );
     }
   }
@@ -135,7 +135,7 @@
   --bk-item-icon-size: 50px;
   --bk-item-icon-radius-base: 8px;
   --bk-item-icon-radius-multiplier: 1;
-  --bk-item-icon-shadow-color: theme('colors.mono.950');
+  --bk-item-icon-shadow-color: theme("colors.mono.950");
   @apply aspect-square flex items-center justify-center;
   @apply border bg-gradient-to-b bg-black;
   width: var(--bk-item-icon-size);
@@ -177,7 +177,7 @@
     @apply size-[66.6666666%];
   }
 
-  --bk-item-icon-shadow-color: theme('colors.mono.950');
+  --bk-item-icon-shadow-color: theme("colors.mono.950");
 
   svg {
     @apply size-full fill-current opacity-80;
@@ -212,9 +212,16 @@
   }
 
   &.bk-is-accent {
-    --bk-item-icon-shadow-color: theme('colors.accent.900');
+    --bk-item-icon-shadow-color: theme("colors.accent.900");
     @apply border-accent-400 text-accent-50;
     @apply from-accent-800;
     @apply to-accent-600;
+  }
+
+  &.bk-is-orange {
+    --bk-item-icon-shadow-color: rgba(0, 0, 0, 0.2);
+    @apply border-orange-normal text-orange-light;
+    @apply from-orange-normal/50;
+    @apply to-orange-normal/70;
   }
 }

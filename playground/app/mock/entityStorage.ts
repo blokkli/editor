@@ -4,6 +4,7 @@ import { Comment } from './state/Comment'
 import type { Entity } from './state/Entity'
 import { ContentPage, type Content } from './state/Entity/Content'
 import { LibraryItem } from './state/LibraryItem'
+import { TemplateItem } from './state/TemplateItem'
 import { MediaImage, type Media, MediaVideo } from './state/Media/Media'
 import { User } from './state/User'
 import data from './../../snapshots/data.json'
@@ -61,6 +62,7 @@ type StorageMap = {
   block: EntityStorage<Block>
   media: EntityStorage<Media>
   library_item: EntityStorage<LibraryItem>
+  template_item: EntityStorage<TemplateItem>
 }
 
 export type ValidStorageKey = keyof StorageMap
@@ -76,6 +78,7 @@ export class EntityStorageManager {
       block: new EntityStorage(),
       media: new EntityStorage(),
       library_item: new EntityStorage(),
+      template_item: new EntityStorage(),
     }
 
     // Object.entries(icons).forEach(([name, markup]) => {
@@ -225,6 +228,20 @@ export class EntityStorageManager {
       this.addLibraryItem(libraryItem)
     })
 
+    // Load template items
+    if ('templateItems' in data && Array.isArray(data.templateItems)) {
+      data.templateItems.forEach((item: any) => {
+        const templateItem = new TemplateItem(item.uuid)
+        templateItem.setValues({
+          title: item.title,
+          description: item.description || '',
+          isDefault: item.isDefault || false,
+        })
+        templateItem.getBlocks().setList(item.blocks || [])
+        this.addTemplateItem(templateItem)
+      })
+    }
+
     videosData.forEach((item, i) => {
       this.createVideo((i + 100).toString(), item.url, item.title)
     })
@@ -368,6 +385,10 @@ export class EntityStorageManager {
 
   addLibraryItem(item: LibraryItem) {
     this.storages.library_item.add(item)
+  }
+
+  addTemplateItem(item: TemplateItem) {
+    this.storages.template_item.add(item)
   }
 
   createBlock(bundle: string, uuid: string, values: Record<string, any> = {}) {

@@ -36,7 +36,7 @@ export type AddListItemProps = {
   id: string
   context: string
   label: string
-  color?: 'rose' | 'lime' | 'default' | 'yellow' | 'accent'
+  color?: 'rose' | 'lime' | 'default' | 'yellow' | 'accent' | 'orange'
   bundle?: string
   icon?: BlokkliIcon
   disabled?: boolean

@@ -35,9 +35,17 @@
     "source": "Add \"@bundle\" inside @parentBundle » @fieldLabel",
     "translation": "«@bundle» in @parentBundle » @fieldLabel drzuefüege"
   },
+  "addButtonBundleToField": {
+    "source": "Add \"@bundle\" to @fieldLabel",
+    "translation": ""
+  },
   "addButtonInsideField": {
     "source": "Add inside @parentBundle » @fieldLabel...",
     "translation": "In @parentBundle » @fieldLabel drzuefüege..."
+  },
+  "addButtonToField": {
+    "source": "Add to @fieldLabel...",
+    "translation": ""
   },
   "addCommentHeader": {
     "source": "Add Comment",
@@ -1071,6 +1079,14 @@
     "source": "Structure",
     "translation": "Struktur"
   },
+  "feature_templates_description": {
+    "source": "Add blocks from templates.",
+    "translation": ""
+  },
+  "feature_templates_label": {
+    "source": "Templates",
+    "translation": ""
+  },
   "feature_theme_description": {
     "source": "Implements a theme editor.",
     "translation": "Implementiert e Theme-Editor."
@@ -1842,6 +1858,30 @@
   "systemRequirementsWebglText": {
     "source": "blökkli uses WebGL for fast rendering of UI elements such as selected blocks and drag-and-drop indicators. If WebGL is not supported, Blökkli will resort to fallback rendering, which is slower and lacks full feature support.",
     "translation": "blökkli brucht WebGL zum schnäll UI-Elemänt wie usgwählti Blöck und Drag-and-Drop-Indikatore z'rendere. Wenn WebGL nid understützt wird, wird blökkli uf Fallback-Rendering zruggriife, wo langsamer isch und nid alli Funktione understützt."
+  },
+  "templatesAddTemplate": {
+    "source": "Add template",
+    "translation": ""
+  },
+  "templatesAddTemplateDescription": {
+    "source": "<p>Drag the icon into the page to add blocks from a template.</p>",
+    "translation": ""
+  },
+  "templatesNoResults": {
+    "source": "No templates available for this field.",
+    "translation": ""
+  },
+  "templatesPlaceDialogLead": {
+    "source": "Select a template to add multiple blocks to your layout.",
+    "translation": ""
+  },
+  "templatesPlaceDialogSubmitButton": {
+    "source": "Add template blocks",
+    "translation": ""
+  },
+  "templatesPlaceDialogTitle": {
+    "source": "Add blocks from template",
+    "translation": ""
   },
   "theme": {
     "source": "Theme",
