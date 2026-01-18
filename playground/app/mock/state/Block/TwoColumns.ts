@@ -5,6 +5,8 @@ import { Block } from './Block'
 export class BlockTwoColumns extends Block {
   static override bundle = 'two_columns'
   static override label = 'Two Columns'
+  static override description =
+    'A two-column layout with header and left/right content areas.'
 
   static override getFieldDefintions(): Field<any>[] {
     return [

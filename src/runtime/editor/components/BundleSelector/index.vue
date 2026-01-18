@@ -127,16 +127,18 @@ type Item =
       props: AddListItemProps
     }
 
-const { types, plugins, storage, $t } = useBlokkli()
+const { types, plugins, storage, $t, definitions } = useBlokkli()
 const favorites = storage.use<string[]>('blockFavorites', [])
 
 const blocks = computed<Item[]>(() => {
   return props.bundles
     .filter((bundle) => !isInternalBundle(bundle))
     .map((bundle) => {
+      const definition = types.getBlockBundleDefinition(bundle)
       return {
         bundle,
-        label: types.getBlockBundleDefinition(bundle)?.label ?? bundle,
+        label: definition?.label ?? bundle,
+        isAutoAdd: definitions.bundlesWithAutoAdd.value.includes(bundle),
         isFavorite: favorites.value.includes(bundle),
       }
     })
@@ -155,6 +157,7 @@ const blocks = computed<Item[]>(() => {
           label: block.label,
           bundle: block.bundle,
           color: block.isFavorite ? 'yellow' : undefined,
+          isAutoAdd: block.isAutoAdd,
           context: 'selection-add-buttons',
         },
       }

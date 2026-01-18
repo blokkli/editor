@@ -1867,6 +1867,54 @@
     "source": "<p>Drag the icon into the page to add blocks from a template.</p>",
     "translation": ""
   },
+  "templatesCreate": {
+    "source": "Create template...",
+    "translation": ""
+  },
+  "templatesCreateDialogDefaultDescription": {
+    "source": "If set, this template is used automatically when adding a new block of this type.",
+    "translation": ""
+  },
+  "templatesCreateDialogDefaultLabel": {
+    "source": "Use as default",
+    "translation": ""
+  },
+  "templatesCreateDialogDescriptionLabel": {
+    "source": "Description",
+    "translation": ""
+  },
+  "templatesCreateDialogDescriptionPlaceholder": {
+    "source": "Optional description of the template",
+    "translation": ""
+  },
+  "templatesCreateDialogLabelLabel": {
+    "source": "Name",
+    "translation": ""
+  },
+  "templatesCreateDialogLabelPlaceholder": {
+    "source": "e.g. Hero Section",
+    "translation": ""
+  },
+  "templatesCreateDialogLead": {
+    "source": "Create a reusable template from the selected blocks. Templates can be added to any page.",
+    "translation": ""
+  },
+  "templatesCreateDialogPreviewLabel": {
+    "source": "Preview",
+    "translation": ""
+  },
+  "templatesCreateDialogSubmit": {
+    "source": "Create template",
+    "translation": ""
+  },
+  "templatesCreateDialogTitle": {
+    "source": "Create template",
+    "translation": ""
+  },
+  "templatesCreateError": {
+    "source": "Failed to create template.",
+    "translation": ""
+  },
   "templatesNoResults": {
     "source": "No templates available for this field.",
     "translation": ""
@@ -1881,6 +1929,10 @@
   },
   "templatesPlaceDialogTitle": {
     "source": "Add blocks from template",
+    "translation": ""
+  },
+  "templatesSuccessMessage": {
+    "source": "Successfully created template \"@label\"",
     "translation": ""
   },
   "theme": {

@@ -69,6 +69,21 @@
   }
 }
 
+.bk-block-preview-renderer {
+  @apply rounded p-20 min-h-[200px] mb-30 border border-mono-300 overflow-hidden;
+  &.bk-default-bg {
+    @apply bg-mono-50;
+  }
+}
+
+.bk-block-preview-renderer-items {
+  @apply flex flex-col gap-10;
+}
+
+.bk-block-preview-renderer-item {
+  @apply rounded overflow-hidden;
+}
+
 .bk-message-info {
   @apply font-sans text-base bg-yellow-light p-10 border border-yellow-normal rounded text-yellow-dark my-20;
 }

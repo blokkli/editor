@@ -114,6 +114,11 @@ export type DefinitionProvider = {
    * Automatically increments via HMR during development.
    */
   renderKey: DeepReadonly<Ref<string>>
+
+  /**
+   * Block bundles that can be added automatically without showing the form.
+   */
+  bundlesWithAutoAdd: ComputedRef<string[]>
 }
 
 export default function (): DefinitionProvider {
@@ -231,6 +236,12 @@ export default function (): DefinitionProvider {
     return blockIcons.value[bundle]
   }
 
+  const bundlesWithAutoAdd = computed<string[]>(() => {
+    return blocks.value
+      .filter((v) => v.editor?.addBehaviour === 'no-form')
+      .map((v) => v.bundle)
+  })
+
   return {
     getBlockDefinition,
     getFragmentDefinition,
@@ -242,6 +253,7 @@ export default function (): DefinitionProvider {
     globalOptions: readonly(allGlobalOptions),
     runtimeOptions: readonly(runtimeOptions),
     renderKey: readonly(renderKey),
+    bundlesWithAutoAdd,
   }
 }
 

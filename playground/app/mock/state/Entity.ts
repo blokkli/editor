@@ -7,6 +7,7 @@ export class Entity {
   static entityType = ''
   static bundle = ''
   static label = ''
+  static description = ''
   langcode = 'en'
 
   uuid: string

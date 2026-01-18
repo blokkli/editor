@@ -2079,6 +2079,58 @@ msgctxt "templatesAddTemplateDescription"
 msgid "<p>Drag the icon into the page to add blocks from a template.</p>"
 msgstr ""
 
+msgctxt "templatesCreate"
+msgid "Create template..."
+msgstr ""
+
+msgctxt "templatesCreateDialogDefaultDescription"
+msgid ""
+"If set, this template is used automatically when adding a new block of this "
+"type."
+msgstr ""
+
+msgctxt "templatesCreateDialogDefaultLabel"
+msgid "Use as default"
+msgstr ""
+
+msgctxt "templatesCreateDialogDescriptionLabel"
+msgid "Description"
+msgstr ""
+
+msgctxt "templatesCreateDialogDescriptionPlaceholder"
+msgid "Optional description of the template"
+msgstr ""
+
+msgctxt "templatesCreateDialogLabelLabel"
+msgid "Name"
+msgstr ""
+
+msgctxt "templatesCreateDialogLabelPlaceholder"
+msgid "e.g. Hero Section"
+msgstr ""
+
+msgctxt "templatesCreateDialogLead"
+msgid ""
+"Create a reusable template from the selected blocks. Templates can be added "
+"to any page."
+msgstr ""
+
+msgctxt "templatesCreateDialogPreviewLabel"
+msgid "Preview"
+msgstr ""
+
+msgctxt "templatesCreateDialogSubmit"
+msgid "Create template"
+msgstr ""
+
+msgctxt "templatesCreateDialogTitle"
+msgid "Create template"
+msgstr ""
+
+msgctxt "templatesCreateError"
+msgid "Failed to create template."
+msgstr ""
+
 msgctxt "templatesNoResults"
 msgid "No templates available for this field."
 msgstr ""
@@ -2093,6 +2145,10 @@ msgstr ""
 
 msgctxt "templatesPlaceDialogTitle"
 msgid "Add blocks from template"
+msgstr ""
+
+msgctxt "templatesSuccessMessage"
+msgid "Successfully created template \"@label\""
 msgstr ""
 
 msgctxt "theme"

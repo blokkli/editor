@@ -9,7 +9,9 @@
       :label="type.label"
       :bundle="type.id"
       :disabled="type.isDisabled"
+      :description="type.description"
       :color="type.isFavorite ? 'yellow' : 'default'"
+      :is-auto-add="type.isAutoAdd"
       data-element-type="new"
       :data-item-bundle="type.id"
     />
@@ -103,16 +105,20 @@ function determineVisibility(bundle: string, label: string): boolean {
 }
 
 const sortedList = computed(() => {
+  const autoAdd = definitions.bundlesWithAutoAdd.value
+
   return [...props.generallyAvailableBundles]
     .filter((v) => !isInternalBundle(v.id))
     .map((v) => {
       const isVisible = determineVisibility(v.id, v.label)
       const isDisabled = !v.id || !props.selectableBundles.includes(v.id)
+      const isAutoAdd = autoAdd.includes(v.id)
       return {
         ...v,
         isDisabled,
         isVisible: isVisible && (!props.hideDisabledBlocks || !isDisabled),
         isFavorite: favorites.value.includes(v.id),
+        isAutoAdd,
       }
     })
     .sort((a, b) => {

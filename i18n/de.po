@@ -2091,6 +2091,62 @@ msgstr ""
 "<p>Ziehen Sie das Symbol auf die Seite, um Blöcke aus einer Vorlage "
 "hinzuzufügen.</p>"
 
+msgctxt "templatesCreate"
+msgid "Create template..."
+msgstr "Vorlage erstellen..."
+
+msgctxt "templatesCreateDialogDefaultDescription"
+msgid ""
+"If set, this template is used automatically when adding a new block of this "
+"type."
+msgstr ""
+"Falls aktiviert, wird diese Vorlage automatisch verwendet, wenn ein neuer "
+"Block dieses Typs hinzugefügt wird."
+
+msgctxt "templatesCreateDialogDefaultLabel"
+msgid "Use as default"
+msgstr "Als Standard verwenden"
+
+msgctxt "templatesCreateDialogDescriptionLabel"
+msgid "Description"
+msgstr "Beschreibung"
+
+msgctxt "templatesCreateDialogDescriptionPlaceholder"
+msgid "Optional description of the template"
+msgstr "Optionale Beschreibung der Vorlage"
+
+msgctxt "templatesCreateDialogLabelLabel"
+msgid "Name"
+msgstr "Name"
+
+msgctxt "templatesCreateDialogLabelPlaceholder"
+msgid "e.g. Hero Section"
+msgstr "z.B. Hero-Bereich"
+
+msgctxt "templatesCreateDialogLead"
+msgid ""
+"Create a reusable template from the selected blocks. Templates can be added "
+"to any page."
+msgstr ""
+"Erstellen Sie eine wiederverwendbare Vorlage aus den ausgewählten Blöcken. "
+"Vorlagen können auf jeder Seite hinzugefügt werden."
+
+msgctxt "templatesCreateDialogPreviewLabel"
+msgid "Preview"
+msgstr "Vorschau"
+
+msgctxt "templatesCreateDialogSubmit"
+msgid "Create template"
+msgstr "Vorlage erstellen"
+
+msgctxt "templatesCreateDialogTitle"
+msgid "Create template"
+msgstr "Vorlage erstellen"
+
+msgctxt "templatesCreateError"
+msgid "Failed to create template."
+msgstr "Vorlage konnte nicht erstellt werden."
+
 msgctxt "templatesNoResults"
 msgid "No templates available for this field."
 msgstr "Keine Vorlagen für dieses Feld verfügbar."
@@ -2106,6 +2162,10 @@ msgstr "Vorlagen-Blöcke hinzufügen"
 msgctxt "templatesPlaceDialogTitle"
 msgid "Add blocks from template"
 msgstr "Blöcke aus Vorlage hinzufügen"
+
+msgctxt "templatesSuccessMessage"
+msgid "Successfully created template \"@label\""
+msgstr "Die Vorlage «@label» wurde erfolgreich erstellt."
 
 msgctxt "theme"
 msgid "Theme"

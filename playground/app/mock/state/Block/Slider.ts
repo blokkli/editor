@@ -5,6 +5,7 @@ import { Block } from './Block'
 export class BlockSlider extends Block {
   static override bundle = 'slider'
   static override label = 'Slider'
+  static override description = 'A carousel component for displaying multiple slides.'
 
   static override getFieldDefintions(): Field<any>[] {
     return [

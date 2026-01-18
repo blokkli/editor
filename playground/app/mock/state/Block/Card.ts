@@ -7,6 +7,7 @@ import { Block } from './Block'
 export class BlockCard extends Block {
   static override bundle = 'card'
   static override label = 'Card'
+  static override description = 'A content card with icon, title, and text.'
   static override allowReusable = true
   static override isTranslatable = true
 

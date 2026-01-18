@@ -5,6 +5,7 @@ import { Block } from './Block'
 export class BlockTable extends Block {
   static override bundle = 'table'
   static override label = 'Table'
+  static override description = 'A table displaying data in rows and columns.'
 
   static override getFieldDefintions(): Field<any>[] {
     return [

@@ -6,6 +6,7 @@
     type="button"
     class="bk-add-item"
     :menu="menu"
+    :title="description"
     :data-sortli-id="id"
     :class="[
       {
@@ -18,7 +19,7 @@
       <ItemIconBox :color :bundle :icon />
     </div>
     <div class="bk-add-item-label">
-      <span>{{ label }}</span>
+      <span>{{ label }}{{ isAutoAdd ? '' : '...' }}</span>
     </div>
   </PluginContextMenu>
 </template>
@@ -36,16 +37,19 @@ export type AddListItemProps = {
   id: string
   context: string
   label: string
+  description?: string
   color?: 'rose' | 'lime' | 'default' | 'yellow' | 'accent' | 'orange'
   bundle?: string
   icon?: BlokkliIcon
   disabled?: boolean
+  isAutoAdd?: boolean
   noContextMenu?: boolean
 }
 
 const props = withDefaults(defineProps<AddListItemProps>(), {
   color: 'default',
   bundle: '',
+  description: '',
   icon: undefined,
 })
 

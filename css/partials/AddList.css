@@ -8,6 +8,11 @@
     @apply cursor-grab;
   }
 
+  .bk-add-item-description {
+    @apply block;
+    @apply absolute left-full;
+  }
+
   #blokkli-add-list-blocks {
     @apply grid pb-25;
   }
@@ -19,6 +24,10 @@
 
     .bk-add-item-label {
       @apply text-mono-400;
+
+      .bk-icon {
+        @apply bg-mono-900;
+      }
     }
 
     .bk-item-icon {
@@ -37,6 +46,14 @@
   }
 }
 
+.bk-add-item-label {
+  @apply flex items-center flex-1 gap-8 pr-25;
+}
+
+.bk-add-item-description {
+  @apply hidden;
+}
+
 .bk-add-list-inner {
   @apply absolute top-0 left-0 h-full overflow-auto transition-all ease-swing duration-200 w-auto;
   @apply bg-mono-900;
@@ -45,7 +62,7 @@
   clip-path: rect(0px 70px 100% 0px);
 
   .bk-add-item-label {
-    @apply opacity-0 pr-25;
+    @apply opacity-0;
   }
 
   .bk-add-item:not(:last-child) {

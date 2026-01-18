@@ -71,6 +71,10 @@ import {
   MutationAddTemplate,
   type MutationAddTemplateArgs,
 } from './Mutation/AddTemplate'
+import {
+  MutationCreateTemplate,
+  type MutationCreateTemplateArgs,
+} from './Mutation/CreateTemplate'
 
 export type MutationArgsMap = {
   add: MutationAddArgs | MutationAddArgs[]
@@ -94,6 +98,7 @@ export type MutationArgsMap = {
   add_video_from_url: MutationAddVideoFromUrlArgs
   set_block_schedule: MutationSetBlockScheduleArgs
   add_template: MutationAddTemplateArgs
+  create_template: MutationCreateTemplateArgs
 }
 
 export const createMutation = <T extends keyof MutationArgsMap>(
@@ -143,6 +148,8 @@ export const createMutation = <T extends keyof MutationArgsMap>(
       return new MutationSetBlockSchedule(configuration)
     case 'add_template':
       return new MutationAddTemplate(configuration)
+    case 'create_template':
+      return new MutationCreateTemplate(configuration)
   }
 
   throw new Error('Missing mutation plugin with ID: ' + id)

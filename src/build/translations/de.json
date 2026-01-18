@@ -1867,6 +1867,54 @@
     "source": "<p>Drag the icon into the page to add blocks from a template.</p>",
     "translation": "<p>Ziehen Sie das Symbol auf die Seite, um Blöcke aus einer Vorlage hinzuzufügen.</p>"
   },
+  "templatesCreate": {
+    "source": "Create template...",
+    "translation": "Vorlage erstellen..."
+  },
+  "templatesCreateDialogDefaultDescription": {
+    "source": "If set, this template is used automatically when adding a new block of this type.",
+    "translation": "Falls aktiviert, wird diese Vorlage automatisch verwendet, wenn ein neuer Block dieses Typs hinzugefügt wird."
+  },
+  "templatesCreateDialogDefaultLabel": {
+    "source": "Use as default",
+    "translation": "Als Standard verwenden"
+  },
+  "templatesCreateDialogDescriptionLabel": {
+    "source": "Description",
+    "translation": "Beschreibung"
+  },
+  "templatesCreateDialogDescriptionPlaceholder": {
+    "source": "Optional description of the template",
+    "translation": "Optionale Beschreibung der Vorlage"
+  },
+  "templatesCreateDialogLabelLabel": {
+    "source": "Name",
+    "translation": "Name"
+  },
+  "templatesCreateDialogLabelPlaceholder": {
+    "source": "e.g. Hero Section",
+    "translation": "z.B. Hero-Bereich"
+  },
+  "templatesCreateDialogLead": {
+    "source": "Create a reusable template from the selected blocks. Templates can be added to any page.",
+    "translation": "Erstellen Sie eine wiederverwendbare Vorlage aus den ausgewählten Blöcken. Vorlagen können auf jeder Seite hinzugefügt werden."
+  },
+  "templatesCreateDialogPreviewLabel": {
+    "source": "Preview",
+    "translation": "Vorschau"
+  },
+  "templatesCreateDialogSubmit": {
+    "source": "Create template",
+    "translation": "Vorlage erstellen"
+  },
+  "templatesCreateDialogTitle": {
+    "source": "Create template",
+    "translation": "Vorlage erstellen"
+  },
+  "templatesCreateError": {
+    "source": "Failed to create template.",
+    "translation": "Vorlage konnte nicht erstellt werden."
+  },
   "templatesNoResults": {
     "source": "No templates available for this field.",
     "translation": "Keine Vorlagen für dieses Feld verfügbar."
@@ -1882,6 +1930,10 @@
   "templatesPlaceDialogTitle": {
     "source": "Add blocks from template",
     "translation": "Blöcke aus Vorlage hinzufügen"
+  },
+  "templatesSuccessMessage": {
+    "source": "Successfully created template \"@label\"",
+    "translation": "Die Vorlage «@label» wurde erfolgreich erstellt."
   },
   "theme": {
     "source": "Theme",

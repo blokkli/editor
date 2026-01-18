@@ -1453,6 +1453,15 @@ export default defineBlokkliEditAdapter((ctx) => {
     })
   }
 
+  adapter.templatesCreate = function (e) {
+    return addMutation('create_template', {
+      label: e.label,
+      description: e.description,
+      uuids: e.uuids,
+      isDefault: e.isDefault,
+    })
+  }
+
   if (import.meta.dev && ENABLED_ASSISTANT) {
     adapter.assistantGetResults = (e) => {
       return $fetch<AssistantResultMarkup | undefined>('/api/gpt', {

@@ -8,6 +8,8 @@ import { Block } from './Block'
 export class BlockButton extends Block {
   static override bundle = 'button'
   static override label = 'Button'
+  static override description =
+    'A call-to-action button with title, URL, and optional icon.'
   static override isTranslatable = true
 
   static override getFieldDefintions(): Field<any>[] {

@@ -5,7 +5,8 @@ import { removeSizes } from 'nuxt-svg-icon-sprite/processors'
 
 const playgroundFolder = fileURLToPath(new URL('./', import.meta.url))
 
-const FORCE_GERMAN = false
+const IS_DEV = process.env.NODE_ENV === 'development'
+const FORCE_GERMAN = true
 
 const additionalIcons = [
   'bk_mdi_lightbulb',
@@ -132,8 +133,8 @@ export default defineNuxtConfig({
       },
     },
 
-    defaultLanguage: FORCE_GERMAN ? 'de' : 'en',
-    forceDefaultLanguage: FORCE_GERMAN,
+    defaultLanguage: IS_DEV && FORCE_GERMAN ? 'de' : 'en',
+    forceDefaultLanguage: IS_DEV && FORCE_GERMAN,
 
     schemaOptionsPath: '~/options-schema.json',
 

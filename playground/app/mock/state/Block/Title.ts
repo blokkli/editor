@@ -6,6 +6,8 @@ import { Block } from './Block'
 export class BlockTitle extends Block {
   static override bundle = 'title'
   static override label = 'Title'
+  static override description =
+    'A section header with tagline, title, and lead text.'
   static override allowReusable = true
   static override isTranslatable = true
 

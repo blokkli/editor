@@ -6,6 +6,7 @@
     class="bk-is-action"
     context="add-list-actions"
     :label="action.title"
+    :description="action.description"
     :bundle="action.itemBundle"
     :icon="action.icon"
     :color="action.color"

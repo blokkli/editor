@@ -7,6 +7,7 @@ import { Block } from './Block'
 export class BlockText extends Block {
   static override bundle = 'text'
   static override label = 'Text'
+  static override description = 'A rich text block for formatted content.'
   static override allowReusable = true
   static override isTranslatable = true
 

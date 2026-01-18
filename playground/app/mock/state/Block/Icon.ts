@@ -5,6 +5,7 @@ import { Block } from './Block'
 export class BlockIcon extends Block {
   static override bundle = 'icon'
   static override label = 'Icon'
+  static override description = 'Displays a single icon.'
   static override isTranslatable = true
 
   static override getFieldDefintions(): Field<any>[] {

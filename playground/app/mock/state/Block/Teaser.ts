@@ -6,6 +6,7 @@ import { Block } from './Block'
 export class BlockTeaser extends Block {
   static override bundle = 'teaser'
   static override label = 'Teaser'
+  static override description = 'A linked teaser with title, text, and URL.'
   static override isTranslatable = true
 
   static override getFieldDefintions(): Field<any>[] {

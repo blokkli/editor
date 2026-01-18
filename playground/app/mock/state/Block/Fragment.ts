@@ -5,6 +5,7 @@ import { Block } from './Block'
 export class BlockFragment extends Block {
   static override bundle = 'blokkli_fragment'
   static override label = 'Fragment'
+  static override description = 'A reusable fragment defined in code.'
   static override allowReusable = false
   static override isTranslatable = false
 

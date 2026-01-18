@@ -6,6 +6,7 @@ export const allTypes: BlockBundleDefinition[] = getBlockBundles().map(
     return {
       id: block.bundle,
       label: block.label,
+      description: block.description,
       allowReusable: block.allowReusable,
       isTranslatable: block.isTranslatable,
       hasPublishOn: block.bundle !== 'title',

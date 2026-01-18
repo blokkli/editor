@@ -5,6 +5,7 @@ import { Block } from './Block'
 export class BlockButtonList extends Block {
   static override bundle = 'button_list'
   static override label = 'Button List'
+  static override description = 'A container for grouping multiple buttons.'
   static override isTranslatable = true
 
   static override getFieldDefintions(): Field<any>[] {

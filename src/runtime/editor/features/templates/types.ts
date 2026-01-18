@@ -11,6 +11,13 @@ export type AdapterAddTemplate = {
   afterUuid: string | null
 }
 
+export type AdapterCreateTemplate = {
+  label: string
+  description?: string
+  uuids: string[]
+  isDefault?: boolean
+}
+
 export type TemplateItem = {
   uuid: string
   label: string
@@ -41,5 +48,12 @@ declare module '#blokkli/editor/adapter' {
     templatesSearch?: (
       e: TemplatesSearchArguments,
     ) => Promise<AdapterTemplatesGetResult>
+
+    /**
+     * Create a new template from selected blocks.
+     */
+    templatesCreate?: (
+      e: AdapterCreateTemplate,
+    ) => Promise<MutationResponseLike<T>> | undefined
   }
 }
