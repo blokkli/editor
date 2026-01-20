@@ -1,6 +1,6 @@
 .bk.bk-add-list {
   @apply pointer-events-auto relative z-add-list bg-mono-900;
-  @apply w-70 h-full relative;
+  @apply w-toolbar-left h-full relative;
 
   grid-area: left;
 
@@ -59,14 +59,14 @@
   @apply bg-mono-900;
   @apply flex flex-col;
   @apply border-t border-t-mono-700;
-  clip-path: rect(0px 70px 100% 0px);
+  clip-path: rect(0px var(--bk-toolbar-left-width) 100% 0px);
 
   .bk-add-item-label {
     @apply opacity-0;
   }
 
   .bk-add-item:not(:last-child) {
-    @apply -mb-10;
+    margin-bottom: calc(var(--bk-add-item-icon-padding) * -1);
   }
 
   &.bk-is-active {
@@ -81,7 +81,8 @@
 .bk-add-list-inner,
 .bk-dragging-overlay {
   .bk-add-item-icon {
-    @apply p-10 size-70;
+    @apply size-toolbar-left;
+    padding: var(--bk-add-item-icon-padding);
   }
 }
 
@@ -120,7 +121,8 @@
   }
 
   .bk-add-item-label {
-    @apply font-semibold text-lg pl-3  text-mono-400 transition-opacity duration-200;
+    @apply font-semibold pl-3  text-mono-400 transition-opacity duration-200;
+    font-size: var(--bk-add-item-font-size, 18px);
   }
 
   .bk-add-item-icon {
@@ -149,8 +151,10 @@
 
 .bk .bk-item-icon {
   --bk-item-icon-outline: 2px;
-  --bk-item-icon-size: 50px;
-  --bk-item-icon-radius-base: 8px;
+  --bk-item-icon-size: calc(
+    var(--bk-toolbar-left-width) - 2 * (var(--bk-add-item-icon-padding, 0px))
+  );
+  --bk-item-icon-radius-base: var(--bk-item-icon-radius-base-toolbar, 8px);
   --bk-item-icon-radius-multiplier: 1;
   --bk-item-icon-shadow-color: theme("colors.mono.950");
   @apply aspect-square flex items-center justify-center;

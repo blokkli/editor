@@ -118,7 +118,7 @@
   @apply relative z-menu h-full pointer-events-auto;
   grid-area: menu;
   .bk-toolbar-menu-button {
-    @apply lg:bg-accent-700 w-50 lg:w-70 flex items-center justify-center text-mono-50 h-full focus:outline-none relative z-50 transition;
+    @apply lg:bg-accent-700 w-toolbar-left flex items-center justify-center text-mono-50 h-full focus:outline-none relative z-50 transition;
     @apply lg:hover:bg-accent-800;
 
     &.bk-is-active {

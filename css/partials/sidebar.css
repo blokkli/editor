@@ -1,5 +1,23 @@
 .bk-html-root {
   --bk-sidebar-width-right: 100vw;
+  --bk-toolbar-left-width: 50px;
+  --bk-add-item-icon-padding: 6px;
+  --bk-item-icon-radius-base-toolbar: 4px;
+  --bk-add-item-font-size: 16px;
+
+  @media screen and (min-height: 900px) {
+    --bk-toolbar-left-width: 60px;
+    --bk-add-item-icon-padding: 8px;
+    --bk-item-icon-radius-base-toolbar: 6px;
+    --bk-add-item-font-size: 16px;
+  }
+
+  @media screen and (min-height: 1100px) {
+    --bk-toolbar-left-width: 70px;
+    --bk-add-item-icon-padding: 10px;
+    --bk-item-icon-radius-base-toolbar: 8px;
+    --bk-add-item-font-size: 18px;
+  }
 
   @screen md {
     --bk-sidebar-width-right: 351px;
@@ -168,7 +186,7 @@ html.bk-is-sidebar-interacting {
 
       &:first-child {
         &:before {
-          content: '';
+          content: "";
           @apply absolute bottom-0 left-0 w-full h-1 bg-mono-700;
         }
 
