@@ -1,0 +1,23 @@
+.bk {
+  .bk-templates-manage-table-actions {
+    > div {
+      @apply flex gap-10 justify-end;
+    }
+  }
+
+  .bk-templates-manage {
+    .bk-table {
+      thead {
+        th:last-child {
+          @apply text-right;
+        }
+      }
+
+      tbody {
+        td:first-child {
+          @apply font-bold;
+        }
+      }
+    }
+  }
+}

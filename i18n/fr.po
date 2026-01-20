@@ -2089,6 +2089,66 @@ msgctxt "templatesCreateError"
 msgid "Failed to create template."
 msgstr ""
 
+msgctxt "templatesDeleteError"
+msgid "Failed to delete template."
+msgstr ""
+
+msgctxt "templatesDeleteSuccess"
+msgid "Template deleted successfully."
+msgstr ""
+
+msgctxt "templatesEditOverlayTitle"
+msgid "Edit template"
+msgstr ""
+
+msgctxt "templatesManageDialogCancelDelete"
+msgid "Cancel"
+msgstr ""
+
+msgctxt "templatesManageDialogColumnActions"
+msgid "Actions"
+msgstr ""
+
+msgctxt "templatesManageDialogConfirmDelete"
+msgid "Delete"
+msgstr ""
+
+msgctxt "templatesManageDialogDelete"
+msgid "Delete"
+msgstr ""
+
+msgctxt "templatesManageDialogDescriptionColumn"
+msgid "Description"
+msgstr ""
+
+msgctxt "templatesManageDialogEdit"
+msgid "Edit"
+msgstr ""
+
+msgctxt "templatesManageDialogLabelColumn"
+msgid "Name"
+msgstr ""
+
+msgctxt "templatesManageDialogLead"
+msgid "View, edit and delete your block templates."
+msgstr ""
+
+msgctxt "templatesManageDialogNoResults"
+msgid "No templates found."
+msgstr ""
+
+msgctxt "templatesManageDialogTitle"
+msgid "Manage templates"
+msgstr ""
+
+msgctxt "templatesMenuDescription"
+msgid "Edit and delete block templates"
+msgstr ""
+
+msgctxt "templatesMenuLabel"
+msgid "Templates..."
+msgstr ""
+
 msgctxt "templatesNoResults"
 msgid "No templates available for this field."
 msgstr ""

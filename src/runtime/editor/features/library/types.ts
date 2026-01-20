@@ -36,6 +36,7 @@ export type BlokkliAdapterGetLibraryItemsResult =
 export type LibraryEditItemEvent = {
   url: string
   uuid: string
+  blockUuid: string
   label?: string
 }
 

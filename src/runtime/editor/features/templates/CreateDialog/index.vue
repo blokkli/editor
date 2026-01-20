@@ -15,7 +15,7 @@
     @submit="onSubmit"
     @cancel="$emit('cancel')"
   >
-    <div class="bk-create-template-dialog-form">
+    <div>
       <FormItem>
         <FormText
           id="template_label"
@@ -55,7 +55,7 @@
       </FormItem>
       <FormItem>
         <div class="bk-form-label">
-          {{ $t('templatesCreateDialogPreviewLabel', 'Preview') }}
+          {{ $t("templatesCreateDialogPreviewLabel", "Preview") }}
         </div>
         <BlockPreviewRenderer :uuids="uuids" />
       </FormItem>
@@ -64,7 +64,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli, watch } from '#imports'
+import { ref, computed, useBlokkli, watch } from "#imports";
 import {
   DialogModal,
   FormText,
@@ -72,36 +72,36 @@ import {
   FormItem,
   FormToggle,
   BlockPreviewRenderer,
-} from '#blokkli/editor/components'
+} from "#blokkli/editor/components";
 
 const emit = defineEmits<{
-  (e: 'confirm', label: string, description: string, isDefault: boolean): void
-  (e: 'cancel'): void
-}>()
+  (e: "confirm", label: string, description: string, isDefault: boolean): void;
+  (e: "cancel"): void;
+}>();
 
-const { $t, ui } = useBlokkli()
+const { $t, ui } = useBlokkli();
 
 const props = defineProps<{
-  uuids: string[]
-}>()
+  uuids: string[];
+}>();
 
-const label = ref('')
-const description = ref('')
-const isDefault = ref(false)
+const label = ref("");
+const description = ref("");
+const isDefault = ref(false);
 
-const canBeDefault = computed(() => props.uuids.length === 1)
+const canBeDefault = computed(() => props.uuids.length === 1);
 
 watch(
   label,
   () => {
-    ui.requireDialogCloseConfirm()
+    ui.requireDialogCloseConfirm();
   },
   {
     once: true,
   },
-)
+);
 
 function onSubmit() {
-  emit('confirm', label.value, description.value, isDefault.value)
+  emit("confirm", label.value, description.value, isDefault.value);
 }
 </script>

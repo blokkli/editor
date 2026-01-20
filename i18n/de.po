@@ -2147,6 +2147,66 @@ msgctxt "templatesCreateError"
 msgid "Failed to create template."
 msgstr "Vorlage konnte nicht erstellt werden."
 
+msgctxt "templatesDeleteError"
+msgid "Failed to delete template."
+msgstr "Vorlage konnte nicht gelöscht werden."
+
+msgctxt "templatesDeleteSuccess"
+msgid "Template deleted successfully."
+msgstr "Vorlage erfolgreich gelöscht."
+
+msgctxt "templatesEditOverlayTitle"
+msgid "Edit template"
+msgstr "Vorlage bearbeiten"
+
+msgctxt "templatesManageDialogCancelDelete"
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgctxt "templatesManageDialogColumnActions"
+msgid "Actions"
+msgstr "Aktonen"
+
+msgctxt "templatesManageDialogConfirmDelete"
+msgid "Delete"
+msgstr "Löschen"
+
+msgctxt "templatesManageDialogDelete"
+msgid "Delete"
+msgstr "Löschen"
+
+msgctxt "templatesManageDialogDescriptionColumn"
+msgid "Description"
+msgstr "Beschreibung"
+
+msgctxt "templatesManageDialogEdit"
+msgid "Edit"
+msgstr "Bearbeiten"
+
+msgctxt "templatesManageDialogLabelColumn"
+msgid "Name"
+msgstr "Name"
+
+msgctxt "templatesManageDialogLead"
+msgid "View, edit and delete your block templates."
+msgstr "Vorlagen verwalten, bearbeiten und löschen."
+
+msgctxt "templatesManageDialogNoResults"
+msgid "No templates found."
+msgstr "Keine Vorlagen gefunden."
+
+msgctxt "templatesManageDialogTitle"
+msgid "Manage templates"
+msgstr "Vorlagen verwalten"
+
+msgctxt "templatesMenuDescription"
+msgid "Edit and delete block templates"
+msgstr "Vorlagen bearbeiten und löschen"
+
+msgctxt "templatesMenuLabel"
+msgid "Templates..."
+msgstr "Vorlagen..."
+
 msgctxt "templatesNoResults"
 msgid "No templates available for this field."
 msgstr "Keine Vorlagen für dieses Feld verfügbar."

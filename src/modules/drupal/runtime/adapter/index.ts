@@ -1107,9 +1107,15 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             filters: mapPluginConfigInputs(
               data.data.paragraphsBlokkliGetTemplates?.filters ?? [],
             ),
-            items: (
-              data.data.paragraphsBlokkliGetTemplates?.items || []
-            ).filter(falsy),
+            items: (data.data.paragraphsBlokkliGetTemplates?.items || [])
+              .filter(falsy)
+              .map((v) => {
+                return {
+                  ...v,
+                  // @TODO: get actual permissions.
+                  permissions: ['view', 'delete', 'edit'],
+                }
+              }),
             total: data.data.paragraphsBlokkliGetTemplates?.total || 0,
             perPage: data.data.paragraphsBlokkliGetTemplates?.perPage || 50,
           }

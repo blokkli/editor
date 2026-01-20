@@ -67,7 +67,7 @@
   @apply fixed top-50 left-0 w-screen bottom-0 flex flex-col z-library-edit-dialog pointer-events-auto;
 
   iframe {
-    @apply absolute top-0 left-0 w-full h-full;
+    @apply absolute top-0 left-0 w-full h-full bg-white;
   }
 }
 

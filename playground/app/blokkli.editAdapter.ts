@@ -1465,12 +1465,16 @@ export default defineBlokkliEditAdapter((ctx) => {
           .getBlocks()
           .map((block) => mapBlockItem(block)),
         isDefault: template.isDefault(),
+        permissions: ['delete', 'view', 'review', 'edit'],
       }))
 
     // Build bundle options from allowed bundles that exist in templates
     const blockClasses = getBlockBundles()
     const bundleOptions = Array.from(allBundles)
-      .filter((bundle) => allowedBundles.length === 0 || allowedBundles.includes(bundle))
+      .filter(
+        (bundle) =>
+          allowedBundles.length === 0 || allowedBundles.includes(bundle),
+      )
       .map((bundle) => {
         const BlockClass = blockClasses.find((c) => c.bundle === bundle)
         return {
@@ -1528,6 +1532,17 @@ export default defineBlokkliEditAdapter((ctx) => {
       uuids: e.uuids,
       isDefault: e.isDefault,
     })
+  }
+
+  adapter.templatesDelete = async function (e) {
+    entityStorageManager.storages.template_item.delete(e.templateUuid)
+    const entity = getEntity()
+    const mutatedState = await editState.getMutatedState(entity)
+    return mockResponse(mutatedState)
+  }
+
+  adapter.templatesGetEditUrl = function (e) {
+    return '/edit-template/' + e.templateUuid
   }
 
   if (import.meta.dev && ENABLED_ASSISTANT) {

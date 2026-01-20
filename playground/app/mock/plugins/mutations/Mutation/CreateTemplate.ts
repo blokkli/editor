@@ -65,7 +65,9 @@ export class MutationCreateTemplate extends Mutation {
    */
   private cloneBlockRecursively(block: Block): string {
     // Generate a new UUID for this block
-    const newUuid = this.getUuidForNewEntity(`template_block_${this.uuidCounter++}`)
+    const newUuid = this.getUuidForNewEntity(
+      `template_block_${this.uuidCounter++}`,
+    )
 
     // First, recursively clone all nested blocks and collect the UUID mappings
     const nestedUuidMap = new Map<string, string>()

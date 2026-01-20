@@ -1915,6 +1915,66 @@
     "source": "Failed to create template.",
     "translation": "Vorlage konnte nicht erstellt werden."
   },
+  "templatesDeleteError": {
+    "source": "Failed to delete template.",
+    "translation": "Vorlage konnte nicht gelöscht werden."
+  },
+  "templatesDeleteSuccess": {
+    "source": "Template deleted successfully.",
+    "translation": "Vorlage erfolgreich gelöscht."
+  },
+  "templatesEditOverlayTitle": {
+    "source": "Edit template",
+    "translation": "Vorlage bearbeiten"
+  },
+  "templatesManageDialogCancelDelete": {
+    "source": "Cancel",
+    "translation": "Abbrechen"
+  },
+  "templatesManageDialogColumnActions": {
+    "source": "Actions",
+    "translation": "Aktonen"
+  },
+  "templatesManageDialogConfirmDelete": {
+    "source": "Delete",
+    "translation": "Löschen"
+  },
+  "templatesManageDialogDelete": {
+    "source": "Delete",
+    "translation": "Löschen"
+  },
+  "templatesManageDialogDescriptionColumn": {
+    "source": "Description",
+    "translation": "Beschreibung"
+  },
+  "templatesManageDialogEdit": {
+    "source": "Edit",
+    "translation": "Bearbeiten"
+  },
+  "templatesManageDialogLabelColumn": {
+    "source": "Name",
+    "translation": "Name"
+  },
+  "templatesManageDialogLead": {
+    "source": "View, edit and delete your block templates.",
+    "translation": "Vorlagen verwalten, bearbeiten und löschen."
+  },
+  "templatesManageDialogNoResults": {
+    "source": "No templates found.",
+    "translation": "Keine Vorlagen gefunden."
+  },
+  "templatesManageDialogTitle": {
+    "source": "Manage templates",
+    "translation": "Vorlagen verwalten"
+  },
+  "templatesMenuDescription": {
+    "source": "Edit and delete block templates",
+    "translation": "Vorlagen bearbeiten und löschen"
+  },
+  "templatesMenuLabel": {
+    "source": "Templates...",
+    "translation": "Vorlagen..."
+  },
   "templatesNoResults": {
     "source": "No templates available for this field.",
     "translation": "Keine Vorlagen für dieses Feld verfügbar."

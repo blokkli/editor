@@ -36,6 +36,7 @@ import Sortli from './Sortli/index.vue'
 import TransitionHeight from './Transition/Height.vue'
 import ViewportBlockingRect from './ViewportBlockingRect/index.vue'
 import BundleSelector from './BundleSelector/index.vue'
+import NestedEditorOverlay from './NestedEditorOverlay/index.vue'
 
 export {
   AddListItem,
@@ -76,4 +77,5 @@ export {
   TransitionHeight,
   ViewportBlockingRect,
   BundleSelector,
+  NestedEditorOverlay,
 }

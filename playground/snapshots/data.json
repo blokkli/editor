@@ -1473,7 +1473,9 @@
         "unpublishOn": [],
         "tagline": ["Welcome"],
         "title": ["Your Hero Title Here"],
-        "lead": ["A compelling lead text that captures attention and drives engagement."]
+        "lead": [
+          "A compelling lead text that captures attention and drives engagement."
+        ]
       }
     },
     {
@@ -1516,7 +1518,9 @@
         "options": [],
         "publishOn": [],
         "unpublishOn": [],
-        "text": ["<p>Start your journey today. Our team is ready to help you achieve your goals.</p>"]
+        "text": [
+          "<p>Start your journey today. Our team is ready to help you achieve your goals.</p>"
+        ]
       }
     },
     {
@@ -1692,21 +1696,30 @@
       "title": "Hero Section",
       "description": "A title block followed by an image for a hero section",
       "isDefault": true,
-      "blocks": ["a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d", "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e"]
+      "blocks": [
+        "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+        "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e"
+      ]
     },
     {
       "uuid": "2b3c4d5e-6f7a-4b8c-9d0e-1f2a3b4c5d6e",
       "title": "Call to Action",
       "description": "Text with buttons for a call to action section",
       "isDefault": false,
-      "blocks": ["c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f", "d4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f8a"]
+      "blocks": [
+        "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f",
+        "d4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f8a"
+      ]
     },
     {
       "uuid": "3c4d5e6f-7a8b-4c9d-0e1f-2a3b4c5d6e7f",
       "title": "Two Buttons",
       "description": "A pair of buttons for navigation",
       "isDefault": false,
-      "blocks": ["e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b", "f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c"]
+      "blocks": [
+        "e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b",
+        "f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c"
+      ]
     },
     {
       "uuid": "9c0d1e2f-3a4b-4c5d-6e7f-8a9b0c1d2e3f",

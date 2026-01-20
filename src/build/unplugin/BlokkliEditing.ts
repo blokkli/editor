@@ -30,7 +30,11 @@ export const BlokkliEditingPlugin = (nuxt: Nuxt) => {
         // Check if the importer is in editing mode and propagate to .vue imports.
         // The importer might be a virtual module like:
         // /path/to/Slider__blokkli_editing__.vue?vue&type=script&setup=true&lang.ts
-        if (!importer || !importer.includes(EDITING_MARKER) || !id.endsWith('.vue')) {
+        if (
+          !importer ||
+          !importer.includes(EDITING_MARKER) ||
+          !id.endsWith('.vue')
+        ) {
           return
         }
 

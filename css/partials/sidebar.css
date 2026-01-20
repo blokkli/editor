@@ -186,7 +186,7 @@ html.bk-is-sidebar-interacting {
 
       &:first-child {
         &:before {
-          content: "";
+          content: '';
           @apply absolute bottom-0 left-0 w-full h-1 bg-mono-700;
         }
 

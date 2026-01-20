@@ -5,7 +5,8 @@ import { Block } from './Block'
 export class BlockImage extends Block {
   static override bundle = 'image'
   static override label = 'Image'
-  static override description = 'Displays a single image from the media library.'
+  static override description =
+    'Displays a single image from the media library.'
 
   static override getFieldDefintions(): Field<any>[] {
     return [

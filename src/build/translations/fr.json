@@ -1915,6 +1915,66 @@
     "source": "Failed to create template.",
     "translation": ""
   },
+  "templatesDeleteError": {
+    "source": "Failed to delete template.",
+    "translation": ""
+  },
+  "templatesDeleteSuccess": {
+    "source": "Template deleted successfully.",
+    "translation": ""
+  },
+  "templatesEditOverlayTitle": {
+    "source": "Edit template",
+    "translation": ""
+  },
+  "templatesManageDialogCancelDelete": {
+    "source": "Cancel",
+    "translation": ""
+  },
+  "templatesManageDialogColumnActions": {
+    "source": "Actions",
+    "translation": ""
+  },
+  "templatesManageDialogConfirmDelete": {
+    "source": "Delete",
+    "translation": ""
+  },
+  "templatesManageDialogDelete": {
+    "source": "Delete",
+    "translation": ""
+  },
+  "templatesManageDialogDescriptionColumn": {
+    "source": "Description",
+    "translation": ""
+  },
+  "templatesManageDialogEdit": {
+    "source": "Edit",
+    "translation": ""
+  },
+  "templatesManageDialogLabelColumn": {
+    "source": "Name",
+    "translation": ""
+  },
+  "templatesManageDialogLead": {
+    "source": "View, edit and delete your block templates.",
+    "translation": ""
+  },
+  "templatesManageDialogNoResults": {
+    "source": "No templates found.",
+    "translation": ""
+  },
+  "templatesManageDialogTitle": {
+    "source": "Manage templates",
+    "translation": ""
+  },
+  "templatesMenuDescription": {
+    "source": "Edit and delete block templates",
+    "translation": ""
+  },
+  "templatesMenuLabel": {
+    "source": "Templates...",
+    "translation": ""
+  },
   "templatesNoResults": {
     "source": "No templates available for this field.",
     "translation": ""

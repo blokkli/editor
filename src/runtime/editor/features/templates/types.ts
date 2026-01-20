@@ -4,6 +4,7 @@ import type {
 } from '#blokkli/editor/adapter'
 import type { BlokkliItemHost } from '#blokkli/editor/types/field'
 import type { FieldListItem } from '#blokkli/types'
+import type { EditPermission } from '#blokkli/types/provider'
 
 export type AdapterAddTemplate = {
   templateUuid: string
@@ -24,6 +25,7 @@ export type TemplateItem = {
   description?: string
   items: FieldListItem[]
   isDefault: boolean
+  permissions: EditPermission[]
 }
 
 export type AdapterTemplatesGetResult =
@@ -32,6 +34,14 @@ export type AdapterTemplatesGetResult =
 export type TemplatesSearchArguments = {
   host?: BlokkliItemHost
 } & AdapterSearchArguments
+
+export type AdapterDeleteTemplate = {
+  templateUuid: string
+}
+
+export type AdapterTemplatesGetEditUrl = {
+  templateUuid: string
+}
 
 declare module '#blokkli/editor/adapter' {
   interface BlokkliAdapter<T> {
@@ -55,5 +65,17 @@ declare module '#blokkli/editor/adapter' {
     templatesCreate?: (
       e: AdapterCreateTemplate,
     ) => Promise<MutationResponseLike<T>> | undefined
+
+    /**
+     * Delete a template.
+     */
+    templatesDelete?: (
+      e: AdapterDeleteTemplate,
+    ) => Promise<MutationResponseLike<T>> | undefined
+
+    /**
+     * Get the URL for editing a template.
+     */
+    templatesGetEditUrl?: (e: AdapterTemplatesGetEditUrl) => string
   }
 }
