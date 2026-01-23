@@ -11,9 +11,8 @@
 
   > .bk-dragging-overlay-item {
     @apply absolute h-full top-0 left-0;
-    border-radius: calc(
-      var(--bk-dragging-radius) * var(--bk-dragging-scale) * 1px
-    );
+    /* Don't multiply by scale - the transform: scale() already scales the border-radius */
+    border-radius: calc(var(--bk-dragging-radius) * 1px);
   }
 
   > .bk-dragging-overlay-item.bk-is-top {
@@ -49,6 +48,11 @@
     /* Prevent text wrapping for cloned ghost elements (in particular: buttons). */
     width: calc(100% + 1px) !important;
     height: 100% !important;
+    /* Reset any transforms on the cloned element to prevent offset from cursor. */
+    transform: none !important;
+    translate: none !important;
+    rotate: none !important;
+    scale: none !important;
     @apply !pointer-events-none;
     @apply !select-none !shadow-none;
   }

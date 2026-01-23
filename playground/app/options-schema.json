@@ -154,15 +154,6 @@
       "options": {},
       "type": "checkboxes"
     },
-    "fromBlock": {
-      "default": "one",
-      "label": "Test",
-      "options": {
-        "one": "One",
-        "two": "Two"
-      },
-      "type": "radios"
-    },
     "showInMenu": {
       "default": true,
       "label": "Show in menu",

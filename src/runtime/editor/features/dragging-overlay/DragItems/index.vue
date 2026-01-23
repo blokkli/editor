@@ -39,7 +39,7 @@ import DragItem, { type DragItemData } from './DragItem.vue'
 import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
 import type { DraggableItem } from '#blokkli/editor/types/draggable'
 
-const { dom, ui, types } = useBlokkli()
+const { dom, ui, types, theme } = useBlokkli()
 
 const props = defineProps<{
   /**
@@ -266,12 +266,6 @@ onMounted(() => {
 
   rects.value = elRects
     .map((item) => {
-      // If the item is an existing one, we have to take the current artboard
-      // scale into account when resizing the drag item.
-      // All other item types (such as clipboard or search) are always rendered
-      // at a 1 scale, since they are not inside the artboard.
-      const artboardScale =
-        item.item.itemType === 'existing' ? ui.artboardScale.value : 1
       const isTop = item.index === boundRect.index
       const rect = item.rect
       const element =
@@ -290,8 +284,12 @@ onMounted(() => {
 
       const from: AnimationRectangleValues = {
         opacity: isTop ? 1 : 0.9,
-        scaleX: Math.min(baseRect.width / rect.width, 1) * artboardScale,
-        scaleY: Math.min(baseRect.width / rect.width, 1) * artboardScale,
+        // Use offsetWidth/offsetHeight (layout size without transforms) as denominator.
+        // baseRect includes both artboard scale and element's own transforms.
+        // offsetWidth is the layout size (no transforms).
+        // The ratio gives us the total scale factor needed (can be > 1 when zoomed in).
+        scaleX: baseRect.width / item.element.offsetWidth,
+        scaleY: baseRect.height / item.element.offsetHeight,
         x: props.isTouch ? rect.x - translateX.value : rect.x - boundsX,
         y: props.isTouch
           ? -rect.height -
@@ -334,6 +332,11 @@ onMounted(() => {
         }
       }
 
+      // Compute border radius from the original element so it's available on the first frame.
+      const borderRadius = isTop
+        ? theme.getDraggableStyle(item.element).radiusMin
+        : 4
+
       return {
         isTop,
         from: ui.lowPerformanceMode.value ? to : from,
@@ -354,6 +357,7 @@ onMounted(() => {
         element: item.element,
         bundle,
         label,
+        borderRadius,
       }
     })
     .filter(falsy)
