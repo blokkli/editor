@@ -32,7 +32,6 @@ function buildItemAction(
   if (!actionType) {
     return
   }
-  const itemBundle = element.dataset.itemBundle
   const action = actions.value.find((v) => v.id === actionType)
   if (!action) {
     return
@@ -41,7 +40,7 @@ function buildItemAction(
     itemType: 'action',
     action,
     actionType,
-    itemBundle,
+    itemBundle: action.itemBundle,
     element: () => element,
   }
 }
