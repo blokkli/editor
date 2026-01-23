@@ -3,6 +3,7 @@ import { isBlock } from '../../Collector/Blocks'
 import { falsy } from '../../helpers'
 import { toObject } from '../helpers'
 import type { BlockDefinitionInputBase } from './../../../global/types/definitions'
+import { toRuntimeOptionArray } from '../../helpers/blockOptions'
 
 export default defineCodeTemplate(
   'runtime-options',
@@ -37,13 +38,13 @@ export default defineCodeTemplate(
         item.definition.globalOptions.forEach((name) => {
           const option = globalOptions[name]
           if (option) {
-            options[name] = [option.type, option.default]
+            options[name] = toRuntimeOptionArray(option)
           }
         })
       }
 
       optionDefinitions.forEach(([name, option]) => {
-        options[name] = [option.type, option.default]
+        options[name] = toRuntimeOptionArray(option)
       })
 
       const hasOptions = Object.keys(options).length > 0
@@ -143,10 +144,6 @@ ${toObject('FIELD_MAPPING', FIELD_MAPPING)}
 
     return `
 import type { BlockOptionDefinition } from '${ctx.helper.relativePaths.TYPES_BLOKK_OPTIONS}'
-
-export type RuntimeBlockOptionArray = {
-  [T in BlockOptionDefinition as T['type']]: [T['type'], T['default']]
-}[BlockOptionDefinition['type']]
 
 export type RuntimeBlockOptions = {
 ${runtimeMappedOptionTypes}

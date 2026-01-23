@@ -422,3 +422,26 @@ export type BlockOptionDefinitionBase<Icon extends string = string> =
   | DefinitionOptionRange
   | DefinitionOptionNumber
   | DefinitionOptionDateTimeLocal
+
+/**
+ * Runtime block option array with validation data.
+ * The third element varies by option type:
+ * - radios/checkboxes: string[] of allowed keys (empty array = accept all)
+ * - number/range: [min, max] tuple
+ * - datetime-local: optional [min?, max?] tuple
+ * - other types: no third element
+ */
+export type RuntimeBlockOptionArray =
+  | ['text', string]
+  | ['checkbox', boolean]
+  | ['color', `#${string}`]
+  | ['radios', string, string[]]
+  | ['checkboxes', string[], string[]]
+  | ['number', number, [number, number]]
+  | ['range', number, [number, number]]
+  | ['datetime-local', string | undefined]
+  | [
+      'datetime-local',
+      string | undefined,
+      [string | undefined, string | undefined],
+    ]

@@ -6,11 +6,9 @@ import type {
 } from '#blokkli/types/definitions'
 import type { GlobalOptionsKey } from '#blokkli-build/generated-types'
 import { INJECT_PROVIDER_KEY } from '#blokkli/helpers/injections'
-import {
-  OPTIONS,
-  type RuntimeBlockOptionArray,
-} from '#blokkli-build/runtime-options'
+import { OPTIONS } from '#blokkli-build/runtime-options'
 import { getRuntimeOptionValue } from '#blokkli/helpers/runtimeHelpers'
+import type { RuntimeBlockOptionArray } from '../../global/types/blockOptions'
 
 type DefineBlokkliProviderProps =
   | {

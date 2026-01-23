@@ -12,10 +12,8 @@ import type {
 } from '#blokkli-build/generated-types'
 import type { DeepReadonly } from 'vue'
 import type { BlockDefinitionOptionsInput } from '../../types/definitions'
-import {
-  OPTIONS,
-  type RuntimeBlockOptionArray,
-} from '#blokkli-build/runtime-options'
+import { OPTIONS } from '#blokkli-build/runtime-options'
+import type { RuntimeBlockOptionArray } from '../../../global/types/blockOptions'
 
 export type DefinitionProvider = {
   /**

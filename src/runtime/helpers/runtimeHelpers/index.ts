@@ -3,11 +3,11 @@
  */
 import {
   OPTIONS,
-  type RuntimeBlockOptionArray,
   type RuntimeBlockOptions,
 } from '#blokkli-build/runtime-options'
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 import type { BlockOptionDefinition } from '#blokkli/types/blockOptions'
+import type { RuntimeBlockOptionArray } from '../../../global/types/blockOptions'
 import {
   bundlesWithVisibleLanguage,
   bundlesWithHiddenGlobally,
@@ -59,26 +59,64 @@ export function getRuntimeOptionValue(
     return defaultValue
   }
 
+  // Get validation data (third element) from RuntimeBlockOptionArray
+  const validationData = Array.isArray(definition) ? definition[2] : undefined
+
   if (type === 'checkbox') {
     return mapCheckboxTrue(value) === '1'
   } else if (type === 'radios') {
     if (typeof value === 'string') {
+      // Validate against allowed keys if available (empty array = accept all)
+      const allowedKeys = validationData as string[] | undefined
+      if (
+        allowedKeys &&
+        allowedKeys.length > 0 &&
+        !allowedKeys.includes(value)
+      ) {
+        return defaultValue ?? ''
+      }
       return value
     }
   } else if (type === 'checkboxes') {
+    let values: string[] = []
     if (typeof value === 'string') {
-      return value.split(',')
+      values = value.split(',')
     } else if (Array.isArray(value)) {
-      return value
+      values = value as string[]
     }
+    // Filter against allowed keys if available (empty array = accept all)
+    const allowedKeys = validationData as string[] | undefined
+    if (allowedKeys && allowedKeys.length > 0) {
+      values = values.filter((v) => allowedKeys.includes(v))
+    }
+    if (values.length > 0) {
+      return values
+    }
+    // Return default if no valid values
+    return defaultValue ?? []
   } else if (type === 'range' || type === 'number') {
+    let numValue: number | undefined
     if (typeof value === 'number' && !Number.isNaN(value)) {
-      return value
+      numValue = value
     } else if (typeof value === 'string') {
       const parsed = Number.parseFloat(value)
       if (!Number.isNaN(parsed)) {
-        return parsed
+        numValue = parsed
       }
+    }
+    if (numValue !== undefined) {
+      // Clamp to min/max bounds if available
+      const bounds = validationData as [number, number] | undefined
+      if (bounds) {
+        const [min, max] = bounds
+        if (min !== undefined && numValue < min) {
+          numValue = min
+        }
+        if (max !== undefined && numValue > max) {
+          numValue = max
+        }
+      }
+      return numValue
     }
   } else if (type === 'color') {
     if (typeof value === 'string') {
@@ -95,6 +133,19 @@ export function getRuntimeOptionValue(
     typeof value === 'string' &&
     isValidDatetimeLocalValue(value)
   ) {
+    // Validate against min/max bounds if available
+    const bounds = validationData as
+      | [string | undefined, string | undefined]
+      | undefined
+    if (bounds) {
+      const [min, max] = bounds
+      if (min && value < min) {
+        return defaultValue ?? ''
+      }
+      if (max && value > max) {
+        return defaultValue ?? ''
+      }
+    }
     return value
   }
 

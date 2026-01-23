@@ -16,10 +16,7 @@ import type {
   ValidFieldListTypes,
 } from '#blokkli-build/generated-types'
 import { getRuntimeOptionValue } from '#blokkli/helpers/runtimeHelpers'
-import {
-  OPTIONS,
-  type RuntimeBlockOptionArray,
-} from '#blokkli-build/runtime-options'
+import { OPTIONS } from '#blokkli-build/runtime-options'
 import type {
   BlockDefinitionInput,
   BlockDefinitionOptionsInput,
@@ -31,6 +28,7 @@ import {
   fragmentBlockBundle,
   fromLibraryBlockBundle,
 } from '#blokkli-build/config'
+import type { RuntimeBlockOptionArray } from '../../global/types/blockOptions'
 
 /**
  * Define a blokkli component.
