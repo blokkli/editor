@@ -199,4 +199,42 @@ describe('getRuntimeOptionValue', () => {
       '2030-12-31T23:59',
     )
   })
+
+  test('Returns the correct value for type color', () => {
+    const option: BlockOptionDefinition = {
+      type: 'color',
+      label: 'Color',
+      default: '#ff0000',
+    }
+    // Valid hex with #
+    expect(getRuntimeOptionValue(option, '#00ff00')).toEqual('#00ff00')
+    expect(getRuntimeOptionValue(option, '#AABBCC')).toEqual('#AABBCC')
+    expect(getRuntimeOptionValue(option, '#a1b2c3')).toEqual('#a1b2c3')
+    // Valid hex without # gets prefixed
+    expect(getRuntimeOptionValue(option, '00ff00')).toEqual('#00ff00')
+    expect(getRuntimeOptionValue(option, 'aabbcc')).toEqual('#aabbcc')
+    // Undefined returns default
+    expect(getRuntimeOptionValue(option, undefined)).toEqual('#ff0000')
+    expect(getRuntimeOptionValue(option, null)).toEqual('#ff0000')
+  })
+
+  test('Rejects invalid color values and returns default', () => {
+    const option: BlockOptionDefinition = {
+      type: 'color',
+      label: 'Color',
+      default: '#ff0000',
+    }
+    // Invalid hex characters
+    expect(getRuntimeOptionValue(option, '#gggggg')).toEqual('#ff0000')
+    expect(getRuntimeOptionValue(option, 'zzzzzz')).toEqual('#ff0000')
+    expect(getRuntimeOptionValue(option, '#xyz123')).toEqual('#ff0000')
+    // Wrong length
+    expect(getRuntimeOptionValue(option, '#fff')).toEqual('#ff0000')
+    expect(getRuntimeOptionValue(option, '#12')).toEqual('#ff0000')
+    expect(getRuntimeOptionValue(option, '#1234567')).toEqual('#ff0000')
+    expect(getRuntimeOptionValue(option, 'abc')).toEqual('#ff0000')
+    // Not a string
+    expect(getRuntimeOptionValue(option, 123456)).toEqual('#ff0000')
+    expect(getRuntimeOptionValue(option, false)).toEqual('#ff0000')
+  })
 })

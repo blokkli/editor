@@ -120,9 +120,9 @@ export function getRuntimeOptionValue(
     }
   } else if (type === 'color') {
     if (typeof value === 'string') {
-      if (value.startsWith('#')) {
+      if (/^#[0-9a-f]{6}$/i.test(value)) {
         return value
-      } else if (value.length === 6) {
+      } else if (/^[0-9a-f]{6}$/i.test(value)) {
         return `#${value}`
       }
     }
