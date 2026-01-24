@@ -18,11 +18,24 @@ function getDrupalAdapterPath(): string {
   return resolver.resolve('./runtime/adapter/index.js')
 }
 
-export default defineBlokkliModule({
+export default defineBlokkliModule<{
+  /**
+   * The name of the route that is used for editing template entities.
+   *
+   * The route must have a param called `uuid`, used for loading the correct
+   * template entity.
+   */
+  templateEditRouteName?: string
+}>({
   alterOptions(options) {
     // Set default options for blökkli starterkit setups.
     if (!options.itemEntityType) {
       options.itemEntityType = 'paragraph'
+    }
+
+    // Set default options for blökkli starterkit setups.
+    if (!options.templateEntityType) {
+      options.templateEntityType = 'blokkli_paragraph_template'
     }
 
     // Default pattern to look for blökkli components.
@@ -61,8 +74,27 @@ export default defineBlokkliModule({
       }
     }
   },
-  setup({ context, helper }) {
+  setup({ context, helper }, options) {
     helper.addAlias('#blokkli/drupal-adapter', getDrupalAdapterPath())
+
+    context.addTemplate({
+      type: 'code',
+      name: 'drupal-config',
+      buildCode: () => {
+        return `
+export const templateEditRouteName = ${JSON.stringify(options?.templateEditRouteName || null)}
+`
+      },
+      buildTypes: () => {
+        return `
+export declare const templateEditRouteName: string|null
+`
+      },
+      options: {
+        dependencies: [],
+        write: true,
+      },
+    })
 
     // First try to get nuxt-graphql-middleware module context without
     // throwing an error, so that we can log additional information on what
@@ -244,8 +276,33 @@ export default defineBlokkliModule({
     }
 
     // Feature: Templates.
-    if (graphql.schemaHasType('ParagraphsBlokkliTemplate')) {
-      addGraphqlDocument('features/templates.graphql')
+    if (graphql.schemaHasType('BlokkliParagraphTemplate')) {
+      const templateFields = getTypeFields('BlokkliParagraphTemplate')
+      const requiredFields = [
+        'uuid',
+        'label',
+        'description',
+        'isDefault',
+        'paragraphs',
+      ]
+      const missingFields = requiredFields.filter(
+        (field) => !templateFields.has(field),
+      )
+      if (missingFields.length) {
+        const missingFieldsString = missingFields
+          .map((v) => `"${v}"`)
+          .join(', ')
+        helper.logger.warn(
+          `Missing GraphQL fields on type "BlokkliParagraphTemplate": ${missingFieldsString}. Please enable them in your Drupal GraphQL schema configuration. The "templates" feature will be disabled.`,
+        )
+      } else {
+        addGraphqlDocument('features/templates.graphql')
+        if (!options?.templateEditRouteName) {
+          helper.logger.warn(
+            `The templates feature is enabled, but the "templateEditRouteName" option was not provided for the blökkli Drupal module. Editing templates will not be possible.`,
+          )
+        }
+      }
     } else {
       context.features.disableFeature('templates')
     }

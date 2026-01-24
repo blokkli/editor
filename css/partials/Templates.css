@@ -6,6 +6,11 @@
   }
 
   .bk-templates-manage {
+    min-height: 80vh;
+    @apply select-text relative;
+    .bk-form-group {
+      @apply mt-20 mb-30;
+    }
     .bk-table {
       thead {
         th:last-child {
@@ -14,8 +19,16 @@
       }
 
       tbody {
+        tr {
+          @apply hover:bg-mono-50;
+        }
+        td {
+          @apply py-15;
+        }
         td:first-child {
-          @apply font-bold;
+          div:first-child {
+            @apply font-bold text-lg;
+          }
         }
       }
     }

@@ -1,9 +1,11 @@
 import {
   defineBlokkliEditAdapter,
   type BlokkliAdapter,
+  type MutationResponseLike,
 } from '#blokkli/editor/adapter'
 import { falsy } from '#blokkli/helpers'
 import { availableFeaturesAtBuild } from '#blokkli-build/features'
+import { templateEditRouteName } from '#blokkli-build/drupal-config'
 import { operationSources } from '#nuxt-graphql-middleware/sources'
 import {
   useGraphqlQuery,
@@ -16,6 +18,7 @@ import type {
   ParagraphsBlokkliCommentFragment,
   ParagraphsBlokkliConfigInputFragment,
   ParagraphsBlokkliEditStateFragment,
+  ParagraphsBlokkliMutationResultFragment,
   ParagraphsBlokkliPublishOptionsFragment,
   ParagraphsBlokkliUserConfigInput,
 } from '#graphql-operations'
@@ -29,6 +32,8 @@ import type { PublishOptions } from '#blokkli/editor/features/publish/types'
 import type { PluginConfigInput } from '#blokkli/editor/types/pluginConfig'
 import type { TranslationState } from '#blokkli/editor/types/state'
 import type { BlockBundleDefinition } from '#blokkli/editor/types/definitions'
+import type { TemplateItem } from '#blokkli/editor/features/templates/types'
+import type { GraphqlResponse } from '#nuxt-graphql-middleware/response'
 
 type DrupalAdapter = BlokkliAdapter<ParagraphsBlokkliEditStateFragment>
 
@@ -46,6 +51,18 @@ function mapPublishOptions(
   }
 }
 
+function valueToFilterString(v: unknown): string {
+  if (typeof v === 'string') {
+    return v
+  } else if (typeof v === 'number') {
+    return v.toString()
+  } else if (typeof v === 'boolean') {
+    return v ? '1' : '0'
+  }
+
+  return ''
+}
+
 function configObjectToUserConfigInput(
   values?: Record<string, any>,
 ): ParagraphsBlokkliUserConfigInput[] {
@@ -56,7 +73,7 @@ function configObjectToUserConfigInput(
   return Object.entries(values).map(([name, value]) => {
     return {
       name,
-      value,
+      value: valueToFilterString(value),
     }
   })
 }
@@ -333,7 +350,18 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       return Promise.resolve(disabled)
     }
 
-    const mapMutation = (v: any) => v.data?.state?.action
+    const mapMutation = (
+      v: GraphqlResponse<{
+        state?: { action?: ParagraphsBlokkliMutationResultFragment }
+      }>,
+    ): MutationResponseLike<any> => {
+      const action = v.data?.state?.action
+      return {
+        success: !!action?.success,
+        state: action?.state,
+        errors: (action?.errors ?? []).filter(falsy),
+      }
+    }
     const route = useRoute()
     const router = useRouter()
 
@@ -1102,22 +1130,32 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         return useGraphqlQuery('pbSearchTemplates', {
           filters: configObjectToUserConfigInput(e.filters),
           page: e.page,
+          includeItems: e.includeItems,
         }).then((data) => {
           return {
-            filters: mapPluginConfigInputs(
-              data.data.paragraphsBlokkliGetTemplates?.filters ?? [],
-            ),
-            items: (data.data.paragraphsBlokkliGetTemplates?.items || [])
+            filters: mapPluginConfigInputs(data.data.results?.filters ?? []),
+            items: (data.data.results?.items || [])
               .filter(falsy)
-              .map((v) => {
+              .map<TemplateItem>((v) => {
                 return {
-                  ...v,
-                  // @TODO: get actual permissions.
-                  permissions: ['view', 'delete', 'edit'],
+                  uuid: v.uuid,
+                  label: v.label ?? '',
+                  description: v.description,
+                  isDefault: !!v.isDefault,
+                  itemBundles: v.templateBundles,
+                  items: (v.items ?? []).filter(falsy),
+                  permissions: v.blokkliProps.permissions,
+                  translationLanguages: v.translationLanguages,
+                  metadata: {
+                    description: v.description ?? null,
+                    createdBy: v.blokkliMetadata.createdBy ?? null,
+                    dateUpdated: v.blokkliMetadata.dateUpdated ?? null,
+                    dateCreated: v.blokkliMetadata.dateCreated ?? null,
+                  },
                 }
               }),
-            total: data.data.paragraphsBlokkliGetTemplates?.total || 0,
-            perPage: data.data.paragraphsBlokkliGetTemplates?.perPage || 50,
+            total: data.data.results?.total || 0,
+            perPage: data.data.results?.perPage || 50,
           }
         })
       }
@@ -1136,6 +1174,20 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       }
     }
 
+    if (hasMutation('pbTemplateDelete')) {
+      adapter.templatesDelete = (e) => {
+        return useGraphqlMutation('pbTemplateDelete', {
+          uuid: e.templateUuid,
+        }).then((v) => {
+          return {
+            success: !!v.data.action.success,
+            state: v.data.action.state,
+            errors: (v.data.action.errors ?? []).filter(falsy),
+          }
+        })
+      }
+    }
+
     if (hasMutation('pbCreateTemplate')) {
       adapter.templatesCreate = (e) => {
         return useGraphqlMutation('pbCreateTemplate', {
@@ -1145,6 +1197,29 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           isDefault: e.isDefault,
           uuids: e.uuids,
         }).then(mapMutation)
+      }
+    }
+
+    if (hasQuery('pbGetTemplateEntity') && templateEditRouteName) {
+      try {
+        const href = router.resolve({
+          name: templateEditRouteName,
+          params: {
+            uuid: 'UUID_PLACEHOLDER',
+          },
+        }).path
+
+        adapter.templatesGetEditUrl = (e) => {
+          return (
+            href.replace('UUID_PLACEHOLDER', e.templateUuid) +
+            '?blokkliEditing=' +
+            e.templateUuid
+          )
+        }
+      } catch {
+        console.error(
+          `The provided templateEditRouteName "${templateEditRouteName}" is not valid. Editing templates will not be possible.`,
+        )
       }
     }
 

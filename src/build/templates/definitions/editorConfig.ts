@@ -18,6 +18,8 @@ export const settingsOverride = ${JSON.stringify(settingsOverride)}
 
 export const blokkliVersion = ${JSON.stringify(version)}
 
+export const templateEntityType = ${JSON.stringify(ctx.helper.options.templateEntityType ?? null)}
+
 export const storageDefaults  = ${JSON.stringify(
       ctx.helper.options.storageDefaults || {},
     )}
@@ -62,12 +64,17 @@ export declare const blokkliVersion: string
 /**
  * Default storage settings.
  */
-export declare const storageDefaults: Record<string, string|boolean|string[]>
+export declare const storageDefaults: Record<string, string | boolean | string[]>
 
 /**
  * The default/fallback language.
  */
 export declare const defaultLanguage: string
+
+/**
+ * The entity type of templates.
+ */
+export declare const templateEntityType: string | null
 
 /**
  * Whether to always force the default language, even on translation pages.

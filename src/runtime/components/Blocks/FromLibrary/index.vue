@@ -16,7 +16,7 @@ import {
   INJECT_REUSABLE_OPTIONS,
   INJECT_REUSABLE_UUID,
 } from '#blokkli/helpers/injections'
-import type { LibraryItemProps } from '#blokkli/editor/features/library/types';
+import type { LibraryItemProps } from '#blokkli/editor/features/library/types'
 
 export type Props = {
   libraryItem?: LibraryItemProps

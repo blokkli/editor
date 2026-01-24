@@ -8,4 +8,11 @@ export type EntityContext = {
   bundle: string
 }
 
+export type EntityMetadata = {
+  description: string | null
+  createdBy: string | null
+  dateUpdated: string | null
+  dateCreated: string | null
+}
+
 export default {}

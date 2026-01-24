@@ -4,6 +4,67 @@ type ActiveEnvironment {
   name: String
 }
 
+"""Paragraph Template"""
+type BlokkliParagraphTemplate implements Entity & EntityDescribable & EntityLinkable {
+  """Check entity access for the given operation, defaults to view."""
+  accessCheck(operation: String): Boolean!
+  blokkliMetadata: ParagraphsBlokkliEntityMetadata!
+
+  """The props for the blokkli provider component."""
+  blokkliProps: ParagraphsBlokkliProps!
+
+  """{value} {field: description} An optional description of the template."""
+  description: String
+
+  """{field: description} An optional description of the template."""
+  descriptionRawField: FieldItemListStringLong
+
+  """The bundle ID of the entity."""
+  entityBundle: String!
+
+  """The description."""
+  entityDescription: String
+
+  """The entity type ID."""
+  entityTypeId: String!
+  id: String
+
+  """
+  {value} {field: is_default} Auto-apply when adding a paragraph of this type.
+  Only allowed when template contains exactly one paragraph.
+  """
+  isDefault: Boolean
+
+  """
+  {field: is_default} Auto-apply when adding a paragraph of this type. Only
+  allowed when template contains exactly one paragraph.
+  """
+  isDefaultRawField: FieldItemListBoolean
+
+  """Determines whether the entity is new."""
+  isNew: Boolean!
+
+  """The label of this entity."""
+  label: String
+
+  """The langcode of this entity."""
+  langcode: String
+
+  """{value} {field: paragraphs} The paragraphs that make up this template."""
+  paragraphs: [Paragraph]
+
+  """{field: paragraphs} The paragraphs that make up this template."""
+  paragraphsRawField: FieldItemListEntityReferenceRevisions
+  templateBundles: [String!]!
+  translationLanguages: [String!]!
+
+  """Get the URL, defaults to canonical."""
+  url(options: UrlOptions, rel: String): Url
+
+  """The unique UUID."""
+  uuid: String!
+}
+
 type Breadcrumb {
   title: String!
   url: Url!
@@ -448,6 +509,9 @@ interface EntityTranslatable implements Entity {
 }
 
 enum EntityType {
+  """Paragraph Template"""
+  BLOKKLI_PARAGRAPH_TEMPLATE
+
   """Kommentar"""
   COMMENT
 
@@ -915,7 +979,7 @@ type FieldItemListString implements FieldItemList {
   list: [FieldItemTypeString]
 }
 
-"""Translation"""
+"""Beschreibung"""
 type FieldItemListStringLong implements FieldItemList {
   """The number of field items."""
   count: Int!
@@ -2553,6 +2617,7 @@ type Mutation {
   messengerMessages: MessengerMessage
   paragraphsBlokkliAddComment(body: String!, entityType: EntityType!, entityUuid: String!, langcode: String!, paragraphUuids: [String]!): [Comment]
   paragraphsBlokkliResolveComment(entityType: EntityType!, entityUuid: String!, langcode: String!, uuid: String!): [Comment]
+  paragraphsBlokkliTemplateDelete(uuid: String!): ParagraphsBlokkliMutationResult!
 
   """Get the edit state for an entity."""
   paragraphsEditMutationState(
@@ -5838,6 +5903,20 @@ type ParagraphsBlokkliEntityConfig {
   linkPath: String
 }
 
+type ParagraphsBlokkliEntityMetadata {
+  """The name of user that created this entity."""
+  createdBy: String
+
+  """Date when the entity was created."""
+  dateCreated: String
+
+  """Date when the entity was updated."""
+  dateUpdated: String
+
+  """The description of the entity if available."""
+  description: String
+}
+
 type ParagraphsBlokkliFieldConfig {
   allowedBundles: [String!]!
   canEdit: Boolean!
@@ -5943,6 +6022,9 @@ type ParagraphsBlokkliParagraphEditContext {
 }
 
 enum ParagraphsBlokkliPermission {
+  """Delete the edit state."""
+  delete
+
   """Edit the edit state"""
   edit
 
@@ -5960,7 +6042,7 @@ type ParagraphsBlokkliProps {
   entityUuid: String!
   hostOptions: ParagraphsBlokkliOptions
   language: String!
-  permissions: [ParagraphsBlokkliPermission]!
+  permissions: [ParagraphsBlokkliPermission!]!
 }
 
 type ParagraphsBlokkliPublishOptions {
@@ -6025,17 +6107,9 @@ type ParagraphsBlokkliSupportedClipboardRichText implements ParagraphsBlokkliSup
   possibleParagraphBundles: [String!]!
 }
 
-type ParagraphsBlokkliTemplate {
-  description: String
-  isDefault: Boolean!
-  label: String!
-  paragraphs: [Paragraph!]!
-  uuid: String!
-}
-
 type ParagraphsBlokkliTemplatesSearchResults {
   filters: [ParagraphsBlokkliConfigInput!]!
-  items: [ParagraphsBlokkliTemplate!]!
+  items: [BlokkliParagraphTemplate!]!
   perPage: Int!
   total: Int!
 }
@@ -6765,7 +6839,7 @@ type Query {
   entityById(entityType: EntityType!, id: ID!, langcode: Langcode): Entity
   entityByUuid(entityType: EntityType!, langcode: Langcode, uuid: String!): Entity
   entityQuery(
-    """ The machine name of the entity type (e.g. "node", "taxonomy_term", etc.)
+    """ The machine name of the entity type (e.g. "node", "taxonomy_term", etc.) 
     """
     entityType: EntityType!
 
@@ -6820,11 +6894,12 @@ type Query {
   """Get the array of allowed paragraph types by entity field."""
   paragraphsBlokkliConversions: [ParagraphsBlokkliConversion!]
   paragraphsBlokkliGetHostTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliHostTransformPlugin!]
-  paragraphsBlokkliGetTemplates(filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliTemplatesSearchResults
   paragraphsBlokkliGetTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliTransformPlugin!]
   paragraphsBlokkliSearch(id: String, text: String!): [ParagraphsBlokkliSearchItem]
   paragraphsBlokkliSearchLibraryItems(bundles: [String]!, filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliLibraryItemsSearchResults
   paragraphsBlokkliSearchTabs: [ParagraphsBlokkliSearchTab]
+  paragraphsBlokkliTemplateGet(uuid: String!): BlokkliParagraphTemplate
+  paragraphsBlokkliTemplateSearch(filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliTemplatesSearchResults
   pbGetDroppableFieldConfig(entityBundle: String!, entityType: String!): [ParagraphsBlokkliDroppableFieldConfig!]
   pbGetEditableFieldConfig(entityBundle: String!, entityType: String!): [ParagraphsBlokkliEditableFieldConfig!]
 

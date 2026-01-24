@@ -1,7 +1,11 @@
 <template>
-  <ol>
+  <ol class="bk-plugin-config-form">
     <slot name="before" />
-    <li v-for="item in renderedConfig" :key="item.name" class="bk-form-item">
+    <li
+      v-for="item in renderedConfig"
+      :key="item.name"
+      :class="'bk-is-type-' + item.type"
+    >
       <FormCheckbox
         v-if="item.type === 'checkbox'"
         v-bind="item"
@@ -27,7 +31,7 @@ import FormCheckbox from './Checkbox/index.vue'
 import FormText from './Text/index.vue'
 import FormOptions from './Options/index.vue'
 import { computed } from '#imports'
-import type { PluginConfigInput } from '#blokkli/editor/types/pluginConfig';
+import type { PluginConfigInput } from '#blokkli/editor/types/pluginConfig'
 
 const props = defineProps<{
   config: PluginConfigInput[]

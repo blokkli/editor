@@ -2,9 +2,9 @@
   <BlockPreviewItem
     :items="items"
     :title="label"
-    :description="description"
+    :description
     :max-height="200"
-    :no-preview="!items.length"
+    :no-preview="!items?.length"
   />
 </template>
 
@@ -16,7 +16,7 @@ defineProps<{
   uuid: string
   label: string
   description?: string
-  items: FieldListItem[]
+  items?: FieldListItem[]
   isDefault: boolean
 }>()
 </script>

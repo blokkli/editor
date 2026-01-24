@@ -691,6 +691,7 @@ export default async function (
       }
       return true
     } catch (e) {
+      console.log(e)
       if (errorMessage !== false) {
         emitMessage(
           errorMessage ||

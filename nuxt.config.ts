@@ -1,4 +1,5 @@
 import { fileURLToPath } from 'node:url'
+import drupal from './src/modules/drupal'
 
 export default defineNuxtConfig({
   modules: ['nuxt-graphql-middleware'],
@@ -8,22 +9,22 @@ export default defineNuxtConfig({
     downloadSchema: false,
     // graphqlConfigFilePath: '',
     autoImportPatterns: [
-      './src/modules/drupal/graphql/base/*.graphql',
-      './src/modules/drupal/graphql/mutations/*.graphql',
-      './src/modules/drupal/graphql/features/comments.graphql',
-      './src/modules/drupal/graphql/features/conversions.graphql',
-      './src/modules/drupal/graphql/features/fragments.graphql',
-      './src/modules/drupal/graphql/features/import-existing.graphql',
-      './src/modules/drupal/graphql/features/library.graphql',
-      './src/modules/drupal/graphql/features/media-library.graphql',
-      './src/modules/drupal/graphql/features/preview-grant.graphql',
-      // './src/modules/drupal/graphql/features/publish.graphql',
-      './src/modules/drupal/graphql/features/publishNew.graphql',
-      './src/modules/drupal/graphql/features/scheduler.graphql',
-      './src/modules/drupal/graphql/features/search.graphql',
-      './src/modules/drupal/graphql/features/transform.graphql',
-      './src/modules/drupal/graphql/features/transform_host.graphql',
-      './src/modules/drupal/graphql/features/templates.graphql',
+      // './src/modules/drupal/graphql/base/*.graphql',
+      // './src/modules/drupal/graphql/mutations/*.graphql',
+      // './src/modules/drupal/graphql/features/comments.graphql',
+      // './src/modules/drupal/graphql/features/conversions.graphql',
+      // './src/modules/drupal/graphql/features/fragments.graphql',
+      // './src/modules/drupal/graphql/features/import-existing.graphql',
+      // './src/modules/drupal/graphql/features/library.graphql',
+      // './src/modules/drupal/graphql/features/media-library.graphql',
+      // './src/modules/drupal/graphql/features/preview-grant.graphql',
+      // // './src/modules/drupal/graphql/features/publish.graphql',
+      // './src/modules/drupal/graphql/features/publishNew.graphql',
+      // './src/modules/drupal/graphql/features/scheduler.graphql',
+      // './src/modules/drupal/graphql/features/search.graphql',
+      // './src/modules/drupal/graphql/features/transform.graphql',
+      // './src/modules/drupal/graphql/features/transform_host.graphql',
+      // './src/modules/drupal/graphql/features/templates.graphql',
       './drupal/mocks.graphql',
     ],
     documents: [
@@ -96,5 +97,9 @@ fragment blokkliParagraphsType on ParagraphsType {
     '~~/helpers': fileURLToPath(
       new URL('./playground/helpers', import.meta.url),
     ),
+  },
+
+  blokkli: {
+    modules: [drupal()],
   },
 })

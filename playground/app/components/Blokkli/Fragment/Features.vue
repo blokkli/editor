@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import { computed, defineBlokkliFragment, useBlokkli } from '#imports'
-import  featureDefinitions from '#blokkli-build/features-data.json'
+import featureDefinitions from '#blokkli-build/features-data.json'
 
 defineBlokkliFragment({
   name: 'features_list',

@@ -31,8 +31,7 @@ const isEditing = import.meta.blokkliEditing
 
 if (import.meta.blokkliEditing) {
   console.log('DEBUG - SLIDER: EDITING')
-}
-else {
+} else {
   console.log('DEBUG - SLIDER: NOT EDITING')
 }
 

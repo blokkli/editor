@@ -1456,17 +1456,28 @@ export default defineBlokkliEditAdapter((ctx) => {
 
     const items: TemplateItem[] = filtered
       .slice(offset, offset + perPage)
-      .map((template) => ({
-        uuid: template.uuid,
-        label: template.title(),
-        description: template.description(),
-        items: template
+      .map((template) => {
+        const items = template
           .getBlocks()
           .getBlocks()
-          .map((block) => mapBlockItem(block)),
-        isDefault: template.isDefault(),
-        permissions: ['delete', 'view', 'review', 'edit'],
-      }))
+          .map((block) => mapBlockItem(block))
+        return {
+          uuid: template.uuid,
+          label: template.title(),
+          description: template.description(),
+          items,
+          itemBundles: items.map((v) => v.bundle),
+          isDefault: template.isDefault(),
+          permissions: ['delete', 'view', 'review', 'edit'],
+          translationLanguages: ['en'],
+          metadata: {
+            createdBy: 'dulnan',
+            description: null,
+            dateCreated: '2026-01-24T11:36:55.000Z',
+            dateUpdated: '2025-10-03T11:36:55.000Z',
+          },
+        }
+      })
 
     // Build bundle options from allowed bundles that exist in templates
     const blockClasses = getBlockBundles()
@@ -1495,6 +1506,13 @@ export default defineBlokkliEditAdapter((ctx) => {
           label: 'Search',
           placeholder: 'Search templates...',
           required: false,
+        },
+        {
+          type: 'checkbox',
+          name: 'byMe',
+          label: 'Created by me',
+          required: false,
+          defaultValue: false,
         },
         {
           type: 'options',

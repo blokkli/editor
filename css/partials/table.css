@@ -9,6 +9,16 @@
     }
   }
 
+  tbody,
+  thead {
+    th,
+    td {
+      &:not(:first-child) {
+        @apply pl-5;
+      }
+    }
+  }
+
   tbody {
     td {
       @apply border-t border-t-mono-300 py-5;

@@ -79,8 +79,7 @@ defineProps<Props>()
 if (import.meta.dev) {
   if (import.meta.blokkliEditing) {
     console.log('FOOBAR:EDITING')
-  }
-  else {
+  } else {
     console.log('FOOBAR:NOT-EDITING')
   }
 }

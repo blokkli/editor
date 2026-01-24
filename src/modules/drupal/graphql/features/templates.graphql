@@ -1,18 +1,29 @@
 query pbSearchTemplates(
   $page: Int
   $filters: [ParagraphsBlokkliUserConfigInput]
+  $includeItems: Boolean!
 ) {
-  paragraphsBlokkliGetTemplates(page: $page, filters: $filters) {
+  results: paragraphsBlokkliTemplateSearch(page: $page, filters: $filters) {
     items {
       uuid
       label
       description
       isDefault
-      items: paragraphs {
+      items: paragraphs @include(if: $includeItems) {
         ...paragraphsFieldItem
         props {
           ...paragraph
         }
+      }
+      templateBundles
+      translationLanguages
+      blokkliProps {
+        permissions
+      }
+      blokkliMetadata {
+        createdBy
+        dateUpdated
+        dateCreated
       }
     }
     total
@@ -69,6 +80,30 @@ mutation pbCreateTemplate(
       uuids: $uuids
     ) {
       ...paragraphsBlokkliMutationResult
+    }
+  }
+}
+
+mutation pbTemplateDelete($uuid: String!, $langcode: String) {
+  action: paragraphsBlokkliTemplateDelete(uuid: $uuid) {
+    ...paragraphsBlokkliMutationResult
+  }
+}
+
+query pbGetTemplateEntity($uuid: String!) {
+  paragraphsBlokkliTemplateGet(uuid: $uuid) {
+    uuid
+    label
+    description
+    isDefault
+    items: paragraphs {
+      ...paragraphsFieldItem
+      props {
+        ...paragraph
+      }
+    }
+    blokkliProps {
+      ...blokkliProps
     }
   }
 }

@@ -5,7 +5,10 @@
 <script lang="ts" setup>
 import { getComponent } from '#blokkli/helpers/imports'
 import { provide, defineBlokkli, inject } from '#imports'
-import { INJECT_ALL_COMPONENTS_CHUNK, INJECT_FRAGMENT_CONTEXT } from '#blokkli/helpers/injections'
+import {
+  INJECT_ALL_COMPONENTS_CHUNK,
+  INJECT_FRAGMENT_CONTEXT,
+} from '#blokkli/helpers/injections'
 import type { BlokkliFragmentName } from '#blokkli-build/definitions'
 
 export type Props = {
@@ -23,7 +26,13 @@ const ctx = defineBlokkli({
 })
 
 const allComponentsChunk = inject(INJECT_ALL_COMPONENTS_CHUNK, null)
-const component = getComponent('fragment', componentProps.name, undefined, undefined, allComponentsChunk)
+const component = getComponent(
+  'fragment',
+  componentProps.name,
+  undefined,
+  undefined,
+  allComponentsChunk,
+)
 
 provide(INJECT_FRAGMENT_CONTEXT, ctx)
 </script>

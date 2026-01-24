@@ -3,7 +3,7 @@ import type {
   AdapterSearchArguments,
 } from '#blokkli/editor/adapter'
 import type { BlokkliItemHost } from '#blokkli/editor/types/field'
-import type { FieldListItem } from '#blokkli/types'
+import type { EntityMetadata, FieldListItem } from '#blokkli/types'
 import type { EditPermission } from '#blokkli/types/provider'
 
 export type AdapterAddTemplate = {
@@ -23,9 +23,12 @@ export type TemplateItem = {
   uuid: string
   label: string
   description?: string
-  items: FieldListItem[]
+  items?: FieldListItem[]
+  itemBundles: string[]
   isDefault: boolean
+  translationLanguages: string[]
   permissions: EditPermission[]
+  metadata: EntityMetadata | null
 }
 
 export type AdapterTemplatesGetResult =
@@ -33,6 +36,7 @@ export type AdapterTemplatesGetResult =
 
 export type TemplatesSearchArguments = {
   host?: BlokkliItemHost
+  includeItems: boolean
 } & AdapterSearchArguments
 
 export type AdapterDeleteTemplate = {

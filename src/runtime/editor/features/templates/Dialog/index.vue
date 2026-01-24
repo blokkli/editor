@@ -10,11 +10,11 @@
         <InfoBox
           color="accent"
           :text="
-          $t(
-            'templatesPlaceDialogDescription',
-            'Templates create copies of blocks that can be edited freely on this page without affecting other pages.',
-          )
-        "
+            $t(
+              'templatesPlaceDialogDescription',
+              'Templates create copies of blocks that can be edited freely on this page without affecting other pages.',
+            )
+          "
         />
         <div v-if="config.length" class="bk-form-group">
           <ConfigForm v-model="filters" :config />
@@ -22,7 +22,7 @@
       </div>
       <div class="bk-library-dialog-content">
         <Loading v-if="status === 'pending'" />
-        <ul v-else-if="items.length" class="bk-library-dialog-list">
+        <ul v-if="items.length" class="bk-library-dialog-list">
           <li
             v-for="item in items"
             :key="item.uuid"
@@ -35,7 +35,9 @@
           </li>
         </ul>
         <p v-else class="bk-lead">
-          {{ $t('templatesNoResults', 'No templates available for this field.') }}
+          {{
+            $t('templatesNoResults', 'No templates available for this field.')
+          }}
         </p>
       </div>
       <div v-if="totalPages > 1" class="bk bk-library-pagination">
@@ -55,9 +57,22 @@
 </template>
 
 <script setup lang="ts">
-import { FormOverlay, Pagination, Loading, InfoBox, ConfigForm } from '#blokkli/editor/components'
+import {
+  FormOverlay,
+  Pagination,
+  Loading,
+  InfoBox,
+  ConfigForm,
+} from '#blokkli/editor/components'
 import type { BlokkliFieldElement } from '#blokkli/editor/types/field'
-import { ref, useBlokkli, computed, useAsyncData, reactive, watch } from '#imports'
+import {
+  ref,
+  useBlokkli,
+  computed,
+  useAsyncData,
+  reactive,
+  watch,
+} from '#imports'
 import TemplateItem from './Item/index.vue'
 import type {
   AdapterTemplatesGetResult,
@@ -88,6 +103,7 @@ const searchParams = computed<TemplatesSearchArguments>(() => ({
   host: host.value,
   page: page.value,
   filters: { ...filters },
+  includeItems: true,
 }))
 
 watch(filters, function () {

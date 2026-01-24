@@ -104,6 +104,13 @@ export type ModuleOptions = {
   itemEntityType?: string
 
   /**
+   * The entity type of template entities.
+   *
+   * Using the paragraphs_blokkli integration this value should be set to "blokkli_paragraph_template".
+   */
+  templateEntityType?: string
+
+  /**
    * The name of the 'from library' block bundle.
    */
   fromLibraryBlockBundle?: string
