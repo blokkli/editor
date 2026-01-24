@@ -64,7 +64,8 @@ const props = defineProps<{
 
   isTouch: boolean
 
-  activeColor?: string
+  color?: string
+  backgroundColor?: string
   activeLabel?: string
 }>()
 
@@ -78,7 +79,8 @@ const isExisting = computed<boolean>(
 )
 
 const currentActiveLabel = ref('')
-const currentActiveColor = ref('')
+const currentColor = ref('')
+const currentBackgroundColor = ref('')
 
 watch(
   () => props.activeLabel,
@@ -90,10 +92,19 @@ watch(
 )
 
 watch(
-  () => props.activeColor,
+  () => props.backgroundColor,
   function (color) {
     if (color) {
-      currentActiveColor.value = color
+      currentBackgroundColor.value = color
+    }
+  },
+)
+
+watch(
+  () => props.color,
+  function (color) {
+    if (color) {
+      currentColor.value = color
     }
   },
 )
@@ -127,9 +138,13 @@ const style = computed(() => {
     width: width.value + 'px',
     height: height.value + 'px',
     transform: `translate(${translateX.value}px, ${translateY.value}px)`,
-    '--bk-active-color':
-      props.activeColor && props.activeLabel
-        ? props.activeColor
+    '--bk-active-background-color':
+      props.backgroundColor && props.activeLabel
+        ? props.backgroundColor
+        : 'rgba(255,255,255,0)',
+'--bk-active-color':
+      props.color && props.activeLabel
+        ? props.color
         : 'rgba(255,255,255,0)',
   }
 })
@@ -142,11 +157,14 @@ const styleLabel = computed(() => {
   const y = Math.max(10, translateY.value - labelHeight.value - 20)
   return {
     transform: `translate(${x}px, ${y}px)`,
-    '--bk-active-color':
-      props.activeColor && props.activeLabel
-        ? props.activeColor
+    '--bk-active-background-color':
+      props.backgroundColor && props.activeLabel
+        ? props.backgroundColor
         : 'rgba(255,255,255,0)',
-    backgroundColor: currentActiveColor.value,
+    '--bk-active-color':
+      props.color && props.activeLabel
+        ? props.color
+        : 'rgba(255,255,255,0)',
   }
 })
 

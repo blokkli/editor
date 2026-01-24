@@ -1,6 +1,10 @@
 <template>
   <Teleport :to="ui.mainLayoutElement.value">
-    <slot :color="activeColorHex" :label="active?.label" />
+    <slot
+      :background-color="activeBackgroundColorHex"
+      :color="activeColor"
+      :label="active?.label"
+    />
   </Teleport>
 </template>
 
@@ -49,6 +53,28 @@ const props = defineProps<{
   isTouch: boolean
 }>()
 
+const {
+  dom,
+  ui,
+  theme,
+  dropAreas,
+  eventBus,
+  animation,
+  state,
+  types,
+  fields,
+  definitions,
+  context,
+} = useBlokkli()
+
+const FIELD_MIN_DRAW_SIZE = 6
+const alphaBase = 0.7
+
+const colorTeal = rgbaToString(theme.teal.value.normal)
+const colorTealAlpha = rgbaToString(theme.teal.value.normal, alphaBase)
+const colorAccent = rgbaToString(theme.accent.value[800])
+const colorAccentAlpha = rgbaToString(theme.accent.value[800], alphaBase)
+
 enum RectRenderType {
   DROP_AREA,
   FIELD_1,
@@ -82,6 +108,7 @@ type DrawnRect = Rectangle & {
   colorAlpha: string
   field?: FieldRect
   index: number
+  state?: number
 }
 
 const dragStart = Date.now()
@@ -97,20 +124,6 @@ const active = ref<DrawnRect | null>(null)
 defineEmits<{
   (e: 'drop', data: DropTargetEvent): void
 }>()
-
-const {
-  dom,
-  ui,
-  theme,
-  dropAreas,
-  eventBus,
-  animation,
-  state,
-  types,
-  fields,
-  definitions,
-  context,
-} = useBlokkli()
 
 const areas = dropAreas
   .getDropAreas(props.items)
@@ -662,6 +675,7 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
 
 const cachedDropAreaRects: Record<string, Rectangle> = {}
 
+
 const buildDropAreaRect = (area: DropArea): Rectangle => {
   if (cachedDropAreaRects[area.id]) {
     return cachedDropAreaRects[area.id]!
@@ -679,13 +693,6 @@ const buildDropAreaRect = (area: DropArea): Rectangle => {
   cachedDropAreaRects[area.id] = dropAreaRect
   return dropAreaRect
 }
-
-const alphaBase = 0.7
-
-const colorTeal = rgbaToString(theme.teal.value.normal)
-const colorTealAlpha = rgbaToString(theme.teal.value.normal, alphaBase)
-const colorAccent = rgbaToString(theme.accent.value[800])
-const colorAccentAlpha = rgbaToString(theme.accent.value[800], alphaBase)
 
 function getRectType(field: BlokkliFieldElement): RectRenderType {
   if (field.nestingLevel >= 3) {
@@ -734,6 +741,11 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
             width: child.width,
             height: child.height,
             field: fieldRect,
+            state: child.id.includes(':empty:')
+              ? 2
+              : fieldRect.orientation === 'vertical'
+                ? 1
+                : 0,
           },
           type,
           true,
@@ -764,6 +776,7 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
           y: areaRect.y,
           width: areaRect.width,
           height: areaRect.height,
+          state: 0,
         },
         RectRenderType.DROP_AREA,
         false,
@@ -822,28 +835,61 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
   }
 }
 
-const fieldColors = computed(() => {
+type FieldColorPalette = {
+  gradStart: RGB
+  gradEnd: RGB
+  borderOuter: RGB
+  borderInner: RGB
+  color: RGB
+}
+
+const fieldRenderPalette = computed<Record<'0' | '1' | '2' |'3',  FieldColorPalette>>(() => {
+  const accent = theme.accent.value
   return {
-    '0': theme.accent.value[950],
-    '1': theme.accent.value[500],
-    '2': theme.accent.value[600],
-    '3': theme.accent.value[500],
+    '0': {
+      gradStart: accent[800],
+      gradEnd: accent[900],
+      borderOuter: [0,0,0],
+      borderInner: accent[600],
+      color: [255, 255, 255],
+    },
+    '1': {
+      gradStart: accent[300],
+      gradEnd: accent[400],
+      borderOuter: accent[400],
+      borderInner: accent[100],
+      color: accent[950],
+    },
+    '2': {
+      gradStart: accent[700],
+      gradEnd: accent[800],
+      borderOuter: accent[900],
+      borderInner: accent[600],
+      color: accent[100],
+    },
+    '3': {
+      gradStart: accent[400],
+      gradEnd: accent[500],
+      borderOuter: accent[600],
+      borderInner: accent[300],
+      color: accent[100],
+    },
   }
 })
 
-function getColorForField(field?: FieldRect | null): RGB {
+function getColorForField(field?: FieldRect | null, property: keyof FieldColorPalette = 'gradStart'): RGB {
   const nestingLevel = field?.field.nestingLevel || 0
   if (nestingLevel >= 3) {
-    return fieldColors.value[3]
+    return fieldRenderPalette.value[3][property]
   } else if (nestingLevel >= 2) {
-    return fieldColors.value[2]
+    return fieldRenderPalette.value[2][property]
   } else if (nestingLevel >= 1) {
-    return fieldColors.value[1]
+    return fieldRenderPalette.value[1][property]
   }
-  return fieldColors.value[0]
+  return fieldRenderPalette.value[0][property]
 }
 
-const activeColorRgb = computed<RGB | undefined>(() => {
+const activeBackgroundColorRgb = computed<RGB | undefined>(() => {
   if (active.value?.type === 'drop-area') {
     return theme.teal.value.normal
   }
@@ -853,9 +899,23 @@ const activeColorRgb = computed<RGB | undefined>(() => {
   return getColorForField(active.value?.field)
 })
 
-const activeColorHex = computed<string>(() => {
-  if (activeColorRgb.value) {
-    return rgbaToString(activeColorRgb.value)
+function joinRgb(rgb: RGB): string {
+  return rgb.join(' ')
+}
+
+const activeColor = computed<string | undefined>(() => {
+  if (active.value?.type === 'drop-area') {
+    return joinRgb(theme.teal.value.light)
+  }
+  if (!active.value) {
+    return
+  }
+  return joinRgb(getColorForField(active.value?.field, 'color'))
+})
+
+const activeBackgroundColorHex = computed<string>(() => {
+  if (activeBackgroundColorRgb.value) {
+    return joinRgb(activeBackgroundColorRgb.value)
   }
   return ''
 })
@@ -900,28 +960,54 @@ const activeHoverFieldNestingLevel = computed<number>(() => {
   return activeHoverField.value?.field.nestingLevel ?? 0
 })
 
-const uniforms = computed<
-  Record<
-    string,
-    | RGB
-    | string
-    | boolean
-    | undefined
-    | number
-    | [number, number, number, number]
-  >
->(() => {
+type UniformValue =
+  | RGB
+  | string
+  | boolean
+  | undefined
+  | number
+  | [number, number, number, number]
+  | number[]
+
+const uniforms = computed<Record<string, UniformValue>>(() => {
   const index = active.value?.index
   return {
-    u_color_field_0: toShaderColor(fieldColors.value[0]),
-    u_color_field_1: toShaderColor(fieldColors.value[1]),
-    u_color_field_2: toShaderColor(fieldColors.value[2]),
-    u_color_field_3: toShaderColor(fieldColors.value[3]),
     u_color_hover_area: toShaderColor(activeHoverColor.value),
     u_color_area: toShaderColor(theme.teal.value.normal),
+    u_drop_area: [
+      ...toShaderColor(theme.teal.value.light),
+      ...toShaderColor(theme.teal.value.normal),
+      ...toShaderColor(theme.teal.value.dark),
+      ...toShaderColor(theme.teal.value.light),
+    ],
+    u_field_0: [
+      ...toShaderColor(fieldRenderPalette.value[0].gradStart),
+      ...toShaderColor(fieldRenderPalette.value[0].gradEnd),
+      ...toShaderColor(fieldRenderPalette.value[0].borderOuter),
+      ...toShaderColor(fieldRenderPalette.value[0].borderInner),
+    ],
+    u_field_1: [
+      ...toShaderColor(fieldRenderPalette.value[1].gradStart),
+      ...toShaderColor(fieldRenderPalette.value[1].gradEnd),
+      ...toShaderColor(fieldRenderPalette.value[1].borderOuter),
+      ...toShaderColor(fieldRenderPalette.value[1].borderInner),
+    ],
+    u_field_2: [
+      ...toShaderColor(fieldRenderPalette.value[2].gradStart),
+      ...toShaderColor(fieldRenderPalette.value[2].gradEnd),
+      ...toShaderColor(fieldRenderPalette.value[2].borderOuter),
+      ...toShaderColor(fieldRenderPalette.value[2].borderInner),
+    ],
+    u_field_3: [
+      ...toShaderColor(fieldRenderPalette.value[3].gradStart),
+      ...toShaderColor(fieldRenderPalette.value[3].gradEnd),
+      ...toShaderColor(fieldRenderPalette.value[3].borderOuter),
+      ...toShaderColor(fieldRenderPalette.value[3].borderInner),
+    ],
     u_active_rect_id: index === undefined ? -1 : index,
     u_active_hover_rect: activeHoverRect.value,
     u_active_hover_nesting_level: activeHoverFieldNestingLevel.value,
+    u_field_min_size: FIELD_MIN_DRAW_SIZE,
   }
 })
 
@@ -1004,6 +1090,7 @@ const { collector } = defineRenderer('drop-targets', {
         y: 0,
         width: ui.artboardSize.value.width,
         height: ui.artboardSize.value.height,
+        state: 0,
       },
       RectRenderType.ACTIVE_AREA,
       false,
@@ -1101,17 +1188,39 @@ const { collector } = defineRenderer('drop-targets', {
       if (rect.id === 'active-hover-rect') {
         continue
       }
+      const isActive = active.value?.id === rect.id
+      let drawX = rect.x
+      let drawY = rect.y
+      let drawWidth = rect.width
+      let drawHeight = rect.height
+
+      if (!isActive && rect.type === 'field') {
+        const isVertical =
+          rect.id.includes(':empty:') || rect.field?.orientation === 'vertical'
+        if (isVertical) {
+          drawHeight = Math.min(FIELD_MIN_DRAW_SIZE, rect.height)
+          drawY = rect.y + (rect.height - drawHeight) / 2
+        } else {
+          drawWidth = Math.min(FIELD_MIN_DRAW_SIZE, rect.width)
+          drawX = rect.x + (rect.width - drawWidth) / 2
+        }
+      }
+      const isField = rect.type === 'field'
       if (active.value?.id === rect.id) {
-        ctx2d.fillStyle = rect.color
+        ctx2d.fillStyle = isField
+          ? rgbaToString(getColorForField(rect.field))
+          : rect.color
       } else {
-        ctx2d.fillStyle = rect.colorAlpha
+        ctx2d.fillStyle = isField
+          ? rgbaToString(getColorForField(rect.field), 0.7)
+          : rect.colorAlpha
       }
 
       ctx2d.fillRect(
-        (rect.x * scale + offset.x) * ctx.dpi,
-        (rect.y * scale + offset.y) * ctx.dpi,
-        rect.width * ctx.dpi * scale,
-        rect.height * ctx.dpi * scale,
+        (drawX * scale + offset.x) * ctx.dpi,
+        (drawY * scale + offset.y) * ctx.dpi,
+        drawWidth * ctx.dpi * scale,
+        drawHeight * ctx.dpi * scale,
       )
     }
   },

@@ -22,7 +22,7 @@
       content: '';
       @apply absolute top-0 left-0 w-full h-full z-50;
       outline: calc((5 / var(--bk-dragging-scale)) * 1px) solid
-        var(--bk-active-color);
+        rgb(var(--bk-active-background-color));
       outline-offset: 0px;
       border-radius: inherit;
     }
@@ -93,12 +93,14 @@
 }
 
 .bk.bk-dragging-overlay-label {
-  @apply fixed top-0 left-0 rounded-lg text-white;
+  @apply fixed top-0 left-0 rounded-lg;
   @apply p-8 whitespace-nowrap;
   @apply shadow;
-  @apply flex items-center gap-5 font-sans text-base;
+  @apply flex items-center gap-5 font-sans text-sm;
   @apply z-dragging-overlay;
   will-change: transform, contents, opacity;
+  @apply bg-mono-800 text-mono-300;
+  @apply outline outline-mono-700;
 
   > p {
     @apply inline-flex items-center gap-8;
@@ -110,20 +112,19 @@
     @apply truncate min-w-0 max-w-70;
 
     &:nth-last-child(2) {
-      @apply font-bold max-w-none;
+      @apply font-bold max-w-none text-mono-50;
     }
   }
 
   span.bk-is-field {
     @apply uppercase text-xs tracking-wide min-w-0;
-    @apply bg-white/10 rounded-md px-[8px] pt-[4px] pb-2;
-    @apply text-white;
-    @apply border border-white/40;
+    @apply rounded-md px-[8px] pt-[4px] pb-2;
+    @apply bg-mono-700;
+    @apply border border-mono-600;
     @apply font-bold;
 
     &:last-child {
-      @apply bg-white;
-      color: var(--bk-active-color);
+      @apply bg-mono-50 border-mono-100 text-mono-800;
     }
   }
 

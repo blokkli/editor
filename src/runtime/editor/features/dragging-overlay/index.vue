@@ -1,7 +1,7 @@
 <template>
   <Renderer
     v-if="dragItems.length && isVisible"
-    v-slot="{ color, label }"
+    v-slot="{ backgroundColor, color, label }"
     :items="dragItems"
     :box="box"
     :mouse-x="mouseX"
@@ -15,7 +15,8 @@
       :start-coords="startCoords"
       :items="dragItems"
       :is-touch="isTouching"
-      :active-color="color"
+      :background-color
+      :color
       :active-label="label"
     />
   </Renderer>
