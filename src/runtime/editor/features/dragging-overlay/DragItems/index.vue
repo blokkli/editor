@@ -69,6 +69,9 @@ const props = defineProps<{
   activeLabel?: string
 }>()
 
+const MAX_WIDTH = 350
+const MAX_HEIGHT = 150
+
 const labelEl = useTemplateRef('labelEl')
 
 const labelWidth = ref(0)
@@ -193,13 +196,20 @@ function getDraggingBounds(
   mouse: Coord,
   rect: Rectangle,
   maxWidth: number,
+  maxHeight: number,
 ): Rectangle {
-  // The aspect ratio of the original rectangle.
-  const aspectRatio = rect.width / rect.height
-
-  // Apply maxWidth constraint to the rectangle's width and adjust height proportionally.
-  const effectiveWidth = Math.min(rect.width, maxWidth)
-  const effectiveHeight = effectiveWidth / aspectRatio
+  const widthScale = rect.width > 0 ? maxWidth / rect.width : 1
+  const heightScale = rect.height > 0 ? maxHeight / rect.height : 1
+  const scale = Math.min(widthScale, heightScale, 1)
+  let effectiveWidth = rect.width * scale
+  let effectiveHeight = rect.height * scale
+  if (
+    Math.abs(rect.width - effectiveWidth) < 10 ||
+    Math.abs(rect.height - effectiveHeight) < 10
+  ) {
+    effectiveWidth = rect.width
+    effectiveHeight = rect.height
+  }
 
   // Calculate the relative position of the drag start within the original rectangle.
   const relativeX = mouse.x - rect.x
@@ -271,8 +281,8 @@ onMounted(() => {
   const bounds = getDraggingBounds(
     props.startCoords,
     boundRect.rect,
-    // Limit width to 250px
-    351,
+    MAX_WIDTH,
+    MAX_HEIGHT,
   )
   const boundsX = props.isTouch ? 0 : bounds.x
   const boundsY = props.isTouch ? translateY.value : bounds.y
