@@ -8,6 +8,7 @@
     :data-item-bundle="targetBundles[0]"
     :data-media-id="mediaId"
     :data-media-bundle="mediaBundle"
+    @click="onClick"
   >
     <div class="bk-media-library-items-item-box">
       <label @click.stop>
@@ -39,9 +40,27 @@ const props = defineProps<{
   isDisabled?: boolean
 }>()
 
-const selected = defineModel<string[]>()
+const selected = defineModel<string[]>({
+  default: () => {
+    return []
+  }
+})
 
 const isSelected = computed(() => selected.value?.includes(props.mediaId))
+
+function onClick(e: MouseEvent) {
+  if (e.ctrlKey) {
+    e.stopPropagation()
+    e.preventDefault()
+
+    if (isSelected.value) {
+      selected.value = selected.value.filter(v => v !== props.mediaId)
+    }
+    else {
+      selected.value.push(props.mediaId)
+   }
+  }
+}
 
 // @TODO: Shift-click to select all media items inbetween.
 </script>
