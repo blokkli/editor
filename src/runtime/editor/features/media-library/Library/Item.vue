@@ -43,7 +43,7 @@ const props = defineProps<{
 const selected = defineModel<string[]>({
   default: () => {
     return []
-  }
+  },
 })
 
 const isSelected = computed(() => selected.value?.includes(props.mediaId))
@@ -54,11 +54,10 @@ function onClick(e: MouseEvent) {
     e.preventDefault()
 
     if (isSelected.value) {
-      selected.value = selected.value.filter(v => v !== props.mediaId)
-    }
-    else {
+      selected.value = selected.value.filter((v) => v !== props.mediaId)
+    } else {
       selected.value.push(props.mediaId)
-   }
+    }
   }
 }
 

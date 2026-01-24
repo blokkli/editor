@@ -15,7 +15,10 @@
 </template>
 
 <script setup lang="ts">
-import { fragmentBlockBundle, fromLibraryBlockBundle } from '#blokkli-build/config';
+import {
+  fragmentBlockBundle,
+  fromLibraryBlockBundle,
+} from '#blokkli-build/config'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { ItemIcon, Icon } from '#blokkli/editor/components'
 import { computed } from '#imports'

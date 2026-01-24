@@ -40,7 +40,10 @@ import { getFieldKey } from '#blokkli/helpers'
 import { itemEntityType } from '#blokkli-build/config'
 import { defineCommands } from '#blokkli/editor/composables'
 import type { Command } from '../../command-palette/types'
-import type { BlockBundleDefinition, FieldConfig } from '#blokkli/editor/types/definitions'
+import type {
+  BlockBundleDefinition,
+  FieldConfig,
+} from '#blokkli/editor/types/definitions'
 import type { DraggableNewItem } from '../types'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 

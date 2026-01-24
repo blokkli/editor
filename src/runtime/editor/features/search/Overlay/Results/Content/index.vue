@@ -55,7 +55,10 @@
 import { ref, watch, useBlokkli, onMounted, useTemplateRef } from '#imports'
 import { ItemIcon, Icon, Sortli } from '#blokkli/editor/components'
 import { modulo } from '#blokkli/editor/helpers/math'
-import type { DraggableSearchContentItem, SearchContentItem } from '../../../types';
+import type {
+  DraggableSearchContentItem,
+  SearchContentItem,
+} from '../../../types'
 
 const listItems = useTemplateRef('listItems')
 

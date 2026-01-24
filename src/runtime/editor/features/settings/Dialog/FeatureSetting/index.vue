@@ -61,7 +61,7 @@
 import { Icon, FormToggle } from '#blokkli/editor/components'
 import type { ValidFeatureKey } from '#blokkli-build/features'
 import { useBlokkli, computed } from '#imports'
-import type { FeatureDefinitionSetting } from '#blokkli/editor/types/features';
+import type { FeatureDefinitionSetting } from '#blokkli/editor/types/features'
 
 const props = defineProps<{
   featureId: ValidFeatureKey

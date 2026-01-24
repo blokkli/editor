@@ -30,7 +30,11 @@ import {
   watch,
 } from '#imports'
 import { itemEntityType } from '#blokkli-build/config'
-import { defineItemDropdownAction, onBlokkliEvent, useStateBasedCache } from '#blokkli/editor/composables'
+import {
+  defineItemDropdownAction,
+  onBlokkliEvent,
+  useStateBasedCache,
+} from '#blokkli/editor/composables'
 import type { Rectangle } from '#blokkli/editor/types/geometry'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 

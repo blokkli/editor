@@ -102,7 +102,7 @@
 
 <script setup lang="ts">
 import { computed, useBlokkli } from '#imports'
-import type { FieldListItem, } from '#blokkli/types'
+import type { FieldListItem } from '#blokkli/types'
 import { ItemIcon, FormRadioTabs } from '#blokkli/editor/components'
 import diff from 'html-diff-ts'
 import type { ThemeColorName } from './../../../../global/types/theme'

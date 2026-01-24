@@ -13,7 +13,7 @@
 import { computed, useBlokkli } from '#imports'
 import { Sortli } from '#blokkli/editor/components'
 import ActionButton from './Action.vue'
-import type { DraggableActionItem } from '../types';
+import type { DraggableActionItem } from '../types'
 
 defineProps<{
   selectableBundles: string[]

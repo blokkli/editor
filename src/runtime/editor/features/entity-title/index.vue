@@ -121,13 +121,13 @@ const tourText = computed(() => {
   )
 
   return `
-${intro}
-<ul>
-<li><div class="bk-status-indicator"></div>${statusUnpublished.value}</li>
-<li><div class="bk-status-indicator bk-is-warning"></div>${statusPending.value}</li>
-<li><div class="bk-status-indicator bk-is-success"></div>${statusPublished.value}</li>
-</ul>
-`
+  ${intro}
+  <ul>
+  <li><div class="bk-status-indicator"></div>${statusUnpublished.value}</li>
+  <li><div class="bk-status-indicator bk-is-warning"></div>${statusPending.value}</li>
+  <li><div class="bk-status-indicator bk-is-success"></div>${statusPublished.value}</li>
+  </ul>
+  `
 })
 
 defineTourItem(() => {

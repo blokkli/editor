@@ -64,9 +64,9 @@ import {
   FormItem,
   FormSelect,
   ConfigForm,
-  Loading
+  Loading,
 } from '#blokkli/editor/components'
-import type { BlokkliFieldElement } from '#blokkli/editor/types/field';
+import type { BlokkliFieldElement } from '#blokkli/editor/types/field'
 import {
   ref,
   useBlokkli,
@@ -75,7 +75,10 @@ import {
   watch,
   reactive,
 } from '#imports'
-import type { BlokkliAdapterGetLibraryItemsData, BlokkliAdapterGetLibraryItemsResult } from '../types';
+import type {
+  BlokkliAdapterGetLibraryItemsData,
+  BlokkliAdapterGetLibraryItemsResult,
+} from '../types'
 import LibraryListItem from './Item/index.vue'
 
 const props = defineProps<{

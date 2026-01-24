@@ -58,9 +58,7 @@ import type { BlokkliFragmentName } from '#blokkli-build/definitions'
 import { isVisibleByOptions } from '#blokkli/helpers/runtimeHelpers'
 import BlokkliItem from './BlokkliItem.vue'
 
-import type {
-  FieldListItem,
-} from '#blokkli/types'
+import type { FieldListItem } from '#blokkli/types'
 import type {
   ValidFieldListTypes,
   FieldListItemTyped,

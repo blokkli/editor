@@ -67,10 +67,7 @@ import {
   watch,
   useTemplateRef,
 } from '#imports'
-import type {
-  FieldListItem,
-  EntityContext,
-} from '#blokkli/types'
+import type { FieldListItem, EntityContext } from '#blokkli/types'
 import type { BlokkliFragmentName } from '#blokkli-build/definitions'
 import BlokkliItem from './../../components/BlokkliItem.vue'
 import { isVisibleByOptions } from '#blokkli/helpers/runtimeHelpers'

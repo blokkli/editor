@@ -56,7 +56,11 @@
 
 <script setup lang="ts">
 import { useBlokkli, computed } from '#imports'
-import { DialogModal, Icon, BlokkliTransition } from '#blokkli/editor/components'
+import {
+  DialogModal,
+  Icon,
+  BlokkliTransition,
+} from '#blokkli/editor/components'
 
 const { $t, storage, animation } = useBlokkli()
 

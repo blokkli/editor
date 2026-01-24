@@ -155,7 +155,7 @@ type SearchResultsComponent = NonNullable<
   NonNullable<typeof searchComponents.value>[number]
 >
 
-const getResultsComponent = (): SearchResultsComponent | undefined |null => {
+const getResultsComponent = (): SearchResultsComponent | undefined | null => {
   return searchComponents.value?.find((v) => v?.isActive())
 }
 

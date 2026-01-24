@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import { FormToggle } from '#blokkli/editor/components'
-import type { PluginConfigInputCheckbox } from '#blokkli/editor/types/pluginConfig';
+import type { PluginConfigInputCheckbox } from '#blokkli/editor/types/pluginConfig'
 
 defineProps<PluginConfigInputCheckbox>()
 

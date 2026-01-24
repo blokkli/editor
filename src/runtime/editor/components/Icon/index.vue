@@ -24,12 +24,14 @@ const props = defineProps<{
 
 const app = useBlokkli(true)
 
-const iconMarkup = computed<string|null>(() => app?.icons.icons.value[props.name] ?? '')
+const iconMarkup = computed<string | null>(
+  () => app?.icons.icons.value[props.name] ?? '',
+)
 
-const markup = computed<string|null>(() =>
-  iconMarkup.value ? (iconMarkup.value)
-    .replace('width="48"', '')
-    .replace('height="48"', '') : null,
+const markup = computed<string | null>(() =>
+  iconMarkup.value
+    ? iconMarkup.value.replace('width="48"', '').replace('height="48"', '')
+    : null,
 )
 </script>
 

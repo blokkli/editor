@@ -23,7 +23,10 @@ import {
 } from '#imports'
 import { BlokkliTransition } from '#blokkli/editor/components'
 import TransformDialog from './Dialog/index.vue'
-import { defineCommands, defineItemDropdownAction } from '#blokkli/editor/composables'
+import {
+  defineCommands,
+  defineItemDropdownAction,
+} from '#blokkli/editor/composables'
 import type { HostTransformPlugin, TransformPlugin } from './types'
 import type { PluginConfigInputItem } from '#blokkli/editor/types/pluginConfig'
 

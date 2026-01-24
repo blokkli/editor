@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import { useBlokkli, useTemplateRef } from '#imports'
-import { falsy, } from '#blokkli/helpers'
+import { falsy } from '#blokkli/helpers'
 import { intersects } from '#blokkli/editor/helpers/geometry'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
@@ -62,7 +62,7 @@ onBlokkliEvent('canvas:draw', (e) => {
   const blockRects = dom.getBlockRects()
   const viewport = ui.visibleViewport.value
 
-  const rects = Object.values(blockRects).filter(v => v !== undefined)
+  const rects = Object.values(blockRects).filter((v) => v !== undefined)
   drawRects(ctx, rects, e.artboardScale, e.artboardOffset, viewport)
 
   ctx.strokeStyle = 'red'

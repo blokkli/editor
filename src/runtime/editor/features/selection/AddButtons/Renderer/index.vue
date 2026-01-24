@@ -430,9 +430,7 @@ function adjustEmptyFieldButtonPosition(
   const distToBefore = Math.sqrt(
     (fieldX - beforeX) ** 2 + (fieldY - beforeY) ** 2,
   )
-  const distToAfter = Math.sqrt(
-    (fieldX - afterX) ** 2 + (fieldY - afterY) ** 2,
-  )
+  const distToAfter = Math.sqrt((fieldX - afterX) ** 2 + (fieldY - afterY) ** 2)
 
   // If too close to either button, reposition to block center
   if (distToBefore < minDistanceArtboard || distToAfter < minDistanceArtboard) {
@@ -499,7 +497,10 @@ const { collector } = defineRenderer('add-buttons', {
   program: () => ({ shaders: [vs, fs] }),
   enabled: () => {
     // Show when exactly one block is selected OR when host is selected
-    if (selection.uuids.value.length !== 1 && !selection.hasHostSelected.value) {
+    if (
+      selection.uuids.value.length !== 1 &&
+      !selection.hasHostSelected.value
+    ) {
       return false
     }
     if (ui.openTooltip.value && ui.openTooltip.value !== 'add-buttons') {
@@ -513,7 +514,10 @@ const { collector } = defineRenderer('add-buttons', {
   cursor: () => (hoveredCircle.value >= 0 ? 'pointer' : null),
   onClick: ({ mouseArtboard }) => {
     // Handle clicks when exactly one block is selected OR when host is selected
-    if (selection.uuids.value.length !== 1 && !selection.hasHostSelected.value) {
+    if (
+      selection.uuids.value.length !== 1 &&
+      !selection.hasHostSelected.value
+    ) {
       return false
     }
 
@@ -624,7 +628,8 @@ const { collector } = defineRenderer('add-buttons', {
       // Update tooltip data
       currentUuid.value = uuid
       currentBundleLabel.value = blockState.bundleLabel
-      currentSingleAllowedBundleLabel.value = blockState.singleAllowedBundleLabel
+      currentSingleAllowedBundleLabel.value =
+        blockState.singleAllowedBundleLabel
     }
 
     // Determine which empty field keys and tooltips to use
@@ -770,7 +775,8 @@ const { collector } = defineRenderer('add-buttons', {
       // Update tooltip data
       currentUuid.value = uuid
       currentBundleLabel.value = blockState.bundleLabel
-      currentSingleAllowedBundleLabel.value = blockState.singleAllowedBundleLabel
+      currentSingleAllowedBundleLabel.value =
+        blockState.singleAllowedBundleLabel
     }
 
     // Determine which empty field keys and tooltips to use

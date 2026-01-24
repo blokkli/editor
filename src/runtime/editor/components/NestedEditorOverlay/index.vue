@@ -9,7 +9,7 @@
         </h2>
         <button @click.prevent="closeOverlay">
           <Icon name="bk_mdi_arrow_left_alt" />
-          <span>{{ $t("libraryItemEditOverlayBack", "Back to page") }}</span>
+          <span>{{ $t('libraryItemEditOverlayBack', 'Back to page') }}</span>
         </button>
       </header>
     </Transition>
@@ -35,85 +35,85 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, useTemplateRef } from "#imports";
-import { Icon, Loading } from "#blokkli/editor/components";
-import { onBroadcastEvent } from "#blokkli/editor/composables";
+import { ref, useBlokkli, useTemplateRef } from '#imports'
+import { Icon, Loading } from '#blokkli/editor/components'
+import { onBroadcastEvent } from '#blokkli/editor/composables'
 
 export type NestedEditorOverlayProps = {
-  url: string;
-  uuid: string;
-  title: string;
-  blockUuid?: string;
-  element?: HTMLElement | null;
-  label?: string;
-};
+  url: string
+  uuid: string
+  title: string
+  blockUuid?: string
+  element?: HTMLElement | null
+  label?: string
+}
 
-const props = defineProps<NestedEditorOverlayProps>();
+const props = defineProps<NestedEditorOverlayProps>()
 
-const { $t, ui, dom, blocks } = useBlokkli();
-const DURATION = 530;
-const emit = defineEmits(["submit", "close"]);
+const { $t, ui, dom, blocks } = useBlokkli()
+const DURATION = 530
+const emit = defineEmits(['submit', 'close'])
 
 function getOriginatingElement(): HTMLElement | null {
   if (props.element) {
-    return props.element;
+    return props.element
   }
   if (props.blockUuid) {
-    const block = blocks.getBlock(props.blockUuid);
+    const block = blocks.getBlock(props.blockUuid)
     if (block) {
-      return dom.getDragElement(block) ?? null;
+      return dom.getDragElement(block) ?? null
     }
   }
 
-  return null;
+  return null
 }
 
 // called one frame after the element is inserted.
 // use this to start the entering animation.
 function onEnter(el: Element, done: () => void) {
   if (el instanceof HTMLElement) {
-    const originating = getOriginatingElement();
-    console.log(originating);
+    const originating = getOriginatingElement()
+    console.log(originating)
     if (!originating) {
-      done();
-      isLoading.value = false;
-      return;
+      done()
+      isLoading.value = false
+      return
     }
 
-    const originatingRect = originating.getBoundingClientRect();
-    const overlayRect = el.getBoundingClientRect();
+    const originatingRect = originating.getBoundingClientRect()
+    const overlayRect = el.getBoundingClientRect()
 
     const offsetX =
-      originatingRect.x - overlayRect.x + originatingRect.width / 2;
+      originatingRect.x - overlayRect.x + originatingRect.width / 2
     const offsetY =
-      originatingRect.y - overlayRect.y + originatingRect.height / 2;
+      originatingRect.y - overlayRect.y + originatingRect.height / 2
 
-    el.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(0, 0)`;
-
-    setTimeout(() => {
-      el.style.transitionDuration = DURATION + "ms";
-      el.style.transitionTimingFunction = "cubic-bezier(0.56, 0.04, 0.25, 1)";
-      el.style.transitionProperty = "transform";
-      el.style.transformOrigin = "0px 0px";
-      el.style.transform = "translate(0px, 0px)";
-    }, 10);
+    el.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(0, 0)`
 
     setTimeout(() => {
-      done();
-      isLoading.value = false;
-    }, DURATION);
+      el.style.transitionDuration = DURATION + 'ms'
+      el.style.transitionTimingFunction = 'cubic-bezier(0.56, 0.04, 0.25, 1)'
+      el.style.transitionProperty = 'transform'
+      el.style.transformOrigin = '0px 0px'
+      el.style.transform = 'translate(0px, 0px)'
+    }, 10)
+
+    setTimeout(() => {
+      done()
+      isLoading.value = false
+    }, DURATION)
   }
 }
 
 // called when the enter transition has finished.
 function onAfter(el: Element) {
   if (el instanceof HTMLElement) {
-    el.style.transform = "";
-    el.style.transitionDuration = "";
-    el.style.opacity = "";
-    el.style.transitionProperty = "";
-    el.style.transitionTimingFunction = "";
-    el.style.transformOrigin = "";
+    el.style.transform = ''
+    el.style.transitionDuration = ''
+    el.style.opacity = ''
+    el.style.transitionProperty = ''
+    el.style.transitionTimingFunction = ''
+    el.style.transformOrigin = ''
   }
 }
 
@@ -121,91 +121,91 @@ function onAfter(el: Element) {
 // use this to start the leaving animation.
 function onLeave(el: Element, done: () => void) {
   if (el instanceof HTMLElement) {
-    const originating = getOriginatingElement();
+    const originating = getOriginatingElement()
     if (!originating) {
-      done();
-      return;
+      done()
+      return
     }
 
-    const originatingRect = originating.getBoundingClientRect();
-    const overlayRect = el.getBoundingClientRect();
+    const originatingRect = originating.getBoundingClientRect()
+    const overlayRect = el.getBoundingClientRect()
 
     const offsetX =
-      originatingRect.x - overlayRect.x + originatingRect.width / 2;
+      originatingRect.x - overlayRect.x + originatingRect.width / 2
     const offsetY =
-      originatingRect.y - overlayRect.y + originatingRect.height / 2;
+      originatingRect.y - overlayRect.y + originatingRect.height / 2
 
-    el.style.transform = "translate(0px, 0px)";
-
-    setTimeout(() => {
-      el.style.transitionDuration = DURATION + "ms";
-      el.style.transitionTimingFunction = "cubic-bezier(0.56, 0.04, 0.25, 1)";
-      el.style.transitionProperty = "transform";
-      el.style.transformOrigin = "0px 0px";
-      el.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(0, 0)`;
-    }, 10);
+    el.style.transform = 'translate(0px, 0px)'
 
     setTimeout(() => {
-      done();
-    }, DURATION);
+      el.style.transitionDuration = DURATION + 'ms'
+      el.style.transitionTimingFunction = 'cubic-bezier(0.56, 0.04, 0.25, 1)'
+      el.style.transitionProperty = 'transform'
+      el.style.transformOrigin = '0px 0px'
+      el.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(0, 0)`
+    }, 10)
+
+    setTimeout(() => {
+      done()
+    }, DURATION)
   }
 }
 
 function onAfterLeave(el: Element) {
-  onAfter(el);
+  onAfter(el)
   if (hasPublished.value) {
-    emit("submit");
+    emit('submit')
   } else {
-    emit("close");
+    emit('close')
   }
 }
 
-const iframe = useTemplateRef("iframe");
-const isLoaded = ref(false);
-const isLoading = ref(true);
-const hasPublished = ref(false);
-let timeout: any = null;
+const iframe = useTemplateRef('iframe')
+const isLoaded = ref(false)
+const isLoading = ref(true)
+const hasPublished = ref(false)
+let timeout: any = null
 
 function onPublished({ uuid }: { uuid: string }) {
   if (props.uuid === uuid) {
-    hasPublished.value = true;
-    isLoaded.value = false;
+    hasPublished.value = true
+    isLoaded.value = false
   }
 }
 
 function onLoad() {
-  clearTimeout(timeout);
+  clearTimeout(timeout)
 
   timeout = window.setTimeout(() => {
-    isLoaded.value = true;
-  }, 3000);
+    isLoaded.value = true
+  }, 3000)
   if (!iframe.value) {
-    return;
+    return
   }
 
-  iframe.value.focus();
+  iframe.value.focus()
 
-  iframe.value.contentWindow?.focus();
+  iframe.value.contentWindow?.focus()
 }
 
 function closeOverlay() {
-  hasPublished.value = false;
-  isLoaded.value = false;
+  hasPublished.value = false
+  isLoaded.value = false
 }
 
 function onClosed({ uuid }: { uuid: string }) {
   if (props.uuid === uuid) {
-    closeOverlay();
+    closeOverlay()
   }
 }
 
 function onEditorLoaded({ uuid }: { uuid: string }) {
   if (props.uuid === uuid) {
-    isLoaded.value = true;
+    isLoaded.value = true
   }
 }
 
-onBroadcastEvent("published", onPublished);
-onBroadcastEvent("closeEditor", onClosed);
-onBroadcastEvent("editorLoaded", onEditorLoaded);
+onBroadcastEvent('published', onPublished)
+onBroadcastEvent('closeEditor', onClosed)
+onBroadcastEvent('editorLoaded', onEditorLoaded)
 </script>

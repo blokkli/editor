@@ -19,12 +19,11 @@
 
 <script setup lang="ts">
 import { computed } from '#imports'
-import type { ClipboardItemFile } from '../../types';
+import type { ClipboardItemFile } from '../../types'
 
 const props = defineProps<ClipboardItemFile>()
 
 function prng(seed: number) {
-
   seed = (seed ^ 0x6d2b79f5) + (seed << 1)
   seed = seed ^ (seed >> 15)
   seed = seed + (seed << 4)

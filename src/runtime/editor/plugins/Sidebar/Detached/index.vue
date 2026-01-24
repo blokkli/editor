@@ -76,7 +76,11 @@ import {
   useState,
   useTemplateRef,
 } from '#imports'
-import { Icon, ViewportBlockingRect, ScrollBoundary } from '#blokkli/editor/components'
+import {
+  Icon,
+  ViewportBlockingRect,
+  ScrollBoundary,
+} from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { SidebarRegion } from '#blokkli/editor/types/ui'
 import { addElementClasses, onBlokkliEvent } from '#blokkli/editor/composables'

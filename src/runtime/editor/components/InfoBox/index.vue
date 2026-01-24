@@ -22,7 +22,7 @@ withDefaults(
   {
     text: undefined,
     icon: 'bk_mdi_info-fill',
-    color: 'yellow'
+    color: 'yellow',
   },
 )
 </script>

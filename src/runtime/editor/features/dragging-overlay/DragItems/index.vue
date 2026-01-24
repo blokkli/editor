@@ -33,7 +33,7 @@ import {
 } from '#imports'
 import { falsy } from '#blokkli/helpers'
 import { realBackgroundColor } from '#blokkli/editor/helpers/dom'
-import { isInsideRect} from '#blokkli/editor/helpers/geometry'
+import { isInsideRect } from '#blokkli/editor/helpers/geometry'
 import { Icon } from '#blokkli/editor/components'
 import DragItem, { type DragItemData } from './DragItem.vue'
 import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
@@ -145,10 +145,8 @@ const style = computed(() => {
       props.backgroundColor && props.activeLabel
         ? props.backgroundColor
         : 'rgba(255,255,255,0)',
-'--bk-active-color':
-      props.color && props.activeLabel
-        ? props.color
-        : 'rgba(255,255,255,0)',
+    '--bk-active-color':
+      props.color && props.activeLabel ? props.color : 'rgba(255,255,255,0)',
   }
 })
 
@@ -165,9 +163,7 @@ const styleLabel = computed(() => {
         ? props.backgroundColor
         : 'rgba(255,255,255,0)',
     '--bk-active-color':
-      props.color && props.activeLabel
-        ? props.color
-        : 'rgba(255,255,255,0)',
+      props.color && props.activeLabel ? props.color : 'rgba(255,255,255,0)',
   }
 })
 

@@ -89,7 +89,10 @@ import EditActionsItemDropdown from './ItemDropdown.vue'
 import type { FragmentDefinition } from '#blokkli-build/definitions'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { onBlokkliEvent, useStickyToolbar } from '#blokkli/editor/composables'
-import { fragmentBlockBundle, fromLibraryBlockBundle } from '#blokkli-build/config'
+import {
+  fragmentBlockBundle,
+  fromLibraryBlockBundle,
+} from '#blokkli-build/config'
 
 const { selection, $t, types, state, ui, definitions, debug } = useBlokkli()
 

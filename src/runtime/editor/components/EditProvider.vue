@@ -123,7 +123,10 @@ import type { AdapterContext } from '#blokkli/editor/adapter'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { allComponents } from '#blokkli-build/chunk-editing'
 import { falsy } from '#blokkli/helpers'
-import { addElementClasses, useBlockRegistration } from '#blokkli/editor/composables'
+import {
+  addElementClasses,
+  useBlockRegistration,
+} from '#blokkli/editor/composables'
 import type { BlokkliApp } from '../types/app'
 import type { EditPermission } from '#blokkli/types/provider'
 
@@ -212,7 +215,14 @@ const theme = themeProvider(element)
 const blocks = blocksProvider(state, dom, context)
 const selection = selectionProvider(blocks)
 const keyboard = keyboardProvider(eventBus)
-const animation = animationProvider(eventBus, ui, storage, selection, debug, keyboard)
+const animation = animationProvider(
+  eventBus,
+  ui,
+  storage,
+  selection,
+  debug,
+  keyboard,
+)
 const types = await typesProvider(adapter, selection, context)
 const indicators = indicatorsProvider()
 const directive = directiveProvider(debug, ui)

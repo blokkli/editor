@@ -37,7 +37,10 @@ import {
 } from '../helpers/injections'
 import type { BlockBundleWithNested } from '#blokkli-build/generated-types'
 import { fragmentBlockBundle, itemEntityType } from '#blokkli-build/config'
-import type { BlockEditContext, InjectedBlokkliItem } from '#blokkli/types/field'
+import type {
+  BlockEditContext,
+  InjectedBlokkliItem,
+} from '#blokkli/types/field'
 
 const componentProps = withDefaults(
   defineProps<{
@@ -87,7 +90,9 @@ const itemProps = computed<Record<string, string>>(() => {
 
 const component =
   isProxyMode || isGlobalProxyMode?.value
-    ? defineAsyncComponent(() => import('./../editor/components/BlockProxy/index.vue'))
+    ? defineAsyncComponent(
+        () => import('./../editor/components/BlockProxy/index.vue'),
+      )
     : getComponent(
         'block',
         componentProps.bundle,

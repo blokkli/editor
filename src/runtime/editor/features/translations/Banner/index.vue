@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import { Banner } from '#blokkli/editor/components'
-import type { Language } from '#blokkli/editor/types/state';
+import type { Language } from '#blokkli/editor/types/state'
 
 const props = defineProps<{
   activeLanguage: Language

@@ -48,14 +48,28 @@ import Renderer from './Renderer/index.vue'
 import { itemEntityType } from '#blokkli-build/config'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type { AddAction } from '#blokkli/editor/types/actions'
-import type { BlokkliFieldElement, BlokkliItemHost, RenderedFieldListItem } from '#blokkli/editor/types/field'
+import type {
+  BlokkliFieldElement,
+  BlokkliItemHost,
+  RenderedFieldListItem,
+} from '#blokkli/editor/types/field'
 
 const props = defineProps<{
   items: RenderedFieldListItem[]
 }>()
 
-const { dom, state, eventBus, types, $t, blocks, fields, animation, context, selection } =
-  useBlokkli()
+const {
+  dom,
+  state,
+  eventBus,
+  types,
+  $t,
+  blocks,
+  fields,
+  animation,
+  context,
+  selection,
+} = useBlokkli()
 
 const isLocked = ref(false)
 
@@ -100,7 +114,10 @@ const emptyBlockFields = computed(() => {
 
 const emptyHostFields = computed(() => {
   return types.fieldConfig
-    .forEntityTypeAndBundle(context.value.entityType, context.value.entityBundle)
+    .forEntityTypeAndBundle(
+      context.value.entityType,
+      context.value.entityBundle,
+    )
     .map((field) => {
       const key = getFieldKey(context.value.entityUuid, field.name)
       const count = state.getFieldBlockCount(key)
@@ -229,7 +246,10 @@ const fieldTooltips = computed(() => {
 const hostFieldTooltips = computed(() => {
   return emptyHostFields.value.map((field) => {
     const fieldConfig = types.fieldConfig
-      .forEntityTypeAndBundle(context.value.entityType, context.value.entityBundle)
+      .forEntityTypeAndBundle(
+        context.value.entityType,
+        context.value.entityBundle,
+      )
       .find((f) => f.name === field.name)
 
     const fieldLabel = fieldConfig?.label || field.name
@@ -253,8 +273,10 @@ const hostFieldTooltips = computed(() => {
       }
     }
 
-    return $t('addButtonToField', 'Add to @fieldLabel...')
-      .replace('@fieldLabel', fieldLabel)
+    return $t('addButtonToField', 'Add to @fieldLabel...').replace(
+      '@fieldLabel',
+      fieldLabel,
+    )
   })
 })
 

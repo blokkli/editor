@@ -35,7 +35,13 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, ref, useBlokkli, defineBlokkliFeature, useTemplateRef } from '#imports'
+import {
+  nextTick,
+  ref,
+  useBlokkli,
+  defineBlokkliFeature,
+  useTemplateRef,
+} from '#imports'
 import Overlay from './Overlay/index.vue'
 import { BlokkliTransition } from '#blokkli/editor/components'
 import { PluginToolbarButton } from '#blokkli/editor/plugins'

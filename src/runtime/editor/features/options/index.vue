@@ -23,7 +23,7 @@ import type {
   FragmentDefinitionInput,
   ProviderDefinitionInput,
 } from '#blokkli/types/definitions'
-import { fragmentBlockBundle } from '#blokkli-build/config';
+import { fragmentBlockBundle } from '#blokkli-build/config'
 
 defineBlokkliFeature({
   id: 'options',

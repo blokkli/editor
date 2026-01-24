@@ -32,7 +32,10 @@ import { useBlokkli, computed } from '#imports'
 import { DialogModal } from '#blokkli/editor/components'
 import FeatureSettingComponent from './FeatureSetting/index.vue'
 import type { ValidFeatureKey } from '#blokkli-build/features'
-import { SETTINGS_GROUP, type SettingsGroup } from '../../../../../global/constants'
+import {
+  SETTINGS_GROUP,
+  type SettingsGroup,
+} from '../../../../../global/constants'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { settingsOverride } from '#blokkli-build/editor-config'
 import type { FeatureDefinitionSetting } from '#blokkli/editor/types/features'

@@ -82,7 +82,7 @@
 <script setup lang="ts">
 import { ref, computed, useBlokkli, watch } from '#imports'
 import { RelativeTime, Icon } from '#blokkli/editor/components'
-import type { MutationItem } from '#blokkli/editor/types/state';
+import type { MutationItem } from '#blokkli/editor/types/state'
 
 defineProps<{
   scrolledToEnd: boolean

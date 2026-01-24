@@ -47,7 +47,7 @@ import {
   useTemplateRef,
 } from '#imports'
 import { ItemIcon, Highlight } from '#blokkli/editor/components'
-import { falsy, } from '#blokkli/helpers'
+import { falsy } from '#blokkli/helpers'
 import { modulo } from '#blokkli/editor/helpers/math'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 

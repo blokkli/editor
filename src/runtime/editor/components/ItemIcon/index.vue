@@ -9,7 +9,7 @@
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import { fromLibraryBlockBundle } from '#blokkli-build/config';
+import { fromLibraryBlockBundle } from '#blokkli-build/config'
 
 const props = defineProps<{
   bundle?: string

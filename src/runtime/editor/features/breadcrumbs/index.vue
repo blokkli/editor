@@ -58,7 +58,10 @@
 import { useBlokkli, defineBlokkliFeature, computed } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import { useStateBasedCache } from '#blokkli/editor/composables'
-import { fragmentBlockBundle, fromLibraryBlockBundle } from '#blokkli-build/config';
+import {
+  fragmentBlockBundle,
+  fromLibraryBlockBundle,
+} from '#blokkli-build/config'
 
 defineBlokkliFeature({
   id: 'breadcrumbs',

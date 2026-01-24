@@ -10,7 +10,10 @@
 import { useBlokkli, defineBlokkliFeature, computed } from '#imports'
 import SettingsDialog from './Dialog/index.vue'
 import { BlokkliTransition } from '#blokkli/editor/components'
-import { addElementClasses, defineMenuButton } from '#blokkli/editor/composables'
+import {
+  addElementClasses,
+  defineMenuButton,
+} from '#blokkli/editor/composables'
 
 const { ui, $t } = useBlokkli()
 

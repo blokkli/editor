@@ -21,8 +21,8 @@
 </template>
 
 <script setup lang="ts">
-import  {
-useStickyToolbar,
+import {
+  useStickyToolbar,
   type PlacementVertical,
 } from '#blokkli/editor/composables/useStickyToolbar'
 import {
@@ -34,7 +34,7 @@ import {
 } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import {onBlokkliEvent, useFocusTrap }from '#blokkli/editor/composables'
+import { onBlokkliEvent, useFocusTrap } from '#blokkli/editor/composables'
 import type { Coord } from '#blokkli/editor/types/geometry'
 
 const props = withDefaults(

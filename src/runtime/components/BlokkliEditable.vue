@@ -24,7 +24,7 @@ import {
   INJECT_IS_EDITING,
   INJECT_IS_IN_REUSABLE,
 } from '#blokkli/helpers/injections'
-import type { EditableFieldUpdateEvent } from '#blokkli/editor/events';
+import type { EditableFieldUpdateEvent } from '#blokkli/editor/events'
 
 const props = withDefaults(
   defineProps<{

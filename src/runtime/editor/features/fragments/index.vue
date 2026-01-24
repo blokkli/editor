@@ -16,8 +16,8 @@ import { ref, useBlokkli, defineBlokkliFeature, computed } from '#imports'
 import FragmentsDialog from './Dialog/index.vue'
 import { BlokkliTransition } from '#blokkli/editor/components'
 import { defineAddAction } from '#blokkli/editor/composables'
-import type { ActionPlacedData } from '#blokkli/editor/types/actions';
-import { fragmentBlockBundle } from '#blokkli-build/config';
+import type { ActionPlacedData } from '#blokkli/editor/types/actions'
+import { fragmentBlockBundle } from '#blokkli-build/config'
 
 const { adapter } = defineBlokkliFeature({
   id: 'fragments',

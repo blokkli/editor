@@ -66,7 +66,7 @@
 
 <script setup lang="ts">
 import { FormOverlay } from '#blokkli/editor/components'
-import type { BlokkliFieldElement } from '#blokkli/editor/types/field';
+import type { BlokkliFieldElement } from '#blokkli/editor/types/field'
 import { falsy } from '#blokkli/helpers'
 import { ref, useBlokkli, computed, watch, useTemplateRef } from '#imports'
 import FragmentItem from './Item/index.vue'

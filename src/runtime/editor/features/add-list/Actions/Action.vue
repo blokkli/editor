@@ -19,7 +19,7 @@
 import { AddListItem } from '#blokkli/editor/components'
 import { computed, useTemplateRef, useBlokkli } from '#imports'
 import { defineTourItem } from '#blokkli/editor/composables'
-import type { AddAction } from '#blokkli/editor/types/actions';
+import type { AddAction } from '#blokkli/editor/types/actions'
 
 const props = defineProps<{
   action: AddAction

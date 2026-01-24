@@ -118,19 +118,19 @@ function createPieSegment(
   // Special case for full circle
   if (endAngle - startAngle >= 360) {
     return `
-      M ${cx} ${cy}
-      L ${cx + radius} ${cy}
-      A ${radius} ${radius} 0 1 1 ${cx + radius} ${cy + 0.001}
-      Z
-    `
+        M ${cx} ${cy}
+        L ${cx + radius} ${cy}
+        A ${radius} ${radius} 0 1 1 ${cx + radius} ${cy + 0.001}
+        Z
+      `
   }
 
   // Create the path
   return `
-    M ${cx} ${cy}
-    L ${x1} ${y1}
-    A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2}
-    Z
-  `
+      M ${cx} ${cy}
+      L ${x1} ${y1}
+      A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2}
+      Z
+    `
 }
 </script>

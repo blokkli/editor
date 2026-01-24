@@ -35,7 +35,12 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature, computed, useTemplateRef } from '#imports'
+import {
+  useBlokkli,
+  defineBlokkliFeature,
+  computed,
+  useTemplateRef,
+} from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
 import { Icon } from '#blokkli/editor/components'
 import ValidationOverlay from './Overlay/index.vue'

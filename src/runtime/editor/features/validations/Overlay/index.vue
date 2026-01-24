@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import { itemEntityType } from '#blokkli-build/config'
-import type { Validation } from '#blokkli/editor/types/state';
+import type { Validation } from '#blokkli/editor/types/state'
 import { falsy } from '#blokkli/helpers'
 import { computed } from '#imports'
 import OverlayItem from './Item.vue'

@@ -55,12 +55,18 @@ import type { DraggableMediaLibraryItem } from '../media-library/types'
 import type { DraggableSearchContentItem } from '../search/types'
 import type { DropTargetEvent } from '#blokkli/editor/events'
 import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
-import type { DraggableExistingBlock, DraggableItem, } from '#blokkli/editor/types/draggable'
+import type {
+  DraggableExistingBlock,
+  DraggableItem,
+} from '#blokkli/editor/types/draggable'
 import type { DraggableClipboardItem } from '../clipboard/types'
 import type { DraggableActionItem } from '../add-list/types'
 import type { DraggableReusableItem } from '../library/types'
 import type { DraggableExistingStructureBlock } from '../structure/types'
-import type { BlokkliFieldElement, BlokkliItemHost } from '#blokkli/editor/types/field'
+import type {
+  BlokkliFieldElement,
+  BlokkliItemHost,
+} from '#blokkli/editor/types/field'
 import type { BlokkliDefinitionAddBehaviour } from './../../../../global/types/definitions'
 
 const { adapter } = defineBlokkliFeature({

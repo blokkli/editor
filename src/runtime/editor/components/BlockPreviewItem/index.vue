@@ -48,7 +48,7 @@ import {
 
 const props = withDefaults(
   defineProps<{
-    items: FieldListItem[] | FieldListItem
+    items?: FieldListItem[] | FieldListItem
     title: string
     description?: string
     bundle?: string
@@ -62,9 +62,12 @@ const props = withDefaults(
 
 const { types, definitions } = useBlokkli()
 
-const normalizedItems = computed(() =>
-  Array.isArray(props.items) ? props.items : [props.items],
-)
+const normalizedItems = computed(() => {
+  if (!props.items) {
+    return []
+  }
+  return Array.isArray(props.items) ? props.items : [props.items]
+})
 
 const bundleLabel = computed(() =>
   props.bundle
@@ -78,7 +81,9 @@ const firstBundle = computed(
 )
 
 const definition = computed(() =>
-  firstBundle.value ? definitions.getDefaultDefinition(firstBundle.value) : null,
+  firstBundle.value
+    ? definitions.getDefaultDefinition(firstBundle.value)
+    : null,
 )
 
 const previewWidth = computed(

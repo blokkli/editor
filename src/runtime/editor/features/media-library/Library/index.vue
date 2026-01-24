@@ -78,7 +78,12 @@ import {
   nextTick,
   useTemplateRef,
 } from '#imports'
-import { Sortli, Icon, Pagination, FormToggle } from '#blokkli/editor/components'
+import {
+  Sortli,
+  Icon,
+  Pagination,
+  FormToggle,
+} from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import Item from './Item.vue'
 import { falsy } from '#blokkli/helpers'

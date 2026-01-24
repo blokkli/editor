@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import { computed } from '#imports'
 import { FormSelect, FormRadio } from '#blokkli/editor/components'
-import type { PluginConfigInputOptions } from '#blokkli/editor/types/pluginConfig';
+import type { PluginConfigInputOptions } from '#blokkli/editor/types/pluginConfig'
 
 const props = defineProps<PluginConfigInputOptions>()
 

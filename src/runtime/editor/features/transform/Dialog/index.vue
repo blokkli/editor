@@ -64,10 +64,15 @@ import {
   onMounted,
   onBeforeUnmount,
 } from '#imports'
-import { ConfigForm, DiffViewerState, Icon, Loading } from '#blokkli/editor/components'
-import type { HostTransformPlugin, TransformPlugin } from '../types';
-import type { PluginConfigInputItem } from '#blokkli/editor/types/pluginConfig';
-import type { MappedState } from '#blokkli/editor/types/state';
+import {
+  ConfigForm,
+  DiffViewerState,
+  Icon,
+  Loading,
+} from '#blokkli/editor/components'
+import type { HostTransformPlugin, TransformPlugin } from '../types'
+import type { PluginConfigInputItem } from '#blokkli/editor/types/pluginConfig'
+import type { MappedState } from '#blokkli/editor/types/state'
 
 const props = defineProps<{
   plugin: HostTransformPlugin | TransformPlugin

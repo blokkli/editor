@@ -13,9 +13,7 @@ import {
   useRouter,
   useAsyncData,
 } from '#imports'
-import type {
-  MutatedOptions,
-} from '#blokkli/editor/types/state'
+import type { MutatedOptions } from '#blokkli/editor/types/state'
 import '#blokkli-build/styles.css'
 import getAdapter from '#blokkli-build/edit-adapter'
 import {

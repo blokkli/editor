@@ -9,16 +9,13 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  falsy,
-  onlyUnique,
-} from '#blokkli/helpers'
+import { falsy, onlyUnique } from '#blokkli/helpers'
 import {
   findClosestRectangle,
   intersects,
   isInsideRect,
 } from '#blokkli/editor/helpers/geometry'
-import{ toShaderColor, rgbaToString } from '#blokkli/editor/helpers/color'
+import { toShaderColor, rgbaToString } from '#blokkli/editor/helpers/color'
 import { ref, computed, useBlokkli } from '#imports'
 import {
   setBuffersAndAttributes,
@@ -37,7 +34,11 @@ import {
   type Orientation,
 } from '#blokkli/editor/helpers/dropTargets'
 import type { RGB } from './../../../../../global/types/theme'
-import { fragmentBlockBundle, fromLibraryBlockBundle, itemEntityType } from '#blokkli-build/config'
+import {
+  fragmentBlockBundle,
+  fromLibraryBlockBundle,
+  itemEntityType,
+} from '#blokkli-build/config'
 import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'
 import type { DropTargetEvent } from '#blokkli/editor/events'
 import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
@@ -675,7 +676,6 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
 
 const cachedDropAreaRects: Record<string, Rectangle> = {}
 
-
 const buildDropAreaRect = (area: DropArea): Rectangle => {
   if (cachedDropAreaRects[area.id]) {
     return cachedDropAreaRects[area.id]!
@@ -843,13 +843,15 @@ type FieldColorPalette = {
   color: RGB
 }
 
-const fieldRenderPalette = computed<Record<'0' | '1' | '2' |'3',  FieldColorPalette>>(() => {
+const fieldRenderPalette = computed<
+  Record<'0' | '1' | '2' | '3', FieldColorPalette>
+>(() => {
   const accent = theme.accent.value
   return {
     '0': {
       gradStart: accent[800],
       gradEnd: accent[900],
-      borderOuter: [0,0,0],
+      borderOuter: [0, 0, 0],
       borderInner: accent[600],
       color: [255, 255, 255],
     },
@@ -877,7 +879,10 @@ const fieldRenderPalette = computed<Record<'0' | '1' | '2' |'3',  FieldColorPale
   }
 })
 
-function getColorForField(field?: FieldRect | null, property: keyof FieldColorPalette = 'gradStart'): RGB {
+function getColorForField(
+  field?: FieldRect | null,
+  property: keyof FieldColorPalette = 'gradStart',
+): RGB {
   const nestingLevel = field?.field.nestingLevel || 0
   if (nestingLevel >= 3) {
     return fieldRenderPalette.value[3][property]

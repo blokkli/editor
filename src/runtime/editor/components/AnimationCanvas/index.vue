@@ -14,21 +14,14 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  falsy,
-} from '#blokkli/helpers'
-import {
-  getDistance,
-  isInsideRect
-} from '#blokkli/editor/helpers/geometry'
+import { falsy } from '#blokkli/helpers'
+import { getDistance, isInsideRect } from '#blokkli/editor/helpers/geometry'
 import {
   MOUSE_BUTTON,
   MOUSE_BUTTONS,
-  getInteractionCoordinates
+  getInteractionCoordinates,
 } from '#blokkli/editor/helpers/dom'
-import type {
-  CursorKeyword,
-} from '#blokkli/editor/types'
+import type { CursorKeyword } from '#blokkli/editor/types'
 import {
   ref,
   computed,

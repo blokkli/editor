@@ -15,7 +15,11 @@ import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
 import { toShaderColor } from '#blokkli/editor/helpers/color'
 import type { RGB } from './../../../../../global/types/theme'
-import { defineRenderer, onBlokkliEvent, useTransitionedValue } from '#blokkli/editor/composables'
+import {
+  defineRenderer,
+  onBlokkliEvent,
+  useTransitionedValue,
+} from '#blokkli/editor/composables'
 import type { Rectangle } from '#blokkli/editor/types/geometry'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 

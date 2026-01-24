@@ -84,7 +84,11 @@ import getVideoId from 'get-video-id'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { emitMessage } from '#blokkli/editor/events'
 import { fragmentBlockBundle, itemEntityType } from '#blokkli-build/config'
-import { defineItemDropdownAction, defineShortcut, onBlokkliEvent } from '#blokkli/editor/composables'
+import {
+  defineItemDropdownAction,
+  defineShortcut,
+  onBlokkliEvent,
+} from '#blokkli/editor/composables'
 import type { BlokkliClipboardItem } from './types'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 
