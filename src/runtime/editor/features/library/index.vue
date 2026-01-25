@@ -45,6 +45,8 @@
   <NestedEditorOverlay
     v-if="editingLibraryItem"
     v-bind="editingLibraryItem"
+    theme="lime"
+    icon="reusable"
     :title="$t('libraryItemEditOverlayTitle', 'Edit reusable block')"
     @submit="onSubmitLibraryItem"
     @close="cancelLibraryItemEdit"
@@ -194,7 +196,11 @@ const canMakeReusable = computed(
 const editingLibraryItem = ref<LibraryEditItemEvent | null>(null)
 
 onBlokkliEvent('library:edit-item', function (e) {
-  editingLibraryItem.value = e
+  editingLibraryItem.value = {
+    uuid: e.uuid,
+    blockUuid: e.blockUuid,
+    url: e.url,
+  }
 })
 
 function cancelLibraryItemEdit() {

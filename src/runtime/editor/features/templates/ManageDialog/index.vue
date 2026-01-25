@@ -135,6 +135,9 @@
       v-if="itemBeingEdited"
       v-bind="itemBeingEdited"
       :element="dialogEl"
+      :title="$t('templatesEditOverlayTitle', 'Edit template')"
+      theme="red"
+      icon="bk_mdi_dashboard"
       @close="onCloseNested"
       @submit="onSubmitNested"
     />
@@ -163,7 +166,6 @@ import type {
   AdapterTemplatesGetResult,
   TemplatesSearchArguments,
 } from '../types'
-import type { NestedEditorOverlayProps } from '#blokkli/editor/components/NestedEditorOverlay/index.vue'
 
 defineEmits<{
   (e: 'cancel'): void
@@ -178,7 +180,7 @@ const confirmDeleteUuid = ref('')
 const isDeleting = ref(false)
 const filters = reactive<Record<string, any>>({})
 
-const itemBeingEdited = ref<NestedEditorOverlayProps | null>(null)
+const itemBeingEdited = ref<{ url: string; uuid: string } | null>(null)
 
 const adapterHasEditMethod = computed<boolean>(
   () => !!adapter.templatesGetEditUrl,
@@ -233,8 +235,6 @@ function onEdit(templateUuid: string) {
   itemBeingEdited.value = {
     url: editUrl,
     uuid: templateUuid,
-    title: $t('templatesEditOverlayTitle', 'Edit template'),
-    label: template.label,
   }
 }
 

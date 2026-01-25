@@ -856,10 +856,10 @@ const fieldRenderPalette = computed<
       color: [255, 255, 255],
     },
     '1': {
-      gradStart: accent[300],
-      gradEnd: accent[400],
+      gradStart: accent[400],
+      gradEnd: accent[500],
       borderOuter: accent[400],
-      borderInner: accent[100],
+      borderInner: accent[200],
       color: accent[950],
     },
     '2': {

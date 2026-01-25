@@ -2,10 +2,14 @@
   <Teleport :to="ui.mainLayoutElement.value">
     <Loading v-if="isLoading" />
     <Transition name="bk-library-edit-header">
-      <header v-show="isLoaded" class="bk bk-library-edit-overlay-header">
+      <header
+        v-show="isLoaded"
+        class="bk bk-library-edit-overlay-header"
+        :class="'bk-is-' + theme"
+      >
+        <Icon :name="icon" />
         <h2>
           <span>{{ title }}</span>
-          <span v-if="label">&nbsp;{{ label }}</span>
         </h2>
         <button @click.prevent="closeOverlay">
           <Icon name="bk_mdi_arrow_left_alt" />
@@ -22,7 +26,11 @@
       @after-leave="onAfterLeave"
       @leave-cancelled="onAfterLeave"
     >
-      <div v-show="isLoaded" class="bk bk-library-edit-overlay">
+      <div
+        v-show="isLoaded"
+        class="bk bk-library-edit-overlay"
+        :class="'bk-is-' + theme"
+      >
         <iframe
           ref="iframe"
           :src="url"
@@ -38,14 +46,16 @@
 import { ref, useBlokkli, useTemplateRef } from '#imports'
 import { Icon, Loading } from '#blokkli/editor/components'
 import { onBroadcastEvent } from '#blokkli/editor/composables'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 
 export type NestedEditorOverlayProps = {
   url: string
   uuid: string
   title: string
+  theme: 'lime' | 'red'
+  icon: BlokkliIcon
   blockUuid?: string
   element?: HTMLElement | null
-  label?: string
 }
 
 const props = defineProps<NestedEditorOverlayProps>()
