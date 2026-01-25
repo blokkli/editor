@@ -1507,13 +1507,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           placeholder: 'Search templates...',
           required: false,
         },
-        {
-          type: 'checkbox',
-          name: 'byMe',
-          label: 'Created by me',
-          required: false,
-          defaultValue: false,
-        },
+
         {
           type: 'options',
           variant: 'select',
@@ -1528,6 +1522,13 @@ export default defineBlokkliEditAdapter((ctx) => {
             },
             ...bundleOptions,
           ],
+        },
+        {
+          type: 'checkbox',
+          name: 'byMe',
+          label: 'Created by me',
+          required: false,
+          defaultValue: false,
         },
       ],
     })

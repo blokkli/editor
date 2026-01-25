@@ -1,8 +1,12 @@
 .bk .bk-plugin-config-form {
-  @apply flex flex-wrap gap-y-20 gap-x-10 items-end;
+  @apply flex flex-wrap gap-10 items-end;
   > li {
-    @apply min-w-[200px] flex-1 shrink;
+    @apply flex-1 shrink;
 
+    &.bk-is-type-options,
+    &.bk-is-type-text {
+      @apply min-w-[200px];
+    }
     &.bk-is-type-checkbox {
       @apply flex-none;
       min-height: 46px;
