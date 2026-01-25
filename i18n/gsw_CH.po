@@ -3,6 +3,10 @@ msgstr ""
 "Language: gsw_CH\n"
 "Content-Type: text/plain\n"
 
+msgctxt "actions"
+msgid "Actions"
+msgstr ""
+
 msgctxt "actionsDropdownToolip"
 msgid "Further actions"
 msgstr "Witeri Aktione"
@@ -366,6 +370,10 @@ msgctxt "cancelSelection"
 msgid "Cancel selection"
 msgstr "Uswahl abbräche"
 
+msgctxt "clearInput"
+msgid "Clear input"
+msgstr ""
+
 msgctxt "clipboard"
 msgid "Clipboard"
 msgstr "Zwüscheablag"
@@ -518,6 +526,18 @@ msgstr "«@text» isch in dini Zwüscheablag kopiert worde"
 msgctxt "copy"
 msgid "Copy"
 msgstr "Kopiere"
+
+msgctxt "created"
+msgid "Created"
+msgstr ""
+
+msgctxt "createdBy"
+msgid "Created by"
+msgstr ""
+
+msgctxt "dateUpdated"
+msgid "Updated"
+msgstr ""
 
 msgctxt "deleteButton"
 msgid "Delete"
@@ -1541,6 +1561,10 @@ msgctxt "multipleItemsLabel"
 msgid "Items"
 msgstr "Elemänt"
 
+msgctxt "nameDescription"
+msgid "Name / Description"
+msgstr ""
+
 msgctxt "notSet"
 msgid "Not set"
 msgstr ""
@@ -2131,6 +2155,14 @@ msgctxt "templatesCreateError"
 msgid "Failed to create template."
 msgstr ""
 
+msgctxt "templatesDefaultPill"
+msgid "Default"
+msgstr ""
+
+msgctxt "templatesDefaultPillDescription"
+msgid "This template is used when new blocks of this type are created."
+msgstr ""
+
 msgctxt "templatesDeleteError"
 msgid "Failed to delete template."
 msgstr ""
@@ -2147,10 +2179,6 @@ msgctxt "templatesManageDialogCancelDelete"
 msgid "Cancel"
 msgstr ""
 
-msgctxt "templatesManageDialogColumnActions"
-msgid "Actions"
-msgstr ""
-
 msgctxt "templatesManageDialogConfirmDelete"
 msgid "Delete"
 msgstr ""
@@ -2159,16 +2187,8 @@ msgctxt "templatesManageDialogDelete"
 msgid "Delete"
 msgstr ""
 
-msgctxt "templatesManageDialogDescriptionColumn"
-msgid "Description"
-msgstr ""
-
 msgctxt "templatesManageDialogEdit"
 msgid "Edit"
-msgstr ""
-
-msgctxt "templatesManageDialogLabelColumn"
-msgid "Name"
 msgstr ""
 
 msgctxt "templatesManageDialogLead"

@@ -3,6 +3,10 @@ msgstr ""
 "Language: de\n"
 "Content-Type: text/plain\n"
 
+msgctxt "actions"
+msgid "Actions"
+msgstr "Aktonen"
+
 msgctxt "actionsDropdownToolip"
 msgid "Further actions"
 msgstr "Weitere Aktionen"
@@ -371,6 +375,10 @@ msgctxt "cancelSelection"
 msgid "Cancel selection"
 msgstr "Auswahl abbrechen"
 
+msgctxt "clearInput"
+msgid "Clear input"
+msgstr "Eingabe löschen"
+
 msgctxt "clipboard"
 msgid "Clipboard"
 msgstr "Zwischenablage"
@@ -416,11 +424,11 @@ msgstr "Der Block-Typ «@types» ist hier nicht erlaubt."
 
 msgctxt "clipboardPasteErrorAllowedFragmentsMultiple"
 msgid "Fragments (@types) are not allowed here."
-msgstr ""
+msgstr "Die Fragmente (@types) sind hier nicht erlaubt."
 
 msgctxt "clipboardPasteErrorAllowedFragmentsSingle"
 msgid "Fragment \"@types\" is not allowed here."
-msgstr ""
+msgstr "Das Fragment «@types» ist hier nicht erlaubt."
 
 msgctxt "clipboardPasteErrorCardinality"
 msgid "This field only allows up to @count blocks."
@@ -522,6 +530,18 @@ msgstr "«@text» wurde in die Zwischenablage kopiert"
 msgctxt "copy"
 msgid "Copy"
 msgstr "Kopieren"
+
+msgctxt "created"
+msgid "Created"
+msgstr "Erstellt"
+
+msgctxt "createdBy"
+msgid "Created by"
+msgstr "Erstellt von"
+
+msgctxt "dateUpdated"
+msgid "Updated"
+msgstr "Aktualisiert"
 
 msgctxt "deleteButton"
 msgid "Delete"
@@ -653,11 +673,11 @@ msgstr "Seite"
 
 msgctxt "errorCapturedMessage"
 msgid "Error in \"@label\": @errorMessage"
-msgstr ""
+msgstr "Fehler in «@label»: @errorMessage"
 
 msgctxt "errorCapturedMessageDisabled"
 msgid "\"@label\" has errored more than 3 times. The feature will be disabled."
-msgstr ""
+msgstr "«@label» hat mehr als 3 Fehler verursacht. Die Funktion wird deaktiviert."
 
 msgctxt "exitDescription"
 msgid "Close editor without publishing"
@@ -714,10 +734,12 @@ msgstr "Hinzufügen-Liste"
 msgctxt "feature_add-list_setting_hideDisabledBlocks_description"
 msgid "Hides blocks from the \"Add List\" if they can't be added to anywhere."
 msgstr ""
+"Versteckt Blöcke in der «Hinzufügen-Liste», wenn sie nirgendwo hinzugefügt "
+"werden können."
 
 msgctxt "feature_add-list_setting_hideDisabledBlocks_label"
 msgid "Hide blocks that can't be added"
-msgstr ""
+msgstr "Blöcke verstecken, die nicht hinzugefügt werden können"
 
 msgctxt "feature_analyze_description"
 msgid "Analyze blocks and page for SEO, accessibility, etc."
@@ -783,19 +805,19 @@ msgstr "Assistent"
 
 msgctxt "feature_block-scheduler_description"
 msgid "Adds support for scheduling blocks."
-msgstr ""
+msgstr "Ermöglicht das zeitgesteuerte Veröffentlichen von Blöcken."
 
 msgctxt "feature_block-scheduler_label"
 msgid "Block Scheduler"
-msgstr ""
+msgstr "Block-Planung"
 
 msgctxt "feature_breadcrumbs_description"
 msgid "Provides a breadcrumb of the selection."
-msgstr ""
+msgstr "Zeigt den Breadcrumbs-Pfad der Auswahl an."
 
 msgctxt "feature_breadcrumbs_label"
 msgid "Breadcrumbs"
-msgstr ""
+msgstr "Breadcrumbs"
 
 msgctxt "feature_clipboard_description"
 msgid ""
@@ -868,11 +890,11 @@ msgstr "Löschen"
 
 msgctxt "feature_dev-mode_description"
 msgid "Feature enabled in development mode."
-msgstr ""
+msgstr "Funktion ist im Dev Mode aktiviert."
 
 msgctxt "feature_dev-mode_label"
 msgid "Dev Mode"
-msgstr ""
+msgstr "Dev Mode"
 
 msgctxt "feature_diff_description"
 msgid "Displays a diff of all changes in the edit state."
@@ -1004,11 +1026,11 @@ msgstr "Maustasten für Rückgängig/Wiederherstellen verwenden"
 
 msgctxt "feature_hover_description"
 msgid "Renders a border around blocks that are currently being hovered."
-msgstr ""
+msgstr "Zeigt einen Rahmen um Blöcke an, über denen sich der Mauszeiger befindet."
 
 msgctxt "feature_hover_label"
 msgid "Hover"
-msgstr ""
+msgstr "Hover"
 
 msgctxt "feature_import-existing_description"
 msgid ""
@@ -1402,7 +1424,7 @@ msgstr "Welche Inhalte möchten Sie importieren?"
 
 msgctxt "importExistingPagesTitle"
 msgid "Select page"
-msgstr ""
+msgstr "Seite auswählen"
 
 msgctxt "importExistingSuccess"
 msgid "Content imported successfully."
@@ -1414,11 +1436,11 @@ msgstr "Importieren..."
 
 msgctxt "interactionLayerOff"
 msgid "Show interaction layers"
-msgstr ""
+msgstr "Interaktionsebenen anzeigen"
 
 msgctxt "interactionLayersOn"
 msgid "Hide interaction layers"
-msgstr ""
+msgstr "Interaktionsebenen ausblenden"
 
 msgctxt "libraryAdd"
 msgid "Add to library..."
@@ -1547,6 +1569,10 @@ msgstr "Suchen Sie nach Medien wie Bildern und ziehen Sie diese in die Seite."
 msgctxt "multipleItemsLabel"
 msgid "Items"
 msgstr "Elemente"
+
+msgctxt "nameDescription"
+msgid "Name / Description"
+msgstr "Name / Beschreibung"
 
 msgctxt "notSet"
 msgid "Not set"
@@ -2147,6 +2173,14 @@ msgctxt "templatesCreateError"
 msgid "Failed to create template."
 msgstr "Vorlage konnte nicht erstellt werden."
 
+msgctxt "templatesDefaultPill"
+msgid "Default"
+msgstr "Standard"
+
+msgctxt "templatesDefaultPillDescription"
+msgid "This template is used when new blocks of this type are created."
+msgstr "Diese Vorlage wird verwendet, wenn neue Blöcke dieses Typs erstellt werden."
+
 msgctxt "templatesDeleteError"
 msgid "Failed to delete template."
 msgstr "Vorlage konnte nicht gelöscht werden."
@@ -2163,10 +2197,6 @@ msgctxt "templatesManageDialogCancelDelete"
 msgid "Cancel"
 msgstr "Abbrechen"
 
-msgctxt "templatesManageDialogColumnActions"
-msgid "Actions"
-msgstr "Aktonen"
-
 msgctxt "templatesManageDialogConfirmDelete"
 msgid "Delete"
 msgstr "Löschen"
@@ -2175,17 +2205,9 @@ msgctxt "templatesManageDialogDelete"
 msgid "Delete"
 msgstr "Löschen"
 
-msgctxt "templatesManageDialogDescriptionColumn"
-msgid "Description"
-msgstr "Beschreibung"
-
 msgctxt "templatesManageDialogEdit"
 msgid "Edit"
 msgstr "Bearbeiten"
-
-msgctxt "templatesManageDialogLabelColumn"
-msgid "Name"
-msgstr "Name"
 
 msgctxt "templatesManageDialogLead"
 msgid "View, edit and delete your block templates."
@@ -2241,7 +2263,7 @@ msgstr "Ändern Sie das Theme und generieren Sie eine Theme-Datei."
 
 msgctxt "toggleInteractionLayers"
 msgid "Toggle interaction layers"
-msgstr ""
+msgstr "Interaktionsebenen umschalten"
 
 msgctxt "touchBarCancelDragging"
 msgid "Cancel dragging"

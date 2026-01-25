@@ -1,4 +1,8 @@
 {
+  "actions": {
+    "source": "Actions",
+    "translation": ""
+  },
   "actionsDropdownToolip": {
     "source": "Further actions",
     "translation": "Witeri Aktione"
@@ -347,6 +351,10 @@
     "source": "Cancel selection",
     "translation": "Uswahl abbräche"
   },
+  "clearInput": {
+    "source": "Clear input",
+    "translation": ""
+  },
   "clipboard": {
     "source": "Clipboard",
     "translation": "Zwüscheablag"
@@ -478,6 +486,18 @@
   "copy": {
     "source": "Copy",
     "translation": "Kopiere"
+  },
+  "created": {
+    "source": "Created",
+    "translation": ""
+  },
+  "createdBy": {
+    "source": "Created by",
+    "translation": ""
+  },
+  "dateUpdated": {
+    "source": "Updated",
+    "translation": ""
   },
   "deleteButton": {
     "source": "Delete",
@@ -1379,6 +1399,10 @@
     "source": "Items",
     "translation": "Elemänt"
   },
+  "nameDescription": {
+    "source": "Name / Description",
+    "translation": ""
+  },
   "notSet": {
     "source": "Not set",
     "translation": ""
@@ -1915,6 +1939,14 @@
     "source": "Failed to create template.",
     "translation": ""
   },
+  "templatesDefaultPill": {
+    "source": "Default",
+    "translation": ""
+  },
+  "templatesDefaultPillDescription": {
+    "source": "This template is used when new blocks of this type are created.",
+    "translation": ""
+  },
   "templatesDeleteError": {
     "source": "Failed to delete template.",
     "translation": ""
@@ -1931,10 +1963,6 @@
     "source": "Cancel",
     "translation": ""
   },
-  "templatesManageDialogColumnActions": {
-    "source": "Actions",
-    "translation": ""
-  },
   "templatesManageDialogConfirmDelete": {
     "source": "Delete",
     "translation": ""
@@ -1943,16 +1971,8 @@
     "source": "Delete",
     "translation": ""
   },
-  "templatesManageDialogDescriptionColumn": {
-    "source": "Description",
-    "translation": ""
-  },
   "templatesManageDialogEdit": {
     "source": "Edit",
-    "translation": ""
-  },
-  "templatesManageDialogLabelColumn": {
-    "source": "Name",
     "translation": ""
   },
   "templatesManageDialogLead": {

@@ -1,4 +1,8 @@
 {
+  "actions": {
+    "source": "Actions",
+    "translation": "Aktonen"
+  },
   "actionsDropdownToolip": {
     "source": "Further actions",
     "translation": "Weitere Aktionen"
@@ -347,6 +351,10 @@
     "source": "Cancel selection",
     "translation": "Auswahl abbrechen"
   },
+  "clearInput": {
+    "source": "Clear input",
+    "translation": "Eingabe löschen"
+  },
   "clipboard": {
     "source": "Clipboard",
     "translation": "Zwischenablage"
@@ -381,11 +389,11 @@
   },
   "clipboardPasteErrorAllowedFragmentsMultiple": {
     "source": "Fragments (@types) are not allowed here.",
-    "translation": ""
+    "translation": "Die Fragmente (@types) sind hier nicht erlaubt."
   },
   "clipboardPasteErrorAllowedFragmentsSingle": {
     "source": "Fragment \"@types\" is not allowed here.",
-    "translation": ""
+    "translation": "Das Fragment «@types» ist hier nicht erlaubt."
   },
   "clipboardPasteErrorCardinality": {
     "source": "This field only allows up to @count blocks.",
@@ -478,6 +486,18 @@
   "copy": {
     "source": "Copy",
     "translation": "Kopieren"
+  },
+  "created": {
+    "source": "Created",
+    "translation": "Erstellt"
+  },
+  "createdBy": {
+    "source": "Created by",
+    "translation": "Erstellt von"
+  },
+  "dateUpdated": {
+    "source": "Updated",
+    "translation": "Aktualisiert"
   },
   "deleteButton": {
     "source": "Delete",
@@ -605,11 +625,11 @@
   },
   "errorCapturedMessage": {
     "source": "Error in \"@label\": @errorMessage",
-    "translation": ""
+    "translation": "Fehler in «@label»: @errorMessage"
   },
   "errorCapturedMessageDisabled": {
     "source": "\"@label\" has errored more than 3 times. The feature will be disabled.",
-    "translation": ""
+    "translation": "«@label» hat mehr als 3 Fehler verursacht. Die Funktion wird deaktiviert."
   },
   "exitDescription": {
     "source": "Close editor without publishing",
@@ -657,11 +677,11 @@
   },
   "feature_add-list_setting_hideDisabledBlocks_description": {
     "source": "Hides blocks from the \"Add List\" if they can't be added to anywhere.",
-    "translation": ""
+    "translation": "Versteckt Blöcke in der «Hinzufügen-Liste», wenn sie nirgendwo hinzugefügt werden können."
   },
   "feature_add-list_setting_hideDisabledBlocks_label": {
     "source": "Hide blocks that can't be added",
-    "translation": ""
+    "translation": "Blöcke verstecken, die nicht hinzugefügt werden können"
   },
   "feature_analyze_description": {
     "source": "Analyze blocks and page for SEO, accessibility, etc.",
@@ -717,19 +737,19 @@
   },
   "feature_block-scheduler_description": {
     "source": "Adds support for scheduling blocks.",
-    "translation": ""
+    "translation": "Ermöglicht das zeitgesteuerte Veröffentlichen von Blöcken."
   },
   "feature_block-scheduler_label": {
     "source": "Block Scheduler",
-    "translation": ""
+    "translation": "Block-Planung"
   },
   "feature_breadcrumbs_description": {
     "source": "Provides a breadcrumb of the selection.",
-    "translation": ""
+    "translation": "Zeigt den Breadcrumbs-Pfad der Auswahl an."
   },
   "feature_breadcrumbs_label": {
     "source": "Breadcrumbs",
-    "translation": ""
+    "translation": "Breadcrumbs"
   },
   "feature_clipboard_description": {
     "source": "Provides clipboard integration to copy/paste existing blocks or paste supported clipboard content like text or images.",
@@ -789,11 +809,11 @@
   },
   "feature_dev-mode_description": {
     "source": "Feature enabled in development mode.",
-    "translation": ""
+    "translation": "Funktion ist im Dev Mode aktiviert."
   },
   "feature_dev-mode_label": {
     "source": "Dev Mode",
-    "translation": ""
+    "translation": "Dev Mode"
   },
   "feature_diff_description": {
     "source": "Displays a diff of all changes in the edit state.",
@@ -909,11 +929,11 @@
   },
   "feature_hover_description": {
     "source": "Renders a border around blocks that are currently being hovered.",
-    "translation": ""
+    "translation": "Zeigt einen Rahmen um Blöcke an, über denen sich der Mauszeiger befindet."
   },
   "feature_hover_label": {
     "source": "Hover",
-    "translation": ""
+    "translation": "Hover"
   },
   "feature_import-existing_description": {
     "source": "Implements a menu action that renders a dialog to import blocks from another entity.",
@@ -1249,7 +1269,7 @@
   },
   "importExistingPagesTitle": {
     "source": "Select page",
-    "translation": ""
+    "translation": "Seite auswählen"
   },
   "importExistingSuccess": {
     "source": "Content imported successfully.",
@@ -1261,11 +1281,11 @@
   },
   "interactionLayerOff": {
     "source": "Show interaction layers",
-    "translation": ""
+    "translation": "Interaktionsebenen anzeigen"
   },
   "interactionLayersOn": {
     "source": "Hide interaction layers",
-    "translation": ""
+    "translation": "Interaktionsebenen ausblenden"
   },
   "libraryAdd": {
     "source": "Add to library...",
@@ -1378,6 +1398,10 @@
   "multipleItemsLabel": {
     "source": "Items",
     "translation": "Elemente"
+  },
+  "nameDescription": {
+    "source": "Name / Description",
+    "translation": "Name / Beschreibung"
   },
   "notSet": {
     "source": "Not set",
@@ -1915,6 +1939,14 @@
     "source": "Failed to create template.",
     "translation": "Vorlage konnte nicht erstellt werden."
   },
+  "templatesDefaultPill": {
+    "source": "Default",
+    "translation": "Standard"
+  },
+  "templatesDefaultPillDescription": {
+    "source": "This template is used when new blocks of this type are created.",
+    "translation": "Diese Vorlage wird verwendet, wenn neue Blöcke dieses Typs erstellt werden."
+  },
   "templatesDeleteError": {
     "source": "Failed to delete template.",
     "translation": "Vorlage konnte nicht gelöscht werden."
@@ -1931,10 +1963,6 @@
     "source": "Cancel",
     "translation": "Abbrechen"
   },
-  "templatesManageDialogColumnActions": {
-    "source": "Actions",
-    "translation": "Aktonen"
-  },
   "templatesManageDialogConfirmDelete": {
     "source": "Delete",
     "translation": "Löschen"
@@ -1943,17 +1971,9 @@
     "source": "Delete",
     "translation": "Löschen"
   },
-  "templatesManageDialogDescriptionColumn": {
-    "source": "Description",
-    "translation": "Beschreibung"
-  },
   "templatesManageDialogEdit": {
     "source": "Edit",
     "translation": "Bearbeiten"
-  },
-  "templatesManageDialogLabelColumn": {
-    "source": "Name",
-    "translation": "Name"
   },
   "templatesManageDialogLead": {
     "source": "View, edit and delete your block templates.",
@@ -2005,7 +2025,7 @@
   },
   "toggleInteractionLayers": {
     "source": "Toggle interaction layers",
-    "translation": ""
+    "translation": "Interaktionsebenen umschalten"
   },
   "touchBarCancelDragging": {
     "source": "Cancel dragging",
