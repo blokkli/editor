@@ -18,10 +18,23 @@
           :selectable-bundles
           :generally-available-bundles
           :hide-disabled-blocks="settings.hideDisabledBlocks"
+          :help-active
+          @help="activeHelpItem = $event"
+          @start-help="onStartHelp"
         />
-        <AddListActions :selectable-bundles />
+        <AddListActions
+          :selectable-bundles
+          :help-active
+          @help="activeHelpItem = $event"
+          @start-help="onStartHelp"
+        />
       </div>
+      <AddListHelpComponent
+        v-if="helpActive && activeHelpItem && isActive"
+        v-bind="activeHelpItem"
+      />
     </div>
+
     <PluginTourItem
       id="add-blocks"
       :element="wrapper"
@@ -42,10 +55,12 @@ import {
 import { PluginTourItem } from '#blokkli/editor/plugins'
 import AddListBlocks from './Blocks/index.vue'
 import AddListActions from './Actions/index.vue'
+import AddListHelpComponent from './Help/index.vue'
 import { itemEntityType } from '#blokkli-build/config'
 import { onlyUnique } from '#blokkli/helpers'
 import type { BlockBundleDefinition } from '#blokkli/editor/types/definitions'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
+import type { AddListHelp } from './types'
 
 const { settings } = defineBlokkliFeature({
   id: 'add-list',
@@ -67,6 +82,10 @@ const { settings } = defineBlokkliFeature({
 })
 
 const { $t, ui, selection, state, tour, types, context, dom } = useBlokkli()
+
+const helpActive = ref(false)
+
+const activeHelpItem = ref<AddListHelp | null>(null)
 
 const getAllowedTypesForSelected = (p: RenderedFieldListItem): string[] => {
   // If the selected bundle allows nested items, return the allowed bundles for it instead.
@@ -145,6 +164,11 @@ const isActive = computed(() => {
   )
 })
 
+function onStartHelp(item: AddListHelp) {
+  helpActive.value = true
+  activeHelpItem.value = item
+}
+
 function onMouseEnter() {
   if (mouseTimeout) {
     clearTimeout(mouseTimeout)
@@ -152,6 +176,7 @@ function onMouseEnter() {
     mouseTimeout = null
     return
   }
+
   mouseTimeout = setTimeout(() => {
     isHovered.value = true
     mouseTimeout = null
@@ -160,6 +185,7 @@ function onMouseEnter() {
 function onMouseLeave() {
   clearTimeout(mouseTimeout)
   isHovered.value = false
+  helpActive.value = false
 }
 
 const onWheel = (e: WheelEvent) => {

@@ -26,6 +26,7 @@ const zIndex = [
   'selection-add',
   'add-buttons-label',
   'add-list',
+  'add-list-info',
   'tour-popup',
   'preview',
   'toolbar-dropdown',

@@ -12,6 +12,10 @@
     :color="action.color"
     :disabled
     no-context-menu
+    use-help
+    :help-active
+    @start-help="$emit('startHelp', $event)"
+    @help="$emit('help', $event)"
   />
 </template>
 
@@ -24,6 +28,11 @@ import type { AddAction } from '#blokkli/editor/types/actions'
 const props = defineProps<{
   action: AddAction
   selectableBundles: string[]
+  helpActive: boolean
+}>()
+
+defineEmits<{
+  (e: 'help' | 'startHelp', data: HTMLElement): void
 }>()
 
 const { selection } = useBlokkli()

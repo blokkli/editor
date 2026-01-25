@@ -1283,7 +1283,7 @@ msgid "This field is required"
 msgstr "Ce champ est obligatoire"
 
 msgctxt "fragmentsAddFragmentAction"
-msgid "Add fragment"
+msgid "Fragment"
 msgstr ""
 
 msgctxt "fragmentsAddFragmentDescription"
@@ -1423,11 +1423,13 @@ msgid "Add to library..."
 msgstr "Ajouter à la bibliothèque"
 
 msgctxt "libraryAddDescription"
-msgid "Add a reusable block from the block library."
+msgid ""
+"<p>Add a reusable block from the block library. Changes to that block will "
+"become visible on all pages.</p>"
 msgstr ""
 
 msgctxt "libraryAddFromLibrary"
-msgid "Add from library"
+msgid "From library"
 msgstr ""
 
 msgctxt "libraryDetach"
@@ -2054,11 +2056,14 @@ msgid ""
 msgstr ""
 
 msgctxt "templatesAddTemplate"
-msgid "Add template"
+msgid "Template"
 msgstr ""
 
 msgctxt "templatesAddTemplateDescription"
-msgid "<p>Drag the icon into the page to add blocks from a template.</p>"
+msgid ""
+"<p>Drag the icon into the page to add blocks from a "
+"template.</p><p>Templates are copied to your page and can be changed "
+"without affecting other pages.</p>"
 msgstr ""
 
 msgctxt "templatesCanNotBeDefault"

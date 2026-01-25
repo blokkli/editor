@@ -5,8 +5,7 @@ import { Block } from './Block'
 export class BlockGrid extends Block {
   static override bundle = 'grid'
   static override label = 'Grid'
-  static override description =
-    'A section to render a title and a grid of blocks.'
+  static override description = `<p>A section to render a title and a grid of blocks.</p><p>Use this block to place 2 or more child blocks (such as cards, text) in a grid. The grid can either be 2 or 3 columns.</p>`
 
   static override getFieldDefintions(): Field<any>[] {
     return [

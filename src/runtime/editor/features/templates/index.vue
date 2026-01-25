@@ -135,11 +135,11 @@ defineAddAction(() => {
     id: 'template',
     icon: 'bk_mdi_dashboard',
     color: 'rose',
-    title: $t('templatesAddTemplate', 'Add template'),
+    title: $t('templatesAddTemplate', 'Template'),
     weight: 10,
     description: $t(
       'templatesAddTemplateDescription',
-      '<p>Drag the icon into the page to add blocks from a template.</p>',
+      '<p>Drag the icon into the page to add blocks from a template.</p><p>Templates are copied to your page and can be changed without affecting other pages.</p>',
     ),
     callback: (action: ActionPlacedData) => {
       placedAction.value = action

@@ -13,7 +13,11 @@
       :color="type.isFavorite ? 'yellow' : 'default'"
       :is-auto-add="type.isAutoAdd"
       data-element-type="new"
+      use-help
+      :help-active
       :data-item-bundle="type.id"
+      @help="onHelp(type, $event)"
+      @start-help="onStartHelp(type, $event)"
     />
   </Sortli>
 
@@ -44,14 +48,52 @@ import type {
   BlockBundleDefinition,
   FieldConfig,
 } from '#blokkli/editor/types/definitions'
-import type { DraggableNewItem } from '../types'
+import type { AddListHelp, DraggableNewItem } from '../types'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
+
+type SortedListItem = BlockBundleDefinition & {
+  isDisabled: boolean
+  isVisible: boolean
+  isFavorite: boolean
+  isAutoAdd: boolean
+}
 
 const props = defineProps<{
   hideDisabledBlocks?: boolean
   selectableBundles: string[]
   generallyAvailableBundles: BlockBundleDefinition[]
+  helpActive: boolean
 }>()
+
+const emit = defineEmits<{
+  (e: 'help' | 'startHelp', date: AddListHelp): void
+}>()
+
+function onHelp(item: SortedListItem, element: HTMLElement) {
+  if (!props.helpActive) {
+    return
+  }
+
+  emit('help', {
+    id: item.id,
+    title: item.label,
+    text: item.description ?? '',
+    element,
+  })
+}
+
+function onStartHelp(item: SortedListItem, element: HTMLElement) {
+  if (props.helpActive) {
+    return
+  }
+
+  emit('startHelp', {
+    id: item.id,
+    title: item.label,
+    text: item.description ?? '',
+    element,
+  })
+}
 
 const {
   selection,
@@ -107,7 +149,7 @@ function determineVisibility(bundle: string, label: string): boolean {
   return true
 }
 
-const sortedList = computed(() => {
+const sortedList = computed<SortedListItem[]>(() => {
   const autoAdd = definitions.bundlesWithAutoAdd.value
 
   return [...props.generallyAvailableBundles]

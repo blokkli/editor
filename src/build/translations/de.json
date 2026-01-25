@@ -1160,8 +1160,8 @@
     "translation": "Feld darf nicht leer sein"
   },
   "fragmentsAddFragmentAction": {
-    "source": "Add fragment",
-    "translation": "Fragment hinzufügen"
+    "source": "Fragment",
+    "translation": "Fragment"
   },
   "fragmentsAddFragmentDescription": {
     "source": "<p>Drag the icon into the page to add a fragment block.</p><p>Fragments are reusable blocks that always render the same content.</p>",
@@ -1292,12 +1292,12 @@
     "translation": "Zur Bibliothek hinzufügen..."
   },
   "libraryAddDescription": {
-    "source": "Add a reusable block from the block library.",
+    "source": "<p>Add a reusable block from the block library. Changes to that block will become visible on all pages.</p>",
     "translation": "Fügen Sie einen wiederverwendbaren Block aus der Bibliothek hinzu."
   },
   "libraryAddFromLibrary": {
-    "source": "Add from library",
-    "translation": "Aus der Bibliothek hinzufügen"
+    "source": "From library",
+    "translation": "Aus der Bibliothek"
   },
   "libraryDetach": {
     "source": "Detach from library",
@@ -1884,11 +1884,11 @@
     "translation": "blökkli verwendet WebGL für die schnelle Darstellung von GUI-Elementen wie ausgewählten Blöcken und Drag-and-Drop-Indikatoren. Wenn WebGL nicht unterstützt wird, verwendet blökkli einen Fallback, der langsamer ist und nicht alle Funktionen unterstützt."
   },
   "templatesAddTemplate": {
-    "source": "Add template",
-    "translation": "Vorlage hinzufügen"
+    "source": "Template",
+    "translation": "Vorlage"
   },
   "templatesAddTemplateDescription": {
-    "source": "<p>Drag the icon into the page to add blocks from a template.</p>",
+    "source": "<p>Drag the icon into the page to add blocks from a template.</p><p>Templates are copied to your page and can be changed without affecting other pages.</p>",
     "translation": "<p>Ziehen Sie das Symbol auf die Seite, um Blöcke aus einer Vorlage hinzuzufügen.</p>"
   },
   "templatesCanNotBeDefault": {

@@ -1160,7 +1160,7 @@
     "translation": "Das Fäld dörf nid leer sii"
   },
   "fragmentsAddFragmentAction": {
-    "source": "Add fragment",
+    "source": "Fragment",
     "translation": "Fragmänt drzuefüege"
   },
   "fragmentsAddFragmentDescription": {
@@ -1292,11 +1292,11 @@
     "translation": "Zur Bibliothek drzuefüege"
   },
   "libraryAddDescription": {
-    "source": "Add a reusable block from the block library.",
+    "source": "<p>Add a reusable block from the block library. Changes to that block will become visible on all pages.</p>",
     "translation": "E wiederverwändbare Block us dr Block-Bibliothek drzuefüege."
   },
   "libraryAddFromLibrary": {
-    "source": "Add from library",
+    "source": "From library",
     "translation": "Us dr Bibliothek drzuefüege"
   },
   "libraryDetach": {
@@ -1884,11 +1884,11 @@
     "translation": "blökkli brucht WebGL zum schnäll UI-Elemänt wie usgwählti Blöck und Drag-and-Drop-Indikatore z'rendere. Wenn WebGL nid understützt wird, wird blökkli uf Fallback-Rendering zruggriife, wo langsamer isch und nid alli Funktione understützt."
   },
   "templatesAddTemplate": {
-    "source": "Add template",
+    "source": "Template",
     "translation": ""
   },
   "templatesAddTemplateDescription": {
-    "source": "<p>Drag the icon into the page to add blocks from a template.</p>",
+    "source": "<p>Drag the icon into the page to add blocks from a template.</p><p>Templates are copied to your page and can be changed without affecting other pages.</p>",
     "translation": ""
   },
   "templatesCanNotBeDefault": {

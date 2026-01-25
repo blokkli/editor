@@ -6,7 +6,6 @@
     type="button"
     class="bk-add-item"
     :menu="menu"
-    :title="description"
     :data-sortli-id="id"
     :class="[
       {
@@ -14,6 +13,8 @@
       },
       'bk-is-' + color,
     ]"
+    @mouseenter="onMouseEnter"
+    @mouseleave="onMouseLeave"
   >
     <div class="bk-add-item-icon">
       <ItemIconBox :color :bundle :icon />
@@ -44,7 +45,13 @@ export type AddListItemProps = {
   disabled?: boolean
   isAutoAdd?: boolean
   noContextMenu?: boolean
+  useHelp?: boolean
+  helpActive?: boolean
 }
+
+const emit = defineEmits<{
+  (e: 'help' | 'startHelp', d: HTMLElement): void
+}>()
 
 const props = withDefaults(defineProps<AddListItemProps>(), {
   color: 'default',
@@ -84,6 +91,40 @@ const menu = computed<ContextMenu[]>(() => {
 })
 
 const getElement = (): HTMLElement | null => el.value?.$el
+
+let helpTimeout: number | null = null
+
+function onMouseEnter() {
+  if (!props.useHelp) {
+    return
+  }
+
+  if (props.helpActive) {
+    const element = getElement()
+    if (!element) {
+      return
+    }
+    emit('help', element)
+  }
+
+  if (helpTimeout) {
+    window.clearTimeout(helpTimeout)
+  }
+
+  helpTimeout = window.setTimeout(() => {
+    const element = getElement()
+    if (!element) {
+      return
+    }
+    emit('startHelp', element)
+  }, 800)
+}
+
+function onMouseLeave() {
+  if (helpTimeout) {
+    window.clearTimeout(helpTimeout)
+  }
+}
 
 defineExpose({ getElement })
 </script>

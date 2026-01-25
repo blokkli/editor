@@ -228,10 +228,10 @@ defineAddAction(() => {
   }
   return {
     id: 'library',
-    title: $t('libraryAddFromLibrary', 'Add from library'),
+    title: $t('libraryAddFromLibrary', 'From library'),
     description: $t(
       'libraryAddDescription',
-      'Add a reusable block from the block library.',
+      '<p>Add a reusable block from the block library. Changes to that block will become visible on all pages.</p>',
     ),
     icon: 'reusable',
     color: 'lime',

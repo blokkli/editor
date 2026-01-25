@@ -1160,7 +1160,7 @@
     "translation": "Questo campo è obbligatorio"
   },
   "fragmentsAddFragmentAction": {
-    "source": "Add fragment",
+    "source": "Fragment",
     "translation": ""
   },
   "fragmentsAddFragmentDescription": {
@@ -1292,11 +1292,11 @@
     "translation": "Aggiungi alla biblioteca"
   },
   "libraryAddDescription": {
-    "source": "Add a reusable block from the block library.",
+    "source": "<p>Add a reusable block from the block library. Changes to that block will become visible on all pages.</p>",
     "translation": ""
   },
   "libraryAddFromLibrary": {
-    "source": "Add from library",
+    "source": "From library",
     "translation": ""
   },
   "libraryDetach": {
@@ -1884,11 +1884,11 @@
     "translation": ""
   },
   "templatesAddTemplate": {
-    "source": "Add template",
+    "source": "Template",
     "translation": ""
   },
   "templatesAddTemplateDescription": {
-    "source": "<p>Drag the icon into the page to add blocks from a template.</p>",
+    "source": "<p>Drag the icon into the page to add blocks from a template.</p><p>Templates are copied to your page and can be changed without affecting other pages.</p>",
     "translation": ""
   },
   "templatesCanNotBeDefault": {

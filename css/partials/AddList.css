@@ -1,3 +1,24 @@
+.bk.bk-add-list-help {
+  @apply absolute top-0 left-0 z-add-list-info p-5;
+  @apply w-[600px];
+
+  .bk-add-list-help-inner {
+    @apply text-mono-50 bg-mono-900/90 backdrop-blur-md;
+    @apply rounded-md overflow-hidden p-20;
+  }
+
+  h2 {
+    @apply text-lg font-bold leading-none mb-5;
+    @apply border-b border-b-mono-600 pb-20 mb-20;
+  }
+  .bk-add-list-help-description {
+    @apply select-text;
+    p + p {
+      @apply mt-15;
+    }
+  }
+}
+
 .bk.bk-add-list {
   @apply pointer-events-auto relative z-add-list bg-mono-900;
   @apply w-toolbar-left h-full relative;

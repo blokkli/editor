@@ -62,7 +62,7 @@ defineAddAction(() => {
     icon: 'bk_mdi_newspaper',
     color: 'accent',
     itemBundle: fragmentBlockBundle,
-    title: $t('fragmentsAddFragmentAction', 'Add fragment'),
+    title: $t('fragmentsAddFragmentAction', 'Fragment'),
     weight: 20,
     description: $t(
       'fragmentsAddFragmentDescription',
