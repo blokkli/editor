@@ -17,24 +17,19 @@
     @cancel="$emit('cancel')"
   >
     <div class="bk">
-      <ConfigForm v-model="filters" :config>
-        <template #before>
-          <li class="bk-form-item">
-            <FormCheckboxes
-              id="import-existing-fields"
-              v-model="selectedFields"
-              :label="
-                $t(
-                  'importExistingFieldsLabel',
-                  'Which content would you like to import?',
-                )
-              "
-              :options="fieldOptions"
-              inline
-            />
-          </li>
-        </template>
-      </ConfigForm>
+      <FormCheckboxes
+        id="import-existing-fields"
+        v-model="selectedFields"
+        :label="
+          $t(
+            'importExistingFieldsLabel',
+            'Which content would you like to import?',
+          )
+        "
+        :options="fieldOptions"
+        inline
+      />
+      <ConfigForm v-model="filters" :config />
       <div class="bk-import-existing-dialog-results">
         <div class="bk-form-label">
           {{ $t('importExistingPagesTitle', 'Select page') }}

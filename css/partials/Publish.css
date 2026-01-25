@@ -77,14 +77,6 @@
     }
   }
 
-  .bk-pill {
-    @apply bg-accent-100 inline-block text-accent-800 ml-5 rounded-full px-[7px] pt-[2px] uppercase text-xs font-semibold;
-
-    &.bk-is-mono {
-      @apply bg-mono-100 text-mono-500;
-    }
-  }
-
   .bk-publish-options {
     @apply grid grid-cols-3 gap-10 my-20;
   }

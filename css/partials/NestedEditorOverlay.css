@@ -61,10 +61,18 @@
   .bk-library-edit-header-enter-active,
   .bk-library-edit-header-leave-active {
     @apply transition duration-700 ease-swing;
+
+    > header {
+      @apply transition duration-700 ease-swing;
+    }
   }
   .bk-library-edit-header-enter-from,
   .bk-library-edit-header-leave-to {
     @apply opacity-0;
+
+    > header {
+      @apply -translate-y-full;
+    }
   }
 }
 

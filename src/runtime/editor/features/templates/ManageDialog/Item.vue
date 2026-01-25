@@ -5,7 +5,7 @@
         <span>{{ label }}</span>
         <span
           v-if="isDefault"
-          class="bk-pill"
+          class="bk-pill bk-is-strong"
           :title="
             $t(
               'templatesDefaultPillDescription',
@@ -16,6 +16,11 @@
         >
       </div>
       <div v-if="description">{{ description }}</div>
+      <ul class="bk-pill-list">
+        <li v-for="(bundle, index) in bundleLabels" :key="index">
+          <span class="bk-pill bk-is-mono" v-text="bundle" />
+        </li>
+      </ul>
     </td>
     <td>
       <span v-if="metadata?.createdBy">{{ metadata.createdBy }}</span>
@@ -88,6 +93,7 @@ import {
   NestedEditorOverlay,
   RelativeTime,
 } from '#blokkli/editor/components'
+import { falsy, onlyUnique } from '#blokkli/helpers'
 
 const props = defineProps<TemplateItem>()
 
@@ -95,7 +101,7 @@ const emit = defineEmits<{
   (e: 'refresh'): void
 }>()
 
-const { $t, adapter, state } = useBlokkli()
+const { $t, adapter, state, types } = useBlokkli()
 
 const editButtonEl = useTemplateRef('editButtonEl')
 
@@ -118,6 +124,15 @@ function onSubmitEdit() {
 }
 
 const adapterHasEdit = !!adapter.templatesGetEditUrl
+
+const bundleLabels = computed(() =>
+  props.itemBundles
+    .map((bundle) => {
+      return types.getBlockBundleDefinition(bundle)?.label
+    })
+    .filter(falsy)
+    .filter(onlyUnique),
+)
 
 async function onConfirmDelete() {
   if (!adapter.templatesDelete) {

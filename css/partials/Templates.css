@@ -8,14 +8,20 @@
   .bk-templates-manage {
     min-height: 80vh;
     @apply select-text relative;
+    @apply mt-25;
     .bk-form-group {
       @apply mt-20 mb-30;
     }
     .bk-table {
+      @apply mt-40;
       thead {
         th:last-child {
           @apply text-right;
         }
+      }
+
+      .bk-pill-list {
+        @apply mt-8;
       }
 
       tbody {
@@ -28,6 +34,10 @@
         td:first-child {
           div:first-child {
             @apply font-bold text-lg;
+
+            .bk-pill {
+              @apply ml-5;
+            }
           }
         }
       }

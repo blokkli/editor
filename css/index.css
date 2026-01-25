@@ -64,6 +64,7 @@
 
 @import './indicator.css';
 
+@import './components/pill.css';
 @import './components/button.css';
 @import './components/toggle.css';
 
