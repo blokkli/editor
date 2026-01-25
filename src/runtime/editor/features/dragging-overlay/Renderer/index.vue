@@ -110,6 +110,7 @@ type DrawnRect = Rectangle & {
   field?: FieldRect
   index: number
   state?: number
+  nestingLevel?: number
 }
 
 const dragStart = Date.now()
@@ -741,6 +742,7 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
             width: child.width,
             height: child.height,
             field: fieldRect,
+            nestingLevel: fieldRect.field.nestingLevel,
             state: child.id.includes(':empty:')
               ? 2
               : fieldRect.orientation === 'vertical'
@@ -847,6 +849,7 @@ const fieldRenderPalette = computed<
   Record<'0' | '1' | '2' | '3', FieldColorPalette>
 >(() => {
   const accent = theme.accent.value
+  const mono = theme.mono.value
   return {
     '0': {
       gradStart: accent[800],
@@ -859,22 +862,22 @@ const fieldRenderPalette = computed<
       gradStart: accent[400],
       gradEnd: accent[500],
       borderOuter: accent[400],
-      borderInner: accent[200],
+      borderInner: accent[300],
       color: accent[950],
     },
     '2': {
-      gradStart: accent[700],
-      gradEnd: accent[800],
-      borderOuter: accent[900],
-      borderInner: accent[600],
-      color: accent[100],
+      gradStart: mono[700],
+      gradEnd: mono[800],
+      borderOuter: [0, 0, 0],
+      borderInner: mono[600],
+      color: mono[100],
     },
     '3': {
-      gradStart: accent[400],
-      gradEnd: accent[500],
-      borderOuter: accent[600],
-      borderInner: accent[300],
-      color: accent[100],
+      gradStart: mono[300],
+      gradEnd: mono[400],
+      borderOuter: mono[600],
+      borderInner: mono[300],
+      color: mono[100],
     },
   }
 })

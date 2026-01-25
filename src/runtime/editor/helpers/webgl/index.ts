@@ -7,6 +7,7 @@ type RectangleBufferRect = Rectangle & {
   index: number
   radius?: [number, number, number, number]
   state?: number
+  nestingLevel?: number
 }
 
 type RectangleBufferCollectorOptions = {
@@ -14,7 +15,7 @@ type RectangleBufferCollectorOptions = {
   deferredMode?: boolean
 }
 
-type PlacedRectangle = Rectangle & { originalY: number }
+type PlacedRectangle = Rectangle & { originalY: number; nestingLevel?: number }
 
 type PendingRect<T> = {
   rect: Omit<T, 'index'>
@@ -68,7 +69,8 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
     width: number,
     height: number,
     isEmptyField = false,
-  ): Rectangle {
+    nestingLevel?: number,
+  ): Rectangle & { nestingLevel?: number } {
     const MIN_HEIGHT = 5 // Minimum height for intersection detection
 
     const rect: PlacedRectangle = {
@@ -77,11 +79,13 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
       width,
       height,
       originalY: y,
+      nestingLevel,
     }
 
     const intersections: PlacedRectangle[] = []
     for (let i = 0; i < this.placedRects.length; i++) {
       const placed = this.placedRects[i]!
+
       // Use minimum height for intersection test to handle empty fields (height=0)
       const testRect = { ...rect, height: Math.max(height, MIN_HEIGHT) }
       const testPlaced = {
@@ -89,7 +93,19 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
         height: Math.max(placed.height, MIN_HEIGHT),
       }
 
-      if (intersects(testRect, testPlaced)) {
+      // For empty fields, use a buffer to also catch adjacent rects (touching edges)
+      // so they can be properly centered away from nearby drop targets
+      if (isEmptyField) {
+        const buffer = 1
+        const bufferedRect = {
+          ...testRect,
+          y: testRect.y - buffer,
+          height: testRect.height + buffer * 2,
+        }
+        if (intersects(bufferedRect, testPlaced)) {
+          intersections.push(placed)
+        }
+      } else if (intersects(testRect, testPlaced)) {
         intersections.push(placed)
       }
     }
@@ -104,29 +120,67 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
     // Try centered approach: find space between rects and center in it
     // Only apply to empty field rects
     if (isEmptyField) {
+      // Maximum distance we're willing to move from original position
+      const MAX_DISPLACEMENT = 100
+
       for (let i = 0; i < intersections.length; i++) {
         const existingRect = intersections[i]!
 
-        // Find rects above this intersection (in the same horizontal space)
-        const rectsAbove = this.placedRects.filter(
-          (r) =>
-            r.y + r.height <= existingRect.y &&
-            r.x < x + width &&
-            r.x + r.width > x,
-        )
+        // Determine if intersection is above or below our original position
+        const intersectionIsAbove = existingRect.y < y
 
-        // Calculate the bottom edge of the highest rect above
-        let prevBottom = 0
-        if (rectsAbove.length > 0) {
-          prevBottom = Math.max(...rectsAbove.map((r) => r.y + r.height))
+        let gapStart: number
+        let gapEnd: number
+
+        if (intersectionIsAbove) {
+          // Intersection is above us - look for space BELOW the intersection
+          gapStart = existingRect.y + existingRect.height
+
+          // Find the next rect below the intersection (in the same horizontal space)
+          const rectsBelow = this.placedRects.filter(
+            (r) =>
+              r.y >= gapStart &&
+              r.y <= y + MAX_DISPLACEMENT &&
+              r.x < x + width &&
+              r.x + r.width > x,
+          )
+
+          if (rectsBelow.length > 0) {
+            gapEnd = Math.min(...rectsBelow.map((r) => r.y))
+          } else {
+            gapEnd = y + MAX_DISPLACEMENT
+          }
+        } else {
+          // Intersection is below us - look for space ABOVE the intersection
+          gapEnd = existingRect.y
+
+          // Find rects above the intersection (in the same horizontal space)
+          const rectsAbove = this.placedRects.filter(
+            (r) =>
+              r.y + r.height <= gapEnd &&
+              r.y + r.height >= y - MAX_DISPLACEMENT &&
+              r.x < x + width &&
+              r.x + r.width > x,
+          )
+
+          if (rectsAbove.length > 0) {
+            gapStart = Math.max(...rectsAbove.map((r) => r.y + r.height))
+          } else {
+            gapStart = Math.max(0, y - MAX_DISPLACEMENT)
+          }
         }
 
-        const nextTop = existingRect.y
-        const availableSpace = nextTop - prevBottom
+        const availableSpace = gapEnd - gapStart
 
         // Try to center in the available space
         if (availableSpace >= height) {
-          const centeredY = prevBottom + (availableSpace - height) / 2
+          const centeredY = gapStart + (availableSpace - height) / 2
+
+          // Ensure we don't move too far from original position
+          if (Math.abs(centeredY - y) > MAX_DISPLACEMENT) {
+            continue
+          }
+
           const centeredRect = { ...rect, y: centeredY }
 
           // Verify this centered position doesn't intersect with anything
@@ -295,6 +349,7 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
             rect.width,
             rect.height,
             isEmptyField,
+            rect.nestingLevel,
           )
         } else {
           // New rect without overlap checking
