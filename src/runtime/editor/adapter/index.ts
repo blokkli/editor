@@ -8,6 +8,7 @@ import type { PluginConfigInput } from '../types/pluginConfig'
 import type { EntityTranslation, MappedState } from '../types/state'
 import type { BlockBundleDefinition, FieldConfig } from '../types/definitions'
 import type { EditBlockEvent } from '../features/edit/types'
+import type { UserPermissions } from '../types/permissions'
 
 export interface MutationResponseLike<T> {
   success: boolean
@@ -95,6 +96,8 @@ export interface BlokkliAdapter<T> {
    * Map the state returned by mutations.
    */
   mapState(state: T): MappedState
+
+  getUserPermissions: () => Promise<UserPermissions[]>
 
   /**
    * Get disabled features at runtime.

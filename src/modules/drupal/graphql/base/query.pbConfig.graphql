@@ -1,4 +1,21 @@
+fragment paragraphsBlokkliUserPermissions on ParagraphsBlokkliUser {
+  create_library_item: hasPermission(
+    permission: "create paragraph library item"
+  )
+
+  edit_library_item: hasPermission(permission: "edit paragraph library item")
+
+  manage_default_templates: hasPermission(
+    permission: "manage default paragraph templates"
+  )
+
+  create_comments: hasPermission(permission: "post comments")
+  view_comments: hasPermission(permission: "access comments")
+}
 query pbConfig($entityType: String!, $entityBundle: String!) {
+  userPermissions: paragraphsBlokkliGetUser {
+    ...paragraphsBlokkliUserPermissions
+  }
   clipboards: pbGetSupportedClipboards {
     ...paragraphsBlokkliSupportedClipboard
   }

@@ -7,6 +7,14 @@
       .bk-checkbox-toggle-toggle {
         @apply !bg-mono-200;
       }
+
+      .bk-checkbox-toggle-label-description {
+        @apply text-mono-300;
+      }
+    }
+
+    .bk-form-disabled-reason {
+      @apply mt-8;
     }
 
     &:focus-within {
@@ -16,10 +24,10 @@
     }
 
     .bk-checkbox-toggle-label {
-      div:first-child {
+      .bk-checkbox-toggle-label-label {
         @apply font-semibold;
       }
-      div:nth-child(2) {
+      .bk-checkbox-toggle-label-description {
         @apply text-sm text-mono-600 text-pretty max-w-[500px];
       }
       @apply inline-block pr-10 text-base;

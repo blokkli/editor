@@ -13,7 +13,10 @@
       <p v-if="lastRun" class="bk-analyze-last-run">
         <RelativeTime v-slot="{ formatted }" :timestamp="lastRun">
           {{
-            $t('analyzeLastRun', 'Last run: @time').replace('@time', formatted)
+            $t('analyzeLastRun', 'Last run: @time').replace(
+              '@time',
+              formatted ?? 'never',
+            )
           }}
         </RelativeTime>
       </p>

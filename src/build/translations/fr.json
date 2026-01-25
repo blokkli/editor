@@ -1891,6 +1891,10 @@
     "source": "<p>Drag the icon into the page to add blocks from a template.</p>",
     "translation": ""
   },
+  "templatesCanNotBeDefault": {
+    "source": "Only single blocks can be made default.",
+    "translation": ""
+  },
   "templatesCreate": {
     "source": "Create template...",
     "translation": ""
@@ -1993,6 +1997,10 @@
   },
   "templatesMenuLabel": {
     "source": "Templates...",
+    "translation": ""
+  },
+  "templatesMissingDefaultPermissions": {
+    "source": "Missing permission to create default templates.",
     "translation": ""
   },
   "templatesNoResults": {

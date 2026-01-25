@@ -2061,6 +2061,10 @@ msgctxt "templatesAddTemplateDescription"
 msgid "<p>Drag the icon into the page to add blocks from a template.</p>"
 msgstr ""
 
+msgctxt "templatesCanNotBeDefault"
+msgid "Only single blocks can be made default."
+msgstr ""
+
 msgctxt "templatesCreate"
 msgid "Create template..."
 msgstr ""
@@ -2167,6 +2171,10 @@ msgstr ""
 
 msgctxt "templatesMenuLabel"
 msgid "Templates..."
+msgstr ""
+
+msgctxt "templatesMissingDefaultPermissions"
+msgid "Missing permission to create default templates."
 msgstr ""
 
 msgctxt "templatesNoResults"

@@ -1891,6 +1891,10 @@
     "source": "<p>Drag the icon into the page to add blocks from a template.</p>",
     "translation": "<p>Ziehen Sie das Symbol auf die Seite, um Blöcke aus einer Vorlage hinzuzufügen.</p>"
   },
+  "templatesCanNotBeDefault": {
+    "source": "Only single blocks can be made default.",
+    "translation": "Nur einzelne Blöcke können als Standard definiert werden."
+  },
   "templatesCreate": {
     "source": "Create template...",
     "translation": "Vorlage erstellen..."
@@ -1994,6 +1998,10 @@
   "templatesMenuLabel": {
     "source": "Templates...",
     "translation": "Vorlagen..."
+  },
+  "templatesMissingDefaultPermissions": {
+    "source": "Missing permission to create default templates.",
+    "translation": "Fehlende Berechtigung um Standard-Vorlagen zu erstellen."
   },
   "templatesNoResults": {
     "source": "No templates available for this field.",

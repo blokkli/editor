@@ -44,6 +44,7 @@ import type { HostTransformPlugin } from '#blokkli/editor/features/transform/typ
 import type { CommentItem } from '#blokkli/editor/features/comments/types'
 import type { PublishOptions } from '#blokkli/editor/features/publish/types'
 import type { TemplateItem } from '#blokkli/editor/features/templates/types'
+import type { UserPermissions } from '#blokkli/editor/types/permissions'
 
 const ENALBE_EDIT_STATES = false
 const ENABLED_ASSISTANT = false
@@ -328,6 +329,14 @@ export default defineBlokkliEditAdapter((ctx) => {
       }
       const mutatedState = editState.getMutatedState(page)
       return Promise.resolve(mutatedState)
+    },
+    getUserPermissions() {
+      const permissions: UserPermissions[] = [
+        // 'manage-default-templates',
+        // 'create-library-item',
+        'edit_library_item',
+      ]
+      return Promise.resolve(permissions)
     },
     loadStateAtIndex(index: number) {
       const page = entityStorageManager.getContent(ctx.value.entityUuid)

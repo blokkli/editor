@@ -5915,6 +5915,7 @@ type ParagraphsBlokkliEntityMetadata {
 
   """The description of the entity if available."""
   description: String
+  entityAccess(operation: String!): Boolean!
 }
 
 type ParagraphsBlokkliFieldConfig {
@@ -6151,6 +6152,10 @@ type ParagraphsBlokkliTranslationStateEntityTranslation {
 input ParagraphsBlokkliUpdateHostOptionsInput {
   key: String!
   value: String!
+}
+
+type ParagraphsBlokkliUser {
+  hasPermission(permission: String!): Boolean!
 }
 
 input ParagraphsBlokkliUserConfigInput {
@@ -6895,6 +6900,7 @@ type Query {
   paragraphsBlokkliConversions: [ParagraphsBlokkliConversion!]
   paragraphsBlokkliGetHostTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliHostTransformPlugin!]
   paragraphsBlokkliGetTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliTransformPlugin!]
+  paragraphsBlokkliGetUser: ParagraphsBlokkliUser
   paragraphsBlokkliSearch(id: String, text: String!): [ParagraphsBlokkliSearchItem]
   paragraphsBlokkliSearchLibraryItems(bundles: [String]!, filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliLibraryItemsSearchResults
   paragraphsBlokkliSearchTabs: [ParagraphsBlokkliSearchTab]

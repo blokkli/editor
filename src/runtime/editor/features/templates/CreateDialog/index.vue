@@ -41,10 +41,12 @@
           "
         />
       </FormItem>
-      <FormItem v-if="canBeDefault">
+      <FormItem>
         <FormToggle
           v-model="isDefault"
           :label="$t('templatesCreateDialogDefaultLabel', 'Use as default')"
+          :disabled="!!disabledReason"
+          :disabled-reason
           :description="
             $t(
               'templatesCreateDialogDefaultDescription',
@@ -79,7 +81,7 @@ const emit = defineEmits<{
   (e: 'cancel'): void
 }>()
 
-const { $t, ui } = useBlokkli()
+const { $t, ui, permissions } = useBlokkli()
 
 const props = defineProps<{
   uuids: string[]
@@ -90,6 +92,26 @@ const description = ref('')
 const isDefault = ref(false)
 
 const canBeDefault = computed(() => props.uuids.length === 1)
+
+const userCanMakeDefault = computed(() =>
+  permissions.hasPermission('manage_default_templates'),
+)
+
+const disabledReason = computed(() => {
+  if (!canBeDefault.value) {
+    return $t(
+      'templatesCanNotBeDefault',
+      'Only single blocks can be made default.',
+    )
+  } else if (!userCanMakeDefault.value) {
+    return $t(
+      'templatesMissingDefaultPermissions',
+      'Missing permission to create default templates.',
+    )
+  }
+
+  return null
+})
 
 watch(
   label,

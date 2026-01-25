@@ -54,7 +54,6 @@
 
   .bk-item-action {
     @apply text-mono-300 h-full flex items-center shrink-0  justify-center relative lg:static z-50;
-    @apply lg:hover:bg-mono-700 lg:hover:text-mono-50;
     max-width: var(--bk-actions-height);
     flex: 1 0 auto;
     @screen lg {
@@ -75,8 +74,15 @@
       }
     }
 
+    &:not([disabled]) {
+      @apply lg:hover:bg-mono-700 lg:hover:text-mono-50;
+    }
+
     &[disabled] {
-      @apply opacity-25 pointer-events-none;
+      @apply cursor-not-allowed;
+      .bk-item-action-icon {
+        @apply opacity-25;
+      }
     }
   }
 

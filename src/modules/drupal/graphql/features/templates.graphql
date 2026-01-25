@@ -17,13 +17,12 @@ query pbSearchTemplates(
       }
       templateBundles
       translationLanguages
-      blokkliProps {
-        permissions
-      }
       blokkliMetadata {
         createdBy
         dateUpdated
         dateCreated
+        canDelete: entityAccess(operation: "delete")
+        canEdit: entityAccess(operation: "update")
       }
     }
     total

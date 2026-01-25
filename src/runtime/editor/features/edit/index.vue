@@ -26,7 +26,12 @@ defineBlokkliFeature({
   requiredAdapterMethods: ['formFrameBuilder'],
 })
 
-const { eventBus, selection, state, $t, adapter, definitions } = useBlokkli()
+const { eventBus, selection, state, $t, adapter, definitions, permissions } =
+  useBlokkli()
+
+const userCanEditLibraryItems = computed(() =>
+  permissions.hasPermission('edit_library_item'),
+)
 
 const canEdit = computed(() => {
   const item = selection.item.value
@@ -49,6 +54,9 @@ const canEdit = computed(() => {
   // For reusable blocks, editing is only possible if the adapter implements
   // the getLibraryItemEditUrl method.
   if (item.library?.libraryItemUuid) {
+    if (!userCanEditLibraryItems.value) {
+      return false
+    }
     return (
       !!adapter.getLibraryItemEditUrl &&
       (state.editMode.value === 'editing' ||

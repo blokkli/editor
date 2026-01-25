@@ -25,6 +25,7 @@ import type { TourProvider } from '../providers/tour'
 import type { DropAreaProvider } from '../providers/dropArea'
 import type { ThemeProvider } from '../providers/theme'
 import type { DefinitionProvider } from '../providers/definition'
+import type { PermissionsProvider } from '../providers/permissions'
 
 export interface BlokkliApp {
   /**
@@ -59,4 +60,5 @@ export interface BlokkliApp {
   directive: DirectiveProvider
   fields: FieldsProvider
   icons: IconsProvider
+  permissions: PermissionsProvider
 }

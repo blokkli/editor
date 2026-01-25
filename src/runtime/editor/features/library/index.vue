@@ -81,8 +81,13 @@ const { adapter } = defineBlokkliFeature({
   dependencies: ['add-list'],
 })
 
-const { selection, state, types, $t, eventBus, definitions, ui } = useBlokkli()
+const { selection, state, types, $t, eventBus, definitions, ui, permissions } =
+  useBlokkli()
 const showReusableDialog = useDialog('library-reusable', 'center')
+
+const userCanCreateLibraryItem = computed(() =>
+  permissions.hasPermission('create_library_item'),
+)
 
 async function selectNewlyAdded(cb: () => Promise<boolean>): Promise<void> {
   // Get all current UUIDs.
@@ -190,7 +195,8 @@ const canMakeReusable = computed(
   () =>
     !isReusable.value &&
     itemBundle?.value?.allowReusable &&
-    fromLibraryAllowedInList.value,
+    fromLibraryAllowedInList.value &&
+    userCanCreateLibraryItem.value,
 )
 
 const editingLibraryItem = ref<LibraryEditItemEvent | null>(null)

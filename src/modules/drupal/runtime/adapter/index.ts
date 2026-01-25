@@ -21,6 +21,7 @@ import type {
   ParagraphsBlokkliMutationResultFragment,
   ParagraphsBlokkliPublishOptionsFragment,
   ParagraphsBlokkliUserConfigInput,
+  ParagraphsBlokkliUserPermissionsFragment,
 } from '#graphql-operations'
 import { ParagraphsBlokkliRemoteVideoProvider } from '#graphql-operations'
 import type { Mutation, Query } from '#nuxt-graphql-middleware/operation-types'
@@ -34,6 +35,11 @@ import type { TranslationState } from '#blokkli/editor/types/state'
 import type { BlockBundleDefinition } from '#blokkli/editor/types/definitions'
 import type { TemplateItem } from '#blokkli/editor/features/templates/types'
 import type { GraphqlResponse } from '#nuxt-graphql-middleware/response'
+import type { EditPermission } from '#blokkli/types/provider'
+import {
+  ALL_PERMISSIONS,
+  type UserPermissions,
+} from '#blokkli/editor/types/permissions'
 
 type DrupalAdapter = BlokkliAdapter<ParagraphsBlokkliEditStateFragment>
 
@@ -49,6 +55,14 @@ function mapPublishOptions(
     publishOn: publishOptions.publishOn ?? null,
     revisionLogMessage: publishOptions.revisionLogMessage ?? null,
   }
+}
+
+function mapUserPermissions(
+  user: ParagraphsBlokkliUserPermissionsFragment,
+): UserPermissions[] {
+  return ALL_PERMISSIONS.filter((permission) => {
+    return user[permission] === true
+  })
 }
 
 function valueToFilterString(v: unknown): string {
@@ -166,6 +180,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     }).then((v) => {
       return {
         clipboard: v.data.clipboards || [],
+        userPermissions: v.data.userPermissions,
         availableFeatures: v.data.features,
         allTypes: (v.data.allTypes.items || []).filter(
           (v) => v && 'id' in v,
@@ -459,6 +474,12 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     const adapter: BlokkliAdapter<any> = {
       addNewBlock,
       buildEditableFrameUrl,
+      getUserPermissions: function () {
+        const permissions = config.userPermissions
+          ? mapUserPermissions(config.userPermissions)
+          : []
+        return Promise.resolve(permissions)
+      },
       changeLanguage,
       formFrameBuilder,
       getAllBundles,
@@ -1137,6 +1158,13 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             items: (data.data.results?.items || [])
               .filter(falsy)
               .map<TemplateItem>((v) => {
+                const permissions: EditPermission[] = []
+                if (v.blokkliMetadata.canDelete) {
+                  permissions.push('delete')
+                }
+                if (v.blokkliMetadata.canEdit) {
+                  permissions.push('edit')
+                }
                 return {
                   uuid: v.uuid,
                   label: v.label ?? '',
@@ -1144,7 +1172,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
                   isDefault: !!v.isDefault,
                   itemBundles: v.templateBundles,
                   items: (v.items ?? []).filter(falsy),
-                  permissions: v.blokkliProps.permissions,
+                  permissions,
                   translationLanguages: v.translationLanguages,
                   metadata: {
                     description: v.description ?? null,
