@@ -105,6 +105,16 @@ export type UiProvider = {
   hasDialogOpen: ComputedRef<boolean>
 
   /**
+   * Whether a nested editor overlay is currently open.
+   */
+  hasNestedEditorOpen: ComputedRef<boolean>
+
+  /**
+   * Set the currently open nested editor.
+   */
+  setNestedEditor: (key: string | null) => void
+
+  /**
    * The currently open dialog, or null if none is open.
    */
   currentDialog: Readonly<Ref<GlobalUiDialog | null>>
@@ -456,6 +466,14 @@ export default function (
     const lang = interfaceLanguage.value
     return localeMap[lang] || lang
   })
+
+  const nestedEditorKey = ref('')
+
+  const hasNestedEditorOpen = computed(() => !!nestedEditorKey.value)
+
+  function setNestedEditor(key: string | null) {
+    nestedEditorKey.value = key ?? ''
+  }
 
   const viewportWidth = ref(window.innerWidth)
   const viewportHeight = ref(window.innerHeight)
@@ -900,5 +918,7 @@ export default function (
     currentDialog: readonly(currentDialog),
     requireDialogCloseConfirm,
     toArtboardCoords,
+    hasNestedEditorOpen,
+    setNestedEditor,
   }
 }

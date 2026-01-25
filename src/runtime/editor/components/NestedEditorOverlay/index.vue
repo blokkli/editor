@@ -1,27 +1,30 @@
 <template>
   <Teleport :to="ui.mainLayoutElement.value">
-    <Loading v-if="isLoading" />
     <Transition name="bk-library-edit-header">
-      <header
+      <div
         v-show="isLoaded"
-        class="bk bk-library-edit-overlay-header"
+        class="bk bk-nested-editor-overlay"
         :class="'bk-is-' + theme"
       >
         <Icon :name="icon" />
-        <h2>
-          <span>{{ title }}</span>
-        </h2>
-        <button @click.prevent="closeOverlay">
-          <Icon name="bk_mdi_arrow_left_alt" />
-          <span>{{ $t('libraryItemEditOverlayBack', 'Back to page') }}</span>
-        </button>
-      </header>
+        <header>
+          <h2>
+            <span>{{ title }}</span>
+          </h2>
+          <button @click.prevent="closeOverlay">
+            <Icon name="bk_mdi_arrow_left_alt" />
+            <span>{{ $t('libraryItemEditOverlayBack', 'Back to page') }}</span>
+          </button>
+        </header>
+      </div>
     </Transition>
     <Transition
       :css="false"
+      @before-enter="onBeforeEnter"
       @enter="onEnter"
       @after-enter="onAfter"
       @enter-cancelled="onAfter"
+      @before-leave="onBeforeLeave"
       @leave="onLeave"
       @after-leave="onAfterLeave"
       @leave-cancelled="onAfterLeave"
@@ -43,8 +46,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, useTemplateRef } from '#imports'
-import { Icon, Loading } from '#blokkli/editor/components'
+import {
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  useBlokkli,
+  useTemplateRef,
+} from '#imports'
+import { Icon } from '#blokkli/editor/components'
 import { onBroadcastEvent } from '#blokkli/editor/composables'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 
@@ -61,7 +70,7 @@ export type NestedEditorOverlayProps = {
 const props = defineProps<NestedEditorOverlayProps>()
 
 const { $t, ui, dom, blocks } = useBlokkli()
-const DURATION = 530
+const DURATION = 600
 const emit = defineEmits(['submit', 'close'])
 
 function getOriginatingElement(): HTMLElement | null {
@@ -78,91 +87,164 @@ function getOriginatingElement(): HTMLElement | null {
   return null
 }
 
+const FADE_DURATION = 150
+const EASING = 'cubic-bezier(0.56, 0.04, 0.25, 1)'
+
+let pendingTimeouts: number[] = []
+let raf: number | null = null
+
+function cancelPendingTimeouts() {
+  pendingTimeouts.forEach((id) => window.clearTimeout(id))
+  pendingTimeouts = []
+}
+
+function withTimeout(callback: () => void, duration: number) {
+  const id = window.setTimeout(callback, duration)
+  pendingTimeouts.push(id)
+}
+
+// Called before the element is inserted/shown.
+// Use this to set initial styles before any paint.
+function onBeforeEnter(el: Element) {
+  cancelPendingTimeouts()
+  if (el instanceof HTMLElement) {
+    // Set transition to none so styles apply instantly
+    el.style.transition = 'none'
+    el.style.opacity = '0'
+  }
+}
+
 // called one frame after the element is inserted.
 // use this to start the entering animation.
 function onEnter(el: Element, done: () => void) {
-  if (el instanceof HTMLElement) {
-    const originating = getOriginatingElement()
-    console.log(originating)
-    if (!originating) {
-      done()
-      isLoading.value = false
-      return
-    }
-
-    const originatingRect = originating.getBoundingClientRect()
-    const overlayRect = el.getBoundingClientRect()
-
-    const offsetX =
-      originatingRect.x - overlayRect.x + originatingRect.width / 2
-    const offsetY =
-      originatingRect.y - overlayRect.y + originatingRect.height / 2
-
-    el.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(0, 0)`
-
-    setTimeout(() => {
-      el.style.transitionDuration = DURATION + 'ms'
-      el.style.transitionTimingFunction = 'cubic-bezier(0.56, 0.04, 0.25, 1)'
-      el.style.transitionProperty = 'transform'
-      el.style.transformOrigin = '0px 0px'
-      el.style.transform = 'translate(0px, 0px)'
-    }, 10)
-
-    setTimeout(() => {
-      done()
-      isLoading.value = false
-    }, DURATION)
+  isLoading.value = false
+  if (raf) {
+    window.cancelAnimationFrame(raf)
   }
+
+  if (!(el instanceof HTMLElement)) {
+    done()
+    return
+  }
+
+  const originating = getOriginatingElement()
+  if (!originating) {
+    done()
+    return
+  }
+
+  const originatingRect = originating.getBoundingClientRect()
+  const overlayRect = el.getBoundingClientRect()
+
+  // Calculate scale to match originating element's size
+  const scaleX = originatingRect.width / overlayRect.width
+  const scaleY = originatingRect.height / overlayRect.height
+
+  // Calculate translation to position overlay at originating element
+  const offsetX = originatingRect.x - overlayRect.x
+  const offsetY = originatingRect.y - overlayRect.y
+
+  // Set initial state with no transition
+  el.style.transition = 'none'
+  el.style.opacity = '0'
+  el.style.transformOrigin = '0px 0px'
+  el.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scaleX}, ${scaleY})`
+
+  // Force reflow to ensure initial state is painted
+  el.getBoundingClientRect()
+
+  // Start animation in next frame
+  raf = requestAnimationFrame(() => {
+    // First: fade in
+    el.style.transition = `opacity ${FADE_DURATION}ms ease-out`
+    el.style.opacity = '1'
+
+    // After fade completes, do transform
+    withTimeout(() => {
+      el.style.transition = `transform ${DURATION}ms ${EASING}`
+      el.style.transform = 'translate(0px, 0px) scale(1, 1)'
+
+      withTimeout(() => {
+        pendingTimeouts = []
+        done()
+      }, DURATION)
+    }, FADE_DURATION)
+  })
 }
 
 // called when the enter transition has finished.
 function onAfter(el: Element) {
   if (el instanceof HTMLElement) {
     el.style.transform = ''
-    el.style.transitionDuration = ''
+    el.style.transition = ''
     el.style.opacity = ''
-    el.style.transitionProperty = ''
-    el.style.transitionTimingFunction = ''
     el.style.transformOrigin = ''
+  }
+  pendingTimeouts = []
+}
+
+function onBeforeLeave(el: Element) {
+  cancelPendingTimeouts()
+  if (el instanceof HTMLElement) {
+    // Start from visible state
+    el.style.transform = 'none'
+    el.style.opacity = '1'
   }
 }
 
 // called when the leave transition starts.
 // use this to start the leaving animation.
 function onLeave(el: Element, done: () => void) {
-  if (el instanceof HTMLElement) {
-    const originating = getOriginatingElement()
-    if (!originating) {
-      done()
-      return
-    }
-
-    const originatingRect = originating.getBoundingClientRect()
-    const overlayRect = el.getBoundingClientRect()
-
-    const offsetX =
-      originatingRect.x - overlayRect.x + originatingRect.width / 2
-    const offsetY =
-      originatingRect.y - overlayRect.y + originatingRect.height / 2
-
-    el.style.transform = 'translate(0px, 0px)'
-
-    setTimeout(() => {
-      el.style.transitionDuration = DURATION + 'ms'
-      el.style.transitionTimingFunction = 'cubic-bezier(0.56, 0.04, 0.25, 1)'
-      el.style.transitionProperty = 'transform'
-      el.style.transformOrigin = '0px 0px'
-      el.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(0, 0)`
-    }, 10)
-
-    setTimeout(() => {
-      done()
-    }, DURATION)
+  if (raf) {
+    window.cancelAnimationFrame(raf)
   }
+
+  if (!(el instanceof HTMLElement)) {
+    done()
+    return
+  }
+
+  const originating = getOriginatingElement()
+  if (!originating) {
+    done()
+    return
+  }
+
+  const originatingRect = originating.getBoundingClientRect()
+  const overlayRect = el.getBoundingClientRect()
+
+  // Calculate scale to match originating element's size
+  const scaleX = originatingRect.width / overlayRect.width
+  const scaleY = originatingRect.height / overlayRect.height
+
+  // Calculate translation to position overlay at originating element
+  const offsetX = originatingRect.x - overlayRect.x
+  const offsetY = originatingRect.y - overlayRect.y
+
+  // First: do the transform
+  el.style.transition = `transform ${DURATION}ms ${EASING}`
+  el.style.transformOrigin = '0px 0px'
+  el.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scaleX}, ${scaleY})`
+
+  // After transform completes, fade out
+  withTimeout(() => {
+    el.style.transition = `opacity ${FADE_DURATION}ms ease-out`
+    el.style.opacity = '0'
+
+    withTimeout(() => {
+      pendingTimeouts = []
+      done()
+    }, FADE_DURATION)
+  }, DURATION)
 }
 
 function onAfterLeave(el: Element) {
   onAfter(el)
+  pendingTimeouts = []
+  if (raf) {
+    window.cancelAnimationFrame(raf)
+    raf = null
+  }
   if (hasPublished.value) {
     emit('submit')
   } else {
@@ -174,7 +256,6 @@ const iframe = useTemplateRef('iframe')
 const isLoaded = ref(false)
 const isLoading = ref(true)
 const hasPublished = ref(false)
-let timeout: any = null
 
 function onPublished({ uuid }: { uuid: string }) {
   if (props.uuid === uuid) {
@@ -184,11 +265,6 @@ function onPublished({ uuid }: { uuid: string }) {
 }
 
 function onLoad() {
-  clearTimeout(timeout)
-
-  timeout = window.setTimeout(() => {
-    isLoaded.value = true
-  }, 3000)
   if (!iframe.value) {
     return
   }
@@ -214,6 +290,15 @@ function onEditorLoaded({ uuid }: { uuid: string }) {
     isLoaded.value = true
   }
 }
+
+onMounted(() => {
+  isLoaded.value = true
+  ui.setNestedEditor(props.uuid)
+})
+
+onBeforeUnmount(() => {
+  ui.setNestedEditor(null)
+})
 
 onBroadcastEvent('published', onPublished)
 onBroadcastEvent('closeEditor', onClosed)

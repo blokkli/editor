@@ -737,6 +737,11 @@ export default function (
   )
 
   useAnimationFrame((time) => {
+    // Disable any animations if a nested editor is open, since they are not visible anyway.
+    if (ui.hasNestedEditorOpen.value) {
+      return
+    }
+
     const selectedUuids: string[] = [...selection.uuids.value]
     const changeOptionsTransition = getChangeOptionsTransition()
 

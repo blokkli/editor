@@ -46,6 +46,8 @@ const zIndex = [
   'menu',
   'command-palette',
   'library-edit-dialog',
+  'nested-editor-overlay-bg',
+  'nested-editor-overlay-iframe',
   'init-overlay',
 ].reduce((acc, key, index) => {
   acc[key] = z(index * 10000, key)

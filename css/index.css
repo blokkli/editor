@@ -60,6 +60,7 @@
 @import './partials/BlockPreviewItem.css';
 @import './partials/Templates.css';
 @import './partials/PluginConfigForm.css';
+@import './partials/NestedEditorOverlay.css';
 
 @import './indicator.css';
 

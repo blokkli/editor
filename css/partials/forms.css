@@ -14,6 +14,35 @@
   }
 }
 .bk {
+  .bk-form-text {
+    @apply relative;
+
+    > button {
+      @apply absolute right-10 flex items-center justify-center;
+      @apply top-1/2 -translate-y-1/2;
+      @apply size-25 rounded-full bg-mono-100;
+      @apply p-3;
+      @apply text-mono-500;
+      @apply hover:bg-accent-700 hover:text-white;
+
+      .bk-icon {
+        @apply size-full;
+        svg {
+          @apply fill-current;
+        }
+      }
+    }
+    input {
+      @apply !pr-40;
+    }
+
+    &:has(input:placeholder-shown) {
+      button {
+        @apply hidden;
+      }
+    }
+  }
+
   .bk-checkboxes {
     &.bk-is-inline {
       @apply flex flex-wrap gap-25;

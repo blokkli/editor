@@ -1,13 +1,31 @@
 <template>
-  <slot :formatted="formatted" />
+  <slot :formatted :formatted-date>
+    <span :title="formattedDate">{{ formatted }}</span>
+  </slot>
 </template>
 
 <script lang="ts" setup>
+import { isValidDate } from '#blokkli/editor/helpers/date'
 import { ref, computed, onMounted, onBeforeUnmount, useBlokkli } from '#imports'
 
 const props = defineProps<{
-  timestamp: number
+  timestamp: number | string
 }>()
+
+const { ui } = useBlokkli()
+
+const date = computed<Date | null>(() => {
+  const dateArg =
+    typeof props.timestamp === 'number'
+      ? props.timestamp * 1000
+      : props.timestamp
+  const parsedDate = new Date(dateArg)
+  return isValidDate(parsedDate) ? parsedDate : null
+})
+
+const formattedDate = computed<string>(() => {
+  return date.value ? ui.formatDate(date.value) : ''
+})
 
 /**
  * Convert a date to a relative time string, such as
@@ -60,15 +78,18 @@ function getRelativeTimeString(
   return rtf.format(Math.floor(deltaSeconds / divisor), units[unitIndex]!)
 }
 
-const { ui } = useBlokkli()
-
 const incrementToggle = ref(0)
 let interval: any = null
 
 const formatted = computed(() => {
-  // Adding the toggle value forces an update every 5 seconds, so the relative time stays correct.
-  const date = new Date(props.timestamp * 1000 + incrementToggle.value)
-  return getRelativeTimeString(date, ui.interfaceLanguage.value)
+  if (!date.value) {
+    return
+  }
+
+  // Adding the toggle value forces an update, so the relative time stays correct.
+  // We add 0 or 1 ms which doesn't affect the display but triggers reactivity.
+  const dateIncremented = new Date(date.value.getTime() + incrementToggle.value)
+  return getRelativeTimeString(dateIncremented, ui.interfaceLanguage.value)
 })
 
 onMounted(() => {
