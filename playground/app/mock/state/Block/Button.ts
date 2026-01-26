@@ -4,6 +4,7 @@ import { FieldIcon } from '../Field/Icon'
 import { FieldText } from '../Field/Text'
 import { FieldUrl } from '../Field/Url'
 import { Block } from './Block'
+import imageUrl from './images/button.png?url'
 
 export class BlockButton extends Block {
   static override bundle = 'button'
@@ -11,6 +12,7 @@ export class BlockButton extends Block {
   static override description =
     'A call-to-action button with title, URL, and optional icon.'
   static override isTranslatable = true
+  static override imageUrl = imageUrl
 
   static override getFieldDefintions(): Field<any>[] {
     return [

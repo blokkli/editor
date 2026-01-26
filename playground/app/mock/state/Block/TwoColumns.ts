@@ -1,3 +1,4 @@
+import imageUrl from './images/two_columns.png?url'
 import type { Field } from '../Field'
 import { FieldBlocks } from '../Field/Blocks'
 import { Block } from './Block'
@@ -7,6 +8,7 @@ export class BlockTwoColumns extends Block {
   static override label = 'Two Columns'
   static override description =
     'A two-column layout with header and left/right content areas.'
+  static override imageUrl = imageUrl
 
   static override getFieldDefintions(): Field<any>[] {
     return [

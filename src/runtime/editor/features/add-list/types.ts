@@ -1,10 +1,9 @@
 import type { AddAction } from '#blokkli/editor/types/actions'
 
 export type AddListHelp = {
+  type: 'bundle' | 'action'
   id: string
   element: HTMLElement
-  title: string
-  text: string
 }
 
 export interface DraggableActionItem {

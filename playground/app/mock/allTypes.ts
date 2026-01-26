@@ -11,6 +11,7 @@ export const allTypes: BlockBundleDefinition[] = getBlockBundles().map(
       isTranslatable: block.isTranslatable,
       hasPublishOn: block.bundle !== 'title',
       hasUnpublishOn: block.bundle !== 'image',
+      imageUrl: block.imageUrl,
     }
   },
 )

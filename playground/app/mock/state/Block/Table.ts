@@ -1,11 +1,13 @@
 import type { Field } from '../Field'
 import { FieldBlocks } from '../Field/Blocks'
 import { Block } from './Block'
+import imageUrl from './images/table.png?url'
 
 export class BlockTable extends Block {
   static override bundle = 'table'
   static override label = 'Table'
   static override description = 'A table displaying data in rows and columns.'
+  static override imageUrl = imageUrl
 
   static override getFieldDefintions(): Field<any>[] {
     return [

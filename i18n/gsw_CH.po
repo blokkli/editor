@@ -91,6 +91,10 @@ msgctxt "all"
 msgid "All"
 msgstr "Alli"
 
+msgctxt "allowedBlocks"
+msgid "Allowed Blocks"
+msgstr ""
+
 msgctxt "analyzeButtonLabel"
 msgid "Analyze Page"
 msgstr "Sitte analysiere"
@@ -546,6 +550,10 @@ msgstr "Lösche"
 msgctxt "deleteError"
 msgid "The block could not be deleted."
 msgstr "S'Elemänt het nid chönne entfärnt wärde. "
+
+msgctxt "description"
+msgid "Description"
+msgstr ""
 
 msgctxt "diffAfter"
 msgid "After"

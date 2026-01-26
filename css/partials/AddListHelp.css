@@ -1,0 +1,103 @@
+.bk.bk-add-list-help {
+  @apply absolute top-0 left-0 z-add-list-info will-change-transform;
+  @apply w-[650px];
+
+  .bk-add-list-help-item {
+    &:has(.bk-add-list-help-fields) {
+      .bk-add-list-help-image {
+        @apply mb-20;
+      }
+    }
+  }
+  .bk-add-list-help-label {
+    @apply uppercase text-sm font-semibold text-mono-300 tracking-wider mb-5;
+  }
+
+  .bk-add-list-help-inner {
+    @apply relative;
+    @apply will-change-transform;
+    @apply text-mono-50 bg-mono-950/90 backdrop-blur-md;
+    @apply rounded-lg overflow-hidden;
+  }
+
+  .bk-add-list-help-content {
+    @apply absolute top-0 left-0 right-0 p-15;
+  }
+
+  hr {
+    @apply border-t border-t-mono-600 my-20;
+  }
+
+  h2 {
+    @apply text-xl font-bold leading-none mb-5;
+    @apply mb-20;
+    @apply flex items-center gap-15;
+  }
+  .bk-add-list-help-description {
+    @apply select-text text-base;
+    p + p {
+      @apply mt-15;
+    }
+  }
+
+  .bk-add-list-help-image {
+    @apply bg-white rounded-md overflow-hidden;
+    @apply size-200 float-right ml-20;
+
+    img {
+      @apply border-0 size-full object-contain;
+    }
+  }
+
+  .bk-add-list-help-fields-item {
+    @apply flex flex-wrap;
+
+    ul {
+      @apply flex flex-wrap gap-x-15 gap-y-10;
+    }
+
+    li {
+      &.bk-is-bundle {
+        @apply inline-flex gap-5 text-mono-100 font-medium;
+      }
+
+      &.bk-is-field {
+        @apply uppercase inline-block;
+        @apply text-xs tracking-wide min-w-0;
+        @apply rounded-md px-[8px] pt-[4px] pb-2;
+        @apply border;
+        @apply font-medium;
+        @apply bg-mono-800/60;
+        @apply text-mono-300;
+        @apply border-mono-600;
+      }
+    }
+  }
+  .bk-add-list-help-fields-item + .bk-add-list-help-fields-item {
+    @apply mt-20;
+  }
+}
+
+.bk-add-list-help-enter-active,
+.bk-add-list-help-leave-active {
+  .bk-add-list-help-inner {
+    @apply transition duration-200 ease-swing;
+  }
+}
+.bk-add-list-help-enter-from,
+.bk-add-list-help-leave-to {
+}
+
+.bk-add-list-help-enter-from {
+  .bk-add-list-help-inner {
+    @apply -translate-x-30;
+    @apply opacity-0;
+  }
+}
+
+.bk-add-list-help-leave-to {
+  .bk-add-list-help-inner {
+    @apply -translate-x-100;
+    @apply opacity-0;
+  }
+}

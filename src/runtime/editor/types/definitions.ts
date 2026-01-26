@@ -2,6 +2,7 @@ export interface BlockBundleDefinition {
   id: string
   label: string
   description?: string
+  imageUrl?: string
   allowReusable?: boolean
   isTranslatable?: boolean
   hasPublishOn?: boolean

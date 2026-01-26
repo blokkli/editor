@@ -99,16 +99,17 @@ function onMouseEnter() {
     return
   }
 
+  if (helpTimeout) {
+    window.clearTimeout(helpTimeout)
+    helpTimeout = null
+  }
+
   if (props.helpActive) {
     const element = getElement()
     if (!element) {
       return
     }
     emit('help', element)
-  }
-
-  if (helpTimeout) {
-    window.clearTimeout(helpTimeout)
   }
 
   helpTimeout = window.setTimeout(() => {
@@ -123,6 +124,7 @@ function onMouseEnter() {
 function onMouseLeave() {
   if (helpTimeout) {
     window.clearTimeout(helpTimeout)
+    helpTimeout = null
   }
 }
 

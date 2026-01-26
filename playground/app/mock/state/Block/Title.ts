@@ -1,3 +1,4 @@
+import imageUrl from './images/title.png?url'
 import { LOREM_LEAD, LOREM_TITLE } from '../../defaultText'
 import type { Field } from '../Field'
 import { FieldText } from '../Field/Text'
@@ -10,6 +11,7 @@ export class BlockTitle extends Block {
     'A section header with tagline, title, and lead text.'
   static override allowReusable = true
   static override isTranslatable = true
+  static override imageUrl = imageUrl
 
   static override getDefaultValues(): Record<string, any> {
     return {

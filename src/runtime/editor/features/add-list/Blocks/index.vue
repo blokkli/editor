@@ -75,9 +75,8 @@ function onHelp(item: SortedListItem, element: HTMLElement) {
   }
 
   emit('help', {
+    type: 'bundle',
     id: item.id,
-    title: item.label,
-    text: item.description ?? '',
     element,
   })
 }
@@ -88,9 +87,8 @@ function onStartHelp(item: SortedListItem, element: HTMLElement) {
   }
 
   emit('startHelp', {
+    type: 'bundle',
     id: item.id,
-    title: item.label,
-    text: item.description ?? '',
     element,
   })
 }

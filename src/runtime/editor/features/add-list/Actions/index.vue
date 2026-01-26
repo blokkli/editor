@@ -13,7 +13,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed, useBlokkli } from '#imports'
 import { Sortli } from '#blokkli/editor/components'
 import ActionButton from './Action.vue'
 import type { AddListHelp, DraggableActionItem } from '../types'
@@ -21,6 +20,7 @@ import type { AddAction } from '#blokkli/editor/types/actions'
 
 const props = defineProps<{
   selectableBundles: string[]
+  actions: AddAction[]
   helpActive: boolean
 }>()
 
@@ -33,9 +33,8 @@ function onStartHelp(action: AddAction, element: HTMLElement) {
     return
   }
   emit('startHelp', {
+    type: 'action',
     id: action.id,
-    title: action.title,
-    text: action.description ?? '',
     element,
   })
 }
@@ -45,18 +44,11 @@ function onHelp(action: AddAction, element: HTMLElement) {
     return
   }
   emit('help', {
+    type: 'action',
     id: action.id,
-    title: action.title,
-    text: action.description ?? '',
     element,
   })
 }
-
-const { plugins } = useBlokkli()
-
-const actions = computed<AddAction[]>(() => {
-  return plugins.get('addAction').sort((a, b) => a.weight - b.weight)
-})
 
 function buildItemAction(
   element: HTMLElement,
@@ -65,7 +57,7 @@ function buildItemAction(
   if (!actionType) {
     return
   }
-  const action = actions.value.find((v) => v.id === actionType)
+  const action = props.actions.find((v) => v.id === actionType)
   if (!action) {
     return
   }

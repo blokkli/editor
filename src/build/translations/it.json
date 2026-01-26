@@ -79,6 +79,10 @@
     "source": "All",
     "translation": ""
   },
+  "allowedBlocks": {
+    "source": "Allowed Blocks",
+    "translation": ""
+  },
   "analyzeButtonLabel": {
     "source": "Analyze Page",
     "translation": ""
@@ -506,6 +510,10 @@
   "deleteError": {
     "source": "The block could not be deleted.",
     "translation": "L'elemento non può essere rimosso."
+  },
+  "description": {
+    "source": "Description",
+    "translation": ""
   },
   "diffAfter": {
     "source": "After",

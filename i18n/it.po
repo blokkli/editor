@@ -87,6 +87,10 @@ msgctxt "all"
 msgid "All"
 msgstr ""
 
+msgctxt "allowedBlocks"
+msgid "Allowed Blocks"
+msgstr ""
+
 msgctxt "analyzeButtonLabel"
 msgid "Analyze Page"
 msgstr ""
@@ -539,6 +543,10 @@ msgstr "Elimina"
 msgctxt "deleteError"
 msgid "The block could not be deleted."
 msgstr "L'elemento non può essere rimosso."
+
+msgctxt "description"
+msgid "Description"
+msgstr ""
 
 msgctxt "diffAfter"
 msgid "After"

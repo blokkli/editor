@@ -79,6 +79,10 @@
     "source": "All",
     "translation": "Alli"
   },
+  "allowedBlocks": {
+    "source": "Allowed Blocks",
+    "translation": ""
+  },
   "analyzeButtonLabel": {
     "source": "Analyze Page",
     "translation": "Sitte analysiere"
@@ -506,6 +510,10 @@
   "deleteError": {
     "source": "The block could not be deleted.",
     "translation": "S'Elemänt het nid chönne entfärnt wärde. "
+  },
+  "description": {
+    "source": "Description",
+    "translation": ""
   },
   "diffAfter": {
     "source": "After",

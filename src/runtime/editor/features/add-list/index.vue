@@ -25,14 +25,23 @@
         <AddListActions
           :selectable-bundles
           :help-active
+          :actions
           @help="activeHelpItem = $event"
           @start-help="onStartHelp"
         />
       </div>
-      <AddListHelpComponent
-        v-if="helpActive && activeHelpItem && isActive"
-        v-bind="activeHelpItem"
-      />
+      <Transition name="bk-add-list-help" :duration="200">
+        <AddListHelpComponent
+          v-if="hasOpenedHelpOnce || DEBUG_HELP"
+          v-show="helpIsVisible"
+          :is-visible="helpIsVisible"
+          :type="helpType"
+          :id="helpId"
+          :element="activeHelpItem?.element"
+          :actions
+          :bundles="generallyAvailableBundles"
+        />
+      </Transition>
     </div>
 
     <PluginTourItem
@@ -51,6 +60,7 @@ import {
   useBlokkli,
   defineBlokkliFeature,
   useTemplateRef,
+  onBeforeUnmount,
 } from '#imports'
 import { PluginTourItem } from '#blokkli/editor/plugins'
 import AddListBlocks from './Blocks/index.vue'
@@ -61,6 +71,9 @@ import { onlyUnique } from '#blokkli/helpers'
 import type { BlockBundleDefinition } from '#blokkli/editor/types/definitions'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 import type { AddListHelp } from './types'
+import type { AddAction } from '#blokkli/editor/types/actions'
+
+const DEBUG_HELP = false
 
 const { settings } = defineBlokkliFeature({
   id: 'add-list',
@@ -81,11 +94,27 @@ const { settings } = defineBlokkliFeature({
   screenshot: 'feature-add-list.jpg',
 })
 
-const { $t, ui, selection, state, tour, types, context, dom } = useBlokkli()
+const { $t, ui, selection, state, tour, types, context, dom, plugins } =
+  useBlokkli()
+
+const actions = computed<AddAction[]>(() => {
+  return plugins.get('addAction').sort((a, b) => a.weight - b.weight)
+})
 
 const helpActive = ref(false)
+const hasOpenedHelpOnce = ref(false)
 
 const activeHelpItem = ref<AddListHelp | null>(null)
+
+const helpType = computed(() =>
+  DEBUG_HELP ? 'bundle' : activeHelpItem.value?.type,
+)
+const helpId = computed(() =>
+  DEBUG_HELP ? 'two_columns' : activeHelpItem.value?.id,
+)
+const helpIsVisible = computed(
+  () => (isActive.value && helpActive.value) || DEBUG_HELP,
+)
 
 const getAllowedTypesForSelected = (p: RenderedFieldListItem): string[] => {
   // If the selected bundle allows nested items, return the allowed bundles for it instead.
@@ -155,7 +184,8 @@ const hasContextMenuOpen = computed(() =>
 
 const wrapper = useTemplateRef('wrapper')
 const isHovered = ref(false)
-let mouseTimeout: any = null
+let mouseTimeout: number | null = null
+let mouseLeaveTimeout: number | null = null
 
 const isActive = computed(() => {
   return (
@@ -166,26 +196,44 @@ const isActive = computed(() => {
 
 function onStartHelp(item: AddListHelp) {
   helpActive.value = true
+  hasOpenedHelpOnce.value = true
   activeHelpItem.value = item
 }
 
 function onMouseEnter() {
-  if (mouseTimeout) {
-    clearTimeout(mouseTimeout)
-    isHovered.value = true
-    mouseTimeout = null
-    return
+  if (mouseLeaveTimeout) {
+    window.clearTimeout(mouseLeaveTimeout)
+    mouseLeaveTimeout = null
   }
 
-  mouseTimeout = setTimeout(() => {
+  if (mouseTimeout) {
+    window.clearTimeout(mouseTimeout)
+    mouseTimeout = null
+  }
+
+  mouseTimeout = window.setTimeout(() => {
     isHovered.value = true
     mouseTimeout = null
   }, 300)
 }
 function onMouseLeave() {
-  clearTimeout(mouseTimeout)
-  isHovered.value = false
-  helpActive.value = false
+  if (mouseTimeout) {
+    window.clearTimeout(mouseTimeout)
+    mouseTimeout = null
+  }
+  if (mouseLeaveTimeout) {
+    window.clearTimeout(mouseLeaveTimeout)
+    mouseLeaveTimeout = null
+  }
+  if (helpActive.value) {
+    mouseLeaveTimeout = window.setTimeout(() => {
+      isHovered.value = false
+      helpActive.value = false
+    }, 300)
+  } else {
+    isHovered.value = false
+    helpActive.value = false
+  }
 }
 
 const onWheel = (e: WheelEvent) => {
@@ -203,6 +251,12 @@ const tourText = computed(() =>
     '<p>This shows the list of available blocks that can be placed. Add a block by dragging the icon into the page.</p><p>When an existing block is selected, some blocks may be greyed out. This indicates which blocks can be placed inside or after the selected block.</p>',
   ),
 )
+
+onBeforeUnmount(() => {
+  if (mouseTimeout) {
+    window.clearTimeout(mouseTimeout)
+  }
+})
 </script>
 
 <script lang="ts">

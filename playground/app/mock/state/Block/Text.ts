@@ -1,3 +1,4 @@
+import imageUrl from './images/text.png?url'
 import { LOREM_TEXT } from '../../defaultText'
 import type { Field } from '../Field'
 import { FieldTextarea } from '../Field/Textarea'
@@ -10,6 +11,7 @@ export class BlockText extends Block {
   static override description = 'A rich text block for formatted content.'
   static override allowReusable = true
   static override isTranslatable = true
+  static override imageUrl = imageUrl
 
   static override getDefaultValues(): Record<string, any> {
     return {
