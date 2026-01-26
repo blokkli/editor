@@ -74,6 +74,14 @@ export type DefinitionProvider = {
   getBlockIcon: (bundle: string) => string | undefined
 
   /**
+   * Get the image of a block.
+   *
+   * @param bundle - The block bundle name
+   * @returns The url of the image.
+   */
+  getBlockImage: (bundle: string) => string | undefined
+
+  /**
    * List of all registered fragment definitions.
    *
    * Updates automatically via HMR during development.
@@ -126,6 +134,7 @@ export default function (): DefinitionProvider {
   const renderKey = ref(definitions.renderKey)
 
   const blockIcons = ref<Record<string, string>>(definitions.icons)
+  const blockImages = ref<Record<string, string>>(definitions.images)
   const allGlobalOptions = ref<BlockDefinitionOptionsInput>(
     definitions.globalOptions,
   )
@@ -140,6 +149,7 @@ export default function (): DefinitionProvider {
       fragments.value = newDefinitions?.default?.fragments || []
       providers.value = newDefinitions?.default?.providers || []
       blockIcons.value = newDefinitions?.default?.icons || {}
+      blockImages.value = newDefinitions?.default?.images || {}
       allGlobalOptions.value = newDefinitions?.default?.globalOptions || {}
     })
     import.meta.hot.accept('#blokkli-build/runtime-options', (mod) => {
@@ -234,6 +244,10 @@ export default function (): DefinitionProvider {
     return blockIcons.value[bundle]
   }
 
+  function getBlockImage(bundle: string): string | undefined {
+    return blockImages.value[bundle]
+  }
+
   const bundlesWithAutoAdd = computed<string[]>(() => {
     return blocks.value
       .filter((v) => {
@@ -251,6 +265,7 @@ export default function (): DefinitionProvider {
     getProviderDefinition,
     getDefaultDefinition,
     getBlockIcon,
+    getBlockImage,
     fragmentDefinitions: computed(() => fragments.value),
     blockDefinitions: computed(() => blocks.value),
     globalOptions: readonly(allGlobalOptions),

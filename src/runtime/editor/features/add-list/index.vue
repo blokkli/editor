@@ -34,9 +34,9 @@
         <AddListHelpComponent
           v-if="hasOpenedHelpOnce || DEBUG_HELP"
           v-show="helpIsVisible"
+          :id="helpId"
           :is-visible="helpIsVisible"
           :type="helpType"
-          :id="helpId"
           :element="activeHelpItem?.element"
           :actions
           :bundles="generallyAvailableBundles"

@@ -62,6 +62,7 @@ export default defineCodeTemplate(
     const fragments: string[] = []
     const providers: string[] = []
     const icons = new Map<string, string>()
+    const images = new Map<string, string>()
 
     const definitions: string[] = []
 
@@ -82,6 +83,9 @@ export default defineCodeTemplate(
         if (file.iconContents) {
           icons.set(file.definition.bundle, JSON.stringify(file.iconContents))
         }
+        if (file.imagePath) {
+          images.set(file.definition.bundle, file.imagePath)
+        }
       } else if (isFragment(file.definition)) {
         fragments.push(identifier)
       } else {
@@ -89,8 +93,27 @@ export default defineCodeTemplate(
       }
     })
     const renderKey = hash(key)
+
+    const imageImports = [...images.entries()]
+      .map(([bundle, imagePath]) => {
+        return `import image_${bundle} from '${imagePath}?url'`
+      })
+      .join('\n')
+
+    const imageObject = [...images.keys()]
+      .map((bundle) => {
+        return `${bundle}: image_${bundle}`
+      })
+      .join(',\n  ')
+
     return `
+${imageImports}
+
 ${definitions.join('\n\n')}
+
+const images = {
+  ${imageObject}
+}
 
 const blocks = [
   ${blocks.join(',\n  ')}
@@ -116,6 +139,7 @@ const definitions = {
   fragments,
   providers,
   icons,
+  images,
   globalOptions,
   renderKey
 }
@@ -154,6 +178,7 @@ export type Definitions = {
   fragments: FragmentDefinition[]
   providers: ProviderDefinition[]
   icons: Record<string, string>
+  images: Record<string, string>
   globalOptions: BlockDefinitionOptionsInput
   renderKey: string
 }

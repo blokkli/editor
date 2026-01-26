@@ -143,6 +143,7 @@ export function validateBlockDefinition(
 export class CollectedBlockFile extends CollectedFile {
   folder = ''
   iconPath: string | null = null
+  imagePath: string | null = null
   iconContents: string | null = null
   diffComponentPath: string | null = null
   proxyComponentPath: string | null = null
@@ -159,11 +160,20 @@ export class CollectedBlockFile extends CollectedFile {
   private objectLiteralString = ''
   private validationCache: BlockValidationError[] | null = null
 
-  private hasSiblingFile(name: string, helper: ModuleHelper): string | null {
-    const siblingFilePath = path.join(this.folder, '/' + name)
+  private hasSiblingFile(
+    providedName: string | string[],
+    helper: ModuleHelper,
+  ): string | null {
+    const candidates = Array.isArray(providedName)
+      ? providedName
+      : [providedName]
+    for (let i = 0; i < candidates.length; i++) {
+      const name = candidates[i]
+      const siblingFilePath = path.join(this.folder, '/' + name)
 
-    if (helper.fileCache.fileExists(siblingFilePath)) {
-      return siblingFilePath
+      if (helper.fileCache.fileExists(siblingFilePath)) {
+        return siblingFilePath
+      }
     }
 
     return null
@@ -244,6 +254,10 @@ export class CollectedBlockFile extends CollectedFile {
     // Only collect the icon for the main block entry.
     if (this.type === 'main') {
       this.iconPath = this.hasSiblingFile('icon.svg', helper)
+      this.imagePath = this.hasSiblingFile(
+        ['image.png', 'image.jpg', 'image.svg'],
+        helper,
+      )
 
       if (this.iconPath) {
         this.iconContents = await helper.fileCache.read(this.iconPath)

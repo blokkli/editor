@@ -53,7 +53,7 @@ const props = defineProps<{
   actions: AddAction[]
 }>()
 
-const { types, $t } = useBlokkli()
+const { types, $t, definitions } = useBlokkli()
 
 const bundleDefinition = computed(() => {
   if (props.type === 'bundle') {
@@ -78,6 +78,14 @@ const text = computed(() => {
 })
 
 const imageUrl = computed(() => {
+  if (bundle.value) {
+    const imagePath = definitions.getBlockImage(bundle.value)
+    if (imagePath) {
+      return imagePath
+    }
+  }
+
+  // Fall back to backend provided image if available.
   return bundleDefinition.value?.imageUrl
 })
 

@@ -228,7 +228,7 @@ const types = await typesProvider(adapter, selection, context)
 const indicators = indicatorsProvider()
 const directive = directiveProvider(debug, ui)
 const fields = fieldsProvider(dom, types)
-const permissions = await permissionsProvider(adapter)
+const permissionsInstance = await permissionsProvider(adapter)
 
 const mutatedEntityProps = computed(() => state.mutatedItemProps.HOST)
 
@@ -348,7 +348,7 @@ const app: BlokkliApp = {
   ui,
   fields,
   icons,
-  permissions,
+  permissions: permissionsInstance,
 }
 
 provide(INJECT_APP, app)
