@@ -36,10 +36,9 @@ import { useBlokkli, defineBlokkliFeature, ref } from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
 import { InfoBox } from '#blokkli/editor/components'
 import AnalyzerMain from './Main.vue'
-import type { Analyzer } from './analyzers/types'
 import AnalyzeIcon from './Icon.vue'
 
-const { adapter } = defineBlokkliFeature({
+const { adapters } = defineBlokkliFeature({
   id: 'analyze',
   label: 'Analyze',
   icon: 'bk_mdi_speed',
@@ -52,21 +51,8 @@ const { $t, context, animation, ui } = useBlokkli()
 
 const isRunning = ref(false)
 
-function getAdapterAnalyzers(): Promise<Analyzer[]> {
-  const result = adapter.getAnalyzers()
-  if (Array.isArray(result)) {
-    return Promise.resolve(result)
-  }
-  return Promise.resolve(result).then((result) => {
-    if (Array.isArray(result)) {
-      return result
-    }
-
-    return [result]
-  })
-}
-
-const analyzers = await getAdapterAnalyzers()
+// Aggregate analyzers from base adapter and all extensions
+const analyzers = await adapters.getAggregated('getAnalyzers')
 </script>
 
 <script lang="ts">

@@ -50,8 +50,7 @@
 <script setup lang="ts">
 import type { AddAction } from '#blokkli/editor/types/actions'
 import { ItemIconBox, ItemIcon } from '#blokkli/editor/components'
-import { itemEntityType } from '#blokkli-build/config'
-import { fragmentBlockBundle } from '#blokkli-build/config'
+import { itemEntityType, fragmentBlockBundle } from '#blokkli-build/config'
 import { computed, useBlokkli } from '#imports'
 import { falsy } from '#blokkli/helpers'
 import type { BlokkliIcon } from '#blokkli-build/icons'

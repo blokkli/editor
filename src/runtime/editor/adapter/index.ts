@@ -12,7 +12,7 @@ import type { UserPermissions } from '../types/permissions'
 
 export interface MutationResponseLike<T> {
   success: boolean
-  state: T
+  state?: T
   errors?: string[]
 }
 
@@ -162,14 +162,68 @@ export interface BlokkliAdapter<T> {
   }
 }
 
+/**
+ * Methods that adapter extensions can implement.
+ * Features augment this interface via module augmentation to add extensible methods.
+ * These methods can be implemented by both the base adapter AND extensions.
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-object-type
+export interface AdapterExtensionMethods<T> {
+  // Features augment this interface to declare extensible methods
+}
+
+/**
+ * The full adapter type combining core methods with extensible methods.
+ */
+export type FullBlokkliAdapter<T> = BlokkliAdapter<T> &
+  Partial<AdapterExtensionMethods<T>>
+
 export type BlokkliAdapterFactory<T> = (
   ctx: ComputedRef<AdapterContext>,
-) => Promise<BlokkliAdapter<T>> | BlokkliAdapter<T>
+) => Promise<FullBlokkliAdapter<T>> | FullBlokkliAdapter<T>
 
-export type AdapterMethods = keyof BlokkliAdapter<any>
+export type AdapterMethods =
+  | keyof BlokkliAdapter<any>
+  | keyof AdapterExtensionMethods<any>
 
 export function defineBlokkliEditAdapter<T>(
   cb: BlokkliAdapterFactory<T>,
 ): BlokkliAdapterFactory<T> {
   return cb
+}
+
+/**
+ * An adapter extension (with namespace assigned by build system).
+ */
+export interface BlokkliAdapterExtension<T = any> {
+  /**
+   * Unique namespace (e.g., '@my-org/ai').
+   * Assigned by the build system from registerAdapterExtension().
+   */
+  namespace: string
+
+  /**
+   * Extension methods.
+   */
+  methods: Partial<AdapterExtensionMethods<T>>
+}
+
+/**
+ * Factory type for extension files.
+ * Just returns methods - namespace is assigned externally.
+ */
+export type BlokkliAdapterExtensionFactory<T> = (
+  ctx: ComputedRef<AdapterContext>,
+) =>
+  | Promise<Partial<AdapterExtensionMethods<T>>>
+  | Partial<AdapterExtensionMethods<T>>
+
+/**
+ * Define an adapter extension.
+ * The namespace is NOT specified here - it's assigned via registerAdapterExtension().
+ */
+export function defineBlokkliAdapterExtension<T>(
+  factory: BlokkliAdapterExtensionFactory<T>,
+): BlokkliAdapterExtensionFactory<T> {
+  return factory
 }

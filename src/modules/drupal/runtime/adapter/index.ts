@@ -1,6 +1,6 @@
 import {
   defineBlokkliEditAdapter,
-  type BlokkliAdapter,
+  type FullBlokkliAdapter,
   type MutationResponseLike,
 } from '#blokkli/editor/adapter'
 import { falsy } from '#blokkli/helpers'
@@ -41,7 +41,7 @@ import {
   type UserPermissions,
 } from '#blokkli/editor/types/permissions'
 
-type DrupalAdapter = BlokkliAdapter<ParagraphsBlokkliEditStateFragment>
+type DrupalAdapter = FullBlokkliAdapter<ParagraphsBlokkliEditStateFragment>
 
 function mapPublishOptions(
   publishOptions: ParagraphsBlokkliPublishOptionsFragment,
@@ -471,7 +471,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       return `${entityConfig.linkPath}#${id}`
     }
 
-    const adapter: BlokkliAdapter<any> = {
+    const adapter: DrupalAdapter = {
       addNewBlock,
       buildEditableFrameUrl,
       getUserPermissions: function () {

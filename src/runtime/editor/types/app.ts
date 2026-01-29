@@ -1,6 +1,9 @@
 import type { ComputedRef } from 'vue'
 import type { DomProvider } from '../providers/dom'
-import type { AdapterContext, BlokkliAdapter } from '#blokkli/editor/adapter'
+import type {
+  AdapterContext,
+  FullBlokkliAdapter,
+} from '#blokkli/editor/adapter'
 import type { Eventbus } from '../events'
 import type { StorageProvider } from '../providers/storage'
 import type { BlockDefinitionProvider } from '../providers/types'
@@ -26,12 +29,18 @@ import type { DropAreaProvider } from '../providers/dropArea'
 import type { ThemeProvider } from '../providers/theme'
 import type { DefinitionProvider } from '../providers/definition'
 import type { PermissionsProvider } from '../providers/permissions'
+import type { AdaptersProvider } from '../providers/adapters'
 
 export interface BlokkliApp {
   /**
    * The adapter.
    */
-  adapter: BlokkliAdapter<any>
+  adapter: FullBlokkliAdapter<any>
+
+  /**
+   * The adapters provider for accessing base adapter and extensions.
+   */
+  adapters: AdaptersProvider
 
   eventBus: Eventbus
 

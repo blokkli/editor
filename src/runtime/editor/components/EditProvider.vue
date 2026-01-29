@@ -105,9 +105,11 @@ import directiveProvider from '#blokkli/editor/providers/directive'
 import fieldsProvider from '#blokkli/editor/providers/fields'
 import iconsProvider from '#blokkli/editor/providers/icons'
 import permissionsProvider from '#blokkli/editor/providers/permissions'
+import adaptersProvider from '#blokkli/editor/providers/adapters'
 import { eventBus } from '#blokkli/editor/events'
 import '#blokkli-build/styles.css'
 import getAdapter from '#blokkli-build/edit-adapter'
+import getExtensions from '#blokkli-build/adapter-extensions'
 import {
   INJECT_ALL_COMPONENTS_CHUNK,
   INJECT_APP,
@@ -172,6 +174,7 @@ const context = computed<AdapterContext>(() => {
   }
 })
 const adapter = await getAdapter(context)
+const adapters = await adaptersProvider(adapter, getExtensions, context)
 const providerKey = inject(INJECT_PROVIDER_KEY, '')
 
 const route = useRoute()
@@ -323,6 +326,7 @@ provide(INJECT_EDIT_CONTEXT, {
 const app: BlokkliApp = {
   $t,
   adapter,
+  adapters,
   animation,
   broadcast,
   commands,

@@ -60,7 +60,7 @@ function filterTransforms(
   })
 }
 
-const { adapter } = defineBlokkliFeature({
+const { adapters } = defineBlokkliFeature({
   id: 'transform',
   icon: 'bk_mdi_function',
   label: 'Transform',
@@ -85,7 +85,8 @@ const {
   status,
 } = await useLazyAsyncData(
   () => {
-    return adapter.getTransformPlugins()
+    // Aggregate plugins from base adapter and all extensions
+    return adapters.getAggregated('getTransformPlugins')
   },
   {
     immediate: false,
@@ -107,11 +108,8 @@ const {
   execute: executeHostPlugins,
 } = await useLazyAsyncData(
   () => {
-    if (adapter.getHostTransformPlugins) {
-      return adapter.getHostTransformPlugins()
-    }
-
-    return Promise.resolve([])
+    // Aggregate host plugins from base adapter and all extensions
+    return adapters.getAggregated('getHostTransformPlugins')
   },
   {
     immediate: !openPlugin.value,
@@ -209,7 +207,8 @@ async function onTransformBlock(
 
   await state.mutateWithLoadingState(
     () =>
-      adapter.applyTransformPlugin({
+      // Route to correct source (base adapter or extension) based on plugin ID namespace
+      adapters.callNamespaced('applyTransformPlugin', {
         uuids,
         pluginId: plugin.id,
         config: values,
@@ -239,16 +238,13 @@ async function onTransformHost(
   plugin: HostTransformPlugin,
   values: PluginConfigInputItem[],
 ) {
-  if (!adapter.applyHostTransformPlugin) {
-    return
-  }
-
   ui.setTransform(plugin.label)
   openPlugin.value = null
 
   await state.mutateWithLoadingState(
     () =>
-      adapter.applyHostTransformPlugin!({
+      // Route to correct source (base adapter or extension) based on plugin ID namespace
+      adapters.callNamespaced('applyHostTransformPlugin', {
         pluginId: plugin.id,
         config: values,
       }),

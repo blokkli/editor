@@ -11,9 +11,15 @@ import type { BlockCollector } from './Collector/Blocks'
 
 const WRITE = false
 
+export interface AdapterExtensionDefinition {
+  namespace: string
+  path: string
+}
+
 export class ModuleContext {
   private templates: ModuleTemplate[] = []
   private templateContents: Map<string, string> = new Map()
+  private adapterExtensions: AdapterExtensionDefinition[] = []
 
   constructor(
     public helper: ModuleHelper,
@@ -22,6 +28,17 @@ export class ModuleContext {
     public blocks: BlockCollector,
     public theme: ThemeData,
   ) {}
+
+  registerAdapterExtension(namespace: string, path: string): void {
+    if (this.adapterExtensions.some((e) => e.namespace === namespace)) {
+      throw new Error(`Duplicate adapter extension namespace: ${namespace}`)
+    }
+    this.adapterExtensions.push({ namespace, path })
+  }
+
+  getAdapterExtensions(): AdapterExtensionDefinition[] {
+    return this.adapterExtensions
+  }
 
   private getTemplateContents(
     type: 'code' | 'types' | 'file',

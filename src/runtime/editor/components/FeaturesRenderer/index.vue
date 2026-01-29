@@ -15,7 +15,7 @@ import { useBlokkli, computed, watch } from '#imports'
 
 const emit = defineEmits(['loaded'])
 
-const { adapter, features, ui, debug } = useBlokkli()
+const { adapter, adapters, features, ui, debug } = useBlokkli()
 
 const logger = debug.createLogger('Features')
 
@@ -37,11 +37,19 @@ const availableFeatures = computed(() => {
       }
 
       // Feature requires adapter methods that aren't implemented.
-      if (
-        v.requiredAdapterMethods?.length &&
-        !v.requiredAdapterMethods.every((method) => adapter[method])
-      ) {
-        return false
+      // Check both base adapter and extensions.
+      if (v.requiredAdapterMethods?.length) {
+        const hasAllMethods = v.requiredAdapterMethods.every((method) => {
+          // Check base adapter
+          if (adapter[method]) {
+            return true
+          }
+          // Check extensions
+          return adapters.extensions.some((ext) => ext.methods[method])
+        })
+        if (!hasAllMethods) {
+          return false
+        }
       }
 
       // Feature has dependencies on other features that are not yet rendered.

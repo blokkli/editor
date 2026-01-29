@@ -2,6 +2,7 @@ import { USED_MATERIAL_ICONS } from '../src/build/used-icons'
 import packageJson from './../package.json'
 import { fileURLToPath } from 'node:url'
 import { removeSizes } from 'nuxt-svg-icon-sprite/processors'
+import testExtensionModule from './app/blokkli/modules/test-extension'
 
 const playgroundFolder = fileURLToPath(new URL('./', import.meta.url))
 
@@ -85,6 +86,7 @@ export default defineNuxtConfig({
   },
 
   blokkli: {
+    modules: [testExtensionModule()],
     pattern: [
       playgroundFolder + 'app/components/Blokkli/**/*.vue',
       playgroundFolder + 'app/pages/**/*.vue',

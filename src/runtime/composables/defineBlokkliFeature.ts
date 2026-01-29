@@ -6,10 +6,11 @@ import {
   type ComputedRef,
   provide,
 } from '#imports'
-import type { BlokkliAdapter, AdapterMethods } from '#blokkli/editor/adapter'
+import type { FullBlokkliAdapter, AdapterMethods } from '#blokkli/editor/adapter'
 import type { ValidFeatureKey } from '#blokkli-build/features'
 import { settingsOverride } from '#blokkli-build/editor-config'
 import type { DebugLogger } from '#blokkli/editor/providers/debug'
+import type { AdaptersProvider } from '#blokkli/editor/providers/adapters'
 import { INJECT_EDIT_LOGGER } from '#blokkli/helpers/injections'
 import type { FeatureDefinition } from '#blokkli/editor/types/features'
 
@@ -26,14 +27,15 @@ type SettingsTypes<S> = {
 }
 
 type RequireAdapterMethods<
-  T extends BlokkliAdapter<any>,
+  T extends FullBlokkliAdapter<any>,
   Methods extends readonly AdapterMethods[],
 > = Omit<T, Methods[number]> & Required<Pick<T, Methods[number] & keyof T>>
 
 type DefineBlokkliFeature<F extends FeatureDefinition<any, any>> = {
-  adapter: F['requiredAdapterMethods'] extends readonly (keyof BlokkliAdapter<any>)[]
-    ? RequireAdapterMethods<BlokkliAdapter<any>, F['requiredAdapterMethods']>
-    : BlokkliAdapter<any>
+  adapter: F['requiredAdapterMethods'] extends readonly AdapterMethods[]
+    ? RequireAdapterMethods<FullBlokkliAdapter<any>, F['requiredAdapterMethods']>
+    : FullBlokkliAdapter<any>
+  adapters: AdaptersProvider
   settings: ComputedRef<SettingsTypes<F['settings']>>
   logger: DebugLogger
 }
@@ -41,7 +43,7 @@ type DefineBlokkliFeature<F extends FeatureDefinition<any, any>> = {
 export function defineBlokkliFeature<
   const F extends FeatureDefinition<AdapterMethods[], ValidFeatureKey>,
 >(feature: F): DefineBlokkliFeature<F> {
-  const { adapter, storage, features, debug } = useBlokkli()
+  const { adapter, adapters, storage, features, debug } = useBlokkli()
 
   const logger = debug.createLogger(feature.label || feature.id)
 
@@ -106,6 +108,7 @@ export function defineBlokkliFeature<
 
   return {
     adapter: adapter as any,
+    adapters,
     settings: settings as any,
     logger,
   }

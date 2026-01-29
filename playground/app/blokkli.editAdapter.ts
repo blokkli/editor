@@ -1,7 +1,7 @@
 import { useRouter, useRoute } from '#imports'
 import {
   defineBlokkliEditAdapter,
-  type BlokkliAdapter,
+  type FullBlokkliAdapter,
   type MutationResponseLike,
 } from '#blokkli/editor/adapter'
 import { defineAnalyzer } from '#blokkli/analyzer'
@@ -317,7 +317,7 @@ export default defineBlokkliEditAdapter((ctx) => {
     })
   }
 
-  const adapter: BlokkliAdapter<MutatedState> = {
+  const adapter: FullBlokkliAdapter<MutatedState> = {
     mediaLibraryGetResults,
     loadState() {
       // throw new Error('Failed to load state')

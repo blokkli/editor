@@ -3,13 +3,13 @@ import type {
   PluginConfigInputItem,
 } from '#blokkli/editor/types/pluginConfig'
 
-type AdapterApplyTransformPlugin = {
+export type AdapterApplyTransformPlugin = {
   pluginId: string
   uuids: string[]
   config?: PluginConfigInputItem[]
 }
 
-type AdapterApplyHostTransformPlugin = {
+export type AdapterApplyHostTransformPlugin = {
   pluginId: string
   config?: PluginConfigInputItem[]
 }
@@ -83,7 +83,10 @@ export interface HostTransformPlugin {
 }
 
 declare module '#blokkli/editor/adapter' {
-  interface BlokkliAdapter<T> {
+  /**
+   * Extensible transform methods - available on both base adapter and extensions.
+   */
+  interface AdapterExtensionMethods<T> {
     /**
      * Get all possible transform plugins.
      */
