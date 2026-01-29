@@ -3,6 +3,8 @@
   @apply w-[750px];
 
   .bk-add-list-help-item {
+    @apply p-15;
+    @apply contain-paint;
     &:has(.bk-add-list-help-fields) {
       .bk-add-list-help-image {
         @apply mb-20;
@@ -21,7 +23,12 @@
   }
 
   .bk-add-list-help-content {
-    @apply absolute top-0 left-0 right-0 p-15;
+    @apply absolute top-0 left-0 right-0;
+    @apply grid items-start;
+
+    .bk-add-list-help-item {
+      grid-area: 1 / 1;
+    }
   }
 
   hr {

@@ -6,7 +6,10 @@ import {
   type ComputedRef,
   provide,
 } from '#imports'
-import type { FullBlokkliAdapter, AdapterMethods } from '#blokkli/editor/adapter'
+import type {
+  FullBlokkliAdapter,
+  AdapterMethods,
+} from '#blokkli/editor/adapter'
 import type { ValidFeatureKey } from '#blokkli-build/features'
 import { settingsOverride } from '#blokkli-build/editor-config'
 import type { DebugLogger } from '#blokkli/editor/providers/debug'
@@ -33,7 +36,10 @@ type RequireAdapterMethods<
 
 type DefineBlokkliFeature<F extends FeatureDefinition<any, any>> = {
   adapter: F['requiredAdapterMethods'] extends readonly AdapterMethods[]
-    ? RequireAdapterMethods<FullBlokkliAdapter<any>, F['requiredAdapterMethods']>
+    ? RequireAdapterMethods<
+        FullBlokkliAdapter<any>,
+        F['requiredAdapterMethods']
+      >
     : FullBlokkliAdapter<any>
   adapters: AdaptersProvider
   settings: ComputedRef<SettingsTypes<F['settings']>>

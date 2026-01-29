@@ -349,7 +349,7 @@ async function updateTranslationFile(
     __dirname,
     `./../../src/build/translations/${language}.json`,
   )
-  const formatted = JSON.stringify(sorted, null, 2)
+  const formatted = JSON.stringify(sorted, null, 2) + '\n'
   await fs.promises.writeFile(filePath, formatted)
 }
 

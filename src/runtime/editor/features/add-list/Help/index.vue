@@ -1,12 +1,13 @@
 <template>
   <div ref="rootEl" class="bk bk-add-list-help">
     <div ref="innerEl" class="bk-add-list-help-inner">
-      <div ref="contentEl" class="bk-add-list-help-content">
-        <HelpItem
+      <div class="bk-add-list-help-content">
+        <HelpItemComponent
           v-for="item in items"
-          v-show="item.type === type && item.id === id"
           :id="item.id"
+          ref="itemRefs"
           :key="item.type + ':' + item.id"
+          :is-visible="item.type === type && item.id === id"
           :type="item.type"
           :actions
         />
@@ -20,7 +21,7 @@ import { useAnimationFrame } from '#blokkli/editor/composables'
 import type { AddAction } from '#blokkli/editor/types/actions'
 import type { BlockBundleDefinition } from '#blokkli/editor/types/definitions'
 import { computed, ref, useTemplateRef, useBlokkli, watch } from '#imports'
-import HelpItem from './Item.vue'
+import HelpItemComponent from './Item.vue'
 
 type HelpItemData = {
   type: 'bundle' | 'action'
@@ -38,7 +39,7 @@ const props = defineProps<{
 
 const rootEl = useTemplateRef('rootEl')
 const innerEl = useTemplateRef('innerEl')
-const contentEl = useTemplateRef('contentEl')
+const itemRefs = useTemplateRef('itemRefs')
 
 // Target values (where we want to animate to).
 const targetHeight = ref(200)
@@ -116,16 +117,26 @@ function lerp(current: number, target: number, factor: number): number {
   return current + diff * factor
 }
 
+const visibleIndex = computed(() => {
+  if (!props.type || !props.id) return -1
+  return items.value.findIndex(
+    (item) => item.type === props.type && item.id === props.id,
+  )
+})
+
 useAnimationFrame(() => {
   // Don't run animation when not visible.
   if (!props.isVisible) {
     return
   }
 
-  // Measure the content element's actual height.
-  if (contentEl.value) {
-    const rect = contentEl.value.getBoundingClientRect()
-    targetHeight.value = rect.height
+  // Get the visible item's height.
+  const index = visibleIndex.value
+  if (index >= 0 && itemRefs.value) {
+    const height = itemRefs.value[index]?.height
+    if (height) {
+      targetHeight.value = height
+    }
   }
 
   // If skipping animation, set values immediately.

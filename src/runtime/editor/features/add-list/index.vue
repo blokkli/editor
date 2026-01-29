@@ -7,6 +7,7 @@
       @wheel.capture.passive="onWheel"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
+      @mousemove="onMouseMove"
     >
       <div
         class="bk-add-list-inner"
@@ -19,14 +20,14 @@
           :generally-available-bundles
           :hide-disabled-blocks="settings.hideDisabledBlocks"
           :help-active
-          @help="activeHelpItem = $event"
+          @help="onHelp"
           @start-help="onStartHelp"
         />
         <AddListActions
           :selectable-bundles
           :help-active
           :actions
-          @help="activeHelpItem = $event"
+          @help="onHelp"
           @start-help="onStartHelp"
         />
       </div>
@@ -185,6 +186,50 @@ const isHovered = ref(false)
 let mouseTimeout: number | null = null
 let mouseLeaveTimeout: number | null = null
 
+// Hover intent state for help popup
+const ANGLE_THRESHOLD = (35 * Math.PI) / 180 // 45° in radians
+
+let lastMouseX = 0
+let lastMouseY = 0
+let pendingHelpItem: AddListHelp | null = null
+let isMovingTowardsPopup = false
+
+function clearPendingHelp() {
+  pendingHelpItem = null
+}
+
+function onMouseMove(e: MouseEvent) {
+  const dx = e.clientX - lastMouseX
+  const dy = e.clientY - lastMouseY
+
+  // Only calculate direction if there's meaningful movement
+  if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
+    // Angle from vertical: 0 = vertical, π/2 = horizontal
+    const angle = Math.abs(Math.atan2(Math.abs(dx), Math.abs(dy)))
+    isMovingTowardsPopup = angle >= ANGLE_THRESHOLD && dx > 0
+
+    // If moving vertically and we have a pending item, activate it
+    if (!isMovingTowardsPopup && pendingHelpItem) {
+      activeHelpItem.value = pendingHelpItem
+      pendingHelpItem = null
+    }
+  }
+
+  lastMouseX = e.clientX
+  lastMouseY = e.clientY
+}
+
+function onHelp(item: AddListHelp) {
+  // If moving towards popup (horizontally right), defer activation
+  if (isMovingTowardsPopup) {
+    pendingHelpItem = item
+  } else {
+    // Moving vertically or no recent movement - activate immediately
+    pendingHelpItem = null
+    activeHelpItem.value = item
+  }
+}
+
 const isActive = computed(() => {
   return (
     (isHovered.value || hasContextMenuOpen.value || tour.isTouring.value) &&
@@ -215,6 +260,7 @@ function onMouseEnter() {
   }, 300)
 }
 function onMouseLeave() {
+  clearPendingHelp()
   if (mouseTimeout) {
     window.clearTimeout(mouseTimeout)
     mouseTimeout = null
@@ -251,6 +297,7 @@ const tourText = computed(() =>
 )
 
 onBeforeUnmount(() => {
+  clearPendingHelp()
   if (mouseTimeout) {
     window.clearTimeout(mouseTimeout)
   }

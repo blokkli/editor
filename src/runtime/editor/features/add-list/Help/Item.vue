@@ -1,5 +1,11 @@
 <template>
-  <div class="bk-add-list-help-item">
+  <div
+    ref="el"
+    class="bk-add-list-help-item"
+    :style="{
+      visibility: isVisible ? 'visible' : 'hidden',
+    }"
+  >
     <div v-if="type === 'bundle'" class="bk-add-list-help-image">
       <img v-if="imageUrl" :src="imageUrl" />
       <div v-else>
@@ -51,7 +57,8 @@
 import type { AddAction } from '#blokkli/editor/types/actions'
 import { ItemIconBox, ItemIcon } from '#blokkli/editor/components'
 import { itemEntityType, fragmentBlockBundle } from '#blokkli-build/config'
-import { computed, useBlokkli } from '#imports'
+import { computed, ref, useBlokkli, useTemplateRef } from '#imports'
+import { onElementResize } from '#blokkli/editor/composables'
 import { falsy } from '#blokkli/helpers'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 
@@ -59,7 +66,19 @@ const props = defineProps<{
   type: 'bundle' | 'action'
   id: string
   actions: AddAction[]
+  isVisible: boolean
 }>()
+
+const el = useTemplateRef('el')
+const height = ref(0)
+
+onElementResize(el, (size) => {
+  height.value = size.height
+})
+
+defineExpose({
+  height,
+})
 
 const { types, $t, definitions } = useBlokkli()
 

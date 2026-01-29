@@ -4,7 +4,9 @@ import { fileURLToPath } from 'node:url'
 
 export default defineBlokkliModule({
   setup({ context }) {
-    const resolver = createResolver(fileURLToPath(new URL('./', import.meta.url)))
+    const resolver = createResolver(
+      fileURLToPath(new URL('./', import.meta.url)),
+    )
     context.registerAdapterExtension(
       '@test/extension',
       resolver.resolve('./extension.ts'),

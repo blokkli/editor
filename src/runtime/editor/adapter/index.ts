@@ -1,3 +1,4 @@
+/* oxlint-disable typescript-eslint(no-empty-object-type) */
 import type { ComputedRef } from 'vue'
 import type {
   AddNewBlockEvent,
@@ -167,7 +168,7 @@ export interface BlokkliAdapter<T> {
  * Features augment this interface via module augmentation to add extensible methods.
  * These methods can be implemented by both the base adapter AND extensions.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-object-type
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface AdapterExtensionMethods<T> {
   // Features augment this interface to declare extensible methods
 }

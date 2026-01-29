@@ -131,7 +131,9 @@ export default async function adaptersProvider(
       // Route to extension
       const ext = extensionsByNamespace.get(namespace)
       if (!ext) {
-        throw new Error(`No adapter extension found for namespace: ${namespace}`)
+        throw new Error(
+          `No adapter extension found for namespace: ${namespace}`,
+        )
       }
       const method = ext.methods[methodName]
       if (typeof method !== 'function') {
