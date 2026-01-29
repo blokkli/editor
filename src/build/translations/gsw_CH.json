@@ -279,6 +279,14 @@
     "source": "Generate content for a page about how taxes work in Switzerland",
     "translation": "Schrib e Teggscht zum Thema Stüüre in dr Schwiz"
   },
+  "availableBlocks": {
+    "source": "Available blocks",
+    "translation": ""
+  },
+  "availableFragments": {
+    "source": "Available fragments",
+    "translation": ""
+  },
   "blockAddListTourText": {
     "source": "Right-click on a block to add or remove them from your favorites. Favorites are highlighted and always displayed at the top of the list.",
     "translation": "Mach e Rächtsklick uf e Block zum nen zu dine Favorite drzuefüege oder z'entfärne. Favorite sin hervorhebt und wärde immer oobe in dr Lischt aazeigt."
@@ -510,10 +518,6 @@
   "deleteError": {
     "source": "The block could not be deleted.",
     "translation": "S'Elemänt het nid chönne entfärnt wärde. "
-  },
-  "description": {
-    "source": "Description",
-    "translation": ""
   },
   "diffAfter": {
     "source": "After",
@@ -1342,6 +1346,10 @@
   "libraryItemEditOverlayBack": {
     "source": "Back to page",
     "translation": "Zrugg zur Sitte"
+  },
+  "libraryItemEditOverlayBackWithPage": {
+    "source": "Back to \"@label\"",
+    "translation": ""
   },
   "libraryItemEditOverlayTitle": {
     "source": "Edit reusable block",

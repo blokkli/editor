@@ -291,6 +291,14 @@ msgctxt "assistantPromptPlaceholder"
 msgid "Generate content for a page about how taxes work in Switzerland"
 msgstr "Schrib e Teggscht zum Thema Stüüre in dr Schwiz"
 
+msgctxt "availableBlocks"
+msgid "Available blocks"
+msgstr ""
+
+msgctxt "availableFragments"
+msgid "Available fragments"
+msgstr ""
+
 msgctxt "blockAddListTourText"
 msgid ""
 "Right-click on a block to add or remove them from your favorites. Favorites "
@@ -550,10 +558,6 @@ msgstr "Lösche"
 msgctxt "deleteError"
 msgid "The block could not be deleted."
 msgstr "S'Elemänt het nid chönne entfärnt wärde. "
-
-msgctxt "description"
-msgid "Description"
-msgstr ""
 
 msgctxt "diffAfter"
 msgid "After"
@@ -1500,6 +1504,10 @@ msgstr "Das Elemänt het nid chönne zur Bibliothek drzuegfüegt wärde. "
 msgctxt "libraryItemEditOverlayBack"
 msgid "Back to page"
 msgstr "Zrugg zur Sitte"
+
+msgctxt "libraryItemEditOverlayBackWithPage"
+msgid "Back to \"@label\""
+msgstr ""
 
 msgctxt "libraryItemEditOverlayTitle"
 msgid "Edit reusable block"

@@ -1,7 +1,10 @@
 <template>
   <div class="bk-add-list-help-item">
-    <div v-if="imageUrl" class="bk-add-list-help-image">
-      <img :src="imageUrl" />
+    <div v-if="type === 'bundle'" class="bk-add-list-help-image">
+      <img v-if="imageUrl" :src="imageUrl" />
+      <div v-else>
+        <ItemIcon :bundle="undefined" :icon />
+      </div>
     </div>
     <h2>
       <ItemIconBox :bundle :icon :color />
@@ -12,26 +15,30 @@
 
     <div v-if="text" class="bk-add-list-help-description" v-html="text" />
 
-    <template v-if="fields.length">
+    <template v-for="section in sections" :key="section.title">
       <hr />
       <div class="bk-add-list-help-label">
-        {{ $t('allowedBlocks', 'Allowed Blocks') }}
+        {{ section.title }}
       </div>
       <div
-        v-for="field in fields"
+        v-for="field in section.fields"
         :key="field.name"
         class="bk-add-list-help-fields-item"
       >
         <ul>
-          <li v-if="fields.length > 1" class="bk-is-field">
+          <li v-if="section.fields.length > 1" class="bk-is-field">
             {{ field.label }}
           </li>
           <li
-            v-for="allowed in field.allowed"
+            v-for="allowed in field.items"
             :key="field.name + allowed.bundle"
             class="bk-is-bundle"
           >
-            <ItemIconBox :bundle="allowed.bundle" is-tiny />
+            <ItemIconBox
+              :bundle="allowed.bundle"
+              :icon="allowed.icon"
+              is-tiny
+            />
             <span>{{ allowed.label }}</span>
           </li>
         </ul>
@@ -42,10 +49,12 @@
 
 <script setup lang="ts">
 import type { AddAction } from '#blokkli/editor/types/actions'
-import { ItemIconBox } from '#blokkli/editor/components'
+import { ItemIconBox, ItemIcon } from '#blokkli/editor/components'
 import { itemEntityType } from '#blokkli-build/config'
+import { fragmentBlockBundle } from '#blokkli-build/config'
 import { computed, useBlokkli } from '#imports'
 import { falsy } from '#blokkli/helpers'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 
 const props = defineProps<{
   type: 'bundle' | 'action'
@@ -54,6 +63,20 @@ const props = defineProps<{
 }>()
 
 const { types, $t, definitions } = useBlokkli()
+
+const reusableBlockTypes = computed(() =>
+  types.generallyAvailableBundles.filter((v) => v.allowReusable),
+)
+
+const fragments = computed<FieldInfoItem[]>(() => {
+  return definitions.fragmentDefinitions.value.map((v) => {
+    return {
+      bundle: fragmentBlockBundle,
+      label: v.label,
+      icon: v.editor?.icon ?? 'bk_mdi_newspaper',
+    }
+  })
+})
 
 const bundleDefinition = computed(() => {
   if (props.type === 'bundle') {
@@ -101,10 +124,21 @@ const color = computed(() => {
   return action.value?.color
 })
 
+type FieldInfoItem = {
+  bundle: string
+  label: string
+  icon?: BlokkliIcon
+}
+
 type FieldInfo = {
   name: string
   label: string
-  allowed: { bundle: string; label: string }[]
+  items: FieldInfoItem[]
+}
+
+type Section = {
+  title: string
+  fields: FieldInfo[]
 }
 
 const fields = computed<FieldInfo[]>(() => {
@@ -118,7 +152,7 @@ const fields = computed<FieldInfo[]>(() => {
   )
 
   return fieldConfigs.map((field) => {
-    const allowed = field.allowedBundles
+    const items = field.allowedBundles
       .map((bundleId) => {
         return types.getBlockBundleDefinition(bundleId)
       })
@@ -133,8 +167,54 @@ const fields = computed<FieldInfo[]>(() => {
     return {
       name: field.name,
       label: field.label,
-      allowed,
+      items,
     }
   })
+})
+
+const sections = computed<Section[]>(() => {
+  const result: Section[] = []
+
+  if (fields.value.length) {
+    result.push({
+      title: $t('allowedBlocks', 'Allowed Blocks'),
+      fields: fields.value,
+    })
+  }
+
+  if (
+    props.type === 'action' &&
+    props.id === 'library' &&
+    reusableBlockTypes.value.length
+  ) {
+    result.push({
+      title: $t('availableBlocks', 'Available blocks'),
+      fields: [
+        {
+          name: 'reusable',
+          label: '',
+          items: reusableBlockTypes.value.map((block) => ({
+            bundle: block.id,
+            label: block.label,
+          })),
+        },
+      ],
+    })
+  }
+
+  if (props.type === 'action' && props.id === 'fragment' && fragments.value) {
+    result.push({
+      title: $t('availableFragments', 'Available fragments'),
+      fields: [
+        {
+          name: 'fragments',
+          label: '',
+          items: fragments.value,
+        },
+      ],
+    })
+  }
+
+  return result
 })
 </script>

@@ -1,6 +1,6 @@
 .bk.bk-add-list-help {
   @apply absolute top-0 left-0 z-add-list-info will-change-transform;
-  @apply w-[650px];
+  @apply w-[750px];
 
   .bk-add-list-help-item {
     &:has(.bk-add-list-help-fields) {
@@ -10,7 +10,7 @@
     }
   }
   .bk-add-list-help-label {
-    @apply uppercase text-sm font-semibold text-mono-300 tracking-wider mb-5;
+    @apply uppercase text-sm font-semibold text-mono-300 tracking-wider mb-10;
   }
 
   .bk-add-list-help-inner {
@@ -42,7 +42,19 @@
 
   .bk-add-list-help-image {
     @apply bg-white rounded-md overflow-hidden;
-    @apply size-200 float-right ml-20;
+    @apply float-right ml-20 w-300 h-200;
+    @apply outline outline-1 outline-mono-700;
+
+    &:has(.bk-blokkli-item-icon) {
+      @apply flex items-center justify-center bg-mono-700;
+    }
+
+    .bk-blokkli-item-icon {
+      @apply size-100;
+      svg {
+        @apply fill-mono-500;
+      }
+    }
 
     img {
       @apply border-0 size-full object-contain;

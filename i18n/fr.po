@@ -287,6 +287,14 @@ msgctxt "assistantPromptPlaceholder"
 msgid "Generate content for a page about how taxes work in Switzerland"
 msgstr ""
 
+msgctxt "availableBlocks"
+msgid "Available blocks"
+msgstr ""
+
+msgctxt "availableFragments"
+msgid "Available fragments"
+msgstr ""
+
 msgctxt "blockAddListTourText"
 msgid ""
 "Right-click on a block to add or remove them from your favorites. Favorites "
@@ -543,10 +551,6 @@ msgstr "Supprimer"
 msgctxt "deleteError"
 msgid "The block could not be deleted."
 msgstr "L'élément n'a pas pu être supprimé."
-
-msgctxt "description"
-msgid "Description"
-msgstr ""
 
 msgctxt "diffAfter"
 msgid "After"
@@ -1482,6 +1486,10 @@ msgstr "L'élément n’a pas pu être rendu réutilisable."
 
 msgctxt "libraryItemEditOverlayBack"
 msgid "Back to page"
+msgstr ""
+
+msgctxt "libraryItemEditOverlayBackWithPage"
+msgid "Back to \"@label\""
 msgstr ""
 
 msgctxt "libraryItemEditOverlayTitle"

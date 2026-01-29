@@ -109,9 +109,7 @@ const activeHelpItem = ref<AddListHelp | null>(null)
 const helpType = computed(() =>
   DEBUG_HELP ? 'bundle' : activeHelpItem.value?.type,
 )
-const helpId = computed(() =>
-  DEBUG_HELP ? 'two_columns' : activeHelpItem.value?.id,
-)
+const helpId = computed(() => (DEBUG_HELP ? 'image' : activeHelpItem.value?.id))
 const helpIsVisible = computed(
   () => (isActive.value && helpActive.value) || DEBUG_HELP,
 )

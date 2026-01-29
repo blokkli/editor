@@ -279,6 +279,14 @@
     "source": "Generate content for a page about how taxes work in Switzerland",
     "translation": "Schreibe Text zum Thema Steuern in der Schweiz"
   },
+  "availableBlocks": {
+    "source": "Available blocks",
+    "translation": "Verfügbare Blöcke"
+  },
+  "availableFragments": {
+    "source": "Available fragments",
+    "translation": "Verfügbare Fragmente"
+  },
   "blockAddListTourText": {
     "source": "Right-click on a block to add or remove them from your favorites. Favorites are highlighted and always displayed at the top of the list.",
     "translation": "Klicken Sie mit der rechten Maustaste auf den Block um ihn zu den Favoriten hinzuzufügen oder zu entfernen. Favoriten werden hervorgehoben und an erster Stelle dargestellt."
@@ -510,10 +518,6 @@
   "deleteError": {
     "source": "The block could not be deleted.",
     "translation": "Das Element konnte nicht entfernt werden."
-  },
-  "description": {
-    "source": "Description",
-    "translation": "Beschreibung"
   },
   "diffAfter": {
     "source": "After",
@@ -1342,6 +1346,10 @@
   "libraryItemEditOverlayBack": {
     "source": "Back to page",
     "translation": "Zurück zur Seite"
+  },
+  "libraryItemEditOverlayBackWithPage": {
+    "source": "Back to \"@label\"",
+    "translation": "Zurück zu «@label»"
   },
   "libraryItemEditOverlayTitle": {
     "source": "Edit reusable block",

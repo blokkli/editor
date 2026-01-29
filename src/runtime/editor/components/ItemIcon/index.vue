@@ -13,6 +13,7 @@ import { fromLibraryBlockBundle } from '#blokkli-build/config'
 
 const props = defineProps<{
   bundle?: string
+  icon?: BlokkliIcon
 }>()
 
 const { definitions } = useBlokkli()
@@ -32,7 +33,7 @@ const iconName = computed<BlokkliIcon>(() => {
     }
   }
 
-  return 'bk_mdi_question_mark'
+  return props.icon ?? 'bk_mdi_question_mark'
 })
 </script>
 

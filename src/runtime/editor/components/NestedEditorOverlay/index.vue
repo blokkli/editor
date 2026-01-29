@@ -13,7 +13,7 @@
           </h2>
           <button @click.prevent="closeOverlay">
             <Icon name="bk_mdi_arrow_left_alt" />
-            <span>{{ $t('libraryItemEditOverlayBack', 'Back to page') }}</span>
+            <span>{{ backLabel }}</span>
           </button>
         </header>
       </div>
@@ -47,6 +47,7 @@
 
 <script lang="ts" setup>
 import {
+  computed,
   onBeforeUnmount,
   onMounted,
   ref,
@@ -69,7 +70,7 @@ export type NestedEditorOverlayProps = {
 
 const props = defineProps<NestedEditorOverlayProps>()
 
-const { $t, ui, dom, blocks } = useBlokkli()
+const { $t, ui, dom, blocks, state } = useBlokkli()
 const DURATION = 600
 const emit = defineEmits(['submit', 'close'])
 
@@ -86,6 +87,17 @@ function getOriginatingElement(): HTMLElement | null {
 
   return null
 }
+
+const backLabel = computed(() => {
+  const entityLabel = state.entity.value.label
+  if (!entityLabel) {
+    return $t('libraryItemEditOverlayBack', 'Back to page')
+  }
+  return $t('libraryItemEditOverlayBackWithPage', 'Back to "@label"').replace(
+    '@label',
+    entityLabel,
+  )
+})
 
 const FADE_DURATION = 150
 const EASING = 'cubic-bezier(0.56, 0.04, 0.25, 1)'

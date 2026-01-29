@@ -279,6 +279,14 @@
     "source": "Generate content for a page about how taxes work in Switzerland",
     "translation": ""
   },
+  "availableBlocks": {
+    "source": "Available blocks",
+    "translation": ""
+  },
+  "availableFragments": {
+    "source": "Available fragments",
+    "translation": ""
+  },
   "blockAddListTourText": {
     "source": "Right-click on a block to add or remove them from your favorites. Favorites are highlighted and always displayed at the top of the list.",
     "translation": ""
@@ -510,10 +518,6 @@
   "deleteError": {
     "source": "The block could not be deleted.",
     "translation": "L'élément n'a pas pu être supprimé."
-  },
-  "description": {
-    "source": "Description",
-    "translation": ""
   },
   "diffAfter": {
     "source": "After",
@@ -1341,6 +1345,10 @@
   },
   "libraryItemEditOverlayBack": {
     "source": "Back to page",
+    "translation": ""
+  },
+  "libraryItemEditOverlayBackWithPage": {
+    "source": "Back to \"@label\"",
     "translation": ""
   },
   "libraryItemEditOverlayTitle": {
