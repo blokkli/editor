@@ -1184,6 +1184,14 @@ msgctxt "feature_revert_label"
 msgid "Revert"
 msgstr "Verwerfen"
 
+msgctxt "feature_rewrite_description"
+msgid "Rewrite selected blocks using AI."
+msgstr "Ausgewählte Blöcke mit KI umschreiben."
+
+msgctxt "feature_rewrite_label"
+msgid "AI Rewrite"
+msgstr "KI-Umschreiben"
+
 msgctxt "feature_search_description"
 msgid ""
 "Provides an overlay with shortcut to search for blocks on the current page "
@@ -1963,6 +1971,62 @@ msgstr "Verwerfen..."
 msgctxt "revertSuccess"
 msgid "All changes have been discarded."
 msgstr "Alle Änderungen wurden verworfen."
+
+msgctxt "rewriteAcceptedMessagePlural"
+msgid "Accepted @count texts:"
+msgstr "@count Texte übernommen:"
+
+msgctxt "rewriteAcceptedMessageSingular"
+msgid "Accepted 1 text:"
+msgstr "1 Text übernommen:"
+
+msgctxt "rewriteAction"
+msgid "Rewrite with AI"
+msgstr "Mit KI umschreiben"
+
+msgctxt "rewriteApplyError"
+msgid "Failed to save rewritten content."
+msgstr "Umgeschriebene Inhalte konnten nicht gespeichert werden."
+
+msgctxt "rewriteAssistantMessagePlural"
+msgid "Rewrote @count texts"
+msgstr "@count Texte umgeschrieben"
+
+msgctxt "rewriteAssistantMessageSingular"
+msgid "Rewrote 1 text"
+msgstr "1 Text umgeschrieben"
+
+msgctxt "rewriteError"
+msgid "An error occurred."
+msgstr "Ein Fehler ist aufgetreten."
+
+msgctxt "rewriteGenerate"
+msgid "Generate"
+msgstr "Generieren"
+
+msgctxt "rewritePromptPlaceholder"
+msgid "e.g. \"rewrite in simpler words\""
+msgstr "z.B. «in einfacheren Worten umschreiben»"
+
+msgctxt "rewriteRefinePromptPlaceholder"
+msgid "Enter instructions to refine unchecked results..."
+msgstr "Anweisungen eingeben um nicht markierte Texte zu überarbeiten..."
+
+msgctxt "rewriteRegenerate"
+msgid "Regenerate"
+msgstr "Erneut generieren"
+
+msgctxt "rewriteTitle"
+msgid "Rewriting @count texts..."
+msgstr "@count Texte werden umgeschrieben..."
+
+msgctxt "rewriteTitleDone"
+msgid "Rewrite complete"
+msgstr "Umschreiben abgeschlossen"
+
+msgctxt "rewriteTitlePrompt"
+msgid "Rewrite @count texts in @blockCount blocks"
+msgstr "@count Texte in @blockCount Blöcken umschreiben"
 
 msgctxt "scheduledFor"
 msgid "The changes will be published on this date."

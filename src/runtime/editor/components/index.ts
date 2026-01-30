@@ -1,4 +1,5 @@
 import AddListItem from './AddListItem/index.vue'
+import FlexTextarea from './FlexTextarea/index.vue'
 import BlockPreviewItem from './BlockPreviewItem/index.vue'
 import BlockPreviewRenderer from './BlockPreviewRenderer/index.vue'
 import ItemIconBox from './ItemIconBox/index.vue'
@@ -40,6 +41,7 @@ import NestedEditorOverlay from './NestedEditorOverlay/index.vue'
 
 export {
   AddListItem,
+  FlexTextarea,
   BlockPreviewItem,
   BlockPreviewRenderer,
   ItemIconBox,

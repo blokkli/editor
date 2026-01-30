@@ -26,6 +26,10 @@ npm run dev:build              # Generate static playground
 npm run dev:start              # Serve static playground build
 ```
 
+**Note:** During development, the dev server is always running with hot module
+replacement. Do NOT start the dev server to verify changes - it's already
+running and will automatically reload.
+
 ### Building & Packaging
 
 ```bash

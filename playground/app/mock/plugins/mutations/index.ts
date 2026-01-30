@@ -75,6 +75,10 @@ import {
   MutationCreateTemplate,
   type MutationCreateTemplateArgs,
 } from './Mutation/CreateTemplate'
+import {
+  MutationApplyRewrite,
+  type MutationApplyRewriteArgs,
+} from './Mutation/ApplyRewrite'
 
 export type MutationArgsMap = {
   add: MutationAddArgs | MutationAddArgs[]
@@ -99,6 +103,7 @@ export type MutationArgsMap = {
   set_block_schedule: MutationSetBlockScheduleArgs
   add_template: MutationAddTemplateArgs
   create_template: MutationCreateTemplateArgs
+  apply_rewrite: MutationApplyRewriteArgs
 }
 
 export const createMutation = <T extends keyof MutationArgsMap>(
@@ -150,6 +155,8 @@ export const createMutation = <T extends keyof MutationArgsMap>(
       return new MutationAddTemplate(configuration)
     case 'create_template':
       return new MutationCreateTemplate(configuration)
+    case 'apply_rewrite':
+      return new MutationApplyRewrite(configuration)
   }
 
   throw new Error('Missing mutation plugin with ID: ' + id)

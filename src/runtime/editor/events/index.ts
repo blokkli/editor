@@ -132,6 +132,8 @@ export type AddNewBlockEvent = {
   bundle: string
   host: BlokkliItemHost
   afterUuid: string | null
+  /** Optional UUID to use for the new block. If not provided, the adapter generates one. */
+  blockUuid?: string
 }
 
 export type UpdateMutatedFieldsEvent = {
@@ -219,6 +221,7 @@ export interface EventbusEvents {
   'item:doubleClick': RenderedFieldListItem
 
   scrollIntoView: ScrollIntoViewEvent
+  highlight: HTMLElement | null
   'animationFrame:before': AnimationFrameBeforeEvent
   'animationFrame:after': undefined
   'canvas:draw': CanvasDrawEvent

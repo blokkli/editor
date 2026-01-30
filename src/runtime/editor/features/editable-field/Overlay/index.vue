@@ -38,7 +38,7 @@
         />
       </div>
 
-      <div class="bk bk-editable-field-info">
+      <div class="bk-artboard-tooltip-info">
         <button :disabled="!hasChanged" @click.prevent="discard">
           {{ $t('editableFieldDiscard', 'Discard') }}
         </button>

@@ -157,7 +157,9 @@ function cancelTransform() {
 
 watch(selection.uuids, async () => {
   if (status.value === 'idle') {
-    execute()
+    execute().then(() => {
+      console.log(plugins.value)
+    })
   }
 })
 

@@ -20,7 +20,7 @@
     --bk-header-bg: var(--bk-border);
   }
 
-  &.bk-is-top {
+  &.bk-is-y-top {
     &:before,
     &:after {
       border-width: var(--bk-caret-size) var(--bk-caret-size) 0
@@ -38,7 +38,7 @@
     }
   }
 
-  &.bk-is-bottom {
+  &.bk-is-y-bottom {
     &:before,
     &:after {
       border-width: 0 var(--bk-caret-size) var(--bk-caret-size)
@@ -49,6 +49,30 @@
 
     &:after {
       @apply -mb-1;
+    }
+  }
+
+  &.bk-is-y-center {
+    /* No vertical caret when centered */
+    &:before,
+    &:after {
+      @apply hidden;
+    }
+  }
+
+  &.bk-is-x-right {
+    /* Caret on left side pointing left */
+    &:before,
+    &:after {
+      border-width: var(--bk-caret-size) var(--bk-caret-size)
+        var(--bk-caret-size) 0;
+      border-color: transparent var(--bk-header-bg) transparent transparent;
+      @apply right-full top-1/2 -translate-y-1/2 left-auto;
+      transform: translateX(0) translateY(-50%);
+    }
+
+    &:after {
+      @apply -mr-1;
     }
   }
 
@@ -77,6 +101,23 @@
 
       svg {
         @apply size-18 fill-current;
+      }
+    }
+  }
+}
+
+.bk {
+  .bk-artboard-tooltip-info {
+    @apply border-t border-t-mono-300 text-sm font-semibold flex justify-between items-center;
+
+    > button {
+      @apply text-red-normal text-sm;
+      @apply py-[6px] px-10;
+      @apply hover:bg-red-light;
+      @apply border-r border-r-mono-300;
+
+      &[disabled] {
+        @apply pointer-events-none text-mono-300;
       }
     }
   }

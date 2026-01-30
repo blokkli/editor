@@ -2,7 +2,7 @@
   <div
     ref="el"
     class="bk bk-artboard-tooltip"
-    :class="'bk-is-' + placementY"
+    :class="['bk-is-y-' + placementY, 'bk-is-x-' + placementX]"
     :style="{
       '--bk-caret-x': caretX,
     }"
@@ -24,6 +24,7 @@
 import {
   useStickyToolbar,
   type PlacementVertical,
+  type PlacementHorizontal,
 } from '#blokkli/editor/composables/useStickyToolbar'
 import {
   useTemplateRef,
@@ -44,6 +45,7 @@ const props = withDefaults(
     anchorEl?: HTMLElement | null
     anchorCoordinates?: Coord | null
     placementY?: PlacementVertical
+    placementX?: PlacementHorizontal
     closeIcon?: BlokkliIcon
   }>(),
   {
@@ -51,6 +53,7 @@ const props = withDefaults(
     anchorCoordinates: null,
     closeIcon: 'bk_mdi_close',
     placementY: 'auto',
+    placementX: 'center',
   },
 )
 
@@ -67,7 +70,7 @@ const { onKeyDown } = useFocusTrap({
 
 const { ui } = useBlokkli()
 
-const { placementY, caretX } = useStickyToolbar(el, {
+const { placementY, placementX, caretX } = useStickyToolbar(el, {
   getAnchorElement() {
     return props.anchorEl ?? null
   },
@@ -78,7 +81,7 @@ const { placementY, caretX } = useStickyToolbar(el, {
     return props.placementY
   },
   getPlacementX() {
-    return 'center'
+    return props.placementX
   },
   getCaretWidth() {
     return 30

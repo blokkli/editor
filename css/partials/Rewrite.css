@@ -1,0 +1,231 @@
+.bk.bk-rewrite-form {
+  --bk-bg: white;
+  --bk-header-bg: theme('colors.orange.normal');
+  --bk-header-text: theme('colors.orange.dark');
+  --bk-border: theme('colors.orange.normal');
+  --bk-header-hover: rgb(var(--bk-theme-orange-dark) / 0.2);
+
+  .bk-rewrite-form-inner {
+    @apply w-[400px];
+    height: min(calc(100vh - 100px), 500px);
+    @apply flex flex-col;
+  }
+
+  .bk-rewrite-history {
+    @apply overflow-y-auto p-15 mb-15;
+    @apply flex flex-col gap-15;
+  }
+
+  .bk-rewrite-messages {
+    @apply flex flex-col gap-15;
+  }
+
+  .bk-rewrite-message {
+    @apply flex items-start gap-8 text-sm px-10 py-8 rounded-xl;
+
+    svg {
+      @apply size-15 shrink-0 mt-[2px] fill-current;
+    }
+
+    .bk-rewrite-message-content {
+      @apply flex flex-col gap-5 min-w-0;
+
+      > span {
+        @apply leading-tight;
+      }
+    }
+
+    &.bk-is-user {
+      @apply bg-orange-normal text-orange-dark;
+      @apply ml-30;
+    }
+
+    &.bk-is-assistant {
+      @apply bg-orange-light text-orange-dark;
+      @apply mr-30;
+    }
+  }
+
+  .bk-rewrite-accepted-texts {
+    @apply list-none m-0 p-0 flex flex-col gap-3;
+
+    li {
+      @apply text-xs opacity-80 line-clamp-1;
+    }
+  }
+
+  .bk-rewrite-results {
+    @apply flex flex-col gap-5;
+    @apply border border-mono-200 rounded p-5;
+  }
+
+  .bk-rewrite-result-item {
+    @apply cursor-pointer;
+    @apply hover:bg-mono-50;
+
+    span {
+      @apply -mt-2;
+    }
+
+    &.bk-is-rejected {
+      @apply opacity-60;
+
+      .bk-rewrite-result-text {
+        @apply line-through;
+      }
+    }
+  }
+
+  .bk-rewrite-result-text {
+    @apply text-sm text-mono-700 line-clamp-2;
+  }
+
+  .bk-rewrite-input {
+    @apply flex flex-col bg-white mt-auto mx-15 mb-15;
+    @apply border border-mono-200;
+    @apply rounded-lg;
+
+    @apply focus-within:outline focus-within:outline-4 focus-within:outline-orange-normal/20 focus-within:border-orange-dark/50;
+
+    .bk-flex-textarea {
+      @apply min-h-[60px];
+    }
+
+    textarea {
+      @apply w-full resize-none text-base p-10 pb-0;
+      @apply border-none bg-transparent appearance-none;
+      @apply !text-orange-dark;
+      @apply rounded-t-lg;
+
+      &:focus {
+        @apply outline-none shadow-none;
+      }
+    }
+
+    .bk-rewrite-input-bottom {
+      @apply border-t border-t-mono-200 flex justify-end p-8;
+    }
+
+    .bk-rewrite-submit {
+      @apply size-30 flex items-center justify-center;
+      @apply rounded bg-orange-normal text-white;
+      @apply hover:bg-orange-dark transition-colors;
+      @apply disabled:opacity-40 disabled:cursor-not-allowed;
+
+      svg {
+        @apply size-18 fill-current;
+      }
+    }
+  }
+
+  .bk-rewrite-streaming {
+    @apply flex items-center gap-10 pt-10;
+
+    span {
+      @apply text-mono-600;
+    }
+
+    .bk-loading {
+      @apply size-20;
+    }
+  }
+
+  .bk-rewrite-error {
+    @apply flex items-center gap-10 text-red-dark pb-10;
+
+    svg {
+      @apply size-20 fill-current;
+    }
+  }
+
+  .bk-rewrite-tool-calls {
+    @apply flex flex-col gap-5;
+    @apply border border-mono-200 rounded p-5;
+  }
+
+  .bk-rewrite-tool-call {
+    @apply rounded overflow-hidden;
+    @apply border border-mono-200;
+
+    &.bk-is-rejected {
+      @apply opacity-60;
+
+      .bk-rewrite-tool-call-details {
+        @apply line-through;
+      }
+    }
+
+    &:hover {
+      @apply border-orange-normal/50;
+    }
+  }
+
+  .bk-rewrite-tool-call-header {
+    @apply flex items-center gap-8 px-8 py-5;
+    @apply bg-mono-50 cursor-pointer;
+
+    svg {
+      @apply size-15 fill-mono-600;
+    }
+
+    .bk-is-add & svg {
+      @apply fill-lime-normal;
+    }
+
+    .bk-is-rewrite & svg {
+      @apply fill-orange-normal;
+    }
+
+    .bk-is-delete & svg {
+      @apply fill-red-normal;
+    }
+
+    .bk-is-move & svg {
+      @apply fill-accent-700;
+    }
+
+    span:first-of-type {
+      @apply -mt-2;
+    }
+  }
+
+  .bk-rewrite-tool-call-type {
+    @apply text-xs font-medium text-mono-700;
+  }
+
+  .bk-rewrite-tool-call-details {
+    @apply px-8 py-5 text-sm;
+  }
+
+  .bk-rewrite-tool-call-text {
+    @apply text-mono-600 line-clamp-2;
+  }
+
+  .bk-rewrite-tool-call-bundle {
+    @apply font-medium text-mono-700 mb-3;
+  }
+
+  .bk-rewrite-tool-call-field {
+    @apply flex gap-5 text-xs;
+  }
+
+  .bk-rewrite-tool-call-field-name {
+    @apply text-mono-500 shrink-0;
+  }
+
+  .bk-rewrite-tool-call-field-value {
+    @apply text-mono-700 line-clamp-1;
+  }
+}
+
+.bk {
+  .bk-item-action.bk-is-rewrite {
+    @apply hover:bg-orange-normal/20;
+    svg {
+      @apply fill-orange-normal;
+      filter: drop-shadow(
+        0px 0px 4px rgb(var(--bk-theme-orange-normal) / 100%)
+      );
+    }
+  }
+}

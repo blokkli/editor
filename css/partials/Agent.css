@@ -1,0 +1,231 @@
+.bk-agent-connecting {
+  @apply flex items-center justify-center gap-8 p-20 text-mono-500;
+}
+
+.bk.bk-agent-panel {
+  @apply flex flex-col h-full min-h-[200px];
+
+  .bk-agent-panel-inner {
+    @apply flex-1 overflow-y-auto p-15;
+  }
+
+  /* Conversation */
+  .bk-agent-conversation {
+    @apply flex flex-col gap-15;
+  }
+
+  .bk-agent-message {
+    @apply flex gap-10;
+  }
+
+  .bk-agent-message-avatar {
+    @apply shrink-0 flex items-center justify-center w-25 h-25 rounded-full bg-mono-100;
+
+    svg {
+      @apply w-15 h-15 fill-current;
+    }
+  }
+
+  .bk-agent-message.bk-is-user .bk-agent-message-avatar {
+    @apply bg-accent-700 text-white;
+  }
+
+  .bk-agent-message.bk-is-assistant .bk-agent-message-avatar {
+    @apply bg-yellow-light text-yellow-dark;
+  }
+
+  .bk-agent-message-content {
+    @apply flex-1 min-w-0;
+  }
+
+  .bk-agent-message-text {
+    @apply text-sm leading-relaxed text-mono-800 break-words;
+
+    code {
+      @apply bg-mono-100 px-3 py-1 rounded text-xs font-mono;
+    }
+  }
+
+  .bk-agent-message.bk-is-user .bk-agent-message-text {
+    @apply text-mono-600;
+  }
+
+  .bk-agent-message-tools {
+    @apply flex flex-wrap gap-5 mt-5;
+  }
+
+  .bk-agent-message-tool {
+    @apply text-xs px-5 py-2 rounded bg-mono-100 text-mono-600;
+
+    &.bk-is-success {
+      @apply bg-lime-light text-lime-dark;
+    }
+
+    &.bk-is-error {
+      @apply bg-red-light text-red-dark;
+    }
+  }
+
+  /* Tool calls */
+  .bk-agent-tool-calls {
+    @apply flex flex-col gap-5 mt-8 p-8 bg-mono-50 rounded-md;
+  }
+
+  .bk-agent-tool-call {
+    @apply flex items-center gap-8 px-8 py-5 text-xs rounded;
+
+    &.bk-is-executing {
+      @apply bg-yellow-light text-yellow-dark;
+    }
+
+    &.bk-is-success {
+      @apply bg-lime-light text-lime-dark;
+    }
+
+    &.bk-is-error {
+      @apply bg-red-light text-red-dark;
+    }
+  }
+
+  .bk-agent-tool-call-icon {
+    @apply w-15 h-15;
+
+    svg {
+      @apply w-full h-full fill-current;
+    }
+  }
+
+  .bk-agent-tool-call-name {
+    @apply flex-1;
+  }
+
+  .bk-agent-tool-call-status {
+    @apply w-15 h-15;
+
+    svg {
+      @apply w-full h-full fill-current;
+    }
+  }
+
+  /* Pending changes */
+  .bk-agent-pending-changes {
+    @apply mt-15 border border-yellow-normal rounded-lg bg-yellow-light overflow-hidden;
+  }
+
+  .bk-agent-pending-header {
+    @apply flex items-center gap-8 px-10 py-10 bg-yellow-normal/30 text-yellow-dark font-medium text-sm;
+
+    svg {
+      @apply w-15 h-15 fill-current;
+    }
+  }
+
+  .bk-agent-pending-count {
+    @apply ml-auto px-8 py-2 rounded-full bg-yellow-normal/40 text-xs;
+  }
+
+  .bk-agent-pending-list {
+    @apply p-8;
+  }
+
+  .bk-agent-pending-item {
+    @apply flex items-center gap-8 px-8 py-5 text-xs text-yellow-dark;
+  }
+
+  .bk-agent-pending-item-icon {
+    @apply w-15 h-15 text-yellow-dark;
+
+    svg {
+      @apply w-full h-full fill-current;
+    }
+
+    .bk-is-add & {
+      @apply text-lime-normal;
+    }
+
+    .bk-is-delete & {
+      @apply text-red-normal;
+    }
+  }
+
+  .bk-agent-pending-actions {
+    @apply flex gap-8 px-10 pb-10;
+  }
+
+  .bk-agent-accept-btn,
+  .bk-agent-reject-btn {
+    @apply flex-1 flex items-center justify-center gap-5 px-10 py-8 border-none rounded-md text-sm font-medium cursor-pointer transition-colors;
+
+    svg {
+      @apply w-15 h-15 fill-current;
+    }
+  }
+
+  .bk-agent-accept-btn {
+    @apply bg-lime-normal text-white hover:bg-lime-dark;
+  }
+
+  .bk-agent-reject-btn {
+    @apply bg-white text-mono-700 border border-mono-300 hover:bg-mono-50;
+  }
+
+  /* Input area */
+  .bk-agent-input {
+    @apply flex flex-col shrink-0;
+    @apply mx-15 mb-15;
+    @apply border border-mono-200 bg-white;
+    @apply rounded-lg;
+    @apply focus-within:outline focus-within:outline-4 focus-within:outline-accent-700/20 focus-within:border-accent-700/50;
+
+    .bk-flex-textarea {
+      @apply min-h-[60px];
+    }
+
+    textarea {
+      @apply w-full resize-none text-base p-10 pb-0;
+      @apply border-none bg-transparent appearance-none;
+      @apply text-mono-800;
+      @apply rounded-t-lg;
+
+      &:focus {
+        @apply outline-none shadow-none;
+      }
+
+      &::placeholder {
+        @apply text-mono-400;
+      }
+    }
+
+    .bk-agent-input-actions {
+      @apply border-t border-t-mono-200 flex justify-end p-8;
+    }
+
+    .bk-agent-submit-btn,
+    .bk-agent-cancel-btn,
+    .bk-agent-debug-btn {
+      @apply w-30 h-30 flex items-center justify-center;
+      @apply rounded-full border-none;
+      @apply transition-colors;
+
+      svg {
+        @apply w-18 h-18 fill-current;
+      }
+    }
+
+    .bk-agent-submit-btn {
+      @apply bg-accent-700 text-white;
+      @apply hover:bg-accent-800;
+      @apply disabled:opacity-40 disabled:cursor-not-allowed;
+    }
+
+    .bk-agent-cancel-btn {
+      @apply bg-red-normal text-white;
+      @apply hover:bg-red-dark;
+    }
+
+    .bk-agent-debug-btn {
+      @apply bg-mono-100 text-mono-500;
+      @apply hover:bg-mono-200 hover:text-mono-700;
+    }
+  }
+}

@@ -30,7 +30,7 @@ import type {
   Validation,
 } from '../types/state'
 import type { EditPermission } from '#blokkli/types/provider'
-import { fromLibraryBlockBundle } from '#blokkli-build/config'
+import { fromLibraryBlockBundle, itemEntityType } from '#blokkli-build/config'
 
 const HOST_OPTION_KEY = 'HOST'
 
@@ -317,6 +317,67 @@ export type StateProvider = {
    * @returns The parent entity UUID, or null if block not found
    */
   getParentEntityUuid: (uuid: string) => string | null
+
+  /**
+   * Phantom blocks for preview purposes.
+   *
+   * Maps phantom UUIDs to their field list items. These are temporary blocks
+   * that are rendered but not persisted until explicitly applied.
+   */
+  phantomBlocks: Readonly<Ref<ReadonlyMap<string, PhantomBlock>>>
+
+  /**
+   * Add a phantom block for preview.
+   *
+   * @param uuid - Unique ID for the phantom block
+   * @param block - The phantom block data
+   */
+  addPhantomBlock: (uuid: string, block: PhantomBlock) => void
+
+  /**
+   * Update props for a phantom block.
+   *
+   * @param uuid - The phantom block UUID
+   * @param props - Props to merge into the phantom block
+   */
+  updatePhantomBlockProps: (uuid: string, props: Record<string, string>) => void
+
+  /**
+   * Remove a phantom block.
+   *
+   * @param uuid - The phantom block UUID
+   */
+  removePhantomBlock: (uuid: string) => void
+
+  /**
+   * Clear all phantom blocks.
+   */
+  clearPhantomBlocks: () => void
+
+  /**
+   * Get a phantom block by UUID.
+   *
+   * @param uuid - The phantom block UUID
+   * @returns The phantom block or undefined
+   */
+  getPhantomBlock: (uuid: string) => PhantomBlock | undefined
+}
+
+/**
+ * A phantom block for preview purposes.
+ */
+export type PhantomBlock = {
+  /** Block bundle type */
+  bundle: string
+  /** Host entity information */
+  host: {
+    uuid: string
+    fieldName: string
+  }
+  /** UUID of block to insert after, null for beginning */
+  afterUuid: string | null
+  /** Field props for the block */
+  props: Record<string, string>
 }
 
 export default async function (
@@ -398,6 +459,7 @@ export default async function (
 
   const mutatedOptions = reactive<MutatedOptions>({})
   const mutatedItemProps = reactive<MutatedItemProps>({})
+  const phantomBlocks = ref<Map<string, PhantomBlock>>(new Map())
   const translation = ref<TranslationState>({
     isTranslatable: false,
     sourceLanguage: '',
@@ -784,6 +846,133 @@ export default async function (
     setContext(_mappedState)
   }
 
+  function addPhantomBlock(uuid: string, block: PhantomBlock) {
+    // Track the phantom block
+    const newMap = new Map(phantomBlocks.value)
+    newMap.set(uuid, block)
+    phantomBlocks.value = newMap
+
+    // Set the props in mutatedItemProps so the block renders correctly
+    mutatedItemProps[uuid] = { ...block.props }
+
+    // Add the phantom block to the field's list in mutatedFieldsMap
+    const fieldKey = `${block.host.uuid}:${block.host.fieldName}`
+    let field = mutatedFieldsMap[fieldKey]
+
+    // If field doesn't exist and the host is a phantom block, create the field entry
+    if (!field) {
+      const parentPhantom = phantomBlocks.value.get(block.host.uuid)
+      if (parentPhantom) {
+        // Create a new field entry for this phantom parent block
+        field = {
+          name: block.host.fieldName,
+          entityType: itemEntityType,
+          entityUuid: block.host.uuid,
+          list: [],
+        }
+        mutatedFieldsMap[fieldKey] = field
+      }
+    }
+
+    if (field) {
+      const newItem: FieldListItem = {
+        uuid,
+        bundle: block.bundle,
+        isVisible: true,
+        options: {},
+        props: block.props,
+      }
+
+      // Find the position to insert
+      const newList = [...field.list]
+      if (block.afterUuid === null) {
+        // Insert at the beginning
+        newList.unshift(newItem)
+      } else {
+        // Find the index of afterUuid and insert after it
+        const afterIndex = newList.findIndex((item) => item.uuid === block.afterUuid)
+        if (afterIndex !== -1) {
+          newList.splice(afterIndex + 1, 0, newItem)
+        } else {
+          // If afterUuid not found, append to end
+          newList.push(newItem)
+        }
+      }
+
+      mutatedFieldsMap[fieldKey] = { ...field, list: newList }
+    }
+  }
+
+  function updatePhantomBlockProps(uuid: string, props: Record<string, string>) {
+    const block = phantomBlocks.value.get(uuid)
+    if (block) {
+      const newMap = new Map(phantomBlocks.value)
+      newMap.set(uuid, { ...block, props: { ...block.props, ...props } })
+      phantomBlocks.value = newMap
+      // Update mutatedItemProps
+      mutatedItemProps[uuid] = { ...mutatedItemProps[uuid], ...props }
+    }
+  }
+
+  function removePhantomBlock(uuid: string) {
+    const block = phantomBlocks.value.get(uuid)
+    if (block) {
+      // Remove from mutatedFieldsMap
+      const fieldKey = `${block.host.uuid}:${block.host.fieldName}`
+      const field = mutatedFieldsMap[fieldKey]
+      if (field) {
+        const newList = field.list.filter((item) => item.uuid !== uuid)
+        mutatedFieldsMap[fieldKey] = { ...field, list: newList }
+      }
+
+      // Also clean up any field entries that were created for this block as a parent
+      const fieldKeys = Object.keys(mutatedFieldsMap)
+      for (const key of fieldKeys) {
+        const f = mutatedFieldsMap[key]
+        if (f && f.entityUuid === uuid) {
+          mutatedFieldsMap[key] = undefined
+        }
+      }
+    }
+
+    const newMap = new Map(phantomBlocks.value)
+    newMap.delete(uuid)
+    phantomBlocks.value = newMap
+    // Clear from mutatedItemProps
+    mutatedItemProps[uuid] = undefined
+  }
+
+  function clearPhantomBlocks() {
+    // Collect phantom block UUIDs for cleanup
+    const phantomUuids = new Set(phantomBlocks.value.keys())
+
+    // Remove all phantom blocks from mutatedFieldsMap
+    for (const [uuid, block] of phantomBlocks.value) {
+      const fieldKey = `${block.host.uuid}:${block.host.fieldName}`
+      const field = mutatedFieldsMap[fieldKey]
+      if (field) {
+        const newList = field.list.filter((item) => item.uuid !== uuid)
+        mutatedFieldsMap[fieldKey] = { ...field, list: newList }
+      }
+      mutatedItemProps[uuid] = undefined
+    }
+
+    // Also remove any field entries that were created for phantom parent blocks
+    const fieldKeys = Object.keys(mutatedFieldsMap)
+    for (const key of fieldKeys) {
+      const field = mutatedFieldsMap[key]
+      if (field && phantomUuids.has(field.entityUuid)) {
+        mutatedFieldsMap[key] = undefined
+      }
+    }
+
+    phantomBlocks.value = new Map()
+  }
+
+  function getPhantomBlock(uuid: string): PhantomBlock | undefined {
+    return phantomBlocks.value.get(uuid)
+  }
+
   return {
     stateAvailable,
     getMappedState,
@@ -817,5 +1006,11 @@ export default async function (
     permissions: computed(() => permissions),
     getFieldKeyForUuid,
     getParentEntityUuid,
+    phantomBlocks: readonly(phantomBlocks),
+    addPhantomBlock,
+    updatePhantomBlockProps,
+    removePhantomBlock,
+    clearPhantomBlocks,
+    getPhantomBlock,
   }
 }

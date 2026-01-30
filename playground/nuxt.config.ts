@@ -3,6 +3,7 @@ import packageJson from './../package.json'
 import { fileURLToPath } from 'node:url'
 import { removeSizes } from 'nuxt-svg-icon-sprite/processors'
 import testExtensionModule from './app/blokkli/modules/test-extension'
+import aiRewriteModule from './app/blokkli/modules/ai-rewrite'
 
 const playgroundFolder = fileURLToPath(new URL('./', import.meta.url))
 
@@ -44,6 +45,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     openaiKey: process.env.OPENAI_KEY || '',
+    anthropicKey: process.env.ANTHROPIC_API_KEY || '',
     public: {
       version: packageJson.version,
     },
@@ -59,6 +61,9 @@ export default defineNuxtConfig({
 
   nitro: {
     minify: false,
+    experimental: {
+      websocket: true,
+    },
   },
 
   vite: {
@@ -86,7 +91,7 @@ export default defineNuxtConfig({
   },
 
   blokkli: {
-    modules: [testExtensionModule()],
+    modules: [testExtensionModule(), aiRewriteModule()],
     pattern: [
       playgroundFolder + 'app/components/Blokkli/**/*.vue',
       playgroundFolder + 'app/pages/**/*.vue',

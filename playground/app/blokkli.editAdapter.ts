@@ -544,6 +544,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         hostEntityUuid: e.host.uuid,
         hostField: e.host.fieldName,
         preceedingUuid: e.afterUuid,
+        blockUuid: e.blockUuid,
       }),
 
     moveBlock: (e) =>

@@ -27,20 +27,6 @@
       @apply absolute top-0 left-0 h-full;
     }
   }
-  .bk-editable-field-info {
-    @apply border-t border-t-mono-300 text-sm font-semibold flex justify-between items-center;
-
-    > button {
-      @apply text-red-normal text-sm;
-      @apply py-[6px] px-10;
-      @apply hover:bg-red-light;
-      @apply border-r border-r-mono-300;
-
-      &[disabled] {
-        @apply pointer-events-none text-mono-300;
-      }
-    }
-  }
   .bk-editable-field-info-error {
     @apply text-red-normal px-10;
   }

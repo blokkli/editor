@@ -92,7 +92,7 @@
   .bk-item-action-icon {
     @apply pointer-events-none;
     svg {
-      @apply w-20 h-20 lg:w-25 lg:h-25 fill-current;
+      @apply size-20 lg:size-24 fill-current;
     }
   }
   .bk-blokkli-item-actions-buttons:last-child button.bk-is-last {

@@ -26,6 +26,7 @@
 @import './partials/SelectionAdd.css';
 @import './partials/AddButtonsRenderer.css';
 @import './partials/EditableField.css';
+@import './partials/FlexTextarea.css';
 @import './partials/Assistant.css';
 @import './partials/AppMenu.css';
 @import './partials/Animator.css';
@@ -52,6 +53,8 @@
 @import './partials/Indicators.css';
 @import './partials/Analyze.css';
 @import './partials/Transform.css';
+@import './partials/Rewrite.css';
+@import './partials/Agent.css';
 @import './partials/Konami.css';
 @import './partials/Publish.css';
 @import './partials/ArtboardTooltip.css';

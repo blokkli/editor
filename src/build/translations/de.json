@@ -1059,6 +1059,14 @@
     "source": "Revert",
     "translation": "Verwerfen"
   },
+  "feature_rewrite_description": {
+    "source": "Rewrite selected blocks using AI.",
+    "translation": "Ausgewählte Blöcke mit KI umschreiben."
+  },
+  "feature_rewrite_label": {
+    "source": "AI Rewrite",
+    "translation": "KI-Umschreiben"
+  },
   "feature_search_description": {
     "source": "Provides an overlay with shortcut to search for blocks on the current page or existing content to add as blocks.",
     "translation": "Stellt ein Overlay mit Tastenkombination bereit, um nach Blöcken auf der aktuellen Seite oder bestehenden Inhalten zu suchen, die als Blöcke hinzugefügt werden können."
@@ -1770,6 +1778,62 @@
   "revertSuccess": {
     "source": "All changes have been discarded.",
     "translation": "Alle Änderungen wurden verworfen."
+  },
+  "rewriteAcceptedMessagePlural": {
+    "source": "Accepted @count texts:",
+    "translation": "@count Texte übernommen:"
+  },
+  "rewriteAcceptedMessageSingular": {
+    "source": "Accepted 1 text:",
+    "translation": "1 Text übernommen:"
+  },
+  "rewriteAction": {
+    "source": "Rewrite with AI",
+    "translation": "Mit KI umschreiben"
+  },
+  "rewriteApplyError": {
+    "source": "Failed to save rewritten content.",
+    "translation": "Umgeschriebene Inhalte konnten nicht gespeichert werden."
+  },
+  "rewriteAssistantMessagePlural": {
+    "source": "Rewrote @count texts",
+    "translation": "@count Texte umgeschrieben"
+  },
+  "rewriteAssistantMessageSingular": {
+    "source": "Rewrote 1 text",
+    "translation": "1 Text umgeschrieben"
+  },
+  "rewriteError": {
+    "source": "An error occurred.",
+    "translation": "Ein Fehler ist aufgetreten."
+  },
+  "rewriteGenerate": {
+    "source": "Generate",
+    "translation": "Generieren"
+  },
+  "rewritePromptPlaceholder": {
+    "source": "e.g. \"rewrite in simpler words\"",
+    "translation": "z.B. «in einfacheren Worten umschreiben»"
+  },
+  "rewriteRefinePromptPlaceholder": {
+    "source": "Enter instructions to refine unchecked results...",
+    "translation": "Anweisungen eingeben um nicht markierte Texte zu überarbeiten..."
+  },
+  "rewriteRegenerate": {
+    "source": "Regenerate",
+    "translation": "Erneut generieren"
+  },
+  "rewriteTitle": {
+    "source": "Rewriting @count texts...",
+    "translation": "@count Texte werden umgeschrieben..."
+  },
+  "rewriteTitleDone": {
+    "source": "Rewrite complete",
+    "translation": "Umschreiben abgeschlossen"
+  },
+  "rewriteTitlePrompt": {
+    "source": "Rewrite @count texts in @blockCount blocks",
+    "translation": "@count Texte in @blockCount Blöcken umschreiben"
   },
   "scheduledFor": {
     "source": "The changes will be published on this date.",

@@ -1,26 +1,20 @@
 <template>
-  <div
+  <FlexTextarea
+    id="bk-editable-field-textarea"
+    ref="textarea"
+    v-model="modelValue"
     class="bk bk-editable-field-textarea"
-    :style="{
-      height: height + 'px',
-    }"
-  >
-    <textarea
-      id="bk-editable-field-textarea"
-      ref="input"
-      v-model="modelValue"
-      enterkeyhint="done"
-      rows="2"
-      v-bind="inputAttributes"
-      @keydown.capture="onKeyDown"
-      @blur="onBlur"
-    />
-  </div>
+    enterkeyhint="done"
+    rows="2"
+    v-bind="inputAttributes"
+    @keydown="onKeyDown"
+    @blur="onBlur"
+  />
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, computed, useTemplateRef, ref } from '#imports'
-import { onBlokkliEvent } from '#blokkli/editor/composables'
+import { useBlokkli, computed, useTemplateRef } from '#imports'
+import { FlexTextarea } from '#blokkli/editor/components'
 
 const { ui, selection } = useBlokkli()
 
@@ -34,9 +28,7 @@ const modelValue = defineModel<string>({ required: true })
 
 const emit = defineEmits(['discard', 'save'])
 
-const input = useTemplateRef('input')
-
-const height = ref(20)
+const textarea = useTemplateRef('textarea')
 
 function discard() {
   emit('discard')
@@ -90,8 +82,4 @@ const onBlur = (e: FocusEvent) => {
     save()
   }, 100)
 }
-
-onBlokkliEvent('animationFrame', () => {
-  height.value = Math.max(input.value?.scrollHeight ?? 20, 20)
-})
 </script>

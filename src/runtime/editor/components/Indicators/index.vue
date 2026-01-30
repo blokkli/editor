@@ -123,19 +123,31 @@ onBlokkliEvent('state:reloaded', () => {
   prevRects.clear()
 })
 
-onBlokkliEvent('scrollIntoView', (e) => {
-  if ('element' in e && e.highlight) {
-    if (artboardElement.contains(e.element)) {
-      highlighted.value = ui.getAbsoluteElementRect(e.element)
-    } else {
-      highlighted.value = {
-        x: 0,
-        y: 0,
-        width: ui.artboardSize.value.width,
-        height: ui.artboardSize.value.height,
-      }
+function highlightElement(element: HTMLElement) {
+  if (artboardElement.contains(element)) {
+    highlighted.value = ui.getAbsoluteElementRect(element)
+  } else {
+    highlighted.value = {
+      x: 0,
+      y: 0,
+      width: ui.artboardSize.value.width,
+      height: ui.artboardSize.value.height,
     }
   }
+}
+
+onBlokkliEvent('scrollIntoView', (e) => {
+  if ('element' in e && e.highlight) {
+    highlightElement(e.element)
+  }
+})
+
+onBlokkliEvent('highlight', (element) => {
+  if (!element) {
+    highlighted.value = null
+    return
+  }
+  highlightElement(element)
 })
 
 onBlokkliEvent('window:clickAway', function () {

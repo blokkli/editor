@@ -10,6 +10,8 @@ export type MutationAddArgs = {
   hostEntityUuid: string
   hostField: string
   preceedingUuid: string | null
+  /** Optional UUID to use for the new block. If provided, this UUID is used instead of generating one. */
+  blockUuid?: string
 }
 
 export class MutationAdd extends Mutation {
@@ -24,7 +26,8 @@ export class MutationAdd extends Mutation {
     const items: MutationAddArgs[] = Array.isArray(arg) ? arg : [arg]
     for (let i = 0; i < items.length; i++) {
       const item = items[i]!
-      const uuid = this.getUuidForNewEntity(i.toString())
+      // Use provided blockUuid if available, otherwise generate one
+      const uuid = item.blockUuid ?? this.getUuidForNewEntity(i.toString())
 
       const block = entityStorageManager.createBlock(item.bundle, uuid)
       const blockBundle = getBlockBundles().find(

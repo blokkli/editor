@@ -4,7 +4,7 @@ import * as prettier from 'prettier'
 
 export async function format(data: string, parser: 'json' | 'typescript') {
   const prettierConfigFile = await fs.readFile(
-    path.resolve(__dirname, './../.oxfmtrc.jsonc'),
+    path.resolve(__dirname, './../.prettierrc'),
     'utf8',
   )
 
@@ -12,6 +12,5 @@ export async function format(data: string, parser: 'json' | 'typescript') {
   return await prettier.format(data, {
     ...prettierConfig,
     parser,
-    $schema: undefined,
   })
 }

@@ -5,8 +5,8 @@ import { falsy } from '../../helpers'
 import { findIdealRectPosition } from '#blokkli/editor/helpers/geometry'
 import type { Coord, Rectangle } from '../types/geometry'
 
-export type PlacementVertical = 'top' | 'bottom' | 'auto'
-type PlacementHorizontal = 'left' | 'center'
+export type PlacementVertical = 'top' | 'bottom' | 'center' | 'auto'
+export type PlacementHorizontal = 'left' | 'center' | 'right'
 
 type UseStickyToolbarOptions = {
   getPlacementY?: () => PlacementVertical
@@ -23,7 +23,8 @@ type UseStickyToolbarOptions = {
 
 type UseStickyToolbar = {
   shouldRender: ComputedRef<boolean>
-  placementY: ComputedRef<'top' | 'bottom'>
+  placementY: ComputedRef<'top' | 'bottom' | 'center'>
+  placementX: ComputedRef<'left' | 'center' | 'right'>
   caretX: ComputedRef<number>
 }
 
@@ -48,7 +49,8 @@ export function useStickyToolbar(
 ): UseStickyToolbar {
   const { ui, selection, dom } = useBlokkli()
   const shouldRender = ref(false)
-  const actualPlacement = ref<'top' | 'bottom'>('bottom')
+  const actualPlacementY = ref<'top' | 'bottom' | 'center'>('bottom')
+  const actualPlacementX = ref<'left' | 'center' | 'right'>('center')
   const caretXPosition = ref<number>(0)
 
   function getMargin(): number {
@@ -77,7 +79,11 @@ export function useStickyToolbar(
     offset: Coord,
     scale: number,
   ):
-    | (Coord & { actualPlacementY: 'top' | 'bottom'; caretX: number })
+    | (Coord & {
+        actualPlacementY: 'top' | 'bottom' | 'center'
+        actualPlacementX: PlacementHorizontal
+        caretX: number
+      })
     | undefined {
     let minX = 0
     let maxX = 0
@@ -166,9 +172,13 @@ export function useStickyToolbar(
     const xSubtract = hasRects ? 5 * Math.min(scale, 1) : 0
     const margin = getMargin() * Math.min(scale, 1)
 
+    // Calculate the center of the anchor element or selection
+    const centerX = (minX + maxX) / 2
+    const centerY = (minY + maxY) / 2
+
     // Determine actual placement if 'auto' is specified
-    let actualPlacementY: 'top' | 'bottom' =
-      placementY === 'auto' ? 'bottom' : placementY
+    let actualPlacementY: 'top' | 'bottom' | 'center' =
+      placementY === 'center' ? 'center' : placementY === 'auto' ? 'bottom' : placementY
     if (placementY === 'auto') {
       const spaceAbove = minY - padding.y
       const spaceBelow = padding.y + padding.height - maxY
@@ -186,17 +196,22 @@ export function useStickyToolbar(
     }
 
     // Calculate Y position based on vertical placement
-    const y =
-      actualPlacementY === 'top' ? minY - height - margin : maxY + margin
-
-    // Calculate the center of the anchor element or selection
-    const centerX = (minX + maxX) / 2
+    let y: number
+    if (placementY === 'center') {
+      // Center vertically relative to the selection
+      y = centerY - height / 2
+    } else {
+      y = actualPlacementY === 'top' ? minY - height - margin : maxY + margin
+    }
 
     // Calculate X position based on horizontal placement
     let x: number
     if (placementX === 'center') {
       // Center the toolbar horizontally relative to the selection
       x = centerX - width / 2
+    } else if (placementX === 'right') {
+      // Place to the right of the selection
+      x = maxX + margin
     } else {
       // Default 'left' placement
       x = minX - xSubtract
@@ -253,7 +268,7 @@ export function useStickyToolbar(
       Math.min(centerX - idealPosition.x, maxCaretX),
     )
 
-    return { ...idealPosition, actualPlacementY, caretX }
+    return { ...idealPosition, actualPlacementY, actualPlacementX: placementX, caretX }
   }
 
   function getWidth(): number | null {
@@ -336,14 +351,16 @@ export function useStickyToolbar(
     }
 
     el.value.style.transform = `translate3d(${coords.x}px, ${coords.y}px, 0)`
-    actualPlacement.value = coords.actualPlacementY
+    actualPlacementY.value = coords.actualPlacementY
+    actualPlacementX.value = coords.actualPlacementX
     caretXPosition.value = coords.caretX
     shouldRender.value = true
   })
 
   return {
     shouldRender: computed(() => shouldRender.value),
-    placementY: computed(() => actualPlacement.value),
+    placementY: computed(() => actualPlacementY.value),
+    placementX: computed(() => actualPlacementX.value),
     caretX: computed(() => caretXPosition.value),
   }
 }

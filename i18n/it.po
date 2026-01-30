@@ -1167,6 +1167,14 @@ msgctxt "feature_revert_label"
 msgid "Revert"
 msgstr "Annulla"
 
+msgctxt "feature_rewrite_description"
+msgid "Rewrite selected blocks using AI."
+msgstr ""
+
+msgctxt "feature_rewrite_label"
+msgid "AI Rewrite"
+msgstr ""
+
 msgctxt "feature_search_description"
 msgid ""
 "Provides an overlay with shortcut to search for blocks on the current page "
@@ -1929,6 +1937,62 @@ msgstr "Annulla..."
 msgctxt "revertSuccess"
 msgid "All changes have been discarded."
 msgstr "Tutte le modifiche sono state scartate."
+
+msgctxt "rewriteAcceptedMessagePlural"
+msgid "Accepted @count texts:"
+msgstr ""
+
+msgctxt "rewriteAcceptedMessageSingular"
+msgid "Accepted 1 text:"
+msgstr ""
+
+msgctxt "rewriteAction"
+msgid "Rewrite with AI"
+msgstr ""
+
+msgctxt "rewriteApplyError"
+msgid "Failed to save rewritten content."
+msgstr ""
+
+msgctxt "rewriteAssistantMessagePlural"
+msgid "Rewrote @count texts"
+msgstr ""
+
+msgctxt "rewriteAssistantMessageSingular"
+msgid "Rewrote 1 text"
+msgstr ""
+
+msgctxt "rewriteError"
+msgid "An error occurred."
+msgstr ""
+
+msgctxt "rewriteGenerate"
+msgid "Generate"
+msgstr ""
+
+msgctxt "rewritePromptPlaceholder"
+msgid "e.g. \"rewrite in simpler words\""
+msgstr ""
+
+msgctxt "rewriteRefinePromptPlaceholder"
+msgid "Enter instructions to refine unchecked results..."
+msgstr ""
+
+msgctxt "rewriteRegenerate"
+msgid "Regenerate"
+msgstr ""
+
+msgctxt "rewriteTitle"
+msgid "Rewriting @count texts..."
+msgstr ""
+
+msgctxt "rewriteTitleDone"
+msgid "Rewrite complete"
+msgstr ""
+
+msgctxt "rewriteTitlePrompt"
+msgid "Rewrite @count texts in @blockCount blocks"
+msgstr ""
 
 msgctxt "scheduledFor"
 msgid "The changes will be published on this date."

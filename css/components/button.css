@@ -11,7 +11,7 @@
 
     &.bk-is-primary {
       @apply !bg-accent-700 !text-white hover:!bg-accent-800 focus-visible:ring-accent-600 focus-visible:ring-offset-accent-100;
-      &[disabled] {
+      &[disabled]:not(.bk-is-loading) {
         @apply !bg-accent-100 !text-white;
       }
     }
