@@ -58,6 +58,13 @@ fragment blokkliParagraphsType on ParagraphsType {
 `,
     ],
   },
+  nitro: {
+    typescript: {
+      tsConfig: {
+        include: ['../packages/agent/src/runtime/server/**/*'],
+      },
+    },
+  },
   typescript: {
     strict: true,
     tsConfig: {
@@ -75,6 +82,7 @@ fragment blokkliParagraphsType on ParagraphsType {
         '../src/runtime/types/**/*',
         '../src/global/**/*',
         '../src/modules/drupal/runtime/**/*',
+        '../packages/agent/src/runtime/features/**/*',
       ],
     },
     nodeTsConfig: {
@@ -87,8 +95,13 @@ fragment blokkliParagraphsType on ParagraphsType {
         '../src/build/**/*',
         '../src/modules/**/*.ts',
         '../src/global/**/*',
+        '../packages/agent/src/module.ts',
       ],
-      exclude: ['../src/runtime/**/*', '../src/modules/*/runtime/**/*'],
+      exclude: [
+        '../src/runtime/**/*',
+        '../src/modules/*/runtime/**/*',
+        '../packages/agent/src/runtime/features/**/*',
+      ],
     },
   },
 

@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { removeSizes } from 'nuxt-svg-icon-sprite/processors'
 import testExtensionModule from './app/blokkli/modules/test-extension'
 import aiRewriteModule from './app/blokkli/modules/ai-rewrite'
+import agentModule from './../packages/agent/src/module'
 
 const playgroundFolder = fileURLToPath(new URL('./', import.meta.url))
 
@@ -91,7 +92,7 @@ export default defineNuxtConfig({
   },
 
   blokkli: {
-    modules: [testExtensionModule(), aiRewriteModule()],
+    modules: [testExtensionModule(), aiRewriteModule(), agentModule()],
     pattern: [
       playgroundFolder + 'app/components/Blokkli/**/*.vue',
       playgroundFolder + 'app/pages/**/*.vue',
