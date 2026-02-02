@@ -75,6 +75,226 @@
     "source": "<p>This shows the list of available blocks that can be placed. Add a block by dragging the icon into the page.</p><p>When an existing block is selected, some blocks may be greyed out. This indicates which blocks can be placed inside or after the selected block.</p>",
     "translation": ""
   },
+  "aiAgent": {
+    "source": "AI Agent",
+    "translation": ""
+  },
+  "aiAgentAddBlockDone": {
+    "source": "Added @bundle",
+    "translation": ""
+  },
+  "aiAgentAddBlocksDone": {
+    "source": "Added @count blocks",
+    "translation": ""
+  },
+  "aiAgentAddBlocksRunning": {
+    "source": "Adding blocks...",
+    "translation": ""
+  },
+  "aiAgentAddFragmentDone": {
+    "source": "Added fragment \"@label\"",
+    "translation": ""
+  },
+  "aiAgentAddFragmentRunning": {
+    "source": "Adding fragment...",
+    "translation": ""
+  },
+  "aiAgentAddMediaBlockDone": {
+    "source": "Added @bundle with media ID @id",
+    "translation": ""
+  },
+  "aiAgentAddMediaBlockRunning": {
+    "source": "Adding media block...",
+    "translation": ""
+  },
+  "aiAgentAlwaysApprove": {
+    "source": "Always",
+    "translation": ""
+  },
+  "aiAgentApprove": {
+    "source": "Approve",
+    "translation": ""
+  },
+  "aiAgentAwaitingApproval": {
+    "source": "Awaiting your approval...",
+    "translation": ""
+  },
+  "aiAgentBatchRewriteTextRunning": {
+    "source": "Rewriting multiple texts...",
+    "translation": ""
+  },
+  "aiAgentConnecting": {
+    "source": "Connecting...",
+    "translation": ""
+  },
+  "aiAgentDeleteBlockDone": {
+    "source": "Deleted @bundle",
+    "translation": ""
+  },
+  "aiAgentDeleteBlocksDone": {
+    "source": "Deleted @count blocks",
+    "translation": ""
+  },
+  "aiAgentDeleteBlocksRunning": {
+    "source": "Deleting blocks...",
+    "translation": ""
+  },
+  "aiAgentDuplicateBlockDone": {
+    "source": "Duplicated @bundle",
+    "translation": ""
+  },
+  "aiAgentDuplicateBlocksDone": {
+    "source": "Duplicated @count blocks",
+    "translation": ""
+  },
+  "aiAgentDuplicateBlocksRunning": {
+    "source": "Duplicating blocks...",
+    "translation": ""
+  },
+  "aiAgentGetAllFragments": {
+    "source": "Get all fragments",
+    "translation": ""
+  },
+  "aiAgentGetAllFragmentsDone": {
+    "source": "Got all fragments",
+    "translation": ""
+  },
+  "aiAgentGetAvailableBundlesDone": {
+    "source": "Got available bundles for @field",
+    "translation": ""
+  },
+  "aiAgentGetAvailableBundlesRunning": {
+    "source": "Getting available bundles...",
+    "translation": ""
+  },
+  "aiAgentGetBlockFieldsDone": {
+    "source": "Got fields of @bundle block",
+    "translation": ""
+  },
+  "aiAgentGetBlockFieldsRunning": {
+    "source": "Getting block fields...",
+    "translation": ""
+  },
+  "aiAgentGetBlockInfoDone": {
+    "source": "Got info for @bundle",
+    "translation": ""
+  },
+  "aiAgentGetBlockInfoMultipleDone": {
+    "source": "Got info for @count blocks",
+    "translation": ""
+  },
+  "aiAgentGetBlockInfoRunning": {
+    "source": "Getting block info...",
+    "translation": ""
+  },
+  "aiAgentGetBlockOptionsDone": {
+    "source": "Got options of @bundle",
+    "translation": ""
+  },
+  "aiAgentGetBlockOptionsMultipleDone": {
+    "source": "Got options of @count blocks",
+    "translation": ""
+  },
+  "aiAgentGetBlockOptionsRunning": {
+    "source": "Getting block options...",
+    "translation": ""
+  },
+  "aiAgentGetChildrenDone": {
+    "source": "Got children of @bundle",
+    "translation": ""
+  },
+  "aiAgentGetChildrenRunning": {
+    "source": "Getting child blocks...",
+    "translation": ""
+  },
+  "aiAgentGetEditableFieldsDone": {
+    "source": "Got editable fields of @bundle block",
+    "translation": ""
+  },
+  "aiAgentGetEditableFieldsRunning": {
+    "source": "Getting editable fields...",
+    "translation": ""
+  },
+  "aiAgentGetPageStructure": {
+    "source": "Get page structure",
+    "translation": ""
+  },
+  "aiAgentGetPageStructureDone": {
+    "source": "Got page structure",
+    "translation": ""
+  },
+  "aiAgentGetVisibleBlocksDone": {
+    "source": "Got @count visible blocks",
+    "translation": ""
+  },
+  "aiAgentGetVisibleBlocksRunning": {
+    "source": "Getting visible blocks...",
+    "translation": ""
+  },
+  "aiAgentMoveBlockDone": {
+    "source": "Moved @bundle",
+    "translation": ""
+  },
+  "aiAgentMoveBlocksDone": {
+    "source": "Moved @count blocks",
+    "translation": ""
+  },
+  "aiAgentMoveBlocksRunning": {
+    "source": "Moving blocks...",
+    "translation": ""
+  },
+  "aiAgentPlaceholder": {
+    "source": "Ask me to edit the page content...",
+    "translation": ""
+  },
+  "aiAgentReject": {
+    "source": "Reject",
+    "translation": ""
+  },
+  "aiAgentRewriteFieldDone": {
+    "source": "Rewrote @field",
+    "translation": ""
+  },
+  "aiAgentRewriteTextRunning": {
+    "source": "Rewriting text...",
+    "translation": ""
+  },
+  "aiAgentSearchMediaAllDone": {
+    "source": "Searched all media",
+    "translation": ""
+  },
+  "aiAgentSearchMediaDone": {
+    "source": "Searched media for '@query'",
+    "translation": ""
+  },
+  "aiAgentSearchMediaRunning": {
+    "source": "Searching media...",
+    "translation": ""
+  },
+  "aiAgentSelectMediaRunning": {
+    "source": "Selecting media...",
+    "translation": ""
+  },
+  "aiAgentSetBlockOptionsRunning": {
+    "source": "Setting block options...",
+    "translation": ""
+  },
+  "aiAgentThinking": {
+    "source": "Processing...",
+    "translation": ""
+  },
+  "aiAgentTourText": {
+    "source": "Chat with an AI assistant to edit page content.",
+    "translation": ""
+  },
+  "aiAgentUpdateOptionsOnBlockDone": {
+    "source": "Updated @count option(s) on block",
+    "translation": ""
+  },
+  "aiAgentUpdateOptionsOnBlocksDone": {
+    "source": "Updated @count option(s) on @blockCount blocks",
+    "translation": ""
+  },
   "all": {
     "source": "All",
     "translation": ""
@@ -285,6 +505,18 @@
   },
   "availableFragments": {
     "source": "Available fragments",
+    "translation": ""
+  },
+  "batchRewriteApply": {
+    "source": "Apply",
+    "translation": ""
+  },
+  "batchRewriteFields": {
+    "source": "fields",
+    "translation": ""
+  },
+  "batchRewriteTitle": {
+    "source": "Rewrite",
     "translation": ""
   },
   "blockAddListTourText": {
@@ -693,6 +925,14 @@
   },
   "feature_add-list_setting_hideDisabledBlocks_label": {
     "source": "Hide blocks that can't be added",
+    "translation": ""
+  },
+  "feature_agent_description": {
+    "source": "Chat with an AI assistant to edit page content.",
+    "translation": ""
+  },
+  "feature_agent_label": {
+    "source": "AI Agent",
     "translation": ""
   },
   "feature_analyze_description": {
@@ -1419,6 +1659,14 @@
     "source": "Search for media like images and drag and drop them into the page.",
     "translation": ""
   },
+  "mediaSelectConfirm": {
+    "source": "Use selected",
+    "translation": ""
+  },
+  "mediaSelectTitle": {
+    "source": "Select a media item",
+    "translation": ""
+  },
   "multipleItemsLabel": {
     "source": "Items",
     "translation": "Elementi"
@@ -1791,6 +2039,14 @@
     "source": "Rewrite with AI",
     "translation": ""
   },
+  "rewriteAddedBlock": {
+    "source": "Added 1 block",
+    "translation": ""
+  },
+  "rewriteAddedBlocks": {
+    "source": "Added @count blocks",
+    "translation": ""
+  },
   "rewriteApplyError": {
     "source": "Failed to save rewritten content.",
     "translation": ""
@@ -1807,20 +2063,12 @@
     "source": "An error occurred.",
     "translation": ""
   },
-  "rewriteGenerate": {
-    "source": "Generate",
-    "translation": ""
-  },
   "rewritePromptPlaceholder": {
     "source": "e.g. \"rewrite in simpler words\"",
     "translation": ""
   },
   "rewriteRefinePromptPlaceholder": {
     "source": "Enter instructions to refine unchecked results...",
-    "translation": ""
-  },
-  "rewriteRegenerate": {
-    "source": "Regenerate",
     "translation": ""
   },
   "rewriteTitle": {

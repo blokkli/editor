@@ -10,9 +10,23 @@ export type TemplateDependency =
   | 'block-path'
   | 'block-global-options'
 
+/**
+ * Where the template should be available:
+ * - 'app': Only in app context (default)
+ * - 'server': Only in server/Nitro context (will be inlined for Nitro build)
+ * - 'both': Available in both contexts
+ */
+export type TemplateContext = 'app' | 'server' | 'both'
+
 type TemplateOptions = {
   dependencies?: TemplateDependency[]
   write?: boolean
+  /**
+   * The context where this template should be available.
+   * Server templates will be inlined for Nitro build.
+   * @default 'app'
+   */
+  context?: TemplateContext
 }
 
 export type ModuleCodeTemplate = {
@@ -20,14 +34,14 @@ export type ModuleCodeTemplate = {
   name: string
   buildCode: TemplateCallback
   buildTypes: TemplateCallback
-  options: Required<TemplateOptions>
+  options: Required<TemplateOptions> & { context: TemplateContext }
 }
 
 export type ModuleFileTemplate = {
   type: 'file'
   fileName: string
   build: TemplateCallback
-  options: Required<TemplateOptions>
+  options: Required<TemplateOptions> & { context: TemplateContext }
 }
 
 export type ModuleTemplate = ModuleCodeTemplate | ModuleFileTemplate
@@ -46,6 +60,7 @@ export function defineCodeTemplate(
     options: {
       dependencies: options?.dependencies || [],
       write: !!options?.write,
+      context: options?.context || 'app',
     },
   }
 }
@@ -53,14 +68,16 @@ export function defineCodeTemplate(
 export function defineFileTemplate(
   fileName: string,
   build: TemplateCallback,
+  options?: TemplateOptions,
 ): ModuleFileTemplate {
   return {
     type: 'file',
     fileName,
     build,
     options: {
-      dependencies: [],
-      write: true,
+      dependencies: options?.dependencies || [],
+      write: options?.write ?? true,
+      context: options?.context || 'app',
     },
   }
 }

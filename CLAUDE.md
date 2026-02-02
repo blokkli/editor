@@ -28,7 +28,7 @@ npm run dev:start              # Serve static playground build
 
 **Note:** During development, the dev server is always running with hot module
 replacement. Do NOT start the dev server to verify changes - it's already
-running and will automatically reload.
+running and will automatically reload. Same for styles, no need to build styles.
 
 ### Building & Packaging
 

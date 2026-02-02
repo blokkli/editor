@@ -5,10 +5,14 @@ import { glob } from 'glob'
 import { format } from './../helpers'
 
 const RUNTIME_PATH = path.resolve(__dirname, '../../src/runtime')
+const PACKAGES_RUNTIME_PATH = path.resolve(
+  __dirname,
+  '../../packages/*/src/runtime',
+)
 
 const TYPES_OUTPUT_PATH = path.resolve(
   __dirname,
-  '../../src/runtime/editor/icons/material-icons.ts',
+  '../../src/runtime/material-icons/index.ts',
 )
 
 const USED_ICONS_OUTPUT_PATH = path.resolve(
@@ -17,8 +21,11 @@ const USED_ICONS_OUTPUT_PATH = path.resolve(
 )
 
 async function findUsedIcons(): Promise<string[]> {
-  const pattern = path.join(RUNTIME_PATH, '**/*.{vue,ts}')
-  const files = await glob(pattern)
+  const patterns = [
+    path.join(RUNTIME_PATH, '**/*.{vue,ts}'),
+    path.join(PACKAGES_RUNTIME_PATH, '**/*.{vue,ts}'),
+  ]
+  const files = (await Promise.all(patterns.map((p) => glob(p)))).flat()
 
   const usedIcons = new Set<string>()
   const iconPattern = /bk_mdi_[a-z0-9_-]+/g

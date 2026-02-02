@@ -19,9 +19,7 @@ export class MutationApplyRewrite extends Mutation {
     super('apply_rewrite', configuration)
   }
 
-  override getAffectedUuid(
-    args: MutationApplyRewriteArgs,
-  ): string | undefined {
+  override getAffectedUuid(args: MutationApplyRewriteArgs): string | undefined {
     // Return the first UUID as the affected one for display purposes
     const uuids = Object.keys(args.values)
     if (uuids[0]) return uuids[0]
@@ -114,7 +112,9 @@ export class MutationApplyRewrite extends Mutation {
     const uuid = this.getUuidForNewEntity(params.tempId)
     const block = entityStorageManager.createBlock(params.bundle, uuid)
 
-    const blockBundle = getBlockBundles().find((v) => v.bundle === params.bundle)
+    const blockBundle = getBlockBundles().find(
+      (v) => v.bundle === params.bundle,
+    )
     const defaultValues = blockBundle?.getDefaultValues() || {}
 
     // Merge default values with AI-generated fields

@@ -205,6 +205,14 @@ export type BlockDefinitionProvider = {
   ) => BlockBundleDefinition | undefined
 
   /**
+   * Get the label of a bundle.
+   *
+   * @param bundle - The block bundle ID (e.g., 'text', 'image')
+   * @returns The label.
+   */
+  getBlockLabel: (bundle: string) => string
+
+  /**
    * Get the field configuration for a specific field on an entity.
    *
    * Field configurations define allowed bundles, cardinality, and other
@@ -331,6 +339,10 @@ export default async function (
     return typeMap[bundle]
   }
 
+  function getBlockLabel(bundle: string): string {
+    return typeMap[bundle]?.label ?? bundle
+  }
+
   function getFieldConfig(
     entityType: string,
     entityBundle: string,
@@ -388,6 +400,7 @@ export default async function (
   return {
     itemBundlesWithNested,
     allowedTypesInList,
+    getBlockLabel,
     getBlockBundleDefinition,
     getDroppableFieldConfig,
     generallyAvailableBundles,

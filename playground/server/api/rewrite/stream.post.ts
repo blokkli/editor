@@ -102,7 +102,9 @@ function buildTools(request: RewriteRequest): Tool[] {
   // rewrite_text tool - always available if there are fields
   if (request.fields.length > 0) {
     const fieldDescriptions = request.fields
-      .map((f) => `- uuid: "${f.uuid}", fieldName: "${f.fieldName}" (${f.type})`)
+      .map(
+        (f) => `- uuid: "${f.uuid}", fieldName: "${f.fieldName}" (${f.type})`,
+      )
       .join('\n')
 
     tools.push({
@@ -148,7 +150,7 @@ function buildTools(request: RewriteRequest): Tool[] {
 
     tools.push({
       name: 'add_block',
-      description: `Add a new block to the page. Available bundles:\n${bundleDescriptions}\n\nHost options:\n${hostOptions || 'Use the first block\'s host info'}`,
+      description: `Add a new block to the page. Available bundles:\n${bundleDescriptions}\n\nHost options:\n${hostOptions || "Use the first block's host info"}`,
       input_schema: {
         type: 'object' as const,
         properties: {
@@ -341,10 +343,7 @@ async function handleToolMode(
               }
             }
           } else if (event.type === 'content_block_delta') {
-            if (
-              event.delta.type === 'input_json_delta' &&
-              currentToolUse
-            ) {
+            if (event.delta.type === 'input_json_delta' && currentToolUse) {
               currentToolUse.inputJson += event.delta.partial_json
             }
           } else if (event.type === 'content_block_stop') {

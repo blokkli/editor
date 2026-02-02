@@ -88,6 +88,226 @@ msgstr ""
 "dass nur die hervorgehobenen Blöcke im oder nach dem ausgewählten Block "
 "hinzugefügt werden können.</p>"
 
+msgctxt "aiAgent"
+msgid "AI Agent"
+msgstr "KI-Agent"
+
+msgctxt "aiAgentAddBlockDone"
+msgid "Added @bundle"
+msgstr "@bundle hinzugefügt"
+
+msgctxt "aiAgentAddBlocksDone"
+msgid "Added @count blocks"
+msgstr "@count Blöcke hinzugefügt"
+
+msgctxt "aiAgentAddBlocksRunning"
+msgid "Adding blocks..."
+msgstr "Blöcke hinzufügen..."
+
+msgctxt "aiAgentAddFragmentDone"
+msgid "Added fragment \"@label\""
+msgstr "Fragment «@label» hinzugefügt"
+
+msgctxt "aiAgentAddFragmentRunning"
+msgid "Adding fragment..."
+msgstr "Fragment hinzufügen..."
+
+msgctxt "aiAgentAddMediaBlockDone"
+msgid "Added @bundle with media ID @id"
+msgstr "@bundle mit Medien-ID @id hinzugefügt"
+
+msgctxt "aiAgentAddMediaBlockRunning"
+msgid "Adding media block..."
+msgstr "Medien-Block hinzufügen..."
+
+msgctxt "aiAgentAlwaysApprove"
+msgid "Always"
+msgstr "Immer"
+
+msgctxt "aiAgentApprove"
+msgid "Approve"
+msgstr "Bestätigen"
+
+msgctxt "aiAgentAwaitingApproval"
+msgid "Awaiting your approval..."
+msgstr "Wartet auf Ihre Bestätigung..."
+
+msgctxt "aiAgentBatchRewriteTextRunning"
+msgid "Rewriting multiple texts..."
+msgstr "Mehrere Texte umschreiben..."
+
+msgctxt "aiAgentConnecting"
+msgid "Connecting..."
+msgstr "Verbinden..."
+
+msgctxt "aiAgentDeleteBlockDone"
+msgid "Deleted @bundle"
+msgstr "@bundle gelöscht"
+
+msgctxt "aiAgentDeleteBlocksDone"
+msgid "Deleted @count blocks"
+msgstr "@count Blöcke gelöscht"
+
+msgctxt "aiAgentDeleteBlocksRunning"
+msgid "Deleting blocks..."
+msgstr "Blöcke löschen..."
+
+msgctxt "aiAgentDuplicateBlockDone"
+msgid "Duplicated @bundle"
+msgstr "@bundle dupliziert"
+
+msgctxt "aiAgentDuplicateBlocksDone"
+msgid "Duplicated @count blocks"
+msgstr "@count Blöcke dupliziert"
+
+msgctxt "aiAgentDuplicateBlocksRunning"
+msgid "Duplicating blocks..."
+msgstr "Blöcke duplizieren..."
+
+msgctxt "aiAgentGetAllFragments"
+msgid "Get all fragments"
+msgstr "Alle Fragmente abrufen"
+
+msgctxt "aiAgentGetAllFragmentsDone"
+msgid "Got all fragments"
+msgstr "Alle Fragmente abgerufen"
+
+msgctxt "aiAgentGetAvailableBundlesDone"
+msgid "Got available bundles for @field"
+msgstr "Verfügbare Blocktypen für @field abgerufen"
+
+msgctxt "aiAgentGetAvailableBundlesRunning"
+msgid "Getting available bundles..."
+msgstr "Verfügbare Blocktypen abrufen..."
+
+msgctxt "aiAgentGetBlockFieldsDone"
+msgid "Got fields of @bundle block"
+msgstr "Felder von @bundle-Block abgerufen"
+
+msgctxt "aiAgentGetBlockFieldsRunning"
+msgid "Getting block fields..."
+msgstr "Block-Felder abrufen..."
+
+msgctxt "aiAgentGetBlockInfoDone"
+msgid "Got info for @bundle"
+msgstr "Info für @bundle abgerufen"
+
+msgctxt "aiAgentGetBlockInfoMultipleDone"
+msgid "Got info for @count blocks"
+msgstr "Info für @count Blöcke abgerufen"
+
+msgctxt "aiAgentGetBlockInfoRunning"
+msgid "Getting block info..."
+msgstr "Block-Info abrufen..."
+
+msgctxt "aiAgentGetBlockOptionsDone"
+msgid "Got options of @bundle"
+msgstr "Optionen von @bundle abgerufen"
+
+msgctxt "aiAgentGetBlockOptionsMultipleDone"
+msgid "Got options of @count blocks"
+msgstr "Optionen von @count Blöcken abgerufen"
+
+msgctxt "aiAgentGetBlockOptionsRunning"
+msgid "Getting block options..."
+msgstr "Block-Optionen abrufen..."
+
+msgctxt "aiAgentGetChildrenDone"
+msgid "Got children of @bundle"
+msgstr "Unterblöcke von @bundle abgerufen"
+
+msgctxt "aiAgentGetChildrenRunning"
+msgid "Getting child blocks..."
+msgstr "Unterblöcke abrufen..."
+
+msgctxt "aiAgentGetEditableFieldsDone"
+msgid "Got editable fields of @bundle block"
+msgstr "Editierbare Felder von @bundle-Block abgerufen"
+
+msgctxt "aiAgentGetEditableFieldsRunning"
+msgid "Getting editable fields..."
+msgstr "Editierbare Felder abrufen..."
+
+msgctxt "aiAgentGetPageStructure"
+msgid "Get page structure"
+msgstr "Seitenstruktur abrufen"
+
+msgctxt "aiAgentGetPageStructureDone"
+msgid "Got page structure"
+msgstr "Seitenstruktur abgerufen"
+
+msgctxt "aiAgentGetVisibleBlocksDone"
+msgid "Got @count visible blocks"
+msgstr "@count sichtbare Blöcke abgerufen"
+
+msgctxt "aiAgentGetVisibleBlocksRunning"
+msgid "Getting visible blocks..."
+msgstr "Sichtbare Blöcke abrufen..."
+
+msgctxt "aiAgentMoveBlockDone"
+msgid "Moved @bundle"
+msgstr "@bundle verschoben"
+
+msgctxt "aiAgentMoveBlocksDone"
+msgid "Moved @count blocks"
+msgstr "@count Blöcke verschoben"
+
+msgctxt "aiAgentMoveBlocksRunning"
+msgid "Moving blocks..."
+msgstr "Blöcke verschieben..."
+
+msgctxt "aiAgentPlaceholder"
+msgid "Ask me to edit the page content..."
+msgstr "Fragen Sie mich, um den Seiteninhalt zu bearbeiten..."
+
+msgctxt "aiAgentReject"
+msgid "Reject"
+msgstr "Ablehnen"
+
+msgctxt "aiAgentRewriteFieldDone"
+msgid "Rewrote @field"
+msgstr "@field umgeschrieben"
+
+msgctxt "aiAgentRewriteTextRunning"
+msgid "Rewriting text..."
+msgstr "Text umschreiben..."
+
+msgctxt "aiAgentSearchMediaAllDone"
+msgid "Searched all media"
+msgstr "Alle Medien durchsucht"
+
+msgctxt "aiAgentSearchMediaDone"
+msgid "Searched media for '@query'"
+msgstr "Medien nach «@query» durchsucht"
+
+msgctxt "aiAgentSearchMediaRunning"
+msgid "Searching media..."
+msgstr "Medien suchen..."
+
+msgctxt "aiAgentSelectMediaRunning"
+msgid "Selecting media..."
+msgstr "Medien auswählen..."
+
+msgctxt "aiAgentSetBlockOptionsRunning"
+msgid "Setting block options..."
+msgstr "Block-Optionen setzen..."
+
+msgctxt "aiAgentThinking"
+msgid "Processing..."
+msgstr "Verarbeiten..."
+
+msgctxt "aiAgentTourText"
+msgid "Chat with an AI assistant to edit page content."
+msgstr "Chatten Sie mit einem KI-Assistenten, um Seiteninhalte zu bearbeiten."
+
+msgctxt "aiAgentUpdateOptionsOnBlockDone"
+msgid "Updated @count option(s) on block"
+msgstr "@count Option(en) auf Block aktualisiert"
+
+msgctxt "aiAgentUpdateOptionsOnBlocksDone"
+msgid "Updated @count option(s) on @blockCount blocks"
+msgstr "@count Option(en) auf @blockCount Blöcken aktualisiert"
+
 msgctxt "all"
 msgid "All"
 msgstr "Alle"
@@ -301,6 +521,18 @@ msgstr "Verfügbare Blöcke"
 msgctxt "availableFragments"
 msgid "Available fragments"
 msgstr "Verfügbare Fragmente"
+
+msgctxt "batchRewriteApply"
+msgid "Apply"
+msgstr ""
+
+msgctxt "batchRewriteFields"
+msgid "fields"
+msgstr ""
+
+msgctxt "batchRewriteTitle"
+msgid "Rewrite"
+msgstr ""
 
 msgctxt "blockAddListTourText"
 msgid ""
@@ -752,6 +984,14 @@ msgstr ""
 msgctxt "feature_add-list_setting_hideDisabledBlocks_label"
 msgid "Hide blocks that can't be added"
 msgstr "Blöcke verstecken, die nicht hinzugefügt werden können"
+
+msgctxt "feature_agent_description"
+msgid "Chat with an AI assistant to edit page content."
+msgstr ""
+
+msgctxt "feature_agent_label"
+msgid "AI Agent"
+msgstr ""
 
 msgctxt "feature_analyze_description"
 msgid "Analyze blocks and page for SEO, accessibility, etc."
@@ -1592,6 +1832,14 @@ msgctxt "mediaLibraryTourText"
 msgid "Search for media like images and drag and drop them into the page."
 msgstr "Suchen Sie nach Medien wie Bildern und ziehen Sie diese in die Seite."
 
+msgctxt "mediaSelectConfirm"
+msgid "Use selected"
+msgstr ""
+
+msgctxt "mediaSelectTitle"
+msgid "Select a media item"
+msgstr ""
+
 msgctxt "multipleItemsLabel"
 msgid "Items"
 msgstr "Elemente"
@@ -1984,6 +2232,14 @@ msgctxt "rewriteAction"
 msgid "Rewrite with AI"
 msgstr "Mit KI umschreiben"
 
+msgctxt "rewriteAddedBlock"
+msgid "Added 1 block"
+msgstr ""
+
+msgctxt "rewriteAddedBlocks"
+msgid "Added @count blocks"
+msgstr ""
+
 msgctxt "rewriteApplyError"
 msgid "Failed to save rewritten content."
 msgstr "Umgeschriebene Inhalte konnten nicht gespeichert werden."
@@ -2000,10 +2256,6 @@ msgctxt "rewriteError"
 msgid "An error occurred."
 msgstr "Ein Fehler ist aufgetreten."
 
-msgctxt "rewriteGenerate"
-msgid "Generate"
-msgstr "Generieren"
-
 msgctxt "rewritePromptPlaceholder"
 msgid "e.g. \"rewrite in simpler words\""
 msgstr "z.B. «in einfacheren Worten umschreiben»"
@@ -2011,10 +2263,6 @@ msgstr "z.B. «in einfacheren Worten umschreiben»"
 msgctxt "rewriteRefinePromptPlaceholder"
 msgid "Enter instructions to refine unchecked results..."
 msgstr "Anweisungen eingeben um nicht markierte Texte zu überarbeiten..."
-
-msgctxt "rewriteRegenerate"
-msgid "Regenerate"
-msgstr "Erneut generieren"
 
 msgctxt "rewriteTitle"
 msgid "Rewriting @count texts..."

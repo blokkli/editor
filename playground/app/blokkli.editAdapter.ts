@@ -547,6 +547,21 @@ export default defineBlokkliEditAdapter((ctx) => {
         blockUuid: e.blockUuid,
       }),
 
+    addNewBlocks: (e) =>
+      addMutation(
+        'add',
+        e.blocks.map((block, index) => ({
+          bundle: block.bundle,
+          values: block.values,
+          hostEntityType: e.host.type,
+          hostEntityUuid: e.host.uuid,
+          hostField: e.host.fieldName,
+          // First block uses the provided afterUuid, subsequent blocks are placed after the previous one
+          preceedingUuid: index === 0 ? e.afterUuid : e.blocks[index - 1]?.blockUuid ?? null,
+          blockUuid: block.blockUuid,
+        })),
+      ),
+
     moveBlock: (e) =>
       addMutation('move', {
         uuids: [e.item.block.uuid],

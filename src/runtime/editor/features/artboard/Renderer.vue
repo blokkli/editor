@@ -397,4 +397,58 @@ onBlokkliEvent('scrollIntoView', (e) => {
     }
   }
 })
+
+onBlokkliEvent('scrollSelectionIntoView', (e) => {
+  const uuids = selection.uuids.value
+  if (uuids.length === 0) {
+    return
+  }
+
+  // Calculate the bounding rect that covers all selected blocks.
+  let minX = Infinity
+  let minY = Infinity
+  let maxX = -Infinity
+  let maxY = -Infinity
+
+  for (const uuid of uuids) {
+    dom.refreshBlockRect(uuid)
+    const rect = dom.getBlockRect(uuid)
+    if (!rect) {
+      continue
+    }
+    minX = Math.min(minX, rect.x)
+    minY = Math.min(minY, rect.y)
+    maxX = Math.max(maxX, rect.x + rect.width)
+    maxY = Math.max(maxY, rect.y + rect.height)
+  }
+
+  // No valid rects found.
+  if (minX === Infinity) {
+    console.log('no valid rects found')
+    return
+  }
+
+  const boundingRect = {
+    x: minX,
+    y: minY,
+    width: maxX - minX,
+    height: maxY - minY,
+  }
+
+  const viewportRelativeRect = ui.getViewportRelativeRect(boundingRect)
+
+  // Skip scrolling if most of the selection is already visible.
+  if (
+    calculateIntersection(viewportRelativeRect, ui.visibleViewport.value) >=
+    0.75
+  ) {
+    return
+  }
+
+  artboard.scrollIntoView(boundingRect, {
+    scale: 'blocking',
+    axis: 'y',
+    behavior: e.immediate ? 'instant' : 'auto',
+  })
+})
 </script>

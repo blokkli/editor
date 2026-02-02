@@ -25,7 +25,9 @@
         />
         <span />
         <Icon :name="getToolIcon(item.tool.name)" />
-        <span class="bk-rewrite-tool-call-type">{{ getToolLabel(item.tool.name) }}</span>
+        <span class="bk-rewrite-tool-call-type">{{
+          getToolLabel(item.tool.name)
+        }}</span>
       </label>
       <div class="bk-rewrite-tool-call-details">
         <template v-if="item.tool.name === 'rewrite_text'">
@@ -43,7 +45,9 @@
             class="bk-rewrite-tool-call-field"
           >
             <span class="bk-rewrite-tool-call-field-name">{{ key }}:</span>
-            <span class="bk-rewrite-tool-call-field-value">{{ truncateText(value) }}</span>
+            <span class="bk-rewrite-tool-call-field-value">{{
+              truncateText(value)
+            }}</span>
           </div>
         </template>
         <template v-else-if="item.tool.name === 'delete_block'">
@@ -65,8 +69,9 @@
 import { useBlokkli } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import type { PendingToolCall, RewriteTool } from '../types'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 
-const { eventBus, dom } = useBlokkli()
+const { eventBus, dom, blocks } = useBlokkli()
 
 defineProps<{
   items: PendingToolCall[]
@@ -76,7 +81,7 @@ defineEmits<{
   (e: 'toggle', id: string): void
 }>()
 
-function getToolIcon(name: RewriteTool['name']): string {
+function getToolIcon(name: RewriteTool['name']): BlokkliIcon {
   switch (name) {
     case 'rewrite_text':
       return 'bk_mdi_edit'
@@ -116,23 +121,20 @@ function truncateText(text: string, maxLength = 100): string {
 
 function onMouseEnter(item: PendingToolCall) {
   // For rewrite_text, highlight the existing block element
-  if (item.tool.name === 'rewrite_text') {
+  if (
+    item.tool.name === 'rewrite_text' ||
+    item.tool.name === 'delete_block' ||
+    item.tool.name === 'move_block'
+  ) {
     const uuid = item.tool.params.uuid
-    const el = dom.getBlockElement(uuid)
-    if (el) {
-      eventBus.emit('highlight', el)
+    const block = blocks.getBlock(uuid)
+    if (block) {
+      const el = dom.getDragElement(block)
+      if (el) {
+        eventBus.emit('highlight', el)
+      }
     }
   }
-  // For delete_block and move_block, highlight the target block
-  else if (item.tool.name === 'delete_block' || item.tool.name === 'move_block') {
-    const uuid = item.tool.params.uuid
-    const el = dom.getBlockElement(uuid)
-    if (el) {
-      eventBus.emit('highlight', el)
-    }
-  }
-  // For add_block, we can't highlight phantom blocks easily
-  // They might not have DOM elements yet
 }
 
 function onMouseLeave() {

@@ -1,5 +1,6 @@
 import { fileURLToPath } from 'node:url'
 import drupal from './src/modules/drupal'
+import agent from './packages/agent/src/module'
 
 export default defineNuxtConfig({
   modules: ['nuxt-graphql-middleware'],
@@ -61,7 +62,10 @@ fragment blokkliParagraphsType on ParagraphsType {
   nitro: {
     typescript: {
       tsConfig: {
-        include: ['../packages/agent/src/runtime/server/**/*'],
+        include: [
+          '../packages/agent/src/runtime/server/**/*',
+          '../packages/agent/src/runtime/shared/**/*',
+        ],
       },
     },
   },
@@ -72,7 +76,13 @@ fragment blokkliParagraphsType on ParagraphsType {
         composite: true,
         noUncheckedIndexedAccess: true,
       },
-      exclude: ['../playground', '../playground-minimal', '../dist', '../app'],
+      exclude: [
+        '../playground',
+        '../playground-minimal',
+        '../dist',
+        '../app',
+        '../packages/agent/src/runtime/server/**/*',
+      ],
       include: [
         '../src/runtime/components/**/*',
         '../src/runtime/composables/**/*',
@@ -82,7 +92,8 @@ fragment blokkliParagraphsType on ParagraphsType {
         '../src/runtime/types/**/*',
         '../src/global/**/*',
         '../src/modules/drupal/runtime/**/*',
-        '../packages/agent/src/runtime/features/**/*',
+        '../packages/agent/src/runtime/app/**/*',
+        '../packages/agent/src/runtime/shared/**/*',
       ],
     },
     nodeTsConfig: {
@@ -96,11 +107,12 @@ fragment blokkliParagraphsType on ParagraphsType {
         '../src/modules/**/*.ts',
         '../src/global/**/*',
         '../packages/agent/src/module.ts',
+        '../packages/agent/src/build/**/*',
       ],
       exclude: [
         '../src/runtime/**/*',
         '../src/modules/*/runtime/**/*',
-        '../packages/agent/src/runtime/features/**/*',
+        '../packages/agent/src/runtime/**/*',
       ],
     },
   },
@@ -113,6 +125,6 @@ fragment blokkliParagraphsType on ParagraphsType {
   },
 
   blokkli: {
-    modules: [drupal()],
+    modules: [drupal(), agent()],
   },
 })

@@ -136,6 +136,18 @@ export type AddNewBlockEvent = {
   blockUuid?: string
 }
 
+export type AddNewBlocksEvent = {
+  blocks: Array<{
+    bundle: string
+    /** Optional UUID to use for the new block. If not provided, the adapter generates one. */
+    blockUuid?: string
+    /** Optional default values for the block's editable/droppable fields. */
+    values?: Record<string, unknown>
+  }>
+  host: BlokkliItemHost
+  afterUuid: string | null
+}
+
 export type UpdateMutatedFieldsEvent = {
   fields: MutatedField[]
 }
@@ -188,6 +200,11 @@ export type GlobalPointerUpEvent = GlobalPointerEvent & {
   duration: number
 }
 
+export type ScrollSelectionIntoViewEvent = {
+  center?: boolean
+  immediate?: boolean
+}
+
 export interface EventbusEvents {
   select: string | string[]
   'select:unselect': undefined
@@ -221,6 +238,7 @@ export interface EventbusEvents {
   'item:doubleClick': RenderedFieldListItem
 
   scrollIntoView: ScrollIntoViewEvent
+  scrollSelectionIntoView: ScrollSelectionIntoViewEvent
   highlight: HTMLElement | null
   'animationFrame:before': AnimationFrameBeforeEvent
   'animationFrame:after': undefined

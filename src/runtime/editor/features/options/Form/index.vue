@@ -63,14 +63,14 @@ import {
   BK_VISIBLE_LANGUAGES,
 } from './../../../../../global/constants'
 import { fromLibraryBlockBundle, itemEntityType } from '#blokkli-build/config'
+import {
+  getAvailableOptions,
+  getMutatedOptionValue,
+  type OptionItem,
+} from '#blokkli/editor/helpers/options'
 
 if (import.meta.hot) {
   import.meta.hot.accept('#blokkli/runtime-helpers', () => {})
-}
-
-type OptionItem = {
-  property: string
-  option: BlockOptionDefinition
 }
 
 type OptionGroup = {
@@ -231,25 +231,11 @@ const availableOptions = computed<OptionItem[]>(() => {
   if (!props.definition) {
     return []
   }
-  const options = (props.definition.options ||
-    {}) as BlockDefinitionOptionsInput
-  const global = (
-    (props.definition.globalOptions || []) as string[]
-  ).reduce<BlockDefinitionOptionsInput>((acc, v) => {
-    const globalDefinition: BlockOptionDefinition | null =
-      (definitions.globalOptions.value as any)[v] || null
-    if (globalDefinition) {
-      acc[v] = globalDefinition
-    }
-    return acc
-  }, {})
-
-  return Object.entries({ ...options, ...global }).map(([property, option]) => {
-    return {
-      property,
-      option,
-    }
-  })
+  return getAvailableOptions(
+    props.definition.options as BlockDefinitionOptionsInput | undefined,
+    props.definition.globalOptions as string[] | undefined,
+    definitions.globalOptions.value as Record<string, any>,
+  )
 })
 
 function getOptionValue(
@@ -257,17 +243,7 @@ function getOptionValue(
   key: string,
   defaultValue: string | boolean | string[] | number | undefined,
 ) {
-  if (!uuid) {
-    return ''
-  }
-  const blockMutatedOptions = state.mutatedOptions[uuid]
-  if (
-    blockMutatedOptions !== undefined &&
-    blockMutatedOptions[key] !== undefined
-  ) {
-    return blockMutatedOptions[key]
-  }
-  return defaultValue
+  return getMutatedOptionValue(state.mutatedOptions, uuid, key, defaultValue)
 }
 
 /**

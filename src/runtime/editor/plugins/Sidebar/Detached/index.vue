@@ -124,20 +124,19 @@ function onPointerMove(e: PointerEvent) {
   e.stopPropagation()
 }
 
-const BASE_Z = 190000
-
 const isMinimized = storage.use(
   computed(() => 'sidebar:detached:minimized:' + props.id),
   false,
 )
 const storageKey = computed(() => 'sidebar:detached:size:' + props.id)
 const focusedSidebar = storage.use('sidebar:focused', '')
-const zStorageKey = computed(() => 'sidebar:detached:zIndex:' + props.id)
-const globalZ = useState('blokkli:zIndex', () => BASE_Z)
-const z = storage.use(zStorageKey.value, BASE_Z)
+const zStorageKey = computed(() => 'sidebar:detached:zindexOffset:' + props.id)
+// Store just the offset from the base z-index (starting at 0)
+const globalZOffset = useState('blokkli:zOffset', () => 0)
+const zOffset = storage.use(zStorageKey.value, 0)
 
-if (z.value > globalZ.value) {
-  globalZ.value = z.value
+if (zOffset.value > globalZOffset.value) {
+  globalZOffset.value = zOffset.value
 }
 
 const offsetX = computed(() => {
@@ -243,7 +242,7 @@ watch(
 const style = computed(() => {
   return {
     transform: `translate(${x.value - offsetX.value}px, ${y.value}px)`,
-    zIndex: z.value,
+    zIndex: `calc(var(--bk-z-index-sidebar-detached) + ${zOffset.value})`,
   }
 })
 
@@ -256,8 +255,8 @@ const innerStyle = computed(() => {
 
 const onFocus = () => {
   focusedSidebar.value = props.id
-  globalZ.value++
-  z.value = globalZ.value
+  globalZOffset.value++
+  zOffset.value = globalZOffset.value
 }
 
 const onMouseDown = (e: MouseEvent, mode: MouseMode) => {

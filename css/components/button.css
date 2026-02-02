@@ -28,6 +28,17 @@
       }
     }
 
+    &.bk-is-lime {
+      @apply !bg-lime-normal !text-lime-light hover:!bg-lime-dark hover:!text-white focus-visible:ring-accent-600 focus-visible:ring-offset-accent-100;
+      &[disabled] {
+        @apply opacity-15;
+      }
+    }
+
+    &.bk-is-lime-outline {
+      @apply !bg-transparent !text-lime-normal hover:!bg-lime-normal/20 hover:!text-lime-dark focus-visible:ring-accent-600 focus-visible:ring-offset-accent-100;
+    }
+
     &.bk-is-danger {
       @apply !bg-red-normal !text-white hover:!bg-red-dark focus-visible:ring-red-dark;
       &[disabled] {
@@ -46,7 +57,7 @@
       }
     }
     &.bk-is-small {
-      @apply h-[30px] !px-[8px] !text-sm;
+      @apply h-[32px] !px-[8px] !text-sm gap-5;
     }
     &.bk-is-icon-only {
       @apply !px-0 !w-50;

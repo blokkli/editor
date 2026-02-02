@@ -2,6 +2,7 @@
 import type { ComputedRef } from 'vue'
 import type {
   AddNewBlockEvent,
+  AddNewBlocksEvent,
   MoveBlockEvent,
   MoveMultipleBlocksEvent,
 } from '../events'
@@ -125,6 +126,11 @@ export interface BlokkliAdapter<T> {
    * Add a new block.
    */
   addNewBlock(e: AddNewBlockEvent): Promise<MutationResponseLike<T>>
+
+  /**
+   * Add multiple new blocks at once.
+   */
+  addNewBlocks?(e: AddNewBlocksEvent): Promise<MutationResponseLike<T>>
 
   /**
    * Move an item.

@@ -75,6 +75,226 @@
     "source": "<p>This shows the list of available blocks that can be placed. Add a block by dragging the icon into the page.</p><p>When an existing block is selected, some blocks may be greyed out. This indicates which blocks can be placed inside or after the selected block.</p>",
     "translation": "<p>Hier sehen Sie die Liste der verfügbaren Blöcke. Ziehen Sie einen Block auf die Seite um ihn hinzuzufügen.</p><p>Wenn ein bestehender Block ausgewählt ist sind möglicherweise einige Blöcke ausgegraut. Das bedeutet, dass nur die hervorgehobenen Blöcke im oder nach dem ausgewählten Block hinzugefügt werden können.</p>"
   },
+  "aiAgent": {
+    "source": "AI Agent",
+    "translation": "KI-Agent"
+  },
+  "aiAgentAddBlockDone": {
+    "source": "Added @bundle",
+    "translation": "@bundle hinzugefügt"
+  },
+  "aiAgentAddBlocksDone": {
+    "source": "Added @count blocks",
+    "translation": "@count Blöcke hinzugefügt"
+  },
+  "aiAgentAddBlocksRunning": {
+    "source": "Adding blocks...",
+    "translation": "Blöcke hinzufügen..."
+  },
+  "aiAgentAddFragmentDone": {
+    "source": "Added fragment \"@label\"",
+    "translation": "Fragment «@label» hinzugefügt"
+  },
+  "aiAgentAddFragmentRunning": {
+    "source": "Adding fragment...",
+    "translation": "Fragment hinzufügen..."
+  },
+  "aiAgentAddMediaBlockDone": {
+    "source": "Added @bundle with media ID @id",
+    "translation": "@bundle mit Medien-ID @id hinzugefügt"
+  },
+  "aiAgentAddMediaBlockRunning": {
+    "source": "Adding media block...",
+    "translation": "Medien-Block hinzufügen..."
+  },
+  "aiAgentAlwaysApprove": {
+    "source": "Always",
+    "translation": "Immer"
+  },
+  "aiAgentApprove": {
+    "source": "Approve",
+    "translation": "Bestätigen"
+  },
+  "aiAgentAwaitingApproval": {
+    "source": "Awaiting your approval...",
+    "translation": "Wartet auf Ihre Bestätigung..."
+  },
+  "aiAgentBatchRewriteTextRunning": {
+    "source": "Rewriting multiple texts...",
+    "translation": "Mehrere Texte umschreiben..."
+  },
+  "aiAgentConnecting": {
+    "source": "Connecting...",
+    "translation": "Verbinden..."
+  },
+  "aiAgentDeleteBlockDone": {
+    "source": "Deleted @bundle",
+    "translation": "@bundle gelöscht"
+  },
+  "aiAgentDeleteBlocksDone": {
+    "source": "Deleted @count blocks",
+    "translation": "@count Blöcke gelöscht"
+  },
+  "aiAgentDeleteBlocksRunning": {
+    "source": "Deleting blocks...",
+    "translation": "Blöcke löschen..."
+  },
+  "aiAgentDuplicateBlockDone": {
+    "source": "Duplicated @bundle",
+    "translation": "@bundle dupliziert"
+  },
+  "aiAgentDuplicateBlocksDone": {
+    "source": "Duplicated @count blocks",
+    "translation": "@count Blöcke dupliziert"
+  },
+  "aiAgentDuplicateBlocksRunning": {
+    "source": "Duplicating blocks...",
+    "translation": "Blöcke duplizieren..."
+  },
+  "aiAgentGetAllFragments": {
+    "source": "Get all fragments",
+    "translation": "Alle Fragmente abrufen"
+  },
+  "aiAgentGetAllFragmentsDone": {
+    "source": "Got all fragments",
+    "translation": "Alle Fragmente abgerufen"
+  },
+  "aiAgentGetAvailableBundlesDone": {
+    "source": "Got available bundles for @field",
+    "translation": "Verfügbare Blocktypen für @field abgerufen"
+  },
+  "aiAgentGetAvailableBundlesRunning": {
+    "source": "Getting available bundles...",
+    "translation": "Verfügbare Blocktypen abrufen..."
+  },
+  "aiAgentGetBlockFieldsDone": {
+    "source": "Got fields of @bundle block",
+    "translation": "Felder von @bundle-Block abgerufen"
+  },
+  "aiAgentGetBlockFieldsRunning": {
+    "source": "Getting block fields...",
+    "translation": "Block-Felder abrufen..."
+  },
+  "aiAgentGetBlockInfoDone": {
+    "source": "Got info for @bundle",
+    "translation": "Info für @bundle abgerufen"
+  },
+  "aiAgentGetBlockInfoMultipleDone": {
+    "source": "Got info for @count blocks",
+    "translation": "Info für @count Blöcke abgerufen"
+  },
+  "aiAgentGetBlockInfoRunning": {
+    "source": "Getting block info...",
+    "translation": "Block-Info abrufen..."
+  },
+  "aiAgentGetBlockOptionsDone": {
+    "source": "Got options of @bundle",
+    "translation": "Optionen von @bundle abgerufen"
+  },
+  "aiAgentGetBlockOptionsMultipleDone": {
+    "source": "Got options of @count blocks",
+    "translation": "Optionen von @count Blöcken abgerufen"
+  },
+  "aiAgentGetBlockOptionsRunning": {
+    "source": "Getting block options...",
+    "translation": "Block-Optionen abrufen..."
+  },
+  "aiAgentGetChildrenDone": {
+    "source": "Got children of @bundle",
+    "translation": "Unterblöcke von @bundle abgerufen"
+  },
+  "aiAgentGetChildrenRunning": {
+    "source": "Getting child blocks...",
+    "translation": "Unterblöcke abrufen..."
+  },
+  "aiAgentGetEditableFieldsDone": {
+    "source": "Got editable fields of @bundle block",
+    "translation": "Editierbare Felder von @bundle-Block abgerufen"
+  },
+  "aiAgentGetEditableFieldsRunning": {
+    "source": "Getting editable fields...",
+    "translation": "Editierbare Felder abrufen..."
+  },
+  "aiAgentGetPageStructure": {
+    "source": "Get page structure",
+    "translation": "Seitenstruktur abrufen"
+  },
+  "aiAgentGetPageStructureDone": {
+    "source": "Got page structure",
+    "translation": "Seitenstruktur abgerufen"
+  },
+  "aiAgentGetVisibleBlocksDone": {
+    "source": "Got @count visible blocks",
+    "translation": "@count sichtbare Blöcke abgerufen"
+  },
+  "aiAgentGetVisibleBlocksRunning": {
+    "source": "Getting visible blocks...",
+    "translation": "Sichtbare Blöcke abrufen..."
+  },
+  "aiAgentMoveBlockDone": {
+    "source": "Moved @bundle",
+    "translation": "@bundle verschoben"
+  },
+  "aiAgentMoveBlocksDone": {
+    "source": "Moved @count blocks",
+    "translation": "@count Blöcke verschoben"
+  },
+  "aiAgentMoveBlocksRunning": {
+    "source": "Moving blocks...",
+    "translation": "Blöcke verschieben..."
+  },
+  "aiAgentPlaceholder": {
+    "source": "Ask me to edit the page content...",
+    "translation": "Fragen Sie mich, um den Seiteninhalt zu bearbeiten..."
+  },
+  "aiAgentReject": {
+    "source": "Reject",
+    "translation": "Ablehnen"
+  },
+  "aiAgentRewriteFieldDone": {
+    "source": "Rewrote @field",
+    "translation": "@field umgeschrieben"
+  },
+  "aiAgentRewriteTextRunning": {
+    "source": "Rewriting text...",
+    "translation": "Text umschreiben..."
+  },
+  "aiAgentSearchMediaAllDone": {
+    "source": "Searched all media",
+    "translation": "Alle Medien durchsucht"
+  },
+  "aiAgentSearchMediaDone": {
+    "source": "Searched media for '@query'",
+    "translation": "Medien nach «@query» durchsucht"
+  },
+  "aiAgentSearchMediaRunning": {
+    "source": "Searching media...",
+    "translation": "Medien suchen..."
+  },
+  "aiAgentSelectMediaRunning": {
+    "source": "Selecting media...",
+    "translation": "Medien auswählen..."
+  },
+  "aiAgentSetBlockOptionsRunning": {
+    "source": "Setting block options...",
+    "translation": "Block-Optionen setzen..."
+  },
+  "aiAgentThinking": {
+    "source": "Processing...",
+    "translation": "Verarbeiten..."
+  },
+  "aiAgentTourText": {
+    "source": "Chat with an AI assistant to edit page content.",
+    "translation": "Chatten Sie mit einem KI-Assistenten, um Seiteninhalte zu bearbeiten."
+  },
+  "aiAgentUpdateOptionsOnBlockDone": {
+    "source": "Updated @count option(s) on block",
+    "translation": "@count Option(en) auf Block aktualisiert"
+  },
+  "aiAgentUpdateOptionsOnBlocksDone": {
+    "source": "Updated @count option(s) on @blockCount blocks",
+    "translation": "@count Option(en) auf @blockCount Blöcken aktualisiert"
+  },
   "all": {
     "source": "All",
     "translation": "Alle"
@@ -286,6 +506,18 @@
   "availableFragments": {
     "source": "Available fragments",
     "translation": "Verfügbare Fragmente"
+  },
+  "batchRewriteApply": {
+    "source": "Apply",
+    "translation": ""
+  },
+  "batchRewriteFields": {
+    "source": "fields",
+    "translation": ""
+  },
+  "batchRewriteTitle": {
+    "source": "Rewrite",
+    "translation": ""
   },
   "blockAddListTourText": {
     "source": "Right-click on a block to add or remove them from your favorites. Favorites are highlighted and always displayed at the top of the list.",
@@ -694,6 +926,14 @@
   "feature_add-list_setting_hideDisabledBlocks_label": {
     "source": "Hide blocks that can't be added",
     "translation": "Blöcke verstecken, die nicht hinzugefügt werden können"
+  },
+  "feature_agent_description": {
+    "source": "Chat with an AI assistant to edit page content.",
+    "translation": ""
+  },
+  "feature_agent_label": {
+    "source": "AI Agent",
+    "translation": ""
   },
   "feature_analyze_description": {
     "source": "Analyze blocks and page for SEO, accessibility, etc.",
@@ -1419,6 +1659,14 @@
     "source": "Search for media like images and drag and drop them into the page.",
     "translation": "Suchen Sie nach Medien wie Bildern und ziehen Sie diese in die Seite."
   },
+  "mediaSelectConfirm": {
+    "source": "Use selected",
+    "translation": ""
+  },
+  "mediaSelectTitle": {
+    "source": "Select a media item",
+    "translation": ""
+  },
   "multipleItemsLabel": {
     "source": "Items",
     "translation": "Elemente"
@@ -1791,6 +2039,14 @@
     "source": "Rewrite with AI",
     "translation": "Mit KI umschreiben"
   },
+  "rewriteAddedBlock": {
+    "source": "Added 1 block",
+    "translation": ""
+  },
+  "rewriteAddedBlocks": {
+    "source": "Added @count blocks",
+    "translation": ""
+  },
   "rewriteApplyError": {
     "source": "Failed to save rewritten content.",
     "translation": "Umgeschriebene Inhalte konnten nicht gespeichert werden."
@@ -1807,10 +2063,6 @@
     "source": "An error occurred.",
     "translation": "Ein Fehler ist aufgetreten."
   },
-  "rewriteGenerate": {
-    "source": "Generate",
-    "translation": "Generieren"
-  },
   "rewritePromptPlaceholder": {
     "source": "e.g. \"rewrite in simpler words\"",
     "translation": "z.B. «in einfacheren Worten umschreiben»"
@@ -1818,10 +2070,6 @@
   "rewriteRefinePromptPlaceholder": {
     "source": "Enter instructions to refine unchecked results...",
     "translation": "Anweisungen eingeben um nicht markierte Texte zu überarbeiten..."
-  },
-  "rewriteRegenerate": {
-    "source": "Regenerate",
-    "translation": "Erneut generieren"
   },
   "rewriteTitle": {
     "source": "Rewriting @count texts...",

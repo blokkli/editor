@@ -4,6 +4,7 @@ import type { ModuleHelper } from './ModuleHelper'
 import type {
   ModuleTemplate,
   TemplateDependency,
+  TemplateContext,
 } from './templates/defineTemplate'
 import type { FeatureCollector } from './Collector/Features'
 import type { ThemeData } from './ThemeData'
@@ -97,54 +98,83 @@ export class ModuleContext {
 
   addTemplate(template: ModuleTemplate) {
     this.templates.push(template)
+    const context = template.options.context
 
     if (template.type === 'code') {
-      addTemplate({
+      const resolvedTemplate = addTemplate({
         filename: `blokkli/${template.name}.js`,
         write: template.options.write || WRITE,
         getContents: () => this.getTemplateContents('code', template.name),
       })
 
-      this.addTypeTemplate(`blokkli/${template.name}.d.ts`, () => {
-        const lines = this.getTemplateContents('types', template.name)
-          .trim()
-          .split('\n')
+      // For server templates, inline for Nitro build
+      if (context === 'server' || context === 'both') {
+        this.inlineForNitro(resolvedTemplate.dst)
+      }
 
-        const imports: string[] = []
-        const declarations: string[] = []
+      this.addTypeTemplate(
+        `blokkli/${template.name}.d.ts`,
+        () => {
+          const lines = this.getTemplateContents('types', template.name)
+            .trim()
+            .split('\n')
 
-        for (const line of lines) {
-          if (line.startsWith('import ') && line.includes(' from ')) {
-            imports.push(line)
-          } else {
-            declarations.push(line)
+          const imports: string[] = []
+          const declarations: string[] = []
+
+          for (const line of lines) {
+            if (line.startsWith('import ') && line.includes(' from ')) {
+              imports.push(line)
+            } else {
+              declarations.push(line)
+            }
           }
-        }
 
-        return `${imports.join('\n')}
+          return `${imports.join('\n')}
 
 declare module '#blokkli-build/${template.name}' {
   ${declarations.join('\n  ')}
 }`
-      })
+        },
+        context,
+      )
     } else {
       const filename = template.fileName.startsWith('/')
         ? template.fileName
         : `blokkli/${template.fileName}`
 
       if (filename.endsWith('.d.ts')) {
-        this.addTypeTemplate(filename as any, () =>
-          this.getTemplateContents('file', template.fileName),
+        this.addTypeTemplate(
+          filename as `${string}.d.ts`,
+          () => this.getTemplateContents('file', template.fileName),
+          context,
         )
       } else {
-        addTemplate({
+        const resolvedTemplate = addTemplate({
           filename,
           write: true,
           getContents: () =>
             this.getTemplateContents('file', template.fileName),
         })
+
+        // For server templates, inline for Nitro build
+        if (context === 'server' || context === 'both') {
+          this.inlineForNitro(resolvedTemplate.dst)
+        }
       }
     }
+  }
+
+  /**
+   * Add a template path to Nitro's externals.inline for server-side usage.
+   * @see https://github.com/nuxt/nuxt/issues/28995
+   */
+  private inlineForNitro(path: string) {
+    const nuxt = this.helper.nuxt
+    nuxt.options.nitro.externals ||= {}
+    nuxt.options.nitro.externals.inline ||= []
+    nuxt.options.nitro.externals.inline.push(path)
+    nuxt.options.build.transpile.push(path)
   }
 
   /**
@@ -157,6 +187,7 @@ declare module '#blokkli-build/${template.name}' {
   private addTypeTemplate(
     filename: `${string}.d.ts`,
     getContents: () => string,
+    context: TemplateContext = 'app',
   ) {
     const resolvedTemplate = addTemplate({
       filename,
@@ -164,11 +195,23 @@ declare module '#blokkli-build/${template.name}' {
       getContents,
     })
 
+    const forApp = context === 'app' || context === 'both'
+    const forServer = context === 'server' || context === 'both'
+
     // Manually register type references (what addTypeTemplate does),
     // but without adding to globalTypeFiles which breaks Vue's compiler-sfc.
-    this.helper.nuxt.hook('prepare:types', (payload) => {
-      payload.references ||= []
-      payload.references.push({ path: resolvedTemplate.dst })
-    })
+    if (forApp) {
+      this.helper.nuxt.hook('prepare:types', (payload) => {
+        payload.references ||= []
+        payload.references.push({ path: resolvedTemplate.dst })
+      })
+    }
+
+    if (forServer) {
+      this.helper.nuxt.hook('nitro:prepare:types', (payload) => {
+        payload.references ||= []
+        payload.references.push({ path: resolvedTemplate.dst })
+      })
+    }
   }
 }

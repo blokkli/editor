@@ -120,6 +120,14 @@ export type DomProvider = {
   ) => RegisteredField | undefined
 
   /**
+   * Get all registered fields that allow a specific fragment.
+   *
+   * @param fragmentName - The fragment name to search for
+   * @returns Array of RegisteredField objects that allow the fragment
+   */
+  getFieldsAllowingFragment: (fragmentName: string) => RegisteredField[]
+
+  /**
    * List of unique field types currently registered.
    *
    * Returns unique combinations of entity type, bundle, and field name.
@@ -529,6 +537,21 @@ export default function (
   ): RegisteredField | undefined => {
     const key = `${uuid}:${fieldName}`
     return registeredFields[key]
+  }
+
+  const getFieldsAllowingFragment = (fragmentName: string): RegisteredField[] => {
+    const results: RegisteredField[] = []
+
+    for (const field of Object.values(registeredFields)) {
+      if (
+        field &&
+        field.allowedFragments.includes(fragmentName as (typeof field.allowedFragments)[number])
+      ) {
+        results.push(field)
+      }
+    }
+
+    return results
   }
 
   const getDropElementMarkup = (
@@ -960,6 +983,7 @@ export default function (
     registeredBlockUuids,
     getDebugData,
     getRegisteredField,
+    getFieldsAllowingFragment,
     registeredBlocks: computed(() => registeredBlocks),
     getBoundingClientRect,
   }

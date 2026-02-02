@@ -35,7 +35,11 @@
       (activeSidebar === id || isRenderedDetached || renderAlways) &&
       !isDisabled
     "
-    :to="isRenderedDetached ? 'body' : '#bk-sidebar-content-' + region"
+    :to="
+      isRenderedDetached
+        ? ui.mainLayoutElement.value
+        : '#bk-sidebar-content-' + region
+    "
   >
     <SidebarDetached
       v-if="isRenderedDetached"

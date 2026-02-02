@@ -138,7 +138,8 @@ const hasAcceptedContent = computed(() => {
 })
 
 const hasChanged = computed(
-  () => hasPendingContent.value || hasAcceptedContent.value || hasToolCalls.value,
+  () =>
+    hasPendingContent.value || hasAcceptedContent.value || hasToolCalls.value,
 )
 
 const canGenerate = computed(() => {
@@ -147,14 +148,16 @@ const canGenerate = computed(() => {
 
   // After rewrite: only enable if there are rejected fields/tool calls to regenerate
   if (hasPendingContent.value || hasToolCalls.value) {
-    const hasRejected = rejectedFields.value.size > 0 || rejectedToolCallsCount.value > 0
+    const hasRejected =
+      rejectedFields.value.size > 0 || rejectedToolCallsCount.value > 0
     return hasPrompt && notStreaming && hasRejected
   }
   return hasPrompt && notStreaming
 })
 
 const inputPlaceholder = computed(() => {
-  const hasRejected = rejectedFields.value.size > 0 || rejectedToolCallsCount.value > 0
+  const hasRejected =
+    rejectedFields.value.size > 0 || rejectedToolCallsCount.value > 0
   if ((hasPendingContent.value || hasToolCalls.value) && hasRejected) {
     return $t(
       'rewriteRefinePromptPlaceholder',
@@ -165,27 +168,7 @@ const inputPlaceholder = computed(() => {
 })
 
 const resultItems = computed<ResultItem[]>(() => {
-  const items: ResultItem[] = []
-  for (const [uuid, fields] of Object.entries(pendingValues.value)) {
-    for (const [fieldName, value] of Object.entries(fields)) {
-      const key = getFieldKey(uuid, fieldName)
-      const plainText = value.replace(/<[^>]*>/g, '').trim()
-      const element = directive.findEditableElement(fieldName, {
-        type: itemEntityType,
-        uuid,
-        bundle: '',
-      })
-      items.push({
-        key,
-        uuid,
-        fieldName,
-        displayText: plainText,
-        accepted: !rejectedFields.value.has(key),
-        element,
-      })
-    }
-  }
-  return items
+  return []
 })
 
 function toggleField(key: string) {
@@ -217,19 +200,7 @@ function toggleToolCall(id: string) {
   // Handle phantom block visibility for add_block
   if (toolCall.tool.name === 'add_block' && toolCall.phantomUuid) {
     if (toolCall.accepted) {
-      // Re-add phantom block
-      state.addPhantomBlock(toolCall.phantomUuid, {
-        bundle: toolCall.tool.params.bundle,
-        host: {
-          uuid: toolCall.tool.params.hostUuid,
-          fieldName: toolCall.tool.params.hostFieldName,
-        },
-        afterUuid: toolCall.tool.params.afterUuid,
-        props: toolCall.tool.params.fields,
-      })
     } else {
-      // Remove phantom block
-      state.removePhantomBlock(toolCall.phantomUuid)
     }
   }
 
@@ -267,15 +238,6 @@ function handleToolCallChunk(chunk: RewriteChunk) {
     if (chunk.tool.name === 'add_block') {
       const phantomUuid = generatePhantomUuid()
       toolCall.phantomUuid = phantomUuid
-      state.addPhantomBlock(phantomUuid, {
-        bundle: chunk.tool.params.bundle,
-        host: {
-          uuid: chunk.tool.params.hostUuid,
-          fieldName: chunk.tool.params.hostFieldName,
-        },
-        afterUuid: chunk.tool.params.afterUuid,
-        props: chunk.tool.params.fields,
-      })
     }
 
     // For rewrite_text, update the DOM
@@ -305,7 +267,6 @@ function handleToolCallChunk(chunk: RewriteChunk) {
         }
         // Update phantom block props
         if (toolCall.phantomUuid) {
-          state.updatePhantomBlockProps(toolCall.phantomUuid, deltaFields)
         }
       } catch {
         // Delta might be partial JSON, ignore
@@ -659,7 +620,6 @@ function revertToOriginal() {
   messages.value = []
   rejectedFields.value = new Set()
   // Clear tool calls and phantom blocks
-  state.clearPhantomBlocks()
   pendingToolCalls.value = []
 }
 
@@ -784,7 +744,10 @@ async function startRewrite(rewritePrompt: string) {
                 (f) => f.uuid === chunk.uuid && f.fieldName === chunk.fieldName,
               )
             ) {
-              affectedFields.push({ uuid: chunk.uuid, fieldName: chunk.fieldName })
+              affectedFields.push({
+                uuid: chunk.uuid,
+                fieldName: chunk.fieldName,
+              })
             }
 
             updateEditableField(chunk.uuid, chunk.fieldName, chunk.value)
@@ -841,10 +804,16 @@ async function startRewrite(rewritePrompt: string) {
           if (tc.tool.name === 'add_block') {
             messageContent = $t('rewriteAddedBlock', 'Added 1 block')
           } else {
-            messageContent = $t('rewriteAssistantMessageSingular', 'Rewrote 1 text')
+            messageContent = $t(
+              'rewriteAssistantMessageSingular',
+              'Rewrote 1 text',
+            )
           }
         } else {
-          messageContent = $t('rewriteAssistantMessageSingular', 'Rewrote 1 text')
+          messageContent = $t(
+            'rewriteAssistantMessageSingular',
+            'Rewrote 1 text',
+          )
         }
       } else {
         const parts: string[] = []
@@ -852,10 +821,10 @@ async function startRewrite(rewritePrompt: string) {
           parts.push(
             affectedFields.length === 1
               ? $t('rewriteAssistantMessageSingular', 'Rewrote 1 text')
-              : $t('rewriteAssistantMessagePlural', 'Rewrote @count texts').replace(
-                  '@count',
-                  String(affectedFields.length),
-                ),
+              : $t(
+                  'rewriteAssistantMessagePlural',
+                  'Rewrote @count texts',
+                ).replace('@count', String(affectedFields.length)),
           )
         }
         const addBlockCount = pendingToolCalls.value.filter(
@@ -913,7 +882,6 @@ async function onAccept() {
 
   if (!hasAccepted && !hasPending && !hasAcceptedToolCalls) {
     // Clean up phantom blocks
-    state.clearPhantomBlocks()
     emit('close')
     return
   }
@@ -921,7 +889,6 @@ async function onAccept() {
   const applyRewrite = getApplyRewriteMethod()
   if (!applyRewrite) {
     console.error('No applyRewrite method available')
-    state.clearPhantomBlocks()
     emit('close')
     return
   }
@@ -964,14 +931,13 @@ async function onAccept() {
   // Remove rejected phantom blocks
   for (const tc of pendingToolCalls.value) {
     if (!tc.accepted && tc.phantomUuid) {
-      state.removePhantomBlock(tc.phantomUuid)
     }
   }
 
-  // Clear all phantom blocks before applying (they will be created as real blocks)
-  state.clearPhantomBlocks()
-
-  if (Object.keys(valuesToApply).length === 0 && acceptedToolCalls.length === 0) {
+  if (
+    Object.keys(valuesToApply).length === 0 &&
+    acceptedToolCalls.length === 0
+  ) {
     emit('close')
     return
   }
@@ -994,7 +960,5 @@ onBeforeUnmount(() => {
   if (abortController.value) {
     abortController.value.abort()
   }
-  // Clean up any phantom blocks
-  state.clearPhantomBlocks()
 })
 </script>

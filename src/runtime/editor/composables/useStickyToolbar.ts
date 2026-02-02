@@ -178,7 +178,11 @@ export function useStickyToolbar(
 
     // Determine actual placement if 'auto' is specified
     let actualPlacementY: 'top' | 'bottom' | 'center' =
-      placementY === 'center' ? 'center' : placementY === 'auto' ? 'bottom' : placementY
+      placementY === 'center'
+        ? 'center'
+        : placementY === 'auto'
+          ? 'bottom'
+          : placementY
     if (placementY === 'auto') {
       const spaceAbove = minY - padding.y
       const spaceBelow = padding.y + padding.height - maxY
@@ -268,7 +272,12 @@ export function useStickyToolbar(
       Math.min(centerX - idealPosition.x, maxCaretX),
     )
 
-    return { ...idealPosition, actualPlacementY, actualPlacementX: placementX, caretX }
+    return {
+      ...idealPosition,
+      actualPlacementY,
+      actualPlacementX: placementX,
+      caretX,
+    }
   }
 
   function getWidth(): number | null {

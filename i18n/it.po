@@ -83,6 +83,226 @@ msgid ""
 "placed inside or after the selected block.</p>"
 msgstr ""
 
+msgctxt "aiAgent"
+msgid "AI Agent"
+msgstr ""
+
+msgctxt "aiAgentAddBlockDone"
+msgid "Added @bundle"
+msgstr ""
+
+msgctxt "aiAgentAddBlocksDone"
+msgid "Added @count blocks"
+msgstr ""
+
+msgctxt "aiAgentAddBlocksRunning"
+msgid "Adding blocks..."
+msgstr ""
+
+msgctxt "aiAgentAddFragmentDone"
+msgid "Added fragment \"@label\""
+msgstr ""
+
+msgctxt "aiAgentAddFragmentRunning"
+msgid "Adding fragment..."
+msgstr ""
+
+msgctxt "aiAgentAddMediaBlockDone"
+msgid "Added @bundle with media ID @id"
+msgstr ""
+
+msgctxt "aiAgentAddMediaBlockRunning"
+msgid "Adding media block..."
+msgstr ""
+
+msgctxt "aiAgentAlwaysApprove"
+msgid "Always"
+msgstr ""
+
+msgctxt "aiAgentApprove"
+msgid "Approve"
+msgstr ""
+
+msgctxt "aiAgentAwaitingApproval"
+msgid "Awaiting your approval..."
+msgstr ""
+
+msgctxt "aiAgentBatchRewriteTextRunning"
+msgid "Rewriting multiple texts..."
+msgstr ""
+
+msgctxt "aiAgentConnecting"
+msgid "Connecting..."
+msgstr ""
+
+msgctxt "aiAgentDeleteBlockDone"
+msgid "Deleted @bundle"
+msgstr ""
+
+msgctxt "aiAgentDeleteBlocksDone"
+msgid "Deleted @count blocks"
+msgstr ""
+
+msgctxt "aiAgentDeleteBlocksRunning"
+msgid "Deleting blocks..."
+msgstr ""
+
+msgctxt "aiAgentDuplicateBlockDone"
+msgid "Duplicated @bundle"
+msgstr ""
+
+msgctxt "aiAgentDuplicateBlocksDone"
+msgid "Duplicated @count blocks"
+msgstr ""
+
+msgctxt "aiAgentDuplicateBlocksRunning"
+msgid "Duplicating blocks..."
+msgstr ""
+
+msgctxt "aiAgentGetAllFragments"
+msgid "Get all fragments"
+msgstr ""
+
+msgctxt "aiAgentGetAllFragmentsDone"
+msgid "Got all fragments"
+msgstr ""
+
+msgctxt "aiAgentGetAvailableBundlesDone"
+msgid "Got available bundles for @field"
+msgstr ""
+
+msgctxt "aiAgentGetAvailableBundlesRunning"
+msgid "Getting available bundles..."
+msgstr ""
+
+msgctxt "aiAgentGetBlockFieldsDone"
+msgid "Got fields of @bundle block"
+msgstr ""
+
+msgctxt "aiAgentGetBlockFieldsRunning"
+msgid "Getting block fields..."
+msgstr ""
+
+msgctxt "aiAgentGetBlockInfoDone"
+msgid "Got info for @bundle"
+msgstr ""
+
+msgctxt "aiAgentGetBlockInfoMultipleDone"
+msgid "Got info for @count blocks"
+msgstr ""
+
+msgctxt "aiAgentGetBlockInfoRunning"
+msgid "Getting block info..."
+msgstr ""
+
+msgctxt "aiAgentGetBlockOptionsDone"
+msgid "Got options of @bundle"
+msgstr ""
+
+msgctxt "aiAgentGetBlockOptionsMultipleDone"
+msgid "Got options of @count blocks"
+msgstr ""
+
+msgctxt "aiAgentGetBlockOptionsRunning"
+msgid "Getting block options..."
+msgstr ""
+
+msgctxt "aiAgentGetChildrenDone"
+msgid "Got children of @bundle"
+msgstr ""
+
+msgctxt "aiAgentGetChildrenRunning"
+msgid "Getting child blocks..."
+msgstr ""
+
+msgctxt "aiAgentGetEditableFieldsDone"
+msgid "Got editable fields of @bundle block"
+msgstr ""
+
+msgctxt "aiAgentGetEditableFieldsRunning"
+msgid "Getting editable fields..."
+msgstr ""
+
+msgctxt "aiAgentGetPageStructure"
+msgid "Get page structure"
+msgstr ""
+
+msgctxt "aiAgentGetPageStructureDone"
+msgid "Got page structure"
+msgstr ""
+
+msgctxt "aiAgentGetVisibleBlocksDone"
+msgid "Got @count visible blocks"
+msgstr ""
+
+msgctxt "aiAgentGetVisibleBlocksRunning"
+msgid "Getting visible blocks..."
+msgstr ""
+
+msgctxt "aiAgentMoveBlockDone"
+msgid "Moved @bundle"
+msgstr ""
+
+msgctxt "aiAgentMoveBlocksDone"
+msgid "Moved @count blocks"
+msgstr ""
+
+msgctxt "aiAgentMoveBlocksRunning"
+msgid "Moving blocks..."
+msgstr ""
+
+msgctxt "aiAgentPlaceholder"
+msgid "Ask me to edit the page content..."
+msgstr ""
+
+msgctxt "aiAgentReject"
+msgid "Reject"
+msgstr ""
+
+msgctxt "aiAgentRewriteFieldDone"
+msgid "Rewrote @field"
+msgstr ""
+
+msgctxt "aiAgentRewriteTextRunning"
+msgid "Rewriting text..."
+msgstr ""
+
+msgctxt "aiAgentSearchMediaAllDone"
+msgid "Searched all media"
+msgstr ""
+
+msgctxt "aiAgentSearchMediaDone"
+msgid "Searched media for '@query'"
+msgstr ""
+
+msgctxt "aiAgentSearchMediaRunning"
+msgid "Searching media..."
+msgstr ""
+
+msgctxt "aiAgentSelectMediaRunning"
+msgid "Selecting media..."
+msgstr ""
+
+msgctxt "aiAgentSetBlockOptionsRunning"
+msgid "Setting block options..."
+msgstr ""
+
+msgctxt "aiAgentThinking"
+msgid "Processing..."
+msgstr ""
+
+msgctxt "aiAgentTourText"
+msgid "Chat with an AI assistant to edit page content."
+msgstr ""
+
+msgctxt "aiAgentUpdateOptionsOnBlockDone"
+msgid "Updated @count option(s) on block"
+msgstr ""
+
+msgctxt "aiAgentUpdateOptionsOnBlocksDone"
+msgid "Updated @count option(s) on @blockCount blocks"
+msgstr ""
+
 msgctxt "all"
 msgid "All"
 msgstr ""
@@ -293,6 +513,18 @@ msgstr ""
 
 msgctxt "availableFragments"
 msgid "Available fragments"
+msgstr ""
+
+msgctxt "batchRewriteApply"
+msgid "Apply"
+msgstr ""
+
+msgctxt "batchRewriteFields"
+msgid "fields"
+msgstr ""
+
+msgctxt "batchRewriteTitle"
+msgid "Rewrite"
 msgstr ""
 
 msgctxt "blockAddListTourText"
@@ -733,6 +965,14 @@ msgstr ""
 
 msgctxt "feature_add-list_setting_hideDisabledBlocks_label"
 msgid "Hide blocks that can't be added"
+msgstr ""
+
+msgctxt "feature_agent_description"
+msgid "Chat with an AI assistant to edit page content."
+msgstr ""
+
+msgctxt "feature_agent_label"
+msgid "AI Agent"
 msgstr ""
 
 msgctxt "feature_analyze_description"
@@ -1565,6 +1805,14 @@ msgctxt "mediaLibraryTourText"
 msgid "Search for media like images and drag and drop them into the page."
 msgstr ""
 
+msgctxt "mediaSelectConfirm"
+msgid "Use selected"
+msgstr ""
+
+msgctxt "mediaSelectTitle"
+msgid "Select a media item"
+msgstr ""
+
 msgctxt "multipleItemsLabel"
 msgid "Items"
 msgstr "Elementi"
@@ -1950,6 +2198,14 @@ msgctxt "rewriteAction"
 msgid "Rewrite with AI"
 msgstr ""
 
+msgctxt "rewriteAddedBlock"
+msgid "Added 1 block"
+msgstr ""
+
+msgctxt "rewriteAddedBlocks"
+msgid "Added @count blocks"
+msgstr ""
+
 msgctxt "rewriteApplyError"
 msgid "Failed to save rewritten content."
 msgstr ""
@@ -1966,20 +2222,12 @@ msgctxt "rewriteError"
 msgid "An error occurred."
 msgstr ""
 
-msgctxt "rewriteGenerate"
-msgid "Generate"
-msgstr ""
-
 msgctxt "rewritePromptPlaceholder"
 msgid "e.g. \"rewrite in simpler words\""
 msgstr ""
 
 msgctxt "rewriteRefinePromptPlaceholder"
 msgid "Enter instructions to refine unchecked results..."
-msgstr ""
-
-msgctxt "rewriteRegenerate"
-msgid "Regenerate"
 msgstr ""
 
 msgctxt "rewriteTitle"

@@ -5,7 +5,7 @@ const z = (index, key) => {
   return `calc(var(--bk-z-index-base) + ${index}) /* "${key}" */`
 }
 
-const zIndex = [
+const zIndexKeys = [
   'main-layout',
   'canvas-overlay',
   'animation-canvas',
@@ -18,11 +18,10 @@ const zIndex = [
   'translations-banner-mobile',
   'editable-field',
   'translations-banner-desktop',
+  'actions',
   'sidebar',
-  'sidebar-detached',
   'sidebar-tabs',
   'toolbar',
-  'actions',
   'selection-add',
   'add-buttons-label',
   'add-list',
@@ -40,6 +39,7 @@ const zIndex = [
   'resizable',
   'transform-overlay',
   'overlay',
+  'sidebar-detached',
   'form-overlay',
   'form-overlay-header',
   'dialog',
@@ -50,7 +50,12 @@ const zIndex = [
   'nested-editor-overlay-bg',
   'nested-editor-overlay-iframe',
   'init-overlay',
-].reduce((acc, key, index) => {
+]
+
+// Keys to expose as CSS variables on :root
+const zIndexCssVars = ['sidebar-detached']
+
+const zIndex = zIndexKeys.reduce((acc, key, index) => {
   acc[key] = z(index * 10000, key)
   return acc
 }, {})
@@ -134,7 +139,9 @@ module.exports = {
       transitionTimingFunction: {
         swing: 'cubic-bezier(0.56, 0.04, 0.25, 1)',
       },
-      zIndex,
+      zIndex: {
+        ...zIndex,
+      },
       boxShadow: {
         sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
         DEFAULT:
@@ -195,11 +202,25 @@ module.exports = {
     },
   },
   plugins: [
-    plugin(function ({ addVariant }) {
+    plugin(function ({ addVariant, addBase }) {
       addVariant(
         'mobile-only',
         "@media screen and (max-width: theme('screens.sm'))",
       ) // instead of hard-coded 640px use sm breakpoint value from config. Or anything
+
+      // Expose selected z-index values as CSS variables
+      const cssVars = zIndexCssVars.reduce((acc, key) => {
+        const index = zIndexKeys.indexOf(key)
+        if (index !== -1) {
+          acc[`--bk-z-index-${key}`] =
+            `calc(var(--bk-z-index-base) + ${index * 10000})`
+        }
+        return acc
+      }, {})
+
+      addBase({
+        ':root': cssVars,
+      })
     }),
   ],
 }

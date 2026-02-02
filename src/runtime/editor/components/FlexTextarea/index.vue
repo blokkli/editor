@@ -63,7 +63,9 @@ watch(modelValue, (newValue) => {
 onBlokkliEvent('animationFrame', () => {
   const scrollHeight = textarea.value?.scrollHeight ?? minHeight
   const newHeight = Math.max(scrollHeight, minHeight)
-  height.value = props.maxHeight ? Math.min(newHeight, props.maxHeight) : newHeight
+  height.value = props.maxHeight
+    ? Math.min(newHeight, props.maxHeight)
+    : newHeight
 })
 
 defineExpose({
