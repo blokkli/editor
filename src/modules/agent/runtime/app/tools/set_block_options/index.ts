@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import {
   getAvailableOptions,
   optionValueToStorable,
@@ -23,7 +23,7 @@ const paramsSchema = z.object({
     .describe('Array of blocks with their options to set'),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'set_block_options',
   description:
     'Set options on one or more blocks. Each block entry contains a UUID and an options object with key-value pairs.',

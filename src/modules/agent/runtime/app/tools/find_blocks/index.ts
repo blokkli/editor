@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { parentSchema } from '../schemas'
 import {
   getAvailableOptions,
@@ -75,7 +75,7 @@ const resultSchema = z.object({
     .describe('Whether there are more results beyond the limit'),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'find_blocks',
   description:
     'Find blocks matching multiple filter criteria. Supports filtering by bundle, structure (nesting, parent, field), content, and options. Returns paginated results.',

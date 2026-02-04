@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
 
 const paramsSchema = z.object({
@@ -10,7 +10,7 @@ const paramsSchema = z.object({
     ),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'go_to_history_index',
   description:
     'Navigate to a specific point in mutation history. Use -1 for pristine state, ' +

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema, parentSchema } from '../schemas'
 
 const paramsSchema = z.object({
@@ -16,7 +16,7 @@ const paramsSchema = z.object({
     .describe('UUID of block to insert after, or null for beginning'),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'add_template',
   description:
     "Add a template to the page. Templates are copied when added, so changes to the added blocks won't affect other pages using the same template. Requires user approval before the template is actually added.",

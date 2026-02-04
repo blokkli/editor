@@ -5,6 +5,8 @@ import { CollectedFile, Collector } from '../../../build/Collector'
 import type { TemplateDependency } from '../../../build/templates/defineTemplate'
 import type { ModuleHelper } from '../../../build/ModuleHelper'
 
+const SKILL_COMPOSABLE = 'defineBlokkliAgentSkill'
+
 /**
  * Extracted skill data for template generation.
  */
@@ -17,35 +19,62 @@ export type ExtractedSkill = {
  * Collected skill file.
  */
 export class CollectedSkillFile extends CollectedFile {
-  private skill: ExtractedSkill
+  private skill: ExtractedSkill | null = null
 
-  constructor(filePath: string, fileContents: string, importName: string) {
+  constructor(filePath: string, fileContents: string) {
     super(filePath, fileContents)
-    this.skill = {
-      filePath,
-      importName,
-    }
   }
 
-  getSkill(): ExtractedSkill {
+  /**
+   * Check if file contains the skill composable and extract skill data.
+   */
+  override async handleChange(): Promise<boolean> {
+    if (!this.fileContents.includes(SKILL_COMPOSABLE)) {
+      this.skill = null
+      return true
+    }
+
+    const ext = path.extname(this.filePath)
+    const fileName = path.basename(this.filePath, ext)
+    const importName = toImportName(fileName)
+
+    this.skill = {
+      filePath: this.filePath,
+      importName,
+    }
+
+    return true
+  }
+
+  getSkill(): ExtractedSkill | null {
     return this.skill
   }
 
-  override async handleChange(): Promise<boolean> {
-    // Skills don't need to parse file contents for now
-    // All metadata is available at runtime via defineBlokkliAgentSkill
-    return Promise.resolve(true)
+  isValid(): boolean {
+    return this.skill !== null
   }
+}
+
+/**
+ * Convert a file name to a valid import name.
+ */
+function toImportName(fileName: string): string {
+  // Convert snake_case/kebab-case to PascalCase and add skill prefix
+  const name = fileName
+    .split(/[-_]/)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('')
+  return `skill${name}`
 }
 
 /**
  * Collects skill files from multiple directories.
  *
- * Skills are defined as TypeScript modules using defineBlokkliAgentSkill().
- * All .ts files in the skills directories (recursively) are collected.
+ * Skills are defined using defineBlokkliAgentSkill().
+ * Files (.ts or .js) containing this composable are collected.
  */
 export class SkillCollector extends Collector<CollectedSkillFile> {
-  protected override needsFileContents = false
+  protected override needsFileContents = true
   private skillsDirs: string[]
 
   constructor(helper: ModuleHelper, skillsDirs: string[]) {
@@ -54,7 +83,7 @@ export class SkillCollector extends Collector<CollectedSkillFile> {
   }
 
   /**
-   * Initialize the collector by scanning for .ts files in all directories.
+   * Initialize the collector by scanning for skill files in all directories.
    */
   override async init(): Promise<void> {
     for (const dir of this.skillsDirs) {
@@ -66,9 +95,12 @@ export class SkillCollector extends Collector<CollectedSkillFile> {
         continue
       }
 
-      const skillFiles = await resolveFiles(dir, ['**/*.ts'], {
-        followSymbolicLinks: false,
-      })
+      // Find .ts and .js files, but exclude .d.ts declaration files
+      const skillFiles = (
+        await resolveFiles(dir, ['**/*.ts', '**/*.js'], {
+          followSymbolicLinks: false,
+        })
+      ).filter((f) => !f.endsWith('.d.ts'))
 
       for (const filePath of skillFiles) {
         await this.addFile(filePath)
@@ -85,13 +117,20 @@ export class SkillCollector extends Collector<CollectedSkillFile> {
     const isInSkillsDir = this.skillsDirs.some((dir) =>
       filePath.startsWith(dir),
     )
-    return isInSkillsDir && filePath.endsWith('.ts')
+    // Exclude .d.ts declaration files
+    if (filePath.endsWith('.d.ts')) {
+      return false
+    }
+    const hasValidExtension =
+      filePath.endsWith('.ts') || filePath.endsWith('.js')
+    return isInSkillsDir && hasValidExtension
   }
 
-  override createCollectedFile(filePath: string): CollectedSkillFile {
-    const fileName = path.basename(filePath, '.ts')
-    const importName = this.toImportName(fileName)
-    return new CollectedSkillFile(filePath, '', importName)
+  override createCollectedFile(
+    filePath: string,
+    fileContents: string,
+  ): CollectedSkillFile {
+    return new CollectedSkillFile(filePath, fileContents)
   }
 
   override getDependencyTypes(): TemplateDependency[] {
@@ -99,21 +138,11 @@ export class SkillCollector extends Collector<CollectedSkillFile> {
   }
 
   /**
-   * Convert a file name to a valid import name.
-   */
-  private toImportName(fileName: string): string {
-    // Convert snake_case/kebab-case to PascalCase and add skill prefix
-    const name = fileName
-      .split(/[-_]/)
-      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-      .join('')
-    return `skill${name}`
-  }
-
-  /**
-   * Get all collected skills.
+   * Get all collected skills that are valid (contain defineBlokkliAgentSkill).
    */
   getSkills(): ExtractedSkill[] {
-    return [...this.files.values()].map((v) => v.getSkill())
+    return [...this.files.values()]
+      .filter((v) => v.isValid())
+      .map((v) => v.getSkill()!)
   }
 }

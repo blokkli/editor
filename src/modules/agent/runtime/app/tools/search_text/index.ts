@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 
 const paramsSchema = z.object({
   query: z
@@ -32,7 +32,7 @@ const resultSchema = z.object({
   totalMatches: z.number().describe('Total number of blocks that matched'),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'search_text',
   description:
     'Search for text in block content. Returns blocks containing matches with text snippets. Only searches text directly in each block, not in nested child blocks. For regex, use /pattern/flags format (e.g., "/hello|world/gi").',

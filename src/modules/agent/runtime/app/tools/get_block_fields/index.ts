@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 
 const paramsSchema = z.object({
   uuid: z.string().describe('The block UUID'),
@@ -19,7 +19,7 @@ const resultSchema = z.array(
   }),
 )
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'get_block_fields',
   description:
     'Get all block reference fields on a block (fields that can contain child blocks)',

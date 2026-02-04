@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 
 const paramsSchema = z.object({
   parentUuid: z.string().describe('The parent entity UUID'),
@@ -19,7 +19,7 @@ const resultSchema = z.object({
   bundles: z.array(bundleSchema).describe('Available block types'),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'get_available_bundles',
   description: 'Get the block types that can be added to a specific field',
   category: 'query',

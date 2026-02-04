@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { parentSchema } from '../schemas'
 import {
   getAvailableOptions,
@@ -125,7 +125,7 @@ const resultSchema = z.object({
     .describe('Block options with definitions and current values'),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'get_block_context',
   description:
     'Get comprehensive context for a single block including parent chain, siblings, children, editable fields, and options. Preferred over multiple individual tool calls.',

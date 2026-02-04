@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 
 const paramsSchema = z.object({
   message: z.string().optional().describe('Optional message to echo back'),
@@ -11,7 +11,7 @@ const resultSchema = z.object({
   timestamp: z.number().describe('Unix timestamp of the response'),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'ping',
   description:
     'A simple test tool that returns a success response. Use this to verify the agent is working.',

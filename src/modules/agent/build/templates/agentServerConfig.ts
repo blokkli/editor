@@ -38,8 +38,7 @@ export function createAgentServerConfigTemplate(
           ? 'createOpenAIProvider()'
           : 'createAnthropicProvider()'
 
-      // Use provider's default model if none specified
-      const modelExport = model ? `'${model}'` : 'provider.defaultModel'
+      const modelExport = `'${model}'`
 
       return `${providerImport}
 

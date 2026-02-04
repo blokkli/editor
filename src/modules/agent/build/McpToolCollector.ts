@@ -5,6 +5,8 @@ import { CollectedFile, Collector } from '../../../build/Collector'
 import type { TemplateDependency } from '../../../build/templates/defineTemplate'
 import type { ModuleHelper } from '../../../build/ModuleHelper'
 
+const TOOL_COMPOSABLE = 'defineBlokkliAgentTool'
+
 export type ExtractedMcpTool = {
   filePath: string
   importName: string
@@ -14,36 +16,58 @@ export type ExtractedMcpTool = {
  * Collected MCP tool file.
  */
 export class CollectedMcpToolFile extends CollectedFile {
-  private tool: ExtractedMcpTool
+  private tool: ExtractedMcpTool | null = null
 
-  constructor(filePath: string, fileContents: string, importName: string) {
-    super(filePath, fileContents)
+  /**
+   * Check if file contains the tool composable and extract tool data.
+   */
+  override async handleChange(): Promise<boolean> {
+    if (!this.fileContents.includes(TOOL_COMPOSABLE)) {
+      this.tool = null
+      return true
+    }
+
+    const folderName = path.basename(path.dirname(this.filePath))
+    const importName = toImportName(folderName)
+
     this.tool = {
-      filePath,
+      filePath: this.filePath,
       importName,
     }
+
+    return true
   }
 
-  getTool(): ExtractedMcpTool {
+  getTool(): ExtractedMcpTool | null {
     return this.tool
   }
 
-  override async handleChange(): Promise<boolean> {
-    // Tools don't need to parse file contents for now
-    // All metadata is available at runtime
-    return Promise.resolve(true)
+  isValid(): boolean {
+    return this.tool !== null
   }
+}
+
+/**
+ * Convert a folder name to a valid import name.
+ */
+function toImportName(folderName: string): string {
+  // Convert snake_case/kebab-case to PascalCase and add tool prefix
+  const name = folderName
+    .split(/[-_]/)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('')
+  return `tool${name}`
 }
 
 /**
  * Collects MCP tool files from multiple directories.
  *
+ * Tools are defined using defineBlokkliAgentTool() in index.ts or index.js files.
  * The collector finds tool files for import generation.
- * All tool metadata (name, description, schema) is available at runtime
- * and sent to the server dynamically via WebSocket.
+ * All tool metadata (name, description, schema) is available at runtime.
  */
 export class McpToolCollector extends Collector<CollectedMcpToolFile> {
-  protected override needsFileContents = false
+  protected override needsFileContents = true
   private toolsDirs: string[]
 
   constructor(helper: ModuleHelper, toolsDirs: string[]) {
@@ -64,9 +88,12 @@ export class McpToolCollector extends Collector<CollectedMcpToolFile> {
         continue
       }
 
-      const toolFiles = await resolveFiles(dir, ['*/index.ts'], {
-        followSymbolicLinks: false,
-      })
+      // Find index.ts and index.js files, but exclude .d.ts declaration files
+      const toolFiles = (
+        await resolveFiles(dir, ['*/index.ts', '*/index.js'], {
+          followSymbolicLinks: false,
+        })
+      ).filter((f) => !f.endsWith('.d.ts'))
 
       for (const filePath of toolFiles) {
         await this.addFile(filePath)
@@ -81,13 +108,20 @@ export class McpToolCollector extends Collector<CollectedMcpToolFile> {
 
   override async applies(filePath: string): Promise<boolean> {
     const isInToolsDir = this.toolsDirs.some((dir) => filePath.startsWith(dir))
-    return isInToolsDir && filePath.endsWith('/index.ts')
+    // Exclude .d.ts declaration files
+    if (filePath.endsWith('.d.ts')) {
+      return false
+    }
+    const isIndexFile =
+      filePath.endsWith('/index.ts') || filePath.endsWith('/index.js')
+    return isInToolsDir && isIndexFile
   }
 
-  override createCollectedFile(filePath: string): CollectedMcpToolFile {
-    const folderName = path.basename(path.dirname(filePath))
-    const importName = this.toImportName(folderName)
-    return new CollectedMcpToolFile(filePath, '', importName)
+  override createCollectedFile(
+    filePath: string,
+    fileContents: string,
+  ): CollectedMcpToolFile {
+    return new CollectedMcpToolFile(filePath, fileContents)
   }
 
   override getDependencyTypes(): TemplateDependency[] {
@@ -95,21 +129,11 @@ export class McpToolCollector extends Collector<CollectedMcpToolFile> {
   }
 
   /**
-   * Convert a folder name to a valid import name.
-   */
-  private toImportName(fileName: string): string {
-    // Convert snake_case to PascalCase and add tool prefix
-    const name = fileName
-      .split(/[-_]/)
-      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-      .join('')
-    return `tool${name}`
-  }
-
-  /**
-   * Get all collected tools.
+   * Get all collected tools that are valid (contain defineBlokkliAgentTool).
    */
   getTools(): ExtractedMcpTool[] {
-    return [...this.files.values()].map((v) => v.getTool())
+    return [...this.files.values()]
+      .filter((v) => v.isValid())
+      .map((v) => v.getTool()!)
   }
 }

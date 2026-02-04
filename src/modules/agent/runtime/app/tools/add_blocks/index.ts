@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { generateUUID } from '#blokkli/editor/helpers/uuid'
 import { mutationResultSchema, parentSchema } from '../schemas'
 import { itemEntityType } from '#blokkli-build/config'
@@ -27,7 +27,7 @@ const paramsSchema = z.object({
     .describe('UUID of block to insert after, or null for beginning'),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'add_blocks',
   description:
     'Add one or more new blocks to the page. All blocks are added to the same parent field in the order specified. Requires user approval before the blocks are actually created.',

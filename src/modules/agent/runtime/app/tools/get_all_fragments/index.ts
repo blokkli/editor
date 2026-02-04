@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 
 const fragmentSchema = z.object({
   name: z.string().describe('The unique fragment identifier'),
@@ -14,7 +14,7 @@ const paramsSchema = z.object({})
 
 const resultSchema = z.array(fragmentSchema).describe('All available fragments')
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'get_all_fragments',
   description: 'Get all available fragments that can be added to the page',
   category: 'query',

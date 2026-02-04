@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 
 const paramsSchema = z.object({
   query: z.string().optional().describe('Search text to filter templates'),
@@ -22,7 +22,7 @@ const resultSchema = z.object({
   total: z.number().describe('Total number of matching templates'),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'search_templates',
   description:
     'Search for available templates. Templates are reusable block collections created by users that can be added to the page.',

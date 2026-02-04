@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 
 const paramsSchema = z.object({})
@@ -36,7 +36,7 @@ function getFieldType(
   return 'plain'
 }
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'get_all_page_content',
   description:
     'Get all text content from the entire page in a single call. Returns a flat list of all blocks with their concatenated text. Use this as the first tool when reviewing or analyzing page content.',

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import {
   getAvailableOptions,
   getMutatedOptionValue,
@@ -58,7 +58,7 @@ const resultSchema = z.object({
   notFound: z.array(z.string()).describe('UUIDs of blocks that were not found'),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'get_block_options',
   description:
     'Get available options and their current values for one or more blocks',

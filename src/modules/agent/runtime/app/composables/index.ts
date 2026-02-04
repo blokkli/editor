@@ -1,2 +1,2 @@
-export { defineBlokkliMcpTool } from './defineBlokkliMcpTool'
+export { defineBlokkliAgentTool } from './defineBlokkliAgentTool'
 export { useAgentWebSocket } from './useAgentWebSocket'

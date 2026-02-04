@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { parentSchema } from '../schemas'
 
 const paramsSchema = z.object({
@@ -22,7 +22,7 @@ const resultSchema = z.object({
   notFound: z.array(z.string()).describe('UUIDs of blocks that were not found'),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'get_block_info',
   description:
     'Get lightweight info for multiple blocks (bundle, current option values, parent). ' +

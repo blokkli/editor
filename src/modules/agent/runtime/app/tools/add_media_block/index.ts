@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema, parentSchema } from '../schemas'
 import type { DraggableMediaLibraryItem } from '#blokkli/editor/features/media-library/types'
 
@@ -17,7 +17,7 @@ const paramsSchema = z.object({
     .describe('UUID of block to insert after, or null for beginning'),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'add_media_block',
   description:
     'Add a block using a media item from the library. Use search_media first to find media items, then use this tool to add one to the page. Requires user approval.',

@@ -29,19 +29,13 @@ export type AgentModuleOptions = {
    * NOTE: The API key needs to be provided at runtime via runtime config:
    *
    * NUXT_BLOKKLI_AGENT_API_KEY=hunter2
-   *
-   * @default 'anthropic'
    */
-  provider?: AgentProvider
+  provider: AgentProvider
 
   /**
    * Model to use for the AI provider.
-   *
-   * If not specified, uses the provider's default model:
-   * - Anthropic: claude-haiku-4-5-20251001
-   * - OpenAI: gpt-4o
    */
-  model?: string
+  model: string
 }
 
 export default defineBlokkliModule<AgentModuleOptions>({
@@ -56,6 +50,12 @@ export default defineBlokkliModule<AgentModuleOptions>({
     options.featureImports.push(featurePath)
   },
   async setup(ctx, options) {
+    if (!options.model) {
+      throw new Error('Missing blökkli agent option "model".')
+    }
+    if (!options.provider) {
+      throw new Error('Missing blökkli agent option "provider".')
+    }
     const nuxt = ctx.helper.nuxt
     const moduleResolver = createResolver(
       fileURLToPath(new URL('./', import.meta.url)),
@@ -139,6 +139,7 @@ export default defineBlokkliModule<AgentModuleOptions>({
     addServerHandler({
       route: AGENT_ROUTE,
       handler: moduleResolver.resolve('./runtime/server/agent'),
+      lazy: true,
     })
 
     // Add server handler for web fetch

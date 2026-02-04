@@ -31,7 +31,7 @@ import type { Component } from 'vue'
  *   bundle: z.string(),
  * })
  *
- * export default defineBlokkliMcpTool({
+ * export default defineBlokkliAgentTool({
  *   name: 'get_block_info',
  *   description: 'Get detailed information about a specific block by its UUID',
  *   category: 'query',
@@ -48,7 +48,7 @@ import type { Component } from 'vue'
  * })
  * ```
  */
-export function defineBlokkliMcpTool<
+export function defineBlokkliAgentTool<
   TParamsSchema extends z.ZodType,
   TResultSchema extends z.ZodType,
   const TMethods extends readonly AdapterMethods[] = readonly [],

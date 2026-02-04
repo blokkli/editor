@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 
 const paramsSchema = z.object({
   url: z.string().url().describe('The URL to fetch content from'),
@@ -22,7 +22,7 @@ const resultSchema = z.object({
     .describe('The final URL (may differ from input if redirected)'),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'web_fetch',
   description:
     'Fetch and extract content from a web page. Only allowed origins can be fetched. By default returns Markdown which preserves document structure (headings, lists, links). Use format="html" if you need the raw HTML.',

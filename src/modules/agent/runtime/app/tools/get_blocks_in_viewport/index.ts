@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 
 const paramsSchema = z.object({
@@ -248,7 +248,7 @@ function buildRootBlockTree(
   return result
 }
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'get_blocks_in_viewport',
   description:
     'Get blocks currently visible in the viewport with their visibility percentage. Use this for viewport-relative queries like "the block at the top", "what\'s in the center", or "blocks near the bottom". NOT for getting all page content - use get_all_page_content for that.',

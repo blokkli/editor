@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema, parentSchema } from '../schemas'
 
 const paramsSchema = z.object({
@@ -12,7 +12,7 @@ const paramsSchema = z.object({
     .describe('UUID of block to insert after, or null for beginning'),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'move_blocks',
   description:
     'Move one or more blocks to a different parent field. All blocks are moved to the same target location.',

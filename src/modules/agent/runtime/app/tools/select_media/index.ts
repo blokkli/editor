@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import Component from './Component.vue'
 
 const mediaItemSchema = z.object({
@@ -37,7 +37,7 @@ export type SelectMediaParams = z.infer<typeof paramsSchema>
 export type SelectMediaResult = z.infer<typeof resultSchema>
 export type SelectMediaItem = z.infer<typeof mediaItemSchema>
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'select_media',
   description:
     'Show a thumbnail grid of media items for the user to select from. Use this when search_media returns multiple results and you want the user to choose one.',

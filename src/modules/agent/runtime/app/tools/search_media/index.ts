@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 
 const paramsSchema = z.object({
   query: z.string().optional().describe('Search text to filter media items'),
@@ -28,7 +28,7 @@ const resultSchema = z.object({
 
 export type SearchMediaResult = z.infer<typeof resultSchema>
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'search_media',
   description:
     'Search the media library for images, videos, and other media. Returns media items that can be added to the page using add_media_block.',

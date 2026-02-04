@@ -107,7 +107,6 @@ function convertTools(tools: ClientToolDefinition[]): ChatCompletionTool[] {
  */
 export class OpenAIProvider implements AIProvider {
   readonly name = 'openai'
-  readonly defaultModel = 'gpt-4o'
 
   async *createStream(
     config: ProviderConfig,
@@ -127,7 +126,7 @@ export class OpenAIProvider implements AIProvider {
     try {
       const stream = await client.chat.completions.create({
         model: config.model,
-        max_tokens: options.maxTokens ?? 4096,
+        max_completion_tokens: options.maxTokens ?? 4096,
         messages: allMessages,
         tools: tools.length > 0 ? tools : undefined,
         stream: true,

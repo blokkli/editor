@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
 
 const paramsSchema = z.object({
@@ -9,7 +9,7 @@ const paramsSchema = z.object({
   mediaBundle: z.string().describe('The media bundle type (e.g., "image")'),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'replace_media_field',
   description:
     'Replace the media on an existing block field. Use get_editable_fields first to see available droppable fields, then search_media to find media items.',

@@ -1,12 +1,12 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
 
 const paramsSchema = z.object({
   uuids: z.array(z.string()).describe('The UUIDs of the blocks to delete'),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'delete_blocks',
   description:
     'Delete one or more blocks from the page. Requires user approval before the blocks are actually deleted.',

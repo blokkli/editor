@@ -3,7 +3,6 @@ import type { MessageParam, Tool } from '@anthropic-ai/sdk/resources/messages'
 import type {
   AIProvider,
   GenericMessage,
-  GenericContentBlock,
   ProviderConfig,
   StreamOptions,
   StreamEvent,
@@ -67,7 +66,6 @@ function convertTools(tools: ClientToolDefinition[]): Tool[] {
  */
 export class AnthropicProvider implements AIProvider {
   readonly name = 'anthropic'
-  readonly defaultModel = 'claude-haiku-4-5-20251001'
 
   async *createStream(
     config: ProviderConfig,

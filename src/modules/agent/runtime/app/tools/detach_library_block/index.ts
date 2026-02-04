@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
 import { fromLibraryBlockBundle } from '#blokkli-build/config'
 
@@ -7,7 +7,7 @@ const paramsSchema = z.object({
   uuids: z.array(z.string()).describe('UUIDs of library blocks to detach'),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'detach_library_block',
   description:
     'Detach one or more library blocks to create editable copies. ' +

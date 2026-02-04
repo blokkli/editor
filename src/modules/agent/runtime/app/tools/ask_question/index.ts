@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import Component from './Component.vue'
 
 const optionSchema = z.object({
@@ -34,7 +34,7 @@ const resultSchema = z.object({
 export type AskQuestionParams = z.infer<typeof paramsSchema>
 export type AskQuestionResult = z.infer<typeof resultSchema>
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'ask_question',
   description:
     'Ask the user a question with predefined options. Use for clarifications or choices.',

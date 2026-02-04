@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema, parentSchema } from '../schemas'
 
 const paramsSchema = z.object({
@@ -12,7 +12,7 @@ const paramsSchema = z.object({
     .describe('UUID of block to insert after, or null for beginning'),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'add_fragment',
   description:
     'Add a fragment block to the page. Requires user approval before the fragment is actually added.',

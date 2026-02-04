@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import Component from './Component.vue'
 
 const changeSchema = z.object({
@@ -36,7 +36,7 @@ export type BatchRewriteParams = z.infer<typeof paramsSchema>
 export type BatchRewriteResult = z.infer<typeof resultSchema>
 export type BatchRewriteChange = z.infer<typeof changeSchema>
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'batch_rewrite_text',
   description:
     'Rewrite text content in multiple fields at once. Shows previews immediately and lets the user select which changes to apply. Use this when you need to update multiple text fields.',

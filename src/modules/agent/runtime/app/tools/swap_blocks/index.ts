@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
 
 const paramsSchema = z.object({
@@ -7,7 +7,7 @@ const paramsSchema = z.object({
   uuidB: z.string().describe('Second block UUID'),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'swap_blocks',
   description:
     'Swap the positions of two blocks, either in the same field or different fields.',

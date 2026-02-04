@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 import { mutationResultSchema } from '../schemas'
 
@@ -29,7 +29,7 @@ function getFieldType(
   return 'plain'
 }
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'rewrite_text',
   description:
     'Rewrite the text content of an editable field. Shows a preview immediately and requires user approval.',

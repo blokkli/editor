@@ -111,9 +111,6 @@ export interface AIProvider {
   /** Provider name for identification */
   readonly name: string
 
-  /** Default model to use if none specified */
-  readonly defaultModel: string
-
   /**
    * Create a stream of events for the given messages.
    * The provider converts generic messages to its native format,

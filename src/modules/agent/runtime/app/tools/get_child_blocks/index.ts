@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { parentSchema } from '../schemas'
 
 const paramsSchema = z.object({
@@ -33,7 +33,7 @@ const resultSchema = z.object({
   fields: z.array(fieldWithBlocksSchema),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'get_child_blocks',
   description:
     'Get all child fields and blocks for the page or a block. Returns parent objects ready for use with add_blocks. Use this to understand structure before adding blocks.',

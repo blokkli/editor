@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 
 const paramsSchema = z.object({
@@ -58,7 +58,7 @@ function getFieldType(
   return 'plain'
 }
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'get_editable_fields',
   description:
     'Get all editable text fields and droppable media fields for a block and optionally its nested children',

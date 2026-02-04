@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema, parentSchema } from '../schemas'
 import {
   validateBlocksExist,
@@ -22,7 +22,7 @@ const paramsSchema = z.object({
     .describe('Insert after this block (only when parent is provided)'),
 })
 
-export default defineBlokkliMcpTool({
+export default defineBlokkliAgentTool({
   name: 'duplicate_blocks',
   description:
     'Duplicate one or more blocks. Without parent parameter, duplicates in the same field. With parent parameter, duplicates to a different field. Requires user approval.',
